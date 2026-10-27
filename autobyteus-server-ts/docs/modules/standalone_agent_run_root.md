@@ -160,7 +160,7 @@ each. Deleting the host's run keeps its copies' folders (detached). The location
 
 - **`@` resolution.** A host SEND_MESSAGE with `mentions` on `/ws/agent/:runId` is resolved by the
   root after the host is ready (`AgentRunCommandCoordinator.post` →
-  `StandaloneAgentRunRoot.postUserMessage` → `StandaloneRootMessageDelivery.postToHost`); a child's
+  `StandaloneAgentRunRoot.postHostUserMessage` → `StandaloneRootMessageDelivery.postToHost`); a child's
   SEND_MESSAGE with `mentions` on the collaboration stream is resolved by the root
   (`resolveCollaboratorMentions`). Resolution adds nothing; the posted message carries the note
   steering the agent to `delegate_task`. An ineligible mention rejects the send with

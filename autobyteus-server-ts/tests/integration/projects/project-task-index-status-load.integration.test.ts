@@ -58,7 +58,7 @@ describe.runIf(enabled)("Embedding section status load (QR-001)", () => {
       const { projectId } = await getProjectService().createProject({ name: `Load ${String(p).padStart(2, "0")}` });
       for (let start = 0; start < TASKS; start += 50) {
         await Promise.all(Array.from({ length: Math.min(50, TASKS - start) }, (_, i) =>
-          tasks.createTask({ projectId, description: `Task ${start + i} of project ${p}: docker image sidebar token cost ${(start + i) % 97}` })));
+          tasks.createTask({ projectId, title: `Task ${start + i} of project ${p}: docker image sidebar token cost ${(start + i) % 97}`, description: `Task ${start + i} of project ${p}: docker image sidebar token cost ${(start + i) % 97}` })));
       }
       seeded.projects++;
       seeded.tasks += TASKS;

@@ -244,9 +244,12 @@ const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
         expect(workerCompleted).toHaveLength(1);
         const turnIdOf = (message: TeamStreamMessage) => message.payload.turn_id ?? message.payload.turnId;
         expect(turnIdOf(workerCompleted[0]!)).toBe(turnIdOf(workerStarted[0]!));
+        // Text arrives as single SEGMENT_CONTENT frames or as SEGMENT_CONTENT_BATCH frames whose items carry the run ID.
         const workerReply = stream
-          .filter((message) => ofWorker("SEGMENT_CONTENT")(message) && (message.payload.segment_type ?? "text") === "text")
-          .map((message) => String(message.payload.delta ?? ""))
+          .flatMap((message) => message.type === "SEGMENT_CONTENT" ? [message.payload]
+            : message.type === "SEGMENT_CONTENT_BATCH" ? (message.payload.items as Array<Record<string, unknown>> | undefined) ?? [] : [])
+          .filter((item) => item.agent_run_id === workerRunId && (item.segment_type ?? "text") === "text")
+          .map((item) => String(item.delta ?? ""))
           .join("");
         expect(workerReply).toContain("WORK_DONE");
         expect(workerReply.toUpperCase()).toContain("PINEAPPLE");

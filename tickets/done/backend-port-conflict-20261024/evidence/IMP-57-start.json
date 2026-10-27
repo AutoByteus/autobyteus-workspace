@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "start",
+  "result": {
+    "instanceId": "iso-58464-e168",
+    "pid": 97959,
+    "executablePath": "/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "backendUrl": "http://127.0.0.1:58465",
+    "graphqlUrl": "http://127.0.0.1:58465/graphql",
+    "controlEndpoint": "http://127.0.0.1:58464",
+    "controlPort": 58464,
+    "serverPort": 58465,
+    "dataRoot": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-imp57-4B4PlW/data",
+    "ownsDataRoot": false,
+    "keepDataRoot": false,
+    "testUpdateFeedUrl": null,
+    "databaseUrl": "file:/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-imp57-4B4PlW/data/server-data/db/production.db",
+    "logPath": "/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-imp57-4B4PlW/autobyteus-isolated-app/iso-58464-e168.log"
+  }
+}

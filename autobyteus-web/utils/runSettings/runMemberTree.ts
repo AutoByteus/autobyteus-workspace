@@ -48,6 +48,10 @@ export interface RunMemberNode {
   badge?: 'delegated_copy'
   /** A delegated copy: where its launch came from (absent once the user chose its model). */
   sourceKey?: RunMemberLaunchSource
+  /** autobyteus-32: the Model Router's choice for this copy agent (its reason, task kind and where its decision is). */
+  routing?: RunMemberRouting
+  /** autobyteus-32: the other node that runs this copy (a remote copy's read-only row). */
+  remoteNode?: string
   /** A delegated copy row: what the user can stop and change on it (SR-007). */
   delegated?: RunMemberDelegatedFacts
   /** This row's own locks; when set they replace its section's. */
@@ -70,7 +74,17 @@ export type RunMemberDelegatedFacts = Readonly<{
 }>
 
 /** Where a delegated copy's launch came from (`configured`: a copy of an in-run placement). */
-export type RunMemberLaunchSource = 'agent_default' | 'team_default' | 'inherited' | 'configured' | 'not_recorded'
+export type RunMemberLaunchSource = 'agent_default' | 'team_default' | 'model_router' | 'inherited' | 'configured' | 'not_recorded'
+
+/**
+ * A copy agent the Model Router chose for (autobyteus-32 REQ-009): why, for which kind of Task, and where its decision
+ * is recorded on this node (the delegating run, the copy and the agent; null for a copy another node decided).
+ */
+export type RunMemberRouting = Readonly<{
+  decision: Readonly<{ runId: string; copy: string; agent: string }> | null
+  taskKind: string | null
+  reason: string | null
+}>
 
 /** A recorded configured layer a copy skipped, with the server's reason. */
 export type RunMemberLaunchFallback = Readonly<{
@@ -153,6 +167,8 @@ export type RunMemberLaunchFacts = Readonly<{
   /** Absent: the user chose this row's model, so no origin is shown (SR-007). */
   sourceKey?: RunMemberLaunchSource
   notes: readonly RunMemberNote[]
+  routing?: RunMemberRouting
+  remoteNode?: string
 }>
 
 export const memberNode = (input: Readonly<{
@@ -182,6 +198,8 @@ export const memberNode = (input: Readonly<{
   launchNotes: Object.freeze(input.launch?.notes ?? seededNotes(input.marks, input.key)),
   ...(input.launch?.badge ? { badge: input.launch.badge } : {}),
   ...(input.launch?.sourceKey ? { sourceKey: input.launch.sourceKey } : {}),
+  ...(input.launch?.routing ? { routing: input.launch.routing } : {}),
+  ...(input.launch?.remoteNode ? { remoteNode: input.launch.remoteNode } : {}),
   ...(input.delegated ? { delegated: input.delegated } : {}),
   ...(input.locked ? { locked: input.locked } : {}),
   children: Object.freeze([...(input.children ?? [])]),

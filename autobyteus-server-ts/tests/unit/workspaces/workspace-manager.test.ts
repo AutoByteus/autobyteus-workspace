@@ -140,6 +140,25 @@ describe("WorkspaceManager", () => {
     expect(await manager.getRegisteredWorkspaceRootPath(regularWorkspaceId)).toBe(regularRoot);
   });
 
+  it("autobyteus-32 REQ-008: leaves internal workspaces out of the list while internal agents are hidden; opening one by ID still works", async () => {
+    const regularRoot = createTempRoot();
+    const internalRoot = path.join(appDataDir, "internal-workspaces", "autobyteus-model-router");
+    fs.mkdirSync(internalRoot, { recursive: true });
+    const regular = await manager.ensureWorkspaceByRootPath(regularRoot);
+    const internal = await manager.ensureWorkspaceByRootPath(internalRoot);
+    vi.stubEnv("AUTOBYTEUS_SHOW_INTERNAL_AGENTS", "false");
+    try {
+      expect((await manager.listVisibleWorkspaces()).map((workspace) => workspace.workspaceId)).toEqual([regular.workspaceId]);
+      expect(await manager.getOrCreateWorkspace(internal.workspaceId)).toBe(internal);
+      vi.stubEnv("AUTOBYTEUS_SHOW_INTERNAL_AGENTS", "true");
+      expect((await manager.listVisibleWorkspaces()).map((workspace) => workspace.workspaceId).sort())
+        .toEqual([regular.workspaceId, internal.workspaceId].sort());
+    } finally {
+      vi.unstubAllEnvs();
+      fs.rmSync(regularRoot, { recursive: true, force: true });
+    }
+  });
+
   it("returns undefined for unknown workspace IDs", () => {
     expect(manager.getWorkspaceById("missing")).toBeUndefined();
   });

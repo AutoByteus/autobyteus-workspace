@@ -1,0 +1,24 @@
+prefix | tasks | n | now (compact) | omit-empty | +slim context files | of which descriptions
+autobyteus-investor-applications | all | 1 | 3850 | 3752 | 3752 | 3485
+autobyteus-investor-applications | open | 1 | 3850 | 3752 | 3752 | 3485
+autobyteus-nfs | all | 4 | 25154 | 24925 | 19790 | 14345
+autobyteus-nfs | open | 2 | 9458 | 9328 | 7578 | 5752
+autobyteus-nfs | DONE | 2 | 15766 | 15667 | 12282 | 8593
+autobyteus-opportunities | all | 1 | 4672 | 4591 | 4591 | 4074
+autobyteus-opportunities | open | 1 | 4672 | 4591 | 4591 | 4074
+autobyteus-mcps | all | 1 | 5112 | 5032 | 4063 | 3029
+autobyteus-mcps | open | 1 | 5112 | 5032 | 4063 | 3029
+autobyteus | all | 283 | 1179099 | 1158439 | 999669 | 773765
+autobyteus | open | 151 | 463850 | 451202 | 401371 | 328531
+autobyteus | DONE | 116 | 645333 | 638465 | 542244 | 403938
+autobyteus-agents | all | 56 | 224504 | 220387 | 214013 | 187023
+autobyteus-agents | open | 6 | 21021 | 20502 | 20197 | 18355
+autobyteus-agents | DONE | 43 | 186125 | 183062 | 179128 | 157835
+autobyteus-marketing | all | 1 | 2200 | 2120 | 1848 | 1405
+autobyteus-marketing | open | 1 | 2200 | 2120 | 1848 | 1405
+autobyteus-website | all | 2 | 9237 | 9100 | 8466 | 7239
+autobyteus-website | open | 1 | 3870 | 3790 | 3484 | 3011
+autobyteus-website | DONE | 1 | 5437 | 5380 | 5052 | 4228
+niuzhirui-app-market | all | 1 | 3160 | 3085 | 3085 | 2688
+niuzhirui-app-market | DONE | 1 | 3160 | 3085 | 3085 | 2688
+synthetic dom_snapshot: pretty 60542 compact 37930 compact+omit-empty 36334

@@ -1,0 +1,38 @@
+IMP-14-electron-final
+Command (root): pnpm -C autobyteus-web test:electron --run electron/server/__tests__ electron/application/__tests__ electron/updater/__tests__
+Invocation: env -i PATH="$PATH" HOME="$HOME" TMPDIR="$TMPDIR" npm exec --yes --package=pnpm@10.28.2 -- <command>; tsc direct
+Commit: 10990feb1 (production unchanged through these checks; documentation edits pending)
+Environment: macOS arm64; Node26.12.0; pnpm10.28.2
+Log finished: 2026-10-24T18:53:57.521314+00:00
+
+
+> autobyteus@1.5.9-beta.4 test:electron /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-web
+> vitest --config ./electron/vitest.config.ts --run electron/server/__tests__ electron/application/__tests__ electron/updater/__tests__
+
+
+ RUN  v3.2.7 /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-web/electron
+
+ ✓ updater/__tests__/appUpdateChannelStore.spec.ts (9 tests) 11ms
+ ✓ updater/__tests__/appUpdateNotificationRecord.spec.ts (7 tests) 12ms
+ ✓ updater/__tests__/appUpdateCheckSchedule.spec.ts (9 tests) 16ms
+ ✓ updater/__tests__/appUpdaterAutoCheck.spec.ts (9 tests) 21ms
+ ✓ updater/__tests__/appUpdater.spec.ts (36 tests) 49ms
+ ✓ server/__tests__/BaseServerManager.spec.ts (4 tests) 65ms
+ ✓ server/__tests__/BackendPortAvailability.spec.ts (3 tests) 138ms
+ ✓ server/__tests__/serverOutputLogging.spec.ts (4 tests) 138ms
+ ✓ updater/__tests__/appUpdateErrorClassifier.spec.ts (4 tests) 5ms
+ ✓ server/__tests__/ManagedBackendShutdown.spec.ts (7 tests) 8ms
+ ✓ server/__tests__/StartupDelayLifecycle.spec.ts (16 tests) 235ms
+ ✓ server/__tests__/serverRuntimeEnv.spec.ts (13 tests) 4ms
+ ✓ application/__tests__/ApplicationShutdown.spec.ts (3 tests) 7ms
+ ✓ server/__tests__/platformServerEnvironment.spec.ts (2 tests) 8ms
+ ✓ server/__tests__/WindowsServerManagerShutdown.spec.ts (2 tests) 8ms
+ ✓ updater/__tests__/disabledAppUpdater.spec.ts (3 tests) 3ms
+ ✓ updater/__tests__/appReleasePage.spec.ts (3 tests) 4ms
+ ✓ server/__tests__/ServerStatusManager.spec.ts (4 tests) 4ms
+ ✓ server/__tests__/prismaSqliteUrl.spec.ts (3 tests) 2ms
+
+ Test Files  19 passed (19)
+      Tests  141 passed (141)
+   Start at  20:53:56
+   Duration  963ms (transform 697ms, setup 0ms, collect 1.52s, tests 740ms, environment 2ms, prepare 1.19s)

@@ -44,7 +44,7 @@ describe("ProjectTaskService.currentTasksOfTaskWorkers", () => {
       ...("teamRunId" in execution ? { teamCoordinatorAgentRunId: "lead" } : {}) });
     await tasks.markStarted(execution);
   };
-  const create = async (description: string) => (await tasks.createTask({ projectId, description })).taskId;
+  const create = async (description: string) => (await tasks.createTask({ projectId, title: description, description })).taskId;
 
   it("answers an agent and a team worker with their Project Task and Temp task, in request order", async () => {
     const taskId = await create("Ship the summary line\nwith details");
@@ -53,8 +53,8 @@ describe("ProjectTaskService.currentTasksOfTaskWorkers", () => {
       execution: team, teamCoordinatorAgentRunId: "lead", adHocTask: { description: "Review it", referenceFiles: [] } });
 
     expect(await tasks.currentTasksOfTaskWorkers([agent, team, { agentRunId: "unknown" }, { teamRunId: "unknown" }])).toEqual([
-      { execution: agent, task: { taskId, projectId, description: "Ship the summary line\nwith details", status: "TODO" } },
-      { execution: team, task: { taskId: tempTaskId, projectId: null, description: "Review it", status: "TODO" } },
+      { execution: agent, task: { taskId, projectId, title: "Ship the summary line\nwith details", description: "Ship the summary line\nwith details", status: "TODO" } },
+      { execution: team, task: { taskId: tempTaskId, projectId: null, title: null, description: "Review it", status: "TODO" } },
       { execution: { agentRunId: "unknown" }, task: null },
       { execution: { teamRunId: "unknown" }, task: null },
     ]);
@@ -65,7 +65,7 @@ describe("ProjectTaskService.currentTasksOfTaskWorkers", () => {
     const followUp = await create("Follow-up Task");
     await assign(first, team);
     await tasks.updateTaskById({ taskId: first, status: "DONE" });
-    expect(await tasks.currentTasksOfTaskWorkers([team])).toEqual([{ execution: team, task: { taskId: first, projectId, description: "First Task", status: "DONE" } }]);
+    expect(await tasks.currentTasksOfTaskWorkers([team])).toEqual([{ execution: team, task: { taskId: first, projectId, title: "First Task", description: "First Task", status: "DONE" } }]);
 
     await tasks.assignExistingTaskExecution({ hostRoot, execution: team, teamCoordinatorAgentRunId: "lead", taskId: followUp, assignedBy: "manager" });
     expect((await tasks.currentTasksOfTaskWorkers([team]))[0]!.task).toMatchObject({ taskId: followUp, status: "TODO" });
@@ -85,7 +85,7 @@ describe("ProjectTaskService.currentTasksOfTaskWorkers", () => {
     const deleted = await create("Deleted Task");
     await assign(deleted, agent);
     const otherProjectId = (await projects.createProject({ name: "Other" })).projectId;
-    const other = (await tasks.createTask({ projectId: otherProjectId, description: "In a deleted Project" })).taskId;
+    const other = (await tasks.createTask({ projectId: otherProjectId, title: "In a deleted Project", description: "In a deleted Project" })).taskId;
     await assign(other, team);
     const survivor = await create("Still here");
     const survivorWorker = { agentRunId: "survivor" };
@@ -97,7 +97,7 @@ describe("ProjectTaskService.currentTasksOfTaskWorkers", () => {
     expect(await tasks.currentTasksOfTaskWorkers([agent, team, survivorWorker])).toEqual([
       { execution: agent, task: null },
       { execution: team, task: null },
-      { execution: survivorWorker, task: { taskId: survivor, projectId, description: "Still here", status: "TODO" } },
+      { execution: survivorWorker, task: { taskId: survivor, projectId, title: "Still here", description: "Still here", status: "TODO" } },
     ]);
   });
 

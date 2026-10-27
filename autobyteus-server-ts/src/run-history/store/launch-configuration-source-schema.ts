@@ -1,8 +1,9 @@
 import type { UserLaunchSelection } from "../domain/run-execution-tree-shared-records.js";
 import {
-  CONFIGURED_LAUNCH_LAYERS,
   LAUNCH_CONFIGURATION_FALLBACK_REASONS,
   LAUNCH_CONFIGURATION_ORIGINS,
+  SKIPPABLE_LAUNCH_LAYERS,
+  type LaunchConfigurationFallback,
   type LaunchConfigurationSource,
 } from "../../agent-collaboration/domain/launch-configuration-source.js";
 import {
@@ -19,23 +20,33 @@ const oneOf = <T extends string>(value: unknown, allowed: readonly T[], label: s
   return value as T;
 };
 
+/**
+ * A recorded launch source. Records written before autobyteus-32 use a subset of the origins, layers and reasons, so
+ * they read as they always did; a `model_router` origin requires the router's `choiceReason` and `taskKind`.
+ */
 export const parseLaunchConfigurationSource = (value: unknown, label: string): LaunchConfigurationSource => {
   const source = objectRecord(value, label);
   requireKeys(source, ["origin", "fallbacks"], label);
-  return {
-    origin: oneOf(source.origin, LAUNCH_CONFIGURATION_ORIGINS, `${label}.origin`),
-    fallbacks: requiredArray(source.fallbacks, `${label}.fallbacks`).map((item, index) => {
+  const origin = oneOf(source.origin, LAUNCH_CONFIGURATION_ORIGINS, `${label}.origin`);
+  const fallbacks = requiredArray(source.fallbacks, `${label}.fallbacks`).map((item, index): LaunchConfigurationFallback => {
       const at = `${label}.fallbacks[${index}]`;
       const fallback = objectRecord(item, at);
       requireKeys(fallback, ["layer", "runtimeKind", "llmModelIdentifier", "reason", "detail"], at);
       return {
-        layer: oneOf(fallback.layer, CONFIGURED_LAUNCH_LAYERS, `${at}.layer`),
+        layer: oneOf(fallback.layer, SKIPPABLE_LAUNCH_LAYERS, `${at}.layer`),
         runtimeKind: nullableString(fallback.runtimeKind, `${at}.runtimeKind`),
         llmModelIdentifier: nullableString(fallback.llmModelIdentifier, `${at}.llmModelIdentifier`),
         reason: oneOf(fallback.reason, LAUNCH_CONFIGURATION_FALLBACK_REASONS, `${at}.reason`),
         detail: requiredString(fallback.detail, `${at}.detail`),
       };
-    }),
+    });
+  if (origin !== "model_router") return { origin, fallbacks };
+  requireKeys(source, ["choiceReason", "taskKind"], label);
+  return {
+    origin,
+    fallbacks,
+    choiceReason: requiredString(source.choiceReason, `${label}.choiceReason`),
+    taskKind: requiredString(source.taskKind, `${label}.taskKind`),
   };
 };
 

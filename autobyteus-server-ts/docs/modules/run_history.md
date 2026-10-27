@@ -217,6 +217,9 @@ standalone agent runs whose V2 catalog row contains `archivedAt` and inactive
 team runs whose V2 catalog row contains `archivedAt` before workspace grouping
 and count projection. If an archived run or team is active again through a
 restore/resume path, it remains visible while active so live work is not hidden.
+It also leaves out the standalone runs of internal agents while "Show internal
+agents" is off, active or not; they are still recorded and open by run ID (see
+[Agent Definition: Internal Agents](./agent_definition.md#internal-agents)).
 
 Archive is a non-destructive visibility action:
 

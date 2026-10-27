@@ -1,0 +1,8 @@
+IMP-01 autobyteus-ts unit suite
+Command: pnpm -C autobyteus-ts exec vitest run tests/unit
+Commit: 010e4eb2ab (code exercised unchanged since the run; working-tree run before commit)
+Environment: macOS arm64, node v22.23.1, pnpm
+Date: 2026-10-25
+---
+ Test Files  306 passed (306)
+      Tests  2047 passed (2047)

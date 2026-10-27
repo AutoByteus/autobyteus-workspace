@@ -212,7 +212,7 @@ suite("@ delegates and every delegated copy is closable by its ad-hoc Task (real
     const projectId = (await graphql(`mutation($input:CreateProjectInput!){createProject(input:$input){projectId}}`,
       { input: { name: `Ad-hoc ${kind} ${randomUUID().slice(0, 8)}` } })).createProject.projectId as string;
     const projectTaskId = (await graphql(`mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId}}`,
-      { input: { projectId, description: "Project Task description." } })).createProjectTask.taskId as string;
+      { input: { projectId, title: "Project Task description.", description: "Project Task description." } })).createProjectTask.taskId as string;
 
     const { rootId, managerRunId } = await startRoot(kind);
     const viewRoute = kind === "agent" ? "agent-collaboration" : kind === "team" ? "agent-team" : "agent-org";
@@ -356,7 +356,8 @@ suite("@ delegates and every delegated copy is closable by its ad-hoc Task (real
     const doneFrom = view.frames.length;
     const done = await managerCalls(callTool("update_task", { task_id: adHocTaskId, status: "DONE" }));
     expect(done).toContain(adHocTaskId!);
-    expect(done).toMatch(/\\?"projectId\\?":null/);
+    // A Task with no Project has no projectId in its acknowledgement (REQ-001: absent means none).
+    expect(done).not.toMatch(/projectId/);
     await until(() => view.frames.slice(doneFrom).some(closedFrame), "live task_executions_closed", 60_000);
     const closedPayload = closedRefsOf(view.frames.slice(doneFrom).find(closedFrame)!);
     const adHocRefs = [copy, subCopy].map((node) => node.teamRunId ? { teamRunId: node.teamRunId } : { agentRunId: node.agentRunId });

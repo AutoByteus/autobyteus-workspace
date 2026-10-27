@@ -24,6 +24,7 @@ import {
   type AgentPackageDefinitions,
 } from "../../agent-package-definitions/services/agent-package-definitions.js";
 import type { DefinitionLoadIssue } from "../../agent-package-definitions/domain/agent-package-definition-types.js";
+import { getInternalAgentVisibility, type InternalAgentVisibility } from "./internal-agent-visibility.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -96,6 +97,8 @@ type AgentDefinitionServiceOptions = {
   fileStore?: AgentDefinitionFileStore;
   packageDefinitions?: AgentPackageDefinitions;
   registries?: Partial<ProcessorRegistries>;
+  /** The internal-agent rule for the visible list; the process rule by default. */
+  visibility?: Pick<InternalAgentVisibility, "isHidden">;
 };
 
 export class AgentDefinitionService {
@@ -126,11 +129,13 @@ export class AgentDefinitionService {
 
   private readonly fileStore: AgentDefinitionFileStore;
   private readonly packageDefinitions: AgentPackageDefinitions;
+  private readonly visibility: Pick<InternalAgentVisibility, "isHidden">;
   private registries: ProcessorRegistries;
 
   constructor(options: AgentDefinitionServiceOptions = {}) {
     this.fileStore = options.fileStore ?? new FileAgentDefinitionProvider();
     this.packageDefinitions = options.packageDefinitions ?? getProcessAgentPackageDefinitions();
+    this.visibility = options.visibility ?? getInternalAgentVisibility();
     this.registries = {
       input: options.registries?.input ?? defaultInputProcessorRegistry,
       llmResponse: options.registries?.llmResponse ?? defaultLlmResponseProcessorRegistry,
@@ -243,8 +248,16 @@ export class AgentDefinitionService {
     return definitions.map((definition) => this.stripMandatoryProcessors(definition) ?? definition);
   }
 
-  /** All agents plus the team-local agents of shared and application-package Teams. */
+  /**
+   * The agents the user browses and picks (Agents page, every picker, mobile, application resources): every agent,
+   * team-local ones included, except internal agents while they are hidden (autobyteus-308).
+   */
   async getVisibleAgentDefinitions(): Promise<AgentDefinition[]> {
+    return (await this.getAgentDefinitionsWithTeamLocal()).filter((definition) => !this.visibility.isHidden(definition));
+  }
+
+  /** All agents plus the team-local agents of shared and application-package Teams, internal ones included. */
+  async getAgentDefinitionsWithTeamLocal(): Promise<AgentDefinition[]> {
     const definitions = await this.getAllAgentDefinitions();
     const seenIds = new Set(definitions.map((definition) => definition.id));
     const teamLocal = this.packageDefinitions.store.listNestedDefinitions("agent_team", "agent")

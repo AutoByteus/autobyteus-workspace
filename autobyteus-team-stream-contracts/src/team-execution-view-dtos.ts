@@ -44,16 +44,18 @@ export type ConfiguredAgentExecutionDto = Readonly<{
  * it; `configured` marks a copy started from a configured placement of the coordinating run. Absent on
  * records written before sources existed ("not recorded").
  */
-export type LaunchConfigurationSourceDto = Readonly<{
-  origin: "agent_default" | "team_default" | "inherited" | "configured";
-  fallbacks: readonly Readonly<{
-    layer: "agent_default" | "team_default";
-    runtime_kind: string | null;
-    llm_model_identifier: string | null;
-    reason: "incomplete" | "runtime_unavailable" | "model_unavailable" | "model_settings_invalid";
-    detail: string;
-  }>[];
+export type LaunchConfigurationFallbackDto = Readonly<{
+  layer: "agent_default" | "team_default" | "model_router";
+  runtime_kind: string | null;
+  llm_model_identifier: string | null;
+  reason: "incomplete" | "runtime_unavailable" | "signed_out" | "model_unavailable" | "blocked" | "model_settings_invalid"
+    | "router_not_active" | "router_failed";
+  detail: string;
 }>;
+export type LaunchConfigurationSourceDto =
+  | Readonly<{ origin: "agent_default" | "team_default" | "inherited" | "configured"; fallbacks: readonly LaunchConfigurationFallbackDto[] }>
+  /** A choice of the node's Model Router (autobyteus-32): its one-sentence reason and task kind. */
+  | Readonly<{ origin: "model_router"; fallbacks: readonly LaunchConfigurationFallbackDto[]; choice_reason: string; task_kind: string }>;
 
 /**
  * A Team copy member's launch: the complete launch it started with, and whether a Team-level choice
@@ -163,16 +165,22 @@ const launchConfigurationSchema: z.ZodType<AgentLaunchConfigurationDto> = z.obje
   workspace_root_path: nullableNonEmptyStringSchema,
 }).strict();
 
-const launchSourceSchema: z.ZodType<LaunchConfigurationSourceDto> = z.object({
-  origin: z.enum(["agent_default", "team_default", "inherited", "configured"]),
-  fallbacks: z.array(z.object({
-    layer: z.enum(["agent_default", "team_default"]),
-    runtime_kind: nullableNonEmptyStringSchema,
-    llm_model_identifier: nullableNonEmptyStringSchema,
-    reason: z.enum(["incomplete", "runtime_unavailable", "model_unavailable", "model_settings_invalid"]),
-    detail: nonEmptyStringSchema,
-  }).strict()),
-}).strict();
+const launchFallbacksSchema = z.array(z.object({
+  layer: z.enum(["agent_default", "team_default", "model_router"]),
+  runtime_kind: nullableNonEmptyStringSchema,
+  llm_model_identifier: nullableNonEmptyStringSchema,
+  reason: z.enum([
+    "incomplete", "runtime_unavailable", "signed_out", "model_unavailable", "blocked", "model_settings_invalid",
+    "router_not_active", "router_failed",
+  ]),
+  detail: nonEmptyStringSchema,
+}).strict());
+const launchSourceSchema: z.ZodType<LaunchConfigurationSourceDto> = z.union([
+  z.object({ origin: z.enum(["agent_default", "team_default", "inherited", "configured"]), fallbacks: launchFallbacksSchema }).strict(),
+  z.object({
+    origin: z.literal("model_router"), fallbacks: launchFallbacksSchema, choice_reason: nonEmptyStringSchema, task_kind: nonEmptyStringSchema,
+  }).strict(),
+]);
 const memberLaunchSchema = {
   launch_configuration: launchConfigurationSchema, follows_team: z.boolean(), launch_source: launchSourceSchema.optional(),
 };

@@ -93,7 +93,14 @@ suite("Project Task comments reach delegated task agents; the feed carries the t
   const task = async (reference: string) => (await tasks()).find((t) => t.taskId === reference || t.taskKey === reference);
   const upserts = (taskId: string, from = 0) => feedFrames.slice(from).filter((f) => f.type === "task_upserted" && f.task.taskId === taskId).map((f) => f.task);
   const workerAddress = () => `/${segment(workerName)}`;
-  const ack = (taskId: string, status: string) => ({ task: { projectId, taskId, status, dependsOn: [], partOf: null } });
+  // autobyteus-260: an acknowledgement names the Task's title and leaves out empty fields.
+  const titles: Record<string, string> = {};
+  const ack = (taskId: string, status: string) => ({ task: { projectId, taskId, title: titles[taskId], status } });
+  const createTask = async (title: string) => {
+    const created = (await manager.calls(callTool("create_task", { project_id: projectId, title, description: title }))).task;
+    titles[created.taskId] = created.title;
+    return created.taskId as string;
+  };
   /** Every text of a task agent's conversation, as the agent received it. */
   const workerTexts = async (worker: string) => stringsIn(await manager.conversationOf(worker, workerAddress()));
 
@@ -159,7 +166,7 @@ suite("Project Task comments reach delegated task agents; the feed carries the t
   let workerA = "", keyA = "";
 
   it("CMT-LIVE-001: comments added by the Manager's tool are in the feed and in a new task agent's work, after the description; a Task without comments has no block (AC-010, AC-001, REQ-007)", async () => {
-    keyA = (await manager.calls(callTool("create_task", { project_id: projectId, description: "Write the release notes" }))).task.taskId as string;
+    keyA = await createTask("Write the release notes");
     const longA = (await task(keyA)).taskId as string;
     // Two calls (the key in upper case, then the long ID): two comments, numbered 1 and 2; the result has no comment field.
     expect(await manager.calls(callTool("update_task", { task_id: keyA.toUpperCase(), add_comment: "  Dispatched with this direction.  " }))).toEqual(ack(keyA, "TODO"));
@@ -182,7 +189,7 @@ suite("Project Task comments reach delegated task agents; the feed carries the t
     expect(workA).not.toMatch(/#1|#2|\d{4}-\d{2}-\d{2}T/);
 
     // A Task without comments: the work text has no block.
-    const keyB = (await manager.calls(callTool("create_task", { project_id: projectId, description: "Check the changelog links" }))).task.taskId as string;
+    const keyB = await createTask("Check the changelog links");
     const plain = await manager.calls(callTool("delegate_task", { recipient_address: workerAddress(), task_id: keyB }));
     const workerB = plain.target_agent_run_id as string;
     let textsB: string[] = [];
@@ -208,7 +215,7 @@ suite("Project Task comments reach delegated task agents; the feed carries the t
     expect(views.every((t) => (t.status === "DONE") === (t.comments.length === 3)), JSON.stringify(views.map((t) => [t.status, t.comments.length]))).toBe(true);
 
     // The task agent whose Task is DONE gets a new Task with comments (existing task agent path).
-    const keyC = (await manager.calls(callTool("create_task", { project_id: projectId, description: "Post the release announcement" }))).task.taskId as string;
+    const keyC = await createTask("Post the release announcement");
     await manager.calls(callTool("update_task", { task_id: keyC, add_comment: "Use the beta channel." }));
     await manager.calls(callTool("update_task", { task_id: keyC, add_comment: "Keep it under 200 words." }));
     const assigned = await manager.calls(callTool("delegate_task", { target_agent_run_id: workerA, task_id: keyC }));

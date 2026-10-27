@@ -196,6 +196,7 @@ export const useExistingRunConfigStore = defineStore('existingRunConfig', {
       const view = payload.isActive ? null : await readAgentRunCollaboration(runId)
       const delegatedSnapshot = view ? {
         execution_tree: view.execution_tree, closed_task_executions: view.closed_task_executions,
+        remote_task_executions: view.remote_task_executions,
       } : null
       return { payload, delegatedSnapshot }
     },

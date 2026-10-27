@@ -13,7 +13,7 @@ import type { CodexThreadCleanup } from "../../../../../../src/agent-execution/b
 import { MemberExecutionContext } from "../../../../../../src/agent-collaboration/execution/domain/member-execution-context.js";
 import { createTeamRootExecutionIdentity } from "../../../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import type { SystemInstructionCaptureService } from "../../../../../../src/agent-memory/services/system-instruction-capture-service.js";
-import { testMemberTaskCommandCapability } from "../../../../../fixtures/current-team-run-fixtures.js";
+import { testMemberTaskCapability } from "../../../../../fixtures/current-team-run-fixtures.js";
 
 const createRunContext = (
   runId: string,
@@ -49,7 +49,7 @@ const createRunContext = (
               agentRunId: runId,
             },
             collaboration: { outgoingHandoffs: [], deliverLogicalMessage: async () => ({ accepted: true }) },
-            tasks: testMemberTaskCommandCapability(input.teamRunId),
+            tasks: testMemberTaskCapability(input.teamRunId),
           })
         : null,
     }),

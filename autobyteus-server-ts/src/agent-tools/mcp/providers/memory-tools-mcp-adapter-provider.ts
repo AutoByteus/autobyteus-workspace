@@ -10,8 +10,8 @@ export class MemoryToolsMcpAdapterProvider implements AgentToolMcpAdapterProvide
       definition: { name: entry.name, description: entry.description, inputSchema: entry.parameterSchema },
       configuredMcpCollisionPolicy: "protect_static_adapter", isAvailable: () => true,
       execute: async ({ session, rawArguments }) => {
-        try { return toAgentToolMcpToolResult(toAgentToolsMcpStructuredJsonResult(JSON.stringify(await entry.execute(rawArguments, session.owner.runId)))); }
-        catch (error) { return toAgentToolMcpToolResult(toAgentToolsMcpStructuredJsonResult(JSON.stringify(memoryToolError(error)), { isError: true })); }
+        try { return toAgentToolMcpToolResult(toAgentToolsMcpStructuredJsonResult(await entry.execute(rawArguments, session.owner.runId))); }
+        catch (error) { return toAgentToolMcpToolResult(toAgentToolsMcpStructuredJsonResult(memoryToolError(error), { isError: true })); }
       },
     }];
   }

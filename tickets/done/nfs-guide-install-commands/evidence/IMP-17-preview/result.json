@@ -1,0 +1,44 @@
+{
+  "id": "IMP-17",
+  "date": "2026-10-26T06:32:30.731Z",
+  "commit": "1f2b346cfb164d0b0a7fe2534d1fec8d81fbc708",
+  "sourceState": "committed product source clean",
+  "base": "http://127.0.0.1:52083",
+  "events": [],
+  "scenarios": [
+    {
+      "locale": "en",
+      "width": 1280,
+      "commands": 9,
+      "links": 0,
+      "footer": {
+        "tip": "Use the printed mount path as a normal folder.",
+        "note": [
+          "Use only on a trusted private network",
+          "NFS is unencrypted—do not expose it to the internet.",
+          "If storage or the network goes offline, file operations and other work may stall. Restore connectivity before retrying."
+        ],
+        "tipBackground": "rgba(0, 0, 0, 0)",
+        "tipBorder": "0px",
+        "following": null,
+        "gap": 20,
+        "noteGap": 16
+      },
+      "installGap": 17,
+      "clipboard": "nine actual Chrome clipboard comparisons matched displayed bytes",
+      "overflow": {
+        "scroll": 1280,
+        "client": 1280
+      }
+    }
+  ],
+  "cleanup": {
+    "browser": "closed",
+    "nuxt": "closed",
+    "fixture": "removed"
+  },
+  "serverPid": 53169,
+  "browser": "156.0.8078.47",
+  "result": "Fail",
+  "error": "Error: document overflow"
+}

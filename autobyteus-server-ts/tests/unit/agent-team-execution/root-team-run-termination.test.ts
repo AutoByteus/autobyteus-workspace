@@ -46,7 +46,7 @@ const buildRoot = (input: {
     drain: vi.fn(async () => undefined),
     commitTaskMutation: vi.fn(),
     commitTaskSettlement: vi.fn(),
-    commitReservedMessageAppend: vi.fn(),
+    commitMessageAppend: vi.fn(),
     commitExecutionTreeMutation: vi.fn(),
     readConsistent: vi.fn(),
     enterRootFailStop: vi.fn(),

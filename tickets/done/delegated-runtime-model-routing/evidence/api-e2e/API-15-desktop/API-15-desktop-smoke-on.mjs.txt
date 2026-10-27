@@ -1,0 +1,18 @@
+import { createRequire } from 'node:module';
+const require = createRequire('/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-runtime-model-routing/autobyteus-web/package.json');
+const { chromium } = require('playwright-core');
+const [controlPort, outDir] = process.argv.slice(2);
+const browser = await chromium.connectOverCDP(`http://127.0.0.1:${controlPort}`);
+const page = browser.contexts()[0].pages()[0];
+const errors = []; page.on('pageerror', (e) => errors.push(e.message));
+await page.locator('[data-testid="model-routing-tab-setup"]').click(); await page.waitForTimeout(800);
+await page.locator('[data-testid="model-routing-switch"]').click(); await page.waitForTimeout(4000);
+const on = { switch: await page.locator('[data-testid="model-routing-switch"]').getAttribute('aria-checked'),
+  runtimeOptions: await page.locator('[data-testid="model-routing-router-runtime"] option').allInnerTexts(),
+  runtimeDisabled: await page.locator('[data-testid="model-routing-router-runtime"]').isDisabled(),
+  status: (await page.locator('[data-testid="model-routing-status"]').innerText().catch(() => '')).replace(/\s+/g, ' ').trim() };
+await page.screenshot({ path: `${outDir}/API-15-desktop-model-routing-on.png` });
+await page.locator('[data-testid="model-routing-switch"]').click(); await page.waitForTimeout(2000);
+const off = await page.locator('[data-testid="model-routing-switch"]').getAttribute('aria-checked');
+await browser.close();
+console.log(JSON.stringify({ on, offAgain: off, browserErrors: errors }, null, 2));

@@ -1,6 +1,7 @@
 import { BaseTool } from "autobyteus-ts";
 import { ParameterDefinition, ParameterSchema, ParameterType } from "autobyteus-ts/utils/parameter-schema.js";
 import { defaultToolRegistry } from "autobyteus-ts/tools/registry/tool-registry.js";
+import { toToolResultJson } from "autobyteus-ts/tools/tool-result-json.js";
 import { ToolDefinition } from "autobyteus-ts/tools/registry/tool-definition.js";
 import { ToolOrigin } from "autobyteus-ts/tools/tool-origin.js";
 import type { ToolConfig } from "autobyteus-ts/tools/tool-config.js";
@@ -147,7 +148,7 @@ const publishArtifacts = async (
 
   const artifacts = await publicationService.publishManyForRun(publicationRequest);
 
-  return JSON.stringify({
+  return toToolResultJson({
     success: true,
     artifacts,
   });

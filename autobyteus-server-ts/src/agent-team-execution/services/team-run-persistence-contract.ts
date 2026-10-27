@@ -1,8 +1,5 @@
 import { RootTaskPersistenceFinalizationIndeterminateError } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import type { TeamRunExecutionTreeSnapshot } from "../domain/team-run-execution-tree.js";
-import type { TeamCommunicationMessagesSnapshot } from "../../services/team-communication/team-communication-messages-file.js";
-import type { CollaborationCommunicationMessage } from "../../agent-collaboration/execution/communication/collaboration-communication-message.js";
-import type { StoredMessageLogOwner } from "../../run-history/store/task-agent-message-logs.js";
 import type {
   RunPackageDirectoryFinalizationStage,
 } from "../../run-history/store/atomic-run-package-file-commit-writer.js";
@@ -45,46 +42,6 @@ export type ExecutionTreeCommitResult =
   | Readonly<{
       outcome: "finalization_indeterminate";
       file: TeamRunFileRole;
-      stage: TeamRunDirectoryFinalizationStage;
-    }>;
-
-export type TeamMessageAppendRejectionCode =
-  | "TEAM_MESSAGE_COMMIT_CONFLICT"
-  | "TEAM_MESSAGE_HISTORY_COMMIT_FAILED";
-
-export type PreparedTeamMessageCommit = Readonly<{
-  nextMessages: TeamCommunicationMessagesSnapshot;
-  /** The one message this commit adds, and the logs it belongs to (receiver's first; D-4). */
-  message: CollaborationCommunicationMessage;
-  logOwners: readonly StoredMessageLogOwner[];
-  cancelBeforeDurability(code: TeamMessageAppendRejectionCode): void;
-  commitAfterDurability(): void;
-}>;
-
-export type PreparedTeamMessageAppend = Readonly<{
-  rootTeamRunId: string;
-  messageId: string;
-  prepareAgainstCurrent():
-    | Readonly<{
-        prepared: false;
-        code: "TEAM_MESSAGE_COMMIT_CONFLICT";
-        message: string;
-      }>
-    | Readonly<{ prepared: true; commit: PreparedTeamMessageCommit }>;
-  cancelBeforePreparation(): void;
-  disposeAfterRootFailStop(): void;
-}>;
-
-export type TeamMessageCommitResult =
-  | Readonly<{
-      outcome: "conflict";
-      code: "TEAM_MESSAGE_COMMIT_CONFLICT";
-      message: string;
-    }>
-  | Readonly<{ outcome: "not_committed"; cause: Error }>
-  | Readonly<{ outcome: "committed" }>
-  | Readonly<{
-      outcome: "finalization_indeterminate";
       stage: TeamRunDirectoryFinalizationStage;
     }>;
 

@@ -8,25 +8,25 @@ import {
   parseSearchMemoryInput,
 } from "./memory-tool-contract.js";
 
-/** Only fields that have a value (autobyteus-260). */
-const present = <T extends Record<string, unknown>>(value: T): Partial<T> =>
-  Object.fromEntries(Object.entries(value).filter(([, field]) => field !== null && field !== undefined && field !== "")) as Partial<T>;
-
-const toToolMatch = (match: MemorySearchMatch) => present({
+const toToolMatch = (match: MemorySearchMatch) => ({
   journalFile: match.journalFile, lines: `${match.lineStart}-${match.lineEnd}`, day: match.day,
-  snippet: match.snippet, matchedBy: match.matchedBy, matchedWords: match.matchedWords.length ? [...match.matchedWords] : undefined,
+  snippet: match.snippet, matchedBy: match.matchedBy, matchedWords: match.matchedWords,
 });
 
 const toToolRun = (run: MemorySearchRunResult) => ({
-  ...present({ agent: run.agent, team: run.team, member: run.member, org: run.org, runId: run.runId, workspace: run.workspace,
-    firstDay: run.firstDay, latestDay: run.latestDay, source: run.source }),
+  agent: run.agent, team: run.team, member: run.member, org: run.org, runId: run.runId, workspace: run.workspace,
+  firstDay: run.firstDay, latestDay: run.latestDay, source: run.source,
   matches: run.matches.map(toToolMatch),
 });
 
-/** The agent-facing result: runs best first; `coverage`, `wordsNotFound` and `note` only when they say something. */
+/**
+ * The agent-facing result object: runs best first, with `coverage`, `wordsNotFound` and `note`. Both entry forms
+ * turn it into text by the one tool result rule (`toToolResultJson`), which leaves out empty fields: a meaning
+ * match has no `matchedWords`, a complete search no `coverage`.
+ */
 export const toSearchMemoryToolResult = (result: MemorySearchResult) => ({
   results: result.results.map(toToolRun),
-  ...present({ coverage: result.coverage, wordsNotFound: result.wordsNotFound.length ? [...result.wordsNotFound] : undefined, note: result.note }),
+  coverage: result.coverage, wordsNotFound: result.wordsNotFound, note: result.note,
 });
 
 /** `search_memory` for the asking run (left out of its own results), through the memory-search boundary. */

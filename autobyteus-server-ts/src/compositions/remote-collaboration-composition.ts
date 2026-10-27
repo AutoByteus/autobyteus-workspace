@@ -1,4 +1,5 @@
 import { getCollaboratorAdmission } from "../agent-collaboration/collaborators/collaborator-definition-catalog.js";
+import { PeerStartedRunDecisions } from "../remote-collaboration/inbound/peer-started-run-decisions.js";
 import type { AgentRunService } from "../agent-execution/services/agent-run-service.js";
 import type { AgentOrgRunService } from "../agent-org-execution/services/agent-org-run-service.js";
 import type { TeamRunService } from "../agent-team-execution/services/team-run-service.js";
@@ -52,6 +53,8 @@ export const composeStudioRemoteCollaboration = (input: Readonly<{
     org: async (orgRunId) => input.orgRuns.getActive(orgRunId) ?? input.orgRuns.restore(orgRunId),
     pairedAgents: (kind) => kind === "agent" ? getStandaloneAgentRunRootManager().pairedAgents : input.teamRuns.pairedAgents,
   };
+  // autobyteus-32: decisions of copies started for a peer, held until the peer's work packet arrives.
+  const peerStartedRunDecisions = new PeerStartedRunDecisions();
   const services = composeRemoteCollaboration({
     config: { getAppDataDir: () => input.appDataDir },
     settings: getServerSettingsService(),
@@ -59,13 +62,13 @@ export const composeStudioRemoteCollaboration = (input: Readonly<{
     tempWorkspaceDir: input.tempWorkspaceDir,
     handlers: (services) => ({
       delegatedRuns: new RemoteDelegationReceiver({ admission: getCollaboratorAdmission, catalogPort: services.catalogPort, agentRuns: input.agentRuns,
-        teams: new RemoteTeamRunStarter({ teamRuns: input.teamRuns }) }),
+        teams: new RemoteTeamRunStarter({ teamRuns: input.teamRuns }), decisions: peerStartedRunDecisions }),
       messages: new RemoteMessageReceiver(roots, {
         // autobyteus-269: an accepted work packet's content is the run's title (a peer never starts an Org).
         recordFirstMessage: (root, content) => root.kind === "agent" ? input.agentRuns.recordRunTitle(root.runId, content)
           : root.kind === "agent_team" ? input.teamRuns.recordRunTitle(root.runId, content)
             : Promise.resolve(),
-      }),
+      }, peerStartedRunDecisions),
       availableAgents: new RemoteCatalogLister({ policy: () => getCollaboratorAdmission().policy, catalogPort: services.catalogPort }),
       // autobyteus-278: what the peer's owner reads and drives here, for runs its delegation started.
       runViews: new RemoteRunViewProvider(roots, {

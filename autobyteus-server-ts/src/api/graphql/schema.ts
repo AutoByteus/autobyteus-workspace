@@ -1,3 +1,4 @@
+import { AgentBackgroundTaskViewResolver } from './types/agent-background-task-view.js';
 import { buildSchema } from 'type-graphql';
 import { HealthResolver } from './types/health.js';
 import { ServerSettingsResolver } from './types/server-settings.js';
@@ -44,6 +45,8 @@ import { ProjectTaskSearchResolver } from './types/project-task-search.js';
 import { EmbeddingModelResolver } from './types/embeddings.js';
 import { UpdateNotificationResolver } from './types/update-notifications.js';
 import { AgentRuntimesResolver } from './types/agent-runtimes.js';
+import { AvailableAgentRuntimesResolver } from './types/available-agent-runtimes.js';
+import { ModelRoutingResolver } from './types/model-routing.js';
 
 export async function buildGraphqlSchema() {
   return buildSchema({
@@ -54,6 +57,7 @@ export async function buildGraphqlSchema() {
       ApplicationCapabilityResolver,
       SkillResolver,
       AgentRunResolver,
+      AgentBackgroundTaskViewResolver,
       AgentTeamRunResolver,
       DelegatedLaunchSelectionResolver,
       WorkspaceResolver,
@@ -92,6 +96,8 @@ export async function buildGraphqlSchema() {
       ProjectTaskSearchResolver,
       EmbeddingModelResolver,
       AgentRuntimesResolver,
+      AvailableAgentRuntimesResolver,
+      ModelRoutingResolver,
     ],
     scalarsMap: [{ type: Date, scalar: DateTimeScalar }],
   });

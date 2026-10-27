@@ -28,8 +28,10 @@ import { TaskRelationWrites, type SuppliedTaskRelations } from "./task-relation-
 import { NO_PART_CLOSURE, TaskPartClosure, type PartClosureResult } from "./task-part-closure.js";
 import { TaskAssignmentEligibility, terminalAssignment } from "./task-assignment-eligibility.js";
 import { TaskReferences } from "./task-references.js";
+import { readDelegatedTaskIdentity } from "./task-identity-reader.js";
 import { sameDependencies } from "../domain/task-dependencies.js";
 import { appendComment, normalizeCommentText } from "../domain/task-comments.js";
+import { normalizeTaskDescription, normalizeTaskTitle, taskTextPatchOf } from "../domain/task-text.js";
 
 type TaskPersistence = Pick<ProjectStore, "layout" | "readProject" | "listTasks" | "readTask" | "findTask" | "createTask" | "updateTask" | "deleteTask" | "withTaskRelations" | "findTaskByKey">;
 type AssignedLink = Extract<NewTaskExecutionLinkInput, { role: "assigned" }>;
@@ -49,10 +51,6 @@ type Dependencies = {
   /** A Task root's live status from its hosting root (composition-bound); absent means `offline`. */
   workerStatus?: TaskWorkerStatusResolver;
   /** Search index cleanup after a committed delete (composition-bound; never throws or waits); absent means no index. */ searchCleanup?: import("../search/project-task-search-service.js").ProjectTaskSearchCleanup;
-};
-const normalizeDescription = (description: unknown): string => {
-  if (typeof description !== "string" || !description.trim()) throw new ProjectError("TASK_DESCRIPTION_REQUIRED", "Task description is required.");
-  return description.trim();
 };
 const compareTasks = (a: Pick<ProjectTask, "taskId" | "updatedAt">, b: Pick<ProjectTask, "taskId" | "updatedAt">): number => b.updatedAt.localeCompare(a.updatedAt) || a.taskId.localeCompare(b.taskId);
 const cleanup = async (operation: () => Promise<unknown>): Promise<void> => {
@@ -102,6 +100,12 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
     return Promise.all((await this.store.listTasks(projectId))
       .filter((t) => status === undefined || t.status === status).sort(compareTasks).map((t) => this.views.projectTask(projectId, t)));
   }
+  /** One Task of this Project, by its key (any letter case) or long ID (`get_project_task`). */
+  async readProjectTask(projectId: string, reference: string): Promise<ProjectTaskView> {
+    return this.views.projectTask(projectId, await this.references.inProject(projectId, reference));
+  }
+  /** A Project Task's key by its long ID (it names a worker's own Task in `get_project_task`'s refusal). */
+  async taskKeyOf(taskId: string): Promise<string> { return (await this.references.byId(taskId)).task.taskKey; }
   /** The Manager's read of open and closed assignments per Task; `unavailable` when a Task's data can't be read. */
   async assignments(taskIds: readonly string[]): Promise<Map<string, TaskAssignmentViews | "unavailable">> {
     return new Map(await Promise.all(taskIds.map(async (taskId) => [taskId, await this.resources.assignments(taskId)] as const)));
@@ -109,28 +113,28 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
   /** UI/GraphQL create: context comes from an upload draft. */
   async createTask(command: CreateProjectTaskCommand): Promise<ProjectTaskView> {
     const draft = command.contextDraft;
-    return this.create(command.projectId, command.description, (taskId) => draft
+    return this.create(command.projectId, command, (taskId) => draft
       ? this.context.prepare(command.projectId, taskId, draft.draftId, draft.storedFilenames, false) : Promise.resolve(noContext()),
       async () => ({ dependsOnTaskIds: command.dependsOnTaskIds, partOfTaskId: command.partOfTaskId }));
   }
   /** Agent-tool create: context is copied from node-local files (may be none); dependencies and parent by key or ID. Never reachable from GraphQL. */
   async createTaskWithLocalContextFiles(command: CreateTaskWithLocalContextFilesCommand): Promise<ProjectTaskView> {
-    return this.create(command.projectId, command.description, (taskId) => this.context.importLocalFiles(command.projectId, taskId, command.localContextFiles),
+    return this.create(command.projectId, command, (taskId) => this.context.importLocalFiles(command.projectId, taskId, command.localContextFiles),
       async () => ({ dependsOnTaskIds: command.dependsOn && await this.relations.dependencyIdsOf(command.projectId, command.dependsOn),
         partOfTaskId: command.partOf === undefined ? undefined : await this.relations.parentIdOf(command.projectId, command.partOf) }));
   }
   async updateTask(command: UpdateProjectTaskCommand): Promise<ProjectTaskView> {
-    const hasDescription = Object.hasOwn(command, "description");
+    const hasText = Object.hasOwn(command, "title") || Object.hasOwn(command, "description");
     const hasStatus = Object.hasOwn(command, "status");
     const changes = command.contextChanges;
     const relations = this.relations.changesOf(command);
-    if (!hasDescription && !hasStatus && !changes && !relations.dependsOnTaskIds && relations.partOfTaskId === undefined) throw new ProjectError("TASK_PATCH_REQUIRED", "Supply description and/or status to update a Task.");
-    const description = hasDescription ? normalizeDescription(command.description) : undefined;
+    if (!hasText && !hasStatus && !changes && !relations.dependsOnTaskIds && relations.partOfTaskId === undefined) throw new ProjectError("TASK_PATCH_REQUIRED", "Supply title, description and/or status to update a Task.");
+    const text = taskTextPatchOf(command);
     const status = hasStatus ? validateTaskStatus(command.status) : undefined;
     const additions = changes?.addStoredFilenames ?? [];
     const removals = changes?.removeStoredFilenames ?? [];
     if (new Set(removals).size !== removals.length) throw new ProjectError("TASK_CONTEXT_INVALID", "Context removals must be unique.");
-    const write = () => this.update(command.projectId, command.taskId, { description, status, ...relations }, {
+    const write = () => this.update(command.projectId, command.taskId, { ...text, status, ...relations }, {
       removals, writesContextList: Boolean(changes),
       prepare: () => this.prepareChanges(command.projectId, command.taskId, changes?.draftId, additions, Boolean(changes)),
     });
@@ -144,18 +148,19 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
    * (a reference replaces, "" or null clears). DONE or CANCELLED closes its agent runs, and a parent's its open parts.
    */
   async updateTaskById(command: UpdateTaskByIdCommand): Promise<TaskAcknowledgementView> {
-    const hasDescription = Object.hasOwn(command, "description");
+    const hasText = Object.hasOwn(command, "title") || Object.hasOwn(command, "description");
     const hasStatus = Object.hasOwn(command, "status");
     const localContextFiles = command.localContextFiles ?? [];
-    if (!hasDescription && !hasStatus && !localContextFiles.length && command.dependsOn === undefined && command.partOf === undefined && command.addComment === undefined) {
-      throw new ProjectError("TASK_PATCH_REQUIRED", "Supply description, status, context files, dependencies, a parent and/or a comment to update a Task.");
+    if (!hasText && !hasStatus && !localContextFiles.length && command.dependsOn === undefined && command.partOf === undefined && command.addComment === undefined) {
+      throw new ProjectError("TASK_PATCH_REQUIRED", "Supply title, description, status, context files, dependencies, a parent and/or a comment to update a Task.");
     }
-    const description = hasDescription ? normalizeDescription(command.description) : undefined;
+    const text = taskTextPatchOf(command), { description } = text;
     const addComment = command.addComment === undefined ? undefined : normalizeCommentText(command.addComment);
     const status = hasStatus ? validateTaskStatus(command.status) : undefined;
     if (typeof command.taskId !== "string" || !command.taskId.trim()) throw new ProjectError("TASK_NOT_FOUND", "Task ID must be nonblank.");
     const taskId = command.taskId;
     if (await this.adHocTasks.read(taskId)) {
+      if (text.title !== undefined) throw new ProjectError("TASK_TITLE_INVALID", "Only Project Tasks have a title; this Task has no Project.");
       if (localContextFiles.length) {
         throw new ProjectError("TASK_CONTEXT_INVALID", "Context files can be attached only to Project Tasks; this Task has no Project.");
       }
@@ -173,12 +178,12 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
     const { projectId, task: { taskId: id } } = await this.references.projectTask(taskId);
     const relations = { dependsOnTaskIds: command.dependsOn && await this.relations.dependencyIdsOf(projectId, command.dependsOn),
       partOfTaskId: command.partOf === undefined ? undefined : await this.relations.parentIdOf(projectId, command.partOf) };
-    const write = () => this.update(projectId, id, { description, status, ...relations, addComment }, {
+    const write = () => this.update(projectId, id, { ...text, status, ...relations, addComment }, {
       removals: [], writesContextList: localContextFiles.length > 0, prepare: () => this.context.importLocalFiles(projectId, id, localContextFiles),
     });
     const { task, attached, parts } = await this.relations.write(projectId, id, relations, write);
-    return { projectId, taskId: id, taskReference: task.taskKey, status: task.status, dependsOnTaskIds: task.dependsOnTaskIds, partOfTaskId: task.partOfTaskId,
-      ...(attached.length ? { attachedContextFiles: attached } : {}), ...(parts.closed.length ? { closedPartReferences: parts.closed } : {}),
+    return { projectId, taskId: id, taskReference: task.taskKey, title: task.title, status: task.status, dependsOnTaskIds: task.dependsOnTaskIds, partOfTaskId: task.partOfTaskId,
+      ...(attached.length ? { attachedContextFiles: await this.views.contextFiles(projectId, id, attached) } : {}), ...(parts.closed.length ? { closedPartReferences: parts.closed } : {}),
       ...(parts.notClosed.length ? { partsNotClosedReferences: parts.notClosed } : {}) };
   }
   /** The app's add of one comment (GraphQL): appended through the shared update body; the description is not changed. */
@@ -244,7 +249,8 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
       const location = this.resources.rootTaskLocationOf(execution);
       const view = location && await this.readTaskChangeView(location)
         .catch((error: unknown) => { console.warn("TASK_WORKER_TASK_READ_FAILED", { execution, error: error instanceof Error ? error.message : String(error) }); return null; });
-      return { execution, task: view && { taskId: view.task.taskId, projectId: view.kind === "project" ? view.projectId : null, description: view.task.description, status: view.task.status } };
+      return { execution, task: view && { taskId: view.task.taskId, projectId: view.kind === "project" ? view.projectId : null,
+        title: view.kind === "project" ? view.task.title : null, description: view.task.description, status: view.task.status } };
     }));
   }
   async beginContextDraft(projectId: string, taskId?: string) {
@@ -286,8 +292,9 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
     await this.resources.load();
     this.resources.assertTaskReadable(task.taskId);
     const referenceFiles = await Promise.all((task.contextFiles ?? []).map(f => this.context.savedFile(projectId, task.taskId, f)));
-    return { taskId: task.taskId, taskReference: task.taskKey, description: task.description, comments: task.comments.map((comment) => comment.text), referenceFiles };
+    return { taskId: task.taskId, taskReference: task.taskKey, projectId, title: task.title, description: task.description, comments: task.comments.map((comment) => comment.text), referenceFiles };
   }
+  describeTask(taskId: string) { return readDelegatedTaskIdentity(this.references, this.adHocTasks, taskId); }
   async linkNewTaskExecution(input: NewTaskExecutionLinkInput): Promise<{ taskId: string }> {
     if (input.role !== "assigned") return { taskId: await this.resources.linkInherited(input) };
     if (input.adHocTask) return { taskId: await this.linkAdHocTask(input, input.adHocTask) };
@@ -360,7 +367,7 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
   private async linkAdHocTask(link: AssignedLink, content: NonNullable<AssignedLink["adHocTask"]>): Promise<string> {
     const taskId = `${AD_HOC_TASK_ID_PREFIX}${randomUUID()}`;
     const timestamp = this.nowIso();
-    await this.adHocTasks.create({ taskId, description: normalizeDescription(content.description),
+    await this.adHocTasks.create({ taskId, description: normalizeTaskDescription(content.description),
       referenceFiles: [...content.referenceFiles], status: "TODO", createdAt: timestamp, updatedAt: timestamp });
     this.changes.taskChanged({ projectId: null, taskId });
     await this.resources.serialize(taskId, () => this.resources.linkAssigned({ projectId: null, taskId }, link));
@@ -389,9 +396,9 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
    * Shared create body: input and owner checks, then (under the relations lock when it has dependencies or a parent,
    * validated first) the context step and the in-lock commit with its new key; then it publishes the Task.
    */
-  private async create(projectId: string, rawDescription: string, prepareContext: (taskId: string) => Promise<PreparedTaskContext>,
+  private async create(projectId: string, text: { title: string; description: string }, prepareContext: (taskId: string) => Promise<PreparedTaskContext>,
     relations: () => Promise<SuppliedTaskRelations>): Promise<ProjectTaskView> {
-    const description = normalizeDescription(rawDescription);
+    const title = normalizeTaskTitle(text.title), description = normalizeTaskDescription(text.description);
     const taskId = this.deps.createId?.() ?? `project_task_${randomUUID()}`;
     const timestamp = this.nowIso();
     await this.assertOwner(projectId);
@@ -401,7 +408,7 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
       // On any unproven failed outcome retain prepared bytes and draft, never infer rollback from catch.
       return { prepared, task: await this.store.createTask(projectId, taskId, async () => {
         await this.validatePrepared(projectId, taskId, prepared);
-        return { taskId, description, status: "TODO", dependsOnTaskIds, partOfTaskId, comments: [], createdAt: timestamp, updatedAt: timestamp, contextFiles: prepared.files };
+        return { taskId, title, description, status: "TODO", dependsOnTaskIds, partOfTaskId, comments: [], createdAt: timestamp, updatedAt: timestamp, contextFiles: prepared.files };
       }) };
     });
     await this.consume(projectId, prepared);
@@ -412,14 +419,14 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
    * Shared Project Task update body over a validated patch. The context step (draft prepare or local
    * import) runs after every input check and before any write, so a failure changes nothing and DONE
    * or CANCELLED never closes runs first. Prepared files are appended to the current list under the Task lock.
-   * A supplied `dependsOnTaskIds` or `partOfTaskId` (validated by the caller) replaces the stored one; `addComment`
+   * A supplied `title` or `description` (normalized) replaces the stored one; a supplied `dependsOnTaskIds` or `partOfTaskId` (validated by the caller) replaces the stored one; `addComment`
    * (normalized text) appends one comment in the same write. A write that changes the status to DONE or CANCELLED
    * then closes the Task's open parts (`cascade`; off for the parts themselves).
    */
-  private async update(projectId: string, taskId: string, patch: { description?: string; status?: ProjectTaskStatus; dependsOnTaskIds?: string[];
+  private async update(projectId: string, taskId: string, patch: { title?: string; description?: string; status?: ProjectTaskStatus; dependsOnTaskIds?: string[];
     partOfTaskId?: string | null; addComment?: string }, context: ContextUpdate, cascade = true)
     : Promise<{ task: ProjectTask; attached: ProjectTaskContextFile[]; parts: PartClosureResult }> {
-    const { description, status, dependsOnTaskIds, partOfTaskId, addComment } = patch;
+    const { title, description, status, dependsOnTaskIds, partOfTaskId, addComment } = patch;
     const closing = status !== undefined && isTerminalTaskStatus(status);
     const { removals } = context;
     const existing = await this.assertOwner(projectId, taskId);
@@ -434,11 +441,11 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
       removed = files.filter((f) => removals.includes(f.storedFilename));
       closesParts = closing && current.status !== status;
       const now = this.nowIso(), base = addComment === undefined ? current : appendComment(current, addComment, now);
-      const meaningful = addComment !== undefined || (description !== undefined && current.description !== description)
+      const meaningful = addComment !== undefined || (title !== undefined && current.title !== title) || (description !== undefined && current.description !== description)
         || (status !== undefined && current.status !== status) || prepared.files.length > 0 || removals.length > 0
         || (dependsOnTaskIds !== undefined && !sameDependencies(current.dependsOnTaskIds, dependsOnTaskIds))
         || (partOfTaskId !== undefined && current.partOfTaskId !== partOfTaskId);
-      return meaningful ? { ...base, ...(description !== undefined ? { description } : {}), ...(status !== undefined ? { status } : {}), ...(dependsOnTaskIds ? { dependsOnTaskIds } : {}),
+      return meaningful ? { ...base, ...(title !== undefined ? { title } : {}), ...(description !== undefined ? { description } : {}), ...(status !== undefined ? { status } : {}), ...(dependsOnTaskIds ? { dependsOnTaskIds } : {}),
         ...(partOfTaskId !== undefined ? { partOfTaskId } : {}),
         ...(context.writesContextList ? { contextFiles: [...files.filter((f) => !removals.includes(f.storedFilename)), ...prepared.files] } : {}), updatedAt: now } as ProjectTask : current;
     });

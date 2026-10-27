@@ -1,0 +1,435 @@
+# API-14b — the data a live Claude agent received from list_available_agent_runtimes (09:49:41Z), validated against each runtime's direct 0-token answer (09:50:23Z)
+# Tool result: tests/e2e/runtime/available-agent-runtimes-live-agents.e2e.test.ts (RUN_CLAUDE_E2E=1, haiku), LR-EVIDENCE 'LR-2 report'. Direct: /tmp/lr/direct-check.mjs (copy API-14b-direct-check.mjs.txt): Codex app-server account/rateLimits/read + model/list, Claude SDK get_usage + supportedModels (idle query, cost 0), agy -p /usage + agy models, Grok ACP initialize + _x.ai/billing, LM Studio /api/v1/models
+
+## Comparison
+Codex: Weekly remaining 100 = 100 - usedPercent 0; reset 2026-11-01T06:31:15Z equal; models 7 = 7 identical ids. MATCH
+Claude: 5-hour 36 = 100-64; Weekly 37 = 100-63; Weekly · Fable 100 = 100-0; resets equal; models 12 = direct 13 minus the 'default' alias. MATCH
+Antigravity: Gemini weekly 90 = floor(90.27); Gemini 5-hour 98 = floor(98.95); Claude and GPT weekly 0; Argon weekly 36 = floor(36.52); disabled 5h bucket left out; resets equal; models 13 = 13 identical; the 7 Claude/GPT-OSS models blocked until 2026-10-26T10:22:39Z, Gemini models not blocked. MATCH
+Grok: Billing period resets 2026-10-29T00:00Z = period end; creditUsagePercent absent -> remainingPercent null + note; model grok-4.7 256000. MATCH
+AutoByteus: only LM Studio (this test server has no API keys); its 4 models equal LM Studio's 4. MATCH. Note for agents: the embedding model text-embedding-nomic-embed-text-v1.5 is listed as a model (the catalog's existing behavior).
+
+## Tool result (what the agent received)
+{
+    "checkedAt": "2026-10-25T09:49:41.664Z",
+    "agentRuntimes": [
+        {
+            "runtime": "codex_app_server",
+            "name": "Codex",
+            "limits": [
+                {
+                    "name": "Weekly",
+                    "remainingPercent": 100,
+                    "resetsAt": "2026-11-01T06:31:15.000Z"
+                }
+            ],
+            "models": [
+                {
+                    "id": "gpt-6.1-sol",
+                    "name": "GPT-6.1-Sol (default reasoning: low)"
+                },
+                {
+                    "id": "gpt-6-astra",
+                    "name": "GPT-6-Astra (default reasoning: medium)"
+                },
+                {
+                    "id": "gpt-6-sol",
+                    "name": "GPT-6-Sol (default reasoning: medium)"
+                },
+                {
+                    "id": "gpt-6-luna",
+                    "name": "GPT-6-Luna (default reasoning: medium)"
+                },
+                {
+                    "id": "gpt-5.6-sol",
+                    "name": "GPT-5.6-Sol (default reasoning: low)"
+                },
+                {
+                    "id": "gpt-5.6-terra",
+                    "name": "GPT-5.6-Terra (default reasoning: medium)"
+                },
+                {
+                    "id": "gpt-5.6-luna",
+                    "name": "GPT-5.6-Luna (default reasoning: medium)"
+                }
+            ]
+        },
+        {
+            "runtime": "claude_agent_sdk",
+            "name": "Claude",
+            "limits": [
+                {
+                    "name": "5-hour",
+                    "remainingPercent": 36,
+                    "resetsAt": "2026-10-25T12:09:59.695Z"
+                },
+                {
+                    "name": "Weekly",
+                    "remainingPercent": 37,
+                    "resetsAt": "2026-10-31T15:59:59.695Z"
+                },
+                {
+                    "name": "Weekly \u00b7 Fable",
+                    "remainingPercent": 100,
+                    "resetsAt": "2026-10-31T16:00:00.000Z"
+                }
+            ],
+            "models": [
+                {
+                    "id": "opus",
+                    "name": "Opus 5.5"
+                },
+                {
+                    "id": "fable",
+                    "name": "Fable 5.1"
+                },
+                {
+                    "id": "sonnet",
+                    "name": "Sonnet 5.5"
+                },
+                {
+                    "id": "haiku",
+                    "name": "Haiku 5.5"
+                },
+                {
+                    "id": "claude-haiku-4-5-20251001",
+                    "name": "Haiku 4.5"
+                },
+                {
+                    "id": "claude-sonnet-5",
+                    "name": "Sonnet 5"
+                },
+                {
+                    "id": "claude-opus-5",
+                    "name": "Opus 5"
+                },
+                {
+                    "id": "claude-fable-5",
+                    "name": "Fable 5"
+                },
+                {
+                    "id": "claude-opus-4-8",
+                    "name": "Opus 4.8"
+                },
+                {
+                    "id": "claude-opus-4-7",
+                    "name": "Opus 4.7"
+                },
+                {
+                    "id": "claude-opus-4-6",
+                    "name": "Opus 4.6"
+                },
+                {
+                    "id": "claude-sonnet-4-6",
+                    "name": "Sonnet 4.6"
+                }
+            ]
+        },
+        {
+            "runtime": "antigravity_cli",
+            "name": "Antigravity",
+            "limits": [
+                {
+                    "name": "Gemini Models \u00b7 weekly",
+                    "remainingPercent": 90,
+                    "resetsAt": "2026-10-31T04:59:08.000Z"
+                },
+                {
+                    "name": "Gemini Models \u00b7 5-hour",
+                    "remainingPercent": 98,
+                    "resetsAt": "2026-10-25T14:45:49.000Z"
+                },
+                {
+                    "name": "Claude and GPT models \u00b7 weekly",
+                    "remainingPercent": 0,
+                    "resetsAt": "2026-10-26T10:22:39.000Z"
+                },
+                {
+                    "name": "Gemini 4 Argon \u00b7 weekly",
+                    "remainingPercent": 36,
+                    "resetsAt": "2026-10-26T12:35:29.000Z"
+                }
+            ],
+            "models": [
+                {
+                    "id": "gemini-4-argon-medium",
+                    "name": "Gemini 4 Argon (Medium)"
+                },
+                {
+                    "id": "gemini-4-argon-high",
+                    "name": "Gemini 4 Argon (High)"
+                },
+                {
+                    "id": "gemini-4-argon-low",
+                    "name": "Gemini 4 Argon (Low)"
+                },
+                {
+                    "id": "gemini-3.8-flash-high",
+                    "name": "Gemini 3.8 Flash (High)"
+                },
+                {
+                    "id": "gemini-3.8-flash-medium",
+                    "name": "Gemini 3.8 Flash (Medium)"
+                },
+                {
+                    "id": "gemini-3.8-flash-low",
+                    "name": "Gemini 3.8 Flash (Low)"
+                },
+                {
+                    "id": "claude-opus-5-5-low",
+                    "name": "Claude Opus 5.5 (Low)",
+                    "blocked": {
+                        "until": "2026-10-26T10:22:39.000Z",
+                        "by": "Claude and GPT models \u00b7 weekly"
+                    }
+                },
+                {
+                    "id": "claude-opus-5-5-medium",
+                    "name": "Claude Opus 5.5 (Medium)",
+                    "blocked": {
+                        "until": "2026-10-26T10:22:39.000Z",
+                        "by": "Claude and GPT models \u00b7 weekly"
+                    }
+                },
+                {
+                    "id": "claude-opus-5-5-high",
+                    "name": "Claude Opus 5.5 (High)",
+                    "blocked": {
+                        "until": "2026-10-26T10:22:39.000Z",
+                        "by": "Claude and GPT models \u00b7 weekly"
+                    }
+                },
+                {
+                    "id": "claude-sonnet-5-5-low",
+                    "name": "Claude Sonnet 5.5 (Low)",
+                    "blocked": {
+                        "until": "2026-10-26T10:22:39.000Z",
+                        "by": "Claude and GPT models \u00b7 weekly"
+                    }
+                },
+                {
+                    "id": "claude-sonnet-5-5-medium",
+                    "name": "Claude Sonnet 5.5 (Medium)",
+                    "blocked": {
+                        "until": "2026-10-26T10:22:39.000Z",
+                        "by": "Claude and GPT models \u00b7 weekly"
+                    }
+                },
+                {
+                    "id": "claude-sonnet-5-5-high",
+                    "name": "Claude Sonnet 5.5 (High)",
+                    "blocked": {
+                        "until": "2026-10-26T10:22:39.000Z",
+                        "by": "Claude and GPT models \u00b7 weekly"
+                    }
+                },
+                {
+                    "id": "gpt-oss-120b-medium",
+                    "name": "GPT-OSS 120B (Medium)",
+                    "blocked": {
+                        "until": "2026-10-26T10:22:39.000Z",
+                        "by": "Claude and GPT models \u00b7 weekly"
+                    }
+                }
+            ]
+        },
+        {
+            "runtime": "grok_build",
+            "name": "Grok",
+            "limits": [
+                {
+                    "name": "Billing period",
+                    "remainingPercent": null,
+                    "resetsAt": "2026-10-29T00:00:00.000Z"
+                }
+            ],
+            "limitsNote": "Grok does not report how much of the period is used.",
+            "models": [
+                {
+                    "id": "grok-4.7",
+                    "name": "Grok 4.7",
+                    "contextTokens": 256000
+                }
+            ]
+        },
+        {
+            "runtime": "autobyteus",
+            "name": "AutoByteus",
+            "providers": [
+                {
+                    "provider": "LM Studio",
+                    "limits": "not reported",
+                    "models": [
+                        {
+                            "id": "deepseek-ocr:lmstudio@localhost:1234",
+                            "name": "deepseek-ocr",
+                            "contextTokens": 8192
+                        },
+                        {
+                            "id": "google/gemma-4-26b-a4b:lmstudio@localhost:1234",
+                            "name": "google/gemma-4-26b-a4b",
+                            "contextTokens": 262144
+                        },
+                        {
+                            "id": "qwen/qwen3.6-35b-a3b:lmstudio@localhost:1234",
+                            "name": "qwen/qwen3.6-35b-a3b",
+                            "contextTokens": 262144
+                        },
+                        {
+                            "id": "text-embedding-nomic-embed-text-v1.5:lmstudio@localhost:1234",
+                            "name": "text-embedding-nomic-embed-text-v1.5",
+                            "contextTokens": 2048
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
+
+## Direct answers
+{
+ "codex": {
+  "windows": [
+   {
+    "mins": 10080,
+    "usedPercent": 0,
+    "resetsAt": "2026-11-01T06:31:15.000Z",
+    "reached": null,
+    "hasCredits": false
+   }
+  ],
+  "models": [
+   "gpt-6.1-sol",
+   "gpt-6-astra",
+   "gpt-6-sol",
+   "gpt-6-luna",
+   "gpt-5.6-sol",
+   "gpt-5.6-terra",
+   "gpt-5.6-luna"
+  ],
+  "hiddenModels": []
+ },
+ "claude": {
+  "cost": 0,
+  "limits": [
+   {
+    "kind": "session",
+    "scope": null,
+    "usedPercent": 64,
+    "resetsAt": "2026-10-25T12:09:59.695526+00:00"
+   },
+   {
+    "kind": "weekly_all",
+    "scope": null,
+    "usedPercent": 63,
+    "resetsAt": "2026-10-31T15:59:59.695541+00:00"
+   },
+   {
+    "kind": "weekly_scoped",
+    "scope": "Fable",
+    "usedPercent": 0,
+    "resetsAt": "2026-10-31T16:00:00+00:00"
+   }
+  ],
+  "models": [
+   "default | Default (recommended)",
+   "opus | Opus 5.5",
+   "fable | Fable 5.1",
+   "sonnet | Sonnet 5.5",
+   "haiku | Haiku 5.5",
+   "claude-haiku-4-5-20251001 | Haiku 4.5",
+   "claude-sonnet-5 | Sonnet 5",
+   "claude-opus-5 | Opus 5",
+   "claude-fable-5 | Fable 5",
+   "claude-opus-4-8 | Opus 4.8",
+   "claude-opus-4-7 | Opus 4.7",
+   "claude-opus-4-6 | Opus 4.6",
+   "claude-sonnet-4-6 | Sonnet 4.6"
+  ]
+ },
+ "antigravity": {
+  "tokens": 0,
+  "groups": [
+   {
+    "group": "Gemini Models",
+    "families": "Models within this group: Gemini Flash, Gemini Pro",
+    "buckets": [
+     {
+      "window": "weekly",
+      "disabled": false,
+      "remainingFraction": 0.9027039408683777,
+      "resetsAt": "2026-10-31T04:59:08Z"
+     },
+     {
+      "window": "5h",
+      "disabled": false,
+      "remainingFraction": 0.9894616007804871,
+      "resetsAt": "2026-10-25T14:45:49Z"
+     }
+    ]
+   },
+   {
+    "group": "Claude and GPT models",
+    "families": "Models within this group: Claude Opus, Claude Sonnet, GPT-OSS",
+    "buckets": [
+     {
+      "window": "weekly",
+      "disabled": false,
+      "remainingFraction": 0,
+      "resetsAt": "2026-10-26T10:22:39Z"
+     },
+     {
+      "window": "5h",
+      "disabled": true,
+      "remainingFraction": 1
+     }
+    ]
+   },
+   {
+    "group": "Gemini 4 Argon",
+    "families": "For paid Pro plans, Argon quota is separate. Higher Argon quota (included as part of the larger Gemini quota bucket) is available on Ultra plans.",
+    "buckets": [
+     {
+      "window": "weekly",
+      "disabled": false,
+      "remainingFraction": 0.3652347922325134,
+      "resetsAt": "2026-10-26T12:35:29Z"
+     }
+    ]
+   }
+  ],
+  "models": [
+   "gemini-4-argon-medium | Gemini 4 Argon (Medium)",
+   "gemini-4-argon-high | Gemini 4 Argon (High)",
+   "gemini-4-argon-low | Gemini 4 Argon (Low)",
+   "gemini-3.8-flash-high | Gemini 3.8 Flash (High)",
+   "gemini-3.8-flash-medium | Gemini 3.8 Flash (Medium)",
+   "gemini-3.8-flash-low | Gemini 3.8 Flash (Low)",
+   "claude-opus-5-5-low | Claude Opus 5.5 (Low)",
+   "claude-opus-5-5-medium | Claude Opus 5.5 (Medium)",
+   "claude-opus-5-5-high | Claude Opus 5.5 (High)",
+   "claude-sonnet-5-5-low | Claude Sonnet 5.5 (Low)",
+   "claude-sonnet-5-5-medium | Claude Sonnet 5.5 (Medium)",
+   "claude-sonnet-5-5-high | Claude Sonnet 5.5 (High)",
+   "gpt-oss-120b-medium | GPT-OSS 120B (Medium)"
+  ]
+ },
+ "grok": {
+  "models": [
+   "grok-4.7 | Grok 4.7 | 256000"
+  ],
+  "period": {
+   "type": "USAGE_PERIOD_TYPE_WEEKLY",
+   "start": "2026-10-22T00:00:00+00:00",
+   "end": "2026-10-29T00:00:00+00:00"
+  },
+  "creditUsagePercent": null,
+  "tier": "X Basic"
+ },
+ "lmstudio": [
+  "google/gemma-4-26b-a4b | llm | 262144",
+  "qwen/qwen3.6-35b-a3b | llm | 262144",
+  "text-embedding-nomic-embed-text-v1.5 | embedding | 2048",
+  "deepseek-ocr | llm | 8192"
+ ]
+}

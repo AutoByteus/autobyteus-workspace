@@ -1,0 +1,799 @@
+# MR-01…08 — tests/e2e/model-routing/model-routing-delegation.e2e.test.ts (real server; router = a real agent run on the scripted AGY CLI; fake Grok)
+# Command: env -i PATH="$PATH" HOME="$HOME" TMPDIR="$TMPDIR" RUN_AGY_FAILURE_E2E=1 MODEL_ROUTING_E2E_EVIDENCE_DIR=<dir> ANTIGRAVITY_CLI_COMMAND=$PWD/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs pnpm -C autobyteus-server-ts exec vitest run tests/e2e/model-routing/model-routing-delegation.e2e.test.ts --no-watch
+# Commit: a5a29c4ff6 (code 03d9860e82) + this round's test/fixture; macOS darwin 25.5, Node v22.23.1; 2026-10-26T17:12Z; second of two consecutive full runs (both 8/8); runs 1-6 before them failed on test expectations/harness (addresses are full paths; a silent turn ends the request at once; Grok discovery handshakes; lazy team members; source records under source.members), fixed
+
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-runtime-model-routing/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-runtime-model-routing/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:44195) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-runtime-model-routing/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-runtime-model-routing/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/.env
+◇ injected env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/.env // tip: ⌘ custom filepath { path: '/custom/path/.env' }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-runtime-model-routing/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-runtime-model-routing/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/memory
+============================================================
+Initialized server settings service with 31 predefined settings
+
+(node:44195) [FSTDEP023] FastifyDeprecation: disableRequestLogging option is deprecated. Use the logController option with disableRequestLogging or isLogDisabled override instead. The disableRequestLogging top-level option will be removed in `fastify@6`.
+(node:44195) [FSTDEP022] FastifyWarning: The router options for maxParamLength property access is deprecated. Please use "options.routerOptions" instead for accessing router options. The router options will be removed in `fastify@6`.
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok)
+AgentRunManager initialized.
+AgentRunManager initialized.
+
+(node:44195) [FSTDEP023] FastifyDeprecation: disableRequestLogging option is deprecated. Use the logController option with disableRequestLogging or isLogDisabled override instead. The disableRequestLogging top-level option will be removed in `fastify@6`.
+(node:44195) [FSTDEP022] FastifyWarning: The router options for maxParamLength property access is deprecated. Please use "options.routerOptions" instead for accessing router options. The router options will be removed in `fastify@6`.
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok)
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok)
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok)
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok)
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok)
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok)
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok)
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok)
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok)
+Registered required tool unit: Agent Communication Tools
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok)
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok)
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok)
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok)
+Registered required tool unit: Agent Discovery Tools
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok)
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok)
+Registered required tool unit: Agent Runtime Tools
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok)
+Registered required tool unit: Browser Tools
+
+stderr | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok)
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok)
+Successfully registered tool definition: 'search_web'
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok)
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok)
+Agent Definition created successfully with ID: mr-manager-8b25
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok)
+Agent Definition created successfully with ID: mr-designer-12c1
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok)
+Agent Definition created successfully with ID: mr-engineer-fae9
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok)
+Agent Definition created successfully with ID: mr-reviewer-1f9e
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok)
+Agent Definition created successfully with ID: mr-solo-fe81
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok)
+Agent Definition created successfully with ID: mr-blocked-4c18
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok)
+Agent Team Definition created successfully with ID: mr-team-0085
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-01 routing off (the default): a team copy runs as today — default, then the delegating run's launch — with no routing request and no record (AC-002)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/workspace.
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-01 routing off (the default): a team copy runs as today — default, then the delegating run's launch — with no routing request and no record (AC-002)
+Created and registered workspace ID: agent_ws_68489f215a12741a627566256ecd8c0088a6d1161ce8ffe39068de4e56d7842c
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-01 routing off (the default): a team copy runs as today — default, then the delegating run's launch — with no routing request and no record (AC-002)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/workspace.
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-01 routing off (the default): a team copy runs as today — default, then the delegating run's launch — with no routing request and no record (AC-002)
+Reusing registered workspace ID: agent_ws_68489f215a12741a627566256ecd8c0088a6d1161ce8ffe39068de4e56d7842c
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-01 routing off (the default): a team copy runs as today — default, then the delegating run's launch — with no routing request and no record (AC-002)
+AGY compaction detection off for run mr_manager_8b25_1b772c29313d4230b6be5aa214d81954: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-01 routing off (the default): a team copy runs as today — default, then the delegating run's launch — with no routing request and no record (AC-002)
+Agent websocket attached for run mr_manager_8b25_1b772c29313d4230b6be5aa214d81954
+Created agent session fd614a3e-07c0-44a2-a60e-f1392b30eb9c for run mr_manager_8b25_1b772c29313d4230b6be5aa214d81954
+Agent WebSocket connected: session=fd614a3e-07c0-44a2-a60e-f1392b30eb9c, run=mr_manager_8b25_1b772c29313d4230b6be5aa214d81954
+
+stderr | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-01 routing off (the default): a team copy runs as today — default, then the delegating run's launch — with no routing request and no record (AC-002)
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/memory/agents/mr_manager_8b25_1b772c29313d4230b6be5aa214d81954/raw_traces_active.jsonl
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-01 routing off (the default): a team copy runs as today — default, then the delegating run's launch — with no routing request and no record (AC-002)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/workspace.
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-01 routing off (the default): a team copy runs as today — default, then the delegating run's launch — with no routing request and no record (AC-002)
+Reusing registered workspace ID: agent_ws_68489f215a12741a627566256ecd8c0088a6d1161ce8ffe39068de4e56d7842c
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-01 routing off (the default): a team copy runs as today — default, then the delegating run's launch — with no routing request and no record (AC-002)
+AGY compaction detection off for run mr_designer_12c1_136a693151ce4ec49d5471eca960da6b: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-02 routing on: the router is asked once, for the members without a usable default; they start on its choice (another runtime); result lines, recorded sources, decisions by Task and statistics (AC-001, AC-009, AC-012)
+Server setting 'AUTOBYTEUS_MODEL_ROUTER_RUNTIME' updated
+Server setting 'AUTOBYTEUS_MODEL_ROUTER_MODEL' updated
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-02 routing on: the router is asked once, for the members without a usable default; they start on its choice (another runtime); result lines, recorded sources, decisions by Task and statistics (AC-001, AC-009, AC-012)
+Server setting 'AUTOBYTEUS_MODEL_ROUTING_ENABLED' updated
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-02 routing on: the router is asked once, for the members without a usable default; they start on its choice (another runtime); result lines, recorded sources, decisions by Task and statistics (AC-001, AC-009, AC-012)
+Discovering LM Studio models from host: http://localhost:1234
+Discovering Ollama models from host: http://localhost:11434
+
+stderr | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-02 routing on: the router is asked once, for the members without a usable default; they start on its choice (another runtime); result lines, recorded sources, decisions by Task and statistics (AC-001, AC-009, AC-012)
+Could not connect to Ollama server at http://localhost:11434. Ensure it's running. fetch failed
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-02 routing on: the router is asked once, for the members without a usable default; they start on its choice (another runtime); result lines, recorded sources, decisions by Task and statistics (AC-001, AC-009, AC-012)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/workspace.
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-02 routing on: the router is asked once, for the members without a usable default; they start on its choice (another runtime); result lines, recorded sources, decisions by Task and statistics (AC-001, AC-009, AC-012)
+Reusing registered workspace ID: agent_ws_68489f215a12741a627566256ecd8c0088a6d1161ce8ffe39068de4e56d7842c
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-02 routing on: the router is asked once, for the members without a usable default; they start on its choice (another runtime); result lines, recorded sources, decisions by Task and statistics (AC-001, AC-009, AC-012)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/workspace.
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-02 routing on: the router is asked once, for the members without a usable default; they start on its choice (another runtime); result lines, recorded sources, decisions by Task and statistics (AC-001, AC-009, AC-012)
+Reusing registered workspace ID: agent_ws_68489f215a12741a627566256ecd8c0088a6d1161ce8ffe39068de4e56d7842c
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-02 routing on: the router is asked once, for the members without a usable default; they start on its choice (another runtime); result lines, recorded sources, decisions by Task and statistics (AC-001, AC-009, AC-012)
+AGY compaction detection off for run mr_manager_8b25_928d86fdcaf844119c4a0f79a820a26f: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-02 routing on: the router is asked once, for the members without a usable default; they start on its choice (another runtime); result lines, recorded sources, decisions by Task and statistics (AC-001, AC-009, AC-012)
+Agent websocket attached for run mr_manager_8b25_928d86fdcaf844119c4a0f79a820a26f
+Created agent session d2fb5e72-63e1-4703-b9a0-2e46ffd73de5 for run mr_manager_8b25_928d86fdcaf844119c4a0f79a820a26f
+Agent WebSocket connected: session=d2fb5e72-63e1-4703-b9a0-2e46ffd73de5, run=mr_manager_8b25_928d86fdcaf844119c4a0f79a820a26f
+
+stderr | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-02 routing on: the router is asked once, for the members without a usable default; they start on its choice (another runtime); result lines, recorded sources, decisions by Task and statistics (AC-001, AC-009, AC-012)
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/memory/agents/mr_manager_8b25_928d86fdcaf844119c4a0f79a820a26f/raw_traces_active.jsonl
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-02 routing on: the router is asked once, for the members without a usable default; they start on its choice (another runtime); result lines, recorded sources, decisions by Task and statistics (AC-001, AC-009, AC-012)
+Discovering LM Studio models from host: http://localhost:1234
+Discovering Ollama models from host: http://localhost:11434
+
+stderr | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-02 routing on: the router is asked once, for the members without a usable default; they start on its choice (another runtime); result lines, recorded sources, decisions by Task and statistics (AC-001, AC-009, AC-012)
+Could not connect to Ollama server at http://localhost:11434. Ensure it's running. fetch failed
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-02 routing on: the router is asked once, for the members without a usable default; they start on its choice (another runtime); result lines, recorded sources, decisions by Task and statistics (AC-001, AC-009, AC-012)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/internal-workspaces/autobyteus-model-router
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/internal-workspaces/autobyteus-model-router.
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-02 routing on: the router is asked once, for the members without a usable default; they start on its choice (another runtime); result lines, recorded sources, decisions by Task and statistics (AC-001, AC-009, AC-012)
+Created and registered workspace ID: agent_ws_1ca46f160bcf7e314bb75217afe896890587b5102cad5ac1742a13917d2f183c
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-02 routing on: the router is asked once, for the members without a usable default; they start on its choice (another runtime); result lines, recorded sources, decisions by Task and statistics (AC-001, AC-009, AC-012)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/internal-workspaces/autobyteus-model-router
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/internal-workspaces/autobyteus-model-router.
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-02 routing on: the router is asked once, for the members without a usable default; they start on its choice (another runtime); result lines, recorded sources, decisions by Task and statistics (AC-001, AC-009, AC-012)
+Reusing registered workspace ID: agent_ws_1ca46f160bcf7e314bb75217afe896890587b5102cad5ac1742a13917d2f183c
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-02 routing on: the router is asked once, for the members without a usable default; they start on its choice (another runtime); result lines, recorded sources, decisions by Task and statistics (AC-001, AC-009, AC-012)
+AGY compaction detection off for run model_router_84cab76c46514f228838e8a4f56d9a70: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-02 routing on: the router is asked once, for the members without a usable default; they start on its choice (another runtime); result lines, recorded sources, decisions by Task and statistics (AC-001, AC-009, AC-012)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/workspace.
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-02 routing on: the router is asked once, for the members without a usable default; they start on its choice (another runtime); result lines, recorded sources, decisions by Task and statistics (AC-001, AC-009, AC-012)
+Reusing registered workspace ID: agent_ws_68489f215a12741a627566256ecd8c0088a6d1161ce8ffe39068de4e56d7842c
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-02 routing on: the router is asked once, for the members without a usable default; they start on its choice (another runtime); result lines, recorded sources, decisions by Task and statistics (AC-001, AC-009, AC-012)
+AGY compaction detection off for run mr_designer_12c1_8fb452cc4e0f411ba80589d18b284645: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-02 routing on: the router is asked once, for the members without a usable default; they start on its choice (another runtime); result lines, recorded sources, decisions by Task and statistics (AC-001, AC-009, AC-012)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/workspace.
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-02 routing on: the router is asked once, for the members without a usable default; they start on its choice (another runtime); result lines, recorded sources, decisions by Task and statistics (AC-001, AC-009, AC-012)
+Reusing registered workspace ID: agent_ws_68489f215a12741a627566256ecd8c0088a6d1161ce8ffe39068de4e56d7842c
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-02 routing on: the router is asked once, for the members without a usable default; they start on its choice (another runtime); result lines, recorded sources, decisions by Task and statistics (AC-001, AC-009, AC-012)
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-02 routing on: the router is asked once, for the members without a usable default; they start on its choice (another runtime); result lines, recorded sources, decisions by Task and statistics (AC-001, AC-009, AC-012)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/workspace.
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-02 routing on: the router is asked once, for the members without a usable default; they start on its choice (another runtime); result lines, recorded sources, decisions by Task and statistics (AC-001, AC-009, AC-012)
+Reusing registered workspace ID: agent_ws_68489f215a12741a627566256ecd8c0088a6d1161ce8ffe39068de4e56d7842c
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-03 an unusable answer goes back to the router and its correction is used; a silent router gives the inherited launch with the router-failure note within the bound (AC-004)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/workspace.
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-03 an unusable answer goes back to the router and its correction is used; a silent router gives the inherited launch with the router-failure note within the bound (AC-004)
+Reusing registered workspace ID: agent_ws_68489f215a12741a627566256ecd8c0088a6d1161ce8ffe39068de4e56d7842c
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-03 an unusable answer goes back to the router and its correction is used; a silent router gives the inherited launch with the router-failure note within the bound (AC-004)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/workspace.
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-03 an unusable answer goes back to the router and its correction is used; a silent router gives the inherited launch with the router-failure note within the bound (AC-004)
+Reusing registered workspace ID: agent_ws_68489f215a12741a627566256ecd8c0088a6d1161ce8ffe39068de4e56d7842c
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-03 an unusable answer goes back to the router and its correction is used; a silent router gives the inherited launch with the router-failure note within the bound (AC-004)
+AGY compaction detection off for run mr_manager_8b25_ce8cb89dd578437e84ed92c4e56705da: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-03 an unusable answer goes back to the router and its correction is used; a silent router gives the inherited launch with the router-failure note within the bound (AC-004)
+Agent websocket attached for run mr_manager_8b25_ce8cb89dd578437e84ed92c4e56705da
+Created agent session 846d26cc-0291-462f-a95b-b6fb3111285a for run mr_manager_8b25_ce8cb89dd578437e84ed92c4e56705da
+Agent WebSocket connected: session=846d26cc-0291-462f-a95b-b6fb3111285a, run=mr_manager_8b25_ce8cb89dd578437e84ed92c4e56705da
+
+stderr | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-03 an unusable answer goes back to the router and its correction is used; a silent router gives the inherited launch with the router-failure note within the bound (AC-004)
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/memory/agents/mr_manager_8b25_ce8cb89dd578437e84ed92c4e56705da/raw_traces_active.jsonl
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-03 an unusable answer goes back to the router and its correction is used; a silent router gives the inherited launch with the router-failure note within the bound (AC-004)
+Discovering LM Studio models from host: http://localhost:1234
+Discovering Ollama models from host: http://localhost:11434
+
+stderr | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-03 an unusable answer goes back to the router and its correction is used; a silent router gives the inherited launch with the router-failure note within the bound (AC-004)
+Could not connect to Ollama server at http://localhost:11434. Ensure it's running. fetch failed
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-03 an unusable answer goes back to the router and its correction is used; a silent router gives the inherited launch with the router-failure note within the bound (AC-004)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/workspace.
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-03 an unusable answer goes back to the router and its correction is used; a silent router gives the inherited launch with the router-failure note within the bound (AC-004)
+Reusing registered workspace ID: agent_ws_68489f215a12741a627566256ecd8c0088a6d1161ce8ffe39068de4e56d7842c
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-03 an unusable answer goes back to the router and its correction is used; a silent router gives the inherited launch with the router-failure note within the bound (AC-004)
+AGY compaction detection off for run mr_solo_fe81_0f24e81b33254d8ca7c1edc2301d9fe8: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-03 an unusable answer goes back to the router and its correction is used; a silent router gives the inherited launch with the router-failure note within the bound (AC-004)
+Discovering LM Studio models from host: http://localhost:1234
+Discovering Ollama models from host: http://localhost:11434
+
+stderr | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-03 an unusable answer goes back to the router and its correction is used; a silent router gives the inherited launch with the router-failure note within the bound (AC-004)
+Could not connect to Ollama server at http://localhost:11434. Ensure it's running. fetch failed
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-03 an unusable answer goes back to the router and its correction is used; a silent router gives the inherited launch with the router-failure note within the bound (AC-004)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/workspace.
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-03 an unusable answer goes back to the router and its correction is used; a silent router gives the inherited launch with the router-failure note within the bound (AC-004)
+Reusing registered workspace ID: agent_ws_68489f215a12741a627566256ecd8c0088a6d1161ce8ffe39068de4e56d7842c
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-03 an unusable answer goes back to the router and its correction is used; a silent router gives the inherited launch with the router-failure note within the bound (AC-004)
+AGY compaction detection off for run mr_solo_fe81_5a96b22e82c2487787b790bbecb383ec: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-03 an unusable answer goes back to the router and its correction is used; a silent router gives the inherited launch with the router-failure note within the bound (AC-004)
+Discovering LM Studio models from host: http://localhost:1234
+Discovering Ollama models from host: http://localhost:11434
+
+stderr | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-03 an unusable answer goes back to the router and its correction is used; a silent router gives the inherited launch with the router-failure note within the bound (AC-004)
+Could not connect to Ollama server at http://localhost:11434. Ensure it's running. fetch failed
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-03 an unusable answer goes back to the router and its correction is used; a silent router gives the inherited launch with the router-failure note within the bound (AC-004)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/workspace.
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-03 an unusable answer goes back to the router and its correction is used; a silent router gives the inherited launch with the router-failure note within the bound (AC-004)
+Reusing registered workspace ID: agent_ws_68489f215a12741a627566256ecd8c0088a6d1161ce8ffe39068de4e56d7842c
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-03 an unusable answer goes back to the router and its correction is used; a silent router gives the inherited launch with the router-failure note within the bound (AC-004)
+AGY compaction detection off for run mr_solo_fe81_c56e4a0f264d4fdbbccd71722abfb0c9: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-04 three delegations at once reach the router one per turn in arrival order; a request still waiting at 40 s is never sent and falls back as "busy" (AC-006)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/workspace.
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-04 three delegations at once reach the router one per turn in arrival order; a request still waiting at 40 s is never sent and falls back as "busy" (AC-006)
+Reusing registered workspace ID: agent_ws_68489f215a12741a627566256ecd8c0088a6d1161ce8ffe39068de4e56d7842c
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-04 three delegations at once reach the router one per turn in arrival order; a request still waiting at 40 s is never sent and falls back as "busy" (AC-006)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/workspace.
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-04 three delegations at once reach the router one per turn in arrival order; a request still waiting at 40 s is never sent and falls back as "busy" (AC-006)
+Reusing registered workspace ID: agent_ws_68489f215a12741a627566256ecd8c0088a6d1161ce8ffe39068de4e56d7842c
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-04 three delegations at once reach the router one per turn in arrival order; a request still waiting at 40 s is never sent and falls back as "busy" (AC-006)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/workspace.
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-04 three delegations at once reach the router one per turn in arrival order; a request still waiting at 40 s is never sent and falls back as "busy" (AC-006)
+Reusing registered workspace ID: agent_ws_68489f215a12741a627566256ecd8c0088a6d1161ce8ffe39068de4e56d7842c
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-04 three delegations at once reach the router one per turn in arrival order; a request still waiting at 40 s is never sent and falls back as "busy" (AC-006)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/workspace.
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-04 three delegations at once reach the router one per turn in arrival order; a request still waiting at 40 s is never sent and falls back as "busy" (AC-006)
+Reusing registered workspace ID: agent_ws_68489f215a12741a627566256ecd8c0088a6d1161ce8ffe39068de4e56d7842c
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-04 three delegations at once reach the router one per turn in arrival order; a request still waiting at 40 s is never sent and falls back as "busy" (AC-006)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/workspace.
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-04 three delegations at once reach the router one per turn in arrival order; a request still waiting at 40 s is never sent and falls back as "busy" (AC-006)
+Reusing registered workspace ID: agent_ws_68489f215a12741a627566256ecd8c0088a6d1161ce8ffe39068de4e56d7842c
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-04 three delegations at once reach the router one per turn in arrival order; a request still waiting at 40 s is never sent and falls back as "busy" (AC-006)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/workspace.
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-04 three delegations at once reach the router one per turn in arrival order; a request still waiting at 40 s is never sent and falls back as "busy" (AC-006)
+Reusing registered workspace ID: agent_ws_68489f215a12741a627566256ecd8c0088a6d1161ce8ffe39068de4e56d7842c
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-04 three delegations at once reach the router one per turn in arrival order; a request still waiting at 40 s is never sent and falls back as "busy" (AC-006)
+AGY compaction detection off for run mr_manager_8b25_ecad8f7f3fad4a939399fb41aa04e55f: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-04 three delegations at once reach the router one per turn in arrival order; a request still waiting at 40 s is never sent and falls back as "busy" (AC-006)
+AGY compaction detection off for run mr_manager_8b25_33b83a7ab3b149be88c718de8e3dd221: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-04 three delegations at once reach the router one per turn in arrival order; a request still waiting at 40 s is never sent and falls back as "busy" (AC-006)
+Agent websocket attached for run mr_manager_8b25_ecad8f7f3fad4a939399fb41aa04e55f
+Created agent session 145c8097-3cc8-4385-9d99-76a7994adb61 for run mr_manager_8b25_ecad8f7f3fad4a939399fb41aa04e55f
+Agent WebSocket connected: session=145c8097-3cc8-4385-9d99-76a7994adb61, run=mr_manager_8b25_ecad8f7f3fad4a939399fb41aa04e55f
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-04 three delegations at once reach the router one per turn in arrival order; a request still waiting at 40 s is never sent and falls back as "busy" (AC-006)
+AGY compaction detection off for run mr_manager_8b25_40f700380163420cb2cdd8f9417cec5f: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-04 three delegations at once reach the router one per turn in arrival order; a request still waiting at 40 s is never sent and falls back as "busy" (AC-006)
+Agent websocket attached for run mr_manager_8b25_33b83a7ab3b149be88c718de8e3dd221
+Created agent session ad1cee19-41c8-4cb8-b46c-6c6996f653fd for run mr_manager_8b25_33b83a7ab3b149be88c718de8e3dd221
+Agent WebSocket connected: session=ad1cee19-41c8-4cb8-b46c-6c6996f653fd, run=mr_manager_8b25_33b83a7ab3b149be88c718de8e3dd221
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-04 three delegations at once reach the router one per turn in arrival order; a request still waiting at 40 s is never sent and falls back as "busy" (AC-006)
+Agent websocket attached for run mr_manager_8b25_40f700380163420cb2cdd8f9417cec5f
+Created agent session 48375fc0-14b8-433e-a735-84b2f35679f2 for run mr_manager_8b25_40f700380163420cb2cdd8f9417cec5f
+Agent WebSocket connected: session=48375fc0-14b8-433e-a735-84b2f35679f2, run=mr_manager_8b25_40f700380163420cb2cdd8f9417cec5f
+
+stderr | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-04 three delegations at once reach the router one per turn in arrival order; a request still waiting at 40 s is never sent and falls back as "busy" (AC-006)
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/memory/agents/mr_manager_8b25_ecad8f7f3fad4a939399fb41aa04e55f/raw_traces_active.jsonl
+
+stderr | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-04 three delegations at once reach the router one per turn in arrival order; a request still waiting at 40 s is never sent and falls back as "busy" (AC-006)
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/memory/agents/mr_manager_8b25_33b83a7ab3b149be88c718de8e3dd221/raw_traces_active.jsonl
+
+stderr | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-04 three delegations at once reach the router one per turn in arrival order; a request still waiting at 40 s is never sent and falls back as "busy" (AC-006)
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/memory/agents/mr_manager_8b25_40f700380163420cb2cdd8f9417cec5f/raw_traces_active.jsonl
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-04 three delegations at once reach the router one per turn in arrival order; a request still waiting at 40 s is never sent and falls back as "busy" (AC-006)
+Discovering LM Studio models from host: http://localhost:1234
+Discovering Ollama models from host: http://localhost:11434
+
+stderr | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-04 three delegations at once reach the router one per turn in arrival order; a request still waiting at 40 s is never sent and falls back as "busy" (AC-006)
+Could not connect to Ollama server at http://localhost:11434. Ensure it's running. fetch failed
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-04 three delegations at once reach the router one per turn in arrival order; a request still waiting at 40 s is never sent and falls back as "busy" (AC-006)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/workspace.
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-04 three delegations at once reach the router one per turn in arrival order; a request still waiting at 40 s is never sent and falls back as "busy" (AC-006)
+Reusing registered workspace ID: agent_ws_68489f215a12741a627566256ecd8c0088a6d1161ce8ffe39068de4e56d7842c
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-04 three delegations at once reach the router one per turn in arrival order; a request still waiting at 40 s is never sent and falls back as "busy" (AC-006)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/workspace.
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-04 three delegations at once reach the router one per turn in arrival order; a request still waiting at 40 s is never sent and falls back as "busy" (AC-006)
+Reusing registered workspace ID: agent_ws_68489f215a12741a627566256ecd8c0088a6d1161ce8ffe39068de4e56d7842c
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-04 three delegations at once reach the router one per turn in arrival order; a request still waiting at 40 s is never sent and falls back as "busy" (AC-006)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/workspace.
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-04 three delegations at once reach the router one per turn in arrival order; a request still waiting at 40 s is never sent and falls back as "busy" (AC-006)
+Reusing registered workspace ID: agent_ws_68489f215a12741a627566256ecd8c0088a6d1161ce8ffe39068de4e56d7842c
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-04 three delegations at once reach the router one per turn in arrival order; a request still waiting at 40 s is never sent and falls back as "busy" (AC-006)
+Discovering LM Studio models from host: http://localhost:1234
+Discovering Ollama models from host: http://localhost:11434
+
+stderr | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-04 three delegations at once reach the router one per turn in arrival order; a request still waiting at 40 s is never sent and falls back as "busy" (AC-006)
+Could not connect to Ollama server at http://localhost:11434. Ensure it's running. fetch failed
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-04 three delegations at once reach the router one per turn in arrival order; a request still waiting at 40 s is never sent and falls back as "busy" (AC-006)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/workspace.
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-04 three delegations at once reach the router one per turn in arrival order; a request still waiting at 40 s is never sent and falls back as "busy" (AC-006)
+Reusing registered workspace ID: agent_ws_68489f215a12741a627566256ecd8c0088a6d1161ce8ffe39068de4e56d7842c
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-04 three delegations at once reach the router one per turn in arrival order; a request still waiting at 40 s is never sent and falls back as "busy" (AC-006)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/workspace.
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-04 three delegations at once reach the router one per turn in arrival order; a request still waiting at 40 s is never sent and falls back as "busy" (AC-006)
+Reusing registered workspace ID: agent_ws_68489f215a12741a627566256ecd8c0088a6d1161ce8ffe39068de4e56d7842c
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-04 three delegations at once reach the router one per turn in arrival order; a request still waiting at 40 s is never sent and falls back as "busy" (AC-006)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/workspace.
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-04 three delegations at once reach the router one per turn in arrival order; a request still waiting at 40 s is never sent and falls back as "busy" (AC-006)
+Reusing registered workspace ID: agent_ws_68489f215a12741a627566256ecd8c0088a6d1161ce8ffe39068de4e56d7842c
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-04 three delegations at once reach the router one per turn in arrival order; a request still waiting at 40 s is never sent and falls back as "busy" (AC-006)
+AGY compaction detection off for run mr_solo_fe81_211804030da54761b035a0a151c09640: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-04 three delegations at once reach the router one per turn in arrival order; a request still waiting at 40 s is never sent and falls back as "busy" (AC-006)
+AGY compaction detection off for run mr_solo_fe81_5cf7661b5082435b90a1b9f67d938b81: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-04 three delegations at once reach the router one per turn in arrival order; a request still waiting at 40 s is never sent and falls back as "busy" (AC-006)
+Discovering LM Studio models from host: http://localhost:1234
+Discovering Ollama models from host: http://localhost:11434
+
+stderr | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-04 three delegations at once reach the router one per turn in arrival order; a request still waiting at 40 s is never sent and falls back as "busy" (AC-006)
+Could not connect to Ollama server at http://localhost:11434. Ensure it's running. fetch failed
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-05 a default on a model blocked by a used-up limit is skipped with "blocked until …" while routing is on, and used as today while off (AC-003)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/workspace.
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-05 a default on a model blocked by a used-up limit is skipped with "blocked until …" while routing is on, and used as today while off (AC-003)
+Reusing registered workspace ID: agent_ws_68489f215a12741a627566256ecd8c0088a6d1161ce8ffe39068de4e56d7842c
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-05 a default on a model blocked by a used-up limit is skipped with "blocked until …" while routing is on, and used as today while off (AC-003)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/workspace.
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-05 a default on a model blocked by a used-up limit is skipped with "blocked until …" while routing is on, and used as today while off (AC-003)
+Reusing registered workspace ID: agent_ws_68489f215a12741a627566256ecd8c0088a6d1161ce8ffe39068de4e56d7842c
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-05 a default on a model blocked by a used-up limit is skipped with "blocked until …" while routing is on, and used as today while off (AC-003)
+AGY compaction detection off for run mr_manager_8b25_3b8d8836a70040929ccf00a585b78b7f: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-05 a default on a model blocked by a used-up limit is skipped with "blocked until …" while routing is on, and used as today while off (AC-003)
+Agent websocket attached for run mr_manager_8b25_3b8d8836a70040929ccf00a585b78b7f
+Created agent session 81e92af8-79e7-4200-a023-61453caac7f8 for run mr_manager_8b25_3b8d8836a70040929ccf00a585b78b7f
+Agent WebSocket connected: session=81e92af8-79e7-4200-a023-61453caac7f8, run=mr_manager_8b25_3b8d8836a70040929ccf00a585b78b7f
+
+stderr | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-05 a default on a model blocked by a used-up limit is skipped with "blocked until …" while routing is on, and used as today while off (AC-003)
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/memory/agents/mr_manager_8b25_3b8d8836a70040929ccf00a585b78b7f/raw_traces_active.jsonl
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-05 a default on a model blocked by a used-up limit is skipped with "blocked until …" while routing is on, and used as today while off (AC-003)
+Discovering LM Studio models from host: http://localhost:1234
+Discovering Ollama models from host: http://localhost:11434
+
+stderr | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-05 a default on a model blocked by a used-up limit is skipped with "blocked until …" while routing is on, and used as today while off (AC-003)
+Could not connect to Ollama server at http://localhost:11434. Ensure it's running. fetch failed
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-05 a default on a model blocked by a used-up limit is skipped with "blocked until …" while routing is on, and used as today while off (AC-003)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/workspace.
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-05 a default on a model blocked by a used-up limit is skipped with "blocked until …" while routing is on, and used as today while off (AC-003)
+Reusing registered workspace ID: agent_ws_68489f215a12741a627566256ecd8c0088a6d1161ce8ffe39068de4e56d7842c
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-05 a default on a model blocked by a used-up limit is skipped with "blocked until …" while routing is on, and used as today while off (AC-003)
+AGY compaction detection off for run mr_blocked_4c18_67b99d26524a4248aff81ed42d2412da: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-05 a default on a model blocked by a used-up limit is skipped with "blocked until …" while routing is on, and used as today while off (AC-003)
+Server setting 'AUTOBYTEUS_MODEL_ROUTING_ENABLED' updated
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-05 a default on a model blocked by a used-up limit is skipped with "blocked until …" while routing is on, and used as today while off (AC-003)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/workspace.
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-05 a default on a model blocked by a used-up limit is skipped with "blocked until …" while routing is on, and used as today while off (AC-003)
+Reusing registered workspace ID: agent_ws_68489f215a12741a627566256ecd8c0088a6d1161ce8ffe39068de4e56d7842c
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-05 a default on a model blocked by a used-up limit is skipped with "blocked until …" while routing is on, and used as today while off (AC-003)
+AGY compaction detection off for run mr_blocked_4c18_5e225b8831e04ddfbe1d34982e44f0db: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-05 a default on a model blocked by a used-up limit is skipped with "blocked until …" while routing is on, and used as today while off (AC-003)
+Server setting 'AUTOBYTEUS_MODEL_ROUTING_ENABLED' updated
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-05 a default on a model blocked by a used-up limit is skipped with "blocked until …" while routing is on, and used as today while off (AC-003)
+Discovering LM Studio models from host: http://localhost:1234
+Discovering Ollama models from host: http://localhost:11434
+
+stderr | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-05 a default on a model blocked by a used-up limit is skipped with "blocked until …" while routing is on, and used as today while off (AC-003)
+Could not connect to Ollama server at http://localhost:11434. Ensure it's running. fetch failed
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-06 the router set to a signed-out runtime: status SIGNED_OUT, and a delegation that needs it notes the inactive router (CR-002)
+Server setting 'AUTOBYTEUS_MODEL_ROUTER_RUNTIME' updated
+Server setting 'AUTOBYTEUS_MODEL_ROUTER_MODEL' updated
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-06 the router set to a signed-out runtime: status SIGNED_OUT, and a delegation that needs it notes the inactive router (CR-002)
+Discovering LM Studio models from host: http://localhost:1234
+Discovering Ollama models from host: http://localhost:11434
+
+stderr | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-06 the router set to a signed-out runtime: status SIGNED_OUT, and a delegation that needs it notes the inactive router (CR-002)
+Could not connect to Ollama server at http://localhost:11434. Ensure it's running. fetch failed
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-06 the router set to a signed-out runtime: status SIGNED_OUT, and a delegation that needs it notes the inactive router (CR-002)
+Discovering LM Studio models from host: http://localhost:1234
+Discovering Ollama models from host: http://localhost:11434
+
+stderr | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-06 the router set to a signed-out runtime: status SIGNED_OUT, and a delegation that needs it notes the inactive router (CR-002)
+Could not connect to Ollama server at http://localhost:11434. Ensure it's running. fetch failed
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-06 the router set to a signed-out runtime: status SIGNED_OUT, and a delegation that needs it notes the inactive router (CR-002)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/workspace.
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-06 the router set to a signed-out runtime: status SIGNED_OUT, and a delegation that needs it notes the inactive router (CR-002)
+Reusing registered workspace ID: agent_ws_68489f215a12741a627566256ecd8c0088a6d1161ce8ffe39068de4e56d7842c
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-06 the router set to a signed-out runtime: status SIGNED_OUT, and a delegation that needs it notes the inactive router (CR-002)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/workspace.
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-06 the router set to a signed-out runtime: status SIGNED_OUT, and a delegation that needs it notes the inactive router (CR-002)
+Reusing registered workspace ID: agent_ws_68489f215a12741a627566256ecd8c0088a6d1161ce8ffe39068de4e56d7842c
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-06 the router set to a signed-out runtime: status SIGNED_OUT, and a delegation that needs it notes the inactive router (CR-002)
+AGY compaction detection off for run mr_manager_8b25_40d497735526445a8c3f0b4ead788677: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-06 the router set to a signed-out runtime: status SIGNED_OUT, and a delegation that needs it notes the inactive router (CR-002)
+Agent websocket attached for run mr_manager_8b25_40d497735526445a8c3f0b4ead788677
+Created agent session 7f927ec0-6b35-41bf-81de-8c5a57c6191b for run mr_manager_8b25_40d497735526445a8c3f0b4ead788677
+Agent WebSocket connected: session=7f927ec0-6b35-41bf-81de-8c5a57c6191b, run=mr_manager_8b25_40d497735526445a8c3f0b4ead788677
+
+stderr | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-06 the router set to a signed-out runtime: status SIGNED_OUT, and a delegation that needs it notes the inactive router (CR-002)
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/memory/agents/mr_manager_8b25_40d497735526445a8c3f0b4ead788677/raw_traces_active.jsonl
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-06 the router set to a signed-out runtime: status SIGNED_OUT, and a delegation that needs it notes the inactive router (CR-002)
+Discovering LM Studio models from host: http://localhost:1234
+Discovering Ollama models from host: http://localhost:11434
+
+stderr | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-06 the router set to a signed-out runtime: status SIGNED_OUT, and a delegation that needs it notes the inactive router (CR-002)
+Could not connect to Ollama server at http://localhost:11434. Ensure it's running. fetch failed
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-06 the router set to a signed-out runtime: status SIGNED_OUT, and a delegation that needs it notes the inactive router (CR-002)
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-e2e-jsRaNZ/workspace.
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-06 the router set to a signed-out runtime: status SIGNED_OUT, and a delegation that needs it notes the inactive router (CR-002)
+Reusing registered workspace ID: agent_ws_68489f215a12741a627566256ecd8c0088a6d1161ce8ffe39068de4e56d7842c
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-06 the router set to a signed-out runtime: status SIGNED_OUT, and a delegation that needs it notes the inactive router (CR-002)
+AGY compaction detection off for run mr_solo_fe81_952a34be7f5041238c2b1d15641fb12e: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-06 the router set to a signed-out runtime: status SIGNED_OUT, and a delegation that needs it notes the inactive router (CR-002)
+Server setting 'AUTOBYTEUS_MODEL_ROUTER_RUNTIME' updated
+Server setting 'AUTOBYTEUS_MODEL_ROUTER_MODEL' updated
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-06 the router set to a signed-out runtime: status SIGNED_OUT, and a delegation that needs it notes the inactive router (CR-002)
+Discovering LM Studio models from host: http://localhost:1234
+Discovering Ollama models from host: http://localhost:11434
+
+stderr | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-06 the router set to a signed-out runtime: status SIGNED_OUT, and a delegation that needs it notes the inactive router (CR-002)
+Could not connect to Ollama server at http://localhost:11434. Ensure it's running. fetch failed
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-06 the router set to a signed-out runtime: status SIGNED_OUT, and a delegation that needs it notes the inactive router (CR-002)
+Discovering LM Studio models from host: http://localhost:1234
+Discovering Ollama models from host: http://localhost:11434
+
+stderr | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-06 the router set to a signed-out runtime: status SIGNED_OUT, and a delegation that needs it notes the inactive router (CR-002)
+Could not connect to Ollama server at http://localhost:11434. Ensure it's running. fetch failed
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-07 the router's definition, run and workspace are hidden unless internal agents are shown; "Talk to the router" opens its run either way (AC-008)
+Server setting 'AUTOBYTEUS_SHOW_INTERNAL_AGENTS' updated
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-07 the router's definition, run and workspace are hidden unless internal agents are shown; "Talk to the router" opens its run either way (AC-008)
+Server setting 'AUTOBYTEUS_SHOW_INTERNAL_AGENTS' updated
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok) > MR-08 the router run's agent tools are its template's, without collaboration tools (AC-011)
+Agent websocket attached for run model_router_84cab76c46514f228838e8a4f56d9a70
+Created agent session 749ac305-531f-4688-93c5-e022e60e2fbd for run model_router_84cab76c46514f228838e8a4f56d9a70
+Agent WebSocket connected: session=749ac305-531f-4688-93c5-e022e60e2fbd, run=model_router_84cab76c46514f228838e8a4f56d9a70
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok)
+Closed agent session 749ac305-531f-4688-93c5-e022e60e2fbd
+Agent WebSocket disconnected: 749ac305-531f-4688-93c5-e022e60e2fbd
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok)
+Closed agent session 7f927ec0-6b35-41bf-81de-8c5a57c6191b
+Agent WebSocket disconnected: 7f927ec0-6b35-41bf-81de-8c5a57c6191b
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok)
+Closed agent session 81e92af8-79e7-4200-a023-61453caac7f8
+Agent WebSocket disconnected: 81e92af8-79e7-4200-a023-61453caac7f8
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok)
+Closed agent session 48375fc0-14b8-433e-a735-84b2f35679f2
+Agent WebSocket disconnected: 48375fc0-14b8-433e-a735-84b2f35679f2
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok)
+Closed agent session ad1cee19-41c8-4cb8-b46c-6c6996f653fd
+Agent WebSocket disconnected: ad1cee19-41c8-4cb8-b46c-6c6996f653fd
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok)
+Closed agent session 145c8097-3cc8-4385-9d99-76a7994adb61
+Agent WebSocket disconnected: 145c8097-3cc8-4385-9d99-76a7994adb61
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok)
+Closed agent session 846d26cc-0291-462f-a95b-b6fb3111285a
+Agent WebSocket disconnected: 846d26cc-0291-462f-a95b-b6fb3111285a
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok)
+Closed agent session d2fb5e72-63e1-4703-b9a0-2e46ffd73de5
+Agent WebSocket disconnected: d2fb5e72-63e1-4703-b9a0-2e46ffd73de5
+
+stdout | tests/e2e/model-routing/model-routing-delegation.e2e.test.ts > Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch usability, a real router run on scripted AGY; fake Grok)
+Closed agent session fd614a3e-07c0-44a2-a60e-f1392b30eb9c
+Agent WebSocket disconnected: fd614a3e-07c0-44a2-a60e-f1392b30eb9c
+
+ ✓ tests/e2e/model-routing/model-routing-delegation.e2e.test.ts (8 tests) 245515ms
+     ✓ MR-01 routing off (the default): a team copy runs as today — default, then the delegating run's launch — with no routing request and no record (AC-002)  775ms
+     ✓ MR-02 routing on: the router is asked once, for the members without a usable default; they start on its choice (another runtime); result lines, recorded sources, decisions by Task and statistics (AC-001, AC-009, AC-012)  18247ms
+     ✓ MR-03 an unusable answer goes back to the router and its correction is used; a silent router gives the inherited launch with the router-failure note within the bound (AC-004)  80530ms
+     ✓ MR-04 three delegations at once reach the router one per turn in arrival order; a request still waiting at 40 s is never sent and falls back as "busy" (AC-006)  84477ms
+     ✓ MR-05 a default on a model blocked by a used-up limit is skipped with "blocked until …" while routing is on, and used as today while off (AC-003)  17475ms
+     ✓ MR-06 the router set to a signed-out runtime: status SIGNED_OUT, and a delegation that needs it notes the inactive router (CR-002)  41197ms
+
+ Test Files  1 passed (1)
+      Tests  8 passed (8)
+   Start at  18:07:48
+   Duration  257.27s (transform 7.86s, setup 68ms, import 10.91s, tests 245.51s, environment 0ms)
+

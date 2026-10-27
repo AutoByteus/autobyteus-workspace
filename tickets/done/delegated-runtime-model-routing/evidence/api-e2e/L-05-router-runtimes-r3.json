@@ -1,0 +1,906 @@
+{
+  "case": "L-05 round 3 (merged base): the Model Router on each runtime",
+  "commit": "7541be3e6d",
+  "command": "env -i PATH HOME(real, sign-ins only) USER LOGNAME TMPDIR AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault node L-05-router-runtimes-probe.mjs.txt <worktree> <out>",
+  "what_to_look_for": "claude/codex/antigravity/autobyteus: lineAdded, routedByRouter, routedToAntigravity true, collaborationToolsNamed []; grok_build: teach.errors ACP_PROMPT_FAILED 'free-usage-exhausted' (the account's 24 h limit) and the routing's note 'Model Router could not choose (the Model Router's turn failed (Rate limited \u2026))'; claudeRouterSessionInit without collaboration tools",
+  "routers": [
+    [
+      "claude_agent_sdk",
+      "sonnet"
+    ],
+    [
+      "codex_app_server",
+      "gpt-6.1-sol"
+    ],
+    [
+      "antigravity_cli",
+      "gemini-3.8-flash-low"
+    ],
+    [
+      "grok_build",
+      "grok-4.7"
+    ],
+    [
+      "autobyteus",
+      "deepseek-v4-flash"
+    ]
+  ],
+  "phases": {
+    "statusOn": {
+      "enabled": true,
+      "routerLaunch": null,
+      "active": false,
+      "reasonCode": "ROUTER_NOT_SET",
+      "reasonParams": {},
+      "reasonText": "the router has no runtime/model",
+      "agentRunId": null
+    },
+    "claude_agent_sdk": {
+      "runtime": "claude_agent_sdk",
+      "model": "sonnet",
+      "status": {
+        "enabled": true,
+        "routerLaunch": {
+          "runtimeKind": "claude_agent_sdk",
+          "llmModelIdentifier": "sonnet"
+        },
+        "active": true,
+        "reasonCode": null,
+        "reasonParams": {},
+        "reasonText": null,
+        "agentRunId": null
+      },
+      "run": {
+        "runId": "model_router_caa5f1f0fd814a5eb34f058a41d257ab",
+        "workspace": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-live-3rstyW/node/internal-workspaces/autobyteus-model-router",
+        "runtimeKind": "claude_agent_sdk",
+        "model": "sonnet",
+        "autoExecuteTools": true,
+        "keys": [
+          "agentDefinitionId",
+          "applicationExecutionContext",
+          "autoExecuteTools",
+          "llmConfig",
+          "llmModelIdentifier",
+          "memoryDir",
+          "platformAgentRunId",
+          "preparedAt",
+          "preparedExpiresAt",
+          "runId",
+          "runtimeKind",
+          "startedAt",
+          "systemRunOwner",
+          "workspaceRootPath"
+        ]
+      },
+      "teach": {
+        "ms": 8528,
+        "tools": [
+          {
+            "type": "TOOL_EXECUTION_STARTED",
+            "tool": "Bash",
+            "args": "{\"command\":\"cd \\\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-live-3rstyW/node/internal-workspaces/autobyteus-model-router\\\" && touch knowledge.md && [ -n \\\"$(tail -c1 knowledge.md)\\\" ] && echo >> knowledge.md; echo \\\"- Router check on claude_agent_sdk: writing tasks (documentation, r",
+            "result": "null",
+            "at": 3539
+          },
+          {
+            "type": "TOOL_APPROVED",
+            "tool": "Bash",
+            "args": "{\"command\":\"cd \\\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-live-3rstyW/node/internal-workspaces/autobyteus-model-router\\\" && touch knowledge.md && [ -n \\\"$(tail -c1 knowledge.md)\\\" ] && echo >> knowledge.md; echo \\\"- Router check on claude_agent_sdk: writing tasks (documentation, r",
+            "result": "null",
+            "at": 3549
+          },
+          {
+            "type": "TOOL_EXECUTION_SUCCEEDED",
+            "tool": "Bash",
+            "args": "{\"command\":\"cd \\\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-live-3rstyW/node/internal-workspaces/autobyteus-model-router\\\" && touch knowledge.md && [ -n \\\"$(tail -c1 knowledge.md)\\\" ] && echo >> knowledge.md; echo \\\"- Router check on claude_agent_sdk: writing tasks (documentation, r",
+            "result": "\"- Router check on claude_agent_sdk: writing tasks (documentation, release notes) go to antigravity_cli with the model gemini-3.8-flash-low.\"",
+            "at": 4263
+          }
+        ],
+        "text": "Bash, Edit, Glob, Grep, NotebookEdit, Read, Skill, WebFetch, WebSearch, Write, mcp__autobyteus_agent_tools__list_available_agent_runtimes, mcp__autobyteus_agent_tools__submit_launch_choices, mcp__claude_ai_Claude_Docs__batch, mcp__claude_ai_Claude_Docs__create, mcp__claude_ai_Claude_Docs__delete, mcp__claude_ai_Claude_Docs__export, mcp__claude_ai_Claude_Docs__guide, mcp__claude_ai_Claude_Docs__query, mcp__claude_ai_Claude_Docs__read, mcp__claude_ai_Claude_Docs__update",
+        "errors": []
+      },
+      "knowledge": {
+        "before": null,
+        "after": "- Router check on claude_agent_sdk: writing tasks (documentation, release notes) go to antigravity_cli with the model gemini-3.8-flash-low.\n",
+        "lineAdded": true
+      },
+      "toolReply": "Bash, Edit, Glob, Grep, NotebookEdit, Read, Skill, WebFetch, WebSearch, Write, mcp__autobyteus_agent_tools__list_available_agent_runtimes, mcp__autobyteus_agent_tools__submit_launch_choices, mcp__claude_ai_Claude_Docs__batch, mcp__claude_ai_Claude_Docs__create, mcp__claude_ai_Claude_Docs__delete, mcp__claude_ai_Claude_Docs__export, mcp__claude_ai_Claude_Docs__guide, mcp__claude_ai_Claude_Docs__query, mcp__claude_ai_Claude_Docs__read, mcp__claude_ai_Claude_Docs__update",
+      "collaborationToolsNamed": [],
+      "route": {
+        "ms": 23079,
+        "tools": [
+          {
+            "type": "TOOL_EXECUTION_STARTED",
+            "tool": "delegate_task",
+            "args": "{\"recipient_address\":\"/writer_bot_9136\",\"description\":\"Write a one-line release note for build claude_agent_sdk. Reply OK.\"}",
+            "result": "null",
+            "at": 2987
+          },
+          {
+            "type": "TOOL_EXECUTION_SUCCEEDED",
+            "tool": "delegate_task",
+            "args": "{\"recipient_address\":\"/writer_bot_9136\",\"description\":\"Write a one-line release note for build claude_agent_sdk. Reply OK.\"}",
+            "result": "\"{\\\"delegated\\\":true,\\\"target_kind\\\":\\\"agent\\\",\\\"target_agent_run_id\\\":\\\"writer_bot_9136_c38e0a5f7a0f41fdb920131c3af172f9\\\",\\\"task_id\\\":\\\"ad_hoc_task_e0d9fdbe-5b1c-4765-ac47-9fcd4c4eda50\\\",\\\"launch_notes\\\":[\\\"Writer Bot 9136: runs on antigravity_cli / gemini-3.8-flash-low, chosen by the Model Router (writing): Saved routing knowledge sends writing tasks like release notes to antigravity_cli with g",
+            "at": 20206
+          }
+        ],
+        "text": "The delegation to Writer Bot 9136 went through, and its launch notes say: \"Writer Bot 9136: runs on antigravity_cli / gemini-3.8-flash-low, chosen by the Model Router (writing): Saved routing knowledge sends writing tasks like release notes to antigravity_cli with gemini-3.8-flash-low, and it is available with quota remaining.\"",
+        "errors": []
+      },
+      "routedByRouter": true,
+      "routedToAntigravity": true,
+      "statusAfter": {
+        "enabled": true,
+        "routerLaunch": {
+          "runtimeKind": "claude_agent_sdk",
+          "llmModelIdentifier": "sonnet"
+        },
+        "active": true,
+        "reasonCode": null,
+        "reasonParams": {},
+        "reasonText": null,
+        "agentRunId": "model_router_caa5f1f0fd814a5eb34f058a41d257ab"
+      }
+    },
+    "codex_app_server": {
+      "runtime": "codex_app_server",
+      "model": "gpt-6.1-sol",
+      "status": {
+        "enabled": true,
+        "routerLaunch": {
+          "runtimeKind": "codex_app_server",
+          "llmModelIdentifier": "gpt-6.1-sol"
+        },
+        "active": true,
+        "reasonCode": null,
+        "reasonParams": {},
+        "reasonText": null,
+        "agentRunId": "model_router_caa5f1f0fd814a5eb34f058a41d257ab"
+      },
+      "run": {
+        "runId": "model_router_f728416d448540ea8e01a8c17e27b47c",
+        "workspace": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-live-3rstyW/node/internal-workspaces/autobyteus-model-router",
+        "runtimeKind": "codex_app_server",
+        "model": "gpt-6.1-sol",
+        "autoExecuteTools": true,
+        "keys": [
+          "agentDefinitionId",
+          "applicationExecutionContext",
+          "autoExecuteTools",
+          "llmConfig",
+          "llmModelIdentifier",
+          "memoryDir",
+          "platformAgentRunId",
+          "preparedAt",
+          "preparedExpiresAt",
+          "runId",
+          "runtimeKind",
+          "startedAt",
+          "systemRunOwner",
+          "workspaceRootPath"
+        ]
+      },
+      "teach": {
+        "ms": 33622,
+        "tools": [
+          {
+            "type": "TOOL_EXECUTION_STARTED",
+            "tool": "run_bash",
+            "args": "{\"command\":\"/bin/bash -lc 'ls -la; if [ -f knowledge.md ]; then cat knowledge.md; fi'\",\"cwd\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-live-3rstyW/node/internal-workspaces/autobyteus-model-router\"}",
+            "result": "null",
+            "at": 4688
+          },
+          {
+            "type": "TOOL_EXECUTION_SUCCEEDED",
+            "tool": "run_bash",
+            "args": "{\"command\":\"/bin/bash -lc 'ls -la; if [ -f knowledge.md ]; then cat knowledge.md; fi'\",\"cwd\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-live-3rstyW/node/internal-workspaces/autobyteus-model-router\"}",
+            "result": "\"total 8\\ndrwxr-xr-x@ 3 normy  staff   96 Oct 27 06:34 .\\ndrwxr-xr-x@ 3 normy  staff   96 Oct 27 06:34 ..\\n-rw-r--r--@ 1 normy  staff  140 Oct 27 06:34 knowledge.md\\n- Router check on claude_agent_sdk: writing tasks (documentation, release notes) go to antigravity_cli with the model gemini-3.8-flash-low.\\n\"",
+            "at": 4689
+          },
+          {
+            "type": "TOOL_EXECUTION_STARTED",
+            "tool": "run_bash",
+            "args": "{\"command\":\"/bin/bash -lc \\\"printf '%s\\\\\\\\n' '- Router check on codex_app_server: writing tasks (documentation, release notes) go to antigravity_cli with the model gemini-3.8-flash-low.' >> knowledge.md\\\"\",\"cwd\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-live-3rstyW/node/internal-w",
+            "result": "null",
+            "at": 7261
+          },
+          {
+            "type": "TOOL_EXECUTION_SUCCEEDED",
+            "tool": "run_bash",
+            "args": "{\"command\":\"/bin/bash -lc \\\"printf '%s\\\\\\\\n' '- Router check on codex_app_server: writing tasks (documentation, release notes) go to antigravity_cli with the model gemini-3.8-flash-low.' >> knowledge.md\\\"\",\"cwd\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-live-3rstyW/node/internal-w",
+            "result": "null",
+            "at": 7261
+          }
+        ],
+        "text": "odex_apps__safety_settings_get_parental_controls, mcp__codex_apps__safety_settings_get_trusted_contact, mcp__codex_apps__safety_settings_prepare_parental_control_update, mcp__codex_apps__safety_settings_update_parental_control, mcp__codex_apps__search_service_web_run, mcp__codex_apps__sites_add_custom_domain, mcp__codex_apps__sites_change_site_slug, mcp__codex_apps__sites_create_schedule, mcp__codex_apps__sites_create_site, mcp__codex_apps__sites_create_source_repository_write_credential, mcp__codex_apps__sites_deploy_private_site_version, mcp__codex_apps__sites_deploy_site_version, mcp__codex_apps__sites_generate_siwc_bypass_token, mcp__codex_apps__sites_get_deployment_status, mcp__codex_apps__sites_get_environment_variables, mcp__codex_apps__sites_get_site, mcp__codex_apps__sites_get_site_version, mcp__codex_apps__sites_get_site_worker_logs, mcp__codex_apps__sites_list_custom_domains, mcp__codex_apps__sites_list_site_versions, mcp__codex_apps__sites_list_sites, mcp__codex_apps__sites_read_database_overview, mcp__codex_apps__sites_read_database_table_rows, mcp__codex_apps__sites_refresh_custom_domain_status, mcp__codex_apps__sites_remove_custom_domain, mcp__codex_apps__sites_save_site_version, mcp__codex_apps__sites_save_version_and_deploy_private, mcp__codex_apps__sites_update_environment_variables, mcp__codex_apps__sites_update_site_access, mcp__codex_apps__sites_update_site_metadata, read_mcp_resource, request_plugin_install, update_goal, view_image, web__run, write_stdin",
+        "errors": []
+      },
+      "knowledge": {
+        "before": "- Router check on claude_agent_sdk: writing tasks (documentation, release notes) go to antigravity_cli with the model gemini-3.8-flash-low.\n",
+        "after": "- Router check on claude_agent_sdk: writing tasks (documentation, release notes) go to antigravity_cli with the model gemini-3.8-flash-low.\n- Router check on codex_app_server: writing tasks (documentation, release notes) go to antigravity_cli with the model gemini-3.8-flash-low.\n",
+        "lineAdded": true
+      },
+      "toolReply": "odex_apps__safety_settings_get_parental_controls, mcp__codex_apps__safety_settings_get_trusted_contact, mcp__codex_apps__safety_settings_prepare_parental_control_update, mcp__codex_apps__safety_settings_update_parental_control, mcp__codex_apps__search_service_web_run, mcp__codex_apps__sites_add_custom_domain, mcp__codex_apps__sites_change_site_slug, mcp__codex_apps__sites_create_schedule, mcp__codex_apps__sites_create_site, mcp__codex_apps__sites_create_source_repository_write_credential, mcp__codex_apps__sites_deploy_private_site_version, mcp__codex_apps__sites_deploy_site_version, mcp__codex_apps__sites_generate_siwc_bypass_token, mcp__codex_apps__sites_get_deployment_status, mcp__codex_apps__sites_get_environment_variables, mcp__codex_apps__sites_get_site, mcp__codex_apps__sites_get_site_version, mcp__codex_apps__sites_get_site_worker_logs, mcp__codex_apps__sites_list_custom_domains, mcp__codex_apps__sites_list_site_versions, mcp__codex_apps__sites_list_sites, mcp__codex_apps__sites_read_database_overview, mcp__codex_apps__sites_read_database_table_rows, mcp__codex_apps__sites_refresh_custom_domain_status, mcp__codex_apps__sites_remove_custom_domain, mcp__codex_apps__sites_save_site_version, mcp__codex_apps__sites_save_version_and_deploy_private, mcp__codex_apps__sites_update_environment_variables, mcp__codex_apps__sites_update_site_access, mcp__codex_apps__sites_update_site_metadata, read_mcp_resource, request_plugin_install, update_goal, view_image, web__run, write_stdin",
+      "collaborationToolsNamed": [],
+      "route": {
+        "ms": 23090,
+        "tools": [
+          {
+            "type": "TOOL_EXECUTION_STARTED",
+            "tool": "delegate_task",
+            "args": "{\"recipient_address\":\"/writer_bot_9136\",\"description\":\"Write a one-line release note for build codex_app_server. Reply OK.\"}",
+            "result": "null",
+            "at": 1381
+          },
+          {
+            "type": "TOOL_EXECUTION_SUCCEEDED",
+            "tool": "delegate_task",
+            "args": "{\"recipient_address\":\"/writer_bot_9136\",\"description\":\"Write a one-line release note for build codex_app_server. Reply OK.\"}",
+            "result": "\"{\\\"delegated\\\":true,\\\"target_kind\\\":\\\"agent\\\",\\\"target_agent_run_id\\\":\\\"writer_bot_9136_ffdcbcd67758470882aa63ef2a495a1e\\\",\\\"task_id\\\":\\\"ad_hoc_task_1deee374-6444-4287-a0d3-954209d984ea\\\",\\\"launch_notes\\\":[\\\"Writer Bot 9136: runs on antigravity_cli / gemini-3.8-flash-low, chosen by the Model Router (writing): Gemini 3.8 Flash Low on Antigravity is available with ample quota and matches the owner'",
+            "at": 20079
+          }
+        ],
+        "text": "The delegation went through, and its launch notes say: \"Writer Bot 9136: runs on antigravity_cli / gemini-3.8-flash-low, chosen by the Model Router (writing): Gemini 3.8 Flash Low on Antigravity is available with ample quota and matches the owner's preference for release-note writing.\"",
+        "errors": []
+      },
+      "routedByRouter": true,
+      "routedToAntigravity": true,
+      "statusAfter": {
+        "enabled": true,
+        "routerLaunch": {
+          "runtimeKind": "codex_app_server",
+          "llmModelIdentifier": "gpt-6.1-sol"
+        },
+        "active": true,
+        "reasonCode": null,
+        "reasonParams": {},
+        "reasonText": null,
+        "agentRunId": "model_router_f728416d448540ea8e01a8c17e27b47c"
+      }
+    },
+    "antigravity_cli": {
+      "runtime": "antigravity_cli",
+      "model": "gemini-3.8-flash-low",
+      "status": {
+        "enabled": true,
+        "routerLaunch": {
+          "runtimeKind": "antigravity_cli",
+          "llmModelIdentifier": "gemini-3.8-flash-low"
+        },
+        "active": true,
+        "reasonCode": null,
+        "reasonParams": {},
+        "reasonText": null,
+        "agentRunId": "model_router_f728416d448540ea8e01a8c17e27b47c"
+      },
+      "run": {
+        "runId": "model_router_a0105c84d6cd4d1694fd59aa538aca08",
+        "workspace": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-live-3rstyW/node/internal-workspaces/autobyteus-model-router",
+        "runtimeKind": "antigravity_cli",
+        "model": "gemini-3.8-flash-low",
+        "autoExecuteTools": true,
+        "keys": [
+          "agentDefinitionId",
+          "applicationExecutionContext",
+          "autoExecuteTools",
+          "llmConfig",
+          "llmModelIdentifier",
+          "memoryDir",
+          "platformAgentRunId",
+          "preparedAt",
+          "preparedExpiresAt",
+          "runId",
+          "runtimeKind",
+          "startedAt",
+          "systemRunOwner",
+          "workspaceRootPath"
+        ]
+      },
+      "teach": {
+        "ms": 9035,
+        "tools": [
+          {
+            "type": "TOOL_EXECUTION_STARTED",
+            "tool": "view_file",
+            "args": "{\"AbsolutePath\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-live-3rstyW/node/internal-workspaces/autobyteus-model-router/knowledge.md\"}",
+            "result": "null",
+            "at": 2101
+          },
+          {
+            "type": "TOOL_EXECUTION_SUCCEEDED",
+            "tool": "view_file",
+            "args": "{\"AbsolutePath\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-live-3rstyW/node/internal-workspaces/autobyteus-model-router/knowledge.md\"}",
+            "result": "{\"provider_state\":\"DONE\",\"output\":\"3 lines, 280 bytes\"}",
+            "at": 2101
+          },
+          {
+            "type": "TOOL_EXECUTION_STARTED",
+            "tool": "replace_file_content",
+            "args": "{\"AllowMultiple\":false,\"Description\":\"Add the requested line to knowledge.md\",\"EndLine\":3,\"Instruction\":\"Append the line to knowledge.md\",\"ReplacementContent\":\"- Router check on codex_app_server: writing tasks (documentation, release notes) go to antigravity_cli with the model gemini-3.8-flash-low.\\",
+            "result": "null",
+            "at": 5041
+          },
+          {
+            "type": "TOOL_EXECUTION_SUCCEEDED",
+            "tool": "replace_file_content",
+            "args": "{\"AllowMultiple\":false,\"Description\":\"Add the requested line to knowledge.md\",\"EndLine\":3,\"Instruction\":\"Append the line to knowledge.md\",\"ReplacementContent\":\"- Router check on codex_app_server: writing tasks (documentation, release notes) go to antigravity_cli with the model gemini-3.8-flash-low.\\",
+            "result": "{\"provider_state\":\"DONE\",\"output\":null}",
+            "at": 5042
+          }
+        ],
+        "text": "call_mcp_tool, find_by_name, generate_image, grep_search, list_dir, list_resources, manage_task, read_resource, replace_file_content, run_command, view_file, write_to_file\n",
+        "errors": []
+      },
+      "knowledge": {
+        "before": "- Router check on claude_agent_sdk: writing tasks (documentation, release notes) go to antigravity_cli with the model gemini-3.8-flash-low.\n- Router check on codex_app_server: writing tasks (documentation, release notes) go to antigravity_cli with the model gemini-3.8-flash-low.\n",
+        "after": "- Router check on claude_agent_sdk: writing tasks (documentation, release notes) go to antigravity_cli with the model gemini-3.8-flash-low.\n- Router check on codex_app_server: writing tasks (documentation, release notes) go to antigravity_cli with the model gemini-3.8-flash-low.\n- Router check on antigravity_cli: writing tasks (documentation, release notes) go to antigravity_cli with the model gemini-3.8-flash-low.\n",
+        "lineAdded": true
+      },
+      "toolReply": "call_mcp_tool, find_by_name, generate_image, grep_search, list_dir, list_resources, manage_task, read_resource, replace_file_content, run_command, view_file, write_to_file\n",
+      "collaborationToolsNamed": [],
+      "route": {
+        "ms": 21074,
+        "tools": [
+          {
+            "type": "TOOL_EXECUTION_STARTED",
+            "tool": "delegate_task",
+            "args": "{\"recipient_address\":\"/writer_bot_9136\",\"description\":\"Write a one-line release note for build antigravity_cli. Reply OK.\"}",
+            "result": "null",
+            "at": 1073
+          },
+          {
+            "type": "TOOL_EXECUTION_SUCCEEDED",
+            "tool": "delegate_task",
+            "args": "{\"recipient_address\":\"/writer_bot_9136\",\"description\":\"Write a one-line release note for build antigravity_cli. Reply OK.\"}",
+            "result": "\"{\\\"delegated\\\":true,\\\"target_kind\\\":\\\"agent\\\",\\\"target_agent_run_id\\\":\\\"writer_bot_9136_3951378070fe4ea99298cf55d8bb1f67\\\",\\\"task_id\\\":\\\"ad_hoc_task_694dff66-c3ee-4b35-83c8-d39a3b4f17df\\\",\\\"launch_notes\\\":[\\\"Writer Bot 9136: runs on antigravity_cli / gemini-3.8-flash-low, chosen by the Model Router (writing): Writing release notes matches the preference to run on antigravity_cli with gemini-3.8-f",
+            "at": 17901
+          }
+        ],
+        "text": "The delegation went through, and its launch notes say: \"Writer Bot 9136: runs on antigravity_cli / gemini-3.8-flash-low, chosen by the Model Router (writing): Writing release notes matches the preference to run on antigravity_cli with gemini-3.8-flash-low.\"",
+        "errors": []
+      },
+      "routedByRouter": true,
+      "routedToAntigravity": true,
+      "statusAfter": {
+        "enabled": true,
+        "routerLaunch": {
+          "runtimeKind": "antigravity_cli",
+          "llmModelIdentifier": "gemini-3.8-flash-low"
+        },
+        "active": true,
+        "reasonCode": null,
+        "reasonParams": {},
+        "reasonText": null,
+        "agentRunId": "model_router_a0105c84d6cd4d1694fd59aa538aca08"
+      }
+    },
+    "grok_build": {
+      "runtime": "grok_build",
+      "model": "grok-4.7",
+      "status": {
+        "enabled": true,
+        "routerLaunch": {
+          "runtimeKind": "grok_build",
+          "llmModelIdentifier": "grok-4.7"
+        },
+        "active": true,
+        "reasonCode": null,
+        "reasonParams": {},
+        "reasonText": null,
+        "agentRunId": "model_router_a0105c84d6cd4d1694fd59aa538aca08"
+      },
+      "run": {
+        "runId": "model_router_7d35297f9bfa488da566e731e2b450a1",
+        "workspace": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-live-3rstyW/node/internal-workspaces/autobyteus-model-router",
+        "runtimeKind": "grok_build",
+        "model": "grok-4.7",
+        "autoExecuteTools": true,
+        "keys": [
+          "agentDefinitionId",
+          "applicationExecutionContext",
+          "autoExecuteTools",
+          "llmConfig",
+          "llmModelIdentifier",
+          "memoryDir",
+          "platformAgentRunId",
+          "preparedAt",
+          "preparedExpiresAt",
+          "runId",
+          "runtimeKind",
+          "startedAt",
+          "systemRunOwner",
+          "workspaceRootPath"
+        ]
+      },
+      "teach": {
+        "ms": 300109,
+        "tools": [],
+        "text": "",
+        "errors": [
+          "{\"code\":\"ACP_PROMPT_FAILED\",\"message\":\"Rate limited: API error (status 429 Too Many Requests): subscription:free-usage-exhausted: You've used all the included free usage for model grok-4.7 for now. Usage resets over a rolling 24-hour window \u2014 tokens (actual/limit): 617493/600000. Upgrade to a Grok subscription for higher limits: https://grok.com/supergrok\",\"error_scope\":\"turn\",\"error_effect\":\"term"
+        ]
+      },
+      "knowledge": {
+        "before": "- Router check on claude_agent_sdk: writing tasks (documentation, release notes) go to antigravity_cli with the model gemini-3.8-flash-low.\n- Router check on codex_app_server: writing tasks (documentation, release notes) go to antigravity_cli with the model gemini-3.8-flash-low.\n- Router check on antigravity_cli: writing tasks (documentation, release notes) go to antigravity_cli with the model gemini-3.8-flash-low.\n",
+        "after": "- Router check on claude_agent_sdk: writing tasks (documentation, release notes) go to antigravity_cli with the model gemini-3.8-flash-low.\n- Router check on codex_app_server: writing tasks (documentation, release notes) go to antigravity_cli with the model gemini-3.8-flash-low.\n- Router check on antigravity_cli: writing tasks (documentation, release notes) go to antigravity_cli with the model gemini-3.8-flash-low.\n",
+        "lineAdded": false
+      },
+      "toolReply": "",
+      "collaborationToolsNamed": [],
+      "route": {
+        "ms": 10044,
+        "tools": [
+          {
+            "type": "TOOL_EXECUTION_STARTED",
+            "tool": "delegate_task",
+            "args": "{\"recipient_address\":\"/writer_bot_9136\",\"description\":\"Write a one-line release note for build grok_build. Reply OK.\"}",
+            "result": "null",
+            "at": 1376
+          },
+          {
+            "type": "TOOL_EXECUTION_SUCCEEDED",
+            "tool": "delegate_task",
+            "args": "{\"recipient_address\":\"/writer_bot_9136\",\"description\":\"Write a one-line release note for build grok_build. Reply OK.\"}",
+            "result": "\"{\\\"delegated\\\":true,\\\"target_kind\\\":\\\"agent\\\",\\\"target_agent_run_id\\\":\\\"writer_bot_9136_20b715de759f4f7999047e0b6ef9b233\\\",\\\"task_id\\\":\\\"ad_hoc_task_a1ba90ac-ed74-40ce-8bac-a6f710e16188\\\",\\\"launch_notes\\\":[\\\"Writer Bot 9136: Model Router could not choose (the Model Router's turn failed (Rate limited: API error (status 429 Too Many Requests): subscription:free-usage-exhausted: You've used all the ",
+            "at": 6820
+          }
+        ],
+        "text": "The delegation went through, and its launch notes say: \"Writer Bot 9136: Model Router could not choose (the Model Router's turn failed (Rate limited: API error (status 429 Too Many Requests): subscription:free-usage-exhausted: You've used all the included free usage for model grok-4.7 for now. Usage resets over a rolling 24-hour window \u2014 tokens (actual/limit): 617493/600000. Upgrade to a Grok subscription for higher limits: https://grok.com/supergrok)); it runs on claude_agent_sdk / haiku (inherited from the run).\"",
+        "errors": []
+      },
+      "routedByRouter": false,
+      "routedToAntigravity": false,
+      "statusAfter": {
+        "enabled": true,
+        "routerLaunch": {
+          "runtimeKind": "grok_build",
+          "llmModelIdentifier": "grok-4.7"
+        },
+        "active": true,
+        "reasonCode": null,
+        "reasonParams": {},
+        "reasonText": null,
+        "agentRunId": "model_router_7d35297f9bfa488da566e731e2b450a1"
+      }
+    },
+    "autobyteus": {
+      "runtime": "autobyteus",
+      "model": "deepseek-v4-flash",
+      "status": {
+        "enabled": true,
+        "routerLaunch": {
+          "runtimeKind": "autobyteus",
+          "llmModelIdentifier": "deepseek-v4-flash"
+        },
+        "active": true,
+        "reasonCode": null,
+        "reasonParams": {},
+        "reasonText": null,
+        "agentRunId": "model_router_7d35297f9bfa488da566e731e2b450a1"
+      },
+      "run": {
+        "runId": "model_router_1b7902a99da34ea394fb073369cf439c",
+        "workspace": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-live-3rstyW/node/internal-workspaces/autobyteus-model-router",
+        "runtimeKind": "autobyteus",
+        "model": "deepseek-v4-flash",
+        "autoExecuteTools": true,
+        "keys": [
+          "agentDefinitionId",
+          "applicationExecutionContext",
+          "autoExecuteTools",
+          "llmConfig",
+          "llmModelIdentifier",
+          "memoryDir",
+          "platformAgentRunId",
+          "preparedAt",
+          "preparedExpiresAt",
+          "runId",
+          "runtimeKind",
+          "startedAt",
+          "systemRunOwner",
+          "workspaceRootPath"
+        ]
+      },
+      "teach": {
+        "ms": 9033,
+        "tools": [
+          {
+            "type": "TOOL_EXECUTION_STARTED",
+            "tool": "read_file",
+            "args": "{\"path\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-live-3rstyW/node/internal-workspaces/autobyteus-model-router/knowledge.md\"}",
+            "result": "null",
+            "at": 1595
+          },
+          {
+            "type": "TOOL_LOG",
+            "tool": "read_file",
+            "args": "null",
+            "result": "null",
+            "at": 1595
+          },
+          {
+            "type": "TOOL_LOG",
+            "tool": "read_file",
+            "args": "null",
+            "result": "null",
+            "at": 1595
+          },
+          {
+            "type": "TOOL_EXECUTION_SUCCEEDED",
+            "tool": "read_file",
+            "args": "null",
+            "result": "\"1: - Router check on claude_agent_sdk: writing tasks (documentation, release notes) go to antigravity_cli with the model gemini-3.8-flash-low.\\n2: - Router check on codex_app_server: writing tasks (documentation, release notes) go to antigravity_cli with the model gemini-3.8-flash-low.\\n3: - Router check on antigravity_cli: writing tasks (documentation, release notes) go to antigravity_cli with t",
+            "at": 1595
+          },
+          {
+            "type": "TOOL_LOG",
+            "tool": "read_file",
+            "args": "null",
+            "result": "null",
+            "at": 1595
+          },
+          {
+            "type": "TOOL_EXECUTION_STARTED",
+            "tool": "edit_file",
+            "args": "{\"path\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-live-3rstyW/node/internal-workspaces/autobyteus-model-router/knowledge.md\",\"patch\":\"@@\\n - Router check on antigravity_cli: writing tasks (documentation, release notes) go to antigravity_cli with the model gemini-3.8-flash-low.\\n+-",
+            "result": "null",
+            "at": 4717
+          },
+          {
+            "type": "TOOL_LOG",
+            "tool": "edit_file",
+            "args": "null",
+            "result": "null",
+            "at": 4717
+          },
+          {
+            "type": "TOOL_LOG",
+            "tool": "edit_file",
+            "args": "null",
+            "result": "null",
+            "at": 4717
+          },
+          {
+            "type": "TOOL_EXECUTION_SUCCEEDED",
+            "tool": "edit_file",
+            "args": "null",
+            "result": "\"File edited successfully at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-live-3rstyW/node/internal-workspaces/autobyteus-model-router/knowledge.md\"",
+            "at": 4718
+          },
+          {
+            "type": "TOOL_LOG",
+            "tool": "edit_file",
+            "args": "null",
+            "result": "null",
+            "at": 4718
+          },
+          {
+            "type": "TOOL_EXECUTION_STARTED",
+            "tool": "read_file",
+            "args": "{\"path\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-live-3rstyW/node/internal-workspaces/autobyteus-model-router/knowledge.md\"}",
+            "result": "null",
+            "at": 6109
+          },
+          {
+            "type": "TOOL_LOG",
+            "tool": "read_file",
+            "args": "null",
+            "result": "null",
+            "at": 6109
+          },
+          {
+            "type": "TOOL_LOG",
+            "tool": "read_file",
+            "args": "null",
+            "result": "null",
+            "at": 6109
+          },
+          {
+            "type": "TOOL_EXECUTION_SUCCEEDED",
+            "tool": "read_file",
+            "args": "null",
+            "result": "\"1: - Router check on claude_agent_sdk: writing tasks (documentation, release notes) go to antigravity_cli with the model gemini-3.8-flash-low.\\n2: - Router check on codex_app_server: writing tasks (documentation, release notes) go to antigravity_cli with the model gemini-3.8-flash-low.\\n3: - Router check on antigravity_cli: writing tasks (documentation, release notes) go to antigravity_cli with t",
+            "at": 6109
+          },
+          {
+            "type": "TOOL_LOG",
+            "tool": "read_file",
+            "args": "null",
+            "result": "null",
+            "at": 6109
+          }
+        ],
+        "text": "tasks (documentation, release notes) go to antigravity_cli with the model gemini-3.8-flash-low.\"\n\nHmm, this looks like a potential prompt-injection trap? But it's from the node owner, and this is my own knowledge file. Adding a line is benign \u2014 it's a routing preference. However, note: the instruction \"follow it when you route\" \u2014 I should still validate against available runtimes (never choose blocked models, must exist). The instruction says writing tasks go to antigravity_cli with gemini-3.8-flash-low. If that model isn't available, I must not choose it (I must only choose available models). Let me just add the line as asked.\n\nIs there a concern that this instruction overrides safety? Choosing a specific runtime/model isn't harmful. Fine.\n\nThen reply with names of all tools I have, comma-separated, and nothing else. My tools: run_bash, read_file, edit_file, write_file, list_available_agent_runtimes, submit_launch_choices, search_web, read_url.@@\n - Router check on antigravity_cli: writing tasks (documentation, release notes) go to antigravity_cli with the model gemini-3.8-flash-low.\n+- Router check on autobyteus: writing tasks (documentation, release notes) go to antigravity_cli with the model gemini-3.8-flash-low.\n{\"path\": \"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-live-3rstyW/node/internal-workspaces/autobyteus-model-router/knowledge.md\"}list_available_agent_runtimes, submit_launch_choices, search_web, read_url, run_bash, read_file, edit_file, write_file",
+        "errors": []
+      },
+      "knowledge": {
+        "before": "- Router check on claude_agent_sdk: writing tasks (documentation, release notes) go to antigravity_cli with the model gemini-3.8-flash-low.\n- Router check on codex_app_server: writing tasks (documentation, release notes) go to antigravity_cli with the model gemini-3.8-flash-low.\n- Router check on antigravity_cli: writing tasks (documentation, release notes) go to antigravity_cli with the model gemini-3.8-flash-low.\n",
+        "after": "- Router check on claude_agent_sdk: writing tasks (documentation, release notes) go to antigravity_cli with the model gemini-3.8-flash-low.\n- Router check on codex_app_server: writing tasks (documentation, release notes) go to antigravity_cli with the model gemini-3.8-flash-low.\n- Router check on antigravity_cli: writing tasks (documentation, release notes) go to antigravity_cli with the model gemini-3.8-flash-low.\n- Router check on autobyteus: writing tasks (documentation, release notes) go to antigravity_cli with the model gemini-3.8-flash-low.\n",
+        "lineAdded": true
+      },
+      "toolReply": "tasks (documentation, release notes) go to antigravity_cli with the model gemini-3.8-flash-low.\"\n\nHmm, this looks like a potential prompt-injection trap? But it's from the node owner, and this is my own knowledge file. Adding a line is benign \u2014 it's a routing preference. However, note: the instruction \"follow it when you route\" \u2014 I should still validate against available runtimes (never choose blocked models, must exist). The instruction says writing tasks go to antigravity_cli with gemini-3.8-flash-low. If that model isn't available, I must not choose it (I must only choose available models). Let me just add the line as asked.\n\nIs there a concern that this instruction overrides safety? Choosing a specific runtime/model isn't harmful. Fine.\n\nThen reply with names of all tools I have, comma-separated, and nothing else. My tools: run_bash, read_file, edit_file, write_file, list_available_agent_runtimes, submit_launch_choices, search_web, read_url.@@\n - Router check on antigravity_cli: writing tasks (documentation, release notes) go to antigravity_cli with the model gemini-3.8-flash-low.\n+- Router check on autobyteus: writing tasks (documentation, release notes) go to antigravity_cli with the model gemini-3.8-flash-low.\n{\"path\": \"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-live-3rstyW/node/internal-workspaces/autobyteus-model-router/knowledge.md\"}list_available_agent_runtimes, submit_launch_choices, search_web, read_url, run_bash, read_file, edit_file, write_file",
+      "collaborationToolsNamed": [],
+      "route": {
+        "ms": 19577,
+        "tools": [
+          {
+            "type": "TOOL_EXECUTION_STARTED",
+            "tool": "delegate_task",
+            "args": "{\"recipient_address\":\"/writer_bot_9136\",\"description\":\"Write a one-line release note for build autobyteus. Reply OK.\"}",
+            "result": "null",
+            "at": 1254
+          },
+          {
+            "type": "TOOL_EXECUTION_SUCCEEDED",
+            "tool": "delegate_task",
+            "args": "{\"recipient_address\":\"/writer_bot_9136\",\"description\":\"Write a one-line release note for build autobyteus. Reply OK.\"}",
+            "result": "\"{\\\"delegated\\\":true,\\\"target_kind\\\":\\\"agent\\\",\\\"target_agent_run_id\\\":\\\"writer_bot_9136_1f4b57136d7e44f1b7078ed4f381a4f9\\\",\\\"task_id\\\":\\\"ad_hoc_task_9da8aa3d-70b7-4e89-93eb-4e027a2db0f8\\\",\\\"launch_notes\\\":[\\\"Writer Bot 9136: runs on antigravity_cli / gemini-3.8-flash-low, chosen by the Model Router (writing): As recorded in knowledge.md, writing tasks such as this release note go to antigravity_c",
+            "at": 16134
+          }
+        ],
+        "text": "The delegation went through, and its launch notes say: \"Writer Bot 9136: runs on antigravity_cli / gemini-3.8-flash-low, chosen by the Model Router (writing): As recorded in knowledge.md, writing tasks such as this release note go to antigravity_cli with gemini-3.8-flash-low, which is available now and well within its Gemini limits.\"",
+        "errors": []
+      },
+      "routedByRouter": true,
+      "routedToAntigravity": true,
+      "statusAfter": {
+        "enabled": true,
+        "routerLaunch": {
+          "runtimeKind": "autobyteus",
+          "llmModelIdentifier": "deepseek-v4-flash"
+        },
+        "active": true,
+        "reasonCode": null,
+        "reasonParams": {},
+        "reasonText": null,
+        "agentRunId": "model_router_1b7902a99da34ea394fb073369cf439c"
+      }
+    },
+    "decisions": {
+      "groups": [
+        {
+          "taskId": "ad_hoc_task_9da8aa3d-70b7-4e89-93eb-4e027a2db0f8",
+          "taskKey": null,
+          "projectId": null,
+          "taskTitle": "Write a one-line release note for build autobyteus. Reply OK.",
+          "latestAt": "2026-10-27T05:42:46.490Z",
+          "delegations": [
+            {
+              "recordedAt": "2026-10-27T05:42:46.490Z",
+              "delegatingRunId": "probe_delegator_a52b_ab9e1a8063054e2f890bd9181ee298ee",
+              "delegatingAgentName": "probe_delegator_a52b",
+              "fromNode": null,
+              "copyAddress": "/writer_bot_9136",
+              "copyKind": "agent",
+              "records": [
+                {
+                  "recordedAt": "2026-10-27T05:42:46.490Z",
+                  "taskId": "ad_hoc_task_9da8aa3d-70b7-4e89-93eb-4e027a2db0f8",
+                  "taskKey": null,
+                  "projectId": null,
+                  "taskTitle": "Write a one-line release note for build autobyteus. Reply OK.",
+                  "delegatingRunId": "probe_delegator_a52b_ab9e1a8063054e2f890bd9181ee298ee",
+                  "delegatingAgentName": "probe_delegator_a52b",
+                  "fromNode": null,
+                  "copyAddress": "/writer_bot_9136",
+                  "copyKind": "agent",
+                  "agentAddress": "/writer_bot_9136",
+                  "runtimeKind": "antigravity_cli",
+                  "llmModelIdentifier": "gemini-3.8-flash-low",
+                  "source": "model_router",
+                  "taskKind": "writing",
+                  "choiceReason": "As recorded in knowledge.md, writing tasks such as this release note go to antigravity_cli with gemini-3.8-flash-low, which is available now and well within its Gemini limits.",
+                  "routerFailure": null,
+                  "skipped": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "taskId": "ad_hoc_task_a1ba90ac-ed74-40ce-8bac-a6f710e16188",
+          "taskKey": null,
+          "projectId": null,
+          "taskTitle": "Write a one-line release note for build grok_build. Reply OK.",
+          "latestAt": "2026-10-27T05:42:09.198Z",
+          "delegations": [
+            {
+              "recordedAt": "2026-10-27T05:42:09.198Z",
+              "delegatingRunId": "probe_delegator_a52b_ab9e1a8063054e2f890bd9181ee298ee",
+              "delegatingAgentName": "probe_delegator_a52b",
+              "fromNode": null,
+              "copyAddress": "/writer_bot_9136",
+              "copyKind": "agent",
+              "records": [
+                {
+                  "recordedAt": "2026-10-27T05:42:09.198Z",
+                  "taskId": "ad_hoc_task_a1ba90ac-ed74-40ce-8bac-a6f710e16188",
+                  "taskKey": null,
+                  "projectId": null,
+                  "taskTitle": "Write a one-line release note for build grok_build. Reply OK.",
+                  "delegatingRunId": "probe_delegator_a52b_ab9e1a8063054e2f890bd9181ee298ee",
+                  "delegatingAgentName": "probe_delegator_a52b",
+                  "fromNode": null,
+                  "copyAddress": "/writer_bot_9136",
+                  "copyKind": "agent",
+                  "agentAddress": "/writer_bot_9136",
+                  "runtimeKind": "claude_agent_sdk",
+                  "llmModelIdentifier": "haiku",
+                  "source": "inherited",
+                  "taskKind": null,
+                  "choiceReason": null,
+                  "routerFailure": "the Model Router's turn failed (Rate limited: API error (status 429 Too Many Requests): subscription:free-usage-exhausted: You've used all the included free usage for model grok-4.7 for now. Usage resets over a rolling 24-hour window \u2014 tokens (actual/limit): 617493/600000. Upgrade to a Grok subscription for higher limits: https://grok.com/supergrok)",
+                  "skipped": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "taskId": "ad_hoc_task_694dff66-c3ee-4b35-83c8-d39a3b4f17df",
+          "taskKey": null,
+          "projectId": null,
+          "taskTitle": "Write a one-line release note for build antigravity_cli. Reply OK.",
+          "latestAt": "2026-10-27T05:36:50.187Z",
+          "delegations": [
+            {
+              "recordedAt": "2026-10-27T05:36:50.187Z",
+              "delegatingRunId": "probe_delegator_a52b_ab9e1a8063054e2f890bd9181ee298ee",
+              "delegatingAgentName": "probe_delegator_a52b",
+              "fromNode": null,
+              "copyAddress": "/writer_bot_9136",
+              "copyKind": "agent",
+              "records": [
+                {
+                  "recordedAt": "2026-10-27T05:36:50.187Z",
+                  "taskId": "ad_hoc_task_694dff66-c3ee-4b35-83c8-d39a3b4f17df",
+                  "taskKey": null,
+                  "projectId": null,
+                  "taskTitle": "Write a one-line release note for build antigravity_cli. Reply OK.",
+                  "delegatingRunId": "probe_delegator_a52b_ab9e1a8063054e2f890bd9181ee298ee",
+                  "delegatingAgentName": "probe_delegator_a52b",
+                  "fromNode": null,
+                  "copyAddress": "/writer_bot_9136",
+                  "copyKind": "agent",
+                  "agentAddress": "/writer_bot_9136",
+                  "runtimeKind": "antigravity_cli",
+                  "llmModelIdentifier": "gemini-3.8-flash-low",
+                  "source": "model_router",
+                  "taskKind": "writing",
+                  "choiceReason": "Writing release notes matches the preference to run on antigravity_cli with gemini-3.8-flash-low.",
+                  "routerFailure": null,
+                  "skipped": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "taskId": "ad_hoc_task_1deee374-6444-4287-a0d3-954209d984ea",
+          "taskKey": null,
+          "projectId": null,
+          "taskTitle": "Write a one-line release note for build codex_app_server. Reply OK.",
+          "latestAt": "2026-10-27T05:36:08.544Z",
+          "delegations": [
+            {
+              "recordedAt": "2026-10-27T05:36:08.544Z",
+              "delegatingRunId": "probe_delegator_a52b_ab9e1a8063054e2f890bd9181ee298ee",
+              "delegatingAgentName": "probe_delegator_a52b",
+              "fromNode": null,
+              "copyAddress": "/writer_bot_9136",
+              "copyKind": "agent",
+              "records": [
+                {
+                  "recordedAt": "2026-10-27T05:36:08.544Z",
+                  "taskId": "ad_hoc_task_1deee374-6444-4287-a0d3-954209d984ea",
+                  "taskKey": null,
+                  "projectId": null,
+                  "taskTitle": "Write a one-line release note for build codex_app_server. Reply OK.",
+                  "delegatingRunId": "probe_delegator_a52b_ab9e1a8063054e2f890bd9181ee298ee",
+                  "delegatingAgentName": "probe_delegator_a52b",
+                  "fromNode": null,
+                  "copyAddress": "/writer_bot_9136",
+                  "copyKind": "agent",
+                  "agentAddress": "/writer_bot_9136",
+                  "runtimeKind": "antigravity_cli",
+                  "llmModelIdentifier": "gemini-3.8-flash-low",
+                  "source": "model_router",
+                  "taskKind": "writing",
+                  "choiceReason": "Gemini 3.8 Flash Low on Antigravity is available with ample quota and matches the owner's preference for release-note writing.",
+                  "routerFailure": null,
+                  "skipped": []
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "taskId": "ad_hoc_task_e0d9fdbe-5b1c-4765-ac47-9fcd4c4eda50",
+          "taskKey": null,
+          "projectId": null,
+          "taskTitle": "Write a one-line release note for build claude_agent_sdk. Reply OK.",
+          "latestAt": "2026-10-27T05:35:02.602Z",
+          "delegations": [
+            {
+              "recordedAt": "2026-10-27T05:35:02.602Z",
+              "delegatingRunId": "probe_delegator_a52b_ab9e1a8063054e2f890bd9181ee298ee",
+              "delegatingAgentName": "probe_delegator_a52b",
+              "fromNode": null,
+              "copyAddress": "/writer_bot_9136",
+              "copyKind": "agent",
+              "records": [
+                {
+                  "recordedAt": "2026-10-27T05:35:02.602Z",
+                  "taskId": "ad_hoc_task_e0d9fdbe-5b1c-4765-ac47-9fcd4c4eda50",
+                  "taskKey": null,
+                  "projectId": null,
+                  "taskTitle": "Write a one-line release note for build claude_agent_sdk. Reply OK.",
+                  "delegatingRunId": "probe_delegator_a52b_ab9e1a8063054e2f890bd9181ee298ee",
+                  "delegatingAgentName": "probe_delegator_a52b",
+                  "fromNode": null,
+                  "copyAddress": "/writer_bot_9136",
+                  "copyKind": "agent",
+                  "agentAddress": "/writer_bot_9136",
+                  "runtimeKind": "antigravity_cli",
+                  "llmModelIdentifier": "gemini-3.8-flash-low",
+                  "source": "model_router",
+                  "taskKind": "writing",
+                  "choiceReason": "Saved routing knowledge sends writing tasks like release notes to antigravity_cli with gemini-3.8-flash-low, and it is available with quota remaining.",
+                  "routerFailure": null,
+                  "skipped": []
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "totalTasks": 5
+    }
+  },
+  "claudeRouterSessionInit": {
+    "tools": [
+      "Bash",
+      "Edit",
+      "Glob",
+      "Grep",
+      "NotebookEdit",
+      "Read",
+      "Skill",
+      "WebFetch",
+      "WebSearch",
+      "Write",
+      "mcp__autobyteus_agent_tools__list_available_agent_runtimes",
+      "mcp__autobyteus_agent_tools__submit_launch_choices",
+      "mcp__claude_ai_Claude_Docs__batch",
+      "mcp__claude_ai_Claude_Docs__create",
+      "mcp__claude_ai_Claude_Docs__delete",
+      "mcp__claude_ai_Claude_Docs__export",
+      "mcp__claude_ai_Claude_Docs__guide",
+      "mcp__claude_ai_Claude_Docs__query",
+      "mcp__claude_ai_Claude_Docs__read",
+      "mcp__claude_ai_Claude_Docs__update"
+    ],
+    "mcp_servers": [
+      {
+        "name": "autobyteus_agent_tools",
+        "status": "connected",
+        "source": "dynamic"
+      },
+      {
+        "name": "claude.ai Claude Docs",
+        "status": "connected",
+        "source": "claudeai"
+      }
+    ],
+    "permissionMode": "default",
+    "cwd": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-live-3rstyW/node/internal-workspaces/autobyteus-model-router"
+  },
+  "cleanup": {
+    "serverExited": true,
+    "removed": {
+      "tempRoot": true
+    }
+  }
+}

@@ -1,3 +1,4 @@
+import { NativeCommandShutdown } from "./native-command-shutdown.js";
 import { CONTEXT_FILE_MAX_BYTES } from "../context-files/domain/context-file-upload-policy.js";
 import fastify, { type FastifyInstance } from "fastify";
 import cors from "@fastify/cors";
@@ -74,6 +75,7 @@ import { composeAgentPackageDefinitionFeed, type AgentPackageDefinitionFeed } fr
 import { createSkillUpdateNotices, type SkillUpdateNotices } from "../skill-update-notices/skill-update-notices.js";
 import { composeUpdateNotifications, type UpdateNotifications } from "./update-notifications-composition.js";
 import { composeAgentRuntimeStatus, type AgentRuntimeStatusHandle } from "./agent-runtime-status-composition.js";
+import { composeModelRouting } from "./model-routing-composition.js";
 
 export type StudioServer = Readonly<{
   fastify: FastifyInstance;
@@ -206,7 +208,9 @@ const createStudioApplicationServices = (input: {
 export const buildStudioServer = async (input: {
   appConfig: AppConfig;
   loggingConfig: LoggingConfig;
+  onCleanupOwnershipTransferred?: (close: () => Promise<void>) => void;
 }): Promise<StudioServer> => {
+  const nativeShutdown = new NativeCommandShutdown();
   const packages = createStudioPackageServices(input.appConfig);
   const hostDefinitionServices = createHostDefinitionServices({
     appConfig: input.appConfig,
@@ -216,7 +220,7 @@ export const buildStudioServer = async (input: {
   try {
     agentPackageDefinitionFeed = await composeAgentPackageDefinitionFeed({ reloader: hostDefinitionServices.agentPackageDefinitions.reloader });
   } catch (error) {
-    hostDefinitionServices.close();
+    await nativeShutdown.close(async () => { hostDefinitionServices.close(); });
     throw error;
   }
   // Startup logs unavailable definitions; it is never blocked by the agent package definitions (BEH-008).
@@ -239,11 +243,13 @@ export const buildStudioServer = async (input: {
   let agentRuntimeStatus: AgentRuntimeStatusHandle | null = null;
   let applicationRuntime: ApplicationPlatformRuntime | null = null;
   let releaseRemoteCollaboration: (() => void) | null = null;
+  let releaseModelRouting: (() => void) | null = null;
   let processResourcesClosed = false;
   const closeProcessResources = async (): Promise<void> => {
     if (processResourcesClosed) return;
     processResourcesClosed = true;
     releaseRemoteCollaboration?.();
+    releaseModelRouting?.();
     await closeStudioProcessResources({
       hostDefinitionServices,
       agentPackageDefinitionFeed,
@@ -258,6 +264,10 @@ export const buildStudioServer = async (input: {
     });
   };
 
+  input.onCleanupOwnershipTransferred?.(() => nativeShutdown.close(async () => {
+    try { await applicationRuntime?.lifecycle.stop(); } finally { await closeProcessResources(); }
+  }));
+
   try {
     const workspaceManager = getWorkspaceManager();
     const contextFilePathEnvironment = createContextFilePathEnvironment({
@@ -268,7 +278,7 @@ export const buildStudioServer = async (input: {
       loggingConfig: input.loggingConfig,
     });
     const agentProviderFactoryBuilder = createProcessAgentProviderFactoryBuilder({
-      workspaceManager,
+      workspaceManager, nativeCommandProcessScope: nativeShutdown.scope,
     });
     const modelCatalogService = getModelCatalogService();
     const modelSelectionValidator = new RunModelSelectionService(modelCatalogService);
@@ -352,6 +362,8 @@ export const buildStudioServer = async (input: {
       codexClientManager: getCodexAppServerClientManager(),
       applicationActiveAgentRuns: currentApplicationRuntime.hostManagement.activeAgentRuns,
     });
+    // autobyteus-32: the node's Model Routing (it reads the runtime report composed just above).
+    releaseModelRouting = composeModelRouting({ appDataDir: input.appConfig.getAppDataDir() }).close;
     // After the runtime status: the background pass checks and updates the runtimes through it (AR-006).
     updateNotifications = composeUpdateNotifications({ runtimes: agentRuntimeStatus.service });
 
@@ -360,13 +372,14 @@ export const buildStudioServer = async (input: {
       disableRequestLogging: true,
       maxParamLength: SERVER_ROUTE_PARAM_MAX_LENGTH,
     });
-    app.addHook("onClose", async () => {
+    nativeShutdown.install(app);
+    app.addHook("onClose", async () => nativeShutdown.close(async () => {
       try {
         await currentApplicationRuntime.lifecycle.stop();
       } finally {
         await closeProcessResources();
       }
-    });
+    }));
     try {
       registerHttpAccessLogPolicy(app, {
         mode: input.loggingConfig.httpAccessLogMode,
@@ -406,11 +419,10 @@ export const buildStudioServer = async (input: {
       throw error;
     }
   } catch (error) {
-    try {
-      await applicationRuntime?.lifecycle.stop();
-    } finally {
-      await closeProcessResources();
-    }
+    await nativeShutdown.close(async () => {
+      try { await applicationRuntime?.lifecycle.stop(); }
+      finally { await closeProcessResources(); }
+    });
     throw error;
   }
 };

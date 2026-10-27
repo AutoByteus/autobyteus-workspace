@@ -24,7 +24,7 @@ import {
   createTeamRootExecutionIdentity,
   type RootExecutionPhysicalScope,
 } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
-import type { MemberTaskCommandCapability } from "../../../src/agent-collaboration/execution/task/member-task-command-capability.js";
+import type { MemberTaskCapability } from "../../../src/agent-collaboration/execution/task/member-task-capability.js";
 import type { TaskExecutionReference } from "../../../src/agent-collaboration/execution/task/task-execution-reference.js";
 import type { TaskExecutionIdleTimers } from "../../../src/agent-collaboration/execution/task/task-execution-idle-shutdown-schedule.js";
 import type { TeamMemberExecutionCommand } from "../../../src/agent-team-execution/domain/team-member-execution-command.js";
@@ -54,6 +54,9 @@ import type { RunModelSelectionValidator } from "../../../src/llm-management/ser
 import { ProjectStore } from "../../../src/projects/stores/project-store.js";
 import { ProjectService } from "../../../src/projects/services/project-service.js";
 import { ProjectTaskService } from "../../../src/projects/services/project-task-service.js";
+import * as projectTaskServices from "../../../src/projects/services/project-task-service.js";
+import { ProjectTaskToolsMcpAdapterProvider } from "../../../src/agent-tools/mcp/providers/project-task-tools-mcp-adapter-provider.js";
+import { createBoundGetProjectTaskTool } from "../../../src/agent-tools/project-tasks/project-task-native-tools.js";
 import { ProjectTaskContextStore } from "../../../src/projects/context/project-task-context-store.js";
 import { ProjectsLayout } from "../../../src/projects/stores/projects-layout.js";
 import { TaskExecutionResourceService } from "../../../src/projects/services/task-execution-resource-service.js";
@@ -322,6 +325,7 @@ const createHarness = async () => {
     instructions: "Read work", nodes: [new TeamMember({ memberName: "lead", ref: helper.id!, refScope: "shared" })], coordinatorMemberName: "lead", handoffs: [] });
   const helperAdmission = createCollaboratorAdmission({
     listAgentDefinitions: async () => [helper], listTeamDefinitions: async () => [helperTeam],
+    isAgentHidden: () => false,
     getAgentDefinition: async id => id === helper.id ? helper : null,
     getTeamDefinition: async id => id === helperTeam.id ? helperTeam : null,
   }, { validate: vi.fn(), validateMany: async (inputs: readonly unknown[]) => inputs.map(() => ({ kind: "valid" as const, selection: { llmModelIdentifier: "test", llmConfig: null } })) } as RunModelSelectionValidator);
@@ -349,10 +353,11 @@ const createHarness = async () => {
     // The catalog holds the Scope Helper Agent and Team: the independent units this Team's members delegate to.
     collaboratorAdmission: helperAdmission,
   });
-  const commands: MemberTaskCommandCapability = Object.freeze({
+  const commands: MemberTaskCapability = Object.freeze({
     root: createTeamRootExecutionIdentity(rootTeamRunId),
     delegateToNewCopy: (caller, command) => root!.delegateToNewCopy({ identity: caller }, command),
     assignToExistingCopy: (caller, command) => root!.assignToExistingCopy({ identity: caller }, command),
+    ownedTaskOf: (caller) => root!.ownedTaskOf({ identity: caller }),
   });
   const emitStatus = (memberAddress: string, agentRunId: string, status: "idle" | "running") => publisher.publish({
     eventSourceType: TeamRunEventSourceType.AGENT,
@@ -404,8 +409,8 @@ describe("current delegate_task lifecycle integration (pure spawn, idle shutdown
     const h = await createHarness();
     const manager = context(h.commands, "/coordinator", "run-coordinator");
     const projectId = (await h.projects.createProject({ name: "Task-owned delegation" })).projectId;
-    const a = await h.tasks.createTask({ projectId, description: "Task A saved instructions" });
-    const b = await h.tasks.createTask({ projectId, description: "Task B saved instructions" });
+    const a = await h.tasks.createTask({ projectId, title: "Task A saved instructions", description: "Task A saved instructions" });
+    const b = await h.tasks.createTask({ projectId, title: "Task B saved instructions", description: "Task B saved instructions" });
     const dispatch = async (taskId: string) => {
       const result = await delegate(h.service, manager, { recipient_address: "/scope_helper", task_id: taskId }) as { target_agent_run_id: string };
       expect(result.target_agent_run_id).toEqual(expect.any(String));
@@ -682,5 +687,55 @@ describe("current delegate_task lifecycle integration (pure spawn, idle shutdown
     const message = harness.backend.preparedAgents[0]!.message;
     expect(message).toBeDefined();
     expect(message!.content).toContain(referencePath);
+  });
+  // autobyteus-260 REQ-015, AC-013, AC-015: a worker reads only the Task it works on, on both routes; the first message names it.
+  it.each(["/scope_helper", "/scope_helpers"])("scopes get_project_task to the Task a worker at %s works on, also for agents it delegated to; a caller on no Task reads any", async address => {
+    const h = await createHarness();
+    vi.spyOn(projectTaskServices, "getProjectTaskService").mockImplementation(() => h.tasks);
+    const manager = context(h.commands, "/coordinator", "run-coordinator");
+    const projectId = (await h.projects.createProject({ name: "Scoped reads" })).projectId;
+    const a = await h.tasks.createTask({ projectId, title: "Task A", description: "Task A saved instructions" });
+    const b = await h.tasks.createTask({ projectId, title: "Task B", description: "Task B saved instructions" });
+    const memberOf = (agentRunId: string, memberAddress = "/scope_helper") =>
+      ({ identity: createCollaborationMemberExecutionIdentity({ root: createTeamRootExecutionIdentity(rootTeamRunId), memberAddress, agentRunId }), tasks: h.commands }) as never;
+    const viaMcp = async (member: unknown, taskId: string) => {
+      const adapter = new ProjectTaskToolsMcpAdapterProvider().getAdapters().find((entry) => entry.definition.name === "get_project_task")!;
+      const result = await adapter.execute({ rawArguments: { project_id: projectId, task_id: taskId }, session: { sender: { memberExecutionContext: member } } as never });
+      return (result as { result: { structuredContent: Record<string, any> } }).result.structuredContent;
+    };
+    const viaNative = async (member: unknown, taskId: string) => createBoundGetProjectTaskTool(member as never)
+      .execute(null, { project_id: projectId, task_id: taskId }).then((text) => JSON.parse(text), (error) => JSON.parse(error.message));
+    try {
+      const dispatched = await delegate(h.service, manager, { recipient_address: address, task_id: a.taskId }) as Record<string, string>;
+      const workerRunId = dispatched.target_agent_run_id ?? dispatched.target_team_coordinator_agent_run_id!;
+      // AC-015: the new copy's first message names its Task and Project.
+      const firstMessage = (h.backend.preparedAgents.at(-1)?.message ?? h.backend.preparedTeams.at(-1)?.message)?.content ?? "";
+      expect(firstMessage).toContain(`Task: ${a.taskKey} in Project ${projectId}\nIf you have get_project_task, it reads this Task again, including comments added later.\nDescription:`);
+      // A task team's members work on its Task: its coordinator is the member asked here.
+      const workerAddress = address === "/scope_helper" ? address : h.backend.preparedTeams.at(-1)!.teamNode.coordinatorAddress;
+      const worker = memberOf(workerRunId, workerAddress);
+      // Sub-work the worker delegated belongs to the same Task (its delegated agent reads A, not B).
+      const sub = await delegate(h.service, context(h.commands, workerAddress, workerRunId), { recipient_address: "/reviewer", description: "Review it." }) as Record<string, string>;
+      const delegatedAgent = memberOf(sub.target_agent_run_id!, "/reviewer");
+      const refusal = { error: { code: "TASK_READ_OUT_OF_SCOPE", message: `You work on ${a.taskKey}; you can read only that Task.` } };
+      for (const read of [viaMcp, viaNative]) {
+        for (const member of [worker, delegatedAgent]) {
+          expect(await read(member, a.taskKey)).toMatchObject({ projectId, taskId: a.taskKey, title: "Task A", description: "Task A saved instructions" });
+          expect(await read(member, b.taskKey)).toEqual(refusal);
+        }
+        // The coordinator works on no Task: it reads any Project Task.
+        expect(await read(memberOf("run-coordinator", "/coordinator"), b.taskKey)).toMatchObject({ taskId: b.taskKey, title: "Task B" });
+      }
+    } finally { await h.tasks.drainRuntimeReleases(); await h.root.terminate(); }
+  });
+
+  it("gives described work no Task line in its first message (AC-015)", async () => {
+    const h = await createHarness();
+    try {
+      await delegate(h.service, context(h.commands, "/coordinator", "run-coordinator"), { recipient_address: "/scope_helper", description: "Just described." });
+      const content = h.backend.preparedAgents[0]!.message!.content;
+      expect(content).not.toMatch(/Task: |get_project_task/);
+      expect(content).toContain("Description:\nJust described.");
+    } finally { await h.root.terminate(); }
   });
 });

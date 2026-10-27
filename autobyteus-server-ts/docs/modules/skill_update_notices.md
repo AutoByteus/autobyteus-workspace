@@ -89,7 +89,7 @@ Do not rely on a skill that is no longer available.
 - The header line is fixed: the web labels the card "Skill updated" by it (or by the sender).
 
 **Busy run** (status `running`):
-- The notice is posted now through `AgentRun.postUserMessage` as a SYSTEM input (`sender_id: "system.skill_update_notifier"`, `suppress_system_task_notification: true`). That is the call agent-to-agent messages use, so delivery follows each runtime's agent-message semantics:
+- The notice is posted now through `AgentRun.postUserMessage` as a SYSTEM input (`sender_id: "system.skill_update_notifier"`, `suppress_system_task_notification: true`). It is the same `AgentRun` input admission agent-to-agent messages reach (teammate delivery holds the slot with `reserveUserMessage` and commits it once the message is saved), so delivery follows each runtime's agent-message semantics:
   - **inside the current turn** on Codex and Claude (`activeTurnAppend: supported`);
   - **as the next turn** on native AutoByteus, Antigravity, ACP and Grok. Follow-ups FT-1…FT-3 add mid-turn input there; no change here is needed when they land.
 - Once forwarded, the notice is published as a `SYSTEM_TASK_NOTIFICATION` event and its versions are recorded as seen.

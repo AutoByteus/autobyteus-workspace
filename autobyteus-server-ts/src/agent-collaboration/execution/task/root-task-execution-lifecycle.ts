@@ -9,10 +9,10 @@ import { remoteTeamCoordinatorRunId } from "../../../run-history/domain/run-exec
 export type RemoteEndpointLookup = Readonly<{ isRemoteEndpoint(agentRunId: string): boolean; isRemoteTeam(teamRunId: string): boolean }>;
 const NO_REMOTE_ENDPOINTS: RemoteEndpointLookup = Object.freeze({ isRemoteEndpoint: () => false, isRemoteTeam: () => false });
 import type { AgentOperationResult } from "../../../agent-execution/domain/agent-operation-result.js";
-import { dispatchTaskCopy, type TaskExecutionJoin } from "./root-task-dispatch.js";
+import { dispatchTaskCopy } from "./root-task-dispatch.js";
 import { notACopyOfThisRun, resolveExistingCopy } from "./existing-copy-target.js";
-import { RootTaskExecutionResourceScope, asTaskDelegationError } from "./root-task-execution-resource-scope.js";
-import { ASSIGNER_ONLY_REACTIVATION_MESSAGE, taskReactivationRejectionCode, type TaskExecutionResourcePort, type TaskExecutionStopResult } from "./task-execution-resource-port.js";
+import { RootTaskExecutionResourceScope } from "./root-task-execution-resource-scope.js";
+import { ASSIGNER_ONLY_REACTIVATION_MESSAGE, taskReactivationRejectionCode, type TaskExecutionOwner, type TaskExecutionResourcePort, type TaskExecutionStopResult } from "./task-execution-resource-port.js";
 import type { CollaborationMemberExecutionIdentity } from "../domain/root-execution-identity.js";
 import type { AgentExecutionStatus } from "@autobyteus/collaboration-stream-contracts";
 import { resolveTaskExecutionIdleShutdownGraceMs } from "../../../config/task-execution-idle-shutdown-setting.js";
@@ -36,6 +36,7 @@ import {
   requireTaskString,
   validateTaskReferenceFiles,
 } from "./task-execution-input.js";
+import { prepareNewCopyWork, type NewCopyWork } from "./new-copy-work.js";
 import {
   TaskExecutionIdleShutdownSchedule,
   type TaskExecutionIdleTimers,
@@ -133,41 +134,23 @@ export class RootTaskExecutionLifecycle<TPlacement extends TaskCopyPlacementLaun
 
   drain(): Promise<void> { return this.queue.drain(); }
 
-  /** `delegate_task` with an address: a new copy for a saved Task or for described work. */
-  async delegateToNewCopy(
-    context: TaskDelegationContext,
-    input: SpawnTaskInput,
-    placement: TPlacement,
-  ): Promise<TaskDelegationOutcome> {
+  /**
+   * `delegate_task` with an address, step 1 (DS-001): the work and its Task, before placement (the root resolves the
+   * placement for this work, then calls `dispatchNewCopy`).
+   */
+  async prepareNewCopyWork(context: TaskDelegationContext, input: SpawnTaskInput): Promise<NewCopyWork> {
     this.assertAdmitting(context.identity);
     this.adapter.assertCurrentSchemaReady();
-    const linked = Object.prototype.hasOwnProperty.call(input, "task_id");
-    const allowed = linked ? ["recipient_address", "task_id"] : ["recipient_address", "description", "reference_files"];
-    if (Object.keys(input).some(key => !allowed.includes(key))) throw new TaskDelegationError("VALIDATION_ERROR", "Delegation accepts exactly one work source.");
-    const owner = this.resourceScope.ownerOf(context.identity.agentRunId);
-    let description: string, referenceFiles: readonly string[], comments: readonly string[] = [];
-    let join: TaskExecutionJoin;
-    if (linked) {
-      if (owner) throw new TaskDelegationError("TASK_AGENT_RESOURCE_OWNED_SENDER", "You are a task agent, so you can't use task_id. Delegate with a description instead; that work is part of your Task.");
-      // The agent's task_id (key or ID) is resolved once; only the stored ID goes on.
-      const saved = await this.resourceScope.port().resolveAssignment(requireTaskString(input.task_id, "task_id")).catch(error => { throw asTaskDelegationError(error); });
-      ({ description, comments } = saved);
-      referenceFiles = await validateTaskReferenceFiles(saved.referenceFiles);
-      join = { role: "assigned", taskId: saved.taskId, assignedBy: context.identity.agentRunId };
-    } else {
-      if (owner && !owner.open) throw new TaskDelegationError("TASK_AGENT_RESOURCE_CLOSED", "Your Task is DONE or CANCELLED, so you can't start new work.");
-      // An unowned copy could not be told apart from an unreadable Task's work: reject before any planning.
-      if (!owner) this.resourceScope.assertResourceDataReadable();
-      description = requireTaskString(input.description, "description");
-      referenceFiles = await validateTaskReferenceFiles(input.reference_files ?? []);
-      // Sub-work of Task work stays that Task's; otherwise the copy gets its own Task with no Project.
-      join = owner
-        ? { role: "delegated", creator: owner.execution }
-        : { role: "assigned", assignedBy: context.identity.agentRunId, adHocTask: { description, referenceFiles } };
-    }
-    return dispatchTaskCopy({ adapter: this.adapter, queue: this.queue, context, placement,
-      workPacket: buildTaskAssigneeWorkPacket({ delegator: context.identity, delegatorAddress: this.adapter.reachingAddressOf(context.identity), description, comments, referenceFiles }),
-      join, resources: this.resourceScope.port(),
+    return prepareNewCopyWork(this.resourceScope, context.identity.agentRunId, input);
+  }
+
+  /** Step 3: a new copy at `placement` for the prepared work. */
+  dispatchNewCopy(context: TaskDelegationContext, work: NewCopyWork, placement: TPlacement): Promise<TaskDelegationOutcome> {
+    this.assertAdmitting(context.identity);
+    return dispatchTaskCopy({ adapter: this.adapter, queue: this.queue, context, placement, delegation: work.delegation,
+      workPacket: buildTaskAssigneeWorkPacket({ delegator: context.identity, delegatorAddress: this.adapter.reachingAddressOf(context.identity),
+        description: work.description, comments: work.comments, ...(work.task ? { task: work.task } : {}), referenceFiles: work.referenceFiles }),
+      join: work.join, resources: this.resourceScope.port(),
       assertAdmitting: () => this.assertAdmitting(context.identity),
     });
   }
@@ -180,7 +163,7 @@ export class RootTaskExecutionLifecycle<TPlacement extends TaskCopyPlacementLaun
    */
   async assignToExistingCopy(context: TaskDelegationContext, input: AssignToExistingCopyInput, deliverWork: DeliverTaskWork): Promise<TaskDelegationOutcome> {
     const sender = context.identity.agentRunId;
-    let target: TaskExecutionTarget, taskId: string, taskReference: string, description: string, comments: readonly string[], referenceFiles: readonly string[];
+    let target: TaskExecutionTarget, taskId: string, taskReference: string, projectId: string, description: string, comments: readonly string[], referenceFiles: readonly string[];
     let otherOpenTaskReferences: readonly string[];
     try {
       this.assertAdmitting(context.identity);
@@ -189,7 +172,7 @@ export class RootTaskExecutionLifecycle<TPlacement extends TaskCopyPlacementLaun
       const port = this.resourceScope.port();
       // The agent's task_id (key or ID) is resolved once; only the stored ID goes on, the key only into texts.
       const saved = await port.resolveAssignment(requireTaskString(input.taskId, "task_id"));
-      ({ taskId, taskReference, description, comments } = saved);
+      ({ taskId, taskReference, projectId, description, comments } = saved);
       // AR-003: a saved Task is never given to a run on a peer node; refused after the named Task's own refusals
       // and before the copy is resolved or any Task change.
       if ("agentRunId" in input.copy ? this.remoteEndpoints.isRemoteEndpoint(input.copy.agentRunId) : this.remoteEndpoints.isRemoteTeam(input.copy.teamRunId)) {
@@ -210,7 +193,7 @@ export class RootTaskExecutionLifecycle<TPlacement extends TaskCopyPlacementLaun
       throw error;
     }
     this.adapter.publishTaskExecutionsReopened(Object.freeze([target.execution]));
-    const content = buildExistingCopyTaskMessage({ taskReference, description, comments, otherOpenTaskReferences });
+    const content = buildExistingCopyTaskMessage({ taskReference, projectId, description, comments, otherOpenTaskReferences });
     let delivered: AgentOperationResult;
     try { delivered = await this.withLiveLease(sender, () => deliverWork(target.ingressAgentRunId, content, referenceFiles)); }
     catch (error) { delivered = { accepted: false, code: "TASK_WORK_NOT_DELIVERED", message: errorMessage(error) }; }
@@ -243,6 +226,8 @@ export class RootTaskExecutionLifecycle<TPlacement extends TaskCopyPlacementLaun
    * `send_message_to` guidance: the coordinator agent run of the Team copy with this team run ID in this root, or
    * of the remote Team run this root delegated to (G-6); `null` otherwise.
    */
+  /** The Task the agent works on (its copy's current Task), or null; throws when damaged run data can't tell. */
+  ownedTaskOf(agentRunId: string): TaskExecutionOwner | null { return this.resourceScope.ownerOf(agentRunId); }
   teamCoordinatorOf(teamRunId: string): string | null {
     const remote = this.remoteRunLinks?.teamLinkFor(teamRunId);
     return remote ? remoteTeamCoordinatorRunId(remote) : this.adapter.taskExecutionTargetOf({ teamRunId })?.ingressAgentRunId ?? null;

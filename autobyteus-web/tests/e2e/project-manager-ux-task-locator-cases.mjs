@@ -535,8 +535,8 @@ export const createTaskLocatorCases = (h) => {
     const workerSummary = () => summaryIn(agentRow(page, worker));
     const details = {};
 
-    // Rename (the Task page's Save).
-    await gql('mutation($input:UpdateProjectTaskInput!){updateProjectTask(input:$input){taskId}}', { input: { projectId: projectL, taskId: live.first, description: 'Write the changelog for 1.6\nwith links' } });
+    // Rename (the Task page's Save): autobyteus-260, the tree line is the Task's title.
+    await gql('mutation($input:UpdateProjectTaskInput!){updateProjectTask(input:$input){taskId}}', { input: { projectId: projectL, taskId: live.first, title: 'Write the changelog for 1.6', description: 'Write the changelog for 1.6\nwith links' } });
     await until('summary renamed live', async () => (await summaryLabel(workerSummary())) === 'Write the changelog for 1.6', 15000);
 
     // The feed is lost; a rename made meanwhile is missed; the reconnect re-reads it.
@@ -544,7 +544,7 @@ export const createTaskLocatorCases = (h) => {
     for (const ws of net.feedSockets) ws.close({ code: 1006 });
     net.feedSockets.clear();
     await sleep(500);
-    await gql('mutation($input:UpdateProjectTaskInput!){updateProjectTask(input:$input){taskId}}', { input: { projectId: projectL, taskId: live.first, description: 'Write the changelog while offline' } });
+    await gql('mutation($input:UpdateProjectTaskInput!){updateProjectTask(input:$input){taskId}}', { input: { projectId: projectL, taskId: live.first, title: 'Write the changelog while offline', description: 'Write the changelog while offline' } });
     await sleep(3000);
     details.whileOffline = await summaryLabel(workerSummary());
     assert(details.whileOffline === 'Write the changelog for 1.6', 'the rename is not seen while the feed is lost', details);

@@ -14,7 +14,7 @@ describe('Background Tasks panel localization', () => {
     const zhCn = zhCnWorkspaceMessages as TranslationCatalog;
 
     expect(keysWith(zhCn, PREFIX)).toEqual(keysWith(en, PREFIX));
-    expect(keysWith(en, PREFIX)).toHaveLength(13);
+    expect(keysWith(en, PREFIX)).toHaveLength(24);
     expect(en[`${PREFIX}title`]).toBe('Background Tasks');
     expect(en[`${PREFIX}empty`]).toBe('No background tasks');
     expect(en[`${PREFIX}counts`]).toBe('{{running}} running · {{total}} total');

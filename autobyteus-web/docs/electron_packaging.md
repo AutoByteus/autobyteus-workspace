@@ -119,6 +119,43 @@ Key features:
 - **Validation**: Checks for required server files before starting
 - **Port waiting**: Ensures port is free before binding
 
+### Backend port conflict recovery
+
+An occupied required backend endpoint produces a structured `port-conflict`
+diagnostic: port, inspection status, observation time, and current PID/executable
+identity where available. Owner lookup is bounded and advisory; denied, missing
+or racing inspection does not invent an owner. Full command arguments are not
+used as the default identity display. Non-address startup failures keep their
+own diagnosis.
+
+The default error surface shows the conflict and safe recovery without opening
+technical details. Restart Server controls only this application's managed
+backend; it cannot release another application's listener. Verify the other
+application, stop or reconfigure it independently, then retry. Resetting server
+data does not free a port and is not offered as conflict recovery. Retrying
+while the external owner remains leaves it untouched; a healthy retry clears
+the stale diagnostic. Port-owner information never authorizes automatic kills.
+
+### Confirmed backend and application shutdown
+
+Each managed backend child has a `ManagedBackendShutdownClient` bound to that
+captured child and the versioned `autobyteus.embedded-server.shutdown.v1`
+ready/request/complete/failed protocol. Capability readiness is separate from
+HTTP health. Graceful stop requests the backend's shared close owner, including
+startup cancellation; success requires a complete result and exit code zero,
+not merely signal delivery or pipe EOF. Missing/failed acknowledgement,
+disconnection and forced fallback remain incomplete cleanup, not clean success.
+Windows uses this application request before its bounded captured-child force
+fallback, so taskkill alone is not treated as graceful host cleanup.
+
+`ApplicationShutdown` prevents normal `will-quit` completion until shared
+resource cleanup finishes, with a 30-second application deadline and log flush.
+Repeated quit requests share the work; the updater's explicit installation path
+uses the same preparation. Backend restart and application quit drain the host's
+owned native command scope, including work retained after an agent ends;
+provider shutdown remains provider-owned. Ordinary agent stop does not acquire
+a new preview-killing policy. Failures are reported instead of declared clean.
+
 ### Delayed startup is informational
 
 Startup calls share one pending attempt, including port preflight. After 100 seconds

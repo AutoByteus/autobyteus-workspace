@@ -1,0 +1,12 @@
+# probes/cors-order-probe.mjs: an encapsulated MCP-like plugin registered before root @fastify/cors (the order in build-studio-server.ts L373-377), 2026-10-24
+## node probes/cors-order-probe.mjs <fastify> <@fastify/cors>
+4.29.1 /mcp-with-config GET acao= http://evil.example | OPTIONS status= 204 acao= http://evil.example
+4.29.1 /mcp-no-config GET acao= http://evil.example | OPTIONS status= 204 acao= http://evil.example
+4.29.1 /rest/x GET acao= http://evil.example | OPTIONS status= 204 acao= http://evil.example
+5.12.7 /mcp-with-config GET acao= - | OPTIONS status= 200 acao= -
+5.12.7 /mcp-no-config GET acao= http://evil.example | OPTIONS status= 204 acao= http://evil.example
+5.12.7 /rest/x GET acao= http://evil.example | OPTIONS status= 204 acao= http://evil.example
+
+=> On Fastify 4 + cors 9 the route config { cors: false } has no effect (base MCP routes get the cors plugin's headers).
+=> On Fastify 5 + cors 11 it takes effect (no cors-plugin headers). Without the config, Fastify 5 matches base.
+In the real app, MCP OPTIONS are answered earlier by the MCP gates' own onRequest hooks (agent-tools-mcp-http-gate.ts L13-27, mcp-gateway-routes.ts L70-89), and non-loopback origins get 403 there.

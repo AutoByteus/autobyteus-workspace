@@ -1,0 +1,2 @@
+{"fixture":"cleanup-success","pid":61660,"ready":true,"result":"autobyteus.embedded-server.shutdown.v1:complete","code":0,"signal":null}
+{"fixture":"cleanup-failure","pid":61661,"ready":true,"result":"autobyteus.embedded-server.shutdown.v1:failed","code":1,"signal":null}

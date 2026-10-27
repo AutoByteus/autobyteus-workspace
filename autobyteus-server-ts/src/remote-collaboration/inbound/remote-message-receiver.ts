@@ -1,4 +1,5 @@
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
+import type { PeerStartedRunDecisions } from "./peer-started-run-decisions.js";
 import type {
   RemoteInboundMessage,
   RemoteInboundQuery,
@@ -57,7 +58,12 @@ const answerOf = (result: AgentOperationResult) => result.accepted
  * root's own link check stays the authority.
  */
 export class RemoteMessageReceiver implements RemoteMessageHandler {
-  constructor(private readonly roots: RemoteRootDirectory, private readonly titles: RemoteRunTitles) {}
+  constructor(
+    private readonly roots: RemoteRootDirectory,
+    private readonly titles: RemoteRunTitles,
+    /** autobyteus-32: the decision records a run started for a peer keeps until its work packet arrives. */
+    private readonly decisions: Pick<PeerStartedRunDecisions, "workArrived">,
+  ) {}
 
   async accept(request: DeliverRemoteMessageRequest, from: PeerNode) {
     const query: RemoteInboundQuery = Object.freeze({
@@ -79,6 +85,7 @@ export class RemoteMessageReceiver implements RemoteMessageHandler {
         void this.titles.recordFirstMessage(request.targetRoot, request.content).catch((error: unknown) => {
           console.warn(`Failed to record the title of run '${request.targetRoot.runId}': ${String(error)}`);
         });
+        void this.decisions.workArrived(request.targetRoot.runId);
       }
       return answerOf(accepted);
     }

@@ -5,7 +5,8 @@ import type { TaskExecutionReference } from "../../agent-collaboration/execution
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
 import { CollaborationContractError } from "../../agent-collaboration/domain/collaboration-contract-error.js";
-import { TeamCommunicationService } from "../../services/team-communication/team-communication-service.js";
+import { RootCommunicationEngine } from "../../agent-collaboration/execution/communication/root-communication-engine.js";
+import { createTeamCommunicationPort } from "../../services/team-communication/team-communication-port.js";
 import type { TeamCommunicationMessagesSnapshot } from "../../services/team-communication/team-communication-messages-file.js";
 import type { InterAgentMessageDeliveryIntent } from "./inter-agent-message-delivery.js";
 import { createTeamAgentStatusDetails, createTeamAgentStatusSnapshot, type TeamAgentStatusSnapshot } from "./team-agent-status.js";
@@ -81,11 +82,10 @@ type RootLifecycleState = "active" | "persistence_fail_stop" | "terminating" | "
 export class RootTeamRun {
   private lifecycle: RootLifecycleState = "active";
   private tree: TeamRunExecutionTreeSnapshot;
-  private messages: TeamCommunicationMessagesSnapshot;
   private index: TeamExecutionIndex;
   private readonly teamRunResolver: TeamRunResolver;
   private readonly taskExecutions: TeamTaskExecutionService;
-  private readonly communication: TeamCommunicationService;
+  private readonly communication: RootCommunicationEngine;
   private readonly platformBindings: TeamAgentPlatformBindingCommitter;
   private readonly materializationGate: RootTeamRunMaterializationGate;
   private readonly collaborators: TeamRunCollaborators;
@@ -122,7 +122,6 @@ export class RootTeamRun {
       throw new Error("RootTeamRun task execution identity capabilities are required.");
     }
     this.tree = options.tree;
-    this.messages = options.messages;
     this.index = new TeamExecutionIndex(options.tree);
     this.materializationGate = new RootTeamRunMaterializationGate({
       rootTeamRunId: this.teamRunId,
@@ -159,7 +158,7 @@ export class RootTeamRun {
       taskExecutionResources: options.taskExecutionResources,
       onLiveLeaseReleased: () => this.remoteIdle?.arm(),
     });
-    this.communication = new TeamCommunicationService({
+    this.communication = new RootCommunicationEngine(createTeamCommunicationPort({
       rootTeamRunId: this.teamRunId,
       initial: options.messages,
       assertDeliveryAllowed: (sender, receiver) => this.taskExecutions.assertMessageScope(sender, receiver),
@@ -167,10 +166,9 @@ export class RootTeamRun {
       messageLogOwnerOf: (agentRunId) => this.remoteLinks.has(agentRunId) ? REMOTE_RUN_LOG
         : messageLogOwnerOf(agentRunId, this.index.getMemoryPlacementForAgent(agentRunId)),
       requireContainingTeamRun: (agentRunId) => this.requireContainingTeamRun(agentRunId),
-      commit: (plan) => options.persistence.commitReservedMessageAppend(plan),
+      commitMessageAppend: (append) => options.persistence.commitMessageAppend(append),
       publish: (event) => options.publisher.publish(event),
-      replaceSnapshot: (messages) => this.replaceMessages(messages),
-    });
+    }));
     this.collaborators = new TeamRunCollaborators({
       admission: options.collaboratorAdmission,
       getTree: () => this.tree,
@@ -184,7 +182,7 @@ export class RootTeamRun {
       isLiveAgent: (agentRunId) => this.isLiveAgent(agentRunId),
       withLiveLease: (agentRunId, operation) => this.taskExecutions.withLiveLease(agentRunId, operation),
       remoteLinks: this.remoteLinks,
-      remoteSend: new RemoteMessageSend({ engine: () => this.communication.remoteSendEngine(), links: this.remoteLinks }),
+      remoteSend: new RemoteMessageSend({ engine: () => this.communication, links: this.remoteLinks }),
     });
     this.platformBindings = new TeamAgentPlatformBindingCommitter({
       persistence: options.persistence,
@@ -265,7 +263,9 @@ export class RootTeamRun {
   hasAgentExecution(agentRunId: string): boolean {
     return this.index.getAgent(agentRunId.trim()) !== null || this.remoteLinks.has(agentRunId.trim());
   }
-  getCommunicationSnapshot(): TeamCommunicationMessagesSnapshot { return this.messages; }
+  getCommunicationSnapshot(): TeamCommunicationMessagesSnapshot {
+    return Object.freeze({ schemaVersion: 1, rootTeamRunId: this.teamRunId, messages: this.communication.getMessages() });
+  }
 
   commitAgentPlatformBindingChange(change: CollaborationAgentPlatformBindingChange): Promise<void> {
     return this.platformBindings.commit(change);
@@ -322,10 +322,12 @@ export class RootTeamRun {
     return this.materializationGate.run(async () => {
       this.authorizeIdentity(context.identity);
       if (input.node !== undefined) {
-        return this.remoteDelegation.delegate({ ...input, node: input.node }, (local, placement) => this.taskExecutions.delegateToNewCopy(context, local, placement));
+        return this.remoteDelegation.delegate({ ...input, node: input.node }, context, this.taskExecutions);
       }
-      return delegateToResolvedTarget(() => this.delivery.resolveDelegationPlacement(context.identity, input.recipient_address), (placement) =>
-        this.taskExecutions.delegateToNewCopy(context, input, placement));
+      // DS-001: the work and its Task first, then the placement for that work, then the copy.
+      const work = await this.taskExecutions.prepareNewCopyWork(context, input);
+      return delegateToResolvedTarget(() => this.delivery.resolveDelegationPlacement(context.identity, input.recipient_address, work.delegation), (placement) =>
+        this.taskExecutions.dispatchNewCopy(context, work, placement));
     });
   }
 
@@ -339,6 +341,8 @@ export class RootTeamRun {
   }
   /** The coordinator agent run of this root's Team copy with that team run ID (`send_message_to` guidance); null otherwise. */
   teamCoordinatorOf(teamRunId: string): string | null { return this.taskExecutions.teamCoordinatorOf(teamRunId); }
+  /** The Task this member works on (`get_project_task`'s read scope), or null; throws on damaged run data. */
+  ownedTaskOf(context: TaskDelegationContext) { return this.taskExecutions.ownedTaskOf(context.identity.agentRunId); }
 
   /** `send_message_to(address)`: delivers to a standing instance; never creates a run. */
   deliverInterAgentMessage(intent: InterAgentMessageDeliveryIntent): Promise<AgentOperationResult> {
@@ -398,7 +402,7 @@ export class RootTeamRun {
       this.options.persistence.readConsistent(() => ({
         tree: this.tree,
         closedTaskExecutions: this.taskExecutions.closedTaskExecutions(),
-        messages: this.messages,
+        messages: this.getCommunicationSnapshot(),
         statuses: this.getLeafAgentStatusSnapshots(),
         inputStates: this.options.rootRun.getInputStateSnapshots(),
       })),
@@ -524,15 +528,10 @@ export class RootTeamRun {
     this.assertRootCorrelation();
   }
 
-  private replaceMessages(messages: TeamCommunicationMessagesSnapshot): void {
-    this.messages = messages;
-    this.assertRootCorrelation();
-  }
-
   private assertRootCorrelation(): void {
     if (
       this.options.rootRun.teamRunId !== this.tree.rootTeam.teamRunId ||
-      this.messages.rootTeamRunId !== this.tree.rootTeam.teamRunId
+      this.options.messages.rootTeamRunId !== this.tree.rootTeam.teamRunId
     ) throw new Error("RootTeamRun subject identities do not agree.");
   }
 }

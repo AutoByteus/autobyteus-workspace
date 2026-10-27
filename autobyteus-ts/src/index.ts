@@ -32,3 +32,5 @@ export * from './agent/tool-result-posting.js';
 export * from './agent/utils/index.js';
 export * from './utils/gemini-helper.js';
 export * from './utils/gemini-runtime.js';
+
+export { NativeCommandProcessScope, type NativeCommandCloseReport } from './tools/terminal/command-execution/native-command-process-scope.js';

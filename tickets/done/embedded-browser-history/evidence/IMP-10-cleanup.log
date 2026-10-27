@@ -1,0 +1,23 @@
+IMP-10 | 7e2704199 | macOS arm64 Node v22.23.3 | Mon Oct 26 17:08:40 UTC 2026
+Command: pnpm --silent isolated-app stop iso-65117-0fae
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "stop",
+  "result": {
+    "instanceId": "iso-65117-0fae",
+    "wasRunning": true,
+    "forced": true,
+    "dataRoot": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/autobyteus-isolated-root-aszO4F",
+    "dataRootRemoved": true,
+    "controlPortReleased": true,
+    "serverPortReleased": true,
+    "logPath": null
+  }
+}
+
+Fixture session 10858 stopped with Ctrl-C (exit 130); no fixture file/data directory was created.
+Verified owned ports 65010, 65117 and 65118 have no listeners (lsof -nP ... -sTCP:LISTEN returned no rows).
+Verified owned temporary data root no longer exists.
+No unrelated app process was signalled or controlled. No release/install occurred.
+Build outputs retained untracked/ignored for downstream reuse; untracked SDK dist outputs listed in handoff.

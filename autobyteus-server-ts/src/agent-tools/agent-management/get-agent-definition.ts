@@ -1,5 +1,6 @@
 import { tool, ParameterSchema, ParameterDefinition, ParameterType, BaseTool } from "autobyteus-ts";
 import { defaultToolRegistry } from "autobyteus-ts/tools/registry/tool-registry.js";
+import { toToolResultJson } from "autobyteus-ts/tools/tool-result-json.js";
 import { AgentDefinition } from "../../agent-definition/domain/models.js";
 import { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
 
@@ -60,7 +61,7 @@ export async function getAgentDefinition(
       throw new Error(`Agent definition with ID ${definition_id} not found.`);
     }
 
-    return JSON.stringify(serializeDefinition(definition), null, 2);
+    return toToolResultJson(serializeDefinition(definition));
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     logger.error(`Error getting agent definition ID '${definition_id}': ${message}`);

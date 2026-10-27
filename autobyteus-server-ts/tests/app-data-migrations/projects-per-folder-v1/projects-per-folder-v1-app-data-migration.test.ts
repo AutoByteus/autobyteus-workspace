@@ -8,6 +8,8 @@ import { ProjectStore } from "../../../src/projects/stores/project-store.js";
 import { ProjectsLayout } from "../../../src/projects/stores/projects-layout.js";
 import { ProjectTaskContextStore } from "../../../src/projects/context/project-task-context-store.js";
 import { ProjectTaskKeysV1AppDataMigration } from "../../../src/app-data-migrations/migrations/project-task-keys-v1/project-task-keys-v1-app-data-migration.js";
+import { ProjectTaskTitlesAppDataMigration } from "../../../src/app-data-migrations/migrations/project-task-titles/project-task-titles-app-data-migration.js";
+import { titleFromFirstLine } from "../../../src/app-data-migrations/migrations/project-task-titles/title-from-first-line.js";
 
 const fixture = (name: string) => fs.readFile(new URL(`../../fixtures/projects-per-folder-v1/${name}`, import.meta.url), "utf8");
 const DRAFT = "3f2a9c1e-0b4d-4e6f-8a7b-9c0d1e2f3a4b";
@@ -30,7 +32,12 @@ describe("projects-per-folder-v1 migration (SR-024)", () => {
   const writeFile = async (file: string, content: string) => { await fs.mkdir(path.dirname(file), { recursive: true }); await fs.writeFile(file, content); };
   const readJson = async (file: string) => JSON.parse(await fs.readFile(file, "utf8"));
   /** The next startup migration (Task keys); the current store admits only keyed Projects and Tasks. */
-  const keyTasks = () => new ProjectTaskKeysV1AppDataMigration(appData).execute();
+  /** The startup migrations after this one that the current store needs: Task keys, then titles. Returns the keys result. */
+  const keyTasks = async () => {
+    const keyed = await new ProjectTaskKeysV1AppDataMigration(appData).execute();
+    await new ProjectTaskTitlesAppDataMigration(appData).execute();
+    return keyed;
+  };
 
   it("is a registered required STARTUP_ONLY definition", () => {
     const definition = new AppDataMigrationRegistry().listDefinitions().find(d => d.id === PROJECTS_PER_FOLDER_V1_MIGRATION_ID);
@@ -53,7 +60,7 @@ describe("projects-per-folder-v1 migration (SR-024)", () => {
     const store = new ProjectStore(layout);
     expect(await store.listProjects()).toEqual([{ ...projectFields, taskKeys: { prefix: "website-relaunch", lastNumber: 2 } }]);
     expect((await store.listTasks(released.projectId)).sort((a, b) => a.taskId.localeCompare(b.taskId)))
-      .toEqual(tasks.map((task: { taskId: string }, index: number) => ({ ...task, taskKey: `website-relaunch-${index + 1}`, dependsOnTaskIds: [], partOfTaskId: null, comments: [] }))
+      .toEqual(tasks.map((task: { taskId: string; description: string }, index: number) => ({ ...task, taskKey: `website-relaunch-${index + 1}`, title: titleFromFirstLine(task.description), dependsOnTaskIds: [], partOfTaskId: null, comments: [] }))
         .sort((a: { taskId: string }, b: { taskId: string }) => a.taskId.localeCompare(b.taskId)));
     // Already migrated: a no-op that touches nothing.
     expect(await migration.execute()).toMatchObject({ status: "SUCCEEDED", summary: { scannedCount: 0, migratedCount: 0 } });

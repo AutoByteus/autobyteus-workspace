@@ -361,3 +361,12 @@ Team adaptation: they read the root's events directly and unthrottled.
 - [Agent Team Execution](../modules/agent_team_execution.md)
 - [Streaming Parsing Architecture](./streaming_parsing_architecture.md)
 - [Run History](../modules/run_history.md)
+
+## Background inspection is not a stream lifecycle
+
+The typed `agentBackgroundTaskView(agentRunId)` GraphQL query provides a read-only
+selected-run snapshot for Codex. It uses an observational published-run lookup
+and exact-instance/active recheck, never restoring a run. Claude/Antigravity
+continue using their existing background-task stream and store. No new WebSocket
+event, streamed task status, idle timer reset or process-control permission is
+introduced. View-only `unknown` does not extend the streamed lifecycle enum.

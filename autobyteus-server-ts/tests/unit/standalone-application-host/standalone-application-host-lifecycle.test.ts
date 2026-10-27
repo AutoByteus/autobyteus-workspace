@@ -11,6 +11,7 @@ const mocks = vi.hoisted(() => {
     recoverAfterListen: vi.fn(async () => undefined),
   };
   const app = {
+    addHook: vi.fn(),
     listen: vi.fn(async () => "http://127.0.0.1:43210"),
     close: vi.fn(async () => undefined),
     server: {

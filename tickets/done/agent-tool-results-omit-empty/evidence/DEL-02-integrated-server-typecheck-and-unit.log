@@ -1,0 +1,24 @@
+# DEL-02 integrated 3531463a04 (origin/personal@84dc0b2156 merged)
+## (superseded) a plain `npx tsc -p tsconfig.json` was run by mistake; it reports TS6059 rootDir errors for tests by design. The project's typecheck is below.
+## npx vitest run tests/architecture tests/unit/agent-tools tests/unit/projects tests/unit/available-agent-runtimes tests/unit/startup tests/unit/runtime-management/claude tests/unit/services tests/app-data-migrations
+     × keeps required tool registration behind the single lifecycle readiness owner 1128ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/architecture/application-framework-boundaries.test.ts > application framework architecture boundaries > keeps required tool registration behind the single lifecycle readiness owner
+ Test Files  1 failed | 203 passed (204)
+      Tests  1 failed | 1774 passed (1775)
+## pnpm -C autobyteus-server-ts typecheck   (tsc -p tsconfig.build.json --noEmit)
+
+> autobyteus-server-ts@0.1.1 typecheck /Users/normy/autobyteus_org/autobyteus-worktrees/agent-tool-results-omit-empty/autobyteus-server-ts
+> tsc -p tsconfig.build.json --noEmit
+
+exit=0
+## FU-008 note: application-framework-boundaries.test.ts and src/startup/agent-tool-loader.ts are identical to origin/personal@84dc0b2156
+identical: yes
+## pnpm -C autobyteus-web guard:web-boundary && guard:localization-boundary && audit:localization-literals
+[guard:web-boundary] Passed.
+[guard:localization-boundary] Passed.
+(Use `node --trace-warnings ...` to show where the warning was created)
+## pnpm -C autobyteus-web test:nuxt --run components/projects components/settings components/workspace utils/projects stores
+ Test Files  238 passed (238)
+      Tests  2056 passed (2056)
+[audit:localization-literals] Passed with zero unresolved findings.

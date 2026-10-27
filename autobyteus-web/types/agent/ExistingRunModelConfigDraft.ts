@@ -13,7 +13,7 @@ export type ExistingRunModelConfigFieldError = Readonly<{
   message: string
 }>
 
-export type ExistingAgentDelegatedSnapshot = Pick<AgentRunCollaborationViewDto, 'execution_tree' | 'closed_task_executions'>
+export type ExistingAgentDelegatedSnapshot = Pick<AgentRunCollaborationViewDto, 'execution_tree' | 'closed_task_executions' | 'remote_task_executions'>
 
 export type ExistingAgentModelConfigDraft = Readonly<{
   kind: 'agent'

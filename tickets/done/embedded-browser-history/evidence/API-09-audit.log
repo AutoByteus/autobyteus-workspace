@@ -1,0 +1,50 @@
+API-09 | e51d4b103d32da21da2beb784d9bd2d515eb97ad | macOS arm64 Node 22.23.3 | 2026-10-26T17:25:08Z
+Command: node --check autobyteus-web/tests/e2e/embedded-browser-history-probe.mjs; git diff --check; shasum -a 256; Python result/root/port audit; git diff --name-only 7e270419 HEAD
+Probe syntax: PASS
+Diff whitespace: PASS
+14d143ed7889efc48b5883cb6fd34f963f8c1ac2c4008f02bb7e4ac19618aa0b  autobyteus-web/tests/e2e/embedded-browser-history-probe.mjs
+API-03: Pass
+API-04: Pass
+API-05: Pass
+API-06: Pass
+API-07: Pass
+API-08: Pass
+iso-49479-27bc: root absent; control/server ports closed
+iso-49757-15fa: root absent; control/server ports closed
+iso-49855-1995: root absent; control/server ports closed
+iso-50065-1066: root absent; control/server ports closed
+iso-50251-5536: root absent; control/server ports closed
+iso-50423-296d: root absent; control/server ports closed
+iso-50501-2ddb: root absent; control/server ports closed
+iso-50653-7b85: root absent; control/server ports closed
+iso-49253-b946: root absent; control/server ports closed
+All 9 owned instance roots removed; ports closed. Fixture ports independently verified in each API-08 receipt.
+
+Impact: git diff --name-only 7e270419 HEAD
+tickets/in-progress/embedded-browser-history/code-review-report.md
+tickets/in-progress/embedded-browser-history/code-review-revision-record.md
+tickets/in-progress/embedded-browser-history/evidence/IMP-00-install.log
+tickets/in-progress/embedded-browser-history/evidence/IMP-00-prebuild.log
+tickets/in-progress/embedded-browser-history/evidence/IMP-00-prepare.log
+tickets/in-progress/embedded-browser-history/evidence/IMP-01-electron.log
+tickets/in-progress/embedded-browser-history/evidence/IMP-02-renderer-unit.log
+tickets/in-progress/embedded-browser-history/evidence/IMP-03.log
+tickets/in-progress/embedded-browser-history/evidence/IMP-04.log
+tickets/in-progress/embedded-browser-history/evidence/IMP-05.log
+tickets/in-progress/embedded-browser-history/evidence/IMP-06.log
+tickets/in-progress/embedded-browser-history/evidence/IMP-07-desktop-build-excerpt.log
+tickets/in-progress/embedded-browser-history/evidence/IMP-07-desktop-build.log
+tickets/in-progress/embedded-browser-history/evidence/IMP-08-source-audit.txt
+tickets/in-progress/embedded-browser-history/evidence/IMP-09-full-view.png
+tickets/in-progress/embedded-browser-history/evidence/IMP-09-interaction.json
+tickets/in-progress/embedded-browser-history/evidence/IMP-09-mobile-full-view.png
+tickets/in-progress/embedded-browser-history/evidence/IMP-09-observations.md
+tickets/in-progress/embedded-browser-history/evidence/IMP-09-panel.png
+tickets/in-progress/embedded-browser-history/evidence/IMP-10-cleanup.log
+tickets/in-progress/embedded-browser-history/implementation-handoff.md
+tickets/in-progress/embedded-browser-history/implementation-revision-record.md
+Working tracked diff:
+ autobyteus-web/package.json | 1 +
+ 1 file changed, 1 insertion(+)
+
+Staging audit: raw copied setup DOM had two trailing-space lines (not product/test code); trimmed trailing whitespace without changing observed content. Final cumulative git diff HEAD^ --check: PASS.

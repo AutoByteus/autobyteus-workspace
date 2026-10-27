@@ -1,3 +1,4 @@
+import type { NativeCommandProcessScope } from "autobyteus-ts";
 import type { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
 import type { SkillService } from "../../skills/services/skill-service.js";
 import type { WorkspaceManager } from "../../workspaces/workspace-manager.js";
@@ -30,6 +31,7 @@ export type AgentProviderFactoryBuilderProcessInput = Readonly<{
   workspaceManager: WorkspaceManager;
   skillService: SkillService;
   autoByteus: Readonly<{
+    nativeCommandProcessScope: NativeCommandProcessScope;
     agentFactory: AutoByteusAgentFactoryLike;
     createLlm: AutoByteusLlmFactory;
     processorRegistries: Readonly<ProcessorRegistries>;
@@ -93,6 +95,7 @@ const freezeProcessInput = (
     "autoByteus.processorRegistries",
   );
   for (const field of [
+    "nativeCommandProcessScope",
     "agentFactory",
     "createLlm",
     "waitForIdle",
@@ -176,6 +179,7 @@ export const createAgentProviderFactoryBuilder = (
       );
       return Object.freeze({
         autoByteus: new AutoByteusAgentRunBackendFactory({
+          nativeCommandProcessScope: process.autoByteus.nativeCommandProcessScope,
           agentFactory: process.autoByteus.agentFactory,
           agentDefinitionService: input.agentDefinitionService,
           createLLM: process.autoByteus.createLlm,

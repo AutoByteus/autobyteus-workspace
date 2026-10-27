@@ -43,7 +43,6 @@ export async function registerMcpGatewayRoutes(
     registerRawBodyParsers(mcpApp);
     mcpApp.all<{ Body: unknown }>(
       MCP_GATEWAY_ROUTE,
-      { config: { cors: false } },
       async (request, reply) => handleMcpGatewayRequest({ request, reply, accessGate, dispatcher }),
     );
   });

@@ -9,6 +9,7 @@ const specs = [
   ["../agent-tools/task-delegation/register-task-delegation-tools.js", "registerTaskDelegationTools", "task_delegation"],
   ["../agent-tools/agent-communication/register-agent-communication-tools.js", "registerAgentCommunicationTools", "agent_communication"],
   ["../agent-tools/agent-discovery/register-agent-discovery-tools.js", "registerAgentDiscoveryTools", "agent_discovery"],
+  ["../agent-tools/agent-runtimes/register-agent-runtimes-tools.js", "registerAgentRuntimesTools", "agent_runtimes"],
   ["../agent-tools/published-artifacts/register-published-artifact-tools.js", "registerPublishedArtifactTools", "published_artifact"],
   ["../agent-tools/media/register-media-tools.js", "registerMediaTools", "media"],
   ["../agent-tools/search/register-search-tool.js", "registerProvisionedSearchTool", "search"],
@@ -59,6 +60,7 @@ describe("AgentToolRegistryReadiness", () => {
       "task_delegation",
       "agent_communication",
       "agent_discovery",
+      "agent_runtimes",
       "published_artifact",
       "media",
       "search",
@@ -83,7 +85,7 @@ describe("AgentToolRegistryReadiness", () => {
     expect(concurrent).toBe(first);
     const result = await first;
     expect(await readiness.registerRequiredGroups()).toBe(result);
-    expect(modules.loader).toHaveBeenCalledTimes(10);
+    expect(modules.loader).toHaveBeenCalledTimes(specs.length);
   });
 
   it("names a server registrar failure, never starts Search, and never retries", async () => {
@@ -100,7 +102,7 @@ describe("AgentToolRegistryReadiness", () => {
     );
     await expect(readiness.registerRequiredGroups()).rejects.toBeInstanceOf(AggregateError);
     expect(modules.loads).not.toContain("search");
-    expect(modules.loader).toHaveBeenCalledTimes(9);
+    expect(modules.loader).toHaveBeenCalledTimes(specs.length - 1);
     const aggregate = await first.catch((error: unknown) => error as AggregateError);
     expect(aggregate.errors.map((error) => String(error))).toEqual(expect.arrayContaining([
       expect.stringContaining("Task Delegation Tools"),

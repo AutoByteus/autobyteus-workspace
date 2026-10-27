@@ -307,6 +307,26 @@ describe('AppUpdater', () => {
     expect(autoUpdaterMock.quitAndInstall).toHaveBeenCalledWith(false, true);
   });
 
+  it('awaits preparation before installation and does not install when preparation fails', async () => {
+    vi.useFakeTimers();
+    let finish!: () => void;
+    const prepare = vi.fn(() => new Promise<void>(resolve => { finish = resolve; }));
+    const updater = new AppUpdater({ prepareForInstall: prepare });
+    updater.initialize(); autoUpdaterMock.emit('update-downloaded', { version: '1.2.0' });
+    updater.installUpdateAndRestart(); await vi.advanceTimersByTimeAsync(100);
+    expect(prepare).toHaveBeenCalledOnce(); expect(autoUpdaterMock.quitAndInstall).not.toHaveBeenCalled();
+    finish(); await vi.advanceTimersByTimeAsync(0);
+    expect(autoUpdaterMock.quitAndInstall).toHaveBeenCalledWith(false, true);
+  });
+
+  it('turns failed preparation into install error without invoking installation', async () => {
+    vi.useFakeTimers();
+    const updater = new AppUpdater({ prepareForInstall: async () => { throw new Error('cleanup incomplete'); } });
+    updater.initialize(); autoUpdaterMock.emit('update-downloaded', { version: '1.2.0' });
+    updater.installUpdateAndRestart(); await vi.advanceTimersByTimeAsync(100);
+    expect(autoUpdaterMock.quitAndInstall).not.toHaveBeenCalled(); expect(updater.getState().errorKind).toBe('install');
+  });
+
   it('maps synchronous install invocation failure to updater error state', async () => {
     vi.useFakeTimers();
     const updater = new AppUpdater();

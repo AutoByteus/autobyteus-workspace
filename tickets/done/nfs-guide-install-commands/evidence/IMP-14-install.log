@@ -1,0 +1,51 @@
+# IMP-14; 2026-10-26; macOS26.5.2 arm64 Node22.23.1 pnpm10.28.2; private HOME/TMP
+# Input 0c27b150; RED has changed presentation assertions, original product.
+# env -i PATH=<current> HOME=<owned>/home TMPDIR=<owned>/tmp COREPACK_ENABLE_DOWNLOAD_PROMPT=0 pnpm --filter autobyteus... install --frozen-lockfile
+# IMP-14 | 0c27b150 | Macarm64 Node22.23.1 clean HOME/TMP | 2026-10-26
+# pnpm --filter autobyteus... install --frozen-lockfile
+Scope: 5 of 13 workspace projects
+Lockfile is up to date, resolution step is skipped
+Progress: resolved 1, reused 0, downloaded 0, added 0
+.                                        |    +1457 ++++++++++++++++++++++++++++
+
+   ╭───────────────────────────────────────────────╮
+   │                                               │
+   │     Update available! 10.28.2 → 12.15.0.      │
+   │     Changelog: https://pnpm.io/v/12.15.0      │
+   │   To update, run: corepack use pnpm@12.15.0   │
+   │                                               │
+   ╰───────────────────────────────────────────────╯
+
+Progress: resolved 1457, reused 0, downloaded 77, added 0
+Progress: resolved 1457, reused 0, downloaded 208, added 207
+Progress: resolved 1457, reused 0, downloaded 289, added 284
+Progress: resolved 1457, reused 0, downloaded 372, added 371
+Progress: resolved 1457, reused 0, downloaded 474, added 473
+Progress: resolved 1457, reused 0, downloaded 576, added 575
+Progress: resolved 1457, reused 0, downloaded 695, added 695
+Progress: resolved 1457, reused 0, downloaded 772, added 773
+Progress: resolved 1457, reused 0, downloaded 856, added 859
+Progress: resolved 1457, reused 0, downloaded 957, added 959
+Progress: resolved 1457, reused 0, downloaded 1033, added 1035
+Progress: resolved 1457, reused 0, downloaded 1126, added 1117
+Progress: resolved 1457, reused 0, downloaded 1271, added 1271
+Progress: resolved 1457, reused 0, downloaded 1375, added 1378
+Progress: resolved 1457, reused 0, downloaded 1444, added 1446
+Progress: resolved 1457, reused 0, downloaded 1451, added 1454
+Progress: resolved 1457, reused 0, downloaded 1452, added 1455
+Progress: resolved 1457, reused 0, downloaded 1453, added 1455
+Progress: resolved 1457, reused 0, downloaded 1453, added 1456
+Progress: resolved 1457, reused 0, downloaded 1454, added 1456
+Progress: resolved 1457, reused 0, downloaded 1454, added 1457, done
+.../node_modules/@parcel/watcher install$ node scripts/build-from-source.js
+.../esbuild@0.27.3/node_modules/esbuild postinstall$ node install.js
+.../esbuild@0.28.2/node_modules/esbuild postinstall$ node install.js
+.../node_modules/vue-demi postinstall$ node -e "try{require('./scripts/postinstall.js')}catch(e){}"
+.../sharp@0.33.5/node_modules/sharp install$ node install/check
+.../node_modules/@parcel/watcher install: Done
+.../node_modules/vue-demi postinstall: Done
+.../esbuild@0.27.3/node_modules/esbuild postinstall: Done
+.../esbuild@0.28.2/node_modules/esbuild postinstall: Done
+.../sharp@0.33.5/node_modules/sharp install: Done
+Done in 28.8s using pnpm v10.28.2
+exit=0

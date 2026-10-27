@@ -142,7 +142,10 @@ suite("A run's MCP server processes end when the run ends (real server, Agent To
     app = started.fastify;
     url = started.mainUrl;
     const input = { serverId: "cleanup_stdio", transportType: "STDIO", enabled: true, toolNamePrefix: "cleanup_stdio",
-      stdioConfig: { command: process.execPath, args: [FIXTURE], env: { CLEANUP_ENV: ENV_VALUE, MCP_TEST_SERVER_PID_FILE: pidFile }, cwd: dataDir } };
+      stdioConfig: { command: process.execPath, args: [FIXTURE], env: [
+        { name: "CLEANUP_ENV", secret: false, value: ENV_VALUE },
+        { name: "MCP_TEST_SERVER_PID_FILE", secret: false, value: pidFile },
+      ], cwd: dataDir } };
     await gql("mutation($input: McpServerInput!) { configureMcpServer(input: $input) { savedConfig { __typename } } }", { input });
     const discovered = (await gql("mutation($id: String!) { discoverAndRegisterMcpServerTools(serverId: $id) { success message } }",
       { id: input.serverId })).discoverAndRegisterMcpServerTools;

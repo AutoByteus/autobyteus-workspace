@@ -1,0 +1,21 @@
+{
+  "source": "2c47bcd646ccd371a180dbc510fd1e30aee9144f",
+  "integratedBase": "67994daba0adf6eb8c6bc05827b5fab6b2975aa4",
+  "checks": [
+    {
+      "path": "autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.5.9-beta.9.dmg",
+      "bytes": 494986179,
+      "bytesMatch": true,
+      "sha256": "b42973c1fac1b2d4d81803a08403e25eacdd8dd8408a305349e40d4e371d0384",
+      "matchesIMP56": true
+    },
+    {
+      "path": "autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.5.9-beta.9.zip",
+      "bytes": 491343842,
+      "bytesMatch": true,
+      "sha256": "16ac83495866d41a8a5416ea30b703fb5a5435cae6ecde4cbb8d26e9f00597c4",
+      "matchesIMP56": true
+    }
+  ],
+  "scope": "Read-only verification of existing IMP56 artifacts; not proof of new incoming base, no mount/install."
+}

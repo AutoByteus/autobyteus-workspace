@@ -17,7 +17,7 @@ import { ApplicationExecutionResourceResolver } from "../../../src/application-o
 import { createBundleBackedDefinitionServices } from "../../../src/application-platform/definitions/create-bundle-backed-definition-services.js";
 import { validateStandaloneApplicationPackage } from "../../../src/application-platform/launch-configuration/application-standalone-package-validator.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
-import { testMemberTaskCommandCapability } from "../../fixtures/current-team-run-fixtures.js";
+import { testMemberTaskCapability } from "../../fixtures/current-team-run-fixtures.js";
 
 const packageRoot = path.resolve("../applications/brief-studio/dist/importable-package");
 const workspaceRoot = path.resolve("../applications/brief-studio");
@@ -105,7 +105,7 @@ describe("Brief package team prompt authority", () => {
       }),
       agentNode: researcherNode as never,
       deliverInterAgentMessage: vi.fn(async () => ({ accepted: true })),
-      taskCommands: testMemberTaskCommandCapability("brief-team-run"),
+      taskCapability: testMemberTaskCapability("brief-team-run"),
     });
     const activateForRun = vi.fn((input: {
       owner: { runId: string };

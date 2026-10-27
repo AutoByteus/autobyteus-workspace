@@ -11,6 +11,7 @@ export type RequiredAgentToolUnitKey =
   | "memory"
   | "agent_communication"
   | "agent_discovery"
+  | "agent_runtimes"
   | "published_artifact"
   | "media"
   | "search";
@@ -69,6 +70,12 @@ const serverOwnedSpecs: LoaderSpec[] = [
     displayName: "Agent Discovery Tools",
     modulePath: "../agent-tools/agent-discovery/register-agent-discovery-tools.js",
     exportName: "registerAgentDiscoveryTools",
+  },
+  {
+    key: "agent_runtimes",
+    displayName: "Agent Runtime Tools",
+    modulePath: "../agent-tools/agent-runtimes/register-agent-runtimes-tools.js",
+    exportName: "registerAgentRuntimesTools",
   },
   {
     key: "published_artifact",

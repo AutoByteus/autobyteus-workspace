@@ -9,7 +9,8 @@ const PEER: PeerNode = { nodeId: "srv_peer_node_000000000000000000000000", name:
 
 const startBody = (overrides: Record<string, unknown> = {}) => ({
   fromNodeId: PEER.nodeId, toNodeId: SELF, address: "/publisher",
-  delegator: { agentRunId: "agent_a1" }, coordinatingRun: { kind: "agent", runId: "agent_a1" }, ...overrides,
+  delegator: { agentRunId: "agent_a1" }, coordinatingRun: { kind: "agent", runId: "agent_a1" },
+  task: { text: "Publish the video draft.", title: "Publish the video draft.", taskKey: null, projectId: null, taskId: null }, ...overrides,
 });
 const messageBody = (overrides: Record<string, unknown> = {}) => ({
   fromNodeId: PEER.nodeId, toNodeId: SELF, kind: "message", messageId: "collabmsg_1",

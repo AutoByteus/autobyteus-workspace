@@ -1,6 +1,5 @@
 import path from 'node:path';
 import { accessSync, constants as fsConstants, statSync } from 'node:fs';
-import { randomBytes } from 'node:crypto';
 import {
   ensureWslAvailable,
   selectWslDistro,
@@ -17,7 +16,7 @@ export interface NonInteractiveShellInvocation {
   env: NodeJS.ProcessEnv;
   kind: ShellInvocationKind;
   processTarget: ProcessExecutionTarget;
-  shellIdentityMarker?: string;
+  wslCwd?: string;
 }
 
 export interface NonInteractiveShellResolverOptions {
@@ -105,24 +104,14 @@ export class NonInteractiveShellResolver {
     const wslExe = this.options.ensureWslAvailable?.() ?? ensureWslAvailable();
     const distro = this.options.selectWslDistro?.(wslExe) ?? selectWslDistro(wslExe);
     const wslCwd = this.options.windowsPathToWsl?.(cwd, wslExe) ?? windowsPathToWsl(cwd, wslExe);
-    const marker = `__AUTOBYTEUS_SHELL_ID_${randomBytes(4).toString('hex')}__`;
-    const markedCommand =
-      `__autobyteus_pgid="$(ps -o pgid= -p "$$" | tr -d ' ')"; ` +
-      `if [ -z "$__autobyteus_pgid" ]; then __autobyteus_pgid="$$"; fi; ` +
-      `printf '%s:%s:%s\\n' ${shellSingleQuote(marker)} "$$" "$__autobyteus_pgid" >&2; ` +
-      command;
 
     return {
-      executable: wslExe,
-      args: ['-d', distro, '--cd', wslCwd, '--exec', 'bash', '--noprofile', '--norc', '-lc', markedCommand],
+      executable: 'bash',
+      args: ['--noprofile', '--norc', '-lc', command],
+      wslCwd,
       env: { ...(this.options.env ?? process.env) },
       kind: 'windows-wsl',
       processTarget: { kind: 'wsl', wslExecutable: wslExe, distro },
-      shellIdentityMarker: marker
     };
   }
-}
-
-function shellSingleQuote(value: string): string {
-  return `'${value.replace(/'/g, `'\\''`)}'`;
 }

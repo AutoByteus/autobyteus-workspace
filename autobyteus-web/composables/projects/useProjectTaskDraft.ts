@@ -10,6 +10,7 @@ import type { VoiceTranscriptTarget } from '~/types/voiceInput'
 export function useProjectTaskDraft(projectId: string, saved?: ProjectTask, initialPartOf?: string | null) {
   let alive = true
   const client = createProjectTaskContextClient(projectId, saved?.taskId, () => alive)
+  const title = ref(saved?.title ?? '')
   const text = ref(saved?.description ?? '')
   const files = ref<ProjectTaskContextFile[]>([...(saved?.contextFiles ?? [])])
   // "Depends on" (same Project), starting from the dependencies that still exist, so a deleted one is never resubmitted.
@@ -74,8 +75,9 @@ export function useProjectTaskDraft(projectId: string, saved?: ProjectTask, init
       const changes = added.size || removed.size ? {
         ...(draftId.value ? {draftId: draftId.value} : {}), addStoredFilenames: additions, removeStoredFilenames: [...removed],
       } : undefined
-      const result = saved ? await store.updateTask(projectId, saved.taskId, text.value.trim(), changes, current, [...dependsOn.value], partOf.value)
-        : await store.createTask(projectId, text.value.trim(), draftId.value ? {draftId: draftId.value, storedFilenames: additions} : undefined, current, [...dependsOn.value], partOf.value)
+      const taskText = {title: title.value.trim(), description: text.value.trim()}
+      const result = saved ? await store.updateTask(projectId, saved.taskId, taskText, changes, current, [...dependsOn.value], partOf.value)
+        : await store.createTask(projectId, taskText, draftId.value ? {draftId: draftId.value, storedFilenames: additions} : undefined, current, [...dependsOn.value], partOf.value)
       // Save may already be committed on a captured endpoint; only the live draft may navigate.
       return current() ? result : null
     } catch (e) { if (current()) error.value = e instanceof Error ? e.message : 'Task save failed.'; return null }
@@ -87,5 +89,5 @@ export function useProjectTaskDraft(projectId: string, saved?: ProjectTask, init
     if (draftId.value) void client.discard(draftId.value).catch(() => undefined)
   }
   onBeforeUnmount(dispose)
-  return {text, files, dependsOn, partOf, draftId, pending, saving, error, blocked, target, current, addFiles, removeFile, save, dispose, client}
+  return {title, text, files, dependsOn, partOf, draftId, pending, saving, error, blocked, target, current, addFiles, removeFile, save, dispose, client}
 }

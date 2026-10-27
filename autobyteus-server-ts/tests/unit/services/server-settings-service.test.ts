@@ -316,6 +316,46 @@ describe("ServerSettingsService", () => {
     expect(mockConfig.delete).toHaveBeenCalledWith(leftoverKey);
   });
 
+  it("exposes the Claude one-hour prompt cache toggle and accepts only true or false", () => {
+    mockConfig.getConfigData.mockReturnValue({ CLAUDE_AGENT_SDK_ONE_HOUR_PROMPT_CACHE: "false" });
+    mockConfig.set.mockImplementation(() => undefined);
+    const service = new ServerSettingsService();
+
+    expect(service.getAvailableSettings().find((item) => item.key === "CLAUDE_AGENT_SDK_ONE_HOUR_PROMPT_CACHE")).toMatchObject({
+      value: "false",
+      description: expect.stringContaining("one-hour prompt cache"),
+      isEditable: true,
+      isDeletable: false,
+    });
+    const [rejected, message] = service.updateSetting("CLAUDE_AGENT_SDK_ONE_HOUR_PROMPT_CACHE", "1h");
+    expect(rejected).toBe(false);
+    expect(message).toContain("true, false");
+    expect(mockConfig.set).not.toHaveBeenCalled();
+
+    expect(service.updateSetting("CLAUDE_AGENT_SDK_ONE_HOUR_PROMPT_CACHE", " false ")[0]).toBe(true);
+    expect(mockConfig.set).toHaveBeenCalledWith("CLAUDE_AGENT_SDK_ONE_HOUR_PROMPT_CACHE", "false");
+  });
+
+  it("exposes \"Show internal agents\" (autobyteus-308) and persists only true or false", () => {
+    mockConfig.getConfigData.mockReturnValue({ AUTOBYTEUS_SHOW_INTERNAL_AGENTS: "true" });
+    mockConfig.set.mockImplementation(() => undefined);
+    const service = new ServerSettingsService();
+
+    expect(service.getAvailableSettings().find((item) => item.key === "AUTOBYTEUS_SHOW_INTERNAL_AGENTS")).toMatchObject({
+      value: "true",
+      description: expect.stringContaining("Show internal agents"),
+      isEditable: true,
+      isDeletable: false,
+    });
+    const [rejected, message] = service.updateSetting("AUTOBYTEUS_SHOW_INTERNAL_AGENTS", "on");
+    expect(rejected).toBe(false);
+    expect(message).toContain("true or false");
+    expect(mockConfig.set).not.toHaveBeenCalled();
+
+    expect(service.updateSetting("AUTOBYTEUS_SHOW_INTERNAL_AGENTS", " False ")[0]).toBe(true);
+    expect(mockConfig.set).toHaveBeenCalledWith("AUTOBYTEUS_SHOW_INTERNAL_AGENTS", "false");
+  });
+
   it("rejects invalid predefined Codex sandbox values before persistence", () => {
     const service = new ServerSettingsService();
     const [ok, message] = service.updateSetting("CODEX_APP_SERVER_SANDBOX", "full-access");

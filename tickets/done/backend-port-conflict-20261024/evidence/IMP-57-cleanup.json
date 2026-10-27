@@ -1,0 +1,15 @@
+{
+  "source": "2c47bcd646ccd371a180dbc510fd1e30aee9144f",
+  "scope": "integrated implementation rendered fixture cleanup, NOT active provider shutdown acceptance",
+  "appPid": 97959,
+  "appExited": true,
+  "portsClosed": {
+    "58464": true,
+    "58465": true
+  },
+  "sentinelPreservedBeforeFixtureDisposal": "integrated-visibility-sentinel",
+  "ownedRoot": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-imp57-4B4PlW",
+  "ownedRootRemoved": true,
+  "forced": true,
+  "correction": "Uses authoritative stop receipt; forced cleanup is not graceful shutdown proof."
+}

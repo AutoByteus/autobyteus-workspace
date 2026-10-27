@@ -3,6 +3,7 @@ import type { AgentOperationResult } from "../../agent-execution/domain/agent-op
 import type { TaskExecutionStopResult } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import { RootTaskExecutionLifecycle, type DeliverTaskWork, type TaskExecutionLiveLease } from "../../agent-collaboration/execution/task/root-task-execution-lifecycle.js";
+import type { NewCopyWork } from "../../agent-collaboration/execution/task/new-copy-work.js";
 import type {
   AssignToExistingCopyInput,
   SpawnTaskInput,
@@ -50,13 +51,17 @@ export class TeamTaskExecutionService {
     }
   }
 
-  delegateToNewCopy(context: TaskDelegationContext, input: SpawnTaskInput, placement: TeamDelegationPlacement): Promise<TaskDelegationOutcome> {
-    return this.lifecycle.delegateToNewCopy(context, input, placement);
+  prepareNewCopyWork(context: TaskDelegationContext, input: SpawnTaskInput): Promise<NewCopyWork> {
+    return this.lifecycle.prepareNewCopyWork(context, input);
+  }
+  dispatchNewCopy(context: TaskDelegationContext, work: NewCopyWork, placement: TeamDelegationPlacement): Promise<TaskDelegationOutcome> {
+    return this.lifecycle.dispatchNewCopy(context, work, placement);
   }
   assignToExistingCopy(context: TaskDelegationContext, input: AssignToExistingCopyInput, deliverWork: DeliverTaskWork): Promise<TaskDelegationOutcome> {
     return this.lifecycle.assignToExistingCopy(context, input, deliverWork);
   }
   teamCoordinatorOf(teamRunId: string): string | null { return this.lifecycle.teamCoordinatorOf(teamRunId); }
+  ownedTaskOf(agentRunId: string) { return this.lifecycle.ownedTaskOf(agentRunId); }
 
   withLiveLease(id: string, operation: () => Promise<AgentOperationResult>): Promise<AgentOperationResult> {
     return this.lifecycle.withLiveLease(id, operation);

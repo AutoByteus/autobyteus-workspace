@@ -1,0 +1,179 @@
+{
+  "url": "file:///Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat",
+  "text": "Chat\nAgents\nAgent Teams\nAgent Orgs\nProjects\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nSettings\nDaily Assistant\n\nAll your skills are available. Type / to use a skill, or @ to delegate to an agent or team.\n\nContext Files (0)\n(drag, paste, or upload)\nTemp workspace\nAuto-approve\nclaude-fable-5\nAutoByteus\nOff",
+  "buttons": [
+    {
+      "text": "Chat",
+      "title": "",
+      "aria": null,
+      "test": "app-left-panel-chat"
+    },
+    {
+      "text": "",
+      "title": "New chat",
+      "aria": "New chat",
+      "test": "app-left-panel-new-chat"
+    },
+    {
+      "text": "",
+      "title": "Collapse left panel",
+      "aria": null,
+      "test": "app-left-panel-collapse"
+    },
+    {
+      "text": "Agents",
+      "title": "",
+      "aria": null,
+      "test": null
+    },
+    {
+      "text": "Agent Teams",
+      "title": "",
+      "aria": null,
+      "test": null
+    },
+    {
+      "text": "Agent Orgs",
+      "title": "",
+      "aria": null,
+      "test": null
+    },
+    {
+      "text": "Projects",
+      "title": "",
+      "aria": null,
+      "test": null
+    },
+    {
+      "text": "Skills",
+      "title": "",
+      "aria": null,
+      "test": null
+    },
+    {
+      "text": "Memory",
+      "title": "",
+      "aria": null,
+      "test": null
+    },
+    {
+      "text": "Nodes",
+      "title": "",
+      "aria": null,
+      "test": null
+    },
+    {
+      "text": "",
+      "title": "Add workspace",
+      "aria": null,
+      "test": null
+    },
+    {
+      "text": "Temp Workspace",
+      "title": "",
+      "aria": null,
+      "test": null
+    },
+    {
+      "text": "Settings",
+      "title": "",
+      "aria": null,
+      "test": null
+    },
+    {
+      "text": "Daily Assistant",
+      "title": "",
+      "aria": "Choose what to run (now Daily Assistant)",
+      "test": "run-target-switcher-trigger"
+    },
+    {
+      "text": "",
+      "title": "Upload files",
+      "aria": "Upload files",
+      "test": null
+    },
+    {
+      "text": "Temp workspace",
+      "title": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-imp73-damuDE/data/server-data/temp_workspace",
+      "aria": "Workspace: Temp workspace. Change workspace",
+      "test": "chat-workspace-trigger"
+    },
+    {
+      "text": "Auto-approve",
+      "title": "Tools run without asking. Click to ask before running tools.",
+      "aria": "Auto-approve tools is on. Tools run without asking. Turn off to ask first.",
+      "test": "chat-approval-toggle"
+    },
+    {
+      "text": "claude-fable-5AutoByteus",
+      "title": "claude-fable-5 · AutoByteus",
+      "aria": "Model: claude-fable-5 on AutoByteus. Change model",
+      "test": "chat-model-trigger"
+    },
+    {
+      "text": "Off",
+      "title": "Thinking",
+      "aria": "Thinking: Off. Change",
+      "test": "chat-thinking-trigger"
+    },
+    {
+      "text": "",
+      "title": "Send message",
+      "aria": "Send message",
+      "test": "chat-primary-action"
+    },
+    {
+      "text": "",
+      "title": "Show tools",
+      "aria": "Show tools",
+      "test": "start-surface-tools-toggle"
+    }
+  ],
+  "stores": [
+    "appFontSize",
+    "server",
+    "appUpdate",
+    "nodeStore",
+    "windowNodeContext",
+    "browserShell",
+    "uiError",
+    "mobileNodeSession",
+    "notificationCenter",
+    "updateNotifications",
+    "updateAutomation",
+    "updateChecksCapability",
+    "skillNames",
+    "agentDefinition",
+    "agentTeamDefinition",
+    "agentOrgDefinition",
+    "agentPackages",
+    "definitionProblems",
+    "appLayout",
+    "applicationsCapability",
+    "agentContexts",
+    "agentSelection",
+    "chatDraft",
+    "fileExplorer",
+    "workspace",
+    "workspaceCenterView",
+    "activeContext",
+    "agentTeamContexts",
+    "agentRun",
+    "agentTeamRun",
+    "contextFileUpload",
+    "agentOrgContexts",
+    "remoteRuns",
+    "agentRunCollaboration",
+    "agentActivity",
+    "taskLocator",
+    "llmProviderConfig",
+    "agentOrgLaunchDraft",
+    "skill",
+    "runtimeAvailability",
+    "runHistory",
+    "agentOrgRun",
+    "runHistoryRetiredRuns",
+    "voiceInput",
+    "extensions"
+  ]
+}

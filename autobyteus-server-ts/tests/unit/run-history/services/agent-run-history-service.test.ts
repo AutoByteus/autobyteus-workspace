@@ -40,6 +40,8 @@ const buildService = (options: {
   projectionByRunId?: Record<string, Partial<AgentRunStatusProjection>>;
   archiveResult?: { success: boolean; message: string };
   deleteResult?: { success: boolean; message: string };
+  /** Definition IDs the internal-agent rule hides now (autobyteus-308). */
+  hidden?: string[];
 } = {}) => {
   const rows = options.rows ?? [];
   const projectionByRunId = options.projectionByRunId ?? {};
@@ -64,11 +66,23 @@ const buildService = (options: {
     statusProjectionService: statusProjectionService as never,
     agentRunManager: {} as never,
     metadataStore: {} as never,
+    visibility: { hiddenDefinitionIds: async () => new Set(options.hidden ?? []) },
   });
   return { service, catalogService, statusProjectionService };
 };
 
 describe("AgentRunHistoryService", () => {
+  it("leaves out runs of internal agents while they are hidden; shows them once shown (autobyteus-308 AC-002, AC-005)", async () => {
+    const rows = [
+      buildRow({ runId: "run-reviewer", agentDefinitionId: "reviewer", agentName: "Code Reviewer" }),
+      buildRow({ runId: "run-router", agentDefinitionId: "router", agentName: "Model Router" }),
+    ];
+    const hidden = await buildService({ rows, hidden: ["router"] }).service.listRunHistory();
+    expect(hidden.flatMap((group) => group.agents.map((agent) => agent.agentDefinitionId))).toEqual(["reviewer"]);
+    const shown = await buildService({ rows, hidden: [] }).service.listRunHistory();
+    expect(shown.flatMap((group) => group.agents.map((agent) => agent.agentDefinitionId)).sort()).toEqual(["reviewer", "router"]);
+  });
+
   it("lists grouped standalone history from V2 catalog rows and overlays live status", async () => {
     const rows = [
       buildRow({

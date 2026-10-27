@@ -1,0 +1,24 @@
+# AC-003 route probe on BASE server sources and base dependencies (fastify 4.29.1, @fastify/cors 9.0.1): probes/mcp-cors-headers.probe.test.ts copied to tests/integration/zz-imp-probe/ for the run
+# Check: IMP-06
+# Command: TEST_IMP_PROBE_OUT=/tmp/ab-impl/probe-base.txt pnpm -C autobyteus-server-ts exec vitest run tests/integration/zz-imp-probe --no-watch 2>&1 | sed 's/\x1b\[[0-9;]*m//g' | grep -E 'Test Files|Tests |Error'; cat /tmp/ab-impl/probe-base.txt
+# Commit: 195db3c42e
+# Env: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-24T19:55:23Z
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+PROBE fastify 4.29.1
+PROBE mcp-gateway (studio order + cors) | POST no Origin | status=200 | {"vary":"Origin"}
+PROBE mcp-gateway (studio order + cors) | POST loopback Origin | status=200 | {"access-control-allow-origin":"http://127.0.0.1:3000","vary":"Origin"}
+PROBE mcp-gateway (studio order + cors) | POST non-loopback Origin | status=403 | {}
+PROBE mcp-gateway (studio order + cors) | OPTIONS preflight loopback | status=204 | {"access-control-allow-headers":"authorization, content-type, accept, mcp-protocol-version, mcp-session-id","access-control-allow-methods":"GET, POST, DELETE, OPTIONS","access-control-allow-origin":"http://127.0.0.1:3000","vary":"Origin"}
+PROBE mcp-gateway (studio order + cors) | OPTIONS preflight non-loopback | status=403 | {}
+PROBE mcp-gateway (studio order + cors) | OPTIONS no Origin | status=204 | {"access-control-allow-headers":"authorization, content-type, accept, mcp-protocol-version, mcp-session-id","access-control-allow-methods":"GET, POST, DELETE, OPTIONS"}
+PROBE agent-tools (own instance, no cors) | POST no Origin | status=200 | {}
+PROBE agent-tools (own instance, no cors) | POST loopback Origin | status=200 | {}
+PROBE agent-tools (own instance, no cors) | POST non-loopback Origin | status=403 | {}
+PROBE agent-tools (own instance, no cors) | OPTIONS preflight loopback | status=204 | {"access-control-allow-headers":"content-type, accept, mcp-protocol-version, mcp-session-id","access-control-allow-methods":"GET, POST, DELETE, OPTIONS","access-control-allow-origin":"http://127.0.0.1:3000","vary":"Origin"}
+PROBE agent-tools (own instance, no cors) | OPTIONS preflight non-loopback | status=403 | {}
+PROBE agent-tools (own instance, no cors) | OPTIONS no Origin | status=204 | {"access-control-allow-headers":"content-type, accept, mcp-protocol-version, mcp-session-id","access-control-allow-methods":"GET, POST, DELETE, OPTIONS"}
+
+# exit code: 0

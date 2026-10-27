@@ -59,6 +59,11 @@ The GraphQL `workspaces()` query is the canonical visible workspace-list source 
 - registered filesystem workspaces from the registry; and
 - transient active workspaces such as temp or skill workspaces that are not duplicated by registry entries.
 
+Internal workspaces (`<appData>/internal-workspaces/`, `internal-workspaces.ts`; the Model Router agent's) are left
+out while "Show internal agents" is off (`WorkspaceManager.listVisibleWorkspaces`). Opening a run by ID still
+resolves its workspace. See [Model Routing](./model_routing.md) and
+[Agent Definition: Internal Agents](./agent_definition.md#internal-agents).
+
 Run history is not an authority for top-level workspace visibility. A historical run under an unregistered or removed workspace root must not recreate a top-level workspace row by itself.
 
 The fixed default temp workspace (`temp_ws_default`) is a visible run workspace

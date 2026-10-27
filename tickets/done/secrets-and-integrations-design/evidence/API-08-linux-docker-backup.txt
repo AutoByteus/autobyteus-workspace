@@ -1,0 +1,36 @@
+# Case: API-08 the move on Linux: Docker image built from the worktree (Dockerfile.monorepo, linux/arm64), test-owned container on 127.0.0.1, no user volumes
+# Commands: docker buildx build --builder multi-platform-builder --load --platform linux/arm64 -f autobyteus-server-ts/docker/Dockerfile.monorepo -t autobyteus-server:s244-validation .; docker run -d --name s244-validation -p 127.0.0.1:<free>:8000 …; GraphQL configureMcpServer (plain AUTOBYTEUS_API_KEY), mcpSecretMoveCandidates, moveMcpSecretsToVault; docker exec stat; docker rm -f -v; docker rmi
+# Commit: f3c52bd0f6 (code 4aa2543f9d; round-2 code 4505158d77, fc6032999e, 98eeac9f31)
+# Date: 2026-10-26
+
+== configure / candidates / move ==
+{"data":{"configureMcpServer":{"savedConfig":{"__typename":"StdioMcpServerConfig"}}}}
+{"data":{"mcpSecretMoveCandidates":[{"serverId":"linux-check","field":"env:AUTOBYTEUS_API_KEY","matchedBy":"NAME"}],"getSecretVaultStatus":{"health":"READY"}}}
+{"data":{"moveMcpSecretsToVault":{"backupPath":"/home/autobyteus/data/mcps.json.backup-before-vault-move-2026-10-26T08-19-43-551Z","moved":[{"serverId":"linux-check","field":"env:AUTOBYTEUS_API_KEY"}],"skipped":[],"serversFailingAfterMove":[{"serverId":"linux-check","reason":"Connection closed"}]}}}
+(serversFailingAfterMove: "Connection closed" is expected: the server command is node --version, not an MCP server)
+
+== inside the container ==
+Linux aarch64
+uid=0(root) gid=0(root) groups=0(root)
+0022
+600 root:root /home/autobyteus/data/mcps.json.backup-before-vault-move-2026-10-26T08-19-43-551Z
+644 root:root /home/autobyteus/data/mcps.json
+1
+{
+  "mcpServers": {
+    "linux-check": {
+      "command": "node",
+      "args": [
+        "--version"
+      ],
+      "env": {
+        "AUTOBYTEUS_API_KEY": {
+          "vaultSecretId": "mcp.ee80484b-c556-4edb-9cec-df734a18b473"
+        },
+        "LOG_LEVEL": "debug"
+      }
+    }
+  }
+}
+
+== logs: docker logs test-dummy=0, data-dir logs test-dummy=0; container and image removed ==

@@ -39,6 +39,7 @@ This directory mirrors the module documentation layout used in `autobyteus-serve
 | LLM Management | [llm_management.md](./llm_management.md) |
 | MCP Server Management | [mcp_server_management.md](./mcp_server_management.md) |
 | Memory Search (search past work in every run's Work Journal: index, `search_memory`, Memory page search) | [memory_search.md](./memory_search.md) |
+| Model Routing (the Model Router agent chooses runtimes/models of delegated copies; decision records) | [model_routing.md](./model_routing.md) |
 | Multimedia Management | [multimedia_management.md](./multimedia_management.md) |
 | Projects | [projects.md](./projects.md) |
 | Prompt Engineering | [prompt_engineering.md](./prompt_engineering.md) |

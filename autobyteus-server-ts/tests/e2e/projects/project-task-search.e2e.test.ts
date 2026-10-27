@@ -46,8 +46,9 @@ describe("Project Task search over the production HTTP and MCP boundaries", () =
     }
     throw new Error("meaning search never became ready");
   };
-  const createTask = async (projectId: string, description: string) => (await ok<{ createProjectTask: { taskId: string; taskKey: string } }>(
-    "mutation($i:CreateProjectTaskInput!){createProjectTask(input:$i){taskId taskKey}}", { i: { projectId, description } })).createProjectTask;
+  // autobyteus-260: a Project Task has a title (by default here its one-line description).
+  const createTask = async (projectId: string, description: string, title = description) => (await ok<{ createProjectTask: { taskId: string; taskKey: string } }>(
+    "mutation($i:CreateProjectTaskInput!){createProjectTask(input:$i){taskId taskKey}}", { i: { projectId, title, description } })).createProjectTask;
 
   beforeAll(async () => {
     flags = Object.fromEntries(Object.entries(process.env).filter(([k, v]) => (k.startsWith("ENABLE_") || k.startsWith("AUTOBYTEUS_")) && v !== undefined)) as Record<string, string>;
@@ -78,11 +79,13 @@ describe("Project Task search over the production HTTP and MCP boundaries", () =
 
   it("answers exact matches at once, reports preparation, then adds meaning matches without a new query text", async () => {
     const projectId = (await ok<{ createProject: { projectId: string } }>("mutation($i:CreateProjectInput!){createProject(input:$i){projectId}}", { i: { name: "Search E2E" } })).createProject.projectId;
-    const docker = await createTask(projectId, "Docker image fails on ARM servers");
-    const sidebar = await createTask(projectId, "Sidebar collapse state is lost after restart");
+    const docker = await createTask(projectId, "Docker image fails on ARM servers", "Container build is broken on ARM");
+    const sidebar = await createTask(projectId, "Sidebar collapse state is lost after restart", "Sidebar forgets that it was folded");
     const first = await search(projectId, "docker");
     expect(first.matches).toEqual([{ taskId: docker.taskId, match: "EXACT" }]);
     expect(first.meaningSearch.state).toBe("PREPARING");
+    // DEC-018 (1): the exact tier also matches the title, so a word shown on a card finds its Task.
+    expect((await search(projectId, "container build")).matches).toEqual([{ taskId: docker.taskId, match: "EXACT" }]);
     await untilReady(projectId);
     expect((await search(projectId, "the folded navigation panel")).matches).toEqual([{ taskId: sidebar.taskId, match: "MEANING" }]);
     expect((await search(projectId, "recipe for banana bread")).matches).toEqual([]);
@@ -90,8 +93,11 @@ describe("Project Task search over the production HTTP and MCP boundaries", () =
     // An agent gets the same search with Task keys and statuses over MCP.
     const response = await fetch(mcpUrl, { method: "POST", headers: { "content-type": "application/json", accept: "application/json" },
       body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "tools/call", params: { name: "search_project_tasks", arguments: { project_id: projectId, query: "folded navigation panel" } } }) });
-    const tool = (await response.json() as { result: { structuredContent: unknown } }).result.structuredContent;
-    expect(tool).toEqual({ projectId, tasks: [{ taskId: sidebar.taskKey, status: "TODO", partOf: null, parts: [], summary: "Sidebar collapse state is lost after restart", match: "meaning" }], meaningSearch: { state: "ready" } });
+    const body = await response.json() as { result: { content: Array<{ text: string }>; structuredContent: unknown } };
+    const tool = body.result.structuredContent;
+    // REQ-008: each hit carries the Task's title; meaningSearch is left out when meaning search was used; no empty field.
+    expect(tool).toEqual({ projectId, tasks: [{ taskId: sidebar.taskKey, status: "TODO", title: "Sidebar forgets that it was folded", match: "meaning" }] });
+    expect(body.result.content[0]!.text).toBe(JSON.stringify(tool));
 
     // Deleting a Task removes it at once, and a deleted Project's search fails like any Project read.
     expect((await ok<{ deleteProjectTask: boolean }>("mutation($i:DeleteProjectTaskInput!){deleteProjectTask(input:$i)}", { i: { projectId, taskId: sidebar.taskId } })).deleteProjectTask).toBe(true);
@@ -107,7 +113,7 @@ describe("Project Task search over the production HTTP and MCP boundaries", () =
   it("POF-SEARCH-001: search_project_tasks shows partOf and parts by key, parts in numeric key order, no long Task ID", async () => {
     const projectId = (await ok<{ createProject: { projectId: string } }>("mutation($i:CreateProjectInput!){createProject(input:$i){projectId}}", { i: { name: "Search Parts" } })).createProject.projectId;
     const createWith = async (description: string, partOfTaskId?: string) => (await ok<{ createProjectTask: { taskId: string; taskKey: string } }>(
-      "mutation($i:CreateProjectTaskInput!){createProjectTask(input:$i){taskId taskKey}}", { i: { projectId, description, ...(partOfTaskId ? { partOfTaskId } : {}) } })).createProjectTask;
+      "mutation($i:CreateProjectTaskInput!){createProjectTask(input:$i){taskId taskKey}}", { i: { projectId, title: description, description, ...(partOfTaskId ? { partOfTaskId } : {}) } })).createProjectTask;
     const parent = await createWith("Release pipeline overhaul");
     const tasks = [parent];
     for (let index = 2; index <= 11; index += 1) {
@@ -119,8 +125,10 @@ describe("Project Task search over the production HTTP and MCP boundaries", () =
     await untilReady(projectId);
     const response = await fetch(mcpUrl, { method: "POST", headers: { "content-type": "application/json", accept: "application/json" },
       body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "tools/call", params: { name: "search_project_tasks", arguments: { project_id: projectId, query: "release pipeline", limit: 30 } } }) });
-    const result = (await response.json() as { result: { structuredContent: { tasks: Array<{ taskId: string; partOf: string | null; parts: string[]; match: string }> } } }).result.structuredContent;
-    const byKey = Object.fromEntries(result.tasks.filter((task) => task.match === "exact").map((task) => [task.taskId, { partOf: task.partOf, parts: task.parts }]));
+    const result = (await response.json() as { result: { structuredContent: { tasks: Array<{ taskId: string; partOf?: string; parts?: string[]; match: string }> } } }).result.structuredContent;
+    // No partOf without a parent and no parts without parts (REQ-001): absent reads as none.
+    expect(result.tasks.every((task) => task.partOf !== null && !(Array.isArray(task.parts) && task.parts.length === 0))).toBe(true);
+    const byKey = Object.fromEntries(result.tasks.filter((task) => task.match === "exact").map((task) => [task.taskId, { partOf: task.partOf ?? null, parts: task.parts ?? [] }]));
     expect(byKey).toEqual({
       "search-parts-1": { partOf: null, parts: ["search-parts-2", "search-parts-11"] },
       "search-parts-2": { partOf: "search-parts-1", parts: [] },
@@ -150,7 +158,8 @@ describe("Project Task search over the production HTTP and MCP boundaries", () =
       body: JSON.stringify({ jsonrpc: "2.0", id: 1, method: "tools/call", params: { name: "search_project_tasks", arguments: { project_id: projectId, query: "quokka" } } }) });
     const tool = (await response.json() as { result: { structuredContent: { tasks: Array<Record<string, unknown> & { taskId: string; match: string }> } } }).result.structuredContent;
     const exact = Object.fromEntries(tool.tasks.filter((t) => t.match === "exact").map((t) => [t.taskId, t]));
-    expect(exact[commented.taskKey]).toMatchObject({ status: "TODO", summary: "Release notes for 1.5.6", match: "exact", commentCount: 2 });
+    expect(exact[commented.taskKey]).toMatchObject({ status: "TODO", title: "Release notes for 1.5.6", match: "exact", commentCount: 2 });
+    expect(exact[commented.taskKey]).not.toHaveProperty("summary");
     expect(exact[described.taskKey]).toMatchObject({ match: "exact" });
     expect(Object.hasOwn(exact[described.taskKey]!, "commentCount")).toBe(false);
     expect(JSON.stringify(tool)).not.toContain("User decided");

@@ -1,0 +1,26 @@
+diff --git a/autobyteus-web/components/fileExplorer/viewers/ExcelViewer.vue b/autobyteus-web/components/fileExplorer/viewers/ExcelViewer.vue
+index e272c7578a..a06004f27d 100644
+--- a/autobyteus-web/components/fileExplorer/viewers/ExcelViewer.vue
++++ b/autobyteus-web/components/fileExplorer/viewers/ExcelViewer.vue
+@@ -42,6 +42,7 @@
+ <script setup lang="ts">
+ import { ref, computed, watch, onMounted } from 'vue';
+ import * as XLSX from 'xlsx';
++import DOMPurify from 'dompurify';
+ import { authorizedFetch } from '~/utils/remoteAccess/authorizedTransport';
+ 
+ const props = defineProps<{
+@@ -62,9 +63,10 @@ const sheetHtml = computed(() => {
+   const sheet = workbook.value.Sheets[activeSheet.value];
+   if (!sheet) return '';
+   
+-  return XLSX.utils.sheet_to_html(sheet, { 
+-    id: 'excel-table',
+-    editable: false
++  const tableHtml = XLSX.utils.sheet_to_html(sheet, { header: '', footer: '' });
++  return DOMPurify.sanitize(tableHtml, {
++    ALLOWED_TAGS: ['table', 'thead', 'tbody', 'tr', 'th', 'td', 'br'],
++    ALLOWED_ATTR: ['colspan', 'rowspan'],
+   });
+ });
+ 

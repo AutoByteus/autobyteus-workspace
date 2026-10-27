@@ -3,10 +3,10 @@ import { mount, RouterLinkStub } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import ProjectTaskRow from '../ProjectTaskRow.vue'
 import type { ProjectTask, TaskWithoutProject } from '~/types/project'
-import { TASK_CARD_TEXT_MAX_CHARS, TASK_SUMMARY_LABEL_MAX_CHARS } from '~/utils/projects/taskSummary'
+import { TASK_CARD_TEXT_MAX_CHARS, TASK_LABEL_MAX_CHARS } from '~/utils/projects/taskText'
 
 const words = (count: number, prefix = 'word') => Array.from({ length: count }, (_, i) => `${prefix}${i}`).join(' ')
-const projectTask = (description: string): ProjectTask => ({ taskId: 't1', projectId: 'p1', description, status: 'TODO', contextFiles: [],
+const projectTask = (description: string, title = description.split('\n')[0]!.trim()): ProjectTask => ({ taskId: 't1', projectId: 'p1', title, description, status: 'TODO', contextFiles: [],
   createdAt: '2026-10-07T00:00:00.000Z', updatedAt: '2026-10-07T00:00:00.000Z', root: null })
 const tempTask = (description: string): TaskWithoutProject => ({ taskId: 'x1', description, status: 'TODO', referenceFiles: [],
   createdAt: '2026-10-07T00:00:00.000Z', updatedAt: '2026-10-07T00:00:00.000Z', root: null })
@@ -22,7 +22,7 @@ describe('ProjectTaskRow card text (task-card-compact-summary)', () => {
     expect(text.text().endsWith('…')).toBe(true)
     expect(wrapper.find('[data-testid="project-task-row-preview"]').exists()).toBe(false)
     const name = wrapper.get('[data-testid="project-task-row-link"]').attributes('aria-label')!
-    expect(name.length).toBeLessThanOrEqual(TASK_SUMMARY_LABEL_MAX_CHARS)
+    expect(name.length).toBeLessThanOrEqual(TASK_LABEL_MAX_CHARS)
     expect(name.endsWith('…')).toBe(true)
   })
 
@@ -48,5 +48,12 @@ describe('ProjectTaskRow card text (task-card-compact-summary)', () => {
     expect(wrapper.get('[data-testid="project-task-row-text"]').text()).toBe('Write the release notes.')
     expect(wrapper.get('[data-testid="project-task-row-preview"]').text()).toBe('Keep it short.')
     expect(wrapper.get('[data-testid="project-task-row-link"]').attributes('aria-label')).toBe('Write the release notes.')
+  })
+
+  it('a Project Task card shows its title as the main line and its description\'s start as the preview (autobyteus-260 REQ-006)', () => {
+    const wrapper = mountRow(projectTask('The image build stops on arm64.\nSteps follow.', 'Docker image fails on ARM'))
+    expect(wrapper.get('[data-testid="project-task-row-text"]').text()).toBe('Docker image fails on ARM')
+    expect(wrapper.get('[data-testid="project-task-row-preview"]').text()).toBe('The image build stops on arm64. Steps follow.')
+    expect(wrapper.get('[data-testid="project-task-row-link"]').attributes('aria-label')).toBe('Docker image fails on ARM')
   })
 })

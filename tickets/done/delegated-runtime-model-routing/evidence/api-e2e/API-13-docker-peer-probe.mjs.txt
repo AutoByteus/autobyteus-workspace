@@ -1,0 +1,162 @@
+#!/usr/bin/env node
+// autobyteus-32 API-13 (temporary probe; a copy is kept in the ticket's evidence): node A = this worktree's built server on
+// the host; node B = a test-owned container of the released image (autobyteus/autobyteus-server:beta) running this
+// worktree's dist (mounted read-only), on 127.0.0.1, without any user volume. Both use the scripted AGY CLI (mounted
+// read-only into B); B's Model Router is a scripted AGY run that answers routing requests as a plan file in the container
+// says. Cases: D-1 Model Routing off on B → refused with B's state; D-2 on → B's router chooses, the launch comes back to A
+// (notes, link), B records the copy from A's node; D-3 B's router silent → MODEL_ROUTER_FAILED within the 50 s start bound.
+// Usage: node docker-peer-probe.mjs <worktree> <out-dir>
+import { spawn, execFileSync } from 'node:child_process';
+import { createWriteStream, existsSync } from 'node:fs';
+import fs from 'node:fs/promises';
+import net from 'node:net';
+import os from 'node:os';
+import path from 'node:path';
+import { randomUUID } from 'node:crypto';
+import { createRequire } from 'node:module';
+import { pathToFileURL } from 'node:url';
+
+const [worktree, outDir] = process.argv.slice(2);
+const serverDir = path.join(worktree, 'autobyteus-server-ts');
+const fixtures = path.join(serverDir, 'tests', 'fixtures');
+const WebSocket = createRequire(path.join(serverDir, 'package.json'))('ws');
+const IMAGE = 'autobyteus/autobyteus-server:beta';
+const MODEL = 'gemini-3.8-flash-low';
+const NAMES = { a: 'host-a', b: 'docker-1' };
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+const out = { startedAt: new Date().toISOString(), head: execFileSync('git', ['-C', worktree, 'rev-parse', '--short', 'HEAD']).toString().trim(), image: IMAGE, cases: {} };
+await fs.mkdir(outDir, { recursive: true });
+const save = () => fs.writeFile(path.join(outDir, 'docker-peer-probe.json'), JSON.stringify(out, null, 2));
+const freePort = () => new Promise((resolve) => { const s = net.createServer(); s.listen(0, '127.0.0.1', () => { const { port } = s.address(); s.close(() => resolve(port)); }); });
+const [aPort, bPort] = [await freePort(), await freePort()];
+const container = `mr-docker-peer-${randomUUID().slice(0, 8)}`;
+out.image = { name: IMAGE, id: execFileSync('docker', ['image', 'inspect', IMAGE, '--format', '{{.Id}}']).toString().trim() };
+const root = await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(), 'mr-docker-')));
+const dataRoot = path.join(root, 'a');
+for (const folder of ['db', 'logs', 'memory', 'temp_workspace', 'workspace', 'home']) await fs.mkdir(path.join(dataRoot, folder), { recursive: true });
+const aUrl = `http://127.0.0.1:${aPort}`; const bUrl = `http://127.0.0.1:${bPort}`;
+const db = pathToFileURL(path.join(dataRoot, 'db', 'node.db')).href;
+const cli = path.join(fixtures, 'agy-failure-cli.mjs');
+const aEnv = { PATH: process.env.PATH, HOME: path.join(dataRoot, 'home'), TMPDIR: process.env.TMPDIR ?? os.tmpdir(), APP_ENV: 'development', DB_TYPE: 'sqlite', DATABASE_URL: db,
+  AUTOBYTEUS_SERVER_HOST: aUrl, AUTOBYTEUS_LOG_DIR: path.join(dataRoot, 'logs'), AUTOBYTEUS_MEMORY_DIR: path.join(dataRoot, 'memory'),
+  AUTOBYTEUS_TEMP_WORKSPACE_DIR: path.join(dataRoot, 'temp_workspace'), ANTIGRAVITY_CLI_COMMAND: cli, AGY_FAKE_CASE: 'linked_skills' };
+await fs.writeFile(path.join(dataRoot, '.env'), `APP_ENV=development\nDB_TYPE=sqlite\nDATABASE_URL=${db}\nAUTOBYTEUS_SERVER_HOST=${aUrl}\n`);
+execFileSync('corepack', ['pnpm', '-C', serverDir, 'exec', 'prisma', 'migrate', 'deploy', '--schema', './prisma/schema.prisma'], { env: { ...aEnv, HOME: os.homedir() }, stdio: 'ignore' });
+let server = null;
+const gqlAt = (base) => async (query, variables = {}) => { const r = await fetch(`${base}/graphql`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ query, variables }) }).then((x) => x.json()); if (r.errors) throw new Error(JSON.stringify(r.errors)); return r.data; };
+const a = gqlAt(aUrl); const b = gqlAt(bUrl);
+const healthy = async (base, ms) => { const t0 = Date.now(); while (Date.now() - t0 < ms) { if (await fetch(`${base}/rest/health`).then((r) => r.ok).catch(() => false)) return true; await sleep(500); } return false; };
+const inB = (...args) => execFileSync('docker', ['exec', container, ...args], { encoding: 'utf8' });
+const setPlan = (plan) => execFileSync('docker', ['exec', '-i', container, 'sh', '-c', 'cat > /tmp/mr-router-plan.json'], { input: JSON.stringify(plan) });
+const routerLog = () => { try { return inB('sh', '-c', 'cat /tmp/mr-router-log.jsonl 2>/dev/null || true').trim().split('\n').filter(Boolean).map((l) => JSON.parse(l)); } catch { return []; } };
+
+const callTool = (name, args) => `CALL_TOOL:${JSON.stringify({ name, arguments: args })}`;
+const stringsOf = (v) => { const o = []; const walk = (x) => { if (typeof x === 'string') o.push(x); else if (Array.isArray(x)) x.forEach(walk); else if (x && typeof x === 'object') Object.values(x).forEach(walk); }; walk(v); return o; };
+const calledResults = (conversation) => (Array.isArray(conversation) ? conversation : []).flatMap((entry) => { const s = stringsOf(entry).filter((v) => v.includes('CALLED:')); return s.length ? [s[0].slice(s[0].indexOf('CALLED:') + 7)] : []; });
+const toolResult = (called) => { const raw = JSON.parse(called); if (raw.structuredContent) return raw.structuredContent; const text = raw.content?.find?.((p) => p.type === 'text')?.text; try { return JSON.parse(text); } catch { return { text: text ?? called }; } };
+const conversation = async (runId) => (await a('query($id:String!){getRunProjection(runId:$id){conversation}}', { id: runId })).getRunProjection?.conversation;
+const calls = async (runId, name, args, ms = 120_000) => {
+  const before = calledResults(await conversation(runId)).length;
+  const socket = new WebSocket(`ws://127.0.0.1:${aPort}/ws/agent/${runId}`);
+  const frames = []; socket.on('message', (raw) => frames.push(JSON.parse(String(raw))));
+  await new Promise((resolve, reject) => { socket.once('open', resolve); socket.once('error', reject); });
+  while (!frames.some((f) => f.type === 'CONNECTED')) await sleep(100);
+  const id = randomUUID(); const t0 = Date.now();
+  socket.send(JSON.stringify({ type: 'SEND_MESSAGE', payload: { agent_run_id: runId, content: callTool(name, args), message_id: id, dedupe_key: id, command_id: randomUUID(), context_file_paths: [], image_urls: [] } }));
+  let results = [];
+  while (Date.now() - t0 < ms) { results = calledResults(await conversation(runId)); if (results.length > before) break; await sleep(300); }
+  socket.close();
+  if (results.length <= before) throw new Error(`no result of ${name}`);
+  return { ...toolResult(results[before]), elapsedMs: Date.now() - t0 };
+};
+const textOf = (result) => String(result.message ?? result.text ?? JSON.stringify(result));
+
+try {
+  // Node B: a test-owned container, 127.0.0.1 only, no volumes but this worktree's dist and the scripted CLI (read-only).
+  execFileSync('docker', ['run', '-d', '--name', container, '-p', `127.0.0.1:${bPort}:8000`,
+    '-v', `${path.join(serverDir, 'dist')}:/app/autobyteus-server-ts/dist:ro`,
+    // The workspace packages the server imports at runtime, from this worktree too (same package.json as the image).
+    ...['autobyteus-ts', 'autobyteus-agent-presentation-contracts', 'autobyteus-application-sdk-contracts', 'autobyteus-collaboration-stream-contracts', 'autobyteus-team-stream-contracts']
+      .flatMap((pkg) => ['-v', `${path.join(worktree, pkg, 'dist')}:/app/${pkg}/dist:ro`]), '-v', `${fixtures}:/app/autobyteus-server-ts/tests/fixtures:ro`,
+    '-e', 'ANTIGRAVITY_CLI_COMMAND=/app/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs', '-e', 'AGY_FAKE_CASE=linked_skills', '-e', 'AGY_FAKE_EXTRA_MODELS=alt-model',
+    '-e', 'AGY_FAKE_ROUTER_PLAN=/tmp/mr-router-plan.json', '-e', 'AGY_FAKE_ROUTER_LOG=/tmp/mr-router-log.jsonl', IMAGE], { stdio: 'ignore' });
+  out.container = { name: container, port: bPort, mounts: JSON.parse(execFileSync('docker', ['inspect', container, '--format', '{{json .Mounts}}']).toString()).map((m) => ({ source: m.Source, destination: m.Destination, rw: m.RW, type: m.Type })) };
+  setPlan({ mode: 'valid', runtime: 'antigravity_cli', model: 'alt-model' });
+  server = spawn(process.execPath, [path.join(serverDir, 'dist/app.js'), '--host', '127.0.0.1', '--port', String(aPort), '--data-dir', dataRoot], { cwd: serverDir, env: aEnv, detached: true, stdio: ['ignore', 'pipe', 'pipe'] });
+  const aLog = createWriteStream(path.join(outDir, 'docker-peer-probe-node-a.log')); server.stdout.pipe(aLog); server.stderr.pipe(aLog);
+  if (!(await healthy(aUrl, 90_000))) throw new Error('node A did not start');
+  if (!(await healthy(bUrl, 240_000))) throw new Error('node B (container) did not start');
+  out.container.distInUse = inB('sh', '-c', 'ls /app/autobyteus-server-ts/dist/built-in-agents/templates').trim().split('\n');
+  out.container.cliCommand = inB('sh', '-c', 'cat /proc/$(pgrep -f "node dist/app.js" | head -1)/environ | tr "\\0" "\\n" | grep -E "^(ANTIGRAVITY_CLI_COMMAND|AGY_FAKE_CASE)="').trim().split('\n');
+  const status = async (base) => (await fetch(`${base}/rest/remote-access/status`).then((r) => r.json()));
+  const [aId, bId] = [(await status(aUrl)).nodeId, (await status(bUrl)).nodeId];
+  out.nodes = { a: aId, b: bId };
+  for (const node of [a, b]) await node('mutation{setRemoteCollaborationEnabled(enabled:true){enabled}}');
+  await a('mutation($i:AddPeerNodeInput!){addPeerNode(input:$i){nodeId}}', { i: { nodeId: bId, baseUrl: bUrl, name: NAMES.b } });
+  await b('mutation($i:AddPeerNodeInput!){addPeerNode(input:$i){nodeId}}', { i: { nodeId: aId, baseUrl: `http://host.docker.internal:${aPort}`, name: NAMES.a } });
+  // B's agent with no default (covered only by B's router), and B's router launch (the scripted AGY CLI).
+  await b('mutation($i:CreateAgentDefinitionInput!){createAgentDefinition(input:$i){id}}', { i: { name: 'Blank Slate', role: 'assistant', description: 'No default (Docker probe)', instructions: 'Reply OK.', toolNames: [] } });
+  await b('mutation($r:String!,$m:String!){setModelRouterLaunch(runtimeKind:$r, llmModelIdentifier:$m)}', { r: 'antigravity_cli', m: MODEL });
+  // A's delegator (scripted AGY).
+  const delegatorDef = (await a('mutation($i:CreateAgentDefinitionInput!){createAgentDefinition(input:$i){id}}', { i: { name: 'Delegator', role: 'assistant', description: 'Docker probe delegator', instructions: 'Follow the request.', toolNames: [] } })).createAgentDefinition.id;
+  const created = (await a('mutation($i:CreateAgentRunInput!){createAgentRun(input:$i){success message runId}}', { i: { agentDefinitionId: delegatorDef,
+    workspaceRootPath: path.join(dataRoot, 'workspace'), llmModelIdentifier: MODEL, llmConfig: null, autoExecuteTools: true, runtimeKind: 'antigravity_cli' } })).createAgentRun;
+  if (!created.success) throw new Error(created.message);
+  const delegate = (description) => calls(created.runId, 'delegate_task', { node: NAMES.b, recipient_address: '/blank_slate', description });
+
+  // D-1: off on B.
+  const off = await delegate('Docker off. Reply OK.');
+  out.cases['D-1'] = { result: off, ok: off.delegated === false && textOf(off) === `There is no default runtime configured for the target agent Blank Slate on node "${NAMES.b}", and Model Routing is off on node "${NAMES.b}".` };
+  await save();
+
+  // D-2: on; B's router chooses.
+  setPlan({ mode: 'valid', runtime: 'antigravity_cli', model: 'alt-model', taskKind: 'writing', reason: 'Gemini has limit left on the Docker node.', readRuntimes: true });
+  out.cases.bStatusOn = (await b('mutation{setModelRoutingEnabled(enabled:true)}')).setModelRoutingEnabled;
+  const on = await delegate('Write the Docker release note. Reply OK.');
+  out.cases['D-2'] = { result: on };
+  await save();
+  // The delegator's link (its collaboration tree, wherever the node keeps it).
+  const findFiles = async (dir) => (await fs.readdir(dir, { withFileTypes: true }).catch(() => [])).reduce(async (acc, e) => [...await acc,
+    ...(e.isDirectory() ? await findFiles(path.join(dir, e.name)) : e.name === 'collaboration_tree.json' ? [path.join(dir, e.name)] : [])], Promise.resolve([]));
+  let link = null;
+  for (let i = 0; i < 40 && !link; i += 1) {
+    for (const file of await findFiles(dataRoot)) {
+      const tree = JSON.parse(await fs.readFile(file, 'utf8').catch(() => '{}'));
+      link ??= (tree.taskExecutions ?? []).find((entry) => entry.agentRunId === on.target_agent_run_id) ?? null;
+    }
+    if (!link) await sleep(500);
+  }
+  // The delegating run's tree as the window reads it (GraphQL), for the Settings rows.
+  const windowTree = (await a('query($id:String!){agentRunCollaboration(runId:$id)}', { id: created.runId }).catch((e) => ({ error: String(e) })));
+  const records = [];
+  for (let i = 0; i < 60 && !records.length; i += 1) {
+    const page = (await b('{modelRoutingDecisions(limit:20)}')).modelRoutingDecisions;
+    if (JSON.stringify(page).includes('model_router')) records.push(page); else await sleep(500);
+  }
+  out.cases['D-2'] = { result: on, link, windowTree, bDecisions: records[0] ?? null, routerLog: routerLog(),
+    ok: on.delegated === true && (on.launch_notes ?? []).some((n) => n.includes('antigravity_cli / alt-model, chosen by the Model Router (writing)'))
+      && link?.launches?.[0]?.source?.origin === 'model_router' && JSON.stringify(records[0] ?? {}).includes(`"fromNode":"${NAMES.a}"`) };
+  await save();
+
+  // D-3: B's router silent past its 40 s budget → MODEL_ROUTER_FAILED within the 50 s start bound.
+  setPlan({ mode: 'silent', delayMs: 55_000 });
+  const failed = await delegate('Docker silent router. Reply OK.');
+  out.cases['D-3'] = { result: failed, ok: failed.delegated === false && textOf(failed) === `The Model Router on node "${NAMES.b}" could not choose a runtime for Blank Slate: no valid answer within 40 seconds.` && failed.elapsedMs < 50_000 };
+  for (let i = 0; i < 120 && routerLog().length < 2; i += 1) await sleep(500);
+  // D-4: once the silent turn has ended, the router answers again.
+  setPlan({ mode: 'valid', runtime: 'antigravity_cli', model: 'alt-model', taskKind: 'writing', reason: 'Back after a silent turn.' });
+  const again = await delegate('Write the Docker follow-up note. Reply OK.');
+  out.cases['D-4'] = { result: again, routerLog: routerLog(), ok: again.delegated === true && (again.launch_notes ?? []).some((n) => n.includes('Back after a silent turn.')) };
+  await b('mutation{setModelRoutingEnabled(enabled:false)}');
+} catch (error) {
+  out.error = error.stack || String(error);
+} finally {
+  try { out.containerLog = execFileSync('docker', ['exec', container, 'sh', '-c', 'tail -n 80 /var/log/supervisor/autobyteus_server.log /var/log/supervisor/autobyteus_server.err.log 2>/dev/null || true'], { encoding: 'utf8' }).slice(-6000); } catch {}
+  try { execFileSync('docker', ['rm', '-f', '-v', container], { stdio: 'ignore' }); } catch {}
+  if (server) { try { process.kill(-server.pid, 'SIGTERM'); } catch {} await sleep(3000); try { process.kill(-server.pid, 'SIGKILL'); } catch {} }
+  await fs.rm(root, { recursive: true, force: true });
+  out.cleanup = { containerRemoved: !execFileSync('docker', ['ps', '-a', '--format', '{{.Names}}']).toString().split('\n').includes(container), tempRoot: !existsSync(root) };
+  out.finishedAt = new Date().toISOString();
+  await save();
+  console.log(JSON.stringify({ error: out.error ?? null, cases: Object.fromEntries(Object.entries(out.cases).map(([k, v]) => [k, v?.ok ?? null])), cleanup: out.cleanup }));
+}

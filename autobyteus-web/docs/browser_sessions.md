@@ -59,6 +59,11 @@ Main-process owners:
   - URL normalization
   - load/readiness waits
   - reuse eligibility
+  - native Back/Forward dispatch (without load-completion waiting)
+- `browser-tab-observers.ts`
+  - shared native event adapter for ordinary and popup-created sessions
+  - main-frame navigation and stop-loading capability reconciliation
+  - title/destruction notifications; popup adoption policy stays in the manager
 - `BrowserTabPageOperations`
   - page reads
   - screenshot capture
@@ -81,6 +86,24 @@ The current settlement rules are:
 - main-frame navigation failure rejects on Electron `did-fail-load`, `did-fail-provisional-load`, or an immediate `loadURL()` rejection
 
 This keeps navigation lifecycle policy in one place and prevents Browser session calls from hanging when the URL changes without a full reload or when Electron reports a provisional failure path.
+
+### Desktop Back / Forward
+
+The Browser toolbar has localized, keyboard-focusable Back and Forward buttons.
+Each is enabled only when the active tab's native history can traverse in that direction.
+Chromium owns document, hash and History API entries (including same-URL entries),
+forward-branch truncation after new navigation, and page/unload restrictions.
+Histories remain independent per live tab; switching or maximizing does not recreate them.
+No history restoration or new agent-facing tool is provided.
+
+The shell-only `navigateBrowserHistory({ tabId, direction: 'back' | 'forward' })`
+bridge uses `browser-shell:navigate-history`. Main checks the actual IPC sender,
+attachment, lease and active tab synchronously before dispatch. An inactive request
+is inert; malformed/unattached/foreign requests reject. Unavailable directions do nothing.
+The response is a current snapshot, **not load completion**. Native navigation and
+stop-loading events publish updated `canGoBack` / `canGoForward` flags even if the
+URL does not change. Capability-only updates preserve unfinished address edits.
+Existing address/reload readiness semantics and persistent Browser partition are unchanged.
 
 ### Server browser boundary
 
@@ -253,6 +276,7 @@ The Browser shell UI owns:
 
 - the internal browser tab strip
 - manual URL entry
+- active-tab native Back / Forward with availability-driven disabled states
 - manual new-tab creation
 - mobile/desktop toggle for the active tab
 - refresh
@@ -389,6 +413,14 @@ results. Reopen saved history and verify exact results without replayed focus.
 Backend success or assignment while the tools panel is collapsed is not, by
 itself, evidence that the page was visible. Follow the workspace
 [testing guideline](../../TESTING.md) and clean up only test-owned instances.
+
+The credential-free `pnpm -C autobyteus-web test:e2e:embedded-browser-history`
+probe exercises toolbar history through a packaged worktree app and loopback
+fixtures. It covers committed documents and SPA entries, per-tab isolation,
+pending traversal, error-document recovery, popup lifecycle and keyboard/layout.
+Its file header lists prerequisites and case/output options. A native command
+response or network failure alone is not settlement: assert committed content
+(or the native error document) and reconciled controls.
 
 Electron browser lifecycle regression coverage should explicitly protect:
 

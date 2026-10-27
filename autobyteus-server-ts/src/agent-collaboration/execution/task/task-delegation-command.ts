@@ -1,5 +1,6 @@
 import type { CollaborationMemberExecutionIdentity, RootSubjectKind } from "../domain/root-execution-identity.js";
 import type { TaskExecutionReference } from "./task-execution-reference.js";
+import type { RoutingDecisionDraft } from "../../../model-routing/domain/model-routing-types.js";
 
 export type TaskDelegationContext = Readonly<{ identity: CollaborationMemberExecutionIdentity }>;
 
@@ -18,7 +19,11 @@ export type AssignToExistingCopyInput = Readonly<{ copy: TaskExecutionReference;
  * What dispatch reads from a root's placement: the launch notes of a fresh catalog admission (DS-003).
  * Structural, so task execution never depends on catalog admission.
  */
-export type TaskCopyPlacementLaunchNotes = Readonly<{ launchNotes?: readonly string[] }>;
+export type TaskCopyPlacementLaunchNotes = Readonly<{
+  launchNotes?: readonly string[];
+  /** A fresh catalog admission resolved while Model Routing was on: its decision records (REQ-012). */
+  routingDecision?: RoutingDecisionDraft;
+}>;
 
 /** The copy a delegation reached, named for what it is: an Agent copy, or a Team copy and its coordinator. */
 export type DelegatedCopy =

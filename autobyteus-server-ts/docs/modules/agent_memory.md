@@ -233,7 +233,7 @@ native rows for loaded contexts; it is not durable native cold replay. See
 Codex and Claude runs are recorded by the server as **raw-trace-only** local memory:
 
 1. `AgentRunManager` attaches `AgentRunMemoryRecorder` as an active-run sidecar when the run has a `memoryDir` and its runtime kind is explicitly Codex App Server or Claude Agent SDK.
-2. Accepted user messages are observed only after `AgentRun.postUserMessage(...)` returns `accepted: true`.
+2. User messages are observed only when the `AgentRun` forwards an admitted input to the runtime, whether it entered through `postUserMessage(...)` or a committed `reserveUserMessage(...)` slot (teammate delivery). Both keep the raw-trace `sourceEvent: "AgentRun.postUserMessage"` literal.
 3. Assistant text, reasoning, tool lifecycle outcomes, and normalized provider compaction-boundary payloads are captured from normalized `AgentRunEvent`s.
 4. `ExternalRuntimeMemoryWriter` writes shared `RawTraceItem` records through `RunMemoryFileStore`. It restores only sequence and tool-lifecycle state from active plus complete rotated raw traces; it never loads, constructs, or persists a `WorkingContext`.
 
@@ -347,6 +347,7 @@ Memory availability (`MemoryAvailabilitySummary`) is `latestMemoryAt`, `hasWorkJ
 
 - `DEFINITION` groups use `agentDefinitionId` from run metadata or run-history catalog rows.
 - Runs without metadata/history attribution are grouped under `UNATTRIBUTED` / `Unattributed runs` so legacy standalone memory remains discoverable.
+- Runs of an internal agent are left out while "Show internal agents" is off: no group, and not moved under `UNATTRIBUTED` (see [Agent Definition: Internal Agents](./agent_definition.md#internal-agents)).
 
 Agent explorer summaries include display name, stable ID, run count, latest memory timestamp, and merged memory availability. Agent-run summaries include run ID, optional agent metadata, workspace path, created/updated timestamps, and per-run memory availability.
 

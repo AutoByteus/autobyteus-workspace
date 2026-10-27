@@ -72,26 +72,12 @@ export class AgentRunInputAdmissionState {
   private rootShutdownFenced = false;
   private activeClaim: InputEntry | null = null;
 
+  /** One step: `reserve` (which holds the only admission checks), then commit and release. */
   admit(
     message: AgentInputUserMessage,
     observer: AgentRunInputLifecycleObserver | null,
     runtimeAvailable: boolean,
   ): AgentRunInputAdmission {
-    if (!this.accepting || !runtimeAvailable) {
-      return {
-        accepted: false,
-        code: "AGENT_RUN_NOT_ACCEPTING_INPUT",
-        message: "AgentRun is not accepting input.",
-      };
-    }
-    if (!message || !requiredString(message.content)) {
-      return {
-        accepted: false,
-        code: "AGENT_RUN_INPUT_INVALID",
-        message: "AgentRun input content must be a non-empty string.",
-      };
-    }
-
     const reservation = this.reserve(message, observer, runtimeAvailable);
     if (!reservation.accepted) return reservation;
     this.commitReservation(reservation.entrySequence);

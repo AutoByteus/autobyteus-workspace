@@ -1,0 +1,72 @@
+{
+  "source": "2c47bcd646ccd371a180dbc510fd1e30aee9144f",
+  "base": "67994daba0adf6eb8c6bc05827b5fab6b2975aa4",
+  "cwd": "/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024",
+  "note": "48-51 ran on resolved integration working tree before its commit; 52 onward at that commit. All current exercised production files match. Compile/generation not counted as test cases.",
+  "uniqueUnitCases": 854,
+  "checks": [
+    {
+      "id": "IMP-48",
+      "command": "env -i PATH=\"$PATH\" HOME=\"$HOME\" TMPDIR=\"$TMPDIR\" npm exec --yes --package=pnpm@10.28.2 -- pnpm install --frozen-lockfile",
+      "exit": 0,
+      "passedCases": null,
+      "evidence": "IMP-48-dependencies.log"
+    },
+    {
+      "id": "IMP-49",
+      "command": "env -i PATH=\"$PATH\" HOME=\"$HOME\" TMPDIR=\"$TMPDIR\" npm exec --yes --package=pnpm@10.28.2 -- pnpm -C autobyteus-server-ts build",
+      "exit": 0,
+      "passedCases": null,
+      "evidence": "IMP-49-integrated-server-build.log"
+    },
+    {
+      "id": "IMP-52",
+      "command": "env -i PATH=\"$PATH\" HOME=\"$HOME\" TMPDIR=\"$TMPDIR\" npm exec --yes --package=pnpm@10.28.2 -- pnpm -C autobyteus-ts exec vitest run tests/unit/tools/terminal tests/unit/agent/context/agent-config.test.ts tests/unit/tools/tool-result-json.test.ts",
+      "exit": 0,
+      "passedCases": 146,
+      "evidence": "IMP-52-integrated-core.log"
+    },
+    {
+      "id": "IMP-53",
+      "command": "env -i PATH=\"$PATH\" HOME=\"$HOME\" TMPDIR=\"$TMPDIR\" npm exec --yes --package=pnpm@10.28.2 -- pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/agent-provider-factory-builder.test.ts tests/unit/agent-execution/backends/autobyteus tests/unit/startup tests/unit/compositions tests/unit/shutdown tests/unit/server-runtime-app-data-migration-gate.test.ts tests/unit/standalone-application-host/standalone-application-host-lifecycle.test.ts tests/unit/agent-execution/backends/codex/thread tests/unit/agent-execution/backends/codex/codex-agent-run-backend.test.ts tests/unit/agent-execution/runtime/agent-run-activation-registry.test.ts tests/unit/agent-execution/agent-run.test.ts tests/unit/agent-execution/agent-run-manager.test.ts tests/unit/agent-execution/agent-run-root-shutdown-fence.test.ts tests/unit/agent-execution/backends/claude/session/claude-background-task-registry.test.ts tests/unit/agent-execution/backends/antigravity/agy-background-task-monitor.test.ts tests/unit/api/graphql/agent-background-task-view.test.ts tests/unit/agent-execution/input/agent-run-input-admission-state.test.ts tests/unit/agent-execution/general-process-run-supervisor-ownership.test.ts --no-watch",
+      "exit": 0,
+      "passedCases": 503,
+      "evidence": "IMP-53-integrated-server.log"
+    },
+    {
+      "id": "IMP-54",
+      "command": "env -i PATH=\"$PATH\" HOME=\"$HOME\" TMPDIR=\"$TMPDIR\" npm exec --yes --package=pnpm@10.28.2 -- pnpm -C autobyteus-web test:electron --run electron/server/__tests__ electron/application/__tests__ electron/updater/__tests__ electron/__tests__/nodeRegistryStore.spec.ts electron/__tests__/rendererConsoleDiagnostics.spec.ts electron/shell/__tests__",
+      "exit": 0,
+      "passedCases": 156,
+      "evidence": "IMP-54-integrated-electron.log"
+    },
+    {
+      "id": "IMP-55-prepare",
+      "command": "env -i PATH=\"$PATH\" HOME=\"$HOME\" TMPDIR=\"$TMPDIR\" npm exec --yes --package=pnpm@10.28.2 -- pnpm -C autobyteus-web exec nuxt prepare",
+      "exit": 0,
+      "passedCases": null,
+      "evidence": "IMP-55-nuxt-prepare.log"
+    },
+    {
+      "id": "IMP-55",
+      "command": "env -i PATH=\"$PATH\" HOME=\"$HOME\" TMPDIR=\"$TMPDIR\" npm exec --yes --package=pnpm@10.28.2 -- pnpm -C autobyteus-web test:nuxt --run components/server/__tests__ components/progress/__tests__/BackgroundTaskPanel.spec.ts components/progress/__tests__/BackgroundTaskPanel.inspection.spec.ts localization/messages/__tests__/backgroundTaskPanelCatalog.spec.ts stores/__tests__/windowNodeContextStore.spec.ts components/settings/__tests__/MemorySyncCard.spec.ts",
+      "exit": 0,
+      "passedCases": 49,
+      "evidence": "IMP-55-integrated-web.log"
+    },
+    {
+      "id": "IMP-56",
+      "command": "env -i PATH=\"$PATH\" HOME=\"$HOME\" TMPDIR=\"$TMPDIR\" CSC_IDENTITY_AUTO_DISCOVERY=false npm exec --yes --package=pnpm@10.28.2 -- pnpm -C autobyteus-web build:electron:mac",
+      "exit": 0,
+      "passedCases": null,
+      "evidence": "IMP-56-integrated-desktop-build.log"
+    }
+  ],
+  "additional": {
+    "50": "Compiled buildGraphqlSchema/printSchema export via node ESM; same exact recipe as IMP39 with output IMP-50-integrated-schema.graphql",
+    "51": "DOTENV_CONFIG_PATH=/dev/null BACKEND_GRAPHQL_BASE_URL=<absolute IMP-50-integrated-schema.graphql> plus clean pnpm prefix -C autobyteus-web codegen; exit0",
+    "56verify": "hdiutil verify autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.5.9-beta.9.dmg; exit0",
+    "57": "Private-HOME isolated-app start with explicit worktree .app and private data root, no fixed ports; returned ports/instance in start.json. Run control.mjs inspect, seed, states. Group CLI stop forced=true; not app quit proof.",
+    "59": "Separate private-HOME current app; quiet-quit.mjs invokes existing preload startShutdown, waits32s bounded; exited221ms, ports closed. CLI stop after app exit not forced."
+  }
+}

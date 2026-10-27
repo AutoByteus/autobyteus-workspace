@@ -255,7 +255,7 @@ describe("application execution-event journal recovery", () => {
         definitionRuntimeReadiness: {
           prepare: vi.fn(async () => undefined),
           isApplicationReady: vi.fn(() => true),
-          getDiagnosticsByApplicationId: vi.fn(() => new Map()),
+          getSetupRequiredDetail: vi.fn(() => null),
         },
       },
       executionReadiness: { assertReady: vi.fn() },
@@ -312,7 +312,7 @@ describe("application execution-event journal recovery", () => {
     });
   });
 
-  it("lets reload/reentry inspect and dispatch existing journal state before activation", async () => {
+  it("lets reload/reentry dispatch existing journal state once the application is active again (autobyteus-296)", async () => {
     await journalStore.appendEventAwaitable(APPLICATION_ID, buildEvent());
     const { service: eventDispatchService, engineController } = createDispatchService();
     const availability = new Map<string, { applicationId: string; state: string; detail: string | null; updatedAt: string }>([
@@ -333,7 +333,7 @@ describe("application execution-event journal recovery", () => {
       availabilityService: availabilityService as never,
       recoveryService: { resumeApplication: vi.fn(async () => undefined) },
       eventDispatchService,
-      engineLauncher: { ensureReady: vi.fn(async () => undefined), stop: vi.fn(async () => undefined) },
+      engineLauncher: { stop: vi.fn(async () => undefined) },
       applicationAgentToolCallLifecycle: {
         quiesceAndDrain: vi.fn(async () => undefined),
         open: vi.fn(),
@@ -367,7 +367,7 @@ describe("application execution-event journal recovery", () => {
       catalogReconciliation: catalogReconciliation as never,
       definitionReadiness: {
         prepare: vi.fn(async () => undefined),
-        isApplicationReady: vi.fn(() => true),
+        getSetupRequiredDetail: vi.fn(() => null),
       } as never,
       availabilityService: availabilityService as never,
       storageLifecycleService: storageLifecycle,
@@ -384,6 +384,10 @@ describe("application execution-event journal recovery", () => {
     expect(availabilityService.quarantineApplication).not.toHaveBeenCalled();
     expect(availabilityService.activateApplication).toHaveBeenCalledAfter(
       catalogReconciliation.reconcile,
+    );
+    // Dispatch needs ACTIVE: the pending event is handled after the activation.
+    expect(engineController.invokeApplicationEventHandler).toHaveBeenCalledAfter(
+      availabilityService.activateApplication,
     );
   });
 });

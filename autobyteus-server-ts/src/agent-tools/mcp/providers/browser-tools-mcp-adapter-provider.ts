@@ -4,10 +4,8 @@ import {
   getBrowserToolService,
   type BrowserToolService,
 } from "../../browser/browser-tool-service.js";
-import {
-  toBrowserJsonString,
-  toBrowserToolErrorPayload,
-} from "../../browser/browser-tool-serialization.js";
+import { toBrowserToolErrorPayload } from "../../browser/browser-tool-serialization.js";
+import { toToolResultJson } from "autobyteus-ts/tools/tool-result-json.js";
 import type {
   AgentToolMcpAdapterProvider,
   AgentToolMcpToolAdapter,
@@ -42,10 +40,10 @@ export class BrowserToolsMcpAdapterProvider implements AgentToolMcpAdapterProvid
             this.browserToolService,
             entry.parseInput(asRawArguments(rawArguments)),
           );
-          return createAgentToolsMcpSuccessResult(toBrowserJsonString(result));
+          return createAgentToolsMcpSuccessResult(toToolResultJson(result));
         } catch (error) {
           return createAgentToolsMcpErrorResult(
-            toBrowserJsonString(toBrowserToolErrorPayload(error)),
+            toToolResultJson(toBrowserToolErrorPayload(error)),
             "browser_tool_execution_failed",
           );
         }

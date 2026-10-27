@@ -1,0 +1,29 @@
+# Evidence formatting: terminal blank lines normalized; content retained.
+# API11 | 2026-10-26T10:40:21.818686+00:00 | source9b10fcd4 / HEAD52a3434f5 plus new test | macOS arm64 Node26.12.0
+# cwd worktree root; env -i PATH="$PATH" HOME="$HOME" TMPDIR="$TMPDIR" npm exec --yes --package=pnpm@10.28.2 -- pnpm -C autobyteus-web test:electron --run server/__tests__/PortOwnerInspectorFaults.spec.ts --reporter=verbose
+
+> autobyteus@1.5.9-beta.10 test:electron /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-web
+> vitest --config ./electron/vitest.config.ts --run server/__tests__/PortOwnerInspectorFaults.spec.ts --reporter=verbose
+
+
+ RUN  v3.2.7 /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-web/electron
+
+stdout | server/__tests__/PortOwnerInspectorFaults.spec.ts > actual advisory inspector faults > enforces the real 1000ms subprocess deadline and reaps only its owned child
+AC002 actual deadline receipt {"elapsedMs":1010,"pid":23664,"absent":true}
+
+ ✓ server/__tests__/PortOwnerInspectorFaults.spec.ts > actual advisory inspector faults > missing diagnostic binary returns unavailable without obscuring the conflict 10ms
+ ✓ server/__tests__/PortOwnerInspectorFaults.spec.ts > actual advisory inspector faults > permission-denied executable returns unavailable 3ms
+ ✓ server/__tests__/PortOwnerInspectorFaults.spec.ts > actual advisory inspector faults > enforces the real 1000ms subprocess deadline and reaps only its owned child 1015ms
+ ✓ server/__tests__/PortOwnerInspectorFaults.spec.ts > actual advisory inspector faults > rejects over-32KiB output rather than publishing a truncated owner 372ms
+ ✓ server/__tests__/PortOwnerInspectorFaults.spec.ts > actual advisory inspector faults > empty or malformed evidence "" does not fabricate an owner 373ms
+ ✓ server/__tests__/PortOwnerInspectorFaults.spec.ts > actual advisory inspector faults > empty or malformed evidence "unstructured text" does not fabricate an owner 456ms
+ ✓ server/__tests__/PortOwnerInspectorFaults.spec.ts > actual advisory inspector faults > empty or malformed evidence "p0\ncnode\n" does not fabricate an owner 404ms
+ ✓ server/__tests__/PortOwnerInspectorFaults.spec.ts > actual advisory inspector faults > empty or malformed evidence "pNaN\ncnode\n" does not fabricate an owner 359ms
+ ✓ server/__tests__/PortOwnerInspectorFaults.spec.ts > actual advisory inspector faults > empty or malformed evidence "p9007199254740992\ncnode\n" does not fabricate an owner 346ms
+ ✓ server/__tests__/PortOwnerInspectorFaults.spec.ts > actual advisory inspector faults > empty or malformed evidence "p12\ncnode\npbad\n" does not fabricate an owner 472ms
+ ✓ server/__tests__/PortOwnerInspectorFaults.spec.ts > actual advisory inspector faults > discards racing/nonzero partial evidence, recovers fresh, then forgets vanished owners 490ms
+
+ Test Files  1 passed (1)
+      Tests  11 passed (11)
+   Start at  11:40:23
+   Duration  4.63s (transform 24ms, setup 0ms, collect 24ms, tests 4.30s, environment 0ms, prepare 73ms)

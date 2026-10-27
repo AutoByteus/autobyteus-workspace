@@ -281,6 +281,35 @@ raw SDK no longer reports a saved ID, the ID remains visible but no valid schema
 or successful Save is invented. Frontend display must not perform alias folding
 or rewrite the stored ID merely because it rendered a recommended sibling.
 
+Claude model discovery (`ClaudeSdkClient.listModels`) opens the CLI with an
+input stream that never yields a message (`withClaudeControlQuery`,
+`claude-sdk-control-query.ts`) and closes it after `supportedModels()`, so no
+user turn is sent and no tokens are spent. A string prompt would be sent as a
+user turn (the SDK drops `maxTurns: 0`).
+
+### Provider Usage
+
+`src/llm-management/provider-usage/` reads one AutoByteus provider's usage
+with its API key (from the server's secret resolver; never logged or returned)
+and no completion request, for the available-agent-runtimes read (see
+[Agent Runtimes](agent_runtimes.md#available-agent-runtimes)). One reader per
+provider, by provider ID (`provider-usage-readers.ts`):
+
+| Provider | Call | Result |
+| --- | --- | --- |
+| DeepSeek | `GET /user/balance` | balance; `is_available` false → blocked "no balance left" |
+| Kimi | `GET /v1/users/me/balance` (api.moonshot.ai) | `available_balance` (USD); ≤ 0 → blocked "no balance left" |
+| Anthropic | free `POST /v1/messages/count_tokens` on the provider's first model | 400 "credit balance" → blocked "credit balance too low" |
+| xAI (Grok) | `GET /v1/api-key` | key blocked / disabled / team blocked → blocked |
+| Others, custom providers | — | "not reported" |
+
+A reader returns its reading or throws: an unusable answer throws
+`ProviderUsageUnreadableError` with a short reason (`the API key was not
+accepted`, `unexpected answer (<status>)`, `no model to check with`); a time-out
+is the request's abort. The available-agent-runtimes service words it
+("<Provider> usage timed out" / "… could not be read: <reason>" / "… could not
+be read"); provider texts are not kept.
+
 ### Claude Agent SDK Authentication
 
 `CLAUDE_AGENT_SDK_AUTH_MODE` preserves the existing `auto|cli|api-key`
@@ -292,6 +321,42 @@ replaces `ANTHROPIC_API_KEY` in the otherwise unchanged launch environment.
 This is credential substitution at the existing use point, not child-process
 isolation; baseline tools, MCP/session behavior, and external Codex behavior
 remain unchanged.
+
+### Claude Agent SDK Prompt Cache Lifetime
+
+Claude Code keeps prompt caches for 5 minutes when it is billed through API
+credits or an API key, and for 1 hour on a Claude subscription. AutoByteus
+agents often wait longer than 5 minutes between turns (for teammates or the
+user), so each resume would write the whole context again. AutoByteus therefore
+asks Claude Code for the one-hour cache by default.
+
+- `client/claude-sdk-spawn-environment.ts` (`buildClaudeSdkSpawnEnvironment`)
+  composes the Claude Code child environment for every spawn (agent sessions,
+  and the model-listing and usage reads that send no message): first the
+  auth-mode policy above, then the one-hour cache default, in every auth mode.
+- The default is `ENABLE_PROMPT_CACHING_1H=1`, added only when the server
+  setting `CLAUDE_AGENT_SDK_ONE_HOUR_PROMPT_CACHE` is not `false` (absent means
+  on) and the server environment does not already define
+  `ENABLE_PROMPT_CACHING_1H`. The key, its values and the rule live in
+  `runtime-management/claude/claude-prompt-cache-setting.ts`.
+- Claude Code ranks this variable below every explicit user choice: a
+  `promptCacheTtl` or `subagentPromptCacheTtl` in the user's Claude Code
+  settings, `CLAUDE_CODE_PROMPT_CACHE_TTL`,
+  `CLAUDE_CODE_SUBAGENT_PROMPT_CACHE_TTL` and `FORCE_PROMPT_CACHING_5M` all
+  win. AutoByteus never sets `CLAUDE_CODE_PROMPT_CACHE_TTL`, because that
+  variable would override the user's `promptCacheTtl` setting. See
+  [Claude Code prompt caching](https://code.claude.com/docs/en/prompt-caching).
+- On a subscription the agent conversation keeps Claude Code's own 1-hour
+  cache; only Claude Code's background requests (such as compaction and titles)
+  move from 5 minutes to 1 hour.
+- Cost trade-off on API billing: writing a 1-hour cache costs 2x the input
+  price instead of 1.25x; reading it costs the same. A conversation resumed
+  5-60 minutes later reads its cache instead of writing it again, which saves
+  money for agents that wait between turns.
+- The user switches it in Settings -> Server Settings -> Basics -> **Claude
+  runtime** -> **One-hour prompt cache** (`true`/`false`; other values are
+  rejected). A change applies to Claude agent sessions started afterwards,
+  without a restart. Older Claude Code versions ignore the variable.
 
 ## Built-In vs. Custom Providers
 
