@@ -75,6 +75,7 @@
     "test:e2e:embedding-settings": "node tests/e2e/embedding-settings-probe.mjs",
     "test:e2e:internal-agents": "node tests/e2e/internal-agents-probe.mjs",
     "test:e2e:model-routing-settings": "node tests/e2e/model-routing-settings-probe.mjs",
+    "test:e2e:model-routing-decisions": "node tests/e2e/model-routing-decisions-probe.mjs",
     "test:e2e:agent-runtimes-settings": "node tests/e2e/agent-runtimes-settings-probe.mjs",
     "test:e2e:project-manager-ux": "node tests/e2e/project-manager-ux-probe.mjs",
     "test:e2e:chat-entry-live": "node tests/e2e/chat-entry-live-probe.mjs",

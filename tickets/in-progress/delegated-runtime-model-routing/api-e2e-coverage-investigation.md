@@ -101,4 +101,12 @@ Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-runtime-mod
 
 ## Investigation Decision
 
-- Proceed: `Yes`. Durable coverage added/updated: `Yes`. Reroute: `Yes`, after execution. F-1 (Codex sandbox widened by a workspace config), F-2 (the Claude router has the user's claude.ai connector tools and `Skill`) and F-3 (a failed router turn leaves routing "busy") go to the code reviewer for failure-origin review; see the execution report.
+- **Round 2 (CRR-004, IR-003, SR-018):**
+  - L-01/L-02 confinement probes withdrawn (no escape probes).
+  - New cases:
+    - L-05: the router on each runtime (Claude, Codex, Antigravity, Grok, AutoByteus/DeepSeek from the test vault); it teaches `knowledge.md`, lists its tools and routes one Task (AC-011 reworded, AC-007);
+    - API-14: the durable browser probe `autobyteus-web/tests/e2e/model-routing-decisions-probe.mjs` on two scripted nodes (AC-009, AC-012);
+    - API-15: an isolated desktop instance of this build, prepared for the user.
+  - MR-09 asserts recovery (CR-005).
+  - Rerun: everything that exercises routing (IR-003 changed `model-router{,-agent}.ts`).
+- Round 1: Proceed: `Yes`. Durable coverage added/updated: `Yes`. Reroute: `Yes`, after execution. F-1 (Codex sandbox widened by a workspace config), F-2 (the Claude router has the user's claude.ai connector tools and `Skill`) and F-3 (a failed router turn leaves routing "busy") go to the code reviewer for failure-origin review; see the execution report.

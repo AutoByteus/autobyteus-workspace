@@ -343,7 +343,7 @@ describeLive("list_available_agent_runtimes used by a live agent on every runtim
       const reported = ((await pageRead()).agentRuntimes.find((entry) => entry.runtime === runtime.runtimeKind)?.models ?? null) as Record_[] | null;
       const model = runtime.pickModel(runtime.runtimeKind === "autobyteus" || !Array.isArray(reported) ? await modelsFor(runtime)
         : reported.filter((entry) => !entry.blocked).map((entry) => String(entry.id)));
-      expect(model).toBeTruthy();
+      expect(model, `no unblocked ${runtime.runtimeKind} model in the node's report: ${JSON.stringify(reported).slice(0, 800)}`).toBeTruthy();
       const suffix = randomUUID().slice(0, 6);
       const targetName = `AAR Routed Target ${suffix}`;
       await createAgentDefinition(targetName, "Reply OK to any task.", []);

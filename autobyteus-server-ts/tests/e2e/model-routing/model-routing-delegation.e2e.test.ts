@@ -37,9 +37,10 @@ import { grokAcpFixturePath } from "../helpers/grok-fake-cli.js";
  * and used as today while off (AC-003); MR-06 the router set to a signed-out runtime: status `SIGNED_OUT` and an
  * inactive-router note (CR-002); MR-07 the router's definition, run and workspace are hidden unless internal agents are
  * shown, and "Talk to the router" opens its run (AC-008); MR-08 the router run's agent tools are its template's, without
- * collaboration tools (AC-011); MR-09 (C-05, observation) the router's CLI process dies mid-turn, then a turn fails with
- * an error: the notes and timing of the routings after each.
- * About 8 minutes (MR-03, MR-04 and MR-09 wait for the 40 s budget). `MODEL_ROUTING_E2E_EVIDENCE_DIR` keeps a JSON receipt.
+ * collaboration tools (AC-011); MR-09 (C-05, CR-005) the router's CLI process dies mid-turn, then a turn fails with
+ * an error: that request falls back with its reason, and the next routings are the router's again (restored run), also
+ * after a router launch round trip.
+ * About 5 minutes (MR-03 and MR-04 wait for the 40 s budget). `MODEL_ROUTING_E2E_EVIDENCE_DIR` keeps a JSON receipt.
  * Run (a disposable HOME, as TESTING.md asks for E2E): env -i PATH="$PATH" HOME="$(mktemp -d)" TMPDIR="$TMPDIR" RUN_AGY_FAILURE_E2E=1 \
  *   ANTIGRAVITY_CLI_COMMAND=$PWD/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs \
  *   pnpm -C autobyteus-server-ts exec vitest run tests/e2e/model-routing/model-routing-delegation.e2e.test.ts --no-watch
@@ -416,11 +417,14 @@ suite("Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch
     for (const collaboration of ["delegate_task", "send_message_to", "get_handoff_rules", "list_available_agents"]) expect(tools, collaboration).not.toContain(collaboration);
   }, 90_000);
 
-  it("MR-09 C-05 (observation): the router's CLI process dies mid-turn; the next routings, then a new router launch", async () => {
+  it("MR-09 C-05/CR-005: after the router's CLI dies mid-turn, or its turn fails with an error, the next routings are the router's again", async () => {
     const manager = await delegator();
     const route = async (label: string) => {
+      console.log(`MR-09 step ${label}: started ${new Date().toISOString()}`);
       const { result, elapsedMs } = await manager.calls(delegate(`/${segment(names.solo!)}`, `${label}. Reply OK.`), 120_000);
-      return { label, elapsedMs, delegated: result.delegated, notes: notesOf(result), status: (await graphql(`{modelRoutingStatus}`)).modelRoutingStatus };
+      const entry = { label, elapsedMs, delegated: result.delegated, notes: notesOf(result), status: (await graphql(`{modelRoutingStatus}`)).modelRoutingStatus };
+      console.log(`MR-09 step ${JSON.stringify(entry)}`);
+      return entry;
     };
     const observed: Rec[] = [];
     await setRouter(AGY, MODEL);
@@ -439,11 +443,18 @@ suite("Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch
     evidence["MR-09"] = observed;
     console.log(`MR-09 ${JSON.stringify(observed)}`);
     for (const entry of observed) expect(entry.elapsedMs, `${entry.label}: within the 50 s bound`).toBeLessThan(50_000);
-    // A process that dies mid-turn ends that turn only: the next routing is the router's again.
-    expect(observed.find((entry) => entry.label === "Router crash")?.notes.join(" ")).toContain("the Model Router's turn was interrupted");
-    expect(observed.find((entry) => entry.label === "After crash, 1")?.notes.join(" ")).toContain("chosen by the Model Router (general): Back after crash.");
-    // A turn that fails with an error is recorded here as observed (API/E2E finding F-3: the next routings wait 40 s and
-    // read "the Model Router was busy" while the status stays active); the failure-origin review decides the behavior.
-    expect(observed.find((entry) => entry.label === "Router throw")?.notes.join(" ")).toContain("the Model Router's turn failed");
+    const notesOfStep = (label: string) => observed.find((entry) => entry.label === label)?.notes.join(" ") ?? "";
+    // The failing request falls back with its own reason.
+    expect(notesOfStep("Router crash")).toContain("the Model Router's turn was interrupted");
+    expect(notesOfStep("Router throw")).toContain("the Model Router's turn failed");
+    // Every later routing is the router's again, without waiting for the budget (CR-005: the stopped run is restored).
+    for (const mode of ["crash", "throw"] as const) {
+      for (const label of [`After ${mode}, 1`, `After ${mode}, 2`]) {
+        expect(notesOfStep(label), label).toContain(`chosen by the Model Router (general): Back after ${mode}.`);
+        expect(observed.find((entry) => entry.label === label)?.elapsedMs, label).toBeLessThan(30_000);
+      }
+    }
+    expect(notesOfStep("After a new router launch")).toContain("chosen by the Model Router (general): Back after throw.");
+    for (const entry of observed) expect(entry.status, entry.label).toMatchObject({ enabled: true, active: true });
   }, 400_000);
 });

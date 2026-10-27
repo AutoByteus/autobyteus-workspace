@@ -1,0 +1,47 @@
+# RC-01…RC-41 round 2
+# Commit: 289209272f (+ round-2 test changes, committed with this evidence)
+# Command: env -i PATH HOME=<disposable> TMPDIR RUN_AGY_FAILURE_E2E=1 REMOTE_E2E_EVIDENCE_DIR=<dir> ANTIGRAVITY_CLI_COMMAND=<fixture> pnpm -C autobyteus-server-ts exec vitest run tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts --no-watch
+# Environment: ENV-2
+# Date: 2026-10-26/27
+# Look for: "Tests  41 passed (41)"
+ ✓ tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts (41 tests) 447083ms
+     ✓ RC-02 AC-101: on a fresh node with the switch off, delegate_task naming a peer is refused 'turned off' and nothing is sent  803ms
+     ✓ RC-04 245 AC-202/203/204/207: beta refuses each target it can't start, with the reason, before anything starts; nothing is left on alpha  2445ms
+     ✓ RC-05 AC-104/105: a standalone delegator delegates to Publisher on beta and the two runs message each other both ways (view open)  3417ms
+     ✓ RC-06 AC-104/105/107: a Team coordinator delegates; messages both ways with the Team view open; a later local message appears; the other member is not permitted  4231ms
+     ✓ RC-07 AC-104/105: an Org member delegates; messages both ways with the Org view open; a later local message appears  2417ms
+     ✓ RC-08 AC-107: unlinked senders are refused on both nodes and the target receives nothing  2135ms
+     ✓ RC-09 AC-108: files and saved Tasks across nodes are refused before anything is sent  1954ms
+     ✓ RC-10 AC-109: a task agent on a Project Task delegates remotely; the remote run is a run of that Task; after DONE its messages are not delivered  4934ms
+     ✓ RC-11 AC-109: after the delegator sets its Task DONE, its own message to the remote run is refused with the closed-Task reason and nothing is sent  4311ms
+     ✓ RC-21 247 AC-301: a Team member on alpha delegates beta's shared Studio Team; beta starts a Team run whose members use their own or the Team's default, and only its coordinator starts  871ms
+     ✓ RC-22 247 AC-303: the delegator and any member of the remote Team message each other; a never-started member starts; the team run ID gets the coordinator guidance; unlinked senders are refused  2896ms
+     ✓ RC-23 247 AC-305: a saved Task to a remote Team is refused; after the delegator's Task is DONE, messages both ways are refused and the Team keeps running on beta  5161ms
+     ✓ RC-25 247 RSK-301/DEC-304: when alpha's work packet to a just-started remote Team fails, beta keeps an unused Team run (no member starts); RC-12 shows its idle schedule stops it  559ms
+     ✓ RC-31 278 AC-801/802/803, DEC-804: a standalone delegator's remote Agent is in its tree with node, title and status; its view is live; the owner messages it, interrupts it and stops it from alpha's window  2470ms
+     ✓ RC-32 278 DS-006 (C-2): when beta's own owner stops the remote run in beta's window, alpha's open view ends offline  1070ms
+     ✓ RC-33 278 AC-801/802/803/806: a Team delegator's tree has its remote Agent and its remote Team with members; a member's projection; the owner messages a never-messaged member  355ms
+     ✓ RC-35 278 security: a registered peer that did not start the run is refused on all four routes; naming an agent outside the run is refused; summaries omit runs the caller did not start  4578ms
+     ✓ RC-12 AC-106, 247 AC-304: the remote run and the remote Team on beta are shut down after the idle grace period, and a follow-up restores each with its conversation  151026ms
+     ✓ RC-36 278 AC-805: after the idle grace a quiet remote run reads offline in alpha's view; a message from alpha's window restores it with its conversation  405ms
+     ✓ RC-13 AC-106/REQ-108: after beta restarts, a follow-up restores the remote run; after alpha restarts, replies restore every root kind and wake the delegators  12920ms
+     ✓ RC-24 247 REQ-307: beta's owner stops the peer-started Team during its idle grace; it shows as inactive in history; the delegator's next message restores it  720ms
+     ✓ RC-26 261 AC-402/AC-404/AC-406/QR-402: an agent that selects the discovery tools lists exactly what beta offers, each entry only name, kind, address and description; listing writes nothing; every listed address is accepted by delegate_task; an agent without the tools does not have them (290: nor one that selects only the former name list_available_nodes)  6089ms
+     ✓ RC-38 308 AC-003/AC-005: beta's internal agent is not offered to alpha and delegating it is refused while beta hides it; once beta shows it (no restart) it is offered and accepted; hidden again, refused again  1987ms
+     ✓ RC-39 autobyteus-32 AC-005: with Model Routing off on beta, an agent and a Team no default covers are refused with beta's state; with the router not usable, with its reason  2389ms
+     ✓ RC-40 autobyteus-32 AC-005/REQ-009/REQ-012: with Model Routing on, beta's Model Router chooses for the agent and the Team member no default covers; the launches come back to alpha (result notes, the link); beta records the copies from alpha's node  3676ms
+     ✓ RC-41 autobyteus-32 QR-001/AC-005: a slow router answer within the bound starts the copy (past the former 20 s request bound); a router that does not answer is refused MODEL_ROUTER_FAILED within the 50 s start bound, nothing started  86954ms
+     ✓ RC-27 261 AC-401/QR-401: list_peer_nodes gives every registered peer in registration order with its status now — beta available; a stopped peer, a peer with the switch off and a peer that does not know alpha unavailable; list_available_agents gives each one's reason (the same as delegate_task); a peer that does not answer is unavailable within the bound  45185ms
+     ✓ RC-28 261 AC-404/AC-407: with alpha's switch off both discovery calls are refused 'turned off' and nothing is sent; an unknown node gets the node-list hint (the same for delegate_task); a blank node gets the recovery text; without node the list is alpha's own  1561ms
+     ✓ RC-29 261 AC-405: a Team that beta's owner adds between two listings appears in the second (nothing is cached)  464ms
+     ✓ RC-30 269 AC-601/AC-602: a long description with line breaks titles the peer-started Agent and Team runs as one line of at most 100 characters, by the history's rule  1070ms
+     ✓ RC-37 278 AC-804: with beta stopped, the view shows its remote runs unreachable within the bound and the rest works; after beta returns, Retry reads them again  2940ms
+     ✓ RC-14 AC-106: a follow-up to a remote run whose history was deleted on beta is refused with 'not found'  842ms
+     ✓ RC-15 QR-102: a partitioned or stopped peer is refused within the bound and the tool call never hangs; nothing is left on alpha  73588ms
+     ✓ RC-16 AC-102: when beta's address reaches a different AutoByteus server, delegation and messages are refused with 'identity mismatch'  454ms
+     ✓ RC-17 245 RU-1: after the owner changes Publisher's default to a model beta does not offer, new delegations are refused with that reason and a run already started still exchanges both ways  1130ms
+     ✓ RC-18 AC-101/SCN-107: turning the switch off on beta, then on alpha, refuses new requests with 'turned off'  919ms
+     ✓ RC-19 AC-102: after a peer is removed, new requests in either direction are refused and run history stays  716ms
+ Test Files  1 passed (1)
+      Tests  41 passed (41)
+exit 0

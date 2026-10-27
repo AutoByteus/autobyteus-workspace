@@ -29,3 +29,14 @@
 | 10-26T20:20 | MR-01…09 | Completed | Pass | 9/9 final run |
 | 10-26T20:30 | API-12 LR-3 | Started | — | final test version, all four runtimes, one clean run |
 | 10-26T20:40 | API-12 LR-3 | Completed | Pass | final version, 4/4 runtimes in one clean run |
+| 10-26T21:00 | R2: MR-01…09, RC-01…41, API-09 | Started | — | round 2 on 424e9bdd62 (build 21:00); background chain |
+| 10-26T21:33 | API-14 | Started | — | model-routing-decisions-probe.mjs |
+| 10-26T21:41 | API-14 | Completed | Pass | run 4 (runs 1–3: probe assertions on display names / filter, fixed) |
+| 10-26T21:41 | API-13 | Started | — | R2 docker peer |
+| 10-26T21:43 | API-13 | Completed | Pass | D-1…D-4 |
+| 10-26T21:43 | API-12 LR-3 | Started | — | R2 live, four runtimes |
+| 10-27T04:35 | API-12 LR-3 | Completed | Pass | Codex/AGY/Grok in the 4-runtime run; Claude rerun alone (first attempt: no unblocked Claude model in that report read) |
+| 10-27T04:35 | API-09 | Started | — | R2 regression, alone |
+| 10-27T04:54 | API-09 | Completed | Pass (triaged) | 3 failed files = FU-007/008/009 only |
+| 10-27T04:55 | API-15 | Started | — | isolated-app start --build |
+| 10-27T05:06 | API-15 | Completed | Pass (prepared) | instance built, smoke on/off, stopped; L-03/L-04 R2 Pass |
