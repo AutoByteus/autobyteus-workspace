@@ -9,6 +9,7 @@ The current code and `implementation-handoff.md` are authoritative. This record 
 | IR-001 | Architecture Reviewer, `design-review-report.md` ARCH-REV-002 Pass (round 2) | N/A | `Initial Baseline` | SR-001, SR-003, ARCH-REV-002 | Stage 1 (server) and Stage 2 (web) implemented; handed to code review |
 | IR-002 | Solution Designer rework after CRR-001 (`code-review-report.md`), SR-004, SR-004b | CR-001, CR-002, CR-003 (UD-018), UD-019, C-06 | `Local Fix` (CR-001, CR-002, C-06); UD-019 implemented; a `Design Impact` on AC-007 was raised and resolved by SR-004b | SR-004, SR-004b, CRR-001 | Done: all checks pass (IMP-13 … IMP-17); handed to the targeted code review |
 | IR-003 | Architecture Reviewer ARCH-REV-003 Pass (SR-005: meaning strength after API/E2E F-001 / CRR-003) and the Solution Designer's R-8…R-11; SR-005b | F-001, R-8, R-9, R-10, R-11, O-1 | `Design Impact` raised twice (R-9): first OT-T3 (resolved by SR-005b), then LEAF-IR verification | SR-005, SR-005b, ARCH-REV-003, CRR-003 | Implemented (`0f3c2a2d87`); the default model meets all three constraints (IMP-20). LEAF-IR fails constraint 2 for any values because of how a match found by both tiers is merged (IMP-21); returned to the Solution Designer |
+| IR-004 | Architecture Reviewer ARCH-REV-004 Pass (SR-006, UD-020; Product revision UD-021) and the Solution Designer's R-12 … R-15 resolutions and UD-022 | UD-020, UD-021, UD-022, R-12, R-13, R-14, R-15 | `Requirement/design change implemented` (strength removed; match facts) | SR-006, ARCH-REV-004 | Done (`e7a15930c3`, `606d13b937`): gates unchanged, 0 `wordsNotFound` mismatches (IMP-27), tests and probe pass (IMP-25, IMP-28); handed to the targeted code review |
 
 ## Revision Entries
 
@@ -93,5 +94,26 @@ The current code and `implementation-handoff.md` are authoritative. This record 
   - A match found by both tiers is shown once, with the stronger strength and its tier's label.
   - IMP-23: both models meet constraints 1 and 2 (off-topic 12/12, no false note). The default model's gates are unchanged. LEAF-IR is 30/31 (its Q14 miss) with a ±0.0022 margin, and shows off-topic Fair labels when partly embedded.
   - IMP-24: 649 server tests, 20 memory e2e, typecheck, 121 web memory tests and the guards pass.
-  - **Paused (2026-10-27) at the Solution Designer's request:** the user is reconsidering whether strength labels should exist at all. No handoff to code review until the decision; the handoff document is not yet updated for IR-003.
+  - **Paused (2026-10-27) at the Solution Designer's request:** the user was reconsidering whether strength labels should exist at all. The user then removed them (UD-020); IR-004 supersedes this round's strength work. The handoff covers IR-003 in its IR-004 update.
 
+### IR-004 — SR-006: match facts instead of strength labels
+
+- Triggering role, report path, and round: Architecture Reviewer, `design-review-report.md` ARCH-REV-004 (Pass); the Solution Designer's resolutions of R-12 … R-15 and UD-022 (tool wording).
+- Triggering finding IDs: UD-020 (the user removes Strong / Fair / Weak), UD-021 (the Product revision of the page), UD-022, R-12 … R-15.
+- Classification: requirement/design change implemented as designed; no new Design Impact.
+- Prior authoritative result: IR-003 (`0f3c2a2d87`, `5617a04d02`), paused at `9fa2e072ba`.
+- Current authoritative result: `e7a15930c3` (code, docs), `606d13b937` (probe step, evaluation doc), plus the ticket-folder commit named in the handoff.
+- Related solution revision IDs: SR-006
+- Related architecture-review revision IDs: ARCH-REV-004
+- Implementation delta: see `implementation-handoff.md` § Current Implementation Summary (IR-004).
+  - Server: `matchedWords`, `wordsNotFound` (`hasChunk` per term, whole index), the ordered note, the Text-step rule, `bestCardPerRun`; all strength machinery removed.
+  - Tool and GraphQL: R-12 and UD-022 wording; `matchedWords` and `wordsNotFound` fields.
+  - Evaluation: the tokenizer-aware census (R-14).
+  - Web: the Product revision (words label, gray and amber notes, card cleanup, banner, strings).
+- Local validation and result:
+  - IMP-25: 648 server tests, 20 memory e2e, typecheck, 121 web memory tests and 3 guards pass. The R-13, R-15 and Text-step tests each fail under a targeted mutation.
+  - IMP-26: build passes.
+  - IMP-27: gates identical to IMP-23 (31/31, 30 in one search, #1 18, top 3 26, MRR 0.7288); `wordsNotFound` mismatches [] over 47 questions; N02 names no word, a question-set matter (its rare word is only in the asking run's journal, R-15).
+  - IMP-28: probe Pass, 23 checks, with the VIS-006, 007, 017, 022, 024 and 025 states.
+- Next recipient or routing: Code Reviewer (targeted review of IR-003 and IR-004; Large/High), then API/E2E re-runs AC-001, AC-002 and AC-007.
+- Remaining limitations or risks: see `implementation-handoff.md` § Known Risks (N02; the R-13 live window; the "No matches" wording).

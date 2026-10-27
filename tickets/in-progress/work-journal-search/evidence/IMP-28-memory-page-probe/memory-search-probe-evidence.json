@@ -1,0 +1,261 @@
+{
+  "startedAt": "2026-10-27T04:40:17.773Z",
+  "node": "v22.23.1",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "checks": [
+    {
+      "id": "MS-PROBE-000",
+      "pass": true,
+      "message": "Built server entry exists (run pnpm -C autobyteus-server-ts build first)"
+    },
+    {
+      "id": "MS-PROBE-001",
+      "pass": true,
+      "message": "A Chrome executable is available"
+    },
+    {
+      "id": "MS-PROBE-010",
+      "pass": true,
+      "message": "Search box disabled before the index has content"
+    },
+    {
+      "id": "MS-PROBE-011",
+      "pass": true,
+      "message": "Four waiting steps before the first build",
+      "details": [
+        "waiting",
+        "waiting",
+        "waiting",
+        "waiting"
+      ]
+    },
+    {
+      "id": "MS-PROBE-012",
+      "pass": true,
+      "message": "Nothing starts a build before the click"
+    },
+    {
+      "id": "MS-PROBE-013",
+      "pass": true,
+      "message": "All four steps done",
+      "details": [
+        "done",
+        "done",
+        "done",
+        "done"
+      ]
+    },
+    {
+      "id": "MS-PROBE-014",
+      "pass": true,
+      "message": "The ready headline counts the 4 runs"
+    },
+    {
+      "id": "MS-PROBE-015",
+      "pass": true,
+      "message": "Every step bar is full when up to date",
+      "details": [
+        "100",
+        "100",
+        "100",
+        "100"
+      ]
+    },
+    {
+      "id": "MS-PROBE-020",
+      "pass": true,
+      "message": "The DDNS run is the first result",
+      "details": "codex ddns 45cecodex_ddns_45ce26 Aug 2026 – 27 Aug 2026work_journal_active.md· lines 41–64· 27 Aug 2026Words: ddns, updater, domain[09:05:30] User: Is the domain updater still running after the reboot?[09:05:31] Tool: Bash command=\"systemctl status ddns-update.timer\" → okactive (waiting)work_journal_active.md· lines 36–39· 26 Aug 2026Words: ddns, updater, home, domain[09:03:00] User: Set up a DDNS updater for home.example.org so the domain follows our home IP.[09:03:01] Tool: Bash command=\"crontab -l\" → ok*/5 * * * * /opt/ddns/update.sh home.example.org"
+    },
+    {
+      "id": "MS-PROBE-021",
+      "pass": true,
+      "message": "A text match shows its found words and lines, and no grade",
+      "details": "codex ddns 45cecodex_ddns_45ce26 Aug 2026 – 27 Aug 2026work_journal_active.md· lines 41–64· 27 Aug 2026Words: ddns, updater, domain[09:05:30] User: Is the domain updater still running after the reboot?[09:05:31] Tool: Bash command=\"systemctl status ddns-update.timer\" → okactive (waiting)work_journal_active.md· lines 36–39· 26 Aug 2026Words: ddns, updater, home, domain[09:03:00] User: Set up a DDNS updater for home.example.org so the domain follows our home IP.[09:03:01] Tool: Bash command=\"crontab -l\" → ok*/5 * * * * /opt/ddns/update.sh home.example.org"
+    },
+    {
+      "id": "MS-PROBE-022",
+      "pass": true,
+      "message": "The cue is in the address"
+    },
+    {
+      "id": "MS-PROBE-023",
+      "pass": true,
+      "message": "A Chinese cue finds the Chinese run"
+    },
+    {
+      "id": "MS-PROBE-024",
+      "pass": true,
+      "message": "Never says nothing is in memory"
+    },
+    {
+      "id": "MS-PROBE-025",
+      "pass": true,
+      "message": "The off-topic cue names its words as found in no journal",
+      "details": "Results for “purple elephant saxophone”4 runs · Pointers to check in the Work Journal, not factsClear searchNone of these words appear in your memory: purple, elephant, saxophone.daily zh 77aedaily_zh_77ae20 Aug 2026work_journal_active.md· lines 5–5[09:00:00] User: 帮我设置域名自动更新，家里的 IP 变了以后域名也要跟着变。researcher long 6a02researcher_long_6a021 Sept 2026work_journal_active.md· lines 5–5[09:00:00] User: Check step 1 of the migration checklist and keep the notes short.member writermember_writer1 Jul 2026work_journal_active.md· lines 5–5[09:00:00] User: Draft the cloudflare tunnel notes for the release.codex ddns 45cecodex_ddns_45ce25 Aug 2026work_journal_active.md· lines 5–5[09:00:00] User: Check step 1 of the router checklist and keep the notes short."
+    },
+    {
+      "id": "MS-PROBE-026",
+      "pass": true,
+      "message": "Some words not found: a gray note names the missing word; text matches list their words",
+      "details": "Not found in your memory: saxophone."
+    },
+    {
+      "id": "MS-PROBE-030",
+      "pass": true,
+      "message": "The matched lines are highlighted",
+      "details": 24
+    },
+    {
+      "id": "MS-PROBE-031",
+      "pass": true,
+      "message": "The run detail has Work Journal and Raw Traces tabs"
+    },
+    {
+      "id": "MS-PROBE-032",
+      "pass": true,
+      "message": "Back returns to the same results"
+    },
+    {
+      "id": "MS-PROBE-040",
+      "pass": true,
+      "message": "The large-file note shows"
+    },
+    {
+      "id": "MS-PROBE-050",
+      "pass": true,
+      "message": "A folder-only run shows its Work Journal only"
+    },
+    {
+      "id": "MS-PROBE-051",
+      "pass": true,
+      "message": "It opens through the run-folder route"
+    },
+    {
+      "id": "MS-PROBE-060",
+      "pass": true,
+      "message": "No horizontal page overflow at 390 px",
+      "details": 0
+    },
+    {
+      "id": "MS-PROBE-090",
+      "pass": true,
+      "message": "No page errors",
+      "details": []
+    }
+  ],
+  "screenshots": [
+    "/tmp/wjs-eval/probe-sr006/VIS-010-search-not-indexed-1440x900.png",
+    "/tmp/wjs-eval/probe-sr006/VIS-011-index-first-time-1440x900.png",
+    "/tmp/wjs-eval/probe-sr006/VIS-012-index-building-1440x900.png",
+    "/tmp/wjs-eval/probe-sr006/VIS-014-index-ready-1440x900.png",
+    "/tmp/wjs-eval/probe-sr006/VIS-006-search-results-1440x900.png",
+    "/tmp/wjs-eval/probe-sr006/VIS-007-search-none-of-the-words-found-1440x900.png",
+    "/tmp/wjs-eval/probe-sr006/VIS-025-search-some-words-not-found-1440x900.png",
+    "/tmp/wjs-eval/probe-sr006/VIS-017-work-journal-from-result-1440x900.png",
+    "/tmp/wjs-eval/probe-sr006/VIS-019-raw-traces-1440x900.png",
+    "/tmp/wjs-eval/probe-sr006/VIS-018-work-journal-large-file-1440x900.png",
+    "/tmp/wjs-eval/probe-sr006/VIS-001-browse-agents-1440x900.png",
+    "/tmp/wjs-eval/probe-sr006/VIS-021-browse-agents-390x844.png",
+    "/tmp/wjs-eval/probe-sr006/VIS-022-search-results-390x844.png",
+    "/tmp/wjs-eval/probe-sr006/VIS-023-index-390x844.png",
+    "/tmp/wjs-eval/probe-sr006/VIS-024-work-journal-from-result-390x844.png"
+  ],
+  "operations": [
+    "GetUpdateNotifications",
+    "GetUpdateAutomationSettings",
+    "ListMemoryExplorerSources",
+    "MemoryIndexStatus",
+    "GetApplicationsCapability",
+    "GetAllWorkspaces",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "GetAgentDefinitions",
+    "GetAgentTeamDefinitions",
+    "GetAgentOrgDefinitions",
+    "ListMemoryExplorerSources",
+    "MemoryIndexStatus",
+    "StartMemoryIndexing",
+    "MemoryIndexStatus",
+    "MemoryIndexStatus",
+    "ListMemoryExplorerSources",
+    "MemoryIndexStatus",
+    "MemorySearch",
+    "ListMemoryExplorerSources",
+    "MemorySearch",
+    "ListMemoryExplorerSources",
+    "MemorySearch",
+    "ListMemoryExplorerSources",
+    "MemorySearch",
+    "ListMemoryExplorerSources",
+    "MemorySearch",
+    "ListMemoryExplorerSources",
+    "GetAgentRunWorkJournal",
+    "ListMemoryExplorerSources",
+    "MemoryIndexStatus",
+    "GetAgentRunWorkJournal",
+    "GetAgentRunMemoryView",
+    "GetUpdateNotifications",
+    "GetUpdateAutomationSettings",
+    "MemoryIndexStatus",
+    "ListMemoryExplorerSources",
+    "GetApplicationsCapability",
+    "GetAllWorkspaces",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "GetAgentDefinitions",
+    "GetAgentTeamDefinitions",
+    "GetAgentOrgDefinitions",
+    "MemorySearch",
+    "GetAgentRunWorkJournal",
+    "GetAgentRunWorkJournal",
+    "GetAgentRunWorkJournal",
+    "GetUpdateNotifications",
+    "GetUpdateAutomationSettings",
+    "MemoryIndexStatus",
+    "ListMemoryExplorerSources",
+    "GetApplicationsCapability",
+    "GetAllWorkspaces",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "GetAgentDefinitions",
+    "GetAgentTeamDefinitions",
+    "GetAgentOrgDefinitions",
+    "MemorySearch",
+    "GetRunFolderWorkJournal",
+    "GetUpdateNotifications",
+    "GetUpdateAutomationSettings",
+    "ListMemoryExplorerSources",
+    "ListAgentsWithMemory",
+    "MemoryIndexStatus",
+    "GetApplicationsCapability",
+    "GetAllWorkspaces",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "GetAgentDefinitions",
+    "GetAgentTeamDefinitions",
+    "GetAgentOrgDefinitions",
+    "GetUpdateNotifications",
+    "GetUpdateAutomationSettings",
+    "MemoryIndexStatus",
+    "ListMemoryExplorerSources",
+    "GetApplicationsCapability",
+    "MemorySearch",
+    "GetUpdateNotifications",
+    "GetUpdateAutomationSettings",
+    "ListMemoryExplorerSources",
+    "MemoryIndexStatus",
+    "GetApplicationsCapability",
+    "GetUpdateNotifications",
+    "GetUpdateAutomationSettings",
+    "MemoryIndexStatus",
+    "ListMemoryExplorerSources",
+    "GetApplicationsCapability",
+    "MemorySearch",
+    "GetAgentRunWorkJournal"
+  ],
+  "pageErrors": [],
+  "failures": [],
+  "finishedAt": "2026-10-27T04:40:47.674Z",
+  "result": "Pass"
+}

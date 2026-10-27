@@ -4,32 +4,72 @@ Branch `codex/work-journal-search` (base `ddd6fdcdf6`), worktree `/Users/normy/a
 
 ## Upstream Artifact Package
 
-- Upstream review applicability and handoff-rule result: independent architecture review selected (Large, High); ARCH-REV-002 Pass; this handoff goes to the Code Reviewer.
-- Requirements doc: `requirements-doc.md` (SR-001, approved by the user 2026-10-26; UD-016, UD-017)
+- Upstream review applicability and handoff-rule result: independent architecture review selected (Large, High); ARCH-REV-002, ARCH-REV-003 (SR-005) and ARCH-REV-004 (SR-006) Pass; this handoff goes to the Code Reviewer.
+- Requirements doc: `requirements-doc.md` (SR-001, approved by the user 2026-10-26; UD-016, UD-017; UD-020 the strength labels removed, 2026-10-27)
 - Investigation notes: `investigation-notes.md` (AE-01 … AE-21)
-- Solution revision record: `solution-revision-record.md` (SR-001 … SR-003)
-- Design spec (required on every route): `design-spec.md` (SR-003)
-- Supplemental task artifacts: the approved UI/UX spec `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/work-journal-search/ui-ux-spec.md` (VIS-001 … VIS-024); `memory-search-evaluation-report.md`; `probes/`; `follow-ups.md`; `product-design-request.md`
-- Design review report: `design-review-report.md` (ARCH-REV-002 Pass)
+- Solution revision record: `solution-revision-record.md` (SR-001 … SR-006)
+- Design spec (required on every route): `design-spec.md` (SR-006: § Match Facts (SR-006), § Tool Contract, § Removal Plan, § Product Design Integration)
+- Supplemental task artifacts: the approved UI/UX spec `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/work-journal-search/ui-ux-spec.md` (VIS-001 … VIS-026; revised for SR-006 and approved by the user 2026-10-27, design repository `a0b6410395`); `memory-search-evaluation-report.md`; `probes/`; `follow-ups.md`; `product-design-request.md`
+- Design review report: `design-review-report.md` (ARCH-REV-004 Pass)
 - Architecture review revision record: `architecture-review-revision-record.md`
-- Triggering rework report, revision record, or evidence, when applicable: `code-review-report.md` (CRR-001: CR-001, CR-002, CR-003, note C-06); the Solution Designer's SR-004 (UD-018, UD-019, AC-007 extended) and SR-004b (the Design Impact on AC-007 resolved: option (a), corrected off-topic set). The earlier clarifications of R-5 (explicit `notSynced`), R-6 (empty-state copy, now UD-018) and R-7 (newest first) are implemented as written.
+- Triggering rework report, revision record, or evidence, when applicable: `code-review-report.md` (CRR-001: CR-001, CR-002, CR-003, note C-06); the Solution Designer's SR-004 (UD-018, UD-019, AC-007 extended) and SR-004b (the Design Impact on AC-007 resolved: option (a), corrected off-topic set). The earlier clarifications of R-5 (explicit `notSynced`), R-6 (empty-state copy, now UD-018) and R-7 (newest first) are implemented as written. Then SR-005 / SR-005b / SR-005c (meaning strength, IR-003, superseded) and SR-006 (UD-020: match facts instead of strength; ARCH-REV-004 with the Solution Designer's R-12 … R-15 resolutions and UD-022 tool wording; IR-004).
 
 ## Current Implementation Summary
 
 - Implementation cycle: `Rework`
 - Implementation revision record: `implementation-revision-record.md`
-- Current implementation revision ID: `IR-002` (on the IR-001 baseline)
-- Related solution revision IDs: SR-001, SR-003, SR-004, SR-004b
-- Related architecture-review revision IDs: ARCH-REV-002
-- Related code-review revision IDs: CRR-001
-- Related API/E2E revision IDs: N/A
+- Current implementation revision ID: `IR-004` (on IR-001 … IR-003)
+- Related solution revision IDs: SR-001, SR-003, SR-004, SR-004b, SR-005, SR-005b, SR-005c, SR-006
+- Related architecture-review revision IDs: ARCH-REV-002, ARCH-REV-003, ARCH-REV-004
+- Related code-review revision IDs: CRR-001, CRR-002 (IR-002 Pass), CRR-003
+- Related API/E2E revision IDs: F-001 (the API/E2E finding that started SR-005)
 - Related delivery revision IDs: N/A
-- Triggering finding IDs: CR-001, CR-002, CR-003 (UD-018), C-06; UD-019; SR-004b
+- Triggering finding IDs: UD-020, UD-021 (Product revision), UD-022; ARCH-REV-004 R-12 … R-15
+
+**IR-004 (this round, SR-006): match facts instead of strength labels.** `e7a15930c3`, `606d13b937`.
+- **Match facts** (`search/memory-search-service.ts`):
+  - A text match carries `matchedWords`: the query's terms its lines hold (`containsTerm`, in query order).
+  - A meaning match carries none, and the tool result omits the field.
+  - Lines found by both tiers are listed once, as the text match.
+  - The result carries `wordsNotFound`: each term for which `store.hasChunk(toFtsPhrase(term))` (`SELECT 1 … MATCH ? LIMIT 1`) finds no chunk, over the whole index, the asking run included (R-15).
+  - `bestCardPerRun` keeps each run's first card in `nearest` order. No grade, threshold, baseline or calibration remains, and ranking is unchanged.
+- **Facade** (`memory-search.ts`):
+  - `wordsNotFound` is empty while the `textIndex` step is not `done`.
+  - A live pass, queued or running, does not hold it back (R-13): live passes report the settled index.
+  - The note, in order: no results → `No matches; try other words.`; every term not found → `None of these words appear in your memory: X, Y.`; some → `Not found in your memory: X.`; else none.
+- **Tool and API:**
+  - The tool result keeps `matchedWords` and `wordsNotFound` only when non-empty.
+  - The description says a match without `matchedWords` was found by meaning (R-12), that `wordsNotFound` names words in no **indexed** journal, and UD-022's "open a run's first match (its newest) … and the second when the first does not answer, before searching again".
+  - GraphQL: `MemorySearchMatch.strength` → `matchedWords: [String!]!`; `MemorySearchResult.wordsNotFound: [String!]!`.
+- **Removed:**
+  - `MemoryMatchStrength` and every `strength` field;
+  - `textStrength`, `termWeights`, `MIN_TERM_WEIGHT`, `tokenChunkCounts` and the `chunk_vocab` table;
+  - `termTokens`;
+  - the meaning lift and baseline, `meaningCalibrationFor` and `MEANING_CALIBRATION`;
+  - merge rule B and `STRENGTH_RANK`;
+  - `WEAK_ONLY` and its R-10 suppression;
+  - the service's `activeModelId`;
+  - `meaning-strength.test.ts`, the evaluation's off-topic / `falseOnlyWeak` / `partial` checks and the meaning calibration report.
+- **Evaluation (AC-007, R-14):**
+  - New `evaluation/journal-term-census.ts` counts each term in the journal files independently of the index. It reads entries through `readJournalEntries`, tokenizes as `unicode61` does (NFKD, marks removed, lower case, split at non-letters/digits, each ideograph its own token), matches multi-token terms as adjacent tokens, and skips `imports/`.
+  - The report's `wordsNotFound` gives the `mismatches` per question and `offTopicUnnamed`.
+- **Memory page (Product revision UD-021):**
+  - `Words: <words>` on text matches only, with no label on a meaning match.
+  - A gray `Not found in your memory: …` note, or an amber `None of these words appear in your memory: …` note when every match is a meaning match. Neither shows while the Text index is incomplete, because the server then sends none.
+  - Run ID and workspace on one line; dates without "Mentioned"; a match day only when the card's date does not say it; no Open line; hover outline.
+  - The Work Journal banner shows `lines a–b · Words: …`, and the `words` address parameter replaces `strength`.
+  - en and zh-CN strings follow the design repository, and the weak, kind and strength keys are removed.
+  - GraphQL types regenerated.
+- **Docs:** `memory_search.md`, `GLOSSARY.md` (Words / Meaning: how a match was found, not a grade), `autobyteus-web/docs/memory.md`, `scripts/evaluate-memory-search.md`.
+
+**IR-003 (SR-005 … SR-005c, superseded by IR-004).** Meaning strength by lift over a per-query baseline, then per-model rows and merge rule B (`0f3c2a2d87`, `5617a04d02`; IMP-18 … IMP-24). Two Design Impacts (R-9) were raised and resolved. Paused at the Solution Designer's request when the user reconsidered the labels. Only `nearest`'s `{id, score}` cleanup (SR-005) and the tool's "when to use" wording (O-1) remain.
+
+**IR-001 / IR-002 baseline:**
 
 Stage 1 (server) and Stage 2 (web), Change Sequence steps 1–9:
 
 1. **Journal and embedding boundaries.** `WorkJournalService` gains reads (`journalFileVersions`, `listJournalFiles`, `readJournalFile`, `readJournalLines` ≤ 400 lines, `journalFilePath`; all manifest-validated, no generation), `onJournalChanged` (only after a write or removal; listener errors logged as `WORK_JOURNAL_CHANGE_LISTENER_FAILED`, never failing `ensureCurrent`), a nullable `runtimeKind` (generic rule; manifest `runtime_kind: null`), and `reading/journal-entry-reader.ts`. `EmbeddingIndex.nearest` never creates a job, never syncs, never prepares or downloads, and answers `collection: "notSynced"` with no job in this process (R-5).
-2. **`src/memory-search/`**, one public boundary (`MemorySearch`): run discovery (every run kind of § Run Kinds, `RUN_FOLDER` for folders no record names, never `imports/`), the pipeline (Find runs → Journals → Text index → Meaning index; single flight, merged requests, built marker, `meaningIndexModelId`, 20 s live debounce, catch-up without the Meaning step, `meaningSync` on the first `notSynced`), the store (contentless FTS5, CJK spaced, chunk locations, cards with parts), chunker, card builder, search (text and meaning alternated, pointer rule text chunk → best card part → first request, newest first, secrets masked, three strengths, coverage and weak/none notes), the default-limit setting.
+2. **`src/memory-search/`**, one public boundary (`MemorySearch`): run discovery (every run kind of § Run Kinds, `RUN_FOLDER` for folders no record names, never `imports/`), the pipeline (Find runs → Journals → Text index → Meaning index; single flight, merged requests, built marker, `meaningIndexModelId`, 20 s live debounce, catch-up without the Meaning step, `meaningSync` on the first `notSynced`), the store (contentless FTS5, CJK spaced, chunk locations, cards with parts), chunker, card builder, search (text and meaning alternated, pointer rule text chunk → best card part → first request, newest first, secrets masked, match facts (IR-004), coverage and words-not-found / no-matches notes), the default-limit setting.
 3. **`search_memory`**: one contract for the native tool and the MCP adapter; the asking run is left out; argument errors are tool errors.
 4. **GraphQL**: `memorySearch`, `memoryIndexStatus`, `startMemoryIndexing`, `rebuildMemoryIndex`, `runFolderWorkJournal`; the memory view's `workJournal` window; availability `hasWorkJournal`; task teams (`TaskTeamRootMemorySource`, `isTaskTeam`, `startedByAgentName`).
 5. **Removal** of the per-run episodic/semantic/working-context server path (reader methods, view fields, converter, include flags, availability flags, run-history projection call).
@@ -42,12 +82,12 @@ Stage 1 (server) and Stage 2 (web), Change Sequence steps 1–9:
 
 - Task size (`Small`/`Medium`/`Large`): `Large`
 - Architecture risk (`Low`/`High`): `High`
-- Design classification section / evidence reference: `design-spec.md` § Classification; `design-review-report.md` ARCH-REV-002
+- Design classification section / evidence reference: `design-spec.md` § Classification; `design-review-report.md` ARCH-REV-004
 - Classification confirmed or changed: `Confirmed`
 - Evidence and rationale for confirmation or change: a new server subsystem with a persistent derived store, a new agent tool in two entry forms, GraphQL additions and removals, a startup task, and a rebuilt web page; 140 files outside the ticket folder, about 9,000 lines added (including the regenerated GraphQL types).
 - Selected route (`Direct API/E2E`/`Code Review`/`Solution Designer`): `Code Review`
 - Lightweight implementation self-review completed for the direct route: `Not Applicable`
-- New design impact or escalation trigger: one in IR-002, resolved. The extended AC-007 was not met under UD-019 (IMP-15). The Solution Designer decided option (a) in SR-004b: keep the rule and correct the off-topic set. IMP-17 now passes.
+- New design impact or escalation trigger: none in IR-004. Earlier ones were all resolved: IR-002's off-topic set (SR-004b); IR-003's R-9 twice (SR-005b, SR-005c), then superseded by UD-020. One question-set observation for the Solution Designer and API/E2E (N02, Known Risks), not a design problem.
 
 ## Reviewed Behavior Implementation Trace
 
@@ -62,10 +102,10 @@ Stage 1 (server) and Stage 2 (web), Change Sequence steps 1–9:
 | R-001, R-002 | Tool contract; one entry per run, fields with a value | `memory-tool-contract.ts`, `memory-tool-manifest.ts` (`toSearchMemoryToolResult`) | IMP-03 (`search-memory-tool.test.ts`) |
 | R-004, R-012, AC-006, AC-010 | Every run folder, names as recorded or by folder; no `imports/`; asking run left out | `memory-run-discovery.ts` (catalog, metadata, team/org trees, `TaskTeamRootMemorySource`, folder walk), `isAsking` in the search service | IMP-03 (`memory-run-discovery.test.ts`: every run kind, linked and detached task teams) |
 | R-008, AC-005 | Secrets masked in what is shown | `search/secret-masker.ts` applied to every snippet | IMP-07: 0 unmasked |
-| R-009, R-010, AC-007 | Honest notes; days; newest first; pointers, not facts | `memory-search.ts` (`NO_MATCHES`, `WEAK_ONLY`, coverage), `newestFirst` | IMP-03, IMP-11 |
+| R-009, R-010, AC-007, UD-020 | Honest notes; days; newest first; pointers, not facts; match facts (`matchedWords`, `wordsNotFound`), no grade | `search/memory-search-service.ts` (`toMatch`, `hasChunk` per term, `bestCardPerRun`), `memory-search.ts` (`note`, Text-step rule), `memory-tool-contract.ts`; web `MemorySearchResults.vue` (`wordsNote`, `wordsLabel`) | IMP-25 (R-13, R-15, Text-step tests, mutations), IMP-27 (census: 0 mismatches), IMP-28 |
 | R-013, R-014, AC-011 | Memory page per the UI/UX spec; old tabs gone; task teams listed | `autobyteus-web/pages/memory.vue`, `components/memory/*`, stores, localization | IMP-08 … IMP-10, IMP-12 |
 | R-015 | One vocabulary | `GLOSSARY.md` § Memory; no "episodic"/"semantic" in UI, strings or web docs | — |
-| R-016 | Repeatable quality check | `memory-search/evaluation/memory-search-evaluation.ts`, `scripts/evaluate-memory-search.mjs` | IMP-07 |
+| R-016 | Repeatable quality check | `memory-search/evaluation/memory-search-evaluation.ts`, `evaluation/journal-term-census.ts`, `scripts/evaluate-memory-search.mjs` | IMP-07, IMP-27 |
 | AC-008 | First build on the reference data | — | IMP-06: journals 113 s, text by 198 s, meaning about 63 min |
 
 - Changes stayed within the requirements doc's Scope Guardrail: `Yes`
@@ -80,7 +120,7 @@ Server (`autobyteus-server-ts/`):
 - `src/api/graphql/types/memory-search.ts` (new), `work-journal-view.ts` (new), `memory-view.ts`, `memory-explorer-schema.ts`, the converter and schema registration
 - `src/agent-memory/` — `services/task-team-root-memory-source.ts` (new), `team-memory-explorer-service.ts`, `agent-memory-location-service.ts`, `memory-run-summary-builder.ts`, `agent-memory-service.ts`, `store/memory-file-store.ts`, `domain/models.ts`
 - `src/run-history/projection/providers/local-memory-run-view-projection-provider.ts`
-- `scripts/evaluate-memory-search.mjs`, `scripts/evaluate-memory-search.md` (new)
+- `scripts/evaluate-memory-search.mjs`, `scripts/evaluate-memory-search.md` (new); `src/memory-search/evaluation/journal-term-census.ts` (new, IR-004)
 - tests: `tests/unit/memory-search/` (new), `tests/helpers/memory-search-fixtures.ts`, `tests/unit/embeddings/embedding-nearest.test.ts`, `tests/unit/agent-tools/memory/search-memory-tool.test.ts`, `tests/agent-work-journal/services/work-journal-reading.test.ts`, `tests/e2e/memory/memory-search-graphql.e2e.test.ts`, and the updated memory/GraphQL tests
 
 Web (`autobyteus-web/`):
@@ -94,13 +134,20 @@ Docs: `GLOSSARY.md`; `autobyteus-server-ts/docs/modules/{memory_search,agent_mem
 
 ## Important Assumptions
 
+IR-004 decisions:
+- **`wordsNotFound` uses the search terms** (`queryTerms`: stop words removed, ideograph runs as two-character phrases), so a Chinese cue names its absent two-character phrases (N05 names 6 of its 11 terms). A query with only stop words has no terms, no `wordsNotFound` and only the standard notes.
+- **The page's amber/gray choice** follows the Product revision's rule: amber when every listed match is a meaning match, else gray. The text comes from the page's own strings; the server's `note` is for agents.
+- **The words in the Work Journal address** are comma-joined (`words=ddns,home`); terms never contain a comma (a term is `[a-z0-9_\-.]+` or a run of ideographs).
+- **The census reads entries' text** as the text index takes it, through `readJournalEntries`. It covers every `work_journal/*.md` file outside `imports/`, so it counts the asking run too, as absence does (R-15).
+- **"No matches" wording:** the design's § Match Facts calls the no-results note "No matches in memory." and "(unchanged)". The existing string is `No matches; try other words.`, so I kept it as unchanged. The reviewer or the Solution Designer may want the quoted text instead; it is a one-line change.
+
 IR-002 decisions:
 - **Own notifications (CR-001)** are recognized by the run folder being made current by the Journals step's own `ensureCurrent` at that moment (`ownJournalCalls`). An agent's change caught in that window is still indexed: this same pass's Text step reads the run afterwards.
 - **Before any build**, queued changes index nothing; while the first build runs, they follow it.
 - **Quiet passes (CR-002):** a failed `runs` or `meaningSync` pass is logged and leaves the reported state unchanged; the next change or start retries it. `meaningSync` no longer moves `updatedAt`.
 - **Meaning progress** counts the build's own embedding (a `full` or `rebuild` pass, or the deferred `meaningSync` after a start), not a live update's re-embedded card. The coverage note says nothing about those few cards.
-- **Term weights (UD-019):** BM25's IDF, `log((N − n + 0.5)/(n + 0.5))`, floored at 1e-6. `N` is the chunk count; `n` comes from `chunk_vocab` (`fts5vocab`, created on open, so existing stores need no rebuild). A term of several tokens uses its rarest token's count, and a term no chunk holds weighs the most.
-- **Evaluation kinds (SR-004b):** a false note is counted on an answerable question's first search. Partial questions are reported only.
+- (UD-019's term weights and the false-note check were removed by IR-004.)
+- **Evaluation kinds (SR-004b):** `answerable`, `offTopic`, `partial`; IR-004 checks `wordsNotFound` for all of them.
 
 IR-001 decisions:
 
@@ -125,9 +172,10 @@ Decisions inside the design's room, for the reviewer to check:
 ## Known Risks
 
 - **The question file's authoring run answers every question by its own words.** This ticket's Solution Designer run quotes all the questions. Without `--asking-run` it is the text tier's #1 for 15 of them, and #1 overall falls from 18 to 11; the gates still pass either way. Any run that discusses a topic at length (reviews, designs) competes with the run that did the work. The Solution Designer kept this as is (SR-004); "self-references" stays a later R-016 candidate.
-- **Partial cues rate fair, by design (UD-019, SR-004b).** A cue that describes real work in most of its words gets fair matches, even when one word is new; N01 and N03 are reported as `partial`, not gated. The only-weak note shows for cues whose key words occur nowhere (N02, N04, N05).
-- **Chinese terms weigh against the whole index.** Chinese chunks are a small share of the index, so overlapping two-character terms all look rare (IMP-15). The optional Chinese-only weighting was not added: N05 already ends only-weak, and no answerable Chinese question gets a false note (IMP-17). If a future off-topic Chinese cue fails, that weighting is the measured next step (the Solution Designer's follow-up).
-- **Gate 2 latency was measured on a busy shared machine** (load averages 30–40): p90 575 ms, max 964 ms. Idle numbers should be lower; the probe report measured 0.2–0.9 s idle.
+- **N02 names no word (IMP-27, question set):** every N02 word occurs in memory. Its one rare word occurs only in the journal of the run that wrote the question file, which is the `--asking-run`. By R-15 that journal counts for absence, so N02 correctly names nothing. The AC-007 check itself passes: 0 mismatches over 47 questions, and the other 11 off-topic questions name their absent words. The set needs N02 reworded with a word that occurs nowhere, or reclassified; that is the Solution Designer's call (as in SR-004b).
+- **Live-update window (R-13, accepted):** a word only in the last turn's lines is named as not found until that turn is indexed (≤ 20 s debounce plus a pass). The tool says "no indexed journal"; a unit test pins it.
+- **A meaning match is unlabelled.** An agent may over-trust it; the tool description says how to tell it apart and to read the lines first (design-spec § Risks).
+- **Gate 2 latency was measured on a busy shared machine** (load averages 20–40): p90 575 ms, max 964 ms (IMP-07); 605 ms and 1,041 ms in IMP-27. Idle numbers should be lower; the probe report measured 0.2–0.9 s idle.
 - **The first build wrote Work Journals into the isolated copy**, as building does on a user's memory (R-005, approved); building on the user's own data needs the user's go and a backup first (TESTING.md; nothing here touched `~/.autobyteus`).
 - **`listJournalFiles` reads every journal file of a run** to count lines and days on each Work Journal read; for runs with many MB of journals a window read costs that read. Acceptable for the page's use; a cache keyed by `content_sha256` would remove it if needed.
 
@@ -144,7 +192,7 @@ Decisions inside the design's room, for the reviewer to check:
 
 - Backward-compatibility mechanisms introduced: `None`
 - Legacy old-behavior retained in scope: `No`
-- Dead code in the touched files and modules removed (Core Principle 7): `Yes` — the episodic/semantic/working-context readers, view fields, flags, converter paths, web tabs and specs; `MemoryMessage` (web type); `formatTimestamp` in `MemoryInspector.vue`; 11 memory localization keys nothing used (7 made dead by this change, 2 added unused by the reference, 2 already dead in these files).
+- Dead code in the touched files and modules removed (Core Principle 7): `Yes` — IR-004: all strength machinery listed in the summary, `termTokens`, `chunk_vocab`, the service's `activeModelId`, the weak/kind/strength/open_at strings, `Strength` (web), `weakOnly`; IR-001: the episodic/semantic/working-context readers, view fields, flags, converter paths, web tabs and specs; `MemoryMessage` (web type); `formatTimestamp` in `MemoryInspector.vue`; 11 memory localization keys nothing used (7 made dead by this change, 2 added unused by the reference, 2 already dead in these files).
 - Dead code found elsewhere, added to `follow-ups.md`: FU-003 (library code in `autobyteus-ts`, text updated); FU-006 (Work Journal tests outside the green suite).
 - Shared structures remain tight (no one-for-all base or overlapping parallel shapes introduced): `Yes`
 - Canonical shared design guidance was reapplied during implementation, and file-level design weaknesses were routed upstream when needed: `Yes`
@@ -158,6 +206,7 @@ Decisions inside the design's room, for the reviewer to check:
 - Implementation follows the approved decision without an unapproved migration or version-specific runtime fallback: `Yes`
 - Direct-use evidence or discard/rebuild result, when applicable: Rebuild drops the store and the card collection (`memory-search.test.ts`); an unreadable store file is deleted and recreated (`memory-search-store.test.ts`); 3,680 existing runs indexed directly (IMP-06).
 - Migration implementation and focused checks, only when `Migration Required`: N/A
+- IR-004: the schema no longer creates `chunk_vocab`. A store from IR-002/IR-003 keeps that unused virtual table; it was never released and Rebuild drops it. No migration, as § Match Facts says.
 - Deviation from the reviewed transition decision: `None`
 
 ## Environment Or Dependency Notes
@@ -169,6 +218,21 @@ Decisions inside the design's room, for the reviewer to check:
 ## Checks Run
 
 All evidence files are in `evidence/`.
+
+**Rerun plan for IR-004 (TESTING.md, rerun by impact).**
+- Baseline: IR-003 validated through `5617a04d02` (IMP-22 … IMP-24).
+- `git diff --name-only 5617a04d02 HEAD` outside the ticket folder lists:
+  - server: `src/memory-search/**` (models, normalizer, store, service, facade, evaluation and the new census), `src/agent-tools/memory/*`, `src/api/graphql/types/memory-search.ts`, the evaluation script and docs;
+  - web: the Memory search results, Work Journal tab, page, both stores, types, query, generated types, en/zh-CN memory strings, specs and the probe;
+  - `GLOSSARY.md`.
+- **Rerun:**
+  - IMP-24 (server unit and in-process, memory e2e, typecheck, web memory specs, guards) → IMP-25;
+  - IMP-22 → IMP-26;
+  - the gates (IMP-23, default model) → IMP-27, with AC-007 now `wordsNotFound` against the census;
+  - IMP-12 (the page) → IMP-28.
+- **Superseded, not rerun:** IMP-18, IMP-20, IMP-21 and IMP-23's strength, calibration and LEAF-IR checks; nothing they measured exists any more.
+- **LEAF-IR not rerun:** ranking is unchanged, `wordsNotFound` does not depend on the embedding model, and LEAF-IR's gates are as in IMP-23 (30/31).
+- **Still valid:** IMP-06 (build timings: the pipeline is unchanged; `chunk_vocab` was a virtual `fts5vocab` table over `chunk_text`, with no build cost); IMP-03's suites outside the rerun set.
 
 **Rerun plan for IR-002 (TESTING.md, rerun by impact).**
 - Baseline: IR-001 validated through `c66708b44b`.
@@ -203,7 +267,19 @@ All evidence files are in `evidence/`.
 | IMP-16 | impacted server tests (+ `tests/unit/api`), memory e2e (clean env), typecheck | `41501c5a41` | same | memory-search, GraphQL types, tools, startup, journals, embeddings | CR-001, CR-002, UD-019, C-06, DS-001…DS-006 | Pass | `IMP-16-server-tests-ir002.log` | `Test Files  58 passed \| 1 skipped (59)`; `Tests  369 passed`; e2e `Tests  20 passed \| 3 skipped (23)`; typecheck `exit 0` |
 | IMP-17 | evaluation on the SR-004b set (kinds), as the authoring run | `41501c5a41` | isolated copy; load 18–20 | search, strength, notes, masking, latency | AC-001…AC-005, AC-007 (refined), R-016 | Pass | `IMP-17-evaluation-gates-sr004b.log` | `"passed": 31`, `"oneSearchTop10": 30`, `"top3": 26`, `"p90Ms": 556`, `"maxMs": 879`, `"offTopic": {"questions": 3, "passed": 3, "failed": []}`, `"falseOnlyWeak": []`, `"unmaskedSecrets": 0` |
 
+| IMP-18 | meaning-strength calibration data (local script) on the isolated copy | `d07abb8ab2` | isolated copy | meaning scores per question | SR-005, R-9 | Superseded (SR-006) | `IMP-18-meaning-strength-calibration.log` | the R-9 trigger (OT-T3) |
+| IMP-19 | `pnpm -C autobyteus-server-ts build` | `0f3c2a2d87` | same | build and bootstrap smoke | — | Pass | `IMP-19-server-build.log` | `exit 0` |
+| IMP-20 | evaluation, default model, SR-005b values | `0f3c2a2d87` | isolated copy | meaning lift rule | SR-005b | Superseded (SR-006) | `IMP-20-meaning-strength-default-model.log` | gates unchanged |
+| IMP-21 | evaluation, LEAF-IR | `0f3c2a2d87` | isolated copy (LEAF-IR index) | meaning lift rule on a second model | SR-005b | Fail → R-9 (resolved by SR-005c, then superseded) | `IMP-21-meaning-strength-leaf-ir.log` | `"passed": 30` |
+| IMP-22 | `pnpm -C autobyteus-server-ts build` | `5617a04d02` | same | build and bootstrap smoke | — | Pass | `IMP-22-server-build.log` | `exit 0` |
+| IMP-23 | evaluation, both models, SR-005c rows | `5617a04d02` | isolated copy | per-model rows, merge rule B | SR-005c | Superseded (SR-006) | `IMP-23-meaning-strength-both-models.log` | default model: 31/31, top 3 26, MRR 0.7288 |
+| IMP-24 | impacted server tests, memory e2e (clean env), typecheck, web memory specs, guards | `5617a04d02` | same | IR-003 code | SR-005c | Pass (superseded by IMP-25) | `IMP-24-tests-ir003.log` | `Tests  649 passed` |
+| IMP-25 | as IMP-24 (commands in the file header) | `e7a15930c3` | macOS arm64, Node 22.23.1; e2e clean env | match facts, notes, Text-step rule, tool result and description, GraphQL, evaluation and census, web results / journal banner / stores / strings | UD-020, UD-022, R-12 … R-15, AC-007, R-009, R-013, R-014 | Pass | `IMP-25-tests-ir004.log` | server `Tests  648 passed \| 2 skipped`; e2e `Tests  20 passed \| 3 skipped (23)`; typecheck `exit 0`; web `Tests  121 passed (121)`; 3 guards passed; mutations M1–M3 each fail the intended tests |
+| IMP-26 | `pnpm -C autobyteus-server-ts build` | `e7a15930c3` | same | build and bootstrap smoke | — | Pass | `IMP-26-server-build.log` | `exit 0` |
+| IMP-27 | evaluation (default model, no build) with `--asking-run`, private 47-question file | `e7a15930c3` (dist IMP-26) | isolated copy (3,680 runs); load 20–40 | search, ranking, pointer rule, masking, `wordsNotFound` vs. the census | AC-001, AC-002, AC-005, AC-007, R-016 | Pass (N02 observation in Known Risks) | `IMP-27-evaluation-match-facts.log` | `"passed": 31`, `"oneSearchTop10": 30`, `"number1": 18`, `"top3": 26`, `"mrr": 0.7288…`, `"unmaskedSecrets": 0`, `"mismatches": []`, `"offTopicUnnamed": ["N02"]` |
+| IMP-28 | `node autobyteus-web/tests/e2e/memory-search-probe.mjs …` (probe-owned real stack, clean env) | `606d13b937` (dist `e7a15930c3`) | headless Chrome | the Memory page end to end after the Product revision | UD-020, UD-021, R-013, R-014, AC-004, AC-007 (page), VIS-006, 007, 017, 022, 024, 025 | Pass | `IMP-28-memory-page-probe/` | `Pass (23 checks passed)`; MS-PROBE-021, 025, 026; screenshots by VIS ID |
 - Not run, and why:
+  - IR-004: LEAF-IR evaluation (see the rerun plan); `test:unit` and the web suite in full (rerun by impact: nothing outside the memory files changed).
   - AC-012 and AC-013 (real agents; tool selection): API/E2E (UD-007).
   - The Electron shell: the probe covers the browser page only.
   - `test:integration` in full: only the 3 integration files this change edited were run (IMP-03).
@@ -213,13 +289,13 @@ All evidence files are in `evidence/`.
 ## Frontend Rendered-Result Check (When Applicable)
 
 - Affected surfaces / journeys: the Memory page (Browse, Search, Index), the run detail (Work Journal, Raw Traces), agent and team/org detail, the run-folder detail; UXJ-001 … UXJ-006.
-- Approved UI/UX, interaction, requirement, or design references: `ui-ux-spec.md` (VIS-001 … VIS-024); the runnable reference at the design repository (`5dedfcd84d`). Its components were taken over as written and its mock stores replaced by real ones.
+- Approved UI/UX, interaction, requirement, or design references: `ui-ux-spec.md` (VIS-001 … VIS-026, revised for SR-006); the runnable reference at the design repository (`5dedfcd84d`, then the Product revision `a0b6410395`, whose memory component, store and string changes IR-004 follows). Its components were taken over as written and its mock stores replaced by real ones.
 - Existing design system, shared components, and adjacent product surfaces reviewed: the Skills page toolbar/card language (as the spec says), `@iconify/vue` icons, Tailwind palette, the existing Raw Traces tab (unchanged except its card frame), localization runtime and guards.
 - Testing guideline or development / preview instructions and rendered surface used: TESTING.md browser probes against a probe-owned real stack (built server, SQLite, `pnpm dev`, a hand-written memory folder; never user data); headless Chrome.
 - States, layouts, viewports, and interactions inspected:
   - desktop 1440×900 and narrow 390×844;
   - not indexed (Search and Index tabs), Index now, building, up to date;
-  - search results (strong, two matches), weak or no matches, a Chinese cue;
+  - search results (text matches with `Words:`, meaning matches unlabelled), none of the words found (amber, IMP-28), some words not found (gray, IMP-28), a Chinese cue;
   - a result opened at its lines (banner, Match 1/2, file marker, highlight), Back to the same results;
   - a large file: Go to line and later lines;
   - Raw Traces, a run known only by its folder, Browse;
@@ -230,11 +306,13 @@ All evidence files are in `evidence/`.
   - the probe's fixture did not pair tool calls with results, and its ready screenshot caught the bars mid-transition (probe fixes, same commit);
   - the inspector read the memory view on every open although the Work Journal tab doesn't use it; it now reads only for Raw Traces.
 - Check IDs with the supporting evidence, and remaining unverified states or limitations:
-  - IMP-12 (screenshots by VIS ID, 21 checks), IMP-09, IMP-10.
+  - IMP-28 (IR-004: screenshots by VIS ID, 23 checks), IMP-12 (IR-001, 21 checks), IMP-25 (web specs, guards), IMP-09, IMP-10.
+  - IR-004 not rendered: VIS-026 (Work Journal from a meaning match: the banner shows only the lines; covered by the WorkJournalTab spec); the gray/amber notes held back while the Text index is incomplete (component spec and server unit test).
   - Not rendered: VIS-002/003/004 with real task teams and agent metadata (the fixture has no run metadata; names come from folders); VIS-008/009/013/015/016 (component specs only); VIS-020 team member; zh-CN rendering (strings and guards checked).
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
+- **AC-007 words not found (SR-006):** the tool result's `wordsNotFound` for an off-topic cue in the running app; a word only in the asking agent's own journal is not named (R-15); a just-written word is named until indexed (R-13).
 - **AC-012 real agents** (UD-007): a Project Task Manager (Claude or Codex) with `search_memory` selected, in the running app on an isolated copy, asks the known-answer questions (DDNS first) and reaches the right journal lines; also a definition without the tool cannot call it (AC-013).
 - **AC-009 freshness** in the running app: a turn's new words are found by text within about a minute (20 s debounce + pass), by meaning after embedding.
 - **Restart**: after a build, restart the server; the first search says the meaning index is loading, then answers by meaning (DS-006); nothing loads at start.
