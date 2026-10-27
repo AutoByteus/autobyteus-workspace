@@ -107,7 +107,7 @@ const props = withDefaults(defineProps<{
   agentName?: string;
   agentAvatarUrl?: string | null;
   interAgentSenderNameById?: Record<string, string>;
-  compactionActivities?: CompactionActivity[];
+  compactionActivities?: readonly CompactionActivity[];
   showTokenCosts?: boolean;
   showTotalUsage?: boolean;
   presentationRevision?: number;

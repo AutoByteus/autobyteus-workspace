@@ -269,7 +269,7 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted } from 'vue';
 import { storeToRefs } from 'pinia';
-import type { ManagedExtensionState } from '~/electron/extensions/types';
+import type { ManagedExtensionState, VoiceInputLanguageMode } from '~/electron/extensions/types';
 import { useLocalization } from '~/composables/useLocalization';
 import { useVoiceInputStore } from '~/stores/voiceInputStore';
 
@@ -286,7 +286,7 @@ const emit = defineEmits<{
   remove: [];
   reinstall: [];
   openFolder: [];
-  updateLanguageMode: [value: string];
+  updateLanguageMode: [value: VoiceInputLanguageMode];
   updateAudioInputDevice: [value: string | null];
 }>();
 
@@ -525,7 +525,14 @@ function handleLanguageModeChange(event: Event): void {
   if (!target) {
     return;
   }
-  emit('updateLanguageMode', target.value);
+  if (isLanguageMode(target.value)) {
+    emit('updateLanguageMode', target.value);
+  }
+}
+
+/** The select's options (auto, en, zh). */
+function isLanguageMode(value: string): value is VoiceInputLanguageMode {
+  return value === 'auto' || value === 'en' || value === 'zh';
 }
 
 function handleAudioInputDeviceChange(event: Event): void {
