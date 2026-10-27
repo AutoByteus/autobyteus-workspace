@@ -9,7 +9,7 @@ export type AgentDefinitionsSource = Readonly<{
 /**
  * The one rule for internal agents (autobyteus-308): an agent definition marked internal is hidden while the server
  * setting "Show internal agents" is off. Every place that lets the user or an agent browse, pick or delegate to agents
- * asks it (the visible agent list, collaboration eligibility, run history, the Memory page, `list_agent_definitions`);
+ * asks it (the visible agent list, collaboration eligibility, run history, the Memory page);
  * none reads the setting or the attribute itself. Opening a definition or run by ID does not ask it.
  */
 export class InternalAgentVisibility {
