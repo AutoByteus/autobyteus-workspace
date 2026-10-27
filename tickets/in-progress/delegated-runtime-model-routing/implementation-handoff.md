@@ -29,16 +29,22 @@ record, `evidence/implementation/`).
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Rework` (IR-003, after API/E2E round 1, code review CRR-003 and SR-018 / ARCH-REV-004)
+- Implementation cycle: `Rework` (IR-004, a delivery Local Fix after integrating `origin/personal` `50e93c2108`)
 - Implementation revision record: `tickets/in-progress/delegated-runtime-model-routing/implementation-revision-record.md`
-- Current implementation revision ID: `IR-003` (earlier: `IR-001` baseline, `IR-002`)
+- Current implementation revision ID: `IR-004` (earlier: `IR-001` baseline, `IR-002`, `IR-003`)
 - Related solution revision IDs: SR-001..SR-018 (built against SR-015 + SR-016; SR-017 in IR-002; SR-018 in IR-003)
 - Related architecture-review revision IDs: ARCH-REV-002, ARCH-REV-003, ARCH-REV-004 (SR-018 with SR-017)
-- Related code-review revision IDs: CRR-001 (Fail), CRR-002 (Pass), CRR-003 (failure-origin review of API/E2E round 1)
+- Related code-review revision IDs: CRR-001 (Fail), CRR-002 (Pass), CRR-003 (failure-origin review of API/E2E round 1), CRR-004 (Pass on IR-003)
 - Related API/E2E revision IDs: N/A
-- Related delivery revision IDs: N/A
-- Triggering finding IDs: IR-003: CR-005 (CRR-003, F-3 / MR-09) and SR-018 (CR-003/CR-004 resolved by removing
+- Related delivery revision IDs: delivery blocker in `release-deployment-report.md` (DEL-F1, DEL-F2) on `e2e4f1a1ab`
+- Triggering finding IDs: IR-004: DEL-F1 (blocking), DEL-F2 (minor). IR-003: CR-005 (CRR-003, F-3 / MR-09) and SR-018 (CR-003/CR-004 resolved by removing
   confinement). IR-002: CR-001, CR-002 (CRR-001); SR-017.
+
+IR-004 delta (commit `f48af0176a`, web only): the merged base added a web mirror of the server's built-in agent ids
+(DI-002, `autobyteus-web/utils/agents/builtInAgentDefinitionIds.ts`) with a contract spec; it now lists the Model
+Router (`MODEL_ROUTER_AGENT_DEFINITION_ID = 'autobyteus-model-router'`), so the contract passes and the New chat `@`
+list never offers the router (DEL-F1; `draftMentionEligibility.spec.ts` pins it). The hints that pointed to "Setup"
+now name the tab "Configuration" / 配置, as does the Configuration panel's label (`setup.title`) (DEL-F2).
 
 IR-003 delta (commit `424e9bdd62`): the router's workspace confinement is removed as a clean cut (SR-018, the user's
 decision): no `toolConfinement` option or metadata marker; the Codex bootstrapper, Claude session query options and
@@ -230,7 +236,10 @@ presentation spec), and the Runtimes tab is unchanged. Evidence folder: `tickets
 | IMP-10 | `(autobyteus-web) NUXT_TEST=true npx vitest run components/settings components/run-settings components/workspace/config utils/runSettings stores localization`; the three web guards | `03d9860e82` | same | page, presentation, rows, stores, copy | CR-002, CR-001 (web types), SR-017 | Pass for every file this branch touches; 1 file fails that this branch does not touch (FU-006) | `IMP-10-web-specs-and-guards-ir002.log` | `Test Files  1 failed \| 194 passed (195)`; the failing file `stores/__tests__/definitionMutationCache.spec.ts` ("Unconfigured GraphQL fixture field: internal", see the note at the end); `guard:localization-boundary exit=0` |
 | IMP-11 | `pnpm -C autobyteus-server-ts typecheck && pnpm -C autobyteus-server-ts test:unit` | `424e9bdd62` | macOS 26.5.2, node v22.23.1 | all server source and unit suites | SR-018 (confinement removed), CR-005 (restore after a failed turn), AC-011 | Pass | `IMP-11-server-typecheck-unit-ir003.log` | `typecheck exit=0`; `Test Files  844 passed \| 4 skipped (848)`, `Tests  7015 passed \| 7 skipped (7022)` |
 
-- IR-003 changes no web file, so IMP-05/06/07/08/10 stand.
+| IMP-12 | `(autobyteus-web) NUXT_TEST=true npx vitest run utils/agents utils/collaborators components/settings/model-routing components/run-settings utils/runSettings localization`; the three web guards | `f48af0176a` (merged base `50e93c2108`) | macOS 26.5.2, node v22.23.1 | built-in id mirror and its contract, `@` eligibility, the page, run Settings rows, copy | DEL-F1, DEL-F2; REQ-010 | Pass | `IMP-12-web-del-fixes.log` | `✓ utils/agents/__tests__/builtInAgentDefinitionIds.contract.spec.ts`; `Test Files  34 passed (34)`; three `exit=0` |
+| IMP-13 | `(autobyteus-web) pnpm test:nuxt run; pnpm test:electron run` | `f48af0176a` (merged base) | same | the whole web suite | — | Pass for this branch: only failures that are outside it | `IMP-13-web-full-suite.log` | nuxt `Test Files  5 failed \| 702 passed \| 2 skipped (710)`, electron `1 failed \| 47 passed`; the triage at the end of the log: `definitionMutationCache` (FU-006), `BackendPortBindFaults`, `WindowsServerManagerShutdown`, `e2eLaunchPreflight` fail on the clean base (DEL-03); `memory.spec.ts` is a load flake (passes alone, 17/17) |
+
+- IR-003 changes no web file, so IMP-05/06/07/08/10 stand for it.
 
 - Not run, and why:
   - Live provider runs (`RUN_CLAUDE_E2E`, `RUN_CODEX_E2E`, live-agents suite): need test-vault keys and real runtime

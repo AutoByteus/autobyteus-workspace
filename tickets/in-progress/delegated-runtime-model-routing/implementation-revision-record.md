@@ -9,6 +9,7 @@ The current code and `implementation-handoff.md` remain authoritative.
 | IR-001 | Architecture Reviewer, `design-review-report.md` (ARCH-REV-002 Pass, ARCH-REV-003 Pass), round 1 | N/A | `Initial Baseline` | SR-015, SR-016, ARCH-REV-002, ARCH-REV-003 | Implemented; handed to Code Review |
 | IR-002 | Code Reviewer, `code-review-report.md` CRR-001 (Fail), round 1; Solution Designer SR-017 | CR-001, CR-002; C-03 → SR-017 | `Local Fix` | CRR-001, SR-017 | Fixed; returned to Code Review |
 | IR-003 | Architecture Reviewer, ARCH-REV-004 (SR-018 with SR-017); Code Reviewer CRR-003 (failure origin of API/E2E round 1) | CR-005; CR-003/CR-004 resolved by SR-018 | `Local Fix` + design revision SR-018 | SR-018, ARCH-REV-004, CRR-003, API-E2E round 1 | Confinement removed; CR-005 fixed; to Code Review |
+| IR-004 | Delivery Engineer, `release-deployment-report.md` § Blocker, after merging `origin/personal` `50e93c2108` | DEL-F1, DEL-F2 | `Local Fix` | CRR-004 (Pass on IR-003), delivery round 1 | Fixed; to Code Review |
 
 ## Revision Entries
 
@@ -122,3 +123,29 @@ The current code and `implementation-handoff.md` remain authoritative.
 - Next recipient or routing: `code_reviewer` (Large/High), then API/E2E reruns (MR-09; normal live routing).
 - Remaining limitations or risks: the router is unconfined by design (RSK-006); a router run that cannot be restored is
   replaced (context starts over, `knowledge.md` stays).
+
+### IR-004 — Model Router in the web's built-in id mirror (DEL-F1); "Configuration" in the hints (DEL-F2)
+
+- Triggering role, report path, and round: Delivery Engineer, `tickets/in-progress/delegated-runtime-model-routing/release-deployment-report.md` § Blocker, delivery round 1 (branch at `e2e4f1a1ab`, after the merge `357936966c` of `origin/personal` `50e93c2108`); evidence `evidence/delivery/DEL-03-web-failure-triage.log`, `DEL-04-merged-desktop-decisions-empty.png`.
+- Triggering finding IDs: DEL-F1 (blocking), DEL-F2 (minor).
+- Classification: `Local Fix`.
+- Prior authoritative result: IR-003 (CRR-004 Pass); delivery blocked on DEL-F1.
+- Current authoritative result: both fixed (commit `f48af0176a`, web only); IMP-12 and IMP-13 rerun on the merged state.
+- Related solution revision IDs: N/A
+- Related architecture-review revision IDs: N/A
+- Related code-review revision IDs: CRR-004
+- Related API/E2E revision IDs: N/A
+- Related delivery revision IDs: delivery round 1 (DEL-F1, DEL-F2)
+- Why this revision is recorded: the merged base added a web mirror of the server's built-in agent ids (DI-002) that this branch's new built-in had to join; the copy still named the tab by its old label.
+- Approved behavior or requirement IDs affected: REQ-008 (the router is internal and never a collaborator), REQ-010 (page copy).
+- Implementation delta:
+  - DEL-F1: `autobyteus-web/utils/agents/builtInAgentDefinitionIds.ts` exports `MODEL_ROUTER_AGENT_DEFINITION_ID` and
+    lists it in `BUILT_IN_AGENT_DEFINITION_IDS`; `utils/collaborators/__tests__/draftMentionEligibility.spec.ts` adds the
+    router (as listed while "Show internal agents" is on) and asserts it is never offered.
+  - DEL-F2: en `decisions.inactiveNote`, `decisions.emptyOffHint`, `overview.emptyOffHint` say "Configuration", zh-CN
+    say “配置”; `setup.title` (the Configuration panel's aria-label) is "Configuration" / 配置.
+- Changed files or areas: the four web files above.
+- Local validation and result: IMP-12 (contract spec, eligibility, the page, rows, copy; 34 files; guards) pass;
+  IMP-13 (full web suite) in the handoff.
+- Next recipient or routing: `code_reviewer` (Large/High route), then delivery.
+- Remaining limitations or risks: none new.
