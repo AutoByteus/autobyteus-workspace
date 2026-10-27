@@ -4,19 +4,22 @@
 
 The Memory page (`/memory`) is a page-based memory browser for stored agent, agent-team, and agent-org memory. It is intentionally memory-derived: it lists only independent agents, agent teams, or agent orgs that have persisted memory-bearing runs. Configured agents, teams, or orgs that have never produced memory do not appear.
 
-The current user flow is:
+The page has three tabs (`section` in the route query):
 
-1. **Memory source** — default to `Local Memory`; when the current server is a
-   Memory Hub, optionally select an imported source.
-2. **Memory Home** — choose `Agents`, `Agent Teams`, or `Agent Orgs`.
-3. **Agent detail** — after selecting an agent card, browse that agent's memory-bearing runs.
-4. **Agent Team / Agent Org detail** — after selecting a team or org card, browse that definition's memory-bearing root runs and each run's member memory tree.
-5. **Memory Inspector** — inspect one agent run, one team member run, or one org member run through `Working Context`, `Episodic`, `Semantic`, and `Raw Traces` tabs.
+- **Browse** (the entry) — choose `Agents`, `Agent Teams`, or `Agent Orgs`, then an agent's runs or a team's or
+  org's runs and their members. When the current server is a Memory Hub, an imported source can be selected.
+- **Search** — memory search over the Work Journals of every local run (see [Memory Search](#memory-search)).
+- **Index** — the memory index pipeline: its four steps, `Index now`, `Try again` and `Rebuild` (see
+  [Memory Index](#memory-index)).
 
-Route query state (`view`, `tab`, `source`, and the selected definition/run
+A run opens in the **run detail** (the Memory Inspector) on its `Work Journal` tab; `Raw Traces` is the other tab.
+There is no Working Context tab and no tab for the per-run category files of an early compaction design: the Work
+Journal is the readable account of a run and the raw traces its authority.
+
+Route query state (`view`, `section`, `tab`, `source`, `q`, and the selected definition/run
 identifiers) preserves deep links and refreshes for home, source selection,
 agent detail, team detail, org detail, agent-run inspector, team-member
-inspector, and org-member inspector views. Each card, run, member, or Back click
+inspector, org-member inspector and run-folder inspector views. Each card, run, member, or Back click
 navigates immediately and issues exactly one data request for the target view;
 detail views show `Loading runs…` until their own data arrives and never show a
 previous selection's runs.
@@ -25,25 +28,27 @@ previous selection's runs.
 
 Current native compaction stores a six-section Markdown summary inside Working
 Context, whose versionless snapshot is the continuation authority. It does not
-append new Episodic/Semantic records or depend on a lineage head. Existing category
-files remain historical inspection data; an empty category tab is not evidence
-that current compaction failed. Raw traces/archives remain original work evidence.
-Normal reopen uses snapshot decode, active-raw tool repair, validation and save;
-it does not generate another summary. Imported memory remains an inspection
-corpus, not automatic native continuation state.
+append the old per-run category records or depend on a lineage head. The Memory
+page no longer shows those historical category files or the Working Context
+snapshot; the files stay on disk. Raw traces/archives remain
+original work evidence. Normal reopen uses snapshot decode, active-raw tool
+repair, validation and save; it does not generate another summary. Imported
+memory remains an inspection corpus, not automatic native continuation state.
 
 See [core memory design](../../autobyteus-ts/docs/agent_memory_design.md).
 
-## Memory Home
+## Memory Home (Browse)
 
-Memory Home starts directly with the functional browser panel rather than a repeated page title. It has three tabs:
+Memory Home starts directly with the `Browse · Search · Index` tab control, without a page title, flat on the
+page like the Skills page. Browse has three quiet sub-tabs and a name filter that applies as you type (300 ms) or
+on Enter:
 
 - `Agents`
 - `Agent Teams`
 - `Agent Orgs`
 
-When imported Memory Sync sources exist, a source selector is shown above the
-tabs. `Local Memory` is the default for initial page load and for missing or
+When more than one memory source exists (imported Memory Sync sources), a source
+selector is shown beside the filter. `Local Memory` is the default for initial page load and for missing or
 invalid source route state. Imported options are labeled as read-only imported
 corpora and use `source=imported:<memorySyncSourceId>` in the route query.
 
@@ -56,7 +61,9 @@ back to `Local Memory` and drops it from the URL. Detail and inspector
 navigation never request the sources list. A failed refresh keeps the previously
 loaded list and shows the source error text.
 
-Cards show display names, stable IDs, run counts, compact latest-update timestamps, member counts for teams and orgs, and memory availability badges. Search placeholders are scoped to the selected tab, and search/pagination are backed by GraphQL rather than by client-side grouping.
+Cards show display names, stable IDs, run counts, compact latest-update timestamps and member counts for teams and orgs. Availability says nothing in the normal case: a card shows `No Work Journal`, `No Raw traces` or `Archive` only when something is missing or archived. Filter placeholders are scoped to the selected tab, and filtering/pagination are backed by GraphQL rather than by client-side grouping.
+
+Task teams (teams an agent started) are listed with the configured teams, with a dashed `Task team` tag whose tooltip names the agent that started it (`isTaskTeam`, `startedByAgentName`).
 
 Agent cards are grouped primarily by `agentDefinitionId` when metadata exists. Standalone memory directories without run-history or metadata remain visible under an explicit `Unattributed runs` agent group so legacy stored memory is not hidden.
 
@@ -73,7 +80,7 @@ Agent detail pages use the selected agent name as the run-list card heading with
 
 Team and org detail pages share one component (`CollaborationMemoryDetail`) and use the selected team or org name as the run-list card heading without a separate subject summary card. Root runs are sorted by latest member-memory update. Backend summaries are resolved from the stored execution tree of each root run and the server memory-location service. Logical `memberAddress` identifies the Agent placement; physical memory resolution uses the root run id plus ancestor team run ids plus `agentRunId` rather than a flattened or address-derived directory.
 
-Each run's `Members` section is a tree that mirrors the run-history sidebar
+Each run's member chips form a tree (no `Members` label) that mirrors the run-history sidebar
 structure. It shows every agent run of that root run that has memory on disk:
 
 - configured agents;
@@ -95,9 +102,9 @@ renders as a flat member list.
 The tree is built client-side (`components/memory/collaborationMemberTree.ts`)
 from each member target's `groupPath`, `executionKind`, and `startedAt`.
 
-Search on detail pages uses `Search runs...` and filters only within the selected agent's runs or the selected team's/org's runs and member targets (including task agents and task-team members). Subject-level run-count and ID metadata are intentionally not repeated above the list; per-run and per-team-run metadata remains visible inside the list cards.
+The filter on detail pages (`Filter runs by title or run ID…`) narrows only within the selected agent's runs or the selected team's/org's runs and member targets (including task agents and task-team members). Subject-level run-count and ID metadata are intentionally not repeated above the list; per-run and per-team-run metadata remains visible inside the list cards.
 
-The inspector header renders `Memory Inspector` once. Inspector back links preserve the previous destination while using concise subject labels, for example `Back to Codex`, `Back to <team name>`, or `Back to <org name>`. The org-member breadcrumb reads `Agent Orgs / <org> / <org run> / <member>`.
+The run detail's heading is the run's name: the agent, or `member · team` / `member · org`, with the run ID (and workspace) below; no path words. Back links preserve the previous destination while using concise subject labels, for example `Back to Codex`, `Back to <team name>`, `Back to <org name>`, or `Back to search results` when the run was opened from a search.
 
 Imported source detail and inspector views keep the selected source in route and
 store state. Imported memory is browse-only; the UI must not add restore,
@@ -108,10 +115,12 @@ continue, archive, delete, or other local-runtime actions for imported sources.
 Frontend memory state is split by role:
 
 - `stores/memoryExplorerStore.ts` owns Memory Home and detail-page lists (agents, teams, orgs), searches, pagination, the sources list and selected source, selected agent/team/org summaries, and request-staleness guards. `pages/memory.vue` owns route-driven fetching: it decides which single request a navigation issues and when the sources list is refreshed.
-- `stores/memoryInspectorStore.ts` owns the explicit inspect target, selected inspector tab, raw-trace loading state, selected raw-trace file name, raw-trace limit, and request-staleness guards.
+- `stores/memoryInspectorStore.ts` owns the explicit inspect target, selected inspector tab, raw-trace loading state, selected raw-trace file name, raw-trace limit, and request-staleness guards. It reads the memory view only when Raw Traces are shown.
+- `stores/memoryJournalStore.ts` owns the Work Journal view of one run: its files, the selected file, the window of lines shown, the matched lines a search result opened it at, and request-staleness guards.
+- `stores/memorySearchStore.ts` owns the memory search (cue, results, coverage, error) and the memory index status, read again about every 2 s while a build runs; `composables/useMemoryIndexView.ts` turns the status into the Index tab's headline, badge and step text.
 - `stores/memorySyncStore.ts` owns the Nodes -> Memory Sync setup/status UI for the currently bound backend node.
 
-The old flat `MemoryIndexPanel` and per-scope index/view stores were replaced. The page shell now renders `MemoryHome`, `AgentMemoryDetail`, `CollaborationMemoryDetail` (teams and orgs; it replaced `AgentTeamMemoryDetail`), or `MemoryInspector` according to `/memory` query parameters.
+The page shell renders `MemoryHome` (with `MemorySearchPanel`, `MemorySearchResults` and `MemoryIndexPanel` for the Search and Index tabs), `AgentMemoryDetail`, `CollaborationMemoryDetail` (teams and orgs), or `MemoryInspector` (with `WorkJournalTab` and `RawTracesTab`) according to `/memory` query parameters.
 
 ## GraphQL Explorer Contract
 
@@ -135,7 +144,7 @@ member target type). Each target carries `memberAddress`, `displayName`,
 `startedAt`), `lastUpdatedAt`, and `memory`. These fields are additive; existing
 query names and arguments are unchanged.
 
-Every explorer page returns `entries`, `total`, `page`, `pageSize`, and `totalPages`. Entry summaries include `MemoryAvailabilitySummary` flags for working context, episodic memory, semantic memory, active raw traces, and raw-trace archives.
+Every explorer page returns `entries`, `total`, `page`, `pageSize`, and `totalPages`. Entry summaries include `MemoryAvailabilitySummary` flags `hasWorkJournal`, `hasRawTraces` and `hasRawArchive`, and team summaries `isTaskTeam` and `startedByAgentName`.
 
 The `source` variable is explicit:
 
@@ -157,9 +166,9 @@ Inspector data comes from memory-view queries:
 
 An unknown team or org member resolves to an empty view for that `agentRunId`.
 
-All three support include flags for working context, episodic memory, semantic memory, raw traces, raw-trace file metadata, archive inclusion, and `rawTraceLimit`. The raw-trace file selector uses the optional `rawTraceFileName` argument and returns `rawTraceFiles` plus `selectedRawTraceFileName` in the memory view.
+All three support include flags for raw traces, raw-trace file metadata and archive inclusion, and `rawTraceLimit`. The raw-trace file selector uses the optional `rawTraceFileName` argument and returns `rawTraceFiles` plus `selectedRawTraceFileName` in the memory view. The optional `workJournal: WorkJournalWindowInput` (`journalFile`, `start`, `end`) returns the view's `workJournal`: the run's journal files (`OPEN`/`CLOSED`, size, line count, days) and a window of lines; it is `null` for a run without a journal.
 
-The frontend initially loads working/episodic/semantic data without raw traces. Opening the `Raw Traces` tab flips `includeRawTraces` and `includeRawTraceFiles` on and refetches the selected target. The backend defaults the selected file to active `raw_traces_active.jsonl` when it exists, otherwise to the first available complete segment in the inspector ordering. The selector lists active `raw_traces_active.jsonl` plus complete rotated `raw_traces_<zero-padded-index>.jsonl` segment files with record counts; pending/incomplete manifest entries are not shown. Selecting a file sends only that backend-listed file name, not an absolute path, and the response contains records from that file only. Changing the raw-trace limit refetches the currently selected file and applies the limit to that file.
+Opening a run reads only its Work Journal (one window). Opening the `Raw Traces` tab flips `includeRawTraces` and `includeRawTraceFiles` on and fetches the selected target. The backend defaults the selected file to active `raw_traces_active.jsonl` when it exists, otherwise to the first available complete segment in the inspector ordering. The selector lists active `raw_traces_active.jsonl` plus complete rotated `raw_traces_<zero-padded-index>.jsonl` segment files with record counts; pending/incomplete manifest entries are not shown. Selecting a file sends only that backend-listed file name, not an absolute path, and the response contains records from that file only. Changing the raw-trace limit refetches the currently selected file and applies the limit to that file.
 
 When raw traces are requested with archive inclusion enabled without file-selector mode, the backend can still merge complete archive segments plus active traces for non-inspector callers. In both selected-file and merged-corpus modes it exposes provenance fields such as persisted trace `id`, `traceType`, `sourceEvent`, `turnId`, `seq`, timestamp, media fields, and tool payload fields. The current UI displays one selected file at a time with the normalized trace type, content, sequence, tool/media details, file selector, limit control, and loading/empty states.
 
@@ -171,6 +180,54 @@ persisted ID/timestamp, and `turnId: null` / `seq: null`. The Raw Traces UI must
 not fabricate turn grouping or sequence for it. Malformed system rows are
 omitted by backend normalization instead of being rendered through the generic
 turn shape.
+
+## Memory Search
+
+The Search tab searches what past runs did, in any words or language, through the server's memory index
+(`memorySearch(query, limit)`; the server's default limit). The box is centred while empty and moves to the top
+with results; it is disabled until the text index has content (`Index your memory to search it…`, with
+`Index now`).
+
+- One card per run, best first: agent (`team / member` for members), `run ID · workspace` on one line, the day or
+  first–latest range, and 1–2 matches newest first, each with its journal file, lines, its own day (only when the
+  card's date does not already say it) and a 2–3 line snippet (secrets masked by the server). A text match shows
+  `Words: <found words>` (`matchedWords`); a meaning match carries no label. No match carries a grade (UD-020). A
+  line says results are pointers, not facts; the whole match is the click target.
+- Honest states, from the server's `wordsNotFound` (which it leaves empty while the Text index is incomplete): a
+  gray `Not found in your memory: <words>.` when some search words occur in no journal; an amber `None of these
+  words appear in your memory: <words>.` when no match holds any search word; the results are still listed. Also
+  `No matches` with a suggestion (never "nothing in memory"), a blue coverage note while the Text or Meaning index
+  is incomplete, and an error with `Retry`.
+- Opening a match (or a card header, for its first match) opens the run detail at the matched lines, addressed by
+  the result's `subject`: `agent-inspector`, `team-inspector`, `org-inspector`, or `folder-inspector` (a run no
+  record names, read with `runFolderWorkJournal(runKey)`; it has a Work Journal tab only). The cue (and a text
+  match's found words, for the banner `lines a–b · Words: …`) stays in the address, so `Back to search results`
+  returns to the same results.
+
+## Memory Index
+
+The Index tab shows the memory index pipeline from `memoryIndexStatus`: a headline (`Not indexed yet`,
+`Step N of 4 · <step> P%`, `Meaning index P%`, `Up to date`, `Stopped at <step>`, `Embedding model changed`) and
+four step cards (Find runs, Journals, Text index, Meaning index) with state, progress bar and counts. The tab label
+shows a spinner and percent while building, and a dot when the user may need to act.
+
+- `Index now` (`startMemoryIndexing`) is the only way a first build starts; `Try again` resumes a failed build.
+- `Rebuild` (`rebuildMemoryIndex`) asks for confirmation in a slim row and is disabled while a build runs.
+- After a build the Meaning index keeps embedding in the background; the page shows it as the running last step.
+- Spinners and bar transitions stop under `prefers-reduced-motion`.
+
+## Work Journal View
+
+The run detail's default tab reads the run's Work Journal in windows of 300 lines (a file can be several MB):
+
+- a file rail (from 1280 px; a select below) with each file's days, lines, size, `Active` for the open file and
+  `Matched lines` for files holding matches;
+- `Jump to day`, `Go to line` (clamped to the file), `Show 300 earlier / later lines`, and the footer
+  `Lines a–b of N` (`Large file: lines load in parts.` above 5,000 lines);
+- opened from a search result: the matched lines highlighted and scrolled into view, a banner naming the cue and
+  the match, and `Match 1 / Match 2` when the run has two matches;
+- a local run without a journal shows `No Work Journal yet. Index your memory to create it.` with a link to the
+  Index tab; an imported run shows `No Work Journal`.
 
 ## Storage Source
 
@@ -295,4 +352,4 @@ Coverage includes:
 - Backend unit and GraphQL e2e checks for memory-derived agent/team/org inclusion, one execution-tree read per root per list request, task-agent and task-team member targets with their group paths, each member target's own run id, org member views (including task-team members), no-memory exclusion, `Unattributed runs`, selected agent/team filtering, memory-view raw-trace lazy loading, selected raw-trace file listing/reads, invalid selector fallback, imported read-only source behavior, and merged-corpus preservation.
 - Backend Memory Sync API/E2E checks for hub enablement, URL candidates, one-time token handling, source config redaction, explicit draft and saved connection-test modes, REST batch ingestion, imported-source Memory Explorer reads, duplicate retry, source-token binding, latest-error source status, and unsafe path rejection.
 - Backend multi-process Memory Sync E2E starts two real server processes with isolated app-data directories, configures hub/source through HTTP GraphQL, validates saved-mode connection testing, syncs over HTTP, and asserts hub import files without requiring browser, Electron, Docker, or Kubernetes.
-- Frontend store/component/page tests for Memory Home (three tabs), source selection and home-only sources refresh, one request per navigation, agent detail, team and org detail with the member tree, inspector targets, direct route restoration, search/pagination behavior, tab-specific raw-trace fetching, raw-trace file selector state/rendering, Memory Sync tab entry, source-aware query variables, form-preserving Memory Sync status refresh, saved-vs-draft connection-test dispatch, inline connection feedback, `Current job`/`Last sync` precedence, and sync button loading state.
+- Frontend store/component/page tests for memory search (result mapping, found words, words-not-found/none/coverage/error states, opening each run kind by its subject), the memory index (status mapping, polling while building, Index now/Try again/Rebuild with confirmation, model changed), the Work Journal view (windows, jumps, matched lines, missing-journal states), Memory Home (Browse/Search/Index tabs, task-team tag), source selection and home-only sources refresh, one request per navigation, agent detail, team and org detail with the member tree, inspector targets, direct route restoration, search/pagination behavior, tab-specific raw-trace fetching, raw-trace file selector state/rendering, Memory Sync tab entry, source-aware query variables, form-preserving Memory Sync status refresh, saved-vs-draft connection-test dispatch, inline connection feedback, `Current job`/`Last sync` precedence, and sync button loading state.

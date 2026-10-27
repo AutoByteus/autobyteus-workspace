@@ -1,0 +1,27 @@
+# API-L04 (round 2): AC-001, AC-002 (rank, latency), AC-005, AC-007 (word facts) on the round-2 desktop instance's own index, default model Granite R2
+# Build 5b16e1fe4a (code 3204aa2455); data root /private/tmp/wjs-api2/root (clone of the memory copy; 3,686 runs, 7,432 journal files incl. this round's test chats); index from Index now (05:15:59, text done 05:18:29, meaning done 05:59:44); 2026-10-27
+# Question file: the implementer's private SR-006 file (47 questions: 31 answerable, 12 off-topic incl. my F-001 cues as OT-*, 4 partial; Q13 with 2 rephrasings; Q30 out), copied privately as r2/questions-sr006.json (sha256 bfac645560f98d28…)
+# Load: the host was waited on until the 1-minute load average fell below 12 (it had been 31–61); an idle reference machine was not available
+
+## (1) The page's search over HTTP (instance running), 2 rounds: node probes/API-PROBE-graphql-gates-r2.mjs http://127.0.0.1:55188/graphql <file> --rounds 2 --private-out <private>
+{"loadBefore": [10.8, 40.8, 40.6], "loadAfter": [10.1, 37.7, 39.5], "lastRound": {"answerable": 31, "oneSearchTop10": 30, "withinThreeSearches": 31, "rank1": 10, "top3": 26, "p50Ms": 247, "p90Ms": 678, "maxMs": 1164, "answerableNamingWords": [], "offTopic": [{"id": "N02", "wordsNotFound": []}, {"id": "N04", "wordsNotFound": ["aquarium"]}, {"id": "N05", "wordsNotFound": ["前给", "给鱼", "鱼缸", "缸装", "加热", "热棒"]}, {"id": "OT-C1", "wordsNotFound": ["pelicanmarigold9152"]}, {"id": "OT-C2", "wordsNotFound": ["xylophonequartz7731"]}, {"id": "OT-C3", "wordsNotFound": []}, {"id": "OT-C4", "wordsNotFound": ["falconsaffron3381"]}, {"id": "OT-S1", "wordsNotFound": ["pelicanmarigold9152"]}, {"id": "OT-S2", "wordsNotFound": ["xylophonequartz7731"]}, {"id": "OT-S3", "wordsNotFound": []}, {"id": "OT-S4", "wordsNotFound": ["falconsaffron3381"]}, {"id": "OT-T1", "wordsNotFound": ["tortellini", "fermentation", "bakery"]}], "coverageNotes": 0}, "ranks": {"Q01": 3, "Q02": 2, "Q03": 1, "Q04": 10, "Q05": 1, "Q06": 2, "Q07": 8, "Q08": 2, "Q09": 2, "Q10": 3, "Q11": 1, "Q12": 2, "Q13": "#3 at search 3", "Q14": 8, "Q15": 2, "Q16": 1, "Q17": 1, "Q18": 1, "Q19": 3, "Q20": 2, "Q21": 2, "Q22": 1, "Q23": 1, "Q24": 1, "Q25": 1, "Q26": 2, "Q27": 9, "Q28": 2, "Q29": 3, "Q31": 2, "Q32": 2}}
+
+## (2) R-016 evaluation command (instance stopped): caffeinate -i node autobyteus-server-ts/scripts/evaluate-memory-search.mjs --memory-dir /private/tmp/wjs-api2/root/server-data/memory --index-dir /private/tmp/wjs-api2/root/server-data --questions <file> --model granite-embedding-small-english-r2 --asking-run solution_designer_80624588913d473bac3ef7d8c3d4d305 --out <private r2/API-L04r2-evaluation-full.json>
+run: exit 0 start 06:51:25 end 07:09:25 UTC (18 min, most of it the term census over every journal); load before 12.56 28.47 35.43 after 17.03 24.57 32.82
+(a first attempt at 06:36 was cut by my shell's 15-minute timeout and left no report)
+questions 31
+gate1 {"passed": 31, "oneSearchTop10": 30, "withinThreeSearches": 31}
+gate2 {"number1": 16, "top3": 26, "top3Share": 0.8387096774193549, "mrr": 0.695468509984639, "p90Ms": 742, "maxMs": 1034}
+meaningPointers {"total": 153, "textChunk": 27, "cardPart": 28, "firstRequest": 98, "emptySnippet": 0}
+unmaskedSecrets 0
+textMatches {"total": 703, "withoutWords": 0}
+wordsNotFound {"questions": 47, "mismatches": [], "offTopic": 12, "offTopicUnnamed": ["N02", "OT-C3", "OT-S3"]}
+per question (first-search rank @ search found): Q01:2@1 Q02:2@1 Q03:1@1 Q04:8@1 Q05:1@1 Q06:1@1 Q07:6@1 Q08:2@1 Q09:2@1 Q10:1@1 Q11:1@1 Q12:1@1 Q13:None@3 Q14:8@1 Q15:1@1 Q16:1@1 Q17:1@1 Q18:1@1 Q19:1@1 Q20:2@1 Q21:2@1 Q22:1@1 Q23:1@1 Q24:1@1 Q25:1@1 Q26:2@1 Q27:7@1 Q28:2@1 Q29:1@1 Q31:2@1 Q32:2@1
+
+## Reading
+- AC-001: 31/31 within 3 searches (30 in one; Q13 at search 3).
+- AC-002: top 3 26/31 = 84% (≥ 80%); p90 742 ms ≤ 1 s, max 1,034 ms ≤ 2 s in-process; over HTTP p90 678 ms, max 1,164 ms.
+- AC-003: Q01 #2. AC-004: Chinese Q07 #6, Q10 #1, Q19 #1, Q22 #1, Q29 #1. AC-005: 0 unmasked.
+- AC-007: wordsNotFound mismatches [] over 47 questions (no named-absent word occurs; no named-found word absent); text matches without words 0 of 703.
+  offTopicUnnamed: N02 (its rare word occurs only in the --asking-run's own journal; R-15, accepted in IMP-27/CRR-004);
+  OT-C3, OT-S3: 'orchidtundra5520' (and 'codenamed') now occur in this round's own test chat project_task_manager_78775398…/work_journal/work_journal_active.md (API-L05r2 asked about it at 05:21), so naming nothing is correct. Before that chat, both named the word (API-L14).

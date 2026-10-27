@@ -11,6 +11,7 @@ import { ListAvailableAgentRuntimesMcpAdapterProvider } from "./list-available-a
 import { ModelRoutingToolsMcpAdapterProvider } from "./model-routing-tools-mcp-adapter-provider.js";
 
 import { ProjectTaskToolsMcpAdapterProvider } from "./project-task-tools-mcp-adapter-provider.js";
+import { MemoryToolsMcpAdapterProvider } from "./memory-tools-mcp-adapter-provider.js";
 
 export const buildDefaultAgentToolMcpAdapterProviders = (): AgentToolMcpAdapterProvider[] => [
   new SendMessageToMcpAdapterProvider(),
@@ -24,4 +25,5 @@ export const buildDefaultAgentToolMcpAdapterProviders = (): AgentToolMcpAdapterP
   new ListAvailableAgentRuntimesMcpAdapterProvider(),
   new ModelRoutingToolsMcpAdapterProvider(),
   new ProjectTaskToolsMcpAdapterProvider(),
+  new MemoryToolsMcpAdapterProvider(),
 ];

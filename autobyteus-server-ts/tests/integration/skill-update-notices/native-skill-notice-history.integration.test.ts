@@ -60,7 +60,7 @@ const createNativeRun = async () => {
   const conversation = () => {
     const traces = new AgentMemoryService(new MemoryFileStore(path.dirname(memoryDir), { runRootSubdir: "" }))
       .getRunMemoryView(path.basename(memoryDir), {
-        includeRawTraces: true, includeArchive: false, includeEpisodic: false, includeSemantic: false,
+        includeRawTraces: true, includeArchive: false,
       }).rawTraces ?? [];
     return buildRunProjectionBundleFromEvents("run-native", buildHistoricalReplayEvents(traces)).conversation;
   };

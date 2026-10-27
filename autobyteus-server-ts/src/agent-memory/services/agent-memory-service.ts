@@ -1,6 +1,5 @@
 import type {
   AgentMemoryView,
-  MemoryMessage,
   MemoryTraceEvent,
   RawTraceFileSummary,
 } from "../domain/models.js";
@@ -10,9 +9,6 @@ import { normalizeRawTraceRecords } from "./raw-trace-record-normalizer.js";
 import type { ActiveRawTraceSnapshot } from "../store/memory-file-store.js";
 
 type AgentMemoryViewOptions = {
-  includeWorkingContext?: boolean;
-  includeEpisodic?: boolean;
-  includeSemantic?: boolean;
   includeRawTraces?: boolean;
   includeRawTraceFiles?: boolean;
   includeArchive?: boolean;
@@ -31,24 +27,12 @@ export class AgentMemoryService {
 
   getRunMemoryView(runId: string, options: AgentMemoryViewOptions = {}): AgentMemoryView {
     const {
-      includeWorkingContext = true,
-      includeEpisodic = true,
-      includeSemantic = true,
       includeRawTraces = false,
       includeRawTraceFiles = false,
       includeArchive = false,
       rawTraceLimit = null,
       rawTraceFileName = null,
     } = options;
-
-    let workingContext: MemoryMessage[] | null = null;
-    if (includeWorkingContext) {
-      const snapshotPayload = this.store.readWorkingContextSnapshot(runId);
-      workingContext = this.parseWorkingContext(snapshotPayload);
-    }
-
-    const episodic = includeEpisodic ? this.store.readEpisodic(runId) : null;
-    const semantic = includeSemantic ? this.store.readSemantic(runId) : null;
 
     let rawTraces: MemoryTraceEvent[] | null = null;
     let rawTraceFiles: RawTraceFileSummary[] | null = null;
@@ -79,9 +63,6 @@ export class AgentMemoryService {
 
     return {
       runId,
-      workingContext,
-      episodic,
-      semantic,
       rawTraces,
       rawTraceFiles,
       selectedRawTraceFileName,
@@ -94,33 +75,6 @@ export class AgentMemoryService {
       ...snapshot,
       rawTraces: normalizeRawTraceRecords(snapshot.records, null),
     };
-  }
-
-  private parseWorkingContext(payload: Record<string, unknown> | null): MemoryMessage[] | null {
-    if (!payload || typeof payload !== "object") {
-      return null;
-    }
-    const messages = payload.messages as unknown;
-    if (!Array.isArray(messages)) {
-      return null;
-    }
-
-    const parsed: MemoryMessage[] = [];
-    for (const message of messages) {
-      if (!message || typeof message !== "object") {
-        continue;
-      }
-      const msg = message as Record<string, unknown>;
-      parsed.push({
-        role: (msg.role as string | undefined) ?? "",
-        content: (msg.content as string | undefined) ?? null,
-        reasoning: (msg.reasoning_content as string | undefined) ?? null,
-        toolPayload: (msg.tool_payload as Record<string, unknown> | undefined) ?? null,
-        ts: null,
-      });
-    }
-
-    return parsed;
   }
 }
 

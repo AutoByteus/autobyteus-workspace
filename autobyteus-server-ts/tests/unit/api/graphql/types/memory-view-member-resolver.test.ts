@@ -20,10 +20,13 @@ vi.mock("../../../../../src/agent-memory/services/memory-explorer-source-service
 }));
 
 const { MemoryViewResolver } = await import("../../../../../src/api/graphql/types/memory-view.js");
+const { getWorkJournalService } = await import("../../../../../src/agent-work-journal/services/work-journal-service.js");
 
+/** A run folder whose raw traces say `fact`, so a view proves which folder it read. */
 const writeSemantic = async (runDir: string, fact: string) => {
   await fs.mkdir(runDir, { recursive: true });
-  await fs.writeFile(path.join(runDir, "semantic.jsonl"), `${JSON.stringify({ id: fact, fact })}\n`, "utf8");
+  await fs.writeFile(path.join(runDir, "raw_traces_active.jsonl"),
+    `${JSON.stringify({ trace_type: "user", content: fact, ts: 1790056800, turn_id: "t1", seq: 1 })}\n`, "utf8");
 };
 
 describe("MemoryViewResolver member run views", () => {
@@ -65,20 +68,34 @@ describe("MemoryViewResolver member run views", () => {
   });
 
   it("reads an org member run's memory through its resolved org location", async () => {
-    const view = await new MemoryViewResolver().getAgentOrgMemberRunMemoryView("org-root", "org-lead-run");
+    const view = await new MemoryViewResolver().getAgentOrgMemberRunMemoryView("org-root", "org-lead-run", null, true);
     expect(view.runId).toBe("org-lead-run");
-    expect(view.semantic).toEqual([expect.objectContaining({ fact: "org fact" })]);
+    expect(view.rawTraces?.map((trace) => trace.content)).toEqual(["org fact"]);
   });
 
   it("returns an empty view for an unknown org member", async () => {
-    const view = await new MemoryViewResolver().getAgentOrgMemberRunMemoryView("org-root", "missing-run");
+    const view = await new MemoryViewResolver().getAgentOrgMemberRunMemoryView("org-root", "missing-run", null, true, false, false, null, null, {});
     expect(view).toMatchObject({ runId: "missing-run" });
-    expect(view.semantic ?? null).toBeNull();
+    expect(view.rawTraces ?? null).toBeNull();
+    expect(view.workJournal ?? null).toBeNull();
   });
 
   it("keeps reading team member runs through the shared member view read", async () => {
-    const view = await new MemoryViewResolver().getTeamMemberRunMemoryView("team-root", "writer-run");
+    const view = await new MemoryViewResolver().getTeamMemberRunMemoryView("team-root", "writer-run", null, true);
     expect(view.runId).toBe("writer-run");
-    expect(view.semantic).toEqual([expect.objectContaining({ fact: "team fact" })]);
+    expect(view.rawTraces?.map((trace) => trace.content)).toEqual(["team fact"]);
+  });
+
+  it("reads a member's Work Journal through the journal service, null before the run has one", async () => {
+    const resolver = new MemoryViewResolver();
+    const before = await resolver.getTeamMemberRunMemoryView("team-root", "writer-run", null, false, false, false, null, null, {});
+    expect(before.workJournal).toBeNull();
+    const runDir = path.join(memoryDir, "agent_teams", "team-root", "writer-run");
+    await getWorkJournalService().ensureCurrent({ runId: "writer-run", memoryDir: runDir, runtimeKind: null });
+    const view = await resolver.getTeamMemberRunMemoryView("team-root", "writer-run", null, false, false, false, null, null, { start: 1, end: 2 });
+    expect(view.workJournal).toMatchObject({
+      files: [{ journalFile: "work_journal_active.md", state: "OPEN", days: [{ day: "2026-09-22", line: 5 }] }],
+      selectedFile: "work_journal_active.md", start: 1, end: 2, lines: ["# Work Journal — run writer-run", expect.stringContaining("Runtime")],
+    });
   });
 });

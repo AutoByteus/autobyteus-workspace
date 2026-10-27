@@ -1,0 +1,12 @@
+# IMP-04 server memory GraphQL e2e (test-owned folders and database)
+# Command: env -i PATH="$PATH" HOME=<temp> TMPDIR="$TMPDIR" pnpm -C autobyteus-server-ts exec vitest run tests/e2e/memory --no-watch
+# Commit: ecbf5a57bd
+# Environment: macOS (Darwin 25.5.0, arm64), Node v22.23.1; clean environment, HOME=/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.rYATryHYIK
+# Date: 2026-10-26
+
+Config file not found in new data directory: Error: Configuration file not found: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-memory-collaboration-ZG4h0u/.env
+Config file not found in new data directory: Error: Configuration file not found: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-memory-view-7mMH9D/.env
+Config file not found in new data directory: Error: Configuration file not found: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-memory-explorer-tV00K2/.env
+Config file not found in new data directory: Error: Configuration file not found: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/imported-team-memory-graphql-BjoRo3/.env
+[2m Test Files [22m [1m[32m7 passed[39m[22m[2m | [22m[33m1 skipped[39m[90m (8)[39m
+[2m      Tests [22m [1m[32m20 passed[39m[22m[2m | [22m[33m3 skipped[39m[90m (23)[39m

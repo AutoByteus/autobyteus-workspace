@@ -2113,6 +2113,7 @@ describe("application framework architecture boundaries", () => {
     expect(collectSpecs(readinessPath)).toEqual([
       { key: "core", name: undefined, modulePath: "autobyteus-ts/tools/register-tools.js", exportName: "registerTools" },
       { key: "project_tasks", name: undefined, modulePath: "../agent-tools/project-tasks/project-task-native-tools.js", exportName: "registerProjectTaskTools" },
+      { key: "memory", name: undefined, modulePath: "../agent-tools/memory/memory-native-tools.js", exportName: "registerMemoryTools" },
       { key: "browser", name: undefined, modulePath: "../agent-tools/browser/register-browser-tools.js", exportName: "registerBrowserTools" },
       { key: "task_delegation", name: undefined, modulePath: "../agent-tools/task-delegation/register-task-delegation-tools.js", exportName: "registerTaskDelegationTools" },
       { key: "agent_communication", name: undefined, modulePath: "../agent-tools/agent-communication/register-agent-communication-tools.js", exportName: "registerAgentCommunicationTools" },

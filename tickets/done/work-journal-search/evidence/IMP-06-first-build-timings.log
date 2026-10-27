@@ -1,0 +1,27 @@
+# IMP-06 first memory index build on an isolated copy (AC-008 timings)
+# Command: env -i PATH="$PATH" HOME=/tmp/wjs-eval/home TMPDIR="$TMPDIR" node autobyteus-server-ts/scripts/evaluate-memory-search.mjs --memory-dir /tmp/wjs-copy/memory --index-dir /tmp/wjs-eval/index --questions <private gate file> --build --out <private>
+# Commit: 0e1e9b5dde (dist built from it with pnpm -C autobyteus-server-ts build; between 0e1e9b5dde and the handoff commit only src/memory-search/evaluation/ changed in server src)
+# Environment: macOS (Darwin 25.5.0, arm64, M1 Max), Node v22.23.1; the isolated copy /tmp/wjs-copy/memory (7.7 GB, 3,680 local run folders; Work Journals the probes had written were deleted first, so this is a first build); embedding model granite-embedding-small-english-r2 downloaded into the index dir; host shared with other work (load averages 14-37 during the Meaning step; the full web suite ran in parallel for 6 minutes of it)
+# Date: 2026-10-26
+# Never ~/.autobyteus: the command refuses it (checked: "Refusing /Users/normy/.autobyteus").
+
+Started (UTC): 2026-10-26T14:01:22Z
+Journals step done: [115 s] findRuns done 3680/3680 | journals done 3680/3680 | textIndex running 72/7426 | meaningIndex waiting 0/0
+Steps 1-3 done (text index; search by words works): Built in 198 s; waiting for the meaning index to finish embedding…
+Meaning index first/last progress lines: meaning index 0/7426 ... meaning index 7392/7426
+Finished (UTC): 2026-10-26T15:08:11Z
+
+Step progress (every change, 2 s sampling; excerpt of the first and last lines):
+[0 s] findRuns running 0/0 | journals waiting 0/0 | textIndex waiting 0/0 | meaningIndex waiting 0/0
+[2 s] findRuns done 3680/3680 | journals running 16/3680 | textIndex waiting 0/0 | meaningIndex waiting 0/0
+[4 s] findRuns done 3680/3680 | journals running 60/3680 | textIndex waiting 0/0 | meaningIndex waiting 0/0
+[6 s] findRuns done 3680/3680 | journals running 108/3680 | textIndex waiting 0/0 | meaningIndex waiting 0/0
+[8 s] findRuns done 3680/3680 | journals running 223/3680 | textIndex waiting 0/0 | meaningIndex waiting 0/0
+[10 s] findRuns done 3680/3680 | journals running 317/3680 | textIndex waiting 0/0 | meaningIndex waiting 0/0
+...
+[186 s] findRuns done 3680/3680 | journals done 3680/3680 | textIndex running 6154/7426 | meaningIndex waiting 0/0
+[188 s] findRuns done 3680/3680 | journals done 3680/3680 | textIndex running 6255/7426 | meaningIndex waiting 0/0
+[190 s] findRuns done 3680/3680 | journals done 3680/3680 | textIndex running 6376/7426 | meaningIndex waiting 0/0
+[192 s] findRuns done 3680/3680 | journals done 3680/3680 | textIndex running 6461/7426 | meaningIndex waiting 0/0
+[194 s] findRuns done 3680/3680 | journals done 3680/3680 | textIndex running 6610/7426 | meaningIndex waiting 0/0
+[196 s] findRuns done 3680/3680 | journals done 3680/3680 | textIndex running 6838/7426 | meaningIndex waiting 0/0

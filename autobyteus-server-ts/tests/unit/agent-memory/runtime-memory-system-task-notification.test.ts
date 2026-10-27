@@ -36,7 +36,7 @@ const setup = async () => {
   });
   const readTraces = () => new AgentMemoryService(new MemoryFileStore(path.dirname(memoryDir), { runRootSubdir: "" }))
     .getRunMemoryView(path.basename(memoryDir), {
-      includeRawTraces: true, includeArchive: false, includeEpisodic: false, includeSemantic: false,
+      includeRawTraces: true, includeArchive: false, 
     }).rawTraces ?? [];
   return { accumulator, readTraces };
 };

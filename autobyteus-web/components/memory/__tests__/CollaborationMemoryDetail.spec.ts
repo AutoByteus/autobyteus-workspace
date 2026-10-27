@@ -5,7 +5,7 @@ import type { CollaborationMemberMemoryTargetSummary, CollaborationMemoryGroup, 
 
 vi.mock('@iconify/vue', () => ({ Icon: { props: ['icon'], template: '<span :data-icon="icon" />' } }));
 
-const memory = { latestMemoryAt: null, hasWorkingContext: true, hasEpisodic: false, hasSemantic: false, hasRawTraces: false, hasRawArchive: false };
+const memory = { latestMemoryAt: null, hasWorkJournal: true, hasRawTraces: false, hasRawArchive: false };
 
 const member = (overrides: Partial<CollaborationMemberMemoryTargetSummary> & Pick<CollaborationMemberMemoryTargetSummary, 'agentRunId' | 'displayName'>): CollaborationMemberMemoryTargetSummary => ({
   memberAddress: `/${overrides.displayName}`,
@@ -64,11 +64,12 @@ describe('CollaborationMemoryDetail', () => {
     const wrapper = mountDetail();
 
     expect(wrapper.find('header').exists()).toBe(false);
-    expect(wrapper.find('section h1').text()).toBe('Software Team');
+    expect(wrapper.find('h1').text()).toBe('Software Team');
     expect(wrapper.text()).not.toContain('Agent Team');
     expect(wrapper.text()).not.toContain('ID:');
     expect(wrapper.find('input').attributes('placeholder')).toMatch(/search runs/i);
-    expect(wrapper.text()).toContain('Members');
+    // No "Members" label (the chips say who they are).
+    expect(wrapper.text()).not.toContain('Members');
     expect(wrapper.text()).toContain('/tmp/team-project');
     const memberButtons = wrapper.findAll('article button');
     const spans = memberButtons.map((button) => button.findAll('span').map((span) => span.text()));
@@ -138,7 +139,7 @@ describe('CollaborationMemoryDetail', () => {
     expect((wrapper.find('input').element as HTMLInputElement).value).toBe('plan');
 
     await wrapper.find('input').setValue(' planning ');
-    await wrapper.findAll('button').find((button) => button.text() === 'Search')!.trigger('click');
+    await wrapper.find('input').trigger('keyup.enter');
     expect(wrapper.emitted('search')).toEqual([['planning']]);
 
     await wrapper.findAll('article button')[1]!.trigger('click');

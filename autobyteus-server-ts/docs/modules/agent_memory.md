@@ -67,9 +67,9 @@ Common files/directories:
   handoff was captured.
 - `raw_traces_manifest.json` — completed raw-trace archive descriptors owned by `RawTraceArchiveManager`.
 - `raw_traces_<zero-padded-index>.jsonl` — immutable raw-trace archives. Native compaction prepares selected new activity before snapshot commit; a failed preparation/publication can leave copied archive evidence without a successful new summary.
-- `episodic.jsonl` and `semantic.jsonl` — historical compacted output rows; current direct compaction does not append them.
+- `episodic.jsonl` and `semantic.jsonl` — historical compacted output rows; current direct compaction does not append them, and the server no longer reads them (the memory view and the Memory page dropped them). Existing files stay on disk; the library code is FU-003 of `work-journal-search`.
 - `compaction_lineage.jsonl` — historical append-only lineage, not current continuation authority and not a normal compaction/restore dependency.
-- `working_context_snapshot.json` — native continuation state: versionless `{agent_id, messages}` with finalized messages and provenance. The normal reader ignores obsolete root version/extras but requires current shapes, identity and repairable tool facts. Codex/Claude recording does not write it.
+- `working_context_snapshot.json` — native continuation state: versionless `{agent_id, messages}` with finalized messages and provenance. The normal reader ignores obsolete root version/extras but requires current shapes, identity and repairable tool facts. Codex/Claude recording does not write it. The memory view does not show it; it still counts as memory for listing a run.
 - `seen_skill_versions.json` — the skill file versions this run was last given, used by [Skill Update Notices](./skill_update_notices.md) on every runtime. It is additive and disposable: missing or invalid means "nothing seen", and the root-package validators tolerate it.
 - `work_journal/` — the [Work Journal](./agent_work_journal.md): readable Markdown rendered from the raw traces (one file per raw-trace file plus `work_journal_manifest.json`). Derived and disposable: it is rebuilt from the raw traces when missing.
 
@@ -339,6 +339,8 @@ The memory explorer is a backend-for-frontend read model for the `/memory` UI. I
 
 Explorer services scan persisted memory roots at request time, derive memory availability flags, enrich with run-history metadata when available, sort by latest memory update, and paginate server-side.
 
+Memory availability (`MemoryAvailabilitySummary`) is `latestMemoryAt`, `hasWorkJournal` (the run has `work_journal/work_journal_manifest.json`), `hasRawTraces` and `hasRawArchive`. A run is listed when it has a Work Journal, raw traces, a raw archive or a working-context snapshot (`hasMemoryAvailability`).
+
 ### Independent Agents
 
 `AgentMemoryExplorerService` reads standalone run directories from `memory/agents/<runId>` and includes only runs with at least one memory artifact. It groups included runs as follows:
@@ -358,6 +360,7 @@ Team and org explorers share one catalog policy owner,
 - `TeamRootMemorySource` — lists stored root team runs and reads each admitted
   V2 Team execution tree through `TeamRunExecutionTreeLocationService`; display
   metadata comes from the Team catalog owner.
+- `TaskTeamRootMemorySource` — lists task agent teams (`memory/agent_teams/<taskTeamRunId>/` with a `taskAgent` section) that are linked to the run that started them (`TaskAgentLinkChecker`), and reads each one's own files (`TaskAgentOwnFiles.readTeam`). Detached task teams are not listed. Memory search uses the same source to find task-team members.
 - `AgentOrgRootMemorySource` — lists stored root org runs and reads each org
   execution tree through `AgentOrgExecutionTreeLocationService`; display
   metadata comes from `AgentOrgRunHistoryCatalogService.listCatalogRows()`,
@@ -365,7 +368,11 @@ Team and org explorers share one catalog policy owner,
   stored-only history manager and never manages live runs.
 
 `TeamMemoryExplorerService` and `AgentOrgMemoryExplorerService` are thin
-family facades over that catalog. The catalog owns: iteration with **exactly
+family facades over that catalog. The team explorer merges the configured
+teams' catalog with the task teams' catalog before paging: a task team's
+summary has `isTaskTeam: true` and `startedByAgentName` (the agent that
+delegated it: the catalog's agent name for a standalone run, the member
+address basename inside a team or org). The catalog owns: iteration with **exactly
 one execution-tree read per root per list request** (linear in stored root
 runs; this replaced an O(N²) per-root all-root rescan), the skip-invalid-root
 rule (a corrupt tree is skipped with a warning while other roots still list),
@@ -481,7 +488,9 @@ GraphQL memory-view queries:
 
 Unknown members resolve to an empty view for the requested `agentRunId`.
 
-All view queries accept include flags for working context, episodic memory, semantic memory, raw traces, raw-trace file metadata, archive inclusion, and `rawTraceLimit`. They also accept an optional `rawTraceFileName` selector. Raw traces default to omitted so explorer/detail page transitions can stay lightweight; clients load raw traces explicitly when the user opens the Raw Traces tab, changes the trace limit, or selects a different raw-trace file.
+All view queries accept include flags for raw traces, raw-trace file metadata and archive inclusion, `rawTraceLimit`, and an optional `rawTraceFileName` selector. Raw traces default to omitted so explorer/detail page transitions can stay lightweight; clients load raw traces explicitly when the user opens the Raw Traces tab, changes the trace limit, or selects a different raw-trace file.
+
+The view's `workJournal` field is the run's Work Journal, read through `WorkJournalService` (`api/graphql/types/work-journal-view.ts`); it never renders a journal, and it is `null` for a run without one. The optional `workJournal: WorkJournalWindowInput` argument chooses `journalFile` (default: the run's latest file) and the lines `start`–`end` (default: the first 300 lines; at most 400 per read). The answer lists every journal file (`OPEN`/`CLOSED`, size, line count, days with their first line) and the selected window's lines. A run that memory search knows only by its folder is read with `runFolderWorkJournal(runKey)` ([memory_search.md](memory_search.md)).
 
 `MemoryTraceEvent` exposes both `id` and `sourceEvent` for active and complete rotated raw traces, so API consumers can correlate displayed rows with persisted trace records and their originating runtime event boundary. `RawTraceFileSummary` exposes safe file-selection metadata: `fileName`, `kind` (`active` or `segment`), `recordCount`, optional `segmentIndex`, and optional first/last timestamps. The selector identity is the backend-listed file name only, for example `raw_traces_active.jsonl` or `raw_traces_000003.jsonl`; callers must not send or expose absolute file paths.
 
@@ -576,12 +585,14 @@ above.
 - Raw-trace file selector service: `src/agent-memory/services/raw-trace-file-source-service.ts`
 - Raw-trace record normalization: `src/agent-memory/services/raw-trace-record-normalizer.ts`
 - Explorer helpers: `src/agent-memory/services/memory-run-summary-builder.ts`, `src/agent-memory/services/collaboration-member-memory-targets.ts`, `src/agent-memory/services/memory-explorer-page.ts`
-- Memory location owner: `src/agent-memory/services/agent-memory-location-service.ts`
+- Memory location owner: `src/agent-memory/services/agent-memory-location-service.ts` (falls back to a task team's members)
+- Task-team source: `src/agent-memory/services/task-team-root-memory-source.ts`
 - Conversation activity guard: `src/agent-memory/services/agent-conversation-activity-inspector.ts`
 - Memory layout owner: `src/agent-memory/store/agent-memory-layout.ts`
 - Team memory topology reader: `src/run-history/services/team-run-memory-topology-reader.ts`
 - Explorer GraphQL types/resolver: `src/api/graphql/types/memory-explorer-schema.ts`, `src/api/graphql/types/memory-explorer.ts`
-- Inspector GraphQL view types: `src/api/graphql/types/memory-view.ts`
+- Inspector GraphQL view types: `src/api/graphql/types/memory-view.ts`, `src/api/graphql/types/work-journal-view.ts`
+- Memory search (index, search, `search_memory`): [memory_search.md](memory_search.md)
 - Recorder: `src/agent-memory/services/agent-run-memory-recorder.ts`
 - Event accumulator: `src/agent-memory/services/runtime-memory-event-accumulator.ts`
 - Provider boundary recorder: `src/agent-memory/services/provider-compaction-boundary-recorder.ts`

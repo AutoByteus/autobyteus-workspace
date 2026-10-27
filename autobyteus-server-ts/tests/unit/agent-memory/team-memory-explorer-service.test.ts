@@ -87,7 +87,7 @@ describe("TeamMemoryExplorerService current V1 tree", () => {
       { teamRunId: "classroom-run-2", teamDefinitionId: "classroom-team", teamDefinitionName: "Classroom Team", workspaceRootPath: "/tmp/classroom-run-2", summary: "second lesson", createdAt: "2026-08-15T00:00:00.000Z", archivedAt: null, terminatedAt: null },
     ]);
     await touch(path.join(memoryDir, "agent_teams", "classroom-run-1", "teacher-run-1", "raw_traces_active.jsonl"), Date.parse("2026-08-14T01:00:00.000Z"));
-    await touch(path.join(memoryDir, "agent_teams", "classroom-run-2", "teacher-run-2", "semantic.jsonl"), Date.parse("2026-08-15T01:00:00.000Z"));
+    await touch(path.join(memoryDir, "agent_teams", "classroom-run-2", "teacher-run-2", "raw_traces_active.jsonl"), Date.parse("2026-08-15T01:00:00.000Z"));
     resetTeamRunHistoryCatalogState(memoryDir);
     const readiness = new RootRunPackageReadinessIndex(memoryDir);
     await readiness.rebuild();
@@ -130,7 +130,7 @@ describe("TeamMemoryExplorerService current V1 tree", () => {
       teamDefinitionName: "Classroom Team",
       teamRunCount: 2,
       memberMemoryCount: 1,
-      memory: expect.objectContaining({ hasRawTraces: true, hasSemantic: true }),
+      memory: expect.objectContaining({ hasRawTraces: true }),
     })]);
   });
 
@@ -209,7 +209,7 @@ describe("TeamMemoryExplorerService member identity and invalid roots", () => {
   });
 
   it("reports a delegated task instance with its own run ID (AC-011)", async () => {
-    await touch(path.join(memoryDir, "agents", "task-writer-run", "episodic.jsonl"), Date.parse("2026-08-15T02:00:00.000Z"));
+    await touch(path.join(memoryDir, "agents", "task-writer-run", "raw_traces_active.jsonl"), Date.parse("2026-08-15T02:00:00.000Z"));
     const page = await serviceWithoutHistory().listAgentTeamRunsWithMemory("writing-team");
     expect(page.entries[0]?.memberTargets).toEqual([expect.objectContaining({
       memberAddress: "/Teacher",
@@ -217,14 +217,14 @@ describe("TeamMemoryExplorerService member identity and invalid roots", () => {
       agentRunId: "task-writer-run",
       agentDefinitionId: "agent-Teacher",
       lastUpdatedAt: "2026-08-15T02:00:00Z",
-      memory: expect.objectContaining({ hasEpisodic: true, hasSemantic: false }),
+      memory: expect.objectContaining({ hasRawTraces: true, hasWorkJournal: false }),
     })]);
     expect((await serviceWithoutHistory().listAgentTeamRunsWithMemory("writing-team", "task-writer-run")).total).toBe(1);
   });
 
   it("lists the configured member and its task instance as separate runs", async () => {
-    await touch(path.join(memoryDir, "agent_teams", "writer-root", "teacher-run", "semantic.jsonl"), Date.parse("2026-08-15T01:00:00.000Z"));
-    await touch(path.join(memoryDir, "agents", "task-writer-run", "episodic.jsonl"), Date.parse("2026-08-15T02:00:00.000Z"));
+    await touch(path.join(memoryDir, "agent_teams", "writer-root", "teacher-run", "raw_traces_active.jsonl"), Date.parse("2026-08-15T01:00:00.000Z"));
+    await touch(path.join(memoryDir, "agents", "task-writer-run", "raw_traces_active.jsonl"), Date.parse("2026-08-15T02:00:00.000Z"));
     const teams = await serviceWithoutHistory().listAgentTeamsWithMemory();
     expect(teams.entries).toEqual([expect.objectContaining({ teamDefinitionId: "writing-team", teamRunCount: 1, memberMemoryCount: 1 })]);
     const page = await serviceWithoutHistory().listAgentTeamRunsWithMemory("writing-team");
@@ -232,7 +232,7 @@ describe("TeamMemoryExplorerService member identity and invalid roots", () => {
   });
 
   it("skips a corrupt root tree with a readiness diagnostic while other roots still list (AC-003)", async () => {
-    await touch(path.join(memoryDir, "agent_teams", "writer-root", "teacher-run", "semantic.jsonl"), Date.parse("2026-08-15T01:00:00.000Z"));
+    await touch(path.join(memoryDir, "agent_teams", "writer-root", "teacher-run", "raw_traces_active.jsonl"), Date.parse("2026-08-15T01:00:00.000Z"));
     const brokenDir = layout.getTeamDirPath({ rootTeamRunId: "broken-root", ancestorTeamRunIds: [] });
     await fs.mkdir(brokenDir, { recursive: true });
     await fs.writeFile(path.join(brokenDir, "team_run_execution_tree.json"), "{ not json", "utf8");
@@ -248,7 +248,7 @@ describe("TeamMemoryExplorerService member identity and invalid roots", () => {
   });
 
   it("skips a root folder whose tree names a different team run, while other roots still list", async () => {
-    await touch(path.join(memoryDir, "agent_teams", "writer-root", "teacher-run", "semantic.jsonl"), Date.parse("2026-08-15T01:00:00.000Z"));
+    await touch(path.join(memoryDir, "agent_teams", "writer-root", "teacher-run", "raw_traces_active.jsonl"), Date.parse("2026-08-15T01:00:00.000Z"));
     const foreign = testExecutionTree({
       rootTeamRunId: "other-root-id",
       rootTeamDefinitionId: "foreign-team",
@@ -258,7 +258,7 @@ describe("TeamMemoryExplorerService member identity and invalid roots", () => {
     const mismatchDir = layout.getTeamDirPath({ rootTeamRunId: "mismatch-root", ancestorTeamRunIds: [] });
     await new TeamRunExecutionTreeStore().write(mismatchDir, foreign);
     await new TeamCommunicationStore().write(mismatchDir, { schemaVersion: 1, rootTeamRunId: "mismatch-root", messages: [] });
-    await touch(path.join(memoryDir, "agent_teams", "mismatch-root", "foreign-teacher-run", "semantic.jsonl"), Date.parse("2026-08-15T03:00:00.000Z"));
+    await touch(path.join(memoryDir, "agent_teams", "mismatch-root", "foreign-teacher-run", "raw_traces_active.jsonl"), Date.parse("2026-08-15T03:00:00.000Z"));
 
     const page = await serviceWithoutHistory().listAgentTeamsWithMemory();
 
@@ -324,11 +324,11 @@ describe("TeamMemoryExplorerService execution structure (REQ-012)", () => {
     const packageDir = layout.getTeamDirPath({ rootTeamRunId: "structure-root", ancestorTeamRunIds: [] });
     await new TeamRunExecutionTreeStore().write(packageDir, tree);
     await new TeamCommunicationStore().write(packageDir, { schemaVersion: 1, rootTeamRunId: "structure-root", messages: [] });
-    await touch(teamDir("structure-writer-run", "semantic.jsonl"), Date.parse("2026-08-15T01:00:00.000Z"));
+    await touch(teamDir("structure-writer-run", "raw_traces_active.jsonl"), Date.parse("2026-08-15T01:00:00.000Z"));
     // Task agents are normal runs (contract L1): an agent at `agents/<id>/`, task team members at `agent_teams/<team>/<id>/`.
-    await touch(path.join(memoryDir, "agents", "task-writer-run", "semantic.jsonl"), Date.parse("2026-08-15T02:00:00.000Z"));
-    await touch(path.join(memoryDir, "agent_teams", "review-team-run", "reviewer-run", "semantic.jsonl"), Date.parse("2026-08-15T03:00:00.000Z"));
-    await touch(path.join(memoryDir, "agent_teams", "inner-team-run", "checker-run", "episodic.jsonl"), Date.parse("2026-08-15T04:00:00.000Z"));
+    await touch(path.join(memoryDir, "agents", "task-writer-run", "raw_traces_active.jsonl"), Date.parse("2026-08-15T02:00:00.000Z"));
+    await touch(path.join(memoryDir, "agent_teams", "review-team-run", "reviewer-run", "raw_traces_active.jsonl"), Date.parse("2026-08-15T03:00:00.000Z"));
+    await touch(path.join(memoryDir, "agent_teams", "inner-team-run", "checker-run", "raw_traces_active.jsonl"), Date.parse("2026-08-15T04:00:00.000Z"));
     resetTeamRunHistoryCatalogState(memoryDir);
     resetRootRunPackageReadinessIndex(memoryDir);
     const readiness = new RootRunPackageReadinessIndex(memoryDir);
@@ -359,12 +359,15 @@ describe("TeamMemoryExplorerService execution structure (REQ-012)", () => {
       { displayName: "lead", agentRunId: "reviewer-run", executionKind: "TASK_TEAM_MEMBER", startedAt: null, groupPath: [reviewSquad] },
       { displayName: "checker", agentRunId: "checker-run", executionKind: "TASK_TEAM_MEMBER", startedAt: null, groupPath: [inner] },
     ]);
-    expect(page.entries[0]).toMatchObject({ lastUpdatedAt: "2026-08-15T04:00:00Z", memory: expect.objectContaining({ hasEpisodic: true }) });
+    expect(page.entries[0]).toMatchObject({ lastUpdatedAt: "2026-08-15T04:00:00Z", memory: expect.objectContaining({ hasRawTraces: true }) });
   });
 
   it("counts every member address and matches search on members of a delegated task team inside a task team", async () => {
     const service = new TeamMemoryExplorerService(memoryDir);
-    expect((await service.listAgentTeamsWithMemory()).entries[0]).toMatchObject({ teamRunCount: 1, memberMemoryCount: 3 });
+    const entries = (await service.listAgentTeamsWithMemory()).entries;
+    expect(entries.find((entry) => entry.teamDefinitionId === "structure-team")).toMatchObject({ teamRunCount: 1, memberMemoryCount: 3, isTaskTeam: false });
+    // The linked task teams are listed too, tagged (UD-008).
+    expect(entries.filter((entry) => entry.isTaskTeam).map((entry) => entry.teamDefinitionId).sort()).toEqual(["team-Inner", "team-reviewer"]);
     expect((await service.listAgentTeamRunsWithMemory("structure-team", "checker-run")).total).toBe(1);
     expect((await service.listAgentTeamsWithMemory("Inner/checker")).total).toBe(1);
   });

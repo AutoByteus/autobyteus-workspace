@@ -56,7 +56,7 @@ describe("AgentMemoryExplorerService", () => {
     await writeMetadata("codex-run-2", "codex", "2026-01-02T00:00:00Z");
     await writeMetadata("empty-run", "empty-agent", "2026-01-03T00:00:00Z");
     touch(path.join(tempDir, "agents", "codex-run-1", "raw_traces_active.jsonl"), 1000);
-    touch(path.join(tempDir, "agents", "codex-run-2", "semantic.jsonl"), 2000);
+    touch(path.join(tempDir, "agents", "codex-run-2", "raw_traces_active.jsonl"), 2000);
 
     const page = await createService().listAgentsWithMemory();
 
@@ -64,7 +64,7 @@ describe("AgentMemoryExplorerService", () => {
     expect(page.entries[0]?.agentDefinitionId).toBe("codex");
     expect(page.entries[0]?.runCount).toBe(2);
     expect(page.entries[0]?.memory.hasRawTraces).toBe(true);
-    expect(page.entries[0]?.memory.hasSemantic).toBe(true);
+    expect(page.entries[0]?.memory.hasRawTraces).toBe(true);
   });
 
   it("leaves out an internal agent and its runs while it is hidden (autobyteus-308 AC-002)", async () => {

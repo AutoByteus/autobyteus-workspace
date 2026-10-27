@@ -28,6 +28,7 @@ import { buildApplicationPlatformRuntime } from "../application-platform/runtime
 import type { ApplicationPlatformRuntime } from "../application-platform/runtime/application-platform-runtime.js";
 import { configureStudioApplicationApiServices } from "../api/graphql/studio-application-api-services.js";
 import { stopMemorySyncWorker } from "../memory-sync/source/memory-sync-worker.js";
+import { shutdownMemorySearch } from "../memory-search/memory-search.js";
 import { stopDefaultAgentRunEventPipeline } from "../agent-execution/events/default-agent-run-event-pipeline.js";
 import { getSecretVaultRuntime } from "../secret-management/secret-vault-runtime.js";
 import {
@@ -98,6 +99,7 @@ const closeStudioProcessResources = async (input: {
   agentRuntimeStatus: AgentRuntimeStatusHandle | null;
 }): Promise<void> => {
   stopMemorySyncWorker();
+  shutdownMemorySearch();
   try {
     input.updateNotifications?.close();
   } catch (error) {

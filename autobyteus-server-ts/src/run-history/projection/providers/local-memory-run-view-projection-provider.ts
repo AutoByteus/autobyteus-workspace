@@ -39,9 +39,6 @@ export class LocalMemoryRunViewProjectionProvider implements RunProjectionProvid
   async buildProjection(input: RunProjectionProviderInput): Promise<RunProjection> {
     const { memoryService, localRunId } = this.resolveMemorySource(input);
     const view = memoryService.getRunMemoryView(localRunId, {
-      includeWorkingContext: false,
-      includeEpisodic: false,
-      includeSemantic: false,
       includeRawTraces: true,
       includeArchive: false,
     });

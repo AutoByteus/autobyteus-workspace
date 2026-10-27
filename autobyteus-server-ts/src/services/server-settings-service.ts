@@ -53,6 +53,11 @@ import {
   EMBEDDING_MODEL_SETTING_KEY,
   normalizeEmbeddingModelSettingForPersistence,
 } from "../embeddings/catalog/embedding-model-setting.js";
+import {
+  MEMORY_SEARCH_DEFAULT_LIMIT_SETTING_DESCRIPTION,
+  MEMORY_SEARCH_DEFAULT_LIMIT_SETTING_KEY,
+  normalizeMemorySearchDefaultLimitForPersistence,
+} from "../memory-search/settings/memory-search-settings.js";
 
 export {
   DEFAULT_IMAGE_EDIT_MODEL_SETTING_KEY,
@@ -242,6 +247,15 @@ export class ServerSettingsService {
       true,
       {
         normalizeForPersistence: normalizeEmbeddingModelSettingForPersistence,
+      },
+    );
+
+    this.registerPredefinedSetting(
+      MEMORY_SEARCH_DEFAULT_LIMIT_SETTING_KEY,
+      MEMORY_SEARCH_DEFAULT_LIMIT_SETTING_DESCRIPTION,
+      true,
+      {
+        normalizeForPersistence: normalizeMemorySearchDefaultLimitForPersistence,
       },
     );
 

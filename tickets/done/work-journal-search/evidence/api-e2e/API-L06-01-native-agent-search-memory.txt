@@ -1,0 +1,13 @@
+# API-L06: AC-012 on the native entry form (AutoByteus runtime, native tool with agentId as the asking run)
+# Desktop iso-53567-504c; Project Task Manager with search_memory selected in the definition editor (General → search_memory; 17 tools); model qwen/qwen3.6-35b-a3b:lmstudio@localhost:1234; Auto-approve on
+# Run project_task_manager_b57512f3fcf147e9bd5ff8a9b0cc92ba, from the UI; 2026-10-26 18:43 UTC; Meaning index at 5152 of 7428 files (first build still embedding)
+User (known-answer question Q06 in the user's words): "Do you remember the game with a bunny and a tortoise we made earlier? Where is it, and when was it made?"
+Tool calls (raw_traces_active.jsonl): list_projects; search_memory {"query": "bunny tortoise race game"} (one search)
+search_memory result: coverage "The meaning index covers 5152 of 7428 journal files."; note none; 10 results
+  #1 solution_designer_80624588… (this ticket's own design run, which quotes the question; text/strong)
+  #2 student_1dfc5548… (meaning/weak)
+  #3 daily_assistant_9784d6c45cd842cda664941b24206a81 = the accepted run · Daily Assistant · firstDay 2026-08-06 · matches lines 269-295 text/weak, 3040-3060 text/fair (agents/daily_assistant_9784…/work_journal/…)
+  source line shape: "software_engineering_team / solution_designer · run solution_designer_8062… · 2026-10-23 · work_journal_active.md:5857-5858"
+Answer: "I found it in the memory logs! The game was created by the Daily Assistant on August 6, 2026. It was called “<game title redacted>” … built in the workspace at /Users/normy/.autobyteus/server-data/temp_workspace …" (the right run and day; the workspace is the run's recorded one, from the result; nothing here reads ~/.autobyteus)
+Steps: 1 search, 0 reads: the agent answered from the snippet and did not open the journal lines, although the tool description asks it to.
+LM Studio: qwen was loaded just-in-time by these runs and unloaded afterwards (lms unload).

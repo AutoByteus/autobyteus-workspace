@@ -1,0 +1,10 @@
+# IMP-13 server focused tests (IR-002: CR-001, CR-002, UD-019, C-06)
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/unit/memory-search tests/agent-work-journal tests/unit/embeddings tests/unit/agent-tools/memory tests/unit/startup --no-watch; then pnpm -C autobyteus-server-ts typecheck
+# Commit: 8529960b80
+# Environment: macOS (Darwin 25.5.0, arm64), Node v22.23.1
+# Date: 2026-10-26
+
+ Test Files  26 passed | 1 skipped (27)
+      Tests  215 passed | 2 skipped (217)
+
+typecheck exit 0

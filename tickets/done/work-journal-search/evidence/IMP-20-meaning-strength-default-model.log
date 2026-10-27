@@ -1,0 +1,35 @@
+# IMP-20 meaning strength (SR-005, SR-005b) on the default model: the three hard constraints, values, margins, partial coverage
+# Commands:
+#   gates: env -i PATH="$PATH" HOME=/tmp/wjs-eval/home TMPDIR="$TMPDIR" node autobyteus-server-ts/scripts/evaluate-memory-search.mjs --memory-dir /tmp/wjs-copy/memory --index-dir /tmp/wjs-eval/index --questions <private SR-005b file: Q30 left out, Q13 with its two rephrasings> --asking-run solution_designer_80624588913d473bac3ef7d8c3d4d305 --out <private>
+#   margins and partial coverage: <local script> over the per-question data of IMP-18 (same index, same rule, baseline over all candidates before the asking run is removed)
+# Commit: 0f3c2a2d87 (dist built at it, IMP-19)
+# Environment: macOS (Darwin 25.5.0, arm64, M1 Max), Node v22.23.1; granite-embedding-small-english-r2; isolated copy (3,680 runs, 7,426 cards, complete); host load 28-41 (the LEAF-IR embedding ran in parallel), so latencies are under load
+# Date: 2026-10-26
+# Only IDs, ranks and numbers; the questions stay private.
+
+## Values (named constants in MemorySearchService)
+MEANING_BASELINE_RANK = 200 (k), MEANING_FAIR_LIFT = 0.0477 (Lf), MEANING_STRONG_LIFT = 0.0567 (Ls).
+
+## The three hard constraints (evaluation command)
+1. Every verified off-topic question ends only-weak: offTopic {"questions": 12, "passed": 12, "failed": []} -> Pass (12 of 12: N02, N04, N05, OT-C1..OT-C4, OT-S1..OT-S4, OT-T1).
+2. No answerable question gets a false only-weak note: falseOnlyWeak [] -> Pass.
+3. Gates 1 and 2 unchanged (IMP-17: 31/31, 30 in one search, top 3 26, #1 18, MRR 0.7288): gate1 {"passed": 31, "oneSearchTop10": 30, "withinThreeSearches": 31}, gate2 {"number1": 18, "top3": 26, "top3Share": 0.8387096774193549, "mrr": 0.7288018433179723, "p90Ms": 590, "maxMs": 893} -> Pass (strength does not rank). Latency under load 28-41.
+Also: unmaskedSecrets 0; meaning pointers {"total": 156, "textChunk": 27, "cardPart": 33, "firstRequest": 96, "emptySnippet": 0}; partial (reported, not gated) [{"id": "N01", "onlyWeak": false}, {"id": "N03", "onlyWeak": false}, {"id": "OT-T2", "onlyWeak": false}, {"id": "OT-T3", "onlyWeak": false}].
+Per question rank (first search): {"Q01": 1, "Q02": 1, "Q03": 1, "Q04": 8, "Q05": 1, "Q06": 1, "Q07": 5, "Q08": 2, "Q09": 2, "Q10": 1, "Q11": 1, "Q12": 1, "Q13": null, "Q14": 8, "Q15": 1, "Q16": 1, "Q17": 1, "Q18": 1, "Q19": 1, "Q20": 2, "Q21": 2, "Q22": 1, "Q23": 1, "Q24": 1, "Q25": 1, "Q26": 2, "Q27": 7, "Q28": 2, "Q29": 1, "Q31": 2, "Q32": 2}
+
+## Margins
+model granite-embedding-small-english-r2: k=200 Lf=0.0477 Ls=0.0567
+  off-topic largest meaning lift 0.0420 (N04): Lf margin +0.0057
+  smallest best lift of an answerable question that relies on meaning 0.0535 (Q08): Lf margin +0.0058
+  answerable best meaning lifts p25/p50/p75/p90: 0.0344/0.0519/0.0567/0.0763; Ls 0.0567 is above the off-topic largest lift by +0.0147 and above Lf by +0.0090
+  answerable questions whose best meaning match is Strong 5, Fair 8, Weak 18 (of 31)
+  partial coverage (simulated: a share of the cards embedded; baseline from the embedded candidates, the last one when fewer than k):
+    50% embedded: off-topic questions with a Fair/Strong meaning match []; answerable questions with one 8/31 (R-10 holds the only-weak note back while incomplete)
+    25% embedded: off-topic questions with a Fair/Strong meaning match ['N04']; answerable questions with one 5/31 (R-10 holds the only-weak note back while incomplete)
+    10% embedded: off-topic questions with a Fair/Strong meaning match ['OT-C4']; answerable questions with one 2/31 (R-10 holds the only-weak note back while incomplete)
+
+## Escalation trigger (R-9)
+If a re-check finds no k, Ls, Lf (or per-model table) that meets all three constraints on the default model, the implementer stops and returns a Design Impact to the Solution Designer; no constraint is relaxed.
+
+## Risk
+The Lf margins are thin (+0.0057 / +0.0058 in cosine lift), each set by one question (N04, Q08); the evaluation re-check guards them. While cards are still being embedded, a single off-topic cue can rate Fair by meaning (simulated: N04 at 25%, OT-C4 at 10%); R-10 then shows the coverage note instead of the only-weak note.
