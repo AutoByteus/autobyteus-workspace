@@ -175,3 +175,15 @@ describe('ChatModelMenu unavailable runtimes (AC-003)', () => {
     expect(document.activeElement?.getAttribute('data-runtime')).not.toBe('grok_build')
   })
 })
+
+describe('ChatModelMenu with no runtime chosen yet (autobyteus-313: the Model Router before it is set)', () => {
+  it('the trigger asks for a model and names no runtime', () => {
+    wrapper = mount(ChatModelMenu, { props: { runtimeKind: '', llmModelIdentifier: '', modelLabel: '' }, attachTo: document.body })
+    const trigger = wrapper.get('[data-test="chat-model-trigger"]')
+    const text = trigger.text().replace(/\s+/g, ' ').trim()
+    expect(text).toMatch(/^Choose/)
+    expect(text).not.toMatch(/AutoByteus|Codex|Claude|Antigravity|Grok/)
+    expect(trigger.attributes('title')).toBeUndefined()
+    expect(trigger.attributes('aria-label')).toBe(text)
+  })
+})

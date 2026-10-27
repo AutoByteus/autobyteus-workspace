@@ -24,7 +24,9 @@ export function useModelRouterLaunchControls(
   // The saved model's label and settings come from its runtime's catalog.
   watch(runtimeKind, (kind) => { if (kind) catalog.ensureCatalog(kind) }, { immediate: true })
   const modelLabel = computed(() => (llmModelIdentifier.value ? catalog.modelLabel(runtimeKind.value, llmModelIdentifier.value) : ''))
-  const thinkingSchema = computed<UiModelConfigSchema | null>(() => catalog.schemaFor(runtimeKind.value, llmModelIdentifier.value))
+  // No launch yet (the router is not set): no schema to read (the catalog needs a runtime).
+  const thinkingSchema = computed<UiModelConfigSchema | null>(() => (runtimeKind.value && llmModelIdentifier.value
+    ? catalog.schemaFor(runtimeKind.value, llmModelIdentifier.value) : null))
 
   const selectModel = (selection: ChatModelSelection): void => save({
     runtimeKind: selection.runtimeKind,

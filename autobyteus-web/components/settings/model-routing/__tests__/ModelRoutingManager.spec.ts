@@ -21,12 +21,14 @@ const catalog = vi.hoisted(() => {
     reasoning_effort: { type: 'string', enum: ['low', 'medium', 'high'], default: 'medium' },
     service_tier: { type: 'string', enum: ['fast'], title: 'Fast mode' },
   }
+  /** Like the real catalog store, a read without a runtime throws ("runtimeKind is required"). */
+  const runtimeRequired = (runtimeKind: string) => { if (!runtimeKind) throw new Error('runtimeKind is required') }
   return {
     codexSchema,
     ensureCatalog: vi.fn(),
-    modelLabel: (runtimeKind: string, id: string) => labels[`${runtimeKind}:${id}`] ?? id,
-    findModel: (runtimeKind: string, id: string) => (labels[`${runtimeKind}:${id}`] ? { label: labels[`${runtimeKind}:${id}`] } : null),
-    schemaFor: (runtimeKind: string, id: string | null | undefined) => (runtimeKind === 'codex_app_server' && id ? codexSchema : null),
+    modelLabel: (runtimeKind: string, id: string) => { runtimeRequired(runtimeKind); return labels[`${runtimeKind}:${id}`] ?? id },
+    findModel: (runtimeKind: string, id: string) => { runtimeRequired(runtimeKind); return labels[`${runtimeKind}:${id}`] ? { label: labels[`${runtimeKind}:${id}`] } : null },
+    schemaFor: (runtimeKind: string, id: string | null | undefined) => { runtimeRequired(runtimeKind); return runtimeKind === 'codex_app_server' && id ? codexSchema : null },
   }
 })
 vi.mock('~/composables/chat/useChatModelCatalog', () => ({ useChatModelCatalog: () => catalog }))

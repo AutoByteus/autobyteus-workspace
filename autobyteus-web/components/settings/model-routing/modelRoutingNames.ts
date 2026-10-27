@@ -24,7 +24,9 @@ export function useModelRoutingNames(runtimesShown: () => readonly string[]) {
   }, { immediate: true })
 
   const runtimeName = (runtimeKind: string): string => runtimeKindToLabel(runtimeKind)
-  const modelLabel = (runtimeKind: string, llmModelIdentifier: string): string => catalog.modelLabel(runtimeKind, llmModelIdentifier)
+  /** The catalog needs a runtime: with none (or no model) the model reads as given. */
+  const modelLabel = (runtimeKind: string, llmModelIdentifier: string): string =>
+    (runtimeKind && llmModelIdentifier ? catalog.modelLabel(runtimeKind, llmModelIdentifier) : llmModelIdentifier)
   const modelWithRuntime = (runtimeKind: string, llmModelIdentifier: string): ModelWithRuntime =>
     ({ model: modelLabel(runtimeKind, llmModelIdentifier), runtime: runtimeShortLabel(runtimeKind) })
   const modelWithRuntimeText = (runtimeKind: string, llmModelIdentifier: string): string => {
@@ -33,7 +35,7 @@ export function useModelRoutingNames(runtimesShown: () => readonly string[]) {
   }
   /** A model of the Runtimes tab's report: the catalog's label when the catalog has it, else the report's name. */
   const reportedModelName = (runtimeKind: string, model: Readonly<{ id: string; name: string }>): string =>
-    catalog.findModel(runtimeKind, model.id)?.label ?? model.name
+    (runtimeKind ? catalog.findModel(runtimeKind, model.id)?.label : undefined) ?? model.name
 
   return { runtimeName, modelLabel, modelWithRuntime, modelWithRuntimeText, reportedModelName }
 }

@@ -5,7 +5,7 @@
     <!-- autobyteus-313 REQ-001: the app's launch controls, as on New chat and in run Settings; usable only while Model
          Routing is on and nothing is being saved. -->
     <div
-      class="mt-3 flex flex-wrap items-center gap-1 rounded-md border border-gray-200 px-1.5 py-1"
+      class="mt-3 flex w-fit max-w-full flex-wrap items-center gap-1 rounded-md border border-gray-200 px-1.5 py-1"
       :class="controlsDisabled ? 'cursor-not-allowed bg-gray-50 opacity-60' : 'bg-white'"
       :inert="controlsDisabled || undefined"
       :aria-disabled="controlsDisabled ? 'true' : undefined"
