@@ -88,4 +88,10 @@ The current code and `implementation-handoff.md` are authoritative. This record 
     - Tests: R-11 and R-10 discriminate (a mutation run confirmed R-10); embedding test updated; docs updated.
   - IMP-20 (default model): off-topic 12/12; falseOnlyWeak []; gates unchanged (31/31, top 3 26/31). Margins: Lf +0.0057 (N04) / +0.0058 (Q08); Ls +0.0147 over the largest off-topic lift. Partial-coverage simulation: 50% embedded clean; at 25% and 10%, one off-topic cue rates Fair (R-10 holds the note back).
   - IMP-21 (LEAF-IR): with the same values, off-topic 0/12 and Q08 a false note. Per-model values can't fix Q08: its best meaning card belongs to a run with weak text matches, and `toResult` drops a meaning pointer that duplicates a text pointer (a merge the design does not define). With a merge where a match found by both tiers carries the stronger strength (rule B), both models are feasible: Granite k 200 Lf ≈ 0.0689 ±0.0078, and LEAF-IR only at k 20 (±0.0022) or k 50 (±0.0011). R-9: returned to the Solution Designer.
+- **After SR-005c (rule B for every model, per-model rows):** implemented in `5617a04d02`.
+  - `MEANING_CALIBRATION`: Granite R2 k 200, Fair 0.0689, Strong 0.0999; LEAF-IR k 20, Fair 0.0429, Strong 0.159; other models use the default row, reported unverified.
+  - A match found by both tiers is shown once, with the stronger strength and its tier's label.
+  - IMP-23: both models meet constraints 1 and 2 (off-topic 12/12, no false note). The default model's gates are unchanged. LEAF-IR is 30/31 (its Q14 miss) with a ±0.0022 margin, and shows off-topic Fair labels when partly embedded.
+  - IMP-24: 649 server tests, 20 memory e2e, typecheck, 121 web memory tests and the guards pass.
+  - **Paused (2026-10-27) at the Solution Designer's request:** the user is reconsidering whether strength labels should exist at all. No handoff to code review until the decision; the handoff document is not yet updated for IR-003.
 
