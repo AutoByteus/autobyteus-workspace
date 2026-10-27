@@ -22,8 +22,8 @@
 - Handoff summary: `handoff-summary.md`
 - Release/publication/deployment report: `release-deployment-report.md`
 - Integration and post-integration verification: base `1c54ffec6a` not advanced; checkpoint `8e43e74d78`; DEL-01 clean clone, all passing.
-- Verification and finalization state: see the report.
-- Terminal return to the Solution Designer: see the report's Final Status.
+- Verification and finalization state: verified; merged `baf87f2269` into `personal`; beta v1.5.9-beta.13 released (complete); worktrees and local branches removed.
+- Terminal return to the Solution Designer: `Sent` after this record was pushed.
 - Why this baseline was recorded: first delivery round.
 - Next recipient/action: the Solution Designer (`Delivery Completed`).
 - Remaining blockers, rollback concerns, or untested scope:

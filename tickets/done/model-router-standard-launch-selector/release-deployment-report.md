@@ -89,3 +89,58 @@ The Model Router's launch with the app's standard launch controls and model sett
 ## Repository Finalization And Release
 
 Recorded below after the merge and the release.
+
+## Finalization Record
+
+- Bootstrap context source: the API/E2E handoff (branch `codex/model-router-standard-launch-selector`, base and target `origin/personal` `1c54ffec6a`) and RELEASE.md
+- Ticket branch: `codex/model-router-standard-launch-selector`
+- Ticket branch commit result: archive commit `4ff2d67ab2`. Code: `09f99eed32`, `f9c58612e5`, `1357063994`. Docs: `e9c25f3801`. API/E2E: `0b6911aaac`. Checkpoint: `8e43e74d78`.
+- Name check before the commit: `check_repository_artifact_hygiene.py` passed. The longest ticket path is 139 characters, with no Windows-hostile names.
+- Ticket branch push result: pushed `origin/codex/model-router-standard-launch-selector` @ `4ff2d67ab2`, after the Secret Gate passed
+- Finalization target: `origin/personal`
+- Target advanced after verification: `No` (`1c54ffec6a` at verification, at the merge and before the push)
+- Merge into target result: `git merge --no-ff` on `finalize/model-router-standard-launch-selector` (a clean release worktree) → `baf87f2269`. Checks on the merged state:
+  - Secret Gate PASS;
+  - `check_repository_artifact_hygiene.py` passed;
+  - `check_licensing.py`: "Licensing is consistent."
+- Push target branch result: pushed with the release commit, `1c54ffec6a..57f986e75a  HEAD -> personal`
+- Repository finalization status: `Completed`
+
+## Beta Release v1.5.9-beta.13
+
+- Decision: `Beta`, by the user ("if everythign fine, release a new beta thanks", 2026-10-27)
+- Checks before tagging, on `baf87f2269`: licensing consistent; hygiene passed; `scripts/check_secrets.sh v1.5.9-beta.12..HEAD` PASS.
+- Version: `next-beta` gave `1.5.9-beta.13` (previous `v1.5.9-beta.12`, a pre-release published 2026-10-27).
+- Command: `bash scripts/desktop-release.sh beta --branch finalize/model-router-standard-launch-selector --no-push`. It produced release commit `57f986e75a` (`autobyteus-web/package.json` only) and the annotated tag `v1.5.9-beta.13`. The identity is the same as on earlier releases.
+- Push: `origin/personal` was confirmed still at `1c54ffec6a`; then `HEAD -> personal` and `[new tag] v1.5.9-beta.13`, at 13:30:46Z.
+
+| Workflow | Run | Result |
+| --- | --- | --- |
+| Android APK Release | 40512673547 | success (13:35:29Z) |
+| iOS App Store Connect Release | 40512673651 | success (13:50:14Z), TestFlight upload |
+| Desktop Release | 40512673701 | success (13:57:27Z) |
+| Server Docker Release | 40512673564 | success (14:36:47Z) |
+
+- Published artifacts:
+  - `gh release view v1.5.9-beta.13`: `isPrerelease: true`, 17 assets (macOS arm64/x64 `.dmg`/`.zip` with blockmaps, Linux x64/arm64 AppImages, Windows `.exe`, four `latest*.yml`, the Android APK and its `.sha256`). This matches RELEASE.md.
+  - Docker Hub, read through its public tag API: `autobyteus/autobyteus-server:1.5.9-beta.13` and `:beta` both `sha256:0abe3082d408d83d5a5884a94f985fed4fe7ee2435cbea50ec5508115816f525` (amd64, arm64); `:latest` unchanged (`sha256:ff6bf251…`, 2026-10-22).
+  - The local `docker buildx imagetools inspect` hung on the Docker Desktop credential helper, so it was stopped.
+- Release result: `Completed` (not partial)
+- Release notes: GitHub generated notes (pre-release tag)
+- Rollback: never move or delete the tag; fix forward with the next beta, or revert the merge on `personal` and cut the next beta.
+
+## Post-Finalization Cleanup
+
+- Ticket worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/model-router-standard-launch-selector`, release worktree `…-release`, and the local `codex/` and `finalize/` branches: removed after this record is pushed. Only untracked build output was left, and both branches are contained in `origin/personal`.
+- Remote branch: `origin/codex/model-router-standard-launch-selector` is kept as pushed ticket history.
+- The clean clone `/tmp/ab313-clone` and its scripts were removed after the log was copied to `evidence/delivery/`.
+
+## Final Status
+
+- Verification complete: `Yes` (from the evidence and a clean clone; no user check required)
+- Repository finalization complete: `Yes` (merge `baf87f2269`, release commit `57f986e75a` on `personal`)
+- Applicable release complete: `Yes` (beta v1.5.9-beta.13, complete)
+- Applicable safe cleanup complete: `Yes`
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to the Solution Designer: right after this record is pushed
