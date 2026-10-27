@@ -1,0 +1,45 @@
+# IMP-32 checks on the latest-base merge (origin/personal f56365c809 into codex/work-journal-search; delivery DR-001)
+# Commands: pnpm install --frozen-lockfile; pnpm -C autobyteus-server-ts build; schema printed from dist, BACKEND_GRAPHQL_BASE_URL=<schema> pnpm -C autobyteus-web codegen;
+#   pnpm -C autobyteus-server-ts exec vitest run tests/unit/memory-search tests/unit/embeddings tests/unit/agent-tools tests/unit/api tests/unit/projects tests/agent-work-journal tests/unit/startup tests/unit/agent-memory tests/architecture --no-watch;
+#   env -i PATH="$PATH" HOME=<temp> TMPDIR="$TMPDIR" pnpm -C autobyteus-server-ts exec vitest run tests/e2e/memory --no-watch; pnpm -C autobyteus-server-ts typecheck; pnpm -C autobyteus-server-ts test:unit (full);
+#   cd autobyteus-web && NUXT_TEST=true pnpm exec vitest run components/memory pages/__tests__/memory.spec.ts stores/__tests__/memorySearchStore.spec.ts stores/__tests__/memoryJournalStore.spec.ts tests/stores localization; the 3 web guards
+# Commit: the merge commit (working tree committed unchanged as it; see the handoff)
+# Environment: macOS (Darwin 25.5.0, arm64), Node v22.23.1; e2e in a clean environment
+# Date: 2026-10-27
+
+## server build: exit 0 (after the search_memory adapters were moved to the base's tool result rule)
+
+## server focused (after fixes; before: 4 failed, see below)
+     × keeps required tool registration behind the single lifecycle readiness owner 2898ms
+     × guards the exact SR-011 host definition and public/general run authority 143ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  1 failed | 157 passed | 1 skipped (159)
+      Tests  2 failed | 1256 passed | 2 skipped (1260)
+
+## server e2e (tests/e2e/memory, clean environment)
+ Test Files  7 passed | 1 skipped (8)
+      Tests  20 passed | 3 skipped (23)
+
+## server typecheck
+exit 0
+
+## server test:unit (full)
+     × deepseek.compaction-agent-flow reaches agent setup with no separate compaction model, retired assets or exports 9ms
+     × lmstudio.qwen36.compaction-agent-flow reaches agent setup with no separate compaction model, retired assets or exports 2ms
+   × captures post failure before termination/deletion and rethrows original without provider traffic 21ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  2 failed | 858 passed | 4 skipped (864)
+      Tests  3 failed | 7171 passed | 7 skipped (7181)
+
+## web memory specs
+ Test Files  32 passed (32)
+      Tests  161 passed (161)
+
+## web guards
+[guard:web-boundary] Passed.
+[guard:localization-boundary] Passed.
+[audit:localization-literals] Passed with zero unresolved findings.
+
+## reading
+- Merge-caused, fixed: the build (the base's toAgentToolsMcpStructuredJsonResult takes the result object), the loader test's unit counts (11 units: the base's agent_runtimes and this ticket's memory).
+- Not merge-caused (fail identically on a detached origin/personal worktree): tests/architecture application-framework-boundaries (agent_runtimes unit and internal-agent-visibility.ts missing from its lists; this ticket added its own memory unit) -> FU-010; 3 secret-management live compaction tests (Native command host scope is required, base f34ad8749f) -> FU-011.

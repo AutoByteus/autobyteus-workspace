@@ -11,6 +11,7 @@ The current code and `implementation-handoff.md` are authoritative. This record 
 | IR-003 | Architecture Reviewer ARCH-REV-003 Pass (SR-005: meaning strength after API/E2E F-001 / CRR-003) and the Solution Designer's R-8…R-11; SR-005b | F-001, R-8, R-9, R-10, R-11, O-1 | `Design Impact` raised twice (R-9): first OT-T3 (resolved by SR-005b), then LEAF-IR verification | SR-005, SR-005b, ARCH-REV-003, CRR-003 | Implemented (`0f3c2a2d87`); the default model meets all three constraints (IMP-20). LEAF-IR fails constraint 2 for any values because of how a match found by both tiers is merged (IMP-21); returned to the Solution Designer |
 | IR-004 | Architecture Reviewer ARCH-REV-004 Pass (SR-006, UD-020; Product revision UD-021) and the Solution Designer's R-12 … R-15 resolutions and UD-022 | UD-020, UD-021, UD-022, R-12, R-13, R-14, R-15 | `Requirement/design change implemented` (strength removed; match facts) | SR-006, ARCH-REV-004 | Done (`e7a15930c3`, `606d13b937`): gates unchanged, 0 `wordsNotFound` mismatches (IMP-27), tests and probe pass (IMP-25, IMP-28); handed to the targeted code review |
 | IR-005 | Code Reviewer CRR-004 (`code-review-report.md`, round 4, Fail: Local Fix) | CR-004, CR-005 | `Local Fix` | SR-006, CRR-004 | Done (`3204aa2455`): text matches without words 0 (IMP-31); punctuation-only words are no terms; checks pass (IMP-29 … IMP-31); returned for the targeted delta review |
+| IR-006 | Delivery Engineer DR-001 (`release-deployment-report.md`: latest-base integration blocked, Local Fix) | DR-001 | `Local Fix` (merge) | SR-006, CRR-005 | Done (`72874aac91`, `92c25580db`): conflicts resolved, types regenerated, `search_memory` on the base's tool result rule; checks pass apart from 5 failures that pre-exist on the base (IMP-32; FU-010, FU-011); returned for source review |
 
 ## Revision Entries
 
@@ -140,3 +141,20 @@ The current code and `implementation-handoff.md` are authoritative. This record 
 - Remaining limitations or risks:
   - C-12 (link markup indexed; pre-existing) is noted in Known Risks.
   - Design wording alignment for the Solution Designer (§ Match Facts items 1 and 4).
+
+### IR-006 — Delivery DR-001: latest base merged
+
+- Triggering role, report path, and round: Delivery Engineer, `release-deployment-report.md` DR-001 (latest-base integration blocked: Local Fix).
+- Classification: `Local Fix` (merge and merge-caused fixes).
+- Prior authoritative result: IR-005 (`3204aa2455`), CRR-005 Pass.
+- Current authoritative result: merges `72874aac91` (`origin/personal` `f56365c809`) and `92c25580db` (`8c31e530d6`), plus the ticket-folder commit named in the handoff.
+- Implementation delta:
+  - `generated/graphql.ts` regenerated;
+  - the README rows merged;
+  - `search_memory` native and MCP results on the base's `toToolResultJson` rule, with `present` removed;
+  - the loader test counts follow the spec list;
+  - the architecture test lists the `memory` unit.
+- Local validation and result: IMP-32.
+  - Build, typecheck, focused server tests, memory e2e, web memory specs and guards pass.
+  - 5 failures pre-exist on `origin/personal` alone: FU-010 (architecture lists) and FU-011 (live compaction tests).
+- Next recipient or routing: Code Reviewer (the merge touches the tool adapters); then API/E2E on the merged state if the reviewer selects it; then delivery.

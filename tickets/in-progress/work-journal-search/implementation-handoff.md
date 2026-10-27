@@ -18,15 +18,40 @@ Branch `codex/work-journal-search` (base `ddd6fdcdf6`), worktree `/Users/normy/a
 
 - Implementation cycle: `Rework`
 - Implementation revision record: `implementation-revision-record.md`
-- Current implementation revision ID: `IR-005` (CRR-004 Local Fix, on IR-001 … IR-004)
+- Current implementation revision ID: `IR-006` (latest-base merge for delivery DR-001, on IR-001 … IR-005)
 - Related solution revision IDs: SR-001, SR-003, SR-004, SR-004b, SR-005, SR-005b, SR-005c, SR-006
 - Related architecture-review revision IDs: ARCH-REV-002, ARCH-REV-003, ARCH-REV-004
 - Related code-review revision IDs: CRR-001, CRR-002 (IR-002 Pass), CRR-003, CRR-004 (Fail, Local Fix: CR-004, CR-005)
 - Related API/E2E revision IDs: F-001 (the API/E2E finding that started SR-005)
-- Related delivery revision IDs: N/A
+- Related delivery revision IDs: DR-001 (latest-base integration blocked: Local Fix)
 - Triggering finding IDs: UD-020, UD-021 (Product revision), UD-022; ARCH-REV-004 R-12 … R-15
 
-**IR-005 (this round, CRR-004 Local Fix).** `3204aa2455`.
+**IR-006 (this round, delivery DR-001: latest base merged).** Merge commits `72874aac91` (`origin/personal` `f56365c809`, 238 commits) and `92c25580db` (`8c31e530d6`, one delivery report of another ticket). Branch head after this round: the ticket commit named in the message to the reviewer.
+- **Conflicts:**
+  - `autobyteus-web/generated/graphql.ts`: regenerated from the merged server's schema, not merged by hand. Against the base, it differs only by this ticket's additions and its deliberate removals (episodic, semantic and working-context fields, `MemoryMessage`, the include flags).
+  - `docs/modules/README.md`: both rows kept (Memory Search, then Model Routing).
+- **Merge-caused fixes:**
+  - The base made one tool result rule (autobyteus-260, `toToolResultJson`), enforced by `tests/architecture/agent-tool-result-boundaries.test.ts`, and `toAgentToolsMcpStructuredJsonResult` now takes the object.
+    - `search_memory` now follows it: the native tool returns `toToolResultJson(result)`, and the MCP adapter returns `toAgentToolsMcpStructuredJsonResult(result)`.
+    - Its own `present` pruning is removed; the rule leaves out the same empty fields (`matchedWords: []`, null `coverage`, empty `wordsNotFound`). The result shape agents see is unchanged; the tool test's `TOOL_RESULT` passes as before.
+  - The loader test's unit counts now follow the spec list (11 units: the base's `agent_runtimes` and this ticket's `memory`).
+  - The architecture test now lists the `memory` unit, which this ticket never added.
+- **Auto-merged files checked:**
+  - Against the base, the ticket's deltas in `schema.ts`, `build-studio-server.ts`, `agent-tool-loader.ts`, `default-agent-tool-mcp-adapter-providers.ts` and `server-settings-service.ts` are only the memory-search wiring.
+  - `agent-memory-explorer-service.ts` keeps the ticket's availability change.
+  - `GLOSSARY.md` keeps both the Memory and the new MCP Secrets sections.
+  - Neither the server nor the web code uses a removed memory field.
+- **Checks (IMP-32):**
+  - Build and typecheck pass.
+  - 1,256 focused server tests and 20 memory e2e tests (clean env) pass.
+  - 161 web memory and localization tests and the 3 guards pass.
+  - Full `test:unit`: 7,171 passed, 3 failed.
+- **Pre-existing failures, also on a detached `origin/personal` (not caused by this ticket, recorded as follow-ups):**
+  - 2 architecture assertions → FU-010;
+  - 3 secret-management live compaction tests (`Native command host scope is required`, base `f34ad8749f`) → FU-011.
+- **Not rerun:** the evaluation and the page probe. Memory-search source and the web memory code did not change in the merge (`git diff 3204aa2455 HEAD -- autobyteus-server-ts/src/memory-search autobyteus-web/components/memory autobyteus-web/stores/memorySearchStore.ts autobyteus-web/stores/memoryJournalStore.ts autobyteus-web/pages/memory.vue autobyteus-web/types/memorySearch.ts autobyteus-web/graphql/queries/memorySearchQueries.ts` is empty).
+
+**IR-005 (CRR-004 Local Fix).** `3204aa2455`.
 - **CR-004:**
   - `containsTerm` (normalizer) now matches as the text index does: the term's `unicode61` tokens in a row, case and diacritics folded, each ideograph its own token. It is the one rule for found words, snippet start and card-part choice.
   - `matchedWords` reads the lines as indexed (links included), so a term with `_`, `-` or `.` (`memory_search`) is found in "Memory search" or "memory-search".
@@ -300,6 +325,7 @@ All evidence files are in `evidence/`.
 | IMP-29 | impacted server tests, memory e2e (clean env), typecheck | `3204aa2455` | macOS arm64, Node 22.23.1 | normalizer rule, term filter, service found words, evaluation counter | CR-004, CR-005, R-12, R-14 | Pass | `IMP-29-server-tests-cr004-cr005.log` | `Tests  650 passed \| 2 skipped`; e2e `Tests  20 passed \| 3 skipped (23)`; typecheck `exit 0`; M4 and M5 each fail 2 tests |
 | IMP-30 | `pnpm -C autobyteus-server-ts build` | `3204aa2455` | same | build and bootstrap smoke | — | Pass | `IMP-30-server-build.log` | `exit 0` |
 | IMP-31 | evaluation: private 47-question file, and the reviewer's 3 cues as partial questions | `3204aa2455` (dist IMP-30) | isolated copy; host under load | found words vs. the index, words not found, gates | CR-004, CR-005, AC-001, AC-002, AC-007 | Pass | `IMP-31-evaluation-cr004-cr005.log` | `"textMatches": {"total": 698, "withoutWords": 0}`; cues `{'total': 35, 'withoutWords': 0}`; `"mismatches": []`; gates as IMP-27 |
+| IMP-32 | install, build, codegen; focused server tests (+ `tests/architecture`, `tests/unit/agent-memory`, all `tests/unit/agent-tools`), memory e2e (clean env), typecheck, full `test:unit`, web memory specs + localization, guards | `72874aac91` (merge) | macOS arm64, Node 22.23.1 | the merged state: memory wiring in schema, composition, tool loader and MCP providers; `search_memory` on the base's tool result rule; regenerated types | DR-001; R-001, R-002, DS-002 | Pass (5 pre-existing base failures: FU-010, FU-011) | `IMP-32-merge-checks.log` | focused `Tests  2 failed \| 1256 passed` (FU-010 only); e2e `20 passed`; `test:unit` `3 failed \| 7171 passed` (FU-011 only); web `161 passed (161)`; guards passed |
 - Not run, and why:
   - IR-004: LEAF-IR evaluation (see the rerun plan); `test:unit` and the web suite in full (rerun by impact: nothing outside the memory files changed).
   - AC-012 and AC-013 (real agents; tool selection): API/E2E (UD-007).
