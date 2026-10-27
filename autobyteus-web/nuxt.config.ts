@@ -1,4 +1,4 @@
-import { defineNuxtConfig } from 'nuxt/config'
+import { defineNuxtConfig, type NuxtConfig } from 'nuxt/config'
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 import { applyElectronConfig } from './nuxt.electron.config'
@@ -92,7 +92,7 @@ if (isElectronBuild) {
   };
 }
 
-const baseConfig = {
+const baseConfig: NuxtConfig = {
   ssr: false,
 
   // Disable Nuxt DevTools floating icon
@@ -110,7 +110,6 @@ const baseConfig = {
   
   modules: [
     '@pinia/nuxt',
-    './modules/devhandler-compat',
     ...(isTest ? ['@nuxt/test-utils/module'] : [])
   ],
 
@@ -118,11 +117,6 @@ const baseConfig = {
   // Keep it disabled in tests to avoid cross-test unhandled timer noise.
   experimental: {
     appManifest: !isTest
-  },
-
-  routeRules: {
-    '/workspace/**': { middleware: ['workspace'] },
-    '/': { middleware: ['workspace'] }
   },
 
   // In development, HTTP requests are proxied via vite.server.proxy.
