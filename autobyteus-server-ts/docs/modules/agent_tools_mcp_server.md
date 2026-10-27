@@ -255,6 +255,7 @@ one canonical AutoByteus tool name. The default adapter set currently covers:
 - `list_projects`, `list_project_tasks`, `search_project_tasks`, `get_project_task`, `create_project`, `update_project`,
   `create_task`, `update_task` from
   `src/agent-tools/project-tasks`
+- `search_memory` from `src/agent-tools/memory` (see [memory_search.md](./memory_search.md))
 
 The catalog filters by the session's resolved effective tool names. That set is
 the configured Agent tool set plus the automatic Team collaboration trio when a
