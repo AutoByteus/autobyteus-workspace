@@ -196,16 +196,7 @@ const baseConfig = {
       showDebugErrorPanel: process.env.SHOW_DEBUG_ERROR_PANEL === 'true',
 
       audio: {
-        targetSampleRate: 16000,
-        chunkDuration: 5,
-        overlapDuration: 0.2,
-        channels: 1,
         transcriptionWsEndpoint: serverUrls.transcriptionWsEndpoint,
-        constraints: {
-          echoCancellation: true,
-          noiseSuppression: true,
-          autoGainControl: true
-        }
       }
     }
   },
