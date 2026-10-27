@@ -10,6 +10,7 @@ The current code and `implementation-handoff.md` are authoritative. This record 
 | IR-002 | Solution Designer rework after CRR-001 (`code-review-report.md`), SR-004, SR-004b | CR-001, CR-002, CR-003 (UD-018), UD-019, C-06 | `Local Fix` (CR-001, CR-002, C-06); UD-019 implemented; a `Design Impact` on AC-007 was raised and resolved by SR-004b | SR-004, SR-004b, CRR-001 | Done: all checks pass (IMP-13 … IMP-17); handed to the targeted code review |
 | IR-003 | Architecture Reviewer ARCH-REV-003 Pass (SR-005: meaning strength after API/E2E F-001 / CRR-003) and the Solution Designer's R-8…R-11; SR-005b | F-001, R-8, R-9, R-10, R-11, O-1 | `Design Impact` raised twice (R-9): first OT-T3 (resolved by SR-005b), then LEAF-IR verification | SR-005, SR-005b, ARCH-REV-003, CRR-003 | Implemented (`0f3c2a2d87`); the default model meets all three constraints (IMP-20). LEAF-IR fails constraint 2 for any values because of how a match found by both tiers is merged (IMP-21); returned to the Solution Designer |
 | IR-004 | Architecture Reviewer ARCH-REV-004 Pass (SR-006, UD-020; Product revision UD-021) and the Solution Designer's R-12 … R-15 resolutions and UD-022 | UD-020, UD-021, UD-022, R-12, R-13, R-14, R-15 | `Requirement/design change implemented` (strength removed; match facts) | SR-006, ARCH-REV-004 | Done (`e7a15930c3`, `606d13b937`): gates unchanged, 0 `wordsNotFound` mismatches (IMP-27), tests and probe pass (IMP-25, IMP-28); handed to the targeted code review |
+| IR-005 | Code Reviewer CRR-004 (`code-review-report.md`, round 4, Fail: Local Fix) | CR-004, CR-005 | `Local Fix` | SR-006, CRR-004 | Done (`3204aa2455`): text matches without words 0 (IMP-31); punctuation-only words are no terms; checks pass (IMP-29 … IMP-31); returned for the targeted delta review |
 
 ## Revision Entries
 
@@ -117,3 +118,25 @@ The current code and `implementation-handoff.md` are authoritative. This record 
   - IMP-28: probe Pass, 23 checks, with the VIS-006, 007, 017, 022, 024 and 025 states.
 - Next recipient or routing: Code Reviewer (targeted review of IR-003 and IR-004; Large/High), then API/E2E re-runs AC-001, AC-002 and AC-007.
 - Remaining limitations or risks: see `implementation-handoff.md` § Known Risks (N02; the R-13 live window; the "No matches" wording).
+
+### IR-005 — CRR-004 Local Fix: found words by the index's rule; no punctuation-only terms
+
+- Triggering role, report path, and round: Code Reviewer, `code-review-report.md` CRR-004 (round 4, Fail: Local Fix).
+- Triggering finding IDs: CR-004 (a text match could carry no `matchedWords`: a literal substring against the index's token match), CR-005 (`...` and `--` were terms named as not found).
+- Classification: `Local Fix`
+- Prior authoritative result: IR-004 (`e7a15930c3`, `606d13b937`, `716563012f`).
+- Current authoritative result: `3204aa2455` plus the ticket-folder commit named in the handoff.
+- Implementation delta:
+  - `containsTerm` matches a term as its `unicode61` tokens in a row (one owner, the normalizer).
+  - `matchedWords` reads the lines as indexed.
+  - `queryTerms` requires a letter or digit.
+  - The evaluation's `textMatches` counter.
+  - Unit tests for the rule, the facade (separator variants, punctuation) and the counter.
+- Local validation and result:
+  - IMP-29: server tests, memory e2e and typecheck pass; M4 and M5 are each caught.
+  - IMP-30: build passes.
+  - IMP-31: gates unchanged; text matches without words 0 of 698 and 0 of 35; mismatches [].
+- Next recipient or routing: Code Reviewer (targeted delta review of CR-004 and CR-005), then API/E2E (AC-001, AC-002, AC-007).
+- Remaining limitations or risks:
+  - C-12 (link markup indexed; pre-existing) is noted in Known Risks.
+  - Design wording alignment for the Solution Designer (§ Match Facts items 1 and 4).

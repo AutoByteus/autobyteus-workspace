@@ -18,15 +18,31 @@ Branch `codex/work-journal-search` (base `ddd6fdcdf6`), worktree `/Users/normy/a
 
 - Implementation cycle: `Rework`
 - Implementation revision record: `implementation-revision-record.md`
-- Current implementation revision ID: `IR-004` (on IR-001 … IR-003)
+- Current implementation revision ID: `IR-005` (CRR-004 Local Fix, on IR-001 … IR-004)
 - Related solution revision IDs: SR-001, SR-003, SR-004, SR-004b, SR-005, SR-005b, SR-005c, SR-006
 - Related architecture-review revision IDs: ARCH-REV-002, ARCH-REV-003, ARCH-REV-004
-- Related code-review revision IDs: CRR-001, CRR-002 (IR-002 Pass), CRR-003
+- Related code-review revision IDs: CRR-001, CRR-002 (IR-002 Pass), CRR-003, CRR-004 (Fail, Local Fix: CR-004, CR-005)
 - Related API/E2E revision IDs: F-001 (the API/E2E finding that started SR-005)
 - Related delivery revision IDs: N/A
 - Triggering finding IDs: UD-020, UD-021 (Product revision), UD-022; ARCH-REV-004 R-12 … R-15
 
-**IR-004 (this round, SR-006): match facts instead of strength labels.** `e7a15930c3`, `606d13b937`.
+**IR-005 (this round, CRR-004 Local Fix).** `3204aa2455`.
+- **CR-004:**
+  - `containsTerm` (normalizer) now matches as the text index does: the term's `unicode61` tokens in a row, case and diacritics folded, each ideograph its own token. It is the one rule for found words, snippet start and card-part choice.
+  - `matchedWords` reads the lines as indexed (links included), so a term with `_`, `-` or `.` (`memory_search`) is found in "Memory search" or "memory-search".
+  - The census keeps its own independent tokenizer (R-14).
+  - The evaluation reports `textMatches {total, withoutWords}`, which should be 0.
+- **CR-005:** `queryTerms` keeps a non-ideograph word only when it has a letter or digit, so `...` and `--` are never terms and never named as not found.
+- **Checks:**
+  - IMP-29: 650 server tests, 20 memory e2e and typecheck pass; mutations M4 and M5 are each caught.
+  - IMP-30: build passes.
+  - IMP-31: gates identical; text matches without words 0 of 698 on the private set and 0 of 35 on the reviewer's cues.
+- **Not rerun:** web specs, guards and the page probe (no web, GraphQL or tool-shape change).
+- **For the Solution Designer (design wording, no code impact):** `design-spec.md` § Match Facts needs two alignments.
+  - Item 1 ("by the existing `containsTerm`") should say "by the text index's rule: the term's tokens in a row".
+  - Item 4 should quote the kept no-results note `No matches; try other words.` instead of "No matches in memory.". The code reviewer confirmed keeping the existing string.
+
+**IR-004 (SR-006): match facts instead of strength labels.** `e7a15930c3`, `606d13b937`.
 - **Match facts** (`search/memory-search-service.ts`):
   - A text match carries `matchedWords`: the query's terms its lines hold (`containsTerm`, in query order).
   - A meaning match carries none, and the tool result omits the field.
@@ -174,6 +190,7 @@ Decisions inside the design's room, for the reviewer to check:
 - **The question file's authoring run answers every question by its own words.** This ticket's Solution Designer run quotes all the questions. Without `--asking-run` it is the text tier's #1 for 15 of them, and #1 overall falls from 18 to 11; the gates still pass either way. Any run that discusses a topic at length (reviews, designs) competes with the run that did the work. The Solution Designer kept this as is (SR-004); "self-references" stays a later R-016 candidate.
 - **N02 names no word (IMP-27, question set):** every N02 word occurs in memory. Its one rare word occurs only in the journal of the run that wrote the question file, which is the `--asking-run`. By R-15 that journal counts for absence, so N02 correctly names nothing. The AC-007 check itself passes: 0 mismatches over 47 questions, and the other 11 off-topic questions name their absent words. The set needs N02 reworded with a word that occurs nowhere, or reclassified; that is the Solution Designer's call (as in SR-004b).
 - **Live-update window (R-13, accepted):** a word only in the last turn's lines is named as not found until that turn is indexed (≤ 20 s debounce plus a pass). The tool says "no indexed journal"; a unit test pins it.
+- **Link markup is indexed (C-12, rejected by CRR-004 as pre-existing):** an entry's trailing `[↗](../raw_traces_….jsonl#rt_…)` is in the text index, so a link-only token (`rt`, a record ID) can make a text match. Its `matchedWords` now names that token, because matching reads the lines as indexed. CRR-004 found no visible effect for common words (0 of 80 probe matches).
 - **A meaning match is unlabelled.** An agent may over-trust it; the tool description says how to tell it apart and to read the lines first (design-spec § Risks).
 - **Gate 2 latency was measured on a busy shared machine** (load averages 20–40): p90 575 ms, max 964 ms (IMP-07); 605 ms and 1,041 ms in IMP-27. Idle numbers should be lower; the probe report measured 0.2–0.9 s idle.
 - **The first build wrote Work Journals into the isolated copy**, as building does on a user's memory (R-005, approved); building on the user's own data needs the user's go and a backup first (TESTING.md; nothing here touched `~/.autobyteus`).
@@ -218,6 +235,8 @@ Decisions inside the design's room, for the reviewer to check:
 ## Checks Run
 
 All evidence files are in `evidence/`.
+
+**Rerun plan for IR-005 (CRR-004 Local Fix).** `git diff --name-only 716563012f 3204aa2455` lists only `src/memory-search/index/memory-text-normalizer.ts`, `search/memory-search-service.ts`, `evaluation/memory-search-evaluation.ts`, the evaluation script and its doc, `memory_search.md` and three memory-search test files. Rerun: IMP-25's server part → IMP-29; IMP-26 → IMP-30; IMP-27 → IMP-31. Still valid: IMP-25's web specs and guards and IMP-28's page probe (no web, GraphQL or tool-shape change; the found words the page shows are covered by IMP-29's unit tests and IMP-31's counter).
 
 **Rerun plan for IR-004 (TESTING.md, rerun by impact).**
 - Baseline: IR-003 validated through `5617a04d02` (IMP-22 … IMP-24).
@@ -278,6 +297,9 @@ All evidence files are in `evidence/`.
 | IMP-26 | `pnpm -C autobyteus-server-ts build` | `e7a15930c3` | same | build and bootstrap smoke | — | Pass | `IMP-26-server-build.log` | `exit 0` |
 | IMP-27 | evaluation (default model, no build) with `--asking-run`, private 47-question file | `e7a15930c3` (dist IMP-26) | isolated copy (3,680 runs); load 20–40 | search, ranking, pointer rule, masking, `wordsNotFound` vs. the census | AC-001, AC-002, AC-005, AC-007, R-016 | Pass (N02 observation in Known Risks) | `IMP-27-evaluation-match-facts.log` | `"passed": 31`, `"oneSearchTop10": 30`, `"number1": 18`, `"top3": 26`, `"mrr": 0.7288…`, `"unmaskedSecrets": 0`, `"mismatches": []`, `"offTopicUnnamed": ["N02"]` |
 | IMP-28 | `node autobyteus-web/tests/e2e/memory-search-probe.mjs …` (probe-owned real stack, clean env) | `606d13b937` (dist `e7a15930c3`) | headless Chrome | the Memory page end to end after the Product revision | UD-020, UD-021, R-013, R-014, AC-004, AC-007 (page), VIS-006, 007, 017, 022, 024, 025 | Pass | `IMP-28-memory-page-probe/` | `Pass (23 checks passed)`; MS-PROBE-021, 025, 026; screenshots by VIS ID |
+| IMP-29 | impacted server tests, memory e2e (clean env), typecheck | `3204aa2455` | macOS arm64, Node 22.23.1 | normalizer rule, term filter, service found words, evaluation counter | CR-004, CR-005, R-12, R-14 | Pass | `IMP-29-server-tests-cr004-cr005.log` | `Tests  650 passed \| 2 skipped`; e2e `Tests  20 passed \| 3 skipped (23)`; typecheck `exit 0`; M4 and M5 each fail 2 tests |
+| IMP-30 | `pnpm -C autobyteus-server-ts build` | `3204aa2455` | same | build and bootstrap smoke | — | Pass | `IMP-30-server-build.log` | `exit 0` |
+| IMP-31 | evaluation: private 47-question file, and the reviewer's 3 cues as partial questions | `3204aa2455` (dist IMP-30) | isolated copy; host under load | found words vs. the index, words not found, gates | CR-004, CR-005, AC-001, AC-002, AC-007 | Pass | `IMP-31-evaluation-cr004-cr005.log` | `"textMatches": {"total": 698, "withoutWords": 0}`; cues `{'total': 35, 'withoutWords': 0}`; `"mismatches": []`; gates as IMP-27 |
 - Not run, and why:
   - IR-004: LEAF-IR evaluation (see the rerun plan); `test:unit` and the web suite in full (rerun by impact: nothing outside the memory files changed).
   - AC-012 and AC-013 (real agents; tool selection): API/E2E (UD-007).
