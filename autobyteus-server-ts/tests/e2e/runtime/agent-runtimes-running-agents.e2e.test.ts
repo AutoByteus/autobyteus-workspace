@@ -186,9 +186,12 @@ describe.skipIf(!packageBuilt)("Agent Runtimes running-agent count and Applicati
     // A newer Codex is out again, so Update is offered.
     sources.answers.codex = { status: 302, body: "rust-v0.170.0" };
     states.set("codex-update-to", "0.170.0");
-    // RA-03's update starts its own re-check (AR-006), which stays checking until Codex's sign-in is read; a check
-    // started meanwhile skips the row and the re-check ends with the release it read. Press Check again until the
-    // newer release shows, as a user would.
+    // Press Check once whatever RA-03's automatic re-check already read: a user's check clears finished operations
+    // (checkAll), so RA-03's succeeded update does not linger as this row's operation (L222 asserts none). RA-03's
+    // update starts its own re-check (AR-006), which stays checking until Codex's sign-in is read; a check started
+    // meanwhile skips the row and the re-check ends with the release it read. Press Check again until the newer
+    // release shows, as a user would.
+    await client.mutate("checkAgentRuntimes");
     await until(async () => {
       if ((await row(CODEX)).updates.state === "UPDATE_AVAILABLE") return true;
       await client.mutate("checkAgentRuntimes");
