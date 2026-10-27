@@ -11,6 +11,8 @@ The latest `code-review-report.md` or `api-e2e-test-review-report.md` remains au
 | CRR-003 | `code-review-report.md` | API/E2E Failure-Origin Review, round 3 / API-REV-001 | Pass | Fail (Design Impact + Local Fix) | CR-003, CR-004, CR-005 |
 | CRR-004 | `code-review-report.md` | Implementation Review, round 4 (Full Re-Audit) / IR-003 | Fail (Design Impact + Local Fix) | Pass | CR-003, CR-004 (by SR-018), CR-005 (resolved) |
 | CRR-005 | `api-e2e-test-review-report.md` | Proportional API/E2E Test-Code Review, round 1 / API-REV-002 Pass | Pass (implementation review CRR-004) | Pass | None |
+| CRR-006 | `code-review-report.md` | Implementation Review, round 5 (Targeted Delta, delivery re-entry) / IR-004 | Pass | Pass | None (DEL-F1, DEL-F2 verified) |
+| CRR-007 | `api-e2e-test-review-report.md` | Proportional API/E2E Test-Code Review, round 2 / API-REV-003 Pass | Pass (implementation review CRR-006) | Pass | None |
 
 ## Revision Entries
 
@@ -154,3 +156,58 @@ None
 - Material score or classification changes: N/A
 - Recommended recipient: `/software_engineering_team/delivery_engineer`
 - Remaining risks or uncertainty: the user's desktop check (Done-when); the new `SIGNED_OUT` string and the presentation observations for Product; FU-001…FU-004 and FU-006…FU-009 (FU-005 withdrawn).
+
+### CRR-006 — Delivery re-entry: targeted delta review of IR-004 (DEL-F1, DEL-F2)
+
+- Canonical review report updated: `tickets/in-progress/delegated-runtime-model-routing/code-review-report.md`
+- Review entry point and round: Implementation Review, round 5
+- Review scope: `Targeted Delta Review`. `git diff e2e4f1a1ab f48af0176a` changes 4 web files, all inside DEL-F1 and DEL-F2.
+- Triggering role, report path, and finding or scenario IDs: Implementation Engineer, `implementation-handoff.md` (IR-004); delivery `release-deployment-report.md` DEL-F1, DEL-F2
+- Relevant solution revision IDs: `SR-018`
+- Relevant architecture-review revision IDs: `ARCH-REV-004`
+- Relevant implementation revision IDs: `IR-004`
+- Relevant API/E2E revision IDs: `API-REV-002`
+- Relevant delivery revision IDs: delivery's blocked post-integration verification (`e2e4f1a1ab`)
+- Prior authoritative result: CRR-005 Pass (test review); CRR-004 Pass (implementation review)
+- Current authoritative result: Pass; score unchanged at 9.4/10.
+- What changed in the review result and why:
+  - The built-in ID mirror includes the router. Its only effect is that the router is never offered in the New chat `@` list, and the server agrees.
+  - "Configuration" wording in the hints and the panel label.
+- Supported product scenario / material-premise basis changes: none.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| DEL-F1 (delivery) | Open (blocking) | Resolved | IR-004, `f48af0176a` | Mirror lists `autobyteus-model-router`; contract spec and mention-eligibility spec pass (IMP-12) |
+| DEL-F2 (delivery) | Open (minor) | Resolved | IR-004, `f48af0176a` | en and zh-CN hints and the panel label say Configuration / 配置 |
+
+- New or remaining finding IDs: None
+- Material score or classification changes: none.
+- Recommended recipient: `/software_engineering_team/api_e2e_engineer`; informational notice to `/software_engineering_team/implementation_engineer`.
+- Remaining risks or uncertainty: `memory.spec.ts`'s cause under load (TESTING.md Rule 9, delivery's triage); the optional internal-identifier rename; the user's desktop check.
+
+### CRR-007 — Proportional test-code review after API/E2E round 3 (API-REV-003 Pass)
+
+- Canonical review report updated: `tickets/in-progress/delegated-runtime-model-routing/api-e2e-test-review-report.md`
+- Review entry point and round: Successful API/E2E Test-Code Review, round 2
+- Review scope: `N/A` (test review). The only durable change is MRD-08 in `autobyteus-web/tests/e2e/model-routing-decisions-probe.mjs` (`9e8ac5e423`).
+- Triggering role, report path, and finding or scenario IDs: API/E2E Engineer, `api-e2e-execution-coverage-report.md` (API-REV-003 Pass, § Round 3 Cases); DEL-F1
+- Relevant solution revision IDs: `SR-018`
+- Relevant architecture-review revision IDs: `ARCH-REV-004`
+- Relevant implementation revision IDs: `IR-004`
+- Relevant API/E2E revision IDs: `API-REV-003`
+- Relevant delivery revision IDs: delivery's post-integration verification (`e2e4f1a1ab`, DEL-F1/DEL-F2)
+- Prior authoritative result: CRR-006 Pass (implementation review)
+- Current authoritative result: Pass. MRD-08 uses the real user steps, a positive control and a reset setting; no findings.
+- What changed in the review result and why: the post-merge rerun added one probe case.
+- Supported product scenario / material-premise basis changes: none.
+
+#### Prior Finding Resolution
+
+None
+
+- New or remaining finding IDs: None
+- Material score or classification changes: N/A
+- Recommended recipient: `/software_engineering_team/delivery_engineer`
+- Remaining risks or uncertainty: the user's desktop check; Grok live on the merged base (account usage); the status reads active while the router's model is out of usage (observation).

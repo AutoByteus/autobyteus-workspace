@@ -2,7 +2,7 @@
 
 ## Review Round Meta
 
-- Review Entry Point: `Implementation Review` (round 4); round 3 was an `API/E2E Failure-Origin Review`, rounds 1–2 `Implementation Review`
+- Review Entry Point: `Implementation Review` (round 5, delivery re-entry); round 4 Full Re-Audit, round 3 failure-origin, rounds 1–2 implementation review
 - Requirements Doc Reviewed As Context: `requirements-doc.md` (SR-016, Approved), with `launch-selection-order.md` (SR-016, behavior-defining)
 - Investigation Notes Reviewed As Context: via the design spec (A-01…A-33)
 - Solution Revision Record Reviewed As Context: `solution-revision-record.md` (to SR-016)
@@ -14,11 +14,13 @@
 - Relevant Architecture Review Revision IDs: `ARCH-REV-002`…`ARCH-REV-004`
 - Implementation Handoff Reviewed As Context: `implementation-handoff.md` (IR-001)
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
-- Relevant Implementation Revision IDs: `IR-001`…`IR-003`
+- Relevant Implementation Revision IDs: `IR-001`…`IR-004`
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-004`
-- Current Review Round: `4`
-- Review Scope: `Full Re-Audit` (round 3: failure-origin; round 2: Targeted Delta; round 1: Full Review)
+- Current Code Review Revision ID: `CRR-006`
+- Current Review Round: `5`
+- Review Scope: `Targeted Delta Review` (round 4: Full Re-Audit)
+- Round-5 scope evidence: `git diff e2e4f1a1ab f48af0176a` changes 4 web files (+15/−8), each inside delivery's DEL-F1/DEL-F2 (`release-deployment-report.md`; delivery docs `e2e4f1a1ab`, after delivery's merge of `origin/personal` `50e93c2108` as `357936966c`). No server change, no spine or interface change; round-4 evidence carries forward.
+- Round-5 trigger: implementation handoff IR-004 (delivery Local Fix DEL-F1 blocking, DEL-F2 minor); code `f48af0176a`, docs `7541be3e6d`
 - Round-4 scope evidence: `git diff 64e5b57932 424e9bdd62` (18 files, +177/−226) removes this ticket's own shared-interface additions: `AgentRunConfig.toolConfinement`, `CreateAgentRunInput.toolConfinement`, the metadata marker and type. It deletes `claude-workspace-confinement.ts`, and it changes `ModelRouterAgent` and `ModelRouter` (CR-005). Because shared interfaces change, every structural check was rerun.
   - `codex-thread-bootstrapper.ts`, `agent-run-config.ts`, `claude-session-query-options.ts`, `claude-sdk-client.ts` and its unit test are byte-identical to base `d74f75a51a`.
   - No reference to `toolConfinement`, `AgentRunToolConfinement` or the confinement module remains in server, tests or web.
@@ -27,7 +29,7 @@
 - Review Scope Evidence (round >1): `git diff 0cdaa0d480 03d9860e82` changes 17 files (+124/−42). Every source change is in CR-001's and CR-002's files or in the decision record those findings and C-03 concern: SR-017 drops `notes`, and `delegatingAgentName` becomes nullable, on server and web. No spine node, ownership boundary or other interface changed, so the round-1 evidence for every other check carries forward.
 - Trigger: implementation handoff IR-002 (CR-001, CR-002; SR-017 from C-03)
 - Prior Review Round Reviewed: `1` (CRR-001, Fail)
-- Latest Authoritative Round: `4`
+- Latest Authoritative Round: `5`
 - Code reviewed: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-runtime-model-routing`, branch `codex/delegated-runtime-model-routing`; round 1 `git diff d74f75a51a 0cdaa0d480` (170 files; the contract packages' tracked `dist/` matches their `src` changes); round 2 `git diff 0cdaa0d480 03d9860e82` (`161d136c1b`, `03d9860e82`)
 - Scorecard bar: clean pass `>= 9.2` in every category, a single `/10` scale (current template).
 
@@ -103,6 +105,16 @@
 | C-09 | Every routing request reads the whole decision log for `taskKindsInUse` | DESIGN.md rule 3 | — | Grows with history | `routing-statistics.ts:93-97` | Reject | — | No measured cost at expected volumes; nothing to optimize speculatively (DESIGN.md rule 1) |
 | C-10 | Codex merges `[sandbox_workspace_write] writable_roots` from workspace or user config into the router's thread | AC-011, QR-004 | The router writes its workspace `.codex/config.toml`; or the user's config | Sandbox widened; a write outside the workspace succeeds (L-02) | L-02 | Promote (round 3) | This ticket | CR-003, Design Impact |
 | C-11 | The confined Claude session loads claude.ai and user MCP connectors and `Skill` | AC-011 | Any Claude router run of a user with claude.ai connectors or skills | Tools beyond the template; account-side actions (L-01) | L-01 | Promote (round 3) | This ticket | CR-004, Design Impact |
+
+## Round 5 — Delivery Re-Entry (DEL-F1, DEL-F2)
+
+- **DEL-F1.** The merged base's web mirror of the server's built-in agent IDs (DI-002, `utils/agents/builtInAgentDefinitionIds.ts`) now lists `MODEL_ROUTER_AGENT_DEFINITION_ID = 'autobyteus-model-router'`, matching `built-in-agent-registry.ts`. The DI-002 contract spec passes.
+  - The set's only web reader is the New chat `@` eligibility (`draftMentionEligibility.ts:49`), so the one effect is that the router is never offered there. That matches the server, which excludes built-in agents from collaboration.
+  - It does not hide the router from Agents or history while "Show internal agents" is on (AC-008 is unaffected).
+  - `draftMentionEligibility.spec.ts` lists the router and asserts that it is never offered.
+- **DEL-F2.** Three hints and the Configuration panel's aria-label (`setup.title`) now say "Configuration" / "配置", matching the tab (`tabs.setup` = "Configuration") and the problem line's "Go to Configuration". No user-visible "Setup" remains. The remaining "设置" in zh-CN belongs to "默认设置" (default settings), a different word.
+- **Checks.** IMP-12: 34 files / 137 tests and the three web guards pass. IMP-13: the full web suite's failures are outside this branch. Four fail on the clean base (delivery DEL-03; FU-006), and `pages/__tests__/memory.spec.ts` passes alone. Its cause under load is still owed per TESTING.md Rule 9 (delivery's triage).
+- **Non-blocking note.** The internal identifiers still say setup (message keys `settings.modelRouting.setup.*` / `tabs.setup`, component `ModelRoutingSetup.vue`) while the product word is Configuration (Principle 15). Optional cleanup, not required for this round.
 
 ## Round 4 — Delta Verification (SR-018, CR-005)
 
@@ -302,10 +314,10 @@ N/A (Pass).
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
-- Review Entry Point: `Implementation Review` (round 4, Full Re-Audit)
+- Review Entry Point: `Implementation Review` (round 5, Targeted Delta Review, delivery re-entry)
 - Supported Product Scenario Gate: `Pass`
 - Material-Premise Gate: `Pass`
-- Score Summary: 9.4/10; every category ≥ 9.3 (bar 9.2)
+- Score Summary: 9.4/10; every category ≥ 9.3 (bar 9.2); unchanged from round 4
 - Failure Origin: N/A
-- Recommended Recipient: `/software_engineering_team/api_e2e_engineer`
-- Notes: CR-001…CR-005 are resolved (CR-003 and CR-004 by the requirement change SR-018). The Done-when still needs the user's desktop check.
+- Recommended Recipient: `/software_engineering_team/api_e2e_engineer` (an implementation-owned fix returns through API/E2E)
+- Notes: DEL-F1 and DEL-F2 are resolved. The user's desktop check (Done-when) and the beta follow delivery.

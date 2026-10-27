@@ -2,29 +2,44 @@
 
 ## Review Meta
 
-- Review Round: `1` (first proportional test review; API/E2E round 1 failed, so its durable test code is reviewed here with round 2's)
-- Trigger: API/E2E round 2 Pass (`API-REV-002`, commit `bf4dabf99c`; round 1 `64e5b57932`), from `/software_engineering_team/api_e2e_engineer`
+- Review Round: `2` (API/E2E round 3, the post-merge rerun with IR-004). Round 1 reviewed the durable test code of API/E2E rounds 1–2.
+- Trigger: API/E2E round 3 Pass (`API-REV-003`, commit `9e8ac5e423`; tested `7541be3e6d` = merged base `50e93c2108` + IR-004 `f48af0176a`); earlier rounds `bf4dabf99c`, `64e5b57932`
 - Requirements Doc Reviewed As Context: `requirements-doc.md` (SR-018), `launch-selection-order.md` (SR-018)
 - Investigation Notes Reviewed As Context: via the design spec
 - Solution Revision Record Reviewed As Context: `solution-revision-record.md` (to SR-018)
 - Design Spec Reviewed As Context: `design-spec.md` (SR-018)
 - Supplemental Task Artifacts Reviewed As Context: Product UI/UX specification (`ce3e417`)
 - Architecture Review Revision Record Reviewed As Context: `architecture-review-revision-record.md` (ARCH-REV-004)
-- Implementation Revision Record Reviewed As Context: `implementation-revision-record.md` (IR-003)
-- Original Code Review Report: `code-review-report.md` (CRR-004 Pass)
+- Implementation Revision Record Reviewed As Context: `implementation-revision-record.md` (IR-004)
+- Original Code Review Report: `code-review-report.md` (CRR-006 Pass, delivery re-entry)
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-005`
+- Current Code Review Revision ID: `CRR-007`
 - Coverage Investigation: `api-e2e-coverage-investigation.md`
 - Execution Coverage Report: `api-e2e-execution-coverage-report.md`
-- API/E2E Revision Record Reviewed As Context: `api-e2e-revision-record.md` (API-REV-001 Fail, API-REV-002 Pass)
+- API/E2E Revision Record Reviewed As Context: `api-e2e-revision-record.md` (API-REV-001 Fail, API-REV-002 Pass, API-REV-003 Pass)
 - Delivery Revision Record Reviewed As Context: N/A
 - API/E2E Result: `Pass`
 - Final Validation Confidence: 95%
-- Prior unresolved test-review findings rechecked: none (first test review)
+- Prior unresolved test-review findings rechecked: none (round 1: no findings)
 - Project testing guideline(s) applied: `TESTING.md` (disposable HOME for E2E; real keys only from the test vault; Rule 9, every failure has its cause). No conflicts.
 - Supported Product Scenario Basis Confirmed: `Yes` (SCN-001…SCN-007 of `code-review-report.md`; SCN-008 withdrawn by SR-018)
 
 ## Changed Durable Test Scope
+
+**Round 2 (API-REV-003): only `autobyteus-web/tests/e2e/model-routing-decisions-probe.mjs`, the added MRD-08** (`git show 9e8ac5e423 -- autobyteus-web/tests/e2e/model-routing-decisions-probe.mjs`, +30). The commit's other files are ticket evidence and reports. The Docker peer probe's added `dist` mounts are in the evidence script, not durable test code.
+
+- MRD-08 (DEL-F1):
+  - It turns "Show internal agents" on through the public setting.
+  - It checks the router is listed with `internal: true`.
+  - On New chat, as the Manager, it types `@`.
+  - Positive control: a shared agent (`writer`) is offered.
+  - Neither the full option list nor the list filtered by "Model" contains `autobyteus-model-router`.
+  - It escapes the menu, and resets the setting in `finally`.
+  - It enters through the real user steps (target switcher, composer), and its assertion proves the approved behavior (REQ-008/DEL-F1: built-in agents are never mention targets), not a detail.
+  - The header lists MRD-08 before MRD-07 ("no browser errors" stays last). Fine.
+
+Round 1 scope (API-REV-001/002) is below; its result stands.
+
 
 | Durable Test Path | Change | Related Scenario / Requirement | Coherent Test Responsibility | Notes |
 | --- | --- | --- | --- | --- |
@@ -67,10 +82,14 @@ None.
 
 ## Latest Authoritative Result
 
-- Result: `Pass`
-- Changed durable test paths reviewed: the six above (plus the package script)
+- Result: `Pass` (round 2)
+- Changed durable test paths reviewed: round 2, `autobyteus-web/tests/e2e/model-routing-decisions-probe.mjs` (MRD-08); round 1, the six paths above (plus the package script)
 - Unresolved finding IDs: None
 - Recommended Recipient: `/software_engineering_team/delivery_engineer`
 - Notes:
-  - Done-when: the user's own desktop check is required and prepared in `evidence/api-e2e/API-15-desktop/API-15-user-desktop-check.md` (the packaged build is in `autobyteus-web/electron-dist`, untracked).
-  - For Product: the new `SIGNED_OUT` page text (CR-002), and API/E2E's presentation observations (copies named by address; Decisions shows the model ID where Settings rows show the display name).
+  - Done-when: the user's own desktop check is required. The final build was rebuilt and smoke-checked (`evidence/api-e2e/API-15-desktop-r3/`); the guide is `API-15-desktop/API-15-user-desktop-check.md`; the packaged build is in `autobyteus-web/electron-dist`.
+  - API/E2E's round-3 observations for delivery:
+    - Grok was not rerun live on the merged base, because the account's usage is used up (HTTP 429). It passed live in round 2, and MR-02 routes to Grok through the fake CLI.
+    - While the router's model is out of usage, the Model Routing status still reads active, because the runtime report gives no Grok limit. Delegations fall back visibly with the reason. A possible follow-up, not a defect against the approved requirements.
+  - The `memory.spec.ts` cause is recorded by API/E2E: a 208 s report against Vitest's 5 s timeout means the worker's event loop was blocked, which points to a host or process stall, not the test or the code.
+  - For Product: the new `SIGNED_OUT` page text (CR-002) and the earlier presentation observations.
