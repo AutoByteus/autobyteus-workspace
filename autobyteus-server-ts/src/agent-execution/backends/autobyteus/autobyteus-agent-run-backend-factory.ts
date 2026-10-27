@@ -1,3 +1,4 @@
+import type { NativeCommandProcessScope } from "autobyteus-ts";
 import fs from "node:fs/promises";
 import {
   AgentConfig,
@@ -89,6 +90,7 @@ type AgentLike = {
 type AutoByteusRuntimeAgentLike = AgentLike & AutoByteusAgentLike;
 
 export type AutoByteusAgentRunBackendFactoryOptions = {
+  nativeCommandProcessScope: NativeCommandProcessScope;
   agentFactory?: AutoByteusAgentFactoryLike;
   agentDefinitionService?: AgentDefinitionService;
   createLLM?: AutoByteusLlmFactory;
@@ -112,7 +114,8 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
   private readonly waitForIdle: (agent: Agent, timeout?: number) => Promise<void>;
   private readonly applicationAgentTools: ApplicationAgentToolCapability | null;
 
-  constructor(options: AutoByteusAgentRunBackendFactoryOptions = {}) {
+  constructor(private readonly options: AutoByteusAgentRunBackendFactoryOptions) {
+    if (!options.nativeCommandProcessScope) throw new Error("Native command host scope is required");
     this.agentFactory = options.agentFactory ?? defaultAgentFactory;
     this.agentDefinitionService =
       options.agentDefinitionService ?? AgentDefinitionService.getInstance();
@@ -477,6 +480,7 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
         skillPaths,
         null,
         memoryCompaction,
+        this.options.nativeCommandProcessScope,
       ),
     };
   }
@@ -496,14 +500,3 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
     return (this.agentFactory.getAgent(runId) as AutoByteusRuntimeAgentLike | undefined) ?? null;
   }
 }
-
-let cachedAutoByteusAgentRunBackendFactory: AutoByteusAgentRunBackendFactory | null = null;
-
-export const getAutoByteusAgentRunBackendFactory = (
-  options: AutoByteusAgentRunBackendFactoryOptions = {},
-): AutoByteusAgentRunBackendFactory => {
-  if (!cachedAutoByteusAgentRunBackendFactory) {
-    cachedAutoByteusAgentRunBackendFactory = new AutoByteusAgentRunBackendFactory(options);
-  }
-  return cachedAutoByteusAgentRunBackendFactory;
-};

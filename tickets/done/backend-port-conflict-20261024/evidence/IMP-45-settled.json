@@ -1,0 +1,7 @@
+{
+  "source": "9bd72c208",
+  "result": "passed",
+  "scope": "rendered fixture only",
+  "reason": "Capture settled English layout; earlier snapshot-en caught expand animation",
+  "text": "Chat\nAgents\nAgent Teams\nAgent Orgs\nProjects\nSkills\nMemory\nNodes\nWorkspaces\nTemp Workspace\nSettings\nRV\nRead-only view fixture A - EW-A\nOffline\nContext Files (0)\n(drag, paste, or upload)\nProjects\nFiles\nTerminal\nActivity\nToken\nArtifacts\nBrowser\nVNC Viewer\nBackground Tasks\n1 running · 4 total\n\nTracked commands continuing beyond their turn. Recent runtime observations, not all system processes.\n\nbash\n\nRunning\nShell\n·\nlocal-ru · observed 26.10.2026, 09:40:04\n\nnode\n\nFailed\nShell\n·\nlocal-fa · observed 26.10.2026, 09:40:04\n\nExit code -1\n\nShell command\n\nUnknown\nShell\n·\nlocal-un · observed 26.10.2026, 09:40:04\n\npython\n\nCompleted\nShell\n·\nlocal-co · observed 26.10.2026, 09:40:04\n\nExit code 0\n\nActivity\n0 Events"
+}

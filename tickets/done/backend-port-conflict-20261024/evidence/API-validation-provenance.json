@@ -1,0 +1,17 @@
+{
+  "date": "2026-10-26T09:18:29.368948+00:00",
+  "productionSource": "9bd72c20893dedb8c7dc99aacfcb0b732d092d6c",
+  "reviewHead": "a201abe848cdff500948dfbd40dcd71d97926e26",
+  "currentUnpackedBuild": "IMP-44 compilation / IMP-45-build-provenance.json; overall DMG build failed",
+  "fileSha256": {
+    "autobyteus-server-ts/tests/e2e/shutdown/native-standalone-host-shutdown.e2e.test.ts": "03160e0d953fc4994e576a6a3a3817edf987dbe6be9a83368a7e3dab6a949386",
+    "autobyteus-server-ts/tests/e2e/shutdown/native-standalone-host-fixture.mjs": "c513e49dca179067ff9232615ce7f3535facc769940fada9eb755e4ec36c0e40",
+    "tickets/in-progress/backend-port-conflict-20261024/evidence/API-05-conflict-recovery.mjs": "03ec8037eac7e80b86c3d52228a4979a571089dbc677c530c8103391dde16575",
+    "tickets/in-progress/backend-port-conflict-20261024/evidence/API-06B-desktop-native-current.mjs": "0940c5707d2ee240b0309e36d362f83f19b4f17d52d4baf5dedca475f7f44c03",
+    "tickets/in-progress/backend-port-conflict-20261024/evidence/API-07-packaged-ipc.mjs": "f3c10177defc5e8a443f2ea7e35d86214391b560ee55b4cbb44c5e66a27c23c0",
+    "tickets/in-progress/backend-port-conflict-20261024/evidence/API-09-desktop-visibility.mjs": "3c18b717be59079b1d6d417e01c71025bac100be56c2a5581543247d2731b26a",
+    "tickets/in-progress/backend-port-conflict-20261024/evidence/API-09B-selection-lifecycle.mjs": "92b4186b97c5507714ab0db7341da0f6fdff47dd23d5265b2080555e4b3e491d",
+    "tickets/in-progress/backend-port-conflict-20261024/evidence/API-10-provider-unavailable.mjs": "480689727970051b23bde17a5cc96fb89843a34eee99ced7bc7b5e7665fcc552"
+  },
+  "reused": "Implementation ledger receipts validated by scope/source impact; no duplicate whole-suite run"
+}

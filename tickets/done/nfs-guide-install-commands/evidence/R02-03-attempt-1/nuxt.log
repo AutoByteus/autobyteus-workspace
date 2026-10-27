@@ -1,0 +1,28 @@
+# R02/R03 command pnpm exec nuxt dev; ccc0c56d2d4fdf48815a19d73870798dcd8fadb9; privateHOME+TMP/macOS; 2026-10-26T06:41:26.389Z
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.1.tgz
+│
+●  Nuxt 3.21.11 (with Nitro 2.13.5, Vite 7.3.7 and Vue 3.5.44)
+
+  ➜ Local:    http://127.0.0.1:53568/
+  ➜ Network:  use --host to expose
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ WARN  Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r3/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r3/autobyteus-web/stores/serverStore.ts" is used
+
+
+ WARN  Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r3/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r3/autobyteus-web/stores/serverStore.ts" is used
+
+✔ Vite client built in 242ms
+
+ WARN  Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r3/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r3/autobyteus-web/stores/serverStore.ts" is used
+
+
+ WARN  Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r3/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r3/autobyteus-web/stores/serverStore.ts" is used
+
+✔ Vite server built in 1056ms
+[nitro] ✔ Nuxt Nitro server built in 2221ms
+ℹ Vite client warmed up in 1ms
+ℹ ✨ new dependencies optimized: qrcode
+ℹ ✨ optimized dependencies changed. reloading

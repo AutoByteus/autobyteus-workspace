@@ -1,0 +1,242 @@
+[
+  {
+    "command": "/opt/homebrew/Cellar/node@22/22.23.3_3/bin/node /Users/normy/autobyteus-org/autobyteus-task-worktrees/embedded-browser-history/autobyteus-web/tests/e2e/embedded-browser-history-probe.mjs --cases API-03 --output-dir /Users/normy/autobyteus-org/autobyteus-task-worktrees/embedded-browser-history/tickets/in-progress/embedded-browser-history/evidence/API-native --native-capture",
+    "commit": "e51d4b103d32da21da2beb784d9bd2d515eb97ad",
+    "date": "2026-10-26T17:19:04.949Z",
+    "environment": "darwin-arm64 Node v22.23.3",
+    "dirtyPaths": "autobyteus-web/package.json",
+    "caseId": "API-08",
+    "stop": {
+      "schemaVersion": 1,
+      "ok": true,
+      "command": "stop",
+      "result": {
+        "instanceId": "iso-49479-27bc",
+        "wasRunning": true,
+        "forced": true,
+        "dataRoot": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/autobyteus-isolated-root-jbpS2E",
+        "dataRootRemoved": true,
+        "controlPortReleased": true,
+        "serverPortReleased": true,
+        "logPath": null
+      }
+    },
+    "dataRootRemoved": true,
+    "ports": {
+      "49478": true,
+      "49479": true,
+      "49480": true
+    },
+    "result": "Pass"
+  },
+  {
+    "command": "/opt/homebrew/Cellar/node@22/22.23.3_3/bin/node /Users/normy/autobyteus-org/autobyteus-task-worktrees/embedded-browser-history/autobyteus-web/tests/e2e/embedded-browser-history-probe.mjs --cases API-03 --output-dir /Users/normy/autobyteus-org/autobyteus-task-worktrees/embedded-browser-history/tickets/in-progress/embedded-browser-history/evidence/API-native --native-capture",
+    "commit": "e51d4b103d32da21da2beb784d9bd2d515eb97ad",
+    "date": "2026-10-26T17:19:52.584Z",
+    "environment": "darwin-arm64 Node v22.23.3",
+    "dirtyPaths": "autobyteus-web/package.json",
+    "caseId": "API-08",
+    "stop": {
+      "schemaVersion": 1,
+      "ok": true,
+      "command": "stop",
+      "result": {
+        "instanceId": "iso-49757-15fa",
+        "wasRunning": true,
+        "forced": true,
+        "dataRoot": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/autobyteus-isolated-root-GsRHO4",
+        "dataRootRemoved": true,
+        "controlPortReleased": true,
+        "serverPortReleased": true,
+        "logPath": null
+      }
+    },
+    "dataRootRemoved": true,
+    "ports": {
+      "49756": true,
+      "49757": true,
+      "49758": true
+    },
+    "result": "Pass"
+  },
+  {
+    "command": "/opt/homebrew/Cellar/node@22/22.23.3_3/bin/node /Users/normy/autobyteus-org/autobyteus-task-worktrees/embedded-browser-history/autobyteus-web/tests/e2e/embedded-browser-history-probe.mjs --cases API-03 --output-dir /Users/normy/autobyteus-org/autobyteus-task-worktrees/embedded-browser-history/tickets/in-progress/embedded-browser-history/evidence/API-native --native-capture",
+    "commit": "e51d4b103d32da21da2beb784d9bd2d515eb97ad",
+    "date": "2026-10-26T17:20:30.764Z",
+    "environment": "darwin-arm64 Node v22.23.3",
+    "dirtyPaths": "autobyteus-web/package.json",
+    "caseId": "API-08",
+    "stop": {
+      "schemaVersion": 1,
+      "ok": true,
+      "command": "stop",
+      "result": {
+        "instanceId": "iso-49855-1995",
+        "wasRunning": true,
+        "forced": true,
+        "dataRoot": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/autobyteus-isolated-root-wowOPL",
+        "dataRootRemoved": true,
+        "controlPortReleased": true,
+        "serverPortReleased": true,
+        "logPath": null
+      }
+    },
+    "dataRootRemoved": true,
+    "ports": {
+      "49854": true,
+      "49855": true,
+      "49856": true
+    },
+    "result": "Pass"
+  },
+  {
+    "command": "/opt/homebrew/Cellar/node@22/22.23.3_3/bin/node /Users/normy/autobyteus-org/autobyteus-task-worktrees/embedded-browser-history/autobyteus-web/tests/e2e/embedded-browser-history-probe.mjs --cases API-04,API-05,API-06,API-07 --output-dir /Users/normy/autobyteus-org/autobyteus-task-worktrees/embedded-browser-history/tickets/in-progress/embedded-browser-history/evidence/API-native --native-capture",
+    "commit": "e51d4b103d32da21da2beb784d9bd2d515eb97ad",
+    "date": "2026-10-26T17:20:57.744Z",
+    "environment": "darwin-arm64 Node v22.23.3",
+    "dirtyPaths": "autobyteus-web/package.json",
+    "caseId": "API-08",
+    "stop": {
+      "schemaVersion": 1,
+      "ok": true,
+      "command": "stop",
+      "result": {
+        "instanceId": "iso-50065-1066",
+        "wasRunning": true,
+        "forced": true,
+        "dataRoot": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/autobyteus-isolated-root-tkkEOa",
+        "dataRootRemoved": true,
+        "controlPortReleased": true,
+        "serverPortReleased": true,
+        "logPath": null
+      }
+    },
+    "dataRootRemoved": true,
+    "ports": {
+      "50064": true,
+      "50065": true,
+      "50066": true
+    },
+    "result": "Pass"
+  },
+  {
+    "command": "/opt/homebrew/Cellar/node@22/22.23.3_3/bin/node /Users/normy/autobyteus-org/autobyteus-task-worktrees/embedded-browser-history/autobyteus-web/tests/e2e/embedded-browser-history-probe.mjs --cases API-06,API-07 --output-dir /Users/normy/autobyteus-org/autobyteus-task-worktrees/embedded-browser-history/tickets/in-progress/embedded-browser-history/evidence/API-native --native-capture",
+    "commit": "e51d4b103d32da21da2beb784d9bd2d515eb97ad",
+    "date": "2026-10-26T17:21:29.595Z",
+    "environment": "darwin-arm64 Node v22.23.3",
+    "dirtyPaths": "autobyteus-web/package.json",
+    "caseId": "API-08",
+    "stop": {
+      "schemaVersion": 1,
+      "ok": true,
+      "command": "stop",
+      "result": {
+        "instanceId": "iso-50251-5536",
+        "wasRunning": true,
+        "forced": true,
+        "dataRoot": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/autobyteus-isolated-root-MRpBdC",
+        "dataRootRemoved": true,
+        "controlPortReleased": true,
+        "serverPortReleased": true,
+        "logPath": null
+      }
+    },
+    "dataRootRemoved": true,
+    "ports": {
+      "50250": true,
+      "50251": true,
+      "50252": true
+    },
+    "result": "Pass"
+  },
+  {
+    "command": "/opt/homebrew/Cellar/node@22/22.23.3_3/bin/node /Users/normy/autobyteus-org/autobyteus-task-worktrees/embedded-browser-history/autobyteus-web/tests/e2e/embedded-browser-history-probe.mjs --cases API-06 --output-dir /Users/normy/autobyteus-org/autobyteus-task-worktrees/embedded-browser-history/tickets/in-progress/embedded-browser-history/evidence/API-native --native-capture",
+    "commit": "e51d4b103d32da21da2beb784d9bd2d515eb97ad",
+    "date": "2026-10-26T17:22:12.820Z",
+    "environment": "darwin-arm64 Node v22.23.3",
+    "dirtyPaths": "autobyteus-web/package.json",
+    "caseId": "API-08",
+    "stop": {
+      "schemaVersion": 1,
+      "ok": true,
+      "command": "stop",
+      "result": {
+        "instanceId": "iso-50423-296d",
+        "wasRunning": true,
+        "forced": true,
+        "dataRoot": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/autobyteus-isolated-root-RugfYA",
+        "dataRootRemoved": true,
+        "controlPortReleased": true,
+        "serverPortReleased": true,
+        "logPath": null
+      }
+    },
+    "dataRootRemoved": true,
+    "ports": {
+      "50422": true,
+      "50423": true,
+      "50424": true
+    },
+    "result": "Pass"
+  },
+  {
+    "command": "/opt/homebrew/Cellar/node@22/22.23.3_3/bin/node /Users/normy/autobyteus-org/autobyteus-task-worktrees/embedded-browser-history/autobyteus-web/tests/e2e/embedded-browser-history-probe.mjs --cases API-06,API-07 --output-dir /Users/normy/autobyteus-org/autobyteus-task-worktrees/embedded-browser-history/tickets/in-progress/embedded-browser-history/evidence/API-native --native-capture",
+    "commit": "e51d4b103d32da21da2beb784d9bd2d515eb97ad",
+    "date": "2026-10-26T17:22:51.969Z",
+    "environment": "darwin-arm64 Node v22.23.3",
+    "dirtyPaths": "autobyteus-web/package.json",
+    "caseId": "API-08",
+    "stop": {
+      "schemaVersion": 1,
+      "ok": true,
+      "command": "stop",
+      "result": {
+        "instanceId": "iso-50501-2ddb",
+        "wasRunning": true,
+        "forced": true,
+        "dataRoot": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/autobyteus-isolated-root-rSI8Nx",
+        "dataRootRemoved": true,
+        "controlPortReleased": true,
+        "serverPortReleased": true,
+        "logPath": null
+      }
+    },
+    "dataRootRemoved": true,
+    "ports": {
+      "50500": true,
+      "50501": true,
+      "50502": true
+    },
+    "result": "Pass"
+  },
+  {
+    "command": "/opt/homebrew/Cellar/node@22/22.23.3_3/bin/node /Users/normy/autobyteus-org/autobyteus-task-worktrees/embedded-browser-history/autobyteus-web/tests/e2e/embedded-browser-history-probe.mjs --cases API-07 --output-dir /Users/normy/autobyteus-org/autobyteus-task-worktrees/embedded-browser-history/tickets/in-progress/embedded-browser-history/evidence/API-native --native-capture",
+    "commit": "e51d4b103d32da21da2beb784d9bd2d515eb97ad",
+    "date": "2026-10-26T17:24:00.070Z",
+    "environment": "darwin-arm64 Node v22.23.3",
+    "dirtyPaths": "autobyteus-web/package.json",
+    "caseId": "API-08",
+    "stop": {
+      "schemaVersion": 1,
+      "ok": true,
+      "command": "stop",
+      "result": {
+        "instanceId": "iso-50653-7b85",
+        "wasRunning": true,
+        "forced": true,
+        "dataRoot": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/autobyteus-isolated-root-aFJgzb",
+        "dataRootRemoved": true,
+        "controlPortReleased": true,
+        "serverPortReleased": true,
+        "logPath": null
+      }
+    },
+    "dataRootRemoved": true,
+    "ports": {
+      "50652": true,
+      "50653": true,
+      "50654": true
+    },
+    "result": "Pass"
+  }
+]

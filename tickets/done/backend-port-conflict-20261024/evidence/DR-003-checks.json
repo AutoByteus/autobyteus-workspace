@@ -1,0 +1,73 @@
+[
+  {
+    "command": [
+      "autobyteus-ts/node_modules/.bin/tsc",
+      "-p",
+      "autobyteus-ts/tsconfig.build.json",
+      "--noEmit"
+    ],
+    "exit": 0,
+    "log": "DR-003-check-1.log"
+  },
+  {
+    "command": [
+      "autobyteus-ts/node_modules/.bin/tsc",
+      "-p",
+      "autobyteus-application-sdk-contracts/tsconfig.build.json",
+      "--noEmit"
+    ],
+    "exit": 0,
+    "log": "DR-003-check-2.log"
+  },
+  {
+    "command": [
+      "autobyteus-ts/node_modules/.bin/tsc",
+      "-p",
+      "autobyteus-application-backend-sdk/tsconfig.build.json",
+      "--noEmit"
+    ],
+    "exit": 0,
+    "log": "DR-003-check-3.log"
+  },
+  {
+    "command": [
+      "autobyteus-ts/node_modules/.bin/tsc",
+      "-p",
+      "autobyteus-server-ts/tsconfig.build.json",
+      "--noEmit"
+    ],
+    "exit": 0,
+    "log": "DR-003-check-4.log"
+  },
+  {
+    "command": [
+      "autobyteus-ts/node_modules/.bin/tsc",
+      "-p",
+      "autobyteus-web/electron/tsconfig.json",
+      "--noEmit"
+    ],
+    "exit": 0,
+    "log": "DR-003-check-5.log"
+  },
+  {
+    "command": [
+      "autobyteus-ts/node_modules/.bin/tsc",
+      "-p",
+      "autobyteus-web/build/tsconfig.json",
+      "--noEmit"
+    ],
+    "exit": 0,
+    "log": "DR-003-check-6.log"
+  },
+  {
+    "command": [
+      "autobyteus-ts/node_modules/.bin/vitest",
+      "run",
+      "--root",
+      "autobyteus-ts",
+      "tests/unit/tools/terminal/command-execution/native-command-process-scope.test.ts"
+    ],
+    "exit": 0,
+    "log": "DR-003-check-7.log"
+  }
+]

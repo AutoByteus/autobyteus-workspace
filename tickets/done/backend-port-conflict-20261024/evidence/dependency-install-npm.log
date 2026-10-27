@@ -1,0 +1,51 @@
+Scope: all 13 workspace projects
+Lockfile is up to date, resolution step is skipped
+Progress: resolved 1, reused 0, downloaded 0, added 0
+Packages: +1669
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+   ╭──────────────────────────────────────────╮
+   │                                          │
+   │   Update available! 10.28.2 → 12.15.0.   │
+   │   Changelog: https://pnpm.io/v/12.15.0   │
+   │     To update, run: pnpm add -g pnpm     │
+   │                                          │
+   ╰──────────────────────────────────────────╯
+
+Progress: resolved 1669, reused 1296, downloaded 25, added 51
+Progress: resolved 1669, reused 1296, downloaded 88, added 364
+Progress: resolved 1669, reused 1296, downloaded 151, added 567
+Progress: resolved 1669, reused 1296, downloaded 254, added 674
+Progress: resolved 1669, reused 1296, downloaded 349, added 800
+Progress: resolved 1669, reused 1296, downloaded 362, added 1225
+Progress: resolved 1669, reused 1296, downloaded 367, added 1516
+Progress: resolved 1669, reused 1296, downloaded 367, added 1666
+Progress: resolved 1669, reused 1296, downloaded 368, added 1668
+Progress: resolved 1669, reused 1296, downloaded 369, added 1668
+Progress: resolved 1669, reused 1296, downloaded 369, added 1669, done
+.../node_modules/protobufjs postinstall$ node scripts/postinstall
+.../node_modules/@parcel/watcher install$ node scripts/build-from-source.js
+.../sharp@0.33.5/node_modules/sharp install$ node install/check
+.../node_modules/vue-demi postinstall$ node -e "try{require('./scripts/postinstall.js')}catch(e){}"
+.../esbuild@0.28.2/node_modules/esbuild postinstall$ node install.js
+.../node_modules/@parcel/watcher install: Done
+.../node_modules/protobufjs postinstall: Done
+.../node_modules/vue-demi postinstall: Done
+.../esbuild@0.28.2/node_modules/esbuild postinstall: Done
+.../sharp@0.33.5/node_modules/sharp install: Done
+ WARN  Failed to create bin at /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/applications/brief-studio/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-application-devkit/dist/cli.js'
+ WARN  Failed to create bin at /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/applications/socratic-math-teacher/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-application-devkit/dist/cli.js'
+
+autobyteus-ts postinstall$ node ./scripts/fix-node-pty-permissions.mjs
+autobyteus-ts postinstall: [node-pty-fix] repaired: /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+autobyteus-ts postinstall: Done
+ WARN  Failed to create bin at /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/applications/brief-studio/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/applications/brief-studio/node_modules/@autobyteus/application-devkit/dist/cli.js'
+ WARN  Failed to create bin at /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/applications/socratic-math-teacher/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/applications/socratic-math-teacher/node_modules/@autobyteus/application-devkit/dist/cli.js'
+╭ Warning ─────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│   Ignored build scripts: @google/genai@2.24.0.                               │
+│   Run "pnpm approve-builds" to pick which dependencies should be allowed     │
+│   to run scripts.                                                            │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Done in 14s using pnpm v10.28.2

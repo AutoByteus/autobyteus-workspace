@@ -1,0 +1,36 @@
+
+> autobyteus@1.5.9-beta.10 test:electron /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-web
+> vitest --config ./electron/vitest.config.ts --run electron/server/__tests__ electron/application/__tests__ electron/updater/__tests__ electron/__tests__/nodeRegistryStore.spec.ts electron/__tests__/rendererConsoleDiagnostics.spec.ts electron/shell/__tests__
+
+
+ RUN  v3.2.7 /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-web/electron
+
+ ✓ server/__tests__/ManagedBackendShutdown.spec.ts (7 tests) 10ms
+ ✓ updater/__tests__/appUpdateNotificationRecord.spec.ts (7 tests) 12ms
+ ✓ updater/__tests__/appUpdateCheckSchedule.spec.ts (9 tests) 18ms
+ ✓ updater/__tests__/appUpdaterAutoCheck.spec.ts (9 tests) 20ms
+ ✓ updater/__tests__/appUpdater.spec.ts (36 tests) 41ms
+ ✓ server/__tests__/BaseServerManager.spec.ts (4 tests) 67ms
+ ✓ server/__tests__/BackendPortAvailability.spec.ts (3 tests) 111ms
+ ✓ server/__tests__/serverOutputLogging.spec.ts (4 tests) 137ms
+ ✓ updater/__tests__/appUpdateChannelStore.spec.ts (9 tests) 11ms
+ ✓ __tests__/nodeRegistryStore.spec.ts (7 tests) 8ms
+ ✓ server/__tests__/platformServerEnvironment.spec.ts (2 tests) 7ms
+ ✓ server/__tests__/serverRuntimeEnv.spec.ts (13 tests) 6ms
+ ✓ updater/__tests__/appUpdateErrorClassifier.spec.ts (4 tests) 5ms
+ ✓ application/__tests__/ApplicationShutdown.spec.ts (3 tests) 8ms
+ ✓ server/__tests__/WindowsServerManagerShutdown.spec.ts (2 tests) 11ms
+ ✓ server/__tests__/StartupDelayLifecycle.spec.ts (16 tests) 372ms
+ ✓ updater/__tests__/appReleasePage.spec.ts (3 tests) 4ms
+ ✓ server/__tests__/ServerStatusManager.spec.ts (4 tests) 5ms
+ ✓ shell/__tests__/workspace-shell-window-registry.spec.ts (3 tests) 6ms
+ ✓ __tests__/rendererConsoleDiagnostics.spec.ts (3 tests) 7ms
+ ✓ updater/__tests__/disabledAppUpdater.spec.ts (3 tests) 7ms
+ ✓ server/__tests__/prismaSqliteUrl.spec.ts (3 tests) 1ms
+ ✓ shell/__tests__/workspace-shell-window.spec.ts (2 tests) 2ms
+
+ Test Files  23 passed (23)
+      Tests  156 passed (156)
+   Start at  11:08:31
+   Duration  1.09s (transform 816ms, setup 0ms, collect 1.67s, tests 875ms, environment 2ms, prepare 1.63s)
+

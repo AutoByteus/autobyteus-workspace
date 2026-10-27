@@ -1,0 +1,168 @@
+{
+  "case": "R02/R03",
+  "date": "2026-10-26T07:07:59.777799+00:00",
+  "commit": "ccc0c56d2d4fdf48815a19d73870798dcd8fadb9",
+  "command": "Evidence adjudication after owned cleanup; raw observations from R02-03-browser.mjs",
+  "environment": {
+    "R02": {
+      "platform": "darwin",
+      "arch": "arm64",
+      "node": "v22.23.1",
+      "base": "http://127.0.0.1:53710",
+      "root": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-guide-api003-gqNhYF",
+      "serverPid": 90527,
+      "chrome": "156.0.8078.47",
+      "browserPid": 92165,
+      "browserPgid": 92165,
+      "chromiumSandbox": true
+    },
+    "R03": {
+      "platform": "darwin",
+      "arch": "arm64",
+      "node": "v22.23.1",
+      "base": "http://127.0.0.1:56072",
+      "root": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-guide-api003-4RsoEy",
+      "serverPid": 7324,
+      "chrome": "156.0.8078.47",
+      "browserPid": 8999,
+      "browserPgid": 8999,
+      "chromiumSandbox": true
+    }
+  },
+  "result": "Pass (case-level, not relabelled original aggregate files)",
+  "R02": {
+    "evidence": "R02-03-attempt-2/result.json",
+    "rawAggregateStatus": "Not Tested",
+    "completionEvidence": "| 2026-10-26T06:42:51.895Z | R02 | Completed | Pass | Actual /nodes+language settings, en/zh\u00d71280/390,9exact actual clipboard values each, zeroanchors, exact43wordshortfooter/bilingual safety/no reservedgap/review reminder/accessibility/layout and Docker preserved |",
+    "views": [
+      {
+        "locale": "en",
+        "width": 1280,
+        "copies": 9,
+        "anchors": 0,
+        "footer": {
+          "tip": "Use the printed mount path as a normal folder.",
+          "note": [
+            "Use only on a trusted private network",
+            "NFS is unencrypted\u2014do not expose it to the internet.",
+            "If storage or the network goes offline, file operations and other work may stall. Restore connectivity before retrying."
+          ],
+          "tipBackground": "rgba(0, 0, 0, 0)",
+          "tipBorder": "0px",
+          "tipFont": "14px",
+          "tipGap": 20,
+          "noteGap": 16,
+          "noteIsNext": true,
+          "following": null,
+          "words": 43
+        },
+        "document": {
+          "scroll": 1280,
+          "client": 1280
+        },
+        "installGap": 17
+      },
+      {
+        "locale": "en",
+        "width": 390,
+        "copies": 9,
+        "anchors": 0,
+        "footer": {
+          "tip": "Use the printed mount path as a normal folder.",
+          "note": [
+            "Use only on a trusted private network",
+            "NFS is unencrypted\u2014do not expose it to the internet.",
+            "If storage or the network goes offline, file operations and other work may stall. Restore connectivity before retrying."
+          ],
+          "tipBackground": "rgba(0, 0, 0, 0)",
+          "tipBorder": "0px",
+          "tipFont": "14px",
+          "tipGap": 20,
+          "noteGap": 16,
+          "noteIsNext": true,
+          "following": null,
+          "words": 43
+        },
+        "document": {
+          "scroll": 390,
+          "client": 390
+        },
+        "installGap": 17
+      },
+      {
+        "locale": "zh-CN",
+        "width": 1280,
+        "copies": 9,
+        "anchors": 0,
+        "footer": {
+          "tip": "\u5c06\u8f93\u51fa\u7684\u6302\u8f7d\u8def\u5f84\u7528\u4f5c\u666e\u901a\u6587\u4ef6\u5939\u3002",
+          "note": [
+            "\u4ec5\u7528\u4e8e\u53d7\u4fe1\u4efb\u7684\u79c1\u6709\u7f51\u7edc",
+            "NFS \u6d41\u91cf\u4e0d\u52a0\u5bc6\uff0c\u8bf7\u52ff\u5c06\u670d\u52a1\u66b4\u9732\u5230\u516c\u5171\u4e92\u8054\u7f51\u3002",
+            "\u5b58\u50a8\u6216\u7f51\u7edc\u79bb\u7ebf\u65f6\uff0c\u6587\u4ef6\u64cd\u4f5c\u53ca\u5176\u4ed6\u5de5\u4f5c\u53ef\u80fd\u505c\u6ede\u3002\u8bf7\u6062\u590d\u8fde\u63a5\u540e\u91cd\u8bd5\u3002"
+          ],
+          "tipBackground": "rgba(0, 0, 0, 0)",
+          "tipBorder": "0px",
+          "tipFont": "14px",
+          "tipGap": 20,
+          "noteGap": 16,
+          "noteIsNext": true,
+          "following": null,
+          "words": null
+        },
+        "document": {
+          "scroll": 1280,
+          "client": 1280
+        },
+        "installGap": 17
+      },
+      {
+        "locale": "zh-CN",
+        "width": 390,
+        "copies": 9,
+        "anchors": 0,
+        "footer": {
+          "tip": "\u5c06\u8f93\u51fa\u7684\u6302\u8f7d\u8def\u5f84\u7528\u4f5c\u666e\u901a\u6587\u4ef6\u5939\u3002",
+          "note": [
+            "\u4ec5\u7528\u4e8e\u53d7\u4fe1\u4efb\u7684\u79c1\u6709\u7f51\u7edc",
+            "NFS \u6d41\u91cf\u4e0d\u52a0\u5bc6\uff0c\u8bf7\u52ff\u5c06\u670d\u52a1\u66b4\u9732\u5230\u516c\u5171\u4e92\u8054\u7f51\u3002",
+            "\u5b58\u50a8\u6216\u7f51\u7edc\u79bb\u7ebf\u65f6\uff0c\u6587\u4ef6\u64cd\u4f5c\u53ca\u5176\u4ed6\u5de5\u4f5c\u53ef\u80fd\u505c\u6ede\u3002\u8bf7\u6062\u590d\u8fde\u63a5\u540e\u91cd\u8bd5\u3002"
+          ],
+          "tipBackground": "rgba(0, 0, 0, 0)",
+          "tipBorder": "0px",
+          "tipFont": "14px",
+          "tipGap": 20,
+          "noteGap": 16,
+          "noteIsNext": true,
+          "following": null,
+          "words": null
+        },
+        "document": {
+          "scroll": 390,
+          "client": 390
+        },
+        "installGap": 17
+      }
+    ],
+    "nativeClipboardComparisons": 36,
+    "docker": "Before/after equality and one actual copy per locale guarded before R02 Completed; driver/progress are boundary evidence, Docker values were not separately dumped"
+  },
+  "R03": {
+    "evidence": "R02-03-attempt-3/result.json",
+    "assertions": {
+      "case": "R03",
+      "keyboard": "Enter",
+      "timerReset": true,
+      "pendingAll9Disabled": true,
+      "secondRequestExcluded": true,
+      "unmountLateResolve": true,
+      "denialManualSelection": true,
+      "missingClipboard": true
+    },
+    "nativeKeyboardCopies": 1
+  },
+  "errors": [],
+  "attempts": "attempt1 failed stale Windows expectation; attempt2 R02 completed and R03 observed but final receipt lost to ENOTEMPTY; attempt3 only R03 rerun. Original statuses retained.",
+  "cleanup": "C01-03-cleanup.json all3 groups/ports/roots absent",
+  "limits": "Actual Nodes web renderer with read-fixture services. No backend/Electron/installer/NFS/field qualification. Negative clipboard states controlled; normal reads/writes are actual Chrome."
+}

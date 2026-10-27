@@ -1,0 +1,21 @@
+IMP-08 source audit | 7e2704199a6cf192546506f7e265301aee014dc0 | macOS arm64 | 2026-10-26
+Steps: git diff --check; effective nonempty line counts for changed production files vs 0389c68; inspect touched paths for dead code/ownership.
+git diff --check: exit 0, no findings
+File | before nonempty | after nonempty | delta added/deleted
+autobyteus-web/components/workspace/tools/BrowserPanel.vue | 324 | 339 | +20/-3
+autobyteus-web/electron/browser/browser-shell-controller.ts | 338 | 362 | +28/-2
+autobyteus-web/electron/browser/browser-tab-manager.ts | 499 | 490 | +14/-24
+autobyteus-web/electron/browser/browser-tab-navigation.ts | 234 | 248 | +16/-0
+autobyteus-web/electron/browser/browser-tab-observers.ts | 0 | 29 | +30/-0
+autobyteus-web/electron/browser/browser-tab-types.ts | 164 | 166 | +3/-0
+autobyteus-web/electron/browser/register-browser-shell-ipc-handlers.ts | 84 | 92 | +9/-0
+autobyteus-web/electron/preload.ts | 126 | 129 | +3/-0
+autobyteus-web/localization/messages/en/workspace.ts | 296 | 298 | +2/-0
+autobyteus-web/localization/messages/zh-CN/workspace.ts | 295 | 297 | +2/-0
+autobyteus-web/stores/browserShellStore.ts | 233 | 246 | +14/-0
+autobyteus-web/types/browserShell.ts | 54 | 60 | +7/-0
+autobyteus-web/types/electron.d.ts | 102 | 104 | +2/-0
+All changed production files <=500 effective nonempty lines; all per-file changed-line deltas <220.
+Manager total physical lines: 570 -> 560. Effective nonempty: 499 -> 490.
+Removed inline observer bodies, replaced broad address watcher and URL/title-only equality. No additional proven dead code found in touched paths.
+No agent-facing summary/tool, persistence, profile or server production changes. FU-001/002 remain deferred.

@@ -1,0 +1,24 @@
+{
+  "recordedAt": "2026-10-26T10:48:20.965143+00:00",
+  "reviewedHead": "3b0a830d105e4bd3818b8e994fdd0f9f2480fc89",
+  "base": "b5f302a335014ff6d03d6acab7794edb4254475f",
+  "integration": "53423ca028831a943c8d30a31287fec73234527c",
+  "source": "9b10fcd4d3eee578b9d1d23e1d6ab47f9b950c5c",
+  "newBaseCommits": false,
+  "newProductChanges": false,
+  "testHashes": {
+    "autobyteus-web/electron/server/__tests__/PortOwnerInspectorFaults.spec.ts": true,
+    "autobyteus-web/electron/server/__tests__/BackendPortBindFaults.spec.ts": true
+  },
+  "AC002": "Proven: real missing/permission/deadline/output/empty/malformed/racing inspector plus actual-shaped bind errno tests; exact11+5 pass logs opened and full assertions inspected",
+  "deadlineReceipt": {
+    "elapsedMs": 1010,
+    "ownedPid": 23664,
+    "absent": true
+  },
+  "signalGuardScope": "Advisory process.kill API guard plus unrelated listener/data checks, not universal syscall audit; own diagnostic subprocess timeout cleanup allowed.",
+  "priorHold": "DR003 AC002 cleared by Delivery; original overclaim remains withdrawn",
+  "rerunDecision": "No duplicate product/build/API rerun. Current base unchanged; test-only additions reviewed and run. DR003 six types+9 source smoke and APIREV003 actual journeys remain valid for unchanged source.",
+  "verification": "Sufficient for approved criteria; AC006 repository finalization/cleanup receipt pending actual operations",
+  "userCheck": "Not needed"
+}

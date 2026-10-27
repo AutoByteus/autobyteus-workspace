@@ -1,6 +1,6 @@
 {
   "name": "autobyteus",
-  "version": "1.5.9-beta.9",
+  "version": "1.5.9-beta.10",
   "packageManager": "pnpm@10.28.1",
   "description": "AutoByteus Desktop Application",
   "license": "AGPL-3.0-only",
@@ -87,6 +87,7 @@
     "test:e2e:event-monitor-file-preview": "node tests/e2e/event-monitor-file-preview-probe.mjs",
     "test:e2e:electron": "node scripts/run-electron-e2e.mjs",
     "test:e2e:electron:isolation": "node tests/e2e/electron-launch-profile-probe.mjs",
+    "test:e2e:embedded-browser-history": "node tests/e2e/embedded-browser-history-probe.mjs",
     "test:e2e:isolated-app": "node tests/e2e/isolated-app-lifecycle-probe.mjs",
     "test:e2e:team-reload-member-freshness": "node tests/e2e/team-reload-member-freshness-probe.mjs",
     "test:e2e:composer-mention-discoverability": "node tests/e2e/composer-mention-discoverability-probe.mjs",

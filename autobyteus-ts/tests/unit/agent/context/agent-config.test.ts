@@ -1,3 +1,4 @@
+import { NativeCommandProcessScope } from '../../../../src/tools/terminal/command-execution/native-command-process-scope.js';
 import { describe, it, expect } from 'vitest';
 import { AgentConfig } from '../../../../src/agent/context/agent-config.js';
 import { BaseLLM } from '../../../../src/llm/base.js';
@@ -30,6 +31,11 @@ const makeLLM = () => {
 };
 
 describe('AgentConfig', () => {
+  it('copies host native scope by identity outside structured custom data', () => {
+    const config = new AgentConfig('name', 'role', 'desc', makeLLM());
+    config.nativeCommandProcessScope = new NativeCommandProcessScope();
+    expect(config.copy().nativeCommandProcessScope).toBe(config.nativeCommandProcessScope);
+  });
   it('copy creates a new config with cloned lists and data', () => {
     const llm = makeLLM();
     const toolResultProcessor = { process: () => undefined } as any;

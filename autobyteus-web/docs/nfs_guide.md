@@ -2,9 +2,9 @@
 
 Nodes → NFS Guide documents the independent
 [AutoByteus NFS tool](https://github.com/AutoByteus/autobyteus-nfs/releases/tag/v0.1.0).
-The app only displays text, opens documentation links and writes selected text to
-the clipboard. It never installs software, runs a command, detects a mount or
-admits a workspace by NFS identity. AutoByteus uses ordinary filesystem APIs.
+The app only displays text and writes selected text to the clipboard. It never
+installs software, runs a command, detects a mount or admits a workspace by NFS
+identity. AutoByteus uses ordinary filesystem APIs.
 
 ## Install, then choose a role
 
@@ -33,6 +33,10 @@ Non-version commands can require administrator approval. Advanced flags belong
 to the [public CLI documentation](https://github.com/AutoByteus/autobyteus-nfs/blob/v0.1.0/README.md),
 not an app-side execution API. The guide excludes internal service commands.
 
+The on-page footer keeps one ordinary-folder tip and a compact private-network
+and outage warning. Detailed constraints and documentation links remain here,
+not as standalone links or extra disclaimer paragraphs below the command cards.
+
 ## Availability and limits
 
 Downloads exist for ARM64/x64 macOS and Linux. Intended hosts are macOS 26+ APFS
@@ -40,8 +44,15 @@ and Ubuntu 24.04 ext4 (native or Linux Docker storage). Windows and Mac Docker
 storage hosting are excluded. Physical-host/shared-filesystem/independent-client
 and user testing remains deferred; download availability is not host readiness.
 Use a trusted private network: NFS is unencrypted and trusts allowed computers,
-not individual users. Outages may stall filesystem work; there is no offline
-copy or local fallback. Generic Docker directory binds are configured separately.
+not individual users. Writes map to the selected nonroot source owner; connection
+JSON is not an access token. Never expose the service to the public internet.
+Outages may stall filesystem work, previews and other work; restore connectivity
+before retrying. There is no offline copy or local fallback.
+
+Use the printed mount path as an ordinary folder. The service does not attach or
+restart application containers. Generic Docker directory binds are configured
+separately, using an operator-managed shared root with `shared/` and
+`nodes/<name>/` subdirectories.
 
 ## Maintaining the guide
 
@@ -50,9 +61,10 @@ strings. To deliberately update it, verify the actual public release, installer
 bytes and published SHA256SUMS; update tag, URLs, `installerSha256` and
 `availableComputers` together. Do not substitute build fixtures, `latest`, or a
 field-qualified label. Keep checksum verification and the trailing `version`.
-Standalone installer/release links are not shown; use the URL in the command to
-review the script. Invalid/null descriptors suppress the version notice and
-disable affected install buttons; the installed-tool reference remains explicitly prerequisite.
+Standalone installer/release/advanced-documentation links are not shown in the
+guide; use the URL in the command to review the script. Invalid/null descriptors
+suppress the version notice and disable affected install buttons; the
+installed-tool reference remains explicitly prerequisite.
 
 `NfsGuideCard.vue` owns one promise-based clipboard lifecycle for all nine buttons:
 pending exclusion, success only after fulfillment, a two-second reset, manual

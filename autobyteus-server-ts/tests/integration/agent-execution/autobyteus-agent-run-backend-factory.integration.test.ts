@@ -1,3 +1,4 @@
+import { NativeCommandProcessScope } from "autobyteus-ts";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -80,7 +81,7 @@ describe("AutoByteusAgentRunBackendFactory integration", () => {
     const activeIds = agentFactory.listActiveAgentIds();
     await Promise.all(activeIds.map((id) => agentFactory.removeAgent(id).catch(() => false)));
 
-    backendFactory = new AutoByteusAgentRunBackendFactory({
+    backendFactory = new AutoByteusAgentRunBackendFactory({ nativeCommandProcessScope: new NativeCommandProcessScope(),
       agentFactory: agentFactory as any,
       agentDefinitionService: {
         getAgentDefinitionById: async () => persistedAgentDefinition,

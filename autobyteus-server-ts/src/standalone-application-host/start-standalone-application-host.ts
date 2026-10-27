@@ -1,3 +1,4 @@
+import { NativeCommandShutdown } from "../compositions/native-command-shutdown.js";
 import "reflect-metadata";
 import type { FastifyInstance } from "fastify";
 import { initializePrisma, shutdownPrisma } from "repository_prisma";
@@ -191,6 +192,7 @@ export const startStandaloneApplicationHost = async (
     packageRoot: config.packageRoot,
     localApplicationId: config.localApplicationId,
   });
+  const nativeShutdown = new NativeCommandShutdown();
   let app: FastifyInstance | null = null;
   let processResources: StandaloneProcessResources | null = null;
   let agentToolsMcpHost: AgentToolsMcpHost | null = null;
@@ -222,7 +224,7 @@ export const startStandaloneApplicationHost = async (
       loggingConfig: processResources.loggingConfig,
     });
     const agentProviderFactoryBuilder = createProcessAgentProviderFactoryBuilder({
-      workspaceManager,
+      workspaceManager, nativeCommandProcessScope: nativeShutdown.scope,
     });
     const modelCatalogService = getModelCatalogService();
     const modelSelectionValidator = new RunModelSelectionService(modelCatalogService);
@@ -282,6 +284,7 @@ export const startStandaloneApplicationHost = async (
       applicationRuntime,
       loggingConfig: processResources.loggingConfig,
     });
+    nativeShutdown.install(app);
     await applicationRuntime.lifecycle.prepareBeforeListen();
     await agentToolsMcpHost.listen();
     const url = await app.listen({ host: config.host, port: config.port });
@@ -289,7 +292,7 @@ export const startStandaloneApplicationHost = async (
 
     let closePromise: Promise<void> | null = null;
     const close = (): Promise<void> => {
-      closePromise ??= (async () => {
+      closePromise ??= nativeShutdown.close(async () => {
         try {
           await app!.close();
         } finally {
@@ -314,7 +317,7 @@ export const startStandaloneApplicationHost = async (
             }
           }
         }
-      })();
+      });
       return closePromise;
     };
     return Object.freeze({
@@ -324,6 +327,7 @@ export const startStandaloneApplicationHost = async (
       close,
     });
   } catch (error) {
+    await nativeShutdown.close(async () => {
     try {
       if (app) {
         await app.close();
@@ -355,6 +359,7 @@ export const startStandaloneApplicationHost = async (
         }
       }
     }
+    });
     throw error;
   }
 };

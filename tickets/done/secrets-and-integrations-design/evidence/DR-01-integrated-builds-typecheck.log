@@ -1,0 +1,29 @@
+# Case: DR-01 core build, server typecheck, server build
+# Command: pnpm -C autobyteus-ts build; pnpm -C autobyteus-server-ts typecheck; pnpm -C autobyteus-server-ts build
+# Commit: 2c67d4b4c2 (codex/secrets-and-integrations-design merged with origin/personal 67994daba0; doc conflicts in GLOSSARY.md and docs/design-cases.md resolved keeping both sides)
+# Environment: macOS 26 arm64, node v22.23.1, pnpm 10.28.2; env -i PATH HOME=<temp> TMPDIR
+# Date: 2026-10-26 (delivery, integrated state)
+
+## core-build (exit 0)
+
+> autobyteus-ts@1.0.0 build ~/autobyteus_org/autobyteus-worktrees/secrets-and-integrations-design/autobyteus-ts
+> node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+
+[verify:runtime-deps] OK
+
+## server-typecheck (exit 0)
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+
+> autobyteus-server-ts@0.1.1 typecheck ~/autobyteus_org/autobyteus-worktrees/secrets-and-integrations-design/autobyteus-server-ts
+> tsc -p tsconfig.build.json --noEmit
+
+
+## server-build (exit 0)
+
+AgentFactory (Singleton) initialized.
+(node:1145) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+

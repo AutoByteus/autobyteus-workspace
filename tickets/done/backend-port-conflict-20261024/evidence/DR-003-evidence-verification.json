@@ -1,0 +1,116 @@
+{
+  "at": "2026-10-26T10:33:43.592512+00:00",
+  "source": "9b10fcd4d3eee578b9d1d23e1d6ab47f9b950c5c",
+  "head": "53423ca028831a943c8d30a31287fec73234527c",
+  "artifacts": [
+    {
+      "path": "autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.5.9-beta.10.dmg",
+      "bytes": 494925731,
+      "sha256": "6a555aba8483dce084764ee0782513008d1539ce9ad6f7d6a16df016897720e0",
+      "actualSha256": "6a555aba8483dce084764ee0782513008d1539ce9ad6f7d6a16df016897720e0",
+      "actualBytes": 494925731
+    },
+    {
+      "path": "autobyteus-web/electron-dist/AutoByteus_enterprise_macos-arm64-1.5.9-beta.10.zip",
+      "bytes": 491435572,
+      "sha256": "5f2b08dfa84f3bd2bc28e0c5a1ffdb201888b4309222356aa377bb117854291f",
+      "actualSha256": "5f2b08dfa84f3bd2bc28e0c5a1ffdb201888b4309222356aa377bb117854291f",
+      "actualBytes": 491435572
+    }
+  ],
+  "provenanceChecks": {
+    "autobyteus-server-ts/tests/e2e/shutdown/native-standalone-host-shutdown.e2e.test.ts": true,
+    "autobyteus-server-ts/tests/e2e/shutdown/native-standalone-host-fixture.mjs": true,
+    "tickets/in-progress/backend-port-conflict-20261024/evidence/API-05-conflict-recovery.mjs": true,
+    "tickets/in-progress/backend-port-conflict-20261024/evidence/API-06B-desktop-native-current.mjs": true,
+    "tickets/in-progress/backend-port-conflict-20261024/evidence/API-07-packaged-ipc.mjs": true,
+    "tickets/in-progress/backend-port-conflict-20261024/evidence/API-09-desktop-visibility.mjs": true,
+    "tickets/in-progress/backend-port-conflict-20261024/evidence/API-09B-selection-lifecycle.mjs": true,
+    "tickets/in-progress/backend-port-conflict-20261024/evidence/API-10-provider-unavailable.mjs": true,
+    "tickets/in-progress/backend-port-conflict-20261024/evidence/API-REV-003/API-run-integrated.mjs": true
+  },
+  "compiledPackagedChecks": [
+    {
+      "file": "server-runtime.js",
+      "sha256": "f7245815d4cfd2cb062a8bc5bfb5a1028519fc3d0adbe2041b57557e28d08843",
+      "match": true
+    },
+    {
+      "file": "secret-management/resolution/mcp-secret-resolver.js",
+      "sha256": "b9895d15afbd2d867937bb016e9fa8eaf136d2370aa3a35aec114b33ecdc05c6",
+      "match": true
+    },
+    {
+      "file": "agent-execution/backends/codex/thread/codex-thread.js",
+      "sha256": "a93a2b12994f7378be3f4f1e8959bccfc31e562a64c720ab17c38c1abbe16abf",
+      "match": true
+    },
+    {
+      "file": "api/graphql/types/agent-background-task-view.js",
+      "sha256": "f0033a3c364ddc984563a45d334c2ed64520d59973e1a479bc5ae4fbd1697869",
+      "match": true
+    },
+    {
+      "file": "api/graphql/schema.js",
+      "sha256": "81fc07ebefbc1d7e2b3e37bfa30881ef5cfeab8e3130e0495620e625351f8bd6",
+      "match": true
+    }
+  ],
+  "rawResults": [
+    {
+      "case": "03",
+      "result": "Pass",
+      "source": "9b10fcd4d3eee578b9d1d23e1d6ab47f9b950c5c",
+      "forced": null
+    },
+    {
+      "case": "05",
+      "result": "Pass",
+      "source": "9b10fcd4d3eee578b9d1d23e1d6ab47f9b950c5c",
+      "forced": false
+    },
+    {
+      "case": "06B",
+      "result": "Pass",
+      "source": "9b10fcd4d3eee578b9d1d23e1d6ab47f9b950c5c",
+      "forced": false
+    },
+    {
+      "case": "07",
+      "result": "Pass",
+      "source": "9b10fcd4d3eee578b9d1d23e1d6ab47f9b950c5c",
+      "forced": null
+    },
+    {
+      "case": "09",
+      "result": "Pass",
+      "source": "9b10fcd4d3eee578b9d1d23e1d6ab47f9b950c5c",
+      "forced": false
+    },
+    {
+      "case": "09B",
+      "result": "Pass",
+      "source": "9b10fcd4d3eee578b9d1d23e1d6ab47f9b950c5c",
+      "forced": false
+    },
+    {
+      "case": "10",
+      "result": "Pass",
+      "source": "9b10fcd4d3eee578b9d1d23e1d6ab47f9b950c5c",
+      "forced": false
+    }
+  ],
+  "upstreamCleanup": {
+    "pidCount": 35,
+    "allPidsAbsentAtAudit": true,
+    "otherKeys": [
+      "case",
+      "round",
+      "date",
+      "method",
+      "pids",
+      "roots"
+    ]
+  },
+  "note": "Direct artifact and script hashes plus raw result provenance checked. PID historical audit is not authority to kill any reused PID."
+}

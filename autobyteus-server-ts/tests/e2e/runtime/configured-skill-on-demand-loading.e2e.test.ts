@@ -1,3 +1,4 @@
+import { NativeCommandProcessScope } from "autobyteus-ts";
 import "reflect-metadata";
 import os from "node:os";
 import path from "node:path";
@@ -158,7 +159,7 @@ describe("Configured skill on-demand loading active native runtime e2e", () => {
       getName: () => "Configured Skill Workspace",
       getBasePath: () => workspaceRoot,
     };
-    const factory = new AutoByteusAgentRunBackendFactory({
+    const factory = new AutoByteusAgentRunBackendFactory({ nativeCommandProcessScope: new NativeCommandProcessScope(),
       agentDefinitionService: AgentDefinitionService.getInstance(),
       skillService: SkillService.getInstance(),
       agentFactory: new AgentFactory(),

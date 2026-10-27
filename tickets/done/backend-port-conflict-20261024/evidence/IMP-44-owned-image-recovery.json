@@ -1,0 +1,8 @@
+{
+  "reason": "builder resize35 while its exact temporary image remains attached",
+  "image": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/t-JISSQh/0.dmg",
+  "device": "/dev/disk13",
+  "exit": 0,
+  "output": "\"disk13\" ejected.\n",
+  "error": ""
+}

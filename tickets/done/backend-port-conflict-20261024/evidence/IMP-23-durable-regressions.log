@@ -1,0 +1,24 @@
+IMP-23-durable-regressions — IR-003
+Command (worktree root): pnpm -C autobyteus-ts exec vitest run tests/unit/tools/terminal/command-execution/stop-retirement-race.test.ts tests/unit/tools/terminal/command-execution/output-capture-lifetime.test.ts
+Invocation: clean env -i PATH="$PATH" HOME="$HOME" TMPDIR="$TMPDIR"; pnpm through npm exec --yes --package=pnpm@10.28.2 --; direct tsc exceptions
+Commit: d0338db0b
+Environment: macOS arm64 Node26.12.0 pnpm10.28.2; no provider gate
+Finished: 2026-10-24T19:10:39.158158+00:00
+Log ANSI/trailing whitespace normalized; empty successful tsc means exit0.
+
+
+ RUN  v4.1.12 /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-ts
+
+ ✓ tests/unit/tools/terminal/command-execution/stop-retirement-race.test.ts (3 tests) 1982ms
+     ✓ drains after inspection, shares only real stop work (expired=false)  902ms
+     ✓ drains after inspection, shares only real stop work (expired=true)  905ms
+ ✓ tests/unit/tools/terminal/command-execution/output-capture-lifetime.test.ts (5 tests) 3611ms
+     ✓ releases every foreground-only capture and listener without losing returned output  688ms
+     ✓ releases a foreground capture after command launch failure  838ms
+     ✓ releases a background capture after command launch failure  850ms
+     ✓ keeps an adopted live record output until confirmed explicit stop  1051ms
+
+ Test Files  2 passed (2)
+      Tests  8 passed (8)
+   Start at  21:10:35
+   Duration  3.82s (transform 118ms, setup 72ms, import 88ms, tests 5.59s, environment 0ms)

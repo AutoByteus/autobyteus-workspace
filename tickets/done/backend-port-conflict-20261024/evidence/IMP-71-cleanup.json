@@ -1,0 +1,6 @@
+{
+  "root": "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-imp71-qdB1WT",
+  "matchingProcesses": [],
+  "rootRemoved": true,
+  "scope": "test-owned home/uv cache/venv; test afterEach closes clients/servers and per-test roots"
+}

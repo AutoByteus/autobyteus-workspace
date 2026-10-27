@@ -1,0 +1,28 @@
+{
+  "recordedAt": "2026-10-26T10:02:31.947612+00:00",
+  "candidate": "b16beba9e1b60ffb949853a8bb861ccf5c189bd5",
+  "previousIntegratedBase": "67994daba0adf6eb8c6bc05827b5fab6b2975aa4",
+  "fetchedBase": "0fd9ca4b63bf86fad8e3fa357aa05016cc6d299e",
+  "incomingCommitCount": 21,
+  "commands": [
+    "git fetch origin personal",
+    "git merge --no-edit origin/personal"
+  ],
+  "result": "Blocked: new merge conflicts, not a failed API-REV-002 validation",
+  "conflicts": [
+    "autobyteus-web/generated/graphql.ts",
+    "docs/design-cases.md"
+  ],
+  "foundationDelta": [
+    "autobyteus-ts/src/tools/mcp/index.ts",
+    "autobyteus-ts/src/tools/mcp/mcp-secret-resolver.ts",
+    "autobyteus-ts/src/tools/mcp/server-instance-manager.ts",
+    "autobyteus-ts/src/tools/mcp/server/base-managed-mcp-server.ts",
+    "autobyteus-ts/src/tools/mcp/server/http-managed-mcp-server.ts",
+    "autobyteus-ts/src/tools/mcp/server/stdio-managed-mcp-server.ts",
+    "autobyteus-ts/src/tools/mcp/types.ts",
+    "autobyteus-ts/tests/integration/tools/mcp/secret-reference-resolution.test.ts",
+    "autobyteus-ts/tests/unit/tools/mcp/types.test.ts"
+  ],
+  "recovery": "git merge --abort exited0; restored reviewed candidate b16beba9e; no unmerged paths; no new merge commit"
+}

@@ -1,0 +1,3 @@
+Post-merge commit 763265ab81fbb58e532bda75d7b374c47dd40e28
+API-03 Pass: A/B/C and B/A/B/C committed content; stable length3; correct direction flags.
+API-08 Pass: iso-52218-1402; data root absent, all three ports closed; canonical stop forced=True.

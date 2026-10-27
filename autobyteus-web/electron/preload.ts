@@ -4,6 +4,7 @@ import { contextBridge, ipcRenderer, webUtils } from 'electron'
 import type { NodeRegistryChange } from './nodeRegistryTypes'
 import type {
   BrowserHostBounds,
+  BrowserShellHistoryNavigationRequest,
   BrowserShellNavigateTabRequest,
   BrowserShellOpenTabRequest,
   BrowserShellReloadTabRequest,
@@ -58,6 +59,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
     ipcRenderer.invoke('browser-shell:open-tab', request) as Promise<BrowserShellSnapshot>,
   navigateBrowserTab: (request: BrowserShellNavigateTabRequest) =>
     ipcRenderer.invoke('browser-shell:navigate-tab', request) as Promise<BrowserShellSnapshot>,
+  navigateBrowserHistory: (request: BrowserShellHistoryNavigationRequest) =>
+    ipcRenderer.invoke('browser-shell:navigate-history', request) as Promise<BrowserShellSnapshot>,
   reloadBrowserTab: (request: BrowserShellReloadTabRequest) =>
     ipcRenderer.invoke('browser-shell:reload-tab', request) as Promise<BrowserShellSnapshot>,
   focusBrowserTab: (browserSessionId: string) =>

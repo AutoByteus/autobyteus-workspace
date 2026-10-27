@@ -1,3 +1,4 @@
+import { AgentBackgroundTaskViewResolver } from './types/agent-background-task-view.js';
 import { buildSchema } from 'type-graphql';
 import { HealthResolver } from './types/health.js';
 import { ServerSettingsResolver } from './types/server-settings.js';
@@ -55,6 +56,7 @@ export async function buildGraphqlSchema() {
       ApplicationCapabilityResolver,
       SkillResolver,
       AgentRunResolver,
+      AgentBackgroundTaskViewResolver,
       AgentTeamRunResolver,
       DelegatedLaunchSelectionResolver,
       WorkspaceResolver,

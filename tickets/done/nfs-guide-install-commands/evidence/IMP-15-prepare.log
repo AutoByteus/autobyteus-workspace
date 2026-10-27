@@ -1,0 +1,13 @@
+# IMP-15; 2026-10-26; macOS26.5.2 arm64 Node22.23.1 pnpm10.28.2; private HOME/TMP
+# Input 0c27b150; RED has changed presentation assertions, original product.
+# env -i PATH=<current> HOME=<owned>/home TMPDIR=<owned>/tmp pnpm -C autobyteus-web exec nuxt prepare
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ WARN  Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r3/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r3/autobyteus-web/stores/serverStore.ts" is used
+
+
+ WARN  Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r3/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r3/autobyteus-web/stores/serverStore.ts" is used
+
+│
+◆  Types generated in .nuxt.

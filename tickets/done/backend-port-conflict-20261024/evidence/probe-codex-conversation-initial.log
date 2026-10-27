@@ -1,0 +1,61 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.12 [39m[90m/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024[39m
+
+ [2m[90m↓[39m[22m tickets/in-progress/backend-port-conflict-20261024/evidence/anchored-launch.probe.test.ts [2m([22m[2m4 tests[22m[2m | [22m[33m4 skipped[39m[2m)[22m
+[90mstderr[2m | tickets/in-progress/backend-port-conflict-20261024/evidence/codex-conversation.probe.test.ts[2m > [22m[2mP-009 Codex conversation exec_command yielded
+[22m[39m[CodexAppServerClient] stderr: WARNING: proceeding, even though we could not create PATH aliases: Refusing to create helper binaries under temporary dir "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-codex-turn-sR6E86" (codex_home: AbsolutePathBuf("/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-codex-turn-sR6E86"))
+
+[90mstdout[2m | tickets/in-progress/backend-port-conflict-20261024/evidence/codex-conversation.probe.test.ts[2m > [22m[2mP-009 Codex conversation exec_command yielded
+[22m[39m{"check":"P-009-preclose","mode":"yielded","calls":2,"child":{"pid":70895,"port":51199},"toolsSeen":["exec_command","write_stdin","request_user_input","view_image","multi_agent_v1","get_goal","create_goal","update_goal","web_search"],"events":[{"method":"item/completed","params":{"item":{"type":"userMessage","id":"01a16f36-8c09-74c2-9827-c6c3f1b2be5a","clientId":null,"content":[{"type":"text","text":"Run the local owned fixture command.","text_elements":[]}]},"threadId":"01a16f36-8beb-74e2-91ad-4855a9982ff3","turnId":"01a16f36-8c05-7521-aeee-8abf5eeca008","completedAtMs":1792867208201}},{"method":"item/completed","params":{"item":{"type":"agentMessage","id":"done-msg","text":"fixture command submitted","phase":null,"memoryCitation":null,"delivery":null,"questions":null},"threadId":"01a16f36-8beb-74e2-91ad-4855a9982ff3","turnId":"01a16f36-8c05-7521-aeee-8abf5eeca008","completedAtMs":1792867209373}},{"method":"turn/completed","params":{"threadId":"01a16f36-8beb-74e2-91ad-4855a9982ff3","turn":{"id":"01a16f36-8c05-7521-aeee-8abf5eeca008","rootTurnId":"01a16f36-8c05-7521-aeee-8abf5eeca008","items":[{"type":"agentMessage","id":"done-msg","text":"fixture command submitted","phase":null,"memoryCitation":null,"delivery":null,"questions":null}],"itemsView":"summary","status":"completed","error":null,"startedAt":1792867208,"completedAt":1792867209,"durationMs":1174}}}]}
+
+[90mstdout[2m | tickets/in-progress/backend-port-conflict-20261024/evidence/codex-conversation.probe.test.ts[2m > [22m[2mP-009 Codex conversation exec_command yielded
+[22m[39m{"check":"P-009","mode":"yielded","codex":"0.164.0","child":{"pid":70895,"port":51199},"ancestry":"70895 70867 70895 Sat Oct 24 20:40:08 2026","httpBeforeClose":426,"httpAfterClose":null,"model":"deterministic localhost SSE fixture; actual Codex conversation exec_command"}
+
+[90mstdout[2m | tickets/in-progress/backend-port-conflict-20261024/evidence/codex-conversation.probe.test.ts[2m > [22m[2mP-009 Codex conversation exec_command yielded
+[22m[39m{"check":"P-009-cleanup","mode":"yielded","pid":70895,"privateRootRemoved":true}
+
+[90mstderr[2m | tickets/in-progress/backend-port-conflict-20261024/evidence/codex-conversation.probe.test.ts[2m > [22m[2mP-009 Codex conversation exec_command shell-background
+[22m[39m[CodexAppServerClient] stderr: WARNING: proceeding, even though we could not create PATH aliases: Refusing to create helper binaries under temporary dir "/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-codex-turn-vr8TYR" (codex_home: AbsolutePathBuf("/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-codex-turn-vr8TYR"))
+
+[90mstdout[2m | tickets/in-progress/backend-port-conflict-20261024/evidence/codex-conversation.probe.test.ts[2m > [22m[2mP-009 Codex conversation exec_command shell-background
+[22m[39m{"check":"P-009-preclose","mode":"shell-background","calls":2,"toolsSeen":["exec_command","write_stdin","request_user_input","view_image","multi_agent_v1","get_goal","create_goal","update_goal","web_search"],"events":[{"method":"item/completed","params":{"item":{"type":"userMessage","id":"01a16f36-9403-76e0-8789-9c4009a5e11e","clientId":null,"content":[{"type":"text","text":"Run the local owned fixture command.","text_elements":[]}]},"threadId":"01a16f36-93f0-7c31-baab-6a57f2e9f022","turnId":"01a16f36-93ff-7b41-9833-a4c30d8b6a3f","completedAtMs":1792867210243}},{"method":"item/completed","params":{"item":{"type":"commandExecution","id":"owned-exec","pluginId":null,"scriptPath":null,"command":"/bin/bash -c \"'/opt/homebrew/Cellar/node/26.12.0/bin/node' -e 'const fs=require('\\\\''fs'\\\\''),http=require('\\\\''http'\\\\''); const s=http.createServer((q,r)=>{r.writeHead(426);r.end('\\\\''owned fixture'\\\\'')});s.listen(0,'\\\\''::'\\\\'',()=>fs.writeFileSync(\\\"/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-codex-turn-vr8TYR/listener.json\\\",JSON.stringify({pid:process.pid,port:s.address().port})));' > '/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-codex-turn-vr8TYR/command.log' 2>&1 &\"","cwd":"/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-codex-turn-vr8TYR","processId":"10690","source":"unifiedExecStartup","status":"completed","commandActions":[{"type":"unknown","command":"'/opt/homebrew/Cellar/node/26.12.0/bin/node' -e 'const fs=require('\\''fs'\\''),http=require('\\''http'\\''); const s=http.createServer((q,r)=>{r.writeHead(426);r.end('\\''owned fixture'\\'')});s.listen(0,'\\''::'\\'',()=>fs.writeFileSync(\"/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-codex-turn-vr8TYR/listener.json\",JSON.stringify({pid:process.pid,port:s.address().port})));' > '/private/var/folders/hz/4tttqxm93gg0bm4cbxdz3rmr0000gp/T/ab-codex-turn-vr8TYR/command.log' 2>&1 &"}],"aggregatedOutput":null,"exitCode":0,"durationMs":0},"threadId":"01a16f36-93f0-7c31-baab-6a57f2e9f022","turnId":"01a16f36-93ff-7b41-9833-a4c30d8b6a3f","completedAtMs":1792867210278}},{"method":"item/completed","params":{"item":{"type":"agentMessage","id":"done-msg","text":"fixture command submitted","phase":null,"memoryCitation":null,"delivery":null,"questions":null},"threadId":"01a16f36-93f0-7c31-baab-6a57f2e9f022","turnId":"01a16f36-93ff-7b41-9833-a4c30d8b6a3f","completedAtMs":1792867210281}},{"method":"turn/completed","params":{"threadId":"01a16f36-93f0-7c31-baab-6a57f2e9f022","turn":{"id":"01a16f36-93ff-7b41-9833-a4c30d8b6a3f","rootTurnId":"01a16f36-93ff-7b41-9833-a4c30d8b6a3f","items":[{"type":"agentMessage","id":"done-msg","text":"fixture command submitted","phase":null,"memoryCitation":null,"delivery":null,"questions":null}],"itemsView":"summary","status":"completed","error":null,"startedAt":1792867210,"completedAt":1792867210,"durationMs":41}}}]}
+
+[90mstdout[2m | tickets/in-progress/backend-port-conflict-20261024/evidence/codex-conversation.probe.test.ts[2m > [22m[2mP-009 Codex conversation exec_command shell-background
+[22m[39m{"check":"P-009-cleanup","mode":"shell-background","privateRootRemoved":true}
+
+ [31m❯[39m tickets/in-progress/backend-port-conflict-20261024/evidence/codex-conversation.probe.test.ts [2m([22m[2m2 tests[22m[2m | [22m[31m1 failed[39m[2m)[22m[33m 2209[2mms[22m[39m
+   [33m[2m✓[22m[39m P-009 Codex conversation exec_command yielded [33m 2058[2mms[22m[39m
+[31m   [31m×[31m P-009 Codex conversation exec_command shell-background[39m[32m 150[2mms[22m[39m
+ [2m[90m↓[39m[22m tickets/in-progress/backend-port-conflict-20261024/evidence/IMP-01-short-lived-anchor.probe.test.ts [2m([22m[2m1 test[22m[2m | [22m[33m1 skipped[39m[2m)[22m
+ [2m[90m↓[39m[22m tickets/in-progress/backend-port-conflict-20261024/evidence/codex.probe.test.ts [2m([22m[2m1 test[22m[2m | [22m[33m1 skipped[39m[2m)[22m
+ [2m[90m↓[39m[22m tickets/in-progress/backend-port-conflict-20261024/evidence/group-stop.probe.test.ts [2m([22m[2m1 test[22m[2m | [22m[33m1 skipped[39m[2m)[22m
+ [2m[90m↓[39m[22m tickets/in-progress/backend-port-conflict-20261024/evidence/native-signal.probe.test.ts [2m([22m[2m1 test[22m[2m | [22m[33m1 skipped[39m[2m)[22m
+ [2m[90m↓[39m[22m tickets/in-progress/backend-port-conflict-20261024/evidence/shutdown.probe.test.ts [2m([22m[2m2 tests[22m[2m | [22m[33m2 skipped[39m[2m)[22m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 1 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tickets/in-progress/backend-port-conflict-20261024/evidence/codex-conversation.probe.test.ts[2m > [22mP-009 Codex conversation exec_command shell-background
+[31m[1mAssertionError[22m: expected undefined to be truthy[39m
+
+[32m- Expected:[39m
+true
+
+[31m+ Received:[39m
+undefined
+
+[36m [2m❯[22m tickets/in-progress/backend-port-conflict-20261024/evidence/codex-conversation.probe.test.ts:[2m42:18[22m[39m
+    [90m 40|[39m    [35mtry[39m{child[33m=[39m[33mJSON[39m[33m.[39m[34mparse[39m([35mawait[39m [34mreadFile[39m(receipt[33m,[39m[32m'utf8'[39m))}[35mcatch[39m{}
+    [90m 41|[39m    console.log(JSON.stringify({check:'P-009-preclose',mode,calls,child…
+    [90m 42|[39m    expect(child).toBeTruthy();expect(notices.some(n=>n.method==='turn/…
+    [90m   |[39m                  [31m^[39m
+    [90m 43|[39m    const ancestry=execFileSync('ps',['-p',String(child.pid),'-o','pid=…
+    [90m 44|[39m    const before=await fetch(`http://127.0.0.1:${child.port}`,{signal:A…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[2m | [22m[33m6 skipped[39m[90m (7)[39m
+[2m      Tests [22m [1m[31m1 failed[39m[22m[2m | [22m[1m[32m1 passed[39m[22m[2m | [22m[33m10 skipped[39m[90m (12)[39m
+[2m   Start at [22m 20:40:07
+[2m   Duration [22m 3.45s[2m (transform 210ms, setup 0ms, import 411ms, tests 2.21s, environment 0ms)[22m
+

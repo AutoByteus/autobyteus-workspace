@@ -42,6 +42,43 @@ delegated run, …) are defined in the
   `memory/imports/<Memory Sync source ID>/`. It is not a node ID, and it is not
   the `sourceId` of a skill source, an update notification or a package source.
 
+## MCP Secrets
+
+- **Vault secret ID:** the stable name of one vault entry (`SecretId`), for
+  example `provider.openai.api-key`, an MCP secret's `mcp.<uuid>`, or the
+  test-only `test.github.token`. It is not a server ID or a field.
+- **Secret reference:** what `mcps.json` stores in place of a secret value:
+  `{ "vaultSecretId": "mcp.<uuid>" }`. It is not the value; the managed MCP
+  server resolves it when it connects, and never earlier.
+- **MCP secret:** an MCP server value (env value, header value or token)
+  stored as a vault entry. Provider keys are not MCP secrets.
+- **Secret field (`field`):** which value of an MCP server is meant:
+  `env:<NAME>`, `header:<Name>` or `token`; names keep their case. Every
+  interface about one value of a server uses it (resolver context, errors,
+  states, move candidates and selection, `storedSecrets`). It is not the env or
+  header `name` alone.
+- **Always-secret field:** the HTTP `token` and an `Authorization` header (name
+  in any case). It is always locked, and its value is never returned, even
+  while it is still stored as plain text.
+- **Locked (UI):** a form row whose value is, or will be, an MCP secret.
+- **Secret state (`McpSecretState`):** `PLAIN` (stored as plain text),
+  `CONFIGURED` (a reference whose vault entry is present), `MISSING` (a
+  reference with no entry), `VAULT_UNAVAILABLE` (a reference while the vault is
+  not READY). It is not the vault's health.
+- **Server draft (`McpServerDraft`):** an MCP server's settings as the user
+  sent them; each value is `plain`, `newSecret`, `keep`, or (from import only)
+  `missingSecret`, a secret this node does not hold. It is not a core config:
+  only `McpServerSecretFields` turns a draft into one.
+- **Keep marker (JSON tab):** `{"stored": "vault"}` or `{"stored": "plain"}`:
+  "keep what is stored for this field". It is not a secret reference.
+- **Secret suggestion rule:** the name keywords and value prefixes that
+  pre-lock form rows and select move candidates (`McpSecretSuggestionRule`;
+  the web reads it, never defines it). It is not secret scanning.
+- **Reviewed (move candidate):** a candidate the user decided about (unticked
+  in the review dialog, "Keep as they are", or unlocked after the rule
+  pre-locked it). The move banner leaves it out; the per-row hint still offers
+  the move. Kept per device and node (`mcpSecretReviewState`).
+
 ## Project Tasks
 
 - **Title:** a Project Task's one-line name, given by its writer (an agent's

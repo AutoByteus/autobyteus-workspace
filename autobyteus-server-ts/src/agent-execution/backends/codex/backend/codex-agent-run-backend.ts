@@ -32,6 +32,7 @@ const logger = {
 };
 
 export class CodexAgentRunBackend implements AgentRunBackend {
+  readonly backgroundTaskInspection = { kind: 'snapshot', read: () => this.codexThread.inspectBackgroundTasks() } as const;
   readonly compactionRecovery = { kind: "unsupported" } as const;
   readonly inputCapabilities = { activeTurnAppend: "supported" } as const;
   private readonly runContext: CodexRunContext;
@@ -102,7 +103,7 @@ export class CodexAgentRunBackend implements AgentRunBackend {
     return this.codexThread.getPlatformAgentRunId() ?? null;
   }
 
-  /** Codex background terminals are polled by the model and not reported as background tasks. */
+  /** Existing idle policy remains independent of read-only terminal inspection. */
   hasRunningBackgroundTasks(): boolean {
     return false;
   }

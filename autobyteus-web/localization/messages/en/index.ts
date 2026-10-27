@@ -1,3 +1,4 @@
+import manualServerMessages from './server';
 import agentInputMessages from './agentInput.generated';
 import chatMessages from './chat';
 import agentOrgMessages from './agentOrgs';
@@ -53,6 +54,7 @@ const enMessages: TranslationCatalog = {
   ...generatedMemoryMessages,
   ...memoryMessages,
   ...serverMessages,
+  ...manualServerMessages,
   ...generatedSettingsMessages,
   ...settingsMessages,
   ...updateNotificationsMessages,

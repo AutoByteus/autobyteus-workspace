@@ -1,0 +1,34 @@
+{
+  "check": "IMP-20",
+  "date": "2026-10-24T19:02:41.648Z",
+  "fixtureSurvivesRetry": 426,
+  "fixtureBody": "IMP-20 unrelated fixture survives",
+  "sentinel": "preserve-owned-render-check\n",
+  "status": {
+    "status": "restarting",
+    "baseUrl": "http://127.0.0.1:52677",
+    "urls": {
+      "graphql": "http://127.0.0.1:52677/graphql",
+      "rest": "http://127.0.0.1:52677/rest",
+      "graphqlWs": "ws://127.0.0.1:52677/graphql",
+      "transcription": "ws://127.0.0.1:52677/ws/transcribe",
+      "terminalWs": "ws://127.0.0.1:52677/ws/terminal",
+      "health": "http://127.0.0.1:52677/rest/health"
+    },
+    "healthCheckStatus": "Healthy"
+  },
+  "narrowLayout": {
+    "client": 226,
+    "scroll": 226,
+    "body": 390,
+    "viewport": 390
+  },
+  "focus": "重启服务器",
+  "evidenceMetadata": {
+    "checkId": "IMP-20",
+    "commit": "10990feb1",
+    "environment": "macOS arm64 / Electron42.11.16 / Node26.12.0 / task-local isolated desktop",
+    "date": "2026-10-24",
+    "steps": "IMP-20-rendered-notes.md; not API/E2E sign-off"
+  }
+}
