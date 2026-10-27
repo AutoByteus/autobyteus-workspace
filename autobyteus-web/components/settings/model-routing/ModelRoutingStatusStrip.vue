@@ -14,6 +14,7 @@
 import { computed } from 'vue'
 import type { ModelRoutingStatus } from '~/types/modelRouting'
 import { routerProblem } from './modelRoutingPresentation'
+import { useModelRoutingNames } from './modelRoutingNames'
 
 const props = defineProps<{ status: ModelRoutingStatus | null; nodeName: string; ownNode: boolean; setupLink: boolean }>()
 const emit = defineEmits<{ (event: 'show-setup'): void }>()
@@ -21,5 +22,6 @@ const { t, resolvedLocale } = useLocalization()
 const locale = computed(() => String(resolvedLocale.value || 'en'))
 
 /** Why the router cannot answer while Model Routing is on (by the server's reason code); '' otherwise. */
-const detail = computed(() => routerProblem(props.status, t, locale.value))
+const names = useModelRoutingNames(() => (props.status?.routerLaunch ? [props.status.routerLaunch.runtimeKind] : []))
+const detail = computed(() => routerProblem(props.status, t, locale.value, names.modelLabel))
 </script>

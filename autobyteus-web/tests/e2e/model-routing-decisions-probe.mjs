@@ -8,7 +8,8 @@
 // beta has Blank Slate (no default). Model Routing is on on both nodes, remote collaboration on, the nodes are peers. The
 // Manager delegates the Studio Team (the router chooses for Writer) and, on beta, Blank Slate (beta's router chooses).
 // Cases:
-//   MRD-01 Setup: the router row (runtime, model) and the status line of a node whose router is active (AC-009);
+//   MRD-01 Setup: the router row (the app's model menu with the saved launch, autobyteus-313; no native select) and the
+//          status line of a node whose router is active (AC-009);
 //   MRD-02 Decisions: the Task blocks; the Team row folds and opens to Lead (agent default) and Writer (Model Router, model,
 //          reason); the remote copy is not on alpha's page (each node shows only its own); the source filter (AC-009);
 //   MRD-03 Overview: the period and the sources and task kinds of these records (AC-009);
@@ -192,11 +193,16 @@ try {
   await kase('MRD-01', 'Setup: the router row and the status of an active router', async () => {
     await openTab('setup');
     await page.locator(tid('model-routing-router-row')).waitFor({ timeout: 60000 });
-    const runtime = await page.locator(tid('model-routing-router-runtime')).inputValue();
-    const model = await page.locator(tid('model-routing-router-model')).inputValue();
+    // autobyteus-313: the app's model menu shows the saved launch as "<model label> <short runtime name>".
+    const trigger = page.locator(`${tid('model-routing-router-row')} [data-test="chat-model-trigger"]`);
+    await trigger.waitFor({ timeout: 60000 });
+    await waitFor('router model label', async () => !/choose/i.test(await trigger.innerText()), 30000);
+    const launch = (await trigger.innerText()).replace(/\s+/g, ' ').trim();
+    const nativeSelects = await page.locator(`${tid('model-routing-setup')} select`).count();
     const status = await textOf(tid('model-routing-status')).catch(() => '');
-    evidence.observations.setup = { runtime, model, status, switchChecked: await page.locator(tid('model-routing-switch')).getAttribute('aria-checked').catch(() => null) };
-    assert(runtime === AGY && model === MODEL, `router launch shown: ${runtime} / ${model}`);
+    evidence.observations.setup = { launch, nativeSelects, status, switchChecked: await page.locator(tid('model-routing-switch')).getAttribute('aria-checked').catch(() => null) };
+    assert(launch.endsWith('Antigravity') && launch.length > 'Antigravity'.length, `router launch shown in the model menu: ${launch}`);
+    assert(nativeSelects === 0, `no native select on Configuration (${nativeSelects})`);
     assert(evidence.observations.setup.switchChecked === 'true', `switch: ${evidence.observations.setup.switchChecked}`);
     assert(!(await page.locator(tid('model-routing-decisions-inactive-note')).count()), 'no inactive note');
     await shot('MRD-01-setup');

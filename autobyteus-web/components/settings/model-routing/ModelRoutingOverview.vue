@@ -30,7 +30,7 @@
           <h3 class="text-base font-semibold text-gray-900">{{ t('settings.modelRouting.overview.byKind.title') }}</h3>
           <ul class="flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-500" :aria-label="t('settings.modelRouting.overview.byKind.legend')" data-testid="model-routing-overview-runtime-legend">
             <li v-for="runtime in usedRuntimes" :key="runtime" class="inline-flex items-center gap-1.5">
-              <span class="inline-block h-2.5 w-2.5 rounded-[3px]" :style="{ backgroundColor: runtimeColor(runtime) }" aria-hidden="true"></span>{{ runtimeName(runtime) }}
+              <span class="inline-block h-2.5 w-2.5 rounded-[3px]" :style="{ backgroundColor: runtimeColor(runtime) }" aria-hidden="true"></span>{{ names.runtimeName(runtime) }}
             </li>
           </ul>
         </div>
@@ -43,7 +43,7 @@
               </span>
               <span class="flex min-w-0 items-center gap-3">
                 <span class="flex h-2 gap-0.5" role="img" :aria-label="runtimeSummary(kind)" :style="{ width: `${Math.max(8, Math.round((kind.total / maxKindTotal) * 70))}%` }">
-                  <span v-for="runtime in kind.runtimes" :key="runtime.runtime" class="h-full min-w-[3px] first:rounded-l last:rounded-r" :style="{ flexGrow: runtime.count, backgroundColor: runtimeColor(runtime.runtime) }" :title="`${runtimeName(runtime.runtime)} · ${runtime.count}`"></span>
+                  <span v-for="runtime in kind.runtimes" :key="runtime.runtime" class="h-full min-w-[3px] first:rounded-l last:rounded-r" :style="{ flexGrow: runtime.count, backgroundColor: runtimeColor(runtime.runtime) }" :title="`${names.runtimeName(runtime.runtime)} · ${runtime.count}`"></span>
                 </span>
                 <span class="flex-shrink-0 text-sm text-gray-500"><span class="font-medium tabular-nums text-gray-800">{{ kind.total }}</span> {{ t(kind.total === 1 ? 'settings.modelRouting.overview.agentOne' : 'settings.modelRouting.overview.agentMany') }}</span>
               </span>
@@ -53,7 +53,7 @@
               <template v-for="runtime in kind.runtimes" :key="runtime.runtime">
                 <li v-for="model in runtime.models" :key="`${runtime.runtime}-${model.model}`" class="flex items-center gap-2 text-sm text-gray-700">
                   <span class="inline-block h-2.5 w-2.5 flex-shrink-0 rounded-[3px]" :style="{ backgroundColor: runtimeColor(runtime.runtime) }" aria-hidden="true"></span>
-                  <span class="min-w-0 flex-1 truncate"><span class="font-medium">{{ runtimeName(runtime.runtime) }}</span><span class="text-gray-400"> · </span>{{ model.model }}</span>
+                  <span class="min-w-0 flex-1 truncate" data-testid="model-routing-overview-model"><span class="font-medium">{{ names.modelLabel(runtime.runtime, model.model) }}</span> <span class="text-gray-400">{{ names.modelWithRuntime(runtime.runtime, model.model).runtime }}</span></span>
                   <span class="tabular-nums text-gray-900">{{ model.count }}</span>
                   <span class="w-10 text-right text-xs tabular-nums text-gray-400">{{ percent(model.count, kind.total) }}</span>
                 </li>
@@ -73,7 +73,8 @@ import { getApolloClient } from '~/utils/apolloClient'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 import { ModelRoutingStatisticsQuery } from '~/graphql/queries/modelRoutingQueries'
 import type { DecisionLaunchSource, ModelRoutingStatus, RoutingStatistics, RoutingStatisticsGroup } from '~/types/modelRouting'
-import { kindLabel, runtimeColor, runtimeName, SOURCE_COLORS, SOURCE_KEY } from './modelRoutingPresentation'
+import { kindLabel, runtimeColor, SOURCE_COLORS, SOURCE_KEY } from './modelRoutingPresentation'
+import { useModelRoutingNames } from './modelRoutingNames'
 
 const props = defineProps<{ status: ModelRoutingStatus | null; period: string }>()
 const emit = defineEmits<{ (event: 'show-setup'): void }>()
@@ -134,6 +135,8 @@ const kinds = computed<readonly KindRow[]>(() => {
   return [...value.taskKinds.map((kind) => rowOf(kind.taskKind, kind)), ...(value.notRouted.count ? [rowOf('', value.notRouted)] : [])]
 })
 const maxKindTotal = computed(() => Math.max(1, ...kinds.value.map((kind) => kind.total)))
-const runtimeSummary = (kind: KindRow): string => kind.runtimes.map((runtime) => `${runtimeName(runtime.runtime)} ${runtime.count}`).join(', ')
+const runtimeSummary = (kind: KindRow): string => kind.runtimes.map((runtime) => `${names.runtimeName(runtime.runtime)} ${runtime.count}`).join(', ')
 const usedRuntimes = computed(() => [...new Set(kinds.value.flatMap((kind) => kind.runtimes.map((runtime) => runtime.runtime)))])
+/** The app's names for the runtimes and models in these statistics (autobyteus-313 REQ-004). */
+const names = useModelRoutingNames(() => usedRuntimes.value)
 </script>

@@ -17,10 +17,18 @@ Delegation side: [collaboration_model.md](../design/collaboration_model.md) (CM-
 | `AUTOBYTEUS_MODEL_ROUTING_ENABLED` | The switch (`true`/`false`; off by default). |
 | `AUTOBYTEUS_MODEL_ROUTER_RUNTIME` | The runtime the Model Router agent runs on. |
 | `AUTOBYTEUS_MODEL_ROUTER_MODEL` | The model it runs on. |
+| `AUTOBYTEUS_MODEL_ROUTER_LLM_CONFIG` | Its model settings (`llmConfig`, e.g. the thinking level) as one JSON object; empty means none (autobyteus-313). |
 
-`model-routing-settings.ts` reads and normalizes them; the GraphQL mutations
-write them through `ModelRoutingSettings` (registered in the server settings
-service).
+The last three are the router's launch configuration, the same fields as any
+agent's: runtime, model and model settings. `model-routing-settings.ts` reads
+and normalizes them; model settings that cannot be read count as none, with one
+warning. The GraphQL mutations write them through `ModelRoutingSettings`
+(registered in the server settings service), which checks a launch like any
+agent launch first (`RunModelSelectionService.validate` in the router's
+workspace: the model is offered, the settings are valid for it) and refuses it
+with the check's message, then writes the three keys together with the settings
+as the check normalized them. Settings written before the model-settings key
+existed read as "no settings", with no migration.
 
 ## Which launch an agent of a copy gets
 
@@ -79,7 +87,11 @@ skipped default becomes a launch note ("opus is blocked until …").
   first need from the built-in definition `autobyteus-model-router`
   (`built-in-agents/templates/model-router/`), stored in
   `<appData>/model-routing/model-router-agent.json` with the launch it was made
-  with (a changed launch makes a new run). It runs in
+  with: runtime, model and model settings. The run starts with that launch,
+  model settings included, and is reused only while all three equal the
+  settings (structurally; no settings is not the same as an empty object). Any
+  change makes a new run (the old one stays in history; `knowledge.md` stays). A
+  state recorded before model settings were stored has none. It runs in
   `<appData>/internal-workspaces/<id>`, auto-approved, with
   `systemRunOwner: "model_router"`, kept in run metadata and on restore. That
   marker keeps it out of the standalone-run eligibility (no collaboration tools),
@@ -136,7 +148,9 @@ fit B's 40 s routing; other peer calls keep 20 s.
 - Queries: `modelRoutingStatus`, `modelRoutingDecisions(limit, before, source:
   ROUTER | NOT_ROUTER)`, `modelRoutingStatistics(period: DAYS_7 | DAYS_30 | ALL)`.
 - Mutations: `setModelRoutingEnabled(enabled)`, `setModelRouterLaunch(runtimeKind,
-  llmModelIdentifier)`, `openModelRouterAgent` (the run ID).
+  llmModelIdentifier, llmConfig: JSON)` (refused with the launch check's message;
+  answers the status, whose `routerLaunch` carries `llmConfig`),
+  `openModelRouterAgent` (the run ID).
 
 ## Composition
 

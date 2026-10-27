@@ -11,26 +11,54 @@ vi.mock('~/stores/windowNodeContextStore', () => ({
   useWindowNodeContextStore: () => ({ isEmbeddedWindow: true, entryId: 'embedded-local', bindingRevision: 0, lastReadyError: null, waitForBoundBackendReady: async () => true }),
 }))
 vi.mock('~/stores/nodeStore', () => ({ useNodeStore: () => ({ getEntryById: () => ({ name: 'Embedded Node' }) }) }))
+/**
+ * The app's model catalog (autobyteus-313), synthesized: catalog labels for some models, and the Codex model's schema
+ * with a reasoning effort (thinking) and a Fast option (another model option).
+ */
+const catalog = vi.hoisted(() => {
+  const labels: Record<string, string> = { 'codex_app_server:gpt-sol': 'GPT Sol', 'claude_agent_sdk:sonnet': 'Claude Sonnet', 'claude_agent_sdk:opus': 'Claude Opus' }
+  const codexSchema = {
+    reasoning_effort: { type: 'string', enum: ['low', 'medium', 'high'], default: 'medium' },
+    service_tier: { type: 'string', enum: ['fast'], title: 'Fast mode' },
+  }
+  return {
+    codexSchema,
+    ensureCatalog: vi.fn(),
+    modelLabel: (runtimeKind: string, id: string) => labels[`${runtimeKind}:${id}`] ?? id,
+    findModel: (runtimeKind: string, id: string) => (labels[`${runtimeKind}:${id}`] ? { label: labels[`${runtimeKind}:${id}`] } : null),
+    schemaFor: (runtimeKind: string, id: string | null | undefined) => (runtimeKind === 'codex_app_server' && id ? codexSchema : null),
+  }
+})
+vi.mock('~/composables/chat/useChatModelCatalog', () => ({ useChatModelCatalog: () => catalog }))
 
 import ModelRoutingManager from '../ModelRoutingManager.vue'
 import type { ModelRoutingStatus, RoutingDecisionPage, RoutingDecisionRecord, RoutingStatistics } from '~/types/modelRouting'
+import { explicitChatModelConfig } from '~/utils/runSettings/explicitModelConfig'
+
+/** The app's launch controls, stubbed to their props and events (their own behavior is the chat components' specs). */
+const ChatModelMenu = {
+  name: 'ChatModelMenu',
+  props: ['runtimeKind', 'llmModelIdentifier', 'modelLabel', 'placement', 'align'],
+  emits: ['select'],
+  template: '<button type="button" data-testid="stub-model-menu" @click="$emit(\'select\', { runtimeKind: \'codex_app_server\', llmModelIdentifier: \'gpt-sol\' })">{{ modelLabel }}</button>',
+}
+const ChatThinkingControl = {
+  name: 'ChatThinkingControl', props: ['schema', 'llmConfig', 'placement', 'align'], emits: ['update'],
+  template: '<button type="button" data-testid="stub-thinking" @click="$emit(\'update\', { ...(llmConfig || {}), reasoning_effort: \'high\' })">thinking</button>',
+}
+const ChatModelOptionControl = {
+  name: 'ChatModelOptionControl', props: ['option', 'placement', 'align'], emits: ['update'],
+  template: '<button type="button" :data-testid="`stub-option-${option.key}`" @click="$emit(\'update\', option.onValue)">{{ option.title }}</button>',
+}
 
 /**
  * autobyteus-32 REQ-010 / UI/UX specification UIS-001..003, TR-001..013: the Model Routing page against the server's
  * JSON answers (synthesized). The Runtimes tab is `AgentRuntimesNowSection.spec.ts`.
  */
 const status = (overrides: Partial<ModelRoutingStatus> = {}): ModelRoutingStatus => ({
-  enabled: true, routerLaunch: { runtimeKind: 'codex_app_server', llmModelIdentifier: 'gpt-sol' }, active: true,
+  enabled: true, routerLaunch: { runtimeKind: 'codex_app_server', llmModelIdentifier: 'gpt-sol', llmConfig: { reasoning_effort: 'medium' } }, active: true,
   reasonCode: null, reasonParams: {}, reasonText: null, agentRunId: 'router_run_1', ...overrides,
 })
-const report = {
-  checkedAt: '2026-10-26T09:00:00.000Z',
-  agentRuntimes: [
-    { runtime: 'codex_app_server', name: 'Codex', limits: 'not reported',
-      models: [{ id: 'gpt-sol', name: 'GPT Sol' }, { id: 'gpt-mini', name: 'GPT Mini', blocked: { until: '2026-10-27T04:00:00.000Z', by: '5-hour' } }] },
-    { runtime: 'claude_agent_sdk', name: 'Claude', limits: 'not reported', models: [{ id: 'sonnet', name: 'Sonnet' }] },
-  ],
-}
 const record = (overrides: Partial<RoutingDecisionRecord>): RoutingDecisionRecord => ({
   recordedAt: new Date().toISOString(), taskId: 'task_1', taskKey: 'autobyteus-303', projectId: 'project_1', taskTitle: 'Agent runtimes tool',
   delegatingRunId: 'pm_run', delegatingAgentName: 'project_task_manager', fromNode: null, copyAddress: '/software_engineering_team',
@@ -68,7 +96,9 @@ const statistics = (): RoutingStatistics => ({
 let current: ModelRoutingStatus
 let wrapper: VueWrapper | null = null
 const mountPage = async () => {
-  wrapper = mount(ModelRoutingManager, { attachTo: document.body, global: { stubs: { NuxtLink: { props: ['to'], template: '<a :href="to"><slot /></a>' } } } })
+  wrapper = mount(ModelRoutingManager, { attachTo: document.body, global: { stubs: {
+    NuxtLink: { props: ['to'], template: '<a :href="to"><slot /></a>' }, ChatModelMenu, ChatThinkingControl, ChatModelOptionControl,
+  } } })
   await flushPromises()
   return wrapper
 }
@@ -84,7 +114,6 @@ describe('Settings → Model Routing (autobyteus-32)', () => {
     io.query.mockImplementation(async ({ query, variables }) => {
       const name = query.definitions[0].name.value
       if (name === 'ModelRoutingStatus') return { data: { modelRoutingStatus: current } }
-      if (name === 'AvailableAgentRuntimes') return { data: { availableAgentRuntimes: report } }
       if (name === 'ModelRoutingDecisions') {
         const page = decisions()
         const groups = variables.source === 'ROUTER' ? page.groups.slice(0, 1) : page.groups
@@ -108,7 +137,9 @@ describe('Settings → Model Routing (autobyteus-32)', () => {
     await mountPage()
     expect(get('model-routing-switch').attributes('aria-checked')).toBe('false')
     expect(get('model-routing-tab-setup').attributes('aria-selected')).toBe('true')
-    expect(get('model-routing-router-runtime').attributes('disabled')).toBeDefined()
+    // autobyteus-313: the launch controls are present but not usable while Model Routing is off.
+    expect(get('model-routing-router-row').attributes('aria-disabled')).toBe('true')
+    expect(get('model-routing-router-row').attributes('inert')).toBeDefined()
     expect(get('model-routing-open-conversation').attributes('disabled')).toBeDefined()
     expect(has('model-routing-status')).toBe(false)
     await get('model-routing-switch').trigger('click')
@@ -117,24 +148,55 @@ describe('Settings → Model Routing (autobyteus-32)', () => {
     expect(get('model-routing-switch').attributes('aria-checked')).toBe('true')
   })
 
-  it('VIS-003 / TR-003: on but not set: the problem line asks for a runtime and model; choosing both saves them together', async () => {
+  it('VIS-003 / AC-001, AC-002: on but not set: the app\'s model menu (no native select) saves runtime, model and the model\'s settings made explicit', async () => {
     current = status({ routerLaunch: null, active: false, reasonCode: 'ROUTER_NOT_SET' })
     await mountPage()
     expect(get('model-routing-status').text()).toContain('choose a runtime and model for the router.')
-    await get('model-routing-router-runtime').setValue('claude_agent_sdk')
-    expect(io.mutate).not.toHaveBeenCalled()
-    await get('model-routing-router-model').setValue('sonnet')
+    expect(get('model-routing-setup').find('select').exists()).toBe(false)
+    expect(get('model-routing-router-row').attributes('aria-disabled')).toBeUndefined()
+    const menu = wrapper!.getComponent(ChatModelMenu)
+    expect(menu.props()).toMatchObject({ runtimeKind: '', llmModelIdentifier: '', modelLabel: '', placement: 'auto', align: 'left' })
+    await get('stub-model-menu').trigger('click')
     await flushPromises()
-    expect(io.mutate).toHaveBeenCalledWith(expect.objectContaining({ variables: { runtimeKind: 'claude_agent_sdk', llmModelIdentifier: 'sonnet' } }))
+    expect(io.mutate).toHaveBeenCalledWith(expect.objectContaining({ variables: {
+      runtimeKind: 'codex_app_server', llmModelIdentifier: 'gpt-sol', llmConfig: explicitChatModelConfig(catalog.codexSchema, null),
+    } }))
   })
 
-  it('VIS-004: the router\'s model blocked: the problem line says until when, the model list marks blocked models', async () => {
-    current = status({ routerLaunch: { runtimeKind: 'codex_app_server', llmModelIdentifier: 'gpt-mini' }, active: false, reasonCode: 'MODEL_BLOCKED',
-      reasonParams: { runtime: 'codex_app_server', model: 'gpt-mini', until: '2026-10-27T04:00:00.000Z', limit: '5-hour' } })
+  it('AC-001, AC-002: the saved launch shows in the menu, thinking and option controls; each change saves the launch with the new settings', async () => {
     route.query.tab = 'setup'
     await mountPage()
-    expect(get('model-routing-status').text()).toMatch(/Codex · gpt-mini is blocked until .+ \(5-hour\)\./)
-    expect(get('model-routing-router-model').findAll('option').map((option) => option.text())).toContainEqual(expect.stringMatching(/^GPT Mini · blocked until /))
+    expect(wrapper!.getComponent(ChatModelMenu).props()).toMatchObject({ runtimeKind: 'codex_app_server', llmModelIdentifier: 'gpt-sol', modelLabel: 'GPT Sol' })
+    expect(wrapper!.getComponent(ChatThinkingControl).props()).toMatchObject({ schema: catalog.codexSchema, llmConfig: { reasoning_effort: 'medium' } })
+    expect(catalog.ensureCatalog).toHaveBeenCalledWith('codex_app_server')
+    await get('stub-thinking').trigger('click')
+    await flushPromises()
+    expect(io.mutate).toHaveBeenLastCalledWith(expect.objectContaining({ variables: {
+      runtimeKind: 'codex_app_server', llmModelIdentifier: 'gpt-sol', llmConfig: { reasoning_effort: 'high' },
+    } }))
+    await get('stub-option-service_tier').trigger('click')
+    await flushPromises()
+    expect(io.mutate).toHaveBeenLastCalledWith(expect.objectContaining({ variables: {
+      runtimeKind: 'codex_app_server', llmModelIdentifier: 'gpt-sol', llmConfig: { reasoning_effort: 'high', service_tier: 'fast' },
+    } }))
+  })
+
+  it('a refused save shows the server\'s message and keeps the saved launch', async () => {
+    route.query.tab = 'setup'
+    await mountPage()
+    io.mutate.mockRejectedValueOnce(new Error('The model settings are invalid: reasoning_effort must be one of low, medium, high'))
+    await get('stub-thinking').trigger('click')
+    await flushPromises()
+    expect(get('model-routing-error').text()).toBe('The model settings are invalid: reasoning_effort must be one of low, medium, high')
+    expect(wrapper!.getComponent(ChatThinkingControl).props('llmConfig')).toEqual({ reasoning_effort: 'medium' })
+  })
+
+  it('VIS-004 / AC-004: the router\'s model blocked: the problem line names it as the model menu does and says until when', async () => {
+    current = status({ routerLaunch: { runtimeKind: 'codex_app_server', llmModelIdentifier: 'gpt-sol', llmConfig: null }, active: false, reasonCode: 'MODEL_BLOCKED',
+      reasonParams: { runtime: 'codex_app_server', model: 'gpt-sol', until: '2026-10-27T04:00:00.000Z', limit: '5-hour' } })
+    route.query.tab = 'setup'
+    await mountPage()
+    expect(get('model-routing-status').text()).toMatch(/GPT Sol Codex is blocked until .+ \(5-hour\)\./)
   })
 
   it('TR-005: Talk to the router opens the Model Router agent\'s run by its ID', async () => {
@@ -154,7 +216,9 @@ describe('Settings → Model Routing (autobyteus-32)', () => {
     expect(team.text()).toContain('2 agents')
     await team.trigger('click')
     expect(get('model-routing-decision-reason').text()).toBe('Codex fits a server change.')
-    expect(get('model-routing-decision-skipped').text()).toContain('Agent default Claude · opus was not used: opus is blocked until 2026-10-28 09:00 UTC (weekly).')
+    // AC-004: models are named as the model menu names them, with the runtime's short name.
+    expect(wrapper!.findAll('[data-testid="model-routing-decision-launch"]').map((row) => row.text().replace(/\s+/g, ' '))).toEqual(['Claude Sonnet Claude SDK', 'GPT Sol Codex', 'Claude Sonnet Claude SDK'])
+    expect(get('model-routing-decision-skipped').text()).toContain('Agent default Claude Opus Claude SDK was not used: opus is blocked until 2026-10-28 09:00 UTC (weekly).')
     expect(get('model-routing-decision-failure').text()).toBe("The Model Router could not choose: no valid answer within 40 seconds. The agents started on the delegating run's runtime and model.")
     expect(wrapper!.text()).toContain('No Project Task')
     expect(wrapper!.text()).toContain('Showing 2 of 2 Tasks')
@@ -183,7 +247,10 @@ describe('Settings → Model Routing (autobyteus-32)', () => {
     expect(get('model-routing-overview-kind-list').text()).toContain('Implementation')
     expect(get('model-routing-overview-kind-list').text()).toContain('Not routed')
     await get('model-routing-overview-details-implementation').trigger('click')
-    expect(get('model-routing-overview-models-implementation').text()).toContain('Codex · gpt-sol')
+    expect(get('model-routing-overview-models-implementation').text().replace(/\s+/g, ' ')).toContain('GPT Sol Codex')
+    // AC-004: a runtime on its own has the app's full name.
+    expect(get('model-routing-overview-runtime-legend').text()).toContain('Codex App Server')
+    expect(get('model-routing-overview-runtime-legend').text()).toContain('Claude Agent SDK')
     await get('model-routing-period-7d').trigger('click')
     await flushPromises()
     expect(io.query).toHaveBeenCalledWith(expect.objectContaining({ variables: { period: 'DAYS_7' } }))

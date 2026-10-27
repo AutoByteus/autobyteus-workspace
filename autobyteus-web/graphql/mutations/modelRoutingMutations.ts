@@ -7,10 +7,10 @@ export const SetModelRoutingEnabled = gql`
   }
 `
 
-/** Sets the Model Router agent's runtime and model; answers the new status. */
+/** Sets the Model Router agent's launch configuration (runtime, model, model settings); answers the new status. */
 export const SetModelRouterLaunch = gql`
-  mutation SetModelRouterLaunch($runtimeKind: String!, $llmModelIdentifier: String!) {
-    setModelRouterLaunch(runtimeKind: $runtimeKind, llmModelIdentifier: $llmModelIdentifier)
+  mutation SetModelRouterLaunch($runtimeKind: String!, $llmModelIdentifier: String!, $llmConfig: JSON) {
+    setModelRouterLaunch(runtimeKind: $runtimeKind, llmModelIdentifier: $llmModelIdentifier, llmConfig: $llmConfig)
   }
 `
 

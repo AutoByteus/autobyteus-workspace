@@ -1,12 +1,10 @@
 import type { DecisionLaunchSource, ModelRoutingStatus } from '~/types/modelRouting'
+import { runtimeKindToLabel } from '~/types/agent/AgentRunConfig'
+import { runtimeShortLabel } from '~/utils/chat/chatDefaults'
 
 type T = (key: any, params?: Record<string, string | number>) => string
-
-/** Runtime display names (the product's words). */
-export const RUNTIME_NAMES: Readonly<Record<string, string>> = {
-  codex_app_server: 'Codex', claude_agent_sdk: 'Claude', antigravity_cli: 'Antigravity', grok_build: 'Grok', autobyteus: 'AutoByteus',
-}
-export const runtimeName = (runtimeKind: string): string => RUNTIME_NAMES[runtimeKind] ?? runtimeKind
+/** A model's label in its runtime's catalog (the model menu's; the model ID until the catalog has loaded). */
+type ModelLabelOf = (runtimeKind: string, llmModelIdentifier: string) => string
 
 /** One fixed colour per runtime (UI/UX specification § Visual Language), in Decisions and Overview alike. */
 export const RUNTIME_COLORS: Readonly<Record<string, string>> = {
@@ -41,17 +39,24 @@ export const decisionTime = (iso: string, locale: string, t: T, now: number = Da
   return shortDate(ms, locale)
 }
 
-/** The problem line while Model Routing is on but the router cannot answer, from the server's reason code (D6); '' otherwise. */
-export const routerProblem = (status: ModelRoutingStatus | null, t: T, locale: string): string => {
+/**
+ * The problem line while Model Routing is on but the router cannot answer, from the server's reason code (D6); ''
+ * otherwise. A runtime on its own has its full name; a blocked model is named as the model menu names it
+ * (autobyteus-313 REQ-004).
+ */
+export const routerProblem = (
+  status: ModelRoutingStatus | null, t: T, locale: string, modelLabel: ModelLabelOf = (_runtimeKind, id) => id,
+): string => {
   if (!status || !status.enabled || status.active || !status.reasonCode) return ''
   const params = status.reasonParams
-  const runtime = runtimeName(params.runtime ?? status.routerLaunch?.runtimeKind ?? '')
-  const model = params.model ?? status.routerLaunch?.llmModelIdentifier ?? ''
+  const runtimeKind = params.runtime ?? status.routerLaunch?.runtimeKind ?? ''
+  const runtime = runtimeKindToLabel(runtimeKind)
+  const model = modelLabel(runtimeKind, params.model ?? status.routerLaunch?.llmModelIdentifier ?? '')
   switch (status.reasonCode) {
     case 'ROUTER_NOT_SET': return t('settings.modelRouting.problem.notSet')
     case 'MODEL_BLOCKED': return params.until
-      ? t('settings.modelRouting.problem.blockedUntil', { runtime, model, time: shortDate(Date.parse(params.until), locale), by: params.limit ?? '' })
-      : t('settings.modelRouting.problem.blocked', { runtime, model, by: params.limit ?? '' })
+      ? t('settings.modelRouting.problem.blockedUntil', { runtime: runtimeShortLabel(runtimeKind), model, time: shortDate(Date.parse(params.until), locale), by: params.limit ?? '' })
+      : t('settings.modelRouting.problem.blocked', { runtime: runtimeShortLabel(runtimeKind), model, by: params.limit ?? '' })
     case 'MODEL_NOT_OFFERED': return t('settings.modelRouting.problem.modelMissing', { runtime, model })
     case 'RUNTIME_UNAVAILABLE': return t('settings.modelRouting.problem.runtimeMissing', { runtime })
     case 'SIGNED_OUT': return t('settings.modelRouting.problem.signedOut', { runtime })

@@ -2409,6 +2409,7 @@ export type MutationSetAutomaticUpdatesArgs = {
 
 
 export type MutationSetModelRouterLaunchArgs = {
+  llmConfig?: InputMaybe<Scalars['JSON']['input']>;
   llmModelIdentifier: Scalars['String']['input'];
   runtimeKind: Scalars['String']['input'];
 };
@@ -5081,6 +5082,7 @@ export type SetModelRoutingEnabledMutation = { __typename?: 'Mutation', setModel
 export type SetModelRouterLaunchMutationVariables = Exact<{
   runtimeKind: Scalars['String']['input'];
   llmModelIdentifier: Scalars['String']['input'];
+  llmConfig?: InputMaybe<Scalars['JSON']['input']>;
 }>;
 
 
@@ -9597,10 +9599,11 @@ export function useSetModelRoutingEnabledMutation(options: VueApolloComposable.U
 }
 export type SetModelRoutingEnabledMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<SetModelRoutingEnabledMutation, SetModelRoutingEnabledMutationVariables>;
 export const SetModelRouterLaunchDocument = gql`
-    mutation SetModelRouterLaunch($runtimeKind: String!, $llmModelIdentifier: String!) {
+    mutation SetModelRouterLaunch($runtimeKind: String!, $llmModelIdentifier: String!, $llmConfig: JSON) {
   setModelRouterLaunch(
     runtimeKind: $runtimeKind
     llmModelIdentifier: $llmModelIdentifier
+    llmConfig: $llmConfig
   )
 }
     `;
@@ -9620,6 +9623,7 @@ export const SetModelRouterLaunchDocument = gql`
  *   variables: {
  *     runtimeKind: // value for 'runtimeKind'
  *     llmModelIdentifier: // value for 'llmModelIdentifier'
+ *     llmConfig: // value for 'llmConfig'
  *   },
  * });
  */

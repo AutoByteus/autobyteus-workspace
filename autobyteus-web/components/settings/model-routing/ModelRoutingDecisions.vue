@@ -86,7 +86,7 @@
                     <div class="min-w-0">
                       <p class="flex min-w-0 flex-wrap items-baseline gap-x-2 text-sm text-gray-800">
                         <span class="inline-block h-2.5 w-2.5 flex-shrink-0 translate-y-px self-center rounded-[3px]" :style="{ backgroundColor: runtimeColor(record.runtimeKind) }" aria-hidden="true"></span>
-                        <span class="min-w-0 truncate"><span class="font-medium">{{ runtimeName(record.runtimeKind) }}</span><span class="text-gray-400"> · </span>{{ record.llmModelIdentifier }}</span>
+                        <span class="min-w-0 truncate" data-testid="model-routing-decision-launch"><span class="font-medium">{{ names.modelLabel(record.runtimeKind, record.llmModelIdentifier) }}</span> <span class="text-gray-400">{{ names.modelWithRuntime(record.runtimeKind, record.llmModelIdentifier).runtime }}</span></span>
                         <span v-if="record.source !== 'model_router'" class="flex-shrink-0 text-xs" :class="record.source === 'inherited' ? 'text-amber-700' : 'text-gray-400'">{{ t(SOURCE_KEY[record.source]) }}</span>
                       </p>
                       <p v-if="record.choiceReason" class="mt-0.5 text-xs text-gray-500" data-testid="model-routing-decision-reason">{{ record.choiceReason }}</p>
@@ -121,7 +121,8 @@ import type {
   DecisionLocator, ModelRoutingStatus, RoutingDecisionDelegation, RoutingDecisionPage, RoutingDecisionRecord, RoutingDecisionTaskGroup,
 } from '~/types/modelRouting'
 import TaskKey from '~/components/projects/TaskKey.vue'
-import { agentName, decisionTime, runtimeColor, runtimeName, SOURCE_KEY } from './modelRoutingPresentation'
+import { agentName, decisionTime, runtimeColor, SOURCE_KEY } from './modelRoutingPresentation'
+import { useModelRoutingNames } from './modelRoutingNames'
 
 const props = defineProps<{ status: ModelRoutingStatus | null; focus: DecisionLocator | null; source: string }>()
 const emit = defineEmits<{ (event: 'show-setup'): void; (event: 'update:source', value: string): void; (event: 'loaded', hasDecisions: boolean): void }>()
@@ -136,6 +137,9 @@ const FOCUS_PAGES = 12
 const NO_TASK = '__no_project_task__'
 
 const groups = shallowRef<readonly RoutingDecisionTaskGroup[]>([])
+/** The app's names for the runtimes and models these decisions use (autobyteus-313 REQ-004). */
+const names = useModelRoutingNames(() => [...new Set(groups.value.flatMap((group) => group.delegations.flatMap((delegation) => delegation.records
+  .flatMap((record) => [record.runtimeKind, ...record.skipped.map((layer) => layer.runtimeKind ?? '')]))))])
 const totalTasks = ref(0)
 /** Every Task with a decision, whatever the filter (the empty and "off with history" states). */
 const totalAll = ref(0)
@@ -238,7 +242,8 @@ const showName = (task: TaskView, item: DelegationView): boolean => item.isTeam 
 const nameOf = (item: DelegationView, record: RoutingDecisionRecord): string => (item.isTeam ? agentName(record.agentAddress) : item.targetName)
 const skippedText = (layer: RoutingDecisionRecord['skipped'][number]): string => t('runSettings.delegated.fallback', {
   layer: t(`runSettings.delegated.layer.${layer.layer}`),
-  model: `${layer.runtimeKind ? runtimeName(layer.runtimeKind) : '—'} · ${layer.llmModelIdentifier ?? '—'}`,
+  model: layer.runtimeKind && layer.llmModelIdentifier ? names.modelWithRuntimeText(layer.runtimeKind, layer.llmModelIdentifier)
+    : layer.runtimeKind ? names.runtimeName(layer.runtimeKind) : (layer.llmModelIdentifier ?? '—'),
   detail: layer.detail,
 })
 /** The failure sentence ends with the router's reason (its own words) and a full stop. */

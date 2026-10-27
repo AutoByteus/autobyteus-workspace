@@ -5,9 +5,16 @@
 export type ModelRoutingReasonCode =
   | 'OFF' | 'ROUTER_NOT_SET' | 'RUNTIME_UNAVAILABLE' | 'SIGNED_OUT' | 'MODEL_NOT_OFFERED' | 'MODEL_BLOCKED' | 'REPORT_UNREADABLE'
 
+/** The Model Router's launch configuration: runtime, model and model settings, like any agent's (autobyteus-313). */
+export type ModelRouterLaunch = Readonly<{
+  runtimeKind: string
+  llmModelIdentifier: string
+  llmConfig: Readonly<Record<string, unknown>> | null
+}>
+
 export type ModelRoutingStatus = Readonly<{
   enabled: boolean
-  routerLaunch: Readonly<{ runtimeKind: string; llmModelIdentifier: string }> | null
+  routerLaunch: ModelRouterLaunch | null
   active: boolean
   reasonCode: ModelRoutingReasonCode | null
   reasonParams: Readonly<Record<string, string | null>>
