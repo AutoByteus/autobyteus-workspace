@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- |
 | API-REV-001 | Code reviewer pass handoff, `code-review-report.md` CRR-002; round 1 | SR-004, SR-004b, ARCH-REV-002, IR-002, CRR-002 | N/A | Fail / 87% (requirement proof 50%) |
 | API-REV-002 | Code reviewer pass handoff, `code-review-report.md` CRR-005; round 2 | SR-005…SR-006 (UD-020, UD-021), IR-003…IR-005, CRR-003…CRR-005 | Fail / 87% | Pass / 94% |
+| API-REV-003 | Code reviewer pass handoff, `code-review-report.md` CRR-007 (latest-base merge, DR-001); round 3 | IR-006, CRR-006, CRR-007, DR-001 | Pass / 94% | Pass / 94% |
 
 ## Revision Entries
 
@@ -84,4 +85,34 @@ None.
   - AC-008 on the user's own memory (the user only);
   - O-1 and O-3;
   - C-12;
+  - Windows, Linux and macOS x64 builds.
+
+### API-REV-003 — Latest-base merge (`3d209177ec`); Pass
+
+- Triggering role, report path, and round: `/software_engineering_team/code_reviewer`, `code-review-report.md` (CRR-007, Pass), round 3; the merge of `origin/personal` `8c31e530d6` (delivery DR-001, IR-006).
+- Triggering finding or case IDs: the reviewer's suggestions:
+  - `search_memory` through both entry forms on the packaged merged build: with results, with no results, and an error;
+  - a page smoke test.
+- Related revision IDs: API-REV-002, IR-006, CRR-006, CRR-007, DR-001.
+- Why this revision was recorded: the merge changed shared foundations (Fastify 5 / mercurius 16, `autobyteus-ts`, agent tools, runtimes, Electron) and the tool's serialization. TESTING.md rules 4 and 5 apply.
+- Coverage decisions or durable test paths changed: none. API-D01 still awaits test review.
+- Cases added, changed, removed, or rechecked:
+  - reused: IMP-32;
+  - rerun on the merged packaged build: API-R03r3, API-L01r3, API-L07r3, API-L05r3/L06r3 (four states, both forms), API-L08r3, API-L02r3/L03r3, API-L14r3, API-L04r3 (HTTP), API-L11r3, API-L10r3, API-R05r3;
+  - still valid: the in-process evaluation (API-L04r2), API-L09, API-L12, API-L13, API-D01.
+- Commands, environment, fixture, or broader-validation delta: `pnpm install --frozen-lockfile`; a packaged desktop build of the merge on a fresh clone of the memory copy; a chat helper rewritten for the merged model picker.
+
+#### Prior Failure Resolution
+
+None open (F-001 was resolved in API-REV-002).
+
+- Canonical artifacts and sections updated: `api-e2e-coverage-investigation.md` (§ Round 3 Rerun Plan), `api-e2e-execution-coverage-report.md` (round-3 rows, AC proof, cleanup), `api-e2e-test-progress.md`, `evidence/api-e2e/` (round-3 files; private `r3/`).
+- Prior result and confidence: `Pass`, 94%.
+- Current result and confidence: `Pass`, 94%.
+- New or remaining failure IDs: none. Known base failures FU-010 and FU-011 are not this ticket's (IMP-32).
+- Recommended owner: code reviewer (proportional test review of API-D01), then delivery.
+- Remaining risks, blocked evidence, or untested scope:
+  - AC-008 on the user's own memory (the user only);
+  - O-1 and O-3 (the merge round's own chats moved Q01 from #3 to #7 in the page search);
+  - no idle reference machine;
   - Windows, Linux and macOS x64 builds.

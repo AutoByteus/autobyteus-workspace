@@ -20,11 +20,11 @@
 - Delivery Revision Record (delivery re-entry only): N/A
 - Relevant Delivery Revision IDs: N/A
 - API/E2E Revision Record (created after the first completed result): `api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-001` (round 2 will add `API-REV-002`)
-- Current Investigation Round: 2
+- Current API/E2E Revision ID: `API-REV-002` (round 3 will add `API-REV-003`)
+- Current Investigation Round: 3
 - Trigger: round 1 CRR-002 (`41501c5a41`); round 2 CRR-005 Pass on SR-006 (UD-020, UD-021), branch at `5b16e1fe4a`, code `3204aa2455`
 - Prior Investigation Reviewed: round 1 (this file)
-- Latest Authoritative Investigation: this file, round 2 (§ Round 2 Rerun Plan)
+- Latest Authoritative Investigation: this file, round 3 (§ Round 3 Rerun Plan); round 3 trigger: CRR-007 Pass on the latest-base merge (delivery DR-001, IR-006), branch `3d209177ec`
 
 ## Current Requirement And Design Basis
 
@@ -236,4 +236,34 @@ None.
 | API-L06 (native) | Rerun, one question | The same result shape on the native path |
 | API-L08 | Rerun, short | AC-009: the text search code changed; one turn's new word, timed |
 | API-L10, API-L11 | Spot-check during API-L11 only | Notes changed in the facade. Restart: the first search's meaning note, and `wordsNotFound` empty while the catch-up holds the Text step |
+| API-R05 | Rerun | Licensing and hygiene |
+
+## Round 3 Rerun Plan (latest-base merge, `3d209177ec`)
+
+- **What changed** (`git diff 3204aa2455 3d209177ec`, 789 files, mostly the base):
+  - **Shared foundations:**
+    - the server's HTTP and GraphQL stack: Fastify 4 → 5, mercurius 13 → 16, `@fastify/*` majors;
+    - `autobyteus-ts` (40 files);
+    - the contract packages;
+    - agent tools (49 files, incl. the platform's one tool-result rule, autobyteus-260);
+    - runtime management and agent execution;
+    - the Electron shell (30 files);
+    - app-data migrations (4 files).
+  - **For this ticket:** `search_memory` serialization now goes through `toToolResultJson` (native) and `toAgentToolsMcpStructuredJsonResult` (MCP). Empty fields, including `results: []`, are left out. Wiring was re-applied in auto-merged files.
+  - **Unchanged:** `src/memory-search`, `src/embeddings`, `src/agent-work-journal`, `src/memory-sync`, the web memory components, stores and page. The embedding packages in the lockfile (`@huggingface/tokenizers` 0.2.0) are also unchanged.
+- **TESTING.md rule 4** applies: a shared foundation changed, so every case that crosses those boundaries is rerun. Rule 5 applies too: after a merge, rebuild every output the cases use.
+
+| Case | Decision | Reason |
+| --- | --- | --- |
+| API-R01/R02 | Reused: IMP-32 (merge commit) | Build, typecheck, 1,256 focused, 20 memory e2e, full `test:unit` 7,171 (failures FU-010/FU-011 shown identical on the base), 161 web tests, guards |
+| API-R03 | Rerun | Server build of the merge |
+| API-L01r3 | Rerun | First build in the packaged merged app (Electron, GraphQL, startup changed) |
+| API-L02r3/L03r3 | Rerun (smoke) | Page search, notes, open a match, journal navigation, Browse, over the new GraphQL server |
+| API-L05r3 (Codex, MCP) / API-L06r3 (native) | Rerun | `search_memory` serialization changed: before a build, with results, with no results, and an argument error, on both entry forms |
+| API-L07r3 | Rerun | Tool exposure through the changed agent-tools layer (both runtimes) |
+| API-L08r3 | Rerun | A live turn reaches the index through the changed agent-execution path |
+| API-L11r3 | Rerun | Restart of the changed Electron shell and embedded server |
+| API-L04r3 (HTTP part) and API-L14r3 | Rerun | Same search code, but HTTP and GraphQL changed |
+| API-L04 evaluation (in-process) | Still valid (round 2) | memory-search, embeddings and their packages are unchanged |
+| API-L09, API-L10, API-L12, API-L13, API-D01 | Still valid | Pipeline, embedding settings flow, discovery and Docker runtime are unchanged in what they exercise. API-L10's page and GraphQL path is covered by L02r3/L04r3. API-L12's imports exclusion is discovery; Memory Sync's transport is not this ticket's code |
 | API-R05 | Rerun | Licensing and hygiene |

@@ -72,3 +72,26 @@
 | 10-27 08:10 | API-L11r2 | Completed | Pass | catch-up: no absence claimed; then named; meaning loads on first search |
 | 10-27 08:12 | (round 2) | Completed | Pass | report rewritten; API-REV-002; final 94% |
 | 10-27 08:12 | API-R05 | Completed | Pass | round 2 licensing + hygiene |
+| 10-27 08:49 | (round 3) | Checkpoint | — | CRR-007 merge 3d209177ec; plan § Round 3 Rerun Plan; next build |
+| 10-27 08:50 | (desktop r3) | Started | — | isolated-app start --build --data-root /private/tmp/wjs-api3/root |
+| 10-27 09:00 | API-L07r3 | Started | — | AC-013 Codex + native on the merged build |
+| 10-27 09:08 | API-L07r3 | Completed | Pass | Codex 'not a function'; native 'no tool named search_memory'; then opt-in via editor |
+| 10-27 09:08 | API-L05r3 | Started | — | Codex: before build, results, no results, error |
+| 10-27 09:11 | API-L05r3 | Checkpoint | — | before build: native and Codex return only coverage 'Memory index not built yet'; GPT-6.1-Sol low once failed to find the tool (model), GPT-6-Sol listed it |
+| 10-27 09:11 | API-L01r3 | Started | — | Index now on the merged build |
+| 10-27 09:17 | API-L08r3 | Started | — | turn with tapirindigo8814 |
+| 10-27 09:18 | API-L08r3 | Completed | Pass | 22.9 s after the reply |
+| 10-27 09:18 | API-L02r3 | Started | — | page smoke on the merged build |
+| 10-27 09:18 | API-L02r3 | Completed | Pass | notes, Words, open at lines, go to line, task-team tags |
+| 10-27 09:18 | API-L14r3 | Started | — | off-topic cues over the merged GraphQL |
+| 10-27 09:18 | API-L14r3 | Completed | Pass | 11/11; no strength field |
+| 10-27 09:19 | API-L05r3 | Checkpoint | — | both forms: before build, results, error done; no-results case pending (model switch) |
+| 10-27 09:52 | API-L01r3 | Completed | Pass | journals 58 s, text 2:32, meaning complete |
+| 10-27 09:52 | API-L04r3 | Started | — | HTTP gates on the merged server |
+| 10-27 09:52 | API-L04r3 | Completed | Pass | HTTP gate1 31/31, top3 25/31, p90 537 max 1013 at load 7.5; Q01 pushed by own test chats |
+| 10-27 09:52 | API-L11r3 | Started | — | restart of the merged app |
+| 10-27 09:54 | API-L11r3 | Completed | Pass | no model at start; first search loading note; model loaded on it |
+| 10-27 09:54 | API-L10r3 | Started | — | restart with CODEX_HOME; switch to LEAF-IR; no-results tool case both forms |
+| 10-27 10:01 | API-L05r3 | Completed | Pass | both forms: before build, results, no results, error |
+| 10-27 10:01 | API-L10r3 | Completed | Pass | MODEL_CHANGED, words only, Rebuild READY in 146 s with LEAF-IR |
+| 10-27 10:03 | (round 3) | Completed | Pass | report updated; API-REV-003 |

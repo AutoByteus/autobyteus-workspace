@@ -1,0 +1,6 @@
+# API-R03 (round 3): pnpm install --frozen-lockfile; pnpm -C autobyteus-server-ts build
+# Commit: 3d209177ec (merge); 2026-10-27 08:49; load: 9.77 9.82 19.70
+install exit 0
+build exit 0
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.

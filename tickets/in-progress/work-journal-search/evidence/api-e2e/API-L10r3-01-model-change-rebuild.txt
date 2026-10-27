@@ -1,0 +1,8 @@
+# API-L10 (round 3): embedding model change and Rebuild on the merged build (GraphQL server changed by the merge)
+# iso-63150-d45d after `CODEX_HOME=<throwaway> pnpm --silent isolated-app restart iso-63150-d45d`; 2026-10-27 08:54–09:01 UTC
+Settings → Server Settings → Embedding → LEAF-IR "Use this model" → confirm → "Active · Ready"
+memoryIndexStatus: {"state":"MODEL_CHANGED","activeModelId":"mdbr-leaf-ir","meaningIndexModelId":"granite-embedding-small-english-r2"}
+memorySearch "pelicanmarigold9152": {"coverage":"The meaning index was built with granite-embedding-small-english-r2; results are by words only until the user rebuilds the index on the Memory page.","note":"No matches; try other words.","wordsNotFound":["pelicanmarigold9152"]}
+Index tab: status "Embedding model changed"; note "The Meaning index was built with granite-embedding-small-english-r2. Rebuild to use mdbr-leaf-ir."; Rebuild enabled
+Rebuild → confirm (08:58:51) → READY after 146 s: FIND_RUNS 3691/3691, JOURNALS 3691/3691, TEXT_INDEX 7437/7437, MEANING_INDEX 0/7437 embedding, meaningIndexModelId "mdbr-leaf-ir"; a search then carries "The meaning index covers 0 of 7437 journal files." (genuine)
+LEAF-IR's full embedding was not waited for (round 1 API-L10 measured it; the embedding code is unchanged)
