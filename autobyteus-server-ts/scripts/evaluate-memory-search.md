@@ -10,12 +10,11 @@ folder, and reports:
 - **meaning pointers**: how many meaning matches each pointer rule resolved (same file's text chunk, best card
   part, first request), and how many had an empty snippet (should be 0);
 - **unmasked secrets**: snippets in which a secret pattern is still visible (should be 0);
-- **meaning calibration**: the meaning-strength row the search used (`MEANING_CALIBRATION`); `verified: false`
-  means the model has no row of its own and was rated with the default model's row;
-- **off-topic** (AC-007): questions of kind `offTopic`, whose key words occur in no run, must each end with the
-  only-weak note, every match weak (`failed` lists the ones that did not); and no answerable question's first
-  search may end with it (`falseOnlyWeak`). Questions of kind `partial` (some words describe real work) are
-  reported, not gated.
+- **words not found** (AC-007): every question's `wordsNotFound` against an independent census of the
+  journals (read from the journal files, tokenized as the text index's `unicode61` does; a term of several
+  tokens counts only as those tokens in a row): `mismatches` lists named words that occur and absent words that
+  are not named; `offTopicUnnamed` lists off-topic questions (`kind: offTopic`) that name no word. Off-topic
+  questions' key words should be single tokens.
 
 A transformation is added or changed only if gate 1 stays at 100% and gate 2 does not get worse.
 

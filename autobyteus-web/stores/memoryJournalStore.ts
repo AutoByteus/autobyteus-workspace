@@ -21,7 +21,8 @@ export interface JournalFocus {
   toLine: number;
   cue?: string | null;
   kind?: 'text' | 'meaning' | null;
-  strength?: 'strong' | 'fair' | 'weak' | null;
+  /** The search words found in the matched lines (a text match); empty for a meaning match. */
+  words?: string[] | null;
 }
 
 type ServerJournal = {

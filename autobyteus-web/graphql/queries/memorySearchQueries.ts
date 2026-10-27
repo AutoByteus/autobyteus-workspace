@@ -13,9 +13,10 @@ export const MEMORY_SEARCH = gql`
         firstDay
         latestDay
         subject { kind runId agentDefinitionId teamRunId orgRunId agentRunId runKey }
-        matches { journalFileName lineStart lineEnd day snippet matchedBy strength }
+        matches { journalFileName lineStart lineEnd day snippet matchedBy matchedWords }
       }
       coverage
+      wordsNotFound
       note
     }
   }

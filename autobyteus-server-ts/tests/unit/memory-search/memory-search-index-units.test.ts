@@ -2,7 +2,8 @@ import { afterEach, describe, expect, it, vi } from "vitest";
 import { readJournalEntries } from "../../../src/agent-work-journal/reading/journal-entry-reader.js";
 import { buildJournalCard, JOURNAL_CARD_MAX_CHARACTERS } from "../../../src/memory-search/index/journal-card-builder.js";
 import { chunkJournalEntries, JOURNAL_CHUNK_MAX_CHARACTERS } from "../../../src/memory-search/index/journal-chunker.js";
-import { queryTerms, termTokens, toFtsQuery, toIndexText } from "../../../src/memory-search/index/memory-text-normalizer.js";
+import { queryTerms, toFtsPhrase, toFtsQuery, toIndexText } from "../../../src/memory-search/index/memory-text-normalizer.js";
+import { bestCardPerRun } from "../../../src/memory-search/search/memory-search-service.js";
 import { maskSecrets } from "../../../src/memory-search/search/secret-masker.js";
 import {
   normalizeMemorySearchDefaultLimitForPersistence,
@@ -26,11 +27,11 @@ describe("memory text normalizer", () => {
     expect(queryTerms("龟")).toEqual(["龟"]);
   });
 
-  it("splits a term into the tokens the text index stores (UD-019 weights)", () => {
-    expect(termTokens("home.example.org")).toEqual(["home", "example", "org"]);
-    expect(termTokens("Café")).toEqual(["cafe"]);
-    expect(termTokens("兔子")).toEqual(["兔", "子"]);
-    expect(termTokens("ddns")).toEqual(["ddns"]);
+  it("makes one term its own FTS phrase: a two-ideograph term as its two tokens, quotes doubled (SR-006)", () => {
+    expect(toFtsPhrase("ddns")).toBe('"ddns"');
+    expect(toFtsPhrase("兔子")).toBe('"兔 子"');
+    expect(toFtsPhrase('say"hi')).toBe('"say""hi"');
+    expect(toFtsQuery(["ddns", "兔子"])).toBe('"ddns" OR "兔 子"');
   });
 
   it("indexes ideographs as single tokens and queries them as phrases", () => {
@@ -93,6 +94,21 @@ describe("journal card builder", () => {
     expect(card.text.length).toBeLessThanOrEqual(JOURNAL_CARD_MAX_CHARACTERS);
     expect(card.parts).toHaveLength(6);
     expect(card.parts.every((part) => part.offset + part.length <= card.text.length)).toBe(true);
+  });
+});
+
+describe("meaning candidates", () => {
+  it("keeps each kept run's first card in nearest order, without grades; no positive similarity is no match", () => {
+    const card = (run: string, file: string, score: number) => ({ id: `agents/${run}/work_journal/${file}`, score });
+    const byRun = bestCardPerRun([
+      card("asker", "work_journal_active.md", 0.9),
+      card("a", "work_journal_2026-09.md", 0.8),
+      card("a", "work_journal_active.md", 0.7),
+      { id: "not-a-card", score: 0.6 },
+      card("b", "work_journal_active.md", 0),
+      card("c", "work_journal_active.md", 0.1),
+    ], (runKey) => runKey !== "agents/asker");
+    expect([...byRun]).toEqual([["agents/a", "work_journal_2026-09.md"], ["agents/c", "work_journal_active.md"]]);
   });
 });
 

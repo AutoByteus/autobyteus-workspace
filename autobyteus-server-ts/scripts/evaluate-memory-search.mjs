@@ -7,9 +7,9 @@ import os from "node:os";
 import path from "node:path";
 import { EmbeddingIndex } from "../dist/embeddings/embedding-index.js";
 import { DEFAULT_EMBEDDING_MODEL_ID, getEmbeddingModelDefinition } from "../dist/embeddings/catalog/embedding-model-catalog.js";
-import { evaluateMemorySearch, readEvaluationQuestions } from "../dist/memory-search/evaluation/memory-search-evaluation.js";
+import { evaluateMemorySearch, evaluationTerms, readEvaluationQuestions } from "../dist/memory-search/evaluation/memory-search-evaluation.js";
+import { termsAbsentFromJournals } from "../dist/memory-search/evaluation/journal-term-census.js";
 import { MemorySearch } from "../dist/memory-search/memory-search.js";
-import { meaningCalibrationFor } from "../dist/memory-search/search/memory-search-service.js";
 
 const usage = "Usage: node scripts/evaluate-memory-search.mjs --memory-dir <isolated copy> --index-dir <folder> --questions <file.json> [--model <id>] [--build] [--asking-run <run id>] [--out <report.json>]";
 const args = process.argv.slice(2);
@@ -65,12 +65,13 @@ for (let i = 0; i < 120; i++) {
   await new Promise((resolve) => setTimeout(resolve, 1000));
 }
 const askingRunId = value("--asking-run");
-const report = await evaluateMemorySearch(memory, readEvaluationQuestions(questionsFile), { askingRunId });
-// The meaning-strength row the search used; a model without its own row is unverified.
-const meaningCalibration = meaningCalibrationFor(model.id);
-const output = { model: model.id, meaningCalibration, askingRunId, status: status(), report };
+const questions = readEvaluationQuestions(questionsFile);
+// The independent census of words in no journal (AC-007), read from the journal files, not the index.
+const absentTerms = termsAbsentFromJournals(resolvedMemory, evaluationTerms(questions));
+const report = await evaluateMemorySearch(memory, questions, { askingRunId, absentTerms });
+const output = { model: model.id, askingRunId, status: status(), report };
 const out = value("--out");
 if (out) fs.writeFileSync(out, `${JSON.stringify(output, null, 2)}\n`);
-console.log(JSON.stringify({ model: model.id, meaningCalibration, gate1: report.gate1, gate2: report.gate2, meaningPointers: report.meaningPointers, unmaskedSecrets: report.unmaskedSecrets, offTopic: report.offTopic, falseOnlyWeak: report.falseOnlyWeak, partial: report.partial, questions: report.questions }, null, 2));
+console.log(JSON.stringify({ model: model.id, gate1: report.gate1, gate2: report.gate2, meaningPointers: report.meaningPointers, unmaskedSecrets: report.unmaskedSecrets, wordsNotFound: report.wordsNotFound, questions: report.questions }, null, 2));
 memory.shutdown();
 await embeddings.shutdown();

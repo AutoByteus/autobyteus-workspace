@@ -60,9 +60,9 @@ export class MemorySearchMatch {
   @Field(() => String)
   matchedBy!: "TEXT" | "MEANING";
 
-  /** `STRONG`, `FAIR` or `WEAK`. */
-  @Field(() => String)
-  strength!: "STRONG" | "FAIR" | "WEAK";
+  /** A text match: the query's search terms its lines hold, in query order. Empty for a meaning match. */
+  @Field(() => [String])
+  matchedWords!: string[];
 }
 
 @ObjectType()
@@ -108,6 +108,10 @@ export class MemorySearchResult {
 
   @Field(() => String, { nullable: true })
   coverage!: string | null;
+
+  /** The query's search terms that occur in no indexed journal (empty while the Text step is incomplete). */
+  @Field(() => [String])
+  wordsNotFound!: string[];
 
   @Field(() => String, { nullable: true })
   note!: string | null;
@@ -185,7 +189,7 @@ const toSubject = (subject: DomainSubject): MemoryRunSubject => ({
 const toMatch = (match: DomainMatch): MemorySearchMatch => ({
   journalFile: match.journalFile, journalFileName: path.basename(match.journalFile), lineStart: match.lineStart, lineEnd: match.lineEnd,
   day: match.day, snippet: match.snippet, matchedBy: match.matchedBy === "text" ? "TEXT" : "MEANING",
-  strength: match.strength.toUpperCase() as MemorySearchMatch["strength"],
+  matchedWords: [...match.matchedWords],
 });
 
 const toRunResult = (run: DomainRunResult): MemorySearchRunResult => ({
@@ -213,7 +217,7 @@ export class MemorySearchResolver {
     @Arg("limit", () => Int, { nullable: true }) limit?: number | null,
   ): Promise<MemorySearchResult> {
     const result = await getMemorySearch().search(query, { limit: limit ?? null });
-    return { results: result.results.map(toRunResult), coverage: result.coverage, note: result.note };
+    return { results: result.results.map(toRunResult), coverage: result.coverage, wordsNotFound: [...result.wordsNotFound], note: result.note };
   }
 
   @Query(() => MemoryIndexStatus)

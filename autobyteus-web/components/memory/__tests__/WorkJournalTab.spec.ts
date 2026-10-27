@@ -48,16 +48,18 @@ describe('WorkJournalTab', () => {
       { n: 813, text: '[--:--:--] Command: crontab -l → exit 0' },
       { n: 814, text: '            [↗](../raw_traces_active.jsonl#rt_2)' },
     ];
-    store.focus = { file: FILE.name, fromLine: 812, toLine: 813, cue: 'ddns', kind: 'text', strength: 'strong' };
-    search.outcome = { cue: 'ddns', weakOnly: false, results: [{
+    store.focus = { file: FILE.name, fromLine: 812, toLine: 813, cue: 'ddns', kind: 'text', words: ['ddns', 'home'] };
+    search.outcome = { cue: 'ddns', wordsNotFound: [], results: [{
       runId: 'run-1', agentName: 'Codex', team: null, member: null, workspace: null, firstDay: null, latestDay: null, subject: { kind: 'AGENT', runId: 'run-1', agentDefinitionId: null },
       matches: [
-        { file: FILE.name, fromLine: 812, toLine: 813, day: '2026-08-27', snippet: [], kind: 'text', strength: 'strong' },
-        { file: FILE.name, fromLine: 4000, toLine: 4002, day: '2026-08-26', snippet: [], kind: 'meaning', strength: 'fair' },
+        { file: FILE.name, fromLine: 812, toLine: 813, day: '2026-08-27', snippet: [], kind: 'text', matchedWords: ['ddns', 'home'] },
+        { file: FILE.name, fromLine: 4000, toLine: 4002, day: '2026-08-26', snippet: [], kind: 'meaning', matchedWords: [] },
       ],
     }] };
     const wrapper = mountIt();
-    expect(wrapper.find('[data-test="work-journal-found"]').exists()).toBe(true);
+    // The banner names the cue and the lines with their found words; a meaning match shows only its lines.
+    expect(wrapper.get('[data-test="work-journal-found"]').text()).toContain('lines 812–813 · Words: ddns, home');
+    expect(wrapper.get('[data-test="work-journal-found"]').text()).not.toMatch(/strong|meaning/i);
     const matched = wrapper.findAll('[data-line]').filter((row) => row.classes().includes('bg-amber-50')).map((row) => row.attributes('data-line'));
     expect(matched).toEqual(['812', '813']);
     // `[--:--:--]` entries read as entries (time, then the bold action).

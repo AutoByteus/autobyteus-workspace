@@ -62,7 +62,7 @@ describe("MemorySearch (pipeline and search over Work Journals)", () => {
 
   it("before the first build says so, writes no journal and starts nothing", async () => {
     const ensure = vi.spyOn(journals, "ensureCurrent");
-    expect(await memory.search("ddns")).toEqual({ results: [], coverage: MEMORY_INDEX_NOT_BUILT, note: null });
+    expect(await memory.search("ddns")).toEqual({ results: [], coverage: MEMORY_INDEX_NOT_BUILT, wordsNotFound: [], note: null });
     const status = memory.indexStatus();
     expect(status).toMatchObject({ state: "notIndexed", textIndexHasContent: false, runCount: 0, meaningIndexModelId: null });
     expect(status.steps.map((step) => [step.step, step.state])).toEqual([["findRuns", "waiting"], ["journals", "waiting"], ["textIndex", "waiting"], ["meaningIndex", "waiting"]]);
@@ -112,39 +112,70 @@ describe("MemorySearch (pipeline and search over Work Journals)", () => {
     const meaning = await memory.search("container on a raspberry");
     expect(meaning.results[0]).toMatchObject({ runId: "designer_1" });
     const [match] = meaning.results[0]!.matches;
-    expect(match).toMatchObject({ matchedBy: "meaning", strength: "strong", day: "2026-09-01" });
+    expect(match).toMatchObject({ matchedBy: "meaning", matchedWords: [], day: "2026-09-01" });
     expect(match!.snippet).toContain("Docker image fails on ARM servers");
   });
 
-  it("rates a text match by the weighted share of the cue's words: rare words weigh more (UD-019)", async () => {
+  it("names the query words each text match holds, and the words no journal holds (UD-020)", async () => {
     memory.startIndexing();
     await built(memory);
-    // "updater" is in 3 of the 5 chunks, "rebuilt" in 1: the chunk holding the rare word is strong, the common one weak.
-    const result = await memory.search("updater rebuilt");
-    const strengthOf = (runId: string) => result.results.find((run) => run.runId === runId)?.matches.find((m) => m.matchedBy === "text")?.strength;
-    expect(strengthOf("designer_1")).toBe("strong");
-    expect(strengthOf("codex_ddns")).toBe("weak");
-    // A cue whose rarest word no chunk holds: what is found is only common words, so every match is weak.
-    const offTopic = await memory.search("updater saxophone");
-    expect(offTopic.results.length).toBeGreaterThan(0);
-    expect(offTopic.note).toBe("Only weak matches; try other words.");
+    const result = await memory.search("DDNS updater rebuilt");
+    const wordsOf = (runId: string) => result.results.find((run) => run.runId === runId)?.matches.filter((m) => m.matchedBy === "text").map((m) => m.matchedWords);
+    expect(wordsOf("codex_ddns")).toEqual([["ddns", "updater"], ["ddns", "updater"]]);
+    expect(wordsOf("designer_1")).toEqual([["rebuilt"]]);
+    expect(result).toMatchObject({ wordsNotFound: [], note: null });
+    // Some words are in no journal: named, with the matches for the others.
+    const some = await memory.search("updater saxophone");
+    expect(some.results.length).toBeGreaterThan(0);
+    expect(some).toMatchObject({ wordsNotFound: ["saxophone"], note: "Not found in your memory: saxophone." });
+    // No word is in any journal: a match by meaning is still shown, without words.
+    const none = await memory.search("container raspberry");
+    expect(none.results[0]).toMatchObject({ runId: "designer_1", matches: [{ matchedBy: "meaning", matchedWords: [] }] });
+    expect(none).toMatchObject({ wordsNotFound: ["container", "raspberry"], note: "None of these words appear in your memory: container, raspberry." });
   });
 
-  it("while the meaning index is incomplete, weak matches carry the coverage note, not the only-weak note (R-10)", async () => {
+  it("names no word as not found while the text index is incomplete: a shown pass is still indexing", async () => {
     memory.startIndexing();
     await built(memory);
-    expect((await memory.search("updater saxophone")).note).toBe("Only weak matches; try other words.");
-    // Rebuild with the embedding held: the cards wait, so the Meaning step stays incomplete after the pass.
-    fake.runner().holdDocuments();
-    expect(memory.rebuild()).toBe(true);
-    await until(() => memory.indexStatus().textIndexHasContent && memory.indexStatus().steps[3]!.done < memory.indexStatus().steps[3]!.total);
-    const partial = await memory.search("updater saxophone");
-    expect(partial.results.length).toBeGreaterThan(0);
-    expect(partial.results.every((run) => run.matches.every((match) => match.strength === "weak"))).toBe(true);
-    expect(partial.note).toBeNull();
-    expect(partial.coverage).toMatch(/meaning index covers \d+ of \d+ journal files/);
-    fake.runner().release();
-    await until(async () => (await memory.search("updater saxophone")).note === "Only weak matches; try other words.");
+    const versions = journals.journalFileVersions.bind(journals);
+    let release!: () => void;
+    const gate = new Promise<void>((resolve) => { release = resolve; });
+    const held = vi.spyOn(journals, "journalFileVersions").mockImplementation(async (dir) => { await gate; return versions(dir); });
+    expect(memory.startIndexing()).toBe(true);
+    await until(() => held.mock.calls.length > 0);
+    expect(memory.indexStatus().steps.find((step) => step.step === "textIndex")?.state).not.toBe("done");
+    const during = await memory.search("updater saxophone");
+    expect(during.results.length).toBeGreaterThan(0);
+    expect(during).toMatchObject({ wordsNotFound: [], note: null });
+    release();
+    await until(async () => (await memory.search("updater saxophone")).note === "Not found in your memory: saxophone.");
+  });
+
+  it("a queued or running live pass does not hold back the words not found: the new word is named until indexed (R-13)", async () => {
+    memory.startIndexing();
+    await built(memory);
+    const versions = journals.journalFileVersions.bind(journals);
+    let release!: () => void;
+    const gate = new Promise<void>((resolve) => { release = resolve; });
+    const held = vi.spyOn(journals, "journalFileVersions").mockImplementation(async (dir) => { await gate; return versions(dir); });
+    const designer = path.join(memoryDir, "agents/designer_1");
+    appendTurns(designer, [{ day: "2026-09-03", user: "Open a cloudflare tunnel", agent: "The cloudflare tunnel is up." }]);
+    await journals.ensureCurrent({ runId: "designer_1", memoryDir: designer, runtimeKind: null });
+    await until(() => held.mock.calls.length > 0);
+    // The live pass is running (held in its Text step); the index still lacks the new turn.
+    expect((await memory.search("cloudflare updater")).wordsNotFound).toEqual(["cloudflare"]);
+    release();
+    await until(async () => (await memory.search("cloudflare updater")).wordsNotFound.length === 0);
+  });
+
+  it("does not name a word that only the asking run's journal holds as not found (R-15)", async () => {
+    memory.startIndexing();
+    await built(memory);
+    // "searching" is only in asker's journal: its results are left out, but the word is in memory.
+    const result = await memory.search("searching", { askingRunId: "asker" });
+    expect(result.results.map((run) => run.runId)).not.toContain("asker");
+    expect(result.wordsNotFound).toEqual([]);
+    expect(result.note).not.toMatch(/not found|none of these words/i);
   });
 
   it("masks a secret before cutting a snippet line, so a cut never leaves part of it (C-06)", async () => {
@@ -158,24 +189,22 @@ describe("MemorySearch (pipeline and search over Work Journals)", () => {
     expect(snippet).not.toMatch(/sk-[a-z]/);
   });
 
-  it("shows a match found by both tiers once, with the stronger strength and its tier's label (SR-005c)", async () => {
+  it("lists lines found by both tiers once, as the text match with its words (SR-006)", async () => {
     memory.startIndexing();
     await built(memory);
-    // "docker" is a weak text match in designer_1's chunk; its meaning card points at that same chunk and is strong.
+    // "docker" is in designer_1's chunk as text; its meaning card points at that same chunk.
     const result = await memory.search("docker container on a raspberry");
     const designer = result.results.find((run) => run.runId === "designer_1")!;
     expect(designer.matches).toHaveLength(1);
-    expect(designer.matches[0]).toMatchObject({ matchedBy: "meaning", strength: "strong", pointer: "textChunk" });
-    expect(result.note).toBeNull();
+    expect(designer.matches[0]).toMatchObject({ matchedBy: "text", matchedWords: ["docker"], pointer: null });
+    expect(result).toMatchObject({ wordsNotFound: ["container", "raspberry"], note: "Not found in your memory: container, raspberry." });
   });
 
-  it("says when nothing matches or only weak matches exist, never that memory is empty", async () => {
+  it("says when nothing matches, never that memory is empty", async () => {
     memory.startIndexing();
     await built(memory);
-    expect(await memory.search("zebra")).toMatchObject({ results: [], note: "No matches; try other words." });
-    const weak = await memory.search("updater zebra giraffe okapi elephant lion");
-    expect(weak.results.length).toBeGreaterThan(0);
-    expect(weak.note).toBe(weak.results.every((run) => run.matches.every((m) => m.strength === "weak")) ? "Only weak matches; try other words." : null);
+    // No text match and no concept word for the meaning tier: no results, whatever was not found.
+    expect(await memory.search("zebra")).toMatchObject({ results: [], wordsNotFound: ["zebra"], note: "No matches; try other words." });
   });
 
   it("keeps itself current after a turn: the changed journal is findable by words after the quiet period", async () => {

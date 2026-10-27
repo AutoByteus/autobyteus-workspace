@@ -34,7 +34,7 @@ journals only through `WorkJournalService`, and meaning vectors only through `Em
 
 ```ts
 const memory = getMemorySearch();
-await memory.search("DDNS updater", { limit: 10, askingRunId }); // {results, coverage, note}
+await memory.search("DDNS updater", { limit: 10, askingRunId }); // {results, coverage, wordsNotFound, note}
 memory.indexStatus();   // {state, steps, runCount, journalFileCount, updatedAt, textIndexHasContent, activeModelId, meaningIndexModelId, meaningNote}
 memory.startIndexing(); // Index now / Try again: a full pass that resumes; false while a pass runs
 memory.rebuild();       // drops the index, then a full pass; false while a pass runs
@@ -46,13 +46,19 @@ memory.runFolderMemoryDir(runKey); // the folder of a RUN_FOLDER run, or null
   citable `source` line, a `subject` (how the Memory page opens the run: `AGENT`, `TEAM_MEMBER`, `ORG_MEMBER`, or
   `RUN_FOLDER` for a folder no record attributes), and up to 2 matches.
 - A match: the journal file's absolute path, `lineStart`–`lineEnd`, day, a snippet of 2–3 lines read from the
-  journal at query time (secrets masked), `matchedBy` (`text` or `meaning`) and `strength` (`strong`, `fair`,
-  `weak`).
+  journal at query time (secrets masked), `matchedBy` (`text` or `meaning`) and `matchedWords`: the query's search
+  terms its lines hold, in query order (a text match); empty for a meaning match. A match carries no grade
+  (UD-020): embedding scores have no reliable absolute meaning.
 - `coverage`: why the answer may be partial (index not built, building, meaning index loading or not current).
   Before the first build: `Memory index not built yet: ask the user to start it on the Memory page.`
-- `note`: `No matches; try other words.` or `Only weak matches; try other words.` Memory search never says that
-  nothing is in memory. While `coverage` says the index is incomplete, weak matches carry the coverage note and
-  not the only-weak note: weakness may only mean cards not embedded yet (R-10).
+- `wordsNotFound`: the query's search terms that no journal chunk of the index holds, one exact phrase `MATCH`
+  per term over the whole index. The asking run's journal counts (absence is a fact about the whole memory, R-15).
+  Empty while the Text step is incomplete (`textIndex` not `done`), since absence is then no fact. A live pass,
+  queued or running, does not hold it back (R-13): a word only in the last turn's lines is named until that turn is
+  indexed (≤ 20 s), which is why the tool says "no indexed journal".
+- `note`, the first that applies: no results → `No matches; try other words.`; every search term not found →
+  `None of these words appear in your memory: X, Y.`; some → `Not found in your memory: X.`; else none. Memory
+  search never says that nothing is in memory.
 
 ## Indexing Pipeline
 
@@ -124,23 +130,14 @@ is deleted and recreated):
 4. **Matches per run:** its best 2 text chunks; a meaning match points to the same file's best text chunk, else
    to the card part with the most query words, else to the file's first request. A run's matches are listed
    newest day first, then by line.
-5. **Strength:** text by the weighted share of the query's words found in the chunk (≥ 2/3 strong, ≥ 1/3 fair,
-   else weak). Each word weighs its rarity among the chunks, as BM25 ranks: `log((N − n + 0.5) / (n + 0.5))`
-   with `n` from the index's own vocabulary (`chunk_vocab`, an `fts5vocab` table) and a tiny floor, so common
-   words alone stay weak and a word no chunk holds weighs the most. A word of several tokens (`home.example.org`,
-   a two-ideograph phrase) counts as its rarest token. Meaning by how far the run's best card stands out from
-   the query's own scores (SR-005): baseline = the score at rank 200 among all `nearest` candidates (the last
-   one when there are fewer), taken before the asking run's cards are left out, so an agent and the page rate a
-   query the same; lift = score − baseline. The rank and the Strong and Fair lifts are a row per embedding model
-   (`MEANING_CALIBRATION`, calibrated with the evaluation): Granite R2 (default) rank 200, Fair 0.0689, Strong
-   0.0999; LEAF-IR rank 20, Fair 0.0429, Strong 0.159. A model without a row uses the default model's row and is
-   reported unverified by the evaluation.
-   A meaning match that points at the same lines as one of the run's text matches is shown once, with the
-   stronger of the two strengths, labelled by the tier that gave it (text on a tie).
+5. **Match facts:** a text match names the search terms its lines hold (`containsTerm`). A meaning match that
+   points at the same lines as one of the run's text matches is listed once, as the text match. Then each term
+   is checked once against the whole index (`hasChunk`) for `wordsNotFound`. No score threshold, baseline or
+   calibration exists: meaning candidates count only by their `nearest` order.
 6. **Snippet:** 2–3 lines from the first line holding a query word; each line has its secrets masked, then is
    cut to 200 characters, so a cut never leaves part of a secret.
 
-The facade adds `coverage` and `note`, and asks for a `meaningSync` pass when `nearest` answered `notSynced`.
+The facade adds `coverage`, holds `wordsNotFound` back while the Text step is incomplete, composes `note`, and asks for a `meaningSync` pass when `nearest` answered `notSynced`.
 
 ## Entry Points
 
@@ -150,7 +147,7 @@ The facade adds `coverage` and `note`, and asks for a `meaningSync` pass when `n
   gets the tool only when its definition selects it.
 - **GraphQL** (`api/graphql/types/memory-search.ts`): `memorySearch(query, limit)`, `memoryIndexStatus`,
   `startMemoryIndexing`, `rebuildMemoryIndex`, and `runFolderWorkJournal(runKey, workJournal)` for a `RUN_FOLDER`
-  run. Enum-like fields are upper case strings (`MEANING_INDEX`, `STRONG`, …).
+  run. Enum-like fields are upper case strings (`MEANING_INDEX`, `TEXT`, …).
 - **Memory page:** Search and Index tabs, and the Work Journal view of a run
   ([agent_memory.md](./agent_memory.md#trace-shape-and-graphql-view)).
 

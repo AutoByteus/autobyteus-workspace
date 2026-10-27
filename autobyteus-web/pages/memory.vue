@@ -276,7 +276,7 @@ function routeFocus(): JournalFocus | null {
     toLine: Number(queryValue('to')) || from,
     cue: queryValue('q') ?? null,
     kind: queryValue('kind') === 'meaning' ? 'meaning' : queryValue('kind') === 'text' ? 'text' : null,
-    strength: (['strong', 'fair', 'weak'] as const).find(value => value === queryValue('strength')) ?? null,
+    words: (queryValue('words') ?? '').split(',').filter(Boolean),
   };
 }
 
@@ -361,7 +361,7 @@ const changeSection = (section: MemorySection) => pushMemory({
  * result's subject. Memory search is local only, so the source is always local.
  */
 const openSearchResult = (result: SearchResult, match: SearchMatch) => {
-  const lines = { source: undefined, q: searchStore.query, file: match.file, from: String(match.fromLine), to: String(match.toLine), kind: match.kind, strength: match.strength };
+  const lines = { source: undefined, q: searchStore.query, file: match.file, from: String(match.fromLine), to: String(match.toLine), kind: match.kind, words: match.matchedWords.join(',') || undefined };
   const subject = result.subject;
   const memberName = result.member ?? result.agentName;
   if (subject.kind === 'TEAM_MEMBER') {

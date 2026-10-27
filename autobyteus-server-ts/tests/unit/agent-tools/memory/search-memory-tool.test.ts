@@ -11,18 +11,25 @@ const RESULT: MemorySearchResult = {
     agent: "Codex", team: null, member: null, org: null, runId: "codex_45ce", workspace: "/w/mcps", firstDay: "2026-08-25", latestDay: "2026-08-27",
     source: "Codex · run codex_45ce · 2026-08-27 · work_journal_000004.md:812-860", subject: { kind: "AGENT", runId: "codex_45ce", agentDefinitionId: null },
     matches: [{ journalFile: "/m/agents/codex_45ce/work_journal/work_journal_000004.md", lineStart: 812, lineEnd: 860, day: "2026-08-27",
-      snippet: "User: set up the DDNS updater", matchedBy: "text", strength: "strong", pointer: null }],
+      snippet: "User: set up the DDNS updater", matchedBy: "text", matchedWords: ["ddns", "updater"], pointer: null },
+    { journalFile: "/m/agents/codex_45ce/work_journal/work_journal_000001.md", lineStart: 4, lineEnd: 6, day: "2026-08-25",
+      snippet: "User: home router", matchedBy: "meaning", matchedWords: [], pointer: "cardPart" }],
   }],
   coverage: null,
-  note: null,
+  wordsNotFound: ["porkbun"],
+  note: "Not found in your memory: porkbun.",
 };
 const TOOL_RESULT = {
   results: [{
     agent: "Codex", runId: "codex_45ce", workspace: "/w/mcps", firstDay: "2026-08-25", latestDay: "2026-08-27",
     source: "Codex · run codex_45ce · 2026-08-27 · work_journal_000004.md:812-860",
     matches: [{ journalFile: "/m/agents/codex_45ce/work_journal/work_journal_000004.md", lines: "812-860", day: "2026-08-27",
-      snippet: "User: set up the DDNS updater", matchedBy: "text", strength: "strong" }],
+      snippet: "User: set up the DDNS updater", matchedBy: "text", matchedWords: ["ddns", "updater"] },
+    // A meaning match carries no words and no grade (UD-020).
+    { journalFile: "/m/agents/codex_45ce/work_journal/work_journal_000001.md", lines: "4-6", day: "2026-08-25", snippet: "User: home router", matchedBy: "meaning" }],
   }],
+  wordsNotFound: ["porkbun"],
+  note: "Not found in your memory: porkbun.",
 };
 
 const install = () => {
@@ -69,5 +76,9 @@ describe("search_memory", () => {
     expect(SEARCH_MEMORY_TOOL_MANIFEST.description).toContain("Results are pointers, not facts");
     // When to use it (API/E2E O-1): agents reach for it when the user refers to earlier work.
     expect(SEARCH_MEMORY_TOOL_MANIFEST.description).toMatch(/do you remember.*last time.*earlier we/);
+    // R-12 and UD-022: one wording for a meaning match; which match to open first, without grades.
+    expect(SEARCH_MEMORY_TOOL_MANIFEST.description).toContain("a match without matchedWords was found by meaning");
+    expect(SEARCH_MEMORY_TOOL_MANIFEST.description).toContain("open a run's first match (its newest)");
+    expect(SEARCH_MEMORY_TOOL_MANIFEST.description).not.toMatch(/strong|weak|strength/i);
   });
 });

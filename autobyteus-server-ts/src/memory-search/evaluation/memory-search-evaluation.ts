@@ -1,10 +1,11 @@
 import fs from "node:fs";
 import type { MemorySearchResult } from "../domain/memory-search-models.js";
+import { queryTerms } from "../index/memory-text-normalizer.js";
 import { maskSecrets } from "../search/secret-masker.js";
 
 /**
- * What a question checks: `answerable` (gates 1 and 2), `offTopic` (its key words occur in no run: it must end
- * with the only-weak note, AC-007) or `partial` (some of its words describe real work: reported, not gated).
+ * What a question checks: `answerable` (gates 1 and 2), `offTopic` (its key words occur in no journal: it must name
+ * them as not found, AC-007) or `partial` (some of its words describe real work: not in the gates).
  */
 export type EvaluationQuestionKind = "answerable" | "offTopic" | "partial";
 const KINDS: readonly EvaluationQuestionKind[] = ["answerable", "offTopic", "partial"];
@@ -42,14 +43,17 @@ export type EvaluationReport = Readonly<{
   /** Snippets, over every search, in which a secret pattern is still visible (R-008; should be 0). */
   unmaskedSecrets: number;
   /**
-   * Off-topic questions (UD-019, AC-007): each must end with the only-weak note (every match weak; no matches
-   * also passes). `failed` lists the IDs that did not.
+   * Words not found (AC-007, SR-006), for every question's first search, against the independent census of the
+   * journals: `mismatches` lists a question whose `wordsNotFound` names a word that occurs (`named`) or leaves out
+   * one that occurs nowhere (`missing`); `offTopicUnnamed` lists off-topic questions that name no word.
+   * Null when the census was not given.
    */
-  offTopic: Readonly<{ questions: number; passed: number; failed: readonly string[] }>;
-  /** Answerable questions whose first search ended with the only-weak (or no-match) note: false notes (AC-007). */
-  falseOnlyWeak: readonly string[];
-  /** Partial-match questions: reported (did the first search end with the note), not gated. */
-  partial: readonly Readonly<{ id: string; onlyWeak: boolean }>[];
+  wordsNotFound: Readonly<{
+    questions: number;
+    mismatches: readonly Readonly<{ id: string; named: readonly string[]; missing: readonly string[] }>[];
+    offTopic: number;
+    offTopicUnnamed: readonly string[];
+  }> | null;
   perQuestion: readonly EvaluationQuestionResult[];
 }>;
 
@@ -61,6 +65,8 @@ export type EvaluationOptions = Readonly<{
    * question file: its journal quotes every question and would otherwise answer them all by its own words.
    */
   askingRunId?: string | null;
+  /** The search terms that occur in no journal, from `termsAbsentFromJournals` over the same memory folder. */
+  absentTerms?: ReadonlySet<string> | null;
 }>;
 
 /** A question file: a JSON array of `{id, q, kind?, accept: [runId or run ID prefix, …], rephrasings?: [text, …], note?}`. */
@@ -89,12 +95,15 @@ const percentile = (values: readonly number[], share: number): number => {
   return sorted[Math.min(sorted.length - 1, Math.ceil(share * sorted.length) - 1)]!;
 };
 
+/** Every search term of each question, for the census (`termsAbsentFromJournals`). */
+export const evaluationTerms = (questions: readonly EvaluationQuestion[]): string[] => [...new Set(questions.flatMap((question) => queryTerms(question.q)))];
+
 /**
  * Runs the questions against a built memory index (R-016): gate 1 (the right run in the top 10 within at most 3
  * searches; the first search's top 10 as its proxy), gate 2 (rank and latency of the first search, for the
- * questions that pass gate 1), and the meaning-pointer check (every meaning match points into its file with a
- * snippet; how many each rule resolved), that no snippet shows a secret pattern, that each off-topic question
- * ends with the only-weak note and that no answerable question's first search does (AC-007).
+ * questions that pass gate 1), the meaning-pointer check (every meaning match points into its file with a
+ * snippet; how many each rule resolved), that no snippet shows a secret pattern, and that every question's
+ * `wordsNotFound` equals the words the census finds in no journal, every off-topic question naming some (AC-007).
  */
 export const evaluateMemorySearch = async (memory: Search, questions: readonly EvaluationQuestion[], options: EvaluationOptions = {}): Promise<EvaluationReport> => {
   const perQuestion: EvaluationQuestionResult[] = [];
@@ -109,18 +118,24 @@ export const evaluateMemorySearch = async (memory: Search, questions: readonly E
       if (!match.snippet.trim()) pointers.emptySnippet++;
     }
   };
-  // The note is set exactly when every match is weak (or nothing matched).
-  const endsOnlyWeak = async (question: EvaluationQuestion): Promise<boolean> => {
+  const absent = options.absentTerms ?? null;
+  const mismatches: Array<{ id: string; named: string[]; missing: string[] }> = [];
+  const offTopicUnnamed: string[] = [];
+  /** The first search's words not found, against the census. */
+  const checkWords = (question: EvaluationQuestion, result: MemorySearchResult): void => {
+    if (!absent) return;
+    const reported = new Set(result.wordsNotFound);
+    const terms = queryTerms(question.q);
+    const named = terms.filter((term) => reported.has(term) && !absent.has(term));
+    const missing = terms.filter((term) => absent.has(term) && !reported.has(term));
+    if (named.length || missing.length) mismatches.push({ id: question.id, named, missing });
+    if (question.kind === "offTopic" && !reported.size) offTopicUnnamed.push(question.id);
+  };
+  for (const question of questions.filter((item) => item.kind !== "answerable")) {
     const result = await memory.search(question.q, { limit: 10, askingRunId: options.askingRunId ?? null });
     countSnippets(result);
-    return result.note !== null;
-  };
-  const offTopic = questions.filter((question) => question.kind === "offTopic");
-  const offTopicFailed: string[] = [];
-  for (const question of offTopic) if (!await endsOnlyWeak(question)) offTopicFailed.push(question.id);
-  const partial: Array<{ id: string; onlyWeak: boolean }> = [];
-  for (const question of questions.filter((item) => item.kind === "partial")) partial.push({ id: question.id, onlyWeak: await endsOnlyWeak(question) });
-  const falseOnlyWeak: string[] = [];
+    checkWords(question, result);
+  }
   for (const question of questions.filter((item) => item.kind === "answerable")) {
     const isAccepted = (runId: string): boolean => question.accept.some((accepted) => runId.startsWith(accepted));
     let rank: number | null = null;
@@ -132,7 +147,7 @@ export const evaluateMemorySearch = async (memory: Search, questions: readonly E
       const result = await memory.search(text, { limit: 10, askingRunId: options.askingRunId ?? null });
       if (index === 0) {
         ms = performance.now() - started;
-        if (result.note !== null) falseOnlyWeak.push(question.id);
+        checkWords(question, result);
       }
       countSnippets(result);
       const position = result.results.findIndex((run) => isAccepted(run.runId));
@@ -161,9 +176,9 @@ export const evaluateMemorySearch = async (memory: Search, questions: readonly E
     },
     meaningPointers: pointers,
     unmaskedSecrets,
-    offTopic: { questions: offTopic.length, passed: offTopic.length - offTopicFailed.length, failed: offTopicFailed },
-    falseOnlyWeak,
-    partial,
+    wordsNotFound: absent ? {
+      questions: questions.length, mismatches, offTopic: questions.filter((question) => question.kind === "offTopic").length, offTopicUnnamed,
+    } : null,
     perQuestion,
   };
 };

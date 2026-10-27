@@ -11,8 +11,8 @@ import { MEMORY_SEARCH_MAX_LIMIT, resolveMemorySearchDefaultLimit } from "./sett
 import { MemorySearchStore } from "./store/memory-search-store.js";
 
 export const MEMORY_INDEX_NOT_BUILT = "Memory index not built yet: ask the user to start it on the Memory page.";
-const WEAK_ONLY = "Only weak matches; try other words.";
 const NO_MATCHES = "No matches; try other words.";
+const wordList = (words: readonly string[]): string => words.join(", ");
 
 export type MemorySearchDependencies = Readonly<{
   appDataDir: string;
@@ -29,8 +29,8 @@ export type MemorySearchOptions = Readonly<{ limit?: number | null; askingRunId?
 
 /**
  * The memory-search subsystem's one public boundary (tools, GraphQL, startup): search, the index status and
- * the indexing commands. It resolves the default-limit setting, turns the tiers' states into the coverage and
- * weak-match notes, asks the pipeline for the meaning sync when nothing synced the cards since the start, and
+ * the indexing commands. It resolves the default-limit setting, turns the tiers' states into the coverage note,
+ * names the words no journal holds once the text index is complete, asks the pipeline for the meaning sync when nothing synced the cards since the start, and
  * owns the process lifetime. Searching only reads the indexes.
  */
 export class MemorySearch {
@@ -43,15 +43,14 @@ export class MemorySearch {
     this.memoryDir = path.resolve(deps.memoryDir);
     const journals = deps.journals ?? getWorkJournalService();
     const embeddings = deps.embeddings ?? getEmbeddingIndex;
-    const activeModelId = deps.activeModelId ?? (() => resolveActiveEmbeddingModel().id);
     this.store = new MemorySearchStore(path.join(deps.appDataDir, "memory-search", "memory-search.sqlite"));
     this.pipeline = new MemoryIndexPipeline({
       store: this.store, journals, embeddings,
       discovery: deps.discovery ?? new MemoryRunDiscovery(deps.memoryDir),
-      activeModelId,
+      activeModelId: deps.activeModelId ?? (() => resolveActiveEmbeddingModel().id),
       quietMs: deps.quietMs,
     });
-    this.searchService = new MemorySearchService({ store: this.store, journals, embeddings, activeModelId });
+    this.searchService = new MemorySearchService({ store: this.store, journals, embeddings });
   }
 
   /** Server start (step 9): follow journal changes; catch up when the index was built before. Loads no model. */
@@ -64,22 +63,27 @@ export class MemorySearch {
     const limit = Math.min(MEMORY_SEARCH_MAX_LIMIT, Math.max(1, Math.floor(options.limit ?? resolveMemorySearchDefaultLimit())));
     const status = this.pipeline.status();
     if (!status.textIndexHasContent) {
-      return { results: [], coverage: status.state === "building" ? this.buildingCoverage(status) ?? MEMORY_INDEX_NOT_BUILT : MEMORY_INDEX_NOT_BUILT, note: null };
+      return { results: [], coverage: status.state === "building" ? this.buildingCoverage(status) ?? MEMORY_INDEX_NOT_BUILT : MEMORY_INDEX_NOT_BUILT, wordsNotFound: [], note: null };
     }
     const outcome = await this.searchService.search(query, { limit, askingRunId: options.askingRunId ?? null });
     // Only when the Meaning step would embed: with another model or no model files it would skip (CR-002).
     if (outcome.meaning.collection === "notSynced" && this.pipeline.isBuilt() && !this.pipeline.isRunning() && this.pipeline.canSyncMeaning()) {
       void this.pipeline.request({ kind: "meaningSync" }).catch(() => undefined);
     }
-    const matches = outcome.results.flatMap((result) => result.matches);
     const coverage = this.coverage(status, outcome);
-    // While the index is incomplete, weak may only mean missing cards: the coverage note says so instead (R-10).
-    const weakOnly = !coverage && matches.every((match) => match.strength === "weak");
-    return {
-      results: outcome.results,
-      coverage,
-      note: !outcome.results.length ? NO_MATCHES : weakOnly ? WEAK_ONLY : null,
-    };
+    // Absence is a fact only when the text index covers every journal file (SR-006); a queued live update does
+    // not hold it back (R-13: lines from the last turn are indexed within the live debounce).
+    const textComplete = status.steps.find((step) => step.step === "textIndex")?.state === "done";
+    const wordsNotFound = textComplete ? outcome.wordsNotFound : [];
+    return { results: outcome.results, coverage, wordsNotFound, note: this.note(outcome.results.length, outcome.terms, wordsNotFound) };
+  }
+
+  /** The note (SR-006), in this order: no matches; none of the search words found; some not found; else none. */
+  private note(results: number, terms: readonly string[], wordsNotFound: readonly string[]): string | null {
+    if (!results) return NO_MATCHES;
+    if (wordsNotFound.length && wordsNotFound.length === terms.length) return `None of these words appear in your memory: ${wordList(wordsNotFound)}.`;
+    if (wordsNotFound.length) return `Not found in your memory: ${wordList(wordsNotFound)}.`;
+    return null;
   }
 
   indexStatus(): MemoryIndexStatus {

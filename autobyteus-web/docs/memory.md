@@ -188,16 +188,21 @@ The Search tab searches what past runs did, in any words or language, through th
 with results; it is disabled until the text index has content (`Index your memory to search it…`, with
 `Index now`).
 
-- One card per run, best first: agent (`team / member` for members), run ID, workspace, first and latest day, and
-  1–2 matches newest first, each with its journal file, lines, day, a 2–3 line snippet (secrets masked by the
-  server), `Words`/`Meaning` and `Strong`/`Fair`/`Weak`. A line says results are pointers, not facts.
-- Honest states: `Only weak matches` (amber, the results still listed; from the server's `note`, which it holds
-  back while the index is incomplete), `No matches` with a suggestion (never "nothing in memory"), a blue
-  coverage note while the Text or Meaning index is incomplete, and an error with `Retry`.
+- One card per run, best first: agent (`team / member` for members), `run ID · workspace` on one line, the day or
+  first–latest range, and 1–2 matches newest first, each with its journal file, lines, its own day (only when the
+  card's date does not already say it) and a 2–3 line snippet (secrets masked by the server). A text match shows
+  `Words: <found words>` (`matchedWords`); a meaning match carries no label. No match carries a grade (UD-020). A
+  line says results are pointers, not facts; the whole match is the click target.
+- Honest states, from the server's `wordsNotFound` (which it leaves empty while the Text index is incomplete): a
+  gray `Not found in your memory: <words>.` when some search words occur in no journal; an amber `None of these
+  words appear in your memory: <words>.` when no match holds any search word; the results are still listed. Also
+  `No matches` with a suggestion (never "nothing in memory"), a blue coverage note while the Text or Meaning index
+  is incomplete, and an error with `Retry`.
 - Opening a match (or a card header, for its first match) opens the run detail at the matched lines, addressed by
   the result's `subject`: `agent-inspector`, `team-inspector`, `org-inspector`, or `folder-inspector` (a run no
-  record names, read with `runFolderWorkJournal(runKey)`; it has a Work Journal tab only). The cue stays in the
-  address, so `Back to search results` returns to the same results.
+  record names, read with `runFolderWorkJournal(runKey)`; it has a Work Journal tab only). The cue (and a text
+  match's found words, for the banner `lines a–b · Words: …`) stays in the address, so `Back to search results`
+  returns to the same results.
 
 ## Memory Index
 
@@ -347,4 +352,4 @@ Coverage includes:
 - Backend unit and GraphQL e2e checks for memory-derived agent/team/org inclusion, one execution-tree read per root per list request, task-agent and task-team member targets with their group paths, each member target's own run id, org member views (including task-team members), no-memory exclusion, `Unattributed runs`, selected agent/team filtering, memory-view raw-trace lazy loading, selected raw-trace file listing/reads, invalid selector fallback, imported read-only source behavior, and merged-corpus preservation.
 - Backend Memory Sync API/E2E checks for hub enablement, URL candidates, one-time token handling, source config redaction, explicit draft and saved connection-test modes, REST batch ingestion, imported-source Memory Explorer reads, duplicate retry, source-token binding, latest-error source status, and unsafe path rejection.
 - Backend multi-process Memory Sync E2E starts two real server processes with isolated app-data directories, configures hub/source through HTTP GraphQL, validates saved-mode connection testing, syncs over HTTP, and asserts hub import files without requiring browser, Electron, Docker, or Kubernetes.
-- Frontend store/component/page tests for memory search (result mapping, weak/none/coverage/error states, opening each run kind by its subject), the memory index (status mapping, polling while building, Index now/Try again/Rebuild with confirmation, model changed), the Work Journal view (windows, jumps, matched lines, missing-journal states), Memory Home (Browse/Search/Index tabs, task-team tag), source selection and home-only sources refresh, one request per navigation, agent detail, team and org detail with the member tree, inspector targets, direct route restoration, search/pagination behavior, tab-specific raw-trace fetching, raw-trace file selector state/rendering, Memory Sync tab entry, source-aware query variables, form-preserving Memory Sync status refresh, saved-vs-draft connection-test dispatch, inline connection feedback, `Current job`/`Last sync` precedence, and sync button loading state.
+- Frontend store/component/page tests for memory search (result mapping, found words, words-not-found/none/coverage/error states, opening each run kind by its subject), the memory index (status mapping, polling while building, Index now/Try again/Rebuild with confirmation, model changed), the Work Journal view (windows, jumps, matched lines, missing-journal states), Memory Home (Browse/Search/Index tabs, task-team tag), source selection and home-only sources refresh, one request per navigation, agent detail, team and org detail with the member tree, inspector targets, direct route restoration, search/pagination behavior, tab-specific raw-trace fetching, raw-trace file selector state/rendering, Memory Sync tab entry, source-aware query variables, form-preserving Memory Sync status refresh, saved-vs-draft connection-test dispatch, inline connection feedback, `Current job`/`Last sync` precedence, and sync button loading state.

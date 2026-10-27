@@ -14,7 +14,7 @@ const present = <T extends Record<string, unknown>>(value: T): Partial<T> =>
 
 const toToolMatch = (match: MemorySearchMatch) => present({
   journalFile: match.journalFile, lines: `${match.lineStart}-${match.lineEnd}`, day: match.day,
-  snippet: match.snippet, matchedBy: match.matchedBy, strength: match.strength,
+  snippet: match.snippet, matchedBy: match.matchedBy, matchedWords: match.matchedWords.length ? [...match.matchedWords] : undefined,
 });
 
 const toToolRun = (run: MemorySearchRunResult) => ({
@@ -23,10 +23,10 @@ const toToolRun = (run: MemorySearchRunResult) => ({
   matches: run.matches.map(toToolMatch),
 });
 
-/** The agent-facing result: runs best first; `coverage` and `note` only when they say something. */
+/** The agent-facing result: runs best first; `coverage`, `wordsNotFound` and `note` only when they say something. */
 export const toSearchMemoryToolResult = (result: MemorySearchResult) => ({
   results: result.results.map(toToolRun),
-  ...present({ coverage: result.coverage, note: result.note }),
+  ...present({ coverage: result.coverage, wordsNotFound: result.wordsNotFound.length ? [...result.wordsNotFound] : undefined, note: result.note }),
 });
 
 /** `search_memory` for the asking run (left out of its own results), through the memory-search boundary. */

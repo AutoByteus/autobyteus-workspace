@@ -8,9 +8,11 @@ export const SEARCH_MEMORY_TOOL_DESCRIPTION = [
   "Use it whenever the user or the task refers to earlier work: \"do you remember\", \"last time\", \"earlier we\", \"before\", \"where is the … we set up\", or a decision, setup or file made in a past conversation.",
   `Returns up to limit runs (1 to ${MEMORY_SEARCH_MAX_LIMIT}; default from the server setting, normally 10), best first.`,
   "Each result names who (agent, and team or org with member when there is one), runId, workspace, the first and latest day mentioned, a source line to cite,",
-  "and its matches: journalFile (an absolute path), lines, day, a short snippet, matchedBy (text: by words; meaning: related by meaning) and strength (strong, fair, weak).",
-  "Results are pointers, not facts: open the best match's journalFile at its lines with your file tool before answering, and before searching again.",
-  "Answer from the run you read and cite its source. When several runs differ, prefer the latest mention and say so. If matches are weak, try other words.",
+  "and its matches: journalFile (an absolute path), lines, day, a short snippet and matchedBy.",
+  "A text match lists the query words it contains (matchedWords); a match without matchedWords was found by meaning.",
+  "wordsNotFound names query words that occur in no indexed journal (the index follows new turns within about a minute).",
+  "Results are pointers, not facts: open a run's first match (its newest) at its lines with your file tool before answering, and the second when the first does not answer, before searching again.",
+  "Answer from the run you read and cite its source. When several runs differ, prefer the latest mention and say so. If what you read does not answer the question, try other words.",
   "coverage says how much is indexed while indexing is incomplete; with no index yet, ask the user to start it on the Memory page.",
 ].join(" ");
 

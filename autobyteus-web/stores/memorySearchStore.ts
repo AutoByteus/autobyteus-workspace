@@ -12,7 +12,6 @@ import type {
   SearchResult,
   StepId,
   StepState,
-  Strength,
 } from '~/types/memorySearch';
 
 /**
@@ -37,7 +36,7 @@ type ServerStatus = {
   meaningNote?: string | null;
 };
 type ServerSubject = { kind: string; runId?: string | null; agentDefinitionId?: string | null; teamRunId?: string | null; orgRunId?: string | null; agentRunId?: string | null; runKey?: string | null };
-type ServerMatch = { journalFileName: string; lineStart: number; lineEnd: number; day?: string | null; snippet: string; matchedBy: string; strength: string };
+type ServerMatch = { journalFileName: string; lineStart: number; lineEnd: number; day?: string | null; snippet: string; matchedBy: string; matchedWords?: string[] | null };
 export type ServerSearchResult = {
   agent: string; team?: string | null; member?: string | null; org?: string | null; runId: string; workspace?: string | null;
   firstDay?: string | null; latestDay?: string | null; subject: ServerSubject; matches: ServerMatch[];
@@ -107,7 +106,7 @@ const toMatch = (match: ServerMatch): SearchMatch => ({
   day: match.day ?? null,
   snippet: match.snippet.split('\n'),
   kind: match.matchedBy === 'MEANING' ? 'meaning' : 'text',
-  strength: match.strength.toLowerCase() as Strength,
+  matchedWords: match.matchedWords ?? [],
 });
 
 export const toSearchResult = (result: ServerSearchResult): SearchResult => {
@@ -202,7 +201,7 @@ export const useMemorySearchStore = defineStore('memorySearchStore', {
       this.error = null;
       try {
         if (!this.index) await this.loadIndexStatus();
-        const { data, errors } = await getApolloClient().query<{ memorySearch: { results: ServerSearchResult[]; note?: string | null } }>({
+        const { data, errors } = await getApolloClient().query<{ memorySearch: { results: ServerSearchResult[]; wordsNotFound?: string[] | null } }>({
           query: MEMORY_SEARCH,
           variables: { query },
           fetchPolicy: 'network-only',
@@ -210,8 +209,8 @@ export const useMemorySearchStore = defineStore('memorySearchStore', {
         if (requestId !== this.requestId) return;
         if (errors?.length) throw new Error(errors.map(e => e.message).join(', '));
         const results = data.memorySearch.results.map(toSearchResult);
-        // The server's note says "only weak matches" (and holds it back while the index is incomplete, R-10).
-        this.outcome = { cue: query, results, weakOnly: results.length > 0 && !!data.memorySearch.note };
+        // The server names no word as not found while the Text index is incomplete (SR-006).
+        this.outcome = { cue: query, results, wordsNotFound: data.memorySearch.wordsNotFound ?? [] };
         this.coverage = { textPct: this.textPct, meaningPct: this.meaningPct };
         this.status = 'ready';
       } catch {

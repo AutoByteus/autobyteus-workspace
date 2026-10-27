@@ -378,9 +378,9 @@ describe('memory page: opening a memory search result', () => {
     routerMock.push.mockClear();
   });
 
-  const match = { file: 'work_journal_active.md', fromLine: 812, toLine: 814, day: '2026-08-27', snippet: [], kind: 'text', strength: 'strong' };
+  const match = { file: 'work_journal_active.md', fromLine: 812, toLine: 814, day: '2026-08-27', snippet: [], kind: 'text', matchedWords: ['ddns', 'home'] };
   const base = { runId: 'run-1', agentName: 'Codex', team: null, member: null, workspace: '/w/home', firstDay: null, latestDay: null, matches: [match] };
-  const lines = { q: 'ddns', file: 'work_journal_active.md', from: '812', to: '814', kind: 'text', strength: 'strong' };
+  const lines = { q: 'ddns', file: 'work_journal_active.md', from: '812', to: '814', kind: 'text', words: 'ddns,home' };
 
   const open = async (result: Record<string, unknown>) => {
     const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: true });
@@ -409,7 +409,7 @@ describe('memory page: opening a memory search result', () => {
   });
 
   it('opens a run known only by its folder on its Work Journal, and goes back to the search results', async () => {
-    routeMock.query = { view: 'folder-inspector', runKey: 'agent_teams/old_team/run-1', runId: 'run-1', agentName: 'Codex', q: 'ddns', file: 'work_journal_active.md', from: '812', to: '814', kind: 'text', strength: 'strong' };
+    routeMock.query = { view: 'folder-inspector', runKey: 'agent_teams/old_team/run-1', runId: 'run-1', agentName: 'Codex', q: 'ddns', file: 'work_journal_active.md', from: '812', to: '814', kind: 'text', words: 'ddns,home' };
     routeMock.fullPath = '/memory?view=folder-inspector&runKey=agent_teams%2Fold_team%2Frun-1';
     const pinia = createTestingPinia({ createSpy: vi.fn, stubActions: true });
     const { useMemoryJournalStore } = await import('~/stores/memoryJournalStore');
@@ -417,7 +417,7 @@ describe('memory page: opening a memory search result', () => {
     const inspectorStore = useMemoryInspectorStore();
     const wrapper = shallowMount(MemoryPage, { global: { plugins: [pinia] } });
     await flushPromises();
-    expect(journal.open).toHaveBeenCalledWith({ kind: 'folder', runKey: 'agent_teams/old_team/run-1' }, 'run-1', { file: 'work_journal_active.md', fromLine: 812, toLine: 814, cue: 'ddns', kind: 'text', strength: 'strong' });
+    expect(journal.open).toHaveBeenCalledWith({ kind: 'folder', runKey: 'agent_teams/old_team/run-1' }, 'run-1', { file: 'work_journal_active.md', fromLine: 812, toLine: 814, cue: 'ddns', kind: 'text', words: ['ddns', 'home'] });
     expect(inspectorStore.inspect).not.toHaveBeenCalled();
     const inspector = wrapper.findComponent({ name: 'MemoryInspector' });
     expect(inspector.props('folderRun')).toEqual({ runKey: 'agent_teams/old_team/run-1', runId: 'run-1', agentName: 'Codex', groupName: null });

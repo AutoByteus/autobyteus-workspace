@@ -16,7 +16,7 @@ const status = (overrides: Record<string, unknown> = {}) => ({
 const serverResult = (overrides: Record<string, unknown> = {}) => ({
   agent: 'Codex', team: null, member: null, org: null, runId: 'codex_45ce', workspace: '/w/home', firstDay: '2026-08-25', latestDay: '2026-08-27',
   subject: { kind: 'AGENT', runId: 'codex_45ce', agentDefinitionId: 'codex', teamRunId: null, orgRunId: null, agentRunId: null, runKey: null },
-  matches: [{ journalFileName: 'work_journal_active.md', lineStart: 812, lineEnd: 814, day: '2026-08-27', snippet: 'User: set up DDNS\n  for home.example.org', matchedBy: 'TEXT', strength: 'STRONG' }],
+  matches: [{ journalFileName: 'work_journal_active.md', lineStart: 812, lineEnd: 814, day: '2026-08-27', snippet: 'User: set up DDNS\n  for home.example.org', matchedBy: 'TEXT', matchedWords: ['ddns', 'home.example.org'] }],
   ...overrides,
 });
 
@@ -56,11 +56,11 @@ describe('memorySearchStore', () => {
     expect(failed.steps[0]).toMatchObject({ state: 'failed', message: 'disk full' });
   });
 
-  it('maps results to the page: subject, team heading, lines, snippet lines, kind and strength', () => {
+  it('maps results to the page: subject, team heading, lines, snippet lines, kind and found words', () => {
     expect(toSearchResult(serverResult())).toEqual({
       runId: 'codex_45ce', agentName: 'Codex', team: null, member: null, workspace: '/w/home', firstDay: '2026-08-25', latestDay: '2026-08-27',
       subject: { kind: 'AGENT', runId: 'codex_45ce', agentDefinitionId: 'codex' },
-      matches: [{ file: 'work_journal_active.md', fromLine: 812, toLine: 814, day: '2026-08-27', snippet: ['User: set up DDNS', '  for home.example.org'], kind: 'text', strength: 'strong' }],
+      matches: [{ file: 'work_journal_active.md', fromLine: 812, toLine: 814, day: '2026-08-27', snippet: ['User: set up DDNS', '  for home.example.org'], kind: 'text', matchedWords: ['ddns', 'home.example.org'] }],
     });
     const member = toSearchResult(serverResult({ team: 'Software Team', member: 'lead', subject: { kind: 'TEAM_MEMBER', teamRunId: 'team_1', agentRunId: 'lead_1' } }));
     expect(member.team).toEqual({ name: 'Software Team', kind: 'team' });
@@ -68,23 +68,23 @@ describe('memorySearchStore', () => {
     const orgMember = toSearchResult(serverResult({ org: 'Alpha Org', team: 'research', subject: { kind: 'ORG_MEMBER', orgRunId: 'org_1', agentRunId: 'r_1' } }));
     expect(orgMember.team).toEqual({ name: 'Alpha Org / research', kind: 'org' });
     expect(toSearchResult(serverResult({ subject: { kind: 'RUN_FOLDER', runKey: 'agent_teams/old/m' } })).subject).toEqual({ kind: 'RUN_FOLDER', runKey: 'agent_teams/old/m' });
-    const meaning = toSearchResult(serverResult({ matches: [{ journalFileName: 'a.md', lineStart: 1, lineEnd: 2, day: null, snippet: 'x', matchedBy: 'MEANING', strength: 'WEAK' }] }));
-    expect(meaning.matches[0]).toMatchObject({ kind: 'meaning', strength: 'weak', day: null });
+    const meaning = toSearchResult(serverResult({ matches: [{ journalFileName: 'a.md', lineStart: 1, lineEnd: 2, day: null, snippet: 'x', matchedBy: 'MEANING', matchedWords: [] }] }));
+    expect(meaning.matches[0]).toMatchObject({ kind: 'meaning', matchedWords: [], day: null });
   });
 
-  it('searches with the server default limit and records coverage and weak-only results', async () => {
+  it('searches with the server default limit and records coverage and the words found in no journal', async () => {
     const { query } = client({ status: () => status({ state: 'BUILDING', steps: [step('FIND_RUNS', 'DONE', 3, 3), step('JOURNALS', 'DONE', 3, 3), step('TEXT_INDEX', 'RUNNING', 1, 4), step('MEANING_INDEX', 'WAITING', 0, 0)] }),
-      search: () => ({ results: [serverResult({ matches: [{ journalFileName: 'a.md', lineStart: 1, lineEnd: 2, day: null, snippet: 'x', matchedBy: 'TEXT', strength: 'WEAK' }] })], note: 'Only weak matches; try other words.' }) });
+      search: () => ({ results: [serverResult({ matches: [{ journalFileName: 'a.md', lineStart: 1, lineEnd: 2, day: null, snippet: 'x', matchedBy: 'MEANING', matchedWords: [] }] })], wordsNotFound: ['purple', 'elephant'], note: 'None of these words appear in your memory: purple, elephant.' }) });
     const store = useMemorySearchStore();
     await store.runSearch('  purple elephant ');
     expect(store.query).toBe('purple elephant');
     expect(store.status).toBe('ready');
-    expect(store.outcome).toMatchObject({ cue: 'purple elephant', weakOnly: true });
+    expect(store.outcome).toMatchObject({ cue: 'purple elephant', wordsNotFound: ['purple', 'elephant'] });
     expect(store.coverage).toEqual({ textPct: 25, meaningPct: 0 });
-    // Weak only comes from the server's note: while the index is incomplete the server holds the note back (R-10).
-    client({ search: () => ({ results: [serverResult({ matches: [{ journalFileName: 'a.md', lineStart: 1, lineEnd: 2, day: null, snippet: 'x', matchedBy: 'TEXT', strength: 'WEAK' }] })], note: null, coverage: 'The meaning index covers 3 of 9 journal files.' }) });
+    // The words come from the server, which names none while the Text index is incomplete (SR-006).
+    client({ search: () => ({ results: [serverResult({ matches: [{ journalFileName: 'a.md', lineStart: 1, lineEnd: 2, day: null, snippet: 'x', matchedBy: 'MEANING', matchedWords: [] }] })], wordsNotFound: [], note: null, coverage: 'Text index covers 1 of 4 journal files.' }) });
     await store.runSearch('purple elephant');
-    expect(store.outcome?.weakOnly).toBe(false);
+    expect(store.outcome?.wordsNotFound).toEqual([]);
     const searchCall = query.mock.calls.find(([options]) => (options as { variables?: unknown }).variables);
     expect((searchCall![0] as { variables: unknown }).variables).toEqual({ query: 'purple elephant' });
   });

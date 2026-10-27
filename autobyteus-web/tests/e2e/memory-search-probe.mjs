@@ -208,14 +208,14 @@ try {
   await sleep(500); // the bars' 300 ms width transition
   await shot(page, 'VIS-014-index-ready-1440x900');
 
-  // Search: results one per run, the matches with lines, kind and strength; the DDNS run first.
+  // Search: results one per run, the matches with lines and found words (no grade); the DDNS run first.
   await page.locator('[data-test="memory-section-search"]').click();
   await page.locator('[data-test="memory-search-input"]').fill('DDNS updater for the home domain');
   await page.locator('[data-test="memory-search-input"]').press('Enter');
   await page.locator('[data-test="memory-result"]').first().waitFor();
   const first = await page.locator('[data-test="memory-result"]').first().textContent();
   check('MS-PROBE-020', first.includes('codex_ddns_45ce'), 'The DDNS run is the first result', first);
-  check('MS-PROBE-021', /Words|Meaning/.test(first) && /Strong|Fair|Weak/.test(first) && /lines \d+–\d+/.test(first), 'A match shows its kind, strength and lines', first);
+  check('MS-PROBE-021', /Words: [^\n]*ddns/i.test(first) && !/Strong|Fair|Weak|Meaning/.test(first) && /lines \d+–\d+/.test(first), 'A text match shows its found words and lines, and no grade', first);
   check('MS-PROBE-022', (await page.url()).includes('q=DDNS'), 'The cue is in the address');
   await shot(page, 'VIS-006-search-results-1440x900');
 
@@ -225,12 +225,15 @@ try {
   await waitFor('the Chinese result', async () => (await page.locator('[data-test="memory-result"]').first().textContent())?.includes('daily_zh_77ae'));
   check('MS-PROBE-023', true, 'A Chinese cue finds the Chinese run');
 
-  // An off-topic cue: weak or no matches, said honestly; never "nothing in memory".
+  // An off-topic cue: its words are named as found in no journal (or no matches); never "nothing in memory".
   await page.locator('[data-test="memory-search-input"]').fill('purple elephant saxophone');
   await page.locator('[data-test="memory-search-input"]').press('Enter');
-  await waitFor('a weak or none note', async () => (await page.locator('[data-test="memory-search-weak"], [data-test="memory-search-none"]').count()) > 0);
-  check('MS-PROBE-024', !/nothing in memory/i.test(await page.locator('[data-test="memory-search-results"]').textContent()), 'Never says nothing is in memory');
-  await shot(page, 'VIS-007-search-weak-or-none-1440x900');
+  await waitFor('a words-not-found or none note', async () => (await page.locator('[data-test="memory-search-none-found"], [data-test="memory-search-some-not-found"], [data-test="memory-search-none"]').count()) > 0);
+  const offTopic = await page.locator('[data-test="memory-search-results"]').textContent();
+  check('MS-PROBE-024', !/nothing in memory/i.test(offTopic), 'Never says nothing is in memory');
+  check('MS-PROBE-025', (await page.locator('[data-test="memory-search-none"]').count()) > 0 || /None of these words appear in your memory: purple, elephant, saxophone\./.test(offTopic),
+    'The off-topic cue names its words as found in no journal', offTopic);
+  await shot(page, 'VIS-007-search-none-of-the-words-found-1440x900');
 
   // Open a result at its lines: banner, highlighted lines, Back to the same results.
   await page.locator('[data-test="memory-search-input"]').fill('DDNS updater for the home domain');

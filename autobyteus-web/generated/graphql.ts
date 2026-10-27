@@ -1558,8 +1558,8 @@ export type MemorySearchMatch = {
   lineEnd: Scalars['Int']['output'];
   lineStart: Scalars['Int']['output'];
   matchedBy: Scalars['String']['output'];
+  matchedWords: Array<Scalars['String']['output']>;
   snippet: Scalars['String']['output'];
-  strength: Scalars['String']['output'];
 };
 
 export type MemorySearchResult = {
@@ -1567,6 +1567,7 @@ export type MemorySearchResult = {
   coverage?: Maybe<Scalars['String']['output']>;
   note?: Maybe<Scalars['String']['output']>;
   results: Array<MemorySearchRunResult>;
+  wordsNotFound: Array<Scalars['String']['output']>;
 };
 
 export type MemorySearchRunResult = {

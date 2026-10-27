@@ -56,7 +56,7 @@ describe('memoryJournalStore', () => {
   it('opened from a result, reads one window around the matched lines of that file and jumps to them', async () => {
     const reads = journalServer();
     const store = useMemoryJournalStore();
-    await store.open({ kind: 'team', teamRunId: 'team-1', agentRunId: 'lead-1', source: LOCAL }, 'lead-1', { file: 'work_journal_000001.md', fromLine: 812, toLine: 815, cue: 'ddns', kind: 'text', strength: 'strong' });
+    await store.open({ kind: 'team', teamRunId: 'team-1', agentRunId: 'lead-1', source: LOCAL }, 'lead-1', { file: 'work_journal_000001.md', fromLine: 812, toLine: 815, cue: 'ddns', kind: 'text', words: ['ddns'] });
     expect(reads).toHaveLength(1);
     expect(reads[0]).toMatchObject({ name: 'GetTeamMemberRunWorkJournal', variables: { teamRunId: 'team-1', agentRunId: 'lead-1', workJournal: { journalFile: 'work_journal_000001.md', start: 662, end: 961 } } });
     expect(store.selectedFile).toBe('work_journal_000001.md');

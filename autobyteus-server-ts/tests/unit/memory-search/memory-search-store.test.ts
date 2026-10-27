@@ -3,7 +3,7 @@ import os from "node:os";
 import path from "node:path";
 import { DatabaseSync } from "node:sqlite";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
-import { queryTerms, toFtsQuery } from "../../../src/memory-search/index/memory-text-normalizer.js";
+import { queryTerms, toFtsPhrase, toFtsQuery } from "../../../src/memory-search/index/memory-text-normalizer.js";
 import { MemorySearchStore } from "../../../src/memory-search/store/memory-search-store.js";
 
 const run = (runKey: string) => ({ runKey, runId: runKey.split("/").at(-1)!, memoryDir: `/m/${runKey}`, agentName: "Codex", teamName: null, memberName: null,
@@ -28,8 +28,13 @@ describe("MemorySearchStore", () => {
     expect(store.textCandidates(toFtsQuery(queryTerms("兔子")), 10).map((hit) => hit.lineStart)).toEqual([10]);
     expect(store.allCards()).toEqual([{ id: "agents/a/work_journal/work_journal_active.md", runKey: "agents/a", journalFile: "work_journal_active.md", text: card.text, parts: card.parts }]);
     expect(store.runDays("agents/a")).toEqual({ firstDay: "2026-08-25", latestDay: "2026-08-26" });
-    // The text index's own vocabulary: chunks per token (ideographs single tokens), absent tokens left out.
-    expect(store.tokenChunkCounts(["ddns", "updater", "兔", "zebra"])).toEqual({ counts: new Map([["ddns", 1], ["updater", 1], ["兔", 1]]), chunks: 2 });
+    // One term's exact phrase (SR-006 wordsNotFound): adjacent tokens only, ideographs as two-character phrases.
+    expect(store.hasChunk(toFtsPhrase("ddns"))).toBe(true);
+    expect(store.hasChunk(toFtsPhrase("ddns.updater"))).toBe(true);
+    expect(store.hasChunk(toFtsPhrase("updater.ddns"))).toBe(false);
+    expect(store.hasChunk(toFtsPhrase("兔子"))).toBe(true);
+    expect(store.hasChunk(toFtsPhrase("游兔"))).toBe(false);
+    expect(store.hasChunk(toFtsPhrase("zebra"))).toBe(false);
     store.close();
     const db = new DatabaseSync(file);
     expect(db.prepare("SELECT body FROM chunk_text").all()).toEqual([{ body: null }, { body: null }]);

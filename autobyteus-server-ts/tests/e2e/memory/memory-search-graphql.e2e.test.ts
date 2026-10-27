@@ -72,14 +72,15 @@ describe("Memory search GraphQL e2e", () => {
     const found = await exec<{ memorySearch: { results: Array<Record<string, unknown>> } }>(`query {
       memorySearch(query: "DDNS updater", limit: 5) {
         results { agent runId firstDay source subject { kind runId agentDefinitionId runKey }
-          matches { journalFileName lineStart lineEnd day snippet matchedBy strength } }
-        coverage note
+          matches { journalFileName lineStart lineEnd day snippet matchedBy matchedWords } }
+        coverage wordsNotFound note
       } }`);
     expect(found.memorySearch.results[0]).toMatchObject({
       agent: "Codex", runId: "codex_ddns", firstDay: "2026-08-25",
       subject: { kind: "AGENT", runId: "codex_ddns", agentDefinitionId: null, runKey: null },
-      matches: [{ journalFileName: "work_journal_active.md", day: "2026-08-25", matchedBy: "TEXT", strength: "STRONG", snippet: expect.stringContaining("DDNS") }],
+      matches: [{ journalFileName: "work_journal_active.md", day: "2026-08-25", matchedBy: "TEXT", matchedWords: ["ddns", "updater"], snippet: expect.stringContaining("DDNS") }],
     });
+    expect(found.memorySearch).toMatchObject({ wordsNotFound: [], note: null });
   });
 
   it("opens the Work Journal of a run known only by its folder; refuses any other key", async () => {

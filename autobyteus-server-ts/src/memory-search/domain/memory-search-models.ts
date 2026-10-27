@@ -50,8 +50,6 @@ export type JournalCard = Readonly<{
   parts: readonly JournalCardPart[];
 }>;
 
-export type MemoryMatchStrength = "strong" | "fair" | "weak";
-
 export type MemorySearchMatch = Readonly<{
   /** The journal file's absolute path, to open with a file tool. */
   journalFile: string;
@@ -60,7 +58,8 @@ export type MemorySearchMatch = Readonly<{
   day: string | null;
   snippet: string;
   matchedBy: "text" | "meaning";
-  strength: MemoryMatchStrength;
+  /** A text match: the query's search terms that occur in its lines, in query order. Empty for a meaning match. */
+  matchedWords: readonly string[];
   /**
    * How a meaning match's lines were chosen (AR-002): the same file's text chunk, the card part with the most
    * query terms, or the first request; null for a text match. For the evaluation, not shown to users.
@@ -87,7 +86,12 @@ export type MemorySearchResult = Readonly<{
   results: readonly MemorySearchRunResult[];
   /** While the index is incomplete or not built: how much it covers. */
   coverage: string | null;
-  /** When every match is weak: say so and suggest other words. */
+  /**
+   * The query's search terms that no chunk of the text index holds (checked by an exact phrase MATCH per term).
+   * Empty while the Text step is incomplete: absence is a fact only for a complete index.
+   */
+  wordsNotFound: readonly string[];
+  /** No matches, or the words named as not found (UD-020); null otherwise. */
   note: string | null;
 }>;
 

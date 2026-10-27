@@ -23,7 +23,6 @@ export interface IndexStatus {
   textIndexHasContent: boolean;
 }
 
-export type Strength = 'strong' | 'fair' | 'weak';
 export type MatchKind = 'text' | 'meaning';
 
 /** How the page opens a result: the run's memory view by its identity, or its folder for a run no record names. */
@@ -41,7 +40,8 @@ export interface SearchMatch {
   day: string | null;
   snippet: string[];
   kind: MatchKind;
-  strength: Strength;
+  /** The search words found in the matched lines (a text match); empty for a meaning match, which has no label. */
+  matchedWords: string[];
 }
 
 export interface SearchResult {
@@ -60,8 +60,8 @@ export interface SearchResult {
 export interface SearchOutcome {
   cue: string;
   results: SearchResult[];
-  /** Every match is weak: the page says so and suggests other words. */
-  weakOnly: boolean;
+  /** The query's words that occur in no indexed journal (empty while the Text index is incomplete). */
+  wordsNotFound: string[];
 }
 
 /** One file of a run's Work Journal, as the file rail lists it. */

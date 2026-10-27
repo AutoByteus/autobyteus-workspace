@@ -60,9 +60,10 @@ delegated run, …) are defined in the
   meaning index (agent, first requests, first reply openings, distinct
   actions), with the line ranges of its parts. It is not a summary written by a
   model.
-- **Words / Meaning:** the match labels on the Memory page: a match found by
-  the text index (Words) or by the meaning index (Meaning). The tool and the
-  API call them `text` and `meaning`.
+- **Words / Meaning:** how a match was found: by the text index (words), when
+  it names its matched words (`matchedWords`, "Words: …" on the Memory page),
+  or by the meaning index (meaning), when it names none. The tool and the API
+  call them `text` and `meaning` (`matchedBy`). Neither is a grade.
 - **Memory run:** one run folder known to the memory index, with its recorded
   names and runtime (`MemoryRun`). It is not a live run.
 
