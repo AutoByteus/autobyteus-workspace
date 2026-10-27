@@ -1,0 +1,12 @@
+# IMP-16 generated GraphQL code: no drift against the schema printed from this branch's server build (H-02, DEC-007)
+# command: node <SD-13 print-schema probe> autobyteus-server-ts/dist <schema>; graphql-codegen with codegen.ts writing to a temp file; diff with autobyteus-web/generated/graphql.ts
+# commit: 6fa5f443c6 (server dist built from it)
+# environment: macOS 26.5.2, node v22.23.1
+# date: 2026-10-27T19:33:45Z
+
+diff: 0 lines (identical)
+
+import lines:
+import gql from 'graphql-tag';
+import * as VueApolloComposable from '@vue/apollo-composable';
+import * as VueCompositionApi from 'vue';

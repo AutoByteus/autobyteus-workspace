@@ -1,0 +1,119 @@
+# IMP-06 web type gate self-check (AC-008 + fail-closed cases)
+# command: /tmp driver running 'node scripts/typecheck.mjs' per case in autobyteus-web after 'nuxt prepare'
+# commit: 9af64a9052 (+ temporary edits, each reverted)
+# environment: macOS 26.5.2, node v22.23.1, vue-tsc 3.3.13, typescript 5.9.3
+# date: 2026-10-27T18:37:39Z
+
+### SC-1 — type error added to production file utils/updateInterval.ts
+exit: 1
+[typecheck] Nuxt app (tsconfig.json): 272 errors, exit 2, 34.7s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 2.0s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.6s
+utils/updateInterval.ts(21,7): error TS2322: Type 'string' is not assignable to type 'number'.
+[typecheck] production errors: 1; test-file errors: 298 in 139 files (baseline 298 in 139 files)
+[typecheck] FAIL
+
+### SC-2 — one more type error in baselined test file stores/__tests__/definitionMutationCache.spec.ts (baseline 1)
+exit: 1
+[typecheck] Nuxt app (tsconfig.json): 272 errors, exit 2, 34.6s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 1.7s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.8s
+stores/__tests__/definitionMutationCache.spec.ts(110,102): error TS2322: Type '{ __typename: string; memberName: string; ref: string; refType: string; refScope: string; }[]' is not assignable to type 'AgentOrgMember[]'.
+stores/__tests__/definitionMutationCache.spec.ts(194,7): error TS2322: Type 'string' is not assignable to type 'number'.
+[typecheck] more errors than the baseline: stores/__tests__/definitionMutationCache.spec.ts (2, baseline 1)
+[typecheck] production errors: 0; test-file errors: 299 in 139 files (baseline 298 in 139 files)
+[typecheck] FAIL: fix the new type errors in the test files above
+
+### SC-3 — new test file utils/__tests__/gateSelfCheck.spec.ts with a type error
+exit: 1
+[typecheck] Nuxt app (tsconfig.json): 272 errors, exit 2, 35.4s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 2.3s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.6s
+utils/__tests__/gateSelfCheck.spec.ts(1,7): error TS2322: Type 'string' is not assignable to type 'number'.
+[typecheck] new test file with errors: utils/__tests__/gateSelfCheck.spec.ts (1)
+[typecheck] production errors: 0; test-file errors: 299 in 140 files (baseline 298 in 139 files)
+[typecheck] FAIL: fix the new type errors in the test files above
+
+### SC-4 — temporary bad types entry in electron/tsconfig.typecheck.json
+exit: 1
+[typecheck] Nuxt app (tsconfig.json): 271 errors, exit 2, 35.4s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 0 errors, exit 2, 1.1s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.6s
+[typecheck] FAIL: Electron main (electron/tsconfig.typecheck.json): an error without a file: error TS2688: Cannot find type definition file for 'gate-self-check-missing-types'.
+[typecheck] FAIL: Electron main (electron/tsconfig.typecheck.json): unexpected compiler output:   The file is in the program because:
+[typecheck] FAIL: Electron main (electron/tsconfig.typecheck.json): unexpected compiler output:     Entry point of type library 'gate-self-check-missing-types' specified in compilerOptions
+[typecheck] fewer errors than the baseline: electron/extensions/__tests__/managedExtensionService.realRelease.spec.ts (0, baseline 1)
+[typecheck] fewer errors than the baseline: electron/server/__tests__/BackendPortBindFaults.spec.ts (0, baseline 1)
+[typecheck] fewer errors than the baseline: electron/server/__tests__/BaseServerManager.spec.ts (0, baseline 3)
+[typecheck] fewer errors than the baseline: electron/server/__tests__/PortOwnerInspectorFaults.spec.ts (0, baseline 2)
+[typecheck] fewer errors than the baseline: electron/server/__tests__/StartupDelayLifecycle.spec.ts (0, baseline 8)
+[typecheck] fewer errors than the baseline: electron/server/__tests__/platformServerEnvironment.spec.ts (0, baseline 1)
+
+### SC-5 — temporary syntax error in build/tsconfig.json
+exit: 1
+[typecheck] Nuxt app (tsconfig.json): 271 errors, exit 2, 36.9s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 2.0s
+[typecheck] build scripts (build/tsconfig.json): 14 errors, exit 2, 1.2s
+build/scripts/afterPack.ts(9,34): error TS2792: Cannot find module 'electron-builder'. Did you mean to set the 'moduleResolution' option to 'nodenext', or to add aliases to the 'paths' option?
+build/scripts/build.ts(1,54): error TS2792: Cannot find module 'electron-builder'. Did you mean to set the 'moduleResolution' option to 'nodenext', or to add aliases to the 'paths' option?
+build/scripts/build.ts(3,25): error TS2792: Cannot find module 'dotenv'. Did you mean to set the 'moduleResolution' option to 'nodenext', or to add aliases to the 'paths' option?
+build/scripts/generateIcons.ts(1,19): error TS2792: Cannot find module 'sharp'. Did you mean to set the 'moduleResolution' option to 'nodenext', or to add aliases to the 'paths' option?
+build/scripts/generateIcons.ts(2,8): error TS1192: Module '"fs"' has no default export.
+build/scripts/generateIcons.ts(3,8): error TS1259: Module '"path"' can only be default-imported using the 'allowSyntheticDefaultImports' flag
+build/scripts/generateIcons.ts(4,8): error TS1259: Module '"/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/node_modules/.pnpm/@types+to-ico@1.1.3/node_modules/@types/to-ico/index"' can only be default-imported using the 'allowSyntheticDefaultImports' flag
+build/tsconfig.json(3,24): error TS1136: Property assignment expected.
+build/tsconfig.json(4,1): error TS1005: '}' expected.
+
+### SC-6 — vue-tsc killed (SIGKILL) during the run
+exit: 1
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 2.0s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.7s
+[typecheck] FAIL: Nuxt app (tsconfig.json): the compiler ended by signal SIGKILL
+[typecheck] fewer errors than the baseline: components/agentInput/__tests__/TeamComposerPublication.spec.ts (0, baseline 2)
+[typecheck] fewer errors than the baseline: components/agentOrgs/__tests__/AgentOrgOwnedAuthoring.spec.ts (0, baseline 1)
+[typecheck] fewer errors than the baseline: components/agents/__tests__/GroupableTagInput.spec.ts (0, baseline 3)
+[typecheck] fewer errors than the baseline: components/applications/__tests__/ApplicationIframeHost.spec.ts (0, baseline 1)
+[typecheck] fewer errors than the baseline: components/applications/__tests__/ApplicationImmersiveControlPanel.spec.ts (0, baseline 1)
+[typecheck] fewer errors than the baseline: components/applications/__tests__/ApplicationLaunchSetupPanel.spec.ts (0, baseline 2)
+[typecheck] fewer errors than the baseline: components/applications/__tests__/ApplicationShell.spec.ts (0, baseline 5)
+[typecheck] fewer errors than the baseline: components/applications/__tests__/ApplicationSurface.spec.ts (0, baseline 1)
+[typecheck] fewer errors than the baseline: components/applications/setup/__tests__/ApplicationTeamLaunchProfileEditor.spec.ts (0, baseline 7)
+
+### SC-7 — baseline count raised to 2 for a file with 1 error (a lower count than listed)
+exit: 1
+[typecheck] Nuxt app (tsconfig.json): 271 errors, exit 2, 34.4s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 1.8s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.6s
+[typecheck] fewer errors than the baseline: stores/__tests__/definitionMutationCache.spec.ts (1, baseline 2)
+[typecheck] production errors: 0; test-file errors: 298 in 139 files (baseline 299 in 139 files)
+[typecheck] FAIL: test-file errors went down; shrink the baseline with `pnpm typecheck:update-baseline`
+
+### SC-8 — typecheck:update-baseline after SC-7 shrinks the count to 1
+exit: 0
+[typecheck] Nuxt app (tsconfig.json): 271 errors, exit 2, 34.1s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 1.7s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.6s
+[typecheck] fewer errors than the baseline: stores/__tests__/definitionMutationCache.spec.ts (1, baseline 2)
+[typecheck] production errors: 0; test-file errors: 298 in 139 files (baseline 299 in 139 files)
+[typecheck] baseline written: 298 errors in 139 files (was 299 in 139)
+
+SC-8: baseline equal to the committed one after the shrink
+### SC-9 — typecheck:update-baseline with one more error in a baselined test file
+exit: 1
+[typecheck] Nuxt app (tsconfig.json): 272 errors, exit 2, 35.9s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 2.2s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.6s
+stores/__tests__/definitionMutationCache.spec.ts(110,102): error TS2322: Type '{ __typename: string; memberName: string; ref: string; refType: string; refScope: string; }[]' is not assignable to type 'AgentOrgMember[]'.
+stores/__tests__/definitionMutationCache.spec.ts(194,7): error TS2322: Type 'string' is not assignable to type 'number'.
+[typecheck] more errors than the baseline: stores/__tests__/definitionMutationCache.spec.ts (2, baseline 1)
+[typecheck] production errors: 0; test-file errors: 299 in 139 files (baseline 298 in 139 files)
+[typecheck] FAIL: the baseline only shrinks; fix the new or higher test-file errors above
+
+SC-9: baseline unchanged after the refused update
+### SC-10 — no edits
+exit: 0
+[typecheck] Nuxt app (tsconfig.json): 271 errors, exit 2, 35.4s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 2.0s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.6s
+[typecheck] production errors: 0; test-file errors: 298 in 139 files (baseline 298 in 139 files)
+

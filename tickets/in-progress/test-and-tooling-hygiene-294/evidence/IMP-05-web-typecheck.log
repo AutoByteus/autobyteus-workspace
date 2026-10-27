@@ -1,0 +1,18 @@
+# IMP-05 web type gate
+# command: pnpm -C autobyteus-web typecheck
+# commit: 6fa5f443c6
+# environment: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# date: 2026-10-27T19:30:23Z
+
+> autobyteus@1.5.9-beta.13 typecheck /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/autobyteus-web
+> nuxt prepare && node ./scripts/typecheck.mjs
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+ WARN  Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/autobyteus-web/stores/serverStore.ts" is used
+ WARN  Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/autobyteus-web/stores/serverStore.ts" is used
+[typecheck] Nuxt app (tsconfig.json): 271 errors, exit 2, 33.6s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 2.4s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.6s
+[typecheck] production errors: 0; test-file errors: 298 in 139 files (baseline 298 in 139 files)
+[typecheck] PASS
+exit 0
