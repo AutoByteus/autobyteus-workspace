@@ -27,6 +27,8 @@ const { chromium } = require('playwright-core');
 const webDir = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..');
 const root = path.dirname(webDir);
 const serverDir = path.join(root, 'autobyteus-server-ts');
+// The backends have no outside network (see the fixture), so meaning search is unavailable and PT-E2E-013 is exact-only.
+const outsideNetworkOffline = path.join(webDir, 'tests/e2e/fixtures/outside-network-offline.mjs');
 const arg = (name, fallback) => {
   const value = process.argv.find(item => item.startsWith(`--${name}=`));
   return value ? value.slice(name.length + 3) : fallback;
@@ -111,6 +113,7 @@ const createNode = async (ownedRoot, name) => {
     AUTOBYTEUS_SERVER_HOST: url, AUTOBYTEUS_LOG_DIR: path.join(dataRoot, 'logs'),
     AUTOBYTEUS_MEMORY_DIR: path.join(dataRoot, 'memory'),
     AUTOBYTEUS_TEMP_WORKSPACE_DIR: path.join(dataRoot, 'temp_workspace'),
+    OUTSIDE_NETWORK_LOG: path.join(outputDir, `${name}-outside-network.log`),
   };
   await fs.writeFile(path.join(dataRoot, '.env'), [
     'APP_ENV=development', 'DB_TYPE=sqlite', `DATABASE_URL=${databaseUrl}`, `AUTOBYTEUS_SERVER_HOST=${url}`,
@@ -120,7 +123,7 @@ const createNode = async (ownedRoot, name) => {
   return { name, dataRoot, port, url, env, process: null };
 };
 const startNode = async node => {
-  node.process = start(process.execPath, [path.join(serverDir, 'dist/app.js'), '--host', '127.0.0.1', '--port', String(node.port), '--data-dir', node.dataRoot],
+  node.process = start(process.execPath, ['--import', outsideNetworkOffline, path.join(serverDir, 'dist/app.js'), '--host', '127.0.0.1', '--port', String(node.port), '--data-dir', node.dataRoot],
     serverDir, node.env, path.join(outputDir, `${node.name}-backend.log`));
   await waitFor(`${node.name} health`, async () => {
     if (exited(node.process)) throw new Error(`${node.name} exited ${node.process.exitCode}/${node.process.signalCode}`);
@@ -578,6 +581,12 @@ try {
     await waitFor('60 filtered rows', async () => await page.locator('div[data-testid^=project-task-row-]').count() === 60);
     assert(await page.getByTestId('project-task-column-TODO').getByTestId('project-task-column-count').innerText() === '60', 'Filtered count');
     assert((await api.project(nodeA, id)).taskCount === 120, 'Deletion/full count not search-filtered');
+    // The backend has no outside network: meaning search cannot download its model and reports itself unavailable,
+    // so the board's no-match below is the exact tier alone, not a model-dependent meaning result.
+    let meaning;
+    await waitFor('meaning search settled', async () => (meaning = (await gql(nodeA, 'query($p: String!, $q: String!) { searchProjectTasks(projectId: $p, query: $q) { meaningSearch { state reason } } }',
+      { p: id, q: 'unmatched' })).searchProjectTasks.meaningSearch).state !== 'PREPARING', 120000);
+    assert(meaning.state === 'UNAVAILABLE', `Meaning search unavailable on the offline node: ${JSON.stringify(meaning)}`); obs.meaningSearch = meaning;
     await search().fill('unmatched'); await page.getByTestId('project-tasks-no-match').waitFor(); await page.getByTestId('project-tasks-clear-search').click();
     assert(JSON.stringify(await api.tasks(nodeA, id)) === JSON.stringify(before), 'Search is read-only'); obs.total = 120;
     await api.deleteProject(nodeA, id);
