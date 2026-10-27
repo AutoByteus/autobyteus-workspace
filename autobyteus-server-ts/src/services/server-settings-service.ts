@@ -40,9 +40,11 @@ import {
   SHOW_INTERNAL_AGENTS_SETTING_KEY,
 } from "../config/show-internal-agents-setting.js";
 import {
+  MODEL_ROUTER_LLM_CONFIG_SETTING_KEY,
   MODEL_ROUTER_MODEL_SETTING_KEY,
   MODEL_ROUTER_RUNTIME_SETTING_KEY,
   MODEL_ROUTING_ENABLED_SETTING_KEY,
+  normalizeModelRouterLlmConfigForPersistence,
   normalizeModelRouterModelForPersistence,
   normalizeModelRouterRuntimeForPersistence,
   normalizeModelRoutingEnabledForPersistence,
@@ -230,6 +232,13 @@ export class ServerSettingsService {
       "The Model Router agent's model on its runtime. Set on Settings → Model Routing.",
       true,
       { normalizeForPersistence: normalizeModelRouterModelForPersistence },
+    );
+
+    this.registerPredefinedSetting(
+      MODEL_ROUTER_LLM_CONFIG_SETTING_KEY,
+      "The Model Router agent's model settings (a JSON object, e.g. its thinking level); empty means none. Set on Settings → Model Routing.",
+      true,
+      { normalizeForPersistence: normalizeModelRouterLlmConfigForPersistence },
     );
 
     this.registerPredefinedSetting(

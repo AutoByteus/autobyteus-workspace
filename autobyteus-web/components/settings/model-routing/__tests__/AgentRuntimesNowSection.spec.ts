@@ -10,6 +10,13 @@ vi.mock('~/stores/windowNodeContextStore', () => ({
 vi.mock('~/stores/nodeStore', () => ({
   useNodeStore: () => ({ getEntryById: (id: string) => ({ name: id === 'embedded-local' ? 'Embedded Node' : 'Docker Node' }) }),
 }))
+/** autobyteus-313: the app's model catalog, synthesized: a catalog label for the Codex model only. */
+const catalog = vi.hoisted(() => ({
+  ensureCatalog: vi.fn(),
+  modelLabel: (_runtimeKind: string, id: string) => id,
+  findModel: (runtimeKind: string, id: string) => (runtimeKind === 'codex_app_server' && id === 'gpt-5.6' ? { label: 'gpt-5.6' } : null),
+}))
+vi.mock('~/composables/chat/useChatModelCatalog', () => ({ useChatModelCatalog: () => catalog }))
 
 import AgentRuntimesNowSection from '../AgentRuntimesNowSection.vue'
 import { localTime } from '../availableAgentRuntimesPresentation'
@@ -112,6 +119,12 @@ describe('Model Routing → Runtimes (Agent runtimes now)', () => {
       .toEqual([`Billing period remaining not reported · resets ${at('2026-10-29T00:00:00.000Z')}`])
     expect(textOf(get('available-runtime-grok_build-limits-note'))).toBe('Grok does not report how much of the period is used.')
     expect(textOf(get('available-runtime-grok_build-models'))).toContain('Grok 4.7 grok-4.7 256K context')
+    // autobyteus-313 AC-004: the app's runtime names; a model the app's catalog knows has the menu's label (the report's
+    // name otherwise).
+    expect(rows().map((row) => textOf(row.get('h4')))).toEqual(['Codex App Server', 'Claude Agent SDK', 'Antigravity CLI', 'Grok Build', 'AutoByteus'])
+    expect(all('available-model-name').map(textOf)).toContain('gpt-5.6')
+    expect(all('available-model-name').map(textOf)).not.toContain('GPT-5.6')
+    expect(catalog.ensureCatalog).toHaveBeenCalledWith('codex_app_server')
   })
 
   it('shows AutoByteus providers with balance, block and limit texts', async () => {

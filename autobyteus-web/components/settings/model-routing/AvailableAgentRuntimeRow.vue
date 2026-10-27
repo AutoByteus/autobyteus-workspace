@@ -1,7 +1,7 @@
 <template>
   <li class="py-5" :data-testid="`available-runtime-${entry.runtime}`">
     <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-      <h4 class="text-base font-semibold text-gray-900">{{ entry.name }}</h4>
+      <h4 class="text-base font-semibold text-gray-900">{{ runtimeKindToLabel(entry.runtime) }}</h4>
       <span
         v-if="external?.signIn === 'not checked'"
         class="inline-flex items-center gap-1.5 text-sm text-amber-700"
@@ -36,7 +36,7 @@
       <section :aria-label="t('settings.modelRouting.runtimesNow.models.heading')">
         <h5 class="text-xs font-medium text-gray-400">{{ t('settings.modelRouting.runtimesNow.models.heading') }}</h5>
         <div class="mt-1.5">
-          <AvailableModelList v-if="Array.isArray(external.models)" :models="external.models" :testid="`available-runtime-${entry.runtime}-models`" />
+          <AvailableModelList v-if="Array.isArray(external.models)" :runtime="entry.runtime" :models="external.models" :testid="`available-runtime-${entry.runtime}-models`" />
           <p v-else class="text-sm text-gray-500" :data-testid="`available-runtime-${entry.runtime}-models-unknown`">{{ t('settings.modelRouting.runtimesNow.models.unknown', { reason: unknownReason(external.models) ?? '' }) }}</p>
         </div>
       </section>
@@ -60,7 +60,7 @@
             <p v-if="provider.limits === 'not reported'" class="text-gray-500">{{ t('settings.modelRouting.runtimesNow.limits.notReported') }}</p>
             <p v-else-if="provider.limits" class="text-gray-500" data-testid="available-provider-limits-unknown">{{ t('settings.modelRouting.runtimesNow.limits.unknown', { reason: unknownReason(provider.limits) ?? '' }) }}</p>
           </div>
-          <AvailableModelList v-if="Array.isArray(provider.models)" :models="provider.models" testid="available-provider-models" />
+          <AvailableModelList v-if="Array.isArray(provider.models)" :runtime="entry.runtime" :models="provider.models" testid="available-provider-models" />
           <p v-else class="text-sm text-gray-500" data-testid="available-provider-models-unknown">{{ t('settings.modelRouting.runtimesNow.models.unknown', { reason: unknownReason(provider.models) ?? '' }) }}</p>
         </li>
       </ul>
@@ -70,6 +70,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import { runtimeKindToLabel } from '~/types/agent/AgentRunConfig'
 import type { AutoByteusEntry, AvailableAgentRuntimeEntry, ExternalAgentRuntimeEntry } from '~/types/availableAgentRuntimes'
 import AvailableModelList from './AvailableModelList.vue'
 import { isAutoByteusEntry, localTime, unknownReason } from './availableAgentRuntimesPresentation'

@@ -363,7 +363,7 @@ export const buildStudioServer = async (input: {
       applicationActiveAgentRuns: currentApplicationRuntime.hostManagement.activeAgentRuns,
     });
     // autobyteus-32: the node's Model Routing (it reads the runtime report composed just above).
-    releaseModelRouting = composeModelRouting({ appDataDir: input.appConfig.getAppDataDir() }).close;
+    releaseModelRouting = composeModelRouting({ appDataDir: input.appConfig.getAppDataDir(), modelSelectionValidator }).close;
     // After the runtime status: the background pass checks and updates the runtimes through it (AR-006).
     updateNotifications = composeUpdateNotifications({ runtimes: agentRuntimeStatus.service });
 

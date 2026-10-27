@@ -247,11 +247,13 @@ const layout = () => page.evaluate(() => {
   };
 });
 /** The page shows what the node answers: same runtimes, models, blocked models, limits and texts. */
+/** autobyteus-313 AC-004: the page names runtimes with the app's names (`runtimeKindToLabel`), not the report's. */
+const APP_RUNTIME_NAMES = { autobyteus: 'AutoByteus', codex_app_server: 'Codex App Server', claude_agent_sdk: 'Claude Agent SDK', antigravity_cli: 'Antigravity CLI', grok_build: 'Grok Build' };
 const assertPageMatches = (rows, report) => {
   assert(JSON.stringify(rows.map(row => row.runtime)) === JSON.stringify(report.agentRuntimes.map(entry => entry.runtime)), `runtimes: page ${rows.map(r => r.runtime)} vs api ${report.agentRuntimes.map(e => e.runtime)}`);
   for (const entry of report.agentRuntimes) {
     const row = rows.find(r => r.runtime === entry.runtime);
-    assert(row.name === entry.name, `${entry.runtime} name`);
+    assert(row.name === APP_RUNTIME_NAMES[entry.runtime], `${entry.runtime} name: ${row.name}`);
     if (entry.runtime === 'autobyteus') {
       assert(JSON.stringify(row.providers.map(p => p.provider)) === JSON.stringify(entry.providers.map(p => p.provider)), 'provider rows');
       for (const provider of entry.providers) {

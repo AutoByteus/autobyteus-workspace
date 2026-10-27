@@ -51,7 +51,7 @@
     </div>
 
     <div :id="`model-routing-panel-${activeTab}`" role="tabpanel" :aria-labelledby="`model-routing-tab-${activeTab}`" class="flex flex-col gap-5">
-      <ModelRoutingSetup v-if="activeTab === 'setup'" :report="report" :status="status" :saving="saving" @choose-launch="setLaunch" @open-agent="openAgent" />
+      <ModelRoutingSetup v-if="activeTab === 'setup'" :status="status" :saving="saving" @choose-launch="setLaunch" @open-agent="openAgent" />
       <ModelRoutingDecisions v-else-if="activeTab === 'decisions'" v-model:source="sourceFilter" :status="status" :focus="focus" @show-setup="select('setup')" @loaded="hasDecisions = $event" />
       <ModelRoutingOverview v-else-if="activeTab === 'overview'" :period="period" :status="status" @show-setup="select('setup')" />
       <AgentRuntimesNowSection v-else />
@@ -66,11 +66,9 @@ import { getApolloClient } from '~/utils/apolloClient'
 import { isOwnNodeWindow } from '~/utils/ownNodeWindow'
 import { useNodeStore } from '~/stores/nodeStore'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
-import { AvailableAgentRuntimes } from '~/graphql/queries/availableAgentRuntimesQueries'
 import { ModelRoutingStatusQuery } from '~/graphql/queries/modelRoutingQueries'
 import { OpenModelRouterAgent, SetModelRouterLaunch, SetModelRoutingEnabled } from '~/graphql/mutations/modelRoutingMutations'
-import type { AvailableAgentRuntimesReport } from '~/types/availableAgentRuntimes'
-import type { DecisionLocator, ModelRoutingStatus } from '~/types/modelRouting'
+import type { DecisionLocator, ModelRouterLaunch, ModelRoutingStatus } from '~/types/modelRouting'
 import { buildAgentRunChatRoute } from '~/services/workspace/workspaceNavigationService'
 import AgentRuntimesNowSection from './AgentRuntimesNowSection.vue'
 import ModelRoutingStatusStrip from './ModelRoutingStatusStrip.vue'
@@ -108,16 +106,6 @@ const readStatus = async (): Promise<void> => {
   }
 }
 
-// The router's runtime and model choices are the node's runtimes; "Agent runtimes now" reads them itself.
-const report = shallowRef<AvailableAgentRuntimesReport | null>(null)
-const readReport = async (): Promise<void> => {
-  try {
-    if (!await node.waitForBoundBackendReady()) return
-    const { data } = await getApolloClient().query({ query: AvailableAgentRuntimes, fetchPolicy: 'network-only', context: { queryDeduplication: false } })
-    report.value = data.availableAgentRuntimes as AvailableAgentRuntimesReport
-  } catch { /* the choices then show the saved launch only */ }
-}
-
 const mutate = async (run: () => Promise<ModelRoutingStatus>): Promise<void> => {
   saving.value = true
   error.value = ''
@@ -125,8 +113,8 @@ const mutate = async (run: () => Promise<ModelRoutingStatus>): Promise<void> => 
 }
 const setEnabled = (next: boolean): Promise<void> => mutate(async () =>
   (await getApolloClient().mutate({ mutation: SetModelRoutingEnabled, variables: { enabled: next } })).data.setModelRoutingEnabled)
-const setLaunch = (launch: Readonly<{ runtimeKind: string; llmModelIdentifier: string }>): Promise<void> => mutate(async () =>
-  (await getApolloClient().mutate({ mutation: SetModelRouterLaunch, variables: launch })).data.setModelRouterLaunch)
+const setLaunch = (launch: ModelRouterLaunch): Promise<void> => mutate(async () =>
+  (await getApolloClient().mutate({ mutation: SetModelRouterLaunch, variables: { ...launch } })).data.setModelRouterLaunch)
 
 /** "Talk to the router" opens the router's run by its ID, whether internal agents are shown or not. */
 const openAgent = async (): Promise<void> => {
@@ -142,7 +130,7 @@ const openAgent = async (): Promise<void> => {
   }
 }
 
-const load = (): void => { status.value = null; report.value = null; void readStatus(); void readReport() }
+const load = (): void => { status.value = null; void readStatus() }
 onMounted(load)
 watch(() => node.bindingRevision, load)
 

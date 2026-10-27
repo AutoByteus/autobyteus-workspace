@@ -1,0 +1,300 @@
+{
+  "cases": "API-01 (AC-002) and API-02 (AC-003)",
+  "commit": "e9c25f3801",
+  "command": "env -i PATH HOME(real, CLI sign-ins only) USER LOGNAME TMPDIR node API-01-02-live-router-launch-probe.mjs.txt <worktree> <out>",
+  "environment": "ENV-2: this branch's built server (dist/app.js, rebuilt from HEAD) on a fresh data root; real Claude Code (router claude_agent_sdk/sonnet, delegator haiku), real agy for the routed copies; throwaway CODEX_HOME",
+  "what_to_look_for": {
+    "API-01": "valid \u2192 routerLaunch.llmConfig {thinking_enabled:true, reasoning_effort:'high'}; invalidValue \u2192 'The model settings are invalid: Value is not one of the supported options.'; invalidType \u2192 '\u2026Expected boolean.'; modelNotOffered \u2192 \"The model 'no-such-model' is not available on claude_agent_sdk.\"; statusAfterRefusals = the valid launch",
+    "API-02": "checks all true; r1LlmConfig effort high, r2LlmConfig effort low; cli1 command has '--effort high', cli2 has the old '--effort high' process (same pid) and '--effort low'; stateFile records llmConfig"
+  },
+  "model": "sonnet",
+  "configSchema": {
+    "type": "object",
+    "properties": {
+      "thinking_enabled": {
+        "description": "Enable Claude extended thinking.",
+        "type": "boolean",
+        "default": false
+      },
+      "reasoning_effort": {
+        "description": "Controls Claude thinking depth. Higher effort may improve quality but increase latency.",
+        "type": "string",
+        "default": "medium",
+        "enum": [
+          "low",
+          "medium",
+          "high",
+          "xhigh",
+          "max"
+        ]
+      }
+    },
+    "required": []
+  },
+  "API-01": {
+    "valid": {
+      "data": {
+        "setModelRouterLaunch": {
+          "enabled": false,
+          "routerLaunch": {
+            "runtimeKind": "claude_agent_sdk",
+            "llmModelIdentifier": "sonnet",
+            "llmConfig": {
+              "thinking_enabled": true,
+              "reasoning_effort": "high"
+            }
+          },
+          "active": false,
+          "reasonCode": "OFF",
+          "reasonParams": {},
+          "reasonText": "Model Routing is off",
+          "agentRunId": null
+        }
+      }
+    },
+    "statusAfterValid": {
+      "enabled": false,
+      "routerLaunch": {
+        "runtimeKind": "claude_agent_sdk",
+        "llmModelIdentifier": "sonnet",
+        "llmConfig": {
+          "thinking_enabled": true,
+          "reasoning_effort": "high"
+        }
+      },
+      "active": false,
+      "reasonCode": "OFF",
+      "reasonParams": {},
+      "reasonText": "Model Routing is off",
+      "agentRunId": null
+    },
+    "invalidValue": {
+      "data": null,
+      "errors": [
+        {
+          "message": "The model settings are invalid: Value is not one of the supported options.",
+          "locations": [
+            {
+              "line": 1,
+              "column": 41
+            }
+          ],
+          "path": [
+            "setModelRouterLaunch"
+          ],
+          "extensions": {
+            "code": "BAD_USER_INPUT"
+          }
+        }
+      ]
+    },
+    "invalidType": {
+      "data": null,
+      "errors": [
+        {
+          "message": "The model settings are invalid: Expected boolean.",
+          "locations": [
+            {
+              "line": 1,
+              "column": 41
+            }
+          ],
+          "path": [
+            "setModelRouterLaunch"
+          ],
+          "extensions": {
+            "code": "BAD_USER_INPUT"
+          }
+        }
+      ]
+    },
+    "modelNotOffered": {
+      "data": null,
+      "errors": [
+        {
+          "message": "The model 'no-such-model' is not available on claude_agent_sdk.",
+          "locations": [
+            {
+              "line": 1,
+              "column": 41
+            }
+          ],
+          "path": [
+            "setModelRouterLaunch"
+          ],
+          "extensions": {
+            "code": "BAD_USER_INPUT"
+          }
+        }
+      ]
+    },
+    "statusAfterRefusals": {
+      "enabled": false,
+      "routerLaunch": {
+        "runtimeKind": "claude_agent_sdk",
+        "llmModelIdentifier": "sonnet",
+        "llmConfig": {
+          "thinking_enabled": true,
+          "reasoning_effort": "high"
+        }
+      },
+      "active": false,
+      "reasonCode": "OFF",
+      "reasonParams": {},
+      "reasonText": "Model Routing is off",
+      "agentRunId": null
+    }
+  },
+  "API-02": {
+    "model": "sonnet",
+    "r1": "model_router_034b54dead5b483abb28ec8e8e5d47c0",
+    "r1LlmConfig": {
+      "thinking_enabled": true,
+      "reasoning_effort": "high"
+    },
+    "teach": {
+      "ms": 10530,
+      "text": "DONE. I added the line to `knowledge.md`. The file didn't exist yet, so I created it, and that line is its only content. I'll route writing tasks (documentation, release notes) to `antigravity_cli` with `gemini-3.8-flash-low`."
+    },
+    "knowledgeAfterTeach": "- Writing tasks (documentation, release notes) go to antigravity_cli with the model gemini-3.8-flash-low.\n",
+    "cli1": [
+      {
+        "pid": 86036,
+        "command": "/Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --thinking adaptive --effort high --model sonnet --permission-prompt-tool stdio --allowedTools list_available_agent_runtimes,mcp__autobyteus_agent_tools__list_available_agent_runtimes,submit_launch_choices,mcp__autobyteus_agent_tools__submit_launch_choices --disallowedTools AskUserQuestion,Agent,Task,Workflow,SendMessage,ListAgents --tools Bash,Read,Edit,Write,Glob,Grep,NotebookEdit,WebFetch,WebSearch,Skill --mcp-config {\"mcpServers\":{\"autobyteus_agent_tools\":{\"type\":\"http\",\"url\":\"http://127.0.0.1:56310/mcp/agent-tools/agtrun_LQK-J_ZTXEj-MNNl65kzMSIJDUclyCVnAJusRRzv6Ik\",\"alwaysLoad\":true}}} --setting-sources=user,project,local --permission-mode default --include-partial-messages --session-id=8f6e8d00-2e6c-406f-9c48-fb491aab2c3b"
+      }
+    ],
+    "first": {
+      "ms": 25560,
+      "result": "\"{\\\"delegated\\\":true,\\\"target_kind\\\":\\\"agent\\\",\\\"target_agent_run_id\\\":\\\"writer_bot_fbb8_35bb7dfc604b4e7cb3cc2758901bf143\\\",\\\"task_id\\\":\\\"ad_hoc_task_92210f42-58a0-4d75-80f0-e5a2d8ba7829\\\",\\\"launch_notes\\\":[\\\"Writer Bot fbb8: runs on antigravity_cli / gemini-3.8-flash-low, chosen by the Model Router (release notes writing): Saved owner preference sends writing tasks like release notes to antigravi",
+      "routedByRouter": true,
+      "toAntigravity": true,
+      "status": {
+        "enabled": true,
+        "routerLaunch": {
+          "runtimeKind": "claude_agent_sdk",
+          "llmModelIdentifier": "sonnet",
+          "llmConfig": {
+            "thinking_enabled": true,
+            "reasoning_effort": "high"
+          }
+        },
+        "active": true,
+        "reasonCode": null,
+        "reasonParams": {},
+        "reasonText": null,
+        "agentRunId": "model_router_034b54dead5b483abb28ec8e8e5d47c0"
+      }
+    },
+    "second": {
+      "ms": 29082,
+      "result": "\"{\\\"delegated\\\":true,\\\"target_kind\\\":\\\"agent\\\",\\\"target_agent_run_id\\\":\\\"writer_bot_fbb8_15cf5b6c2b3e4a53b230cebe80604341\\\",\\\"task_id\\\":\\\"ad_hoc_task_8049f41f-47be-4df7-8b1d-9972556ee7c8\\\",\\\"launch_notes\\\":[\\\"Writer Bot fbb8: runs on antigravity_cli / gemini-3.8-flash-low, chosen by the Model Router (release notes writing): Saved owner preference sends release-note writing to antigravity_cli with ",
+      "routedByRouter": true,
+      "toAntigravity": true,
+      "status": {
+        "enabled": true,
+        "routerLaunch": {
+          "runtimeKind": "claude_agent_sdk",
+          "llmModelIdentifier": "sonnet",
+          "llmConfig": {
+            "thinking_enabled": true,
+            "reasoning_effort": "high"
+          }
+        },
+        "active": true,
+        "reasonCode": null,
+        "reasonParams": {},
+        "reasonText": null,
+        "agentRunId": "model_router_034b54dead5b483abb28ec8e8e5d47c0"
+      }
+    },
+    "knowledgeBeforeChange": "- Writing tasks (documentation, release notes) go to antigravity_cli with the model gemini-3.8-flash-low.\n",
+    "changed": {
+      "data": {
+        "setModelRouterLaunch": {
+          "enabled": true,
+          "routerLaunch": {
+            "runtimeKind": "claude_agent_sdk",
+            "llmModelIdentifier": "sonnet",
+            "llmConfig": {
+              "thinking_enabled": true,
+              "reasoning_effort": "low"
+            }
+          },
+          "active": true,
+          "reasonCode": null,
+          "reasonParams": {},
+          "reasonText": null,
+          "agentRunId": "model_router_034b54dead5b483abb28ec8e8e5d47c0"
+        }
+      }
+    },
+    "r2": "model_router_5944011a62a44e498e7cdefcc23f7a19",
+    "r2LlmConfig": {
+      "thinking_enabled": true,
+      "reasoning_effort": "low"
+    },
+    "knowledgeAtNewRun": "- Writing tasks (documentation, release notes) go to antigravity_cli with the model gemini-3.8-flash-low.\n",
+    "third": {
+      "ms": 25559,
+      "result": "\"{\\\"delegated\\\":true,\\\"target_kind\\\":\\\"agent\\\",\\\"target_agent_run_id\\\":\\\"writer_bot_fbb8_f444aa5044f142e1a1285d4e32614e82\\\",\\\"task_id\\\":\\\"ad_hoc_task_60bd8094-e666-4963-ba72-326888c85988\\\",\\\"launch_notes\\\":[\\\"Writer Bot fbb8: runs on antigravity_cli / gemini-3.8-flash-low, chosen by the Model Router (release notes writing): Writing tasks go to Antigravity with Gemini 3.8 Flash Low, which is availa",
+      "routedByRouter": true,
+      "toAntigravity": true,
+      "status": {
+        "enabled": true,
+        "routerLaunch": {
+          "runtimeKind": "claude_agent_sdk",
+          "llmModelIdentifier": "sonnet",
+          "llmConfig": {
+            "thinking_enabled": true,
+            "reasoning_effort": "low"
+          }
+        },
+        "active": true,
+        "reasonCode": null,
+        "reasonParams": {},
+        "reasonText": null,
+        "agentRunId": "model_router_5944011a62a44e498e7cdefcc23f7a19"
+      }
+    },
+    "cli2": [
+      {
+        "pid": 86036,
+        "command": "/Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --thinking adaptive --effort high --model sonnet --permission-prompt-tool stdio --allowedTools list_available_agent_runtimes,mcp__autobyteus_agent_tools__list_available_agent_runtimes,submit_launch_choices,mcp__autobyteus_agent_tools__submit_launch_choices --disallowedTools AskUserQuestion,Agent,Task,Workflow,SendMessage,ListAgents --tools Bash,Read,Edit,Write,Glob,Grep,NotebookEdit,WebFetch,WebSearch,Skill --mcp-config {\"mcpServers\":{\"autobyteus_agent_tools\":{\"type\":\"http\",\"url\":\"http://127.0.0.1:56310/mcp/agent-tools/agtrun_LQK-J_ZTXEj-MNNl65kzMSIJDUclyCVnAJusRRzv6Ik\",\"alwaysLoad\":true}}} --setting-sources=user,project,local --permission-mode default --include-partial-messages --session-id=8f6e8d00-2e6c-406f-9c48-fb491aab2c3b"
+      },
+      {
+        "pid": 87442,
+        "command": "/Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --thinking adaptive --effort low --model sonnet --permission-prompt-tool stdio --allowedTools list_available_agent_runtimes,mcp__autobyteus_agent_tools__list_available_agent_runtimes,submit_launch_choices,mcp__autobyteus_agent_tools__submit_launch_choices --disallowedTools AskUserQuestion,Agent,Task,Workflow,SendMessage,ListAgents --tools Bash,Read,Edit,Write,Glob,Grep,NotebookEdit,WebFetch,WebSearch,Skill --mcp-config {\"mcpServers\":{\"autobyteus_agent_tools\":{\"type\":\"http\",\"url\":\"http://127.0.0.1:56310/mcp/agent-tools/agtrun_U2JtIRSJQS9kbHufCtxwNcpXzagOFfrB6c-v1MEazy0\",\"alwaysLoad\":true}}} --setting-sources=user,project,local --permission-mode default --include-partial-messages --session-id=761f5995-b052-4b14-b893-a6891bff6cba"
+      }
+    ],
+    "stateFile": {
+      "runId": "model_router_5944011a62a44e498e7cdefcc23f7a19",
+      "runtimeKind": "claude_agent_sdk",
+      "llmModelIdentifier": "sonnet",
+      "llmConfig": {
+        "thinking_enabled": true,
+        "reasoning_effort": "low"
+      }
+    },
+    "checks": {
+      "r1CarriesHigh": true,
+      "reusedWithoutChange": true,
+      "newRunOnEffortChange": true,
+      "r2CarriesLow": true,
+      "knowledgeCarriedUnchanged": true,
+      "routedEachTime": true,
+      "cli1Effort": [
+        "/Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --thinking adaptive --effort high --model sonnet --permission-prompt-tool stdio --allowedTools list_available_agent_runtimes,mcp__autobyteus_agent_tools__list_available_agent_runtimes,submit_launch_choices,mcp__autobyteus_agent_tools__submit_launch_choices --disallowedTools AskUserQuestion,Agent,Task,Workflow,SendMessage,ListAgents --tools Bash,Read,Edit,Write,Glob,Grep,NotebookEdit,WebFetch,WebSearch,Skill --mcp-config {\"mcpServers\":{\"autobyteus_agent_tools\":{\"type\":\"http\",\"url\":\"http://127.0.0.1:56310/mcp/agent-tools/agtrun_LQK-J_ZTXEj-MNNl65kzMSIJDUclyCVnAJusRRzv6Ik\",\"alwaysLoad\":true}}} --setting-sources=user,project,local --permission-mode default --include-partial-messages --session-id=8f6e8d00-2e6c-406f-9c48-fb491aab2c3b"
+      ],
+      "cli2Effort": [
+        "/Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --thinking adaptive --effort high --model sonnet --permission-prompt-tool stdio --allowedTools list_available_agent_runtimes,mcp__autobyteus_agent_tools__list_available_agent_runtimes,submit_launch_choices,mcp__autobyteus_agent_tools__submit_launch_choices --disallowedTools AskUserQuestion,Agent,Task,Workflow,SendMessage,ListAgents --tools Bash,Read,Edit,Write,Glob,Grep,NotebookEdit,WebFetch,WebSearch,Skill --mcp-config {\"mcpServers\":{\"autobyteus_agent_tools\":{\"type\":\"http\",\"url\":\"http://127.0.0.1:56310/mcp/agent-tools/agtrun_LQK-J_ZTXEj-MNNl65kzMSIJDUclyCVnAJusRRzv6Ik\",\"alwaysLoad\":true}}} --setting-sources=user,project,local --permission-mode default --include-partial-messages --session-id=8f6e8d00-2e6c-406f-9c48-fb491aab2c3b",
+        "/Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --thinking adaptive --effort low --model sonnet --permission-prompt-tool stdio --allowedTools list_available_agent_runtimes,mcp__autobyteus_agent_tools__list_available_agent_runtimes,submit_launch_choices,mcp__autobyteus_agent_tools__submit_launch_choices --disallowedTools AskUserQuestion,Agent,Task,Workflow,SendMessage,ListAgents --tools Bash,Read,Edit,Write,Glob,Grep,NotebookEdit,WebFetch,WebSearch,Skill --mcp-config {\"mcpServers\":{\"autobyteus_agent_tools\":{\"type\":\"http\",\"url\":\"http://127.0.0.1:56310/mcp/agent-tools/agtrun_U2JtIRSJQS9kbHufCtxwNcpXzagOFfrB6c-v1MEazy0\",\"alwaysLoad\":true}}} --setting-sources=user,project,local --permission-mode default --include-partial-messages --session-id=761f5995-b052-4b14-b893-a6891bff6cba"
+      ]
+    }
+  },
+  "cleanup": {
+    "serverExited": true,
+    "removed": {
+      "tempRoot": true
+    }
+  }
+}

@@ -8,7 +8,8 @@
 // beta has Blank Slate (no default). Model Routing is on on both nodes, remote collaboration on, the nodes are peers. The
 // Manager delegates the Studio Team (the router chooses for Writer) and, on beta, Blank Slate (beta's router chooses).
 // Cases:
-//   MRD-01 Setup: the router row (runtime, model) and the status line of a node whose router is active (AC-009);
+//   MRD-01 Setup: the router row (the app's model menu with the saved launch, autobyteus-313; no native select) and the
+//          status line of a node whose router is active (AC-009);
 //   MRD-02 Decisions: the Task blocks; the Team row folds and opens to Lead (agent default) and Writer (Model Router, model,
 //          reason); the remote copy is not on alpha's page (each node shows only its own); the source filter (AC-009);
 //   MRD-03 Overview: the period and the sources and task kinds of these records (AC-009);
@@ -46,6 +47,8 @@ const executablePath = arg('browser-executable', process.env.PLAYWRIGHT_CHROME_E
 const AGY = 'antigravity_cli';
 const MODEL = 'gemini-3.8-flash-low';
 const ALT = 'alt-model';
+/** autobyteus-313: Decisions name models as the model menu does: the catalog's label (the scripted CLI's model names) and the runtime's short name. */
+const LABEL_OF = { [MODEL]: 'Gemini test', [ALT]: 'Retiring test model' };
 const LABEL = { alpha: 'alpha-node', beta: 'beta-node' };
 const REASON = { alpha: 'Writing goes to the alternate model.', beta: 'Beta keeps writing on the alternate model.' };
 const evidence = { startedAt: new Date().toISOString(), result: 'Fail', cases: {}, observations: {}, browserErrors: [], cleanup: {}, error: null };
@@ -192,11 +195,16 @@ try {
   await kase('MRD-01', 'Setup: the router row and the status of an active router', async () => {
     await openTab('setup');
     await page.locator(tid('model-routing-router-row')).waitFor({ timeout: 60000 });
-    const runtime = await page.locator(tid('model-routing-router-runtime')).inputValue();
-    const model = await page.locator(tid('model-routing-router-model')).inputValue();
+    // autobyteus-313: the app's model menu shows the saved launch as "<model label> <short runtime name>".
+    const trigger = page.locator(`${tid('model-routing-router-row')} [data-test="chat-model-trigger"]`);
+    await trigger.waitFor({ timeout: 60000 });
+    await waitFor('router model label', async () => !/choose/i.test(await trigger.innerText()), 30000);
+    const launch = (await trigger.innerText()).replace(/\s+/g, ' ').trim();
+    const nativeSelects = await page.locator(`${tid('model-routing-setup')} select`).count();
     const status = await textOf(tid('model-routing-status')).catch(() => '');
-    evidence.observations.setup = { runtime, model, status, switchChecked: await page.locator(tid('model-routing-switch')).getAttribute('aria-checked').catch(() => null) };
-    assert(runtime === AGY && model === MODEL, `router launch shown: ${runtime} / ${model}`);
+    evidence.observations.setup = { launch, nativeSelects, status, switchChecked: await page.locator(tid('model-routing-switch')).getAttribute('aria-checked').catch(() => null) };
+    assert(launch.endsWith('Antigravity') && launch.length > 'Antigravity'.length, `router launch shown in the model menu: ${launch}`);
+    assert(nativeSelects === 0, `no native select on Configuration (${nativeSelects})`);
     assert(evidence.observations.setup.switchChecked === 'true', `switch: ${evidence.observations.setup.switchChecked}`);
     assert(!(await page.locator(tid('model-routing-decisions-inactive-note')).count()), 'no inactive note');
     await shot('MRD-01-setup');
@@ -214,8 +222,8 @@ try {
     const clean = rows.map((r) => r.replace(/\s+/g, ' ').trim());
     evidence.observations.decisions = { tasks: await page.locator('[data-testid^="model-routing-task-"]').count(), folded, rows: clean, page: await textOf(tid('model-routing-decisions')) };
     const writer = clean.find((r) => /writer/i.test(r)); const lead = clean.find((r) => /lead/i.test(r));
-    assert(writer && writer.includes(ALT) && writer.includes(REASON.alpha), `Writer row: ${writer}`);
-    assert(lead && lead.includes(MODEL) && !lead.includes(REASON.alpha), `Lead row: ${lead}`);
+    assert(writer && writer.includes(`${LABEL_OF[ALT]} Antigravity`) && writer.includes(REASON.alpha), `Writer row: ${writer}`);
+    assert(lead && lead.includes(`${LABEL_OF[MODEL]} Antigravity`) && !lead.includes(REASON.alpha), `Lead row: ${lead}`);
     assert(!(await page.locator(tid('model-routing-decision-/blank_slate')).count()), 'the copy on beta is not on alpha\'s Decisions');
     assert(await page.locator(tid('model-routing-decision-open-run')).count() > 0, 'Open run on a local delegation');
     await shot('MRD-02-decisions');

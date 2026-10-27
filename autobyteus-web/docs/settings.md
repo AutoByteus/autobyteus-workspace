@@ -609,10 +609,29 @@ shows what its Model Router chose (server side:
   or on but not usable, with the reason (no launch set, runtime missing or
   signed out, model unknown or blocked) and a link to Configuration. **Talk to the
   router** (`openModelRouterAgent`) opens the router's run in the chat.
-- **Tabs** (`?tab=`): **Configuration** (`setup`: the router's runtime, then its model, saved on
-  the model choice with `setModelRouterLaunch`; models come from the node's
-  runtimes now), **Decisions** (`decisions`), **Overview** (`overview`) and
-  **Runtimes** (`runtimes`, the "Agent runtimes now" section).
+- **Tabs** (`?tab=`): **Configuration** (`setup`), **Decisions** (`decisions`),
+  **Overview** (`overview`) and **Runtimes** (`runtimes`, the "Agent runtimes
+  now" section).
+- **Configuration** (autobyteus-313): the router's launch configuration with the
+  app's launch controls, the same as on New chat and in run Settings:
+  `ChatModelMenu` (runtimes grouped with model counts, search, "<model>
+  <runtime>" labels), `ChatThinkingControl` and one `ChatModelOptionControl` per
+  other model setting (e.g. Codex Fast mode). `modelRouterLaunchControls.ts`
+  adapts the status's `routerLaunch` to them: a model choice saves runtime, model
+  and the model's settings made explicit (`explicitChatModelConfig`, as
+  `chatDraftStore.setModel`); a thinking or option change saves the launch with
+  the new settings. Each change is one `setModelRouterLaunch(runtimeKind,
+  llmModelIdentifier, llmConfig)`; a refused one shows the server's message and
+  keeps the saved launch. The controls are inert and dimmed while Model Routing
+  is off or a save runs. A changed launch starts a new router run (its
+  `knowledge.md` stays).
+- **Names** (autobyteus-313): the page names runtimes and models as the rest of
+  the app does (`modelRoutingNames.ts`): a runtime on its own by
+  `runtimeKindToLabel` ("Claude Agent SDK"), a model with its runtime as the model
+  menu does (the catalog's model label and `runtimeShortLabel`, "claude-sonnet-5-5
+  Claude SDK"), on Configuration, Decisions, Overview, Runtimes and the problem
+  line. Labels load with each runtime's catalog; until then a model reads as its
+  ID. On Runtimes, a model the catalog does not have keeps the report's name.
 - **Decisions** (`modelRoutingDecisions`): one entry per started copy, newest
   first, pages of 8 from the server, filter All / Model Router / Not the router.
   Each agent row shows its runtime and model, the source, the task kind and
@@ -650,6 +669,7 @@ the opt-in agent tool
 - Views: `components/settings/model-routing/` (`ModelRoutingManager`,
   `ModelRoutingStatusStrip`, `ModelRoutingSegmented`, `ModelRoutingSetup`,
   `ModelRoutingDecisions`, `ModelRoutingOverview`, `modelRoutingPresentation.ts`,
+  `modelRouterLaunchControls.ts`, `modelRoutingNames.ts`,
   `AgentRuntimesNowSection`, `AvailableAgentRuntimeRow`, `AvailableModelList`,
   `availableAgentRuntimesPresentation.ts`). GraphQL:
   `graphql/queries/modelRoutingQueries.ts`, `graphql/mutations/modelRoutingMutations.ts`;

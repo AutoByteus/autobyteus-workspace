@@ -1,0 +1,5 @@
+const {DatabaseSync}=require("node:sqlite"); const db=new DatabaseSync(process.argv[2],{readOnly:true});
+const tables=db.prepare("select name from sqlite_master where type='table'").all().map(r=>r.name).filter(n=>/migration/i.test(n));
+const out={};
+for (const t of tables) out[t]=db.prepare(`select * from ${t}`).all().map(r=>{ const o={}; for (const [k,v] of Object.entries(r)) if (/name|id|key|migration|finished|applied|status/i.test(k)) o[k]=typeof v==="bigint"?Number(v):v; return o; });
+console.log(JSON.stringify(out));

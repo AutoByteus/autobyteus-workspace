@@ -183,3 +183,13 @@ Principle 1.
   - evidence explained away by changing the presentation ("words, not a number");
   - a second failed tuning of the same behavior.
 - **Skill change:** `autobyteus-agents-67` (PR #128): feasibility evidence per requirement, the challenge rule, and the stop rule.
+
+### Case 13: A Second Control And Name Map For Something The App Already Has (autobyteus-32, autobyteus-313 SR-001)
+
+Principle: one owner per concern (Duplicated Policy).
+
+- **The design said:** the Model Routing page lets the user choose the Model Router's runtime and model (autobyteus-32). The page was built with two native selects fed by the runtime report and its own runtime-name map ("Claude", "Codex"), and the server stored runtime and model only.
+- **What happened:** the router is an ordinary agent, but its launch was chosen with a control no other agent uses, without the thinking level or other model settings, and named with a third set of runtime names beside the app's full names ("Claude Agent SDK") and the model menu's labels ("claude-sonnet-5-5 Claude SDK"). The user found it on the beta (FU-012).
+- **The fix (autobyteus-313):** Configuration uses the app's launch controls (`ChatModelMenu`, `ChatThinkingControl`, `ChatModelOptionControl`) through a small adapter; the router's stored launch adds the model settings (one added setting, checked like any agent launch) and its run starts with them; the page's name map is removed and every tab uses the app's two name functions.
+- **Why it mattered:** a parallel control drops what the shared one has (thinking, options, search, the same labels), and a parallel name map makes one runtime look like two things.
+- **Notice it by:** a new select, list or label map for runtimes or models on a new surface; a stored launch that is a subset of the launch configuration every agent has.

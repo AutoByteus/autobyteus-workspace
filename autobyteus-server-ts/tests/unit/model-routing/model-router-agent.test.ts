@@ -35,7 +35,7 @@ const setup = async () => {
   return { root, agent, agentRuns, runs, listeners, active };
 };
 
-const CODEX = { runtimeKind: "codex_app_server", llmModelIdentifier: "gpt-sol" };
+const CODEX = { runtimeKind: "codex_app_server", llmModelIdentifier: "gpt-sol", llmConfig: null };
 
 describe("ModelRouterAgent (REQ-004, SR-012 point 3, AR-001)", () => {
   it("creates one run of the internal agent in its internal workspace: auto-approved, system-owned, no confinement (SR-018); reuses it while the launch is the same", async () => {
@@ -44,7 +44,7 @@ describe("ModelRouterAgent (REQ-004, SR-012 point 3, AR-001)", () => {
     expect(agentRuns.createAgentRun).toHaveBeenCalledExactlyOnceWith({
       agentDefinitionId: "autobyteus-model-router",
       workspaceRootPath: path.join(root, "internal-workspaces", "autobyteus-model-router"),
-      llmModelIdentifier: "gpt-sol", runtimeKind: "codex_app_server",
+      llmModelIdentifier: "gpt-sol", runtimeKind: "codex_app_server", llmConfig: null,
       autoExecuteTools: true, systemRunOwner: "model_router",
     });
     await expect(fs.stat(path.join(root, "internal-workspaces", "autobyteus-model-router"))).resolves.toBeTruthy();
@@ -58,12 +58,12 @@ describe("ModelRouterAgent (REQ-004, SR-012 point 3, AR-001)", () => {
   it("a changed runtime or model starts a new run (the old one stays in history); a run that does not restore too", async () => {
     const { agent, agentRuns } = await setup();
     await agent.ensureRun(CODEX);
-    await agent.ensureRun({ runtimeKind: "claude_agent_sdk", llmModelIdentifier: "sonnet" });
+    await agent.ensureRun({ runtimeKind: "claude_agent_sdk", llmModelIdentifier: "sonnet", llmConfig: null });
     expect(agentRuns.createAgentRun).toHaveBeenCalledTimes(2);
     await expect(agent.storedRunId()).resolves.toBe("router_2");
     agentRuns.resolveCommandReadyAgentRun.mockRejectedValueOnce(new Error("history unreadable"));
     vi.spyOn(console, "warn").mockImplementation(() => undefined);
-    await agent.ensureRun({ runtimeKind: "claude_agent_sdk", llmModelIdentifier: "sonnet" });
+    await agent.ensureRun({ runtimeKind: "claude_agent_sdk", llmModelIdentifier: "sonnet", llmConfig: null });
     await expect(agent.storedRunId()).resolves.toBe("router_3");
   });
 
@@ -123,5 +123,50 @@ describe("ModelRouterAgent after a failed turn (CRR-003 CR-005)", () => {
     expect(agent.isIdle()).toBe(true);
     emit({ eventType: "AGENT_INPUT_STATE", payload: { entries: [{ sequence: 2 }] } });
     expect(agent.isIdle()).toBe(false);
+  });
+});
+
+describe("ModelRouterAgent with model settings (autobyteus-313 REQ-003, REQ-005)", () => {
+  const SONNET_HIGH = { runtimeKind: "claude_agent_sdk", llmModelIdentifier: "claude-sonnet-5-5", llmConfig: { thinking_level: "high", fast: false } };
+
+  it("AC-003: the run starts with the stored model settings and is reused while they are equal (whatever the key order)", async () => {
+    const { root, agent, agentRuns } = await setup();
+    const first = await agent.ensureRun(SONNET_HIGH);
+    expect(agentRuns.createAgentRun).toHaveBeenCalledWith(expect.objectContaining({ llmConfig: { thinking_level: "high", fast: false } }));
+    const state = JSON.parse(await fs.readFile(path.join(root, "model-routing", "model-router-agent.json"), "utf8"));
+    expect(state).toEqual({ runId: "router_1", runtimeKind: "claude_agent_sdk", llmModelIdentifier: "claude-sonnet-5-5", llmConfig: { thinking_level: "high", fast: false } });
+    expect(await agent.ensureRun({ ...SONNET_HIGH, llmConfig: { fast: false, thinking_level: "high" } })).toBe(first);
+    expect(agentRuns.createAgentRun).toHaveBeenCalledTimes(1);
+  });
+
+  it("AC-003: a changed thinking level starts a new run with it; knowledge.md stays in the workspace", async () => {
+    const { root, agent, agentRuns } = await setup();
+    await agent.ensureRun(SONNET_HIGH);
+    const workspace = path.join(root, "internal-workspaces", "autobyteus-model-router");
+    await fs.writeFile(path.join(workspace, "knowledge.md"), "- Use Antigravity for writing.\n");
+    await agent.ensureRun({ ...SONNET_HIGH, llmConfig: { thinking_level: "low", fast: false } });
+    expect(agentRuns.createAgentRun).toHaveBeenCalledTimes(2);
+    expect(agentRuns.createAgentRun).toHaveBeenLastCalledWith(expect.objectContaining({ llmConfig: { thinking_level: "low", fast: false } }));
+    await expect(agent.storedRunId()).resolves.toBe("router_2");
+    await expect(agent.readKnowledge()).resolves.toEqual({ text: "- Use Antigravity for writing.", truncated: false });
+  });
+
+  it("AC-005: a state written by beta.11 (no model settings) is reused while the router has none; settings added later start a new run", async () => {
+    const { root, agent, agentRuns, runs } = await setup();
+    runs.set("router_beta11", { runId: "router_beta11", isActive: () => true, getStatusSnapshot: () => ({ status: "idle" }), subscribeToEvents: () => () => undefined });
+    await fs.mkdir(path.join(root, "model-routing"), { recursive: true });
+    await fs.writeFile(path.join(root, "model-routing", "model-router-agent.json"),
+      `${JSON.stringify({ runId: "router_beta11", runtimeKind: "codex_app_server", llmModelIdentifier: "gpt-sol" }, null, 2)}\n`);
+    expect((await agent.ensureRun(CODEX)).runId).toBe("router_beta11");
+    expect(agentRuns.createAgentRun).not.toHaveBeenCalled();
+    await agent.ensureRun({ ...CODEX, llmConfig: { reasoning_effort: "high" } });
+    expect(agentRuns.createAgentRun).toHaveBeenCalledTimes(1);
+  });
+
+  it("no settings and an empty settings object are different launches (none is not assumed to be {})", async () => {
+    const { agent, agentRuns } = await setup();
+    await agent.ensureRun(CODEX);
+    await agent.ensureRun({ ...CODEX, llmConfig: {} });
+    expect(agentRuns.createAgentRun).toHaveBeenCalledTimes(2);
   });
 });

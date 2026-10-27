@@ -22,8 +22,8 @@ const PERIODS: Readonly<Record<string, RoutingStatisticsPeriod>> = { DAYS_7: 7, 
 
 /**
  * Settings → Model Routing (DS-005, design § Interface Boundary Mapping): the status line, Decisions (Task groups, a
- * source filter applied before paging) and Overview, the switch and the router's runtime/model, and "Talk to the
- * router". Each value is one JSON object, read live; the page reads them as the server words them.
+ * source filter applied before paging) and Overview, the switch and the router's launch configuration (runtime, model
+ * and model settings, checked like any agent launch; autobyteus-313), and "Talk to the router". Each value is one JSON object, read live; the page reads them as the server words them.
  */
 @Resolver()
 export class ModelRoutingResolver {
@@ -61,9 +61,10 @@ export class ModelRoutingResolver {
   async setModelRouterLaunch(
     @Arg("runtimeKind", () => String) runtimeKind: string,
     @Arg("llmModelIdentifier", () => String) llmModelIdentifier: string,
+    @Arg("llmConfig", () => GraphQLJSON, { nullable: true }) llmConfig?: Record<string, unknown> | null,
   ): Promise<ModelRoutingStatus> {
     const current = routing();
-    try { current.settings.setRouterLaunch({ runtimeKind, llmModelIdentifier }); }
+    try { await current.settings.setRouterLaunch({ runtimeKind, llmModelIdentifier, llmConfig: llmConfig ?? null }); }
     catch (error) { throw invalid(error instanceof Error ? error.message : String(error)); }
     return current.router.status();
   }
