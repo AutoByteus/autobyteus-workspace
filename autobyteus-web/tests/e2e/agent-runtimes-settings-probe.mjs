@@ -103,7 +103,7 @@ const createFakes = async ownedRoot => {
   for (const name of ['codex', 'claude', 'agy', 'grok']) await fs.symlink(fakeCli, path.join(binDir, name));
   const sourcesFile = path.join(stateDir, 'vendor-sources.json');
   const sources = {
-    codex: { status: 200, body: JSON.stringify({ tag_name: 'rust-v0.163.0' }) },
+    codex: { status: 200, body: 'rust-v0.163.0' },
     claude: { status: 503, body: 'Service Unavailable' },
     antigravity: { status: 200, body: JSON.stringify({ version: '1.4.3' }), delayMs: 6000 },
   };
@@ -424,6 +424,9 @@ try {
     await shot('ARP-07b-zh-CN-739-stacked');
     await page.setViewportSize({ width: 1440, height: 1100 });
     await page.evaluate(() => localStorage.setItem('autobyteus.localization.preference-mode', 'en'));
+    // Reload, so the page is English for the next cases on every platform (ARP-08, which also reopens, does not run
+    // on macOS or Windows).
+    await open();
   });
 
   await kase('ARP-08', 'A remote node window on a node without a desktop browser: same rows and statuses, no Update, no Sign in, no hint, the status-only note (AC-010, VIS-019; remote-node-runtime-sign-in AC-005)', async () => {
