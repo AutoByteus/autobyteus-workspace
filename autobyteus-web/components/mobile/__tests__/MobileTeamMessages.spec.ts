@@ -63,6 +63,15 @@ describe('MobileTeamMessages current TeamExecutionView', () => {
     expect(wrapper.findAll('a[href*="/tmp/design-spec.md"]')).toHaveLength(0);
   });
 
+  // BEH-032 (c) of autobyteus-294: the row names the counterpart by its label, as the desktop panel does.
+  it('names the message counterpart by its label', async () => {
+    const wrapper = mountSubject();
+    await flushPromises();
+    const row = wrapper.get('[data-testid="mobile-team-message-row"]');
+    expect(row.text()).toContain('From solution designer');
+    expect(row.text()).not.toContain('teammate');
+  });
+
   it('opens and closes the exact TeamRun/message/reference identity', async () => {
     const wrapper = mountSubject();
     await wrapper.findAll('[data-testid="mobile-team-reference-row"]')[0].trigger('click');
