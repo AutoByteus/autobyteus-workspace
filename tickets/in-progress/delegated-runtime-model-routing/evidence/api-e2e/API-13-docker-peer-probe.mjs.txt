@@ -74,7 +74,10 @@ const textOf = (result) => String(result.message ?? result.text ?? JSON.stringif
 try {
   // Node B: a test-owned container, 127.0.0.1 only, no volumes but this worktree's dist and the scripted CLI (read-only).
   execFileSync('docker', ['run', '-d', '--name', container, '-p', `127.0.0.1:${bPort}:8000`,
-    '-v', `${path.join(serverDir, 'dist')}:/app/autobyteus-server-ts/dist:ro`, '-v', `${fixtures}:/app/autobyteus-server-ts/tests/fixtures:ro`,
+    '-v', `${path.join(serverDir, 'dist')}:/app/autobyteus-server-ts/dist:ro`,
+    // The workspace packages the server imports at runtime, from this worktree too (same package.json as the image).
+    ...['autobyteus-ts', 'autobyteus-agent-presentation-contracts', 'autobyteus-application-sdk-contracts', 'autobyteus-collaboration-stream-contracts', 'autobyteus-team-stream-contracts']
+      .flatMap((pkg) => ['-v', `${path.join(worktree, pkg, 'dist')}:/app/${pkg}/dist:ro`]), '-v', `${fixtures}:/app/autobyteus-server-ts/tests/fixtures:ro`,
     '-e', 'ANTIGRAVITY_CLI_COMMAND=/app/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs', '-e', 'AGY_FAKE_CASE=linked_skills', '-e', 'AGY_FAKE_EXTRA_MODELS=alt-model',
     '-e', 'AGY_FAKE_ROUTER_PLAN=/tmp/mr-router-plan.json', '-e', 'AGY_FAKE_ROUTER_LOG=/tmp/mr-router-log.jsonl', IMAGE], { stdio: 'ignore' });
   out.container = { name: container, port: bPort, mounts: JSON.parse(execFileSync('docker', ['inspect', container, '--format', '{{json .Mounts}}']).toString()).map((m) => ({ source: m.Source, destination: m.Destination, rw: m.RW, type: m.Type })) };

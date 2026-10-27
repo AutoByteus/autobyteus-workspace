@@ -40,3 +40,17 @@
 | 10-27T04:54 | API-09 | Completed | Pass (triaged) | 3 failed files = FU-007/008/009 only |
 | 10-27T04:55 | API-15 | Started | — | isolated-app start --build |
 | 10-27T05:06 | API-15 | Completed | Pass (prepared) | instance built, smoke on/off, stopped; L-03/L-04 R2 Pass |
+| 10-27T06:00 | R3: MR, RC, API-09 | Started | — | round 3 on 7541be3e6d (merged base 50e93c2108 + IR-004); serialized chain |
+| 10-27T06:32 | R3: MR, RC, API-09 | Completed | Pass | MR 9/9, RC 41/41, regression = FU-007/008/009 only |
+| 10-27T06:32 | API-13 | Started | — | R3, all workspace dists mounted |
+| 10-27T06:34 | API-13 | Completed | Pass | D-1…D-4 |
+| 10-27T06:34 | L-05 | Started | — | R3 live, five router runtimes |
+| 10-27T06:43 | L-05 | Completed | Pass (4/5) | Grok: account free usage exhausted (429), routing fell back with the reason; Claude/Codex/AGY/AutoByteus pass |
+| 10-27T06:43 | API-12 LR-3 | Started | — | R3 live Codex/Claude/AGY (Grok usage exhausted) |
+| 10-27T06:47 | API-12 LR-3 | Completed | Pass | Codex 40219, Claude 40133, AGY 43383 ms |
+| 10-27T06:47 | API-14 | Started | — | R3 with MRD-08 |
+| 10-27T06:49 | API-14 | Completed | Pass | MRD-01…08 |
+| 10-27T06:49 | WEB-FULL | Started | — | test:nuxt full suite (memory.spec cause, Rule 9) |
+| 10-27T06:55 | WEB-FULL | Completed | Pass (triaged) | memory.spec 17/17 in 100 ms; failures = clean-base ones (FU-006, port specs) |
+| 10-27T06:55 | API-15 | Started | — | R3 rebuild + smoke |
+| 10-27T07:02 | API-15 | Completed | Pass (prepared) | final build smoke; stopped |

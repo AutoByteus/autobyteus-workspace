@@ -1,0 +1,23 @@
+# Web full Nuxt suite, alone (the cause of IMP-13's memory.spec.ts failure, TESTING.md Rule 9)
+# Commit: 7541be3e6d (merged base origin/personal 50e93c2108 + IR-004 f48af0176a; + round-3 probe change, committed with this evidence)
+# Command: (autobyteus-web) pnpm test:nuxt run
+# Environment: macOS, Node 22; no other heavy run
+# Date: 2026-10-27
+# Look for: "✓ pages/__tests__/memory.spec.ts (17 tests) 100ms"; the failing files are the clean-base ones (definitionMutationCache = FU-006; BackendPortBindFaults, e2eLaunchPreflight, WindowsServerManagerShutdown = DEL-03)
+# Cause of IMP-13's failure: the test ran 208193 ms under Vitest's default 5 s test timeout (vitest.config.mts sets none). A test can only report that long when its
+#   worker's event loop is blocked (the time-out timer cannot fire): a host/process stall during IMP-13's run, not the test or the code. It passes here in the
+#   full suite (and alone in IMP-13).
+stderr | pages/__tests__/memory.spec.ts
+stdout | pages/__tests__/memory.spec.ts
+ ✓ pages/__tests__/memory.spec.ts (17 tests) 100ms
+ FAIL  electron/server/__tests__/BackendPortBindFaults.spec.ts [ electron/server/__tests__/BackendPortBindFaults.spec.ts ]
+ FAIL  stores/__tests__/definitionMutationCache.spec.ts > definition mutations publish a complete current-query cache row > creates a healthy Agent without missing-field errors or an unreadable catalog cache
+ FAIL  stores/__tests__/definitionMutationCache.spec.ts > definition mutations publish a complete current-query cache row > edits a healthy Agent with complete issue fields and cache-first rereads
+ FAIL  stores/__tests__/definitionMutationCache.spec.ts > definition mutations publish a complete current-query cache row > keeps nonempty Agent catalog diagnostics readable through the real cache
+ FAIL  electron/launch-profile/__tests__/e2eLaunchPreflight.spec.ts > embedded listener preflight > uses wildcard-equivalent exclusive binding and rejects an occupied port
+ FAIL  electron/server/__tests__/WindowsServerManagerShutdown.spec.ts > production Windows launcher attaches IPC to the captured child and stop waits for complete plus exit
+ FAIL  electron/server/__tests__/WindowsServerManagerShutdown.spec.ts > uses taskkill only after the graceful deadline and reports forced stop as incomplete
+ Test Files  4 failed | 704 passed | 2 skipped (710)
+      Tests  6 failed | 5049 passed | 3 skipped (5058)
+real	5m1.755s
+exit 1

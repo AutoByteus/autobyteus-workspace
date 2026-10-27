@@ -5,9 +5,9 @@ The run record and the result. The plan is `api-e2e-coverage-investigation.md`; 
 ## Round
 
 - Coverage investigation: `api-e2e-coverage-investigation.md`
-- API/E2E revision record and current revision ID: `api-e2e-revision-record.md` / `API-REV-002`
+- API/E2E revision record and current revision ID: `api-e2e-revision-record.md` / `API-REV-003`
 - Test progress log: `api-e2e-test-progress.md`
-- Round and trigger: round 2, code review pass CRR-004 (Full Re-Audit) from `/software_engineering_team/code_reviewer` after IR-003 (`424e9bdd62`):
+- Round and trigger: **round 3**: delivery's Local Fix IR-004 (`f48af0176a`, web only: DEL-F1 built-in id mirror, DEL-F2 wording) on the merged base `origin/personal` `50e93c2108` (merge `357936966c`), source review CRR-006 from `/software_engineering_team/code_reviewer`; the post-fix rerun scoped by impact (the merge changed every runtime's agent-run backend, `agent-run.ts`, `agent-run-manager`, compositions, `autobyteus-ts`). Before it, round 2, code review pass CRR-004 (Full Re-Audit) from `/software_engineering_team/code_reviewer` after IR-003 (`424e9bdd62`):
   - SR-018, the user's decision: the router is not confined; F-1 and F-2 no longer apply.
   - CR-005: fixes round 1's F-3.
 - Prior round reviewed: round 1 (API-REV-001, Fail). Prior failures rechecked first (Prior Failure Resolution in the revision record).
@@ -40,7 +40,23 @@ The run record and the result. The plan is `api-e2e-coverage-investigation.md`; 
 | ENV-6 | same | same + headless Chrome (playwright-core) | Nuxt dev frontend bound to node alpha; two built backends (alpha, beta) with scripted AGY and scripted routers | probe-owned ports, temp root removed |
 | ENV-7 | same | macOS arm64 | Isolated desktop instance of this worktree's packaged build (`autobyteus-web/electron-dist`, 1.5.9-beta.9 build of this branch), `pnpm --silent isolated-app start --build` | own data root (removed on stop), embedded server with the system-baseline environment (real sign-ins) |
 
-## Cases
+## Round 3 Cases (post-merge, IR-004)
+
+The merge touched the router run's lifecycle code (all runtime backends, `agent-run`, `agent-run-manager`) and the web (IR-004). So everything that exercises routing, plus the web and the desktop build, ran again, one at a time.
+
+| Case ID | Criteria | Env | Result | Evidence Files | Look For | Notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| MR-01…09 | AC-001…004, 006, 008, 011, 012; CR-005 | ENV-1 | Pass | `R3-server-e2e.log` | `Tests  9 passed (9)` | |
+| RC-01…41 | AC-005, peer contract | ENV-2 | Pass | `R3-server-e2e.log` | `Tests  41 passed (41)` | |
+| API-09 | AC-002, regression | ENV-1 | Pass (triaged) | `R3-server-e2e.log` | `Test Files  3 failed | 44 passed | 9 skipped (56)` | FU-007/008/009 only |
+| API-13 | AC-005 (Docker) | ENV-4 | Pass | `API-13-docker-peer-r3.json` | D-1…D-4 `ok: true`; seven read-only mounts | Now also mounts `autobyteus-ts` and the four contract packages' `dist` (rounds 1–2 mounted only the server's; the image's were beta.7's) |
+| L-05 | AC-011, AC-007 | ENV-3 | Pass (4 of 5 live) | `L-05-router-runtimes-r3.json` | Claude, Codex, Antigravity, AutoByteus/DeepSeek: `lineAdded`, `routedByRouter`, `routedToAntigravity` true, `collaborationToolsNamed: []`; Claude router session-init without collaboration tools | Grok: the account's free usage for grok-4.7 is used up ("617493/600000" in 24 h, HTTP 429). The router turn failed and the routing fell back with "Model Router could not choose (the Model Router's turn failed (Rate limited …))". Grok passed live in round 2, and MR-02 routes to Grok (fake CLI) on the merged code |
+| API-12 LR-3 | QR-001 | ENV-5 | Pass (3 live runtimes) | `API-12-LR-3-live-routed-delegation-r3.log` | Codex `toolMs` 40219, Claude 40133, Antigravity 43383 | Grok not run (usage exhausted); passed in round 2 |
+| API-14 | AC-009, AC-012, DEL-F1 | ENV-6 | Pass | `API-14-model-routing-decisions-r3/result.json`, `MRD-*.png` | MRD-01…08 Pass; MRD-08 `"options":["lead","writer","studio"]`, `"filteredModel":[]` while the router is listed (`internal: true`) | New MRD-08: New chat `@` never offers the Model Router (DEL-F1) |
+| WEB-FULL | IMP-13 Rule 9 cause | macOS | Pass (triaged) | `WEB-FULL-r3.log` | `✓ pages/__tests__/memory.spec.ts (17 tests) 100ms` | The failures are the clean-base ones (FU-006, DEL-03). memory.spec's 208 s run under a 5 s default time-out means a stalled event loop during IMP-13 (a host or process stall), not the test |
+| API-15 | Done-when (preparation) | ENV-7 | Pass (prepared) | `API-15-desktop-r3/API-15-desktop-smoke-r3.json`, `*.png` | final build: status OFF; "Turn Model Routing on in Configuration" (DEL-F2); switch on lists five runtimes; no browser errors; stopped, data removed | The user's guide is unchanged: `API-15-desktop/API-15-user-desktop-check.md` |
+
+## Cases (round 2)
 
 Round-1 rows for code that IR-003 did not change are kept, marked "R1 (still holds)". IR-003 changed `model-routing/services/model-router{,-agent}.ts` and removed the run-config confinement field, so every case that exercises routing was rerun.
 
@@ -90,7 +106,7 @@ Round-1 rows for code that IR-003 did not change are kept, marked "R1 (still hol
 | Durable regression coverage quality and relevance | 92% | 95% | MR-01…09 (MR-09 now asserts recovery), RC-39…41, LR-3, the API-14 probe | — | — |
 
 - Overall post-repository confidence: 87%
-- Overall final confidence: 95%
+- Overall final confidence: 95% (round 3: the same; the only change is environment fidelity: Grok live could not be rerun on the merged base because its account usage was used up, which the fake-Grok routing in MR-02 and round 2's live pass cover)
 - Calculation method: simple average of the seven categories (94.9%, rounded)
 - Every critical acceptance criterion directly proven, apart from parts only the user can check: `Yes`
 - Any final applicable category below `90%`: `No`
@@ -151,7 +167,7 @@ Round-1 rows for code that IR-003 did not change are kept, marked "R1 (still hol
 | `autobyteus-server-ts/tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts` | Updated (R1: RC-39…41; twelve older cases to the ticket's peer contract) | RC-* | — |
 | `autobyteus-server-ts/tests/e2e/agent-definitions/internal-agents.e2e.test.ts` | Updated (R1: IA-01) | API-09 | — |
 | `autobyteus-server-ts/tests/e2e/runtime/available-agent-runtimes-live-agents.e2e.test.ts` | Added by the 303 fold; updated (R1: LR-3; R2: model-pick message) | API-12 | — |
-| `autobyteus-web/tests/e2e/model-routing-decisions-probe.mjs`, `autobyteus-web/package.json` (`test:e2e:model-routing-decisions`) | Added (R2) | API-14 | — |
+| `autobyteus-web/tests/e2e/model-routing-decisions-probe.mjs`, `autobyteus-web/package.json` (`test:e2e:model-routing-decisions`) | Added (R2); updated (R3: MRD-08, New chat `@` never offers the Model Router) | API-14 | — |
 
 - Added or updated paths attached for proportional test-code review: `Yes`
 
@@ -176,8 +192,8 @@ Round-1 rows for code that IR-003 did not change are kept, marked "R1 (still hol
 
 ## Latest Authoritative Result
 
-- Result: `Pass`
-- Criteria not proven, or parts only the user can check: only the user can check the desktop app verification (Done-when); prepared in API-15
+- Result: `Pass` (round 3, post-merge with IR-004)
+- Criteria not proven, or parts only the user can check: only the user can check the desktop app verification (Done-when); prepared in API-15 on the final build (round 3)
 - Next recipient from `get_handoff_rules`: code reviewer (proportional test-code review, Large/High)
 - Notes:
   - FU-007, FU-008 and FU-009 are pre-existing regression failures, recorded in `follow-ups.md`.

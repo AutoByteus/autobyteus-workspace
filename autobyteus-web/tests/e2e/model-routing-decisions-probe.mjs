@@ -16,6 +16,7 @@
 //          for the remote copy (from the peer's launches) (AC-012);
 //   MRD-05 beta's window: its own Decisions list the copy alpha delegated, with no "Open run" (UXJ-008, VIS-011);
 //   MRD-06 Simplified Chinese: Decisions and Overview are translated (AC-009);
+//   MRD-08 New chat `@`: with internal agents shown, the Model Router is never offered as a mention (DEL-F1);
 //   MRD-07 no browser errors.
 // Every case records Pass/Fail in <output-dir>/result.json with screenshots; owned processes and the temp root are removed.
 // Prerequisite: a current server build (`pnpm -C autobyteus-server-ts build`).
@@ -280,6 +281,35 @@ try {
     assert(!evidence.observations.betaDecisions.page.includes(REASON.alpha), 'alpha\'s records are not on beta');
     await shot('MRD-05-beta-decisions');
     await bindWindow('mr-probe-alpha-again', alpha.url); await sleep(1500);
+  });
+
+  await kase('MRD-08', 'New chat `@`: with internal agents shown, the Model Router is listed among the agents but never offered as a mention (DEL-F1)', async () => {
+    await gql(alpha, 'mutation{ updateServerSetting(key: "AUTOBYTEUS_SHOW_INTERNAL_AGENTS", value: "true") }');
+    try {
+      const listed = (await gql(alpha, '{ agentDefinitions { id internal } }')).agentDefinitions;
+      assert(listed.some((d) => d.id === 'autobyteus-model-router' && d.internal), 'the router is listed while internal agents are shown');
+      await page.goto(`${frontendUrl}/chat`, { waitUntil: 'domcontentloaded' });
+      await page.locator(dt('chat-new')).waitFor({ timeout: 120000 }); await sleep(1500);
+      await page.locator(dt('run-target-switcher-trigger')).click();
+      await page.locator(dt('run-target-switcher-search')).fill('Manager');
+      await page.locator(dt(`run-target-switcher-option-${ids.manager}`)).click();
+      await page.locator(dt('run-target-switcher-menu')).waitFor({ state: 'detached', timeout: 30000 });
+      const input = page.locator(`${dt('chat-composer')} textarea`).first();
+      await input.click(); await input.fill(''); await page.keyboard.type('@');
+      await page.locator(dt('run-mention-menu')).waitFor({ timeout: 30000 });
+      await waitFor('mention options', async () => (await page.locator(`${dt('run-mention-menu')} [data-test^="run-mention-option-"]`).count()) > 0, 30000);
+      await sleep(500);
+      const options = await page.locator(`${dt('run-mention-menu')} [data-test^="run-mention-option-"]`).evaluateAll((els) => els.map((e) => e.getAttribute('data-test').replace('run-mention-option-', '')));
+      await page.keyboard.type('Model'); await sleep(800);
+      const filtered = await page.locator(`${dt('run-mention-menu')} [data-test^="run-mention-option-"]`).evaluateAll((els) => els.map((e) => e.getAttribute('data-test').replace('run-mention-option-', '')));
+      evidence.observations.newChatMentions = { options, filteredModel: filtered, menu: await textOf(dt('run-mention-menu')).catch(() => null) };
+      await shot('MRD-08-new-chat-mentions');
+      assert(options.includes(ids.writer), `a shared agent is offered (positive control): ${JSON.stringify(options)}`);
+      assert(!options.some((o) => o.includes('autobyteus-model-router')) && !filtered.some((o) => o.includes('autobyteus-model-router')), `the Model Router is never offered: ${JSON.stringify({ options, filtered })}`);
+      await page.keyboard.press('Escape');
+    } finally {
+      await gql(alpha, 'mutation{ updateServerSetting(key: "AUTOBYTEUS_SHOW_INTERNAL_AGENTS", value: "false") }');
+    }
   });
 
   await kase('MRD-06', 'Simplified Chinese: Decisions and Overview are translated', async () => {

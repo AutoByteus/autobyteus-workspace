@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- |
 | API-REV-001 | Code Reviewer, `code-review-report.md` (CRR-002 Pass), round 1 | SR-017, ARCH-REV-003, IR-002, CRR-002 | N/A | Fail / 81% |
 | API-REV-002 | Code Reviewer, `code-review-report.md` (CRR-004 Pass, Full Re-Audit), round 2 | SR-018, ARCH-REV-004, IR-003, CRR-004 | Fail / 81% | Pass / 95% |
+| API-REV-003 | Code Reviewer, `code-review-report.md` (CRR-006 Pass, Targeted Delta), round 3 | IR-004, CRR-006, delivery DEL-F1/DEL-F2 | Pass / 95% | Pass / 95% |
 
 ## Revision Entries
 
@@ -76,3 +77,33 @@ None
   - the user's desktop verification (Done-when; prepared);
   - the one-off MR-09 time-out under concurrent load;
   - Claude's transient report read.
+
+### API-REV-003 — Round 3: post-merge rerun (origin/personal 50e93c2108) with delivery's Local Fix IR-004
+
+- Triggering role, report path, and round: `/software_engineering_team/code_reviewer`, CRR-006 (Targeted Delta Review of IR-004), round 3
+- Triggering finding or case IDs:
+  - DEL-F1: the web built-in id mirror lists `autobyteus-model-router`, so New chat `@` never offers it.
+  - DEL-F2: "Configuration" wording.
+  - The merged base needs a rerun scoped by impact.
+- Related revision IDs: IR-004 (`f48af0176a`), CRR-006; delivery `e2e4f1a1ab`
+- Why recorded: the post-fix, post-merge rerun
+- Coverage decisions or durable test paths changed: the API-14 probe gains MRD-08 (New chat `@` with internal agents shown never offers the Model Router)
+- Cases:
+  - rerun: MR-01…09, RC-01…41, API-09, API-13, L-05, LR-3, API-14, API-15;
+  - added: WEB-FULL (the cause of IMP-13's memory.spec failure).
+- Commands, environment, fixture, or broader-validation delta:
+  - The Docker probe now mounts all workspace package `dist` folders (`autobyteus-ts`, four contract packages), not only the server's.
+  - Grok live was not rerun: the account's free usage is used up (HTTP 429). The product's fallback note for it was observed.
+
+#### Prior Failure Resolution
+
+None (round 2 passed).
+
+- Canonical artifacts and sections updated: the execution report ("Round 3 Cases"), the progress log, `evidence/api-e2e/*-r3*`, `R3-server-e2e.log`, `WEB-FULL-r3.log`
+- Prior result and confidence: Pass, 95%
+- Current result and confidence: Pass, 95%
+- New or remaining failure IDs: none in scope. FU-006/007/008/009 and the DEL-03 web specs are pre-existing.
+- Recommended owner: code reviewer (proportional test-code review of MRD-08)
+- Remaining risks, blocked evidence, or untested scope:
+  - Grok live on the merged base (account usage). Observation: while the router's model is out of usage, the Model Routing status still reads active, because the runtime report gives no Grok limit; the routing falls back with the reason.
+  - The user's desktop verification (prepared on the final build).

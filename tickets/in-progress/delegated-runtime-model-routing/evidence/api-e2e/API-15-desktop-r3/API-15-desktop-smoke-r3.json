@@ -1,0 +1,101 @@
+{
+  "case": "API-15 round 3: isolated desktop instance of the final build (merged base + IR-004)",
+  "commit": "7541be3e6d",
+  "commands": [
+    "pnpm --silent isolated-app start --build",
+    "node API-15-desktop/API-15-desktop-smoke.mjs.txt 61527 http://127.0.0.1:61528 <out>",
+    "node API-15-desktop/API-15-desktop-smoke-on.mjs.txt 61527 <out>",
+    "pnpm --silent isolated-app stop iso-61527-dd30"
+  ],
+  "what_to_look_for": "start ok; status OFF; decisions empty text 'Turn Model Routing on in Configuration' (DEL-F2); switch on \u2192 runtimeOptions Codex, Claude, Antigravity, Grok, AutoByteus; browserErrors []; stop dataRootRemoved true",
+  "start": {
+    "schemaVersion": 1,
+    "ok": true,
+    "command": "start",
+    "result": {
+      "instanceId": "iso-61527-dd30",
+      "pid": 43063,
+      "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-runtime-model-routing/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+      "backendUrl": "http://127.0.0.1:61528",
+      "graphqlUrl": "http://127.0.0.1:61528/graphql",
+      "controlEndpoint": "http://127.0.0.1:61527",
+      "controlPort": 61527,
+      "serverPort": 61528,
+      "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-NPSfgg",
+      "ownsDataRoot": true,
+      "keepDataRoot": false,
+      "testUpdateFeedUrl": null,
+      "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-NPSfgg/server-data/db/production.db",
+      "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-61527-dd30.log"
+    }
+  },
+  "smokeOff": {
+    "checks": {
+      "status": {
+        "enabled": false,
+        "routerLaunch": null,
+        "active": false,
+        "reasonCode": "OFF",
+        "reasonParams": {},
+        "reasonText": "Model Routing is off",
+        "agentRunId": null
+      },
+      "runtimes": [
+        {
+          "runtime": "codex_app_server",
+          "models": 8,
+          "signIn": null
+        },
+        {
+          "runtime": "claude_agent_sdk",
+          "models": 12,
+          "signIn": null
+        },
+        {
+          "runtime": "antigravity_cli",
+          "models": 13,
+          "signIn": null
+        },
+        {
+          "runtime": "grok_build",
+          "models": 1,
+          "signIn": null
+        },
+        {
+          "runtime": "autobyteus",
+          "signIn": null
+        }
+      ],
+      "windowUrl": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/delegated-runtime-model-routing/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat",
+      "switch": "false",
+      "runtimeOptions": [
+        "Choose a runtime"
+      ],
+      "decisions": "Nothing recorded yet. Turn Model Routing on in Configuration. Every delegated agent's launch is then recorded here, with its reason. Go to Configuration",
+      "browserErrors": []
+    }
+  },
+  "smokeOn": {
+    "on": {
+      "switch": "true",
+      "runtimeOptions": [
+        "Choose a runtime",
+        "Codex",
+        "Claude",
+        "Antigravity",
+        "Grok",
+        "AutoByteus"
+      ],
+      "runtimeDisabled": false,
+      "status": "choose a runtime and model for the router."
+    },
+    "offAgain": "false",
+    "browserErrors": []
+  },
+  "stop": {
+    "ok": true,
+    "dataRootRemoved": true,
+    "controlPortReleased": true,
+    "serverPortReleased": true
+  }
+}
