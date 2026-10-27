@@ -1,4 +1,4 @@
-import fastify, { type FastifyInstance } from "fastify";
+import fastify, { LogController, type FastifyInstance } from "fastify";
 import websocket from "@fastify/websocket";
 import type { LoggingConfig } from "../config/logging-config.js";
 import { getFastifyLoggerOptions } from "../logging/runtime-logger-bootstrap.js";
@@ -17,7 +17,7 @@ export const buildStandaloneApplicationServer = async (input: {
 }): Promise<FastifyInstance> => {
   const app = fastify({
     logger: getFastifyLoggerOptions(input.loggingConfig),
-    disableRequestLogging: true,
+    logController: new LogController({ disableRequestLogging: true }),
     maxParamLength: SERVER_ROUTE_PARAM_MAX_LENGTH,
   });
   app.addHook("onClose", async () => input.applicationRuntime.lifecycle.stop());
