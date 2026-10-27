@@ -52,3 +52,22 @@
 | 10-26 21:05 | F-001 | Checkpoint | — | also under LEAF-IR: meaning STRONG on C1, C2, C4, T1, T3 |
 | 10-26 21:10 | (process) | Checkpoint | — | cleanup done; private screenshots moved; next: commit, API-R05, handoff |
 | 10-26 21:10 | API-R05 | Completed | Pass | licensing + hygiene after c7a2f3b972 |
+| 10-27 06:09 | (round 2) | Checkpoint | — | CRR-005 at 5b16e1fe4a (code 3204aa2455); plan § Round 2 Rerun Plan; next API-R03 build, desktop build |
+| 10-27 06:09 | API-R03 | Started | — | round 2 server build |
+| 10-27 06:09 | API-R03 | Completed | Pass | round 2 build |
+| 10-27 06:09 | (desktop r2) | Started | — | isolated-app start --build --data-root /private/tmp/wjs-api2/root |
+| 10-27 06:15 | API-L01r2 | Started | — | Index now on the round-2 instance (journals present in the clone) |
+| 10-27 06:18 | API-L14 | Started | — | AC-007 fact check, off-topic cues (text complete; meaning embedding) |
+| 10-27 06:19 | API-L02r2 | Started | — | result cards and notes on the page |
+| 10-27 06:19 | API-L02r2 | Completed | Pass | gray/amber notes, Words: on text, no meaning label, no strength; open from match row with Words banner |
+| 10-27 06:20 | API-L05r2 | Started | — | Codex prompted: absent codename, Q07, Q01 |
+| 10-27 06:24 | API-L05r2 | Completed | Pass | absent codename named and answered honestly; Q07 2 steps; Q01 reached |
+| 10-27 06:24 | API-L08r2 | Started | — | turn with marmotcobalt3390, text findability |
+| 10-27 06:29 | API-L08r2 | Checkpoint | — | first attempt void: round-1 freshness probe queried the removed strength field (GraphQL error each poll); word was findable; repeating with probe r2 |
+| 10-27 06:30 | API-L08r2 | Completed | Pass | 21.2 s after the reply (probe r2) |
+| 10-27 06:30 | API-L14 | Completed | Pass | 11/11 cues name their absent words; census 0 occurrences; no strength field |
+| 10-27 07:02 | API-L04r2 | Started | — | HTTP gates then evaluation command; load ~11 |
+| 10-27 08:09 | API-L04r2 | Completed | Pass | gate1 31/31, top3 26/31, p90 742 max 1034 (load 12-17); mismatches [] /47; 0/703 text w/o words |
+| 10-27 08:09 | API-L11r2 | Started | — | start again on the same root; first-search notes |
+| 10-27 08:10 | API-L11r2 | Completed | Pass | catch-up: no absence claimed; then named; meaning loads on first search |
+| 10-27 08:12 | (round 2) | Completed | Pass | report rewritten; API-REV-002; final 94% |

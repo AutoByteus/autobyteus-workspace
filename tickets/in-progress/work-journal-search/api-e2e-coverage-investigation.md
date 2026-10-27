@@ -20,11 +20,11 @@
 - Delivery Revision Record (delivery re-entry only): N/A
 - Relevant Delivery Revision IDs: N/A
 - API/E2E Revision Record (created after the first completed result): `api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `N/A` (first round)
-- Current Investigation Round: 1
-- Trigger: code reviewer pass handoff CRR-002 (reviewed source `41501c5a41`; ticket folder `e183aded53`)
-- Prior Investigation Reviewed: none
-- Latest Authoritative Investigation: this file, round 1
+- Current API/E2E Revision ID: `API-REV-001` (round 2 will add `API-REV-002`)
+- Current Investigation Round: 2
+- Trigger: round 1 CRR-002 (`41501c5a41`); round 2 CRR-005 Pass on SR-006 (UD-020, UD-021), branch at `5b16e1fe4a`, code `3204aa2455`
+- Prior Investigation Reviewed: round 1 (this file)
+- Latest Authoritative Investigation: this file, round 2 (§ Round 2 Rerun Plan)
 
 ## Current Requirement And Design Basis
 
@@ -209,3 +209,31 @@ None.
 - Reroute Required Before Validation Execution: `No`
 - Recommended Owner If Reroute Required: N/A
 - Notes: the gate-2 measurement records the host load; an idle reference machine is not available on this shared host.
+
+## Round 2 Rerun Plan
+
+- **What changed** (`git diff --name-only 41501c5a41 3204aa2455`, code only; `3204aa2455..5b16e1fe4a` touches only `tickets/`):
+  - search service, facade notes, models, store query (`hasChunk` replaces the vocabulary weights), normalizer query side (no punctuation-only terms; `containsTerm` by tokens);
+  - the tool contract and manifest result shape (`matchedWords`, `wordsNotFound`, no strength), GraphQL types;
+  - the evaluation and the term census;
+  - `EmbeddingIndex` (relevance flags dropped for memory);
+  - web: results card, notes, page and journal store.
+  - **Unchanged:** the pipeline, journals step, discovery, journal service, index-side normalization (`toIndexText`), and the startup loader.
+- **Requirement basis:** SR-006, UD-020 (no strength labels; factual notes), UD-021 (Product revision of the card), AC-007 as a fact check, R-13 (live-window limit), R-15 (the asking run's journal counts for absence).
+
+| Case | Decision | Reason |
+| --- | --- | --- |
+| API-R01 | Reused: IMP-25, IMP-29, IMP-30 (`3204aa2455`) | 650 server tests and 20 memory e2e on the code under test |
+| API-R02 | Reused: IMP-26 (web 121 memory tests) and IMP-28 (page probe, 23 checks) | The web changed; the implementer ran both on the changed web |
+| API-D01 | Still valid | The test and discovery are unchanged |
+| API-R03 | Rerun | Fresh `dist` for the evaluation and the desktop build |
+| API-L01 | Still valid (round 1) | Pipeline and indexing unchanged. A new first build is still needed to get an index; its step times are recorded again as a check |
+| API-L02 | Rerun (as API-L02r2) | The results card, notes and opening a match changed (UD-021) |
+| API-L03, API-L07, API-L09, API-L12, API-L13 | Still valid | Browse, tool exposure, pipeline passes, discovery and store DDL features are unchanged in what they exercise |
+| API-L04 | Rerun | AC-001 and AC-002 on the new search; idle-as-possible host; the private 47-question file |
+| F-001 / AC-007 | Rerun as API-L14 | Off-topic cues must name their verified-absent words. Checks: no named word occurs in the index, no strength anywhere, and named-as-found words occur in the match's lines |
+| API-L05 (Codex) | Rerun, short | The tool's result shape changed; 3 prompted questions including an absent codename |
+| API-L06 (native) | Rerun, one question | The same result shape on the native path |
+| API-L08 | Rerun, short | AC-009: the text search code changed; one turn's new word, timed |
+| API-L10, API-L11 | Spot-check during API-L11 only | Notes changed in the facade. Restart: the first search's meaning note, and `wordsNotFound` empty while the catch-up holds the Text step |
+| API-R05 | Rerun | Licensing and hygiene |
