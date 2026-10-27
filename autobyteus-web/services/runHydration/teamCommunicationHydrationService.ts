@@ -1,3 +1,5 @@
+import type { FetchPolicy } from '@apollo/client/core';
+import type { DocumentNode } from 'graphql';
 import type { TeamCommunicationMessageDto } from '@autobyteus/team-stream-contracts';
 import { GetTeamCommunicationMessages } from '~/graphql/queries/runHistoryQueries';
 import type { GetTeamCommunicationMessagesQuery } from '~/generated/graphql';
@@ -5,10 +7,10 @@ import { projectTeamCommunicationMessageDtos } from './teamCommunicationGraphqlD
 
 interface TeamCommunicationHydrationClient {
   query: <TData>(options: {
-    query: unknown;
+    query: DocumentNode;
     variables: Record<string, unknown>;
-    fetchPolicy: string;
-  }) => Promise<{ data?: TData; errors?: Array<{ message: string }> }>;
+    fetchPolicy: FetchPolicy;
+  }) => Promise<{ data?: TData; errors?: ReadonlyArray<{ message: string }> }>;
 }
 
 export const fetchTeamCommunicationForTeam = async (params: {

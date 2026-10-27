@@ -1,4 +1,4 @@
-import { ApolloClient, ApolloLink, HttpLink, InMemoryCache } from '@apollo/client/core';
+import { ApolloClient, ApolloLink, HttpLink, InMemoryCache, type NormalizedCacheObject } from '@apollo/client/core';
 import { onError } from '@apollo/client/link/error';
 import { useUiErrorStore } from '~/stores/uiErrorStore';
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
@@ -7,18 +7,27 @@ import { resolveCurrentGraphqlHttpEndpoint } from '~/utils/remoteAccess/mobileSe
 
 export const BOUND_APOLLO_CLIENT_KEY = '__boundApolloClient';
 
-type NuxtAppLike = {
-  [BOUND_APOLLO_CLIENT_KEY]?: ApolloClient<unknown>;
-  _apolloClients?: Record<string, ApolloClient<unknown>>;
+export type NuxtAppLike = {
+  [BOUND_APOLLO_CLIENT_KEY]?: ApolloClient<NormalizedCacheObject>;
+  _apolloClients?: Record<string, ApolloClient<NormalizedCacheObject>>;
   $apollo?: {
-    clients?: Record<string, ApolloClient<unknown>>;
-    defaultClient?: ApolloClient<unknown>;
+    clients?: Record<string, ApolloClient<NormalizedCacheObject>>;
+    defaultClient?: ApolloClient<NormalizedCacheObject>;
   };
 };
 
+// The bindings registerBoundApolloClient writes, as the Nuxt app's own fields (read by utils/apolloClient.ts).
+declare module '#app' {
+  interface NuxtApp {
+    [BOUND_APOLLO_CLIENT_KEY]?: NuxtAppLike[typeof BOUND_APOLLO_CLIENT_KEY];
+    _apolloClients?: NuxtAppLike['_apolloClients'];
+    $apollo?: NuxtAppLike['$apollo'];
+  }
+}
+
 export function buildBoundApolloClient(
   graphqlHttpEndpoint: string | (() => string),
-): ApolloClient<unknown> {
+): ApolloClient<NormalizedCacheObject> {
   const uiErrorStore = useUiErrorStore();
   const resolveGraphqlHttpEndpoint = typeof graphqlHttpEndpoint === 'function'
     ? graphqlHttpEndpoint
@@ -78,7 +87,7 @@ export function buildBoundApolloClient(
 
 export function registerBoundApolloClient(
   nuxtApp: NuxtAppLike,
-  client: ApolloClient<unknown>,
+  client: ApolloClient<NormalizedCacheObject>,
 ): void {
   nuxtApp[BOUND_APOLLO_CLIENT_KEY] = client;
 
