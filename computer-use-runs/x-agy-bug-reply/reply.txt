@@ -1,9 +1,0 @@
-Bug report for Antigravity CLI (agy, headless, --output-format stream-json):
-
-After a turn hits a real quota error (429 RESOURCE_EXHAUSTED, "Individual quota reached… Resets in 46m49s"), that conversation never recovers. Every later turn ends with status ERROR and the exact same message, still "Resets in 46m49s", days later.
-
-The turns actually succeed: the agent does all its work and returns a full response, and the agy logs show no new 429s. It even happens on trivial no-tool turns, and it persists across agy restarts.
-
-It looks like the stored error step from the original 429 in the conversation history is being reported as the result of every later turn.
-
-Seen on agy 1.2.16. The only workaround so far is starting a new conversation.
