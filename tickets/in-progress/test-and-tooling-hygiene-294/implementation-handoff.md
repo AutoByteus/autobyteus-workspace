@@ -10,21 +10,21 @@
 - Supplemental task artifacts: `follow-ups.md` (FU-001..FU-009; FU-009 added here), `evidence/` (SD-* from design, IMP-* from this implementation)
 - Design review report: `tickets/in-progress/test-and-tooling-hygiene-294/design-review-report.md` (round 2, Pass)
 - Architecture review revision record: `tickets/in-progress/test-and-tooling-hygiene-294/architecture-review-revision-record.md` (ARCH-REV-002)
-- Triggering rework report, revision record, or evidence, when applicable: N/A (initial)
+- Triggering rework report, revision record, or evidence, when applicable: `code-review-report.md` and `code-review-revision-record.md` (CRR-001, CR-001); evidence IMP-19
 
 All paths are under the worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294`, branch `codex/test-and-tooling-hygiene-294`, base `origin/personal` `2f48d85d4d`. The code commit range is `origin/personal..6fa5f443c6`; the ticket documents and evidence are committed after it (see the handoff message for the final commit).
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework` (IR-002, Local Fix CR-001 of CRR-001)
 - Implementation revision record: `implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
+- Current implementation revision ID: `IR-002`
 - Related solution revision IDs: SR-002, SR-004, SR-005
 - Related architecture-review revision IDs: ARCH-REV-002
-- Related code-review revision IDs: N/A
+- Related code-review revision IDs: CRR-001
 - Related API/E2E revision IDs: N/A
 - Related delivery revision IDs: N/A
-- Triggering finding IDs: N/A
+- Triggering finding IDs: CR-001
 
 Every work item H-01..H-32 of groups A–F is implemented, mostly one commit per item, with each test-caused fix labelled "baseline fix" and naming its test and cause (TESTING.md Rule 9). TESTING.md changes are four separate `docs(testing): …` commits. 43 code commits (`origin/personal..6fa5f443c6`), 217 files changed.
 
@@ -77,7 +77,7 @@ Every work item H-01..H-32 of groups A–F is implemented, mostly one commit per
 
 ### Deviations and additions (for review)
 
-1. **Typed Apollo client (H-07).** The design typed each of the 45 implicit-`any` callback parameters. Their cause was `getApolloClient()` returning `any`, so I fixed that instead. The plugin declares its Nuxt-app bindings (a `#app` NuxtApp augmentation, like `types/localization.d.ts`) as `ApolloClient<NormalizedCacheObject>`. This also removed the 2 `utils/apolloClient.ts` errors. The typed results surfaced type-only corrections in 6 more files; commit `2396303c53` lists them with their reasons. One is `'LOCAL' as ToolOriginEnum` / `'MCP' as ToolOriginEnum`: the wire value typed as the generated enum. It's a cast that hides no mismatch, chosen because importing the enum value would bundle all of `generated/graphql.ts`. The getter's last fallback, `useApolloClient()`, could never return a client (nothing provides one, so it always threw "Apollo client with id default not found"). It now throws that outcome directly.
+1. **Typed Apollo client (H-07).** The design typed each of the 45 implicit-`any` callback parameters. Their cause was `getApolloClient()` returning `any`, so I fixed that instead. The plugin declares its one Nuxt-app binding, the bound key (a `#app` NuxtApp augmentation, like `types/localization.d.ts`), as `ApolloClient<NormalizedCacheObject>`. This also removed the 2 `utils/apolloClient.ts` errors. The typed results surfaced type-only corrections in 6 more files; commit `2396303c53` lists them with their reasons. One is `'LOCAL' as ToolOriginEnum` / `'MCP' as ToolOriginEnum`: the wire value typed as the generated enum. It's a cast that hides no mismatch, chosen because importing the enum value would bundle all of `generated/graphql.ts`. The getter's fallbacks could never return a client: the `useApolloClient()` fallback always threw (nothing provides one), and, after CR-001 (IR-002), the `_apolloClients` / `$apollo` slots and the `clientId` parameter are removed too, because the plugin, their only writer, always set the bound key first. `getApolloClient()` returns the bound client or throws "No Apollo client is bound"; `registerBoundApolloClient` writes only that key.
 2. **More dead code removed in touched files (H-07, Principle 7):** `runtimeConfig.public.audio`'s capture settings (read only by the removed `audioStore`); `nuxt.config.ts` `routeRules` (`middleware: ['workspace']`: Nuxt reads `appMiddleware`, and no `workspace` middleware exists); `modules/devhandler-compat.ts` (Nuxt 3.21's only `server:devHandler` caller always passes two arguments, so it never acted); `VncViewer`'s `config.public.vncPassword` (an undeclared key, always undefined); the `useApolloClient` fallback (item 1). The transcription URL chain is live config and stays, recorded as FU-009.
 3. **`TreeNode` private sort helpers became module functions** (same code). Pinia's state unwrapping drops private members, which made the file-explorer store's state unassignable to its own type.
 4. **FSTDEP022 (H-18).** The built server, once FSTDEP023 was gone, still printed FSTDEP022 twice: the top-level `maxParamLength` router option is deprecated. Moved to `routerOptions` in the same three servers and five test setups (`6fa5f443c6`). This is REQ-017 / AC-019 ("no Fastify deprecation warnings").
@@ -167,6 +167,7 @@ Evidence is in `tickets/in-progress/test-and-tooling-hygiene-294/evidence/`.
 | IMP-15 | frozen install, `pnpm why`, lockfile package-key diff | 6fa5f443c6 | same | dependency declarations | R-2, QR-003 | Pass | IMP-15-dependencies.log | `package entries removed: []`; one version each |
 | IMP-16 | codegen against the schema printed from this branch's build | 6fa5f443c6 | same | `generated/graphql.ts`, `codegen.ts` | BEH-002, DEC-007 | Pass | IMP-16-codegen-drift.log | `diff: 0 lines (identical)` |
 | IMP-17 | sanitisation spec under jsdom, then happy-dom | 6fa5f443c6 | same | `useMarkdownSegments` | BEH-019; AC-020 | Pass | IMP-17-sanitisation-jsdom.log | jsdom `3 passed`; happy-dom `1 failed` (the injection case) |
+| IMP-19 | CR-001 fix: `pnpm -C autobyteus-web typecheck`; `apollo.client.spec.ts`; `test:nuxt --run`; `git grep` for the removed slots | 256cee925e | same | `utils/apolloClient.ts`, `plugins/30.apollo.client.ts` and every store using the client | BEH-007; CR-001 | Pass | IMP-19-cr001-apollo-binding.log | `[typecheck] PASS`; `Tests  2 passed (2)`; `Test Files  666 passed (666)`; grep `(none)` |
 | IMP-18 | archive E2E | 6fa5f443c6 | clean env | H-03 | AC-003 | Pass | IMP-18-archive-e2e.log | `Tests  6 passed (6)` |
 
 - Not run, and why:
