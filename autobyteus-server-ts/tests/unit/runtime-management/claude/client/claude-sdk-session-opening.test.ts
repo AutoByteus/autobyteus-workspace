@@ -61,9 +61,12 @@ describe("retained SDK opening — actual pinned SDK / public hook", () => {
     const acquire = vi.fn(() => ({ async *[Symbol.asyncIterator]() {}, interrupt: async () => undefined,
       close() {}, initializationResult: async () => ({}) }));
     const client = new ClaudeSdkClient(); client.setCachedModuleForTesting({ query: acquire });
+    // The session launches with the process environment (through the spawn-environment builder).
+    for (const [key, value] of Object.entries({ HOME: home, CLAUDE_AGENT_SDK_AUTH_MODE: "cli", CLAUDE_CONFIG_DIR: path.join(home, "config"), DEBUG_CLAUDE_AGENT_SDK: "1" })) {
+      vi.stubEnv(key, value);
+    }
     const opening = client.beginStreamingSession({ resolveOptions: () => ({ systemPrompt: "test instructions",
-      sessionBinding: { kind: "resume", sessionId: "exact-resume" }, model: "test-model", workingDirectory: home,
-      env: { HOME: home, CLAUDE_AGENT_SDK_AUTH_MODE: "cli", CLAUDE_CONFIG_DIR: path.join(home, "config"), DEBUG_CLAUDE_AGENT_SDK: "1" } }) });
+      sessionBinding: { kind: "resume", sessionId: "exact-resume" }, model: "test-model", workingDirectory: home }) });
     try {
       await opening.open();
       const options = acquire.mock.calls[0][0].options;
@@ -71,6 +74,6 @@ describe("retained SDK opening — actual pinned SDK / public hook", () => {
       expect(options.spawnClaudeCodeProcess).toBeTypeOf("function");
       expect(options.debugFile).toContain(path.join(home, "config", "debug", "autobyteus-cli-"));
       expect(await opening.release()).toEqual({ kind: "released" });
-    } finally { await opening.release(); await fs.rm(home, { recursive: true, force: true }); }
+    } finally { await opening.release(); vi.unstubAllEnvs(); await fs.rm(home, { recursive: true, force: true }); }
   });
 });

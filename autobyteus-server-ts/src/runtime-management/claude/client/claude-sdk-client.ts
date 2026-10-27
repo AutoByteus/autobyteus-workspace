@@ -59,7 +59,6 @@ export type ClaudeSdkStreamingSessionOptions = {
   sessionBinding: ClaudeSdkSessionBinding;
   model: string;
   workingDirectory: string | null;
-  env?: Record<string, string | undefined>;
   mcpServers?: Record<string, unknown> | null;
   allowedTools?: Iterable<string> | null;
   permissionMode?: ClaudeSdkPermissionMode;
@@ -242,7 +241,7 @@ export class ClaudeSdkClient {
         control.assertAccepting();
         const queryFn = this.resolveFunction(sdk, "query");
         if (!queryFn) throw new Error("Claude SDK query API is unavailable.");
-        const spawnEnvironment = await this.resolveSpawnEnvironment(options.env);
+        const spawnEnvironment = await this.resolveSpawnEnvironment();
         control.assertAccepting();
         if (asString(spawnEnvironment.CLAUDE_CODE_DISABLE_BACKGROUND_TASKS)) logger.warn("Claude CLI background tasks disabled by inherited CLAUDE_CODE_DISABLE_BACKGROUND_TASKS operator environment.");
         const queryOptions = this.buildQueryOptions(options, spawnEnvironment);
@@ -349,18 +348,15 @@ export class ClaudeSdkClient {
     };
   }
 
-  private async resolveSpawnEnvironment(
-    explicitEnvironment?: Record<string, string | undefined>,
-  ): Promise<Record<string, string | undefined>> {
-    const effectiveEnvironment = explicitEnvironment ?? process.env;
-    if (resolveClaudeSdkAuthMode(effectiveEnvironment) !== "api-key") {
-      return explicitEnvironment ?? buildClaudeSdkSpawnEnvironment(effectiveEnvironment);
+  private async resolveSpawnEnvironment(): Promise<Record<string, string | undefined>> {
+    if (resolveClaudeSdkAuthMode(process.env) !== "api-key") {
+      return buildClaudeSdkSpawnEnvironment(process.env);
     }
 
     try {
       const apiKey = await this.resolveClaudeApiKey();
       return buildClaudeSdkSpawnEnvironment(
-        effectiveEnvironment,
+        process.env,
         apiKey.revealToTrustedConsumer(),
       );
     } catch {
