@@ -107,3 +107,68 @@ Model Routing (switch, Model Router agent, one-at-a-time routing, decision log a
 ## Repository Finalization And Release
 
 Recorded below after the merge and the release.
+
+## Finalization Record
+
+- Bootstrap context source: the code reviewer's handoff (branch `codex/delegated-runtime-model-routing`, base `origin/personal` `d74f75a51a`) and RELEASE.md
+- Ticket branch: `codex/delegated-runtime-model-routing`
+- Ticket branch commit result: archive commit `ccf55a4eb0`, on top of:
+  - checkpoint `67bb22ce04`;
+  - base merge `357936966c`;
+  - delivery docs `e2e4f1a1ab`;
+  - IR-004 `f48af0176a`;
+  - API/E2E round 3 `9e8ac5e423`;
+  - review records and FU-011 `9b1f9424cf`.
+- Name check before the commit: `check_repository_artifact_hygiene.py` passed. The longest ticket path is 143 characters, with no Windows-hostile names.
+- Ticket branch push result: pushed `origin/codex/delegated-runtime-model-routing` @ `ccf55a4eb0`, after the Secret Gate on `origin/personal..codex/delegated-runtime-model-routing` passed
+- Finalization target: `origin/personal`
+- Target advanced after verification: `No` (`50e93c2108` at verification, at the merge and right before the push)
+- Merge into target result: `git merge --no-ff` on `finalize/delegated-runtime-model-routing` → `3c751828cb`. Checks on the merged state:
+  - Secret Gate PASS;
+  - `check_repository_artifact_hygiene.py` passed;
+  - `check_licensing.py`: "Licensing is consistent."
+- Push target branch result: pushed together with the release commit, `50e93c2108..f56365c809  HEAD -> personal`
+- Repository finalization status: `Completed`
+
+## Beta Release v1.5.9-beta.11
+
+- Decision: `Beta`, by the user ("if everythign goes fine. please release a new beta thanks.", 2026-10-27)
+- Checks before tagging, on `3c751828cb`:
+  - `check_licensing.py`: consistent;
+  - `check_repository_artifact_hygiene.py`: passed;
+  - `scripts/check_secrets.sh v1.5.9-beta.10..HEAD`: PASS (94 commits).
+- Version: `python3 scripts/release_versions.py next-beta` gave `1.5.9-beta.11` (previous `v1.5.9-beta.10`, a pre-release published 2026-10-26).
+- Command: `bash scripts/desktop-release.sh beta --branch finalize/delegated-runtime-model-routing --no-push`, in a clean release worktree (`…/delegated-runtime-model-routing-release`). The ticket worktree keeps its untracked `electron-dist` for the user's check.
+  - Release commit `f56365c809` (`chore(release): bump workspace release version to 1.5.9-beta.11`, `autobyteus-web/package.json` only) and the annotated tag `v1.5.9-beta.11`.
+  - The identity is the same as on earlier releases.
+- Push: `origin/personal` was confirmed still at `50e93c2108`; then `HEAD -> personal` and `[new tag] v1.5.9-beta.11`, at 07:10:14Z.
+
+| Workflow | Run | Result |
+| --- | --- | --- |
+| Android APK Release | 40465501039 | success (07:14:56Z) |
+| iOS App Store Connect Release | 40465501123 | success (07:26:41Z), TestFlight upload |
+| Desktop Release | 40465501092 | success (07:38:00Z) |
+| Server Docker Release | 40465501079 | success (07:42:18Z) |
+
+- Published artifacts:
+  - `gh release view v1.5.9-beta.11`: `isPrerelease: true`, 17 assets. These are macOS arm64 and x64 `.dmg`/`.zip` with blockmaps, Linux x64 and arm64 AppImages, the Windows `.exe`, four `latest*.yml` files, and the Android APK with its `.sha256`. This matches RELEASE.md.
+  - Docker Hub: `autobyteus/autobyteus-server:1.5.9-beta.11` and `:beta` both point to `sha256:94c9b4bf19f7296ebcee2cb867a1ad0db3db85ee0aa26aea2e7ea340950b9751` (linux/amd64, linux/arm64). `:latest` is unchanged.
+- Release result: `Completed` (not partial)
+- Release notes: GitHub generated notes (pre-release tag)
+- Rollout: desktop installs with Receive beta updates on are offered 1.5.9-beta.11; Docker nodes upgrade with `autobyteus-docker upgrade --all --tag beta`.
+- Rollback: never move or delete the tag. Fix forward with the next beta, or turn Model Routing off (the default).
+
+## Post-Finalization Cleanup
+
+- Release worktree `…/delegated-runtime-model-routing-release` and the local `finalize/delegated-runtime-model-routing` branch: removed after this record is pushed.
+- Ticket worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-runtime-model-routing` and the local `codex/delegated-runtime-model-routing` branch: **kept until the user's desktop check**, because the check guide can start the isolated app `--from-worktree` from its `electron-dist`. They are removed once the check is recorded.
+- Remote branch: `origin/codex/delegated-runtime-model-routing` is kept as pushed ticket history.
+
+## Final Status
+
+- Verification complete: evidence `Yes`; **the user's desktop check (Task "Done when"): open**
+- Repository finalization complete: `Yes` (merge `3c751828cb`, release commit `f56365c809` on `personal`)
+- Applicable release complete: `Yes` (beta v1.5.9-beta.11, complete, all four workflows)
+- Applicable safe cleanup complete: partly. The release worktree is removed; the ticket worktree is kept for the user's check.
+- Unresolved blocker: the user's desktop-app check (or the user's explicit waiver)
+- Successful terminal package eligible for return: `No`, until the user's check is recorded
