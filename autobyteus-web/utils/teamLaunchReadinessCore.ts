@@ -72,9 +72,9 @@ export const evaluateTeamLaunchProfileReadiness = (input: {
     if (!effectiveRuntimeKind) {
       blockingIssues.push({
         code: 'RUNTIME_REQUIRED',
-        memberName: memberProfile.memberName,
+        displayName: memberProfile.displayName,
         runtimeKind: '',
-        message: `${memberProfile.memberName} needs a runtime before this team setup can be saved.`,
+        message: `${memberProfile.displayName} needs a runtime before this team setup can be saved.`,
       })
       return
     }
