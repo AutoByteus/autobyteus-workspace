@@ -20,6 +20,8 @@
     "guard:web-boundary": "node ./scripts/guard-web-boundary.mjs",
     "guard:localization-boundary": "node ./scripts/guard-localization-boundary.mjs",
     "audit:localization-literals": "node ./scripts/audit-localization-literals.mjs",
+    "typecheck": "nuxt prepare && node ./scripts/typecheck.mjs",
+    "typecheck:update-baseline": "nuxt prepare && node ./scripts/typecheck.mjs --update-baseline",
     "test": "pnpm test:nuxt && pnpm test:electron",
     "test:nuxt": "cross-env NUXT_TEST=true vitest",
     "test:electron": "vitest --config ./electron/vitest.config.ts",
