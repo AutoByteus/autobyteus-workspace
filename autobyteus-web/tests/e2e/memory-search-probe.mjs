@@ -235,6 +235,15 @@ try {
     'The off-topic cue names its words as found in no journal', offTopic);
   await shot(page, 'VIS-007-search-none-of-the-words-found-1440x900');
 
+  // Some words found, one in no journal: a gray note names it; the text matches list their words.
+  await page.locator('[data-test="memory-search-input"]').fill('DDNS updater saxophone');
+  await page.locator('[data-test="memory-search-input"]').press('Enter');
+  await waitFor('the some-not-found note', async () => (await page.locator('[data-test="memory-search-some-not-found"]').count()) > 0);
+  const someNote = await text('[data-test="memory-search-some-not-found"]');
+  check('MS-PROBE-026', someNote.trim() === 'Not found in your memory: saxophone.' && (await page.locator('[data-test="memory-match-words"]').count()) > 0,
+    'Some words not found: a gray note names the missing word; text matches list their words', someNote);
+  await shot(page, 'VIS-025-search-some-words-not-found-1440x900');
+
   // Open a result at its lines: banner, highlighted lines, Back to the same results.
   await page.locator('[data-test="memory-search-input"]').fill('DDNS updater for the home domain');
   await page.locator('[data-test="memory-search-input"]').press('Enter');

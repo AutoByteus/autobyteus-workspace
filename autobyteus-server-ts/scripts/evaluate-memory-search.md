@@ -13,8 +13,9 @@ folder, and reports:
 - **words not found** (AC-007): every question's `wordsNotFound` against an independent census of the
   journals (read from the journal files, tokenized as the text index's `unicode61` does; a term of several
   tokens counts only as those tokens in a row): `mismatches` lists named words that occur and absent words that
-  are not named; `offTopicUnnamed` lists off-topic questions (`kind: offTopic`) that name no word. Off-topic
-  questions' key words should be single tokens.
+  are not named; `offTopicUnnamed` lists off-topic questions (`kind: offTopic`) that name no word. With no mismatch,
+  such a question's words all occur somewhere in memory (the asking run's journal counts, as in a search), so the
+  question needs a key word that occurs nowhere. Off-topic questions' key words should be single tokens.
 
 A transformation is added or changed only if gate 1 stays at 100% and gate 2 does not get worse.
 
