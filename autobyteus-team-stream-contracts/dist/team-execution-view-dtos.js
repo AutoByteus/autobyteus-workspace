@@ -40,16 +40,22 @@ const launchConfigurationSchema = z.object({
     auto_execute_tools: z.boolean(),
     workspace_root_path: nullableNonEmptyStringSchema,
 }).strict();
-const launchSourceSchema = z.object({
-    origin: z.enum(["agent_default", "team_default", "inherited", "configured"]),
-    fallbacks: z.array(z.object({
-        layer: z.enum(["agent_default", "team_default"]),
-        runtime_kind: nullableNonEmptyStringSchema,
-        llm_model_identifier: nullableNonEmptyStringSchema,
-        reason: z.enum(["incomplete", "runtime_unavailable", "model_unavailable", "model_settings_invalid"]),
-        detail: nonEmptyStringSchema,
-    }).strict()),
-}).strict();
+const launchFallbacksSchema = z.array(z.object({
+    layer: z.enum(["agent_default", "team_default", "model_router"]),
+    runtime_kind: nullableNonEmptyStringSchema,
+    llm_model_identifier: nullableNonEmptyStringSchema,
+    reason: z.enum([
+        "incomplete", "runtime_unavailable", "signed_out", "model_unavailable", "blocked", "model_settings_invalid",
+        "router_not_active", "router_failed",
+    ]),
+    detail: nonEmptyStringSchema,
+}).strict());
+const launchSourceSchema = z.union([
+    z.object({ origin: z.enum(["agent_default", "team_default", "inherited", "configured"]), fallbacks: launchFallbacksSchema }).strict(),
+    z.object({
+        origin: z.literal("model_router"), fallbacks: launchFallbacksSchema, choice_reason: nonEmptyStringSchema, task_kind: nonEmptyStringSchema,
+    }).strict(),
+]);
 const memberLaunchSchema = {
     launch_configuration: launchConfigurationSchema, follows_team: z.boolean(), launch_source: launchSourceSchema.optional(),
 };

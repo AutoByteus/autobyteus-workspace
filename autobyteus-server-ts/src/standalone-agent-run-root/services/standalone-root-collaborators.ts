@@ -1,4 +1,5 @@
 import { buildInRunPlacements, type CollaboratorRootPort } from "../../agent-collaboration/collaborators/collaborator-root-port.js";
+import type { DelegationWork } from "../../model-routing/domain/model-routing-types.js";
 import { type MentionViewer } from "../../agent-collaboration/collaborators/mention-viewer.js";
 import type {
   CatalogTaskSource,
@@ -59,7 +60,7 @@ export class StandaloneRootCollaborators {
     return this.admission.policy.listEligible(this.portFor(viewerAgentRunId));
   }
 
-  catalogTaskSource(input: Readonly<{ address: string; senderRunId: string }>): Promise<CatalogTaskSource | null> {
+  catalogTaskSource(input: Readonly<{ address: string; senderRunId: string; work: DelegationWork }>): Promise<CatalogTaskSource | null> {
     return this.admission.catalogTaskSource(this.portFor(input.senderRunId), input);
   }
 

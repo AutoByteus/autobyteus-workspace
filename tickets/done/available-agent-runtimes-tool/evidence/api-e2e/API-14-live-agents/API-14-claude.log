@@ -1,0 +1,9 @@
+# API-14 live agent on claude — tests/e2e/runtime/available-agent-runtimes-live-agents.e2e.test.ts
+# Command: env -i PATH HOME USER LOGNAME TMPDIR RUN_<RUNTIME>_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/available-agent-runtimes-live-agents.e2e.test.ts --no-watch
+# Commit: origin/personal c77f9af791 (feature merged) + this test; host CLIs codex-cli 0.164.0, Claude Code 2.1.310, agy 1.4.7, grok 1.0.70, LM Studio; macOS darwin 25.5; 2026-10-25
+
+LR-EVIDENCE claude_agent_sdk LR-1 {"model":"haiku","successfulCalls":0,"toolEvents":[]}
+LR-EVIDENCE claude_agent_sdk LR-2 {"model":"haiku","event":"TOOL_EXECUTION_SUCCEEDED","toolName":"list_available_agent_runtimes","toolMs":7218,"reportShape":[{"runtime":"codex_app_server","models":"read","limits":"read"},{"runtime":"claude_agent_sdk","models":"read","limits":"read"},{"runtime":"antigravity_cli","models":"read","limits":"read"},{"runtime":"grok_build","models":"read","limits":"read"},{"runtime":"autobyteus","providers":["LM Studio"]}],"pageShape":[{"runtime":"codex_app_server","models":"read","limits":"read"},{"runtime":"claude_agent_sdk","models":"read","limits":"read"},{"runtime":"antigravity_cli","models":"read","limits":"read"},{"runtime":"grok_build","models":"read","limits":"read"},{"runtime":"autobyteus","providers":["LM Studio"]}],"agentReplyTail":"The agent runtimes listed are Codex, Claude, Antigravity, Grok, and AutoByteus."}
+ ✓ tests/e2e/runtime/available-agent-runtimes-live-agents.e2e.test.ts (5 tests | 4 skipped) 18399ms
+     ✓ claude_agent_sdk: LR-1 without the tool it cannot be called; LR-2 a live agent with the tool calls it and gets the node's report  18194ms
+      Tests  1 passed | 4 skipped (5)

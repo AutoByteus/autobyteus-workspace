@@ -39,6 +39,14 @@ import {
   normalizeShowInternalAgentsForPersistence,
   SHOW_INTERNAL_AGENTS_SETTING_KEY,
 } from "../config/show-internal-agents-setting.js";
+import {
+  MODEL_ROUTER_MODEL_SETTING_KEY,
+  MODEL_ROUTER_RUNTIME_SETTING_KEY,
+  MODEL_ROUTING_ENABLED_SETTING_KEY,
+  normalizeModelRouterModelForPersistence,
+  normalizeModelRouterRuntimeForPersistence,
+  normalizeModelRoutingEnabledForPersistence,
+} from "../model-routing/model-routing-settings.js";
 import { getModelCatalogService } from "../llm-management/services/model-catalog-service.js";
 import {
   EMBEDDING_MODEL_SETTING_DESCRIPTION,
@@ -196,6 +204,27 @@ export class ServerSettingsService {
       {
         normalizeForPersistence: normalizeTaskExecutionIdleShutdownGraceForPersistence,
       },
+    );
+
+    this.registerPredefinedSetting(
+      MODEL_ROUTING_ENABLED_SETTING_KEY,
+      "Model Routing: the node's Model Router chooses a runtime and model for delegated agents that have no usable default (true/false). Default: false. Set on Settings → Model Routing.",
+      true,
+      { normalizeForPersistence: normalizeModelRoutingEnabledForPersistence },
+    );
+
+    this.registerPredefinedSetting(
+      MODEL_ROUTER_RUNTIME_SETTING_KEY,
+      "The Model Router agent's runtime (for example codex_app_server). Set on Settings → Model Routing.",
+      true,
+      { normalizeForPersistence: normalizeModelRouterRuntimeForPersistence },
+    );
+
+    this.registerPredefinedSetting(
+      MODEL_ROUTER_MODEL_SETTING_KEY,
+      "The Model Router agent's model on its runtime. Set on Settings → Model Routing.",
+      true,
+      { normalizeForPersistence: normalizeModelRouterModelForPersistence },
     );
 
     this.registerPredefinedSetting(

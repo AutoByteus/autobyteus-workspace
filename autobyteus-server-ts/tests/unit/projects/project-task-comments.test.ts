@@ -118,7 +118,7 @@ describe("Project Task comments (services)", () => {
       await tasks.addComment({ projectId, taskId: task.taskId, text: "second" });
       await publisher.idle();
       expect(upserts().filter((t) => t.taskId === task.taskId).at(-1)!.comments.map((c) => [c.id, c.text])).toEqual([[1, "first"], [2, "second"]]);
-      expect(await tasks.resolveAssignment("autobyteus-1")).toEqual({ taskId: task.taskId, taskReference: "autobyteus-1", projectId, description: "A",
+      expect(await tasks.resolveAssignment("autobyteus-1")).toEqual({ taskId: task.taskId, taskReference: "autobyteus-1", projectId, title: task.title, description: "A",
         comments: ["first", "second"], referenceFiles: [] });
     });
   });

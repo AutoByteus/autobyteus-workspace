@@ -28,6 +28,7 @@ import { TaskRelationWrites, type SuppliedTaskRelations } from "./task-relation-
 import { NO_PART_CLOSURE, TaskPartClosure, type PartClosureResult } from "./task-part-closure.js";
 import { TaskAssignmentEligibility, terminalAssignment } from "./task-assignment-eligibility.js";
 import { TaskReferences } from "./task-references.js";
+import { readDelegatedTaskIdentity } from "./task-identity-reader.js";
 import { sameDependencies } from "../domain/task-dependencies.js";
 import { appendComment, normalizeCommentText } from "../domain/task-comments.js";
 import { normalizeTaskDescription, normalizeTaskTitle, taskTextPatchOf } from "../domain/task-text.js";
@@ -291,8 +292,9 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
     await this.resources.load();
     this.resources.assertTaskReadable(task.taskId);
     const referenceFiles = await Promise.all((task.contextFiles ?? []).map(f => this.context.savedFile(projectId, task.taskId, f)));
-    return { taskId: task.taskId, taskReference: task.taskKey, projectId, description: task.description, comments: task.comments.map((comment) => comment.text), referenceFiles };
+    return { taskId: task.taskId, taskReference: task.taskKey, projectId, title: task.title, description: task.description, comments: task.comments.map((comment) => comment.text), referenceFiles };
   }
+  describeTask(taskId: string) { return readDelegatedTaskIdentity(this.references, this.adHocTasks, taskId); }
   async linkNewTaskExecution(input: NewTaskExecutionLinkInput): Promise<{ taskId: string }> {
     if (input.role !== "assigned") return { taskId: await this.resources.linkInherited(input) };
     if (input.adHocTask) return { taskId: await this.linkAdHocTask(input, input.adHocTask) };

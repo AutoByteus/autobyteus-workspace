@@ -143,6 +143,19 @@ export type RemoteTaskAgentExecution = Readonly<{
   nodeId: string;
   delegatorAgentRunId: string;
   startedAt: IsoTimestamp;
+  /** The launch the peer resolved for it (autobyteus-32 REQ-009); absent on links recorded before. */
+  launches?: readonly RemoteAgentLaunch[];
+}>;
+
+/**
+ * One agent's launch on a peer node as the peer resolved it (autobyteus-32 REQ-009): its address there (mounted at the
+ * catalog address), runtime, model and source (with the Model Router's reason and task kind when it chose).
+ */
+export type RemoteAgentLaunch = Readonly<{
+  address: string;
+  runtimeKind: string;
+  llmModelIdentifier: string;
+  source: LaunchConfigurationSource;
 }>;
 
 /** One member of a Team run on a peer node: its address in the Team and the run ID the peer gave it. */
@@ -162,6 +175,8 @@ export type RemoteTaskTeamExecution = Readonly<{
   members: readonly RemoteTeamMember[];
   delegatorAgentRunId: string;
   startedAt: IsoTimestamp;
+  /** Each member's launch as the peer resolved it (autobyteus-32 REQ-009); absent on links recorded before. */
+  launches?: readonly RemoteAgentLaunch[];
 }>;
 
 export type RemoteTaskExecution = RemoteTaskAgentExecution | RemoteTaskTeamExecution;

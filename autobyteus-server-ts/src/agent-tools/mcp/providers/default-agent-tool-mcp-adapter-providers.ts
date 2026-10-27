@@ -8,6 +8,7 @@ import { GetHandoffRulesMcpAdapterProvider } from "./get-handoff-rules-mcp-adapt
 import { ListAvailableAgentsMcpAdapterProvider } from "./list-available-agents-mcp-adapter-provider.js";
 import { ListPeerNodesMcpAdapterProvider } from "./list-peer-nodes-mcp-adapter-provider.js";
 import { ListAvailableAgentRuntimesMcpAdapterProvider } from "./list-available-agent-runtimes-mcp-adapter-provider.js";
+import { ModelRoutingToolsMcpAdapterProvider } from "./model-routing-tools-mcp-adapter-provider.js";
 
 import { ProjectTaskToolsMcpAdapterProvider } from "./project-task-tools-mcp-adapter-provider.js";
 
@@ -21,5 +22,6 @@ export const buildDefaultAgentToolMcpAdapterProviders = (): AgentToolMcpAdapterP
   new ListAvailableAgentsMcpAdapterProvider(),
   new ListPeerNodesMcpAdapterProvider(),
   new ListAvailableAgentRuntimesMcpAdapterProvider(),
+  new ModelRoutingToolsMcpAdapterProvider(),
   new ProjectTaskToolsMcpAdapterProvider(),
 ];

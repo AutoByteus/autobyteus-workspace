@@ -7,7 +7,7 @@ import { afterEach, beforeEach, describe, expect, it } from "vitest";
 import { AgentDefinitionService } from "../../../src/agent-definition/services/agent-definition-service.js";
 import { parseAgentMd, serializeAgentMd } from "../../../src/agent-definition/utils/agent-md-parser.js";
 import { bootstrapBuiltInAgents } from "../../../src/built-in-agents/built-in-agent-bootstrapper.js";
-import { DAILY_ASSISTANT_AGENT_DEFINITION_ID } from "../../../src/built-in-agents/built-in-agent-registry.js";
+import { DAILY_ASSISTANT_AGENT_DEFINITION_ID, MODEL_ROUTER_AGENT_DEFINITION_ID } from "../../../src/built-in-agents/built-in-agent-registry.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 
@@ -89,7 +89,8 @@ describe("BuiltInAgentBootstrapper", () => {
       agentsDir: path.join(tempDataDir, "agents"),
       refreshedCache: true,
     });
-    expect(result.builtInAgents.map(item => item.agentDefinitionId)).toEqual([DAILY_ASSISTANT_AGENT_DEFINITION_ID]);
+    // autobyteus-32: the internal Model Router is the second built-in.
+    expect(result.builtInAgents.map(item => item.agentDefinitionId)).toEqual([DAILY_ASSISTANT_AGENT_DEFINITION_ID, MODEL_ROUTER_AGENT_DEFINITION_ID]);
     expect(resultFor(result, DAILY_ASSISTANT_AGENT_DEFINITION_ID)).toEqual({
       agentDefinitionId: DAILY_ASSISTANT_AGENT_DEFINITION_ID,
       displayName: "Daily Assistant",
@@ -289,7 +290,7 @@ describe("BuiltInAgentBootstrapper", () => {
       const definition = await services.agentDefinitionService.getAgentDefinitionById(DAILY_ASSISTANT_AGENT_DEFINITION_ID);
       expect(definition).toMatchObject({ id: DAILY_ASSISTANT_AGENT_DEFINITION_ID, name: "Daily Assistant" });
       expect(definition?.toolNames).toContain("list_available_agents");
-      expect(await fs.readdir(path.join(tempDataDir, "agents"))).toEqual([DAILY_ASSISTANT_AGENT_DEFINITION_ID]);
+      expect((await fs.readdir(path.join(tempDataDir, "agents"))).sort()).toEqual([DAILY_ASSISTANT_AGENT_DEFINITION_ID, MODEL_ROUTER_AGENT_DEFINITION_ID].sort());
     });
 
     it("replaces edited files and agent-local skills from the template on the next startup", async () => {

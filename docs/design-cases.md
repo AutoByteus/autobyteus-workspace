@@ -127,7 +127,6 @@ Principle 5; Data Migration Guideline § 1 ("Gate narrowly").
 - **Why it mattered:** a whole-run prerequisite turns a predecessor's narrow, contained failure into a global one.
 - **Notice it by:** a prerequisite on a migration that can fail for one item while others succeed; a source validator that requires a field the migration does not use.
 
-
 ### Case 9: Process Exit Is Not Resource-Lifetime Completion (backend-port-conflict-20261024, E-003/E-008/E-009, P-003/P-005)
 
 Principles 1, 2 and 13.
@@ -147,3 +146,15 @@ Principles 1, 2 and 13.
 - **The designed correction:** D3 creates a gated internal group/session leader before user code and retains it beyond command-result/agent lifetime until the group is verified empty. It separates command RESULT from anchor exit; WSL explicitly creates a new session. The retained anchor is implemented and independently reviewed; real native scope and composed host tests verify quick shell exit and TERM-resistant cleanup on macOS. WSL session mechanics have deterministic coverage, not live-platform certification.
 - **Why it mattered:** faster polling is not an ownership mechanism, and fail-closed is not a successful implementation of a normal supported path.
 - **Notice it by:** a promised live identity handoff with no overlap guarantee, or resource completion tied to the exit of a short-lived launcher rather than an explicitly retained owner.
+
+
+### Case 11: A New Kind Of Run Classified By A Rule It Never Met (autobyteus-32, ARCH-REV-001 AR-001, AR-002)
+
+Principles 2 and 13 (trace the real path; one owner decides).
+
+- **The design said:** the Model Router agent's run has "exactly its listed tools", is confined to its workspace on Codex and Claude, and the server creates it through `AgentRunService`. On Claude, the write check sits in our `canUseTool` coordinator.
+- **What happened:** two shared rules decided for the new run without the design naming them. Any standalone run that is not application-owned is collaboration-eligible (`standalone-agent-run-eligibility.ts`), so it would get a member context and with it `delegate_task` and `send_message_to` automatically: an auto-approved, web-reading router could delegate to an unconfined agent, or wait on its own turn. On Claude, allow rules from the user, project and local settings are evaluated before `canUseTool`, so a user's "allow Write" rule would bypass the check. The project and local settings sit in the router's own workspace, which it can write. The architecture review caught both; the design had traced only the new code.
+- **The fix (SR-015):** a run-metadata marker `systemRunOwner`, set only by the owning service (`ModelRouterAgent`), kept on restore and read by the eligibility rule. A confined Claude run loads only the user's settings, removes the shell tools, and checks writes in a `PreToolUse` hook, which runs before every other permission step.
+- **Why it mattered:** a safety property of a new kind of run is decided by shared rules that run before, or instead of, the new code.
+- **Later in autobyteus-32 (CRR-003, SR-018):** the live checks then found the confinement leaking through the runtimes' own configuration (a Codex config file's `writable_roots`, the user's claude.ai connectors in Claude). The design had claimed "thread parameters override config files" without checking which settings they cover (Case 5). The user removed the confinement, so the router runs like any auto-approved agent; the AR-001 marker stays.
+- **Notice it by:** a new kind of run, member or session created through a shared service; a claim like "has exactly these tools" or "is confined" without naming every rule that adds tools or approves calls; a check placed at the last step of a pipeline whose earlier steps can approve.

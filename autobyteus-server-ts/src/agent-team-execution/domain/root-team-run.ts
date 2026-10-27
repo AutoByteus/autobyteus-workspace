@@ -322,10 +322,12 @@ export class RootTeamRun {
     return this.materializationGate.run(async () => {
       this.authorizeIdentity(context.identity);
       if (input.node !== undefined) {
-        return this.remoteDelegation.delegate({ ...input, node: input.node }, (local, placement) => this.taskExecutions.delegateToNewCopy(context, local, placement));
+        return this.remoteDelegation.delegate({ ...input, node: input.node }, context, this.taskExecutions);
       }
-      return delegateToResolvedTarget(() => this.delivery.resolveDelegationPlacement(context.identity, input.recipient_address), (placement) =>
-        this.taskExecutions.delegateToNewCopy(context, input, placement));
+      // DS-001: the work and its Task first, then the placement for that work, then the copy.
+      const work = await this.taskExecutions.prepareNewCopyWork(context, input);
+      return delegateToResolvedTarget(() => this.delivery.resolveDelegationPlacement(context.identity, input.recipient_address, work.delegation), (placement) =>
+        this.taskExecutions.dispatchNewCopy(context, work, placement));
     });
   }
 

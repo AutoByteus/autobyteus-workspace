@@ -1,5 +1,14 @@
 import { describe, expect, it, vi } from "vitest";
 import { CollaboratorLaunchResolver } from "../../../../src/agent-collaboration/collaborators/collaborator-launch-resolver.js";
+import { LaunchUsabilityCheck } from "../../../../src/launch-preferences/launch-usability-check.js";
+import { NO_MODEL_ROUTING } from "../../../../src/model-routing/domain/model-routing-types.js";
+
+/** Model Routing off (these tests are today's order): the work is not read, so any stands in. */
+const WORK = { text: "Do it", task: { taskId: "task-1", taskKey: null, projectId: null, title: "Do it" } };
+const plansOnly = (resolver: CollaboratorLaunchResolver) => ({
+  resolve: async (plans: readonly CollaboratorDefinitionPlan[], base: Parameters<CollaboratorLaunchResolver["resolve"]>[1]) =>
+    (await resolver.resolve(plans, base, WORK)).plans,
+});
 import { CollaboratorAddError, CollaboratorNoDefaultLaunchError } from "../../../../src/agent-collaboration/collaborators/collaborator-errors.js";
 import type { CollaboratorDefinitionPlan } from "../../../../src/agent-collaboration/collaborators/collaborator-entry-builder.js";
 import type { DefaultLaunchConfig } from "../../../../src/launch-preferences/default-launch-config.js";
@@ -44,7 +53,7 @@ const setup = (options: { unavailable?: Partial<Record<string, string>>; verdict
           : { kind };
     }));
   const validator = { validate: vi.fn(), validateMany } as unknown as RunModelSelectionValidator;
-  return { availability, validateMany, resolver: new CollaboratorLaunchResolver({ availability, validator }) };
+  return { availability, validateMany, resolver: plansOnly(new CollaboratorLaunchResolver({ usability: new LaunchUsabilityCheck({ availability, validator }), router: NO_MODEL_ROUTING })) };
 };
 
 describe("CollaboratorLaunchResolver with the defaults_only base", () => {

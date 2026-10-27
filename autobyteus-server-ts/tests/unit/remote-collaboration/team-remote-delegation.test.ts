@@ -1,4 +1,5 @@
 import fs from "node:fs/promises";
+import { PeerStartedRunDecisions } from "../../../src/remote-collaboration/inbound/peer-started-run-decisions.js";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
@@ -124,7 +125,7 @@ const buildNodeA = async (network: Network, memoryDir?: string, metadata = new M
     messages: new RemoteMessageReceiver({
       storedLinkCheck: async (root, query) => root.kind === "agent" ? manager.storedRemoteLinkCheck(root.runId, query) : "not_found",
       standalone: (runId) => manager.resolveRoot(runId), team: async () => null, org: async () => null,
-    }, { recordFirstMessage: async () => undefined }),
+    }, { recordFirstMessage: async () => undefined }, new PeerStartedRunDecisions()),
   }));
   hostActive = true;
   const identity = createCollaborationMemberExecutionIdentity({ root: createAgentRootExecutionIdentity(DELEGATOR), memberAddress: "/assistant" as never, agentRunId: DELEGATOR });
@@ -229,12 +230,12 @@ const buildNodeB = async (network: Network, memoryDir?: string, state: RuntimeSt
   network.set(B_ID, new PeerGateway({
     ownNodeId: async () => B_ID, capability: { isEnabled: () => true }, peers: peerDirectory(B_PEERS),
     delegatedRuns: new RemoteDelegationReceiver({ admission: () => admission, catalogPort,
-      agentRuns: { prepareAgentRun: vi.fn(async () => { throw new Error("not an Agent"); }) }, teams: new RemoteTeamRunStarter({ teamRuns }) }),
+      agentRuns: { prepareAgentRun: vi.fn(async () => { throw new Error("not an Agent"); }) }, teams: new RemoteTeamRunStarter({ teamRuns }), decisions: new PeerStartedRunDecisions() }),
     availableAgents: new RemoteCatalogLister({ policy: () => admission.policy, catalogPort }),
     messages: new RemoteMessageReceiver({
       storedLinkCheck: async (root, query) => root.kind === "agent_team" ? teamRuns.storedRemoteLinkCheck(root.runId, query) : "not_found",
       standalone: async () => null, team: (teamRunId) => teamRuns.resolveManagedTeamRun(teamRunId), org: async () => null,
-    }, { recordFirstMessage: (root, content) => root.kind === "agent_team" ? teamRuns.recordRunTitle(root.runId, content) : Promise.resolve() }),
+    }, { recordFirstMessage: (root, content) => root.kind === "agent_team" ? teamRuns.recordRunTitle(root.runId, content) : Promise.resolve() }, new PeerStartedRunDecisions()),
   }));
   const member = (address: string, agentRunId: string) => createCollaborationMemberExecutionIdentity({
     root: createTeamRootExecutionIdentity("studio_team_b"), memberAddress: address as never, agentRunId });
@@ -282,7 +283,8 @@ describe("remote delegation to a shared Agent Team, in process (autobyteus-247)"
     const aTree = JSON.parse(await fs.readFile(path.join(new AgentMemoryLayout(a.dir).getAgentRunCollaborationDirPath(DELEGATOR), "collaboration_tree.json"), "utf8"));
     expect(aTree.taskExecutions).toEqual([{ address: "/studio_team", teamRunId: "studio_team_b", nodeId: B_ID, coordinatorAddress: "/studio_team/lead",
       members: [{ address: "/studio_team/lead", agentRunId: LEAD.agentRunId }, { address: "/studio_team/writer", agentRunId: WRITER.agentRunId }],
-      delegatorAgentRunId: DELEGATOR, startedAt: expect.any(String) }]);
+      delegatorAgentRunId: DELEGATOR, startedAt: expect.any(String),
+      launches: [expect.objectContaining({ address: "/studio_team/lead" }), expect.objectContaining({ address: "/studio_team/writer" })] }]);
     expect(a.resources.entry({ teamRunId: "studio_team_b" })).toMatchObject({ taskId: "ad_hoc_task_1", start: "started", open: true });
     // G-6: the team run ID's guidance names the coordinator.
     expect((await a.root()).teamCoordinatorOf("studio_team_b")).toBe(LEAD.agentRunId);

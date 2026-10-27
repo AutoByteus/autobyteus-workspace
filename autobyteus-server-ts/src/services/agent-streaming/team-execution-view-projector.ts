@@ -171,13 +171,15 @@ export const projectExecutionTree = (tree: TeamRunExecutionTreeSnapshot): TeamRu
   },
 });
 
-const projectLaunchSource = (source: LaunchConfigurationSource): LaunchConfigurationSourceDto => ({
-  origin: source.origin,
-  fallbacks: source.fallbacks.map((fallback) => ({
+const projectLaunchSource = (source: LaunchConfigurationSource): LaunchConfigurationSourceDto => {
+  const fallbacks = source.fallbacks.map((fallback) => ({
     layer: fallback.layer, runtime_kind: fallback.runtimeKind, llm_model_identifier: fallback.llmModelIdentifier,
     reason: fallback.reason, detail: fallback.detail,
-  })),
-});
+  }));
+  return source.origin === "model_router"
+    ? { origin: source.origin, fallbacks, choice_reason: source.choiceReason, task_kind: source.taskKind }
+    : { origin: source.origin, fallbacks };
+};
 /** A Team copy member's complete launch and follower fact; its own launch source only when recorded. */
 const projectMemberLaunch = (member: RecordedMemberLaunch) => ({
   launch_configuration: projectLaunchConfiguration(member.launchConfiguration),

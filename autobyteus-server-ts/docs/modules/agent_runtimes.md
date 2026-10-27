@@ -253,3 +253,11 @@ used-up limits covering it). AutoByteus providers are read by
   in any output, discovered providers; provider endpoints, LM Studio and a
   custom endpoint are answered by an in-process stub). Run them with a
   clean environment and a temporary `HOME`, so no real account is read.
+- Live (gated, real signed-in CLIs, spends model tokens):
+  `tests/e2e/runtime/available-agent-runtimes-live-agents.e2e.test.ts`: per
+  enabled runtime (`RUN_CODEX_E2E`, `RUN_CLAUDE_E2E`, `RUN_AGY_E2E`,
+  `RUN_GROK_E2E`; AutoByteus with `RUN_LMSTUDIO_E2E` or `RUN_DEEPSEEK_E2E`, the
+  key from `AUTOBYTEUS_TEST_VAULT`), LR-1 an agent without the
+  tool cannot call it, LR-2 an agent with it gets the node's report, the same as
+  the GraphQL read; LR-3 (`RUN_ROUTED_DELEGATION_E2E=1`) is Model Routing's busy-router
+  fallback (see [Model Routing](model_routing.md)).

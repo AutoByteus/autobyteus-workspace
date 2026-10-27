@@ -1,0 +1,215 @@
+{
+  "RC-39": {
+    "offAgent": "There is no default runtime configured for the target agent Blank Slate on node \"beta-node\", and Model Routing is off on node \"beta-node\".",
+    "offTeam": "There is no default runtime configured for the target agent team Hollow Team on node \"beta-node\", and Model Routing is off on node \"beta-node\".",
+    "answers": [
+      {
+        "accepted": false,
+        "code": "NO_DEFAULT_RUNTIME",
+        "message": "There is no default runtime configured for the target agent Blank Slate",
+        "target": {
+          "kind": "agent",
+          "name": "Blank Slate"
+        },
+        "modelRouting": {
+          "state": "off"
+        },
+        "nodeId": "srv_JM6BT4npq3rvNok84TGPSUfNjfhXk-dY"
+      },
+      {
+        "accepted": false,
+        "code": "NO_DEFAULT_RUNTIME",
+        "message": "There is no default runtime configured for the target agent team Hollow Team",
+        "target": {
+          "kind": "agent_team",
+          "name": "Hollow Team"
+        },
+        "modelRouting": {
+          "state": "off"
+        },
+        "nodeId": "srv_JM6BT4npq3rvNok84TGPSUfNjfhXk-dY"
+      }
+    ],
+    "notUsable": {
+      "enabled": true,
+      "routerLaunch": {
+        "runtimeKind": "codex_app_server",
+        "llmModelIdentifier": "gpt-5.5"
+      },
+      "active": false,
+      "reasonCode": "RUNTIME_UNAVAILABLE",
+      "reasonParams": {
+        "runtime": "codex_app_server",
+        "model": "gpt-5.5"
+      },
+      "reasonText": "Codex is not available on this node",
+      "agentRunId": null
+    },
+    "notUsableAgent": "There is no default runtime configured for the target agent Blank Slate on node \"beta-node\", and the Model Router on node \"beta-node\" is not usable (Codex is not available on this node)."
+  },
+  "RC-40": {
+    "agent": {
+      "notes": [
+        "blank_slate: runs on antigravity_cli / alt-model, chosen by the Model Router (writing): Gemini has limit left on beta."
+      ],
+      "runId": "blank_slate_f8789008f9e048aaa97983765c237453",
+      "link": {
+        "address": "/blank_slate",
+        "agentRunId": "blank_slate_f8789008f9e048aaa97983765c237453",
+        "nodeId": "srv_JM6BT4npq3rvNok84TGPSUfNjfhXk-dY",
+        "delegatorAgentRunId": "delegator_ee003f1b374d4e138f77e9e1850a9c46",
+        "startedAt": "2026-10-26T17:38:30.083Z",
+        "launches": [
+          {
+            "address": "/blank_slate",
+            "runtimeKind": "antigravity_cli",
+            "llmModelIdentifier": "alt-model",
+            "source": {
+              "origin": "model_router",
+              "fallbacks": [],
+              "choiceReason": "Gemini has limit left on beta.",
+              "taskKind": "writing"
+            }
+          }
+        ]
+      }
+    },
+    "team": {
+      "notes": [
+        "lead: runs on antigravity_cli / alt-model, chosen by the Model Router (writing): Gemini has limit left on beta."
+      ],
+      "link": {
+        "address": "/hollow_team",
+        "teamRunId": "hollow_team_c454bf8d41424389b984716a861419b7",
+        "nodeId": "srv_JM6BT4npq3rvNok84TGPSUfNjfhXk-dY",
+        "coordinatorAddress": "/hollow_team/lead",
+        "members": [
+          {
+            "address": "/hollow_team/lead",
+            "agentRunId": "blank_slate_b7f142b3c488494aa1df5773ac48d6f9"
+          }
+        ],
+        "delegatorAgentRunId": "delegator_ee003f1b374d4e138f77e9e1850a9c46",
+        "startedAt": "2026-10-26T17:38:31.514Z",
+        "launches": [
+          {
+            "address": "/hollow_team/lead",
+            "runtimeKind": "antigravity_cli",
+            "llmModelIdentifier": "alt-model",
+            "source": {
+              "origin": "model_router",
+              "fallbacks": [],
+              "choiceReason": "Gemini has limit left on beta.",
+              "taskKind": "writing"
+            }
+          }
+        ]
+      }
+    },
+    "asked": [
+      {
+        "requestId": "req_5b3bd65b",
+        "addresses": [
+          "/blank_slate"
+        ],
+        "receivedAt": 1793036310626,
+        "answeredAt": 1793036311107,
+        "results": [
+          {
+            "tool": "list_available_agent_runtimes",
+            "ok": true
+          },
+          {
+            "tool": "submit_launch_choices",
+            "isError": false,
+            "text": "Accepted: 1 launch choice for request req_5b3bd65b."
+          }
+        ]
+      },
+      {
+        "requestId": "req_8ff6ec45",
+        "addresses": [
+          "/hollow_team/lead"
+        ],
+        "receivedAt": 1793036311908,
+        "answeredAt": 1793036312289,
+        "results": [
+          {
+            "tool": "list_available_agent_runtimes",
+            "ok": true
+          },
+          {
+            "tool": "submit_launch_choices",
+            "isError": false,
+            "text": "Accepted: 1 launch choice for request req_8ff6ec45."
+          }
+        ]
+      }
+    ],
+    "records": [
+      {
+        "recordedAt": "2026-10-26T17:38:32.509Z",
+        "taskId": null,
+        "taskKey": null,
+        "projectId": null,
+        "taskTitle": "Draft the team plan. Marker ROUTED-TEAM.",
+        "delegatingRunId": null,
+        "delegatingAgentName": null,
+        "fromNode": "alpha-node",
+        "copyAddress": "/hollow_team",
+        "copyKind": "agent_team",
+        "agentAddress": "/hollow_team/lead",
+        "runtimeKind": "antigravity_cli",
+        "llmModelIdentifier": "alt-model",
+        "source": "model_router",
+        "taskKind": "writing",
+        "choiceReason": "Gemini has limit left on beta.",
+        "routerFailure": null,
+        "skipped": []
+      },
+      {
+        "recordedAt": "2026-10-26T17:38:31.326Z",
+        "taskId": null,
+        "taskKey": null,
+        "projectId": null,
+        "taskTitle": "Write the release note. Marker ROUTED-PEER.",
+        "delegatingRunId": null,
+        "delegatingAgentName": null,
+        "fromNode": "alpha-node",
+        "copyAddress": "/blank_slate",
+        "copyKind": "agent",
+        "agentAddress": "/blank_slate",
+        "runtimeKind": "antigravity_cli",
+        "llmModelIdentifier": "alt-model",
+        "source": "model_router",
+        "taskKind": "writing",
+        "choiceReason": "Gemini has limit left on beta.",
+        "routerFailure": null,
+        "skipped": []
+      }
+    ]
+  },
+  "RC-41": {
+    "slow": {
+      "elapsedMs": 30911,
+      "notes": [
+        "blank_slate: runs on antigravity_cli / alt-model, chosen by the Model Router (writing): Slow but valid."
+      ]
+    },
+    "failed": {
+      "text": "The Model Router on node \"beta-node\" could not choose a runtime for Blank Slate: no valid answer within 40 seconds.",
+      "elapsedMs": 40195,
+      "answer": {
+        "accepted": false,
+        "code": "MODEL_ROUTER_FAILED",
+        "message": "no valid answer within 40 seconds",
+        "target": {
+          "kind": "agent",
+          "name": "Blank Slate"
+        },
+        "agentName": "Blank Slate",
+        "nodeId": "srv_JM6BT4npq3rvNok84TGPSUfNjfhXk-dY"
+      }
+    }
+  }
+}

@@ -74,6 +74,7 @@ import { composeAgentPackageDefinitionFeed, type AgentPackageDefinitionFeed } fr
 import { createSkillUpdateNotices, type SkillUpdateNotices } from "../skill-update-notices/skill-update-notices.js";
 import { composeUpdateNotifications, type UpdateNotifications } from "./update-notifications-composition.js";
 import { composeAgentRuntimeStatus, type AgentRuntimeStatusHandle } from "./agent-runtime-status-composition.js";
+import { composeModelRouting } from "./model-routing-composition.js";
 
 export type StudioServer = Readonly<{
   fastify: FastifyInstance;
@@ -240,11 +241,13 @@ export const buildStudioServer = async (input: {
   let agentRuntimeStatus: AgentRuntimeStatusHandle | null = null;
   let applicationRuntime: ApplicationPlatformRuntime | null = null;
   let releaseRemoteCollaboration: (() => void) | null = null;
+  let releaseModelRouting: (() => void) | null = null;
   let processResourcesClosed = false;
   const closeProcessResources = async (): Promise<void> => {
     if (processResourcesClosed) return;
     processResourcesClosed = true;
     releaseRemoteCollaboration?.();
+    releaseModelRouting?.();
     await closeStudioProcessResources({
       hostDefinitionServices,
       agentPackageDefinitionFeed,
@@ -357,6 +360,8 @@ export const buildStudioServer = async (input: {
       codexClientManager: getCodexAppServerClientManager(),
       applicationActiveAgentRuns: currentApplicationRuntime.hostManagement.activeAgentRuns,
     });
+    // autobyteus-32: the node's Model Routing (it reads the runtime report composed just above).
+    releaseModelRouting = composeModelRouting({ appDataDir: input.appConfig.getAppDataDir() }).close;
     // After the runtime status: the background pass checks and updates the runtimes through it (AR-006).
     updateNotifications = composeUpdateNotifications({ runtimes: agentRuntimeStatus.service });
 

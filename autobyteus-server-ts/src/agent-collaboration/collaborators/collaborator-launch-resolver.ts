@@ -1,33 +1,60 @@
 import type { AgentLaunchConfiguration } from "../../agent-team-execution/domain/team-run-config.js";
 import type { DefaultLaunchConfig } from "../../launch-preferences/default-launch-config.js";
-import type {
-  RunModelSelectionValidationResult,
-  RunModelSelectionValidator,
-} from "../../llm-management/services/run-model-selection-service.js";
-import type { RuntimeAvailabilityService } from "../../runtime-management/runtime-availability-service.js";
+import {
+  LaunchModelCheckError,
+  type LaunchUsabilityCheck,
+  type LaunchVerdict,
+} from "../../launch-preferences/launch-usability-check.js";
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
+import type {
+  DelegationRouting,
+  DelegationWork,
+  LaunchChoice,
+  ModelRouterPort,
+  RoutingAgentToChoose,
+  RoutingCoveredAgent,
+} from "../../model-routing/domain/model-routing-types.js";
 import type {
   ConfiguredLaunchLayer,
   LaunchConfigurationFallback,
   LaunchConfigurationSource,
 } from "../domain/launch-configuration-source.js";
+import type { AgentTeamAddress } from "../domain/agent-team-address.js";
 import type {
   CollaboratorDefinitionPlan,
   CollaboratorEntryPlan,
   CollaboratorEntryPlanMember,
 } from "./collaborator-entry-builder.js";
-import { CollaboratorAddError, CollaboratorNoDefaultLaunchError } from "./collaborator-errors.js";
+import {
+  CollaboratorAddError,
+  CollaboratorNoDefaultLaunchError,
+  CollaboratorRouterFailedError,
+  type CopyRouterState,
+} from "./collaborator-errors.js";
 import type { CollaboratorLaunchBase } from "./collaborator-root-port.js";
 
-type RuntimeAvailability = Pick<RuntimeAvailabilityService, "getRuntimeAvailability">;
-
-/** A configured layer's verdict: its launch, or why it was skipped. */
+/** A configured layer's verdict: its launch, a runtime-only default the router may complete, or why it was skipped. */
 type LayerVerdict =
   | Readonly<{ usable: true; launch: AgentLaunchConfiguration }>
+  | Readonly<{ usable: "runtime_only"; runtimeKind: string; fallback: LaunchConfigurationFallback }>
   | Readonly<{ usable: false; fallback: LaunchConfigurationFallback }>;
 
-/** One configured default to check, with the layer it was configured on. */
-type ConfiguredCandidate = { layer: ConfiguredLaunchLayer; value: DefaultLaunchConfig; verdict?: LayerVerdict; launch?: AgentLaunchConfiguration };
+/** One agent of a plan (an Agent, or a Team member) on its way through the order. */
+type AgentSlot = Readonly<{ key: object; address: AgentTeamAddress; name: string; description: string; role: string | null }>;
+
+/**
+ * Where an agent's launch comes from after steps 1–2: a configured layer, or the Model Router (with the layers skipped
+ * before it and the runtime it must stay on), or nothing configured covers it and no router is asked.
+ */
+type SlotPlan =
+  | Readonly<{ kind: "covered"; layer: ConfiguredLaunchLayer; launch: AgentLaunchConfiguration; fallbacks: readonly LaunchConfigurationFallback[] }>
+  | Readonly<{ kind: "uncovered"; fallbacks: readonly LaunchConfigurationFallback[]; requiredRuntime: string | null }>;
+
+/** What launch resolution answers. */
+export type ResolvedCopies = Readonly<{ plans: CollaboratorEntryPlan[]; modelRoutingOn: boolean }>;
+
+/** The final launch of one agent. */
+type Resolved = Readonly<{ launch: AgentLaunchConfiguration; source: LaunchConfigurationSource }>;
 
 const cloneLaunch = (value: AgentLaunchConfiguration): AgentLaunchConfiguration => Object.freeze({
   runtimeKind: value.runtimeKind,
@@ -37,235 +64,262 @@ const cloneLaunch = (value: AgentLaunchConfiguration): AgentLaunchConfiguration 
   workspaceRootPath: value.workspaceRootPath,
 });
 
-const source = (origin: LaunchConfigurationSource["origin"], fallbacks: readonly LaunchConfigurationFallback[] = []): LaunchConfigurationSource =>
+const source = (origin: "agent_default" | "team_default" | "inherited", fallbacks: readonly LaunchConfigurationFallback[] = []): LaunchConfigurationSource =>
   Object.freeze({ origin, fallbacks: Object.freeze([...fallbacks]) });
 
-const fallbackOf = (
-  candidate: ConfiguredCandidate,
-  reason: LaunchConfigurationFallback["reason"],
-  detail: string,
-): LayerVerdict => Object.freeze({ usable: false, fallback: Object.freeze({
-  layer: candidate.layer,
-  runtimeKind: candidate.value.runtimeKind,
-  llmModelIdentifier: candidate.value.llmModelIdentifier,
-  reason,
-  detail,
-}) });
+const routedSource = (choice: LaunchChoice, fallbacks: readonly LaunchConfigurationFallback[]): LaunchConfigurationSource => Object.freeze({
+  origin: "model_router", fallbacks: Object.freeze([...fallbacks]), choiceReason: choice.reason, taskKind: choice.taskKind,
+});
 
-const incompleteDetail = (value: DefaultLaunchConfig): string => !value.runtimeKind && !value.llmModelIdentifier
-  ? "It names neither a runtime nor a model."
-  : !value.runtimeKind ? "It names no runtime." : "It names no model.";
+const configuredFallback = (layer: ConfiguredLaunchLayer, value: DefaultLaunchConfig, verdict: Extract<LaunchVerdict, { usable: false }>): LaunchConfigurationFallback =>
+  Object.freeze({ layer, runtimeKind: value.runtimeKind, llmModelIdentifier: value.llmModelIdentifier, reason: verdict.reason, detail: verdict.detail });
 
-/** Today's runnability wording for a model check that did not pass (kept identical for the inherited layer). */
-const invalidModelMessage = (launch: AgentLaunchConfiguration, result: RunModelSelectionValidationResult | undefined): string =>
-  !result ? "Its model could not be checked."
-    : result.kind === "model_unavailable" ? `The model '${launch.llmModelIdentifier}' is not available on ${launch.runtimeKind}.`
-      : result.kind === "schema_unavailable" ? `The settings of model '${launch.llmModelIdentifier}' could not be checked.`
-        : result.kind === "invalid" ? `Its model settings are invalid: ${result.errors.map((error) => error.message).join("; ")}`
-          : "";
+const routerFallback = (reason: "router_not_active" | "router_failed", detail: string): LaunchConfigurationFallback =>
+  Object.freeze({ layer: "model_router", runtimeKind: null, llmModelIdentifier: null, reason, detail });
 
-const messageOf = (error: unknown): string => error instanceof Error ? error.message : String(error);
-
-/** Where configured candidates take their workspace and auto-approve from. */
-type CandidateContext = Readonly<{ workspaceRootPath: string | null; autoExecuteTools: boolean }>;
+/** A layer that was configured but could not be used now, with its note fallback; null when none was configured. */
+const skippedOf = (verdict: LayerVerdict | null, routerActive: boolean): LaunchConfigurationFallback | null =>
+  !verdict || verdict.usable === true || (verdict.usable === "runtime_only" && routerActive) ? null : verdict.fallback;
 
 /**
- * Turns new collaborator / catalog-copy definition plans into entry plans (DS-002). For each
- * agent the first usable layer wins, as one unit: its agent default, then (Team members) its
- * Team's default, then the run root's launch (REQ-001, REQ-002). With the `defaults_only` base
- * (a run started for a peer node) there is no run root's launch: only the configured layers count,
- * with the base's workspace and auto-approve, and an agent no configured layer covers fails
- * (`CollaboratorNoDefaultLaunchError` when nothing complete is configured, else the layer's reason). A configured layer is usable
- * when it names a runtime and a model, the runtime is available and the model with its settings
- * is offered for the root workspace; the inherited layer keeps today's model check only. Skipped
- * configured layers are recorded as fallbacks (REQ-003). When an agent has no usable layer the
- * plan fails with today's `CollaboratorAddError` and nothing is added (REQ-004). One batch checks
- * each configured runtime's availability once and validates every candidate in one
- * `validateMany`, which shares the catalog evidence (QR-001).
+ * Turns new catalog-copy definition plans into entry plans (DS-001, supplement §§ 3–5). For each agent the first usable
+ * layer wins, as one unit: its agent default, then (Team members) its Team's default, then the node's Model Router
+ * (while Model Routing is on and the router is active), then (this node only) the run root's launch. With the
+ * `defaults_only` base (a run started for a peer node) there is no run root's launch: an agent nothing covers refuses
+ * the copy, with the router's state for the delegating node's wording (§ 6). Usability is `LaunchUsabilityCheck`'s:
+ * U3 and U4b only while Model Routing is on (DEC-022). Skipped layers are recorded as fallbacks (REQ-003). One routing
+ * request covers every agent of the delegation that steps 1–2 did not cover.
  */
 export class CollaboratorLaunchResolver {
   constructor(private readonly dependencies: Readonly<{
-    availability: RuntimeAvailability;
-    validator: RunModelSelectionValidator;
+    usability: Pick<LaunchUsabilityCheck, "check">;
+    router: ModelRouterPort;
   }>) {}
 
-  async resolve(plans: readonly CollaboratorDefinitionPlan[], base: CollaboratorLaunchBase): Promise<CollaboratorEntryPlan[]> {
-    if (plans.length === 0) return [];
-    const candidates = new Map<object, ConfiguredCandidate>();
-    const consider = (key: object, layer: ConfiguredLaunchLayer, value: DefaultLaunchConfig | null) => {
-      if (value) candidates.set(key, { layer, value });
-    };
-    for (const plan of plans) {
-      if (plan.kind === "agent") { consider(plan, "agent_default", plan.agentDefault); continue; }
-      consider(plan, "team_default", plan.teamDefault);
-      plan.members.forEach((member) => consider(member, "agent_default", member.agentDefault));
-    }
-    const verdictOf = (key: object): LayerVerdict | null => candidates.get(key)?.verdict ?? null;
-    if (base.kind === "defaults_only") {
-      await this.check([...candidates.values()], base, null, plans[0]!.name);
-      return plans.map((plan) => resolveDefaultsOnly(plan, verdictOf));
-    }
-    const inherited = cloneLaunch(base.launch);
-    const inheritedFailure = await this.check([...candidates.values()], inherited, inherited, plans[0]!.name);
+  /** The entry plans, and whether Model Routing was on for this resolution (its decisions are then recorded, REQ-012). */
+  async resolve(plans: readonly CollaboratorDefinitionPlan[], base: CollaboratorLaunchBase, work: DelegationWork): Promise<ResolvedCopies> {
+    if (plans.length === 0) return { plans: [], modelRoutingOn: false };
+    const routing = await this.dependencies.router.openDelegation();
+    return { plans: await this.resolveWith(plans, base, work, routing), modelRoutingOn: routing !== null };
+  }
 
-    const requireInherited = (planName: string): AgentLaunchConfiguration => {
-      if (inheritedFailure !== null) throw new CollaboratorAddError(planName, inheritedFailure);
-      return inherited;
+  private async resolveWith(
+    plans: readonly CollaboratorDefinitionPlan[],
+    base: CollaboratorLaunchBase,
+    work: DelegationWork,
+    routing: DelegationRouting | null,
+  ): Promise<CollaboratorEntryPlan[]> {
+    const routerActive = routing !== null && routing.notActiveReason === null;
+    const inherited = base.kind === "inherited" ? cloneLaunch(base.launch) : null;
+    const verdicts = await this.checkConfigured(plans, base, inherited, routing);
+    const verdictOf = (key: object): LayerVerdict | null => verdicts.layers.get(key) ?? null;
+
+    // Steps 1–2 for every agent of every plan.
+    const slots = new Map<object, SlotPlan>();
+    for (const plan of plans) {
+      if (plan.kind === "agent") { slots.set(plan, planSlot(verdictOf(plan), null, routerActive)); continue; }
+      for (const member of plan.members) slots.set(member, planSlot(verdictOf(member), verdictOf(plan), routerActive));
+    }
+
+    // Step 3: one routing request for every uncovered agent, while Model Routing is on.
+    const uncovered = agentSlots(plans).filter((slot) => slots.get(slot.key)?.kind === "uncovered");
+    const choices = new Map<string, LaunchChoice>();
+    let routerFailure: LaunchConfigurationFallback | null = null;
+    if (uncovered.length && routing) {
+      const outcome = await routing.route({
+        work,
+        target: { kind: plans[0]!.kind, name: plans[0]!.name, description: plans[0]!.description },
+        agents: uncovered.map((slot): RoutingAgentToChoose => {
+          const planned = slots.get(slot.key) as Extract<SlotPlan, { kind: "uncovered" }>;
+          return {
+            address: slot.address, name: slot.name, description: slot.description, role: slot.role,
+            skipped: planned.fallbacks.flatMap((fallback) => fallback.layer === "model_router" ? [] : [{
+              layer: fallback.layer, runtimeKind: fallback.runtimeKind, llmModelIdentifier: fallback.llmModelIdentifier, detail: fallback.detail,
+            }]),
+            requiredRuntime: planned.requiredRuntime,
+          };
+        }),
+        covered: agentSlots(plans).flatMap((slot): RoutingCoveredAgent[] => {
+          const planned = slots.get(slot.key);
+          return planned?.kind === "covered" ? [{ address: slot.address, runtimeKind: planned.launch.runtimeKind,
+            llmModelIdentifier: planned.launch.llmModelIdentifier, source: planned.layer }] : [];
+        }),
+        delegatingLaunch: inherited ? { runtimeKind: inherited.runtimeKind, llmModelIdentifier: inherited.llmModelIdentifier } : null,
+      });
+      if (outcome.kind === "chosen") outcome.choices.forEach((choice) => choices.set(choice.address, choice));
+      else if (outcome.kind === "not_active") routerFailure = routerFallback("router_not_active", outcome.reason);
+      else {
+        if (base.kind === "defaults_only") throw new CollaboratorRouterFailedError(plans[0]!.name, uncovered[0]!.name, outcome.reason);
+        routerFailure = routerFallback("router_failed", outcome.reason);
+      }
+    }
+    const routerState: CopyRouterState = !routing ? { kind: "off" } : { kind: "not_active", reason: routerFailure?.detail ?? routing.notActiveReason ?? "" };
+    // A routed launch takes the workspace and auto-approve every candidate takes (§ 3.3), with the model's default settings.
+    const context = launchContextOf(base);
+
+    /** Step 3's result, or step 4 / refusal, for one agent no configured layer covers. */
+    const finish = (plan: CollaboratorDefinitionPlan, slot: AgentSlot, planned: Extract<SlotPlan, { kind: "uncovered" }>): Resolved => {
+      const choice = choices.get(slot.address);
+      if (choice) {
+        return { launch: Object.freeze({ runtimeKind: choice.runtimeKind as RuntimeKind, llmModelIdentifier: choice.llmModelIdentifier,
+          llmConfig: null, ...context }), source: routedSource(choice, planned.fallbacks) };
+      }
+      const fallbacks = routerFailure ? [...planned.fallbacks, routerFailure] : planned.fallbacks;
+      if (!inherited) return noUsableLayer(plan, planned.fallbacks, routerState);
+      if (verdicts.inheritedFailure !== null) throw new CollaboratorAddError(plan.name, verdicts.inheritedFailure);
+      return { launch: inherited, source: source("inherited", fallbacks) };
     };
 
     return plans.map((plan): CollaboratorEntryPlan => {
       const identity = { name: plan.name, address: plan.address };
       if (plan.kind === "agent") {
-        const own = verdictOf(plan);
-        return Object.freeze({
-          kind: "agent", ...identity, agentDefinitionId: plan.agentDefinitionId,
-          ...(own?.usable
-            ? { launchConfiguration: own.launch, launchSource: source("agent_default") }
-            : { launchConfiguration: requireInherited(plan.name), launchSource: source("inherited", own ? [own.fallback] : []) }),
-        });
+        const planned = slots.get(plan)!;
+        const resolved = planned.kind === "covered"
+          ? { launch: planned.launch, source: source(planned.layer, planned.fallbacks) }
+          : finish(plan, { key: plan, ...identity, description: plan.description, role: plan.role }, planned);
+        return Object.freeze({ kind: "agent", ...identity, agentDefinitionId: plan.agentDefinitionId,
+          launchConfiguration: resolved.launch, launchSource: resolved.source });
       }
-      const teamOwn = verdictOf(plan);
-      const teamLevel = teamOwn?.usable
-        ? { launch: teamOwn.launch, source: source("team_default") }
-        : { launch: inheritedFailure === null ? inherited : null, source: source("inherited", teamOwn ? [teamOwn.fallback] : []) };
+      const team = verdictOf(plan);
+      const teamFallback = skippedOf(team, routerActive);
       const members = plan.members.map((member): CollaboratorEntryPlanMember => {
-        const own = verdictOf(member);
+        const planned = slots.get(member)!;
         const layout = { address: member.address, agentDefinitionId: member.agentDefinitionId };
-        if (own?.usable) {
-          return Object.freeze({ ...layout, launchConfiguration: own.launch, followsTeam: false, launchSource: source("agent_default") });
+        if (planned.kind === "covered" && planned.layer === "agent_default") {
+          return Object.freeze({ ...layout, launchConfiguration: planned.launch, followsTeam: false, launchSource: source("agent_default") });
         }
-        const teamLaunch = teamLevel.launch ?? requireInherited(plan.name);
-        const follower = { ...layout, launchConfiguration: teamLaunch, followsTeam: true };
-        return Object.freeze(own ? { ...follower, launchSource: source(teamLevel.source.origin, [own.fallback]) } : follower);
+        if (planned.kind === "covered") {
+          // Follows its Team's default: a source only when its own default was skipped (as before).
+          const follower = { ...layout, launchConfiguration: planned.launch, followsTeam: true };
+          return Object.freeze(planned.fallbacks.length ? { ...follower, launchSource: source("team_default", planned.fallbacks) } : follower);
+        }
+        const resolved = finish(plan, { key: member, address: member.address, name: member.name, description: member.description, role: member.role }, planned);
+        if (resolved.source.origin === "model_router") {
+          return Object.freeze({ ...layout, launchConfiguration: resolved.launch, followsTeam: false, launchSource: resolved.source });
+        }
+        // The run root's launch: it follows the Team's launch, which is that launch (the Team default is not usable).
+        const follower = { ...layout, launchConfiguration: resolved.launch, followsTeam: true };
+        const ownNotes = resolved.source.fallbacks.filter((fallback) => fallback !== teamFallback);
+        return Object.freeze(ownNotes.length ? { ...follower, launchSource: source("inherited", ownNotes) } : follower);
       });
+      const teamLevel = this.teamLevel(plan, team, teamFallback, members, inherited);
       return Object.freeze({
         kind: "agent_team", ...identity,
         teamDefinitionId: plan.teamDefinitionId,
         coordinatorAddress: plan.coordinatorAddress,
         members: Object.freeze(members),
         handoffs: plan.handoffs,
-        // Unused by every member (each runs on its own default) when the inherited layer failed.
-        defaultLaunchConfiguration: teamLevel.launch ?? inherited,
+        defaultLaunchConfiguration: teamLevel.launch,
         defaultLaunchSource: teamLevel.source,
       });
     });
   }
 
   /**
-   * Sets each configured candidate's verdict and returns the inherited layer's failure message
-   * (null when it is usable or there is none): availability once per distinct configured runtime,
-   * concurrently, then one `validateMany` over the inherited launch (when there is one) and every
-   * candidate on an available runtime. Candidates take `context`'s workspace and auto-approve.
+   * A Team's own launch, which its followers take: its default when usable; else the run root's (this node; unused by
+   * every member when that failed, as before), or, on a peer node, its coordinator's.
    */
-  private async check(
-    candidates: ConfiguredCandidate[],
-    context: CandidateContext,
+  private teamLevel(
+    plan: Extract<CollaboratorDefinitionPlan, { kind: "agent_team" }>,
+    team: LayerVerdict | null,
+    teamFallback: LaunchConfigurationFallback | null,
+    members: readonly CollaboratorEntryPlanMember[],
     inherited: AgentLaunchConfiguration | null,
-    batchName: string,
-  ): Promise<string | null> {
-    const complete: ConfiguredCandidate[] = [];
-    for (const candidate of candidates) {
-      const { runtimeKind, llmModelIdentifier, llmConfig } = candidate.value;
-      if (!runtimeKind || !llmModelIdentifier) {
-        candidate.verdict = fallbackOf(candidate, "incomplete", incompleteDetail(candidate.value));
-        continue;
-      }
-      candidate.launch = Object.freeze({
-        runtimeKind: runtimeKind as RuntimeKind,
-        llmModelIdentifier,
-        llmConfig: llmConfig ? structuredClone(llmConfig) : null,
-        autoExecuteTools: context.autoExecuteTools,
-        workspaceRootPath: context.workspaceRootPath,
-      });
-      complete.push(candidate);
+  ): Resolved {
+    if (team?.usable === true) return { launch: team.launch, source: source("team_default") };
+    // A skipped Team default is noted at Team level unless every member without its own default was routed (each
+    // routed member's note already names it).
+    const routedOnly = members.some((member) => member.launchSource?.origin === "model_router") && !members.some((member) => member.followsTeam);
+    const fallbacks = teamFallback && !routedOnly ? [teamFallback] : [];
+    if (inherited) return { launch: inherited, source: source("inherited", fallbacks) };
+    // Without a usable Team default every member runs on its own launch; the coordinator's stands in as the Team's
+    // recorded default (autobyteus-247 decides Teams).
+    const coordinator = members.find((member) => member.address === plan.coordinatorAddress) ?? members[0]!;
+    const coordinatorSource = coordinator.launchSource;
+    return {
+      launch: coordinator.launchConfiguration,
+      source: coordinatorSource?.origin === "model_router"
+        ? Object.freeze({ ...coordinatorSource, fallbacks: Object.freeze(fallbacks) })
+        : source("agent_default", fallbacks),
+    };
+  }
+
+  /**
+   * Every configured candidate's verdict and the inherited layer's failure, in one batch: the node's facts (U3, U4b)
+   * only while Model Routing is on.
+   */
+  private async checkConfigured(
+    plans: readonly CollaboratorDefinitionPlan[],
+    base: CollaboratorLaunchBase,
+    inherited: AgentLaunchConfiguration | null,
+    routing: DelegationRouting | null,
+  ): Promise<Readonly<{ layers: ReadonlyMap<object, LayerVerdict>; inheritedFailure: string | null }>> {
+    const candidates: { key: object; layer: ConfiguredLaunchLayer; value: DefaultLaunchConfig }[] = [];
+    const consider = (key: object, layer: ConfiguredLaunchLayer, value: DefaultLaunchConfig | null) => {
+      if (value) candidates.push({ key, layer, value });
+    };
+    for (const plan of plans) {
+      if (plan.kind === "agent") { consider(plan, "agent_default", plan.agentDefault); continue; }
+      consider(plan, "team_default", plan.teamDefault);
+      plan.members.forEach((member) => consider(member, "agent_default", member.agentDefault));
     }
-    const runtimes = [...new Set(complete.map((candidate) => candidate.launch!.runtimeKind))];
-    const availability = new Map(await Promise.all(runtimes.map(async (runtimeKind) => {
-      try {
-        const result = await this.dependencies.availability.getRuntimeAvailability(runtimeKind);
-        return [runtimeKind, result.enabled ? null : result.reason ?? `Runtime '${runtimeKind}' is not available.`] as const;
-      } catch (error) {
-        return [runtimeKind, `Runtime '${runtimeKind}' could not be checked: ${messageOf(error)}`] as const;
-      }
-    })));
-    const checked: ConfiguredCandidate[] = [];
-    for (const candidate of complete) {
-      const unavailable = availability.get(candidate.launch!.runtimeKind);
-      if (unavailable) candidate.verdict = fallbackOf(candidate, "runtime_unavailable", unavailable);
-      else checked.push(candidate);
-    }
-    const offset = inherited ? 1 : 0;
-    const launches = [...(inherited ? [inherited] : []), ...checked.map((candidate) => candidate.launch!)];
-    // Only `defaults_only` can have nothing to validate: the inherited launch is always checked.
-    if (launches.length === 0) return null;
-    let results: RunModelSelectionValidationResult[];
+    let result;
     try {
-      results = await this.dependencies.validator.validateMany(launches.map((launch) => ({
-        context: {
-          runtimeKind: launch.runtimeKind,
-          currentModelIdentifier: launch.llmModelIdentifier,
-          workspaceRootPath: launch.workspaceRootPath ?? process.cwd(),
-        },
-        selection: { llmModelIdentifier: launch.llmModelIdentifier, llmConfig: launch.llmConfig },
-      })));
+      result = await this.dependencies.usability.check({
+        candidates: candidates.map((candidate) => candidate.value),
+        context: launchContextOf(base),
+        inherited,
+        facts: routing?.facts ?? null,
+      });
     } catch (error) {
-      throw new CollaboratorAddError(batchName, `Its model could not be checked: ${messageOf(error)}`);
+      if (error instanceof LaunchModelCheckError) throw new CollaboratorAddError(plans[0]!.name, error.reason);
+      throw error;
     }
-    checked.forEach((candidate, index) => {
-      const result = results[index + offset];
-      const launch = candidate.launch!;
-      candidate.verdict = result?.kind === "valid"
-        ? Object.freeze({ usable: true, launch })
-        : fallbackOf(candidate, result?.kind === "model_unavailable" ? "model_unavailable" : "model_settings_invalid", invalidModelMessage(launch, result));
+    const layers = new Map<object, LayerVerdict>();
+    candidates.forEach((candidate, index) => {
+      const verdict = result.verdicts[index]!;
+      layers.set(candidate.key, verdict.usable === true ? verdict
+        : verdict.usable === "runtime_only"
+          ? Object.freeze({ usable: "runtime_only", runtimeKind: verdict.runtimeKind, fallback: configuredFallback(candidate.layer, candidate.value,
+            { usable: false, reason: "incomplete", detail: "It names no model." }) })
+          : Object.freeze({ usable: false, fallback: configuredFallback(candidate.layer, candidate.value, verdict) }));
     });
-    if (!inherited) return null;
-    return results[0]?.kind === "valid" ? null : invalidModelMessage(inherited, results[0]);
+    return { layers, inheritedFailure: result.inheritedFailure };
   }
 }
 
-type VerdictOf = (key: object) => LayerVerdict | null;
-type UsableVerdict = Extract<LayerVerdict, { usable: true }>;
-const isUsable = (verdict: LayerVerdict | null): verdict is UsableVerdict => verdict?.usable === true;
-
 /**
- * No configured layer covers an agent of `plan` (`defaults_only`): a complete configured layer that could
- * not be used gives its reason; nothing complete configured is "no default runtime".
+ * Steps 1–2 for one agent (supplement §§ 3.1–3.2): its own default; a usable runtime-only own default goes to the router
+ * on that runtime while it is active; then (a Team member) the Team's default, likewise; else uncovered.
  */
-const noUsableLayer = (plan: CollaboratorDefinitionPlan, layers: readonly (LayerVerdict | null)[]): never => {
-  for (const layer of layers) {
-    if (layer && !layer.usable && layer.fallback.reason !== "incomplete") throw new CollaboratorAddError(plan.name, layer.fallback.detail);
-  }
-  throw new CollaboratorNoDefaultLaunchError(plan.name, plan.kind);
+const planSlot = (own: LayerVerdict | null, team: LayerVerdict | null, routerActive: boolean): SlotPlan => {
+  if (own?.usable === true) return { kind: "covered", layer: "agent_default", launch: own.launch, fallbacks: [] };
+  const ownSkipped = skippedOf(own, routerActive);
+  const skipped = ownSkipped ? [ownSkipped] : [];
+  if (own?.usable === "runtime_only" && routerActive) return { kind: "uncovered", fallbacks: [], requiredRuntime: own.runtimeKind };
+  if (team?.usable === true) return { kind: "covered", layer: "team_default", launch: team.launch, fallbacks: skipped };
+  if (team?.usable === "runtime_only" && routerActive) return { kind: "uncovered", fallbacks: skipped, requiredRuntime: team.runtimeKind };
+  const teamSkipped = skippedOf(team, routerActive);
+  return { kind: "uncovered", fallbacks: teamSkipped ? [...skipped, teamSkipped] : skipped, requiredRuntime: null };
 };
 
-/** One plan with the `defaults_only` base: the agent default, then (Team members) the Team default; nothing else. */
-const resolveDefaultsOnly = (plan: CollaboratorDefinitionPlan, verdictOf: VerdictOf): CollaboratorEntryPlan => {
-  const identity = { name: plan.name, address: plan.address };
-  if (plan.kind === "agent") {
-    const own = verdictOf(plan);
-    if (!isUsable(own)) return noUsableLayer(plan, [own]);
-    return Object.freeze({ kind: "agent", ...identity, agentDefinitionId: plan.agentDefinitionId,
-      launchConfiguration: own.launch, launchSource: source("agent_default") });
+const launchContextOf = (base: CollaboratorLaunchBase): Readonly<{ workspaceRootPath: string | null; autoExecuteTools: boolean }> =>
+  base.kind === "inherited"
+    ? { workspaceRootPath: base.launch.workspaceRootPath, autoExecuteTools: base.launch.autoExecuteTools }
+    : { workspaceRootPath: base.workspaceRootPath, autoExecuteTools: base.autoExecuteTools };
+
+/** Every agent of the plans, in order: an Agent, or each Team member. */
+const agentSlots = (plans: readonly CollaboratorDefinitionPlan[]): AgentSlot[] => plans.flatMap((plan): AgentSlot[] => plan.kind === "agent"
+  ? [{ key: plan, address: plan.address, name: plan.name, description: plan.description, role: plan.role }]
+  : plan.members.map((member) => ({ key: member, address: member.address, name: member.name, description: member.description, role: member.role })));
+
+/**
+ * No layer covers an agent of `plan` (`defaults_only`): a complete configured layer that could not be used gives its
+ * reason; nothing complete configured is "no default runtime". Both carry why the Model Router did not choose.
+ */
+const noUsableLayer = (plan: CollaboratorDefinitionPlan, fallbacks: readonly LaunchConfigurationFallback[], routerState: CopyRouterState): never => {
+  for (const fallback of fallbacks) {
+    if (fallback.reason !== "incomplete") throw new CollaboratorAddError(plan.name, fallback.detail, routerState);
   }
-  const teamOwn = verdictOf(plan);
-  const members = plan.members.map((member): CollaboratorEntryPlanMember => {
-    const own = verdictOf(member);
-    const layout = { address: member.address, agentDefinitionId: member.agentDefinitionId };
-    if (isUsable(own)) return Object.freeze({ ...layout, launchConfiguration: own.launch, followsTeam: false, launchSource: source("agent_default") });
-    if (!isUsable(teamOwn)) return noUsableLayer(plan, [own, teamOwn]);
-    const follower = { ...layout, launchConfiguration: teamOwn.launch, followsTeam: true };
-    return Object.freeze(own ? { ...follower, launchSource: source("team_default", [own.fallback]) } : follower);
-  });
-  // Without a usable Team default every member runs on its own default; the coordinator's stands in as the
-  // Team's recorded default, as the inherited launch does today when it fails (autobyteus-247 decides Teams).
-  const coordinator = members.find((member) => member.address === plan.coordinatorAddress) ?? members[0]!;
-  return Object.freeze({
-    kind: "agent_team", ...identity,
-    teamDefinitionId: plan.teamDefinitionId,
-    coordinatorAddress: plan.coordinatorAddress,
-    members: Object.freeze(members),
-    handoffs: plan.handoffs,
-    defaultLaunchConfiguration: isUsable(teamOwn) ? teamOwn.launch : coordinator.launchConfiguration,
-    defaultLaunchSource: isUsable(teamOwn) ? source("team_default") : source("agent_default", teamOwn ? [teamOwn.fallback] : []),
-  });
+  throw new CollaboratorNoDefaultLaunchError(plan.name, plan.kind, routerState);
 };

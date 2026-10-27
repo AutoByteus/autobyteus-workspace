@@ -3,6 +3,7 @@ import { NodeIdentityNotMigratedError } from "../../remote-access/services/node-
 import { parseTaskAgentCoordinatingRun } from "../../run-history/store/task-agent-own-file-schema.js";
 import {
   isoTimestamp,
+  nullableString,
   objectRecord,
   requiredString,
 } from "../../run-history/store/run-execution-tree-shared-record-schemas.js";
@@ -18,6 +19,7 @@ import type {
   OwnerCommandAnswer,
   OwnerCommandRequest,
   RemoteEnvelope,
+  RemoteModelRoutingState,
   RemoteRefusalTarget,
   RunObservationOpening,
   RunSummariesAnswer,
@@ -26,7 +28,7 @@ import type {
   StartDelegatedRunRequest,
 } from "../domain/remote-requests.js";
 import type { AvailableCollaboratorEntry } from "../../agent-collaboration/collaborators/available-collaborator-entry.js";
-import type { RemoteAgentProjection, RemoteOwnerCommand, RemoteRunSummary } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
+import type { RemoteAgentLaunch, RemoteAgentProjection, RemoteOwnerCommand, RemoteRunSummary } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
 import type { PairedAgentObservation } from "../../agent-collaboration/execution/remote/paired-agent-access.js";
 import type { RunObservationSink } from "../inbound/remote-run-view-provider.js";
 
@@ -39,11 +41,20 @@ export type PeerGatewayResponse<TAnswer> =
 
 /** What a delegation handler started (the gateway adds this node's ID): an Agent run, or a Team run with its members. */
 export type StartedRunAnswer =
-  | Readonly<{ accepted: true; kind: "agent"; agentRunId: string }>
-  | Readonly<{ accepted: true; kind: "agent_team"; teamRunId: string; coordinatorAddress: string; members: readonly Readonly<{ address: string; agentRunId: string }>[] }>;
+  | Readonly<{ accepted: true; kind: "agent"; agentRunId: string; launches: readonly RemoteAgentLaunch[] }>
+  | Readonly<{
+      accepted: true; kind: "agent_team"; teamRunId: string; coordinatorAddress: string;
+      members: readonly Readonly<{ address: string; agentRunId: string }>[]; launches: readonly RemoteAgentLaunch[];
+    }>;
 
-/** A refusal as a handler returns it (with its target when it has one); the gateway adds this node's ID. */
-export type PeerHandlerRefusal = Readonly<{ accepted: false; code: string; message: string; target?: RemoteRefusalTarget }>;
+/**
+ * A refusal as a handler returns it (with its target when it has one, and for a target no layer covers this node's
+ * Model Routing state or the agent its router failed for); the gateway adds this node's ID.
+ */
+export type PeerHandlerRefusal = Readonly<{
+  accepted: false; code: string; message: string; target?: RemoteRefusalTarget;
+  modelRouting?: RemoteModelRoutingState; agentName?: string;
+}>;
 
 export type DelegatedRunHandler = Readonly<{
   start(request: StartDelegatedRunRequest, from: PeerNode): Promise<StartedRunAnswer | PeerHandlerRefusal>;
@@ -89,6 +100,21 @@ const parseStartRequest = (value: unknown): StartDelegatedRunRequest => {
     address: field(() => requiredString(body.address, "address")),
     delegator: runRef(body.delegator, "delegator"),
     coordinatingRun: coordinatingRunOf(body.coordinatingRun, "coordinatingRun"),
+    task: parseStartTask(body.task),
+  };
+};
+
+/** The delegated work and its Task (autobyteus-32): the text and title are required, the Task's identity may be null. */
+const parseStartTask = (value: unknown): StartDelegatedRunRequest["task"] => {
+  const task = field(() => objectRecord(value, "task"));
+  if (typeof task.text !== "string") throw new MalformedRequestError("task.text must be a string.");
+  if (typeof task.title !== "string") throw new MalformedRequestError("task.title must be a string.");
+  return {
+    text: task.text,
+    title: task.title,
+    taskKey: field(() => nullableString(task.taskKey, "task.taskKey")),
+    projectId: field(() => nullableString(task.projectId, "task.projectId")),
+    taskId: field(() => nullableString(task.taskId, "task.taskId")),
   };
 };
 

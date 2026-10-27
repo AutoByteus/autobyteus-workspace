@@ -1,4 +1,5 @@
 import { remoteTaskExecutionDtos } from "../../../src/services/agent-streaming/remote-task-execution-dto-projection.js";
+import { PeerStartedRunDecisions } from "../../../src/remote-collaboration/inbound/peer-started-run-decisions.js";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -196,13 +197,13 @@ const buildNode = async (input: Readonly<{
         autoExecuteTools: request.autoExecuteTools, runtimeKind: request.runtimeKind as RuntimeKind, platformAgentRunId: null,
         preparedAt: T0, preparedExpiresAt: T0, startedAt: null, delegatedFrom: request.delegatedFrom });
       return { runId, activationState: "PREPARED" as const, preparedExpiresAt: T0 };
-    }) } }),
+    }) }, decisions: new PeerStartedRunDecisions() }),
     messages: new RemoteMessageReceiver({
       storedLinkCheck: async (root, query) => root.kind === "agent" ? manager.storedRemoteLinkCheck(root.runId, query) : "not_found",
       standalone: (runId) => manager.resolveRoot(runId),
       team: async () => null,
       org: async () => null,
-    }, { recordFirstMessage: async (root, content) => { if (!titles.has(root.runId)) titles.set(root.runId, content); } }),
+    }, { recordFirstMessage: async (root, content) => { if (!titles.has(root.runId)) titles.set(root.runId, content); } }, new PeerStartedRunDecisions()),
     availableAgents: new RemoteCatalogLister({ policy: () => admission.policy, catalogPort: new NodeCatalogPort(path.join(memoryDir, "temp_workspace")) }),
     runViews: new RemoteRunViewProvider({
       storedLinkCheck: async (root, query) => root.kind === "agent" ? manager.storedRemoteLinkCheck(root.runId, query) : "not_found",
@@ -263,7 +264,9 @@ describe("remote delegation between two standalone runs, in process (slice 1 ste
 
     // A: the link with `nodeId` in the host's tree (one list on disk), the remote run recorded as a run of the Task.
     const tree = JSON.parse(await fs.readFile(path.join(new AgentMemoryLayout(a.memoryDir).getAgentRunCollaborationDirPath(DELEGATOR), "collaboration_tree.json"), "utf8"));
-    expect(tree.taskExecutions).toEqual([{ address: "/publisher", agentRunId: "publisher_r1", nodeId: B_ID, delegatorAgentRunId: DELEGATOR, startedAt: expect.any(String) }]);
+    expect(tree.taskExecutions).toEqual([{ address: "/publisher", agentRunId: "publisher_r1", nodeId: B_ID, delegatorAgentRunId: DELEGATOR, startedAt: expect.any(String),
+      // autobyteus-32 REQ-009: B's launch for it, as B resolved it.
+      launches: [expect.objectContaining({ address: "/publisher", source: { origin: "agent_default", fallbacks: [] } })] }]);
     expect(a.resources.entry({ agentRunId: "publisher_r1" })).toMatchObject({ taskId: "ad_hoc_task_1", role: "assigned", start: "started", open: true,
       hostRoot: { rootSubjectKind: "agent", rootRunId: DELEGATOR } });
     // autobyteus-278: A's run tree view lists it as a remote child of the delegator, never among the local copies.
@@ -272,7 +275,8 @@ describe("remote delegation between two standalone runs, in process (slice 1 ste
     if (view.root_subject_kind !== "agent") throw new Error("Expected an Agent root view.");
     expect(view.root_agent.execution_tree.taskExecutions).toEqual([]);
     expect(view.root_agent.remote_task_executions).toEqual([{ kind: "agent", address: "/publisher", agent_run_id: "publisher_r1", node_id: B_ID,
-      node_name: B_ID, delegator_agent_run_id: DELEGATOR, started_at: expect.any(String) }]);
+      node_name: B_ID, delegator_agent_run_id: DELEGATOR, started_at: expect.any(String),
+      launches: [expect.objectContaining({ address: "/publisher", source: { origin: "agent_default", fallbacks: [] } })] }]);
   });
 
   it("the two runs message each other both ways by run ID; each message is in both logs once, with one ID, and the headers name the node", async () => {
@@ -329,7 +333,7 @@ describe("remote delegation between two standalone runs, in process (slice 1 ste
     await expect(delegate(a, { recipient_address: "/unknown" })).resolves.toEqual({ delegated: false, message: 'Node "docker" has no Agent or Agent Team at /unknown that can be delegated to. If you have list_available_agents, call it with this node to see what it offers.' });
     b.models.available = false;
     await expect(delegate(a)).resolves.toEqual({ delegated: false,
-      message: `The Agent Publisher on node "docker" cannot run there: The model 'sonnet' is not available on claude_agent_sdk.` });
+      message: `The Agent Publisher on node "docker" cannot run there: The model 'sonnet' is not available on claude_agent_sdk, and Model Routing is off on node "docker".` });
     b.models.available = true;
     bOn = false;
     await expect(delegate(a)).resolves.toEqual({ delegated: false, message: 'Remote collaboration is turned off on node "docker", so it refused the request.' });
