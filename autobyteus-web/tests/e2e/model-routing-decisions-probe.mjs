@@ -47,6 +47,8 @@ const executablePath = arg('browser-executable', process.env.PLAYWRIGHT_CHROME_E
 const AGY = 'antigravity_cli';
 const MODEL = 'gemini-3.8-flash-low';
 const ALT = 'alt-model';
+/** autobyteus-313: Decisions name models as the model menu does: the catalog's label (the scripted CLI's model names) and the runtime's short name. */
+const LABEL_OF = { [MODEL]: 'Gemini test', [ALT]: 'Retiring test model' };
 const LABEL = { alpha: 'alpha-node', beta: 'beta-node' };
 const REASON = { alpha: 'Writing goes to the alternate model.', beta: 'Beta keeps writing on the alternate model.' };
 const evidence = { startedAt: new Date().toISOString(), result: 'Fail', cases: {}, observations: {}, browserErrors: [], cleanup: {}, error: null };
@@ -220,8 +222,8 @@ try {
     const clean = rows.map((r) => r.replace(/\s+/g, ' ').trim());
     evidence.observations.decisions = { tasks: await page.locator('[data-testid^="model-routing-task-"]').count(), folded, rows: clean, page: await textOf(tid('model-routing-decisions')) };
     const writer = clean.find((r) => /writer/i.test(r)); const lead = clean.find((r) => /lead/i.test(r));
-    assert(writer && writer.includes(ALT) && writer.includes(REASON.alpha), `Writer row: ${writer}`);
-    assert(lead && lead.includes(MODEL) && !lead.includes(REASON.alpha), `Lead row: ${lead}`);
+    assert(writer && writer.includes(`${LABEL_OF[ALT]} Antigravity`) && writer.includes(REASON.alpha), `Writer row: ${writer}`);
+    assert(lead && lead.includes(`${LABEL_OF[MODEL]} Antigravity`) && !lead.includes(REASON.alpha), `Lead row: ${lead}`);
     assert(!(await page.locator(tid('model-routing-decision-/blank_slate')).count()), 'the copy on beta is not on alpha\'s Decisions');
     assert(await page.locator(tid('model-routing-decision-open-run')).count() > 0, 'Open run on a local delegation');
     await shot('MRD-02-decisions');
