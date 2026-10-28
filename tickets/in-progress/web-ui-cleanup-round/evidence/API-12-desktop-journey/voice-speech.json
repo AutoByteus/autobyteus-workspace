@@ -1,0 +1,78 @@
+{
+ "label": "speech",
+ "log": [
+  {
+   "step": "tab from input",
+   "focused": "Start voice input"
+  },
+  {
+   "step": "after Enter (start)",
+   "t": 1793206801636,
+   "value": "",
+   "button": "Stop recording",
+   "disabled": false,
+   "focus": "BODY",
+   "status": [
+    "memory-search-voice-status: Recording… Tap stop when you are done. Cancel recording",
+    "memory-search-voice-cancel: Cancel recording"
+   ]
+  },
+  {
+   "step": "while recording",
+   "t": 1793206804255,
+   "value": "",
+   "button": "Stop recording",
+   "disabled": false,
+   "focus": "BODY",
+   "status": [
+    "memory-search-voice-status: Recording… Tap stop when you are done. Cancel recording",
+    "memory-search-voice-cancel: Cancel recording"
+   ]
+  },
+  {
+   "step": "tab back to the button",
+   "focused": "BUTTON[Stop recording]"
+  },
+  {
+   "step": "after Enter (stop)",
+   "t": 1793206804673,
+   "value": "",
+   "button": "Transcribing...",
+   "disabled": true,
+   "focus": "BODY",
+   "status": [
+    "memory-search-voice-status: Transcribing voice input…"
+   ]
+  },
+  {
+   "step": "settled",
+   "t": 1793206835732,
+   "value": "",
+   "button": "Transcribing...",
+   "disabled": true,
+   "focus": "BODY",
+   "status": [
+    "memory-search-voice-status: Transcribing voice input…"
+   ]
+  }
+ ],
+ "graphqlDuringVoice": [
+  "ListWorkspaceRunHistory",
+  "ListCollaborationRootHistory",
+  "ListWorkspaceRunHistory",
+  "ListCollaborationRootHistory",
+  "ListWorkspaceRunHistory",
+  "ListCollaborationRootHistory",
+  "ListWorkspaceRunHistory",
+  "ListCollaborationRootHistory",
+  "ListWorkspaceRunHistory",
+  "ListCollaborationRootHistory",
+  "ListWorkspaceRunHistory",
+  "ListCollaborationRootHistory",
+  "ListWorkspaceRunHistory",
+  "ListCollaborationRootHistory"
+ ],
+ "resultsChanged": true,
+ "resultsAfter": "Browse Search Index Search Transcribing voice input…",
+ "micCalls": 2
+}

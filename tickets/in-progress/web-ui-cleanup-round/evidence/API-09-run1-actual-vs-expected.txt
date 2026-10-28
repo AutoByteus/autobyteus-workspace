@@ -1,0 +1,4 @@
+# API-09 run 1 (before the probe update): first note, expected (probe) vs the conversation (actual)
+error: delegation result in the conversation lacks a note
+expected[0]: Squad Team 801f: its team default antigravity_cli / dlc-no-such-team-model could not be used (The model 'dlc-no-such-team-model' is not available on antigravity_cli); its members without their own default run on antigravity_cli / gemini-3.8-flash-low (inherited from the run).
+actual    : its team default Antigravity CLI / dlc-no-such-team-model could not be used (The model 'dlc-no-such-team-model' is not available on Antigravity CLI); its members without their own default run on Antigravity CLI / gemini-3.
