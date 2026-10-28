@@ -88,19 +88,50 @@
 ## Version / Tag / Release Commit
 
 - Version: `1.5.9-beta.14` (`python3 scripts/release_versions.py next-beta`; the highest existing tag is `v1.5.9-beta.13`)
-- Release commit and tag: RELEASE_COMMIT_RESULT
+- Release commit and tag: `4c34e5b71d` `chore(release): bump workspace release version to 1.5.9-beta.14` (sets `autobyteus-web/package.json` to `1.5.9-beta.14`), with annotated tag `v1.5.9-beta.14`, made by `scripts/desktop-release.sh beta --branch finalize/test-and-tooling-hygiene-294 --no-push`. Pushed to `personal` and pushed the tag, after checking that `origin/personal` was still `3f0f22f8c2`.
 
 ## Repository Finalization
 
-FINALIZATION_RESULT
+- Bootstrap context source: the Code Reviewer handoff and RELEASE.md § Finalization Target
+- Ticket branch: `codex/test-and-tooling-hygiene-294`
+- Ticket branch commit result: `0d8d864ddd` (docs sync, verification, archive)
+- Ticket branch push result: pushed to `origin/codex/test-and-tooling-hygiene-294`
+- Finalization target remote / branch: `origin` / `personal`
+- Target advanced after verification: `No` (`origin/personal` still at `73e4c4f329`)
+- Re-integration before final merge result: `Not needed`
+- Merge into target result: `finalize/test-and-tooling-hygiene-294` from `origin/personal`, `git merge --no-ff` → `3f0f22f8c2`. The tree is identical to the ticket branch. `check_licensing.py` and `check_repository_artifact_hygiene.py` passed on the merged state.
+- Push target branch result: `73e4c4f329..3f0f22f8c2  HEAD -> personal`
+- Repository finalization status: `Completed`
 
 ## Release / Publication / Deployment
 
-RELEASE_RESULT
+- Applicable: `Yes` (beta, at the user's request)
+- Method: `Project Release Guide` (RELEASE.md § Cutting The Release, beta)
+- Pipelines triggered and their results (tag `v1.5.9-beta.14`):
+  - Desktop Release `40640209395`: **failure**. All five build jobs (macOS ARM64, macOS x64, Linux x64, Linux ARM64, Windows x64) failed in `Build Electron …`, and Publish was skipped.
+  - Android APK Release `40640209403`: success.
+  - iOS App Store Connect Release `40640209398`: success.
+  - Server Docker Release `40640209389`: success (`autobyteus/autobyteus-server:1.5.9-beta.14`; `:beta` moves to it)
+- Published artifacts checked: `gh release view v1.5.9-beta.14` → pre-release with 2 of 17 assets (`AutoByteus_personal_android-1.5.9-beta.14-release.apk` and its `.sha256`); no desktop assets and no `latest*.yml`, so no desktop update is offered.
+- Release/publication/deployment result: **`Partial`**. Per RELEASE.md § Recovery, the tag stays in place.
+- Desktop failure cause: **a defect in this ticket's change**:
+  - In CI, the job runs `pnpm install` and then `pnpm build:electron:<platform>`.
+  - The new type gate (`pnpm typecheck`) runs in that chain before `pnpm prepare-server`.
+  - `@autobyteus/application-sdk-contracts` resolves its types from `dist/index.d.ts` (`package.json` `types`). That `dist/` is built only by the server `prebuild` → `prepare:shared`, which in the build chain runs inside `prepare-server`.
+  - On a fresh runner, the gate therefore saw 23 production errors (`TS2307: Cannot find module '@autobyteus/application-sdk-contracts'`, plus implicit `any`s that follow from it) and a changed test-file count: `[typecheck] FAIL`, `production errors: 23; test-file errors: 296 in 141 files (baseline 298 in 139 files)`.
+- Why validation did not catch it:
+  - every local run had the contracts `dist/` present: API-24 built in the worktree, and the clean clone (API-01, DEL-01) followed TESTING.md's install order, which runs server `prebuild` before the suites;
+  - neither reproduced the CI job's order: install, then the build chain.
+- Classification: `Local Fix` (packaging), routed to the implementation engineer. The gate must build or wait for the workspace packages it type-checks against: for example, run the shared-package build before `typecheck` in every `build:electron*` chain, or move `typecheck` after `prepare-server`. Then prove it from a fresh clone with no prior build, in the release job's order: `pnpm install` → `pnpm -C autobyteus-web build:electron:mac`, or at least `pnpm install` → `pnpm -C autobyteus-web typecheck` with no shared `dist/`.
+- Recovery plan (RELEASE.md § Recovery, "the tag's content is at fault"): fix on `personal`, then cut the next beta, `v1.5.9-beta.15`. Do not re-dispatch or move `v1.5.9-beta.14`.
+- Release notes handoff result: `Not required` (beta)
 
 ## Post-Finalization Cleanup
 
-CLEANUP_RESULT
+- Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294`
+- Worktree cleanup result: `Blocked` (kept for the desktop build fix)
+- Local ticket branch cleanup result: `Blocked` (kept). `codex/test-and-tooling-hygiene-294` was fast-forwarded to `origin/personal` `4c34e5b71d` for the fix.
+- Remote branch cleanup result: `Blocked` (kept until the fix lands)
 
 ## Release Notes Summary
 
@@ -136,4 +167,10 @@ CLEANUP_RESULT
 
 ## Final Status
 
-FINAL_STATUS
+- Verification complete (from the evidence): `Yes` for the validated acceptance criteria. The release exposed a gap the evidence did not cover: the type gate inside the CI desktop build on a fresh runner.
+- Repository finalization complete: `Yes` (`3f0f22f8c2`, release commit `4c34e5b71d`)
+- Applicable release/deployment/rollout complete: **`No`**. `v1.5.9-beta.14` is a partial release, with desktop failed.
+- Applicable safe cleanup complete: `No` (deferred)
+- Unresolved blocker: the desktop build fails at the type gate on a fresh CI runner (`Local Fix`, implementation engineer)
+- Successful terminal package eligible for return: `No`
+- Terminal package sent to the Solution Designer: `No`
