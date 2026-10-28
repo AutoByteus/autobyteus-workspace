@@ -9,11 +9,9 @@
           @click="$emit('add')"
           class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700"
         >
-          <Icon icon="heroicons:plus-20-solid" class="w-4 h-4 mr-1" />
           {{ addButtonText }}
         </button>
         <button v-if="showBackButton" @click="$emit('back')" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
-          <Icon icon="heroicons:arrow-left-20-solid" class="w-5 h-5 mr-2 -ml-1" />
           Back
         </button>
       </div>
@@ -35,7 +33,6 @@
     </div>
 
     <div v-else class="col-span-full text-center py-8 bg-white rounded-lg border border-gray-200 flex-1 flex flex-col justify-center items-center">
-      <Icon :icon="emptyIcon" class="w-10 h-10 text-gray-400 mx-auto mb-3" />
       <p class="text-gray-500">{{ emptyMessage }}</p>
     </div>
   </div>
@@ -54,7 +51,6 @@ interface Props {
   showBackButton?: boolean;
   showAddButton?: boolean;
   addButtonText?: string;
-  emptyIcon?: string;
   emptyMessage?: string;
 }
 
@@ -62,7 +58,6 @@ withDefaults(defineProps<Props>(), {
   showBackButton: false,
   showAddButton: false,
   addButtonText: 'Add',
-  emptyIcon: 'heroicons:circle-stack-20-solid',
   emptyMessage: 'No tools found.',
 });
 

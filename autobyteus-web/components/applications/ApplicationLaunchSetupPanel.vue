@@ -10,7 +10,6 @@
     >
       <div class="min-w-0 space-y-2">
         <div class="inline-flex items-center gap-2 rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700">
-          <Icon icon="heroicons:adjustments-horizontal-20-solid" class="h-4 w-4" />
           <span>{{ $t('applications.components.applications.ApplicationLaunchSetupPanel.title') }}</span>
         </div>
         <h2 class="text-xl font-semibold text-slate-900">
@@ -194,7 +193,6 @@
 </template>
 
 <script setup lang="ts">
-import { Icon } from '@iconify/vue'
 import { computed, ref, watch } from 'vue'
 import type {
   ApplicationLaunchConfigurationView,

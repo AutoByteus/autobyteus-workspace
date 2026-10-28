@@ -76,7 +76,7 @@
               </div>
             </div>
             <button @click="addArgument" class="mt-2 inline-flex items-center px-3 py-1.5 border border-dashed border-gray-400 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
-              <Icon icon="heroicons:plus-20-solid" class="w-5 h-5 mr-1 text-gray-500" />{{ $t('tools.components.tools.McpServerFormModal.add_argument') }}</button>
+              {{ $t('tools.components.tools.McpServerFormModal.add_argument') }}</button>
           </div>
           <div>
             <label for="stdio_cwd" class="block text-base font-medium text-gray-700">{{ $t('tools.components.tools.McpServerFormModal.current_working_directory_optional') }}</label>

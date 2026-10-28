@@ -28,4 +28,16 @@ describe('McpServerCard', () => {
 
     expect(wrapper.find('[data-testid="mcp-card-needs-secret"]').exists()).toBe(false)
   })
+
+  it('shows the detail rows and Sync Tools as text, without decorative icons (autobyteus-320, AC-002)', () => {
+    const wrapper = mountCard({
+      __typename: 'StdioMcpServerConfig', serverId: 'local', transportType: 'STDIO', enabled: true, toolNamePrefix: 'gh',
+      command: 'node', cwd: '/srv/mcp', env: [],
+    })
+
+    expect(wrapper.text()).toContain('tools.components.tools.McpServerCard.prefix')
+    expect(wrapper.text()).toContain('Sync Tools')
+    expect(wrapper.findAll('svg, [class*="iconify"]')).toHaveLength(0)
+    expect(wrapper.html()).not.toContain('heroicons:')
+  })
 })

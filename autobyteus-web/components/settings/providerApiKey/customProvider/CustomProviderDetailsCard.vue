@@ -14,7 +14,6 @@
         @click="emit('delete')"
       >
         <span v-if="deleting" class="animate-spin rounded-full h-4 w-4 border-b-2 border-red-700 mr-2"></span>
-        <Icon v-else icon="heroicons:trash-20-solid" class="w-4 h-4 mr-2" />
         {{ $t('settings.components.settings.ProviderAPIKeyManager.remove_custom_provider') }}
       </button>
     </div>
@@ -37,7 +36,6 @@
 </template>
 
 <script setup lang="ts">
-import { Icon } from '@iconify/vue'
 import type { ProviderSummary } from '~/components/settings/providerApiKey/useProviderApiKeySectionRuntime'
 
 defineProps<{
