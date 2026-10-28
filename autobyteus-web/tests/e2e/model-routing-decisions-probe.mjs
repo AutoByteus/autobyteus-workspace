@@ -203,7 +203,7 @@ try {
     const nativeSelects = await page.locator(`${tid('model-routing-setup')} select`).count();
     const status = await textOf(tid('model-routing-status')).catch(() => '');
     evidence.observations.setup = { launch, nativeSelects, status, switchChecked: await page.locator(tid('model-routing-switch')).getAttribute('aria-checked').catch(() => null) };
-    assert(launch.endsWith('Antigravity') && launch.length > 'Antigravity'.length, `router launch shown in the model menu: ${launch}`);
+    assert(launch.endsWith('Antigravity CLI') && launch.length > 'Antigravity CLI'.length, `router launch shown in the model menu: ${launch}`);
     assert(nativeSelects === 0, `no native select on Configuration (${nativeSelects})`);
     assert(evidence.observations.setup.switchChecked === 'true', `switch: ${evidence.observations.setup.switchChecked}`);
     assert(!(await page.locator(tid('model-routing-decisions-inactive-note')).count()), 'no inactive note');

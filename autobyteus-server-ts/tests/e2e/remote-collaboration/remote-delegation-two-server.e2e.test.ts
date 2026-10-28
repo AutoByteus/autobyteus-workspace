@@ -824,7 +824,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
       ["/half_set", "NO_DEFAULT_RUNTIME", `There is no default runtime configured for the target agent Half Set on node "${node}", and Model Routing is off on node "${node}".`],
       // AC-203: the default's runtime is unavailable on beta; the default's model is not offered there.
       ["/codex_writer", "AGENT_CANNOT_RUN", new RegExp(`^The Agent Codex Writer on node "${node}" cannot run there: .+`)],
-      ["/fragile", "AGENT_CANNOT_RUN", `The Agent Fragile on node "${node}" cannot run there: The model 'no-such-model' is not available on antigravity_cli, and Model Routing is off on node "${node}".`],
+      ["/fragile", "AGENT_CANNOT_RUN", `The Agent Fragile on node "${node}" cannot run there: The model 'no-such-model' is not available on Antigravity CLI, and Model Routing is off on node "${node}".`],
       // AC-204: a built-in, an Agent Org, a team-local Agent and an unknown address are not delegable targets.
       ["/daily_assistant", "AGENT_NOT_FOUND", notFound("/daily_assistant")],
       ["/remote_org_b", "AGENT_NOT_FOUND", notFound("/remote_org_b")],
@@ -1897,7 +1897,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     const agent = await calls(delegatorRun, "delegate_task", { node, recipient_address: "/blank_slate", description: "Write the release note. Marker ROUTED-PEER." });
     expect(agent, JSON.stringify(agent)).toMatchObject({ delegated: true, target_kind: "agent", node });
     const notes = (agent.launch_notes ?? []) as string[];
-    expect(notes.join("\n"), JSON.stringify(agent)).toContain("antigravity_cli / alt-model, chosen by the Model Router (writing): Gemini has limit left on beta.");
+    expect(notes.join("\n"), JSON.stringify(agent)).toContain("Antigravity CLI / alt-model, chosen by the Model Router (writing): Gemini has limit left on beta.");
     const runId = agent.target_agent_run_id as string;
     expect(await betaMetadata(runId)).toMatchObject({ runtimeKind: "antigravity_cli", llmModelIdentifier: "alt-model" });
     await receives(composeOnBeta(runId), "ROUTED-PEER");
@@ -2200,7 +2200,7 @@ suite("Remote collaboration slice 1 between two real server processes (scripted 
     expect(updated.defaultLaunchConfig).toEqual({ runtimeKind: "antigravity_cli", llmModelIdentifier: "retired-model" });
     const runsBefore = await remoteRunDirs();
     const refused = await delegateRemote(solo, "After the default changed.");
-    expect(textOf(refused)).toBe(`The Agent Publisher on node "${LABEL.beta}" cannot run there: The model 'retired-model' is not available on antigravity_cli, and Model Routing is off on node "${LABEL.beta}".`);
+    expect(textOf(refused)).toBe(`The Agent Publisher on node "${LABEL.beta}" cannot run there: The model 'retired-model' is not available on Antigravity CLI, and Model Routing is off on node "${LABEL.beta}".`);
     expect(await remoteRunDirs()).toEqual(runsBefore);
     expect(await calls(solo, "send_message_to", { target_agent_run_id: ids.r1, content: "AFTER-DEFAULT-CHANGE-FOLLOWUP" })).toMatchObject({ accepted: true });
     await receives(composeOnBeta(ids.r1), "AFTER-DEFAULT-CHANGE-FOLLOWUP");

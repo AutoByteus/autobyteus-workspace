@@ -1,4 +1,4 @@
-import { runtimeKindToLabel } from '~/types/agent/AgentRunConfig'
+import { agentRuntimeName } from '@autobyteus/agent-presentation-contracts'
 import { buildUnavailableInheritedModelMessage } from '~/utils/teamRunConfigUtils'
 
 export type TeamLaunchProfileMemberReadinessInput = {
@@ -84,7 +84,7 @@ export const evaluateTeamLaunchProfileReadiness = (input: {
         code: 'MODEL_CATALOG_PENDING',
         displayName: memberProfile.displayName,
         runtimeKind: effectiveRuntimeKind,
-        message: `Models for ${runtimeKindToLabel(effectiveRuntimeKind)} are still loading.`,
+        message: `Models for ${agentRuntimeName(effectiveRuntimeKind)} are still loading.`,
       })
       return
     }
@@ -108,7 +108,7 @@ export const evaluateTeamLaunchProfileReadiness = (input: {
         code: 'MODEL_UNAVAILABLE',
         displayName: memberProfile.displayName,
         runtimeKind: effectiveRuntimeKind,
-        message: `${memberProfile.displayName} model ${explicitModelIdentifier} is unavailable for ${runtimeKindToLabel(effectiveRuntimeKind)}.`,
+        message: `${memberProfile.displayName} model ${explicitModelIdentifier} is unavailable for ${agentRuntimeName(effectiveRuntimeKind)}.`,
       })
       return
     }

@@ -1,3 +1,5 @@
+import { agentRuntimeName } from "@autobyteus/agent-presentation-contracts";
+import { RuntimeKind } from "../../../runtime-management/runtime-kind-enum.js";
 import path from "node:path";
 import {
   asInteger,
@@ -119,7 +121,7 @@ const searchWeb: BuiltInConverter = (call, result) => {
 };
 
 export const autobyteusTranslation: RuntimeTranslation = Object.freeze({
-  label: "AutoByteus",
+  label: agentRuntimeName(RuntimeKind.AUTOBYTEUS),
   builtInTools: new Map<string, BuiltInConverter>([
     ["run_bash", runBash],
     ["start_background_process", startBackgroundProcess],

@@ -142,7 +142,6 @@
                       :class="saveButtonClass"
                     >
                       <span v-if="isAddingNewSetting" class="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-600 inline-block"></span>
-                      <Icon v-else icon="heroicons:check-20-solid" class="w-4 h-4" />
                       <span>Save</span>
                     </button>
                   </td>

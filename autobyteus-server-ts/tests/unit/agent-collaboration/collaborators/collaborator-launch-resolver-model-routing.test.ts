@@ -81,8 +81,8 @@ describe("CollaboratorLaunchResolver with Model Routing on (autobyteus-32)", () 
     expect(plan!.members[1]).toMatchObject({ followsTeam: false, launchConfiguration: { llmConfig: null, workspaceRootPath: "/work", autoExecuteTools: true },
       launchSource: { choiceReason: "Codex has limit left.", taskKind: "implementation" } });
     expect(entryPlanLaunchNotes(plan!)).toEqual([
-      "implementation_engineer: runs on codex_app_server / gpt-sol, chosen by the Model Router (implementation): Codex has limit left.",
-      "code_reviewer: runs on codex_app_server / gpt-sol, chosen by the Model Router (implementation): Codex has limit left.",
+      "implementation_engineer: runs on Codex App Server / gpt-sol, chosen by the Model Router (implementation): Codex has limit left.",
+      "code_reviewer: runs on Codex App Server / gpt-sol, chosen by the Model Router (implementation): Codex has limit left.",
     ]);
   });
 
@@ -93,10 +93,10 @@ describe("CollaboratorLaunchResolver with Model Routing on (autobyteus-32)", () 
     })], inherited, WORK);
     expect(requests[0]!.agents.map((asked) => asked.skipped)).toEqual([
       [{ layer: "agent_default", runtimeKind: "codex_app_server", llmModelIdentifier: "gpt-sol", detail: "gpt-sol is blocked until 2026-10-30 20:57 UTC (weekly)." }],
-      [{ layer: "agent_default", runtimeKind: "antigravity_cli", llmModelIdentifier: "gemini", detail: "Antigravity is signed out." }],
+      [{ layer: "agent_default", runtimeKind: "antigravity_cli", llmModelIdentifier: "gemini", detail: "Antigravity CLI is signed out." }],
     ]);
     expect(entryPlanLaunchNotes(plan!)).toContain(
-      "implementation_engineer: its agent default codex_app_server / gpt-sol could not be used (gpt-sol is blocked until 2026-10-30 20:57 UTC (weekly)); it runs on codex_app_server / gpt-sol (chosen by the Model Router).");
+      "implementation_engineer: its agent default Codex App Server / gpt-sol could not be used (gpt-sol is blocked until 2026-10-30 20:57 UTC (weekly)); it runs on Codex App Server / gpt-sol (chosen by the Model Router).");
   });
 
   it("AC-002 / DEC-022: with Model Routing off a blocked default is used as today; nothing is routed", async () => {
@@ -114,8 +114,8 @@ describe("CollaboratorLaunchResolver with Model Routing on (autobyteus-32)", () 
       .resolve([agent(cfg("codex_app_server", null))], inherited, WORK);
     expect(plan).toMatchObject({ launchConfiguration: { runtimeKind: "claude_agent_sdk" }, launchSource: { origin: "inherited" } });
     expect(entryPlanLaunchNotes(plan!)).toEqual([
-      "Writer: its agent default codex_app_server / (no model) could not be used (It names no model); it runs on claude_agent_sdk / sonnet (inherited from the run).",
-      "Writer: Model Routing is on but the Model Router is not usable (the router has no runtime/model); it runs on claude_agent_sdk / sonnet (inherited from the run).",
+      "Writer: its agent default Codex App Server / (no model) could not be used (It names no model); it runs on Claude Agent SDK / sonnet (inherited from the run).",
+      "Writer: Model Routing is on but the Model Router is not usable (the router has no runtime/model); it runs on Claude Agent SDK / sonnet (inherited from the run).",
     ]);
   });
 
@@ -125,7 +125,7 @@ describe("CollaboratorLaunchResolver with Model Routing on (autobyteus-32)", () 
     expect(plan).toMatchObject({ launchConfiguration: { runtimeKind: "claude_agent_sdk", llmModelIdentifier: "sonnet" },
       launchSource: { origin: "inherited", fallbacks: [{ layer: "model_router", reason: "router_failed", detail: "no valid answer within 40 seconds" }] } });
     expect(entryPlanLaunchNotes(plan!)).toEqual([
-      "Writer: Model Router could not choose (no valid answer within 40 seconds); it runs on claude_agent_sdk / sonnet (inherited from the run).",
+      "Writer: Model Router could not choose (no valid answer within 40 seconds); it runs on Claude Agent SDK / sonnet (inherited from the run).",
     ]);
   });
 

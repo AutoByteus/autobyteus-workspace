@@ -84,6 +84,7 @@ import { desktopAdapter } from './fixtures/settings-refresh-desktop.mjs'
 import { registerSavedRefreshCases } from './settings-saved-model-refresh-cases.mjs'
 import { registerDelegatedCopyOwnFileCases } from './delegated-copy-own-file-cases.mjs'
 import { registerSkillImprovementRemovalCases } from './skill-improvement-removal-cases.mjs'
+import { agentRuntimeName } from '@autobyteus/agent-presentation-contracts'
 import { spawn } from 'node:child_process'
 import { createWriteStream, existsSync } from 'node:fs'
 import fs from 'node:fs/promises'
@@ -231,15 +232,16 @@ const seed = async () => {
 }
 const address = (key) => `/${segment(names[key])}`
 /** The `launch_notes` sentence of the server's notes renderer for one skipped layer. */
-const noteText = ({ name, layer, runtime, model, detail, runsOn, origin, team = false }) => `${name}: its ${layer} default ${runtime ?? '(no runtime)'} / `
+// Launch notes name runtimes by their display names (autobyteus-320: one list, the contract's agentRuntimeName); kinds stay in launch values.
+const noteText = ({ name, layer, runtime, model, detail, runsOn, origin, team = false }) => `${name}: its ${layer} default ${runtime ? agentRuntimeName(runtime) : '(no runtime)'} / `
   + `${model ?? '(no model)'} could not be used (${detail.replace(/\.$/, '')}); ${team ? 'its members without their own default run on' : 'it runs on'} ${runsOn} (${origin}).`
 const squadNotes = () => {
-  const runsOn = `${AGY} / ${MODEL}`
+  const runsOn = `${agentRuntimeName(AGY)} / ${MODEL}`
   const inherited = 'inherited from the run'
   return [
-    noteText({ name: names.squad, layer: 'team', runtime: AGY, model: TEAM_NOT_OFFERED, detail: `The model '${TEAM_NOT_OFFERED}' is not available on ${AGY}.`, runsOn, origin: inherited, team: true }),
+    noteText({ name: names.squad, layer: 'team', runtime: AGY, model: TEAM_NOT_OFFERED, detail: `The model '${TEAM_NOT_OFFERED}' is not available on ${agentRuntimeName(AGY)}.`, runsOn, origin: inherited, team: true }),
     noteText({ name: 'offline', layer: 'agent', runtime: 'codex_app_server', model: 'gpt-5.5', detail: `Codex App Server command '${missingCodex}' is not available.`, runsOn, origin: inherited }),
-    noteText({ name: 'unoffered', layer: 'agent', runtime: AGY, model: NOT_OFFERED, detail: `The model '${NOT_OFFERED}' is not available on ${AGY}.`, runsOn, origin: inherited }),
+    noteText({ name: 'unoffered', layer: 'agent', runtime: AGY, model: NOT_OFFERED, detail: `The model '${NOT_OFFERED}' is not available on ${agentRuntimeName(AGY)}.`, runsOn, origin: inherited }),
     noteText({ name: 'badsettings', layer: 'agent', runtime: AGY, model: MODEL, detail: 'Its model settings are invalid: This model has no adjustable settings.', runsOn, origin: inherited }),
     noteText({ name: 'incomplete', layer: 'agent', runtime: AGY, model: null, detail: 'It names no model.', runsOn, origin: inherited }),
   ]
@@ -561,7 +563,7 @@ defineCase('DLP-003', 'AC-001/003/004/005/010: Manager chat from the UI; copies 
   await shot(page, 'DLP-003-conversation-squad-notes-1280', 1280)
   // Agent copies: the Pair (its unoffered member falls back to the team default) and the Writer (usable default, no note).
   r.pairCall = await callFromComposer(page, 'delegate Pair', 'delegate_task', { recipient_address: address('pair'), description: 'Pair work.' })
-  const pairNote = noteText({ name: 'unoffered', layer: 'agent', runtime: AGY, model: NOT_OFFERED, detail: `The model '${NOT_OFFERED}' is not available on ${AGY}.`, runsOn: `${AGY} / ${ALT}`, origin: 'its team default' })
+  const pairNote = noteText({ name: 'unoffered', layer: 'agent', runtime: AGY, model: NOT_OFFERED, detail: `The model '${NOT_OFFERED}' is not available on ${agentRuntimeName(AGY)}.`, runsOn: `${agentRuntimeName(AGY)} / ${ALT}`, origin: 'its team default' })
   assert(r.pairCall.includes('"delegated":true') && r.pairCall.includes(pairNote), 'Pair delegation note not shown', { call: r.pairCall, pairNote })
   r.writerCall = await callFromComposer(page, 'delegate Writer', 'delegate_task', { recipient_address: address('writer'), description: 'Write.' })
   assert(r.writerCall.includes('"delegated":true') && !r.writerCall.includes('launch_notes'), 'Writer delegation should carry no note', r.writerCall)
@@ -581,7 +583,7 @@ defineCase('DLP-003', 'AC-001/003/004/005/010: Manager chat from the UI; copies 
   r.teammateCall = await callFromComposer(page, 'teammate delegation', 'delegate_task', { recipient_address: `${address('squad')}/unoffered`, description: 'Teammate work.' })
   assert(r.teammateCall.includes('COLLABORATION_SELF_TARGET_REJECTED') && !r.teammateCall.includes('"delegated":true'), 'a teammate is refused, not delegated', r.teammateCall)
   r.helperCall = await callFromComposer(page, 'helper delegation', 'delegate_task', { recipient_address: address('badsettings'), description: 'Helper work.' })
-  const helperNote = noteText({ name: names.badsettings, layer: 'agent', runtime: AGY, model: MODEL, detail: 'Its model settings are invalid: This model has no adjustable settings.', runsOn: `${AGY} / ${MODEL}`, origin: 'inherited from the run' })
+  const helperNote = noteText({ name: names.badsettings, layer: 'agent', runtime: AGY, model: MODEL, detail: 'Its model settings are invalid: This model has no adjustable settings.', runsOn: `${agentRuntimeName(AGY)} / ${MODEL}`, origin: 'inherited from the run' })
   assert(r.helperCall.includes('"delegated":true') && r.helperCall.includes(helperNote), 'helper delegation note not shown', { call: r.helperCall, helperNote })
   r.helperAgainCall = await callFromComposer(page, 'helper again', 'delegate_task', { recipient_address: address('badsettings'), description: 'More helper work.' })
   assert(r.helperAgainCall.includes('"delegated":true') && r.helperAgainCall.includes(helperNote), 'each helper copy carries its note', r.helperAgainCall)
@@ -674,7 +676,7 @@ defineCase('DLP-005', 'AC-006/REQ-004: the root model is retired mid-run; delega
   r.runId = await startManagerChat(page, RETIRING, 'Hello. Marker DLP-005.')
   await waitFor('manager answered', async () => /DLP-005[\s\S]*OK/.test(await conversationText(page)), 60000)
   await offerAgyModels([MODEL, ALT])
-  const reason = `The model '${RETIRING}' is not available on ${AGY}.`
+  const reason = `The model '${RETIRING}' is not available on ${agentRuntimeName(AGY)}.`
   r.plainCall = await callFromComposer(page, 'delegate Plain', 'delegate_task', { recipient_address: address('plain'), description: 'Plain work.' })
   assert(!r.plainCall.includes('"delegated":true') && r.plainCall.includes(`${names.plain} cannot be delegated to: ${reason}`), 'delegation failure text', { call: r.plainCall, reason })
   r.squadCall = await callFromComposer(page, 'delegate Squad', 'delegate_task', { recipient_address: address('squad'), description: 'Squad work.' })

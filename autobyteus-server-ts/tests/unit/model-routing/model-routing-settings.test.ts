@@ -80,7 +80,7 @@ describe("ModelRoutingSettings.setRouterLaunch: checked like any agent launch, t
     expect(invalid.written).toEqual([]);
     const missing = setup({ kind: "model_unavailable" });
     await expect(missing.settings.setRouterLaunch({ runtimeKind: "codex_app_server", llmModelIdentifier: "gone", llmConfig: null }))
-      .rejects.toThrow("The model 'gone' is not available on codex_app_server.");
+      .rejects.toThrow("The model 'gone' is not available on Codex App Server.");
     expect(missing.written).toEqual([]);
   });
 

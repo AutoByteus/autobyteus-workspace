@@ -311,7 +311,7 @@ describe("ApplicationCatalogTransitionService", () => {
       oldApplications: [],
       packageCandidate: candidate([application("app-a"), application("app-b")]),
     });
-    const detail = "Application setup is required: app-b/slot:draftingTeam: Codex authentication is unavailable: no logged-in account.";
+    const detail = "Application setup is required: app-b/slot:draftingTeam: Codex App Server authentication is unavailable: no logged-in account.";
     harness.readiness.getSetupRequiredDetail.mockImplementation((applicationId: string) =>
       applicationId === "app-b" ? detail : null);
 

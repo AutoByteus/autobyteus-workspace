@@ -1,4 +1,5 @@
 import "reflect-metadata";
+import { agentRuntimeName } from "@autobyteus/agent-presentation-contracts";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -252,7 +253,7 @@ suite("Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch
     expect(requests[0]!.results.at(-1), "accepted").toMatchObject({ tool: "submit_launch_choices", isError: false });
     const notes = notesOf(result);
     for (const member of ["engineer", "reviewer"]) {
-      expect(notes.some((note) => note.includes(`${GROK} / ${GROK_MODEL}, chosen by the Model Router (implementation): Grok is signed in with limit left.`)
+      expect(notes.some((note) => note.includes(`${agentRuntimeName(GROK)} / ${GROK_MODEL}, chosen by the Model Router (implementation): Grok is signed in with limit left.`)
         && note.toLowerCase().includes(member)), `a result line for ${member}: ${JSON.stringify(notes)}`).toBe(true);
     }
     expect(notes.some((note) => note.toLowerCase().includes("designer")), "the designer used its default: no line").toBe(false);
@@ -294,7 +295,7 @@ suite("Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch
     const request = (await routerRequests()).at(-1)!;
     expect(request.results[0], "the unusable answer is refused with what to correct").toMatchObject({ tool: "submit_launch_choices", isError: true });
     expect(request.results[1], "the correction is accepted").toMatchObject({ tool: "submit_launch_choices", isError: false });
-    expect(notesOf(corrected.result).join(" ")).toContain(`${AGY} / ${MODEL}, chosen by the Model Router (review)`);
+    expect(notesOf(corrected.result).join(" ")).toContain(`${agentRuntimeName(AGY)} / ${MODEL}, chosen by the Model Router (review)`);
     evidence["MR-03-corrected"] = { result: corrected.result, request };
 
     // The router's turn ends without a decision: the request fails at once (design: the failed turn ends it).
@@ -313,7 +314,7 @@ suite("Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch
     await until(async () => (await routerRequests()).length > loggedBefore, "the silent turn ended", 60_000);
     expect(silent.result, JSON.stringify(silent.result)).toMatchObject({ delegated: true });
     expect(notesOf(silent.result).join(" "), "inherited with the router-failure note").toContain("Model Router could not choose (no valid answer within 40 seconds)");
-    expect(notesOf(silent.result).join(" ")).toContain(`${AGY} / ${MODEL} (inherited from the run)`);
+    expect(notesOf(silent.result).join(" ")).toContain(`${agentRuntimeName(AGY)} / ${MODEL} (inherited from the run)`);
     expect(silent.elapsedMs, "the routed delegation answers within the 50 s bound").toBeLessThan(50_000);
     expect(silent.elapsedMs, "it waited for the budget").toBeGreaterThan(38_000);
   }, 240_000);
@@ -353,7 +354,7 @@ suite("Model Routing for delegated work (real HTTP/WS/GraphQL/scoped MCP, launch
     const on = await manager.calls(delegate(`/${segment(names.blocked!)}`, "Blocked default, routing on. Reply OK."));
     const onNotes = notesOf(on.result).join(" ");
     evidence["MR-05-on"] = on.result;
-    expect(onNotes, JSON.stringify(on.result)).toContain(`its agent default ${AGY} / ${BLOCKED} could not be used (${BLOCKED} is blocked until 2026-11-02 10:00 UTC (Retiring · weekly))`);
+    expect(onNotes, JSON.stringify(on.result)).toContain(`its agent default ${agentRuntimeName(AGY)} / ${BLOCKED} could not be used (${BLOCKED} is blocked until 2026-11-02 10:00 UTC (Retiring · weekly))`);
     expect(onNotes).toContain("chosen by the Model Router (general)");
     await setEnabled(false);
     const off = await manager.calls(delegate(`/${segment(names.blocked!)}`, "Blocked default, routing off. Reply OK."));

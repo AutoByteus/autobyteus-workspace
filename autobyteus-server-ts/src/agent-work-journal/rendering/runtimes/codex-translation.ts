@@ -1,3 +1,5 @@
+import { agentRuntimeName } from "@autobyteus/agent-presentation-contracts";
+import { RuntimeKind } from "../../../runtime-management/runtime-kind-enum.js";
 import { asText, curlCommand } from "../command-text.js";
 import { commandLine, editFileLine, searchWebLine, writeFileLine } from "../journal-actions.js";
 import { normalizeRecordedResult } from "../result-envelopes.js";
@@ -97,7 +99,7 @@ const searchWeb: BuiltInConverter = (call, result): BuiltInLine => {
 };
 
 export const codexTranslation: RuntimeTranslation = Object.freeze({
-  label: "Codex",
+  label: agentRuntimeName(RuntimeKind.CODEX_APP_SERVER),
   builtInTools: new Map<string, BuiltInConverter>([
     ["run_bash", runBash],
     ["edit_file", editFile],

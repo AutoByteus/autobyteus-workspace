@@ -83,7 +83,8 @@ import { useNodeStore } from '~/stores/nodeStore'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 import { isRowChecking, useAgentRuntimes, type AgentRuntimeAnnouncement } from '~/composables/settings/useAgentRuntimes'
 import AgentRuntimeRow from './AgentRuntimeRow.vue'
-import { runtimeName, type AgentRuntimeNodeAccess } from './agentRuntimesPresentation'
+import { agentRuntimeName } from '@autobyteus/agent-presentation-contracts'
+import { type AgentRuntimeNodeAccess } from './agentRuntimesPresentation'
 import { isOwnNodeWindow } from '~/utils/ownNodeWindow'
 
 const { t } = useLocalization()
@@ -116,9 +117,9 @@ const minutesSinceCheck = computed(() => {
 const announcementText = (item: AgentRuntimeAnnouncement): string => {
   switch (item.kind) {
     case 'checked': return t('settings.agentRuntimes.announce.checked')
-    case 'updated': return t('settings.agentRuntimes.announce.updated', { name: runtimeName(item.runtimeKind), version: item.version })
-    case 'updateFailed': return t('settings.agentRuntimes.announce.updateFailed', { name: runtimeName(item.runtimeKind) })
-    case 'signedIn': return t('settings.agentRuntimes.announce.signedIn', { name: runtimeName(item.runtimeKind) })
+    case 'updated': return t('settings.agentRuntimes.announce.updated', { name: agentRuntimeName(item.runtimeKind), version: item.version })
+    case 'updateFailed': return t('settings.agentRuntimes.announce.updateFailed', { name: agentRuntimeName(item.runtimeKind) })
+    case 'signedIn': return t('settings.agentRuntimes.announce.signedIn', { name: agentRuntimeName(item.runtimeKind) })
   }
 }
 const announcement = computed(() => state.announcements.value.map(announcementText).join(' '))

@@ -133,11 +133,11 @@ describe("ApplicationProviderCredentialReadinessAdapter", () => {
     [{ state: "notRequired" } as const, { configured: true, reason: null }],
     [
       { state: "signedOut", detail: "no logged-in account." } as const,
-      { configured: false, reason: "Codex authentication is unavailable: no logged-in account." },
+      { configured: false, reason: "Codex App Server authentication is unavailable: no logged-in account." },
     ],
     [
       { state: "unknown", detail: "spawn codex ENOENT" } as const,
-      { configured: false, reason: "Codex authentication is unavailable: spawn codex ENOENT" },
+      { configured: false, reason: "Codex App Server authentication is unavailable: spawn codex ENOENT" },
     ],
   ])("maps the Codex reading %o to launch readiness", async (reading, expected) => {
     const { adapter } = buildAdapter({ codex: reading });
@@ -149,7 +149,7 @@ describe("ApplicationProviderCredentialReadinessAdapter", () => {
     const { adapter } = buildAdapter({ claude: { state: "unknown", detail: "Command timed out after 10000ms." } });
     await expect(adapter.getReadiness({ kind: "claude_process" })).resolves.toEqual({
       configured: false,
-      reason: "Claude authentication is unavailable: Command timed out after 10000ms.",
+      reason: "Claude Agent SDK authentication is unavailable: Command timed out after 10000ms.",
     });
   });
 

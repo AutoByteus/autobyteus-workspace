@@ -15,7 +15,7 @@
       @click="onToggle"
     >
       <span class="truncate whitespace-nowrap font-medium" :class="modelLabel ? 'text-gray-800' : 'text-amber-700'">{{ modelLabel || $t('chat.model.chooseModel') }}</span>
-      <span class="truncate whitespace-nowrap text-gray-400 max-sm:hidden">{{ runtimeShortLabel }}</span>
+      <span class="truncate whitespace-nowrap text-gray-400 max-sm:hidden">{{ runtimeLabel }}</span>
       <Icon icon="heroicons:chevron-down" class="h-3.5 w-3.5 flex-shrink-0 text-gray-400" aria-hidden="true" />
     </button>
 
@@ -145,7 +145,7 @@
             @click="choose(model)"
           >
             <ChatModelOptionLabel :option="model" />
-            <span class="flex-shrink-0 whitespace-nowrap text-xs text-gray-400">{{ runtimeShortLabelFor(model.runtimeKind) }}</span>
+            <span class="flex-shrink-0 whitespace-nowrap text-xs text-gray-400">{{ runtimeLabelFor(model.runtimeKind) }}</span>
             <span class="flex h-4 w-4 flex-shrink-0 items-center justify-center">
               <Icon v-if="isCurrent(model)" icon="heroicons:check" class="h-4 w-4 text-blue-600" aria-hidden="true" />
             </span>
@@ -240,8 +240,7 @@ import {
   type ChatModelOption,
 } from '~/composables/chat/useChatModelCatalog'
 import type { ChatModelSelection } from '~/stores/chatDraftStore'
-import { runtimeKindToLabel } from '~/types/agent/AgentRunConfig'
-import { runtimeShortLabel as toRuntimeShortLabel } from '~/utils/chat/chatDefaults'
+import { agentRuntimeName } from '@autobyteus/agent-presentation-contracts'
 
 const props = withDefaults(defineProps<{
   runtimeKind: string
@@ -303,11 +302,9 @@ const lockedSearchResults = computed<ChatModelOption[]>(() => {
   return lockedGroups.value.flatMap((group) => group.models).filter((model) => matchesModelQuery(model, terms))
 })
 
-const runtimeLabelFor = (runtimeKind: string) => runtimeKindToLabel(runtimeKind)
-const runtimeShortLabelFor = (runtimeKind: string) => toRuntimeShortLabel(runtimeKind)
+const runtimeLabelFor = (runtimeKind: string) => agentRuntimeName(runtimeKind)
 /** No runtime chosen yet (e.g. the Model Router before it is set): no runtime name, only "Choose a model". */
 const runtimeLabel = computed(() => (props.runtimeKind ? runtimeLabelFor(props.runtimeKind) : ''))
-const runtimeShortLabel = computed(() => (props.runtimeKind ? runtimeShortLabelFor(props.runtimeKind) : ''))
 const isCurrent = (model: ChatModelOption) =>
   model.runtimeKind === props.runtimeKind && model.llmModelIdentifier === props.llmModelIdentifier
 

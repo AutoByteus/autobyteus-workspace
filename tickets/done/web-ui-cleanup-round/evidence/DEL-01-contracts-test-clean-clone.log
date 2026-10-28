@@ -1,0 +1,150 @@
+
+> @autobyteus/agent-presentation-contracts@0.1.0 test /private/tmp/ab320-clone/autobyteus-agent-presentation-contracts
+> pnpm build && node --test tests/*.test.mjs
+
+
+> @autobyteus/agent-presentation-contracts@0.1.0 build /private/tmp/ab320-clone/autobyteus-agent-presentation-contracts
+> tsc -p tsconfig.build.json
+
+TAP version 13
+# Subtest: normalized tagged primary identity never bridges secondary tokens
+ok 1 - normalized tagged primary identity never bridges secondary tokens
+  ---
+  duration_ms: 0.68725
+  type: 'test'
+  ...
+# Subtest: accepts a strict root-neutral message and rejects root identity
+ok 2 - accepts a strict root-neutral message and rejects root identity
+  ---
+  duration_ms: 11.087958
+  type: 'test'
+  ...
+# Subtest: accepts a background-task snapshot with a required nullable command and rejects the removed to-do message
+ok 3 - accepts a background-task snapshot with a required nullable command and rejects the removed to-do message
+  ---
+  duration_ms: 6.893083
+  type: 'test'
+  ...
+# Subtest: compaction carries direct diagnostics separately from provider-native identity
+ok 4 - compaction carries direct diagnostics separately from provider-native identity
+  ---
+  duration_ms: 4.251625
+  type: 'test'
+  ...
+# Subtest: live token event carries the model-call fact, compaction threshold and summary revision
+ok 5 - live token event carries the model-call fact, compaction threshold and summary revision
+  ---
+  duration_ms: 7.118042
+  type: 'test'
+  ...
+# Subtest: live token event carries one model call's TPS or null
+ok 6 - live token event carries one model call's TPS or null
+  ---
+  duration_ms: 9.638792
+  type: 'test'
+  ...
+# Subtest: each runtime kind has its full name (autobyteus-320, AC-005)
+ok 7 - each runtime kind has its full name (autobyteus-320, AC-005)
+  ---
+  duration_ms: 0.7785
+  type: 'test'
+  ...
+# Subtest: an unknown kind is shown as given, including object keys
+ok 8 - an unknown kind is shown as given, including object keys
+  ---
+  duration_ms: 0.068541
+  type: 'test'
+  ...
+# Subtest: composes one line per mention, each with its own guidance, and parses it back (wording §8)
+ok 9 - composes one line per mention, each with its own guidance, and parses it back (wording §8)
+  ---
+  duration_ms: 1.420208
+  type: 'test'
+  ...
+# Subtest: every presence composes its own line and parses back to the same presence
+ok 10 - every presence composes its own line and parses back to the same presence
+  ---
+  duration_ms: 0.34
+  type: 'test'
+  ...
+# Subtest: a delegate suggestion is never composed for the agent itself, its team or the agent the user started
+ok 11 - a delegate suggestion is never composed for the agent itself, its team or the agent the user started
+  ---
+  duration_ms: 0.322417
+  type: 'test'
+  ...
+# Subtest: a line whose guidance does not match its presence is not parsed
+ok 12 - a line whose guidance does not match its presence is not parsed
+  ---
+  duration_ms: 0.108375
+  type: 'test'
+  ...
+# Subtest: the composed note names no task tool and never tells the agent to close a task_id
+ok 13 - the composed note names no task tool and never tells the agent to close a task_id
+  ---
+  duration_ms: 0.10475
+  type: 'test'
+  ...
+# Subtest: notes saved by the previous release in every combination keep parsing (saved heading, suffixes, guidance)
+ok 14 - notes saved by the previous release in every combination keep parsing (saved heading, suffixes, guidance)
+  ---
+  duration_ms: 0.654209
+  type: 'test'
+  ...
+# Subtest: a saved note whose guidance does not match its entries, or from neither release, is not parsed
+ok 15 - a saved note whose guidance does not match its entries, or from neither release, is not parsed
+  ---
+  duration_ms: 0.130542
+  type: 'test'
+  ...
+# Subtest: notes saved with the collaborator-messaging guidances still parse
+ok 16 - notes saved with the collaborator-messaging guidances still parse
+  ---
+  duration_ms: 0.07125
+  type: 'test'
+  ...
+# Subtest: a mention-only message is the note alone
+ok 17 - a mention-only message is the note alone
+  ---
+  duration_ms: 0.358125
+  type: 'test'
+  ...
+# Subtest: no mentions leaves the text unchanged; foreign text is not parsed
+ok 18 - no mentions leaves the text unchanged; foreign text is not parsed
+  ---
+  duration_ms: 0.41275
+  type: 'test'
+  ...
+# Subtest: mentions are at most 8 and unique by kind and definition
+ok 19 - mentions are at most 8 and unique by kind and definition
+  ---
+  duration_ms: 1.247
+  type: 'test'
+  ...
+# Subtest: composes the three worked examples of the complete views (§11) exactly
+ok 20 - composes the three worked examples of the complete views (§11) exactly
+  ---
+  duration_ms: 0.156583
+  type: 'test'
+  ...
+# Subtest: a remote execution is an Agent run or a Team run with its mounted members, named by node
+ok 21 - a remote execution is an Agent run or a Team run with its mounted members, named by node
+  ---
+  duration_ms: 3.0625
+  type: 'test'
+  ...
+# Subtest: a summary says whether the node answered, with its title and its agents' statuses
+ok 22 - a summary says whether the node answered, with its title and its agents' statuses
+  ---
+  duration_ms: 0.563958
+  type: 'test'
+  ...
+1..22
+# tests 22
+# suites 0
+# pass 22
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 123.469

@@ -1,15 +1,14 @@
 import { watch } from 'vue'
 import { useChatModelCatalog } from '~/composables/chat/useChatModelCatalog'
-import { runtimeKindToLabel } from '~/types/agent/AgentRunConfig'
-import { runtimeShortLabel } from '~/utils/chat/chatDefaults'
+import { agentRuntimeName } from '@autobyteus/agent-presentation-contracts'
 
-/** A model named with its runtime, as the model menu names it: "claude-sonnet-5-5" and "Claude SDK". */
+/** A model named with its runtime, as the model menu names it: "claude-sonnet-5-5" and "Claude Agent SDK". */
 export type ModelWithRuntime = Readonly<{ model: string; runtime: string }>
 
 /**
- * The app's names on the Model Routing page (autobyteus-313 REQ-004): a runtime on its own by its full name
- * (`runtimeKindToLabel`, "Claude Agent SDK"), a model with its runtime as the model menu shows it (the catalog's model
- * label and `runtimeShortLabel`). The catalogs of the runtimes a view shows load on demand; until one has loaded its
+ * The app's names on the Model Routing page (autobyteus-313 REQ-004): a runtime by its name (`agentRuntimeName`,
+ * "Claude Agent SDK"), a model with its runtime as the model menu shows it (the catalog's model label and the runtime's
+ * name). The catalogs of the runtimes a view shows load on demand; until one has loaded its
  * models read as their IDs, as in the menu.
  */
 export function useModelRoutingNames(runtimesShown: () => readonly string[]) {
@@ -23,12 +22,12 @@ export function useModelRoutingNames(runtimesShown: () => readonly string[]) {
     }
   }, { immediate: true })
 
-  const runtimeName = (runtimeKind: string): string => runtimeKindToLabel(runtimeKind)
+  const runtimeName = (runtimeKind: string): string => agentRuntimeName(runtimeKind)
   /** The catalog needs a runtime: with none (or no model) the model reads as given. */
   const modelLabel = (runtimeKind: string, llmModelIdentifier: string): string =>
     (runtimeKind && llmModelIdentifier ? catalog.modelLabel(runtimeKind, llmModelIdentifier) : llmModelIdentifier)
   const modelWithRuntime = (runtimeKind: string, llmModelIdentifier: string): ModelWithRuntime =>
-    ({ model: modelLabel(runtimeKind, llmModelIdentifier), runtime: runtimeShortLabel(runtimeKind) })
+    ({ model: modelLabel(runtimeKind, llmModelIdentifier), runtime: agentRuntimeName(runtimeKind) })
   const modelWithRuntimeText = (runtimeKind: string, llmModelIdentifier: string): string => {
     const named = modelWithRuntime(runtimeKind, llmModelIdentifier)
     return `${named.model} ${named.runtime}`

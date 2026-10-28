@@ -1,4 +1,5 @@
 import "reflect-metadata";
+import { agentRuntimeName } from "@autobyteus/agent-presentation-contracts";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -109,7 +110,7 @@ const sourceOf = (value: Rec | null | undefined) => value ? { origin: value.orig
   layer: entry.layer, runtimeKind: f(entry, "runtimeKind"), model: f(entry, "llmModelIdentifier"), reason: entry.reason, detail: entry.detail })) } : null;
 /** The `launch_notes` sentence of the notes renderer (launch-configuration-notes.ts) for one skipped layer. */
 const noteText = (input: { name: string; layer: "agent" | "team"; runtime: string | null; model: string | null; detail: string;
-  runsOn: string; origin: string; team?: boolean }) => `${input.name}: its ${input.layer} default ${input.runtime ?? "(no runtime)"} / `
+  runsOn: string; origin: string; team?: boolean }) => `${input.name}: its ${input.layer} default ${input.runtime ? agentRuntimeName(input.runtime) : "(no runtime)"} / `
   + `${input.model ?? "(no model)"} could not be used (${input.detail.replace(/\.$/, "")}); `
   + `${input.team ? "its members without their own default run on" : "it runs on"} ${input.runsOn} (${input.origin}).`;
 
@@ -344,7 +345,7 @@ suite("Delegated copies honor agent and team launch defaults in every root (real
     ({ layer, runtimeKind, model, reason, detail });
   const squadFallbacks = () => ({
     offline: fallback("runtime_unavailable", "codex_app_server", "gpt-5.5", `Codex App Server command '${missingCodex}' is not available.`),
-    unoffered: fallback("model_unavailable", AGY, NOT_OFFERED, `The model '${NOT_OFFERED}' is not available on ${AGY}.`),
+    unoffered: fallback("model_unavailable", AGY, NOT_OFFERED, `The model '${NOT_OFFERED}' is not available on ${agentRuntimeName(AGY)}.`),
     badsettings: fallback("model_settings_invalid", AGY, MODEL, "Its model settings are invalid: This model has no adjustable settings."),
     incomplete: fallback("incomplete", AGY, null, "It names no model."),
   });
@@ -360,7 +361,7 @@ suite("Delegated copies honor agent and team launch defaults in every root (real
     // DLC-001 (AC-001, AC-002 member layer, AC-005, AC-015 shape, REQ-002): a catalog Team copy, each agent resolved alone.
     const squad = await delegateTeam(root, "squad");
     const reasons = squadFallbacks();
-    const teamFallback = fallback("model_unavailable", AGY, TEAM_NOT_OFFERED, `The model '${TEAM_NOT_OFFERED}' is not available on ${AGY}.`, "team_default");
+    const teamFallback = fallback("model_unavailable", AGY, TEAM_NOT_OFFERED, `The model '${TEAM_NOT_OFFERED}' is not available on ${agentRuntimeName(AGY)}.`, "team_default");
     const source = f(squad.copy, "source");
     record.squadSource = source;
     expect(launchOf(f(source, "defaultLaunchConfiguration"))).toEqual(inheritedLaunch());
@@ -375,7 +376,7 @@ suite("Delegated copies honor agent and team launch defaults in every root (real
       badsettings: { launch: inheritedLaunch(), source: { origin: "inherited", fallbacks: [reasons.badsettings] }, followsTeam: true },
       incomplete: { launch: inheritedLaunch(), source: { origin: "inherited", fallbacks: [reasons.incomplete] }, followsTeam: true },
     });
-    const runsOnRoot = `${AGY} / ${MODEL}`;
+    const runsOnRoot = `${agentRuntimeName(AGY)} / ${MODEL}`;
     expect(squad.result.launch_notes).toEqual([
       noteText({ name: names.squad!, layer: "team", runtime: AGY, model: TEAM_NOT_OFFERED, detail: teamFallback.detail, runsOn: runsOnRoot,
         origin: "inherited from the run", team: true }),
@@ -461,7 +462,7 @@ suite("Delegated copies honor agent and team launch defaults in every root (real
     // resolved on its own again (each copy records its own snapshot), with the same notes.
     const pairFallback = squadFallbacks().unoffered;
     const pairDelegation = await delegateTeam(root, "pair");
-    expect(JSON.stringify(pairDelegation.result.launch_notes)).toContain(agentNote("unoffered", pairFallback, `${AGY} / ${ALT}`, "its team default"));
+    expect(JSON.stringify(pairDelegation.result.launch_notes)).toContain(agentNote("unoffered", pairFallback, `${agentRuntimeName(AGY)} / ${ALT}`, "its team default"));
     const pairSource = f(pairDelegation.copy, "source");
     expect(launchOf(f(pairSource, "defaultLaunchConfiguration"))).toEqual(ownLaunch(AGY, ALT));
     expect(sourceOf(f(pairSource, "defaultLaunchSource"))).toEqual({ origin: "team_default", fallbacks: [] });
@@ -516,7 +517,7 @@ suite("Delegated copies honor agent and team launch defaults in every root (real
     root.sendToManager("Hello. Marker ROOT-STARTED.");
     await until(async () => /ROOT-STARTED[\s\S]*OK/.test(await root.conversationText({ address: "/", agentRunId: root.managerRunId })), "root answered", 60_000);
     process.env["AGY_FAKE_EXTRA_MODELS"] = ALT;
-    const reason = `The model '${RETIRING}' is not available on ${AGY}.`;
+    const reason = `The model '${RETIRING}' is not available on ${agentRuntimeName(AGY)}.`;
     const before = await root.liveTree();
     const delegated = await root.managerCalls(callTool("delegate_task", { recipient_address: `/${segment(names.worker!)}`, description: "Plain work." }));
     expect(delegated.delegated ?? false, JSON.stringify(delegated)).toBe(false);

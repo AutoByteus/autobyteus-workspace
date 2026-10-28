@@ -68,7 +68,6 @@
             class="inline-flex items-center gap-1 text-xs font-medium text-emerald-700"
             data-testid="qwen-api-key-configured"
           >
-            <Icon icon="heroicons:check-circle-20-solid" aria-hidden="true" class="h-4 w-4" />
             {{ $t('settings.components.settings.ProviderAPIKeyManager.qwen_api_key_configured') }}
           </span>
         </div>

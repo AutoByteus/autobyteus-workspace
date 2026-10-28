@@ -21,7 +21,7 @@
 
     <textarea id="task-page-description" :value="modelValue" rows="8" :disabled="disabled" :placeholder="placeholder" :aria-invalid="error ? 'true' : 'false'" :aria-describedby="error ? 'task-page-error' : undefined" class="block w-full resize-y rounded-none border-0 bg-transparent px-3 py-3 text-base leading-6 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-0 sm:text-sm" data-testid="task-page-description-input" @input="emit('update:modelValue', ($event.target as HTMLTextAreaElement).value)" @keydown.enter.ctrl.exact.prevent="emit('save')" @keydown.enter.meta.exact.prevent="emit('save')" />
 
-    <ProjectVoiceStatus :target="target" class="mx-3 mb-3" status-test-id="task-voice-status" cancel-test-id="task-voice-cancel" />
+    <VoiceTargetStatus :target="target" class="mx-3 mb-3" status-test-id="task-voice-status" cancel-test-id="task-voice-cancel" />
 
     <div class="flex flex-wrap items-center justify-between gap-2 rounded-b-xl border-t border-slate-100 px-3 py-2">
       <p class="text-xs text-slate-500">{{ t('projects.ui.shortcut') }}</p>
@@ -35,7 +35,7 @@ import { ref } from 'vue'
 import { Icon } from '@iconify/vue'
 import TaskContextFiles from './TaskContextFiles.vue'
 import VoiceInputButton from '~/components/voiceInput/VoiceInputButton.vue'
-import ProjectVoiceStatus from './ProjectVoiceStatus.vue'
+import VoiceTargetStatus from '~/components/voiceInput/VoiceTargetStatus.vue'
 import { useLocalization } from '~/composables/useLocalization'
 import type { VoiceTranscriptTarget } from '~/types/voiceInput'
 import type { ProjectTaskContextFile } from '~/types/project'

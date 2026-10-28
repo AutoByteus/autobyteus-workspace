@@ -88,10 +88,10 @@ describe('AgentRuntimesManager', () => {
     expect(mutations()).toEqual([{ name: 'CheckAgentRuntimes', variables: undefined }])
     expect(textOf(get('agent-runtimes-node'))).toBe('Embedded Node · This computer')
     expect(has('agent-runtimes-remote-note')).toBe(false)
-    expect(wrapper!.findAll('li').map((item) => item.get('h4').text())).toEqual(['Codex', 'Claude', 'Antigravity', 'Grok'])
+    expect(wrapper!.findAll('li').map((item) => item.get('h4').text())).toEqual(['Codex App Server', 'Claude Agent SDK', 'Antigravity CLI', 'Grok Build'])
     expect(textOf(get('runtime-claude_agent_sdk-status'))).toBe('Update available (version 2.1.304)')
     expect(textOf(get('runtime-codex_app_server-status'))).toBe('Up to date')
-    expect(textOf(get('runtime-antigravity_cli-check-failed-note'))).toBe("Couldn't reach the update source. Antigravity still works.")
+    expect(textOf(get('runtime-antigravity_cli-check-failed-note'))).toBe("Couldn't reach the update source. Antigravity CLI still works.")
     expect(get('runtime-antigravity_cli-installed').find('.sr-only').text()).toBe('Version')
     expect(textOf(get('runtime-antigravity_cli-installed'))).toContain('Version 1.4.3')
     expect(textOf(get('runtime-antigravity_cli-signin'))).toBe('Sign-in unknown')
@@ -114,7 +114,7 @@ describe('AgentRuntimesManager', () => {
     set('claude_agent_sdk', { account: { state: 'SIGNED_OUT' } })
     await mountPage()
     expect(textOf(get('runtime-codex_app_server-signin'))).toBe('Not signed in')
-    expect(get('runtime-codex_app_server-signin-button').attributes('aria-label')).toBe('Sign in Codex')
+    expect(get('runtime-codex_app_server-signin-button').attributes('aria-label')).toBe('Sign in Codex App Server')
     expect(has('runtime-codex_app_server-signin-hint')).toBe(false)
     expect(textOf(get('runtime-claude_agent_sdk-signin-hint'))).toBe('Sign in from its command line.')
     expect(has('runtime-claude_agent_sdk-signin-button')).toBe(false)
@@ -132,7 +132,7 @@ describe('AgentRuntimesManager', () => {
     const button = get('runtime-codex_app_server-signin-button')
     expect(button.text()).toBe('Signing in…')
     expect(button.attributes('disabled')).toBeDefined()
-    expect(textOf(get('runtime-codex_app_server-signin-waiting'))).toBe('Finish signing in to Codex in your browser.')
+    expect(textOf(get('runtime-codex_app_server-signin-waiting'))).toBe('Finish signing in to Codex App Server in your browser.')
     io.mutate.mockClear()
     await get('runtime-codex_app_server-signin-cancel').trigger('click')
     await flushPromises()
@@ -151,14 +151,14 @@ describe('AgentRuntimesManager', () => {
     await poll(BUSY_POLL_MS)
     expect(textOf(get('runtime-codex_app_server-signin'))).toBe('Signed in')
     expect(has('runtime-codex_app_server-signin-button')).toBe(false)
-    expect(get('agent-runtimes-announce').text()).toBe('Codex is signed in.')
+    expect(get('agent-runtimes-announce').text()).toBe('Codex App Server is signed in.')
   })
 
   it('updates with progress from the vendor, then shows the result and announces it', async () => {
     await mountPage()
     io.mutate.mockClear()
     const update = get('runtime-claude_agent_sdk-update')
-    expect(update.attributes('aria-label')).toBe('Update Claude')
+    expect(update.attributes('aria-label')).toBe('Update Claude Agent SDK')
     await update.trigger('click')
     await flushPromises()
     expect(mutations()).toEqual([{ name: 'UpdateAgentRuntime', variables: { runtimeKind: 'claude_agent_sdk' } }])
@@ -172,7 +172,7 @@ describe('AgentRuntimesManager', () => {
     expect(get('runtime-codex_app_server-signin-button').attributes('disabled')).toBeDefined()
     set('codex_app_server', { operation: null })
     expect(textOf(get('runtime-claude_agent_sdk-progress'))).toBe('claude update · Downloading 2.1.304…')
-    expect(get('runtime-claude_agent_sdk-outcome').find('[role="progressbar"]').attributes('aria-label')).toBe('Claude: Updating…')
+    expect(get('runtime-claude_agent_sdk-outcome').find('[role="progressbar"]').attributes('aria-label')).toBe('Claude Agent SDK: Updating…')
 
     set('claude_agent_sdk', {
       installedVersion: '2.1.304',
@@ -183,7 +183,7 @@ describe('AgentRuntimesManager', () => {
     expect(textOf(get('runtime-claude_agent_sdk-updated'))).toBe('Updated from 2.1.302 to 2.1.304.')
     expect(textOf(get('runtime-claude_agent_sdk-status'))).toBe('Up to date')
     expect(has('runtime-claude_agent_sdk-update')).toBe(false)
-    expect(get('agent-runtimes-announce').text()).toBe('Claude updated to 2.1.304.')
+    expect(get('agent-runtimes-announce').text()).toBe('Claude Agent SDK updated to 2.1.304.')
   })
 
   it("shows a failed update with the vendor's own message and offers Try again", async () => {
@@ -198,7 +198,7 @@ describe('AgentRuntimesManager', () => {
     expect(get('runtime-claude_agent_sdk-update-failed').attributes('role')).toBe('alert')
     expect(get('runtime-claude_agent_sdk-update').text()).toBe('Try again')
     expect(textOf(get('runtime-claude_agent_sdk-status'))).toBe('Update available (version 2.1.304)')
-    expect(get('agent-runtimes-announce').text()).toBe('Claude update failed.')
+    expect(get('agent-runtimes-announce').text()).toBe('Claude Agent SDK update failed.')
   })
 
   it('keeps Update visible but inert while that runtime has running agents, and enables it when they finish', async () => {
@@ -229,7 +229,7 @@ describe('AgentRuntimesManager', () => {
     expect(textOf(get('agent-runtimes-remote-note'))).toBe(
       "Sign-in opens the browser on that node; finish it in the VNC Viewer. Update these runtimes on that node's computer.",
     )
-    expect(get('runtime-codex_app_server-signin-button').attributes('aria-label')).toBe('Sign in Codex')
+    expect(get('runtime-codex_app_server-signin-button').attributes('aria-label')).toBe('Sign in Codex App Server')
     expect(textOf(get('runtime-claude_agent_sdk-signin-hint'))).toBe('Sign in from its command line on that node.')
     expect(has('runtime-claude_agent_sdk-signin-button')).toBe(false)
     // No Update and no blocked-update line on a remote node (REQ-005).
@@ -246,7 +246,7 @@ describe('AgentRuntimesManager', () => {
     set('codex_app_server', { operation: { kind: 'SIGN_IN', state: 'RUNNING', command: null, step: null, fromVersion: null, toVersion: null, error: null } })
     await poll()
     expect(get('runtime-codex_app_server-signin-button').text()).toBe('Signing in…')
-    expect(textOf(get('runtime-codex_app_server-signin-waiting'))).toBe('Finish signing in to Codex in the browser on that node (VNC Viewer).')
+    expect(textOf(get('runtime-codex_app_server-signin-waiting'))).toBe('Finish signing in to Codex App Server in the browser on that node (VNC Viewer).')
     io.mutate.mockClear()
     await get('runtime-codex_app_server-signin-cancel').trigger('click')
     await flushPromises()
@@ -260,7 +260,7 @@ describe('AgentRuntimesManager', () => {
     set('codex_app_server', { operation: null, account: { state: 'SIGNED_IN' } })
     await poll(BUSY_POLL_MS)
     expect(textOf(get('runtime-codex_app_server-signin'))).toBe('Signed in')
-    expect(get('agent-runtimes-announce').text()).toBe('Codex is signed in.')
+    expect(get('agent-runtimes-announce').text()).toBe('Codex App Server is signed in.')
   })
 
   it('keeps a remote node that cannot open a browser status only: no Update, no Sign in, no sign-in hint', async () => {
@@ -282,9 +282,9 @@ describe('AgentRuntimesManager', () => {
     set('claude_agent_sdk', { account: { state: 'SIGNED_OUT' } })
     await mountPage()
     expect(has('agent-runtimes-remote-note')).toBe(false)
-    expect(get('runtime-codex_app_server-signin-button').attributes('aria-label')).toBe('Sign in Codex')
+    expect(get('runtime-codex_app_server-signin-button').attributes('aria-label')).toBe('Sign in Codex App Server')
     expect(textOf(get('runtime-claude_agent_sdk-signin-hint'))).toBe('Sign in from its command line.')
-    expect(get('runtime-claude_agent_sdk-update').attributes('aria-label')).toBe('Update Claude')
+    expect(get('runtime-claude_agent_sdk-update').attributes('aria-label')).toBe('Update Claude Agent SDK')
   })
 
   it('checks again on request, polls fast while rows check, and announces when all are done', async () => {

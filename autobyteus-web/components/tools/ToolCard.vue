@@ -4,15 +4,7 @@
     @click="$emit('details', tool)"
   >
     <div class="p-4">
-      <div class="flex items-center mb-3">
-        <div :class="isLocal ? 'bg-indigo-100' : 'bg-purple-100'" class="p-2 rounded-md mr-3">
-          <Icon
-            :icon="icon"
-            :class="[isLocal ? 'text-indigo-600' : 'text-purple-600', 'w-5 h-5']"
-          />
-        </div>
-        <h3 class="font-medium text-gray-900">{{ tool.name }}</h3>
-      </div>
+      <h3 class="mb-3 font-medium text-gray-900">{{ tool.name }}</h3>
       <p class="text-sm text-gray-500 mb-4 line-clamp-2">{{ tool.description }}</p>
       <!-- The redundant source badge has been removed from here. -->
     </div>
@@ -20,22 +12,12 @@
 </template>
 
 <script setup lang="ts">
-import { Icon } from '@iconify/vue';
-import { computed } from 'vue';
 import type { Tool } from '~/stores/toolManagementStore';
 
-const props = defineProps<{  tool: Tool;
+defineProps<{
+  tool: Tool;
   source: string;
 }>();
 
 defineEmits(['details']);
-
-const isLocal = computed(() => props.tool.category === 'LOCAL');
-
-const icon = computed(() => {
-  if (isLocal.value) {
-    return 'heroicons:wrench-screwdriver-20-solid';
-  }
-  return 'heroicons:cloud-arrow-down-20-solid';
-});
 </script>

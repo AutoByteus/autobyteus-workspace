@@ -287,7 +287,7 @@ describe("AvailableAgentRuntimesService", () => {
       const thrown = await service({ strategies: [strategy(RuntimeKind.ANTIGRAVITY_CLI)], catalog: async () => {
         throw new Error("AGY_MODEL_DISCOVERY_FAILED secret-token");
       } }).read();
-      expect(external(thrown.agentRuntimes as unknown[], "antigravity_cli")!.models).toBe("unknown: Antigravity model list could not be read");
+      expect(external(thrown.agentRuntimes as unknown[], "antigravity_cli")!.models).toBe("unknown: Antigravity CLI model list could not be read");
       const empty = await service({ strategies: [strategy(RuntimeKind.ANTIGRAVITY_CLI)], catalog: async (kind) =>
         kind === RuntimeKind.ANTIGRAVITY_CLI ? [] : MODELS[kind]! }).read();
       expect(external(empty.agentRuntimes as unknown[], "antigravity_cli")!.models).toBe("unknown: no models could be read");
@@ -297,14 +297,14 @@ describe("AvailableAgentRuntimesService", () => {
       const limitsFailing = async (error: unknown) => external((await failing({ readUsageLimits: async () => { throw error; } })
         .read()).agentRuntimes as unknown[], "antigravity_cli")!;
       const timedOut = await limitsFailing(new Error("AGY_MODEL_DISCOVERY_TIMEOUT", { cause: new DeadlineExceededError() }));
-      expect(timedOut.limits).toBe("unknown: Antigravity usage limits timed out");
+      expect(timedOut.limits).toBe("unknown: Antigravity CLI usage limits timed out");
       expect((timedOut.models as Array<{ blocked?: unknown }>).every((entry) => !entry.blocked)).toBe(true);
       expect((await limitsFailing(new UsageLimitsUnreadableError("the answer was not in the expected form"))).limits)
-        .toBe("unknown: Antigravity usage limits could not be read: the answer was not in the expected form");
+        .toBe("unknown: Antigravity CLI usage limits could not be read: the answer was not in the expected form");
       // Any other failure's own text (vendor output, paths, keys) is never shown.
-      expect((await limitsFailing(new Error("agy: token=abc /private/path"))).limits).toBe("unknown: Antigravity usage limits could not be read");
+      expect((await limitsFailing(new Error("agy: token=abc /private/path"))).limits).toBe("unknown: Antigravity CLI usage limits could not be read");
       // An ordinary per-command time-out (not the step's deadline) is "could not be read" (SR-007 decision 3).
-      expect((await limitsFailing(new Error("Command timed out after 3000ms."))).limits).toBe("unknown: Antigravity usage limits could not be read");
+      expect((await limitsFailing(new Error("Command timed out after 3000ms."))).limits).toBe("unknown: Antigravity CLI usage limits could not be read");
       const notReported = external((await failing({ readUsageLimits: async () => ({ state: "not_reported" }) })
         .read()).agentRuntimes as unknown[], "antigravity_cli")!;
       expect(notReported.limits).toBe("not reported");
@@ -359,8 +359,8 @@ describe("AvailableAgentRuntimesService", () => {
     const agy = external(report.agentRuntimes as unknown[], "antigravity_cli")!;
     expect(agy).toMatchObject({
       signIn: "not checked",
-      limits: "unknown: Antigravity usage limits timed out",
-      models: "unknown: Antigravity model list timed out",
+      limits: "unknown: Antigravity CLI usage limits timed out",
+      models: "unknown: Antigravity CLI model list timed out",
     });
     expect(external(report.agentRuntimes as unknown[], "grok_build")!.models).toHaveLength(1);
     expect(autobyteus(report.agentRuntimes as unknown[]).providers.find((p) => p.provider === "DeepSeek")!.limits)
@@ -440,7 +440,7 @@ describe("AvailableAgentRuntimesService", () => {
           throw new Error("AGY_MODEL_DISCOVERY_TIMEOUT", { cause: new DeadlineExceededError() });
         },
       }).read();
-      expect(external(report.agentRuntimes as unknown[], "antigravity_cli")!.models).toBe("unknown: Antigravity model list timed out");
+      expect(external(report.agentRuntimes as unknown[], "antigravity_cli")!.models).toBe("unknown: Antigravity CLI model list timed out");
     } finally {
       clock.mockRestore();
     }

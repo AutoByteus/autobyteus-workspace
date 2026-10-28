@@ -1,3 +1,5 @@
+import { agentRuntimeName } from "@autobyteus/agent-presentation-contracts";
+import { RuntimeKind } from "../../../runtime-management/runtime-kind-enum.js";
 import { SkillService } from "../../../skills/services/skill-service.js";
 import {
   WorkspaceSkillMaterializer,
@@ -5,7 +7,7 @@ import {
 } from "../shared/workspace-skill-materializer.js";
 
 export const CLAUDE_WORKSPACE_SKILL_MATERIALIZATION_PROFILE: WorkspaceSkillMaterializationProfile = {
-  runtimeLabel: "Claude",
+  runtimeLabel: agentRuntimeName(RuntimeKind.CLAUDE_AGENT_SDK),
   workspaceSkillsRootSegments: [".claude", "skills"],
 };
 

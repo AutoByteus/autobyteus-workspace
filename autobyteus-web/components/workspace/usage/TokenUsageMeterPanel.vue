@@ -114,7 +114,7 @@
                 <dd class="min-w-0 truncate font-medium text-slate-800" :title="primarySummary.latestSelectedRawModelId">{{ primarySummary.latestSelectedRawModelId }}</dd>
               </template>
               <dt class="text-slate-500">{{ trimLabel($t('shell.tokenUsage.runtime')) }}</dt>
-              <dd class="min-w-0 truncate text-slate-800" :title="primarySummary.latestRuntimeKind || t('shell.tokenUsage.unknown')">{{ primarySummary.latestRuntimeKind || t('shell.tokenUsage.unknown') }}</dd>
+              <dd class="min-w-0 truncate text-slate-800" :title="runtimeName">{{ runtimeName }}</dd>
               <dt class="text-slate-500">{{ $t('shell.tokenUsage.priceStatus') }}</dt>
               <dd><span :class="statusClass(primarySummary.apiCostStatus)">{{ formatStatus(primarySummary.apiCostStatus) }}</span></dd>
               <dt class="text-slate-500">{{ $t('shell.tokenUsage.usageReports') }}</dt>
@@ -226,6 +226,7 @@
 
 <script setup lang="ts">
 import { computed, ref } from 'vue';
+import { agentRuntimeName } from '@autobyteus/agent-presentation-contracts';
 import TokenUsageThroughputCard from '~/components/workspace/usage/TokenUsageThroughputCard.vue';
 import TeamTokenUsageSummary from '~/components/workspace/usage/TeamTokenUsageSummary.vue';
 import { createTokenUsageFormatter } from '~/components/workspace/usage/tokenUsageFormatting';
@@ -263,6 +264,11 @@ const {
 } = useTokenUsageWorkspaceScope();
 
 const meterStore = useTokenUsageMeterStore();
+/** The run's runtime by its name (autobyteus-320); "Unknown" when the reading names none. */
+const runtimeName = computed(() => {
+  const kind = primarySummary.value?.latestRuntimeKind;
+  return kind ? agentRuntimeName(kind) : t('shell.tokenUsage.unknown');
+});
 /**
  * D-13: after a completed compaction on a runtime whose new size arrives only with its next call,
  * the previous reading stays, muted, with a note. The card's run (the host for a standalone

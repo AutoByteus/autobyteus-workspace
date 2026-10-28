@@ -188,6 +188,12 @@ The Search tab searches what past runs did, in any words or language, through th
 with results; it is disabled until the text index has content (`Index your memory to search it…`, with
 `Index now`).
 
+With the local Voice Input extension available, the box has the same microphone button as the chat input
+(`VoiceInputButton`, source `memory-search`). The transcript joins the typed text in the box; the search runs only
+when the user presses Search (DEC-003 of autobyteus-320). The button is disabled while search is not ready and
+absent when voice is unavailable; recording, transcribing, no-speech and error feedback use the shared
+`VoiceTargetStatus` line, as in Project and Task descriptions.
+
 - One card per run, best first: agent (`team / member` for members), `run ID · workspace` on one line, the day or
   first–latest range, and 1–2 matches newest first, each with its journal file, lines, its own day (only when the
   card's date does not already say it) and a 2–3 line snippet (secrets masked by the server). A text match shows

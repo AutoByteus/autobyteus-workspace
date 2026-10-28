@@ -113,6 +113,22 @@ describe('AgentDetail', () => {
     expect(wrapper.text()).not.toContain('Fork')
   })
 
+  it('names the default runtime by its full name, and says Not set without one (autobyteus-320, CRR-001 FO-002)', async () => {
+    const agent = mockAgentDefinitionStore.agentDefinitions[0]
+    agent.defaultLaunchConfig = { runtimeKind: 'codex_app_server', llmModelIdentifier: 'gpt-5.6-luna', llmConfig: null }
+    const named = mount(AgentDetail, { props: { agentDefinitionId: 'agent-1' }, global: { stubs: { AgentDeleteConfirmDialog: true } } })
+    expect(named.text()).toContain('Codex App Server')
+    expect(named.text()).not.toContain('codex_app_server')
+    named.unmount()
+
+    agent.defaultLaunchConfig = null
+    const unset = mount(AgentDetail, { props: { agentDefinitionId: 'agent-1' }, global: { stubs: { AgentDeleteConfirmDialog: true } } })
+    const texts = unset.findAll('p').map((p) => p.text())
+    expect(texts[texts.indexOf('Default runtime') + 1]).toBe('Not set')
+    expect(unset.text()).not.toContain('codex_app_server')
+    unset.unmount()
+  })
+
   it('shows the chevron toggle when instructions overflow', async () => {
     const longInstruction = 'Always create a concrete execution plan before coding.\n'.repeat(50)
     const agent = {

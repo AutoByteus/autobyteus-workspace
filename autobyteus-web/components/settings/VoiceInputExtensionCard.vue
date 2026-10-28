@@ -2,14 +2,9 @@
   <section class="rounded-xl border border-gray-200 bg-white p-5 shadow-sm">
     <div class="flex flex-col items-start gap-4 lg:flex-row lg:justify-between">
       <div class="space-y-3">
-        <div class="flex items-center gap-3">
-          <div class="flex h-10 w-10 items-center justify-center rounded-full bg-blue-50 text-blue-600">
-            <Icon icon="heroicons:microphone-20-solid" class="h-5 w-5" />
-          </div>
-          <div>
-            <h3 class="text-lg font-semibold text-gray-900">{{ extension.name }}</h3>
-            <p class="text-sm text-gray-500">{{ extension.description }}</p>
-          </div>
+        <div>
+          <h3 class="text-lg font-semibold text-gray-900">{{ extension.name }}</h3>
+          <p class="text-sm text-gray-500">{{ extension.description }}</p>
         </div>
 
         <div class="flex flex-wrap items-center gap-2">
@@ -267,7 +262,6 @@
 </template>
 
 <script setup lang="ts">
-import { Icon } from '@iconify/vue';
 import { computed, onBeforeUnmount, onMounted } from 'vue';
 import { storeToRefs } from 'pinia';
 import type { ManagedExtensionState, VoiceInputLanguageMode } from '~/electron/extensions/types';

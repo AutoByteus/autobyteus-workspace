@@ -72,7 +72,6 @@
             class="px-4 py-2 bg-white border border-gray-300 rounded-md hover:bg-gray-50 text-base font-medium inline-flex items-center disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <Icon v-if="isReloading" icon="heroicons:arrow-path-20-solid" class="w-5 h-5 animate-spin mr-2" />
-          <Icon v-else icon="heroicons:arrow-path-20-solid" class="w-5 h-5 mr-2" />
           {{ isReloading ? 'Reloading...' : 'Reload Schema' }}
         </button>
         <button @click="close" class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700">

@@ -119,7 +119,8 @@ import { useWorkspaceStore } from '~/stores/workspace'
 import { resolveChatLaunchReadiness } from '~/services/chat/chatLaunchService'
 import { sameRunWorkspaceChoice } from '~/services/workspace/runWorkspaceChoice'
 import { hasSendableDraft } from '~/services/runSubmission/agentPrimaryAction'
-import { runtimeKindToLabel } from '~/types/agent/AgentRunConfig'
+import { DEFAULT_AGENT_RUNTIME_KIND } from '~/types/agent/AgentRunConfig'
+import { agentRuntimeName } from '@autobyteus/agent-presentation-contracts'
 import { DEFAULT_CHAT_AGENT_DEFINITION_ID } from '~/utils/chat/chatDefaults'
 import { effectiveAutoExecuteTools, isAutoApproveLockedForRuntime } from '~/utils/agentRunRuntimeDraftPolicy'
 import { buildTeamMemberTree } from '~/utils/runSettings/runMemberTree'
@@ -165,7 +166,8 @@ const currentTargetKey = computed(() => {
   if (!current) return ''
   return current.kind === 'team' ? `team:${current.teamDefinitionId}` : `agent:${current.agentDefinitionId}`
 })
-const runtimeLabel = computed(() => runtimeKindToLabel(controls.runtimeKind.value))
+// A draft with no runtime yet starts on the default runtime (as `useRuntimeScopedModelSelection` resolves it).
+const runtimeLabel = computed(() => agentRuntimeName(controls.runtimeKind.value.trim() || DEFAULT_AGENT_RUNTIME_KIND))
 
 const placeholder = computed(() => {
   if (team.value) return t('chat.new.placeholderTeam', { team: team.value.name })

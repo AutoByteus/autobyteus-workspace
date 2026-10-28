@@ -1,0 +1,10 @@
+# IMP-12 full web suite + guards (IR-002)
+# cmd: NUXT_TEST=true pnpm -C autobyteus-web exec vitest run ; guard:web-boundary ; guard:localization-boundary ; audit:localization-literals
+# commit: 1a4bfd2ae9  env: macOS, Node v22.23.1  date: 2026-10-28T17:27Z
+
+ Test Files  668 passed (668)
+      Tests  4858 passed (4858)
+   Duration  225.51s (transform 25.36s, setup 1481.23s, collect 143.06s, tests 72.84s, environment 133.76s, prepare 81.22s)
+[guard:web-boundary] Passed.
+[guard:localization-boundary] Passed.
+[audit:localization-literals] Passed with zero unresolved findings.

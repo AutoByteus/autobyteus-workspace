@@ -1,4 +1,5 @@
 import os from "node:os";
+import { agentRuntimeName } from "@autobyteus/agent-presentation-contracts";
 import type { ModelInfo } from "autobyteus-ts/llm/models.js";
 import { LLMProvider } from "autobyteus-ts/llm/providers.js";
 import type { ModelCatalogService } from "../llm-management/services/model-catalog-service.js";
@@ -44,17 +45,6 @@ export const AVAILABLE_AGENT_RUNTIMES_STEP_CAPS: AvailableAgentRuntimesStepCaps 
 
 /** A step that ignores its deadline still ends here, and is recorded as timed out. */
 const BACKSTOP_MS = 500;
-
-const RUNTIME_NAMES: Readonly<Record<AgentRuntimeKind, string>> = {
-  [RuntimeKind.CODEX_APP_SERVER]: "Codex",
-  [RuntimeKind.CLAUDE_AGENT_SDK]: "Claude",
-  [RuntimeKind.ANTIGRAVITY_CLI]: "Antigravity",
-  [RuntimeKind.GROK_BUILD]: "Grok",
-};
-
-/** A runtime's display name ("Codex"); the runtime kind itself for AutoByteus or an unknown kind. */
-export const agentRuntimeDisplayName = (runtimeKind: string): string =>
-  runtimeKind === RuntimeKind.AUTOBYTEUS ? "AutoByteus" : RUNTIME_NAMES[runtimeKind as AgentRuntimeKind] ?? runtimeKind;
 
 /** Local model servers have no key: they are usable when they answer with models now. */
 const LOCAL_PROVIDERS: ReadonlySet<string> = new Set([LLMProvider.OLLAMA, LLMProvider.LMSTUDIO]);
@@ -242,7 +232,7 @@ export class AvailableAgentRuntimesService {
     signedOut: Set<AgentRuntimeKind>,
   ): Promise<ExternalAgentRuntimeEntry | null> {
     const kind = strategy.runtimeKind;
-    const name = RUNTIME_NAMES[kind];
+    const name = agentRuntimeName(kind);
     const signIn = await runStep(this.caps.signInMs, (deadline) =>
       this.dependencies.signInReader.read(kind, { cwd: this.homeDirectory, deadline }));
     if (signIn.ok && signIn.value.state === "signedOut") {

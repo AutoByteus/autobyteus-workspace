@@ -14,7 +14,7 @@ import { parseClaudeUsageLimits } from "../usage-limits/claude-usage-limits.js";
 
 const RELEASES_URL = "https://downloads.claude.ai/claude-code-releases";
 
-/** The failure text application launch readiness has always shown after "Claude authentication is unavailable: ". */
+/** The failure text application launch readiness shows after "Claude Agent SDK authentication is unavailable: ". */
 const describeFailure = (result: RuntimeCommandResult): string =>
   result.error?.message
   ?? result.stderr.trim()

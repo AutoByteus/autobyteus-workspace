@@ -168,11 +168,11 @@ const messages = {
   "workspace.components.progress.SystemInstructionActivityItem.aria_label":
     "{{title}}。{{source}}。{{availability}}。捕获于 {{time}}。{{count}} 个字符。",
   "workspace.components.progress.SystemInstructionActivityItem.source.native":
-    "由 AutoByteus 提供 · Native 已配置系统提示词",
+    "由 AutoByteus 提供 · AutoByteus 已配置系统提示词",
   "workspace.components.progress.SystemInstructionActivityItem.source.claude":
-    "由 AutoByteus 提供 · Claude SDK systemPrompt",
+    "由 AutoByteus 提供 · Claude Agent SDK systemPrompt",
   "workspace.components.progress.SystemInstructionActivityItem.source.codex":
-    "由 AutoByteus 提供 · Codex baseInstructions",
+    "由 AutoByteus 提供 · Codex App Server baseInstructions",
   "workspace.components.progress.SystemInstructionActivityItem.source.grok":
     "由 AutoByteus 提供 · Grok Build rules",
   "workspace.components.progress.SystemInstructionActivityItem.source.unknown":

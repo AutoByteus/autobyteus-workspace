@@ -178,7 +178,9 @@ Temp tasks have no key and no dependencies.
   description. A combobox search ("Add a Task · Search by key or text") lists at
   most 8 Tasks of this Project, newest key first, never the Task itself or one
   already chosen. A Task that already depends on this one, directly or not, is
-  greyed with "Depends on this Task" and cannot be chosen (arrows skip it).
+  greyed with "Depends on this Task" and cannot be chosen (arrows skip it; the
+  highlight starts on the first choosable Task, so Enter never adds a greyed one,
+  and adds nothing when every listed Task is greyed).
   Enter or a click adds; the list closes after a choice and focus stays in the
   search; Esc closes; "No other Tasks in this Project match." when nothing
   matches. Chosen Tasks are rows with a "Remove <key>" button. Edit starts from
@@ -532,8 +534,9 @@ new editor. Dictation never submits the form: review/edit, then explicitly Save.
 Project and workspace descriptions remain optional, including blank values;
 there is no migration or historical-description backfill.
 
-`ProjectVoiceStatus` replaces TaskDescriptionComposer's local status rendering
-and serves both Project and Task descriptions. It shows target-scoped starting,
+`components/voiceInput/VoiceTargetStatus.vue` (formerly `ProjectVoiceStatus`) is the one
+voice status line for every voice target: Project and Task descriptions and Memory
+search ([Memory Search](./memory.md#memory-search)). It shows target-scoped starting,
 recording/transcribing, cancellation, error and no-speech feedback. Successful
 dictation leaves only editable text, with no success banner or reserved status
 gap. Its synchronous result snapshot retains useful terminal feedback before

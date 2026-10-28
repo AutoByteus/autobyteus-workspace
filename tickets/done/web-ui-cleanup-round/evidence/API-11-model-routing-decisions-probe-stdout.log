@@ -1,0 +1,11 @@
+# API-11 2026-10-28T16:30:29Z commit b34c2a36ea (+ uncommitted probe changes in other files); cmd (cwd autobyteus-web): node tests/e2e/model-routing-decisions-probe.mjs --output-dir /tmp/ab320e2e/API-11/out
+Pass MRD-01 Setup: the router row and the status of an active router
+Pass MRD-02 Decisions: Task blocks, the Team row folds and opens to its agents with source and reason; the remote copy is not on this node; the filter
+Pass MRD-03 Overview: period, sources and task kinds of these records
+Pass MRD-04 The Manager run's Settings: the delegated rows show runtime, model, source and reason (local member and remote copy)
+Pass MRD-05 beta's window: its own Decisions list the copy alpha delegated, without "Open run"
+Pass MRD-08 New chat `@`: with internal agents shown, the Model Router is listed among the agents but never offered as a mention (DEL-F1)
+Pass MRD-06 Simplified Chinese: Decisions and Overview are translated
+Pass MRD-07 No browser errors
+Model Routing decisions probe: Pass → /Users/normy/autobyteus_org/autobyteus-worktrees/web-ui-cleanup-round/autobyteus-web/test-results/model-routing-decisions-1793205029290
+exit=0

@@ -11,7 +11,7 @@ import { useChatDraftStore, type ChatDraft } from '~/stores/chatDraftStore'
 import { useRuntimeAvailabilityStore } from '~/stores/runtimeAvailabilityStore'
 import { effectiveAutoExecuteTools } from '~/utils/agentRunRuntimeDraftPolicy'
 import { useWorkspaceCenterViewStore } from '~/stores/workspaceCenterViewStore'
-import { runtimeKindToLabel } from '~/types/agent/AgentRunConfig'
+import { agentRuntimeName } from '@autobyteus/agent-presentation-contracts'
 import { writeChatLastModel } from '~/utils/chat/chatLastModelPreference'
 import { isTemporaryRunId } from '~/utils/chat/chatDefaults'
 import { buildAgentRunChatRoute } from '~/services/workspace/workspaceNavigationService'
@@ -77,7 +77,7 @@ export const resolveChatLaunchReadiness = (draft: ChatDraft): ChatLaunchReadines
     isRuntimeEnabled: availability.hasFetched ? (runtimeKind) => availability.isRuntimeEnabled(runtimeKind) : null,
   }, {
     targetUnavailable,
-    runtimeUnavailable: (runtimeKind) => t('chat.launch.runtimeUnavailable', { runtime: runtimeKindToLabel(runtimeKind) }),
+    runtimeUnavailable: (runtimeKind) => t('chat.launch.runtimeUnavailable', { runtime: agentRuntimeName(runtimeKind) }),
     chooseModel: t('chat.launch.chooseModel'),
   })
 }
