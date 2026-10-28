@@ -134,6 +134,9 @@ try {
   browser = await chromium.launch({ headless: true, executablePath });
   const context = await browser.newContext({ viewport: { width: 1280, height: 900 }, locale: 'en-US' });
   const page = await context.newPage();
+  // The app shell's change feeds (agent package definitions, update notifications) open WebSockets to the bound node:
+  // accept them without a server, so the fixture page supplies every boundary it reaches (TESTING.md, Browser probes).
+  await page.routeWebSocket('ws://127.0.0.1:65534/**', () => {});
   await page.route('http://127.0.0.1:65534/**', async (route) => {
     const requestUrl = new URL(route.request().url());
     await route.fulfill({
@@ -150,6 +153,10 @@ try {
           workspaces: [],
           agentDefinitions: [],
           agentTeamDefinitions: [],
+          // Root fields the app shell's run-history and Org loaders query.
+          listWorkspaceRunHistory: [],
+          listCollaborationRootHistory: [],
+          agentOrgDefinitions: [],
         },
       }),
     });
