@@ -58,3 +58,24 @@
 | 2026-10-28 06:06 | API-25 | Started | | isolated-app start --from-worktree (package of API-24) |
 | 2026-10-28 06:10 | API-25 | Completed | Pass | D-01..D-06 Pass, 0 leftover classes, 0 console errors; instance stopped |
 | 2026-10-28 06:14 | — | Completed | Pass | round 1 result recorded; documents and evidence committed next |
+| 2026-10-28 07:56 | API-27 | Checkpoint | | round 2 diagnosis (before planning): CI macOS jobs of 40640209395 ended vue-tsc by SIGABRT (not TS2307); local: vue-tsc OOMs at heap caps <=3072 MB with contracts built; and the gate sweeps in resources/server + electron-dist after a local build. Build outputs restored. |
+| 2026-10-28 07:56 | API-31 | Completed | Pass | macOS ARM64 + Intel: vue-tsc SIGABRT; Linux x64/ARM64 + Windows: 292 errors (TS2307) |
+| 2026-10-28 07:57 | API-27 | Started | | fresh clone /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab294r-clone.NhA2wmjY8t, CI order |
+| 2026-10-28 07:58 | API-27 | Completed | Pass | PASS 0 production, 298/139 |
+| 2026-10-28 07:58 | API-28 | Started | | same clone, NODE_OPTIONS=--max-old-space-size=1792 (+ 2048, 3072, 4096 bracket) |
+| 2026-10-28 08:01 | API-28 | Completed | Fail | 1792 and 2048 MB: SIGABRT exactly as the CI macOS jobs; 3072, 4096: PASS |
+| 2026-10-28 08:01 | API-29 | Started | | same clone: test:nuxt then test:electron |
+| 2026-10-28 08:05 | API-29 | Checkpoint | | run 1 (install only, no prebuild): test:nuxt 2 failed = the FU-003 cross-package specs (need autobyteus-ts dist); test:electron 1 failed = FU-011 Electron download race; run 2 in TESTING.md order (prebuild first) |
+| 2026-10-28 08:09 | API-29 | Completed | Pass | run 2 (TESTING.md order): test:nuxt 666 passed; test:electron 48 passed 1 skipped |
+| 2026-10-28 08:09 | API-30 | Started | | worktree gate with resources/server + electron-dist from API-24 present |
+| 2026-10-28 08:10 | API-30 | Completed | Fail | gate FAIL: Nuxt vue-tsc SIGABRT (resources/server + electron-dist swept in; not excluded) |
+| 2026-10-28 08:12 | — | Completed | Fail | round 2 result recorded (F-1 macOS heap, F-2 build outputs in scope); committing |
+| 2026-10-28 08:23 | API-30 | Started | | round 3 rerun: worktree gate with both build trees, default and NODE_OPTIONS=1792 |
+| 2026-10-28 08:25 | API-30 | Completed | Pass | round 3: PASS with both build trees; PASS under NODE_OPTIONS 1792 |
+| 2026-10-28 08:25 | API-28 | Started | | round 3: fresh clone /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab294s-clone.mG9pqOimcI, CI order; gate default + NODE_OPTIONS 1792 |
+| 2026-10-28 08:27 | API-28 | Completed | Pass | round 3: default PASS; NODE_OPTIONS 1792 PASS |
+| 2026-10-28 08:27 | API-29 | Started | | round 3: same clone, prebuild then test:nuxt |
+| 2026-10-28 08:33 | API-29 | Completed | Pass | round 3: test:nuxt 666 passed |
+| 2026-10-28 08:33 | API-32 | Started | | docker node:22-bookworm --memory=7g --memory-swap=7g: clone, install, control + gate |
+| 2026-10-28 08:40 | API-32 | Completed | Pass | 7 GB container: default heap 2096 MB; control vue-tsc aborts (FATAL heap) like CI macOS; gate PASS, peak anon 3.12 GB, oom_kill 0; container, volume, clone, bundle removed |
+| 2026-10-28 08:41 | — | Completed | Pass | round 3 result recorded (95.0%); committing |

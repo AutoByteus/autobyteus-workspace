@@ -1,0 +1,17 @@
+# IMP-21 CR-003: the Nuxt type project without the build outputs inside the package
+# steps: this worktree, with autobyteus-web/resources/server (866 MB) and electron-dist/ (2.4 GB) left by a desktop build; nuxt prepare; vue-tsc --listFilesOnly before and after the excludes; pnpm typecheck
+# commits: 0a81db3a37 (before) / 65a7955726 (fix)
+# environment: macOS 26.5.2 arm64, node v22.23.1, vue-tsc 3.3.13, typescript 5.9.3
+# date: 2026-10-28T07:21:02Z
+
+before: project files    19872: electron-dist 8163, resources 7233, dist-mobile 141
+after:  project files     4359: files under resources/, electron-dist/, dist-mobile/, .output/: 0
+after nuxt prepare, .nuxt/tsconfig.json exclude contains: ['../resources/**', '../electron-dist/**', '../dist-mobile/**', '../.output/**']
+
+pnpm -C autobyteus-web typecheck with both trees present (machine default heap 4144 MB, before the CR-002 change):
+[typecheck] Nuxt app (tsconfig.json): 271 errors, exit 2, 35.1s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 1.8s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.7s
+[typecheck] production errors: 0; test-file errors: 298 in 139 files (baseline 298 in 139 files)
+[typecheck] PASS
+(before the fix, the same state: API-30, SIGABRT)

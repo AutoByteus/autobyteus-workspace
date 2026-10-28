@@ -1,5 +1,6 @@
 #!/usr/bin/env node
-// The web type gate: `pnpm typecheck` (after `nuxt prepare`). Type-checks the Nuxt app (vue-tsc), Electron main with
+// The web type gate: `pnpm typecheck` (after `prepare:shared-types` builds @autobyteus/application-sdk-contracts, whose
+// types web code imports from its untracked dist/, and `nuxt prepare`). Type-checks the Nuxt app (vue-tsc), Electron main with
 // its specs and the build scripts (tsc), each under its own config, with the package's pinned compilers.
 // Production files must have no type errors. Test files may not exceed their counts in `typecheck-baseline.json`;
 // a lower count also fails until `pnpm typecheck:update-baseline` shrinks the baseline, which refuses any growth.
@@ -25,8 +26,14 @@ const baselinePath = path.join(packageRoot, 'typecheck-baseline.json');
 const require = createRequire(import.meta.url);
 const updateBaseline = process.argv.includes('--update-baseline');
 
+// The Nuxt app's compiler gets its own V8 heap limit, so the gate does not depend on the machine's default (a quarter of
+// RAM: about 1.75 GB on the 7 GB macOS release runners, where it aborted) or on the caller's NODE_OPTIONS (a command-line
+// flag takes precedence). Measured 2026-10-28 (macOS arm64, Node 22): the project's heap peaks at about 3.0 GB (it
+// aborts at limits up to 2560 MB) with a maximum RSS of about 3.3 GB, which fits the 7 GB runners.
+const NUXT_APP_HEAP_MB = 4096;
+
 const PROJECTS = [
-  { name: 'Nuxt app', compiler: 'vue-tsc/bin/vue-tsc.js', config: 'tsconfig.json' },
+  { name: 'Nuxt app', compiler: 'vue-tsc/bin/vue-tsc.js', config: 'tsconfig.json', heapMb: NUXT_APP_HEAP_MB },
   { name: 'Electron main', compiler: 'typescript/bin/tsc', config: 'electron/tsconfig.typecheck.json' },
   { name: 'build scripts', compiler: 'typescript/bin/tsc', config: 'build/tsconfig.json' },
 ];
@@ -44,7 +51,8 @@ function runProject(project) {
     return { label, failures: [`${label}: the compiler ${project.compiler} cannot be found: ${error.message}`], diagnostics: [] };
   }
   const started = Date.now();
-  const result = spawnSync(process.execPath, [compilerPath, '-p', project.config, '--noEmit', '--pretty', 'false'], {
+  const heapArgs = project.heapMb ? [`--max-old-space-size=${project.heapMb}`] : [];
+  const result = spawnSync(process.execPath, [...heapArgs, compilerPath, '-p', project.config, '--noEmit', '--pretty', 'false'], {
     cwd: packageRoot,
     encoding: 'utf8',
     maxBuffer: 256 * 1024 * 1024,
@@ -54,7 +62,9 @@ function runProject(project) {
     return { label, failures: [`${label}: the compiler could not be started: ${result.error.message}`], diagnostics: [] };
   }
   if (result.signal) {
-    return { label, failures: [`${label}: the compiler ended by signal ${result.signal}`], diagnostics: [] };
+    // Name the cause when the compiler printed one (for example V8's "Reached heap limit" before SIGABRT).
+    const fatal = `${result.stderr}\n${result.stdout}`.split('\n').find((line) => /FATAL ERROR/.test(line));
+    return { label, failures: [`${label}: the compiler ended by signal ${result.signal}${fatal ? ` (${fatal.trim()})` : ''}`], diagnostics: [] };
   }
   const stdout = parseCompilerOutput(result.stdout, packageRoot);
   const stderr = parseCompilerOutput(result.stderr, packageRoot);
