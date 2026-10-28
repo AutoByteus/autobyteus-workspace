@@ -423,6 +423,45 @@ describe('ApplicationLaunchSetupPanel', () => {
     expect(summary).not.toContain('claude_agent_sdk')
   })
 
+  it('shows nothing for the runtime of a baseline leaf without one, and the name in the effective configuration (autobyteus-320, CRR-002 FO-003)', async () => {
+    const agentRef = { source: 'shared' as const, kind: 'AGENT' as const, definitionId: 'unset-agent' }
+    const agentSlot = { ...slot, slotKey: 'primaryAgent', name: 'Primary Agent',
+      allowedExecutionResourceKinds: ['AGENT'], defaultExecutionResourceRef: null,
+      supportedLaunchConfig: { AGENT: { runtimeKind: true, llmModelIdentifier: true, workspaceRootPath: true } } }
+    // The definition sets no runtime and no model: its baseline leaf carries null for both.
+    const baselineLeaf = { memberAddress: null, displayName: 'Primary Agent', agentDefinitionId: agentRef.definitionId,
+      runtimeKind: null, llmModelIdentifier: null, llmConfig: null,
+      provenance: { runtimeKind: null, llmModelIdentifier: null, llmConfig: null } }
+    const selectedResourceBaseline = { slotKey: agentSlot.slotKey, executionResourceRef: agentRef,
+      resourceDefinitionId: agentRef.definitionId, resourceKind: 'AGENT', leaves: [baselineLeaf] }
+    const effectiveConfiguration = { ...selectedResourceBaseline, leaves: [{ ...baselineLeaf,
+      runtimeKind: 'codex_app_server', llmModelIdentifier: 'gpt-5.6-luna', workspaceRootPath: '/runtime/brief-app',
+      provenance: { runtimeKind: { kind: 'SAVED_OVERRIDE' }, llmModelIdentifier: { kind: 'SAVED_OVERRIDE' }, llmConfig: null,
+        workspaceRootPath: 'APPLICATION_RUNTIME' } }] }
+    const agentView = { applicationId: 'brief-app', slots: [{ slot: agentSlot,
+      packageBaseline: null, selectedResourceBaseline,
+      savedOverride: { slotKey: agentSlot.slotKey, executionResourceRef: agentRef,
+        launchOverride: { kind: 'AGENT', runtimeKind: 'codex_app_server', llmModelIdentifier: 'gpt-5.6-luna', llmConfig: null } },
+      savedOverrideState: 'VALID', effectiveConfiguration,
+      issues: [], canResetToPackageDefaults: true, updatedAt: '2026-09-25T00:00:00.000Z' }],
+      readiness: { status: 'RUNNABLE', issues: [] } }
+    const agentResources = [{ source: 'shared', kind: 'AGENT', localId: null,
+      definitionId: agentRef.definitionId, name: 'Unset Agent', applicationId: null }]
+    fetchMock.mockResolvedValueOnce(okJson(agentView)).mockResolvedValueOnce(okJson(agentResources))
+
+    const wrapper = mount(ApplicationLaunchSetupPanel, {
+      props: { applicationId: 'brief-app', presentation: 'panel' },
+      global: { stubs: { ApplicationAgentLaunchProfileEditor: true, ApplicationTeamLaunchProfileEditor: true } },
+    })
+    await flushPromises()
+    const rows = wrapper.get('[data-testid="application-launch-authority-summary"]').findAll('p')
+      .map((row) => row.text().replace(/\s+/g, ' ').trim())
+    // Selected resource baseline: no runtime and no model, both empty (as before), never "null".
+    expect(rows).toContain('Primary Agent · ·')
+    expect(rows.some((row) => row.startsWith('Primary Agent · Codex App Server · gpt-5.6-luna'))).toBe(true)
+    expect(rows.join(' ')).not.toMatch(/null|codex_app_server/)
+  })
+
   it('uses DELETE for explicit Reset and restores the package-selected view', async () => {
     fetchMock
       .mockResolvedValueOnce(okJson(savedView))
