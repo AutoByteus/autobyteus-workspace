@@ -1,0 +1,49 @@
+# DEL-01 excerpt — AC-032 clean clone of the integrated branch
+# Command: /tmp/ab294-delivery/clean-clone.sh (git clone --branch codex/test-and-tooling-hygiene-294 <worktree>; frozen install; server prebuild; nuxt prepare; server typecheck, test:unit, test:integration:prepare, test:integration; web test:nuxt, test:electron, typecheck, three guards; gateway install, build, typecheck, test)
+# Commit: 9ac984a599; macOS 26.5 arm64, Node 22.23.1, pnpm 10.28.2; 2026-10-28 05:17-05:40 UTC; full log: DEL-01-clean-clone-final-branch.log.gz
+
+===== exit: 0 (34s) :: git clone --quiet --branch codex/test-and-tooling-hygiene-294 /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294 repo
+HEAD: 9ac984a599009c447c62e8f4fa5b1be7e1ea7511
+===== exit: 0 (9s) :: pnpm install --frozen-lockfile
+===== exit: 0 (9s) :: pnpm -C autobyteus-server-ts prebuild
+===== exit: 0 (4s) :: pnpm -C autobyteus-web exec nuxt prepare
+===== exit: 0 (16s) :: pnpm -C autobyteus-server-ts typecheck
+===== exit: 0 (693s) :: pnpm -C autobyteus-server-ts test:unit
+===== exit: 0 (27s) :: pnpm -C autobyteus-server-ts test:integration:prepare
+===== exit: 1 (242s) :: pnpm -C autobyteus-server-ts test:integration
+===== exit: 0 (257s) :: pnpm -C autobyteus-web test:nuxt --run
+===== exit: 0 (7s) :: pnpm -C autobyteus-web test:electron --run
+===== exit: 0 (36s) :: pnpm -C autobyteus-web typecheck
+===== exit: 0 (0s) :: pnpm -C autobyteus-web guard:web-boundary
+===== exit: 0 (1s) :: pnpm -C autobyteus-web guard:localization-boundary
+===== exit: 0 (0s) :: pnpm -C autobyteus-web audit:localization-literals
+===== exit: 0 (1s) :: pnpm install --frozen-lockfile
+===== exit: 0 (3s) :: pnpm build
+===== exit: 0 (2s) :: pnpm typecheck
+===== exit: 0 (4s) :: pnpm test
+===== exit-summary
+clone root removed: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T//ab294-del-clone.jpXgp3
+===== DONE 2026-10-28T05:40:30Z
+
+## Result lines
+ Test Files  864 passed | 5 skipped (869)
+      Tests  7296 passed | 9 skipped (7305)
+ Test Files  1 failed | 79 passed | 20 skipped (100)
+      Tests  2 failed | 439 passed | 69 skipped (510)
+ Test Files  666 passed (666)
+      Tests  4836 passed | 2 skipped (4838)
+ Test Files  48 passed | 1 skipped (49)
+      Tests  279 passed | 1 skipped (280)
+[typecheck] production errors: 0; test-file errors: 298 in 139 files (baseline 298 in 139 files)
+[typecheck] PASS
+[guard:web-boundary] Passed.
+[guard:localization-boundary] Passed.
+[audit:localization-literals] Passed with zero unresolved findings.
+ Test Files  86 passed (86)
+      Tests  268 passed (268)
+
+## test:integration failures
+     26|       reject(new Error("Timed out waiting for event"));
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits file creation event with node metadata
+ FAIL  tests/integration/file-explorer/file-system-watcher.integration.test.ts > FileSystemWatcher integration > emits folder creation and deletion events
+Error: Timed out waiting for event
