@@ -1,0 +1,13 @@
+# API-12 observed: FSTDEP and request-log lines in the probe backends' logs (built server of API-13, commit dfef14abc6)
+# 2026-10-27T20:29:35Z; grep -c 'FSTDEP' and request-log patterns ('incoming request', 'request completed', '"reqId"')
+API-14 backend.log: lines 136, FSTDEP 0, request-log 0
+API-14 desktop-backend.log: lines 136, FSTDEP 0, request-log 0
+API-15 node-a-backend.log: lines 292, FSTDEP 0, request-log 3
+API-15 node-b-backend.log: lines 138, FSTDEP 0, request-log 0
+
+## API-15 node-a: the 3 lines my broad pattern matched are application-owned, not Fastify request logging
+Fastify request-logging messages ('incoming request', exact msg 'request completed'): 0
+145:{"level":30,"time":1793133031515,"pid":25482,"hostname":"MacBookPro","reqId":"req-7g","err":{"type":"GraphQLError","message":"Workspace path must be an absolute folder path on this node (without NUL characters).","stack":"…","path":["updateProject"],"loc
+146:{"level":30,"time":1793133031592,"pid":25482,"hostname":"MacBookPro","reqId":"req-7i","err":{"type":"GraphQLError","message":"Duplicate workspace links are not allowed.","stack":"…","path":["updateProject"],"locations":[{"line":2,"column":3}],"extensions
+279:{"level":40,"time":1793133051048,"pid":25739,"hostname":"MacBookPro","reqId":"req-19","method":"GET","url":"/rest/projects/project_f71f57e6-6bf3-4a99-988d-c37ca8991ecb/tasks/project_task_b395e7a8-ac17-4148-819c-130c0d707f0d/context-files/ctx_f287883b7f44__
+line 279 comes from src/logging/http-access-log-policy.ts:79 (app access-log policy: 4xx at warn), identical on origin/personal; lines 145-146 are GraphQL error logs that carry the request id.

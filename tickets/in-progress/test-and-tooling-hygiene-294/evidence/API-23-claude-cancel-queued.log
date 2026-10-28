@@ -1,0 +1,508 @@
+# API-23 env -i PATH HOME=$HOME USER LOGNAME TMPDIR RUN_CLAUDE_E2E=1 pnpm exec vitest run tests/integration/runtime-management/claude/client/claude-sdk-client.integration.test.ts -t "cancels a queued message" --no-watch --reporter=verbose
+# worktree, commit bce2f8b4e3, 2026-10-28T04:53:14Z, claude 2.1.311 (Claude Code)
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+stdout | tests/integration/runtime-management/claude/client/claude-sdk-client.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:64587) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ↓ tests/integration/runtime-management/claude/client/claude-sdk-client.integration.test.ts > ClaudeSdkClient integration (live streaming transport) > lists live models, answers consecutive messages on one streaming session, and fetches session messages
+ ↓ tests/integration/runtime-management/claude/client/claude-sdk-client.integration.test.ts > ClaudeSdkClient integration (live streaming transport) > loads a project skill from .claude/skills when project skill settings are enabled
+ ↓ tests/integration/runtime-management/claude/client/claude-sdk-client.integration.test.ts > ClaudeSdkClient integration (live streaming transport) > resumes a closed streaming session in a new process and retains prior session history
+ × tests/integration/runtime-management/claude/client/claude-sdk-client.integration.test.ts > Claude CLI Stop contract (interrupt with cancelQueued) > path-claude cancels a queued message atomically with the interrupt and keeps the process usable 4ms
+   → client.openStreamingSession is not a function
+ × tests/integration/runtime-management/claude/client/claude-sdk-client.integration.test.ts > Claude CLI Stop contract (interrupt with cancelQueued) > sdk-bundled-claude cancels a queued message atomically with the interrupt and keeps the process usable 1ms
+   → client.openStreamingSession is not a function
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/runtime-management/claude/client/claude-sdk-client.integration.test.ts > Claude CLI Stop contract (interrupt with cancelQueued) > path-claude cancels a queued message atomically with the interrupt and keeps the process usable
+ FAIL  tests/integration/runtime-management/claude/client/claude-sdk-client.integration.test.ts > Claude CLI Stop contract (interrupt with cancelQueued) > sdk-bundled-claude cancels a queued message atomically with the interrupt and keeps the process usable
+TypeError: client.openStreamingSession is not a function
+ ❯ openLiveSession tests/integration/runtime-management/claude/client/claude-sdk-client.integration.test.ts:69:32
+     67|   options: ClaudeSdkStreamingSessionOptions,
+     68| ): Promise<LiveSession> => {
+     69|   const session = await client.openStreamingSession(options);
+       |                                ^
+     70|   const frames: Array<Record<string, unknown>> = [];
+     71|   const results: Array<Record<string, unknown>> = [];
+ ❯ tests/integration/runtime-management/claude/client/claude-sdk-client.integration.test.ts:268:26
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 3 skipped (5)
+   Start at  05:53:15
+   Duration  2.98s (transform 1.52s, setup 39ms, import 2.47s, tests 5ms, environment 0ms)
+
+
+real	0m3.602s
+user	0m3.468s
+sys	0m1.022s
+exit: 1
+
+## run 1 cause: the test's openLiveSession helper calls client.openStreamingSession, removed from src by 028cca2312 (2026-10-05; on origin/personal); replaced by beginStreamingSession({ resolveOptions }).open(). Helper updated (uncommitted at run 2).
+## run 2, 2026-10-28T04:54:02Z
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+stdout | tests/integration/runtime-management/claude/client/claude-sdk-client.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:69855) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ↓ tests/integration/runtime-management/claude/client/claude-sdk-client.integration.test.ts > ClaudeSdkClient integration (live streaming transport) > lists live models, answers consecutive messages on one streaming session, and fetches session messages
+ ↓ tests/integration/runtime-management/claude/client/claude-sdk-client.integration.test.ts > ClaudeSdkClient integration (live streaming transport) > loads a project skill from .claude/skills when project skill settings are enabled
+ ↓ tests/integration/runtime-management/claude/client/claude-sdk-client.integration.test.ts > ClaudeSdkClient integration (live streaming transport) > resumes a closed streaming session in a new process and retains prior session history
+ × tests/integration/runtime-management/claude/client/claude-sdk-client.integration.test.ts > Claude CLI Stop contract (interrupt with cancelQueued) > path-claude cancels a queued message atomically with the interrupt and keeps the process usable 11377ms
+   → session.close is not a function
+ × tests/integration/runtime-management/claude/client/claude-sdk-client.integration.test.ts > Claude CLI Stop contract (interrupt with cancelQueued) > sdk-bundled-claude cancels a queued message atomically with the interrupt and keeps the process usable 10119ms
+   → session.close is not a function
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/runtime-management/claude/client/claude-sdk-client.integration.test.ts > Claude CLI Stop contract (interrupt with cancelQueued) > path-claude cancels a queued message atomically with the interrupt and keeps the process usable
+ FAIL  tests/integration/runtime-management/claude/client/claude-sdk-client.integration.test.ts > Claude CLI Stop contract (interrupt with cancelQueued) > sdk-bundled-claude cancels a queued message atomically with the interrupt and keeps the process usable
+TypeError: session.close is not a function
+ ❯ Object.close tests/integration/runtime-management/claude/client/claude-sdk-client.integration.test.ts:103:26
+    101|       return results[consumed++]!;
+    102|     },
+    103|     close: () => session.close(),
+       |                          ^
+    104|   };
+    105| };
+ ❯ tests/integration/runtime-management/claude/client/claude-sdk-client.integration.test.ts:307:14
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  2 failed | 3 skipped (5)
+   Start at  05:54:02
+   Duration  24.60s (transform 1.50s, setup 42ms, import 2.51s, tests 21.50s, environment 0ms)
+
+
+real	0m25.163s
+user	0m3.753s
+sys	0m1.134s
+exit: 1
+
+## run 2 cause: the helper's close() calls session.close, renamed requestClose() by the same 028cca2312. Helper updated.
+## run 3, 2026-10-28T04:54:52Z
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+stdout | tests/integration/runtime-management/claude/client/claude-sdk-client.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:72051) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ↓ tests/integration/runtime-management/claude/client/claude-sdk-client.integration.test.ts > ClaudeSdkClient integration (live streaming transport) > lists live models, answers consecutive messages on one streaming session, and fetches session messages
+ ↓ tests/integration/runtime-management/claude/client/claude-sdk-client.integration.test.ts > ClaudeSdkClient integration (live streaming transport) > loads a project skill from .claude/skills when project skill settings are enabled
+ ↓ tests/integration/runtime-management/claude/client/claude-sdk-client.integration.test.ts > ClaudeSdkClient integration (live streaming transport) > resumes a closed streaming session in a new process and retains prior session history
+ ✓ tests/integration/runtime-management/claude/client/claude-sdk-client.integration.test.ts > Claude CLI Stop contract (interrupt with cancelQueued) > path-claude cancels a queued message atomically with the interrupt and keeps the process usable 10245ms
+ ✓ tests/integration/runtime-management/claude/client/claude-sdk-client.integration.test.ts > Claude CLI Stop contract (interrupt with cancelQueued) > sdk-bundled-claude cancels a queued message atomically with the interrupt and keeps the process usable 10731ms
+
+ Test Files  1 passed (1)
+      Tests  2 passed | 3 skipped (5)
+   Start at  05:54:52
+   Duration  24.13s (transform 1.54s, setup 40ms, import 2.60s, tests 20.98s, environment 0ms)
+
+
+real	0m24.645s
+user	0m4.935s
+sys	0m1.866s
+exit: 0
+
+## run 4: the whole file (the helper is shared by all five gated tests), 2026-10-28T04:55:26Z
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+stdout | tests/integration/runtime-management/claude/client/claude-sdk-client.integration.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:73278) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/integration/runtime-management/claude/client/claude-sdk-client.integration.test.ts > ClaudeSdkClient integration (live streaming transport) > lists live models, answers consecutive messages on one streaming session, and fetches session messages 4800ms
+ ✓ tests/integration/runtime-management/claude/client/claude-sdk-client.integration.test.ts > ClaudeSdkClient integration (live streaming transport) > loads a project skill from .claude/skills when project skill settings are enabled 5425ms
+ ✓ tests/integration/runtime-management/claude/client/claude-sdk-client.integration.test.ts > ClaudeSdkClient integration (live streaming transport) > resumes a closed streaming session in a new process and retains prior session history 4401ms
+ ✓ tests/integration/runtime-management/claude/client/claude-sdk-client.integration.test.ts > Claude CLI Stop contract (interrupt with cancelQueued) > path-claude cancels a queued message atomically with the interrupt and keeps the process usable 9780ms
+ ✓ tests/integration/runtime-management/claude/client/claude-sdk-client.integration.test.ts > Claude CLI Stop contract (interrupt with cancelQueued) > sdk-bundled-claude cancels a queued message atomically with the interrupt and keeps the process usable 11509ms
+
+ Test Files  1 passed (1)
+      Tests  5 passed (5)
+   Start at  05:55:27
+   Duration  39.09s (transform 1.66s, setup 39ms, import 2.67s, tests 35.92s, environment 0ms)
+
+
+real	0m39.730s
+user	0m9.818s
+sys	0m6.047s
+exit: 0
