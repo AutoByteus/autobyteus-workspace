@@ -59,12 +59,12 @@ Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/web-ui-cleanup-round
    - The status line moves (with `git mv`) to `components/voiceInput/VoiceTargetStatus.vue`. It is used by the project editor (explicit `project-voice-*` test ids), the task composer and Memory search (`memory-search-voice-*`).
    - The texts move from `projects.ui.voice*`/`cancelRecording` to `voiceInput.status.*` in a new `voiceInput.ts` catalog (en, zh-CN).
 
-- Implementation cycle: `Rework` (IR-002: Local Fix for CRR-001 FO-001, FO-002)
+- Implementation cycle: `Rework` (IR-003: Local Fix for CRR-002 FO-003; IR-002: CRR-001 FO-001, FO-002)
 - Implementation revision record: `implementation-revision-record.md`
-- Current implementation revision ID: `IR-002`
+- Current implementation revision ID: `IR-003`
 - Related solution revision IDs: `SR-001`
-- Related architecture-review / code-review / API/E2E / delivery revision IDs: `N/A` / `CRR-001` / `API-REV-001` / `N/A`
-- Triggering finding IDs: FO-001, FO-002 (CRR-001; API-12 of API-REV-001)
+- Related architecture-review / code-review / API/E2E / delivery revision IDs: `N/A` / `CRR-001`, `CRR-002` / `API-REV-001`, `API-REV-002` / `N/A`
+- Triggering finding IDs: FO-003 (CRR-002; API-12 r2 of API-REV-002); earlier FO-001, FO-002 (CRR-001)
 
 ### IR-002: Local Fix for CRR-001 (commit `1a4bfd2ae9`)
 
@@ -84,6 +84,14 @@ Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/web-ui-cleanup-round
 - **Tests:** the launch-setup summary shows "Primary Agent · Claude Agent SDK · default", never `claude_agent_sdk`. The agent detail shows "Codex App Server", and "Not set" when there is none. Both fail on base (IMP-10). Two meter tests now expect "Codex App Server".
 - FU-002 (other technical identifiers in the summary) is recorded by the reviewer and not touched here.
 - Classification recheck: `Medium` / `Low`, unchanged (presentation text only).
+
+### IR-003: Local Fix for CRR-002 FO-003 (commit `0e3029d503`)
+
+- Baseline leaves (`ApplicationResolvedLaunchBaselineLeaf`) carry `runtimeKind: string | null`. IR-002 passed that value straight to `agentRuntimeName(string)`, which failed the desktop build's web typecheck (2 × TS2345).
+- Fix: a local `runtimeLabel(kind: string | null)` in `ApplicationExecutionResourceSlotEditor.vue`. It returns `agentRuntimeName(kind)`, or `''` for null (the same empty segment as before, like the model), and is used at all three summary sites. `agentRuntimeName` keeps its `string` parameter.
+- Test: a baseline leaf with `runtimeKind: null` and `llmModelIdentifier: null` shows "Primary Agent · ·", never "null"; the effective configuration shows "Codex App Server".
+- Why it slipped through: IR-001/IR-002 did not run `pnpm -C autobyteus-web typecheck`. I had assumed from an earlier base that the web package had no typecheck script, and vitest does not type-check templates. It now runs as IMP-13: production errors 0, test-file errors at the baseline (298 in 139 files).
+- Classification recheck: `Medium` / `Low`, unchanged.
 
 ## Routing Classification (Mandatory)
 
@@ -197,6 +205,8 @@ See the per-item commits. Contract: `autobyteus-agent-presentation-contracts/src
 | IMP-10 | IR-002 new tests with the two fix files stashed | components at `b34c2a36ea` | macOS, Node 22 | launch-setup summary, agent detail | AC-003 (FO-001/002) | Fail as expected | `evidence/IMP-10-fo-tests-on-base.log` | `Tests  2 failed \| 7 passed (9)` |
 | IMP-11 | `pnpm -C autobyteus-server-ts typecheck`; `env -i … vitest run tests/unit tests/agent-work-journal tests/integration/skill-update-notices` | `1a4bfd2ae9` | macOS, Node 22 | all server units, journal, notices | AC-004, AC-009, AC-012 | Pass | `evidence/IMP-11-server-unit-full.log` | `typecheck exit=0`; `Test Files  797 passed \| 5 skipped (802)`, `Tests  6721 passed \| 9 skipped (6730)` |
 | IMP-12 | `NUXT_TEST=true pnpm -C autobyteus-web exec vitest run` + web guards | `1a4bfd2ae9` | macOS, Node 22 | all web | AC-001…003, 007, 009…012 | Pass | `evidence/IMP-12-web-full-suite-and-guards.log` | `Test Files  668 passed (668)`, `Tests  4858 passed (4858)`; `Passed.`; `zero unresolved findings` |
+| IMP-13 | `pnpm -C autobyteus-web typecheck` (TESTING.md web typecheck layer; the desktop build runs it) | `0e3029d503` | macOS, Node 22 | Nuxt app, Electron main, build scripts | AC-012 | Pass | `evidence/IMP-13-web-typecheck.log` | `production errors: 0; test-file errors: 298 in 139 files (baseline 298 in 139 files)`, `PASS` |
+| IMP-14 | `NUXT_TEST=true pnpm -C autobyteus-web exec vitest run components/applications --run` (rerun by impact after FO-003; IMP-12 stays valid for the rest) | `0e3029d503` | macOS, Node 22 | launch-setup panel and slot editor | AC-003 | Pass | `evidence/IMP-14-web-application-specs.log` | `Tests  29 passed (29)` |
 - Not run, and why:
   - AC-011 with the voice extension enabled (button look, keyboard, recording/transcribing/no-speech/failure, mic permission, language) needs the extension installed in a test instance. That's API/E2E's look in the app.
   - The chat footer/model menu with live models in the app: unit tests plus API/E2E.

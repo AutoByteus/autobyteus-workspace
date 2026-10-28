@@ -8,6 +8,7 @@ The current code and `implementation-handoff.md` remain authoritative.
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Solution Designer, `solution-designer-handoff.md`, initial | N/A | `Initial Baseline` | SR-001 | Six items implemented in per-item commits; checks pass; ready for direct API/E2E |
 | IR-002 | Code Reviewer, `code-review-report.md` CRR-001 (failure-origin of API-REV-001 API-12) | FO-001, FO-002 | `Local Fix` | SR-001, CRR-001, API-REV-001 | Fixed with a census; third web site and server issue texts named; checks rerun |
+| IR-003 | Code Reviewer, `code-review-report.md` CRR-002 (failure-origin of API-REV-002 API-12 r2) | FO-003 | `Local Fix` | SR-001, CRR-002, API-REV-002 | Null runtime handled at the caller; web typecheck now run (production 0) |
 
 ## Revision Entries
 
@@ -56,3 +57,24 @@ The current code and `implementation-handoff.md` remain authoritative.
 - Classification recheck: `Medium` / `Low`, unchanged
 - Next recipient or routing: direct API/E2E (`get_handoff_rules`: Medium/Low Local Fix)
 - Remaining limitations or risks: FU-002 (other identifiers in the summary) is outside this ticket
+
+### IR-003: launch-authority summary handles a baseline leaf without a runtime (CRR-002 Local Fix)
+
+- Triggering role, report path, and round: Code Reviewer, `code-review-report.md` (CRR-002), after API/E2E API-REV-002 (API-12 r2: desktop build failed its web typecheck)
+- Triggering finding IDs: FO-003
+- Classification: `Local Fix`
+- Prior authoritative result: IR-002 (`1a4bfd2ae9`)
+- Current authoritative result: commit `0e3029d503`; IMP-13 (web typecheck PASS, production 0, tests at baseline 298/139), IMP-14
+- Related solution revision IDs: `SR-001`
+- Related architecture-review revision IDs: `N/A`
+- Related code-review revision IDs: `CRR-002`
+- Related API/E2E revision IDs: `API-REV-002`
+- Related delivery revision IDs: `N/A`
+- Why this implementation revision is recorded: FO-003; IR-002 introduced two TS2345 errors (a nullable baseline `runtimeKind` passed to `agentRuntimeName(string)`)
+- Approved behavior or requirement IDs affected: BEH-003; REQ-003; AC-003, AC-012
+- Implementation delta: a local `runtimeLabel(kind: string | null)` (name, or empty for null) at the three summary sites; a test for the null case
+- Changed files or areas: `ApplicationExecutionResourceSlotEditor.vue`, `ApplicationLaunchSetupPanel.spec.ts`
+- Local validation and result: IMP-13, IMP-14
+- Classification recheck: `Medium` / `Low`, unchanged
+- Next recipient or routing: direct API/E2E (desktop build, then API-12's affected views)
+- Remaining limitations or risks: none new; the web typecheck is now part of my checks for this ticket
