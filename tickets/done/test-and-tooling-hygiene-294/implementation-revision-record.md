@@ -8,6 +8,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture Reviewer, `design-review-report.md`, round 2 (Pass) | N/A | `Initial Baseline` | SR-002, SR-004, SR-005; ARCH-REV-002; CRR N/A; API-REV N/A; DR N/A | Implementation complete for H-01..H-32 (groups A–F); ready for code review |
 | IR-002 | Code Reviewer, `code-review-report.md`, round 1 (CRR-001, Fail) | CR-001 | `Local Fix` | SR-005; ARCH-REV-002; CRR-001; API-REV N/A; DR N/A | Dead Apollo compatibility slots removed; back to code review (Targeted Delta Review) |
+| IR-003 | Delivery Engineer, `release-deployment-report.md` (DR-001, Desktop Release run 40640209395 failed) | packaging Local Fix (type gate on a fresh runner) | `Local Fix` | SR-005; ARCH-REV-002; CRR-003; API-REV-001; DR-001 | The type gate builds the contract types it reads; passes on a fresh clone standalone and in `build:electron:mac` |
 
 ## Revision Entries
 
@@ -50,3 +51,26 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Local validation and result: `pnpm -C autobyteus-web typecheck` PASS (0 production errors, baseline unchanged 298/139); `apollo.client.spec.ts` 2/2; `test:nuxt` 666 files passed; `git grep` finds no `_apolloClients` / `$apollo` left (IMP-19).
 - Next recipient or routing: Code Reviewer (Targeted Delta Review on CR-001).
 - Remaining limitations or risks: the unused `@nuxtjs/apollo` dev dependency stays (FU-010, the reviewer's).
+
+### IR-003 — Packaging: the type gate builds the shared contract types it reads
+
+- Triggering role, report path, and round: Delivery Engineer, `tickets/done/test-and-tooling-hygiene-294/release-deployment-report.md` (DR-001; Desktop Release run 40640209395 for `v1.5.9-beta.14` failed in all 5 build jobs at `pnpm typecheck`).
+- Triggering finding IDs: the delivery's packaging `Local Fix` (no finding ID assigned).
+- Classification: `Local Fix`
+- Prior authoritative result: IR-002 — `typecheck` = `nuxt prepare && node ./scripts/typecheck.mjs`, placed before `prepare-server` in every `build:electron*` chain. It needed `@autobyteus/application-sdk-contracts`'s untracked `dist/` (its `types`), which only the server's `prepare:shared` builds (inside `prepare-server`). Every local and clean-clone run already had that `dist/` (TESTING.md's install order runs the server prebuild first).
+- Current authoritative result: `typecheck` and `typecheck:update-baseline` first run `prepare:shared-types` (`pnpm -C .. --filter @autobyteus/application-sdk-contracts build`; the only `@autobyteus/*` package web code imports whose `dist/` is not committed). The gate keeps its place in the chains (before `prepare-server`, failing fast) and gives the same result standalone right after `pnpm install`.
+- Related solution revision IDs: SR-005
+- Related architecture-review revision IDs: ARCH-REV-002
+- Related code-review revision IDs: CRR-003
+- Related API/E2E revision IDs: API-REV-001
+- Related delivery revision IDs: DR-001
+- Why this baseline or implementation revision is recorded: delivery's packaging Local Fix; REQ-007 / DEC-004 require the desktop build to run the gate, and the gate must not depend on an earlier build.
+- Approved behavior or requirement IDs affected: BEH-007 / REQ-007, AC-009 (no product behaviour change).
+- Implementation delta: `75e9f323f0` — `autobyteus-web/package.json` (`prepare:shared-types`, the two typecheck scripts), `scripts/typecheck.mjs` header comment, `docs/electron_packaging.md` step list (order unchanged; says the gate builds the contract types first). `340cee3763` — `docs(testing)`: the Web typecheck row says it runs right after `pnpm install`.
+- Changed files or areas: the four files above.
+- Local validation and result (IMP-20, fresh clone `/tmp/h294/fresh` from the branch, `pnpm install --frozen-lockfile`, no `dist/` but the three committed contract ones):
+  - at `4c34e5b71d` (beta.14): `pnpm -C autobyteus-web typecheck` → FAIL, `production errors: 23; test-file errors: 296 in 141 files`, `TS2307 … '@autobyteus/application-sdk-contracts'` — the CI failure reproduced;
+  - at `340cee3763`: `pnpm -C autobyteus-web typecheck` → `[typecheck] PASS`, production errors 0, 298 in 139 files;
+  - after `git clean -fdx -e node_modules`: `pnpm -C autobyteus-web build:electron:mac` (the release job's order) → guards pass, the gate `[typecheck] PASS` (production errors 0), then prepare-server, generate:electron, transpile-electron and the build tsc pass. `build/dist/build.js --mac` then needs the updater repository: CI provides `GITHUB_REPOSITORY`, but the clone's origin is a local path. Rerun with `GITHUB_REPOSITORY=AutoByteus/autobyteus-workspace` (unsigned, publish never): the first attempt failed only at `hdiutil resize` (errno 35, resource temporarily unavailable, a host error) after producing the app and zip; the retry `exit 0` produced the `.dmg` and `.zip`.
+- Next recipient or routing: per the handoff rules (Large / High → Code Reviewer).
+- Remaining limitations or risks: proven on macOS; the Linux and Windows jobs run the same script (`pnpm -C ..` and `--filter` are platform-neutral). The beta.15 release run is delivery's.

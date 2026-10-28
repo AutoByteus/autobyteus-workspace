@@ -10,21 +10,21 @@
 - Supplemental task artifacts: `follow-ups.md` (FU-001..FU-009; FU-009 added here), `evidence/` (SD-* from design, IMP-* from this implementation)
 - Design review report: `tickets/in-progress/test-and-tooling-hygiene-294/design-review-report.md` (round 2, Pass)
 - Architecture review revision record: `tickets/in-progress/test-and-tooling-hygiene-294/architecture-review-revision-record.md` (ARCH-REV-002)
-- Triggering rework report, revision record, or evidence, when applicable: `code-review-report.md` and `code-review-revision-record.md` (CRR-001, CR-001); evidence IMP-19
+- Triggering rework report, revision record, or evidence, when applicable: `release-deployment-report.md` (DR-001: Desktop Release run 40640209395 for `v1.5.9-beta.14` failed at the type gate on a fresh runner); earlier `code-review-report.md` (CRR-001, CR-001); evidence IMP-19, IMP-20
 
 All paths are under the worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294`, branch `codex/test-and-tooling-hygiene-294`, base `origin/personal` `2f48d85d4d`. The code commit range is `origin/personal..6fa5f443c6`; the ticket documents and evidence are committed after it (see the handoff message for the final commit).
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Rework` (IR-002, Local Fix CR-001 of CRR-001)
+- Implementation cycle: `Rework` (IR-003, delivery packaging Local Fix; IR-002 was CR-001 of CRR-001)
 - Implementation revision record: `implementation-revision-record.md`
-- Current implementation revision ID: `IR-002`
+- Current implementation revision ID: `IR-003`
 - Related solution revision IDs: SR-002, SR-004, SR-005
 - Related architecture-review revision IDs: ARCH-REV-002
-- Related code-review revision IDs: CRR-001
-- Related API/E2E revision IDs: N/A
-- Related delivery revision IDs: N/A
-- Triggering finding IDs: CR-001
+- Related code-review revision IDs: CRR-001, CRR-002, CRR-003
+- Related API/E2E revision IDs: API-REV-001
+- Related delivery revision IDs: DR-001
+- Triggering finding IDs: the delivery packaging Local Fix (type gate needs an earlier build); earlier CR-001
 
 Every work item H-01..H-32 of groups A–F is implemented, mostly one commit per item, with each test-caused fix labelled "baseline fix" and naming its test and cause (TESTING.md Rule 9). TESTING.md changes are four separate `docs(testing): …` commits. 43 code commits (`origin/personal..6fa5f443c6`), 217 files changed.
 
@@ -87,6 +87,10 @@ Every work item H-01..H-32 of groups A–F is implemented, mostly one commit per
 8. **Production error count:** 103 in the table → 79 type-only after the dead/codegen/bug rows. The 2 `../autobyteus-server-ts/tests/fixtures/recorded-upload-labels.ts` errors disappear after a fresh `nuxt prepare`. A vitest run (`NUXT_TEST`) rewrites `.nuxt/` in test mode and registers 538 specs as components, which pulls the excluded spec back in. `pnpm typecheck` always runs `nuxt prepare` first.
 9. **H-23** also removes the `dist-runtime` ignore line, the default output of the removed gateway script.
 10. **Size guardrail:** `VoiceInputExtensionCard.vue` and `ApplicationLaunchSetupPanel.vue` would have crossed 500 effective lines. Both are 498 after `e1d5ded2e9`.
+
+### Packaging fix (IR-003)
+
+The type gate needed `@autobyteus/application-sdk-contracts`'s untracked `dist/`, which the desktop build chain only built later (`prepare-server` → server `prepare:shared`). Every earlier run had that `dist/` already. `typecheck` and `typecheck:update-baseline` now run `prepare:shared-types` (`pnpm -C .. --filter @autobyteus/application-sdk-contracts build`) first. That is the only `@autobyteus/*` package web code imports whose `dist/` is not committed. The gate keeps its fail-fast place in every `build:electron*` chain and passes right after `pnpm install` (IMP-20). Commits `75e9f323f0` (fix, `electron_packaging.md`) and `340cee3763` (`docs(testing)`).
 
 ## Key Files Or Areas
 
@@ -167,6 +171,7 @@ Evidence is in `tickets/in-progress/test-and-tooling-hygiene-294/evidence/`.
 | IMP-15 | frozen install, `pnpm why`, lockfile package-key diff | 6fa5f443c6 | same | dependency declarations | R-2, QR-003 | Pass | IMP-15-dependencies.log | `package entries removed: []`; one version each |
 | IMP-16 | codegen against the schema printed from this branch's build | 6fa5f443c6 | same | `generated/graphql.ts`, `codegen.ts` | BEH-002, DEC-007 | Pass | IMP-16-codegen-drift.log | `diff: 0 lines (identical)` |
 | IMP-17 | sanitisation spec under jsdom, then happy-dom | 6fa5f443c6 | same | `useMarkdownSegments` | BEH-019; AC-020 | Pass | IMP-17-sanitisation-jsdom.log | jsdom `3 passed`; happy-dom `1 failed` (the injection case) |
+| IMP-20 | fresh clone, `pnpm install --frozen-lockfile`, no shared `dist/`: `pnpm -C autobyteus-web typecheck` at beta.14 then at the fix; after `git clean -fdx -e node_modules`, `pnpm -C autobyteus-web build:electron:mac`; the final `build/dist/build.js --mac` with `GITHUB_REPOSITORY` as CI sets it | 4c34e5b71d / 340cee3763 | macOS, fresh clone `/tmp/h294/fresh` | `prepare:shared-types`, the gate, the whole mac chain | BEH-007; AC-009; delivery Local Fix | Pass | IMP-20-fresh-clone-type-gate.log | before: `production errors: 23; test-file errors: 296 in 141 files` (CI reproduced); after: `[typecheck] PASS`, `production errors: 0` standalone and in the chain; packaging retry `exit 0`, `.dmg` and `.zip` |
 | IMP-19 | CR-001 fix: `pnpm -C autobyteus-web typecheck`; `apollo.client.spec.ts`; `test:nuxt --run`; `git grep` for the removed slots | 256cee925e | same | `utils/apolloClient.ts`, `plugins/30.apollo.client.ts` and every store using the client | BEH-007; CR-001 | Pass | IMP-19-cr001-apollo-binding.log | `[typecheck] PASS`; `Tests  2 passed (2)`; `Test Files  666 passed (666)`; grep `(none)` |
 | IMP-18 | archive E2E | 6fa5f443c6 | clean env | H-03 | AC-003 | Pass | IMP-18-archive-e2e.log | `Tests  6 passed (6)` |
 
