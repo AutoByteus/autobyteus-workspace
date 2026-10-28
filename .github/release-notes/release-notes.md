@@ -1,39 +1,96 @@
 ## Before You Update
-- **Back up your data first. You can't go back to an earlier version afterwards.** On the first start, this update deletes the data of the removed Skill Improvement feature (details under Upgrade Notes), and Remote Collaboration saves new information with your runs that earlier versions were never checked against. Installing an earlier version after this update is not supported. To back up, quit AutoByteus and copy the `~/.autobyteus/server-data` folder (on a Docker node, the server's data volume). If you need to go back after updating, don't install an older version: open an issue at https://github.com/AutoByteus/autobyteus-workspace/issues and we will help.
-- **Update the desktop app and every remote or Docker node it connects to together.** Different versions of the app and a node are not supported together, and Remote Collaboration needs both nodes on this version.
+- **Back up your data first. You can't go back to an earlier version afterwards.**
+  - On the first start, this update gives every Project Task a title, and an earlier version drops those titles whenever it saves a Task.
+  - It also renames stored names to the app's new node vocabulary: this node's identity, its Remote Collaboration peers, and Memory Sync. Each converted file keeps a backup, but an earlier version does not read the new names.
+  - Installing an earlier version after this update is not supported. To back up, quit AutoByteus and copy the `~/.autobyteus/server-data` folder (on a Docker node, the server's data volume).
+  - If you need to go back after updating, don't install an older version: open an issue at https://github.com/AutoByteus/autobyteus-workspace/issues and we will help.
+- **If you move your MCP secrets into the vault, keep the backup.** Moving them is your choice, and AutoByteus writes a backup of your `mcps.json` first (`mcps.json.backup-before-vault-move-…`, next to `mcps.json`). Earlier versions don't understand vault references, so servers whose secrets you moved won't connect there. To go back, restore that backup before you start the earlier version.
+- **Agents that use `list_available_nodes` need the new name `list_peer_nodes`.** The old tool name no longer exists. Select `list_peer_nodes` in those agents' tool lists.
+- **Update the desktop app and every remote or Docker node it connects to together.** Different versions of the app and a node are not supported together.
 
 ## What's New
-- **Remote Collaboration: agents on different nodes work together.** Your desktop node and your Docker or other nodes can now hand work to each other. It is off by default and meant for a trusted private network only: nodes do not authenticate each other, and no key, token or sign-in ever travels between them.
-  - **Set it up** in **Nodes → Remote Collaboration** on each node: turn it on, then add the other node by its URL and a name. Register each node on the other one too.
-  - **Delegate across nodes.** An agent can give a text task to any shared agent or agent team of another node, naming the node by the name you gave it. The task runs on that node as an ordinary run you can open, watch, message and stop there, and it appears in that node's history titled with the task.
-  - **Talk both ways.** The two agents keep messaging each other by run ID, also after the remote run went idle or either node restarted. For a remote team, every member can be reached, including members that haven't started yet.
-  - **How runs started by another node work.** Each agent runs with its own default runtime and model (a team member without one uses its team's default), in the node's temp workspace, with tool calls auto-approved. An agent whose runtime signs in with that node's local login (for example Codex or Claude) uses that login for every registered peer. An agent without a default runtime and model is refused with a message saying so.
-  - **Let agents find the other node themselves.** Give an agent the new **list_available_nodes** and **list_available_agents** tools: it can then list the registered nodes and their status, and see which agents and agent teams another node offers, without being told an address.
-  - **See every peer at a glance.** **Nodes → Remote Collaboration** shows each peer's state (Available, Not reachable, Off there, Not registered there, Different server) and, when it is available, its agents and agent teams, with search for long lists.
-- **Notification Center.** A badge in the sidebar shows waiting updates of the app and of the agent packages and skill sources you imported from GitHub. Open it to see what changed and update with one click. AutoByteus checks GitHub in the background at most every 6 hours, without an account or token, and downloads nothing until you press **Update**. Turn the checks off in **Settings → Server Settings → Basics → Update checks**. The update card that used to open by itself is gone; **Settings → Updates** is unchanged.
-- **Settings → Agent Runtimes.** See Codex, Claude, Antigravity and Grok for the current node: the installed version, whether a newer one exists, and whether you are signed in. **Update** runs the runtime's own updater, and **Sign in** starts Codex's or Grok's own browser sign-in. On a Docker node, Codex and Grok sign-in opens in the node's own browser, which you finish in the workspace's VNC viewer. AutoByteus never sees or stores your sign-in.
-- **NFS Guide.** Copyable, checksum-checked macOS and Linux installation commands for AutoByteus NFS v0.1.0, storage setup guidance and the command reference. The guide only copies text; it runs nothing.
+- **Project Tasks have titles and comments.**
+  - You give a Task a title when you create it, and you see it on board cards, in pickers, on the Task page and in the Workspaces tree.
+  - Add numbered comments under a Task's description, without rewriting the description. Agents can add comments too, and board search finds words in comments.
+  - Agents can read one Task in full with the new opt-in tool `get_project_task`.
+- **Search your past work.** **Memory → Search** finds runs across every run's Work Journal, best first, with snippets (secrets masked). A click opens the run's journal at the matching lines.
+  - Build the index once with **Index now** under **Memory → Index**. It then stays current within about 20 seconds of each turn.
+  - Agents can search the same index with the new opt-in tool `search_memory`.
+- **Model Routing** (Settings → Model Routing), off by default.
+  - While it is on, each agent of a new delegated copy starts with its own default, its team's default, or the choice of the built-in **Model Router** agent, in that order.
+  - Defaults that can't run right now are skipped with a note, for example when you're signed out or a usage limit is used up.
+  - You teach the router through **Talk to the router**, and set its runtime, model and thinking level with the usual launch controls.
+  - Every choice is visible: in the delegation result, in run Settings ("View decision") and under **Decisions** and **Overview**.
+- **See every agent runtime's models and usage limits.**
+  - **Settings → Model Routing → Agent runtimes now** shows, for the current node, each runtime's models and live usage limits, and which models are blocked until when.
+  - Agents can read the same with the new opt-in tool `list_available_agent_runtimes`. Reading the limits spends no tokens.
+- **Remote delegated runs in your run tree.** A run your agent started on another node now appears under its delegator, tagged with the node, with its title and status. Open it to watch the live conversation, message it, interrupt it or stop it.
+- **MCP secrets in the encrypted vault.**
+  - When you add or edit an MCP server, values that look like secrets (API keys, tokens, `Authorization` headers) are locked automatically, and you can lock or unlock any row yourself. A stored secret is never shown again.
+  - Existing plain secrets are moved only when you choose to, with **Review and move to vault**.
+  - A server whose secret is missing shows **Needs secret** and does not connect.
+- **Update checks and automatic updates.**
+  - Checks for agent packages and skill sources no longer use GitHub's API quota. You set how often each kind is checked, from 15 minutes to 24 hours.
+  - Agent runtimes are a kind of update too.
+  - Automatic updates are opt-in for each kind. The app itself is never updated automatically, but it now also checks for app updates periodically, not only at launch.
+- **One Manage Nodes list.** **Nodes → Manage Nodes** is now the one place for every node.
+  - Each node appears once, with its reachability, its collaboration switch, and one status line with a button that fixes the problem.
+  - Turning collaboration on or off, removing a node and renaming it each need one confirmation, and update both nodes.
+  - Errors name the cause, for example refused, timed out, name not found or a different node.
+- **Internal agents.** An agent definition can be marked internal. Internal agents and their runs are hidden from pickers, run history, Memory and other nodes, unless you turn on **Settings → Server Settings → Basics → Show internal agents**.
+- **One-hour prompt cache for Claude agents.**
+  - Claude-runtime agents now ask for Claude's one-hour prompt cache by default. On API billing, an agent that waits longer than five minutes then reads its cache instead of writing it again.
+  - Turn it off in **Settings → Server Settings → Basics → Claude runtime**.
+  - Token Statistics shows 5-minute and 1-hour cache writes separately.
+- **An agent working on a Task can be given more Tasks,** for example a parent Task and its parts. It stops when its last open Task is closed.
 
 ## Improvements
-- **MCP servers that split their tool list into pages now show all their tools.** Before, only the first page appeared. AutoByteus now connects to MCP servers with version 2 of the MCP TypeScript client, on every agent runtime.
-- **MCP connection errors start with the HTTP status,** for example `HTTP 401 Unauthorized: …`, in tool preview, discovery and agent tool calls. No token or header value appears in any message.
-- **A stopped skill-tagged run keeps a clean title.** Its history row reads as your message, without the "Use the … skill for this request." prefix, just as it did while the run was active.
+- **Smaller agent tool results.** Built-in tools leave out empty fields. `list_project_tasks` returns short entries; for a Project with about 150 open Tasks, the list is over 90% smaller.
+- **When a configured MCP tool fails, Codex, Claude and Antigravity agents see the failure as a tool error** (for example `HTTP 401 Unauthorized: …`) and can react. Before, they got an internal error.
+- **The embedded browser's Back and Forward buttons follow the tab's real history,** including in-page and single-page-app navigation.
+- **A new agent team folder in an agent package is picked up reliably,** even when the system misses a folder event.
+- **Run Settings names delegated copies as the sidebar does.**
+- **The server starts quietly,** without the deprecation warnings it used to print.
+- **When another program holds the app's server port,** startup now says so, with guidance on how to retry, instead of only timing out.
+
+## Fixes
+- **A Task closing while an agent's message to it was being saved no longer stops the whole run.** The sending agent gets a readable "this Task is closed" answer.
+- **An application imported while the server runs, with Codex as its runtime, starts right away.** Before, it stayed quarantined until the next restart.
+- **Reloading or repairing an application no longer leaves it quarantined.**
+- **Saving a stopped delegated copy's model in a running Org's Settings** no longer sometimes asks you to refresh.
+- **Icon-only buttons show their icons again,** for example in MCP server forms, Bulk Import and agent details.
+- **Phone app:**
+  - choosing a workspace for a new team run works;
+  - team messages name the teammate, not just "teammate".
+- **Applications:** a team member without a runtime is named by its display name in the setup message.
+- **Settings → API keys:** a custom provider whose models are still loading shows "—", not "null models".
+- **A failed conversion of custom LLM providers from an older version no longer stops AutoByteus from starting.** Custom providers show as unavailable until the conversion succeeds, on the next start or when you retry it in **Settings → Migrations**.
+- **The one-time Skill Improvement cleanup now deletes only Skill Improvement data.** On installs that used the 1.4.92 beta builds, the 1.5.8 cleanup could also delete old memory-compaction helper runs. Runs already deleted that way can't be restored.
 
 ## Security
-- **The desktop app now runs on Electron 42.11.16** (Chromium 148, Node.js 24.19), which fixes the security issues reported for the earlier Electron 42 build.
-- **Security fixes in libraries the app and server use,** including `tar`, `undici`, `axios`, `protobufjs` and `markdown-it`. 17 unused dependencies were removed, which makes installs and the packaged app smaller.
+- **The server and the message gateway now run on Fastify 5,** which fixes the web-framework advisories listed as known in 1.5.8.
+- **The spreadsheet viewer uses SheetJS 0.20.3,** which fixes the `.xlsx` reader advisory. It also cleans its output down to the table, so a file's cell content can't inject markup.
 
 ## Changes
-- **Skill Improvement has been removed.** The **Skill Improvement** card in Server Settings and the **Improve skills** button in agent and team chats are gone. It may return later in a different form. To improve a skill today, ask an agent to read a run's Work Journal and update the skill.
-- **Some MCP error messages read differently,** because they come from the new MCP client: remote server errors start with `SdkHttpError: …`, a local server that exits at start says `SdkError: Connection closed`, and one that doesn't answer says `SdkError: Request timed out` (still after 60 seconds).
+- **`list_available_nodes` is now `list_peer_nodes`** (see Before You Update). `list_available_agents` is unchanged.
+- **The Remote Collaboration tab is gone.** Its settings are in **Nodes → Manage Nodes**.
+- **The GraphiQL page is turned off,** so `/graphiql` returns "not found". The GraphQL API itself is unchanged.
+- **Hyperlinked cells in the spreadsheet viewer show as plain text.** `.xls`, `.xlsx`, `.xlsm` and CSV files still open.
 
 ## Known Limitations
-- **Remote Collaboration is text only.** Files and saved Tasks can't be sent to another node yet, and a run started by another node can't be stopped from the node that started it.
-- **Nodes trust each other on the network.** A node accepts requests from any node registered on it; identities are not yet proven. Use Remote Collaboration only on a network you trust.
-- **A message between nodes is sent once.** If the other node doesn't answer within 20 seconds, the agent is told the message may have been delivered; nothing is retried.
-- Two libraries still have known security advisories without a fix in their current versions: the server's web framework (moving to its next major version is planned) and the spreadsheet viewer's `.xlsx` reader.
+- **Nodes trust each other on the network.** Identities are not yet proven, so use Remote Collaboration only on a network you trust.
+- **Remote Collaboration is text only.** Files and saved Tasks can't be sent to another node yet.
+- **Local (stdio) MCP servers still receive their secrets as environment variables,** because that is the only way such servers accept them.
 
 ## Upgrade Notes
-- **What the first start deletes:** the earlier skill-improvement and self-evolution records, the built-in **Retrospective Skill Improver** agent and all of its runs (they disappear from your run history), and the settings `ENABLE_SKILL_IMPROVEMENT`, `AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID` and `ENABLE_SELF_EVOLUTION`. The **Skill Self-Evolver** agent, if you have it, is kept, but the runs that the old self-evolution feature started with it are deleted too. Nothing else is changed. If something can't be deleted, the app still starts normally and tries again on the next start.
-- **Docker.** The server image is `autobyteus/autobyteus-server:1.5.8`, and `:latest` and `:beta` now point to it. If you follow the beta track with the public launcher, you can return to stable with `autobyteus-docker upgrade --all --tag latest`, because this release is newer than every 1.5.8 beta. A Docker node deletes the Skill Improvement data on its first start too, so back up its data volume first.
-- Existing runs, agents, teams, Projects, settings and MCP servers load unchanged. Remote Collaboration stays off until you turn it on.
+- **What the first start converts:**
+  - every existing Project Task gets a title from the first line of its description (at most 200 characters);
+  - the stored names of this node's identity, its Remote Collaboration peers and Memory Sync follow the new vocabulary, and each converted file keeps a backup;
+  - the desktop app's saved node list, and the saved nodes in the iOS and Android apps, are converted the same way.
+
+  Every value stays the same, and nothing needs to be set up again.
+- **Docker.**
+  - The server image is `autobyteus/autobyteus-server:1.5.9`, and `:latest` and `:beta` now point to it.
+  - If you follow the beta track with the public launcher, you can return to stable with `autobyteus-docker upgrade --all --tag latest`, because this release is newer than every 1.5.9 beta.
+  - Back up a Docker node's data volume before it starts on this version.
+- **Stays off until you turn it on:** Model Routing, Remote Collaboration, automatic updates and the Work Journal index. MCP secrets stay where they are until you move them.
