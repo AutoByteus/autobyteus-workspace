@@ -5,10 +5,10 @@ The run record and the result. The coverage investigation is the plan; `api-e2e-
 ## Round
 
 - Coverage investigation: `api-e2e-coverage-investigation.md`
-- API/E2E revision record and current revision ID: `api-e2e-revision-record.md`, `API-REV-001`
+- API/E2E revision record and current revision ID: `api-e2e-revision-record.md`, `API-REV-002`
 - Test progress log: `api-e2e-test-progress.md`
-- Round and trigger: 1, implementation IR-001 complete (direct route, `Medium` / `Low`)
-- Prior round reviewed: none
+- Round and trigger: 2, IR-002 (Local Fix for CRR-001 FO-001/FO-002, code `1a4bfd2ae9`; head `de7482b46f`). Rerun by impact: API-09 (DLP-003…005 exercise `launch-usability-check.ts`) and API-12's affected views. Round 1: IR-001 (direct route, `Medium` / `Low`)
+- Prior round reviewed: round 1 (`API-REV-001`, Fail on the launch setup summary's runtime kinds)
 - Deviations from the investigation's plan, and why:
   - API-10 needed a baseline fix in its probe: harness drift that predates this ticket (see the case).
   - API-11's probe ignored `--output-dir <dir>` (it takes `--output-dir=<dir>`) and wrote into `autobyteus-web/test-results/`. The output was moved to `/tmp`; nothing was left in the worktree.
@@ -39,6 +39,8 @@ The run record and the result. The coverage investigation is the plan; `api-e2e-
 | API-10 | AC-003 | system-instruction labels | `node tests/e2e/system-instruction-activity-probe.mjs --output-dir /tmp/ab320e2e/API-10r2/out` | ENV-1 | Pass (after a baseline fix) | `API-10-system-instruction-probe-run1-failures.txt`, `API-10r2-system-instruction-probe-evidence.json`, `API-10r2-desktop-expanded.png` | Run 1: `BE2E-SI-001A` Pass with "AutoByteus-supplied · AutoByteus configured system prompt", "… Claude Agent SDK systemPrompt", "… Codex App Server baseInstructions", HARNESS Fail on browser errors; run 2: `result Pass`, `failures []` | Run 1 had WebSocket errors from the app shell's change feeds (`/ws/agent-package-definitions`, `/ws/update-notifications`, added 2026-10-12/20) and Apollo "missing field" errors (`listWorkspaceRunHistory`, `listCollaborationRootHistory`, `agentOrgDefinitions`). The probe's last real change is 2026-08-20, and this ticket touches neither. Cause in the probe's stub; baseline fix `a26305a2a7` (accept the WebSockets, answer those fields), TESTING Rule 9 |
 | API-11 | AC-003 | Model Routing names (two nodes, scripted AGY) | `node tests/e2e/model-routing-decisions-probe.mjs` | ENV-1 | Pass | `API-11-model-routing-decisions-probe-stdout.log`, `API-11-MRD-04-run-settings.png` | `Pass MRD-01` … `Pass MRD-07`, `Model Routing decisions probe: Pass` | — |
 | API-12 | AC-001, AC-002, AC-003, AC-010, AC-011, QR-001 | isolated desktop instance of this worktree | Journey in `evidence/API-12-desktop-journey/JOURNEY.md` (UI over CDP; DOM checks per page; the voice extension installed; Memory → Search by keyboard with the emulated microphone; the chat composer's voice button for comparison) | ENV-2 | **Fail** (one finding); every other check Pass | `API-12-desktop-journey/JOURNEY.md`, `FINDING-application-setup-runtime-kinds.txt`, the screenshots and JSON files listed in JOURNEY.md | Finding: `"text": "PACKAGE BASELINE /researcher · codex_app_server · gpt-5.6-luna …"`, `"visible": true`, `"technicalToggle": "Show technical details"`. Passes: see JOURNEY.md (e.g. voice: `"value": "Release notes for the voice input."` with no memory-search request; picker: Enter chose "ab320-picker-1 Task C (choosable)" with the newest option `aria-disabled`) | Group C icons all present (search magnifiers, argument trash, folder browse, toasts). Not reached in the app (component-tested in IMP-05): Qwen "API key configured" (the form validates the key with the provider: "Model discovery failed with status 401"), Migrations "Run" (no pending migration), the workspace list's empty state, Token Statistics names (no data in a fresh instance), the Embedding Waiting state (AC-007) and the skill-update card (AC-009) |
+| API-09 (r2) | AC-004, AC-003 | same as API-09 | the API-09 command, `--output-dir /tmp/ab320e2e/r2/API-09/out` | ENV-1 on `de7482b46f` (server dist rebuilt) | Pass | `API-09-r2-delegated-launch-probe-stdout.log` | `Summary: 3 Pass, 0 Fail` | The fix's launch-usability fallbacks are not on this path (the notes use the availability reason) |
+| API-12 (r2) | AC-003 (FO-001/FO-002), AC-012 | isolated desktop build of `de7482b46f` | `CODEX_HOME=<throwaway> pnpm --silent isolated-app start --build` | macOS 26.5.2 | **Fail** (build): no instance started, so the views were not reached | `API-12-r2-desktop-build-typecheck-fail.log` | `"code": "BUILD_FAILED"`; `components/applications/setup/ApplicationExecutionResourceSlotEditor.vue(52,78): error TS2345: Argument of type 'string \| null' is not assignable to parameter of type 'string'.` and the same at `(64,78)`; `[typecheck] production errors: 2` | The desktop build's typecheck gate (`build:electron:mac`) rejects the fix: `agentRuntimeName(runtimeKind: string)` is called with `leaf.runtimeKind: string \| null` (Package and Selected resource baselines; line 88, the effective configuration, is non-null). At runtime a null renders empty, as before, so it's a type error, not a crash, but it blocks every desktop build. Round 1 built from `a26305a2a7` with the same tooling, so `1a4bfd2ae9` introduced it. IMP-12 (web suite, guards, changed-file tsc) does not run this gate |
 
 ### Observations (not defects of this ticket)
 
@@ -52,7 +54,7 @@ The run record and the result. The coverage investigation is the plan; `api-e2e-
 | --- | --- | --- | --- | --- |
 | AC-001 | Yes | API-05 (IMP-05 sidebar test), API-07 (IMP-07), API-12 | Proven | — |
 | AC-002 | Yes | API-05 (component tests), API-12 (every group A/B page reachable in the app; group C kept) | Proven | — |
-| AC-003 | Yes | API-05, API-07, API-09, API-10, API-11, API-12 | **Not Proven**: the Application launch setup summary shows runtime kinds (API-12 finding). Every other surface shows full names | — |
+| AC-003 | Yes | API-05, API-07, API-09, API-10, API-11, API-12 | **Not Proven**: round 1, the Application launch setup summary showed runtime kinds. Round 2: the fix does not build (API-12 r2), so the fixed views could not be seen | — |
 | AC-004 | Yes | API-03/04/08 (IMP), API-09 | Proven | — |
 | AC-005 | Yes | API-02 (IMP-01) | Proven for maps (no other name map). The finding is a place that shows the kind without any map | — |
 | AC-006 | No | GLOSSARY (implementation) | Proven (review) | — |
@@ -61,7 +63,7 @@ The run record and the result. The coverage investigation is the plan; `api-e2e-
 | AC-009 | Yes | API-03 (builder test), API-05 (card test) | Proven | — |
 | AC-010 | Yes | API-00 (IMP-00), API-05, API-12 (real app) | Proven | — |
 | AC-011 | Yes | API-05, API-12 (real extension, real transcription, emulated microphone) | Proven | A real microphone and speech: optional user check |
-| AC-012 | Yes | API-02…08 | Proven for the suites; the clean-clone proof is delivery's | — |
+| AC-012 | Yes | API-02…08; API-12 (r2) | **Not Proven** in round 2: the desktop build fails its production typecheck | — |
 
 ## Validation Confidence Scorecard (Mandatory)
 
@@ -125,13 +127,14 @@ The run record and the result. The coverage investigation is the plan; `api-e2e-
 
 ## Preliminary Classification (On `Fail`)
 
-- `Local Fix` (implementation). REQ-003 says "every runtime name shown by the web app … is the full name". The Application launch setup's authority summary, visible by default, prints `leaf.runtimeKind` in three places (`ApplicationExecutionResourceSlotEditor.vue:52,64,88`); `agentRuntimeName` would give the full name there. The design's census missed it, so it may also be read as a small `Design Impact`. One point for the reviewer: the block mixes user-facing rows with technical identifiers (`PACKAGE_TEAM_DEFAULT:bundle-team__…`, `llmConfig: none · workspace: APPLICATION_RUNTIME`). If the block is considered technical metadata, it belongs behind "Show technical details", which is a scope question for the Solution Designer.
+- Round 2: `Local Fix` (implementation). In `ApplicationExecutionResourceSlotEditor.vue:52,64` the new `agentRuntimeName(leaf.runtimeKind)` receives `string | null`, which fails the desktop build's production typecheck. Handle the null as the other new callers do, e.g. "Not set", or keep it empty as before. A component assertion for a null runtime would cover it. Also run the web typecheck gate the desktop build runs (`pnpm -C autobyteus-web build:electron:mac` runs it first; its `[typecheck]` lines name the command).
+- Round 1 (resolved by IR-002 except for this): runtime kinds in the launch setup summary (FO-001) and agent detail (FO-002).
 - Recommended owner: implementation engineer, after failure-origin review.
 
 ## Latest Authoritative Result
 
 - Result: `Fail`
-- Criteria not proven: AC-003 (one surface)
+- Criteria not proven: AC-003 (the fixed views could not be reached), AC-012 (the desktop build fails)
 - Preliminary classification and recommended owner: `Local Fix`, implementation engineer (failure-origin review first)
 - Next recipient from `get_handoff_rules`: Code Reviewer (failure-origin review)
-- Notes: everything else passed in the app. A rerun after the fix needs only the launch setup check (a component test plus a look), unless the fix touches more.
+- Notes: API-09 (r2) passes. After the fix, the rerun is the desktop build and API-12's affected views: the app setup summary, the agent detail Default runtime, the token-usage Runtime row and a launch-setup issue text.

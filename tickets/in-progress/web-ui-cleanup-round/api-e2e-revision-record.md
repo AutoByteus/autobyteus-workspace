@@ -7,6 +7,7 @@ The latest coverage investigation and execution coverage report remain authorita
 | Revision ID | Triggering Role / Report / Round | Related Upstream Revision IDs | Prior Result / Confidence | Current Result / Confidence |
 | --- | --- | --- | --- | --- |
 | API-REV-001 | Implementation Engineer, `implementation-handoff.md`, round 1 | SR-001, IR-001 | N/A | Fail / 90% |
+| API-REV-002 | Implementation Engineer, IR-002 (CRR-001 Local Fix), round 2 | IR-002, CRR-001 | Fail / 90% | Fail (build) |
 
 ## Revision Entries
 
@@ -30,3 +31,26 @@ None.
 - New or remaining failure IDs: API-12 finding (AC-003, `ApplicationExecutionResourceSlotEditor.vue:52,64,88`)
 - Recommended owner: Code Reviewer (failure-origin review), then the implementation engineer
 - Remaining risks, blocked evidence, or untested scope: Qwen configured state, Migrations Run, Token Statistics names and the Embedding/skill-update cards were checked by component tests only; real microphone optional for the user
+
+### API-REV-002: Round 2. The fix fails the desktop build's typecheck
+
+- Triggering role, report path, and round: Implementation Engineer, `implementation-handoff.md` IR-002 (CRR-001 FO-001/FO-002), round 2
+- Triggering finding or case IDs: FO-001, FO-002
+- Related revision IDs: IR-002, CRR-001
+- Why this revision was recorded: rerun by impact after the fix
+- Coverage decisions or durable test paths changed: none
+- Cases added, changed, removed, or rechecked: API-09 rerun (Pass); API-12 rerun stopped at the build (`BUILD_FAILED`, 2 production type errors)
+- Commands, environment, fixture, or broader-validation delta: server dist rebuilt on `de7482b46f`
+
+#### Prior Failure Resolution
+
+| Prior Case / Failure Reference | Previous Classification | Current Resolution | Case IDs Now Proving It |
+| --- | --- | --- | --- |
+| API-12 round 1 (runtime kinds in the launch setup summary) | Local Fix (confirmed by CRR-001 as FO-001; FO-002 added) | Fixed in source, but the fix does not build (`ApplicationExecutionResourceSlotEditor.vue:52,64`, `string \| null`), so not yet verified in the app | — (pending) |
+
+- Canonical artifacts and sections updated: execution report (Round, Cases, Acceptance-Criteria Proof, Preliminary Classification, Result)
+- Prior result and confidence: Fail, 90%
+- Current result and confidence: Fail (build blocked)
+- New or remaining failure IDs: API-12 (r2) build typecheck
+- Recommended owner: Code Reviewer (failure-origin review), then the implementation engineer
+- Remaining risks, blocked evidence, or untested scope: the fixed views, the token-usage Runtime row and a launch-setup issue text await a building fix
