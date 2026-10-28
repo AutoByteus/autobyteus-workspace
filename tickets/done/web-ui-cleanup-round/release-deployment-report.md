@@ -98,3 +98,64 @@ Web UI cleanup round (six items) across web, server and the contracts package. F
 ## Repository Finalization, Release And Cleanup
 
 Recorded after the merge and the release in "Finalization And Release Record" below.
+
+## Finalization And Release Record
+
+### Repository Finalization
+
+- Bootstrap context source: `solution-designer-handoff.md` and RELEASE.md
+- Ticket branch: `codex/web-ui-cleanup-round`; archive commit `afc712ea03`, pushed to `origin/codex/web-ui-cleanup-round` after the Secret Gate passed
+- Finalization target: `origin/personal`; target advanced after verification: `No` (`e72a4702e9` throughout)
+- Merge into target: `git merge --no-ff` → `18c779fd37`. On the merged state: Secret Gate PASS, `check_repository_artifact_hygiene.py` exit 0, `check_licensing.py` "Licensing is consistent."
+- Push target branch: `e72a4702e9..18c779fd37  HEAD -> personal`
+- Repository finalization status: `Completed`
+
+### Version / Tag / Release Commit
+
+- `python3 scripts/release_versions.py next-beta` gave `1.5.10-beta.1` (Android version code `10051001`).
+- The untracked `*/dist/` build output was deleted so the worktree was clean, then `bash scripts/desktop-release.sh beta --branch finalize/web-ui-cleanup-round --no-push` ran.
+- Release commit `78c42e699a` "chore(release): bump workspace release version to 1.5.10-beta.1" (`autobyteus-web/package.json`), with the annotated tag `v1.5.10-beta.1` on it. Committer and tagger identity is the same as earlier releases.
+- `git fetch origin personal` confirmed it was still `18c779fd37`. Then: Secret Gate PASS, `18c779fd37..78c42e699a HEAD -> personal`, `[new tag] v1.5.10-beta.1` (18:41:29Z).
+
+### Release / Publication
+
+- Applicable: `Yes`. Method: `Project Release Guide` (beta).
+- Pipelines (tag push, 2026-10-28):
+
+  | Run | Workflow | Result | Finished |
+  | --- | --- | --- | --- |
+  | `40747472691` | Desktop Release | success | 19:16:43Z |
+  | `40747472710` | Android APK Release | success | 18:50:52Z |
+  | `40747472696` | iOS App Store Connect Release (TestFlight upload) | success | 19:17:12Z |
+  | `40747472748` | Server Docker Release | success | 19:28:25Z |
+
+- Published artifacts checked against RELEASE.md:
+  - GitHub release `v1.5.10-beta.1` (https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.5.10-beta.1): `isPrerelease: true`, not a draft, **17 assets**. They are:
+    - Android APK + `.sha256`;
+    - Linux arm64 and x64 AppImages;
+    - macOS arm64 and x64 `.dmg`/`.zip`, each with its blockmap;
+    - Windows `.exe`;
+    - `latest-linux-arm64.yml`, `latest-linux.yml`, `latest-mac.yml`, `latest.yml`.
+  - Docker Hub `autobyteus/autobyteus-server`:
+    - `1.5.10-beta.1` = `sha256:f6f8699c…b152b6` (amd64, arm64);
+    - `:beta` moved to the same digest;
+    - `:latest` unchanged at `1.5.9` (`sha256:52ab2f57…d64`).
+- Release/publication result: `Completed` (4/4 workflows, 17/17 assets)
+- Release notes: GitHub generated notes (pre-release); no ticket `release-notes.md` needed
+
+### Post-Finalization Cleanup
+
+- Ticket worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/web-ui-cleanup-round` removed (clean; its untracked build output had already been deleted for the release) and pruned. `Completed`.
+- Local branches `codex/web-ui-cleanup-round` (`afc712ea03`) and `finalize/web-ui-cleanup-round` (`78c42e699a`) deleted; both are contained in `origin/personal`. `Completed`.
+- Remote branch: `Not required` (`origin/codex/web-ui-cleanup-round` is kept as the pushed ticket history)
+- The clean clone `/tmp/ab320-clone` and its logs were removed after the trimmed logs were copied into `evidence/`. The main checkout was not touched. This record was committed from a temporary detached checkout of `origin/personal` (`/tmp/ab320-record`), which is removed after the push.
+
+### Final Status
+
+- Verification complete: `Yes` (from the evidence, with the clean-clone proof)
+- Repository finalization complete: `Yes` (`18c779fd37`; release commit `78c42e699a` on `personal`)
+- Applicable release complete: `Yes` (`v1.5.10-beta.1`, 4/4 workflows, 17/17 assets, Docker `:beta` moved)
+- Applicable safe cleanup complete: `Yes`
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to the Solution Designer: sent with `send_message_to` to `/software_engineering_team/solution_designer` right after this record is pushed (confirmed in the delivery conversation)
