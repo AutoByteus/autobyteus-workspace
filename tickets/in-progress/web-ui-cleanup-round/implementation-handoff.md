@@ -59,12 +59,31 @@ Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/web-ui-cleanup-round
    - The status line moves (with `git mv`) to `components/voiceInput/VoiceTargetStatus.vue`. It is used by the project editor (explicit `project-voice-*` test ids), the task composer and Memory search (`memory-search-voice-*`).
    - The texts move from `projects.ui.voice*`/`cancelRecording` to `voiceInput.status.*` in a new `voiceInput.ts` catalog (en, zh-CN).
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework` (IR-002: Local Fix for CRR-001 FO-001, FO-002)
 - Implementation revision record: `implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
+- Current implementation revision ID: `IR-002`
 - Related solution revision IDs: `SR-001`
-- Related architecture-review / code-review / API/E2E / delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A`
+- Related architecture-review / code-review / API/E2E / delivery revision IDs: `N/A` / `CRR-001` / `API-REV-001` / `N/A`
+- Triggering finding IDs: FO-001, FO-002 (CRR-001; API-12 of API-REV-001)
+
+### IR-002: Local Fix for CRR-001 (commit `1a4bfd2ae9`)
+
+- **FO-001.** `ApplicationExecutionResourceSlotEditor.vue` (launch-authority summary: Package baseline, Selected resource baseline, Effective configuration) shows `agentRuntimeName(leaf.runtimeKind)`.
+- **FO-002.** `AgentDefinitionDetailSections.vue` "Default runtime" shows `agentRuntimeName(kind)` when set, "Not set" otherwise (rendered by AgentDetail and TeamLocalAgentMemberDetails).
+- **Census of runtime kinds still displayed without `agentRuntimeName`** (web: components, composables, stores, utils, services, types, pages, layouts; the forms `{{ … runtimeKind … }}`, `{{ x.runtimeKind || … }}`, bound attributes `:title/:aria-label/:label/:placeholder/…`, and `${…runtimeKind}` strings):
+  - **Fixed, third web site:** `components/workspace/usage/TokenUsageMeterPanel.vue:117`. The workspace token-usage panel's "Runtime" row (text and title) showed `latestRuntimeKind`; it now uses a `runtimeName` computed (`agentRuntimeName`, "Unknown" when none).
+  - **Already named:**
+    - the runtime select options of the launch editors (`useRuntimeScopedModelSelection.runtimeOptions`);
+    - Token Statistics (`formatRuntimeKind`, `formatDistinctValues`, analytics `formatRuntime`/`runtime`);
+    - ChatModelMenu, RunSettingsCard, RunMemberRow, Model Routing (`names.runtimeName`).
+  - **Not displays:** the remaining hits are i18n keys, `:key`/`data-test`/`data-runtime` values, store/request keys (`${runtimeKind}:${…}`), the system-instruction source-key lookup, and the provenance enum formatter (`formatProvenance(leaf.provenance.runtimeKind)`, a provenance kind, not a runtime).
+  - **Server** (same rule, texts users see):
+    - Fixed: Application launch-setup issues (`application-launch-host-capability-validator.ts`: unavailable fallback, authenticated catalog failure, model unavailable, authentication fallback) and the launch-usability fallbacks (`launch-usability-check.ts`: not available / could not be checked). These now read e.g. "Codex App Server is unavailable for '…'" and "Model 'm' is unavailable for Antigravity CLI and '…'".
+    - Kept as the identifier: texts about an unknown, unregistered or unsupported kind (validator `:71`, standalone validator, current-model policy, definition validator, sign-in reader, status service, availability "not configured", GraphQL unsupported runtime, run provisioning/manager), logs, keys, and the Model Router prompt (the router answers with kinds).
+  - Also fixed: two unit expectations from item 2 in folders not run in IR-001 (`tests/unit/remote-collaboration/standalone-remote-delegation.test.ts`, `tests/unit/agent-team-execution/team-root-launch-notes.test.ts`). IMP-11 now runs the whole `tests/unit`.
+- **Tests:** the launch-setup summary shows "Primary Agent · Claude Agent SDK · default", never `claude_agent_sdk`. The agent detail shows "Codex App Server", and "Not set" when there is none. Both fail on base (IMP-10). Two meter tests now expect "Codex App Server".
+- FU-002 (other technical identifiers in the summary) is recorded by the reviewer and not touched here.
+- Classification recheck: `Medium` / `Low`, unchanged (presentation text only).
 
 ## Routing Classification (Mandatory)
 
@@ -175,6 +194,9 @@ See the per-item commits. Contract: `autobyteus-agent-presentation-contracts/src
 | IMP-08 | Server e2e affected by names/readiness (delegated-launch-config-defaults, model-routing-delegation [2 failed, fixed → IMP-04], remote-delegation-two-server, application-import-codex-launch, application-reload-repair, agent-runtimes-running-agents, available-agent-runtimes-graphql) | item-2 server code (= `2b53fd8ad3` for what they exercise) | macOS, scripted CLIs | readiness texts, notes, runtime report | AC-004, AC-007 | Pass (after the IMP-04 fix) | `evidence/IMP-08-e2e-runtime-names-and-applications.log` | `41 passed`, `5 passed`, `4 passed`, `2 passed`, `3 passed` |
 | IMP-09 | Look in the app: own backend + Nuxt dev, browser tab | web `51a0aec3ac` | macOS | sidebar, submenu, Local Tools, MCP, Memory search (voice unavailable) | AC-001, 002, 011 (hidden state) | Observed | `evidence/IMP-09-look-in-app/README.md` + png | DOM svg counts 0 per menu item; card rows text only |
 
+| IMP-10 | IR-002 new tests with the two fix files stashed | components at `b34c2a36ea` | macOS, Node 22 | launch-setup summary, agent detail | AC-003 (FO-001/002) | Fail as expected | `evidence/IMP-10-fo-tests-on-base.log` | `Tests  2 failed \| 7 passed (9)` |
+| IMP-11 | `pnpm -C autobyteus-server-ts typecheck`; `env -i … vitest run tests/unit tests/agent-work-journal tests/integration/skill-update-notices` | `1a4bfd2ae9` | macOS, Node 22 | all server units, journal, notices | AC-004, AC-009, AC-012 | Pass | `evidence/IMP-11-server-unit-full.log` | `typecheck exit=0`; `Test Files  797 passed \| 5 skipped (802)`, `Tests  6721 passed \| 9 skipped (6730)` |
+| IMP-12 | `NUXT_TEST=true pnpm -C autobyteus-web exec vitest run` + web guards | `1a4bfd2ae9` | macOS, Node 22 | all web | AC-001…003, 007, 009…012 | Pass | `evidence/IMP-12-web-full-suite-and-guards.log` | `Test Files  668 passed (668)`, `Tests  4858 passed (4858)`; `Passed.`; `zero unresolved findings` |
 - Not run, and why:
   - AC-011 with the voice extension enabled (button look, keyboard, recording/transcribing/no-speech/failure, mic permission, language) needs the extension installed in a test instance. That's API/E2E's look in the app.
   - The chat footer/model menu with live models in the app: unit tests plus API/E2E.
