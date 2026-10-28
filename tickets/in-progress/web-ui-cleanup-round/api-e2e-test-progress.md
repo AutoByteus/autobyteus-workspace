@@ -27,3 +27,6 @@ Read it first whenever you pick the run back up. Only add rows.
 | 2026-10-28T17:45:04Z | API-09 (r2) | Completed | Pass | 3 Pass 0 Fail |
 | 2026-10-28T17:45:04Z | API-12 (r2) | Started | | isolated-app start --build; /tmp/ab320e2e/r2/API-12 |
 | 2026-10-28T17:46:15Z | API-12 (r2) | Completed | Fail | isolated build BUILD_FAILED: production typecheck 2 errors in ApplicationExecutionResourceSlotEditor.vue(52,78),(64,78) agentRuntimeName(string|null); no instance started; CODEX_HOME removed |
+| 2026-10-28T17:52:11Z | round 3 | Started | | IR-003 (CRR-002 FO-003, code 0e3029d503; only the slot editor + spec changed since 1a4bfd2ae9): API-09 r2 stays valid; API-12 r3: desktop build + affected views; /tmp/ab320e2e/r3/API-12 |
+| 2026-10-28T17:58:28Z | API-12 (r3) | Checkpoint | | build PASS (production typecheck 0 errors); instance iso-52555-8e2c (control 52555, backend 52556) |
+| 2026-10-28T18:03:31Z | API-12 (r3) | Completed | Pass | build PASS; app setup summary names; launch-setup issue text names; agent detail + team-local member Preferred runtime names / Not set; token-usage Runtime "AutoByteus"; instance stopped, CODEX_HOME removed, LM Studio unloaded |

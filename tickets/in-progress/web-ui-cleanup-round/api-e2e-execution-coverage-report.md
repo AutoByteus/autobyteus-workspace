@@ -5,10 +5,10 @@ The run record and the result. The coverage investigation is the plan; `api-e2e-
 ## Round
 
 - Coverage investigation: `api-e2e-coverage-investigation.md`
-- API/E2E revision record and current revision ID: `api-e2e-revision-record.md`, `API-REV-002`
+- API/E2E revision record and current revision ID: `api-e2e-revision-record.md`, `API-REV-003`
 - Test progress log: `api-e2e-test-progress.md`
-- Round and trigger: 2, IR-002 (Local Fix for CRR-001 FO-001/FO-002, code `1a4bfd2ae9`; head `de7482b46f`). Rerun by impact: API-09 (DLP-003…005 exercise `launch-usability-check.ts`) and API-12's affected views. Round 1: IR-001 (direct route, `Medium` / `Low`)
-- Prior round reviewed: round 1 (`API-REV-001`, Fail on the launch setup summary's runtime kinds)
+- Round and trigger: 3, IR-003 (Local Fix for CRR-002 FO-003, code `0e3029d503`, head `308c509018`; only the slot editor and its spec changed since `1a4bfd2ae9`). Rerun: the desktop build and API-12's affected views. Round 2: IR-002 (CRR-001 FO-001/FO-002); API-09 (r2) passed and stays valid (no server change since). Round 1: IR-001
+- Prior rounds reviewed: round 1 (`API-REV-001`, Fail: runtime kinds in the launch setup summary); round 2 (`API-REV-002`, Fail: the fix failed the desktop build's typecheck)
 - Deviations from the investigation's plan, and why:
   - API-10 needed a baseline fix in its probe: harness drift that predates this ticket (see the case).
   - API-11's probe ignored `--output-dir <dir>` (it takes `--output-dir=<dir>`) and wrote into `autobyteus-web/test-results/`. The output was moved to `/tmp`; nothing was left in the worktree.
@@ -20,8 +20,8 @@ The run record and the result. The coverage investigation is the plan; `api-e2e-
 - Task size: `Medium`
 - Architectural risk: `Low`
 - Input route: `Direct Low-Risk`
-- Successful-output route: `Delivery` (not reached: result `Fail`)
-- Proportional test-code review decision: `Not Applicable` (Fail: failure-origin review requested)
+- Successful-output route: `Delivery`
+- Proportional test-code review decision: `Not Required — direct low-risk route` (CRR-001 noted that API/E2E's test commits `bacc8f51fd`, `a26305a2a7` would get a proportional test review after the next pass; the direct-route handoff rule sends a pass to delivery, and CRR-002 excluded them; recorded for delivery)
 
 ## Tested Builds And Environments
 
@@ -41,6 +41,7 @@ The run record and the result. The coverage investigation is the plan; `api-e2e-
 | API-12 | AC-001, AC-002, AC-003, AC-010, AC-011, QR-001 | isolated desktop instance of this worktree | Journey in `evidence/API-12-desktop-journey/JOURNEY.md` (UI over CDP; DOM checks per page; the voice extension installed; Memory → Search by keyboard with the emulated microphone; the chat composer's voice button for comparison) | ENV-2 | **Fail** (one finding); every other check Pass | `API-12-desktop-journey/JOURNEY.md`, `FINDING-application-setup-runtime-kinds.txt`, the screenshots and JSON files listed in JOURNEY.md | Finding: `"text": "PACKAGE BASELINE /researcher · codex_app_server · gpt-5.6-luna …"`, `"visible": true`, `"technicalToggle": "Show technical details"`. Passes: see JOURNEY.md (e.g. voice: `"value": "Release notes for the voice input."` with no memory-search request; picker: Enter chose "ab320-picker-1 Task C (choosable)" with the newest option `aria-disabled`) | Group C icons all present (search magnifiers, argument trash, folder browse, toasts). Not reached in the app (component-tested in IMP-05): Qwen "API key configured" (the form validates the key with the provider: "Model discovery failed with status 401"), Migrations "Run" (no pending migration), the workspace list's empty state, Token Statistics names (no data in a fresh instance), the Embedding Waiting state (AC-007) and the skill-update card (AC-009) |
 | API-09 (r2) | AC-004, AC-003 | same as API-09 | the API-09 command, `--output-dir /tmp/ab320e2e/r2/API-09/out` | ENV-1 on `de7482b46f` (server dist rebuilt) | Pass | `API-09-r2-delegated-launch-probe-stdout.log` | `Summary: 3 Pass, 0 Fail` | The fix's launch-usability fallbacks are not on this path (the notes use the availability reason) |
 | API-12 (r2) | AC-003 (FO-001/FO-002), AC-012 | isolated desktop build of `de7482b46f` | `CODEX_HOME=<throwaway> pnpm --silent isolated-app start --build` | macOS 26.5.2 | **Fail** (build): no instance started, so the views were not reached | `API-12-r2-desktop-build-typecheck-fail.log` | `"code": "BUILD_FAILED"`; `components/applications/setup/ApplicationExecutionResourceSlotEditor.vue(52,78): error TS2345: Argument of type 'string \| null' is not assignable to parameter of type 'string'.` and the same at `(64,78)`; `[typecheck] production errors: 2` | The desktop build's typecheck gate (`build:electron:mac`) rejects the fix: `agentRuntimeName(runtimeKind: string)` is called with `leaf.runtimeKind: string \| null` (Package and Selected resource baselines; line 88, the effective configuration, is non-null). At runtime a null renders empty, as before, so it's a type error, not a crash, but it blocks every desktop build. Round 1 built from `a26305a2a7` with the same tooling, so `1a4bfd2ae9` introduced it. IMP-12 (web suite, guards, changed-file tsc) does not run this gate |
+| API-12 (r3) | AC-003 (FO-001, FO-002, IR-002 census), AC-012 | isolated desktop build of `308c509018` | `CODEX_HOME=<throwaway> pnpm --silent isolated-app start --build`; the affected views over CDP | macOS 26.5.2; instance `iso-52555-8e2c` | Pass | `API-12-r3-affected-views/RESULTS.md`, `instance-build-start-stop.txt`, `API-12-r3-01…05-*.png` | `[typecheck] production errors: 0`; summary "PACKAGE BASELINE /researcher · Codex App Server · gpt-5.6-luna …" with no kind; issue "Model 'gpt-retired-ab320' is unavailable for Codex App Server and 'team member /researcher'." in the panel; "PREFERRED RUNTIME \| Claude Agent SDK", "PREFERRED RUNTIME \| Not set"; team-local member "PREFERRED RUNTIME \| Codex App Server"; token usage `["Runtime","AutoByteus"]` | The issue case used a saved override whose model Codex doesn't offer (as after a retirement), removed afterwards. One local LM Studio turn produced the token usage; the model was unloaded |
 
 ### Observations (not defects of this ticket)
 
@@ -54,7 +55,7 @@ The run record and the result. The coverage investigation is the plan; `api-e2e-
 | --- | --- | --- | --- | --- |
 | AC-001 | Yes | API-05 (IMP-05 sidebar test), API-07 (IMP-07), API-12 | Proven | — |
 | AC-002 | Yes | API-05 (component tests), API-12 (every group A/B page reachable in the app; group C kept) | Proven | — |
-| AC-003 | Yes | API-05, API-07, API-09, API-10, API-11, API-12 | **Not Proven**: round 1, the Application launch setup summary showed runtime kinds. Round 2: the fix does not build (API-12 r2), so the fixed views could not be seen | — |
+| AC-003 | Yes | API-05, API-07, API-09, API-10, API-11, API-12, API-12 (r3) | Proven (round 3: the launch setup summary, agent and team-member detail, token usage and launch-setup issue texts show full names) | — |
 | AC-004 | Yes | API-03/04/08 (IMP), API-09 | Proven | — |
 | AC-005 | Yes | API-02 (IMP-01) | Proven for maps (no other name map). The finding is a place that shows the kind without any map | — |
 | AC-006 | No | GLOSSARY (implementation) | Proven (review) | — |
@@ -63,25 +64,26 @@ The run record and the result. The coverage investigation is the plan; `api-e2e-
 | AC-009 | Yes | API-03 (builder test), API-05 (card test) | Proven | — |
 | AC-010 | Yes | API-00 (IMP-00), API-05, API-12 (real app) | Proven | — |
 | AC-011 | Yes | API-05, API-12 (real extension, real transcription, emulated microphone) | Proven | A real microphone and speech: optional user check |
-| AC-012 | Yes | API-02…08; API-12 (r2) | **Not Proven** in round 2: the desktop build fails its production typecheck | — |
+| AC-012 | Yes | API-02…08; API-12 (r3) (the desktop build passes its typecheck gate: 0 production errors, test files at baseline) | Proven for the suites and the desktop build; the clean-clone proof is delivery's | — |
 
 ## Validation Confidence Scorecard (Mandatory)
 
 | Confidence Category | Post-Repository Score | Final Score | What Supports It (Case IDs) | Residual Uncertainty | What Could Improve It |
 | --- | --- | --- | --- | --- | --- |
-| Requirement and acceptance-criteria proof | 80% | 75% | All ACs but AC-003 proven | AC-003 fails at one surface | Fix and recheck the launch setup summary |
-| Changed-boundary execution directness | 80% | 95% | Rendered pages in the desktop app; real extension | — | — |
-| Cross-boundary integration realism and mock gap | 75% | 95% | Real server texts read in the web (API-09, API-11); real voice IPC and transcription | The microphone is emulated | User check (optional) |
-| Environment, configuration, identity, and fixture fidelity | 85% | 95% | Worktree desktop build, own data root | — | — |
-| Failure, edge-case, lifecycle, and recovery evidence | 85% | 95% | Voice: no speech, failure text, mic denied, unavailable, not ready; picker loop option | — | — |
-| User-surface, browser, and desktop-shell confidence | 60% | 85% | API-12 | One user-visible surface shows kinds | Fix |
-| Durable regression coverage quality and relevance | 90% | 90% | Component and server tests; probes updated | No test asserts the launch setup summary's runtime text | A component test with the fix |
+| Requirement and acceptance-criteria proof | 80% | 95% | All ACs proven (round 3 closes AC-003 and AC-012); AC-008 is the Product Team's | AC-007 and AC-009 proven at component level only | — |
+| Changed-boundary execution directness | 80% | 95% | Rendered views in the desktop app; real extension | — | — |
+| Cross-boundary integration realism and mock gap | 75% | 95% | Real server texts read in the web (API-09, API-11, API-12 r3); real voice IPC and transcription | The microphone is emulated | User check (optional) |
+| Environment, configuration, identity, and fixture fidelity | 85% | 95% | Worktree desktop builds, own data roots | — | — |
+| Failure, edge-case, lifecycle, and recovery evidence | 85% | 95% | Voice states; picker loop option; null runtime (component test) and retired-model issue text (r3) | — | — |
+| User-surface, browser, and desktop-shell confidence | 60% | 95% | API-12, API-12 (r3) | Pages reachable only with real keys or data checked by component tests | — |
+| Durable regression coverage quality and relevance | 90% | 95% | Component tests for every fixed site (IMP-10/13/14), server tests, probes updated | — | — |
 
 - Overall post-repository confidence: 79%
-- Overall final confidence: 90% (simple average: 75, 95, 95, 95, 95, 85, 90)
-- Every critical acceptance criterion directly proven: `No` (AC-003)
-- Any final applicable category below `90%`: `Yes`: requirement proof, user surface
-- Default final confidence target of `95%` met: `No`
+- Overall final confidence: 95% (simple average of the seven final scores)
+- Every critical acceptance criterion directly proven: `Yes`
+- Any final applicable category below `90%`: `No`
+- Default final confidence target of `95%` met: `Yes`
+- Confidence-limiting residual risks: AC-007/AC-009 at component level; FU-001 (voice focus) and FU-002 (technical lines in the launch-authority summary) are follow-ups
 
 ## Broader Validation Decision (Mandatory)
 
@@ -127,14 +129,13 @@ The run record and the result. The coverage investigation is the plan; `api-e2e-
 
 ## Preliminary Classification (On `Fail`)
 
-- Round 2: `Local Fix` (implementation). In `ApplicationExecutionResourceSlotEditor.vue:52,64` the new `agentRuntimeName(leaf.runtimeKind)` receives `string | null`, which fails the desktop build's production typecheck. Handle the null as the other new callers do, e.g. "Not set", or keep it empty as before. A component assertion for a null runtime would cover it. Also run the web typecheck gate the desktop build runs (`pnpm -C autobyteus-web build:electron:mac` runs it first; its `[typecheck]` lines name the command).
-- Round 1 (resolved by IR-002 except for this): runtime kinds in the launch setup summary (FO-001) and agent detail (FO-002).
-- Recommended owner: implementation engineer, after failure-origin review.
+Not applicable in round 3 (Pass). Earlier rounds: round 1 runtime kinds (CRR-001 FO-001/FO-002, fixed by IR-002); round 2 the fix's type error (CRR-002 FO-003, fixed by IR-003).
 
 ## Latest Authoritative Result
 
-- Result: `Fail`
-- Criteria not proven: AC-003 (the fixed views could not be reached), AC-012 (the desktop build fails)
-- Preliminary classification and recommended owner: `Local Fix`, implementation engineer (failure-origin review first)
-- Next recipient from `get_handoff_rules`: Code Reviewer (failure-origin review)
-- Notes: API-09 (r2) passes. After the fix, the rerun is the desktop build and API-12's affected views: the app setup summary, the agent detail Default runtime, the token-usage Runtime row and a launch-setup issue text.
+- Result: `Pass`
+- Criteria not proven, or parts only the user can check: AC-008 (the Product Team's record, outside API/E2E); AC-011 with a real microphone (optional user check)
+- Next recipient from `get_handoff_rules`: Delivery
+- Notes:
+  - Durable coverage changed by API/E2E: `bacc8f51fd` (delegated-launch probe expectations) and `a26305a2a7` (system-instruction probe, baseline fix).
+  - Follow-ups: FU-001 (voice button focus), FU-002 (launch-authority summary's technical lines).

@@ -1,0 +1,44 @@
+# API-12 round 3: CODEX_HOME=<throwaway> pnpm --silent isolated-app start --build; commit 308c509018 (code 0e3029d503)
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "start",
+  "result": {
+    "instanceId": "iso-52555-8e2c",
+    "pid": 23104,
+    "executablePath": "$HOME/autobyteus_org/autobyteus-worktrees/web-ui-cleanup-round/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "backendUrl": "http://127.0.0.1:52556",
+    "graphqlUrl": "http://127.0.0.1:52556/graphql",
+    "controlEndpoint": "http://127.0.0.1:52555",
+    "controlPort": 52555,
+    "serverPort": 52556,
+    "dataRoot": "<dataRoot>",
+    "ownsDataRoot": true,
+    "keepDataRoot": false,
+    "testUpdateFeedUrl": null,
+    "databaseUrl": "file:<dataRoot>/server-data/db/production.db",
+    "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-52555-8e2c.log"
+  }
+}
+
+[typecheck] Nuxt app (tsconfig.json): 271 errors, exit 2, 31.7s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 2.1s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.8s
+[typecheck] production errors: 0; test-file errors: 298 in 139 files (baseline 298 in 139 files)
+[typecheck] PASS
+# stop
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "stop",
+  "result": {
+    "instanceId": "iso-52555-8e2c",
+    "wasRunning": true,
+    "forced": true,
+    "dataRoot": "<dataRoot>",
+    "dataRootRemoved": true,
+    "controlPortReleased": true,
+    "serverPortReleased": true,
+    "logPath": null
+  }
+}

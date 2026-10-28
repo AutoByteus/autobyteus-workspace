@@ -8,6 +8,7 @@ The latest coverage investigation and execution coverage report remain authorita
 | --- | --- | --- | --- | --- |
 | API-REV-001 | Implementation Engineer, `implementation-handoff.md`, round 1 | SR-001, IR-001 | N/A | Fail / 90% |
 | API-REV-002 | Implementation Engineer, IR-002 (CRR-001 Local Fix), round 2 | IR-002, CRR-001 | Fail / 90% | Fail (build) |
+| API-REV-003 | Implementation Engineer, IR-003 (CRR-002 Local Fix), round 3 | IR-003, CRR-002 | Fail (build) | Pass / 95% |
 
 ## Revision Entries
 
@@ -54,3 +55,27 @@ None.
 - New or remaining failure IDs: API-12 (r2) build typecheck
 - Recommended owner: Code Reviewer (failure-origin review), then the implementation engineer
 - Remaining risks, blocked evidence, or untested scope: the fixed views, the token-usage Runtime row and a launch-setup issue text await a building fix
+
+### API-REV-003: Round 3. The fix builds; the affected views show full names
+
+- Triggering role, report path, and round: Implementation Engineer, `implementation-handoff.md` IR-003 (CRR-002 FO-003), round 3
+- Triggering finding or case IDs: FO-003 (and the pending FO-001/FO-002 verification)
+- Related revision IDs: IR-003, CRR-002
+- Why this revision was recorded: rerun after the fix
+- Coverage decisions or durable test paths changed: none
+- Cases added, changed, removed, or rechecked: API-12 (r3): desktop build plus the affected views; API-09 (r2) stays valid (no server change since `1a4bfd2ae9`)
+- Commands, environment, fixture, or broader-validation delta: isolated instance `iso-52555-8e2c`; a retired-model override (removed); one local LM Studio turn
+
+#### Prior Failure Resolution
+
+| Prior Case / Failure Reference | Previous Classification | Current Resolution | Case IDs Now Proving It |
+| --- | --- | --- | --- |
+| API-12 round 1 (runtime kinds in the launch setup summary; agent detail) | Local Fix (CRR-001 FO-001, FO-002) | Fixed (IR-002, IR-003); names shown in the app | API-12 (r3) |
+| API-12 (r2) (the desktop build's typecheck) | Local Fix (CRR-002 FO-003) | Fixed (IR-003); build passes with 0 production errors | API-12 (r3) |
+
+- Canonical artifacts and sections updated: execution report (Round, Routing, Cases, Acceptance-Criteria Proof, Scorecard, Classification, Result)
+- Prior result and confidence: Fail (build)
+- Current result and confidence: Pass, 95%
+- New or remaining failure IDs: none
+- Recommended owner: delivery
+- Remaining risks, blocked evidence, or untested scope: AC-007/AC-009 at component level; FU-001, FU-002
