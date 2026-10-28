@@ -2,13 +2,15 @@
 
 - Status:
   - Verified from the evidence, and proven from a clean clone of the integrated branch (AC-032); archived and finalized on `personal`. The final state is in `release-deployment-report.md`.
-  - Released as beta, as the user asked during delivery ("release a new beta please if everythign works", 2026-10-28). The tag and the rollout result are in `release-deployment-report.md`.
+  - Released as beta **v1.5.9-beta.15**, as the user asked. All four release workflows succeeded, with 17 of 17 assets and Docker `:beta` moved.
+  - The first beta, **v1.5.9-beta.14**, is a partial release: its desktop builds failed at the new type gate on the release runners (see below).
+  - Details are in `release-deployment-report.md`.
 - Classification: `task_size=Large`, `architectural_risk=High`, reviewed route.
   - Architecture review: ARCH-REV-002 Pass.
   - Source review: CRR-002 Pass (CR-001 resolved by `256cee925e`).
   - API/E2E: API-REV-001 Pass, 95.3%.
   - Test-code review: CRR-003 Pass (five Rule 9 baseline fixes, none weakens an assertion).
-- Revisions: SR-005 / ARCH-REV-002 / IR-002 / CRR-003 / API-REV-001 / DR-001.
+- Revisions: SR-005 / ARCH-REV-002 / IR-004 / CRR-007 / API-REV-003 / DR-002.
 - Origin: Project Task `autobyteus-294`, collecting test and tooling follow-ups from earlier tickets.
 
 ## What Changed
@@ -71,6 +73,25 @@ Every critical acceptance criterion is directly proven. The table is in `release
   - IMP-08: each BEH-032 spec fails on the base and passes with the fix.
 - No user check is needed: nothing in the requirements needs the user's own accounts or nodes.
 
+## The beta.14 Desktop Failure And Its Fix
+
+- **What failed:** in `v1.5.9-beta.14`, all five desktop builds stopped at the new web type gate. Android, iOS and Docker published, so the release had 2 of 17 assets.
+- **The causes,** none visible on the prepared local machines:
+  1. On a fresh runner the gate ran before `@autobyteus/application-sdk-contracts` was built, so its types were missing (fixed by IR-003, `75e9f323f0`: the gate builds the shared types it reads).
+  2. The macOS runners' default V8 heap (about 1.75 GB) was below the Nuxt compiler's 3 GB peak (fixed by IR-004, `2846b2abd2`: an explicit 4096 MB heap).
+  3. Build outputs inside the package entered the type project (fixed by IR-004, `65a7955726`).
+- **Review and validation of the fix:** CRR-004..CRR-007, API-REV-003 (95.0%).
+- **Proof on the release runners:** build-only runs `40649647049` and `40658284610`, all five builds `[typecheck] PASS`, plus a local server Docker build (DEL-03).
+- **Process changes** (RELEASE.md, agreed by the user, `aca8655bdd`):
+  - a build-only release run before every tag;
+  - watch the four runs together;
+  - read the guide from `origin/personal`;
+  - a beta.14 case study.
+- **Delivery's own misses,** recorded there too:
+  - no build-only run before the tag;
+  - the runs were watched one after another;
+  - the guide was read from the stale main checkout, so the Secret Gate ran late (it passed on everything pushed).
+
 ## Residual Risks
 
 - AC-014 was run on macOS only. Its wording is "Linux when available", and no Linux host was available; SD-14 showed the same fixes on Linux.
@@ -79,6 +100,9 @@ Every critical acceptance criterion is directly proven. The table is in `release
 
 ## Follow-ups (`follow-ups.md`, sent by the Solution Designer)
 
-FU-001..FU-014. FU-010 came from code review, FU-011 and FU-012 from API/E2E, and FU-013 and FU-014 from delivery:
+FU-001..FU-015. FU-010 came from code review, FU-011 and FU-012 from API/E2E, and FU-013..FU-015 from delivery:
 - FU-013: the stale `openStreamingSession` line in `agent_execution.md`;
-- FU-014: the watcher integration test's timing under full-suite load.
+- FU-014: the watcher integration test's timing under full-suite load;
+- FU-015: release installs depend on `cdn.sheetjs.com`.
+
+The user's idea of running the type gate locally, outside the GitHub pipeline, is with the Solution Designer as a separate change.

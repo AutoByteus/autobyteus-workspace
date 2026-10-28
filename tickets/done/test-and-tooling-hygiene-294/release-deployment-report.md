@@ -150,16 +150,50 @@
   - Windows x64 job `122702912714`;
   - macOS ARM64 job `122702912310`: 75.5 s.
 - No `FATAL` or SIGABRT on either macOS runner.
-- Still required before tagging `v1.5.9-beta.15`:
-  - the user's decision on the pending Requirement Gap (keep the gate in the release build chain, or run it locally before release), sent to the Solution Designer by the code reviewer;
-  - then, per RELEASE.md: the Secret Gate, the merge into `personal`, the checks before tagging, and a build-only run on the pushed merge.
+
+### Recovery release `v1.5.9-beta.15` (RELEASE.md § Recovery: the tag's content was at fault)
+
+- **Decision:** the user, 2026-10-28: "if no problem then we should release … Release the beta please". The gate stays in `build:electron*`, as REQ-007 / DEC-004 have it. The idea of moving it out of the GitHub pipeline is not part of this release; the Solution Designer was told it is a separate change.
+- **Repository finalization of the fix:**
+  - Secret Gate `origin/personal..codex/test-and-tooling-hygiene-294` (12 commits): PASS;
+  - ticket branch pushed (`2c23d65cac`);
+  - `finalize/test-and-tooling-hygiene-294` from `origin/personal` `4c34e5b71d`, `git merge --no-ff` → `620a4d988b` (tree identical to the ticket branch);
+  - Secret Gate on the merged state (13 commits): PASS; licensing and hygiene checks: passed;
+  - `origin/personal` unchanged, so pushed `4c34e5b71d..620a4d988b`.
+- **Checks before tagging** (RELEASE.md as updated in `aca8655bdd`):
+  - `scripts/check_secrets.sh v1.5.9-beta.14..HEAD`: PASS (13 commits).
+  - Build-only release run `40658284610` (`pnpm release:test --ref personal`, head `620a4d988b`): `success` on the first attempt. All five builds show `[typecheck] production errors: 0; test-file errors: 298 in 139 files (baseline 298 in 139 files)`, `[typecheck] PASS`. Publish was `skipped`.
+  - Server Docker image (no build-only mode in `release-server-docker.yml`, which always pushes), built locally from a clean detached checkout of `620a4d988b` with `docker build -f autobyteus-server-ts/docker/Dockerfile.monorepo`: `docker build exit: 0 (241s)`. The image holds `autobyteus-server-ts/mobile-web` (the `build:mobile-web` output) and `dist`; image and checkout removed (`evidence/DEL-03-server-docker-local-build.log`). This covers the one Docker input the fix changed (`autobyteus-web/nuxt.config.ts`, a type-check exclude list).
+  - Android and iOS: their workflows build only the native projects; nothing they build changed since `v1.5.9-beta.14`, where both succeeded.
+- **Release commit and tag:**
+  - `517cf5b604` `chore(release): bump workspace release version to 1.5.9-beta.15`, with annotated tag `v1.5.9-beta.15` (`scripts/desktop-release.sh beta --branch finalize/test-and-tooling-hygiene-294 --no-push`);
+  - `origin/personal` was still `620a4d988b`, so I pushed `620a4d988b..517cf5b604` and the tag.
+- **Rollout** (the four runs watched together):
+
+  | Workflow | Run | Result | Time (UTC) |
+  | --- | --- | --- | --- |
+  | Desktop Release | `40662983257` | success | 09:16:40 → 09:50:59 |
+  | Server Docker Release | `40662983271` | success | 09:16:40 → 09:54:58 |
+  | Android APK Release | `40662983285` | success | 09:16:40 → 09:22:14 |
+  | iOS App Store Connect Release | `40662983305` | success | 09:16:40 → 09:34:42 |
+
+- **Published artifacts:**
+  - `gh release view v1.5.9-beta.15`: pre-release, not a draft, **17 of 17 assets**:
+    - Android APK and its `.sha256`;
+    - Linux x64 and ARM64 AppImages;
+    - macOS ARM64 and x64 `.dmg`/`.zip` with blockmaps;
+    - the Windows `.exe`;
+    - `latest.yml`, `latest-mac.yml`, `latest-linux.yml`, `latest-linux-arm64.yml`.
+  - Docker Hub: `autobyteus/autobyteus-server:1.5.9-beta.15` and `:beta` share digest `sha256:b0c7a64ef0b4…408aab`, for `linux/amd64` and `linux/arm64`.
+- **Result:** `v1.5.9-beta.15` is `Completed`. `v1.5.9-beta.14` stays as the partial release (Android, iOS, Docker; no desktop assets), and its tag was not moved.
 
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294`
-- Worktree cleanup result: `Blocked` (kept for the desktop build fix)
-- Local ticket branch cleanup result: `Blocked` (kept). `codex/test-and-tooling-hygiene-294` was fast-forwarded to `origin/personal` `4c34e5b71d` for the fix.
-- Remote branch cleanup result: `Blocked` (kept until the fix lands)
+- Worktree cleanup result: `Completed` after this record is pushed, the same way as the previous delivery. Only untracked build output (`autobyteus-web/electron-dist/`, git-ignored) remains in it.
+- Local ticket branch cleanup result: `Completed` after this record is pushed. `codex/test-and-tooling-hygiene-294` and `finalize/test-and-tooling-hygiene-294` are both contained in `origin/personal`.
+- Remote branch cleanup result: `Not required`. `origin/codex/test-and-tooling-hygiene-294` is kept as pushed ticket history, as for earlier tickets.
+- Temporary items: the clean clones, the Docker check image and its checkout, and `/tmp/ab294-delivery` were removed.
 
 ## Release Notes Summary
 
@@ -168,7 +202,7 @@
 
 ## Deployment Steps
 
-- No hosted deployment (RELEASE.md § Deployment). The server rollout is the Docker image `autobyteus/autobyteus-server:1.5.9-beta.14`, which also moves `:beta`.
+- No hosted deployment (RELEASE.md § Deployment). The server rollout is the Docker image `autobyteus/autobyteus-server:1.5.9-beta.15`; `:beta` points to it (same digest). Users upgrade with `autobyteus-docker upgrade --all --tag beta`.
 - Desktop installs with **Receive beta updates** on are offered the update.
 
 ## Environment Or Persisted-Data Transition Notes
@@ -195,10 +229,18 @@
 
 ## Final Status
 
-- Verification complete (from the evidence): `Yes` for the validated acceptance criteria. The release exposed a gap the evidence did not cover: the type gate inside the CI desktop build on a fresh runner.
-- Repository finalization complete: `Yes` (`3f0f22f8c2`, release commit `4c34e5b71d`)
-- Applicable release/deployment/rollout complete: **`No`**. `v1.5.9-beta.14` is a partial release, with desktop failed.
-- Applicable safe cleanup complete: `No` (deferred)
-- Unresolved blocker: the desktop build fails at the type gate on a fresh CI runner (`Local Fix`, implementation engineer)
-- Successful terminal package eligible for return: `No`
-- Terminal package sent to the Solution Designer: `No`
+- Verification complete: `Yes`.
+  - From the evidence (API-REV-001, and API-REV-003 for the fix) and the clean clone (DEL-01, DEL-02).
+  - Plus the release-runner proof the first release lacked: build-only runs `40649647049` (fix branch) and `40658284610` (`personal`), and the local Docker build DEL-03.
+  - No user check was needed.
+- Repository finalization complete: `Yes`.
+  - `3f0f22f8c2` (ticket), `620a4d988b` (fix), release commits `4c34e5b71d` (beta.14) and `517cf5b604` (beta.15);
+  - this record goes in a docs commit on top.
+- Applicable release/deployment/rollout complete: `Yes`.
+  - `v1.5.9-beta.15`: all four workflows succeeded, 17 of 17 assets, Docker `:beta` moved.
+  - `v1.5.9-beta.14` is recorded as partial.
+- Applicable safe cleanup complete: `Yes`, after this record is pushed (see Post-Finalization Cleanup).
+- Unresolved blocker: `None`.
+- Proposed guide fix not yet agreed by the user: one line in Checks Before Tagging, saying that when a change touches the server or the web files the server Docker image builds (`Dockerfile.monorepo`: `build:mobile-web`), build that image locally before tagging, because `release-server-docker.yml` has no build-only mode.
+- Successful terminal package eligible for return: `Yes`.
+- Terminal package sent to the Solution Designer: `Yes`, `Delivery Completed`, after the push of this record.
