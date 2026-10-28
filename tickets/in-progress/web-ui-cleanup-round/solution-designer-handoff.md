@@ -49,6 +49,17 @@ Six local changes in their existing owners, plus two small consolidations:
 - Server unit tests for the agent-facing runtime names (AC-004); contract test (AC-005).
 - AC-008 (design repository) is with the Product Team (delegated 2026-10-28, coordinator run `product_ui_ux_designer_59eb057cb21e4b06b448096a92028ca4`). The Solution Designer passes their commit to delivery for the report.
 
+## Product Team result for REQ-006 / AC-008 (2026-10-28)
+
+- Done by the Product Team (coordinator run `product_ui_ux_designer_59eb057cb21e4b06b448096a92028ca4`). The design repository records "Project: Waiting" as one state, "Waiting…" (zh-CN "等待中…"), citing the user's approval.
+- Repository: `/Users/normy/autobyteus_org/autobyteus-web-design` (remote `AutoByteus/autobyteus-web-prototype`), branch `personal`.
+  - Change commit: `a4e5674eb605324f323e93e51142d8ee115e9b4a`.
+  - Integration-record commit (final revision): `752b6b816c01350280f87cbd994146b8ff03832b`.
+- Link for the delivery report: `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/search-model-settings/ui-ux-spec.md`, states table row "Project: Waiting", and the "Revision RV-001" section at its top. Updated references: VIS-007, VIS-010, and VIS-022 (zh-CN), in `tickets/done/search-model-settings/visual-references/`.
+- Their check: in the browser on the design reference, both model states show "Waiting…", then "Indexing 2 of 5"; zh-CN shows "等待中…".
+- Their recorded limitations (design repository only, not this app): older visual references are ticket-time captures, and two old capture scripts use outdated test ids.
+- Nothing was written in the app's repository. Delivery links this record for AC-008.
+
 ## Follow-ups
 
 None.
