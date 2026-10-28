@@ -14,14 +14,15 @@
 - Relevant Architecture Review Revision IDs: ARCH-REV-002
 - Implementation Handoff Reviewed As Context: `implementation-handoff.md` (IR-001, including "Deviations and additions" 1–10)
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
-- Relevant Implementation Revision IDs: IR-001
+- Relevant Implementation Revision IDs: IR-001, IR-002
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-001`
-- Current Review Round: 1
-- Review Scope: `Full Review`
-- Trigger: implementation handoff IR-001 (Large / High)
-- Prior Review Round Reviewed: N/A
-- Latest Authoritative Round: 1
+- Current Code Review Revision ID: `CRR-002`
+- Current Review Round: 2
+- Review Scope: round 1 `Full Review`; round 2 `Targeted Delta Review`
+- Review Scope Evidence (round 2): the delta `6fa5f443c6..54ed02d56d` touches only `utils/apolloClient.ts`, `plugins/30.apollo.client.ts` and `plugins/__tests__/apollo.client.spec.ts` (commit `256cee925e`, 9+/52-), the files of CR-001; the other two commits are ticket documents. No shared interface beyond the removed dead slots changes; `getApolloClient()` keeps its return type and its 79 callers.
+- Trigger: round 1, implementation handoff IR-001; round 2, IR-002 (CR-001 Local Fix)
+- Prior Review Round Reviewed: 1 (CRR-001, Fail)
+- Latest Authoritative Round: 2
 - Code reviewed: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294`, branch `codex/test-and-tooling-hygiene-294`, `origin/personal` (`2f48d85d4d`)..`6fa5f443c6` (43 commits); `cf5192d830` holds the ticket documents only.
 
 ## Routing Classification Review
@@ -105,7 +106,7 @@
 | Off-spine concern clarity | Pass | baseline written only by the update mode | — |
 | Existing capability/subsystem reuse check | Pass | `Icon`, `NativeCommandProcessScope`, `github-head-read-stub`, the `--import` stub pattern; the Brief Studio helper extracted once | — |
 | Reusable owned structures check | Pass | `brief-studio-package.ts` is used by 3 suites | — |
-| Shared-structure/data-model tightness check | Fail | the NuxtApp augmentation adds two parallel shapes (`_apolloClients`, `$apollo.{clients,defaultClient}`) for the one bound client (CR-001) | CR-001 |
+| Shared-structure/data-model tightness check | Pass | round 2: `NuxtAppLike` and the `#app` augmentation declare only `[BOUND_APOLLO_CLIENT_KEY]?` (CR-001 resolved) | — |
 | Repeated coordination ownership check | Pass | — | — |
 | Empty indirection check | Pass | `package.json` scripts are thin entries, as designed | — |
 | Scope-appropriate separation of concerns and file responsibility clarity | Pass | `TreeNode` helpers moved to module scope, unchanged logic | — |
@@ -113,14 +114,14 @@
 | Authoritative Boundary Rule check | Pass | — | — |
 | File placement check | Pass | new files sit beside their peers | — |
 | Flat-vs-over-split layout judgment | Pass | — | — |
-| Interface/API boundary clarity | Pass | `getApolloClient` has an unused `clientId` selector (part of CR-001) | CR-001 |
-| Naming quality; one concept, one name (Principle 15) | Pass with CR-001 | one client under four names (`__boundApolloClient`, `_apolloClients.default`, `$apollo.defaultClient`, `$apollo.clients.default`), now typed app-wide | CR-001 |
+| Interface/API boundary clarity | Pass | round 2: `getApolloClient()` takes no selector | — |
+| Naming quality; one concept, one name (Principle 15) | Pass | round 2: one client, one key; `git grep` finds no `_apolloClients` / `$apollo` in `autobyteus-web` | — |
 | No unjustified duplication of code | Pass | — | — |
 | Patch-on-patch complexity control | Pass | — | — |
-| Dead code removed in the touched files and modules (Principle 7) | Fail | CR-001 | CR-001 |
+| Dead code removed in the touched files and modules (Principle 7) | Pass | round 2: CR-001 resolved | — |
 | Relevant test scenarios and assertions are clear and requirement-aligned | Pass | BEH-032 specs enter through the real triggers (picker emit, component mount) and fail on base (IMP-08) | — |
 | Test fixtures/helpers reusable; structure coherent | Pass | — | — |
-| No stale, duplicated, or compatibility-only tests retained in changed scope | Fail | `plugins/__tests__/apollo.client.spec.ts` "registers bound client in both custom and nuxt-apollo compatibility slots" asserts the dead slots | CR-001 |
+| No stale, duplicated, or compatibility-only tests retained in changed scope | Pass | round 2: the spec asserts `toEqual({ [BOUND_APOLLO_CLIENT_KEY]: client })`, so the app holds exactly the bound key | — |
 | API/E2E readiness | Pass | the handoff's "not run" list and coverage hints are concrete | — |
 
 ## Source File Size And Structure Audit (If Applicable)
@@ -135,7 +136,7 @@
 | `stores/toolManagementStore.ts` | 479 | 483 | Pass | 9+/4- | — | — | OK | — |
 | `pages/settings.vue` | 450 | 450 | Pass | 13/13 | — | — | OK | — |
 | `nuxt.config.ts` | 235 | 230 | Pass | 19+/25- | — | — | OK | — |
-| `plugins/30.apollo.client.ts`, `utils/apolloClient.ts` | 108, 19 | 116, 20 | Pass | small | binding owner | — | CR-001 | CR-001 |
+| `plugins/30.apollo.client.ts`, `utils/apolloClient.ts` | 108, 19 | 94, 10 (round 2) | Pass | small | binding owner | — | OK | — |
 | server `claude-sdk-client.ts`, `build-studio-server.ts` | 342, 419 | 338, 419 | Pass | small | — | — | OK | — |
 
 `test-support/live-e2e/live-e2e-harness.ts` (1297 → 1306) is test tooling; source thresholds do not apply.
@@ -144,14 +145,16 @@
 
 | Check | Result | Notes |
 | --- | --- | --- |
-| No backward-compatibility mechanisms in changed scope | Fail | the "nuxt-apollo compatibility slots" in the touched plugin are kept and newly typed (CR-001) |
+| No backward-compatibility mechanisms in changed scope | Pass | round 2: the nuxt-apollo compatibility slots are removed (CR-001) |
 | No legacy old-behavior retention in changed scope | Pass | `env` option, DLC-008 stripping, gateway scripts, class icons removed |
-| Dead code removed in the touched files and modules | Fail | CR-001; the rest of deviation 2 is correct (`devhandler-compat`: the only `server:devHandler` caller passes two arguments, `@nuxt/vite-builder` L889; `routeRules` `middleware`: no `workspace` middleware exists; `config.public.vncPassword`: not declared in `runtimeConfig`) |
+| Dead code removed in the touched files and modules | Pass | round 2: CR-001 resolved; the rest of deviation 2 is correct (`devhandler-compat`: the only `server:devHandler` caller passes two arguments, `@nuxt/vite-builder` L889; `routeRules` `middleware`: no `workspace` middleware exists; `config.public.vncPassword`: not declared in `runtimeConfig`) |
 | Approved persisted-data transition decision followed | Pass | `Not Affected` |
 | No version-specific dual reads/writes | Pass | — |
 | Approved transition mechanics match | Pass | N/A |
 
 ## Dead / Obsolete / Legacy Items Requiring Removal (Mandatory If Any Exist)
+
+Round 2: all four items below were removed in `256cee925e` (verified in the diff and with `git grep`). The table is kept as the round-1 record.
 
 | Item / Path | Type | Evidence | Why It Must Be Removed | Required Action |
 | --- | --- | --- | --- | --- |
@@ -172,24 +175,33 @@ None.
 
 ## Review Scorecard (Mandatory)
 
-- Overall score: 9.2 / 10 (simple average; not the decision rule)
+- Overall score: 9.4 / 10 (simple average; not the decision rule). Round 1 was 9.2, with categories 5, 9 and 10 at 8.8 because of CR-001.
 
 | Priority | Category | Score | Why This Score | What Is Weak / Holding It Down | What Should Improve |
 | --- | --- | --- | --- | --- | --- |
 | 1 | Data-Flow Spine Inventory and Clarity | 9.5 | DS-001..004 implemented as designed; the gate's local spine is short and explicit | — | — |
-| 2 | Ownership Clarity and Boundary Encapsulation | 9.4 | the gate owns its rules and baseline; fixes stay with their owners | — | — |
-| 3 | API / Interface / Query / Command Clarity | 9.2 | gate CLI is clear | `getApolloClient(clientId)` keeps a selector nothing uses | drop `clientId` (CR-001) |
+| 2 | Ownership Clarity and Boundary Encapsulation | 9.4 | the gate owns its rules and baseline; the plugin owns the one client binding | — | — |
+| 3 | API / Interface / Query / Command Clarity | 9.4 | the gate CLI is clear; `getApolloClient()` has no unused selector | — | — |
 | 4 | Separation of Concerns and File Placement | 9.5 | pure rules split from the runner; new files beside their peers | — | — |
-| 5 | Shared-Structure / Data-Model Tightness | 8.8 | `NuxtAppLike` and the new NuxtApp augmentation carry three parallel shapes for one client | overlapping representations made app-wide | one binding (CR-001) |
-| 6 | Naming Quality and Local Readability | 9.3 | comments state causes; commit labels follow Rule 9 | one client under four names | CR-001 |
+| 5 | Shared-Structure / Data-Model Tightness | 9.3 | one binding shape (`[BOUND_APOLLO_CLIENT_KEY]`) | — | — |
+| 6 | Naming Quality and Local Readability | 9.4 | one name per client; comments state causes; commit labels follow Rule 9 | — | — |
 | 7 | API/E2E Readiness | 9.4 | clear not-run list, commands, look-for strings | — | — |
-| 8 | Runtime Correctness And Behavioral Fidelity | 9.5 | every production type fix checked against SD-18: same runtime behaviour or the approved BEH-032 fix; BEH-032 specs fail on base | — | — |
-| 9 | No Backward-Compatibility / No Legacy Retention | 8.8 | many legacy paths removed | nuxt-apollo compatibility slots kept in a touched file and newly typed | remove (CR-001) |
-| 10 | Cleanup Completeness | 8.8 | thorough removals with evidence, FU-009 recorded | deviation 1 removed one dead fallback and kept the adjacent ones (same reasoning) | finish CR-001 |
+| 8 | Runtime Correctness And Behavioral Fidelity | 9.5 | every production type fix checked against SD-18; the BEH-032 specs fail on base | — | — |
+| 9 | No Backward-Compatibility / No Legacy Retention | 9.4 | legacy paths and the nuxt-apollo slots removed | unused `@nuxtjs/apollo` dev dependency (follow-up FU-010, not scored) | — |
+| 10 | Cleanup Completeness | 9.3 | removals made with evidence; FU-009 and FU-010 recorded | — | — |
 
 ## Findings
 
-### CR-001 — Dead Apollo compatibility slots kept and newly typed (Local Fix, implementation)
+### CR-001 — Dead Apollo compatibility slots kept and newly typed (Local Fix, implementation) — Resolved in round 2
+
+- Resolution (CRR-002): commit `256cee925e`.
+  - `getApolloClient()` takes no parameter. It returns the bound client or throws "No Apollo client is bound".
+  - `registerBoundApolloClient` writes only the bound key.
+  - `NuxtAppLike` and the `#app` augmentation declare only that key.
+  - The spec asserts the app holds exactly that key.
+  - Checks: `git grep` finds no `_apolloClients` / `$apollo` left in `autobyteus-web`; typecheck PASS (0 production, baseline 298/139), the plugin spec 2/2, `test:nuxt` 666 files (IMP-19).
+
+Round-1 record:
 
 - Contract: Principle 7 (dead code in touched files), Principle 8 (no compatibility slots), Principle 15 (one concept, one name). Candidate C-01.
 - Where: `autobyteus-web/utils/apolloClient.ts` L6-20; `autobyteus-web/plugins/30.apollo.client.ts` L10-26 (`NuxtAppLike`, the new `declare module '#app'`), L88-113 (`registerBoundApolloClient`); `plugins/__tests__/apollo.client.spec.ts` L17-27.
@@ -212,11 +224,11 @@ None.
 
 ## Classification
 
-- `Local Fix` (implementation-owned): bounded to two production files and one spec, with no requirement or design change.
+- Round 2: none (Pass). Round 1 was `Local Fix` (implementation-owned, CR-001), now resolved.
 
 ## Recommended Recipient
 
-- Implementation Engineer (`/software_engineering_team/implementation_engineer`): "source review identifies an implementation-owned Local Fix … before executable coverage". After the fix: source review again (Targeted Delta Review on CR-001), then API/E2E.
+- API/E2E Engineer (`/software_engineering_team/api_e2e_engineer`), for coverage and executable validation. Implementation Engineer receives an informational pass notice.
 
 ## Residual Risks
 
@@ -227,11 +239,18 @@ None.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail`
-- Review Entry Point: `Implementation Review`
+- Review Decision: `Pass`
+- Review Entry Point: `Implementation Review` (round 2, Targeted Delta Review)
 - Supported Product Scenario Gate: `Pass`
 - Material-Premise Gate: `Pass`
-- Score Summary: 9.2 average; categories 5, 9 and 10 at 8.8 (CR-001); all others ≥ 9.2.
+- Score Summary: 9.4 average; every category ≥ 9.3.
 - Failure Origin: N/A
-- Recommended Recipient: Implementation Engineer (Local Fix CR-001)
-- Notes: the rest of the change is sound. Every production type fix matches SD-18 with unchanged behaviour or an approved BEH-032 fix. No `any` or suppression was added to production code. The gate fails closed as specified. No changed test assertion is weakened (QR-001).
+- Recommended Recipient: API/E2E Engineer
+- Notes:
+  - CR-001 is resolved.
+  - Round 1's other conclusions are unchanged and still hold, because the delta touches only CR-001's files:
+    - every production type fix matches SD-18 with unchanged behaviour or an approved BEH-032 fix;
+    - no `any` or suppression was added to production code;
+    - the gate fails closed;
+    - no changed test assertion is weakened (QR-001).
+  - API/E2E still owns the handoff's not-run list (Residual Risks).
