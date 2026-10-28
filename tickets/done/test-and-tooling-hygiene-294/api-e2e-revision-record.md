@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- |
 | API-REV-001 | Code Reviewer, `code-review-report.md`, CRR-002 (round 2 Pass) | SR-005, ARCH-REV-002, IR-002, CRR-002 | N/A | Pass / 95.3% |
 | API-REV-002 | Code Reviewer, `code-review-report.md` § Round 3, CRR-004 (IR-003 packaging fix) after DR-001 | IR-003, CRR-004, DR-001 | Pass / 95.3% | Fail / 73% |
+| API-REV-003 | Code Reviewer, CRR-006 (round 5), IR-004 (CR-002, CR-003) | IR-004, CRR-005, CRR-006 | Fail / 73% | Pass / 95.0% |
 
 ## Revision Entries
 
@@ -58,3 +59,27 @@ None.
 - Recommended owner: implementation engineer (`Local Fix`, preliminary), through the Code Reviewer's failure-origin review.
 - Remaining risks, blocked evidence, or untested scope: the build-only release run (delivery, needs a push to `personal`); whether a raised heap fits in a 7 GB runner (vue-tsc RSS 4.4-4.9 GB at a 4 GB cap on this host).
 - Correction of a round-1 statement: round 1's AC-009/AC-016 proof (API-24) ran from a clean worktree on a 64 GB Mac and could not show F-1 or F-2.
+
+### API-REV-003 — Rerun for IR-004: the gate passes after a local build, under the macOS runner heap, and inside a 7 GB ceiling
+
+- Triggering role, report path, and round: Code Reviewer, `code-review-report.md` CRR-006 (round 5).
+- Triggering finding or case IDs: CR-002 (F-1), CR-003 (F-2); IMP-21, IMP-22.
+- Related revision IDs: IR-004, CRR-005, CRR-006.
+- Why recorded: rerun of the affected validation after the fixes for API-REV-002's failures.
+- Coverage decisions or durable test paths changed: none.
+- Cases added, changed, removed, or rechecked: reran API-30, API-28, API-29 (`test:nuxt`); added API-32 (Docker `--memory=7g --memory-swap=7g`, with a control run).
+- Commands, environment, fixture, or broader-validation delta: ENV-4 container emulating the 7 GB runner's memory and Node's derived default heap (2096 MB).
+
+#### Prior Failure Resolution
+
+| Prior Case / Failure Reference | Previous Classification | Current Resolution | Case IDs Now Proving It |
+| --- | --- | --- | --- |
+| F-1: the Nuxt compiler aborts on the 7 GB macOS runner heap (API-28, API-31) | Local Fix, implementation (CR-002) | Resolved in emulation: passes under `NODE_OPTIONS=--max-old-space-size=1792` and in a 7 GB container (peak 3.12 GB, no OOM kill), where the unflagged compiler still aborts | API-28 rerun, API-32 |
+| F-2: build outputs inside the Nuxt type scope (API-30) | Local Fix, implementation (CR-003) | Resolved | API-30 rerun |
+
+- Canonical artifacts and sections updated: investigation (Meta, § Round 3), execution report (Round, § Round 3, Latest Authoritative Result; round 2 result kept as superseded), progress log, `evidence/API-28`, `API-29`, `API-30` (round 3 sections), `API-32`.
+- Prior result and confidence: Fail, 73%.
+- Current result and confidence: Pass, 95.0%.
+- New or remaining failure IDs: none.
+- Recommended owner: Code Reviewer (Pass route), then Delivery.
+- Remaining risks, blocked evidence, or untested scope: the five-runner build-only release run needs a pushed ref (delivery or the user; RELEASE.md before any tag); the user's pending suggestion to move the gate out of the pipeline (Requirement Gap at the Solution Designer).

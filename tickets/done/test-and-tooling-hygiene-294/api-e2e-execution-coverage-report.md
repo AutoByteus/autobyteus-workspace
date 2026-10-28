@@ -3,10 +3,10 @@
 ## Round
 
 - Coverage investigation (the plan; it lists the upstream documents): `api-e2e-coverage-investigation.md`
-- API/E2E revision record and current revision ID: `api-e2e-revision-record.md`, `API-REV-002`
+- API/E2E revision record and current revision ID: `api-e2e-revision-record.md`, `API-REV-003`
 - Test progress log (when used): `api-e2e-test-progress.md`
-- Round and trigger: round 1, code review pass CRR-002; **round 2 (current), code review pass CRR-004 of the IR-003 packaging fix `75e9f323f0`** (§ Round 2 below)
-- Prior round reviewed: round 1 (API-REV-001, Pass 95.3%)
+- Round and trigger: round 1, code review pass CRR-002; round 2, code review pass CRR-004 of the IR-003 packaging fix `75e9f323f0` (§ Round 2); **round 3 (current), code review pass CRR-006 of IR-004 (CR-002, CR-003)** (§ Round 3)
+- Prior round reviewed: round 2 (API-REV-002, Fail 73%: F-1, F-2)
 - Deviations from the investigation's plan, and why:
   - API-20 ran file by file (run 2, temporary runner) after the full `pnpm test:e2e` (run 1) was stopped at the 2 h tool limit; the machine slept 03:32-05:16, which explains run 1's apparent hang. The two files that started at sleep boundaries were rerun awake.
   - Five red tests were found and fixed as Rule 9 baseline fixes (API-04, API-20 ×2, API-23, API-24); each is in the investigation's Durable Coverage To Update with its cause.
@@ -248,10 +248,64 @@
 
 - `Local Fix` for both, owner: implementation engineer. Both sit inside the approved design (REQ-007 / AC-007, AC-009: the gate passes and runs in every `build:electron*` chain) and need no new behaviour: F-1, give the Nuxt compiler the heap it needs on the release runners, or reduce the program it checks, and prove it against a 7 GB macOS runner (the build-only release run); F-2, keep the build outputs (`resources/`, `electron-dist/`) out of the Nuxt type project, like `electron/` and `build/`. The failure-origin review confirms the origin and owner.
 
-## Latest Authoritative Result
+## Round 2 Result (superseded by § Round 3)
 
 - Result: `Fail` (round 2)
 - Criteria not proven: AC-007, AC-009, AC-016 (round 2 Acceptance-Criteria Impact)
 - Preliminary classification and recommended owner: `Local Fix`, implementation engineer (F-1, F-2)
 - Next recipient from `get_handoff_rules`: `/software_engineering_team/code_reviewer` (focused failure-origin review)
 - Notes: IR-003 itself works for its cause (API-27); the macOS jobs had a second cause the release run already showed. No durable test code changed this round.
+
+## Round 3 — IR-004 (CR-002 heap limit, CR-003 build-output excludes)
+
+- Trigger: Code Reviewer CRR-006 (round 5), IR-004: `65a7955726` (CR-003), `2846b2abd2` (CR-002); HEAD `1f5a4a19df`.
+- Plan: investigation § Round 3. Rerun by impact: the gate and `test:nuxt`; everything else stays valid from rounds 1-2 (unchanged code).
+- Environments: ENV-2 (worktree with `resources/server` 866 MB and `electron-dist/` 2.4 GB from API-24); ENV-3 (fresh clone of `1f5a4a19df`, `pnpm install --no-frozen-lockfile` only, as the release job); ENV-4 (Docker `node:22-bookworm`, Linux aarch64, Node 22.23.4, `--memory=7g --memory-swap=7g`, work tree on a Docker volume, branch passed in as a git bundle).
+
+### Round 3 Cases
+
+| Case ID | Criteria | Boundary / Surface | Command Or Steps | Env | Result | Evidence Files | Look For | Notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| API-30 (rerun) | AC-007, AC-009 (F-2) | the gate after a local desktop build | `pnpm -C autobyteus-web typecheck`; then `NODE_OPTIONS=--max-old-space-size=1792 pnpm -C autobyteus-web typecheck` | ENV-2 | Pass | `API-30-gate-after-local-desktop-build.log` § round 3 rerun | `866M resources/server`, `2.4G electron-dist`; `[typecheck] Nuxt app (tsconfig.json): 271 errors`; `production errors: 0; test-file errors: 298 in 139 files`; `[typecheck] PASS` (both runs); `exclude has resources: true \| exclude has electron-dist: true` | F-2 resolved |
+| API-28 (rerun) | AC-007, AC-009, AC-016 (F-1, heap) | fresh clone, release-job order | `pnpm install --no-frozen-lockfile`; `pnpm -C autobyteus-web typecheck` with no `NODE_OPTIONS` and with `--max-old-space-size=1792` | ENV-3 | Pass | `API-28-fresh-clone-gate-macos14-heap.log` § round 3 rerun | no contracts `dist/`, no build outputs; `> pnpm -C .. --filter @autobyteus/application-sdk-contracts build`; `[typecheck] PASS` in both runs, `298 in 139 files` | the caller's heap no longer reaches the Nuxt compiler (the gate's own flag wins) |
+| API-32 | AC-009, AC-016 (F-1, memory fit) | the gate inside a 7 GB memory ceiling | in the container: clone, `pnpm install --no-frozen-lockfile`; (a) control: `node node_modules/vue-tsc/bin/vue-tsc.js -p tsconfig.json --noEmit --pretty false` (unflagged, as before CR-002); (b) `pnpm -C autobyteus-web typecheck`; cgroup `memory.stat` anon and `memory.current` sampled every 0.5 s, `memory.events` oom_kill | ENV-4 | Pass | `API-32-gate-in-7gb-container.log` | `memory.max 7516192768`; `default V8 heap_size_limit in this container: 2096 MB`; (a) `Aborted … exit: 134`, `FATAL ERROR: Reached heap limit Allocation failed - JavaScript heap out of memory`; (b) `[typecheck] PASS`, `production errors: 0; test-file errors: 298 in 139 files`, `peak anon (process) memory: 3.12 GB`, `oom_kill 0` | the control reproduces the CI macOS failure from the memory ceiling alone, which validates the emulation; the fixed gate fits with about 2x headroom. Linux, not macOS: the remaining difference is the OS, not the memory budget |
+| API-29 (rerun, test:nuxt) | preserved | web unit suite after the Nuxt config change | `pnpm -C autobyteus-server-ts prebuild`; `pnpm -C autobyteus-web test:nuxt --run` | ENV-3 | Pass | `API-29-fresh-clone-web-suites.log` § round 3 rerun | `Test Files  666 passed (666)` | `test:electron` not rerun: `electron/vitest.config.ts` does not read `nuxt.config.ts`; round 2 run 2 stays valid |
+| — | AC-016 on CI | build-only `release-desktop.yml` run on the five real runners | not run | — | Not Tested | — | — | needs a pushed ref (delivery or the user; RELEASE.md requires it before any tag) |
+
+### Round 3 Prior-Failure Resolution And Acceptance Criteria
+
+| Item | Round 3 Result | Proven By |
+| --- | --- | --- |
+| F-1 (macOS runner heap) | Resolved in emulation: the Nuxt compiler no longer depends on the machine's default heap, and the gate fits a 7 GB ceiling (peak 3.12 GB, no OOM kill) | API-28 rerun, API-32 |
+| F-2 (build outputs in the Nuxt type scope) | Resolved | API-30 rerun |
+| AC-007 | Proven (fresh clone, after a local build, under the macOS heap, in 7 GB) | API-28, API-30, API-32 |
+| AC-009 | Proven locally and in the 7 GB emulation; the real five-runner confirmation is the build-only release run | API-28, API-30, API-32; round 1 API-24 |
+| AC-016 | Proven locally (round 1 API-24, from a clean worktree; a repeated build no longer stops at the gate, API-30) | API-24, API-30 |
+| AC-032 | Proven (fresh clone: gate, `test:nuxt`) | API-28, API-29 |
+| all other ACs | Proven (round 1; code unchanged) | round 1 cases |
+
+### Round 3 Validation Confidence Scorecard
+
+| Confidence Category | Score | What Supports It | Residual Uncertainty | What Could Improve It |
+| --- | --- | --- | --- | --- |
+| Requirement and acceptance-criteria proof | 95% | every critical AC proven (rounds 1-3) | the five-runner CI confirmation is pending | the build-only release run |
+| Changed-boundary execution directness | 95% | the real gate and compilers in the release job's command order; the 7 GB ceiling validated by a control that reproduces the CI abort | macOS runner itself not used | the build-only release run |
+| Cross-boundary integration realism and mock gap | 95% | real install, real compilers, real build outputs | — | — |
+| Environment, configuration, identity, and fixture fidelity | 95% | fresh clone like the runner; memory ceiling and Node's derived default heap emulated (2096 MB in 7 GB) | Linux container vs macOS runner (OS-level memory accounting) | the build-only release run |
+| Failure, edge-case, lifecycle, and recovery evidence | 96% | control abort reproduced; repeated-build state (API-30); caller heap override (API-28) | the new `FATAL ERROR` quote in the gate's message was not exercised (the gate's own flag prevents the abort) | — |
+| User-surface, browser, and desktop-shell confidence | 94% | round 1 desktop cases (unchanged app code) | BEH-032 screens proven by specs (AC-034's stated method) | — |
+| Durable regression coverage quality and relevance | 95% | round 1 baseline fixes; the gate fails closed | no test pins the heap flag or the excludes | — |
+
+- Overall final confidence: 95.0% (simple average of 95, 95, 95, 95, 96, 94, 95)
+- Every critical acceptance criterion directly proven, apart from parts only the user can check: `Yes`
+- Any final applicable category below `90%`: `No`
+- Default final confidence target of `95%` met: `Yes` (at the threshold)
+- Broader validation decision: `Required`, executed (fresh clone in release order, a validated 7 GB memory emulation, the worktree with build outputs). The remaining surface is the build-only release run on the five real runners, which RELEASE.md requires before any tag and which needs a pushed ref (delivery or the user).
+
+## Latest Authoritative Result
+
+- Result: `Pass` (round 3)
+- Criteria not proven, or parts only the user can check (IDs): `None`. For delivery: the build-only `release-desktop.yml` run (`publish_release: false`) on a pushed ref, covering all five jobs, before any tag (RELEASE.md); not run here because it needs a push.
+- Preliminary classification and recommended owner (on `Fail`): N/A
+- Next recipient from `get_handoff_rules`: `/software_engineering_team/code_reviewer` (Pass, Large / High). No durable test code changed in rounds 2-3; the test-code review of round 1's five baseline fixes is already recorded (`api-e2e-test-review-report.md`).
+- Notes: the pending Requirement Gap (taking the gate out of the GitHub pipeline) does not change this result: the gate passes as committed, locally and in the 7 GB emulation.

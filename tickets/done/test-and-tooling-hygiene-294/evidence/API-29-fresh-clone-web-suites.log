@@ -35,3 +35,13 @@ $ pnpm -C autobyteus-web test:electron --run
       Tests  279 passed | 1 skipped (280)
 real	0m4.140s
 exit: 0
+
+## round 3 rerun (nuxt.config.ts changed): same fresh clone of 1f5a4a19df, TESTING.md order, 2026-10-28T07:27:39Z
+$ pnpm -C autobyteus-server-ts prebuild
+exit: 0
+$ pnpm -C autobyteus-web test:nuxt --run
+ Test Files  666 passed (666)
+      Tests  4836 passed | 2 skipped (4838)
+real	5m29.829s
+exit: 0
+test:electron not rerun: electron/vitest.config.ts does not read nuxt.config.ts; round 2 run 2 stays valid

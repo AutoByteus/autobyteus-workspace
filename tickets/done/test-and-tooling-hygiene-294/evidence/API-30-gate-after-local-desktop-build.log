@@ -18,3 +18,23 @@ exclude has resources: false | exclude has electron-dist: false
 - electron-dist moved aside, resources/server present, --max-old-space-size=8192: exit 2, 4222 errors (3951 in resources/server/…), max RSS 7702806528, 120 s
 - both moved aside, --max-old-space-size=8192: exit 2, 271 errors (the baseline), used heap at exit 4231 MB; under 1792 / 2560 / 3072 MB: out of memory each (direct runs, heavily loaded host)
 - both outputs restored afterwards
+
+## round 3 rerun at 1f5a4a19df (CR-003 excludes, CR-002 heap flag), 2026-10-28T07:23:52Z
+$ du -sh resources/server electron-dist
+866M	resources/server
+2.4G	electron-dist
+$ pnpm typecheck
+[typecheck] Nuxt app (tsconfig.json): 271 errors, exit 2, 34.2s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 1.8s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.8s
+[typecheck] production errors: 0; test-file errors: 298 in 139 files (baseline 298 in 139 files)
+[typecheck] PASS
+real	0m39.370s
+exclude has resources: true | exclude has electron-dist: true
+$ NODE_OPTIONS=--max-old-space-size=1792 pnpm typecheck
+[typecheck] Nuxt app (tsconfig.json): 271 errors, exit 2, 35.3s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 2.0s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.6s
+[typecheck] production errors: 0; test-file errors: 298 in 139 files (baseline 298 in 139 files)
+[typecheck] PASS
+real	0m40.833s

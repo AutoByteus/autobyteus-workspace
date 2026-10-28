@@ -36,3 +36,27 @@ $ NODE_OPTIONS=--max-old-space-size=4096 pnpm -C autobyteus-web typecheck
 [typecheck] production errors: 0; test-file errors: 298 in 139 files (baseline 298 in 139 files)
 [typecheck] PASS
 exit: 0, 40s
+
+## round 3 rerun: fresh clone of 1f5a4a19df in the release job's order, 2026-10-28T07:25:54Z
+$ ls -d autobyteus-application-sdk-contracts/dist autobyteus-web/resources autobyteus-web/electron-dist
+ls: autobyteus-application-sdk-contracts/dist: No such file or directory
+ls: autobyteus-web/electron-dist: No such file or directory
+ls: autobyteus-web/resources: No such file or directory
+$ pnpm install --no-frozen-lockfile
+exit: 0
+$ NODE_OPTIONS= pnpm -C autobyteus-web typecheck
+> pnpm -C .. --filter @autobyteus/application-sdk-contracts build
+[typecheck] Nuxt app (tsconfig.json): 271 errors, exit 2, 36.2s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 2.1s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.6s
+[typecheck] production errors: 0; test-file errors: 298 in 139 files (baseline 298 in 139 files)
+[typecheck] PASS
+real	0m44.489s
+$ NODE_OPTIONS=--max-old-space-size=1792 pnpm -C autobyteus-web typecheck
+> pnpm -C .. --filter @autobyteus/application-sdk-contracts build
+[typecheck] Nuxt app (tsconfig.json): 271 errors, exit 2, 35.9s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 1.8s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.7s
+[typecheck] production errors: 0; test-file errors: 298 in 139 files (baseline 298 in 139 files)
+[typecheck] PASS
+real	0m42.772s

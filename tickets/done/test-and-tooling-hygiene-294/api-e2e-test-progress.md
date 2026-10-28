@@ -70,3 +70,12 @@
 | 2026-10-28 08:09 | API-30 | Started | | worktree gate with resources/server + electron-dist from API-24 present |
 | 2026-10-28 08:10 | API-30 | Completed | Fail | gate FAIL: Nuxt vue-tsc SIGABRT (resources/server + electron-dist swept in; not excluded) |
 | 2026-10-28 08:12 | — | Completed | Fail | round 2 result recorded (F-1 macOS heap, F-2 build outputs in scope); committing |
+| 2026-10-28 08:23 | API-30 | Started | | round 3 rerun: worktree gate with both build trees, default and NODE_OPTIONS=1792 |
+| 2026-10-28 08:25 | API-30 | Completed | Pass | round 3: PASS with both build trees; PASS under NODE_OPTIONS 1792 |
+| 2026-10-28 08:25 | API-28 | Started | | round 3: fresh clone /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab294s-clone.mG9pqOimcI, CI order; gate default + NODE_OPTIONS 1792 |
+| 2026-10-28 08:27 | API-28 | Completed | Pass | round 3: default PASS; NODE_OPTIONS 1792 PASS |
+| 2026-10-28 08:27 | API-29 | Started | | round 3: same clone, prebuild then test:nuxt |
+| 2026-10-28 08:33 | API-29 | Completed | Pass | round 3: test:nuxt 666 passed |
+| 2026-10-28 08:33 | API-32 | Started | | docker node:22-bookworm --memory=7g --memory-swap=7g: clone, install, control + gate |
+| 2026-10-28 08:40 | API-32 | Completed | Pass | 7 GB container: default heap 2096 MB; control vue-tsc aborts (FATAL heap) like CI macOS; gate PASS, peak anon 3.12 GB, oom_kill 0; container, volume, clone, bundle removed |
+| 2026-10-28 08:41 | — | Completed | Pass | round 3 result recorded (95.0%); committing |

@@ -17,10 +17,10 @@
 - Relevant Delivery Revision IDs: N/A
 - API/E2E Revision Record (created after the first completed result): `api-e2e-revision-record.md`
 - Current API/E2E Revision ID: `API-REV-001`
-- Current Investigation Round: 2
+- Current Investigation Round: 3
 - Trigger: round 1, code review pass CRR-002 (2026-10-27); round 2, code review pass CRR-004 of the IR-003 packaging fix (`75e9f323f0`), after Desktop Release `40640209395` (v1.5.9-beta.14) failed in all five build jobs (DR-001), 2026-10-28
 - Prior Investigation Reviewed: none (first round)
-- Latest Authoritative Investigation: this file, round 2 (§ Round 2 below; round 1 sections unchanged)
+- Latest Authoritative Investigation: this file, round 3 (§ Round 3 below; rounds 1-2 unchanged)
 
 All paths are in the ticket folder `/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/tickets/in-progress/test-and-tooling-hygiene-294/`. Code under test: branch `codex/test-and-tooling-hygiene-294`, code commit `256cee925e` (HEAD `54ed02d56d` adds ticket documents only), base `origin/personal` `2f48d85d4d`.
 
@@ -250,3 +250,25 @@ None.
 - Proceed To API/E2E Execution: `Yes` (done; result in the execution report § Round 2)
 - Repository-Resident Durable Coverage Will Be Added / Updated / Removed: `No`
 - Reroute Required: `Yes`, as execution failures F-1 and F-2 (failure-origin review by the Code Reviewer), not as an upstream gap.
+
+## Round 3 — IR-004 (CR-002 heap, CR-003 build-output excludes)
+
+- Upstream added: `code-review-report.md` CRR-005/CRR-006 (CR-002, CR-003), `implementation-handoff.md` IR-004 (IMP-21, IMP-22). Pending upstream: the user's suggestion to take the gate out of the GitHub pipeline (Requirement Gap at the Solution Designer); this round validates the gate as it stands.
+- Code delta since round 2 (`0a81db3a37..1f5a4a19df`): `autobyteus-web/nuxt.config.ts` (excludes `../resources/**`, `../electron-dist/**`, `../dist-mobile/**`, `../.output/**`), `autobyteus-web/scripts/typecheck.mjs` (Nuxt compiler spawned with `--max-old-space-size=4096`; a signal failure quotes V8's `FATAL ERROR` line).
+- Rerun by impact: the gate (F-1, F-2 paths) and `test:nuxt` (its Nuxt config changed). `test:electron` uses `electron/vitest.config.ts`, which does not read `nuxt.config.ts`: round 2 API-29 stays valid for it. Server, E2E, probes and live CLIs: unchanged code, round 1 stays valid.
+
+### Round 3 Planned Cases
+
+| Case ID | Criteria | Boundary / Surface | Kind | Planned Command Or Steps | Why |
+| --- | --- | --- | --- | --- | --- |
+| API-30 (rerun) | AC-007, AC-009 (F-2) | the gate after a local desktop build | Existing Test | worktree with `resources/server` and `electron-dist/` from API-24: `pnpm -C autobyteus-web typecheck`; then the same under `NODE_OPTIONS=--max-old-space-size=1792` | F-2 path and the heap flag on the same tree |
+| API-27/API-28 (rerun) | AC-007, AC-009, AC-016 (F-1) | fresh clone, release-job order | Existing Test | fresh clone of `1f5a4a19df`; `pnpm install --no-frozen-lockfile`; `pnpm -C autobyteus-web typecheck` (default) and with `NODE_OPTIONS=--max-old-space-size=1792` | the macOS runner heap no longer reaches the compiler |
+| API-32 | AC-009, AC-016 (F-1 memory fit) | the gate inside a 7 GB memory ceiling | Temporary Probe | `docker run --memory=7g --memory-swap=7g node:22-bookworm`: clone `1f5a4a19df` inside, `corepack` pnpm 10.28.2, `pnpm install --no-frozen-lockfile`, then (a) control: unflagged `vue-tsc -p tsconfig.json` (expect the default cgroup-sized heap to abort, as on `macos-14`), (b) `pnpm -C autobyteus-web typecheck` with peak memory read from the container's cgroup | emulates the 7 GB runner's physical memory and default heap; Linux, not macOS: the gate's memory profile is the compiler's, which does not depend on the OS; not durable (host emulation) |
+| API-29 (rerun, test:nuxt) | preserved | web unit suite after the Nuxt config change | Existing Test | same fresh clone, TESTING.md order (`pnpm -C autobyteus-server-ts prebuild`), `pnpm -C autobyteus-web test:nuxt --run` | config changed |
+| — | AC-016 on CI | build-only release run on `macos-14` and the four other runners | Not run here | needs a pushed ref (delivery or the user) | push is not this role's |
+
+### Round 3 Investigation Decision
+
+- Proceed To API/E2E Execution: `Yes` (done; result in the execution report § Round 3)
+- Repository-Resident Durable Coverage Will Be Added / Updated / Removed: `No`
+- Reroute Required: `No`
