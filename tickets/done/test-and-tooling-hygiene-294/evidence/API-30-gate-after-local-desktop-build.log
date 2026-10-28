@@ -1,0 +1,20 @@
+# API-30 worktree after a local desktop build (API-24 left autobyteus-web/resources/server from prepare-server and electron-dist/ from electron-builder; both git-ignored): pnpm -C autobyteus-web typecheck
+# commit 4f27c2514d, 2026-10-28T07:09:14Z, default heap 4144 MB
+$ du -sh resources/server electron-dist
+866M	resources/server
+2.4G	electron-dist
+$ .nuxt/tsconfig.json after nuxt prepare: include has '../**/*'; exclude lists ../electron/**, ../build/**, ../dist, ../.data … and neither ../resources nor ../electron-dist
+$ pnpm typecheck
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 2.4s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.7s
+[typecheck] FAIL: Nuxt app (tsconfig.json): the compiler ended by signal SIGABRT
+[typecheck] production errors: 0; test-file errors: 27 in 8 files (baseline 298 in 139 files)
+[typecheck] FAIL
+real	0m35.607s
+exclude has resources: false | exclude has electron-dist: false
+
+## supporting measurements (direct vue-tsc -p tsconfig.json --noEmit --pretty false, same worktree, contracts built)
+- both outputs present, default heap: Abort trap 6, 'FATAL ERROR: Reached heap limit Allocation failed - JavaScript heap out of memory', max RSS 4478320640 bytes
+- electron-dist moved aside, resources/server present, --max-old-space-size=8192: exit 2, 4222 errors (3951 in resources/server/…), max RSS 7702806528, 120 s
+- both moved aside, --max-old-space-size=8192: exit 2, 271 errors (the baseline), used heap at exit 4231 MB; under 1792 / 2560 / 3072 MB: out of memory each (direct runs, heavily loaded host)
+- both outputs restored afterwards

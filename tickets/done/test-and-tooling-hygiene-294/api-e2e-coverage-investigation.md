@@ -17,10 +17,10 @@
 - Relevant Delivery Revision IDs: N/A
 - API/E2E Revision Record (created after the first completed result): `api-e2e-revision-record.md`
 - Current API/E2E Revision ID: `API-REV-001`
-- Current Investigation Round: 1
-- Trigger: code review pass CRR-002 (`/software_engineering_team/code_reviewer`), 2026-10-27
+- Current Investigation Round: 2
+- Trigger: round 1, code review pass CRR-002 (2026-10-27); round 2, code review pass CRR-004 of the IR-003 packaging fix (`75e9f323f0`), after Desktop Release `40640209395` (v1.5.9-beta.14) failed in all five build jobs (DR-001), 2026-10-28
 - Prior Investigation Reviewed: none (first round)
-- Latest Authoritative Investigation: this file, round 1
+- Latest Authoritative Investigation: this file, round 2 (§ Round 2 below; round 1 sections unchanged)
 
 All paths are in the ticket folder `/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/tickets/in-progress/test-and-tooling-hygiene-294/`. Code under test: branch `codex/test-and-tooling-hygiene-294`, code commit `256cee925e` (HEAD `54ed02d56d` adds ticket documents only), base `origin/personal` `2f48d85d4d`.
 
@@ -223,3 +223,30 @@ None.
 - Repository-Resident Durable Coverage Will Be Added / Updated / Removed: `Yes` — one update (Durable Coverage To Update, API-04 baseline fix)
 - Reroute Required Before Validation Execution: `No`
 - Notes: one heavy run at a time on a loaded machine.
+
+## Round 2 — IR-003 packaging fix (rerun)
+
+- Upstream added this round: `release-deployment-report.md` (DR-001), `implementation-handoff.md` / `implementation-revision-record.md` (IR-003, IMP-20), `code-review-report.md` § Round 3 (CRR-004), RELEASE.md § Build-only release run (`aca8655bdd`). Ticket folder moved to `tickets/done/test-and-tooling-hygiene-294/`.
+- Code delta since round 1 (`ecd7dc2d0f..4f27c2514d`, outside the ticket folder): `autobyteus-web/package.json` (`prepare:shared-types`; `typecheck` and `typecheck:update-baseline` run it first; version bump), `scripts/typecheck.mjs` (header comment), `docs/electron_packaging.md`, TESTING.md, RELEASE.md. Production code, the gate's rules and the baseline are unchanged.
+- Real-use scenario (SCN-A2, refined): a release runner checks out the ref, runs `pnpm install --no-frozen-lockfile` only, then `pnpm build:electron:<target>` in `autobyteus-web` (`.github/workflows/release-desktop.yml`): macOS ARM64 and Intel on `macos-14`, Linux x64 on `ubuntu-22.04`, Linux ARM64 on `ubuntu-24.04-arm`, Windows on `windows-2022`. All five chains run the same `guards && pnpm typecheck` prefix.
+- New evidence read before planning (diagnosis, recorded as API-31):
+  - In run `40640209395` only the Linux and Windows jobs failed with TS2307 (Nuxt `292 errors`). **Both macOS jobs failed differently: `[typecheck] FAIL: Nuxt app (tsconfig.json): the compiler ended by signal SIGABRT`** after about 34 s. DR-001 and IR-003 attribute all five to the missing contracts `dist/`.
+  - Locally, the Nuxt vue-tsc program (contracts built, no build outputs present) runs out of V8 heap ("Reached heap limit … JavaScript heap out of memory") under `--max-old-space-size` 1792, 2560 and 3072 MB, and passes (271 errors, the baseline) only at this 64 GB Mac's default of 4144 MB. A 7 GB `macos-14` runner gives Node a default old space of about a quarter of its memory (~1.75 GB); the 16 GB Linux and Windows runners get the 4 GB maximum, which is why only they reached the type errors.
+  - Separately, after a local desktop build the gate sweeps in `autobyteus-web/resources/server` (`prepare-server`'s output, 866 MB) and `electron-dist/` (2.4 GB): the Nuxt project includes `../**/*` and excludes neither, so the next `pnpm typecheck` (and so the next `build:electron:*` in that worktree, or a CI retry of the macOS job after a notarization failure) fails: 3951 errors from `resources/server`, and out of memory at the default 4 GB.
+
+### Round 2 Planned Cases
+
+| Case ID | Criteria | Boundary / Surface | Kind | Planned Command Or Steps | Why |
+| --- | --- | --- | --- | --- | --- |
+| API-27 | AC-007, AC-009, AC-016 precondition; IR-003 | the gate on a fresh checkout in the release job's order, default heap (models the 16 GB Linux/Windows runners) | Existing Test | fresh clone of `4f27c2514d` (no build outputs, no `*/dist/`); `pnpm install --no-frozen-lockfile`; `pnpm -C autobyteus-web typecheck` | the fix's own claim |
+| API-28 | same | the same gate under the `macos-14` runner's default heap | Temporary Probe | same clone: `NODE_OPTIONS=--max-old-space-size=1792 pnpm -C autobyteus-web typecheck` | emulates the 7 GB macOS runner (the gate passes its environment to vue-tsc); not durable: a host-memory emulation |
+| API-29 | preserved | web unit and Electron suites after the script change | Existing Test | same clone: `pnpm -C autobyteus-web test:nuxt --run`, then `test:electron --run` | the reviewer's ask |
+| API-30 | AC-007, AC-009 | the gate after a local desktop build | Existing Test | worktree with `resources/server` and `electron-dist/` from API-24: `pnpm -C autobyteus-web typecheck` | a second local build or a CI retry meets this state |
+| API-31 | DR-001 | the failed release run's five gate outputs | Temporary Probe | `gh run view 40640209395 --job <id> --log`, `[typecheck]` lines per job | read-only evidence of what each runner did |
+| — | AC-016 on CI | build-only release run (RELEASE.md) | Not run here | needs the fix pushed to `personal`; delivery runs it before tagging | pushing and release runs are delivery's |
+
+### Round 2 Investigation Decision
+
+- Proceed To API/E2E Execution: `Yes` (done; result in the execution report § Round 2)
+- Repository-Resident Durable Coverage Will Be Added / Updated / Removed: `No`
+- Reroute Required: `Yes`, as execution failures F-1 and F-2 (failure-origin review by the Code Reviewer), not as an upstream gap.

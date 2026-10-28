@@ -1,0 +1,38 @@
+# API-28 the same fresh clone (API-27), the gate under the macOS release runner's default V8 heap: NODE_OPTIONS=--max-old-space-size=<MB> pnpm -C autobyteus-web typecheck
+# 2026-10-28T06:58:37Z; commit 4f27c2514d; macos-14 GitHub runners have 7 GB RAM -> Node 22 default old space ~ 7 GB / 4 = 1792 MB; the Linux/Windows runners (16 GB) get the 4096 MB maximum
+
+## --max-old-space-size=1792
+$ NODE_OPTIONS=--max-old-space-size=1792 pnpm -C autobyteus-web typecheck
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 2.0s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.9s
+[typecheck] FAIL: Nuxt app (tsconfig.json): the compiler ended by signal SIGABRT
+[typecheck] production errors: 0; test-file errors: 27 in 8 files (baseline 298 in 139 files)
+[typecheck] FAIL
+exit: 1, 26s
+
+## --max-old-space-size=2048
+$ NODE_OPTIONS=--max-old-space-size=2048 pnpm -C autobyteus-web typecheck
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 1.6s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.6s
+[typecheck] FAIL: Nuxt app (tsconfig.json): the compiler ended by signal SIGABRT
+[typecheck] production errors: 0; test-file errors: 27 in 8 files (baseline 298 in 139 files)
+[typecheck] FAIL
+exit: 1, 29s
+
+## --max-old-space-size=3072
+$ NODE_OPTIONS=--max-old-space-size=3072 pnpm -C autobyteus-web typecheck
+[typecheck] Nuxt app (tsconfig.json): 271 errors, exit 2, 32.8s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 1.8s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.6s
+[typecheck] production errors: 0; test-file errors: 298 in 139 files (baseline 298 in 139 files)
+[typecheck] PASS
+exit: 0, 38s
+
+## --max-old-space-size=4096
+$ NODE_OPTIONS=--max-old-space-size=4096 pnpm -C autobyteus-web typecheck
+[typecheck] Nuxt app (tsconfig.json): 271 errors, exit 2, 34.3s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 1.6s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.6s
+[typecheck] production errors: 0; test-file errors: 298 in 139 files (baseline 298 in 139 files)
+[typecheck] PASS
+exit: 0, 40s

@@ -1,0 +1,72 @@
+# API-27 fresh clone in the release job's order: git clone; pnpm install --no-frozen-lockfile; pnpm -C autobyteus-web typecheck (default heap)
+# 2026-10-28T06:57:11Z, macOS 26.5.2 arm64, 64 GB RAM, node v22.23.1, pnpm 10.28.2; default V8 heap_size_limit 4144 MB
+$ git log -1
+4f27c2514dfa2a6d6915d6d5ef0635e005c19bd7 docs(tickets): autobyteus-294 IR-003 — the type gate on a fresh clone (delivery packaging Local Fix)
+$ ls -d */dist autobyteus-web/resources autobyteus-web/electron-dist (expect none untracked)
+ls: autobyteus-application-sdk-contracts/dist: No such file or directory
+ls: autobyteus-web/electron-dist: No such file or directory
+ls: autobyteus-web/resources: No such file or directory
+$ pnpm install --no-frozen-lockfile
+Scope: all 13 workspace projects
+Lockfile is up to date, resolution step is skipped
+Progress: resolved 1, reused 0, downloaded 0, added 0
+Packages: +1665
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Progress: resolved 1665, reused 1086, downloaded 0, added 0
+Progress: resolved 1665, reused 1661, downloaded 0, added 207
+Progress: resolved 1665, reused 1661, downloaded 0, added 435
+Progress: resolved 1665, reused 1661, downloaded 0, added 614
+Progress: resolved 1665, reused 1661, downloaded 0, added 805
+Progress: resolved 1665, reused 1661, downloaded 0, added 1012
+Progress: resolved 1665, reused 1661, downloaded 0, added 1495
+Progress: resolved 1665, reused 1661, downloaded 0, added 1665, done
+ WARN  Failed to create bin at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab294r-clone.NhA2wmjY8t/repo/applications/socratic-math-teacher/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab294r-clone.NhA2wmjY8t/repo/autobyteus-application-devkit/dist/cli.js'
+ WARN  Failed to create bin at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab294r-clone.NhA2wmjY8t/repo/applications/brief-studio/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab294r-clone.NhA2wmjY8t/repo/autobyteus-application-devkit/dist/cli.js'
+
+autobyteus-ts postinstall$ node ./scripts/fix-node-pty-permissions.mjs
+autobyteus-ts postinstall: [node-pty-fix] repaired: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab294r-clone.NhA2wmjY8t/repo/node_modules/.pnpm/node-pty@1.1.0/node_modules/node-pty/prebuilds/darwin-arm64/spawn-helper
+autobyteus-ts postinstall: Done
+ WARN  Failed to create bin at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab294r-clone.NhA2wmjY8t/repo/applications/brief-studio/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab294r-clone.NhA2wmjY8t/repo/applications/brief-studio/node_modules/@autobyteus/application-devkit/dist/cli.js'
+ WARN  Failed to create bin at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab294r-clone.NhA2wmjY8t/repo/applications/socratic-math-teacher/node_modules/.bin/autobyteus-app. ENOENT: no such file or directory, open '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab294r-clone.NhA2wmjY8t/repo/applications/socratic-math-teacher/node_modules/@autobyteus/application-devkit/dist/cli.js'
+╭ Warning ─────────────────────────────────────────────────────────────────────╮
+│                                                                              │
+│   Ignored build scripts: @google/genai@2.24.0.                               │
+│   Run "pnpm approve-builds" to pick which dependencies should be allowed     │
+│   to run scripts.                                                            │
+│                                                                              │
+╰──────────────────────────────────────────────────────────────────────────────╯
+Done in 9.6s using pnpm v10.28.2
+exit: 0
+$ pnpm -C autobyteus-web typecheck
+
+> autobyteus@1.5.9-beta.14 typecheck /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab294r-clone.NhA2wmjY8t/repo/autobyteus-web
+> pnpm prepare:shared-types && nuxt prepare && node ./scripts/typecheck.mjs
+
+
+> autobyteus@1.5.9-beta.14 prepare:shared-types /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab294r-clone.NhA2wmjY8t/repo/autobyteus-web
+> pnpm -C .. --filter @autobyteus/application-sdk-contracts build
+
+
+> @autobyteus/application-sdk-contracts@0.1.0 build /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab294r-clone.NhA2wmjY8t/repo/autobyteus-application-sdk-contracts
+> tsc -p tsconfig.build.json
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ WARN  Duplicated imports "getters", the one from "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab294r-clone.NhA2wmjY8t/repo/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab294r-clone.NhA2wmjY8t/repo/autobyteus-web/stores/serverStore.ts" is used
+
+
+ WARN  Duplicated imports "getters", the one from "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab294r-clone.NhA2wmjY8t/repo/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab294r-clone.NhA2wmjY8t/repo/autobyteus-web/stores/serverStore.ts" is used
+
+│
+◆  Types generated in .nuxt.
+[typecheck] Nuxt app (tsconfig.json): 271 errors, exit 2, 30.1s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 2.0s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.7s
+[typecheck] production errors: 0; test-file errors: 298 in 139 files (baseline 298 in 139 files)
+[typecheck] PASS
+
+real	0m37.575s
+user	0m55.082s
+sys	0m3.234s
+exit: 0

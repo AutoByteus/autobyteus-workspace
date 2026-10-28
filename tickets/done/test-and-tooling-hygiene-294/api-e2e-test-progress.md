@@ -58,3 +58,15 @@
 | 2026-10-28 06:06 | API-25 | Started | | isolated-app start --from-worktree (package of API-24) |
 | 2026-10-28 06:10 | API-25 | Completed | Pass | D-01..D-06 Pass, 0 leftover classes, 0 console errors; instance stopped |
 | 2026-10-28 06:14 | — | Completed | Pass | round 1 result recorded; documents and evidence committed next |
+| 2026-10-28 07:56 | API-27 | Checkpoint | | round 2 diagnosis (before planning): CI macOS jobs of 40640209395 ended vue-tsc by SIGABRT (not TS2307); local: vue-tsc OOMs at heap caps <=3072 MB with contracts built; and the gate sweeps in resources/server + electron-dist after a local build. Build outputs restored. |
+| 2026-10-28 07:56 | API-31 | Completed | Pass | macOS ARM64 + Intel: vue-tsc SIGABRT; Linux x64/ARM64 + Windows: 292 errors (TS2307) |
+| 2026-10-28 07:57 | API-27 | Started | | fresh clone /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab294r-clone.NhA2wmjY8t, CI order |
+| 2026-10-28 07:58 | API-27 | Completed | Pass | PASS 0 production, 298/139 |
+| 2026-10-28 07:58 | API-28 | Started | | same clone, NODE_OPTIONS=--max-old-space-size=1792 (+ 2048, 3072, 4096 bracket) |
+| 2026-10-28 08:01 | API-28 | Completed | Fail | 1792 and 2048 MB: SIGABRT exactly as the CI macOS jobs; 3072, 4096: PASS |
+| 2026-10-28 08:01 | API-29 | Started | | same clone: test:nuxt then test:electron |
+| 2026-10-28 08:05 | API-29 | Checkpoint | | run 1 (install only, no prebuild): test:nuxt 2 failed = the FU-003 cross-package specs (need autobyteus-ts dist); test:electron 1 failed = FU-011 Electron download race; run 2 in TESTING.md order (prebuild first) |
+| 2026-10-28 08:09 | API-29 | Completed | Pass | run 2 (TESTING.md order): test:nuxt 666 passed; test:electron 48 passed 1 skipped |
+| 2026-10-28 08:09 | API-30 | Started | | worktree gate with resources/server + electron-dist from API-24 present |
+| 2026-10-28 08:10 | API-30 | Completed | Fail | gate FAIL: Nuxt vue-tsc SIGABRT (resources/server + electron-dist swept in; not excluded) |
+| 2026-10-28 08:12 | — | Completed | Fail | round 2 result recorded (F-1 macOS heap, F-2 build outputs in scope); committing |

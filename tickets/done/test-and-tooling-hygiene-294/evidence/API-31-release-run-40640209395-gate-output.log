@@ -1,0 +1,52 @@
+# API-31 gate output of each build job in Desktop Release run 40640209395 (v1.5.9-beta.14), read with gh run view 40640209395 --job <id> --log (read-only), 2026-10-28T06:56:59Z
+
+## job 122656716565: Build macOS ARM64 (##[group]Runner Image Provisioner)
+Build macOS ARM64	Build Electron macOS ARM64	2026-10-28T05:52:35.7560540Z > nuxt prepare && node ./scripts/typecheck.mjs
+Build macOS ARM64	Build Electron macOS ARM64	2026-10-28T05:53:11.1187230Z [typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 3.8s
+Build macOS ARM64	Build Electron macOS ARM64	2026-10-28T05:53:11.8727850Z [typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.8s
+Build macOS ARM64	Build Electron macOS ARM64	2026-10-28T05:53:11.8733780Z [typecheck] FAIL: Nuxt app (tsconfig.json): the compiler ended by signal SIGABRT
+Build macOS ARM64	Build Electron macOS ARM64	2026-10-28T05:53:11.8868230Z [typecheck] production errors: 0; test-file errors: 27 in 8 files (baseline 298 in 139 files)
+Build macOS ARM64	Build Electron macOS ARM64	2026-10-28T05:53:11.8868600Z [typecheck] FAIL
+first error TS lines:
+
+## job 122656716537: Build macOS Intel x64 (##[group]Runner Image Provisioner)
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-28T05:53:20.3121380Z > nuxt prepare && node ./scripts/typecheck.mjs
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-28T05:54:16.7587510Z [typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 7.0s
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-28T05:54:18.0645770Z [typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 1.3s
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-28T05:54:18.0676180Z [typecheck] FAIL: Nuxt app (tsconfig.json): the compiler ended by signal SIGABRT
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-28T05:54:18.1092960Z [typecheck] production errors: 0; test-file errors: 27 in 8 files (baseline 298 in 139 files)
+Build macOS Intel x64	Build Electron macOS Intel x64	2026-10-28T05:54:18.1095060Z [typecheck] FAIL
+first error TS lines:
+
+## job 122656716652: Build Linux x64 (##[group]Runner Image Provisioner)
+Build Linux x64	Build Electron Linux x64	2026-10-28T05:51:54.2957820Z > nuxt prepare && node ./scripts/typecheck.mjs
+Build Linux x64	Build Electron Linux x64	2026-10-28T05:52:25.0266152Z [typecheck] Nuxt app (tsconfig.json): 292 errors, exit 2, 29.5s
+Build Linux x64	Build Electron Linux x64	2026-10-28T05:52:27.1419830Z [typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 2.1s
+Build Linux x64	Build Electron Linux x64	2026-10-28T05:52:27.8533907Z [typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.7s
+Build Linux x64	Build Electron Linux x64	2026-10-28T05:52:27.8597552Z [typecheck] FAIL
+Build Linux x64	Build Electron Linux x64	2026-10-28T05:52:27.8597875Z [typecheck] production errors: 23; test-file errors: 296 in 141 files (baseline 298 in 139 files)
+first error TS lines:
+Build Linux x64	Build Electron Linux x64	2026-10-28T05:52:27.8557269Z ##[error]components/applications/ApplicationIframeHost.vue(21,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its corr
+Build Linux x64	Build Electron Linux x64	2026-10-28T05:52:27.8563414Z ##[error]components/applications/ApplicationLaunchSetupPanel.vue(206,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or i
+
+## job 122656716642: Build Linux ARM64 (##[group]Runner Image Provisioner)
+Build Linux ARM64	Build Electron Linux ARM64	2026-10-28T05:52:39.5082541Z > nuxt prepare && node ./scripts/typecheck.mjs
+Build Linux ARM64	Build Electron Linux ARM64	2026-10-28T05:53:36.4832330Z [typecheck] Nuxt app (tsconfig.json): 292 errors, exit 2, 55.1s
+Build Linux ARM64	Build Electron Linux ARM64	2026-10-28T05:53:39.4459195Z [typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 3.0s
+Build Linux ARM64	Build Electron Linux ARM64	2026-10-28T05:53:40.3828908Z [typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.9s
+Build Linux ARM64	Build Electron Linux ARM64	2026-10-28T05:53:40.3933818Z [typecheck] FAIL
+Build Linux ARM64	Build Electron Linux ARM64	2026-10-28T05:53:40.3934317Z [typecheck] production errors: 23; test-file errors: 296 in 141 files (baseline 298 in 139 files)
+first error TS lines:
+Build Linux ARM64	Build Electron Linux ARM64	2026-10-28T05:53:40.3862911Z ##[error]components/applications/ApplicationIframeHost.vue(21,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its 
+Build Linux ARM64	Build Electron Linux ARM64	2026-10-28T05:53:40.3871862Z ##[error]components/applications/ApplicationLaunchSetupPanel.vue(206,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' 
+
+## job 122656716659: Build Windows x64 (##[group]Runner Image Provisioner)
+Build Windows x64	Build Electron Windows x64	2026-10-28T05:53:26.9297637Z > nuxt prepare && node ./scripts/typecheck.mjs
+Build Windows x64	Build Electron Windows x64	2026-10-28T05:54:25.4419271Z [typecheck] Nuxt app (tsconfig.json): 292 errors, exit 2, 51.6s
+Build Windows x64	Build Electron Windows x64	2026-10-28T05:54:29.2721095Z [typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 3.8s
+Build Windows x64	Build Electron Windows x64	2026-10-28T05:54:30.5873474Z [typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 1.3s
+Build Windows x64	Build Electron Windows x64	2026-10-28T05:54:30.6014703Z [typecheck] FAIL
+Build Windows x64	Build Electron Windows x64	2026-10-28T05:54:30.6015305Z [typecheck] production errors: 23; test-file errors: 296 in 141 files (baseline 298 in 139 files)
+first error TS lines:
+Build Windows x64	Build Electron Windows x64	2026-10-28T05:54:30.5916275Z ##[error]components/applications/ApplicationIframeHost.vue(21,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' or its 
+Build Windows x64	Build Electron Windows x64	2026-10-28T05:54:30.5928820Z ##[error]components/applications/ApplicationLaunchSetupPanel.vue(206,8): error TS2307: Cannot find module '@autobyteus/application-sdk-contracts' 
