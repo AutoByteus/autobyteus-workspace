@@ -14,15 +14,15 @@
 - Relevant Architecture Review Revision IDs: ARCH-REV-002
 - Implementation Handoff Reviewed As Context: `implementation-handoff.md` (IR-001, including "Deviations and additions" 1–10)
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
-- Relevant Implementation Revision IDs: IR-001, IR-002
+- Relevant Implementation Revision IDs: IR-001, IR-002, IR-003
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-002`
-- Current Review Round: 2
+- Current Code Review Revision ID: `CRR-005`
+- Current Review Round: 4 (API/E2E failure-origin review)
 - Review Scope: round 1 `Full Review`; round 2 `Targeted Delta Review`
 - Review Scope Evidence (round 2): the delta `6fa5f443c6..54ed02d56d` touches only `utils/apolloClient.ts`, `plugins/30.apollo.client.ts` and `plugins/__tests__/apollo.client.spec.ts` (commit `256cee925e`, 9+/52-), the files of CR-001; the other two commits are ticket documents. No shared interface beyond the removed dead slots changes; `getApolloClient()` keeps its return type and its 79 callers.
-- Trigger: round 1, implementation handoff IR-001; round 2, IR-002 (CR-001 Local Fix)
+- Trigger: round 1, implementation handoff IR-001; round 2, IR-002 (CR-001 Local Fix); round 3, IR-003 (packaging Local Fix requested by delivery after Desktop Release run 40640209395, v1.5.9-beta.14, failed at `pnpm typecheck` in all 5 build jobs; DR-001)
 - Prior Review Round Reviewed: 1 (CRR-001, Fail)
-- Latest Authoritative Round: 2
+- Latest Authoritative Round: 4
 - Code reviewed: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294`, branch `codex/test-and-tooling-hygiene-294`, `origin/personal` (`2f48d85d4d`)..`6fa5f443c6` (43 commits); `cf5192d830` holds the ticket documents only.
 
 ## Routing Classification Review
@@ -237,20 +237,91 @@ Round-1 record:
 - BEH-032 (d)'s spec fails on base partly because the new `data-testid` is missing. Its `not.toContain('null')` assertion still pins the actual bug.
 - The handoff counts 51 Electron specs under the old `test:nuxt`, against 49 tracked files. No tracked spec is lost (C-07).
 
+## Round 3 — Packaging Local Fix (IR-003), Targeted Delta Review
+
+- Scope evidence: the implementation delta since the merge is `75e9f323f0` (`autobyteus-web/package.json`, `scripts/typecheck.mjs` header comment, `docs/electron_packaging.md`) and `340cee3763` (TESTING.md row). `aca8655bdd` (RELEASE.md) and `3d50cedc1b` are delivery-owned documents and are outside this source review. The gate's rules, baseline and production code are unchanged.
+- Cause confirmed:
+  - Web code imports `@autobyteus/application-sdk-contracts` 17 times. That package tracks no `dist/` files; the other three contract packages web imports track theirs (44, 32 and 20 files).
+  - Its `dist/` is built only by the server's `prepare:shared`, which runs inside `prepare-server`. Every `build:electron*` chain ran `pnpm typecheck` before `prepare-server`, so a fresh runner had no types.
+- Fix reviewed:
+  - `prepare:shared-types` (`pnpm -C .. --filter @autobyteus/application-sdk-contracts build`) now runs first in `typecheck` and `typecheck:update-baseline`.
+  - The gate keeps its fail-fast position, so the chains are unchanged.
+  - The package is a declared web dependency (`package.json` L148, `workspace:*`), and the web package now builds the types it reads itself, rather than depending on the server's script. That is the right owner.
+  - In the chains this builds the package twice: once here, once again in `prepare:shared`. That is a small cost for an independent gate; not a finding.
+  - The docs (TESTING.md row, `electron_packaging.md`, the script header) state the new precondition: run right after `pnpm install`.
+- Evidence (IMP-20), on a fresh clone with a frozen install and no contracts `dist/`:
+  - At `4c34e5b71d` the gate fails as CI did (23 production TS2307 errors, 296/141).
+  - At `340cee3763` it passes (0 production, 298/139).
+  - `build:electron:mac` passes the guards, the gate, `prepare-server`, `generate:electron`, `transpile-electron` and the build tsc.
+  - The final electron-builder step passed on retry; the first attempt's `hdiutil` errno 35 is a host error after the app and zip were built.
+- Review gap: rounds 1 and 2 did not catch this. The gate's position before `prepare-server`, read together with the untracked contracts `dist/`, was detectable from source. Every local and clean-clone run had that `dist/` already, so no evidence showed the failure. Recorded in CRR-004.
+- Findings: none. Scores unchanged (categories 7, API/E2E readiness, and 8, runtime correctness, stay at 9.4/9.5 now that the fresh-runner case is proven).
+
+## Round 4 — API/E2E Failure-Origin Review (API-REV-002)
+
+- Entry point: `API/E2E Failure-Origin Review`. Scope: `N/A` (failure-origin round; no full re-audit or scorecard).
+- Trigger: the API/E2E rerun for IR-003 failed (API-REV-002), with failures F-1 and F-2.
+- Failing scenario: SCN-001 / AC-009 and AC-016. `build:electron:mac` must pass the web type gate on the release runners and on a rerun of the chain.
+- Exact failing commands / evidence:
+  - Desktop Release run 40640209395, macOS jobs 122656716565 and 122656716537 (API-31);
+  - `NODE_OPTIONS=--max-old-space-size=1792|2048 pnpm -C autobyteus-web typecheck` on a fresh clone (API-28);
+  - `pnpm -C autobyteus-web typecheck` in a worktree after a local desktop build (API-30).
+- Coverage investigation, execution report and API/E2E revision record reviewed: `api-e2e-coverage-investigation.md`, `api-e2e-execution-coverage-report.md` § Round 2, `api-e2e-revision-record.md` (API-REV-002).
+- Scenario basis confirmed:
+  - The release workflow (`.github/workflows/release-desktop.yml`) runs `pnpm build:electron:mac` on `macos-14` (L118, L248). That chain runs the gate (AC-009).
+  - The macOS jobs rerun the whole chain up to 3 times on failure (L165-170, `max_attempts=3`), so a second gate run after `prepare-server` and electron-builder is a normal release path, not a contrived one.
+  - Locally, rebuilding a worktree that already built (`build:electron:*`, `isolated-app start --build`) is the same path.
+
+### CR-002 — The Nuxt type project needs more heap than the macOS release runner gives Node by default (F-1)
+
+- Origin: `Runtime-only behavior`, introduced by this change (H-07 added the gate to `build:electron*`). Owner: implementation (`Local Fix`).
+- Evidence:
+  - API-31: both macOS jobs print `[typecheck] FAIL: Nuxt app (tsconfig.json): the compiler ended by signal SIGABRT`. Only the Linux and Windows jobs show the TS2307 errors that IR-003 fixed.
+  - API-28: the same fresh clone, with the contracts built, aborts the same way at 1792 and 2048 MB (the default on a 7 GB runner is about 1.75 GB) and passes at 3072 and 4096 MB.
+  - The gate itself behaved as designed: it failed closed and named the signal.
+- Classification check: within REQ-007 / AC-009 / AC-016. No requirement or design change is needed as long as the gate keeps the same projects, rules and baseline.
+- Required action:
+  - Make the gate's Nuxt compiler run within the release runners' memory.
+    - The gate spawns each compiler itself (`typecheck.mjs` L48, `spawnSync(process.execPath, …)`), so it is the owner of the compiler's Node options. An explicit `--max-old-space-size` on that spawn, sized from measurement, keeps the setting in one place and independent of the caller's environment.
+    - Record the measured peak (heap and RSS) next to the choice.
+  - Prove it on a `macos-14` runner, not by reasoning.
+    - `release-desktop.yml` accepts `workflow_dispatch` with `publish_release: false` on any pushed ref. That is a build-only run of all five jobs without a tag.
+    - Pushing the branch is the user's or delivery's decision; ask for it rather than assuming.
+- Escalation condition: the heap limit may still not fit, for example if peak RSS approaches the runner's 7 GB, as API-30's 4.4–4.9 GB RSS at a 4 GB cap suggests it might. In that case, reducing what the Nuxt project checks, or splitting it, changes DS-001's structure. Return that as a `Design Impact` to the Solution Designer; don't choose it locally.
+
+### CR-003 — The Nuxt type project sweeps in the desktop build outputs (F-2)
+
+- Origin: `Implementation defect` (H-07), with an `earlier review gap`.
+- Owner: implementation (`Local Fix`).
+- Evidence:
+  - API-30: after `prepare-server` and electron-builder, `autobyteus-web/resources/server` (866 MB) and `electron-dist/` (2.4 GB) are inside the generated `../**/*` include. `.nuxt/tsconfig.json` excludes neither of them.
+  - The gate aborts with SIGABRT at 4 GB. At 8 GB it reports 4222 errors, 3951 of them in `resources/server/…`.
+  - The same `nuxt.config.ts` already keeps both trees out of Nuxt's source scanning (`ignore: ['**/electron-dist/**', '**/resources/**']`, L248-251), with the comment that they are large. The type project's `typescript.tsConfig.exclude` (H-07) did not do the same.
+- Real path: the macOS release job's retry loop, which reruns the chain once `resources/server` exists, and any local rebuild.
+- Required action:
+  - Add `../resources/**` and `../electron-dist/**` to `typescript.tsConfig.exclude`, with the reason given for `electron/` and `build/`.
+  - Check `.nuxt/tsconfig.json` after `nuxt prepare`.
+  - Rerun the gate in a worktree that has both trees: the result must equal the fresh-clone one (0 production errors, 298 in 139 files).
+- Review gap: in round 1 I reviewed `nuxt.config.ts` and saw both the `ignore` list and the new exclude list, but didn't connect the build chain's outputs to the type project. This was detectable from source. The design's exclude list had the same gap; the fix is a bounded addition within its intent (the Nuxt project covers the app, not other projects' outputs), so it is not a Design Impact.
+
+### Review gap in round 3 (CRR-004)
+
+I accepted IR-003's and DR-001's attribution of all five failed jobs to the missing contracts `dist/` without reading the macOS job logs. Those logs were available (`gh run view --job … --log`) and show SIGABRT. CR-002 would have surfaced one round earlier. The IR-003 fix itself remains correct (API-27).
+
+### Classification and routing
+
+- `Local Fix`, implementation-owned: CR-002 and CR-003. Both are in this ticket (REQ-007, AC-009, AC-016) and were caused by this change.
+- After the fix: source review (targeted, CR-002/003), then API/E2E. API/E2E's proof must include the build-only release run on the five runners.
+
 ## Latest Authoritative Result
 
-- Review Decision: `Pass`
-- Review Entry Point: `Implementation Review` (round 2, Targeted Delta Review)
-- Supported Product Scenario Gate: `Pass`
+- Review Decision: `Fail` (failure origin confirmed)
+- Review Entry Point: `API/E2E Failure-Origin Review` (round 4)
+- Supported Product Scenario Gate: `Pass` (release runner and chain rerun are supported paths)
 - Material-Premise Gate: `Pass`
-- Score Summary: 9.4 average; every category ≥ 9.3.
-- Failure Origin: N/A
-- Recommended Recipient: API/E2E Engineer
-- Notes:
-  - CR-001 is resolved.
-  - Round 1's other conclusions are unchanged and still hold, because the delta touches only CR-001's files:
-    - every production type fix matches SD-18 with unchanged behaviour or an approved BEH-032 fix;
-    - no `any` or suppression was added to production code;
-    - the gate fails closed;
-    - no changed test assertion is weakened (QR-001).
-  - API/E2E still owns the handoff's not-run list (Residual Risks).
+- Score Summary: not rescored in a failure-origin round. Affected rationale: API/E2E readiness and runtime correctness held only for 64 GB hosts and clean worktrees; CR-002 and CR-003 are open.
+- Failure Origin:
+  - CR-002: runtime-only behavior (the gate's heap on the 7 GB macOS runner);
+  - CR-003: implementation defect with an earlier review gap (the type project includes `resources/` and `electron-dist/`).
+- Recommended Recipient: Implementation Engineer
+- Notes: IR-003's own fix holds (API-27, API-29). Escalate CR-002 as a `Design Impact` if a heap limit cannot be proven to fit the `macos-14` runner.

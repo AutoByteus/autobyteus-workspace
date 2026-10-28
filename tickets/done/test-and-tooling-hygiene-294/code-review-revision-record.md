@@ -9,6 +9,8 @@ The latest `code-review-report.md` (or `api-e2e-test-review-report.md`) is autho
 | CRR-001 | `code-review-report.md` | Implementation Review, round 1 (IR-001) | N/A | Fail (Local Fix) | CR-001 |
 | CRR-002 | `code-review-report.md` | Implementation Review, round 2 (IR-002, CR-001 fix) | Fail (Local Fix) | Pass | CR-001 |
 | CRR-003 | `api-e2e-test-review-report.md` | Proportional test-code review after API/E2E Pass (API-REV-001) | N/A (first test review) | Pass | None |
+| CRR-004 | `code-review-report.md` | Implementation Review, round 3 (IR-003, delivery packaging Local Fix) | Pass (CRR-002) | Pass | None |
+| CRR-005 | `code-review-report.md` | API/E2E Failure-Origin Review, round 4 (API-REV-002) | Pass (CRR-004) | Fail — Local Fix (implementation) | CR-002, CR-003 |
 
 ## Revision Entries
 
@@ -88,3 +90,65 @@ None.
 - Material score or classification changes: none
 - Recommended recipient: Delivery Engineer
 - Remaining risks or uncertainty: AC-014 not run on Linux; the BEH-032 screens are proven by specs only; FU-009..FU-012 are open.
+
+### CRR-004 — Packaging fix: the type gate builds the contract types it reads
+
+- Canonical review report updated: `tickets/done/test-and-tooling-hygiene-294/code-review-report.md` (§ Round 3, Latest Authoritative Result)
+- Review entry point and round: Implementation Review, round 3
+- Review scope: `Targeted Delta Review`. `75e9f323f0` and `340cee3763` change two scripts, one script header and two docs. The gate's rules, baseline and production code are unchanged.
+- Triggering role, report path, and finding or scenario IDs: Delivery Engineer, `release-deployment-report.md` (DR-001), Desktop Release run 40640209395; Implementation Engineer, `implementation-handoff.md` (IR-003)
+- Relevant solution revision IDs: SR-005
+- Relevant architecture-review revision IDs: ARCH-REV-002
+- Relevant implementation revision IDs: IR-003
+- Relevant API/E2E revision IDs: API-REV-001
+- Relevant delivery revision IDs: DR-001
+- Prior authoritative result: `Pass` (CRR-002)
+- Current authoritative result: `Pass`
+- What changed in the review result and why:
+  - The cause is confirmed: `@autobyteus/application-sdk-contracts` tracks no `dist/`, and the gate ran before `prepare-server` built it.
+  - The fix builds that one package inside `typecheck`, which is the web package's own declared dependency, so the gate holds standalone and in every chain.
+  - IMP-20 reproduces the CI failure before the fix and passes after it on a fresh clone.
+- Review gap acknowledged: rounds 1 and 2 could have caught this from source. The gate's place before `prepare-server` and the untracked contracts `dist/` were both visible. No evidence pointed at it, because every run had the `dist/`.
+- Supported product scenario / material-premise basis changes: none. (SCN-001 now explicitly includes a fresh CI runner.)
+
+#### Prior Finding Resolution
+
+None open.
+
+- New or remaining finding IDs: none
+- Material score or classification changes: none
+- Recommended recipient: API/E2E Engineer (rerun the gate and desktop-build validation after the implementation fix); Implementation Engineer, informational.
+- Remaining risks or uncertainty: the full CI desktop matrix (5 jobs) is proven only by the next release or build-only run; the build was proven on macOS only.
+
+### CRR-005 — Failure origin: the type gate on the macOS release runner and after a desktop build
+
+- Canonical review report updated: `tickets/done/test-and-tooling-hygiene-294/code-review-report.md` (§ Round 4, Latest Authoritative Result)
+- Review entry point and round: API/E2E Failure-Origin Review, round 4
+- Review scope: `N/A` (failure-origin)
+- Triggering role, report path, and finding or scenario IDs: API/E2E Engineer, `api-e2e-execution-coverage-report.md` § Round 2 (API-REV-002), F-1 and F-2; evidence API-27..API-31
+- Relevant solution revision IDs: SR-005
+- Relevant architecture-review revision IDs: ARCH-REV-002
+- Relevant implementation revision IDs: IR-003
+- Relevant API/E2E revision IDs: API-REV-002
+- Relevant delivery revision IDs: DR-001
+- Prior authoritative result: `Pass` (CRR-004)
+- Current authoritative result: `Fail`, `Local Fix` owned by implementation
+- What changed in the review result and why:
+  - F-1 is confirmed from the CI job logs: both macOS jobs aborted with SIGABRT, and a reproduction at the runner's default heap matches. It becomes CR-002, runtime-only behavior.
+  - F-2 is confirmed from API-30 and from `nuxt.config.ts`: the type project includes the build outputs that the same file already ignores for scanning. It becomes CR-003, an implementation defect with an earlier review gap.
+  - Both are in this ticket.
+- Supported product scenario / material-premise basis changes: SCN-001 now names the `macos-14` release runner and the release job's chain retry (`release-desktop.yml` L118, L165-170) as supported paths.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR-001 | Resolved (CRR-002) | Resolved | IR-002 | unchanged |
+
+- New or remaining finding IDs: CR-002, CR-003
+- Material score or classification changes: classification `Local Fix`; CR-002 becomes a `Design Impact` if no heap limit is proven to fit `macos-14`.
+- Recommended recipient: Implementation Engineer
+- Review gaps acknowledged:
+  - round 1 missed CR-003, which was detectable from `nuxt.config.ts`;
+  - round 3 accepted the five-job attribution without reading the macOS job logs.
+- Remaining risks or uncertainty: whether a heap limit fits the 7 GB runner is unproven. Only a build-only `workflow_dispatch` run (`publish_release: false`) on a pushed ref can prove it.

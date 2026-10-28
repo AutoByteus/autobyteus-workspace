@@ -9,6 +9,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | IR-001 | Architecture Reviewer, `design-review-report.md`, round 2 (Pass) | N/A | `Initial Baseline` | SR-002, SR-004, SR-005; ARCH-REV-002; CRR N/A; API-REV N/A; DR N/A | Implementation complete for H-01..H-32 (groups A–F); ready for code review |
 | IR-002 | Code Reviewer, `code-review-report.md`, round 1 (CRR-001, Fail) | CR-001 | `Local Fix` | SR-005; ARCH-REV-002; CRR-001; API-REV N/A; DR N/A | Dead Apollo compatibility slots removed; back to code review (Targeted Delta Review) |
 | IR-003 | Delivery Engineer, `release-deployment-report.md` (DR-001, Desktop Release run 40640209395 failed) | packaging Local Fix (type gate on a fresh runner) | `Local Fix` | SR-005; ARCH-REV-002; CRR-003; API-REV-001; DR-001 | The type gate builds the contract types it reads; passes on a fresh clone standalone and in `build:electron:mac` |
+| IR-004 | Code Reviewer, `code-review-report.md` round 4 (CRR-005, failure-origin review of API-REV-002) | CR-002, CR-003 | `Local Fix` | SR-005; ARCH-REV-002; CRR-005; API-REV-002; DR-001 | Build outputs excluded from the Nuxt type project; the Nuxt compiler gets an explicit 4 GB heap; macOS-runner proof pending a push |
 
 ## Revision Entries
 
@@ -74,3 +75,28 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
   - after `git clean -fdx -e node_modules`: `pnpm -C autobyteus-web build:electron:mac` (the release job's order) → guards pass, the gate `[typecheck] PASS` (production errors 0), then prepare-server, generate:electron, transpile-electron and the build tsc pass. `build/dist/build.js --mac` then needs the updater repository: CI provides `GITHUB_REPOSITORY`, but the clone's origin is a local path. Rerun with `GITHUB_REPOSITORY=AutoByteus/autobyteus-workspace` (unsigned, publish never): the first attempt failed only at `hdiutil resize` (errno 35, resource temporarily unavailable, a host error) after producing the app and zip; the retry `exit 0` produced the `.dmg` and `.zip`.
 - Next recipient or routing: per the handoff rules (Large / High → Code Reviewer).
 - Remaining limitations or risks: proven on macOS; the Linux and Windows jobs run the same script (`pnpm -C ..` and `--filter` are platform-neutral). The beta.15 release run is delivery's.
+
+### IR-004 — CR-002 and CR-003: the gate's Nuxt compiler memory
+
+- Triggering role, report path, and round: Code Reviewer, `tickets/done/test-and-tooling-hygiene-294/code-review-report.md`, round 4 (CRR-005, failure-origin review of API/E2E's IR-003 rerun API-REV-002).
+- Triggering finding IDs: CR-002 (F-1), CR-003 (F-2)
+- Classification: `Local Fix`
+- Prior authoritative result: IR-003. Correction to IR-003: its handoff (and DR-001) attributed all five failed jobs of run 40640209395 to TS2307. Only Linux and Windows showed TS2307; both macOS jobs ended with `the compiler ended by signal SIGABRT` (API-31), the default heap on the 7 GB runners. IR-003's fresh-clone proof ran on a 64 GB Mac (default heap 4144 MB), so it could not show this.
+- Current authoritative result:
+  - CR-003: `nuxt.config.ts` `typescript.tsConfig.exclude` also leaves out `../resources/**`, `../electron-dist/**`, `../dist-mobile/**` and `../.output/**`, the build outputs inside the package (allowJs pulled them in). In a worktree with `resources/server` and `electron-dist/` present the project shrinks from 19,872 to 4,359 files, and the gate gives the fresh-clone result.
+  - CR-002: `scripts/typecheck.mjs` spawns the Nuxt app's vue-tsc with `--max-old-space-size=4096` (`NUXT_APP_HEAP_MB`). That is independent of the machine default and of the caller's `NODE_OPTIONS`; a command-line flag takes precedence, and a run under `NODE_OPTIONS=--max-old-space-size=1792` passes. A compiler ended by a signal now quotes its FATAL ERROR line.
+- Related solution revision IDs: SR-005
+- Related architecture-review revision IDs: ARCH-REV-002
+- Related code-review revision IDs: CRR-005
+- Related API/E2E revision IDs: API-REV-002
+- Related delivery revision IDs: DR-001
+- Why this baseline or implementation revision is recorded: the reviewer's Local Fixes; REQ-007 / DEC-004 (the desktop build runs the gate) require it to pass on every release runner and after a previous build.
+- Approved behavior or requirement IDs affected: BEH-007 / REQ-007, AC-009 (no product behaviour change).
+- Implementation delta: `65a7955726` (CR-003, `autobyteus-web/nuxt.config.ts`), `2846b2abd2` (CR-002, `autobyteus-web/scripts/typecheck.mjs`).
+- Changed files or areas: the two files above.
+- Local validation and result:
+  - IMP-21: excludes listed in `.nuxt/tsconfig.json`; the gate with both trees present passes (0 production errors, 298 in 139 files).
+  - IMP-22: measured on the developer Mac (macOS arm64, Node 22), the project's heap peaks at about 3.0 GB. It runs out of memory at limits of 1792, 2304 and 2560 MB, and completes at 3072 MB (RSS 3132 MB) and 4096 MB (RSS 3250 MB). The gate passes under NODE_OPTIONS 1792. A temporary 1024 MB limit fails with "(FATAL ERROR: Reached heap limit …)".
+  - The gate spec passes 19/19.
+- Next recipient or routing: Code Reviewer (targeted review of CR-002 and CR-003), then API/E2E with the build-only release run on all five runners.
+- Remaining limitations or risks: the measurement is from a 64 GB developer Mac, so the proof on a real `macos-14` runner (7 GB) is still open. It needs the branch pushed and `release-desktop.yml` dispatched with `publish_release: false`, which is the user's or delivery's decision; it is requested in the handoff. If 4096 MB does not fit there (RSS 3.3 GB measured, 7 GB available), the next step is a Design Impact on DS-001 to the Solution Designer.

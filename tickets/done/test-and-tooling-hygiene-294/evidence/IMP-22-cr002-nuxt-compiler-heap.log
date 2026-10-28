@@ -1,0 +1,29 @@
+# IMP-22 CR-002: the Nuxt app compiler's heap — measurement and the gate's explicit limit
+# A. node --max-old-space-size=<N> --trace-gc node_modules/vue-tsc/bin/vue-tsc.js -p tsconfig.json --noEmit --pretty false under /usr/bin/time -l (peak = largest heap size before a GC in the trace)
+# B. NODE_OPTIONS=--max-old-space-size=1792 node scripts/typecheck.mjs (the macOS runner default) with the 4096 MB limit
+# C. a temporary NUXT_APP_HEAP_MB = 1024 (reverted): the failure names the cause
+# commits: 65a7955726 tree for A; 2846b2abd2 for B and C
+# environment: macOS 26.5.2 arm64, node v22.23.1, vue-tsc 3.3.13, typescript 5.9.3 (developer Mac, 64 GB; not a macos-14 runner)
+# date: 2026-10-28T07:21:02Z
+
+## A
+limit 1792 MB: OUT OF MEMORY (Abort trap 6, "Reached heap limit"), exit 134; peak heap 1789.8 MB; max RSS 1961 MB
+limit 2304 MB: OUT OF MEMORY (Abort trap 6, "Reached heap limit"), exit 134; peak heap 2287.0 MB; max RSS 2479 MB
+limit 2560 MB: OUT OF MEMORY (Abort trap 6, "Reached heap limit"), exit 134; peak heap 2539.6 MB; max RSS 2739 MB
+limit 3072 MB: completed, 271 errors; peak heap 2902.2 MB; max RSS 3132 MB
+limit 4096 MB: completed, 271 errors; peak heap 3035.0 MB; max RSS 3250 MB
+
+## B
+[typecheck] Nuxt app (tsconfig.json): 271 errors, exit 2, 35.2s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 2.1s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.7s
+[typecheck] production errors: 0; test-file errors: 298 in 139 files (baseline 298 in 139 files)
+[typecheck] PASS
+exit 0
+
+## C
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 1.7s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.6s
+[typecheck] FAIL: Nuxt app (tsconfig.json): the compiler ended by signal SIGABRT (FATAL ERROR: Reached heap limit Allocation failed - JavaScript heap out of memory)
+[typecheck] FAIL
+exit 1
