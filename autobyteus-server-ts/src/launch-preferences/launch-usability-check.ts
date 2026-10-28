@@ -4,7 +4,7 @@ import type {
   AvailableModel,
   NodeRuntimesReading,
 } from "../available-agent-runtimes/available-agent-runtimes-report.js";
-import { agentRuntimeDisplayName } from "../available-agent-runtimes/available-agent-runtimes-service.js";
+import { agentRuntimeName } from "@autobyteus/agent-presentation-contracts";
 import type {
   RunModelSelectionValidationResult,
   RunModelSelectionValidator,
@@ -49,7 +49,7 @@ const incompleteDetail = (value: DefaultLaunchConfig): string => !value.runtimeK
 /** Today's runnability wording for a model check that did not pass (kept identical for the inherited layer). */
 export const invalidModelMessage = (launch: AgentLaunchConfiguration, result: RunModelSelectionValidationResult | undefined): string =>
   !result ? "Its model could not be checked."
-    : result.kind === "model_unavailable" ? `The model '${launch.llmModelIdentifier}' is not available on ${launch.runtimeKind}.`
+    : result.kind === "model_unavailable" ? `The model '${launch.llmModelIdentifier}' is not available on ${agentRuntimeName(launch.runtimeKind)}.`
       : result.kind === "schema_unavailable" ? `The settings of model '${launch.llmModelIdentifier}' could not be checked.`
         : result.kind === "invalid" ? `Its model settings are invalid: ${result.errors.map((error) => error.message).join("; ")}`
           : "";
@@ -171,7 +171,7 @@ export class LaunchUsabilityCheck {
     const reason = unavailable.get(runtimeKind);
     if (reason) return Object.freeze({ usable: false, reason: "runtime_unavailable", detail: reason });
     if (facts?.signedOutRuntimes.has(runtimeKind)) {
-      return Object.freeze({ usable: false, reason: "signed_out", detail: `${agentRuntimeDisplayName(runtimeKind)} is signed out.` });
+      return Object.freeze({ usable: false, reason: "signed_out", detail: `${agentRuntimeName(runtimeKind)} is signed out.` });
     }
     return null;
   }

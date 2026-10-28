@@ -626,11 +626,11 @@ shows what its Model Router chose (server side:
   is off or a save runs. A changed launch starts a new router run (its
   `knowledge.md` stays).
 - **Names** (autobyteus-313): the page names runtimes and models as the rest of
-  the app does (`modelRoutingNames.ts`): a runtime on its own by
-  `runtimeKindToLabel` ("Claude Agent SDK"), a model with its runtime as the model
-  menu does (the catalog's model label and `runtimeShortLabel`, "claude-sonnet-5-5
-  Claude SDK"), on Configuration, Decisions, Overview, Runtimes and the problem
-  line. Labels load with each runtime's catalog; until then a model reads as its
+  the app does (`modelRoutingNames.ts`): a runtime by its one name
+  (`agentRuntimeName`, "Claude Agent SDK"; `GLOSSARY.md`, Agent Runtimes), a model
+  with its runtime as the model menu does (the catalog's model label and the
+  runtime's name, "claude-sonnet-5-5 Claude Agent SDK"), on Configuration,
+  Decisions, Overview, Runtimes and the problem line. Labels load with each runtime's catalog; until then a model reads as its
   ID. On Runtimes, a model the catalog does not have keeps the report's name.
 - **Decisions** (`modelRoutingDecisions`): one entry per started copy, newest
   first, pages of 8 from the server, filter All / Model Router / Not the router.

@@ -1,3 +1,5 @@
+import { agentRuntimeName } from "@autobyteus/agent-presentation-contracts";
+import { RuntimeKind } from "../../../runtime-management/runtime-kind-enum.js";
 import {
   asInteger,
   asText,
@@ -135,7 +137,7 @@ const webSearch: BuiltInConverter = (call, result) => {
 };
 
 export const claudeTranslation: RuntimeTranslation = Object.freeze({
-  label: "Claude",
+  label: agentRuntimeName(RuntimeKind.CLAUDE_AGENT_SDK),
   builtInTools: new Map<string, BuiltInConverter>([
     ["Bash", bash],
     ["Monitor", monitor],

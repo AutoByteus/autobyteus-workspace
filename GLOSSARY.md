@@ -128,11 +128,21 @@ delegated run, …) are defined in the
 
 ## Agent Runtimes
 
-- **Agent runtime:** what runs an agent (`RuntimeKind`): AutoByteus, the
-  Claude Agent SDK, Codex, Antigravity or Grok (Settings → Agent Runtimes,
-  `list_available_agent_runtimes`). It is not the LLM runtime (`LLMRuntime`,
-  `ModelInfo.runtime`: how AutoByteus calls a model, e.g. API or Ollama);
-  always say "agent runtime" for the first.
+- **Agent runtime:** what runs an agent (`RuntimeKind`; Settings → Agent
+  Runtimes, `list_available_agent_runtimes`). It is not the LLM runtime
+  (`LLMRuntime`, `ModelInfo.runtime`: how AutoByteus calls a model, e.g. API or
+  Ollama); always say "agent runtime" for the first.
+- **Agent runtime names:** each agent runtime has one name, used in every view
+  and in every text to agents; there are no short forms. The names come from
+  one list, `agentRuntimeName` in `@autobyteus/agent-presentation-contracts`:
+
+  | Kind | Name |
+  | --- | --- |
+  | `autobyteus` | AutoByteus |
+  | `codex_app_server` | Codex App Server |
+  | `claude_agent_sdk` | Claude Agent SDK |
+  | `antigravity_cli` | Antigravity CLI |
+  | `grok_build` | Grok Build |
 - **Available agent runtime:** an agent runtime installed on the node and not
   known to be signed out; for AutoByteus, a provider with an API key, or a
   local provider (Ollama, LM Studio) that offers models.

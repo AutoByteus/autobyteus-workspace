@@ -113,7 +113,7 @@ describe("Codex-default application imported while the server runs (real studio 
     const signedOut = await view();
     expect(signedOut.readiness.status).toBe("HOST_REQUIREMENT_MISSING");
     expect(signedOut.readiness.issues.map((entry) => [entry.code, entry.memberAddress, entry.message])).toEqual(["/", "/researcher", "/writer"].map((address) =>
-      ["RUNTIME_AUTHENTICATION_UNAVAILABLE", address, "Codex authentication is unavailable: no logged-in account."]));
+      ["RUNTIME_AUTHENTICATION_UNAVAILABLE", address, "Codex App Server authentication is unavailable: no logged-in account."]));
 
     states.set("codex-account", "signedIn");
     expect((await view()).readiness).toEqual({ status: "RUNNABLE", issues: [] });

@@ -162,7 +162,7 @@ describe("Application reload and repair (real studio server, Brief Studio, scrip
       expect(quarantined.status, brief(quarantined.body)).toBe(503);
       expect(quarantined.body.availabilityState).toBe("QUARANTINED");
       expect(String(quarantined.body.detail)).toContain("Application setup is required:");
-      expect(String(quarantined.body.detail)).toContain("Codex authentication is unavailable");
+      expect(String(quarantined.body.detail)).toContain("Codex App Server authentication is unavailable");
 
       states.set("codex-account", "signedIn");
       const repaired = await repair(applicationId);
@@ -214,7 +214,7 @@ describe("Application reload and repair (real studio server, Brief Studio, scrip
       await gql(`mutation($packageId: String!) { reloadApplicationPackage(packageId: $packageId) { packageId } }`, { packageId });
       const quarantined = await rest("GET", `/applications/${encodeURIComponent(applicationId)}/execution-resource-configurations`);
       expect(quarantined.status, brief(quarantined.body)).toBe(503);
-      expect(String(quarantined.body.detail)).toContain("Codex authentication is unavailable");
+      expect(String(quarantined.body.detail)).toContain("Codex App Server authentication is unavailable");
       // The run's runtime process dies while the application is quarantined: the run's event waits for dispatch.
       process.kill(runtimePids[0]!, "SIGKILL");
       await until(async () => childPids("app-server").includes(runtimePids[0]!), (alive) => !alive, "the runtime process is gone");

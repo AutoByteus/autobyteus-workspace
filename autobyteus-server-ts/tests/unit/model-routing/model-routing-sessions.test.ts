@@ -12,7 +12,7 @@ describe("ModelRoutingSessions validates the router's decision against the sessi
     const { sessions, session } = open();
     const [ie, cr] = validChoices();
     const wrong = sessions.submit("req_1", [ie!, { ...cr!, model: "opus" }]);
-    expect(wrong).toEqual({ accepted: false, message: expect.stringContaining("/set/code_reviewer: Claude does not offer the model opus on this node.") });
+    expect(wrong).toEqual({ accepted: false, message: expect.stringContaining("/set/code_reviewer: Claude Agent SDK does not offer the model opus on this node.") });
     expect(sessions.isOpen("req_1")).toBe(true);
     expect(sessions.submit("req_1", validChoices())).toEqual({ accepted: true, message: "Accepted: 2 launch choices for request req_1." });
     await expect(session.outcome).resolves.toEqual({ kind: "chosen", choices: [

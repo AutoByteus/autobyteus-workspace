@@ -1,3 +1,5 @@
+import { agentRuntimeName } from "@autobyteus/agent-presentation-contracts";
+import { RuntimeKind } from "../../../runtime-management/runtime-kind-enum.js";
 import {
   asInteger,
   asText,
@@ -114,7 +116,7 @@ const replaceFileContent: BuiltInConverter = (call, result) => editFileLine(
 );
 
 export const antigravityTranslation: RuntimeTranslation = Object.freeze({
-  label: "Antigravity",
+  label: agentRuntimeName(RuntimeKind.ANTIGRAVITY_CLI),
   builtInTools: new Map<string, BuiltInConverter>([
     ["run_command", runCommand],
     ["view_file", viewFile],

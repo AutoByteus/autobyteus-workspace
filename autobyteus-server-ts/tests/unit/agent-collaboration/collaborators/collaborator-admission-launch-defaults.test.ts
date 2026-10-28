@@ -85,7 +85,7 @@ describe("admission honors definition launch defaults", () => {
     const run = setup(false);
     const copy = await run.admission.catalogTaskSource(port(), { address: "/software_engineering_team", senderRunId: "pm" });
     expect(copy?.launchNotes).toEqual(["implementation_engineer", "code_reviewer"].map((name) =>
-      `${name}: its agent default codex_app_server / sol-6.1 could not be used (Codex App Server command 'codex' is not available); it runs on claude_agent_sdk / opus (inherited from the run).`));
+      `${name}: its agent default Codex App Server / sol-6.1 could not be used (Codex App Server command 'codex' is not available); it runs on Claude Agent SDK / opus (inherited from the run).`));
     expect(copy?.source.kind === "agent_team" && copy.source.members[1]).toEqual({
       address: "/software_engineering_team/implementation_engineer", agentDefinitionId: "implementation_engineer",
       launchConfiguration: root, followsTeam: true,

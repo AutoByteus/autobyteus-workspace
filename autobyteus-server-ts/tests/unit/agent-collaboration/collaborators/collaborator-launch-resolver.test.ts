@@ -132,7 +132,7 @@ describe("CollaboratorLaunchResolver", () => {
     });
     expect(fallbacks).toEqual([
       [{ layer: "agent_default", runtimeKind: "grok_build", llmModelIdentifier: "grok-4", reason: "runtime_unavailable", detail: "Grok Build CLI 'grok' is not available." }],
-      [{ layer: "agent_default", runtimeKind: "codex_app_server", llmModelIdentifier: "missing", reason: "model_unavailable", detail: "The model 'missing' is not available on codex_app_server." }],
+      [{ layer: "agent_default", runtimeKind: "codex_app_server", llmModelIdentifier: "missing", reason: "model_unavailable", detail: "The model 'missing' is not available on Codex App Server." }],
       [{ layer: "agent_default", runtimeKind: "codex_app_server", llmModelIdentifier: "bad-settings", reason: "model_settings_invalid", detail: "Its model settings are invalid: effort must be one of low, high" }],
       [{ layer: "agent_default", runtimeKind: "codex_app_server", llmModelIdentifier: null, reason: "incomplete", detail: "It names no model." }],
       [{ layer: "agent_default", runtimeKind: null, llmModelIdentifier: "sol-6.1", reason: "incomplete", detail: "It names no runtime." }],
@@ -160,9 +160,9 @@ describe("CollaboratorLaunchResolver", () => {
   it("AC-006: when an agent has no usable layer, the plan fails with today's message and names the definition", async () => {
     const { resolver } = setup({ verdict: (runtimeKind) => runtimeKind === RuntimeKind.CLAUDE_AGENT_SDK ? "model_unavailable" : "valid" });
     await expect(resolver.resolve([agentPlan(null, "Code Reviewer")], inheritedBase))
-      .rejects.toMatchObject({ code: "COLLABORATOR_ADD_FAILED", collaboratorName: "Code Reviewer", reason: "The model 'opus' is not available on claude_agent_sdk." });
+      .rejects.toMatchObject({ code: "COLLABORATOR_ADD_FAILED", collaboratorName: "Code Reviewer", reason: "The model 'opus' is not available on Claude Agent SDK." });
     await expect(resolver.resolve([teamPlan({ implementation_engineer: sol(), solution_designer: null })], inheritedBase))
-      .rejects.toMatchObject({ collaboratorName: "Software Engineering Team", reason: "The model 'opus' is not available on claude_agent_sdk." });
+      .rejects.toMatchObject({ collaboratorName: "Software Engineering Team", reason: "The model 'opus' is not available on Claude Agent SDK." });
     const schema = setup({ verdict: () => "schema_unavailable" });
     await expect(schema.resolver.resolve([agentPlan(null)], inheritedBase)).rejects.toMatchObject({ reason: "The settings of model 'opus' could not be checked." });
     const invalid = setup({ verdict: () => "invalid" });

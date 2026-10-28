@@ -1,8 +1,7 @@
 import { computed } from 'vue'
 import { useRuntimeAvailabilityStore } from '~/stores/runtimeAvailabilityStore'
 import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig'
-import { runtimeKindToLabel } from '~/types/agent/AgentRunConfig'
-import { runtimeShortLabel } from '~/utils/chat/chatDefaults'
+import { agentRuntimeName } from '@autobyteus/agent-presentation-contracts'
 import type { UiModelConfigSchema } from '~/utils/llmConfigSchema'
 import type { ModelInfo } from '~/stores/llmProviderConfigSupport'
 import {
@@ -18,7 +17,6 @@ export type ChatCatalogState = 'idle' | 'loading' | 'ready' | 'error'
 export interface ChatRuntimeOption {
   runtimeKind: string
   label: string
-  shortLabel: string
   enabled: boolean
   reason: string | null
 }
@@ -75,7 +73,7 @@ const toQueryTerms = (query: string): string[] => query.trim().toLowerCase().spl
 export const matchesModelQuery = (option: ChatModelOption, terms: readonly string[]): boolean => {
   const haystack = [
     option.llmModelIdentifier, option.label, option.displayName, option.canonicalName,
-    option.secondary, option.providerName, runtimeKindToLabel(option.runtimeKind),
+    option.secondary, option.providerName, agentRuntimeName(option.runtimeKind),
   ].filter(Boolean).join(' ').toLowerCase()
   return terms.every((term) => haystack.includes(term))
 }
@@ -97,8 +95,7 @@ export function useChatModelCatalog() {
 
   const runtimes = computed<ChatRuntimeOption[]>(() => availability.availabilities.map((entry) => ({
     runtimeKind: entry.runtimeKind,
-    label: runtimeKindToLabel(entry.runtimeKind),
-    shortLabel: runtimeShortLabel(entry.runtimeKind),
+    label: agentRuntimeName(entry.runtimeKind),
     enabled: entry.enabled,
     reason: entry.reason,
   })))

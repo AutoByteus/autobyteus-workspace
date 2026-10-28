@@ -198,7 +198,7 @@ describe('Settings → Model Routing (autobyteus-32)', () => {
       reasonParams: { runtime: 'codex_app_server', model: 'gpt-sol', until: '2026-10-27T04:00:00.000Z', limit: '5-hour' } })
     route.query.tab = 'setup'
     await mountPage()
-    expect(get('model-routing-status').text()).toMatch(/GPT Sol Codex is blocked until .+ \(5-hour\)\./)
+    expect(get('model-routing-status').text()).toMatch(/GPT Sol Codex App Server is blocked until .+ \(5-hour\)\./)
   })
 
   it('TR-005: Talk to the router opens the Model Router agent\'s run by its ID', async () => {
@@ -219,8 +219,8 @@ describe('Settings → Model Routing (autobyteus-32)', () => {
     await team.trigger('click')
     expect(get('model-routing-decision-reason').text()).toBe('Codex fits a server change.')
     // AC-004: models are named as the model menu names them, with the runtime's short name.
-    expect(wrapper!.findAll('[data-testid="model-routing-decision-launch"]').map((row) => row.text().replace(/\s+/g, ' '))).toEqual(['Claude Sonnet Claude SDK', 'GPT Sol Codex', 'Claude Sonnet Claude SDK'])
-    expect(get('model-routing-decision-skipped').text()).toContain('Agent default Claude Opus Claude SDK was not used: opus is blocked until 2026-10-28 09:00 UTC (weekly).')
+    expect(wrapper!.findAll('[data-testid="model-routing-decision-launch"]').map((row) => row.text().replace(/\s+/g, ' '))).toEqual(['Claude Sonnet Claude Agent SDK', 'GPT Sol Codex App Server', 'Claude Sonnet Claude Agent SDK'])
+    expect(get('model-routing-decision-skipped').text()).toContain('Agent default Claude Opus Claude Agent SDK was not used: opus is blocked until 2026-10-28 09:00 UTC (weekly).')
     expect(get('model-routing-decision-failure').text()).toBe("The Model Router could not choose: no valid answer within 40 seconds. The agents started on the delegating run's runtime and model.")
     expect(wrapper!.text()).toContain('No Project Task')
     expect(wrapper!.text()).toContain('Showing 2 of 2 Tasks')
@@ -249,7 +249,7 @@ describe('Settings → Model Routing (autobyteus-32)', () => {
     expect(get('model-routing-overview-kind-list').text()).toContain('Implementation')
     expect(get('model-routing-overview-kind-list').text()).toContain('Not routed')
     await get('model-routing-overview-details-implementation').trigger('click')
-    expect(get('model-routing-overview-models-implementation').text().replace(/\s+/g, ' ')).toContain('GPT Sol Codex')
+    expect(get('model-routing-overview-models-implementation').text().replace(/\s+/g, ' ')).toContain('GPT Sol Codex App Server')
     // AC-004: a runtime on its own has the app's full name.
     expect(get('model-routing-overview-runtime-legend').text()).toContain('Codex App Server')
     expect(get('model-routing-overview-runtime-legend').text()).toContain('Claude Agent SDK')

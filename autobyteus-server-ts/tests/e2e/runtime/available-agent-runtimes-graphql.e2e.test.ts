@@ -231,7 +231,7 @@ describe("list_available_agent_runtimes / availableAgentRuntimes e2e (real studi
     // AC-003: Codex weekly window used up, no credits → "Weekly" 0 % and every model blocked until its reset.
     const codexReset = new Date(1793390273 * 1000).toISOString();
     expect(entries[CODEX]).toEqual({
-      runtime: CODEX, name: "Codex",
+      runtime: CODEX, name: "Codex App Server",
       limits: [{ name: "Weekly", remainingPercent: 0, resetsAt: codexReset }],
       models: [expect.objectContaining({ id: CODEX_MODEL, blocked: { until: codexReset, by: "Weekly" } })],
     });
@@ -266,7 +266,7 @@ describe("list_available_agent_runtimes / availableAgentRuntimes e2e (real studi
 
     // AC-006: Grok "Billing period" resets at the period end; used % absent → null with its note.
     expect(entries[GROK]).toEqual({
-      runtime: GROK, name: "Grok",
+      runtime: GROK, name: "Grok Build",
       limits: [{ name: "Billing period", remainingPercent: null, resetsAt: "2026-10-29T00:00:00.000Z" }],
       limitsNote: "Grok does not report how much of the period is used.",
       models: [{ id: "grok-4.7", name: "Grok 4.7", contextTokens: 256000 }],
@@ -360,11 +360,11 @@ describe("list_available_agent_runtimes / availableAgentRuntimes e2e (real studi
     const entries = byRuntime(report);
     expect(report.agentRuntimes.map((entry) => entry.runtime), "an install check that timed out counts as not installed").toEqual([CODEX, CLAUDE, AGY, "autobyteus"]);
     expect(entries[AGY]).toEqual({
-      runtime: AGY, name: "Antigravity", signIn: "not checked",
-      limits: "unknown: Antigravity usage limits timed out",
-      models: "unknown: Antigravity model list timed out",
+      runtime: AGY, name: "Antigravity CLI", signIn: "not checked",
+      limits: "unknown: Antigravity CLI usage limits timed out",
+      models: "unknown: Antigravity CLI model list timed out",
     });
-    expect(entries[CODEX]!.limits).toBe("unknown: Codex usage limits timed out");
+    expect(entries[CODEX]!.limits).toBe("unknown: Codex App Server usage limits timed out");
     expect(entries[CODEX]!.models, "models read; no limits → nothing blocked").toEqual([expect.not.objectContaining({ blocked: expect.anything() })]);
     expect(Array.isArray(entries[CLAUDE]!.limits), "Claude is not held back by the others").toBe(true);
 

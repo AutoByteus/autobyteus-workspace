@@ -133,7 +133,7 @@ describe("ApplicationPlatformLifecycle", () => {
 
   it("quarantines each selected not-ready application with readiness's setup-required detail (autobyteus-296, AC-006)", async () => {
     const dependencies = createDependencies();
-    const detail = "Application setup is required: selected-app/slot:draftingTeam: Codex authentication is unavailable: no logged-in account.";
+    const detail = "Application setup is required: selected-app/slot:draftingTeam: Codex App Server authentication is unavailable: no logged-in account.";
     const readiness = dependencies.preparation.definitionRuntimeReadiness;
     readiness.isApplicationReady.mockImplementation((applicationId: string) => applicationId !== "selected-app");
     readiness.getSetupRequiredDetail.mockImplementation((applicationId: string) =>

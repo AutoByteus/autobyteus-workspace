@@ -123,7 +123,7 @@ describe("Agent Runtimes running-agent count and Application launch readiness (r
     const signedOut = await view();
     expect(signedOut.readiness.status).toBe("HOST_REQUIREMENT_MISSING");
     expect(signedOut.readiness.issues.map((entry: any) => [entry.code, entry.memberAddress, entry.message])).toEqual(["/", "/researcher", "/writer"].map((address) =>
-      ["RUNTIME_AUTHENTICATION_UNAVAILABLE", address, "Codex authentication is unavailable: no logged-in account."]));
+      ["RUNTIME_AUTHENTICATION_UNAVAILABLE", address, "Codex App Server authentication is unavailable: no logged-in account."]));
 
     // DEC-008's state (no OpenAI sign-in required) stays launchable, as before.
     states.set("codex-account", "notRequired");
@@ -150,7 +150,7 @@ describe("Agent Runtimes running-agent count and Application launch readiness (r
     expect(signedOut.readiness.status).toBe("HOST_REQUIREMENT_MISSING");
     // Today's text for a signed-out Claude: the empty stderr after the prefix (base adapter `describeFailure`).
     expect(new Set(signedOut.readiness.issues.map((entry: any) => `${entry.code}|${entry.message}`)))
-      .toEqual(new Set(["RUNTIME_AUTHENTICATION_UNAVAILABLE|Claude authentication is unavailable: "]));
+      .toEqual(new Set(["RUNTIME_AUTHENTICATION_UNAVAILABLE|Claude Agent SDK authentication is unavailable: "]));
 
     states.set("claude-account", "signedIn");
     expect((await view()).readiness).toEqual({ status: "RUNNABLE", issues: [] });

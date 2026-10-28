@@ -1,3 +1,4 @@
+import { agentRuntimeName } from "@autobyteus/agent-presentation-contracts";
 import { appConfigProvider } from "../config/app-config-provider.js";
 import type { RunModelSelectionValidationResult, RunModelSelectionValidator } from "../llm-management/services/run-model-selection-service.js";
 import { RuntimeKind } from "../runtime-management/runtime-kind-enum.js";
@@ -108,7 +109,7 @@ export type ModelRoutingSettingsDependencies = Readonly<{
 
 /** The refusal for a launch the check did not accept. */
 const refusalOf = (launch: ModelRouterLaunch, result: RunModelSelectionValidationResult): string =>
-  result.kind === "model_unavailable" ? `The model '${launch.llmModelIdentifier}' is not available on ${launch.runtimeKind}.`
+  result.kind === "model_unavailable" ? `The model '${launch.llmModelIdentifier}' is not available on ${agentRuntimeName(launch.runtimeKind)}.`
     : result.kind === "schema_unavailable" ? `The settings of model '${launch.llmModelIdentifier}' could not be checked.`
       : result.kind === "invalid" ? `The model settings are invalid: ${result.errors.map((error) => error.message).join("; ")}`
         : "The launch could not be checked.";

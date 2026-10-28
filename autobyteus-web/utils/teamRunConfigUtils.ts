@@ -1,6 +1,6 @@
+import { agentRuntimeName } from '@autobyteus/agent-presentation-contracts'
 import {
   DEFAULT_AGENT_RUNTIME_KIND,
-  runtimeKindToLabel,
   type AgentRuntimeKind,
 } from '~/types/agent/AgentRunConfig'
 import type {
@@ -42,7 +42,7 @@ export const buildUnavailableInheritedModelMessage = (params: {
 }): string => {
   const model = params.inheritedLlmModelIdentifier ?? params.globalLlmModelIdentifier ?? ''
   const prefix = params.memberName?.trim() ? `${params.memberName.trim()} ` : ''
-  return `Inherited model ${model} is unavailable for ${runtimeKindToLabel(params.runtimeKind)}; choose a compatible ${prefix}model or reset the runtime override.`
+  return `Inherited model ${model} is unavailable for ${agentRuntimeName(params.runtimeKind)}; choose a compatible ${prefix}model or reset the runtime override.`
 }
 export const hasMeaningfulLaunchOverride = (override?: LaunchConfigOverride | null): boolean => Boolean(override && (
   hasExplicitRuntimeOverride(override)

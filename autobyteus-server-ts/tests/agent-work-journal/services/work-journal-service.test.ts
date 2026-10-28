@@ -123,7 +123,7 @@ describe("WorkJournalService.ensureCurrent (DS-004)", () => {
 
     const codex = await service.ensureCurrent({ ...target(), runtimeKind: RuntimeKind.CODEX_APP_SERVER });
     expect(closedRenders()).toBe(2);
-    expect(read(codex.files[0]!.path)).toContain("Runtime Codex");
+    expect(read(codex.files[0]!.path)).toContain("Runtime Codex App Server ·");
 
     setSegmentRecordCount(runDir, "raw_traces_000001.jsonl", 3);
     await service.ensureCurrent({ ...target(), runtimeKind: RuntimeKind.CODEX_APP_SERVER });
