@@ -168,11 +168,11 @@ const messages = {
   "workspace.components.progress.SystemInstructionActivityItem.aria_label":
     "{{title}}. {{source}}. {{availability}}. Captured {{time}}. {{count}} characters.",
   "workspace.components.progress.SystemInstructionActivityItem.source.native":
-    "AutoByteus-supplied · Native configured system prompt",
+    "AutoByteus-supplied · AutoByteus configured system prompt",
   "workspace.components.progress.SystemInstructionActivityItem.source.claude":
-    "AutoByteus-supplied · Claude SDK systemPrompt",
+    "AutoByteus-supplied · Claude Agent SDK systemPrompt",
   "workspace.components.progress.SystemInstructionActivityItem.source.codex":
-    "AutoByteus-supplied · Codex baseInstructions",
+    "AutoByteus-supplied · Codex App Server baseInstructions",
   "workspace.components.progress.SystemInstructionActivityItem.source.grok":
     "AutoByteus-supplied · Grok Build rules",
   "workspace.components.progress.SystemInstructionActivityItem.source.unknown":

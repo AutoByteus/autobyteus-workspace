@@ -284,7 +284,7 @@ try {
     assert(await text(`runtime-${CODEX}-signin-button`) === 'Sign in', 'codex sign in button');
     assert(!(await present(`runtime-${CODEX}-signin-hint`)), 'codex has no command-line hint');
     assert(await text(`runtime-${CLAUDE}-status`) === 'Check failed', 'claude check failed');
-    assert(await text(`runtime-${CLAUDE}-check-failed-note`) === "Couldn't reach the update source. Claude still works.", 'claude note');
+    assert(await text(`runtime-${CLAUDE}-check-failed-note`) === "Couldn't reach the update source. Claude Agent SDK still works.", 'claude note');
     assert((await text(`runtime-${CLAUDE}-installed`)).includes('2.1.200'), 'claude version kept');
     for (const runtime of [CLAUDE, AGY]) {
       assert(await text(`runtime-${runtime}-signin`) === 'Not signed in', `${runtime} account`);
@@ -370,7 +370,7 @@ try {
     await waitFor('up to date after re-check', async () => (await text(`runtime-${CODEX}-status`)) === 'Up to date');
     assert((await text(`runtime-${CODEX}-installed`)).includes('0.163.0'), 'new version shown');
     assert(await text(`runtime-${CODEX}-updated`) === 'Updated from 0.150.0 to 0.163.0.', 'result kept after the re-check (AR-006)');
-    await waitFor('announcement', async () => (await page.locator('[data-testid="agent-runtimes-announce"]').textContent()).includes('Codex updated to 0.163.0.'));
+    await waitFor('announcement', async () => (await page.locator('[data-testid="agent-runtimes-announce"]').textContent()).includes('Codex App Server updated to 0.163.0.'));
     await shot('ARP-04b-VIS-005-updated');
   });
 
@@ -393,7 +393,7 @@ try {
     await waitState(CODEX, 'sign_in_running');
     assert(await text(`runtime-${CODEX}-signin-button`) === 'Signing in…', 'signing in label');
     assert(await locate(`runtime-${CODEX}-signin-button`).isDisabled(), 'button disabled while signing in');
-    assert(await text(`runtime-${CODEX}-signin-waiting`) === 'Finish signing in to Codex in your browser.', 'waiting copy');
+    assert(await text(`runtime-${CODEX}-signin-waiting`) === 'Finish signing in to Codex App Server in your browser.', 'waiting copy');
     await shot('ARP-06a-VIS-008-signing-in');
     await click(`runtime-${CODEX}-signin-cancel`);
     await waitFor('back to Sign in', async () => (await present(`runtime-${CODEX}-signin-button`)) && (await text(`runtime-${CODEX}-signin-button`)) === 'Sign in', 15000);
@@ -403,7 +403,7 @@ try {
     await fakes.set('codex-login', 'complete');
     await waitFor('signed in', async () => (await text(`runtime-${CODEX}-signin`)) === 'Signed in', 20000);
     assert(!(await present(`runtime-${CODEX}-signin-button`)), 'no Sign in when signed in');
-    await waitFor('announcement', async () => (await page.locator('[data-testid="agent-runtimes-announce"]').textContent()).includes('Codex is signed in.'));
+    await waitFor('announcement', async () => (await page.locator('[data-testid="agent-runtimes-announce"]').textContent()).includes('Codex App Server is signed in.'));
     await shot('ARP-06b-VIS-009-signed-in');
   });
 
@@ -480,7 +480,7 @@ try {
     await bindWindow('remote-desktop-probe-node', desktopNode.url);
     await remoteDesktopRowsRead();
     assert(/·\s*Remote node$/.test(await text('agent-runtimes-node')), `node line ${await text('agent-runtimes-node')}`);
-    for (const [runtime, name] of [[CODEX, 'Codex'], [GROK, 'Grok']]) {
+    for (const [runtime, name] of [[CODEX, 'Codex App Server'], [GROK, 'Grok Build']]) {
       assert(await text(`runtime-${runtime}-signin`) === 'Not signed in', `${runtime} account`);
       assert(await text(`runtime-${runtime}-signin-button`) === 'Sign in', `${runtime} Sign in`);
       assert(await locate(`runtime-${runtime}-signin-button`).getAttribute('aria-label') === `Sign in ${name}`, `${runtime} label`);
@@ -521,7 +521,7 @@ try {
     await waitState(CODEX, 'sign_in_running');
     assert(await text(`runtime-${CODEX}-signin-button`) === 'Signing in…', 'signing in label');
     assert(await locate(`runtime-${CODEX}-signin-button`).isDisabled(), 'button disabled while signing in');
-    assert(await text(`runtime-${CODEX}-signin-waiting`) === 'Finish signing in to Codex in the browser on that node (VNC Viewer).', `waiting copy ${await text(`runtime-${CODEX}-signin-waiting`)}`);
+    assert(await text(`runtime-${CODEX}-signin-waiting`) === 'Finish signing in to Codex App Server in the browser on that node (VNC Viewer).', `waiting copy ${await text(`runtime-${CODEX}-signin-waiting`)}`);
     assert((await locate(`runtime-${CODEX}-signin-waiting`).locator('xpath=..').getAttribute('role')) === 'status', 'waiting line is a status');
     assert(existsSync(path.join(desktopFakes.stateDir, 'codex-login.pid')), "the login started on the desktop node");
     assert((await apiRows(desktopNode))[CODEX].operation?.kind === 'SIGN_IN', 'the desktop node runs the sign-in');
@@ -536,12 +536,12 @@ try {
     await desktopFakes.set('codex-login', 'complete');
     await waitFor('signed in', async () => (await text(`runtime-${CODEX}-signin`)) === 'Signed in', 20000);
     assert(!(await present(`runtime-${CODEX}-signin-button`)), 'no Sign in when signed in');
-    await waitFor('announcement', async () => (await page.locator('[data-testid="agent-runtimes-announce"]').textContent()).includes('Codex is signed in.'));
+    await waitFor('announcement', async () => (await page.locator('[data-testid="agent-runtimes-announce"]').textContent()).includes('Codex App Server is signed in.'));
     await shot('ARP-11c-remote-desktop-codex-signed-in');
 
     await click(`runtime-${GROK}-signin-button`);
     await waitState(GROK, 'sign_in_running');
-    assert(await text(`runtime-${GROK}-signin-waiting`) === 'Finish signing in to Grok in the browser on that node (VNC Viewer).', 'grok waiting copy');
+    assert(await text(`runtime-${GROK}-signin-waiting`) === 'Finish signing in to Grok Build in the browser on that node (VNC Viewer).', 'grok waiting copy');
     await click(`runtime-${GROK}-signin-cancel`);
     await waitFor('grok back to Sign in', async () => (await present(`runtime-${GROK}-signin-button`)) && (await text(`runtime-${GROK}-signin-button`)) === 'Sign in', 15000);
 
@@ -566,7 +566,7 @@ try {
     assert(await text(`runtime-${GROK}-signin-button`) === '登录', 'zh Sign in');
     await click(`runtime-${GROK}-signin-button`);
     await waitState(GROK, 'sign_in_running');
-    assert(await text(`runtime-${GROK}-signin-waiting`) === '请在该节点的浏览器中完成 Grok 的登录（VNC 查看器）。', `zh waiting ${await text(`runtime-${GROK}-signin-waiting`)}`);
+    assert(await text(`runtime-${GROK}-signin-waiting`) === '请在该节点的浏览器中完成 Grok Build 的登录（VNC 查看器）。', `zh waiting ${await text(`runtime-${GROK}-signin-waiting`)}`);
     assert((await layout()).columnsDisplay === 'grid', 'zh table at 1440');
     await shot('ARP-12a-zh-CN-remote-desktop-1440');
     await page.setViewportSize({ width: 739, height: 1100 });

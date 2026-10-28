@@ -5,7 +5,7 @@ import SystemInstructionActivityItem from '../SystemInstructionActivityItem.vue'
 const translations: Record<string, string> = {
   'workspace.components.progress.SystemInstructionActivityItem.title': 'System instructions',
   'workspace.components.progress.SystemInstructionActivityItem.available': 'Available',
-  'workspace.components.progress.SystemInstructionActivityItem.source.native': 'AutoByteus-supplied · Native configured system prompt',
+  'workspace.components.progress.SystemInstructionActivityItem.source.native': 'AutoByteus-supplied · AutoByteus configured system prompt',
   'workspace.components.progress.SystemInstructionActivityItem.character_count': '{{count}} characters',
   'workspace.components.progress.SystemInstructionActivityItem.captured_at': 'Captured {{time}}',
   'workspace.components.progress.SystemInstructionActivityItem.aria_label': '{{title}}. {{source}}. {{availability}}. Captured {{time}}. {{count}} characters.',
@@ -39,7 +39,7 @@ describe('SystemInstructionActivityItem', () => {
     const pre = wrapper.get('pre');
     expect(button.attributes('aria-expanded')).toBe('false');
     expect(button.attributes('aria-controls')).toBe('system-instruction-content-raw-system-id');
-    expect(button.attributes('aria-label')).toContain('Native configured system prompt');
+    expect(button.attributes('aria-label')).toContain('AutoByteus configured system prompt');
     expect(button.attributes('aria-label')).toContain('Captured');
     expect(contentRegion.attributes()).toMatchObject({
       role: 'region',

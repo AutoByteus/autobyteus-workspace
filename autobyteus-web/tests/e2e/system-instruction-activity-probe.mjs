@@ -29,9 +29,9 @@ const executablePath = valueAfter(
 const timeoutMs = Number(valueAfter('--timeout-ms', '90000'));
 const exactContent = 'first line\n\n  indented line\nemoji: 🧪\nfinal line';
 const expectedLabels = {
-  autobyteus: 'AutoByteus-supplied · Native configured system prompt',
-  claude_agent_sdk: 'AutoByteus-supplied · Claude SDK systemPrompt',
-  codex_app_server: 'AutoByteus-supplied · Codex baseInstructions',
+  autobyteus: 'AutoByteus-supplied · AutoByteus configured system prompt',
+  claude_agent_sdk: 'AutoByteus-supplied · Claude Agent SDK systemPrompt',
+  codex_app_server: 'AutoByteus-supplied · Codex App Server baseInstructions',
   unknown: 'AutoByteus-supplied system instructions',
 };
 
