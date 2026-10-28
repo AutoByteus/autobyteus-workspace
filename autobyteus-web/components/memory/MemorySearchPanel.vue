@@ -10,9 +10,18 @@
             :disabled="!store.searchReady"
             :placeholder="store.searchReady ? $t('memory.search.placeholder') : $t('memory.search.placeholder_not_ready')"
             :aria-label="$t('memory.search.label')"
-            class="w-full rounded-lg border border-gray-200 bg-white pl-10 pr-3 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 disabled:bg-gray-50 disabled:text-gray-400"
-            :class="centered ? 'py-3.5 text-base shadow-sm' : 'py-2.5 text-sm'"
+            class="w-full rounded-lg border border-gray-200 bg-white pl-10 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100 disabled:bg-gray-50 disabled:text-gray-400"
+            :class="[centered ? 'py-3.5 text-base shadow-sm' : 'py-2.5 text-sm', voice.isAvailable ? 'pr-12' : 'pr-3']"
             data-test="memory-search-input"
+          />
+          <!-- Voice input fills the box; the search runs when the user presses Search (autobyteus-320, DEC-003). -->
+          <VoiceInputButton
+            :target="voiceTarget"
+            source="memory-search"
+            compact
+            :disabled="!store.searchReady"
+            class="absolute right-1.5 top-1/2 -translate-y-1/2"
+            data-test="memory-search-voice-button"
           />
         </div>
         <button
@@ -22,6 +31,13 @@
           :class="centered ? 'py-3.5' : 'py-2'"
         >{{ $t('memory.search.button') }}</button>
       </form>
+      <VoiceTargetStatus
+        :target="voiceTarget"
+        class="mt-2"
+        :class="centered ? '' : 'max-w-3xl'"
+        status-test-id="memory-search-voice-status"
+        cancel-test-id="memory-search-voice-cancel"
+      />
     </section>
 
     <section v-if="index?.phase === 'needs_index'" class="text-center" data-test="memory-search-not-indexed">
@@ -47,9 +63,14 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch } from 'vue';
+import { onBeforeUnmount, ref, watch } from 'vue';
 import { Icon } from '@iconify/vue';
 import { useMemoryIndexView } from '~/composables/useMemoryIndexView';
+import { useVoiceInputStore } from '~/stores/voiceInputStore';
+import { mergeTranscriptWithDraft } from '~/utils/voiceInputCapture';
+import type { VoiceTranscriptTarget } from '~/types/voiceInput';
+import VoiceInputButton from '~/components/voiceInput/VoiceInputButton.vue';
+import VoiceTargetStatus from '~/components/voiceInput/VoiceTargetStatus.vue';
 import MemorySpinner from './MemorySpinner.vue';
 
 withDefaults(defineProps<{ showNotice?: boolean; centered?: boolean }>(), { showNotice: true, centered: false });
@@ -58,6 +79,18 @@ const emit = defineEmits<{ search: [query: string]; openIndex: [] }>();
 const { store, index, status } = useMemoryIndexView();
 const queryInput = ref(store.query);
 watch(() => store.query, (value) => { queryInput.value = value; });
+
+const voice = useVoiceInputStore();
+let mounted = true;
+/** The search box as a voice target: a transcript joins the typed text and waits for Search. */
+const voiceTarget: VoiceTranscriptTarget = {
+  key: `memory-search-${Math.random().toString(36).slice(2)}`,
+  isCurrent: () => mounted,
+  appendTranscript: (transcript) => {
+    if (mounted) queryInput.value = mergeTranscriptWithDraft(queryInput.value, transcript);
+  },
+};
+onBeforeUnmount(() => { mounted = false; });
 
 const submit = () => {
   const query = queryInput.value.trim();
