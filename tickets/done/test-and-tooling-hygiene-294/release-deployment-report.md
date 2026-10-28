@@ -10,8 +10,15 @@
 ## Project Release Guide
 
 - Release guide path and revision: `RELEASE.md` at the repository root, as of `origin/personal` `73e4c4f329`.
-- Deviations from the guide and why: `None`
-- Proposed guide fixes, and whether the user agreed: `None`
+- Deviations from the guide and why:
+  - I read the guide from the main checkout, which was behind `origin/personal` and lacked the Secret Gate. The guide's own Finalization Target warns that this checkout is often behind. So I pushed the ticket branch and `personal`, and tagged, without running `scripts/check_secrets.sh`.
+  - I ran it afterwards on everything pushed: `2f48d85d4d..3d50cedc1b` (62 commits) and `v1.5.9-beta.13..v1.5.9-beta.14` (62 commits), both `PASS (no secrets found)`. Nothing was exposed.
+  - The worktree's `check_repository_artifact_hygiene.py` (current, with its tracked-imports check) did run before the push.
+- Proposed guide fixes, and whether the user agreed: agreed by the user on 2026-10-28 ("I think yeah, that's important … document … the case study"), and committed on the ticket branch as `docs(release): …`:
+  - a build-only release run (`pnpm release:test --ref personal`) is required before every tag, beta or stable;
+  - watch the four runs together, and report "released" only once they are complete;
+  - read the guide from `origin/personal`;
+  - a Case Studies section records `v1.5.9-beta.14`.
 
 ## Handoff Summary
 
