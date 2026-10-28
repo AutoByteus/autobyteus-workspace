@@ -14,15 +14,15 @@
 - Relevant Architecture Review Revision IDs: ARCH-REV-002
 - Implementation Handoff Reviewed As Context: `implementation-handoff.md` (IR-001, including "Deviations and additions" 1–10)
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
-- Relevant Implementation Revision IDs: IR-001, IR-002, IR-003
+- Relevant Implementation Revision IDs: IR-001, IR-002, IR-003, IR-004
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-005`
-- Current Review Round: 4 (API/E2E failure-origin review)
+- Current Code Review Revision ID: `CRR-006`
+- Current Review Round: 5
 - Review Scope: round 1 `Full Review`; round 2 `Targeted Delta Review`
 - Review Scope Evidence (round 2): the delta `6fa5f443c6..54ed02d56d` touches only `utils/apolloClient.ts`, `plugins/30.apollo.client.ts` and `plugins/__tests__/apollo.client.spec.ts` (commit `256cee925e`, 9+/52-), the files of CR-001; the other two commits are ticket documents. No shared interface beyond the removed dead slots changes; `getApolloClient()` keeps its return type and its 79 callers.
 - Trigger: round 1, implementation handoff IR-001; round 2, IR-002 (CR-001 Local Fix); round 3, IR-003 (packaging Local Fix requested by delivery after Desktop Release run 40640209395, v1.5.9-beta.14, failed at `pnpm typecheck` in all 5 build jobs; DR-001)
 - Prior Review Round Reviewed: 1 (CRR-001, Fail)
-- Latest Authoritative Round: 4
+- Latest Authoritative Round: 5
 - Code reviewed: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294`, branch `codex/test-and-tooling-hygiene-294`, `origin/personal` (`2f48d85d4d`)..`6fa5f443c6` (43 commits); `cf5192d830` holds the ticket documents only.
 
 ## Routing Classification Review
@@ -313,15 +313,35 @@ I accepted IR-003's and DR-001's attribution of all five failed jobs to the miss
 - `Local Fix`, implementation-owned: CR-002 and CR-003. Both are in this ticket (REQ-007, AC-009, AC-016) and were caused by this change.
 - After the fix: source review (targeted, CR-002/003), then API/E2E. API/E2E's proof must include the build-only release run on the five runners.
 
+## Round 5 — CR-002 / CR-003 fixes (IR-004), Targeted Delta Review
+
+- Scope evidence: since `0a81db3a37`, the code delta is `65a7955726` (`nuxt.config.ts`, 7 lines) and `2846b2abd2` (`scripts/typecheck.mjs`, 12+/3-). `1f5a4a19df` holds ticket documents only. The gate's rules, baseline and production code are unchanged.
+- CR-003 resolved:
+  - `typescript.tsConfig.exclude` adds `../resources/**`, `../electron-dist/**`, `../dist-mobile/**` and `../.output/**`, each with the reason.
+  - All four are git-ignored build outputs inside the package (`git check-ignore`; no tracked files under them), so no source leaves the project.
+  - IMP-21: in a worktree that holds `resources/server` and `electron-dist/`, the project drops from 19,872 to 4,359 files, and the gate gives the fresh-clone result (0 production, 298/139).
+- CR-002 resolved locally; the runner proof is still open:
+  - The gate passes `--max-old-space-size=4096` to the Nuxt compiler's own spawn. The limit is named and its comment carries the measurement. A command-line flag takes precedence over the caller's `NODE_OPTIONS`.
+  - IMP-22 measures, with the build outputs excluded:
+    - out of memory up to 2560 MB;
+    - completes at 3072 MB (peak heap 2.9 GB, RSS 3.1 GB) and at 4096 MB (peak heap 3.0 GB, RSS 3.25 GB).
+  - So 4096 leaves about 1 GB of heap headroom, and RSS fits a 7 GB runner by arithmetic.
+  - Under `NODE_OPTIONS=--max-old-space-size=1792` (the runner default) the gate passes.
+  - The signal failure now quotes V8's `FATAL ERROR` line, which keeps the gate fail-closed and makes the failure self-explaining.
+  - The other two projects are unchanged; they are small.
+- Open (API/E2E, not a finding): proof on a real `macos-14` runner through a build-only `workflow_dispatch` run (`publish_release: false`) on a pushed ref. The implementation engineer has asked delivery about the push.
+- Pending upstream (not a finding): the user's direction to take the gate out of the GitHub pipeline (Requirement Gap sent to the Solution Designer). Both fixes stay correct under every option: CR-003 keeps a local gate right after a local build, and CR-002 keeps it independent of a machine's default heap.
+- Findings: none. CR-002 and CR-003 resolved.
+
 ## Latest Authoritative Result
 
-- Review Decision: `Fail` (failure origin confirmed)
-- Review Entry Point: `API/E2E Failure-Origin Review` (round 4)
-- Supported Product Scenario Gate: `Pass` (release runner and chain rerun are supported paths)
+- Review Decision: `Pass`
+- Review Entry Point: `Implementation Review` (round 5, Targeted Delta Review of IR-004)
+- Supported Product Scenario Gate: `Pass`
 - Material-Premise Gate: `Pass`
-- Score Summary: not rescored in a failure-origin round. Affected rationale: API/E2E readiness and runtime correctness held only for 64 GB hosts and clean worktrees; CR-002 and CR-003 are open.
-- Failure Origin:
-  - CR-002: runtime-only behavior (the gate's heap on the 7 GB macOS runner);
-  - CR-003: implementation defect with an earlier review gap (the type project includes `resources/` and `electron-dist/`).
-- Recommended Recipient: Implementation Engineer
-- Notes: IR-003's own fix holds (API-27, API-29). Escalate CR-002 as a `Design Impact` if a heap limit cannot be proven to fit the `macos-14` runner.
+- Score Summary: 9.4 average; every category ≥ 9.3 (as in round 2). The runtime-correctness rationale now rests on the IMP-22 measurement; the `macos-14` proof is pending.
+- Failure Origin: N/A
+- Recommended Recipient: API/E2E Engineer (rerun the affected validation, including the build-only release run), with an informational notice to the Implementation Engineer
+- Notes:
+  - CR-002 and CR-003 are resolved.
+  - The Solution Designer still owns the user's pending decision on whether the gate stays in the GitHub pipeline. If it moves out, the `macos-14` proof is no longer needed for the gate.

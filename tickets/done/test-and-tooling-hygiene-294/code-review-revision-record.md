@@ -11,6 +11,8 @@ The latest `code-review-report.md` (or `api-e2e-test-review-report.md`) is autho
 | CRR-003 | `api-e2e-test-review-report.md` | Proportional test-code review after API/E2E Pass (API-REV-001) | N/A (first test review) | Pass | None |
 | CRR-004 | `code-review-report.md` | Implementation Review, round 3 (IR-003, delivery packaging Local Fix) | Pass (CRR-002) | Pass | None |
 | CRR-005 | `code-review-report.md` | API/E2E Failure-Origin Review, round 4 (API-REV-002) | Pass (CRR-004) | Fail — Local Fix (implementation) | CR-002, CR-003 |
+| CRR-006 | `code-review-report.md` | Implementation Review, round 5 (IR-004) | Fail (CRR-005) | Pass | CR-002, CR-003 |
+| CRR-007 | `api-e2e-test-review-report.md` | Proportional test-code review after API/E2E Pass (API-REV-003) | Pass (CRR-003) | Not Applicable | None |
 
 ## Revision Entries
 
@@ -152,3 +154,61 @@ None open.
   - round 1 missed CR-003, which was detectable from `nuxt.config.ts`;
   - round 3 accepted the five-job attribution without reading the macOS job logs.
 - Remaining risks or uncertainty: whether a heap limit fits the 7 GB runner is unproven. Only a build-only `workflow_dispatch` run (`publish_release: false`) on a pushed ref can prove it.
+
+### CRR-006 — CR-002 and CR-003 fixes verified
+
+- Canonical review report updated: `tickets/done/test-and-tooling-hygiene-294/code-review-report.md` (§ Round 5, Latest Authoritative Result)
+- Review entry point and round: Implementation Review, round 5
+- Review scope: `Targeted Delta Review` (`65a7955726`, `2846b2abd2`; CR-002's and CR-003's files only)
+- Triggering role, report path, and finding or scenario IDs: Implementation Engineer, `implementation-handoff.md` (IR-004), CR-002, CR-003
+- Relevant solution revision IDs: SR-005 (a Requirement Gap on the gate's pipeline placement is pending with the Solution Designer)
+- Relevant architecture-review revision IDs: ARCH-REV-002
+- Relevant implementation revision IDs: IR-004
+- Relevant API/E2E revision IDs: API-REV-002
+- Relevant delivery revision IDs: DR-001
+- Prior authoritative result: `Fail`, Local Fix (CRR-005)
+- Current authoritative result: `Pass`
+- What changed in the review result and why:
+  - The build outputs are excluded from the type project; all four are git-ignored, and IMP-21 shows the same result in a built worktree.
+  - The Nuxt compiler gets an explicit 4096 MB heap from the gate. IMP-22 measures a 3.0 GB peak heap and 3.25 GB RSS, and the gate passes under the runner's default `NODE_OPTIONS`.
+  - The signal failure names V8's fatal error.
+- Supported product scenario / material-premise basis changes: none.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR-002 | Open (CRR-005) | Resolved (runner proof pending in API/E2E) | IR-004, `2846b2abd2` | diff read; IMP-22 |
+| CR-003 | Open (CRR-005) | Resolved | IR-004, `65a7955726` | diff read; `git check-ignore`; IMP-21 |
+
+- New or remaining finding IDs: none
+- Material score or classification changes: none
+- Recommended recipient: API/E2E Engineer; Implementation Engineer, informational
+- Remaining risks or uncertainty:
+  - `macos-14` runner proof pending (build-only dispatch needs a pushed ref);
+  - the user's pipeline-placement decision is pending with the Solution Designer.
+
+### CRR-007 — Test-code review after API-REV-003: no durable test changed
+
+- Canonical review report updated: `tickets/done/test-and-tooling-hygiene-294/api-e2e-test-review-report.md` (§ Round 2)
+- Review entry point and round: Successful API/E2E test-code review, round 2
+- Review scope: `N/A` (test review). `ecd7dc2d0f..2edb3336ae` changes no durable test file.
+- Triggering role, report path, and finding or scenario IDs: API/E2E Engineer, `api-e2e-execution-coverage-report.md` § Round 3 (API-REV-003)
+- Relevant solution revision IDs: SR-005 (Requirement Gap pending)
+- Relevant architecture-review revision IDs: ARCH-REV-002
+- Relevant implementation revision IDs: IR-003, IR-004
+- Relevant API/E2E revision IDs: API-REV-002, API-REV-003
+- Relevant delivery revision IDs: DR-001
+- Prior authoritative result: `Pass` (CRR-003)
+- Current authoritative result: `Not Applicable`
+- What changed in the review result and why: no durable test code changed after round 1. The API/E2E reruns and the 7 GB container run (API-32) are execution evidence. In API-32, the control aborts as CI did; the gate as committed passes at 3.12 GB peak process memory with `oom_kill 0`.
+- Supported product scenario / material-premise basis changes: none.
+
+#### Prior Finding Resolution
+
+None open.
+
+- New or remaining finding IDs: none
+- Material score or classification changes: none
+- Recommended recipient: Delivery Engineer
+- Remaining risks or uncertainty: the build-only dispatch on the five real runners; the pending pipeline-placement decision.

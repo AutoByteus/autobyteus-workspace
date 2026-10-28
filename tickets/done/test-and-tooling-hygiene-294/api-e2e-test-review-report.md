@@ -2,7 +2,7 @@
 
 ## Review Meta
 
-- Review Round: 1
+- Review Round: 2 (round 1: API-REV-001, Pass)
 - Trigger: API/E2E Pass (API-REV-001), with five Rule 9 baseline-fix commits to durable tests
 - Requirements Doc Reviewed As Context: `requirements-doc.md` (SR-005)
 - Investigation Notes Reviewed As Context: not needed for this bounded review
@@ -13,7 +13,7 @@
 - Implementation Revision Record Reviewed As Context: IR-002
 - Original Code Review Report: `code-review-report.md` (CRR-002, Pass)
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-003`
+- Current Code Review Revision ID: `CRR-007`
 - Coverage Investigation: `api-e2e-coverage-investigation.md`
 - Execution Coverage Report: `api-e2e-execution-coverage-report.md`
 - API/E2E Revision Record Reviewed As Context: `api-e2e-revision-record.md` (API-REV-001)
@@ -65,10 +65,20 @@ None.
 
 - Follow-ups this review added: None. FU-011 and FU-012 were added by API/E2E.
 
+## Round 2 — API-REV-002 / API-REV-003
+
+- Trigger: API/E2E Pass for IR-004 (API-REV-003, confidence 95.0%), after the failed API-REV-002 round. That failure was reviewed as a failure origin in `code-review-report.md` (CRR-005).
+- Changed durable test scope: none. `git diff --name-only ecd7dc2d0f..2edb3336ae` outside `tickets/` lists only:
+  - `RELEASE.md` and `TESTING.md`;
+  - `autobyteus-web/docs/electron_packaging.md`;
+  - `autobyteus-web/nuxt.config.ts`, `package.json` and `scripts/typecheck.mjs`.
+  These are source and docs, reviewed in CRR-004 and CRR-006. API-32's Docker run and the API-28/29/30 reruns are execution evidence, not durable tests.
+- Result: `Not Applicable`. Round 1's review of the five baseline fixes still covers every test change on the branch.
+
 ## Latest Authoritative Result
 
-- Result: `Pass`
-- Changed durable test paths reviewed: the five above
+- Result: `Not Applicable` (round 2: no durable test file changed since round 1's `Pass`)
+- Changed durable test paths reviewed: none in round 2; round 1's five remain reviewed
 - Unresolved finding IDs: none
 - Recommended Recipient: `delivery_engineer`
-- Notes: no focused rerun was needed; every changed assertion is decidable from the diff and the API-* evidence.
+- Notes: the remaining release proof is the build-only `release-desktop.yml` dispatch on the five real runners, which RELEASE.md requires before a tag. A Requirement Gap on the gate's pipeline placement is pending with the Solution Designer.
