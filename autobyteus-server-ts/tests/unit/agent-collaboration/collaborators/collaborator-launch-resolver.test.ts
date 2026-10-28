@@ -207,7 +207,7 @@ describe("CollaboratorLaunchResolver", () => {
     availability.getRuntimeAvailability.mockRejectedValueOnce(new Error("probe crashed"));
     const [plan] = await resolver.resolve([agentPlan(sol())], inheritedBase);
     expect(plan).toMatchObject({ launchConfiguration: root, launchSource: { origin: "inherited", fallbacks: [
-      { reason: "runtime_unavailable", detail: "Runtime 'codex_app_server' could not be checked: probe crashed" },
+      { reason: "runtime_unavailable", detail: "Codex App Server could not be checked: probe crashed" },
     ] } });
   });
 });

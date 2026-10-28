@@ -105,7 +105,7 @@ describe("ApplicationLaunchHostCapabilityValidator current model readiness", () 
       runtimeKind: RuntimeKind.ANTIGRAVITY_CLI, llmModelIdentifier: "gemini-test",
     }]));
     expect(issues).toEqual([expect.objectContaining({ code: "RUNTIME_AUTHENTICATION_UNAVAILABLE",
-      message: "Runtime 'antigravity_cli' could not provide its authenticated model catalog: Antigravity model discovery failed; check authentication or network and retry.",
+      message: "Antigravity CLI could not provide its authenticated model catalog: Antigravity model discovery failed; check authentication or network and retry.",
     })]);
   });
 
@@ -123,7 +123,7 @@ describe("ApplicationLaunchHostCapabilityValidator current model readiness", () 
       runtimeKind: RuntimeKind.GROK_BUILD, llmModelIdentifier: "grok-4.7",
     }]));
     expect(issues).toEqual([expect.objectContaining({ code: "RUNTIME_AUTHENTICATION_UNAVAILABLE",
-      message: "Runtime 'grok_build' could not provide its authenticated model catalog: Grok Build model discovery failed; check Grok authentication or network and retry.",
+      message: "Grok Build could not provide its authenticated model catalog: Grok Build model discovery failed; check Grok authentication or network and retry.",
     })]);
   });
 

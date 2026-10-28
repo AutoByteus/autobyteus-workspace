@@ -181,9 +181,9 @@ export class LaunchUsabilityCheck {
     const checked = await Promise.all(runtimes.map(async (runtimeKind) => {
       try {
         const result = await this.dependencies.availability.getRuntimeAvailability(runtimeKind);
-        return [runtimeKind, result.enabled ? null : result.reason ?? `Runtime '${runtimeKind}' is not available.`] as const;
+        return [runtimeKind, result.enabled ? null : result.reason ?? `${agentRuntimeName(runtimeKind)} is not available.`] as const;
       } catch (error) {
-        return [runtimeKind, `Runtime '${runtimeKind}' could not be checked: ${messageOf(error)}`] as const;
+        return [runtimeKind, `${agentRuntimeName(runtimeKind)} could not be checked: ${messageOf(error)}`] as const;
       }
     }));
     return new Map(checked.filter((entry): entry is readonly [RuntimeKind, string] => entry[1] !== null));

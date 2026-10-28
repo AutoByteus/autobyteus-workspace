@@ -417,6 +417,10 @@ describe('ApplicationLaunchSetupPanel', () => {
       .toMatchObject({ llmModelIdentifier: 'default', llmConfig: { effort: 'high' } })
     expect(wrapper.text()).toContain('default')
     expect(wrapper.text()).toContain('VALID')
+    // autobyteus-320 (AC-003, CRR-001 FO-001): the launch-authority summary names the runtime, never its kind.
+    const summary = wrapper.get('[data-testid="application-launch-authority-summary"]').text()
+    expect(summary).toContain('Primary Agent · Claude Agent SDK · default')
+    expect(summary).not.toContain('claude_agent_sdk')
   })
 
   it('uses DELETE for explicit Reset and restores the package-selected view', async () => {

@@ -18,7 +18,7 @@ afterEach(async () => {
 type Harness = Awaited<ReturnType<typeof harness>>;
 const coordinatorOf = (f: Harness) => f.identity("/coordinator", "run-coordinator");
 const note = (name: string) => expect.stringMatching(new RegExp(
-  `^${name}: its agent default codex_app_server / \\(no model\\) could not be used \\(It names no model\\); it runs on .+ \\(inherited from the run\\)\\.$`));
+  `^${name}: its agent default Codex App Server / \\(no model\\) could not be used \\(It names no model\\); it runs on .+ \\(inherited from the run\\)\\.$`));
 
 describe("Team root launch notes", () => {
   it("delegate_task to a catalog copy carries its notes; a teammate delegation inside that copy is refused (CM-1)", async () => {
