@@ -66,7 +66,7 @@ const openLiveSession = async (
   client: ClaudeSdkClient,
   options: ClaudeSdkStreamingSessionOptions,
 ): Promise<LiveSession> => {
-  const session = await client.openStreamingSession(options);
+  const session = await client.beginStreamingSession({ resolveOptions: () => options }).open();
   const frames: Array<Record<string, unknown>> = [];
   const results: Array<Record<string, unknown>> = [];
   let waiter: (() => void) | null = null;
@@ -100,7 +100,7 @@ const openLiveSession = async (
       }
       return results[consumed++]!;
     },
-    close: () => session.close(),
+    close: () => session.requestClose(),
   };
 };
 
