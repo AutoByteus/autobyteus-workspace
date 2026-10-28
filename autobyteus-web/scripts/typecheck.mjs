@@ -1,5 +1,6 @@
 #!/usr/bin/env node
-// The web type gate: `pnpm typecheck` (after `nuxt prepare`). Type-checks the Nuxt app (vue-tsc), Electron main with
+// The web type gate: `pnpm typecheck` (after `prepare:shared-types` builds @autobyteus/application-sdk-contracts, whose
+// types web code imports from its untracked dist/, and `nuxt prepare`). Type-checks the Nuxt app (vue-tsc), Electron main with
 // its specs and the build scripts (tsc), each under its own config, with the package's pinned compilers.
 // Production files must have no type errors. Test files may not exceed their counts in `typecheck-baseline.json`;
 // a lower count also fails until `pnpm typecheck:update-baseline` shrinks the baseline, which refuses any growth.
