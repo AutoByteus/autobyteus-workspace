@@ -42,6 +42,8 @@ const useIsolatedWorkspaceConfig = (
   vi.spyOn(appConfigProvider, "config", "get").mockReturnValue({
     getAppDataDir: () => appDataDir,
     getTempWorkspaceDir: () => configuredTempRoot,
+    // No server setting is configured (workspace listing reads the show-internal-agents setting).
+    get: () => undefined,
   } as any);
   resetWorkspaceRegistryStoreForTest();
 };
