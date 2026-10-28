@@ -68,12 +68,12 @@ Each affected run gets one notice per settled burst. The text has this shape:
 ```
 [Platform notice — skill updated]
 
-Your skill package `code-review` has been updated (/…/skills/code-review).
+Your skill package `code-review` has been updated (`/…/skills/code-review`).
 
 Changed files:
-- SKILL.md (changed)
-- references/new-checklist.md (added)
-- scripts/old.sh (removed)
+- `SKILL.md` (changed)
+- `references/new-checklist.md` (added)
+- `scripts/old.sh` (removed)
 
 Your skill package `deep-research` is no longer available.
 
@@ -83,6 +83,7 @@ Do not rely on a skill that is no longer available.
 ```
 
 - One block per skill, in skill-name order. An updated skill names its current folder once; its files are listed relative to that folder, one per line, each marked `(changed)`, `(added)` or `(removed)`.
+- The folder and every file path are Markdown inline code (`inlineCode` in `skill-update-notice-builder.ts`), so the card shows them literally: `references/__init__.py` is not bold and `notes/*draft*.md` is not emphasis. The fence is one backtick longer than the longest backtick run in the path, so a path with a backtick also shows literally.
 - `SKILL.md` appears only when it changed, and then first; the other files follow by path. At most 10 files are listed per skill, followed by "- …and N more files".
 - The re-read line appears only when a skill was updated ("this skill", or "these skills" when several were).
 - "Removed files are no longer available." appears only when a listed file was removed; the last line only when a skill was removed.
