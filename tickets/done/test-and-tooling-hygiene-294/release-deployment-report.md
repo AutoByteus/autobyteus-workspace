@@ -133,6 +133,27 @@
 - Recovery plan (RELEASE.md § Recovery, "the tag's content is at fault"): fix on `personal`, then cut the next beta, `v1.5.9-beta.15`. Do not re-dispatch or move `v1.5.9-beta.14`.
 - Release notes handoff result: `Not required` (beta)
 
+### Build-only release run on the fix (RELEASE.md § Build-only release run)
+
+- Run: Desktop Release `40649647049`. Dispatched with `pnpm release:test --ref codex/test-and-tooling-hygiene-294` (`workflow_dispatch`, `publish_release=false`) on `1f5a4a19df`, the reviewed code of IR-003 and IR-004. Later commits up to `7608a73c57` change only ticket documents.
+- Before the push: Secret Gate on `origin/codex/test-and-tooling-hygiene-294..1f5a4a19df` (11 commits): `PASS (no secrets found)`.
+- Attempt 1:
+  - Linux x64, Linux ARM64 and macOS Intel x64 succeeded.
+  - macOS ARM64 failed in `Install workspace dependencies`: `ERR_PNPM_FETCH_503  GET https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz: Service Unavailable - 503`, after 3 tries. This was transient: the host answered `200` minutes later. Follow-up FU-015.
+  - Windows x64 hung in `Install workspace dependencies` for 44 minutes (a normal Windows job takes about 15 minutes in total), so I cancelled the run.
+- Attempt 2 (`gh run rerun 40649647049 --failed`, RELEASE.md § Recovery, transient): macOS ARM64 and Windows x64 succeeded.
+- Result: **`success` on all five builds**. Publish was `skipped` (build-only), with no tag and nothing published.
+- Every job's gate line was identical: `[typecheck] production errors: 0; test-file errors: 298 in 139 files (baseline 298 in 139 files)`, then `[typecheck] PASS`. Nuxt run times:
+  - Linux x64 job `122686857119`: 33.8 s;
+  - Linux ARM64 job `122686857159`: 53.1 s;
+  - macOS Intel x64 job `122686857187`: 56.5 s;
+  - Windows x64 job `122702912714`;
+  - macOS ARM64 job `122702912310`: 75.5 s.
+- No `FATAL` or SIGABRT on either macOS runner.
+- Still required before tagging `v1.5.9-beta.15`:
+  - the user's decision on the pending Requirement Gap (keep the gate in the release build chain, or run it locally before release), sent to the Solution Designer by the code reviewer;
+  - then, per RELEASE.md: the Secret Gate, the merge into `personal`, the checks before tagging, and a build-only run on the pushed merge.
+
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294`
