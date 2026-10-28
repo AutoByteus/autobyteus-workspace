@@ -239,6 +239,13 @@ const baseConfig: NuxtConfig = {
         '../components/conversation/__tests__/UserMessageStoredUploadNames.spec.ts',
         '../services/runHydration/__tests__/acceptedInputIdentity.spec.ts',
         '../tests/integration/codex-turn-lifecycle-native-to-live-projection.integration.test.ts',
+        // Build outputs inside the package, not app source; they stay after a desktop or mobile build (and the release
+        // job reruns the chain), and would otherwise enter the project (allowJs): prepare-server's bundled server,
+        // electron-builder's packages, the mobile web build and `nuxt generate`'s output.
+        '../resources/**',
+        '../electron-dist/**',
+        '../dist-mobile/**',
+        '../.output/**',
       ],
     },
   },
