@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import type { DocumentNode } from 'graphql'
 import {
   CREATE_CUSTOM_PROVIDER,
   DELETE_CUSTOM_PROVIDER,
@@ -479,7 +480,7 @@ export const useLLMProviderConfigStore = defineStore('llmProviderConfig', {
     async activateGeminiConfigurationOption(option: GeminiConfigurationOption): Promise<GeminiSetupConfigState> {
       return this.runGeminiMutation(USE_GEMINI_MODE, 'useGeminiMode', { mode: option })
     },
-    async runGeminiMutation(mutation: unknown, key: string, variables: Record<string, unknown>): Promise<GeminiSetupConfigState> {
+    async runGeminiMutation(mutation: DocumentNode, key: string, variables: Record<string, unknown>): Promise<GeminiSetupConfigState> {
       const { data, errors } = await getApolloClient().mutate({ mutation, variables })
       throwGraphqlErrors(errors)
       const result = data?.[key] as GeminiConfigurationCommandResult | undefined

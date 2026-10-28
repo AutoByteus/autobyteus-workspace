@@ -14,11 +14,11 @@
         :class="[triggerClass, { 'cursor-not-allowed opacity-50 bg-gray-100': disabled || loading }]"
       >
         <div v-if="loading" class="flex items-center text-gray-500">
-          <span class="i-heroicons-arrow-path-20-solid w-4 h-4 animate-spin mr-2"></span>
+          <Icon icon="heroicons:arrow-path-20-solid" class="w-4 h-4 animate-spin mr-2" />
           {{ $t('common.components.common.SearchableSelect.loading') }}
         </div>
         <div v-else-if="selectedItem" class="flex items-center min-w-0 flex-1">
-          <span class="i-heroicons-folder-20-solid w-5 h-5 text-blue-500 mr-2 flex-shrink-0"></span>
+          <Icon icon="heroicons:folder-20-solid" class="w-5 h-5 text-blue-500 mr-2 flex-shrink-0" />
           <div class="min-w-0 flex-1">
             <div class="font-medium text-gray-900 truncate">{{ selectedItem.name }}</div>
             <div v-if="selectedItem.description" class="text-xs text-gray-500 truncate">{{ selectedItem.description }}</div>
@@ -45,7 +45,7 @@
         <!-- Search Input -->
         <div class="p-3 border-b border-gray-100 bg-gray-50/80 backdrop-blur-sm">
           <div class="relative">
-            <span class="i-heroicons-magnifying-glass-20-solid w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2"></span>
+            <Icon icon="heroicons:magnifying-glass-20-solid" class="w-4 h-4 text-gray-400 absolute left-3 top-1/2 -translate-y-1/2" />
             <input
               ref="searchInputRef"
               v-model="searchTerm"
@@ -66,7 +66,7 @@
         <div class="flex-grow overflow-y-auto">
           <!-- Empty State -->
           <div v-if="filteredOptions.length === 0" class="p-6 text-center">
-            <span class="i-heroicons-folder-open-20-solid w-10 h-10 text-gray-300 mx-auto mb-2"></span>
+            <Icon icon="heroicons:folder-open-20-solid" class="w-10 h-10 text-gray-300 mx-auto mb-2" />
             <p class="text-sm text-gray-500">{{ emptyMessage }}</p>
           </div>
 
@@ -85,8 +85,7 @@
                 'bg-blue-50 ring-1 ring-inset ring-blue-300': index === activeIndex && modelValue !== item.id,
               }"
             >
-              <span class="i-heroicons-folder-20-solid w-5 h-5 mr-3 flex-shrink-0"
-                    :class="modelValue === item.id ? 'text-blue-600' : 'text-gray-400'"></span>
+              <Icon icon="heroicons:folder-20-solid" :class="modelValue === item.id ? 'text-blue-600' : 'text-gray-400'" class="w-5 h-5 mr-3 flex-shrink-0" />
               <div class="min-w-0 flex-1">
                 <div class="font-medium text-sm truncate"
                      :class="modelValue === item.id ? 'text-blue-700' : 'text-gray-900'">
@@ -110,6 +109,7 @@
 </template>
 
 <script setup lang="ts">
+import { Icon } from '@iconify/vue';
 import { ref, computed, watch, onMounted, onUnmounted, nextTick, reactive } from 'vue';
 
 let searchableSelectSequence = 0;

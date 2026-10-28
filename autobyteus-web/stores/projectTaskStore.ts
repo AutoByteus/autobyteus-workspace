@@ -1,4 +1,5 @@
 import { defineStore } from 'pinia'
+import type { DocumentNode } from 'graphql'
 import { ref, watch } from 'vue'
 import { getApolloClient } from '~/utils/apolloClient'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
@@ -159,7 +160,7 @@ export const useProjectTaskStore = defineStore('projectTasks', () => {
     if (inflight.has(id)) queued.set(id, [...(queued.get(id) ?? []), message])
     else applyToList(id, message)
   }
-  const mutate = async <T>(id: string, mutation: unknown, input: Record<string, unknown>, field: string, change: (tasks: ProjectTask[], result: T) => ProjectTask[], eligible: () => boolean = () => true): Promise<T> => {
+  const mutate = async <T>(id: string, mutation: DocumentNode, input: Record<string, unknown>, field: string, change: (tasks: ProjectTask[], result: T) => ProjectTask[], eligible: () => boolean = () => true): Promise<T> => {
     const revision = node.bindingRevision
     const client = getApolloClient()
     const owner = epoch(id), deleted = owner.deleted

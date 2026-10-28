@@ -40,7 +40,7 @@
         data-testid="application-surface-failure-overlay"
       >
         <div class="rounded-full bg-red-500/15 p-3 text-red-300">
-          <span class="i-heroicons-exclamation-triangle-20-solid h-6 w-6"></span>
+          <Icon icon="heroicons:exclamation-triangle-20-solid" class="h-6 w-6" />
         </div>
         <div class="space-y-2">
           <h3 class="text-lg font-semibold text-white">{{ $t('applications.components.applications.ApplicationIframeHost.initializationFailed') }}</h3>
@@ -84,6 +84,7 @@
 </template>
 
 <script setup lang="ts">
+import { Icon } from '@iconify/vue'
 import { computed, onBeforeUnmount, ref, shallowRef, watch } from 'vue'
 import {
   APPLICATION_IFRAME_READY_EVENT,

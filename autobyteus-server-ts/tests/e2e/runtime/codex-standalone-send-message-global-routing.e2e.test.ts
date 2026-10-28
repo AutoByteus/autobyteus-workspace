@@ -563,8 +563,9 @@ describeCodexStandaloneDirect(
         toolAutoExecute: true,
       });
 
-      const senderAppServerClient =
-        await getCodexAppServerClientManager().getClient(senderWorkspaceRoot);
+      // The test holds its own lease on the sender workspace's App Server client (released after the runs end).
+      const senderClientLease = getCodexAppServerClientManager().beginAcquire(senderWorkspaceRoot);
+      const senderAppServerClient = await senderClientLease.acquire();
       let evidenceSequence = 0;
       const mcpStartupObservations: McpStartupObservation[] = [];
       const unbindMcpStartupObserver = senderAppServerClient.onNotification(
@@ -783,6 +784,7 @@ describeCodexStandaloneDirect(
         if (!targetTerminated) {
           await terminateAgentRun(targetRunId).catch(() => undefined);
         }
+        await senderClientLease.release();
       }
     }, 300_000);
   },

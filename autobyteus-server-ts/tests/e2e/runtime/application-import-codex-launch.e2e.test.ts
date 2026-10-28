@@ -20,6 +20,7 @@ import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import type { FastifyInstance } from "fastify";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
+import { assertBriefStudioPackageBuilt, BRIEF_STUDIO_PACKAGE } from "../helpers/brief-studio-package.js";
 import { createGraphqlClient, fakeRuntimeState, installVendorSourceStub } from "../helpers/agent-runtimes-e2e-harness.js";
 import { until } from "../helpers/agy-runtime-error-fixture.js";
 
@@ -28,11 +29,9 @@ const fake = await vi.hoisted(async () => {
   return prepareFakeRuntimes({ label: "imported-app-codex-e2e", grokInstalled: true });
 });
 
-const BRIEF_STUDIO_PACKAGE = path.resolve(process.cwd(), "..", "applications/brief-studio/dist/importable-package");
-const packageBuilt = fs.existsSync(path.join(BRIEF_STUDIO_PACKAGE, "applications", "brief-studio", "application.json"));
 const MODEL = "gpt-5.6-luna";
 
-describe.skipIf(!packageBuilt)("Codex-default application imported while the server runs (real studio server, Brief Studio, scripted CLIs)", () => {
+describe("Codex-default application imported while the server runs (real studio server, Brief Studio, scripted CLIs)", () => {
   const states = fakeRuntimeState(fake.stateDir);
   let fastify: FastifyInstance;
   let url: URL;
@@ -65,6 +64,7 @@ describe.skipIf(!packageBuilt)("Codex-default application imported while the ser
   const threadStarts = () => (states.read("app-server-requests.log") ?? "").split("\n").filter((method) => method === "thread/start").length;
 
   beforeAll(async () => {
+    assertBriefStudioPackageBuilt();
     states.set("codex-account", "signedIn");
     states.set("codex-models", MODEL);
     // No AUTOBYTEUS_APPLICATION_PACKAGE_ROOTS: the application is not present at startup.

@@ -1,9 +1,9 @@
-import { computed, ref, shallowRef, unref, watch } from 'vue';
+import { computed, ref, shallowRef, unref, watch, type MaybeRef } from 'vue';
 import RFB from '@novnc/novnc';
 
 interface VncSessionOptions {
-  url: string | { value: string };
-  password: string | { value: string };
+  url: MaybeRef<string>;
+  password: MaybeRef<string>;
   viewOnly?: boolean;
   label?: string;
 }

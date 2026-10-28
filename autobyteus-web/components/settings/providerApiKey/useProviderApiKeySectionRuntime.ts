@@ -1,6 +1,7 @@
 import { storeToRefs } from 'pinia'
 import { computed, onBeforeUnmount, reactive, ref } from 'vue'
 import { useLocalization } from '~/composables/useLocalization'
+import { LLMProvider } from '~/types/llm'
 import {
   PROVIDER_SETTINGS_RUNTIME_KIND,
   QwenConfigurationMutationError,
@@ -30,7 +31,7 @@ export interface ProviderSectionNotification {
 }
 
 const NEW_CUSTOM_PROVIDER_ID = '__new_custom_provider__'
-const CUSTOM_PROVIDER_TYPE = 'OPENAI_COMPATIBLE'
+const CUSTOM_PROVIDER_TYPE = LLMProvider.OPENAI_COMPATIBLE
 
 export function useProviderApiKeySectionRuntime() {
   const store = useLLMProviderConfigStore()
@@ -121,7 +122,7 @@ export function useProviderApiKeySectionRuntime() {
   }
 
   const allProvidersWithModels = computed<ProviderSummary[]>(() => {
-    const providers = providerCredentialSettings.value.map(setting => ({
+    const providers: ProviderSummary[] = providerCredentialSettings.value.map(setting => ({
       id: setting.provider.id,
       name: setting.provider.name,
       label: setting.provider.name,

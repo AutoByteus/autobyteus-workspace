@@ -1,0 +1,13 @@
+# IMP-09b-brief-studio-missing.log Brief Studio suite without the package fails loudly (H-23, AC-024)
+# command: package dir moved aside; env -i PATH="$PATH" HOME=<resolved temp> TMPDIR="$TMPDIR" … vitest run tests/e2e/runtime/application-reload-repair.e2e.test.ts; package restored
+# commit: same tree as IMP-09a
+# environment: macOS 26.5.2, node v22.23.1
+# date: 2026-10-27T19:33:13Z
+
+ ❯ tests/e2e/runtime/application-reload-repair.e2e.test.ts (5 tests | 5 skipped) 511ms
+Error: Brief Studio importable package missing (/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/applications/brief-studio/dist/importable-package); build it with: pnpm -C autobyteus-server-ts test:integration:prepare
+ ❯ Module.assertBriefStudioPackageBuilt tests/e2e/helpers/brief-studio-package.ts:13:11
+     14|       `Brief Studio importable package missing (${BRIEF_STUDIO_PACKAGE…
+ ❯ tests/e2e/runtime/application-reload-repair.e2e.test.ts:112:5
+ Test Files  1 failed (1)
+      Tests  5 skipped (5)

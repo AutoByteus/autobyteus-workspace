@@ -1,4 +1,4 @@
-import { defineNuxtConfig } from 'nuxt/config'
+import { defineNuxtConfig, type NuxtConfig } from 'nuxt/config'
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 import { applyElectronConfig } from './nuxt.electron.config'
@@ -92,7 +92,7 @@ if (isElectronBuild) {
   };
 }
 
-const baseConfig = {
+const baseConfig: NuxtConfig = {
   ssr: false,
 
   // Disable Nuxt DevTools floating icon
@@ -110,7 +110,6 @@ const baseConfig = {
   
   modules: [
     '@pinia/nuxt',
-    './modules/devhandler-compat',
     ...(isTest ? ['@nuxt/test-utils/module'] : [])
   ],
 
@@ -119,18 +118,6 @@ const baseConfig = {
   experimental: {
     appManifest: !isTest
   },
-
-  routeRules: {
-    '/workspace/**': { middleware: ['workspace'] },
-    '/': { middleware: ['workspace'] }
-  },
-
-  // Prevent Nuxt dev watcher from traversing bundled server dependencies.
-  // These trees are large and can exhaust Linux inotify limits.
-  ignore: [
-    'resources/server/node_modules/**',
-    'electron-dist/**'
-  ],
 
   // In development, HTTP requests are proxied via vite.server.proxy.
   // Static output is only needed for production/electron builds.
@@ -203,16 +190,7 @@ const baseConfig = {
       showDebugErrorPanel: process.env.SHOW_DEBUG_ERROR_PANEL === 'true',
 
       audio: {
-        targetSampleRate: 16000,
-        chunkDuration: 5,
-        overlapDuration: 0.2,
-        channels: 1,
         transcriptionWsEndpoint: serverUrls.transcriptionWsEndpoint,
-        constraints: {
-          echoCancellation: true,
-          noiseSuppression: true,
-          autoGainControl: true
-        }
       }
     }
   },
@@ -250,7 +228,23 @@ const baseConfig = {
     ],
   },
 
-  // Keep Nuxt's source scanning focused on app source folders.
+  // The app's type project (.nuxt/tsconfig.json, checked by `pnpm typecheck`). Electron main and the build
+  // scripts have their own projects; the three tests that import server code are left out (FU-003 of autobyteus-294).
+  // Paths are relative to .nuxt/; Nuxt appends them to its generated excludes.
+  typescript: {
+    tsConfig: {
+      exclude: [
+        '../electron/**',
+        '../build/**',
+        '../components/conversation/__tests__/UserMessageStoredUploadNames.spec.ts',
+        '../services/runHydration/__tests__/acceptedInputIdentity.spec.ts',
+        '../tests/integration/codex-turn-lifecycle-native-to-live-projection.integration.test.ts',
+      ],
+    },
+  },
+
+  // Keep Nuxt's source scanning focused on app source folders, and the dev watcher out of the bundled server
+  // dependencies (large trees that can exhaust Linux inotify limits).
   ignore: [
     '**/electron-dist/**',
     '**/resources/**'

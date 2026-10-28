@@ -35,7 +35,7 @@
                 :class="{ 'bg-gray-100 text-gray-900': activeSection === 'api-keys' }"
               >
                 <div class="flex items-center min-w-[20px] mr-3">
-                  <span class="i-heroicons-key-20-solid w-5 h-5"></span>
+                  <Icon icon="heroicons:key-20-solid" class="w-5 h-5" />
                 </div>
                 <span class="text-left">{{ $t('settings.page.sections.apiKeys') }}</span>
               </button>
@@ -48,7 +48,7 @@
                 :class="{ 'bg-gray-100 text-gray-900': activeSection === 'agent-runtimes' }"
               >
                 <div class="flex items-center min-w-[20px] mr-3">
-                  <span class="i-heroicons-cpu-chip-20-solid w-5 h-5"></span>
+                  <Icon icon="heroicons:cpu-chip-20-solid" class="w-5 h-5" />
                 </div>
                 <span class="text-left">{{ $t('settings.page.sections.agentRuntimes') }}</span>
               </button>
@@ -61,7 +61,7 @@
                 :class="{ 'bg-gray-100 text-gray-900': activeSection === 'model-routing' }"
               >
                 <div class="flex items-center min-w-[20px] mr-3">
-                  <span class="i-heroicons-arrows-right-left-20-solid w-5 h-5"></span>
+                  <Icon icon="heroicons:arrows-right-left-20-solid" class="w-5 h-5" />
                 </div>
                 <span class="text-left">{{ $t('settings.page.sections.modelRouting') }}</span>
               </button>
@@ -73,7 +73,7 @@
                 :class="{ 'bg-gray-100 text-gray-900': activeSection === 'token-usage' }"
               >
                 <div class="flex items-center min-w-[20px] mr-3">
-                  <span class="i-heroicons-chart-bar-20-solid w-5 h-5"></span>
+                  <Icon icon="heroicons:chart-bar-20-solid" class="w-5 h-5" />
                 </div>
                 <span class="text-left">{{ $t('settings.page.sections.tokenUsage') }}</span>
               </button>
@@ -86,7 +86,7 @@
                 :class="{ 'bg-gray-100 text-gray-900': activeSection === 'display' }"
               >
                 <div class="flex items-center min-w-[20px] mr-3">
-                  <span class="i-heroicons-computer-desktop-20-solid w-5 h-5"></span>
+                  <Icon icon="heroicons:computer-desktop-20-solid" class="w-5 h-5" />
                 </div>
                 <span class="text-left">{{ $t('settings.page.sections.display') }}</span>
               </button>
@@ -99,7 +99,7 @@
                 :class="{ 'bg-gray-100 text-gray-900': activeSection === 'language' }"
               >
                 <div class="flex items-center min-w-[20px] mr-3">
-                  <span class="i-heroicons-language-20-solid w-5 h-5"></span>
+                  <Icon icon="heroicons:language-20-solid" class="w-5 h-5" />
                 </div>
                 <span class="text-left">{{ $t('settings.page.sections.language') }}</span>
               </button>
@@ -111,7 +111,7 @@
                 :class="{ 'bg-gray-100 text-gray-900': activeSection === 'local-tools' }"
               >
                 <div class="flex items-center min-w-[20px] mr-3">
-                  <span class="i-heroicons-wrench-screwdriver-20-solid w-5 h-5"></span>
+                  <Icon icon="heroicons:wrench-screwdriver-20-solid" class="w-5 h-5" />
                 </div>
                 <span class="text-left">{{ $t('settings.page.sections.localTools') }}</span>
               </button>
@@ -123,7 +123,7 @@
                 :class="{ 'bg-gray-100 text-gray-900': activeSection === 'mcp-servers' }"
               >
                 <div class="flex items-center min-w-[20px] mr-3">
-                  <span class="i-heroicons-puzzle-piece-20-solid w-5 h-5"></span>
+                  <Icon icon="heroicons:puzzle-piece-20-solid" class="w-5 h-5" />
                 </div>
                 <span class="text-left">{{ $t('settings.page.sections.mcpServers') }}</span>
               </button>
@@ -136,7 +136,7 @@
                 :class="{ 'bg-gray-100 text-gray-900': activeSection === 'application-packages' }"
               >
                 <div class="flex items-center min-w-[20px] mr-3">
-                  <span class="i-heroicons-squares-plus-20-solid w-5 h-5"></span>
+                  <Icon icon="heroicons:squares-plus-20-solid" class="w-5 h-5" />
                 </div>
                 <span class="text-left">{{ $t('settings.page.sections.applicationPackages') }}</span>
               </button>
@@ -149,7 +149,7 @@
                 :class="{ 'bg-gray-100 text-gray-900': activeSection === 'agent-packages' }"
               >
                 <div class="flex items-center min-w-[20px] mr-3">
-                  <span class="i-heroicons-folder-open-20-solid w-5 h-5"></span>
+                  <Icon icon="heroicons:folder-open-20-solid" class="w-5 h-5" />
                 </div>
                 <span class="text-left">{{ $t('settings.page.sections.agentPackages') }}</span>
               </button>
@@ -162,7 +162,7 @@
                 :class="{ 'text-gray-900 font-medium': activeSection === 'server-settings' }"
               >
                 <div class="flex items-center min-w-[20px] mr-3">
-                  <span class="i-heroicons-server-20-solid w-5 h-5"></span>
+                  <Icon icon="heroicons:server-20-solid" class="w-5 h-5" />
                 </div>
                 <span class="text-left">{{ $t('settings.page.sections.serverSettings') }}</span>
               </button>
@@ -213,7 +213,7 @@
                 :class="{ 'bg-gray-100 text-gray-900': activeSection === 'extensions' }"
               >
                 <div class="flex items-center min-w-[20px] mr-3">
-                  <span class="i-heroicons-squares-2x2-20-solid w-5 h-5"></span>
+                  <Icon icon="heroicons:squares-2x2-20-solid" class="w-5 h-5" />
                 </div>
                 <span class="text-left">{{ $t('settings.page.sections.extensions') }}</span>
               </button>
@@ -226,7 +226,7 @@
                 :class="{ 'bg-gray-100 text-gray-900': activeSection === 'updates' }"
               >
                 <div class="flex items-center min-w-[20px] mr-3">
-                  <span class="i-heroicons-arrow-path-20-solid w-5 h-5"></span>
+                  <Icon icon="heroicons:arrow-path-20-solid" class="w-5 h-5" />
                 </div>
                 <span class="text-left">{{ $t('settings.page.sections.updates') }}</span>
               </button>

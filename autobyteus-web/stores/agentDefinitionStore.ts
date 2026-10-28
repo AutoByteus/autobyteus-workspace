@@ -208,7 +208,7 @@ export const useAgentDefinitionStore = defineStore('agentDefinition', () => {
       const { data, errors } = await client.mutate({
         mutation: CreateAgentDefinition,
         variables: { input },
-        update: (cache: any, result: { data?: { createAgentDefinition?: AgentDefinition | null } }) => {
+        update: (cache, result: { data?: { createAgentDefinition?: AgentDefinition | null } | null }) => {
           if (!result.data?.createAgentDefinition) {
             return
           }

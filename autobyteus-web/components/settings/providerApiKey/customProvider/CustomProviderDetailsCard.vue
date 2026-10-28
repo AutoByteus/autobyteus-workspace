@@ -14,7 +14,7 @@
         @click="emit('delete')"
       >
         <span v-if="deleting" class="animate-spin rounded-full h-4 w-4 border-b-2 border-red-700 mr-2"></span>
-        <span v-else class="i-heroicons-trash-20-solid w-4 h-4 mr-2"></span>
+        <Icon v-else icon="heroicons:trash-20-solid" class="w-4 h-4 mr-2" />
         {{ $t('settings.components.settings.ProviderAPIKeyManager.remove_custom_provider') }}
       </button>
     </div>
@@ -23,14 +23,21 @@
       <span class="rounded-full border border-blue-100 bg-blue-50 px-2.5 py-1 font-medium text-blue-700">
         {{ provider.providerType }}
       </span>
-      <span class="rounded-full border border-gray-100 bg-gray-50 px-2.5 py-1 font-medium text-gray-600">
-        {{ $t('settings.components.settings.ProviderAPIKeyManager.models_count', { count: provider.totalModels }) }}
+      <span
+        class="rounded-full border border-gray-100 bg-gray-50 px-2.5 py-1 font-medium text-gray-600"
+        data-testid="custom-provider-model-count"
+        :aria-label="provider.totalModels === null ? $t('settings.components.settings.ProviderAPIKeyManager.model_count_loading') : undefined"
+      >
+        {{ provider.totalModels === null
+          ? '—'
+          : $t('settings.components.settings.ProviderAPIKeyManager.models_count', { count: provider.totalModels }) }}
       </span>
     </div>
   </section>
 </template>
 
 <script setup lang="ts">
+import { Icon } from '@iconify/vue'
 import type { ProviderSummary } from '~/components/settings/providerApiKey/useProviderApiKeySectionRuntime'
 
 defineProps<{

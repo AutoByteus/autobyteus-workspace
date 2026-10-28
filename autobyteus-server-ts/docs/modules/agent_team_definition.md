@@ -187,7 +187,6 @@ See [Agent Team Execution](./agent_team_execution.md),
 - `src/agent-team-definition/services/flat-team-definition-resolver.ts`
 - `src/agent-team-definition/services/flat-team-definition-validator.ts`
 - `src/api/graphql/types/agent-team-definition.ts`
-- `src/agent-tools/agent-team-management`
 
 ### Optional Avatar Input
 

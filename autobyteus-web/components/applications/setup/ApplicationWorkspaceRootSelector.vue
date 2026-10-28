@@ -53,7 +53,7 @@
           :disabled="disabled"
           @click="browseForFolder"
         >
-          <span class="i-heroicons-folder-open-20-solid h-5 w-5"></span>
+          <Icon icon="heroicons:folder-open-20-solid" class="h-5 w-5" />
         </button>
       </div>
       <p class="text-xs text-slate-500">
@@ -64,6 +64,7 @@
 </template>
 
 <script setup lang="ts">
+import { Icon } from '@iconify/vue'
 import { computed, ref, watch } from 'vue'
 import { storeToRefs } from 'pinia'
 import SearchableSelect from '~/components/common/SearchableSelect.vue'

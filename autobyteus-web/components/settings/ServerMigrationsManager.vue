@@ -13,7 +13,7 @@
         @click="refresh"
       >
         <span v-if="store.isLoading" class="inline-block h-4 w-4 animate-spin rounded-full border-b-2 border-blue-600"></span>
-        <span v-else class="i-heroicons-arrow-path-20-solid h-4 w-4"></span>
+        <Icon v-else icon="heroicons:arrow-path-20-solid" class="h-4 w-4" />
         {{ $t('settings.components.settings.ServerMigrationsManager.refresh') }}
       </button>
     </div>
@@ -76,7 +76,7 @@
                   @click="retry(migration)"
                 >
                   <span v-if="store.isRunningById[migration.migrationId]" class="inline-block h-4 w-4 animate-spin rounded-full border-b-2 border-blue-600"></span>
-                  <span v-else class="i-heroicons-play-20-solid h-4 w-4"></span>
+                  <Icon v-else icon="heroicons:play-20-solid" class="h-4 w-4" />
                   {{ $t('settings.components.settings.ServerMigrationsManager.retry') }}
                 </button>
                 <p
@@ -101,6 +101,7 @@
 </template>
 
 <script setup lang="ts">
+import { Icon } from '@iconify/vue'
 import { onMounted } from 'vue'
 import {
   useAppDataMigrationsStore,

@@ -1,6 +1,6 @@
 import { NativeCommandShutdown } from "./native-command-shutdown.js";
 import { CONTEXT_FILE_MAX_BYTES } from "../context-files/domain/context-file-upload-policy.js";
-import fastify, { type FastifyInstance } from "fastify";
+import fastify, { LogController, type FastifyInstance } from "fastify";
 import cors from "@fastify/cors";
 import multipart from "@fastify/multipart";
 import websocket from "@fastify/websocket";
@@ -369,8 +369,8 @@ export const buildStudioServer = async (input: {
 
     const app = fastify({
       logger: getFastifyLoggerOptions(input.loggingConfig),
-      disableRequestLogging: true,
-      maxParamLength: SERVER_ROUTE_PARAM_MAX_LENGTH,
+      logController: new LogController({ disableRequestLogging: true }),
+      routerOptions: { maxParamLength: SERVER_ROUTE_PARAM_MAX_LENGTH },
     });
     nativeShutdown.install(app);
     app.addHook("onClose", async () => nativeShutdown.close(async () => {

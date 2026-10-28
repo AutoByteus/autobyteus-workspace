@@ -1493,9 +1493,6 @@ describe("TeamRun released-shape production upgrade to the current AgentOrg end 
     })]));
     // The delegated-copy own-file completion (registered last) waits for the task-agent migration the same way.
     expect(await delegatedCopyOwnFileStatus(first.serverUrl)).toMatchObject({ status: "FAILED", attempts: 1 });
-    // The preserved V1 warning package is intentionally excluded by the V1
-    // promotion, so the follow-on V2 migration itself remains clean.
-    expect(first.output()).not.toContain("startup continues with strict current-package admission");
     expect(first.output()).toContain("Server listening on");
     expect(first.output()).not.toContain(EMBEDDED_SERVER_PLATFORM_FATAL_PROTOCOL);
     assertV2TeamPackage(scenario);

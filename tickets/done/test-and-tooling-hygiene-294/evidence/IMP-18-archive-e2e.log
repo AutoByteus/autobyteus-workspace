@@ -1,0 +1,13 @@
+# IMP-18 archive run history E2E (H-03, AC-003)
+# command: env -i PATH HOME=<resolved temp> TMPDIR pnpm -C autobyteus-server-ts exec vitest run tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts --no-watch
+# commit: 6fa5f443c6
+# environment: macOS 26.5.2, node v22.23.1
+# date: 2026-10-27T19:34:05Z
+
+ ✓ tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts (6 tests) 2144ms
+       ✓ archives every stored run of the agent in that workspace, including runs hidden by the listing cap, and nothing else  405ms
+       ✓ archives nothing while any run of the group is live, including one hidden by the cap, and archives all after they stop  432ms
+       ✓ reports a run that started after the running-run check as failed and archives the rest (AC-010)  411ms
+       ✓ rejects an empty workspace root or agent definition id as a GraphQL error without writing anything  340ms
+ Test Files  1 passed (1)
+      Tests  6 passed (6)

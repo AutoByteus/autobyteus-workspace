@@ -12,6 +12,7 @@ import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 import { until } from "../helpers/agy-runtime-error-fixture.js";
+import { headReadRepository, headReadResponse } from "../helpers/github-head-read-stub.js";
 import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadata-helpers.js";
 
 // Skill update notices across run roots at the real server/wire boundary (Studio HTTP/GraphQL/WebSocket, scoped MCP
@@ -136,11 +137,16 @@ suite("Skill update notices across run roots (real HTTP/WS/scoped MCP, idle shut
     }
     process.env["AGY_FAKE_CASE"] = "linked_skills";
     process.env["AGY_FAKE_ARGV_LOG"] = argvLog;
-    // Only GitHub's API and archive host are controlled; this suite's own HTTP is real.
+    // Every GitHub request is answered here (the fixture repository's head read, API and archive); no request
+    // leaves the machine. This suite's own HTTP is real.
     const realFetch = globalThis.fetch;
     vi.stubGlobal("fetch", async (input: string | URL | Request, init?: RequestInit) => {
       const target = typeof input === "string" ? input : input instanceof URL ? input.href : input.url;
-      if (target.startsWith("https://api.github.com/") || target.startsWith("https://codeload.github.com/")) {
+      if (headReadRepository(target, init) === "apar-sun-e2e/skills") {
+        githubRequests.push(target);
+        return headReadResponse(githubRevision);
+      }
+      if (target.startsWith("https://github.com/") || target.startsWith("https://api.github.com/") || target.startsWith("https://codeload.github.com/")) {
         githubRequests.push(target);
         if (target === "https://api.github.com/repos/apar-sun-e2e/skills") {
           return Response.json({ owner: { login: "apar-sun-e2e" }, name: "skills", private: false, default_branch: "main", html_url: GITHUB_URL });

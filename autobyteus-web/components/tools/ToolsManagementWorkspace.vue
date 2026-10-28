@@ -118,7 +118,7 @@
           :loading="store.getLoading && activeView === `mcp-tools-${currentServerId}`"
           :source="currentServerId!"
           show-back-button
-          empty-icon="i-heroicons-puzzle-piece-20-solid"
+          empty-icon="heroicons:puzzle-piece-20-solid"
           empty-message="No tools registered for this server. Try syncing tools."
           @back="handleNavigation('mcp-servers')"
           @details="showToolDetails"

@@ -332,26 +332,30 @@ export function useMobileRunSetupController(options: MobileRunSetupControllerOpt
     }
   }
 
+  /**
+   * Loads a server-side path as a workspace and selects it. An Agent setup records the load on its config's
+   * workspace-loading state; a Team setup takes the loaded workspace as its root workspace. In both modes a failed
+   * load's message is the picker's error (`launchWorkspaces.error`).
+   */
   async function loadWorkspacePath(path: string): Promise<void> {
     if (creating.value) return
-    const loadingStore = mode.value === 'agent' ? agentRunConfigStore : teamRunConfigStore
-    const hasActiveConfig = Boolean(activeConfig.value)
-    if (hasActiveConfig) {
-      loadingStore.setWorkspaceLoading(true)
+    const recordsAgentLoading = mode.value === 'agent' && Boolean(activeConfig.value)
+    if (recordsAgentLoading) {
+      agentRunConfigStore.setWorkspaceLoading(true)
     }
 
     try {
       const result = await launchWorkspaces.loadByPath(path)
       selectedWorkspaceId.value = result.workspaceId
-      if (hasActiveConfig) {
-        loadingStore.setWorkspaceLoaded(result.workspaceId, result.rootPath)
+      if (recordsAgentLoading) {
+        agentRunConfigStore.setWorkspaceLoaded(result.workspaceId, result.rootPath)
       } else {
         updateActiveWorkspaceConfig()
       }
     } catch (cause) {
-      const message = launchWorkspaces.error.value || (cause instanceof Error ? cause.message : 'Could not load that workspace path.')
-      if (hasActiveConfig) {
-        loadingStore.setWorkspaceError(message)
+      if (recordsAgentLoading) {
+        const message = launchWorkspaces.error.value || (cause instanceof Error ? cause.message : 'Could not load that workspace path.')
+        agentRunConfigStore.setWorkspaceError(message)
       }
     }
   }

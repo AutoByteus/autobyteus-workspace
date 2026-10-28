@@ -1,0 +1,49 @@
+# API-26 docs read checks at 256cee925e, 2026-10-27T19:57:57Z
+
+## AC-031: providers registered by buildDefaultAgentToolMcpAdapterProviders
+  new SendMessageToMcpAdapterProvider(),
+  new GetHandoffRulesMcpAdapterProvider(),
+  new BrowserToolsMcpAdapterProvider(),
+  new MediaToolsMcpAdapterProvider(),
+  new TaskDelegationToolsMcpAdapterProvider(),
+  new PublishArtifactsMcpAdapterProvider(),
+  new ListAvailableAgentsMcpAdapterProvider(),
+  new ListPeerNodesMcpAdapterProvider(),
+  new ListAvailableAgentRuntimesMcpAdapterProvider(),
+  new ModelRoutingToolsMcpAdapterProvider(),
+  new ProjectTaskToolsMcpAdapterProvider(),
+  new MemoryToolsMcpAdapterProvider(),
+count: 12
+
+## the doc's Supported Tool Families list
+## Supported Tool Families
+
+`AgentToolMcpCatalog` is adapter-backed for server-owned tool families and
+registry-backed for configured MCP-origin tools. Each server-owned adapter
+supplies the MCP tool definition, availability gate, and execution delegate for
+one canonical AutoByteus tool name. The default adapter set
+(`buildDefaultAgentToolMcpAdapterProviders` in
+`src/agent-tools/mcp/providers/default-agent-tool-mcp-adapter-providers.ts`) covers:
+
+- `send_message_to` and `get_handoff_rules` from `src/agent-tools/agent-communication`
+- browser tools from `src/agent-tools/browser`
+- media tools from `src/agent-tools/media`
+- `delegate_task` from `src/agent-tools/task-delegation`
+- `publish_artifacts` from `src/agent-tools/published-artifacts`
+- `list_available_agents` and `list_peer_nodes` from `src/agent-tools/agent-discovery`
+- `list_available_agent_runtimes` from `src/agent-tools/agent-runtimes`
+- `submit_launch_choices` (the Model Router's decision tool) from `src/agent-tools/model-routing`
+- `list_projects`, `list_project_tasks`, `search_project_tasks`, `get_project_task`, `create_project`, `update_project`,
+  `create_task`, `update_task` from
+  `src/agent-tools/project-tasks`
+- `search_memory` from `src/agent-tools/memory` (see [memory_search.md](./memory_search.md))
+
+The catalog filters by the session's resolved effective tool names. That set is
+mapping: SendMessageTo+GetHandoffRules -> line 1; Browser -> 2; Media -> 3; TaskDelegation -> 4; PublishArtifacts -> 5; ListAvailableAgents+ListPeerNodes -> 6; ListAvailableAgentRuntimes -> 7; ModelRouting -> 8; ProjectTask -> 9; Memory -> 10. All 12 providers listed.
+
+## AC-033: TESTING.md commits and the compaction rule
+ca6c6fb72a docs(testing): sanitisation specs run under jsdom
+e69e37aa81 docs(testing): name the E2E build prerequisite
+0e8ecd2125 docs(testing): add the web type check layer
+ef5a18f4d4 docs(testing): live compaction runs are not required proof
+180:  Prove compaction with the deterministic layers: the core library and server unit tests

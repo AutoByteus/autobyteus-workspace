@@ -66,7 +66,8 @@ const confirming = ref<SourceNotificationRow | null>(null)
 
 const checksOff = computed(() => updateChecks.status === 'resolved' && !updateChecks.isEnabled)
 const confirmingTarget = computed<SkillSourceUpdateTarget | null>(() => confirming.value && {
-  name: confirming.value.name, repositoryUrl: confirming.value.repositoryUrl, branch: confirming.value.branch,
+  // A skill source row always carries its repository (only runtime rows have none); `?? ''` renders the same as null.
+  name: confirming.value.name, repositoryUrl: confirming.value.repositoryUrl ?? '', branch: confirming.value.branch,
   installedRevision: confirming.value.installedRevision, latestRevision: confirming.value.latestRevision,
 })
 /** Runtime rows read their runtimes' state (running agents, a running update) only while the panel shows them. */

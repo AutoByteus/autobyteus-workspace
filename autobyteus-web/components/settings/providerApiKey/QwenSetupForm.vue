@@ -68,7 +68,7 @@
             class="inline-flex items-center gap-1 text-xs font-medium text-emerald-700"
             data-testid="qwen-api-key-configured"
           >
-            <span class="i-heroicons-check-circle-20-solid h-4 w-4" aria-hidden="true"></span>
+            <Icon icon="heroicons:check-circle-20-solid" aria-hidden="true" class="h-4 w-4" />
             {{ $t('settings.components.settings.ProviderAPIKeyManager.qwen_api_key_configured') }}
           </span>
         </div>
@@ -95,16 +95,8 @@
             :aria-label="$t('settings.components.settings.ProviderAPIKeyManager.toggle_key_visibility')"
             @click="showApiKey = !showApiKey"
           >
-            <span
-              v-if="showApiKey"
-              class="i-heroicons-eye-slash-20-solid h-5 w-5"
-              aria-hidden="true"
-            ></span>
-            <span
-              v-else
-              class="i-heroicons-eye-20-solid h-5 w-5"
-              aria-hidden="true"
-            ></span>
+            <Icon v-if="showApiKey" icon="heroicons:eye-slash-20-solid" aria-hidden="true" class="h-5 w-5" />
+            <Icon v-else icon="heroicons:eye-20-solid" aria-hidden="true" class="h-5 w-5" />
           </button>
         </div>
       </div>
@@ -151,6 +143,7 @@
 </template>
 
 <script setup lang="ts">
+import { Icon } from '@iconify/vue'
 import { computed, ref, watch } from 'vue'
 import { useLocalization } from '~/composables/useLocalization'
 import type { QwenConfigurationInput, QwenSetupStatus } from '~/stores/llmProviderConfig'
