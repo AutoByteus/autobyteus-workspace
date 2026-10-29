@@ -19,10 +19,10 @@ Paths are relative to `/Users/normy/autobyteus_org/autobyteus-worktrees/live-too
 - Code Review Revision Record: `code-review-revision-record.md`
 - Delivery Revision Record: N/A
 - API/E2E Revision Record: `api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-001`
-- Current Investigation Round: 1
-- Trigger: code review CRR-003 passed (reviewed route)
-- Prior Investigation Reviewed: none
+- Current API/E2E Revision ID: `API-REV-002`
+- Current Investigation Round: 2
+- Trigger: round 1 CRR-003 Pass; round 2 CRR-005 Pass after the API-05 rework (IR-004, code `011275b49a`, SR-010 / ARCH-REV-010)
+- Prior Investigation Reviewed: round 1 (this file)
 - Latest Authoritative Investigation: this file
 
 ## Current Requirement And Design Basis
@@ -81,9 +81,14 @@ Paths are relative to `/Users/normy/autobyteus_org/autobyteus-worktrees/live-too
 | API-04 | AC-002, AC-003 (Grok) | real Grok | Existing Test (gated, live) | same with `grok_build`, `grok-4.7`, `LIVE_TOOL_LIST_TURN_TIMEOUT_MS=120000` | Owed; credit unknown |
 | API-05 | AC-007, REQ-010, SCN-004b | real server, run WebSocket, a scripted Grok agent whose reopen (`session/load`) fails once | Durable (new server e2e) or Temporary | scripted `grok` wrapper (fixture per process; `FAKE_ACP_STOP_BEFORE=session/load` while a state file says so); two Grok runs; change run A's definition; message A → failed message with the exact text, not sent; run B unaffected; message A again → reopen succeeds and the message is sent | The failure path through the real server is unit-proven only |
 | API-06 | AC-001, AC-003, AC-006, REQ-007, SCN-001b | browser probe: probe-owned real stack, scripted AGY (real Agent Tools calls) | Durable (new probe case module) | open a run; Agents → Edit → add a tool → Save; the "Tools updated" card in the open run; call the new tool from the composer (`CALL_TOOL`); remove the old tool; its call is refused; stop the run, change tools, send a message: the card again (AC-006) | The card and the UI edit path through the product |
-| API-07 | code review hint (Claude approved events) | Claude run view | Journey | one Claude Agent Tools call (`list_available_agents`) in the browser stack; compare the conversation's tool rows with an auto-executed non-Agent-Tools call | The run view must not gain noise |
+| API-07 | code review hint (Claude approved events) | Claude run stream | Temporary probe (round 2: replaces the planned browser journey) | a real Claude run's stream frames for one Agent Tools call (`list_projects`), with auto-execute on and off; the web builds one tool row per invocation id from these frames | The run view must not gain noise; the frames are the direct evidence, and the browser probe stack has no real Claude |
 
 - Test progress log needed: `Yes`
+
+Round 2 notes:
+- API-01 now reuses IR-004 (server only); API-05 is rechecked first (round 1 Fail).
+- API-06 needs the scripted agent's tool log to read a refusal: the Agent Tools endpoint answers a removed tool with a JSON-RPC error (`-32602 Tool is not enabled for this session`), and the scripted AGY turn then ends without a `CALLED:` reply. The probe sets `AGY_FAKE_TOOL_LOG` and passes `agyToolCalls`.
+- API-04 waits for the user's Grok credits (back tomorrow).
 
 ## Durable Coverage To Add
 
