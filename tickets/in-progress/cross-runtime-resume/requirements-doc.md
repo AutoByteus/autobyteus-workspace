@@ -84,8 +84,8 @@ Findings must cite REQ/AC/BEH IDs. New behavior is a `Requirement Gap`.
 | REQ-007 | For a large journal the notice tells the agent to read the latest part fully and earlier parts by search or line range; the settings show the journal size when the runtime is switched. | BEH-002 | Must | F-03 |
 | REQ-008 | If the new runtime cannot read the run's folder, a bounded excerpt is included instead (after U-2). | BEH-006 | Should | U-2 |
 | REQ-009 | The stop reason is the provider's own message and structured code if given; nothing is classified. | BEH-004 | Should | autobyteus-314 C-01 |
-| REQ-010 | The journal tells each file's runtime so a mixed run is translated by the right rules (file-level runtime). | BEH-002 | Must | F-01, F-07 |
-| REQ-011 | The chat shows a marker where the runtime changed (DEC-3). | BEH-005 | Should | User question |
+| REQ-010 | The switch is one record in the run's single raw-trace stream (from runtime, to runtime, time). The journal renderer derives each record's runtime from it (records before the first switch use the switch's `from`) and translates with that runtime's rules; no new raw-trace file is started at a switch. | BEH-002 | Must | F-01, F-07; user model 2026-10-29 |
+| REQ-011 | The chat shows a marker where the runtime changed (DEC-3), built from the same switch record. | BEH-005 | Should | User question |
 
 ## Acceptance Criteria
 
