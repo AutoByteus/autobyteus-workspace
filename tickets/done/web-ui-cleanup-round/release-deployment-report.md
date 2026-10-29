@@ -159,3 +159,14 @@ Recorded after the merge and the release in "Finalization And Release Record" be
 - Unresolved blocker: `None`
 - Successful terminal package eligible for return: `Yes`
 - Terminal package sent to the Solution Designer: sent with `send_message_to` to `/software_engineering_team/solution_designer` right after this record is pushed (confirmed in the delivery conversation)
+
+## Correction (2026-10-29, recorded by the delivery engineer during autobyteus-322)
+
+- The report above names `RELEASE.md` at `83e8e12125` as the guide used. That is wrong. The ticket's base `e72a4702e9` already held `aca8655bdd` (2026-10-28), which added three rules:
+  - the build-only release run before every tag;
+  - watching the four runs together;
+  - reading the guide from `origin/personal`.
+- Deviations from that guide in this beta:
+  - no build-only release run (`pnpm release:test --ref personal`) was made before the `v1.5.10-beta.1` tag;
+  - the four runs were watched one after another in one background loop, not together.
+- Effect: none on the outcome. All four workflows succeeded and the release has 17/17 assets (recorded above), so nothing was published partially. The miss is in the process, and the stable `v1.5.10` release follows the current guide.
