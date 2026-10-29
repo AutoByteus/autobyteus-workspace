@@ -95,7 +95,12 @@ const createNativeToProjectionHarness = (memoryDir?: string) => {
     getThread: vi.fn(() => thread),
     terminateThread: vi.fn().mockResolvedValue(undefined),
   };
-  const backend = new CodexAgentRunBackend(runContext, thread, threadManager as never);
+  // The run's Agent Tools session (autobyteus-324): the backend reads the tools its thread opened with.
+  const agentToolSessions = {
+    describeForRun: () => ({ name: 'autobyteus_agent_tools', transport: 'streamable_http', serverUrl: 'http://127.0.0.1:9', enabledTools: [] }),
+    replaceForRun: vi.fn(),
+  };
+  const backend = new CodexAgentRunBackend(runContext, thread, threadManager as never, agentToolSessions as never);
   const run = new AgentRun({
     context: runContext,
     backend,
