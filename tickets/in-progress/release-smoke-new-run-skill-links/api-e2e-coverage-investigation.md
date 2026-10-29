@@ -120,6 +120,7 @@ The plan: what must be proven, how, the decisions about existing tests, and the 
 | API-04 | AC-007 | RELEASE.md, TESTING.md | Temporary Probe | Read both at the head against AC-007's list; check the `#release-smoke-check` anchor matches the heading; check consistency with "Cutting The Release" | A doc review is not durable test code |
 | API-05 | AC-005, REQ-001, REQ-005; SCN-004a | full command over a real run-start regression | Temporary Probe | Temporarily reverse-apply the `src/` part of `810408bcee` (the autobyteus-142 fix); run `python3 scripts/release_smoke.py` with `grok` removed from `PATH` (no Grok tokens); restore; confirm `git status` | A reverted product fix cannot be committed; the probe proves the smoke catches the regression it was created for |
 | API-06 | AC-004, REQ-005; SCN-004b, RSK-001 | full command with signed-out CLIs | Temporary Probe | `env -i PATH=… HOME=<throwaway resolved> USER LOGNAME TMPDIR python3 scripts/release_smoke.py`; observe the reasons, duration and exit | Needs a signed-out identity; cannot be durable without a CLI-less fixture |
+| API-06b | AC-004, REQ-005; SCN-004b, RSK-001 | full command with signed-out Claude/Codex and no `grok` | Temporary Probe | As API-06 with `PATH=<dir linking only claude, codex, node>:/usr/bin:/bin:/usr/sbin:/sbin` | Added after API-06: there, signed-out Grok stopped the live suite in `beforeAll`, so Claude's and Codex's signed-out turns were not observed |
 | API-07 | AC-004, AC-005, AC-006 | full command negative paths | Reused | IMP-08 | Ran on `e8d2888695`; `git diff --name-only e8d2888695 HEAD` = RELEASE.md, TESTING.md, ticket files only; evidence names each reason and `exit=1` |
 | API-08 | AC-001, AC-002, AC-003, AC-006, AC-008; QR-001/002/003 | full command on the head, all five runtimes | Journey | `git status --porcelain` + hashes of user CLI config files before; `python3 scripts/release_smoke.py`; the same after. Run once Grok's rolling 24 h quota has room (estimated from local session usage: after ~09:50Z on 2026-10-19) | AC-001/002 need one fully green run on the head; Grok's team member and collision cases are unproven after the baseline fix |
 
@@ -159,6 +160,8 @@ None.
 | Issue | Classification | Evidence | Recommended Owner |
 | --- | --- | --- | --- |
 | One smoke run uses roughly a third of Grok's free 600k-token daily quota; RELEASE.md's "Cost" line names turns only | Not a reroute (risk; AC-007 asks for a cost statement, which exists). Report to the Solution Designer as a recommendation | IMP-07 429; local Grok session usage | Solution Designer (optional doc refinement) |
+| A signed-out Grok shows "grok model grok-4.7 is not offered; available: grok-4.5, grok-4.6" (API-06), not "not signed in"; the runner's preflight checks only Codex's `auth.json` (as the design specifies). Fail-closed holds; only the reason text points at the model | Not a reroute (implementation matches design DS-001; REQ-005 is met: failed, with the observed reason). Recommendation: a Grok sign-in preflight (e.g. `~/.grok/auth.json`) like Codex's | API-06 | Solution Designer (optional follow-up) |
+| `grok` is installed twice (`~/.grok/bin`, `~/.local/bin`) on the release machine | Observation for reproducing AC-004 by hand: removing one PATH entry does not hide Grok | API-05 | none |
 
 ## Investigation Decision
 
