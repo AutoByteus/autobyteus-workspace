@@ -572,7 +572,7 @@ collapsed when effective **Thinking** is OFF or unavailable; toggling a supporte
 | GPT-5.5          | `reasoning_effort` | ENUM    | Dropdown / schema-backed Thinking state | `{reasoning_effort: "high"}` |
 | Gemini 3 / 3.5 Flash | `thinking_level`   | ENUM    | Dropdown / schema-backed Thinking state | `{thinking_level: "high"}`   |
 | Current Claude adaptive rows | `thinking_enabled` | BOOLEAN | Basic Thinking toggle | `{thinking: {type: "adaptive"}}` |
-| Current Claude adaptive rows | `thinking_display` | ENUM    | Dropdown   | `{thinking: {type: "adaptive", display: "summarized"}}` |
+| Current Claude rows | `reasoning_effort` | ENUM    | Thinking list (Off · levels; levels only without a toggle) | `{output_config: {effort: "high"}}` (not sent while thinking is off) |
 | DeepSeek V4      | `thinking_type`    | ENUM    | Basic Thinking toggle | `{thinking: {type: "enabled"}}` |
 | DeepSeek V4      | `reasoning_effort` | ENUM    | Dropdown   | `{reasoning_effort: "max"}` |
 | Zhipu GLM 5.2     | `thinking_type`    | ENUM    | Basic Thinking toggle | `{thinking: {type: "enabled"}}`   |

@@ -61,7 +61,6 @@ const chatMessages = {
   'chat.thinking.on': 'On',
   'chat.thinking.off': 'Off',
   'chat.thinking.default': 'Default',
-  'chat.thinking.summaryWithEffort': '{{state}} · {{effort}}',
   'chat.thinking.triggerAria': 'Thinking: {{value}}. Change',
   'chat.skills.headerPrefix': 'Skills matching',
   'chat.skills.headerHint': '↑↓ to move, Enter to add',

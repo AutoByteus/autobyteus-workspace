@@ -12,63 +12,30 @@ const claudeEffortParameter = (defaultValue: AnthropicEffortLevel): ParameterDef
   new ParameterDefinition({
     name: 'reasoning_effort',
     type: ParameterType.ENUM,
-    description: 'Anthropic effort: how much Claude spends on thinking, text and tool calls. Xhigh and max need thinking on.',
+    description: 'Anthropic effort: how much Claude spends on thinking, text and tool calls. Sent only while thinking is on.',
     required: false,
     defaultValue,
     enumValues: [...ANTHROPIC_EFFORT_LEVELS],
   });
 
-const claudeAdaptiveThinkingSchema = (effortDefault: AnthropicEffortLevel): ParameterSchema => new ParameterSchema([
-  new ParameterDefinition({
-    name: 'thinking_enabled',
-    type: ParameterType.BOOLEAN,
-    description: 'Request Anthropic adaptive thinking for current Claude models. No fixed budget is sent.',
-    required: false,
-    defaultValue: false
-  }),
-  new ParameterDefinition({
-    name: 'thinking_display',
-    type: ParameterType.ENUM,
-    description: 'Controls whether adaptive thinking content is omitted or summarized when an explicit adaptive thinking request is sent.',
-    required: false,
-    defaultValue: 'omitted',
-    enumValues: ['omitted', 'summarized']
-  }),
-  claudeEffortParameter(effortDefault),
-]);
+/** A Claude row with a thinking switch: Off sends the model's off shape and no effort. */
+const claudeThinkingSwitchSchema = (switchDescription: string, effortDefault: AnthropicEffortLevel): ParameterSchema =>
+  new ParameterSchema([
+    new ParameterDefinition({
+      name: 'thinking_enabled',
+      type: ParameterType.BOOLEAN,
+      description: switchDescription,
+      required: false,
+      defaultValue: false,
+    }),
+    claudeEffortParameter(effortDefault),
+  ]);
 
-const claudeOpus55Schema = new ParameterSchema([
-  new ParameterDefinition({
-    name: 'thinking_display',
-    type: ParameterType.ENUM,
-    description: 'Adaptive thinking display mode. Claude Opus 5.5 always uses adaptive thinking.',
-    required: false,
-    defaultValue: 'omitted',
-    enumValues: ['omitted', 'summarized'],
-  }),
-  claudeEffortParameter('medium'),
-]);
+const ADAPTIVE_THINKING_SWITCH_DESCRIPTION = 'Request Anthropic adaptive thinking for current Claude models. No fixed budget is sent.';
 
-const claudeFable51Schema = new ParameterSchema([claudeEffortParameter('high')]);
-
-const claudeSonnet55Schema = new ParameterSchema([
-  new ParameterDefinition({
-    name: 'thinking_enabled',
-    type: ParameterType.BOOLEAN,
-    description: 'Request Anthropic adaptive thinking. Off sends the lowest setting (between_tools): Claude still writes short progress notes between tool calls. No fixed budget is sent.',
-    required: false,
-    defaultValue: false
-  }),
-  new ParameterDefinition({
-    name: 'thinking_display',
-    type: ParameterType.ENUM,
-    description: 'Controls whether adaptive thinking content is omitted or summarized. Summarized keeps the progress notes between tool calls visible.',
-    required: false,
-    defaultValue: 'summarized',
-    enumValues: ['omitted', 'summarized']
-  }),
-  claudeEffortParameter('high'),
-]);
+/** A Claude row whose adaptive thinking is always on (Opus 5.5, Fable 5.1): effort is its only setting. */
+const claudeEffortOnlySchema = (effortDefault: AnthropicEffortLevel): ParameterSchema =>
+  new ParameterSchema([claudeEffortParameter(effortDefault)]);
 
 export const anthropicSupportedModelDefinitions: SupportedModelDefinition[] = [
   {
@@ -79,7 +46,7 @@ export const anthropicSupportedModelDefinitions: SupportedModelDefinition[] = [
       pricingEffectiveDate: '2026-09-01',
       cachedInputReadTokenPricing: 0.25, cachedInputWrite5mTokenPricing: 12.5, cachedInputWrite1hTokenPricing: 20,
     }) }),
-    configSchema: claudeFable51Schema,
+    configSchema: claudeEffortOnlySchema('high'),
   },
   {
     name: 'claude-fable-5',
@@ -94,7 +61,7 @@ export const anthropicSupportedModelDefinitions: SupportedModelDefinition[] = [
       cachedInputWrite5mTokenPricing: 12.5,
       cachedInputWrite1hTokenPricing: 20.0,
     }) }),
-    configSchema: claudeAdaptiveThinkingSchema('high')
+    configSchema: claudeThinkingSwitchSchema(ADAPTIVE_THINKING_SWITCH_DESCRIPTION, 'high')
   },
   {
     name: 'claude-opus-5',
@@ -109,7 +76,7 @@ export const anthropicSupportedModelDefinitions: SupportedModelDefinition[] = [
       cachedInputWrite5mTokenPricing: 6.25,
       cachedInputWrite1hTokenPricing: 10.0,
     }) }),
-    configSchema: claudeAdaptiveThinkingSchema('high')
+    configSchema: claudeThinkingSwitchSchema(ADAPTIVE_THINKING_SWITCH_DESCRIPTION, 'high')
   },
   {
     name: 'claude-opus-5-5',
@@ -125,7 +92,7 @@ export const anthropicSupportedModelDefinitions: SupportedModelDefinition[] = [
       cachedInputWrite5mTokenPricing: 5,
       cachedInputWrite1hTokenPricing: 8,
     }) }),
-    configSchema: claudeOpus55Schema,
+    configSchema: claudeEffortOnlySchema('medium'),
   },
   {
     name: 'claude-sonnet-5-5',
@@ -141,7 +108,10 @@ export const anthropicSupportedModelDefinitions: SupportedModelDefinition[] = [
       cachedInputWrite5mTokenPricing: 2.5,
       cachedInputWrite1hTokenPricing: 4,
     }) }),
-    configSchema: claudeSonnet55Schema,
+    configSchema: claudeThinkingSwitchSchema(
+      'Request Anthropic adaptive thinking. Off sends the lowest setting (between_tools): Claude still writes short progress notes between tool calls. No fixed budget is sent.',
+      'high',
+    ),
   },
   {
     name: 'claude-sonnet-5',
@@ -156,7 +126,7 @@ export const anthropicSupportedModelDefinitions: SupportedModelDefinition[] = [
       cachedInputWrite5mTokenPricing: 2.5,
       cachedInputWrite1hTokenPricing: 4.0,
     }) }),
-    configSchema: claudeAdaptiveThinkingSchema('high')
+    configSchema: claudeThinkingSwitchSchema(ADAPTIVE_THINKING_SWITCH_DESCRIPTION, 'high')
   },
   {
     name: 'claude-haiku-5-5',
@@ -183,6 +153,6 @@ export const anthropicSupportedModelDefinitions: SupportedModelDefinition[] = [
         },
       ],
     }) }),
-    configSchema: claudeAdaptiveThinkingSchema('medium'),
+    configSchema: claudeThinkingSwitchSchema(ADAPTIVE_THINKING_SWITCH_DESCRIPTION, 'medium'),
   },
 ];

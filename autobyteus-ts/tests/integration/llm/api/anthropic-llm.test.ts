@@ -115,9 +115,10 @@ live.describe('AnthropicLLM Integration', () => {
 });
 
 /**
- * Every catalog Claude row accepts an explicit effort (`output_config.effort`): the highest level
- * with thinking on, and for rows with a thinking switch also `high` with thinking off (the highest
- * level allowed off). Anthropic rejecting a request fails the case.
+ * Every catalog Claude row accepts an explicit effort (`output_config.effort`) at the highest level
+ * with thinking on. Rows with a thinking switch also accept thinking off with a stored `max`: off
+ * sends the off shape and no effort. A stored config key no schema declares (a saved run's
+ * `thinking_display`) is never sent. Anthropic rejecting a request fails the case.
  */
 live.describe('AnthropicLLM effort per catalog model', () => {
   const effortCases = anthropicSupportedModelDefinitions.flatMap((definition) => {
@@ -125,13 +126,14 @@ live.describe('AnthropicLLM effort per catalog model', () => {
       ?.properties ?? {};
     const hasSwitch = 'thinking_enabled' in properties;
     return [
-      { definition, extraParams: hasSwitch ? { thinking_enabled: true, reasoning_effort: 'max' } : { reasoning_effort: 'max' } },
-      ...(hasSwitch ? [{ definition, extraParams: { thinking_enabled: false, reasoning_effort: 'high' } }] : []),
+      { label: 'effort on', definition, extraParams: hasSwitch ? { thinking_enabled: true, reasoning_effort: 'max' } : { reasoning_effort: 'max' } },
+      ...(hasSwitch ? [{ label: 'thinking off', definition, extraParams: { thinking_enabled: false, reasoning_effort: 'max' } }] : []),
+      { label: 'stored config', definition, extraParams: { ...(hasSwitch ? { thinking_enabled: true } : {}), reasoning_effort: 'high', thinking_display: 'summarized' } },
     ];
   });
 
-  for (const { definition, extraParams } of effortCases) {
-    live.it(`accepts ${JSON.stringify(extraParams)} on ${definition.value}`, async () => {
+  for (const { label, definition, extraParams } of effortCases) {
+    live.it(`${label}: accepts ${JSON.stringify(extraParams)} on ${definition.value}`, async () => {
       const llm = new AnthropicLLM(new LLMModel(definition), new LLMConfig({ maxTokens: 2048, extraParams }));
       try {
         const response = await llm.sendUserMessage(new LLMUserMessage({ content: 'Reply with exactly: OK' }));

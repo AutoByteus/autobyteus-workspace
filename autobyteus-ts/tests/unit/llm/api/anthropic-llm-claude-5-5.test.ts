@@ -91,37 +91,39 @@ describe.each(['sync', 'stream'] as const)('AnthropicLLM Claude 5.5 request shap
 
   it('sends between_tools for Sonnet 5.5 with thinking off by default (AC-004)', async () => {
     expect(schemaDefaults('claude-sonnet-5-5')).toEqual({
-      thinking_enabled: false, thinking_display: 'summarized', reasoning_effort: 'high',
+      thinking_enabled: false, reasoning_effort: 'high',
     });
     const params = await sendWith(transport, buildLlm('claude-sonnet-5-5', schemaDefaults('claude-sonnet-5-5')));
     expect(params.model).toBe('claude-sonnet-5-5');
     expect(params.thinking).toEqual({ type: 'between_tools' });
-    expect(params.output_config).toEqual({ effort: 'high' });
+    // Off sends no effort (REQ-005).
+    expect(params).not.toHaveProperty('output_config');
     expectNoSampling(params);
     expectNoInternalThinkingFields(params);
   });
 
   it('sends disabled for Haiku 5.5 with thinking off by default (AC-005)', async () => {
     expect(schemaDefaults('claude-haiku-5-5')).toEqual({
-      thinking_enabled: false, thinking_display: 'omitted', reasoning_effort: 'medium',
+      thinking_enabled: false, reasoning_effort: 'medium',
     });
     const params = await sendWith(transport, buildLlm('claude-haiku-5-5', schemaDefaults('claude-haiku-5-5')));
     expect(params.model).toBe('claude-haiku-5-5');
     expect(params.thinking).toEqual({ type: 'disabled' });
-    expect(params.output_config).toEqual({ effort: 'medium' });
+    expect(params).not.toHaveProperty('output_config');
     expectNoSampling(params);
     expectNoInternalThinkingFields(params);
   });
 
   it.each([
-    ['claude-sonnet-5-5', undefined, { type: 'adaptive', display: 'summarized' }],
-    ['claude-sonnet-5-5', 'omitted', { type: 'adaptive' }],
-    ['claude-haiku-5-5', undefined, { type: 'adaptive' }],
-    ['claude-haiku-5-5', 'summarized', { type: 'adaptive', display: 'summarized' }],
-  ] as const)('sends adaptive thinking for %s with display %s when thinking is on (AC-006)', async (id, display, expected) => {
+    ['claude-sonnet-5-5', undefined],
+    ['claude-sonnet-5-5', 'summarized'],
+    ['claude-haiku-5-5', undefined],
+    ['claude-haiku-5-5', 'summarized'],
+  ] as const)('sends adaptive thinking without display for %s (stored display %s) when thinking is on (AC-010)', async (id, display) => {
     const extraParams = { ...schemaDefaults(id), thinking_enabled: true, ...(display ? { thinking_display: display } : {}) };
     const params = await sendWith(transport, buildLlm(id, extraParams));
-    expect(params.thinking).toEqual(expected);
+    expect(params.thinking).toEqual({ type: 'adaptive' });
+    expect(params.output_config).toEqual({ effort: schemaDefaults(id).reasoning_effort });
     expectNoSampling(params);
     expectNoInternalThinkingFields(params);
   });

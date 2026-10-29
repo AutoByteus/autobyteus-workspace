@@ -178,7 +178,8 @@ describe('AnthropicLLM', () => {
 
     const params = mockCreate.mock.calls[0]?.[0] as Record<string, unknown>;
     expect(params.model).toBe(value);
-    expect(params.thinking).toEqual({ type: 'adaptive', display: 'summarized' });
+    // A stored display setting is not an owned key: thinking never carries `display` (AC-010).
+    expect(params.thinking).toEqual({ type: 'adaptive' });
     expect(params).not.toHaveProperty('temperature');
     expect(params).not.toHaveProperty('thinking_enabled');
     expect(params).not.toHaveProperty('thinking_display');
@@ -227,22 +228,30 @@ describe('AnthropicLLM', () => {
     expect(params.thinking).toEqual({ type: 'adaptive', display: 'omitted' });
   });
 
-  it('filters internal runtime keys from Anthropic config extra params', async () => {
-    const opus5 = new AnthropicLLM(
-      buildModel('claude-opus-5'),
-      new LLMConfig({
-        extraParams: {
-          ...internalRuntimeKwargs,
-          metadata: { user_id: 'config-user' }
-        }
-      })
-    );
+  it('sends only what the owned config keys decide; other stored config keys never reach the request (AC-011)', async () => {
+    // A resumed run's stored config: owned keys plus keys no current schema declares.
+    const storedConfig = {
+      thinking_enabled: true,
+      reasoning_effort: 'max',
+      thinking_display: 'omitted',
+      thinking_budget_tokens: 4096,
+      thinking: { type: 'enabled', budget_tokens: 4096 },
+      output_config: { effort: 'low' },
+      metadata: { user_id: 'config-user' },
+      cache_control: { type: 'ephemeral' },
+      ...internalRuntimeKwargs,
+    };
+    for (const id of ['claude-opus-5-5', 'claude-sonnet-5-5']) {
+      mockCreate.mockClear();
+      const model = new AnthropicLLM(buildModel(id), new LLMConfig({ extraParams: storedConfig }));
 
-    await opus5.sendMessages(userMessages);
+      await model.sendMessages(userMessages);
 
-    const params = mockCreate.mock.calls[0]?.[0] as Record<string, unknown>;
-    expectNoInternalRuntimeKwargs(params);
-    expect(params.metadata).toEqual({ user_id: 'config-user' });
+      const params = mockCreate.mock.calls[0]?.[0] as Record<string, unknown>;
+      expect(Object.keys(params).sort()).toEqual(['max_tokens', 'messages', 'model', 'output_config', 'thinking']);
+      expect(params.thinking).toEqual({ type: 'adaptive' });
+      expect(params.output_config).toEqual({ effort: 'max' });
+    }
   });
 
   it('drops provider-invalid manual thinking and sampling overrides for Sonnet 5', async () => {
@@ -331,8 +340,8 @@ describe('AnthropicLLM', () => {
     ['claude-sonnet-5', { type: 'disabled' }],
     ['claude-opus-5', undefined],
     ['claude-fable-5', undefined],
-  ] as const)('sends effort low/medium/high with %s thinking off, keeping its off shape', async (modelId, offShape) => {
-    for (const effort of ['low', 'medium', 'high']) {
+  ] as const)('sends %s thinking off as its off shape and no effort, whatever effort is stored (AC-003, AC-004)', async (modelId, offShape) => {
+    for (const effort of ['low', 'medium', 'high', 'xhigh', 'max']) {
       mockCreate.mockClear();
       const model = new AnthropicLLM(
         buildModel(modelId),
@@ -343,23 +352,21 @@ describe('AnthropicLLM', () => {
 
       const params = mockCreate.mock.calls[0]?.[0] as Record<string, unknown>;
       expect(params.thinking).toEqual(offShape);
-      expect(params.output_config).toEqual({ effort });
+      expect(params).not.toHaveProperty('output_config');
     }
   });
 
-  it.each([
-    'claude-sonnet-5-5', 'claude-haiku-5-5', 'claude-sonnet-5', 'claude-opus-5', 'claude-fable-5',
-  ])('refuses xhigh and max with %s thinking off before the SDK call', async (modelId) => {
-    for (const effort of ['xhigh', 'max']) {
-      const model = new AnthropicLLM(
-        buildModel(modelId),
-        new LLMConfig({ extraParams: { thinking_enabled: false, reasoning_effort: effort } })
-      );
-      await expect(model.sendMessages(userMessages)).rejects.toThrow(
-        `Anthropic model ${modelId}: effort '${effort}' requires thinking on.`
-      );
-    }
-    expect(mockCreate).not.toHaveBeenCalled();
+  it('sends effort with thinking on, without display (AC-003)', async () => {
+    const sonnet55 = new AnthropicLLM(
+      buildModel('claude-sonnet-5-5'),
+      new LLMConfig({ extraParams: { thinking_enabled: true, reasoning_effort: 'low' } })
+    );
+
+    await sonnet55.sendMessages(userMessages);
+
+    const params = mockCreate.mock.calls[0]?.[0] as Record<string, unknown>;
+    expect(params.thinking).toEqual({ type: 'adaptive' });
+    expect(params.output_config).toEqual({ effort: 'low' });
   });
 
   it('sends xhigh with thinking on', async () => {
@@ -415,7 +422,7 @@ describe('AnthropicLLM', () => {
     mockCreate.mockResolvedValueOnce(emptyStream());
     const haiku = new AnthropicLLM(
       buildModel('claude-haiku-5-5'),
-      new LLMConfig({ extraParams: { thinking_enabled: true, thinking_display: 'summarized', reasoning_effort: 'max' } })
+      new LLMConfig({ extraParams: { thinking_enabled: true, reasoning_effort: 'max' } })
     );
 
     for await (const _chunk of haiku.streamMessages(userMessages)) {
@@ -424,7 +431,7 @@ describe('AnthropicLLM', () => {
 
     const params = mockCreate.mock.calls[0]?.[0] as Record<string, unknown>;
     expect(params.stream).toBe(true);
-    expect(params.thinking).toEqual({ type: 'adaptive', display: 'summarized' });
+    expect(params.thinking).toEqual({ type: 'adaptive' });
     expect(params.output_config).toEqual({ effort: 'max' });
     expect(params).not.toHaveProperty('reasoning_effort');
   });

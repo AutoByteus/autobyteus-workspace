@@ -82,9 +82,9 @@ or credentials.
 | LLM | `claude-fable-5` | `claude-fable-5` | Anthropic | 2026-07-07 | High-cost catalog-available model; uses adaptive-thinking request policy, standard cache-aware pricing, and Fable data-retention/cost caveats below. |
 | LLM | `claude-opus-5` | `claude-opus-5` | Anthropic | 2026-07-31 | Exact API ID; standard pricing is effective 2026-07-24, with 1M context / 128k output metadata and the adaptive-thinking/no-sampling request policy. |
 | LLM | `claude-opus-5-5` | `claude-opus-5-5` | Anthropic | 2026-09-23 | Exact Messages API ID; 1M context/input / 128k output, adaptive-only thinking request policy, effort default `medium`, and Standard $4 input / $20 output / $0.20 cache read / $5 five-minute write / $8 one-hour write per MTok. Signed native thinking remains private working-context material during tool continuation. |
-| LLM | `claude-sonnet-5-5` | `claude-sonnet-5-5` | Anthropic | 2026-10-09 | Exact API ID; 1M context/input / 128k output. Adaptive thinking; thinking off sends `{ type: "between_tools" }` (never `disabled`); display defaults to `summarized`. Forced `tool_choice` fails locally. Standard pricing effective 2026-09-28. |
+| LLM | `claude-sonnet-5-5` | `claude-sonnet-5-5` | Anthropic | 2026-10-09 | Exact API ID; 1M context/input / 128k output. Adaptive thinking; thinking off sends `{ type: "between_tools" }` (never `disabled`). Forced `tool_choice` fails locally. Standard pricing effective 2026-09-28. |
 | LLM | `claude-sonnet-5` | `claude-sonnet-5` | Anthropic | 2026-07-07 | Exact provider ID only, with no `claude-sonnet-4.8` alias. |
-| LLM | `claude-haiku-5-5` | `claude-haiku-5-5` | Anthropic | 2026-10-09 | Exact API ID; 1M context/input / 128k output. Adaptive thinking; thinking off sends `{ type: "disabled" }`; display defaults to `omitted`. Standard pricing effective 2026-10-07, tiered at 100k prompt tokens (cache tokens included). |
+| LLM | `claude-haiku-5-5` | `claude-haiku-5-5` | Anthropic | 2026-10-09 | Exact API ID; 1M context/input / 128k output. Adaptive thinking; thinking off sends `{ type: "disabled" }`. Standard pricing effective 2026-10-07, tiered at 100k prompt tokens (cache tokens included). |
 | LLM | `deepseek-v4-flash` | `deepseek-v4-flash` | DeepSeek | 2026-04-25 | Uses the existing OpenAI-compatible DeepSeek adapter with a flat V4 thinking schema and adapter-owned provider request mapping. |
 | LLM | `deepseek-v4-pro` | `deepseek-v4-pro` | DeepSeek | 2026-04-25 | Uses the existing OpenAI-compatible DeepSeek adapter with a flat V4 thinking schema and adapter-owned provider request mapping. |
 | LLM | `qwen3.8-max` | `qwen3.8-max` | Qwen / Alibaba | 2026-08-06 | Native Qwen offering with source-dated 1M context metadata; input/output limits remain unknown. |
@@ -234,8 +234,10 @@ Every catalog Claude model uses adaptive thinking; none uses the older
 fixed-budget extended-thinking request shape. The built-in schemas expose a
 thinking toggle where the provider supports one:
 
-- `thinking_enabled: true` maps to `thinking: { type: "adaptive" }`.
-- `thinking_display: "summarized"` adds `display: "summarized"`.
+- `thinking_enabled: true` maps to `thinking: { type: "adaptive" }`. No catalog
+  model exposes a display setting and the adapter never sends `display`, so
+  Anthropic's default `omitted` applies: thinking blocks come back with empty
+  text and the full signature, which tool continuation keeps and passes back.
 - The adapter never sends fixed budgets and strips provider-invalid manual
   `thinking: { type: "enabled", budget_tokens: ... }`.
 - The adapter removes `temperature`, `top_p`, and `top_k` request fields for
@@ -256,35 +258,40 @@ a forced `tool_choice` (`any`/`tool`) fails locally:
 | `claude-sonnet-5` | adaptive | `{ type: "disabled" }` | allowed |
 | `claude-opus-5`, `claude-fable-5`, `claude-fable-5-1` | adaptive | nothing | allowed |
 
-An explicit caller `thinking` value reaches an adaptive model only when its type
-is `adaptive` or that model's own off shape (`between_tools` is reduced to
-`{ type: "between_tools" }`); anything else is dropped.
+An explicit caller `thinking` value (a per-call kwarg) reaches an adaptive model
+only when its type is `adaptive` or that model's own off shape (`between_tools`
+is reduced to `{ type: "between_tools" }`); anything else is dropped.
+
+**Run config keys.** A run's stored `llmConfig` reaches the adapter as
+`LLMConfig.extraParams`. `AnthropicLLM` reads only the keys it owns,
+`thinking_enabled` and `reasoning_effort`, and sends no other config key. A key a
+schema no longer declares (for example a display setting kept in a saved run) is
+therefore inert, and saved runs keep resuming without a data migration. Per-call
+kwargs are applied as before.
 
 **Effort.** Every catalog Claude model exposes `reasoning_effort` with Anthropic's
 levels `low`, `medium`, `high`, `xhigh`, `max` (verified 2026-10-29 against the
 [effort docs](https://platform.claude.com/docs/en/build-with-claude/effort) and a
 live request per model). Each schema default equals the model's API default:
 `medium` for Opus 5.5 and Haiku 5.5, `high` for the others. The adapter sends a
-configured level as `output_config: { effort }` (merged into any explicit
+configured level as `output_config: { effort }` (merged into a per-call
 `output_config`) and never as a top-level field; with no level configured it
-sends no effort, so the model default applies. Effort applies with thinking on
-and off, but `xhigh` and `max` need thinking on: Anthropic rejects them with
-thinking off on several models, so one rule holds for every model with a toggle.
-A config with `thinking_enabled: false` and `xhigh`/`max` fails locally before the
-SDK call (the web thinking control never produces it), and an unknown level
-fails locally too. The level vocabulary lives in
-`anthropic-model-request-policy.ts` (`ANTHROPIC_EFFORT_LEVELS`,
-`ANTHROPIC_THINKING_REQUIRED_EFFORT_LEVELS`). Changing effort mid-run restarts
-Anthropic's prompt cache for that run (provider behavior).
+sends no effort, so the model default applies. With `thinking_enabled: false`
+the request carries the model's off shape and no effort, whatever level the
+config still holds: off means thinking off at the model's default effort (this
+also avoids Anthropic's rejection of `xhigh`/`max` with thinking off). An unknown
+level fails locally. The level vocabulary is `ANTHROPIC_EFFORT_LEVELS` in
+`anthropic-model-request-policy.ts`. Changing effort mid-run restarts Anthropic's
+prompt cache for that run (provider behavior).
 
 Claude Sonnet 5.5 and Haiku 5.5 (verified 2026-10-09 against the
 [Sonnet 5.5](https://platform.claude.com/docs/en/models/sonnet-5-5/overview) and
 [Haiku 5.5](https://platform.claude.com/docs/en/models/haiku-5-5/overview)
 overviews) both default the thinking toggle to off, which sends each model's
 lowest setting. Sonnet 5.5 rejects `disabled`, so off sends `between_tools`,
-and Claude still writes short progress notes between tool calls; its display
-defaults to `summarized` so those notes stay visible. Haiku 5.5 off sends
-`disabled`. The beta `display: "updates"` is not exposed.
+and Claude still writes short progress notes between tool calls (they are not
+shown, because display is always Anthropic's `omitted` default). Haiku 5.5 off
+sends `disabled`. The beta `display: "updates"` is not exposed.
 
 Fable 5.1 is different at the catalog boundary: adaptive thinking is always on,
 so its schema has no `thinking_enabled`; effort is its only setting. The

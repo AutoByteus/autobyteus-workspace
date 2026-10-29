@@ -11,9 +11,6 @@ export const ANTHROPIC_EFFORT_LEVELS = ['low', 'medium', 'high', 'xhigh', 'max']
 
 export type AnthropicEffortLevel = (typeof ANTHROPIC_EFFORT_LEVELS)[number];
 
-/** Effort levels that are never sent with the thinking switch off (Anthropic rejects them on several models). */
-export const ANTHROPIC_THINKING_REQUIRED_EFFORT_LEVELS: readonly AnthropicEffortLevel[] = ['xhigh', 'max'];
-
 /**
  * Keyed by `thinkingMode`. On every variant, `rejectsForcedToolChoice` means `tool_choice`
  * `any`/`tool` fails locally before the SDK call. Sampling parameters are always stripped.

@@ -85,12 +85,11 @@ describe('current supported model definitions', () => {
         multimodalCapabilities: { image: 'supported' },
       });
       const schema = rows[0]!.configSchema?.toJsonSchema() as { properties: Record<string, unknown> };
-      expect(Object.keys(schema.properties).sort()).toEqual(['reasoning_effort', 'thinking_display', 'thinking_enabled']);
+      expect(Object.keys(schema.properties).sort()).toEqual(['reasoning_effort', 'thinking_enabled']);
     }
     const [sonnet] = supportedModelDefinitions.filter((item) => item.value === 'claude-sonnet-5-5');
     expect(sonnet!.configSchema?.toJsonSchema()).toMatchObject({ properties: {
       thinking_enabled: { default: false },
-      thinking_display: { enum: ['omitted', 'summarized'], default: 'summarized' },
     } });
     expect(sonnet!.defaultConfig.pricingConfig).toMatchObject({
       inputTokenPricing: 2, outputTokenPricing: 10, cachedInputReadTokenPricing: 0.1,
@@ -101,7 +100,6 @@ describe('current supported model definitions', () => {
     const [haiku] = supportedModelDefinitions.filter((item) => item.value === 'claude-haiku-5-5');
     expect(haiku!.configSchema?.toJsonSchema()).toMatchObject({ properties: {
       thinking_enabled: { default: false },
-      thinking_display: { enum: ['omitted', 'summarized'], default: 'omitted' },
     } });
     expect(haiku!.defaultConfig.pricingConfig).toMatchObject({
       inputTokenPricing: 0.1, outputTokenPricing: 0.5, cachedInputReadTokenPricing: 0.01,
@@ -126,6 +124,14 @@ describe('current supported model definitions', () => {
       expect(configSchema?.toJsonSchema(), value).toMatchObject({ properties: {
         reasoning_effort: { enum: ['low', 'medium', 'high', 'xhigh', 'max'], default: expectedDefaults[value] },
       } });
+    }
+  });
+
+  it('exposes no thinking display setting on any Claude row (AC-010)', () => {
+    for (const { value, configSchema } of anthropicSupportedModelDefinitions) {
+      const properties = (configSchema?.toJsonSchema() as { properties: Record<string, unknown> }).properties;
+      expect(properties, value).not.toHaveProperty('thinking_display');
+      expect(Object.keys(properties).every((key) => ['thinking_enabled', 'reasoning_effort'].includes(key)), value).toBe(true);
     }
   });
 

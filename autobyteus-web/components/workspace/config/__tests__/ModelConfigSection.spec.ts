@@ -657,19 +657,14 @@ describe('ModelConfigSection', () => {
       temperature: { type: 'number', minimum: 0, maximum: 1, default: 0.7 },
     };
 
-    it('keeps Claude thinking off for an Advanced effort up to high and turns it on for xhigh/max (claude-anthropic-effort-control AC-005)', async () => {
+    it('turns the Thinking toggle on when an Advanced effort is changed while off (AC-010)', async () => {
       const wrapper = mount(ModelConfigSection, {
         props: { modelConfig: { thinking_enabled: false }, schema: claudeSchema },
       });
       await wrapper.get('select#config-reasoning_effort').setValue('high');
-      expect(wrapper.emitted('update:config')?.at(-1)?.[0]).toEqual({ thinking_enabled: false, reasoning_effort: 'high' });
+      expect(wrapper.emitted('update:config')?.at(-1)?.[0]).toEqual({ thinking_enabled: true, reasoning_effort: 'high' });
 
-      await wrapper.setProps({ modelConfig: { thinking_enabled: false, reasoning_effort: 'high' } });
-      expect(wrapper.getComponent({ name: 'ModelConfigBasic' }).props('enabled')).toBe(false);
-      await wrapper.get('select#config-reasoning_effort').setValue('max');
-      expect(wrapper.emitted('update:config')?.at(-1)?.[0]).toEqual({ thinking_enabled: true, reasoning_effort: 'max' });
-
-      await wrapper.setProps({ modelConfig: { thinking_enabled: true, reasoning_effort: 'max' } });
+      await wrapper.setProps({ modelConfig: { thinking_enabled: true, reasoning_effort: 'high' } });
       expect(wrapper.getComponent({ name: 'ModelConfigBasic' }).props('enabled')).toBe(true);
     });
 

@@ -306,9 +306,11 @@ Provider adapters own request-shape differences:
   without sending fixed thinking budgets, manual-budget overrides, or
   unsupported sampling fields (`temperature`, `top_p`, `top_k`). It maps a
   configured `reasoning_effort` to `output_config.effort` (never a top-level
-  field; nothing when unset) and fails locally on an unknown level or on
-  `xhigh`/`max` with `thinking_enabled: false`. It also filters
-  AutoByteus-internal invocation kwargs before Anthropic Messages API calls.
+  field; nothing when unset or while thinking is off) and fails locally on an
+  unknown level. From the run config it reads only `thinking_enabled` and
+  `reasoning_effort` and sends no other config key; it never sends
+  `thinking.display`. It also filters AutoByteus-internal invocation kwargs
+  before Anthropic Messages API calls.
 - Opus 5.5 uses an adaptive-only schema and preflight: fixed-budget thinking,
   unsupported sampling parameters and forced `tool_choice` are rejected before
   the Messages SDK call.

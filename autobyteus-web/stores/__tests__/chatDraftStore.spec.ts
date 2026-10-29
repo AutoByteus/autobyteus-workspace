@@ -326,7 +326,6 @@ describe('chatDraftStore', () => {
       temperature: { type: 'number', default: 0.7 },
       max_tokens: { type: 'integer' },
       thinking_enabled: { type: 'boolean', default: false },
-      thinking_display: { type: 'string', enum: ['omitted', 'summarized'], default: 'omitted' },
       reasoning_effort: { type: 'string', enum: ['low', 'medium', 'high', 'xhigh', 'max'], default: 'high' },
     }
 
@@ -350,7 +349,7 @@ describe('chatDraftStore', () => {
       const launchForm = applyModelConfigSchemaDefaults(claudeSchema as any, null)!
       // Non-thinking keys equal the launch form; thinking keys equal the schema defaults.
       expect({ temperature: recorded.temperature }).toEqual(launchForm)
-      expect(recorded).toMatchObject({ thinking_enabled: false, thinking_display: 'omitted', reasoning_effort: 'high' })
+      expect(recorded).toMatchObject({ thinking_enabled: false, reasoning_effort: 'high' })
     })
 
     it('records the default resolution’s model config too, keeping a preset’s own thinking', async () => {

@@ -87,8 +87,7 @@ import type { UiModelConfigSchema } from '~/utils/llmConfigSchema'
 /**
  * Thinking follows the selected model's config schema (DEC-009): only the parameters the model
  * exposes are offered, and the control is hidden when there are none. Models with an on/off switch
- * get Off / On, then their effort group (independent of the switch), then the settings that only
- * apply with thinking on; the adapter decides which choices also turn thinking on.
+ * get one merged list (Off · effort levels); picking any dependent setting turns thinking on.
  */
 const props = withDefaults(defineProps<{
   schema: UiModelConfigSchema | null
@@ -103,12 +102,10 @@ const { t } = useLocalization()
 const rootRef = ref<HTMLElement | null>(null)
 const triggerRef = ref<HTMLElement | null>(null)
 const menuRef = ref<HTMLElement | null>(null)
-// Fits the tallest menu (Claude switch: Off · On, five effort levels, two display options) unscrolled;
-// the popover still clamps to the space available.
-const popover = useAnchoredPopover(rootRef, triggerRef, 380, { placement: props.placement })
+const popover = useAnchoredPopover(rootRef, triggerRef, 240, { placement: props.placement })
 const inBoundary = useMenuInBoundary(menuRef, computed(() => popover.open.value), computed(() => !popover.narrow.value))
 
-const menu = computed(() => buildChatThinkingMenu(props.schema, props.llmConfig, (key, params) => t(key, params)))
+const menu = computed(() => buildChatThinkingMenu(props.schema, props.llmConfig, (key) => t(key)))
 const groups = computed<ChatThinkingParameter[]>(() => {
   if (menu.value.mode === 'merged') return menu.value.secondary
   if (menu.value.mode === 'parameters') return menu.value.parameters

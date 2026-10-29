@@ -172,12 +172,11 @@ describe('getDefaultThinkingConfig (D-18: default thinking written explicitly)',
     const { getDefaultThinkingConfig } = await import('../llmThinkingConfigAdapter')
     expect(getDefaultThinkingConfig({ reasoning_effort: { type: 'string', enum: ['low', 'medium'], default: 'medium' } }))
       .toEqual({ reasoning_effort: 'medium' })
-    // Claude: effort is written with thinking off too (it applies either way).
+    // AutoByteus Claude switch row: switch and effort default (effort is not sent while off).
     expect(getDefaultThinkingConfig({
       thinking_enabled: { type: 'boolean', default: false },
-      thinking_display: { type: 'string', enum: ['omitted', 'summarized'], default: 'summarized' },
       reasoning_effort: { type: 'string', enum: ['low', 'medium', 'high', 'xhigh', 'max'], default: 'high' },
-    })).toEqual({ thinking_enabled: false, thinking_display: 'summarized', reasoning_effort: 'high' })
+    })).toEqual({ thinking_enabled: false, reasoning_effort: 'high' })
     expect(getDefaultThinkingConfig({ thinking_type: { type: 'string', enum: ['enabled', 'disabled'], default: 'disabled' }, reasoning_effort: { type: 'string', enum: ['low', 'high'], default: 'high' } }))
       .toEqual({ thinking_type: 'disabled' })
     expect(getDefaultThinkingConfig({ temperature: { type: 'number', default: 1 } })).toEqual({})
@@ -189,14 +188,10 @@ describe('thinking-dependent settings (chat-composer-polish REQ-001, REQ-008)', 
     thinking_enabled: { type: 'boolean', default: false },
     reasoning_effort: { type: 'string', enum: ['low', 'medium', 'high', 'xhigh', 'max'], default: 'medium' },
   };
+  /** AutoByteus Claude switch row (e.g. claude-sonnet-5-5). */
   const anthropicSwitchSchema = {
     thinking_enabled: { type: 'boolean', default: false },
-    thinking_display: { type: 'string', enum: ['omitted', 'summarized'], default: 'summarized' },
     reasoning_effort: { type: 'string', enum: ['low', 'medium', 'high', 'xhigh', 'max'], default: 'high' },
-  };
-  const anthropicAdaptiveSchema = {
-    thinking_enabled: { type: 'boolean', default: false },
-    thinking_display: { type: 'string', enum: ['summarized', 'omitted'], default: 'summarized' },
   };
   const deepSeekV4Schema = {
     thinking_type: { type: 'string', enum: ['enabled', 'disabled'], default: 'enabled' },
@@ -216,15 +211,9 @@ describe('thinking-dependent settings (chat-composer-polish REQ-001, REQ-008)', 
   };
 
   it('lists dependent keys only for schemas whose switch can both enable and disable', async () => {
-    const { getThinkingDependentParamKeys, getIndependentThinkingParamKeys, hasThinkingSwitch } = await import('../llmThinkingConfigAdapter');
-    // Claude effort applies with thinking on and off: independent, never dependent (AC-005).
-    expect(getThinkingDependentParamKeys(claudeSdkSchema)).toEqual([]);
-    expect(getIndependentThinkingParamKeys(claudeSdkSchema)).toEqual(['reasoning_effort']);
-    expect(getThinkingDependentParamKeys(anthropicSwitchSchema)).toEqual(['thinking_display']);
-    expect(getIndependentThinkingParamKeys(anthropicSwitchSchema)).toEqual(['reasoning_effort']);
-    expect(getThinkingDependentParamKeys(anthropicAdaptiveSchema)).toEqual(['thinking_display']);
-    expect([deepSeekV4Schema, glmSchema, openAiSchema, geminiSchema, null].map(getIndependentThinkingParamKeys))
-      .toEqual([[], [], [], [], []]);
+    const { getThinkingDependentParamKeys, hasThinkingSwitch } = await import('../llmThinkingConfigAdapter');
+    expect(getThinkingDependentParamKeys(claudeSdkSchema)).toEqual(['reasoning_effort']);
+    expect(getThinkingDependentParamKeys(anthropicSwitchSchema)).toEqual(['reasoning_effort']);
     expect(getThinkingDependentParamKeys(deepSeekV4Schema)).toEqual(['reasoning_effort']);
     expect(getThinkingDependentParamKeys(glmSchema)).toEqual([]);
     expect(getThinkingDependentParamKeys(openAiSchema)).toEqual([]);
@@ -236,8 +225,13 @@ describe('thinking-dependent settings (chat-composer-polish REQ-001, REQ-008)', 
 
   it('turns thinking on when a dependent value is chosen, keeping the chosen value', async () => {
     const { applyThinkingParamChoice } = await import('../llmThinkingConfigAdapter');
-    expect(applyThinkingParamChoice(anthropicAdaptiveSchema, { thinking_enabled: false }, 'thinking_display', 'omitted'))
-      .toEqual({ thinking_enabled: true, thinking_display: 'omitted' });
+    expect(applyThinkingParamChoice(claudeSdkSchema, null, 'reasoning_effort', 'high'))
+      .toEqual({ reasoning_effort: 'high', thinking_enabled: true });
+    // Re-choosing the stored effort while off still turns thinking on.
+    expect(applyThinkingParamChoice(claudeSdkSchema, { thinking_enabled: false, reasoning_effort: 'medium' }, 'reasoning_effort', 'medium'))
+      .toEqual({ thinking_enabled: true, reasoning_effort: 'medium' });
+    expect(applyThinkingParamChoice(anthropicSwitchSchema, { thinking_enabled: false, reasoning_effort: 'max' }, 'reasoning_effort', 'low'))
+      .toEqual({ thinking_enabled: true, reasoning_effort: 'low' });
     expect(applyThinkingParamChoice(deepSeekV4Schema, { thinking_type: 'disabled' }, 'reasoning_effort', 'max'))
       .toEqual({ thinking_type: 'enabled', reasoning_effort: 'max' });
     // Non-dependent keys are written as is.
@@ -248,8 +242,12 @@ describe('thinking-dependent settings (chat-composer-polish REQ-001, REQ-008)', 
 
   it('auto-enables form edits of a dependent value only while thinking is off', async () => {
     const { applyThinkingDependentEdit } = await import('../llmThinkingConfigAdapter');
-    expect(applyThinkingDependentEdit(anthropicAdaptiveSchema, null, { thinking_display: 'omitted' }))
-      .toEqual({ thinking_enabled: true, thinking_display: 'omitted' });
+    expect(applyThinkingDependentEdit(claudeSdkSchema, { thinking_enabled: false }, { thinking_enabled: false, reasoning_effort: 'high' }))
+      .toEqual({ thinking_enabled: true, reasoning_effort: 'high' });
+    expect(applyThinkingDependentEdit(claudeSdkSchema, null, { reasoning_effort: 'low' }))
+      .toEqual({ thinking_enabled: true, reasoning_effort: 'low' });
+    expect(applyThinkingDependentEdit(anthropicSwitchSchema, null, { reasoning_effort: 'xhigh' }))
+      .toEqual({ thinking_enabled: true, reasoning_effort: 'xhigh' });
     expect(applyThinkingDependentEdit(deepSeekV4Schema, { thinking_type: 'disabled' }, { thinking_type: 'disabled', reasoning_effort: 'max' }))
       .toEqual({ thinking_type: 'enabled', reasoning_effort: 'max' });
     // Already on: unchanged.
@@ -266,64 +264,5 @@ describe('thinking-dependent settings (chat-composer-polish REQ-001, REQ-008)', 
     expect(applyThinkingDependentEdit(openAiSchema, null, { reasoning_effort: 'high' })).toEqual({ reasoning_effort: 'high' });
     expect(applyThinkingDependentEdit(geminiSchema, null, { thinking_level: 'low' })).toEqual({ thinking_level: 'low' });
     expect(applyThinkingDependentEdit(glmSchema, null, { reasoning_effort: 'max' })).toEqual({ reasoning_effort: 'max' });
-  });
-});
-
-describe('Claude effort and the thinking switch (claude-anthropic-effort-control REQ-004, REQ-005, AC-005)', () => {
-  const claudeSdkSchema = {
-    thinking_enabled: { type: 'boolean', default: false },
-    reasoning_effort: { type: 'string', enum: ['low', 'medium', 'high', 'xhigh', 'max'], default: 'medium' },
-  };
-  const anthropicSwitchSchema = {
-    thinking_enabled: { type: 'boolean', default: false },
-    thinking_display: { type: 'string', enum: ['omitted', 'summarized'], default: 'summarized' },
-    reasoning_effort: { type: 'string', enum: ['low', 'medium', 'high', 'xhigh', 'max'], default: 'high' },
-  };
-
-  it('keeps thinking off when low, medium or high is chosen, and turns it on for xhigh or max', async () => {
-    const { applyThinkingParamChoice } = await import('../llmThinkingConfigAdapter');
-    for (const schema of [claudeSdkSchema, anthropicSwitchSchema]) {
-      for (const effort of ['low', 'medium', 'high']) {
-        expect(applyThinkingParamChoice(schema, { thinking_enabled: false }, 'reasoning_effort', effort))
-          .toEqual({ thinking_enabled: false, reasoning_effort: effort });
-        expect(applyThinkingParamChoice(schema, null, 'reasoning_effort', effort)).toEqual({ reasoning_effort: effort });
-      }
-      for (const effort of ['xhigh', 'max']) {
-        expect(applyThinkingParamChoice(schema, { thinking_enabled: false }, 'reasoning_effort', effort))
-          .toEqual({ thinking_enabled: true, reasoning_effort: effort });
-        expect(applyThinkingParamChoice(schema, null, 'reasoning_effort', effort))
-          .toEqual({ thinking_enabled: true, reasoning_effort: effort });
-      }
-    }
-    // With thinking on, any level keeps thinking on.
-    expect(applyThinkingParamChoice(claudeSdkSchema, { thinking_enabled: true, reasoning_effort: 'max' }, 'reasoning_effort', 'low'))
-      .toEqual({ thinking_enabled: true, reasoning_effort: 'low' });
-  });
-
-  it('turning thinking off with xhigh or max sets high, and keeps low/medium/high (and on/off) otherwise', () => {
-    for (const effort of ['xhigh', 'max']) {
-      expect(applyThinkingToggle(anthropicSwitchSchema, false, { thinking_enabled: true, reasoning_effort: effort }))
-        .toEqual({ thinking_enabled: false, reasoning_effort: 'high' });
-    }
-    for (const effort of ['low', 'medium', 'high']) {
-      expect(applyThinkingToggle(anthropicSwitchSchema, false, { thinking_enabled: true, reasoning_effort: effort }))
-        .toEqual({ thinking_enabled: false, reasoning_effort: effort });
-      expect(applyThinkingToggle(anthropicSwitchSchema, true, { thinking_enabled: false, reasoning_effort: effort }))
-        .toEqual({ thinking_enabled: true, reasoning_effort: effort });
-    }
-    // Unset effort: the schema default (high/medium) needs no fallback, so nothing is written.
-    expect(applyThinkingToggle(claudeSdkSchema, false, { thinking_enabled: true })).toEqual({ thinking_enabled: false });
-  });
-
-  it('applies the same rule to form edits', async () => {
-    const { applyThinkingDependentEdit } = await import('../llmThinkingConfigAdapter');
-    expect(applyThinkingDependentEdit(anthropicSwitchSchema, { thinking_enabled: false }, { thinking_enabled: false, reasoning_effort: 'low' }))
-      .toEqual({ thinking_enabled: false, reasoning_effort: 'low' });
-    expect(applyThinkingDependentEdit(anthropicSwitchSchema, { thinking_enabled: false }, { thinking_enabled: false, reasoning_effort: 'max' }))
-      .toEqual({ thinking_enabled: true, reasoning_effort: 'max' });
-    expect(applyThinkingDependentEdit(claudeSdkSchema, null, { reasoning_effort: 'xhigh' }))
-      .toEqual({ thinking_enabled: true, reasoning_effort: 'xhigh' });
-    expect(applyThinkingDependentEdit(claudeSdkSchema, { thinking_enabled: true }, { thinking_enabled: true, reasoning_effort: 'max' }))
-      .toEqual({ thinking_enabled: true, reasoning_effort: 'max' });
   });
 });

@@ -123,7 +123,6 @@ describe('LLMFactory metadata resolution', () => {
     expect(claudeOpus5?.config_schema).toMatchObject({
       properties: {
         thinking_enabled: expect.objectContaining({ type: 'boolean' }),
-        thinking_display: expect.objectContaining({ enum: ['omitted', 'summarized'] }),
         reasoning_effort: expect.objectContaining({ enum: ['low', 'medium', 'high', 'xhigh', 'max'], default: 'high' })
       }
     });
@@ -145,7 +144,6 @@ describe('LLMFactory metadata resolution', () => {
     expect(claudeSonnet5?.config_schema).toMatchObject({
       properties: {
         thinking_enabled: expect.objectContaining({ type: 'boolean' }),
-        thinking_display: expect.objectContaining({ enum: ['omitted', 'summarized'] }),
         reasoning_effort: expect.objectContaining({ enum: ['low', 'medium', 'high', 'xhigh', 'max'], default: 'high' })
       }
     });
@@ -325,12 +323,14 @@ describe('LLMFactory metadata resolution', () => {
     expect(fable?.config_schema).toMatchObject({
       properties: { reasoning_effort: { enum: ['low', 'medium', 'high', 'xhigh', 'max'], default: 'high' } },
     });
-    expect(anthropicModels.find((model) => model.model_identifier === 'claude-opus-5-5')?.config_schema).toMatchObject({
-      properties: {
-        thinking_display: { enum: ['omitted', 'summarized'], default: 'omitted' },
-        reasoning_effort: { enum: ['low', 'medium', 'high', 'xhigh', 'max'], default: 'medium' },
-      },
+    const opus55Schema = anthropicModels.find((model) => model.model_identifier === 'claude-opus-5-5')?.config_schema;
+    expect(Object.keys(opus55Schema?.properties ?? {})).toEqual(['reasoning_effort']);
+    expect(opus55Schema).toMatchObject({
+      properties: { reasoning_effort: { enum: ['low', 'medium', 'high', 'xhigh', 'max'], default: 'medium' } },
     });
+    for (const model of anthropicModels) {
+      expect(model.config_schema?.properties ?? {}, model.model_identifier).not.toHaveProperty('thinking_display');
+    }
     expect(anthropicModels.map((model) => model.model_identifier)).not.toContain('claude-fable-5.1');
   });
 
