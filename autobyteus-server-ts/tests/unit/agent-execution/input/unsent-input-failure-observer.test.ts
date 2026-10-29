@@ -1,16 +1,17 @@
 import { describe, expect, it, vi } from "vitest";
-import { createMemberInputFailureObserver } from "../../../src/agent-collaboration/execution/backends/member-input-failure-observer.js";
+import { createUnsentInputFailureObserver } from "../../../../src/agent-execution/input/unsent-input-failure-observer.js";
 
-// autobyteus-324 CRR-002 CR-004: only a Team member's input that failed before it was sent is
-// published; everything else is already on the Team stream through the run's own events.
+// autobyteus-324 (CRR-002 CR-004, SR-010): only an input that failed before it was sent is published,
+// for single runs and Team members alike; everything else already reaches the stream through the
+// run's own events.
 
 const setup = () => {
   const publish = vi.fn();
-  const observe = createMemberInputFailureObserver({ runId: "member-run", publish });
+  const observe = createUnsentInputFailureObserver({ runId: "member-run", publish });
   return { publish, observe };
 };
 
-describe("createMemberInputFailureObserver", () => {
+describe("createUnsentInputFailureObserver", () => {
   it("publishes a run ERROR, without evidence, for an input that failed before it was sent", () => {
     const { publish, observe } = setup();
     observe({ kind: "admitted" });

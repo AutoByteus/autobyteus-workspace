@@ -534,8 +534,10 @@ AutoByteus (`Agent.replaceTools`), Claude and AGY apply at once (`applied`).
 Codex and Grok set `reopenPending` (`on_next_turn`) and reopen their runtime
 session inside the next `start_turn` dispatch; a failed reopen fails that
 dispatch with `RUNTIME_SESSION_REOPEN_FAILED` and a plain message (the input is
-not sent; no notice). A Team member's direct input that failed before it was sent reaches its Team stream
-as a run `ERROR` (see [Tool List Updates](./tool_list_updates.md)).
+not sent; no notice). An input that failed before it was sent is shown once as a
+run `ERROR`, on a single run's stream (`AgentRunCommandCoordinator`) or a Team
+member's Team stream, by the shared `createUnsentInputFailureObserver` (see
+[Tool List Updates](./tool_list_updates.md)).
 
 `GeneralProcessRunSupervisor` receives both ports as `platformInputNotices` from
 the studio and standalone compositions.

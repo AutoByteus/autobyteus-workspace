@@ -26,7 +26,7 @@ notice of what changed, and the user sees a "Tools updated" card in the run.
 - backends: `applyDefinitionTools` / `getToolNames` on each `AgentRunBackend`;
   `src/agent-execution/backends/shared/runtime-session-reopen.ts` (the failed
   dispatch); `src/agent-execution/backends/acp/session/acp-session-launcher.ts`
-- Team members: `ConfiguredAgentExecutionHandle.postMessage` with `member-input-failure-observer.ts` (a failed message that was not sent, as a run `ERROR`)
+- A failed message that was not sent, as a run `ERROR`: `src/agent-execution/input/unsent-input-failure-observer.ts`, used by `AgentRunCommandCoordinator` (single runs) and `ConfiguredAgentExecutionHandle.postMessage` (Team members)
 - Agent Tools endpoint: `replaceForRun` / `describeForRun` and
   `AgentToolsMcpSessionStreams` (see [Agent Tools MCP Server](./agent_tools_mcp_server.md#live-tool-list))
 
@@ -85,18 +85,26 @@ give this run its new tools (<cause>). Send your message again to retry, or stop
 and resume the run." The next turn start tries again. A Grok run with a failed
 reopen stays active and idle with no runtime session.
 
-The message is shown the way every failed message is:
+A failed message that was **not sent** is otherwise silent on the run's stream,
+so one shared rule shows it, `createUnsentInputFailureObserver`
+(`agent-execution/input/unsent-input-failure-observer.ts`): a lifecycle
+observer that publishes a run `ERROR { code, message }` (no error evidence)
+only when no `forwarded` fact came before the `failed` one and the failure is
+not derived from the run's own `ERROR` event (`RUN_EVENT_INPUT_FAILURE_CODES`).
+A message that was sent and whose turn then failed, or one failed by the run's
+own runtime error, is not published again: the run's own `ERROR` already
+reached the stream. It is never published through `AgentRun.publishEvent`, so
+nothing records it, and it is not replayed. The web shows it through
+`handleError` as an error in the conversation.
 
-- a single run: the input lifecycle marks the command failed with that message
-  (`AgentRunCommandCoordinator`);
-- a Team member: `ConfiguredAgentExecutionHandle.postMessage` passes a
-  lifecycle observer (`member-input-failure-observer.ts`) that publishes a
-  failed message that was **not sent** as a run `ERROR { code, message }` (no
-  error evidence) to the Team stream through `publishAgentEvent`; the web shows
-  it as an error in that member's conversation. A message that was sent and
-  whose turn then failed, or one failed by the run's own runtime error, is not
-  published again: the run's own `ERROR` already reached the Team stream. It is
-  not published through the run, so nothing records it, and it is not replayed.
+- A single run: `AgentRunCommandCoordinator.post` composes its input lifecycle
+  handling (the command is marked failed with that message) with the shared
+  observer, for both the standalone-owned and the direct branch. The observer
+  sends the mapped `ERROR` through the run's stream broadcaster
+  (`publishToRun`), as the coordinator publishes command status (SR-010).
+- A Team member: `ConfiguredAgentExecutionHandle.postMessage` passes the shared
+  observer, which publishes to the Team stream through `publishAgentEvent`
+  (SR-009).
 
 Stop, then resume, stays the user's manual way to restart a run.
 
