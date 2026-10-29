@@ -1,0 +1,45 @@
+# REL-02-release-smoke
+# command: python3 scripts/release_smoke.py from the repository root, normal user shell, after pnpm install and pnpm -C autobyteus-server-ts prebuild; wrapped with snapshots (git status --porcelain, SHA-256 of ~/.codex/config.toml, ~/.claude/settings.json, ~/.grok/config.toml, listings of ~/.autobyteus and ~/.codex)
+# commit: 5bde5a33493b56d9ff79a4327a544d9cf71beb4b
+# environment: macOS (Darwin 25.5.0), Python 3.9.6; claude 2.1.312 (Claude Code), codex-cli 0.165.0, grok 1.0.70 (f50904eaee6c) [stable]; signed in
+# date: 2026-10-29T14:54:25Z .. 2026-10-29T14:56:14Z
+# shows: Claude 3/3, Antigravity 2/2, AutoByteus 2/2 PASS. Codex 3/3 FAIL on the ChatGPT account usage limit; Grok 3/3 FAIL on the free-tier quota (429, 602133/600000 tokens per rolling 24 h). Both runtimes started their runs; the collision case was refused as designed (markers below). Both waived by the user for v1.5.11-beta.1 (release report).
+
+Release smoke check
+runtime     scenario                                 result  reason
+claude      new run + restore, linked workspace      PASS
+claude      brand-new team member                    PASS
+claude      different same-named skill               PASS
+codex       new run + restore, linked workspace      FAIL    failed: AssertionError: turn errors: {"code":"RUNTIME_ERROR","message":"You’ve hit your usage limit. Visit https://chatgpt.com/settings/usage to purchase more credits or try again at Nov 4th, 2026 8:11 AM.","error_scope":"turn","error_effect":"terminal","turn_id":"01a18828-56ad-7f50-b67c-5703cba3b87a"} | {"
+codex       brand-new team member                    FAIL    failed: AssertionError: turn errors: {"code":"RUNTIME_ERROR","message":"You’ve hit your usage limit. Visit https://chatgpt.com/settings/usage to purchase more credits or try again at Nov 4th, 2026 8:11 AM.","error_scope":"turn","error_effect":"terminal","turn_id":"01a18828-61f7-7fe3-a638-c45a538357e4","chan
+codex       different same-named skill               FAIL    failed: AssertionError: turn errors: {"code":"RUNTIME_ERROR","message":"You’ve hit your usage limit. Visit https://chatgpt.com/settings/usage to purchase more credits or try again at Nov 4th, 2026 8:11 AM.","error_scope":"turn","error_effect":"terminal","turn_id":"01a18828-72c3-72e0-a793-efdbff86f3d0"} | {"
+grok        new run + restore, linked workspace      FAIL    failed: AssertionError: turn errors: {"code":"ACP_PROMPT_FAILED","message":"Rate limited: API error (status 429 Too Many Requests): subscription:free-usage-exhausted: You've used all the included free usage for model grok-4.7 for now. Usage resets over a rolling 24-hour window — tokens (actual/limit): 60213
+grok        brand-new team member                    FAIL    failed: AssertionError: turn errors: {"code":"ACP_PROMPT_FAILED","message":"Rate limited: API error (status 429 Too Many Requests): subscription:free-usage-exhausted: You've used all the included free usage for model grok-4.7 for now. Usage resets over a rolling 24-hour window — tokens (actual/limit): 60213
+grok        different same-named skill               FAIL    failed: AssertionError: turn errors: {"code":"ACP_PROMPT_FAILED","message":"Rate limited: API error (status 429 Too Many Requests): subscription:free-usage-exhausted: You've used all the included free usage for model grok-4.7 for now. Usage resets over a rolling 24-hour window — tokens (actual/limit): 60406
+antigravity brand-new run, linked workspace          PASS
+antigravity brand-new team member, linked workspace  PASS
+autobyteus  brand-new run, linked workspace          PASS
+autobyteus  brand-new team member, linked workspace  PASS
+commit    5bde5a33493b56d9ff79a4327a544d9cf71beb4b
+models    {"claude": "haiku", "codex": "gpt-5.6-luna", "grok": "grok-4.7"}
+duration  live 71s, antigravity 23s, autobyteus 11s
+result    FAIL
+logs      /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/release-smoke-6sxpyx8p
+exit=1
+status before == after: yes
+cli-config before == after: yes
+autobyteus-root before == after: yes
+codex-home before == after: yes
+
+## Codex and Grok live markers
+SKILL_LINKS_LIVE_NEW_RUN codex {"runId":"link_probe_agent_179d312d_1f69cbc5c4bd4c9bbe4212c925c87afc","text":"","tools":[]}
+SKILL_LINKS_LIVE_TEAM_MEMORY_BEFORE codex {"teamRunId":"link_probe_team_codex_179d312d_257b67d8593544899f9a2b441a3fa052","designerRunId":"link_probe_agent_179d312d_68a2b9d87dff4ec9a1baaa0797595e07","memberFoldersBefore":["team_communication_m
+SKILL_LINKS_LIVE_TEAM_MEMBER codex {"designerRunId":"link_probe_agent_179d312d_68a2b9d87dff4ec9a1baaa0797595e07","text":"","tools":[],"memberFoldersAfter":["link_probe_agent_179d312d_68a2b9d87dff4ec9a1baaa0797595e07","team_communicatio
+SKILL_LINKS_LIVE_COLLISION codex {"success":false,"refusal":"Error: Workspace skill path collision for Codex App Server skill 'link-probe-179d312d': path '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-l1wM
+SKILL_LINKS_LIVE_ALL_INSTALLED codex {"text":"","tools":[]}
+SKILL_LINKS_LIVE_NEW_RUN grok {"runId":"link_probe_agent_179d312d_f2615005ce0f40f38de7c185e3aab51e","text":"The user wants me to use the link-probe skill and reply with only the code. I need to find and read that skill.Let me sear
+SKILL_LINKS_LIVE_TEAM_MEMORY_BEFORE grok {"teamRunId":"link_probe_team_grok_179d312d_9f41aa8ee7f94ee188b7181dfd48c3fa","designerRunId":"link_probe_agent_179d312d_d59ba6f6f4bc46a88dad2c77db4e92a1","memberFoldersBefore":["team_communication_me
+SKILL_LINKS_LIVE_TEAM_MEMBER grok {"designerRunId":"link_probe_agent_179d312d_d59ba6f6f4bc46a88dad2c77db4e92a1","text":"","tools":[],"memberFoldersAfter":["link_probe_agent_179d312d_d59ba6f6f4bc46a88dad2c77db4e92a1","team_communicatio
+SKILL_LINKS_LIVE_COLLISION grok {"success":false,"refusal":"Error: Workspace skill path collision for Grok Build skill 'link-probe-179d312d': path '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-l1wM7Q/gro
+SKILL_LINKS_LIVE_ALL_INSTALLED grok {"text":"The user wants me to use the link-probe-179d312d skill and reply with only the code. I need to find and read that skill.","tools":["grep"]}
+free-usage-exhausted: You've used all the included free usage for model grok-4.7 for now. Usage resets over a rolling 24-hour window — tokens (actual/limit): 602133/600000. Upgra
