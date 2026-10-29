@@ -1,0 +1,29 @@
+# REL-01-checks-before-tagging
+# commit: 5bde5a33493b56d9ff79a4327a544d9cf71beb4b (origin/personal)
+# date: 2026-10-29
+
+## scripts/check_secrets.sh v1.5.10..HEAD
+secret gate: scanning 20 commit(s) in v1.5.10..HEAD
+secret gate: PASS (no secrets found)
+exit=0
+
+## python3 scripts/check_licensing.py
+Licensing is consistent.
+Tracked files scanned: 7445
+exit=0
+
+## python3 scripts/check_repository_artifact_hygiene.py
+Path-length threshold: 200
+Longest tracked path: 200 chars: tickets/done/context-compaction-simplification-analysis/implementation-evidence/ir-004/sr031-continuation/contract-baseline/autobyteus-agent-presentation-contracts/dist/token-usage-presentation-dto.js
+exit=0
+
+## Build-only release run: pnpm release:test --ref personal (release-desktop.yml, publish_release=false)
+{"conclusion":"success","createdAt":"2026-10-29T13:15:24Z","headSha":"5bde5a33493b56d9ff79a4327a544d9cf71beb4b","updatedAt":"2026-10-29T13:43:02Z","url":"https://github.com/AutoByteus/autobyteus-workspace/actions/runs/40880264109"}
+
+Resolve Release Metadata: success
+Build Windows x64: success
+Build macOS Intel x64: success
+Build Linux ARM64: success
+Build Linux x64: success
+Build macOS ARM64: success
+Publish GitHub Release: skipped
