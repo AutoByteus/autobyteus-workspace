@@ -14,20 +14,27 @@
 - Relevant Architecture Review Revision IDs: ARCH-REV-005…ARCH-REV-009
 - Implementation Handoff Reviewed As Context: `implementation-handoff.md` (IR-002)
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
-- Relevant Implementation Revision IDs: IR-001, IR-002
+- Relevant Implementation Revision IDs: IR-001, IR-002, IR-003
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-002`
-- Current Review Round: 2
-- Review Scope: `Full Re-Audit`
-- Review Scope Evidence (round >1): the delta `git diff 5f3923c4cd c4da95428e` (27 files) goes beyond the prior findings' files:
+- Current Code Review Revision ID: `CRR-003`
+- Current Review Round: 3
+- Review Scope: `Targeted Delta Review` (round 3). Round 2 was a `Full Re-Audit`; its evidence below is carried forward
+- Review Scope Evidence (round 3): `git diff 6b04b12378 c8f6319838` stays within CR-004's files and behavior:
+  - the handle;
+  - a new owned helper `member-input-failure-observer.ts` (30 lines) that the handle uses;
+  - one exported constant in `agent-run-input-lifecycle.ts`, beside the codes it names;
+  - the Team test, a new helper unit test, and two doc sentences.
+
+  `8aaf2740fd` is ticket files only. No spine, interface or data shape changed. I rechecked CR-004 and the affected checks and scores.
+- Review Scope Evidence (round 2): the delta `git diff 5f3923c4cd c4da95428e` (27 files) goes beyond the prior findings' files:
   - a new behavior in `agent-collaboration/execution/backends/configured-agent-execution-handle.ts` (SR-009);
   - the shared reopen helper's contract (`runtimeSessionReopenFailedResult`);
   - web removals across the store, the segment, the payload and segment types, and the handler.
 
   I reran every structural check and the full scorecard. Evidence for code unchanged since round 1 (DS-001…DS-006 apart from the reopen failure path) is carried forward from CRR-001.
-- Trigger: IR-002 (rework for CRR-001, after SR-005…SR-009 and ARCH-REV-009 Pass)
-- Prior Review Round Reviewed: 1 (CRR-001: CR-001, CR-002, CR-003)
-- Latest Authoritative Round: 2
+- Trigger: round 3, IR-003 (CR-004). Round 2: IR-002 (rework for CRR-001, after SR-005…SR-009 and ARCH-REV-009 Pass)
+- Prior Review Round Reviewed: 2 (CRR-002: CR-004)
+- Latest Authoritative Round: 3
 - Coverage Investigation / Execution Coverage Report / API/E2E Revision Record: N/A
 - Delivery Revision Record: N/A
 
@@ -79,7 +86,7 @@
 | --- | --- | --- | --- |
 | BEH-001…BEH-003 (DS-001…DS-006) | Confirmed (carried forward from CRR-001) | Unchanged by IR-002 apart from the reopen failure result | — |
 | BEH-004 / REQ-010, single run | Confirmed | The Codex (`codex-agent-run-backend.ts` `reopenWithCurrentTools`) and ACP failure paths return `runtimeSessionReopenFailedResult(error)`. That is `forwarded: false`, code `RUNTIME_SESSION_REOPEN_FAILED`, the approved text, and no event published. `reopenPending` stays set; the run's existing failed-input display shows it | — |
-| BEH-004 / REQ-010, Team member | Confirmed for the reopen failure; **regression for other failures** (CR-004) | `ConfiguredAgentExecutionHandle.postMessage` passes a `lifecycleObserver`, and a `failed` fact publishes `ERROR {code, message}` to the Team stream. The new integration test proves the reopen case and isolates the member | The observer fires on **every** `failed` fact. `failed` also comes from `observeTurnFailure` and `observeRuntimeFailure`, which are derived from the run's own `ERROR` events (`agent-run-input-lifecycle.ts:33-46`), and those events already reach the Team stream through `bindEvents` (`configured-agent-execution-handle.ts:463-468`). Probe: one ordinary failed member turn produces two `ERROR` entries (`evidence/CRR-002-probe-team-member-duplicate-error.log`) |
+| BEH-004 / REQ-010, Team member | **Confirmed** (round 3: CR-004 resolved). `createMemberInputFailureObserver` publishes only a `failed` fact with no `forwarded` fact before it, whose code is not one of the run-event-derived `RUN_EVENT_INPUT_FAILURE_CODES` (`RUNTIME_TURN_FAILED`, `RUNTIME_GLOBAL_FAILURE`, exported beside their producer in `agent-run-input-lifecycle.ts`). The integration case "sent, then the turn failed" yields exactly the run's own ERROR, and fails under IR-002's behavior (IR-003 log). The unit tests cover not sent / forwarded / queued plus a run-global or turn code / other facts. Round 2: | `ConfiguredAgentExecutionHandle.postMessage` passes a `lifecycleObserver`, and a `failed` fact publishes `ERROR {code, message}` to the Team stream. The new integration test proves the reopen case and isolates the member | The observer fires on **every** `failed` fact. `failed` also comes from `observeTurnFailure` and `observeRuntimeFailure`, which are derived from the run's own `ERROR` events (`agent-run-input-lifecycle.ts:33-46`), and those events already reach the Team stream through `bindEvents` (`configured-agent-execution-handle.ts:463-468`). Probe: one ordinary failed member turn produces two `ERROR` entries (`evidence/CRR-002-probe-team-member-duplicate-error.log`) |
 
 ## Supported Product Scenario And Reachability Gate (Mandatory)
 
@@ -97,6 +104,8 @@
 | C-11 | The new integration test accepts either code (`/^(RUNTIME_SESSION_REOPEN_FAILED\|RUNTIME_REJECTED)$/`), and the observer falls back to `"RUNTIME_REJECTED"` when `fact.code` is empty | AC-007 | — | `fact.code` is typed `string`; a dispatch failure carries the backend's code | Test; `agent-run-input-contract.ts:56-60` | Promote (with CR-004) | This ticket | Assert the exact code. Keep the fallback only if an empty code can really occur, and say where |
 | C-12 | `configured-agent-execution-handle.ts` is at 498 effective lines (485 before) | Size rule | — | The CR-004 fix adds lines to a file at 498 | Line count | Promote (constraint on CR-004) | This ticket | The fix must keep the file at or below 500. Put the "failed before forwarding" decision in a small owned helper if needed |
 | C-13 | The ERROR the handle publishes has no evidence (no error scope or effect) | SR-009 | — | The presentation shows it as a generic error, and it does not change the member's status, as designed | Design SR-009 ("no evidence") | Reject | — | As designed |
+| C-15 (round 3) | Suppression by code (`RUN_EVENT_INPUT_FAILURE_CODES`), in addition to "not forwarded" | SCN-TEAM-TURN-ERROR (runtime-global case) | A runtime-global ERROR while an input is still queued | Such an input gets `failed` with no `forwarded` fact, and its error is already on the Team stream through `bindEvents` | `agent-run-input-admission-state.ts:330-340` (`observeRuntimeFailure` fails every non-terminal entry); unit test | Reject (as a finding) | — | Correct, and it closes the "one extra per pending input" case of CR-004. The set sits next to the only code that produces those codes, so the coupling is owned and visible |
+| C-16 (round 3) | Are there other undispatched failures that the run also publishes as its own event (which would still duplicate)? | — | — | Dispatch failures return a result; the backends' dispatch paths (Codex, ACP) publish no event for them since IR-002 removed the notice | Code read | Reject | — | No evidenced case |
 | C-14 | The removed CR-001 code: anything left? | SR-005…SR-007 removal plan | — | — | The completion grep (server, web, autobyteus-ts, docs) is empty; the five web files are identical to base | Reject | — | Clean |
 
 ## Structural / Design Checks
@@ -120,13 +129,13 @@
 | Flat-vs-over-split layout | Pass | — | — |
 | Interface boundary clarity | Pass | `runtimeSessionReopenFailedResult(error)`; `AcpAgentRunBackendInput.workingDirectory: string` | — |
 | Naming quality / one vocabulary | Pass | The sender comment narrowed to the one notice | — |
-| No unjustified duplication | Fail | CR-004: a duplicate Team-stream `ERROR` for run-published failures | CR-004 |
+| No unjustified duplication | Pass | Round 3: CR-004 resolved (one ERROR per failure) | — |
 | Patch-on-patch complexity control | Pass | The rework removes code (+272/−295) instead of layering on the button | — |
 | Dead code removed in touched files | Pass | CR-003 resolved (no fallback); Codex `publishSourceEvents` removed with its only use; the button, notice and strings all removed | — |
-| Test scenarios and assertions are clear and requirement-aligned | Fail (minor) | The reopen tests assert the plain failure and that no event is published. The Team test proves member isolation with a real handle, run and adapter, but accepts either code (C-11), and no test covers an ordinary member turn failure (where CR-004 shows) | With CR-004: assert the exact code; add a case for a failed forwarded turn (one ERROR) |
+| Test scenarios and assertions are clear and requirement-aligned | Pass (round 3: exact code asserted; sent-then-failed case added; helper unit tests) | Round 2 note: The reopen tests assert the plain failure and that no event is published. The Team test proves member isolation with a real handle, run and adapter, but accepts either code (C-11), and no test covers an ordinary member turn failure (where CR-004 shows) | With CR-004: assert the exact code; add a case for a failed forwarded turn (one ERROR) |
 | Test fixtures/helpers reusable, structure coherent | Pass | — | — |
 | No stale, duplicated, or compatibility-only tests | Pass | Button and notice tests removed; spec key checks removed with the strings | — |
-| API/E2E readiness | Fail | CR-004 changes what every Team member's failed turn shows | CR-004 |
+| API/E2E readiness | Pass | Round 3: CR-004 resolved; IR-003 checks green; architecture 54/54 and the helper test 4/4 rerun by the reviewer on `8aaf2740fd` | — |
 
 ## Source File Size And Structure Audit
 
@@ -135,7 +144,8 @@ The delta's changed source files over 220 effective lines:
 | Source File | Base | Round 1 | Now | `>500` | `>220` Delta | SoC / Ownership | Placement | Classification | Action |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | `backends/claude/session/claude-session.ts` | 487 | 501 | 490 | Pass | +3 | Pass | Pass | Resolved (CR-002) | — |
-| `agent-collaboration/execution/backends/configured-agent-execution-handle.ts` | 485 | 485 | 498 | Pass (close) | +13 | Pass | Pass | — | Keep ≤ 500 with the CR-004 fix (C-12) |
+| `agent-collaboration/execution/backends/configured-agent-execution-handle.ts` | 485 | 485 | 487 (round 3; 498 in round 2) | Pass | +2 | Pass (the decision sits in the owned helper) | Pass | — | — |
+| `agent-collaboration/execution/backends/member-input-failure-observer.ts` (new, round 3) | — | — | 30 | Pass | — | Pass | Pass (beside the handle it serves) | — | — |
 | `backends/acp/backend/acp-agent-run-backend.ts` | 120 | 250 | 249 | Pass | — | Pass | Pass | — | — |
 | `backends/codex/backend/codex-agent-run-backend.ts` | 256 | 341 | 330 | Pass | — | Pass | Pass | — | — |
 | `autobyteus-web/stores/agentRunStore.ts` | 456 | 488 | 456 (identical to base) | Pass | — | Pass | Pass | — | — |
@@ -159,7 +169,7 @@ None.
 
 ## Docs-Impact Verdict
 
-- Docs impact: `Yes`, done. `tool_list_updates.md`, `agent_execution.md`, `grok_build_runtime.md` and web `agent_execution_architecture.md` describe the plain failed message; no button or card text remains (grep empty). After CR-004, the Team-member sentence should say "a failed message that was not sent".
+- Docs impact: `Yes`, done. `tool_list_updates.md`, `agent_execution.md`, `grok_build_runtime.md` and web `agent_execution_architecture.md` describe the plain failed message; no button or card text remains (grep empty). Round 3: the Team-member sentences in `tool_list_updates.md` and `agent_execution.md` now say "failed before it was sent" and explain why a sent-then-failed message is not published again.
 
 ## Additional Material Premise Validation
 
@@ -172,7 +182,7 @@ None.
 
 ## Review Scorecard (Mandatory)
 
-- Overall score (`/10`): 9.3
+- Overall score (`/10`): 9.5
 - Score calculation note: simple average of the ten categories, for trend visibility only.
 
 | Priority | Category | Score | Why This Score | What Is Weak / Holding It Down | What Should Improve |
@@ -180,11 +190,11 @@ None.
 | 1 | Data-Flow Spine Inventory and Clarity | 9.5 | The failure branch is now a plain result; the Team path is one observer | — | — |
 | 2 | Ownership Clarity and Boundary Encapsulation | 9.5 | CR-002 moved the logic to its owner; the handle owns its stream | — | — |
 | 3 | API / Interface / Query / Command Clarity | 9.5 | Simpler reopen-result contract; non-null `workingDirectory` | — | — |
-| 4 | Separation of Concerns and File Placement | 9.3 | CR-002 resolved | The handle is at 498/500 (C-12) | Keep it ≤ 500 with the fix |
+| 4 | Separation of Concerns and File Placement | 9.5 | CR-002 resolved; CR-004's decision is in its own 30-line helper; the handle is at 487 | — | — |
 | 5 | Shared-Structure / Data-Model Tightness and Reusable Owned Structures | 9.5 | `action` removed; one shared result helper | — | — |
 | 6 | Naming Quality and Local Readability | 9.4 | Clear comments, approved text | — | — |
-| 7 | API/E2E Readiness | 9.0 | Suites green; the Team reopen proven with real parts | CR-004 shows on every failed Team-member turn; the test accepts either code | Fix CR-004; add the forwarded-turn case |
-| 8 | Runtime Correctness And Behavioral Fidelity | 8.7 | Reopen failure correct on single runs and Team members | CR-004: duplicate error for ordinary Team-member turn and runtime failures (probe) | Publish only for failures before forwarding |
+| 7 | API/E2E Readiness | 9.4 | Suites green; Team reopen and sent-then-failed cases proven with real parts; exact code asserted | Codex/Grok live runs owed (DEC-004, accepted) | API/E2E runs them when credit returns |
+| 8 | Runtime Correctness And Behavioral Fidelity | 9.4 | Reopen failure correct on single runs and Team members; one error per failure (round 3) | Residuals C-07 (Claude approval in the re-list window) | — |
 | 9 | No Backward-Compatibility / No Legacy Retention | 9.6 | Clean removal | — | — |
 | 10 | Cleanup Completeness | 9.5 | Completion grep empty; CR-003 resolved | — | — |
 
@@ -195,7 +205,7 @@ None.
 | CR-001 | — | **Resolved** | — | The Team-member restart | Resolved upstream (DEC-008, DEC-009; SR-005…SR-009). The button, the notice and all their consumers are removed; the completion grep is empty | — |
 | CR-002 | — | **Resolved** | `claude-session.ts` | Over 500 | Now 490; the logic sits in `ClaudeAgentToolsMcpSessionState` (`currentToolNames`, `applyExposure`) | — |
 | CR-003 | — | **Resolved** | `acp-agent-run-backend.ts` | `?? "."` fallback | `AcpAgentRunBackendInput.workingDirectory: string` from `bindBackend`, used directly | — |
-| CR-004 | Blocking | New | `autobyteus-server-ts/src/agent-collaboration/execution/backends/configured-agent-execution-handle.ts` (`postMessage`, the `lifecycleObserver`) | The observer publishes a run `ERROR` for **every** `failed` fact. `failed` facts also come from the run's own turn-terminal and runtime-global `ERROR` events (`agent-run-input-lifecycle.ts:33-46`), and the handle already forwards those events to the Team stream (`bindEvents`, `:463-468`). Result: every ordinary failed turn of a Team member's direct input shows its error twice in the member's conversation (the second with code `RUNTIME_TURN_FAILED` and no scope or effect), and a runtime failure adds one extra error per pending input. Proven by probe (`evidence/CRR-002-probe-team-member-duplicate-error.log`). This regresses existing behavior (BEH-004 preserved: failed messages show as they do today) on a common path | Publish only for an input that failed **before it was forwarded** (no `forwarded` fact before the `failed` fact), which is the reopen failure and the other undispatched failures that SR-009 targets and that the run never publishes. Also: tighten the integration test to the exact code `RUNTIME_SESSION_REOPEN_FAILED`; add a case where a forwarded member turn fails and exactly one `ERROR` reaches the Team stream; drop the `"RUNTIME_REJECTED"` fallback unless an empty code can occur; keep the file ≤ 500 effective lines | `Local Fix` → Implementation |
+| CR-004 | — | **Resolved (round 3)** — IR-003 `c8f6319838`: `member-input-failure-observer.ts` publishes only when not forwarded and not a run-event code; exact-code assertion; sent-then-failed integration case; fallback dropped (every `failed` code is non-empty); handle at 487; docs updated. Round 2 text: | `autobyteus-server-ts/src/agent-collaboration/execution/backends/configured-agent-execution-handle.ts` (`postMessage`, the `lifecycleObserver`) | The observer publishes a run `ERROR` for **every** `failed` fact. `failed` facts also come from the run's own turn-terminal and runtime-global `ERROR` events (`agent-run-input-lifecycle.ts:33-46`), and the handle already forwards those events to the Team stream (`bindEvents`, `:463-468`). Result: every ordinary failed turn of a Team member's direct input shows its error twice in the member's conversation (the second with code `RUNTIME_TURN_FAILED` and no scope or effect), and a runtime failure adds one extra error per pending input. Proven by probe (`evidence/CRR-002-probe-team-member-duplicate-error.log`). This regresses existing behavior (BEH-004 preserved: failed messages show as they do today) on a common path | Publish only for an input that failed **before it was forwarded** (no `forwarded` fact before the `failed` fact), which is the reopen failure and the other undispatched failures that SR-009 targets and that the run never publishes. Also: tighten the integration test to the exact code `RUNTIME_SESSION_REOPEN_FAILED`; add a case where a forwarded member turn fails and exactly one `ERROR` reaches the Team stream; drop the `"RUNTIME_REJECTED"` fallback unless an empty code can occur; keep the file ≤ 500 effective lines | `Local Fix` → Implementation |
 
 ## Follow-ups
 
@@ -203,11 +213,11 @@ None.
 
 ## Classification
 
-- `Local Fix`, owned by the Implementation Engineer. This is a bounded defect introduced by IR-002. The fix is inside the design's own premise (SR-009: an undispatched failure, no duplicate), so no requirement or design revision is needed.
+- Round 3: none (Pass). Round 2's `Local Fix` (CR-004) is resolved.
 
 ## Recommended Recipient
 
-- Implementation Engineer. Then source review again (`Targeted Delta Review`: the handle, the Team test, and the docs sentence), then API/E2E.
+- API/E2E Engineer (primary pass recipient); informational notice to the Implementation Engineer.
 
 ## Residual Risks
 
@@ -215,11 +225,11 @@ None.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail`
+- Review Decision: `Pass` (round 3)
 - Review Entry Point: `Implementation Review`
 - Supported Product Scenario Gate: `Pass`
-- Material-Premise Gate: `Pass` (SR-009 premise reclassified with evidence)
-- Score Summary: 9.3/10. Below 9.2: Runtime Correctness 8.7 (CR-004), API/E2E Readiness 9.0 (CR-004)
+- Material-Premise Gate: `Pass`
+- Score Summary: 9.5/10; every category is at 9.3 or above
 - Failure Origin: N/A
-- Recommended Recipient: Implementation Engineer
-- Notes: CR-001, CR-002 and CR-003 are resolved. Checks in `evidence/local-checks.log` (IR-002) were reused. I ran one temporary probe for CR-004; it was removed, and its output is saved as evidence.
+- Recommended Recipient: API/E2E Engineer
+- Notes: CR-001…CR-004 are resolved. Round 3 reused the IR-003 checks. The log shows no architecture rerun after the commit, so I ran `tests/architecture` plus the helper test on `8aaf2740fd`: 8 files / 58 tests passed. Round 2: Checks in `evidence/local-checks.log` (IR-002) were reused. I ran one temporary probe for CR-004; it was removed, and its output is saved as evidence.

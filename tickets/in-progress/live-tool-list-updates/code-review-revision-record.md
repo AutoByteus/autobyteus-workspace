@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- | --- |
 | CRR-001 | `code-review-report.md` | Implementation Review / IR-001 | N/A | Fail (9.2/10): Design Impact → Solution Designer | CR-001, CR-002, CR-003 |
 | CRR-002 | `code-review-report.md` | Implementation Review / IR-002 (Full Re-Audit) | Fail (CRR-001) | Fail (9.3/10): Local Fix → Implementation | CR-001…CR-003 resolved; CR-004 new |
+| CRR-003 | `code-review-report.md` | Implementation Review / IR-003 (Targeted Delta Review) | Fail (CRR-002) | Pass (9.5/10) | CR-004 resolved |
 
 ## Revision Entries
 
@@ -65,3 +66,30 @@ None
 - Material score or classification changes: 9.2 → 9.3; classification Design Impact → Local Fix
 - Recommended recipient: Implementation Engineer
 - Remaining risks or uncertainty: as round 1 (Codex and Grok live runs owed; C-07)
+
+### CRR-003 — CR-004 resolved; implementation review passes
+
+- Canonical review report updated: `code-review-report.md`
+- Review entry point and round: Implementation Review, round 3
+- Review scope: `Targeted Delta Review`. The changes stay within CR-004's files (the handle, a new owned helper, one exported constant, tests, docs)
+- Triggering role, report path, and finding or scenario IDs: Implementation Engineer, `implementation-handoff.md` (IR-003), CR-004
+- Relevant solution revision IDs: SR-009
+- Relevant architecture-review revision IDs: ARCH-REV-009
+- Relevant implementation revision IDs: IR-003
+- Relevant API/E2E revision IDs: N/A
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: CRR-002 `Fail`
+- Current authoritative result: `Pass`
+- What changed in the review result and why: `createMemberInputFailureObserver` publishes a Team member's failed input only when it was not forwarded and its code is not one the run derives from its own ERROR events. That removes both duplicate cases found in round 2. Tests: exact code; a sent-then-failed integration case (fails under IR-002's behavior); helper unit tests. The reviewer reran architecture plus the helper test: 58/58
+- Supported product scenario / material-premise basis changes: none
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR-004 | Open (Local Fix) | Resolved | IR-003 (`c8f6319838`) | Diff; `team-member-reopen-failure.integration.test.ts` (2 cases); `member-input-failure-observer.test.ts` (4); IR-003 log; reviewer rerun of tests/architecture plus the helper test: 8 files / 58 tests passed |
+
+- New or remaining finding IDs: None
+- Material score or classification changes: 9.3 → 9.5; Fail → Pass
+- Recommended recipient: API/E2E Engineer; informational to Implementation Engineer
+- Remaining risks or uncertainty: Codex and Grok live runs owed (DEC-004); C-07 (Claude approval prompt for a removed tool in the re-list window); Claude's `agent_tools_enabled` approved events
