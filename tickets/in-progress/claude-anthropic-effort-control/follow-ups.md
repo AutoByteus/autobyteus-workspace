@@ -1,0 +1,5 @@
+# Follow-ups
+
+| ID | Found by (role, document) | What is wrong, where | Evidence | Why it is outside this ticket | Urgent | Suggested Task description | Sent (to, date) |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| FU-001 | Solution Designer, investigation-notes SRC-005/SRC-008 | Claude "thinking Off" is not real off on two rows: `claude-opus-5` and `claude-fable-5` use off shape `omit` (`anthropic-model-request-policy.ts` L34-45), so "Off" sends nothing and the model keeps adaptive thinking (on by default for both). Fable 5 cannot turn thinking off at all (disabled → 400), so its toggle is misleading; Opus 5 accepts `disabled` at ≤ high effort. | Anthropic thinking docs per-model table (2026-10-29); prior ticket claude-sonnet-haiku-5-5 AF-011 | Pre-existing; effort works without changing off shapes; the ticket's scope excludes off-shape changes | No | "Make Claude thinking Off truthful on the AutoByteus runtime: Opus 5 Off should send `thinking: {type: 'disabled'}` (only allowed at effort ≤ high, consistent with the effort rule); Fable 5 should not offer a thinking switch (thinking cannot be off); update schemas, request policy, tests, docs." |  |
