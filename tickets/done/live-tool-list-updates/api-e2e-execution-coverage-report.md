@@ -7,10 +7,11 @@ Paths are relative to `/Users/normy/autobyteus_org/autobyteus-worktrees/live-too
 ## Round
 
 - Coverage investigation (the plan; it lists the upstream documents): `api-e2e-coverage-investigation.md`
-- API/E2E revision record and current revision ID: `api-e2e-revision-record.md` / `API-REV-002`
+- API/E2E revision record and current revision ID: `api-e2e-revision-record.md` / `API-REV-003`
 - Test progress log: `api-e2e-test-progress.md`
 - Round and trigger: round 2, code review CRR-005 Pass after the API-05 rework (IR-004, SR-010 / ARCH-REV-010)
 - Prior round reviewed: round 1 (API-REV-001, Fail on API-05)
+- Round 3 (delivery-stage Local Fix IR-005, CRR-007): `137ce572aa` changes only `SystemTaskNotificationSegment.spec.ts`; the branch was fast-forwarded to `origin/personal`. No source file changed since `5ee923081a` (`git diff --stat 5ee923081a 1c454e1ec1 -- '*/src/*' autobyteus-ts` is empty), and this round's tests are unchanged since `db27b28223`. So the round 2 results stand; API-05 was rerun on `1c454e1ec1` as a check (`API-05-round3-rerun.log`, "Tests  1 passed (1)"). The guards and the spec are the implementation's checks (IR-005, `evidence/ir-005-localization-guard-fix.log`).
 - Deviations from the investigation's plan, and why:
   - API-07 ran at the server level: a real Claude run's stream frames with auto-execute on and off, instead of a browser journey. The web renders tool rows per invocation id from these frames, so the frames are the direct evidence for "no extra rows".
   - API-04 (real Grok) is owed. The Grok account is at its free usage limit, and the user's credits are back tomorrow, when it runs.
