@@ -33,3 +33,20 @@ Observations (non-blocking):
    gap (AC-007 asks for a cost statement, which exists).
 2. RELEASE.md says "delivery report", AC-007 says "release report": the design's guidance chose "delivery report",
    which is the report the release owner writes. Same meaning; no change needed.
+
+## Recheck on the final commit (round 2)
+
+# steps: git diff 3c2bbf5aa6 32ec7773d4 -- RELEASE.md; reread "Checks Before Tagging" + "### Release smoke check"
+# commit: 32ec7773d4 (RELEASE.md change f9d1db2aa0, 1 file, +8/-1)
+# date: 2026-10-29
+# shows: only the Cost bullet changed; every AC-007 item above is still present; FU-002 resolved
+
+- Added under **Cost**: "The binding limit is the live CLIs' subscription quotas, not money:" with sub-bullets
+  "**Grok:** one run uses about 150–240k tokens against the free tier's 600k per rolling 24 hours, roughly two runs a
+  day.", "**Codex:** it uses the same ChatGPT account quota as your other Codex work." and "A quota refusal, such as
+  "usage limit" or a 429, is handled like a runtime that cannot run: wait for the reset, or the user waives that
+  runtime for this release and the waiver is recorded."
+- Consistent with the evidence (Grok 147,643–241,515 tokens per run; IMP-07 429; API-08 Codex usage limit) and with
+  the unchanged Failure/waiver bullet. Matches design-spec "Guidance For Implementation" (SR-003).
+- Not changed: When, Prerequisites, Pass, Failure and waiver, the command block, TESTING.md row (`git diff --name-only
+  3c2bbf5aa6 32ec7773d4` outside the ticket folder = RELEASE.md only).
