@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-004`
+- Current solution revision ID: `SR-005`
 - Approved requirements baseline: `requirements-doc.md` at SR-002 (User, 2026-10-29), with SR-003 adding DEC-011 / AC-012 (User chose option B for the stopped-run edit fix, 2026-10-29) and SR-004 placing DEC-011 at the server validator (Solution Designer, within the user's choice; AC-012 extended with the Org workspace-only edit). SR-001 design is superseded; unchanged parts are restated here.
 - Behavior-defining supplements: None.
 - Design status: `Ready`
@@ -20,11 +20,60 @@
 | Web | budget removal | revert the independent-effort presentation: claude keys `thinking_enabled`, `reasoning_effort`; effort is the switch's dependent key again (existing merged list "Off · Low … Max"); remove `getIndependentThinkingParamKeys`, the xhigh/max web rule, the `chat.thinking.summaryWithEffort` key and the `ChatThinkingControl` height change if it was only for the extra groups; remove `thinking_display` handling |
 | Docs/tests | as SR-001 | follow the above |
 
-## SR-004 Delta (Design Impact DI-1 / DI-2 from implementation, supersedes the SR-003 mechanism)
+## SR-005 Delta (Architecture review ARCH-REV-001: AR-001, AR-002)
+
+**Rule (supersedes the SR-004 wording "runtime ignores undeclared keys"): every caller of `RunModelSelectionService.validate`/`validateMany` stores or launches only the canonical selection (`validation.selection`) it gets back, never the raw input.** Combined with the validator omitting undeclared top-level keys, no validated save, edit or launch carries an undeclared key to any runtime — for every provider, not only Anthropic. Raw input is used only for refusal messages.
+
+### Server admission spine (DS-004)
+
+`Caller (save / edit / launch / preference check) -> RunModelSelectionService.validate(Many) (catalog evidence, capacity) -> validateModelConfigSchema (types, enums, required; omit undeclared top-level keys; null schema -> null) -> validation.selection (canonical) -> caller stores / launches validation.selection`
+
+Owner: `RunModelSelectionService` + `validateModelConfigSchema` own the canonical selection; each caller owns only "use the canonical selection, not its input".
+
+### Caller inventory (all 10 production call sites; `rg "\.validate\(|\.validateMany\(" autobyteus-server-ts/src`, model-selection callers only)
+
+| # | Caller (file:line) | Purpose | Uses today | SR-005 decision |
+| --- | --- | --- | --- | --- |
+| 1 | `agent-execution/services/standalone-stopped-run-model-config-updater.ts` L66-91 | stopped agent run settings save | stores `validation.selection` | no change |
+| 2 | `agent-team-execution/services/team-run-delegated-launch-plan.ts` L68-93 (configured patches) | stopped team run settings save | stores `result.selection` | no change |
+| 3 | same, delegated inputs via `interpretDelegatedLaunchValidation` (`delegated-launch-selection-command.ts` L112-132) | team run delegated-copy launch selections | stores `result.selection` | no change |
+| 4 | `agent-org-execution/services/agent-org-run-manager.ts` L290-321 (model patches) | stopped Org settings save | stores `validation.selection` for patched scopes; untouched (workspace-only) scopes validated, not normalized (L316) | no change (untouched stale keys stay inert on disk; they are not launched raw by this path) |
+| 5 | same, delegated inputs | Org delegated-copy selections | stores `result.selection` | no change |
+| 6 | `agent-org-execution/services/agent-org-run-service.ts` L105-161 (`validateCompleteConfiguration`) | Org launch from definition + launch configuration | validates, discards `selection`, builds the tree from raw configurations (L106-112) | **change**: build the tree from the canonical configurations — return each scope's `validation.selection` from validation and pass the canonical `llmConfig` per scope into `planner.build` (e.g. as resolved overrides), so the launched tree holds only canonical configs |
+| 7 | `launch-preferences/launch-usability-check.ts` L138-163 | collaborator / delegated launch usability → `collaborator-launch-resolver.ts` L178-201 launches `verdict.launch` | returns the raw launch | **change**: `{ usable: true, launch: { ...launch, llmModelIdentifier: result.selection.llmModelIdentifier, llmConfig: result.selection.llmConfig } }`; inherited launch (offset 0) likewise where it is returned for use |
+| 8 | `model-routing/model-routing-settings.ts` L136-148 | Model Router launch setting | stores `result.selection` | no change |
+| 9 | `agent-collaboration/collaborators/delegated-launch-selection-command.ts` L134-140 (`validateDelegatedLaunchChanges`, live roots) | live delegated-copy selections | uses `result.selection` via interpret | no change |
+| 10 | `standalone-agent-run-root/services/standalone-agent-run-root-manager.ts` L323-345 (+ host) | stopped standalone delegated copies; host selection admission | copies: `result.selection`; host: admission only, then saved through caller 1 (`delegated-launch-selection-service.ts` L141-156), which revalidates and stores canonical | no change |
+
+Not callers (name collision only): `agent-org-definition-service.ts` L119/L140, `application-launch-configuration-service.ts` L118 (host capability validator), app-data-migration codecs.
+
+### Paths that do not go through the validator (unchanged, recorded)
+
+Resuming a saved run and launching a new standalone agent/team run read stored/submitted configs without `RunModelSelectionService`; the runtime adapters receive them as `extraParams`. `AnthropicLLM` reads only owned keys (SR-002); other adapters (`openai-compatible-request-builder.ts` L48, `mistral-llm.ts` L68) forward `extraParams` raw. This is pre-existing and unaffected by SR-004/005 (no non-Claude schema removes a key in this ticket). Recorded as FU-004.
+
+### Example (validator input → canonical output)
+
+| Schema (Opus 5.5) | Input `llmConfig` | Result |
+| --- | --- | --- |
+| `{ reasoning_effort: enum[low..max] }` | `{ reasoning_effort: 'high', thinking_display: 'omitted' }` | `valid`, `selection.llmConfig = { reasoning_effort: 'high' }` |
+| same | `{ reasoning_effort: 'ultra', thinking_display: 'omitted' }` | `invalid`, errors `[llmConfig.reasoning_effort: not one of the supported options]` (undeclared key not reported) |
+| same | `{ thinking_display: 'omitted' }` | `valid`, `selection.llmConfig = null` (empty canonical config is `null`, as today) |
+| `null` (model without settings) | `{ old: true }` | `valid`, `selection.llmConfig = null` |
+
+### Verification added (AC-012, AC-013)
+
+- Unit: validator cases above; `launch-usability-check` returns the canonical launch; Org launch builds the tree from canonical configs.
+- Server e2e: AC-012 (a)/(b) as before; AC-013 — a stored Claude launch preference (agent default launch config / collaborator preference) holding `thinking_display` is reported usable and the launched copy's stored launch configuration has no `thinking_display`; Org launch from a launch configuration holding it creates a tree without it.
+
+### Classification
+
+task_size `Medium`, architectural_risk `High` (unchanged).
+
+## SR-004 Delta (Design Impact DI-1 / DI-2 from implementation, supersedes the SR-003 mechanism; amended by SR-005)
 
 - Findings (SRC-023): (DI-1) the stopped-run edit surface is `ExistingRunConfigEditor` → `RunSettingsCard`, not `RuntimeModelConfigFields` → `ModelConfigSection`; its thinking/option changes spread the stored config, so the stale key rides along. (DI-2) An Org edit that changes only a team's workspace revalidates that team's untouched stored configs (`agent-org-run-manager.ts` L278-321); no client draft filter can reach them. Org launch (`agent-org-run-service.ts` L136-161) also validates saved configs. SR-003's premise and placement were wrong.
 - Decision: one owner applies DEC-011 — the server model-settings validator `validateModelConfigSchema` (`autobyteus-server-ts/src/llm-management/services/model-config-schema-validation.ts`), reached through `RunModelSelectionService` by every save, edit and launch path. New rule: **top-level keys the selected model's current schema does not declare are left out of the canonical config instead of producing an error**; with a null schema, any config canonicalizes to `null`. All other checks (types, enums, ranges, patterns, required, nested object properties, model/schema availability, capacity) are unchanged.
-- Why it works on every path: saves persist `validation.selection` (agent updater L66-91, team plan L93, Org manager L317-320), so the next real save drops undeclared keys; Org workspace-only validation of untouched scopes now passes and, per the existing comment (L316), does not normalize them; Org launch passes and the runtime ignores undeclared keys (AnthropicLLM owned-key reads).
+- Why it works on every path: see the SR-005 caller inventory — every validator caller stores or launches the canonical selection (two callers changed: Org launch, launch-usability).
 - Opening settings writes nothing (no change on the client); dirty state stays client-side and semantic. A save with no real change returns `UNCHANGED`/no-op as today; a stale key left in an untouched run is harmless.
 - Client: no change. SR-003's `ModelConfigSection`/`llmConfigSchema.ts` filter and doc rule edits are dropped. The web keeps showing undeclared keys as residuals only in read-only/historical views; the editable card never showed them.
 - Contract change (documented): `autobyteus-server-ts/docs/modules/run_history.md` L184-187 ("Unknown keys … produce explicit non-success outcomes") → undeclared keys are omitted from the saved canonical config. Also note it in `docs/modules/llm_management.md` (validation section) and `autobyteus-web/docs/settings.md` L1652-1660 (server omits undeclared keys on save).
@@ -58,7 +107,7 @@
 - Size rationale: production delta in 3 autobyteus-ts files (catalog, request policy, Anthropic adapter) and 3 web files (thinking adapter, thinking menu builder, schema-defaults helper); docs/tests in existing places. No new file, subsystem, API, route or persistence code. SR-002 shrinks the web delta.
 - Architectural risk: `High` (SR-004)
 - Risk rationale (SR-004): the shared server model-settings validator's documented contract changes (undeclared keys omitted instead of rejected) for every runtime and every save/edit/launch path. Earlier rationale (still true for the rest): existing owners absorb the change; the new request field is additive and measured (PRB-001/002/003); persisted data directly usable through the adapter's owned-key projection; Claude Agent SDK runtime untouched.
-- Escalation trigger: return a Design Impact if (a′) the automatic drop cannot be kept from marking stopped-run drafts dirty without changing the draft owners' dirty contract, (a) resuming a saved run whose config holds `thinking_display` is blocked by a server validation path (not only the adapter), (b) another production caller relies on raw forwarding of Anthropic config extra params, (c) a remaining model rejects a documented effort level live, or (d) another production caller constructs `AnthropicLLM` with a non-catalog model value.
+- Escalation trigger: return a Design Impact if (a′) a validator caller cannot use the canonical selection without changing its own contract (e.g. Org planner cannot accept canonical per-scope configs), (a) resuming a saved run whose config holds `thinking_display` is blocked by a server validation path (not only the adapter), (b) another production caller relies on raw forwarding of Anthropic config extra params, (c) a remaining model rejects a documented effort level live, or (d) another production caller constructs `AnthropicLLM` with a non-catalog model value.
 
 ## Architecture Investigation Evidence
 
@@ -80,7 +129,7 @@ Add `reasoning_effort` to every Claude catalog schema and remove `thinking_displ
 ## Change Scope (Mandatory)
 
 - In scope: UC-001..UC-004. Areas: `autobyteus-ts/src/llm` Anthropic catalog/policy/adapter; `autobyteus-web` thinking adapter, menu builder, schema-defaults helper; docs and tests describing these.
-- Derived consumers: catalog schema → server GraphQL `configSchema` and `model-config-schema-validation` (no change); web `normalizeModelConfigSchema` → thinking adapter/menu (changed), `modelOptions.otherModelSettingKeys` (no change; with display gone Opus 5.5 has no other-setting row), `explicitModelConfig`/`getDefaultThinkingConfig` (writes `thinking_enabled:false` and the effort default for switch rows, effort default for no-switch rows — harmless: effort is not sent while off, and the default equals the API default), ModelConfigSection form (follows adapter; launch surfaces drop stale keys via `sanitizeModelConfigAgainstSchema`); server validator omits undeclared keys on every save/edit/launch (SR-004), historical views (stale keys shown as residuals, existing rule).
+- Derived consumers: catalog schema → server GraphQL `configSchema` (no change) and `model-config-schema-validation` (SR-004/005: omits undeclared keys; callers use the canonical selection); web `normalizeModelConfigSchema` → thinking adapter/menu (changed), `modelOptions.otherModelSettingKeys` (no change; with display gone Opus 5.5 has no other-setting row), `explicitModelConfig`/`getDefaultThinkingConfig` (writes `thinking_enabled:false` and the effort default for switch rows, effort default for no-switch rows — harmless: effort is not sent while off, and the default equals the API default), ModelConfigSection form (follows adapter; launch surfaces drop stale keys via `sanitizeModelConfigAgainstSchema`); server validator omits undeclared keys on every save/edit/launch (SR-004), historical views (stale keys shown as residuals, existing rule).
 - Deliberately left alone: Claude Agent SDK runtime presentation and backend (FU-003); per-model off shapes (FU-001); prompt caching; non-Anthropic providers; per-call kwargs forwarding in `AnthropicLLM`; per-message effort.
 - Follow-ups: FU-001, FU-002, FU-003.
 
@@ -127,9 +176,9 @@ None.
 
 - Stored subject: saved runs (run metadata, team/org execution trees), definitions, launch profiles — `llmModelIdentifier`, `llmConfig` JSON.
 - Change: gen-4 rows removed; `reasoning_effort` added; `thinking_display` and `thinking_budget_tokens` no longer declared.
-- Readers: `AnthropicLLM` (via `LLMConfig.extraParams`), server strict validation on model replacement / Org launch / stopped-run edit (SRC-011, SRC-020), web edit surfaces (sanitize to schema) and historical views (residuals).
+- Readers: `AnthropicLLM` (via `LLMConfig.extraParams`, owned keys only), the server model-settings validator on every save/edit/launch (SR-005 caller inventory; undeclared keys omitted from the canonical selection), web launch surfaces (sanitize to schema) and historical views (residuals).
 - Evidence: user data holds `thinking_display: "omitted"` in a run and a team run, none in definitions (SRC-019).
-- Semantics under direct use: `AnthropicLLM` reads only owned keys, so stale keys are inert (and `omitted` is what they mostly held — now the provider default); edit surfaces drop them on save; historical views show them as residuals; configs naming removed models show the unavailable-model state.
+- Semantics under direct use: `AnthropicLLM` reads only owned keys, so stale keys are inert (and `omitted` is what they mostly held — now the provider default); the server validator omits them from every saved or launched canonical config, so they disappear on the next real save; untouched runs keep them inert on disk; historical views show them as residuals; configs naming removed models show the unavailable-model state.
 - Decision: `Directly Usable — No Migration`.
 - Rationale: a generic owned-key projection is a tolerant reader, not version branching; rewriting run trees would cost I/O and risk for no semantic gain. Migration checklist: need none (no meaning change of a stored name); availability unaffected; disposition: retained as-is; cost none; references unchanged; evidence AC-011.
 - Supported ACs: AC-007, AC-008, AC-011.
@@ -141,6 +190,7 @@ None.
 | DS-001 | Primary End-to-End | BEH-001..004, BEH-007 | User picks a level / sends a message / resumes a run | Anthropic request | `AnthropicLLM` | Correct thinking/effort, no stale keys |
 | DS-002 | Primary End-to-End | BEH-001/002/004/006 | Model selected in a thinking surface | `llmConfig` update | `llmThinkingConfigAdapter` | Users see and set effort |
 | DS-003 | Primary End-to-End | BEH-005 | Catalog listing | Model menu | catalog definitions | Obsolete rows disappear |
+| DS-004 | Primary End-to-End | BEH-007 | Any save / edit / launch / preference check | Stored or launched canonical selection | `RunModelSelectionService` + `validateModelConfigSchema` | Undeclared keys never stored or launched by validated paths (SR-005) |
 
 ## Primary Execution Spine(s)
 
@@ -158,7 +208,7 @@ None.
 
 ## Spine Actors / Main-Line Nodes
 
-Catalog definitions; server validation (unchanged); `AnthropicLLM`; web thinking adapter; web menu builder.
+Catalog definitions; server model-settings validator (SR-004/005: canonical selection without undeclared keys) and its callers; `AnthropicLLM`; web thinking adapter; web menu builder.
 
 ## Ownership Map
 
@@ -241,7 +291,7 @@ Catalog = data; `AnthropicLLM` is the only Anthropic request builder and the onl
 | Per-model levels/defaults | catalog `ParameterDefinition` | Reuse | per-model settings owner |
 | One-list presentation | merged menu with dependent effort (Claude SDK path) | Reuse | already the requested UX |
 | Effort-only presentation | per-parameter path | Reuse | no change needed |
-| Stale stored keys | web sanitize + residuals | Reuse | existing product rule |
+| Stale stored keys | server validator canonical selection (+ web residuals in read-only views) | Extend | one owner for every save/edit/launch (SR-004/005) |
 
 ## Subsystem / Capability-Area Allocation
 
@@ -334,6 +384,8 @@ N/A.
 5. Docs; grep audit for removed IDs, `thinking_budget_tokens` and `thinking_display` outside `tickets/` and the historical-residual code (AC-007/010).
 6. Live re-check only where the request shape changed: one request per switch row with thinking off + stored effort, and Opus 5.5 with a stored `thinking_display` (AC-004/009/011); the IMP-05 effort-on results stay valid for unchanged shapes.
 7. Rendered check of the one-list menu (Fable 5, Sonnet 5.5) and Opus 5.5 run settings (AC-005/006).
+8. SR-004/005 server: `validateModelConfigSchema` omits undeclared top-level keys (null schema → null) with unit tests (examples table); Org launch builds from canonical configs; `launch-usability-check` returns the canonical launch; update `run_model-selection-service` tests; docs (`run_history.md` L184-187, `llm_management.md`, `autobyteus-web/docs/settings.md` L1652-1660).
+9. Server e2e AC-012 (a)/(b) and AC-013; rerun API-04, API-06, Org edit path.
 
 ## Key Tradeoffs
 

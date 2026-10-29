@@ -3,7 +3,7 @@
 ## Document Status
 
 - Status: `Approved` (SR-002; SR-001 approved basis superseded where marked)
-- Current solution revision ID: `SR-004` (requirements text unchanged from SR-002 except DEC-011 and AC-012)
+- Current solution revision ID: `SR-005` (requirements text unchanged from SR-002 except DEC-011, AC-012, AC-013)
 - Package identifier: `claude-anthropic-effort-control` (Project Task `autobyteus-8`)
 - Request / ticket: Investigate and fix the missing thinking-effort control for Claude Opus 5.5 on the AutoByteus runtime (autobyteus-ts).
 - Requested by: `/project_task_manager` (run `project_task_manager_3a5fea41304e412da92575d61bd88570`) on behalf of the user
@@ -109,7 +109,8 @@ None.
 | AC-008 | REQ-008 | BEH-002, BEH-003 | Existing configs without `reasoning_effort` on each Claude model | Requests identical to pre-change (thinking shape, display, no effort). | — | Existing adapter tests stay green |
 | AC-009 | REQ-001, REQ-003 | BEH-002 | One live request per remaining Claude model with an explicit effort | Anthropic accepts each (no 400). | A model refusing is a finding. | Gated live provider test |
 | AC-010 | REQ-010 | BEH-007 | Catalog listing; any Claude request | No Claude schema contains `thinking_display`; no request contains `thinking.display`. | — | Catalog + adapter unit tests |
-| AC-012 | REQ-011 | BEH-007, SCN-005 | Stopped AutoByteus agent run, team run and AgentOrg run whose stored `llmConfig` holds `thinking_display`: (a) user changes effort in the stopped-run settings and saves; (b) for the Org run, user changes only a team's workspace and saves | (a) Save succeeds (`UPDATED`); the saved config has the new effort and no `thinking_display`; opening the settings alone does not enable Save or write anything. (b) Save succeeds; untouched scopes' stored configs are not rewritten by the validation. | An invalid value of a key the schema still declares is still rejected with its field error (existing behavior). | Web unit test of the shared settings component + server/browser edit-path checks (agent, team, Org) |
+| AC-012 | REQ-011 | BEH-007, SCN-005 | Stopped AutoByteus agent run, team run and AgentOrg run whose stored `llmConfig` holds `thinking_display`: (a) user changes effort in the stopped-run settings and saves; (b) for the Org run, user changes only a team's workspace and saves | (a) Save succeeds (`UPDATED`); the saved config has the new effort and no `thinking_display`; opening the settings alone does not enable Save or write anything. (b) Save succeeds; untouched scopes' stored configs are not rewritten by the validation. | An invalid value of a key the schema still declares is still rejected with its field error (existing behavior). | Server validator unit tests + server e2e and browser edit-path checks (agent, team, Org; Org workspace-only) |
+| AC-013 | REQ-011 | BEH-007, SCN-005 | A stored Claude launch configuration (agent default launch config / collaborator launch preference, Org launch configuration) holding `thinking_display` | It is reported usable / the launch succeeds, and the launched run's stored launch configuration has no `thinking_display`. | An invalid value of a declared key still makes it unusable with its error. | Server unit + e2e |
 | AC-011 | REQ-011 | BEH-007, SCN-005 | A saved AutoByteus run on `claude-opus-5-5` whose config holds `thinking_display:"omitted"` (and one on a switch row) is resumed and sent a message | The run resumes; the request contains neither `thinking_display` nor `display`; no validation error blocks the resume. | — | Adapter unit test + server-level resume test with such a stored config |
 
 ## Relevant Scenarios And Journeys
@@ -196,7 +197,7 @@ None.
 | REQ-008 | UC-001 | BEH-001..003 | AC-008 | SCN-001, SCN-002 |
 | REQ-009 | UC-002 | BEH-006 | AC-005 | SCN-002, SCN-003 |
 | REQ-010 | UC-002, UC-004 | BEH-007 | AC-005, AC-006, AC-010 | SCN-001, SCN-002 |
-| REQ-011 | UC-004 | BEH-007 | AC-011 | SCN-005 |
+| REQ-011 | UC-004 | BEH-007 | AC-011, AC-012, AC-013 | SCN-005 |
 
 ## Architecture Phase Input
 

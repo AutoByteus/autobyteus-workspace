@@ -8,6 +8,7 @@
 | SR-002 | Requirements | Implementation engineer Requirement Gap 2026-10-29 (user changed the thinking UX after reviewing the rendered menu) | Requirement Gap (user change) | Approved | Approved (User); design Ready (SR-002) | BEH-001/002/004/006/007; REQ-004/005/009/010/011; AC-003..006, AC-010, AC-011; DEC-003..010 | Approved; design revised; Medium / Low |
 | SR-003 | Design (+ user decision) | Code review failure-origin CRR-001 (API-REV-001) | CR-FO-001 | Requirements Approved; design Ready | Requirements Approved (DEC-011, AC-012 added); design Ready | REQ-011, SCN-005; AC-012; DEC-011 | Editable drafts drop undeclared keys; Medium / Low |
 | SR-004 | Design | Implementation Design Impact DI-1/DI-2 on SR-003 | DI-1, DI-2 | Design Ready (SR-003) | Design Ready (SR-004) | REQ-011; AC-012 (extended); DEC-011 (owner placement) | Server validator omits undeclared keys; Medium / High → architecture review |
+| SR-005 | Design | ARCH-REV-001 (Fail) | AR-001, AR-002 | Design Ready (SR-004) | Design Ready (SR-005) | REQ-011; AC-012, AC-013; DEC-011 | Canonical-only rule for all 10 validator callers; 2 callers changed; AC-013 added; stale text fixed; Medium / High → architecture re-review |
 
 ## Revision Entries
 
@@ -74,3 +75,11 @@
 - Requirements: DEC-011 owner placement recorded (Solution Designer, within the user's option-B choice; user-visible outcome unchanged); AC-012 extended with the Org workspace-only edit. No renewed approval needed (intended behavior unchanged); user informed.
 - Classification: Medium / High (documented shared validation contract change) → architecture review.
 - Next action: architecture review of the cumulative package.
+
+### SR-005 — Canonical selection only (ARCH-REV-001 AR-001, AR-002)
+
+- Classification: Design Impact from architecture review ARCH-REV-001 (run architecture_reviewer_0f802f5dd6a44f8d836ec39b1abeef6b).
+- AR-001: full inventory of the 10 validator callers (design-spec SR-005); rule "callers store or launch only `validation.selection`"; Org launch and launch-usability changed to use the canonical selection; non-validated resume/launch paths recorded as pre-existing (FU-004); AC-013 added for the launch-preference/collaborator and Org launch legs.
+- AR-002: stale SR-002/SR-003 text in design-spec (derived consumers, spine actors, persisted data, reuse row, escalation trigger, change sequence) and AC-012 verification intent corrected; validator input → canonical output examples added.
+- Intended behavior changed: No (AC-013 makes REQ-011's launch-config leg explicit).
+- Classification: Medium / High → architecture re-review limited to AR-001/AR-002.

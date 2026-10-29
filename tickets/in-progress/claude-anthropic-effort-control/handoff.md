@@ -70,3 +70,9 @@ Handoff rule matched: "Architecture Design Complete with task_size=Small or Medi
 - Classification: task_size Medium, architectural_risk High (documented shared validation contract, `run_history.md` L184-187) → `/software_engineering_team/architecture_reviewer`.
 - Implementation state: production code at 574aa0bd7 (SR-002), API/E2E round 1 at 51b94b3e1, docs at the SR-004 commit; implementation is waiting for the reviewed design.
 - Review basis: the cumulative package (SR-001..SR-004); no earlier architecture review exists (direct route until now).
+
+## SR-005 revision (2026-10-29) — ARCH-REV-001 AR-001 / AR-002 → architecture re-review
+
+- AR-001: design-spec "SR-005 Delta" has the server admission spine (DS-004) and a table of all 10 validator callers. The rule: callers store or launch only `validation.selection`. Two callers change: Org launch builds its tree from canonical configs; launch-usability returns the canonical launch. Non-validated resume/launch paths are recorded as pre-existing (FU-004). Added AC-013, which covers the stored launch preference / collaborator launch and the Org launch holding `thinking_display`.
+- AR-002: corrected the leftover text and the AC-012 verification intent; added a validator input → canonical output example table.
+- Classification: Medium / High → `/software_engineering_team/architecture_reviewer` (re-review limited to AR-001/AR-002).
