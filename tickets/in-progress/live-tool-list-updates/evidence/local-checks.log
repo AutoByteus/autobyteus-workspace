@@ -53,3 +53,13 @@ production errors: 0; test-file errors: 298 in 139 files (baseline 298 in 139 fi
 ## web (full): Test Files 668 passed; Tests 4860 passed | 2 skipped
 ## completion grep (server src/tests/docs, web): restart_run, restartRunWithNewTools, RESTART_RUN, ReopenFailedNotice, toolsReopenFailed, toolsNotUpdated, tool_list_update_failed, TOOL_LIST_UPDATE_FAILED, RUNTIME_SESSION_REOPEN_FAILED_NOTICE, isToolsReopenFailure, restartWithNewTools: all 0
 ## real run re-check after CR-002: Claude (haiku) pass — evidence/real-runs/ir-002/live-tool-list-claude_agent_sdk.json
+
+# ---- IR-003 (CRR-002 CR-004) ----
+# date: 2026-10-29T18:48:01Z; same environment rules
+## server typecheck: 0 errors
+## server unit (full): Tests 1 failed | 7335 passed | 9 skipped — the failure is tracked-imports for the new, then-uncommitted
+   member-input-failure-observer.ts; architecture re-run after commit below
+## server integration (full): Test Files 82 passed | 20 skipped; Tests 459 passed | 69 skipped
+## team-member-reopen-failure.integration.test.ts: 2 passed; the sent-turn case fails when the observer publishes on every failed fact (IR-002 behavior)
+## related unit suites (agent-collaboration, agent-team-execution, agent-org-execution): 100 files / 876 tests passed
+## configured-agent-execution-handle.ts non-blank lines: base 485, now 487

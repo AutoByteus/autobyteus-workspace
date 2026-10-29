@@ -8,6 +8,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture Reviewer / `design-review-report.md` / ARCH-REV-004 (Pass) | N/A | `Initial Baseline` | `SR-004`, `ARCH-REV-004` | Ready for Code Review |
 | IR-002 | Architecture Reviewer / `design-review-report.md` / ARCH-REV-009 (Pass), after Code Reviewer CRR-001 | CR-001 (via SR-005…SR-009), CR-002, CR-003 | `Design Impact Rework` + `Local Fix` | `SR-009`, `ARCH-REV-009`, `CRR-001` | Ready for Code Review |
+| IR-003 | Code Reviewer / `code-review-report.md` / CRR-002 (Fail) | CR-004 | `Local Fix` | `SR-009`, `CRR-002` | Ready for Code Review |
 
 ## Revision Entries
 
@@ -54,4 +55,22 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
   - CR-003: non-null `workingDirectory` on `AcpAgentRunBackendInput`.
 - Tests: reopen tests assert the plain failed dispatch and no notice event (Codex, Grok); new integration `tests/integration/agent-collaboration/team-member-reopen-failure.integration.test.ts` (real handle, AgentRun and presentation adapter: the failing member's Team stream gets `ERROR` with the message, the other member nothing; verified to fail without the handle change); web `TeamStreamingService.spec.ts` (the member's conversation shows the error segment, the other member's nothing).
 - Local validation and result: see `implementation-handoff.md` "Local Implementation Checks Run" (IR-002 block).
+
+### IR-003 — CR-004: publish a Team member's failed message only when it was not sent
+
+- Triggering role, report path, and round: `/software_engineering_team/code_reviewer`, `code-review-report.md`, CRR-002 (Fail, Full Re-Audit), probe `evidence/CRR-002-probe-team-member-duplicate-error.log`.
+- Triggering finding IDs: CR-004 (blocking, introduced by IR-002: every ordinary failed turn of a member's direct input showed its error twice; a runtime failure added one per pending input).
+- Classification: `Local Fix`.
+- Prior authoritative result: IR-002 at `60d9d78d43` (code `c4da95428e`).
+- Current authoritative result: the IR-003 commit on `codex/live-tool-list-updates` (see git log).
+- Related solution revision IDs: `SR-009` (unchanged: its own no-duplicate premise). Related code-review revision IDs: `CRR-002`.
+- Implementation delta:
+  - New `agent-collaboration/execution/backends/member-input-failure-observer.ts` (owned by the handle): publishes a run `ERROR { code, message }` only when no `forwarded` fact came before the `failed` one **and** the code is not one of `RUN_EVENT_INPUT_FAILURE_CODES` (`RUNTIME_TURN_FAILED`, `RUNTIME_GLOBAL_FAILURE`, now exported from `agent-run-input-lifecycle.ts` beside the code that produces them). The second condition goes slightly beyond the reviewer's rule 1: a still-queued input failed by the run's own runtime-global ERROR has no `forwarded` fact either, and the run already published that ERROR, so publishing it would duplicate it (the "one extra error per pending input" in CR-004).
+  - `|| "RUNTIME_REJECTED"` dropped: every `failed` fact carries a non-empty code (`agent-run-input-admission-state.ts`: dispatch results use `requiredString(result.code) ?? "RUNTIME_COMMAND_FAILED"`; every other source is a literal).
+  - `configured-agent-execution-handle.ts`: 485 non-blank lines at base, 487 now.
+  - Docs: `tool_list_updates.md` and `agent_execution.md` say "a failed message that was not sent".
+- Tests:
+  - `team-member-reopen-failure.integration.test.ts`: the reopen case asserts exactly `RUNTIME_SESSION_REOPEN_FAILED`. New case: a sent member turn that fails with a turn-terminal ERROR gives exactly one ERROR on the Team stream (the run's own, `PROVIDER_ERROR`). Checked to fail when the observer publishes on every `failed` fact (IR-002's behavior).
+  - New unit `tests/unit/agent-collaboration/member-input-failure-observer.test.ts`: not-sent failure published; failures after `forwarded` not published; a queued input failed by `RUNTIME_GLOBAL_FAILURE`/`RUNTIME_TURN_FAILED` not published; other facts ignored.
+- Local validation and result: see `implementation-handoff.md` (IR-003 block) and `evidence/local-checks.log`.
 
