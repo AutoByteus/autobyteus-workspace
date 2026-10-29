@@ -83,3 +83,5 @@
 - AR-002: stale SR-002/SR-003 text in design-spec (derived consumers, spine actors, persisted data, reuse row, escalation trigger, change sequence) and AC-012 verification intent corrected; validator input → canonical output examples added.
 - Intended behavior changed: No (AC-013 makes REQ-011's launch-config leg explicit).
 - Classification: Medium / High → architecture re-review limited to AR-001/AR-002.
+
+- Review record (informational, 2026-10-29): ARCH-REV-002 Pass on SR-005 (AR-001, AR-002 resolved; non-blocking guidance IG-1, IG-2 in design-review-report.md). The architecture reviewer sent the implementation handoff; no Solution Designer handoff repeated.
