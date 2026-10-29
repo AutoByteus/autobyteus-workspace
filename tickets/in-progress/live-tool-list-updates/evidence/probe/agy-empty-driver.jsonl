@@ -1,0 +1,56 @@
+{"t":"2026-10-29T11:15:03.981Z","kind":"init","conversation":"1ac6c663-3237-4e30-811b-e0010b37f380"}
+{"t":"2026-10-29T11:15:03.984Z","kind":"turn","n":1}
+{"t":"2026-10-29T11:15:07.600Z","kind":"text","text":""}
+{"t":"2026-10-29T11:15:07.600Z","kind":"tool_step","state":"ACTIVE","tool":"list_dir","mcpTool":null,"server":null,"output":"null"}
+{"t":"2026-10-29T11:15:07.600Z","kind":"tool_step","state":"DONE","tool":"list_dir","mcpTool":null,"server":null,"output":"null"}
+{"t":"2026-10-29T11:15:09.654Z","kind":"text","text":""}
+{"t":"2026-10-29T11:15:09.654Z","kind":"tool_step","state":"ACTIVE","tool":"list_dir","mcpTool":null,"server":null,"output":"null"}
+{"t":"2026-10-29T11:15:09.654Z","kind":"tool_step","state":"DONE","tool":"list_dir","mcpTool":null,"server":null,"output":"\"auth_http_probe/\\nautobyteus_agent_tools/\\nautobyteus_http_probe/\\nautobyteus_probe/\\ncapsule-test/\\ncollision-probe/\\nprobe/\\nshape-test/\\nworkspace-test/\""}
+{"t":"2026-10-29T11:15:11.670Z","kind":"text","text":""}
+{"t":"2026-10-29T11:15:11.670Z","kind":"tool_step","state":"ACTIVE","tool":"list_dir","mcpTool":null,"server":null,"output":"null"}
+{"t":"2026-10-29T11:15:11.670Z","kind":"tool_step","state":"DONE","tool":"list_dir","mcpTool":null,"server":null,"output":"\"probe_echo.json\""}
+{"t":"2026-10-29T11:15:13.651Z","kind":"text","text":""}
+{"t":"2026-10-29T11:15:13.651Z","kind":"tool_step","state":"ACTIVE","tool":"list_dir","mcpTool":null,"server":null,"output":"null"}
+{"t":"2026-10-29T11:15:13.652Z","kind":"tool_step","state":"DONE","tool":"list_dir","mcpTool":null,"server":null,"output":"\"probe_echo.json\""}
+{"t":"2026-10-29T11:15:15.984Z","kind":"text","text":""}
+{"t":"2026-10-29T11:15:15.984Z","kind":"tool_step","state":"ACTIVE","tool":"grep_search","mcpTool":null,"server":null,"output":"null"}
+{"t":"2026-10-29T11:15:16.956Z","kind":"tool_step","state":"DONE","tool":"grep_search","mcpTool":null,"server":null,"output":"null"}
+{"t":"2026-10-29T11:15:19.045Z","kind":"text","text":""}
+{"t":"2026-10-29T11:15:19.046Z","kind":"tool_step","state":"ACTIVE","tool":"grep_search","mcpTool":null,"server":null,"output":"null"}
+{"t":"2026-10-29T11:15:25.377Z","kind":"tool_step","state":"DONE","tool":"grep_search","mcpTool":null,"server":null,"output":"\"ab324-codex-dbg-srv.jsonl:\\nab324-codex-dbg.jsonl:\""}
+{"t":"2026-10-29T11:15:27.556Z","kind":"text","text":""}
+{"t":"2026-10-29T11:15:27.557Z","kind":"tool_step","state":"ACTIVE","tool":"view_file","mcpTool":null,"server":null,"output":"null"}
+{"t":"2026-10-29T11:15:27.557Z","kind":"tool_step","state":"DONE","tool":"view_file","mcpTool":null,"server":null,"output":"\"10 lines, 1336 bytes\""}
+{"t":"2026-10-29T11:15:32.239Z","kind":"text","text":""}
+{"t":"2026-10-29T11:15:32.239Z","kind":"tool_step","state":"ACTIVE","tool":"view_file","mcpTool":null,"server":null,"output":"null"}
+{"t":"2026-10-29T11:15:32.265Z","kind":"tool_step","state":"DONE","tool":"view_file","mcpTool":null,"server":null,"output":"\"24 lines, 5195 bytes\""}
+{"t":"2026-10-29T11:15:35.447Z","kind":"text","text":""}
+{"t":"2026-10-29T11:15:35.447Z","kind":"tool_step","state":"ACTIVE","tool":"run_command","mcpTool":null,"server":null,"output":"null"}
+{"t":"2026-10-29T11:15:35.627Z","kind":"tool_step","state":"DONE","tool":"run_command","mcpTool":null,"server":null,"output":"\"Command exited with code 0.\\n\\nCommand output:\\nnormy            24230   2.5  0.4 437179536 253648   ??  S    12:15PM   0:00.91 agy --new-project --agent ab324"}
+{"t":"2026-10-29T11:15:38.303Z","kind":"text","text":""}
+{"t":"2026-10-29T11:15:38.303Z","kind":"tool_step","state":"ACTIVE","tool":"view_file","mcpTool":null,"server":null,"output":"null"}
+{"t":"2026-10-29T11:15:38.328Z","kind":"tool_step","state":"DONE","tool":"view_file","mcpTool":null,"server":null,"output":"\"51 lines, 4383 bytes\""}
+{"t":"2026-10-29T11:15:42.105Z","kind":"text","text":""}
+{"t":"2026-10-29T11:15:42.105Z","kind":"tool_step","state":"ACTIVE","tool":"view_file","mcpTool":null,"server":null,"output":"null"}
+{"t":"2026-10-29T11:15:42.105Z","kind":"tool_step","state":"DONE","tool":"view_file","mcpTool":null,"server":null,"output":"\"90 lines, 6065 bytes\""}
+{"t":"2026-10-29T11:15:49.256Z","kind":"text","text":""}
+{"t":"2026-10-29T11:15:49.256Z","kind":"tool_step","state":"ACTIVE","tool":"view_file","mcpTool":null,"server":null,"output":"null"}
+{"t":"2026-10-29T11:15:49.283Z","kind":"tool_step","state":"DONE","tool":"view_file","mcpTool":null,"server":null,"output":"\"31 lines, 6899 bytes\""}
+{"t":"2026-10-29T11:15:52.472Z","kind":"text","text":"he current toolkit.\n"}
+{"t":"2026-10-29T11:15:52.472Z","kind":"result","status":"SUCCESS","response":"The MCP tool `probe_alpha` is not available in the current toolkit.\n","error":null}
+{"t":"2026-10-29T11:15:52.493Z","kind":"control","action":"add-beta","state":{"tools":["probe_beta"],"getStreams":1}}
+{"t":"2026-10-29T11:15:55.494Z","kind":"turn","n":2}
+{"t":"2026-10-29T11:15:59.226Z","kind":"text","text":""}
+{"t":"2026-10-29T11:15:59.227Z","kind":"tool_step","state":"ACTIVE","tool":"call_mcp_tool","mcpTool":"probe_beta","server":"probe","output":"null"}
+{"t":"2026-10-29T11:15:59.227Z","kind":"tool_step","state":"DONE","tool":"call_mcp_tool","mcpTool":"probe_beta","server":"probe","output":"\"PROBE_BETA_OK_7319\""}
+{"t":"2026-10-29T11:16:01.829Z","kind":"text","text":"PROBE_BETA_OK_7319\n"}
+{"t":"2026-10-29T11:16:01.857Z","kind":"result","status":"SUCCESS","response":"PROBE_BETA_OK_7319\n","error":null}
+{"t":"2026-10-29T11:16:01.861Z","kind":"control","action":"remove-alpha","state":{"tools":["probe_beta"],"getStreams":1}}
+{"t":"2026-10-29T11:16:04.862Z","kind":"turn","n":3}
+{"t":"2026-10-29T11:16:08.139Z","kind":"text","text":"NO_ALPHA_TOOL\n"}
+{"t":"2026-10-29T11:16:08.139Z","kind":"result","status":"SUCCESS","response":"NO_ALPHA_TOOL\n","error":null}
+{"t":"2026-10-29T11:16:08.139Z","kind":"end","stderrTail":""}
+{"t":"2026-10-29T11:16:08.140Z","kind":"result","status":"ERROR","response":"NO_ALPHA_TOOL\n","error":"stream input cancelled: context canceled"}
+{"t":"2026-10-29T11:18:03.990Z","kind":"turn_timeout","n":1}
+{"t":"2026-10-29T11:18:55.499Z","kind":"turn_timeout","n":2}
+{"t":"2026-10-29T11:19:04.869Z","kind":"turn_timeout","n":3}
