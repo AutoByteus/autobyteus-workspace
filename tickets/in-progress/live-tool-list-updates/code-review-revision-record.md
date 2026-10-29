@@ -7,6 +7,7 @@
 | CRR-001 | `code-review-report.md` | Implementation Review / IR-001 | N/A | Fail (9.2/10): Design Impact → Solution Designer | CR-001, CR-002, CR-003 |
 | CRR-002 | `code-review-report.md` | Implementation Review / IR-002 (Full Re-Audit) | Fail (CRR-001) | Fail (9.3/10): Local Fix → Implementation | CR-001…CR-003 resolved; CR-004 new |
 | CRR-003 | `code-review-report.md` | Implementation Review / IR-003 (Targeted Delta Review) | Fail (CRR-002) | Pass (9.5/10) | CR-004 resolved |
+| CRR-004 | `code-review-report.md` | API/E2E Failure-Origin Review / API-REV-001 Fail (API-05) | Pass (CRR-003) | Fail: Design Impact → Solution Designer | CR-005 new |
 
 ## Revision Entries
 
@@ -93,3 +94,30 @@ None
 - Material score or classification changes: 9.3 → 9.5; Fail → Pass
 - Recommended recipient: API/E2E Engineer; informational to Implementation Engineer
 - Remaining risks or uncertainty: Codex and Grok live runs owed (DEC-004); C-07 (Claude approval prompt for a removed tool in the re-list window); Claude's `agent_tools_enabled` approved events
+
+### CRR-004 — Failure origin of API-05: a single run's failed reopen is invisible
+
+- Canonical review report updated: `code-review-report.md` (the Failure-Origin section; the BEH-004 single-run row; CR-005; Classification; Latest Result)
+- Review entry point and round: API/E2E Failure-Origin Review, round 4
+- Review scope: `N/A` (failure-origin)
+- Triggering role, report path, and finding or scenario IDs: API/E2E Engineer, `api-e2e-execution-coverage-report.md` (API-REV-001), API-05 (AC-007, REQ-010, SCN-004b)
+- Relevant solution revision IDs: SR-007…SR-009
+- Relevant architecture-review revision IDs: ARCH-REV-007…ARCH-REV-009
+- Relevant implementation revision IDs: IR-002, IR-003
+- Relevant API/E2E revision IDs: API-REV-001
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: CRR-003 `Pass`
+- Current authoritative result: `Fail`, `Design Impact` → Solution Designer
+- What changed in the review result and why: the failed dispatch is correct, but on a single run `AgentRunCommandCoordinator.applyInputLifecycle("failed")` only marks the registry. After the accepted ack, nothing reaches the web, so the message vanishes. This is pre-existing (the coordinator is unchanged; other undispatched post-admission failures are silent too), and it blocks AC-007, which is in scope. The design assumed a display that does not exist; choosing its owner and channel is a design decision (CR-005 options a–c). It is also a review gap on my part: CRR-002 and CRR-003 confirmed the single-run row on the design's claim without tracing it
+- Supported product scenario / material-premise basis changes: SCN-004 single run now `Contradicted`; the premise "failed messages already show" is reclassified for single runs after admission
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR-001…CR-004 | Resolved | Resolved (unchanged) | CRR-002, CRR-003 | — |
+
+- New or remaining finding IDs: CR-005
+- Material score or classification changes: round-3 Pass superseded by the round-4 failure-origin result
+- Recommended recipient: Solution Designer
+- Remaining risks or uncertainty: FU-003 (Grok usage-limit refusal shows no error) not traced and may share the cause; Grok live run blocked by the usage limit; API-06/07 not yet run
