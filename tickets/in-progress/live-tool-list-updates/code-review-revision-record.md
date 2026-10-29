@@ -8,6 +8,7 @@
 | CRR-002 | `code-review-report.md` | Implementation Review / IR-002 (Full Re-Audit) | Fail (CRR-001) | Fail (9.3/10): Local Fix → Implementation | CR-001…CR-003 resolved; CR-004 new |
 | CRR-003 | `code-review-report.md` | Implementation Review / IR-003 (Targeted Delta Review) | Fail (CRR-002) | Pass (9.5/10) | CR-004 resolved |
 | CRR-004 | `code-review-report.md` | API/E2E Failure-Origin Review / API-REV-001 Fail (API-05) | Pass (CRR-003) | Fail: Design Impact → Solution Designer | CR-005 new |
+| CRR-005 | `code-review-report.md` | Implementation Review / IR-004 (Targeted Delta Review) | Fail (CRR-004) | Pass (9.5/10) | CR-005 resolved |
 
 ## Revision Entries
 
@@ -121,3 +122,30 @@ None
 - Material score or classification changes: round-3 Pass superseded by the round-4 failure-origin result
 - Recommended recipient: Solution Designer
 - Remaining risks or uncertainty: FU-003 (Grok usage-limit refusal shows no error) not traced and may share the cause; Grok live run blocked by the usage limit; API-06/07 not yet run
+
+### CRR-005 — CR-005 resolved: a single run's unsent failure is shown once
+
+- Canonical review report updated: `code-review-report.md` (the round-5 section; the BEH-004 single-run row; CR-005; Classification; Latest Result)
+- Review entry point and round: Implementation Review, round 5
+- Review scope: `Targeted Delta Review` (the shared observer moved; the coordinator composes it; tests; docs)
+- Triggering role, report path, and finding or scenario IDs: Implementation Engineer, `implementation-handoff.md` (IR-004), CR-005
+- Relevant solution revision IDs: SR-010
+- Relevant architecture-review revision IDs: ARCH-REV-010
+- Relevant implementation revision IDs: IR-004
+- Relevant API/E2E revision IDs: API-REV-001 (API-05 rerun passes unchanged)
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: CRR-004 `Fail`
+- Current authoritative result: `Pass`
+- What changed in the review result and why: `AgentRunCommandCoordinator.post` composes the shared `createUnsentInputFailureObserver` and publishes the mapped `ERROR` through its broadcaster. The Team handle uses the same observer. No double publication, because the coordinator serves only the single-run stream handler. The tests cover both paths; the API-05 e2e passes unchanged. The reviewer reran architecture plus the moved unit test: 58/58
+- Supported product scenario / material-premise basis changes: the SCN-004 single run is back to `Confirmed`
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR-005 | Open (Design Impact) | Resolved | SR-010, ARCH-REV-010, IR-004 (`011275b49a`) | Diff; `single-run-unsent-input-failure.integration.test.ts` (2); Team test; `evidence/ir-004-api-05-rerun.log`; reviewer rerun of architecture plus the unit test: 58/58 |
+
+- New or remaining finding IDs: None
+- Material score or classification changes: Fail → Pass
+- Recommended recipient: API/E2E Engineer; informational to Implementation Engineer
+- Remaining risks or uncertainty: Grok live run blocked by the usage limit; FU-003 not traced; a failure shown this way is not replayed after a page reload (by design, as for Team members); API-06/07 still to run

@@ -2,7 +2,7 @@
 
 ## Review Round Meta
 
-- Review Entry Point: `API/E2E Failure-Origin Review` (round 4). Rounds 1–3 were `Implementation Review` (CRR-001…CRR-003); their results below stand except where round 4 updates them
+- Review Entry Point: `Implementation Review` (round 5, IR-004 for CR-005). Round 4 was an `API/E2E Failure-Origin Review`. Rounds 1–3 were `Implementation Review` (CRR-001…CRR-003); their results below stand except where round 4 updates them
 - Requirements Doc Reviewed As Context: `requirements-doc.md` (SR-007; REQ-010, AC-007, SCN-004 and the UI section changed; DEC-008 and DEC-009 are the user's decisions)
 - Investigation Notes Reviewed As Context: `investigation-notes.md` (round 1; unchanged for the delta)
 - Solution Revision Record Reviewed As Context: `solution-revision-record.md` (SR-001…SR-009)
@@ -16,8 +16,15 @@
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
 - Relevant Implementation Revision IDs: IR-001, IR-002, IR-003
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-004`
-- Current Review Round: 4 (failure-origin)
+- Current Code Review Revision ID: `CRR-005`
+- Current Review Round: 5
+- Round 5 Review Scope: `Targeted Delta Review`. `git diff fbd00b2f53 011275b49a` stays within CR-005's files and behavior:
+  - the shared observer, moved (`git mv`) from `agent-collaboration/.../member-input-failure-observer.ts` to `agent-execution/input/unsent-input-failure-observer.ts`, with its rule unchanged;
+  - `AgentRunCommandCoordinator.post` composing it (+18 lines; 338 total) with a new `publishRunEvent`;
+  - the Team handle's import;
+  - tests and docs.
+
+  `3405e218c0` and `16eb6f8515` are ticket files only. Round-1…3 evidence is carried forward
 - Review Scope: `Targeted Delta Review` (round 3). Round 2 was a `Full Re-Audit`; its evidence below is carried forward
 - Review Scope Evidence (round 3): `git diff 6b04b12378 c8f6319838` stays within CR-004's files and behavior:
   - the handle;
@@ -43,6 +50,29 @@
 - Exact Failing Commands / Execution Mode: `env -i PATH HOME USER LOGNAME TMPDIR pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/tool-list-reopen-failure.e2e.test.ts --no-watch`. Real Studio server; the scripted ACP agent stands in for Grok through `GROK_BUILD_COMMAND`, and the agent process exits before `session/load` on the reopen
 - Failure Evidence Paths: `evidence/api-e2e/API-05-reopen-failure-e2e.log`, `evidence/api-e2e/API-05-failed-send-frames.jsonl`
 - Delivery Revision Record: N/A
+
+## Round 5: CR-005 Rework (IR-004, SR-010, ARCH-REV-010)
+
+- **What changed.**
+  - SR-010 chose option (a) with the generic rule: one shared `createUnsentInputFailureObserver` (`agent-execution/input/unsent-input-failure-observer.ts`) used by both paths.
+  - `AgentRunCommandCoordinator.post` composes it with `applyInputLifecycle`, and publishes the mapped `ERROR` frame through its broadcaster (`publishRunEvent`, try/catch like `publishStatus`, never `AgentRun.publishEvent`, so nothing is recorded).
+  - The Team handle imports the same observer.
+- **Verified.**
+  - The rule is byte-for-byte the CRR-003-reviewed rule: not forwarded, and not a run-event-derived code.
+  - There is no double publication. The coordinator serves only the single-run stream handler (`services/agent-streaming/agent-stream-handler.ts` is its only caller), and Team member messages go through `ConfiguredAgentExecutionHandle`.
+  - The dependency direction is unchanged: the coordinator already imports `services/agent-streaming` (`models.js`), and `agent-collaboration` → `agent-execution` was already allowed.
+  - The old file and name are gone (`git mv`; docs grep clean).
+  - Sizes: coordinator 320 → 338; observer 34 lines.
+- **Tests.**
+  - New `single-run-unsent-input-failure.integration.test.ts` (real `AgentRun` and coordinator, recording broadcaster): the reopen failure gives exactly one `ERROR` with `RUNTIME_SESSION_REOPEN_FAILED` and the full message, and fails without the coordinator change. A sent-then-failed turn adds no coordinator frame.
+  - The Team test still passes. The API-05 e2e passes unchanged (`evidence/ir-004-api-05-rerun.log`).
+- **Checks.**
+  - The IR-004 block of `evidence/local-checks.log`: typecheck 0; unit 7,336; integration 461, 0 failed.
+  - The log has no architecture rerun after the commit, so I ran `tests/architecture` plus the moved unit test on `16eb6f8515`: 8 files / 58 tests passed.
+- **Candidates rejected.**
+  - The mapper is read through its module singleton at use, rather than injected like the broadcaster. That is a style point with no consequence.
+  - A failure shown this way is not replayed after a reload (not recorded), the same as the Team path (SR-009/010, by design).
+- **Result:** CR-005 resolved; `Pass`.
 
 ## API/E2E Failure-Origin Review (Round 4)
 
@@ -124,7 +154,7 @@
 | Behavior ID | Current Status | Current Implementation Path And Lifecycle Evidence | Contradicting / Newly Discovered Evidence |
 | --- | --- | --- | --- |
 | BEH-001…BEH-003 (DS-001…DS-006) | Confirmed (carried forward from CRR-001) | Unchanged by IR-002 apart from the reopen failure result | — |
-| BEH-004 / REQ-010, single run | **Contradicted (round 4, CR-005)**: the failed dispatch is correct, but nothing shows it (see the Failure-Origin section). Rounds 2–3 marked it Confirmed in error | The Codex (`codex-agent-run-backend.ts` `reopenWithCurrentTools`) and ACP failure paths return `runtimeSessionReopenFailedResult(error)`. That is `forwarded: false`, code `RUNTIME_SESSION_REOPEN_FAILED`, the approved text, and no event published. `reopenPending` stays set; the run's existing failed-input display shows it | — |
+| BEH-004 / REQ-010, single run | **Confirmed (round 5)**: the unsent failure is published once as an `ERROR` frame by the coordinator (integration test; API-05 e2e). Round 4: Contradicted (CR-005): the failed dispatch is correct, but nothing shows it (see the Failure-Origin section). Rounds 2–3 marked it Confirmed in error | The Codex (`codex-agent-run-backend.ts` `reopenWithCurrentTools`) and ACP failure paths return `runtimeSessionReopenFailedResult(error)`. That is `forwarded: false`, code `RUNTIME_SESSION_REOPEN_FAILED`, the approved text, and no event published. `reopenPending` stays set; the run's existing failed-input display shows it | — |
 | BEH-004 / REQ-010, Team member | **Confirmed** (round 3: CR-004 resolved). `createMemberInputFailureObserver` publishes only a `failed` fact with no `forwarded` fact before it, whose code is not one of the run-event-derived `RUN_EVENT_INPUT_FAILURE_CODES` (`RUNTIME_TURN_FAILED`, `RUNTIME_GLOBAL_FAILURE`, exported beside their producer in `agent-run-input-lifecycle.ts`). The integration case "sent, then the turn failed" yields exactly the run's own ERROR, and fails under IR-002's behavior (IR-003 log). The unit tests cover not sent / forwarded / queued plus a run-global or turn code / other facts. Round 2: | `ConfiguredAgentExecutionHandle.postMessage` passes a `lifecycleObserver`, and a `failed` fact publishes `ERROR {code, message}` to the Team stream. The new integration test proves the reopen case and isolates the member | The observer fires on **every** `failed` fact. `failed` also comes from `observeTurnFailure` and `observeRuntimeFailure`, which are derived from the run's own `ERROR` events (`agent-run-input-lifecycle.ts:33-46`), and those events already reach the Team stream through `bindEvents` (`configured-agent-execution-handle.ts:463-468`). Probe: one ordinary failed member turn produces two `ERROR` entries (`evidence/CRR-002-probe-team-member-duplicate-error.log`) |
 
 ## Supported Product Scenario And Reachability Gate (Mandatory)
@@ -233,7 +263,7 @@ None.
 | 5 | Shared-Structure / Data-Model Tightness and Reusable Owned Structures | 9.5 | `action` removed; one shared result helper | — | — |
 | 6 | Naming Quality and Local Readability | 9.4 | Clear comments, approved text | — | — |
 | 7 | API/E2E Readiness | 9.4 | Suites green; Team reopen and sent-then-failed cases proven with real parts; exact code asserted | Codex/Grok live runs owed (DEC-004, accepted) | API/E2E runs them when credit returns |
-| 8 | Runtime Correctness And Behavioral Fidelity | 9.4 (round 3; superseded by round 4: CR-005, a single-run failed reopen is invisible) | Reopen failure correct on single runs and Team members; one error per failure (round 3) | Residuals C-07 (Claude approval in the re-list window) | — |
+| 8 | Runtime Correctness And Behavioral Fidelity | 9.4 (round 5: CR-005 resolved; round 4 had superseded round 3) | Reopen failure correct on single runs and Team members; one error per failure (round 3) | Residuals C-07 (Claude approval in the re-list window) | — |
 | 9 | No Backward-Compatibility / No Legacy Retention | 9.6 | Clean removal | — | — |
 | 10 | Cleanup Completeness | 9.5 | Completion grep empty; CR-003 resolved | — | — |
 
@@ -244,7 +274,7 @@ None.
 | CR-001 | — | **Resolved** | — | The Team-member restart | Resolved upstream (DEC-008, DEC-009; SR-005…SR-009). The button, the notice and all their consumers are removed; the completion grep is empty | — |
 | CR-002 | — | **Resolved** | `claude-session.ts` | Over 500 | Now 490; the logic sits in `ClaudeAgentToolsMcpSessionState` (`currentToolNames`, `applyExposure`) | — |
 | CR-003 | — | **Resolved** | `acp-agent-run-backend.ts` | `?? "."` fallback | `AcpAgentRunBackendInput.workingDirectory: string` from `bindBackend`, used directly | — |
-| CR-005 | Blocking | New (round 4) | Single-run failure display: `AgentRunCommandCoordinator.applyInputLifecycle` (`agent-run-command-coordinator.ts:169-176`) and the run stream | After an accepted `SEND_MESSAGE` ack, a single run's input that fails before it is sent (the reopen failure, REQ-010) only marks the registry; no `ERROR` frame or rejected ack reaches the web, so the message disappears. AC-007 fails (API-05) | The Solution Designer chooses the owner and channel, then implementation. Options: (a) the single-run command coordinator, owner of the single-run command lifecycle, publishes a run `ERROR { code, message }` (no evidence) to the run's stream for a failed input that was not forwarded and whose code is not run-event-derived, the same rule as the Team helper, ideally reusing it; (b) `AgentRun` publishes such an `ERROR` for an undispatched post-admission failure, and the Team handle's observer is removed (one owner for both paths; SR-009 rejected this to avoid input-lifecycle effects, so the trade-off needs revisiting); (c) narrow it to the reopen code only, and record the other silent undispatched failures (C-18) as a follow-up. The API-05 e2e then passes unchanged | `Design Impact` → Solution Designer |
+| CR-005 | — | **Resolved (round 5)**: IR-004 `011275b49a` (SR-010 option (a), generic rule, shared observer). Round 4 text: | Single-run failure display: `AgentRunCommandCoordinator.applyInputLifecycle` (`agent-run-command-coordinator.ts:169-176`) and the run stream | After an accepted `SEND_MESSAGE` ack, a single run's input that fails before it is sent (the reopen failure, REQ-010) only marks the registry; no `ERROR` frame or rejected ack reaches the web, so the message disappears. AC-007 fails (API-05) | The Solution Designer chooses the owner and channel, then implementation. Options: (a) the single-run command coordinator, owner of the single-run command lifecycle, publishes a run `ERROR { code, message }` (no evidence) to the run's stream for a failed input that was not forwarded and whose code is not run-event-derived, the same rule as the Team helper, ideally reusing it; (b) `AgentRun` publishes such an `ERROR` for an undispatched post-admission failure, and the Team handle's observer is removed (one owner for both paths; SR-009 rejected this to avoid input-lifecycle effects, so the trade-off needs revisiting); (c) narrow it to the reopen code only, and record the other silent undispatched failures (C-18) as a follow-up. The API-05 e2e then passes unchanged | `Design Impact` → Solution Designer |
 | CR-004 | — | **Resolved (round 3)** — IR-003 `c8f6319838`: `member-input-failure-observer.ts` publishes only when not forwarded and not a run-event code; exact-code assertion; sent-then-failed integration case; fallback dropped (every `failed` code is non-empty); handle at 487; docs updated. Round 2 text: | `autobyteus-server-ts/src/agent-collaboration/execution/backends/configured-agent-execution-handle.ts` (`postMessage`, the `lifecycleObserver`) | The observer publishes a run `ERROR` for **every** `failed` fact. `failed` facts also come from the run's own turn-terminal and runtime-global `ERROR` events (`agent-run-input-lifecycle.ts:33-46`), and the handle already forwards those events to the Team stream (`bindEvents`, `:463-468`). Result: every ordinary failed turn of a Team member's direct input shows its error twice in the member's conversation (the second with code `RUNTIME_TURN_FAILED` and no scope or effect), and a runtime failure adds one extra error per pending input. Proven by probe (`evidence/CRR-002-probe-team-member-duplicate-error.log`). This regresses existing behavior (BEH-004 preserved: failed messages show as they do today) on a common path | Publish only for an input that failed **before it was forwarded** (no `forwarded` fact before the `failed` fact), which is the reopen failure and the other undispatched failures that SR-009 targets and that the run never publishes. Also: tighten the integration test to the exact code `RUNTIME_SESSION_REOPEN_FAILED`; add a case where a forwarded member turn fails and exactly one `ERROR` reaches the Team stream; drop the `"RUNTIME_REJECTED"` fallback unless an empty code can occur; keep the file ≤ 500 effective lines | `Local Fix` → Implementation |
 
 ## Follow-ups
@@ -253,11 +283,11 @@ None.
 
 ## Classification
 
-- Round 4: `Design Impact` (CR-005), owned by the Solution Designer. The ticket's code is correct up to the failed dispatch. The single-run display the design relied on does not exist (a pre-existing gap that blocks in-scope AC-007), and choosing its owner and channel is a design decision (see the options in CR-005), because two paths now need the same rule. It is not a prerequisite: it belongs to the same failure-display functionality this ticket already extended for Team members (SR-009). Round 3: Pass; round 2's `Local Fix` (CR-004) is resolved.
+- Round 5: none (Pass). Round 4: `Design Impact` (CR-005), owned by the Solution Designer, resolved by SR-010 and IR-004. The ticket's code is correct up to the failed dispatch. The single-run display the design relied on does not exist (a pre-existing gap that blocks in-scope AC-007), and choosing its owner and channel is a design decision (see the options in CR-005), because two paths now need the same rule. It is not a prerequisite: it belongs to the same failure-display functionality this ticket already extended for Team members (SR-009). Round 3: Pass; round 2's `Local Fix` (CR-004) is resolved.
 
 ## Recommended Recipient
 
-- Round 4: the Solution Designer. Then implementation, then source review (targeted), then API/E2E again (API-05 unchanged; API-06/07 in the next round). Round 3: API/E2E Engineer.
+- Round 5: the API/E2E Engineer (primary pass recipient); an informational notice to the Implementation Engineer. Round 4: the Solution Designer. Then implementation, then source review (targeted), then API/E2E again (API-05 unchanged; API-06/07 in the next round). Round 3: API/E2E Engineer.
 
 ## Residual Risks
 
@@ -265,6 +295,7 @@ None.
 
 ## Latest Authoritative Result
 
+- Review Decision (round 5): `Pass`. CR-001…CR-005 resolved; scorecard 9.5/10, every category ≥ 9.3; recipient API/E2E Engineer
 - Review Decision (round 4, failure-origin): `Fail`. Failure origin: a pre-existing missing single-run failure display after admission, which blocks AC-007; design gap (the SR-007…SR-009 premise); review gap acknowledged (CRR-002/003). Classification `Design Impact` → Solution Designer (CR-005)
 - Review Decision (round 3): `Pass`
 - Review Entry Point: `Implementation Review`
