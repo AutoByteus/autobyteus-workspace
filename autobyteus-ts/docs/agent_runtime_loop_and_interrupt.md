@@ -274,7 +274,7 @@ The runner uses these collaborators:
   - receive one runner-owned, ordered `MemoryManager.ingestToolResults(...)`
     commit after the processed result batch is complete;
   - build semantic completed-tool continuation text, for example
-    `The read_media_file tool call completed successfully.`, plus any context-file
+    `The read_file tool call completed successfully.`, plus any context-file
     media in a same-turn internal `SenderType.TOOL` carrier;
   - keep the builder pure: persistence remains owned by `MemoryManager`, while
     `AgentInputPipeline` returns either `llmUserMessage: null` for text-only

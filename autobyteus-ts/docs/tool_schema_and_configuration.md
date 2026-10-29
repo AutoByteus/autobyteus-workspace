@@ -136,6 +136,18 @@ inspection. The default registry does not define the retired
 `replace_in_file` or `insert_in_file` tools and no compatibility alias restores
 them.
 
+`read_file` also reads image, audio and video files, chosen by extension
+(`src/utils/media-file-kind.ts`; the media branch is
+`src/tools/file/read-file-media.ts`). Instead of text it returns a context file,
+which the agent loop attaches to the next turn for the model to see. For these
+files `start_line`/`end_line` are refused, `include_line_numbers` is ignored, an
+empty file is refused, and a kind the current model's capability marks
+`unsupported` is refused with a message saying the file was not loaded
+(`unknown` loads). The same path contract and denied paths apply. The separate
+`read_media_file` tool was removed; a stored definition that still names it
+starts as described below and reads media through `read_file`, which every
+native agent has.
+
 Agent definitions persist tool names as strings. Existing configurations are
 not rewritten when a registered tool is removed: the normal AutoByteus resolver
 warns and skips an unknown name while continuing to instantiate the remaining

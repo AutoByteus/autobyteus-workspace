@@ -476,7 +476,7 @@ lines, or aggregate `Status: Success` markers; the next LLM request is assembled
 from the existing working context and rendered through the provider's native
 channel. If a continuation carries context-file media, the request may append a
 user/media carrier, but its text is limited to semantic completed-tool wording
-such as `The read_media_file tool call completed successfully.` and must not
+such as `The read_file tool call completed successfully.` and must not
 include internal continuation labels or generated tool-call formatting guidance.
 
 OpenAI Responses is stricter than Chat Completions-style history for reasoning

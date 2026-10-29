@@ -10,7 +10,6 @@ import {
   ToolCategory,
   registerTools,
   Search,
-  ReadMediaFile,
   DownloadMediaTool,
   ReadUrl
 } from '../../../src/tools/index.js';
@@ -30,7 +29,6 @@ describe('tools index exports', () => {
 
   it('exposes class-based tools', () => {
     expect(typeof Search).toBe('function');
-    expect(typeof ReadMediaFile).toBe('function');
     expect(typeof DownloadMediaTool).toBe('function');
     expect(typeof ReadUrl).toBe('function');
   });
