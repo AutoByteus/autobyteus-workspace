@@ -1,0 +1,27 @@
+# Check: IMP-08 gated Gemini m4a live test through read_file (AC-005)
+# Command: (cd /Users/normy/autobyteus_org/autobyteus-worktrees/read-file-media-merge && env -i PATH="$PATH" HOME=<temp> TMPDIR="$TMPDIR" AUTOBYTEUS_TEST_VAULT=/Users/normy/.autobyteus-test/vault RUN_LIVE_PROVIDER_TESTS=1 AUTOBYTEUS_RUN_GEMINI_M4A_LIVE=1 pnpm -C autobyteus-ts exec vitest run tests/integration/agent/gemini-read-file-m4a-live.test.ts)
+# Commit: 16b3e2452d (branch codex/read-file-media-merge)
+# Environment: macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2; clean environment: env -i PATH="$PATH" HOME=<temp, resolved> TMPDIR="$TMPDIR"
+# Date: 2026-10-29, start 21:42:40 local
+# Result: SKIPPED, not passed. The provider refused the test vault's Gemini credential (invalid_or_missing_credentials), so no request was sent. A skip is not a pass (TESTING.md).
+
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/read-file-media-merge/autobyteus-ts
+
+stdout | tests/integration/agent/gemini-read-file-m4a-live.test.ts > Gemini read_file .m4a live integration (env gated) > sends a read_file .m4a tool result continuation to direct Gemini
+Successfully registered tool definition: 'read_file'
+
+(node:27552) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stderr | tests/integration/agent/gemini-read-file-m4a-live.test.ts > Gemini read_file .m4a live integration (env gated) > sends a read_file .m4a tool result continuation to direct Gemini
+[live provider skip] provider refused Gemini: invalid_or_missing_credentials
+
+ ✓ tests/integration/agent/gemini-read-file-m4a-live.test.ts (1 test | 1 skipped) 302ms
+
+ Test Files  1 passed (1)
+      Tests  1 skipped (1)
+   Start at  21:42:40
+   Duration  1.72s (transform 762ms, setup 70ms, import 1.18s, tests 302ms, environment 0ms)
+
+

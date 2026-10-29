@@ -1,0 +1,156 @@
+# Check: IMP-02 reproduction: read_file on non-media binary files, before REQ-009
+# Command: (cd /Users/normy/autobyteus_org/autobyteus-worktrees/read-file-media-merge/autobyteus-ts && pnpm exec vitest run tests/integration/tools/file/read-file-binary.test.ts)
+# Commit: 9c5bcf7d44 (branch codex/read-file-media-merge, before the REQ-009 change) with the new test file only
+# Environment: macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-29T20:57:54 local
+# Expected: 5 refusal cases fail (the PDF-like file, ZIP, random bytes and ELF are returned as text); 3 text cases pass. Raw control bytes from the garbled output are written as \xNN escapes so the log stays text.
+
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/read-file-media-merge/autobyteus-ts
+
+stdout | tests/integration/tools/file/read-file-binary.test.ts > read_file on non-media binary files > refuses report.pdf
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/integration/tools/file/read-file-binary.test.ts > read_file on non-media binary files > refuses archive.zip
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/integration/tools/file/read-file-binary.test.ts > read_file on non-media binary files > refuses blob.bin
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/integration/tools/file/read-file-binary.test.ts > read_file on non-media binary files > refuses program
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/integration/tools/file/read-file-binary.test.ts > read_file on non-media binary files > refuses a binary file whatever the line arguments
+Successfully registered tool definition: 'read_file'
+
+ ❯ tests/integration/tools/file/read-file-binary.test.ts (8 tests | 5 failed) 61ms
+     × refuses report.pdf 20ms
+     × refuses archive.zip 10ms
+     × refuses blob.bin 7ms
+     × refuses program 4ms
+     × refuses a binary file whatever the line arguments 5ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 5 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/tools/file/read-file-binary.test.ts > read_file on non-media binary files > refuses report.pdf
+AssertionError: promise resolved "'1: %PDF-1.7\n2: %\ufffd\ufffd\ufffd\u…'" instead of rejecting
+
+- Expected:
+Error {
+  "message": "rejected promise",
+}
+
++ Received:
+"1: %PDF-1.7
+2: %����
+3: 1 0 obj
+4: << /Length 4 >>
+5: stream
+6: x�\x01
+7: endstream
+8: endobj
+9: %%EOF
+"
+
+ ❯ tests/integration/tools/file/read-file-binary.test.ts:66:42
+     64|     const filePath = await write(name, bytes);
+     65|
+     66|     await expect(read({ path: filePath })).rejects.toThrow(binaryMessa…
+       |                                          ^
+     67|   });
+     68|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/5]⎯
+
+ FAIL  tests/integration/tools/file/read-file-binary.test.ts > read_file on non-media binary files > refuses archive.zip
+AssertionError: promise resolved "'1: PK\u0003\u0004\u0014\u0000\u0000\u…'" instead of rejecting
+
+- Expected:
+Error {
+  "message": "rejected promise",
+}
+
++ Received:
+"1: PK\x03\x04\x14\x05a.txt"
+
+ ❯ tests/integration/tools/file/read-file-binary.test.ts:66:42
+     64|     const filePath = await write(name, bytes);
+     65|
+     66|     await expect(read({ path: filePath })).rejects.toThrow(binaryMessa…
+       |                                          ^
+     67|   });
+     68|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/5]⎯
+
+ FAIL  tests/integration/tools/file/read-file-binary.test.ts > read_file on non-media binary files > refuses blob.bin
+AssertionError: promise resolved "'1: \u0010\u0000\u0000\u0000\u0000\u00…'" instead of rejecting
+
+- Expected:
+Error {
+  "message": "rejected promise",
+}
+
++ Received:
+"1: \x10@��@@@8@@8@8@@�@8@@@@8@8@��@@@@��@@@@�@@@@@@�@@@@@@@@@@@8@@@@@��@@@@@@@@@��@@@@@@��@�@@@�@@@@@@�@�@@�@@@@8@@@@�@8@@��@x@@@@@@�8@��@��@@@@�@@@�@@@@@@@x@�����@@��@�@@�@�@��@@��@�@@@@@@8 ����8@@��@�@��8@@@8@�@@�8@@@@@x@@�@@@@8@@@�@@@@@�@@@@@@@�@@�@@8 @@@@@@@�@��@@@�@8@�@��@�@8@�@�@@@�@x8@x88@�@@@8@��@�@@��@��@@@@@@@@��@@@@@@@@@@88 @@@8@@@�@@@@@@��@@�@@��8@�@8@�8@@@@@@�@@@���@���@@@�@�@@8@@@��@x@��@8@@@@8@@@@@@��@@�@@�8@@�@@�@@@@@@8@x@@��88@@@@@@@���8@@��@��8@�@8@@@@@@x@@@@@@���X@��8@�@@@@@@@@@@@��@�@@�@�@@@@9�@@8@@@@@@�@@8@@@@��@@@�@@��@@888\x10@@@�@8@@@@��@@�@@@@@@�8@@@�@�@@@@@@@@8@@@@��@@@@@@��@��@@��@@@8@y��@@@@@�@��@@@@@@�@@��@@@@@@8@@8@@�@x@��@�@@��@@@@8888@@@@@@@@@@@@8@��@@x@�8@@8@@@8 �@@��@@�@@�@88@@@8@@@�@@@@@@@@�8@@�@��@@���@@��@8\x10@@@�@@@x@8@@��@��@@@�@@���@@@@@@8 ���8@@@@�@@@@����@�@@@89@8 �@@@8@@@@@@@�@@@���@@@8@@@@@@x@@8@�@@8@@@�@8 �@@�@8@9@@@�@@@@��@@�@@@@@��@�@���@@@@@x@@8\x10@�@8 ���@�@@��@�@�@@@@@@@@@@@@@@@@@@@@�8@@8@8@@@@��8@@@@8@@����@@@�@@@@��8\x10@@@@@@@�@@���@@@��@y8@@@@@@@@8@@@@@��@@@@@8@@@@@���@x@@@8@��@@@�@@x@@@@@@@�8@x`@@@�@@@@@@�@8@98@@8@�@@@@@@�@@�9�@@�8@@����@@@@@@@@@@@@�@���@@@9�@��@@@@@@@x@@@@��8@@8@@�@8@�@8@�@@��@@9�@@@@@�8@��@@��@@@@@@@@@@@@8@98@@@�@@x@@�@�@@@@@@������@@���@�@@��@@8@8\x10@�@@@@����8@@8@@�888\x109�@@@�@8@@��@�@@x@�@@��@@�8@x@@@8@@x`@��@���9@@@@@@@@��@@@���@888@x@8@@8@8@@@@x@�@�@@89�@@��@@@@@���@��@@@@@@@@x@@@8@@@@@�88@��8 8@@8@@@@@@x@8@��@@@@�@@�@8@@@��@�@�@@@8@@8@@@@@@@88@@@8@@@�8@@@�8@@@@�@@8@@@��@@@@@@��8@��8@@y�8@8 8@�@@��888@@@@��@@@��@9@@8@8@@�8@@@@@@@@@@@@@@@@x@@@@@���@@@8@�@@x@x@8@��@@x@8@@�����8@@��9@@@@@@@�@@@��8@�@@@@��@x@@@@@��@@@@�@@@8@x@��@�@@@�9@@@@@@@@@@�@��@���@@�@@@�@@8@�@@@@@@�@@8@@@@@@x@@@�@�@@@@@@@@@@@@@@@�@@8@9��8@@@�@@@@@���@@@���@8@9@@@@@@����@@@�@@@@@@@@��@@@9��@�@8@���@@8\x10@@�@@@x@@����@@899@@8 @@@@8@@@8@98@@@8@@@@@89@@@�����@@@@�@�@@�8@@@@@@@@@��@@@�@@@8@@@8 �@@@�@@@@@�����8@@@�@x@@@�@��@@��88@���@88@@x@@@@��@8@8@@@9��@@@@@@��@@@@�@x@@@��8@@@@@@@@@@@@@@@@��@8@�@@y�@@@�98 @@@@��8@@@�@@@@@@@@@@@@@@@@���@@@@@��8@@�8@@@8@@@@@@@�@@@@x`@@@x@@@x88@@@@@x8@x8 @@�@@x@@@��@x@@8@�8@�@@8@@@8@@�@�@@�8@@@89���@@@�@@@@@@@@��8@@@y@@@@���@8@@@x@@@@@�@�@@@@@@@�@@��@@@@�@8@�@@�@8\x10@@@@@��@@�@@@@@�8 �@�@@��@�@@@@@�@@@@9@@�@y@@���@@@@@x8@8@@@@@@@�@8@@@@@@@@�@@8@��@��@8@@@8 8 ����@��@x@@@@��8 @y@@@8@@@98@@�@@�8 �@@@@8@y�@8"
+
+ ❯ tests/integration/tools/file/read-file-binary.test.ts:66:42
+     64|     const filePath = await write(name, bytes);
+     65|
+     66|     await expect(read({ path: filePath })).rejects.toThrow(binaryMessa…
+       |                                          ^
+     67|   });
+     68|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/5]⎯
+
+ FAIL  tests/integration/tools/file/read-file-binary.test.ts > read_file on non-media binary files > refuses program
+AssertionError: promise resolved "'1: \u007fELF\u0002\u0001\u0001\u0000'" instead of rejecting
+
+- Expected:
+Error {
+  "message": "rejected promise",
+}
+
++ Received:
+"1: \x7fELF\x02\x01\x01"
+
+ ❯ tests/integration/tools/file/read-file-binary.test.ts:66:42
+     64|     const filePath = await write(name, bytes);
+     65|
+     66|     await expect(read({ path: filePath })).rejects.toThrow(binaryMessa…
+       |                                          ^
+     67|   });
+     68|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/5]⎯
+
+ FAIL  tests/integration/tools/file/read-file-binary.test.ts > read_file on non-media binary files > refuses a binary file whatever the line arguments
+AssertionError: promise resolved "'%PDF-1.7\n%\ufffd\ufffd\ufffd\ufffd\n'" instead of rejecting
+
+- Expected:
+Error {
+  "message": "rejected promise",
+}
+
++ Received:
+"%PDF-1.7
+%����
+"
+
+ ❯ tests/integration/tools/file/read-file-binary.test.ts:72:99
+     70|     const filePath = await write('report.pdf', PDF_LIKE);
+     71|
+     72|     await expect(read({ path: filePath, start_line: 1, end_line: 2, in…
+       |                                                                                                   ^
+     73|       .rejects.toThrow(binaryMessage(filePath));
+     74|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/5]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  5 failed | 3 passed (8)
+   Start at  20:57:53
+   Duration  546ms (transform 201ms, setup 83ms, import 170ms, tests 61ms, environment 0ms)
+

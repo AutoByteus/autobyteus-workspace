@@ -1,0 +1,33 @@
+# Check: IMP-06 typechecks
+# Commands: (cd /Users/normy/autobyteus_org/autobyteus-worktrees/read-file-media-merge/autobyteus-ts && pnpm exec tsc -p tsconfig.build.json --noEmit); (cd /Users/normy/autobyteus_org/autobyteus-worktrees/read-file-media-merge && env -i PATH="$PATH" HOME=<temp> TMPDIR="$TMPDIR" pnpm -C autobyteus-server-ts typecheck)
+# Commit: 16b3e2452d (branch codex/read-file-media-merge)
+# Environment: macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2; clean environment: env -i PATH="$PATH" HOME=<temp, resolved> TMPDIR="$TMPDIR"
+# Date: 2026-10-29 ~21:36 local
+# Result: autobyteus-ts exit 0 (no output); server exit 0. The worktree's first server typecheck needed `pnpm -C autobyteus-server-ts prebuild` (prepare:shared and prisma generate), exit 0; it leaves untracked SDK dist folders that must not be staged.
+# autobyteus-ts tests are not in tsconfig.build.json; `tsc -p tsconfig.json` reports existing test-file errors outside this change (for example the test-vault rootDir imports).
+
+----- autobyteus-ts -----
+(no output)
+----- server -----
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+> autobyteus-server-ts@0.1.1 pretypecheck /Users/normy/autobyteus_org/autobyteus-worktrees/read-file-media-merge/autobyteus-server-ts
+> pnpm prepare:shared
+
+
+> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus_org/autobyteus-worktrees/read-file-media-merge/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+
+Scope: 3 of 13 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+
+> autobyteus-server-ts@0.1.1 typecheck /Users/normy/autobyteus_org/autobyteus-worktrees/read-file-media-merge/autobyteus-server-ts
+> tsc -p tsconfig.build.json --noEmit
+
+
