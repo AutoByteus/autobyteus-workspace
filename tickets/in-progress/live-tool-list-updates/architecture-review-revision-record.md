@@ -15,6 +15,7 @@ The latest `design-review-report.md` remains authoritative.
 | ARCH-REV-007 | Round 7 / targeted re-review of SR-007 (DEC-009) | SR-007 | Fail | Fail (Design Impact) | AR-009 (open, reframed: Team-member dispatch failure is silent) |
 | ARCH-REV-008 | Round 8 / targeted re-review of SR-008 | SR-008 | Fail | Fail (Design Impact) | AR-009 (open: the chosen command-status hook is a no-op with a live run) |
 | ARCH-REV-009 | Round 9 / targeted re-review of SR-009 | SR-009 | Fail | Pass | AR-009 resolved |
+| ARCH-REV-010 | Round 10 / targeted re-review of SR-010 (after CRR-004) | SR-010 | Pass | Pass | none open; the round-7 single-run verdict is corrected |
 
 ## Revision Entries
 
@@ -243,3 +244,27 @@ None
   - as in ARCH-REV-004;
   - `handleError` marks the member's conversation complete (harmless for a reopen);
   - teammate deliveries are unchanged.
+
+### ARCH-REV-010 — Targeted re-review of SR-010: single runs share the unsent-input `ERROR` rule; Pass
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/live-tool-list-updates/tickets/in-progress/live-tool-list-updates/design-review-report.md`
+- Review round and trigger: round 10 (targeted), Solution Designer re-review request (SR-010), after code review CRR-004 (failure-origin review of API-05), 2026-10-29; code at `fbd00b2f53`
+- Triggering role, report path, and finding IDs: Solution Designer, `solution-handoff.md` ("SR-010 Revision"); `code-review-report.md` CRR-004; `evidence/api-e2e/API-05-failed-send-frames.jsonl`
+- Relevant solution revision IDs: `SR-010`
+- Prior authoritative decision: `Pass` (ARCH-REV-009)
+- Current authoritative decision: `Pass`
+- What changed in the review result:
+  - **Correction of ARCH-REV-007:** its single-run "Pass (command failure)" relied on `registry.markFailed`, which publishes nothing (`agent-run-command-registry.ts:82-90,135-153`). API-05 exposed it.
+  - SR-010 moves the runtime-neutral rule (`member-input-failure-observer.ts:12-30`) to `agent-execution/input/` and composes it in `AgentRunCommandCoordinator.post` (`:117-137`, both branches). It publishes the mapped `ERROR` (`agent-run-event-message-mapper.ts:141-147`) through the coordinator's broadcaster (`:288-294`).
+  - There is no duplicate and there are no run side effects.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-009 | Resolved (Team members, SR-009) | Resolved; the single-run half, wrongly passed in round 7, is now covered (SR-010) | SR-009, SR-010; CRR-004 | See "Round 10 Scope" |
+
+- New or remaining finding IDs: none
+- Material classification changes: none (task_size=Large, architectural_risk=High)
+- Recommended recipient: Implementation Engineer; informational notice to the Solution Designer
+- Remaining risks or uncertainty: as in ARCH-REV-009. Non-websocket single-run input paths (for example application-originated input) keep their existing failure behavior; they are outside AC-007.

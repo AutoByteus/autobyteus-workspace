@@ -5,18 +5,30 @@
 - Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/live-tool-list-updates/tickets/in-progress/live-tool-list-updates/requirements-doc.md` (approved by the user at SR-001; SR-002 adds DEC-006, DEC-007, the AC-007 detail and application packages in UC-003, within the direction, user informed)
 - Upstream Investigation Notes: `…/investigation-notes.md` (E-13…E-18 added)
 - Upstream Solution Revision Record: `…/solution-revision-record.md` (SR-001, SR-002)
-- Reviewed Design Spec: `…/design-spec.md` (SR-009, Ready)
+- Reviewed Design Spec: `…/design-spec.md` (SR-010, Ready)
 - Supplemental Task Artifacts Reviewed:
   - `evidence/probe/*`, including the new `drive-codex-reopen.mjs`, `drive-grok-reopen.mjs`, `codex-reopen-*`, `grok-reopen-*` and `*-empty-*`;
   - `follow-ups.md` (FU-001, FU-002).
-- Relevant Solution Revision IDs: `SR-001`…`SR-009`
+- Relevant Solution Revision IDs: `SR-001`…`SR-010`
 - Architecture Review Revision Record: `…/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-009`
-- Current Review Round: `9` (targeted: SR-009, a Team member's failed input as a run `ERROR` on the Team stream)
-- Trigger: Solution Designer re-review request (SR-009, for ARCH-REV-008 AR-009), 2026-10-29
-- Prior Review Round Reviewed: `8` (ARCH-REV-008, Fail: AR-009)
-- Latest Authoritative Round: `9`
+- Current Architecture Review Revision ID: `ARCH-REV-010`
+- Current Review Round: `10` (targeted: SR-010, single-run unsent-input failure, after the failure-origin review CRR-004 of API-05)
+- Trigger: Solution Designer re-review request (SR-010), 2026-10-29; code at `fbd00b2f53`
+- Prior Review Round Reviewed: `9` (ARCH-REV-009, Pass)
+- Latest Authoritative Round: `10`
 - Current-State Evidence Basis: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/live-tool-list-updates` @ `9f7c9c10a6` (no source changes; ticket docs uncommitted). Round-1 code citations are still valid. New probe drivers were read. Round 3 also read `acp-agent-run-backend.ts:29-150` and `acp-agent-run-backend-factory.ts:75-200` (preparation owner, `release`, `cleanup`).
+
+## Round 10 Scope (SR-010, Targeted)
+
+- **Reviewer correction.** In round 7 this review accepted the single-run path as "Pass (command failure)" on the strength of `AgentRunCommandCoordinator.applyInputLifecycle` → `registry.markFailed`. `markFailed` only records the terminal state and publishes nothing (`agent-run-command-registry.ts:82-90,135-153`). API-05 proved the gap (`evidence/api-e2e/API-05-failed-send-frames.jsonl`), and CRR-004 classified it correctly. The round-7 single-run verdict was wrong. It is corrected here.
+- **The rule moves unchanged.** It sits today in `member-input-failure-observer.ts:12-30`: after a `forwarded` fact nothing is published; a `failed` fact whose code is not in `RUN_EVENT_INPUT_FAILURE_CODES` (`agent-run-input-lifecycle.ts:11`) → a run `ERROR { code, message }` without evidence. It is runtime-neutral and belongs in `agent-execution/input/unsent-input-failure-observer.ts`. The Team handle imports it.
+- **Single-run owner.**
+  - `AgentRunCommandCoordinator.post` (`:117-137`) already builds the one `lifecycleObserver` used by both the standalone-owned and the direct branch. Composing the shared observer there covers every single-run websocket command.
+  - Its `publish` maps through `AgentRunEventMessageMapper` (`agent-run-event-message-mapper.ts:141-147`) and sends through the coordinator's broadcaster, the same way as `publishStatus` (`:288-294`).
+  - The coordinator already depends on `services/agent-streaming` (`ServerMessage`, `:21`), so there is no new dependency direction. The `publish` callback is a notification; the coordinator still drives its own sequence.
+- **No duplicate, no side effects.** A forwarded failure, or one derived from a run `ERROR` (`RUNTIME_TURN_FAILED`, `RUNTIME_GLOBAL_FAILURE`), is not republished. The frame does not pass through `AgentRun.publishEvent`, so there are no memory, input-lifecycle or presentation effects. It is live only.
+- **Coverage:** shared-rule unit tests; a coordinator integration test (one `ERROR` frame, no duplicate); the API-05 e2e unchanged.
+- **Scope:** this also shows other undispatched post-admission failures on single runs, which falls within DEC-009 ("they will just show error"). Other entry paths, such as application-originated input, are outside AC-007.
 
 ## Round 9 Scope (SR-009, Targeted)
 
@@ -100,7 +112,7 @@ The implemented code at `5f3923c4cd`…`bba8117550` was searched for every use o
 | BEH-002 | Contract | Pass | Pass | Pass: the session is never deactivated during a reopen; empty lists are valid | Confirmed | — |
 | BEH-003 | User (preserved) | Pass | Pass | Pass: the skill notice sits behind the composite; DEC-006 defers it at most one message | Confirmed | — |
 | BEH-004 | User (preserved) | Pass | Pass | Pass (stop after a reopen ends the current process: SR-004) | Confirmed | — |
-| REQ-010 / AC-007 (SR-005…SR-009) | User | Pass | Pass | Pass: single runs show the command failure; Team members get a run `ERROR` on the Team stream, shown as an error segment (SR-009) | Confirmed | — |
+| REQ-010 / AC-007 (SR-005…SR-010) | User | Pass | Pass | Pass: single runs (SR-010, the coordinator's `ERROR` frame) and Team members (SR-009, the Team-stream `ERROR`) share one rule and are shown as an error segment | Confirmed | — |
 
 ## Supplemental Artifact Coherence Verdict
 
@@ -283,7 +295,7 @@ None.
 
 ## Findings
 
-None open. AR-001…AR-009 are resolved (see ARCH-REV-002…ARCH-REV-009 in the revision record).
+None open. AR-001…AR-009 are resolved (see ARCH-REV-002…ARCH-REV-010). CRR-004's Design Impact is answered by SR-010.
 
 ## Classification
 
@@ -307,11 +319,5 @@ Implementation Engineer (`/software_engineering_team/implementation_engineer`)
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
-- Material-Premise Gate: `Pass` (MP-001…MP-005 resolved; no new premise in rounds 5–9)
-- Notes: task_size=Large, architectural_risk=High. The implementation rework is:
-  - the SR-005…SR-009 removals with their completion grep;
-  - the dispatch-failure message;
-  - the Team-member `ERROR` publication with its Team-stream test;
-  - CRR-001's CR-002 and CR-003.
-
-  The design's escalation triggers still apply.
+- Material-Premise Gate: `Pass`
+- Notes: round 10 is targeted. SR-010 gives single runs and Team members one unsent-input rule, owned per path by the coordinator and by the member handle. The round-7 single-run verdict is corrected. task_size=Large, architectural_risk=High.

@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-009` (ARCH-REV-008: a Team member's failed direct input is published as a run `ERROR` on the Team stream; SR-008: SR-007: the user's decision: a failed reopen is an ordinary failed-message error, with no failure notice; SR-006: ARCH-REV-005 AR-009: the failure notice gets its own sender, and the removal list is complete; SR-005: the restart button removed after CRR-001 CR-001, the user's DEC-008; SR-004 after ARCH-REV-003; SR-003 after ARCH-REV-002; SR-002 after ARCH-REV-001)
+- Current solution revision ID: `SR-010` (CRR-004: single runs get the same unsent-input ERROR, through one shared observer; SR-009: ARCH-REV-008: a Team member's failed direct input is published as a run `ERROR` on the Team stream; SR-008: SR-007: the user's decision: a failed reopen is an ordinary failed-message error, with no failure notice; SR-006: ARCH-REV-005 AR-009: the failure notice gets its own sender, and the removal list is complete; SR-005: the restart button removed after CRR-001 CR-001, the user's DEC-008; SR-004 after ARCH-REV-003; SR-003 after ARCH-REV-002; SR-002 after ARCH-REV-001)
 - Approved requirements baseline: `requirements-doc.md`, approved by the user on 2026-10-29 at SR-001 (DEC-001 (a) automatic reopen; DEC-004 build Codex without a real run). SR-002 adds DEC-006, DEC-007 and the AC-007 detail, within the direction (user informed)
 - Behavior-defining supplements: none
 - Design status: `Ready`
@@ -10,7 +10,7 @@
 - Authorities read: `references/architecture-design.md`, `references/design-principles.md`, `DESIGN.md` (this conversation, 2026-10-29)
 - Project design-principle conflicts: none
 
-## SR-002…SR-009 Revision Summary (ARCH-REV-001…ARCH-REV-008, CRR-001)
+## SR-002…SR-010 Revision Summary (ARCH-REV-001…ARCH-REV-008, CRR-001, CRR-004)
 
 | Finding | Resolution | Where |
 | --- | --- | --- |
@@ -29,6 +29,7 @@
 | ARCH-REV-006, AR-009 (Team streams drop `sender_id`) | SR-007, the user's decision: there is no failure notice at all. A failed reopen fails the dispatch with a plain error message, shown through the existing failed-message path on single runs and Team members alike. Nothing new crosses the Team presentation adapter. The SR-006 notice pieces are added to the Removal plan | Return / Event spine; Removal plan |
 | ARCH-REV-007, AR-009 (a Team member's post-admission failure is silent) | SR-008, option (a): `ConfiguredAgentExecutionHandle.postMessage` passes a `lifecycleObserver` whose `failed` fact publishes the member's existing command status `error` with the message (`publishCommandStatus`, `:461`). No new UI. A Team-member integration test is named | Return / Event spine (Team members); mapping |
 | ARCH-REV-008, AR-009 (`publishCommandStatus` is inert once a run exists) | SR-009: the observer publishes a run `ERROR`, with no evidence, through `publishAgentEvent` to the Team stream. It reaches the presentation `ERROR` and then the web `handleError`, which adds an error segment to the member's conversation. It does not go through the run's own event stream, so single runs show nothing twice. The test asserts what the Team stream receives | Return / Event spine (Team members) |
+| CRR-004 (API-05: a single run's unsent-input failure is silent) | SR-010, option (a): the member observer becomes the shared `agent-execution/input/unsent-input-failure-observer.ts`. `AgentRunCommandCoordinator.post` composes it and publishes the mapped `ERROR` frame through its broadcaster. One rule for single runs and Team members; no `AgentRun.publishEvent` side effects | Return / Event spine (single runs) |
 
 ## Current-State Read
 
@@ -258,6 +259,16 @@ When a definition's tool list changes, AutoByteus asks each live run of it to ta
 - Failure (SR-007, the user's decision; ARCH-REV-006 AR-009): there is **no failure notice, card, sender or strings**. A failed reopen fails the dispatch with `runtimeSessionReopenFailedResult` (`backends/shared/runtime-session-reopen.ts`): `{ forwarded: false, code: RUNTIME_SESSION_REOPEN_FAILED, message }`. The message reads "Couldn't give this run its new tools (<cause>). Send your message again to retry, or stop and resume the run."
   - Through the existing input lifecycle, `AgentRunCommandCoordinator.applyInputLifecycle` (`agent-run-command-coordinator.ts:169-176`) marks the command failed with `RUNTIME_REJECTED` and that message. The web shows it the way it shows every failed message today, on single runs and Team members alike, because it is the same command-failure path.
   - Nothing new crosses the Team presentation adapter, so AR-009's Team-stream gap disappears.
+  - **Single runs (SR-010, failure-origin review CRR-004 for API-05).** SR-007 assumed single runs already show a failed input. They do not. `AgentRunCommandCoordinator.applyInputLifecycle` "failed" (`agent-run-command-coordinator.ts:169-176`) only calls `registry.markFailed`, which records the state and publishes nothing (`agent-run-command-registry.ts:82-90`). The web shows errors only for an `ERROR` frame or a rejected ack (`agentStreamMessageProjector.ts:136-165,198-201`). Measured: API-05 got the accepted ack, then only `AGENT_INPUT_STATE` and `AGENT_STATUS` idle (`evidence/api-e2e/API-05-failed-send-frames.jsonl`).
+    - **One rule for both paths (option a).** The rule now in `agent-collaboration/execution/backends/member-input-failure-observer.ts` moves to the runtime-neutral `agent-execution/input/unsent-input-failure-observer.ts` as `createUnsentInputFailureObserver({ runId, publish })`. It publishes a run `ERROR` `{ code, message }`, with no error evidence, for an input that failed **before it was forwarded**, unless the code is run-event-derived (`RUN_EVENT_INPUT_FAILURE_CODES`). The member file is deleted, and `ConfiguredAgentExecutionHandle.postMessage` imports the shared observer.
+    - **Single-run owner.** `AgentRunCommandCoordinator.post` (`:117-137`) composes its `lifecycleObserver`: the existing `applyInputLifecycle`, plus the shared observer. The observer's `publish` maps the event with `getAgentRunEventMessageMapper().map(event)`, which gives `ERROR { code, message, error_scope: null, error_effect: null, turn_id: null }`, and sends it with the coordinator's own `this.broadcaster.publishToRun(runId, …)`, the channel `publishStatus` uses (`:288-294`). Both post branches are covered: the standalone-owned branch (`postOptions` is passed through) and the direct `run.postUserMessage` branch.
+    - **Web:** `AgentStreamingService` → `dispatchAgentStreamMessage` → `handleError` (non-diagnostic) adds an error segment to the run's conversation, as for Team members.
+    - **No side effects:** the event never goes through `AgentRun.publishEvent`, so the run's input lifecycle, memory and Team presentation are untouched, and it is live only. A failure after forwarding, or one derived from a run ERROR, is not published again, because the run's own events already carry it.
+    - **Scope:** this also ends the same pre-existing silence for every other undispatched post-admission failure on a single run (for example ACP `RUNTIME_COMMAND_FAILED`), as SR-009 did for members. It is the same failure-display functionality, within DEC-009 ("if there are errors … just show error"). FU-003 (a Grok usage-limit refusal shows no error) is re-checked in API/E2E; if it is an undispatched failure it is covered, otherwise it stays a follow-up.
+    - **Tests:**
+      - unit: the shared observer (not forwarded → publishes; forwarded then failed → nothing; run-event-derived code → nothing);
+      - coordinator integration: a failed, unforwarded input → one `ERROR` frame on the run's stream; no duplicate when the run's own ERROR caused it;
+      - the API-05 e2e (`tool-list-reopen-failure.e2e.test.ts`) unchanged, which must pass.
   - **Team members (SR-009, ARCH-REV-008 AR-009; replaces the inert SR-008 target).** Today a member's direct input is acknowledged at admission, and a later dispatch failure is silent: `ConfiguredAgentExecutionHandle.postMessage` calls `run.postUserMessage(message)` without a `lifecycleObserver` (`configured-agent-execution-handle.ts:138-150`). `publishCommandStatus` cannot help, because it returns early once a run exists (`:461-463`).
     - **The change:** `postMessage` passes a `lifecycleObserver`. On a `failed` fact it publishes a run `ERROR` event to the Team stream: `this.options.callbacks.publishAgentEvent(this.identity, { kind: "agent_run", event })` (`:455`, the path every member event takes). The event is `{ eventType: ERROR, runId: member run ID, payload: { code: fact.code ?? "RUNTIME_REJECTED", message: fact.message } }` and carries **no error evidence**.
     - **What the Team stream receives:**
@@ -434,6 +445,8 @@ Codex needs no such change. Its reopen keeps the run's `ThreadPreparation` (clie
 | `src/agent-execution/domain/agent-run-platform-notices.ts` (new) | composite | order, routing, fan-out |
 | `agent-run-input-preface.ts`, `agent-run-input-preface-dispatch.ts`, `agent-run.ts` | run | `takePreface(run, { dispatchKind })`; `applyDefinitionTools`, `getToolNames` |
 | the backend contract (`agent-run-backend.ts`) | run | the two operations |
+| `agent-execution/input/unsent-input-failure-observer.ts` (new; replaces `member-input-failure-observer.ts`) | input | the one rule: an unforwarded, non-run-event-derived failure → a run `ERROR` without evidence (SR-010) |
+| `agent-execution/services/agent-run-command-coordinator.ts` | single-run commands | composes the shared observer; publishes the mapped `ERROR` through its broadcaster (SR-010) |
 | `agent-collaboration/execution/backends/configured-agent-execution-handle.ts` | Team member input | `postMessage` passes a `lifecycleObserver`; a `failed` fact publishes a run `ERROR` (no evidence) to the Team stream through `publishAgentEvent` (SR-009) |
 | `agent-execution/domain/system-task-notification-senders.ts` | notices | `TOOL_LIST_UPDATE_NOTICE_SENDER_ID` |
 | `compositions/build-studio-server.ts`, `standalone-application-host/start-standalone-application-host.ts` | wiring | create tool-list updates; pass `new AgentRunPlatformNotices([toolListUpdates.service, skillUpdateNotices.service])`; close order |

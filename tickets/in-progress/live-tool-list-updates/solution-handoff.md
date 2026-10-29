@@ -186,3 +186,17 @@ Every finding is answered in `design-spec.md` "SR-002 Revision Summary". In shor
 - **Route:** the architecture-review rule → `/software_engineering_team/architecture_reviewer`.
 
 - 2026-10-29: ARCH-REV-009 **Pass** on SR-009 (AR-001…AR-009 closed). The reviewer delivered the rework handoff to `/software_engineering_team/implementation_engineer`. No Solution Designer forwarding required.
+
+## SR-010 Revision (after failure-origin review CRR-004, 2026-10-29)
+
+- **Finding:** a single run's input that failed before it was sent (API-05, Grok reopen failure) is silent. The coordinator's "failed" only records it, and the web shows errors only for an `ERROR` frame or a rejected ack. SR-007 wrongly assumed otherwise.
+- **Decision, option (a): one rule for both paths.**
+  - `member-input-failure-observer.ts` moves to the runtime-neutral `agent-execution/input/unsent-input-failure-observer.ts` (`createUnsentInputFailureObserver`).
+  - `AgentRunCommandCoordinator.post` composes it with `applyInputLifecycle`, and publishes `getAgentRunEventMessageMapper().map(errorEvent)` through `this.broadcaster.publishToRun`.
+  - The Team handle imports the same observer.
+  - Nothing goes through `AgentRun.publishEvent`, so there are no lifecycle or memory effects, and it is live only.
+- This also ends the same silence for other undispatched post-admission failures on single runs, which is within DEC-009. FU-003 is re-checked in API/E2E.
+- **Tests:** a unit test of the shared rule; a coordinator integration test (one `ERROR`, no duplicate); the API-05 e2e unchanged.
+- **Route:** `get_handoff_rules` → the architecture-review rule (Large/High revised) → `/software_engineering_team/architecture_reviewer`.
+
+- 2026-10-29: ARCH-REV-010 **Pass** on SR-010. The reviewer delivered the handoff to `/software_engineering_team/implementation_engineer`. No Solution Designer forwarding required.
