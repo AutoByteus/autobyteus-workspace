@@ -9,6 +9,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | IR-001 | Architecture Reviewer / `design-review-report.md` / ARCH-REV-004 (Pass) | N/A | `Initial Baseline` | `SR-004`, `ARCH-REV-004` | Ready for Code Review |
 | IR-002 | Architecture Reviewer / `design-review-report.md` / ARCH-REV-009 (Pass), after Code Reviewer CRR-001 | CR-001 (via SR-005…SR-009), CR-002, CR-003 | `Design Impact Rework` + `Local Fix` | `SR-009`, `ARCH-REV-009`, `CRR-001` | Ready for Code Review |
 | IR-003 | Code Reviewer / `code-review-report.md` / CRR-002 (Fail) | CR-004 | `Local Fix` | `SR-009`, `CRR-002` | Ready for Code Review |
+| IR-004 | Architecture Reviewer / `design-review-report.md` / ARCH-REV-010 (Pass), after API/E2E round 1 (API-05) and failure-origin review CRR-004 | API-05 (CRR-004 Design Impact) | `Design Impact Rework` | `SR-010`, `ARCH-REV-010`, `CRR-004` | Ready for Code Review |
 
 ## Revision Entries
 
@@ -73,4 +74,21 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
   - `team-member-reopen-failure.integration.test.ts`: the reopen case asserts exactly `RUNTIME_SESSION_REOPEN_FAILED`. New case: a sent member turn that fails with a turn-terminal ERROR gives exactly one ERROR on the Team stream (the run's own, `PROVIDER_ERROR`). Checked to fail when the observer publishes on every `failed` fact (IR-002's behavior).
   - New unit `tests/unit/agent-collaboration/member-input-failure-observer.test.ts`: not-sent failure published; failures after `forwarded` not published; a queued input failed by `RUNTIME_GLOBAL_FAILURE`/`RUNTIME_TURN_FAILED` not published; other facts ignored.
 - Local validation and result: see `implementation-handoff.md` (IR-003 block) and `evidence/local-checks.log`.
+
+### IR-004 — SR-010: one shared unsent-input failure rule, now also for single runs
+
+- Triggering role, report path, and round: `/software_engineering_team/architecture_reviewer`, `design-review-report.md`, ARCH-REV-010 (Pass) on SR-010, after API/E2E round 1 (API-05: a single run's failed, unsent message was silent on the run stream; `evidence/api-e2e/API-05-failed-send-frames.jsonl`) and the code reviewer's failure-origin review CRR-004 (Design Impact).
+- Classification: `Design Impact Rework`.
+- Prior authoritative result: IR-003 at `8aaf2740fd` (code `c8f6319838`; CRR-003 Pass).
+- Current authoritative result: code commit `011275b49a` on `codex/live-tool-list-updates`.
+- Related solution revision IDs: `SR-010`. Related architecture-review revision IDs: `ARCH-REV-010`. Related code-review revision IDs: `CRR-004`.
+- Implementation delta:
+  - The rule moved, unchanged, from `agent-collaboration/execution/backends/member-input-failure-observer.ts` to `agent-execution/input/unsent-input-failure-observer.ts` as `createUnsentInputFailureObserver({ runId, publish })` (`git mv`; no old file left). Its unit test moved to `tests/unit/agent-execution/input/unsent-input-failure-observer.test.ts`. The Team handle imports it.
+  - `AgentRunCommandCoordinator.post` composes its `lifecycleObserver` from `applyInputLifecycle` plus the shared observer, for both the standalone-owned and the direct branch. `publish` sends `getAgentRunEventMessageMapper().map(event)` through `this.broadcaster.publishToRun(runId, …)` (new `publishRunEvent`, shaped like `publishStatus`); never `AgentRun.publishEvent`. The coordinator goes from 320 (base) to 338 non-blank lines.
+  - Docs: `tool_list_updates.md`, `agent_execution.md`, web `agent_execution_architecture.md` describe the one shared rule for single runs and Team members.
+- Tests:
+  - Shared-rule unit tests (moved): not sent → `ERROR`; after `forwarded` → nothing; `RUNTIME_TURN_FAILED` / `RUNTIME_GLOBAL_FAILURE` → nothing; other facts ignored.
+  - New `tests/integration/agent-execution/single-run-unsent-input-failure.integration.test.ts` (real coordinator, real AgentRun): a reopen failure gives exactly one `ERROR` frame with `RUNTIME_SESSION_REOPEN_FAILED` and the message; a sent turn that then fails gives no coordinator `ERROR` frame (the run's own ERROR is published by the run). The first case fails against the coordinator without the change.
+  - The API-05 e2e (`tests/e2e/runtime/tool-list-reopen-failure.e2e.test.ts`), unchanged, now passes (`evidence/ir-004-api-05-rerun.log`).
+- Local validation and result: see `implementation-handoff.md` (IR-004 block) and `evidence/local-checks.log`.
 

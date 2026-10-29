@@ -102,6 +102,8 @@ Full record with commands, commit and environment: `evidence/local-checks.log`.
   - Grok: **not proven** — the account ran out of credit (confirmed by the user); turn 1 stalled before any tool change. Reopen covered by the fake-agent tests.
   - Codex: **not run** — no credit (DEC-004).
 
+**IR-004 (SR-010, ARCH-REV-010):** the unsent-input failure rule is one shared observer, `agent-execution/input/unsent-input-failure-observer.ts` (`createUnsentInputFailureObserver`), used by `AgentRunCommandCoordinator.post` (single runs: mapped `ERROR` frame through `broadcaster.publishToRun`) and `ConfiguredAgentExecutionHandle.postMessage` (Team members). A single run's failed, unsent message (API-05) now shows one `ERROR`; a sent-then-failed turn shows only the run's own. Checks: see the IR-004 block in `evidence/local-checks.log`; API-05 re-run passes unchanged (`evidence/ir-004-api-05-rerun.log`).
+
 **IR-002 checks** (`evidence/local-checks.log`, IR-002 block): server typecheck 0; server unit green after the two routing assertions took the new `lifecycleObserver` argument (affected suites 872/872); integration 458 passed, 0 failed (including the new Team-member test); web typecheck PASS (production 0, baseline 298/139); web 4,860 passed; the completion grep is empty; Claude real run re-passed after CR-002 (`evidence/real-runs/ir-002/`). Native and AGY code is unchanged in IR-002; Grok and Codex real runs are still owed (no credit).
 
 ## Frontend Rendered-Result Check (When Applicable)
