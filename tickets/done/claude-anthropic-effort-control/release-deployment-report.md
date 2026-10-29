@@ -122,3 +122,34 @@ Revert the merge on `personal` and cut a new release if Claude runs fail with ef
 ## Final Status
 
 (Completed in the addendum below, after finalization.)
+
+## Final Status Addendum (after finalization)
+
+### Repository Finalization results
+
+- Archive commit on the ticket branch: `3da38804a` (ticket moved to `tickets/done/`, delivery records added). Hygiene check exit 0 after the archive.
+- Secret Gate before the first push: `scripts/check_secrets.sh origin/personal..codex/claude-anthropic-effort-control`, 16 commits, PASS.
+- Ticket branch push: `origin/codex/claude-anthropic-effort-control` @ `3da38804a`, Completed.
+- Target re-fetch after verification: `origin/personal` still `5fb7f2918`, the base that was integrated and verified. Target advanced after verification: `No`. Re-integration: `Not needed`.
+- Merge: `finalize/claude-anthropic-effort-control` from `origin/personal`, `git merge --no-ff` → `6a240b0d2`. Merged tree identical to the verified ticket tree (`git diff codex/claude-anthropic-effort-control 6a240b0d2` empty).
+- Secret Gate on the merged state: `scripts/check_secrets.sh` (origin/personal..HEAD), 17 commits, PASS.
+- Fetch-before-push: `origin/personal` still `5fb7f2918` = merge parent 1.
+- Push target: `5fb7f2918..6a240b0d2  HEAD -> personal`, Completed.
+- Repository finalization status: `Completed`.
+- This addendum is committed on top of `personal` as a delivery-docs commit.
+
+### Post-Finalization Cleanup
+
+- Worktree `/home/autobyteus/workspace/.codex/worktrees/claude-anthropic-effort-control`: removed after this commit is pushed (it holds only untracked build output `*/dist/` besides the committed state).
+- Local branches `codex/claude-anthropic-effort-control` and `finalize/claude-anthropic-effort-control`: deleted (both merged into `origin/personal`).
+- Remote ticket branch `origin/codex/claude-anthropic-effort-control`: kept (Not required; it is merged and matches the repository's practice).
+
+### Final Status
+
+- Verification complete (from the evidence): `Yes`
+- Repository finalization complete: `Yes`
+- Applicable release/deployment/rollout complete or not required: `Yes` (Not required: No release)
+- Applicable safe cleanup complete or not required: `Yes`
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to the Solution Designer: `Yes` (Delivery Completed, DR-001)
