@@ -7,7 +7,8 @@
 - Design: `design-spec.md` SR-004, plus the Solution Designer's step-5 clarification (`Agent.replaceTools` keeps the existing instance of every tool whose name stays; recorded in the Interface Boundary Mapping row).
 - Architecture review: `design-review-report.md`, ARCH-REV-004 Pass (Large/High).
 - Investigation and probes: `investigation-notes.md`, `evidence/probe/`.
-- Revision record: `implementation-revision-record.md` (IR-001).
+- Revision record: `implementation-revision-record.md` (IR-001; IR-002 = the CRR-001 / SR-005…SR-009 rework, ARCH-REV-009 Pass).
+- Code review: `code-review-report.md` CRR-001 (CR-001 Design Impact → SR-005…SR-009; CR-002, CR-003 Local Fix).
 
 ## Current Implementation Summary
 
@@ -18,10 +19,18 @@ Built by the design's Change / Refactor Sequence, one commit per step group:
 3. **Run side**: `takePreface(run, { dispatchKind })`; `AgentRunPlatformNotices` (tools first, then skills; one notice per input; owner-routed settlement; guarded fan-out) wired in both compositions; `AgentRun.applyDefinitionTools` / `getToolNames` on the backend contract; `ToolListUpdateService` (coalesced passes, per-run definition re-read, diff against `SeenToolNamesStore`, dirty/in-flight delivery, busy post for immediate runtimes, `waitForTurnStart`); `TOOL_LIST_UPDATE_NOTICE_SENDER_ID` (also recorded by agent memory); web "Tools updated" card.
 4. **Claude and AGY**: Claude keeps the exposure on its run context, activates once and reads `describeForRun` per use; Agent Tools names are no longer in `allowedTools` (only `Skill`); the coordinator allows a tool in the current descriptor (`agent_tools_enabled`). AGY replaces the session (re-lists over the held stream); its capsule config is always written and has no header.
 5. **Native**: `Agent.replaceTools` (existing instances kept for names that stay; removed and unused instances cleaned up as at shutdown); `resolveTurnToolNames` no longer falls back to `config.tools` once instances exist (an empty set is "every tool removed"); the native backend compares names first and builds nothing for an unchanged list.
-6. **Codex and Grok**: `reopenPending`; Codex `CodexThreadManager.reopenThread` (unsubscribe + resume with history; unsubscribe + start without); Grok `AcpSessionLauncher` extracted, `AcpPreparationOwner` the single holder of process/connection/session, reopen ends first then loads, a failed reopen leaves no runtime session (active, idle) with every operation defined; failure → `RUNTIME_SESSION_REOPEN_FAILED`, input not sent, `restart_run` notice; web failure card with "Restart this run with the new tools".
+6. **Codex and Grok**: `reopenPending`; Codex `CodexThreadManager.reopenThread` (unsubscribe + resume with history; unsubscribe + start without); Grok `AcpSessionLauncher` extracted, `AcpPreparationOwner` the single holder of process/connection/session, reopen ends first then loads, a failed reopen leaves no runtime session (active, idle) with every operation defined; a failed reopen fails the `start_turn` dispatch with `RUNTIME_SESSION_REOPEN_FAILED` and the plain message "Couldn't give this run its new tools (<cause>). Send your message again to retry, or stop and resume the run." — no notice, no button (DEC-008, DEC-009; IR-002). A Team member's failed direct input is published to its Team stream as a run `ERROR` (`ConfiguredAgentExecutionHandle.postMessage` lifecycle observer, SR-009).
 7. **Docs**: `agent_tools_mcp_server.md`, new `tool_list_updates.md`, `agent_execution.md`, `skill_update_notices.md`, `grok_build_runtime.md`, `antigravity_cli_runtime.md`, web `agent_execution_architecture.md`.
 
 (Commit hashes for steps 3–7 are in `implementation-revision-record.md`.)
+
+**IR-002 rework (CRR-001, SR-005…SR-009, ARCH-REV-009):**
+
+- DEC-008: the restart button and everything serving only it removed (store action and tests, segment button and `runId` prop, `action` field, strings and spec key checks, docs).
+- DEC-009 / SR-007: the failure notice removed (`buildRuntimeSessionReopenFailedNotice`, `RUNTIME_SESSION_REOPEN_FAILED_NOTICE`, `RESTART_RUN_NOTICE_ACTION`, the Codex/ACP publish calls, the web recognition and `toolsReopenFailed`). `runtimeSessionReopenFailedResult(error)` now carries the plain message. The design's completion grep (`restart_run`, `restartRunWithNewTools`, `RESTART_RUN`, `ReopenFailedNotice`, `toolsReopenFailed`, `toolsNotUpdated`, `tool_list_update_failed`) is empty across server src/tests/docs and web.
+- SR-009 / AC-007: `ConfiguredAgentExecutionHandle.postMessage` passes a `lifecycleObserver`; a `failed` fact publishes `ERROR { code, message }` (no evidence) through `callbacks.publishAgentEvent(identity, { kind: "agent_run", event })`.
+- CR-002: `currentToolNames` / `applyExposure` live in `ClaudeAgentToolsMcpSessionState`; `ClaudeSession` keeps two one-line forwards (487 → 490 non-blank lines).
+- CR-003: `AcpAgentRunBackendInput.workingDirectory: string` (the directory the session was opened in, from `bindBackend`); the reopen uses it with no fallback.
 
 ## Routing Classification (Mandatory)
 
@@ -45,14 +54,14 @@ Built by the design's Change / Refactor Sequence, one commit per step group:
 - Server, new: `src/tool-list-updates/**`, `src/agent-definition/services/agent-definition-change-signal.ts`, `src/agent-execution/domain/agent-run-platform-notices.ts`, `src/agent-tools/mcp/agent-tools-mcp-session-streams.ts`, `src/agent-execution/backends/acp/session/acp-session-launcher.ts`, `src/agent-execution/backends/shared/runtime-session-reopen.ts`.
 - Server, changed: `src/agent-tools/mcp/*` (session, registry, service, authority, scoped authority, host, routes, http gate, dispatcher), the five backends and their factories, `agent-run.ts`, preface port/dispatch, backend contract, compositions, provider factory builder, agent memory accumulator.
 - autobyteus-ts: `agent.ts` (`replaceTools`), `context/agent-tool-instances.ts` (new, shared by factory and shutdown cleanup), `loop/llm-phase-tools.ts`.
-- Web: `SystemTaskNotificationSegment.vue`, `AIMessage.vue` (passes `runId`), `agentRunStore.restartRunWithNewTools`, payload/segment `action`, en/zh-CN messages.
+- Web: `SystemTaskNotificationSegment.vue` ("Tools updated" label and body only), the `toolsUpdated` string (en/zh-CN). The IR-001 restart button, store action, `action` field and failure strings are removed (IR-002); `AIMessage.vue`, `agentRunStore.ts`, `messageTypes.ts`, `types/segments.ts` and the notification handler are back to base.
+- Team members: `agent-collaboration/execution/backends/configured-agent-execution-handle.ts` (`postMessage` lifecycle observer → run `ERROR` via `publishAgentEvent`).
 - Tests: shared `tests/helpers/agent-tool-mcp-run-sessions-stub.ts` and `agent-tools-mcp-test-host.ts` (live harnesses now get a real endpoint because every run configures one).
 
 ## Important Assumptions
 
 - A Codex thread "has a conversation" when it was restored or a turn was started on it (`CodexAgentRunContext.hasConversationHistory`); otherwise the reopen starts a new thread (E-13: no rollout to resume).
-- The restart button for a Team member stops the Team; its next message restores it (the existing Team stop/restore; there is no single-member restart).
-- Team streams carry no `action` field, so the web recognizes the failure notice by its exact text as well (also needed for replayed history).
+- (IR-001's Team-stop restart assumption is gone with the button, DEC-008.) Stop, then resume, stays the user's manual way to restart a run.
 
 ## Known Risks
 
@@ -93,6 +102,8 @@ Full record with commands, commit and environment: `evidence/local-checks.log`.
   - Grok: **not proven** — the account ran out of credit (confirmed by the user); turn 1 stalled before any tool change. Reopen covered by the fake-agent tests.
   - Codex: **not run** — no credit (DEC-004).
 
+**IR-002 checks** (`evidence/local-checks.log`, IR-002 block): server typecheck 0; server unit green after the two routing assertions took the new `lifecycleObserver` argument (affected suites 872/872); integration 458 passed, 0 failed (including the new Team-member test); web typecheck PASS (production 0, baseline 298/139); web 4,860 passed; the completion grep is empty; Claude real run re-passed after CR-002 (`evidence/real-runs/ir-002/`). Native and AGY code is unchanged in IR-002; Grok and Codex real runs are still owed (no credit).
+
 ## Frontend Rendered-Result Check (When Applicable)
 
 The card change is small (label, body text, one button). Covered by component specs; no layout change.
@@ -101,7 +112,7 @@ The card change is small (label, body text, one button). Covered by component sp
 
 - AC-001…AC-008 through the real product: `tests/e2e/runtime/live-tool-list-updates.e2e.test.ts` (gated, per runtime).
 - A forced reopen failure end to end (Codex/Grok) with the button in an isolated desktop instance.
-- Team member runs (Codex/Grok) after a definition change: the notice on the member's next turn start.
+- Team member runs (Codex/Grok) after a definition change: the notice on the member's next turn start; a member's failed reopen shown as an error in that member's conversation only (AC-007).
 - An application-owned agent saved in the app while its run is open.
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required

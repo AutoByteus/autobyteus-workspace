@@ -41,3 +41,15 @@ production errors: 0; test-file errors: 298 in 139 files (baseline 298 in 139 fi
 - tests/unit/tool-list-updates: 5 passed; autobyteus-ts agent-replace-tools: 2 passed
 - tests/integration/agent-tools/mcp (held stream, list_changed, removal, empty list, SDK client): passed
 - web SystemTaskNotificationSegment.spec 10 passed; agentRunStore.spec 28 passed
+
+# ---- IR-002 (CRR-001 rework, SR-005…SR-009, ARCH-REV-009) ----
+# date: 2026-10-29T18:17:28Z; same environment rules
+## server typecheck: 0 errors
+## server unit (full): Test Files 1 failed | 868 passed | 5 skipped (874); Tests 2 failed | 7330 passed | 9 skipped
+   the 2 failures: flat-team-execution-manager-routing asserted postUserMessage's exact arguments, which now carry the
+   member lifecycleObserver (SR-009) — updated; re-run tests/unit/agent-team-execution + agent-collaboration + agent-org-execution: 99 files / 872 tests passed
+## server integration (full, after prepare): Test Files 82 passed | 20 skipped (102); Tests 458 passed | 69 skipped (incl. the new team-member-reopen-failure test, verified to fail without the handle change)
+## web typecheck: production errors 0; test-file errors 298 in 139 files (baseline); PASS
+## web (full): Test Files 668 passed; Tests 4860 passed | 2 skipped
+## completion grep (server src/tests/docs, web): restart_run, restartRunWithNewTools, RESTART_RUN, ReopenFailedNotice, toolsReopenFailed, toolsNotUpdated, tool_list_update_failed, TOOL_LIST_UPDATE_FAILED, RUNTIME_SESSION_REOPEN_FAILED_NOTICE, isToolsReopenFailure, restartWithNewTools: all 0
+## real run re-check after CR-002: Claude (haiku) pass — evidence/real-runs/ir-002/live-tool-list-claude_agent_sdk.json
