@@ -26,7 +26,7 @@ notice of what changed, and the user sees a "Tools updated" card in the run.
 - backends: `applyDefinitionTools` / `getToolNames` on each `AgentRunBackend`;
   `src/agent-execution/backends/shared/runtime-session-reopen.ts` (the failed
   dispatch); `src/agent-execution/backends/acp/session/acp-session-launcher.ts`
-- Team members: `ConfiguredAgentExecutionHandle.postMessage` (a failed input as a run `ERROR`)
+- Team members: `ConfiguredAgentExecutionHandle.postMessage` with `member-input-failure-observer.ts` (a failed message that was not sent, as a run `ERROR`)
 - Agent Tools endpoint: `replaceForRun` / `describeForRun` and
   `AgentToolsMcpSessionStreams` (see [Agent Tools MCP Server](./agent_tools_mcp_server.md#live-tool-list))
 
@@ -90,10 +90,13 @@ The message is shown the way every failed message is:
 - a single run: the input lifecycle marks the command failed with that message
   (`AgentRunCommandCoordinator`);
 - a Team member: `ConfiguredAgentExecutionHandle.postMessage` passes a
-  lifecycle observer that publishes a run `ERROR { code, message }` (no error
-  evidence) to the Team stream through `publishAgentEvent`; the web shows it as
-  an error in that member's conversation. It is not published through the run,
-  so nothing records or shows it twice, and it is not replayed.
+  lifecycle observer (`member-input-failure-observer.ts`) that publishes a
+  failed message that was **not sent** as a run `ERROR { code, message }` (no
+  error evidence) to the Team stream through `publishAgentEvent`; the web shows
+  it as an error in that member's conversation. A message that was sent and
+  whose turn then failed, or one failed by the run's own runtime error, is not
+  published again: the run's own `ERROR` already reached the Team stream. It is
+  not published through the run, so nothing records it, and it is not replayed.
 
 Stop, then resume, stays the user's manual way to restart a run.
 

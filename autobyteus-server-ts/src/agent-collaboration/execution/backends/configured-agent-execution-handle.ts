@@ -3,7 +3,8 @@ import type { ApplicationExecutionContext } from "../../../application-orchestra
 import type { AgentOperationResult } from "../../../agent-execution/domain/agent-operation-result.js";
 import { AgentRunConfig } from "../../../agent-execution/domain/agent-run-config.js";
 import type { AgentRun } from "../../../agent-execution/domain/agent-run.js";
-import { AgentRunEventType, isAgentRunEvent } from "../../../agent-execution/domain/agent-run-event.js";
+import { isAgentRunEvent } from "../../../agent-execution/domain/agent-run-event.js";
+import { createMemberInputFailureObserver } from "./member-input-failure-observer.js";
 import type {
   AgentRunInputOptions,
   AgentRunInputRejectionCode,
@@ -142,20 +143,8 @@ export class ConfiguredAgentExecutionHandle implements RetainedAgentExecutionCon
     }
     const run = start.run;
     this.assertInputAllowed();
-    const result = await run.postUserMessage(message, {
-      // A failure after admission (for example a turn start whose runtime session could not be
-      // reopened with new tools) reaches the member's Team stream as a run error. It is not published
-      // through the run itself, so nothing else records or shows it twice.
-      lifecycleObserver: (fact) => {
-        if (fact.kind !== "failed") return;
-        this.options.callbacks.publishAgentEvent(this.identity, { kind: "agent_run", event: {
-          eventType: AgentRunEventType.ERROR,
-          runId: run.runId,
-          payload: { code: fact.code || "RUNTIME_REJECTED", message: fact.message },
-          statusHint: null,
-        } });
-      },
-    });
+    const result = await run.postUserMessage(message, { lifecycleObserver: createMemberInputFailureObserver({ runId: run.runId,
+      publish: (event) => this.options.callbacks.publishAgentEvent(this.identity, { kind: "agent_run", event }) }) });
     if (result.accepted) {
       this.options.callbacks.publishAgentEvent(this.identity, { kind: "member_input", message });
     } else this.publishCommandStatus("error", result.message ?? null);

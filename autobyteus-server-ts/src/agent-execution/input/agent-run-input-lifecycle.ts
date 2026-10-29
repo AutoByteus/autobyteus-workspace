@@ -4,6 +4,12 @@ import { resolveAgentRunEventTurnId } from "../domain/agent-run-event-turn-id.js
 import type { AgentRunInterruptState } from "../domain/agent-run-interrupt-state.js";
 import type { AgentRunInputAdmissionState } from "./agent-run-input-admission-state.js";
 
+/**
+ * The codes of the `failed` input facts derived from the run's own ERROR events (a turn-terminal
+ * or runtime-global error). The run has already published that error itself.
+ */
+export const RUN_EVENT_INPUT_FAILURE_CODES: ReadonlySet<string> = new Set(["RUNTIME_TURN_FAILED", "RUNTIME_GLOBAL_FAILURE"]);
+
 export function observeAgentRunInputEvents(events: readonly AgentRunEvent[], inputState: AgentRunInputAdmissionState, interruptState: AgentRunInterruptState): void {
     for (const event of events) {
       if (event.eventType === AgentRunEventType.TURN_STARTED) {
@@ -35,13 +41,13 @@ export function observeAgentRunInputEvents(events: readonly AgentRunEvent[], inp
         interruptState.observeTerminal(evidence.turnId);
         inputState.observeTurnFailure({
           turnId: evidence.turnId,
-          code: "RUNTIME_TURN_FAILED",
+          code: "RUNTIME_TURN_FAILED", // RUN_EVENT_INPUT_FAILURE_CODES
           message: errorMessage ?? "Runtime turn failed.",
         });
       } else if (evidence?.kind === "RUNTIME_GLOBAL") {
         interruptState.clear();
         inputState.observeRuntimeFailure({
-          code: "RUNTIME_GLOBAL_FAILURE",
+          code: "RUNTIME_GLOBAL_FAILURE", // RUN_EVENT_INPUT_FAILURE_CODES
           message: errorMessage ?? "Runtime failed.",
         });
       }

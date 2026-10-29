@@ -14,6 +14,7 @@ import { AgentRun } from "../../../src/agent-execution/domain/agent-run.js";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-context.js";
 import type { AgentRunBackendInputDispatch } from "../../../src/agent-execution/input/agent-run-input-contract.js";
+import { AgentRunEventType, type AgentRunEvent } from "../../../src/agent-execution/domain/agent-run-event.js";
 import { runtimeSessionReopenFailedResult } from "../../../src/agent-execution/backends/shared/runtime-session-reopen.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { testActivationManager } from "../../fixtures/agent-run-preparation-fixtures.js";
@@ -26,8 +27,15 @@ import { testActivationManager } from "../../fixtures/agent-run-preparation-fixt
 const root = createTeamRootExecutionIdentity("team-run");
 const scope = createRootExecutionPhysicalScope({ root, ancestorTeamRunIds: [] });
 
-/** A real AgentRun over a fake idle backend; `failReopen` makes every turn start fail as a failed reopen does. */
-const createRun = (identity: CollaborationMemberExecutionIdentity, memberExecutionContext: MemberExecutionContext, failReopen: boolean) => {
+/**
+ * How the member's fake backend handles a turn start: `reopen_fails` fails it before sending (as a
+ * failed reopen does); `forwards` sends it; `turn_fails` sends it, then the turn fails with a
+ * turn-terminal ERROR the run publishes itself (an ordinary failed turn).
+ */
+type Behavior = "reopen_fails" | "forwards" | "turn_fails";
+
+/** A real AgentRun over a fake idle backend with the given turn-start behavior. */
+const createRun = (identity: CollaborationMemberExecutionIdentity, memberExecutionContext: MemberExecutionContext, behavior: Behavior) => {
   const context = new AgentRunContext({
     runId: identity.agentRunId,
     config: new AgentRunConfig({
@@ -36,9 +44,22 @@ const createRun = (identity: CollaborationMemberExecutionIdentity, memberExecuti
     }),
     runtimeContext: null,
   });
-  const dispatchUserInput = vi.fn(async (_dispatch: AgentRunBackendInputDispatch) => failReopen
-    ? runtimeSessionReopenFailedResult(new Error("thread/resume refused"))
-    : { forwarded: true, turnId: "turn-1" });
+  const listeners = new Set<(events: readonly AgentRunEvent[]) => void | Promise<void>>();
+  const emit = (eventType: AgentRunEventType, payload: Record<string, unknown>) => {
+    for (const listener of listeners) void listener([{ eventType, runId: identity.agentRunId, payload, statusHint: null }]);
+  };
+  const dispatchUserInput = vi.fn(async (_dispatch: AgentRunBackendInputDispatch) => {
+    if (behavior === "reopen_fails") return runtimeSessionReopenFailedResult(new Error("thread/resume refused"));
+    if (behavior === "turn_fails") {
+      setTimeout(() => {
+        emit(AgentRunEventType.TURN_STARTED, { turn_id: "turn-1" });
+        emit(AgentRunEventType.ERROR, {
+          code: "PROVIDER_ERROR", message: "rate limited", error_scope: "turn", error_effect: "terminal", turn_id: "turn-1",
+        });
+      }, 0);
+    }
+    return { forwarded: true, turnId: "turn-1" };
+  });
   const backend = {
     runId: identity.agentRunId,
     runtimeKind: RuntimeKind.CODEX_APP_SERVER,
@@ -50,7 +71,10 @@ const createRun = (identity: CollaborationMemberExecutionIdentity, memberExecuti
     isActive: () => true,
     getLifecycleSnapshot: () => ({ availability: "active", phase: "idle", currentTurn: { kind: "NONE" } }),
     hasRunningBackgroundTasks: () => false,
-    subscribeToSourceEventBatches: () => () => undefined,
+    subscribeToSourceEventBatches: (listener: (events: readonly AgentRunEvent[]) => void | Promise<void>) => {
+      listeners.add(listener);
+      return () => listeners.delete(listener);
+    },
     dispatchUserInput,
     approveToolInvocation: vi.fn(),
     interrupt: vi.fn(),
@@ -66,14 +90,14 @@ const createRun = (identity: CollaborationMemberExecutionIdentity, memberExecuti
   return { run, dispatchUserInput };
 };
 
-const createMember = (address: string, failReopen: boolean, publishAgentEvent: (...args: unknown[]) => void) => {
+const createMember = (address: string, behavior: Behavior, publishAgentEvent: (...args: unknown[]) => void) => {
   const identity = createCollaborationMemberExecutionIdentity({ root, memberAddress: address, agentRunId: `run${address.replace("/", "-")}` });
   const memberExecutionContext = new MemberExecutionContext({
     teamScoped: true, collaborationRole: "team_member", identity,
     collaboration: new MemberCollaborationContext({ deliverLogicalMessage: async () => ({ accepted: true }) }),
     tasks: { root, delegateToNewCopy: vi.fn(), ownedTaskOf: () => null, assignToExistingCopy: vi.fn(), submitTaskResult: vi.fn(), reviewTaskResult: vi.fn() } as never,
   });
-  const { run, dispatchUserInput } = createRun(identity, memberExecutionContext, failReopen);
+  const { run, dispatchUserInput } = createRun(identity, memberExecutionContext, behavior);
   const preparation = async ({ runId }: { runId: string }) => ({
     runId, runtimeKind: RuntimeKind.CODEX_APP_SERVER, platformAgentRunId: "thread-1",
     commitPublication: () => run, abort: async () => ({ kind: "aborted" as const }),
@@ -101,42 +125,65 @@ const createMember = (address: string, failReopen: boolean, publishAgentEvent: (
   return { identity, handle, run, dispatchUserInput };
 };
 
-describe("a Team member's failed reopen reaches its Team stream (AC-007)", () => {
-  it("publishes a run ERROR with the plain message for that member only", async () => {
-    // The Team stream: every member event goes through the real presentation adapter.
-    const members = new Map<string, CollaborationMemberExecutionIdentity>();
-    const adapter = new CollaborationAgentPresentationEventAdapter((agentRunId) => members.get(agentRunId) ?? null);
-    const stream: Array<{ agentRunId: string; type: string; payload: Record<string, unknown> }> = [];
-    const publishAgentEvent = (identity: unknown, event: unknown) => {
-      const memberIdentity = identity as CollaborationMemberExecutionIdentity;
-      const result = adapter.adapt(memberIdentity, event as never);
-      if (result.kind === "publish") {
-        stream.push({ agentRunId: memberIdentity.agentRunId, type: result.message.type, payload: result.message.payload as Record<string, unknown> });
-      }
-    };
-    const failing = createMember("/Coder", true, publishAgentEvent);
-    const healthy = createMember("/Reviewer", false, publishAgentEvent);
-    members.set(failing.identity.agentRunId, failing.identity);
-    members.set(healthy.identity.agentRunId, healthy.identity);
+/** The Team stream: every member event goes through the real presentation adapter. */
+const createTeamStream = () => {
+  const members = new Map<string, CollaborationMemberExecutionIdentity>();
+  const adapter = new CollaborationAgentPresentationEventAdapter((agentRunId) => members.get(agentRunId) ?? null);
+  const stream: Array<{ agentRunId: string; type: string; payload: Record<string, unknown> }> = [];
+  const publishAgentEvent = (identity: unknown, event: unknown) => {
+    const memberIdentity = identity as CollaborationMemberExecutionIdentity;
+    const result = adapter.adapt(memberIdentity, event as never);
+    if (result.kind === "publish") {
+      stream.push({ agentRunId: memberIdentity.agentRunId, type: result.message.type, payload: result.message.payload as Record<string, unknown> });
+    }
+  };
+  const add = (address: string, behavior: Behavior) => {
+    const member = createMember(address, behavior, publishAgentEvent);
+    members.set(member.identity.agentRunId, member.identity);
+    return member;
+  };
+  const errors = () => stream.filter((entry) => entry.type === "ERROR");
+  return { add, errors };
+};
+
+describe("a Team member's failed message reaches its Team stream once (AC-007)", () => {
+  it("publishes a run ERROR for a message that was not sent (a failed reopen), for that member only", async () => {
+    const team = createTeamStream();
+    const failing = team.add("/Coder", "reopen_fails");
+    const healthy = team.add("/Reviewer", "forwards");
 
     // Direct input is admitted for both members (the failure comes after admission).
     expect(await failing.handle.postMessage(new AgentInputUserMessage("Use the new tool."))).toMatchObject({ accepted: true });
     expect(await healthy.handle.postMessage(new AgentInputUserMessage("Review this."))).toMatchObject({ accepted: true });
     await vi.waitFor(() => expect(failing.dispatchUserInput).toHaveBeenCalledOnce());
     await vi.waitFor(() => expect(healthy.dispatchUserInput).toHaveBeenCalledOnce());
-    await vi.waitFor(() => expect(stream.filter((entry) => entry.type === "ERROR")).toHaveLength(1));
+    await vi.waitFor(() => expect(team.errors()).toHaveLength(1));
 
-    const errors = stream.filter((entry) => entry.type === "ERROR");
-    expect(errors).toEqual([{
+    expect(team.errors()).toEqual([{
       agentRunId: failing.identity.agentRunId,
       type: "ERROR",
       payload: expect.objectContaining({
-        code: expect.stringMatching(/^(RUNTIME_SESSION_REOPEN_FAILED|RUNTIME_REJECTED)$/),
+        code: "RUNTIME_SESSION_REOPEN_FAILED",
         message: "Couldn't give this run its new tools (thread/resume refused). Send your message again to retry, or stop and resume the run.",
         error_scope: null,
         error_effect: null,
       }),
     }]);
-    expect(stream.filter((entry) => entry.agentRunId === healthy.identity.agentRunId && entry.type === "ERROR")).toEqual([]);
+  });
+
+  it("adds nothing for a message that was sent and whose turn then failed: the run's own ERROR is the only one", async () => {
+    const team = createTeamStream();
+    const member = team.add("/Coder", "turn_fails");
+
+    expect(await member.handle.postMessage(new AgentInputUserMessage("Do the work."))).toMatchObject({ accepted: true });
+    await vi.waitFor(() => expect(team.errors()).toHaveLength(1));
+    // Let any second (duplicate) publication arrive before counting.
+    await new Promise((resolve) => setTimeout(resolve, 50));
+
+    expect(team.errors()).toEqual([{
+      agentRunId: member.identity.agentRunId,
+      type: "ERROR",
+      payload: expect.objectContaining({ code: "PROVIDER_ERROR", message: "rate limited" }),
+    }]);
   });
 });
