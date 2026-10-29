@@ -2,107 +2,198 @@
 
 ## Review Round Meta
 
-- Review Entry Point: `API/E2E Failure-Origin Review`
-- Requirements Doc Reviewed As Context: `tickets/in-progress/claude-anthropic-effort-control/requirements-doc.md` (REQ-011, AC-011, BEH-007, SCN-005, DEC-009, persisted-data section)
-- Investigation Notes Reviewed As Context: `investigation-notes.md` (SRC-011, SRC-019, SRC-020)
-- Solution Revision Record Reviewed As Context: `solution-revision-record.md` (SR-002 basis)
-- Design Spec Reviewed As Context: `design-spec.md` (Risk escalation trigger (a), Derived consumers, Persisted Data / State Transition Decision, "Stale stored keys: web sanitize + residuals — Reuse")
-- Supplemental Task Artifacts Reviewed As Context: `autobyteus-web/docs/settings.md` L1652-1660
-- Relevant Solution Revision IDs: SR-002
-- Design Review Report Reviewed As Context: N/A (direct Medium / Low route)
-- Architecture Review Revision Record Reviewed As Context: N/A
-- Relevant Architecture Review Revision IDs: N/A
-- Implementation Handoff Reviewed As Context: `implementation-handoff.md`
+- Review Entry Point: `Implementation Review`
+- Requirements Doc Reviewed As Context: `requirements-doc.md` at SR-005 (REQ-011, AC-011, AC-012, AC-013, DEC-011, BEH-007, SCN-005)
+- Investigation Notes Reviewed As Context: `investigation-notes.md` (SRC-011, SRC-019, SRC-020, SRC-023, SRC-024)
+- Solution Revision Record Reviewed As Context: `solution-revision-record.md` (SR-003 → SR-005)
+- Design Spec Reviewed As Context: `design-spec.md` SR-005 (SR-005 Delta: rule, DS-004 spine, 10-caller inventory, examples table, verification; SR-004 Delta; classification)
+- Supplemental Task Artifacts Reviewed As Context: `follow-ups.md` (FU-004)
+- Relevant Solution Revision IDs: SR-004, SR-005
+- Design Review Report Reviewed As Context: `design-review-report.md` (ARCH-REV-002 pass; AR-001, AR-002, IG-1, IG-2). The worktree holds uncommitted edits to it from the architecture reviewer; I read the working-tree version.
+- Architecture Review Revision Record Reviewed As Context: `architecture-review-revision-record.md`
+- Relevant Architecture Review Revision IDs: ARCH-REV-001, ARCH-REV-002
+- Implementation Handoff Reviewed As Context: `implementation-handoff.md` (IR-002, Checks Run IMP-15..IMP-21)
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
-- Relevant Implementation Revision IDs: IR-001
+- Relevant Implementation Revision IDs: IR-002 (src `47f44c3df`, docs/evidence `7daf47430`); IR-001 (`574aa0bd7`) as context
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: CRR-001
-- Current Review Round: 1
-- Review Scope: N/A (failure-origin round)
-- Trigger: API/E2E Fail, API-REV-001
-- Prior Review Round Reviewed: None
-- Latest Authoritative Round: 1
-- Coverage Investigation Reviewed: `api-e2e-coverage-investigation.md` (testing guideline: root `TESTING.md`; not material to this classification)
-- Execution Coverage Report Reviewed: `api-e2e-execution-coverage-report.md`
-- API/E2E Revision Record Reviewed: `api-e2e-revision-record.md`
+- Current Code Review Revision ID: CRR-002
+- Current Review Round: 2. Round 1 (CRR-001) was a failure-origin review; this is the first implementation-source review.
+- Review Scope: `Full Review` of the IR-002 delta. The CRR-001 finding is rechecked first.
+- Review Scope Evidence (round >1): CRR-001 had no source scorecard. IR-002 changes a shared validator contract and two caller interfaces (`AgentOrgRunPlanner.build`, `LaunchUsabilityResult`), so every structural check is rerun on this delta.
+- Trigger: implementation complete IR-002 (Medium / High → source review)
+- Prior Review Round Reviewed: CRR-001 (API/E2E failure-origin review, Design Impact CR-FO-001)
+- Latest Authoritative Round: 2
+- Coverage Investigation / Execution Report / API/E2E Revision Record: `api-e2e-*.md` used as context for API-REV-001
 - Relevant API/E2E Revision IDs: API-REV-001
 - Delivery Revision Record Reviewed: N/A
-- Failing Scenario IDs: API-04, API-06 (old-run edit part); criterion REQ-011 / AC-011
-- Exact Failing Commands / Execution Mode: temporary GraphQL probe in `autobyteus-anthropic-stored-config-resume.e2e.test.ts` (`-t TMP-EDIT-PROBE`, removed); ENV-3 real backend + browser journey
-- Failure Evidence Paths: `evidence/API-04-stopped-edit-stale-key-server.txt`, `evidence/API-05-06-browser-journeys.txt`, `evidence/API-06-old-run-edit-save-refused.png`, `evidence/API-06-old-team-run-edit-save-refused.png`
+- Failing Scenario IDs / Commands / Evidence: N/A (implementation review)
 
 ## Routing Classification Review
 
 - Task size: `Medium`
-- Architectural risk: `Low`
-- Selected route: `API/E2E Failure-Origin Review`
-- Independent source review required by the classification: `Failure-origin exception`
-- Classification evidence or correction required: none from this failure; the fix choice may touch a shared edit/validation rule, which the Solution Designer should weigh when re-classifying the revision.
+- Architectural risk: `High` (shared server validator contract changed for every runtime and every save/edit/launch path)
+- Selected route: `Implementation Review`
+- Independent source review required by the classification: `Yes`
+- Classification evidence or correction required: confirmed. 5 src files, +81/−49, all inside existing owners; the contract change justifies `High`.
 
 ## Review Scope
 
-- Changed implementation and behavior reviewed: stopped-run model-setting Save for a saved AutoByteus run (agent, team; Org by code) whose stored `llmConfig` holds `thinking_display`.
-- Files / areas reviewed:
-  - `autobyteus-web/components/launch-config/RuntimeModelConfigFields.vue` L82 (`:preserve-invalid-draft="!historicalModelConfig"`)
-  - `autobyteus-web/components/workspace/config/ModelConfigSection.vue` L272-293 (`sanitizeConfigIfNeeded` returns early when `preserveInvalidDraft`)
-  - `autobyteus-server-ts/src/llm-management/services/run-model-selection-service.ts` L71 → `model-config-schema-validation.ts` L131-134 (unknown key → "Setting is not supported…")
-  - `autobyteus-web/docs/settings.md` L1652-1660 (documented rule)
-  - `git diff 4db2efa01 574aa0bd7 --stat`: none of the four files above is changed by the implementation.
-- Explicit exclusions: the passing cases (API-01/02/03/05/07/07b/08), the definition-surface part of API-06, and general test-suite review.
+- Changed implementation and behavior reviewed (IR-002, `git diff 1425eb3ec 47f44c3df`):
+  - `llm-management/services/model-config-schema-validation.ts`: undeclared top-level keys are left out of the canonical config; a null schema gives `null`; a config whose keys were all left out gives `null`.
+  - `agent-org-execution/services/agent-org-run-service.ts` and `agent-org-run-planner.ts`: Org launch builds the tree from the canonical plan (caller #6, IG-1).
+  - `launch-preferences/launch-usability-check.ts` and `agent-collaboration/collaborators/collaborator-launch-resolver.ts`: canonical candidate and inherited launches (caller #7, IG-2).
+  - Docs: `run_history.md`, `llm_management.md`, `autobyteus-web/docs/settings.md`.
+  - Tests: the new e2e `autobyteus-anthropic-stored-config-edit-launch.e2e.test.ts`, the new unit test `launch-usability-check.test.ts`, the validator unit cases, 4 updated e2e suites, the 8 fakes changed to echo input, and the web probe DLP-003.
+- Files / areas reviewed: the files above, plus callers #1–#10 at their call sites. `rg "\.validate\(|\.validateMany\("` in `src` gives 10 model-selection call sites, which matches the inventory. I read the code of caller #4 (`agent-org-run-manager.ts` L290-321) and caller #10 (`standalone-agent-run-root-manager.ts` L323-345).
+- Explicit exclusions:
+  - IR-001 source (SR-002 Claude effort work, `574aa0bd7`). It was classified Medium / Low under SR-002, went the direct route, and API/E2E validated it in API-REV-001 (API-01/02/03/05/07/07b/08 passed). IR-002 does not touch autobyteus-ts, the web source or the catalog.
+  - The paths that do not go through the validator (resume, new standalone launch). The design records them, and FU-004 covers them.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
-- Approved requirements basis understood: REQ-011 — saved runs whose `llmConfig` holds `thinking_display` "keep loading, resuming and running"; "No stored data is rewritten." BEH-007: "Saved runs whose config still holds `thinking_display` keep working."
-- Design-spec behavior map verified against the implementation: the design names the stopped-run edit as a strict-validation reader (Persisted Data "Readers", SRC-020) and states that "edit surfaces drop them on save" / "stale `thinking_display` dropped by existing `sanitizeModelConfigAgainstSchema`". The code contradicts that premise on the stopped-run edit surface: that surface deliberately preserves the draft (`preserveInvalidDraft`), matching the documented rule that unsupported stored values "remain visible as historical residuals instead of being … silently written back".
-- Behavior-basis status: `Contradicted` (design premise), requirement itself `Confirmed`.
+- Approved requirements basis understood: DEC-011 (B), chosen by the user: keys the current schema does not declare are left out of saved model settings instead of blocking the save, and no stored data is rewritten. AC-012 covers the stopped-run edit for agent, team and Org runs, including the Org workspace-only edit. AC-013 covers launches from stored launch configurations.
+- Design-spec behavior map verified against the implementation: DS-004 `Caller -> RunModelSelectionService.validate(Many) -> validateModelConfigSchema -> validation.selection -> caller stores/launches selection` matches the code. Callers #6 and #7 now use the selection. The other 8 already did, which I confirmed at the call sites I read and through the inventory.
+- Design review report and round confirmed: ARCH-REV-002 pass. AR-001 (canonical-only callers) and AR-002 (stale cumulative wording) are applied.
+- Behavior-basis status: `Confirmed`
 
 | Behavior ID | Current Status | Current Implementation Path And Lifecycle Evidence | Contradicting Evidence |
 | --- | --- | --- | --- |
-| BEH-007 / REQ-011 (edit a saved run) | Contradicted | Stopped run → Edit Config → change Thinking → Save → draft still holds `thinking_display` (sanitize skipped, `ModelConfigSection.vue` L274) → `updateStoppedAgentRunModelConfig` / `updateStoppedTeamRunModelConfigs` → `validateModelConfigSchema` rejects the unknown key → `VALIDATION_FAILED`. The key is not rendered on the editable card, so the user cannot remove it. | API-04 evidence: with key → `VALIDATION_FAILED` `llmConfig.thinking_display`; without key → `UPDATED`. API-06 screenshots. Before this change `thinking_display` was a schema key, so the same Save passed: the regression is caused by this ticket. |
-| BEH-007 / REQ-011 (resume, send) | Confirmed | API-02/03 pass (agent, team, Org; synthetic and live). | — |
+| BEH-007 / AC-012 (a) agent and team stopped-run edit | Confirmed | `updateStoppedAgentRunModelConfig` → updater stores `validation.selection` (caller #1); team (caller #2) stores `result.selection`. The validator leaves out `thinking_display`. IMP-17 cases 1–2: `UPDATED`, and the resumed config is `{reasoning_effort:"high"}`. | — |
+| BEH-007 / AC-012 (b) Org workspace-only edit and Org model edit | Confirmed | `agent-org-run-manager.ts` L290-321: the untouched scopes are validated (now valid) but not normalized (L313). Patched scopes take `validation.selection`. IMP-17 case 3. | — |
+| BEH-007 / AC-013 (a) Org launch | Confirmed | `validateCompleteConfiguration` returns the canonical placements, and `planner.build({plan})` builds from them. IMP-17 case 4 asserts no stale key in the tree. | — |
+| BEH-007 / AC-013 (b) delegated copy from a stored default | Confirmed | `LaunchUsabilityCheck.check` → `canonicalLaunch(launch, result.selection)` → `CollaboratorLaunchResolver` launches `verdict.launch`. The inherited layer uses `verdicts.inherited.launch` when it is usable. IMP-17 case 5 and the unit test. | — |
+| AC-012/013 exception: an invalid declared value is still refused | Confirmed | Declared keys still go through `validateValue`, and the errors are unchanged. Unit cases `ultra` and updated e2e refusals. | — |
+| BEH-007 / AC-011 resume | Confirmed (unchanged) | Does not go through the validator. Rerun in IMP-06. | — |
 
 ## Supported Product Scenario And Reachability Gate (Mandatory)
 
-| Scenario ID | Related IDs | Kind | Actor | Goal | Entry Surface | Shape | Forward Path / Lifecycle | Expected Outcome | Independent Evidence | Validity | Use |
+| Scenario ID | Related IDs | Kind | Actor | Goal / Event | Entry Surface | Shape | Forward Path / Lifecycle | Expected Outcome | Independent Evidence | Validity | Use |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| SCN-005 (edit leg) | REQ-011, BEH-007 | User | User | Change the Thinking level of an existing stopped run created before this change | Run history → stopped run → Edit Config → Save (agent / team; Org same validator) | Normal | as table above | Save succeeds; stale key not sent to Anthropic; REQ-011 "keep working" | SRC-019 real user data (an Opus 5.5 run and a team run hold the key); stopped-run edit is a shipped surface (`settings.md`); design itself lists it as a reader | Supported Normal Scenario | Use |
+| SCN-005 edit | REQ-011, AC-012 | User | User | Change the settings of a stopped run created before this change | Run settings → Save (agent / team / Org; Org workspace-only) | Normal | as above | `UPDATED`, saved without the key | SRC-019 real data; API-REV-001 reproduction | Supported Normal Scenario | Use |
+| SCN-005 launch | REQ-011, AC-013 | User / System | User; delegation | Launch an Org, or delegate to an agent whose stored launch preference predates the change | Org launch; `delegate_task` collaborator launch | Normal | as above | Launch succeeds; the launched config has no key | REQ-011 "launch configs"; ARCH-REV-001 AR-001 | Supported Normal Scenario | Use |
+| RISK-6 | DEC-011, design SR-004 | Contract | — | A non-null config on a model without a schema (e.g. AGY) now canonicalizes to `null` instead of being refused | any validated path | Normal | validator | Usable with `null` settings | Design SR-004 decision, examples table row 4 | Supported Normal Scenario (decided behavior) | Use |
 
 ### Candidate Finding And Mechanism Gate
 
-| Candidate | Scenario / Contract | Trigger → Path → Consequence | Evidence | Disposition |
-| --- | --- | --- | --- | --- |
-| CR-FO-001: stopped-run edit of a saved run holding `thinking_display` is refused and cannot be repaired by the user | SCN-005 edit leg, REQ-011 | Real stored data → Edit Save → strict validation refuses hidden key → run settings cannot be changed | API-04 server probe, API-06 browser journeys + screenshots, code at the cited lines | Promote |
-| Implementation defect (implementation diverged from design) | — | Implementation did not touch the sanitize/preserve or validator code; design marked these "Reuse / no change" | `git diff --stat` | Reject |
-| Stale/invalid test | — | Probe enters through the real GraphQL mutations and the real UI; the payload is what the UI sends | API-04, API-06 | Reject |
-| AgentOrg stopped-run edit | same | `agent-org-run-manager.ts` revalidates with the same validator | code (not executed) | Promote as part of CR-FO-001 scope (same cause); rerun to confirm |
+| Candidate ID | Observation | Scenario / Contract | Trigger → Path → Consequence | Evidence | Disposition | Reason |
+| --- | --- | --- | --- | --- | --- | --- |
+| C-1 | Empty-config rule: a submitted `{}` gives `{}`, but a config whose keys were all left out gives `null`. The design's "as today" claim for this row is inaccurate: before this change `{}` came back as `{}`. | Design SR-005 examples table | Validator output | `model-config-schema-validation.ts` L139-141; unit `it.each` rows 3–4 | Reject | The implementation follows the design's table (row 3 → `null`) and keeps today's `{}` behavior. Both values mean "no explicit settings" to every consumer, so nothing changes in behavior. The implementation engineer raised it and a unit test pins it. Only the design's wording is off, and it is not material. |
+| C-2 | Org launch keys a single `canonical` map by address across root `/`, teams and agents | Org topology contract | Address collision would mix up placements | `resolveOrg` builds team and agent addresses from distinct member `absolutePath`s; the root is `/` | Reject | Addresses are unique absolute paths, so there is no supported collision. |
+| C-3 | When the inherited check fails, the raw delegator launch is still used for the Team-level recorded default and the routing hint | Collaborator launch contract | Invalid inherited launch → members refused | `collaborator-launch-resolver.ts` L118, L170-174 | Reject | Pre-existing behavior for invalid launches, and the comment documents it. Undeclared keys no longer make the check fail, so this path cannot carry a stale key through a passing check. |
+| C-4 | "Launch with selection" is written three times: `canonicalLaunch`, the inline spread in the Org service, and the Org manager patch spread | Principle 11 | — | 1–2 lines each | Reject | Trivial and local. Extracting it would add a helper with no owned concern. |
+| C-5 | The 8 test fakes now echo the input instead of returning a fixed selection | Test realism | — | Unit diffs | Reject (positive) | Echoing matches the real validator when every key is declared. The fixed selection was a latent fake inaccuracy. |
+| C-6 | Existing tests that asserted the old reject contract were rewritten to use an invalid declared value | DEC-011 B | — | 4 e2e suites, DLP-003 | Reject (positive) | Required by the approved contract change, and they still prove the refusal path. |
 
-## Findings
+## Structural / Design Checks
 
-### CR-FO-001 — Design premise "edit surfaces drop stale keys on save" does not hold for stopped-run edit (Design Impact)
+| Check | Result | Evidence | Required Action |
+| --- | --- | --- | --- |
+| Task design health assessment present and preserved | Pass | Missing invariant, with one owner at the validator; callers use the canonical selection | — |
+| Matches approved supplemental artifacts | Pass | SR-005 caller inventory, examples table and docs list implemented | — |
+| Data-flow spine clarity | Pass | DS-004 is exactly the code path; Org launch is now resolve → validate (canonical) → build, a single resolve | — |
+| Ownership boundary preservation | Pass | The validator owns canonicalization; callers only choose the selection | — |
+| Off-spine concern clarity | Pass | `canonicalLaunch` is a local mapper inside the usability owner | — |
+| Capability reuse | Pass | Reuses `RunModelSelectionService`; no new helper | — |
+| Reusable owned structures | Pass | C-4 rejected | — |
+| Shared-structure tightness | Pass | `InheritedLaunchVerdict` replaces `inheritedFailure: string \| null` with a discriminated verdict that carries the launch, so one structure no longer has two meanings | — |
+| Repeated coordination ownership | Pass | The rule is decided once, in the validator | — |
+| Empty indirection | Pass | `planner.build` no longer re-resolves the configuration; the duplicate resolution is removed | — |
+| Separation of concerns and file responsibility | Pass | Every change stays in its owning file | — |
+| Dependency direction | Pass | `launch-usability-check` imports the `RunModelSelection` type from `llm-management/domain`, the allowed direction | — |
+| Authoritative Boundary Rule | Pass | Callers depend on `RunModelSelectionValidator` only | — |
+| File placement | Pass | Unchanged | — |
+| Flat vs over-split | Pass | — | — |
+| Interface clarity | Pass | `build({definition, plan})` takes the resolved plan explicitly; the inherited verdict is explicit | — |
+| Naming / vocabulary | Pass | "canonical" is used consistently for the validated selection; `delegatorLaunch` vs `inherited` is clearer than before | — |
+| No unjustified duplication | Pass | C-4 | — |
+| Patch-on-patch control | Pass | SR-003's client filter was dropped, not layered on; the validator change is a clean replacement | — |
+| Dead code removed | Pass | `inheritedFailure` gone (`rg` finds no hits in src or tests); the old "This model has no adjustable settings" refusal and the unknown-key error branch were removed; the duplicate resolve in `build` was removed | — |
+| Test scenarios and assertions requirement-aligned | Pass | The e2e names map to AC-012 (a)/(b) and AC-013 (a)/(b), and assert the stored config and the absence of the key; the unit cases are the design's examples table; the failing-first run (IMP-21: 14 fail on the old src) | — |
+| Test fixtures and helpers coherent | Pass | The new e2e reuses e2e helpers (`flattenE2eConfiguredAgentExecutions`); the fakes are now realistic | — |
+| No stale or compatibility-only tests | Pass | The old reject assertions were rewritten (C-6) | — |
+| API/E2E readiness | Pass | Server e2e green; rerun plan for API-04, API-06 and the Org edit path is stated | — |
 
-- Ticket scope: this ticket (regression caused by removing `thinking_display` from the schemas; blocks REQ-011 / AC-011's "keep working").
-- Origin: design. The design identified the stopped-run edit as a strict-validation reader (SRC-020) but relied on the web sanitize step, which the stopped-run edit surface intentionally bypasses (`preserveInvalidDraft`), in line with the documented no-silent-write-back residual rule. The editable card renders no residual for the key, so the user has no way out.
-- Not an implementation defect: the implementation matches the design's "no change" for these consumers.
-- Not a review gap: direct route, no source review. The issue was a design-level premise. It also falls under the design's own escalation trigger (a) ("blocked by a server validation path"), applied to the edit leg rather than to resume.
-- Decision needed from the Solution Designer (options from API/E2E, not prescribed here): (1) drop undeclared keys from the stopped-run edit draft (this conflicts with the documented `settings.md` rule and needs that rule to be revised); (2) let the server validation tolerate unchanged stored keys that the schema no longer declares (this touches the shared validator used by model replacement and Org launch); (3) show a removable residual on the editable card. Whichever you choose, also cover the AgentOrg stopped-run edit, and add a durable test for the edit path.
+## Source File Size And Structure Audit
 
-## Follow-ups
+| Source File | Lines Before | Lines After | `>500` | `>220` Delta | SoC | Placement | Classification | Action |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `collaborator-launch-resolver.ts` | 325 | 329 | Pass | Pass (+4) | Pass | Pass | — | — |
+| `agent-org-run-planner.ts` | 85 | 87 | Pass | Pass | Pass | Pass | — | — |
+| `agent-org-run-service.ts` | 278 | 287 | Pass | Pass | Pass | Pass | — | — |
+| `launch-usability-check.ts` | 191 | 207 | Pass | Pass | Pass | Pass | — | — |
+| `model-config-schema-validation.ts` | 142 | 143 | Pass | Pass | Pass | Pass | — | — |
+
+## Legacy / Backward-Compatibility Verdict
+
+| Check | Result | Notes |
+| --- | --- | --- |
+| No backward-compatibility mechanisms | Pass | Leaving out undeclared keys is a generic tolerant reader with no version or key-name branching (Principle 5) |
+| No legacy retention | Pass | — |
+| Dead code removed | Pass | See above |
+| Persisted-data decision followed | Pass | Directly Usable, no migration; untouched Org scopes are not rewritten (AC-012 b) |
+| No dual reads/writes | Pass | — |
+| Transition mechanics match the design | Pass | — |
+
+## Dead / Obsolete / Legacy Items Requiring Removal
 
 None.
 
+## Docs-Impact Verdict
+
+- Docs impact: `Yes`. Done in IR-002.
+- Why: the validator contract changed.
+- Files: `autobyteus-server-ts/docs/modules/llm_management.md` (contract and the caller rule), `run_history.md` (save outcomes), `autobyteus-web/docs/settings.md` (undeclared setting is left out on save; residual only in read-only views). All three match the code.
+
+## Additional Material Premise Validation
+
+None new. RISK-6 is a design decision (SR-004), not a new premise.
+
+## Review Scorecard (Mandatory)
+
+- Overall score: 9.5 / 10 (simple average)
+
+| Priority | Category | Score | Why | Weak | Improve |
+| --- | --- | --- | --- | --- | --- |
+| 1 | Data-Flow Spine Inventory and Clarity | 9.6 | DS-004 is implemented exactly; Org launch now resolves once | — | — |
+| 2 | Ownership Clarity and Boundary Encapsulation | 9.6 | One owner for the rule; callers only choose the selection | — | — |
+| 3 | API / Interface / Query / Command Clarity | 9.5 | `build({plan})` and `InheritedLaunchVerdict` are explicit | `build`'s doc says the caller "may replace" selections, which is a soft contract | — |
+| 4 | Separation of Concerns and File Placement | 9.5 | All changes stay in their owning files | — | — |
+| 5 | Shared-Structure / Data-Model Tightness | 9.4 | The verdict type replaces a two-meaning string | Trivial three-place mapping (C-4) | — |
+| 6 | Naming Quality and Local Readability | 9.4 | "canonical" is consistent | `of` helper name in the Org service is terse | Optional |
+| 7 | API/E2E Readiness | 9.5 | Server e2e, failing-first and updated suites are green | Browser reruns left to API/E2E as planned | — |
+| 8 | Runtime Correctness And Behavioral Fidelity | 9.4 | AC-012 and AC-013 hold; declared-key refusals are preserved; RISK-6 matches the decision | Empty-config split (C-1) is a small special case | — |
+| 9 | No Backward-Compatibility / No Legacy Retention | 9.6 | Generic reader, no key-name branch | — | — |
+| 10 | Cleanup Completeness | 9.5 | Dead branches and fields removed; docs synced | — | — |
+
+## Findings
+
+None. CR-FO-001 (CRR-001) is resolved: see the CRR-002 prior-finding table.
+
+## Follow-ups
+
+- Follow-ups this review added: None. FU-004, which the Solution Designer recorded, covers the paths that do not go through the validator.
+
 ## Classification
 
-`Design Impact` — owner: Solution Designer. This confirms the API/E2E preliminary classification.
+N/A (Pass)
 
 ## Recommended Recipient
 
-Solution Designer. After the design revision and implementation: rerun API-04 and API-06 (old-run edit) and add the Org edit path. The other API cases stay valid unless the fix touches autobyteus-ts or the catalog.
+API/E2E (`/software_engineering_team/api_e2e_engineer`): rerun API-04 and API-06 (old-run edit) and add the Org edit path. Implementation gets an informational notification.
 
 ## Residual Risks
 
-- Org stopped-run edit has been confirmed by reading the code only, not by running it.
-- Option (2) changes a validator shared by model replacement and Org launch. If it is chosen, its blast radius needs a decision.
+- RISK-6: a non-null config on a schema-less model (e.g. AGY) is now accepted as `null` instead of refused. This is decided behavior; API/E2E may want to confirm the user-visible effect on one such model.
+- The browser edit paths (agent, team, Org) are proven at the server level only (IMP-17). The API/E2E reruns close this.
+- I did not re-audit IR-001 source here (see Explicit exclusions).
 
 ## Latest Authoritative Result
 
-- Result: Fail. Classification `Design Impact`. Owner: Solution Designer. CRR-001.
+- Review Decision: Pass
+- Review Entry Point: Implementation Review
+- Supported Product Scenario Gate: Pass
+- Material-Premise Gate: Pass
+- Score Summary: 9.5 / 10; every category is ≥ 9.4
+- Failure Origin: N/A
+- Recommended Recipient: API/E2E
+- Notes: CRR-002 resolves CR-FO-001.

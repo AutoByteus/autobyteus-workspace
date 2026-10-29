@@ -5,15 +5,15 @@
 - Upstream Requirements Doc: `tickets/in-progress/claude-anthropic-effort-control/requirements-doc.md` (Approved SR-002; DEC-011/AC-012 at SR-003/SR-004)
 - Upstream Investigation Notes: `investigation-notes.md` (SRC-001..SRC-023, PRB-001..003)
 - Upstream Solution Revision Record: `solution-revision-record.md` (SR-001..SR-004)
-- Reviewed Design Spec: `design-spec.md` at docs commit `7bfed6427` (SR-004)
+- Reviewed Design Spec: `design-spec.md` at docs commit `4eb5d87f7` (SR-005; round 1 reviewed `7bfed6427`, SR-004)
 - Supplemental Task Artifacts Reviewed: `handoff.md`, `follow-ups.md`, `code-review-report.md`, `implementation-handoff.md` (context only)
-- Relevant Solution Revision IDs: SR-001 (superseded parts), SR-002, SR-003 (superseded mechanism), SR-004
+- Relevant Solution Revision IDs: SR-001 (superseded parts), SR-002, SR-003 (superseded mechanism), SR-004, SR-005
 - Architecture Review Revision Record: `architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-001`
-- Current Review Round: 1
-- Trigger: first architecture review; SR-004 raised `architectural_risk` to High (shared server validation contract changes)
-- Prior Review Round Reviewed: N/A
-- Latest Authoritative Round: 1
+- Current Architecture Review Revision ID: `ARCH-REV-002`
+- Current Review Round: 2
+- Trigger: SR-005 revision (docs `4eb5d87f7`) answering ARCH-REV-001 AR-001/AR-002; re-review limited to those findings, unaffected verdicts carried forward
+- Prior Review Round Reviewed: 1 (ARCH-REV-001, Fail)
+- Latest Authoritative Round: 2
 - Current-State Evidence Basis: worktree `codex/claude-anthropic-effort-control`; production code at `574aa0bd7` (SR-002); server validator and every `RunModelSelectionValidator` call site read directly (cited below).
 
 ## Routing Classification Review
@@ -212,68 +212,67 @@ Each domain word keeps one meaning (Principle 15): `Pass`. "Declared key" and "o
 | --- | --- | --- | --- |
 | REQ-011 "launch configs" leg (launch preferences → collaborator launch) not traced or tested | REQ-011 names launch configs | Trace it under AR-001 and add a check | Open (AR-001) |
 
+## Round 2 Re-Review (ARCH-REV-002) — AR-001 / AR-002
+
+Behavior basis reconfirmed. SR-005 changes no intended behavior. AC-013 makes REQ-011's "launch configs" leg testable and does not add new behavior.
+
+The SR-005 claims were checked against the code:
+
+- **Caller inventory (10 rows):** matches my round-1 count. Each row's "uses today" was spot-checked:
+  - #1 is L66-91 (canonical).
+  - #2/#3: the team plan stores the canonical selection at L95-98.
+  - #4: the Org manager does so at L316-320.
+  - #6: Org launch, `agent-org-run-service.ts` L99-112, validates `resolved.launch` and then `planner.build` re-resolves from the raw inputs. This is correct and now marked as a change.
+  - #7: launch-usability L138-163 is now marked as a change.
+  - #8: model routing L136-143 is canonical.
+  - #10: the host selection is admission only and is then saved through `agentRuns.updateStoppedModelConfig` (`delegated-launch-selection-service.ts` L141-156). That save goes through caller #1, which revalidates and stores the canonical config. Correct.
+  - The name-collision exclusions are correct.
+- **Rule:** "every caller stores or launches only `validation.selection`" is one owner-level rule. Combined with DS-004, "omitted" now holds on every validated path for every provider.
+- **Paths that bypass the validator** (resume, new standalone launch) are stated honestly as pre-existing and recorded as FU-004 with evidence. No key is removed from a non-Claude schema in this ticket, so this is not a prerequisite.
+- **AR-002 corrections:** derived consumers, spine actors, the Persisted Data readers and semantics, the reuse row, escalation trigger (a′), sequence steps 8-9 and the AC-012 verification intent are all aligned with SR-004/005. The examples table covers omit, invalid-with-undeclared, an all-undeclared config → `null`, and a null schema.
+
+Verdict updates (all other verdicts carried forward from round 1 unchanged):
+- Behavior table, BEH-007 (edit/launch): Confirmed.
+- Spine inventory, DS-004: Pass.
+- Allocation, server llm-management validation: Pass.
+- `ModelConfigValidationResult.valid.config` tightness: Pass, because callers consume the canonical config.
+- Principle 11 derived consumers: Pass.
+- File mapping, admission callers: Pass (named in the inventory, rows #6 and #7).
+- Change safety, SR-004/005: Pass.
+- Example adequacy, validator omission: Pass.
+- Task Design Health, refactor supported by sections: Pass.
+
+Implementation guidance (non-blocking; for the implementer and code reviewer to verify against the stated rule):
+
+- **IG-1, Org launch (#6).** `planner.build` calls `resolveConfiguration` again from the raw inputs (`agent-org-run-planner.ts` L46-54). Prefer resolving once, replacing each scope's `llmModelIdentifier`/`llmConfig` with its validated selection, and building the tree from that resolved plan. Feeding canonical configs back in as "overrides" could change follow-team/inheritance resolution. If neither approach works without changing the planner contract, escalation trigger (a′) applies.
+- **IG-2, inherited collaborator launch.** `LaunchUsabilityCheck` validates the inherited launch (offset 0) but returns only `inheritedFailure`. The resolver launches its own raw copy (`collaborator-launch-resolver.ts` L113, `cloneLaunch(base.launch)`). The design says "inherited launch likewise where it is returned for use". Today it is not returned. To keep the rule, return the canonical inherited launch from the check and have the resolver use it. Otherwise record explicitly that it is the delegator's own running config, the same class as the resume path in FU-004. Either is acceptable. Do not leave it implicit.
+
 ## Review Decision
 
-`Fail`. Design Impact, small. The SR-004 direction is sound: one owner on the server, the rejected alternatives are well reasoned, and no migration is needed. The contract change is under-specified across its callers.
+`Pass`. The design is ready for implementation.
 
 ## Findings
 
-### AR-001 — Validator-contract caller inventory incomplete; "omitted" not guaranteed where the canonical config is discarded
-
-- Type: Design Impact
-- Severity: Medium (blocking)
-- Protects: DEC-011 / AC-012 (keys "left out"), REQ-011 (launch configs keep running; stale key never sent), and the Out-of-Scope boundary for non-Anthropic providers (their admission behavior should not change silently).
-- Scope status: Within Approved Scope
-- Changes approved behavior: No
-- Affected contract: shared `validateModelConfigSchema` / `RunModelSelectionService` admission (`run_history.md` L184-187).
-- Evidence:
-  - 10 production call sites (see Principle 11 line above). The design names 4.
-  - Org launch `agent-org-run-service.ts` L136-161 and `launch-usability-check.ts` L138-163 only check `kind` and pass the raw `llmConfig` onward.
-  - Non-Anthropic AutoByteus adapters forward `extraParams` raw (`openai-compatible-request-builder.ts` L48, `mistral-llm.ts` L68).
-  - The design's justification "the runtime ignores undeclared keys (AnthropicLLM owned-key reads)" covers one adapter.
-- Material premise: AR-P1
-- Required update (design-spec):
-  1. Add the server admission spine and a caller table that lists every production caller of `validate`/`validateMany`. For each caller, state whether it persists or launches with `validation.selection` (canonical) or with the raw input, and what that means after the change.
-  2. Decide the admission-only callers (Org launch and launch-usability/collaborator launch). Recommended: they carry `validation.selection.llmConfig` onward, so the rule is one sentence, "only the canonical config is stored or launched", and undeclared keys never reach any runtime. A lighter alternative: keep the raw config and state explicitly, per runtime, why that is acceptable, including the change from refusal to admission for non-Anthropic providers.
-  3. Add the REQ-011 launch-preference/collaborator leg to the tests: a stored Claude launch preference holding `thinking_display` is usable and its launch carries no such key.
-- Why proportionate: a table plus one decision and at most two small call-site changes. The change already classifies itself as High because of this blast radius, so the blast radius has to be written down.
-- Recommended recipient: Solution Designer
-
-### AR-002 — Cumulative design text still states SR-002/SR-003 premises that SR-004 replaced
-
-- Type: Design Impact
-- Severity: Low (fix together with AR-001)
-- Protects: AC-012 / REQ-011 (implementer and validator read one consistent target)
-- Scope status: Within Approved Scope
-- Changes approved behavior: No
-- Evidence:
-  - The "Derived consumers" line says `model-config-schema-validation` has "no change" but later says it omits keys.
-  - "Spine Actors" says "server validation (unchanged)".
-  - Persisted Data says "Readers: server strict validation" and "edit surfaces drop them on save".
-  - The Reuse row "Stale stored keys | web sanitize + residuals" is stale.
-  - Escalation trigger (a′) refers to the dropped SR-003 draft mechanism.
-  - The Change/Refactor Sequence has no SR-004 step.
-  - The requirements AC-012 verification intent still says "Web unit test of the shared settings component" (an SR-003 mechanism). Correcting it is a verification wording change, not a behavior change.
-- Required update: align those sections with SR-004. Add a sequence step (validator + unit tests → server e2e AC-012 a/b + Org model edit + launch leg → docs). Add the validator input → canonical example (Example Adequacy).
-- Recommended recipient: Solution Designer
+None open. AR-001 and AR-002 are resolved (see `architecture-review-revision-record.md` ARCH-REV-002).
 
 ## Classification
 
-`Design Impact`
+N/A (Pass)
 
 ## Recommended Recipient
 
-Solution Designer (`/software_engineering_team/solution_designer`)
+Implementation Engineer (`/software_engineering_team/implementation_engineer`); informational notice to the Solution Designer.
 
 ## Residual Risks
 
-- Nested object properties still reject undeclared nested keys. No current Claude schema uses nested settings, so this is acceptable as stated. A future nested-key removal would hit the old failure mode.
-- After SR-004, a stray or typo key submitted through the API is silently dropped instead of reported. This is inherent in DEC-011 B as approved.
-- FU-001 and FU-003 remain open as recorded.
-- Live evidence for Fable 5.1 round trip incomplete (design notes max_tokens).
+- Nested object properties still reject undeclared nested keys. No current schema needs nested settings.
+- A stray or typo key submitted through the API is silently dropped (inherent in DEC-011 B).
+- FU-004: paths that bypass the validator plus non-Anthropic raw forwarding. FU-001 and FU-003 remain open.
+- IG-1/IG-2 are implementation-level. The escalation trigger (a′) covers a planner-contract surprise.
+- Live evidence for the Fable 5.1 round trip is incomplete (noted by the design).
 
 ## Latest Authoritative Result
 
-- Review Decision: Fail
-- Material-Premise Gate: Pass. AR-P1 is recorded. The finding asks for a design statement and caller decisions, not machinery for an unsupported premise.
-- Notes: Everything outside the SR-004 admission leg passes (effort mapping, owned keys, catalog, one-list web, gen-4 removal, persisted-data decision). Expect a quick re-review limited to AR-001/AR-002.
+- Review Decision: Pass
+- Material-Premise Gate: Pass. AR-P1 is resolved by the canonical-only rule. The remaining raw-forwarding class is recorded as FU-004.
+- Notes: The round-1 sections above keep their evidence. Where round 1 marked Fail for AR-001/AR-002, the round-2 verdict updates above supersede it.
