@@ -13,7 +13,7 @@ import { getMediaFileKindFromPath } from '../../utils/media-file-kind.js';
 const DESCRIPTION = [
   'Reads content from a specified file. Supports optional 1-based inclusive line ranges via start_line/end_line.',
   'Each returned line is prefixed with its line number when include_line_numbers is true.',
-  'Image, audio and video files (by extension) are attached for the model to see in the next turn instead of being returned as text; line ranges do not apply to them, and a kind the current model cannot take is refused.',
+  'Image, audio and video files (by extension) are attached for the model to see in the next turn instead of being returned as text; line ranges do not apply to them, a kind the current model cannot take is refused, and other binary files are refused.',
   "File paths use trusted-local semantics: absolute paths are used directly; relative paths require an explicit absolute base_dir and are never resolved from workspace, process, or shell cd state.",
   'Raises ValueError if a relative path is given without an absolute base_dir or if line range arguments are invalid.',
   'Raises FileNotFoundError if the file does not exist.',
@@ -41,6 +41,9 @@ argumentSchema.addParameter(new ParameterDefinition({
   required: false,
   defaultValue: true
 }));
+
+/** A NUL byte in the first 8,000 bytes marks a file as binary (git's heuristic); text files contain none. */
+const BINARY_SNIFF_BYTES = 8000;
 
 type AgentContextLike = { agentId: string; workspaceRootPath?: string | null } & MediaReadContext;
 
@@ -85,38 +88,46 @@ export async function readFile(
     throw new Error(`The file at resolved path ${finalPath} does not exist.`);
   }
 
+  let fileBytes: Buffer;
   try {
-    const fileContents = await fs.readFile(finalPath, 'utf-8');
-    const lines = fileContents.match(/.*(?:\n|$)/g) ?? [];
-    const selected: string[] = [];
-    let lineNo = 0;
-
-    for (const line of lines) {
-      if (line === '') {
-        continue;
-      }
-      lineNo += 1;
-      if (startLine !== undefined && startLine !== null && lineNo < startLine) {
-        continue;
-      }
-      if (endLine !== undefined && endLine !== null && lineNo > endLine) {
-        break;
-      }
-
-      if (includeLineNumbers) {
-        const hasNewline = line.endsWith('\n');
-        const lineText = hasNewline ? line.slice(0, -1) : line;
-        selected.push(`${lineNo}: ${lineText}${hasNewline ? '\n' : ''}`);
-      } else {
-        selected.push(line);
-      }
-    }
-
-    return selected.join('');
+    fileBytes = await fs.readFile(finalPath);
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     throw new Error(`Could not read file at ${finalPath}: ${message}`);
   }
+  if (fileBytes.subarray(0, BINARY_SNIFF_BYTES).includes(0)) {
+    throw new Error(
+      `The file '${finalPath}' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files.`
+    );
+  }
+
+  const fileContents = fileBytes.toString('utf8');
+  const lines = fileContents.match(/.*(?:\n|$)/g) ?? [];
+  const selected: string[] = [];
+  let lineNo = 0;
+
+  for (const line of lines) {
+    if (line === '') {
+      continue;
+    }
+    lineNo += 1;
+    if (startLine !== undefined && startLine !== null && lineNo < startLine) {
+      continue;
+    }
+    if (endLine !== undefined && endLine !== null && lineNo > endLine) {
+      break;
+    }
+
+    if (includeLineNumbers) {
+      const hasNewline = line.endsWith('\n');
+      const lineText = hasNewline ? line.slice(0, -1) : line;
+      selected.push(`${lineNo}: ${lineText}${hasNewline ? '\n' : ''}`);
+    } else {
+      selected.push(line);
+    }
+  }
+
+  return selected.join('');
 }
 
 const TOOL_NAME = 'read_file';

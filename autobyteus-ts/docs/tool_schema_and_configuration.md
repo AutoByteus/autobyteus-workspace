@@ -143,7 +143,10 @@ which the agent loop attaches to the next turn for the model to see. For these
 files `start_line`/`end_line` are refused, `include_line_numbers` is ignored, an
 empty file is refused, and a kind the current model's capability marks
 `unsupported` is refused with a message saying the file was not loaded
-(`unknown` loads). The same path contract and denied paths apply. The separate
+(`unknown` loads). The same path contract and denied paths apply. Any other
+file is read once; if its first 8,000 bytes contain a NUL byte it is refused as
+binary (PDF, Office documents, archives, executables), otherwise those bytes are
+decoded as UTF-8 text exactly as before. The separate
 `read_media_file` tool was removed; a stored definition that still names it
 starts as described below and reads media through `read_file`, which every
 native agent has.
