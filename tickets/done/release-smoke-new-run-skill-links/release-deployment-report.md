@@ -37,7 +37,7 @@
   - Not rerun: API-05 (temporary regression mutation), API-06/06b and IMP-08 (signed-out, missing CLI, bogus model). They prove the runner's fail-closed logic, which no base commit touches (`scripts/release_smoke.py` and its tests are new in this ticket and unchanged by the merge). DEL-01 covers the verdict logic, and DEL-03 run 1 happened to show a fail-closed run again.
 - Post-integration verification result: `Passed` (same result as the accepted API-08 basis)
 - Delivery edits started only after integrated state was current: `Yes`
-- Handoff state current with latest tracked remote base: `Yes` (rechecked before the final merge; see Repository Finalization)
+- Handoff state current with latest tracked remote base: `Yes` (rechecked before the final merge and the push: unchanged)
 
 ## Verification
 
@@ -59,7 +59,7 @@
 - More evidence requested: `None`. The only missing executable proof is one run with Codex quota. API/E2E showed it cannot be reached before 2026-11-04 (the limit is on the account, and no other sign-in exists), and the user accepted the gap.
 - User check needed: `No`
 - User check reference, when needed: —
-- Re-verification after later re-integration: see Repository Finalization.
+- Re-verification after later re-integration: `Not needed`. The target did not move, and the merged tree equals the verified tree.
 
 ## Release Decision
 
@@ -87,17 +87,17 @@
 
 - Bootstrap context source: `handoff-architecture-design.md` (Finalization target `origin` / `personal`) and RELEASE.md "Finalization Target"
 - Ticket branch: `codex/release-smoke-new-run-skill-links`
-- Ticket branch commit result: see `delivery-revision-record.md` DR-001 (filled after finalization)
-- Ticket branch push result: see DR-001
+- Ticket branch commit result: `Completed`: `33277d2e16` (archive and delivery records) on top of the integration merge `32eac02929`
+- Ticket branch push result: `Completed`: first push, after the Secret Gate passed over its 17 commits (`origin/codex/release-smoke-new-run-skill-links` @ `33277d2e16`)
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Target advanced after verification / acceptance: see DR-001
-- Delivery-owned edits protected before re-integration: see DR-001
-- Re-integration before final merge result: see DR-001
-- Target branch update result: see DR-001
-- Merge into target result: see DR-001
-- Push target branch result: see DR-001
-- Repository finalization status: see DR-001
+- Target advanced after verification / acceptance: `No`. `origin/personal` was still `9f7c9c10a6` when fetched before the merge and again before the push
+- Delivery-owned edits protected before re-integration: `Not needed`
+- Re-integration before final merge result: `Not needed`. The `--no-ff` merge tree equals the verified ticket branch tree (`git diff --quiet` clean), so no re-verification was needed
+- Target branch update result: `Completed`: `git checkout -b finalize/release-smoke-new-run-skill-links origin/personal` @ `9f7c9c10a6`
+- Merge into target result: `Completed`: `b681fc2e8c`, `--no-ff`. Secret Gate on the merged state: PASS (18 commits)
+- Push target branch result: `Completed`: `9f7c9c10a6..b681fc2e8c HEAD -> personal`. This report's final record is a follow-up `docs(delivery)` commit on `personal`
+- Repository finalization status: `Completed`
 - Blocker (if applicable): —
 
 ## Release / Publication / Deployment
@@ -114,7 +114,11 @@
 ## Post-Finalization Cleanup
 
 - Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/release-smoke-new-run-skill-links`
-- Worktree cleanup result, prune, local branch, remote branch: see DR-001
+- Worktree cleanup result: `Completed` after this record's commit was pushed: untracked `*/dist/` install output deleted, then `git worktree remove`
+- Worktree prune result: `Completed` (`git worktree prune`)
+- Local ticket branch cleanup result: `Completed`: `codex/release-smoke-new-run-skill-links` and `finalize/release-smoke-new-run-skill-links` deleted (both merged into `origin/personal`)
+- Remote branch cleanup result: `Not required`. By repository practice, merged `codex/*` ticket branches stay on `origin`
+- Blocker (if applicable): —
 
 ## Release Notes Summary
 
@@ -134,8 +138,8 @@
 
 ## Verification Checks
 
-- Secret Gate `scripts/check_secrets.sh origin/personal..codex/release-smoke-new-run-skill-links`: PASS over 16 commits before the first push (rerun on the merged state before pushing `personal`; result in DR-001).
-- `python3 scripts/check_repository_artifact_hygiene.py` before the final commit: result in DR-001.
+- Secret Gate `scripts/check_secrets.sh origin/personal..codex/release-smoke-new-run-skill-links`: PASS over 16 commits before the first push Rerun on the merged state before pushing `personal`: PASS over 18 commits..
+- `python3 scripts/check_repository_artifact_hygiene.py` before the final commit: passed (80,375 tracked files; longest path 200, at the limit, from an earlier ticket). `python3 scripts/check_licensing.py`: consistent.
 - DEL-01, DEL-02, DEL-03 as above.
 
 ## Rollback Criteria
@@ -145,10 +149,10 @@
 ## Final Status
 
 - Verification complete (from the evidence, or the user's check where needed): `Yes`
-- Repository finalization complete: see DR-001
+- Repository finalization complete: `Yes` (`personal` @ `b681fc2e8c`, plus this record's `docs(delivery)` commit)
 - Applicable release/deployment/rollout complete or not required: `Yes` (not required)
-- Applicable safe cleanup complete or not required: see DR-001
-- Unresolved blocker: see DR-001
-- Successful terminal package eligible for return: see DR-001
-- Terminal package sent to the Solution Designer: see DR-001
-- Terminal message/reference: see DR-001
+- Applicable safe cleanup complete or not required: `Yes`
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to the Solution Designer: `Yes`, after this record was pushed
+- Terminal message/reference: `send_message_to` to the terminal recipient that `get_handoff_rules` selects, `Delivery Completed`, 2026-10-29
