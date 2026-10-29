@@ -11,7 +11,7 @@
 - Finalization target remote / branch: `origin` / `personal` (RELEASE.md)
 - Bootstrap result: worktree created; first `git worktree add` timed out at 30 s and was cleaned (`worktree prune`, branch deleted) and re-run successfully in the background; dependencies installed with `corepack pnpm install --frozen-lockfile --prefer-offline` (pnpm is only available through corepack in this environment).
 - Bootstrap blocker: None
-- Current solution revision ID: `SR-001`
+- Current solution revision ID: `SR-002`
 - Authorities read (requirements gate, 2026-10-29): `references/requirements-engineering.md`, `references/finding-the-cause.md`, `references/ticket-scope.md`, `references/handoff.md`. Architecture gate (2026-10-29): `references/architecture-design.md`, `references/design-principles.md`, project `DESIGN.md`, `autobyteus-server-ts/docs/design/data_migration_guideline.md` §2.
 - Investigation status: Complete
 
@@ -52,6 +52,9 @@
 | SRC-016 | 2026-10-29 | Ticket | `tickets/done/remove-deprecated-deepseek-kimi-models/requirements.md` | Removal precedent | Prior model removals were clean cuts (no alias/migration); AC: no references outside archived tickets. |
 | SRC-017 | 2026-10-29 | Code | `autobyteus-web/components/run-settings/RunSettingsCard.vue` L58-60; `autobyteus-ts/src/llm/current-model-selection-error.ts`; server `application-current-model-selection-guard.ts` | Removed-model handling | Existing "model unavailable for runtime" UI state and `CurrentModelSelectionRequiredError` path cover saved configs naming a model that is no longer listed. |
 | SRC-018 | 2026-10-29 | Code | `autobyteus-server-ts/src/token-usage/pricing/token-price-config-provider.ts` L147-160 | Pricing | Prices resolved from the catalog at observation time and captured on the usage row; removing rows only affects new observations. |
+| SRC-019 | 2026-10-29 | Data (read-only) | `grep -rl thinking_display /home/autobyteus/data` (user app data) | Do saved configs hold `thinking_display`? | Yes: `memory/agents/daily_assistant_…/run_metadata.json` (`claude-opus-5-5`, `"thinking_display": "omitted"`) and `memory/agent_teams/job_search_application_team_…/team_run_execution_tree.json` (3×). No agent/team/org definition files hold it. |
+| SRC-021 | 2026-10-29 | Code | `autobyteus-ts/src/llm/api/anthropic-native-assistant-turn.ts` L20-30; `anthropic-assistant-turn-assembler.ts` L20-64; `tests/unit/llm/api/anthropic-signed-tool-continuation.test.ts` | Do we pass omitted blocks back? | The native turn keeps a thinking block whenever it has a non-empty signature, whatever its text (empty included), and replays it unchanged within the tool cycle and across later turns (append-only). Opus 5.5 has run with display omitted by default before this ticket (user run SRC-019). |
+| SRC-020 | 2026-10-29 | Code | `autobyteus-web/utils/llmConfigSchema.ts` L258-279 (`sanitizeModelConfigAgainstSchema`), `ModelConfigSection.vue` L271-280, `utils/historicalModelConfigFields.ts`, `docs/settings.md` L1652-1658; `anthropic-llm.ts` L107-111/L203 | How removed schema keys behave | Editable surfaces drop keys the current schema lacks; historical views show them as residuals (documented product rule). `AnthropicLLM` forwards non-internal config extra params raw, so a key removed from the internal set (e.g. `thinking_display`) would reach Anthropic as an unknown top-level field from a resumed run's stored config. Server strict validation runs on model replacement, Org launch and stopped-run edits (`run-model-selection-service.ts` L71; `agent-org-run-service.ts` L136). |
 
 ## Relevant Existing Behavior And Supported Product Paths
 
@@ -90,6 +93,7 @@ All probes ran on the real Anthropic API through the current (unchanged) `Anthro
 | PRB-002 | same | Sonnet 5.5 thinking on + xhigh | OK (68 out tokens) | Measured |
 | PRB-002 | same | Opus 5.5 effort `adaptive` | 400 `output_config.effort: Input should be 'low', 'medium', 'high', 'xhigh' or 'max'` | Reproduced |
 | PRB-002 | same | Sonnet 4.6 budget thinking + effort medium | OK (429 out tokens) — moot after removal | Measured |
+| PRB-003 | raw SDK two-turn tool round trip (evidence/SD-PRB-003-omitted-thinking-round-trip.log) | display omitted vs summarized; pass back vs strip thinking | Omitted: thinking text empty, signature full (thousands of chars); passing back unchanged works on Sonnet 5.5, Opus 5.5, Haiku 5.5 (Fable 5.1 hit max_tokens at T1); stripping on Opus 5.5 → no error but input 1940→746 tokens (reasoning lost). Display only changes the visible summary, not what must be passed back. | Measured |
 
 - Temporary diagnostics: None in the worktree; probe script lived in `/tmp` and was deleted. Two untracked `dist/` folders produced by the `test-vault` build in the worktree were deleted. Note: a first `test-vault setup` attempt in the shared main checkout failed at its `autobyteus-ts` build (stale dependencies); its `clean-dist` + `tsc` regenerated `autobyteus-ts/dist` there from that checkout's own source; no tracked file changed.
 - Reproduction for implementation: None as a committed test; AC-002/AC-004 unit tests are the failing-first starting point.

@@ -1,12 +1,12 @@
 # Solution Handoff — claude-anthropic-effort-control
 
 - Result: `Architecture Design Complete`
-- Package: `claude-anthropic-effort-control` (Project Task `autobyteus-8`, Project `project_f34a9537-07d7-449a-b78f-16368f1aa619`), SR-001
+- Package: `claude-anthropic-effort-control` (Project Task `autobyteus-8`, Project `project_f34a9537-07d7-449a-b78f-16368f1aa619`), SR-002 (revision after the implementation engineer's Requirement Gap; implementation WIP `781823e77`)
 - Requested by: `/project_task_manager` (run `project_task_manager_3a5fea41304e412da92575d61bd88570`) for the user
 - Worktree / branch: `/home/autobyteus/workspace/.codex/worktrees/claude-anthropic-effort-control` / `codex/claude-anthropic-effort-control`
 - Base: `origin/personal` @ `e82d03b0f` (fetched 2026-10-29); finalization target `origin/personal` (RELEASE.md)
 - Ticket folder: `tickets/in-progress/claude-anthropic-effort-control/`
-- Approval: requirements approved by the User on 2026-10-29 (Solution Designer conversation). Recorded in requirements-doc.md Document Status.
+- Approval: SR-001 and SR-002 requirements approved by the User on 2026-10-29 (Solution Designer conversation). Recorded in requirements-doc.md Document Status.
 - Classification: task_size `Medium`, architectural_risk `Low` → direct implementation route (no independent architecture review).
 
 ## Original request and goals
@@ -47,3 +47,10 @@ Implementation per the design's change sequence, with implementation-handoff.md,
 ## Route
 
 Handoff rule matched: "Architecture Design Complete with task_size=Small or Medium and architectural_risk=Low" → `/software_engineering_team/implementation_engineer` (2026-10-29).
+
+## SR-002 revision (2026-10-29)
+
+- User changes: one Thinking list Off · Low · Medium · High · Xhigh · Max (Off = thinking off, no effort sent); remove the thinking display setting (never shown, never sent; Anthropic default `omitted`). The user approved after PRB-003 showed display is presentation-only: omitted blocks keep the full signed reasoning and our runtime already passes them back.
+- Design delta: see design-spec.md "SR-002 Delta Against The SR-001 Implementation". Key items: `AnthropicLLM` reads only owned config keys (stored `thinking_display` in real user runs must not reach Anthropic, AC-011); no effort while off (refusal dropped); web reverts to the existing merged list with dependent effort.
+- Classification unchanged: Medium / Low → implementation engineer.
+- Follow-ups: FU-001, FU-002 (from implementation), FU-003 (Claude SDK Off + stored effort).

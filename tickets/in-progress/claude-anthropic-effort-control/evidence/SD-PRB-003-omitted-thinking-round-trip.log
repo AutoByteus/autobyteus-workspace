@@ -1,0 +1,20 @@
+# SD-PRB-003 — does display "omitted" break passing thinking back? (Solution Designer, 2026-10-29)
+# Method: raw @anthropic-ai/sdk 0.132.1 client obtained from AnthropicLLM (test vault key), two-turn tool round trip:
+#   T1: user asks to reason (largest 2020 city) then call get_weather; thinking {type:'adaptive'} (display default = omitted) unless noted; effort max.
+#   T2: user turn + T1 assistant content passed back unchanged (or with thinking blocks stripped) + tool_result.
+# thinking(text=2ch) means the JSON string "" (empty text); sig = signature length.
+claude-sonnet-5-5 max pass-back T1 tool_use thinking(text=2ch, sig=7460) | text | tool_use
+claude-sonnet-5-5 max pass-back T2 tool_use thinking(text=2ch, sig=3352) | text | tool_use in_tokens= 2683
+claude-opus-5-5 max pass-back T1 tool_use thinking(text=2ch, sig=5148) | text | tool_use
+claude-opus-5-5 max pass-back T2 end_turn thinking(text=2ch, sig=6492) | text in_tokens= 1940
+claude-haiku-5-5 max pass-back T1 tool_use thinking(text=2ch, sig=12740) | text | tool_use
+claude-haiku-5-5 max pass-back T2 tool_use thinking(text=2ch, sig=2168) | text | tool_use in_tokens= 4231
+claude-fable-5-1 max pass-back T1 max_tokens thinking(text=2ch, sig=13392)            (4000 max_tokens too small at max effort; no T2)
+claude-sonnet-5-5 max pass-back display=summarized T1 max_tokens thinking(text=3148ch, sig=13640)
+claude-opus-5-5 max strip-thinking T1 tool_use thinking(text=2ch, sig=6004) | text | tool_use
+claude-opus-5-5 max strip-thinking T2 end_turn thinking(text=2ch, sig=6768) | text in_tokens= 746
+# Earlier lighter run (effort high, simple prompt): all four models completed T2 after pass-back; no thinking before the tool call.
+# Findings:
+# - With omitted, thinking blocks arrive with empty text but a full signature (the encrypted complete reasoning).
+# - Passing them back unchanged works on every model tried (no error), exactly as with summarized.
+# - Stripping them on Opus 5.5 gives no error but input drops 1940 -> 746 tokens: the reasoning is silently lost. So blocks must be passed back; display does not change that.
