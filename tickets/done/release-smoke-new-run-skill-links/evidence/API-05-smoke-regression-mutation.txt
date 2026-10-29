@@ -1,0 +1,100 @@
+# API-05-smoke-regression-mutation
+# case: API-05 (AC-005, REQ-001, REQ-005; SCN-004a: the v1.5.6-beta.2 regression comes back)
+# commit: 27e197bd724bbcce9db74d021efe851fcccde4d7 + a TEMPORARY reverse-apply of the src/ part of 810408bcee
+#         (the autobyteus-142 fix "restore v1.5.6-beta.1 workspace skill exposure for Claude, Codex and Grok"),
+#         i.e. the beta.2 skill-exposure code. Restored right after the run; git status identical to before (see end).
+# command: git show 810408bcee -- autobyteus-server-ts/src > fix-src.patch; git apply -R fix-src.patch
+#          PATH=<PATH without ~/.grok/bin> python3 scripts/release_smoke.py      (from the repository root, normal shell)
+#          git apply fix-src.patch
+# environment: macOS (Darwin 25.5.0), Python 3.9.6; claude 2.1.302, codex-cli 0.163.0, grok 1.0.62 signed in
+# date: 2026-10-19T03:53:30Z
+# note: removing ~/.grok/bin from PATH did not hide grok: a second copy is at ~/.local/bin/grok, so Grok ran too.
+#       No Grok session or token was used: every Grok case failed before a turn (no new ~/.grok/sessions entry).
+#       Claude and Codex spent one turn each (the all-installed half of the collision case).
+# shows: 8 of 9 live cases FAIL with exactly the beta.2 symptoms ("Workspace skill path collision" on a same-skill
+#        link; "ENOENT ... realpath .../memory/agent_teams/<team>/<member>" for a brand-new member); exit 1.
+#        AGY and AutoByteus PASS, as expected: the regression did not touch them.
+
+## runner output
+running live (claude, codex, grok): tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts
+running antigravity (antigravity): tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts
+running autobyteus (autobyteus): tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts
+
+Release smoke check
+runtime     scenario                                 result  reason
+claude      new run + restore, linked workspace      FAIL    failed: AssertionError: Error: Workspace skill path collision for 'link-probe-a8d47633' at '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-6UeomZ/claude-run-ws-tyWCie/.claude/skills/link-probe-a8d47633'.: expected { success: false, …(2) } to match object { success: true }
+claude      brand-new team member                    FAIL    failed: AssertionError: turn errors: {"code":"ENOENT","message":"ENOENT: no such file or directory, realpath '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-6UeomZ/app-data/memory/agent_teams/link_probe_team_claude_a8d47633_09a9a7848fad4d42b79526586cf17b04/link_probe_agent_a8d4763
+claude      different same-named skill               PASS
+codex       new run + restore, linked workspace      FAIL    failed: AssertionError: Error: Workspace skill path collision for 'link-probe-a8d47633' at '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-6UeomZ/codex-run-ws-2clfdN/.codex/skills/link-probe-a8d47633'.: expected { success: false, …(2) } to match object { success: true }
+codex       brand-new team member                    FAIL    failed: AssertionError: turn errors: {"code":"ENOENT","message":"ENOENT: no such file or directory, realpath '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-6UeomZ/app-data/memory/agent_teams/link_probe_team_codex_a8d47633_a39afb961f484da6b4d9a2cf016e651d/link_probe_agent_a8d47633
+codex       different same-named skill               PASS
+grok        new run + restore, linked workspace      FAIL    failed: AssertionError: Error: Workspace skill path collision for 'link-probe-a8d47633' at '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-6UeomZ/grok-run-ws-u0EU6V/.grok/skills/link-probe-a8d47633'.: expected { success: false, …(2) } to match object { success: true }
+grok        brand-new team member                    FAIL    failed: AssertionError: turn errors: {"code":"ENOENT","message":"ENOENT: no such file or directory, realpath '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-6UeomZ/app-data/memory/agent_teams/link_probe_team_grok_a8d47633_09d08132a1c3464389e9a276b0bbe58f/link_probe_agent_a8d47633_
+grok        different same-named skill               FAIL    failed: AssertionError: Error: Grok did not discover private configured skill 'retrospective-skill-improver'. No shared/copy fallback.: expected { success: false, …(2) } to match object { success: true }
+antigravity brand-new run, linked workspace          PASS
+antigravity brand-new team member, linked workspace  PASS
+autobyteus  brand-new run, linked workspace          PASS
+autobyteus  brand-new team member, linked workspace  PASS
+
+commit    27e197bd724bbcce9db74d021efe851fcccde4d7
+models    {"claude": "haiku", "codex": "gpt-5.6-luna", "grok": "grok-4.7"}
+duration  live 33s, antigravity 21s, autobyteus 8s
+result    FAIL
+logs      /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/release-smoke-x4jp8nrl
+exit=1
+
+## live step log excerpt (kept by the runner at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/release-smoke-x4jp8nrl/live.log)
+SKILL_LINKS_LIVE_MODELS {"claude":"haiku","codex":"gpt-5.6-luna","grok":"grok-4.7"}
+Error in createAgentRun: Error: Workspace skill path collision for 'link-probe-a8d47633' at '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-6UeomZ/claude-run-ws-tyWCie/.claude/skills/link-probe-a8d47633'.
+SKILL_LINKS_LIVE_TEAM_MEMORY_BEFORE claude {"teamRunId":"link_probe_team_claude_a8d47633_09a9a7848fad4d42b79526586cf17b04","designerRunId":"link_probe_agent_a8d47633_9465da1bf49545d5864bdc0c86f6247a","memberFoldersBefore":["team_communication_messages_active.jsonl","team_run_execution_tree.json"]}
+SKILL_LINKS_LIVE_TEAM_MEMBER claude {"designerRunId":"link_probe_agent_a8d47633_9465da1bf49545d5864bdc0c86f6247a","text":"","tools":[],"memberFoldersAfter":["team_communication_messages_active.jsonl","team_run_execution_tree.json"]}
+Error in createAgentRun: Error: Workspace skill path collision for 'link-probe-a8d47633' at '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-6UeomZ/claude-collision-ws-HuqoZZ/.claude/skills/link-probe-a8d47633'.
+SKILL_LINKS_LIVE_COLLISION claude {"success":false,"refusal":"Error: Workspace skill path collision for 'link-probe-a8d47633' at '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-6UeomZ/claude-collision-ws-HuqoZZ/.claude/skills/link-probe-a8d47633'."}
+SKILL_LINKS_LIVE_ALL_INSTALLED claude {"text":"OWNCODE-a8d47633","tools":["Skill"]}
+Error in createAgentRun: Error: Workspace skill path collision for 'link-probe-a8d47633' at '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-6UeomZ/codex-run-ws-2clfdN/.codex/skills/link-probe-a8d47633'.
+SKILL_LINKS_LIVE_TEAM_MEMORY_BEFORE codex {"teamRunId":"link_probe_team_codex_a8d47633_a39afb961f484da6b4d9a2cf016e651d","designerRunId":"link_probe_agent_a8d47633_b75009e635654ac8957f759ad12e38bc","memberFoldersBefore":["team_communication_messages_active.jsonl","team_run_execution_tree.json"]}
+SKILL_LINKS_LIVE_TEAM_MEMBER codex {"designerRunId":"link_probe_agent_a8d47633_b75009e635654ac8957f759ad12e38bc","text":"","tools":[],"memberFoldersAfter":["team_communication_messages_active.jsonl","team_run_execution_tree.json"]}
+Error in createAgentRun: Error: Workspace skill path collision for 'link-probe-a8d47633' at '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-6UeomZ/codex-collision-ws-q2eLxg/.codex/skills/link-probe-a8d47633'.
+SKILL_LINKS_LIVE_COLLISION codex {"success":false,"refusal":"Error: Workspace skill path collision for 'link-probe-a8d47633' at '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-6UeomZ/codex-collision-ws-q2eLxg/.codex/skills/link-probe-a8d47633'."}
+SKILL_LINKS_LIVE_ALL_INSTALLED codex {"text":"**Identifying required read skill**OWNCODE-a8d47633","tools":["run_bash"]}
+Error in createAgentRun: Error: Workspace skill path collision for 'link-probe-a8d47633' at '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-6UeomZ/grok-run-ws-u0EU6V/.grok/skills/link-probe-a8d47633'.
+SKILL_LINKS_LIVE_TEAM_MEMORY_BEFORE grok {"teamRunId":"link_probe_team_grok_a8d47633_09d08132a1c3464389e9a276b0bbe58f","designerRunId":"link_probe_agent_a8d47633_abf73e77ff7646ab9707ece3a36de56f","memberFoldersBefore":["team_communication_messages_active.jsonl","team_run_execution_tree.json"]}
+SKILL_LINKS_LIVE_TEAM_MEMBER grok {"designerRunId":"link_probe_agent_a8d47633_abf73e77ff7646ab9707ece3a36de56f","text":"","tools":[],"memberFoldersAfter":["team_communication_messages_active.jsonl","team_run_execution_tree.json"]}
+Error in createAgentRun: Error: Workspace skill path collision for 'link-probe-a8d47633' at '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-6UeomZ/grok-collision-ws-8QonAf/.grok/skills/link-probe-a8d47633'.
+SKILL_LINKS_LIVE_COLLISION grok {"success":false,"refusal":"Error: Workspace skill path collision for 'link-probe-a8d47633' at '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-6UeomZ/grok-collision-ws-8QonAf/.grok/skills/link-probe-a8d47633'."}
+Error in createAgentRun: Error: Grok did not discover private configured skill 'retrospective-skill-improver'. No shared/copy fallback.
+    296|       console.info(`SKILL_LINKS_LIVE_TEAM_MEMBER ${name}`, JSON.string…
+    296|       console.info(`SKILL_LINKS_LIVE_TEAM_MEMBER ${name}`, JSON.string…
+    296|       console.info(`SKILL_LINKS_LIVE_TEAM_MEMBER ${name}`, JSON.string…
+
+## git status --porcelain: before the mutation == after restoring the fix
+identical: yes
+## files the mutation changed (git status while mutated, excluding the pre-existing lines)
+ M autobyteus-server-ts/src/agent-execution/backends/acp/backend/acp-agent-run-backend-factory.ts
+ M autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-agent-run-backend-factory.ts
+ M autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-agent-run-context.ts
+ M autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-session-bootstrapper.ts
+ D autobyteus-server-ts/src/agent-execution/backends/claude/claude-workspace-skill-materializer.ts
+ M autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-cleanup.ts
+ M autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-manager.ts
+ M autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session-query-options.ts
+ M autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-agent-run-backend-factory.ts
+ M autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-agent-run-context.ts
+ M autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts
+ D autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-thread-cleanup.ts
+ M autobyteus-server-ts/src/agent-execution/backends/codex/backend/index.ts
+ D autobyteus-server-ts/src/agent-execution/backends/codex/codex-workspace-skill-materializer.ts
+ M autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread-manager.ts
+ M autobyteus-server-ts/src/agent-execution/backends/grok/grok-build-agent-run-backend-factory.ts
+ D autobyteus-server-ts/src/agent-execution/backends/grok/grok-workspace-skill-materializer.ts
+ M autobyteus-server-ts/src/agent-execution/backends/provider-preparation-guard.ts
+ M autobyteus-server-ts/src/agent-execution/providers/agent-provider-factory-builder.ts
+ M autobyteus-server-ts/src/compositions/create-process-agent-provider-factory-builder.ts
+ M autobyteus-server-ts/src/runtime-management/claude/client/claude-sdk-client.ts
+ M autobyteus-server-ts/src/runtime-management/codex/client/codex-app-server-client-manager.ts
+?? autobyteus-server-ts/src/agent-execution/backends/acp/acp-private-skill-adapter.ts
+?? autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-private-skill-discovery.ts
+?? autobyteus-server-ts/src/agent-execution/backends/grok/grok-private-skills.ts
+?? autobyteus-server-ts/src/agent-execution/backends/shared/prepare-private-runtime-skills.ts
+?? autobyteus-server-ts/src/agent-execution/backends/shared/runtime-skill-profile.ts
+?? autobyteus-server-ts/src/runtime-management/claude/client/claude-private-skill-discovery.ts
