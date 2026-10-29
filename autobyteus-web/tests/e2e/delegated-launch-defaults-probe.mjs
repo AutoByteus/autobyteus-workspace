@@ -62,6 +62,8 @@
 //   SIR-001..SIR-002 (remove-skill-improvement BEH-003, AC-003, AC-004): send_message_to by run id through real tool
 //           calls; an upgrade around real runs removes the feature's data once; see skill-improvement-removal-cases.mjs.
 //           Alone: pnpm -C autobyteus-web test:e2e:skill-improvement-removal
+//   TLU-001 (live-tool-list-updates) tools edited in the app reach the open run: card, refusal, restore; see
+//           tool-list-update-cases.mjs. Alone: pnpm -C autobyteus-web test:e2e:tool-list-updates
 // Settings rows (SR-006) are the read-only member rows, collapsed until opened, with the same look as the Members list
 // (`model · runtime · approval · source`, Coordinator chip, an opened Team's card then its Members, "Notes: N" on a
 // collapsed Team); DLP-003 (running) and DLP-007 (stopped and running again) also read them as Settings opens them.
@@ -84,6 +86,7 @@ import { desktopAdapter } from './fixtures/settings-refresh-desktop.mjs'
 import { registerSavedRefreshCases } from './settings-saved-model-refresh-cases.mjs'
 import { registerDelegatedCopyOwnFileCases } from './delegated-copy-own-file-cases.mjs'
 import { registerSkillImprovementRemovalCases } from './skill-improvement-removal-cases.mjs'
+import { registerToolListUpdateCases } from './tool-list-update-cases.mjs'
 import { agentRuntimeName } from '@autobyteus/agent-presentation-contracts'
 import { spawn } from 'node:child_process'
 import { createWriteStream, existsSync } from 'node:fs'
@@ -162,7 +165,7 @@ const stopOwned = async (child) => {
   return exited ? 'SIGTERM' : 'SIGKILL'
 }
 
-let ownedRoot, dataRoot, workspace, backendUrl, frontUrl, browser, backend, backendPort, dbUrl, agyModelsFile, argvLog, missingCodex
+let ownedRoot, dataRoot, workspace, backendUrl, frontUrl, browser, backend, backendPort, dbUrl, agyModelsFile, argvLog, agyToolLog, missingCodex
 const backendEnv = {}
 const gql = async (query, variables = {}) => {
   const res = await fetch(`${backendUrl}/graphql`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ query, variables }), signal: AbortSignal.timeout(30000) })
@@ -1536,6 +1539,11 @@ registerSkillImprovementRemovalCases({ defineCase, assert, waitFor, delay, sel, 
   /** Quits the backend, runs `between` while it is down, and starts it again on the same data root. */
   restartBackend: async (label, between) => { await stopOwned(backend); if (between) await between(); backend = await startBackend(label) },
   env: () => ({ frontUrl, dataRoot, outDir, dbUrl }) })
+registerToolListUpdateCases({ defineCase, assert, waitFor, delay, settle, shot, gql, newChatFor, chooseModel, typeAndSend, callFromComposer,
+  callTool, openAgentRun, AGY, MODEL,
+  /** The scripted AGY agent's tool calls (`AGY_FAKE_TOOL_LOG`): name, arguments, and the result or the error its MCP client got. */
+  agyToolCalls: async () => (await fs.readFile(agyToolLog, 'utf8').catch(() => '')).trim().split('\n').filter(Boolean).map((line) => JSON.parse(line)),
+  env: () => ({ frontUrl }) })
 const desktopSurface = desktopAdapter({ webDir, outDir, chromium, assert, waitFor })
 let exitCode = 0
 try {
@@ -1551,6 +1559,7 @@ try {
   for (const dir of [path.join(dataRoot, 'db'), workspace, home, toolsDir]) await fs.mkdir(dir, { recursive: true })
   missingCodex = path.join(ownedRoot, 'missing', 'codex')
   argvLog = path.join(ownedRoot, 'agy-argv.jsonl')
+  agyToolLog = path.join(ownedRoot, 'agy-tool-calls.jsonl')
   agyModelsFile = path.join(toolsDir, 'agy-models.tsv')
   await offerAgyModels([MODEL, ALT])
   const agy = path.join(toolsDir, 'agy')
@@ -1568,7 +1577,7 @@ try {
   })
   Object.assign(backendEnv, {
     ...baseEnv(), HOME: home, APP_ENV: 'development', DB_TYPE: 'sqlite', DATABASE_URL: dbUrl, AUTOBYTEUS_SERVER_HOST: backendUrl, DISABLE_HTTP_REQUEST_LOGS: 'true',
-    ANTIGRAVITY_CLI_COMMAND: agy, AGY_FAKE_CASE: 'linked_skills', AGY_FAKE_ARGV_LOG: argvLog,
+    ANTIGRAVITY_CLI_COMMAND: agy, AGY_FAKE_CASE: 'linked_skills', AGY_FAKE_ARGV_LOG: argvLog, AGY_FAKE_TOOL_LOG: agyToolLog,
     GROK_BUILD_COMMAND: grok, FAKE_ACP_FIXTURE: path.join(serverDir, 'tests/fixtures/grok-acp/prompt.jsonl'), FAKE_ACP_REPORT_MCP_READY: '1',
     CODEX_APP_SERVER_COMMAND: missingCodex,
   })

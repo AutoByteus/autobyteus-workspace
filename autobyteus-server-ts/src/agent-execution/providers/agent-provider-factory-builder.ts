@@ -193,6 +193,7 @@ export const createAgentProviderFactoryBuilder = (
           process.codex.threadManager,
           codexBootstrapper,
           process.codex.threadCleanup,
+          input.agentToolMcpRunSessions,
         ),
         antigravity: new AgyAgentRunBackendFactory(
           input.agentDefinitionService, process.skillService,

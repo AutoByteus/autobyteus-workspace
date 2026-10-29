@@ -44,6 +44,7 @@ import {
   type ClaudeSdkStreamingSession,
 } from "../../../../runtime-management/claude/client/claude-sdk-streaming-session.js";
 import type { ClaudeSdkQueryKind, ClaudeSdkSelectedBinding } from "../../../domain/claude-sdk-usage.js";
+import type { RuntimeAgentToolExposure } from "../../../shared/runtime-agent-tool-exposure.js";
 
 type ClaudeSessionStatus = "OFFLINE" | "IDLE" | "RUNNING" | "ERROR";
 
@@ -190,6 +191,9 @@ export class ClaudeSession {
   }
 
   releaseAgentToolsMcp(): void { this.agentToolsMcpSessionState.release(this.runId); }
+
+  getAgentToolNames(): readonly string[] { return this.agentToolsMcpSessionState.currentToolNames(this.runContext); }
+  applyToolExposure(exposure: RuntimeAgentToolExposure): readonly string[] { return this.agentToolsMcpSessionState.applyExposure(this.runContext, exposure); }
 
   clearRuntimeListeners(): void {
     this.listeners.clear();

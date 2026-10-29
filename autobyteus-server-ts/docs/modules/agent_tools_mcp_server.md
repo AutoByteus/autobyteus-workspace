@@ -64,7 +64,12 @@ external `/mcp/gateway` route.
 The endpoint handles the MCP Streamable HTTP methods:
 
 - `POST` for JSON-RPC requests, notifications, and client responses.
-- `GET` for SSE compatibility with Streamable HTTP clients.
+- `GET` for the session's held server-to-client SSE stream (see
+  [Live Tool List](#live-tool-list)). It requires `Accept: text/event-stream`
+  (`406` otherwise), opens with an `: open` comment, sends a `: keepalive`
+  comment every 15 seconds, and is ended when the run-session is deactivated or
+  the host closes. Every client gets the same held stream; there is no
+  per-client transport header.
 - `OPTIONS` for local preflight handling.
 - `DELETE` currently returns `405 Method Not Allowed`; AutoByteus published-run
   lifecycle remains the owner of run-session deactivation.
@@ -105,7 +110,11 @@ source snapshots, execution context/capabilities, creation time, and optional
 execution observer. Those live values are activation-only and are never
 persisted.
 
-Activation fails rather than replacing a current entry. Authoritative
+Every external run gets an active session, even when its agent selects no
+Agent Tools tools: an empty `enabledTools` list is a valid record, so a tool
+added to the definition later is reachable without a restart. Activation fails
+rather than replacing a current entry; the run's exposure is changed only
+through `replaceForRun` (below). Authoritative
 published-run termination deactivates the exact run-session as part of
 `AgentRunResourceManager.release`; scope close is the fallback that removes any
 remaining owned sessions, and host close clears the process registry. Within a
@@ -115,6 +124,28 @@ address stays stable. A process restart creates a new listener address and an
 empty registry, so restored or newly started runtimes materialize the current
 descriptor during provider bootstrap/session setup. No Agent Tools session,
 token, listener address, or descriptor is persisted.
+
+## Live Tool List
+
+The run-session authority (and its scoped form, for the sessions it owns) also
+offers:
+
+- `replaceForRun({ runId, runtimeExposure })`: the session service re-resolves
+  the exposure through the catalog as activation does, the registry replaces the
+  session record as one new frozen object (a request reads the old exposure or
+  the new one, never a mix), and `AgentToolsMcpSessionStreams` sends
+  `notifications/tools/list_changed` on the session's open GET streams. It
+  returns the current descriptor.
+- `describeForRun(runId)`: the current descriptor; it throws for a run without
+  a session.
+
+Removal is enforced at once on every runtime: from the next request on,
+`tools/list` no longer lists a removed tool and `tools/call` refuses it with
+"Tool is not enabled for this session". `initialize` advertises
+`tools.listChanged: true`. Only `AgentToolsMcpSessionStreams` writes to the held
+streams; the dispatcher does not. Which runtime re-lists on the notification and
+which needs its session reopened is described in
+[Tool List Updates](./tool_list_updates.md).
 
 ## Published-Run Finalization
 
@@ -140,10 +171,11 @@ reported as successful Team stop.
 ## Runtime Materialization
 
 Claude Agent SDK materialization is programmatic and provider-session scoped.
-When the current Claude run has at least one configured, available Agent Tools
-MCP tool, the Claude session lazily activates the run-session on first tooling
-setup, caches that activation for the lifetime of the `ClaudeSession`, and
-passes the materialized SDK config under the reserved server name:
+The Claude session activates the run-session once (on first tooling setup, or
+when the run's tools are first read) and then reads the current descriptor with
+`describeForRun` on every use, because the descriptor can change during the
+run. Every process generation passes the materialized SDK config under the
+reserved server name, even with an empty tool list:
 
 ```ts
 {
@@ -155,19 +187,20 @@ passes the materialized SDK config under the reserved server name:
 }
 ```
 
-Claude allowed-tool entries are generated from the descriptor's `enabledTools`.
-For each enabled canonical tool name, Claude pre-approves both the canonical
-name and the provider wire name such as
-`mcp__autobyteus_agent_tools__generate_image`. If no supported tool is enabled,
-the session does not create an Agent Tools MCP descriptor. Restored or newly
+Agent Tools are not listed in Claude's `allowedTools` (only `Skill` is), because
+the list can change during the run. Instead the tool-use coordinator allows,
+without asking, a tool that is in the run's **current** descriptor's
+`enabledTools`, matched by its canonical name or its provider wire name such as
+`mcp__autobyteus_agent_tools__generate_image` (reason `agent_tools_enabled`).
+Any other tool goes through the existing approval path. Restored or newly
 created Claude sessions reactivate current context instead of persisting or
 refreshing descriptor credentials.
 
 Codex App Server materialization occurs during run bootstrap and uses the app
-server thread protocol. When a Codex standalone or team-member run has at least
-one configured, available Agent Tools MCP tool, `CodexThreadBootstrapper`
-activates the run-session and passes only a thread-scoped config object into
-`thread/start` and `thread/resume`:
+server thread protocol. For every Codex standalone or team-member run,
+`CodexThreadBootstrapper` activates the run-session and passes only a
+thread-scoped config object into `thread/start` and `thread/resume` (and the
+reopen of [Tool List Updates](./tool_list_updates.md)):
 
 ```ts
 {
@@ -183,9 +216,10 @@ activates the run-session and passes only a thread-scoped config object into
 
 Codex must not materialize this descriptor through shared process-wide launch
 flags, `CODEX_APP_SERVER_ARGS*`, trusted
-`.codex/config.toml`, or any other durable project file. If no supported tool is
-enabled, Codex does not create the descriptor or pass the MCP server config for
-this surface.
+`.codex/config.toml`, or any other durable project file. With no supported tool
+enabled the config is still passed, with `enabled_tools: []`; Codex 0.165.0
+accepts it and reports the server ready (gated e2e
+`tests/e2e/runtime/codex-agent-tools-empty-list.e2e.test.ts`).
 
 ## Configured Tool Boundary
 
@@ -454,7 +488,8 @@ gates explicitly, and add durable route/session/executor coverage.
   Antigravity CLI;
 - persisted Agent Tools run sessions or descriptors across restored runs;
 - remote/non-loopback Agent Tools MCP clients;
-- complex long-lived or resumable SSE server push;
+- resumable SSE streams (event IDs, `Last-Event-ID` replay) or server push other
+  than `notifications/tools/list_changed`;
 - exposing every local registry tool through Agent Tools MCP;
 - using Agent Tools MCP as the general external `/mcp/gateway`;
 - direct provider-native external MCP config materialization for configured MCP

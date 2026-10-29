@@ -10,6 +10,7 @@ import { AgentRunContext } from "../../../../../../src/agent-execution/domain/ag
 import { ClaudeAgentRunContext } from "../../../../../../src/agent-execution/backends/claude/backend/claude-agent-run-context.js";
 import { buildClaudeSessionConfig } from "../../../../../../src/agent-execution/backends/claude/session/claude-session-config.js";
 import { ClaudeSession } from "../../../../../../src/agent-execution/backends/claude/session/claude-session.js";
+import { createAgentToolMcpRunSessionsStub } from "../../../../../helpers/agent-tool-mcp-run-sessions-stub.js";
 import { ClaudeProviderSessionLifecycle } from "../../../../../../src/agent-execution/backends/claude/session/claude-provider-session-lifecycle.js";
 import { ClaudeSessionMessageCache } from "../../../../../../src/agent-execution/backends/claude/session/claude-session-message-cache.js";
 import { ClaudeSessionToolUseCoordinator } from "../../../../../../src/agent-execution/backends/claude/session/claude-session-tool-use-coordinator.js";
@@ -141,11 +142,7 @@ const createSession = (input: {
       sessionMessageCache,
       sdkClient: sdkClient as never,
       toolingCoordinator,
-      agentToolMcpRunSessions: {
-        activateForRun: vi.fn(() => {
-          throw new Error("Non-MCP ClaudeSession coverage must not issue Agent Tools.");
-        }),
-      } as never,
+      agentToolMcpRunSessions: createAgentToolMcpRunSessionsStub() as never,
       systemInstructionCaptureService: input.systemInstructionCaptureService,
       isRunSessionActive: () => true,
       terminateRunSession,

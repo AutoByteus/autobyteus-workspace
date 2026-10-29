@@ -1,7 +1,18 @@
 import { randomUUID } from "node:crypto";
 import type { AgentOperationResult } from "../../../domain/agent-operation-result.js";
 import { AgentRunEventType, type AgentRunEvent } from "../../../domain/agent-run-event.js";
-import type { AgentRunBackend, AgentRunSourceEventBatchListener } from "../../agent-run-backend.js";
+import type {
+  AgentRunBackend,
+  AgentRunSourceEventBatchListener,
+  AgentRunToolListApplyResult,
+} from "../../agent-run-backend.js";
+import type { AgentDefinition } from "../../../../agent-definition/domain/models.js";
+import type { AgentToolMcpRunSessionExposure } from "../../../../agent-tools/mcp/agent-tool-mcp-session-authority.js";
+import {
+  isSameRuntimeAgentToolExposure,
+  resolveRuntimeAgentToolExposure,
+  type RuntimeAgentToolExposure,
+} from "../../../shared/runtime-agent-tool-exposure.js";
 import type { AgentRunBackendInputDispatch, AgentRunBackendInputDispatchResult } from "../../../input/agent-run-input-contract.js";
 import type { AgentRuntimeLifecycleSnapshot } from "../../../domain/agent-runtime-lifecycle-snapshot.js";
 import type { AgyRunContext } from "./agy-agent-run-context.js";
@@ -14,6 +25,12 @@ import { readAgyNativeToolArguments } from "../stream/agy-native-tool-arguments-
 import type { AgyStreamMessage } from "../stream/agy-stream-message.js";
 import { AgyBackgroundTaskMonitor } from "../stream/agy-background-task-monitor.js";
 import { buildBackgroundTaskUpdatedPayload, type AgentBackgroundTask } from "../../../domain/agent-background-task.js";
+
+/** The run's Agent Tools session and the exposure it was last given. */
+export type AgyAgentToolsBinding = Readonly<{
+  runSessions: AgentToolMcpRunSessionExposure;
+  exposure: RuntimeAgentToolExposure;
+}>;
 
 export class AgyAgentRunBackend implements AgentRunBackend {
   readonly backgroundTaskInspection = { kind: 'event-stream' } as const;
@@ -29,9 +46,13 @@ export class AgyAgentRunBackend implements AgentRunBackend {
   private phase: AgentRuntimeLifecycleSnapshot["phase"] = "idle";
   private cancelled = false;
   private argumentLookup: AbortController | null = null;
+  private toolExposure: RuntimeAgentToolExposure;
+  private readonly agentToolSessions: AgentToolMcpRunSessionExposure;
 
   constructor(private readonly context: AgyRunContext, private readonly process: AgyStreamProcess,
-    converterOptions: AgyStreamEventConverterOptions = { compactionDetection: false }) {
+    converterOptions: AgyStreamEventConverterOptions, agentTools: AgyAgentToolsBinding) {
+    this.toolExposure = agentTools.exposure;
+    this.agentToolSessions = agentTools.runSessions;
     const conversationId = context.runtimeContext.conversationId;
     // Background-task changes arrive between turns, so they bypass turn-scoped message handling.
     this.backgroundTasks = new AgyBackgroundTaskMonitor({ runId: context.runId, conversationId,
@@ -106,6 +127,24 @@ export class AgyAgentRunBackend implements AgentRunBackend {
     this.backgroundTasks.stopAll();
     await Promise.all([stopped, this.eventQueue]);
     return { accepted: true, turnId };
+  }
+
+  /**
+   * AGY re-lists its Agent Tools over the held GET stream when the session is replaced, so the
+   * change applies from its next model call.
+   */
+  async applyDefinitionTools(definition: AgentDefinition): Promise<AgentRunToolListApplyResult> {
+    const exposure = resolveRuntimeAgentToolExposure(definition, this.context.config.memberExecutionContext);
+    if (isSameRuntimeAgentToolExposure(this.toolExposure, exposure)) {
+      return { kind: "unchanged", toolNames: this.getToolNames() };
+    }
+    const descriptor = this.agentToolSessions.replaceForRun({ runId: this.runId, runtimeExposure: exposure });
+    this.toolExposure = exposure;
+    return { kind: "applied", toolNames: [...descriptor.enabledTools] };
+  }
+
+  getToolNames(): readonly string[] {
+    return [...this.agentToolSessions.describeForRun(this.runId).enabledTools];
   }
 
   async terminate(): Promise<AgentOperationResult> {

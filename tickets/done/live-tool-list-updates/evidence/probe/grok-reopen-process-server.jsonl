@@ -1,0 +1,15 @@
+{"t":"2026-10-29T11:14:24.221Z","kind":"listening","port":39956}
+{"t":"2026-10-29T11:14:25.763Z","kind":"rpc","methods":["server/discover"],"names":[null],"accept":"text/event-stream, application/json","session":null,"ua":"grok-cli/1.0.70"}
+{"t":"2026-10-29T11:14:25.765Z","kind":"rpc","methods":["initialize"],"names":[null],"accept":"text/event-stream, application/json","session":null,"ua":"grok-cli/1.0.70"}
+{"t":"2026-10-29T11:14:25.769Z","kind":"rpc","methods":["notifications/initialized"],"names":[null],"accept":"text/event-stream, application/json","session":"58b4c0b7-c133-4e32-a319-3779f674311b","ua":"grok-cli/1.0.70"}
+{"t":"2026-10-29T11:14:25.773Z","kind":"http","http":"GET","accept":"text/event-stream, application/json","session":"58b4c0b7-c133-4e32-a319-3779f674311b","ua":"grok-cli/1.0.70"}
+{"t":"2026-10-29T11:14:25.774Z","kind":"rpc","methods":["tools/list"],"names":[null],"accept":"text/event-stream, application/json","session":"58b4c0b7-c133-4e32-a319-3779f674311b","ua":"grok-cli/1.0.70"}
+{"t":"2026-10-29T11:14:29.742Z","kind":"notify","reason":"add-beta","getStreams":1,"tools":["probe_alpha","probe_beta"]}
+{"t":"2026-10-29T11:14:32.175Z","kind":"http","http":"GET-closed","session":"58b4c0b7-c133-4e32-a319-3779f674311b"}
+{"t":"2026-10-29T11:14:33.148Z","kind":"rpc","methods":["server/discover"],"names":[null],"accept":"text/event-stream, application/json","session":null,"ua":"grok-cli/1.0.70"}
+{"t":"2026-10-29T11:14:33.152Z","kind":"notify-on-post"}
+{"t":"2026-10-29T11:14:33.153Z","kind":"rpc","methods":["initialize"],"names":[null],"accept":"text/event-stream, application/json","session":null,"ua":"grok-cli/1.0.70"}
+{"t":"2026-10-29T11:14:33.157Z","kind":"rpc","methods":["notifications/initialized"],"names":[null],"accept":"text/event-stream, application/json","session":"a6561744-167b-4fad-8234-60529491a331","ua":"grok-cli/1.0.70"}
+{"t":"2026-10-29T11:14:33.163Z","kind":"http","http":"GET","accept":"text/event-stream, application/json","session":"a6561744-167b-4fad-8234-60529491a331","ua":"grok-cli/1.0.70"}
+{"t":"2026-10-29T11:14:33.167Z","kind":"rpc","methods":["tools/list"],"names":[null],"accept":"text/event-stream, application/json","session":"a6561744-167b-4fad-8234-60529491a331","ua":"grok-cli/1.0.70"}
+{"t":"2026-10-29T11:14:39.671Z","kind":"http","http":"GET-closed","session":"a6561744-167b-4fad-8234-60529491a331"}

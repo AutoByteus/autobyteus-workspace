@@ -1,0 +1,12 @@
+{
+  "runtimeKind": "grok_build",
+  "model": "grok-4.7",
+  "codeword": "OKAPI-7271",
+  "turns": [],
+  "terminate": {
+    "terminateAgentRun": {
+      "success": true,
+      "message": "Agent run terminated successfully."
+    }
+  }
+}

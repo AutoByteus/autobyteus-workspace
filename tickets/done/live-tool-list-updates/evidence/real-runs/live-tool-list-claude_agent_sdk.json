@@ -1,0 +1,147 @@
+{
+  "runtimeKind": "claude_agent_sdk",
+  "model": "haiku",
+  "codeword": "OKAPI-1176",
+  "turns": [
+    {
+      "label": "1 call alpha",
+      "content": "Remember this codeword: OKAPI-1176. Call the list_projects tool once, then reply with exactly: DONE-1",
+      "entries": [
+        {
+          "kind": "message",
+          "role": "user",
+          "content": "Remember this codeword: OKAPI-1176. Call the list_projects tool once, then reply with exactly: DONE-1",
+          "media": null,
+          "ts": 1793291769.533
+        },
+        {
+          "kind": "tool_call",
+          "invocationId": "toolu_014CLGyAcZg3pB3tiF447qmm",
+          "role": null,
+          "content": "",
+          "toolName": "list_projects",
+          "toolArgs": {},
+          "toolResult": "{\"projects\":[{\"projectId\":\"project_ee936cd5-3ebe-40d5-b428-f8a8b7b2cbfb\",\"name\":\"Tool List Live 54bd7e\"}]}",
+          "toolError": null,
+          "media": null,
+          "ts": 1793291772.743
+        },
+        {
+          "kind": "message",
+          "role": "assistant",
+          "content": "DONE-1",
+          "media": null,
+          "ts": 1793291773.685
+        }
+      ]
+    },
+    {
+      "label": "2 add beta, call beta",
+      "content": "Call the list_project_tasks tool once with project_id \"project_ee936cd5-3ebe-40d5-b428-f8a8b7b2cbfb\". Then reply with DONE-2 followed by the codeword from my first message.",
+      "entries": [
+        {
+          "kind": "system_task_notification",
+          "role": null,
+          "senderId": "system.tool_list_update_notifier",
+          "content": "[Platform notice — tools updated]\n\nYour tools changed. Now available: list_project_tasks.",
+          "ts": 1793291779.618
+        },
+        {
+          "kind": "message",
+          "role": "user",
+          "content": "Call the list_project_tasks tool once with project_id \"project_ee936cd5-3ebe-40d5-b428-f8a8b7b2cbfb\". Then reply with DONE-2 followed by the codeword from my first message.",
+          "media": null,
+          "ts": 1793291779.618
+        },
+        {
+          "kind": "tool_call",
+          "invocationId": "toolu_014M9J36jFZQWmSsCJ4g54s5",
+          "role": null,
+          "content": "",
+          "toolName": "list_project_tasks",
+          "toolArgs": {},
+          "toolResult": null,
+          "toolError": "{\"error\":{\"code\":\"PROJECT_TOOL_ARGUMENT_INVALID\",\"message\":\"project_id must be a non-empty string.\"}}",
+          "media": null,
+          "ts": 1793291780.922
+        },
+        {
+          "kind": "message",
+          "role": "assistant",
+          "content": "My previous call went out with no arguments, so I'm retrying with the project_id.",
+          "media": null,
+          "ts": 1793291782.619
+        },
+        {
+          "kind": "tool_call",
+          "invocationId": "toolu_01XsHcqhq7w2ejiK56o8MLMa",
+          "role": null,
+          "content": "",
+          "toolName": "list_project_tasks",
+          "toolArgs": {
+            "project_id": "project_ee936cd5-3ebe-40d5-b428-f8a8b7b2cbfb"
+          },
+          "toolResult": "{\"projectId\":\"project_ee936cd5-3ebe-40d5-b428-f8a8b7b2cbfb\"}",
+          "toolError": null,
+          "media": null,
+          "ts": 1793291782.968
+        },
+        {
+          "kind": "message",
+          "role": "assistant",
+          "content": "DONE-2 OKAPI-1176",
+          "media": null,
+          "ts": 1793291783.852
+        }
+      ]
+    },
+    {
+      "label": "3 remove alpha, try alpha",
+      "content": "Try to call the list_projects tool once. If you do not have it or it fails, do not retry. Then reply with exactly: DONE-3",
+      "entries": [
+        {
+          "kind": "message",
+          "role": "user",
+          "content": "Try to call the list_projects tool once. If you do not have it or it fails, do not retry. Then reply with exactly: DONE-3",
+          "media": null,
+          "ts": 1793291789.687
+        },
+        {
+          "kind": "system_task_notification",
+          "role": null,
+          "senderId": "system.tool_list_update_notifier",
+          "content": "[Platform notice — tools updated]\n\nYour tools changed. No longer available: list_projects.",
+          "ts": 1793291789.688
+        },
+        {
+          "kind": "tool_call",
+          "invocationId": "toolu_018hndz6vXuKz6fsm76tiQ7L",
+          "role": null,
+          "content": "",
+          "toolName": "list_projects",
+          "toolArgs": {},
+          "toolResult": null,
+          "toolError": "<tool_use_error>Error: No such tool available: mcp__autobyteus_agent_tools__list_projects. Its MCP server 'autobyteus_agent_tools' is connected but does not offer this tool here. Continue without it.</tool_use_error>",
+          "media": null,
+          "ts": 1793291791.569
+        },
+        {
+          "kind": "message",
+          "role": "assistant",
+          "content": "DONE-3",
+          "media": null,
+          "ts": 1793291792.651
+        }
+      ]
+    }
+  ],
+  "seenToolNames": [
+    "{\n  \"version\": 1,\n  \"toolNames\": [\n    \"delegate_task\",\n    \"list_project_tasks\",\n    \"send_message_to\"\n  ]\n}\n"
+  ],
+  "terminate": {
+    "terminateAgentRun": {
+      "success": true,
+      "message": "Agent run terminated successfully."
+    }
+  }
+}

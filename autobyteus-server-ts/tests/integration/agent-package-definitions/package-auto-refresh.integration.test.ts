@@ -33,6 +33,7 @@ let registered: string[];
 let host: HostDefinitionServices | null = null;
 let feed: AgentPackageDefinitionFeed | null = null;
 let frames: Frame[];
+let definitionSignals: number;
 
 const AC_BOUND_MS = 5000;
 
@@ -104,11 +105,17 @@ const bundleService = {
 
 const start = async (options: { createWatcher?: PackageFolderWatchFactory } = {}) => {
   host = createHostDefinitionServices({ appConfig: appConfig(), bundleService });
-  feed = await composeAgentPackageDefinitionFeed({ reloader: host.agentPackageDefinitions.reloader, createWatcher: options.createWatcher });
+  feed = await composeAgentPackageDefinitionFeed({
+    reloader: host.agentPackageDefinitions.reloader,
+    definitionChanges: host.agentDefinitionChanges,
+    createWatcher: options.createWatcher,
+  });
+  host.agentDefinitionChanges.subscribe(() => { definitionSignals += 1; });
   feed.hub.connect({ send: (data) => frames.push(JSON.parse(data) as Frame), close: () => undefined });
   await host.definitionAdmissionService.scan();
   await feed.watcher.whenReady();
   frames.length = 0;
+  definitionSignals = 0;
 };
 
 beforeEach(async () => {
@@ -117,6 +124,7 @@ beforeEach(async () => {
   packageRoot = path.join(base, "autobyteus-agents");
   registered = [packageRoot];
   frames = [];
+  definitionSignals = 0;
   await fs.mkdir(path.join(dataDir, "agents"), { recursive: true });
   await fs.mkdir(path.join(packageRoot, "agents"), { recursive: true });
   await fs.mkdir(path.join(packageRoot, "agent-teams"), { recursive: true });
@@ -143,6 +151,20 @@ describe("package auto-refresh: the next delegation sees current definitions", {
     expect((await policy().requireAdmissible(port, { kind: "agent_team", definitionId: "squad" })).definition.name).toBe("Squad");
     expect((await services().definitionAdmissionService.requireAvailable("agent_team", "squad")).status).toBe("available");
     expect(definitionFrames().some((frame) => frame.changedLists?.includes("agents") && frame.changedLists.includes("agent_teams"))).toBe(true);
+  });
+
+  it("autobyteus-324: a tool list edit on disk and an in-app save each signal an agent definition change", async () => {
+    await start();
+    await write(path.join(packageRoot, "agents", "planner", "agent-config.json"),
+      JSON.stringify({ toolNames: ["send_message_to"], skillNames: [] }));
+    await waitFor(() => services().agentDefinitionService.getAgentDefinitionById("planner"),
+      (definition) => definition?.toolNames.includes("send_message_to") === true);
+    await waitFor(async () => definitionSignals, (count) => count > 0);
+
+    const before = definitionSignals;
+    await services().agentDefinitionService.updateAgentDefinition("planner", { toolNames: [] });
+    expect(definitionSignals).toBeGreaterThan(before);
+    expect((await services().agentDefinitionService.getAgentDefinitionById("planner"))?.toolNames).toEqual([]);
   });
 
   it("AC-016: a lookup inside the settle window applies the detected change first", async () => {

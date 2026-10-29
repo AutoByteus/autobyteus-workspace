@@ -204,6 +204,28 @@ describe('TeamStreamingService current AgentRun event dispatch', () => {
     expect(taskStudent.state.conversation.messages).toHaveLength(0);
   });
 
+  it('shows a member\'s failed message (a failed tool-list reopen) as an error in that member\'s conversation only (autobyteus-324 AC-007)', () => {
+    const { callbacks, team } = createHarness();
+    admitReady(callbacks, team);
+    const teacher = team.view.getAgentContext(teacherRunId)!;
+    const persistentStudent = team.view.getAgentContext(persistentStudentRunId)!;
+    const message = "Couldn't give this run its new tools (thread/resume refused). Send your message again to retry, or stop and resume the run.";
+
+    emit(callbacks, 'ERROR', {
+      change_sequence: 1,
+      agent_run_id: teacherRunId,
+      code: 'RUNTIME_SESSION_REOPEN_FAILED',
+      message,
+      error_scope: null,
+      error_effect: null,
+      turn_id: null,
+    });
+
+    const segments = (teacher.state.conversation.messages.at(-1) as AIMessage | undefined)?.segments ?? [];
+    expect(segments).toEqual([expect.objectContaining({ type: 'error', code: 'RUNTIME_SESSION_REOPEN_FAILED', message })]);
+    expect(persistentStudent.state.conversation.messages).toHaveLength(0);
+  });
+
   it('applies a content batch per member in item order and continues after its covered range (autobyteus-139)', () => {
     const { callbacks, team } = createHarness();
     admitReady(callbacks, team);

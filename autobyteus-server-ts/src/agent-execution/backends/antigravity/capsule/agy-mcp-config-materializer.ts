@@ -23,16 +23,13 @@ const checkCollision = async (configPath: string): Promise<void> => {
 export const materializeAgyMcpConfig = async (input: {
   capsulePath: string;
   workspacePath: string;
-  descriptor: AgentToolMcpDescriptor | null;
+  descriptor: AgentToolMcpDescriptor;
 }): Promise<void> => {
-  if (input.descriptor) {
-    await checkCollision(path.join(input.workspacePath, ".agents", "mcp_config.json"));
-    await checkCollision(path.join(os.homedir(), ".gemini", "config", "mcp_config.json"));
-  }
-  const mcpServers = input.descriptor
-    ? { [serverName]: { disabled: false, serverUrl: input.descriptor.serverUrl,
-      headers: { "X-Autobyteus-MCP-Transport": "streamable-http" } } }
-    : {};
+  await checkCollision(path.join(input.workspacePath, ".agents", "mcp_config.json"));
+  await checkCollision(path.join(os.homedir(), ".gemini", "config", "mcp_config.json"));
+  const mcpServers = {
+    [serverName]: { disabled: false, serverUrl: input.descriptor.serverUrl },
+  };
   await fs.writeFile(path.join(input.capsulePath, ".agents", "mcp_config.json"),
     `${JSON.stringify({ mcpServers }, null, 2)}\n`, { mode: 0o600 });
 };

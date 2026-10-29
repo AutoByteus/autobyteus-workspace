@@ -4,7 +4,7 @@ import os from "node:os";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
 import { spawnSync } from "node:child_process";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from "vitest";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-context.js";
@@ -24,11 +24,26 @@ import { getClaudeSdkClient } from "../../../src/runtime-management/claude/clien
 import { getClaudeWorkspaceSkillMaterializer } from "../../../src/agent-execution/backends/claude/claude-workspace-skill-materializer.js";
 import { createFakeClaudeSdkClient, flushClaudeSession } from "../../helpers/fake-claude-streaming-sdk.js";
 import type { AgentToolMcpRunSessionActivationInput } from "../../../src/agent-tools/mcp/agent-tool-mcp-session-authority.js";
+import { startAgentToolsMcpTestHost } from "../../helpers/agent-tools-mcp-test-host.js";
 
 const claudeBinaryReady = spawnSync("claude", ["--version"], {
   stdio: "ignore",
 }).status === 0;
 const liveClaudeTestsEnabled = process.env.RUN_CLAUDE_E2E === "1";
+
+// Every run has an Agent Tools MCP session, so a live Claude run needs a live endpoint.
+let agentToolsTestHost: Awaited<ReturnType<typeof startAgentToolsMcpTestHost>> | null = null;
+const requireAgentToolsTestHost = () => {
+  if (!agentToolsTestHost) throw new Error("The Agent Tools MCP test host is not started.");
+  return agentToolsTestHost;
+};
+beforeAll(async () => {
+  if (liveClaudeTestsEnabled) agentToolsTestHost = await startAgentToolsMcpTestHost();
+});
+afterAll(async () => {
+  await agentToolsTestHost?.close();
+  agentToolsTestHost = null;
+});
 const describeClaudeSessionIntegration =
   claudeBinaryReady && liveClaudeTestsEnabled ? describe : describe.skip;
 
@@ -149,7 +164,7 @@ const normalizeWrittenText = (value: string): string => value.replace(/\r?\n$/u,
 
 const createExplicitSessionManager = (): ClaudeSessionManager =>
   new ClaudeSessionManager(
-    { activateForRun: () => ({ kind: "not_exposed" as const }), deactivateForRun: () => 0 },
+    requireAgentToolsTestHost().runSessions,
     getWorkspaceManager(),
     getClaudeSdkClient(),
     getClaudeWorkspaceSkillMaterializer(),

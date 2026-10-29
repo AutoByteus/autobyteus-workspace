@@ -17,6 +17,7 @@ import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-u
 import { ContextFile } from "autobyteus-ts/agent/message/context-file.js";
 import { ContextFileType } from "autobyteus-ts/agent/message/context-file-type.js";
 import { SenderType } from "autobyteus-ts/agent/sender-type.js";
+import { stubAgyAgentTools } from "../../../../helpers/agent-tool-mcp-run-sessions-stub.js";
 
 const conversationId = "3d5ce362-1127-4d6b-8259-4a2c04d7d876";
 class FakeProcess {
@@ -55,7 +56,7 @@ const setup = () => {
   const process = new FakeProcess();
   const backend = new AgyAgentRunBackend({ runId: "run-one", config: {
     runtimeKind: RuntimeKind.ANTIGRAVITY_CLI, llmModelIdentifier: "gemini-3.8-flash-low",
-  }, runtimeContext: { conversationId } } as never, process as never);
+  }, runtimeContext: { conversationId } } as never, process as never, { compactionDetection: false }, stubAgyAgentTools("run-one"));
   const events: AgentRunEvent[] = [];
   backend.subscribeToSourceEventBatches(async (batch) => { events.push(...batch); });
   return { process, backend, events };

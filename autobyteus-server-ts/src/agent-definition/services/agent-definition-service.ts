@@ -25,6 +25,7 @@ import {
 } from "../../agent-package-definitions/services/agent-package-definitions.js";
 import type { DefinitionLoadIssue } from "../../agent-package-definitions/domain/agent-package-definition-types.js";
 import { getInternalAgentVisibility, type InternalAgentVisibility } from "./internal-agent-visibility.js";
+import type { AgentDefinitionChangeSignal } from "./agent-definition-change-signal.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -99,6 +100,8 @@ type AgentDefinitionServiceOptions = {
   registries?: Partial<ProcessorRegistries>;
   /** The internal-agent rule for the visible list; the process rule by default. */
   visibility?: Pick<InternalAgentVisibility, "isHidden">;
+  /** Announces a saved application-owned agent (package agents announce through their reload). */
+  changeSignal?: Pick<AgentDefinitionChangeSignal, "notifyChanged">;
 };
 
 export class AgentDefinitionService {
@@ -130,12 +133,14 @@ export class AgentDefinitionService {
   private readonly fileStore: AgentDefinitionFileStore;
   private readonly packageDefinitions: AgentPackageDefinitions;
   private readonly visibility: Pick<InternalAgentVisibility, "isHidden">;
+  private readonly changeSignal: Pick<AgentDefinitionChangeSignal, "notifyChanged"> | null;
   private registries: ProcessorRegistries;
 
   constructor(options: AgentDefinitionServiceOptions = {}) {
     this.fileStore = options.fileStore ?? new FileAgentDefinitionProvider();
     this.packageDefinitions = options.packageDefinitions ?? getProcessAgentPackageDefinitions();
     this.visibility = options.visibility ?? getInternalAgentVisibility();
+    this.changeSignal = options.changeSignal ?? null;
     this.registries = {
       input: options.registries?.input ?? defaultInputProcessorRegistry,
       llmResponse: options.registries?.llmResponse ?? defaultLlmResponseProcessorRegistry,
@@ -356,6 +361,8 @@ export class AgentDefinitionService {
 
     const updated = await this.fileStore.update(existing);
     await this.reloadOwningFolder(definitionId);
+    // An application-owned agent is read on demand, with no folder reload to announce it.
+    if (isApplicationOwnedAgentId(definitionId)) this.changeSignal?.notifyChanged();
     logger.info(`Agent Definition with ID ${definitionId} updated successfully.`);
     return this.stripMandatoryProcessors(updated) ?? updated;
   }

@@ -282,6 +282,7 @@ export class CodexThreadBootstrapper {
         dynamicToolHandlers: buildCodexDynamicToolHandlerMap(
           dynamicToolRegistrations,
         ),
+        runtimeToolExposure,
         threadId: existingRuntimeContext?.threadId ?? null,
         activeTurnId: existingRuntimeContext?.activeTurnId ?? null,
       }),
@@ -318,7 +319,7 @@ export class CodexThreadBootstrapper {
     runContext: AgentRunContext<CodexAgentRunContext | null>;
     runtimeToolExposure: RuntimeAgentToolExposure;
     workingDirectory: string;
-  }): ReturnType<typeof materializeCodexAgentToolsMcpThreadConfig> | null {
+  }): ReturnType<typeof materializeCodexAgentToolsMcpThreadConfig> {
     const memberExecutionContext = input.runContext.config.memberExecutionContext;
     const result = this.agentToolMcpRunSessions.activateForRun({
       owner: memberExecutionContext
@@ -342,9 +343,6 @@ export class CodexThreadBootstrapper {
       },
       runtimeKind: input.runContext.config.runtimeKind,
     });
-    if (result.kind === "not_exposed") {
-      return null;
-    }
     return materializeCodexAgentToolsMcpThreadConfig(result.descriptor);
   }
 
