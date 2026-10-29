@@ -33,7 +33,7 @@ export const createAgyRunCapsule = async (input: {
   agentDefinitionId: string;
   configuredSkillBindings: readonly ConfiguredAgentSkillBinding[];
   workspaceCollisionPolicy: WorkspaceCollisionPolicy;
-  mcpDescriptor: AgentToolMcpDescriptor | null;
+  mcpDescriptor: AgentToolMcpDescriptor;
 }): Promise<AgyRunCapsule> => {
   const workspacePath = await fs.realpath(input.workspacePath);
   if (!(await fs.stat(workspacePath)).isDirectory()) throw new Error("AGY_WORKSPACE_INVALID: selected workspace is not a directory.");
@@ -86,7 +86,7 @@ export const restoreAgyRunCapsule = async (input: {
   runId: string;
   memoryDir: string;
   selectedWorkspacePath: string | null;
-  mcpDescriptor: AgentToolMcpDescriptor | null;
+  mcpDescriptor: AgentToolMcpDescriptor;
 }): Promise<AgyRunCapsule> => {
   const root = capsulePath(input.memoryDir);
   const manifest = JSON.parse(await fs.readFile(path.join(root, "manifest.json"), "utf8")) as AgyCapsuleManifest;

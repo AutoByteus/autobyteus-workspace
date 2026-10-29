@@ -72,9 +72,9 @@ export type AcpMcpReadinessRequirement = Readonly<{ serverName: string; timeoutM
  */
 export interface AcpAgentSessionProfile {
   newSessionMeta(input: Readonly<{ composedPrompt: string; autoExecuteTools: boolean }>): Record<string, unknown> | undefined;
-  mcpServers(descriptor: AgentToolMcpDescriptor | null): McpServer[];
+  mcpServers(descriptor: AgentToolMcpDescriptor): McpServer[];
   /** Readiness the session must observe before activation completes, if the agent reports it. */
-  mcpReadiness(descriptor: AgentToolMcpDescriptor | null): AcpMcpReadinessRequirement | null;
+  mcpReadiness(descriptor: AgentToolMcpDescriptor): AcpMcpReadinessRequirement | null;
   projectToolCall(snapshot: AcpToolCallSnapshot): AcpToolCallProjection;
   interpretExtNotification(
     method: string,

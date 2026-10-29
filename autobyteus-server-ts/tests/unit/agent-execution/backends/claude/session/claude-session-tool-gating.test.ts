@@ -65,19 +65,17 @@ const createSession = (requestedToolNames: string[] = [], input: {
   const enabledTools = runtimeToolExposure.requestedToolNames.filter((toolName) =>
     supportedAgentToolsMcpNames.has(toolName),
   );
-  const activateForRun = vi.fn((issueInput) => enabledTools.length === 0
-    ? ({ kind: "not_exposed" as const })
-    : ({
-        kind: "active" as const,
-        sessionId: "session-gating",
-        owner: issueInput.owner,
-        descriptor: {
-          name: "autobyteus_agent_tools" as const,
-          transport: "streamable_http" as const,
-          serverUrl: "http://127.0.0.1:3000/mcp/agent-tools/session-gating",
-          enabledTools,
-        },
-      }));
+  const activateForRun = vi.fn((issueInput) => ({
+    kind: "active" as const,
+    sessionId: "session-gating",
+    owner: issueInput.owner,
+    descriptor: {
+      name: "autobyteus_agent_tools" as const,
+      transport: "streamable_http" as const,
+      serverUrl: "http://127.0.0.1:3000/mcp/agent-tools/session-gating",
+      enabledTools,
+    },
+  }));
 
   const runContext = new AgentRunContext({
     runId: "run-1",
@@ -127,7 +125,10 @@ const createSession = (requestedToolNames: string[] = [], input: {
         requestToolApprovalDecision: vi.fn(),
         clearPendingToolApprovals: vi.fn(),
       } as any,
-      agentToolMcpRunSessions: { activateForRun } as any,
+      agentToolMcpRunSessions: {
+        activateForRun,
+        describeForRun: vi.fn(() => activateForRun.mock.results.at(-1)?.value.descriptor),
+      } as any,
       isRunSessionActive: () => true,
       terminateRunSession: vi.fn(async () => undefined),
     },
@@ -488,7 +489,7 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
 
     expect(buildClaudeSessionMcpServersMock).toHaveBeenCalledWith(
       expect.objectContaining({
-        agentToolsMcpDescriptor: null,
+        agentToolsMcpDescriptor: expect.objectContaining({ enabledTools: [] }),
       }),
     );
     expect(openStreamingSession).toHaveBeenCalledWith(

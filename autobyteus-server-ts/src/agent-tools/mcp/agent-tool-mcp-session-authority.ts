@@ -26,14 +26,27 @@ export type ActiveAgentToolMcpRunSession = Readonly<{
   descriptor: AgentToolMcpDescriptor;
 }>;
 
-export type AgentToolMcpRunSessionActivationResult =
-  | ActiveAgentToolMcpRunSession
-  | Readonly<{ kind: "not_exposed" }>;
+export type AgentToolMcpRunSessionReplaceInput = Readonly<{
+  runId: string;
+  runtimeExposure: import("../../agent-execution/shared/runtime-agent-tool-exposure.js")
+    .RuntimeAgentToolExposure;
+}>;
 
 export interface AgentToolMcpRunSessionActivator {
+  /** Every external run gets an active session, even with an empty tool list. */
   activateForRun(
     input: AgentToolMcpRunSessionActivationInput,
-  ): AgentToolMcpRunSessionActivationResult;
+  ): ActiveAgentToolMcpRunSession;
+}
+
+export interface AgentToolMcpRunSessionExposure {
+  /**
+   * Re-resolves and replaces the run's tool exposure, notifies the session's
+   * GET streams and returns the current descriptor.
+   */
+  replaceForRun(input: AgentToolMcpRunSessionReplaceInput): AgentToolMcpDescriptor;
+  /** The run's current descriptor. Throws for a run without a session. */
+  describeForRun(runId: string): AgentToolMcpDescriptor;
 }
 
 export interface AgentToolMcpRunSessionDeactivator {
@@ -41,7 +54,9 @@ export interface AgentToolMcpRunSessionDeactivator {
 }
 
 export interface AgentToolMcpRunSessionAuthority
-  extends AgentToolMcpRunSessionActivator, AgentToolMcpRunSessionDeactivator {}
+  extends AgentToolMcpRunSessionActivator,
+    AgentToolMcpRunSessionExposure,
+    AgentToolMcpRunSessionDeactivator {}
 
 export interface ScopedAgentToolMcpSessionAuthorityAssembly {
   readonly scopeIdentity: string;

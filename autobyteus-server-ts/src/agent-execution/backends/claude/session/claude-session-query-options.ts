@@ -23,16 +23,12 @@ export const resolveClaudeSessionQueryOptions = async (input: {
     hasMaterializedSkills: runContext.runtimeContext.materializedConfiguredSkills.length > 0,
     memberExecutionContext: runContext.config.memberExecutionContext,
   };
-  const configuredToolingOptions = resolveClaudeSessionToolingOptions(toolingInput);
-  const agentToolsMcpDescriptor = (
-    configuredToolingOptions.agentToolsMcpToolingRequested ||
-    runContext.runtimeContext.runtimeToolExposure.requestedToolNames.length > 0
-  )
-    ? input.agentToolsMcpSessionState.ensureDescriptor(runContext)
-    : null;
+  // Every run has an Agent Tools MCP session, even with an empty tool list,
+  // so a tool added during the run is reachable without a restart.
+  const agentToolsMcpDescriptor = input.agentToolsMcpSessionState.ensureDescriptor(runContext);
   const toolingOptions = resolveClaudeSessionToolingOptions({
     ...toolingInput,
-    agentToolsMcpEnabledToolNames: agentToolsMcpDescriptor?.enabledTools ?? [],
+    agentToolsMcpEnabledToolNames: agentToolsMcpDescriptor.enabledTools,
   });
   const mcpServers = await buildClaudeSessionMcpServerConfig({ agentToolsMcpDescriptor });
   return {

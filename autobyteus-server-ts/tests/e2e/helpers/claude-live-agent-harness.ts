@@ -21,6 +21,7 @@ import { registerAgentWebsocket } from "../../../src/api/websocket/agent.js";
 import { ClaudeSdkClient } from "../../../src/runtime-management/claude/client/claude-sdk-client.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import {
+import { startAgentToolsMcpTestHost } from "../../helpers/agent-tools-mcp-test-host.js";
   buildStandaloneClaudeProcessEnv,
   type ClaudeCliExecutableCandidate,
 } from "../../helpers/claude-cli-executable-candidates.js";
@@ -29,6 +30,7 @@ export type StreamMessage = { type?: string; payload?: Record<string, unknown> }
 
 export type ClaudeLiveAgentHarness = {
   app: FastifyInstance;
+  agentTools: Awaited<ReturnType<typeof startAgentToolsMcpTestHost>>;
   socket: WebSocket;
   agentRun: AgentRun;
   runContext: AgentRunContext<ClaudeAgentRunContext>;
@@ -97,8 +99,10 @@ export const createClaudeLiveAgentHarness = async (input: {
   memoryDir?: string;
 }): Promise<ClaudeLiveAgentHarness> => {
   const runContext = buildRunContext(input.runId, input.workspaceRoot, input.memoryDir ?? null);
+  // Every run has an Agent Tools MCP session, so the live Claude run needs a live endpoint.
+  const agentTools = await startAgentToolsMcpTestHost();
   const sessionManager = new ClaudeSessionManager(
-    { activateForRun: () => ({ kind: "not_exposed" as const }), deactivateForRun: () => 0 } as never,
+    agentTools.runSessions,
     {} as never,
     new ClaudeSdkClient(),
     { cleanupMaterializedWorkspaceSkills: async () => undefined } as never,
@@ -174,15 +178,19 @@ export const createClaudeLiveAgentHarness = async (input: {
     socket.once("open", () => resolve());
     socket.once("error", reject);
   });
-  return { app, socket, agentRun, runContext, sessionManager, session, messages };
+  return { app, agentTools, socket, agentRun, runContext, sessionManager, session, messages };
 };
 
 export const closeClaudeLiveAgentHarness = async (harness: ClaudeLiveAgentHarness): Promise<void> => {
   if (harness.socket.readyState === WebSocket.OPEN || harness.socket.readyState === WebSocket.CONNECTING) {
     harness.socket.close();
   }
-  await harness.sessionManager.closeRunSession(harness.runContext.runId);
-  await harness.app.close();
+  try {
+    await harness.sessionManager.closeRunSession(harness.runContext.runId);
+    await harness.app.close();
+  } finally {
+    await harness.agentTools.close();
+  }
 };
 
 /** Resolves with the index of the first stream message (after `fromIndex`) matching the predicate. */

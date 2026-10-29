@@ -43,6 +43,7 @@ import { ClaudeSdkClient, type ClaudeSdkQueryLike } from "../../../src/runtime-m
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { recordCase } from "../helpers/runtime-error-case-evidence.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
+import { startAgentToolsMcpTestHost } from "../../helpers/agent-tools-mcp-test-host.js";
 
 type SdkQueryCall = {
   prompt?: unknown;
@@ -235,11 +236,10 @@ const createClaudeAgentRun = async (input: {
     modelIdentifier: input.modelIdentifier,
     workspaceRoot: input.workspaceRoot,
   });
-  const agentToolMcpRunSessions: AgentToolMcpRunSessionAuthority = {
-    activateForRun: () => ({ kind: "not_exposed" }),
-    // No exposed tools means this fixture creates no MCP entries to deactivate.
-    deactivateForRun: () => 0,
-  };
+  // Every run has an Agent Tools MCP session, so the live Claude run needs a live endpoint.
+  const agentTools = await startAgentToolsMcpTestHost();
+  onTestFinished(() => agentTools.close());
+  const agentToolMcpRunSessions: AgentToolMcpRunSessionAuthority = agentTools.runSessions;
   const sessionManager = new ClaudeSessionManager(
     agentToolMcpRunSessions,
     {} as never,

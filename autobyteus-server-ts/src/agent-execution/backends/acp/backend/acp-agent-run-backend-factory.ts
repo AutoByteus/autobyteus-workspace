@@ -50,7 +50,7 @@ export type AcpAgentRunBackendFactoryDependencies = Readonly<{
 type PreparedRun = Readonly<{
   workingDirectory: string;
   definition: AgentDefinition;
-  descriptor: AgentToolMcpDescriptor | null;
+  descriptor: AgentToolMcpDescriptor;
   materializedSkills: MaterializedWorkspaceSkill[];
 }>;
 
@@ -185,7 +185,7 @@ export class AcpAgentRunBackendFactory implements AgentRunBackendFactory {
       const initialized = await connection.initialize();
       const capabilities = AcpAgentCapabilities.fromInitialize(initialized);
       capabilities.require(launchProfile.agentLabel,
-        AcpAgentCapabilities.requiredFor({ restore, mcp: prepared.descriptor !== null }));
+        AcpAgentCapabilities.requiredFor({ restore, mcp: true }));
       assertAccepting();
       const opened = await open(session);
       assertAccepting();
@@ -204,7 +204,7 @@ export class AcpAgentRunBackendFactory implements AgentRunBackendFactory {
     }
   }
 
-  private async awaitMcpReady(session: AcpAgentSession, descriptor: AgentToolMcpDescriptor | null): Promise<void> {
+  private async awaitMcpReady(session: AcpAgentSession, descriptor: AgentToolMcpDescriptor): Promise<void> {
     const requirement = this.deps.sessionProfile.mcpReadiness(descriptor);
     if (requirement) await session.awaitMcpServerReady(requirement);
   }
@@ -216,7 +216,7 @@ export class AcpAgentRunBackendFactory implements AgentRunBackendFactory {
     return capture.created ? capture.trace : null;
   }
 
-  private activateMcp(runId: string, config: AgentRunConfig, workingDirectory: string, definition: AgentDefinition): AgentToolMcpDescriptor | null {
+  private activateMcp(runId: string, config: AgentRunConfig, workingDirectory: string, definition: AgentDefinition): AgentToolMcpDescriptor {
     const member = config.memberExecutionContext;
     const displayName = member ? getAgentTeamAddressBasename(member.identity.memberAddress) : null;
     const result = this.deps.mcpSessions.activateForRun({
@@ -232,7 +232,7 @@ export class AcpAgentRunBackendFactory implements AgentRunBackendFactory {
       },
       runtimeKind: config.runtimeKind,
     });
-    return result.kind === "active" ? result.descriptor : null;
+    return result.descriptor;
   }
 }
 

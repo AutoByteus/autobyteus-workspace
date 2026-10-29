@@ -10,6 +10,7 @@ import { AgentToolMcpCatalog } from "../../../../src/agent-tools/mcp/agent-tool-
 import { AgentToolMcpSessionRegistry } from "../../../../src/agent-tools/mcp/agent-tool-mcp-session-registry.js";
 import { AgentToolMcpSessionService } from "../../../../src/agent-tools/mcp/agent-tool-mcp-session-service.js";
 import { AgentToolMcpToolExecutor } from "../../../../src/agent-tools/mcp/agent-tool-mcp-tool-executor.js";
+import { AgentToolsMcpSessionStreams } from "../../../../src/agent-tools/mcp/agent-tools-mcp-session-streams.js";
 import {
   toAgentToolMcpOperationResult,
   toAgentToolMcpToolResult,
@@ -51,9 +52,11 @@ const buildService = (
   catalog = new AgentToolMcpCatalog({ adapters: [buildSendMessageAdapter()] }),
   getLocalBaseUrl: () => string = () => "http://127.0.0.1:43124",
   applicationAgentTools: ApplicationAgentToolCapability | null = null,
+  streams: AgentToolsMcpSessionStreams = new AgentToolsMcpSessionStreams(),
 ) => new AgentToolMcpSessionService({
   registry,
   catalog,
+  streams,
   getLocalBaseUrl,
   executionCapabilities: {
     publishedArtifactPublisher: createPublisher(),
@@ -117,18 +120,71 @@ describe("AgentToolMcpSessionService", () => {
     expect(resolved.session.executionCapabilities.applicationAgentTools).toBeNull();
   });
 
-  it("returns not_exposed without reading readiness or inserting a record", () => {
+  it("activates a session with an empty tool list", () => {
     const registry = new AgentToolMcpSessionRegistry();
-    const getLocalBaseUrl = vi.fn(() => { throw new Error("not ready"); });
-    const result = buildService(registry, undefined, getLocalBaseUrl).activateForRun({
-      owner: { runId: "run-hidden" },
-      sender: buildSender("run-hidden"),
+    const result = buildService(registry).activateForRun({
+      owner: { runId: "run-empty" },
+      sender: buildSender("run-empty"),
       runtimeExposure: buildRuntimeAgentToolExposure([]),
     });
 
-    expect(result).toEqual({ kind: "not_exposed" });
-    expect(getLocalBaseUrl).not.toHaveBeenCalled();
-    expect(registry.listSessions()).toEqual([]);
+    expect(result).toMatchObject({ kind: "active", descriptor: { enabledTools: [] } });
+    expect(result.descriptor.serverUrl).toBe(
+      `http://127.0.0.1:43124/mcp/agent-tools/${result.sessionId}`,
+    );
+    expect(registry.resolveSession(result.sessionId)).toMatchObject({
+      ok: true,
+      session: { enabledTools: [] },
+    });
+  });
+
+  it("replaces a run's exposure as one new frozen record and notifies its streams", () => {
+    const registry = new AgentToolMcpSessionRegistry();
+    const streams = new AgentToolsMcpSessionStreams();
+    const notifyToolsChanged = vi.spyOn(streams, "notifyToolsChanged");
+    const service = buildService(registry, undefined, undefined, null, streams);
+    const activation = service.activateForRun({
+      owner: { runId: "run-replace" },
+      sender: buildSender("run-replace"),
+      runtimeExposure: buildRuntimeAgentToolExposure([]),
+    });
+    const before = registry.getSession(activation.sessionId)!;
+    expect(Object.isFrozen(before)).toBe(true);
+
+    const added = service.replaceForRun({
+      runId: "run-replace",
+      runtimeExposure: buildRuntimeAgentToolExposure([SEND_MESSAGE_TO_TOOL_NAME]),
+    });
+    const after = registry.getSession(activation.sessionId)!;
+    expect(added).toEqual({ ...activation.descriptor, enabledTools: [SEND_MESSAGE_TO_TOOL_NAME] });
+    expect(Object.isFrozen(added)).toBe(true);
+    expect(after).not.toBe(before);
+    expect(Object.isFrozen(after)).toBe(true);
+    expect(after.enabledTools).toEqual([SEND_MESSAGE_TO_TOOL_NAME]);
+    expect(after.toolRoutes[SEND_MESSAGE_TO_TOOL_NAME]).toBeDefined();
+    expect(after.runtimeExposure.sendMessageToEnabled).toBe(true);
+    expect(after.sender).toBe(before.sender);
+    expect(after.createdAt).toBe(before.createdAt);
+    expect(before.enabledTools).toEqual([]);
+    expect(notifyToolsChanged).toHaveBeenCalledWith(activation.sessionId);
+    expect(service.describeForRun("run-replace")).toEqual(added);
+
+    const removed = service.replaceForRun({
+      runId: "run-replace",
+      runtimeExposure: buildRuntimeAgentToolExposure([]),
+    });
+    expect(removed.enabledTools).toEqual([]);
+    expect(registry.getSession(activation.sessionId)!.toolRoutes).toEqual({});
+    expect(notifyToolsChanged).toHaveBeenCalledTimes(2);
+  });
+
+  it("refuses to replace or describe a run without a session", () => {
+    const service = buildService();
+    expect(() => service.describeForRun("run-missing")).toThrow("is not active");
+    expect(() => service.replaceForRun({
+      runId: "run-missing",
+      runtimeExposure: buildRuntimeAgentToolExposure([]),
+    })).toThrow("is not active");
   });
 
   it("fails before insertion when the owned local listener is not ready", () => {

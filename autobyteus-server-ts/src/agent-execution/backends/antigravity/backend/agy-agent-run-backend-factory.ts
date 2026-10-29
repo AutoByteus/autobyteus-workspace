@@ -114,7 +114,7 @@ export class AgyAgentRunBackendFactory implements AgentRunBackendFactory {
     return supported;
   }
 
-  private activateMcp(runId: string, config: AgentRunConfig, workspacePath: string, definition: NonNullable<Awaited<ReturnType<AgentDefinitionService["getAgentDefinitionById"]>>>): AgentToolMcpDescriptor | null {
+  private activateMcp(runId: string, config: AgentRunConfig, workspacePath: string, definition: NonNullable<Awaited<ReturnType<AgentDefinitionService["getAgentDefinitionById"]>>>): AgentToolMcpDescriptor {
     const member = config.memberExecutionContext;
     const result = this.mcpSessions.activateForRun({
       owner: member ? { runId, collaborationIdentity: member.identity,
@@ -127,7 +127,7 @@ export class AgyAgentRunBackendFactory implements AgentRunBackendFactory {
         applicationExecutionContext: config.applicationExecutionContext },
       runtimeKind: config.runtimeKind,
     });
-    return result.kind === "active" ? result.descriptor : null;
+    return result.descriptor;
   }
 
   private async assertAvailable(config: AgentRunConfig): Promise<void> {

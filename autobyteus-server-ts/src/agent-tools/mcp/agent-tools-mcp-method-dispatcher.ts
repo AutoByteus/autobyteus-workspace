@@ -90,7 +90,7 @@ export class AgentToolsMcpMethodDispatcher {
     }
     return this.json(200, this.resultMapper.jsonRpcSuccess(id, {
       protocolVersion,
-      capabilities: { tools: { listChanged: false }, resources: {} },
+      capabilities: { tools: { listChanged: true }, resources: {} },
       serverInfo: { name: AGENT_TOOLS_MCP_SERVER_NAME, version: "0.1.0" },
     }));
   }

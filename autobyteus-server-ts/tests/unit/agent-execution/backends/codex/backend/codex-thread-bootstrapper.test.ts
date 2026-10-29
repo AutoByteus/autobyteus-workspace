@@ -180,14 +180,12 @@ const createBootstrapper = (input: {
       const descriptor = input.agentToolsDescriptor ?? createAgentToolMcpDescriptor(
         (input.toolNames ?? []).filter((toolName) => SUPPORTED_AGENT_TOOLS_MCP_TEST_NAMES.has(toolName)),
       );
-      return descriptor.enabledTools.length === 0
-        ? ({ kind: "not_exposed" as const })
-        : ({
-            kind: "active" as const,
-            sessionId: "session-codex",
-            owner: issueInput.owner,
-            descriptor,
-          });
+      return {
+        kind: "active" as const,
+        sessionId: "session-codex",
+        owner: issueInput.owner,
+        descriptor,
+      };
     }),
   } as AgentToolMcpRunSessionActivator;
   const bootstrapper = new CodexThreadBootstrapper(
@@ -750,7 +748,7 @@ describe("CodexThreadBootstrapper", () => {
     );
   });
 
-  it("does not materialize Agent Tools MCP config when no configured tool is available", async () => {
+  it("configures the Agent Tools MCP server with an empty list when no configured tool is available", async () => {
     const { bootstrapper, agentToolMcpRunSessions } = createBootstrapper({
       skills: [],
       toolNames: ["open_tab"],
@@ -760,7 +758,15 @@ describe("CodexThreadBootstrapper", () => {
 
     const runContext = await bootstrapper.bootstrapForCreate(createRunContext(), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined });
 
-    expect(runContext.runtimeContext.codexThreadConfig.appServerConfig).toBeNull();
+    expect(runContext.runtimeContext.codexThreadConfig.appServerConfig).toEqual({
+      mcp_servers: {
+        autobyteus_agent_tools: {
+          url: "http://127.0.0.1:3000/mcp/agent-tools/session-codex",
+          enabled_tools: [],
+          startup_timeout_sec: 5,
+        },
+      },
+    });
     expect(agentToolMcpRunSessions.activateForRun).toHaveBeenCalledTimes(1);
   });
 

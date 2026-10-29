@@ -3,7 +3,7 @@ import os from "node:os";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
 import { spawnSync } from "node:child_process";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, onTestFinished } from "vitest";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { RunMemoryFileStore } from "autobyteus-ts/memory/store/run-memory-file-store.js";
 import { createNoopAgentToolMcpRunSessionDeactivator } from "../../fixtures/agent-tool-mcp-run-session-deactivator-fixtures.js";
@@ -24,6 +24,7 @@ import { CodexAppServerClient } from "../../../src/runtime-management/codex/clie
 import { CodexAppServerClientManager } from "../../../src/runtime-management/codex/client/codex-app-server-client-manager.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { AgentRunViewProjectionService } from "../../../src/run-history/services/agent-run-view-projection-service.js";
+import { startAgentToolsMcpTestHost } from "../../helpers/agent-tools-mcp-test-host.js";
 
 // Live proof that an interrupted Codex automatic compaction is closed as failed (REQ-C01, AC-C01d)
 // through the real AgentRun, Codex backend, app server and memory recorder. As in probe C10, the app
@@ -81,10 +82,13 @@ describeLive("Codex interrupted compaction (live E2E)", () => {
 
     const recorder = new AgentRunMemoryRecorder();
     const deactivator = createNoopAgentToolMcpRunSessionDeactivator();
+    // Every run has an Agent Tools MCP session, so the live Codex run needs a live endpoint.
+    const agentTools = await startAgentToolsMcpTestHost();
+    onTestFinished(() => agentTools.close());
     const manager = new AgentRunManager({
       autoByteusBackendFactory: unusedBackendFactory,
       codexBackendFactory: new CodexAgentRunBackendFactory(threadManager, new CodexThreadBootstrapper(
-        { activateForRun: () => ({ kind: "not_exposed" }) },
+        agentTools.runSessions,
         { materializeConfiguredWorkspaceSkills: async () => ({ materializedSkills: [], effectiveRequests: [] }) } as never,
         { resolveWorkingDirectory: async () => workspaceRoot } as never,
         { getAgentDefinitionById: async () => ({ name: "Codex Compaction Agent", skillNames: [], toolNames: [],

@@ -29,6 +29,7 @@ import type { CodexAppServerClientManager } from "../../../src/runtime-managemen
 import { SkillService } from "../../../src/skills/services/skill-service.js";
 import type { ProviderPreparationGuard } from "../../../src/agent-execution/backends/provider-preparation-guard.js";
 import type { AgentToolMcpRunSessionActivator } from "../../../src/agent-tools/mcp/agent-tool-mcp-session-authority.js";
+import { createAgentToolMcpRunSessionsStub } from "../../helpers/agent-tool-mcp-run-sessions-stub.js";
 
 const createAgentMd = (name: string, description: string, instructions: string): string =>
   ["---", `name: ${name}`, `description: ${description}`, "---", "", instructions].join("\n");
@@ -271,9 +272,7 @@ const createCodexBootstrapper = (workingDirectory: string): CodexThreadBootstrap
       release: vi.fn(async () => undefined),
     })),
   } as unknown as CodexAppServerClientManager;
-  const agentToolMcpRunSessions = {
-    activateForRun: vi.fn(() => ({ kind: "not_exposed" as const })),
-  } satisfies AgentToolMcpRunSessionActivator;
+  const agentToolMcpRunSessions: AgentToolMcpRunSessionActivator = createAgentToolMcpRunSessionsStub();
   return new CodexThreadBootstrapper(
     agentToolMcpRunSessions,
     new WorkspaceSkillMaterializer(CODEX_WORKSPACE_SKILL_MATERIALIZATION_PROFILE),

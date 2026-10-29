@@ -3,24 +3,25 @@ import type {
   AgentToolMcpDescriptor,
   AgentToolMcpSessionOwnerIdentity,
 } from "../../../../agent-tools/mcp/agent-tool-mcp-session.js";
-import type {
-  AgentToolMcpRunSessionAuthority,
-  AgentToolMcpRunSessionActivationResult,
-} from "../../../../agent-tools/mcp/agent-tool-mcp-session-authority.js";
+import type { AgentToolMcpRunSessionAuthority } from "../../../../agent-tools/mcp/agent-tool-mcp-session-authority.js";
 import type { ClaudeRunContext } from "../backend/claude-agent-run-context.js";
 import { getAgentTeamAddressBasename } from "../../../../agent-collaboration/domain/agent-team-address.js";
 
+/**
+ * Activates the run's Agent Tools MCP session once and then reads the
+ * session's current descriptor on every use, because the descriptor can
+ * change during the run.
+ */
 export class ClaudeAgentToolsMcpSessionState {
   private closed = false;
-  private activation: AgentToolMcpRunSessionActivationResult | null = null;
+  private active = false;
 
   constructor(private readonly runSessions: AgentToolMcpRunSessionAuthority) {}
 
-  ensureDescriptor(runContext: ClaudeRunContext): AgentToolMcpDescriptor | null {
+  ensureDescriptor(runContext: ClaudeRunContext): AgentToolMcpDescriptor {
     if (this.closed) throw new Error("Claude run MCP admission is closed.");
-    const existing = this.activation;
-    if (existing) {
-      return existing.kind === "active" ? existing.descriptor : null;
+    if (this.active) {
+      return this.runSessions.describeForRun(runContext.runId);
     }
 
     const result = this.runSessions.activateForRun({
@@ -43,13 +44,14 @@ export class ClaudeAgentToolsMcpSessionState {
       },
       runtimeKind: runContext.config.runtimeKind,
     });
-    this.activation = result;
-    return result.kind === "active" ? result.descriptor : null;
+    this.active = true;
+    return result.descriptor;
   }
+
   release(runId: string): void {
     this.closed = true;
     this.runSessions.deactivateForRun(runId);
-    this.activation = null;
+    this.active = false;
   }
 }
 

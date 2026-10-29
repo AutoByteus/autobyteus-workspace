@@ -5,7 +5,7 @@ import os from "node:os";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
 import { spawnSync } from "node:child_process";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import {
   RAW_TRACES_ACTIVE_MEMORY_FILE_NAME,
@@ -31,9 +31,24 @@ import { CodexModelCatalog } from "../../../src/llm-management/services/codex-mo
 import { CodexAppServerClient } from "../../../src/runtime-management/codex/client/codex-app-server-client.js";
 import { CodexAppServerClientManager } from "../../../src/runtime-management/codex/client/codex-app-server-client-manager.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+import { startAgentToolsMcpTestHost } from "../../helpers/agent-tools-mcp-test-host.js";
 
 const codexBinaryReady = spawnSync("codex", ["--version"], { stdio: "ignore" }).status === 0;
 const liveCodexTestsEnabled = process.env.RUN_CODEX_E2E === "1";
+
+// Every run has an Agent Tools MCP session, so a live Codex run needs a live endpoint.
+let agentToolsTestHost: Awaited<ReturnType<typeof startAgentToolsMcpTestHost>> | null = null;
+const requireAgentToolsTestHost = () => {
+  if (!agentToolsTestHost) throw new Error("The Agent Tools MCP test host is not started.");
+  return agentToolsTestHost;
+};
+beforeAll(async () => {
+  if (liveCodexTestsEnabled) agentToolsTestHost = await startAgentToolsMcpTestHost();
+});
+afterAll(async () => {
+  await agentToolsTestHost?.close();
+  agentToolsTestHost = null;
+});
 const describeLiveCodexMemory = codexBinaryReady && liveCodexTestsEnabled ? describe : describe.skip;
 
 const FLOW_TIMEOUT_MS = Number(process.env.CODEX_MEMORY_E2E_TIMEOUT_MS || 180_000);
@@ -166,9 +181,7 @@ const createCodexFactory = (input: {
   runId: string;
 }): CodexAgentRunBackendFactory => {
   const threadBootstrapper = new CodexThreadBootstrapper(
-    {
-      activateForRun: () => ({ kind: "not_exposed" }),
-    },
+    requireAgentToolsTestHost().runSessions,
     {
       materializeConfiguredWorkspaceSkills: async () => ({ materializedSkills: [], effectiveRequests: [] }),
     } as never,
