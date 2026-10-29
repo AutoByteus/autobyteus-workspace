@@ -63,7 +63,7 @@ None.
 - Related revision IDs: DR-001, IR-005, CRR-007
 - Why this revision was recorded: a code change after API-REV-002 (test-only) and a fast-forward to `origin/personal`
 - Coverage decisions or durable test paths changed: none
-- Cases added, changed, removed, or rechecked: API-05 rerun on `1c454e1ec1` (Pass). The other cases are kept: no source file changed since `5ee923081a`, and this round's tests are unchanged since `db27b28223`
+- Cases added, changed, removed, or rechecked: API-05 rerun on `1c454e1ec1` (Pass); API-03 real Codex rerun on `6823d55920` (Pass; the user's Codex limit was back). The other cases are kept: no source file changed since `5ee923081a`, and this round's tests are unchanged since `db27b28223`
 - Commands, environment, fixture, or broader-validation delta: none
 
 #### Prior Failure Resolution
