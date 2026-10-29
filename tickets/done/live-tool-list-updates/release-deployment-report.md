@@ -127,3 +127,19 @@ Recorded below after the merge, the checks before tagging, the tag and the rollo
 - The fix needed: read the messages through the localization runtime in `SystemTaskNotificationSegment.spec.ts`, as other specs do, so `guard:localization-boundary` passes.
 - After the fix: delivery reruns all three web guards, each with its own exit code, then the build-only release run and the release smoke check (Grok waived). Then the tag.
 - The ticket worktree is kept for the fix; cleanup is deferred.
+
+### DR-002: Local Fix received, guards rerun, release resumed
+
+- Chain:
+  - IR-005, the spec-only fix `137ce572aa` (`SystemTaskNotificationSegment.spec.ts` reads the locales through `getCatalog`);
+  - source review CRR-007 Pass (the guard passes, and fails on the old spec);
+  - API/E2E API-REV-003 Pass (`b404e0b519`, API-05 reran green);
+  - test review CRR-008 Not Applicable.
+  `git diff origin/personal HEAD` outside `tickets/` touches only that spec.
+- Delivery checks on `045a7a76b0`, each with its own exit code (`evidence/DEL-11…13`):
+  - `guard:web-boundary` exit 0 Passed;
+  - `guard:localization-boundary` exit 0 Passed;
+  - `audit:localization-literals` exit 0 Passed;
+  - the notice spec 8/8;
+  - web typecheck: production 0, test files at the 298/139 baseline, PASS.
+- Grok: API-04, the real Grok CLI run, is still owed; the code reviewer passed this decision on again. It was already decided by the user on 2026-10-29: "for grok, i can accept that". Delivery does not ask again. The waiver covers API-04 and the Grok row of the release smoke check for this release.
