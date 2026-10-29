@@ -143,3 +143,63 @@ Recorded below after the merge, the checks before tagging, the tag and the rollo
   - the notice spec 8/8;
   - web typecheck: production 0, test files at the 298/139 baseline, PASS.
 - Grok: API-04, the real Grok CLI run, is still owed; the code reviewer passed this decision on again. It was already decided by the user on 2026-10-29: "for grok, i can accept that". Delivery does not ask again. The waiver covers API-04 and the Grok row of the release smoke check for this release.
+
+### DR-002: Repository Finalization (completed)
+
+- Fix branch `codex/live-tool-list-updates` @ `bec8d308a4`, pushed. `git merge --no-ff` into `personal` → `6823d55920`. Secret Gate, hygiene and licensing passed. Pushed `4fb1c1640d..6823d55920`.
+- API/E2E's real-Codex rerun commit `d68545a383` (ticket documents only) was included: Secret Gate PASS, `6823d55920..d68545a383`. It was made by mistake on the release branch and was kept on purpose, being evidence that only changes ticket documents.
+
+### DR-002: Checks Before Tagging
+
+- Build-only release run `40953153841` on `personal` @ `6823d55920`: **success**. All five desktop builds succeeded (Linux x64/ARM64, Windows x64, macOS ARM64/Intel x64); "Publish GitHub Release" was skipped. `6823d55920..d68545a383` changes only `tickets/`, so the built software is the tagged software.
+- Release smoke check:
+  - The first run on `6823d55920` gave the same runtime results as below, but its "worktree left unchanged" guard **FAILED**. API/E2E was editing and committing `api-e2e-test-progress.md` in the same worktree during the run (`evidence/DEL-14-…`). The smoke run itself wrote nothing. API/E2E was asked to keep out of the worktree until the release was done.
+  - The rerun on a clean worktree at `d68545a383` (`evidence/DEL-15-…`):
+    - Claude 3/3 PASS; Codex 3/3 PASS; Antigravity 2/2 PASS; AutoByteus 2/2 PASS;
+    - the worktree guard passes;
+    - Grok 3/3 FAIL: `429 … subscription:free-usage-exhausted … grok-4.7`. That is the quota refusal the user waived for this release ("for grok, i can accept that", 2026-10-29).
+- Secret Gate over the release: PASS.
+
+### DR-002: Version / Tag / Release Commit
+
+- `release_versions.py next-beta` gave `1.5.11-beta.2` (Android version code `10051102`). The untracked `*/dist/` was deleted so the worktree was clean.
+- `bash scripts/desktop-release.sh beta --branch finalize/live-tool-list-updates --no-push` produced release commit `28927b70c5` (`autobyteus-web/package.json` → `1.5.11-beta.2`) with the annotated tag `v1.5.11-beta.2`.
+- `git fetch` confirmed `personal` was still `d68545a383`. Then: Secret Gate PASS, `d68545a383..28927b70c5 HEAD -> personal`, `[new tag] v1.5.11-beta.2` (21:22:04Z).
+
+### DR-002: Rollout (four runs watched together, set to stop on the first failed job)
+
+| Run | Workflow | Result | Finished |
+| --- | --- | --- | --- |
+| `40957190429` | Android APK Release | success | 21:27:30Z |
+| `40957190412` | iOS App Store Connect Release (TestFlight upload) | success | 21:40:41Z |
+| `40957190400` | Server Docker Release | success | 21:56:53Z |
+| `40957190325` | Desktop Release | success | 22:04:51Z |
+
+- GitHub release `v1.5.11-beta.2` (https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.5.11-beta.2):
+  - pre-release, not a draft;
+  - **17 assets**: Android APK + `.sha256`; Linux arm64/x64 AppImages; macOS arm64/x64 `.dmg`/`.zip` with blockmaps; Windows `.exe`; the four `latest*.yml`;
+  - generated notes;
+  - GitHub Latest stays `v1.5.10`.
+- Docker Hub `autobyteus/autobyteus-server`:
+  - `1.5.11-beta.2` and `:beta` on `sha256:34d01f5e…c8d526` (amd64, arm64);
+  - `:latest` unchanged on `1.5.10` (`sha256:a1c22e2e…3fa7cd`).
+- Release result: `Completed` (4/4 workflows, 17/17 assets). Nothing is partial.
+
+### DR-002: Post-Release Cleanup
+
+- Ticket worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/live-tool-list-updates` was clean, then removed and pruned.
+- Local branches `codex/live-tool-list-updates` (`bec8d308a4`) and `finalize/live-tool-list-updates` (`28927b70c5`) were deleted; both are in `origin/personal`.
+- `origin/codex/live-tool-list-updates` is kept.
+- The clean clone, its logs and the check scripts in `/tmp` were removed.
+- The main checkout was not touched.
+- This record was committed from a temporary detached checkout of `origin/personal` (`/tmp/ab324-record`), removed after the push.
+
+### Final Status
+
+- Verification: `Completed` (from the evidence; Grok's real run waived by the user)
+- Repository finalization: `Completed` (`be9e78dc93`, fix `6823d55920`, release commit `28927b70c5` on `personal`)
+- Release: `Completed` (`v1.5.11-beta.2`, 4/4, 17/17, Docker `:beta` moved, `:latest` unchanged)
+- Cleanup: `Completed`
+- Still owed outside the release: API-04, the real Grok CLI run, which API/E2E will run when the user's Grok credit returns
+- Unresolved blocker: `None`
+- Terminal package sent to the Solution Designer: sent with `send_message_to` to `/software_engineering_team/solution_designer` right after this record is pushed (confirmed in the delivery conversation)
