@@ -159,8 +159,8 @@ None.
 
 | Issue | Classification | Evidence | Recommended Owner |
 | --- | --- | --- | --- |
-| One smoke run uses roughly a third of Grok's free 600k-token daily quota; RELEASE.md's "Cost" line names turns only | Not a reroute (risk; AC-007 asks for a cost statement, which exists). Report to the Solution Designer as a recommendation | IMP-07 429; local Grok session usage | Solution Designer (optional doc refinement) |
-| A signed-out Grok shows "grok model grok-4.7 is not offered; available: grok-4.5, grok-4.6" (API-06), not "not signed in"; the runner's preflight checks only Codex's `auth.json` (as the design specifies). Fail-closed holds; only the reason text points at the model | Not a reroute (implementation matches design DS-001; REQ-005 is met: failed, with the observed reason). Recommendation: a Grok sign-in preflight (e.g. `~/.grok/auth.json`) like Codex's | API-06 | Solution Designer (optional follow-up) |
+| One smoke run uses roughly a third of Grok's free 600k-token daily quota; RELEASE.md's "Cost" line names turns only | Not a reroute (risk; AC-007 asks for a cost statement, which exists). Report to the Solution Designer as a recommendation | IMP-07 429; local Grok session usage; API-08 Codex account usage limit | Follow-up FU-002 (`follow-ups.md`) |
+| A signed-out Grok shows "grok model grok-4.7 is not offered; available: grok-4.5, grok-4.6" (API-06), not "not signed in"; the runner's preflight checks only Codex's `auth.json` (as the design specifies). Fail-closed holds; only the reason text points at the model | Not a reroute (implementation matches design DS-001; REQ-005 is met: failed, with the observed reason). Recommendation: a Grok sign-in preflight (e.g. `~/.grok/auth.json`) like Codex's | API-06 | Follow-up FU-001 (`follow-ups.md`) |
 | `grok` is installed twice (`~/.grok/bin`, `~/.local/bin`) on the release machine | Observation for reproducing AC-004 by hand: removing one PATH entry does not hide Grok | API-05 | none |
 
 ## Investigation Decision
@@ -169,4 +169,4 @@ None.
 - Repository-Resident Durable Coverage Will Be Added / Updated / Removed: `No`
 - Reroute Required Before Validation Execution: `No`
 - Recommended Owner If Reroute Required: `N/A`
-- Notes: API-04, API-05 and API-06 run first (no Grok tokens); API-08 waits for the Grok quota window.
+- Notes: API-04, API-05 and API-06 run first (no Grok tokens); API-08 waits for the Grok quota window. API-08 ran on 2026-10-29 (resumed); Codex's account usage limit blocked its three cases (see the execution report).
