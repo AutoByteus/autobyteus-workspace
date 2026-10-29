@@ -6,10 +6,14 @@ import { defaultToolRegistry } from '../registry/tool-registry.js';
 import { ParameterSchema, ParameterDefinition, ParameterType } from '../../utils/parameter-schema.js';
 import { addFileToolPathParameters } from './file-tool-schema.js';
 import { resolveFileToolPath } from './workspace-path-utils.js';
+import { readMediaFileAsContextFile, type MediaReadContext } from './read-file-media.js';
+import type { ContextFile } from '../../agent/message/context-file.js';
+import { getMediaFileKindFromPath } from '../../utils/media-file-kind.js';
 
 const DESCRIPTION = [
   'Reads content from a specified file. Supports optional 1-based inclusive line ranges via start_line/end_line.',
   'Each returned line is prefixed with its line number when include_line_numbers is true.',
+  'Image, audio and video files (by extension) are attached for the model to see in the next turn instead of being returned as text; line ranges do not apply to them, and a kind the current model cannot take is refused.',
   "File paths use trusted-local semantics: absolute paths are used directly; relative paths require an explicit absolute base_dir and are never resolved from workspace, process, or shell cd state.",
   'Raises ValueError if a relative path is given without an absolute base_dir or if line range arguments are invalid.',
   'Raises FileNotFoundError if the file does not exist.',
@@ -21,13 +25,13 @@ addFileToolPathParameters(argumentSchema);
 argumentSchema.addParameter(new ParameterDefinition({
   name: 'start_line',
   type: ParameterType.INTEGER,
-  description: "Parameter 'start_line' for tool 'read_file'.",
+  description: "Parameter 'start_line' for tool 'read_file' (text files only).",
   required: false
 }));
 argumentSchema.addParameter(new ParameterDefinition({
   name: 'end_line',
   type: ParameterType.INTEGER,
-  description: "Parameter 'end_line' for tool 'read_file'.",
+  description: "Parameter 'end_line' for tool 'read_file' (text files only).",
   required: false
 }));
 argumentSchema.addParameter(new ParameterDefinition({
@@ -38,7 +42,7 @@ argumentSchema.addParameter(new ParameterDefinition({
   defaultValue: true
 }));
 
-type AgentContextLike = { agentId: string; workspaceRootPath?: string | null };
+type AgentContextLike = { agentId: string; workspaceRootPath?: string | null } & MediaReadContext;
 
 export async function readFile(
   context: AgentContextLike,
@@ -47,7 +51,7 @@ export async function readFile(
   startLine?: number | null,
   endLine?: number | null,
   includeLineNumbers: boolean = true
-): Promise<string> {
+): Promise<string | ContextFile> {
   if (startLine !== undefined && startLine !== null && startLine < 1) {
     throw new Error(`start_line must be >= 1 when provided; got ${startLine}.`);
   }
@@ -65,6 +69,15 @@ export async function readFile(
   }
 
   const finalPath = resolveFileToolPath(context, filePath, baseDir);
+
+  const mediaKind = getMediaFileKindFromPath(finalPath);
+  if (mediaKind) {
+    const hasLineRange = (startLine !== undefined && startLine !== null) || (endLine !== undefined && endLine !== null);
+    if (hasLineRange) {
+      throw new Error(`start_line and end_line apply to text files only; '${finalPath}' is ${mediaKind === 'audio' ? 'an' : 'a'} ${mediaKind} file.`);
+    }
+    return readMediaFileAsContextFile(context, finalPath, mediaKind);
+  }
 
   try {
     await fs.access(finalPath);
