@@ -1,0 +1,60 @@
+# IMP-07-smoke-run-2
+# command: python3 scripts/release_smoke.py   (from the repository root, normal shell)
+# commit: e918bb6c444c054e9565471d83a8bc69ccac8180
+# environment: macOS (Darwin 25.5.0), Python 3.9.6; claude 2.1.302, codex-cli 0.163.0, grok 1.0.62 signed in
+# date: 2026-10-19T03:38Z
+# shows: Claude and Codex pass all 3 scenarios, Grok passes new run + restore; Grok's other 2 fail with HTTP 429 free-usage-exhausted (external quota); git status unchanged by the run
+
+running live (claude, codex, grok): tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts
+running antigravity (antigravity): tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts
+running autobyteus (autobyteus): tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts
+
+Release smoke check
+runtime     scenario                                 result  reason
+claude      new run + restore, linked workspace      PASS
+claude      brand-new team member                    PASS
+claude      different same-named skill               PASS
+codex       new run + restore, linked workspace      PASS
+codex       brand-new team member                    PASS
+codex       different same-named skill               PASS
+grok        new run + restore, linked workspace      PASS
+grok        brand-new team member                    FAIL    failed: AssertionError: expected [ Array(1) ] to deeply equal []
+grok        different same-named skill               FAIL    failed: AssertionError: expected [ Array(1) ] to deeply equal []
+antigravity brand-new run, linked workspace          PASS
+antigravity brand-new team member, linked workspace  PASS
+autobyteus  brand-new run, linked workspace          PASS
+autobyteus  brand-new team member, linked workspace  PASS
+
+commit    e918bb6c444c054e9565471d83a8bc69ccac8180
+models    {"claude": "haiku", "codex": "gpt-5.6-luna", "grok": "grok-4.7"}
+duration  live 99s, antigravity 19s, autobyteus 8s
+result    FAIL
+logs      /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/release-smoke-rjrsuwf7
+exit=1
+
+## git status --porcelain before == after: yes
+
+## Excerpt of the live step log
+SKILL_LINKS_LIVE_MODELS {"claude":"haiku","codex":"gpt-5.6-luna","grok":"grok-4.7"}
+SKILL_LINKS_LIVE_NEW_RUN claude {"runId":"link_probe_agent_3b30a68a_748e011ddb1e4cd088cf842736c5b17e","text":"LINKCODE-3b30a68a","tools":["Skill","Read"]}
+SKILL_LINKS_LIVE_RESTORED_RUN claude {"runId":"link_probe_agent_3b30a68a_748e011ddb1e4cd088cf842736c5b17e","text":"RESTORECODE-3b30a68a","tools":["Read"]}
+SKILL_LINKS_LIVE_TEAM_MEMORY_BEFORE claude {"teamRunId":"link_probe_team_claude_3b30a68a_df7d8bbc745c4f6da55635f163b5c56f","designerRunId":"link_probe_agent_3b30a68a_7a16c8fa51c54022b28d7309f2761f33","memberFoldersBefore":["team_communication_messages_active.jsonl","team_run_execution_tree.json"]}
+SKILL_LINKS_LIVE_TEAM_MEMBER claude {"designerRunId":"link_probe_agent_3b30a68a_7a16c8fa51c54022b28d7309f2761f33","text":"LINKCODE-3b30a68a","tools":["Skill"],"memberFoldersAfter":["link_probe_agent_3b30a68a_7a16c8fa51c54022b28d7309f2761f33","team_communication_messages_active.jsonl","team_run_execution_tree.json"]}
+SKILL_LINKS_LIVE_COLLISION claude {"success":false,"refusal":"Error: Workspace skill path collision for Claude skill 'link-probe-3b30a68a': path '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-qpWx05/claude-collision-ws-wCQPO5/.claude/skills/link-probe-3b30a68a' already exists as a directory."}
+SKILL_LINKS_LIVE_ALL_INSTALLED claude {"text":"OWNCODE-3b30a68a","tools":["Skill"]}
+SKILL_LINKS_LIVE_NEW_RUN codex {"runId":"link_probe_agent_3b30a68a_755ba09dee4648cb83fccc076462991e","text":"**Identifying required read skill**LINKCODE-3b30a68a","tools":["run_bash"]}
+SKILL_LINKS_LIVE_RESTORED_RUN codex {"runId":"link_probe_agent_3b30a68a_755ba09dee4648cb83fccc076462991e","text":"**Planning cat restore operation**RESTORECODE-3b30a68a","tools":["run_bash"]}
+SKILL_LINKS_LIVE_TEAM_MEMORY_BEFORE codex {"teamRunId":"link_probe_team_codex_3b30a68a_780f23130b2148ce98e8010eaffbe24b","designerRunId":"link_probe_agent_3b30a68a_a96b9c445946478dad9d9c7499a3f1e6","memberFoldersBefore":["team_communication_messages_active.jsonl","team_run_execution_tree.json"]}
+SKILL_LINKS_LIVE_TEAM_MEMBER codex {"designerRunId":"link_probe_agent_3b30a68a_a96b9c445946478dad9d9c7499a3f1e6","text":"**Planning skill file reading**LINKCODE-3b30a68a","tools":["run_bash"],"memberFoldersAfter":["link_probe_agent_3b30a68a_a96b9c445946478dad9d9c7499a3f1e6","team_communication_messages_active.jsonl","team_run_ex
+SKILL_LINKS_LIVE_COLLISION codex {"success":false,"refusal":"Error: Workspace skill path collision for Codex skill 'link-probe-3b30a68a': path '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-qpWx05/codex-collision-ws-yaGrqT/.codex/skills/link-probe-3b30a68a' already exists as a directory."}
+SKILL_LINKS_LIVE_ALL_INSTALLED codex {"text":"**Identifying need for read skill**OWNCODE-3b30a68a","tools":["run_bash"]}
+SKILL_LINKS_LIVE_NEW_RUN grok {"runId":"link_probe_agent_3b30a68a_590fd48add64476fb90faf9451fadc16","text":"The user wants me to use a link-probe skill and reply with only the code. I need to find and read the skill.Let me search more broadly for the skill.Read the skill in the workspace .grok/skillsThe use","tools":["grep","run
+SKILL_LINKS_LIVE_RESTORED_RUN grok {"runId":"link_probe_agent_3b30a68a_590fd48add64476fb90faf9451fadc16","text":"The user wants the restore link probe code from the skill. I already know from the previous turn that I need to read restore-code.md in the skill folder.Reply with only the code.RESTORECODE-3b30a68a","tools":["read_fi
+SKILL_LINKS_LIVE_TEAM_MEMORY_BEFORE grok {"teamRunId":"link_probe_team_grok_3b30a68a_94db7051a6214062b2cf17c41ae13711","designerRunId":"link_probe_agent_3b30a68a_78e113206adb46e196702e4f441df9cb","memberFoldersBefore":["team_communication_messages_active.jsonl","team_run_execution_tree.json"]}
+SKILL_LINKS_LIVE_TEAM_MEMBER grok {"designerRunId":"link_probe_agent_3b30a68a_78e113206adb46e196702e4f441df9cb","text":"The user wants me to use a link-probe skill and reply with only the code. I need to find and read the skill.Let me search more broadly for the skill.","tools":["grep","grep"],"memberFoldersAfter":["link_probe_a
+SKILL_LINKS_LIVE_COLLISION grok {"success":false,"refusal":"Error: Workspace skill path collision for Grok Build skill 'link-probe-3b30a68a': path '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-qpWx05/grok-collision-ws-7tdTSL/.grok/skills/link-probe-3b30a68a' already exists as a directory."}
+SKILL_LINKS_LIVE_ALL_INSTALLED grok {"text":"The user wants me to use a link-probe skill and reply with only the code. I need to find and read the skill.","tools":["grep"]}
+    293|       console.info(`SKILL_LINKS_LIVE_TEAM_MEMBER ${name}`, JSON.string…
+    328|       console.info(`SKILL_LINKS_LIVE_ALL_INSTALLED ${name}`, JSON.stri…
+
++   "{\"code\":\"ACP_PROMPT_FAILED\",\"message\":\"Rate limited: API error (status 429 Too Many Requests): subscription:free-usage-exhausted: You've used all the included free usage for model grok-4.7 for now. Usage resets over a rolling 24-hour window — tokens (actual/limit): 612809/600000. Upgrade to a Grok subscription for higher limits: https://grok.com/supergrok\",\"error_scope\":\"turn\",\"error_effect\":\"terminal\",\"turn_id\":\"44f7680b-2523-4fc6-943c-e98ffda96d1f\",\"change_sequence\":113,\"agent_run_id\":\"link_probe_agent_3b30a68a_78e113206adb46e196702e4f441df9cb\"}",
