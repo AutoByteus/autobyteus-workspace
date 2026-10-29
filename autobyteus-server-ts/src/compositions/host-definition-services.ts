@@ -8,6 +8,7 @@ import { DefinitionSourceRegistry } from "../collaboration-definition-admission/
 import { DefinitionAdmissionService } from "../collaboration-definition-admission/services/definition-admission-service.js";
 import { FileAgentOrgDefinitionProvider } from "../agent-org-definition/providers/file-agent-org-definition-provider.js";
 import type { AgentPackageDefinitions } from "../agent-package-definitions/services/agent-package-definitions.js";
+import type { AgentDefinitionChangeSignal } from "../agent-definition/services/agent-definition-change-signal.js";
 
 export type HostDefinitionServices = Readonly<{
   agentDefinitionService: AgentDefinitionService;
@@ -16,6 +17,8 @@ export type HostDefinitionServices = Readonly<{
   definitionAdmissionService: DefinitionAdmissionService;
   /** The process agent package definitions (the studio server wires the folder watcher and change feed to its reloader). */
   agentPackageDefinitions: AgentPackageDefinitions;
+  /** One signal for every agent definition change (package reloads, application-owned saves, package commands). */
+  agentDefinitionChanges: AgentDefinitionChangeSignal;
   close(): void;
 }>;
 
@@ -77,6 +80,7 @@ export const createHostDefinitionServices = (input: {
     agentOrgDefinitionService,
     definitionAdmissionService,
     agentPackageDefinitions: definitions.packageDefinitions,
+    agentDefinitionChanges: definitions.agentDefinitionChanges,
     close: () => {
       if (closed) return;
       closed = true;

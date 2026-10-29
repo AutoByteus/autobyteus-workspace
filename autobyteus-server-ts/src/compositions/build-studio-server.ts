@@ -201,6 +201,7 @@ const createStudioApplicationServices = (input: {
     registry: input.packages.packageRegistryService,
     provider: input.packages.bundleProvider,
     catalogTransition: applicationRuntime.hostManagement.catalogTransition,
+    definitionChanges: input.definitions.agentDefinitionChanges,
   });
   return { applicationRuntime, packageCommandService };
 };
@@ -218,7 +219,10 @@ export const buildStudioServer = async (input: {
   });
   let agentPackageDefinitionFeed: AgentPackageDefinitionFeed | null = null;
   try {
-    agentPackageDefinitionFeed = await composeAgentPackageDefinitionFeed({ reloader: hostDefinitionServices.agentPackageDefinitions.reloader });
+    agentPackageDefinitionFeed = await composeAgentPackageDefinitionFeed({
+      reloader: hostDefinitionServices.agentPackageDefinitions.reloader,
+      definitionChanges: hostDefinitionServices.agentDefinitionChanges,
+    });
   } catch (error) {
     await nativeShutdown.close(async () => { hostDefinitionServices.close(); });
     throw error;
