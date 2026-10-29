@@ -11,6 +11,7 @@
 | CRR-005 | `code-review-report.md` | Implementation Review / IR-004 (Targeted Delta Review) | Fail (CRR-004) | Pass (9.5/10) | CR-005 resolved |
 | CRR-006 | `api-e2e-test-review-report.md` | Proportional API/E2E Test Review / API-REV-002 | Pass (CRR-005, source review) | Pass | None |
 | CRR-007 | `code-review-report.md` | Implementation Review / IR-005 (delivery-stage Local Fix, DR-001) | Pass (CRR-005) | Pass | None |
+| CRR-008 | `api-e2e-test-review-report.md` | Proportional API/E2E Test Review / API-REV-003 | Pass (CRR-006) | Not Applicable | None |
 
 ## Revision Entries
 
@@ -201,3 +202,28 @@ None
 - Material score or classification changes: N/A
 - Recommended recipient: API/E2E Engineer (pass rule), so delivery can proceed: the three guards on their own, the build-only release run, then the release smoke check
 - Remaining risks or uncertainty: an Electron fixture is load-sensitive (`PortOwnerInspectorFaults.spec.ts`), outside this ticket
+
+### CRR-008 — Test review after API-REV-003: no durable test changed
+
+- Canonical review report updated: `api-e2e-test-review-report.md` (the Round 2 section; Latest Result)
+- Review entry point and round: Proportional API/E2E Test Review, round 2
+- Review scope: `N/A` (test review)
+- Triggering role, report path, and finding or scenario IDs: API/E2E Engineer, `api-e2e-execution-coverage-report.md` (API-REV-003)
+- Relevant solution revision IDs: N/A
+- Relevant architecture-review revision IDs: N/A
+- Relevant implementation revision IDs: IR-005
+- Relevant API/E2E revision IDs: API-REV-003
+- Relevant delivery revision IDs: DR-001
+- Prior authoritative result: CRR-006 `Pass`
+- Current authoritative result: `Not Applicable`
+- What changed in the review result and why: no durable API/E2E test changed since `db27b28223` (empty diff; `b404e0b519` touches ticket files only); API-05 reran green on `1c454e1ec1`
+- Supported product scenario / material-premise basis changes: none
+
+#### Prior Finding Resolution
+
+None
+
+- New or remaining finding IDs: None
+- Material score or classification changes: N/A
+- Recommended recipient: Delivery Engineer
+- Remaining risks or uncertainty: API-04 (the real Grok CLI run) is owed; tagging before it is the user's or delivery's decision
