@@ -9,6 +9,7 @@
 | CRR-003 | `code-review-report.md` | Implementation Review / IR-003 (Targeted Delta Review) | Fail (CRR-002) | Pass (9.5/10) | CR-004 resolved |
 | CRR-004 | `code-review-report.md` | API/E2E Failure-Origin Review / API-REV-001 Fail (API-05) | Pass (CRR-003) | Fail: Design Impact → Solution Designer | CR-005 new |
 | CRR-005 | `code-review-report.md` | Implementation Review / IR-004 (Targeted Delta Review) | Fail (CRR-004) | Pass (9.5/10) | CR-005 resolved |
+| CRR-006 | `api-e2e-test-review-report.md` | Proportional API/E2E Test Review / API-REV-002 | Pass (CRR-005, source review) | Pass | None |
 
 ## Revision Entries
 
@@ -149,3 +150,28 @@ None
 - Material score or classification changes: Fail → Pass
 - Recommended recipient: API/E2E Engineer; informational to Implementation Engineer
 - Remaining risks or uncertainty: Grok live run blocked by the usage limit; FU-003 not traced; a failure shown this way is not replayed after a page reload (by design, as for Team members); API-06/07 still to run
+
+### CRR-006 — Proportional test review of the API/E2E durable tests
+
+- Canonical review report updated: `api-e2e-test-review-report.md`
+- Review entry point and round: Proportional API/E2E Test Review, round 1
+- Review scope: `N/A` (test review)
+- Triggering role, report path, and finding or scenario IDs: API/E2E Engineer, `api-e2e-execution-coverage-report.md` (API-REV-002); API-05, API-06 (TLU-001)
+- Relevant solution revision IDs: SR-010
+- Relevant architecture-review revision IDs: ARCH-REV-010
+- Relevant implementation revision IDs: IR-004
+- Relevant API/E2E revision IDs: API-REV-001, API-REV-002
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: CRR-005 Pass (source review; separate entry point)
+- Current authoritative result: `Pass`
+- What changed in the review result and why: the first test review. The server e2e (`ff1aaa2d60`) and the browser case TLU-001 with its probe registration and script (`db27b28223`) enter through real triggers, assert what the user sees, and are isolated. Two non-blocking notes: the either-code regex, and a fixed 2 s wait
+- Supported product scenario / material-premise basis changes: none
+
+#### Prior Finding Resolution
+
+None
+
+- New or remaining finding IDs: None
+- Material score or classification changes: N/A
+- Recommended recipient: Delivery Engineer
+- Remaining risks or uncertainty: API-04 (the real Grok run) is owed; FU-004 is cosmetic and outside this ticket
