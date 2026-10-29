@@ -62,3 +62,11 @@ Handoff rule matched: "Architecture Design Complete with task_size=Small or Medi
 - Design: design-spec.md "SR-003 Delta". Fix in `ModelConfigSection.vue` schema alignment, with a shared helper in `utils/llmConfigSchema.ts`. Opening settings alone must not make the draft dirty or write. Update the docs (settings.md, agent_execution_architecture.md). Add tests (AC-012).
 - Reruns: API-04, API-06, Org edit path.
 - Classification: Medium / Low → implementation engineer.
+
+## SR-004 revision (2026-10-29) — Design Impact DI-1 / DI-2 → architecture review
+
+- Problem: SR-003 targeted the wrong surface (the stopped-run edit goes through `ExistingRunConfigEditor`/`RunSettingsCard`), and Org workspace-only edits revalidate untouched stored configs that no client filter can reach (SRC-023).
+- Design: the server model-settings validator omits top-level keys the model's current schema does not declare from the canonical config instead of rejecting them (null schema → null). Saves persist the canonical config, so stale keys disappear on the next real save, and untouched or launched configs pass. The runtime already ignores undeclared keys. No client change, no migration. See design-spec.md "SR-004 Delta".
+- Classification: task_size Medium, architectural_risk High (documented shared validation contract, `run_history.md` L184-187) → `/software_engineering_team/architecture_reviewer`.
+- Implementation state: production code at 574aa0bd7 (SR-002), API/E2E round 1 at 51b94b3e1, docs at the SR-004 commit; implementation is waiting for the reviewed design.
+- Review basis: the cumulative package (SR-001..SR-004); no earlier architecture review exists (direct route until now).

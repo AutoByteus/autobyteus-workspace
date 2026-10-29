@@ -7,6 +7,7 @@
 | SR-001 | Mixed (Requirements + Design) | Task autobyteus-8; user clarifications 2026-10-29 | N/A | N/A | Requirements Approved (User); Design Ready | BEH-001..006; REQ-001..009 | Baseline requirements, design, classification Medium / Low |
 | SR-002 | Requirements | Implementation engineer Requirement Gap 2026-10-29 (user changed the thinking UX after reviewing the rendered menu) | Requirement Gap (user change) | Approved | Approved (User); design Ready (SR-002) | BEH-001/002/004/006/007; REQ-004/005/009/010/011; AC-003..006, AC-010, AC-011; DEC-003..010 | Approved; design revised; Medium / Low |
 | SR-003 | Design (+ user decision) | Code review failure-origin CRR-001 (API-REV-001) | CR-FO-001 | Requirements Approved; design Ready | Requirements Approved (DEC-011, AC-012 added); design Ready | REQ-011, SCN-005; AC-012; DEC-011 | Editable drafts drop undeclared keys; Medium / Low |
+| SR-004 | Design | Implementation Design Impact DI-1/DI-2 on SR-003 | DI-1, DI-2 | Design Ready (SR-003) | Design Ready (SR-004) | REQ-011; AC-012 (extended); DEC-011 (owner placement) | Server validator omits undeclared keys; Medium / High → architecture review |
 
 ## Revision Entries
 
@@ -64,3 +65,12 @@
 - Applied handoff-rule outcome: Medium / Low → implementation engineer.
 - Downstream impact: implementation fix; then code review and API/E2E rerun API-04, API-06 and the Org edit path; other validated cases stay valid unless autobyteus-ts or the catalog change.
 - Next action: implementation.
+
+### SR-004 — DEC-011 owned by the server validator (DI-1, DI-2)
+
+- Classification: Design Impact (implementation engineer, run implementation_engineer_bcee63bffa844240afb402bff066e728, no code changed).
+- Findings: DI-1 stopped-run edit surface is `ExistingRunConfigEditor`/`RunSettingsCard`, not `ModelConfigSection` (SR-003 premise SRC-022 wrong); DI-2 Org workspace-only edit revalidates untouched stored configs, unreachable by a client filter. Additional evidence: Org launch validates saved configs; saves persist the validator's canonical config (SRC-023).
+- Design change: `validateModelConfigSchema` omits undeclared top-level keys from the canonical config (null schema → null) instead of rejecting; no client change; SR-003 client filter dropped.
+- Requirements: DEC-011 owner placement recorded (Solution Designer, within the user's option-B choice; user-visible outcome unchanged); AC-012 extended with the Org workspace-only edit. No renewed approval needed (intended behavior unchanged); user informed.
+- Classification: Medium / High (documented shared validation contract change) → architecture review.
+- Next action: architecture review of the cumulative package.
