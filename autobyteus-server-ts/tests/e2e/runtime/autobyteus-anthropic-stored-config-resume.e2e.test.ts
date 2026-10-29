@@ -9,11 +9,14 @@
  *     server reads a synthetic key from a synthetic test vault (test-support `createSyntheticTestVault`).
  *   - Live (`RUN_ANTHROPIC_STORED_CONFIG_LIVE=1` with `AUTOBYTEUS_TEST_VAULT`): requests go to the real
  *     Anthropic API with the test vault's key, so Anthropic itself must accept the request sent after the
- *     restore (4 short calls). A missing key is reported as a skip, never a pass.
+ *     restore. A missing key is reported as a skip, never a pass.
  *
  * Per model (claude-opus-5-5 without a thinking switch, claude-sonnet-5-5 with one): create a run with a
  * current config, send a message, stop it, add `thinking_display: "omitted"` to the run's stored llmConfig
  * on disk (the shape found in user data), restore it, send again, and check the request sent after restore.
+ * Team run (members on both models; the root default and every member hold the key, like the saved team run in
+ * user data) and AgentOrg run (director on Opus 5.5, a mounted team's worker on Sonnet 5.5): the same, with one
+ * request per member after restore (live mode: 12 short calls in total).
  *
  * Run with a clean environment (TESTING.md), from the repository root:
  *   env -i PATH="$PATH" HOME=<temp> TMPDIR="$TMPDIR" corepack pnpm -C autobyteus-server-ts exec vitest run \
@@ -35,6 +38,7 @@ import { createSyntheticTestVault } from "../../../../test-support/test-vault/sy
 import { captureTestVaultSelection, capturedTestVaultSetting } from "../../../../test-support/test-vault/test-vault-selection.js";
 import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
+import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadata-helpers.js";
 
 type Json = Record<string, unknown>;
 type WsMessage = { type: string; payload: Json };
@@ -117,8 +121,10 @@ describe("AutoByteus Anthropic run resumes with a stored config key no schema de
     return changed;
   };
 
-  const openSocket = async (runId: string, frames: WsMessage[]): Promise<WebSocket> => {
-    const ws = new WebSocket(`ws://${mainUrl.hostname}:${mainUrl.port}/ws/agent/${runId}`);
+  const openSocket = async (runId: string, frames: WsMessage[], route = "agent",
+    ready: (frame: WsMessage) => boolean = (frame) => frame.type === "CONNECTED"): Promise<WebSocket> => {
+    const start = frames.length;
+    const ws = new WebSocket(`ws://${mainUrl.hostname}:${mainUrl.port}/ws/${route}/${runId}`);
     ws.on("message", (raw) => {
       try {
         const parsed = JSON.parse(raw.toString()) as { type?: unknown; payload?: unknown };
@@ -126,7 +132,7 @@ describe("AutoByteus Anthropic run resumes with a stored config key no schema de
       } catch { /* not a frame */ }
     });
     await new Promise<void>((resolve, reject) => { ws.once("open", () => resolve()); ws.once("error", reject); });
-    await waitFor(frames, 0, (frame) => frame.type === "CONNECTED", "CONNECTED");
+    await waitFor(frames, start, ready, `${route} socket ready`);
     return ws;
   };
   const closeSocket = async (ws: WebSocket) => {
@@ -248,4 +254,153 @@ describe("AutoByteus Anthropic run resumes with a stored config key no schema de
       expect(JSON.stringify(body)).not.toContain("\"display\"");
     }, 180_000);
   }
+
+  const expectCleanBody = (body: Json, model: string, expectedThinking: Json, expectedEffort: string) => {
+    expect(body.model).toBe(model);
+    expect(body.thinking).toEqual(expectedThinking);
+    expect(body.output_config).toEqual({ effort: expectedEffort });
+    expect(JSON.stringify(body)).not.toContain(STALE_KEY);
+    expect(JSON.stringify(body)).not.toContain("\"display\"");
+  };
+  /** Waits for the Anthropic request a member turn produced and for that member to finish. */
+  const awaitMemberTurn = async (frames: WsMessage[], from: number, callsBefore: number, done: (frame: WsMessage) => boolean,
+    label: string): Promise<Json> => {
+    await waitFor(frames, from, (frame) => done(frame) || frame.type === "ERROR", `${label} done`);
+    const error = frames.slice(from).find((frame) => frame.type === "ERROR");
+    expect(error, `${label} ERROR frame: ${JSON.stringify(error?.payload)}`).toBeUndefined();
+    expect(anthropicBodies.length, `${label}: one Anthropic request`).toBe(callsBefore + 1);
+    expect(anthropicStatuses[anthropicStatuses.length - 1], `${label}: Anthropic accepted the request`).toBe(200);
+    return anthropicBodies[anthropicBodies.length - 1]!;
+  };
+  const createTeamDefinition = async (memberNames: string[]): Promise<string> => (await gql<{ createAgentTeamDefinition: { id: string } }>(
+    "mutation($input: CreateAgentTeamDefinitionInput!) { createAgentTeamDefinition(input: $input) { id } }",
+    { input: { name: `anthropic-stored-config-team-${randomUUID().slice(0, 8)}`, description: "Stored-config resume check.",
+      instructions: "Reply briefly.", coordinatorMemberName: memberNames[0],
+      nodes: memberNames.map((memberName) => ({ memberName, ref: agentDefinitionId, refScope: "SHARED" })) } })).createAgentTeamDefinition.id;
+
+  // Team members (SCN-005-T): the shape found in a real saved team run (root default + members hold the key).
+  const TEAM_MEMBERS = [
+    { name: "lead", ...MODELS[0]! },
+    { name: "helper", ...MODELS[1]! },
+  ];
+
+  it("team run: restore succeeds and every member's request after restore carries no stored stale key", async (context) => {
+    if (LIVE) await requireLiveCapability(context, "provider.anthropic.api-key");
+    const teamDefinitionId = await createTeamDefinition(TEAM_MEMBERS.map((member) => member.name));
+    const created = await gql<{ createAgentTeamRun: { success: boolean; message: string; teamRunId: string | null } }>(
+      "mutation($input: CreateAgentTeamRunInput!) { createAgentTeamRun(input: $input) { success message teamRunId } }",
+      { input: { teamDefinitionId,
+        teamConfigs: [{ teamAddress: "/", llmModelIdentifier: MODELS[0]!.model, llmConfig: MODELS[0]!.llmConfig,
+          autoExecuteTools: true, runtimeKind: "autobyteus", workspaceRootPath }],
+        memberConfigs: TEAM_MEMBERS.map((member) => ({ memberAddress: `/${member.name}`, agentDefinitionId,
+          llmModelIdentifier: member.model, llmConfig: member.llmConfig, autoExecuteTools: true, runtimeKind: "autobyteus",
+          workspaceRootPath })) } });
+    expect(created.createAgentTeamRun.success, created.createAgentTeamRun.message).toBe(true);
+    const teamRunId = created.createAgentTeamRun.teamRunId!;
+    const config = await gql<{ getTeamRunResumeConfig: { executionTree: Json } }>(
+      "query($teamRunId: String!) { getTeamRunResumeConfig(teamRunId: $teamRunId) { executionTree } }", { teamRunId });
+    const members = flattenE2eConfiguredAgentExecutions(config.getTeamRunResumeConfig.executionTree);
+    const runIdOf = (name: string) => members.find((member) => member.memberName === name)!.agentRunId;
+
+    const frames: WsMessage[] = [];
+    const sendToMember = async (ws: WebSocket, name: string, label: string): Promise<Json> => {
+      const from = frames.length;
+      const callsBefore = anthropicBodies.length;
+      const agentRunId = runIdOf(name);
+      sendE2eSendMessageCommand(ws, { agent_run_id: agentRunId, content: "Reply with exactly: OK" });
+      const body = await awaitMemberTurn(frames, from, callsBefore, (frame) => frame.type === "TURN_COMPLETED"
+        && frame.payload.agent_run_id === agentRunId, `${label} ${name}`);
+      await waitFor(frames, from, (frame) => frame.type === "AGENT_STATUS" && frame.payload.agent_run_id === agentRunId
+        && frame.payload.status === "idle", `${label} ${name} idle`);
+      return body;
+    };
+    let ws = await openSocket(teamRunId, frames, "agent-team");
+    await sendToMember(ws, "lead", "before stop");
+    const stopped = await gql<{ terminateAgentTeamRun: { success: boolean; message: string } }>(
+      "mutation($id: String!) { terminateAgentTeamRun(teamRunId: $id) { success message } }", { id: teamRunId });
+    expect(stopped.terminateAgentTeamRun.success, stopped.terminateAgentTeamRun.message).toBe(true);
+    await closeSocket(ws);
+
+    // Root default + every member: at least 3 stored llmConfig objects in the team tree.
+    expect(await addStaleKeyToStoredConfig(teamRunId), "stored llmConfig objects updated").toBeGreaterThanOrEqual(3);
+    const restored = await gql<{ restoreAgentTeamRun: { success: boolean; message: string } }>(
+      "mutation($id: String!) { restoreAgentTeamRun(teamRunId: $id) { success message } }", { id: teamRunId });
+    expect(restored.restoreAgentTeamRun.success, restored.restoreAgentTeamRun.message).toBe(true);
+    ws = await openSocket(teamRunId, frames, "agent-team");
+    for (const member of TEAM_MEMBERS) {
+      expectCleanBody(await sendToMember(ws, member.name, "after restore"), member.model, member.expectedThinking, member.expectedEffort);
+    }
+    await closeSocket(ws);
+    await gql("mutation($id: String!) { terminateAgentTeamRun(teamRunId: $id) { success } }", { id: teamRunId }).catch(() => undefined);
+    const storedTexts = await Promise.all((await storedConfigFiles(teamRunId)).map((file) => readFile(file, "utf-8")));
+    expect(storedTexts.some((text) => text.includes(`"${STALE_KEY}"`)), "stored data is not rewritten").toBe(true);
+  }, 240_000);
+
+  it("Org run: restore succeeds and the member requests after restore carry no stored stale key", async (context) => {
+    if (LIVE) await requireLiveCapability(context, "provider.anthropic.api-key");
+    const teamDefinitionId = await createTeamDefinition(["worker"]);
+    const org = await gql<{ createAgentOrgDefinition: { id: string } }>(
+      "mutation($input: CreateAgentOrgDefinitionInput!) { createAgentOrgDefinition(input: $input) { id } }",
+      { input: { name: `anthropic-stored-config-org-${randomUUID().slice(0, 8)}`, description: "Stored-config resume check.",
+        instructions: "Reply briefly.", handoffs: [], members: [
+          { memberName: "director", ref: agentDefinitionId, refType: "AGENT", refScope: "SHARED" },
+          { memberName: "team", ref: teamDefinitionId, refType: "AGENT_TEAM", refScope: "SHARED" },
+        ] } });
+    const created = await gql<{ createAgentOrgRun: { success: boolean; message: string; agentOrgRunId: string | null } }>(
+      "mutation($input: CreateAgentOrgRunInput!) { createAgentOrgRun(input: $input) { success message agentOrgRunId } }",
+      { input: { agentOrgDefinitionId: org.createAgentOrgDefinition.id,
+        rootConfiguration: { runtimeKind: "autobyteus", llmModelIdentifier: MODELS[0]!.model, llmConfig: MODELS[0]!.llmConfig,
+          autoExecuteTools: true, workspaceRootPath },
+        agentOverrides: [{ address: "/team/worker", configuration: { llmModelIdentifier: MODELS[1]!.model, llmConfig: MODELS[1]!.llmConfig } }],
+        teamOverrides: [] } });
+    expect(created.createAgentOrgRun.success, created.createAgentOrgRun.message).toBe(true);
+    const orgRunId = created.createAgentOrgRun.agentOrgRunId!;
+    const tree = (await gql<{ getAgentOrgRunConfig: { executionTree: { rootOrg: { members: Json[] } } } }>(
+      "query($orgRunId: String!) { getAgentOrgRunConfig(orgRunId: $orgRunId) { executionTree } }", { orgRunId }))
+      .getAgentOrgRunConfig.executionTree;
+    const director = tree.rootOrg.members.find((member) => member.address === "/director")!;
+    const worker = (tree.rootOrg.members.find((member) => member.address === "/team")!.members as Json[])
+      .find((member) => member.address === "/team/worker")!;
+    const targets = [
+      { address: "/director", agentRunId: String(director.agentRunId), ...MODELS[0]! },
+      { address: "/team/worker", agentRunId: String(worker.agentRunId), ...MODELS[1]! },
+    ];
+
+    const frames: WsMessage[] = [];
+    const presentation = (frame: WsMessage) => frame.type === "ROOT_EXECUTION_EVENT" && isRecord(frame.payload.event)
+      && frame.payload.event.kind === "agent_presentation" ? frame.payload.event : null;
+    const sendToMember = async (ws: WebSocket, target: (typeof targets)[number], label: string): Promise<Json> => {
+      const from = frames.length;
+      const callsBefore = anthropicBodies.length;
+      ws.send(JSON.stringify({ type: "SEND_MESSAGE", payload: { root_subject_kind: "agent_org", root_run_id: orgRunId,
+        target_agent_run_id: target.agentRunId, command_id: randomUUID(), message_id: randomUUID(), dedupe_key: randomUUID(),
+        context_file_paths: [], image_urls: [], content: "Reply with exactly: OK" } }));
+      return awaitMemberTurn(frames, from, callsBefore, (frame) => {
+        const event = presentation(frame);
+        return Boolean(event && event.member_address === target.address && isRecord(event.message)
+          && (event.message.type === "TURN_COMPLETED" || event.message.type === "ERROR"));
+      }, `${label} ${target.address}`);
+    };
+    const orgReady = (frame: WsMessage) => frame.type === "ROOT_LIFECYCLE" && frame.payload.is_active === true;
+    let ws = await openSocket(orgRunId, frames, "agent-org", orgReady);
+    await sendToMember(ws, targets[0]!, "before stop");
+    await wait(500);
+    const stopped = await gql<{ terminateAgentOrgRun: { success: boolean; message: string } }>(
+      "mutation($id: String!) { terminateAgentOrgRun(agentOrgRunId: $id) { success message } }", { id: orgRunId });
+    expect(stopped.terminateAgentOrgRun.success, stopped.terminateAgentOrgRun.message).toBe(true);
+    await closeSocket(ws);
+
+    expect(await addStaleKeyToStoredConfig(orgRunId), "stored llmConfig objects updated").toBeGreaterThanOrEqual(3);
+    const restored = await gql<{ restoreAgentOrgRun: { success: boolean; message: string } }>(
+      "mutation($id: String!) { restoreAgentOrgRun(agentOrgRunId: $id) { success message } }", { id: orgRunId });
+    expect(restored.restoreAgentOrgRun.success, restored.restoreAgentOrgRun.message).toBe(true);
+    ws = await openSocket(orgRunId, frames, "agent-org", orgReady);
+    for (const target of targets) {
+      const body = await sendToMember(ws, target, "after restore");
+      expectCleanBody(body, target.model, target.expectedThinking, target.expectedEffort);
+      await wait(500);
+    }
+    await closeSocket(ws);
+    await gql("mutation($id: String!) { terminateAgentOrgRun(agentOrgRunId: $id) { success } }", { id: orgRunId }).catch(() => undefined);
+  }, 240_000);
 });

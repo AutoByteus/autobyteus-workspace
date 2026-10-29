@@ -1,0 +1,14 @@
+# API-07 gated live suite autobyteus-claude-5-5-live (Sonnet/Haiku 5.5 agent tool cycles through the real studio server + real Anthropic)
+# command (autobyteus-server-ts): env -i PATH="$PATH" HOME=/tmp/api-e2e-home TMPDIR=/tmp AUTOBYTEUS_TEST_VAULT=/root/.autobyteus-test/vault RUN_CLAUDE_5_5_E2E=1 AUTOBYTEUS_LIVE_STRICT=1 CLAUDE_5_5_E2E_EVIDENCE_DIR=/tmp/c55-evidence ./node_modules/.bin/vitest run tests/e2e/runtime/autobyteus-claude-5-5-live.e2e.test.ts --no-watch
+# commit: a2a5d0e47 (suite + production code unchanged since 574aa0bd7); env: Linux, Node v22.23.3, real Anthropic; date: 2026-10-29
+
+[2026-10-29T20:43:12.499Z] [INFO] [secret-management.vault] Secret vault: test vault /root/.autobyteus-test/vault (read-only)
+ ✓ tests/e2e/runtime/autobyteus-claude-5-5-live.e2e.test.ts (6 tests) 78282ms
+     ✓ C55-E2E-002: claude-sonnet-5-5 thinking Off tool turn sends {"type":"between_tools"} and replays thinking unchanged  24828ms
+     ✓ C55-E2E-003: claude-sonnet-5-5 thinking On tool turn sends {"type":"adaptive"} and replays thinking unchanged  16682ms
+     ✓ C55-E2E-004: claude-haiku-5-5 thinking Off tool turn sends {"type":"disabled"} and replays thinking unchanged  9148ms
+     ✓ C55-E2E-005: claude-haiku-5-5 thinking On tool turn sends {"type":"adaptive"} and replays thinking unchanged  15543ms
+     ✓ C55-E2E-006: Haiku 5.5 Token Meter prices each call at its prompt-size tier (≤100K and >100K gross input)  8619ms
+ Test Files  1 passed (1)
+      Tests  6 passed (6)
+   Duration  103.84s (transform 16.95s, setup 78ms, import 23.90s, tests 78.28s, environment 0ms)
