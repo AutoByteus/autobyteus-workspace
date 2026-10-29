@@ -3,7 +3,7 @@
 ## Document Status
 
 - Status: `Approved`
-- Current solution revision ID: `SR-002` (requirements approved at SR-001; SR-002 adds DEC-006, DEC-007 and the AC-007 detail within the direction, user informed)
+- Current solution revision ID: `SR-007` (SR-007, the user's decision: a failed reopen is an ordinary failed-message error, with no card; SR-006 is superseded). Requirements were approved at SR-001; SR-002 added DEC-006, DEC-007 and the AC-007 detail within the direction, user informed; SR-005 removes the restart button (DEC-008, the user's decision, 2026-10-29)
 - Package identifier: `live-tool-list-updates`
 - Request / ticket: Project Task `autobyteus-324`: a running agent gets changes to its tool list without stopping and resuming the run (the way a changed skill already reaches it)
 - Requested by: the user, through `/project_task_manager`
@@ -89,7 +89,7 @@ None.
 | REQ-007 | The run shows the user a "Tools updated" card naming the added and removed tools | BEH-001 | Must | "The user stays in control" | Skill card (E-09) | Task constraint |
 | REQ-008 | A change that leaves a run's tool list as it was (a revert, a save without tool changes) yields no notice and no reopen | BEH-001 | Should | No noise, no needless reopen | Skill notice does the same | — |
 | REQ-009 | A run restored after a definition change hears what changed since it last ran | BEH-001 | Should | The same as skills | E-09 | — |
-| REQ-010 | When applying a change fails on a run (a reopen fails), the run shows a plain message and a one-click "Restart this run with the new tools" that keeps the conversation | BEH-004 | Must | The Task's fallback | Stop and resume already does it | Task; DEC-001 |
+| REQ-010 | When applying a change fails on a run (a reopen fails), the message fails and shows its error the way failed messages do today: "Couldn't give this run its new tools (<cause>). Send your message again to retry, or stop and resume the run." The next message tries again. There is no restart button and no special card (SR-007): Stop, then send a message, already works (BEH-004) | BEH-004 | Must | The Task's fallback became unnecessary: every runtime takes new tools without a stop (DEC-008) | Stop and resume already does it | Task; DEC-001; DEC-008 |
 
 ## Acceptance Criteria
 
@@ -101,7 +101,7 @@ None.
 | AC-004 | REQ-002, REQ-004 | SCN-001, SCN-003 | A run is in a turn when the tool list changes | AutoByteus, Claude, AGY: the turn's later model calls have the new list. Every runtime: the removed tool is refused inside that turn | — | Integration plus one real run |
 | AC-005 | REQ-008 | SCN-001 | The user saves the definition without tool changes, or adds and removes the same tool | No card, no notice, no reopen | — | Integration |
 | AC-006 | REQ-009 | SCN-005 | A run is stopped, its tools changed, then it is restored | Its first message carries the notice; the card shows | — | Integration plus one real run |
-| AC-007 | REQ-010 | SCN-004 | Reopening a Codex or Grok run fails | The message that triggered the reopen is not sent (it shows as failed, as other failed inputs do). The run shows the plain message and the button; the button restarts it with the new tools and the conversation, and the user sends again. Until then, the next message tries the reopen again | — | Integration with a failing reopen |
+| AC-007 | REQ-010 | SCN-004 | Reopening a Codex or Grok run fails | The message that triggered the reopen is not sent (it shows as failed, as other failed inputs do). The message shows as failed with that error, as any failed message does (no button, no card). The next message tries the reopen again and, once it succeeds, is sent with the new tools and the conversation. No other run or Team member is stopped | — | Integration with a failing reopen, also for a Team member |
 | AC-008 | REQ-001 | SCN-001 | A team member's definition changes | Only that member's runs change; the other members do not | — | Integration |
 
 ## Relevant Scenarios And Journeys
@@ -111,21 +111,21 @@ None.
 | SCN-001 | User | The user | Give a running agent a new tool | Agent definition edit, or package update | Run is idle or busy, on AutoByteus, Claude or AGY | Save the definition; ask the agent to use the tool | The agent has it at once; card and notice | None | Supported Normal Scenario | The user's report (PM's tools) | REQ-001, 002, 006, 007; AC-001, 004, 005, 008 |
 | SCN-002 | User | The user | The same on Codex or Grok | The same | Run on Codex or Grok | Save; send the next message | The new tool from that message on; the conversation kept | SCN-004 | Supported Normal Scenario | The same | REQ-003; AC-002 |
 | SCN-003 | User | The user | Take a tool away from a running agent | The same | Any runtime | Save without the tool | Calls to it are refused at once | None | Supported Normal Scenario | Task constraint | REQ-004, 005; AC-003, 004 |
-| SCN-004 | User | The user | Recover when a reopen fails | A failed reopen | Codex or Grok | The run shows the message; he clicks the button | The run restarts with the new tools and the conversation | — | Supported Explicit Edge Scenario | Task fallback | REQ-010; AC-007 |
+| SCN-004 | User | The user | Recover when a reopen fails | A failed reopen | Codex or Grok | The run shows the message; he sends his message again | The reopen is retried; once it succeeds, the message goes out with the new tools and the conversation | Stop, then send, as today | Supported Explicit Edge Scenario | Task fallback; DEC-008 | REQ-010; AC-007 |
 | SCN-005 | User | The user | Resume a stopped run whose tools changed | Restore | Run stopped | Restore; send a message | The notice is carried; the card shows | — | Supported Normal Scenario | Skill precedent | REQ-009; AC-006 |
 
 ## UI, Interaction, And Experience Requirements
 
-- Applicable: `Yes` (a run card; one button on failure)
+- Applicable: `Yes` (the "Tools updated" card; a failed reopen uses the existing failed-message display: DEC-008, SR-007)
 - Linked UI/UX or interaction supplement: N/A — the card uses the existing system-notice card ("Skill updated") with the title "Tools updated"
 - Linked runnable UI reference, separate design repository/root, UI/UX specification, and applicable support artifacts: N/A — not applicable
 - Product ticket record and folder: N/A — not applicable
 - Design repository revision or commit: N/A — not applicable
 - UI/UX user-confirmation reference: the user's approval of SR-001 (2026-10-29); the card mirrors the approved "Skill updated" card
 - Approved visual-reference baseline: the existing "Skill updated" card
-- Normative visual and interaction details: card title "Tools updated"; body "Now available: a, b. No longer available: c." The failure message is "Couldn't give this run its new tools." with the button "Restart this run with the new tools"
+- Normative visual and interaction details: card title "Tools updated"; body "Now available: a, b. No longer available: c." A failed reopen is an ordinary failed-message error (no card, no button; SR-007)
 - Explicitly illustrative fixture content or permitted implementation variation: wording may follow the localization conventions
-- Required screens, states, transitions, feedback: the card in the conversation; the failure message with the button
+- Required screens, states, transitions, feedback: the "Tools updated" card in the conversation; a failed reopen uses the existing failed-message display
 - Product decisions that need the user: DEC-001
 
 ## Quality And Non-Functional Requirements
@@ -170,12 +170,14 @@ None.
 
 | Decision ID | Question | Why It Matters | Options / Evidence | Reasoning And Recommendation | Decision Owner | Status |
 | --- | --- | --- | --- | --- | --- | --- |
-| DEC-001 | Codex and Grok ignore the "tools changed" signal. How should their runs get the new tools? | Convenience versus a visible step | (a) AutoByteus reopens the runtime session by itself at the next message: same conversation, as stop and resume does, a few seconds more on that message and the runtime's prompt cache rebuilt. (b) The run shows a message and a one-click "Restart this run with the new tools" button | (a) does what the user does by hand today, without asking him, and the card still shows him. The button stays for a failed reopen (REQ-010). Recommend (a) | User | Decided by the user, 2026-10-29: (a). "When tool change, user does not have to stop manually the agent or team, they send message directly and it will work" |
+| DEC-001 | Codex and Grok ignore the "tools changed" signal. How should their runs get the new tools? | Convenience versus a visible step | (a) AutoByteus reopens the runtime session by itself at the next message: same conversation, as stop and resume does, a few seconds more on that message and the runtime's prompt cache rebuilt. (b) The run shows a message and a one-click "Restart this run with the new tools" button | (a) does what the user does by hand today, without asking him, and the card still shows him. ~~The button stays for a failed reopen (REQ-010).~~ Superseded by DEC-008 (2026-10-29): there is no button. Recommend (a) | User | Decided by the user, 2026-10-29: (a). "When tool change, user does not have to stop manually the agent or team, they send message directly and it will work" |
 | DEC-002 | Which changes count? | Scope | Definition tool list only (edit, package update) | Team tools come from the team, not the definition. Decided | Solution Designer | Decided |
 | DEC-003 | A tool needing the user's approval | Control | A newly added tool asks for approval as its other tools do | Same rule as the rest of its tools. Decided | Solution Designer | Decided |
 | DEC-004 | Codex cannot be proved with a real model turn until 2026-11-04 (account usage limit) | "Done" needs a real run per runtime | (a) Build everything now, run the Codex proof when the quota returns, then merge. (b) Use another Codex sign-in, if he has one. (c) Merge without the Codex real run | Recommend (a): no waiting for the rest of the build, and nothing merged unproven | User | Decided by the user, 2026-10-29: build Codex without the real run ("we don't have to test it, we just build it"); merging does not wait for it. The real Codex run is done if the limit is back before merge, otherwise as a check afterwards |
 | DEC-006 | A skill notice and a tool notice are both pending for the same message | Two notices, one message | (a) Combine both into one message. This needs a multi-sender platform-notice tag, which changes the native memory record and the card contract. (b) One notice per message, tools first; the other goes with the next message | (b) keeps the existing notice contracts, and both pending at once is rare. Tools first, because on Codex/Grok the tool notice describes the reopen this very message causes. Decided (SR-002, within the direction; user informed) | Solution Designer | Decided |
 | DEC-007 | A reopen fails | What happens to the message | Send it on the old session, or do not send it | Not sent: after an unsubscribe the old session is gone, and sending without the new tools would contradict the notice. Decided (SR-002, within REQ-010; user informed) | Solution Designer | Decided |
+| DEC-008 | Is a "Restart this run with the new tools" button needed after a failed reopen? | It duplicates what exists, and for a Team member it would stop the whole Team (code review CRR-001, CR-001: there is no single-member stop and restore) | (a) Keep it: restart the Team, or build a member-level restart. (b) Remove it; a plain message, and the next message retries | The Task asked for the button only where a runtime truly cannot take new tools. The investigation showed every runtime can, and Stop, then send a message, already works today. The button adds nothing and risks stopping a Team. (b). This supersedes DEC-001's "the button stays for a failed reopen" | User | Decided by the user, 2026-10-29: (b). "On the front end, I'm already able to click stop … and I send a message. It's already working" |
+| DEC-009 | How is a failed reopen shown? | Visible failure without new UI | (a) A special "Tools not updated" card (needs its own recognition, and Team streams drop the sender: ARCH-REV-006). (b) The ordinary failed-message error | (b): it is the normal path the user already knows, it works on Team streams unchanged, and Stop and resume stays his manual fallback | User | Decided by the user, 2026-10-29: (b). "If there are errors … they will just show error … the user maybe just manually click the stop and then resume. I think that's normal operation we already have" |
 | DEC-005 | AGY's run-scoped header (a 1.2.10 workaround) blocks the signal | REQ-002 for AGY | Remove it; AGY 1.4.10 measured to work without it | Decided: remove; the build confirms with the installed AGY | Solution Designer | Decided |
 
 ## Traceability

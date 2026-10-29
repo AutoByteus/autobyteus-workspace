@@ -5,18 +5,71 @@
 - Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/live-tool-list-updates/tickets/in-progress/live-tool-list-updates/requirements-doc.md` (approved by the user at SR-001; SR-002 adds DEC-006, DEC-007, the AC-007 detail and application packages in UC-003, within the direction, user informed)
 - Upstream Investigation Notes: `…/investigation-notes.md` (E-13…E-18 added)
 - Upstream Solution Revision Record: `…/solution-revision-record.md` (SR-001, SR-002)
-- Reviewed Design Spec: `…/design-spec.md` (SR-004, Ready)
+- Reviewed Design Spec: `…/design-spec.md` (SR-009, Ready)
 - Supplemental Task Artifacts Reviewed:
   - `evidence/probe/*`, including the new `drive-codex-reopen.mjs`, `drive-grok-reopen.mjs`, `codex-reopen-*`, `grok-reopen-*` and `*-empty-*`;
   - `follow-ups.md` (FU-001, FU-002).
-- Relevant Solution Revision IDs: `SR-001`…`SR-004`
+- Relevant Solution Revision IDs: `SR-001`…`SR-009`
 - Architecture Review Revision Record: `…/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-004`
-- Current Review Round: `4`
-- Trigger: Solution Designer re-review request (SR-004: one owner of the Grok process), 2026-10-29
-- Prior Review Round Reviewed: `3` (ARCH-REV-003, Fail: AR-008)
-- Latest Authoritative Round: `4`
+- Current Architecture Review Revision ID: `ARCH-REV-009`
+- Current Review Round: `9` (targeted: SR-009, a Team member's failed input as a run `ERROR` on the Team stream)
+- Trigger: Solution Designer re-review request (SR-009, for ARCH-REV-008 AR-009), 2026-10-29
+- Prior Review Round Reviewed: `8` (ARCH-REV-008, Fail: AR-009)
+- Latest Authoritative Round: `9`
 - Current-State Evidence Basis: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/live-tool-list-updates` @ `9f7c9c10a6` (no source changes; ticket docs uncommitted). Round-1 code citations are still valid. New probe drivers were read. Round 3 also read `acp-agent-run-backend.ts:29-150` and `acp-agent-run-backend-factory.ts:75-200` (preparation owner, `release`, `cleanup`).
+
+## Round 9 Scope (SR-009, Targeted)
+
+- **Server:**
+  - `postMessage` keeps the `lifecycleObserver` (`AgentRunInputOptions.lifecycleObserver`, `agent-run-input-contract.ts:69`).
+  - On `failed` it publishes a run `ERROR { code, message }` with no evidence through `publishAgentEvent(identity, { kind: "agent_run", event })` (`configured-agent-execution-handle.ts:455`).
+  - The adapter maps it, requiring only `code` and `message` (`collaboration-agent-presentation-adapter.ts:374-379`). The evidence union allows `{ errorScope: null, errorEffect: null, turnId: null }` (`agent-presentation-event.ts:35-38`), and the projector emits that shape (`agent-presentation-message-projector.ts:102`).
+- **Web:** the `handleError` non-diagnostic branch (`agentStatusHandler.ts:129-167`) appends an `error` segment to the member's conversation and marks it complete. A reopen runs only with no active turn, so marking it complete changes nothing for a busy member.
+- **No duplicate:** the event bypasses `AgentRun.publishEvent`, so single-run streams, input lifecycle and memory are unaffected. Single runs keep the command failure (`agent-run-command-coordinator.ts:169-176`). The handle exists only for members.
+- **The test asserts what the Team stream receives** for that member, and nothing for the others. A web unit test covers the error segment.
+- AR-009 is **resolved**. The pre-existing inert admission-rejection call (`:148`) is out of scope, as it does not affect AC-007.
+
+## Round 8 Scope (SR-008, Targeted)
+
+- **The choice is right:** report a Team member's post-admission dispatch failure from `ConfiguredAgentExecutionHandle.postMessage` through a `lifecycleObserver`. AC-007's Team clause is kept.
+- **The chosen surface is a no-op once the member has a run.**
+  - `publishCommandStatus` begins `if (this.agentRun) return false;` (`configured-agent-execution-handle.ts:461-463`). Its doc says "the overlay … is not [set] once a run exists".
+  - `postMessage` first calls `startForInput` → `ensureReady`, which sets `this.agentRun = run` (`:160-165`, `:250`). Only then does it call `run.postUserMessage`.
+  - So when the `failed` fact arrives, `this.agentRun` is always set, and `publishCommandStatus("error", fact.message)` returns `false` without effect. The overlay is also cleared on every run `AGENT_STATUS` (`:456`).
+  - The existing admission-rejection call at `:148` has the same no-op for a live run. That is pre-existing.
+- **An existing Team-visible surface does exist:** the `ERROR` presentation event. `AgentRunEventType.ERROR` is mapped by `CollaborationAgentPresentationAdapter` (`collaboration-agent-presentation-adapter.ts:374`) to `ERROR` (`agent-presentation-event.ts:139`). Member run events reach the Team stream through `publishAgentEvent(identity, { kind: "agent_run", event })` (`configured-agent-execution-handle.ts:455`).
+- AR-009 stays open: the mechanism must be one that works with a live run.
+
+## Round 7 Scope (SR-007, Targeted)
+
+- **DEC-009** (the user's decision) is accepted. There is no failure notice: a failed reopen fails the `start_turn` dispatch with `RUNTIME_SESSION_REOPEN_FAILED` and the message "Couldn't give this run its new tools (<cause>). Send your message again to retry, or stop and resume the run." The removal plan covers every failure-notice piece, with a completion grep. This removes the Team-stream recognition problem entirely, and it is simpler.
+- **Single runs: Pass.**
+  - A non-forwarded dispatch fails the input entry with the result's code and message (`agent-run-input-admission-state.ts:218-230`, `failEntry` `:462-474`).
+  - The entry's observer includes the stream's `lifecycleObserver`. For single runs, `AgentStreamHandler` wires `AgentRunCommandCoordinator`, which marks the command failed with that message (`agent-run-command-coordinator.ts:169-176`; `agent-stream-handler.ts:104-114`).
+- **Team members: the claim "the web shows it like every failed message, on single runs and Team members alike" (SR-007) does not hold.**
+  - A Team member's user message goes `AgentCollaborationStreamHandler` → `root.executeAgentCommand(post_message)` → `ConfiguredAgentExecutionHandle.postMessage` → `run.postUserMessage(message)`, with **no** `lifecycleObserver` (`configured-agent-execution-handle.ts:138-149`).
+  - `postUserMessage` returns `accepted` at admission, before the dispatch runs (`agent-run.ts:209-239`). The stream then sends the `accepted` ack (`agent-collaboration-stream-handler.ts:168-177`).
+  - When the reopen fails later, the `failed` fact reaches only the run's command observers (the memory recorder, `agent-run-manager.ts:157`). The only consumer of `failed` facts is the single-run `AgentRunCommandCoordinator`.
+  - `AGENT_INPUT_STATE` lists only pending entries (`autobyteus-agent-presentation-contracts/src/agent-input-state-dto.ts:26-29`), and the failed entry is removed (`removeEntry`).
+  - Result: on a Team member, a failed reopen shows **no error at all**. The message is acknowledged, then silently disappears. AC-007 requires "The message shows as failed with that error … also for a Team member". AR-009 stays open, reframed.
+
+## Round 6 Scope (SR-006, Targeted)
+
+- **The removal list is now complete.** It covers every consumer listed in round 5, plus a completion grep. DEC-001 is annotated. The new label "Tools not updated" is recorded in the requirements UI section; it is only the failure card's wording.
+- **Single-run streams:** the dedicated sender `system.tool_list_update_failed` reaches the web as `sender_id` (`systemTaskNotificationHandler.ts:17`). The sender-only rule works.
+- **Replay:** the notice is live only. It is not in `RECORDED_SYSTEM_NOTICE_SENDER_IDS` (`runtime-memory-event-accumulator.ts:25-30`). This is sound.
+- **Team member streams: the design's claim "single runs and Team member streams alike" is false.** The collaboration adapter maps a run's `SYSTEM_TASK_NOTIFICATION` to `{ sender: { kind: "system" } | { kind: "execution", … }, content }` and drops `sender_id` (`collaboration-agent-presentation-adapter.ts:363-368`; projector `agent-presentation-message-projector.ts:78`). The previous web rule fell back to content for exactly this reason ("Team streams"). On a Team member, the sender-only rule therefore never fires: the failure shows as an unlabeled, untranslated English notice, not as the "Tools not updated" card. AR-009 stays open, narrowed.
+
+## Round 5 Scope (SR-005, Targeted)
+
+The delta reviewed:
+- the requirement changes to REQ-010, AC-007, SCN-004, the UI section and DEC-008 (the user's decision);
+- the design's Removal plan row and the Return/Event spine.
+
+The implemented code at `5f3923c4cd`…`bba8117550` was searched for every use of the button, its action and its texts (`git grep restart_run|restartRunWithNewTools|Restart this run`). Sections not affected by SR-005 keep their round-4 verdicts.
+
+- The requirement basis is confirmed: DEC-008 was decided by the user, so this is not a reviewer-authorized change. It narrows REQ-010 to a plain message plus retry at the next message. AC-007 adds the Team-member check.
+- Removal completeness: **Fail** (AR-009). The plan omits consumers the search found, and it leaves the web's recognition of the failure notice unspecified.
 
 ## Routing Classification Review
 
@@ -47,6 +100,7 @@
 | BEH-002 | Contract | Pass | Pass | Pass: the session is never deactivated during a reopen; empty lists are valid | Confirmed | — |
 | BEH-003 | User (preserved) | Pass | Pass | Pass: the skill notice sits behind the composite; DEC-006 defers it at most one message | Confirmed | — |
 | BEH-004 | User (preserved) | Pass | Pass | Pass (stop after a reopen ends the current process: SR-004) | Confirmed | — |
+| REQ-010 / AC-007 (SR-005…SR-009) | User | Pass | Pass | Pass: single runs show the command failure; Team members get a run `ERROR` on the Team stream, shown as an error segment (SR-009) | Confirmed | — |
 
 ## Supplemental Artifact Coherence Verdict
 
@@ -162,6 +216,7 @@ Domain vocabulary keeps one meaning per word: `Pass` ("reopen", "turn-start disp
 | `not_exposed` + null-descriptor branches (four backends) | Pass | Pass | Pass | Pass | — |
 | Claude's cached activation; Agent Tools names in `allowedTools` | Pass | Pass | Pass | Pass | — |
 | Dead Codex dynamic-tool path | Pass (FU-002, with evidence E-18) | N/A | Pass | Pass | Accepted as a follow-up: the path spans untouched approval code, and the change adds no use of it |
+| Restart button and failure notice (SR-005…SR-007, DEC-008, DEC-009) | Pass (with a completion grep) | Pass (the dispatch failure replaces it) | Pass | Pass | — |
 
 ## Legacy / Backward-Compatibility Verdict
 
@@ -189,6 +244,7 @@ Domain vocabulary keeps one meaning per word: `Pass` ("reopen", "turn-start disp
 
 ## Material Premise Validation (Only When Needed)
 
+- Round 5: no new premise. AR-009 follows from the code's current recognition rule; it is not a scenario.
 - MP-001…MP-003 (round 1) are resolved by SR-002, and MP-004 (round 2) by SR-003. All are kept in the revision record. MP-004 is shown below as resolved for reference.
 
 ### `MP-004` — The Grok reopen opens a second process on the same session while the first is still alive
@@ -227,7 +283,7 @@ None.
 
 ## Findings
 
-None open. AR-001…AR-008 are resolved (see ARCH-REV-002…ARCH-REV-004 in the revision record).
+None open. AR-001…AR-009 are resolved (see ARCH-REV-002…ARCH-REV-009 in the revision record).
 
 ## Classification
 
@@ -245,9 +301,17 @@ Implementation Engineer (`/software_engineering_team/implementation_engineer`)
 - **AGY without the header against the product endpoint** has been measured only against the probe; the build confirms it.
 - **U-01 / ASM-001 (narrowed by E-13).** Whether the model uses the new tool after a reopen awaits a model turn (DEC-004, accepted).
 - **R-01:** runtime version drift.
+- **SR-009 covers any post-admission failure of a member's direct input,** not only a failed reopen. Its `handleError` marks the member's conversation complete. For the reopen this always happens with no active turn. Another failure kind that arrives during an active turn would also mark it complete; this is existing `handleError` behavior and outside AC-007.
+- **Teammate deliveries (`reserveInput`) are unchanged.** A reopen that fails on a delivered teammate message is reported by the existing delivery path, not by this event.
 
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
-- Material-Premise Gate: `Pass` (MP-001…MP-005 are Reachable and resolved by SR-002…SR-004)
-- Notes: task_size=Large, architectural_risk=High. Implementation must honor the escalation triggers in the design: Codex `enabled_tools: []`, AGY against the product endpoint, Codex resume config, and Grok load in a new process. It must also honor the Change / Refactor Sequence tests, including the named Grok ownership tests and the skill notice behind the composite.
+- Material-Premise Gate: `Pass` (MP-001…MP-005 resolved; no new premise in rounds 5–9)
+- Notes: task_size=Large, architectural_risk=High. The implementation rework is:
+  - the SR-005…SR-009 removals with their completion grep;
+  - the dispatch-failure message;
+  - the Team-member `ERROR` publication with its Team-stream test;
+  - CRR-001's CR-002 and CR-003.
+
+  The design's escalation triggers still apply.

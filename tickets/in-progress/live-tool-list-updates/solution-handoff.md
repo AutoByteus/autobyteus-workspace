@@ -120,3 +120,69 @@ Every finding is answered in `design-spec.md` "SR-002 Revision Summary". In shor
 - **Route:** `get_handoff_rules` → the Large/High revised package → `/software_engineering_team/architecture_reviewer`.
 
 - 2026-10-29: ARCH-REV-004 **Pass** on SR-004 (AR-001…AR-008 resolved). The reviewer delivered the handoff to `/software_engineering_team/implementation_engineer`. No Solution Designer forwarding required.
+
+## SR-005 Revision (after code review CRR-001, 2026-10-29)
+
+- **CR-001 (Design Impact):** decided by the user (DEC-008). The "Restart this run with the new tools" button is **removed altogether**, not adapted for Teams.
+  - Reasoning: the Task asked for it only where a runtime truly cannot take new tools. The investigation showed every runtime can. Stop, then send a message, already works today. For a Team member the button stopped the whole Team.
+  - A failed reopen now shows a plain message: "Couldn't give this run its new tools. Send your message again to retry." The next turn-start retries, and nothing stops a Team.
+  - Requirements changed: REQ-010, AC-007 (now also checked for a Team member), SCN-004, the UI section and DEC-008.
+- **Code to remove,** built at code commit `5f3923c4cd` (design-spec Removal plan):
+  - `restartRunWithNewTools` (`autobyteus-web/stores/agentRunStore.ts:424-452`);
+  - the button and its `restart_run` handling in `SystemTaskNotificationSegment.vue`;
+  - their localization strings and tests;
+  - the server failure notice's `action: "restart_run"` field;
+  - the button text in `autobyteus-server-ts/docs/modules/tool_list_updates.md:86-88`.
+- **CR-002 and CR-003** are the code reviewer's local fixes for the same implementation round; no design change:
+  - move Claude's `getAgentToolNames`/`applyToolExposure` into `ClaudeAgentToolsMcpSessionState`;
+  - pass the Grok working directory as a non-null value and drop the `"."` fallback.
+- **Route:** `get_handoff_rules` → the Large/High revised package matches the architecture-review rule → `/software_engineering_team/architecture_reviewer`. It is a removal-only delta, so a targeted review of SR-005 is enough. After that: implementation, code review again, then API/E2E.
+
+## SR-006 Revision (after ARCH-REV-005, 2026-10-29)
+
+- The user confirmed again, 2026-10-29: "The restart button should be removed … we don't need this restart button."
+- **AR-009, part 1:** the failure notice has its **own sender**, `system.tool_list_update_failed` (`TOOL_LIST_UPDATE_FAILED_SENDER_ID`, beside the tools-updated sender; the web declares the same literal, as it does for both existing senders).
+  - The web recognizes it **by sender only**: no content match, no `action` field.
+  - Label `toolsNotUpdated`: "Tools not updated" / "工具未更新". Body `toolsReopenFailed`: "Couldn't give this run its new tools. Send your message again to retry." / "无法为此运行提供新工具。请重新发送消息以重试。"
+  - It is live only, not recorded for replay: the new sender is not in `RECORDED_SYSTEM_NOTICE_SENDER_IDS`, and no turn exists at the failure. So replay can never show it as "Tools updated".
+- **AR-009, part 2:** the Removal plan names every consumer:
+  - `runtime-session-reopen.ts:8-27`;
+  - the two reopen tests;
+  - `agent_execution.md:537`, `tool_list_updates.md:84-88`;
+  - `messageTypes.ts:225`, `types/segments.ts:82`;
+  - the segment's `runId` prop and its callers;
+  - the en and zh-CN strings and the spec key checks;
+  - `agent_execution_architecture.md:1833`;
+  - plus a grep for `restart_run` / `restartRunWithNewTools` / `RESTART_RUN` that must come back empty.
+- **AR-009, part 3:** DEC-001's "the button stays" is marked superseded by DEC-008.
+- **Route:** the architecture-review rule (Large/High revised) → `/software_engineering_team/architecture_reviewer`.
+
+## SR-007 Revision (the user's decision; resolves ARCH-REV-006, 2026-10-29)
+
+- The user decided (DEC-009): "If there are errors … they will just show error … the user maybe just manually click the stop and then resume. I think that's normal operation we already have."
+- So there is **no failure notice at all**: no card, no own sender, no strings, no web recognition.
+  - A failed reopen fails the dispatch (`RUNTIME_SESSION_REOPEN_FAILED`) with the message "Couldn't give this run its new tools (<cause>). Send your message again to retry, or stop and resume the run."
+  - `AgentRunCommandCoordinator.applyInputLifecycle` marks the command failed with that message, and the web shows it like every failed message, on single runs and Team members alike.
+- AR-009's Team-stream gap disappears: nothing new crosses `CollaborationAgentPresentationAdapter`.
+- The Removal plan adds the failure-notice pieces (built or planned in SR-006), and the completion grep adds their names.
+- **Route:** the architecture-review rule (Large/High revised) → `/software_engineering_team/architecture_reviewer`.
+
+## SR-008 Revision (after ARCH-REV-007, 2026-10-29)
+
+- **AR-009 (Team members), option (a):** `ConfiguredAgentExecutionHandle.postMessage` (`configured-agent-execution-handle.ts:138-150`) passes a `lifecycleObserver`. On a `failed` fact it calls the existing `publishCommandStatus("error", fact.message)` (`:461`), as admission rejections already do (`:148`).
+  - The member shows `error` with the reopen message; no new UI, event or contract.
+  - Teammate deliveries (`reserveInput`) are unchanged.
+  - Integration test: a Team member's failed reopen shows the member error status with the message; the other members are untouched.
+- This stays within DEC-009 ("just show error"). AC-007's Team clause is kept.
+- **Route:** the architecture-review rule → `/software_engineering_team/architecture_reviewer`.
+
+## SR-009 Revision (after ARCH-REV-008, 2026-10-29)
+
+- **AR-009:** the SR-008 target `publishCommandStatus` is inert once a run exists (`:461-463`), so it is replaced.
+  - The `postMessage` `lifecycleObserver` publishes a run `ERROR` `{ code, message }`, with no error evidence, through `this.options.callbacks.publishAgentEvent(this.identity, { kind: "agent_run", event })` (`:455`).
+  - Path: the presentation `ERROR` (`collaboration-agent-presentation-adapter.ts:374-379`, scope and effect `null`) → the projector (`:102`) → the web `TeamStreamingService` → `dispatchAgentStreamMessage` → `handleError` (`agentStatusHandler.ts:129-167`), which adds an error segment to the member's conversation.
+  - It never goes through `AgentRun.publishEvent`, so there is no single-run duplicate and no effect on the run's input lifecycle. It is live only.
+  - Tests: an integration test asserts the Team stream receives `ERROR` for that member and nothing for the others; a web unit test checks the error segment.
+- **Route:** the architecture-review rule → `/software_engineering_team/architecture_reviewer`.
+
+- 2026-10-29: ARCH-REV-009 **Pass** on SR-009 (AR-001…AR-009 closed). The reviewer delivered the rework handoff to `/software_engineering_team/implementation_engineer`. No Solution Designer forwarding required.

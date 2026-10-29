@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-004` (after ARCH-REV-003; SR-003 after ARCH-REV-002; SR-002 after ARCH-REV-001)
+- Current solution revision ID: `SR-009` (ARCH-REV-008: a Team member's failed direct input is published as a run `ERROR` on the Team stream; SR-008: SR-007: the user's decision: a failed reopen is an ordinary failed-message error, with no failure notice; SR-006: ARCH-REV-005 AR-009: the failure notice gets its own sender, and the removal list is complete; SR-005: the restart button removed after CRR-001 CR-001, the user's DEC-008; SR-004 after ARCH-REV-003; SR-003 after ARCH-REV-002; SR-002 after ARCH-REV-001)
 - Approved requirements baseline: `requirements-doc.md`, approved by the user on 2026-10-29 at SR-001 (DEC-001 (a) automatic reopen; DEC-004 build Codex without a real run). SR-002 adds DEC-006, DEC-007 and the AC-007 detail, within the direction (user informed)
 - Behavior-defining supplements: none
 - Design status: `Ready`
@@ -10,7 +10,7 @@
 - Authorities read: `references/architecture-design.md`, `references/design-principles.md`, `DESIGN.md` (this conversation, 2026-10-29)
 - Project design-principle conflicts: none
 
-## SR-002…SR-004 Revision Summary (ARCH-REV-001…ARCH-REV-003)
+## SR-002…SR-009 Revision Summary (ARCH-REV-001…ARCH-REV-008, CRR-001)
 
 | Finding | Resolution | Where |
 | --- | --- | --- |
@@ -24,6 +24,11 @@
 | DS-002 owner wording; scoped authority; streams in the host | Restated; added to the mapping | DS-002, mapping |
 | ARCH-REV-002, AR-001 (Grok) | SR-003: the Grok reopen follows the measured order. The old process ends first (detached from the failure sink, skills kept), then the new one spawns and loads. A failed reopen leaves no runtime session: the run is active and idle, `reopenPending` is kept, and the next `start_turn` retries. Every backend operation is specified without a session. Recommendation adopted: `reopenPending` is recomputed on success (Codex and Grok) | Grok and Codex reopen sequences |
 | ARCH-REV-003, AR-008 (Grok process ownership) | SR-004: the run's `AcpPreparationOwner` is the single holder of its process, connection and session across creation, restore and reopen. `AcpSessionLauncher` opens into it; the backend reads its handles from it; a reopen clears it (step 2), fills it (step 4) and empties it on failure (step 6). The unchanged `releaseResources` therefore ends the current process. Tests are named | Grok reopen sequence (owner paragraph, steps 2, 4, 5, 6, 8) |
+| CRR-001, CR-001 (the restart button for a Team member) | SR-005: the button is removed altogether (DEC-008, the user's decision). A failed reopen shows a plain message; the next turn-start retries; Stop, then send, stays the user's manual way. Nothing stops a Team. The removal of the code built at `5f3923c4cd` is in the Removal plan | Removal plan; Return / Event spine; DS-004 |
+| ARCH-REV-005, AR-009 (the failure notice's recognition; an incomplete removal list) | SR-006: the failure notice has its own sender `system.tool_list_update_failed`, so the web recognizes it by sender only, with no content match and no action. It is labeled "Tools not updated", with a localized body, en and zh-CN. It is live only and not recorded for replay. The removal list names every consumer the reviewer found, plus a grep that must come back empty | Return / Event spine; Removal plan |
+| ARCH-REV-006, AR-009 (Team streams drop `sender_id`) | SR-007, the user's decision: there is no failure notice at all. A failed reopen fails the dispatch with a plain error message, shown through the existing failed-message path on single runs and Team members alike. Nothing new crosses the Team presentation adapter. The SR-006 notice pieces are added to the Removal plan | Return / Event spine; Removal plan |
+| ARCH-REV-007, AR-009 (a Team member's post-admission failure is silent) | SR-008, option (a): `ConfiguredAgentExecutionHandle.postMessage` passes a `lifecycleObserver` whose `failed` fact publishes the member's existing command status `error` with the message (`publishCommandStatus`, `:461`). No new UI. A Team-member integration test is named | Return / Event spine (Team members); mapping |
+| ARCH-REV-008, AR-009 (`publishCommandStatus` is inert once a run exists) | SR-009: the observer publishes a run `ERROR`, with no evidence, through `publishAgentEvent` to the Team stream. It reaches the presentation `ERROR` and then the web `handleError`, which adds an error segment to the member's conversation. It does not go through the run's own event stream, so single runs show nothing twice. The test asserts what the Team stream receives | Return / Event spine (Team members) |
 
 ## Current-State Read
 
@@ -45,7 +50,7 @@ Each runtime's restore path reopens a conversation with the current definition's
   - a composite notice port in both compositions;
   - one `autobyteus-ts` API;
   - a per-run record;
-  - a web card with a button.
+  - a web card (and a plain failure message, no button: DEC-008).
 
   About 35 to 45 files.
 - Architectural risk: `High`
@@ -80,7 +85,7 @@ When a definition's tool list changes, AutoByteus asks each live run of it to ta
   - The preface port: dispatch kind, and the composite `AgentRunPlatformNotices`.
   - `autobyteus-ts`: `Agent.replaceTools`.
   - `AgentDefinitionChangeSignal` and its three sources.
-  - The web card and the restart button.
+  - The web card and the plain failure message (no restart button, DEC-008).
   - Docs.
 - Derived consumers:
   - The session record (`runtimeExposure`, `enabledTools`, `toolRoutes`, `configuredMcpToolSources`) is read by `tools/list`, `tools/call` (`resolveToolCallAvailability`) and the descriptor. All read the replaced record.
@@ -107,7 +112,7 @@ When a definition's tool list changes, AutoByteus asks each live run of it to ta
 | BEH-001 | User | REQ-001…003, 006…009; AC-001, 002, 004…006, 008 | Definition saved / package reloaded / application package changed | Fixed at start (E-01…E-08) | Re-resolved and applied per run | DS-001, DS-003, DS-004, DS-005, DS-006 |
 | BEH-002 | Contract | REQ-004, 005; AC-003, 004 | The same | Removed tools still callable (E-02) | Refused from the save on | DS-002 |
 | BEH-003 | User | preserved | Skill change | E-09 | Unchanged; now behind the composite (tools first per dispatch, DEC-006) | DS-005 |
-| BEH-004 | User | REQ-010; AC-007 | Stop and resume | Keeps the conversation | Unchanged; reused by the restart button | DS-004 |
+| BEH-004 | User | REQ-010; AC-007 | Stop and resume | Keeps the conversation | Unchanged; it stays the user's manual way (no restart button, DEC-008) | DS-004 |
 
 ## Relevant Supplemental Task Artifacts
 
@@ -191,7 +196,7 @@ When a definition's tool list changes, AutoByteus asks each live run of it to ta
   - Native: `backend -> resolve exposure + resolveApplicationAwareAgentTools -> Agent.replaceTools(tools) -> AgentRuntimeState.toolInstances swapped before the next LLM call; removed instances cleaned up`.
 - DS-004:
   - On apply: `backend -> replaceForRun (removal at once) -> reopenPending = (current descriptor ≠ the one the runtime session was opened with)`.
-  - On dispatch: `AgentRun.dispatch(start_turn) -> backend.dispatchUserInput -> (reopenPending) reopen -> send`, or a failure notice and a failed dispatch. An `append_to_active_turn` is sent on the current session unchanged.
+  - On dispatch: `AgentRun.dispatch(start_turn) -> backend.dispatchUserInput -> (reopenPending) reopen -> send`, or a failed dispatch with a plain error message (SR-007). An `append_to_active_turn` is sent on the current session unchanged.
 - DS-005: `AgentRun.dispatch -> AgentRunPrefaceDispatch.take(kind) -> AgentRunPlatformNotices.takePreface(run, { dispatchKind }) -> sources in order (ToolListUpdateService, SkillUpdateNoticeService) -> first non-null -> combinePreface -> backend -> settle -> the owning source's prefaceDelivered / prefaceReturned`. Busy immediate runs: `ToolListUpdateService -> AgentRun.postUserMessage` (as skills do).
 
 ## Spine Narratives (Mandatory)
@@ -202,7 +207,7 @@ When a definition's tool list changes, AutoByteus asks each live run of it to ta
 | DS-001 | Signals are coalesced: one pass at a time, plus one trailing pass if more signals arrived. Each tracked run's definition is re-read. A missing definition is skipped. The backend says whether anything changed and which tool names the agent has (or will have at its next turn start). The service diffs those names with the seen record | definition, run | `ToolListUpdateService` | diff, coalescing |
 | DS-002 | The service re-resolves the exposure through the catalog, as activation does. The registry replaces the session's record as one frozen object, so a `tools/call` sees the old set or the new one, never a mix. The session's open GET streams then get `notifications/tools/list_changed`. An empty list is a valid record | session, stream | `AgentToolMcpSessionService` | keepalive; streams closed at deactivation |
 | DS-003 | The immediate runtimes take the change from their next model call. Claude's coordinator auto-allows a tool that is in the current descriptor's enabled list, as `allowedTools` did before. Any other tool goes through the existing approval logic | — | backend | Claude approval check |
-| DS-004 | A reopen happens only inside a turn-start dispatch, when no turn is active. If it fails, the dispatch fails: the input is not sent (DEC-007), the failure notice with the restart button is published, and `reopenPending` stays set, so the next turn-start tries again. A change reverted before the next turn start clears `reopenPending` | — | backend | restart button |
+| DS-004 | A reopen happens only inside a turn-start dispatch, when no turn is active. If it fails, the dispatch fails: the input is not sent (DEC-007), the dispatch fails with a plain error message (no notice), and `reopenPending` stays set, so the next turn-start tries again. A change reverted before the next turn start clears `reopenPending` | — | backend | the error message |
 | DS-005 | The composite asks the tool source first, then the skill source, and hands the first preface it gets, so one notice per dispatch (DEC-006). It remembers which source gave which preface and settles only that source. The tool source returns its notice for a run waiting for a reopen only on `start_turn`; otherwise on any external input. A restored run whose record differs from its current names gets the notice on its first input. Lifecycle calls go to each source in order, each guarded | notice | `AgentRunPlatformNotices`; `ToolListUpdateService` | localization |
 
 ## Spine Actors / Main-Line Nodes
@@ -242,18 +247,32 @@ When a definition's tool list changes, AutoByteus asks each live run of it to ta
 | `sendSseCompatibilityResponse` (`agent-tools-mcp-http-gate.ts:36-41`) | GET becomes a real stream | `AgentToolsMcpSessionStreams.open` | — |
 | `listChanged: false` (`agent-tools-mcp-method-dispatcher.ts:93`) | The server notifies | `listChanged: true` | — |
 | `not_exposed` (`agent-tool-mcp-session-authority.ts:29-31`, `agent-tool-mcp-session-service.ts:64-66`) and the null-descriptor branches in Claude (`claude-session-query-options.ts:28-33`, session state), AGY (`agy-agent-run-backend-factory.ts:~134`), Codex (`codex-thread-bootstrapper.ts:345-347`), ACP (`acp-agent-run-backend-factory.ts:188,235`, `grok-build-session-profile.ts` null cases) | Every external run has a session (AR-003) | `activateForRun` returns the active session always | An empty list is a valid record |
+| The restart button and everything that serves only it, built at code commit `5f3923c4cd` (SR-005, completed in SR-006 for AR-009). Server: `backends/shared/runtime-session-reopen.ts:8-27`: `RESTART_RUN_NOTICE_ACTION`, the `action` payload field, the "restart" doc comment; the failure notice itself goes too (next row, SR-007). Server tests: the `action` assertions in `acp-tool-list-reopen.test.ts:139` and `codex-tool-list-reopen.test.ts:176` (assert the failed dispatch result instead). Server docs: `agent_execution.md:537`, `tool_list_updates.md:84-88`. Web: `restartRunWithNewTools` (`stores/agentRunStore.ts:424-452`) and its tests in `agentRunStore.spec.ts`; the button, `restartRun`, `restarting`/`restartFailed`, `RESTART_RUN_ACTION`, `TOOLS_REOPEN_FAILED_TEXT` and the content match (`SystemTaskNotificationSegment.vue:63-64,85-87` and the template); the restart-only `runId` prop (`:68-69`) and every caller that passes it; the `action` field in `services/agentStreaming/protocol/messageTypes.ts:225` and `types/segments.ts:82` and whoever sets it; the three restart strings in **en and zh-CN** `localization/messages/*/workspace.ts`, plus the spec's key checks (`SystemTaskNotificationSegment.spec.ts:217-218`), which go with them; the button tests in `SystemTaskNotificationSegment.spec.ts`. Web docs: `agent_execution_architecture.md:1833` | DEC-008: the user decided there is no button; Stop, then send, already works, and for a Team member the button stopped the whole Team (CR-001) | The ordinary failed-message error (Return / Event spine, SR-007) | Delete; the grep for `restart_run`, `restartRunWithNewTools` and `RESTART_RUN` across `autobyteus-server-ts`, `autobyteus-web` and the docs must come back empty |
+| The failure notice built at `5f3923c4cd` and planned in SR-006: `buildRuntimeSessionReopenFailedNotice` and `RUNTIME_SESSION_REOPEN_FAILED_NOTICE` (`runtime-session-reopen.ts`) and the backends' calls that publish it (Codex and ACP reopen); any `TOOL_LIST_UPDATE_FAILED_SENDER_ID`; the web's reopen-failure recognition in `SystemTaskNotificationSegment.vue` (`isToolsReopenFailure` and its label branch); the `toolsReopenFailed` string (en and zh-CN) and any `toolsNotUpdated`; their tests and docs mentions | SR-007: the user decided a failed reopen is shown as the ordinary failed-message error ("if there are errors … just show error … then manually click the stop and then resume") | The dispatch failure message through the existing command-failure path | Delete. The completion grep adds `ReopenFailedNotice`, `toolsReopenFailed`, `toolsNotUpdated` and `tool_list_update_failed`, which must all come back empty; `RUNTIME_SESSION_REOPEN_FAILED` (the dispatch code) stays |
 | Claude's cached activation (`claude-agent-tools-mcp-session-state.ts:21-48`) | The descriptor changes during the run | `ensureActive` once, then `describeForRun` per read | — |
 | Agent Tools names in Claude's `allowedTools` (`claude-session-tooling-options.ts:151-154`) | The list can change during the run | The coordinator's current-descriptor check | `Skill` stays |
 
 ## Return Or Event Spine(s) (If Applicable)
 
 - DS-005 (above).
-- Failure: `Codex/Grok backend reopen fails -> backend emits SYSTEM_TASK_NOTIFICATION { sender_id: TOOL_LIST_UPDATE_NOTICE_SENDER_ID, content: "Couldn't give this run its new tools.", action: "restart_run" } through its event path -> the run's event stream -> the web card with the "Restart this run with the new tools" button -> the existing stop + restore of the same run`.
+- Failure (SR-007, the user's decision; ARCH-REV-006 AR-009): there is **no failure notice, card, sender or strings**. A failed reopen fails the dispatch with `runtimeSessionReopenFailedResult` (`backends/shared/runtime-session-reopen.ts`): `{ forwarded: false, code: RUNTIME_SESSION_REOPEN_FAILED, message }`. The message reads "Couldn't give this run its new tools (<cause>). Send your message again to retry, or stop and resume the run."
+  - Through the existing input lifecycle, `AgentRunCommandCoordinator.applyInputLifecycle` (`agent-run-command-coordinator.ts:169-176`) marks the command failed with `RUNTIME_REJECTED` and that message. The web shows it the way it shows every failed message today, on single runs and Team members alike, because it is the same command-failure path.
+  - Nothing new crosses the Team presentation adapter, so AR-009's Team-stream gap disappears.
+  - **Team members (SR-009, ARCH-REV-008 AR-009; replaces the inert SR-008 target).** Today a member's direct input is acknowledged at admission, and a later dispatch failure is silent: `ConfiguredAgentExecutionHandle.postMessage` calls `run.postUserMessage(message)` without a `lifecycleObserver` (`configured-agent-execution-handle.ts:138-150`). `publishCommandStatus` cannot help, because it returns early once a run exists (`:461-463`).
+    - **The change:** `postMessage` passes a `lifecycleObserver`. On a `failed` fact it publishes a run `ERROR` event to the Team stream: `this.options.callbacks.publishAgentEvent(this.identity, { kind: "agent_run", event })` (`:455`, the path every member event takes). The event is `{ eventType: ERROR, runId: member run ID, payload: { code: fact.code ?? "RUNTIME_REJECTED", message: fact.message } }` and carries **no error evidence**.
+    - **What the Team stream receives:**
+      - `CollaborationAgentPresentationAdapter` maps it to the presentation `ERROR` (`collaboration-agent-presentation-adapter.ts:374-379`), with `errorScope: null` and `errorEffect: null` (`agent-presentation-event.ts:38`).
+      - `agent-presentation-message-projector.ts:102` emits `ERROR { code, message, error_scope: null, error_effect: null, turn_id: null }`.
+    - **What the web shows:** `TeamStreamingService` dispatches the member message through `dispatchAgentStreamMessage` to `handleError` (`agentStatusHandler.ts:129-167`). Its non-diagnostic branch pushes an `error` segment with the message into the member's conversation and marks the conversation complete. No turn ran, so there are no open tool segments to close. This is the error display every member runtime error already uses; no new UI.
+    - **Why there is no duplicate on single runs:** the event goes only to the Team presentation callback, not through `AgentRun.publishEvent`. So the run's own input lifecycle (`agent-run-input-lifecycle.ts:29-45`), its memory and single-run streams never see it. Single runs keep showing the failure only as the failed command (`agent-run-command-coordinator.ts:169-176`). The handle exists only for Team members.
+    - **Replay:** the event is live only and not recorded, like the single-run failure display.
+    - Other lifecycle facts are ignored. Teammate deliveries (`reserveInput`) are unchanged. The inert `publishCommandStatus("error", …)` at `:148` for a live run is pre-existing and out of scope.
+    - **Test (integration):** a Team whose member's reopen fails. It asserts that the **Team stream** receives `ERROR` with that member's run, `code: RUNTIME_SESSION_REOPEN_FAILED` (or `RUNTIME_REJECTED`) and the message, and that the other members receive nothing. A web unit test asserts that the member's conversation shows the error segment (AC-007).
 
 ## Bounded Local / Internal Spines (If Applicable)
 
 - Parent `ToolListUpdateService`, per run: `signal -> apply -> diff -> dirty -> (busy and immediate) post now | (idle, or the run waits for a turn start) preface -> delivered -> record seen | returned -> dirty again`. This is the skill notice's state machine, plus the `waitForTurnStart` flag.
-- Parent Codex/Grok backend: `open -> (apply, changed) reopenPending -> (start_turn) reopening -> open (send; reopenPending recomputed) | failed (failure notice, the input fails, reopenPending stays; Grok: no runtime session until the next start_turn)`. An append never enters `reopening`.
+- Parent Codex/Grok backend: `open -> (apply, changed) reopenPending -> (start_turn) reopening -> open (send; reopenPending recomputed) | failed (the input fails with a plain error, reopenPending stays; Grok: no runtime session until the next start_turn)`. An append never enters `reopening`.
 
 ### Codex reopen sequence (`CodexThreadManager.reopenThread(runContext)`, called by the backend inside a `start_turn` dispatch)
 
@@ -265,7 +284,7 @@ When a definition's tool list changes, AutoByteus asks each live run of it to ta
    - remember the descriptor the thread was resumed with;
    - recompute `reopenPending` as (current descriptor ≠ that descriptor), so a save during the reopen is not lost (SR-003);
    - `turn/start` as usual.
-6. On failure: emit the failure notice, keep `reopenPending`, and fail the dispatch with `RUNTIME_SESSION_REOPEN_FAILED`. The next `start_turn` repeats from step 2.
+6. On failure: keep `reopenPending` and fail the dispatch with `RUNTIME_SESSION_REOPEN_FAILED` and the plain error message (no notice, SR-007). The next `start_turn` repeats from step 2.
 7. Removal is enforced by the server during the whole sequence, because the session is never deactivated.
 
 ### Grok reopen sequence (`AcpAgentRunBackend`, inside a `start_turn` dispatch) — SR-003: end first, then load
@@ -275,7 +294,7 @@ This is the measured order (E-14: `drive-grok-reopen.mjs` ends the first process
 **One owner of the run's ACP process (SR-004, ARCH-REV-003 AR-008).** The run's `AcpPreparationOwner` (`acp-agent-run-backend-factory.ts:79`, the `{ process, connection, session, skills }` record) is the single holder of the run's process, connection and session. That holds for creation, restore and reopen alike:
 - `AcpSessionLauncher.open({ owner, mode, sessionId?, descriptor, sinks })` records each handle in the owner as soon as it exists: the process at spawn, then the connection, then the session. So a half-opened process is always held by the owner.
 - `AcpAgentRunBackend` does not keep its own copies of the connection and session. It reads them from the owner (`owner.session`, `owner.connection`). "No runtime session" is exactly `owner.session === null`.
-- The factory's `releaseResources` (`:84-94`) is unchanged and already null-safe. It closes what the owner holds **now**, so stop or the restart button after a reopen ends the reopened process, and after a failed reopen closes nothing and only releases the skills.
+- The factory's `releaseResources` (`:84-94`) is unchanged and already null-safe. It closes what the owner holds **now**, so stop after a reopen ends the reopened process, and after a failed reopen closes nothing and only releases the skills.
 
 1. Precondition: no active turn. `dispatchUserInput` already refuses a `start_turn` while `session.activeTurnId` is set (`acp-agent-run-backend.ts:91-92`), and ACP refuses appends (`:88-89`). The materialized skills stay, because they belong to the run's `cleanup`, not to the process.
 2. If a runtime session is open, end it **as a reopen**:
@@ -293,10 +312,9 @@ This is the measured order (E-14: `drive-grok-reopen.mjs` ends the first process
    - end the half-opened process the owner holds (session, connection or process, whichever exists), and set the owner's handles to `null`;
    - leave the backend with **no runtime session** (`owner.session === null`): the run stays active and idle, and is not failed;
    - keep `reopenPending`;
-   - emit the failure notice;
    - return `{ forwarded: false, code: "RUNTIME_SESSION_REOPEN_FAILED" }`. The message is not sent (DEC-007).
 
-   The next `start_turn` repeats from step 3. The restart button (stop, then restore) works too.
+   The next `start_turn` repeats from step 3. Stop, then send a message, works too, as it does today.
 7. A backend with no runtime session (after step 2 or step 6) handles every operation:
    - `getLifecycleSnapshot`: availability `active`, phase `idle`, no current turn.
    - `dispatchUserInput(start_turn)`: `reopenPending` is set, so it reopens (from step 3). An append is refused as today.
@@ -319,13 +337,12 @@ Codex needs no such change. Its reopen keeps the run's `ThreadPreparation` (clie
 | Notice text and card event | DS-005 | service | short text; card payload | REQ-006, 007 | Wording spread over backends |
 | Seen record | DS-005 | service | `SeenToolNamesStore` | REQ-009 | Restore misses changes |
 | GET keepalive and close | DS-002 | streams | a comment every 15 s; closed on deactivation | Long-lived streams | Leaked sockets |
-| Failure notice | DS-004 | backend | one event with `action: restart_run` | REQ-010 | — |
-| Restart button | DS-004 | web | the existing stop + restore | REQ-010 | — |
+| Failed reopen | DS-004 | backend | the dispatch fails with a plain error message (no notice) | REQ-010 | — |
 
 ## Ownership Boundaries
 
 - The service never touches runtime details; it calls `AgentRun.applyDefinitionTools`.
-- Backends never diff or notify the agent. Their only event is the reopen failure notice.
+- Backends never diff or notify the agent. They publish no notice events (SR-007).
 - Only the session service changes a session's exposure, and only the streams owner writes to GET streams.
 - `AgentRun` knows only the composite port, never the sources.
 
@@ -388,7 +405,6 @@ Codex needs no such change. Its reopen keeps the run's `ThreadPreparation` (clie
 | Seen record | `SeenSkillVersionsStore` rules | Copy (a separate store) | Different shape; the same rules | — |
 | Exposure resolution | `runtime-agent-tool-exposure.ts`, native resolver | Reuse | One builder | — |
 | Reopen | Codex `resumeRemoteThread`; ACP launch | Reuse / Extract (`AcpSessionLauncher`) | Same conversation | — |
-| Restart button | the existing stop + restore | Reuse | BEH-004 | — |
 
 ## Subsystem / Capability-Area Allocation
 
@@ -400,7 +416,7 @@ Codex needs no such change. Its reopen keeps the run's `ThreadPreparation` (clie
 | `agent-execution/` (domain, input, the five backends) | `applyDefinitionTools`; composite; preface kind; reopen | DS-003, DS-004, DS-005 | Extend |
 | `autobyteus-ts/src/agent/` | `replaceTools` | DS-003 | Extend |
 | compositions (`build-studio-server.ts`, `start-standalone-application-host.ts`, `agent-package-definition-feed-composition.ts`) | wiring | all | Extend |
-| `autobyteus-web` | card, failure button | DS-004, DS-005 | Extend |
+| `autobyteus-web` | card (tools updated; plain failure message) | DS-004, DS-005 | Extend |
 
 ## Final File Responsibility Mapping
 
@@ -418,6 +434,7 @@ Codex needs no such change. Its reopen keeps the run's `ThreadPreparation` (clie
 | `src/agent-execution/domain/agent-run-platform-notices.ts` (new) | composite | order, routing, fan-out |
 | `agent-run-input-preface.ts`, `agent-run-input-preface-dispatch.ts`, `agent-run.ts` | run | `takePreface(run, { dispatchKind })`; `applyDefinitionTools`, `getToolNames` |
 | the backend contract (`agent-run-backend.ts`) | run | the two operations |
+| `agent-collaboration/execution/backends/configured-agent-execution-handle.ts` | Team member input | `postMessage` passes a `lifecycleObserver`; a `failed` fact publishes a run `ERROR` (no evidence) to the Team stream through `publishAgentEvent` (SR-009) |
 | `agent-execution/domain/system-task-notification-senders.ts` | notices | `TOOL_LIST_UPDATE_NOTICE_SENDER_ID` |
 | `compositions/build-studio-server.ts`, `standalone-application-host/start-standalone-application-host.ts` | wiring | create tool-list updates; pass `new AgentRunPlatformNotices([toolListUpdates.service, skillUpdateNotices.service])`; close order |
 | `agent-tools/mcp/agent-tools-mcp-session-streams.ts` (new) | streams | held GET streams |
@@ -428,7 +445,7 @@ Codex needs no such change. Its reopen keeps the run's `ThreadPreparation` (clie
 | Native: `autobyteus-agent-run-backend.ts`; `autobyteus-ts/src/agent/agent.ts`, `agent/context/agent-runtime-state.ts` | native | `replaceTools` |
 | Codex: `codex-agent-run-backend.ts`, `codex-thread-manager.ts`, `codex-thread-bootstrapper.ts`, `codex-agent-run-context.ts` | Codex | `reopenPending`; `reopenThread`; config from the descriptor; always configured |
 | Grok / ACP: `acp-agent-run-backend.ts`, `acp-agent-run-backend-factory.ts`, new `acp-session-launcher.ts`, `grok-build-session-profile.ts` | Grok | `reopenPending`; the launcher; always configured |
-| web: `SystemTaskNotificationSegment.vue`, `localization/messages/*/workspace.ts` | web | "Tools updated" card; failure card with the button |
+| web: `SystemTaskNotificationSegment.vue`, `localization/messages/*/workspace.ts` | web | "Tools updated" card (no failure card, SR-007) |
 | docs: `agent_tools_mcp_server.md`, new `tool_list_updates.md`, `agent_execution.md`, `skill_update_notices.md` (the composite), web `agent_execution_architecture.md` | docs | — |
 
 ## Target Subsystem / Folder / File Mapping
@@ -489,7 +506,7 @@ Codex needs no such change. Its reopen keeps the run's `ThreadPreparation` (clie
 6. **Codex and Grok:**
    - `reopenPending`;
    - the reopen sequences, with `AcpSessionLauncher` extracted;
-   - the failure notice and the button.
+   - a failed reopen fails the message with a plain error (no notice, no button: DEC-008, SR-007).
 
    Integration tests against the protocol (the reopen drivers are the reference), including a failing reopen and an append while pending. Real run: Grok now. Codex: a real run if the limit is back before merge (DEC-004).
 7. **Docs; e2e on isolated data from a clean clone; merge into `personal`.**
