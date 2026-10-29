@@ -1,0 +1,9 @@
+# IMP-06
+# Command: excerpt of server-unit run in ac005.sh; full log (not committed, 1.1M) at /tmp/abyt199-impl/IMP-06-server-unit.log
+# Commit: 33fc5f4e16 (pre-rebase; base dc530fdcb0)
+# Env: macOS (Darwin 25.5.0), node v22.23.1, uv 0.10.2; env -i PATH HOME=<resolved temp> TMPDIR
+# Date: 2026-10-20
+
+ Test Files  752 passed | 4 skipped (756)
+      Tests  6201 passed | 7 skipped (6208)
+   Duration  648.05s (transform 18.66s, setup 8.81s, import 342.09s, tests 221.49s, environment 991ms)

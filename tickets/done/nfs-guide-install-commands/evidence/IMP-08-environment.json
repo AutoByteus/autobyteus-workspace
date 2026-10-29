@@ -1,0 +1,7 @@
+{
+  "date": "2026-10-24T04:04:19.002295+00:00",
+  "commit": "1103c5f9f7c6986a77ef34620b02d790e2297621",
+  "scratch": "/Users/normy/nfs-guide-r2-imp-7uncw0tz",
+  "platform": "Darwin arm64",
+  "command": "private HOME/TMPDIR; filtered pnpm frozen install; nuxt prepare"
+}

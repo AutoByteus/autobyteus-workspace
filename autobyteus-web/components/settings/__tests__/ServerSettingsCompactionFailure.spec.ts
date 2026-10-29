@@ -61,12 +61,12 @@ describe('Server settings Compaction failure journey', () => {
         Icon: true,
         ServerSettingsEndpointCards: true,
         ApplicationsFeatureToggleCard: true,
-        SkillImprovementFeatureToggleCard: true,
         MediaDefaultModelsCard: true,
         CodexFullAccessCard: true,
         LiveResponseStreamingCard: true,
         FeaturedCatalogItemsCard: true,
         WebSearchConfigurationCard: true,
+        UpdateChecksCard: true,
       },
     },
   })

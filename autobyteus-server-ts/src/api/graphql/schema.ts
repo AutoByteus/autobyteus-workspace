@@ -1,3 +1,4 @@
+import { AgentBackgroundTaskViewResolver } from './types/agent-background-task-view.js';
 import { buildSchema } from 'type-graphql';
 import { HealthResolver } from './types/health.js';
 import { ServerSettingsResolver } from './types/server-settings.js';
@@ -22,7 +23,9 @@ import { ToolManagementResolver } from './types/tool-management.js';
 import { McpServerResolver } from './types/mcp-server.js';
 import { MemoryExplorerResolver } from './types/memory-explorer.js';
 import { MemoryViewResolver } from './types/memory-view.js';
+import { MemorySearchResolver } from './types/memory-search.js';
 import { MemorySyncResolver } from './types/memory-sync.js';
+import { RemoteCollaborationSettingsResolver } from './types/remote-collaboration-settings.js';
 import { RunHistoryResolver } from './types/run-history.js';
 import { RunFileChangesResolver } from './types/run-file-changes.js';
 import { TeamCommunicationResolver } from './types/team-communication.js';
@@ -31,7 +34,6 @@ import { RuntimeAvailabilityResolver } from './types/runtime-availability.js';
 import { AgentPackageResolver } from './types/agent-packages.js';
 import { ApplicationPackageResolver } from './types/application-packages.js';
 import { AppDataMigrationResolver } from './types/app-data-migrations.js';
-import { SkillImprovementResolver } from './types/skill-improvement.js';
 import { DateTimeScalar } from './scalars/date-time.js';
 import { SecretStorageResolver } from './types/secret-storage.js';
 import { DefinitionProblemsResolver } from './types/definition-problems.js';
@@ -41,6 +43,10 @@ import { ProjectResolver } from './types/projects.js';
 import { ProjectTaskResolver } from './types/project-tasks.js';
 import { ProjectTaskSearchResolver } from './types/project-task-search.js';
 import { EmbeddingModelResolver } from './types/embeddings.js';
+import { UpdateNotificationResolver } from './types/update-notifications.js';
+import { AgentRuntimesResolver } from './types/agent-runtimes.js';
+import { AvailableAgentRuntimesResolver } from './types/available-agent-runtimes.js';
+import { ModelRoutingResolver } from './types/model-routing.js';
 
 export async function buildGraphqlSchema() {
   return buildSchema({
@@ -51,6 +57,7 @@ export async function buildGraphqlSchema() {
       ApplicationCapabilityResolver,
       SkillResolver,
       AgentRunResolver,
+      AgentBackgroundTaskViewResolver,
       AgentTeamRunResolver,
       DelegatedLaunchSelectionResolver,
       WorkspaceResolver,
@@ -68,7 +75,9 @@ export async function buildGraphqlSchema() {
       McpServerResolver,
       MemoryExplorerResolver,
       MemoryViewResolver,
+      MemorySearchResolver,
       MemorySyncResolver,
+      RemoteCollaborationSettingsResolver,
       RunHistoryResolver,
       RunFileChangesResolver,
       TeamCommunicationResolver,
@@ -77,7 +86,7 @@ export async function buildGraphqlSchema() {
       AgentPackageResolver,
       ApplicationPackageResolver,
       AppDataMigrationResolver,
-      SkillImprovementResolver,
+      UpdateNotificationResolver,
       SecretStorageResolver,
       DefinitionProblemsResolver,
       AgentPackageDefinitionsResolver,
@@ -86,6 +95,9 @@ export async function buildGraphqlSchema() {
       ProjectTaskResolver,
       ProjectTaskSearchResolver,
       EmbeddingModelResolver,
+      AgentRuntimesResolver,
+      AvailableAgentRuntimesResolver,
+      ModelRoutingResolver,
     ],
     scalarsMap: [{ type: Date, scalar: DateTimeScalar }],
   });

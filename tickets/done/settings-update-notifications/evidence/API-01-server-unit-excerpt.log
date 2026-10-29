@@ -1,0 +1,24 @@
+# API-01 — full server unit suite at the validated commit
+# Command: pnpm -C autobyteus-server-ts test:unit (worktree root); commit d76332c669 (code c42bf2abc4); macOS 26.5.2, Node v22.23.1; 2026-10-20 15:22–15:32 (ran while instance A was started)
+# Full log: /tmp/sun-api-e2e/API-01.log (not committed; ~ 1325615 bytes)
+
+test-owned exact retry receipt {"first":{"accepted":false,"code":"RUNTIME_COMMAND_FAILED","message":"Failed to terminate run for runtime 'codex_app_server': AggregateError: Codex exact thread cleanup failed."},"retry":{"accepted":true},"sameThread":"owned-thread-1","sameTurn":"owned-thread-1-turn","facts":[{"kind":"admitted"},{"kind":"forwarded","dispatchKind":"start_turn","turnId":"owned-thread-1-turn"},{"kind":"turn_associated","turnId":"owned-thread-1-turn"},{"kind":"interrupted","turnId":"owned-thread-1-turn"}]}
+stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > the per-run input gate (F-PENDING-FAILED, contract §5.4) > migrates ready runs, waits for a predecessor that can still convert a run, and preserves a tree no predecessor can read
+stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > the per-run input gate (F-PENDING-FAILED, contract §5.4) > migrates ready runs, waits for a predecessor that can still convert a run, and preserves a tree no predecessor can read
+stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > the per-run input gate (F-PENDING-FAILED, contract §5.4) > migrates ready runs, waits for a predecessor that can still convert a run, and preserves a tree no predecessor can read
+stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > the per-run input gate (F-PENDING-FAILED, contract §5.4) > migrates ready runs, waits for a predecessor that can still convert a run, and preserves a tree no predecessor can read
+stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > the per-run input gate (F-PENDING-FAILED, contract §5.4) > migrates ready runs, waits for a predecessor that can still convert a run, and preserves a tree no predecessor can read
+stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > the per-run input gate (F-PENDING-FAILED, contract §5.4) > migrates ready runs, waits for a predecessor that can still convert a run, and preserves a tree no predecessor can read
+stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > the per-run input gate (F-PENDING-FAILED, contract §5.4) > migrates ready runs, waits for a predecessor that can still convert a run, and preserves a tree no predecessor can read
+stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > the per-run input gate (F-PENDING-FAILED, contract §5.4) > migrates ready runs, waits for a predecessor that can still convert a run, and preserves a tree no predecessor can read
+stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > the per-run input gate (F-PENDING-FAILED, contract §5.4) > migrates ready runs, waits for a predecessor that can still convert a run, and preserves a tree no predecessor can read
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > keeps reasoning open across matching TOOL_EXECUTION_FAILED updates
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED:NOT_RUN:NO_LOG","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED:RUNNING:/tmp/running.log","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED:FAILED:/tmp/failed.log","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: migration state store unavailable","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+ Test Files  757 passed | 4 skipped (761)
+      Tests  6224 passed | 7 skipped (6231)
+   Duration  602.63s (transform 18.56s, setup 6.84s, import 303.90s, tests 220.60s, environment 871ms)
+real	10m3.940s
+exit 0

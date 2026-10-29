@@ -107,7 +107,6 @@ try {
     const p = r.request().postDataJSON() || {}; evidence.operations.push(p.operationName)
     const answers = {
       GetApplicationsCapability: { applicationsCapability: { enabled: false, scope: 'BOUND_NODE', settingKey: 'ENABLE_APPLICATIONS', source: 'INITIALIZED_EMPTY_CATALOG' } },
-      GetSkillImprovementCapability: { skillImprovementCapability: { enabled: false, settingKey: 'ENABLE_SKILL_IMPROVEMENT', source: 'INITIALIZED_EMPTY_CATALOG' } },
       GetAgentDefinitions: { agentDefinitions: [] }, GetAgentTeamDefinitions: { agentTeamDefinitions: [] },
       GetAgentOrgDefinitions: { agentOrgDefinitions: [] }, ListWorkspaceRunHistory: { listWorkspaceRunHistory: [] },
       ListCollaborationRootHistory: { listCollaborationRootHistory: [] }, GetWorkspaces: { workspaces: [] },

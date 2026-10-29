@@ -5,11 +5,15 @@
   </header>
   <form novalidate @submit.prevent="save">
     <div class="rounded-xl border border-slate-200 bg-white p-5 sm:p-6">
+      <label for="task-page-title" class="block text-sm font-medium text-slate-700">{{ t('projects.ui.title') }} <span class="font-normal text-slate-400">{{ t('projects.ui.required') }}</span></label>
+      <input id="task-page-title" v-model="title" required type="text" :placeholder="t('projects.components.projects.ProjectTaskEditor.titlePlaceholder')" :disabled="saving" :aria-invalid="titleError ? 'true' : 'false'" :aria-describedby="titleError ? 'task-page-title-error' : undefined" class="mb-5 mt-2 block min-h-11 w-full rounded-lg border bg-white px-3 py-2.5 text-base text-slate-900 placeholder:text-slate-500 focus:outline-none focus:ring-2 sm:text-sm" :class="titleError ? 'border-red-400 focus:ring-red-500/20' : 'border-slate-300 focus:border-blue-500 focus:ring-blue-500/20'" data-testid="task-page-title-input" />
+      <p v-if="titleError" id="task-page-title-error" class="-mt-3 mb-5 text-sm text-red-600" role="alert" data-testid="task-page-title-error">{{ titleError }}</p>
       <label for="task-page-description" class="block text-sm font-medium text-slate-700">{{ t('projects.ui.description') }} <span class="font-normal text-slate-400">{{ t('projects.ui.required') }}</span></label>
       <TaskDescriptionComposer v-model="text" :files="files" :client="client" :draft-id="draftId" :saved-filenames="savedFilenames" :target="target" :disabled="saving" :adding="pending" :error="fieldError" :placeholder="t('projects.components.projects.ProjectTaskEditor.descriptionPlaceholder')" @add="addFiles" @remove="removeFile" @clear="clearFiles" @save="save" />
       <p v-if="fieldError" id="task-page-error" class="mt-2 text-sm text-red-600" role="alert" data-testid="task-page-description-error">{{ fieldError }}</p>
       <p v-if="error" role="alert" class="mt-3 text-sm text-red-700" data-testid="task-page-save-error">{{ error }}</p>
-      <!-- "Depends on" (stored on this, the later Task). -->
+      <!-- "Part of" (stored on this Task, the part), then "Depends on" (stored on this, the later Task). -->
+      <TaskPartOfPicker v-model="partOf" :project-id="projectId" :project-name="projectName" :task-id="task?.taskId" :disabled="saving" />
       <TaskDependencyPicker v-model="dependsOn" :project-id="projectId" :project-name="projectName" :task-id="task?.taskId" :disabled="saving" />
     </div>
     <div class="mt-6 flex justify-end gap-3 border-t border-slate-200 pb-2 pt-5">
@@ -20,25 +24,29 @@
 </template>
 <script setup lang="ts">
 import { nextTick, onMounted, ref, watch } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useLocalization } from '~/composables/useLocalization'
 import { useProjectTaskDraft } from '~/composables/projects/useProjectTaskDraft'
 import { useProjectTaskStore } from '~/stores/projectTaskStore'
 import type { ProjectTask } from '~/types/project'
 import TaskDescriptionComposer from './TaskDescriptionComposer.vue'
 import TaskDependencyPicker from './TaskDependencyPicker.vue'
+import TaskPartOfPicker from './TaskPartOfPicker.vue'
 import { taskPagePath } from '~/utils/projects/taskPagePath'
 const props = defineProps<{projectId: string; projectName: string; task?: ProjectTask}>()
-const {t} = useLocalization(), router = useRouter()
-const draft = useProjectTaskDraft(props.projectId, props.task)
-const {text, files, dependsOn, client, draftId, pending, saving, error, blocked, target, addFiles, removeFile} = draft
-const fieldError = ref(''), heading = ref<HTMLElement | null>(null)
+const {t} = useLocalization(), router = useRouter(), route = useRoute()
+// "New part" on a parent's Task page opens New task with that parent chosen (`?partOf=<task ID>`).
+const draft = useProjectTaskDraft(props.projectId, props.task, props.task ? null : typeof route.query.partOf === 'string' ? route.query.partOf : null)
+const {title, text, files, dependsOn, partOf, client, draftId, pending, saving, error, blocked, target, addFiles, removeFile} = draft
+const fieldError = ref(''), titleError = ref(''), heading = ref<HTMLElement | null>(null)
 const boardTarget = `/projects/${props.projectId}`, detailTarget = props.task ? taskPagePath(props.projectId, props.task) : boardTarget
 const savedFilenames = props.task?.contextFiles?.map((f) => f.storedFilename) ?? []
 watch(text, (value) => { if (value.trim()) fieldError.value = '' })
+watch(title, (value) => { if (value.trim()) titleError.value = '' })
 const clearFiles = async () => {for (const file of [...files.value]) await removeFile(file.storedFilename)}
 const save = async () => {
   if (blocked.value || !draft.current()) return
+  if (!title.value.trim()) {titleError.value = t('projects.errors.taskTitleRequired'); await nextTick(); document.getElementById('task-page-title')?.focus(); return}
   if (!text.value.trim()) {fieldError.value = t('projects.errors.taskDescriptionRequired'); await nextTick(); document.getElementById('task-page-description')?.focus(); return}
   const saved = await draft.save()
   if (!saved || !draft.current()) return

@@ -2,7 +2,6 @@ import path from "node:path";
 import type { AgentLaunchConfiguration } from "../../agent-team-execution/domain/team-run-config.js";
 import type {
   TaskAgentCoordinatingRun,
-  TaskAgentOrigin,
   TaskAgentRunMetadata,
   TaskAgentSection,
 } from "./agent-run-metadata-types.js";
@@ -23,31 +22,30 @@ import { parseLaunchConfigurationSource, parseOptionalUserLaunchSelection } from
  */
 
 const COORDINATING_RUN_KINDS: readonly TaskAgentCoordinatingRun["kind"][] = ["agent", "agent_team", "agent_org"];
-const ORIGINS: readonly TaskAgentOrigin[] = ["catalog", "configured_place"];
 
 /** Whether a parsed run file carries the `taskAgent` section that makes it a task agent's own file (G1, G2). */
 export const hasTaskAgentSection = (value: unknown): boolean =>
   !!value && typeof value === "object" && !Array.isArray(value) && "taskAgent" in value;
 
+/** A coordinating run `{kind, runId}` (a task agent's, or a remote run's back-link on its own node). */
+export const parseTaskAgentCoordinatingRun = (value: unknown, label: string): TaskAgentCoordinatingRun => {
+  const coordinating = objectRecord(value, label);
+  requireKeys(coordinating, ["kind", "runId"], label);
+  if (!COORDINATING_RUN_KINDS.includes(coordinating.kind as TaskAgentCoordinatingRun["kind"])) {
+    throw new Error(`${label}.kind is unsupported.`);
+  }
+  return { kind: coordinating.kind as TaskAgentCoordinatingRun["kind"], runId: requiredString(coordinating.runId, `${label}.runId`) };
+};
+
 export const parseTaskAgentSection = (value: unknown, label = "taskAgent"): TaskAgentSection => {
   const section = objectRecord(value, label);
-  requireKeys(section, ["coordinatingRun", "address", "origin"], label);
-  const coordinating = objectRecord(section.coordinatingRun, `${label}.coordinatingRun`);
-  requireKeys(coordinating, ["kind", "runId"], `${label}.coordinatingRun`);
-  if (!COORDINATING_RUN_KINDS.includes(coordinating.kind as TaskAgentCoordinatingRun["kind"])) {
-    throw new Error(`${label}.coordinatingRun.kind is unsupported.`);
-  }
-  if (!ORIGINS.includes(section.origin as TaskAgentOrigin)) throw new Error(`${label}.origin is unsupported.`);
+  requireKeys(section, ["coordinatingRun", "address"], label);
   return {
-    coordinatingRun: {
-      kind: coordinating.kind as TaskAgentCoordinatingRun["kind"],
-      runId: requiredString(coordinating.runId, `${label}.coordinatingRun.runId`),
-    },
+    coordinatingRun: parseTaskAgentCoordinatingRun(section.coordinatingRun, `${label}.coordinatingRun`),
     ...(section.delegatorAgentRunId === undefined
       ? {}
       : { delegatorAgentRunId: requiredString(section.delegatorAgentRunId, `${label}.delegatorAgentRunId`) }),
     address: canonicalNonRootAddress(section.address, `${label}.address`),
-    origin: section.origin as TaskAgentOrigin,
     ...(section.launchSource === undefined
       ? {}
       : { launchSource: parseLaunchConfigurationSource(section.launchSource, `${label}.launchSource`) }),
@@ -55,29 +53,14 @@ export const parseTaskAgentSection = (value: unknown, label = "taskAgent"): Task
   };
 };
 
-/** The launch a task agent started with, or `null` when never recorded (all launch fields `null`). */
-export const taskAgentStartedLaunch = (metadata: TaskAgentRunMetadata): AgentLaunchConfiguration | null =>
-  metadata.runtimeKind === null || metadata.llmModelIdentifier === null || metadata.autoExecuteTools === null
-    ? null
-    : {
-        runtimeKind: metadata.runtimeKind,
-        llmModelIdentifier: metadata.llmModelIdentifier,
-        llmConfig: metadata.llmConfig,
-        autoExecuteTools: metadata.autoExecuteTools,
-        workspaceRootPath: metadata.workspaceRootPath,
-      };
-
-const parseStartedLaunch = (record: Record<string, unknown>, label: string): AgentLaunchConfiguration | null => {
-  const unrecorded = record.runtimeKind === null && record.llmModelIdentifier === null
-    && record.llmConfig === null && record.autoExecuteTools === null && record.workspaceRootPath === null;
-  return unrecorded ? null : parseLaunchConfiguration({
-    runtimeKind: record.runtimeKind,
-    llmModelIdentifier: record.llmModelIdentifier,
-    llmConfig: record.llmConfig,
-    autoExecuteTools: record.autoExecuteTools,
-    workspaceRootPath: record.workspaceRootPath,
-  }, label);
-};
+/** The launch a task agent started with (contract §3.1). */
+export const taskAgentStartedLaunch = (metadata: TaskAgentRunMetadata): AgentLaunchConfiguration => ({
+  runtimeKind: metadata.runtimeKind,
+  llmModelIdentifier: metadata.llmModelIdentifier,
+  llmConfig: metadata.llmConfig,
+  autoExecuteTools: metadata.autoExecuteTools,
+  workspaceRootPath: metadata.workspaceRootPath,
+});
 
 /** A task agent's own `run_metadata.json`; `expectedRunId` is the folder's run id. */
 export const parseTaskAgentRunMetadata = (value: unknown, expectedRunId: string): TaskAgentRunMetadata => {
@@ -90,19 +73,22 @@ export const parseTaskAgentRunMetadata = (value: unknown, expectedRunId: string)
   const runId = requiredString(record.runId, `${label}.runId`);
   if (runId !== expectedRunId) throw new Error(`${label} runId '${runId}' does not match '${expectedRunId}'.`);
   const taskAgent = parseTaskAgentSection(record.taskAgent, `${label}.taskAgent`);
-  const launch = parseStartedLaunch(record, label);
-  if (!launch && taskAgent.origin === "catalog") {
-    throw new Error(`${label} of a catalog task agent must record the launch it started with.`);
-  }
+  const launch = parseLaunchConfiguration({
+    runtimeKind: record.runtimeKind,
+    llmModelIdentifier: record.llmModelIdentifier,
+    llmConfig: record.llmConfig,
+    autoExecuteTools: record.autoExecuteTools,
+    workspaceRootPath: record.workspaceRootPath,
+  }, label);
   return {
     runId,
     agentDefinitionId: requiredString(record.agentDefinitionId, `${label}.agentDefinitionId`),
-    workspaceRootPath: launch?.workspaceRootPath ?? null,
+    workspaceRootPath: launch.workspaceRootPath,
     memoryDir: path.resolve(requiredString(record.memoryDir, `${label}.memoryDir`)),
-    llmModelIdentifier: launch?.llmModelIdentifier ?? null,
-    llmConfig: launch?.llmConfig ?? null,
-    autoExecuteTools: launch?.autoExecuteTools ?? null,
-    runtimeKind: launch?.runtimeKind ?? null,
+    llmModelIdentifier: launch.llmModelIdentifier,
+    llmConfig: launch.llmConfig,
+    autoExecuteTools: launch.autoExecuteTools,
+    runtimeKind: launch.runtimeKind,
     platformAgentRunId: nullableString(record.platformAgentRunId, `${label}.platformAgentRunId`),
     startedAt: isoTimestamp(record.startedAt, `${label}.startedAt`),
     taskAgent,

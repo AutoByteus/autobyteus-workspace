@@ -43,7 +43,6 @@
         <template v-else>
           <section class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
             <div class="inline-flex items-center gap-2 rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700">
-              <span class="i-heroicons-adjustments-horizontal-20-solid h-4 w-4"></span>
               <span>{{ $t('applications.components.applications.ApplicationLaunchSetupPanel.title') }}</span>
             </div>
 

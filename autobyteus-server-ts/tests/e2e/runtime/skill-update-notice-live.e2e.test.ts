@@ -5,11 +5,11 @@ import path from "node:path";
 import { randomUUID } from "node:crypto";
 import { spawnSync } from "node:child_process";
 import WebSocket from "ws";
-import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
+import { afterAll, beforeAll, describe, expect, it, vi, type TestContext } from "vitest";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
-import { closeLiveRuntimeSecretVault, initializeLiveRuntimeSecretVaultFromEnvironment } from "../helpers/live-runtime-secret-vault-helpers.js";
+import { closeLiveServerVault, initializeLiveServerVault, requireLiveCapability } from "../../../../test-support/test-vault/live-server-vault.js";
 
 /**
  * Live proof of active-run skill update notices (AC-001, AC-002 idle, REQ-011 history, R-1).
@@ -34,12 +34,13 @@ import { closeLiveRuntimeSecretVault, initializeLiveRuntimeSecretVaultFromEnviro
  *   is never written. Model: CODEX_E2E_TOOL_MODEL (default gpt-5.6-luna).
  * - Claude uses the operator's Claude CLI login (as the other Claude E2E suites). Model:
  *   CLAUDE_E2E_TOOL_MODEL (default haiku).
- * - AutoByteus takes provider keys from credential aliases in the environment (OPENAI_API_KEY, …),
- *   saved into the test-owned vault; run it with a clean `env -i` as the other native live suites.
- *   Model: SKILL_NOTICE_E2E_NATIVE_MODEL (default gpt-5.5).
+ * - AutoByteus takes provider keys from the test vault (AUTOBYTEUS_TEST_VAULT, see TESTING.md#test-vault);
+ *   run it with a clean `env -i` as the other native live suites. Model: SKILL_NOTICE_E2E_NATIVE_MODEL
+ *   (default gpt-5.5; with the default, a missing OpenAI key is reported as a skip).
  * - Grok (ACP backend, next-turn class like AutoByteus) runs with a temporary GROK_HOME holding only a symlink to the
  *   user's auth.json and a config without auto-update; ~/.grok is never written. Model: GROK_E2E_MODEL (default grok-4.7).
  * Command: RUN_SKILL_NOTICE_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/skill-update-notice-live.e2e.test.ts --no-watch
+ * (add AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault when SKILL_NOTICE_E2E_RUNTIMES includes autobyteus)
  */
 type RuntimeKind = "codex_app_server" | "claude_agent_sdk" | "autobyteus" | "grok_build";
 /** Runtimes that append input to an active turn (the busy notice arrives inside the busy turn). */
@@ -90,7 +91,7 @@ suite("active-run skill update notice (live E2E)", () => {
     await fs.writeFile(path.join(appData, ".env"), "AUTOBYTEUS_SERVER_HOST=http://localhost:8000\nAPP_ENV=test\n");
     skillMdPath = path.join(appData, "skills", "notice-probe", "SKILL.md");
     appConfigProvider.config.setCustomAppDataDir(appData);
-    if (runtimes.includes("autobyteus")) await initializeLiveRuntimeSecretVaultFromEnvironment();
+    if (runtimes.includes("autobyteus")) await initializeLiveServerVault();
     const started = await startStudioE2eRuntimeServer();
     url = started.mainUrl;
     close = () => started.fastify.close();
@@ -98,7 +99,7 @@ suite("active-run skill update notice (live E2E)", () => {
 
   afterAll(async () => {
     if (close) await close();
-    if (runtimes.includes("autobyteus")) await closeLiveRuntimeSecretVault();
+    if (runtimes.includes("autobyteus")) await closeLiveServerVault();
     vi.unstubAllEnvs();
     if (root) await fs.rm(root, { recursive: true, force: true });
   });
@@ -112,6 +113,13 @@ suite("active-run skill update notice (live E2E)", () => {
     return body.data;
   };
 
+  /** The default native model is OpenAI's: without its key the case is reported as a skip, never a pass. */
+  const requireNativeKey = async (runtimeKind: RuntimeKind, context: TestContext): Promise<void> => {
+    if (runtimeKind === "autobyteus" && !process.env.SKILL_NOTICE_E2E_NATIVE_MODEL?.trim()) {
+      await requireLiveCapability(context, "provider.openai.api-key");
+    }
+  };
+
   const pickModel = (runtimeKind: RuntimeKind): string => {
     if (runtimeKind === "codex_app_server") return process.env.CODEX_E2E_TOOL_MODEL?.trim() || "gpt-5.6-luna";
     if (runtimeKind === "claude_agent_sdk") return process.env.CLAUDE_E2E_TOOL_MODEL?.trim() || "haiku";
@@ -119,7 +127,8 @@ suite("active-run skill update notice (live E2E)", () => {
     return process.env.SKILL_NOTICE_E2E_NATIVE_MODEL?.trim() || "gpt-5.5";
   };
 
-  it.each(runtimes)("%s: busy and idle runs hear about the skill change and re-read it", async (runtimeKind) => {
+  it.for(runtimes)("%s: busy and idle runs hear about the skill change and re-read it", async (runtimeKind, context) => {
+    await requireNativeKey(runtimeKind, context);
     await fs.writeFile(skillMdPath, skillMd("APPLE-1111"));
     const workspaceRootPath = path.join(root, `workspace-${runtimeKind}`);
     await fs.mkdir(workspaceRootPath, { recursive: true });
@@ -251,7 +260,8 @@ suite("active-run skill update notice (live E2E)", () => {
   // AC-003 on a live runtime whose run memory folder appears only with its first trace (DR-001): the
   // seen record is written once that folder exists; a run stopped and continued after a change gets
   // one notice; a deleted run's memory folder is never re-created by a late record write.
-  it.each(runtimes)("%s: a stopped run continued after a change gets one notice; a deleted run's memory stays deleted", async (runtimeKind) => {
+  it.for(runtimes)("%s: a stopped run continued after a change gets one notice; a deleted run's memory stays deleted", async (runtimeKind, context) => {
+    await requireNativeKey(runtimeKind, context);
     await fs.writeFile(skillMdPath, skillMd("CEDAR-1357"));
     const workspaceRootPath = path.join(root, `workspace-restore-${runtimeKind}`);
     await fs.mkdir(workspaceRootPath, { recursive: true });

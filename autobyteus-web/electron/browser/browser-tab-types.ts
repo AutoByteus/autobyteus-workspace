@@ -4,6 +4,9 @@ import type { BrowserDomSnapshotElement } from './browser-dom-snapshot-script'
 import type { BrowserScreenshotArtifactWriter } from './browser-screenshot-artifact-writer'
 import type { BrowserViewFactory } from './browser-view-factory'
 
+export type BrowserHistoryDirection = 'back' | 'forward'
+export type BrowserHistoryState = { canGoBack: boolean; canGoForward: boolean }
+
 export type BrowserReadyState = 'domcontentloaded' | 'load'
 export type BrowserDeviceEmulationMode = 'desktop' | 'mobile'
 

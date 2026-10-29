@@ -1,4 +1,5 @@
 import { createHash } from "node:crypto";
+import type { CollectionIndexStatus } from "./embedding-readiness.js";
 import type { EmbeddingRunner } from "./runtime/embedding-model-runner.js";
 import type { EmbeddingVectorStore, StoredVector, VectorRow } from "./store/embedding-vector-store.js";
 
@@ -7,6 +8,20 @@ export type CollectionItem = { id: string; text: string };
 
 const BATCH_SIZE = 8;
 type CurrentItem = { text: string; fingerprint: string };
+
+/** The fingerprint of an item's text exactly as embedded (document prefix + text). */
+export const fingerprintOf = (documentPrefix: string, text: string): string =>
+  createHash("sha256").update(documentPrefix + text).digest("hex");
+
+/** Status from fingerprints only: items whose stored fingerprint matches their current text are indexed. */
+export const statusFromFingerprints = (current: ReadonlyMap<string, string>,
+  storedFingerprintOf: (id: string) => string | undefined): CollectionIndexStatus => {
+  const total = current.size;
+  let fresh = 0;
+  for (const [id, fingerprint] of current) if (storedFingerprintOf(id) === fingerprint) fresh++;
+  if (fresh === total) return { state: "ready", total };
+  return fresh === 0 ? { state: "notIndexed", total } : { state: "needsUpdate", changed: total - fresh, total };
+};
 
 /**
  * One collection's index for the active model (owned by `EmbeddingIndex`): the consumer's current item set with each
@@ -22,6 +37,8 @@ export class CollectionIndexingJob {
   private items = new Map<string, CurrentItem>();
   private pending = new Map<string, CurrentItem>();
   private job: Promise<void> | null = null;
+  /** Items embedded by the current run (reset when a run starts); its total is this plus what is still pending. */
+  private runDone = 0;
 
   constructor(
     readonly key: string,
@@ -33,7 +50,18 @@ export class CollectionIndexingJob {
 
   /** The fingerprint of the text exactly as embedded (document prefix + text). */
   fingerprint(text: string): string {
-    return createHash("sha256").update(this.model.documentPrefix + text).digest("hex");
+    return fingerprintOf(this.model.documentPrefix, text);
+  }
+
+  /**
+   * Read-only status for the consumer's current items (`fingerprints`: id → fingerprint for this job's model): the
+   * running or waiting run, else freshness against this job's vectors. Nothing is scheduled.
+   */
+  status(fingerprints: ReadonlyMap<string, string>): CollectionIndexStatus {
+    if (this.pending.size) {
+      return this.job ? { state: "indexing", done: this.runDone, total: this.runDone + this.pending.size } : { state: "waiting", total: this.pending.size };
+    }
+    return statusFromFingerprints(fingerprints, (id) => this.vectors.get(id)?.fingerprint);
   }
 
   /** Takes the complete current item set: removes vectors of absent items and marks missing or changed items pending. */
@@ -77,6 +105,7 @@ export class CollectionIndexingJob {
   start(runner: EmbeddingRunner, isCurrent: () => boolean, onModelFailure: (error: unknown) => void): void {
     if (this.job || !this.pending.size) return;
     const generation = this.generation;
+    this.runDone = 0;
     const job = this.run(runner, generation, isCurrent, onModelFailure).then((finished) => {
       if (this.job !== job) return;
       this.job = null;
@@ -118,6 +147,7 @@ export class CollectionIndexingJob {
         this.vectors.set(row.id, { fingerprint: row.fingerprint, vector: row.vector });
         this.pending.delete(row.id);
       }
+      this.runDone += rows.length;
       this.onProgress();
     }
     return false;

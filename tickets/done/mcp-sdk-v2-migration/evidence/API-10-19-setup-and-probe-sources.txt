@@ -1,0 +1,602 @@
+# API-10..API-19 setup record and temporary probe sources, for repeatability; 2026-10-20T09:18:26Z
+
+== builds (per side: install --frozen-lockfile, server prebuild, autobyteus-ts build, server build, nuxt prepare, build:electron:mac)
+/tmp/mcp182/logs/build-before.log:== 2026-10-20T08:43:16Z side=/Users/normy/autobyteus_org/autobyteus-worktrees/mcp-sdk-v2-migration-parity-before commit=dc530fdcb0e52aa70ce681f33df94c80f5d2334c
+/tmp/mcp182/logs/build-before.log:install exit=0
+/tmp/mcp182/logs/build-before.log:ts build exit=0
+/tmp/mcp182/logs/build-before.log:server build exit=0
+/tmp/mcp182/logs/build-before.log:== 2026-10-20T08:44:07Z electron build
+/tmp/mcp182/logs/build-before.log:electron build exit=0
+/tmp/mcp182/logs/build-before.log:== 2026-10-20T08:50:45Z done
+/tmp/mcp182/logs/build-after.log:== 2026-10-20T08:43:17Z side=/Users/normy/autobyteus_org/autobyteus-worktrees/mcp-sdk-v2-migration commit=9715f94db0b1cea561b567889882e7dab38a1716
+/tmp/mcp182/logs/build-after.log:install exit=0
+/tmp/mcp182/logs/build-after.log:ts build exit=0
+/tmp/mcp182/logs/build-after.log:server build exit=0
+/tmp/mcp182/logs/build-after.log:== 2026-10-20T08:44:01Z electron build
+/tmp/mcp182/logs/build-after.log:electron build exit=0
+/tmp/mcp182/logs/build-after.log:== 2026-10-20T08:50:36Z done
+
+== test-owned server copies (/tmp/mcp182/servers/{before,after})
+video-audio-mcp <- git -C autobyteus_mcps archive a947f1a^ (last version with server.py); ssh-mcp <- autobyteus_mcps HEAD aa09165; yt-dlp-mcp <- autobyteus_private_mcps HEAD 02df7a2; Python fixture <- git archive dc530fdcb0 autobyteus-ts/tests/fixtures/mcp-test-server (identical on the branch)
+uv sync --frozen uvsync-after-mcp-test-server: exit 0
+uv sync --frozen uvsync-after-ssh-mcp: exit 0
+uv sync --frozen uvsync-after-video-audio-mcp: exit 0
+uv sync --frozen uvsync-after-yt-dlp-mcp: exit 0
+uv sync --frozen uvsync-before-mcp-test-server: exit 0
+uv sync --frozen uvsync-before-ssh-mcp: exit 0
+uv sync --frozen uvsync-before-video-audio-mcp: exit 0
+uv sync --frozen uvsync-before-yt-dlp-mcp: exit 0
+python mcp versions: video-audio 1.28.1, ssh-mcp 1.26.0, yt-dlp-mcp 1.26.0, Python fixture 2.3.0
+published servers: npm install @modelcontextprotocol/server-filesystem@2026.8.31 (deps @modelcontextprotocol/sdk ^1.30.0) and @2.0.0 (deps @modelcontextprotocol/server ^2.3.1) into /tmp/mcp182/servers/fs-v1, fs-v2; root /tmp/mcp182/servers/fsroot (a.txt)
+API-06 sources: /tmp/mcp182/mcps-src/{pptx-mcp (autobyteus_mcps HEAD archive), video-audio-mcp, ssh-mcp} (copies without .venv)
+throwaway CODEX_HOME /tmp/mcp182/codex-home: empty config.toml + auth.json symlink (never printed)
+
+== raw-dialect-probe.mjs
+// Temporary API/E2E probe (ticket mcp-sdk-v2-migration, case API-14, RR-001).
+// SDK-independent: speaks raw JSON-RPC over stdio to each real server, so neither SDK's validation can hide anything.
+// Records per server: the protocol version it answers for a 2025-11-25 initialize, its tool count (all pages),
+// and per tool whether it declares an outputSchema and which `$schema` dialect that schema names.
+// Usage: node raw-dialect-probe.mjs <servers.json> <out.json>
+import { spawn } from 'node:child_process';
+import fs from 'node:fs';
+
+const [serversFile, outFile] = process.argv.slice(2);
+const servers = JSON.parse(fs.readFileSync(serversFile, 'utf8'));
+const out = {};
+
+const probe = (id, cfg) => new Promise((resolve) => {
+  const child = spawn(cfg.command, cfg.args ?? [], { env: { ...process.env, ...(cfg.env ?? {}) }, cwd: cfg.cwd, stdio: ['pipe', 'pipe', 'ignore'] });
+  let buf = '';
+  const pending = new Map();
+  let nextId = 1;
+  const timer = setTimeout(() => { child.kill('SIGKILL'); resolve({ error: 'timeout after 120 s' }); }, 120_000);
+  child.stdout.on('data', (d) => {
+    buf += d;
+    let i;
+    while ((i = buf.indexOf('\n')) >= 0) {
+      const line = buf.slice(0, i).trim(); buf = buf.slice(i + 1);
+      if (!line) continue;
+      try { const m = JSON.parse(line); if (m.id !== undefined && pending.has(m.id)) { pending.get(m.id)(m); pending.delete(m.id); } } catch { /* non-JSON line */ }
+    }
+  });
+  child.on('exit', (code) => { clearTimeout(timer); for (const r of pending.values()) r({ error: { message: `exited ${code}` } }); });
+  const rpc = (method, params) => new Promise((r) => { const id = nextId++; pending.set(id, r); child.stdin.write(JSON.stringify({ jsonrpc: '2.0', id, method, params }) + '\n'); });
+  (async () => {
+    const init = await rpc('initialize', { protocolVersion: '2025-11-25', capabilities: {}, clientInfo: { name: 'raw-dialect-probe', version: '1' } });
+    if (init.error) { clearTimeout(timer); child.kill(); resolve({ error: init.error }); return; }
+    child.stdin.write(JSON.stringify({ jsonrpc: '2.0', method: 'notifications/initialized' }) + '\n');
+    const tools = []; let cursor; let pages = 0;
+    do { const r = await rpc('tools/list', cursor ? { cursor } : {}); pages++; tools.push(...(r.result?.tools ?? [])); cursor = r.result?.nextCursor; } while (cursor && pages < 64);
+    clearTimeout(timer); child.kill();
+    const dialects = {};
+    for (const t of tools) { const d = t.outputSchema ? (t.outputSchema.$schema ?? '(no $schema)') : '(no outputSchema)'; dialects[d] = (dialects[d] ?? 0) + 1; }
+    const inputDialects = {};
+    for (const t of tools) { const d = t.inputSchema?.$schema ?? '(no $schema)'; inputDialects[d] = (inputDialects[d] ?? 0) + 1; }
+    resolve({ serverInfo: init.result?.serverInfo, protocolVersion: init.result?.protocolVersion, toolCount: tools.length, pages,
+      outputSchemaDialects: dialects, inputSchemaDialects: inputDialects,
+      toolsWithOutputSchema: tools.filter((t) => t.outputSchema).map((t) => t.name) });
+  })();
+});
+
+for (const [id, cfg] of Object.entries(servers)) {
+  out[id] = await probe(id, cfg);
+  console.log(id, JSON.stringify(out[id]));
+}
+fs.writeFileSync(outFile, JSON.stringify(out, null, 2));
+
+== dialect-servers.json
+{
+  "python_fixture": {"command": "uv", "args": ["--directory", "/tmp/mcp182/servers/after/autobyteus-ts/tests/fixtures/mcp-test-server", "run", "python", "server.py"]},
+  "VideoAudioServer": {"command": "uv", "args": ["--directory", "/tmp/mcp182/servers/after/video-audio-mcp", "run", "server.py"]},
+  "media-downloader": {"command": "/opt/homebrew/bin/uv", "args": ["--directory", "/tmp/mcp182/servers/after/yt-dlp-mcp", "run", "python", "-m", "ytdlp_mcp.server"]},
+  "ssh_remote": {"command": "uv", "args": ["--directory", "/tmp/mcp182/servers/after/ssh-mcp", "run", "python", "-m", "ssh_mcp.server"], "env": {"SSH_MCP_DEFAULT_HOST": "parity-dummy.invalid"}},
+  "fs_v1_2026_8_31": {"command": "node", "args": ["/tmp/mcp182/servers/fs-v1/node_modules/@modelcontextprotocol/server-filesystem/dist/index.js", "/tmp/mcp182/servers/fsroot"]},
+  "fs_v2_2_0_0": {"command": "node", "args": ["/tmp/mcp182/servers/fs-v2/node_modules/@modelcontextprotocol/server-filesystem/dist/index.js", "/tmp/mcp182/servers/fsroot"]},
+  "node_fixture_branch": {"command": "node", "args": ["/Users/normy/autobyteus_org/autobyteus-worktrees/mcp-sdk-v2-migration/autobyteus-ts/tests/fixtures/mcp-stdio-fixture-server.mjs"]}
+}
+
+== timing-probe.mjs
+// Temporary API/E2E probe (ticket mcp-sdk-v2-migration, case API-19, QR-001).
+// Times the changed component directly: one side's built autobyteus-ts (dist) StdioManagedMcpServer /
+// HttpManagedMcpServer connect → listRemoteTools → callTool → close, K times per server.
+// Invoked alternately for before and after so machine load affects both alike.
+// Usage: node timing-probe.mjs <side> <worktree> <tokenHttpUrl> <K> >> out.jsonl
+import path from 'node:path';
+
+const [side, W, httpUrl, K = '5'] = process.argv.slice(2);
+const dist = path.join(W, 'autobyteus-ts/dist/tools/mcp');
+const { StdioManagedMcpServer } = await import(path.join(dist, 'server/stdio-managed-mcp-server.js'));
+const { HttpManagedMcpServer } = await import(path.join(dist, 'server/http-managed-mcp-server.js'));
+const { StdioMcpServerConfig, StreamableHttpMcpServerConfig } = await import(path.join(dist, 'types.js'));
+const S = '/tmp/mcp182/servers';
+const servers = {
+  fs_v1: { kind: 'stdio', cfg: { server_id: 'fs_v1', command: 'node', args: [path.join(S, 'fs-v1/node_modules/@modelcontextprotocol/server-filesystem/dist/index.js'), path.join(S, 'fsroot')] }, call: ['read_text_file', { path: path.join(S, 'fsroot/a.txt') }] },
+  fs_v2: { kind: 'stdio', cfg: { server_id: 'fs_v2', command: 'node', args: [path.join(S, 'fs-v2/node_modules/@modelcontextprotocol/server-filesystem/dist/index.js'), path.join(S, 'fsroot')] }, call: ['read_text_file', { path: path.join(S, 'fsroot/a.txt') }] },
+  python_fixture: { kind: 'stdio', cfg: { server_id: 'py', command: 'uv', args: ['--directory', path.join(S, side, 'autobyteus-ts/tests/fixtures/mcp-test-server'), 'run', 'python', 'server.py'] }, call: ['add', { a: 2, b: 3 }] },
+  VideoAudioServer: { kind: 'stdio', cfg: { server_id: 'va', command: 'uv', args: ['--directory', path.join(S, side, 'video-audio-mcp'), 'run', 'server.py'] }, call: ['get_media_duration', { media_path: path.join(S, 'media/parity-sample.mp4') }] },
+  token_http: { kind: 'http', cfg: { server_id: 'tok', url: httpUrl, token: 'test-dummy' }, call: ['auth_probe', {}] },
+};
+for (let i = 0; i < Number(K); i++) {
+  for (const [id, s] of Object.entries(servers)) {
+    const m = s.kind === 'stdio' ? new StdioManagedMcpServer(new StdioMcpServerConfig(s.cfg)) : new HttpManagedMcpServer(new StreamableHttpMcpServerConfig(s.cfg));
+    const t0 = performance.now(); await m.connect(); const t1 = performance.now();
+    const tools = await m.listRemoteTools(); const t2 = performance.now();
+    const r = await m.callTool(s.call[0], s.call[1]); const t3 = performance.now();
+    await m.close(); const t4 = performance.now();
+    console.log(JSON.stringify({ side, id, i, connectMs: +(t1 - t0).toFixed(1), listMs: +(t2 - t1).toFixed(1), callMs: +(t3 - t2).toFixed(1), closeMs: +(t4 - t3).toFixed(1), tools: tools.length, isError: r.isError ?? false }));
+  }
+}
+process.exit(0);
+
+== compare.mjs
+// Builds the before/after comparison for API-10…API-13 from the harness result files. Usage: node compare.mjs <resultsDir> [prefixBefore] [prefixAfter]
+import fs from 'node:fs';
+import path from 'node:path';
+const dir = process.argv[2];
+const pb = process.argv[3] ?? 'before'; const pa = process.argv[4] ?? 'after';
+const load = (f) => { try { return JSON.parse(fs.readFileSync(path.join(dir, f), 'utf8')); } catch { return null; } };
+const bS = load(`${pb}-servers+gateway.json`), aS = load(`${pa}-servers+gateway.json`);
+const bM = load(`${pb}-matrix+cancel.json`), aM = load(`${pa}-matrix+cancel.json`);
+const side = (s) => String(s ?? '').replaceAll(/\b(BEFORE|AFTER)\b/g, '<SIDE>').replaceAll(/\/(before|after)\//g, '/<side>/').replaceAll(/:(47[12]\d\d)\b/g, ':<port>');
+const same = (x, y) => side(JSON.stringify(x)) === side(JSON.stringify(y));
+const row = (...c) => console.log(`| ${c.join(' | ')} |`);
+console.log(`# before = ${bS?.backend} (${pb}), after = ${aS?.backend} (${pa}); side-specific markers, folders and ports are normalized (<SIDE>, <side>, <port>) before comparing\n`);
+console.log('## Servers: preview and discover (API-10)\n');
+row('Server', 'Preview before', 'Preview after', 'Discover before', 'Discover after', 'stdio starts per preview b/a', 'Preview ms b/a', 'Discover ms b/a', 'Same?');
+row('---', '---', '---', '---', '---', '---', '---', '---', '---');
+for (const id of Object.keys(bS.servers)) {
+  const x = bS.servers[id], y = aS.servers[id];
+  const pv = (p) => p.toolCount !== null ? `${p.toolCount} tools` : side(p.error).replace('Failed to preview tools for MCP server: ', '');
+  const dv = (d) => d.success ? `${d.toolCount} tools` : side(d.message);
+  const st = (p) => Object.values(p.startsDuringPreview ?? {}).join('') || '—';
+  const verdict = same(x.preview.tools, y.preview.tools) && same(x.discover.tools, y.discover.tools) && same(x.preview.error, y.preview.error) && same(x.discover.message, y.discover.message) ? 'Same' : 'Different';
+  row(id, pv(x.preview), pv(y.preview), dv(x.discover), dv(y.discover), `${st(x.preview)}/${st(y.preview)}`, `${x.preview.ms}/${y.preview.ms}`, `${x.discover.ms}/${y.discover.ms}`, verdict);
+}
+console.log(`\n- stdio starts in total (preview + discover): before ${JSON.stringify(bS.stdioStartsAfterServers)}, after ${JSON.stringify(aS.stdioStartsAfterServers)}`);
+console.log(`- requests that reached the other origin of the cross-origin redirect: before ${bS.otherOriginRequests}, after ${aS.otherOriginRequests}`);
+console.log(`- app responsiveness during the hang-at-start preview: before ${JSON.stringify(bS.servers.hang_at_start?.responsiveness)}, after ${JSON.stringify(aS.servers.hang_at_start?.responsiveness)}`);
+console.log(`- bulk import: before ${JSON.stringify(bS.import)}, after ${JSON.stringify(aS.import)}`);
+for (const id of ['token_http', 'same_origin_redirect_http', 'paging_http']) {
+  console.log(`- HTTP requests seen by the instrument during preview of ${id}:\n  - before: ${(bS.servers[id].preview.httpRequests ?? []).map(side).join(' ; ')}\n  - after:  ${(aS.servers[id].preview.httpRequests ?? []).map(side).join(' ; ')}`);
+}
+console.log('\n## /mcp/gateway (API-11)\n');
+for (const c of Object.keys(bS.gateway)) {
+  const x = bS.gateway[c], y = aS.gateway[c];
+  console.log(`### client ${c}\n- tools listed: before ${x.toolCount}, after ${y.toolCount}; only after: ${(y.tools ?? []).filter((t) => !(x.tools ?? []).includes(t)).join(', ') || 'none'}; only before: ${(x.tools ?? []).filter((t) => !(y.tools ?? []).includes(t)).join(', ') || 'none'}`);
+  console.log(`- negotiated: before ${x.negotiated} (${x.era}), after ${y.negotiated} (${y.era}); errors: ${x.error ?? 'none'} / ${y.error ?? 'none'}`);
+  console.log(`- first requests before: ${x.requests.join(' ; ')}\n- first requests after:  ${y.requests.join(' ; ')}`);
+  row('Tool call', 'Before', 'After', 'ms b/a', 'Same?'); row('---', '---', '---', '---', '---');
+  for (const k of Object.keys(x.calls ?? {})) {
+    const p = x.calls[k], q = y.calls[k];
+    const v = (r) => r.notRegistered ? 'not registered' : r.thrown ? `thrown: ${side(r.thrown)}` : `${r.isError ? 'isError ' : ''}${side(r.text).replaceAll('\n', '\\n').slice(0, 90)}${r.structured ? ' + structured' : ''}`;
+    row(k, v(p), v(q), `${p.ms ?? '—'}/${q.ms ?? '—'}`, same({ ...p, ms: 0 }, { ...q, ms: 0 }) ? 'Same' : 'Different');
+  }
+  console.log('');
+}
+if (bM && aM) {
+  console.log('## Agents in the packaged apps (API-12)\n');
+  row('Runtime', 'Model b/a', 'Project tools b/a', 'External stdio (VideoAudioServer) b/a', 'External HTTP (token) b/a', 'External stdio (server-filesystem 2.0.0) b/a', 'Credential on tools/call b/a', 'Turn ms b/a');
+  row('---', '---', '---', '---', '---', '---', '---', '---');
+  for (const r of Object.keys(bM.matrix)) { const x = bM.matrix[r], y = aM.matrix[r]; row(r, `${x.model}/${y.model}`, `${x.columns?.projectTools}/${y.columns?.projectTools}`, `${x.columns?.externalStdio}/${y.columns?.externalStdio}`, `${x.columns?.externalHttp}/${y.columns?.externalHttp}`, `${x.columns?.externalStdioFsV2}/${y.columns?.externalStdioFsV2}`, `${JSON.stringify(x.httpToolCallAuth)}/${JSON.stringify(y.httpToolCallAuth)}`, `${x.turnMs}/${y.turnMs}`); }
+  console.log('\n## Stopping a native run during an external MCP tool call (API-13)\n');
+  for (const [n, c] of [['before', bM.cancel], ['after', aM.cancel]]) console.log(`- ${n}: server saw notifications/cancelled ${c.serverSawCancelledNotificationAfterMs} ms after INTERRUPT_GENERATION; run events: ${c.runEventsAfterInterrupt?.join(', ')}; slow tool completed on the server: ${JSON.stringify(c.slowToolFinishedOnServer)}; HTTP: ${c.httpSequence?.join(' ; ')}`);
+}
+
+== packaged-contents.sh
+#!/bin/bash
+# API-15: packaged app contents for one side. Usage: packaged-contents.sh <worktree> <side>
+W="$1"; side="$2"; R="$W/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server"
+echo "# API-15 $side commit=$(git -C $W rev-parse --short HEAD) $(date -u +%FT%TZ)"
+echo "# server root: <worktree>/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server"
+echo "== @modelcontextprotocol packages (name@version, path relative to server root)"
+find -L "$R/node_modules" -maxdepth 6 -path '*@modelcontextprotocol/*/package.json' -not -path '*/dist/*' 2>/dev/null | while read p; do node -e 'const p=require(process.argv[1]); if(p.name&&p.name.startsWith("@modelcontextprotocol/")) console.log(p.name+"@"+p.version)' "$p" | tr '\n' ' '; echo "${p#$R/}"; done | sort -u | grep -E "^@modelcontextprotocol/[a-z-]+@" | sed 's#/package.json##'
+echo "== v2 runtime dependencies (R-002)"
+for n in jose pkce-challenge eventsource eventsource-parser; do f=$(find -L "$R/node_modules" -maxdepth 5 -path "*/node_modules/$n/package.json" 2>/dev/null | head -1); [ -n "$f" ] && echo "$n@$(node -p "require('$f').version") ${f#$R/}" || echo "$n MISSING"; done
+echo "== resolution from the packaged autobyteus-ts (what the MCP client adapters import)"
+TS=$(find -L "$R/node_modules" -maxdepth 3 -type d -name autobyteus-ts 2>/dev/null | head -1); echo "autobyteus-ts: ${TS#$R/}"
+cd "$TS" && node --input-type=module -e '
+for (const s of ["@modelcontextprotocol/client","@modelcontextprotocol/client/stdio","@modelcontextprotocol/sdk/client/index.js","@modelcontextprotocol/sdk/client/stdio.js"]) {
+  try { const u = import.meta.resolve(s); const m = await import(s); console.log("resolves", s, "->", u.replace(/^.*\/server\//, "<server>/"), "exports Client:", typeof m.Client === "function"); }
+  catch (e) { console.log("does not resolve", s, "-", String(e.code ?? e.message).slice(0, 80)); }
+}'
+echo "== which packages reference @modelcontextprotocol/sdk (dependents in the packaged tree)"
+grep -l '"@modelcontextprotocol/sdk"' $(find -L "$R/node_modules" -maxdepth 4 -name package.json -not -path '*/@modelcontextprotocol/*' 2>/dev/null) 2>/dev/null | sed "s#$R/##" | head -20
+echo "== does the packaged autobyteus-ts dist import the v1 package anywhere"
+grep -rl "@modelcontextprotocol/sdk" "$TS/dist" 2>/dev/null | sed "s#$R/##" | head; echo "(end; empty = none)"
+grep -rho "@modelcontextprotocol/client[a-z/]*" "$TS/dist" 2>/dev/null | sort | uniq -c
+
+== build-side.sh
+#!/bin/bash
+# Build one side: install, core + server build, then packaged electron app.
+set -o pipefail
+W="$1"; LOG="$2"
+cd "$W" || exit 9
+{
+echo "== $(date -u +%FT%TZ) side=$W commit=$(git rev-parse HEAD)"
+pnpm install --frozen-lockfile 2>&1 | tail -15 && echo "install exit=$?"
+pnpm -C autobyteus-server-ts prebuild 2>&1 | tail -3
+pnpm -C autobyteus-ts build 2>&1 | tail -5; echo "ts build exit=${PIPESTATUS[0]}"
+pnpm -C autobyteus-server-ts build 2>&1 | tail -5; echo "server build exit=${PIPESTATUS[0]}"
+pnpm -C autobyteus-web exec nuxt prepare 2>&1 | tail -2
+echo "== $(date -u +%FT%TZ) electron build"
+pnpm -C autobyteus-web build:electron:mac 2>&1 | tail -40; echo "electron build exit=${PIPESTATUS[0]}"
+echo "== $(date -u +%FT%TZ) done"
+} > "$LOG" 2>&1
+
+== docker-build.sh
+#!/bin/bash
+# API-18: build the server image of one side exactly as build.sh does (local arm64, --load), with a test-owned tag.
+W="$1"; side="$2"
+cd "$W" && echo "# API-18 docker build $side commit=$(git rev-parse --short HEAD) $(date -u +%FT%TZ)" && \
+docker buildx build --build-arg CLI_INSTALL_CACHE_BUSTER=mcp182 --load --platform linux/arm64 -f autobyteus-server-ts/docker/Dockerfile.monorepo -t autobyteus-server:mcp182-$side "$W" 2>&1 | tail -25
+echo "build exit=${PIPESTATUS[0]} $(date -u +%FT%TZ)"
+
+== harness/parity-harness.mjs
+// Temporary API/E2E parity harness (ticket mcp-sdk-v2-migration, cases API-10…API-13).
+// Drives ONE packaged isolated AutoByteus instance (before = base dc530fdcb0, SDK 1.32.1; after = branch, client 2.3.1)
+// through its public GraphQL, agent WebSocket and /mcp/gateway only. The instruments (HTTP MCP servers, gateway
+// clients) are the same files on both sides. Dummy values only.
+// Usage: node parity-harness.mjs <side> <backendUrl> <sections comma list: servers,gateway,matrix,cancel> [runtimes comma list]
+// Env: H_SERVERS=/tmp/mcp182/servers  H_OUT=/tmp/mcp182/results
+//      H_V1=<dir of @modelcontextprotocol/sdk 1.32.1>  H_PORT_BASE=<first of 5 fixed ports, so separate invocations reuse the imported URLs>
+import http from 'node:http';
+import fs from 'node:fs';
+import path from 'node:path';
+import { randomUUID } from 'node:crypto';
+
+const [side, BACKEND, sectionArg, runtimeArg] = process.argv.slice(2);
+const SECTIONS = new Set((sectionArg ?? 'servers,gateway').split(','));
+const RUNTIMES = (runtimeArg ?? '').split(',').filter(Boolean);
+const S = process.env.H_SERVERS ?? '/tmp/mcp182/servers';
+const OUT = process.env.H_OUT ?? '/tmp/mcp182/results';
+// v2 packages resolve through ./node_modules (a symlink to the branch's autobyteus-ts/node_modules).
+const { McpServer, Server } = await import('@modelcontextprotocol/server');
+const { NodeStreamableHTTPServerTransport } = await import('@modelcontextprotocol/node');
+const v2c = await import('@modelcontextprotocol/client');
+const { z } = await import('zod');
+const V1 = process.env.H_V1;
+const v1c = await import(path.join(V1, 'dist/esm/client/index.js'));
+const v1h = await import(path.join(V1, 'dist/esm/client/streamableHttp.js'));
+
+const DUMMY = 'test-dummy';
+const SAMPLE = path.join(S, 'media', 'parity-sample.mp4');
+const FSROOT = path.join(S, 'fsroot');
+const STARTS = path.join(OUT, `${side}-stdio-starts`);
+fs.mkdirSync(STARTS, { recursive: true });
+const CWD = fs.realpathSync(fs.mkdtempSync(path.join(OUT, `${side}-cwd-`)));
+const MARKER = `MARKER-PARITY-HTTP-${side.toUpperCase()}`;
+const result = { side, backend: BACKEND, startedAt: new Date().toISOString(), servers: {}, gateway: {}, matrix: {}, cancel: {}, notes: [] };
+const resultFile = path.join(OUT, `${side}-${[...SECTIONS].join('+')}.json`);
+const log = (...a) => console.log(new Date().toISOString().slice(11, 19), ...a);
+const save = () => fs.writeFileSync(resultFile, JSON.stringify(result, null, 2));
+const readBody = async (req) => { let raw = ''; for await (const c of req) raw += c; return raw; };
+let nextPort = Number(process.env.H_PORT_BASE ?? 0);
+const HOSTNAME = process.env.H_HOST ?? '127.0.0.1'; // host.docker.internal for the Docker profile
+const listen = async (srv) => { await new Promise((r) => srv.listen(nextPort ? nextPort++ : 0, '127.0.0.1', r)); return `http://${HOSTNAME}:${srv.address().port}`; };
+
+// ---- instruments: HTTP MCP servers (v2 server packages, identical on both sides) ----
+const obs = []; // every request any instrument server sees
+const record = (server, req, body) => {
+  const msgs = Array.isArray(body) ? body : body ? [body] : [];
+  const o = { t: Date.now(), server, path: req.url, http: req.method, rpc: msgs.map((m) => m.method ?? (m.result ? 'result' : 'response')).join(',') || null,
+    tool: msgs[0]?.params?.name ?? null, auth: req.headers.authorization === undefined ? 'none' : req.headers.authorization === `Bearer ${DUMMY}` ? 'expected' : 'other',
+    pv: req.headers['mcp-protocol-version'] ?? '-' };
+  obs.push(o); return o;
+};
+const slowState = { calls: [] };
+const mcpFor = () => {
+  const mcp = new McpServer({ name: 'parity-http', version: '1' });
+  mcp.registerTool('auth_probe', { description: 'Returns this server\'s marker text. Takes no arguments.' }, async () => ({ content: [{ type: 'text', text: MARKER }] }));
+  mcp.registerTool('slow_probe', { description: 'Waits the given number of seconds, then answers "slow done".', inputSchema: z.object({ seconds: z.number() }) },
+    async ({ seconds }) => {
+      const entry = { startedAt: Date.now(), endedAt: null };
+      slowState.calls.push(entry);
+      await new Promise((r) => setTimeout(r, seconds * 1000));
+      entry.endedAt = Date.now();
+      return { content: [{ type: 'text', text: 'slow done' }] };
+    });
+  return mcp;
+};
+const serveMcp = async (mcp, req, res, body) => {
+  const t = new NodeStreamableHTTPServerTransport({ sessionIdGenerator: undefined });
+  res.on('close', () => { void t.close(); void mcp.close(); });
+  await mcp.connect(t); await t.handleRequest(req, res, body);
+};
+// token server; /mcp-old answers 308 to /mcp (same-origin redirect)
+const tokenSrv = http.createServer(async (req, res) => {
+  const raw = await readBody(req); const body = raw ? JSON.parse(raw) : undefined;
+  const o = record('token', req, body);
+  if (req.url === '/mcp-old') { res.writeHead(308, { location: '/mcp' }).end(); return; }
+  if (o.auth !== 'expected') { res.writeHead(401).end('unauthorized'); return; }
+  if (o.tool === 'slow_probe') { o.slowCall = true; res.on('close', () => { o.closedAt = Date.now(); }); }
+  await serveMcp(mcpFor(), req, res, body);
+});
+const TOKEN = await listen(tokenSrv);
+// paging server (low-level Server, 2 pages)
+const pagingSrv = http.createServer(async (req, res) => {
+  const raw = await readBody(req); const body = raw ? JSON.parse(raw) : undefined; record('paging', req, body);
+  const server = new Server({ name: 'paging', version: '1' }, { capabilities: { tools: {} } });
+  const tool = (name) => ({ name, description: `paged tool ${name}`, inputSchema: { type: 'object' } });
+  server.setRequestHandler('tools/list', async (r) => r.params?.cursor === 'page-two'
+    ? { tools: [tool('page_two_a'), tool('page_two_b')] } : { tools: [tool('page_one_a'), tool('page_one_b')], nextCursor: 'page-two' });
+  await serveMcp(server, req, res, body);
+});
+const PAGING = await listen(pagingSrv);
+// always-401 server
+const unauthSrv = http.createServer(async (req, res) => { const raw = await readBody(req); record('unauth', req, raw ? JSON.parse(raw) : undefined); res.writeHead(401, { 'content-type': 'text/plain' }).end('unauthorized-parity'); });
+const UNAUTH = await listen(unauthSrv);
+// cross-origin: redirector → other origin (other records whether it is reached)
+const otherSrv = http.createServer(async (req, res) => { const raw = await readBody(req); record('other-origin', req, raw ? JSON.parse(raw) : undefined); res.writeHead(500).end('should not be reached'); });
+const OTHER = await listen(otherSrv);
+const redirSrv = http.createServer(async (req, res) => { const raw = await readBody(req); record('redirector', req, raw ? JSON.parse(raw) : undefined); res.writeHead(307, { location: `${OTHER}/mcp` }).end(); });
+const REDIR = await listen(redirSrv);
+
+const gql = async (query, variables, timeoutMs = 300_000) => {
+  const ctl = new AbortController(); const timer = setTimeout(() => ctl.abort(), timeoutMs);
+  try { const res = await fetch(`${BACKEND}/graphql`, { method: 'POST', signal: ctl.signal, headers: { 'content-type': 'application/json' }, body: JSON.stringify({ query, variables }) }); return await res.json(); }
+  finally { clearTimeout(timer); }
+};
+const timed = async (fn) => { const t0 = Date.now(); try { return { ok: true, value: await fn(), ms: Date.now() - t0 }; } catch (e) { return { ok: false, error: String(e?.name === 'AbortError' ? 'client wait limit reached (no response)' : e), ms: Date.now() - t0 }; } };
+const counted = (name, command, args) => ({ command: '/bin/sh', args: ['-c', `echo $$ >> "${path.join(STARTS, name)}"; exec "$0" "$@"`, command, ...args] });
+
+const SERVERS = {
+  python_fixture: { transport_type: 'stdio', ...counted('python_fixture', 'uv', ['--directory', path.join(S, side, 'autobyteus-ts/tests/fixtures/mcp-test-server'), 'run', 'python', 'server.py']),
+    env: { PARITY_ENV_VALUE: 'parity-env-dummy' }, cwd: CWD, tool_name_prefix: 'pyfix' },
+  VideoAudioServer: { transport_type: 'stdio', command: 'uv', args: ['--directory', path.join(S, side, 'video-audio-mcp'), 'run', 'server.py'], tool_name_prefix: 'video_editing' },
+  'media-downloader': { transport_type: 'stdio', command: '/opt/homebrew/bin/uv', args: ['--directory', path.join(S, side, 'yt-dlp-mcp'), 'run', 'python', '-m', 'ytdlp_mcp.server'] },
+  ssh_remote: { transport_type: 'stdio', command: 'uv', args: ['--directory', path.join(S, side, 'ssh-mcp'), 'run', 'python', '-m', 'ssh_mcp.server'], env: { SSH_MCP_DEFAULT_HOST: 'parity-dummy.invalid' } },
+  fs_v1: { transport_type: 'stdio', ...counted('fs_v1', 'node', [path.join(S, 'fs-v1/node_modules/@modelcontextprotocol/server-filesystem/dist/index.js'), FSROOT]), tool_name_prefix: 'fsv1' },
+  fs_v2: { transport_type: 'stdio', ...counted('fs_v2', 'node', [path.join(S, 'fs-v2/node_modules/@modelcontextprotocol/server-filesystem/dist/index.js'), FSROOT]), tool_name_prefix: 'fsv2' },
+  token_http: { transport_type: 'streamable_http', url: `${TOKEN}/mcp`, token: DUMMY, tool_name_prefix: 'parity_http' },
+  same_origin_redirect_http: { transport_type: 'streamable_http', url: `${TOKEN}/mcp-old`, token: DUMMY, tool_name_prefix: 'moved_http' },
+  paging_http: { transport_type: 'streamable_http', url: `${PAGING}/mcp`, tool_name_prefix: 'paging' },
+  unauthorized_http: { transport_type: 'streamable_http', url: `${UNAUTH}/mcp`, token: DUMMY },
+  cross_origin_redirect_http: { transport_type: 'streamable_http', url: `${REDIR}/mcp`, token: DUMMY },
+  exit_at_start: { transport_type: 'stdio', command: 'node', args: ['-e', 'process.exit(1)'] },
+  hang_at_start: { transport_type: 'stdio', command: 'node', args: ['-e', 'setInterval(()=>{},1e9) /* parity-hang */'] },
+};
+const toInput = (id, c) => c.transport_type === 'streamable_http'
+  ? { serverId: id, transportType: 'STREAMABLE_HTTP', enabled: true, toolNamePrefix: c.tool_name_prefix ?? null, streamableHttpConfig: { url: c.url, token: c.token ?? null, headers: null } }
+  : { serverId: id, transportType: 'STDIO', enabled: true, toolNamePrefix: c.tool_name_prefix ?? null, stdioConfig: { command: c.command, args: c.args, env: c.env ?? null, cwd: c.cwd ?? null } };
+// Docker profile (API-18): no uv in the image; only servers the container can start or reach.
+if (process.env.H_SERVER_SET === 'docker') for (const id of ['python_fixture', 'VideoAudioServer', 'media-downloader', 'ssh_remote', 'hang_at_start']) delete SERVERS[id];
+const GW_HEADERS = process.env.H_GATEWAY_TOKEN ? { authorization: `Bearer ${process.env.H_GATEWAY_TOKEN}` } : undefined;
+const PREVIEW = 'query($input: McpServerInput!) { previewMcpServerTools(input: $input) { name } }';
+const IMPORT = 'mutation($j: String!) { importMcpServerConfigs(jsonString: $j) { success message importedCount failedCount } }';
+const DISCOVER = 'mutation($id: String!) { discoverAndRegisterMcpServerTools(serverId: $id) { success message discoveredTools { name } } }';
+const starts = (name) => { try { return fs.readFileSync(path.join(STARTS, name), 'utf8').trim().split('\n').filter(Boolean).length; } catch { return 0; } };
+const httpSeq = (server, from) => obs.slice(from).filter((o) => o.server === server).map((o) => `${o.http} ${o.rpc ?? '-'} pv=${o.pv} auth=${o.auth}${o.path !== '/mcp' ? ' path=' + o.path : ''}`);
+
+try {
+  result.health = (await fetch(`${BACKEND}/rest/health`)).status;
+
+  if (SECTIONS.has('servers')) {
+    // ---- API-10: preview, import, discover each server ----
+    for (const [id, cfg] of Object.entries(SERVERS)) {
+      const mark = obs.length; const s0 = Object.fromEntries(['python_fixture', 'fs_v1', 'fs_v2'].map((n) => [n, starts(n)]));
+      let responsiveness = null;
+      const p0 = timed(async () => gql(PREVIEW, { input: toInput(id, cfg) }, id === 'hang_at_start' ? 150_000 : 300_000));
+      if (id === 'hang_at_start') {
+        await new Promise((r) => setTimeout(r, 5_000));
+        const h = await timed(async () => (await fetch(`${BACKEND}/rest/health`)).status);
+        const q = await timed(async () => (await gql('query { mcpServers { __typename } }', {}, 10_000)).data ? 'ok' : 'error');
+        responsiveness = { healthDuringHang: h, graphqlDuringHang: q };
+      }
+      const p = await p0;
+      const tools = p.ok ? p.value?.data?.previewMcpServerTools?.map((t) => t.name) ?? null : null;
+      const startsDuringPreview = Object.fromEntries(Object.entries(s0).map(([n, v]) => [n, starts(n) - v]).filter(([, v]) => v));
+      result.servers[id] = { preview: { ms: p.ms, toolCount: tools?.length ?? null, tools, error: p.ok ? p.value?.errors?.[0]?.message ?? null : p.error, startsDuringPreview,
+        httpRequests: cfg.url ? obs.slice(mark).map((o) => `${o.server} ${o.http} ${o.rpc ?? '-'} pv=${o.pv} auth=${o.auth} path=${o.path}`) : undefined }, responsiveness };
+      log(`preview ${id}: ${tools ? tools.length + ' tools' : 'error ' + String(result.servers[id].preview.error).slice(0, 200)} in ${p.ms} ms`);
+      save();
+    }
+    const imp0 = await gql(IMPORT, { j: JSON.stringify({ mcpServers: SERVERS }) });
+    result.import = imp0.data?.importMcpServerConfigs ?? imp0.errors;
+    log('import', JSON.stringify(result.import));
+    for (const id of Object.keys(SERVERS)) {
+      const mark = obs.length;
+      const d = await timed(async () => gql(DISCOVER, { id }, id === 'hang_at_start' ? 150_000 : 300_000));
+      const v = d.ok ? d.value?.data?.discoverAndRegisterMcpServerTools : null;
+      result.servers[id].discover = { ms: d.ms, success: v?.success ?? null, toolCount: v?.discoveredTools?.length ?? null, tools: v?.discoveredTools?.map((t) => t.name) ?? null,
+        message: v?.message ?? (d.ok ? JSON.stringify(d.value?.errors) : d.error), httpRequests: SERVERS[id].url ? obs.slice(mark).map((o) => `${o.server} ${o.http} ${o.rpc ?? '-'} pv=${o.pv} auth=${o.auth} path=${o.path}`) : undefined };
+      log(`discover ${id}: ${JSON.stringify(result.servers[id].discover).slice(0, 220)}`);
+      save();
+    }
+    result.otherOriginRequests = obs.filter((o) => o.server === 'other-origin').length;
+    result.stdioStartsAfterServers = Object.fromEntries(['python_fixture', 'fs_v1', 'fs_v2'].map((n) => [n, starts(n)]));
+    result.health_after_servers = (await fetch(`${BACKEND}/rest/health`)).status;
+  }
+
+  if (SECTIONS.has('gateway')) {
+    // ---- API-11: /mcp/gateway with v1 1.32.1, v2 default and v2 auto clients ----
+    const CALLS = [
+      ['parity_http_auth_probe', {}],
+      ['moved_http_auth_probe', {}],
+      ['video_editing_get_media_duration', { media_path: SAMPLE }],
+      ['fsv1_read_text_file', { path: path.join(FSROOT, 'a.txt') }],
+      ['fsv2_read_text_file', { path: path.join(FSROOT, 'a.txt') }],
+      ['fsv2_list_allowed_directories', {}],
+      ['pyfix_echo', { text: 'parity-echo' }],
+      ['pyfix_add', { a: 2, b: 3 }],
+      ['pyfix_fail', { message: 'parity-tool-error' }],
+      ['pyfix_report_env_and_cwd', { name: 'PARITY_ENV_VALUE' }],
+    ];
+    const clients = {
+      v1_1_32_1: () => ({ client: new v1c.Client({ name: 'parity-gateway-v1', version: '1' }), transport: (f) => new v1h.StreamableHTTPClientTransport(new URL(`${BACKEND}/mcp/gateway`), { fetch: f, requestInit: { headers: GW_HEADERS } }) }),
+      v2_default: () => ({ client: new v2c.Client({ name: 'parity-gateway-v2', version: '1' }), transport: (f) => new v2c.StreamableHTTPClientTransport(new URL(`${BACKEND}/mcp/gateway`), { fetch: f, requestInit: { headers: GW_HEADERS } }) }),
+      v2_auto: () => ({ client: new v2c.Client({ name: 'parity-gateway-v2auto', version: '1' }, { versionNegotiation: { mode: 'auto' } }), transport: (f) => new v2c.StreamableHTTPClientTransport(new URL(`${BACKEND}/mcp/gateway`), { fetch: f, requestInit: { headers: GW_HEADERS } }) }),
+    };
+    for (const [label, make] of Object.entries(clients)) {
+      const seen = [];
+      const f = async (url, init) => {
+        let method = '-'; try { method = JSON.parse(init?.body ?? 'null')?.method ?? '-'; } catch { /* */ }
+        const h = new Headers(init?.headers); const res = await fetch(url, init);
+        seen.push(`${init?.method ?? 'GET'} ${method} pv=${h.get('mcp-protocol-version') ?? '-'} -> ${res.status}`); return res;
+      };
+      const g = { };
+      result.gateway[label] = g;
+      try {
+        const { client, transport } = make();
+        const c = await timed(() => client.connect(transport(f)));
+        if (!c.ok) throw new Error(`connect: ${c.error}`);
+        g.connectMs = c.ms;
+        g.negotiated = typeof client.getNegotiatedProtocolVersion === 'function' ? client.getNegotiatedProtocolVersion() : null;
+        g.era = typeof client.getProtocolEra === 'function' ? client.getProtocolEra() : null;
+        const l = await timed(() => client.listTools());
+        g.listMs = l.ms; g.toolCount = l.value?.tools?.length ?? null; g.listError = l.ok ? null : l.error;
+        g.tools = l.value?.tools?.map((t) => t.name).sort() ?? null;
+        g.calls = {};
+        for (const [name, args] of CALLS) {
+          if (g.tools && !g.tools.includes(name)) { g.calls[name] = { notRegistered: true }; continue; }
+          const r = await timed(() => client.callTool({ name, arguments: args }));
+          g.calls[name] = r.ok ? { ms: r.ms, isError: r.value.isError ?? false, text: (r.value.content ?? []).map((x) => x.text ?? `[${x.type}]`).join('').slice(0, 300), structured: r.value.structuredContent ?? null }
+            : { ms: r.ms, thrown: r.error.slice(0, 300) };
+        }
+        await client.close();
+      } catch (e) { g.error = String(e).slice(0, 400); }
+      g.requests = seen.slice(0, 6);
+      log(`gateway ${label}: tools ${g.toolCount} negotiated ${g.negotiated} ${g.error ?? ''}`);
+      save();
+    }
+  }
+
+  // ---- shared agent helpers (API-12, API-13) ----
+  const KIND = { native: 'autobyteus', claude: 'claude_agent_sdk', codex: 'codex_app_server', agy: 'antigravity_cli', grok: 'grok_build' };
+  const CONFIG = { native: { temperature: 0 }, codex: { reasoning_effort: 'low' } };
+  const pickModel = async (runtime) => {
+    if (runtime === 'native') {
+      const c = await gql('mutation($p: String!, $r: String) { ensureProviderModelCatalog(providerId: $p, runtimeKind: $r) { llmModels { modelIdentifier } } }', { p: 'LMSTUDIO', r: 'autobyteus' });
+      return c.data?.ensureProviderModelCatalog?.llmModels?.map((m) => m.modelIdentifier).find((m) => m.includes('qwen3.6-35b-a3b')) ?? null;
+    }
+    const s = await gql('query($r: String) { providerModelCatalogSnapshots(runtimeKind: $r) { llmModels { modelIdentifier } } }', { r: KIND[runtime] });
+    const models = (s.data?.providerModelCatalogSnapshots ?? []).flatMap((p) => p.llmModels.map((m) => m.modelIdentifier));
+    const pref = { claude: ['haiku'], codex: ['gpt-5.6-luna'], agy: ['gemini-3.8-flash-low'], grok: [] }[runtime];
+    return pref.find((m) => models.includes(m)) ?? models.find((m) => /flash|mini|fast|luna|haiku/i.test(m)) ?? models[0] ?? null;
+  };
+  const startRun = async (runtime, tools, instructions) => {
+    const model = await pickModel(runtime);
+    if (!model) return { error: 'no model listed for this runtime' };
+    const def = await gql('mutation($input: CreateAgentDefinitionInput!) { createAgentDefinition(input: $input) { id } }', { input: {
+      name: `parity-${runtime}-${side}-${randomUUID().slice(0, 6)}`, role: 'assistant', category: 'runtime-e2e', description: 'MCP SDK parity probe agent.', toolNames: tools, instructions } });
+    const ws = path.join(OUT, 'workspaces', `${side}-${runtime}-${randomUUID().slice(0, 6)}`); fs.mkdirSync(ws, { recursive: true });
+    const run = await gql('mutation($input: CreateAgentRunInput!) { createAgentRun(input: $input) { success message runId } }', { input: {
+      agentDefinitionId: def.data?.createAgentDefinition?.id, workspaceRootPath: ws, llmModelIdentifier: model, llmConfig: CONFIG[runtime] ?? null, autoExecuteTools: true, runtimeKind: KIND[runtime] } });
+    if (!run.data?.createAgentRun?.success) return { model, error: `createAgentRun: ${run.data?.createAgentRun?.message ?? JSON.stringify(run.errors)}` };
+    const runId = run.data.createAgentRun.runId;
+    const socket = new WebSocket(`${BACKEND.replace('http', 'ws')}/ws/agent/${runId}`);
+    const msgs = [];
+    socket.onmessage = (ev) => { try { const m = JSON.parse(String(ev.data)); if (typeof m.type === 'string') msgs.push({ t: Date.now(), type: m.type, payload: m.payload ?? {} }); } catch { /* */ } };
+    await new Promise((r, j) => { socket.onopen = r; socket.onerror = j; });
+    const send = (content) => { const id = `e2e-${randomUUID()}`; socket.send(JSON.stringify({ type: 'SEND_MESSAGE', payload: { message_id: id, dedupe_key: `agent_run_input:e2e:${id}`, context_file_paths: [], image_urls: [], agent_run_id: runId, content } })); };
+    return { model, runId, socket, msgs, send };
+  };
+  const norm = (n) => String(n ?? '').split('__').at(-1);
+  const terminate = async (runId) => gql('mutation($id: String!) { terminateAgentRun(agentRunId: $id) { success } }', { id: runId }).catch(() => undefined);
+
+  if (SECTIONS.has('matrix')) {
+    // ---- API-12: agent per runtime calls project tools, an external stdio tool and an external HTTP tool ----
+    const project = (await gql('mutation($input: CreateProjectInput!) { createProject(input: $input) { projectId name } }',
+      { input: { name: `Parity probe ${side}`, description: 'Test-owned project for the MCP SDK parity matrix.' } })).data?.createProject;
+    const TOOLS = ['create_task', 'update_task', 'video_editing_get_media_duration', 'parity_http_auth_probe', 'fsv2_read_text_file'];
+    for (const runtime of RUNTIMES) {
+      const cell = { runtime }; result.matrix[runtime] = cell;
+      try {
+        const marker = `Parity probe ${runtime} ${side} ${randomUUID().slice(0, 8)}`;
+        const r = await startRun(runtime, TOOLS, 'You are a tool-calling test agent. Follow the user\'s numbered steps exactly, calling each named tool exactly once with the given arguments, in order. Do not call other tools or explore the environment. Then reply FINISHED.');
+        cell.model = r.model;
+        if (r.error) { cell.status = 'not run'; cell.reason = r.error; save(); continue; }
+        const httpMark = obs.length;
+        r.send([
+          `1. Call create_task with project_id "${project.projectId}" and description "${marker}".`,
+          '2. Call update_task with the task_id that step 1 returned and status "DONE".',
+          `3. Call video_editing_get_media_duration with media_path "${SAMPLE}".`,
+          '4. Call parity_http_auth_probe with no arguments.',
+          `5. Call fsv2_read_text_file with path "${path.join(FSROOT, 'a.txt')}".`,
+          'Then reply with the single word FINISHED.',
+        ].join('\n'));
+        const t0 = Date.now();
+        while (Date.now() - t0 < 420_000 && !r.msgs.some((m) => m.type === 'TURN_COMPLETED' || m.type === 'ERROR')) await new Promise((x) => setTimeout(x, 250));
+        cell.turnMs = Date.now() - t0;
+        cell.turnCompleted = r.msgs.some((m) => m.type === 'TURN_COMPLETED');
+        cell.errors = r.msgs.filter((m) => m.type === 'ERROR').map((m) => String(m.payload.message ?? m.payload.code ?? '').slice(0, 300));
+        const toolEvents = r.msgs.filter((m) => /^TOOL_EXECUTION_(SUCCEEDED|FAILED)$/.test(m.type)).map((m) => ({ type: m.type, tool: norm(m.payload.tool_name) }));
+        cell.toolEvents = toolEvents;
+        const ok = (t) => toolEvents.some((e) => e.tool === t && e.type === 'TOOL_EXECUTION_SUCCEEDED');
+        const wire = JSON.stringify(r.msgs);
+        const tasks = (await gql('query($p: String!) { projectTasks(projectId: $p) { taskKey description status } }', { p: project.projectId })).data?.projectTasks ?? [];
+        const task = tasks.find((t) => t.description === marker);
+        const httpCalls = obs.slice(httpMark).filter((o) => o.server === 'token' && o.rpc === 'tools/call');
+        cell.columns = {
+          projectTools: ok('create_task') && ok('update_task') && task?.status === 'DONE' ? 'pass' : 'fail',
+          externalStdio: ok('video_editing_get_media_duration') && wire.includes('62.31') ? 'pass' : 'fail',
+          externalHttp: ok('parity_http_auth_probe') && wire.includes(MARKER) && httpCalls.length > 0 && httpCalls.every((o) => o.auth === 'expected') ? 'pass' : 'fail',
+          externalStdioFsV2: ok('fsv2_read_text_file') && wire.includes('hello from the parity fsroot') ? 'pass' : 'fail',
+        };
+        cell.taskStatus = task?.status ?? null;
+        cell.httpToolCallAuth = httpCalls.map((o) => o.auth);
+        cell.dummyOnWire = wire.includes(DUMMY);
+        cell.status = 'run';
+        r.socket.close(); await terminate(r.runId);
+        log(`matrix ${runtime}: ${JSON.stringify(cell.columns)} turn ${cell.turnMs} ms`);
+      } catch (e) { cell.status = 'fail'; cell.reason = String(e); log(`matrix ${runtime}: error ${e}`); }
+      save();
+    }
+  }
+
+  if (SECTIONS.has('cancel')) {
+    // ---- API-13: stop a native run while an external HTTP MCP tool call runs ----
+    const c = result.cancel;
+    try {
+      const r = await startRun('native', ['parity_http_slow_probe'], 'You are a tool-calling test agent. When asked, call the named tool once with the given arguments. Do not call other tools.');
+      c.model = r.model;
+      if (r.error) throw new Error(r.error);
+      const mark = obs.length; const slowMark = slowState.calls.length;
+      r.send('Call parity_http_slow_probe with seconds 120. Then reply DONE.');
+      const t0 = Date.now();
+      let callObs = null;
+      while (Date.now() - t0 < 300_000 && !(callObs = obs.slice(mark).find((o) => o.slowCall))) await new Promise((x) => setTimeout(x, 100));
+      if (!callObs) throw new Error('the slow tool call never reached the server');
+      c.callReachedServerAfterMs = callObs.t - t0;
+      await new Promise((x) => setTimeout(x, 3_000));
+      const tInt = Date.now();
+      r.socket.send(JSON.stringify({ type: 'INTERRUPT_GENERATION', payload: { command_id: randomUUID() } }));
+      const deadline = tInt + 60_000;
+      const ended = () => r.msgs.some((m) => m.t >= tInt && /^(TURN_INTERRUPTED|TURN_COMPLETED|TOOL_EXECUTION_(INTERRUPTED|FAILED|SUCCEEDED))$/.test(m.type));
+      while (Date.now() < deadline && !(ended() && (obs.slice(mark).some((o) => o.rpc === 'notifications/cancelled') || callObs.closedAt))) await new Promise((x) => setTimeout(x, 100));
+      await new Promise((x) => setTimeout(x, 1_000));
+      const cancelled = obs.slice(mark).find((o) => o.rpc === 'notifications/cancelled');
+      c.serverSawCancelledNotificationAfterMs = cancelled ? cancelled.t - tInt : null;
+      c.slowCallHttpClosedAfterMs = callObs.closedAt ? callObs.closedAt - tInt : null;
+      c.runEventsAfterInterrupt = r.msgs.filter((m) => m.t >= tInt && /^(TURN_|TOOL_EXECUTION_|AGENT_COMMAND_ACK|ERROR)/.test(m.type)).map((m) => `${m.type}${m.payload.tool_name ? ' ' + norm(m.payload.tool_name) : ''} +${m.t - tInt}ms`);
+      c.slowToolFinishedOnServer = slowState.calls.slice(slowMark).map((e) => e.endedAt !== null);
+      c.httpSequence = httpSeq('token', mark);
+      r.socket.close(); await terminate(r.runId);
+      log('cancel', JSON.stringify(c));
+    } catch (e) { c.error = String(e); log('cancel error', String(e)); }
+    save();
+  }
+} catch (e) {
+  result.error = String(e?.stack ?? e);
+} finally {
+  result.instrumentRequestSummary = { total: obs.length, authValues: [...new Set(obs.filter((o) => o.server === 'token').map((o) => o.auth))] };
+  result.finishedAt = new Date().toISOString();
+  save();
+  for (const s of [tokenSrv, pagingSrv, unauthSrv, otherSrv, redirSrv]) { s.closeAllConnections(); s.close(); }
+  log('done', resultFile);
+}
+
+== harness/token-server.mjs
+// Constant instrument for API-19: streamable HTTP MCP server requiring Bearer test-dummy, tool auth_probe. Prints its URL.
+import http from 'node:http';
+import { McpServer } from '@modelcontextprotocol/server';
+import { NodeStreamableHTTPServerTransport } from '@modelcontextprotocol/node';
+const srv = http.createServer(async (req, res) => {
+  let raw = ''; for await (const c of req) raw += c;
+  if (req.headers.authorization !== 'Bearer test-dummy') { res.writeHead(401).end('unauthorized'); return; }
+  const mcp = new McpServer({ name: 'timing-http', version: '1' });
+  mcp.registerTool('auth_probe', { description: 'marker' }, async () => ({ content: [{ type: 'text', text: 'MARKER-TIMING' }] }));
+  const t = new NodeStreamableHTTPServerTransport({ sessionIdGenerator: undefined });
+  res.on('close', () => { void t.close(); void mcp.close(); });
+  await mcp.connect(t); await t.handleRequest(req, res, raw ? JSON.parse(raw) : undefined);
+});
+srv.listen(47300, '127.0.0.1', () => console.log('http://127.0.0.1:47300/mcp'));

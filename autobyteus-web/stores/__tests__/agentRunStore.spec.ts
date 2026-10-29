@@ -350,16 +350,6 @@ describe('agentRunStore', () => {
         );
     });
 
-    it('sendUserInputAndSubscribe omits stale Skill Improvement launch overrides when preparing a new run', async () => {
-        mockAgentContext.config.skillImprovement = { enabled: true };
-        const store = useAgentRunStore();
-
-        await store.sendUserInputAndSubscribe();
-
-        const input = mutateMock.mock.calls[0][0].variables.input;
-        expect(input).not.toHaveProperty('skillImprovement');
-    });
-
     it('acknowledges a new agent send locally before backend creation resolves', () => {
         let resolveCreate: (value: any) => void = () => {};
         mutateMock.mockReturnValueOnce(new Promise((resolve) => {

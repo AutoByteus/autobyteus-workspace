@@ -21,7 +21,7 @@ const team: TaskExecutionReference = { teamRunId: "review-team" };
 const worker: TaskExecutionReference = { agentRunId: "worker" };
 const subWork: TaskExecutionReference = { agentRunId: "sub-work" };
 
-/** The Task side of assigning a new Task to an existing copy: one current Task per copy, history kept (SR-006). */
+/** The Task side of assigning a new Task to an existing copy: its current Task is its newest open one, history kept (SR-006; task-agent-several-tasks). */
 describe("existing-copy assignment on the Task side", () => {
   let appData: string, layout: ProjectsLayout, adHocLayout: AdHocTasksLayout, store: ProjectStore, projectId: string;
   let tasks: ProjectTaskService, release: ReturnType<typeof vi.fn<TaskExecutionReleaseRequest>>;
@@ -40,8 +40,8 @@ describe("existing-copy assignment on the Task side", () => {
   const released = () => release.mock.calls.flatMap(([, executions]) => executions);
   /** Task A delegated by `manager` to the Team copy (started), then A DONE; Task B created. */
   const teamDidA = async () => {
-    const a = (await tasks.createTask({ projectId, description: "Lazy member activation" })).taskId;
-    const b = (await tasks.createTask({ projectId, description: "Follow-up cleanup" })).taskId;
+    const a = (await tasks.createTask({ projectId, title: "Lazy member activation", description: "Lazy member activation" })).taskId;
+    const b = (await tasks.createTask({ projectId, title: "Follow-up cleanup", description: "Follow-up cleanup" })).taskId;
     await tasks.linkNewTaskExecution({ role: "assigned", taskId: a, assignedBy: "manager", recipientAddress: "/review_team", hostRoot, execution: team, teamCoordinatorAgentRunId: "lead" });
     await tasks.markStarted(team);
     await setStatus(a, "DONE");
@@ -97,16 +97,16 @@ describe("existing-copy assignment on the Task side", () => {
     await setStatus(b, "DONE");
     expect(released()).toEqual([team]);
     expect(tasks.closedTaskExecutionsIn(hostRoot)).toEqual([team]);
-    // A repeated DONE of B re-requests the stop; a DONE of A still never does.
+    // With no open Task left, a repeated DONE of B, or of A, re-requests the stop (harmless: it is already stopped).
+    release.mockClear();
+    await setStatus(b, "DONE");
+    expect(released()).toEqual([team]);
     release.mockClear();
     await setStatus(a, "DONE");
-    expect(released()).toEqual([]);
-    await setStatus(b, "DONE");
     expect(released()).toEqual([team]);
   });
 
   it.each([
-    ["the copy's current Task is still open (AC-006)", async (f: { a: string }) => { await setStatus(f.a, "IN_PROGRESS"); await tasks.reopenAssignment({ execution: team, requestedBy: "manager" }); }, "manager", "TASK_AGENT_RESOURCE_CONFLICT", "This task agent still works on Task"],
     ["another run assigns it (AC-007, QR-002)", async () => undefined, "intruder", "TASK_AGENT_RESOURCE_CONFLICT", "Only the agent that gave this task agent its most recent Task"],
     ["Task B is DONE (AC-009)", async (f: { b: string }) => { await setStatus(f.b, "DONE"); }, "manager", "TASK_AGENT_RESOURCE_CLOSED", "The Task is DONE"],
     ["Task B is CANCELLED (AC-009)", async (f: { b: string }) => { await setStatus(f.b, "CANCELLED"); }, "manager", "TASK_AGENT_RESOURCE_CLOSED", "The Task is CANCELLED"],
@@ -120,24 +120,32 @@ describe("existing-copy assignment on the Task side", () => {
     expect(await fs.readdir(path.join(layout.tasksDir(projectId), path.basename(path.dirname(layout.taskExecutionResourcesFile(projectId, f.b)))))).toEqual(before);
   });
 
-  it("names the open Task and its status when the copy is busy (REQ-005)", async () => {
+  it("gives B while A is still open; the copy then holds both, and its other open Tasks are named by key (task-agent-several-tasks REQ-001, REQ-002)", async () => {
     const { a, b } = await teamDidA();
     await setStatus(a, "IN_PROGRESS");
     await tasks.reopenAssignment({ execution: team, requestedBy: "manager" });
-    await expect(tasks.assertAssignable({ execution: team, requestedBy: "manager", taskId: b })).rejects.toMatchObject({
-      message: "This task agent still works on Task p-1 (IN_PROGRESS). Set it to DONE or CANCELLED first, or delegate Task p-2 to a new task agent with recipient_address." });
-    expect(a).not.toBe("p-1");
+    await tasks.assertAssignable({ execution: team, requestedBy: "manager", taskId: b });
+    expect(await tasks.openTaskReferencesOf(team, b)).toEqual(["p-1"]);
+    await assign(b);
+    await tasks.markStarted(team);
+    expect(tasks.ownerOf([team])).toEqual({ taskId: b, execution: team, open: true });
+    expect(await tasks.openTaskReferencesOf(team, b)).toEqual(["p-1"]);
+    expect(await tasks.openTaskReferencesOf(team, a)).toEqual(["p-2"]);
+    // Both Tasks show the copy (REQ-003).
+    for (const taskId of [a, b]) {
+      expect((await tasks.readTaskChangeView({ projectId, taskId }))?.task.root).toMatchObject({ teamRunId: "review-team", closed: false });
+    }
+    // A Task the copy already holds open is refused by the commit.
+    await expect(assign(a)).rejects.toMatchObject({ code: "TASK_AGENT_RESOURCE_CONFLICT", message: "This task agent already works on this Task." });
   });
 
-  it("names a deleted current Task \"a deleted Task\" and never a long ID (AC-023, DEC-013)", async () => {
+  it("leaves a deleted open Task out of the names, never showing a long ID (AC-023, DEC-013)", async () => {
     const { a, b } = await teamDidA();
     await setStatus(a, "IN_PROGRESS");
     await tasks.reopenAssignment({ execution: team, requestedBy: "manager" });
     await tasks.deleteTask({ projectId, taskId: a });
-    const refusal = await tasks.assertAssignable({ execution: team, requestedBy: "manager", taskId: b }).catch((error: Error) => error);
-    expect(refusal).toMatchObject({ code: "TASK_AGENT_RESOURCE_CONFLICT",
-      message: "This task agent still works on a deleted Task. Set it to DONE or CANCELLED first, or delegate Task p-2 to a new task agent with recipient_address." });
-    expect((refusal as Error).message).not.toContain("project_task_");
+    await tasks.assertAssignable({ execution: team, requestedBy: "manager", taskId: b });
+    expect(await tasks.openTaskReferencesOf(team, b)).toEqual([]);
   });
 
   it("refuses unknown and ambiguous Tasks, a copy whose latest assignment is already B, a never-started copy, and sub-work (AC-008/009)", async () => {
@@ -148,7 +156,7 @@ describe("existing-copy assignment on the Task side", () => {
     await expect(tasks.assertAssignable({ execution: team, requestedBy: "manager", taskId: a })).rejects.toMatchObject({
       code: "TASK_AGENT_RESOURCE_CONFLICT", message: expect.stringContaining("This task agent already has Task p-1. To continue it, set Task p-1 to TODO or IN_PROGRESS, then message the task agent's run id") });
     // A copy that never started (its only start failed) has no conversation to resume.
-    const c = (await tasks.createTask({ projectId, description: "C" })).taskId;
+    const c = (await tasks.createTask({ projectId, title: "C", description: "C" })).taskId;
     await tasks.linkNewTaskExecution({ role: "assigned", taskId: c, assignedBy: "manager", recipientAddress: "/w", hostRoot, execution: worker });
     await tasks.markFailed(worker, { code: "TASK_DISPATCH_FAILED", message: "start failed" });
     await setStatus(c, "CANCELLED");
@@ -166,7 +174,7 @@ describe("existing-copy assignment on the Task side", () => {
 
   it("refuses while any Task's data is unreadable (REQ-005, AR-004)", async () => {
     const { b } = await teamDidA();
-    const z = (await tasks.createTask({ projectId, description: "Z" })).taskId;
+    const z = (await tasks.createTask({ projectId, title: "Z", description: "Z" })).taskId;
     await fs.mkdir(path.dirname(layout.taskExecutionResourcesFile(projectId, z)), { recursive: true });
     await fs.writeFile(layout.taskExecutionResourcesFile(projectId, z), "{ truncated");
     vi.spyOn(console, "error").mockImplementation(() => undefined);
@@ -221,8 +229,8 @@ describe("existing-copy assignment on the Task side", () => {
 
   it("a DONE of A and the assignment of B never leave two open entries, in either order (QR-001)", async () => {
     for (const order of ["done-first", "assign-first"] as const) {
-      const a = (await tasks.createTask({ projectId, description: `A ${order}` })).taskId;
-      const b = (await tasks.createTask({ projectId, description: `B ${order}` })).taskId;
+      const a = (await tasks.createTask({ projectId, title: `A ${order}`, description: `A ${order}` })).taskId;
+      const b = (await tasks.createTask({ projectId, title: `B ${order}`, description: `B ${order}` })).taskId;
       const copy = { agentRunId: `copy-${order}` };
       await tasks.linkNewTaskExecution({ role: "assigned", taskId: a, assignedBy: "manager", recipientAddress: "/w", hostRoot, execution: copy });
       await tasks.markStarted(copy);

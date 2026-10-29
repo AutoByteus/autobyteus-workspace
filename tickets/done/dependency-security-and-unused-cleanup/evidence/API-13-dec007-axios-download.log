@@ -1,0 +1,8 @@
+# API-13 DEC-007 at run time: DownloadMediaTool integration file on axios 1.20.0, commit 10126a016a: the public PDF case and the local-server case, with a local server answering 'content-type: image/png; charset=binary'; 2026-10-20T18:46:27Z
+# cmd: env -i PATH HOME=<temp> TMPDIR AUTOBYTEUS_MEDIA_LOCAL_BASE_URL=http://127.0.0.1:47620 pnpm -C autobyteus-ts exec vitest run tests/integration/tools/multimedia/download-media-tool.test.ts --reporter=verbose
+ ✓ tests/integration/tools/multimedia/download-media-tool.test.ts > DownloadMediaTool integration > downloads local media file: test-image 36ms
+ ✓ tests/integration/tools/multimedia/download-media-tool.test.ts > DownloadMediaTool integration > downloads a public PDF 326ms
+      Tests  2 passed (2)
+== local server requests
+READY
+REQ GET /rest/files/images/nice_image.png

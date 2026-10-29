@@ -1,0 +1,189 @@
+# Case: API-05 full server e2e suite on SDK 1.32.1
+# Command: env -i PATH="$PATH" HOME=<resolved temp> TMPDIR="$TMPDIR" pnpm test:e2e
+# Commit: c7f0c18fdc (source = 4923d179c1) + the API/E2E test changes; core + server built at c7f0c18fdc
+# Environment: macOS 26, node 22, pnpm 10.28.2; gated suites skip without their RUN_* gates (a skip is not a pass)
+# Date: 2026-10-19
+# Excerpt: per-file result lines and the summary (the full log, about 646 KB of test stdout, is not committed)
+
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts (14 tests) 7414ms
+ ↓ tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts (21 tests | 21 skipped)
+ ↓ tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts (36 tests | 36 skipped)
+ ↓ tests/e2e/runtime/codex-team-inter-agent-roundtrip.e2e.test.ts (5 tests | 5 skipped)
+ ↓ tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts (9 tests | 9 skipped)
+ ✓ tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts (4 tests) 16043ms
+ ↓ tests/e2e/runtime/claude-team-inter-agent-roundtrip.e2e.test.ts (5 tests | 5 skipped)
+ ↓ tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts (7 tests | 7 skipped)
+ ↓ tests/e2e/runtime/mixed-task-delegation.e2e.test.ts (4 tests | 4 skipped)
+ ✓ tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts (10 tests | 2 skipped) 16204ms
+ ↓ tests/e2e/runtime/agy-runtime-stop-recovery-live.e2e.test.ts (7 tests | 7 skipped)
+ ↓ tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts (3 tests | 3 skipped)
+ ✓ tests/e2e/projects/projects-graphql.e2e.test.ts (12 tests) 1947ms
+ ↓ tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts (5 tests | 5 skipped)
+ ✓ tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts (8 tests) 329ms
+ ↓ tests/e2e/projects/delegated-copy-model-change.e2e.test.ts (6 tests | 6 skipped)
+ ↓ tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts (3 tests | 3 skipped)
+ ✓ tests/e2e/app-data-migrations/append-only-message-logs-startup.e2e.test.ts (2 tests) 18719ms
+ ↓ tests/e2e/runtime/agy-team-inter-agent-roundtrip.e2e.test.ts (2 tests | 2 skipped)
+ ↓ tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts (15 tests | 15 skipped)
+ ↓ tests/e2e/runtime/autobyteus-anthropic-prompt-caching-live.e2e.test.ts (7 tests | 7 skipped)
+ ✓ tests/e2e/token-usage/token-usage-ledger-graphql.e2e.test.ts (4 tests) 388ms
+ ✓ tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts (6 tests) 230ms
+ ✓ tests/e2e/agent-definitions/agent-package-private-skills.e2e.test.ts (6 tests) 589ms
+ ↓ tests/e2e/projects/project-change-feed.e2e.test.ts (7 tests | 7 skipped)
+ ✓ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts (9 tests) 781ms
+ ✓ tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts (9 tests | 1 skipped) 921ms
+ ↓ tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts (3 tests | 3 skipped)
+ ↓ tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts (1 test | 1 skipped)
+ ↓ tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts (11 tests | 11 skipped)
+ ✓ tests/e2e/workspaces/archive-run-history-graphql.e2e.test.ts (6 tests) 2148ms
+ ↓ tests/e2e/runtime/grok-build-live-runtime.e2e.test.ts (3 tests | 3 skipped)
+ ↓ tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts (4 tests | 4 skipped)
+ ↓ tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts (1 test | 1 skipped)
+ ↓ tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts (4 tests | 4 skipped)
+ ✓ tests/e2e/secret-management/custom-provider-readable-id-startup-migration.e2e.test.ts (4 tests) 15272ms
+ ✓ tests/e2e/projects/projects-startup-migration.e2e.test.ts (6 tests) 30362ms
+ ✓ tests/e2e/media/server-owned-media-tools.e2e.test.ts (7 tests) 89ms
+ ↓ tests/e2e/runtime/all-runtime-send-message-matrix.e2e.test.ts (1 test | 1 skipped)
+ ↓ tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts (1 test | 1 skipped)
+ ↓ tests/e2e/memory/codex-live-memory-persistence.e2e.test.ts (3 tests | 3 skipped)
+ ↓ tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts (8 tests | 8 skipped)
+ ↓ tests/e2e/agent-team-definitions/registered-package-definition-edit.e2e.test.ts (8 tests | 8 skipped)
+ ↓ tests/e2e/projects/task-closure-root-visibility.e2e.test.ts (3 tests | 3 skipped)
+ ↓ tests/e2e/runtime/agy-skill-update-notice-roots.e2e.test.ts (3 tests | 3 skipped)
+ ✓ tests/e2e/server-settings/server-settings-graphql.e2e.test.ts (11 tests) 95ms
+ ↓ tests/e2e/runtime/token-meter-tps-live.e2e.test.ts (9 tests | 9 skipped)
+ ✓ tests/e2e/skills/skill-name-catalog-graphql.e2e.test.ts (9 tests) 252ms
+ ✓ tests/e2e/run-history/stopped-run-model-config-graphql.e2e.test.ts (2 tests) 7322ms
+ ✓ tests/e2e/workspaces/workspaces-graphql.e2e.test.ts (11 tests) 92ms
+ ✓ tests/e2e/agent-team-definitions/agent-team-definitions-graphql.e2e.test.ts (6 tests) 240ms
+ ↓ tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts (1 test | 1 skipped)
+ ✓ tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts (8 tests) 494ms
+ ↓ tests/e2e/projects/project-task-parts-live.e2e.test.ts (3 tests | 3 skipped)
+ ↓ tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts (16 tests | 16 skipped)
+ ✓ tests/e2e/app-data-migrations/remove-built-in-project-task-manager-startup.e2e.test.ts (4 tests) 16295ms
+ ✓ tests/e2e/token-usage/token-usage-ledger-provider-semantics.e2e.test.ts (3 tests) 170ms
+ ↓ tests/e2e/projects/collaboration-model-contract.e2e.test.ts (3 tests | 3 skipped)
+ ✓ tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts (3 tests) 19915ms
+ ✓ tests/e2e/token-usage/token-usage-unit-prices-graphql.e2e.test.ts (2 tests) 134ms
+ ✓ tests/e2e/app-data-migrations/collaborators-to-delegated-runs-startup.e2e.test.ts (1 test) 4134ms
+ ↓ tests/e2e/runtime/autobyteus-claude-5-5-live.e2e.test.ts (6 tests | 6 skipped)
+ ✓ tests/e2e/memory-sync/memory-sync-api.e2e.test.ts (1 test) 318ms
+ ↓ tests/e2e/runtime/skill-update-notice-live.e2e.test.ts (4 tests | 4 skipped)
+ ✓ tests/e2e/llm-management/qwen-configuration-lifecycle-graphql.e2e.test.ts (1 test) 6045ms
+ ↓ tests/e2e/runtime/claude-agent-compaction-rotation.e2e.test.ts (7 tests | 7 skipped)
+ ↓ tests/e2e/runtime/agy-context-files-transport.e2e.test.ts (4 tests | 4 skipped)
+ ✓ tests/e2e/memory/memory-view-graphql.e2e.test.ts (6 tests) 124ms
+ ✓ tests/e2e/runtime/grok-build-runtime-replay.e2e.test.ts (6 tests) 2060ms
+ ↓ tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts (0 test)
+ ✓ tests/e2e/agent-definitions/agent-definitions-graphql.e2e.test.ts (7 tests) 202ms
+ ↓ tests/e2e/runtime/agy-background-task-live.e2e.test.ts (3 tests | 3 skipped)
+ ↓ tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts (4 tests | 4 skipped)
+ ↓ tests/e2e/projects/project-task-context-files-delegation.e2e.test.ts (1 test | 1 skipped)
+ ✓ tests/e2e/agent/agent-command-correlated-status.e2e.test.ts (1 test) 126ms
+ ✓ tests/e2e/token-usage/token-usage-analytics-graphql.e2e.test.ts (5 tests) 167ms
+ ✓ tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts (2 tests) 481ms
+ ✓ tests/e2e/secret-management/provider-secret-lifecycle-graphql.e2e.test.ts (6 tests) 2102ms
+ ↓ tests/e2e/runtime/claude-agent-background-task.e2e.test.ts (12 tests | 12 skipped)
+ ✓ tests/e2e/memory-sync/memory-sync-multiprocess.e2e.test.ts (1 test) 16004ms
+ ↓ tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts (2 tests | 2 skipped)
+ ↓ tests/e2e/runtime/agy-native-image-multi-artifact-preview.e2e.test.ts (2 tests | 2 skipped)
+ ↓ tests/e2e/runtime/codex-single-agent-history-title.e2e.test.ts (1 test | 1 skipped)
+ ↓ tests/e2e/runtime/agy-interrupt-resend-transport.e2e.test.ts (3 tests | 3 skipped)
+ ↓ tests/e2e/runtime/codex-interrupted-compaction.e2e.test.ts (3 tests | 3 skipped)
+ ↓ tests/e2e/runtime/agy-native-image-app-chat.e2e.test.ts (2 tests | 2 skipped)
+ ✓ tests/e2e/agent-team-runs/team-run-config-graphql.e2e.test.ts (7 tests) 16063ms
+ ↓ tests/e2e/runtime/agy-delegated-background-task.e2e.test.ts (1 test | 1 skipped)
+ ↓ tests/e2e/runtime/agy-background-task-updates-live.e2e.test.ts (5 tests | 5 skipped)
+ ✓ tests/e2e/token-usage/astra-fable-token-usage-accounting-graphql.e2e.test.ts (4 tests) 100ms
+ ✓ tests/e2e/workspaces/workspace-run-history-graphql.e2e.test.ts (6 tests) 73ms
+ ↓ tests/e2e/runtime/agy-mcp-tool-call-transport.e2e.test.ts (1 test | 1 skipped)
+ ✓ tests/e2e/tool-management/mcp-http-auth-remote-server.e2e.test.ts (2 tests) 4078ms
+ ↓ tests/e2e/runtime/agy-native-tool-arguments-transport.e2e.test.ts (4 tests | 4 skipped)
+ ✓ tests/e2e/secret-management/removed-remote-provider-leftover-startup.e2e.test.ts (1 test) 6489ms
+ ✓ tests/e2e/remote-access/phone-access-running-routes.e2e.test.ts (2 tests) 431ms
+ ↓ tests/e2e/runtime/claude-delegated-background-task.e2e.test.ts (1 test | 1 skipped)
+ ✓ tests/e2e/token-usage/token-usage-provider-name-snapshot-backfill-startup.e2e.test.ts (3 tests) 121ms
+ ↓ tests/e2e/runtime/context-file-storage-runtime.e2e.test.ts (6 tests | 6 skipped)
+ ↓ tests/e2e/runtime/grok-build-compaction-live.e2e.test.ts (1 test | 1 skipped)
+ ↓ tests/e2e/runtime/agy-context-files-live.e2e.test.ts (3 tests | 3 skipped)
+ ↓ tests/e2e/runtime/team-busy-member-mid-turn-delivery.e2e.test.ts (2 tests | 2 skipped)
+ ✓ tests/e2e/token-usage/claude-sdk-selected-model-graphql.e2e.test.ts (3 tests) 222ms
+ ✓ tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts (29 tests) 4920ms
+ ✓ tests/e2e/tool-management/mcp-http-redirect-and-transport.e2e.test.ts (2 tests) 5279ms
+ ↓ tests/e2e/runtime/mcp-http-auth-agent-tool-call.e2e.test.ts (4 tests | 4 skipped)
+ ✓ tests/e2e/token-usage/gpt56-token-usage-accounting-graphql.e2e.test.ts (6 tests) 134ms
+ ✓ tests/e2e/projects/project-task-search-model-unavailable.e2e.test.ts (2 tests) 444ms
+ ✓ tests/e2e/agent/standalone-error-termination-lifecycle.e2e.test.ts (2 tests) 198ms
+ ✓ tests/e2e/runtime/grok-build-compaction-replay.e2e.test.ts (3 tests) 2836ms
+ ↓ tests/e2e/runtime/autobyteus-native-output-limit-live.e2e.test.ts (11 tests | 11 skipped)
+ ↓ tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts (1 test | 1 skipped)
+ ↓ tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts (3 tests | 3 skipped)
+ ↓ tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts (2 tests | 2 skipped)
+ ✓ tests/e2e/llm-management/custom-provider-model-metadata-graphql.e2e.test.ts (3 tests) 2749ms
+ ✓ tests/e2e/agent-definitions/json-file-persistence-contract.e2e.test.ts (1 test) 149ms
+ ↓ tests/e2e/runtime/agy-failure-transport.e2e.test.ts (25 tests | 25 skipped)
+ ↓ tests/e2e/runtime/agy-skill-update-notice-transport.e2e.test.ts (2 tests | 2 skipped)
+ ✓ tests/e2e/skills/skills-graphql.e2e.test.ts (5 tests) 84ms
+ ↓ tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts (1 test | 1 skipped)
+ ✓ tests/e2e/media/gemini-speech-voice-tool.e2e.test.ts (13 tests) 44ms
+ ✓ tests/e2e/projects/project-task-search.e2e.test.ts (3 tests) 644ms
+ ✓ tests/e2e/token-usage/gemini-native-pricing-graphql.e2e.test.ts (5 tests) 138ms
+ ✓ tests/e2e/file-explorer/file-explorer-websocket-lifecycle.e2e.test.ts (3 tests) 1742ms
+ ↓ tests/e2e/runtime/claude-self-started-turn-lifecycle.e2e.test.ts (4 tests | 4 skipped)
+ ↓ tests/e2e/runtime/agy-compaction-rotation-live.e2e.test.ts (1 test | 1 skipped)
+ ✓ tests/e2e/run-history/removed-remote-provider-saved-selection-graphql.e2e.test.ts (2 tests) 7880ms
+ ✓ tests/e2e/token-usage/token-usage-record-restart-graphql.e2e.test.ts (1 test) 3903ms
+ ✓ tests/e2e/app-data-migrations/remove-work-trace-exports-startup.e2e.test.ts (1 test) 3567ms
+ ↓ tests/e2e/runtime/agy-native-image-step-output.e2e.test.ts (4 tests | 4 skipped)
+ ↓ tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts (1 test | 1 skipped)
+ ✓ tests/e2e/token-usage/agy-token-usage-upgrade-continuation.e2e.test.ts (2 tests) 126ms
+ ↓ tests/e2e/runtime/codex-runtime-exit-resend.e2e.test.ts (1 test | 1 skipped)
+ ✓ tests/e2e/secret-management/current-database-import-lifecycle.e2e.test.ts (1 test) 2316ms
+ ↓ tests/e2e/runtime/agy-background-task-transport.e2e.test.ts (2 tests | 2 skipped)
+ ✓ tests/e2e/token-usage/token-usage-custom-provider-model-value-backfill-startup.e2e.test.ts (2 tests) 53ms
+ ✓ tests/e2e/run-history/removed-skill-access-mode-history-graphql.e2e.test.ts (1 test) 2258ms
+ ✓ tests/e2e/projects/project-mutation-node-locality.e2e.test.ts (1 test) 11211ms
+ ↓ tests/e2e/secret-management/real-e2e-provider-capabilities.e2e.test.ts (0 test)
+ ↓ tests/e2e/projects/delegation-forest-restore.e2e.test.ts (3 tests | 3 skipped)
+ ✓ tests/e2e/agent-org-runs/stopped-org-workspace-graphql.e2e.test.ts (1 test) 5288ms
+ ↓ tests/e2e/runtime/agy-native-image-codex-skill.e2e.test.ts (3 tests | 3 skipped)
+ ↓ tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts (1 test | 1 skipped)
+ ↓ tests/e2e/runtime/agy-token-usage-transport.e2e.test.ts (1 test | 1 skipped)
+ ✓ tests/e2e/app-data-migrations/agent-org-token-continuation.e2e.test.ts (2 tests) 555ms
+ ↓ tests/e2e/runtime/autobyteus-compaction-token-reading-live.e2e.test.ts (1 test | 1 skipped)
+ ↓ tests/e2e/secret-management/real-e2e-compaction-quality.e2e.test.ts (0 test)
+ ↓ tests/e2e/runtime/agy-compaction-rotation-transport.e2e.test.ts (1 test | 1 skipped)
+ ✓ tests/e2e/file-explorer/file-explorer-path-boundary.e2e.test.ts (2 tests) 78ms
+ ✓ tests/e2e/file-explorer/workspace-content-rest.e2e.test.ts (6 tests) 243ms
+ ↓ tests/e2e/runtime/codex-compaction-token-reading.e2e.test.ts (1 test | 1 skipped)
+ ✓ tests/e2e/terminal/terminal-websocket-lifecycle.e2e.test.ts (4 tests) 1062ms
+ ↓ tests/e2e/runtime/context-file-startup-recovery.e2e.test.ts (4 tests | 4 skipped)
+ ✓ tests/e2e/token-usage/token-usage-model-list.e2e.test.ts (2 tests) 56ms
+ ✓ tests/e2e/secret-management/server-restart-secret-lifecycle.e2e.test.ts (1 test) 3836ms
+ ✓ tests/e2e/secret-management/secret-vault-independent-process-initialization.e2e.test.ts (1 test) 531ms
+ ✓ tests/e2e/file-explorer/file-operations-graphql.e2e.test.ts (2 tests) 67ms
+ ✓ tests/e2e/agent-org-runs/scoped-org-history-graphql.e2e.test.ts (1 test) 3644ms
+ ↓ tests/e2e/runtime/agy-compaction-gate-off-transport.e2e.test.ts (1 test | 1 skipped)
+ ↓ tests/e2e/projects/hand-started-run-refusal.e2e.test.ts (1 test | 1 skipped)
+ ✓ tests/e2e/memory/imported-team-memory-graphql.e2e.test.ts (1 test) 132ms
+ ↓ tests/e2e/runtime/codex-native-multi-agent-disabled.e2e.test.ts (1 test | 1 skipped)
+ ✓ tests/e2e/file-explorer/file-explorer-graphql.e2e.test.ts (3 tests) 75ms
+ ✓ tests/e2e/llm-management/model-metadata-provenance-graphql.e2e.test.ts (3 tests) 2200ms
+ ↓ tests/e2e/runtime/claude-agent-auth-marker-reply.e2e.test.ts (4 tests | 4 skipped)
+ ✓ tests/e2e/runtime/agy-runtime-availability-graphql.e2e.test.ts (3 tests) 1986ms
+ ↓ tests/e2e/runtime/token-meter-tps-transport.e2e.test.ts (1 test | 1 skipped)
+ ✓ tests/e2e/agent-definitions/general-agent-identity.e2e.test.ts (2 tests) 112ms
+ ✓ tests/e2e/file-explorer/search-content-http.e2e.test.ts (6 tests) 157ms
+ ✓ tests/e2e/memory/memory-explorer-graphql.e2e.test.ts (1 test) 101ms
+ ✓ tests/e2e/agent-team-runs/task-delegation-api-surface.e2e.test.ts (3 tests) 175ms
+ ✓ tests/e2e/tool-management/tool-catalog-cleanup.e2e.test.ts (1 test) 75ms
+ ✓ tests/e2e/runtime/runtime-capability-graphql.e2e.test.ts (4 tests) 2802ms
+ ✓ tests/e2e/llm-management/gemini-3-8-catalog-http.e2e.test.ts (1 test) 1906ms
+ ✓ tests/e2e/runtime/team-task-event-current-contract.e2e.test.ts (2 tests) 5ms
+ ✓ tests/e2e/prompts/prompts-graphql.e2e.test.ts (1 test) 50ms
+ ✓ tests/e2e/runtime/team-run-current-graphql-documents.e2e.test.ts (1 test) 49ms
+ Test Files  89 passed | 88 skipped (177)
+      Tests  370 passed | 394 skipped (764)
+   Start at  11:15:25
+   Duration  564.05s (transform 12.91s, setup 1.53s, import 252.71s, tests 291.65s, environment 13ms)
+exit 0

@@ -1,0 +1,8 @@
+# IMP-18-e2e-environment-key-source environment key source on built packages (AC-018, AC-013 mechanics, no node:sqlite while unset)
+# IR-002 | commit 9498de5f8b | macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2 | 2026-10-20
+# command: pnpm -C autobyteus-ts build && pnpm -C autobyteus-server-ts build && pnpm -C autobyteus-server-ts exec vitest run tests/e2e/secret-management/environment-key-source.e2e.test.ts --no-watch
+
+ ✓ tests/e2e/secret-management/environment-key-source.e2e.test.ts (3 tests) 2646ms
+     ✓ the server turns the default off: a client without a resolver fails, the server resolvers follow its source (AC-018)  2289ms
+ Test Files  1 passed (1)
+      Tests  3 passed (3)

@@ -4,6 +4,7 @@ import {
   DELEGATE_TASK_DESCRIPTION_FIELD_DESCRIPTION,
   DELEGATE_TASK_ID_DESCRIPTION,
   DELEGATE_TASK_LLM_DESCRIPTION,
+  DELEGATE_TASK_NODE_DESCRIPTION,
   DELEGATE_TASK_RECIPIENT_ADDRESS_DESCRIPTION,
   DELEGATE_TASK_REFERENCE_FILES_DESCRIPTION,
   DELEGATE_TASK_TARGET_AGENT_RUN_ID_DESCRIPTION,
@@ -36,18 +37,28 @@ describe("approved collaboration tool descriptions", () => {
       delegateTaskId: sha256(DELEGATE_TASK_ID_DESCRIPTION),
       delegateDescription: sha256(DELEGATE_TASK_DESCRIPTION_FIELD_DESCRIPTION),
       delegateReferences: sha256(DELEGATE_TASK_REFERENCE_FILES_DESCRIPTION),
+      delegateNode: sha256(DELEGATE_TASK_NODE_DESCRIPTION),
     }).toEqual({
-      sendTool: "6ff131924d8cef4ed04f0702af3544484356ec6f1947197da2192455db6dc18f",
+      // autobyteus-260: a refused message leaves target_agent_run_id out (no "null").
+      sendTool: "147726f394b4442a4154a56de437dabfeca6f651234831b395fc2e4f5f225b1a",
       sendRecipient: "6be9ed29689ec44cf8775b00e0d34ab473126416a1330a63aa3ccef2b6d14806",
       sendExactRun: "9a9c650c745f2fcaca353a639339f712e9d9bba60e3de0f3bbad5d43e1cc8b5f",
-      delegateTool: "60639174edf5b22729aad340d17fe94ae4a80f9a20c57f591a35de199d9390a2",
+      // `node` (DEC-111, autobyteus-191): a new task agent on a registered peer node; "agent or agent team" (autobyteus-261 DEC-406).
+      // task-agent-several-tasks (autobyteus-275): mode (3) also while the task agent holds other open Tasks.
+      delegateTool: "78be9b1ac468f3ba11bef98bafe645204af8338877caad02299784a8f5a2a404",
       delegateRecipient: "501c11b0aa0cf1eeb1c64e9d9c0b852356c5d55f45e8288ecbb16c4e60d18c7b",
       delegateTeamId: "2a50c7b86ae6fda3c7f5ad890631ad9d191bbd97fb99bf20bd9c7cca0ded0f6b",
       delegateAgentId: "c6da81bc36fb30aa339f71451a2b0559fb251aad28030b305611c4fe3492f970",
       delegateTaskId: "758d12d753234f54a47324aee40fbd746044ed150ece92d0d2c69abbd9f83017",
       delegateDescription: "e4b27c311d0bbe3a2a28745f12ecf495e9b4437d4c6ff36f95f7edda99993bb5",
       delegateReferences: "dc26162eff418e5fe6ee52377cc0e89521ac1206cc1a13a1ad3c0ac23a5e4610",
+      delegateNode: "273dcd2db56feb22cc02888dd961101ab5752f462765b028c5458fb406dacf0b",
     });
+  });
+
+  it("autobyteus-261 DEC-406: a peer node's agent or agent team (the approved new wording)", () => {
+    expect(DELEGATE_TASK_NODE_DESCRIPTION).toBe("Optional, only with recipient_address and description: the name of a peer node registered on this node. The new task agent then runs on that node, and recipient_address is the address of an agent or agent team on that node.");
+    expect(DELEGATE_TASK_LLM_DESCRIPTION).toContain("With node in mode (1), the task agent starts on that peer node, from the agent or agent team at recipient_address there; the result also gives node, and you message it by its run id as usual. A saved Task or reference_files can't go to another node.");
   });
 
   it("states how each tool works, each fact once: messaging never creates an agent, delegation always does", () => {
@@ -58,6 +69,9 @@ describe("approved collaboration tool descriptions", () => {
     expect(DELEGATE_TASK_RECIPIENT_ADDRESS_DESCRIPTION).toContain("Every call with an address creates another task agent or task agent team.");
     expect(DELEGATE_TASK_LLM_DESCRIPTION).toContain("together with your run id");
     expect(DELEGATE_TASK_LLM_DESCRIPTION).toContain("If you are a task agent yourself");
+    // task-agent-several-tasks: a task agent may hold several Tasks; it is freed when its last one closes.
+    expect(DELEGATE_TASK_LLM_DESCRIPTION).toContain("This works only when you made its most recent assignment; its other open Tasks stay open, and it is freed when its last Task is closed.");
+    expect(DELEGATE_TASK_LLM_DESCRIPTION).not.toContain("its current Task is DONE or CANCELLED");
   });
 
   it("names the IDs a delegation returns for what they are", () => {
@@ -71,7 +85,7 @@ describe("approved collaboration tool descriptions", () => {
       SEND_MESSAGE_TO_LLM_DESCRIPTION, SEND_MESSAGE_TO_RECIPIENT_ADDRESS_DESCRIPTION, SEND_MESSAGE_TO_TARGET_AGENT_RUN_ID_DESCRIPTION,
       DELEGATE_TASK_LLM_DESCRIPTION, DELEGATE_TASK_RECIPIENT_ADDRESS_DESCRIPTION, DELEGATE_TASK_TARGET_TEAM_RUN_ID_DESCRIPTION,
       DELEGATE_TASK_TARGET_AGENT_RUN_ID_DESCRIPTION, DELEGATE_TASK_ID_DESCRIPTION, DELEGATE_TASK_DESCRIPTION_FIELD_DESCRIPTION,
-      DELEGATE_TASK_REFERENCE_FILES_DESCRIPTION, LIST_AVAILABLE_AGENTS_TOOL_DESCRIPTION, GET_HANDOFF_RULES_TOOL_DESCRIPTION,
+      DELEGATE_TASK_REFERENCE_FILES_DESCRIPTION, DELEGATE_TASK_NODE_DESCRIPTION, LIST_AVAILABLE_AGENTS_TOOL_DESCRIPTION, GET_HANDOFF_RULES_TOOL_DESCRIPTION,
       PROJECT_TASK_TOOL_DESCRIPTIONS.update_task, PROJECT_TASK_TOOL_DESCRIPTIONS.list_project_tasks,
     ];
     for (const text of texts) {

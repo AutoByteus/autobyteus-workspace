@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { CollaborationRootHistoryService } from "../../../../src/run-history/services/collaboration-root-history-service.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode } from "../../../fixtures/current-agent-org-run-fixtures.js";
+import { withoutRemoteLinks } from "../../../fixtures/collaboration-public-projection-fixtures.js";
 
 const fixture = () => {
   const tree = testAgentOrgExecutionTree({ orgRunId: "org-one", members: [testOrgAgentNode("/worker", "worker-one")] });
@@ -24,7 +25,7 @@ describe("one authoritative admitted Org history subject", () => {
     const f = fixture(); f.orgs.getCatalogRow.mockResolvedValue({ ...f.row as object, archivedAt: "2026-10-01" } as never);
     expect(await f.service.getAgentOrg("org-one")).toBeNull();
     f.trees.read.mockClear(); f.orgRuns.getActive.mockReturnValue({ getExecutionTreeSnapshot: () => f.tree });
-    expect(await f.service.getAgentOrg("org-one")).toMatchObject({ is_active: true, archived_at: "2026-10-01", summary: "Server summary", org: f.tree });
+    expect(await f.service.getAgentOrg("org-one")).toMatchObject({ is_active: true, archived_at: "2026-10-01", summary: "Server summary", org: withoutRemoteLinks(f.tree) });
     expect(f.trees.read).not.toHaveBeenCalled();
   });
   it("carries the Org's closed task executions, read through the Org manager against the same tree it projects", async () => {

@@ -1,0 +1,2 @@
+# node probes/mercurius-load-probe.mjs (run in autobyteus-server-ts)
+{"query":{"data":{"ping":"pong"}},"graphiqlStatus":200,"modulesLoaded":535,"undiciModules":0,"staticLoaded":true}

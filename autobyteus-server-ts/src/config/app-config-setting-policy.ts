@@ -10,4 +10,10 @@ export const forbiddenGenericSettingNames = new Set<string>([
   "CLAUDE_CODE_API_KEY_FILE_DESCRIPTOR",
 ]);
 
-export const retiredSettingNames = new Set<string>(["AUTOBYTEUS_STREAM_PARSER"]);
+export const retiredSettingNames = new Set<string>([
+  "AUTOBYTEUS_STREAM_PARSER",
+  // The removed Skill Improvement feature (and its earlier name, self evolution).
+  "ENABLE_SKILL_IMPROVEMENT",
+  "AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID",
+  "ENABLE_SELF_EVOLUTION",
+]);

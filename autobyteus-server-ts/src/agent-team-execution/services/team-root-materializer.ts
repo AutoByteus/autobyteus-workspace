@@ -2,13 +2,14 @@ import type { TaskExecutionResourcePort } from "../../agent-collaboration/execut
 import { ROOT_NOT_ACTIVE_MESSAGE } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import { createRootExecutionPhysicalScope, createTeamRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { CollaboratorAdmission } from "../../agent-collaboration/collaborators/collaborator-admission.js";
-import type { MemberTaskCommandCapability } from "../../agent-collaboration/execution/task/member-task-command-capability.js";
+import type { MemberTaskCapability } from "../../agent-collaboration/execution/task/member-task-capability.js";
 import type { TeamCommunicationMessagesSnapshot } from "../../services/team-communication/team-communication-messages-file.js";
 import type { TeamCommunicationStore } from "../../services/team-communication/team-communication-store.js";
 import type { TeamRunExecutionTreeStore } from "../../run-history/store/team-run-execution-tree-store.js";
 import type { ConfiguredMemberActivationMode } from "../local/flat-team-execution-context.js";
 import type { FlatTeamExecutionFactory } from "../local/flat-team-execution-factory.js";
 import { RootTeamRun } from "../domain/root-team-run.js";
+import type { TeamRunEnding } from "../domain/team-run-lifecycle.js";
 import type { TeamRunConfig } from "../domain/team-run-config.js";
 import { TeamRunContext } from "../domain/team-run-context.js";
 import type { TeamRunEvent } from "../domain/team-run-event.js";
@@ -35,7 +36,7 @@ export type TeamRootMaterializationInput = Readonly<{
   communicationStore: TeamCommunicationStore;
   /** The process admission coordinator unless given. */
   collaboratorAdmission?: CollaboratorAdmission;
-  onTerminated: (root: RootTeamRun) => void;
+  onTerminated: (root: RootTeamRun, ending: TeamRunEnding) => void;
 }>;
 
 const requireCommitted = async (
@@ -61,10 +62,11 @@ export const materializeTeamRoot = async (
     }
     return root;
   };
-  const taskCommands: MemberTaskCommandCapability = Object.freeze({
+  const taskCapability: MemberTaskCapability = Object.freeze({
     root: rootIdentity,
     delegateToNewCopy: (caller, command) => requireActiveRoot().delegateToNewCopy({ identity: caller }, command),
     assignToExistingCopy: (caller, command) => requireActiveRoot().assignToExistingCopy({ identity: caller }, command),
+    ownedTaskOf: (caller) => requireActiveRoot().ownedTaskOf({ identity: caller }),
   });
   const callbacks = createTeamFlatExecutionCallbacks({
     assertExecutionInputAllowed: (identity) => requireActiveRoot().assertExecutionInputAllowed(identity.agentRunId),
@@ -79,7 +81,7 @@ export const materializeTeamRoot = async (
       runtimeContext: null,
     }),
     memberExecutionContextBuilder: input.memberExecutionContextBuilder,
-    taskCommands,
+    taskCapability,
     publish: (event) => publisher.publish(event),
     deliverInterAgentMessage: (intent) => root
       ? root.deliverInterAgentMessage(intent)
@@ -115,7 +117,6 @@ export const materializeTeamRoot = async (
     });
     root = new RootTeamRun({
       rootRun: prepared.teamRun,
-      config: input.config,
       tree,
       messages: input.messages,
       persistence,
@@ -123,7 +124,7 @@ export const materializeTeamRoot = async (
       taskExecutionIdentity: input.taskExecutionIdentity,
       taskExecutionResources: input.taskExecutionResources,
       collaboratorAdmission: input.collaboratorAdmission,
-      onTerminated: () => { if (root) input.onTerminated(root); },
+      onTerminated: (ending) => { if (root) input.onTerminated(root, ending); },
     });
     prepared.commitAfterDurability();
     return root;

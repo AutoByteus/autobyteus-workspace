@@ -1,13 +1,13 @@
-import { spawn } from "node:child_process";
 import { resolve as resolvePath } from "node:path";
+import { agentRuntimeName } from "@autobyteus/agent-presentation-contracts";
 import type { ModelInfo } from "autobyteus-ts/llm/models.js";
 import { LLMRuntime } from "autobyteus-ts/llm/runtimes.js";
 import type { LlmProviderService } from "../../llm-management/llm-providers/services/llm-provider-service.js";
 import { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type {
-  CodexAppServerClientManager,
-} from "../../runtime-management/codex/client/codex-app-server-client-manager.js";
-import { resolveClaudeCodeExecutablePath } from "../../runtime-management/claude/client/claude-sdk-executable-path.js";
+  AgentRuntimeSignInReader,
+  SignInReading,
+} from "../../runtime-management/agent-runtimes/agent-runtime-sign-in-reader.js";
 
 export type ApplicationProviderCredentialReadiness = Readonly<{
   configured: boolean;
@@ -38,71 +38,27 @@ export type ApplicationProviderCredentialReadinessPort = {
   ): Promise<ApplicationProviderCredentialReadiness>;
 };
 
-type CommandResult = Readonly<{
-  exitCode: number | null;
-  stdout: string;
-  stderr: string;
-  error: Error | null;
-}>;
-
-const runCommand = (
-  command: string,
-  args: string[],
-  timeoutMs = 5_000,
-): Promise<CommandResult> => new Promise((resolve) => {
-  let stdout = "";
-  let stderr = "";
-  let settled = false;
-  const child = spawn(command, args, {
-    env: process.env,
-    stdio: ["ignore", "pipe", "pipe"],
-  });
-  const finish = (result: CommandResult): void => {
-    if (settled) return;
-    settled = true;
-    clearTimeout(timeout);
-    resolve(result);
-  };
-  child.stdout.on("data", (chunk: Buffer) => {
-    stdout += chunk.toString("utf8");
-  });
-  child.stderr.on("data", (chunk: Buffer) => {
-    stderr += chunk.toString("utf8");
-  });
-  child.once("error", (error) => {
-    finish({ exitCode: null, stdout, stderr, error });
-  });
-  child.once("close", (exitCode) => {
-    finish({ exitCode, stdout, stderr, error: null });
-  });
-  const timeout = setTimeout(() => {
-    child.kill("SIGTERM");
-    finish({
-      exitCode: null,
-      stdout,
-      stderr,
-      error: new Error(`Credential readiness command timed out after ${timeoutMs}ms.`),
-    });
-  }, timeoutMs);
-});
-
-const describeFailure = (label: string, result: CommandResult): string => {
-  const detail = result.error?.message
-    ?? result.stderr.trim()
-    ?? result.stdout.trim()
-    ?? `exit code ${String(result.exitCode)}`;
-  return `${label} authentication is unavailable: ${detail}`;
+/** Signed in, or no sign-in required, is configured; otherwise the runtime's reason text. */
+const toReadiness = (
+  label: string,
+  reading: SignInReading,
+): ApplicationProviderCredentialReadiness => {
+  switch (reading.state) {
+    case "signedIn":
+    case "notRequired":
+      return { configured: true, reason: null };
+    case "signedOut":
+    case "unknown":
+      return { configured: false, reason: `${label} authentication is unavailable: ${reading.detail}` };
+  }
 };
 
 export class ApplicationProviderCredentialReadinessAdapter
 implements ApplicationProviderCredentialReadinessPort {
   constructor(private readonly dependencies: {
     llmProviderService: Pick<LlmProviderService, "getProviderCredentialSetting">;
-    codexClientManager: Pick<
-      CodexAppServerClientManager,
-      "beginAcquire"
-    >;
-    commandRunner?: typeof runCommand;
+    /** The one owner of runtime sign-in reads (Codex `account/read`, `claude auth status`). */
+    signInReader: Pick<AgentRuntimeSignInReader, "read">;
   }) {}
 
   resolveAuthority(
@@ -146,9 +102,15 @@ implements ApplicationProviderCredentialReadinessPort {
       case "provider":
         return this.readProviderReadiness(authority.providerId);
       case "codex_workspace":
-        return this.readCodexReadiness(authority.workspaceRootPath);
+        return toReadiness(agentRuntimeName(RuntimeKind.CODEX_APP_SERVER), await this.dependencies.signInReader.read(
+          RuntimeKind.CODEX_APP_SERVER,
+          { cwd: authority.workspaceRootPath },
+        ));
       case "claude_process":
-        return this.readClaudeReadiness();
+        return toReadiness(agentRuntimeName(RuntimeKind.CLAUDE_AGENT_SDK), await this.dependencies.signInReader.read(
+          RuntimeKind.CLAUDE_AGENT_SDK,
+          { cwd: process.cwd() },
+        ));
       case "no_credential":
         return { configured: true, reason: null };
       case "unsupported":
@@ -180,56 +142,6 @@ implements ApplicationProviderCredentialReadinessPort {
     return normalized
       ? Object.freeze({ kind: "provider", providerId: normalized })
       : Object.freeze({ kind: "unsupported", runtime });
-  }
-
-  private async readCodexReadiness(
-    workspaceRootPath: string,
-  ): Promise<ApplicationProviderCredentialReadiness> {
-    try {
-      const lease = this.dependencies.codexClientManager.beginAcquire(workspaceRootPath);
-      try {
-        const client = await lease.acquire();
-        const response = await client.request<{
-          account?: unknown;
-          requiresOpenaiAuth?: unknown;
-        }>("account/read", { refreshToken: false });
-        const configured = response.requiresOpenaiAuth !== true || response.account != null;
-        return configured
-          ? { configured: true, reason: null }
-          : {
-              configured: false,
-              reason: "Codex authentication is unavailable: no logged-in account.",
-            };
-      } finally {
-        await lease.release();
-      }
-    } catch (error) {
-      return {
-        configured: false,
-        reason: `Codex authentication is unavailable: ${
-          error instanceof Error ? error.message : String(error)
-        }`,
-      };
-    }
-  }
-
-  private async readClaudeReadiness(): Promise<ApplicationProviderCredentialReadiness> {
-    const result = await (this.dependencies.commandRunner ?? runCommand)(
-      resolveClaudeCodeExecutablePath(),
-      ["auth", "status", "--json"],
-    );
-    let loggedIn = false;
-    if (result.exitCode === 0) {
-      try {
-        const payload = JSON.parse(result.stdout) as { loggedIn?: unknown };
-        loggedIn = payload.loggedIn === true;
-      } catch {
-        loggedIn = /\blogged\s+in\b/i.test(`${result.stdout}\n${result.stderr}`);
-      }
-    }
-    return loggedIn
-      ? { configured: true, reason: null }
-      : { configured: false, reason: describeFailure("Claude", result) };
   }
 
   private async readProviderReadiness(

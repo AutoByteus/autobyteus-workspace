@@ -21,18 +21,34 @@ type TeamLayout = Readonly<{ teamDefinitionId: string; coordinatorAddress: Agent
  * member's agent default). Admission's launch resolver turns it into an entry plan.
  */
 export type CollaboratorDefinitionPlan =
-  | (PlanIdentity & Readonly<{ kind: "agent"; agentDefinitionId: string; agentDefault: DefaultLaunchConfig | null }>)
+  | (PlanIdentity & AgentProfile & Readonly<{ kind: "agent"; agentDefinitionId: string; agentDefault: DefaultLaunchConfig | null }>)
   | (PlanIdentity & TeamLayout & Readonly<{
       kind: "agent_team";
-      members: readonly Readonly<{ address: AgentTeamAddress; agentDefinitionId: string; agentDefault: DefaultLaunchConfig | null }>[];
+      /** The Team definition's description (the Model Router is told what the target is). */
+      description: string;
+      members: readonly (AgentProfile & Readonly<{
+        address: AgentTeamAddress;
+        /** The member's agent definition name. */
+        name: string;
+        agentDefinitionId: string;
+        agentDefault: DefaultLaunchConfig | null;
+      }>)[];
       teamDefault: DefaultLaunchConfig | null;
     }>);
 
-/** A resolved Team member: its own launch only when it runs on its agent default (see `RecordedMemberLaunch`). */
+/** What the Model Router is told about an agent besides its name (supplement § 5). */
+type AgentProfile = Readonly<{ description: string; role: string | null }>;
+
+/**
+ * A resolved Team member (see `RecordedMemberLaunch`, D-5): its complete launch (its own agent default when
+ * usable, else the Team's) and whether it follows the Team (it does iff it does not run on its own default).
+ * `launchSource` is present only when its agent definition had a default (used or skipped).
+ */
 export type CollaboratorEntryPlanMember = Readonly<{
   address: AgentTeamAddress;
   agentDefinitionId: string;
-  launchConfiguration?: AgentLaunchConfiguration;
+  launchConfiguration: AgentLaunchConfiguration;
+  followsTeam: boolean;
   launchSource?: LaunchConfigurationSource;
 }>;
 
@@ -52,6 +68,9 @@ export type CollaboratorEntryPlan =
     }>);
 
 export type CollaboratorEntryInput = Readonly<{ address: AgentTeamAddress }>;
+
+const profileOf = (definition: Pick<AgentDefinition, "description" | "role"> | null): AgentProfile =>
+  ({ description: definition?.description ?? "", role: definition?.role?.trim() || null });
 
 const captured = (value: DefaultLaunchConfig | null | undefined): DefaultLaunchConfig | null =>
   value ? Object.freeze(structuredClone(value)) : null;
@@ -78,6 +97,7 @@ export class CollaboratorEntryBuilder {
       return Object.freeze({
         kind: "agent",
         ...identity,
+        ...profileOf(definition.definition),
         agentDefinitionId: definition.definition.id,
         agentDefault: captured(definition.definition.defaultLaunchConfig),
       });
@@ -98,12 +118,18 @@ export class CollaboratorEntryBuilder {
       kind: "agent_team",
       ...identity,
       teamDefinitionId: definition.definition.id,
+      description: definition.definition.description ?? "",
       coordinatorAddress: createAgentTeamAddress(resolved.coordinator.absolutePath),
-      members: Object.freeze(resolved.members.map((member) => Object.freeze({
-        address: createAgentTeamAddress(member.absolutePath),
-        agentDefinitionId: member.agentDefinitionId,
-        agentDefault: captured(memberDefinitions.get(member.agentDefinitionId)?.defaultLaunchConfig),
-      }))),
+      members: Object.freeze(resolved.members.map((member) => {
+        const memberDefinition = memberDefinitions.get(member.agentDefinitionId) ?? null;
+        return Object.freeze({
+          address: createAgentTeamAddress(member.absolutePath),
+          name: memberDefinition?.name ?? member.agentDefinitionId,
+          ...profileOf(memberDefinition),
+          agentDefinitionId: member.agentDefinitionId,
+          agentDefault: captured(memberDefinition?.defaultLaunchConfig),
+        });
+      })),
       handoffs: Object.freeze(this.handoffCompiler.compileTeam(resolved)),
       teamDefault: captured(definition.definition.defaultLaunchConfig),
     });

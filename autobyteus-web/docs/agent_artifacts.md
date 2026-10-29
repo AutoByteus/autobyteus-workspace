@@ -167,7 +167,7 @@ flowchart LR
 
   I[Accepted team-route INTER_AGENT_MESSAGE] --> J[TeamCommunicationMessageProcessor]
   J --> K[TEAM_COMMUNICATION_MESSAGE]
-  K --> L[TeamCommunicationService]
+  K --> L[RootCommunicationEngine: Team root port]
   L --> N[agent_teams/<teamRunId>/team_communication_messages_*.jsonl]
   K --> M[team websocket]
   M --> P[teamCommunicationStore]
@@ -186,12 +186,12 @@ flowchart LR
 | --- | --- | --- |
 | Agent Artifact store | `autobyteus-web/stores/runFileChangesStore.ts` | Owns hydrated/live rows for touched files and generated outputs. |
 | Agent Artifact stream ingestion | `autobyteus-web/services/agentStreaming/handlers/fileChangeHandler.ts` | Applies `FILE_CHANGE` payloads into the Agent Artifact store. |
-| Agent Artifact fetch/commit | `autobyteus-web/services/runHydration/runFileChangeHydrationService.ts` | Fetches `getRunFileChanges(runId)` (`fetchRunFileChanges`) and writes rows into the store, by replacing them (`hydrateRunFileChanges`) or by merging them so live entries with a newer `updatedAt` are kept (`mergeHydratedRunFileChanges`). |
+| Agent Artifact fetch/commit | `autobyteus-web/services/runHydration/runFileChangeHydrationService.ts` | `fetchRunFileChanges(subject)` takes the run's owner subject (`AgentRunReadSubject` in `types/agent/agentRunReadSubject.ts`) and sends that owner's list query: `getRunFileChanges(runId)` for a standalone run, `getTeamMemberFileChanges` for a team member, `getAgentOrgMemberFileChanges` for an org member, `agentRunCollaborationMemberFileChanges` for a delegated copy. It writes rows into the store, by replacing them (`hydrateRunFileChanges`) or by merging them so live entries with a newer `updatedAt` are kept (`mergeHydratedRunFileChanges`). |
 | Standalone Agent Artifact hydration | `autobyteus-web/services/runHydration/runContextHydrationService.ts` | Loads a standalone run's artifacts with its run context. |
 | Collaboration member run-state hydration | `autobyteus-web/services/runHydration/memberRunStateHydration.ts` | Shared owner for Team members, Agent Org members and the delegated runs of a standalone run (`services/agentCollaboration/agentRunCollaborationHydration.ts`). `fetchMemberRunState` fetches a member's projection and its artifacts in parallel. `commitMemberRunStates` commits all member Activity in one revision-guarded replacement, then merges each member's artifacts. On a revision conflict nothing is written, artifacts included. |
-| Desktop Artifacts tab | `autobyteus-web/components/workspace/agent/ArtifactsTab.vue` | Displays only run-scoped Agent Artifacts in the desktop right-side panel. |
+| Desktop Artifacts tab | `autobyteus-web/components/workspace/agent/ArtifactsTab.vue` | Displays only run-scoped Agent Artifacts in the desktop right-side panel, and passes the active workspace target's owner subject (`activeWorkspaceTarget.browse`) to the viewer. |
 | Mobile Artifacts view | `autobyteus-web/components/mobile/MobileArtifacts.vue` | Displays only run-scoped Agent Artifacts for the mobile-selected agent run or focused team member run, using the same run artifact store and `ArtifactContentViewer` rather than the desktop right-panel layout. |
-| Mobile focused-run identity | `autobyteus-web/composables/mobile/useMobileFocusedRunIdentity.ts` | Centralizes the mobile agent/team focused run-id guard shared by Activity and Artifacts so stale mobile selections do not leak artifacts or activity from another run. |
+| Mobile focused-run identity | `autobyteus-web/composables/mobile/useMobileFocusedRunIdentity.ts` | Centralizes the mobile agent/team focused run-id guard shared by Activity and Artifacts so stale mobile selections do not leak artifacts or activity from another run, and gives the focused run's owner subject (`focusedReadSubject`) that the mobile viewer reads through. |
 | Team Communication store | `autobyteus-web/stores/teamCommunicationStore.ts` | Owns hydrated/live inter-agent messages and focused sent/received message perspectives. |
 | Team Communication hydration | `autobyteus-web/services/runHydration/teamCommunicationHydrationService.ts` | Loads `getTeamCommunicationMessages(teamRunId)`. |
 | Collaboration Messages section | `autobyteus-web/components/workspace/collaboration/CollaborationMessagesSection.vue` | Computes the focused member's message rows once per view and passes them to the panel. Shared by Team, AgentOrg, and standalone Messages. |
@@ -212,7 +212,16 @@ opening workspace files directly.
    `content`.
 2. Failed row -> explicit failure state.
 3. Non-`available` row -> pending state.
-4. Available row -> `/runs/:runId/file-change-content?path=...`.
+4. Available row -> the content route of the row's owner, built by
+   `services/runFileChanges/runFileChangeContentPath.ts` from the viewer's
+   `readSubject`:
+   - standalone run: `/runs/:runId/file-change-content?path=...`
+   - team member: `/team-runs/:teamRunId/agent-runs/:agentRunId/file-change-content?path=...`
+   - org member: `/agent-org-runs/:orgRunId/agent-runs/:agentRunId/file-change-content?memberAddress=...&path=...`
+   - delegated copy: `/agent-collaborations/:hostRunId/agent-runs/:agentRunId/file-change-content?memberAddress=...&path=...`
+
+   The server reads only that owner's tree. A member's run id sent to the
+   run-id route gets 404, so the viewer never uses it for members.
 
 Team Communication reference previews use `TeamCommunicationReferenceViewer` and
 never use the run-file-change route. The message viewer owns its local

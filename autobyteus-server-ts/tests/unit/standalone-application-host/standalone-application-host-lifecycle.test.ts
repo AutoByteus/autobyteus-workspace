@@ -11,6 +11,7 @@ const mocks = vi.hoisted(() => {
     recoverAfterListen: vi.fn(async () => undefined),
   };
   const app = {
+    addHook: vi.fn(),
     listen: vi.fn(async () => "http://127.0.0.1:43210"),
     close: vi.fn(async () => undefined),
     server: {
@@ -22,6 +23,7 @@ const mocks = vi.hoisted(() => {
     getLogsDir: () => "/tmp/standalone-lifecycle/logs",
     getMemoryDir: () => "/tmp/standalone-lifecycle/memory",
     getAppDataDir: () => "/tmp/standalone-lifecycle",
+    get: () => undefined,
     getBaseUrl: () => "http://localhost:8000",
     getAppRootDir: () => "/tmp/standalone-lifecycle",
     getOperationalDatabaseUrl: () => "file:/tmp/standalone-lifecycle/operational.db",
@@ -90,13 +92,15 @@ const mocks = vi.hoisted(() => {
       bundleService: {},
     })),
     initializePrisma: vi.fn(async () => undefined),
+    disableEnvironmentKeySource: vi.fn(),
     shutdownPrisma: vi.fn(async () => undefined),
     runDatabaseMigrations: vi.fn(),
     assertTokenUsageCurrentSchema: vi.fn(async () => undefined),
-    configureTokenUsageMigrationReadiness: vi.fn(),
+    configureTokenUsageCapability: vi.fn(),
     initializeSecretVault: vi.fn(async () => undefined),
     closeSecretVault: vi.fn(async () => undefined),
     runPending: vi.fn(),
+    capabilityReadiness: vi.fn(),
     rebuildTeamRunCatalog: vi.fn(async () => undefined),
     resetEventPipeline: vi.fn(async () => undefined),
     stopEventPipeline: vi.fn(async () => undefined),
@@ -111,6 +115,10 @@ const mocks = vi.hoisted(() => {
   };
 });
 
+vi.mock("autobyteus-ts/secrets/provider-api-key-resolver.js", async (importOriginal) => ({
+  ...await importOriginal<typeof import("autobyteus-ts/secrets/provider-api-key-resolver.js")>(),
+  disableEnvironmentProviderApiKeySource: mocks.disableEnvironmentKeySource,
+}));
 vi.mock("repository_prisma", async (importOriginal) => ({
   ...await importOriginal<typeof import("repository_prisma")>(),
   initializePrisma: mocks.initializePrisma,
@@ -146,9 +154,8 @@ vi.mock("../../../src/startup/migrations.js", () => ({
 vi.mock("../../../src/startup/token-usage-current-schema-readiness.js", () => ({
   assertTokenUsageCurrentSchema: mocks.assertTokenUsageCurrentSchema,
 }));
-vi.mock("../../../src/token-usage/providers/token-usage-migration-readiness.js", () => ({
-  TOKEN_USAGE_RUN_RECORDS_V1_MIGRATION_ID: "token-usage-v1",
-  configureTokenUsageMigrationReadiness: mocks.configureTokenUsageMigrationReadiness,
+vi.mock("../../../src/token-usage/providers/token-usage-capability.js", () => ({
+  configureTokenUsageCapability: mocks.configureTokenUsageCapability,
 }));
 vi.mock("../../../src/secret-management/secret-vault-runtime.js", () => ({
   getSecretVaultRuntime: () => ({
@@ -156,17 +163,8 @@ vi.mock("../../../src/secret-management/secret-vault-runtime.js", () => ({
     close: mocks.closeSecretVault,
   }),
 }));
-vi.mock("../../../src/app-data-migrations/migrations/team-context-file-execution-locators-v1/team-context-file-execution-locators-v1-app-data-migration.js", () => ({
-  TEAM_CONTEXT_FILE_EXECUTION_LOCATORS_V1_MIGRATION_ID: "20260926_team_context_file_execution_locators_v1",
-}));
 vi.mock("../../../src/app-data-migrations/app-data-migration-runner.js", () => ({
-  getAppDataMigrationRunner: () => ({ runPending: mocks.runPending }),
-}));
-vi.mock("../../../src/app-data-migrations/migrations/team-run-execution-tree-v2-app-data-migration.js", () => ({
-  TEAM_RUN_EXECUTION_TREE_V2_MIGRATION_ID: "team-run-v1",
-}));
-vi.mock("../../../src/app-data-migrations/migrations/custom-provider-readable-id-app-data-migration.js", () => ({
-  CUSTOM_PROVIDER_READABLE_ID_APP_DATA_MIGRATION_ID: "readable-provider-v1",
+  getAppDataMigrationRunner: () => ({ runPending: mocks.runPending, capabilityReadiness: mocks.capabilityReadiness }),
 }));
 vi.mock("../../../src/run-history/services/root-run-package-readiness-index.js", () => ({
   RootRunPackageReadinessIndex: class {
@@ -232,6 +230,7 @@ vi.mock("autobyteus-ts/tools/file/workspace-path-utils.js", () => ({
 }));
 
 import { startStandaloneApplicationHost } from "../../../src/standalone-application-host/start-standalone-application-host.js";
+import { CustomLlmProviderStore } from "../../../src/llm-management/llm-providers/stores/custom-llm-provider-store.js";
 
 const status = (
   migrationId: string,
@@ -258,26 +257,33 @@ describe("standalone application host latest-Personal prerequisite lifecycle", (
   beforeEach(() => {
     vi.clearAllMocks();
     mocks.runPending.mockResolvedValue(successfulStatuses());
+    mocks.capabilityReadiness.mockResolvedValue({ token_usage_history: true, custom_llm_providers: true, node_identity: true, memory_sync: true });
   });
 
   it("runs phases 5-10 in order before event-pipeline and application construction", async () => {
     const handle = await startStandaloneApplicationHost(input);
 
     expect(mocks.assertTokenUsageCurrentSchema).toHaveBeenCalledTimes(1);
-    expect(mocks.configureTokenUsageMigrationReadiness).toHaveBeenNthCalledWith(1, {
-      kind: "CURRENT_SCHEMA_DEGRADED",
-      migrationStatus: "NOT_RUN",
-      logPath: null,
+    expect(mocks.configureTokenUsageCapability).toHaveBeenNthCalledWith(1, {
+      kind: "HISTORY_MIGRATION_PENDING",
     });
-    expect(mocks.configureTokenUsageMigrationReadiness).toHaveBeenNthCalledWith(2, {
+    expect(mocks.configureTokenUsageCapability).toHaveBeenNthCalledWith(2, {
       kind: "READY",
     });
     expect(mocks.runPending).toHaveBeenCalledTimes(1);
     expect(mocks.rebuildTeamRunCatalog).toHaveBeenCalledTimes(1);
     expect(mocks.assertTokenUsageCurrentSchema.mock.invocationCallOrder[0])
       .toBeLessThan(mocks.initializeSecretVault.mock.invocationCallOrder[0]!);
+    // AC-018: the host owns its vault; the autobyteus-ts environment default is off first.
+    expect(mocks.disableEnvironmentKeySource).toHaveBeenCalledTimes(1);
+    expect(mocks.disableEnvironmentKeySource.mock.invocationCallOrder[0])
+      .toBeLessThan(mocks.runDatabaseMigrations.mock.invocationCallOrder[0]!);
     expect(mocks.initializeSecretVault.mock.invocationCallOrder[0])
       .toBeLessThan(mocks.runPending.mock.invocationCallOrder[0]!);
+    expect(mocks.runPending.mock.invocationCallOrder[0])
+      .toBeLessThan(mocks.capabilityReadiness.mock.invocationCallOrder[0]!);
+    expect(mocks.configureTokenUsageCapability.mock.invocationCallOrder[1])
+      .toBeLessThan(mocks.rebuildTeamRunCatalog.mock.invocationCallOrder[0]!);
     expect(mocks.runPending.mock.invocationCallOrder[0])
       .toBeLessThan(mocks.rebuildTeamRunCatalog.mock.invocationCallOrder[0]!);
     expect(mocks.rebuildTeamRunCatalog.mock.invocationCallOrder[0])
@@ -361,7 +367,7 @@ describe("standalone application host latest-Personal prerequisite lifecycle", (
     await expect(startStandaloneApplicationHost(input))
       .rejects.toThrow("Required current token-usage schema is unavailable");
 
-    expect(mocks.configureTokenUsageMigrationReadiness).toHaveBeenCalledWith(expect.objectContaining({
+    expect(mocks.configureTokenUsageCapability).toHaveBeenCalledWith(expect.objectContaining({
       kind: "CRITICAL_CURRENT_SCHEMA_FAILURE",
       reason: expect.stringContaining("missing current table"),
     }));
@@ -393,24 +399,21 @@ describe("standalone application host latest-Personal prerequisite lifecycle", (
     expect(mocks.shutdownPrisma).toHaveBeenCalledTimes(1);
   });
 
-  it("retains degraded token history and strict TeamRun admission without blocking a current-schema run", async () => {
+  it("keeps token history held back and strict TeamRun admission without blocking a current-schema run", async () => {
     mocks.runPending.mockResolvedValueOnce([
       status(ATTACHMENT_MIGRATION_ID, "SUCCEEDED"),
       status(TOKEN_MIGRATION_ID, "FAILED", { logPath: "/tmp/token.log", errorMessage: "history failed" }),
       status(TEAM_MIGRATION_ID, "FAILED", { logPath: "/tmp/team.log", errorMessage: "legacy package" }),
       status(READABLE_MIGRATION_ID, "SUCCEEDED"),
     ]);
+    mocks.capabilityReadiness.mockResolvedValueOnce({ token_usage_history: false, custom_llm_providers: true, node_identity: true, memory_sync: true });
 
     const handle = await startStandaloneApplicationHost(input);
 
-    expect(mocks.configureTokenUsageMigrationReadiness).toHaveBeenLastCalledWith({
-      kind: "CURRENT_SCHEMA_DEGRADED",
-      migrationStatus: "FAILED",
-      logPath: "/tmp/token.log",
-    });
+    expect(mocks.configureTokenUsageCapability).toHaveBeenLastCalledWith({ kind: "HISTORY_MIGRATION_PENDING" });
     expect(mocks.rebuildTeamRunCatalog).toHaveBeenCalledTimes(1);
     expect(mocks.loggerWarn).toHaveBeenCalledWith(expect.stringContaining(
-      "startup continues with strict current-package admission",
+      "Standalone app-data migration '" + TEAM_MIGRATION_ID + "' is FAILED: legacy package",
     ));
     expect(mocks.app.listen).toHaveBeenCalledTimes(1);
 
@@ -418,23 +421,23 @@ describe("standalone application host latest-Personal prerequisite lifecycle", (
   });
 
   it.each([
-    ["missing", [], "NOT_RUN", "NO_LOG"],
-    ["running", [status(READABLE_MIGRATION_ID, "RUNNING", { logPath: "/tmp/readable-running.log" })], "RUNNING", "/tmp/readable-running.log"],
-    ["failed", [status(READABLE_MIGRATION_ID, "FAILED", { logPath: "/tmp/readable-failed.log" })], "FAILED", "/tmp/readable-failed.log"],
+    ["missing", []],
+    ["running", [status(READABLE_MIGRATION_ID, "RUNNING", { logPath: "/tmp/readable-running.log" })]],
+    ["failed", [status(READABLE_MIGRATION_ID, "FAILED", { logPath: "/tmp/readable-failed.log" })]],
   ] as const)(
-    "rejects %s readable-provider readiness after catalog rebuild and unwinds repository resources",
-    async (_label, statuses, expectedStatus, expectedLogPath) => {
+    "starts with only custom providers held back while readable-provider identity is %s (AC-004)",
+    async (_label, statuses) => {
       mocks.runPending.mockResolvedValueOnce([status(ATTACHMENT_MIGRATION_ID, "SUCCEEDED"), ...statuses]);
+      mocks.capabilityReadiness.mockResolvedValueOnce({ token_usage_history: true, custom_llm_providers: false, node_identity: true, memory_sync: true });
 
-      await expect(startStandaloneApplicationHost(input)).rejects.toThrow(
-        `CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED:${expectedStatus}:${expectedLogPath}`,
-      );
+      const handle = await startStandaloneApplicationHost(input);
 
       expect(mocks.rebuildTeamRunCatalog).toHaveBeenCalledTimes(1);
-      expect(mocks.resetEventPipeline).not.toHaveBeenCalled();
-      expect(mocks.buildApplicationPlatformRuntime).not.toHaveBeenCalled();
-      expect(mocks.closeSecretVault).toHaveBeenCalledTimes(1);
-      expect(mocks.shutdownPrisma).toHaveBeenCalledTimes(1);
+      expect(mocks.buildApplicationPlatformRuntime).toHaveBeenCalledTimes(1);
+      expect(mocks.app.listen).toHaveBeenCalledTimes(1);
+      await expect(new CustomLlmProviderStore("/tmp/standalone-data/no-such-data").listProviders())
+        .rejects.toMatchObject({ code: "CUSTOM_PROVIDERS_MIGRATION_PENDING" });
+      await handle.close();
     },
   );
 

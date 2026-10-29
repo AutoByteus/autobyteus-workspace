@@ -8,7 +8,7 @@ import { initializePrisma, rootPrismaClient, shutdownPrisma } from "repository_p
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { createTokenUsageUpdatedPayload } from "../../../src/agent-execution/domain/agent-run-token-usage.js";
 import { createCurrentTokenUsageTestHarness } from "../../helpers/token-usage-run-record-fixtures.js";
-import { configureTokenUsageMigrationReadiness } from "../../../src/token-usage/providers/token-usage-migration-readiness.js";
+import { configureTokenUsageCapability } from "../../../src/token-usage/providers/token-usage-capability.js";
 import type { TokenUsageUpdatedPayload } from "../../../src/agent-execution/domain/agent-run-token-usage.js";
 import { TokenCostCalculator } from "../../../src/token-usage/pricing/token-cost-calculator.js";
 
@@ -192,7 +192,7 @@ describe("token usage unit-price GraphQL hydration", () => {
   beforeAll(async () => {
     await shutdownPrisma();
     await initializePrisma({ datasourceUrl: process.env.DATABASE_URL });
-    configureTokenUsageMigrationReadiness({ kind: "READY" });
+    configureTokenUsageCapability({ kind: "READY" });
     schema = await buildGraphqlSchema();
     const require = createRequire(import.meta.url);
     const typeGraphqlRoot = path.dirname(require.resolve("type-graphql"));

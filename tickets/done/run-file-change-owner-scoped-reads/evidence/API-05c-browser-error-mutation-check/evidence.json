@@ -1,0 +1,204 @@
+{
+  "mode": "real-stack",
+  "startedAt": "2026-10-19T06:11:51.223Z",
+  "stackRoot": "/Users/normy/autobyteus_org/autobyteus-worktrees/run-file-change-owner-scoped-reads",
+  "stackHead": "3341e7cd54",
+  "dirty": [
+    "M autobyteus-web/tests/e2e/owner-scoped-file-reads-probe.mjs",
+    " M tickets/in-progress/run-file-change-owner-scoped-reads/api-e2e-test-progress.md",
+    " M tickets/in-progress/run-file-change-owner-scoped-reads/code-review-revision-record.md"
+  ],
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "cpus": 10,
+  "loadAtStart": [
+    141.9,
+    89.3,
+    62.1
+  ],
+  "cases": {
+    "T-API": {
+      "result": "Not Run (filtered)",
+      "description": "Server time of owner-scoped list and content reads, member run-id reads and a scanning control (AC-010, QR-001, QR-002)"
+    },
+    "B-001": {
+      "result": "Pass",
+      "description": "Desktop: a delegated copy's file opens through the hub route (AC-001, REQ-007)",
+      "ms": 5528,
+      "load": [
+        100.4,
+        84.2,
+        61.4
+      ],
+      "details": {
+        "opened": {
+          "label": "delegated copy",
+          "subject": {
+            "kind": "standaloneMember",
+            "hostRunId": "osr_manager_e3eac7b4ec6c4dffb807f8d27b98f4ac",
+            "memberAddress": "/osr_helper",
+            "agentRunId": "osr_helper_787290d6e0d74d6aad918db72d0228aa"
+          },
+          "path": "copy-notes.md",
+          "requestUrl": "/rest/agent-collaborations/osr_manager_e3eac7b4ec6c4dffb807f8d27b98f4ac/agent-runs/osr_helper_787290d6e0d74d6aad918db72d0228aa/file-change-content?memberAddress=%2Fosr_helper&path=copy-notes.md",
+          "statuses": [
+            200,
+            200,
+            200
+          ],
+          "requestsOnTabOpen": 2,
+          "requestsOnItemClick": 1,
+          "shown": "copy-notes.md Owner-scoped file of delegated copy (copy-notes.md) 758df631",
+          "sinceClickMs": 1174
+        },
+        "requests": [
+          "200 /rest/agent-collaborations/osr_manager_e3eac7b4ec6c4dffb807f8d27b98f4ac/agent-runs/osr_helper_787290d6e0d74d6aad918db72d0228aa/file-change-content?memberAddress=%2Fosr_helper&path=copy-notes.md",
+          "200 /rest/agent-collaborations/osr_manager_e3eac7b4ec6c4dffb807f8d27b98f4ac/agent-runs/osr_helper_787290d6e0d74d6aad918db72d0228aa/file-change-content?memberAddress=%2Fosr_helper&path=copy-notes.md",
+          "200 /rest/agent-collaborations/osr_manager_e3eac7b4ec6c4dffb807f8d27b98f4ac/agent-runs/osr_helper_787290d6e0d74d6aad918db72d0228aa/file-change-content?memberAddress=%2Fosr_helper&path=copy-notes.md"
+        ],
+        "browserErrors": [],
+        "allowedContent404Errors": 0,
+        "content404Responses": 0
+      }
+    },
+    "B-002": {
+      "result": "Not Run (filtered)",
+      "description": "Desktop: a Team run's configured member and team task agent files open through the team route (AC-002, AC-003, REQ-007)"
+    },
+    "B-003": {
+      "result": "Not Run (filtered)",
+      "description": "Desktop: an Org run's direct agent, member-team member, org-root and member-team task agent files open through the org route (AC-004, AC-005, REQ-007)"
+    },
+    "B-004": {
+      "result": "Fail",
+      "description": "Desktop: a standalone run's own file opens through the run route (AC-006)",
+      "ms": 4816,
+      "message": "B-004: browser errors during the journey",
+      "details": {
+        "unexpected": [
+          {
+            "at": 1792390350480,
+            "kind": "pageerror",
+            "text": "TR-001 mutation page error",
+            "url": null
+          }
+        ],
+        "caseErrors": [
+          {
+            "at": 1792390350480,
+            "kind": "pageerror",
+            "text": "TR-001 mutation page error",
+            "url": null
+          }
+        ]
+      }
+    },
+    "B-005": {
+      "result": "Fail",
+      "description": "Desktop: a delegated copy's deleted file shows \"File not found\" through the hub route (AC-001 alternate, REQ-008)",
+      "ms": 4700,
+      "message": "B-005: browser errors during the journey",
+      "details": {
+        "unexpected": [
+          {
+            "at": 1792390355105,
+            "kind": "console",
+            "text": "TR-001 mutation console error",
+            "url": "http://127.0.0.1:62515/_nuxt/plugins/uiErrorCapture.client.ts"
+          }
+        ],
+        "caseErrors": [
+          {
+            "at": 1792390352427,
+            "kind": "console",
+            "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+            "url": "http://127.0.0.1:62510/rest/agent-collaborations/osr_manager_e3eac7b4ec6c4dffb807f8d27b98f4ac/agent-runs/osr_helper_787290d6e0d74d6aad918db72d0228aa/file-change-content?memberAddress=%2Fosr_helper&path=copy-notes.md"
+          },
+          {
+            "at": 1792390353959,
+            "kind": "console",
+            "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+            "url": "http://127.0.0.1:62510/rest/agent-collaborations/osr_manager_e3eac7b4ec6c4dffb807f8d27b98f4ac/agent-runs/osr_helper_787290d6e0d74d6aad918db72d0228aa/file-change-content?memberAddress=%2Fosr_helper&path=copy-notes.md"
+          },
+          {
+            "at": 1792390355105,
+            "kind": "console",
+            "text": "TR-001 mutation console error",
+            "url": "http://127.0.0.1:62515/_nuxt/plugins/uiErrorCapture.client.ts"
+          }
+        ]
+      }
+    },
+    "B-006": {
+      "result": "Not Run (filtered)",
+      "description": "Mobile (Phone Access): an agent run's file opens in the mobile Artifacts view through the run route (AC-012, REQ-007)"
+    },
+    "B-007": {
+      "result": "Not Run (filtered)",
+      "description": "Mobile (Phone Access): a Team run member's file opens in the mobile Artifacts view through the team route (AC-012, REQ-007)"
+    }
+  },
+  "cleanup": {
+    "frontend": {
+      "pid": 47945,
+      "status": "terminated",
+      "exit": "SIGTERM"
+    },
+    "backend": {
+      "pid": 46964,
+      "status": "terminated",
+      "exit": 0
+    },
+    "dataCopyRemoved": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-run-nqpsXw"
+  },
+  "failures": [
+    "B-004",
+    "B-005"
+  ],
+  "seed": {
+    "from": "/tmp/rfcosr-api/seed-small",
+    "copy": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-run-nqpsXw",
+    "unrelatedTeamRuns": 10,
+    "memoryFolders": {
+      "agent_org_run_history_index.json": 0,
+      "agent_orgs": 1,
+      "agent_teams": 11,
+      "agents": 5,
+      "run_history_index.json": 0,
+      "team_run_history_index.json": 0
+    }
+  },
+  "warmUpBrowserErrors": [],
+  "browserErrors": [
+    {
+      "at": 1792390350480,
+      "kind": "pageerror",
+      "text": "TR-001 mutation page error",
+      "url": null
+    },
+    {
+      "at": 1792390352427,
+      "kind": "console",
+      "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "url": "http://127.0.0.1:62510/rest/agent-collaborations/osr_manager_e3eac7b4ec6c4dffb807f8d27b98f4ac/agent-runs/osr_helper_787290d6e0d74d6aad918db72d0228aa/file-change-content?memberAddress=%2Fosr_helper&path=copy-notes.md"
+    },
+    {
+      "at": 1792390353959,
+      "kind": "console",
+      "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+      "url": "http://127.0.0.1:62510/rest/agent-collaborations/osr_manager_e3eac7b4ec6c4dffb807f8d27b98f4ac/agent-runs/osr_helper_787290d6e0d74d6aad918db72d0228aa/file-change-content?memberAddress=%2Fosr_helper&path=copy-notes.md"
+    },
+    {
+      "at": 1792390355105,
+      "kind": "console",
+      "text": "TR-001 mutation console error",
+      "url": "http://127.0.0.1:62515/_nuxt/plugins/uiErrorCapture.client.ts"
+    }
+  ],
+  "finishedAt": "2026-10-19T06:12:46.414Z",
+  "loadAtEnd": [
+    108,
+    86.9,
+    62.9
+  ]
+}

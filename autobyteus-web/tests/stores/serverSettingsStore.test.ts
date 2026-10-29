@@ -441,17 +441,6 @@ describe('serverSettings store', () => {
     expect(applicationsCapabilityStoreMock.refresh).not.toHaveBeenCalled()
   })
 
-  it('does not refresh a capability store after updating ENABLE_SKILL_IMPROVEMENT', async () => {
-    applicationsCapabilityStoreMock.refresh.mockClear()
-    mockSettingUpdate('ENABLE_SKILL_IMPROVEMENT', 'true')
-
-    const store = useServerSettingsStore()
-    const success = await store.updateServerSetting('ENABLE_SKILL_IMPROVEMENT', 'true')
-
-    expect(success).toBe(true)
-    expect(applicationsCapabilityStoreMock.refresh).not.toHaveBeenCalled()
-  })
-
   it('updates one compaction setting and reloads its authoritative server value', async () => {
     const mutateMock = vi.fn().mockResolvedValue({
       data: {

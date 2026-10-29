@@ -189,8 +189,8 @@ export class AudioClientFactory extends Singleton {
 
   static createAudioClient(
     modelIdentifier: string,
-    configOverride: MultimediaConfig | null | undefined,
-    apiKeyResolver: ProviderApiKeyResolver,
+    configOverride?: MultimediaConfig | null,
+    apiKeyResolver?: ProviderApiKeyResolver,
     geminiRuntimeResolver?: GeminiRuntimeResolver,
   ): BaseAudioClient {
     return AudioClientFactory.requireModel(modelIdentifier).createClient(configOverride, apiKeyResolver, geminiRuntimeResolver);

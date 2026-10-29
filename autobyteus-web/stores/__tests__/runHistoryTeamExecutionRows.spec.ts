@@ -29,13 +29,14 @@ const stableRow = (memberAddress: string, children: any[] = [], overrides: Recor
 });
 
 /** The recorded catalog source of a task Team copy whose only member is its coordinator. */
+const copyLaunch = {
+  runtime_kind: 'autobyteus' as const, llm_model_identifier: 'test-model', llm_config: null,
+  auto_execute_tools: true, workspace_root_path: null,
+};
 const teamSource = (address: string, coordinator: string) => ({
   kind: 'agent_team' as const, team_definition_id: `${address}-definition`, coordinator_address: coordinator,
-  members: [{ address: coordinator, agent_definition_id: `${coordinator}-definition` }], handoffs: [],
-  default_launch_configuration: {
-    runtime_kind: 'autobyteus', llm_model_identifier: 'test-model', llm_config: null,
-    auto_execute_tools: true, workspace_root_path: null,
-  },
+  members: [{ address: coordinator, agent_definition_id: `${coordinator}-definition`, launch_configuration: copyLaunch, follows_team: true }], handoffs: [],
+  default_launch_configuration: copyLaunch,
 });
 
 const historyTeam = (children: any[], isActive = true) => ({
@@ -129,8 +130,7 @@ describe('runHistoryTeamExecutionRows current run identities', () => {
       teamRunId: ROOT, coordinatorAddress: worker.address, rootChildren: [worker], isActive,
       taskExecutions: [{
         kind: 'task_agent', address: worker.address, agent_run_id: 'settled-run',
-        platform_agent_run_id: null, delegator_agent_run_id: worker.agentRunId, started_at: createdAt,
-      }],
+        platform_agent_run_id: null, delegator_agent_run_id: worker.agentRunId, started_at: createdAt, source: { kind: 'agent', agent_definition_id: 'agent', launch_configuration: { runtime_kind: 'autobyteus', llm_model_identifier: 'test-model', llm_config: null, auto_execute_tools: false, workspace_root_path: null } } }],
     });
     const rows = buildRunHistoryTeamExecutionRows(historyTeam([
       stableRow(worker.address, [], { agentRunId: worker.agentRunId }),
@@ -166,8 +166,7 @@ describe('runHistoryTeamExecutionRows current run identities', () => {
         task_executions: [
           {
             kind: 'task_agent', address: reviewLead, agent_run_id: 'settled-nested-agent-run',
-            platform_agent_run_id: null, delegator_agent_run_id: 'settled-review-lead-run', started_at: createdAt,
-          },
+            platform_agent_run_id: null, delegator_agent_run_id: 'settled-review-lead-run', started_at: createdAt, source: { kind: 'agent', agent_definition_id: 'agent', launch_configuration: { runtime_kind: 'autobyteus', llm_model_identifier: 'test-model', llm_config: null, auto_execute_tools: false, workspace_root_path: null } } },
           {
             kind: 'task_team', address: '/SoftwareEngineeringTeam/research', team_run_id: 'settled-research-team-run',
             delegator_agent_run_id: 'settled-review-lead-run', started_at: createdAt,

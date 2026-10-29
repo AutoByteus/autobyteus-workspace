@@ -1,0 +1,6 @@
+Check: IMP-04
+Input: 2c6b41462a5a2caaaa52ad3b1da71586fdc45fcb
+Environment: macOS arm64; Node22.23.1; private HOME/TMPDIR
+Recorded: 2026-10-21T20:01:59.774189+00:00; execution timestamps where emitted below
+Command: pnpm -C autobyteus-web exec tsc --noEmit --skipLibCheck --target es2022 --module esnext --moduleResolution bundler utils/nfsLauncherCommands.ts; exit0
+--- original output ---

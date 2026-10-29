@@ -1,5 +1,5 @@
 import fs from "node:fs";
-import { catalogCopyExecutionSource, taskExecutionListsOf } from "../../agent-collaboration/collaborators/collaborator-source-projector.js";
+import { copyExecutionSource, taskExecutionListsOf } from "../../agent-collaboration/collaborators/collaborator-source-projector.js";
 import fsPromises from "node:fs/promises";
 import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import type {
@@ -166,7 +166,8 @@ export class StandaloneRootLocationService {
     return getStandaloneRootTreePath(this.layout.getAgentRunCollaborationDirPath(hostRunId));
   }
 
-  private readTree(hostRunId: string): Promise<StandaloneRootTreeSnapshot | null> {
+  /** The root's tree: the active root's, else the stored one; `null` without a package. */
+  readTree(hostRunId: string): Promise<StandaloneRootTreeSnapshot | null> {
     const active = this.roots.getActiveTree(hostRunId);
     if (active) return Promise.resolve(active);
     return this.store.readTree(this.layout.getAgentRunCollaborationDirPath(hostRunId), hostRunId);
@@ -210,7 +211,7 @@ export class StandaloneRootLocationService {
       memberAddress: agent.address,
       platformAgentRunId: agent.platformAgentRunId,
       configuredPlacement: null,
-      launchConfiguration: catalogCopyExecutionSource(taskExecutionListsOf(tree), agentRunId)?.launchConfiguration ?? null,
+      launchConfiguration: copyExecutionSource(taskExecutionListsOf(tree), agentRunId)?.launchConfiguration ?? null,
       executionKind: agent.executionKind,
       startedAt: agent.startedAt,
       groupPath: Object.freeze(groups.map((team): LocatedExecutionGroup => Object.freeze({

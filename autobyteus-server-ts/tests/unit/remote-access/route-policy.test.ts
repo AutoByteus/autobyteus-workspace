@@ -133,4 +133,17 @@ describe("RemoteAccessRoutePolicy", () => {
     expect(result).toMatchObject({ ok: true, context: { mode: "trusted_network" } });
     expect(authService.authorizeMobileCredential).not.toHaveBeenCalled();
   });
+
+  it("classifies peer-node routes as REMOTE_PEER: no credential needed, a mobile credential refused (REQ-113, N-3)", async () => {
+    expect(classifyHttpRoute("POST", "/rest/remote/delegated-runs")).toBe("REMOTE_PEER");
+    expect(classifyHttpRoute("POST", "/rest/remote/messages")).toBe("REMOTE_PEER");
+    expect(classifyHttpRoute("GET", "/rest/remote-access/status")).toBe("PUBLIC_HEALTH_STATUS");
+    const authService = { authorizeMobileCredential: vi.fn() };
+    const policy = new RemoteAccessRoutePolicy(authService as never);
+    await expect(policy.authorizeHttpRequest(request({ method: "POST", url: "/rest/remote/messages", remoteAddress: "100.64.1.2" })))
+      .resolves.toMatchObject({ ok: true, context: { mode: "trusted_network", isAuthenticated: false } });
+    await expect(policy.authorizeHttpRequest(request({ method: "POST", url: "/rest/remote/messages", remoteAddress: "100.64.1.2",
+      headers: { authorization: "Bearer mra_device_secret" } }))).resolves.toMatchObject({ ok: false, statusCode: 403 });
+    expect(authService.authorizeMobileCredential).not.toHaveBeenCalled();
+  });
 });

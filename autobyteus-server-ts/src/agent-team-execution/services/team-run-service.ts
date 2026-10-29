@@ -1,4 +1,6 @@
 import type { AgentMemoryLocationService } from "../../agent-memory/services/agent-memory-location-service.js";
+import type { RemoteInboundQuery, StoredRemoteLinkCheck } from "../../agent-collaboration/execution/remote/remote-run-links.js";
+import type { DelegatedFrom } from "../../run-history/store/agent-run-metadata-types.js";
 import { AgentRunIdentityAllocator } from "../../agent-execution/services/agent-run-identity-allocator.js";
 import { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
@@ -17,11 +19,13 @@ import {
   type TeamAgentLaunchInput,
   type TeamScopeLaunchInput,
 } from "./flat-team-topology-planner.js";
-import { TokenUsageMigrationReadiness } from "../../token-usage/providers/token-usage-migration-readiness.js";
+import { TokenUsageCapability } from "../../token-usage/providers/token-usage-capability.js";
 import type { TeamRunModelConfigPatch } from "./team-run-model-config-mutator.js";
 import type { RunModelConfigUpdateResult } from "../../run-history/domain/run-model-config.js";
 import type { TeamRunExecutionTreeSnapshot } from "../domain/team-run-execution-tree.js";
 import { DefinitionAdmissionService } from "../../collaboration-definition-admission/services/definition-admission-service.js";
+import type { PairedAgentAccess } from "../../agent-collaboration/execution/remote/paired-agent-access.js";
+import { TeamPairedAgentAccess } from "./team-paired-agent-access.js";
 
 export interface TeamRunPresetInput {
   workspaceRootPath: string;
@@ -52,6 +56,8 @@ export interface CreateTeamRunInput {
   teamConfigs: TeamRunTeamConfigInput[];
   memberConfigs: TeamRunMemberConfigInput[];
   applicationBinding?: { applicationId: string; bindingId: string } | null;
+  /** A Team run a peer node starts (autobyteus-247): the back-link to its delegator there, kept on the tree. */
+  delegatedFrom?: DelegatedFrom;
 }
 
 export interface CreateTeamRunFromRootConfigInput {
@@ -65,11 +71,18 @@ export interface CreateTeamRunFromRootConfigInput {
 export class TeamRunService {
   private readonly definitions: AgentTeamDefinitionService;
   private readonly manager: AgentTeamRunManager;
+  /** autobyteus-278: a Team run a peer started, as this node serves that peer's owner (behind `RemoteRootDirectory`). */
+  readonly pairedAgents: PairedAgentAccess = new TeamPairedAgentAccess({
+    getManagedTeamRun: (teamRunId) => this.getManagedTeamRun(teamRunId),
+    resolveManagedTeamRun: (teamRunId) => this.resolveManagedTeamRun(teamRunId),
+    subscribeToLifecycle: (teamRunId, listener) => this.manager.subscribeToLifecycle(teamRunId, listener),
+    terminateTeamRun: (teamRunId) => this.terminateTeamRun(teamRunId),
+  });
   private readonly catalog: TeamRunHistoryCatalogService;
   private readonly workspaces: WorkspaceManager;
   private readonly agentIdentityAllocator: Pick<AgentRunIdentityAllocator, "allocateForAgentDefinition">;
   private readonly teamIdentityAllocator: Pick<TeamRunIdentityAllocator, "allocateForTeamDefinitionName">;
-  private readonly tokenUsageReadiness: Pick<TokenUsageMigrationReadiness,
+  private readonly tokenUsageReadiness: Pick<TokenUsageCapability,
     "assertCurrentSchemaReady" | "assertExistingRunRestoreReady">;
   private readonly admission: Pick<DefinitionAdmissionService, "requireAvailable">;
 
@@ -82,7 +95,7 @@ export class TeamRunService {
     memoryLocationService?: AgentMemoryLocationService;
     agentRunIdentityAllocator?: Pick<AgentRunIdentityAllocator, "allocateForAgentDefinition">;
     teamRunIdentityAllocator?: Pick<TeamRunIdentityAllocator, "allocateForTeamDefinitionName">;
-    tokenUsageReadiness?: Pick<TokenUsageMigrationReadiness,
+    tokenUsageReadiness?: Pick<TokenUsageCapability,
       "assertCurrentSchemaReady" | "assertExistingRunRestoreReady">;
     definitionAdmissionService?: Pick<DefinitionAdmissionService, "requireAvailable">;
   } = {}) {
@@ -92,7 +105,7 @@ export class TeamRunService {
     this.workspaces = options.workspaceManager ?? getWorkspaceManager();
     this.agentIdentityAllocator = options.agentRunIdentityAllocator ?? new AgentRunIdentityAllocator();
     this.teamIdentityAllocator = options.teamRunIdentityAllocator ?? new TeamRunIdentityAllocator();
-    this.tokenUsageReadiness = options.tokenUsageReadiness ?? new TokenUsageMigrationReadiness();
+    this.tokenUsageReadiness = options.tokenUsageReadiness ?? new TokenUsageCapability();
     this.admission = options.definitionAdmissionService ?? DefinitionAdmissionService.getInstance();
   }
 
@@ -138,7 +151,8 @@ export class TeamRunService {
       memberConfigs,
       applicationBinding: input.applicationBinding ?? null,
     });
-    const root = await this.manager.createTeamRun({ config: plan.config, teamDefinitionName: plan.teamDefinitionName });
+    const root = await this.manager.createTeamRun({ config: plan.config, teamDefinitionName: plan.teamDefinitionName,
+      ...(input.delegatedFrom ? { delegatedFrom: input.delegatedFrom } : {}) });
     try {
       await this.catalog.recordTeamRunCreated({ tree: root.getExecutionTreeSnapshot(), summary: "" });
       return root;
@@ -203,8 +217,23 @@ export class TeamRunService {
     const normalized = required(teamRunId, "teamRunId");
     return this.getManagedTeamRun(normalized) ?? this.restoreTeamRun(normalized).catch(() => null);
   }
+  /** N-303 / N-304: the stored-link check before a peer's request restores a Team run. */
+  storedRemoteLinkCheck(teamRunId: string, query: RemoteInboundQuery): Promise<StoredRemoteLinkCheck> {
+    return this.manager.storedRemoteLinkCheck(required(teamRunId, "teamRunId"), query);
+  }
   recordRunActivity(run: RootTeamRun, input: { summary?: string | null } = {}): Promise<void> {
-    return this.catalog.recordTeamRunSummary({ teamRunId: run.teamRunId, summary: input.summary });
+    return this.recordRunTitle(run.teamRunId, input.summary ?? "");
+  }
+  /**
+   * The Team run's title from a message it accepted (autobyteus-269): the catalog keeps the first non-empty one, so
+   * only the run's first message sets it, whoever sends it (the owner in the window, or a peer's work packet).
+   */
+  recordRunTitle(teamRunId: string, content: string): Promise<void> {
+    return this.catalog.recordTeamRunSummary({ teamRunId, summary: content });
+  }
+  /** The Team run's title as its history row shows it (autobyteus-278: a peer reads it for a run it started). */
+  async readRunTitle(teamRunId: string): Promise<string | null> {
+    return (await this.catalog.getCatalogRow(teamRunId))?.summary || null;
   }
   async terminateTeamRun(teamRunId: string): Promise<boolean> {
     const success = await this.manager.terminateTeamRun(teamRunId);

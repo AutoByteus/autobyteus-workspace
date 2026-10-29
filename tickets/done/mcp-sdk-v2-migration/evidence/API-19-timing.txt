@@ -1,0 +1,245 @@
+# API-19 QR-001 timing: each side's built autobyteus-ts dist (StdioManagedMcpServer / HttpManagedMcpServer) connect → list → call → close, run alternately before/after (4 rounds × 3 per side; then 3 rounds × 3 with 3 calls per connection); machine load average 40-48 throughout; 2026-10-20T09:18:26Z
+# command: node timing-probe.mjs <side> <worktree> http://127.0.0.1:47300/mcp 3 (and timing-probe-repeat.mjs)
+== medians, first run
+server | phase | before median (n) | after median (n) | after/before
+fs_v1 | connectMs | 141.8 (12) | 139.6 (12) | 0.98
+fs_v1 | listMs | 8.9 (12) | 5.8 (12) | 0.66
+fs_v1 | callMs | 3.3 (12) | 8.2 (12) | 2.51
+fs_v1 | closeMs | 5.2 (12) | 5.0 (12) | 0.96
+fs_v2 | connectMs | 117.9 (12) | 115.3 (12) | 0.98
+fs_v2 | listMs | 9.1 (12) | 6.0 (12) | 0.66
+fs_v2 | callMs | 3.5 (12) | 7.9 (12) | 2.23
+fs_v2 | closeMs | 4.7 (12) | 4.5 (12) | 0.96
+python_fixture | connectMs | 423.0 (12) | 405.9 (12) | 0.96
+python_fixture | listMs | 2.3 (12) | 1.8 (12) | 0.77
+python_fixture | callMs | 1.8 (12) | 3.3 (12) | 1.86
+python_fixture | closeMs | 94.0 (12) | 92.8 (12) | 0.99
+VideoAudioServer | connectMs | 377.5 (12) | 371.1 (12) | 0.98
+VideoAudioServer | listMs | 8.3 (12) | 5.6 (12) | 0.67
+VideoAudioServer | callMs | 76.1 (12) | 85.2 (12) | 1.12
+VideoAudioServer | closeMs | 76.3 (12) | 77.4 (12) | 1.02
+token_http | connectMs | 6.7 (12) | 6.9 (12) | 1.04
+token_http | listMs | 3.0 (12) | 3.4 (12) | 1.15
+token_http | callMs | 3.3 (12) | 3.5 (12) | 1.08
+token_http | closeMs | 0.5 (12) | 0.6 (12) | 1.10
+tools: fs_v1=before:14/after:14  fs_v2=before:14/after:14  python_fixture=before:5/after:5  VideoAudioServer=before:32/after:32  token_http=before:1/after:1
+
+== medians, repeated calls on one connection
+fs_v1: call1 3.3 -> 7.0 | call2 1.0 -> 1.1 | call3 0.9 -> 0.9 (n=9)
+fs_v2: call1 3.5 -> 8.2 | call2 1.2 -> 1.3 | call3 0.8 -> 1.0 (n=9)
+python_fixture: call1 1.1 -> 2.9 | call2 0.7 -> 1.0 | call3 0.9 -> 1.4 (n=9)
+VideoAudioServer: call1 74.2 -> 80.4 | call2 72.0 -> 75.9 | call3 72.7 -> 75.7 (n=9)
+token_http: call1 2.7 -> 2.9 | call2 3.0 -> 3.4 | call3 2.8 -> 2.9 (n=9)
+
+== raw rows (first run)
+{"side":"before","id":"fs_v1","i":0,"connectMs":341.8,"listMs":16.9,"callMs":4,"closeMs":5.1,"tools":14,"isError":false}
+{"side":"before","id":"fs_v2","i":0,"connectMs":144,"listMs":9.2,"callMs":3.4,"closeMs":4.1,"tools":14,"isError":false}
+{"side":"before","id":"python_fixture","i":0,"connectMs":787.1,"listMs":2.4,"callMs":2.2,"closeMs":82.9,"tools":5,"isError":false}
+{"side":"before","id":"VideoAudioServer","i":0,"connectMs":582.9,"listMs":10.3,"callMs":519.2,"closeMs":76.6,"tools":32,"isError":false}
+{"side":"before","id":"token_http","i":0,"connectMs":83.9,"listMs":5.5,"callMs":6.6,"closeMs":1.9,"tools":1,"isError":false}
+{"side":"before","id":"fs_v1","i":1,"connectMs":134.6,"listMs":8.8,"callMs":3.1,"closeMs":4.9,"tools":14,"isError":false}
+{"side":"before","id":"fs_v2","i":1,"connectMs":115.1,"listMs":7.8,"callMs":3.1,"closeMs":5.1,"tools":14,"isError":false}
+{"side":"before","id":"python_fixture","i":1,"connectMs":432.3,"listMs":3.2,"callMs":1.6,"closeMs":93.6,"tools":5,"isError":false}
+{"side":"before","id":"VideoAudioServer","i":1,"connectMs":367.2,"listMs":8.3,"callMs":75.1,"closeMs":75.9,"tools":32,"isError":false}
+{"side":"before","id":"token_http","i":1,"connectMs":7.2,"listMs":5.1,"callMs":2.4,"closeMs":0.4,"tools":1,"isError":false}
+{"side":"before","id":"fs_v1","i":2,"connectMs":137.8,"listMs":8.9,"callMs":3.3,"closeMs":5.5,"tools":14,"isError":false}
+{"side":"before","id":"fs_v2","i":2,"connectMs":122.2,"listMs":8.5,"callMs":3.4,"closeMs":4.9,"tools":14,"isError":false}
+{"side":"before","id":"python_fixture","i":2,"connectMs":390.6,"listMs":2.3,"callMs":1.9,"closeMs":76.9,"tools":5,"isError":false}
+{"side":"before","id":"VideoAudioServer","i":2,"connectMs":343,"listMs":7.2,"callMs":74.2,"closeMs":60.1,"tools":32,"isError":false}
+{"side":"before","id":"token_http","i":2,"connectMs":5.8,"listMs":2.7,"callMs":3.2,"closeMs":0.4,"tools":1,"isError":false}
+{"side":"after","id":"fs_v1","i":0,"connectMs":213.1,"listMs":7.1,"callMs":15.8,"closeMs":4.9,"tools":14,"isError":false}
+{"side":"after","id":"fs_v2","i":0,"connectMs":109,"listMs":5.7,"callMs":8.5,"closeMs":4.6,"tools":14,"isError":false}
+{"side":"after","id":"python_fixture","i":0,"connectMs":582,"listMs":1.8,"callMs":3.6,"closeMs":92.3,"tools":5,"isError":false}
+{"side":"after","id":"VideoAudioServer","i":0,"connectMs":556.4,"listMs":7,"callMs":86.4,"closeMs":74.4,"tools":32,"isError":false}
+{"side":"after","id":"token_http","i":0,"connectMs":28.9,"listMs":2.7,"callMs":3.7,"closeMs":3,"tools":1,"isError":false}
+{"side":"after","id":"fs_v1","i":1,"connectMs":136.9,"listMs":5.7,"callMs":7.9,"closeMs":5.5,"tools":14,"isError":false}
+{"side":"after","id":"fs_v2","i":1,"connectMs":113.2,"listMs":5.9,"callMs":6.9,"closeMs":4.2,"tools":14,"isError":false}
+{"side":"after","id":"python_fixture","i":1,"connectMs":408,"listMs":1.4,"callMs":4,"closeMs":77.5,"tools":5,"isError":false}
+{"side":"after","id":"VideoAudioServer","i":1,"connectMs":356.8,"listMs":4.8,"callMs":78.8,"closeMs":74.8,"tools":32,"isError":false}
+{"side":"after","id":"token_http","i":1,"connectMs":7.4,"listMs":3.5,"callMs":3.9,"closeMs":0.5,"tools":1,"isError":false}
+{"side":"after","id":"fs_v1","i":2,"connectMs":134.9,"listMs":4.9,"callMs":6.9,"closeMs":4.5,"tools":14,"isError":false}
+{"side":"after","id":"fs_v2","i":2,"connectMs":112.1,"listMs":5.7,"callMs":7.1,"closeMs":4.4,"tools":14,"isError":false}
+{"side":"after","id":"python_fixture","i":2,"connectMs":438.5,"listMs":1.8,"callMs":3.1,"closeMs":110.6,"tools":5,"isError":false}
+{"side":"after","id":"VideoAudioServer","i":2,"connectMs":383.8,"listMs":5.4,"callMs":80,"closeMs":80.9,"tools":32,"isError":false}
+{"side":"after","id":"token_http","i":2,"connectMs":7,"listMs":3.2,"callMs":3.3,"closeMs":0.4,"tools":1,"isError":false}
+{"side":"before","id":"fs_v1","i":0,"connectMs":229.4,"listMs":18.2,"callMs":3.6,"closeMs":5.7,"tools":14,"isError":false}
+{"side":"before","id":"fs_v2","i":0,"connectMs":117.6,"listMs":10.2,"callMs":4,"closeMs":5,"tools":14,"isError":false}
+{"side":"before","id":"python_fixture","i":0,"connectMs":421.7,"listMs":3,"callMs":2,"closeMs":94.5,"tools":5,"isError":false}
+{"side":"before","id":"VideoAudioServer","i":0,"connectMs":397.5,"listMs":10,"callMs":78.9,"closeMs":77.2,"tools":32,"isError":false}
+{"side":"before","id":"token_http","i":0,"connectMs":40.4,"listMs":2.8,"callMs":5.6,"closeMs":2.5,"tools":1,"isError":false}
+{"side":"before","id":"fs_v1","i":1,"connectMs":157.1,"listMs":7.6,"callMs":3.2,"closeMs":5.2,"tools":14,"isError":false}
+{"side":"before","id":"fs_v2","i":1,"connectMs":125.8,"listMs":9.4,"callMs":3.3,"closeMs":4.4,"tools":14,"isError":false}
+{"side":"before","id":"python_fixture","i":1,"connectMs":424.4,"listMs":4.7,"callMs":5.1,"closeMs":116.8,"tools":5,"isError":false}
+{"side":"before","id":"VideoAudioServer","i":1,"connectMs":404.2,"listMs":13,"callMs":94.7,"closeMs":87,"tools":32,"isError":false}
+{"side":"before","id":"token_http","i":1,"connectMs":6.5,"listMs":3.1,"callMs":4,"closeMs":0.7,"tools":1,"isError":false}
+{"side":"before","id":"fs_v1","i":2,"connectMs":145,"listMs":7.9,"callMs":2.9,"closeMs":5.3,"tools":14,"isError":false}
+{"side":"before","id":"fs_v2","i":2,"connectMs":137.2,"listMs":9.6,"callMs":9.6,"closeMs":41,"tools":14,"isError":false}
+{"side":"before","id":"python_fixture","i":2,"connectMs":510.9,"listMs":2,"callMs":1.3,"closeMs":87.2,"tools":5,"isError":false}
+{"side":"before","id":"VideoAudioServer","i":2,"connectMs":419.1,"listMs":7.5,"callMs":85.7,"closeMs":88,"tools":32,"isError":false}
+{"side":"before","id":"token_http","i":2,"connectMs":6.8,"listMs":2.8,"callMs":3,"closeMs":0.3,"tools":1,"isError":false}
+{"side":"after","id":"fs_v1","i":0,"connectMs":232.4,"listMs":8.9,"callMs":18,"closeMs":6.3,"tools":14,"isError":false}
+{"side":"after","id":"fs_v2","i":0,"connectMs":123.2,"listMs":9.1,"callMs":11.1,"closeMs":5.1,"tools":14,"isError":false}
+{"side":"after","id":"python_fixture","i":0,"connectMs":463.6,"listMs":1.9,"callMs":3.3,"closeMs":95.6,"tools":5,"isError":false}
+{"side":"after","id":"VideoAudioServer","i":0,"connectMs":395.3,"listMs":5.6,"callMs":88.7,"closeMs":75.1,"tools":32,"isError":false}
+{"side":"after","id":"token_http","i":0,"connectMs":29.7,"listMs":2.5,"callMs":3.9,"closeMs":3.2,"tools":1,"isError":false}
+{"side":"after","id":"fs_v1","i":1,"connectMs":124.1,"listMs":5.4,"callMs":6.8,"closeMs":3.9,"tools":14,"isError":false}
+{"side":"after","id":"fs_v2","i":1,"connectMs":111.8,"listMs":5.9,"callMs":8.1,"closeMs":4.6,"tools":14,"isError":false}
+{"side":"after","id":"python_fixture","i":1,"connectMs":391.2,"listMs":1.3,"callMs":3.5,"closeMs":84.2,"tools":5,"isError":false}
+{"side":"after","id":"VideoAudioServer","i":1,"connectMs":369.1,"listMs":4.8,"callMs":80.4,"closeMs":76.8,"tools":32,"isError":false}
+{"side":"after","id":"token_http","i":1,"connectMs":5.5,"listMs":3.7,"callMs":3.3,"closeMs":0.5,"tools":1,"isError":false}
+{"side":"after","id":"fs_v1","i":2,"connectMs":137.7,"listMs":5.6,"callMs":6.8,"closeMs":5.7,"tools":14,"isError":false}
+{"side":"after","id":"fs_v2","i":2,"connectMs":127.4,"listMs":5.9,"callMs":7.6,"closeMs":4.7,"tools":14,"isError":false}
+{"side":"after","id":"python_fixture","i":2,"connectMs":488.8,"listMs":2.4,"callMs":3.1,"closeMs":117.6,"tools":5,"isError":false}
+{"side":"after","id":"VideoAudioServer","i":2,"connectMs":448.7,"listMs":5.6,"callMs":88.4,"closeMs":78,"tools":32,"isError":false}
+{"side":"after","id":"token_http","i":2,"connectMs":6,"listMs":3.5,"callMs":3,"closeMs":0.5,"tools":1,"isError":false}
+{"side":"before","id":"fs_v1","i":0,"connectMs":227.8,"listMs":16.3,"callMs":3.7,"closeMs":5.3,"tools":14,"isError":false}
+{"side":"before","id":"fs_v2","i":0,"connectMs":110.3,"listMs":9.3,"callMs":3.6,"closeMs":4.2,"tools":14,"isError":false}
+{"side":"before","id":"python_fixture","i":0,"connectMs":402.5,"listMs":2.3,"callMs":2.1,"closeMs":98.7,"tools":5,"isError":false}
+{"side":"before","id":"VideoAudioServer","i":0,"connectMs":350,"listMs":8.3,"callMs":70.4,"closeMs":68,"tools":32,"isError":false}
+{"side":"before","id":"token_http","i":0,"connectMs":36.6,"listMs":2.6,"callMs":3.4,"closeMs":1.5,"tools":1,"isError":false}
+{"side":"before","id":"fs_v1","i":1,"connectMs":128.7,"listMs":7.6,"callMs":2.6,"closeMs":4.3,"tools":14,"isError":false}
+{"side":"before","id":"fs_v2","i":1,"connectMs":106.5,"listMs":7.9,"callMs":3.8,"closeMs":4.8,"tools":14,"isError":false}
+{"side":"before","id":"python_fixture","i":1,"connectMs":401.1,"listMs":3,"callMs":1.4,"closeMs":73.6,"tools":5,"isError":false}
+{"side":"before","id":"VideoAudioServer","i":1,"connectMs":369.6,"listMs":8.2,"callMs":77.7,"closeMs":71.5,"tools":32,"isError":false}
+{"side":"before","id":"token_http","i":1,"connectMs":4.8,"listMs":4.6,"callMs":3.1,"closeMs":0.5,"tools":1,"isError":false}
+{"side":"before","id":"fs_v1","i":2,"connectMs":124.2,"listMs":7.1,"callMs":2.7,"closeMs":4.3,"tools":14,"isError":false}
+{"side":"before","id":"fs_v2","i":2,"connectMs":118.2,"listMs":7.5,"callMs":4,"closeMs":4.5,"tools":14,"isError":false}
+{"side":"before","id":"python_fixture","i":2,"connectMs":389.6,"listMs":2.1,"callMs":1.7,"closeMs":80.7,"tools":5,"isError":false}
+{"side":"before","id":"VideoAudioServer","i":2,"connectMs":348.1,"listMs":6.7,"callMs":71.5,"closeMs":71.1,"tools":32,"isError":false}
+{"side":"before","id":"token_http","i":2,"connectMs":5.7,"listMs":2.7,"callMs":2.9,"closeMs":0.3,"tools":1,"isError":false}
+{"side":"after","id":"fs_v1","i":0,"connectMs":208.6,"listMs":7.1,"callMs":17.4,"closeMs":6.5,"tools":14,"isError":false}
+{"side":"after","id":"fs_v2","i":0,"connectMs":119.2,"listMs":5.7,"callMs":8.6,"closeMs":4.1,"tools":14,"isError":false}
+{"side":"after","id":"python_fixture","i":0,"connectMs":392.6,"listMs":1.8,"callMs":3.5,"closeMs":72.4,"tools":5,"isError":false}
+{"side":"after","id":"VideoAudioServer","i":0,"connectMs":372.4,"listMs":6.7,"callMs":88.1,"closeMs":80.4,"tools":32,"isError":false}
+{"side":"after","id":"token_http","i":0,"connectMs":29.1,"listMs":2.5,"callMs":3.7,"closeMs":2.6,"tools":1,"isError":false}
+{"side":"after","id":"fs_v1","i":1,"connectMs":130.7,"listMs":4.9,"callMs":6.8,"closeMs":4.1,"tools":14,"isError":false}
+{"side":"after","id":"fs_v2","i":1,"connectMs":115.5,"listMs":6.3,"callMs":7.5,"closeMs":4.2,"tools":14,"isError":false}
+{"side":"after","id":"python_fixture","i":1,"connectMs":429.4,"listMs":1.9,"callMs":3.4,"closeMs":96,"tools":5,"isError":false}
+{"side":"after","id":"VideoAudioServer","i":1,"connectMs":369.6,"listMs":8.4,"callMs":91.2,"closeMs":94.8,"tools":32,"isError":false}
+{"side":"after","id":"token_http","i":1,"connectMs":5.3,"listMs":4,"callMs":4,"closeMs":0.6,"tools":1,"isError":false}
+{"side":"after","id":"fs_v1","i":2,"connectMs":149.1,"listMs":7.5,"callMs":11.6,"closeMs":7.4,"tools":14,"isError":false}
+{"side":"after","id":"fs_v2","i":2,"connectMs":128.4,"listMs":6.3,"callMs":7.8,"closeMs":4.3,"tools":14,"isError":false}
+{"side":"after","id":"python_fixture","i":2,"connectMs":401.2,"listMs":2.4,"callMs":2.5,"closeMs":92.8,"tools":5,"isError":false}
+{"side":"after","id":"VideoAudioServer","i":2,"connectMs":387.1,"listMs":18.7,"callMs":104.6,"closeMs":97.2,"tools":32,"isError":false}
+{"side":"after","id":"token_http","i":2,"connectMs":6.8,"listMs":3.3,"callMs":3.7,"closeMs":0.4,"tools":1,"isError":false}
+{"side":"before","id":"fs_v1","i":0,"connectMs":232.1,"listMs":17.8,"callMs":3.6,"closeMs":4.8,"tools":14,"isError":false}
+{"side":"before","id":"fs_v2","i":0,"connectMs":116.7,"listMs":10.4,"callMs":4.5,"closeMs":4.4,"tools":14,"isError":false}
+{"side":"before","id":"python_fixture","i":0,"connectMs":464.3,"listMs":3.3,"callMs":2.7,"closeMs":95.6,"tools":5,"isError":false}
+{"side":"before","id":"VideoAudioServer","i":0,"connectMs":364.9,"listMs":9.5,"callMs":75.9,"closeMs":99.5,"tools":32,"isError":false}
+{"side":"before","id":"token_http","i":0,"connectMs":38,"listMs":2.7,"callMs":4.1,"closeMs":1.7,"tools":1,"isError":false}
+{"side":"before","id":"fs_v1","i":1,"connectMs":136.5,"listMs":12.3,"callMs":6.5,"closeMs":7.4,"tools":14,"isError":false}
+{"side":"before","id":"fs_v2","i":1,"connectMs":112.1,"listMs":8.9,"callMs":3.2,"closeMs":4.2,"tools":14,"isError":false}
+{"side":"before","id":"python_fixture","i":1,"connectMs":401.9,"listMs":2.1,"callMs":1.6,"closeMs":101.4,"tools":5,"isError":false}
+{"side":"before","id":"VideoAudioServer","i":1,"connectMs":395.5,"listMs":9.1,"callMs":76.3,"closeMs":85.4,"tools":32,"isError":false}
+{"side":"before","id":"token_http","i":1,"connectMs":4.7,"listMs":4.2,"callMs":3.3,"closeMs":0.5,"tools":1,"isError":false}
+{"side":"before","id":"fs_v1","i":2,"connectMs":138.7,"listMs":7.6,"callMs":3,"closeMs":4.2,"tools":14,"isError":false}
+{"side":"before","id":"fs_v2","i":2,"connectMs":134.9,"listMs":8.9,"callMs":3.5,"closeMs":5,"tools":14,"isError":false}
+{"side":"before","id":"python_fixture","i":2,"connectMs":430.6,"listMs":2.1,"callMs":1.4,"closeMs":95.9,"tools":5,"isError":false}
+{"side":"before","id":"VideoAudioServer","i":2,"connectMs":385.3,"listMs":7.2,"callMs":75.9,"closeMs":70.5,"tools":32,"isError":false}
+{"side":"before","id":"token_http","i":2,"connectMs":6.3,"listMs":3.3,"callMs":3,"closeMs":0.3,"tools":1,"isError":false}
+{"side":"after","id":"fs_v1","i":0,"connectMs":204.3,"listMs":7.1,"callMs":16.8,"closeMs":4.9,"tools":14,"isError":false}
+{"side":"after","id":"fs_v2","i":0,"connectMs":115.2,"listMs":6.2,"callMs":10.2,"closeMs":4.6,"tools":14,"isError":false}
+{"side":"after","id":"python_fixture","i":0,"connectMs":401.3,"listMs":1.5,"callMs":4.1,"closeMs":92.9,"tools":5,"isError":false}
+{"side":"after","id":"VideoAudioServer","i":0,"connectMs":344.2,"listMs":5.9,"callMs":79.1,"closeMs":69.7,"tools":32,"isError":false}
+{"side":"after","id":"token_http","i":0,"connectMs":30,"listMs":4,"callMs":2.7,"closeMs":2.5,"tools":1,"isError":false}
+{"side":"after","id":"fs_v1","i":1,"connectMs":141.5,"listMs":6,"callMs":8.4,"closeMs":5,"tools":14,"isError":false}
+{"side":"after","id":"fs_v2","i":1,"connectMs":141.6,"listMs":6,"callMs":7.6,"closeMs":4.5,"tools":14,"isError":false}
+{"side":"after","id":"python_fixture","i":1,"connectMs":402.1,"listMs":1.3,"callMs":2.8,"closeMs":81.2,"tools":5,"isError":false}
+{"side":"after","id":"VideoAudioServer","i":1,"connectMs":363.2,"listMs":5.2,"callMs":79.2,"closeMs":71.7,"tools":32,"isError":false}
+{"side":"after","id":"token_http","i":1,"connectMs":5,"listMs":3.5,"callMs":3.2,"closeMs":0.6,"tools":1,"isError":false}
+{"side":"after","id":"fs_v1","i":2,"connectMs":129.1,"listMs":4.6,"callMs":5.5,"closeMs":4.1,"tools":14,"isError":false}
+{"side":"after","id":"fs_v2","i":2,"connectMs":112.9,"listMs":6.8,"callMs":8,"closeMs":4.1,"tools":14,"isError":false}
+{"side":"after","id":"python_fixture","i":2,"connectMs":403.9,"listMs":2.4,"callMs":2.2,"closeMs":99.9,"tools":5,"isError":false}
+{"side":"after","id":"VideoAudioServer","i":2,"connectMs":369.9,"listMs":4.4,"callMs":84,"closeMs":83.6,"tools":32,"isError":false}
+{"side":"after","id":"token_http","i":2,"connectMs":6.1,"listMs":2.8,"callMs":3,"closeMs":0.4,"tools":1,"isError":false}
+== raw rows (repeat run)
+{"side":"before","id":"fs_v1","i":0,"connectMs":222.7,"listMs":17,"callMs":3.7,"call2Ms":1,"call3Ms":1.1,"closeMs":4.9,"tools":14,"isError":false}
+{"side":"before","id":"fs_v2","i":0,"connectMs":112.5,"listMs":8.8,"callMs":3.7,"call2Ms":1.5,"call3Ms":1,"closeMs":4.4,"tools":14,"isError":false}
+{"side":"before","id":"python_fixture","i":0,"connectMs":423.7,"listMs":2.2,"callMs":1.6,"call2Ms":0.8,"call3Ms":0.9,"closeMs":81.9,"tools":5,"isError":false}
+{"side":"before","id":"VideoAudioServer","i":0,"connectMs":403.9,"listMs":9.3,"callMs":83.6,"call2Ms":69.7,"call3Ms":72,"closeMs":72.1,"tools":32,"isError":false}
+{"side":"before","id":"token_http","i":0,"connectMs":41.7,"listMs":2.9,"callMs":3.5,"call2Ms":3.3,"call3Ms":1.9,"closeMs":1.8,"tools":1,"isError":false}
+{"side":"before","id":"fs_v1","i":1,"connectMs":125.3,"listMs":8.2,"callMs":3,"call2Ms":0.8,"call3Ms":0.8,"closeMs":4.4,"tools":14,"isError":false}
+{"side":"before","id":"fs_v2","i":1,"connectMs":110.4,"listMs":7.9,"callMs":3.5,"call2Ms":1.1,"call3Ms":0.8,"closeMs":4.9,"tools":14,"isError":false}
+{"side":"before","id":"python_fixture","i":1,"connectMs":367,"listMs":1.8,"callMs":0.9,"call2Ms":0.6,"call3Ms":0.6,"closeMs":73.9,"tools":5,"isError":false}
+{"side":"before","id":"VideoAudioServer","i":1,"connectMs":326,"listMs":7.3,"callMs":74.2,"call2Ms":70.3,"call3Ms":68.4,"closeMs":66.9,"tools":32,"isError":false}
+{"side":"before","id":"token_http","i":1,"connectMs":6.1,"listMs":3.2,"callMs":2.8,"call2Ms":2.9,"call3Ms":2.8,"closeMs":0.4,"tools":1,"isError":false}
+{"side":"before","id":"fs_v1","i":2,"connectMs":122.4,"listMs":6.8,"callMs":3.1,"call2Ms":1.8,"call3Ms":0.7,"closeMs":3.7,"tools":14,"isError":false}
+{"side":"before","id":"fs_v2","i":2,"connectMs":106.9,"listMs":7.4,"callMs":2.8,"call2Ms":1.2,"call3Ms":0.7,"closeMs":4.8,"tools":14,"isError":false}
+{"side":"before","id":"python_fixture","i":2,"connectMs":361.5,"listMs":1.6,"callMs":0.9,"call2Ms":0.6,"call3Ms":0.6,"closeMs":70.9,"tools":5,"isError":false}
+{"side":"before","id":"VideoAudioServer","i":2,"connectMs":327.1,"listMs":6.9,"callMs":70.8,"call2Ms":69.9,"call3Ms":71.1,"closeMs":66.4,"tools":32,"isError":false}
+{"side":"before","id":"token_http","i":2,"connectMs":4.1,"listMs":2.2,"callMs":2.3,"call2Ms":2.2,"call3Ms":2.1,"closeMs":0.3,"tools":1,"isError":false}
+{"side":"after","id":"fs_v1","i":0,"connectMs":193.2,"listMs":7.6,"callMs":15.3,"call2Ms":1.3,"call3Ms":1.2,"closeMs":4.4,"tools":14,"isError":false}
+{"side":"after","id":"fs_v2","i":0,"connectMs":117.9,"listMs":5.4,"callMs":9.1,"call2Ms":2,"call3Ms":1.2,"closeMs":4.2,"tools":14,"isError":false}
+{"side":"after","id":"python_fixture","i":0,"connectMs":411.2,"listMs":1.6,"callMs":3.3,"call2Ms":0.8,"call3Ms":0.8,"closeMs":74.5,"tools":5,"isError":false}
+{"side":"after","id":"VideoAudioServer","i":0,"connectMs":372.3,"listMs":5.2,"callMs":78.2,"call2Ms":73.4,"call3Ms":73.3,"closeMs":82.9,"tools":32,"isError":false}
+{"side":"after","id":"token_http","i":0,"connectMs":29.7,"listMs":2.6,"callMs":3.7,"call2Ms":4.1,"call3Ms":3.3,"closeMs":2.7,"tools":1,"isError":false}
+{"side":"after","id":"fs_v1","i":1,"connectMs":125.9,"listMs":4.9,"callMs":7.6,"call2Ms":1,"call3Ms":0.8,"closeMs":4.7,"tools":14,"isError":false}
+{"side":"after","id":"fs_v2","i":1,"connectMs":112.6,"listMs":5.2,"callMs":7.2,"call2Ms":1.5,"call3Ms":1,"closeMs":4.2,"tools":14,"isError":false}
+{"side":"after","id":"python_fixture","i":1,"connectMs":386.7,"listMs":1.3,"callMs":2.5,"call2Ms":1,"call3Ms":1.4,"closeMs":83.2,"tools":5,"isError":false}
+{"side":"after","id":"VideoAudioServer","i":1,"connectMs":347.1,"listMs":4.9,"callMs":76.3,"call2Ms":68.8,"call3Ms":71.5,"closeMs":61.7,"tools":32,"isError":false}
+{"side":"after","id":"token_http","i":1,"connectMs":5.9,"listMs":4,"callMs":1.8,"call2Ms":2.9,"call3Ms":2.7,"closeMs":0.4,"tools":1,"isError":false}
+{"side":"after","id":"fs_v1","i":2,"connectMs":121.6,"listMs":4.5,"callMs":5.1,"call2Ms":0.8,"call3Ms":0.6,"closeMs":3.9,"tools":14,"isError":false}
+{"side":"after","id":"fs_v2","i":2,"connectMs":107.3,"listMs":5.1,"callMs":6.7,"call2Ms":1,"call3Ms":0.7,"closeMs":4.8,"tools":14,"isError":false}
+{"side":"after","id":"python_fixture","i":2,"connectMs":366.1,"listMs":1.1,"callMs":2.1,"call2Ms":0.9,"call3Ms":0.8,"closeMs":69,"tools":5,"isError":false}
+{"side":"after","id":"VideoAudioServer","i":2,"connectMs":334.8,"listMs":4.2,"callMs":72.8,"call2Ms":69.7,"call3Ms":69.5,"closeMs":60.4,"tools":32,"isError":false}
+{"side":"after","id":"token_http","i":2,"connectMs":4.1,"listMs":3,"callMs":2.7,"call2Ms":2.5,"call3Ms":2.5,"closeMs":0.4,"tools":1,"isError":false}
+{"side":"before","id":"fs_v1","i":0,"connectMs":199.7,"listMs":16.6,"callMs":3.3,"call2Ms":1,"call3Ms":1,"closeMs":4.6,"tools":14,"isError":false}
+{"side":"before","id":"fs_v2","i":0,"connectMs":107.7,"listMs":8.9,"callMs":3.3,"call2Ms":1.3,"call3Ms":0.8,"closeMs":4.5,"tools":14,"isError":false}
+{"side":"before","id":"python_fixture","i":0,"connectMs":410.2,"listMs":2,"callMs":1.1,"call2Ms":0.7,"call3Ms":1.2,"closeMs":75.2,"tools":5,"isError":false}
+{"side":"before","id":"VideoAudioServer","i":0,"connectMs":336.7,"listMs":8.7,"callMs":70.6,"call2Ms":72.8,"call3Ms":75.6,"closeMs":70.9,"tools":32,"isError":false}
+{"side":"before","id":"token_http","i":0,"connectMs":38.5,"listMs":2.4,"callMs":2.4,"call2Ms":3.7,"call3Ms":3.8,"closeMs":2,"tools":1,"isError":false}
+{"side":"before","id":"fs_v1","i":1,"connectMs":127.8,"listMs":8.2,"callMs":3,"call2Ms":1,"call3Ms":0.6,"closeMs":4.1,"tools":14,"isError":false}
+{"side":"before","id":"fs_v2","i":1,"connectMs":113.3,"listMs":8,"callMs":3.6,"call2Ms":1.1,"call3Ms":0.8,"closeMs":4.5,"tools":14,"isError":false}
+{"side":"before","id":"python_fixture","i":1,"connectMs":384.9,"listMs":2.2,"callMs":1.3,"call2Ms":0.7,"call3Ms":0.7,"closeMs":79.8,"tools":5,"isError":false}
+{"side":"before","id":"VideoAudioServer","i":1,"connectMs":372.9,"listMs":8.2,"callMs":81.2,"call2Ms":77.9,"call3Ms":80,"closeMs":96.6,"tools":32,"isError":false}
+{"side":"before","id":"token_http","i":1,"connectMs":7.6,"listMs":3.7,"callMs":3.3,"call2Ms":4.9,"call3Ms":3.2,"closeMs":0.5,"tools":1,"isError":false}
+{"side":"before","id":"fs_v1","i":2,"connectMs":182.8,"listMs":9.5,"callMs":3.9,"call2Ms":2.3,"call3Ms":1.3,"closeMs":5.9,"tools":14,"isError":false}
+{"side":"before","id":"fs_v2","i":2,"connectMs":119.5,"listMs":9,"callMs":4.4,"call2Ms":1.3,"call3Ms":0.9,"closeMs":5.1,"tools":14,"isError":false}
+{"side":"before","id":"python_fixture","i":2,"connectMs":418.4,"listMs":2.3,"callMs":4.3,"call2Ms":3,"call3Ms":2.1,"closeMs":111.8,"tools":5,"isError":false}
+{"side":"before","id":"VideoAudioServer","i":2,"connectMs":384.6,"listMs":9.1,"callMs":82.5,"call2Ms":80.3,"call3Ms":75.1,"closeMs":75.9,"tools":32,"isError":false}
+{"side":"before","id":"token_http","i":2,"connectMs":5.1,"listMs":2.7,"callMs":2.9,"call2Ms":3,"call3Ms":2.9,"closeMs":0.3,"tools":1,"isError":false}
+{"side":"after","id":"fs_v1","i":0,"connectMs":212.3,"listMs":7.7,"callMs":17.2,"call2Ms":1.1,"call3Ms":1.2,"closeMs":5.8,"tools":14,"isError":false}
+{"side":"after","id":"fs_v2","i":0,"connectMs":115.9,"listMs":6.8,"callMs":10.1,"call2Ms":1.7,"call3Ms":1.3,"closeMs":4.7,"tools":14,"isError":false}
+{"side":"after","id":"python_fixture","i":0,"connectMs":444.4,"listMs":1.3,"callMs":3.4,"call2Ms":1.3,"call3Ms":1.4,"closeMs":86.4,"tools":5,"isError":false}
+{"side":"after","id":"VideoAudioServer","i":0,"connectMs":361.1,"listMs":5,"callMs":80.4,"call2Ms":80.1,"call3Ms":83.7,"closeMs":92.7,"tools":32,"isError":false}
+{"side":"after","id":"token_http","i":0,"connectMs":32.5,"listMs":2.9,"callMs":2.7,"call2Ms":4.4,"call3Ms":2.5,"closeMs":3,"tools":1,"isError":false}
+{"side":"after","id":"fs_v1","i":1,"connectMs":132.6,"listMs":5.3,"callMs":7,"call2Ms":1.1,"call3Ms":0.9,"closeMs":4.1,"tools":14,"isError":false}
+{"side":"after","id":"fs_v2","i":1,"connectMs":116,"listMs":5.6,"callMs":8.2,"call2Ms":1.2,"call3Ms":1.1,"closeMs":4.1,"tools":14,"isError":false}
+{"side":"after","id":"python_fixture","i":1,"connectMs":394.6,"listMs":1.2,"callMs":2.9,"call2Ms":1.3,"call3Ms":1.3,"closeMs":80,"tools":5,"isError":false}
+{"side":"after","id":"VideoAudioServer","i":1,"connectMs":352.8,"listMs":4.8,"callMs":78.2,"call2Ms":72.2,"call3Ms":71.1,"closeMs":66.9,"tools":32,"isError":false}
+{"side":"after","id":"token_http","i":1,"connectMs":6.4,"listMs":4.2,"callMs":3.1,"call2Ms":3.1,"call3Ms":2.9,"closeMs":0.6,"tools":1,"isError":false}
+{"side":"after","id":"fs_v1","i":2,"connectMs":132,"listMs":5.4,"callMs":5.3,"call2Ms":1.2,"call3Ms":1.2,"closeMs":4.2,"tools":14,"isError":false}
+{"side":"after","id":"fs_v2","i":2,"connectMs":115,"listMs":5.4,"callMs":6.2,"call2Ms":1.1,"call3Ms":0.7,"closeMs":4.3,"tools":14,"isError":false}
+{"side":"after","id":"python_fixture","i":2,"connectMs":397.8,"listMs":1.6,"callMs":3.2,"call2Ms":2.5,"call3Ms":2.1,"closeMs":100.8,"tools":5,"isError":false}
+{"side":"after","id":"VideoAudioServer","i":2,"connectMs":383.3,"listMs":11.7,"callMs":90,"call2Ms":77.4,"call3Ms":90.2,"closeMs":94.5,"tools":32,"isError":false}
+{"side":"after","id":"token_http","i":2,"connectMs":4.9,"listMs":5.1,"callMs":3.2,"call2Ms":3.4,"call3Ms":5,"closeMs":0.7,"tools":1,"isError":false}
+{"side":"before","id":"fs_v1","i":0,"connectMs":260.3,"listMs":17.9,"callMs":5.2,"call2Ms":1.2,"call3Ms":1.2,"closeMs":5.5,"tools":14,"isError":false}
+{"side":"before","id":"fs_v2","i":0,"connectMs":117.6,"listMs":10.1,"callMs":4,"call2Ms":1.7,"call3Ms":1.1,"closeMs":6.2,"tools":14,"isError":false}
+{"side":"before","id":"python_fixture","i":0,"connectMs":442.4,"listMs":3.4,"callMs":2,"call2Ms":1.5,"call3Ms":1.9,"closeMs":116.7,"tools":5,"isError":false}
+{"side":"before","id":"VideoAudioServer","i":0,"connectMs":362.5,"listMs":11.5,"callMs":82.8,"call2Ms":72.3,"call3Ms":73.1,"closeMs":77.5,"tools":32,"isError":false}
+{"side":"before","id":"token_http","i":0,"connectMs":38.6,"listMs":2.4,"callMs":2.7,"call2Ms":5.1,"call3Ms":3.4,"closeMs":2.1,"tools":1,"isError":false}
+{"side":"before","id":"fs_v1","i":1,"connectMs":133.1,"listMs":7.7,"callMs":3.4,"call2Ms":0.9,"call3Ms":0.8,"closeMs":5.1,"tools":14,"isError":false}
+{"side":"before","id":"fs_v2","i":1,"connectMs":111.6,"listMs":7.8,"callMs":3.1,"call2Ms":1.1,"call3Ms":0.8,"closeMs":4,"tools":14,"isError":false}
+{"side":"before","id":"python_fixture","i":1,"connectMs":383.8,"listMs":2,"callMs":1.1,"call2Ms":0.8,"call3Ms":1.6,"closeMs":80.5,"tools":5,"isError":false}
+{"side":"before","id":"VideoAudioServer","i":1,"connectMs":352.5,"listMs":7.2,"callMs":72,"call2Ms":72,"call3Ms":72.7,"closeMs":70.7,"tools":32,"isError":false}
+{"side":"before","id":"token_http","i":1,"connectMs":6.1,"listMs":3.1,"callMs":2,"call2Ms":2.9,"call3Ms":2.7,"closeMs":0.5,"tools":1,"isError":false}
+{"side":"before","id":"fs_v1","i":2,"connectMs":121.7,"listMs":7.6,"callMs":2.7,"call2Ms":0.9,"call3Ms":0.9,"closeMs":4.1,"tools":14,"isError":false}
+{"side":"before","id":"fs_v2","i":2,"connectMs":105.5,"listMs":7.6,"callMs":3,"call2Ms":1.2,"call3Ms":0.7,"closeMs":3.8,"tools":14,"isError":false}
+{"side":"before","id":"python_fixture","i":2,"connectMs":378.2,"listMs":1.6,"callMs":0.9,"call2Ms":0.7,"call3Ms":0.7,"closeMs":69.4,"tools":5,"isError":false}
+{"side":"before","id":"VideoAudioServer","i":2,"connectMs":361,"listMs":7.7,"callMs":72.6,"call2Ms":71.9,"call3Ms":72.3,"closeMs":72.9,"tools":32,"isError":false}
+{"side":"before","id":"token_http","i":2,"connectMs":4.8,"listMs":2.5,"callMs":2.7,"call2Ms":2.6,"call3Ms":2.8,"closeMs":0.4,"tools":1,"isError":false}
+{"side":"after","id":"fs_v1","i":0,"connectMs":207.7,"listMs":6.9,"callMs":15.9,"call2Ms":1,"call3Ms":0.9,"closeMs":4.9,"tools":14,"isError":false}
+{"side":"after","id":"fs_v2","i":0,"connectMs":115.1,"listMs":5.7,"callMs":10.8,"call2Ms":1.6,"call3Ms":1.3,"closeMs":4.5,"tools":14,"isError":false}
+{"side":"after","id":"python_fixture","i":0,"connectMs":410.1,"listMs":1.4,"callMs":2.7,"call2Ms":1,"call3Ms":1,"closeMs":75.1,"tools":5,"isError":false}
+{"side":"after","id":"VideoAudioServer","i":0,"connectMs":350.6,"listMs":5,"callMs":86.1,"call2Ms":87.8,"call3Ms":75.7,"closeMs":100.3,"tools":32,"isError":false}
+{"side":"after","id":"token_http","i":0,"connectMs":68.5,"listMs":2.3,"callMs":2.8,"call2Ms":4.1,"call3Ms":3.3,"closeMs":2.6,"tools":1,"isError":false}
+{"side":"after","id":"fs_v1","i":1,"connectMs":130.9,"listMs":5.4,"callMs":6.8,"call2Ms":1.3,"call3Ms":0.9,"closeMs":4.5,"tools":14,"isError":false}
+{"side":"after","id":"fs_v2","i":1,"connectMs":124,"listMs":7.3,"callMs":7.2,"call2Ms":1.3,"call3Ms":0.9,"closeMs":3.8,"tools":14,"isError":false}
+{"side":"after","id":"python_fixture","i":1,"connectMs":379.9,"listMs":1.2,"callMs":2.9,"call2Ms":0.8,"call3Ms":1.8,"closeMs":100.8,"tools":5,"isError":false}
+{"side":"after","id":"VideoAudioServer","i":1,"connectMs":382.1,"listMs":5,"callMs":82.3,"call2Ms":90.3,"call3Ms":81.9,"closeMs":89,"tools":32,"isError":false}
+{"side":"after","id":"token_http","i":1,"connectMs":7.2,"listMs":4.9,"callMs":3,"call2Ms":3.7,"call3Ms":3.2,"closeMs":0.6,"tools":1,"isError":false}
+{"side":"after","id":"fs_v1","i":2,"connectMs":141.8,"listMs":5.6,"callMs":6.5,"call2Ms":1.6,"call3Ms":3,"closeMs":7.4,"tools":14,"isError":false}
+{"side":"after","id":"fs_v2","i":2,"connectMs":150.3,"listMs":12.4,"callMs":8.7,"call2Ms":1.3,"call3Ms":0.8,"closeMs":4.8,"tools":14,"isError":false}
+{"side":"after","id":"python_fixture","i":2,"connectMs":430.7,"listMs":1.6,"callMs":3.2,"call2Ms":1.4,"call3Ms":1.5,"closeMs":134.6,"tools":5,"isError":false}
+{"side":"after","id":"VideoAudioServer","i":2,"connectMs":412.7,"listMs":4.9,"callMs":85.9,"call2Ms":75.9,"call3Ms":77.6,"closeMs":84.7,"tools":32,"isError":false}
+{"side":"after","id":"token_http","i":2,"connectMs":6.6,"listMs":3.6,"callMs":2.9,"call2Ms":3.3,"call3Ms":1.8,"closeMs":0.5,"tools":1,"isError":false}

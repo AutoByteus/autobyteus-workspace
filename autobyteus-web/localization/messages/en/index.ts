@@ -1,3 +1,4 @@
+import manualServerMessages from './server';
 import agentInputMessages from './agentInput.generated';
 import chatMessages from './chat';
 import agentOrgMessages from './agentOrgs';
@@ -14,11 +15,19 @@ import memoryMessages from './memory';
 import serverMessages from './server.generated';
 import generatedSettingsMessages from './settings.generated';
 import settingsMessages from './settings';
+import updateNotificationsMessages from './updateNotifications';
 import apiKeySettingsMessages from './api-key-settings';
 import packageMigrationSettingsMessages from './package-migration-settings';
 import tokenUsageSettingsMessages from './token-usage-settings';
 import memorySyncSettingsMessages from './memorySyncSettings';
+import remoteCollaborationSettingsMessages from './remoteCollaborationSettings';
+import nodesPageMessages from './nodesPage';
+import remoteRunsMessages from './remoteRuns';
+import embeddingSettingsMessages from './embeddingSettings';
+import agentRuntimesSettingsMessages from './agentRuntimesSettings';
+import modelRoutingSettingsMessages from './modelRoutingSettings';
 import projectMessages from './projects';
+import voiceInputMessages from './voiceInput';
 import generatedShellMessages from './shell.generated';
 import shellMessages from './shell';
 import generatedSkillsMessages from './skills.generated';
@@ -46,13 +55,22 @@ const enMessages: TranslationCatalog = {
   ...generatedMemoryMessages,
   ...memoryMessages,
   ...serverMessages,
+  ...manualServerMessages,
   ...generatedSettingsMessages,
   ...settingsMessages,
+  ...updateNotificationsMessages,
   ...apiKeySettingsMessages,
   ...packageMigrationSettingsMessages,
   ...tokenUsageSettingsMessages,
   ...memorySyncSettingsMessages,
+  ...remoteCollaborationSettingsMessages,
+  ...nodesPageMessages,
+  ...remoteRunsMessages,
+  ...embeddingSettingsMessages,
+  ...agentRuntimesSettingsMessages,
+  ...modelRoutingSettingsMessages,
   ...projectMessages,
+  ...voiceInputMessages,
   ...generatedShellMessages,
   ...shellMessages,
   ...generatedSkillsMessages,

@@ -1,0 +1,91 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.12 [39m[90m/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-ts[39m
+
+[90mstdout[2m | tests/unit/tools/terminal/terminal-session-manager.test.ts[2m > [22m[2mTerminalSessionManager[2m > [22m[2mensureStarted creates session
+[22m[39mTerminalSessionManager started backend 'MockPtySession' in '/tmp'.
+
+ [32m✓[39m tests/unit/tools/terminal/wsl-tmux-session.test.ts [2m([22m[2m3 tests[22m[2m)[22m[32m 206[2mms[22m[39m
+ [32m✓[39m tests/unit/tools/terminal/command-execution/process-group-observer.test.ts [2m([22m[2m8 tests[22m[2m)[22m[32m 17[2mms[22m[39m
+ [32m✓[39m tests/unit/tools/terminal/node-pty-bootstrap.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 10[2mms[22m[39m
+[90mstdout[2m | tests/unit/tools/terminal/terminal-session-manager.test.ts[2m > [22m[2mTerminalSessionManager[2m > [22m[2mensureStarted is idempotent
+[22m[39mTerminalSessionManager started backend 'MockPtySession' in '/tmp'.
+
+ [32m✓[39m tests/unit/tools/terminal/command-execution/anchored-command-launcher.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 8[2mms[22m[39m
+ [32m✓[39m tests/unit/tools/terminal/direct-shell-session.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 6[2mms[22m[39m
+ [32m✓[39m tests/unit/tools/terminal/command-execution/shell-command-executor.test.ts [2m([22m[2m1 test[22m[2m)[22m[32m 5[2mms[22m[39m
+[90mstdout[2m | tests/unit/tools/terminal/terminal-session-manager.test.ts[2m > [22m[2mTerminalSessionManager[2m > [22m[2mexecuteCommand returns TerminalResult
+[22m[39mTerminalSessionManager started backend 'MockPtySession' in '/tmp'.
+
+[90mstdout[2m | tests/unit/agent/context/agent-config.test.ts[2m > [22m[2mAgentConfig[2m > [22m[2mcopies host native scope by identity outside structured custom data
+[22m[39mAgentConfig created for name='name', role='role'.
+AgentConfig created for name='name', role='role'.
+
+[90mstdout[2m | tests/unit/agent/context/agent-config.test.ts[2m > [22m[2mAgentConfig[2m > [22m[2mcopy creates a new config with cloned lists and data
+[22m[39mAgentConfig created for name='name', role='role'.
+AgentConfig created for name='name', role='role'.
+
+[90mstdout[2m | tests/unit/agent/context/agent-config.test.ts[2m > [22m[2mAgentConfig[2m > [22m[2mcarries configured skills and no run-level skill switch
+[22m[39mAgentConfig created for name='name', role='role'.
+
+[90mstdout[2m | tests/unit/agent/context/agent-config.test.ts[2m > [22m[2mAgentConfig[2m > [22m[2mdefaults memory compaction to disabled
+[22m[39mAgentConfig created for name='name', role='role'.
+
+[90mstdout[2m | tests/unit/agent/context/agent-config.test.ts[2m > [22m[2mAgentConfig[2m > [22m[2mcopies enabled memory compaction with a fresh policy
+[22m[39mAgentConfig created for name='name', role='role'.
+AgentConfig created for name='name', role='role'.
+
+ [32m✓[39m tests/unit/agent/context/agent-config.test.ts [2m([22m[2m5 tests[22m[2m)[22m[32m 4[2mms[22m[39m
+ [32m✓[39m tests/unit/tools/terminal/isolated-pty-session.test.ts [2m([22m[2m7 tests[22m[2m)[22m[33m 1259[2mms[22m[39m
+ [32m✓[39m tests/unit/tools/terminal/pty-session.test.ts [2m([22m[2m12 tests[22m[2m)[22m[33m 1289[2mms[22m[39m
+     [33m[2m✓[22m[39m starting twice throws [33m 308[2mms[22m[39m
+     [33m[2m✓[22m[39m close is idempotent [33m 318[2mms[22m[39m
+     [33m[2m✓[22m[39m returns queued data on read [33m 303[2mms[22m[39m
+ [32m✓[39m tests/unit/tools/terminal/output-buffer.test.ts [2m([22m[2m11 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/tools/terminal/session-factory.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/tools/terminal/wsl-utils.test.ts [2m([22m[2m7 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/tools/terminal/command-execution/non-interactive-shell-resolver.test.ts [2m([22m[2m2 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/tools/terminal/types.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/tools/terminal/prompt-detector.test.ts [2m([22m[2m10 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/tools/tool-result-json.test.ts [2m([22m[2m6 tests[22m[2m)[22m[32m 3[2mms[22m[39m
+ [32m✓[39m tests/unit/tools/terminal/ansi-utils.test.ts [2m([22m[2m4 tests[22m[2m)[22m[32m 2[2mms[22m[39m
+ [32m✓[39m tests/unit/tools/terminal/run-bash.test.ts [2m([22m[2m15 tests[22m[2m)[22m[33m 1938[2mms[22m[39m
+ [32m✓[39m tests/unit/tools/terminal/command-execution/stop-retirement-race.test.ts [2m([22m[2m3 tests[22m[2m)[22m[33m 1999[2mms[22m[39m
+     [33m[2m✓[22m[39m drains after inspection, shares only real stop work (expired=false) [33m 921[2mms[22m[39m
+     [33m[2m✓[22m[39m drains after inspection, shares only real stop work (expired=true) [33m 906[2mms[22m[39m
+[90mstdout[2m | tests/unit/tools/terminal/terminal-session-manager.test.ts[2m > [22m[2mTerminalSessionManager[2m > [22m[2mclose cleans up session
+[22m[39mTerminalSessionManager started backend 'MockPtySession' in '/tmp'.
+
+[90mstdout[2m | tests/unit/tools/terminal/command-execution/native-command-process-scope.test.ts[2m > [22m[2mNativeCommandProcessScope[2m > [22m[2mforces a TERM-resistant adopted HTTP child, confirms listener release and preserves prior RESULT
+[22m[39m{"check":"owned-survivor","pid":94337,"port":57799,"cleanup":{"outcomes":[{"outcome":"stopped"}]},"listenerReleased":true}
+
+ [32m✓[39m tests/unit/tools/terminal/background-process-manager.test.ts [2m([22m[2m3 tests[22m[2m)[22m[33m 2247[2mms[22m[39m
+     [33m[2m✓[22m[39m startCommand returns PID metadata and captures output [33m 1418[2mms[22m[39m
+     [33m[2m✓[22m[39m stopProcess removes a managed process [33m 826[2mms[22m[39m
+[90mstdout[2m | tests/unit/tools/terminal/terminal-session-manager.test.ts[2m > [22m[2mTerminalSessionManager[2m > [22m[2mfalls back to provided session factory when primary startup fails
+[22m[39mTerminalSessionManager started backend 'MockPtySession' in '/tmp'.
+
+ [32m✓[39m tests/unit/tools/terminal/command-execution/output-capture-lifetime.test.ts [2m([22m[2m5 tests[22m[2m)[22m[33m 3568[2mms[22m[39m
+     [33m[2m✓[22m[39m releases every foreground-only capture and listener without losing returned output [33m 766[2mms[22m[39m
+     [33m[2m✓[22m[39m releases a foreground capture after command launch failure [33m 844[2mms[22m[39m
+     [33m[2m✓[22m[39m releases a background capture after command launch failure [33m 807[2mms[22m[39m
+     [33m[2m✓[22m[39m keeps an adopted live record output until confirmed explicit stop [33m 968[2mms[22m[39m
+ [32m✓[39m tests/unit/tools/terminal/terminal-session-manager.test.ts [2m([22m[2m7 tests[22m[2m)[22m[33m 3585[2mms[22m[39m
+     [33m[2m✓[22m[39m ensureStarted creates session [33m 530[2mms[22m[39m
+     [33m[2m✓[22m[39m ensureStarted is idempotent [33m 510[2mms[22m[39m
+     [33m[2m✓[22m[39m executeCommand returns TerminalResult [33m 1016[2mms[22m[39m
+     [33m[2m✓[22m[39m close cleans up session [33m 510[2mms[22m[39m
+     [33m[2m✓[22m[39m falls back to provided session factory when primary startup fails [33m 1016[2mms[22m[39m
+ [32m✓[39m tests/unit/tools/terminal/command-execution/native-command-process-scope.test.ts [2m([22m[2m9 tests[22m[2m)[22m[33m 8208[2mms[22m[39m
+     [33m[2m✓[22m[39m retains fast shell survivors and drains them after the command/agent context ends [33m 1074[2mms[22m[39m
+     [33m[2m✓[22m[39m forces a TERM-resistant adopted HTTP child, confirms listener release and preserves prior RESULT [33m 1140[2mms[22m[39m
+     [33m[2m✓[22m[39m fails closed on observation denial, then retains the lease for a verified later close [33m 803[2mms[22m[39m
+     [33m[2m✓[22m[39m returns fast/empty/nonzero commands and retires empty anchors [33m 619[2mms[22m[39m
+     [33m[2m✓[22m[39m settles forced timeout without RESULT and keeps partial output [33m 1821[2mms[22m[39m
+     [33m[2m✓[22m[39m host stop is not a tool timeout and duplicate close shares the promise [33m 936[2mms[22m[39m
+     [33m[2m✓[22m[39m drains multiple groups collectively while an unrelated scope survives [33m 1740[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m23 passed[39m[22m[90m (23)[39m
+[2m      Tests [22m [1m[32m146 passed[39m[22m[90m (146)[39m
+[2m   Start at [22m 10:29:47
+[2m   Duration [22m 8.53s[2m (transform 996ms, setup 532ms, import 919ms, tests 24.37s, environment 1ms)[22m
+

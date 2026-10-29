@@ -3,7 +3,9 @@ import { GraphQLJSON } from "graphql-scalars";
 import { getTeamRunHistoryService } from "../../../run-history/services/team-run-history-service.js";
 import { getTeamMemberRunViewProjectionService } from "../../../run-history/services/team-member-run-view-projection-service.js";
 import { EventMonitorActiveTracePageObject } from "./event-monitor-active-trace-page.js";
+import { RunFileChangeEntryObject } from "./run-file-changes.js";
 import { projectExecutionTree } from "../../../services/agent-streaming/team-execution-view-projector.js";
+import { remoteTaskExecutionDtos } from "../../../services/agent-streaming/remote-task-execution-dto-projection.js";
 import { getAgentTeamRunManager } from "../../../agent-team-execution/services/agent-team-run-manager.js";
 import { RunModelConfigEditabilityObject } from "./run-model-config.js";
 import { getStudioRunModelConfigService } from "../studio-application-api-services.js";
@@ -22,6 +24,10 @@ class TeamRunResumeConfigPayload {
   /** `{ agentRunId } | { teamRunId }` of each task execution in `executionTree` whose Task is DONE or CANCELLED. */
   @Field(() => GraphQLJSON)
   closedTaskExecutions!: unknown;
+
+  /** autobyteus-278: the runs this Team delegated to other nodes, with their node's name, as its stream snapshot lists them. */
+  @Field(() => GraphQLJSON)
+  remoteTaskExecutions!: unknown;
 
   @Field(() => RunModelConfigEditabilityObject)
   modelConfigEditability!: RunModelConfigEditabilityObject;
@@ -94,6 +100,7 @@ export class TeamRunHistoryResolver {
       isActive: config.isActive,
       executionTree: projectExecutionTree(config.executionTree),
       closedTaskExecutions: config.closedTaskExecutions,
+      remoteTaskExecutions: await remoteTaskExecutionDtos(config.executionTree.rootTeam.remoteTaskExecutions),
       modelConfigEditability: config.modelConfigEditability,
     };
   }
@@ -112,6 +119,15 @@ export class TeamRunHistoryResolver {
       lastActivityAt: projection.lastActivityAt,
       hasEarlierActiveTraceEvents: projection.hasEarlierActiveTraceEvents,
     };
+  }
+
+  /** One team member's artifact list, located inside the named team run only (live while it runs). */
+  @Query(() => [RunFileChangeEntryObject])
+  async getTeamMemberFileChanges(
+    @Arg("teamRunId", () => String) teamRunId: string,
+    @Arg("agentRunId", () => String) agentRunId: string,
+  ): Promise<RunFileChangeEntryObject[]> {
+    return this.teamMemberRunProjectionService.getFileChanges(teamRunId, agentRunId);
   }
 
   @Query(() => TeamRunExecutionCheckpointPayload)

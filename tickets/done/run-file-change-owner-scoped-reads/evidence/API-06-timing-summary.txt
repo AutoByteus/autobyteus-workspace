@@ -1,0 +1,30 @@
+# API-06 — AC-010 / QR-001 / QR-002 timing summary, generated from API-05-06-small-seed-check/evidence.json and API-05-06-large-seed-check/evidence.json
+# probe: autobyteus-web/tests/e2e/owner-scoped-file-reads-probe.mjs (committed 2486c8b7c4); stack head 2486c8b7c4, dirty tracked files: []
+# env: darwin-arm64, node v22.23.1, 10 CPUs; server dist/app.js of this worktree; client = node fetch over 127.0.0.1 HTTP (time includes HTTP round trip)
+# small seed: 10 unrelated saved team runs, memory folders {'agent_org_run_history_index.json': 0, 'agent_orgs': 1, 'agent_teams': 11, 'agents': 5, 'run_history_index.json': 0, 'team_run_history_index.json': 0}; load [44.8, 34.9, 38.5]
+# large seed: 680 unrelated saved team runs, memory folders {'agent_org_run_history_index.json': 0, 'agent_orgs': 1, 'agent_teams': 681, 'agents': 5, 'run_history_index.json': 0, 'team_run_history_index.json': 0}; load [66.3, 44.6, 41.9]
+# samples per read: 9 after 1 warm-up (median / max ms)
+
+read                                                 small med small max large med large max
+standalone run list                                        3.4       6.1       3.3       5.6
+standalone run content                                     2.8       3.5       2.4       2.7
+delegated copy list                                        3.1       3.7       2.9       3.2
+delegated copy content                                     2.8        48       2.5         3
+team configured member list                                2.6       2.9       2.5       2.8
+team configured member content                             2.5       2.5       2.4       3.7
+team task agent list                                       2.5       2.8       2.4       2.8
+team task agent content                                    2.4       2.5       2.4       2.6
+org direct agent list                                      3.9       8.6       2.7       3.6
+org direct agent content                                   2.5       2.8       2.4       2.6
+org member-team member list                                2.5       2.8       2.3       2.4
+org member-team member content                             2.6       3.2       2.3       3.1
+org-root task agent list                                     3       4.4       2.5       2.8
+org-root task agent content                                2.7         3       2.4       2.7
+org member-team task agent list                            2.8       3.3       2.4       2.7
+org member-team task agent content                         2.7       3.1       2.4       2.8
+run-id list of a member (QR-002)                           2.2       2.3       1.9       2.1
+run-id content of a member (QR-002)                        1.9         2       1.8         2
+control: scanning context-file read (FU-A)                 3.5       4.1      63.3      67.3
+
+slowest owner-scoped sample: small {'name': 'delegated copy content', 'ms': 48} | large {'name': 'standalone run list', 'ms': 5.6}
+QR-001 limit 500 ms per read: every owner-scoped sample on both seeds is below it (asserted by the probe).

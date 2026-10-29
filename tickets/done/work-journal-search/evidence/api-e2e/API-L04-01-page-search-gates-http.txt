@@ -1,0 +1,113 @@
+# API-L04 (part 1): the page's search over the known-answer file through the running node's HTTP GraphQL (memorySearch, limit 10, no asking run), 2 rounds; aggregates and ranks by question ID only (question texts and results: private file autobyteus-delivery-receipts/work-journal-search-evidence/api-e2e/API-L04-graphql-gates-full.json)
+# Command: node probes/API-PROBE-graphql-gates.mjs http://127.0.0.1:53568/graphql <private queries.json> --rounds 2 --private-out <private file>
+# Desktop iso-53567-504c, complete index (3683 runs, 7429 journal files, meaning 7429/7429, Granite R2); 2026-10-26 18:55 UTC; host load before/after in the JSON
+# Note: without an asking run, this ticket's own solution_designer_8062… run (it quotes every question) competes: it is #1 for Q13, Q32, N02 here. The R-016 gates use --asking-run (part 2).
+{
+ "url": "http://127.0.0.1:53568/graphql",
+ "questions": 37,
+ "rounds": 2,
+ "loadBefore": [
+  8.8,
+  9.5,
+  12.1
+ ],
+ "loadAfter": [
+  7.6,
+  9.2,
+  11.9
+ ],
+ "lastRound": {
+  "answerable": 32,
+  "oneSearchTop10": 30,
+  "withinThreeSearches": 30,
+  "rank1": 11,
+  "top3": 26,
+  "p50Ms": 201,
+  "p90Ms": 640,
+  "maxMs": 1198,
+  "falseOnlyWeak": [],
+  "offTopic": [
+   {
+    "id": "N02",
+    "onlyWeak": false
+   },
+   {
+    "id": "N04",
+    "onlyWeak": true
+   },
+   {
+    "id": "N05",
+    "onlyWeak": true
+   }
+  ],
+  "coverageNotes": 0
+ },
+ "ranks": {
+  "Q01": 3,
+  "Q02": 1,
+  "Q03": 1,
+  "Q04": 10,
+  "Q05": 1,
+  "Q06": 3,
+  "Q07": 7,
+  "Q08": 2,
+  "Q09": 2,
+  "Q10": 3,
+  "Q11": 1,
+  "Q12": 2,
+  "Q13": "miss",
+  "Q14": 8,
+  "Q15": 2,
+  "Q16": 1,
+  "Q17": 1,
+  "Q18": 1,
+  "Q19": 3,
+  "Q20": 2,
+  "Q21": 2,
+  "Q22": 1,
+  "Q23": 1,
+  "Q24": 1,
+  "Q25": 1,
+  "Q26": 2,
+  "Q27": 9,
+  "Q28": 2,
+  "Q29": 3,
+  "Q30": "miss",
+  "Q31": 2,
+  "Q32": 2
+ },
+ "firstRoundMs": [
+  452,
+  92,
+  221,
+  86,
+  58,
+  62,
+  67,
+  260,
+  489,
+  69,
+  67,
+  105,
+  269,
+  1017,
+  591,
+  611,
+  893,
+  393,
+  78,
+  411,
+  169,
+  89,
+  85,
+  293,
+  995,
+  1214,
+  465,
+  203,
+  67,
+  115,
+  208,
+  583
+ ]
+}

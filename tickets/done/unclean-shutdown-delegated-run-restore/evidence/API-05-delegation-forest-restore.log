@@ -1,0 +1,493 @@
+# Case: API-05 (delegation-forest-restore, intact logs)
+# Command: env -i PATH HOME=<resolved temp> TMPDIR USER RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<fixture> pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/delegation-forest-restore.e2e.test.ts --no-watch
+# Commit: 19448e398c
+# Environment: macOS, Node v22.23.1, pnpm 10.28.2; clean env, scripted AGY CLI, in-process Studio server
+# Date: 2026-10-19
+
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/unclean-shutdown-delegated-run-restore/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/unclean-shutdown-delegated-run-restore/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:17117) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/unclean-shutdown-delegated-run-restore/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/unclean-shutdown-delegated-run-restore/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-QAgv1d
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-QAgv1d/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-QAgv1d/.env
+[dotenv@17.3.1] injecting env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-QAgv1d/.env -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/unclean-shutdown-delegated-run-restore/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/unclean-shutdown-delegated-run-restore/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-QAgv1d
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-QAgv1d/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-QAgv1d/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-QAgv1d/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-QAgv1d/memory
+============================================================
+Initialized server settings service with 20 predefined settings
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+AgentRunManager initialized.
+AgentRunManager initialized.
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Creating temp workspace at: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-QAgv1d/temp_workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-QAgv1d/temp_workspace.
+Initialized TempWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-QAgv1d/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Agent Discovery Tools
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Registered required tool unit: Agent Communication Tools
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Registered required tool unit: Project Task Tools
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Registered required tool unit: Browser Tools
+
+stderr | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Successfully registered tool definition: 'search_web'
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Agent Definition created successfully with ID: df-manager-b26b64
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Agent Definition created successfully with ID: df-mate-b26b64
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Agent Definition created successfully with ID: df-lead-b26b64
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Agent Definition created successfully with ID: df-peer-b26b64
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Agent Definition created successfully with ID: df-builder-b26b64
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Agent Definition created successfully with ID: df-checker-b26b64
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Agent Definition created successfully with ID: df-helper-b26b64
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Agent Team Definition created successfully with ID: df-team-b26b64
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Agent Team Definition created successfully with ID: df-squad-b26b64
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor)
+Agent Team Definition created successfully with ID: df-crew-b26b64
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-1 Team root: a member delegates a task team that delegates a task team that delegates a task agent; restored after Stop
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-QAgv1d/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-QAgv1d/workspace.
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-1 Team root: a member delegates a task team that delegates a task team that delegates a task agent; restored after Stop
+Created and registered workspace ID: agent_ws_e56b1f6949b9d34fafd616e8bb2a76b396220c97375dd01438a633ba9d506be2
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-1 Team root: a member delegates a task team that delegates a task team that delegates a task agent; restored after Stop
+Agent team websocket attached for team run df_team_b26b64_c8647368bb69467fbeb35428f8c34b14
+Created agent session 79d52b18-31a8-4ff7-b87f-50bc774c4030 for run df_team_b26b64_c8647368bb69467fbeb35428f8c34b14
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-1 Team root: a member delegates a task team that delegates a task team that delegates a task agent; restored after Stop
+Agent Team WebSocket connected: session=79d52b18-31a8-4ff7-b87f-50bc774c4030, run=df_team_b26b64_c8647368bb69467fbeb35428f8c34b14
+
+stderr | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-1 Team root: a member delegates a task team that delegates a task team that delegates a task agent; restored after Stop
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-QAgv1d/memory/agent_teams/df_team_b26b64_c8647368bb69467fbeb35428f8c34b14/df_manager_b26b64_700a0c5c00624c468ca62b1c14c4566f/raw_traces_active.jsonl
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-1 Team root: a member delegates a task team that delegates a task team that delegates a task agent; restored after Stop
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-QAgv1d/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-QAgv1d/workspace.
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-1 Team root: a member delegates a task team that delegates a task team that delegates a task agent; restored after Stop
+Reusing registered workspace ID: agent_ws_e56b1f6949b9d34fafd616e8bb2a76b396220c97375dd01438a633ba9d506be2
+
+stderr | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-1 Team root: a member delegates a task team that delegates a task team that delegates a task agent; restored after Stop
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-QAgv1d/memory/agent_teams/df_team_b26b64_c8647368bb69467fbeb35428f8c34b14/df_manager_b26b64_700a0c5c00624c468ca62b1c14c4566f/raw_traces_active.jsonl
+
+stderr | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-1 Team root: a member delegates a task team that delegates a task team that delegates a task agent; restored after Stop
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-QAgv1d/memory/agent_teams/df_team_b26b64_c8647368bb69467fbeb35428f8c34b14/df_manager_b26b64_700a0c5c00624c468ca62b1c14c4566f/raw_traces_active.jsonl
+
+stderr | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-1 Team root: a member delegates a task team that delegates a task team that delegates a task agent; restored after Stop
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-QAgv1d/memory/agent_teams/df_team_b26b64_c8647368bb69467fbeb35428f8c34b14/df_manager_b26b64_700a0c5c00624c468ca62b1c14c4566f/raw_traces_active.jsonl
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-1 Team root: a member delegates a task team that delegates a task team that delegates a task agent; restored after Stop
+AGY compaction detection off for run df_manager_b26b64_700a0c5c00624c468ca62b1c14c4566f: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-1 Team root: a member delegates a task team that delegates a task team that delegates a task agent; restored after Stop
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-QAgv1d/memory/agent_teams/df_team_b26b64_c8647368bb69467fbeb35428f8c34b14/df_manager_b26b64_700a0c5c00624c468ca62b1c14c4566f/raw_traces_active.jsonl
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-1 Team root: a member delegates a task team that delegates a task team that delegates a task agent; restored after Stop
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-QAgv1d/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-QAgv1d/workspace.
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-1 Team root: a member delegates a task team that delegates a task team that delegates a task agent; restored after Stop
+Reusing registered workspace ID: agent_ws_e56b1f6949b9d34fafd616e8bb2a76b396220c97375dd01438a633ba9d506be2
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-1 Team root: a member delegates a task team that delegates a task team that delegates a task agent; restored after Stop
+AGY compaction detection off for run df_lead_b26b64_3b643057a1d64acbbc877215fd96ccfa: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-1 Team root: a member delegates a task team that delegates a task team that delegates a task agent; restored after Stop
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-QAgv1d/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-QAgv1d/workspace.
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-1 Team root: a member delegates a task team that delegates a task team that delegates a task agent; restored after Stop
+Reusing registered workspace ID: agent_ws_e56b1f6949b9d34fafd616e8bb2a76b396220c97375dd01438a633ba9d506be2
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-1 Team root: a member delegates a task team that delegates a task team that delegates a task agent; restored after Stop
+AGY compaction detection off for run df_builder_b26b64_0125e32791844783bd52ae8851ddefe8: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-1 Team root: a member delegates a task team that delegates a task team that delegates a task agent; restored after Stop
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-QAgv1d/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-QAgv1d/workspace.
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-1 Team root: a member delegates a task team that delegates a task team that delegates a task agent; restored after Stop
+Reusing registered workspace ID: agent_ws_e56b1f6949b9d34fafd616e8bb2a76b396220c97375dd01438a633ba9d506be2
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-1 Team root: a member delegates a task team that delegates a task team that delegates a task agent; restored after Stop
+AGY compaction detection off for run df_helper_b26b64_ea46dc24ff9b48c797a8f6fc93476cab: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-1 Team root: a member delegates a task team that delegates a task team that delegates a task agent; restored after Stop
+Closed agent session 79d52b18-31a8-4ff7-b87f-50bc774c4030
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-1 Team root: a member delegates a task team that delegates a task team that delegates a task agent; restored after Stop
+Agent team websocket attached for team run df_team_b26b64_c8647368bb69467fbeb35428f8c34b14
+Created agent session 137a9956-5875-459c-8d51-e87da3bb3b28 for run df_team_b26b64_c8647368bb69467fbeb35428f8c34b14
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-1 Team root: a member delegates a task team that delegates a task team that delegates a task agent; restored after Stop
+Agent Team WebSocket connected: session=137a9956-5875-459c-8d51-e87da3bb3b28, run=df_team_b26b64_c8647368bb69467fbeb35428f8c34b14
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-1 Team root: a member delegates a task team that delegates a task team that delegates a task agent; restored after Stop
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-QAgv1d/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-QAgv1d/workspace.
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-1 Team root: a member delegates a task team that delegates a task team that delegates a task agent; restored after Stop
+Reusing registered workspace ID: agent_ws_e56b1f6949b9d34fafd616e8bb2a76b396220c97375dd01438a633ba9d506be2
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-1 Team root: a member delegates a task team that delegates a task team that delegates a task agent; restored after Stop
+AGY compaction detection off for run df_builder_b26b64_0125e32791844783bd52ae8851ddefe8: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-1 Team root: a member delegates a task team that delegates a task team that delegates a task agent; restored after Stop
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-QAgv1d/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-QAgv1d/workspace.
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-1 Team root: a member delegates a task team that delegates a task team that delegates a task agent; restored after Stop
+Reusing registered workspace ID: agent_ws_e56b1f6949b9d34fafd616e8bb2a76b396220c97375dd01438a633ba9d506be2
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-1 Team root: a member delegates a task team that delegates a task team that delegates a task agent; restored after Stop
+AGY compaction detection off for run df_helper_b26b64_ea46dc24ff9b48c797a8f6fc93476cab: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-1 Team root: a member delegates a task team that delegates a task team that delegates a task agent; restored after Stop
+Closed agent session 137a9956-5875-459c-8d51-e87da3bb3b28
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-2 Agent root: the agent the user started heads the same forest; restored after Stop
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-QAgv1d/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-QAgv1d/workspace.
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-2 Agent root: the agent the user started heads the same forest; restored after Stop
+Reusing registered workspace ID: agent_ws_e56b1f6949b9d34fafd616e8bb2a76b396220c97375dd01438a633ba9d506be2
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-2 Agent root: the agent the user started heads the same forest; restored after Stop
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-QAgv1d/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-QAgv1d/workspace.
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-2 Agent root: the agent the user started heads the same forest; restored after Stop
+Reusing registered workspace ID: agent_ws_e56b1f6949b9d34fafd616e8bb2a76b396220c97375dd01438a633ba9d506be2
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-2 Agent root: the agent the user started heads the same forest; restored after Stop
+AGY compaction detection off for run df_manager_b26b64_8a044c6088dd442688ffc8f6eedd4c66: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-2 Agent root: the agent the user started heads the same forest; restored after Stop
+Agent websocket attached for run df_manager_b26b64_8a044c6088dd442688ffc8f6eedd4c66
+Created agent session 365f85cc-4b4a-4be9-9f5b-28ac3334d1cc for run df_manager_b26b64_8a044c6088dd442688ffc8f6eedd4c66
+Agent WebSocket connected: session=365f85cc-4b4a-4be9-9f5b-28ac3334d1cc, run=df_manager_b26b64_8a044c6088dd442688ffc8f6eedd4c66
+
+stderr | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-2 Agent root: the agent the user started heads the same forest; restored after Stop
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-QAgv1d/memory/agents/df_manager_b26b64_8a044c6088dd442688ffc8f6eedd4c66/raw_traces_active.jsonl
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-2 Agent root: the agent the user started heads the same forest; restored after Stop
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-QAgv1d/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-QAgv1d/workspace.
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-2 Agent root: the agent the user started heads the same forest; restored after Stop
+Reusing registered workspace ID: agent_ws_e56b1f6949b9d34fafd616e8bb2a76b396220c97375dd01438a633ba9d506be2
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-2 Agent root: the agent the user started heads the same forest; restored after Stop
+AGY compaction detection off for run df_lead_b26b64_1fbdef0250fc4b559819a2618d1e8d67: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-2 Agent root: the agent the user started heads the same forest; restored after Stop
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-QAgv1d/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-QAgv1d/workspace.
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-2 Agent root: the agent the user started heads the same forest; restored after Stop
+Reusing registered workspace ID: agent_ws_e56b1f6949b9d34fafd616e8bb2a76b396220c97375dd01438a633ba9d506be2
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-2 Agent root: the agent the user started heads the same forest; restored after Stop
+AGY compaction detection off for run df_builder_b26b64_2f6c5c78b88a4820871f30c2703afcf9: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-2 Agent root: the agent the user started heads the same forest; restored after Stop
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-QAgv1d/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-QAgv1d/workspace.
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-2 Agent root: the agent the user started heads the same forest; restored after Stop
+Reusing registered workspace ID: agent_ws_e56b1f6949b9d34fafd616e8bb2a76b396220c97375dd01438a633ba9d506be2
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-2 Agent root: the agent the user started heads the same forest; restored after Stop
+AGY compaction detection off for run df_helper_b26b64_ea58c9d9aec44b498b045510f8006ff4: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-2 Agent root: the agent the user started heads the same forest; restored after Stop
+Closed agent session 365f85cc-4b4a-4be9-9f5b-28ac3334d1cc
+Agent WebSocket disconnected: 365f85cc-4b4a-4be9-9f5b-28ac3334d1cc
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-2 Agent root: the agent the user started heads the same forest; restored after Stop
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-QAgv1d/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-QAgv1d/workspace.
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-2 Agent root: the agent the user started heads the same forest; restored after Stop
+Reusing registered workspace ID: agent_ws_e56b1f6949b9d34fafd616e8bb2a76b396220c97375dd01438a633ba9d506be2
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-2 Agent root: the agent the user started heads the same forest; restored after Stop
+AGY compaction detection off for run df_manager_b26b64_8a044c6088dd442688ffc8f6eedd4c66: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-2 Agent root: the agent the user started heads the same forest; restored after Stop
+Agent websocket attached for run df_manager_b26b64_8a044c6088dd442688ffc8f6eedd4c66
+Created agent session 3b0534d3-2627-4dfc-8e93-2d5f833dee73 for run df_manager_b26b64_8a044c6088dd442688ffc8f6eedd4c66
+Agent WebSocket connected: session=3b0534d3-2627-4dfc-8e93-2d5f833dee73, run=df_manager_b26b64_8a044c6088dd442688ffc8f6eedd4c66
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-2 Agent root: the agent the user started heads the same forest; restored after Stop
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-QAgv1d/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-QAgv1d/workspace.
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-2 Agent root: the agent the user started heads the same forest; restored after Stop
+Reusing registered workspace ID: agent_ws_e56b1f6949b9d34fafd616e8bb2a76b396220c97375dd01438a633ba9d506be2
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-2 Agent root: the agent the user started heads the same forest; restored after Stop
+AGY compaction detection off for run df_builder_b26b64_2f6c5c78b88a4820871f30c2703afcf9: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-2 Agent root: the agent the user started heads the same forest; restored after Stop
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-QAgv1d/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-QAgv1d/workspace.
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-2 Agent root: the agent the user started heads the same forest; restored after Stop
+Reusing registered workspace ID: agent_ws_e56b1f6949b9d34fafd616e8bb2a76b396220c97375dd01438a633ba9d506be2
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-2 Agent root: the agent the user started heads the same forest; restored after Stop
+AGY compaction detection off for run df_helper_b26b64_ea58c9d9aec44b498b045510f8006ff4: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-2 Agent root: the agent the user started heads the same forest; restored after Stop
+Closed agent session 3b0534d3-2627-4dfc-8e93-2d5f833dee73
+Agent WebSocket disconnected: 3b0534d3-2627-4dfc-8e93-2d5f833dee73
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-3 Org root: the direct agent delegates a copy of the mounted team, which heads the forest; the mounted team is unchanged; restored after Stop
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-QAgv1d/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-QAgv1d/workspace.
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-3 Org root: the direct agent delegates a copy of the mounted team, which heads the forest; the mounted team is unchanged; restored after Stop
+Reusing registered workspace ID: agent_ws_e56b1f6949b9d34fafd616e8bb2a76b396220c97375dd01438a633ba9d506be2
+
+stderr | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-3 Org root: the direct agent delegates a copy of the mounted team, which heads the forest; the mounted team is unchanged; restored after Stop
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-QAgv1d/memory/agent_orgs/df_org_b26b64_a2c9d7a14dc94883a3ddbcf5da89d209/df_manager_b26b64_e781adb2753c43b1b2ea1f2a9720a155/raw_traces_active.jsonl
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-3 Org root: the direct agent delegates a copy of the mounted team, which heads the forest; the mounted team is unchanged; restored after Stop
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-QAgv1d/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-QAgv1d/workspace.
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-3 Org root: the direct agent delegates a copy of the mounted team, which heads the forest; the mounted team is unchanged; restored after Stop
+Reusing registered workspace ID: agent_ws_e56b1f6949b9d34fafd616e8bb2a76b396220c97375dd01438a633ba9d506be2
+
+stderr | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-3 Org root: the direct agent delegates a copy of the mounted team, which heads the forest; the mounted team is unchanged; restored after Stop
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-QAgv1d/memory/agent_orgs/df_org_b26b64_a2c9d7a14dc94883a3ddbcf5da89d209/df_manager_b26b64_e781adb2753c43b1b2ea1f2a9720a155/raw_traces_active.jsonl
+
+stderr | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-3 Org root: the direct agent delegates a copy of the mounted team, which heads the forest; the mounted team is unchanged; restored after Stop
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-QAgv1d/memory/agent_orgs/df_org_b26b64_a2c9d7a14dc94883a3ddbcf5da89d209/df_manager_b26b64_e781adb2753c43b1b2ea1f2a9720a155/raw_traces_active.jsonl
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-3 Org root: the direct agent delegates a copy of the mounted team, which heads the forest; the mounted team is unchanged; restored after Stop
+AGY compaction detection off for run df_manager_b26b64_e781adb2753c43b1b2ea1f2a9720a155: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stderr | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-3 Org root: the direct agent delegates a copy of the mounted team, which heads the forest; the mounted team is unchanged; restored after Stop
+Memory file missing: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-QAgv1d/memory/agent_orgs/df_org_b26b64_a2c9d7a14dc94883a3ddbcf5da89d209/df_manager_b26b64_e781adb2753c43b1b2ea1f2a9720a155/raw_traces_active.jsonl
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-3 Org root: the direct agent delegates a copy of the mounted team, which heads the forest; the mounted team is unchanged; restored after Stop
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-QAgv1d/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-QAgv1d/workspace.
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-3 Org root: the direct agent delegates a copy of the mounted team, which heads the forest; the mounted team is unchanged; restored after Stop
+Reusing registered workspace ID: agent_ws_e56b1f6949b9d34fafd616e8bb2a76b396220c97375dd01438a633ba9d506be2
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-3 Org root: the direct agent delegates a copy of the mounted team, which heads the forest; the mounted team is unchanged; restored after Stop
+AGY compaction detection off for run df_lead_b26b64_e5a69ac927c54d85ba2772d1c5e9fd03: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-3 Org root: the direct agent delegates a copy of the mounted team, which heads the forest; the mounted team is unchanged; restored after Stop
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-QAgv1d/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-QAgv1d/workspace.
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-3 Org root: the direct agent delegates a copy of the mounted team, which heads the forest; the mounted team is unchanged; restored after Stop
+Reusing registered workspace ID: agent_ws_e56b1f6949b9d34fafd616e8bb2a76b396220c97375dd01438a633ba9d506be2
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-3 Org root: the direct agent delegates a copy of the mounted team, which heads the forest; the mounted team is unchanged; restored after Stop
+AGY compaction detection off for run df_builder_b26b64_7560237475c94b4da988e11cc5e1112e: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-3 Org root: the direct agent delegates a copy of the mounted team, which heads the forest; the mounted team is unchanged; restored after Stop
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-QAgv1d/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-QAgv1d/workspace.
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-3 Org root: the direct agent delegates a copy of the mounted team, which heads the forest; the mounted team is unchanged; restored after Stop
+Reusing registered workspace ID: agent_ws_e56b1f6949b9d34fafd616e8bb2a76b396220c97375dd01438a633ba9d506be2
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-3 Org root: the direct agent delegates a copy of the mounted team, which heads the forest; the mounted team is unchanged; restored after Stop
+AGY compaction detection off for run df_helper_b26b64_7c3f407daaa54eeab9f1fc37a507e734: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-3 Org root: the direct agent delegates a copy of the mounted team, which heads the forest; the mounted team is unchanged; restored after Stop
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-3 Org root: the direct agent delegates a copy of the mounted team, which heads the forest; the mounted team is unchanged; restored after Stop
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-QAgv1d/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-QAgv1d/workspace.
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-3 Org root: the direct agent delegates a copy of the mounted team, which heads the forest; the mounted team is unchanged; restored after Stop
+Reusing registered workspace ID: agent_ws_e56b1f6949b9d34fafd616e8bb2a76b396220c97375dd01438a633ba9d506be2
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-3 Org root: the direct agent delegates a copy of the mounted team, which heads the forest; the mounted team is unchanged; restored after Stop
+AGY compaction detection off for run df_builder_b26b64_7560237475c94b4da988e11cc5e1112e: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-3 Org root: the direct agent delegates a copy of the mounted team, which heads the forest; the mounted team is unchanged; restored after Stop
+Creating new workspace for rootPath: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-QAgv1d/workspace
+Created metadata-only FileSystemWorkspace at /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/df-e2e-QAgv1d/workspace.
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-3 Org root: the direct agent delegates a copy of the mounted team, which heads the forest; the mounted team is unchanged; restored after Stop
+Reusing registered workspace ID: agent_ws_e56b1f6949b9d34fafd616e8bb2a76b396220c97375dd01438a633ba9d506be2
+
+stdout | tests/e2e/projects/delegation-forest-restore.e2e.test.ts > Delegation forest through Stop → reopen (real HTTP/WS/GraphQL/scoped MCP, scripted AGY actor) > DF-3 Org root: the direct agent delegates a copy of the mounted team, which heads the forest; the mounted team is unchanged; restored after Stop
+AGY compaction detection off for run df_helper_b26b64_7c3f407daaa54eeab9f1fc37a507e734: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+ ✓ tests/e2e/projects/delegation-forest-restore.e2e.test.ts (3 tests) 7668ms
+     ✓ DF-1 Team root: a member delegates a task team that delegates a task team that delegates a task agent; restored after Stop  2377ms
+     ✓ DF-2 Agent root: the agent the user started heads the same forest; restored after Stop  2517ms
+     ✓ DF-3 Org root: the direct agent delegates a copy of the mounted team, which heads the forest; the mounted team is unchanged; restored after Stop  2334ms
+
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+   Start at  17:35:45
+   Duration  15.19s (transform 5.25s, setup 22ms, import 7.08s, tests 7.67s, environment 0ms)
+
+exit=0

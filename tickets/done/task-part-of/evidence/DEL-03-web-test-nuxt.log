@@ -1,0 +1,8 @@
+# Check: DEL-03 web test:nuxt on integrated state
+# Commit: afb2b814c2
+# Date: 2026-10-19T06:51:27Z
+# Command: pnpm -C autobyteus-web test:nuxt --run
+# Excerpt (summary); full log: DEL-03-web-test-nuxt.full.log.gz
+ Test Files  639 passed | 2 skipped (641)
+      Tests  4547 passed | 3 skipped (4550)
+exit=0

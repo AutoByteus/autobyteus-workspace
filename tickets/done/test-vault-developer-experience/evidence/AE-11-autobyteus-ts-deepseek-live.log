@@ -1,0 +1,25 @@
+# AE-11 | AC-005 | AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault RUN_LIVE_PROVIDER_TESTS=1 pnpm -C autobyteus-ts exec vitest run tests/integration/llm/api/deepseek-llm.test.ts tests/unit/test-setup-credential-isolation.test.ts | agent shell carrying 13 inherited production *_API_KEY variables | commit 3ae0b40f91 | 2026-10-20T04:51:36Z
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/test-vault-developer-experience/autobyteus-ts
+
+ ✓ tests/unit/test-setup-credential-isolation.test.ts (2 tests | 1 skipped) 2ms
+(node:90971) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/integration/llm/api/deepseek-llm.test.ts (6 tests) 7567ms
+     ✓ should successfully make a simple completion call  1934ms
+     ✓ should stream response incrementally  1198ms
+     ✓ should support public sendUserMessage  1123ms
+     ✓ should support public streamUserMessage  1749ms
+     ✓ should accept tools without forced tool_choice and continue if the model chooses a tool call  1552ms
+
+ Test Files  2 passed (2)
+      Tests  7 passed | 1 skipped (8)
+   Start at  06:51:37
+   Duration  8.45s (transform 591ms, setup 230ms, import 582ms, tests 7.57s, environment 0ms)
+
+exit=0
+## vault sha256 after
+b9a638234e8a5c949679aefb508d2a9260febb1c490bc3642588535628ea9929  ~/.autobyteus-test/vault/test-vault.db
+7ebe87b21eb5f3c5aa2ad24b80044fddd52236d070e85516a746738149b1baae  ~/.autobyteus-test/vault/test-vault.db.secret.key
+test-vault.db
+test-vault.db.secret.key

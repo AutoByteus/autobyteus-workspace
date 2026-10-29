@@ -1,0 +1,14 @@
+# IMP-02-server-unit-excerpt server unit baseline (excerpt; full log not retained in repo)
+# commit 855842b8f1 (baseline fix 6f38cd51e6 below it) | macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2 | 2026-10-19
+# command: pnpm -C autobyteus-server-ts test:unit
+
+stderr | tests/unit/agent-memory/runtime-memory-event-accumulator.test.ts > RuntimeMemoryEventAccumulator > keeps reasoning open across matching TOOL_EXECUTION_FAILED updates
+test-owned exact retry receipt {"first":{"accepted":false,"code":"RUNTIME_COMMAND_FAILED","message":"Failed to terminate run for runtime 'codex_app_server': AggregateError: Codex exact thread cleanup failed."},"retry":{"accepted":true},"sameThread":"owned-thread-1","sameTurn":"owned-thread-1-turn","facts":[{"kind":"admitted"},{"kind":"forwarded","dispatchKind":"start_turn","turnId":"owned-thread-1-turn"},{"kind":"turn_associated","turnId":"owned-thread-1-turn"},{"kind":"interrupted","turnId":"owned-thread-1-turn"}]}
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED:NOT_RUN:NO_LOG","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED:RUNNING:/tmp/running.log","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED:FAILED:/tmp/failed.log","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: migration state store unavailable","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+ Test Files  749 passed | 4 skipped (753)
+      Tests  6167 passed | 7 skipped (6174)
+   Duration  540.95s (transform 14.37s, setup 7.14s, import 260.78s, tests 205.72s, environment 863ms)
+server-unit exit=0

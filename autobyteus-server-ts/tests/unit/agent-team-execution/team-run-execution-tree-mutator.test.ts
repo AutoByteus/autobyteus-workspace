@@ -5,12 +5,14 @@ import {
   adoptAgentPlatformBindingInTree,
   replaceAgentPlatformBindingWithoutConversationInTree,
 } from "../../../src/agent-team-execution/services/team-run-execution-tree-mutator.js";
-import { projectTaskAgentExecution, projectTaskTeamExecution } from "../../../src/agent-collaboration/execution/task/task-execution-tree-projection.js";
+import { projectTaskAgentExecution } from "../../../src/agent-collaboration/execution/task/task-execution-tree-projection.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import {
   address,
+  testAgentCopySource,
   testAgentNode,
   testAgentTeamNode,
+  testCatalogTeamCopy,
   testExecutionTree,
 } from "../../fixtures/current-team-run-fixtures.js";
 
@@ -69,11 +71,12 @@ describe("adoptAgentPlatformBindingInTree", () => {
         address: address("/coordinator"),
         agentRunId: "task-worker-run",
         delegatorAgentRunId: "run-coordinator", startedAt: "2026-08-17T20:00:00.000Z",
+        source: testAgentCopySource("coordinator"),
       }),
     });
     tree = addTaskExecutionToTree({
       tree,
-      execution: projectTaskTeamExecution({
+      execution: testCatalogTeamCopy({
         node: testAgentTeamNode({
           address: "/task-team",
           coordinatorAddress: "/task-team/reviewer",

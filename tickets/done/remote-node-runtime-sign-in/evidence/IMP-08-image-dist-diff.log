@@ -1,0 +1,8 @@
+# IMP-08 image dist vs branch dist (.js files), before mounting the branch dist into a test container
+# Command: docker cp <autobyteus/autobyteus-server:beta 191a2073ebee>:/app/autobyteus-server-ts/dist; diff -rq --exclude='*.map' --exclude='*.d.ts' <image dist> autobyteus-server-ts/dist
+# Commit: c0b385524; 2026-10-21T07:58:28Z
+
+Dateien /tmp/rnrs-image-dist/dist/api/graphql/types/agent-runtimes.js und /home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/remote-node-runtime-sign-in/autobyteus-server-ts/dist/api/graphql/types/agent-runtimes.js sind verschieden.
+Dateien /tmp/rnrs-image-dist/dist/runtime-management/agent-runtimes/agent-runtime-status-service.js und /home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/remote-node-runtime-sign-in/autobyteus-server-ts/dist/runtime-management/agent-runtimes/agent-runtime-status-service.js sind verschieden.
+Nur in /home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/remote-node-runtime-sign-in/autobyteus-server-ts/dist/runtime-management/agent-runtimes: sign-in-browser-availability.js.
+diff exit 1

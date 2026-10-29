@@ -1,0 +1,13 @@
+IMP-03 AF-05 / AR-003 race reproduction (Reproduced)
+Command: pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-packages/agent-package-github-update-state.test.ts --no-watch
+Commit: da74c13406 (server part; unchanged in 71cfcd7d32), macOS, 2026-10-20
+Method: temporary diagnostic edit, never committed — AgentPackageService.serialize() made to run the operation
+directly (`return operation(); // TEMPORARY DIAGNOSTIC: no serialization`); the file was restored from a copy and
+`git diff --stat` on it was empty afterwards.
+
+Without serialization:
+  × a check started before an update never overwrites the update's installed revision (AF-05, AR-003)
+  × a check queued behind an update reads the record the update wrote
+  Tests  2 failed | 4 passed (6)
+With serialization (committed code):
+  Tests  6 passed (6)   (also in IMP-02)

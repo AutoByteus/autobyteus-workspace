@@ -1,0 +1,15 @@
+# API-04 follow-up: the Dockerfile.monorepo install context (only the manifests it copies, as listed in its COPY lines, then 'pnpm install --no-frozen-lockfile'), simulated with --lockfile-only for base 5de6a698b9 and branch 0438027348; macOS, pnpm 10.28.2; 2026-10-20T10:46:31Z
+base (5de6a698b9): exit=0 Scope: all 9 workspace projects 
+branch (HEAD): exit=0 Scope: all 9 workspace projects 
+== v1 SDK eventsource-parser in the resulting lockfile
+base:       eventsource-parser: 3.1.1
+branch:       eventsource-parser: 3.1.1
+== how much each re-resolution changes versus its own committed lockfile (changed lines)
+base: 90 lines
+branch: 90 lines
+== the two re-resolved lockfiles compared (base vs branch)
+234,236d233
+<       hono:
+<         specifier: ^4.0.0
+<         version: 4.12.0
+diff exit=1

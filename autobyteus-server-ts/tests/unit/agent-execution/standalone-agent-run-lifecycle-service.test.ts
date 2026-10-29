@@ -12,7 +12,7 @@ import { AgentRunService } from "../../../src/agent-execution/services/agent-run
 import { AgentRunCommandCoordinator } from "../../../src/agent-execution/services/agent-run-command-coordinator.js";
 import { AgentRunCommandRegistry } from "../../../src/agent-execution/services/agent-run-command-registry.js";
 import { AgentRunCommandStatusOverlayStore } from "../../../src/agent-execution/services/agent-run-command-status-overlay-store.js";
-import { configureTokenUsageMigrationReadiness } from "../../../src/token-usage/providers/token-usage-migration-readiness.js";
+import { configureTokenUsageCapability } from "../../../src/token-usage/providers/token-usage-capability.js";
 import type { StandaloneRunCommandPort } from "../../../src/agent-execution/services/standalone-run-ports.js";
 import { PreviousRuntimeReleasePendingError } from "../../../src/agent-execution/errors.js";
 
@@ -41,6 +41,11 @@ const metadata = (overrides: Partial<AgentRunMetadata> = {}): AgentRunMetadata =
   applicationExecutionContext: null,
   ...overrides,
 });
+
+/** An application-owned run: it cannot host delegated copies, so it runs without a member context. */
+const APPLICATION_OWNED = {
+  applicationExecutionContext: { applicationId: "app", bindingId: "binding", producer: { agentRunId: "producer-run", displayName: "Producer" } } as never,
+} satisfies Partial<AgentRunMetadata>;
 
 const candidate = (input: {
   runtimeKind?: RuntimeKind;
@@ -180,11 +185,7 @@ describe("StandaloneAgentRunLifecycleService", () => {
   );
 
   it("rejects a pre-existing run before any provider candidate is constructed while history is degraded", async () => {
-    configureTokenUsageMigrationReadiness({
-      kind: "CURRENT_SCHEMA_DEGRADED",
-      migrationStatus: "FAILED",
-      logPath: "/tmp/token-migration.log",
-    });
+    configureTokenUsageCapability({ kind: "HISTORY_MIGRATION_PENDING" });
     try {
       const started = metadata({ platformAgentRunId: CLAUDE_SESSION_ID, startedAt: "2026-08-17T20:05:00.000Z" });
       const current = harness({ metadataStates: [{ kind: "present", metadata: started }] });
@@ -194,7 +195,7 @@ describe("StandaloneAgentRunLifecycleService", () => {
       expect(current.agentRunManager.platformPreparation).not.toHaveBeenCalled();
       expect(current.workspaceManager.ensureWorkspaceByRootPath).not.toHaveBeenCalled();
     } finally {
-      configureTokenUsageMigrationReadiness({ kind: "READY" });
+      configureTokenUsageCapability({ kind: "READY" });
     }
   });
 
@@ -262,10 +263,10 @@ describe("StandaloneAgentRunLifecycleService", () => {
     expect(order).toEqual(["publish"]);
   });
 
-  it("activates helpers and application-owned runs without a member context and refuses one", async () => {
+  it("activates application-owned runs without a member context and refuses one", async () => {
     const run = { runId: RUN_ID };
-    const helper = metadata({ launchPurpose: "server_helper" });
-    const current = harness({ metadataStates: [{ kind: "present", metadata: helper }], preparedCandidate: candidate({ run }) });
+    const applicationOwned = metadata(APPLICATION_OWNED);
+    const current = harness({ metadataStates: [{ kind: "present", metadata: applicationOwned }], preparedCandidate: candidate({ run }) });
     await expect(current.service.activateHost(RUN_ID, HOST)).rejects.toThrow("cannot host delegated copies");
     await expect(current.service.activateHost(RUN_ID, { memberExecutionContext: null })).resolves.toMatchObject({ run });
     expect(current.agentRunManager.newPreparation).toHaveBeenCalledWith({
@@ -704,9 +705,9 @@ describe("StandaloneAgentRunLifecycleService", () => {
     expect(current.agentRunManager.platformPreparation).toHaveBeenCalledTimes(2);
   });
 
-  it("keeps helpers on the plain path: a mention is unavailable and nothing is posted", async () => {
+  it("keeps application-owned runs on the plain path: a mention is unavailable and nothing is posted", async () => {
     const activeRun = commandReadyRun();
-    const current = harness({ metadataStates: [{ kind: "present", metadata: metadata({ launchPurpose: "server_helper", startedAt: "2026-08-17T20:01:00.000Z" }) }] });
+    const current = harness({ metadataStates: [{ kind: "present", metadata: metadata({ ...APPLICATION_OWNED, startedAt: "2026-08-17T20:01:00.000Z" }) }] });
     current.agentRunManager.getActiveRun.mockReturnValue(activeRun);
     const plain: StandaloneRunCommandPort = { postUserMessage: vi.fn(async () => null) };
     await expect(exactCommandCoordinator(current, plain).postUserMessage({
@@ -731,7 +732,7 @@ describe("StandaloneAgentRunLifecycleService previous runtime release", () => {
     llmModelIdentifier: "gpt-5.3-codex",
     platformAgentRunId: THREAD_ID,
     startedAt: "2026-08-17T20:05:00.000Z",
-    launchPurpose: "server_helper",
+    ...APPLICATION_OWNED,
   });
   const HELPER = { memberExecutionContext: null };
   afterEach(() => { vi.restoreAllMocks(); });
@@ -779,7 +780,8 @@ describe("StandaloneAgentRunLifecycleService previous runtime release", () => {
     const runSessions = { deactivateForRun: vi.fn(() => 0) };
     const activationRegistry = new AgentRunActivationRegistry(new AgentRunResourceManager({
       runSessions, runFileChangeService: noop as never, publishedArtifactRelayService: noop as never,
-      memoryRecorder: memoryRecorder as never,
+      memoryRecorder: memoryRecorder as never, workJournalUpdater: noop as never,
+      mcpServerInstances: { cleanupMcpServerInstancesForAgent: async () => undefined },
     }));
     const manager = new AgentRunManager({
       autoByteusBackendFactory: testBackendFactory(unavailable) as never,

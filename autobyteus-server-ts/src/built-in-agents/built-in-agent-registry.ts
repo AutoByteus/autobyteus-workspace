@@ -1,13 +1,6 @@
-import {
-  AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
-} from "../services/server-settings-service.js";
-
-export const RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID = "autobyteus-retrospective-skill-improver";
 export const DAILY_ASSISTANT_AGENT_DEFINITION_ID = "autobyteus-daily-assistant";
-
-export type BuiltInAgentSettingDefault = {
-  key: typeof AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID;
-};
+/** The internal Model Router agent (autobyteus-32 REQ-003), run only by Model Routing's `ModelRouterAgent`. */
+export const MODEL_ROUTER_AGENT_DEFINITION_ID = "autobyteus-model-router";
 
 /**
  * Built-in agents are platform-owned: startup replaces each agent's files from its
@@ -17,21 +10,17 @@ export type BuiltInAgentDefinition = {
   id: string;
   templateDirName: string;
   displayName: string;
-  settingDefault?: BuiltInAgentSettingDefault;
 };
 
 export const BUILT_IN_AGENT_DEFINITIONS = [
   {
-    id: RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
-    templateDirName: "retrospective-skill-improver",
-    displayName: "Retrospective Skill Improver",
-    settingDefault: {
-      key: AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
-    },
-  },
-  {
     id: DAILY_ASSISTANT_AGENT_DEFINITION_ID,
     templateDirName: "daily-assistant",
     displayName: "Daily Assistant",
+  },
+  {
+    id: MODEL_ROUTER_AGENT_DEFINITION_ID,
+    templateDirName: "model-router",
+    displayName: "Model Router",
   },
 ] as const satisfies readonly BuiltInAgentDefinition[];

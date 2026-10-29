@@ -757,6 +757,73 @@ stream before teardown. Frontend live state and history merge logic should treat
 `offline` as the canonical inactive non-error terminal state instead of waiting
 for a socket close or a later history reload to infer that transition.
 
+### Remote Delegated Runs In The Tree
+
+A run that another node runs for this node's delegation (autobyteus-278; server
+mechanics in
+[Remote Collaboration](../../autobyteus-server-ts/docs/modules/remote_collaboration.md#remote-runs-in-the-run-tree))
+is a delegated row under its delegator's root (Agent, Team and Org roots), merged
+with the local copies by start time. A remote Team is listed with its members.
+
+- **Data.** Each root view carries `remote_task_executions`, and each root
+  registers them in `useRemoteRunsStore`. The store is window-wide, keyed by run
+  and by agent run, and cleared when the window's node binding changes. It holds
+  the node's name, `reachable` (`null` until the node answers), `checking` while
+  Retry waits, the node's title, and the Retry callback of the root that owns the
+  run.
+- **Updates.** The root's stream adds `remote_task_execution_started` (an unknown
+  run reloads the view; a Team stream recovers) and
+  `remote_task_execution_summary`, which carries `reachable`, the title and the
+  live statuses. An agent the summary does not list is `Offline`.
+- **Shared code.** `services/remoteRuns/remoteChildren.ts` (summary statuses, rows,
+  start-time merge) and `remoteAgentContext.ts` (an `AgentContext` with no local
+  definition) are shared by the three roots.
+- **Live output.** A remote agent's output arrives as ordinary `agent_presentation`
+  events of the root and is dispatched to its own context.
+- **Stored conversation.** It is read through the root's member-projection query,
+  which this node's server answers from the run's node. A failed read marks the
+  run unreachable, and that is its only error. Every family opens a remote agent
+  first and reads it after. In a Team, opening the Team on a remote member, selecting
+  one in a mounted Team, and the focused reconcile all focus and commit it, then read
+  it through `readRemoteTeamMember` (`teamRemoteRunRegistry.ts`). Its node being
+  down therefore never fails the selection or sets a Team inspection error.
+- **Row** (`WorkspaceTransientExecutionRow`, `row.remote = {runId, nodeName}`).
+  The `RemoteNodeChip` sits between the status dot and the identity. Members of a
+  remote Team carry no chip of their own. Under the row:
+  - the Task line, or else the node's title;
+  - `Checking <node>…` while Retry waits;
+  - a red `role="alert"` line "Couldn't reach <node>." with Retry, or the
+    stop-failed line.
+
+  The aria-label adds "on <node>". Stop terminates the run through its node.
+- **Run view.** One owner, `useRemoteRunView`, used by the agent and Team member
+  surfaces (`AgentWorkspaceSurface`, `TeamWorkspaceSurface`), so every family's view
+  of a remote run (standalone, Team, Org) is the same:
+  - the header shows the node chip and no ⚙ or ＋;
+  - `RemoteRunNotice` (red, Retry) shows while the node is unreachable;
+  - the composer's placeholder is `Message <name> on <node>…`, with no context
+    files and no @-mentions;
+  - the right panel shows `RemoteRunPanelNote` ("On <node>"): the run's files,
+    terminal and other node-local panels are on that node.
+- **Retry.** One rule, `remoteRunsStore.retry(runId)`, for every family
+  (SR-008):
+  1. it shows `Checking <node>…` and asks the root's stream to fetch the summaries
+     again (`REFRESH_REMOTE_TASK_EXECUTIONS`);
+  2. it reads again the run's selected agent, or, when none of the run's agents is
+     selected, the run's first agent that is not loaded;
+  3. when neither asks anything (no ready stream, nothing started, including a
+     loaded selected agent), `Checking` ends at once; otherwise the node's answer
+     or the read ends it.
+
+  Each root registers a `RemoteRunRetryAdapter` with only its own mechanisms
+  (`refreshOnStream`, `selectedAgent`, `isLoaded`, `rereadAgent`):
+  - standalone: the collaboration stream, the selected child, the child hydration;
+  - Org: the Org stream, the selected agent execution, the remote agents the Org
+    context has read (`isRemoteAgentLoaded`);
+  - Team: through `teamRemoteRunRegistry`, from its stream snapshot or its stored
+    view (`getTeamRunResumeConfig`): the Team stream, the focused member, the
+    member's authoritative projection.
+
 ### Compaction Lifecycle Activity And Center Feed
 
 Native compaction projects one Activity row per operation with requested/start
@@ -923,25 +990,45 @@ the retained recent window.
 
 Workspace history rows render `RunTreeRow.summary` as the visible one-line task
 title. For standalone agent runs that title should represent the initial
-non-empty user message, not the latest follow-up. When the history tree is
-merged with live single-agent contexts, `mergeRunTreeWithLiveContexts(...)`
-overlays active status and the live context's activity timestamp while using the
-live conversation's first non-empty user message as the row summary when
-available. Persisted standalone rows arrive from GraphQL with `createdAt` plus
+non-empty user message, not the latest follow-up. For an Agent or Team run that
+a peer node started by delegation, the server records the delegated task
+description as the title when the run accepts the work packet (autobyteus-269).
+The packet itself reaches the run's conversation as a `user` message on the
+observed runtimes, so the window never derives a peer-started run's title from
+its conversation.
+
+The stored title is the one source whenever it has a value (autobyteus-269,
+SR-004). The live first-user-message summary only fills a row while its stored
+title is still empty, as for a run that has just started:
+
+- `mergeRunTreeWithLiveContexts(...)` overlays active status and the live
+  context's activity timestamp on history rows, and uses the live conversation's
+  first non-empty user message as the row summary only when the row's stored
+  summary is empty;
+- a local submission's navigation patch (`runHistoryNavigationPatches`) applies
+  the live summary to a standalone row only when the row is not a history row
+  with a stored title;
+- the standalone conversation header (`useStandaloneRunTitle`) shows the stored
+  history title first and the live first user message only while there is none.
+
+A stored title reads through the same cleaning as the live summary. The server
+keeps the content the window sent, compacted to one line, so a skill-tagged
+title starts with the skill instruction; `resolveStoredTitleSummary` (in
+`utils/runTreeSummary.ts`) drops it with `skillRequestInstruction.parseSingleLine`,
+the single-line form of the instruction. A stopped skill-tagged run therefore
+reads the same as when it was active. The collaborator mention note never
+reaches a stored title, because the server adds it later. Team rows show the
+stored Team title as before.
+
+Persisted standalone rows arrive from GraphQL with `createdAt` plus
 derived live status fields. Team rows arrive with `createdAt`, binary
 `isActive`, and exact leaf-member statuses. Neither catalog persists
 `lastActivityAt`, `lastKnownStatus`, or delete-lifecycle fields. The frontend
 read model maps
 `createdAt` into the shared tree sort field for stored rows and derives local
 team-tree `lastActivityAt` / `lastKnownStatus` / delete readiness from V2
-catalog facts plus live status. This prevents an active persisted row with a
-stale latest-message summary from overriding the known initial-message title in
-the sidebar while keeping backend history catalogs out of live-status storage.
-
-If no live first-user-message summary is available, the frontend keeps the
-backend-provided history summary. Team row title behavior remains owned by the
-team-history path and is not reinterpreted by the standalone live-context
-overlay.
+catalog facts plus live status. This keeps backend history catalogs out of
+live-status storage.
 
 AgentOrg rows use the same stable first-accepted-message presentation while
 retaining separate family ownership. A new row keeps an empty backend summary
@@ -1496,48 +1583,6 @@ other); choosing another model resets both. Thinking semantics stay in
 setup and definition launch preferences.
 
 
-### Skill Improvement Manual Composer Action
-
-Skill Improvement is current-target owned, not definition-owned and not
-launch-config owned. Frontend run-config types no longer carry `skillImprovement`
-overrides for standalone runs, team runs, or team agent-member launch records,
-and the backend no longer snapshots `skillImprovementEffective` into run/member
-metadata for new runs. Agent/team definition forms and persisted definition
-defaults must not add `skillImprovement`.
-
-The start surfaces do not expose Skill Improvement eligibility controls. The
-only user-facing manual start entrypoint is the concise composer-adjacent **Self
-improve** CTA for the selected active standalone run or team member. That CTA is
-hidden when the global capability is disabled, hidden for Retrospective Skill Improver
-improver runs, and lazy-loads backend eligibility before rendering. The UI must
-not show technical backend ineligibility reasons in chat and must not recompute
-eligibility from current definitions or local skill lists.
-
-`useSkillImprovementCapabilityStore` owns the global typed capability query/mutation
-for `ENABLE_SKILL_IMPROVEMENT`. `useSkillImprovementStore` owns backend eligibility and
-manual start calls. Run-history rows do not expose Skill Improvement controls.
-Starting Skill Improvement from the composer CTA calls `startAgentRunSkillImprovement`
-or `startTeamMemberSkillImprovement` without run-time overrides. The backend uses
-current global Skill Improvement settings, current target state, and current
-configured writable skill roots; it first ensures work trace files are current
-for the selected target, then activates or reuses a visible target-scoped
-improver `AgentRun`. The returned record summary is stored only internally and
-the UI may show at most a short transient toast/status after start. It must not
-render a persistent composer card, improvement record id, or improver-run
-navigation button.
-
-Meaningful completion communication is helper-authored only after durable skill
-package file changes: the visible improver may call `send_message_to` once with
-`message_type: "skill_update"`, the exact active target run id supplied by the
-backend, concise content explaining what changed, why it matters, and how the
-target should use or reload the updated guidance, plus dynamic references as
-absolute paths to changed or directly relevant surviving files inside editable
-roots. The backend records whether that direct outcome was sent, rejected,
-target-inactive, or not attempted. The skill update message is separate from any
-runtime/model skill-refresh instruction, and team-member live reload remains
-next-run-only in the MVP. The MVP does not expose a metrics/reporting query and
-the UI must not imply improver completion proves downstream improvement.
-
 ### New Run From Existing Run
 
 **+** on a run starts another run like it, through `useRunStart`:
@@ -1817,7 +1862,7 @@ for that evidence-free case.
 A key architectural pattern is the **Sidecar Store Pattern** for runtime data. Instead of keeping all state in a monolithic `AgentContext` (which is optimized for Chat UI), distinct data streams are routed to dedicated stores:
 
 1.  **Run File Changes (`RunFileChangesStore`)**:
-    - Listens to `FILE_CHANGE` plus reopen hydration from `getRunFileChanges(runId)`.
+    - Listens to `FILE_CHANGE` plus reopen hydration from the run owner's list query (`fetchRunFileChanges(subject)`: `getRunFileChanges(runId)` for a standalone run, the team-, org- or copy-scoped query for a member).
     - Owns the run-scoped projection for touched files and generated outputs.
     - Tracks latest-visible discoverability so desktop and mobile Artifacts surfaces can select/refresh the newest row after the user opens them, without stealing focus from other tabs.
     - Keeps transient `write_file` buffers only until committed previews are fetched from the server-backed run preview route.
@@ -1901,6 +1946,7 @@ A key architectural pattern is the **Sidecar Store Pattern** for runtime data. I
     - Visible numbers, currency, percentages, and UTC dates use the active locale while exact token/accounting evidence remains available. English and Simplified Chinese layouts must avoid document-level overflow; keyboard focus and disclosure restoration remain visible.
     - `Run details` preserves the current-run-record investigation path under `tokenUsageRunStatistics`. Its date range selects records by `runCreatedAt` (falling back to `firstObservedAt`), and selected rows retain lifetime cumulative totals.
     - Run-details Task rows are standalone agent runs or root Team runs with backend-provided concrete member `children`; exact `rootTeamRunId`/`runId` identity prevents double-counting. Model remains the secondary runtime/model diagnostic. Sorting, expansion, created-time fallback, cost disclosure, mixed identity summaries, retained loading/error/empty states, and history-migration guidance remain intact.
+    - The expanded cost disclosure (`TokenUsageCostBreakdown.vue`) splits cache writes like the live Token Meter: **Cache write 5m** and **Cache write 1h** rows with their tokens and costs when the aggregate has them, and one **Cache writes** row for writes outside that split (its cost is the cache-write cost the split rows do not carry). An aggregate without a split keeps the single **Cache writes** row.
     - Run-details labels use token-usage-owned display fields. Model rows show server-owned `modelDisplayName` beside raw `llmModel`; Task rows keep positional `modelDisplayNames` beside raw models. Custom-provider labels prefer persisted provider-name snapshots, with current metadata only as the established no-snapshot fallback.
     - The Task table retains its nine-column scan view (`Task / Run`, `Runtime`, `Model(s)`, `Input`, `Output`, `Input Cost`, `Output Cost`, `Total Cost`, `Created Time`), accessible sortable headers, and the value-plus-disclosure control for detailed cost status. Complete estimates stay quiet in main rows while non-complete states remain visible.
     - Run details keeps explicit creation-time/lifetime-total helper copy and sends no analytics `rangeMode`; observation-time claims belong only to the Analytics query/projection. It does not add inactive no-usage roster rows or rebuild deeper Team topology, and changing Task/Model presentation does not refetch.
@@ -2003,7 +2049,6 @@ turn.
 
 ## Related Documentation
 
-- **[Server Skill Improvement](../../autobyteus-server-ts/docs/modules/skill_improvement.md)**: Backend Skill Improvement workflow, shared work-trace package consumption, improver lifecycle, skill-root edit, and minimal provenance contract.
 - **[Agent Management](./agent_management.md)**: Defines the agents whose execution is described here.
 - **[Agent Teams](./agent_teams.md)**: Describes the orchestration of multiple agents.
 - **[Content Rendering](./content_rendering.md)**: Details how the parsed segments (Markdown, Mermaid, etc.) are visualized.

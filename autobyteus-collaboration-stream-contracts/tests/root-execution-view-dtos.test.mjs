@@ -39,6 +39,7 @@ const orgSnapshot = (orgRunId = "org-run-1") => ({
     communication_messages: { schemaVersion: 1, subjectKind: "agent_org", orgRunId: "org-run-1", messages: [] },
     agent_statuses: [],
     agent_input_states: [],
+    remote_task_executions: [],
   },
 });
 
@@ -49,6 +50,7 @@ const launchConfiguration = {
   autoExecuteTools: false,
   workspaceRootPath: null,
 };
+const agentCopySource = { kind: "agent", agentDefinitionId: "agent", launchConfiguration };
 
 const configuredAgent = (address, agentRunId) => ({
   address,
@@ -175,11 +177,13 @@ test("requires one correlated status for every live Agent execution", () => {
     agentRunId: "agent-run-task-active",
     platformAgentRunId: null,
     startedAt: "2026-09-01T00:00:00.000Z",
+    source: agentCopySource,
   }, {
     address: "/task-closed",
     agentRunId: "agent-run-task-closed",
     platformAgentRunId: null,
     startedAt: "2026-09-01T00:00:00.000Z",
+    source: agentCopySource,
   });
   // A closed (DONE) task execution stays in the tree, so it still has its status.
   snapshot.root_org.closed_task_executions.push({ agentRunId: "agent-run-task-closed" });
@@ -276,6 +280,7 @@ test("correlates restored task executions by fresh run identity while reusing co
     agentRunId: "agent-run-worker-task",
     platformAgentRunId: null,
     startedAt: "2026-09-01T00:00:01.000Z",
+    source: agentCopySource,
   }, {
     address: "/team",
     teamRunId: "team-run-task",
@@ -285,6 +290,10 @@ test("correlates restored task executions by fresh run identity while reusing co
     ],
     taskExecutions: [],
     startedAt: "2026-09-01T00:00:02.000Z",
+    source: {
+      kind: "agent_team", teamDefinitionId: "team", coordinatorAddress: "/team/lead", handoffs: [], defaultLaunchConfiguration: launchConfiguration,
+      members: ["/team/lead", "/team/worker"].map((address) => ({ address, agentDefinitionId: "agent", launchConfiguration, followsTeam: true })),
+    },
   });
   snapshot.root_org.agent_statuses.push(
     status("/director", "agent-run-director"),

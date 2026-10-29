@@ -1,0 +1,30 @@
+# API-44 what each real CLI reports under the user's real HOME (same login-shell PATH), next to the page (API-42); account identifiers redacted
+# date 2026-10-20T13:04:19Z
+== codex --version
+codex-cli 0.163.0
+== claude --version
+2.1.304 (Claude Code)
+== agy --version
+1.4.3
+== grok --version
+grok 1.0.62 (1474f9cbdd91) [stable]
+== grok models  (exit code follows)
+You are logged in with grok.com.
+
+Default model: grok-4.7
+
+Available models:
+  * grok-4.7 (default)
+EXIT=0
+== claude auth status --json  (only loggedIn/authMethod/subscription kept)
+{'loggedIn': True, 'authMethod': 'claude.ai', 'apiProvider': 'firstParty', 'subscriptionType': 'max'}
+EXIT=0
+== agy models  (first 3 lines, line count)
+EXIT=0
+Fetching available models...
+gemini-4-argon-medium	Gemini 4 Argon (Medium)
+gemini-4-argon-high	Gemini 4 Argon (High)
+lines=      14
+== codex login status  (exit code and first word only; it can print part of a key)
+EXIT=0
+Logged in using

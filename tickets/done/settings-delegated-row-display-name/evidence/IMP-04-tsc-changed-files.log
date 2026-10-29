@@ -1,0 +1,6 @@
+# IMP-04 web TypeScript check, filtered to the changed files
+# cmd: pnpm -C autobyteus-web exec tsc --noEmit -p .nuxt/tsconfig.json | grep -E "delegatedLaunchRows|teamExecutionTreeSelectors|teamExecutionContextFactory"
+# commit: 5af1a03e11  env: macOS (darwin)  date: 2026-10-24T16:51Z
+# autobyteus-web has no typecheck script; the full output has 1161 pre-existing "error TS" lines in other files. Matches in the changed files:
+
+(none)

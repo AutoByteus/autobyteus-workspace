@@ -1,0 +1,6 @@
+# TEMPORARY PROBE (not committed): signed-out import -> sign in -> package reload (GraphQL reloadApplicationPackage) only. commit 8ab3a2129a (fix), 2026-10-24T17:27:19Z
+[AB238-PROBE] after package reload 503 {"detail":"Application '<id>' is currently quarantined: Application setup is required after catalog transition.","applicationId":"<id>","availabilityState":"QUARANTINED","retryable":true}
+     × IR-01 is quarantined on a signed-out import and becomes runnable after sign-in through repair and package Reload, without a restart 727ms
+AssertionError: {"detail":"Application '<id>' : expected 503 to be 200 // Object.is equality
+     95|     console.log("[AB238-PROBE] after package reload", afterReload.stat…
+exit=1

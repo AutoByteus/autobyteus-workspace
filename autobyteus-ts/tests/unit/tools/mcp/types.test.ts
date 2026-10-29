@@ -4,15 +4,14 @@ import {
   McpServerInstanceKey,
   McpTransportType,
   StdioMcpServerConfig,
-  StreamableHttpMcpServerConfig,
-  WebsocketMcpServerConfig
+  StreamableHttpMcpServerConfig
 } from '../../../../src/tools/mcp/types.js';
 
 describe('McpTransportType', () => {
   it('uses expected string values', () => {
     expect(McpTransportType.STDIO).toBe('stdio');
     expect(McpTransportType.STREAMABLE_HTTP).toBe('streamable_http');
-    expect(McpTransportType.WEBSOCKET).toBe('websocket');
+    expect(Object.values(McpTransportType)).toEqual(['stdio', 'streamable_http']);
   });
 });
 
@@ -96,7 +95,16 @@ describe('StdioMcpServerConfig', () => {
         command: 'bash',
         env: { A: 1 as any }
       })
-    ).toThrowError("StdioMcpServerConfig 'stdio-5' 'env' must be a Dict[str, str].");
+    ).toThrowError("StdioMcpServerConfig 'stdio-5' 'env' must map names to strings or secret references.");
+  });
+
+  it('keeps a secret reference in env beside plain values', () => {
+    const config = new StdioMcpServerConfig({
+      server_id: 'stdio-ref',
+      command: 'bash',
+      env: { API_KEY: { vaultSecretId: 'mcp.00000000-0000-4000-8000-000000000003' } as any, MODE: 'fast' }
+    });
+    expect(config.env).toEqual({ API_KEY: { vaultSecretId: 'mcp.00000000-0000-4000-8000-000000000003' }, MODE: 'fast' });
   });
 
   it('validates cwd type', () => {
@@ -134,7 +142,9 @@ describe('StreamableHttpMcpServerConfig', () => {
         url: 'http://localhost',
         token: 123 as any
       })
-    ).toThrowError("StreamableHttpMcpServerConfig 'http-3' 'token' must be a string if provided.");
+    ).toThrowError(
+      "StreamableHttpMcpServerConfig 'http-3' 'token' must be a string or a secret reference if provided."
+    );
   });
 
   it('validates headers map', () => {
@@ -144,92 +154,99 @@ describe('StreamableHttpMcpServerConfig', () => {
         url: 'http://localhost',
         headers: { X: 2 as any }
       })
-    ).toThrowError("StreamableHttpMcpServerConfig 'http-4' 'headers' must be a Dict[str, str].");
+    ).toThrowError(
+      "StreamableHttpMcpServerConfig 'http-4' 'headers' must map names to strings or secret references."
+    );
   });
-});
 
-describe('WebsocketMcpServerConfig', () => {
-  it('defaults optional fields and sets transport type', () => {
-    const config = new WebsocketMcpServerConfig({
-      server_id: 'ws-1',
-      url: 'wss://localhost:8765/mcp'
+  it('trims the token and treats a blank token as no token', () => {
+    const trimmed = new StreamableHttpMcpServerConfig({
+      server_id: 'http-5',
+      url: 'http://localhost',
+      token: '  test-dummy  '
     });
+    expect(trimmed.token).toBe('test-dummy');
 
-    expect(config.transport_type).toBe(McpTransportType.WEBSOCKET);
-    expect(config.headers).toEqual({});
-    expect(config.subprotocols).toEqual([]);
-    expect(config.origin).toBeNull();
-    expect(config.open_timeout).toBe(10.0);
-    expect(config.ping_interval).toBeNull();
-    expect(config.ping_timeout).toBeNull();
-    expect(config.verify_tls).toBe(true);
+    for (const blank of ['', '   ', null, undefined]) {
+      const config = new StreamableHttpMcpServerConfig({ server_id: 'http-6', url: 'http://localhost', token: blank });
+      expect(config.token).toBeNull();
+    }
   });
 
-  it('requires websocket urls', () => {
-    expect(() =>
-      new WebsocketMcpServerConfig({ server_id: 'ws-2', url: 'http://localhost' })
-    ).toThrowError(
-      "WebsocketMcpServerConfig 'ws-2' 'url' must start with ws:// or wss://."
-    );
+  it('derives the request headers from the resolved headers and token', () => {
+    const config = new StreamableHttpMcpServerConfig({ server_id: 'http-7', url: 'http://localhost' });
+    expect(config.requestHeaders({ headers: { Authorization: 'Basic test-dummy', 'X-Test': 'value' }, token: null }))
+      .toEqual({ Authorization: 'Basic test-dummy', 'X-Test': 'value' });
+    const resolved = { headers: { 'X-Test': 'value' }, token: 'test-dummy' };
+    expect(config.requestHeaders(resolved)).toEqual({ 'X-Test': 'value', Authorization: 'Bearer test-dummy' });
+    expect(resolved.headers).toEqual({ 'X-Test': 'value' });
   });
 
-  it('validates headers and subprotocols', () => {
-    expect(() =>
-      new WebsocketMcpServerConfig({
-        server_id: 'ws-3',
-        url: 'wss://localhost',
-        headers: { X: 1 as any }
-      })
-    ).toThrowError("WebsocketMcpServerConfig 'ws-3' 'headers' must be a Dict[str, str].");
-
-    expect(() =>
-      new WebsocketMcpServerConfig({
-        server_id: 'ws-4',
-        url: 'wss://localhost',
-        subprotocols: ['ok', 2 as any]
-      })
-    ).toThrowError("WebsocketMcpServerConfig 'ws-4' 'subprotocols' must be a list of strings.");
+  it('keeps secret references for headers and token, and plain strings as they are', () => {
+    const config = new StreamableHttpMcpServerConfig({
+      server_id: 'http-ref',
+      url: 'http://localhost',
+      token: { vaultSecretId: 'mcp.00000000-0000-4000-8000-000000000001' } as any,
+      headers: { 'X-Api-Key': { vaultSecretId: 'mcp.00000000-0000-4000-8000-000000000002' } as any, 'X-Plain': 'value' }
+    });
+    expect(config.token).toEqual({ vaultSecretId: 'mcp.00000000-0000-4000-8000-000000000001' });
+    expect(config.headers).toEqual({
+      'X-Api-Key': { vaultSecretId: 'mcp.00000000-0000-4000-8000-000000000002' },
+      'X-Plain': 'value'
+    });
   });
 
-  it('validates numeric timeouts and verify_tls', () => {
+  it.each([
+    ['an empty vault secret ID', { vaultSecretId: '  ' }],
+    ['extra keys', { vaultSecretId: 'mcp.00000000-0000-4000-8000-000000000001', value: 'test-dummy' }],
+    ['a non-string ID', { vaultSecretId: 7 }]
+  ])('rejects a header reference with %s', (_label, value) => {
     expect(() =>
-      new WebsocketMcpServerConfig({
-        server_id: 'ws-5',
-        url: 'wss://localhost',
-        open_timeout: 0
-      })
-    ).toThrowError(
-      "WebsocketMcpServerConfig 'ws-5' 'open_timeout' must be a positive number when provided."
-    );
-
-    expect(() =>
-      new WebsocketMcpServerConfig({
-        server_id: 'ws-6',
-        url: 'wss://localhost',
-        verify_tls: 'false' as any
-      })
-    ).toThrowError("WebsocketMcpServerConfig 'ws-6' 'verify_tls' must be a boolean.");
+      new StreamableHttpMcpServerConfig({ server_id: 'http-bad', url: 'http://localhost', headers: { X: value as any } })
+    ).toThrowError("StreamableHttpMcpServerConfig 'http-bad' 'headers' must map names to strings or secret references.");
   });
 
-  it('validates certificate paths and client key requirements', () => {
+  it('rejects a token reference together with an Authorization header', () => {
     expect(() =>
-      new WebsocketMcpServerConfig({
-        server_id: 'ws-7',
-        url: 'wss://localhost',
-        ca_file: 123 as any
+      new StreamableHttpMcpServerConfig({
+        server_id: 'http-both',
+        url: 'http://localhost',
+        token: { vaultSecretId: 'mcp.00000000-0000-4000-8000-000000000001' } as any,
+        headers: { Authorization: { vaultSecretId: 'mcp.00000000-0000-4000-8000-000000000002' } as any }
       })
-    ).toThrowError(
-      "WebsocketMcpServerConfig 'ws-7' 'ca_file' must be a string path when provided."
-    );
+    ).toThrowError("Streamable HTTP MCP server 'http-both' sets both 'token' and an 'Authorization' header; use one of them.");
+  });
 
-    expect(() =>
-      new WebsocketMcpServerConfig({
-        server_id: 'ws-8',
-        url: 'wss://localhost',
-        client_key: '/tmp/key.pem'
-      })
-    ).toThrowError(
-      "WebsocketMcpServerConfig 'ws-8' requires 'client_cert' when 'client_key' is provided."
-    );
+  it.each(['Authorization', 'authorization', 'AUTHORIZATION'])(
+    'rejects a token together with an %s header without echoing values',
+    (headerName) => {
+      let message = '';
+      try {
+        new StreamableHttpMcpServerConfig({
+          server_id: 'http-9',
+          url: 'http://localhost',
+          token: 'test-dummy',
+          headers: { [headerName]: 'Basic test-other' }
+        });
+      } catch (error) {
+        message = (error as Error).message;
+      }
+      expect(message).toBe(
+        "Streamable HTTP MCP server 'http-9' sets both 'token' and an 'Authorization' header; use one of them."
+      );
+      expect(message).not.toContain('test-dummy');
+      expect(message).not.toContain('test-other');
+    }
+  );
+
+  it('accepts an Authorization header when the token is blank', () => {
+    const config = new StreamableHttpMcpServerConfig({
+      server_id: 'http-10',
+      url: 'http://localhost',
+      token: ' ',
+      headers: { authorization: 'Basic test-dummy' }
+    });
+    expect(config.token).toBeNull();
+    expect(config.headers).toEqual({ authorization: 'Basic test-dummy' });
   });
 });

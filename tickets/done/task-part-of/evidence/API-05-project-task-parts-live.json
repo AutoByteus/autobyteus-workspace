@@ -1,0 +1,155 @@
+{
+  "cancel": {
+    "parent": "parts-live-f181d0-1",
+    "parts": {
+      "A": "parts-live-f181d0-2",
+      "B": "parts-live-f181d0-3",
+      "C": "parts-live-f181d0-4",
+      "D": "parts-live-f181d0-5"
+    },
+    "workerA": "pof_worker_f181d0_ab6084232ef54b458553ff3105907f68",
+    "cancelled": {
+      "task": {
+        "projectId": "project_be043615-2dcc-4119-aed2-956a06e25451",
+        "taskId": "parts-live-f181d0-1",
+        "status": "CANCELLED",
+        "dependsOn": [],
+        "partOf": null,
+        "closedParts": [
+          "parts-live-f181d0-2",
+          "parts-live-f181d0-3"
+        ]
+      }
+    },
+    "fenced": {
+      "accepted": false,
+      "code": "TASK_AGENT_RESOURCE_CLOSED",
+      "message": "This Task is CANCELLED. The agent that assigned it can set the Task to TODO or IN_PROGRESS and then message this run id again.",
+      "target_agent_run_id": null,
+      "isError": true
+    }
+  },
+  "done": {
+    "parent": "parts-live-f181d0-6",
+    "parts": {
+      "E": "parts-live-f181d0-7",
+      "F": "parts-live-f181d0-8"
+    },
+    "workerE": "pof_worker_f181d0_0357255089e34fb4850d4bc9be43d95f",
+    "done": {
+      "task": {
+        "projectId": "project_be043615-2dcc-4119-aed2-956a06e25451",
+        "taskId": "parts-live-f181d0-6",
+        "status": "DONE",
+        "dependsOn": [],
+        "partOf": null,
+        "closedParts": [
+          "parts-live-f181d0-7",
+          "parts-live-f181d0-8"
+        ]
+      }
+    }
+  },
+  "listedAfterDelete": {
+    "parts-live-f181d0-3": {
+      "status": "CANCELLED",
+      "partOf": null,
+      "parts": []
+    },
+    "parts-live-f181d0-10": {
+      "status": "DONE",
+      "partOf": "parts-live-f181d0-9",
+      "parts": []
+    },
+    "parts-live-f181d0-9": {
+      "status": "TODO",
+      "partOf": null,
+      "parts": [
+        "parts-live-f181d0-10"
+      ]
+    },
+    "parts-live-f181d0-8": {
+      "status": "DONE",
+      "partOf": null,
+      "parts": []
+    },
+    "parts-live-f181d0-7": {
+      "status": "DONE",
+      "partOf": null,
+      "parts": []
+    },
+    "parts-live-f181d0-1": {
+      "status": "TODO",
+      "partOf": null,
+      "parts": [
+        "parts-live-f181d0-2",
+        "parts-live-f181d0-4",
+        "parts-live-f181d0-5"
+      ]
+    },
+    "parts-live-f181d0-2": {
+      "status": "CANCELLED",
+      "partOf": "parts-live-f181d0-1",
+      "parts": []
+    },
+    "parts-live-f181d0-5": {
+      "status": "CANCELLED",
+      "partOf": "parts-live-f181d0-1",
+      "parts": []
+    },
+    "parts-live-f181d0-4": {
+      "status": "DONE",
+      "partOf": "parts-live-f181d0-1",
+      "parts": []
+    }
+  },
+  "temp": {
+    "adHocTaskId": "ad_hoc_task_f4405cdc-78ae-4fe2-9e30-5896da542bdb",
+    "onTemp": {
+      "error": {
+        "code": "TASK_PARENT_INVALID",
+        "message": "Only Project Tasks have a parent; this Task has no Project."
+      },
+      "isError": true
+    },
+    "clearOnTemp": {
+      "error": {
+        "code": "TASK_PARENT_INVALID",
+        "message": "Only Project Tasks have a parent; this Task has no Project."
+      },
+      "isError": true
+    },
+    "createUnder": {
+      "error": {
+        "code": "TASK_PARENT_INVALID",
+        "message": "Task 'ad_hoc_task_f4405cdc-78ae-4fe2-9e30-5896da542bdb' is not a current Task of this Project."
+      },
+      "isError": true
+    },
+    "moveUnder": {
+      "error": {
+        "code": "TASK_PARENT_INVALID",
+        "message": "Task 'ad_hoc_task_f4405cdc-78ae-4fe2-9e30-5896da542bdb' is not a current Task of this Project."
+      },
+      "isError": true
+    }
+  },
+  "feed": {
+    "frames": 84,
+    "projectTaskUpserts": 32,
+    "types": [
+      "connected",
+      "project_upserted",
+      "task_removed",
+      "task_upserted",
+      "task_worker_status"
+    ]
+  },
+  "cleanup": {
+    "dataRemoved": true,
+    "serverClosed": true,
+    "remainingRoots": 0,
+    "liveAgyProcessesOfThisRun": 0,
+    "errors": []
+  }
+}

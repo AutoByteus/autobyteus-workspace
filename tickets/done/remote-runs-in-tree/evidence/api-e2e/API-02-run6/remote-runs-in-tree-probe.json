@@ -1,0 +1,145 @@
+{
+  "startedAt": "2026-10-23T14:12:07.987Z",
+  "result": "Fail",
+  "node": "v22.23.1",
+  "servers": {
+    "beta": {
+      "port": 57882,
+      "nodeId": "srv_kJCV5bgVrg3kIRcPUDEadKhEp6l0JFi1"
+    },
+    "alpha": {
+      "port": 57881,
+      "nodeId": "srv_iL0Zf7JhM7YsI1M9CDBRT90UOwFhmmdx"
+    }
+  },
+  "runs": {
+    "standalone": "delegator_435254c6485e4e998f4dc7ebe24524b7",
+    "remoteTeamRun": "studio_team_ab579685f8744a2bbe2a4ee6acc0b0bd",
+    "studioMembers": [
+      "publisher_d92f634be5a14f3cbe04d5d90f822373",
+      "checker_35c3bf07699c42e5bf60514cdf835069"
+    ],
+    "team": "remote_squad_aad25f63f3c743f9909491401e7bd6cf",
+    "leadRun": "delegator_1ccd39b65e454c8abb477a9f541302d0",
+    "localA": "helper_a1a436b03d644778872f651f7d25e6eb",
+    "remoteAgentRun": "publisher_45d817eabed14b8483a4fe1b06c63896",
+    "localB": "helper_43cd65f5e93b41b6adf44cefe6712a2f",
+    "org": "remote_org_edd75ead6fa346b488a8f904f9e949d9",
+    "orgLead": "delegator_d2d54df908f948b1a84f0f1f9f7c8b8b",
+    "orgRemoteRun": "publisher_e509927c34c645e883b673b89e661486"
+  },
+  "cases": {
+    "RTP-01": {
+      "result": "Fail",
+      "remoteTeamRow": null,
+      "memberRows": [
+        {
+          "member": "publisher_d92f634be5a14f3cbe04d5d90f822373",
+          "present": true,
+          "chip": false
+        },
+        {
+          "member": "checker_35c3bf07699c42e5bf60514cdf835069",
+          "present": true,
+          "chip": false
+        }
+      ]
+    },
+    "RTP-02": {
+      "result": "Fail",
+      "indexes": [
+        3,
+        4,
+        5
+      ],
+      "remoteAgent": {
+        "chip": "beta-node",
+        "title": null,
+        "error": null,
+        "checking": null,
+        "statusDot": true,
+        "name": "beta-node",
+        "ariaLabel": "Temporary task agent, publisher, level 1, idle, Started by lead, /publisher, on beta-node, Task: Publish the draft. Marker REMOTE-AGENT."
+      },
+      "localA": {
+        "chip": null,
+        "title": null,
+        "error": null,
+        "checking": null,
+        "statusDot": true,
+        "name": "H",
+        "ariaLabel": "Temporary task agent, helper, level 1, idle, Started by lead, /helper, Task: Local first. Marker LOCAL-A."
+      }
+    },
+    "RTP-03": {
+      "result": "Pass",
+      "orgRemote": {
+        "chip": "beta-node",
+        "title": "Org work. Marker REMOTE-ORG.",
+        "error": null,
+        "checking": null,
+        "statusDot": true,
+        "name": "beta-node",
+        "ariaLabel": "Temporary task agent, publisher, level 1, idle, Started by lead, /publisher, on beta-node"
+      }
+    },
+    "RTP-04": {
+      "result": "Fail",
+      "opened": {
+        "headerChip": null,
+        "editConfig": 1,
+        "newRun": 1,
+        "placeholder": "Ask anything · @ for an agent or team"
+      },
+      "filesNote": "On beta-node\n\nThe files of this run are on beta-node. Open it in that node's window to see them.",
+      "liveAnswer": false,
+      "liveNote": "the answer is on beta but did not appear in the window without a reload (AC-802)"
+    },
+    "RTP-05": {
+      "result": "Pass",
+      "stopVisible": true,
+      "stoppedOnBeta": true,
+      "rowAfter": {
+        "chip": "beta-node",
+        "title": null,
+        "error": null,
+        "checking": null,
+        "statusDot": true,
+        "name": "beta-node",
+        "ariaLabel": "Temporary task agent, publisher, level 1, idle, Started by lead, /publisher, on beta-node, Task: Publish the draft. Marker REMOTE-AGENT."
+      }
+    },
+    "RTP-06": {
+      "result": "Fail",
+      "unreachable": {
+        "chip": "beta-node",
+        "title": null,
+        "error": "Couldn't reach beta-node.\nRetry",
+        "checking": null,
+        "statusDot": true,
+        "name": "beta-node",
+        "ariaLabel": "Temporary task agent, publisher, level 1, offline, Started by lead, /publisher, on beta-node"
+      },
+      "retryVisible": true,
+      "notice": "beta-node isn't reachable\n\nThis run's conversation can't be loaded right now. Your other runs work. Retry when the node is back.\n\nRetry",
+      "localStillListed": false,
+      "afterRetry": {
+        "chip": "beta-node",
+        "title": "Org work. Marker REMOTE-ORG.",
+        "error": null,
+        "checking": null,
+        "statusDot": true,
+        "name": "beta-node",
+        "ariaLabel": "Temporary task agent, publisher, level 1, offline, Started by lead, /publisher, on beta-node"
+      }
+    }
+  },
+  "browserErrors": [],
+  "cleanup": {
+    "frontendExited": true,
+    "serversLeft": 0,
+    "rootRemoved": true
+  },
+  "error": null,
+  "finishedAt": "2026-10-23T14:16:01.573Z"
+}

@@ -22,7 +22,7 @@ Terminal tools provide stateless non-interactive command execution for agents pl
   behavior is separate from generic file-tool path policy and is not a
   sandbox.
 - **Foreground execution is non-PTY** — command output is captured from process pipes, avoiding terminal prompt/echo/wrapping artifacts.
-- **Background processes use PID identity** — managed background processes are returned and queried by `pid` only.
+- **Background tools address processes by PID** — tool results and lookups use `pid`; shutdown authority comes from a retained owned command scope and live identity checks, not the numeric PID or an occupied port alone.
 - **Long-running commands use normal shell syntax** — for example, `npm run dev > server.log 2>&1 &`. If an ordinary live descendant remains after the shell exits, it is adopted and returned in `backgroundProcesses`.
 - **Interactive terminals remain PTY-backed elsewhere** — server/web xterm sessions use the interactive `TerminalSession` backends selected by `session-factory.ts`.
 
@@ -145,11 +145,47 @@ const result = await stopBackgroundProcess(context, pid);
 // result: { status: "stopped", pid }
 ```
 
+## Owned command lifetime and host shutdown
+
+`NativeCommandProcessScope` is the lifetime owner for native non-interactive
+commands. Studio and standalone application hosts inject their scope through the
+native backend into agent configuration; per-agent background managers remain
+views of commands, not the only shutdown registry. Ending an individual agent
+or completing a turn does not close the host scope or terminate its previews.
+Host/backend close drains retained work, including commands whose originating
+run ended and ordinary shell children adopted after `run_bash` returned.
+
+Before user code runs, an internal anchor establishes the owned process
+group/session. It remains alive beyond the shell's RESULT and agent context so
+quick shell exit cannot erase cleanup authority. POSIX and WSL launchers keep
+that anchor separate from the user command result; WSL establishes its session
+explicitly. Foreground output capture and command completion remain distinct
+from ownership retirement.
+
+Close blocks new work, drains groups together within bounded graceful/forced
+phases, and verifies the owned resources are absent. A signalled parent or a
+released port alone is not proof of cleanup. Observation or identity uncertainty
+returns an unconfirmed result rather than signalling an unrelated PID/group or
+claiming success. Host composition still attempts other resource cleanup and
+reports aggregate failure. No port scan grants termination authority; escaped
+untracked daemons, machine crashes and power loss are outside this guarantee.
+
+Provider-owned Codex/Claude commands retain their provider shutdown owners;
+this native scope is not a replacement for those runtimes. The read-only Codex
+Background Tasks panel is documented in the server's
+[Agent Execution](../../autobyteus-server-ts/docs/modules/agent_execution.md#read-only-codex-background-task-inspection).
+
 ## Architecture
 
 ```
 src/tools/terminal/
 ├── command-execution/
+│   ├── native-command-process-scope.ts   # host lifetime, leases and collective drain
+│   ├── anchored-command-launcher.ts      # owned anchor/command launch
+│   ├── anchor-control-protocol.ts        # command RESULT separate from anchor exit
+│   ├── posix-command-anchor-script.ts   # POSIX session/group anchor
+│   ├── wsl-command-anchor-script.ts     # WSL session/group anchor
+│   ├── process-identity.ts              # live ownership identity
 │   ├── non-interactive-shell-resolver.ts # bash/WSL shell invocation
 │   ├── process-group-observer.ts         # process-group scan/status/stop
 │   └── shell-command-executor.ts         # foreground run_bash lifecycle

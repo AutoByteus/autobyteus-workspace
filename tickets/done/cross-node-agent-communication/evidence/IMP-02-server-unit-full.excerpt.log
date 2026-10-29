@@ -1,0 +1,46 @@
+# IMP-02 full server unit suite: pnpm -C autobyteus-server-ts test:unit (vitest run tests/unit)
+# commit: 8491e0d916 (started 16:06 local; the behaviour-identical engine refusal-constant change of 6076a3aadf was saved during the run; the new idle-shutdown test of 6076a3aadf is not in this run, see IMP-03); macOS, node v22.23.1; temp dirs only; 2026-10-20
+# excerpt: the remote-collaboration files and the summary. The full log (1.4 MB) is not committed.
+ ✓ tests/unit/run-history/services/collaboration-root-history-public-projection.test.ts (11 tests) 2308ms
+ ✓ tests/unit/remote-collaboration/standalone-remote-delegation.test.ts (7 tests) 306ms
+ ✓ tests/unit/run-history/services/agent-run-history-catalog-service.test.ts (17 tests) 337ms
+ ✓ tests/unit/run-history/services/team-run-history-catalog-service.test.ts (7 tests) 368ms
+ ✓ tests/unit/run-history/store/remote-task-execution-links.test.ts (12 tests) 340ms
+ ✓ tests/unit/remote-access/pairing-auth-service.test.ts (7 tests) 149ms
+ ✓ tests/unit/remote-collaboration/remote-link-walkers.test.ts (6 tests) 169ms
+ ✓ tests/unit/run-history/store/agent-run-metadata-store.test.ts (4 tests) 68ms
+ ✓ tests/unit/remote-collaboration/remote-collaboration-settings.test.ts (7 tests) 101ms
+ ✓ tests/unit/agent-collaboration/communication-commit-path.test.ts (10 tests) 73ms
+ ✓ tests/unit/agent-tools/team-communication/collaboration-result-contracts.test.ts (5 tests) 61ms
+ ✓ tests/unit/remote-access/server-instance-identity-service.test.ts (1 test) 19ms
+ ✓ tests/unit/app-data-migrations/team-communication-projection-address-migration.test.ts (6 tests) 21ms
+ ✓ tests/unit/remote-collaboration/peer-client.test.ts (6 tests) 27ms
+ ✓ tests/unit/run-history/services/agent-org-run-history-catalog-service.test.ts (9 tests) 19ms
+ ✓ tests/unit/agent-collaboration/task-execution-resource-tree-scope.test.ts (17 tests) 21ms
+ ✓ tests/unit/agent-tools/team-communication/send-message-to.test.ts (8 tests) 9ms
+ ✓ tests/unit/agent-tools/task-delegation/task-delegation-runtime-descriptions.test.ts (7 tests) 9ms
+ ✓ tests/unit/services/team-communication/team-communication-content-service.test.ts (3 tests) 7ms
+ ✓ tests/unit/llm-management/services/model-catalog-service.test.ts (8 tests) 10ms
+ ✓ tests/unit/services/team-communication/team-communication-service.test.ts (5 tests) 9ms
+ ✓ tests/unit/agent-execution/events/team-communication-message-event-processor.test.ts (3 tests) 3ms
+ ✓ tests/unit/agent-tools/task-delegation/task-delegation-work-source.test.ts (30 tests) 8ms
+ ✓ tests/unit/remote-access/local-trust.test.ts (12 tests) 6ms
+ ✓ tests/unit/app-data-migrations/predecessor-team-communication-converter.test.ts (2 tests) 7ms
+ ✓ tests/unit/remote-access/route-policy.test.ts (9 tests) 6ms
+ ✓ tests/unit/agent-tools/task-delegation/task-delegation-tool-run-router.test.ts (3 tests) 6ms
+ ✓ tests/unit/agent-team-execution/agent-team-collaboration-llm-contract.test.ts (5 tests) 4ms
+ ✓ tests/unit/remote-collaboration/peer-gateway.test.ts (4 tests) 6ms
+ ✓ tests/unit/remote-access/pairing-url-policy.test.ts (19 tests) 5ms
+ ✓ tests/unit/agent-tools/team-communication/get-handoff-rules.test.ts (5 tests) 5ms
+ ✓ tests/unit/agent-team-execution/task-delegation/task-execution-identity-capabilities.test.ts (4 tests) 4ms
+ ✓ tests/unit/remote-access/url-normalization.test.ts (3 tests) 3ms
+ ✓ tests/unit/remote-access/redact-sensitive-url.test.ts (5 tests) 2ms
+ ✓ tests/unit/services/team-communication/team-communication-message-append-plan-current.test.ts (1 test) 2ms
+ ✓ tests/unit/remote-access/client-facing-url-resolver.test.ts (2 tests) 2ms
+...
+ Test Files  758 passed | 4 skipped (762)
+      Tests  6248 passed | 7 skipped (6255)
+   Start at  16:06:11
+   Duration  574.40s (transform 17.05s, setup 8.18s, import 281.52s, tests 213.67s, environment 850ms)
+
+exit=0

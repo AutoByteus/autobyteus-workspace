@@ -1,0 +1,36 @@
+# API-24 (AC-113 part) attempt: a test-owned Docker node from autobyteus/autobyteus-server:latest (821e777d8e88) with this worktree's dist mounted (TESTING § Docker server nodes) | 2026-10-20
+cmd: docker run --rm --entrypoint sh <image> -c 'cd /app/autobyteus-server-ts/dist && find . -name "*.js" | xargs md5sum' vs md5 of /Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-agent-communication-r2/autobyteus-server-ts/dist (built at API-00 round 3)
+image: no dist/remote-collaboration; node v22.23.3
+result: 73 files differ, 38 only in this dist, 6 only in the image; 31 differing files are NOT changed by this branch (git diff 5de6a698b9 HEAD), e.g.:
+./agent-execution/backends/autobyteus/available-llm-construction.js
+./agent-tools/media/media-generation-service.js
+./llm-management/services/model-metadata-provisioning-service.js
+./runtime-management/claude/client/claude-sdk-client.js
+./secret-management/bootstrap/secret-vault-bootstrap.js
+./secret-management/catalog/provider-credential-catalog.js
+./secret-management/cli/import-local-environment-secrets.js
+./secret-management/cli/test-vault-cli.js
+./secret-management/crypto/secret-vault-crypto.js
+./secret-management/domain/secret-id.js
+./secret-management/domain/secret-vault-types.js
+./secret-management/index.js
+./secret-management/persistence/secret-entry-repository.js
+./secret-management/persistence/secret-vault-persistence-types.js
+./secret-management/persistence/secret-vault-repository.js
+./secret-management/provisioning/local-environment-secret-import-service.js
+./secret-management/provisioning/local-environment-source-reader.js
+./secret-management/provisioning/local-import-credential-alias-registry.js
+./secret-management/provisioning/writable-vault-target.js
+./secret-management/resolution/runtime-provider-api-key-resolvers.js
+./secret-management/resolution/secret-management-provider-api-key-resolver.js
+./secret-management/root-key/secret-root-key-file.js
+./secret-management/secret-vault-runtime.js
+./secret-management/secret-vault-source.js
+./secret-management/services/secret-management-service.js
+./secret-management/services/secret-vault-inspection-service.js
+./secret-management/test-vault/read-only-test-vault.js
+./secret-management/test-vault/test-vault-commands.js
+./secret-management/windows-exclusive-acl.js
+./server-runtime.js
+./standalone-application-host/start-standalone-application-host.js
+decision: TESTING allows mounting this dist only when the image's dist differs just in the files this branch changed; not the case, so no container was started. The user's containers (autobyteus-server-0/1/2) were not touched.

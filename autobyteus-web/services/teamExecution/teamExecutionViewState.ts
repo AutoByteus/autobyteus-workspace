@@ -1,4 +1,4 @@
-import { teamAgentSourceAt } from '~/services/collaborators/agentSourceSelectors';
+import { teamAgentSourceOf } from '~/services/collaborators/agentSourceSelectors';
 import { handleAgentInputState } from '~/services/agentStreaming/handlers/agentInputStateHandler';
 import { advanceSequencedStream } from '~/services/agentStreaming/sequencedStreamRange';
 import { computed, reactive, ref, shallowRef } from 'vue';
@@ -14,6 +14,9 @@ import type { TeamRunConfigurationView } from '~/types/agent/TeamRunConfig';
 import { parseAgentTeamAddress, type AgentTeamAddress } from '~/types/agent/AgentTeamAddress';
 import { insertTaskExecution, recordDelegatedLaunchSelections } from './teamExecutionTreeMutations';
 import { refreshTeamAgentLaunches } from './teamExecutionContextFactory';
+import { createRemoteTeamAgentContext, isKnownRemoteExecution, isRemoteAgentRun, remoteAgentLocations, teamNavigationRowsWithRemote } from './teamRemoteExecutions';
+import { applyRemoteSummaryStatuses } from '~/services/remoteRuns/remoteChildren';
+import type { RemoteTaskExecutionDto } from '@autobyteus/agent-presentation-contracts';
 import {
   agentRunKey,
   collectClosedSubtrees,
@@ -89,6 +92,8 @@ export interface CreateTeamExecutionViewStateInput {
   initialFocusedAgentRunId: string;
   agentContexts: readonly TeamAgentContextEntry[];
   createAgentContext: (agentRunId: string, address: AgentTeamAddress, tree: TeamRunExecutionTreeDto) => AgentContext | null;
+  /** autobyteus-278: the runs this Team delegated to other nodes (the snapshot's list). */
+  remoteTaskExecutions?: readonly RemoteTaskExecutionDto[];
 }
 
 const requiredId = (value: string, label: string): string => {
@@ -106,7 +111,8 @@ const sequenceOf = (message: Exclude<TeamStreamServerMessage,
 };
 
 const targetAgentRunId = (message: Exclude<TeamStreamServerMessage,
-  { type: 'CONNECTED' | 'TEAM_RUN_LIFECYCLE' | 'TEAM_EXECUTION_VIEW_SNAPSHOT' | 'AGENT_COMMAND_ACK' | 'SEGMENT_CONTENT_BATCH' | 'TASK_EXECUTION_STARTED' | 'TASK_EXECUTIONS_CLOSED' | 'TASK_EXECUTIONS_REOPENED' | 'TEAM_COMMUNICATION_MESSAGE' | 'DELEGATED_LAUNCH_SELECTIONS_CHANGED' }>): string | null => {
+  { type: 'CONNECTED' | 'TEAM_RUN_LIFECYCLE' | 'TEAM_EXECUTION_VIEW_SNAPSHOT' | 'AGENT_COMMAND_ACK' | 'SEGMENT_CONTENT_BATCH' | 'TASK_EXECUTION_STARTED' | 'TASK_EXECUTIONS_CLOSED' | 'TASK_EXECUTIONS_REOPENED' | 'TEAM_COMMUNICATION_MESSAGE' | 'DELEGATED_LAUNCH_SELECTIONS_CHANGED'
+    | 'REMOTE_TASK_EXECUTION_STARTED' | 'REMOTE_TASK_EXECUTION_SUMMARY' }>): string | null => {
   if (message.type === 'MEMBER_INPUT_MESSAGE') return message.payload.recipient_agent_run_id;
   if (message.type === 'ERROR') return message.payload.agent_run_id;
   return message.payload.agent_run_id;
@@ -130,6 +136,7 @@ export const createTeamExecutionViewState = (
     changeSequence: input.baseChangeSequence ?? 0,
     contexts: new Map<string, AgentContext>() as ReadonlyMap<string, AgentContext>,
     locations: new Map<string, TeamAgentExecutionLocation>() as ReadonlyMap<string, TeamAgentExecutionLocation>,
+    remote: structuredClone(input.remoteTaskExecutions ?? []) as readonly RemoteTaskExecutionDto[],
   });
   const streamRecoveryRequired = ref(false);
   const rootActive = ref(input.rootActive);
@@ -150,10 +157,10 @@ export const createTeamExecutionViewState = (
   };
 
   const collectValidatedLocations = (
-    nextTree: TeamRunExecutionTreeDto,
+    nextTree: TeamRunExecutionTreeDto, nextRemote: readonly RemoteTaskExecutionDto[] = publication.value.remote,
   ): ReadonlyMap<string, TeamAgentExecutionLocation> => {
     const nextLocations = new Map<string, TeamAgentExecutionLocation>();
-    for (const rawLocation of collectAgentExecutionLocations(nextTree)) {
+    for (const rawLocation of [...collectAgentExecutionLocations(nextTree), ...remoteAgentLocations(rootTeamRunId, nextRemote)]) {
       const location = Object.freeze({
         agentRunId: requiredId(rawLocation.agentRunId, 'agentRunId'),
         memberAddress: parseAgentTeamAddress(rawLocation.memberAddress),
@@ -175,6 +182,7 @@ export const createTeamExecutionViewState = (
   const planContextAssociations = (
     nextTree: TeamRunExecutionTreeDto,
     nextLocations: ReadonlyMap<string, TeamAgentExecutionLocation>,
+    nextRemote: readonly RemoteTaskExecutionDto[] = publication.value.remote,
   ): readonly TeamAgentContextEntry[] => {
     const unplacedContext = [...publication.value.contexts.keys()].find((agentRunId) => !nextLocations.has(agentRunId));
     if (unplacedContext) {
@@ -183,7 +191,8 @@ export const createTeamExecutionViewState = (
     const planned: TeamAgentContextEntry[] = [];
     for (const location of nextLocations.values()) {
       if (!publication.value.contexts.has(location.agentRunId)) {
-        const context = input.createAgentContext(location.agentRunId, location.memberAddress, nextTree);
+        const context = createRemoteTeamAgentContext(nextRemote, location.agentRunId, location.memberAddress)
+          ?? input.createAgentContext(location.agentRunId, location.memberAddress, nextTree);
         if (!context || context.state.runId !== location.agentRunId) {
           throw new Error(`No exact Agent context could be created for '${location.agentRunId}'.`);
         }
@@ -223,10 +232,10 @@ export const createTeamExecutionViewState = (
 
   // Every placement in the tree (including shut-down delegated children) is
   // navigable; a message to a shut-down child restores it.
-  const navigationRows = (): readonly TeamExecutionNavigationRow[] => projectNavigationRows({
-    tree: publication.value.tree,
-    contexts: publication.value.contexts,
-  });
+  const navigationRows = (): readonly TeamExecutionNavigationRow[] => teamNavigationRowsWithRemote({ tree: publication.value.tree,
+    treeRows: projectNavigationRows({ tree: publication.value.tree, contexts: publication.value.contexts }),
+    executions: publication.value.remote, contexts: publication.value.contexts,
+    addressOf: (agentRunId) => publication.value.locations.get(agentRunId)?.memberAddress ?? null });
   // Rows under a closed task execution leave the Workspaces listing; navigation rows stay complete.
   const closedSubtrees = computed(() => collectClosedSubtrees(
     [publication.value.tree.root_team as TeamTreeNode], publication.value.closed, teamTreeWalk));
@@ -294,8 +303,8 @@ export const createTeamExecutionViewState = (
         || payload.execution_tree.root_team.team_run_id !== rootTeamRunId) {
         return Object.freeze({ disposition: 'rejected', code: 'TEAM_EXECUTION_ROOT_MISMATCH', message: 'Snapshot belongs to another root TeamRun.', effects: Object.freeze([]) });
       }
-      const nextLocations = collectValidatedLocations(payload.execution_tree);
-      const planned = planContextAssociations(payload.execution_tree, nextLocations);
+      const nextLocations = collectValidatedLocations(payload.execution_tree, payload.remote_task_executions);
+      const planned = planContextAssociations(payload.execution_tree, nextLocations, payload.remote_task_executions);
       const plannedContexts = new Map(planned.map((entry) => [entry.agentRunId, entry.agentContext]));
       const statusIds = new Set<string>();
       const validatedStatuses: Array<{ context: AgentContext; status: AgentStatus; recoverableBlock: import("@autobyteus/agent-presentation-contracts").CompactionRecoveryBlockDto | null }> = [];
@@ -309,8 +318,8 @@ export const createTeamExecutionViewState = (
         statusIds.add(status.agent_run_id);
         validatedStatuses.push({ context, status: status.status as AgentStatus, recoverableBlock: status.recoverableBlock });
       }
-      // Every tree placement reports a status; shut-down children report offline.
-      if ([...nextLocations.keys()].some((agentRunId) => !statusIds.has(agentRunId))) {
+      // Every tree placement reports a status; shut-down children report offline (remote ones: their nodes' summaries).
+      if ([...nextLocations.keys()].some((agentRunId) => !statusIds.has(agentRunId) && !isRemoteAgentRun(payload.remote_task_executions, agentRunId))) {
         throw new Error('Snapshot omitted a canonical Agent status.');
       }
       const inputIds = new Set<string>();
@@ -319,7 +328,7 @@ export const createTeamExecutionViewState = (
         inputIds.add(entry.agent_run_id);
       }
       publication.value = {
-        tree: structuredClone(payload.execution_tree), locations: nextLocations,
+        tree: structuredClone(payload.execution_tree), locations: nextLocations, remote: structuredClone(payload.remote_task_executions),
         closed: payload.closed_task_executions.map(fromTeamTaskExecutionReference),
         messages: structuredClone(payload.messages),
         contexts: prepareContextAssociations(planned), changeSequence: payload.base_change_sequence,
@@ -390,6 +399,15 @@ export const createTeamExecutionViewState = (
             agentRunIds: Object.freeze(planned.map((entry) => entry.agentRunId)),
           });
         }
+        effects.push({ kind: 'reconcile_team_navigation' });
+      } else if (message.type === 'REMOTE_TASK_EXECUTION_STARTED') {
+        // autobyteus-278: a new remote run needs its contexts and placements: a fresh snapshot brings them.
+        if (!isKnownRemoteExecution(publication.value.remote, message.payload.execution)) {
+          streamRecoveryRequired.value = true;
+          return Object.freeze({ disposition: 'applied', effects: Object.freeze([{ kind: 'team_stream_recovery_required' as const }]) });
+        }
+      } else if (message.type === 'REMOTE_TASK_EXECUTION_SUMMARY') {
+        applyRemoteSummaryStatuses(message.payload, (agentRunId) => publication.value.contexts.get(agentRunId) ?? null, publication.value.remote);
         effects.push({ kind: 'reconcile_team_navigation' });
       } else if (message.type === 'TASK_EXECUTIONS_CLOSED') {
         // Their Task is DONE: they stay in the tree and the Team tab, and leave the listing.
@@ -471,7 +489,7 @@ export const createTeamExecutionViewState = (
     getAgentWorkspaceRootPath: (agentRunId) => {
       const location = publication.value.locations.get(agentRunId.trim());
       return location
-        ? teamAgentSourceAt(publication.value.tree, location.memberAddress, location.agentRunId)?.launch_configuration.workspace_root_path ?? null
+        ? teamAgentSourceOf(publication.value.tree, location.agentRunId)?.launch_configuration.workspace_root_path ?? null
         : null;
     },
     getAgentExecutionLocation: (agentRunId) => publication.value.locations.get(agentRunId.trim()) ?? null,

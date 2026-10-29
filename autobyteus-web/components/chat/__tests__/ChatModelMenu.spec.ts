@@ -13,9 +13,9 @@ const model = (llmModelIdentifier: string) => ({
 vi.mock('~/composables/chat/useChatModelCatalog', () => ({
   useChatModelCatalog: () => ({
     runtimes: ref([
-      { runtimeKind: 'autobyteus', label: 'AutoByteus', shortLabel: 'AutoByteus', enabled: true, reason: null },
-      { runtimeKind: 'antigravity_cli', label: 'Antigravity CLI', shortLabel: 'Antigravity', enabled: false, reason: SIGN_IN_REASON },
-      { runtimeKind: 'grok_build', label: 'Grok Build', shortLabel: 'Grok', enabled: false, reason: null },
+      { runtimeKind: 'autobyteus', label: 'AutoByteus', enabled: true, reason: null },
+      { runtimeKind: 'antigravity_cli', label: 'Antigravity CLI', enabled: false, reason: SIGN_IN_REASON },
+      { runtimeKind: 'grok_build', label: 'Grok Build', enabled: false, reason: null },
     ]),
     enabledRuntimeKinds: ref(['autobyteus']),
     ensureAvailability: vi.fn(async () => undefined),
@@ -173,5 +173,30 @@ describe('ChatModelMenu unavailable runtimes (AC-003)', () => {
     await autobyteus.trigger('keydown', { key: 'ArrowDown' })
     expect(document.activeElement?.getAttribute('data-runtime')).not.toBe('antigravity_cli')
     expect(document.activeElement?.getAttribute('data-runtime')).not.toBe('grok_build')
+  })
+})
+
+describe('ChatModelMenu with no runtime chosen yet (autobyteus-313: the Model Router before it is set)', () => {
+  it('the trigger asks for a model and names no runtime', () => {
+    wrapper = mount(ChatModelMenu, { props: { runtimeKind: '', llmModelIdentifier: '', modelLabel: '' }, attachTo: document.body })
+    const trigger = wrapper.get('[data-test="chat-model-trigger"]')
+    const text = trigger.text().replace(/\s+/g, ' ').trim()
+    expect(text).toMatch(/^Choose/)
+    expect(text).not.toMatch(/AutoByteus|Codex|Claude|Antigravity|Grok/)
+    expect(trigger.attributes('title')).toBeUndefined()
+    expect(trigger.attributes('aria-label')).toBe(text)
+  })
+})
+
+describe('ChatModelMenu runtime name (autobyteus-320, AC-003)', () => {
+  it.each([
+    ['claude_agent_sdk', 'Claude Agent SDK'],
+    ['codex_app_server', 'Codex App Server'],
+    ['antigravity_cli', 'Antigravity CLI'],
+  ])('the chat footer names %s by its full name', (runtimeKind, name) => {
+    wrapper = mount(ChatModelMenu, { props: { runtimeKind, llmModelIdentifier: 'm-1', modelLabel: 'Model One' }, attachTo: document.body })
+    const trigger = wrapper.get('[data-test="chat-model-trigger"]')
+    expect(trigger.text()).toContain(name)
+    expect(trigger.attributes('title')).toBe(`Model One · ${name}`)
   })
 })

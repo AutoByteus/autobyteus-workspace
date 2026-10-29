@@ -1,6 +1,7 @@
 import type { Rectangle } from 'electron';
 import type {
   BrowserHostBounds,
+  BrowserShellHistoryNavigationRequest,
   BrowserShellNavigateTabRequest,
   BrowserShellOpenTabRequest,
   BrowserShellReloadTabRequest,
@@ -12,6 +13,7 @@ import type { WorkspaceShellWindow } from '../shell/workspace-shell-window';
 import { BrowserTabManager } from './browser-tab-manager';
 import type {
   BrowserDeviceEmulationState,
+  BrowserHistoryState,
   BrowserPopupOpenedEvent,
   BrowserTabSummary,
 } from './browser-tab-types';
@@ -45,7 +47,8 @@ const toRectangle = (bounds: BrowserHostBounds | null): Rectangle | null => {
   };
 };
 
-const cloneSummary = (summary: BrowserTabSummary): BrowserShellTabSummary => ({
+const cloneSummary = (summary: BrowserTabSummary, history: BrowserHistoryState): BrowserShellTabSummary => ({
+  ...history,
   tab_id: summary.tab_id,
   title: summary.title,
   url: summary.url,
@@ -181,6 +184,29 @@ export class BrowserShellController {
     state.activeSessionId = request.tabId;
     this.applyShellProjection(state);
     this.publishSnapshot(shellId);
+    return this.buildSnapshot(state);
+  }
+
+  navigateHistory(
+    shellId: number,
+    request: BrowserShellHistoryNavigationRequest,
+  ): BrowserShellSnapshot {
+    const state = this.getStateOrThrow(shellId);
+    if (!request || typeof request.tabId !== 'string' || !request.tabId.trim() ||
+        (request.direction !== 'back' && request.direction !== 'forward')) {
+      throw new Error('A browser tab ID and back or forward direction are required.');
+    }
+    if (!state.sessionIds.includes(request.tabId)) {
+      throw new Error(`Browser session '${request.tabId}' is not attached to shell '${shellId}'.`);
+    }
+    if (this.browserSessionManager.getSessionLeaseOwner(request.tabId) !== shellId) {
+      throw new Error(`Browser session '${request.tabId}' is not leased to shell '${shellId}'.`);
+    }
+    if (state.activeSessionId !== request.tabId) return this.buildSnapshot(state);
+
+    // Dispatch synchronously after authorization. Native events report completion;
+    // this command must never await a load or reselect a previously active tab.
+    this.browserSessionManager.navigateHistory(request.tabId, request.direction);
     return this.buildSnapshot(state);
   }
 
@@ -355,7 +381,7 @@ export class BrowserShellController {
     const sessions = state.sessionIds
       .map((sessionId) => this.browserSessionManager.getSessionSummary(sessionId))
       .filter((value): value is BrowserTabSummary => value !== null)
-      .map((summary) => cloneSummary(summary));
+      .map((summary) => cloneSummary(summary, this.browserSessionManager.getSessionHistoryState(summary.tab_id)));
 
     const activeTabId =
       state.activeSessionId && sessions.some((session) => session.tab_id === state.activeSessionId)

@@ -29,7 +29,7 @@ vi.mock('~/stores/runHistoryStore', () => ({
 import { stageAgentOrgExecutionContext } from '../agentOrgContextHydration'
 
 import { taskBearingView } from './taskBearingOrgFixture'
-import { GetAgentOrgMemberRunProjection, GetRunFileChanges } from '~/graphql/queries/runHistoryQueries'
+import { GetAgentOrgMemberFileChanges, GetAgentOrgMemberRunProjection, GetRunFileChanges } from '~/graphql/queries/runHistoryQueries'
 
 const liveHistoryRun = (view: AgentOrgExecutionViewDto): AgentOrgRunHistoryItem => ({
   stableKey: 'agent_org:org-run',
@@ -83,7 +83,11 @@ describe('staged AgentOrg context hydration and publication', () => {
     })
     const queried = (document: unknown) => mocks.query.mock.calls.filter(([options]) => options.query === document)
     expect(queried(GetAgentOrgMemberRunProjection)).toHaveLength(7)
-    expect(queried(GetRunFileChanges)).toHaveLength(7)
+    expect(queried(GetAgentOrgMemberFileChanges)).toHaveLength(7)
+    expect(queried(GetAgentOrgMemberFileChanges).map(([options]) => options.variables)).toContainEqual({
+      orgRunId: 'org-run', memberAddress: '/worker', agentRunId: 'agent-worker-task',
+    })
+    expect(queried(GetRunFileChanges)).toHaveLength(0)
     expect(mocks.query).toHaveBeenCalledWith(expect.objectContaining({
       variables: {
         orgRunId: 'org-run', memberAddress: '/worker', agentRunId: 'agent-worker-task',
@@ -123,10 +127,12 @@ describe('staged AgentOrg context hydration and publication', () => {
       createdAt: '2026-10-06T10:00:00.000Z', updatedAt: '2026-10-06T10:00:00.000Z',
     })
     const serve = (failingArtifactsFor?: string) => mocks.query.mockImplementation(async ({ query, variables }) => {
-      if (query === GetRunFileChanges) {
-        return variables.runId === failingArtifactsFor
-          ? { data: null, errors: [{ message: `artifacts unavailable for ${variables.runId}` }] }
-          : { data: { getRunFileChanges: [artifact(variables.runId, '1.png'), artifact(variables.runId, '2.png')] } }
+      if (query === GetRunFileChanges) throw new Error('org member artifacts are read through the org, not by run id')
+      if (query === GetAgentOrgMemberFileChanges) {
+        expect(variables.orgRunId).toBe('org-run')
+        return variables.agentRunId === failingArtifactsFor
+          ? { data: null, errors: [{ message: `artifacts unavailable for ${variables.agentRunId}` }] }
+          : { data: { getAgentOrgMemberFileChanges: [artifact(variables.agentRunId, '1.png'), artifact(variables.agentRunId, '2.png')] } }
       }
       return { data: { getAgentOrgMemberRunProjection: {
         agentRunId: variables.agentRunId, memberAddress: variables.memberAddress, conversation: [], activities: [], hasEarlierActiveTraceEvents: false,
@@ -262,7 +268,9 @@ it('exposes the exact selected Org task source root even with no metadata projec
   const view = JSON.parse(JSON.stringify(taskBearingView()));
   view.is_active = false;
   view.execution_tree.rootOrg.members[0].launchConfiguration.workspaceRootPath = '/parent';
-  view.execution_tree.rootOrg.members[1].launchConfiguration.workspaceRootPath = '/child';
+  // The copy runs from its own recorded source, not from what its configured placement says now (REQ-001).
+  view.execution_tree.rootOrg.members[1].launchConfiguration.workspaceRootPath = '/placement-now';
+  view.execution_tree.rootOrg.taskExecutions[0].source.launchConfiguration.workspaceRootPath = '/child';
   mocks.resolveWorkspaceMetadataByRootPath.mockResolvedValue(null);
   mocks.query.mockImplementation(async ({ variables }: any) => ({ data: { getAgentOrgMemberRunProjection: {
     ...variables, conversation: [], activities: [], hasEarlierActiveTraceEvents: false,

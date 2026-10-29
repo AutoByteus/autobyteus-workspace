@@ -1,0 +1,22 @@
+# IMP-01 regression spec (AC-002, AC-003)
+# cmd: NUXT_TEST=true pnpm -C autobyteus-web exec vitest run stores/__tests__/agentOrgRunConfigRead.spec.ts --run --reporter=verbose
+# commit: 29b51ebcef  env: macOS (darwin), Node v22.23.1  date: 2026-10-24T16:30Z
+
+
+ RUN  v3.2.7 /Users/normy/autobyteus_org/autobyteus-worktrees/org-settings-save-stale-reread/autobyteus-web
+
+
+
+ ✓ stores/__tests__/agentOrgRunConfigRead.spec.ts > Org canonical settings read while the Org view refreshes (autobyteus-265) > reads again and resolves when the live Org stream republishes its view mid-read 7ms
+ ✓ stores/__tests__/agentOrgRunConfigRead.spec.ts > Org canonical settings read while the Org view refreshes (autobyteus-265) > reads again when a stopped Org view is replaced during metadata preparation, then applies the settings 53ms
+ ✓ stores/__tests__/agentOrgRunConfigRead.spec.ts > Org canonical settings read while the Org view refreshes (autobyteus-265) > refuses the read when the target changes mid-read (released) 2ms
+ ✓ stores/__tests__/agentOrgRunConfigRead.spec.ts > Org canonical settings read while the Org view refreshes (autobyteus-265) > refuses the read when the target changes mid-read (binding) 1ms
+ ✓ stores/__tests__/agentOrgRunConfigRead.spec.ts > Org canonical settings read while the Org view refreshes (autobyteus-265) > refuses the read when the target changes mid-read (operation) 1ms
+ ✓ stores/__tests__/agentOrgRunConfigRead.spec.ts > Org canonical settings read while the Org view refreshes (autobyteus-265) > refuses the read when the target changes mid-read (inspection) 1ms
+ ✓ stores/__tests__/agentOrgRunConfigRead.spec.ts > Org canonical settings read while the Org view refreshes (autobyteus-265) > gives up with the stale error after 3 reads when the view keeps being republished 2ms
+
+ Test Files  1 passed (1)
+      Tests  7 passed (7)
+   Start at  18:30:45
+   Duration  6.30s (transform 3.17s, setup 5.59s, collect 121ms, tests 68ms, environment 161ms, prepare 127ms)
+

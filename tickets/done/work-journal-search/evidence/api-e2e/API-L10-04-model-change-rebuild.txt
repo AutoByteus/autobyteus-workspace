@@ -1,0 +1,13 @@
+# API-L10: embedding model change, then Rebuild (UXJ-005, VIS-016, R-013, § Meaning Step Rules "model changed")
+# Desktop iso-50688-fbfc; 2026-10-26 19:47–20:05 UTC
+## Switch (Settings → Server Settings → Embedding)
+"Use this model" on MongoDB LEAF-IR → dialog "Use MongoDB LEAF-IR? Every Project has to be indexed again with this model. Until then, meaning search finds exact matches only. Download: 24 MB, not downloaded yet" → Use this model → status "Active · Preparing…" → "Active · Ready"
+memoryIndexStatus: {"state":"MODEL_CHANGED","activeModelId":"mdbr-leaf-ir","meaningIndexModelId":"granite-embedding-small-english-r2","meaningNote":"The Meaning index was built with granite-embedding-small-english-r2; the active model is mdbr-leaf-ir. Rebuild to use it."}
+## Memory page
+Index tab: status "Embedding model changed"; note "The Meaning index was built with granite-embedding-small-english-r2. Rebuild to use mdbr-leaf-ir."; steps done ×4; button Rebuild (enabled); tab dot class "h-2 w-2 rounded-full bg-amber-400" (API-L10-01-index-model-changed.png)
+Search "set up a domain updater DDNS": notice "Embedding model changed · View the index"; 10 results, all Words (private: API-L10-02-search-model-changed.png); GraphQL coverage "The meaning index was built with granite-embedding-small-english-r2; results are by words only until the user rebuilds the index on the Memory page." and 0 MEANING matches
+## Rebuild (confirmation row "Rebuild starts every step again. Search covers less of your memory while it runs. Rebuild Cancel", API-L10-03-rebuild-confirm.png), clicked 19:48:55.6
+19:48:56 BUILDING JOURNALS RUNNING 0/3693 · 19:49:58 TEXT_INDEX RUNNING · 19:51:39 READY, TEXT 7439/7439, MEANING 0/7439 (LEAF-IR) · 20:04:29 MEANING_INDEX DONE 7440/7440, models ["mdbr-leaf-ir","mdbr-leaf-ir"]
+During the embedding: "the game with a bunny and a tortoise" → coverage "The meaning index covers 264 of 7440 journal files.", 5 MEANING matches
+After: Index tab "Up to date · 3.694 runs · updated 26.10.2026, 20:51:39" (API-L10-05-index-after-rebuild.png); the same search coverage null, the accepted run daily_assistant_9784… at #3
+Imports after the full pass: 0 hits; imported files unchanged (API-L12)

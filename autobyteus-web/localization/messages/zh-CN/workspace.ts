@@ -1,6 +1,8 @@
 import type { TranslationCatalog } from "../../runtime/types";
 
 const messages = {
+  "workspace.components.workspace.tools.BrowserPanel.back": "后退",
+  "workspace.components.workspace.tools.BrowserPanel.forward": "前进",
   "workspace.components.conversation.SkillRequestChips.sentToTheAgentAs": "发送给智能体的内容",
   "workspace.components.conversation.segments.SystemTaskNotificationSegment.skillUpdated": "技能已更新",
   "fileExplorer.workspaceUnavailable": "工作目录信息暂不可用。请刷新或重新打开设置以加载已保存的工作目录。",
@@ -118,6 +120,17 @@ const messages = {
   "workspace.components.workspace.config.TeamScopeConfigEditor.inherited": "已继承",
   "workspace.components.progress.CompactionActivityItem.memory_compaction":
     "记忆压缩",
+  "workspace.components.progress.BackgroundTaskPanel.trackedExplanation": "跟踪在所属轮次结束后继续运行的命令。仅显示最近的运行时观测，并非所有系统进程。",
+  "workspace.components.progress.BackgroundTaskPanel.lastKnown": "以下为已记录／上次已知状态；运行数量尚未确认。",
+  "workspace.components.progress.BackgroundTaskPanel.loading": "正在检查此智能体的后台任务…",
+  "workspace.components.progress.BackgroundTaskPanel.unavailable": "当前无法检查后台任务。",
+  "workspace.components.progress.BackgroundTaskPanel.recordedCounts": "上次运行 {{running}} · 已记录 {{total}}",
+  "workspace.components.progress.BackgroundTaskPanel.unconfirmedCounts": "当前数量不可用",
+  "workspace.components.progress.BackgroundTaskPanel.trackedEmpty": "没有跟踪到的后台命令",
+  "workspace.components.progress.BackgroundTaskPanel.shellCommand": "Shell 命令",
+  "workspace.components.progress.BackgroundTaskPanel.status.unknown": "未知",
+  "workspace.components.progress.BackgroundTaskPanel.observed": "{{id}} · 观测于 {{time}}",
+  "workspace.components.progress.BackgroundTaskPanel.exitCode": "退出码 {{code}}",
   "workspace.components.progress.BackgroundTaskPanel.title":
     "后台任务",
   "workspace.components.progress.BackgroundTaskPanel.counts":
@@ -155,11 +168,11 @@ const messages = {
   "workspace.components.progress.SystemInstructionActivityItem.aria_label":
     "{{title}}。{{source}}。{{availability}}。捕获于 {{time}}。{{count}} 个字符。",
   "workspace.components.progress.SystemInstructionActivityItem.source.native":
-    "由 AutoByteus 提供 · Native 已配置系统提示词",
+    "由 AutoByteus 提供 · AutoByteus 已配置系统提示词",
   "workspace.components.progress.SystemInstructionActivityItem.source.claude":
-    "由 AutoByteus 提供 · Claude SDK systemPrompt",
+    "由 AutoByteus 提供 · Claude Agent SDK systemPrompt",
   "workspace.components.progress.SystemInstructionActivityItem.source.codex":
-    "由 AutoByteus 提供 · Codex baseInstructions",
+    "由 AutoByteus 提供 · Codex App Server baseInstructions",
   "workspace.components.progress.SystemInstructionActivityItem.source.grok":
     "由 AutoByteus 提供 · Grok Build rules",
   "workspace.components.progress.SystemInstructionActivityItem.source.unknown":
@@ -281,13 +294,6 @@ const messages = {
     "模型",
   "workspace.components.launchConfig.RuntimeModelConfigFields.modelPlaceholder":
     "选择模型",
-  "workspace.components.workspace.skillImprovement.SkillImprovementComposerCta.improve_skills": "改进技能",
-  "workspace.components.workspace.skillImprovement.SkillImprovementComposerCta.standalone_scope": "此运行",
-  "workspace.components.workspace.skillImprovement.SkillImprovementComposerCta.team_member_scope": "该成员的运行",
-  "workspace.components.workspace.skillImprovement.SkillImprovementComposerCta.aria_label": "为{{scope}}改进技能",
-  "workspace.components.workspace.skillImprovement.SkillImprovementComposerCta.tooltip": "为{{scope}}启动一个可见的 Retrospective Skill Improver。它可能更新已配置的技能包，也可能不做更改。",
-  "workspace.components.workspace.skillImprovement.SkillImprovementComposerCta.run_not_eligible": "此运行不符合技能改进条件。",
-  "workspace.components.workspace.skillImprovement.SkillImprovementComposerCta.started_toast": "技能改进已启动。技能可能会被更新，也可能不做更改。",
 } satisfies TranslationCatalog;
 
 export default messages;

@@ -1,0 +1,19 @@
+# API-L01: the Memory page during the first build (desktop iso-53567-504c; probes/API-PROBE-memory-page.mjs over CDP port 53567); 2026-10-26
+
+## Before the build (UD-018, R-009, R-013)
+Run codex_45ce1b9e… opened (agent-inspector): tabs ['Work Journal', 'Raw Traces']; Work Journal: "No Work Journal yet. Index your memory to create it."; its folder still had no work_journal/ afterwards (count 0). Screenshot API-L01-01-before-build-run-no-journal.png
+Search tab: inputDisabled true, placeholder 'Index your memory to search it…', 'Memory is not indexed yet … Index now'
+Index tab: status 'Not indexed yet'; steps runs/journals/text/meaning all 'waiting'; one button 'Index now'. Screenshot API-L01-02-index-first-time.png
+
+## During the Journals step (17:23, load average 36–57)
+Index tab: 'Step 2 of 4 · Journals 21%'; tab badge '21%'; Rebuild disabled with title 'Available when the current build has finished.' Screenshot API-L01-03-building-journals.png
+Tab switches, click → content rendered (timed command):
+  Browse (first list load of the session) 3387 ms; Index 54 ms; Browse again 56 ms; Index 66 ms
+
+## During the Meaning step (17:27)
+Index tab: status 'Meaning index 0%'; detail 'Search by words is ready; matches by meaning grow in the background'; steps done/done/done/running '32 of 7.426 journal files · 0%'. Screenshot API-L01-04-meaning-running.png
+Page search 'set up a domain updater DDNS': input enabled; results shown; coverage note: 'Still indexing: the Meaning index covers 0% of your journals, so more matches by meaning may appear.'; the DDNS run codex_45ce… is result #3 (#1 is this ticket's own solution_designer run, which quotes the question; the page has no asking run). Screenshot API-L01-05-search-during-meaning.png
+
+## Work Journals written by the build
+work_journal folders: 3680 of 3680 run folders; 7426 journal .md files, 1.78 GB apparent size (stat sum); du of the folders incl. manifests 3,546,216 KB allocated
+memory-search store (18:26, text done): memory-search.sqlite 609,923,072 bytes + WAL 19,190,992 bytes (design estimate 100–300 MB; contentless FTS5 holds no journal text: 0.61 GB vs 1.78 GB of journals)

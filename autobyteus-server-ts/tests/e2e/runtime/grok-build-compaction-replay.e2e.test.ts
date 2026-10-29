@@ -43,7 +43,7 @@ describe("Grok Build compaction over GraphQL/WebSocket (recorded Grok 1.0.46 rep
   const memoryView = async (runId: string, mode: "files" | "corpus"): Promise<MemoryView> =>
     (await graphql<{ getAgentRunMemoryView: MemoryView }>(
       `query($runId: String!, $files: Boolean!, $corpus: Boolean!) { getAgentRunMemoryView(runId: $runId,
-        includeWorkingContext: false, includeEpisodic: false, includeSemantic: false, includeRawTraces: true,
+        includeRawTraces: true,
         includeRawTraceFiles: $files, includeArchive: $corpus) { rawTraces { traceType toolResult } rawTraceFiles { kind } } }`,
       { runId, files: mode === "files", corpus: mode === "corpus" })).getAgentRunMemoryView;
   const segments = async (runId: string) =>

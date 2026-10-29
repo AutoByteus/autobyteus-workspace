@@ -1,3 +1,4 @@
+import { useRemoteRunsStore } from '~/stores/remoteRunsStore';
 import type { WorkspaceSelectionIntent } from '~/stores/agentSelectionStore';
 import type { AgentContext } from '~/types/agent/AgentContext';
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
@@ -10,7 +11,7 @@ import { buildActivitiesFromProjection } from './runProjectionActivityHydration'
 import { fetchExactTeamMemberProjection } from './teamRunContextHydrationService';
 import { commitMemberRunStates, fetchMemberRunState } from './memberRunStateHydration';
 import { fetchRunFileChanges } from './runFileChangeHydrationService';
-import { teamAgentSourceAt } from '~/services/collaborators/agentSourceSelectors';
+import { teamAgentSourceOf } from '~/services/collaborators/agentSourceSelectors';
 import {
   primeRecentEventMonitorBaseline,
   resetRecentEventMonitorBaseline,
@@ -58,25 +59,37 @@ const attemptHydration = async (
   }
   const rootTeamRunId = team.view.getRootTeamRunId();
   const location = team.view.getAgentExecutionLocation(agentRunId)!;
-  const configured = teamAgentSourceAt(team.view.getExecutionTree(), location.memberAddress, agentRunId);
-  if (!configured) {
+  const configured = teamAgentSourceOf(team.view.getExecutionTree(), agentRunId);
+  // autobyteus-278: an agent of a run another node runs: its conversation is read from its node; its files stay there.
+  const remote = configured ? null : useRemoteRunsStore().runOfAgentRun(agentRunId);
+  if (!configured && !remote) {
     throw new Error(`AgentRun '${agentRunId}' has no configured Team placement.`);
   }
   const liveToolAuthority = hasLiveToolAuthority(team, agent);
   const expectedPresentationRevision = agent.state.eventMonitorPresentationRevision;
   const activityStore = useAgentActivityStore();
   const expectedActivityRevision = activityStore.getActivityContentRevision(agentRunId);
-  const { projection, fileChanges } = await fetchMemberRunState({
-    fetchProjection: () => fetchExactTeamMemberProjection(rootTeamRunId, agentRunId),
-    fetchFileChanges: () => fetchRunFileChanges(agentRunId),
-  });
+  let fetched
+  try {
+    fetched = await fetchMemberRunState({
+      fetchProjection: () => fetchExactTeamMemberProjection(rootTeamRunId, agentRunId),
+      fetchFileChanges: () => remote ? Promise.resolve([]) : fetchRunFileChanges({
+        kind: 'teamMember', teamRunId: rootTeamRunId, memberAddress: location.memberAddress, agentRunId,
+      }),
+    });
+  } catch (cause) {
+    if (remote) useRemoteRunsStore().markReachable(remote.runId, false);
+    throw cause;
+  }
+  if (remote) useRemoteRunsStore().markReachable(remote.runId, true);
+  const { projection, fileChanges } = fetched;
   let conversation = buildConversationFromProjection(
     agentRunId,
     projection.conversation ?? [],
     {
-      agentDefinitionId: configured.agent_definition_id,
+      agentDefinitionId: configured?.agent_definition_id ?? '',
       agentName: location.memberAddress.split('/').at(-1) ?? location.memberAddress,
-      llmModelIdentifier: configured.launch_configuration.llm_model_identifier,
+      llmModelIdentifier: configured?.launch_configuration.llm_model_identifier ?? '',
     },
   );
   if (projection.lastActivityAt) conversation.updatedAt = projection.lastActivityAt;

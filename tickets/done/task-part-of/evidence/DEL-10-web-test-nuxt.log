@@ -1,0 +1,7 @@
+# Check: DEL-10 web test:nuxt on re-integrated state 2fe032750f
+# Date: 2026-10-19T07:30:07Z
+# Command: pnpm -C autobyteus-web test:nuxt --run
+# Excerpt (summary); full log: DEL-10-web-test-nuxt.full.log.gz
+ Test Files  639 passed | 2 skipped (641)
+      Tests  4549 passed | 3 skipped (4552)
+exit=0

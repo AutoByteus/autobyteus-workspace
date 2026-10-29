@@ -1,0 +1,23 @@
+{
+  "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/node-vocabulary/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/nodes?nodeTab=manage",
+  "rows": [
+    {
+      "key": "srv_rK3-Dw0suyak5YriiBooKHWczqOxO6Ad",
+      "name": "remote x box"
+    },
+    {
+      "key": "d:remote-never-entry",
+      "name": "never reached"
+    }
+  ],
+  "lines": [
+    {
+      "key": "srv_rK3-Dw0suyak5YriiBooKHWczqOxO6Ad",
+      "line": "ⓘ Agents here can't work with remote x box yet. Turn on"
+    },
+    {
+      "key": "d:remote-never-entry",
+      "line": "ⓘNot reachable. Nothing answers at that address and port. Check again"
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+# TEMPORARY PROBE (not committed) for RE-05 design; commit 1103e38619 + uncommitted e2e; 2026-10-25T04:01:18Z
+[AB296-PROBE] A launched {"briefId":"brief-835730ad-e640-496c-80fb-bae7b147bc31","bindingId":"e90ce846-e1fd-4f01-b57c-72b70300f30d","runId":"brief_studio_team_35102cff1bc14d05b88c600f8228626b","status":"ATTACHED"}
+[AB296-PROBE] A brief before {"briefId":"brief-835730ad-e640-496c-80fb-bae7b147bc31","title":"probe A","status":"not_started","latestBindingId":"e90ce846-e1fd-4f01-b57c-72b70300f30d","latestRunId":"brief_studio_team_35102cff1bc14d05b88c600f8228626b","latestBindingStatus":"ATTACHED","lastErrorMessage":null,"createdAt":"2026-10-25T04:01:33.976Z","updatedAt":"2026-10-25T04:01:34.310Z","approvedAt":null,"rejectedAt":null
+[AB296-PROBE] A terminate while ACTIVE {"terminateAgentTeamRun":{"success":false,"message":"Agent team run not found."}}
+[AB296-PROBE] A brief after {"briefId":"brief-835730ad-e640-496c-80fb-bae7b147bc31","title":"probe A","status":"not_started","latestBindingId":"e90ce846-e1fd-4f01-b57c-72b70300f30d","latestRunId":"brief_studio_team_35102cff1bc14d05b88c600f8228626b","latestBindingStatus":"ATTACHED","lastErrorMessage":null,"createdAt":"2026-10-25T04:01:33.976Z","updatedAt":"2026-10-25T04:01:34.310Z","approvedAt":null,"rejectedAt":null,
+[AB296-PROBE] B launched {"briefId":"brief-42c8ab1d-35e7-4596-9e3e-a88779ff7883","bindingId":"eeff00bd-1d81-4b7e-a31b-1778607fd037","runId":"brief_studio_team_33bdf8752fa64cb8bc1c4a1cc1fd828e","status":"ATTACHED"}
+[AB296-PROBE] B brief before {"briefId":"brief-42c8ab1d-35e7-4596-9e3e-a88779ff7883","title":"probe B","status":"not_started","latestBindingId":"eeff00bd-1d81-4b7e-a31b-1778607fd037","latestRunId":"brief_studio_team_33bdf8752fa64cb8bc1c4a1cc1fd828e","latestBindingStatus":"ATTACHED","lastErrorMessage":null,"createdAt":"2026-10-25T04:01:37.424Z","updatedAt":"2026-10-25T04:01:37.726Z","approvedAt":null,"rejectedAt":null
+[AB296-PROBE] B view after reload 503
+[AB296-PROBE] B terminate while QUARANTINED {"terminateAgentTeamRun":{"success":false,"message":"Agent team run not found."}}
+[AB296-PROBE] B repair {"applicationId":"<id>","state":"ACTIVE","detail":null,"updatedAt":"2026-10-25T04:01:39.788Z"}
+[AB296-PROBE] B status 0 stopped
+[AB296-PROBE] B status 1 stopped
+[AB296-PROBE] B status 2 stopped
+[AB296-PROBE] B status 3 stopped
+[AB296-PROBE] B status 4 stopped
+[AB296-PROBE] B status 5 stopped
+[AB296-PROBE] B status 6 stopped
+[AB296-PROBE] B status 7 stopped
+[AB296-PROBE] B status 8 stopped
+[AB296-PROBE] B status 9 stopped
+[AB296-PROBE] B status 10 stopped
+[AB296-PROBE] B status 11 stopped
+[AB296-PROBE] B status 12 stopped
+[AB296-PROBE] B status 13 stopped
+[AB296-PROBE] B status 14 stopped
+[AB296-PROBE] B status 15 stopped
+[AB296-PROBE] B status 16 stopped
+[AB296-PROBE] B status 17 stopped
+[AB296-PROBE] B status 18 stopped
+[AB296-PROBE] B status 19 stopped
+[AB296-PROBE] B brief after repair {"briefId":"brief-42c8ab1d-35e7-4596-9e3e-a88779ff7883","title":"probe B","status":"not_started","latestBindingId":"eeff00bd-1d81-4b7e-a31b-1778607fd037","latestRunId":"brief_studio_team_33bdf8752fa64cb8bc1c4a1cc1fd828e","latestBindingStatus":"ATTACHED","lastErrorMessage":null,"createdAt":"2026-10-25T04:01:37.424Z","updatedAt":"2026-10-25T04:01:37.726Z","approvedAt":null,"rejectedAt
+ ✓ tests/e2e/runtime/zz-probe-ab296-re05.e2e.test.ts (5 tests) 20897ms
+     ✓ RE-01 an ACTIVE application stays usable after a package reload (AC-001)  1436ms
+     ✓ RE-02 a repair of an ACTIVE application answers ACTIVE and keeps it usable (AC-002)  666ms
+     ✓ RE-03 imported while Codex is signed out, it is quarantined with the reason; after sign-in a repair returns it to ACTIVE (AC-003, AC-004)  991ms
+     ✓ RE-04 after the worker process crashes, a repair resets it to stopped and the application is usable again (MP-001)  1048ms
+     ✓ TEMPORARY PROBE RE-05 diagnostics  16021ms
+exit=0

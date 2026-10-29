@@ -1,0 +1,11 @@
+# Case: API-02 (fresh clone identity)
+# Command: git clone --no-local --branch codex/clean-checkout-build-fix file:///Users/normy/autobyteus_org/autobyteus-workspace-superrepo/.git /tmp/ab282e2e/clone
+# Date: 2026-10-23T23:31:01Z
+
+Cloning into '/tmp/ab282e2e/clone'...
+(git checkout progress lines removed)
+worktree branch head: 828c88b2a23d314614006026075c2deb597ef68b
+clone HEAD:           828c88b2a23d314614006026075c2deb597ef68b
+clone code commit 204025a459 is an ancestor: yes
+untracked or ignored files in the clone before install: 0
+tracked frozen memory files: 19

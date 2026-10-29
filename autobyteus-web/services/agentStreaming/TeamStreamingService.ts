@@ -16,6 +16,7 @@ import { getActiveRemoteAccessCredential } from '~/utils/remoteAccess/authorized
 import { buildAuthenticatedWebSocketUrl } from '~/utils/remoteAccess/websocketAuth';
 import { drainPendingInterruptTransportFailures, tryAdmitInterruptCommand } from './interruptCommandAdmission';
 import { TeamToolApprovalTargetTracker } from './TeamToolApprovalTargetTracker';
+import { registerTeamRemoteRuns } from '~/services/teamExecution/teamRemoteRunRegistry';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useTokenUsageMeterStore } from '~/stores/tokenUsageMeterStore';
@@ -316,6 +317,13 @@ export class TeamStreamingService {
     return true;
   }
 
+  /** Retry (autobyteus-278): the Team asks the nodes of its remote runs again; the answers arrive on this stream. */
+  refreshRemote(): boolean {
+    if (this.phase !== 'ready') return false;
+    this.wsClient.send(serializeTeamStreamClientMessage({ type: 'REFRESH_REMOTE_TASK_EXECUTIONS', payload: {} }));
+    return true;
+  }
+
   private dispatchMessage(message: TeamStreamServerMessage, context: AgentTeamContext): void {
     if (message.type === 'CONNECTED') {
       if (this.phase !== 'awaiting_connected_root') throw new Error(`Team CONNECTED message is invalid during '${this.phase}'.`);
@@ -332,6 +340,8 @@ export class TeamStreamingService {
       const result = context.view.applySnapshot(message);
       if (result.disposition === 'rejected') throw new Error(`${result.code}: ${result.message}`);
       this.applyEffects(result.effects, context);
+      // autobyteus-278: the runs this Team delegated to other nodes; Retry asks their nodes again on this stream.
+      registerTeamRemoteRuns(context.view.getRootTeamRunId(), message.payload.remote_task_executions);
       this.phase = 'ready';
       this.expectedBaseChangeSequence = null;
       this.resolveCandidate();

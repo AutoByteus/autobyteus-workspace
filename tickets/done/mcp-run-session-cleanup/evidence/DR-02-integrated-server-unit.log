@@ -1,0 +1,13 @@
+# Case: DR-02 full server unit suite (summary; full log 1.2 MB not kept)
+# Command: pnpm -C autobyteus-server-ts test:unit
+# Commit: 98365d815d (codex/mcp-run-session-cleanup merged with origin/personal b5e4dd6cdc)
+# Environment: macOS 26 arm64, node v22.23.1, pnpm 10.28.2; env -i PATH HOME=<resolved temp> TMPDIR
+# Date: 2026-10-19 (delivery, integrated state)
+# Failed test files in the full log: 0
+
+ ✓ tests/unit/agent-execution/agent-run-resource-manager.test.ts (8 tests) 57ms
+ ✓ tests/unit/agent-execution/agent-run-manager.test.ts (31 tests) 26ms
+
+ Test Files  745 passed | 4 skipped (749)
+      Tests  6116 passed | 7 skipped (6123)
+   Duration  534.20s (transform 14.40s, setup 5.86s, import 260.86s, tests 200.83s, environment 677ms)

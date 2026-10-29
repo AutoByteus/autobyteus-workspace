@@ -306,14 +306,20 @@ persisted data.
 A **catalog copy** (`delegate_task` to a listed catalog Agent or Team that is not in the
 run) is an ordinary task row, Offline until its first message. The Team view has no collaborator
 concept: runs that earlier releases recorded as collaborators were converted at startup into
-these rows. No configured member describes a catalog copy, so its task DTO carries `source`,
-and the view reads the definition and launch settings from there:
-- `agentSourceSelectors.teamCatalogAgentSourceAt` for the copy and its members;
+these rows. Every copy, a catalog copy or a copy of a configured member, carries on its task DTO
+the `source` it started with. The view reads a copy's definition and launch settings only from
+that `source`, by run ID, never from the configured member at its address:
+- `agentSourceSelectors.teamAgentSourceOf` for the copy and its members: the started launch with the
+  copy's own model choice, else its Team's when the member's recorded `follows_team` says it follows;
 - `source.coordinator_address` for a Team copy's coordinator.
 
 A new copy arrives as `TASK_EXECUTION_STARTED`. Rows and tab labels use
-`utils/collaboration/memberDisplayName.ts`; rows for catalog-copy addresses use the
-display-name formatter (`readsAsDisplayName`). New copies are always placed at the run's
+`utils/collaboration/memberDisplayName.ts`. Rows for addresses outside the root Team's configured
+members (catalog copies, their members and copies) use the display-name formatter
+(`readsAsDisplayName`); a configured member and every copy started from it keep the address
+basename. `teamMemberName` in `services/teamExecution/teamExecutionTreeSelectors.ts` is the one
+owner of this rule: the sidebar rows, the member contexts (conversation titles) and the Run
+Settings delegated-copy rows all name a copy through it. New copies are always placed at the run's
 top level (CM-1: delegation to the sender's own team is refused on the server); copies already
 stored inside a Team instance keep their recorded host.
 See [Chat](./chat.md#-in-a-live-run-delegation).
@@ -326,7 +332,8 @@ Agents plus delegated child executions; it has no configured child Team.
 
 Opening a current or historical run hydrates its stored execution tree and exact
 member projection. Each member's recorded Agent Artifacts
-(`getRunFileChanges(memberRunId)`) are fetched with its projection and committed
+(`getTeamMemberFileChanges(teamRunId, agentRunId)`, read inside that team run
+only) are fetched with its projection and committed
 with it through `services/runHydration/memberRunStateHydration.ts`. As a
 result, a member's Artifacts list is complete after a page reload and on
 historical runs. Live `FILE_CHANGE` rows that are newer than the fetched ones
@@ -416,12 +423,6 @@ settings whose `resourceKind` is `AGENT_TEAM`.
 - A featured Team is omitted from the regular section to avoid duplication.
 - Search removes featured grouping and searches admitted root Teams normally.
 - Unknown featured IDs remain operator-cleanup concerns in Settings.
-
-## Manual Skill Improvement
-
-Manual Skill Improvement is selected-Agent owned. The composer-adjacent action
-targets the active focused Agent execution, not the Team container. Definition
-and launch config do not persist a Team-wide or task-Team eligibility flag.
 
 ## Main Files
 

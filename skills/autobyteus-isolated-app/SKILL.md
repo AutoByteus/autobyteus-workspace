@@ -41,12 +41,10 @@ Every command prints one JSON value: `{"schemaVersion":1,"ok":true,"command":"â€
    `stop-recording`.
 3. **Prepare content** through the instance UI (agent packages, demo agents); there is no import
    command.
-4. **Model access** (only when the user gave you a key source file): run the unchanged importer
-   against the instance database. It asks for `IMPORT` in a terminal; `script` provides one. On
-   macOS: `script -q /dev/null pnpm --dir <root> secrets:import -- --source <absolute key file> --database-url "<databaseUrl>"`.
-   On Linux: `script -qc "pnpm --dir <root> secrets:import -- --source <file> --database-url '<databaseUrl>'" /dev/null`.
-   Then run `pnpm --dir <root> isolated-app restart <instanceId>`. Never point the importer at the
-   production database.
+4. **Model access:** start (and `restart`) the instance with
+   `AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault` set; its server reads the test vault
+   read-only. Check it first with `pnpm --dir <root> test-vault status`; never import keys into
+   the instance and never read keys from `.env` or the environment. See TESTING.md#test-vault.
 5. **Restart** with `pnpm --dir <root> isolated-app restart <instanceId>`. It keeps the id, ports,
    data root and ownership. The window gets a new tab id, so run `list-tabs` again; a recording of
    the old tab ends with `end_reason: target_closed`.

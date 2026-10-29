@@ -1,4 +1,9 @@
-import { messageLogOwnerOf } from "../../run-history/store/task-agent-message-logs.js";
+import { messageLogOwnerOf, REMOTE_RUN_LOG } from "../../run-history/store/task-agent-message-logs.js";
+import { RemoteRunLinks, type RemoteInboundMessage } from "../../agent-collaboration/execution/remote/remote-run-links.js";
+import { RemoteDelegation } from "../../agent-collaboration/execution/remote/remote-delegation.js";
+import { RemoteMessageSend } from "../../agent-collaboration/execution/remote/remote-message-send.js";
+import { RemoteRunObservation } from "../../agent-collaboration/execution/remote/remote-run-observation.js";
+import { executeRemoteChildCommand, stopRemoteChild } from "../../agent-collaboration/execution/remote/remote-child-commands.js";
 import type {
   DelegatedLaunchSelectionCommand,
   DelegatedLaunchUpdateResult,
@@ -30,7 +35,7 @@ import type { AgentOrgRunEvent } from "./agent-org-run-event.js";
 import type { AgentOrgCommunicationMessagesFile } from "../persistence/agent-org-communication-messages.js";
 import { AgentOrgExecutionIndex } from "../services/agent-org-execution-index.js";
 import { AgentOrgTaskExecutionAdapter, type ResolvedAgentOrgRecipient } from "../services/agent-org-task-execution-adapter.js";
-import { AgentOrgCommunicationAdapter } from "../services/agent-org-communication-adapter.js";
+import { createAgentOrgCommunicationPort } from "../services/agent-org-communication-port.js";
 import { adoptAgentOrgPlatformBinding, replaceAgentOrgPlatformBindingWithoutConversation } from "../services/agent-org-run-execution-tree-mutator.js";
 import { AgentOrgTaskEventRetirement } from "../services/agent-org-task-event-retirement.js";
 import { AgentOrgRecipientResolver } from "../services/agent-org-recipient-resolver.js";
@@ -62,13 +67,15 @@ export type AgentOrgRunPackageSnapshot = Readonly<{
 export class AgentOrgRun implements ActiveRootMessageBoundary {
   private lifecycle: "activating" | "active" | "terminating" | "terminated" | "fail_stop" = "activating";
   private tree: AgentOrgRunExecutionTreeSnapshot;
-  private messages: AgentOrgCommunicationMessagesFile;
   private index: AgentOrgExecutionIndex;
   private readonly taskExecutions: RootTaskExecutionLifecycle<ResolvedAgentOrgRecipient>;
   private readonly communication: RootCommunicationEngine;
   private readonly presentation: CollaborationAgentPresentationEventAdapter;
   private readonly operationGate: RootOperationGate;
   private readonly delivery: AgentOrgRunMessageDelivery;
+  private readonly remoteLinks: RemoteRunLinks;
+  /** autobyteus-278: the live facts of the runs this Org delegated to other nodes (its stream viewers drive it). */
+  readonly remoteChildren: RemoteRunObservation;
   private readonly collaborators: AgentOrgRunCollaborators;
   private readonly eventRetirement: AgentOrgTaskEventRetirement;
   private readonly delegatedLaunches: DelegatedLaunchSelectionCommand;
@@ -79,7 +86,6 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
 
   constructor(private readonly options: import("./agent-org-run-options.js").AgentOrgRunOptions) {
     this.tree = options.tree;
-    this.messages = options.messages;
     this.index = new AgentOrgExecutionIndex(this.tree);
     this.assertCorrelation();
     this.operationGate = new RootOperationGate({
@@ -94,6 +100,10 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
       const agent = this.index.getAgent(agentRunId);
       return agent ? this.identityFor(agent.agentRunId, agent.address) : null;
     });
+    this.remoteLinks = new RemoteRunLinks({ remoteRuns: () => this.tree.rootOrg.remoteTaskExecutions ?? [] });
+    const remoteDelegation = new RemoteDelegation({ root: options.root });
+    this.remoteChildren = new RemoteRunObservation({ links: () => this.tree.rootOrg.remoteTaskExecutions ?? [],
+      publish: (event) => options.publisher.publish(event) });
     this.taskExecutions = new RootTaskExecutionLifecycle(new AgentOrgTaskExecutionAdapter({
       root: options.root,
       taskExecutionIdentity: options.taskExecutionIdentity,
@@ -103,6 +113,9 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
       persistence: options.persistence,
       getTree: () => this.tree,
       getIndex: () => this.index,
+      remoteLinks: this.remoteLinks,
+      remoteDelegation,
+      onRemoteLinkCommitted: (link) => this.remoteChildren.linkCommitted(link),
       isOpen: () => this.isAdmitting(),
       authorize: (identity) => this.authorizeCurrentIdentity(identity),
       beginTaskExecutionEventRetirement: (reference) => this.eventRetirement.begin(reference),
@@ -117,7 +130,8 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
       enterLifecycleFailStop: () => this.enterLifecycleFailStop(),
       memoryLocator: options.memoryLocator,
       activityInspector: options.activityInspector,
-    }), { ...options.taskExecutionIdleShutdown, taskExecutionResources: options.taskExecutionResources });
+    }), { ...options.taskExecutionIdleShutdown, taskExecutionResources: options.taskExecutionResources,
+      remoteRunLinks: this.remoteLinks, remoteEndpoints: { isRemoteEndpoint: (agentRunId) => this.remoteLinks.has(agentRunId), isRemoteTeam: (teamRunId) => this.remoteLinks.teamLinkFor(teamRunId) !== null } });
     this.collaborators = new AgentOrgRunCollaborators({
       admission: options.collaboratorAdmission,
       getTree: () => this.tree,
@@ -143,18 +157,21 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
       rootAgents: options.rootAgents,
       teams: options.teams,
       publisher: options.publisher,
+      remoteLinks: this.remoteLinks,
+      remoteDelegation,
+      remoteSend: new RemoteMessageSend({ engine: () => this.communication, links: this.remoteLinks }),
       authorizeIdentity: (identity) => this.authorizeIdentity(identity),
     });
-    this.communication = new RootCommunicationEngine(new AgentOrgCommunicationAdapter({
+    this.communication = new RootCommunicationEngine(createAgentOrgCommunicationPort({
       root: options.root,
       initial: options.messages,
       persistence: options.persistence,
       isOpen: () => this.isAdmitting(),
-      assertDeliveryAllowed: (sender, receiver) => this.taskExecutions.assertMessageScope(sender.agentRunId, receiver.agentRunId),
+      assertDeliveryAllowed: (sender, receiver) => this.taskExecutions.assertMessageScope(sender, receiver),
       isCurrentAgent: (identity) => this.isPublishedAgent(identity),
-      messageLogOwnerOf: (agentRunId) => messageLogOwnerOf(agentRunId, this.index.getMemoryPlacementForAgent(agentRunId)),
+      messageLogOwnerOf: (agentRunId) => this.remoteLinks.has(agentRunId) ? REMOTE_RUN_LOG
+        : messageLogOwnerOf(agentRunId, this.index.getMemoryPlacementForAgent(agentRunId)),
       reserveRecipientInput: (agentRunId, message) => this.delivery.reserveAgentInput(agentRunId, message),
-      replaceMessages: (messages) => { this.messages = messages; },
       publish: (message) => options.publisher.publish({ kind: "communication", message }),
       presentCommittedMessage: (message, receiverInput) => this.delivery.presentCommittedCommunication(message, receiverInput),
     }));
@@ -172,9 +189,9 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
     return this.taskExecutions.taskExecutionStatus(execution);
   }
 
-  /** DS-002: the user's Stop of one delegated copy and the copies it started. */
-  stopDelegatedExecution(target: DelegatedRunReference): Promise<DelegatedStopResult> {
-    return this.operationGate.run(() => this.delegatedLaunches.stop(target));
+  /** DS-002: the user's Stop of one delegated copy and the copies it started (a remote copy: by its node, DEC-804). */
+  async stopDelegatedExecution(target: DelegatedRunReference): Promise<DelegatedStopResult> {
+    return await stopRemoteChild(this.remoteLinks, target) ?? this.operationGate.run(() => this.delegatedLaunches.stop(target));
   }
   /** DS-001: the user's model choice for stopped delegated copies of this live run. */
   updateDelegatedLaunchSelections(
@@ -192,7 +209,9 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
     this.lifecycle = "active";
   }
   getExecutionTreeSnapshot(): AgentOrgRunExecutionTreeSnapshot { return this.tree; }
-  getCommunicationSnapshot(): AgentOrgCommunicationMessagesFile { return this.messages; }
+  getCommunicationSnapshot(): AgentOrgCommunicationMessagesFile {
+    return Object.freeze({ schemaVersion: 1, subjectKind: "agent_org", orgRunId: this.orgRunId, messages: this.communication.getMessages() });
+  }
   getAgentStatusSnapshots(): readonly CollaborationAgentStatusSnapshot[] {
     return projectAgentOrgAgentStatusSnapshots({
       tree: this.tree,
@@ -205,7 +224,10 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
     return this.options.rootAgents.hasOpenExecutionWork() || this.options.teams.hasOpenExecutionWork();
   }
   /** Same-root membership for run-ID routing; a shut-down child is still a member. */
-  hasAgentExecution(agentRunId: string): boolean { return this.index.getAgent(agentRunId.trim()) !== null; }
+  /** Same-root membership for run-ID routing: every agent of the Org (and its copies) and every remote endpoint. */
+  hasAgentExecution(agentRunId: string): boolean {
+    return this.index.getAgent(agentRunId.trim()) !== null || this.remoteLinks.has(agentRunId.trim());
+  }
   getExecutionCheckpoint(): Readonly<{
     orgRunId: string;
     changeSequence: number;
@@ -247,8 +269,12 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
   }
 
   deliverExactAgentMessage(input: ExactAgentMessageInput): Promise<AgentOperationResult> {
-    return this.operationGate.run(() => this.taskExecutions.deliverToExactTarget(input.sender.identity.agentRunId, input.targetAgentRunId,
-      () => this.delivery.deliverToRunId(input)));
+    return this.operationGate.run(() => this.delivery.deliverExact(input));
+  }
+
+  /** A message from a linked run on a peer node, admitted by its peer gateway (DS-003). */
+  acceptRemoteMessage(input: RemoteInboundMessage): Promise<AgentOperationResult> {
+    return this.operationGate.run(async () => { this.assertAdmitting(); return this.delivery.acceptRemoteMessage(input); });
   }
 
   delegateToNewCopy(context: TaskDelegationContext, input: SpawnTaskInput): Promise<TaskDelegationOutcome> {
@@ -259,6 +285,8 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
   }
   /** The coordinator agent run of this root's Team copy with that team run ID (`send_message_to` guidance); null otherwise. */
   teamCoordinatorOf(teamRunId: string): string | null { return this.taskExecutions.teamCoordinatorOf(teamRunId); }
+  /** The Task this member works on (`get_project_task`'s read scope), or null; throws on damaged run data. */
+  ownedTaskOf(context: TaskDelegationContext) { return this.taskExecutions.ownedTaskOf(context.identity.agentRunId); }
 
   async commitAgentPlatformBindingChange(change: CollaborationAgentPlatformBindingChange): Promise<void> {
     return this.operationGate.run(async () => {
@@ -311,7 +339,7 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
     return this.options.publisher.openSnapshotConnection(() => Object.freeze({
       tree: this.tree,
       closedTaskExecutions: this.taskExecutions.closedTaskExecutions(),
-      messages: this.messages,
+      messages: this.getCommunicationSnapshot(),
       statuses: this.getAgentStatusSnapshots(),
       inputStates: [...new Map([...this.options.rootAgents.getInputStateSnapshots(),
         ...this.options.teams.list().flatMap(team => team.getInputStateSnapshots())]
@@ -326,6 +354,7 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
     if (this.lifecycle === "terminated") return Promise.resolve({ accepted: true });
     if (this.termination) return this.termination;
     this.lifecycle = "terminating";
+    this.remoteChildren.dispose();
     this.communication.closeAdmission();
     this.taskExecutions.closeExternalAdmission();
     void this.operationGate.closeAndDrain();
@@ -370,6 +399,10 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
     result: AgentOperationResult;
     executionKind: AgentOrgIndexedAgentExecution["executionKind"] | null;
   }>> {
+    // A remote child's command goes to its node, outside the gate (a peer call takes up to 20 s).
+    if (this.isAdmitting() && this.remoteLinks.has(agentRunId)) {
+      return executeRemoteChildCommand(this.remoteLinks, agentRunId, command).then((result) => ({ result, executionKind: null }));
+    }
     return this.operationGate.run(async () => {
       this.assertAdmitting();
       return this.delivery.executeAgentCommand(agentRunId, command);
@@ -405,7 +438,7 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
   private assertCorrelation(): void {
     if (this.options.root.rootSubjectKind !== "agent_org"
       || this.options.root.rootRunId !== this.tree.rootOrg.orgRunId
-      || this.messages.orgRunId !== this.orgRunId) {
+      || this.options.messages.orgRunId !== this.orgRunId) {
       throw new Error("AgentOrg aggregate authorities do not correlate to one exact root.");
     }
   }

@@ -43,7 +43,7 @@ export class MemoryExplorerSourceInput {
   type!: MemoryExplorerSourceType;
 
   @Field(() => String, { nullable: true })
-  sourceNodeId?: string | null;
+  memorySyncSourceId?: string | null;
 }
 
 @ObjectType()
@@ -58,7 +58,7 @@ export class MemoryExplorerSourceOption {
   label!: string;
 
   @Field(() => String, { nullable: true })
-  sourceNodeId?: string | null;
+  memorySyncSourceId?: string | null;
 
   @Field(() => String, { nullable: true })
   displayName?: string | null;
@@ -79,13 +79,7 @@ export class MemoryAvailabilitySummary {
   latestMemoryAt?: string | null;
 
   @Field(() => Boolean)
-  hasWorkingContext!: boolean;
-
-  @Field(() => Boolean)
-  hasEpisodic!: boolean;
-
-  @Field(() => Boolean)
-  hasSemantic!: boolean;
+  hasWorkJournal!: boolean;
 
   @Field(() => Boolean)
   hasRawTraces!: boolean;
@@ -209,6 +203,12 @@ export class AgentTeamWithMemorySummary {
 
   @Field(() => MemoryAvailabilitySummary)
   memory!: MemoryAvailabilitySummary;
+
+  @Field(() => Boolean)
+  isTaskTeam!: boolean;
+
+  @Field(() => String, { nullable: true })
+  startedByAgentName!: string | null;
 }
 
 @ObjectType()
@@ -305,6 +305,12 @@ export class AgentTeamRunMemorySummary {
 
   @Field(() => [CollaborationMemberMemoryTargetSummary])
   memberTargets!: CollaborationMemberMemoryTargetSummary[];
+
+  @Field(() => Boolean)
+  isTaskTeam!: boolean;
+
+  @Field(() => String, { nullable: true })
+  startedByAgentName!: string | null;
 }
 
 @ObjectType()

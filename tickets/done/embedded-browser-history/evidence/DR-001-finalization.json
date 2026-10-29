@@ -1,0 +1,14 @@
+{
+  "sourceMerge": "763265ab81fbb58e532bda75d7b374c47dd40e28",
+  "ticketCommit": "015457de89a95f62ff8df96371924f97cf9c04de",
+  "pushedTarget": "474fa0a415e412a30d2d4e29e58cbb0c939a5833",
+  "taskWorktree": "/Users/normy/autobyteus-org/autobyteus-task-worktrees/embedded-browser-history",
+  "trackedTreeClean": true,
+  "untrackedFilesOnlyGeneratedSDK": 64,
+  "taskCommitInRemoteTarget": true,
+  "worktreeCleanup": "Completed",
+  "localTaskBranchCleanup": "Completed",
+  "remoteTaskBranchCleanup": "Completed",
+  "worktreePruneDryRun": "Empty",
+  "mainCheckoutUnchanged": true
+}

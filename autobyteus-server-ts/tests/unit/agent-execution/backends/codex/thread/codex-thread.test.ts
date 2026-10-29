@@ -13,7 +13,7 @@ import { createCodexDynamicToolTextResult } from "../../../../../../src/agent-ex
 import { RuntimeKind } from "../../../../../../src/runtime-management/runtime-kind-enum.js";
 import { MemberExecutionContext } from "../../../../../../src/agent-collaboration/execution/domain/member-execution-context.js";
 import { createTeamRootExecutionIdentity } from "../../../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
-import { testMemberTaskCommandCapability } from "../../../../../fixtures/current-team-run-fixtures.js";
+import { testMemberTaskCapability } from "../../../../../fixtures/current-team-run-fixtures.js";
 
 const createRunContext = (input: {
   runId: string;
@@ -99,7 +99,7 @@ const createMemberExecutionContext = () =>
       agentRunId: "ping-run-1",
     },
     collaboration: { outgoingHandoffs: [], deliverLogicalMessage: async () => ({ accepted: true }) },
-    tasks: testMemberTaskCommandCapability("team-1"),
+    tasks: testMemberTaskCapability("team-1"),
   });
 
 const createSpeakApprovalParams = () => ({
@@ -1626,5 +1626,177 @@ describe("Task-owned exact Codex input release", () => {
     expect(client.request.mock.calls.map(([method]) => method)).toEqual(["turn/interrupt", "turn/interrupt"]);
     await thread.releaseRuntimeInput();
     expect(client.request).toHaveBeenCalledTimes(2);
+  });
+});
+
+describe("CodexThread exact-turn rejection logging", () => {
+  const DETAILED = "[CodexSegmentTurnAdmissionRejected]";
+  const SUMMARY = "[CodexSegmentTurnAdmissionRejectedSummary]";
+  const spyOnRejectionLines = () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    const lines = (tag: string) =>
+      warn.mock.calls.filter((call) => call[0] === tag).map((call) => call[1]);
+    return { warn, lines };
+  };
+  const lateCommandCompleted = (turnId: string) => ({
+    turnId,
+    item: { type: "commandExecution", id: `cmd-${turnId}`, status: "completed", command: "secret-cmd" },
+  });
+
+  it("writes one detailed line for a whole rejected turn and one count summary at the next turn start (AC-001)", () => {
+    const { warn, lines } = spyOnRejectionLines();
+    try {
+      const { thread } = createThread(true);
+      const messages: unknown[] = [];
+      thread.subscribeAppServerMessages((message) => messages.push(message));
+
+      thread.handleAppServerNotification(CodexThreadEventName.ITEM_STARTED, {
+        turnId: "turn-t", item: { type: "agentMessage", id: "m-1" },
+      });
+      for (let index = 0; index < 437; index += 1) {
+        thread.handleAppServerNotification(CodexThreadEventName.ITEM_AGENT_MESSAGE_DELTA, {
+          turnId: "turn-t", itemId: "m-1", delta: "lost text",
+        });
+      }
+
+      expect(messages).toEqual([]);
+      expect(lines(DETAILED)).toEqual([{
+        runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+        runId: "run-auto",
+        nativeEventName: CodexThreadEventName.ITEM_STARTED,
+        reasonCode: "CODEX_SEGMENT_TURN_INACTIVE",
+        itemType: "agentMessage",
+        turnId: "turn-t",
+        activeTurnId: null,
+      }]);
+      expect(lines(SUMMARY)).toEqual([]);
+
+      thread.handleAppServerNotification(CodexThreadEventName.TURN_STARTED, { turn: { id: "turn-u" } });
+
+      expect(lines(DETAILED)).toHaveLength(1);
+      expect(lines(SUMMARY)).toEqual([{
+        runtimeKind: RuntimeKind.CODEX_APP_SERVER, runId: "run-auto", turnId: "turn-t", count: 437,
+      }]);
+      expect(thread.activeTurnId).toBe("turn-u");
+      expect(JSON.stringify(warn.mock.calls)).not.toContain("lost text");
+    } finally {
+      warn.mockRestore();
+    }
+  });
+
+  it("writes one detailed CONFLICT line per late tool item of distinct ended turns and no summary (AC-002, AC-006)", () => {
+    const { warn, lines } = spyOnRejectionLines();
+    try {
+      const { thread } = createThread(true);
+      const messages: Array<{ method: string; params: Record<string, unknown> }> = [];
+      thread.subscribeAppServerMessages((message) => messages.push(message));
+      thread.markTurnStarted("turn-u");
+
+      for (const turnId of ["turn-t1", "turn-t2", "turn-t3"]) {
+        thread.handleAppServerNotification(CodexThreadEventName.ITEM_COMPLETED, lateCommandCompleted(turnId));
+      }
+      thread.handleAppServerNotification(CodexThreadEventName.ITEM_AGENT_MESSAGE_DELTA, {
+        turnId: "turn-u", itemId: "m-u", delta: "admitted",
+      });
+      thread.handleAppServerNotification(CodexThreadEventName.TURN_COMPLETED, { turn: { id: "turn-u" } });
+
+      expect(lines(DETAILED)).toEqual(["turn-t1", "turn-t2", "turn-t3"].map((turnId) => ({
+        runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+        runId: "run-auto",
+        nativeEventName: CodexThreadEventName.ITEM_COMPLETED,
+        reasonCode: "CODEX_SEGMENT_TURN_CONFLICT",
+        itemType: "commandExecution",
+        turnId,
+        activeTurnId: "turn-u",
+      })));
+      expect(lines(SUMMARY)).toEqual([]);
+      expect(JSON.stringify(warn.mock.calls)).not.toContain("secret-cmd");
+      expect(messages.some((message) =>
+        message.method === CodexThreadEventName.ITEM_AGENT_MESSAGE_DELTA &&
+        message.params.turn_id === "turn-u" &&
+        message.params.delta === "admitted"
+      )).toBe(true);
+      expect(messages.some((message) => message.params.turnId === "turn-t1")).toBe(false);
+    } finally {
+      warn.mockRestore();
+    }
+  });
+
+  it("logs itemType null for an item-less delta (AC-006)", () => {
+    const { warn, lines } = spyOnRejectionLines();
+    try {
+      const { thread } = createThread(true);
+      thread.markTurnStarted("turn-u");
+      thread.handleAppServerNotification(CodexThreadEventName.ITEM_AGENT_MESSAGE_DELTA, {
+        turnId: "turn-t", itemId: "m-t", delta: "x",
+      });
+      expect(lines(DETAILED)).toEqual([expect.objectContaining({
+        nativeEventName: CodexThreadEventName.ITEM_AGENT_MESSAGE_DELTA,
+        reasonCode: "CODEX_SEGMENT_TURN_CONFLICT",
+        itemType: null,
+        turnId: "turn-t",
+        activeTurnId: "turn-u",
+      })]);
+    } finally {
+      warn.mockRestore();
+    }
+  });
+
+  it("uses one 'no turn id' account for rejected events without a turn id (AC-003)", () => {
+    const { warn, lines } = spyOnRejectionLines();
+    try {
+      const { thread } = createThread(true);
+      for (let index = 0; index < 3; index += 1) {
+        thread.handleAppServerNotification(CodexThreadEventName.ITEM_AGENT_MESSAGE_DELTA, {
+          itemId: "m-1", delta: "x",
+        });
+      }
+      expect(lines(DETAILED)).toEqual([expect.objectContaining({
+        reasonCode: "CODEX_SEGMENT_TURN_INACTIVE", itemType: null, turnId: null, activeTurnId: null,
+      })]);
+
+      thread.handleAppServerNotification(CodexThreadEventName.TURN_STARTED, { turn: { id: "turn-u" } });
+      expect(lines(SUMMARY)).toEqual([expect.objectContaining({ turnId: null, count: 2 })]);
+    } finally {
+      warn.mockRestore();
+    }
+  });
+
+  it("never writes a second detailed line for a turn whose account was already summarized (AC-008)", () => {
+    const { warn, lines } = spyOnRejectionLines();
+    try {
+      const { thread } = createThread(true);
+      thread.handleAppServerNotification(CodexThreadEventName.ITEM_COMPLETED, lateCommandCompleted("turn-t"));
+      thread.handleAppServerNotification(CodexThreadEventName.ITEM_COMPLETED, lateCommandCompleted("turn-t"));
+      thread.handleAppServerNotification(CodexThreadEventName.TURN_STARTED, { turn: { id: "turn-u" } });
+      thread.handleAppServerNotification(CodexThreadEventName.ITEM_COMPLETED, lateCommandCompleted("turn-t"));
+      thread.handleAppServerNotification(CodexThreadEventName.ITEM_COMPLETED, lateCommandCompleted("turn-t"));
+
+      expect(lines(DETAILED)).toHaveLength(1);
+      expect(lines(SUMMARY)).toEqual([expect.objectContaining({ turnId: "turn-t", count: 1 })]);
+
+      thread.handleAppServerNotification(CodexThreadEventName.TURN_COMPLETED, { turn: { id: "turn-u" } });
+
+      expect(lines(DETAILED)).toHaveLength(1);
+      expect(lines(SUMMARY)).toEqual([
+        expect.objectContaining({ turnId: "turn-t", count: 1 }),
+        expect.objectContaining({ turnId: "turn-t", count: 2 }),
+      ]);
+    } finally {
+      warn.mockRestore();
+    }
+  });
+
+  it("flushes pending counts when the app-server client closes", () => {
+    const { warn, lines } = spyOnRejectionLines();
+    try {
+      const { thread } = createThread(true);
+      thread.handleAppServerNotification(CodexThreadEventName.ITEM_COMPLETED, lateCommandCompleted("turn-t"));
+      thread.handleAppServerNotification(CodexThreadEventName.ITEM_COMPLETED, lateCommandCompleted("turn-t"));
+      thread.handleClientClosed(new Error("closed"));
+      expect(lines(SUMMARY)).toEqual([expect.objectContaining({ turnId: "turn-t", count: 1 })]);
+    } finally {
+      warn.mockRestore();
+    }
   });
 });

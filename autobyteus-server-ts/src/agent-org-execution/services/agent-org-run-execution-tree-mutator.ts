@@ -4,7 +4,7 @@ import {
   type DelegatedLaunchSelections,
 } from "../../agent-collaboration/domain/delegated-launch-selection.js";
 import { taskExecutionListsOf } from "../../agent-collaboration/collaborators/collaborator-source-projector.js";
-import { isConfiguredTeamExecution } from "../../run-history/domain/run-execution-tree-shared-records.js";
+import { isConfiguredTeamExecution, type RemoteTaskExecution } from "../../run-history/domain/run-execution-tree-shared-records.js";
 import type {
   CollaborationAgentNoConversationBindingReplacement,
   CollaborationAgentPlatformBinding,
@@ -35,6 +35,15 @@ export const addAgentOrgTaskExecution = (input: {
     rootOrg: { ...rootOrg, taskExecutions: [...rootOrg.taskExecutions, input.execution] },
   }, rootOrg.orgRunId);
 };
+
+/** Records a remote run an agent of this Org delegated to (CM-10), once, at its delegation's commit. */
+export const addAgentOrgRemoteTaskExecution = (input: {
+  tree: AgentOrgRunExecutionTreeSnapshot;
+  link: RemoteTaskExecution;
+}): AgentOrgRunExecutionTreeSnapshot => validateAgentOrgRunExecutionTreePayload({
+  ...input.tree,
+  rootOrg: { ...input.tree.rootOrg, remoteTaskExecutions: [...(input.tree.rootOrg.remoteTaskExecutions ?? []), input.link] },
+}, input.tree.rootOrg.orgRunId);
 
 type AgentNode = Readonly<{ agentRunId: string; address: string; platformAgentRunId: string | null }>;
 export const adoptAgentOrgPlatformBinding = (input: {

@@ -4,18 +4,22 @@ import { rootExecutionIdentityKey, type RootExecutionIdentity } from "../../src/
 import { taskExecutionReferenceKey, type TaskExecutionReference } from "../../src/agent-collaboration/execution/task/task-execution-reference.js";
 
 const rejection = (code: string, message: string) => Object.assign(new Error(message), { code });
-/** One copy's current entry (a copy moves between Tasks by assignment; `everStarted` spans its periods). */
-type Entry = { taskId: string; hostRoot: RootExecutionIdentity; execution: TaskExecutionReference; role: TaskExecutionRole; assignedBy?: string; open: boolean; start: "starting" | "started" | "failed"; everStarted?: true };
+/**
+ * One copy's current entry (a copy moves between Tasks by assignment; `everStarted` spans its periods). A copy given
+ * another Task while open keeps its earlier open Tasks in `otherOpenTaskIds` (oldest first).
+ */
+type Entry = { taskId: string; hostRoot: RootExecutionIdentity; execution: TaskExecutionReference; role: TaskExecutionRole; assignedBy?: string; open: boolean; start: "starting" | "started" | "failed"; everStarted?: true; otherOpenTaskIds?: string[] };
 
 /**
  * Runtime-test double of the Task side's loaded agent run resources. It follows the reviewed
  * port semantics (link before resources, inherited links only from open creators, closed until the
- * assigner reactivates an assignment of a not-DONE Task, a closed copy takes a new Task only from its
- * most recent assigner, damaged data fails closed); the Projects implementation is tested separately.
+ * assigner reactivates an assignment of a not-DONE Task, a copy takes another Task only from its most recent
+ * assigner and may hold several open Tasks, closed only when its last one closes, damaged data fails closed);
+ * the Projects implementation is tested separately.
  */
 export class InMemoryTaskExecutionResources implements TaskExecutionResourcePort {
   readonly entries = new Map<string, Entry>();
-  readonly tasks = new Map<string, { description: string; referenceFiles: string[]; done: boolean; adHoc?: true; taskKey?: string }>();
+  readonly tasks = new Map<string, { description: string; referenceFiles: string[]; done: boolean; adHoc?: true; taskKey?: string; comments?: string[] }>();
   readonly damaged = new Set<string>();
   readonly links: NewTaskExecutionLinkInput[] = [];
   /** Every committed existing-copy assignment, in order. */
@@ -36,7 +40,12 @@ export class InMemoryTaskExecutionResources implements TaskExecutionResourcePort
   close(taskId: string): TaskExecutionReference[] {
     const task = this.tasks.get(taskId);
     if (task) task.done = true;
-    for (const entry of this.entries.values()) if (entry.taskId === taskId) entry.open = false;
+    for (const entry of this.entries.values()) {
+      if (entry.taskId !== taskId) { entry.otherOpenTaskIds = entry.otherOpenTaskIds?.filter((id) => id !== taskId); continue; }
+      // The newest other open Task becomes current; the copy is closed only when none is left.
+      const next = entry.otherOpenTaskIds?.pop();
+      if (next) entry.taskId = next; else entry.open = false;
+    }
     return this.closedAgentRuns(taskId);
   }
   /** The agent's own status change out of DONE (it reopens no entry). */
@@ -57,7 +66,14 @@ export class InMemoryTaskExecutionResources implements TaskExecutionResourcePort
     if (!task) throw Object.assign(new Error(`Task '${taskId}' was not found.`), { code: "TASK_NOT_FOUND" });
     if (task.done) throw rejection("TASK_AGENT_RESOURCE_CLOSED", "Task is DONE; reopen it before assigning new work.");
     if (task.adHoc) throw Object.assign(new Error(`Task '${taskId}' was not found.`), { code: "TASK_NOT_FOUND" });
-    return { taskId, taskReference: task.taskKey ?? taskId, description: task.description, referenceFiles: task.referenceFiles };
+    return { taskId, taskReference: task.taskKey ?? taskId, projectId: "project_fixture", title: task.description.split("\n")[0]!.trim(), description: task.description, comments: task.comments ?? [], referenceFiles: task.referenceFiles };
+  }
+  /** autobyteus-32: a Task's identity (a Task with no Project: no key, its description's first line as title). */
+  async describeTask(taskId: string) {
+    const task = this.tasks.get(taskId);
+    if (!task) throw Object.assign(new Error(`Task '${taskId}' was not found.`), { code: "TASK_NOT_FOUND" });
+    const title = task.description.split("\n")[0]!.trim();
+    return task.adHoc ? { taskKey: null, projectId: null, title } : { taskKey: task.taskKey ?? taskId, projectId: "project_fixture", title };
   }
   async linkNewTaskExecution(input: NewTaskExecutionLinkInput) {
     await this.beforeLinkCommit?.(input);
@@ -128,16 +144,22 @@ export class InMemoryTaskExecutionResources implements TaskExecutionResourcePort
     if (!entry) throw rejection("TASK_AGENT_RESOURCE_CONFLICT", "This copy belongs to no Task.");
     if (entry.role !== "assigned") throw rejection("TASK_AGENT_RESOURCE_CONFLICT", "This task agent works on part of another agent's Task, so you can't give it a Task.");
     if (entry.assignedBy !== input.requestedBy) throw rejection("TASK_AGENT_RESOURCE_CONFLICT", "Only the agent that gave this task agent its most recent Task can give it a new one.");
-    if (entry.open) throw rejection("TASK_AGENT_RESOURCE_CONFLICT", `This task agent still works on Task ${entry.taskId}. Set it to DONE or CANCELLED first, or delegate Task ${input.taskId} to a new task agent with recipient_address.`);
-    if (entry.taskId === input.taskId) throw rejection("TASK_AGENT_RESOURCE_CONFLICT", `This task agent already has Task ${input.taskId}.`);
+    if (!entry.open && entry.taskId === input.taskId) throw rejection("TASK_AGENT_RESOURCE_CONFLICT", `This task agent already has Task ${input.taskId}.`);
+    if (entry.open && [entry.taskId, ...entry.otherOpenTaskIds ?? []].includes(input.taskId)) throw rejection("TASK_AGENT_RESOURCE_CONFLICT", "This task agent already works on this Task.");
     if (!entry.everStarted) throw rejection("TASK_REACTIVATION_UNAVAILABLE", "This copy never started, so it has no conversation to resume.");
   }
   async assignExistingTaskExecution(input: ExistingTaskExecutionAssignInput): Promise<void> {
     await this.beforeAssignCommit?.(input);
     await this.assertAssignable({ execution: input.execution, requestedBy: input.assignedBy, taskId: input.taskId });
     const entry = this.entry(input.execution)!;
-    Object.assign(entry, { taskId: input.taskId, assignedBy: input.assignedBy, open: true, start: "starting" as const });
+    const otherOpenTaskIds = entry.open ? [...entry.otherOpenTaskIds ?? [], entry.taskId] : [];
+    Object.assign(entry, { taskId: input.taskId, assignedBy: input.assignedBy, open: true, start: "starting" as const, otherOpenTaskIds });
     this.assignments.push(input);
+  }
+  async openTaskReferencesOf(execution: TaskExecutionReference, exceptTaskId: string): Promise<string[]> {
+    const entry = this.entry(execution);
+    if (!entry?.open) return [];
+    return [...entry.otherOpenTaskIds ?? [], entry.taskId].filter((id) => id !== exceptTaskId).map((id) => this.tasks.get(id)?.taskKey ?? id);
   }
   /** Every status-change notification, in order. */
   readonly statusChanges: Array<{ hostRoot: RootExecutionIdentity; references: TaskExecutionReference[] }> = [];

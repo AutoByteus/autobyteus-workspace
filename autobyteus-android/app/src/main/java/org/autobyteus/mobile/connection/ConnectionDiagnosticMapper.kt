@@ -60,12 +60,6 @@ object ConnectionDiagnosticMapper {
             message = "Phone Access may be disabled or this phone may have been revoked on the desktop node.",
             recoveryAction = "Enable Phone Access or revoke/re-pair from the desktop Phone Access card.",
         )
-        426 -> ConnectionDiagnostic(
-            kind = ConnectionFailureKind.ServerVersionIncompatible,
-            title = "Desktop node needs an update",
-            message = "The Android shell and desktop node reported incompatible remote-access versions.",
-            recoveryAction = "Update AutoByteus on the desktop and rebuild/reinstall the Android app if needed.",
-        )
         else -> ConnectionDiagnostic(
             kind = ConnectionFailureKind.WebViewLoadFailed,
             title = "AutoByteus returned HTTP $statusCode",

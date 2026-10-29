@@ -1,0 +1,253 @@
+{
+  "startedAt": "2026-10-26T17:15:31.149Z",
+  "node": "v22.23.1",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "checks": [
+    {
+      "id": "MS-PROBE-000",
+      "pass": true,
+      "message": "Built server entry exists (run pnpm -C autobyteus-server-ts build first)"
+    },
+    {
+      "id": "MS-PROBE-001",
+      "pass": true,
+      "message": "A Chrome executable is available"
+    },
+    {
+      "id": "MS-PROBE-010",
+      "pass": true,
+      "message": "Search box disabled before the index has content"
+    },
+    {
+      "id": "MS-PROBE-011",
+      "pass": true,
+      "message": "Four waiting steps before the first build",
+      "details": [
+        "waiting",
+        "waiting",
+        "waiting",
+        "waiting"
+      ]
+    },
+    {
+      "id": "MS-PROBE-012",
+      "pass": true,
+      "message": "Nothing starts a build before the click"
+    },
+    {
+      "id": "MS-PROBE-013",
+      "pass": true,
+      "message": "All four steps done",
+      "details": [
+        "done",
+        "done",
+        "done",
+        "done"
+      ]
+    },
+    {
+      "id": "MS-PROBE-014",
+      "pass": true,
+      "message": "The ready headline counts the 4 runs"
+    },
+    {
+      "id": "MS-PROBE-015",
+      "pass": true,
+      "message": "Every step bar is full when up to date",
+      "details": [
+        "100",
+        "100",
+        "100",
+        "100"
+      ]
+    },
+    {
+      "id": "MS-PROBE-020",
+      "pass": true,
+      "message": "The DDNS run is the first result",
+      "details": "codex ddns 45cecodex_ddns_45ceMentioned 26 Aug 2026 – 27 Aug 2026work_journal_active.md· lines 41–64· 27 Aug 2026Words Strong[09:05:30] User: Is the domain updater still running after the reboot?[09:05:31] Tool: Bash command=\"systemctl status ddns-update.timer\" → okactive (waiting)Open at lines 41–64 →work_journal_active.md· lines 36–39· 26 Aug 2026Words Strong[09:03:00] User: Set up a DDNS updater for home.example.org so the domain follows our home IP.[09:03:01] Tool: Bash command=\"crontab -l\" → ok*/5 * * * * /opt/ddns/update.sh home.example.orgOpen at lines 36–39 →"
+    },
+    {
+      "id": "MS-PROBE-021",
+      "pass": true,
+      "message": "A match shows its kind, strength and lines",
+      "details": "codex ddns 45cecodex_ddns_45ceMentioned 26 Aug 2026 – 27 Aug 2026work_journal_active.md· lines 41–64· 27 Aug 2026Words Strong[09:05:30] User: Is the domain updater still running after the reboot?[09:05:31] Tool: Bash command=\"systemctl status ddns-update.timer\" → okactive (waiting)Open at lines 41–64 →work_journal_active.md· lines 36–39· 26 Aug 2026Words Strong[09:03:00] User: Set up a DDNS updater for home.example.org so the domain follows our home IP.[09:03:01] Tool: Bash command=\"crontab -l\" → ok*/5 * * * * /opt/ddns/update.sh home.example.orgOpen at lines 36–39 →"
+    },
+    {
+      "id": "MS-PROBE-022",
+      "pass": true,
+      "message": "The cue is in the address"
+    },
+    {
+      "id": "MS-PROBE-023",
+      "pass": true,
+      "message": "A Chinese cue finds the Chinese run"
+    },
+    {
+      "id": "MS-PROBE-024",
+      "pass": true,
+      "message": "Never says nothing is in memory"
+    },
+    {
+      "id": "MS-PROBE-030",
+      "pass": true,
+      "message": "The matched lines are highlighted",
+      "details": 24
+    },
+    {
+      "id": "MS-PROBE-031",
+      "pass": true,
+      "message": "The run detail has Work Journal and Raw Traces tabs"
+    },
+    {
+      "id": "MS-PROBE-032",
+      "pass": true,
+      "message": "Back returns to the same results"
+    },
+    {
+      "id": "MS-PROBE-040",
+      "pass": true,
+      "message": "The large-file note shows"
+    },
+    {
+      "id": "MS-PROBE-050",
+      "pass": true,
+      "message": "A folder-only run shows its Work Journal only"
+    },
+    {
+      "id": "MS-PROBE-051",
+      "pass": true,
+      "message": "It opens through the run-folder route"
+    },
+    {
+      "id": "MS-PROBE-060",
+      "pass": true,
+      "message": "No horizontal page overflow at 390 px",
+      "details": 0
+    },
+    {
+      "id": "MS-PROBE-090",
+      "pass": true,
+      "message": "No page errors",
+      "details": []
+    }
+  ],
+  "screenshots": [
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/work-journal-search/tickets/in-progress/work-journal-search/evidence/api-e2e/API-R04-memory-page-probe/VIS-010-search-not-indexed-1440x900.png",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/work-journal-search/tickets/in-progress/work-journal-search/evidence/api-e2e/API-R04-memory-page-probe/VIS-011-index-first-time-1440x900.png",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/work-journal-search/tickets/in-progress/work-journal-search/evidence/api-e2e/API-R04-memory-page-probe/VIS-012-index-building-1440x900.png",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/work-journal-search/tickets/in-progress/work-journal-search/evidence/api-e2e/API-R04-memory-page-probe/VIS-014-index-ready-1440x900.png",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/work-journal-search/tickets/in-progress/work-journal-search/evidence/api-e2e/API-R04-memory-page-probe/VIS-006-search-results-1440x900.png",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/work-journal-search/tickets/in-progress/work-journal-search/evidence/api-e2e/API-R04-memory-page-probe/VIS-007-search-weak-or-none-1440x900.png",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/work-journal-search/tickets/in-progress/work-journal-search/evidence/api-e2e/API-R04-memory-page-probe/VIS-017-work-journal-from-result-1440x900.png",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/work-journal-search/tickets/in-progress/work-journal-search/evidence/api-e2e/API-R04-memory-page-probe/VIS-019-raw-traces-1440x900.png",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/work-journal-search/tickets/in-progress/work-journal-search/evidence/api-e2e/API-R04-memory-page-probe/VIS-018-work-journal-large-file-1440x900.png",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/work-journal-search/tickets/in-progress/work-journal-search/evidence/api-e2e/API-R04-memory-page-probe/VIS-001-browse-agents-1440x900.png",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/work-journal-search/tickets/in-progress/work-journal-search/evidence/api-e2e/API-R04-memory-page-probe/VIS-021-browse-agents-390x844.png",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/work-journal-search/tickets/in-progress/work-journal-search/evidence/api-e2e/API-R04-memory-page-probe/VIS-022-search-results-390x844.png",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/work-journal-search/tickets/in-progress/work-journal-search/evidence/api-e2e/API-R04-memory-page-probe/VIS-023-index-390x844.png",
+    "/Users/normy/autobyteus_org/autobyteus-worktrees/work-journal-search/tickets/in-progress/work-journal-search/evidence/api-e2e/API-R04-memory-page-probe/VIS-024-work-journal-from-result-390x844.png"
+  ],
+  "operations": [
+    "GetUpdateNotifications",
+    "GetUpdateAutomationSettings",
+    "ListMemoryExplorerSources",
+    "MemoryIndexStatus",
+    "GetApplicationsCapability",
+    "GetAllWorkspaces",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "GetAgentDefinitions",
+    "GetAgentTeamDefinitions",
+    "GetAgentOrgDefinitions",
+    "ListMemoryExplorerSources",
+    "MemoryIndexStatus",
+    "StartMemoryIndexing",
+    "MemoryIndexStatus",
+    "MemoryIndexStatus",
+    "MemoryIndexStatus",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "MemoryIndexStatus",
+    "MemoryIndexStatus",
+    "ListMemoryExplorerSources",
+    "MemoryIndexStatus",
+    "MemorySearch",
+    "ListMemoryExplorerSources",
+    "MemorySearch",
+    "ListMemoryExplorerSources",
+    "MemorySearch",
+    "ListMemoryExplorerSources",
+    "MemorySearch",
+    "ListMemoryExplorerSources",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "GetAgentRunWorkJournal",
+    "ListMemoryExplorerSources",
+    "MemoryIndexStatus",
+    "GetAgentRunWorkJournal",
+    "GetAgentRunMemoryView",
+    "GetUpdateNotifications",
+    "GetUpdateAutomationSettings",
+    "MemoryIndexStatus",
+    "ListMemoryExplorerSources",
+    "GetApplicationsCapability",
+    "GetAllWorkspaces",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "GetAgentDefinitions",
+    "GetAgentTeamDefinitions",
+    "GetAgentOrgDefinitions",
+    "MemorySearch",
+    "GetAgentRunWorkJournal",
+    "GetAgentRunWorkJournal",
+    "GetAgentRunWorkJournal",
+    "GetUpdateNotifications",
+    "GetUpdateAutomationSettings",
+    "MemoryIndexStatus",
+    "ListMemoryExplorerSources",
+    "GetApplicationsCapability",
+    "GetAllWorkspaces",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "GetAgentDefinitions",
+    "GetAgentTeamDefinitions",
+    "GetAgentOrgDefinitions",
+    "MemorySearch",
+    "GetRunFolderWorkJournal",
+    "GetUpdateNotifications",
+    "GetUpdateAutomationSettings",
+    "ListMemoryExplorerSources",
+    "ListAgentsWithMemory",
+    "MemoryIndexStatus",
+    "GetApplicationsCapability",
+    "GetAllWorkspaces",
+    "ListWorkspaceRunHistory",
+    "ListCollaborationRootHistory",
+    "GetAgentDefinitions",
+    "GetAgentTeamDefinitions",
+    "GetAgentOrgDefinitions",
+    "GetUpdateNotifications",
+    "GetUpdateAutomationSettings",
+    "MemoryIndexStatus",
+    "ListMemoryExplorerSources",
+    "GetApplicationsCapability",
+    "MemorySearch",
+    "GetUpdateNotifications",
+    "GetUpdateAutomationSettings",
+    "ListMemoryExplorerSources",
+    "MemoryIndexStatus",
+    "GetApplicationsCapability",
+    "GetUpdateNotifications",
+    "GetUpdateAutomationSettings",
+    "MemoryIndexStatus",
+    "ListMemoryExplorerSources",
+    "GetApplicationsCapability",
+    "MemorySearch",
+    "GetAgentRunWorkJournal"
+  ],
+  "pageErrors": [],
+  "failures": [],
+  "finishedAt": "2026-10-26T17:16:04.885Z",
+  "result": "Pass"
+}

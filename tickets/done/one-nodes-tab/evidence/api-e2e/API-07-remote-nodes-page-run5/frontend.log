@@ -1,0 +1,83 @@
+
+> autobyteus@1.5.8-beta.8 dev /Users/normy/autobyteus_org/autobyteus-worktrees/one-nodes-tab/autobyteus-web
+> nuxt dev --host 0.0.0.0 --host 127.0.0.1 --port 54406
+
+│
+●  Nuxt 3.21.11 (with Nitro 2.13.5, Vite 7.3.7 and Vue 3.5.44)
+
+  ➜ Local:    http://127.0.0.1:54406/
+  ➜ Network:  use --host to expose
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ WARN  Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/one-nodes-tab/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/one-nodes-tab/autobyteus-web/stores/serverStore.ts" is used
+
+
+ WARN  Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/one-nodes-tab/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/one-nodes-tab/autobyteus-web/stores/serverStore.ts" is used
+
+✔ Vite client built in 105ms
+
+ WARN  Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/one-nodes-tab/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/one-nodes-tab/autobyteus-web/stores/serverStore.ts" is used
+
+
+ WARN  Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/one-nodes-tab/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/one-nodes-tab/autobyteus-web/stores/serverStore.ts" is used
+
+
+ ERROR  Pre-transform error: Failed to resolve import "#app-manifest" from "../node_modules/.pnpm/nuxt@3.21.11_@oxc-project+types@0.143.0_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue_c98055000e579fb5cf3e31b410f517ee/node_modules/nuxt/dist/app/composables/manifest.js?v=ed444651". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /Users/normy/autobyteus_org/autobyteus-worktrees/one-nodes-tab/node_modules/.pnpm/nuxt@3.21.11_@oxc-project+types@0.143.0_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue_c98055000e579fb5cf3e31b410f517ee/node_modules/nuxt/dist/app/composables/manifest.js?v=ed444651:16:6
+  14 |        /* webpackIgnore: true */
+  15 |        /* @vite-ignore */
+  16 |        "#app-manifest"
+     |        ^
+  17 |      );
+  18 |    } else {
+
+
+ ERROR  Pre-transform error: Failed to resolve import "#app-manifest" from "../node_modules/.pnpm/nuxt@3.21.11_@oxc-project+types@0.143.0_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue_c98055000e579fb5cf3e31b410f517ee/node_modules/nuxt/dist/app/composables/manifest.js?v=ed444651". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /Users/normy/autobyteus_org/autobyteus-worktrees/one-nodes-tab/node_modules/.pnpm/nuxt@3.21.11_@oxc-project+types@0.143.0_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue_c98055000e579fb5cf3e31b410f517ee/node_modules/nuxt/dist/app/composables/manifest.js?v=ed444651:16:6
+  14 |        /* webpackIgnore: true */
+  15 |        /* @vite-ignore */
+  16 |        "#app-manifest"
+     |        ^
+  17 |      );
+  18 |    } else { (x2)
+
+✔ Vite server built in 855ms
+
+ ERROR  Pre-transform error: Failed to resolve import "#app-manifest" from "../node_modules/.pnpm/nuxt@3.21.11_@oxc-project+types@0.143.0_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue_c98055000e579fb5cf3e31b410f517ee/node_modules/nuxt/dist/app/composables/manifest.js?v=ed444651". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /Users/normy/autobyteus_org/autobyteus-worktrees/one-nodes-tab/node_modules/.pnpm/nuxt@3.21.11_@oxc-project+types@0.143.0_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue_c98055000e579fb5cf3e31b410f517ee/node_modules/nuxt/dist/app/composables/manifest.js?v=ed444651:16:6
+  14 |        /* webpackIgnore: true */
+  15 |        /* @vite-ignore */
+  16 |        "#app-manifest"
+     |        ^
+  17 |      );
+  18 |    } else { (x3)
+
+
+ ERROR  Pre-transform error: Failed to resolve import "#app-manifest" from "../node_modules/.pnpm/nuxt@3.21.11_@oxc-project+types@0.143.0_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue_c98055000e579fb5cf3e31b410f517ee/node_modules/nuxt/dist/app/composables/manifest.js?v=ed444651". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /Users/normy/autobyteus_org/autobyteus-worktrees/one-nodes-tab/node_modules/.pnpm/nuxt@3.21.11_@oxc-project+types@0.143.0_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue_c98055000e579fb5cf3e31b410f517ee/node_modules/nuxt/dist/app/composables/manifest.js?v=ed444651:16:6
+  14 |        /* webpackIgnore: true */
+  15 |        /* @vite-ignore */
+  16 |        "#app-manifest"
+     |        ^
+  17 |      );
+  18 |    } else { (x4)
+
+
+ ERROR  Pre-transform error: Failed to resolve import "#app-manifest" from "../node_modules/.pnpm/nuxt@3.21.11_@oxc-project+types@0.143.0_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue_c98055000e579fb5cf3e31b410f517ee/node_modules/nuxt/dist/app/composables/manifest.js?v=ed444651". Does the file exist?
+  Plugin: vite:import-analysis
+  File: /Users/normy/autobyteus_org/autobyteus-worktrees/one-nodes-tab/node_modules/.pnpm/nuxt@3.21.11_@oxc-project+types@0.143.0_@parcel+watcher@2.5.6_@types+node@22.19.11_@vue_c98055000e579fb5cf3e31b410f517ee/node_modules/nuxt/dist/app/composables/manifest.js?v=ed444651:16:6
+  14 |        /* webpackIgnore: true */
+  15 |        /* @vite-ignore */
+  16 |        "#app-manifest"
+     |        ^
+  17 |      );
+  18 |    } else { (x5)
+
+[nitro] ✔ Nuxt Nitro server built in 1141ms
+ℹ Vite client warmed up in 0ms

@@ -4,11 +4,8 @@ import {
   buildListAvailableAgentsParameterSchema,
   listAvailableAgentsFor,
 } from "../../agent-discovery/list-available-agents-contract.js";
-import {
-  toAgentToolMcpToolResult,
-  type AgentToolMcpAdapterProvider,
-  type AgentToolMcpToolAdapter,
-} from "../agent-tool-mcp-adapter.js";
+import type { AgentToolMcpAdapterProvider, AgentToolMcpToolAdapter } from "../agent-tool-mcp-adapter.js";
+import { toAgentDiscoveryMcpResult } from "./agent-discovery-mcp-result.js";
 
 /**
  * `list_available_agents` over Agent Tools MCP (Codex, Claude, AGY and the other MCP runtimes).
@@ -25,13 +22,8 @@ export class ListAvailableAgentsMcpAdapterProvider implements AgentToolMcpAdapte
       },
       configuredMcpCollisionPolicy: "protect_static_adapter" as const,
       isAvailable: ({ sender }) => Boolean(sender?.memberExecutionContext?.collaboration.listAvailableAgents),
-      execute: async ({ session }) => {
-        const result = await listAvailableAgentsFor(session.sender.memberExecutionContext?.collaboration);
-        return toAgentToolMcpToolResult({
-          content: [{ type: "text", text: JSON.stringify(result) }],
-          structuredContent: result,
-        });
-      },
+      execute: async ({ session, rawArguments }) =>
+        toAgentDiscoveryMcpResult(await listAvailableAgentsFor(session.sender.memberExecutionContext?.collaboration, rawArguments)),
     }];
   }
 }

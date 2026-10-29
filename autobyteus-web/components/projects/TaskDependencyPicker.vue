@@ -8,7 +8,7 @@
     <ul v-if="selected.length" class="mt-3 space-y-1.5" data-testid="task-dependency-selected">
       <li v-for="item in selected" :key="item.taskId" class="flex min-w-0 items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 py-1.5 pl-3 pr-1.5 text-sm" :data-testid="`task-dependency-selected-${item.taskId}`">
         <span class="max-w-[45%] flex-shrink-0 font-medium text-slate-700"><TaskKey :task-key="item.taskKey" /></span>
-        <span class="min-w-0 flex-1 truncate text-slate-600">{{ taskSummaryLabel(item.description) }}</span>
+        <span class="min-w-0 flex-1 truncate text-slate-600">{{ taskTitleLabel(item.title) }}</span>
         <span class="flex-shrink-0 rounded-full px-2 py-0.5 text-xs font-medium ring-1 ring-inset" :class="taskStatusPillClass(item.status)">{{ t(TASK_STATUS_LABEL_KEYS[item.status]) }}</span>
         <button
           type="button"
@@ -69,7 +69,7 @@
           @mousemove="active = index"
         >
           <span class="max-w-[40%] flex-shrink-0 font-medium" :class="item.cycle ? '' : 'text-slate-700'"><TaskKey :task-key="item.task.taskKey" /></span>
-          <span class="min-w-0 flex-1 truncate" :class="item.cycle ? '' : 'text-slate-600'">{{ taskSummaryLabel(item.task.description) }}</span>
+          <span class="min-w-0 flex-1 truncate" :class="item.cycle ? '' : 'text-slate-600'">{{ taskTitleLabel(item.task.title) }}</span>
           <span v-if="item.cycle" class="flex-shrink-0 text-xs">{{ t('projects.deps.cycle') }}</span>
           <span v-else class="flex-shrink-0 rounded-full px-2 py-0.5 text-xs font-medium ring-1 ring-inset" :class="taskStatusPillClass(item.task.status)">{{ t(TASK_STATUS_LABEL_KEYS[item.task.status]) }}</span>
         </li>
@@ -86,7 +86,7 @@ import { useProjectTaskStore } from '~/stores/projectTaskStore'
 import type { ProjectTask } from '~/types/project'
 import { dependencyCycleIds, taskKeyNumber } from '~/utils/projects/taskDependencies'
 import { TASK_STATUS_LABEL_KEYS, taskStatusPillClass } from '~/utils/projects/taskStatusPresentation'
-import { taskSummaryLabel } from '~/utils/projects/taskSummary'
+import { taskTitleLabel } from '~/utils/projects/taskText'
 import TaskKey from './TaskKey.vue'
 
 const props = defineProps<{ projectId: string; projectName: string; taskId?: string; disabled?: boolean }>()
@@ -109,12 +109,13 @@ const options = computed(() => {
   const words = query.value.trim().toLocaleLowerCase()
   return tasks.value
     .filter((item) => item.taskId !== props.taskId && !model.value.includes(item.taskId))
-    .filter((item) => !words || `${item.taskKey} ${item.description}`.toLocaleLowerCase().includes(words))
+    .filter((item) => !words || `${item.taskKey} ${item.title} ${item.description}`.toLocaleLowerCase().includes(words))
     .sort((a, b) => taskKeyNumber(b) - taskKeyNumber(a))
     .slice(0, 8)
     .map((task) => ({ task, cycle: cycle.value.has(task.taskId) }))
 })
-watch(options, () => { active.value = Math.max(0, options.value.findIndex((item) => !item.cycle)) })
+// The active option is always a choosable one, also before the options first change (Enter never lands on a loop).
+watch(options, () => { active.value = Math.max(0, options.value.findIndex((item) => !item.cycle)) }, { immediate: true })
 
 const move = (step: number) => {
   open.value = true

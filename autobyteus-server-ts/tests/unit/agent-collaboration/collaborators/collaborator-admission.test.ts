@@ -35,6 +35,7 @@ const definitions = {
 };
 const catalog: CollaboratorDefinitionCatalog = {
   listAgentDefinitions: async () => definitions.agents,
+  isAgentHidden: () => false,
   listTeamDefinitions: async () => definitions.teams,
   getAgentDefinition: async (id) => definitions.agents.find((item) => item.id === id) ?? null,
   getTeamDefinition: async (id) => definitions.teams.find((item) => item.id === id) ?? null,
@@ -49,9 +50,8 @@ const port = (input: {
   addresses?: string[];
   applicationBound?: boolean;
 } = {}): CollaboratorRootPort => ({
-  rootKind: "agent_team",
   isApplicationBound: input.applicationBound ?? false,
-  rootLaunchConfiguration: () => launch,
+  launchBase: () => ({ kind: "inherited", launch }),
   ownDefinition: () => ({ kind: "agent_team", definitionId: "se-team" }),
   inRunPlacementsByDefinition: () => buildInRunPlacements({
     configured: (input.configuredAgents ?? []).map((id) => ({ ref: { kind: "agent" as const, definitionId: id }, address: `/${id}` as never })),
@@ -204,7 +204,10 @@ describe("catalog policy and mention resolution", () => {
     const source = await run.admission.catalogTaskSource(port(), { address: "/product_team", senderRunId: "pm" });
     expect(source).toEqual({ name: "Product Team", launchNotes: [], source: {
       kind: "agent_team", teamDefinitionId: "product", coordinatorAddress: "/product_team/lead",
-      members: [{ address: "/product_team/lead", agentDefinitionId: "lead" }, { address: "/product_team/designer", agentDefinitionId: "designer" }],
+      members: [
+        { address: "/product_team/lead", agentDefinitionId: "lead", launchConfiguration: launch, followsTeam: true },
+        { address: "/product_team/designer", agentDefinitionId: "designer", launchConfiguration: launch, followsTeam: true },
+      ],
       handoffs: [{ from: "/product_team/lead", to: "/product_team/designer", rules: ["When UI work is needed."] }],
       defaultLaunchConfiguration: launch,
       defaultLaunchSource: { origin: "inherited", fallbacks: [] },

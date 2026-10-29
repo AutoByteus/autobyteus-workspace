@@ -23,6 +23,7 @@ const task = (taskId: string, updatedAt: string, status: ProjectTask['status'] =
   root: null,
   taskId,
   projectId: 'p1',
+  title: `Task ${taskId}`,
   description: `Task ${taskId}`,
   status,
   contextFiles: [],
@@ -83,10 +84,10 @@ describe('projectTaskStore', () => {
 
     const store = useProjectTaskStore()
     await store.fetchTasks('p1')
-    const created = await store.createTask('p1', 'New work')
+    const created = await store.createTask('p1', { title: 'New work', description: 'New work' })
 
     expect(apolloClientMock.mutate).toHaveBeenCalledWith(expect.objectContaining({
-      variables: { input: { projectId: 'p1', description: 'New work' } },
+      variables: { input: { projectId: 'p1', title: 'New work', description: 'New work' } },
     }))
     expect(created.taskId).toBe('t2')
     expect(store.getList('p1')?.tasks.map((entry) => entry.taskId)).toEqual(['t2', 't1'])
@@ -101,7 +102,7 @@ describe('projectTaskStore', () => {
     })
 
     const store = useProjectTaskStore()
-    await store.createTask('p1', 'New work')
+    await store.createTask('p1', { title: 'New work', description: 'New work' })
 
     expect(store.getList('p1')?.tasks.map((entry) => entry.taskId)).toEqual(['t9', 't1'])
     expect(useProjectStore().getProjectById('p1')?.openTaskCount).toBe(1)
@@ -117,15 +118,32 @@ describe('projectTaskStore', () => {
 
     const store = useProjectTaskStore()
     await store.fetchTasks('p1')
-    await store.updateTask('p1', 't1', 'edited')
+    await store.updateTask('p1', 't1', { title: 'Edited title', description: 'edited' })
 
     expect(apolloClientMock.mutate).toHaveBeenCalledWith(expect.objectContaining({
-      variables: { input: { projectId: 'p1', taskId: 't1', description: 'edited' } },
+      variables: { input: { projectId: 'p1', taskId: 't1', title: 'Edited title', description: 'edited' } },
     }))
     expect(store.getList('p1')?.tasks.map((entry) => [entry.taskId, entry.description])).toEqual([
       ['t1', 'edited'],
       ['t2', 'Task t2'],
     ])
+  })
+
+  it('adds a comment: sends only the text, and the returned Task (with its thread and new updatedAt) replaces the listed one (task-comments DS-002)', async () => {
+    apolloClientMock.query.mockResolvedValue({
+      data: { projectTasks: [task('t1', '2026-09-26T01:00:00.000Z'), task('t2', '2026-09-26T02:00:00.000Z')] },
+    })
+    const thread = [{ id: 1, createdAt: '2026-09-26T04:00:00.000Z', text: 'Looks good' }]
+    apolloClientMock.mutate.mockResolvedValue({ data: { addProjectTaskComment: { ...task('t1', '2026-09-26T04:00:00.000Z'), comments: thread } } })
+
+    const store = useProjectTaskStore()
+    await store.fetchTasks('p1')
+    await store.addComment('p1', 't1', 'Looks good')
+
+    expect(apolloClientMock.mutate).toHaveBeenCalledWith(expect.objectContaining({
+      variables: { input: { projectId: 'p1', taskId: 't1', text: 'Looks good' } },
+    }))
+    expect(store.getList('p1')?.tasks.map((entry) => [entry.taskId, entry.comments ?? null])).toEqual([['t1', thread], ['t2', null]])
   })
 
   it('deletes a Task and updates the open count', async () => {
@@ -150,7 +168,7 @@ describe('projectTaskStore', () => {
 
     const store = useProjectTaskStore()
     await store.fetchTasks('p1')
-    await expect(store.createTask('p1', ' ')).rejects.toMatchObject({ code: 'TASK_DESCRIPTION_REQUIRED' })
+    await expect(store.createTask('p1', { title: 'T', description: ' ' })).rejects.toMatchObject({ code: 'TASK_DESCRIPTION_REQUIRED' })
     expect(store.getList('p1')?.tasks.map((entry) => entry.taskId)).toEqual(['t1'])
   })
 
@@ -235,7 +253,7 @@ describe('projectTaskStore', () => {
     await store.fetchTasks('p1')
     let written!: (value: unknown) => void, read!: (value: unknown) => void
     apolloClientMock.mutate.mockReturnValueOnce(new Promise((r) => {written = r}))
-    const saving = store.createTask('p1', 'New')
+    const saving = store.createTask('p1', { title: 'New', description: 'New' })
     await vi.waitFor(() => expect(apolloClientMock.mutate).toHaveBeenCalledOnce())
     apolloClientMock.query.mockReturnValueOnce(new Promise((r) => {read = r}))
     const refreshing = store.refreshTasks('p1')
@@ -251,7 +269,7 @@ describe('projectTaskStore', () => {
     let release!: (value: boolean) => void
     vi.spyOn(useWindowNodeContextStore(), 'waitForBoundBackendReady').mockReturnValueOnce(new Promise((r) => {release = r}))
     let eligible = true
-    const pending = useProjectTaskStore().createTask('p1', 'No stale dispatch', undefined, () => eligible)
+    const pending = useProjectTaskStore().createTask('p1', { title: 'No stale dispatch', description: 'No stale dispatch' }, undefined, () => eligible)
     eligible = false
     release(true)
     await expect(pending).rejects.toThrow('no longer current')

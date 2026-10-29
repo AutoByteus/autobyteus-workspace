@@ -1,13 +1,15 @@
 import fs from "node:fs";
 import fsPromises from "node:fs/promises";
 import { isDeepStrictEqual } from "node:util";
-import type { CollaborationHandoff } from "../../agent-collaboration/domain/collaboration-handoff.js";
 import type { TaskAgentTeamTreeFile } from "../../agent-team-execution/domain/task-agent-team-tree.js";
-import type { TaskExecution } from "../domain/run-execution-tree-shared-records.js";
+import type { RemoteTaskExecution, TaskExecution } from "../domain/run-execution-tree-shared-records.js";
+import type { DelegatedFrom } from "./agent-run-metadata-types.js";
 import type { TaskAgentCoordinatingRun, TaskAgentRunMetadata } from "./agent-run-metadata-types.js";
 import type { TaskAgentRunMetadataReadState } from "./agent-run-metadata-store.js";
 import type { RunPackageFileWriteResult } from "./atomic-run-package-file-commit-writer.js";
-import { objectRecord, parseTaskExecutionLink } from "./run-execution-tree-shared-record-schemas.js";
+import { isRemoteTaskExecutionEntry, objectRecord, parseTaskExecutionLink } from "./run-execution-tree-shared-record-schemas.js";
+import { appendRemoteLinks, attachRemoteLinks, withoutRemoteEntries } from "./remote-task-execution-links.js";
+import { ROOT_TASK_LIST_KEY } from "./coordinating-tree-shapes.js";
 import type { TaskAgentOwnFiles, TaskAgentTeamTreeReadState } from "./task-agent-own-files.js";
 import { parseTaskAgentRunMetadata } from "./task-agent-own-file-schema.js";
 import {
@@ -18,7 +20,6 @@ import {
   taskAgentTeamOwnTree,
   taskExecutionLinkOf,
   taskExecutionRunId,
-  type ConfiguredPlaceResolver,
 } from "./task-agent-own-records.js";
 import { validateTaskAgentTeamTreePayload } from "./task-agent-team-tree-schema.js";
 
@@ -31,6 +32,8 @@ import { validateTaskAgentTeamTreePayload } from "./task-agent-team-tree-schema.
  * - L5: one task agent never fails a load: one without a readable own file is left out and reported.
  * - L6: only available task agents are loaded; a save is computed against the files on disk and never
  *   removes what it did not load.
+ * - Remote links (entries with `nodeId`, CM-10) have no own file: they are loaded into the root's own
+ *   `remoteTaskExecutions` list, never composed, and written back whole (`remote-task-execution-links.ts`).
  */
 
 /** Where one family's tree keeps task executions; `key` names one list stably (the root, or a configured team). */
@@ -47,8 +50,12 @@ export type CoordinatingTreeShape<TTree> = Readonly<{
   withRawTaskLists(raw: Record<string, unknown>, lists: ReadonlyMap<TaskExecutionListKey, readonly unknown[]>): Record<string, unknown>;
   /** AgentRun ids of the coordinating run's own parts (host, members, configured agents). */
   ownAgentRunIdsOfRaw(raw: Record<string, unknown>): readonly string[];
-  resolvePlace(tree: TTree): ConfiguredPlaceResolver;
-  handoffs(tree: TTree): readonly CollaborationHandoff[];
+  /** The in-memory remote links (loaded from the root list's entries with `nodeId`). */
+  remoteLinks(tree: TTree): readonly RemoteTaskExecution[];
+  /** A copy of a tree object with the in-memory remote links set, or removed (`null`) for writing. */
+  withRemoteLinks(raw: Record<string, unknown>, links: readonly RemoteTaskExecution[] | null): Record<string, unknown>;
+  /** The back-link a tree of this kind stores itself (a peer-started Team run), or `null`. */
+  storedBackLink(tree: TTree): DelegatedFrom | null;
 }>;
 
 type OwnFileStates = Readonly<{
@@ -67,6 +74,8 @@ export const listTaskAgentRunIds = <TTree>(shape: CoordinatingTreeShape<TTree>, 
   for (const [key, entries] of shape.rawTaskLists(raw)) {
     entries.forEach((entry, index) => {
       const record = entryRecord(entry, `${key}[${index}]`);
+      // A remote link has no own file on this node.
+      if (isRemoteTaskExecutionEntry(record)) return;
       if (typeof record.agentRunId === "string") agents.push(record.agentRunId);
       else if (typeof record.teamRunId === "string") teams.push(record.teamRunId);
       else throw new Error(`${key}[${index}] names no AgentRun or TeamRun.`);
@@ -109,6 +118,7 @@ export const composeTaskExecutions = <TTree>(
     const records: TaskExecution[] = [];
     entries.forEach((entry, index) => {
       const record = entryRecord(entry, `${key}[${index}]`);
+      if (isRemoteTaskExecutionEntry(record)) return;
       const runId = entryRunId(record);
       const link = parseTaskExecutionLink(isTaskExecutionLinkEntry(record) ? record : {
         address: record.address,
@@ -180,13 +190,12 @@ export const splitTaskExecutions = async <TTree>(input: Readonly<{
   let ownFiles: TaskAgentOwnFiles | null = null;
   const files = (): TaskAgentOwnFiles => ownFiles ??= input.files();
   const coordinatingRun = shape.coordinatingRun(tree);
-  const resolvePlace = shape.resolvePlace(tree);
   const memoryLists = shape.taskLists(tree);
   for (const records of memoryLists.values()) {
     for (const record of records) {
       const write = "agentRunId" in record
-        ? await writeAgentIfChanged(files(), record, coordinatingRun, resolvePlace)
-        : await writeTeamIfChanged(files(), record, coordinatingRun, resolvePlace, shape.handoffs(tree));
+        ? await writeAgentIfChanged(files(), record, coordinatingRun)
+        : await writeTeamIfChanged(files(), record, coordinatingRun);
       if (write && write.outcome !== "committed") return { kind: "own_file_failed", result: write as Exclude<RunPackageFileWriteResult, { outcome: "committed" }> };
     }
   }
@@ -202,9 +211,10 @@ export const splitTaskExecutions = async <TTree>(input: Readonly<{
       loaded.delete(runId);
     }
     for (const record of loaded.values()) output.push(taskExecutionLinkOf(record));
-    lists.set(key, output);
+    lists.set(key, key === ROOT_TASK_LIST_KEY ? appendRemoteLinks(output, shape.remoteLinks(tree)) : output);
   }
-  const treeFile = JSON.parse(JSON.stringify(shape.withRawTaskLists(input.treeFile, lists))) as Record<string, unknown>;
+  const treeFile = JSON.parse(JSON.stringify(
+    shape.withRemoteLinks(shape.withRawTaskLists(input.treeFile, lists), null))) as Record<string, unknown>;
   return input.rawOnDisk && isDeepStrictEqual(treeFile, input.rawOnDisk) ? { kind: "unchanged" } : { kind: "write", treeFile };
 };
 
@@ -212,12 +222,11 @@ const writeAgentIfChanged = async (
   files: TaskAgentOwnFiles,
   record: Extract<TaskExecution, { agentRunId: string }>,
   coordinatingRun: TaskAgentCoordinatingRun,
-  resolvePlace: ConfiguredPlaceResolver,
 ): Promise<RunPackageFileWriteResult | null> => {
   const state = await files.readAgent(record.agentRunId);
   const existing = state.kind === "present" ? state.metadata : null;
   const candidate = parseTaskAgentRunMetadata(taskAgentOwnMetadata({
-    record, coordinatingRun, memoryDir: files.agentMemoryDir(record.agentRunId), resolvePlace, existing,
+    record, coordinatingRun, memoryDir: files.agentMemoryDir(record.agentRunId),
   }), record.agentRunId);
   return existing && isDeepStrictEqual(candidate, existing) ? null : files.writeAgent(candidate);
 };
@@ -226,14 +235,10 @@ const writeTeamIfChanged = async (
   files: TaskAgentOwnFiles,
   record: Extract<TaskExecution, { teamRunId: string }>,
   coordinatingRun: TaskAgentCoordinatingRun,
-  resolvePlace: ConfiguredPlaceResolver,
-  treeHandoffs: readonly CollaborationHandoff[],
 ): Promise<RunPackageFileWriteResult | null> => {
   const state = await files.readTeam(record.teamRunId);
   const existing = state.kind === "present" ? state.tree : null;
-  const candidate = validateTaskAgentTeamTreePayload(taskAgentTeamOwnTree({
-    record, coordinatingRun, resolvePlace, treeHandoffs, existing,
-  }), record.teamRunId);
+  const candidate = validateTaskAgentTeamTreePayload(taskAgentTeamOwnTree({ record, coordinatingRun }), record.teamRunId);
   return existing && isDeepStrictEqual(candidate, existing) ? null : files.writeTeam(candidate);
 };
 
@@ -257,8 +262,10 @@ export const composeTreeFile = async <TTree>(
   files: () => TaskAgentOwnFiles,
 ): Promise<Record<string, unknown>> => {
   const ids = listTaskAgentRunIds(shape, raw);
-  if (ids.agents.length === 0 && ids.teams.length === 0) return raw;
-  return composeTaskExecutions(shape, raw, await readOwnFileStates(files(), ids));
+  const composed = ids.agents.length === 0 && ids.teams.length === 0
+    ? withoutRemoteEntries(shape, raw)
+    : composeTaskExecutions(shape, raw, await readOwnFileStates(files(), ids));
+  return attachRemoteLinks(shape, raw, composed);
 };
 
 export const composeTreeFileSync = <TTree>(
@@ -267,8 +274,10 @@ export const composeTreeFileSync = <TTree>(
   files: () => TaskAgentOwnFiles,
 ): Record<string, unknown> => {
   const ids = listTaskAgentRunIds(shape, raw);
-  if (ids.agents.length === 0 && ids.teams.length === 0) return raw;
-  return composeTaskExecutions(shape, raw, readOwnFileStatesSync(files(), ids));
+  const composed = ids.agents.length === 0 && ids.teams.length === 0
+    ? withoutRemoteEntries(shape, raw)
+    : composeTaskExecutions(shape, raw, readOwnFileStatesSync(files(), ids));
+  return attachRemoteLinks(shape, raw, composed);
 };
 
 /**
@@ -290,9 +299,24 @@ export const commitSplitTree = async <TFile extends string>(
   };
 };
 
-/** Every AgentRun of a composed tree: the coordinating run's own parts and its loaded task agents (message endpoints, L6). */
-export const agentRunIdsOfTree = <TTree>(shape: CoordinatingTreeShape<TTree>, tree: TTree): Set<string> => {
+/**
+ * Every message endpoint of a composed tree (L6), the one rule for every store and validator (SR-017 of
+ * slice 1): the coordinating run's own parts, its loaded task agents, its remote runs (an Agent link's run;
+ * every member of a Team link) and the delegator of its back-link when a peer started it. The back-link is the
+ * one the tree stores (a Team run), or the one given for a run that stores it elsewhere (a standalone run's
+ * `run_metadata.json`).
+ */
+export const agentRunIdsOfTree = <TTree>(
+  shape: CoordinatingTreeShape<TTree>,
+  tree: TTree,
+  backLink: DelegatedFrom | null = shape.storedBackLink(tree),
+): Set<string> => {
   const ids = new Set(shape.ownAgentRunIdsOfRaw(tree as unknown as Record<string, unknown>));
+  for (const link of shape.remoteLinks(tree)) {
+    if (link.kind === "agent") ids.add(link.agentRunId);
+    else link.members.forEach((member) => ids.add(member.agentRunId));
+  }
+  if (backLink) ids.add(backLink.delegatorAgentRunId);
   for (const tasks of shape.taskLists(tree).values()) {
     for (const task of tasks) {
       if ("agentRunId" in task) ids.add(task.agentRunId);

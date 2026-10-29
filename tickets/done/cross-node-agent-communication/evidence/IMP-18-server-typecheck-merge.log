@@ -1,0 +1,5 @@
+# IMP-18 server typecheck on the integration merge: pnpm -C autobyteus-server-ts typecheck (after pnpm install and prebuild); commit c59c6f7359; macOS, node v22.23.1; 2026-10-20T18:34:43Z
+> autobyteus-server-ts@0.1.1 typecheck /Users/normy/autobyteus_org/autobyteus-worktrees/cross-node-agent-communication-r2/autobyteus-server-ts
+> tsc -p tsconfig.build.json --noEmit
+
+exit=0

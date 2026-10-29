@@ -56,40 +56,8 @@ export class TreeNode {
    *   2) Among directories (or among files), sort by name ignoring case.
    */
   addChild(node: TreeNode): void {
-    const insertIndex = this.findInsertIndex(node)
+    const insertIndex = findInsertIndex(this.children, node)
     this.children.splice(insertIndex, 0, node)
-  }
-
-  /**
-   * A helper method to find the correct insertion index for `node`
-   * via binary search, based on the comparison logic:
-   *
-   *  1) Directories before files
-   *  2) Among directories or among files, compare by lowercase name
-   */
-  private findInsertIndex(node: TreeNode): number {
-    let low = 0
-    let high = this.children.length
-    while (low < high) {
-      const mid = (low + high) >>> 1
-      if (this.compareNodes(node, this.children[mid]) < 0) {
-        high = mid
-      } else {
-        low = mid + 1
-      }
-    }
-    return low
-  }
-
-  /**
-   * Compare function that ensures directories appear first,
-   * then files, then name-based comparison ignoring case.
-   */
-  private compareNodes(a: TreeNode, b: TreeNode): number {
-    if (a.is_file !== b.is_file) {
-      return a.is_file ? 1 : -1
-    }
-    return a.name.toLowerCase().localeCompare(b.name.toLowerCase())
   }
 
   /**
@@ -97,8 +65,38 @@ export class TreeNode {
    * as addChild provides more efficient sorted insertion.
    */
   sortChildren(): void {
-    this.children.sort((a, b) => this.compareNodes(a, b))
+    this.children.sort(compareNodes)
   }
+}
+
+/**
+ * The insertion index for `node` in sorted `children`, by binary search with compareNodes:
+ *  1) Directories before files
+ *  2) Among directories or among files, compare by lowercase name
+ */
+function findInsertIndex(children: readonly TreeNode[], node: TreeNode): number {
+  let low = 0
+  let high = children.length
+  while (low < high) {
+    const mid = (low + high) >>> 1
+    if (compareNodes(node, children[mid]) < 0) {
+      high = mid
+    } else {
+      low = mid + 1
+    }
+  }
+  return low
+}
+
+/**
+ * Compare function that ensures directories appear first,
+ * then files, then name-based comparison ignoring case.
+ */
+function compareNodes(a: TreeNode, b: TreeNode): number {
+  if (a.is_file !== b.is_file) {
+    return a.is_file ? 1 : -1
+  }
+  return a.name.toLowerCase().localeCompare(b.name.toLowerCase())
 }
 
 export function convertJsonToTreeNode(json: string): TreeNode {

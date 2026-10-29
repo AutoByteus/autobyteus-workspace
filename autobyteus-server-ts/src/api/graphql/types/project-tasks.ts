@@ -68,6 +68,14 @@ export class TaskRoot {
   @Field(() => String) status!: string;
 }
 
+/** One comment of a Project Task: its number within the Task, the server time it was added, its text. */
+@ObjectType()
+export class ProjectTaskComment {
+  @Field(() => Int) id!: number;
+  @Field(() => String) createdAt!: string;
+  @Field(() => String) text!: string;
+}
+
 @ObjectType()
 export class ProjectTask {
   @Field(() => TaskRoot, { nullable: true }) root!: TaskRoot | null;
@@ -82,6 +90,10 @@ export class ProjectTask {
   @Field(() => String)
   taskKey!: string;
 
+  /** The Task's one-line name, given by its writer. */
+  @Field(() => String)
+  title!: string;
+
   @Field(() => String)
   description!: string;
 
@@ -91,6 +103,14 @@ export class ProjectTask {
   /** Other Tasks of the same Project this Task depends on (informs only). */
   @Field(() => [String])
   dependsOnTaskIds!: string[];
+
+  /** The Task of the same Project this Task is part of (its parent); null when none. */
+  @Field(() => String, { nullable: true })
+  partOfTaskId!: string | null;
+
+  /** The comment thread, oldest first; add only. */
+  @Field(() => [ProjectTaskComment])
+  comments!: ProjectTaskComment[];
 
   @Field(() => String)
   createdAt!: string;
@@ -106,11 +126,18 @@ export class CreateProjectTaskInput {
   projectId!: string;
 
   @Field(() => String)
+  title!: string;
+
+  @Field(() => String)
   description!: string;
 
   /** Same-Project Task IDs; omitted means none. */
   @Field(() => [String], { nullable: true })
   dependsOnTaskIds?: string[] | null;
+
+  /** The parent, a same-Project Task ID; omitted or null means none. */
+  @Field(() => String, { nullable: true })
+  partOfTaskId?: string | null;
 }
 
 @InputType()
@@ -123,11 +150,25 @@ export class UpdateProjectTaskInput {
   taskId!: string;
 
   @Field(() => String)
+  title!: string;
+
+  @Field(() => String)
   description!: string;
 
   /** Replaces the stored list when supplied (`[]` clears it); omitted keeps it. */
   @Field(() => [String], { nullable: true })
   dependsOnTaskIds?: string[] | null;
+
+  /** A same-Project Task ID replaces the parent, null clears it, omitted keeps it. */
+  @Field(() => String, { nullable: true })
+  partOfTaskId?: string | null;
+}
+
+@InputType()
+export class AddProjectTaskCommentInput {
+  @Field(() => String) projectId!: string;
+  @Field(() => String) taskId!: string;
+  @Field(() => String) text!: string;
 }
 
 @InputType()
@@ -156,6 +197,8 @@ export class TaskWithoutProject {
 export class TaskWorkerTaskView {
   @Field(() => String) taskId!: string;
   @Field(() => String, { nullable: true }) projectId!: string | null;
+  /** A Project Task's title; null for a Temp task, which has none. */
+  @Field(() => String, { nullable: true }) title!: string | null;
   @Field(() => String) description!: string;
   @Field(() => ProjectTaskStatus) status!: ProjectTaskStatus;
 }
@@ -178,16 +221,19 @@ const toGraphqlTask = (task: ProjectTaskView): ProjectTask => ({
   taskId: task.taskId,
   projectId: task.projectId,
   taskKey: task.taskKey,
+  title: task.title,
   description: task.description,
   status: task.status as ProjectTaskStatus,
   dependsOnTaskIds: [...task.dependsOnTaskIds],
+  partOfTaskId: task.partOfTaskId,
+  comments: task.comments.map(({ id, createdAt, text }) => ({ id, createdAt, text })),
   createdAt: task.createdAt,
   updatedAt: task.updatedAt,
 });
 
 /**
  * Transport for Project Tasks. There is deliberately no status mutation here:
- * users only create, edit the description of, and delete Tasks.
+ * users only create, edit the title and description of, and delete Tasks.
  */
 @Resolver()
 export class ProjectTaskResolver {
@@ -230,6 +276,14 @@ export class ProjectTaskResolver {
     @Arg("input", () => UpdateProjectTaskInput) input: UpdateProjectTaskInput,
   ): Promise<ProjectTask> {
     return withProjectErrors(async () => toGraphqlTask(await this.service.updateTask(input)));
+  }
+
+  /** Adds one comment (the text); the server sets its number and time. Returns the Task. */
+  @Mutation(() => ProjectTask)
+  async addProjectTaskComment(
+    @Arg("input", () => AddProjectTaskCommentInput) input: AddProjectTaskCommentInput,
+  ): Promise<ProjectTask> {
+    return withProjectErrors(async () => toGraphqlTask(await this.service.addComment(input)));
   }
 
   @Mutation(() => Boolean)

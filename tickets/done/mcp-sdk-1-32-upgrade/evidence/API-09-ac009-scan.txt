@@ -1,0 +1,29 @@
+# Case: API-09 AC-009 / REQ-007 scan
+# PAT: sk-[A-Za-z0-9]{16,}|ghp_[A-Za-z0-9]{20,}|AIza[0-9A-Za-z_-]{20,}|xox[abp]-|ATATT[0-9A-Za-z]|eyJ[A-Za-z0-9_-]{10,}\.|(Bearer|Basic) [A-Za-z0-9+/=._-]{6,}
+# Commands: grep -rEo PAT <evidence folder> | sort | uniq -c ; same over the two API/E2E test files and the temporary probe ; git diff 436b85ce93..HEAD (added lines) + the uncommitted API/E2E test diff ; test-dummy counts in every raw API/E2E run log, the Docker container logs and the isolated-instance logs
+# Commit: c7f0c18fdc + the API/E2E changes (before the API/E2E commit)
+# Environment: macOS 26, local grep
+# Date: 2026-10-19
+
+== evidence folder (all files) ==
+   1 IMP-00-redirect-red-on-sdk-1.30.0.log:Bearer Authorization
+== API/E2E test files and probe ==
+(end)
+== added lines: branch diff 436b85ce93..HEAD plus the uncommitted API/E2E diff ==
+   2 Bearer Authorization
+   1 Bearer test-dummy
+(end)
+== test-dummy in raw run logs (vitest output incl. in-process server console) ==
+api01.log                        bytes=5201     test-dummy=0
+api01m.log                       bytes=6785     test-dummy=0
+api03.log                        bytes=45423    test-dummy=0
+api04.log                        bytes=22304    test-dummy=0
+api06.log                        bytes=21852    test-dummy=0
+api05.log                        bytes=662033   test-dummy=0
+api07-container.log              bytes=48227    test-dummy=0
+api07-container-files.log        bytes=7514     test-dummy=0
+api08-dataroot-logs.txt          bytes=53592    test-dummy=0
+built-server output scans (in-test, API-01/02): containsDummy=false containsCanary=false
+isolated-app instance log (API-08): test-dummy=0
+
+Result: credential-like matches are dummy values (test-dummy, test-wrong, test-other) or prose (Bearer header/scheme/Authorization). No dummy value appears in any server, container or app log; the only stored copies are the saved tokens in each test-owned mcps.json (accepted plain-text storage).

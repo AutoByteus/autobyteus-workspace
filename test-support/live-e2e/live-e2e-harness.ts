@@ -10,6 +10,7 @@ import {
   LLMFactory,
   LLMRuntime,
   MemoryType,
+  NativeCommandProcessScope,
 } from '../../autobyteus-ts/src/index.js';
 import { COMPACTION_SUMMARY_INSTRUCTION, COMPACTION_SUMMARY_PROMPT } from '../../autobyteus-ts/src/memory/compaction/compaction-summary-prompt.js';
 import { parseCompactionSummary } from '../../autobyteus-ts/src/memory/compaction/compaction-summary-parser.js';
@@ -42,6 +43,7 @@ import {
   resetSecretVaultRuntimeForTests,
 } from '../../autobyteus-server-ts/src/secret-management/secret-vault-runtime.js';
 import type { SecretManagementService } from '../../autobyteus-server-ts/src/secret-management/services/secret-management-service.js';
+import { initializeLiveServerVault } from '../test-vault/live-server-vault.js';
 import { createGeminiRuntimeResolver } from '../../autobyteus-server-ts/src/llm-management/services/gemini-runtime-resolver-adapter.js';
 import { getGeminiConfigurationService } from '../../autobyteus-server-ts/src/llm-management/services/gemini-configuration-service.js';
 import { ClaudeSdkClient } from '../../autobyteus-server-ts/src/runtime-management/claude/client/claude-sdk-client.js';
@@ -584,11 +586,14 @@ export class LiveE2eScenarioExecution {
       getWorkspaceById: () => undefined,
       getOrCreateTempWorkspace: async () => workspace,
     } as unknown as WorkspaceManager;
+    // The run's native command scope, closed after the backend ends (as the server's NativeCommandShutdown does).
+    const nativeCommandProcessScope = new NativeCommandProcessScope();
     const productBackendFactory = new AutoByteusAgentRunBackendFactory({
       agentDefinitionService: definitionService,
       createLLM: (modelIdentifier, configInput) =>
         LLMFactory.createLLM(modelIdentifier, configInput, this.llmResolver),
       workspaceManager,
+      nativeCommandProcessScope,
     });
     const backendFactory: LiveE2eAgentBackendFactory = {
       createBackend: async (config, runId) => wrapProductAgentBackendForLiveE2e(
@@ -606,6 +611,7 @@ export class LiveE2eScenarioExecution {
         evidenceObserver,
       });
     } finally {
+      await nativeCommandProcessScope.close();
       await workspace.close();
       await fs.rm(ownedRoot, { recursive: true, force: true });
     }
@@ -704,6 +710,8 @@ export class LiveE2eScenarioExecution {
       : {};
     let primaryLlm: BaseLLM | null = null;
     let invocationCapture: InvocationCaptureExtension | null = null;
+    // The run's native command scope, closed after the backend ends (as the server's NativeCommandShutdown does).
+    const nativeCommandProcessScope = new NativeCommandProcessScope();
     const productBackendFactory = new AutoByteusAgentRunBackendFactory({
       agentDefinitionService: definitionService,
       createLLM: async (modelIdentifier, configInput) => {
@@ -714,6 +722,7 @@ export class LiveE2eScenarioExecution {
         return llm;
       },
       workspaceManager,
+      nativeCommandProcessScope,
     });
     const backendFactory: LiveE2eAgentBackendFactory = {
       createBackend: async (config, id) => wrapProductAgentBackendForLiveE2e(
@@ -1124,6 +1133,7 @@ export class LiveE2eScenarioExecution {
       } finally {
       unsubscribe();
       if (backend) await backend.terminate().catch(() => undefined);
+      await nativeCommandProcessScope.close();
       await workspace.close();
       await fs.rm(ownedRoot, { recursive: true, force: true });
       }
@@ -1223,9 +1233,12 @@ export class LiveE2eHarness {
       )) {
         throw new Error('LIVE_E2E_DATABASE_TARGET_MISMATCH');
       }
-      const selectedRuntime = getSecretVaultRuntime();
-      await selectedRuntime.initialize(config.getOperationalDatabaseLocation());
-      return selectedRuntime;
+      // The same vault source as the run's server: the test vault when selected.
+      await initializeLiveServerVault({
+        databaseLocation: config.getOperationalDatabaseLocation(),
+        appDataDir: runtimeRoot,
+      });
+      return getSecretVaultRuntime();
     });
     return new LiveE2eHarness(runtimeRoot, serverUrl, runtime.requireService());
   }

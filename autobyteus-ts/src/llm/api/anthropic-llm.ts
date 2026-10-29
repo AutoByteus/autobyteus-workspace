@@ -22,7 +22,10 @@ import { Message, MessageRole, leadingSystemMessages } from '../utils/messages.j
 import { convertAnthropicToolCall } from '../converters/anthropic-tool-call-converter.js';
 import { BasePromptRenderer } from '../prompt-renderers/base-prompt-renderer.js';
 import { AnthropicPromptRenderer } from '../prompt-renderers/anthropic-prompt-renderer.js';
-import type { ProviderApiKeyResolver } from '../../secrets/provider-api-key-resolver.js';
+import {
+  resolveProviderApiKeyResolver,
+  type ProviderApiKeyResolver,
+} from '../../secrets/provider-api-key-resolver.js';
 import {
   applySafeProviderRequestKwargs,
   cloneSafeProviderRequestKwargs,
@@ -258,9 +261,9 @@ export class AnthropicLLM extends BaseLLM {
   private readonly apiKeyResolver: ProviderApiKeyResolver;
   protected _renderer: BasePromptRenderer;
 
-  constructor(model: LLMModel, config: LLMConfig, apiKeyResolver: ProviderApiKeyResolver) {
+  constructor(model: LLMModel, config: LLMConfig, apiKeyResolver?: ProviderApiKeyResolver) {
     super(model, config);
-    this.apiKeyResolver = apiKeyResolver;
+    this.apiKeyResolver = resolveProviderApiKeyResolver(apiKeyResolver);
     this._renderer = new AnthropicPromptRenderer();
   }
 

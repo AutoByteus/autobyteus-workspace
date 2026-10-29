@@ -6,7 +6,7 @@ import { BaseRepository } from "repository_prisma";
 import type {
   SecretVaultDomainIdentity,
   SecretVaultMetadataRecord,
-} from "./secret-vault-persistence-types.js";
+} from "autobyteus-ts/secrets/vault/secret-vault-records.js";
 
 const toMetadata = (
   record: SecretEncryptionMetadata,

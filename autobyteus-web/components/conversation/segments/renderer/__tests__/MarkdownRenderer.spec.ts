@@ -431,8 +431,7 @@ describe('MarkdownRenderer', () => {
 
   it('binds a managed image only after authorized resolution completes', async () => {
     const session: MobileNodeSession = {
-      version: 1,
-      nodeId: 'mobile-paired-node',
+      entryId: 'mobile-paired-node',
       serverBaseUrl: 'http://node.example',
       credential: 'credential-a',
       pairedAt: '2026-07-12T00:00:00.000Z',

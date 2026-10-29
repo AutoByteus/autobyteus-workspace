@@ -1,0 +1,71 @@
+# IMP-01 — root lockfile: re-resolved vs minimal, and their pnpm checks
+# Commit: base 5de6a698b9 + uncommitted ticket edits
+# Environment: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-20T10:27:21Z
+
+## A. `pnpm install` after removing hono from autobyteus-ts/package.json (re-resolution) — diff vs base:
+--- /tmp/hyg-lock-base.yaml	2026-10-20 12:27:02
++++ /tmp/hyg-lock-pnpm-regenerated.yaml	2026-10-20 12:27:02
+@@ -313,9 +313,6 @@
+       cheerio:
+         specifier: ^1.2.0
+         version: 1.2.0
+-      hono:
+-        specifier: ^4.0.0
+-        version: 4.12.0
+       mime-types:
+         specifier: ^3.0.2
+         version: 3.0.2
+@@ -4812,10 +4809,6 @@
+     resolution: {integrity: sha512-mQw+2fkQbALzQ7V0MY0IqdnXNOeTtP4r0lN9z7AAawCXgqea7bDii20AYrIBrFd/Hx0M2Ocz6S111CaFkUcb0Q==}
+     engines: {node: '>=0.8.x'}
+ 
+-  eventsource-parser@3.0.6:
+-    resolution: {integrity: sha512-Vo1ab+QXPzZ4tCa8SwIHJFaSzy4R6SHf7BY79rFBDf0idraZWAkYrDjDj8uWaSm3S2TK+hJ7/t1CEmZ7jXw+pg==}
+-    engines: {node: '>=18.0.0'}
+-
+   eventsource-parser@3.1.1:
+     resolution: {integrity: sha512-EKN1vKAMcZ8MlYMpaNuxN6R9yakzH6uajHcHVTqWJzvu5pWw9DyhbP35HH8MVBQ+dZjAfDxk+A8NiR9KWaXiyQ==}
+     engines: {node: '>=18.0.0'}
+@@ -10330,7 +10323,7 @@
+       cors: 2.8.6
+       cross-spawn: 7.0.6
+       eventsource: 3.0.7
+-      eventsource-parser: 3.0.6
++      eventsource-parser: 3.1.1
+       express: 5.2.1
+       express-rate-limit: 8.2.1(express@5.2.1)
+       hono: 4.12.0
+@@ -13489,8 +13482,6 @@
+ 
+   events@3.3.0: {}
+ 
+-  eventsource-parser@3.0.6: {}
+-
+   eventsource-parser@3.1.1: {}
+ 
+   eventsource@3.0.7:
+
+## (control) `pnpm install` on unchanged base: lockfile unchanged (git diff --stat empty)
+
+## B. Minimal lockfile (base minus the 3 importer lines) — diff vs base:
+--- /tmp/hyg-lock-base.yaml	2026-10-20 12:27:02
++++ /tmp/hyg-lock-minimal.yaml	2026-10-20 12:27:02
+@@ -313,9 +313,6 @@
+       cheerio:
+         specifier: ^1.2.0
+         version: 1.2.0
+-      hono:
+-        specifier: ^4.0.0
+-        version: 4.12.0
+       mime-types:
+         specifier: ^3.0.2
+         version: 3.0.2
+
+## B check 1: pnpm install --frozen-lockfile
+Lockfile is up to date, resolution step is skipped
+Already up to date
+Done in 1.2s using pnpm v10.28.2
+## B check 2: plain pnpm install afterwards, then cmp against the minimal lockfile
+Done in 1.1s using pnpm v10.28.2
+cmp: identical (plain install keeps the minimal lockfile)

@@ -4,11 +4,14 @@ import {
   canonicalNonRootAddress,
   deepFreeze,
   isoTimestamp,
+  collectTaskExecutionRunIds,
   objectRecord,
+  parseRemoteTaskExecutions,
   parseTaskExecutions,
   requiredString,
   requireKeys,
-  validateCatalogCopyLayouts,
+  validateCopyLayouts,
+  validateRemoteTaskExecutions,
   validateTaskExecutionDelegators,
 } from "../../run-history/store/run-execution-tree-shared-record-schemas.js";
 
@@ -16,15 +19,13 @@ const validateInvariants = (tree: StandaloneRootTreeFile): void => {
   if (getParentAgentTeamAddress(tree.host.address) !== "/") {
     throw new Error("host.address must be a root-level address.");
   }
-  for (const task of tree.taskExecutions) {
-    // An Agent root has no configured placement besides its host: every copy carries its catalog source.
-    if (!task.source) throw new Error(`Task execution at '${task.address}' has no catalog source.`);
-  }
-  validateCatalogCopyLayouts([tree]);
+  validateCopyLayouts([tree]);
   validateTaskExecutionDelegators(
     [tree.host.agentRunId],
     [{ members: [], taskExecutions: tree.taskExecutions }],
   );
+  validateRemoteTaskExecutions(
+    new Set([tree.host.agentRunId, ...collectTaskExecutionRunIds(tree.taskExecutions)]), tree.remoteTaskExecutions);
 };
 
 /** Reads an Agent-root collaboration tree tolerantly; the result holds only current fields. */
@@ -46,6 +47,7 @@ export const validateStandaloneRootTreePayload = (
       agentDefinitionId: requiredString(host.agentDefinitionId, "host.agentDefinitionId"),
     },
     taskExecutions: parseTaskExecutions(payload.taskExecutions, "taskExecutions"),
+    ...parseRemoteTaskExecutions(payload.remoteTaskExecutions, "remoteTaskExecutions"),
   };
   if (expectedHostRunId && tree.host.agentRunId !== expectedHostRunId) {
     throw new Error(`Collaboration tree host '${tree.host.agentRunId}' does not match '${expectedHostRunId}'.`);

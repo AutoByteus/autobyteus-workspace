@@ -1,0 +1,68 @@
+# Check: IMP-08 (hygiene: whitespace, dependencies, file sizes)
+# Command: git diff --check 8d40ba3b6c 8469d4bcf5; git diff 8d40ba3b6c 8469d4bcf5 -- '*package.json' '*pnpm-lock.yaml'; effective non-empty line counts of changed source files
+# Commit tested: 8469d4bcf5 (base origin/personal @ 8d40ba3b6c)
+# Environment: Darwin arm64, git 2.50.1
+# Date: 2026-10-19T09:50:51Z
+
+## git diff --check
+clean
+
+## Dependency manifests changed
+diff --git a/autobyteus-web/package.json b/autobyteus-web/package.json
+index 9343cc025f..c0121d87f8 100644
+--- a/autobyteus-web/package.json
++++ b/autobyteus-web/package.json
+@@ -67,6 +67,7 @@
+     "test:e2e:interrupt-result-presentation": "node tests/e2e/interrupt-result-presentation-probe.mjs",
+     "test:e2e:projects-navigation": "node tests/e2e/projects-primary-navigation-probe.mjs",
+     "test:e2e:projects": "node tests/e2e/projects-feature-probe.mjs",
++    "test:e2e:embedding-settings": "node tests/e2e/embedding-settings-probe.mjs",
+     "test:e2e:project-manager-ux": "node tests/e2e/project-manager-ux-probe.mjs",
+     "test:e2e:chat-entry-live": "node tests/e2e/chat-entry-live-probe.mjs",
+     "test:e2e:chat-draft-rows-live": "node tests/e2e/chat-draft-rows-live-probe.mjs",
+
+## Effective (non-empty) lines of changed source files (limit 500; embedding-index.ts < 400)
+  428 autobyteus-web/localization/messages/zh-CN/settings.ts
+  428 autobyteus-web/localization/messages/en/settings.ts
+  416 autobyteus-web/pages/settings.vue
+  386 autobyteus-web/pages/__tests__/settings.spec.ts
+  346 autobyteus-server-ts/src/embeddings/embedding-index.ts
+  342 autobyteus-web/components/settings/embedding/__tests__/EmbeddingSettingsPanel.spec.ts
+  319 autobyteus-web/components/settings/ServerSettingsManager.vue
+  277 autobyteus-web/tests/e2e/embedding-settings-probe.mjs
+  228 autobyteus-web/components/settings/__tests__/ServerSettingsManager.spec.ts
+  171 autobyteus-server-ts/tests/e2e/projects/embedding-settings.e2e.test.ts
+  160 autobyteus-server-ts/tests/unit/embeddings/embedding-model-management.test.ts
+  157 autobyteus-web/components/settings/embedding/ProjectIndexesCard.vue
+  152 autobyteus-server-ts/tests/unit/projects/project-task-search.test.ts
+  147 autobyteus-server-ts/tests/unit/embeddings/embedding-index.test.ts
+  142 autobyteus-server-ts/src/embeddings/models/embedding-model-files.ts
+  141 autobyteus-web/components/settings/embedding/EmbeddingModelCard.vue
+  138 autobyteus-web/composables/settings/useEmbeddingSettings.ts
+  138 autobyteus-server-ts/src/embeddings/collection-indexing-job.ts
+  137 autobyteus-server-ts/tests/helpers/fake-embedding-model.ts
+  135 autobyteus-server-ts/src/projects/search/project-task-search-service.ts
+  122 autobyteus-server-ts/src/api/graphql/types/embeddings.ts
+  117 autobyteus-server-ts/src/embeddings/models/embedding-model-downloads.ts
+  108 autobyteus-server-ts/tests/unit/embeddings/embedding-model-downloads.test.ts
+  107 autobyteus-server-ts/tests/unit/embeddings/embedding-model-files.test.ts
+  104 autobyteus-server-ts/tests/unit/agent-tools/project-tasks/search-project-tasks-tool.test.ts
+  104 autobyteus-server-ts/src/embeddings/store/embedding-vector-store.ts
+  104 autobyteus-server-ts/src/api/graphql/types/project-task-search.ts
+   96 autobyteus-server-ts/src/embeddings/catalog/embedding-model-catalog.ts
+   93 autobyteus-server-ts/tests/integration/projects/project-task-index-status-load.integration.test.ts
+   75 autobyteus-web/localization/messages/zh-CN/embeddingSettings.ts
+   75 autobyteus-web/localization/messages/en/embeddingSettings.ts
+   69 autobyteus-server-ts/src/compositions/project-task-execution-resource-composition.ts
+   68 autobyteus-web/localization/messages/zh-CN/index.ts
+   68 autobyteus-web/localization/messages/en/index.ts
+   62 autobyteus-web/components/settings/embedding/EmbeddingSettingsPanel.vue
+   61 autobyteus-web/components/settings/embedding/EmbeddingSwitchDialog.vue
+   49 autobyteus-web/types/embeddingSettings.ts
+   43 autobyteus-web/graphql/mutations/embeddingSettingsMutations.ts
+   32 autobyteus-server-ts/src/embeddings/embedding-readiness.ts
+   20 autobyteus-web/graphql/queries/embeddingSettingsQueries.ts
+   17 autobyteus-web/components/settings/embedding/embeddingPresentation.ts
+   12 autobyteus-server-ts/src/embeddings/embedding-model-error.ts
+    7 autobyteus-web/graphql/mutations/embeddingMutations.ts
+# Exit code: 0

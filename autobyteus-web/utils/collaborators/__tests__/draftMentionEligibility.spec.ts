@@ -5,7 +5,8 @@ import { buildTeamLocalAgentDefinitionId } from '~/utils/teamLocalDefinitionId'
 // Mirrors the server's CollaboratorCandidatePolicy (collaborator-candidate-policy.ts).
 const agents = [
   { id: 'autobyteus-daily-assistant', name: 'Daily Assistant', ownershipScope: 'SHARED' },
-  { id: 'autobyteus-retrospective-skill-improver', name: 'Retrospective Skill Improver', ownershipScope: 'SHARED' },
+  // Listed while "Show internal agents" is on (autobyteus-32).
+  { id: 'autobyteus-model-router', name: 'Model Router', ownershipScope: 'SHARED' },
   { id: 'designer', name: 'Solution Designer', ownershipScope: 'SHARED' },
   { id: 'reviewer', name: 'Reviewer', ownershipScope: 'SHARED' },
   { id: 'researcher', name: 'Researcher', description: 'Finds things', ownershipScope: 'SHARED' },
@@ -37,7 +38,7 @@ describe('draftMentionCandidates (New chat `@`)', () => {
   it('never offers the built-in agents (they mirror the server registry)', () => {
     const offered = ids({ kind: 'agent', agentDefinitionId: 'autobyteus-daily-assistant' })
     expect(offered).not.toContain('agent:autobyteus-daily-assistant')
-    expect(offered).not.toContain('agent:autobyteus-retrospective-skill-improver')
+    expect(offered).not.toContain('agent:autobyteus-model-router')
   })
 
   it('excludes only a Team target itself: its shared members are offered, team-local ones never are (REQ-005, AC-007)', () => {

@@ -1,7 +1,8 @@
+import { remoteTaskExecutionDtos } from "../../../../src/services/agent-streaming/remote-task-execution-dto-projection.js";
 import "reflect-metadata";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { agentRunCollaborationTreeDtoSchema, agentOrgExecutionTreeDtoSchema, CollaborationStreamServerMessageSchema } from "@autobyteus/collaboration-stream-contracts";
-import { agentProjectionTree, orgProjectionTree } from "../../../fixtures/collaboration-public-projection-fixtures.js";
+import { agentProjectionTree, orgProjectionTree, REMOTE_RUN_ID, withoutRemoteLinks } from "../../../fixtures/collaboration-public-projection-fixtures.js";
 import { projectAgentCollaborationView, projectAgentCollaborationEvent } from "../../../../src/services/agent-streaming/agent-collaboration-view-projector.js";
 import { projectAgentOrgExecutionSnapshot, projectAgentOrgExecutionEvent } from "../../../../src/services/agent-streaming/agent-org-execution-view-projector.js";
 import { StandaloneRootExecutionIndex } from "../../../../src/standalone-agent-run-root/services/standalone-root-execution-index.js";
@@ -26,7 +27,8 @@ const setup = (kind: "agent" | "agent_org", linked = true) => {
   const tree = kind === "agent" ? agentProjectionTree(linked) : orgProjectionTree(linked);
 
   const run = { orgRunId: "org-root", isActive: () => true, isHostLive: () => true,
-    ensureHostReady: async () => undefined, getExecutionTreeSnapshot: () => tree };
+    ensureHostReady: async () => undefined, getExecutionTreeSnapshot: () => tree,
+    remoteChildren: { viewerAttached: () => undefined, viewerDetached: () => undefined, refresh: async () => undefined } };
   const index = kind === "agent" ? new StandaloneRootExecutionIndex(tree as ReturnType<typeof agentProjectionTree>)
     : new AgentOrgExecutionIndex(tree as ReturnType<typeof orgProjectionTree>);
   const snapshot = { ...packageSnapshot(tree, kind), statuses: index.listAgents().filter(agent => kind !== "agent" || agent.agentRunId !== "manager").map(agent => ({
@@ -34,8 +36,8 @@ const setup = (kind: "agent" | "agent_org", linked = true) => {
     details: { status: "idle" as const, trigger: null, errorMessage: null, recoverableBlock: null }, statusHint: "IDLE" as const,
   })) };
   const projectView = () => kind === "agent"
-    ? projectAgentCollaborationView({ hostRunId: "manager", isActive: true, snapshot: snapshot as never, baseChangeSequence: 7 })
-    : projectAgentOrgExecutionSnapshot({ orgRunId: "org-root", isActive: true, snapshot: snapshot as never, baseChangeSequence: 7 });
+    ? projectAgentCollaborationView({ hostRunId: "manager", isActive: true, snapshot: snapshot as never, baseChangeSequence: 7, remoteTaskExecutions: [] })
+    : projectAgentOrgExecutionSnapshot({ orgRunId: "org-root", isActive: true, snapshot: snapshot as never, baseChangeSequence: 7, remoteTaskExecutions: [] });
   const projectEvent = (event: StandaloneRootEvent) => kind === "agent"
     ? projectAgentCollaborationEvent("manager", tree as ReturnType<typeof agentProjectionTree>, { event, changeSequence: 8 })
     : projectAgentOrgExecutionEvent(run as never, { event, changeSequence: 8 });
@@ -49,9 +51,11 @@ describe.each(["agent", "agent_org"] as const)("%s camel-case public projection"
     const publicTree = view.root_subject_kind === "agent" ? view.root_agent.execution_tree : view.root_org.execution_tree;
     // Unstamped current trees already ARE the strict public shape. Exact equality
     // catches dropped children, members, sources, settings or identity fields.
+    // A remote run (CM-10) is kept out of the run tree on the delegating node (S3; design AR-001 table).
     expect(publicTree).toEqual(kind === "agent"
-      ? agentRunCollaborationTreeDtoSchema.parse(agentProjectionTree(false))
-      : agentOrgExecutionTreeDtoSchema.parse(orgProjectionTree(false)));
+      ? agentRunCollaborationTreeDtoSchema.parse(withoutRemoteLinks(agentProjectionTree(false)))
+      : agentOrgExecutionTreeDtoSchema.parse(withoutRemoteLinks(orgProjectionTree(false))));
+    expect(JSON.stringify(publicTree)).not.toContain(REMOTE_RUN_ID);
     expect(JSON.stringify(publicTree)).not.toContain("taskLifetime");
     expect(JSON.stringify(current.tree)).toBe(before);
     expect(before).not.toContain("taskLifetime");
@@ -111,7 +115,9 @@ it("GraphQL Agent inspection reuses the exact public view without materializatio
   let result: unknown;
   try { result = await new AgentRunCollaborationResolver().agentRunCollaboration("manager"); }
   finally { releaseProcessStandaloneAgentRunRootManager(manager); }
-  expect(result).toEqual(projectAgentCollaborationView(inspection as never));
+  // autobyteus-278: the view lists the remote link with its node's name (the node ID without a registered peer).
+  expect(result).toEqual(projectAgentCollaborationView({ ...inspection,
+    remoteTaskExecutions: await remoteTaskExecutionDtos((current.snapshot.tree as never as { remoteTaskExecutions: never }).remoteTaskExecutions) } as never));
   expect(getInspection).toHaveBeenCalledWith("manager");
   expect(restore).not.toHaveBeenCalled();
   expect(JSON.stringify(current.tree)).not.toContain("taskLifetime");
@@ -122,7 +128,8 @@ it("Org GraphQL inspection service reuses strict public snapshot projection with
     snapshot: { ...current.snapshot, statuses: [] }, baseChangeSequence: 7 };
   const getInspection = vi.fn(async () => inspection), restore = vi.fn();
   const service = new AgentOrgRunService({ manager: { getInspection, restore } } as never);
-  expect(await service.getInspection("org-root")).toEqual(projectAgentOrgExecutionSnapshot(inspection as never));
+  expect(await service.getInspection("org-root")).toEqual(projectAgentOrgExecutionSnapshot({ ...inspection,
+    remoteTaskExecutions: await remoteTaskExecutionDtos((current.snapshot.tree as never as { rootOrg: { remoteTaskExecutions: never } }).rootOrg.remoteTaskExecutions) } as never));
   expect(getInspection).toHaveBeenCalledWith("org-root");
   expect(restore).not.toHaveBeenCalled();
   expect(JSON.stringify(current.tree)).not.toContain("taskLifetime");

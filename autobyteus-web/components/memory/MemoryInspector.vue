@@ -1,42 +1,45 @@
 <template>
-  <div class="mx-auto max-w-5xl p-6">
-    <button class="mb-4 text-sm font-semibold text-blue-600 hover:underline" @click="$emit('back')">← {{ backLabel }}</button>
-    <section class="rounded-xl border border-gray-200 bg-white shadow-sm">
-      <header class="border-b border-gray-100 p-5">
-        <h1 class="text-2xl font-bold text-gray-900">{{ $t('memory.components.memory.MemoryInspector.memory_inspector') }}</h1>
-        <p class="mt-2 text-sm text-gray-600">{{ breadcrumb }}</p>
-        <p v-if="metadataLine" class="mt-1 text-xs text-gray-500">{{ metadataLine }}</p>
-        <span v-if="isImported" class="mt-3 inline-flex rounded-full bg-amber-100 px-2 py-1 text-xs font-semibold text-amber-700">{{ $t('memory.components.memory.MemoryInspector.importedReadOnlyCorpus') }}</span>
-      </header>
+  <div class="mx-auto max-w-7xl space-y-5 p-8">
+    <button class="text-sm font-medium text-blue-600 hover:underline" @click="$emit('back')">← {{ backLabel }}</button>
 
-      <div v-if="store.error" class="border-b border-red-200 bg-red-50 px-5 py-3 text-sm text-red-700">{{ store.error }}</div>
-      <div v-if="!store.target" class="p-12 text-center text-gray-400">{{ $t('memory.components.memory.MemoryInspector.select_a_memory_entry_to_inspect') }}</div>
+    <header>
+      <h1 class="break-words text-xl font-semibold text-gray-900">{{ breadcrumb }}</h1>
+      <p v-if="metadataLine" class="mt-1 break-words text-sm text-gray-500">{{ metadataLine }}</p>
+      <span v-if="isImported" class="mt-2 inline-flex rounded-full bg-amber-100 px-2 py-1 text-xs font-semibold text-amber-700">{{ $t('memory.components.memory.MemoryInspector.importedReadOnlyCorpus') }}</span>
+    </header>
 
-      <div v-else>
-        <nav class="flex gap-2 border-b border-gray-100 px-5 pt-4">
-          <button v-for="tab in tabs" :key="tab.id" class="rounded-t-lg px-3 py-2 text-sm font-semibold" :class="store.activeTab === tab.id ? 'border border-gray-200 border-b-white bg-white text-blue-600' : 'text-gray-500 hover:text-gray-700'" @click="store.setActiveTab(tab.id)">
-            {{ tab.label }}
-          </button>
-        </nav>
+    <div v-if="store.error" class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{{ store.error }}</div>
+    <div v-if="!store.target && !folderRun" class="py-16 text-center text-sm text-gray-400">{{ $t('memory.components.memory.MemoryInspector.select_a_memory_entry_to_inspect') }}</div>
 
-        <div class="min-h-[360px] p-5">
-          <div v-if="store.loading && !store.memoryView" class="py-12 text-center text-sm text-gray-500">{{ $t('memory.components.memory.MemoryInspector.loading_memory_view') }}</div>
-          <WorkingContextTab v-else-if="store.activeTab === 'working'" :messages="store.memoryView?.workingContext ?? null" />
-          <EpisodicTab v-else-if="store.activeTab === 'episodic'" :items="store.memoryView?.episodic ?? null" />
-          <SemanticTab v-else-if="store.activeTab === 'semantic'" :items="store.memoryView?.semantic ?? null" />
-          <RawTracesTab
-            v-else
-            :traces="store.memoryView?.rawTraces ?? null"
-            :raw-trace-files="store.memoryView?.rawTraceFiles ?? null"
-            :selected-raw-trace-file-name="store.memoryView?.selectedRawTraceFileName ?? store.selectedRawTraceFileName"
-            :limit="store.rawTraceLimit"
-            :loading="store.loading"
-            @updateLimit="store.setRawTraceLimit"
-            @selectFile="store.setRawTraceFileName"
-          />
-        </div>
+    <template v-else>
+      <div class="inline-flex rounded-lg border border-gray-200 bg-white p-1" role="tablist">
+        <button
+          v-for="tab in visibleTabs"
+          :key="tab.id"
+          type="button"
+          role="tab"
+          :aria-selected="activeTab === tab.id"
+          class="rounded-md px-4 py-1.5 text-sm font-medium transition focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+          :class="activeTab === tab.id ? 'bg-blue-600 text-white' : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'"
+          @click="store.setActiveTab(tab.id)"
+        >{{ tab.label }}</button>
       </div>
-    </section>
+
+      <div class="min-h-[360px]">
+        <div v-if="store.loading && !store.memoryView && store.activeTab !== 'journal'" class="py-16 text-center text-sm text-gray-500">{{ $t('memory.components.memory.MemoryInspector.loading_memory_view') }}</div>
+        <WorkJournalTab v-else-if="folderRun || store.activeTab === 'journal'" @open-index="$emit('openIndex')" />
+        <RawTracesTab
+          v-else
+          :traces="store.memoryView?.rawTraces ?? null"
+          :raw-trace-files="store.memoryView?.rawTraceFiles ?? null"
+          :selected-raw-trace-file-name="store.memoryView?.selectedRawTraceFileName ?? store.selectedRawTraceFileName"
+          :limit="store.rawTraceLimit"
+          :loading="store.loading"
+          @updateLimit="store.setRawTraceLimit"
+          @selectFile="store.setRawTraceFileName"
+        />
+      </div>
+    </template>
   </div>
 </template>
 
@@ -44,54 +47,44 @@
 import { computed } from 'vue';
 import { useMemoryInspectorStore } from '~/stores/memoryInspectorStore';
 import type { MemoryInspectorTab } from '~/types/memory';
-import WorkingContextTab from './WorkingContextTab.vue';
-import EpisodicTab from './EpisodicTab.vue';
-import SemanticTab from './SemanticTab.vue';
+import WorkJournalTab from './WorkJournalTab.vue';
 import RawTracesTab from './RawTracesTab.vue';
 
-withDefaults(defineProps<{ backLabel?: string }>(), { backLabel: 'Back to Memory' });
-defineEmits<{ back: [] }>();
+/** A run the memory index knows only by its folder: its Work Journal only (it has no memory view). */
+type FolderRun = { runKey: string; runId: string; agentName: string | null; groupName: string | null };
+const props = withDefaults(defineProps<{ backLabel?: string; folderRun?: FolderRun | null }>(), { backLabel: 'Back to Memory', folderRun: null });
+defineEmits<{ back: []; openIndex: [] }>();
 
 const store = useMemoryInspectorStore();
 const tabs: Array<{ id: MemoryInspectorTab; label: string }> = [
-  { id: 'working', label: 'Working Context' },
-  { id: 'episodic', label: 'Episodic' },
-  { id: 'semantic', label: 'Semantic' },
+  { id: 'journal', label: 'Work Journal' },
   { id: 'raw', label: 'Raw Traces' },
 ];
+const visibleTabs = computed(() => (props.folderRun ? tabs.slice(0, 1) : tabs));
+const activeTab = computed((): MemoryInspectorTab => (props.folderRun ? 'journal' : store.activeTab));
 
+/** The run's name: the agent, or the member and its team. No path words: the page already says where you are. */
 const breadcrumb = computed(() => {
+  const folder = props.folderRun;
+  if (folder) return [folder.agentName || folder.runId, folder.groupName].filter(Boolean).join(' · ');
   const target = store.target;
-  if (!target) return 'No memory selected';
-  if (target.kind === 'agent_run') {
-    const agent = target.agentDisplayName || target.agentDefinitionId || 'Unattributed runs';
-    return `Agents / ${agent} / ${target.runLabel || target.runId}`;
-  }
+  if (!target) return '';
+  if (target.kind === 'agent_run') return target.agentDisplayName || target.agentDefinitionId || target.runId;
   const member = target.memberName || target.memberAddress || target.agentRunId;
-  if (target.kind === 'org_member_run') {
-    const org = target.orgDefinitionName || target.orgDefinitionId || 'Agent Org';
-    return `Agent Orgs / ${org} / ${target.orgRunId} / ${member}`;
-  }
-  const team = target.teamDefinitionName || target.teamDefinitionId || 'Agent Team';
-  return `Agent Teams / ${team} / ${target.teamRunId} / ${member}`;
+  const group = target.kind === 'org_member_run'
+    ? (target.orgDefinitionName || target.orgDefinitionId || '')
+    : (target.teamDefinitionName || target.teamDefinitionId || '');
+  return group ? `${member} · ${group}` : member;
 });
 
 const isImported = computed(() => store.target?.source?.type === 'IMPORTED');
 
+/** The run ID and, when there is one, its workspace. */
 const metadataLine = computed(() => {
+  if (props.folderRun) return props.folderRun.runKey;
   const target = store.target;
   if (!target) return '';
-  if (target.kind === 'agent_run') {
-    const workspace = target.workspaceRootPath ? `Workspace: ${target.workspaceRootPath}` : `Run: ${target.runId}`;
-    return target.lastUpdatedAt ? `${workspace} · Updated: ${formatTimestamp(target.lastUpdatedAt)}` : workspace;
-  }
-  const memberRun = `Member run: ${target.agentRunId}`;
-  return target.lastUpdatedAt ? `${memberRun} · Updated: ${formatTimestamp(target.lastUpdatedAt)}` : memberRun;
+  if (target.kind === 'agent_run') return [target.runId, target.workspaceRootPath].filter(Boolean).join(' · ');
+  return target.agentRunId;
 });
-
-const formatTimestamp = (value?: string | null) => {
-  if (!value) return '—';
-  const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? value : date.toLocaleString();
-};
 </script>

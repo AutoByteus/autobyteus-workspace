@@ -8,10 +8,7 @@ import WebSocket from "ws";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { getTeamMemberRunViewProjectionService } from "../../../src/run-history/services/team-member-run-view-projection-service.js";
-import {
-  closeLiveRuntimeSecretVault,
-  initializeLiveRuntimeSecretVaultFromEnvironment,
-} from "../helpers/live-runtime-secret-vault-helpers.js";
+import { closeLiveServerVault, initializeLiveServerVault } from "../../../../test-support/test-vault/live-server-vault.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadata-helpers.js";
 import { isE2eTeamCommunicationMessage } from "../helpers/team-communication-message-helpers.js";
@@ -182,7 +179,7 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
       "utf-8",
     );
     appConfigProvider.config.setCustomAppDataDir(testDataDir);
-    await initializeLiveRuntimeSecretVaultFromEnvironment();
+    await initializeLiveServerVault();
     const started = await startStudioE2eRuntimeServer();
     runtimeServerApp = started.fastify;
     runtimeServerUrl = started.mainUrl;
@@ -193,7 +190,7 @@ describeAutoByteusTeamRuntime("AutoByteus team current GraphQL runtime e2e", () 
       await runtimeServerApp.close();
       runtimeServerApp = null;
     }
-    await closeLiveRuntimeSecretVault();
+    await closeLiveServerVault();
     for (const workspaceRoot of createdWorkspaceRoots) {
       await rm(workspaceRoot, { recursive: true, force: true });
     }

@@ -17,12 +17,7 @@ export const teamMemberExecutionIdentityDtoSchema = z.object({
     agent_run_id: nonEmptyStringSchema,
     member_address: agentTeamAddressDtoSchema,
 }).strict();
-/**
- * The launch a catalog-Team-copy member runs with: its own, else its Team's.
- * Every reader of such a member's launch uses this, never the Team's value directly.
- */
-export const teamMemberLaunchConfiguration = (team, member) => member.launch_configuration ?? team.default_launch_configuration;
-/** The recorded source of such a member's launch: its own, else its Team's; null when not recorded. */
+/** The recorded source of a Team copy member's launch: its own, else its Team's; null when not recorded. */
 export const teamMemberLaunchSource = (team, member) => member.launch_source ?? team.default_launch_source ?? null;
 /**
  * The single launch rule of a copy agent (mirrors the server's
@@ -38,8 +33,6 @@ export const teamCopyAgentLaunch = (input) => {
         selected: input.agentSelection ? "agent" : "team",
     };
 };
-/** A recorded Team member follows its Team's launch (and choice) iff it records no own launch. */
-export const teamMemberFollowsTeam = (member) => member.launch_configuration === undefined;
 const launchConfigurationSchema = z.object({
     runtime_kind: z.enum(["autobyteus", "claude_agent_sdk", "codex_app_server", "antigravity_cli", "grok_build"]),
     llm_model_identifier: nonEmptyStringSchema,
@@ -47,17 +40,25 @@ const launchConfigurationSchema = z.object({
     auto_execute_tools: z.boolean(),
     workspace_root_path: nullableNonEmptyStringSchema,
 }).strict();
-const launchSourceSchema = z.object({
-    origin: z.enum(["agent_default", "team_default", "inherited"]),
-    fallbacks: z.array(z.object({
-        layer: z.enum(["agent_default", "team_default"]),
-        runtime_kind: nullableNonEmptyStringSchema,
-        llm_model_identifier: nullableNonEmptyStringSchema,
-        reason: z.enum(["incomplete", "runtime_unavailable", "model_unavailable", "model_settings_invalid"]),
-        detail: nonEmptyStringSchema,
-    }).strict()),
-}).strict();
-const memberLaunchSchema = { launch_configuration: launchConfigurationSchema.optional(), launch_source: launchSourceSchema.optional() };
+const launchFallbacksSchema = z.array(z.object({
+    layer: z.enum(["agent_default", "team_default", "model_router"]),
+    runtime_kind: nullableNonEmptyStringSchema,
+    llm_model_identifier: nullableNonEmptyStringSchema,
+    reason: z.enum([
+        "incomplete", "runtime_unavailable", "signed_out", "model_unavailable", "blocked", "model_settings_invalid",
+        "router_not_active", "router_failed",
+    ]),
+    detail: nonEmptyStringSchema,
+}).strict());
+const launchSourceSchema = z.union([
+    z.object({ origin: z.enum(["agent_default", "team_default", "inherited", "configured"]), fallbacks: launchFallbacksSchema }).strict(),
+    z.object({
+        origin: z.literal("model_router"), fallbacks: launchFallbacksSchema, choice_reason: nonEmptyStringSchema, task_kind: nonEmptyStringSchema,
+    }).strict(),
+]);
+const memberLaunchSchema = {
+    launch_configuration: launchConfigurationSchema, follows_team: z.boolean(), launch_source: launchSourceSchema.optional(),
+};
 export const userLaunchSelectionDtoSchema = z.object({
     llm_model_identifier: nonEmptyStringSchema,
     llm_config: z.record(z.string(), jsonValueSchema).nullable(),
@@ -87,7 +88,7 @@ const taskTeamSourceSchema = z.object({
 export const taskAgentExecutionDtoSchema = z.object({
     kind: z.literal("task_agent"), address: agentTeamAddressDtoSchema, agent_run_id: nonEmptyStringSchema,
     platform_agent_run_id: nullableNonEmptyStringSchema, delegator_agent_run_id: nullableNonEmptyStringSchema,
-    started_at: nonEmptyStringSchema, source: taskAgentSourceSchema.optional(), ...agentSelectionSchema,
+    started_at: nonEmptyStringSchema, source: taskAgentSourceSchema, ...agentSelectionSchema,
 }).strict();
 const taskTeamAgentSchema = z.object({
     kind: z.literal("task_team_agent"), address: agentTeamAddressDtoSchema,
@@ -98,7 +99,7 @@ export const taskTeamExecutionDtoSchema = z.lazy(() => z.object({
     members: z.array(taskTeamAgentSchema),
     task_executions: z.array(z.union([taskAgentExecutionDtoSchema, taskTeamExecutionDtoSchema])),
     delegator_agent_run_id: nullableNonEmptyStringSchema, started_at: nonEmptyStringSchema,
-    source: taskTeamSourceSchema.optional(), ...teamSelectionSchema,
+    source: taskTeamSourceSchema, ...teamSelectionSchema,
 }).strict());
 export const teamRunExecutionTreeDtoSchema = z.object({
     created_at: nonEmptyStringSchema, archived_at: nullableNonEmptyStringSchema,

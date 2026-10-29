@@ -10,16 +10,28 @@ export const SKILL_UPDATE_NOTICE_HEADER = "[Platform notice — skill updated]";
 export const SKILL_UPDATE_NOTICE_METADATA_KEY = "skill_update_notice";
 const MAX_FILES_PER_SKILL = 10;
 
+/**
+ * `text` as a Markdown inline code span, so a path shows literally (`__init__.py` is not bold, `*draft*` not
+ * emphasis). CommonMark: the fence is one backtick longer than the longest backtick run inside, and a text that
+ * starts or ends with a backtick or a space is padded with one space on each side (the renderer strips exactly those).
+ */
+export const inlineCode = (text: string): string => {
+  const longestRun = Math.max(0, ...[...text.matchAll(/`+/g)].map((run) => run[0].length));
+  const fence = "`".repeat(longestRun + 1);
+  const pad = /^[` ]|[` ]$/.test(text) ? " " : "";
+  return `${fence}${pad}${text}${pad}${fence}`;
+};
+
 /** One Markdown block per skill; each ends with a blank line, so blocks and lists render apart. */
 const describeChange = (change: SkillChange): string[] => {
   if (change.kind === "removed") return [`Your skill package \`${change.skillName}\` is no longer available.`, ""];
   const shown = change.files.slice(0, MAX_FILES_PER_SKILL);
   const more = change.files.length - shown.length;
   return [
-    `Your skill package \`${change.skillName}\` has been updated (${change.skillDir}).`,
+    `Your skill package \`${change.skillName}\` has been updated (${inlineCode(change.skillDir)}).`,
     "",
     "Changed files:",
-    ...shown.map((file) => `- ${file.path} (${file.status})`),
+    ...shown.map((file) => `- ${inlineCode(file.path)} (${file.status})`),
     ...(more > 0 ? [`- …and ${more} more files`] : []),
     "",
   ];

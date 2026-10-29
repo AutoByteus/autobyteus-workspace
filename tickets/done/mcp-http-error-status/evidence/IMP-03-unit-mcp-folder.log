@@ -1,0 +1,21 @@
+# IMP-03 autobyteus-ts MCP unit folder
+# Command: pnpm -C autobyteus-ts exec vitest run tests/unit/tools/mcp --no-watch
+# Commit: bb1d3cd28c
+# Env: macOS (Darwin 25.5.0), node v22.23.1
+# Date: 2026-10-20
+
+ ✓ tests/unit/tools/mcp/types.test.ts (22 tests) 6ms
+ ✓ tests/unit/tools/mcp/base-managed-mcp-server.test.ts (6 tests) 5ms
+ ✓ tests/unit/tools/mcp/config-service.test.ts (18 tests) 13ms
+ ✓ tests/unit/tools/mcp/schema-mapper.test.ts (11 tests) 10ms
+ ✓ tests/unit/tools/mcp/tool.test.ts (4 tests) 5ms
+ ✓ tests/unit/tools/mcp/server-instance-manager.test.ts (3 tests) 7ms
+ ✓ tests/unit/tools/mcp/tool-registrar.test.ts (6 tests) 7ms
+ ✓ tests/unit/tools/mcp/proxy.test.ts (3 tests) 3ms
+ ✓ tests/unit/tools/mcp/factory.test.ts (2 tests) 2ms
+ ✓ tests/unit/tools/mcp/http-managed-mcp-server.test.ts (15 tests) 355ms
+ ✓ tests/unit/tools/mcp/stdio-managed-mcp-server.test.ts (4 tests) 3005ms
+     ✓ starts the server with the configured env and cwd, lists its tools and calls one  391ms
+     ✓ aborts a running tool call when the signal is aborted  2385ms
+ Test Files  11 passed (11)
+      Tests  94 passed (94)

@@ -1,0 +1,36 @@
+# Case: API-10 repository and folder safety, AC-007/AC-008 rechecks, dummy-value scan
+# Commit: 8d7edc2827 (test code baaee3a150; later commits: TESTING.md row and ticket files only)
+# Date: 2026-10-19
+
+== worktree git status --short --ignored: start of round (before API-01) vs end of round (after removing the API-08 mutation artifact) ==
+identical
+(the pre-existing ignored folders autobyteus-ts/mcp-config-* and tmp-edit-file-* were present before the round and are not from these tests)
+
+== AC-007: ls autobyteus-ts/tests/fixtures; grep for certificates/cert.pem in ts, mjs, json, md (no matches) ==
+mcp-stdio-fixture-server.mjs
+mcp-test-server
+memory
+
+== AC-008: git show --stat c4b4a4dca4 ==
+docs(testing): add the core library MCP integration test layer
+
+ TESTING.md | 1 +
+ 1 file changed, 1 insertion(+)
+
+== dummy values in run logs ==
+api01.log                test-dummy=0 test-wrong-token=0
+api02.log                test-dummy=0 test-wrong-token=0
+api03.log                test-dummy=0 test-wrong-token=0
+api04-verbose.log        test-dummy=0 test-wrong-token=0
+api04.log                test-dummy=0 test-wrong-token=0
+api05.log                test-dummy=0 test-wrong-token=0
+api06a.log               test-dummy=0 test-wrong-token=0
+api06b.log               test-dummy=0 test-wrong-token=0
+api06c.log               test-dummy=0 test-wrong-token=0
+api06d.log               test-dummy=0 test-wrong-token=0
+api06e.log               test-dummy=0 test-wrong-token=0
+api07.log                test-dummy=0 test-wrong-token=0
+api08.log                test-dummy=4 test-wrong-token=0
+api09.log                test-dummy=0 test-wrong-token=0
+clone-install.log        test-dummy=0 test-wrong-token=0
+(api08 test-dummy hits are the expected env value in the deliberately failing env assertion; dummy only)

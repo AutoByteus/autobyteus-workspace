@@ -63,7 +63,7 @@ describe("ProjectTaskService", () => {
   it("creates a TODO Task from a trimmed multi-line description in its own task.json", async () => {
     const task = await harness.tasks.createTask({
       projectId,
-      description: "  Write release notes for 1.4.87\nInclude Projects and Tasks  \n",
+      title: "  Release notes 1.4.87  ", description: "  Write release notes for 1.4.87\nInclude Projects and Tasks  \n",
     });
 
     expect(task).toEqual({
@@ -71,9 +71,12 @@ describe("ProjectTaskService", () => {
       taskId: "project_task_1",
       projectId,
       taskKey: "autobyteus-1",
+      title: "Release notes 1.4.87",
       description: "Write release notes for 1.4.87\nInclude Projects and Tasks",
       status: "TODO",
       dependsOnTaskIds: [],
+      partOfTaskId: null,
+      comments: [],
       contextFiles: [],
       createdAt: expect.any(String),
       updatedAt: task.createdAt,
@@ -83,9 +86,12 @@ describe("ProjectTaskService", () => {
       taskId: "project_task_1",
       projectId,
       taskKey: "autobyteus-1",
+      title: "Release notes 1.4.87",
       description: "Write release notes for 1.4.87\nInclude Projects and Tasks",
       status: "TODO",
       dependsOnTaskIds: [],
+      partOfTaskId: null,
+      comments: [],
       contextFiles: [],
       createdAt: task.createdAt,
       updatedAt: task.createdAt,
@@ -95,14 +101,40 @@ describe("ProjectTaskService", () => {
 
   it.each([[""], ["   "], ["\n\t\n"]])("rejects an empty description %j without writing", async (description) => {
     const before = await harness.readFile();
-    await expectProjectError(harness.tasks.createTask({ projectId, description }), "TASK_DESCRIPTION_REQUIRED");
+    await expectProjectError(harness.tasks.createTask({ projectId, title: "Title", description }), "TASK_DESCRIPTION_REQUIRED");
     expect(await harness.readFile()).toEqual(before);
+  });
+
+  it.each([[""], ["   "], ["\n\t\n"]])("rejects an empty title %j on create and both update paths without writing (REQ-003, REQ-004)", async (title) => {
+    const task = await harness.tasks.createTask({ projectId, title: "Kept", description: "Body" });
+    const before = await harness.readFile();
+    await expectProjectError(harness.tasks.createTask({ projectId, title, description: "Body" }), "TASK_TITLE_REQUIRED");
+    await expectProjectError(harness.tasks.updateTask({ projectId, taskId: task.taskId, title, description: "Body" }), "TASK_TITLE_REQUIRED");
+    await expectProjectError(harness.tasks.updateTaskById({ taskId: task.taskKey, title }), "TASK_TITLE_REQUIRED");
+    expect(await harness.readFile()).toEqual(before);
+  });
+
+  it("keeps a long or multi-line title whole (trimmed, no limit) and changes it on both update paths (REQ-003, REQ-004, REQ-009)", async () => {
+    const long = `${"A very long title ".repeat(30)}\nwith a second line`;
+    const task = await harness.tasks.createTask({ projectId, title: ` ${long} `, description: "Body" });
+    expect(task.title).toBe(long.trim());
+    expect((await harness.store.readTask(projectId, task.taskId))!.title).toBe(long.trim());
+    const edited = await harness.tasks.updateTask({ projectId, taskId: task.taskId, title: " Renamed ", description: "Body" });
+    expect(edited).toMatchObject({ title: "Renamed", description: "Body" });
+    expect(edited.updatedAt > task.updatedAt).toBe(true);
+    const ack = await harness.tasks.updateTaskById({ taskId: task.taskKey, title: " By key " });
+    expect(ack).toMatchObject({ taskReference: task.taskKey, title: "By key" });
+    // Supplying the same title and description changes nothing.
+    const saved = (await harness.store.readTask(projectId, task.taskId))!;
+    const same = await harness.tasks.updateTask({ projectId, taskId: task.taskId, title: "By key", description: "Body" });
+    expect(same.updatedAt).toBe(saved.updatedAt);
+    expect((await harness.tasks.updateTaskById({ taskId: task.taskKey, status: "IN_PROGRESS" })).title).toBe("By key");
   });
 
   it("rejects Task operations on an unknown Project", async () => {
     await expectProjectError(harness.tasks.listTasks("project_missing"), "PROJECT_NOT_FOUND");
     await expectProjectError(
-      harness.tasks.createTask({ projectId: "project_missing", description: "x" }),
+      harness.tasks.createTask({ projectId: "project_missing", title: "x", description: "x" }),
       "PROJECT_NOT_FOUND",
     );
     await expectProjectError(
@@ -112,9 +144,9 @@ describe("ProjectTaskService", () => {
   });
 
   it("lists Tasks most recently updated first", async () => {
-    const first = await harness.tasks.createTask({ projectId, description: "first" });
-    await harness.tasks.createTask({ projectId, description: "second" });
-    await harness.tasks.createTask({ projectId, description: "third" });
+    const first = await harness.tasks.createTask({ projectId, title: "first", description: "first" });
+    await harness.tasks.createTask({ projectId, title: "second", description: "second" });
+    await harness.tasks.createTask({ projectId, title: "third", description: "third" });
     await harness.tasks.updateTask({ projectId, taskId: first.taskId, description: "first, edited" });
 
     const listed = await harness.tasks.listTasks(projectId);
@@ -128,14 +160,14 @@ describe("ProjectTaskService", () => {
       now: () => new Date(Date.UTC(2026, 8, 27)),
       createId: (() => { let n = 0; return () => `project_task_z${++n}`; })(),
     });
-    await fixed.createTask({ projectId, description: "b" });
-    await fixed.createTask({ projectId, description: "a" });
+    await fixed.createTask({ projectId, title: "b", description: "b" });
+    await fixed.createTask({ projectId, title: "a", description: "a" });
 
     expect((await fixed.listTasks(projectId)).map((task) => task.taskId)).toEqual(["project_task_z1", "project_task_z2"]);
   });
 
   it("edits only the description and updatedAt; status stays TODO", async () => {
-    const task = await harness.tasks.createTask({ projectId, description: "old" });
+    const task = await harness.tasks.createTask({ projectId, title: "old", description: "old" });
 
     const edited = await harness.tasks.updateTask({ projectId, taskId: task.taskId, description: " new\nsecond line " });
 
@@ -150,7 +182,7 @@ describe("ProjectTaskService", () => {
   });
 
   it("rejects editing a missing Task or with an empty description, leaving the file intact", async () => {
-    const task = await harness.tasks.createTask({ projectId, description: "keep" });
+    const task = await harness.tasks.createTask({ projectId, title: "keep", description: "keep" });
     const before = await harness.readFile();
 
     await expectProjectError(
@@ -165,8 +197,8 @@ describe("ProjectTaskService", () => {
   });
 
   it("deletes a Task and reports whether it existed", async () => {
-    const keep = await harness.tasks.createTask({ projectId, description: "keep" });
-    const drop = await harness.tasks.createTask({ projectId, description: "drop" });
+    const keep = await harness.tasks.createTask({ projectId, title: "keep", description: "keep" });
+    const drop = await harness.tasks.createTask({ projectId, title: "drop", description: "drop" });
 
     await expect(harness.tasks.deleteTask({ projectId, taskId: drop.taskId })).resolves.toBe(true);
     await expect(harness.tasks.deleteTask({ projectId, taskId: drop.taskId })).resolves.toBe(false);
@@ -176,9 +208,9 @@ describe("ProjectTaskService", () => {
   it("never changes the Project's own fields or updatedAt (only its Task key high-water mark)", async () => {
     const [before] = await harness.readFile();
 
-    const task = await harness.tasks.createTask({ projectId, description: "a" });
+    const task = await harness.tasks.createTask({ projectId, title: "a", description: "a" });
     await harness.tasks.updateTask({ projectId, taskId: task.taskId, description: "b" });
-    await harness.tasks.createTask({ projectId, description: "c" });
+    await harness.tasks.createTask({ projectId, title: "c", description: "c" });
     await harness.tasks.deleteTask({ projectId, taskId: task.taskId });
 
     const [after] = await harness.readFile();
@@ -187,20 +219,20 @@ describe("ProjectTaskService", () => {
 
   it("keeps other Projects' Tasks separate", async () => {
     const other = (await harness.projects.createProject({ name: "Marketing" })).projectId;
-    await harness.tasks.createTask({ projectId, description: "mine" });
-    await harness.tasks.createTask({ projectId: other, description: "theirs" });
+    await harness.tasks.createTask({ projectId, title: "mine", description: "mine" });
+    await harness.tasks.createTask({ projectId: other, title: "theirs", description: "theirs" });
 
     expect((await harness.tasks.listTasks(projectId)).map((task) => task.description)).toEqual(["mine"]);
     expect((await harness.tasks.listTasks(other)).map((task) => task.description)).toEqual(["theirs"]);
   });
 
   it("leaves the previous file intact when the atomic write fails (QR-001)", async () => {
-    await harness.tasks.createTask({ projectId, description: "existing" });
+    await harness.tasks.createTask({ projectId, title: "existing", description: "existing" });
     const before = await harness.readFile();
 
     const renameSpy = vi.spyOn(fs, "rename").mockRejectedValueOnce(new Error("disk full"));
     try {
-      await expect(harness.tasks.createTask({ projectId, description: "new" })).rejects.toThrow("disk full");
+      await expect(harness.tasks.createTask({ projectId, title: "new", description: "new" })).rejects.toThrow("disk full");
     } finally {
       renameSpy.mockRestore();
     }
@@ -210,7 +242,7 @@ describe("ProjectTaskService", () => {
   });
 
   it("patches only supplied fields, supports reset/reopen, exact filtering and same-state retry", async () => {
-    const task = await harness.tasks.createTask({projectId, description: "unchanged"});
+    const task = await harness.tasks.createTask({projectId, title: "unchanged", description: "unchanged"});
     const beforeProject = (await harness.readFile())[0];
     const active = await harness.tasks.updateTask({projectId, taskId: task.taskId, status: "IN_PROGRESS"});
     expect(active.description).toBe(task.description);
@@ -225,7 +257,7 @@ describe("ProjectTaskService", () => {
     await expectProjectError(harness.tasks.updateTask({projectId, taskId: task.taskId, status: "bad" as never}), "TASK_STATUS_INVALID");
   });
   it("merges independent concurrent text and status writes against current records", async () => {
-    const task = await harness.tasks.createTask({projectId, description: "old"});
+    const task = await harness.tasks.createTask({projectId, title: "old", description: "old"});
     await Promise.all([
       harness.tasks.updateTask({projectId, taskId: task.taskId, description: "new"}),
       harness.tasks.updateTask({projectId, taskId: task.taskId, status: "DONE"}),

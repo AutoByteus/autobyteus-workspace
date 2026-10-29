@@ -1,0 +1,169 @@
+# Case: API-07 (folder after edits; also the final run of API-01..API-06)
+# Command: RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<abs>/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs TASK_COMMENTS_LIVE_E2E_EVIDENCE_DIR=<dir> pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects tests/e2e/app-data-migrations --no-watch
+# Commit: code e014c349b8 (HEAD 1b83434652) + this round's test edits (committed with this evidence)
+# Environment: macOS darwin arm64; corepack pnpm 10.28.2; env -i PATH HOME=<resolved temp dir> TMPDIR
+# Date: 2026-10-22
+
+ ✓ tests/e2e/projects/project-change-feed.e2e.test.ts (7 tests) 10295ms
+     ✓ feed contract: `connected` first on every connection, no replay, remote-access rejection like the sibling sockets  908ms
+     ✓ Agent root: an agent's Project/Task writes, delegation, worker status, helpers, DONE, reopen and reactivation are live and equal the snapshot  2350ms
+     ✓ Team root: a delegated catalog Agent copy is hosted by the Team root; a task Team root folds its members  1599ms
+     ✓ Org root: an Org-hosted root reports its worker's status and goes Offline at DONE  867ms
+     ✓ Temp tasks: a described delegation arrives in the no-Project scope; DONE, reopen + reactivation follow; deleting the chat removes its Temp tasks  1494ms
+     ✓ QR-001 under load: on a Project with 60 Tasks and a busy worker, a UI write reaches the feed within 2 s; message volume is recorded  2649ms
+ ❯ tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts (3 tests | 2 failed) 9120ms
+     × in every root, catalog copies run each agent on its own usable default, fall back with notes, and reuse recorded values 1364ms
+     ✓ Agent root: with the root's model retired, an agent that needs the inherited layer cannot be delegated (today's text, nothing added), and an outside message is not found; a usable own default still starts; a user `@` mention admits nothing (AC-006)  1248ms
+     × Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009) 4547ms
+ ✓ tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts (1 test) 162776ms
+     ✓ background copies outlive the grace period and are released one grace period after their step ends; quiet copies, DONE and root stop are unchanged  162314ms
+ ✓ tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts (9 tests | 2 skipped) 164068ms
+     ✓ EXC-E2E-001 standalone Agent root: explicit IDs, every refusal, Team copy A → B → A, Agent copy C → D, repeated closes of the earlier Task, views  18923ms
+     ✓ EXC-E2E-002 Agent Team root: the same journey through the Team stream; a teammate is not the assigner  18411ms
+     ✓ EXC-E2E-003 Agent Org root: the same journey through the Org stream; an Org member is not the assigner  18319ms
+     ✓ EXC-E2E-004 QR-001: DONE of the copy's Task and its next assignment as parallel tool calls in one Manager turn, both orders  102961ms
+     ✓ EXC-E2E-005 cross-root sender: a team run ID message names the coordinator; another root's copy is not assignable  1344ms
+     ✓ EXC-E2E-007 AC-009: a copy whose saved conversation is gone is refused before any change  1033ms
+     ✓ TKD-AGY-001 Agent root: delegate_task by key in any case (recipient_address and target_agent_run_id) and by long ID, blocked Tasks delegated, 'a deleted Task', Temp tasks (task-keys AC-019, 022, 023, 027; REQ-019, 020)  2601ms
+ ✓ tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts (3 tests | 1 skipped) 95992ms
+     ✓ in every root, a delegated copy starts only its coordinator; other members start on first work, through idle shutdown, DONE/reopen and a stopped root with a pre-fix saved tree  92986ms
+     ✓ Org root: a coordinator that cannot start fails delegate_task and starts no member (AC-004)  2630ms
+ ✓ tests/e2e/projects/projects-startup-migration.e2e.test.ts (6 tests) 28184ms
+     ✓ Studio: moves rows, saved files and drafts, retains the original, skips invalid/residue/duplicate/conflict, then no-ops on restart  4602ms
+     ✓ Studio: an unreadable source or a failed move keeps only Projects gated; a restart retries and completes without duplication  4993ms
+     ✓ Standalone host: never locked out by a broken source, migrates once on a valid one, composes per start and releases on close  5392ms
+     ✓ Studio: released per-folder Projects get Task keys at startup; an unkeyable Project is preserved and hidden without lockout until a restart finishes it  4959ms
+     ✓ Studio: existing per-folder path supersets start/read without rewriting; ordinary Save alone removes extras  3395ms
+     ✓ Standalone: existing per-folder path supersets start/read without rewriting; ordinary Save alone removes extras  4842ms
+ ✓ tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts (7 tests | 1 skipped) 26222ms
+     ✓ CLS-E2E-001 standalone Agent root: CANCELLED closes and stops the worker, retry, refusals naming CANCELLED, DONE<->CANCELLED, reopen and reactivation, Temp task CANCELLED  4589ms
+     ✓ CLS-E2E-002 Agent Team root: the same CANCELLED journey through the Team stream (TASK_EXECUTIONS_CLOSED / _REOPENED)  4438ms
+     ✓ standalone Agent root: target_kind, refused while DONE, status-only reopen, helper and non-assigner refusals, Agent and Team copy reactivation, DONE cycle, deleted Task, ad hoc TODO  4400ms
+     ✓ Agent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate  4893ms
+     ✓ Agent Org root: the same journey through the Org stream; an Org member cannot reactivate  4461ms
+     ✓ QR-001: a DONE from another root racing the assigner's reactivating message never leaves a DONE Task with an open entry  3023ms
+ ✓ tests/e2e/projects/delegated-copy-model-change.e2e.test.ts (6 tests) 21522ms
+     ✓ DCM-001 / DCM-002 / DCM-003: a live Team run's agent and Team copies, then a stopped run's combined Save  3153ms
+     ✓ DCM-004: the standalone Agent root stops a copy, saves its choice and resumes it on that model  1342ms
+     ✓ DCM-005: the Org root: an agent copy and a Team copy are stopped, changed and resumed; an outside address is not found; the view publishes the choice; a later copy uses normal resolution  2711ms
+     ✓ DCM-006: Stop of a Team copy interrupts a member mid-turn and stops its nested copy, while the PM and another copy keep running; a Team choice reaches followers only, and never-started members start on their resolved model  7936ms
+     ✓ DCM-008: one member of a Team copy gets its own model: it resumes on it in the same conversation while its teammates keep theirs; with a Team choice in the same Save, the member's own choice wins  2946ms
+     ✓ DCM-007: a copy woken while edited refuses the Save and keeps nothing; invalid settings are refused; the Team stream publishes the choice; a provider refusal at resume is visible and recoverable in the same conversation  1647ms
+ ✓ tests/e2e/app-data-migrations/append-only-message-logs-startup.e2e.test.ts (2 tests) 18432ms
+     ✓ AOML-1 converts every usable log with nothing lost, keeps the unusable ones with a warning, serves the same history and references, and a second start changes nothing  7583ms
+     ✓ AOML-2 runs that ran on the release are converted, resumed and messaged: one line per owner log in each family (sealed files untouched), a delegated team gets an empty append-only log, references of old and new messages resolve, and a restart serves every message  10848ms
+ ✓ tests/e2e/app-data-migrations/task-agent-own-run-startup.e2e.test.ts (3 tests) 17209ms
+     ✓ TAU-1 moves every task agent with its bytes, the runs open with their task agents, the Memory page attributes them, a second start changes nothing  5783ms
+     ✓ TAU-2 a run that cannot be moved leaves the app working; the user edits a migrated task agent's model; the next start completes and keeps the edit (needs POSIX mode bits that bind: not root, not Windows)  5961ms
+     ✓ TAU-3 deleting a migrated hub removes only its folder; its task agents' folders stay with every file and are not listed  5464ms
+ ✓ tests/e2e/app-data-migrations/team-run-v1-production-upgrade.e2e.test.ts (4 tests) 15981ms
+     ✓ migrates the exact supported cohort, serves history and new work, and remains immutable on relaunch  5085ms
+     ✓ isolates mixed root and token warnings and fails closed on an unreadable history index without changing the released root  4080ms
+     ✓ keeps the server healthy after failed consolidation, admits a new current run, and imports disjoint legacy rows on restart retry  4668ms
+     ✓ rejects a legacy/current run-ID overlap before source cleanup while preserving both stores  2147ms
+ ✓ tests/e2e/app-data-migrations/remove-built-in-project-task-manager-startup.e2e.test.ts (4 tests) 16920ms
+     ✓ E-001 Studio upgrade: removes the installed copy once, lists one Project Task Manager and does not rerun on restart  3922ms
+     ✓ E-002 Studio: a failed removal never blocks work and retries on restart; the old conversation stays readable and cannot be continued  4742ms
+     ✓ E-003 Studio fresh install: creates no installed copy and records nothing to remove  3435ms
+     ✓ E-004 standalone host first: a failed removal never blocks the host, the next host start removes it, and Studio shares the record  4820ms
+ ✓ tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts (11 tests) 13213ms
+     ✓ CPW-P1 Agent root: the host is a standalone agent; a task agent delegated to an outside agent, and a task agent team, get theirs  1186ms
+     ✓ CPW-P2 Team root: members of a user-started team (with and without handoff rules); a task agent of the team  826ms
+     ✓ CPW-P3 Org root: the direct agent, a member of the organization's team, a task agent, a task agent with handoff rules and a task agent team  1595ms
+     ✓ CPW-R1 Agent root: refusals a task agent reads from its own scoped tools (a task_id, an unknown ID, a name used as an address, itself, a task agent team's ID)  1656ms
+     ✓ CPW-R2 Agent root: a task agent messaging an agent of a different Task reads the refusal text  1055ms
+     ✓ CPW-M4 Agent root: a member of a task agent team mentioning its teammate is told the teammate is in its team, at the team's address (SR-011)  731ms
+     ✓ CPW-R3 Agent root: catalogue results (views §12) through the real MCP tools — wrong selectors, bad addresses, wrong IDs, bad delegate_task inputs, a teammate  1367ms
+     ✓ CPW-H1 sender address only where it reaches the sender (T-5): task messages and headers in Agent, Team and Org roots  3069ms
+     ✓ CPW-M2 Agent root: a task agent mentioning the agent the user started is told it can't delegate to it  721ms
+     ✓ CPW-M3 Org root: a sibling of the organization is reachable and delegable  354ms
+ ✓ tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts (5 tests) 14499ms
+     ✓ USR-5 SCN-003: a new server process reads every repaired log fresh; another message keeps every record and nothing more is cut  3577ms
+ ✓ tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts (3 tests) 12505ms
+     ✓ standalone Agent root: @ resolves, described delegation creates a text-only ad-hoc Task, DONE by task_id closes and fences, stored, migration pending, delete  4769ms
+     ✓ Agent Team root: same journey through the Team stream (TASK_EXECUTIONS_CLOSED)  3527ms
+     ✓ Agent Org root: same journey through the Org stream  3852ms
+ ✓ tests/e2e/projects/task-closure-root-visibility.e2e.test.ts (3 tests) 9886ms
+     ✓ standalone Agent root: live closed event before stop, snapshot, stored read, SCN-003, reopen + repeated DONE, Task delete  3478ms
+     ✓ Agent Team root: TASK_EXECUTIONS_CLOSED, snapshot, resume config, SCN-003, reopen + repeated DONE, Task delete  3178ms
+     ✓ Agent Org root: live closed event, snapshot, inspection and history item (SP-3), SCN-003, reopen + repeated DONE, Task delete  2858ms
+ ✓ tests/e2e/app-data-migrations/remove-skill-improvement-data-startup.e2e.test.ts (3 tests) 9433ms
+     ✓ SID-1 starts on a fresh data folder: nothing to remove, and the improver is not bootstrapped  2350ms
+     ✓ SID-2 deletes exactly the feature's data once, keeps everything else byte-identical, and other runs list and open  3617ms
+     ✓ SID-3 a helper run that cannot be deleted leaves startup working; the next start finishes (needs POSIX mode bits that bind: not root, not Windows)  3465ms
+stderr | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > CMT-API-001: update_task add_comment by key / any case / long ID appends numbered comments, never the description; DONE + comment is one write; blank, wrong-shape and unknown are refused with nothing written; list_project_tasks shows the texts (task-comments AC-001, AC-005, AC-008)
+stderr | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > CMT-API-002: a parent's close names the part it could not close (damaged run data) in partsNotClosed, next to closedParts; the field is absent when every part closes (task-comments AC-009, autobyteus-187)
+stderr | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > CMT-API-002: a parent's close names the part it could not close (damaged run data) in partsNotClosed, next to closedParts; the field is absent when every part closes (task-comments AC-009, autobyteus-187)
+stderr | tests/e2e/projects/project-task-boundaries.e2e.test.ts > Project Task production HTTP boundaries > CMT-API-002: a parent's close names the part it could not close (damaged run data) in partsNotClosed, next to closedParts; the field is absent when every part closes (task-comments AC-009, autobyteus-187)
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts (16 tests) 8048ms
+     ✓ API-FILES: multipart bytes, saved ownership, typed deltas and Done survive reader reconstruction  488ms
+     ✓ E-006: path links retain descriptions; lists replace, blanks and [] clear only associations  453ms
+     ✓ CTX-E2E-002: invalid context_files fail with a path-naming error and change nothing, including no DONE closure (AC-004, 005, 008)  688ms
+     ✓ TKD-API-001: keys as Task IDs, depends_on by key / any case / long ID, rejected dependencies write nothing, blocked Tasks start, a deleted Project's keys stay unknown (AC-020, 022, 024, 025, 027)  1529ms
+     ✓ POF-API-001: part_of by key / any case / long ID, "" clears, omitted keeps; partOf / parts in numeric key order; refusals write nothing; a parent's DONE / CANCELLED closes its open parts and lists them; reopen, repeats and a part's close never cascade (task-part-of AC-003, 004, 006, 014, 015, 018)  2055ms
+     ✓ CMT-API-001: update_task add_comment by key / any case / long ID appends numbered comments, never the description; DONE + comment is one write; blank, wrong-shape and unknown are refused with nothing written; list_project_tasks shows the texts (task-comments AC-001, AC-005, AC-008)  932ms
+ ✓ tests/e2e/projects/delegation-forest-restore.e2e.test.ts (3 tests) 7452ms
+     ✓ DF-1 Team root: a member delegates a task team that delegates a task team that delegates a task agent; restored after Stop  2341ms
+     ✓ DF-2 Agent root: the agent the user started heads the same forest; restored after Stop  2450ms
+     ✓ DF-3 Org root: the direct agent delegates a copy of the mounted team, which heads the forest; the mounted team is unchanged; restored after Stop  2275ms
+ ✓ tests/e2e/projects/project-mutation-node-locality.e2e.test.ts (1 test) 5892ms
+ ✓ tests/e2e/projects/project-task-parts-live.e2e.test.ts (3 tests) 4281ms
+     ✓ POF-LIVE-001: a parent's CANCELLED, then another parent's DONE, close their open parts (stopping a really running task agent), list them in closedParts and update the feed; closed parts, reopen and a part's own close change nothing; re-parent and delete cleanup are live (AC-018, AC-008, AC-007, AC-006)  3035ms
+     ✓ POF-LIVE-002: a Temp task has no parent and is no parent: both refused with TASK_PARENT_INVALID, nothing written (AC-003, AC-014)  602ms
+ ✓ tests/e2e/projects/collaboration-model-contract.e2e.test.ts (3 tests) 4241ms
+     ✓ CM-E2E-1 Agent root: delegate an outside Agent then message its run ID; an outside address is not found and creates nothing, also for a Task-owned copy  1128ms
+     ✓ CM-E2E-2 Team root: delegating a teammate or the own Team is refused and starts nothing; an outside Agent is delegated and messaged by run ID  1143ms
+     ✓ CM-E2E-3 Org root: siblings are delegable; a mounted Team's member cannot delegate its teammate or its own mounted Team  1641ms
+ ✓ tests/e2e/app-data-migrations/collaborators-to-delegated-runs-startup.e2e.test.ts (1 test) 4076ms
+     ✓ converts collaborators of an Agent, Team and Org root, keeps run IDs and memory, opens the roots, and a second start changes nothing  4075ms
+ ✓ tests/e2e/projects/embedding-settings.e2e.test.ts (6 tests) 3548ms
+     ✓ indexes a Project a few seconds after Task writes, with no search, once the model is on disk (REQ-011, AC-015)  3130ms
+ ✓ tests/e2e/app-data-migrations/remove-work-trace-exports-startup.e2e.test.ts (1 test) 3415ms
+     ✓ removes recognized exports at every released location once, keeps everything else, and is idempotent  3414ms
+ ✓ tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts (2 tests) 3485ms
+     ✓ Team root: configured member, team task agent and a pending file, read through the team run; running, then stopped  1198ms
+     ✓ Org root: direct agents, a member-team member, an org-root and a member-team task agent, read through the org run; running, then stopped  1924ms
+ ✓ tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts (1 test) 3056ms
+     ✓ a Team-copy member and an Agent copy reach the existing host by @, list_available_agents and send_message_to; the host never sees itself  2724ms
+stderr | tests/e2e/projects/project-task-comments-live.e2e.test.ts > Project Task comments reach delegated task agents; the feed carries the thread (real HTTP/WS/scoped MCP, scripted AGY actor) > CMT-LIVE-001: comments added by the Manager's tool are in the feed and in a new task agent's work, after the description; a Task without comments has no block (AC-010, AC-001, REQ-007)
+stdout | tests/e2e/projects/project-task-comments-live.e2e.test.ts > Project Task comments reach delegated task agents; the feed carries the thread (real HTTP/WS/scoped MCP, scripted AGY actor) > CMT-LIVE-001: comments added by the Manager's tool are in the feed and in a new task agent's work, after the description; a Task without comments has no block (AC-010, AC-001, REQ-007)
+stdout | tests/e2e/projects/project-task-comments-live.e2e.test.ts > Project Task comments reach delegated task agents; the feed carries the thread (real HTTP/WS/scoped MCP, scripted AGY actor) > CMT-LIVE-001: comments added by the Manager's tool are in the feed and in a new task agent's work, after the description; a Task without comments has no block (AC-010, AC-001, REQ-007)
+stdout | tests/e2e/projects/project-task-comments-live.e2e.test.ts > Project Task comments reach delegated task agents; the feed carries the thread (real HTTP/WS/scoped MCP, scripted AGY actor) > CMT-LIVE-001: comments added by the Manager's tool are in the feed and in a new task agent's work, after the description; a Task without comments has no block (AC-010, AC-001, REQ-007)
+stdout | tests/e2e/projects/project-task-comments-live.e2e.test.ts > Project Task comments reach delegated task agents; the feed carries the thread (real HTTP/WS/scoped MCP, scripted AGY actor) > CMT-LIVE-001: comments added by the Manager's tool are in the feed and in a new task agent's work, after the description; a Task without comments has no block (AC-010, AC-001, REQ-007)
+stdout | tests/e2e/projects/project-task-comments-live.e2e.test.ts > Project Task comments reach delegated task agents; the feed carries the thread (real HTTP/WS/scoped MCP, scripted AGY actor) > CMT-LIVE-001: comments added by the Manager's tool are in the feed and in a new task agent's work, after the description; a Task without comments has no block (AC-010, AC-001, REQ-007)
+stdout | tests/e2e/projects/project-task-comments-live.e2e.test.ts > Project Task comments reach delegated task agents; the feed carries the thread (real HTTP/WS/scoped MCP, scripted AGY actor) > CMT-LIVE-001: comments added by the Manager's tool are in the feed and in a new task agent's work, after the description; a Task without comments has no block (AC-010, AC-001, REQ-007)
+stdout | tests/e2e/projects/project-task-comments-live.e2e.test.ts > Project Task comments reach delegated task agents; the feed carries the thread (real HTTP/WS/scoped MCP, scripted AGY actor) > CMT-LIVE-002: DONE + a comment is one write; the same task agent's next Task carries that Task's comments (AC-001, AC-010 existing task agent)
+stdout | tests/e2e/projects/project-task-comments-live.e2e.test.ts > Project Task comments reach delegated task agents; the feed carries the thread (real HTTP/WS/scoped MCP, scripted AGY actor) > CMT-LIVE-002: DONE + a comment is one write; the same task agent's next Task carries that Task's comments (AC-001, AC-010 existing task agent)
+stdout | tests/e2e/projects/project-task-comments-live.e2e.test.ts > Project Task comments reach delegated task agents; the feed carries the thread (real HTTP/WS/scoped MCP, scripted AGY actor) > CMT-LIVE-002: DONE + a comment is one write; the same task agent's next Task carries that Task's comments (AC-001, AC-010 existing task agent)
+stdout | tests/e2e/projects/project-task-comments-live.e2e.test.ts > Project Task comments reach delegated task agents; the feed carries the thread (real HTTP/WS/scoped MCP, scripted AGY actor) > CMT-LIVE-003: a Temp task has no comments: add_comment is refused and nothing is written, not even a combined status (AC-001)
+stdout | tests/e2e/projects/project-task-comments-live.e2e.test.ts > Project Task comments reach delegated task agents; the feed carries the thread (real HTTP/WS/scoped MCP, scripted AGY actor) > CMT-LIVE-003: a Temp task has no comments: add_comment is refused and nothing is written, not even a combined status (AC-001)
+stdout | tests/e2e/projects/project-task-comments-live.e2e.test.ts > Project Task comments reach delegated task agents; the feed carries the thread (real HTTP/WS/scoped MCP, scripted AGY actor) > CMT-LIVE-003: a Temp task has no comments: add_comment is refused and nothing is written, not even a combined status (AC-001)
+ ✓ tests/e2e/projects/project-task-comments-live.e2e.test.ts (4 tests) 2569ms
+     ✓ CMT-LIVE-001: comments added by the Manager's tool are in the feed and in a new task agent's work, after the description; a Task without comments has no block (AC-010, AC-001, REQ-007)  1000ms
+     ✓ CMT-LIVE-002: DONE + a comment is one write; the same task agent's next Task carries that Task's comments (AC-001, AC-010 existing task agent)  481ms
+     ✓ CMT-LIVE-003: a Temp task has no comments: add_comment is refused and nothing is written, not even a combined status (AC-001)  400ms
+ ✓ tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts (3 tests) 2193ms
+ ✓ tests/e2e/projects/project-task-context-files-delegation.e2e.test.ts (1 test) 1806ms
+     ✓ CTX-E2E-003: the Manager attaches files by tool, delegate_task({task_id}) hands the saved copies to a live worker that reads them; DONE with a bad file keeps the run open; ad-hoc Tasks refuse files  1591ms
+stdout | tests/e2e/projects/projects-graphql.e2e.test.ts > Projects GraphQL e2e (un-mocked) > API-012: addProjectTaskComment appends numbered comments with the server time and never touches the description; blank or unknown refused with nothing written; a task.json without comments reads as none and is not rewritten until its own save (task-comments AC-001 app side, AC-003, AC-011)
+ ✓ tests/e2e/projects/projects-graphql.e2e.test.ts (13 tests) 1771ms
+     ✓ API-011: part of: set at create, omitted keeps, null clears, an ID replaces; refusals write nothing; one level under concurrency; a deleted parent's parts stay; a step-1 task.json reads with no parent (task-part-of AC-001..005, 007, 016)  435ms
+ ✓ tests/e2e/projects/hand-started-run-refusal.e2e.test.ts (1 test) 1405ms
+     ✓ WDR-1 delegate_task on an agent run and a team run the user started is refused with the pre-adoption text, and nothing is written  943ms
+ ✓ tests/e2e/projects/project-task-search.e2e.test.ts (4 tests) 744ms
+ ✓ tests/e2e/app-data-migrations/agent-org-token-continuation.e2e.test.ts (2 tests) 546ms
+     ✓ first-upgrade: preserves usage and conversation through full restore, replay and advancing response  306ms
+ ✓ tests/e2e/projects/project-task-search-model-unavailable.e2e.test.ts (2 tests) 430ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies run each agent on its own usable default, fall back with notes, and reuse recorded values
+AssertionError: expected [ …(3) ] to deeply equal []
++   "agent: AssertionError: expected { …(7) } to deeply equal { lead: { launch: null, …(1) }, …(6) }
++   "team: AssertionError: expected { …(7) } to deeply equal { lead: { launch: null, …(1) }, …(6) }
++   "org: AssertionError: expected { …(7) } to deeply equal { lead: { launch: null, …(1) }, …(6) }
+ ❯ tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts:521:22
+ FAIL  tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)
+AssertionError: expected [ …(2) ] to deeply equal []
+ ❯ tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts:639:22
+ Test Files  1 failed | 34 passed (35)
+      Tests  2 failed | 141 passed | 4 skipped (147)
+exit=1

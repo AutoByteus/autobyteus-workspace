@@ -6,6 +6,10 @@ deploying. A generic delivery process covers the order of the steps. This file
 holds what is specific to this repository, and for this repository it wins
 where the two differ.
 
+Read the copy on `origin/personal`, for example in the ticket worktree after
+integrating the latest base, not the one in the main checkout: that checkout
+is often behind and may lack newer rules.
+
 For what each release workflow builds, signs and validates, and for the
 required secrets, see [Workflow Reference](#workflow-reference) at the end of
 this file.
@@ -23,13 +27,51 @@ this file.
 
   ```bash
   git fetch origin personal
+  scripts/check_secrets.sh origin/personal..codex/<ticket-name>   # Secret Gate, before the first push
   git checkout -b finalize/<ticket-name> origin/personal
   git merge --no-ff codex/<ticket-name>
+  scripts/check_secrets.sh                                        # again on the merged state
   git push origin HEAD:personal
   ```
 
 - Never commit build output: `*/dist/`, `autobyteus-web/electron-dist/` and
   other packaged app files. CI builds every release from source.
+
+## Secret Gate
+
+This repository is public, so a pushed commit is already exposed. That
+includes the ticket branch. Before the **first push** of a ticket branch, and
+again on the merged state before pushing `personal`, scan the new commits for
+API keys, tokens, passwords and private keys:
+
+```bash
+scripts/check_secrets.sh origin/personal..HEAD   # the default range; any range works
+```
+
+- **How it works:** gitleaks (`brew install gitleaks`) scans only the commits
+  in the range, with `.gitleaks.toml`. That config is gitleaks' default rules,
+  plus rules for `*_API_KEY` / `*_TOKEN` / `*_SECRET` assignments and
+  passwords in URLs, plus allowlists for confirmed false positives. Output is
+  redacted (commit, file, line, rule; never the value). Nothing is sent to any
+  provider.
+- **Exit codes:**
+  - `0`: pass.
+  - `1`: findings. **Finalization is blocked; push nothing.**
+  - `2`: cannot run (gitleaks missing, or a range end that does not
+    resolve). Treat it as blocked too.
+- **On a finding:**
+  - Remove the value from the unpushed commits (amend or rebase the ticket
+    branch). A key that never left the machine needs no rotation.
+  - A key that was ever pushed must also be revoked or rotated at its
+    provider by the user. Removing it from git does not make it safe.
+  - Report the commit, file and kind of key, never the value. Never test a
+    key against its provider.
+- **False positives:** confirm the value by shape and context, then add the
+  narrowest entry to `.gitleaks.toml`, with the reason. Shape-based
+  allowlists stay scoped to the `generic-api-key` rule.
+- **Not covered:** images (screenshots are not OCR-scanned) and commits
+  pushed without this guide. Keep keys out of screenshots, and write evidence
+  with secret IDs, never values (`TESTING.md`).
 
 ## Release Decision
 
@@ -45,13 +87,14 @@ The user decides at verification. There are three options:
 
 ## Checks Before Tagging
 
-Run these checks on the merged `personal` state. The release workflows run the
-first two too, but by then the tag is already pushed. They do not run the
+Run these checks on the merged `personal` state. The release workflows run
+the first two too, but by then the tag is already pushed. They do not run the
 release smoke check.
 
 ```bash
 python3 scripts/check_licensing.py
 python3 scripts/check_repository_artifact_hygiene.py
+scripts/check_secrets.sh <previous-release-tag>..HEAD   # Secret Gate over everything the release adds
 python3 scripts/release_smoke.py
 ```
 
@@ -60,7 +103,11 @@ The hygiene check rejects these tracked paths:
 - paths longer than 200 characters;
 - names Windows cannot check out: `< > : " | ? * \`, a trailing dot or space,
   or device names such as `CON` or `NUL`;
-- raw `.xcresult` bundles and downloaded CI artifact zips.
+- raw `.xcresult` bundles and downloaded CI artifact zips;
+- tracked code that imports a file git does not track. An ignore rule can
+  keep a source file out of git while it stays on your disk, so the build
+  passes in your worktree and fails in a clean checkout
+  (`--only tracked-imports` runs this check alone).
 
 Ticket evidence is the usual source. For example, a log named after a script
 such as `web-audit:localization-literals.log` broke the `v1.5.2-beta.1`
@@ -96,6 +143,26 @@ failing to start; no check before tagging started a run.
   folder it prints. Find the cause first (TESTING.md Rule 9). The only
   exception is the user explicitly waiving a named runtime at the release
   decision. Record the waiver and its reason in the delivery report.
+
+### Build-only release run
+
+Before every tag, beta or stable, run the desktop release workflow build-only
+on the merge you pushed to `personal`, and tag only after it passes:
+
+```bash
+pnpm release:test --ref personal   # builds all five desktop targets; publishes nothing
+gh run list --workflow release-desktop.yml --limit 1
+gh run watch <run-id> --exit-status   # about 25 minutes
+```
+
+- Local builds and clean clones do not replace this run. They usually have
+  the workspace packages' `*/dist/` already built (TESTING.md's install order
+  builds them), while a release runner starts from `pnpm install` alone.
+- Do not skip it because a change "does not touch the build". That judgement
+  is how `v1.5.9-beta.14` shipped without desktop assets (see
+  [Case Studies](#case-studies)).
+- If it fails, nothing is published and no version number is used up. Fix the
+  problem on `personal` and run it again.
 
 ## Cutting The Release
 
@@ -134,8 +201,6 @@ git push origin vX.Y.Z[-beta.N]
   checks a version.
 - Release notes are user-facing and functional. Leave internal IDs, review
   rounds and file paths out.
-- Build-only validation, with no GitHub release published:
-  `pnpm release:test --ref personal`.
 
 ## Watching The Rollout
 
@@ -148,15 +213,22 @@ Pushing a `v*` tag starts four independent workflows:
 | iOS App Store Connect Release | A TestFlight upload |
 | Server Docker Release | `autobyteus/autobyteus-server:X.Y.Z[-beta.N]`. A stable tag also moves `:latest`; the newest tag, stable or beta, moves `:beta` |
 
-A release is done only when all four have succeeded:
+A release is done only when all four have succeeded. Watch the four runs
+together, not one after another, and act on the first failure. Desktop builds
+can fail within minutes while Docker is still running:
 
 ```bash
-gh run list --limit 4
-gh run watch <run-id> --exit-status
+gh run list --limit 4   # the four run IDs of the tag
+for id in <run-id-1> <run-id-2> <run-id-3> <run-id-4>; do
+  gh run watch "$id" --exit-status > "/tmp/release-watch-$id.log" 2>&1 &
+done
+gh run list --limit 4   # repeat every few minutes until all four have finished
 gh release view vX.Y.Z[-beta.N] --json isPrerelease,assets --jq '{pre: .isPrerelease, assets: [.assets[].name]}'
 ```
 
-Compare the assets with the table above: a complete release has 17. The
+Compare the assets with the table above: a complete release has 17. Until all
+four runs have succeeded and the assets are complete, the release is in
+progress: report it as "tagged, workflows running", never as released. The
 workflows publish independently, so a desktop failure still leaves the Android
 APK, the TestFlight build and the Docker image published. That is a partial
 release. Record it as one.
@@ -175,14 +247,62 @@ release. Record it as one.
   `pnpm release:manual-dispatch vX.Y.Z --ref personal`. Do not dispatch manually
   right after a fresh tag push. The push has already started the workflows.
 
+## Case Studies
+
+### `v1.5.9-beta.14`: a new build step failed only on the release runners (2026-10-28)
+
+- **What happened:**
+  - A ticket added the web type check (`pnpm typecheck`) to every
+    `build:electron*` chain, before `prepare-server`.
+  - The check reads the types of `@autobyteus/application-sdk-contracts` from
+    its `dist/`, which the chain builds only inside `prepare-server`.
+  - On the release runners, which start from `pnpm install`, the check found
+    no types (`TS2307: Cannot find module …`) and stopped all five desktop
+    builds.
+  - Android, iOS and Docker published, so the GitHub release had 2 of 17
+    assets: a partial release.
+- **Why every check passed before the tag:**
+  - Every local run had the shared packages built already, including two
+    clean clones that followed TESTING.md's install order.
+  - No run used the release job's order (install, then the build chain), and
+    no build-only release run was made.
+- **Why it was seen late:**
+  - The delivery watched the four runs one after another, starting with
+    Docker, so the desktop failure at minute 5 went unseen for about 30
+    minutes.
+  - The release had been reported as released while the runs were still
+    going. The user found the failure on the Actions page.
+- **Also:** the delivery read this guide from the main checkout, which was
+  behind and lacked the [Secret Gate](#secret-gate). The gate was run late; it
+  passed.
+- **Rules added from it:**
+  - [Build-only release run](#build-only-release-run) before every tag;
+  - watch the four runs together, and report a release only when it is
+    complete ([Watching The Rollout](#watching-the-rollout));
+  - read this guide from `origin/personal`.
+- **Recovery:** the tag stays. The fix goes to `personal` and ships as the
+  next beta.
+
 ## Rollback
 
 - Revert the merge on `personal` and cut a new release. Desktop updates never
   downgrade. Turning beta updates off waits for the next newer stable.
 - `:beta` and `:latest` on Docker Hub only move forward. Docker users pin an
   earlier version tag to go back.
-- Data written by a newer build must stay readable by the build you roll back
-  to. See `autobyteus-server-ts/docs/design/data_migration_guideline.md`.
+- A release with an app-data migration converts users' existing data, so it
+  normally cannot be rolled back. Code moves forward with the data: do not add
+  code to make older builds read converted data. The release notes say whether
+  rolling back is possible. It is possible only when the older build is checked
+  and happens to work with the converted data unchanged, for example when the
+  migration only added data the older build ignores. Otherwise fix problems
+  forward with a newer release instead of reverting. When a release cannot be
+  rolled back, its release notes say so and tell users who need to go back to
+  contact support instead of installing an older version. See
+  `autobyteus-server-ts/docs/design/data_migration_guideline.md`, section 4,
+  "Rolling back after a migration".
+- Other changes need no rollback compatibility either. A release may rename or
+  drop stored fields without keeping fields, dual writes or old-format writers
+  for older builds.
 
 ## Deployment
 
@@ -228,7 +348,7 @@ What the release workflows build, validate and need.
   - `autobyteus-web/package.json` pins the reviewed Electron runtime exactly, and the root `pnpm-lock.yaml` is the canonical workspace lockfile.
   - Electron baseline changes must be validated with native-module rebuild evidence, focused Electron tests, and a desktop package smoke build because Chromium, Node.js, native-module ABI, packaging, and updater behavior change together.
 - Repository artifact hygiene is mandatory:
-  - `scripts/check_repository_artifact_hygiene.py` rejects tracked raw `.xcresult` bundles, generated ticket artifact drops, checkout-risk path lengths, and names Windows cannot check out (`< > : " | ? * \`, trailing dot or space, reserved device names).
+  - `scripts/check_repository_artifact_hygiene.py` rejects tracked raw `.xcresult` bundles, generated ticket artifact drops, checkout-risk path lengths, and names Windows cannot check out (`< > : " | ? * \`, trailing dot or space, reserved device names), and tracked code importing a file that is not tracked (for example one an ignore rule hides).
   - `.github/workflows/release-desktop.yml` runs this guard in `prepare-release` before platform build jobs fan out, so checkout-hostile evidence cannot break the Windows release job again.
 - Licensing consistency is mandatory: `python3 scripts/check_licensing.py` verifies the `LICENSE` texts, the `package.json` license fields and the `LICENSING.md` component list, and rejects stray permissive-license claims in AGPL components (see `LICENSING.md`); the desktop, server Docker, Android and iOS release workflows run it before building.
 - Desktop macOS terminal runtime validation is mandatory:
@@ -290,18 +410,22 @@ What the release workflows build, validate and need.
 AutoByteus NFS source, installer and distribution are maintained in the independent
 [AutoByteus NFS repository](https://github.com/AutoByteus/autobyteus-nfs).
 Its NFS-owned tags/workflow are separate from desktop version/tag publication;
-see its [release and qualification policy](https://github.com/AutoByteus/autobyteus-nfs/blob/main/packaging/RELEASE.md).
+see its [release policy](https://github.com/AutoByteus/autobyteus-nfs/blob/main/packaging/RELEASE.md).
 The application uses ordinary filesystem paths and APIs. It contains no NFS
 launcher/descriptor protocol, paired service fixture pin, mount/UUID admission or
 automatic Git trust injection. Operators provision storage and configure generic
 directory mappings outside the application; an existing directory is not proof
 that its mount is present.
 
-The frontend NFS Guide/instructions tab is retained as documentation for the
-standalone tool and ordinary mounted folders, not application NFS management.
-Its command copy/download remain disabled while public assets are unavailable.
-Public NFS assets require the independent service's current-source, host/engine,
-physical/user/signing gates and explicit release approval; desktop publication,
-candidate builds and historical feasibility evidence do not enable them.
-Delivery records both repositories' exact finalized revisions for traceability,
-not a consumer protocol pin or coupled release version.
+The frontend [NFS Guide](autobyteus-web/docs/nfs_guide.md) is copy-only documentation
+for the standalone tool and ordinary filesystem paths, not application NFS
+management. Its static v0.1.0 descriptor supplies published Mac/Linux installer
+commands, a pinned installer checksum and the public installed-tool reference.
+The install commands end with `version` and do not configure storage. Invalid or
+unavailable descriptor data still disables the affected installer surface.
+
+Distribution availability is not filesystem/host qualification. Physical-host,
+shared-filesystem, independent-client and user testing remains deferred under the
+independent service's postpublication plan; it is not an application release gate.
+NFS signing, publication and future release approval remain independently owned.
+Desktop publication does not publish NFS artifacts or couple release versions.

@@ -4,7 +4,6 @@ import path from "node:path";
 import { randomUUID } from "node:crypto";
 import { spawnSync } from "node:child_process";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { z } from "zod";
 import {
   ClaudeSdkClient,
   type ClaudeSdkCanUseTool,
@@ -67,7 +66,7 @@ const openLiveSession = async (
   client: ClaudeSdkClient,
   options: ClaudeSdkStreamingSessionOptions,
 ): Promise<LiveSession> => {
-  const session = await client.openStreamingSession(options);
+  const session = await client.beginStreamingSession({ resolveOptions: () => options }).open();
   const frames: Array<Record<string, unknown>> = [];
   const results: Array<Record<string, unknown>> = [];
   let waiter: (() => void) | null = null;
@@ -101,7 +100,7 @@ const openLiveSession = async (
       }
       return results[consumed++]!;
     },
-    close: () => session.close(),
+    close: () => session.requestClose(),
   };
 };
 
@@ -243,60 +242,6 @@ describeClaudeSdkClientIntegration("ClaudeSdkClient integration (live streaming 
     },
     FLOW_TEST_TIMEOUT_MS,
   );
-
-  it(
-    "configures a custom MCP server and executes a simple custom MCP tool",
-    async () => {
-      const workspaceRoot = await createWorkspace("claude-sdk-client-mcp");
-      createdWorkspaces.add(workspaceRoot);
-      const client = new ClaudeSdkClient();
-      const modelIdentifier = await resolveHaikuModelIdentifier(client);
-      const invocationTokens: string[] = [];
-      const toolToken = `CLAUDE_SDK_MCP_${Date.now()}`;
-      const echoTool = await client.createToolDefinition({
-        name: "echo_token",
-        description: "Echoes back the provided token.",
-        inputSchema: {
-          token: z.string().min(1).describe("Token to echo back verbatim."),
-        },
-        handler: async (args) => {
-          const token =
-            args && typeof args === "object" && !Array.isArray(args) && "token" in args &&
-            typeof (args as { token?: unknown }).token === "string"
-              ? (args as { token: string }).token
-              : "";
-          invocationTokens.push(token);
-          return { content: [{ type: "text", text: `ECHO:${token}` }] };
-        },
-      });
-      const mcpServer = await client.createMcpServer({ name: "integration_echo", tools: [echoTool] });
-      expect(mcpServer).not.toBeNull();
-
-      const live = await open(client, {
-        systemPrompt: "",
-        sessionBinding: createSessionBinding(),
-        model: modelIdentifier,
-        workingDirectory: workspaceRoot,
-        mcpServers: { integration_echo: mcpServer! },
-        permissionMode: "default",
-        canUseTool: allowAllTools,
-      });
-      live.send([
-        "Use the custom MCP tool exactly once.",
-        "The tool is exposed from MCP server 'integration_echo'.",
-        "Its tool name is 'echo_token'.",
-        "If Claude shows the fully qualified MCP tool name, use 'mcp__integration_echo__echo_token'.",
-        `Pass this exact token argument value: ${toolToken}`,
-        "Do not use any other tool.",
-        "After the tool succeeds, reply with exactly DONE.",
-      ].join("\n"));
-      await live.nextResult();
-
-      expect(invocationTokens).toEqual([toolToken]);
-      expect(resultMentions(live, "DONE")).toBe(true);
-    },
-    FLOW_TEST_TIMEOUT_MS,
-  );
 });
 
 // Design step 1 risk control (RSK-006): `interrupt({ cancelQueued: true })` is protocol-documented
@@ -306,10 +251,18 @@ const cliCandidates = resolveClaudeCliExecutableCandidates();
 const describeCancelQueued = liveClaudeTestsEnabled && cliCandidates.length > 0 ? describe : describe.skip;
 
 describeCancelQueued("Claude CLI Stop contract (interrupt with cancelQueued)", () => {
+  afterEach(() => {
+    vi.unstubAllEnvs();
+  });
+
   it.each(cliCandidates.map((candidate) => [candidate.label, candidate] as const))(
     "%s cancels a queued message atomically with the interrupt and keeps the process usable",
     async (_label, candidate) => {
       vi.stubEnv("CLAUDE_CODE_EXECUTABLE_PATH", candidate.executablePath);
+      // Launch like a standalone server (no inherited Claude Code session variables), with CLI sign-in.
+      const standaloneEnv = buildStandaloneClaudeProcessEnv();
+      for (const key of Object.keys(process.env)) if (!(key in standaloneEnv)) vi.stubEnv(key, undefined);
+      vi.stubEnv("CLAUDE_AGENT_SDK_AUTH_MODE", "cli");
       const workspaceRoot = await createWorkspace("claude-cancel-queued");
       const client = new ClaudeSdkClient();
       const live = await openLiveSession(client, {
@@ -319,7 +272,6 @@ describeCancelQueued("Claude CLI Stop contract (interrupt with cancelQueued)", (
         workingDirectory: workspaceRoot,
         permissionMode: "default",
         canUseTool: allowAllTools,
-        env: { ...buildStandaloneClaudeProcessEnv(), CLAUDE_AGENT_SDK_AUTH_MODE: "cli" },
       });
       try {
         live.send("Reply only READY.");

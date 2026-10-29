@@ -53,6 +53,7 @@ const V2_MIGRATION_ID = "20260824_team_run_execution_tree_v2";
 const FLAT_FAMILIES_MIGRATION_ID = "20260901_agent_org_flat_team_families_v1";
 const TASK_AGENT_OWN_RUN_MIGRATION_ID = "20261017_task_agent_own_run_v1";
 const APPEND_ONLY_MESSAGE_LOGS_MIGRATION_ID = "20261018_append_only_message_logs_v1";
+const DELEGATED_COPY_OWN_FILE_MIGRATION_ID = "20261019_delegated_copy_own_file_complete_v1";
 const TOKEN_USAGE_CONSOLIDATION_MIGRATION_ID = "20260819_token_usage_run_records_v1";
 const HISTORICAL_AUDIT_SENTINEL_MIGRATION_ID = "20260730_token_usage_provider_name_snapshot_backfill";
 const REMOVED_CANONICAL_MIGRATION_ID = "20260801_team_canonical_identity";
@@ -603,6 +604,13 @@ const appendOnlyMessageLogsStatus = async (serverUrl: string): Promise<Migration
   return status;
 };
 
+const delegatedCopyOwnFileStatus = async (serverUrl: string): Promise<MigrationStatus> => {
+  const statuses = await migrationStatuses(serverUrl);
+  const status = statuses.find(({ migrationId }) => migrationId === DELEGATED_COPY_OWN_FILE_MIGRATION_ID);
+  if (!status) throw new Error("DELEGATED_COPY_OWN_FILE_STATUS_MISSING");
+  return status;
+};
+
 const readAttemptLog = (logPath: string): {
   counts: ExecutionCounts;
   details: AttemptLogDetail[];
@@ -849,12 +857,21 @@ const assertAgentOrgPackage = (scenario: Awaited<ReturnType<typeof seedScenario>
   expect(tree.rootOrg.members[1].taskExecutions[0]).not.toHaveProperty("settledAt");
   const memoryRoot = path.dirname(path.dirname(supported.orgDir));
   const own = JSON.parse(fs.readFileSync(path.join(memoryRoot, "agents", supported.taskAgentRunId!, "run_metadata.json"), "utf8"));
-  // A copy of the configured place `/research/reviewer` (no recorded source, U-4): it follows the place.
+  // A copy of the configured place `/research/reviewer`: 20261019_delegated_copy_own_file_complete_v1 records the
+  // place's launch as the copy's own, with the `configured` origin, and drops the released `origin` (REQ-001, M4).
   expect(own).toMatchObject({
     runId: supported.taskAgentRunId,
     agentDefinitionId: "autobyteus-memory-compactor",
-    taskAgent: { coordinatingRun: { kind: "agent_org", runId: rootTeamRunId }, address: "/research/reviewer", origin: "configured_place" },
+    runtimeKind: NESTED_COORDINATOR_CONFIGURATION.runtimeKind,
+    llmModelIdentifier: NESTED_COORDINATOR_CONFIGURATION.llmModelIdentifier,
+    llmConfig: NESTED_COORDINATOR_CONFIGURATION.llmConfig,
+    autoExecuteTools: NESTED_COORDINATOR_CONFIGURATION.autoExecuteTools,
+    workspaceRootPath: NESTED_COORDINATOR_CONFIGURATION.workspaceRootPath,
+    taskAgent: { coordinatingRun: { kind: "agent_org", runId: rootTeamRunId }, address: "/research/reviewer",
+      launchSource: { origin: "configured", fallbacks: [] } },
   });
+  expect(own.taskAgent).not.toHaveProperty("origin");
+  expect(own).not.toHaveProperty("skillAccessMode");
   // Startup ends with the append-only message log conversion: the org's log is JSON Lines.
   const messages = { messages: readMessageLog(supported.orgDir, "agent_org_communication_messages") };
   expect(fs.existsSync(path.join(supported.orgDir, "agent_org_communication_messages.json"))).toBe(false);
@@ -1474,9 +1491,8 @@ describe("TeamRun released-shape production upgrade to the current AgentOrg end 
       status: "FAILED",
       message: expect.stringContaining("WAITING_FOR_PREDECESSOR"),
     })]));
-    // The preserved V1 warning package is intentionally excluded by the V1
-    // promotion, so the follow-on V2 migration itself remains clean.
-    expect(first.output()).not.toContain("startup continues with strict current-package admission");
+    // The delegated-copy own-file completion (registered last) waits for the task-agent migration the same way.
+    expect(await delegatedCopyOwnFileStatus(first.serverUrl)).toMatchObject({ status: "FAILED", attempts: 1 });
     expect(first.output()).toContain("Server listening on");
     expect(first.output()).not.toContain(EMBEDDED_SERVER_PLATFORM_FATAL_PROTOCOL);
     assertV2TeamPackage(scenario);
@@ -1524,8 +1540,10 @@ describe("TeamRun released-shape production upgrade to the current AgentOrg end 
     // The waiting task-agent migration retries with its predecessor and still changes nothing.
     expect(await taskAgentOwnRunStatus(second.serverUrl)).toMatchObject({ status: "FAILED", attempts: 2 });
     expect(await appendOnlyMessageLogsStatus(second.serverUrl)).toMatchObject({ status: "FAILED", attempts: 2 });
+    expect(await delegatedCopyOwnFileStatus(second.serverUrl)).toMatchObject({ status: "FAILED", attempts: 2 });
     const ledgerAfterSecond = readMigrationLedger(target.database.databasePath);
-    const retried = new Set([FLAT_FAMILIES_MIGRATION_ID, TASK_AGENT_OWN_RUN_MIGRATION_ID, APPEND_ONLY_MESSAGE_LOGS_MIGRATION_ID]);
+    const retried = new Set([FLAT_FAMILIES_MIGRATION_ID, TASK_AGENT_OWN_RUN_MIGRATION_ID, APPEND_ONLY_MESSAGE_LOGS_MIGRATION_ID,
+      DELEGATED_COPY_OWN_FILE_MIGRATION_ID]);
     const withoutRetriedRow = (rows: Array<Record<string, unknown>>) =>
       rows.filter(({ migration_id }) => !retried.has(migration_id as string));
     expect(withoutRetriedRow(ledgerAfterSecond)).toEqual(withoutRetriedRow(ledgerAfterFirst));

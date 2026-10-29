@@ -39,7 +39,7 @@ beforeEach(async () => {
 });
 afterEach(async () => { await tasks.drainRuntimeReleases(); vi.restoreAllMocks(); await fs.rm(dir, { recursive: true, force: true }); });
 
-const create = async (description: string, extra: Record<string, unknown> = {}) => (await tool("create_task", { project_id: projectId, description, ...extra })).task;
+const create = async (description: string, extra: Record<string, unknown> = {}) => (await tool("create_task", { project_id: projectId, title: description, description, ...extra })).task;
 const idOfKey = async (key: string) => (await store.listTasks(projectId)).find((t) => t.taskKey === key)!.taskId;
 const files = async () => {
   const out: Record<string, string> = {};
@@ -56,15 +56,15 @@ describe("keys as the agent-facing Task ID (REQ-018, REQ-019; AC-020, AC-022)", 
     const a = await create("A");
     const b = await create("B", { depends_on: [a.taskId] });
     expect([a, b]).toEqual([
-      { projectId, taskId: "autobyteus-1", status: "TODO", dependsOn: [] },
-      { projectId, taskId: "autobyteus-2", status: "TODO", dependsOn: ["autobyteus-1"] },
+      { projectId, taskId: "autobyteus-1", title: "A", status: "TODO" },
+      { projectId, taskId: "autobyteus-2", title: "B", status: "TODO", dependsOn: ["autobyteus-1"] },
     ]);
     const listed = await tool("list_project_tasks", { project_id: projectId });
-    expect(listed.tasks.map((t: Record<string, unknown>) => [t.taskId, t.dependsOn])).toEqual([["autobyteus-2", ["autobyteus-1"]], ["autobyteus-1", []]]);
+    expect(listed.tasks.map((t: Record<string, unknown>) => [t.taskId, t.dependsOn])).toEqual([["autobyteus-2", ["autobyteus-1"]], ["autobyteus-1", undefined]]);
     const idFields = listed.tasks.map(({ contextFiles: _files, ...fields }: Record<string, unknown>) => fields);
     expect(JSON.stringify(idFields)).not.toContain("project_task_");
     const updated = await tool("update_task", { task_id: "autobyteus-2", status: "IN_PROGRESS" });
-    expect(updated.task).toEqual({ projectId, taskId: "autobyteus-2", status: "IN_PROGRESS", dependsOn: ["autobyteus-1"] });
+    expect(updated.task).toEqual({ projectId, taskId: "autobyteus-2", title: "B", status: "IN_PROGRESS", dependsOn: ["autobyteus-1"] });
   });
 
   it("update_task acts on the same Task by key, by long ID and by key in any letter case; unknown keys fail as before", async () => {
@@ -79,14 +79,16 @@ describe("keys as the agent-facing Task ID (REQ-018, REQ-019; AC-020, AC-022)", 
   it("a Temp task keeps its ID in update_task and gets no dependsOn; depends_on on it is refused", async () => {
     const { taskId } = await tasks.linkNewTaskExecution({ role: "assigned", assignedBy: "manager", recipientAddress: "/w", hostRoot,
       execution: { agentRunId: "temp-worker" }, adHocTask: { description: "Temp", referenceFiles: [] } });
-    expect((await tool("update_task", { task_id: taskId, description: "Temp revised" })).task).toEqual({ projectId: null, taskId, status: "TODO" });
+    // A Task with no Project: no projectId, title, dependsOn or partOf (absent = none).
+    expect((await tool("update_task", { task_id: taskId, description: "Temp revised" })).task).toEqual({ taskId, status: "TODO" });
+    expect(await tool("update_task", { task_id: taskId, title: "Temp title" })).toEqual({ error: { code: "TASK_TITLE_INVALID", message: "Only Project Tasks have a title; this Task has no Project." } });
     expect(await tool("update_task", { task_id: taskId, depends_on: [] })).toMatchObject({ error: { code: "TASK_DEPENDENCY_INVALID" } });
   });
 
   it("delegation resolves a key (any case) or long ID to the stored ID; a Temp-task ID or unknown key is TASK_NOT_FOUND (AC-022, DEC-012)", async () => {
     const a = await create("A");
     const id = await idOfKey(a.taskId);
-    expect(await tasks.resolveAssignment("AutoByteus-1")).toEqual({ taskId: id, taskReference: "autobyteus-1", description: "A", referenceFiles: [] });
+    expect(await tasks.resolveAssignment("AutoByteus-1")).toEqual({ taskId: id, taskReference: "autobyteus-1", projectId, title: expect.any(String), description: "A", comments: [], referenceFiles: [] });
     expect((await tasks.resolveAssignment(id)).taskId).toBe(id);
     const { taskId: temp } = await tasks.linkNewTaskExecution({ role: "assigned", assignedBy: "manager", recipientAddress: "/w", hostRoot,
       execution: { agentRunId: "temp-worker" }, adHocTask: { description: "Temp", referenceFiles: [] } });
@@ -104,7 +106,7 @@ describe("depends_on through the tools (REQ-020, AC-024, REC-008)", () => {
     expect((await store.readTask(projectId, await idOfKey(c.taskId)))!.dependsOnTaskIds).toEqual([await idOfKey("autobyteus-1"), await idOfKey("autobyteus-2")]);
     expect((await tool("update_task", { task_id: c.taskId, description: "C kept" })).task.dependsOn).toEqual(["autobyteus-1", "autobyteus-2"]);
     expect((await tool("update_task", { task_id: c.taskId, depends_on: ["autobyteus-2"] })).task.dependsOn).toEqual(["autobyteus-2"]);
-    expect((await tool("update_task", { task_id: c.taskId, depends_on: [] })).task.dependsOn).toEqual([]);
+    expect((await tool("update_task", { task_id: c.taskId, depends_on: [] })).task).not.toHaveProperty("dependsOn");
   });
 
   it("collapses repeated references to one Task (a repeated key, another letter case, key and long ID) on create and update (CR-001, REQ-007)", async () => {
@@ -124,14 +126,14 @@ describe("depends_on through the tools (REQ-020, AC-024, REC-008)", () => {
     const a = await create("A");
     const b = await create("B", { depends_on: [a.taskId] });
     const other = (await projects.createProject({ name: "Marketing" })).projectId;
-    const foreign = (await tool("create_task", { project_id: other, description: "Foreign" })).task;
+    const foreign = (await tool("create_task", { project_id: other, title: "Foreign", description: "Foreign" })).task;
     const { taskId: temp } = await tasks.linkNewTaskExecution({ role: "assigned", assignedBy: "manager", recipientAddress: "/w", hostRoot,
       execution: { agentRunId: "temp-worker" }, adHocTask: { description: "Temp", referenceFiles: [] } });
     const before = await files();
     for (const depends_on of [[b.taskId], [foreign.taskId], [temp], ["autobyteus-77"], [a.taskId.toUpperCase().replace("AUTOBYTEUS", "nope")]]) {
       expect(await tool("update_task", { task_id: a.taskId, depends_on })).toMatchObject({ error: { code: "TASK_DEPENDENCY_INVALID" } });
     }
-    expect(await tool("create_task", { project_id: projectId, description: "D", depends_on: [foreign.taskId] })).toMatchObject({ error: { code: "TASK_DEPENDENCY_INVALID" } });
+    expect(await tool("create_task", { project_id: projectId, title: "D", description: "D", depends_on: [foreign.taskId] })).toMatchObject({ error: { code: "TASK_DEPENDENCY_INVALID" } });
     expect(await tool("update_task", { task_id: a.taskId, depends_on: [a.taskId] })).toMatchObject({ error: { code: "TASK_DEPENDENCY_INVALID" } });
     expect(await files()).toEqual(before);
   });
@@ -141,7 +143,7 @@ describe("depends_on through the tools (REQ-020, AC-024, REC-008)", () => {
     for (const depends_on of ["autobyteus-1", [""], [3]]) {
       expect(await tool("update_task", { task_id: a.taskId, depends_on })).toMatchObject({ error: { code: "PROJECT_TOOL_ARGUMENT_INVALID" } });
     }
-    expect((await tool("update_task", { task_id: a.taskId, depends_on: [] })).task).toMatchObject({ taskId: "autobyteus-1", dependsOn: [] });
+    expect((await tool("update_task", { task_id: a.taskId, depends_on: [] })).task).toEqual({ projectId, taskId: "autobyteus-1", title: "A", status: "TODO" });
   });
 
   it("a blocked Task can still be started and delegated through the tools (REQ-021, AC-027)", async () => {

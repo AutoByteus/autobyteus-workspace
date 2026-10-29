@@ -1,0 +1,4 @@
+# Case: API-09 / J11 (AC-016) | Step: cmp step1-before.json <data root>/server-data/projects/<main>/tasks/<step-1 task>/task.json after J1-J11
+# Commit: code 179ddb9f77, worktree Electron build (autobyteus-web/electron-dist, 1.5.6-beta.8) | Env: isolated instance iso-64678-9a42 | Date: 2026-10-19
+Observed output: AC-016: step-1 task.json bytes unchanged after the journeys
+(the file has every current key except partOfTaskId; J11 reads it with partOfTaskId null and no relation line)

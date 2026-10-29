@@ -13,7 +13,7 @@ const config = appConfigProvider.initialize({ appDataDir: root }); config.initia
 const { initializePrisma, shutdownPrisma } = await import("repository_prisma");
 const { assertTokenUsageCurrentSchema } = await import("../../dist/startup/token-usage-current-schema-readiness.js");
 const { TokenUsageAnalyticsProjectionWriter } = await import("../../dist/token-usage/services/token-usage-analytics-projection-writer.js");
-const { configureTokenUsageMigrationReadiness, TOKEN_USAGE_RUN_RECORDS_V1_MIGRATION_ID } = await import("../../dist/token-usage/providers/token-usage-migration-readiness.js");
+const { applyCapabilityReadiness, markCapabilitiesPending } = await import("../../dist/startup/app-data-capability-readiness.js");
 const { getSecretVaultRuntime } = await import("../../dist/secret-management/secret-vault-runtime.js");
 const { getAppDataMigrationRunner } = await import("../../dist/app-data-migrations/app-data-migration-runner.js");
 const { RootRunPackageReadinessIndex } = await import("../../dist/run-history/services/root-run-package-readiness-index.js");
@@ -21,12 +21,13 @@ let studio;
 try {
   await initializePrisma({ datasourceUrl: config.getOperationalDatabaseUrl() });
   await assertTokenUsageCurrentSchema(); await new TokenUsageAnalyticsProjectionWriter().initializeCoverage();
-  configureTokenUsageMigrationReadiness({ kind: "CURRENT_SCHEMA_DEGRADED", migrationStatus: "NOT_RUN", logPath: null });
-  await getSecretVaultRuntime().initialize(config.getOperationalDatabaseLocation());
-  const statuses = await getAppDataMigrationRunner().runPending();
-  const token = statuses.find(status => status.migrationId === TOKEN_USAGE_RUN_RECORDS_V1_MIGRATION_ID);
-  assert(["SUCCEEDED", "SUCCEEDED_WITH_WARNINGS"].includes(token?.status), JSON.stringify(token));
-  configureTokenUsageMigrationReadiness({ kind: "READY" });
+  markCapabilitiesPending();
+  await getSecretVaultRuntime().initialize({ kind: "application", location: config.getOperationalDatabaseLocation() });
+  const runner = getAppDataMigrationRunner();
+  await runner.runPending();
+  const readiness = await runner.capabilityReadiness();
+  assert(readiness.token_usage_history && readiness.custom_llm_providers, JSON.stringify(readiness));
+  applyCapabilityReadiness(readiness);
   await new RootRunPackageReadinessIndex(config.getMemoryDir()).rebuild();
 } catch (error) {
   await getSecretVaultRuntime().close(); await shutdownPrisma();

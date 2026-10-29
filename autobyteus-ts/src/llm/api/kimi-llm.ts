@@ -10,7 +10,7 @@ import type { ProviderApiKeyResolver } from '../../secrets/provider-api-key-reso
 const KIMI_K3_REASONING_EFFORTS = new Set(['low', 'high', 'max']);
 
 export class KimiLLM extends OpenAICompatibleLLM {
-  constructor(model: LLMModel, config: LLMConfig, apiKeyResolver: ProviderApiKeyResolver) {
+  constructor(model: LLMModel, config: LLMConfig, apiKeyResolver?: ProviderApiKeyResolver) {
     super(model, 'https://api.moonshot.ai/v1', config, apiKeyResolver, LLMProvider.KIMI);
   }
 

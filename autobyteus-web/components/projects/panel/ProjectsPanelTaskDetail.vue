@@ -23,13 +23,15 @@
     <template v-else-if="task">
       <section class="mt-2 overflow-hidden rounded-xl border border-slate-200 bg-white" aria-labelledby="projects-panel-task-description">
         <div class="p-4">
-          <div class="flex items-center justify-between gap-2">
-            <h2 id="projects-panel-task-description" class="text-xs font-medium text-slate-500">{{ t('projects.ui.description') }}</h2>
-            <span class="flex min-w-0 items-center gap-2">
+          <div class="flex items-start justify-between gap-2">
+            <h2 v-if="projectTask" id="projects-panel-task-description" class="min-w-0 break-words text-sm font-semibold leading-6 text-slate-900" data-testid="projects-panel-task-title">{{ projectTask.title }}</h2>
+            <h2 v-else id="projects-panel-task-description" class="text-xs font-medium text-slate-500">{{ t('projects.ui.description') }}</h2>
+            <span class="flex min-w-0 flex-shrink-0 items-center gap-2">
               <TaskKeyChip v-if="projectTask" :task-key="projectTask.taskKey" />
               <span class="flex-shrink-0 rounded-full px-2 py-0.5 text-xs font-medium ring-1 ring-inset" :class="statusPillClass" data-testid="projects-panel-task-status">{{ statusLabel }}</span>
             </span>
           </div>
+          <h3 v-if="projectTask" class="mt-3 text-xs font-medium text-slate-500">{{ t('projects.ui.description') }}</h3>
           <p class="mt-2 whitespace-pre-wrap break-words text-sm leading-6 text-slate-800" data-testid="projects-panel-task-description">{{ task.description }}</p>
           <section v-if="contextFiles.length" class="mt-4 border-t border-slate-100 pt-3" data-testid="projects-panel-task-context-files">
             <h3 class="mb-2 text-xs font-medium text-slate-600">{{ t('projects.ui.contextFiles') }} ({{ contextFiles.length }})</h3>
@@ -45,6 +47,8 @@
           </section>
         </div>
       </section>
+      <TaskCommentsSection v-if="projectTask" class="mt-3" compact :task="projectTask" />
+      <TaskPartsSection v-if="projectTask" class="mt-3" compact :task="projectTask" :tasks="projectTasks" @open-task="emit('open-task', $event)" />
       <TaskDependenciesSection v-if="projectTask" class="mt-3" compact :task="projectTask" :tasks="projectTasks" @open-task="emit('open-task', $event)" />
       <TaskRootSection :root="task.root ?? null" />
     </template>
@@ -57,6 +61,8 @@ import { Icon } from '@iconify/vue'
 import TaskContextFiles from '~/components/projects/TaskContextFiles.vue'
 import TaskRootSection from '~/components/projects/TaskRootSection.vue'
 import TaskDependenciesSection from '~/components/projects/TaskDependenciesSection.vue'
+import TaskPartsSection from '~/components/projects/TaskPartsSection.vue'
+import TaskCommentsSection from '~/components/projects/TaskCommentsSection.vue'
 import TaskKeyChip from '~/components/projects/TaskKeyChip.vue'
 import { useLocalization } from '~/composables/useLocalization'
 import { createProjectTaskContextClient } from '~/services/projects/projectTaskContextClient'

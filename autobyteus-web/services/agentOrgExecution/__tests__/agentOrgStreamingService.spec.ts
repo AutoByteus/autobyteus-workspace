@@ -99,7 +99,7 @@ const snapshot = {
         },
       },
       communication_messages: { schemaVersion: 1, subjectKind: 'agent_org', orgRunId: 'org-run', messages: [] },
-      agent_input_states: [], agent_statuses: [{
+      agent_input_states: [], remote_task_executions: [], agent_statuses: [{
         member_address: '/direct', agent_run_id: 'agent-run', status: 'idle', trigger: null,
         tool_name: null, error_message: null, error_details: null, recoverableBlock: null,
       }],
@@ -366,6 +366,7 @@ describe('AgentOrgStreamingService', () => {
         event: { kind: 'task_execution_started', host_kind: 'root', host_run_id: 'org-run', execution: {
           address: '/direct', agentRunId: 'agent-task-fresh', platformAgentRunId: null,
           delegatorAgentRunId: 'agent-run', startedAt: '2026-09-01T00:00:01.000Z',
+          source: { kind: 'agent', agentDefinitionId: 'direct', launchConfiguration: launch },
         } },
       },
     })
@@ -525,6 +526,7 @@ describe('AgentOrgStreamingService', () => {
         event: { kind: 'task_execution_started', host_kind: 'root', host_run_id: 'org-run', execution: {
           address: '/direct', agentRunId: 'agent-task-fresh', platformAgentRunId: null,
           delegatorAgentRunId: 'agent-run', startedAt: '2026-09-01T00:00:01.000Z',
+          source: { kind: 'agent', agentDefinitionId: 'direct', launchConfiguration: launch },
         } },
       },
     })
@@ -610,6 +612,7 @@ describe('AgentOrgStreamingService', () => {
         event: { kind: 'task_execution_started', host_kind: 'root', host_run_id: 'org-run', execution: {
           address: '/direct', agentRunId: 'agent-task-fresh', platformAgentRunId: null,
           delegatorAgentRunId: 'agent-run', startedAt: '2026-09-01T00:00:01.000Z',
+          source: { kind: 'agent', agentDefinitionId: 'direct', launchConfiguration: launch },
         } },
       },
     })

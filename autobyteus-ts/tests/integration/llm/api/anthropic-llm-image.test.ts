@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { expect } from 'vitest';
 import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
@@ -6,11 +6,12 @@ import { fileURLToPath } from 'node:url';
 import { AnthropicLLM } from '../../../../src/llm/api/anthropic-llm.js';
 import { LLMModel } from '../../../../src/llm/models.js';
 import { LLMProvider } from '../../../../src/llm/providers.js';
+import { LLMConfig } from '../../../../src/llm/utils/llm-config.js';
 import { LLMUserMessage } from '../../../../src/llm/user-message.js';
 import { CompleteResponse, ChunkResponse } from '../../../../src/llm/utils/response-types.js';
+import { liveProviderTest } from '../../../../../test-support/test-vault/test-vault.js';
 
-const apiKey = process.env.ANTHROPIC_API_KEY;
-const runIntegration = apiKey ? describe : describe.skip;
+const live = liveProviderTest('Anthropic');
 
 const buildModel = () =>
   new LLMModel({
@@ -32,13 +33,13 @@ const writeTempImage = (fileName: string, base64Png: string): string => {
   return filePath;
 };
 
-runIntegration('AnthropicLLM Image Integration', () => {
-  it('should send a single local image file', async () => {
+live.describe('AnthropicLLM Image Integration', () => {
+  live.it('should send a single local image file', async () => {
     if (!fs.existsSync(sampleImagePath)) {
       return;
     }
 
-    const llm = new AnthropicLLM(buildModel());
+    const llm = new AnthropicLLM(buildModel(), new LLMConfig());
     const userMessage = new LLMUserMessage({
       content: "What is in this image? Reply with 'image' in the text.",
       image_urls: [sampleImagePath]
@@ -59,13 +60,13 @@ runIntegration('AnthropicLLM Image Integration', () => {
     }
   }, 120000);
 
-  it('should send a single image via base64', async () => {
+  live.it('should send a single image via base64', async () => {
     if (!fs.existsSync(sampleImagePath)) {
       return;
     }
 
     const imageB64 = fs.readFileSync(sampleImagePath).toString('base64');
-    const llm = new AnthropicLLM(buildModel());
+    const llm = new AnthropicLLM(buildModel(), new LLMConfig());
     const userMessage = new LLMUserMessage({
       content: 'Describe this image shortly.',
       image_urls: [imageB64]
@@ -86,7 +87,7 @@ runIntegration('AnthropicLLM Image Integration', () => {
     }
   }, 120000);
 
-  it('should send multiple local images', async () => {
+  live.it('should send multiple local images', async () => {
     if (!fs.existsSync(sampleImagePath)) {
       return;
     }
@@ -94,7 +95,7 @@ runIntegration('AnthropicLLM Image Integration', () => {
     const img1 = sampleImagePath;
     const img2 = sampleImagePath;
 
-    const llm = new AnthropicLLM(buildModel());
+    const llm = new AnthropicLLM(buildModel(), new LLMConfig());
     const userMessage = new LLMUserMessage({
       content: 'What do you see in these images?',
       image_urls: [img1, img2]
@@ -115,12 +116,12 @@ runIntegration('AnthropicLLM Image Integration', () => {
     }
   }, 120000);
 
-  it('should stream with a single local image file', async () => {
+  live.it('should stream with a single local image file', async () => {
     if (!fs.existsSync(sampleImagePath)) {
       return;
     }
 
-    const llm = new AnthropicLLM(buildModel());
+    const llm = new AnthropicLLM(buildModel(), new LLMConfig());
     const userMessage = new LLMUserMessage({
       content: 'What is in this image?',
       image_urls: [sampleImagePath]
@@ -147,12 +148,12 @@ runIntegration('AnthropicLLM Image Integration', () => {
     }
   }, 120000);
 
-  it('should tolerate unsupported MIME types and still respond', async () => {
+  live.it('should tolerate unsupported MIME types and still respond', async () => {
     const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), 'claude-bmp-'));
     const bmpPath = path.join(tmpDir, 'test.bmp');
     fs.writeFileSync(bmpPath, Buffer.from('BM' + '\x00'.repeat(50)));
 
-    const llm = new AnthropicLLM(buildModel());
+    const llm = new AnthropicLLM(buildModel(), new LLMConfig());
     const userMessage = new LLMUserMessage({
       content: 'Ignore the image failure, just say hello.',
       image_urls: [bmpPath]

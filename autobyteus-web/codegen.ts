@@ -12,6 +12,7 @@ const config: CodegenConfig = {
         "typescript-vue-apollo"
       ],
       config: {
+        vueCompositionApiImportFrom: 'vue',
         scalars: {
           SafeInt: {
             input: "number",

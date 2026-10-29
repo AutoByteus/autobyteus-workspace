@@ -82,7 +82,7 @@ export const buildCollaborationMemberMemoryTargets = (
   for (const { memoryDir, ...member } of members) {
     const memoryStore = new MemoryFileStore(path.dirname(memoryDir), { runRootSubdir: "" });
     const memory = new MemoryRunSummaryBuilder(memoryStore).build(path.basename(memoryDir));
-    if (hasMemoryAvailability(memory.availability)) targets.push({ ...member, memory });
+    if (hasMemoryAvailability(memory)) targets.push({ ...member, memory });
   }
   return orderByStructure(targets);
 };

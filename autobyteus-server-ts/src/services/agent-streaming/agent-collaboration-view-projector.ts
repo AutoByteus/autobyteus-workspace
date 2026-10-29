@@ -11,6 +11,14 @@ import type { StandaloneRootPackageSnapshot } from "../../standalone-agent-run-r
 import type { StandaloneRootEvent } from "../../standalone-agent-run-root/domain/standalone-root-event.js";
 import type { StandaloneRootTreeSnapshot } from "../../standalone-agent-run-root/domain/standalone-root-tree.js";
 import { StandaloneRootExecutionIndex } from "../../standalone-agent-run-root/services/standalone-root-execution-index.js";
+import { isPublicMessage } from "./public-message-scope.js";
+import { projectRemoteTaskExecution, projectRemoteTaskExecutionSummary } from "./remote-task-execution-dto-projection.js";
+import type { RemoteTaskExecutionDto } from "@autobyteus/agent-presentation-contracts";
+
+const agentsOf = (tree: StandaloneRootTreeSnapshot) => {
+  const index = new StandaloneRootExecutionIndex(tree);
+  return (agentRunId: string) => index.getAgent(agentRunId) !== null;
+};
 
 /** Agent-root view (root kind `agent`) on the collaboration-stream contracts. */
 export const projectAgentCollaborationView = (input: Readonly<{
@@ -18,6 +26,8 @@ export const projectAgentCollaborationView = (input: Readonly<{
   isActive: boolean;
   snapshot: StandaloneRootPackageSnapshot;
   baseChangeSequence: number;
+  /** autobyteus-278: the runs this root delegated to other nodes, with their nodes' names. */
+  remoteTaskExecutions: readonly RemoteTaskExecutionDto[];
 }>): RootExecutionViewDto => RootExecutionViewDtoSchema.parse({
   root_subject_kind: "agent",
   root_run_id: input.hostRunId,
@@ -26,7 +36,8 @@ export const projectAgentCollaborationView = (input: Readonly<{
     is_active: input.isActive,
     execution_tree: projectAgentCollaborationTree(input.snapshot.tree),
     closed_task_executions: input.snapshot.closedTaskExecutions,
-    communication_messages: input.snapshot.messages,
+    communication_messages: { ...input.snapshot.messages,
+      messages: input.snapshot.messages.messages.filter((message) => isPublicMessage(message, agentsOf(input.snapshot.tree))) },
     agent_input_states: input.snapshot.inputStates,
     agent_statuses: input.snapshot.statuses.map((status) => ({
       member_address: status.execution.memberAddress,
@@ -38,6 +49,7 @@ export const projectAgentCollaborationView = (input: Readonly<{
       error_details: null,
       recoverableBlock: status.details.recoverableBlock,
     })),
+    remote_task_executions: input.remoteTaskExecutions,
   },
 });
 
@@ -59,6 +71,16 @@ export const projectAgentCollaborationEvent = (
       return null;
     case "agent_presentation":
       event = { kind: "agent_presentation" as const, member_address: source.execution.memberAddress, agent_run_id: source.execution.agentRunId, message: source.message };
+      break;
+    // N-402: the one place a remote child's output becomes the stream's `agent_presentation`.
+    case "remote_agent_presentation":
+      event = { kind: "agent_presentation" as const, member_address: source.memberAddress, agent_run_id: source.agentRunId, message: source.message };
+      break;
+    case "remote_task_execution_summary":
+      event = { kind: "remote_task_execution_summary" as const, ...projectRemoteTaskExecutionSummary(source.summary) };
+      break;
+    case "remote_task_execution_started":
+      event = { kind: "remote_task_execution_started" as const, execution: projectRemoteTaskExecution(source.execution) };
       break;
     case "task_execution_started":
       event = {

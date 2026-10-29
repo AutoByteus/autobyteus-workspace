@@ -1,0 +1,9 @@
+# IMP-04 server typecheck (AC-004)
+# cmd: pnpm -C autobyteus-server-ts typecheck
+# commit: 1d49973440  env: macOS (darwin), Node v22.23.1  date: 2026-10-24T16:37Z
+
+
+> autobyteus-server-ts@0.1.1 typecheck /Users/normy/autobyteus_org/autobyteus-worktrees/imported-app-codex-runtime-folder/autobyteus-server-ts
+> tsc -p tsconfig.build.json --noEmit
+
+exit=0

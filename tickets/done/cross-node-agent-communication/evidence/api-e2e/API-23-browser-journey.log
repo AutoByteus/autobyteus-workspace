@@ -1,0 +1,27 @@
+# API-23 (AC-110, REQ-112) browser journey on the receiving node | code 31d46978ad (dist API-00 round 2), web unchanged since 8491e0d916 | macOS 26.5.2, Node v22.23.1, agent browser tool (Chromium) | 2026-10-20 ~15:56-15:59 UTC
+
+Setup (temporary, test-owned): `node evidence/api-e2e/API-23-setup-two-nodes.mjs <autobyteus-server-ts> <tests/fixtures/agy-failure-cli.mjs>`
+- alpha http://127.0.0.1:54156, beta http://127.0.0.1:54178, temp root /var/folders/.../T/api23-two-nodes-hR8si7 (own data roots and HOMEs, clean env, scripted AGY `linked_skills`)
+- switch on both, registered both ways ("beta-node" on alpha, "alpha-node" on beta), Publisher published on beta
+- alpha standalone run delegator_b91338fb5b8c41038f33958042225248 called delegate_task({node:"beta-node", recipient_address:"/publisher", description:"Publish the video draft to the channel. Marker BROWSER-PACKET."})
+  → {"delegated":true,"target_kind":"agent","target_agent_run_id":"publisher_3dd6ffd8b7504b69be6aff4303c2e6a8","node":"beta-node","task_id":"ad_hoc_task_398cf804-…"}
+Web: `BACKEND_NODE_BASE_URL=http://127.0.0.1:54178 nuxt dev --host 127.0.0.1 --port 54292` in autobyteus-web (one dev server; warmed up before asserting)
+
+Steps and DOM/state results (run-script results copied):
+1. Open http://127.0.0.1:54292/, Workspaces → expand "workspace":
+   left panel text: "Workspaces\nTemp Workspace\nworkspace\nP\nPublisher\n(1)"  → the remote run's Agent is listed in beta's history as a top-level run group
+2. Expand Publisher ([data-test="workspace-agent-row"] aria-expanded false → true):
+   row text: "You have a new task from the agent with sender run id \"delegator_b91338fb5b8c41038f33958042225248\" on node \"alpha-node\". When you finish, …"
+   row controls present: workspace-agent-run-row, terminate-agent-run (data-run-id="publisher_3dd6ffd8b7504b69be6aff4303c2e6a8")
+3. Open the run ([data-test="workspace-agent-run-row"] click): url http://127.0.0.1:54292/chat?id=publisher_3dd6ffd8b7504b69be6aff4303c2e6a8
+   main text: "You have a new task from the agent with s…\nIdle\nYou\nYou have a new task from the agent with sender run id \"delegator_b91338fb5b8c41038f33958042225248\" on node \"alpha-node\".\nWhen you finish, or need something you can't get yourself, tell that agent using send_message_to with target_agent_run_id set to that sender run id.\n\nDescription:\nPublish the video draft to the channel. Marker BROWSER-PACKET.\nP\nPublisher\n\nOK"
+   screenshot: API-23-beta-run-history-and-packet.png (the run row under workspace → Publisher, the work packet naming node "alpha-node", status Idle)
+4. Composer message as beta's owner (textarea + "Send message" button):
+   main text afterwards: "…\nYou\nOwner of beta here: please confirm the draft status. Marker OWNER-COMPOSER-MSG.\nP\nPublisher\n\nOK"
+   server: beta getRunProjection(publisher_3dd6…) conversation contains "OWNER-COMPOSER-MSG"
+   screenshot: API-23-beta-composer-message.png
+5. Stop ([data-test="terminate-agent-run"] click): {"stopStillPresent":false,"status":["Offline"]}
+   server: live scripted-CLI processes whose cwd contains publisher_3dd6ffd8b7504b69be6aff4303c2e6a8: 0
+
+Cleanup: tab closed; Nuxt dev (pid 83410) stopped, port 54292 free; setup stopped with SIGTERM: "stopped; removed /private/var/folders/.../api23-two-nodes-hR8si7 exists: false"; ports 54156/54178 free.
+Observation (not a finding): the work packet is shown on the user side ("You" avatar); REQ-112 asks only that the first message shows where it came from, which its text does. Not compared here with a local copy's presentation.

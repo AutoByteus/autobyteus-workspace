@@ -1,0 +1,1124 @@
+{
+  "firstMessages": {
+    "helper": "You have a new task from the agent with sender address \"/manager\" and sender run id \"scope_manager_1cd534_3efc11ed7a474ceb89cbdc031d9243d5\".\nWhen you finish, or need something you can't get yourself, tell that agent using send_message_to with recipient_address set to that sender address or target_agent_run_id set to that sender run id (one of them, not both).\n\nTask: scope-board-1cd534-1 in Project project_1a56ff8e-c2bd-4b22-a68b-a8cd4f1c314a\nIf you have get_project_task, it reads this Task again, including comments added later.\nDescription:\nWrite the release notes for 1.6.\nKeep them short.",
+    "squad coordinator": "You have a new task from the agent with sender address \"/manager\" and sender run id \"scope_manager_1cd534_3efc11ed7a474ceb89cbdc031d9243d5\".\nWhen you finish, or need something you can't get yourself, tell that agent using send_message_to with recipient_address set to that sender address or target_agent_run_id set to that sender run id (one of them, not both).\n\nTask: scope-board-1cd534-2 in Project project_1a56ff8e-c2bd-4b22-a68b-a8cd4f1c314a\nIf you have get_project_task, it reads this Task again, including comments added later.\nDescription:\nReview the docs site with the squad.",
+    "native helper": "You have a new task from the agent with sender address \"/manager\" and sender run id \"scope_manager_1cd534_3efc11ed7a474ceb89cbdc031d9243d5\".\nWhen you finish, or need something you can't get yourself, tell that agent using send_message_to with recipient_address set to that sender address or target_agent_run_id set to that sender run id (one of them, not both).\n\nTask: scope-board-1cd534-3 in Project project_1a56ff8e-c2bd-4b22-a68b-a8cd4f1c314a\nIf you have get_project_task, it reads this Task again, including comments added later.\nDescription:\nCheck the native runtime path.",
+    "plain (described)": "You have a new task from the agent with sender address \"/manager\" and sender run id \"scope_manager_1cd534_3efc11ed7a474ceb89cbdc031d9243d5\".\nWhen you finish, or need something you can't get yourself, tell that agent using send_message_to with recipient_address set to that sender address or target_agent_run_id set to that sender run id (one of them, not both).\n\nDescription:\nCheck the changelog links.\nReport broken ones.",
+    "reviewer (sub-work)": "You have a new task from the agent with sender run id \"scope_lead_1cd534_a13cc3df35794fa1a9b8d0d6a9917249\".\nWhen you finish, or need something you can't get yourself, tell that agent using send_message_to with target_agent_run_id set to that sender run id.\n\nDescription:\nReview the docs site's API pages.",
+    "bare": "You have a new task from the agent with sender address \"/manager\" and sender run id \"scope_manager_1cd534_3efc11ed7a474ceb89cbdc031d9243d5\".\nWhen you finish, or need something you can't get yourself, tell that agent using send_message_to with recipient_address set to that sender address or target_agent_run_id set to that sender run id (one of them, not both).\n\nDescription:\nSay hello.",
+    "helper (existing copy, Task D)": "You received a message from the agent with sender address \"/manager\" and sender run id \"scope_manager_1cd534_3efc11ed7a474ceb89cbdc031d9243d5\".\nmessage:\nNew Task assigned to you: scope-board-1cd534-4. Your Task scope-board-1cd534-1 is still open; name the Task key in each report.\n\nTask: scope-board-1cd534-4 in Project project_1a56ff8e-c2bd-4b22-a68b-a8cd4f1c314a\nIf you have get_project_task, it reads this Task again, including comments added later.\nDescription:\nPublish the changelog after the notes."
+  },
+  "results": [
+    {
+      "who": "manager",
+      "route": "mcp",
+      "name": "delegate_task",
+      "args": {
+        "recipient_address": "/scope_helper_1cd534",
+        "task_id": "scope-board-1cd534-1"
+      },
+      "raw": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"delegated\":true,\"target_kind\":\"agent\",\"target_agent_run_id\":\"scope_helper_1cd534_3c83c03120214c2e839b380c5b37c0f5\"}"
+          }
+        ],
+        "structuredContent": {
+          "delegated": true,
+          "target_kind": "agent",
+          "target_agent_run_id": "scope_helper_1cd534_3c83c03120214c2e839b380c5b37c0f5"
+        }
+      }
+    },
+    {
+      "who": "manager",
+      "route": "mcp",
+      "name": "delegate_task",
+      "args": {
+        "recipient_address": "/scope_squad_1cd534",
+        "task_id": "scope-board-1cd534-2"
+      },
+      "raw": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"delegated\":true,\"target_kind\":\"team\",\"target_team_run_id\":\"scope_squad_1cd534_e23e7ac428a845f0ae625d3594adaccb\",\"target_team_coordinator_agent_run_id\":\"scope_lead_1cd534_a13cc3df35794fa1a9b8d0d6a9917249\"}"
+          }
+        ],
+        "structuredContent": {
+          "delegated": true,
+          "target_kind": "team",
+          "target_team_run_id": "scope_squad_1cd534_e23e7ac428a845f0ae625d3594adaccb",
+          "target_team_coordinator_agent_run_id": "scope_lead_1cd534_a13cc3df35794fa1a9b8d0d6a9917249"
+        }
+      }
+    },
+    {
+      "who": "manager",
+      "route": "mcp",
+      "name": "delegate_task",
+      "args": {
+        "recipient_address": "/scope_native_helper_1cd534",
+        "task_id": "project_task_1ee71635-af94-4bc5-90ec-7b3e5611ed21"
+      },
+      "raw": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"delegated\":true,\"target_kind\":\"agent\",\"target_agent_run_id\":\"scope_native_helper_1cd534_fa6d0bbed62b4691851ba5e5172a1717\"}"
+          }
+        ],
+        "structuredContent": {
+          "delegated": true,
+          "target_kind": "agent",
+          "target_agent_run_id": "scope_native_helper_1cd534_fa6d0bbed62b4691851ba5e5172a1717"
+        }
+      }
+    },
+    {
+      "who": "manager",
+      "route": "mcp",
+      "name": "delegate_task",
+      "args": {
+        "recipient_address": "/scope_plain_1cd534",
+        "description": "Check the changelog links.\nReport broken ones."
+      },
+      "raw": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"delegated\":true,\"target_kind\":\"agent\",\"target_agent_run_id\":\"scope_plain_1cd534_0965b73bda904eb3a7304c794f55491c\",\"task_id\":\"ad_hoc_task_2904e3e1-c256-496d-916f-e91ec6186756\"}"
+          }
+        ],
+        "structuredContent": {
+          "delegated": true,
+          "target_kind": "agent",
+          "target_agent_run_id": "scope_plain_1cd534_0965b73bda904eb3a7304c794f55491c",
+          "task_id": "ad_hoc_task_2904e3e1-c256-496d-916f-e91ec6186756"
+        }
+      }
+    },
+    {
+      "who": "helper",
+      "route": "mcp",
+      "name": "get_project_task",
+      "args": {
+        "project_id": "project_1a56ff8e-c2bd-4b22-a68b-a8cd4f1c314a",
+        "task_id": "scope-board-1cd534-1"
+      },
+      "raw": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"projectId\":\"project_1a56ff8e-c2bd-4b22-a68b-a8cd4f1c314a\",\"taskId\":\"scope-board-1cd534-1\",\"title\":\"Write the release notes\",\"status\":\"TODO\",\"description\":\"Write the release notes for 1.6.\\nKeep them short.\",\"assignments\":[{\"kind\":\"agent\",\"agentRunId\":\"scope_helper_1cd534_3c83c03120214c2e839b380c5b37c0f5\",\"assignedBy\":\"scope_manager_1cd534_3efc11ed7a474ceb89cbdc031d9243d5\",\"outcome\":\"accepted\"}]}"
+          }
+        ],
+        "structuredContent": {
+          "projectId": "project_1a56ff8e-c2bd-4b22-a68b-a8cd4f1c314a",
+          "taskId": "scope-board-1cd534-1",
+          "title": "Write the release notes",
+          "status": "TODO",
+          "description": "Write the release notes for 1.6.\nKeep them short.",
+          "assignments": [
+            {
+              "kind": "agent",
+              "agentRunId": "scope_helper_1cd534_3c83c03120214c2e839b380c5b37c0f5",
+              "assignedBy": "scope_manager_1cd534_3efc11ed7a474ceb89cbdc031d9243d5",
+              "outcome": "accepted"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "who": "helper",
+      "route": "mcp",
+      "name": "get_project_task",
+      "args": {
+        "project_id": "project_1a56ff8e-c2bd-4b22-a68b-a8cd4f1c314a",
+        "task_id": "SCOPE-BOARD-1CD534-1"
+      },
+      "raw": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"projectId\":\"project_1a56ff8e-c2bd-4b22-a68b-a8cd4f1c314a\",\"taskId\":\"scope-board-1cd534-1\",\"title\":\"Write the release notes\",\"status\":\"TODO\",\"description\":\"Write the release notes for 1.6.\\nKeep them short.\",\"assignments\":[{\"kind\":\"agent\",\"agentRunId\":\"scope_helper_1cd534_3c83c03120214c2e839b380c5b37c0f5\",\"assignedBy\":\"scope_manager_1cd534_3efc11ed7a474ceb89cbdc031d9243d5\",\"outcome\":\"accepted\"}]}"
+          }
+        ],
+        "structuredContent": {
+          "projectId": "project_1a56ff8e-c2bd-4b22-a68b-a8cd4f1c314a",
+          "taskId": "scope-board-1cd534-1",
+          "title": "Write the release notes",
+          "status": "TODO",
+          "description": "Write the release notes for 1.6.\nKeep them short.",
+          "assignments": [
+            {
+              "kind": "agent",
+              "agentRunId": "scope_helper_1cd534_3c83c03120214c2e839b380c5b37c0f5",
+              "assignedBy": "scope_manager_1cd534_3efc11ed7a474ceb89cbdc031d9243d5",
+              "outcome": "accepted"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "who": "helper",
+      "route": "mcp",
+      "name": "get_project_task",
+      "args": {
+        "project_id": "project_1a56ff8e-c2bd-4b22-a68b-a8cd4f1c314a",
+        "task_id": "project_task_7a4f98b4-8a45-4670-9e64-61a92c4fcf34"
+      },
+      "raw": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"projectId\":\"project_1a56ff8e-c2bd-4b22-a68b-a8cd4f1c314a\",\"taskId\":\"scope-board-1cd534-1\",\"title\":\"Write the release notes\",\"status\":\"TODO\",\"description\":\"Write the release notes for 1.6.\\nKeep them short.\",\"assignments\":[{\"kind\":\"agent\",\"agentRunId\":\"scope_helper_1cd534_3c83c03120214c2e839b380c5b37c0f5\",\"assignedBy\":\"scope_manager_1cd534_3efc11ed7a474ceb89cbdc031d9243d5\",\"outcome\":\"accepted\"}]}"
+          }
+        ],
+        "structuredContent": {
+          "projectId": "project_1a56ff8e-c2bd-4b22-a68b-a8cd4f1c314a",
+          "taskId": "scope-board-1cd534-1",
+          "title": "Write the release notes",
+          "status": "TODO",
+          "description": "Write the release notes for 1.6.\nKeep them short.",
+          "assignments": [
+            {
+              "kind": "agent",
+              "agentRunId": "scope_helper_1cd534_3c83c03120214c2e839b380c5b37c0f5",
+              "assignedBy": "scope_manager_1cd534_3efc11ed7a474ceb89cbdc031d9243d5",
+              "outcome": "accepted"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "who": "helper",
+      "route": "mcp",
+      "name": "get_project_task",
+      "args": {
+        "project_id": "project_1a56ff8e-c2bd-4b22-a68b-a8cd4f1c314a",
+        "task_id": "scope-board-1cd534-2"
+      },
+      "raw": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"error\":{\"code\":\"TASK_READ_OUT_OF_SCOPE\",\"message\":\"You work on scope-board-1cd534-1; you can read only that Task.\"}}"
+          }
+        ],
+        "structuredContent": {
+          "error": {
+            "code": "TASK_READ_OUT_OF_SCOPE",
+            "message": "You work on scope-board-1cd534-1; you can read only that Task."
+          }
+        },
+        "isError": true
+      }
+    },
+    {
+      "who": "squad coordinator",
+      "route": "mcp",
+      "name": "get_project_task",
+      "args": {
+        "project_id": "project_1a56ff8e-c2bd-4b22-a68b-a8cd4f1c314a",
+        "task_id": "scope-board-1cd534-2"
+      },
+      "raw": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"projectId\":\"project_1a56ff8e-c2bd-4b22-a68b-a8cd4f1c314a\",\"taskId\":\"scope-board-1cd534-2\",\"title\":\"Review the docs site\",\"status\":\"TODO\",\"description\":\"Review the docs site with the squad.\",\"assignments\":[{\"kind\":\"team\",\"teamRunId\":\"scope_squad_1cd534_e23e7ac428a845f0ae625d3594adaccb\",\"teamCoordinatorAgentRunId\":\"scope_lead_1cd534_a13cc3df35794fa1a9b8d0d6a9917249\",\"assignedBy\":\"scope_manager_1cd534_3efc11ed7a474ceb89cbdc031d9243d5\",\"outcome\":\"accepted\"}]}"
+          }
+        ],
+        "structuredContent": {
+          "projectId": "project_1a56ff8e-c2bd-4b22-a68b-a8cd4f1c314a",
+          "taskId": "scope-board-1cd534-2",
+          "title": "Review the docs site",
+          "status": "TODO",
+          "description": "Review the docs site with the squad.",
+          "assignments": [
+            {
+              "kind": "team",
+              "teamRunId": "scope_squad_1cd534_e23e7ac428a845f0ae625d3594adaccb",
+              "teamCoordinatorAgentRunId": "scope_lead_1cd534_a13cc3df35794fa1a9b8d0d6a9917249",
+              "assignedBy": "scope_manager_1cd534_3efc11ed7a474ceb89cbdc031d9243d5",
+              "outcome": "accepted"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "who": "squad coordinator",
+      "route": "mcp",
+      "name": "get_project_task",
+      "args": {
+        "project_id": "project_1a56ff8e-c2bd-4b22-a68b-a8cd4f1c314a",
+        "task_id": "scope-board-1cd534-1"
+      },
+      "raw": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"error\":{\"code\":\"TASK_READ_OUT_OF_SCOPE\",\"message\":\"You work on scope-board-1cd534-2; you can read only that Task.\"}}"
+          }
+        ],
+        "structuredContent": {
+          "error": {
+            "code": "TASK_READ_OUT_OF_SCOPE",
+            "message": "You work on scope-board-1cd534-2; you can read only that Task."
+          }
+        },
+        "isError": true
+      }
+    },
+    {
+      "who": "squad coordinator",
+      "route": "mcp",
+      "name": "delegate_task",
+      "args": {
+        "recipient_address": "/scope_reviewer_1cd534",
+        "description": "Review the docs site's API pages."
+      },
+      "raw": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"delegated\":true,\"target_kind\":\"agent\",\"target_agent_run_id\":\"scope_reviewer_1cd534_1bb923f83f1f48b09858e8ed8f68b0db\"}"
+          }
+        ],
+        "structuredContent": {
+          "delegated": true,
+          "target_kind": "agent",
+          "target_agent_run_id": "scope_reviewer_1cd534_1bb923f83f1f48b09858e8ed8f68b0db"
+        }
+      }
+    },
+    {
+      "who": "reviewer",
+      "route": "mcp",
+      "name": "get_project_task",
+      "args": {
+        "project_id": "project_1a56ff8e-c2bd-4b22-a68b-a8cd4f1c314a",
+        "task_id": "scope-board-1cd534-2"
+      },
+      "raw": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"projectId\":\"project_1a56ff8e-c2bd-4b22-a68b-a8cd4f1c314a\",\"taskId\":\"scope-board-1cd534-2\",\"title\":\"Review the docs site\",\"status\":\"TODO\",\"description\":\"Review the docs site with the squad.\",\"assignments\":[{\"kind\":\"team\",\"teamRunId\":\"scope_squad_1cd534_e23e7ac428a845f0ae625d3594adaccb\",\"teamCoordinatorAgentRunId\":\"scope_lead_1cd534_a13cc3df35794fa1a9b8d0d6a9917249\",\"assignedBy\":\"scope_manager_1cd534_3efc11ed7a474ceb89cbdc031d9243d5\",\"outcome\":\"accepted\"}]}"
+          }
+        ],
+        "structuredContent": {
+          "projectId": "project_1a56ff8e-c2bd-4b22-a68b-a8cd4f1c314a",
+          "taskId": "scope-board-1cd534-2",
+          "title": "Review the docs site",
+          "status": "TODO",
+          "description": "Review the docs site with the squad.",
+          "assignments": [
+            {
+              "kind": "team",
+              "teamRunId": "scope_squad_1cd534_e23e7ac428a845f0ae625d3594adaccb",
+              "teamCoordinatorAgentRunId": "scope_lead_1cd534_a13cc3df35794fa1a9b8d0d6a9917249",
+              "assignedBy": "scope_manager_1cd534_3efc11ed7a474ceb89cbdc031d9243d5",
+              "outcome": "accepted"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "who": "reviewer",
+      "route": "mcp",
+      "name": "get_project_task",
+      "args": {
+        "project_id": "project_1a56ff8e-c2bd-4b22-a68b-a8cd4f1c314a",
+        "task_id": "scope-board-1cd534-3"
+      },
+      "raw": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"error\":{\"code\":\"TASK_READ_OUT_OF_SCOPE\",\"message\":\"You work on scope-board-1cd534-2; you can read only that Task.\"}}"
+          }
+        ],
+        "structuredContent": {
+          "error": {
+            "code": "TASK_READ_OUT_OF_SCOPE",
+            "message": "You work on scope-board-1cd534-2; you can read only that Task."
+          }
+        },
+        "isError": true
+      }
+    },
+    {
+      "who": "plain",
+      "route": "mcp",
+      "name": "get_project_task",
+      "args": {
+        "project_id": "project_1a56ff8e-c2bd-4b22-a68b-a8cd4f1c314a",
+        "task_id": "scope-board-1cd534-1"
+      },
+      "raw": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"error\":{\"code\":\"TASK_READ_OUT_OF_SCOPE\",\"message\":\"Your Task has no Project; get_project_task reads Project Tasks.\"}}"
+          }
+        ],
+        "structuredContent": {
+          "error": {
+            "code": "TASK_READ_OUT_OF_SCOPE",
+            "message": "Your Task has no Project; get_project_task reads Project Tasks."
+          }
+        },
+        "isError": true
+      }
+    },
+    {
+      "who": "manager",
+      "route": "mcp",
+      "name": "get_project_task",
+      "args": {
+        "project_id": "project_1a56ff8e-c2bd-4b22-a68b-a8cd4f1c314a",
+        "task_id": "scope-board-1cd534-2"
+      },
+      "raw": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"projectId\":\"project_1a56ff8e-c2bd-4b22-a68b-a8cd4f1c314a\",\"taskId\":\"scope-board-1cd534-2\",\"title\":\"Review the docs site\",\"status\":\"TODO\",\"description\":\"Review the docs site with the squad.\",\"assignments\":[{\"kind\":\"team\",\"teamRunId\":\"scope_squad_1cd534_e23e7ac428a845f0ae625d3594adaccb\",\"teamCoordinatorAgentRunId\":\"scope_lead_1cd534_a13cc3df35794fa1a9b8d0d6a9917249\",\"assignedBy\":\"scope_manager_1cd534_3efc11ed7a474ceb89cbdc031d9243d5\",\"outcome\":\"accepted\"}]}"
+          }
+        ],
+        "structuredContent": {
+          "projectId": "project_1a56ff8e-c2bd-4b22-a68b-a8cd4f1c314a",
+          "taskId": "scope-board-1cd534-2",
+          "title": "Review the docs site",
+          "status": "TODO",
+          "description": "Review the docs site with the squad.",
+          "assignments": [
+            {
+              "kind": "team",
+              "teamRunId": "scope_squad_1cd534_e23e7ac428a845f0ae625d3594adaccb",
+              "teamCoordinatorAgentRunId": "scope_lead_1cd534_a13cc3df35794fa1a9b8d0d6a9917249",
+              "assignedBy": "scope_manager_1cd534_3efc11ed7a474ceb89cbdc031d9243d5",
+              "outcome": "accepted"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "who": "manager",
+      "route": "mcp",
+      "name": "get_project_task",
+      "args": {
+        "project_id": "project_1a56ff8e-c2bd-4b22-a68b-a8cd4f1c314a",
+        "task_id": "SCOPE-BOARD-1CD534-3"
+      },
+      "raw": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"projectId\":\"project_1a56ff8e-c2bd-4b22-a68b-a8cd4f1c314a\",\"taskId\":\"scope-board-1cd534-3\",\"title\":\"Check the native runtime\",\"status\":\"TODO\",\"description\":\"Check the native runtime path.\",\"assignments\":[{\"kind\":\"agent\",\"agentRunId\":\"scope_native_helper_1cd534_fa6d0bbed62b4691851ba5e5172a1717\",\"assignedBy\":\"scope_manager_1cd534_3efc11ed7a474ceb89cbdc031d9243d5\",\"outcome\":\"accepted\"}]}"
+          }
+        ],
+        "structuredContent": {
+          "projectId": "project_1a56ff8e-c2bd-4b22-a68b-a8cd4f1c314a",
+          "taskId": "scope-board-1cd534-3",
+          "title": "Check the native runtime",
+          "status": "TODO",
+          "description": "Check the native runtime path.",
+          "assignments": [
+            {
+              "kind": "agent",
+              "agentRunId": "scope_native_helper_1cd534_fa6d0bbed62b4691851ba5e5172a1717",
+              "assignedBy": "scope_manager_1cd534_3efc11ed7a474ceb89cbdc031d9243d5",
+              "outcome": "accepted"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "who": "manager",
+      "route": "mcp",
+      "name": "get_project_task",
+      "args": {
+        "project_id": "project_1a56ff8e-c2bd-4b22-a68b-a8cd4f1c314a",
+        "task_id": "other-board-1cd534-1"
+      },
+      "raw": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"error\":{\"code\":\"TASK_NOT_FOUND\",\"message\":\"Task 'other-board-1cd534-1' was not found in this project.\"}}"
+          }
+        ],
+        "structuredContent": {
+          "error": {
+            "code": "TASK_NOT_FOUND",
+            "message": "Task 'other-board-1cd534-1' was not found in this project."
+          }
+        },
+        "isError": true
+      }
+    },
+    {
+      "who": "manager",
+      "route": "mcp",
+      "name": "get_project_task",
+      "args": {
+        "project_id": "project_1a56ff8e-c2bd-4b22-a68b-a8cd4f1c314a",
+        "task_id": "project_task_f6c17346-10a7-4165-a49e-24239f56ea1e"
+      },
+      "raw": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"error\":{\"code\":\"TASK_NOT_FOUND\",\"message\":\"Task 'project_task_f6c17346-10a7-4165-a49e-24239f56ea1e' was not found in this project.\"}}"
+          }
+        ],
+        "structuredContent": {
+          "error": {
+            "code": "TASK_NOT_FOUND",
+            "message": "Task 'project_task_f6c17346-10a7-4165-a49e-24239f56ea1e' was not found in this project."
+          }
+        },
+        "isError": true
+      }
+    },
+    {
+      "who": "manager",
+      "route": "mcp",
+      "name": "get_project_task",
+      "args": {
+        "project_id": "project_1a56ff8e-c2bd-4b22-a68b-a8cd4f1c314a",
+        "task_id": "scope-board-1cd534-19"
+      },
+      "raw": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"error\":{\"code\":\"TASK_NOT_FOUND\",\"message\":\"Task 'scope-board-1cd534-19' was not found in this project.\"}}"
+          }
+        ],
+        "structuredContent": {
+          "error": {
+            "code": "TASK_NOT_FOUND",
+            "message": "Task 'scope-board-1cd534-19' was not found in this project."
+          }
+        },
+        "isError": true
+      }
+    },
+    {
+      "who": "manager",
+      "route": "mcp",
+      "name": "get_project_task",
+      "args": {
+        "project_id": "project_e030cf9c-40f4-411b-8b3e-19a1276d8c4e",
+        "task_id": "other-board-1cd534-1"
+      },
+      "raw": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"projectId\":\"project_e030cf9c-40f4-411b-8b3e-19a1276d8c4e\",\"taskId\":\"other-board-1cd534-1\",\"title\":\"Elsewhere\",\"status\":\"TODO\",\"description\":\"A Task of another Project.\"}"
+          }
+        ],
+        "structuredContent": {
+          "projectId": "project_e030cf9c-40f4-411b-8b3e-19a1276d8c4e",
+          "taskId": "other-board-1cd534-1",
+          "title": "Elsewhere",
+          "status": "TODO",
+          "description": "A Task of another Project."
+        }
+      }
+    },
+    {
+      "who": "native helper",
+      "route": "native",
+      "name": "get_project_task",
+      "args": {
+        "project_id": "project_1a56ff8e-c2bd-4b22-a68b-a8cd4f1c314a",
+        "task_id": "scope-board-1cd534-3"
+      },
+      "text": "{\"projectId\":\"project_1a56ff8e-c2bd-4b22-a68b-a8cd4f1c314a\",\"taskId\":\"scope-board-1cd534-3\",\"title\":\"Check the native runtime\",\"status\":\"TODO\",\"description\":\"Check the native runtime path.\",\"assignments\":[{\"kind\":\"agent\",\"agentRunId\":\"scope_native_helper_1cd534_fa6d0bbed62b4691851ba5e5172a1717\",\"assignedBy\":\"scope_manager_1cd534_3efc11ed7a474ceb89cbdc031d9243d5\",\"outcome\":\"accepted\"}]}"
+    },
+    {
+      "who": "native helper",
+      "route": "native",
+      "name": "get_project_task",
+      "args": {
+        "project_id": "project_1a56ff8e-c2bd-4b22-a68b-a8cd4f1c314a",
+        "task_id": "project_task_1ee71635-af94-4bc5-90ec-7b3e5611ed21"
+      },
+      "text": "{\"projectId\":\"project_1a56ff8e-c2bd-4b22-a68b-a8cd4f1c314a\",\"taskId\":\"scope-board-1cd534-3\",\"title\":\"Check the native runtime\",\"status\":\"TODO\",\"description\":\"Check the native runtime path.\",\"assignments\":[{\"kind\":\"agent\",\"agentRunId\":\"scope_native_helper_1cd534_fa6d0bbed62b4691851ba5e5172a1717\",\"assignedBy\":\"scope_manager_1cd534_3efc11ed7a474ceb89cbdc031d9243d5\",\"outcome\":\"accepted\"}]}"
+    },
+    {
+      "who": "native helper",
+      "route": "native",
+      "name": "get_project_task",
+      "args": {
+        "project_id": "project_1a56ff8e-c2bd-4b22-a68b-a8cd4f1c314a",
+        "task_id": "scope-board-1cd534-1"
+      },
+      "text": "Error: Error executing tool 'get_project_task' (ID: call_c5372a28): Error: {\"error\":{\"code\":\"TASK_READ_OUT_OF_SCOPE\",\"message\":\"You work on scope-board-1cd534-3; you can read only that Task.\"}}"
+    },
+    {
+      "who": "mate",
+      "route": "native",
+      "name": "get_project_task",
+      "args": {
+        "project_id": "project_1a56ff8e-c2bd-4b22-a68b-a8cd4f1c314a",
+        "task_id": "scope-board-1cd534-1"
+      },
+      "text": "{\"projectId\":\"project_1a56ff8e-c2bd-4b22-a68b-a8cd4f1c314a\",\"taskId\":\"scope-board-1cd534-1\",\"title\":\"Write the release notes\",\"status\":\"TODO\",\"description\":\"Write the release notes for 1.6.\\nKeep them short.\",\"assignments\":[{\"kind\":\"agent\",\"agentRunId\":\"scope_helper_1cd534_3c83c03120214c2e839b380c5b37c0f5\",\"assignedBy\":\"scope_manager_1cd534_3efc11ed7a474ceb89cbdc031d9243d5\",\"outcome\":\"accepted\"}]}"
+    },
+    {
+      "who": "mate",
+      "route": "native",
+      "name": "get_project_task",
+      "args": {
+        "project_id": "project_1a56ff8e-c2bd-4b22-a68b-a8cd4f1c314a",
+        "task_id": "other-board-1cd534-1"
+      },
+      "text": "Error: Error executing tool 'get_project_task' (ID: call_43eb447b): Error: {\"error\":{\"code\":\"TASK_NOT_FOUND\",\"message\":\"Task 'other-board-1cd534-1' was not found in this project.\"}}"
+    },
+    {
+      "who": "helper",
+      "route": "mcp",
+      "name": "LIST_TOOLS",
+      "tools": [
+        "get_project_task",
+        "get_handoff_rules",
+        "send_message_to",
+        "delegate_task"
+      ]
+    },
+    {
+      "who": "manager",
+      "route": "mcp",
+      "name": "delegate_task",
+      "args": {
+        "recipient_address": "/scope_bare_1cd534",
+        "description": "Say hello."
+      },
+      "raw": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"delegated\":true,\"target_kind\":\"agent\",\"target_agent_run_id\":\"scope_bare_1cd534_8fc8a79a404d4c4a833547b7cb6df3e6\",\"task_id\":\"ad_hoc_task_1cd5d878-360b-4e53-bcea-e0defbed3cc5\"}"
+          }
+        ],
+        "structuredContent": {
+          "delegated": true,
+          "target_kind": "agent",
+          "target_agent_run_id": "scope_bare_1cd534_8fc8a79a404d4c4a833547b7cb6df3e6",
+          "task_id": "ad_hoc_task_1cd5d878-360b-4e53-bcea-e0defbed3cc5"
+        }
+      }
+    },
+    {
+      "who": "bare",
+      "route": "mcp",
+      "name": "LIST_TOOLS",
+      "tools": [
+        "get_handoff_rules",
+        "send_message_to",
+        "delegate_task"
+      ]
+    },
+    {
+      "who": "manager",
+      "route": "mcp",
+      "name": "delegate_task",
+      "args": {
+        "target_agent_run_id": "scope_helper_1cd534_3c83c03120214c2e839b380c5b37c0f5",
+        "task_id": "scope-board-1cd534-4"
+      },
+      "raw": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"delegated\":true,\"target_kind\":\"agent\",\"target_agent_run_id\":\"scope_helper_1cd534_3c83c03120214c2e839b380c5b37c0f5\"}"
+          }
+        ],
+        "structuredContent": {
+          "delegated": true,
+          "target_kind": "agent",
+          "target_agent_run_id": "scope_helper_1cd534_3c83c03120214c2e839b380c5b37c0f5"
+        }
+      }
+    },
+    {
+      "who": "helper",
+      "route": "mcp",
+      "name": "get_project_task",
+      "args": {
+        "project_id": "project_1a56ff8e-c2bd-4b22-a68b-a8cd4f1c314a",
+        "task_id": "scope-board-1cd534-4"
+      },
+      "raw": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"projectId\":\"project_1a56ff8e-c2bd-4b22-a68b-a8cd4f1c314a\",\"taskId\":\"scope-board-1cd534-4\",\"title\":\"Publish the changelog\",\"status\":\"TODO\",\"description\":\"Publish the changelog after the notes.\",\"assignments\":[{\"kind\":\"agent\",\"agentRunId\":\"scope_helper_1cd534_3c83c03120214c2e839b380c5b37c0f5\",\"assignedBy\":\"scope_manager_1cd534_3efc11ed7a474ceb89cbdc031d9243d5\",\"outcome\":\"accepted\"}]}"
+          }
+        ],
+        "structuredContent": {
+          "projectId": "project_1a56ff8e-c2bd-4b22-a68b-a8cd4f1c314a",
+          "taskId": "scope-board-1cd534-4",
+          "title": "Publish the changelog",
+          "status": "TODO",
+          "description": "Publish the changelog after the notes.",
+          "assignments": [
+            {
+              "kind": "agent",
+              "agentRunId": "scope_helper_1cd534_3c83c03120214c2e839b380c5b37c0f5",
+              "assignedBy": "scope_manager_1cd534_3efc11ed7a474ceb89cbdc031d9243d5",
+              "outcome": "accepted"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "who": "helper",
+      "route": "mcp",
+      "name": "get_project_task",
+      "args": {
+        "project_id": "project_1a56ff8e-c2bd-4b22-a68b-a8cd4f1c314a",
+        "task_id": "scope-board-1cd534-1"
+      },
+      "raw": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"error\":{\"code\":\"TASK_READ_OUT_OF_SCOPE\",\"message\":\"You work on scope-board-1cd534-4; you can read only that Task.\"}}"
+          }
+        ],
+        "structuredContent": {
+          "error": {
+            "code": "TASK_READ_OUT_OF_SCOPE",
+            "message": "You work on scope-board-1cd534-4; you can read only that Task."
+          }
+        },
+        "isError": true
+      }
+    },
+    {
+      "who": "manager",
+      "route": "mcp",
+      "name": "get_project_task",
+      "args": {
+        "project_id": "project_1a56ff8e-c2bd-4b22-a68b-a8cd4f1c314a",
+        "task_id": "scope-board-1cd534-1"
+      },
+      "raw": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"projectId\":\"project_1a56ff8e-c2bd-4b22-a68b-a8cd4f1c314a\",\"taskId\":\"scope-board-1cd534-1\",\"title\":\"Write the release notes\",\"status\":\"TODO\",\"description\":\"Write the release notes for 1.6.\\nKeep them short.\",\"assignments\":[{\"kind\":\"agent\",\"agentRunId\":\"scope_helper_1cd534_3c83c03120214c2e839b380c5b37c0f5\",\"assignedBy\":\"scope_manager_1cd534_3efc11ed7a474ceb89cbdc031d9243d5\",\"outcome\":\"accepted\"}]}"
+          }
+        ],
+        "structuredContent": {
+          "projectId": "project_1a56ff8e-c2bd-4b22-a68b-a8cd4f1c314a",
+          "taskId": "scope-board-1cd534-1",
+          "title": "Write the release notes",
+          "status": "TODO",
+          "description": "Write the release notes for 1.6.\nKeep them short.",
+          "assignments": [
+            {
+              "kind": "agent",
+              "agentRunId": "scope_helper_1cd534_3c83c03120214c2e839b380c5b37c0f5",
+              "assignedBy": "scope_manager_1cd534_3efc11ed7a474ceb89cbdc031d9243d5",
+              "outcome": "accepted"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "who": "mate",
+      "route": "native",
+      "name": "get_project_task",
+      "args": {
+        "project_id": "project_1a56ff8e-c2bd-4b22-a68b-a8cd4f1c314a",
+        "task_id": "scope-board-1cd534-2"
+      },
+      "text": "{\"projectId\":\"project_1a56ff8e-c2bd-4b22-a68b-a8cd4f1c314a\",\"taskId\":\"scope-board-1cd534-2\",\"title\":\"Review the docs site\",\"status\":\"TODO\",\"description\":\"Review the docs site with the squad.\",\"assignments\":[{\"kind\":\"team\",\"teamRunId\":\"scope_squad_1cd534_e23e7ac428a845f0ae625d3594adaccb\",\"teamCoordinatorAgentRunId\":\"scope_lead_1cd534_a13cc3df35794fa1a9b8d0d6a9917249\",\"assignedBy\":\"scope_manager_1cd534_3efc11ed7a474ceb89cbdc031d9243d5\",\"outcome\":\"accepted\"}]}"
+    },
+    {
+      "who": "helper",
+      "route": "mcp",
+      "name": "get_project_task",
+      "args": {
+        "project_id": "project_1a56ff8e-c2bd-4b22-a68b-a8cd4f1c314a",
+        "task_id": "scope-board-1cd534-4"
+      },
+      "raw": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"projectId\":\"project_1a56ff8e-c2bd-4b22-a68b-a8cd4f1c314a\",\"taskId\":\"scope-board-1cd534-4\",\"title\":\"Publish the changelog\",\"status\":\"TODO\",\"description\":\"Publish the changelog after the notes.\",\"assignments\":[{\"kind\":\"agent\",\"agentRunId\":\"scope_helper_1cd534_3c83c03120214c2e839b380c5b37c0f5\",\"assignedBy\":\"scope_manager_1cd534_3efc11ed7a474ceb89cbdc031d9243d5\",\"outcome\":\"accepted\"}]}"
+          }
+        ],
+        "structuredContent": {
+          "projectId": "project_1a56ff8e-c2bd-4b22-a68b-a8cd4f1c314a",
+          "taskId": "scope-board-1cd534-4",
+          "title": "Publish the changelog",
+          "status": "TODO",
+          "description": "Publish the changelog after the notes.",
+          "assignments": [
+            {
+              "kind": "agent",
+              "agentRunId": "scope_helper_1cd534_3c83c03120214c2e839b380c5b37c0f5",
+              "assignedBy": "scope_manager_1cd534_3efc11ed7a474ceb89cbdc031d9243d5",
+              "outcome": "accepted"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "who": "helper",
+      "route": "mcp",
+      "name": "get_project_task",
+      "args": {
+        "project_id": "project_1a56ff8e-c2bd-4b22-a68b-a8cd4f1c314a",
+        "task_id": "scope-board-1cd534-3"
+      },
+      "raw": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"error\":{\"code\":\"TASK_READ_OUT_OF_SCOPE\",\"message\":\"You work on scope-board-1cd534-4; you can read only that Task.\"}}"
+          }
+        ],
+        "structuredContent": {
+          "error": {
+            "code": "TASK_READ_OUT_OF_SCOPE",
+            "message": "You work on scope-board-1cd534-4; you can read only that Task."
+          }
+        },
+        "isError": true
+      }
+    },
+    {
+      "who": "native helper (damaged)",
+      "route": "native",
+      "refusal": {
+        "type": "ERROR",
+        "payload": {
+          "code": "TEAM_SEND_MESSAGE_REJECTED",
+          "message": "Agent run resource data could not be read (/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/scope-e2e-o2CkMM/projects/project_1a56ff8e-c2bd-4b22-a68b-a8cd4f1c314a/tasks/project_task_1ee71635-af94-4bc5-90ec-7b3e5611ed21/agent_run_resources.json: Expected property name or '}' in JSON at position 2 (line 1 column 3)). Fix or restore the file and restart the app; other features keep working.",
+          "details": "TASK_AGENT_RESOURCES_UNAVAILABLE",
+          "error_scope": null,
+          "error_effect": null,
+          "turn_id": null,
+          "change_sequence": null,
+          "agent_run_id": "scope_native_helper_1cd534_fa6d0bbed62b4691851ba5e5172a1717"
+        }
+      }
+    },
+    {
+      "who": "manager",
+      "route": "mcp",
+      "name": "list_project_tasks",
+      "args": {
+        "project_id": "project_1a56ff8e-c2bd-4b22-a68b-a8cd4f1c314a"
+      },
+      "raw": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"projectId\":\"project_1a56ff8e-c2bd-4b22-a68b-a8cd4f1c314a\",\"tasks\":[{\"taskId\":\"scope-board-1cd534-4\",\"title\":\"Publish the changelog\",\"status\":\"TODO\",\"assignments\":[{\"kind\":\"agent\",\"agentRunId\":\"scope_helper_1cd534_3c83c03120214c2e839b380c5b37c0f5\",\"assignedBy\":\"scope_manager_1cd534_3efc11ed7a474ceb89cbdc031d9243d5\",\"outcome\":\"accepted\"}]},{\"taskId\":\"scope-board-1cd534-3\",\"title\":\"Check the native runtime\",\"status\":\"TODO\",\"assignmentsUnavailable\":true},{\"taskId\":\"scope-board-1cd534-2\",\"title\":\"Review the docs site\",\"status\":\"TODO\",\"assignments\":[{\"kind\":\"team\",\"teamRunId\":\"scope_squad_1cd534_e23e7ac428a845f0ae625d3594adaccb\",\"teamCoordinatorAgentRunId\":\"scope_lead_1cd534_a13cc3df35794fa1a9b8d0d6a9917249\",\"assignedBy\":\"scope_manager_1cd534_3efc11ed7a474ceb89cbdc031d9243d5\",\"outcome\":\"accepted\"}]},{\"taskId\":\"scope-board-1cd534-1\",\"title\":\"Write the release notes\",\"status\":\"TODO\",\"assignments\":[{\"kind\":\"agent\",\"agentRunId\":\"scope_helper_1cd534_3c83c03120214c2e839b380c5b37c0f5\",\"assignedBy\":\"scope_manager_1cd534_3efc11ed7a474ceb89cbdc031d9243d5\",\"outcome\":\"accepted\"}]}]}"
+          }
+        ],
+        "structuredContent": {
+          "projectId": "project_1a56ff8e-c2bd-4b22-a68b-a8cd4f1c314a",
+          "tasks": [
+            {
+              "taskId": "scope-board-1cd534-4",
+              "title": "Publish the changelog",
+              "status": "TODO",
+              "assignments": [
+                {
+                  "kind": "agent",
+                  "agentRunId": "scope_helper_1cd534_3c83c03120214c2e839b380c5b37c0f5",
+                  "assignedBy": "scope_manager_1cd534_3efc11ed7a474ceb89cbdc031d9243d5",
+                  "outcome": "accepted"
+                }
+              ]
+            },
+            {
+              "taskId": "scope-board-1cd534-3",
+              "title": "Check the native runtime",
+              "status": "TODO",
+              "assignmentsUnavailable": true
+            },
+            {
+              "taskId": "scope-board-1cd534-2",
+              "title": "Review the docs site",
+              "status": "TODO",
+              "assignments": [
+                {
+                  "kind": "team",
+                  "teamRunId": "scope_squad_1cd534_e23e7ac428a845f0ae625d3594adaccb",
+                  "teamCoordinatorAgentRunId": "scope_lead_1cd534_a13cc3df35794fa1a9b8d0d6a9917249",
+                  "assignedBy": "scope_manager_1cd534_3efc11ed7a474ceb89cbdc031d9243d5",
+                  "outcome": "accepted"
+                }
+              ]
+            },
+            {
+              "taskId": "scope-board-1cd534-1",
+              "title": "Write the release notes",
+              "status": "TODO",
+              "assignments": [
+                {
+                  "kind": "agent",
+                  "agentRunId": "scope_helper_1cd534_3c83c03120214c2e839b380c5b37c0f5",
+                  "assignedBy": "scope_manager_1cd534_3efc11ed7a474ceb89cbdc031d9243d5",
+                  "outcome": "accepted"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "nativeRequests": [
+    {
+      "tools": [
+        "run_bash",
+        "read_file",
+        "edit_file",
+        "write_file",
+        "get_project_task",
+        "get_handoff_rules",
+        "send_message_to",
+        "delegate_task"
+      ],
+      "lastRole": "user",
+      "lastText": "You have a new task from the agent with sender address \"/manager\" and sender run id \"scope_manager_1cd534_3efc11ed7a474ceb89cbdc031d9243d5\".\nWhen you finish, or need something you can't get yourself, tell that agent using send_message_to with recipient_address set to that sender address or target_agent_run_id set to that sender run id (one of them, not both).\n\nTask: scope-board-1cd534-3 in Project project_1a56ff8e-c2bd-4b22-a68b-a8cd4f1c314a\nIf you have get_project_task, it reads this Task again, including comments added later.\nDescription:\nCheck the native runtime path."
+    },
+    {
+      "tools": [
+        "run_bash",
+        "read_file",
+        "edit_file",
+        "write_file",
+        "get_project_task",
+        "get_handoff_rules",
+        "send_message_to",
+        "delegate_task"
+      ],
+      "lastRole": "user",
+      "lastText": "NATIVE_CALL:{\"name\":\"get_project_task\",\"arguments\":{\"project_id\":\"project_1a56ff8e-c2bd-4b22-a68b-a8cd4f1c314a\",\"task_id\":\"scope-board-1cd534-3\"}}"
+    },
+    {
+      "tools": [
+        "run_bash",
+        "read_file",
+        "edit_file",
+        "write_file",
+        "get_project_task",
+        "get_handoff_rules",
+        "send_message_to",
+        "delegate_task"
+      ],
+      "lastRole": "tool",
+      "lastText": "{\"projectId\":\"project_1a56ff8e-c2bd-4b22-a68b-a8cd4f1c314a\",\"taskId\":\"scope-board-1cd534-3\",\"title\":\"Check the native runtime\",\"status\":\"TODO\",\"description\":\"Check the native runtime path.\",\"assignments\":[{\"kind\":\"agent\",\"agentRunId\":\"scope_native_helper_1cd534_fa6d0bbed62b4691851ba5e5172a1717\",\"assignedBy\":\"scope_manager_1cd534_3efc11ed7a474ceb89cbdc031d9243d5\",\"outcome\":\"accepted\"}]}"
+    },
+    {
+      "tools": [
+        "run_bash",
+        "read_file",
+        "edit_file",
+        "write_file",
+        "get_project_task",
+        "get_handoff_rules",
+        "send_message_to",
+        "delegate_task"
+      ],
+      "lastRole": "user",
+      "lastText": "NATIVE_CALL:{\"name\":\"get_project_task\",\"arguments\":{\"project_id\":\"project_1a56ff8e-c2bd-4b22-a68b-a8cd4f1c314a\",\"task_id\":\"project_task_1ee71635-af94-4bc5-90ec-7b3e5611ed21\"}}"
+    },
+    {
+      "tools": [
+        "run_bash",
+        "read_file",
+        "edit_file",
+        "write_file",
+        "get_project_task",
+        "get_handoff_rules",
+        "send_message_to",
+        "delegate_task"
+      ],
+      "lastRole": "tool",
+      "lastText": "{\"projectId\":\"project_1a56ff8e-c2bd-4b22-a68b-a8cd4f1c314a\",\"taskId\":\"scope-board-1cd534-3\",\"title\":\"Check the native runtime\",\"status\":\"TODO\",\"description\":\"Check the native runtime path.\",\"assignments\":[{\"kind\":\"agent\",\"agentRunId\":\"scope_native_helper_1cd534_fa6d0bbed62b4691851ba5e5172a1717\",\"assignedBy\":\"scope_manager_1cd534_3efc11ed7a474ceb89cbdc031d9243d5\",\"outcome\":\"accepted\"}]}"
+    },
+    {
+      "tools": [
+        "run_bash",
+        "read_file",
+        "edit_file",
+        "write_file",
+        "get_project_task",
+        "get_handoff_rules",
+        "send_message_to",
+        "delegate_task"
+      ],
+      "lastRole": "user",
+      "lastText": "NATIVE_CALL:{\"name\":\"get_project_task\",\"arguments\":{\"project_id\":\"project_1a56ff8e-c2bd-4b22-a68b-a8cd4f1c314a\",\"task_id\":\"scope-board-1cd534-1\"}}"
+    },
+    {
+      "tools": [
+        "run_bash",
+        "read_file",
+        "edit_file",
+        "write_file",
+        "get_project_task",
+        "get_handoff_rules",
+        "send_message_to",
+        "delegate_task"
+      ],
+      "lastRole": "tool",
+      "lastText": "Error: Error executing tool 'get_project_task' (ID: call_c5372a28): Error: {\"error\":{\"code\":\"TASK_READ_OUT_OF_SCOPE\",\"message\":\"You work on scope-board-1cd534-3; you can read only that Task.\"}}"
+    },
+    {
+      "tools": [
+        "run_bash",
+        "read_file",
+        "edit_file",
+        "write_file",
+        "get_project_task",
+        "get_handoff_rules",
+        "send_message_to",
+        "delegate_task"
+      ],
+      "lastRole": "user",
+      "lastText": "NATIVE_CALL:{\"name\":\"get_project_task\",\"arguments\":{\"project_id\":\"project_1a56ff8e-c2bd-4b22-a68b-a8cd4f1c314a\",\"task_id\":\"scope-board-1cd534-1\"}}"
+    },
+    {
+      "tools": [
+        "run_bash",
+        "read_file",
+        "edit_file",
+        "write_file",
+        "get_project_task",
+        "get_handoff_rules",
+        "send_message_to",
+        "delegate_task"
+      ],
+      "lastRole": "tool",
+      "lastText": "{\"projectId\":\"project_1a56ff8e-c2bd-4b22-a68b-a8cd4f1c314a\",\"taskId\":\"scope-board-1cd534-1\",\"title\":\"Write the release notes\",\"status\":\"TODO\",\"description\":\"Write the release notes for 1.6.\\nKeep them short.\",\"assignments\":[{\"kind\":\"agent\",\"agentRunId\":\"scope_helper_1cd534_3c83c03120214c2e839b380c5b37c0f5\",\"assignedBy\":\"scope_manager_1cd534_3efc11ed7a474ceb89cbdc031d9243d5\",\"outcome\":\"accepted\"}]}"
+    },
+    {
+      "tools": [
+        "run_bash",
+        "read_file",
+        "edit_file",
+        "write_file",
+        "get_project_task",
+        "get_handoff_rules",
+        "send_message_to",
+        "delegate_task"
+      ],
+      "lastRole": "user",
+      "lastText": "NATIVE_CALL:{\"name\":\"get_project_task\",\"arguments\":{\"project_id\":\"project_1a56ff8e-c2bd-4b22-a68b-a8cd4f1c314a\",\"task_id\":\"other-board-1cd534-1\"}}"
+    },
+    {
+      "tools": [
+        "run_bash",
+        "read_file",
+        "edit_file",
+        "write_file",
+        "get_project_task",
+        "get_handoff_rules",
+        "send_message_to",
+        "delegate_task"
+      ],
+      "lastRole": "tool",
+      "lastText": "Error: Error executing tool 'get_project_task' (ID: call_43eb447b): Error: {\"error\":{\"code\":\"TASK_NOT_FOUND\",\"message\":\"Task 'other-board-1cd534-1' was not found in this project.\"}}"
+    },
+    {
+      "tools": [
+        "run_bash",
+        "read_file",
+        "edit_file",
+        "write_file",
+        "get_project_task",
+        "get_handoff_rules",
+        "send_message_to",
+        "delegate_task"
+      ],
+      "lastRole": "user",
+      "lastText": "NATIVE_CALL:{\"name\":\"get_project_task\",\"arguments\":{\"project_id\":\"project_1a56ff8e-c2bd-4b22-a68b-a8cd4f1c314a\",\"task_id\":\"scope-board-1cd534-2\"}}"
+    },
+    {
+      "tools": [
+        "run_bash",
+        "read_file",
+        "edit_file",
+        "write_file",
+        "get_project_task",
+        "get_handoff_rules",
+        "send_message_to",
+        "delegate_task"
+      ],
+      "lastRole": "tool",
+      "lastText": "{\"projectId\":\"project_1a56ff8e-c2bd-4b22-a68b-a8cd4f1c314a\",\"taskId\":\"scope-board-1cd534-2\",\"title\":\"Review the docs site\",\"status\":\"TODO\",\"description\":\"Review the docs site with the squad.\",\"assignments\":[{\"kind\":\"team\",\"teamRunId\":\"scope_squad_1cd534_e23e7ac428a845f0ae625d3594adaccb\",\"teamCoordinatorAgentRunId\":\"scope_lead_1cd534_a13cc3df35794fa1a9b8d0d6a9917249\",\"assignedBy\":\"scope_manager_1cd534_3efc11ed7a474ceb89cbdc031d9243d5\",\"outcome\":\"accepted\"}]}"
+    }
+  ],
+  "projectId": "project_1a56ff8e-c2bd-4b22-a68b-a8cd4f1c314a",
+  "otherProjectId": "project_e030cf9c-40f4-411b-8b3e-19a1276d8c4e",
+  "tasks": {
+    "A": {
+      "taskId": "project_task_7a4f98b4-8a45-4670-9e64-61a92c4fcf34",
+      "taskKey": "scope-board-1cd534-1",
+      "title": "Write the release notes",
+      "description": "Write the release notes for 1.6.\nKeep them short."
+    },
+    "B": {
+      "taskId": "project_task_13be9dcf-3f2a-4c1a-8773-85e7c4e03910",
+      "taskKey": "scope-board-1cd534-2",
+      "title": "Review the docs site",
+      "description": "Review the docs site with the squad."
+    },
+    "C": {
+      "taskId": "project_task_1ee71635-af94-4bc5-90ec-7b3e5611ed21",
+      "taskKey": "scope-board-1cd534-3",
+      "title": "Check the native runtime",
+      "description": "Check the native runtime path."
+    },
+    "D": {
+      "taskId": "project_task_fbb5c101-7c7a-4b5b-b1cf-7c2909ceddc4",
+      "taskKey": "scope-board-1cd534-4",
+      "title": "Publish the changelog",
+      "description": "Publish the changelog after the notes."
+    },
+    "X": {
+      "taskId": "project_task_f6c17346-10a7-4165-a49e-24239f56ea1e",
+      "taskKey": "other-board-1cd534-1",
+      "title": "Elsewhere",
+      "description": "A Task of another Project."
+    }
+  },
+  "runs": {
+    "helper": "scope_helper_1cd534_3c83c03120214c2e839b380c5b37c0f5",
+    "coordinator": "scope_lead_1cd534_a13cc3df35794fa1a9b8d0d6a9917249",
+    "squadTeam": "scope_squad_1cd534_e23e7ac428a845f0ae625d3594adaccb",
+    "reviewer": "scope_reviewer_1cd534_1bb923f83f1f48b09858e8ed8f68b0db",
+    "native": "scope_native_helper_1cd534_fa6d0bbed62b4691851ba5e5172a1717",
+    "plain": "scope_plain_1cd534_0965b73bda904eb3a7304c794f55491c"
+  }
+}

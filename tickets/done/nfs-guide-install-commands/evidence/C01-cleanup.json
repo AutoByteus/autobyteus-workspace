@@ -1,0 +1,46 @@
+{
+  "case": "C01",
+  "date": "2026-10-21T20:08:00.374124+00:00",
+  "commit": "66b00b8c654c82f0fe8abd44a7094bf9b2799cc4",
+  "step": "Check owned process groups/ports/temp roots + exact current source/preservation",
+  "environment": "localmacOS",
+  "attempts": [
+    {
+      "attempt": 1,
+      "result": "Fail",
+      "ownedProcessGroup": 82499,
+      "processGroupAbsent": true,
+      "portClosed": true,
+      "rootAbsent": true,
+      "browserClosed": true
+    },
+    {
+      "attempt": 2,
+      "result": "Pass",
+      "ownedProcessGroup": 85878,
+      "processGroupAbsent": true,
+      "portClosed": true,
+      "rootAbsent": true,
+      "browserClosed": true
+    }
+  ],
+  "allTrackedInputsUnchanged": true,
+  "approvedSourcePathsUnchanged": [
+    "RELEASE.md",
+    "autobyteus-web/components/settings/NfsGuideCard.vue",
+    "autobyteus-web/components/settings/__tests__/NfsGuideCard.spec.ts",
+    "autobyteus-web/components/settings/__tests__/NodeManager.spec.ts",
+    "autobyteus-web/docs/nfs_guide.md",
+    "autobyteus-web/localization/messages/en/settings.ts",
+    "autobyteus-web/localization/messages/zh-CN/settings.ts",
+    "autobyteus-web/utils/__tests__/nfsLauncherCommands.spec.ts",
+    "autobyteus-web/utils/nfsLauncherCommands.ts"
+  ],
+  "durableCoverageChanges": [],
+  "ignoredOutputsRetained": [
+    "autobyteus-web/node_modules",
+    "autobyteus-web/.nuxt"
+  ],
+  "unrelatedResourcesTouched": false,
+  "pass": true
+}

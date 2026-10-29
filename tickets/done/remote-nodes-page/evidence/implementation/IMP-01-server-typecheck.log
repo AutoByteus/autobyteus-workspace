@@ -1,0 +1,9 @@
+# IMP-01 server typecheck
+# command: pnpm -C autobyteus-server-ts typecheck
+# commit: 3a21bcae44
+# env: macOS Darwin 25.5.0, node v22.23.1
+# date: 2026-10-21T15:48:29Z
+> autobyteus-server-ts@0.1.1 typecheck /Users/normy/autobyteus_org/autobyteus-worktrees/remote-nodes-page/autobyteus-server-ts
+> tsc -p tsconfig.build.json --noEmit
+
+TYPECHECK EXIT 0

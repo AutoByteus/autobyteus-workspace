@@ -2,8 +2,8 @@ import { readReleasedProjectFolderV1, readReleasedTaskFileV1 } from "./released-
 import fs from "node:fs/promises";
 import path from "node:path";
 import { isDeepStrictEqual } from "node:util";
-import { writeJsonFile } from "../../../persistence/file/store-utils.js";
-import { ProjectsLayout } from "../../../projects/stores/projects-layout.js";
+import { writeJsonFile } from "../../frozen/server/persistence/file/store-utils.js";
+import { ProjectsLayout } from "../../frozen/server/projects/stores/projects-layout.js";
 import type {
   AppDataMigrationDefinition,
   AppDataMigrationExecutionResult,

@@ -1,0 +1,4 @@
+IMP-06 launch environment + isolated-app node tests | cmd: node --test scripts/electron-launch/__tests__/*.node-test.mjs scripts/isolated-app/__tests__/*.node-test.mjs | commit 71cfcd7d32 | 2026-10-20
+# tests 52
+# pass 52
+# fail 0

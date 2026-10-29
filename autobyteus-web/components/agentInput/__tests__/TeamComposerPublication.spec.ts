@@ -23,7 +23,7 @@ vi.mock('~/stores/voiceInputStore', () => ({ useVoiceInputStore: () => ({
 }) }));
 const ROOT = 'flat-team';
 const execution = (id = 'fresh-verifier') => ({ kind: 'task_agent' as const, address: '/verifier' as const,
-  agent_run_id: id, platform_agent_run_id: null, delegator_agent_run_id: 'lead', started_at: '2026-08-10T12:00:01.000Z' });
+  agent_run_id: id, platform_agent_run_id: null, delegator_agent_run_id: 'lead', started_at: '2026-08-10T12:00:01.000Z', source: { kind: 'agent', agent_definition_id: 'verifier', launch_configuration: { runtime_kind: 'autobyteus', llm_model_identifier: 'test-model', llm_config: null, auto_execute_tools: false, workspace_root_path: null } } });
 const makeTeam = () => buildTestTeamContext({ teamRunId: ROOT, coordinatorAddress: '/lead', focusedAgentRunId: 'lead',
   rootChildren: [testAgentNode('/lead', { agentRunId: 'lead' }), testAgentNode('/verifier', { agentRunId: 'configured-verifier' })],
 });
@@ -55,7 +55,7 @@ async function setup() {
     const tree = structuredClone(team.view.getExecutionTree());
     tree.root_team.task_executions = ids.map(execution);
     return { root_team_run_id: ROOT, base_change_sequence: base, closed_task_executions: [], execution_tree: tree,
-      messages: [], agent_input_states: [], agent_statuses: ['lead', 'configured-verifier', ...ids].map(id => ({ ...status(id), member_address: id === 'lead' ? '/lead' : '/verifier' })) };
+      messages: [], agent_input_states: [], remote_task_executions: [], agent_statuses: ['lead', 'configured-verifier', ...ids].map(id => ({ ...status(id), member_address: id === 'lead' ? '/lead' : '/verifier' })) };
   };
   emit('CONNECTED', { session_id: 'initial', root_team_run_id: ROOT });
   emit('TEAM_EXECUTION_VIEW_SNAPSHOT', snapshot());

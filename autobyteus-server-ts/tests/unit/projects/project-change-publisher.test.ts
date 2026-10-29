@@ -8,7 +8,7 @@ const project = (projectId: string, openTaskCount: number): ProjectView => ({
   projectId, name: "P", description: "", createdAt: "t", updatedAt: "t", workspaces: [], taskCount: openTaskCount, openTaskCount,
 });
 const task = (taskId: string, status: ProjectTaskView["status"]): ProjectTaskView => ({
-  taskId, projectId: "p1", taskKey: "p-1", description: "Write it", status, dependsOnTaskIds: [], createdAt: "t", updatedAt: "t", contextFiles: [], root: null,
+  taskId, projectId: "p1", taskKey: "p-1", description: "Write it", status, dependsOnTaskIds: [], partOfTaskId: null, comments: [], createdAt: "t", updatedAt: "t", contextFiles: [], root: null,
 });
 
 /** A publisher over controllable state; flushes run when `run()` is called (deterministic `setImmediate`). */

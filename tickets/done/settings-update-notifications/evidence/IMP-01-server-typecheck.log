@@ -1,0 +1,2 @@
+IMP-01 server typecheck | cmd: pnpm -C autobyteus-server-ts typecheck | commit 71cfcd7d32 | 2026-10-20
+tsc exit 0

@@ -17,6 +17,7 @@ import { TeamRunExecutionTreeStore } from "../../../src/run-history/store/team-r
 import { TeamRunHistoryIndexStore } from "../../../src/run-history/store/team-run-history-index-store.js";
 import { TeamCommunicationStore } from "../../../src/services/team-communication/team-communication-store.js";
 import { testAgentNode, testExecutionTree } from "../../fixtures/current-team-run-fixtures.js";
+import { configureMemorySyncCapability } from "../../../src/memory-sync/shared/memory-sync-capability.js";
 
 const hashesOf = async (root: string): Promise<Map<string, string>> => {
   const hashes = new Map<string, string>();
@@ -33,7 +34,7 @@ const hashesOf = async (root: string): Promise<Map<string, string>> => {
 };
 
 describe("imported Team memory GraphQL e2e", () => {
-  const sourceNodeId = "imported-team-memory-e2e";
+  const memorySyncSourceId = "imported-team-memory-e2e";
   const definitionId = "imported-team-definition";
   const rootIds = ["imported-team-run-1", "imported-team-run-2"];
   let appDataDir: string;
@@ -42,6 +43,10 @@ describe("imported Team memory GraphQL e2e", () => {
   let graphql: typeof graphqlFn;
 
   beforeAll(async () => {
+
+    // Memory Sync's stored names are current in this fresh data (autobyteus-290 `memory_sync`).
+
+    configureMemorySyncCapability(true);
     appDataDir = await fs.mkdtemp(path.join(os.tmpdir(), "imported-team-memory-graphql-"));
     appConfigProvider.resetForTests();
     const config = appConfigProvider.config;
@@ -49,10 +54,10 @@ describe("imported Team memory GraphQL e2e", () => {
     resetLocalFileMemoryImportStoreForTests();
     resetMemoryImportCatalogServiceForTests();
     resetMemoryExplorerSourceServiceForTests();
-    importRoot = path.join(config.getMemoryDir(), "imports", sourceNodeId);
+    importRoot = path.join(config.getMemoryDir(), "imports", memorySyncSourceId);
     await fs.mkdir(importRoot, { recursive: true });
-    await fs.writeFile(path.join(importRoot, "source-node.json"), JSON.stringify({
-      schemaVersion: 1, sourceNodeId, displayName: "Imported Team E2E",
+    await fs.writeFile(path.join(importRoot, "memory-sync-source.json"), JSON.stringify({
+      schemaVersion: 1, memorySyncSourceId, displayName: "Imported Team E2E",
       firstImportedAt: "2026-09-01T00:00:00.000Z",
       lastImportedAt: "2026-09-01T00:00:00.000Z",
       lastKnownEndpoint: null, lastSyncStatus: null, lastError: null,
@@ -103,7 +108,7 @@ describe("imported Team memory GraphQL e2e", () => {
   });
 
   const execute = async <T>(source: string): Promise<T> => {
-    const result = await graphql({ schema, source, variableValues: { source: { type: "IMPORTED", sourceNodeId } } });
+    const result = await graphql({ schema, source, variableValues: { source: { type: "IMPORTED", memorySyncSourceId } } });
     if (result.errors?.length) throw result.errors[0];
     return result.data as T;
   };

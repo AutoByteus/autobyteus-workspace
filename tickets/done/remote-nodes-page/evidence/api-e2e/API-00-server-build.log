@@ -1,0 +1,12 @@
+# API-00 server build + Brief Studio package | commit f684e1e368 | 2026-10-21T16:05:07Z | 26.5.2, node v22.23.1
+
+AgentFactory (Singleton) initialized.
+(node:60106) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+build exit=0
+Generated importable package at /Users/normy/autobyteus_org/autobyteus-worktrees/remote-nodes-page/applications/brief-studio/dist/importable-package
+Generated application root at /Users/normy/autobyteus_org/autobyteus-worktrees/remote-nodes-page/applications/brief-studio/dist/importable-package/applications/brief-studio
+Integration test prerequisites are present.
+prepare exit=0

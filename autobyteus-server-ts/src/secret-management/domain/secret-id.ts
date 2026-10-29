@@ -1,41 +1,24 @@
-export type SecretId = string & { readonly __brand: "SecretId" };
+import type { ProviderApiKeySlot } from "autobyteus-ts/secrets/provider-api-key-resolver.js";
+import type { SecretId } from "autobyteus-ts/secrets/vault/secret-id.js";
 
-export type SecretCredentialSlot =
-  | "apiKey"
-  | "geminiAiStudioApiKey"
-  | "geminiVertexExpressApiKey";
-
+/** Who asks the server's vault for a credential; the catalog authorizes each kind. */
 export type SecretConsumerIdentity =
-  | { kind: "llm"; providerId: string; credentialSlot: SecretCredentialSlot }
-  | { kind: "llmMetadata"; providerId: string; credentialSlot: SecretCredentialSlot }
+  | { kind: "llm"; providerId: string; credentialSlot: ProviderApiKeySlot }
+  | { kind: "llmMetadata"; providerId: string; credentialSlot: ProviderApiKeySlot }
   | { kind: "search"; providerId: string; credentialSlot: "apiKey" }
   | {
       kind: "media";
       mediaKind: "audio" | "image" | "video";
       providerId: string;
-      credentialSlot: SecretCredentialSlot;
+      credentialSlot: ProviderApiKeySlot;
     }
   | {
       kind: "agentRuntime";
       runtimeKind: "claude_agent_sdk";
       credentialSlot: "apiKey";
-    };
-
-export const secretId = (value: string): SecretId => {
-  const normalized = value.trim();
-  if (!/^[a-z0-9][a-z0-9._-]*$/.test(normalized)) {
-    throw new Error("INVALID_SECRET_ID");
-  }
-  return normalized as SecretId;
-};
-
-export const customProviderSecretId = (providerId: string): SecretId => {
-  const normalized = providerId.trim();
-  if (!/^[A-Za-z0-9_-]+$/.test(normalized)) {
-    throw new Error("INVALID_CUSTOM_PROVIDER_ID");
-  }
-  return secretId(`provider.openai-compatible.${normalized.toLowerCase()}.api-key`);
-};
+    }
+  /** An MCP server value stored as a vault entry (`mcp.<uuid>`); its owner and field live in `mcps.json`. */
+  | { kind: "mcpServer"; vaultSecretId: SecretId };
 
 export const serializeSecretConsumerIdentity = (consumer: SecretConsumerIdentity): string => {
   switch (consumer.kind) {
@@ -43,6 +26,8 @@ export const serializeSecretConsumerIdentity = (consumer: SecretConsumerIdentity
       return `${consumer.kind}:${consumer.mediaKind}:${consumer.providerId}:${consumer.credentialSlot}`;
     case "agentRuntime":
       return `${consumer.kind}:${consumer.runtimeKind}:${consumer.credentialSlot}`;
+    case "mcpServer":
+      return `${consumer.kind}:${consumer.vaultSecretId}`;
     default:
       return `${consumer.kind}:${consumer.providerId}:${consumer.credentialSlot}`;
   }

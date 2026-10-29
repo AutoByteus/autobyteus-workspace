@@ -1,0 +1,618 @@
+{
+  "side": "before",
+  "backend": "http://127.0.0.1:48170",
+  "startedAt": "2026-10-20T09:23:02.417Z",
+  "servers": {
+    "fs_v1": {
+      "preview": {
+        "ms": 345,
+        "toolCount": 14,
+        "tools": [
+          "fsv1_read_file",
+          "fsv1_read_text_file",
+          "fsv1_read_media_file",
+          "fsv1_read_multiple_files",
+          "fsv1_write_file",
+          "fsv1_edit_file",
+          "fsv1_create_directory",
+          "fsv1_list_directory",
+          "fsv1_list_directory_with_sizes",
+          "fsv1_directory_tree",
+          "fsv1_move_file",
+          "fsv1_search_files",
+          "fsv1_get_file_info",
+          "fsv1_list_allowed_directories"
+        ],
+        "error": null,
+        "startsDuringPreview": {}
+      },
+      "responsiveness": null,
+      "discover": {
+        "ms": 274,
+        "success": true,
+        "toolCount": 14,
+        "tools": [
+          "fsv1_read_file",
+          "fsv1_read_text_file",
+          "fsv1_read_media_file",
+          "fsv1_read_multiple_files",
+          "fsv1_write_file",
+          "fsv1_edit_file",
+          "fsv1_create_directory",
+          "fsv1_list_directory",
+          "fsv1_list_directory_with_sizes",
+          "fsv1_directory_tree",
+          "fsv1_move_file",
+          "fsv1_search_files",
+          "fsv1_get_file_info",
+          "fsv1_list_allowed_directories"
+        ],
+        "message": "Successfully discovered and registered 14 tools."
+      }
+    },
+    "fs_v2": {
+      "preview": {
+        "ms": 190,
+        "toolCount": 14,
+        "tools": [
+          "fsv2_read_file",
+          "fsv2_read_text_file",
+          "fsv2_read_media_file",
+          "fsv2_read_multiple_files",
+          "fsv2_write_file",
+          "fsv2_edit_file",
+          "fsv2_create_directory",
+          "fsv2_list_directory",
+          "fsv2_list_directory_with_sizes",
+          "fsv2_directory_tree",
+          "fsv2_move_file",
+          "fsv2_search_files",
+          "fsv2_get_file_info",
+          "fsv2_list_allowed_directories"
+        ],
+        "error": null,
+        "startsDuringPreview": {}
+      },
+      "responsiveness": null,
+      "discover": {
+        "ms": 186,
+        "success": true,
+        "toolCount": 14,
+        "tools": [
+          "fsv2_read_file",
+          "fsv2_read_text_file",
+          "fsv2_read_media_file",
+          "fsv2_read_multiple_files",
+          "fsv2_write_file",
+          "fsv2_edit_file",
+          "fsv2_create_directory",
+          "fsv2_list_directory",
+          "fsv2_list_directory_with_sizes",
+          "fsv2_directory_tree",
+          "fsv2_move_file",
+          "fsv2_search_files",
+          "fsv2_get_file_info",
+          "fsv2_list_allowed_directories"
+        ],
+        "message": "Successfully discovered and registered 14 tools."
+      }
+    },
+    "token_http": {
+      "preview": {
+        "ms": 72,
+        "toolCount": 2,
+        "tools": [
+          "parity_http_auth_probe",
+          "parity_http_slow_probe"
+        ],
+        "error": null,
+        "startsDuringPreview": {},
+        "httpRequests": [
+          "token POST initialize pv=- auth=expected path=/mcp",
+          "token POST notifications/initialized pv=2025-11-25 auth=expected path=/mcp",
+          "token GET - pv=2025-11-25 auth=expected path=/mcp",
+          "token POST tools/list pv=2025-11-25 auth=expected path=/mcp"
+        ]
+      },
+      "responsiveness": null,
+      "discover": {
+        "ms": 17,
+        "success": true,
+        "toolCount": 2,
+        "tools": [
+          "parity_http_auth_probe",
+          "parity_http_slow_probe"
+        ],
+        "message": "Successfully discovered and registered 2 tools.",
+        "httpRequests": [
+          "token POST initialize pv=- auth=expected path=/mcp",
+          "token POST notifications/initialized pv=2025-11-25 auth=expected path=/mcp",
+          "token GET - pv=2025-11-25 auth=expected path=/mcp",
+          "token POST tools/list pv=2025-11-25 auth=expected path=/mcp"
+        ]
+      }
+    },
+    "same_origin_redirect_http": {
+      "preview": {
+        "ms": 26,
+        "toolCount": 2,
+        "tools": [
+          "moved_http_auth_probe",
+          "moved_http_slow_probe"
+        ],
+        "error": null,
+        "startsDuringPreview": {},
+        "httpRequests": [
+          "token POST initialize pv=- auth=expected path=/mcp-old",
+          "token POST initialize pv=- auth=expected path=/mcp",
+          "token POST notifications/initialized pv=2025-11-25 auth=expected path=/mcp-old",
+          "token POST notifications/initialized pv=2025-11-25 auth=expected path=/mcp",
+          "token GET - pv=2025-11-25 auth=expected path=/mcp-old",
+          "token POST tools/list pv=2025-11-25 auth=expected path=/mcp-old",
+          "token GET - pv=2025-11-25 auth=expected path=/mcp",
+          "token POST tools/list pv=2025-11-25 auth=expected path=/mcp"
+        ]
+      },
+      "responsiveness": null,
+      "discover": {
+        "ms": 25,
+        "success": true,
+        "toolCount": 2,
+        "tools": [
+          "moved_http_auth_probe",
+          "moved_http_slow_probe"
+        ],
+        "message": "Successfully discovered and registered 2 tools.",
+        "httpRequests": [
+          "token POST initialize pv=- auth=expected path=/mcp-old",
+          "token POST initialize pv=- auth=expected path=/mcp",
+          "token POST notifications/initialized pv=2025-11-25 auth=expected path=/mcp-old",
+          "token POST notifications/initialized pv=2025-11-25 auth=expected path=/mcp",
+          "token GET - pv=2025-11-25 auth=expected path=/mcp-old",
+          "token POST tools/list pv=2025-11-25 auth=expected path=/mcp-old",
+          "token GET - pv=2025-11-25 auth=expected path=/mcp",
+          "token POST tools/list pv=2025-11-25 auth=expected path=/mcp"
+        ]
+      }
+    },
+    "paging_http": {
+      "preview": {
+        "ms": 21,
+        "toolCount": 2,
+        "tools": [
+          "paging_page_one_a",
+          "paging_page_one_b"
+        ],
+        "error": null,
+        "startsDuringPreview": {},
+        "httpRequests": [
+          "paging POST initialize pv=- auth=none path=/mcp",
+          "paging POST notifications/initialized pv=2025-11-25 auth=none path=/mcp",
+          "paging GET - pv=2025-11-25 auth=none path=/mcp",
+          "paging POST tools/list pv=2025-11-25 auth=none path=/mcp"
+        ]
+      },
+      "responsiveness": null,
+      "discover": {
+        "ms": 14,
+        "success": true,
+        "toolCount": 2,
+        "tools": [
+          "paging_page_one_a",
+          "paging_page_one_b"
+        ],
+        "message": "Successfully discovered and registered 2 tools.",
+        "httpRequests": [
+          "paging POST initialize pv=- auth=none path=/mcp",
+          "paging POST notifications/initialized pv=2025-11-25 auth=none path=/mcp",
+          "paging GET - pv=2025-11-25 auth=none path=/mcp",
+          "paging POST tools/list pv=2025-11-25 auth=none path=/mcp"
+        ]
+      }
+    },
+    "unauthorized_http": {
+      "preview": {
+        "ms": 10,
+        "toolCount": null,
+        "tools": null,
+        "error": "Failed to preview tools for MCP server: Error: Streamable HTTP error: Error POSTing to endpoint: unauthorized-parity",
+        "startsDuringPreview": {},
+        "httpRequests": [
+          "unauth POST initialize pv=- auth=expected path=/mcp"
+        ]
+      },
+      "responsiveness": null,
+      "discover": {
+        "ms": 6,
+        "success": false,
+        "toolCount": 0,
+        "tools": [],
+        "message": "Error: Streamable HTTP error: Error POSTing to endpoint: unauthorized-parity",
+        "httpRequests": [
+          "unauth POST initialize pv=- auth=expected path=/mcp"
+        ]
+      }
+    },
+    "cross_origin_redirect_http": {
+      "preview": {
+        "ms": 10,
+        "toolCount": null,
+        "tools": null,
+        "error": "Failed to preview tools for MCP server: Error: Streamable HTTP error: Error POSTing to endpoint: Redirect to http://host.docker.internal:47313/mcp not followed (redirectPolicy: 'same-origin')",
+        "startsDuringPreview": {},
+        "httpRequests": [
+          "redirector POST initialize pv=- auth=expected path=/mcp"
+        ]
+      },
+      "responsiveness": null,
+      "discover": {
+        "ms": 8,
+        "success": false,
+        "toolCount": 0,
+        "tools": [],
+        "message": "Error: Streamable HTTP error: Error POSTing to endpoint: Redirect to http://host.docker.internal:47313/mcp not followed (redirectPolicy: 'same-origin')",
+        "httpRequests": [
+          "redirector POST initialize pv=- auth=expected path=/mcp"
+        ]
+      }
+    },
+    "exit_at_start": {
+      "preview": {
+        "ms": 32,
+        "toolCount": null,
+        "tools": null,
+        "error": "Failed to preview tools for MCP server: McpError: MCP error -32000: Connection closed",
+        "startsDuringPreview": {}
+      },
+      "responsiveness": null,
+      "discover": {
+        "ms": 25,
+        "success": false,
+        "toolCount": 0,
+        "tools": [],
+        "message": "McpError: MCP error -32000: Connection closed"
+      }
+    }
+  },
+  "gateway": {
+    "v1_1_32_1": {
+      "connectMs": 10,
+      "negotiated": null,
+      "era": null,
+      "listMs": 5,
+      "toolCount": 34,
+      "listError": null,
+      "tools": [
+        "fsv1_create_directory",
+        "fsv1_directory_tree",
+        "fsv1_edit_file",
+        "fsv1_get_file_info",
+        "fsv1_list_allowed_directories",
+        "fsv1_list_directory",
+        "fsv1_list_directory_with_sizes",
+        "fsv1_move_file",
+        "fsv1_read_file",
+        "fsv1_read_media_file",
+        "fsv1_read_multiple_files",
+        "fsv1_read_text_file",
+        "fsv1_search_files",
+        "fsv1_write_file",
+        "fsv2_create_directory",
+        "fsv2_directory_tree",
+        "fsv2_edit_file",
+        "fsv2_get_file_info",
+        "fsv2_list_allowed_directories",
+        "fsv2_list_directory",
+        "fsv2_list_directory_with_sizes",
+        "fsv2_move_file",
+        "fsv2_read_file",
+        "fsv2_read_media_file",
+        "fsv2_read_multiple_files",
+        "fsv2_read_text_file",
+        "fsv2_search_files",
+        "fsv2_write_file",
+        "moved_http_auth_probe",
+        "moved_http_slow_probe",
+        "paging_page_one_a",
+        "paging_page_one_b",
+        "parity_http_auth_probe",
+        "parity_http_slow_probe"
+      ],
+      "calls": {
+        "parity_http_auth_probe": {
+          "ms": 13,
+          "isError": false,
+          "text": "MARKER-PARITY-HTTP-BEFORE",
+          "structured": null
+        },
+        "moved_http_auth_probe": {
+          "ms": 23,
+          "isError": false,
+          "text": "MARKER-PARITY-HTTP-BEFORE",
+          "structured": null
+        },
+        "video_editing_get_media_duration": {
+          "notRegistered": true
+        },
+        "fsv1_read_text_file": {
+          "ms": 292,
+          "isError": false,
+          "text": "hello from the parity fsroot\n",
+          "structured": {
+            "content": "hello from the parity fsroot\n"
+          }
+        },
+        "fsv2_read_text_file": {
+          "ms": 209,
+          "isError": false,
+          "text": "hello from the parity fsroot\n",
+          "structured": {
+            "content": "hello from the parity fsroot\n"
+          }
+        },
+        "fsv2_list_allowed_directories": {
+          "ms": 5,
+          "isError": false,
+          "text": "Allowed directories:\n/tmp/mcp182/servers/fsroot",
+          "structured": {
+            "content": "Allowed directories:\n/tmp/mcp182/servers/fsroot"
+          }
+        },
+        "pyfix_echo": {
+          "notRegistered": true
+        },
+        "pyfix_add": {
+          "notRegistered": true
+        },
+        "pyfix_fail": {
+          "notRegistered": true
+        },
+        "pyfix_report_env_and_cwd": {
+          "notRegistered": true
+        }
+      },
+      "requests": [
+        "POST initialize pv=- -> 200",
+        "POST notifications/initialized pv=2025-03-26 -> 202",
+        "GET - pv=2025-03-26 -> 200",
+        "POST tools/list pv=2025-03-26 -> 200",
+        "POST tools/call pv=2025-03-26 -> 200",
+        "POST tools/call pv=2025-03-26 -> 200"
+      ]
+    },
+    "v2_default": {
+      "connectMs": 18,
+      "negotiated": "2025-03-26",
+      "era": "legacy",
+      "listMs": 6,
+      "toolCount": 34,
+      "listError": null,
+      "tools": [
+        "fsv1_create_directory",
+        "fsv1_directory_tree",
+        "fsv1_edit_file",
+        "fsv1_get_file_info",
+        "fsv1_list_allowed_directories",
+        "fsv1_list_directory",
+        "fsv1_list_directory_with_sizes",
+        "fsv1_move_file",
+        "fsv1_read_file",
+        "fsv1_read_media_file",
+        "fsv1_read_multiple_files",
+        "fsv1_read_text_file",
+        "fsv1_search_files",
+        "fsv1_write_file",
+        "fsv2_create_directory",
+        "fsv2_directory_tree",
+        "fsv2_edit_file",
+        "fsv2_get_file_info",
+        "fsv2_list_allowed_directories",
+        "fsv2_list_directory",
+        "fsv2_list_directory_with_sizes",
+        "fsv2_move_file",
+        "fsv2_read_file",
+        "fsv2_read_media_file",
+        "fsv2_read_multiple_files",
+        "fsv2_read_text_file",
+        "fsv2_search_files",
+        "fsv2_write_file",
+        "moved_http_auth_probe",
+        "moved_http_slow_probe",
+        "paging_page_one_a",
+        "paging_page_one_b",
+        "parity_http_auth_probe",
+        "parity_http_slow_probe"
+      ],
+      "calls": {
+        "parity_http_auth_probe": {
+          "ms": 8,
+          "isError": false,
+          "text": "MARKER-PARITY-HTTP-BEFORE",
+          "structured": null
+        },
+        "moved_http_auth_probe": {
+          "ms": 6,
+          "isError": false,
+          "text": "MARKER-PARITY-HTTP-BEFORE",
+          "structured": null
+        },
+        "video_editing_get_media_duration": {
+          "notRegistered": true
+        },
+        "fsv1_read_text_file": {
+          "ms": 4,
+          "isError": false,
+          "text": "hello from the parity fsroot\n",
+          "structured": {
+            "content": "hello from the parity fsroot\n"
+          }
+        },
+        "fsv2_read_text_file": {
+          "ms": 6,
+          "isError": false,
+          "text": "hello from the parity fsroot\n",
+          "structured": {
+            "content": "hello from the parity fsroot\n"
+          }
+        },
+        "fsv2_list_allowed_directories": {
+          "ms": 5,
+          "isError": false,
+          "text": "Allowed directories:\n/tmp/mcp182/servers/fsroot",
+          "structured": {
+            "content": "Allowed directories:\n/tmp/mcp182/servers/fsroot"
+          }
+        },
+        "pyfix_echo": {
+          "notRegistered": true
+        },
+        "pyfix_add": {
+          "notRegistered": true
+        },
+        "pyfix_fail": {
+          "notRegistered": true
+        },
+        "pyfix_report_env_and_cwd": {
+          "notRegistered": true
+        }
+      },
+      "requests": [
+        "POST initialize pv=- -> 200",
+        "POST notifications/initialized pv=2025-03-26 -> 202",
+        "GET - pv=2025-03-26 -> 200",
+        "POST tools/list pv=2025-03-26 -> 200",
+        "POST tools/call pv=2025-03-26 -> 200",
+        "POST tools/call pv=2025-03-26 -> 200"
+      ]
+    },
+    "v2_auto": {
+      "connectMs": 11,
+      "negotiated": "2025-03-26",
+      "era": "legacy",
+      "listMs": 5,
+      "toolCount": 34,
+      "listError": null,
+      "tools": [
+        "fsv1_create_directory",
+        "fsv1_directory_tree",
+        "fsv1_edit_file",
+        "fsv1_get_file_info",
+        "fsv1_list_allowed_directories",
+        "fsv1_list_directory",
+        "fsv1_list_directory_with_sizes",
+        "fsv1_move_file",
+        "fsv1_read_file",
+        "fsv1_read_media_file",
+        "fsv1_read_multiple_files",
+        "fsv1_read_text_file",
+        "fsv1_search_files",
+        "fsv1_write_file",
+        "fsv2_create_directory",
+        "fsv2_directory_tree",
+        "fsv2_edit_file",
+        "fsv2_get_file_info",
+        "fsv2_list_allowed_directories",
+        "fsv2_list_directory",
+        "fsv2_list_directory_with_sizes",
+        "fsv2_move_file",
+        "fsv2_read_file",
+        "fsv2_read_media_file",
+        "fsv2_read_multiple_files",
+        "fsv2_read_text_file",
+        "fsv2_search_files",
+        "fsv2_write_file",
+        "moved_http_auth_probe",
+        "moved_http_slow_probe",
+        "paging_page_one_a",
+        "paging_page_one_b",
+        "parity_http_auth_probe",
+        "parity_http_slow_probe"
+      ],
+      "calls": {
+        "parity_http_auth_probe": {
+          "ms": 4,
+          "isError": false,
+          "text": "MARKER-PARITY-HTTP-BEFORE",
+          "structured": null
+        },
+        "moved_http_auth_probe": {
+          "ms": 7,
+          "isError": false,
+          "text": "MARKER-PARITY-HTTP-BEFORE",
+          "structured": null
+        },
+        "video_editing_get_media_duration": {
+          "notRegistered": true
+        },
+        "fsv1_read_text_file": {
+          "ms": 3,
+          "isError": false,
+          "text": "hello from the parity fsroot\n",
+          "structured": {
+            "content": "hello from the parity fsroot\n"
+          }
+        },
+        "fsv2_read_text_file": {
+          "ms": 6,
+          "isError": false,
+          "text": "hello from the parity fsroot\n",
+          "structured": {
+            "content": "hello from the parity fsroot\n"
+          }
+        },
+        "fsv2_list_allowed_directories": {
+          "ms": 4,
+          "isError": false,
+          "text": "Allowed directories:\n/tmp/mcp182/servers/fsroot",
+          "structured": {
+            "content": "Allowed directories:\n/tmp/mcp182/servers/fsroot"
+          }
+        },
+        "pyfix_echo": {
+          "notRegistered": true
+        },
+        "pyfix_add": {
+          "notRegistered": true
+        },
+        "pyfix_fail": {
+          "notRegistered": true
+        },
+        "pyfix_report_env_and_cwd": {
+          "notRegistered": true
+        }
+      },
+      "requests": [
+        "POST server/discover pv=2026-07-28 -> 400",
+        "POST initialize pv=- -> 200",
+        "POST notifications/initialized pv=2025-03-26 -> 202",
+        "GET - pv=2025-03-26 -> 200",
+        "POST tools/list pv=2025-03-26 -> 200",
+        "POST tools/call pv=2025-03-26 -> 200"
+      ]
+    }
+  },
+  "matrix": {},
+  "cancel": {},
+  "notes": [],
+  "health": 200,
+  "import": {
+    "success": true,
+    "message": "Import complete. Imported: 8, Failed: 0",
+    "importedCount": 8,
+    "failedCount": 0
+  },
+  "otherOriginRequests": 0,
+  "stdioStartsAfterServers": {
+    "python_fixture": 0,
+    "fs_v1": 0,
+    "fs_v2": 0
+  },
+  "health_after_servers": 200,
+  "instrumentRequestSummary": {
+    "total": 54,
+    "authValues": [
+      "expected"
+    ]
+  },
+  "finishedAt": "2026-10-20T09:23:04.391Z"
+}

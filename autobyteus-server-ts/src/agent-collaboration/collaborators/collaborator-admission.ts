@@ -4,6 +4,8 @@ import {
   type MentionedCollaborator,
 } from "@autobyteus/agent-presentation-contracts";
 import type { TaskExecutionSource } from "../../run-history/domain/run-execution-tree-shared-records.js";
+import type { DelegationWork, RoutingDecisionDraft } from "../../model-routing/domain/model-routing-types.js";
+import { routingDecisionDraftOf } from "./routing-decision-draft.js";
 import {
   preferredInRunPlacement,
   type AdmissibleCollaboratorDefinition,
@@ -46,7 +48,13 @@ export type { CollaboratorMention };
  * A catalog task copy's definition snapshot (REQ-005): no collaborator entry, no identities.
  * `launchNotes` describe this admission's skipped configured layers (empty when none).
  */
-export type CatalogTaskSource = Readonly<{ name: string; source: TaskExecutionSource; launchNotes: readonly string[] }>;
+export type CatalogTaskSource = Readonly<{
+  name: string;
+  source: TaskExecutionSource;
+  launchNotes: readonly string[];
+  /** Present only when the copy was resolved while Model Routing was on: its decision records once it starts (REQ-012). */
+  routingDecision?: RoutingDecisionDraft;
+}>;
 
 /**
  * Stateless catalog coordinator. `@` only resolves: `resolveMentions` validates each mentioned
@@ -114,13 +122,33 @@ export class CollaboratorAdmission {
   async catalogTaskSource(port: CollaboratorRootPort, input: Readonly<{
     address: string;
     senderRunId: string;
+    /** The work the copy is started for (the Model Router is told it). */
+    work: DelegationWork;
   }>): Promise<CatalogTaskSource | null> {
     const ref = await this.catalogDefinitionAt(port, input.address);
-    if (!ref) return null;
-    const definition = await this.admissible(port, ref);
+    return ref ? this.catalogTaskSourceOf(port, { ref, address: input.address, work: input.work }) : null;
+  }
+
+  /**
+   * The source snapshot of a task copy of the catalog definition `ref` at `address`, with launches resolved
+   * from `port.launchBase()`. A caller that must decide by kind first (a run started for a peer node) calls
+   * `catalogDefinitionAt` and then this. Throws `CollaboratorAddError` (or its `CollaboratorNoDefaultLaunchError`)
+   * when the copy cannot run.
+   */
+  async catalogTaskSourceOf(port: CollaboratorRootPort, input: Readonly<{
+    ref: CatalogDefinitionRef;
+    address: string;
+    work: DelegationWork;
+  }>): Promise<CatalogTaskSource> {
+    const definition = await this.admissible(port, input.ref);
     const plan = await this.buildPlan(definition, { address: input.address });
-    const [resolved] = await this.dependencies.launches.resolve([plan], port.rootLaunchConfiguration());
-    return Object.freeze({ name: resolved!.name, source: toTaskExecutionSource(resolved!), launchNotes: Object.freeze(entryPlanLaunchNotes(resolved!)) });
+    const { plans: [resolved], modelRoutingOn } = await this.dependencies.launches.resolve([plan], port.launchBase(), input.work);
+    return Object.freeze({
+      name: resolved!.name,
+      source: toTaskExecutionSource(resolved!),
+      launchNotes: Object.freeze(entryPlanLaunchNotes(resolved!)),
+      ...(modelRoutingOn ? { routingDecision: routingDecisionDraftOf(resolved!) } : {}),
+    });
   }
 
   /** Catalog copies: never a second instance of a definition already in the run. */

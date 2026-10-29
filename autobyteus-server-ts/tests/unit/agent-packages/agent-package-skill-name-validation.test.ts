@@ -43,7 +43,7 @@ describe("AgentPackageService skill-name validation (REQ-023)", () => {
   let skillService: SkillService;
   const inheritedPackageRoots = process.env.AUTOBYTEUS_AGENT_PACKAGE_ROOTS;
 
-  const createService = (installer?: GitHubAgentPackageInstaller, githubClient?: Pick<GitHubRepositoryClient, "fetchRepositoryRevisionMetadata">) => new AgentPackageService({
+  const createService = (installer?: GitHubAgentPackageInstaller, githubClient?: Pick<GitHubRepositoryClient, "fetchDefaultBranchHead">) => new AgentPackageService({
     rootSettingsStore: new AgentPackageRootSettingsStore(
       { getAppDataDir: () => defaultRoot, getRegisteredAgentPackageRoots: parseAdditionalRoots,
         get: (key: string, defaultValue?: string) => process.env[key] ?? defaultValue },
@@ -179,9 +179,8 @@ describe("AgentPackageService skill-name validation (REQ-023)", () => {
     const rollback = vi.fn(async () => { await fs.rm(path.join(installDir, "agents", "desk-helper", "skills"), { recursive: true, force: true }); });
     const commit = vi.fn(async () => undefined);
     const githubClient = {
-      async fetchRepositoryRevisionMetadata(): Promise<GitHubRepositoryRevisionMetadata> {
-        return { owner: "AutoByteus", repo: "desk-package", canonicalUrl: "https://github.com/AutoByteus/desk-package",
-          defaultBranch: "main", latestRevision: "new-sha" };
+      async fetchDefaultBranchHead() {
+        return { defaultBranch: "main", latestRevision: "new-sha" };
       }
     };
     class MockInstaller extends GitHubAgentPackageInstaller {

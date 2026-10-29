@@ -42,8 +42,7 @@ suite("AGY compaction detection stays off below CLI 1.2.16", () => {
     return body.data;
   };
   const memoryView = async (): Promise<MemoryView> => (await graphql<{ getAgentRunMemoryView: MemoryView }>(
-    `query($runId: String!) { getAgentRunMemoryView(runId: $runId, includeWorkingContext: false,
-      includeEpisodic: false, includeSemantic: false, includeRawTraces: true, includeRawTraceFiles: true,
+    `query($runId: String!) { getAgentRunMemoryView(runId: $runId, includeRawTraces: true, includeRawTraceFiles: true,
       includeArchive: true) { rawTraces { traceType content } rawTraceFiles { fileName kind } } }`,
     { runId })).getAgentRunMemoryView;
 

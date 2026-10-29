@@ -115,7 +115,7 @@ function messageLabel(message: CollaborationMessagePerspectiveRow): string {
 }
 
 function counterpart(message: CollaborationMessagePerspectiveRow): string {
-  const name = message.counterpartLabel || 'teammate';
+  const name = message.counterpart.label || 'teammate';
   return message.direction === 'sent' ? `To ${name}` : `From ${name}`;
 }
 

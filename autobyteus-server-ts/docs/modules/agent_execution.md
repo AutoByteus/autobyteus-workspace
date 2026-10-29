@@ -131,7 +131,7 @@ their own bundle first.
 
 `AgentRunManager` also owns active-run sidecars that must be attached independently of websocket clients. For Codex and Claude runs with a `memoryDir`, it attaches `AgentRunMemoryRecorder` so accepted user commands and normalized runtime events are written to server-owned local memory even when no browser is subscribed to the live stream. Native AutoByteus runs are skipped by that recorder because their memory remains owned by the native `autobyteus-ts` memory manager.
 
-`AgentRun.postUserMessage(...)` exposes an internal command-observer seam. Observers are notified only after the message is accepted, and observer failures are isolated from the user-message result.
+Both `AgentRun` input entry points (`postUserMessage(...)` and `reserveUserMessage(...)`) feed an internal command-observer seam. Observers are notified only when an admitted input is forwarded to the runtime, and observer failures are isolated from the input result.
 
 Current user context-file references are part of runtime input construction, not
 Team Communication metadata. For native AutoByteus turns, the shared
@@ -275,7 +275,10 @@ finish retryable. An accepted provider/runtime finish is not returned to the
 caller until the run is inactive, exact-current removal succeeds, and the
 activation registry's cleanup result is successful. That removal releases the
 same run's resources once: it deactivates the deterministic Agent Tools MCP
-run-session and detaches file-change, artifact-relay, and memory observers.
+run-session, starts closing the external MCP server instances opened for the
+run (in the background, never failing the release; see
+[MCP Server Management](./mcp_server_management.md#server-instance-lifetime)),
+and detaches file-change, artifact-relay, and memory observers.
 Replacement runs are never released by stale cleanup. Thrown finalization,
 identity mismatch, or accepted-but-active outcomes are terminal for the
 committed attempt rather than being converted into success.
@@ -395,15 +398,29 @@ activated or historical runs. Standalone `activationState` is not persisted; the
 `prepareAgentRun` response may still return `activationState: "PREPARED"` as a
 launch API response field.
 
-`AgentRun.postUserMessage(...)` is the sole runtime-level input-admission,
-status, and turn authority once an `AgentRun` exists. Its runtime events are the
-source that replaces command overlays and drives later `running`, `idle`,
-`offline`, and `error` projections.
+Once an `AgentRun` exists it is the runtime-level input-admission, status, and
+turn authority. Its runtime events are the source that replaces command overlays
+and drives later `running`, `idle`, `offline`, and `error` projections. Input
+enters through one of two entry points:
+
+- `postUserMessage(...)` admits and dispatches in one serialized step. It is
+  used for operator and application input, delegated-task seeds, Skill
+  Improvement and skill-update notices, and run-ID messages to a run in another
+  root. Only an immediately admitted `USER` input here may authorize a
+  failed-compaction retry.
+- `reserveUserMessage(...)` holds a FIFO slot that stays invisible and
+  undispatchable until the caller commits and releases it, or cancels it without
+  trace. Teammate delivery uses it (see
+  [Agent Communication](./agent_communication.md#teammate-delivery-path)): the
+  slot is committed only after the message is saved to the root's log. A held
+  slot never authorizes compaction recovery, and root shutdown drops held slots.
 
 ## Active Input And Interrupt Command Results
 
 Each live `AgentRun` owns one non-persisted `AgentRunInputAdmissionState` behind
-`postUserMessage(...)`. It validates and admits a private FIFO entry, owns one
+both entry points. Its `reserve` step holds the only admission validation
+(accepting input, non-empty content); posting is reserve, commit and release in
+one step. It admits a private FIFO entry, owns one
 provider-dispatch claim at a time, and selects exactly one explicit
 `start_turn` or `append_to_active_turn` dispatch from canonical turn state plus
 the backend's declared `activeTurnAppend` capability. `accepted: true` means the
@@ -692,9 +709,10 @@ created before this policy keep any earlier agent-type listing in their
 persisted transcript history. On resume, the tool list itself is still
 restricted and native multi-agent calls still fail.
 
-Claude Agent SDK `0.3.280` is used with exact direct peers
-`@anthropic-ai/sdk@0.128.0` and `@modelcontextprotocol/sdk@1.30.0` in SDK
-streaming input mode. Each Claude AgentRun keeps one Claude CLI process for its
+Claude Agent SDK `0.3.280` is used with the exact direct peer
+`@anthropic-ai/sdk@0.132.1` in SDK streaming input mode. Its
+`@modelcontextprotocol/sdk` peer (v1) is installed by the package manager and
+used for types only; AutoByteus does not depend on it directly. Each Claude AgentRun keeps one Claude CLI process for its
 whole life: `ClaudeSdkClient.openStreamingSession` opens one
 `query({ prompt: AsyncIterable, options })` lazily on the first input (new or
 restored run), and `ClaudeSessionProcess` owns that process, its single frame
@@ -779,6 +797,48 @@ by `task_id`. `command` is always present: the exact shell command the task
 runs, or `null` when the runtime does not know one. Claude and Antigravity produce it. It usually arrives between
 turns, so it is not turn activity (it is not in `ACTIVITY_EVENT_TYPES` and
 never changes run status), and it is not persisted in memory or run history.
+
+### Read-only Codex background-task inspection
+
+`agentBackgroundTaskView(agentRunId)` inspects an already published, active run.
+The resolver uses map-only `peekPublishedRun`, then checks the exact same run
+instance and activity again after the read. It does not use lifecycle-pruning
+getters, restore/start a run, send input, or trigger cleanup. Inactive or replaced
+runs return unavailable. This lookup matters for local Agent, Team and Org
+members: use the concrete selected `agentRunId`, not a guessed root identity.
+
+Codex reads its provider-tracked shell work that continues beyond a turn;
+foreground command Activity is not a background inventory. Turn completion
+alone is not command completion. Rows carry opaque task identity, a safe shell
+label, time, and confirmed running/completed/failed/stopped state where known.
+A lost command without terminal evidence is unknown. Raw arguments,
+environment, output and logs are excluded; `command` is null. Retained terminal
+observations are bounded to 100 per live thread; live/unknown rows are not
+removed to satisfy that terminal-history bound. This is runtime observation,
+not persistent history or an OS-wide process list.
+
+The selected expanded Background Tasks panel performs a network-only read on
+entry/re-entry and refreshes snapshot views two seconds after a read completes.
+Selection/node-binding generation checks and cancellation reject stale responses.
+Reload re-reads the live runtime without another model turn. Unsupported,
+inactive, failed or incomplete inspection is distinct from an empty successful
+snapshot. The panel retains last-known rows only for the same selection and
+labels their running count unconfirmed until recovery. No process stop button,
+new kill authority, idle timer change or change to `hasRunningBackgroundTasks`
+is introduced. Claude/Antigravity continue through their existing event-stream
+view and `BACKGROUND_TASK_UPDATED` behavior.
+
+### Native command scope at application shutdown
+
+Studio and standalone hosts own `NativeCommandShutdown`, passing its scope into
+native execution independently of individual agent lifetimes. The early close
+hook drains tracked native work; final close collects unconfirmed outcomes and
+still attempts the remaining host cleanup. Adopted shell survivors and work
+from already-ended runs therefore remain covered at backend restart/application
+quit. Ordinary individual-agent stop and idle policies are not changed. See
+[Terminal Tools](../../../autobyteus-ts/docs/terminal_tools.md#owned-command-lifetime-and-host-shutdown)
+for retained anchors, bounded collective drain and ownership checks. Existing
+provider shutdown owners remain authoritative for non-native runtimes.
 
 Image context files are sent inline as image content blocks. The Codex and
 Claude paths share `agent-execution/shared/context-image-source.ts`. Local

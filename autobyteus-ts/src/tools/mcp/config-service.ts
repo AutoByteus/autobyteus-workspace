@@ -5,10 +5,8 @@ import {
   McpTransportType,
   StdioMcpServerConfig,
   StreamableHttpMcpServerConfig,
-  WebsocketMcpServerConfig,
   type StdioMcpServerConfigData,
-  type StreamableHttpMcpServerConfigData,
-  type WebsocketMcpServerConfigData
+  type StreamableHttpMcpServerConfigData
 } from './types.js';
 
 type ConfigDict = Record<string, unknown>;
@@ -17,14 +15,12 @@ type TransportSpecificParamsKeyMap = Record<McpTransportType, string>;
 
 const TRANSPORT_SPECIFIC_PARAMS_KEY_MAP: TransportSpecificParamsKeyMap = {
   [McpTransportType.STDIO]: 'stdio_params',
-  [McpTransportType.STREAMABLE_HTTP]: 'streamable_http_params',
-  [McpTransportType.WEBSOCKET]: 'websocket_params'
+  [McpTransportType.STREAMABLE_HTTP]: 'streamable_http_params'
 };
 
 const TRANSPORT_TYPE_NAME: Record<McpTransportType, string> = {
   [McpTransportType.STDIO]: 'STDIO',
-  [McpTransportType.STREAMABLE_HTTP]: 'STREAMABLE_HTTP',
-  [McpTransportType.WEBSOCKET]: 'WEBSOCKET'
+  [McpTransportType.STREAMABLE_HTTP]: 'STREAMABLE_HTTP'
 };
 
 export class McpConfigService extends Singleton {
@@ -95,25 +91,34 @@ export class McpConfigService extends Singleton {
       if (transportType === McpTransportType.STDIO) {
         return new StdioMcpServerConfig(constructorParams as unknown as StdioMcpServerConfigData);
       }
-      if (transportType === McpTransportType.STREAMABLE_HTTP) {
-        return new StreamableHttpMcpServerConfig(constructorParams as unknown as StreamableHttpMcpServerConfigData);
-      }
-      if (transportType === McpTransportType.WEBSOCKET) {
-        return new WebsocketMcpServerConfig(constructorParams as unknown as WebsocketMcpServerConfigData);
-      }
-      throw new Error(
-        `Unsupported McpTransportType '${transportType}' for server '${serverId}'.`
-      );
+      return new StreamableHttpMcpServerConfig(constructorParams as unknown as StreamableHttpMcpServerConfigData);
     } catch (error: unknown) {
-      if (transportType === McpTransportType.WEBSOCKET) {
-        throw error;
-      }
       const errorMessage = error instanceof Error ? error.message : String(error);
       throw new Error(
         `Failed to create config for server '${serverId}' due to incompatible parameters for ` +
           `${TRANSPORT_TYPE_NAME[transportType]} config: ${errorMessage}`
       );
     }
+  }
+
+  /**
+   * The entry's explicit `transport_type`; without one, a non-empty `url` means streamable HTTP and a non-empty
+   * `command` means stdio. This is the one rule for imported JSON and for the app's own stored entries.
+   */
+  private static transportTypeOf(serverId: string, configData: ConfigDict): string {
+    const explicit = configData['transport_type'];
+    if (explicit !== undefined && explicit !== null && explicit !== '') {
+      if (typeof explicit !== 'string') {
+        throw new Error(`'transport_type' for server '${serverId}' must be a string.`);
+      }
+      return explicit;
+    }
+    const nonEmpty = (value: unknown) => typeof value === 'string' && value.trim().length > 0;
+    if (nonEmpty(configData['url'])) return McpTransportType.STREAMABLE_HTTP;
+    if (nonEmpty(configData['command'])) return McpTransportType.STDIO;
+    throw new Error(
+      `Config for server '${serverId}' needs 'command' (stdio) or 'url' (streamable_http), or an explicit 'transport_type'.`
+    );
   }
 
   static parseMcpConfigDict(configDict: ConfigDict): BaseMcpConfig {
@@ -147,12 +152,10 @@ export class McpConfigService extends Singleton {
       delete configData.toolNamePrefix;
     }
 
-    const transportTypeValue = configData['transport_type'];
-    if (typeof transportTypeValue !== 'string' || !transportTypeValue) {
-      throw new Error(`Config data for server '${serverId}' is missing 'transport_type' field.`);
-    }
-
-    const transportType = McpConfigService.parseTransportType(transportTypeValue, serverId);
+    const transportType = McpConfigService.parseTransportType(
+      McpConfigService.transportTypeOf(serverId, configData),
+      serverId
+    );
     return McpConfigService.createSpecificConfig(serverId, transportType, configData as ConfigDict);
   }
 

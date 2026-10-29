@@ -3,8 +3,9 @@ import { AgentRunManager } from "./agent-run-manager.js";
 import { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import { getWorkspaceManager } from "../../workspaces/workspace-manager.js";
 import {
-  type AgentRunLaunchPurpose,
+  type DelegatedFrom,
   type AgentRunMetadata,
+  type SystemRunOwner,
 } from "../../run-history/store/agent-run-metadata-types.js";
 import {
   AgentRunMetadataService,
@@ -37,8 +38,10 @@ export interface CreateAgentRunInput {
     bindingId: string;
     displayName: string | null;
   } | null;
-  /** `server_helper` for server-internal helper runs; they keep their narrowed tool rules. */
-  launchPurpose?: AgentRunLaunchPurpose;
+  /** A run a peer node delegated to this node: its back-link (DEC-112), written once at creation. */
+  delegatedFrom?: DelegatedFrom;
+  /** autobyteus-32: the server service that owns the run (never a collaboration member). */
+  systemRunOwner?: SystemRunOwner;
 }
 
 export interface CreateAgentRunResult {
@@ -280,10 +283,20 @@ export class AgentRunService {
       summary?: string | null;
     } = {},
   ): Promise<void> {
-    await this.historyCatalogService.recordRunSummary({
-      runId: run.runId,
-      summary: input.summary ?? "",
-    });
+    await this.recordRunTitle(run.runId, input.summary ?? "");
+  }
+
+  /**
+   * The run's title from a message it accepted (autobyteus-269): the catalog keeps the first non-empty one, so only
+   * the run's first message sets it, whoever sends it (the owner in the window, or a peer's work packet).
+   */
+  async recordRunTitle(runId: string, content: string): Promise<void> {
+    await this.historyCatalogService.recordRunSummary({ runId, summary: content });
+  }
+
+  /** The run's title as its history row shows it (autobyteus-278: a peer reads it for a run it started). */
+  async readRunTitle(runId: string): Promise<string | null> {
+    return (await this.historyCatalogService.getCatalogRow(runId))?.summary || null;
   }
 
   async restoreAgentRun(runId: string): Promise<RestoreAgentRunResult> {

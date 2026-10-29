@@ -1,3 +1,4 @@
+import { NativeCommandShutdown } from "../compositions/native-command-shutdown.js";
 import "reflect-metadata";
 import type { FastifyInstance } from "fastify";
 import { initializePrisma, shutdownPrisma } from "repository_prisma";
@@ -12,10 +13,14 @@ import {
   initializeServerAppLogger,
 } from "../logging/server-app-logger.js";
 import { runMigrations } from "../startup/migrations.js";
+import { disableEnvironmentProviderApiKeySource } from "autobyteus-ts/secrets/provider-api-key-resolver.js";
 import { getSecretVaultRuntime } from "../secret-management/secret-vault-runtime.js";
+import {
+  selectedTestVaultPaths,
+  selectSecretVaultSource,
+} from "../secret-management/secret-vault-source.js";
+import { TEST_VAULT_SETTING_NAME } from "autobyteus-ts/secrets/test-vault-setting.js";
 import { getAppDataMigrationRunner } from "../app-data-migrations/app-data-migration-runner.js";
-import { TEAM_RUN_EXECUTION_TREE_V2_MIGRATION_ID } from "../app-data-migrations/migrations/team-run-execution-tree-v2-app-data-migration.js";
-import { CUSTOM_PROVIDER_READABLE_ID_APP_DATA_MIGRATION_ID } from "../app-data-migrations/migrations/custom-provider-readable-id-app-data-migration.js";
 import {
   resetDefaultAgentRunEventPipeline,
   stopDefaultAgentRunEventPipeline,
@@ -43,10 +48,8 @@ import {
 } from "../agent-execution/runtime/general-process-run-supervisor.js";
 import { assertTokenUsageCurrentSchema } from "../startup/token-usage-current-schema-readiness.js";
 import { createContextFilePathEnvironment } from "../context-files/domain/context-file-path-environment.js";
-import {
-  TOKEN_USAGE_RUN_RECORDS_V1_MIGRATION_ID,
-  configureTokenUsageMigrationReadiness,
-} from "../token-usage/providers/token-usage-migration-readiness.js";
+import { configureTokenUsageCapability } from "../token-usage/providers/token-usage-capability.js";
+import { applyCapabilityReadiness, markCapabilitiesPending } from "../startup/app-data-capability-readiness.js";
 import { RootRunPackageReadinessIndex } from "../run-history/services/root-run-package-readiness-index.js";
 import {
   createHostDefinitionServices,
@@ -101,6 +104,8 @@ const closeRepositoryResources = async (input: {
 const initializeStandaloneProcessResources = async (
   config: StandaloneApplicationHostConfig,
 ): Promise<StandaloneProcessResources> => {
+  // The host owns its vault: autobyteus-ts must never read AUTOBYTEUS_TEST_VAULT itself here.
+  disableEnvironmentProviderApiKeySource();
   let prismaInitializationStarted = false;
   let vaultInitializationStarted = false;
   try {
@@ -118,33 +123,36 @@ const initializeStandaloneProcessResources = async (
       databaseUrl: appConfig.getOperationalDatabaseUrl(),
     });
     const databaseLocation = appConfig.getOperationalDatabaseLocation();
+    const vaultSource = selectSecretVaultSource({
+      testVaultSetting: appConfig.get(TEST_VAULT_SETTING_NAME),
+      appDataDir: appConfig.getAppDataDir(),
+      databaseLocation,
+    });
     configureFileToolDeniedPaths([
       databaseLocation.databasePath,
       databaseLocation.rootKeyPath,
       `${databaseLocation.databasePath}-wal`,
       `${databaseLocation.databasePath}-shm`,
       `${databaseLocation.databasePath}-journal`,
+      ...selectedTestVaultPaths(vaultSource),
     ]);
     prismaInitializationStarted = true;
     await initializePrisma({ datasourceUrl: databaseLocation.databaseUrl });
     try {
       await assertTokenUsageCurrentSchema();
-      configureTokenUsageMigrationReadiness({
-        kind: "CURRENT_SCHEMA_DEGRADED",
-        migrationStatus: "NOT_RUN",
-        logPath: null,
-      });
+      markCapabilitiesPending();
     } catch (error) {
       const reason = `Required current token-usage schema is unavailable: ${String(error)}`;
-      configureTokenUsageMigrationReadiness({
+      configureTokenUsageCapability({
         kind: "CRITICAL_CURRENT_SCHEMA_FAILURE",
         reason,
       });
       throw new Error(reason, { cause: error });
     }
     vaultInitializationStarted = true;
-    await getSecretVaultRuntime().initialize(databaseLocation);
-    const statuses = await getAppDataMigrationRunner().runPending();
+    await getSecretVaultRuntime().initialize(vaultSource);
+    const runner = getAppDataMigrationRunner();
+    const statuses = await runner.runPending();
     for (const migration of statuses) {
       if (migration.status === "FAILED" || migration.status === "RUNNING") {
         logger.warn(
@@ -153,48 +161,8 @@ const initializeStandaloneProcessResources = async (
         );
       }
     }
-    const tokenUsageStatus = statuses.find(
-      (status) => status.migrationId === TOKEN_USAGE_RUN_RECORDS_V1_MIGRATION_ID,
-    );
-    configureTokenUsageMigrationReadiness(
-      tokenUsageStatus?.status === "SUCCEEDED"
-        || tokenUsageStatus?.status === "SUCCEEDED_WITH_WARNINGS"
-        ? { kind: "READY" }
-        : {
-            kind: "CURRENT_SCHEMA_DEGRADED",
-            migrationStatus: tokenUsageStatus?.status ?? "MISSING",
-            logPath: tokenUsageStatus?.logPath ?? null,
-          },
-    );
+    applyCapabilityReadiness(await runner.capabilityReadiness());
     await new RootRunPackageReadinessIndex(appConfig.getMemoryDir()).rebuild();
-    const teamRunV2Status = statuses.find(
-      (status) => status.migrationId === TEAM_RUN_EXECUTION_TREE_V2_MIGRATION_ID,
-    );
-    if (teamRunV2Status?.status !== "SUCCEEDED") {
-      logger.warn(
-        `TeamRun execution-tree V2 migration did not report clean success; startup continues with strict current-package admission: ${JSON.stringify({
-          migrationId: TEAM_RUN_EXECUTION_TREE_V2_MIGRATION_ID,
-          displayName: teamRunV2Status?.displayName ?? null,
-          status: teamRunV2Status?.status ?? "MISSING",
-          attempts: teamRunV2Status?.attempts ?? null,
-          errorMessage: teamRunV2Status?.errorMessage ?? null,
-          logPath: teamRunV2Status?.logPath ?? null,
-        })}`,
-      );
-    }
-    const readableProviderStatus = statuses.find(
-      (status) => status.migrationId === CUSTOM_PROVIDER_READABLE_ID_APP_DATA_MIGRATION_ID,
-    );
-    if (
-      readableProviderStatus?.status !== "SUCCEEDED"
-      && readableProviderStatus?.status !== "SUCCEEDED_WITH_WARNINGS"
-    ) {
-      throw new Error([
-        "CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED",
-        readableProviderStatus?.status ?? "NOT_RUN",
-        readableProviderStatus?.logPath ?? "NO_LOG",
-      ].join(":"));
-    }
     let closePromise: Promise<void> | null = null;
     return {
       appConfig,
@@ -224,6 +192,7 @@ export const startStandaloneApplicationHost = async (
     packageRoot: config.packageRoot,
     localApplicationId: config.localApplicationId,
   });
+  const nativeShutdown = new NativeCommandShutdown();
   let app: FastifyInstance | null = null;
   let processResources: StandaloneProcessResources | null = null;
   let agentToolsMcpHost: AgentToolsMcpHost | null = null;
@@ -255,7 +224,7 @@ export const startStandaloneApplicationHost = async (
       loggingConfig: processResources.loggingConfig,
     });
     const agentProviderFactoryBuilder = createProcessAgentProviderFactoryBuilder({
-      workspaceManager,
+      workspaceManager, nativeCommandProcessScope: nativeShutdown.scope,
     });
     const modelCatalogService = getModelCatalogService();
     const modelSelectionValidator = new RunModelSelectionService(modelCatalogService);
@@ -315,6 +284,7 @@ export const startStandaloneApplicationHost = async (
       applicationRuntime,
       loggingConfig: processResources.loggingConfig,
     });
+    nativeShutdown.install(app);
     await applicationRuntime.lifecycle.prepareBeforeListen();
     await agentToolsMcpHost.listen();
     const url = await app.listen({ host: config.host, port: config.port });
@@ -322,7 +292,7 @@ export const startStandaloneApplicationHost = async (
 
     let closePromise: Promise<void> | null = null;
     const close = (): Promise<void> => {
-      closePromise ??= (async () => {
+      closePromise ??= nativeShutdown.close(async () => {
         try {
           await app!.close();
         } finally {
@@ -347,7 +317,7 @@ export const startStandaloneApplicationHost = async (
             }
           }
         }
-      })();
+      });
       return closePromise;
     };
     return Object.freeze({
@@ -357,6 +327,7 @@ export const startStandaloneApplicationHost = async (
       close,
     });
   } catch (error) {
+    await nativeShutdown.close(async () => {
     try {
       if (app) {
         await app.close();
@@ -388,6 +359,7 @@ export const startStandaloneApplicationHost = async (
         }
       }
     }
+    });
     throw error;
   }
 };

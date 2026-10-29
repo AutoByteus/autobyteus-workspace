@@ -1,0 +1,21 @@
+# API-06 server E2E: Settings → Agent Runtimes GraphQL over real HTTP, incl. new AR-13 (node sign-in browser fact)
+# Command: env -i PATH="$PATH" HOME="$(cd "$(mktemp -d)" && pwd -P)" TMPDIR="$TMPDIR" pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts --no-watch --reporter=verbose
+# Commit: 20f31117f + this round's change to the test file (committed with this round's evidence); Linux 7.0, node v22.23.2; 2026-10-21T08:15:29Z
+
+ ✓ tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts > Settings → Agent Runtimes GraphQL e2e (real studio server, scripted runtime CLIs) > AR-01 lists the four runtimes and checks each on its own: one source failing, one slow, one not installed (AC-001, AC-002, AC-005, AC-006, AC-009, QR-002) 218ms
+ ✓ tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts > Settings → Agent Runtimes GraphQL e2e (real studio server, scripted runtime CLIs) > AR-02 Check again re-reads every row; the source that failed recovers (AC-002, SCN-A1) 121ms
+ ✓ tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts > Settings → Agent Runtimes GraphQL e2e (real studio server, scripted runtime CLIs) > AR-03 Update runs the vendor's updater with progress, then 'Updated from X to Y.' that the automatic re-check keeps (AC-003, AR-006) 2298ms
+ ✓ tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts > Settings → Agent Runtimes GraphQL e2e (real studio server, scripted runtime CLIs) > AR-04 Update that exits 0 without a newer version is a failure with the vendor's text, version unchanged (AC-003) 684ms
+ ✓ tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts > Settings → Agent Runtimes GraphQL e2e (real studio server, scripted runtime CLIs) > AR-05 Update failure shows the vendor's message without terminal codes; Try again runs it again; busy is refused (AC-003) 3188ms
+ ✓ tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts > Settings → Agent Runtimes GraphQL e2e (real studio server, scripted runtime CLIs) > AR-06 refuses what the page never offers, with codes and safe messages 27ms
+ ✓ tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts > Settings → Agent Runtimes GraphQL e2e (real studio server, scripted runtime CLIs) > AR-07 Sign in starts the runtime's own login, passes nothing of it to the client, and ends Signed in (AC-007, AC-011) 293ms
+ ✓ tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts > Settings → Agent Runtimes GraphQL e2e (real studio server, scripted runtime CLIs) > AR-08 Cancel stops the login process and returns the row to Sign in (AC-007 cancel, QR-003) 241ms
+ ✓ tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts > Settings → Agent Runtimes GraphQL e2e (real studio server, scripted runtime CLIs) > AR-09 a runtime installed later appears on the next check; a login that never finishes times out, even ignoring SIGTERM (AC-005, AC-007 time-out, QR-003) 9265ms
+ ✓ tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts > Settings → Agent Runtimes GraphQL e2e (real studio server, scripted runtime CLIs) > AR-10 Codex with no OpenAI sign-in required shows no account state (DEC-008); a signed-in Grok reads Signed in 125ms
+[AR-11] scanned 332 API responses, 396 stdout/stderr writes, 5 data files; markers 6; hits 0
+ ✓ tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts > Settings → Agent Runtimes GraphQL e2e (real studio server, scripted runtime CLIs) > AR-11 no sign-in URL, code or account detail appears in any API response, log or data file (AC-011, REQ-008) 124ms
+ ✓ tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts > Settings → Agent Runtimes GraphQL e2e (real studio server, scripted runtime CLIs) > AR-13 the web's AgentRuntimes document reads the rows and the node's sign-in browser fact, which polls and sign-ins never change (remote-node-runtime-sign-in REQ-002, QR-002) 151ms
+ ✓ tests/e2e/runtime/agent-runtimes-graphql.e2e.test.ts > Settings → Agent Runtimes GraphQL e2e (real studio server, scripted runtime CLIs) > AR-12 closing the server stops a running vendor process (QR-003, SCN-A4) 150ms
+ Test Files  1 passed (1)
+      Tests  13 passed (13)
+exit 0

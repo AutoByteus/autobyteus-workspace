@@ -172,12 +172,15 @@ application-local definition state.
 - `QUARANTINED` means the bundle currently has diagnostics, or the application is persisted-only after package removal/temporary disappearance, and backend/orchestration entrypoints reject with availability detail, and
 - `REENTERING` means one repaired application is being resumed without restarting unrelated applications, while backend/context-capability admission remains blocked behind retryable availability detail.
 
-`POST /rest/applications/:applicationId/backend/reload` triggers app-scoped reload-and-reenter. A successful repair path now:
+`POST /rest/applications/:applicationId/backend/reload` triggers app-scoped reload-and-reenter; a package reload reenters the package's applications the same way. A successful reentry (`ApplicationReentryService.recoverParticipants`), in the same order as startup:
 
 - marks the application `REENTERING` immediately,
-- stops any pre-existing application worker before the repaired bundle returns to service,
-- reruns binding recovery plus pending-event dispatch resume for that one application, and
-- only then restores `ACTIVE`, leaving the worker in `stopped` state so the next `ensure-ready` boots a fresh worker from the repaired bundle.
+- stops any pre-existing application worker before the repaired bundle returns to service; a stop always leaves the worker `stopped`, including a worker that had crashed (`failed`), so a reentry also resets a crashed worker,
+- reruns binding recovery for that one application,
+- then restores `ACTIVE` with the worker still `stopped`,
+- then resumes pending-event dispatch (dispatch runs only for an `ACTIVE` application), and opens its application tools.
+
+Reentry never starts the worker. The next `ensure-ready`, application tool call or pending event boots a fresh worker from the repaired bundle, so the worker's own host calls on start (for example Brief Studio's) are admitted. An application that launch readiness finds not ready after the catalog change is quarantined with readiness's reason, `Application setup is required: <diagnostics>`, the same text startup uses (`ApplicationDefinitionRuntimeReadiness.getSetupRequiredDetail`); after the cause is fixed (for example Codex signed in), a repair returns it to `ACTIVE` without a restart.
 
 ## Durable Binding And Lookup State
 

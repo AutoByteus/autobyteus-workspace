@@ -1,0 +1,106 @@
+# API-02 real runtime CLIs, signed out, empty temporary HOME (read-only)
+# command: node /tmp/rlr-api-e2e/scripts/probe-real-shapes.mjs ; node /tmp/rlr-api-e2e/scripts/probe-codex-model-list.mjs (scripts copied below)
+# environment: env PATH + HOME=<fresh mktemp, realpath> + CODEX_HOME=<HOME>/.codex; macOS 26.5.2 arm64; node v22.23.1
+# commit: n/a (vendor CLIs only); date 2026-10-20
+
+== codex --version
+EXIT=0 SIGNAL=null
+STDOUT="codex-cli 0.163.0\n"
+STDERR="WARNING: proceeding, even though we could not create PATH aliases: CODEX_HOME points to \"<TEMP_HOME>/.codex\", but that path does not exist\n"
+
+== grok --version
+EXIT=0 SIGNAL=null
+STDOUT="grok 1.0.62 (1474f9cbdd91)\n"
+STDERR=""
+
+== grok models (empty HOME)
+EXIT=0 SIGNAL=null
+STDOUT="You are not authenticated.\n\nDefault model: grok-4.6\n\nAvailable models:\n  * grok-4.6 (default)\n  - grok-4.5\n"
+STDERR=""
+
+== grok update --check --json (empty HOME)
+EXIT=0 SIGNAL=null
+STDOUT="{\"currentVersion\":\"1.0.62\",\"latestVersion\":\"1.0.62\",\"updateAvailable\":false,\"installer\":\"internal\",\"channel\":\"stable\",\"autoUpdate\":null,\"error\":null}\n"
+STDERR=""
+
+== agy --version
+EXIT=0 SIGNAL=null
+STDOUT="1.4.3\n"
+STDERR=""
+
+== agy models (empty HOME)
+EXIT=1 SIGNAL=null
+STDOUT=""
+STDERR="Fetching available models...\nError: Please sign in to view available models. Launch the CLI without arguments to sign in.\n"
+
+== claude --version
+EXIT=0 SIGNAL=null
+STDOUT="2.1.302 (Claude Code)\n"
+STDERR=""
+
+== claude auth status --json (empty HOME)
+EXIT=1 SIGNAL=null
+STDOUT="{\n  \"loggedIn\": false,\n  \"authMethod\": \"none\",\n  \"apiProvider\": \"firstParty\",\n  \"analyticsDisabled\": false,\n  \"projectsDirectory\": \"<TEMP_HOME>/.claude/projects\",\n  \"configDirectory\": \"<TEMP_HOME>/.claude\"\n}\n"
+STDERR=""
+
+EXIT=1 SIGNAL=null
+STDOUT=""
+STDERR="WARNING: proceeding, even though we could not create PATH aliases: CODEX_HOME points to \"<TEMP_HOME>/.codex\", but that path does not exist\nError: CODEX_HOME points to \"<TEMP_HOME>/.codex\", but that path does not exist\n"
+
+temporary HOME removed: true
+== codex app-server (with an existing empty CODEX_HOME)
+STDERR=""
+
+== codex app-server initialize + account/read (empty CODEX_HOME)
+EXIT=null SIGNAL=SIGKILL
+STDOUT="{\"id\":1,\"result\":{\"userAgent\":\"probe/0.163.0 (Mac OS 26.5.2; arm64) unknown (probe; 0)\",\"codexHome\":\"<TEMP_HOME>/.codex\",\"platformFamily\":\"unix\",\"platformOs\":\"macos\"}}\n{\"method\":\"remoteControl/status/changed\",\"params\":{\"status\":\"disabled\",\"serverName\":\"MacBookPro\",\"installationId\":\"49a76856-9248-4d85-9eaa-432aff15f7c8\",\"environmentId\":null},\"emittedAtMs\":1792488872389}\n{\"id\":2,\"result\":{\"account\":null,\"requiresOpenaiAuth\":true,\"workspaceRouting\":null}}\n"
+STDERR=""
+
+temporary HOME removed: true
+
+== codex app-server model/list (signed out)
+rows: 8 first row keys: id,model,upgrade,upgradeInfo,availabilityNux,displayName,description,modelSpecialty,hidden,supportedReasoningEfforts,defaultReasoningEffort,inputModalities,supportsPersonality,multiAgentVersion,additionalSpeedTiers,serviceTiers,defaultServiceTier,availableAccessPrograms,isDefault
+{"id":"gpt-6.1-sol","model":"gpt-6.1-sol","upgrade":null,"upgradeInfo":null,"availabilityNux":{"message":"Maximize usage with GPT-6.1 Sol. Try it on complex work for near-Astra performance at a lower cost."},"displayName":"GPT-6.1-Sol","description":"Latest workhorse model for coding and everyday work.","modelSpecialty":null,"hidden":false,"supportedReasoningEfforts":[{"reasoningEffort":"low","description":"Fast responses with lighter reasoning"},{"reasoningEffort":"medium","description":"Balances speed and reasoning depth for everyday tasks"},{"reasoningEffort":"high","description":"Greater reasoning depth for complex problems"},{"reasoningEffort":"xhigh","description":"Extra high reasoning depth for complex problems"},{"reasoningEffort":"max","description":"Maximum reasoning depth for the hardest problems"},{"reasoningEffort":"ultra","description":"Maximum reasoning with automatic task
+nextCursor: null
+
+----- probe-real-shapes.mjs
+// Read-only probes of the real runtime CLIs in an empty temporary HOME (signed out, no user data).
+import { spawn } from "node:child_process";
+import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
+const home = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), "rlr-shapes-")));
+fs.mkdirSync(path.join(home, ".codex"));
+const env = { PATH: process.env.PATH, HOME: home, TMPDIR: os.tmpdir(), CODEX_HOME: path.join(home, ".codex") };
+const run = (cmd, args, input, ms = 20000) => new Promise((resolve) => {
+  const child = spawn(cmd, args, { env, cwd: home, stdio: ["pipe", "pipe", "pipe"] });
+  let out = "", err = "";
+  child.stdout.on("data", (c) => out += c); child.stderr.on("data", (c) => err += c);
+  const t = setTimeout(() => child.kill("SIGKILL"), ms);
+  if (input) { for (const l of input) child.stdin.write(l + "\n"); } else child.stdin.end();
+  child.on("close", (code, sig) => { clearTimeout(t); resolve({ code, sig, out, err }); });
+});
+const show = (label, r) => console.log(`== ${label}\nEXIT=${r.code} SIGNAL=${r.sig}\nSTDOUT=${JSON.stringify(r.out)}\nSTDERR=${JSON.stringify(r.err.slice(0, 600))}\n`);
+show("codex --version", await run("codex", ["--version"]));
+show("grok --version", await run("grok", ["--version"]));
+show("grok models (empty HOME)", await run("grok", ["models"]));
+show("grok update --check --json (empty HOME)", await run("grok", ["update", "--check", "--json"]));
+show("agy --version", await run("agy", ["--version"]));
+show("agy models (empty HOME)", await run("agy", ["models"]));
+show("claude --version", await run("claude", ["--version"]));
+show("claude auth status --json (empty HOME)", await run("claude", ["auth", "status", "--json"]));
+show("codex app-server initialize + account/read (empty CODEX_HOME)", await run("codex", ["app-server"], [
+  JSON.stringify({ id: 1, method: "initialize", params: { clientInfo: { name: "probe", version: "0" } } }),
+  JSON.stringify({ method: "initialized" }),
+  JSON.stringify({ id: 2, method: "account/read", params: { refreshToken: false } }),
+], 8000));
+fs.rmSync(home, { recursive: true, force: true });
+console.log("temporary HOME removed:", !fs.existsSync(home));
+----- probe-codex-model-list.mjs
+import { spawn } from "node:child_process";
+import fs from "node:fs"; import os from "node:os"; import path from "node:path";
+const home = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), "rlr-codex-ml-"))); fs.mkdirSync(path.join(home, ".codex"));
+const child = spawn("codex", ["app-server"], { env: { PATH: process.env.PATH, HOME: home, TMPDIR: os.tmpdir(), CODEX_HOME: path.join(home, ".codex") }, cwd: home });
+let out = ""; child.stdout.on("data", (c) => out += c);
+for (const m of [{ id: 1, method: "initialize", params: { clientInfo: { name: "probe", version: "0" } } }, { method: "initialized" }, { id: 2, method: "model/list", params: {} }]) child.stdin.write(JSON.stringify(m) + "\n");
+setTimeout(() => { child.kill("SIGKILL"); const line = out.split("\n").find((l) => l.startsWith('{"id":2')); const r = JSON.parse(line); console.log("rows:", r.result?.data?.length, "first row keys:", Object.keys(r.result?.data?.[0] ?? {}).join(",")); console.log(JSON.stringify(r.result?.data?.[0]).slice(0, 900)); console.log("nextCursor:", r.result?.nextCursor); fs.rmSync(home, { recursive: true, force: true }); }, 6000);

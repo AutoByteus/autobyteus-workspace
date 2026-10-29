@@ -1,3 +1,4 @@
+import type { NativeCommandProcessScope } from "autobyteus-ts";
 import {
   defaultAgentFactory,
   defaultInputProcessorRegistry,
@@ -25,6 +26,7 @@ import {
 
 export const createProcessAgentProviderFactoryBuilder = (input: Readonly<{
   workspaceManager: WorkspaceManager;
+  nativeCommandProcessScope: NativeCommandProcessScope;
 }>): AgentProviderFactoryBuilder => {
   if (!input?.workspaceManager) {
     throw new Error("Process Agent provider workspace manager is required.");
@@ -33,6 +35,7 @@ export const createProcessAgentProviderFactoryBuilder = (input: Readonly<{
     workspaceManager: input.workspaceManager,
     skillService: SkillService.getInstance(),
     autoByteus: {
+      nativeCommandProcessScope: input.nativeCommandProcessScope,
       agentFactory: defaultAgentFactory,
       createLlm: createAvailableLlm,
       processorRegistries: {

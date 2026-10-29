@@ -41,8 +41,10 @@ const buildHarness = (input: {
         participants: sorted.map((applicationId) => ({ applicationId, priorAvailability: null })),
       };
     }),
-    recoverParticipants: vi.fn(async (_token: unknown, current: string[], recoverable: string[], options: unknown) => {
-      order.push(`recover:${[...current].sort().join(",")}:${[...recoverable].sort().join(",")}:${JSON.stringify(options)}`);
+    recoverParticipants: vi.fn(async (_token: unknown, current: string[], setupRequired: ReadonlyMap<string, string>, options: unknown) => {
+      // `recover:<current>:<not ready, with their setup reasons>:<options>`
+      const notReady = [...setupRequired].map(([id, detail]) => `${id}=${detail}`).sort().join(",");
+      order.push(`recover:${[...current].sort().join(",")}:${notReady}:${JSON.stringify(options)}`);
       return new Map();
     }),
     quarantineParticipants: vi.fn(async () => { order.push("quarantine"); }),
@@ -76,7 +78,13 @@ const buildHarness = (input: {
   };
   const readiness = {
     prepare: vi.fn(async () => { order.push("readiness"); }),
-    isApplicationReady: vi.fn(() => true),
+    getSetupRequiredDetail: vi.fn((_applicationId: string): string | null => null),
+  };
+  const storageLifecycleService = {
+    ensureRuntimeDirectoryPrepared: vi.fn(async (applicationId: string) => {
+      order.push(`runtime:${applicationId}`);
+      return {} as never;
+    }),
   };
   const availability = {
     getAvailability: vi.fn(async (applicationId: string) => ({
@@ -95,10 +103,12 @@ const buildHarness = (input: {
     },
     definitionReadiness: readiness,
     availabilityService: availability,
+    storageLifecycleService,
   } as never);
   return {
     service,
     order,
+    storageLifecycleService,
     bundleService,
     applicationAgentToolCatalog,
     reentryService,
@@ -212,7 +222,7 @@ describe("ApplicationCatalogTransitionService", () => {
 
     expect(harness.order).toContain("rollback.source");
     expect(harness.order.indexOf("rollback.source")).toBeLessThan(harness.order.indexOf("stage.2"));
-    expect(harness.order.indexOf("tool.commit")).toBeLessThan(harness.order.indexOf("recover:app-a:app-a:{}"));
+    expect(harness.order.indexOf("tool.commit")).toBeLessThan(harness.order.indexOf("recover:app-a::{}"));
     expect(harness.reentryService.quarantineParticipants).not.toHaveBeenCalled();
   });
 
@@ -238,6 +248,44 @@ describe("ApplicationCatalogTransitionService", () => {
     })).resolves.toBe("next");
   });
 
+  it("prepares each current application's runtime folder after the commits and before readiness on import", async () => {
+    const harness = buildHarness({
+      oldApplications: [],
+      packageCandidate: candidate([application("app-a"), application("app-b")]),
+    });
+
+    await expect(harness.service.runPackageTransition({
+      kind: "import",
+      packageId: "pkg-a",
+      applyBeforeStage: async () => "imported",
+      rollbackSource: async () => undefined,
+    })).resolves.toBe("imported");
+
+    expect(harness.order.slice(harness.order.indexOf("tool.commit"))).toEqual([
+      "tool.commit",
+      "runtime:app-a",
+      "runtime:app-b",
+      "snapshot.committed",
+      "reconcile",
+      "readiness",
+      "recover:app-a,app-b::{}",
+    ]);
+  });
+
+  it("prepares the reloaded application's runtime folder before readiness", async () => {
+    const harness = buildHarness({
+      oldApplications: [application("app-a")],
+      applicationCandidate: candidate([application("app-a")], "application"),
+    });
+
+    await harness.service.reloadAndReenter("app-a");
+
+    expect(harness.storageLifecycleService.ensureRuntimeDirectoryPrepared)
+      .toHaveBeenCalledExactlyOnceWith("app-a");
+    expect(harness.order.indexOf("runtime:app-a")).toBeGreaterThan(harness.order.indexOf("tool.commit"));
+    expect(harness.order.indexOf("runtime:app-a")).toBeLessThan(harness.order.indexOf("readiness"));
+  });
+
   it("uses the same staged owner for exact-application repair and can recover a previously inactive participant", async () => {
     const harness = buildHarness({
       oldApplications: [application("app-a")],
@@ -253,8 +301,29 @@ describe("ApplicationCatalogTransitionService", () => {
     expect(harness.reentryService.recoverParticipants).toHaveBeenCalledWith(
       expect.anything(),
       ["app-a"],
-      ["app-a"],
+      new Map(),
       { recoverPreviouslyInactive: true },
     );
+  });
+
+  it("passes each not-ready current application's setup reason from readiness to reentry (autobyteus-296, AC-006)", async () => {
+    const harness = buildHarness({
+      oldApplications: [],
+      packageCandidate: candidate([application("app-a"), application("app-b")]),
+    });
+    const detail = "Application setup is required: app-b/slot:draftingTeam: Codex App Server authentication is unavailable: no logged-in account.";
+    harness.readiness.getSetupRequiredDetail.mockImplementation((applicationId: string) =>
+      applicationId === "app-b" ? detail : null);
+
+    await harness.service.runPackageTransition({
+      kind: "import",
+      packageId: "pkg-a",
+      applyBeforeStage: async () => "imported",
+      rollbackSource: async () => undefined,
+    });
+
+    expect(harness.reentryService.recoverParticipants).toHaveBeenCalledWith(
+      expect.anything(), ["app-a", "app-b"], new Map([["app-b", detail]]), {});
+    expect(harness.order.indexOf("readiness")).toBeLessThan(harness.order.indexOf(`recover:app-a,app-b:app-b=${detail}:{}`));
   });
 });

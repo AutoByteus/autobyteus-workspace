@@ -13,7 +13,7 @@ import type { CodexThreadCleanup } from "../../../../../../src/agent-execution/b
 import { MemberExecutionContext } from "../../../../../../src/agent-collaboration/execution/domain/member-execution-context.js";
 import { createTeamRootExecutionIdentity } from "../../../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import type { SystemInstructionCaptureService } from "../../../../../../src/agent-memory/services/system-instruction-capture-service.js";
-import { testMemberTaskCommandCapability } from "../../../../../fixtures/current-team-run-fixtures.js";
+import { testMemberTaskCapability } from "../../../../../fixtures/current-team-run-fixtures.js";
 
 const createRunContext = (
   runId: string,
@@ -49,7 +49,7 @@ const createRunContext = (
               agentRunId: runId,
             },
             collaboration: { outgoingHandoffs: [], deliverLogicalMessage: async () => ({ accepted: true }) },
-            tasks: testMemberTaskCommandCapability(input.teamRunId),
+            tasks: testMemberTaskCapability(input.teamRunId),
           })
         : null,
     }),
@@ -443,5 +443,58 @@ describe("CodexThreadManager", () => {
     );
     expect(request).not.toHaveBeenCalledWith("thread/start", expect.anything());
     expect(releaseClient).toHaveBeenCalledWith("/tmp/workspace");
+  });
+
+  it("writes one summary per pending rejection account when the thread is released (AC-005)", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
+    try {
+      const client = {
+        request: vi.fn(async () => ({ thread: { id: "thread-release-1" } })),
+        onNotification: vi.fn(() => () => {}),
+        onServerRequest: vi.fn(() => () => {}),
+        onClose: vi.fn(() => () => {}),
+      } as unknown as CodexAppServerClient;
+      const manager = new CodexThreadManager(
+        testCodexLeaseManager({
+          acquireClient: vi.fn(async () => client),
+          releaseClient: vi.fn(async () => undefined),
+        }) as unknown as CodexAppServerClientManager,
+        { cleanupPreparedWorkspaceSkills: vi.fn(async () => undefined) } as unknown as CodexThreadCleanup,
+        { registerThread: vi.fn(() => () => {}) } as unknown as CodexClientThreadRouter,
+      );
+      const summaries = () =>
+        warn.mock.calls
+          .filter((call) => call[0] === "[CodexSegmentTurnAdmissionRejectedSummary]")
+          .map((call) => call[1]);
+
+      const pendingContext = createRunContext("run-release-pending", "/tmp/workspace");
+      const pendingThread = await manager.createThread(pendingContext, () => undefined);
+      for (let index = 0; index < 6; index += 1) {
+        pendingThread.handleAppServerNotification("item/completed", {
+          turnId: "turn-t", item: { type: "commandExecution", id: "cmd-1" },
+        });
+      }
+      pendingThread.handleAppServerNotification("item/agentMessage/delta", { itemId: "m-1", delta: "x" });
+      pendingThread.handleAppServerNotification("item/agentMessage/delta", { itemId: "m-1", delta: "x" });
+      expect(summaries()).toEqual([]);
+
+      await manager.releasePreparation(pendingContext);
+
+      expect(summaries()).toEqual([
+        { runtimeKind: RuntimeKind.CODEX_APP_SERVER, runId: "run-release-pending", turnId: "turn-t", count: 5 },
+        { runtimeKind: RuntimeKind.CODEX_APP_SERVER, runId: "run-release-pending", turnId: null, count: 1 },
+      ]);
+
+      const quietContext = createRunContext("run-release-quiet", "/tmp/workspace");
+      const quietThread = await manager.createThread(quietContext, () => undefined);
+      quietThread.handleAppServerNotification("item/completed", {
+        turnId: "turn-q", item: { type: "commandExecution", id: "cmd-q" },
+      });
+      await manager.releasePreparation(quietContext);
+
+      expect(summaries()).toHaveLength(2);
+    } finally {
+      warn.mockRestore();
+    }
   });
 });

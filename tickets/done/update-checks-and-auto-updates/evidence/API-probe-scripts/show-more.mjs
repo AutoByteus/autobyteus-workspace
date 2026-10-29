@@ -1,0 +1,1 @@
+export default async (page, args) => { const more = page.locator(`[data-testid="notification-section-${args.kind}"] [data-testid="notification-section-more"]`); if (await more.count()) { await more.click(); await page.waitForTimeout(400); return { expanded: true }; } return { expanded: false }; };

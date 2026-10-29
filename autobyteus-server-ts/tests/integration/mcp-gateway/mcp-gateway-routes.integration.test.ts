@@ -2,8 +2,7 @@ import fs from "node:fs/promises";
 import path from "node:path";
 import fastify from "fastify";
 import { describe, expect, it } from "vitest";
-import { Client } from "@modelcontextprotocol/sdk/client/index.js";
-import { StreamableHTTPClientTransport } from "@modelcontextprotocol/sdk/client/streamableHttp.js";
+import { Client, StreamableHTTPClientTransport } from "@modelcontextprotocol/client";
 import { BaseTool } from "autobyteus-ts/tools/base-tool.js";
 import { McpConfigService } from "autobyteus-ts/tools/mcp/config-service.js";
 import { McpServerInstanceManager } from "autobyteus-ts/tools/mcp/server-instance-manager.js";
@@ -22,6 +21,18 @@ import { McpGatewayToolExecutor, MCP_GATEWAY_EXECUTION_SCOPE_ID } from "../../..
 type CallRecord = {
   agentId: string | null;
   args: Record<string, unknown>;
+};
+
+type HttpExchange = { rpcMethod: string | null; status: number };
+
+/** A test-owned fetch for the SDK transport that records each POST's JSON-RPC method and HTTP status. */
+const recordingFetch = (exchanges: HttpExchange[]): typeof fetch => async (input, init) => {
+  const response = await fetch(input, init);
+  if (init?.method === "POST" && typeof init.body === "string") {
+    const body = JSON.parse(init.body) as { method?: unknown };
+    exchanges.push({ rpcMethod: typeof body.method === "string" ? body.method : null, status: response.status });
+  }
+  return response;
 };
 
 class FakeMcpTool extends BaseTool<unknown, Record<string, unknown>, unknown> {
@@ -95,8 +106,8 @@ describe("MCP gateway route", () => {
     const fixtureDir = await fs.mkdtemp(path.join(process.cwd(), "tests", ".tmp", "gateway-stdio-mcp-"));
     const fixtureScript = path.join(fixtureDir, "server.mjs");
     await fs.writeFile(fixtureScript, `
-import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
-import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
+import { McpServer } from "@modelcontextprotocol/server";
+import { StdioServerTransport } from "@modelcontextprotocol/server/stdio";
 import { z } from "zod";
 
 const server = new McpServer({ name: "gateway-real-stdio-fixture", version: "0.0.1" });
@@ -104,7 +115,7 @@ server.registerTool(
   "echo",
   {
     description: "Echoes through a real configured stdio MCP server.",
-    inputSchema: { message: z.string() },
+    inputSchema: z.object({ message: z.string() }),
   },
   async ({ message }) => ({
     content: [{ type: "text", text: \`remote:\${message}\` }],
@@ -228,6 +239,55 @@ await server.connect(new StdioServerTransport());
     }
   });
 
+  it("serves an SDK client in auto negotiation mode, which falls back to the 2025 handshake", async () => {
+    const app = fastify();
+    const calls: CallRecord[] = [];
+    const registry = new FakeToolRegistry();
+    registry.register(buildMcpDefinition("db_query", "sqlite", calls));
+    const catalog = new McpGatewayToolCatalog({ registry: registry as any });
+    await registerMcpGatewayRoutes(app, {
+      dispatcher: new McpGatewayMethodDispatcher({ catalog, toolExecutor: new McpGatewayToolExecutor({ catalog }) }),
+      accessGate: new McpGatewayAccessGate({ readConfiguredToken: () => null }),
+    });
+    await app.ready();
+    await app.listen({ host: "127.0.0.1", port: 0 });
+    const address = app.server.address();
+    if (!address || typeof address === "string") {
+      throw new Error("Expected Fastify to listen on a loopback TCP port.");
+    }
+    const exchanges: HttpExchange[] = [];
+    const sdkClient = new Client(
+      { name: "autobyteus-mcp-gateway-auto-probe", version: "0.0.1" },
+      { versionNegotiation: { mode: "auto" } },
+    );
+    const transport = new StreamableHTTPClientTransport(new URL(`http://127.0.0.1:${address.port}/mcp/gateway`), {
+      fetch: recordingFetch(exchanges),
+    });
+
+    try {
+      await sdkClient.connect(transport);
+      expect(sdkClient.getProtocolEra()).toBe("legacy");
+      // The route answers initialize with the version of the request's mcp-protocol-version header; the
+      // initialize request has none, so the route's default 2025-03-26 is negotiated, as for every client today.
+      expect(sdkClient.getNegotiatedProtocolVersion()).toBe("2025-03-26");
+      expect(exchanges.slice(0, 2)).toEqual([
+        { rpcMethod: "server/discover", status: 400 },
+        { rpcMethod: "initialize", status: 200 },
+      ]);
+
+      const tools = await sdkClient.listTools();
+      expect(tools.tools.map((tool) => tool.name)).toEqual(["db_query"]);
+      await expect(sdkClient.callTool({ name: "db_query", arguments: { sql: "select 2" } })).resolves.toMatchObject({
+        content: [{ type: "text", text: "rows for select 2" }],
+        structuredContent: { ok: true },
+      });
+      expect(calls).toEqual([{ agentId: MCP_GATEWAY_EXECUTION_SCOPE_ID, args: { sql: "select 2" } }]);
+    } finally {
+      await sdkClient.close();
+      await app.close();
+    }
+  });
+
   it("keeps no-token mode local-only by rejecting remote-style requests without Origin headers", async () => {
     const app = fastify();
     const calls: CallRecord[] = [];
@@ -309,7 +369,7 @@ await server.connect(new StdioServerTransport());
 
 const resetDefaultMcpState = async (): Promise<void> => {
   try {
-    await McpServerInstanceManager.getInstance().cleanupAllMcpServerInstances();
+    await McpServerInstanceManager.getInstance().cleanupMcpServerInstancesForAgent(MCP_GATEWAY_EXECUTION_SCOPE_ID);
   } catch {
     // Best-effort cleanup for singleton state that may not have been initialized yet.
   }

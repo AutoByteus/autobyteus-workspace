@@ -15,7 +15,7 @@ import {
   composeMessageLogs,
   taskAgentLogOwners,
   TaskAgentMessageLogs,
-  type MessageLogOwner,
+  type StoredMessageLogOwner,
 } from "../../run-history/store/task-agent-message-logs.js";
 
 /**
@@ -70,7 +70,7 @@ export class TeamCommunicationStore {
     teamMemoryDir: string,
     rootTeamRunId: string,
     message: CollaborationCommunicationMessage,
-    owners: readonly MessageLogOwner[],
+    owners: readonly StoredMessageLogOwner[],
   ): Promise<RunPackageFileWriteResult<"communication_messages">> {
     return appendMessageToOwnerLogs(owners, async (owner) => {
       if (owner.kind !== "coordinating") return this.taskLogs(teamMemoryDir).append(owner, message);

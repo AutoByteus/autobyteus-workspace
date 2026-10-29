@@ -1,0 +1,15 @@
+# IMP-07 web guards
+# command: pnpm -C autobyteus-web guard:web-boundary && guard:localization-boundary && audit:localization-literals
+# commit: 6fa5f443c6
+# environment: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# date: 2026-10-27T19:30:23Z
+
+
+[guard:web-boundary] Passed.
+
+[guard:localization-boundary] Passed.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/autobyteus-web/package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
+exit 0
+[audit:localization-literals] Passed with zero unresolved findings. (full run, exit 0)

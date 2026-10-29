@@ -7,6 +7,8 @@ const launch = {
   workspaceRootPath: null,
 }
 
+const configuredOrigin = { origin: 'configured' as const, fallbacks: [] }
+
 const configuredAgent = (address: string, agentRunId: string) => ({
   address,
   agentDefinitionId: `definition-${agentRunId}`,
@@ -60,12 +62,14 @@ export const taskBearingView = (): AgentOrgExecutionViewDto => ({
           taskExecutions: [],
         },
       ],
+      // Copies of configured placements: each records the placement's snapshot from when it started.
       taskExecutions: [{
         address: '/worker',
         agentRunId: 'agent-worker-task',
         platformAgentRunId: null,
         delegatorAgentRunId: 'agent-director',
         startedAt: '2026-09-01T00:00:01.000Z',
+        source: { kind: 'agent', agentDefinitionId: 'definition-agent-worker-configured', launchConfiguration: launch, launchSource: configuredOrigin },
       }, {
         address: '/team',
         teamRunId: 'team-task',
@@ -76,6 +80,15 @@ export const taskBearingView = (): AgentOrgExecutionViewDto => ({
         taskExecutions: [],
         delegatorAgentRunId: 'agent-director',
         startedAt: '2026-09-01T00:00:02.000Z',
+        source: {
+          // Keys in the contract schema's order (a parsed DTO's order).
+          kind: 'agent_team', teamDefinitionId: 'team-definition', coordinatorAddress: '/team/lead',
+          members: [
+            { address: '/team/lead', agentDefinitionId: 'definition-agent-lead-configured', launchConfiguration: launch, followsTeam: true },
+            { address: '/team/worker', agentDefinitionId: 'definition-agent-team-worker-configured', launchConfiguration: launch, followsTeam: true },
+          ],
+          handoffs: [], defaultLaunchConfiguration: launch, defaultLaunchSource: configuredOrigin,
+        },
       }],
     },
   },
@@ -85,7 +98,7 @@ export const taskBearingView = (): AgentOrgExecutionViewDto => ({
     orgRunId: 'org-run',
     messages: [],
   },
-  agent_input_states: [], agent_statuses: [
+  agent_input_states: [], remote_task_executions: [], agent_statuses: [
     status('/director', 'agent-director'),
     status('/worker', 'agent-worker-configured'),
     status('/team/lead', 'agent-lead-configured'),

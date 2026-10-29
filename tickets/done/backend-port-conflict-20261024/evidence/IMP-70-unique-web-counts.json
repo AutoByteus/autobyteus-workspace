@@ -1,0 +1,27 @@
+{
+  "source": "9b10fcd4d3eee578b9d1d23e1d6ab47f9b950c5c",
+  "files": {
+    "utils/mcp/__tests__/mcpConfigRows.spec.ts": 34,
+    "stores/__tests__/windowNodeContextStore.spec.ts": 10,
+    "components/settings/__tests__/MemorySyncCard.spec.ts": 4,
+    "components/server/__tests__/PortConflictPresentation.spec.ts": 2,
+    "components/progress/__tests__/BackgroundTaskPanel.spec.ts": 14,
+    "components/tools/__tests__/McpBulkImportView.spec.ts": 7,
+    "components/progress/__tests__/BackgroundTaskPanel.inspection.spec.ts": 8,
+    "components/server/__tests__/StartupDelayPresentation.spec.ts": 3,
+    "components/tools/__tests__/McpServerFormModal.spec.ts": 19,
+    "components/server/__tests__/ServerMonitor.spec.ts": 3,
+    "components/tools/__tests__/McpSecretMoveBanner.spec.ts": 6,
+    "components/server/__tests__/ServerLoading.spec.ts": 2,
+    "components/tools/__tests__/McpServerCard.spec.ts": 2,
+    "utils/mcp/__tests__/mcpSecretReviewState.spec.ts": 3,
+    "localization/messages/__tests__/backgroundTaskPanelCatalog.spec.ts": 2,
+    "components/server/__tests__/ServerShutdown.spec.ts": 1,
+    "stores/__tests__/toolManagementStore.mcpGateway.spec.ts": 1,
+    "stores/__tests__/toolManagementStore.mcpImport.spec.ts": 2
+  },
+  "uniqueCases": 123,
+  "initial69": "110 pass/10 fail in120",
+  "focused70": "31 pass includes28 repeated cases plus3 new store cases",
+  "currentWeb": "123 unique passing cases"
+}

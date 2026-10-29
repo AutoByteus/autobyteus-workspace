@@ -1,0 +1,48 @@
+{
+  "runtime": "autobyteus",
+  "model": "qwen/qwen3.6-35b-a3b:lmstudio@localhost:1234",
+  "toolNamesSelected": [
+    "tok_auth_probe"
+  ],
+  "remoteRequests": [
+    {
+      "httpMethod": "POST",
+      "path": "/mcp",
+      "rpcMethod": "initialize",
+      "toolName": null,
+      "auth": "other"
+    }
+  ],
+  "events": [
+    "CONNECTED",
+    "AGENT_STATUS",
+    "AGENT_INPUT_STATE",
+    "AGENT_STATUS",
+    "AGENT_INPUT_STATE",
+    "AGENT_COMMAND_ACK",
+    "SYSTEM_INSTRUCTIONS_SUPPLIED",
+    "AGENT_INPUT_STATE",
+    "AGENT_STATUS",
+    "TURN_STARTED",
+    "AGENT_INPUT_STATE",
+    "SEGMENT_START",
+    "SEGMENT_CONTENT",
+    "SEGMENT_CONTENT",
+    "SEGMENT_START",
+    "SEGMENT_CONTENT",
+    "SEGMENT_START",
+    "SEGMENT_CONTENT",
+    "SEGMENT_END",
+    "SEGMENT_END",
+    "SEGMENT_END",
+    "TOKEN_USAGE_UPDATED",
+    "TOOL_EXECUTION_STARTED",
+    "TOOL_LOG",
+    "TOOL_LOG",
+    "ERROR",
+    "TOOL_EXECUTION_FAILED"
+  ],
+  "lastEvents": "AGENT_INPUT_STATE:{\"run_instance_id\":\"de5062e9-24d6-4353-b019-955b5aaa30d6\",\"revision\":1,\"entries\":[],\"recoverableBlock\":null} | AGENT_STATUS:{\"status\":\"initializing\",\"recoverableBlock\":null,\"agent_id\":\"mcp_http_auth_native_revoked_2b047a6b_a439_4542_23a9e72d13274527904bedba5ade266a\"} | AGENT_INPUT_STATE:{\"run_instance_id\":\"de5062e9-24d6-4353-b019-955b5aaa30d6\",\"revision\":2,\"entries\":[{\"sequence\":1,\"message_id\":\"e2e-4b19b151-9486-43c0-b0ed-c5d45b62d844\",\"dedupe_key\":\"agent_run_input:e2e:e2e-4b19b151-9 | AGENT_COMMAND_ACK:{\"command_type\":\"SEND_MESSAGE\",\"run_id\":\"mcp_http_auth_native_revoked_2b047a6b_a439_4542_23a9e72d13274527904bedba5ade266a\",\"message_id\":\"e2e-4b19b151-9486-43c0-b0ed-c5d45b62d844\",\"dedupe_key\":\"agent_r | SYSTEM_INSTRUCTIONS_SUPPLIED:{\"trace_id\":\"rt_1792863226711_607e53b2-544a-47a4-9345-f15997b7c006\",\"content\":\"## Agent Identity\\n\\n- Name: mcp-http-auth-native-revoked-2b047a6b-a439-4542-8f4a-3b8664661f15\\n- Description: Calls cred | AGENT_INPUT_STATE:{\"run_instance_id\":\"de5062e9-24d6-4353-b019-955b5aaa30d6\",\"revision\":3,\"entries\":[{\"sequence\":1,\"message_id\":\"e2e-4b19b151-9486-43c0-b0ed-c5d45b62d844\",\"dedupe_key\":\"agent_run_input:e2e:e2e-4b19b151-9 | AGENT_STATUS:{\"status\":\"running\",\"recoverableBlock\":null,\"agent_id\":\"mcp_http_auth_native_revoked_2b047a6b_a439_4542_23a9e72d13274527904bedba5ade266a\"} | TURN_STARTED:{\"turn_id\":\"turn_0001\"} | AGENT_INPUT_STATE:{\"run_instance_id\":\"de5062e9-24d6-4353-b019-955b5aaa30d6\",\"revision\":4,\"entries\":[{\"sequence\":1,\"message_id\":\"e2e-4b19b151-9486-43c0-b0ed-c5d45b62d844\",\"dedupe_key\":\"agent_run_input:e2e:e2e-4b19b151-9 | SEGMENT_START:{\"id\":\"segment_45bb25d2d3804d718645190ae86ccce8:reasoning_452553d6ce6444a6a0dccbc7cbbfa328\",\"turn_id\":\"turn_0001\",\"segment_type\":\"reasoning\",\"metadata\":null} | SEGMENT_CONTENT:{\"id\":\"segment_45bb25d2d3804d718645190ae86ccce8:reasoning_452553d6ce6444a6a0dccbc7cbbfa328\",\"turn_id\":\"turn_0001\",\"segment_type\":\"reasoning\",\"delta\":\"The user wants me to call the `tok_auth_probe` too | SEGMENT_CONTENT:{\"id\":\"segment_45bb25d2d3804d718645190ae86ccce8:reasoning_452553d6ce6444a6a0dccbc7cbbfa328\",\"turn_id\":\"turn_0001\",\"segment_type\":\"reasoning\",\"delta\":\" reply with the exact text it returns.\\n\\nLet me c | SEGMENT_START:{\"id\":\"turn_9101b33a997a492790dd56eb827739c8:e84dce9d3d8242fb9f81aa53ab2462bb\",\"turn_id\":\"turn_0001\",\"segment_type\":\"text\",\"metadata\":null} | SEGMENT_CONTENT:{\"id\":\"turn_9101b33a997a492790dd56eb827739c8:e84dce9d3d8242fb9f81aa53ab2462bb\",\"turn_id\":\"turn_0001\",\"segment_type\":\"text\",\"delta\":\"\\n\\n\"} | SEGMENT_START:{\"id\":\"458605810\",\"turn_id\":\"turn_0001\",\"segment_type\":\"tool_call\",\"metadata\":{\"tool_name\":\"tok_auth_probe\"}} | SEGMENT_CONTENT:{\"id\":\"458605810\",\"turn_id\":\"turn_0001\",\"segment_type\":\"tool_call\",\"delta\":\"{}\"} | SEGMENT_END:{\"id\":\"turn_9101b33a997a492790dd56eb827739c8:e84dce9d3d8242fb9f81aa53ab2462bb\",\"turn_id\":\"turn_0001\",\"metadata\":null,\"interrupted\":false,\"reason\":null,\"failed\":false,\"error\":null} | SEGMENT_END:{\"id\":\"458605810\",\"turn_id\":\"turn_0001\",\"metadata\":{\"tool_name\":\"tok_auth_probe\",\"arguments\":{}},\"interrupted\":false,\"reason\":null,\"failed\":false,\"error\":null} | SEGMENT_END:{\"id\":\"segment_45bb25d2d3804d718645190ae86ccce8:reasoning_452553d6ce6444a6a0dccbc7cbbfa328\",\"turn_id\":\"turn_0001\",\"metadata\":null,\"interrupted\":false,\"reason\":null,\"failed\":false,\"error\":null} | TOKEN_USAGE_UPDATED:{\"usage_event_id\":\"30334589-f993-4085-889a-db84667922c5\",\"idempotency_key\":\"mcp_http_auth_native_revoked_2b047a6b_a439_4542_23a9e72d13274527904bedba5ade266a:turn_0001:llm:1\",\"observed_at\":\"2026-10-24T | TOOL_EXECUTION_STARTED:{\"agent_id\":\"mcp_http_auth_native_revoked_2b047a6b_a439_4542_23a9e72d13274527904bedba5ade266a\",\"tool_name\":\"tok_auth_probe\",\"invocation_id\":\"458605810\",\"turn_id\":\"turn_0001\",\"arguments\":{}} | TOOL_LOG:{\"log_entry\":\"[TOOL_CALL] Agent_ID: mcp_http_auth_native_revoked_2b047a6b_a439_4542_23a9e72d13274527904bedba5ade266a, Tool: tok_auth_probe, Invocation_ID: 458605810, Arguments: (empty dict)\",\"tool_inv | TOOL_LOG:{\"log_entry\":\"[TOOL_EXCEPTION] Error executing tool 'tok_auth_probe' (ID: 458605810): Error: HTTP 401 Unauthorized: Error POSTing to endpoint: unauthorized\\nDetails:\\nError: HTTP 401 Unauthorized: Err | ERROR:{\"code\":\"ToolExecution.Exception.tok_auth_probe\",\"message\":\"Error executing tool 'tok_auth_probe' (ID: 458605810): Error: HTTP 401 Unauthorized: Error POSTing to endpoint: unauthorized\",\"details\":\"Err | TOOL_EXECUTION_FAILED:{\"agent_id\":\"mcp_http_auth_native_revoked_2b047a6b_a439_4542_23a9e72d13274527904bedba5ade266a\",\"tool_name\":\"tok_auth_probe\",\"invocation_id\":\"458605810\",\"turn_id\":\"turn_0001\",\"error\":\"Error executing t",
+  "statusInToolResult": true,
+  "dummyValueOnAgentWire": false
+}

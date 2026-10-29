@@ -1,4 +1,8 @@
 import { GitHubRepositoryClient } from "../../integrations/github/github-repository-client.js";
+import type {
+  GitHubSourceStateListener,
+  GitHubSourceUpdateState,
+} from "../../integrations/github/github-source-update-state.js";
 import fs from "node:fs";
 import fsPromises from "node:fs/promises";
 import path from "node:path";
@@ -24,12 +28,12 @@ import { AgentPackageRootSettingsStore } from "../stores/agent-package-root-sett
 import { SkillService } from "../../skills/services/skill-service.js";
 import {
   buildGitHubSourceMetadata,
-  buildInstalledGitHubMetadata,
   githubSourceMetadata,
   mapBuiltInPackage,
   mapGitHubPackage,
   mapLocalPackage,
 } from "./agent-package-mappers.js";
+import { GitHubAgentPackageUpdates } from "./github-agent-package-updates.js";
 
 type ReloadAgentPackageDefinitionsFn = () => Promise<void>;
 type PackageFolderWatchStatusFn = (rootPath: string) => PackageFolderWatchStatus | null;
@@ -39,9 +43,6 @@ type SkillNameGuard = Pick<SkillService, "assertNoIncomingSkillNameConflicts">;
 
 const LOCAL_PATH_SOURCE_KIND = "LOCAL_PATH";
 const GITHUB_SOURCE_KIND = "GITHUB_REPOSITORY";
-
-const formatErrorMessage = (error: unknown): string =>
-  error instanceof Error ? error.message : String(error);
 
 export class AgentPackageService {
   private static instance: AgentPackageService | null = null;
@@ -61,18 +62,21 @@ export class AgentPackageService {
 
   private readonly rootSettingsStore: AgentPackageRootSettingsStore;
   private readonly registryStore: AgentPackageRegistryStore;
-  private readonly githubClient: Pick<GitHubRepositoryClient, "fetchRepositoryRevisionMetadata">;
   private readonly installer: GitHubAgentPackageInstaller;
+  private readonly githubUpdates: GitHubAgentPackageUpdates;
   /** One full reload of every registered agent package; it also re-syncs folder watching and notifies connected clients. */
   private readonly reloadAgentPackageDefinitions: ReloadAgentPackageDefinitionsFn;
   private readonly packageFolderWatchStatus: PackageFolderWatchStatusFn;
   private readonly skillNames: SkillNameGuard;
+  /** Per-package chains: a check, an update and a removal of one package never interleave. */
+  private readonly operations = new Map<string, Promise<unknown>>();
+  private githubSourceStateListener: GitHubSourceStateListener | null = null;
 
   constructor(dependencies: {
     rootSettingsStore?: AgentPackageRootSettingsStore;
     registryStore?: AgentPackageRegistryStore;
     installer?: GitHubAgentPackageInstaller;
-    githubClient?: Pick<GitHubRepositoryClient, "fetchRepositoryRevisionMetadata">;
+    githubClient?: Pick<GitHubRepositoryClient, "fetchDefaultBranchHead">;
     reloadAgentPackageDefinitions?: ReloadAgentPackageDefinitionsFn;
     packageFolderWatchStatus?: PackageFolderWatchStatusFn;
     skillNames?: SkillNameGuard;
@@ -81,7 +85,6 @@ export class AgentPackageService {
       dependencies.rootSettingsStore ?? new AgentPackageRootSettingsStore();
     this.registryStore =
       dependencies.registryStore ?? new AgentPackageRegistryStore();
-    this.githubClient = dependencies.githubClient ?? new GitHubRepositoryClient();
     this.installer =
       dependencies.installer ?? new GitHubAgentPackageInstaller();
     this.reloadAgentPackageDefinitions =
@@ -91,6 +94,13 @@ export class AgentPackageService {
       dependencies.packageFolderWatchStatus ??
       ((rootPath) => AgentPackageFolderWatcher.getProcessInstance()?.getPackageFolderWatchStatus(rootPath) ?? null);
     this.skillNames = dependencies.skillNames ?? SkillService.getInstance();
+    this.githubUpdates = new GitHubAgentPackageUpdates({
+      registryStore: this.registryStore,
+      githubClient: dependencies.githubClient ?? new GitHubRepositoryClient(),
+      installer: this.installer,
+      reloadAgentPackageDefinitions: this.reloadAgentPackageDefinitions,
+      assertPackageSkillNames: (rootPath) => this.assertPackageSkillNames(rootPath),
+    });
   }
 
   async listAgentPackages(): Promise<AgentPackage[]> {
@@ -131,7 +141,11 @@ export class AgentPackageService {
       return this.importLocalPathPackage(source);
     }
     if (input.sourceKind === GITHUB_SOURCE_KIND) {
-      return this.importGitHubPackage(source);
+      try {
+        return await this.importGitHubPackage(source);
+      } finally {
+        this.announceGitHubSourceStateChanged();
+      }
     }
 
     throw new Error(`Unsupported agent package source kind: ${input.sourceKind}`);
@@ -143,6 +157,14 @@ export class AgentPackageService {
       throw new Error("Agent package id cannot be empty.");
     }
 
+    try {
+      return await this.serialize(normalizedPackageId, () => this.removePackage(normalizedPackageId));
+    } finally {
+      this.announceGitHubSourceStateChanged();
+    }
+  }
+
+  private async removePackage(normalizedPackageId: string): Promise<AgentPackage[]> {
     const targetPackage = await this.findPackageById(normalizedPackageId);
     if (!targetPackage) {
       throw new Error(`Agent package not found: ${normalizedPackageId}`);
@@ -200,14 +222,21 @@ export class AgentPackageService {
       (packageIds ?? []).map((id) => id.trim()).filter(Boolean),
     );
     const records = await this.registryStore.listPackageRecords();
-    const githubRecords = records.filter(
-      (record) =>
-        record.sourceKind === GITHUB_SOURCE_KIND &&
-        (requestedIds.size === 0 || requestedIds.has(record.packageId)),
-    );
+    const githubPackageIds = records
+      .filter(
+        (record) =>
+          record.sourceKind === GITHUB_SOURCE_KIND &&
+          (requestedIds.size === 0 || requestedIds.has(record.packageId)),
+      )
+      .map((record) => record.packageId);
 
-    for (const record of githubRecords) {
-      await this.checkGitHubPackageUpdate(record);
+    try {
+      for (const githubPackageId of githubPackageIds) {
+        // Each check reads its record inside the lock (AR-003).
+        await this.serialize(githubPackageId, () => this.githubUpdates.checkPackage(githubPackageId));
+      }
+    } finally {
+      this.announceGitHubSourceStateChanged();
     }
 
     return this.listAgentPackages();
@@ -219,92 +248,22 @@ export class AgentPackageService {
       throw new Error("Agent package id cannot be empty.");
     }
 
-    const record = await this.registryStore.findPackageById(normalizedPackageId);
-    if (!record) {
-      throw new Error(`Agent package not found: ${normalizedPackageId}`);
-    }
-    if (record.sourceKind !== GITHUB_SOURCE_KIND || !record.managedInstallPath) {
-      throw new Error("Only managed GitHub agent packages can be updated.");
-    }
-
-    const previousMetadata = record.sourceMetadata?.github ?? null;
-    const checkedAt = new Date().toISOString();
-    let repositorySource: ReturnType<typeof normalizeGitHubRepositorySource>;
-    let metadata: Awaited<
-      ReturnType<GitHubRepositoryClient["fetchRepositoryRevisionMetadata"]>
-    >;
-
     try {
-      repositorySource = normalizeGitHubRepositorySource(record.source);
-      metadata = await this.githubClient.fetchRepositoryRevisionMetadata(
-        repositorySource,
-      );
-    } catch (error) {
-      await this.markGitHubUpdateFailed(record, error).catch(() => undefined);
-      throw error;
+      await this.serialize(normalizedPackageId, () => this.githubUpdates.updatePackage(normalizedPackageId));
+    } finally {
+      this.announceGitHubSourceStateChanged();
     }
+    return this.listAgentPackages();
+  }
 
-    if (
-      previousMetadata?.installedRevision &&
-      previousMetadata.installedRevision === metadata.latestRevision
-    ) {
-      await this.registryStore.updateGitHubSourceMetadata(
-        record.packageId,
-        buildGitHubSourceMetadata({
-          defaultBranch: metadata.defaultBranch,
-          installedRevision: previousMetadata.installedRevision,
-          latestRevision: metadata.latestRevision,
-          latestCheckedAt: checkedAt,
-          updateStatus: "UP_TO_DATE",
-        }),
-      );
-      return this.listAgentPackages();
-    }
+  /** The update facts of every imported GitHub package, for the update notifications. */
+  listGitHubSourceUpdateStates(): Promise<GitHubSourceUpdateState[]> {
+    return this.githubUpdates.listUpdateStates();
+  }
 
-    let replacement: Awaited<
-      ReturnType<GitHubAgentPackageInstaller["stagePackageReplacement"]>
-    >;
-
-    try {
-      replacement = await this.installer.stagePackageReplacement(
-        repositorySource,
-        metadata,
-        record.managedInstallPath,
-      );
-    } catch (error) {
-      await this.markGitHubUpdateFailed(record, error).catch(() => undefined);
-      throw error;
-    }
-
-    try {
-      this.assertPackageSkillNames(replacement.rootPath);
-    } catch (error) {
-      // The staged revision is rolled back; the package, its record and its status are unchanged.
-      await replacement.rollback().catch(() => undefined);
-      throw error;
-    }
-
-    try {
-      await this.registryStore.upsertManagedGitHubPackageRecord({
-        normalizedSource: repositorySource.normalizedRepository,
-        source: replacement.canonicalSourceUrl,
-        rootPath: replacement.rootPath,
-        managedInstallPath: replacement.managedInstallPath,
-        sourceMetadata: githubSourceMetadata(
-          buildInstalledGitHubMetadata(metadata, checkedAt),
-        ),
-      });
-
-      await this.reloadAgentPackageDefinitions();
-      await replacement.commit();
-      return this.listAgentPackages();
-    } catch (error) {
-      await replacement.rollback().catch(() => undefined);
-      await this.restorePackageRecord(record);
-      await this.markGitHubUpdateFailed(record, error).catch(() => undefined);
-      await this.reloadAgentPackageDefinitions().catch(() => undefined);
-      throw error;
-    }
+  /** One listener, told after an import, removal, check or update settled (success or failure). */
+  setGitHubSourceStateListener(listener: GitHubSourceStateListener | null): void {
+    this.githubSourceStateListener = listener;
   }
 
   private async importLocalPathPackage(source: string): Promise<AgentPackage[]> {
@@ -412,67 +371,6 @@ export class AgentPackageService {
     return targetPackage;
   }
 
-  private async checkGitHubPackageUpdate(
-    record: AgentPackageRecord,
-  ): Promise<void> {
-    const previousMetadata = record.sourceMetadata?.github ?? null;
-    const checkedAt = new Date().toISOString();
-
-    try {
-      const repositorySource = normalizeGitHubRepositorySource(record.source);
-      const revisionMetadata = await this.githubClient.fetchRepositoryRevisionMetadata(
-        repositorySource,
-      );
-      const installedRevision = previousMetadata?.installedRevision ?? null;
-      const updateStatus = installedRevision === null
-        ? "UNKNOWN"
-        : installedRevision === revisionMetadata.latestRevision
-          ? "UP_TO_DATE"
-          : "UPDATE_AVAILABLE";
-
-      await this.registryStore.updateGitHubSourceMetadata(
-        record.packageId,
-        buildGitHubSourceMetadata({
-          defaultBranch: revisionMetadata.defaultBranch,
-          installedRevision,
-          latestRevision: revisionMetadata.latestRevision,
-          latestCheckedAt: checkedAt,
-          updateStatus,
-        }),
-      );
-    } catch (error) {
-      await this.registryStore.updateGitHubSourceMetadata(
-        record.packageId,
-        buildGitHubSourceMetadata({
-          defaultBranch: previousMetadata?.defaultBranch ?? null,
-          installedRevision: previousMetadata?.installedRevision ?? null,
-          latestRevision: previousMetadata?.latestRevision ?? null,
-          latestCheckedAt: checkedAt,
-          updateStatus: "CHECK_FAILED",
-          lastError: formatErrorMessage(error),
-        }),
-      );
-    }
-  }
-
-  private async markGitHubUpdateFailed(
-    record: AgentPackageRecord,
-    error: unknown,
-  ): Promise<void> {
-    const previousMetadata = record.sourceMetadata?.github ?? null;
-    await this.registryStore.updateGitHubSourceMetadata(
-      record.packageId,
-      buildGitHubSourceMetadata({
-        defaultBranch: previousMetadata?.defaultBranch ?? null,
-        installedRevision: previousMetadata?.installedRevision ?? null,
-        latestRevision: previousMetadata?.latestRevision ?? null,
-        latestCheckedAt: previousMetadata?.latestCheckedAt ?? null,
-        updateStatus: "UPDATE_FAILED",
-        lastError: formatErrorMessage(error),
-      }),
-    );
-  }
-
   private sortPackageEntries(packages: AgentPackage[]): AgentPackage[] {
     return [...packages].sort((left, right) => {
       if (left.isDefault) {
@@ -514,15 +412,28 @@ export class AgentPackageService {
   private async restorePackageRecord(
     record: AgentPackageRecord | null,
   ): Promise<void> {
-    if (!record) {
-      return;
-    }
-
-    if (record.sourceKind === LOCAL_PATH_SOURCE_KIND) {
+    if (record) {
       await this.registryStore.replacePackageRecord(record);
-      return;
     }
+  }
 
-    await this.registryStore.replacePackageRecord(record);
+  private serialize<T>(packageId: string, operation: () => Promise<T>): Promise<T> {
+    const previous = this.operations.get(packageId) ?? Promise.resolve();
+    const next = previous.catch(() => undefined).then(operation);
+    this.operations.set(packageId, next);
+    void next
+      .finally(() => {
+        if (this.operations.get(packageId) === next) this.operations.delete(packageId);
+      })
+      .catch(() => undefined);
+    return next;
+  }
+
+  private announceGitHubSourceStateChanged(): void {
+    try {
+      this.githubSourceStateListener?.();
+    } catch (error) {
+      console.warn("AGENT_PACKAGE_GITHUB_STATE_LISTENER_FAILED", error);
+    }
   }
 }

@@ -100,7 +100,7 @@ suite("Task DONE hides the Task's agent run resources in every root view (real H
       { input: { name: `Task closure ${label} ${randomUUID().slice(0, 8)}` } })).createProject.projectId as string;
     const task = async (description: string) => (await graphql(
       `mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId status}}`,
-      { input: { projectId, description } })).createProjectTask.taskId as string;
+      { input: { projectId, title: description.split("\n")[0]!, description } })).createProjectTask.taskId as string;
     return { projectId, task };
   };
   const statusOf = async (projectId: string, taskId: string) => ((await graphql(

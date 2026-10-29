@@ -12,7 +12,11 @@ export const CONFIGURE_MCP_SERVER = gql`
           toolNamePrefix
           command
           args
-          env
+          env {
+            name
+            value
+            state
+          }
           cwd
         }
         ... on StreamableHttpMcpServerConfig {
@@ -21,8 +25,12 @@ export const CONFIGURE_MCP_SERVER = gql`
           enabled
           toolNamePrefix
           url
-          token
-          headers
+          tokenState
+          headers {
+            name
+            value
+            state
+          }
         }
       }
     }
@@ -77,6 +85,45 @@ export const IMPORT_MCP_SERVER_CONFIGS = gql`
             message
             importedCount
             failedCount
+            failures {
+                __typename
+                serverId
+                reason
+            }
+            storedSecrets {
+                __typename
+                serverId
+                field
+            }
+            needsSecret {
+                __typename
+                serverId
+                field
+            }
         }
     }
+`;
+
+export const MOVE_MCP_SECRETS_TO_VAULT = gql`
+  mutation MoveMcpSecretsToVault($selection: [McpServerFieldInput!]!) {
+    moveMcpSecretsToVault(selection: $selection) {
+      __typename
+      backupPath
+      moved {
+        __typename
+        serverId
+        field
+      }
+      skipped {
+        __typename
+        serverId
+        field
+      }
+      serversFailingAfterMove {
+        __typename
+        serverId
+        reason
+      }
+    }
+  }
 `;

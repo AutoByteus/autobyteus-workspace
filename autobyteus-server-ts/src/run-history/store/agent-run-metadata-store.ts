@@ -3,6 +3,7 @@ import { readFileSync } from "node:fs";
 import fs from "node:fs/promises";
 import type { AgentRunMetadata, TaskAgentRunMetadata } from "./agent-run-metadata-types.js";
 import { hasTaskAgentSection, parseTaskAgentRunMetadata } from "./task-agent-own-file-schema.js";
+import { parseDelegatedFrom } from "./delegated-from-schema.js";
 import {
   getAtomicRunPackageFileCommitWriter,
   type AtomicRunPackageFileCommitWriter,
@@ -59,8 +60,16 @@ const normalizeMetadata = (
   applicationExecutionContext: normalizeApplicationExecutionContext(
     metadata.applicationExecutionContext,
   ),
-  ...(metadata.launchPurpose === "server_helper" ? { launchPurpose: "server_helper" as const } : {}),
+  ...(metadata.delegatedFrom === undefined ? {} : { delegatedFrom: parseDelegatedFrom(metadata.delegatedFrom) }),
+  ...optionalMarker("systemRunOwner", metadata.systemRunOwner, ["model_router"] as const),
 });
+
+/** An optional run marker (autobyteus-32): absent stays absent; a present value must be a known one. */
+const optionalMarker = <K extends string, V extends string>(key: K, value: unknown, allowed: readonly V[]): Partial<Record<K, V>> => {
+  if (value === undefined || value === null) return {};
+  if (!allowed.includes(value as V)) throw new Error(`${key} must be one of ${allowed.join(", ")}.`);
+  return { [key]: value } as Partial<Record<K, V>>;
+};
 
 export type AgentRunMetadataReadState =
   | Readonly<{ kind: "present"; metadata: AgentRunMetadata }>

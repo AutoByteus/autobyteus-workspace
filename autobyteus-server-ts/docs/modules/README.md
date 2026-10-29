@@ -12,8 +12,9 @@ This directory mirrors the module documentation layout used in `autobyteus-serve
 | Agent Definition | [agent_definition.md](./agent_definition.md) |
 | Agent Execution | [agent_execution.md](./agent_execution.md) |
 | Agent Memory | [agent_memory.md](./agent_memory.md) |
-| Agent Work Traces | [agent_work_traces.md](./agent_work_traces.md) |
+| Agent Work Journal | [agent_work_journal.md](./agent_work_journal.md) |
 | Agent Packages | [agent_packages.md](./agent_packages.md) |
+| Agent Runtimes (Settings -> Agent Runtimes: versions, updates and sign-in of Codex, Claude, Antigravity, Grok) | [agent_runtimes.md](./agent_runtimes.md) |
 | Agent Streaming | [agent_streaming.md](./agent_streaming.md) |
 | Agent Team Definition | [agent_team_definition.md](./agent_team_definition.md) |
 | Agent Organization | [agent_orgs.md](./agent_orgs.md) |
@@ -37,17 +38,19 @@ This directory mirrors the module documentation layout used in `autobyteus-serve
 | Grok Build Runtime | [grok_build_runtime.md](./grok_build_runtime.md) |
 | LLM Management | [llm_management.md](./llm_management.md) |
 | MCP Server Management | [mcp_server_management.md](./mcp_server_management.md) |
+| Memory Search (search past work in every run's Work Journal: index, `search_memory`, Memory page search) | [memory_search.md](./memory_search.md) |
+| Model Routing (the Model Router agent chooses runtimes/models of delegated copies; decision records) | [model_routing.md](./model_routing.md) |
 | Multimedia Management | [multimedia_management.md](./multimedia_management.md) |
 | Projects | [projects.md](./projects.md) |
 | Prompt Engineering | [prompt_engineering.md](./prompt_engineering.md) |
 | Run History | [run_history.md](./run_history.md) |
 | Search | [search.md](./search.md) |
 | Secret Management | [secret_management.md](./secret_management.md) |
-| Skill Improvement | [skill_improvement.md](./skill_improvement.md) |
 | Skill Update Notices (tell active runs when a used skill changes) | [skill_update_notices.md](./skill_update_notices.md) |
 | Skills | [skills.md](./skills.md) |
 | Terminal | [terminal.md](./terminal.md) |
 | Token Usage | [token_usage.md](./token_usage.md) |
+| Update Notifications (background update checks of imported GitHub packages and skill sources, one notification per source) | [update_notifications.md](./update_notifications.md) |
 | WebSocket Session Design | [websocket_session_design.md](./websocket_session_design.md) |
 | Workflow Definition | [workflow_definition.md](./workflow_definition.md) |
 | Workspace File Explorer | [WORKSPACE_FILE_EXPLORER.md](./WORKSPACE_FILE_EXPLORER.md) |

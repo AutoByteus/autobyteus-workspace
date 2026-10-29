@@ -1,7 +1,9 @@
 import type { UpdateStoppedAgentOrgRunConfig, TeamWorkspacePatch } from "../domain/agent-org-run-config.js";
+import type { RemoteInboundQuery, StoredRemoteLinkCheck } from "../../agent-collaboration/execution/remote/remote-run-links.js";
 import { listAgentOrgRunModelConfigScopes, applyAgentOrgTeamWorkspacePatches, resolveAgentOrgTeamWorkspacePatches } from "./agent-org-run-config-mutator.js";
 import type { RunModelSelectionService } from "../../llm-management/services/run-model-selection-service.js";
 import { projectAgentOrgExecutionSnapshot } from "../../services/agent-streaming/agent-org-execution-view-projector.js";
+import { remoteTaskExecutionDtos } from "../../services/agent-streaming/remote-task-execution-dto-projection.js";
 import type { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
 import type { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
 import type { PlacementLaunchOverride } from "../../agent-collaboration/services/collaboration-launch-configuration-resolver.js";
@@ -190,12 +192,19 @@ export class AgentOrgRunService {
     return result;
   }
 
+  /** N-303 / N-304: the stored-link check before a peer's message restores an Org run. */
+  storedRemoteLinkCheck(agentOrgRunId: string, query: RemoteInboundQuery): Promise<StoredRemoteLinkCheck> {
+    return this.dependencies.manager.storedRemoteLinkCheck(required(agentOrgRunId, "agentOrgRunId"), query);
+  }
+
   getActive(agentOrgRunId: string): AgentOrgRun | null {
     return this.dependencies.manager.getActive(required(agentOrgRunId, "agentOrgRunId"));
   }
 
   async getInspection(orgRunId: string) {
-    return projectAgentOrgExecutionSnapshot(await this.dependencies.manager.getInspection(orgRunId));
+    const inspection = await this.dependencies.manager.getInspection(orgRunId);
+    return projectAgentOrgExecutionSnapshot({ ...inspection,
+      remoteTaskExecutions: await remoteTaskExecutionDtos(inspection.snapshot.tree.rootOrg.remoteTaskExecutions) });
   }
 
   recordRunActivity(run: AgentOrgRun, input: { summary?: string | null } = {}): Promise<void> {

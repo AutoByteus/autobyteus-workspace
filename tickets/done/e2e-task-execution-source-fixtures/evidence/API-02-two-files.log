@@ -1,0 +1,10 @@
+# Case: API-02 both files on HEAD
+# Command: env -i … pnpm -C autobyteus-server-ts exec vitest run tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts tests/e2e/runtime/team-task-event-current-contract.e2e.test.ts --no-watch
+# Commit: cf88b340c0 (fixtures 8a181fd642)
+# Environment: macOS 26 arm64, node v22.23.1, pnpm 10.28.2; clean env (env -i PATH HOME=<resolved temp> TMPDIR)
+# Date: 2026-10-20
+
+ ✓ tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts (8 tests) 755ms
+ ✓ tests/e2e/runtime/team-task-event-current-contract.e2e.test.ts (2 tests) 7ms
+ Test Files  2 passed (2)
+      Tests  10 passed (10)

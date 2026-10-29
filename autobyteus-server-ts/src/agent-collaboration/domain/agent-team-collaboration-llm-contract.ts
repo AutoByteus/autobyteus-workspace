@@ -10,7 +10,7 @@ export const SEND_MESSAGE_TO_LLM_DESCRIPTION = [
   "Send a self-contained request, result, question or blocker to an agent or agent team that already exists. Use exactly one selector, never both:",
   "- recipient_address: an exact address beginning with '/'. A team's address reaches its coordinator. An address inside your own team reaches the member of your own team.",
   "- target_agent_run_id: an agent's run id. For a task agent team, use its coordinator's run id; a team's own run id is refused.",
-  "send_message_to never creates an agent; to have work done by a new agent, use delegate_task. It returns the run id of the agent that received the message as target_agent_run_id, or null with the reason when the message can't be delivered.",
+  "send_message_to never creates an agent; to have work done by a new agent, use delegate_task. It returns the run id of the agent that received the message as target_agent_run_id, or leaves it out, with the reason, when the message can't be delivered.",
 ].join("\n");
 
 export const SEND_MESSAGE_TO_RECIPIENT_ADDRESS_DESCRIPTION =
@@ -23,7 +23,8 @@ export const DELEGATE_TASK_LLM_DESCRIPTION = [
   "Delegate a task to an agent or agent team. Use exactly one mode:",
   "(1) recipient_address and description, with optional reference_files: creates a new task agent (or task agent team) that works on the task you describe;",
   "(2) recipient_address and task_id: creates a new task agent (or task agent team) for that saved Task (its description and files);",
-  "(3) exactly one of target_agent_run_id or target_team_run_id, with task_id: gives the saved Task to one of your task agents (or task agent teams), which continues with its conversation; use it for follow-up work that builds on what that task agent already did. This works only when you made its most recent assignment and its current Task is DONE or CANCELLED; that earlier Task stays closed.",
+  "(3) exactly one of target_agent_run_id or target_team_run_id, with task_id: gives the saved Task to one of your task agents (or task agent teams), which continues with its conversation; use it for follow-up work that builds on what that task agent already did. This works only when you made its most recent assignment; its other open Tasks stay open, and it is freed when its last Task is closed.",
+  "With node in mode (1), the task agent starts on that peer node, from the agent or agent team at recipient_address there; the result also gives node, and you message it by its run id as usual. A saved Task or reference_files can't go to another node.",
   "Never supply project_id. Delegating to yourself, a teammate or your own team is refused.",
   "The task description and reference files become the task agent's first message (for a task agent team, its coordinator receives them), together with your run id.",
   "If you are a task agent yourself (another agent delegated your task to you or to your team), task_id is refused, and a delegation with a description returns no task_id: the new task agent's work is part of your Task. Otherwise, a delegation with a description also creates a Task with no Project and returns its task_id.",
@@ -44,6 +45,9 @@ export const DELEGATE_TASK_ID_DESCRIPTION =
 
 export const DELEGATE_TASK_DESCRIPTION_FIELD_DESCRIPTION =
   "Only with recipient_address and without task_id. A complete, ready-to-work task description: objective, context, scope, constraints, what done looks like, expected output and reference guidance.";
+
+export const DELEGATE_TASK_NODE_DESCRIPTION =
+  "Optional, only with recipient_address and description: the name of a peer node registered on this node. The new task agent then runs on that node, and recipient_address is the address of an agent or agent team on that node.";
 
 export const DELEGATE_TASK_REFERENCE_FILES_DESCRIPTION =
   "Optional, only with recipient_address and description; not allowed with task_id, not even as an empty list. Absolute local file paths the task agent should read. Relative paths and URLs are rejected.";

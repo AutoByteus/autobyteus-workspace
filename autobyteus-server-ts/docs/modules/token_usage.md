@@ -55,7 +55,7 @@ store.
   - analytics range/aggregation policy: `services/token-usage-analytics-range-policy.ts`
     and `services/token-usage-analytics-aggregation-policy.ts`
   - use-case facade/readiness: `providers/token-usage-run-store.ts` and
-    `providers/token-usage-migration-readiness.ts`
+    `providers/token-usage-capability.ts` (set by `src/startup/app-data-capability-readiness.ts`)
   - analytics read governor: `providers/token-usage-analytics-provider.ts`
   - SQL repositories: `repositories/sql/token-usage-run-repository.ts` and
     `repositories/sql/token-usage-analytics-repository.ts`
@@ -68,9 +68,10 @@ store.
   - `prisma/migrations/20260822090000_add_token_usage_analytics/`
   - `prisma/migrations/20260923130000_add_claude_sdk_usage_state/`
   - `prisma/migrations/20261009120000_token_meter_context_readings/`
-- Migration-only legacy owners:
-  - `src/app-data-migrations/migrations/token-usage-custom-provider-model-value-backfill-migration.ts`
-  - `src/app-data-migrations/migrations/token-usage-provider-name-snapshot-backfill-migration.ts`
+- Migration-only legacy owners (sealed: they share no code with token usage, which they read only through
+  frozen copies in `src/app-data-migrations/frozen/server/token-usage/`):
+  - `src/app-data-migrations/migrations/token-usage-custom-provider-model-value-backfill/`
+  - `src/app-data-migrations/migrations/token-usage-provider-name-snapshot-backfill/`
   - `src/app-data-migrations/migrations/team-run-execution-tree-v1/`
   - `src/app-data-migrations/migrations/token-usage-run-records-v1/`
 
@@ -676,9 +677,18 @@ constraint before app-data migration execution:
 - successful consolidation is `READY`; current history, summaries, and restore
   paths are available; and
 - failed/incomplete consolidation with a valid current schema is
-  `CURRENT_SCHEMA_DEGRADED`; the application and newly allocated runs remain
+  `HISTORY_MIGRATION_PENDING`; the application and newly allocated runs remain
   available, but historical token reads and restoration/continuation of a
-  pre-existing canonical run are rejected before provider startup.
+  pre-existing canonical run are rejected before provider startup, with the
+  codes `TOKEN_USAGE_HISTORY_MIGRATION_REQUIRED` and
+  `TOKEN_USAGE_EXISTING_RUN_RESTORE_MIGRATION_REQUIRED`.
+
+Token usage never asks about a migration. `20260819_token_usage_run_records_v1`
+declares that it holds back the `token_usage_history` capability; the migration
+runner answers which capabilities are ready, and
+`src/startup/app-data-capability-readiness.ts` applies the answer at startup
+(both hosts) and after a successful Settings retry, so a retry takes effect
+without a restart.
 
 New runs write only the current table. Global run-ID allocation plus the restore
 gate keeps their IDs disjoint from legacy IDs; retry validates that disjointness
@@ -818,6 +828,10 @@ Settings > Token Statistics has two sibling views:
   run tables, Model diagnostic grouping, sorting, expansion, cost disclosure,
   first-observed fallback, retained loading/error/empty states, and
   history-migration guidance under `tokenUsageRunStatistics`.
+  Its cost breakdown shows 5-minute and 1-hour cache writes (tokens and cost)
+  in their own rows, as the live Token Meter does, using the aggregate's
+  `cacheCreation5m/1hInputTokens` and `estimatedApiCacheCreation5m/1hInputCost`;
+  writes without a split keep one "Cache writes" row.
 
 Task rows continue to render backend-provided `children`, `rootTeamRunId`,
 `runId`, display fields, models, totals, and cost statuses. The frontend must not

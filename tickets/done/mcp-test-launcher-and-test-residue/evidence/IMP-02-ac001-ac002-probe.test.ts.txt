@@ -1,0 +1,23 @@
+// Throwaway probe for AC-001/AC-002 (IR-001); not committed.
+import { spawnSync } from 'node:child_process';
+import fs from 'node:fs';
+import { it, expect } from 'vitest';
+import { prepareMcpTestServers, stdioServerConfig } from './mcp-test-server-launcher.js';
+
+it('AC-001/AC-002 probe', () => {
+  const py = prepareMcpTestServers().find((p) => p.impl === 'python')!;
+  expect(py.available).toBe(true);
+  const config = stdioServerConfig('python', { serverId: 'probe', env: { MCP_TEST_DUMMY_VALUE: 'x' }, pidFile: '/tmp/p.pid' });
+  console.log('AC001 command=' + config.command);
+  console.log('AC001 args=' + JSON.stringify(config.args));
+  console.log('AC001 env=' + JSON.stringify(config.env));
+  // AC-002: spawn the launcher's command with an env lacking the location variables (only PATH, HOME),
+  // replacing the server script with a sys.prefix print.
+  const at = config.args.indexOf('python');
+  const args = [...config.args.slice(0, at + 1), '-c', 'import sys, os; print("PREFIX=" + sys.prefix); print("PYTHONDONTWRITEBYTECODE=" + str(os.environ.get("PYTHONDONTWRITEBYTECODE")))'];
+  const env = { PATH: process.env.PATH ?? '', HOME: process.env.HOME ?? '' };
+  console.log('AC002 child env keys=' + Object.keys(env).join(','));
+  const r = spawnSync(config.command, args, { env, encoding: 'utf8' });
+  console.log('AC002 status=' + r.status + '\n' + r.stdout + r.stderr);
+  console.log('AC002 fixture entries=' + JSON.stringify(fs.readdirSync(new URL('../../../fixtures/mcp-test-server/', import.meta.url)).sort()));
+});

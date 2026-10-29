@@ -86,7 +86,8 @@ it.each(['binding','member-state','member-instance','root','transport'] as const
 it('Team includes a newly published native task member from the same root/service while Stop is pending',async()=>{
   const {team,activities}=setup();const finish=deferred();const pending=useAgentTeamRunStore().terminateTeamRun(ROOT);
   expect(team.view.applyMessage({type:'TASK_EXECUTION_STARTED',payload:{change_sequence:1,parent_team_run_id:ROOT,
-    execution:{kind:'task_agent',address:'/worker',agent_run_id:'task-during',platform_agent_run_id:null,delegator_agent_run_id:'lead',started_at:'2026-10-01T00:00:00Z'}}})).toMatchObject({disposition:'applied'});
+    execution:{kind:'task_agent',address:'/worker',agent_run_id:'task-during',platform_agent_run_id:null,delegator_agent_run_id:'lead',started_at:'2026-10-01T00:00:00Z',
+    source:{kind:'agent',agent_definition_id:'worker',launch_source:{origin:'configured',fallbacks:[]},launch_configuration:{runtime_kind:'autobyteus',llm_model_identifier:'gpt-5',llm_config:null,auto_execute_tools:false,workspace_root_path:null}}}}})).toMatchObject({disposition:'applied'});
   const task=team.view.getAgentContext('task-during')!;seed(task,'during-request');
   finish(response('team'));expect(await pending).toBe(true);
   expect(activities.getCompactionActivities('task-during')[0].phase).toBe('stopped');expect(task.state.currentStatus).toBe('offline');

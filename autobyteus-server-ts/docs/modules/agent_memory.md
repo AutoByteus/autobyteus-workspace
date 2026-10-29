@@ -33,9 +33,9 @@ Memory files live under the configured memory root:
 - Agent org members: `memory/agent_orgs/<orgRunId>/<...ancestorTeamRunIds>/<agentRunId>/...` (an organization's own agents and its mounted teams' members)
 - Task agents (delegated agents of any coordinating run): `memory/agents/<taskAgentRunId>/...` — a normal run folder with its own `run_metadata.json` (with a `taskAgent` section) and its own message log (`communication_messages_active.jsonl` plus sealed `communication_messages_<6 digits>.jsonl` files; see [Run History](./run_history.md), Message logs)
 - Task agent teams: `memory/agent_teams/<taskTeamRunId>/` with their own `team_run_execution_tree.json` (with a `taskAgent` section) and its own message log (`team_communication_messages_*.jsonl`); their members at `memory/agent_teams/<taskTeamRunId>/<memberRunId>/...` (teams are flat)
-- Imported Memory Sync sources: `memory/imports/<sourceNodeId>/agents/...` and
-  `memory/imports/<sourceNodeId>/agent_teams/...`, with source metadata in
-  `source-node.json` and sync state in `sync-manifest.json`.
+- Imported Memory Sync sources: `memory/imports/<memorySyncSourceId>/agents/...` and
+  `memory/imports/<memorySyncSourceId>/agent_teams/...`, with source metadata in
+  `memory-sync-source.json` and sync state in `sync-manifest.json`.
 
 One placement rule decides an agent's memory folder (`agent-memory/domain/agent-run-memory-placement.ts`):
 a part of a run (`run_part`, by its physical scope), a task agent (`task_agent`) or a task agent team's
@@ -67,10 +67,11 @@ Common files/directories:
   handoff was captured.
 - `raw_traces_manifest.json` — completed raw-trace archive descriptors owned by `RawTraceArchiveManager`.
 - `raw_traces_<zero-padded-index>.jsonl` — immutable raw-trace archives. Native compaction prepares selected new activity before snapshot commit; a failed preparation/publication can leave copied archive evidence without a successful new summary.
-- `episodic.jsonl` and `semantic.jsonl` — historical compacted output rows; current direct compaction does not append them.
+- `episodic.jsonl` and `semantic.jsonl` — historical compacted output rows; current direct compaction does not append them, and the server no longer reads them (the memory view and the Memory page dropped them). Existing files stay on disk; the library code is FU-003 of `work-journal-search`.
 - `compaction_lineage.jsonl` — historical append-only lineage, not current continuation authority and not a normal compaction/restore dependency.
-- `working_context_snapshot.json` — native continuation state: versionless `{agent_id, messages}` with finalized messages and provenance. The normal reader ignores obsolete root version/extras but requires current shapes, identity and repairable tool facts. Codex/Claude recording does not write it.
+- `working_context_snapshot.json` — native continuation state: versionless `{agent_id, messages}` with finalized messages and provenance. The normal reader ignores obsolete root version/extras but requires current shapes, identity and repairable tool facts. Codex/Claude recording does not write it. The memory view does not show it; it still counts as memory for listing a run.
 - `seen_skill_versions.json` — the skill file versions this run was last given, used by [Skill Update Notices](./skill_update_notices.md) on every runtime. It is additive and disposable: missing or invalid means "nothing seen", and the root-package validators tolerate it.
+- `work_journal/` — the [Work Journal](./agent_work_journal.md): readable Markdown rendered from the raw traces (one file per raw-trace file plus `work_journal_manifest.json`). Derived and disposable: it is rebuilt from the raw traces when missing.
 
 There is no current compacted-memory manifest or pointer. The destructive
 `20260730_reset_pre_lineage_memory` path is removed. Normal restore accepts
@@ -126,23 +127,58 @@ The old monolithic `raw_traces_archive.jsonl` file is no longer an active read/w
 ## Conversation Activity Classification For Restore
 
 `AgentConversationActivityInspector` is a read-only activation guard over one
-resolved run memory directory. It reports `present` when the active raw-trace
-file or a manifest-declared complete rotated segment contains canonical prior
-activity, `none` when canonical activity is absent, and `indeterminate` when an
-active file, manifest, or complete segment is malformed or unreadable. Pending
-manifest entries do not count as complete history. The inspector never repairs,
-truncates, rotates, or rewrites memory.
+resolved run memory directory. It reads the active raw-trace file and each
+manifest-declared complete rotated segment with the shared memory JSONL line
+rule (`autobyteus-ts/src/memory/store/jsonl-log-file.ts`, see the
+[core memory design](../../../autobyteus-ts/docs/agent_memory_design.md)). It
+reports `present` when the complete records contain canonical prior activity
+and `none` when they do not. A damaged end of a log (what an unclean shutdown
+leaves after the last complete record: an unfinished record and/or zero bytes)
+is ignored, so a log whose complete records hold activity is `present`.
+`indeterminate` is reported for any other damage or unreadable state, and its
+error message is a plain-words reason:
+
+| Cause | Reason |
+| --- | --- |
+| A damaged line other than the damaged end | `line <N> of <file> is damaged` |
+| Missing run ID or memory folder | `its memory folder is unknown` |
+| Manifest not JSON, not an object, or with invalid segments or status | `its conversation index <manifest file> is damaged` |
+| A complete segment without a resolvable file | `its conversation index points to a missing or invalid archive file` |
+| A file-system read error | `<file> could not be read (<error code>)` |
+
+Pending manifest entries do not count as complete history. The inspector never
+repairs, truncates, rotates, or rewrites memory. The damaged end is cut by the
+core `RunMemoryFileStore`, byte-exact and with one warning (file, bytes
+removed, records kept; never content), when the store opens the log for use and
+before its first append to that file, so a restored run's next record starts on
+a clean line. There is no startup scan; an unused damaged log stays as it is.
 
 Team-member activation uses this classification before candidate construction.
 A restored native AutoByteus member with `present` activity selects local-state
 restore, while `none` permits genuinely fresh materialization. An external
 member with `present` activity but no persisted provider binding fails closed.
 `indeterminate` is always a continuation-safety error rather than permission to
-create a replacement run.
+create a replacement run; the member-activation error
+(`COLLABORATION_AGENT_CONTINUATION_STATE_UNREADABLE`) includes the reason.
+
+Waking a shut-down delegated Agent or Team whose ingress member is not
+`present` is refused with `TASK_EXECUTION_CONTEXT_UNAVAILABLE` by
+`taskExecutionConversationUnavailable`
+(`src/agent-collaboration/execution/task/task-execution-conversation-availability.ts`),
+used by the Team, AgentOrg and standalone task-execution adapters. The message
+names the Agent or Team, its coordinator for a Team, and what to do:
+
+- `none`: "The delegated Agent at '/x' cannot be restored: it has no saved
+  conversation to continue. Start a new delegation for this work."
+- `indeterminate`: "The delegated Team at '/t' cannot be restored: the saved
+  conversation of its coordinator '/t/lead' cannot be read (line 3 of
+  raw_traces_active.jsonl is damaged). Its files were left unchanged. Start a
+  new delegation for this work, or restore its saved conversation from a
+  backup."
 
 Memory Sync does not move or wrap local runtime memory. `memory/agents` and
 `memory/agent_teams` remain the active local runtime roots. Imported Memory Sync
-content is an explicit read-only corpus under `memory/imports/<sourceNodeId>` and
+content is an explicit read-only corpus under `memory/imports/<memorySyncSourceId>` and
 must not be treated as runnable local run history, restore state, or a fallback
 runtime memory provider.
 
@@ -197,7 +233,7 @@ native rows for loaded contexts; it is not durable native cold replay. See
 Codex and Claude runs are recorded by the server as **raw-trace-only** local memory:
 
 1. `AgentRunManager` attaches `AgentRunMemoryRecorder` as an active-run sidecar when the run has a `memoryDir` and its runtime kind is explicitly Codex App Server or Claude Agent SDK.
-2. Accepted user messages are observed only after `AgentRun.postUserMessage(...)` returns `accepted: true`.
+2. User messages are observed only when the `AgentRun` forwards an admitted input to the runtime, whether it entered through `postUserMessage(...)` or a committed `reserveUserMessage(...)` slot (teammate delivery). Both keep the raw-trace `sourceEvent: "AgentRun.postUserMessage"` literal.
 3. Assistant text, reasoning, tool lifecycle outcomes, and normalized provider compaction-boundary payloads are captured from normalized `AgentRunEvent`s.
 4. `ExternalRuntimeMemoryWriter` writes shared `RawTraceItem` records through `RunMemoryFileStore`. It restores only sequence and tool-lifecycle state from active plus complete rotated raw traces; it never loads, constructs, or persists a `WorkingContext`.
 
@@ -303,12 +339,15 @@ The memory explorer is a backend-for-frontend read model for the `/memory` UI. I
 
 Explorer services scan persisted memory roots at request time, derive memory availability flags, enrich with run-history metadata when available, sort by latest memory update, and paginate server-side.
 
+Memory availability (`MemoryAvailabilitySummary`) is `latestMemoryAt`, `hasWorkJournal` (the run has `work_journal/work_journal_manifest.json`), `hasRawTraces` and `hasRawArchive`. A run is listed when it has a Work Journal, raw traces, a raw archive or a working-context snapshot (`hasMemoryAvailability`).
+
 ### Independent Agents
 
 `AgentMemoryExplorerService` reads standalone run directories from `memory/agents/<runId>` and includes only runs with at least one memory artifact. It groups included runs as follows:
 
 - `DEFINITION` groups use `agentDefinitionId` from run metadata or run-history catalog rows.
 - Runs without metadata/history attribution are grouped under `UNATTRIBUTED` / `Unattributed runs` so legacy standalone memory remains discoverable.
+- Runs of an internal agent are left out while "Show internal agents" is off: no group, and not moved under `UNATTRIBUTED` (see [Agent Definition: Internal Agents](./agent_definition.md#internal-agents)).
 
 Agent explorer summaries include display name, stable ID, run count, latest memory timestamp, and merged memory availability. Agent-run summaries include run ID, optional agent metadata, workspace path, created/updated timestamps, and per-run memory availability.
 
@@ -321,6 +360,7 @@ Team and org explorers share one catalog policy owner,
 - `TeamRootMemorySource` — lists stored root team runs and reads each admitted
   V2 Team execution tree through `TeamRunExecutionTreeLocationService`; display
   metadata comes from the Team catalog owner.
+- `TaskTeamRootMemorySource` — lists task agent teams (`memory/agent_teams/<taskTeamRunId>/` with a `taskAgent` section) that are linked to the run that started them (`TaskAgentLinkChecker`), and reads each one's own files (`TaskAgentOwnFiles.readTeam`). Detached task teams are not listed. Memory search uses the same source to find task-team members.
 - `AgentOrgRootMemorySource` — lists stored root org runs and reads each org
   execution tree through `AgentOrgExecutionTreeLocationService`; display
   metadata comes from `AgentOrgRunHistoryCatalogService.listCatalogRows()`,
@@ -328,7 +368,11 @@ Team and org explorers share one catalog policy owner,
   stored-only history manager and never manages live runs.
 
 `TeamMemoryExplorerService` and `AgentOrgMemoryExplorerService` are thin
-family facades over that catalog. The catalog owns: iteration with **exactly
+family facades over that catalog. The team explorer merges the configured
+teams' catalog with the task teams' catalog before paging: a task team's
+summary has `isTaskTeam: true` and `startedByAgentName` (the agent that
+delegated it: the catalog's agent name for a standalone run, the member
+address basename inside a team or org). The catalog owns: iteration with **exactly
 one execution-tree read per root per list request** (linear in stored root
 runs; this replaced an O(N²) per-root all-root rescan), the skip-invalid-root
 rule (a corrupt tree is skipped with a warning while other roots still list),
@@ -370,7 +414,7 @@ different memory root; raw-trace readback depends on that root consistency.
 
 `MemoryExplorerSourceService` owns the Memory UI source boundary. Missing or
 null source input resolves to local memory. Imported source input validates the
-`sourceNodeId`, verifies that `memory/imports/<sourceNodeId>` exists, and roots
+`memorySyncSourceId`, verifies that `memory/imports/<memorySyncSourceId>` exists, and roots
 all agent/team/org explorer and view readers under that import root.
 
 Imported source reads are marked read-only. The backend must not silently fall
@@ -404,8 +448,8 @@ and org queries are additive; existing query names and arguments are unchanged.
 The `source` argument is a `MemoryExplorerSourceInput`:
 
 - `{ type: LOCAL }` reads `memory/agents`, `memory/agent_teams`, and `memory/agent_orgs`.
-- `{ type: IMPORTED, sourceNodeId }` reads the selected
-  `memory/imports/<sourceNodeId>` corpus.
+- `{ type: IMPORTED, memorySyncSourceId }` reads the selected
+  `memory/imports/<memorySyncSourceId>` corpus.
 
 The older flat snapshot queries (`listRunMemorySnapshots` and `listTeamRunMemorySnapshots`) were replaced by these explorer queries for the Memory UI.
 
@@ -444,7 +488,9 @@ GraphQL memory-view queries:
 
 Unknown members resolve to an empty view for the requested `agentRunId`.
 
-All view queries accept include flags for working context, episodic memory, semantic memory, raw traces, raw-trace file metadata, archive inclusion, and `rawTraceLimit`. They also accept an optional `rawTraceFileName` selector. Raw traces default to omitted so explorer/detail page transitions can stay lightweight; clients load raw traces explicitly when the user opens the Raw Traces tab, changes the trace limit, or selects a different raw-trace file.
+All view queries accept include flags for raw traces, raw-trace file metadata and archive inclusion, `rawTraceLimit`, and an optional `rawTraceFileName` selector. Raw traces default to omitted so explorer/detail page transitions can stay lightweight; clients load raw traces explicitly when the user opens the Raw Traces tab, changes the trace limit, or selects a different raw-trace file.
+
+The view's `workJournal` field is the run's Work Journal, read through `WorkJournalService` (`api/graphql/types/work-journal-view.ts`); it never renders a journal, and it is `null` for a run without one. The optional `workJournal: WorkJournalWindowInput` argument chooses `journalFile` (default: the run's latest file) and the lines `start`–`end` (default: the first 300 lines; at most 400 per read). The answer lists every journal file (`OPEN`/`CLOSED`, size, line count, days with their first line) and the selected window's lines. A run that memory search knows only by its folder is read with `runFolderWorkJournal(runKey)` ([memory_search.md](memory_search.md)).
 
 `MemoryTraceEvent` exposes both `id` and `sourceEvent` for active and complete rotated raw traces, so API consumers can correlate displayed rows with persisted trace records and their originating runtime event boundary. `RawTraceFileSummary` exposes safe file-selection metadata: `fileName`, `kind` (`active` or `segment`), `recordCount`, optional `segmentIndex`, and optional first/last timestamps. The selector identity is the backend-listed file name only, for example `raw_traces_active.jsonl` or `raw_traces_000003.jsonl`; callers must not send or expose absolute file paths.
 
@@ -517,8 +563,9 @@ run-scoped system-instruction trace projects only to Activity; it is excluded
 from Event Monitor conversation/count/cursor policy and normal display never
 opens a rotated segment to recover it.
 
-Run-history and work-trace projection build one logical interaction from the
-physical call/result pair. New minimal results carry the verified canonical name
+Run-history projection builds one logical interaction from the
+physical call/result pair (the Work Journal pairs them within one raw file; see
+[agent_work_journal.md](./agent_work_journal.md)). New minimal results carry the verified canonical name
 locally and obtain arguments from their call. Full interaction reconstruction
 still correlates the call for arguments, anchoring, ordering, and lifecycle
 integrity. Existing historical name-less results and result rows containing
@@ -538,12 +585,14 @@ above.
 - Raw-trace file selector service: `src/agent-memory/services/raw-trace-file-source-service.ts`
 - Raw-trace record normalization: `src/agent-memory/services/raw-trace-record-normalizer.ts`
 - Explorer helpers: `src/agent-memory/services/memory-run-summary-builder.ts`, `src/agent-memory/services/collaboration-member-memory-targets.ts`, `src/agent-memory/services/memory-explorer-page.ts`
-- Memory location owner: `src/agent-memory/services/agent-memory-location-service.ts`
+- Memory location owner: `src/agent-memory/services/agent-memory-location-service.ts` (falls back to a task team's members)
+- Task-team source: `src/agent-memory/services/task-team-root-memory-source.ts`
 - Conversation activity guard: `src/agent-memory/services/agent-conversation-activity-inspector.ts`
 - Memory layout owner: `src/agent-memory/store/agent-memory-layout.ts`
 - Team memory topology reader: `src/run-history/services/team-run-memory-topology-reader.ts`
 - Explorer GraphQL types/resolver: `src/api/graphql/types/memory-explorer-schema.ts`, `src/api/graphql/types/memory-explorer.ts`
-- Inspector GraphQL view types: `src/api/graphql/types/memory-view.ts`
+- Inspector GraphQL view types: `src/api/graphql/types/memory-view.ts`, `src/api/graphql/types/work-journal-view.ts`
+- Memory search (index, search, `search_memory`): [memory_search.md](memory_search.md)
 - Recorder: `src/agent-memory/services/agent-run-memory-recorder.ts`
 - Event accumulator: `src/agent-memory/services/runtime-memory-event-accumulator.ts`
 - Provider boundary recorder: `src/agent-memory/services/provider-compaction-boundary-recorder.ts`

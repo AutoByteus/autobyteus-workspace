@@ -1,4 +1,5 @@
 import { isDeepStrictEqual } from "node:util";
+import { storedRemoteLinkCheck, type RemoteInboundQuery, type StoredRemoteLinkCheck } from "../../agent-collaboration/execution/remote/remote-run-links.js";
 import { taskExecutionReferenceKey } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import {
   interpretDelegatedLaunchValidation,
@@ -9,7 +10,6 @@ import {
 } from "../../agent-collaboration/collaborators/delegated-launch-selection-command.js";
 import { delegatedLaunchSelections, type DelegatedLaunchChange } from "../../agent-collaboration/domain/delegated-launch-selection.js";
 import type { RunModelSelectionService, RunModelSelectionValidator } from "../../llm-management/services/run-model-selection-service.js";
-import { StandaloneRootTaskSourceResolver } from "./standalone-root-task-source-resolver.js";
 import { applyStandaloneDelegatedLaunchSelections, standaloneDelegatedLaunchForest } from "./standalone-root-tree-mutator.js";
 import {
   ActiveCollaborationRootDirectory,
@@ -46,6 +46,8 @@ import {
   StandaloneRootBuilder,
   type StandaloneRootBuilderDependencies,
 } from "./standalone-root-builder.js";
+import type { PairedAgentAccess } from "../../agent-collaboration/execution/remote/paired-agent-access.js";
+import { StandalonePairedAgentAccess } from "./standalone-paired-agent-access.js";
 
 /** Host facts and mechanics the manager needs from the standalone side; wired at process composition. */
 export type StandaloneRootHostServices = StandaloneHostActivationBackend & Readonly<{
@@ -94,6 +96,10 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
   private readonly hostContexts: StandaloneHostMemberContextBuilder;
   private readonly roots: StandaloneRootBuilder;
   private admissionOpen = true;
+  /** autobyteus-278: a run a peer started, as this node serves that peer's owner (behind `RemoteRootDirectory`). */
+  readonly pairedAgents: PairedAgentAccess = new StandalonePairedAgentAccess(this);
+  /** autobyteus-278 (DS-006): who learns that a run ended by Stop, terminate or history delete/archive (not idle shutdown). */
+  private readonly endListeners = new Map<string, Set<() => void>>();
 
   constructor(private readonly options: Readonly<{
     memoryDir: string;
@@ -157,6 +163,20 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
     }
   }
 
+  /** N-303 / N-304: a peer's request checked against a run's stored links (back-link included); it loads nothing. */
+  async storedRemoteLinkCheck(hostRunIdInput: string, query: RemoteInboundQuery): Promise<StoredRemoteLinkCheck> {
+    const hostRunId = hostRunIdInput.trim();
+    if (query.kind !== "owner" && this.hasRoot(hostRunId)) return "proceed";
+    const metadata = await this.options.host.readMetadata(hostRunId);
+    if (!metadata || !isCollaborationEligibleStandaloneRun(metadata)) return "not_found";
+    const tree = await this.store.readTree(this.layout.getAgentRunCollaborationDirPath(hostRunId), hostRunId);
+    const delegatedFrom = metadata.delegatedFrom ?? null;
+    return storedRemoteLinkCheck({
+      remoteRuns: () => tree?.remoteTaskExecutions ?? [],
+      backLink: delegatedFrom ? { pairedAgentRunIds: () => [hostRunId], delegatedFrom } : null,
+    }, query);
+  }
+
   /** `StandaloneRunCommandPort`: the root executes the host command in its gate. */
   async postUserMessage(input: StandaloneRunPostInput): Promise<StandaloneRunPostResult | null> {
     const root = await this.resolveRoot(input.runId);
@@ -186,10 +206,13 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
     if (!root) {
       const metadata = await this.options.host.readMetadata(hostRunId);
       if (!metadata || !isCollaborationEligibleStandaloneRun(metadata)) return null;
-      return Object.freeze({ rootEnded: false, host: await this.options.host.terminateHost(hostRunId) });
+      const stopped = Object.freeze({ rootEnded: false, host: await this.options.host.terminateHost(hostRunId) });
+      this.notifyEnded(hostRunId);
+      return stopped;
     }
     const host = await root.stop();
     this.unregister(root);
+    this.notifyEnded(hostRunId);
     return Object.freeze({ rootEnded: true, host });
   }
 
@@ -201,6 +224,28 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
     if (!root) return;
     await root.stop();
     this.unregister(root);
+    this.notifyEnded(hostRunId);
+  }
+
+  /**
+   * autobyteus-278: `listener` runs once the run has ended by Stop, terminate or history delete/archive, after its host
+   * stopped (so a final read finds it offline). Idle shutdown does not end a run: its root stays and the host returns.
+   */
+  onRunEnded(hostRunIdInput: string, listener: () => void): () => void {
+    const hostRunId = hostRunIdInput.trim();
+    const listeners = this.endListeners.get(hostRunId) ?? new Set<() => void>();
+    listeners.add(listener);
+    this.endListeners.set(hostRunId, listeners);
+    return () => {
+      listeners.delete(listener);
+      if (!listeners.size && this.endListeners.get(hostRunId) === listeners) this.endListeners.delete(hostRunId);
+    };
+  }
+
+  private notifyEnded(hostRunId: string): void {
+    for (const listener of [...this.endListeners.get(hostRunId) ?? []]) {
+      try { listener(); } catch (error) { console.error(`Agent run '${hostRunId}': an end listener failed:`, error); }
+    }
   }
 
   /** Server shutdown: every root's children stop before the standalone runs (the hosts) stop. */
@@ -232,7 +277,8 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
     const dir = this.layout.getAgentRunCollaborationDirPath(hostRunId);
     const tree = await this.store.readTree(dir, hostRunId);
     if (!tree) return null;
-    const messages = await this.store.readMessages(dir, tree) ?? emptyStandaloneRootMessages(hostRunId);
+    const backLink = (await this.options.host.readMetadata(hostRunId))?.delegatedFrom ?? null;
+    const messages = await this.store.readMessages(dir, tree, backLink) ?? emptyStandaloneRootMessages(hostRunId);
     return Object.freeze({ hostRunId, isActive: false, baseChangeSequence: 0, snapshot: Object.freeze({
       tree, closedTaskExecutions: this.closedTaskExecutionsFor(hostRunId, tree), messages,
       statuses: Object.freeze([]), inputStates: Object.freeze([]),
@@ -316,10 +362,8 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
 
   private delegatedLaunchReader(hostRunId: string, tree: StandaloneRootTreeSnapshot) {
     const closed = new Set(this.closedTaskExecutionsFor(hostRunId, tree).map(taskExecutionReferenceKey));
-    const sources = new StandaloneRootTaskSourceResolver();
     return {
       forest: standaloneDelegatedLaunchForest(tree),
-      readTaskSource: (address: string, recorded: Parameters<StandaloneRootTaskSourceResolver["resolve"]>[1]) => sources.resolve(address, recorded ?? null),
       isClosed: (reference: TaskExecutionReference) => closed.has(taskExecutionReferenceKey(reference)),
     };
   }
@@ -336,7 +380,9 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
     await this.storedEdits.get(hostRunId)?.catch(() => undefined);
     const collaborationDir = this.layout.getAgentRunCollaborationDirPath(hostRunId);
     const storedTree = await this.store.readTree(collaborationDir, hostRunId);
-    const storedMessages = storedTree ? await this.store.readMessages(collaborationDir, storedTree) : null;
+    const delegatedFrom = metadata.delegatedFrom ?? null;
+    const storedMessages = storedTree
+      ? await this.store.readMessages(collaborationDir, storedTree, delegatedFrom) : null;
     if (storedTree && !storedMessages) throw new Error(`Agent root '${hostRunId}' package has no communication messages.`);
     const tree = storedTree ?? emptyStandaloneRootTree({
       host: {
@@ -352,6 +398,7 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
       packageExists: Boolean(storedTree),
       collaborationDir,
       rootLaunchConfiguration: launchConfigurationOf(metadata),
+      delegatedFrom,
       host: new StandaloneHostAgentHandle({
         hostRunId,
         backend: this.options.host,

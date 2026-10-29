@@ -1,4 +1,5 @@
 import { buildInRunPlacements, type CollaboratorRootPort } from "../../agent-collaboration/collaborators/collaborator-root-port.js";
+import type { DelegationWork } from "../../model-routing/domain/model-routing-types.js";
 import { type MentionViewer } from "../../agent-collaboration/collaborators/mention-viewer.js";
 import type {
   CatalogTaskSource,
@@ -27,9 +28,8 @@ export const agentOrgCollaboratorPortFor = (tree: AgentOrgRunExecutionTreeSnapsh
       configured.push({ ref: { kind: "agent", definitionId: agent.agentDefinitionId }, address: agent.address }));
   }
   return Object.freeze({
-    rootKind: "agent_org",
     isApplicationBound: tree.applicationBinding !== null,
-    rootLaunchConfiguration: () => tree.rootOrg.defaultLaunchConfiguration,
+    launchBase: () => Object.freeze({ kind: "inherited" as const, launch: tree.rootOrg.defaultLaunchConfiguration }),
     // An Org is never a catalog candidate, so it has no own definition to exclude.
     ownDefinition: () => null,
     inRunPlacementsByDefinition: () => buildInRunPlacements({ configured }),
@@ -55,7 +55,7 @@ export class AgentOrgRunCollaborators {
 
   listAvailable(): Promise<readonly AvailableCollaborator[]> { return this.admission.policy.listEligible(this.port()); }
 
-  catalogTaskSource(input: Readonly<{ address: string; senderRunId: string }>): Promise<CatalogTaskSource | null> {
+  catalogTaskSource(input: Readonly<{ address: string; senderRunId: string; work: DelegationWork }>): Promise<CatalogTaskSource | null> {
     return this.admission.catalogTaskSource(this.port(), input);
   }
 

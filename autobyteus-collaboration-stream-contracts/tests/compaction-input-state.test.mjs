@@ -10,7 +10,7 @@ const snapshot=()=>({root_subject_kind:'agent_org',root_run_id:'org',root_org:{
  closed_task_executions:[],
  communication_messages:{schemaVersion:1,subjectKind:'agent_org',orgRunId:'org',messages:[]},
  agent_statuses:[{member_address:'/worker',agent_run_id:'run',status:'error',trigger:null,tool_name:null,error_message:null,error_details:null,recoverableBlock:block}],
- agent_input_states:[{agent_run_id:'run',state:structuredClone(state)}],
+ agent_input_states:[{agent_run_id:'run',state:structuredClone(state)}],remote_task_executions:[],
 }});
 test('current versionless Org snapshot carries exact live held/queued state',()=>{
  const value=snapshot();const parsed=RootExecutionViewDtoSchema.parse(value);assert.deepEqual(parsed,value);

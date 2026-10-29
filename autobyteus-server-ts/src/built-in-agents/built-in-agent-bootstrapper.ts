@@ -5,10 +5,6 @@ import type { AgentDefinition } from "../agent-definition/domain/models.js";
 import { AgentDefinitionService } from "../agent-definition/services/agent-definition-service.js";
 import { appConfigProvider } from "../config/app-config-provider.js";
 import {
-  getServerSettingsService,
-  type ServerSettingsService,
-} from "../services/server-settings-service.js";
-import {
   BUILT_IN_AGENT_DEFINITIONS,
   type BuiltInAgentDefinition,
 } from "./built-in-agent-registry.js";
@@ -19,11 +15,6 @@ type AgentDefinitionLookup = {
   getAgentDefinitionById: (definitionId: string) => Promise<AgentDefinition | null>;
   reloadAgentPackageDefinitions: () => Promise<void>;
 };
-
-type BuiltInAgentSettingsPersistence = Pick<
-  ServerSettingsService,
-  "getSettingValue" | "updateSetting"
->;
 
 type Logger = {
   info: (...args: unknown[]) => void;
@@ -39,7 +30,6 @@ export type BuiltInAgentBootstrapResult = {
   syncedAgentConfig: boolean;
   syncedSkills: boolean;
   resolved: boolean;
-  initializedSetting: boolean;
 };
 
 export type BuiltInAgentsBootstrapResult = {
@@ -51,7 +41,6 @@ export type BuiltInAgentsBootstrapResult = {
 export type BuiltInAgentBootstrapperOptions = {
   agentsDir?: string;
   agentDefinitionService?: AgentDefinitionLookup;
-  serverSettingsService?: BuiltInAgentSettingsPersistence;
   logger?: Logger;
 };
 
@@ -64,18 +53,16 @@ export class BuiltInAgentBootstrapper {
   private readonly agentsDir: string | null;
   private readonly agentDefinitions: readonly BuiltInAgentDefinition[];
   private readonly agentDefinitionService: AgentDefinitionLookup | null;
-  private readonly serverSettingsService: BuiltInAgentSettingsPersistence | null;
   private readonly logger: Logger;
 
   constructor(options: BuiltInAgentBootstrapperOptions = {}) {
     this.agentsDir = options.agentsDir ?? null;
     this.agentDefinitions = BUILT_IN_AGENT_DEFINITIONS;
     this.agentDefinitionService = options.agentDefinitionService ?? null;
-    this.serverSettingsService = options.serverSettingsService ?? null;
     this.logger = options.logger ?? logger;
   }
 
-  /** Writes every built-in agent's files, reloads the agent package definitions once, then resolves each and seeds its setting. */
+  /** Writes every built-in agent's files, reloads the agent package definitions once, then resolves each. */
   async bootstrap(): Promise<BuiltInAgentsBootstrapResult> {
     const agentsDir = this.getAgentsDir();
     await fs.mkdir(agentsDir, { recursive: true });
@@ -90,15 +77,11 @@ export class BuiltInAgentBootstrapper {
     const builtInAgents: BuiltInAgentBootstrapResult[] = [];
     for (const { definition, ...files } of synced) {
       const resolved = (await this.resolveBuiltInDefinition(definition)) !== null;
-      const initializedSetting = resolved
-        ? await this.initializeSettingDefaultIfNeeded(definition)
-        : false;
       builtInAgents.push({
         agentDefinitionId: definition.id,
         displayName: definition.displayName,
         ...files,
         resolved,
-        initializedSetting,
       });
     }
 
@@ -137,10 +120,6 @@ export class BuiltInAgentBootstrapper {
 
   private getAgentDefinitionService(): AgentDefinitionLookup {
     return this.agentDefinitionService ?? AgentDefinitionService.getInstance();
-  }
-
-  private getServerSettingsService(): BuiltInAgentSettingsPersistence {
-    return this.serverSettingsService ?? getServerSettingsService();
   }
 
   private getTemplateDir(definition: BuiltInAgentDefinition): string {
@@ -194,33 +173,10 @@ export class BuiltInAgentBootstrapper {
       return agentDefinition;
     } catch (error) {
       this.logger.warn(
-        `Built-in agent '${definition.id}' is invalid and its default setting was not selected. Repair the normal agent definition files: ${String(error)}`,
+        `Built-in agent '${definition.id}' is invalid. Repair the normal agent definition files: ${String(error)}`,
       );
       return null;
     }
-  }
-
-  private async initializeSettingDefaultIfNeeded(
-    definition: BuiltInAgentDefinition,
-  ): Promise<boolean> {
-    const settingDefault = definition.settingDefault;
-    if (!settingDefault) {
-      return false;
-    }
-
-    const settings = this.getServerSettingsService();
-    const currentValue = settings.getSettingValue(settingDefault.key);
-    if (currentValue) {
-      return false;
-    }
-
-    const [ok, message] = settings.updateSetting(settingDefault.key, definition.id);
-    if (!ok) {
-      throw new Error(`Failed to initialize built-in agent setting '${settingDefault.key}': ${message}`);
-    }
-
-    this.logger.info(`Initialized '${settingDefault.key}' with '${definition.id}'.`);
-    return true;
   }
 }
 

@@ -2,6 +2,7 @@ import type { IpcMain } from 'electron';
 import type { BrowserRuntime } from './browser-runtime';
 import type {
   BrowserHostBounds,
+  BrowserShellHistoryNavigationRequest,
   BrowserShellNavigateTabRequest,
   BrowserShellOpenTabRequest,
   BrowserShellReloadTabRequest,
@@ -41,6 +42,14 @@ export const registerBrowserShellIpcHandlers = (
     async (event, request: BrowserShellNavigateTabRequest): Promise<BrowserShellSnapshot> => {
       const browserRuntime = getBrowserRuntimeOrThrow(getBrowserRuntime);
       return browserRuntime.getShellController().navigateSession(event.sender.id, request);
+    },
+  );
+
+  ipcMain.handle(
+    'browser-shell:navigate-history',
+    (event, request: BrowserShellHistoryNavigationRequest): BrowserShellSnapshot => {
+      const browserRuntime = getBrowserRuntimeOrThrow(getBrowserRuntime);
+      return browserRuntime.getShellController().navigateHistory(event.sender.id, request);
     },
   );
 

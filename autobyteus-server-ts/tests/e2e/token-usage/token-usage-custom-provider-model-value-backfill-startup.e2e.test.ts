@@ -13,7 +13,7 @@ import {
   TOKEN_USAGE_CUSTOM_PROVIDER_MODEL_VALUE_BACKFILL_MIGRATION_ID,
   TokenUsageCustomProviderModelValueBackfillMigration,
   type TokenUsageCustomProviderModelValueBackfillDatabase,
-} from '../../../src/app-data-migrations/migrations/token-usage-custom-provider-model-value-backfill-migration.js';
+} from '../../../src/app-data-migrations/migrations/token-usage-custom-provider-model-value-backfill/token-usage-custom-provider-model-value-backfill-migration.js';
 import type {
   AppDataMigrationDefinition,
   AppDataMigrationExecutionResult,

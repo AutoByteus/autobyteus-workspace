@@ -519,10 +519,12 @@ nested by task delegation without changing the fixed configured Org topology.
 A task Agent row shows the member marker (solid status dot and initials); the
 starter is kept in the accessible label, not as a visible line. The Org context has no
 collaborator concept: runs that earlier releases recorded as collaborators were converted at
-startup into ordinary task rows. A catalog copy (`delegate_task` to a listed catalog Agent or Team;
-`send_message_to` never creates one) carries `source` on its task
-DTO; `AgentOrgExecutionViewIndex` and the Org history rows resolve it with
-`catalogAgentSourceAt` / `catalogTeamSourceAt`.
+startup into ordinary task rows. Every copy (`delegate_task` to a configured placement or to a
+listed catalog Agent or Team; `send_message_to` never creates one) carries the `source` it started
+with on its task DTO. `AgentOrgExecutionViewIndex` decides by execution kind, never by address: a
+configured member shows its placement, a copy its own `source` (by run ID, with
+`copyAgentSourceOf` / `copyTeamSourceOf`); the Org history rows read a Team copy's coordinator
+from its `source`.
 
 Copies are placed by address (REQ-012, approved behavior change). A
 mounted-team member's copy of an Org-level address now appears at the Org top
@@ -609,7 +611,10 @@ archived root.
   newest slice.
 - Later messages, task-scoped recipients, inter-Agent/task/system traffic,
   approval or interrupt commands, and rejected or failed sends do not set or
-  replace the summary. A failed refresh retains the last authoritative rows and
+  replace the summary. (The same first-message rule titles Agent and Team runs:
+  for a run a peer node started by delegation, its first message is the
+  delegated task description, which the server records as its title when the
+  work packet is accepted; autobyteus-269. A peer never starts an Org.) A failed refresh retains the last authoritative rows and
   family-scoped error.
 
 - Stopped history retains the AgentOrg execution tree (including delegated
@@ -702,7 +707,8 @@ report for the exact acceptance scope.
 - `services/agentOrgExecution/agentOrgStreamingService.ts`: stream protocol.
 - `services/agentOrgExecution/agentOrgContextHydration.ts`: initial/reopen
   hydration. Each member's projection and its recorded Agent Artifacts
-  (`getRunFileChanges`) are fetched and committed together through
+  (`getAgentOrgMemberFileChanges(orgRunId, memberAddress, agentRunId)`, read
+  inside that org run only) are fetched and committed together through
   `services/runHydration/memberRunStateHydration.ts`. This includes members of
   nested Teams, so member Artifacts lists are complete after a reload and on
   historical runs. An artifact fetch failure fails the Org open, as a

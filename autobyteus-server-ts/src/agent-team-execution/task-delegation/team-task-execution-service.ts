@@ -3,6 +3,7 @@ import type { AgentOperationResult } from "../../agent-execution/domain/agent-op
 import type { TaskExecutionStopResult } from "../../agent-collaboration/execution/task/task-execution-resource-port.js";
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import { RootTaskExecutionLifecycle, type DeliverTaskWork, type TaskExecutionLiveLease } from "../../agent-collaboration/execution/task/root-task-execution-lifecycle.js";
+import type { NewCopyWork } from "../../agent-collaboration/execution/task/new-copy-work.js";
 import type {
   AssignToExistingCopyInput,
   SpawnTaskInput,
@@ -19,10 +20,13 @@ export class TeamTaskExecutionService {
   private readonly lifecycle: RootTaskExecutionLifecycle<TeamDelegationPlacement>;
 
   constructor(options: TeamTaskExecutionServiceOptions) {
-    this.lifecycle = new RootTaskExecutionLifecycle(new TeamTaskExecutionAdapter(options), { ...options.idleShutdown, taskExecutionResources: options.taskExecutionResources });
+    this.lifecycle = new RootTaskExecutionLifecycle(new TeamTaskExecutionAdapter(options), { ...options.idleShutdown, taskExecutionResources: options.taskExecutionResources,
+      remoteRunLinks: options.remoteLinks, remoteEndpoints: { isRemoteEndpoint: (agentRunId) => options.remoteLinks.has(agentRunId), isRemoteTeam: (teamRunId) => options.remoteLinks.teamLinkFor(teamRunId) !== null },
+      onLiveLeaseReleased: options.onLiveLeaseReleased });
   }
 
   assertInputAllowed(id: string): void { this.lifecycle.assertInputAllowed(id); }
+  hasLiveLeases(): boolean { return this.lifecycle.hasLiveLeases(); }
   assertMessageScope(sender: string, recipient: string): void { this.lifecycle.assertMessageScope(sender, recipient); }
   releaseTaskExecutions(refs: readonly TaskExecutionReference[]): Promise<readonly TaskExecutionStopResult[]> {
     return this.lifecycle.releaseTaskExecutions(refs);
@@ -47,13 +51,17 @@ export class TeamTaskExecutionService {
     }
   }
 
-  delegateToNewCopy(context: TaskDelegationContext, input: SpawnTaskInput, placement: TeamDelegationPlacement): Promise<TaskDelegationOutcome> {
-    return this.lifecycle.delegateToNewCopy(context, input, placement);
+  prepareNewCopyWork(context: TaskDelegationContext, input: SpawnTaskInput): Promise<NewCopyWork> {
+    return this.lifecycle.prepareNewCopyWork(context, input);
+  }
+  dispatchNewCopy(context: TaskDelegationContext, work: NewCopyWork, placement: TeamDelegationPlacement): Promise<TaskDelegationOutcome> {
+    return this.lifecycle.dispatchNewCopy(context, work, placement);
   }
   assignToExistingCopy(context: TaskDelegationContext, input: AssignToExistingCopyInput, deliverWork: DeliverTaskWork): Promise<TaskDelegationOutcome> {
     return this.lifecycle.assignToExistingCopy(context, input, deliverWork);
   }
   teamCoordinatorOf(teamRunId: string): string | null { return this.lifecycle.teamCoordinatorOf(teamRunId); }
+  ownedTaskOf(agentRunId: string) { return this.lifecycle.ownedTaskOf(agentRunId); }
 
   withLiveLease(id: string, operation: () => Promise<AgentOperationResult>): Promise<AgentOperationResult> {
     return this.lifecycle.withLiveLease(id, operation);

@@ -4,10 +4,11 @@
     :class="hasMenus ? 'relative' : 'overflow-hidden'"
   >
     <!-- With a `/` or `@` menu, only the Context Files area clips, so the menu can open above the box. -->
-    <div :class="hasMenus ? 'overflow-hidden rounded-t-xl' : ''">
+    <!-- autobyteus-278: a run another node runs takes text only (attachments across nodes come later). -->
+    <div v-if="!remote" :class="hasMenus ? 'overflow-hidden rounded-t-xl' : ''">
       <ContextFilePathInputArea :target="target" />
     </div>
-    <div class="border-t border-gray-100" :class="hasMenus ? 'rounded-b-xl' : ''">
+    <div :class="[remote ? '' : 'border-t border-gray-100', hasMenus ? (remote ? 'rounded-xl' : 'rounded-b-xl') : '']">
       <div
         v-if="skillTagging && requestedSkillNames.length"
         class="flex flex-wrap items-center gap-1.5 px-3 pt-2.5"
@@ -22,6 +23,7 @@
 
 <script setup lang="ts">
 import ContextFilePathInputArea from '~/components/agentInput/ContextFilePathInputArea.vue';
+import { useRemoteRun } from '~/composables/remoteRuns/useRemoteRun';
 import AgentUserInputTextArea from '~/components/agentInput/AgentUserInputTextArea.vue';
 import SkillTagChips from '~/components/chat/SkillTagChips.vue';
 import { computed } from 'vue';
@@ -36,6 +38,7 @@ const props = defineProps<{
 }>();
 
 const target = useComposerTarget();
+const remote = useRemoteRun(() => target.value?.context.state.runId);
 const requestedSkillNames = computed(() => target.value?.context.requestedSkillNames ?? []);
 const hasMenus = computed(() => Boolean(props.skillTagging) || Boolean(target.value?.mentionScope));
 const removeSkill = (name: string) => {

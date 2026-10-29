@@ -303,7 +303,7 @@ describe('TokenUsageTaskStatisticsTable', () => {
 
     const firstDataCells = wrapper.findAll('tbody > tr')[0]!.findAll('td');
     expect(firstDataCells).toHaveLength(9);
-    expect(firstDataCells[1]!.text()).toContain('Mixed: Codex, Autobyteus');
+    expect(firstDataCells[1]!.text()).toContain('Mixed: Codex App Server, AutoByteus');
     const bodyButtons = wrapper.findAll('tbody button');
     expect(bodyButtons).toHaveLength(3);
     expect(bodyButtons.filter((button) => button.attributes('aria-label')?.includes('cost details'))).toHaveLength(2);
@@ -312,7 +312,7 @@ describe('TokenUsageTaskStatisticsTable', () => {
     expect(topRows[0]).toContain('Software Engineering Team');
     expect(topRows[1]).toContain('Standalone Agent');
     expect(wrapper.text()).toContain('First usage observed');
-    expect(wrapper.text()).toContain('Mixed: Codex, Autobyteus');
+    expect(wrapper.text()).toContain('Mixed: Codex App Server, AutoByteus');
     expect(wrapper.text()).toContain('Mixed: gpt-shared, DeepSeek:deepseek-v4-flash');
     expect(wrapper.text()).toContain('cache hit 25.0%');
     expect(wrapper.text()).toContain('5 thinking included');

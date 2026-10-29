@@ -1,0 +1,62 @@
+// TEMPORARY API/E2E probe (AE-15 / AE-12): a plain node script that imports only autobyteus-ts.
+// No resolver, no setup code, no test-support. Mode via argv[2]: "stub" (fetch stubbed, key compared by SHA-256) or "live".
+import { createHash } from 'node:crypto';
+import { LLMFactory } from 'autobyteus-ts/llm/llm-factory.js';
+import { LLMUserMessage } from 'autobyteus-ts/llm/user-message.js';
+
+const mode = process.argv[2] ?? 'stub';
+const sha = (v) => createHash('sha256').update(v).digest('hex');
+const sqliteLoaded = () => process.moduleLoadList.filter((m) => /sqlite/i.test(m));
+const out = (k, v) => console.log(`[AE-15] ${k}: ${typeof v === 'string' ? v : JSON.stringify(v)}`);
+out('mode', mode);
+out('AUTOBYTEUS_TEST_VAULT set', Boolean(process.env.AUTOBYTEUS_TEST_VAULT));
+out('credential env names visible to script', Object.keys(process.env).filter((n) => /_API_KEY$/.test(n)).sort());
+out('sqlite modules loaded before any key lookup', sqliteLoaded());
+
+const bearers = [];
+if (mode === 'stub') {
+  const realFetch = globalThis.fetch;
+  globalThis.fetch = async (input, init) => {
+    const url = typeof input === 'string' ? input : input instanceof URL ? input.href : input.url;
+    if (!url.startsWith('https://api.deepseek.com')) return realFetch(input, init);
+    const headers = new Headers(init?.headers ?? (input instanceof Request ? input.headers : undefined));
+    bearers.push((headers.get('authorization') ?? '').replace(/^Bearer\s+/i, ''));
+    return new Response(JSON.stringify({ id: 'probe', object: 'chat.completion', created: 0, model: 'deepseek-v4-flash',
+      choices: [{ index: 0, message: { role: 'assistant', content: 'probe-ok' }, finish_reason: 'stop' }],
+      usage: { prompt_tokens: 1, completion_tokens: 1, total_tokens: 2 } }), { status: 200, headers: { 'content-type': 'application/json' } });
+  };
+}
+
+let failures = 0;
+const expect = (label, ok) => { out(label, ok ? 'OK' : 'FAILED'); if (!ok) failures += 1; };
+
+try {
+  const llm = await LLMFactory.createLLM('deepseek-v4-flash');
+  try {
+    const response = await llm.sendUserMessage(new LLMUserMessage({ content: 'Reply with the single word: ok' }));
+    out('deepseek completion length', String(response.content.length));
+    expect('deepseek completion non-empty', response.content.length > 0);
+  } finally { await llm.cleanup(); }
+  if (mode === 'stub') {
+    out('bearer sha256 == vault canary', String(sha(bearers[0] ?? '') === process.env.AE_EXPECT_VAULT_DEEPSEEK_SHA256));
+    out('bearer sha256 == env canary', String(sha(bearers[0] ?? '') === process.env.AE_ENV_CANARY_DEEPSEEK_SHA256));
+    expect('vault key sent, env key not sent', bearers.length === 1 && sha(bearers[0]) === process.env.AE_EXPECT_VAULT_DEEPSEEK_SHA256);
+  }
+} catch (error) {
+  out('deepseek error', `${error?.kind ?? error?.code ?? error?.name}: ${error?.message}`);
+  if (process.env.AE_EXPECT_DEEPSEEK_ERROR) expect(`deepseek error contains ${process.env.AE_EXPECT_DEEPSEEK_ERROR}`, String(error?.message).includes(process.env.AE_EXPECT_DEEPSEEK_ERROR) || error?.code === process.env.AE_EXPECT_DEEPSEEK_ERROR);
+  else failures += 1;
+}
+out('sqlite modules loaded after lookup', sqliteLoaded());
+
+if (mode === 'stub') {
+  try {
+    const grok = await LLMFactory.createLLM('grok-4.7');
+    try { await grok.sendUserMessage(new LLMUserMessage({ content: 'hi' })); } finally { await grok.cleanup(); }
+    out('grok', 'UNEXPECTED SUCCESS'); failures += 1;
+  } catch (error) {
+    out('grok error', `${error?.kind ?? error?.code}: ${error?.message}`);
+  }
+}
+out('result', failures === 0 ? 'PASS' : `FAIL (${failures})`);
+process.exitCode = failures === 0 ? 0 : 1;

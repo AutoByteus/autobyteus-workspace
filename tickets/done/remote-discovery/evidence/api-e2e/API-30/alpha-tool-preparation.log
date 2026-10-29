@@ -1,0 +1,5 @@
+Registered required tool unit: Agent Discovery Tools
+Agent 'producer_ee51d1c3d36c4dffb12e05b0dd95868b': LLM instance 'DeepSeekLLM' and 8 tools prepared and stored in state.
+Agent 'plain_producer_a95a6cc35485485e8a6c2bc26dc81295': LLM instance 'DeepSeekLLM' and 6 tools prepared and stored in state.
+[2026-10-21T10:22:42.942Z] [INFO] [secret-management.vault] Secret vault: test vault /Users/normy/.autobyteus-test/vault (read-only)
+[2026-10-21T10:22:44.845Z] [INFO] [secret-management.vault] Secret vault: test vault /Users/normy/.autobyteus-test/vault (read-only)

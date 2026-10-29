@@ -18,7 +18,7 @@ import type {
 import { getMediaModelResolver, type MediaModelResolver } from "./media-tool-model-resolver.js";
 import { getMediaPathResolver, type MediaPathResolver } from "./media-tool-path-resolver.js";
 import { createGeminiRuntimeResolver } from '../../llm-management/services/gemini-runtime-resolver-adapter.js';
-import { createMediaProviderApiKeyResolver } from "../../secret-management/resolution/secret-management-provider-api-key-resolver.js";
+import { createMediaProviderApiKeyResolver } from "../../secret-management/resolution/runtime-provider-api-key-resolvers.js";
 import { getServerSettingsService } from '../../services/server-settings-service.js';
 import { MediaOperationLease } from './media-operation-lease.js';
 import { getModelAvailabilityService } from '../../llm-management/services/model-availability-service.js';

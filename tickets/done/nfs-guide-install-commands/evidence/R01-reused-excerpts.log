@@ -1,0 +1,12 @@
+# R01; excerpts from attributed IMP03/04, source2c6b414; macOS/privateHOME;2026-10-21T20:04:52.787229+00:00
+   ✓ displayed install shell guards (ALL external commands are inert stubs) > macos: success  456ms
+   ✓ displayed install shell guards (ALL external commands are inert stubs) > linux: success  402ms
+   ✓ displayed install shell guards (ALL external commands are inert stubs) > linux: checksum-failure  368ms
+ Test Files  5 passed (5)
+      Tests  53 passed (53)
+[guard:web-boundary] Passed.
+exit=0
+[guard:localization-boundary] Passed.
+exit=0
+[audit:localization-literals] Passed with zero unresolved findings.
+exit=0

@@ -6,6 +6,7 @@ import { getServerSettingsService } from "../../services/server-settings-service
 import { GitHubRepositoryClient } from "../../integrations/github/github-repository-client.js";
 import { parseGitHubSkillRepository } from "../../integrations/github/github-repository-source.js";
 import type { GitHubRepositoryRevisionMetadata } from "../../integrations/github/types.js";
+import type { GitHubSourceStateListener, GitHubSourceUpdateState } from "../../integrations/github/github-source-update-state.js";
 import { WorkspaceManager } from "../../workspaces/workspace-manager.js";
 import { GitHubSkillSourceStore } from "../stores/github-skill-source-store.js";
 import { GitHubSkillRepository } from "../installers/github-skill-repository.js";
@@ -15,7 +16,7 @@ import { SkillService } from "./skill-service.js";
 
 type Options = {
   config?: SkillService["config"]; catalog?: SkillService; store?: GitHubSkillSourceStore;
-  client?: Pick<GitHubRepositoryClient, "fetchRepositoryRevisionMetadata">;
+  client?: Pick<GitHubRepositoryClient, "fetchRepositoryRevisionMetadata" | "fetchDefaultBranchHead">;
   repository?: GitHubSkillRepository;
   invalidateWorkspaces?: () => Promise<void>;
   updateSetting?: (key: string, value: string) => [boolean, string];
@@ -34,6 +35,7 @@ export class SkillSourceService {
   private storagePreparation: Promise<void> | null = null;
   private storageWarnings: string[] = [];
   private readonly operations = new Map<string, Promise<unknown>>();
+  private githubSourceStateListener: GitHubSourceStateListener | null = null;
 
   constructor(private readonly options: Options = {}) {
     this.config = options.config ?? appConfigProvider.config;
@@ -76,6 +78,21 @@ export class SkillSourceService {
     return sources;
   }
 
+  /** The update facts of every ACTIVE GitHub skill source, for the update notifications. */
+  listGitHubSourceUpdateStates(): GitHubSourceUpdateState[] {
+    return this.store.read().filter((record) => record.state === "ACTIVE").map((record) => ({
+      sourceId: record.id, displayName: `${record.repository.owner}/${record.repository.repo}`,
+      repositoryUrl: repositoryUrl(record.repository), defaultBranch: record.installed.defaultBranch,
+      installedRevision: record.installed.revision, latestRevision: record.lastCheck?.latestRevision ?? null,
+      lastCheckedAt: record.lastCheck?.checkedAt ?? null,
+    }));
+  }
+
+  /** One listener, told after an import, removal, check or update settled (success or failure). */
+  setGitHubSourceStateListener(listener: GitHubSourceStateListener | null): void {
+    this.githubSourceStateListener = listener;
+  }
+
   addSkillSource(pathStr: string): SkillSourceInfo[] {
     const resolved = this.localPath(pathStr);
     if (!fs.existsSync(resolved)) throw new Error(`Directory not found: ${resolved}`);
@@ -102,7 +119,7 @@ export class SkillSourceService {
 
   importGitHubSkillSource(url: string): Promise<SkillSourceOperationResult> {
     const source = parseGitHubSkillRepository(url);
-    return this.serialize(repositoryKey(source), async () => {
+    return this.announcing(this.serialize(repositoryKey(source), async () => {
       await this.prepareStorage();
       this.store.read();
       const existing = this.store.read().find((record) => repositoryKey(record.repository) === repositoryKey(source));
@@ -130,16 +147,20 @@ export class SkillSourceService {
       } finally {
         if (!committed) await this.repository.cleanup(id).catch(error => console.warn("Unpublished skill candidate cleanup failed", error));
       }
-    });
+    }));
   }
 
-  async checkGitHubSkillSourceUpdates(sourceIds?: string[] | null): Promise<SkillSourceOperationResult> {
+  checkGitHubSkillSourceUpdates(sourceIds?: string[] | null): Promise<SkillSourceOperationResult> {
+    return this.announcing(this.checkSources(sourceIds));
+  }
+
+  private async checkSources(sourceIds?: string[] | null): Promise<SkillSourceOperationResult> {
     const records = this.store.read().filter((record) => record.state === "ACTIVE" && (!sourceIds || sourceIds.includes(record.id)));
     await Promise.all(records.map((record) => this.serialize(repositoryKey(record.repository), async () => {
       const current = this.store.read().find((entry) => entry.id === record.id);
       if (!current || current.state !== "ACTIVE") return;
       try {
-        const metadata = await this.metadata(repositoryUrl(current.repository));
+        const metadata = await this.head(current.repository);
         this.replaceRecord(current.id, (latest) => ({ ...latest, lastCheck: this.observation(metadata) }));
       } catch (error) {
         this.replaceRecord(current.id, (latest) => ({ ...latest, lastCheck: {
@@ -152,14 +173,14 @@ export class SkillSourceService {
   }
 
   updateGitHubSkillSource(id: string): Promise<SkillSourceOperationResult> {
-    return this.serialize(repositoryKey(this.requireSource(id).repository), async () => {
+    return this.announcing(this.serialize(repositoryKey(this.requireSource(id).repository), async () => {
       await this.prepareStorage();
       const current = this.requireSource(id);
       if (current.state !== "ACTIVE") throw new Error("Removal incomplete. Retry removal before importing or updating this source.");
       let committed = false;
       let generation: string | undefined;
       try {
-        const metadata = await this.metadata(repositoryUrl(current.repository));
+        const metadata = await this.head(current.repository);
         if (metadata.latestRevision === current.installed.revision) {
           this.replaceRecord(id, (record) => ({ ...record, lastCheck: this.observation(metadata), lastUpdateError: null }));
           committed = true;
@@ -184,18 +205,18 @@ export class SkillSourceService {
       } finally {
         if (!committed && generation) await this.repository.cleanup(id, current.installed.generation).catch(error => console.warn("Unpublished skill candidate cleanup failed", error));
       }
-    });
+    }));
   }
 
   removeGitHubSkillSource(id: string): Promise<SkillSourceOperationResult> {
-    return this.serialize(repositoryKey(this.requireSource(id).repository), async () => {
+    return this.announcing(this.serialize(repositoryKey(this.requireSource(id).repository), async () => {
       await this.prepareStorage();
       this.replaceRecord(id, (record) => ({ ...record, state: "REMOVING" }));
       await this.invalidateWorkspaces();
       await this.repository.cleanup(id);
       this.store.write(this.store.read().filter((record) => record.id !== id));
       return this.result();
-    });
+    }));
   }
 
   private prepareStorage(): Promise<void> {
@@ -241,11 +262,25 @@ export class SkillSourceService {
   private observation(metadata: GitHubRepositoryRevisionMetadata): GitHubSkillSourceRecord["lastCheck"] {
     return { checkedAt: new Date().toISOString(), latestRevision: metadata.latestRevision, defaultBranch: metadata.defaultBranch, error: null };
   }
+  /** Check and update: the stored repository's default branch head, read without REST quota. */
+  private async head(repository: GitHubSkillSourceRecord["repository"]): Promise<GitHubRepositoryRevisionMetadata> {
+    const head = await this.client.fetchDefaultBranchHead(repository.owner, repository.repo);
+    if (!/^[a-f0-9]{40,64}$/i.test(head.latestRevision)) throw new Error("GitHub returned an invalid revision.");
+    return { owner: repository.owner, repo: repository.repo, canonicalUrl: repositoryUrl(repository), ...head };
+  }
+  /** Import: the REST metadata, for the repository's identity and visibility. */
   private async metadata(url: string): Promise<GitHubRepositoryRevisionMetadata> {
     const metadata = await this.client.fetchRepositoryRevisionMetadata(parseGitHubSkillRepository(url));
     parseGitHubSkillRepository(repositoryUrl(metadata));
     if (!/^[a-f0-9]{40,64}$/i.test(metadata.latestRevision)) throw new Error("GitHub returned an invalid revision.");
     return metadata;
+  }
+  /** Tells the listener once the operation settled, success or failure. */
+  private announcing<T>(operation: Promise<T>): Promise<T> {
+    return operation.finally(() => {
+      try { this.githubSourceStateListener?.(); }
+      catch (error) { console.warn("SKILL_SOURCE_GITHUB_STATE_LISTENER_FAILED", error); }
+    });
   }
   private serialize<T>(key: string, operation: () => Promise<T>): Promise<T> {
     const previous = this.operations.get(key) ?? Promise.resolve();

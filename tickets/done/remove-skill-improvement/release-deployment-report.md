@@ -1,0 +1,133 @@
+# Delivery / Release / Deployment Report
+
+Ticket `remove-skill-improvement` (autobyteus-205). Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement`, branch `codex/remove-skill-improvement`.
+
+- Task size `Large`, architectural risk `High`, route `Reviewed` (CRR-001 Pass; API-REV-001 Pass at 95.0%; CRR-002 Pass). Delivery does not reclassify.
+- Current delivery revision: `DR-004`. Status: finalized and released as beta `v1.5.8-beta.4` (complete). Waiting for the user's own data check (the last part of AC-004).
+
+## Release / Publication / Deployment Scope
+
+Finalize into `origin/personal` per `RELEASE.md`, then release the beta the user decided in advance. The last part of AC-004 is the user's check of his own data on that released build.
+
+## Project Release Guide
+
+- Release guide: `RELEASE.md`, as on `origin/personal` @ `3b2c86ca9e`. It now has a **Secret Gate**: `scripts/check_secrets.sh` before the ticket branch's first push and again on the merged state. It was run before the ticket branch's first push, on the merged state, and over `v1.5.8-beta.3..HEAD` before tagging. All passed.
+- Deviations from the guide and why: `None`
+- Proposed guide fixes: `None`
+
+## Handoff Summary
+
+- Handoff summary: `handoff-summary.md` (`Updated`)
+- Delivery revision record: `delivery-revision-record.md`. Current delivery revision ID: `DR-003`.
+
+## Initial Delivery Integration Refresh
+
+- Bootstrap base reference: merge base `4c513759fb`
+- Latest tracked remote base reference checked: `origin/personal` @ `3b2c86ca9e`, fetched again at DR-003 (0 behind)
+- Base advanced since bootstrap: `Yes`, by 20 commits
+- New base commits integrated into the ticket branch: `Yes`, merge `5cfccd66c7` (IR-002, after DR-001's INT-001 block)
+- Local checkpoint commit result: `Not needed` (the reviewer's documents were committed)
+- Integration method: `Merge`
+- Integration result: `Completed`. INT-001 was resolved by implementation and passed CRR-003. Base's Update Notifications additions were kept, and this ticket's removals were kept. The Secret Gate allowlist entry `bda3731947` covers the retired-setting text `ENABLE_SKILL_IMPROVEMENT=true`: exact text, generic rule only.
+- Post-integration executable checks rerun: `Yes`, on `5cfccd66c7`:
+  - IMP-14 typecheck;
+  - IMP-15 server unit, 6314;
+  - IMP-16 integration, 421;
+  - IMP-17 build and smoke;
+  - IMP-18 startup e2e;
+  - IMP-19 web unit, 4617;
+  - IMP-20 guards;
+  - IMP-21 AC-001 sweep, PASS;
+  - IMP-22 SIR-001/002, 2 Pass;
+  - IMP-23 Secret Gate.
+
+  API-REV-002 also ran API-07 r2 (edited server e2e 19/19) and the API-13..17 r2 browser regression.
+- Post-integration verification result: `Passed`
+- Delivery edits started only after integrated state was current: `Yes`
+- Handoff state current with latest tracked remote base: `Yes`
+- History: INT-001 (DR-001) is resolved; the details are kept in `delivery-revision-record.md`.
+
+## Verification
+
+- Evidence judged: `Sufficient`. AC-001..AC-004 are proven; AC-005 is the approved `release-notes.md`. Final confidence is 95.0%, at the target, with no category below 93%.
+- Evidence relied on: the execution report (API-REV-002/003) Acceptance-Criteria Proof and Cases, `evidence/API-15-17-r2-probe-evidence.json`, `evidence/API-18-fu005-base-vs-ticket.txt`, and the merged-state checks above.
+
+| AC | Cases And Files Checked | What You Saw | Judgement |
+| --- | --- | --- | --- |
+| AC-001 | IMP-21 sweep; API-17 r2 (`agentsPage`, `memoryPage`, `basics`, composers: `traces.text false, hooks 0`) | The sweep PASSes. No feature UI or hooks remain on the Agents, Memory or Settings Basics pages or in the composers. Doc mentions are only in released or new migration docs (allowed) | Proven |
+| AC-002 | IMP-15/16/19; API-07 r2; SIR-001 r2 | Suites pass. Through real tool calls, `send_message_to` returns `DELIVERED` (agent, Team member, copy lead), `TARGET_AGENT_RUN_NOT_ACTIVE` (unknown id) and `TARGET_IS_TEAM_RUN` (team run id), with each message received | Proven |
+| AC-003 | API-06 (SID-1..3); SIR-002 r2 | A fresh root gives `SUCCEEDED`, "Scanned 0". An upgrade around real runs: the runs list and open, and `agentResumed`/`memberResumed` continue on their own sessions | Proven |
+| AC-004 | SIR-002 r2 | `firstRecord` `SUCCEEDED`, "Scanned 11; migrated 11; failed 0". `deleted` holds exactly the feature paths: the records, the improver's 3 runs plus a helper run, only the `skill_improvement`/`self_evolution` subfolders inside real runs, and the improver definition. `stillThere`, `changed` and `rowsChanged` are `[]`; 1201 kept files are byte-identical; `.env` loses exactly the retired keys; `secondChanged`/`secondAdded` are `[]`. The Skill Self-Evolver is kept. Re-adding a retired key is refused (`SERVER_SETTING_UPDATE_REJECTED`) and `.env` is unchanged | Proven (the user checks his own data after the release) |
+| AC-005 | `release-notes.md` | The approved text: back up first, what the first start deletes, no restoring by going back | Proven |
+
+- Regression signal (DR-002): the r2 probe had 2 failures, DCP-003 and DCR-003 (FU-005). Delivery asked API/E2E for a matched base-vs-ticket run (API-18):
+  - base `3b2c86ca9e` without this ticket: 4 failures in 12 Org saves;
+  - ticket: 3 in 12;
+  - both sides show the stream reconnecting after every save, with the same stale re-read sequence;
+  - no Org stream or settings file differs between the two.
+
+  FU-005 is pre-existing in base and recorded as a follow-up; it does not block this ticket.
+- More evidence requested: API-18 (DR-002); result above
+- User check needed: `Yes`, the last part of AC-004 only. The user's own data may only be changed by a released build after his backup (REQ-005, TESTING.md). He checks that his 4 records, the Retrospective Skill Improver and its 3 runs are gone, and that the Skill Self-Evolver and his other runs remain.
+- User check reference: pending, after the beta
+
+## Release Decision
+
+- Decision: `Beta`, decided in advance. Cut it after verification and finalization are complete.
+- Decided by: the user, 2026-10-20: "After everything is done, please do a beta release." and "i say this is advance". Do not ask again (delivery skill, Release Decision).
+
+## Docs Sync Result
+
+- Docs sync artifact: `docs-sync-report.md`
+- Docs sync result: no delivery edits; the implementation's doc changes were reviewed and are accurate
+
+## Ticket State Transition
+
+- Ticket moved to `tickets/done/`: `Yes`
+- Archived ticket path: `tickets/done/remove-skill-improvement/`
+
+## Version / Tag / Release Commit
+
+- `bash scripts/desktop-release.sh beta --branch finalize/remove-skill-improvement --no-push`, then release commit `3b9014215e` (`autobyteus-web/package.json` = `1.5.8-beta.4`) and the annotated tag `v1.5.8-beta.4` (object `67820bb9e3`).
+
+## Repository Finalization
+
+- Ticket branch: `codex/remove-skill-improvement`, archived and pushed. This was its first push; the Secret Gate passed first (`origin/personal..codex/remove-skill-improvement`, 21 commits).
+- Finalization target: `origin` / `personal`. It was `3b2c86ca9e` at the merge and again just before the push.
+- Merge: `--no-ff` merge `562ad15070`, tree identical to the ticket branch.
+- Checks on the merged state, all exit 0:
+  - Secret Gate (22 commits);
+  - Secret Gate over `v1.5.8-beta.3..HEAD` (22 commits);
+  - `check_licensing.py`;
+  - `check_repository_artifact_hygiene.py`.
+- Push: `origin/personal` = `3b9014215e` (merge plus release commit), then the tag.
+- Repository finalization status: `Completed`
+
+## Release / Publication / Deployment
+
+- Applicable: `Yes` (Beta, the user's advance decision)
+- Method: `Project Release Guide`
+- Pipelines: all `success`. Android APK Release `39474387651`, iOS App Store Connect Release `39474387629`, Desktop Release `39474387433`, Server Docker Release `39474387243`.
+- Published artifacts checked:
+  - GitHub pre-release `v1.5.8-beta.4` (`isPrerelease: true`) with 17 assets: APK and `.sha256`, Linux x64/ARM64 AppImages, macOS ARM64/x64 `.dmg`/`.zip` with blockmaps, Windows `.exe`, and four `latest*.yml`. `latest-mac.yml` says `version: 1.5.8-beta.4`.
+  - Docker `autobyteus/autobyteus-server:1.5.8-beta.4` and `:beta` share `sha256:0496c59863a8…` (amd64, arm64). `:latest` stays on v1.5.7 (`sha256:821e777d8e88…`), as a beta should leave it.
+- Result: `Completed`
+- Release notes: `Not required` for a beta (generated notes). `release-notes.md` is kept for the next stable.
+
+## Post-Finalization Cleanup
+
+- Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement`: removal deferred until the user's check is recorded. Then remove and prune it, delete the local `codex/` and `finalize/` branches, and keep the remote ticket branch.
+- Untracked full logs were moved to `/tmp/ab205-full-logs/` before the release script; their excerpts are committed.
+
+## Escalation / Reroute
+
+- INT-001 (DR-001, `Local Fix`, implementation engineer) is resolved by IR-002 (merge `5cfccd66c7`). No open escalation.
+
+## Final Status
+
+- Verification complete: `No` (evidence complete; the user's own data check of AC-004 follows the beta)
+- Repository finalization complete: `Yes`
+- Release complete or not required: `Yes`
+- Cleanup complete or not required: `No`
+- Unresolved blocker: none. Waiting for the user's data check.
+- Terminal package eligible / sent: `No` / `No`

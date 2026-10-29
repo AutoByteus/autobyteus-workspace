@@ -1,0 +1,39 @@
+# IMP-02 application unit folders + architecture guards (AC-005, AC-006, AC-007)
+# cmd: env -i PATH="$PATH" HOME=<resolved temp> TMPDIR="$TMPDIR" pnpm -C autobyteus-server-ts exec vitest run tests/unit/application-* tests/unit/standalone-application-host tests/architecture --no-watch
+# commit: 6950a24e1b  env: macOS (darwin), Node v22.23.1  date: 2026-10-25T03:49Z
+
+ Test Files  74 passed (74)
+      Tests  433 passed (433)
+   Duration  43.30s (transform 5.01s, setup 935ms, import 19.11s, tests 15.35s, environment 653ms)
+
+## changed/new unit files (verbose)
+ ✓ tests/unit/application-orchestration/application-execution-event-journal-recovery.test.ts > application execution-event journal recovery > does not create platform or journal state while inspecting absent recovery state 4ms
+ ✓ tests/unit/application-orchestration/application-execution-event-journal-recovery.test.ts > application execution-event journal recovery > leaves an existing database without journal state byte-for-byte unchanged 4ms
+ ✓ tests/unit/application-orchestration/application-execution-event-journal-recovery.test.ts > application execution-event journal recovery > reads an appended pending record through a new read-only store without changing SQLite bytes 113ms
+ ✓ tests/unit/application-orchestration/application-execution-event-journal-recovery.test.ts > application execution-event journal recovery > projects old binding and producer supersets, then dispatches and acknowledges them 63ms
+ ✓ tests/unit/application-orchestration/application-execution-event-journal-recovery.test.ts > application execution-event journal recovery > lets lifecycle restart recovery reach ready and dispatch an existing pending event 62ms
+ ✓ tests/unit/application-orchestration/application-execution-event-journal-recovery.test.ts > application execution-event journal recovery > lets reload/reentry dispatch existing journal state once the application is active again (autobyteus-296) 62ms
+ ✓ tests/unit/application-platform/application-platform-lifecycle.test.ts > ApplicationPlatformLifecycle > awaits named readiness and recovers only the selected canonical application 5ms
+ ✓ tests/unit/application-platform/application-platform-lifecycle.test.ts > ApplicationPlatformLifecycle > quarantines each selected not-ready application with readiness's setup-required detail (autobyteus-296, AC-006) 1ms
+ ✓ tests/unit/application-platform/application-platform-lifecycle.test.ts > ApplicationPlatformLifecycle > materializes a fresh selected application runtime cwd before definition/provider readiness 6ms
+ ✓ tests/unit/application-platform/application-platform-lifecycle.test.ts > ApplicationPlatformLifecycle > keeps full lifecycle cleanup available when runtime directory preparation fails 1ms
+ ✓ tests/unit/application-platform/application-platform-lifecycle.test.ts > ApplicationPlatformLifecycle > stops all owned boundaries in order, remains idempotent, and reports cleanup failures after continuing 1ms
+ ✓ tests/unit/application-platform/application-platform-lifecycle.test.ts > ApplicationPlatformLifecycle > drains a real admitted application-tool call before stopping workers during shutdown 51ms
+ ✓ tests/unit/application-orchestration/application-catalog-transition-service.test.ts > ApplicationCatalogTransitionService > drains only old target-package participants before mutation and commits paired target slices before recovery 4ms
+ ✓ tests/unit/application-orchestration/application-catalog-transition-service.test.ts > ApplicationCatalogTransitionService > serializes concurrent package transitions while ordinary work remains outside its mutex 52ms
+ ✓ tests/unit/application-orchestration/application-catalog-transition-service.test.ts > ApplicationCatalogTransitionService > restores and re-stages actual source state before rethrowing the original transition failure 1ms
+ ✓ tests/unit/application-orchestration/application-catalog-transition-service.test.ts > ApplicationCatalogTransitionService > quarantines affected participants and releases the mutex when rollback restoration also fails 1ms
+ ✓ tests/unit/application-orchestration/application-catalog-transition-service.test.ts > ApplicationCatalogTransitionService > prepares each current application's runtime folder after the commits and before readiness on import 0ms
+ ✓ tests/unit/application-orchestration/application-catalog-transition-service.test.ts > ApplicationCatalogTransitionService > prepares the reloaded application's runtime folder before readiness 0ms
+ ✓ tests/unit/application-orchestration/application-catalog-transition-service.test.ts > ApplicationCatalogTransitionService > uses the same staged owner for exact-application repair and can recover a previously inactive participant 1ms
+ ✓ tests/unit/application-orchestration/application-catalog-transition-service.test.ts > ApplicationCatalogTransitionService > passes each not-ready current application's setup reason from readiness to reentry (autobyteus-296, AC-006) 1ms
+ ✓ tests/unit/application-orchestration/application-reentry-service.test.ts > ApplicationReentryService application-tool participant lifecycle > closes only target admission, drains an admitted call, stops the worker, then recovers, activates and dispatches with the worker stopped 56ms
+ ✓ tests/unit/application-orchestration/application-reentry-service.test.ts > ApplicationReentryService application-tool participant lifecycle > keeps removed and non-recoverable participants closed and quarantined 1ms
+ ✓ tests/unit/application-orchestration/application-reentry-service.test.ts > ApplicationReentryService application-tool participant lifecycle > quarantines with the recovery failure, stops the worker and keeps tools closed when returning a participant fails 0ms
+ ✓ tests/unit/application-engine/application-engine-controller.test.ts > ApplicationEngineController > completion-couples every application-work method without a request deadline 3ms
+ ✓ tests/unit/application-engine/application-engine-controller.test.ts > ApplicationEngineController > owns the exact attached handle, status, invocation, and listener identity 2ms
+ ✓ tests/unit/application-engine/application-engine-controller.test.ts > ApplicationEngineController > stops and detaches the exact handle idempotently 0ms
+ ✓ tests/unit/application-engine/application-engine-controller.test.ts > ApplicationEngineController > resets a crashed, detached worker from failed to stopped (autobyteus-296) 0ms
+ ✓ tests/unit/application-agent-tools/application-agent-tool-worker-invoker.test.ts > ApplicationAgentToolWorkerInvoker after a worker crash > fails closed while the crashed worker is failed, and starts it on demand after a stop 3ms
+ ✓ tests/unit/application-platform/application-definition-runtime-readiness.test.ts > ApplicationDefinitionRuntimeReadiness static adapter ownership > rejects an unselected application open_tab declaration from the complete names snapshot 3ms
+      Tests  29 passed (29)

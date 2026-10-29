@@ -1,6 +1,6 @@
 import { isIP } from "node:net";
 import type { FastifyRequest } from "fastify";
-import { isLoopbackPeerAddress } from "../../api/security/remote-access-local-trust.js";
+import { isLoopbackClientAddress } from "../../api/security/remote-access-local-trust.js";
 
 export type AgentToolsMcpLocalAccessDecision =
   | Readonly<{ ok: true }>
@@ -8,7 +8,7 @@ export type AgentToolsMcpLocalAccessDecision =
 
 export class AgentToolsMcpLocalAccessGate {
   validateRequest(request: FastifyRequest): AgentToolsMcpLocalAccessDecision {
-    if (!isLoopbackPeerAddress(request.raw.socket.remoteAddress)) {
+    if (!isLoopbackClientAddress(request.raw.socket.remoteAddress)) {
       return { ok: false };
     }
     const host = readSingleHeader(request.headers.host);
@@ -27,7 +27,7 @@ export const isLoopbackHostHeader = (value: string): boolean => {
   const hostname = parseHostHeader(value);
   if (!hostname) return false;
   if (hostname.toLowerCase() === "localhost") return true;
-  return isLoopbackPeerAddress(hostname);
+  return isLoopbackClientAddress(hostname);
 };
 
 export const isAllowedOrigin = (origin: string | null): boolean => {

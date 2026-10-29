@@ -34,6 +34,8 @@
             <span class="truncate text-sm font-medium text-gray-900">{{ node.name }}</span>
             <span v-if="node.isCoordinator" class="flex-shrink-0 rounded-full bg-gray-100 px-1.5 py-px text-[0.6875rem] font-medium text-gray-600">{{ $t('runSettings.members.coordinator') }}</span>
             <span v-if="node.badge" class="flex-shrink-0 rounded-full bg-gray-100 px-1.5 py-px text-[0.6875rem] font-medium text-gray-600" data-test="run-member-badge">{{ t(BADGE_KEY[node.badge]) }}</span>
+            <!-- autobyteus-32: the node that runs this copy, when it is not this one. -->
+            <RemoteNodeChip v-if="node.remoteNode" :node-name="node.remoteNode" />
           </span>
           <span class="mt-0.5 flex min-w-0 items-center gap-1 text-xs" data-test="run-member-summary">
             <span v-if="node.modelRequired" class="truncate font-medium text-amber-700">{{ $t('chat.model.chooseModel') }}</span>
@@ -43,6 +45,19 @@
               <span v-if="customized || childCustomizedCount" class="flex-shrink-0 text-gray-300" aria-hidden="true">·</span>
               <span class="truncate text-gray-600">{{ summary }}</span>
             </template>
+          </span>
+          <!-- autobyteus-32: why the Model Router chose this launch, and where the decision is recorded. -->
+          <span v-if="node.routing?.reason" class="mt-0.5 block text-xs text-gray-500" data-test="run-member-routing-reason">
+            {{ node.routing.reason }}
+            <span
+              v-if="node.routing.decision"
+              role="link"
+              tabindex="0"
+              class="ml-1 cursor-pointer whitespace-nowrap font-medium text-blue-700 hover:text-blue-800 focus:outline-none focus-visible:underline"
+              data-test="run-member-view-decision"
+              @click.stop="openDecision"
+              @keydown.enter.stop.prevent="openDecision"
+            >{{ $t('runSettings.delegated.viewDecision') }}</span>
           </span>
           <template v-if="!notesInDetail">
             <span
@@ -160,6 +175,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
+import { useRouter } from 'vue-router'
 import { Icon } from '@iconify/vue'
 import { useLocalization } from '~/composables/useLocalization'
 import { initialsFor } from '~/components/chat/chatComposerMenus'
@@ -177,6 +193,7 @@ import {
   type RunMemberDelegatedFacts,
 } from '~/utils/runSettings/runMemberTree'
 import type { MemberLaunchNote } from '~/utils/runSettings/memberLaunchDefaults'
+import RemoteNodeChip from '~/components/workspace/remote/RemoteNodeChip.vue'
 import RunSettingsCard from './RunSettingsCard.vue'
 import { useRunSettingsPresentation } from './useRunSettingsPresentation'
 
@@ -202,6 +219,14 @@ const emit = defineEmits<{
 
 const presentation = useRunSettingsPresentation()
 const { t } = useLocalization()
+const router = useRouter()
+/** Opens Model Routing → Decisions at this copy's decision, with its team open (D9). */
+const openDecision = (): void => {
+  const decision = props.node.routing?.decision
+  if (!decision) return
+  void router.push({ path: '/settings', query: { section: 'model-routing', tab: 'decisions',
+    decisionRun: decision.runId, decisionCopy: decision.copy, decisionAgent: decision.agent } })
+}
 const UNUSABLE_REASON_KEY: Readonly<Record<MemberLaunchNote['reason'], string>> = {
   incomplete: 'runSettings.members.defaultUnusable.incomplete',
   runtime_unavailable: 'runSettings.members.defaultUnusable.runtime_unavailable',
@@ -213,6 +238,7 @@ const BADGE_KEY: Readonly<Record<NonNullable<RunMemberNode['badge']>, string>> =
 const SOURCE_LABEL_KEY: Readonly<Record<RunMemberLaunchSource, string>> = {
   agent_default: 'runSettings.delegated.source.agent_default',
   team_default: 'runSettings.delegated.source.team_default',
+  model_router: 'runSettings.delegated.source.model_router',
   inherited: 'runSettings.delegated.source.inherited',
   configured: 'runSettings.delegated.source.configured',
   not_recorded: 'runSettings.delegated.source.notRecorded',
@@ -222,7 +248,7 @@ const LAYER_LABEL_KEY: Readonly<Record<RunMemberLaunchFallback['layer'], string>
   team_default: 'runSettings.delegated.layer.team_default',
 }
 const modelOf = (runtimeKind: string | null, llmModelIdentifier: string | null): string =>
-  [runtimeKind ? presentation.runtimeShortLabel(runtimeKind) : null, llmModelIdentifier].filter(Boolean).join(' · ') || '—'
+  [runtimeKind ? presentation.runtimeLabel(runtimeKind) : null, llmModelIdentifier].filter(Boolean).join(' · ') || '—'
 /** An own default a fresh start could not use (it follows its parent), or a recorded fallback of a copy. */
 const noteText = (note: RunMemberNote): string => note.kind === 'unusable_default'
   ? t('runSettings.members.defaultUnusable', { model: modelOf(note.runtimeKind, note.llmModelIdentifier), reason: t(UNUSABLE_REASON_KEY[note.reason]) })
@@ -246,10 +272,11 @@ const summary = computed(() => {
   const values = props.node.values
   const parts: string[] = []
   if (props.node.fields.includes('workspace')) parts.push(presentation.workspaceName(values.workspace))
-  if (values.llmModelIdentifier) parts.push(`${presentation.modelLabel(values)} · ${presentation.runtimeShortLabel(values.runtimeKind)}`)
+  if (values.llmModelIdentifier) parts.push(`${presentation.modelLabel(values)} · ${presentation.runtimeLabel(values.runtimeKind)}`)
   parts.push(...setModelOptionLabels(presentation.modelOptions(values)))
   parts.push(presentation.approvalLabel(values))
   if (props.node.sourceKey) parts.push(t(SOURCE_LABEL_KEY[props.node.sourceKey]))
+  if (props.node.routing?.taskKind) parts.push(props.node.routing.taskKind)
   return parts.filter(Boolean).join(' · ')
 })
 </script>

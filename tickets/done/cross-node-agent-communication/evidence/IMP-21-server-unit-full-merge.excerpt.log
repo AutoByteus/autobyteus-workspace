@@ -1,0 +1,15 @@
+# IMP-21 full server unit suite on the merge: pnpm -C autobyteus-server-ts test:unit; commit c59c6f7359; macOS, node v22.23.1; temp dirs only; 2026-10-20 (the IMP-19/20 focused runs overlapped its start)
+# excerpt: failures, summary, isolated reruns. The full log is not committed.
+ ❯ tests/unit/agent-execution/native-compaction-terminal-drain.test.ts (1 test | 1 failed) 3250ms
+AssertionError: expected [ 'failed', 'started', 'stopped' ] to deeply equal [ 'started', 'stopped' ]
+ ❯ tests/unit/agent-execution/native-compaction-terminal-drain.test.ts:19:22
+...
+ Test Files  1 failed | 775 passed | 4 skipped (780)
+      Tests  1 failed | 6391 passed | 7 skipped (6399)
+   Start at  20:34:38
+   Duration  879.96s (transform 25.43s, setup 15.08s, import 502.33s, tests 234.66s, environment 1.18s)
+
+ ELIFECYCLE  Command failed with exit code 1.
+exit=1
+## the one failure rerun alone, 6 times (native-compaction-terminal-drain.test.ts): 6 of 6 passed (Tests  1 passed (1) each)
+## not in this branch's code: the branch touches only agent-run-provisioning-service.ts and agent-run-service.ts (delegatedFrom) under agent-execution; the test checks native compaction shutdown ordering ('failed' event seen under load)

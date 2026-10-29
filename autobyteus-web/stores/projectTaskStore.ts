@@ -1,10 +1,11 @@
 import { defineStore } from 'pinia'
+import type { DocumentNode } from 'graphql'
 import { ref, watch } from 'vue'
 import { getApolloClient } from '~/utils/apolloClient'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 import { useProjectStore } from '~/stores/projectStore'
 import { GetProjectTasks, GetTasksWithoutProject } from '~/graphql/queries/projectTaskQueries'
-import { CreateProjectTask, DeleteProjectTask, UpdateProjectTask } from '~/graphql/mutations/projectTaskMutations'
+import { AddProjectTaskComment, CreateProjectTask, DeleteProjectTask, UpdateProjectTask } from '~/graphql/mutations/projectTaskMutations'
 import type { ProjectChangeMessage, ProjectTask, ProjectTaskContextDraft, ProjectTaskContextChanges, TaskScope, TaskWithoutProject } from '~/types/project'
 import { ProjectRequestError, throwProjectGraphqlErrors, toProjectRequestError } from '~/utils/projects/projectRequestError'
 import { isOpenTaskStatus, tempTaskLaneOf } from '~/utils/projects/taskStatusPresentation'
@@ -159,7 +160,7 @@ export const useProjectTaskStore = defineStore('projectTasks', () => {
     if (inflight.has(id)) queued.set(id, [...(queued.get(id) ?? []), message])
     else applyToList(id, message)
   }
-  const mutate = async <T>(id: string, mutation: unknown, input: Record<string, unknown>, field: string, change: (tasks: ProjectTask[], result: T) => ProjectTask[], eligible: () => boolean = () => true): Promise<T> => {
+  const mutate = async <T>(id: string, mutation: DocumentNode, input: Record<string, unknown>, field: string, change: (tasks: ProjectTask[], result: T) => ProjectTask[], eligible: () => boolean = () => true): Promise<T> => {
     const revision = node.bindingRevision
     const client = getApolloClient()
     const owner = epoch(id), deleted = owner.deleted
@@ -182,13 +183,17 @@ export const useProjectTaskStore = defineStore('projectTasks', () => {
     } catch (cause) { throw toProjectRequestError(cause) }
     finally { owner.write++; if (current()) releaseRead(id) }
   }
-  // "Depends on" is saved with the Task (same-Project Task IDs); on update a supplied list replaces the stored one.
-  const createTask = (projectId: string, description: string, contextDraft?: ProjectTaskContextDraft, eligible?: () => boolean, dependsOnTaskIds?: string[]) => mutate<ProjectTask>(projectId, CreateProjectTask,
-    {projectId, description, ...(contextDraft ? {contextDraft} : {}), ...(dependsOnTaskIds ? {dependsOnTaskIds} : {})}, 'createProjectTask', (tasks, result) => [...tasks.filter((t) => t.taskId !== result.taskId), result], eligible)
-  const updateTask = (projectId: string, taskId: string, description: string, contextChanges?: ProjectTaskContextChanges, eligible?: () => boolean, dependsOnTaskIds?: string[]) => mutate<ProjectTask>(projectId, UpdateProjectTask,
-    {projectId, taskId, description, ...(contextChanges ? {contextChanges} : {}), ...(dependsOnTaskIds ? {dependsOnTaskIds} : {})}, 'updateProjectTask', (tasks, result) => [...tasks.filter((t) => t.taskId !== taskId), result], eligible)
+  // "Depends on" and "Part of" are saved with the Task (same-Project Task IDs); on update a supplied list replaces the stored one,
+  // a supplied `partOfTaskId` replaces the parent and `null` clears it (omitted keeps it).
+  const createTask = (projectId: string, text: {title: string; description: string}, contextDraft?: ProjectTaskContextDraft, eligible?: () => boolean, dependsOnTaskIds?: string[], partOfTaskId?: string | null) => mutate<ProjectTask>(projectId, CreateProjectTask,
+    {projectId, title: text.title, description: text.description, ...(contextDraft ? {contextDraft} : {}), ...(dependsOnTaskIds ? {dependsOnTaskIds} : {}), ...(partOfTaskId ? {partOfTaskId} : {})}, 'createProjectTask', (tasks, result) => [...tasks.filter((t) => t.taskId !== result.taskId), result], eligible)
+  const updateTask = (projectId: string, taskId: string, text: {title: string; description: string}, contextChanges?: ProjectTaskContextChanges, eligible?: () => boolean, dependsOnTaskIds?: string[], partOfTaskId?: string | null) => mutate<ProjectTask>(projectId, UpdateProjectTask,
+    {projectId, taskId, title: text.title, description: text.description, ...(contextChanges ? {contextChanges} : {}), ...(dependsOnTaskIds ? {dependsOnTaskIds} : {}), ...(partOfTaskId !== undefined ? {partOfTaskId} : {})}, 'updateProjectTask', (tasks, result) => [...tasks.filter((t) => t.taskId !== taskId), result], eligible)
+  // A comment is only added: the server sets its number and time and returns the Task, which replaces the listed one.
+  const addComment = (projectId: string, taskId: string, text: string, eligible?: () => boolean) => mutate<ProjectTask>(projectId, AddProjectTaskComment,
+    {projectId, taskId, text}, 'addProjectTaskComment', (tasks, result) => tasks.map((t) => t.taskId === taskId ? result : t), eligible)
   const deleteTask = (projectId: string, taskId: string, eligible?: () => boolean) => mutate<boolean>(projectId, DeleteProjectTask, {projectId, taskId}, 'deleteProjectTask', (tasks) => tasks.filter((t) => t.taskId !== taskId), eligible)
   watch(() => node.bindingRevision, invalidate, {flush: 'sync'})
   return {listsByProjectId, searchByProjectId, liveChanges, getList, getTempList, setSearch, invalidate, forget, releaseRead, fetchTasks, refreshTasks,
-    applyChange, createTask, updateTask, deleteTask}
+    applyChange, createTask, updateTask, addComment, deleteTask}
 })

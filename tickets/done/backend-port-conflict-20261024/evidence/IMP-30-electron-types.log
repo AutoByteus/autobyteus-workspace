@@ -1,0 +1,9 @@
+IMP-30-electron-types — IR-003
+Command (worktree root): autobyteus-web/node_modules/.bin/tsc --noEmit -p autobyteus-web/electron/tsconfig.json
+Invocation: clean env -i PATH="$PATH" HOME="$HOME" TMPDIR="$TMPDIR"; pnpm through npm exec --yes --package=pnpm@10.28.2 --; direct tsc exceptions
+Commit: d0338db0b
+Environment: macOS arm64 Node26.12.0 pnpm10.28.2; no provider gate
+Finished: 2026-10-24T19:11:51.264456+00:00
+Log ANSI/trailing whitespace normalized; empty successful tsc means exit0.
+
+No output; shell exit0.

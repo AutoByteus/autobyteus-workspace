@@ -6,6 +6,7 @@ import fastify, { type FastifyInstance } from "fastify";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { registerGraphql } from "../../../src/api/graphql/index.js";
 import { registerRunFileChangeRoutes } from "../../../src/api/rest/run-file-changes.js";
+import { configureStudioApplicationApiServices } from "../../../src/api/graphql/studio-application-api-services.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { RunFileChangeProjectionService } from "../../../src/run-history/services/run-file-change-projection-service.js";
@@ -45,6 +46,8 @@ describe("Run file changes API integration", () => {
   let ownedTeamRunManager: AgentTeamRunManager | null = null;
   // The process authority that records FILE_CHANGE events for attached runs and serves active-run reads.
   let processRunFileChanges: RunFileChangeService | null = null;
+  // The team-run GraphQL resolver binds Studio services on construction; the file-change reads use none of them.
+  let studioServices: ReturnType<typeof configureStudioApplicationApiServices> | null = null;
 
   const getMemoryDir = (): string => path.join(appDataDir, "memory");
 
@@ -125,7 +128,7 @@ describe("Run file changes API integration", () => {
 
     expect(response.statusCode).toBe(200);
     const body = response.json() as { data?: T; errors?: Array<{ message?: string }> };
-    expect(body.errors).toBeUndefined();
+    expect(body.errors, JSON.stringify(body.errors)).toBeUndefined();
     if (!body.data) {
       throw new Error("Expected GraphQL response data.");
     }
@@ -167,6 +170,12 @@ describe("Run file changes API integration", () => {
 
     processRunFileChanges = new RunFileChangeService();
     bindProcessRunFileChangeService(processRunFileChanges);
+    studioServices = configureStudioApplicationApiServices(Object.fromEntries([
+      "agentDefinitionService", "agentTeamDefinitionService", "agentOrgDefinitionService", "agentRunService",
+      "teamRunService", "agentOrgRunService", "definitionAdmissionService", "collaborationRootHistoryService",
+      "runModelConfigService", "delegatedLaunchSelectionService", "bundleService", "capabilityService",
+      "packageQueries", "packageCommands",
+    ].map((name) => [name, {}])) as never);
 
     const projectionService = new RunFileChangeProjectionService({
       agentRunManager: {
@@ -182,6 +191,7 @@ describe("Run file changes API integration", () => {
   afterAll(async () => {
     activeRuns.clear();
     await app.close();
+    studioServices?.close();
     if (processRunFileChanges) releaseProcessRunFileChangeService(processRunFileChanges);
     if (ownedTeamRunManager) AgentTeamRunManager.releaseProcessInstance(ownedTeamRunManager);
     if (ownedAgentRunManager) AgentRunManager.releaseProcessInstance(ownedAgentRunManager);
@@ -368,7 +378,7 @@ describe("Run file changes API integration", () => {
     expect(response.json()).toEqual({ detail: "File change not found" });
   });
 
-  it("hydrates historical AutoByteus team-member file changes through GraphQL and REST", async () => {
+  it("hydrates historical AutoByteus team-member file changes through the team-scoped GraphQL and REST reads", async () => {
     const teamRunId = `team-file-${Date.now()}`;
     const memberRunId = `${teamRunId}-professor`;
     const relativePath = `team/${teamRunId}.md`;
@@ -401,7 +411,7 @@ describe("Run file changes API integration", () => {
     });
 
     const data = await execGraphql<{
-      getRunFileChanges: Array<{
+      getTeamMemberFileChanges: Array<{
         runId: string;
         path: string;
         type: string;
@@ -409,8 +419,8 @@ describe("Run file changes API integration", () => {
         sourceTool: string;
       }>;
     }>(
-      `query GetRunFileChanges($runId: String!) {
-        getRunFileChanges(runId: $runId) {
+      `query GetTeamMemberFileChanges($teamRunId: String!, $agentRunId: String!) {
+        getTeamMemberFileChanges(teamRunId: $teamRunId, agentRunId: $agentRunId) {
           runId
           path
           type
@@ -418,10 +428,10 @@ describe("Run file changes API integration", () => {
           sourceTool
         }
       }`,
-      { runId: memberRunId },
+      { teamRunId, agentRunId: memberRunId },
     );
 
-    expect(data.getRunFileChanges).toEqual([
+    expect(data.getTeamMemberFileChanges).toEqual([
       expect.objectContaining({
         runId: memberRunId,
         path: relativePath,
@@ -433,13 +443,34 @@ describe("Run file changes API integration", () => {
 
     const response = await app.inject({
       method: "GET",
-      url: `/runs/${encodeURIComponent(memberRunId)}/file-change-content?path=${encodeURIComponent(relativePath)}`,
+      url: `/team-runs/${encodeURIComponent(teamRunId)}/agent-runs/${encodeURIComponent(memberRunId)}/file-change-content?path=${encodeURIComponent(relativePath)}`,
     });
 
     expect(response.statusCode).toBe(200);
     expect(response.payload).toBe("team member artifact bytes");
     expect(String(response.headers["content-type"])).toContain("text");
     expect(response.headers["cache-control"]).toBe("no-store");
+
+    // A run-id-only read means "this standalone run": the member's run id gets nothing (REQ-005).
+    const byRunId = await execGraphql<{ getRunFileChanges: Array<{ path: string }> }>(
+      "query GetRunFileChanges($runId: String!) { getRunFileChanges(runId: $runId) { path } }",
+      { runId: memberRunId },
+    );
+    expect(byRunId.getRunFileChanges).toEqual([]);
+    const contentByRunId = await app.inject({
+      method: "GET",
+      url: `/runs/${encodeURIComponent(memberRunId)}/file-change-content?path=${encodeURIComponent(relativePath)}`,
+    });
+    expect(contentByRunId.statusCode).toBe(404);
+    expect(contentByRunId.json()).toEqual({ detail: "File change not found" });
+
+    // A member named under another team is not found there.
+    const wrongOwner = await app.inject({
+      method: "GET",
+      url: `/team-runs/${encodeURIComponent(`${teamRunId}-other`)}/agent-runs/${encodeURIComponent(memberRunId)}/file-change-content?path=${encodeURIComponent(relativePath)}`,
+    });
+    expect(wrongOwner.statusCode).toBe(404);
+    expect(wrongOwner.json()).toEqual({ detail: "File change not found" });
   });
 
   it("returns 404 for historical rows whose files no longer exist", async () => {
@@ -522,8 +553,8 @@ describe("Run file changes API integration", () => {
 
   it("serves every artifact an attached active run records after an earlier read (regression)", async () => {
     const runId = `run-live-${Date.now()}`;
-    const runDir = path.join(getMemoryDir(), "agents", runId);
-    await fs.mkdir(runDir, { recursive: true });
+    // A standalone run records its metadata before it is activated.
+    const runDir = await seedRun({ runId, workspaceRootPath, writeProjection: false });
     const listeners = new Set<(event: unknown) => void>();
     const run = {
       runId,

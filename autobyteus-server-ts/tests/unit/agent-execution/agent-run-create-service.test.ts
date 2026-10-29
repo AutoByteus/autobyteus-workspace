@@ -88,4 +88,14 @@ describe("AgentRunService create", () => {
     expect(mocks.metadataService.readMetadata).not.toHaveBeenCalled();
     expect(mocks.metadataService.readMetadataState).not.toHaveBeenCalled();
   });
+
+  it("records a run's title by its ID (autobyteus-269: a peer's work packet), through the same catalog rule", async () => {
+    const { service, mocks } = createSubject();
+    await service.recordRunTitle("publisher_r1", "Publish the video draft.");
+    expect(mocks.historyCatalogService.recordRunSummary).toHaveBeenCalledExactlyOnceWith({
+      runId: "publisher_r1",
+      summary: "Publish the video draft.",
+    });
+    expect(mocks.metadataService.readMetadata).not.toHaveBeenCalled();
+  });
 });

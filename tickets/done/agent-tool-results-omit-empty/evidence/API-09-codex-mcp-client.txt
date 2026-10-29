@@ -1,0 +1,26 @@
+API-09 real Codex MCP client (no model turn) — autobyteus-260
+Codex: codex-cli 0.164.0, throwaway CODEX_HOME=<temp> with only a symlink to the user's auth.json and an empty config.toml (user config untouched); real HOME/USER/LOGNAME as TESTING.md asks for a signed-in CLI
+Commit: source 17d631c704; macOS arm64; 2026-10-25
+
+== (a) mcp-runtime-tool-matrix, lane 'codex MCP client (no model turn)': RUN_CODEX_MCP_E2E=1 MCP_MATRIX_E2E_EVIDENCE_DIR=<dir> pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts -t 'codex MCP client' --no-watch
+ Test Files  1 passed (1)
+      Tests  1 passed | 5 skipped (6)
+receipt codex-mcp-client.json:
+{
+  "runtime": "codex-mcp-client",
+  "taskStatus": "DONE",
+  "stdioEnvDelivered": true,
+  "stdioCwdDelivered": true,
+  "httpMarker": true,
+  "httpToolCalls": [
+    "expected"
+  ],
+  "dummyOnWire": false,
+  "stdioProcessGoneAfterTermination": true
+}
+
+== (b) codex-standalone-send-message-global-routing: RUN_CODEX_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/codex-standalone-send-message-global-routing.e2e.test.ts --no-watch
+TypeError: getCodexAppServerClientManager(...).getClient is not a function
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+Reading: the test calls getCodexAppServerClientManager().getClient(), which the base's CodexAppServerClientManager no longer has (it offers beginAcquire(cwd)); this ticket does not touch that file. The case cannot run on the base either (FU-005).

@@ -4,13 +4,15 @@
 
     <div class="grid grid-cols-1 xl:grid-cols-2 gap-5">
       <ApplicationsFeatureToggleCard />
-      <SkillImprovementFeatureToggleCard />
       <MediaDefaultModelsCard />
       <CodexFullAccessCard />
+      <ClaudeRuntimeCard />
       <LiveResponseStreamingCard />
+      <ShowInternalAgentsCard />
       <FeaturedCatalogItemsCard />
       <WebSearchConfigurationCard @notify="showNotification" />
       <CompactionConfigCard />
+      <UpdateChecksCard class="xl:col-span-2" />
     </div>
 
     <div
@@ -27,13 +29,15 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import ApplicationsFeatureToggleCard from '~/components/settings/ApplicationsFeatureToggleCard.vue'
+import ClaudeRuntimeCard from '~/components/settings/ClaudeRuntimeCard.vue'
 import CodexFullAccessCard from '~/components/settings/CodexFullAccessCard.vue'
 import CompactionConfigCard from '~/components/settings/CompactionConfigCard.vue'
 import FeaturedCatalogItemsCard from '~/components/settings/FeaturedCatalogItemsCard.vue'
 import MediaDefaultModelsCard from '~/components/settings/MediaDefaultModelsCard.vue'
 import ServerSettingsEndpointCards from '~/components/settings/ServerSettingsEndpointCards.vue'
-import SkillImprovementFeatureToggleCard from '~/components/settings/SkillImprovementFeatureToggleCard.vue'
+import UpdateChecksCard from '~/components/settings/UpdateChecksCard.vue'
 import LiveResponseStreamingCard from '~/components/settings/LiveResponseStreamingCard.vue'
+import ShowInternalAgentsCard from '~/components/settings/ShowInternalAgentsCard.vue'
 import WebSearchConfigurationCard from '~/components/settings/WebSearchConfigurationCard.vue'
 
 type NotificationType = 'success' | 'error'

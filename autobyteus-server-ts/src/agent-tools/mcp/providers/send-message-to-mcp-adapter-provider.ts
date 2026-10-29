@@ -14,7 +14,6 @@ import {
 } from "../agent-tool-mcp-adapter.js";
 import {
   SendMessageToResultSchema,
-  serializeSendMessageToResult,
   toSendMessageToResult,
 } from "../../../agent-communication/services/send-message-to-tool-result-contract.js";
 import { toAgentToolsMcpStructuredJsonResult } from "../agent-tools-mcp-structured-json-result.js";
@@ -44,7 +43,7 @@ export class SendMessageToMcpAdapterProvider implements AgentToolMcpAdapterProvi
             }),
           );
           return toAgentToolMcpToolResult(toAgentToolsMcpStructuredJsonResult(
-            serializeSendMessageToResult(result),
+            result,
             { isError: !result.accepted },
           ));
         },

@@ -370,11 +370,11 @@ async function assertRootLayout(dataRoot) {
     assert(relative === '' || (!relative.startsWith('..') && !path.isAbsolute(relative)), `Isolated path escaped root: ${directoryPath}`)
   }
   assert(
-    await pathExists(path.join(expected.userData, 'node-registry.v1.json')),
+    await pathExists(path.join(expected.userData, 'node-registry.json')),
     'Node registry was not persisted under isolated userData',
   )
   const registry = JSON.parse(await fs.readFile(
-    path.join(expected.userData, 'node-registry.v1.json'),
+    path.join(expected.userData, 'node-registry.json'),
     'utf8',
   ))
   return { expected, exists, registry }
@@ -675,7 +675,9 @@ async function runRawPackagedFailure({ executablePath, env, expectedMessage }) {
   await waitFor(`raw process group ${child.pid} absence`, () => isPosixGroupAbsent(child.pid), 5000)
   cleanup.active = false
   assert(result.code !== 0, 'Invalid packaged configuration exited successfully', { result, output })
-  assert(output.includes(expectedMessage), 'Invalid packaged diagnostic did not identify the expected field/problem', { expectedMessage, output })
+  // expectedMessage: one substring, or a list of substrings that must all appear.
+  const expectedParts = [expectedMessage].flat()
+  assert(expectedParts.every((part) => output.includes(part)), 'Invalid packaged diagnostic did not identify the expected field/problem', { expectedMessage, output })
   return {
     exitCode: result.code,
     signal: result.signal,
@@ -1008,7 +1010,8 @@ async function execute() {
       {
         name: 'occupied-port',
         env: { ...baseE2E, AUTOBYTEUS_ELECTRON_SERVER_PORT: String(occupiedPort), AUTOBYTEUS_ELECTRON_DATA_ROOT: occupiedRoot },
-        expectedMessage: 'is unavailable',
+        // The shared backend port check (f34ad8749f) fails with the listener's own error, naming the port.
+        expectedMessage: ['EADDRINUSE: address already in use', `:${occupiedPort}`],
       },
     ]
     const results = []

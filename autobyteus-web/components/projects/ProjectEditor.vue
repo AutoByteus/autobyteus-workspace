@@ -21,7 +21,7 @@
           <div class="mt-4">
             <label for="project-editor-description" class="block text-sm font-medium text-slate-700">{{ t('projects.ui.description') }} <span class="font-normal text-slate-500">{{ t('projects.ui.optional') }}</span></label>
             <textarea id="project-editor-description" v-model="description" rows="2" :disabled="saving" :placeholder="t('projects.ui.projectDescriptionPlaceholder')" class="mt-2 block min-h-[104px] w-full resize-y rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-base leading-6 text-slate-900 placeholder:text-slate-500 focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-500/20 sm:min-h-0 sm:text-sm" data-testid="project-description-input" />
-            <ProjectVoiceStatus :target="voiceTarget" class="mt-3" />
+            <VoiceTargetStatus :target="voiceTarget" class="mt-3" status-test-id="project-voice-status" cancel-test-id="project-voice-cancel" />
             <div class="mt-2 flex justify-end">
               <VoiceInputButton :target="voiceTarget" source="project-description" large :disabled="saving" data-testid="project-voice-button" />
             </div>
@@ -52,7 +52,7 @@ import { useWorkspaceStore } from '~/stores/workspace'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 import { useLocalization } from '~/composables/useLocalization'
 import VoiceInputButton from '~/components/voiceInput/VoiceInputButton.vue'
-import ProjectVoiceStatus from './ProjectVoiceStatus.vue'
+import VoiceTargetStatus from '~/components/voiceInput/VoiceTargetStatus.vue'
 import { useVoiceInputStore } from '~/stores/voiceInputStore'
 import { mergeTranscriptWithDraft } from '~/utils/voiceInputCapture'
 import type { VoiceTranscriptTarget } from '~/types/voiceInput'

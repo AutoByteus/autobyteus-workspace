@@ -113,9 +113,9 @@ describe("ad-hoc Tasks (no Project)", () => {
     const { taskId } = await delegate("copy-1");
     await expect(tasks.updateTaskById({ taskId, description: "  Revised  " })).resolves.toEqual({ projectId: null, taskId, taskReference: taskId, status: "TODO" });
     expect((await taskFile(taskId)).description).toBe("Revised");
-    const projectTask = await tasks.createTask({ projectId, description: "Project work" });
+    const projectTask = await tasks.createTask({ projectId, title: "Project work", description: "Project work" });
     await expect(tasks.updateTaskById({ taskId: projectTask.taskId, description: "Project work, revised" }))
-      .resolves.toEqual({ projectId, taskId: projectTask.taskId, taskReference: projectTask.taskKey, status: "TODO", dependsOnTaskIds: [] });
+      .resolves.toEqual({ projectId, taskId: projectTask.taskId, taskReference: projectTask.taskKey, title: projectTask.title, status: "TODO", dependsOnTaskIds: [], partOfTaskId: null });
     expect((await store.readTask(projectId, projectTask.taskId))!.description).toBe("Project work, revised");
     await expect(tasks.updateTaskById({ taskId: "ad_hoc_task_missing", status: "DONE" })).rejects.toMatchObject({ code: "TASK_NOT_FOUND" });
     await expect(tasks.updateTaskById({ taskId: "../escape", status: "DONE" })).rejects.toMatchObject({ code: "TASK_NOT_FOUND" });
@@ -124,7 +124,7 @@ describe("ad-hoc Tasks (no Project)", () => {
   });
 
   it("DONE on a Project Task by task_id alone behaves exactly like the Project-scoped update (AC-014)", async () => {
-    const projectTask = await tasks.createTask({ projectId, description: "Project work" });
+    const projectTask = await tasks.createTask({ projectId, title: "Project work", description: "Project work" });
     await tasks.linkNewTaskExecution({ role: "assigned", taskId: projectTask.taskId, assignedBy: "manager", hostRoot: otherRoot, execution: { agentRunId: "worker" } });
     await tasks.updateTaskById({ taskId: projectTask.taskId, status: "DONE" });
     await tasks.drainRuntimeReleases();
@@ -140,7 +140,7 @@ describe("ad-hoc Tasks (no Project)", () => {
   });
 
   it("works while the Projects migration is pending; Project operations still report it (AC-013)", async () => {
-    const projectTask = await tasks.createTask({ projectId, description: "Project work" });
+    const projectTask = await tasks.createTask({ projectId, title: "Project work", description: "Project work" });
     await fs.writeFile(layout.releasedProjectsFile(), "[]");
     const { taskId } = await delegate("copy-1");
     await expect(tasks.updateTaskById({ taskId, status: "DONE" })).resolves.toEqual({ projectId: null, taskId, taskReference: taskId, status: "DONE" });
@@ -154,7 +154,7 @@ describe("ad-hoc Tasks (no Project)", () => {
     const closed = await delegate("copy-2");
     await tasks.updateTaskById({ taskId: closed.taskId, status: "DONE" });
     const theirs = await delegate("copy-3", { root: otherRoot });
-    const projectTask = await tasks.createTask({ projectId, description: "Project work" });
+    const projectTask = await tasks.createTask({ projectId, title: "Project work", description: "Project work" });
     await tasks.linkNewTaskExecution({ role: "assigned", taskId: projectTask.taskId, assignedBy: "manager", hostRoot, execution: { agentRunId: "worker" } });
 
     await tasks.deleteAdHocTasksHostedBy(hostRoot);

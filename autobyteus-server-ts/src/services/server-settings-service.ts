@@ -1,13 +1,19 @@
 import { appConfigProvider } from "../config/app-config-provider.js";
 import { APPLICATIONS_CAPABILITY_SETTING_KEY } from "../application-capability/domain/models.js";
+import { REMOTE_COLLABORATION_CAPABILITY_SETTING_KEY } from "../remote-collaboration/settings/remote-collaboration-capability.js";
 import {
-  AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
-  SKILL_IMPROVEMENT_CAPABILITY_SETTING_KEY,
-} from "../skill-improvement/domain/settings.js";
+  AUTO_UPDATE_SETTING_KEYS,
+  UPDATE_CHECK_INTERVAL_SETTING_KEYS,
+  UPDATE_CHECKS_SETTING_KEY,
+} from "../update-notifications/domain/settings.js";
 import {
   CODEX_APP_SERVER_SANDBOX_SETTING_KEY,
   CODEX_SANDBOX_MODES,
 } from "../runtime-management/codex/codex-sandbox-mode-setting.js";
+import {
+  CLAUDE_ONE_HOUR_PROMPT_CACHE_SETTING_KEY,
+  CLAUDE_ONE_HOUR_PROMPT_CACHE_SETTING_VALUES,
+} from "../runtime-management/claude/claude-prompt-cache-setting.js";
 import {
   DEFAULT_IMAGE_EDIT_MODEL_SETTING_KEY,
   DEFAULT_IMAGE_GENERATION_MODEL_SETTING_KEY,
@@ -29,12 +35,31 @@ import {
   normalizeTaskExecutionIdleShutdownGraceForPersistence,
   TASK_EXECUTION_IDLE_SHUTDOWN_GRACE_SETTING_KEY,
 } from "../config/task-execution-idle-shutdown-setting.js";
+import {
+  normalizeShowInternalAgentsForPersistence,
+  SHOW_INTERNAL_AGENTS_SETTING_KEY,
+} from "../config/show-internal-agents-setting.js";
+import {
+  MODEL_ROUTER_LLM_CONFIG_SETTING_KEY,
+  MODEL_ROUTER_MODEL_SETTING_KEY,
+  MODEL_ROUTER_RUNTIME_SETTING_KEY,
+  MODEL_ROUTING_ENABLED_SETTING_KEY,
+  normalizeModelRouterLlmConfigForPersistence,
+  normalizeModelRouterModelForPersistence,
+  normalizeModelRouterRuntimeForPersistence,
+  normalizeModelRoutingEnabledForPersistence,
+} from "../model-routing/model-routing-settings.js";
 import { getModelCatalogService } from "../llm-management/services/model-catalog-service.js";
 import {
   EMBEDDING_MODEL_SETTING_DESCRIPTION,
   EMBEDDING_MODEL_SETTING_KEY,
   normalizeEmbeddingModelSettingForPersistence,
 } from "../embeddings/catalog/embedding-model-setting.js";
+import {
+  MEMORY_SEARCH_DEFAULT_LIMIT_SETTING_DESCRIPTION,
+  MEMORY_SEARCH_DEFAULT_LIMIT_SETTING_KEY,
+  normalizeMemorySearchDefaultLimitForPersistence,
+} from "../memory-search/settings/memory-search-settings.js";
 
 export {
   DEFAULT_IMAGE_EDIT_MODEL_SETTING_KEY,
@@ -70,7 +95,6 @@ const SENSITIVE_SETTING_NAME = /(API[_-]?KEY|TOKEN|PASSWORD|SECRET|PRIVATE[_-]?K
 const isSensitiveSettingName = (key: string): boolean =>
   // This exact public key counts context tokens; it does not contain an access token.
   key !== ACTIVE_CONTEXT_TOKENS_OVERRIDE_KEY && SENSITIVE_SETTING_NAME.test(key);
-export { AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID, SKILL_IMPROVEMENT_CAPABILITY_SETTING_KEY };
 
 export class ServerSettingsService {
   private settingsInfo = new Map<string, ServerSettingDescription>();
@@ -136,14 +160,20 @@ export class ServerSettingsService {
     );
 
     this.registerPredefinedSetting(
-      SKILL_IMPROVEMENT_CAPABILITY_SETTING_KEY,
-      "Controls whether manual Skill Improvement is available for this node at runtime. Defaults to disabled.",
+      REMOTE_COLLABORATION_CAPABILITY_SETTING_KEY,
+      "Controls whether this node collaborates with registered peer nodes (trusted private network only). Defaults to disabled.",
     );
 
     this.registerPredefinedSetting(
-      AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
-      "Agent definition id for the Retrospective Skill Improver. Blank runtime/model fields on the selected improver inherit from the target run.",
+      UPDATE_CHECKS_SETTING_KEY,
+      "Controls whether this node checks its imported GitHub agent packages and skill sources (and, on the desktop's own node, its agent runtimes) for updates in the background, and applies automatic updates. Defaults to enabled.",
     );
+    for (const [kind, key] of Object.entries(UPDATE_CHECK_INTERVAL_SETTING_KEYS)) {
+      this.registerPredefinedSetting(key, `How often this node checks ${kind.toLowerCase().replace("_", " ")} updates, in minutes (15 to 1440). Set in Server Settings → Basics → Update checks.`);
+    }
+    for (const [kind, key] of Object.entries(AUTO_UPDATE_SETTING_KEYS)) {
+      this.registerPredefinedSetting(key, `Whether this node applies ${kind.toLowerCase().replace("_", " ")} updates automatically (true/false). Defaults to false. Set in Server Settings → Basics → Update checks.`);
+    }
 
     this.registerPredefinedSetting(
       CODEX_APP_SERVER_SANDBOX_SETTING_KEY,
@@ -151,6 +181,16 @@ export class ServerSettingsService {
       true,
       {
         allowedValues: CODEX_SANDBOX_MODES,
+        trimBeforePersist: true,
+      },
+    );
+
+    this.registerPredefinedSetting(
+      CLAUDE_ONE_HOUR_PROMPT_CACHE_SETTING_KEY,
+      "Claude runtime: request Claude Code's one-hour prompt cache for agent sessions started afterwards (true/false, default true). A promptCacheTtl in the user's Claude Code settings, CLAUDE_CODE_PROMPT_CACHE_TTL or FORCE_PROMPT_CACHING_5M take precedence.",
+      true,
+      {
+        allowedValues: CLAUDE_ONE_HOUR_PROMPT_CACHE_SETTING_VALUES,
         trimBeforePersist: true,
       },
     );
@@ -174,11 +214,57 @@ export class ServerSettingsService {
     );
 
     this.registerPredefinedSetting(
+      MODEL_ROUTING_ENABLED_SETTING_KEY,
+      "Model Routing: the node's Model Router chooses a runtime and model for delegated agents that have no usable default (true/false). Default: false. Set on Settings → Model Routing.",
+      true,
+      { normalizeForPersistence: normalizeModelRoutingEnabledForPersistence },
+    );
+
+    this.registerPredefinedSetting(
+      MODEL_ROUTER_RUNTIME_SETTING_KEY,
+      "The Model Router agent's runtime (for example codex_app_server). Set on Settings → Model Routing.",
+      true,
+      { normalizeForPersistence: normalizeModelRouterRuntimeForPersistence },
+    );
+
+    this.registerPredefinedSetting(
+      MODEL_ROUTER_MODEL_SETTING_KEY,
+      "The Model Router agent's model on its runtime. Set on Settings → Model Routing.",
+      true,
+      { normalizeForPersistence: normalizeModelRouterModelForPersistence },
+    );
+
+    this.registerPredefinedSetting(
+      MODEL_ROUTER_LLM_CONFIG_SETTING_KEY,
+      "The Model Router agent's model settings (a JSON object, e.g. its thinking level); empty means none. Set on Settings → Model Routing.",
+      true,
+      { normalizeForPersistence: normalizeModelRouterLlmConfigForPersistence },
+    );
+
+    this.registerPredefinedSetting(
+      SHOW_INTERNAL_AGENTS_SETTING_KEY,
+      "Show internal agents (the system's own helpers, such as the Model Router) in the Agents list, agent pickers, run history, the Memory page and to other agents (true/false). Default: false. Takes effect on the next list. Set in Server Settings → Basics.",
+      true,
+      {
+        normalizeForPersistence: normalizeShowInternalAgentsForPersistence,
+      },
+    );
+
+    this.registerPredefinedSetting(
       EMBEDDING_MODEL_SETTING_KEY,
       EMBEDDING_MODEL_SETTING_DESCRIPTION,
       true,
       {
         normalizeForPersistence: normalizeEmbeddingModelSettingForPersistence,
+      },
+    );
+
+    this.registerPredefinedSetting(
+      MEMORY_SEARCH_DEFAULT_LIMIT_SETTING_KEY,
+      MEMORY_SEARCH_DEFAULT_LIMIT_SETTING_DESCRIPTION,
+      true,
+      {
+        normalizeForPersistence: normalizeMemorySearchDefaultLimitForPersistence,
       },
     );
 
@@ -405,10 +491,6 @@ export class ServerSettingsService {
 
   getEffectiveStreamingContentFlushIntervalMs(): number {
     return resolveStreamingContentFlushIntervalMs();
-  }
-
-  getSkillImprovementDefaultImproverAgentDefinitionId(): string | null {
-    return this.getSettingValue(AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID);
   }
 
   getFeaturedCatalogItemsSettingValue(): string | null {

@@ -1,0 +1,30 @@
+# Check: IMP-22
+# Command: pnpm -C autobyteus-web test:e2e:skill-improvement-removal --output-dir /tmp/ab205-sir-CaSr/out && cp /tmp/ab205-sir-CaSr/out/delegated-launch-defaults-evidence.json /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/tickets/in-progress/remove-skill-improvement/evidence/IMP-22-sir-evidence.json; ls /tmp/ab205-sir-CaSr/out
+# Commit: 5cfccd66c7 (branch codex/remove-skill-improvement)
+# Environment: macOS 26.5.2, Node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-20T16:58:28Z
+
+
+> autobyteus@1.5.8-beta.3 test:e2e:skill-improvement-removal /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-web
+> node tests/e2e/delegated-launch-defaults-probe.mjs --cases SIR-001,SIR-002 --output-dir /tmp/ab205-sir-CaSr/out
+
+(node:16688) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+SIR-001 Pass BEH-003: send_message_to by run id through real tool calls: standalone → standalone delivered, unknown run not active, Team member → member, a Team copy's run id refused naming its coordinator, its coordinator reached
+SIR-002 Pass AC-003/AC-004: an upgrade around real runs deletes exactly the feature data once; other files and .env byte-identical; a second start changes nothing; runs listed and resumed; no feature UI; retired keys refused
+Summary: 2 Pass, 0 Fail
+SIR-001-team-lead-to-member-1280.png
+SIR-002-agents-page-1280.png
+SIR-002-data-root-after.json
+SIR-002-existing-run-composer-1280.png
+SIR-002-memory-page-1280.png
+SIR-002-settings-advanced-refused-1280.png
+SIR-002-settings-basics-1280.png
+SIR-002-team-member-composer-1280.png
+backend-second-start.log
+backend-upgraded.log
+backend.log
+delegated-launch-defaults-evidence.json
+frontend.log
+
+# Exit code: 0

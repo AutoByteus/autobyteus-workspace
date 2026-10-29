@@ -1,4 +1,5 @@
 import type { AppConfig } from "../../config/app-config.js";
+import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
 import type { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
 import type { ApplicationBundleService } from "../../application-bundles/services/application-bundle-service.js";
@@ -185,6 +186,7 @@ export const buildApplicationPlatformRuntime = (
       catalogReconciliation,
       definitionReadiness: services.definitionRuntimeReadiness,
       availabilityService: services.availabilityService,
+      storageLifecycleService,
     });
     const lifecycle = new ApplicationPlatformLifecycle({
       preparation: {
@@ -279,6 +281,9 @@ export const buildApplicationPlatformRuntime = (
       hostManagement: Object.freeze({
         catalogTransition,
         runOwnership: services.runOwnershipService,
+        activeAgentRuns: Object.freeze({
+          countByRuntimeKind: (runtimeKind: RuntimeKind) => executionScope.countActiveAgentRuns(runtimeKind),
+        }),
       }),
     });
   } catch (error) {

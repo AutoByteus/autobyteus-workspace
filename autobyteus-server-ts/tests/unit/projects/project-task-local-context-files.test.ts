@@ -34,7 +34,7 @@ describe("Project Task local context files", () => {
     const draft = await tasks.beginContextDraft(projectId);
     const upload = await tasks.uploadContextFile(projectId, draft.draftId,
       { filename: "ui.txt", mimetype: "text/plain", file: Readable.from([Buffer.from("ui bytes")]) } as never);
-    return tasks.createTask({ projectId, description, contextDraft: { draftId: draft.draftId, storedFilenames: [upload.storedFilename] } });
+    return tasks.createTask({ projectId, title: description, description, contextDraft: { draftId: draft.draftId, storedFilenames: [upload.storedFilename] } });
   };
 
   beforeEach(async () => {
@@ -70,7 +70,7 @@ describe("Project Task local context files", () => {
     const md = await source("notes.md", "# Notes");
     const linked = path.join(sources, "linked.txt");
     await fs.symlink(await source("target.txt", "via link"), linked);
-    const view = await tasks.createTaskWithLocalContextFiles({ projectId, description: "Fix green status", localContextFiles: [png, md, linked] });
+    const view = await tasks.createTaskWithLocalContextFiles({ projectId, title: "Fix green status", description: "Fix green status", localContextFiles: [png, md, linked] });
     expect(view.status).toBe("TODO");
     expect(view.contextFiles.map(f => [f.displayName, f.mimeType, f.sizeBytes])).toEqual([
       ["shot1.png", "image/png", 7], ["notes.md", "text/markdown", 7], ["linked.txt", "text/plain", 8]]);
@@ -88,7 +88,7 @@ describe("Project Task local context files", () => {
   });
 
   it("creates a Task with no files and no context directory for an empty list (AC-004 alternate)", async () => {
-    const view = await tasks.createTaskWithLocalContextFiles({ projectId, description: "Text only", localContextFiles: [] });
+    const view = await tasks.createTaskWithLocalContextFiles({ projectId, title: "Text only", description: "Text only", localContextFiles: [] });
     expect(view.contextFiles).toEqual([]);
     expect(await contextEntries(view.taskId)).toEqual([]);
   });
@@ -107,7 +107,7 @@ describe("Project Task local context files", () => {
     await source("code.ts"); await source("README");
     await fs.truncate(await source("huge.txt", ""), CONTEXT_FILE_MAX_BYTES + 1);
     const badPath = bad(sources);
-    const error = await tasks.createTaskWithLocalContextFiles({ projectId, description: "Never", localContextFiles: [good, badPath] }).catch(e => e);
+    const error = await tasks.createTaskWithLocalContextFiles({ projectId, title: "Never", description: "Never", localContextFiles: [good, badPath] }).catch(e => e);
     expect(error).toMatchObject({ code, message: expect.stringContaining(`'${badPath}'`) });
     expect(await tasks.listTasks(projectId)).toEqual([]);
     expect(await taskDirs()).toEqual([]);
@@ -115,12 +115,12 @@ describe("Project Task local context files", () => {
 
   it("rejects a duplicate path within one call and an unreadable file (AC-005)", async () => {
     const good = await source("notes.md");
-    await expect(tasks.createTaskWithLocalContextFiles({ projectId, description: "Never", localContextFiles: [good, good] }))
+    await expect(tasks.createTaskWithLocalContextFiles({ projectId, title: "Never", description: "Never", localContextFiles: [good, good] }))
       .rejects.toMatchObject({ code: "TASK_CONTEXT_INVALID", message: expect.stringContaining(good) });
     const locked = await source("locked.txt");
     await fs.chmod(locked, 0o000);
     if (process.getuid?.() !== 0) {
-      await expect(tasks.createTaskWithLocalContextFiles({ projectId, description: "Never", localContextFiles: [good, locked] }))
+      await expect(tasks.createTaskWithLocalContextFiles({ projectId, title: "Never", description: "Never", localContextFiles: [good, locked] }))
         .rejects.toMatchObject({ code: "TASK_CONTEXT_FILE_UNAVAILABLE", message: expect.stringContaining(locked) });
     }
     expect(await taskDirs()).toEqual([]);
@@ -132,7 +132,7 @@ describe("Project Task local context files", () => {
       if (String(from) === second) { await fs.writeFile(String(to), "partial"); throw Object.assign(new Error("EIO"), { code: "EIO" }); }
       return originalCopyFile(from, to, mode);
     });
-    const error = await tasks.createTaskWithLocalContextFiles({ projectId, description: "Never", localContextFiles: [first, second] }).catch(e => e);
+    const error = await tasks.createTaskWithLocalContextFiles({ projectId, title: "Never", description: "Never", localContextFiles: [first, second] }).catch(e => e);
     expect(error).toMatchObject({ code: "TASK_CONTEXT_FILE_UNAVAILABLE", message: `Context file '${second}' could not be copied.` });
     expect(await tasks.listTasks(projectId)).toEqual([]);
     const [taskDir] = await taskDirs();
@@ -146,7 +146,7 @@ describe("Project Task local context files", () => {
       await originalCopyFile(from, to, mode);
       await fs.appendFile(String(to), "line 2\n");
     });
-    const view = await tasks.createTaskWithLocalContextFiles({ projectId, description: "Logs", localContextFiles: [log] });
+    const view = await tasks.createTaskWithLocalContextFiles({ projectId, title: "Logs", description: "Logs", localContextFiles: [log] });
     expect(view.contextFiles[0]).toMatchObject({ displayName: "server.log", sizeBytes: 14, localPath: expect.any(String) });
     vi.mocked(fs.copyFile).mockImplementation(async (from, to, mode) => {
       await originalCopyFile(from, to, mode);
@@ -167,7 +167,10 @@ describe("Project Task local context files", () => {
     expect(after.contextFiles[0]).toEqual(before.contextFiles[0]);
     expect(after.contextFiles[1]).toMatchObject({ displayName: "shot2.png", mimeType: "image/png" });
     expect(after).toMatchObject({ description: before.description, status: "TODO" });
-    expect(ack).toEqual({ projectId, taskId: task.taskId, taskReference: task.taskKey, status: "TODO", dependsOnTaskIds: [], attachedContextFiles: [after.contextFiles[1]] });
+    expect(ack).toEqual({ projectId, taskId: task.taskId, taskReference: task.taskKey, title: task.title, status: "TODO", dependsOnTaskIds: [], partOfTaskId: null,
+      // AR-005: the attached files carry their saved local path, as list views do.
+      attachedContextFiles: [{ ...after.contextFiles[1], locator: expect.stringContaining(after.contextFiles[1].storedFilename), localPath: expect.stringContaining(after.contextFiles[1].storedFilename) }] });
+    expect(await fs.readFile(ack.attachedContextFiles![0]!.localPath!, "utf8")).toBe(await fs.readFile(shot, "utf8"));
     // Attaching the same source again creates another saved copy (no dedupe).
     const again = await tasks.updateTaskById({ taskId: task.taskId, localContextFiles: [shot] });
     expect(again.attachedContextFiles![0]!.storedFilename).not.toBe(after.contextFiles[1].storedFilename);
@@ -205,7 +208,7 @@ describe("Project Task local context files", () => {
   it("requires a change: an empty files list alone is TASK_PATCH_REQUIRED; a patch without files keeps the plain acknowledgement (AC-004, AC-009)", async () => {
     const task = await uiTask();
     await expect(tasks.updateTaskById({ taskId: task.taskId, localContextFiles: [] })).rejects.toMatchObject({ code: "TASK_PATCH_REQUIRED" });
-    await expect(tasks.updateTaskById({ taskId: task.taskId, description: "Plain" })).resolves.toEqual({ projectId, taskId: task.taskId, taskReference: task.taskKey, status: "TODO", dependsOnTaskIds: [] });
+    await expect(tasks.updateTaskById({ taskId: task.taskId, description: "Plain" })).resolves.toEqual({ projectId, taskId: task.taskId, taskReference: task.taskKey, title: task.title, status: "TODO", dependsOnTaskIds: [], partOfTaskId: null });
   });
 
   it("rejects files on a Task with no Project before any write; its text/status patch still works (AC-007)", async () => {

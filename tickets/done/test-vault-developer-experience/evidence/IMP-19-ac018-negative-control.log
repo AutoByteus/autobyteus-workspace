@@ -1,0 +1,12 @@
+# IMP-19 AC-018 negative control
+# IR-002 | commit 9498de5f8b | macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2 | 2026-10-20
+# steps: in autobyteus-server-ts/dist/server-runtime.js replace the line 'disableEnvironmentProviderApiKeySource();' with a comment; run vitest -t AC-018 on environment-key-source.e2e.test.ts; restore the built file (grep count back to 1)
+
+observed (copied from the run):
+  - Expected
+  + Received
+  -     "code": null,
+  -     "kind": "missing_api_key",
+  +     "resolved": true,
+        Tests  1 failed | 2 skipped (3)
+  restored: grep -c 'disableEnvironmentProviderApiKeySource();' dist/server-runtime.js -> 1

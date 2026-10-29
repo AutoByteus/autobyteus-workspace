@@ -140,6 +140,8 @@ export class FileExplorerStreamingService {
   private handleMessage(data: string): void {
     try {
       const message = JSON.parse(data) as ServerMessage;
+      // Kept unnarrowed for the unknown-type log below (the switch narrows `message` to never there).
+      const messageType: string = message.type;
 
       switch (message.type) {
         case 'CONNECTED':
@@ -169,7 +171,7 @@ export class FileExplorerStreamingService {
           break;
 
         default:
-          console.warn('[FileExplorerStreaming] Unknown message type:', message.type);
+          console.warn('[FileExplorerStreaming] Unknown message type:', messageType);
       }
     } catch (error) {
       console.error('[FileExplorerStreaming] Failed to parse message:', error);
@@ -267,8 +269,15 @@ export class FileExplorerStreamingService {
     }
 
     if (this.ws) {
-      this.ws.close(1000, 'Client disconnect');
+      const ws = this.ws;
+      // This close is ours: detach first so the socket's late error/close events (a socket still connecting
+      // reports both) neither log an error nor reset the state of a connection opened right after this call.
+      ws.onopen = null;
+      ws.onmessage = null;
+      ws.onerror = null;
+      ws.onclose = null;
       this.ws = null;
+      ws.close(1000, 'Client disconnect');
     }
 
     this._state = 'disconnected';

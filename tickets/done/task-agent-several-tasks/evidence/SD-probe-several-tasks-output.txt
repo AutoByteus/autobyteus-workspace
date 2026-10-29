@@ -1,0 +1,11 @@
+Probe run 2026-10-23 by the Solution Designer (autobyteus-275), worktree codex/task-agent-several-tasks @ 3b09fbe308.
+Command (from autobyteus-server-ts, after `pnpm install --frozen-lockfile --filter "autobyteus-server-ts..."` and `npx prisma generate`):
+  copy SD-probe-several-tasks.test.ts.txt to tests/unit/projects/zz-probe-several-tasks.test.ts
+  npx vitest run tests/unit/projects/zz-probe-several-tasks.test.ts --silent=false --reporter=verbose
+The probe was removed from tests/ afterwards (never committed).
+
+REFUSAL: This task agent still works on Task p-1 (TODO). Set it to DONE or CANCELLED first, or delegate Task p-2 to a new task agent with recipient_address.
+TASK_AGENT_RESOURCE_CONFLICT { execution: 'team:team-1', openTasks: [ '<A>', '<B>' ] }   (stderr, from deriveCurrent)
+CURRENT after B: true isOpen true
+after B DONE: release calls 0 isOpen true current is A true
+after A DONE: release calls 0 [] isOpen false      <-- the copy is closed (fenced) but never asked to stop

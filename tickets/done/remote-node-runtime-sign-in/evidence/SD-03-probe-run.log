@@ -1,0 +1,14 @@
+{"data":{"checkAgentRuntimes":true}}
+{"data":{"agentRuntimes":[{"runtimeKind":"codex_app_server","installed":true,"installedVersion":"0.163.0","signInRoute":"BROWSER","account":{"state":"SIGNED_OUT"}},{"runtimeKind":"claude_agent_sdk","installed":true,"installedVersion":"2.1.306","signInRoute":"COMMAND_LINE","account":{"state":"SIGNED_OUT"}},{"runtimeKind":"antigravity_cli","installed":true,"installedVersion":"1.4.3","signInRoute":"COMMAND_LINE","account":{"state":"SIGNED_OUT"}},{"runtimeKind":"grok_build","installed":true,"installedVersion":"1.0.62","signInRoute":"BROWSER","account":{"state":"SIGNED_OUT"}}]}}
+== start sign-in: codex_app_server
+{"data":{"startAgentRuntimeSignIn":true}}
+   "url": "https://auth.openai.com/log-in",
+{"data":{"agentRuntimes":[{"runtimeKind":"codex_app_server","operation":{"kind":"SIGN_IN","state":"RUNNING"}},{"runtimeKind":"claude_agent_sdk","operation":null},{"runtimeKind":"antigravity_cli","operation":null},{"runtimeKind":"grok_build","operation":null}]}}
+{"data":{"cancelAgentRuntimeSignIn":true}}
+== start sign-in: grok_build
+{"data":{"startAgentRuntimeSignIn":true}}
+   "url": "https://accounts.x.ai/sign-in?<query redacted>
+   "url": "https://auth.openai.com/log-in",
+   "url": "blob:https://accounts.x.ai/19e41494-69e9-475b-a464-a6a9149db5ea",
+{"data":{"agentRuntimes":[{"runtimeKind":"codex_app_server","operation":null},{"runtimeKind":"claude_agent_sdk","operation":null},{"runtimeKind":"antigravity_cli","operation":null},{"runtimeKind":"grok_build","operation":{"kind":"SIGN_IN","state":"RUNNING"}}]}}
+{"data":{"cancelAgentRuntimeSignIn":true}}

@@ -7,9 +7,7 @@ import {
   type DelegatedLaunchUpdateResult,
 } from "../../agent-collaboration/collaborators/delegated-launch-selection-command.js";
 import type { RunModelSelectionService } from "../../llm-management/services/run-model-selection-service.js";
-import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import { delegatedLaunchSelections } from "../../agent-collaboration/domain/delegated-launch-selection.js";
-import { AgentOrgTaskSourceResolver } from "./agent-org-task-source-resolver.js";
 import { agentOrgDelegatedLaunchForest, applyAgentOrgDelegatedLaunchSelections } from "./agent-org-run-execution-tree-mutator.js";
 import type { UpdateStoppedAgentOrgRunConfig } from "../domain/agent-org-run-config.js";
 import type { WorkspaceManager } from "../../workspaces/workspace-manager.js";
@@ -38,6 +36,7 @@ import type { TaskExecutionResourcePort } from "../../agent-collaboration/execut
 import { listClosedTaskExecutions } from "../../agent-collaboration/execution/task/task-execution-closure.js";
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import { AgentOrgExecutionIndex } from "./agent-org-execution-index.js";
+import { storedRemoteLinkCheck, type RemoteInboundQuery, type StoredRemoteLinkCheck } from "../../agent-collaboration/execution/remote/remote-run-links.js";
 
 export type AgentOrgRunManagerOptions = Readonly<{
   modelSelectionValidator?: RunModelSelectionValidator;
@@ -138,6 +137,13 @@ export class AgentOrgRunManager {
   getActive(orgRunIdInput: string): AgentOrgRun | null {
     const run = this.active.get(required(orgRunIdInput, "orgRunId")) ?? null;
     return run?.isActive() ? run : null;
+  }
+  /** N-303 / N-304: a peer's request checked against an inactive Org run's stored remote links; it loads nothing. */
+  async storedRemoteLinkCheck(orgRunIdInput: string, query: RemoteInboundQuery): Promise<StoredRemoteLinkCheck> {
+    const orgRunId = required(orgRunIdInput, "orgRunId");
+    if (this.active.has(orgRunId)) return "proceed";
+    const tree = await this.executionTreeStore.read(this.layout.getOrgDirPath(orgRunId), orgRunId);
+    return storedRemoteLinkCheck(tree ? { remoteRuns: () => tree.rootOrg.remoteTaskExecutions ?? [] } : null, query);
   }
   async getCollaborationRecordsSnapshot(orgRunIdInput: string): Promise<AgentOrgCollaborationRecordsSnapshot> {
     const orgRunId = required(orgRunIdInput, "orgRunId");
@@ -342,10 +348,8 @@ export class AgentOrgRunManager {
 
   private delegatedLaunchReader(orgRunId: string, tree: AgentOrgRunExecutionTreeFile) {
     const closed = new Set(this.closedTaskExecutionsFor(orgRunId, tree).map(taskExecutionReferenceKey));
-    const sources = new AgentOrgTaskSourceResolver(() => tree);
     return {
       forest: agentOrgDelegatedLaunchForest(tree),
-      readTaskSource: (address: AgentTeamAddress, recorded: Parameters<AgentOrgTaskSourceResolver["resolve"]>[1]) => sources.resolve(address, recorded ?? null),
       isClosed: (reference: TaskExecutionReference) => closed.has(taskExecutionReferenceKey(reference)),
     };
   }

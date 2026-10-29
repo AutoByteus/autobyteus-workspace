@@ -26,6 +26,7 @@ const {
     checkForUpdates: ReturnType<typeof vi.fn>;
     downloadUpdate: ReturnType<typeof vi.fn>;
     quitAndInstall: ReturnType<typeof vi.fn>;
+    setFeedURL: ReturnType<typeof vi.fn>;
     on: (event: string, listener: (...args: any[]) => void) => unknown;
     emit: (event: string, ...args: any[]) => void;
     removeAllListeners: () => void;
@@ -39,6 +40,7 @@ const {
     checkForUpdates: vi.fn().mockResolvedValue(undefined),
     downloadUpdate: vi.fn().mockResolvedValue(undefined),
     quitAndInstall: vi.fn(),
+    setFeedURL: vi.fn(),
     on: (event: string, listener: (...args: any[]) => void) => {
       if (!listeners.has(event)) {
         listeners.set(event, new Set());
@@ -94,6 +96,7 @@ vi.mock('electron', () => ({
   app: appMock,
   ipcMain: ipcMainMock,
   BrowserWindow: browserWindowMock,
+  net: { isOnline: () => true },
 }));
 
 vi.mock('electron-updater', () => ({
@@ -133,6 +136,7 @@ describe('AppUpdater', () => {
     autoUpdaterMock.removeAllListeners();
     autoUpdaterMock.downloadUpdate.mockClear();
     autoUpdaterMock.quitAndInstall.mockClear();
+    autoUpdaterMock.setFeedURL.mockClear();
     loggerMock.info.mockClear();
     loggerMock.warn.mockClear();
     loggerMock.error.mockClear();
@@ -168,7 +172,7 @@ describe('AppUpdater', () => {
 
   it('runs startup auto-check only for packaged app', async () => {
     vi.useFakeTimers();
-    const updater = new AppUpdater(500);
+    const updater = new AppUpdater({ autoCheckDelayMs: 500 });
     updater.initialize();
 
     updater.startAutoCheck();
@@ -301,6 +305,26 @@ describe('AppUpdater', () => {
 
     await vi.advanceTimersByTimeAsync(100);
     expect(autoUpdaterMock.quitAndInstall).toHaveBeenCalledWith(false, true);
+  });
+
+  it('awaits preparation before installation and does not install when preparation fails', async () => {
+    vi.useFakeTimers();
+    let finish!: () => void;
+    const prepare = vi.fn(() => new Promise<void>(resolve => { finish = resolve; }));
+    const updater = new AppUpdater({ prepareForInstall: prepare });
+    updater.initialize(); autoUpdaterMock.emit('update-downloaded', { version: '1.2.0' });
+    updater.installUpdateAndRestart(); await vi.advanceTimersByTimeAsync(100);
+    expect(prepare).toHaveBeenCalledOnce(); expect(autoUpdaterMock.quitAndInstall).not.toHaveBeenCalled();
+    finish(); await vi.advanceTimersByTimeAsync(0);
+    expect(autoUpdaterMock.quitAndInstall).toHaveBeenCalledWith(false, true);
+  });
+
+  it('turns failed preparation into install error without invoking installation', async () => {
+    vi.useFakeTimers();
+    const updater = new AppUpdater({ prepareForInstall: async () => { throw new Error('cleanup incomplete'); } });
+    updater.initialize(); autoUpdaterMock.emit('update-downloaded', { version: '1.2.0' });
+    updater.installUpdateAndRestart(); await vi.advanceTimersByTimeAsync(100);
+    expect(autoUpdaterMock.quitAndInstall).not.toHaveBeenCalled(); expect(updater.getState().errorKind).toBe('install');
   });
 
   it('maps synchronous install invocation failure to updater error state', async () => {
@@ -599,6 +623,112 @@ describe('AppUpdater', () => {
       } finally {
         delete (autoUpdaterMock as { channel?: unknown }).channel;
       }
+    });
+  });
+
+  describe('update notification (DS-004)', () => {
+    const notificationFile = () => path.join(userDataDir, 'app-update-notification.json');
+    const githubConfig = () => {
+      const file = path.join(userDataDir, 'app-update.yml');
+      fs.writeFileSync(file, 'owner: AutoByteus\nrepo: autobyteus-workspace\nprovider: github\nupdaterCacheDirName: autobyteus-updater\n');
+      return file;
+    };
+    const state = () => getIpcHandler('app-update:get-state')();
+
+    it('records a found version as a waiting, unread notification with the GitHub release page', async () => {
+      new AppUpdater({ appUpdateConfigPath: githubConfig() }).initialize();
+      autoUpdaterMock.emit('update-available', { version: '1.2.0', releaseNotes: 'Notes' });
+
+      expect((await state()).notification).toMatchObject({
+        version: '1.2.0', fromVersion: '1.1.9', read: false, state: 'waiting', handledVersion: null,
+        releasePageUrl: 'https://github.com/AutoByteus/autobyteus-workspace/releases/tag/v1.2.0',
+      });
+      expect(JSON.parse(fs.readFileSync(notificationFile(), 'utf8'))).toMatchObject({ version: '1.2.0', read: false });
+    });
+
+    it('marks it read and keeps it after a restart, then handles it when the app runs the new version', async () => {
+      new AppUpdater({ appUpdateConfigPath: null }).initialize();
+      autoUpdaterMock.emit('update-available', { version: '1.2.0' });
+      expect((await getIpcHandler('app-update:mark-notification-read')()).notification).toMatchObject({ read: true });
+
+      autoUpdaterMock.removeAllListeners();
+      new AppUpdater({ appUpdateConfigPath: null }).initialize();
+      expect((await state()).notification).toMatchObject({ version: '1.2.0', read: true, state: 'waiting' });
+
+      autoUpdaterMock.removeAllListeners();
+      appMock.getVersion.mockImplementation(() => '1.2.0');
+      new AppUpdater({ appUpdateConfigPath: null }).initialize();
+      expect((await state()).notification).toMatchObject({ version: '1.2.0', state: 'handled', handledVersion: '1.2.0' });
+
+      expect((await getIpcHandler('app-update:clear-notification')()).notification).toBeNull();
+      expect(fs.existsSync(notificationFile())).toBe(false);
+    });
+
+    it('a newer version replaces the waiting notification and makes it unread again (REQ-005)', async () => {
+      new AppUpdater({ appUpdateConfigPath: null }).initialize();
+      autoUpdaterMock.emit('update-available', { version: '1.2.0' });
+      await getIpcHandler('app-update:mark-notification-read')();
+      autoUpdaterMock.emit('update-available', { version: '1.3.0' });
+      expect((await state()).notification).toMatchObject({ version: '1.3.0', read: false, state: 'waiting' });
+    });
+
+    it('removes a waiting notification when the version is no longer offered and nothing was updated (DEC-015)', async () => {
+      new AppUpdater({ appUpdateConfigPath: null }).initialize();
+      autoUpdaterMock.emit('update-available', { version: '1.2.0' });
+      autoUpdaterMock.emit('update-not-available', {});
+      expect((await state()).notification).toBeNull();
+    });
+
+    it('refuses to clear a waiting notification', async () => {
+      new AppUpdater({ appUpdateConfigPath: null }).initialize();
+      autoUpdaterMock.emit('update-available', { version: '1.2.0' });
+      expect((await getIpcHandler('app-update:clear-notification')()).notification).toMatchObject({ state: 'waiting' });
+    });
+
+    it('Download after a restart re-checks first, then downloads only when the update is available', async () => {
+      fs.writeFileSync(notificationFile(), JSON.stringify({
+        version: '1.2.0', fromVersion: '1.1.9', foundAt: '2026-10-20T10:00:00.000Z', read: true, handledVersion: null, handledAt: null,
+      }));
+      new AppUpdater({ appUpdateConfigPath: null }).initialize();
+      autoUpdaterMock.checkForUpdates.mockImplementationOnce(async () => {
+        autoUpdaterMock.emit('update-available', { version: '1.2.0' });
+      });
+
+      const result = await getIpcHandler('app-update:download')();
+      expect(autoUpdaterMock.checkForUpdates).toHaveBeenCalledTimes(1);
+      expect(autoUpdaterMock.downloadUpdate).toHaveBeenCalledTimes(1);
+      expect(result.status).toBe('downloading');
+    });
+
+    it('Download after a restart shows the check result and downloads nothing when no update is offered', async () => {
+      fs.writeFileSync(notificationFile(), JSON.stringify({
+        version: '1.2.0', fromVersion: '1.1.9', foundAt: '2026-10-20T10:00:00.000Z', read: true, handledVersion: null, handledAt: null,
+      }));
+      new AppUpdater({ appUpdateConfigPath: null }).initialize();
+      const result = await getIpcHandler('app-update:download')();
+      expect(autoUpdaterMock.downloadUpdate).not.toHaveBeenCalled();
+      expect(result.status).toBe('no-update');
+      expect(result.notification).toBeNull();
+    });
+
+    it('checks the generic test feed and gives no release page under it (REQ-019, DEC-017)', async () => {
+      new AppUpdater({ testFeedUrl: 'http://127.0.0.1:8123/', appUpdateConfigPath: githubConfig() }).initialize();
+      expect(autoUpdaterMock.setFeedURL).toHaveBeenCalledWith({ provider: 'generic', url: 'http://127.0.0.1:8123/' });
+      autoUpdaterMock.emit('update-available', { version: '1.2.0' });
+      expect((await state()).notification).toMatchObject({ version: '1.2.0', releasePageUrl: null });
+    });
+
+    it('never sets a feed URL without the test feed', () => {
+      new AppUpdater({ appUpdateConfigPath: null }).initialize();
+      expect(autoUpdaterMock.setFeedURL).not.toHaveBeenCalled();
+    });
+
+    it('a found update never downloads by itself (REQ-015)', async () => {
+      new AppUpdater({ appUpdateConfigPath: null }).initialize();
+      autoUpdaterMock.emit('update-available', { version: '1.2.0' });
+      await getIpcHandler('app-update:mark-notification-read')();
+      expect(autoUpdaterMock.downloadUpdate).not.toHaveBeenCalled();
+      expect(autoUpdaterMock.autoDownload).toBe(false);
     });
   });
 });

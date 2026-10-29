@@ -5,6 +5,8 @@ import { describe, expect, it, vi } from "vitest";
 import { ApplicationPlatformLifecycle } from "../../../src/application-platform/runtime/application-platform-lifecycle.js";
 import { ApplicationStorageLifecycleService } from "../../../src/application-storage/services/application-storage-lifecycle-service.js";
 import { ApplicationProviderCredentialReadinessAdapter } from "../../../src/application-platform/launch-configuration/application-provider-credential-readiness-adapter.js";
+import { AgentRuntimeSignInReader } from "../../../src/runtime-management/agent-runtimes/agent-runtime-sign-in-reader.js";
+import { createCodexAgentRuntimeStrategy } from "../../../src/runtime-management/agent-runtimes/strategies/codex-agent-runtime-strategy.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { ApplicationAgentToolCallLifecycle } from "../../../src/application-agent-tools/services/application-agent-tool-call-lifecycle.js";
 
@@ -16,8 +18,8 @@ const createDependencies = () => ({
     bootstrapBuiltInAgents: vi.fn(async () => undefined),
     definitionRuntimeReadiness: {
       prepare: vi.fn(async () => undefined),
-      isApplicationReady: vi.fn(() => true),
-      getDiagnosticsByApplicationId: vi.fn(() => new Map()),
+      isApplicationReady: vi.fn((_applicationId: string) => true),
+      getSetupRequiredDetail: vi.fn((_applicationId: string): string | null => null),
     },
   },
   executionReadiness: { assertReady: vi.fn() },
@@ -129,6 +131,25 @@ describe("ApplicationPlatformLifecycle", () => {
     await expect(lifecycle.awaitReady()).resolves.toBeUndefined();
   });
 
+  it("quarantines each selected not-ready application with readiness's setup-required detail (autobyteus-296, AC-006)", async () => {
+    const dependencies = createDependencies();
+    const detail = "Application setup is required: selected-app/slot:draftingTeam: Codex App Server authentication is unavailable: no logged-in account.";
+    const readiness = dependencies.preparation.definitionRuntimeReadiness;
+    readiness.isApplicationReady.mockImplementation((applicationId: string) => applicationId !== "selected-app");
+    readiness.getSetupRequiredDetail.mockImplementation((applicationId: string) =>
+      applicationId === "selected-app" ? detail : null);
+    const lifecycle = new ApplicationPlatformLifecycle(dependencies as never);
+
+    await lifecycle.prepareBeforeListen();
+    await lifecycle.recoverAfterListen();
+
+    expect(dependencies.availabilityService.quarantineApplication).toHaveBeenCalledExactlyOnceWith("selected-app", detail);
+    // Only the selected catalog applications are asked; the dormant one is not.
+    expect(readiness.getSetupRequiredDetail).not.toHaveBeenCalledWith("dormant-app");
+    expect(dependencies.eventDispatchService.resumePendingEventsForApplication).not.toHaveBeenCalled();
+    expect(dependencies.applicationAgentToolCallLifecycle.open).not.toHaveBeenCalled();
+  });
+
   it("materializes a fresh selected application runtime cwd before definition/provider readiness", async () => {
     const tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), "application-runtime-readiness-"));
     try {
@@ -155,7 +176,9 @@ describe("ApplicationPlatformLifecycle", () => {
       });
       const credentialReadiness = new ApplicationProviderCredentialReadinessAdapter({
         llmProviderService: { getProviderCredentialSetting: vi.fn() } as never,
-        codexClientManager: { beginAcquire } as never,
+        signInReader: new AgentRuntimeSignInReader([
+          createCodexAgentRuntimeStrategy({ codexClientManager: { beginAcquire } as never }),
+        ]),
       });
       dependencies.storageLifecycleService = storageLifecycleService as never;
       dependencies.preparation.definitionRuntimeReadiness.prepare = vi.fn(async () => {

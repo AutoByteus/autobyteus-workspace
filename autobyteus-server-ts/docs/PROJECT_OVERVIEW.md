@@ -33,8 +33,7 @@ Major domains under `src/`:
 - Server-hosted Agent Tools MCP sessions for configured server-owned tools
 - Prompt engineering
 - Skills
-- Shared Agent Work Trace Projection
-- Manual Skill Improvement orchestration
+- Agent Work Journal (readable, runtime-neutral run history from raw traces)
 - MCP server management
 - LLM and multimedia model management
 - Workspaces and file explorer
@@ -73,7 +72,6 @@ This keeps startup robust while still warming caches shortly after boot.
 - `features/memory_sync.md`
 - `features/remote_access.md`
 - `modules/README.md`
-  - `modules/agent_work_traces.md`
-  - `modules/skill_improvement.md`
+  - `modules/agent_work_journal.md`
   - `modules/agent_tools_mcp_server.md`
 - `design/startup_initialization_and_lazy_services.md`

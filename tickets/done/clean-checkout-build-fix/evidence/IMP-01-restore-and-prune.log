@@ -1,0 +1,60 @@
+# IMP-01 restore and prune of the frozen memory modules (D-1, SR-002)
+# Steps: python3 /tmp/ab280/restore282.py 9b013fcc09 (68 whole files, following relative imports); node autobyteus-server-ts/scripts/prune-frozen-layer.mjs (7 rounds); second run is a no-op
+# Commit: 204025a459 (base 1c9edce551)
+# Environment: macOS darwin arm64, Node 22.23.1, Python 3
+# Date: 2026-10-23T23:11Z
+
+## Tracked frozen files are byte-identical: everything that changed under frozen/ since the base
+$ git diff --stat 1c9edce551 HEAD -- autobyteus-server-ts/src/app-data-migrations/frozen
+ .../autobyteus-ts/memory/models/memory-types.ts    |  10 +
+ .../memory/models/raw-trace-attachments.ts         |  29 +++
+ .../autobyteus-ts/memory/models/raw-trace-item.ts  | 137 ++++++++++++++
+ .../memory/models/system-instruction-trace.ts      |   1 +
+ .../memory/store/durable-file-replace.ts           |  40 ++++
+ .../autobyteus-ts/memory/store/jsonl-log-file.ts   | 158 ++++++++++++++++
+ .../memory/store/memory-file-names.ts              |   5 +
+ .../memory/store/raw-trace-archive-manager.ts      | 206 +++++++++++++++++++++
+ .../memory/store/raw-trace-archive-manifest.ts     |  42 +++++
+ .../memory/store/run-memory-file-store.ts          |  91 +++++++++
+ .../memory/store/working-context-snapshot-store.ts |  44 +++++
+ .../working-context-finalization-validation.ts     |  63 +++++++
+ .../memory/working-context-finalizer.ts            | 181 ++++++++++++++++++
+ .../memory/working-context-provenance.ts           | 158 ++++++++++++++++
+ .../frozen/autobyteus-ts/memory/working-context.ts |  73 ++++++++
+ 15 files changed, 1238 insertions(+)
+$ git diff --diff-filter=MDR --name-only 1c9edce551 HEAD -- autobyteus-server-ts/src/app-data-migrations/frozen   (modified, deleted or renamed tracked files)
+(none)
+
+## Second pruner run on the committed tree
+round 1: 0 implements dropped, 0 files pruned, 0 files deleted
+pruned in 1 rounds; tidied 0 files
+(no changes)
+
+## Per restored file: line subsequence of its source at 9b013fcc09; exports vs the 280 record
+# Lines "not in source" are import lists the pruner shortened (collapsed onto one line) and the dropped `implements`.
+# "DIFFER" = a superset of what 280 kept (more members kept, never fewer).
+memory/models/memory-types.ts: 9 of 9 source lines; not in source: 0; exports superset of the 280 record
+    280: ['MemoryType'] | now: ['MemoryItem', 'MemoryType']
+memory/models/raw-trace-attachments.ts: 27 of 47 source lines; not in source: 0; exports match the 280 record
+memory/models/raw-trace-item.ts: 127 of 127 source lines; not in source: 2; exports match the 280 record
+    not in source: import { MemoryType } from './memory-types.js';
+    not in source: export class RawTraceItem {
+memory/models/system-instruction-trace.ts: 1 of 46 source lines; not in source: 0; exports match the 280 record
+memory/store/durable-file-replace.ts: 37 of 37 source lines; not in source: 0; exports match the 280 record
+memory/store/jsonl-log-file.ts: 145 of 145 source lines; not in source: 0; exports superset of the 280 record
+    280: ['JsonlLogDamagedError', 'JsonlLogReadResult', 'readJsonlRecords', 'repairJsonlDamagedEnd'] | now: ['JsonlLogDamagedError', 'JsonlLogReadResult', 'jsonlLogEndsCleanly', 'readJsonlRecords', 'repairJsonlDamagedEnd', 'serializeJsonlRecords']
+memory/store/memory-file-names.ts: 5 of 12 source lines; not in source: 0; exports match the 280 record
+memory/store/raw-trace-archive-manager.ts: 181 of 211 source lines; not in source: 0; exports superset of the 280 record
+    280: ['RawTraceArchiveManager'] | now: ['RawTraceArchiveBoundaryInput', 'RawTraceArchiveManager', 'RawTraceArchiveWriteResult']
+memory/store/raw-trace-archive-manifest.ts: 36 of 36 source lines; not in source: 0; exports match the 280 record
+memory/store/run-memory-file-store.ts: 77 of 358 source lines; not in source: 4; exports match the 280 record
+    not in source: import { SYSTEM_INSTRUCTION_TRACE_TYPE } from '../models/system-instruction-trace.js';
+    not in source: import { jsonlLogEndsCleanly, repairJsonlDamagedEnd } from './jsonl-log-file.js';
+    not in source: import type { RawTraceArchiveSegmentEntry } from './raw-trace-archive-manifest.js';
+    not in source: import { RawTraceArchiveManager } from './raw-trace-archive-manager.js';
+memory/store/working-context-snapshot-store.ts: 38 of 38 source lines; not in source: 0; exports match the 280 record
+memory/working-context-finalization-validation.ts: 60 of 60 source lines; not in source: 0; exports match the 280 record
+memory/working-context-finalizer.ts: 169 of 202 source lines; not in source: 0; exports match the 280 record
+memory/working-context-provenance.ts: 144 of 175 source lines; not in source: 0; exports match the 280 record
+memory/working-context.ts: 63 of 123 source lines; not in source: 1; exports match the 280 record
+    not in source: import { Message } from '../llm/utils/messages.js';

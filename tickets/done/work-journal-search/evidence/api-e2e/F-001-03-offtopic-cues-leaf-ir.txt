@@ -1,0 +1,174 @@
+# F-001 under the second model: off-topic probe after the Rebuild with MongoDB LEAF-IR (clearMatchFloor 0.3, nearBestMargin 0.045); desktop iso-50688-fbfc, meaning 7440/7440; 2026-10-26 20:05 UTC
+# Command: node probes/API-PROBE-offtopic.mjs http://127.0.0.1:50689/graphql
+# Contamination: by now this run's own Codex test chats contain 'orchidtundra5520' (C3, S3 text matches) and the sentence 'Do you remember the project codenamed …' (S1–S4 text Fair). Count only the MEANING strengths of C1, C2, C4, T1, T3 for this check.
+{
+ "url": "http://127.0.0.1:50689/graphql",
+ "at": "2026-10-26T20:04:44.782Z",
+ "passed": 0,
+ "of": 11,
+ "failed": [
+  "C1",
+  "C2",
+  "C3",
+  "C4",
+  "S1",
+  "S2",
+  "S3",
+  "S4",
+  "T1",
+  "T2",
+  "T3"
+ ],
+ "rows": [
+  {
+   "id": "C1",
+   "q": "pelicanmarigold9152",
+   "ms": 74,
+   "onlyWeakNote": false,
+   "pass": false,
+   "results": 10,
+   "counts": {
+    "MEANING/STRONG": 10
+   },
+   "coverage": null
+  },
+  {
+   "id": "C2",
+   "q": "xylophonequartz7731",
+   "ms": 53,
+   "onlyWeakNote": false,
+   "pass": false,
+   "results": 10,
+   "counts": {
+    "MEANING/STRONG": 10
+   },
+   "coverage": null
+  },
+  {
+   "id": "C3",
+   "q": "orchidtundra5520",
+   "ms": 52,
+   "onlyWeakNote": false,
+   "pass": false,
+   "results": 10,
+   "counts": {
+    "TEXT/STRONG": 4,
+    "MEANING/STRONG": 1,
+    "MEANING/WEAK": 7
+   },
+   "coverage": null
+  },
+  {
+   "id": "C4",
+   "q": "falconsaffron3381",
+   "ms": 53,
+   "onlyWeakNote": false,
+   "pass": false,
+   "results": 10,
+   "counts": {
+    "MEANING/STRONG": 10
+   },
+   "coverage": null
+  },
+  {
+   "id": "S1",
+   "q": "Do you remember the project codenamed pelicanmarigold9152? Where is it?",
+   "ms": 227,
+   "onlyWeakNote": false,
+   "pass": false,
+   "results": 10,
+   "counts": {
+    "TEXT/FAIR": 3,
+    "TEXT/WEAK": 9,
+    "MEANING/FAIR": 4
+   },
+   "coverage": null
+  },
+  {
+   "id": "S2",
+   "q": "Do you remember the project codenamed xylophonequartz7731? Where is it?",
+   "ms": 219,
+   "onlyWeakNote": false,
+   "pass": false,
+   "results": 10,
+   "counts": {
+    "TEXT/FAIR": 3,
+    "TEXT/WEAK": 12,
+    "MEANING/STRONG": 1,
+    "MEANING/FAIR": 2
+   },
+   "coverage": null
+  },
+  {
+   "id": "S3",
+   "q": "Do you remember the project codenamed orchidtundra5520? Where is it?",
+   "ms": 240,
+   "onlyWeakNote": false,
+   "pass": false,
+   "results": 10,
+   "counts": {
+    "TEXT/STRONG": 3,
+    "TEXT/FAIR": 1,
+    "TEXT/WEAK": 10,
+    "MEANING/FAIR": 3
+   },
+   "coverage": null
+  },
+  {
+   "id": "S4",
+   "q": "Do you remember the project codenamed falconsaffron3381? Where is it?",
+   "ms": 250,
+   "onlyWeakNote": false,
+   "pass": false,
+   "results": 10,
+   "counts": {
+    "TEXT/FAIR": 3,
+    "TEXT/WEAK": 9,
+    "MEANING/STRONG": 1,
+    "MEANING/FAIR": 3
+   },
+   "coverage": null
+  },
+  {
+   "id": "T1",
+   "q": "Where did we set up the tortellini fermentation dashboard for the bakery?",
+   "ms": 98,
+   "onlyWeakNote": false,
+   "pass": false,
+   "results": 10,
+   "counts": {
+    "TEXT/WEAK": 10,
+    "MEANING/STRONG": 5
+   },
+   "coverage": null
+  },
+  {
+   "id": "T2",
+   "q": "Which run tuned the bagpipe practice reminders?",
+   "ms": 857,
+   "onlyWeakNote": false,
+   "pass": false,
+   "results": 10,
+   "counts": {
+    "TEXT/FAIR": 5,
+    "MEANING/STRONG": 7,
+    "TEXT/WEAK": 3
+   },
+   "coverage": null
+  },
+  {
+   "id": "T3",
+   "q": "What did we decide about the sauerkraut supplier contract?",
+   "ms": 272,
+   "onlyWeakNote": false,
+   "pass": false,
+   "results": 10,
+   "counts": {
+    "MEANING/WEAK": 1,
+    "TEXT/WEAK": 11,
+    "MEANING/STRONG": 4
+   },
+   "coverage": null
+  }
+ ]
+}

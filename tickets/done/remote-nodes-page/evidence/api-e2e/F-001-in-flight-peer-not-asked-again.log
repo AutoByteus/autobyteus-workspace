@@ -1,0 +1,17 @@
+# F-001 | a peer whose earlier query is still in flight is not asked again on tab return or switch on (AC-505, REQ-504; UI/UX spec line 285, TR-009) | code 3a21bcae44
+
+## Runs 3 and 4 of the browser probe (RNP-06), the code as delivered
+run 3 {"result": "Fail", "returnCounts": {"beta": 1, "gamma": 1, "delta": 1, "epsilon": 1, "zeta": 1, "eta": 1, "theta": 0, "iota": 1}, "thetaEarlierQueryMsBeforeReturn": 1640, "thetaSettledAfterReturnMs": 18441}
+run 4 {"result": "Fail", "returnCounts": {"beta": 1, "gamma": 1, "delta": 1, "epsilon": 1, "zeta": 1, "eta": 1, "theta": 0, "iota": 1}, "onAgainCounts": {"beta": 1, "gamma": 1, "delta": 1, "epsilon": 1, "zeta": 1, "eta": 1, "theta": 0, "iota": 1}, "thetaAsked": {"onReturn": 0, "onSwitchOnAgain": 0}, "returnMsAfterSwitchOn": 1663, "thetaEarlierQueryMsBeforeReturn": 1616, "thetaSettledAfterSwitchOnMs": 16716}
+
+## Diagnostic (temporary, reverted): the same probe with context { queryDeduplication: false } on the store's GetPeerNodeOffer query
+{"all": {"RNP-01": "Pass", "RNP-02": "Pass", "RNP-03": "Pass", "RNP-04": "Pass", "RNP-05": "Pass", "RNP-06": "Pass", "RNP-07": "Pass", "RNP-08": "Pass", "RNP-09": "Pass"}, "thetaAsked": {"onReturn": 1, "onSwitchOnAgain": 1}, "thetaSettledAfterSwitchOnMs": 20167}
+
+## Code
+autobyteus-web/stores/remoteCollaborationOffersStore.ts (ask): getApolloClient().query({ query: GetPeerNodeOffer, variables: { nodeId }, fetchPolicy: 'network-only' })
+        const { data, errors } = await getApolloClient().query<OfferAnswer>({
+          query: GetPeerNodeOffer,
+          variables: { nodeId },
+          fetchPolicy: 'network-only',
+        })
+autobyteus-web/plugins: queryDeduplication is not configured (Apollo's default: true):        0 mentions

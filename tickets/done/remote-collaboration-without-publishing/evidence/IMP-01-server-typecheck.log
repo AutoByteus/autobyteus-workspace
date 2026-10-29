@@ -1,0 +1,4 @@
+# IMP-01 server typecheck: pnpm -C autobyteus-server-ts typecheck; commit 63f6635b6d; macOS, node v22.23.1; 2026-10-21T03:42:15Z
+> tsc -p tsconfig.build.json --noEmit
+
+exit=0

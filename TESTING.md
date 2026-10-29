@@ -34,18 +34,24 @@ Run commands from the repository root. `pnpm -C <dir>` runs a package's script.
 | Web unit and component tests | Nuxt components, stores, composables, utilities (colocated `__tests__`) | `pnpm -C autobyteus-web test:nuxt` |
 | Electron main-process tests | Electron main, preload, launch profile, server manager, updater | `pnpm -C autobyteus-web test:electron` |
 | Web guards | Web boundary and localization rules | `pnpm -C autobyteus-web guard:web-boundary`, `guard:localization-boundary`, `audit:localization-literals` |
+| Web typecheck | Nuxt app, Electron main and build scripts under their own configs; production files must have no errors, test files may not exceed `typecheck-baseline.json`. A lower count also fails until `pnpm -C autobyteus-web typecheck:update-baseline` shrinks the baseline; the update refuses growth. It builds the shared types it reads (`@autobyteus/application-sdk-contracts`) first, so it runs right after `pnpm install`. The desktop build runs it | `pnpm -C autobyteus-web typecheck` |
 | Workspace native-to-web integration | Native producer/FIFO and web hydration at a workspace-owned boundary (`test-support/`) | `pnpm test:native-input-history` |
 | Server unit / integration | Backend logic and in-process integration | `pnpm -C autobyteus-server-ts test:unit`; `test:integration:prepare` once, then `test:integration`; one file: `pnpm -C autobyteus-server-ts exec vitest run <path> --no-watch` |
 | Server typecheck | Production `src` under the build type policy | `pnpm -C autobyteus-server-ts typecheck` |
-| Server E2E | Real HTTP/GraphQL/WebSocket boundaries on a test-owned server and database (`tests/e2e/`) | `pnpm test:e2e`, or one file with `vitest run` as above |
+| Server E2E | Real HTTP/GraphQL/WebSocket boundaries on a test-owned server and database (`tests/e2e/`). Suites that import the Brief Studio sample application need `pnpm -C autobyteus-server-ts test:integration:prepare` once and fail naming it otherwise | `pnpm test:e2e`, or one file with `vitest run` as above |
 | Gated runtime suites | Real or scripted runtimes and providers (`RUN_*` gates in `autobyteus-server-ts/tests/e2e/`) | The gate and command are in the test file |
 | Release smoke | New runs with configured skills start on every runtime, in the user's skill setup | `python3 scripts/release_smoke.py`; see [RELEASE.md](RELEASE.md#release-smoke-check) |
-| Core library tests | `autobyteus-ts` runtime, tools, LLM layer | `pnpm -C autobyteus-ts exec vitest run tests/unit` |
+| Core library tests | `autobyteus-ts` runtime, tools, LLM layer (credential-free; live provider tests stay skipped without their gate) | `pnpm -C autobyteus-ts test`; one folder: `pnpm -C autobyteus-ts exec vitest run tests/unit` |
+| Core library MCP integration | The MCP client against the repository's tiny real MCP servers (Python via `uv`, else Node), stdio and HTTP; an opt-in check against a real `uv` server folder | `env -i PATH="$PATH" HOME=<temp> TMPDIR="$TMPDIR" pnpm -C autobyteus-ts exec vitest run tests/integration/tools/mcp`; the opt-in gate is in the file header |
 | Other packages | SDKs, contracts, message gateway | `pnpm -C <package> test` |
 | Browser probes | Renderer journeys in headless Chrome, against fixture pages or a probe-owned real stack | `pnpm -C autobyteus-web test:e2e:<name>` (sources in `autobyteus-web/tests/e2e/`) |
 | Packaged Electron harness | Packaged launch, isolation and cleanup | `pnpm -C autobyteus-web test:e2e:electron`, `test:e2e:electron:isolation`, `test:e2e:isolated-app` |
 | Isolated desktop instance | The real desktop app of a worktree build, driven like a user | `pnpm --silent isolated-app start --build`; see [Isolated AutoByteus Instances](docs/isolated-app-instances.md) |
 | iOS wrapper (macOS + Xcode) | Release contract, core unit tests, simulator smoke | See [autobyteus-ios/README.md](autobyteus-ios/README.md) |
+
+Web specs that exercise HTML sanitisation (DOMPurify) declare `// @vitest-environment jsdom`: the
+default happy-dom lets DOMPurify skip nodes, so injected markup survives there although a real DOM
+removes it.
 
 ## Choosing the path
 
@@ -59,7 +65,7 @@ closes the remaining confidence gap.
 | Renderer UI, stores, client–server behavior that also runs in a browser | Web unit tests + a browser probe |
 | Desktop-shell behavior: Electron main, preload/IPC, updater, windows, lifecycle, embedded server startup, packaging | Electron main-process tests + an isolated desktop instance |
 | A full real-product journey a user would perform | An isolated desktop instance of a worktree build |
-| Behavior against real model or search providers | A gated live suite, or an isolated instance with keys imported |
+| Behavior against real model or search providers | A gated live suite, or an isolated instance, with the [test vault](#test-vault) |
 | Launch profile, isolation or packaged-launch mechanics | Packaged Electron harness |
 
 These are separate evidence layers; none substitutes for another. A browser probe proves
@@ -67,7 +73,8 @@ web-equivalent behavior, not the Electron shell. A scripted runtime proves the t
 not paid inference. Agent-run testing is not the user's verification.
 
 **Rerun by impact.** A run that passed stays valid for the code it ran on. Plan each later
-round (review fixes, a merge, a rebase) before running anything:
+round (review fixes, a merge or rebase of the base, including delivery's integration
+refresh) before running anything:
 
 1. Record every case with the commit it last passed on, in the ticket's validation ledger.
 2. List what changed since then: `git diff --name-only <validated> HEAD`.
@@ -77,10 +84,18 @@ round (review fixes, a merge, a rebase) before running anything:
    `vitest --changed` does not narrow anything, because every test starts the whole server.
 4. Mark everything **Rerun** when a shared foundation changed: dependencies or the
    lockfile, the database schema or migrations, `autobyteus-ts`, the contract packages,
-   the test harness or fixtures, or build configuration.
-5. Run only the cases marked Rerun or new, and record their new commit.
+   the test harness or fixtures, or build configuration. A large diff without such a
+   change is not a reason to rerun everything: plan by what the cases exercise.
+5. After a merge or rebase, also rerun the typechecks and rebuild every built output the
+   planned cases use (`dist/`, `electron-dist/`): they are cheap and catch a broken merge,
+   and a build made before the merge is stale.
+6. Run only the cases marked Rerun or new, and record their new commit.
 
-The plan, with the validated commit and the diff, goes in the validation report.
+The plan, with the validated commit and the diff, goes in the validation report (for
+delivery, its delivery report).
+
+**One run per case per round.** When a case fails, find its cause (Rule 9) and rerun that
+test, not its whole suite. A second full run of a suite proves nothing the first did not.
 
 ## Environments, credentials and data
 
@@ -91,17 +106,27 @@ The plan, with the validated commit and the diff, goes in the validation report.
   proof of current source.
 - **Serialize builds and dev servers within one worktree.** Parallel builds or Nuxt dev
   servers in the same package overwrite each other's outputs.
+- **One heavy run at a time.** Do not run server `test:unit`, an E2E folder, a build or a
+  probe alongside another of them, in any worktree: they compete for CPU, and timing
+  assertions then fail for reasons that are not in the code under test.
 - **Green server suites.** Server `test:unit`, `test:integration` and `typecheck` are kept
   passing. Every failure there is a real failure: find its cause and fix or report it
   (Rule 9). Run `test:integration:prepare` once per worktree and after changing server or
   SDK source; `test:integration` names any missing build output and exits.
-- **Server test isolation.** For `tests/unit/` and `tests/integration/`,
+- **Tracked imports.** Tracked code must import only tracked files: an ignore rule can keep a
+  source file out of git while it stays on your disk, so the build passes for you and fails in a
+  clean checkout. `tests/architecture/tracked-imports.test.ts` runs
+  `python3 scripts/check_repository_artifact_hygiene.py --only tracked-imports` in every server
+  test run, and the pre-tag hygiene check runs it too.
+- **Server test isolation.** For `tests/unit/`, `tests/integration/` and the per-migration test
+  folders in `tests/app-data-migrations/`,
   `tests/setup/test-environment-isolation.ts` removes every inherited variable except system
   essentials and test-owned knobs (`RUN_*`, `TEST_*`, `FAKE_*`, `AGY_*`,
   `ANTIGRAVITY_CLI_COMMAND`), so results never depend on the shell or `~/.autobyteus`. A new
   opt-in gate variable for those folders goes into `TEST_ENVIRONMENT_ALLOWLIST`.
 - **Clean environment elsewhere.** E2E folders, `autobyteus-ts` integration tests and live
-  suites inherit the shell, which carries the live app's variables and provider keys. Run
+  suites inherit the shell, which carries the live app's variables (their setups delete
+  inherited `*_API_KEY` variables, see [Test vault](#test-vault)). Run
   them with a clean environment, e.g. `env -i PATH="$PATH" HOME=<temp> TMPDIR="$TMPDIR" …`,
   or unset the inherited `AUTOBYTEUS_*` roots, as the test file states. Give the temp `HOME`
   its resolved path (`HOME="$(cd "$(mktemp -d)" && pwd -P)"`): on macOS `/var` is a symlink to
@@ -112,12 +137,8 @@ The plan, with the validated commit and the diff, goes in the validation report.
 - **Gates.** Live and costly tests stay skipped unless their gate is set. A skip is not a
   pass. Real-provider runs spend the user's credits: run them only when the change needs
   real-provider proof.
-- **Real-provider credentials** live in the encrypted vault of the target database. Import
-  them with `pnpm secrets:import -- --source <file> --database-url file:<absolute db path>`
-  (wrap in `script -q /dev/null …` on macOS without a terminal), never by editing `.env`.
-  `pnpm test:e2e:real:preflight` reports what is configured; missing capabilities are
-  reported, never counted as passed. See
-  [Secret Management](autobyteus-server-ts/docs/modules/secret_management.md).
+- **Real-provider credentials** come from the test vault: set `AUTOBYTEUS_TEST_VAULT` (see
+  [Test vault](#test-vault)).
 - **Local model servers share limited compute.** LM Studio and Ollama run on this machine. Run at
   most one agent run or suite that uses a local model at a time, never in parallel, and prefer a
   small, fast model (for example `qwen/qwen3.6-35b-a3b`, the gated LM Studio suite's default via
@@ -156,6 +177,15 @@ The plan, with the validated commit and the diff, goes in the validation report.
     `AUTOBYTEUS_COMPACTION_TRIGGER_RATIO`.
   - Claude: `CLAUDE_CODE_AUTO_COMPACT_WINDOW` (in-process suites only), or a manual
     `/compact`.
+
+  Prove compaction with the deterministic layers: the core library and server unit tests
+  (including the shared live-compaction boundary tests, which make no provider calls) and
+  scripted runtimes with a lowered threshold. A live compaction run against a real model is not
+  required proof for a ticket and not a gate: it needs a real provider key or signed-in CLI and
+  enough input to reach the compaction threshold, and its outcome depends on the model, so a live
+  failure alone is not a defect. Run one only when the user asks for it. This applies to
+  compaction only: other real-provider runs with a small input keep the rule under Gates (run
+  them when the change needs real-provider proof).
 - **Docker server nodes.** Never test against the user's node containers or their volumes
   (`/root` holds each node's CLI sign-ins). Start a test-owned container from the same image,
   bound to `127.0.0.1` on a free port and without the user's volumes, so its runtime CLIs
@@ -181,6 +211,53 @@ The plan, with the validated commit and the diff, goes in the validation report.
   `autobyteus-team-stream-contracts`, `autobyteus-collaboration-stream-contracts`) track
   their `dist/`, which their consumers import. After changing their source, rebuild with
   `pnpm -C <package> build` and commit the `dist/` changes too.
+
+## Test vault
+
+Set `AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault` for any test that needs real provider
+keys, together with the test's live gate. Keys are never taken from `.env` files or
+environment variables: test setups delete inherited `*_API_KEY` variables.
+
+- **Setup, once per machine (the user).** `pnpm test-vault setup --source <absolute path>`
+  reads an owner-private secrets file the user chooses (`OPENAI_API_KEY=…` lines; agents
+  never pick it) and prints the setting to use. Configured keys are skipped; `--replace`
+  replaces them. `pnpm test-vault status` shows the location and the configured and missing
+  secret IDs (never values); `pnpm test-vault remove` deletes the vault files.
+- **Test-only secrets.** A live check may need a secret that is not a provider key. Its alias in
+  the source file maps to a test-only secret ID: `AUTOBYTEUS_TEST_GITHUB_TOKEN=…` is stored as
+  `test.github.token`, which the GitHub MCP live check (`RUN_GITHUB_MCP_E2E=1`) reads and sends
+  once to a server with its own vault. Only `test-vault setup` accepts these aliases;
+  `secrets:import` into an application vault refuses them.
+- **Read-only, like a test database.** A server started with the variable reads the test vault
+  instead of its own: `pnpm test:e2e:real` (its preflight prints `Vault: test vault …`), an
+  isolated instance, a server you start yourself. Settings saves fail with
+  `SECRET_VAULT_READ_ONLY`. A selected vault that is missing or unusable stops the server
+  (`TEST_VAULT_NOT_FOUND`, `TEST_VAULT_UNAVAILABLE`); a server on the real
+  `~/.autobyteus/server-data` ignores the variable.
+- **Scripts need only the variable.** autobyteus-ts reads it itself: in a script run with
+  `node` or `tsx`, `new XLLM(model, config)` and `LLMFactory.createLLM(id)` get keys without a
+  resolver or setup code (Gemini still takes its mode explicitly).
+- **Live test runs opt in; deterministic runs ignore it.** `autobyteus-ts` Vitest live tests
+  also need `RUN_LIVE_PROVIDER_TESTS=1` (without it the setup removes the variable). Server
+  live suites use their `RUN_*` gate. `pnpm test:e2e`, server unit/integration and the default
+  `pnpm -C autobyteus-ts test` keep their own vaults even with the variable exported.
+- **A missing key is never a pass.** It is reported as a skip with its reason
+  (`missing capability <secret id> (test vault <dir>)`), as is a classified provider refusal;
+  `AUTOBYTEUS_LIVE_STRICT=1` turns them into failures.
+- **Set it on the command or in a live-testing shell, not in your shell profile.** Other tools
+  started from that shell (web probes, manual servers) would read the test vault too.
+
+```bash
+AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault RUN_LIVE_PROVIDER_TESTS=1 pnpm -C autobyteus-ts exec vitest run tests/integration/llm/api/deepseek-llm.test.ts
+AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault pnpm test:e2e:real:preflight
+AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault pnpm test:e2e:real -- --scenarios=deepseek.llm
+AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault RUN_DEEPSEEK_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts --no-watch
+AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault RUN_GITHUB_MCP_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/mcp/mcp-github-remote-live.e2e.test.ts --no-watch
+AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault pnpm --silent isolated-app start --build
+```
+
+Gated suites name their keys and gate in the file header. See
+[Secret Management](autobyteus-server-ts/docs/modules/secret_management.md#test-vault).
 
 ## Environment-specific setup: headless Linux and containers
 
@@ -238,8 +315,9 @@ ticket-owned automation does not require a new global package command.
 3. **Use the ports `start` reports** and keep the `instanceId` and `controlPort` for
    browser automation (`CHROME_REMOTE_DEBUGGING_PORT=<controlPort>`,
    `BROWSER_AUTOMATION_ATTACH_ONLY=1`), `restart` and `stop`.
-4. **Credentials go through the importer** into the target database, then
-   `pnpm --silent isolated-app restart <instanceId>` for an isolated instance.
+4. **Real provider keys come from the test vault.** Set `AUTOBYTEUS_TEST_VAULT` with the
+   test's live gate ([Test vault](#test-vault)). Never read keys from `.env` files or
+   environment variables, and never import them into test databases or instances.
 5. **Stop what you started**: `pnpm --silent isolated-app stop <instanceId>`, `Ctrl+C` for
    `pnpm dev`. Leave other processes and data alone. `pnpm --silent isolated-app list` should
    show no instance of yours afterwards.
@@ -260,7 +338,8 @@ ticket-owned automation does not require a new global package command.
    - A product defect not caused by your change and too large for the current work: report
      it to the accountable owner as its own item, with the cause you found.
 
-   Never close a failure as "pre-existing" or "flaky" without its cause.
+   Never close a failure as "pre-existing" or "flaky" without its cause. A pass when
+   rerun alone, under less load or on the base narrows the search; it is not the cause.
 
 ## Evidence and cleanup
 

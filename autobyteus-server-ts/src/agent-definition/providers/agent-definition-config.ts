@@ -18,6 +18,8 @@ export type AgentConfigRecord = {
   lifecycleProcessorNames?: string[];
   avatarUrl?: string | null;
   defaultLaunchConfig?: AgentDefinitionDefaultLaunchConfig | null;
+  /** An internal agent (the system's own helper); absent or anything but `true` means a normal agent. */
+  internal?: boolean;
 };
 
 export const normalizeStringArray = (value: unknown): string[] =>
@@ -49,6 +51,7 @@ export const normalizeAgentConfigRecord = (
   lifecycleProcessorNames: normalizeStringArray(value?.lifecycleProcessorNames),
   avatarUrl: typeof value?.avatarUrl === "string" ? value.avatarUrl : null,
   defaultLaunchConfig: normalizeDefaultLaunchConfig(value?.defaultLaunchConfig),
+  internal: value?.internal === true,
 });
 
 export const buildAgentConfigRecord = (domainObj: AgentDefinition): AgentConfigRecord => ({
@@ -62,6 +65,8 @@ export const buildAgentConfigRecord = (domainObj: AgentDefinition): AgentConfigR
   lifecycleProcessorNames: domainObj.lifecycleProcessorNames ?? [],
   avatarUrl: domainObj.avatarUrl ?? null,
   defaultLaunchConfig: domainObj.defaultLaunchConfig ?? null,
+  // Written only for an internal agent: a normal agent's file stays as it always was.
+  ...(domainObj.internal ? { internal: true } : {}),
 });
 
 export const mergeAgentConfigRecord = (

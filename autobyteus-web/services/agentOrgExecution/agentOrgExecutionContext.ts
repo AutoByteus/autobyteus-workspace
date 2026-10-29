@@ -22,13 +22,13 @@ import { dispatchAgentStreamMessage } from '~/services/agentStreaming/agentStrea
 import { advanceSequencedStream } from '~/services/agentStreaming/sequencedStreamRange'
 import type { AgentPresentationMessage } from '@autobyteus/agent-presentation-contracts'
 import { applyOfflineOrTerminalCleanup } from '~/services/runStatus/agentRuntimeStatusState'
-import { AgentOrgExecutionViewIndex, type OrgWorkspaceSelection, type OrgAgentViewIdentity, type OrgTeamViewIdentity } from './agentOrgExecutionViewIndex'
+import { AgentOrgExecutionViewIndex, type OrgRemoteAgent, type OrgWorkspaceSelection, type OrgAgentViewIdentity, type OrgTeamViewIdentity } from './agentOrgExecutionViewIndex'
+import { applyRemoteSummaryStatuses, isRemoteExecutionKnown } from '~/services/remoteRuns/remoteChildren'
 import {
   assertAgentOrgCommunicationMessagesCorrelated,
   projectAgentOrgCommunicationPerspective,
   projectAgentOrgMessageIdentity,
 } from './agentOrgCommunicationPerspective'
-import { catalogAgentSourceAt, catalogTeamSourceAt } from '~/services/collaborators/agentSourceSelectors'
 import { useRunHistoryStore } from '~/stores/runHistoryStore'
 import { createAgentContext } from './agentOrgMemberContextFactory'
 import {
@@ -80,9 +80,9 @@ export class AgentOrgExecutionContext {
       entry.context.state = reactive(entry.context.state)
       const context = reactive(entry.context)
       this.contexts.set(entry.agentRunId, context)
-      if (this.index.requireAgent(entry.agentRunId).address !== entry.memberAddress) throw new Error('AgentOrg context address mismatch.')
+      if (this.index.addressOf(entry.agentRunId) !== entry.memberAddress) throw new Error('AgentOrg context address mismatch.')
     }
-    if (this.contexts.size !== this.index.agents.size) throw new Error('AgentOrg context scope is incomplete.')
+    if (this.contexts.size !== this.index.agents.size + this.index.remoteAgents.size) throw new Error('AgentOrg context scope is incomplete.')
     assertAgentOrgCommunicationMessagesCorrelated(this.index, this.view.communication_messages.messages)
     for (const status of input.view.agent_statuses) {
       const address = this.index.agents.get(status.agent_run_id)?.address
@@ -112,7 +112,7 @@ export class AgentOrgExecutionContext {
   listAgentContextEntries(): readonly AgentOrgContextEntry[] {
     return Object.freeze([...this.contexts].map(([agentRunId, context]) => Object.freeze({
       agentRunId,
-      memberAddress: this.index.requireAgent(agentRunId).address,
+      memberAddress: this.index.addressOf(agentRunId)!,
       context,
     })))
   }
@@ -123,17 +123,21 @@ export class AgentOrgExecutionContext {
 
   select(selection: OrgWorkspaceSelection | string | null): void {
     const candidate = typeof selection === 'string' ? this.index.configuredSelection(selection) : selection
-    this.selection = this.index.selectedAgent(candidate) ? candidate : null
+    const remote = candidate?.kind === 'agent_execution' && this.index.remoteAgents.has(candidate.agentRunId)
+    this.selection = remote || this.index.selectedAgent(candidate) ? candidate : null
     this.leaveClosedSelection()
   }
 
   /** An agent is listed in the Workspaces tree unless it is in a closed task execution (Task DONE). */
   isListed(agentRunId: string): boolean {
-    return this.index.agents.has(agentRunId) && !this.closedSubtrees().has(agentRunKey(agentRunId))
+    return this.index.remoteAgents.has(agentRunId)
+      || (this.index.agents.has(agentRunId) && !this.closedSubtrees().has(agentRunKey(agentRunId)))
   }
 
   selectedTarget(): ActiveAgentWorkspaceTarget | null {
     if (!['live', 'historical', 'reopen_required'].includes(this.phase)) return null
+    const remote = this.selection?.kind === 'agent_execution' ? this.index.remoteAgents.get(this.selection.agentRunId) : null
+    if (remote) return this.remoteTarget(remote)
     const agent = this.index.selectedAgent(this.selection)
     if (!agent) return null
     const context = this.contexts.get(agent.agentRunId)!
@@ -153,12 +157,29 @@ export class AgentOrgExecutionContext {
     return Object.freeze({ ...common, kind: 'agent_org_direct_agent' })
   }
 
+  /** autobyteus-278: a selected agent of a run another node runs, opened like a task copy; its node keeps its workspace. */
+  private remoteTarget(remote: OrgRemoteAgent): ActiveAgentWorkspaceTarget {
+    return Object.freeze({ access: 'read_only' as const, root: Object.freeze({ orgRunId: this.orgRunId }), address: remote.address,
+      context: this.contexts.get(remote.agentRunId)!, workspaceRootPath: null,
+      collaborationMessages: this.messagesView(remote.address, remote.agentRunId),
+      browse: Object.freeze({ kind: 'agentOrgMember' as const, orgRunId: this.orgRunId, memberAddress: remote.address, agentRunId: remote.agentRunId }),
+      kind: 'agent_org_task_agent' as const })
+  }
+
+  /** autobyteus-278: the runs this Org delegated to other nodes. */
+  get remoteExecutions() { return this.view.remote_task_executions }
+
+  /** autobyteus-278: remote agents whose stored conversation was read from their node into this context (Retry). */
+  private readonly loadedRemoteAgents = new Set<string>()
+  isRemoteAgentLoaded(agentRunId: string): boolean { return this.loadedRemoteAgents.has(agentRunId) }
+  markRemoteAgentLoaded(agentRunId: string): void { this.loadedRemoteAgents.add(agentRunId) }
+
   adoptLocalContexts(previous: AgentOrgExecutionContext): void {
     if (previous.orgRunId !== this.orgRunId) throw new Error('AgentOrg candidate root mismatch.')
     const matches = this.listAgentContextEntries().flatMap((entry) => {
       const old = previous.getAgentContext(entry.agentRunId)
       if (!old) return []
-      if (previous.index.requireAgent(entry.agentRunId).address !== entry.memberAddress) {
+      if (previous.index.addressOf(entry.agentRunId) !== entry.memberAddress) {
         throw new Error('AgentOrg candidate retained address mismatch.')
       }
       return [{ entry, old }]
@@ -239,6 +260,11 @@ export class AgentOrgExecutionContext {
       }
       this.view = { ...this.view,
         closed_task_executions: removeReopenedTaskExecutions(this.view.closed_task_executions, event.task_executions) }
+    } else if (event.kind === 'remote_task_execution_started') {
+      // autobyteus-278: a new remote child needs its contexts (one the view already lists needs nothing).
+      if (!isRemoteExecutionKnown(this.view.remote_task_executions, event.execution)) return 'checkpoint_required'
+    } else if (event.kind === 'remote_task_execution_summary') {
+      applyRemoteSummaryStatuses(event, (agentRunId) => this.contexts.get(agentRunId) ?? null, this.view.remote_task_executions)
     } else if (event.kind === 'delegated_launch_selections_changed') {
       // A Save on the live run (DS-001): reload so the records and the member contexts show the choice.
       if (event.selections.some((entry) => 'agentRunId' in entry ? !this.index.agents.has(entry.agentRunId) : !this.index.teams.has(entry.teamRunId))) {
@@ -269,7 +295,7 @@ export class AgentOrgExecutionContext {
   }>[]): void {
     const targets = entries.map((entry) => {
       const context = this.contexts.get(entry.agent_run_id)
-      if (!context || this.index.agents.get(entry.agent_run_id)?.address !== entry.member_address) {
+      if (!context || this.index.addressOf(entry.agent_run_id) !== entry.member_address) {
         this.requireReopen(`Agent presentation identity '${entry.agent_run_id}' is not in the context.`)
         throw new Error(this.error!)
       }
@@ -353,18 +379,14 @@ export class AgentOrgExecutionContext {
   private validateTaskExecutionStarted(event: TaskExecutionStartedEvent): void {
     const execution = event.execution
     const runId = 'agentRunId' in execution ? execution.agentRunId : execution.teamRunId
-    const address = parseAgentTeamAddress(execution.address)
-    const configured = this.index.configured.get(address)
-    // A catalog copy carries its own source (REQ-011).
-    const source = configured
-      ?? catalogAgentSourceAt([execution], address)
-      ?? catalogTeamSourceAt([execution], address)
+    // Every copy carries the source it started with (REQ-002), of its own kind.
+    const source = execution.source
     const hostKnown = event.host_kind === 'root'
       ? event.host_run_id === this.orgRunId
       : this.index.teams.has(event.host_run_id)
     // A newly started child always records its delegator.
-    if (!execution.delegatorAgentRunId || !this.index.agents.has(execution.delegatorAgentRunId) || !hostKnown || !source
-      || ('agentDefinitionId' in source) !== ('agentRunId' in execution)
+    if (!execution.delegatorAgentRunId || !this.index.agents.has(execution.delegatorAgentRunId) || !hostKnown
+      || (source.kind === 'agent') !== ('agentRunId' in execution)
       || this.index.agents.has(runId) || this.index.teams.has(runId)) {
       this.correlationFailure(`AgentOrg delegated execution '${runId}' identity mismatch.`)
     }
@@ -396,7 +418,8 @@ export class AgentOrgExecutionContext {
       memberIdentityByAgentRunId: () => Object.freeze(Object.fromEntries([...this.index.agents.keys()].map((id) => [id,
         projectAgentOrgMessageIdentity(this.index, id),
       ]))),
-      listMessages: () => projectAgentOrgCommunicationPerspective({ index: this.index,
+      // A remote child's messages are in its own run's log on its node (autobyteus-278).
+      listMessages: () => this.index.remoteAgents.has(focusedAgentRunId) ? Object.freeze([]) : projectAgentOrgCommunicationPerspective({ index: this.index,
         messages: this.view.communication_messages.messages, focusedAgentRunId }),
       referenceContentPath: (messageId: string, referenceId: string) =>
         `agent-org-runs/${encodeURIComponent(this.orgRunId)}/communication/messages/${encodeURIComponent(messageId)}/references/${encodeURIComponent(referenceId)}/content`,

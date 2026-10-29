@@ -1,0 +1,7 @@
+# DEL-05-electron — Electron main tests on the integrated state
+### pnpm test:electron --run
+# State: merge 4c2b43a3d7 (ticket code 985246c53b + tests 5faba271f5 + origin/personal 1c9edce551); macOS 26 arm64, Node v22.23.1; 2026-10-24
+
+ Test Files  40 passed | 1 skipped (41)
+      Tests  237 passed | 1 skipped (238)
+exit 0

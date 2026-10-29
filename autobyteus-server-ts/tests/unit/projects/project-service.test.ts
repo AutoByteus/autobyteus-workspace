@@ -44,7 +44,7 @@ const createHarness = async () => {
   const writeProject = (value: { projectId: string } & Record<string, unknown>) =>
     writeJson(path.join(layout.root, value.projectId, "project.json"), { taskKeys: { prefix: value.projectId, lastNumber: 0 }, ...value });
   const writeTask = (projectId: string, value: { taskId: string } & Record<string, unknown>) =>
-    writeJson(path.join(layout.root, projectId, "tasks", value.taskId, "task.json"), { projectId, taskKey: `${projectId}-${value.taskId}`, ...value });
+    writeJson(path.join(layout.root, projectId, "tasks", value.taskId, "task.json"), { projectId, taskKey: `${projectId}-${value.taskId}`, title: `Title ${value.taskId}`, ...value });
   return { appDataDir, layout, store, registry, workspaceLookup, service, readFile, writeJson, writeProject, writeTask };
 };
 

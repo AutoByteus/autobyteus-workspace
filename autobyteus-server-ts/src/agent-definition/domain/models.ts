@@ -43,6 +43,11 @@ export class AgentDefinition {
   ownerPackageId?: string | null;
   ownerLocalApplicationId?: string | null;
   defaultLaunchConfig: AgentDefinitionDefaultLaunchConfig | null;
+  /**
+   * An internal agent: the system's own helper (`"internal": true` in `agent-config.json`). Hidden from browsing,
+   * picking and delegation while "Show internal agents" is off (`InternalAgentVisibility`); opening it by ID works.
+   */
+  internal: boolean;
   sourceInfo?: AgentDefinitionSourceInfo | null;
 
   constructor(options: {
@@ -71,6 +76,7 @@ export class AgentDefinition {
     ownerPackageId?: string | null;
     ownerLocalApplicationId?: string | null;
     defaultLaunchConfig?: AgentDefinitionDefaultLaunchConfig | null;
+    internal?: boolean;
     sourceInfo?: AgentDefinitionSourceInfo | null;
   }) {
     this.name = options.name;
@@ -98,6 +104,7 @@ export class AgentDefinition {
     this.ownerPackageId = options.ownerPackageId ?? null;
     this.ownerLocalApplicationId = options.ownerLocalApplicationId ?? null;
     this.defaultLaunchConfig = options.defaultLaunchConfig ?? null;
+    this.internal = options.internal === true;
     this.sourceInfo = options.sourceInfo ?? null;
   }
 }

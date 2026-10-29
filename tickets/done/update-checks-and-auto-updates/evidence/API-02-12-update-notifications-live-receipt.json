@@ -1,0 +1,412 @@
+{
+  "api02": {
+    "notifications": [
+      {
+        "kind": "AGENT_PACKAGE",
+        "sourceId": "github:un-e2e/agents",
+        "name": "un-e2e/agents",
+        "repositoryUrl": "https://github.com/un-e2e/agents",
+        "defaultBranch": "main",
+        "installedRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "latestRevision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "foundAt": "2026-10-23T22:41:27.129Z",
+        "read": false,
+        "state": "WAITING",
+        "handledRevision": null,
+        "handledAt": null,
+        "outcome": null,
+        "outcomeReason": null,
+        "outcomeAt": null
+      },
+      {
+        "kind": "SKILL_SOURCE",
+        "sourceId": "a28cfdb4-3632-411e-9626-a0f671961599",
+        "name": "un-e2e/skills",
+        "repositoryUrl": "https://github.com/un-e2e/skills",
+        "defaultBranch": "main",
+        "installedRevision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+        "latestRevision": "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+        "foundAt": "2026-10-23T22:41:27.129Z",
+        "read": false,
+        "state": "WAITING",
+        "handledRevision": null,
+        "handledAt": null,
+        "outcome": null,
+        "outcomeReason": null,
+        "outcomeAt": null
+      }
+    ],
+    "passRequests": [
+      {
+        "url": "https://github.com/un-e2e/agents.git/git-upload-pack",
+        "method": "POST",
+        "host": "github.com",
+        "phase": "due-pass",
+        "answered": "head bbbbbbb"
+      },
+      {
+        "url": "https://github.com/un-e2e/skills.git/git-upload-pack",
+        "method": "POST",
+        "host": "github.com",
+        "phase": "due-pass",
+        "answered": "head bbbbbbb"
+      }
+    ]
+  },
+  "api08": {
+    "record": {
+      "kind": "AGENT_PACKAGE",
+      "sourceId": "github:un-e2e/agents",
+      "name": "un-e2e/agents",
+      "repositoryUrl": "https://github.com/un-e2e/agents",
+      "defaultBranch": "main",
+      "installedRevision": "cccccccccccccccccccccccccccccccccccccccc",
+      "latestRevision": "dddddddddddddddddddddddddddddddddddddddd",
+      "foundAt": "2026-10-24T00:00:31.809Z",
+      "read": false,
+      "state": "HANDLED",
+      "handledRevision": "dddddddddddddddddddddddddddddddddddddddd",
+      "handledAt": "2026-10-24T00:03:33.969Z",
+      "outcome": "AUTO_UPDATED",
+      "outcomeReason": null,
+      "outcomeAt": "2026-10-24T00:03:33.969Z"
+    }
+  },
+  "api10": {
+    "failed": {
+      "kind": "AGENT_PACKAGE",
+      "sourceId": "github:un-e2e/agents",
+      "name": "un-e2e/agents",
+      "repositoryUrl": "https://github.com/un-e2e/agents",
+      "defaultBranch": "main",
+      "installedRevision": "dddddddddddddddddddddddddddddddddddddddd",
+      "latestRevision": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "foundAt": "2026-10-24T00:41:34.249Z",
+      "read": false,
+      "state": "WAITING",
+      "handledRevision": null,
+      "handledAt": null,
+      "outcome": "AUTO_FAILED",
+      "outcomeReason": "Agent package must contain at least one directory: 'agents', 'agent-teams', or 'applications'.",
+      "outcomeAt": "2026-10-24T00:41:34.269Z"
+    },
+    "retried": {
+      "kind": "AGENT_PACKAGE",
+      "sourceId": "github:un-e2e/agents",
+      "name": "un-e2e/agents",
+      "repositoryUrl": "https://github.com/un-e2e/agents",
+      "defaultBranch": "main",
+      "installedRevision": "dddddddddddddddddddddddddddddddddddddddd",
+      "latestRevision": "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "foundAt": "2026-10-24T00:41:34.249Z",
+      "read": true,
+      "state": "WAITING",
+      "handledRevision": null,
+      "handledAt": null,
+      "outcome": "AUTO_FAILED",
+      "outcomeReason": "Agent package must contain at least one directory: 'agents', 'agent-teams', or 'applications'.",
+      "outcomeAt": "2026-10-24T01:30:35.409Z"
+    }
+  },
+  "api07": {
+    "gateFile": {
+      "api": null,
+      "web": "2026-10-24T03:27:37.589Z"
+    },
+    "notifications": [
+      {
+        "kind": "SKILL_SOURCE",
+        "sourceId": "a28cfdb4-3632-411e-9626-a0f671961599",
+        "name": "un-e2e/skills",
+        "repositoryUrl": "https://github.com/un-e2e/skills",
+        "defaultBranch": "main",
+        "installedRevision": "cccccccccccccccccccccccccccccccccccccccc",
+        "latestRevision": "dddddddddddddddddddddddddddddddddddddddd",
+        "foundAt": "2026-10-24T04:05:37.629Z",
+        "read": false,
+        "state": "WAITING",
+        "handledRevision": null,
+        "handledAt": null,
+        "outcome": null,
+        "outcomeReason": null,
+        "outcomeAt": null
+      },
+      {
+        "kind": "AGENT_PACKAGE",
+        "sourceId": "github:un-e2e/agents",
+        "name": "un-e2e/agents",
+        "repositoryUrl": "https://github.com/un-e2e/agents",
+        "defaultBranch": "main",
+        "installedRevision": "dddddddddddddddddddddddddddddddddddddddd",
+        "latestRevision": "ffffffffffffffffffffffffffffffffffffffff",
+        "foundAt": "2026-10-24T04:05:37.609Z",
+        "read": false,
+        "state": "WAITING",
+        "handledRevision": null,
+        "handledAt": null,
+        "outcome": null,
+        "outcomeReason": null,
+        "outcomeAt": null
+      }
+    ]
+  },
+  "requests": [
+    {
+      "url": "https://api.github.com/repos/un-e2e/agents",
+      "method": "GET",
+      "host": "api.github.com",
+      "phase": "import",
+      "answered": "repository"
+    },
+    {
+      "url": "https://api.github.com/repos/un-e2e/agents/branches/main",
+      "method": "GET",
+      "host": "api.github.com",
+      "phase": "import",
+      "answered": "branch aaaaaaa"
+    },
+    {
+      "url": "https://codeload.github.com/un-e2e/agents/tar.gz/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "method": "GET",
+      "host": "codeload.github.com",
+      "phase": "import",
+      "answered": "archive aaaaaaa"
+    },
+    {
+      "url": "https://api.github.com/repos/un-e2e/skills",
+      "method": "GET",
+      "host": "api.github.com",
+      "phase": "import",
+      "answered": "repository"
+    },
+    {
+      "url": "https://api.github.com/repos/un-e2e/skills/branches/main",
+      "method": "GET",
+      "host": "api.github.com",
+      "phase": "import",
+      "answered": "branch aaaaaaa"
+    },
+    {
+      "url": "https://codeload.github.com/un-e2e/skills/tar.gz/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "method": "GET",
+      "host": "codeload.github.com",
+      "phase": "import",
+      "answered": "archive aaaaaaa"
+    },
+    {
+      "url": "https://github.com/un-e2e/agents.git/git-upload-pack",
+      "method": "POST",
+      "host": "github.com",
+      "phase": "due-pass",
+      "answered": "head bbbbbbb"
+    },
+    {
+      "url": "https://github.com/un-e2e/skills.git/git-upload-pack",
+      "method": "POST",
+      "host": "github.com",
+      "phase": "due-pass",
+      "answered": "head bbbbbbb"
+    },
+    {
+      "url": "https://github.com/un-e2e/agents.git/git-upload-pack",
+      "method": "POST",
+      "host": "github.com",
+      "phase": "on-open-check",
+      "answered": "head ccccccc"
+    },
+    {
+      "url": "https://github.com/un-e2e/agents.git/git-upload-pack",
+      "method": "POST",
+      "host": "github.com",
+      "phase": "offline-pass",
+      "answered": "offline"
+    },
+    {
+      "url": "https://github.com/un-e2e/skills.git/git-upload-pack",
+      "method": "POST",
+      "host": "github.com",
+      "phase": "offline-pass",
+      "answered": "offline"
+    },
+    {
+      "url": "https://github.com/un-e2e/agents.git/git-upload-pack",
+      "method": "POST",
+      "host": "github.com",
+      "phase": "user-update-package",
+      "answered": "head ccccccc"
+    },
+    {
+      "url": "https://codeload.github.com/un-e2e/agents/tar.gz/cccccccccccccccccccccccccccccccccccccccc",
+      "method": "GET",
+      "host": "codeload.github.com",
+      "phase": "user-update-package",
+      "answered": "archive ccccccc"
+    },
+    {
+      "url": "https://github.com/un-e2e/skills.git/git-upload-pack",
+      "method": "POST",
+      "host": "github.com",
+      "phase": "user-update-skill",
+      "answered": "head bbbbbbb"
+    },
+    {
+      "url": "https://codeload.github.com/un-e2e/skills/tar.gz/bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",
+      "method": "GET",
+      "host": "codeload.github.com",
+      "phase": "user-update-skill",
+      "answered": "archive bbbbbbb"
+    },
+    {
+      "url": "https://github.com/un-e2e/agents.git/git-upload-pack",
+      "method": "POST",
+      "host": "github.com",
+      "phase": "on-open-check-checks-off",
+      "answered": "head ddddddd"
+    },
+    {
+      "url": "https://github.com/un-e2e/skills.git/git-upload-pack",
+      "method": "POST",
+      "host": "github.com",
+      "phase": "checks-on",
+      "answered": "head ccccccc"
+    },
+    {
+      "url": "https://github.com/un-e2e/agents.git/git-upload-pack",
+      "method": "POST",
+      "host": "github.com",
+      "phase": "automatic-packages",
+      "answered": "head ddddddd"
+    },
+    {
+      "url": "https://codeload.github.com/un-e2e/agents/tar.gz/dddddddddddddddddddddddddddddddddddddddd",
+      "method": "GET",
+      "host": "codeload.github.com",
+      "phase": "automatic-packages",
+      "answered": "archive ddddddd"
+    },
+    {
+      "url": "https://github.com/un-e2e/skills.git/git-upload-pack",
+      "method": "POST",
+      "host": "github.com",
+      "phase": "automatic-skills",
+      "answered": "head ccccccc"
+    },
+    {
+      "url": "https://codeload.github.com/un-e2e/skills/tar.gz/cccccccccccccccccccccccccccccccccccccccc",
+      "method": "GET",
+      "host": "codeload.github.com",
+      "phase": "automatic-skills",
+      "answered": "archive ccccccc"
+    },
+    {
+      "url": "https://github.com/un-e2e/agents.git/git-upload-pack",
+      "method": "POST",
+      "host": "github.com",
+      "phase": "automatic-failure",
+      "answered": "head eeeeeee"
+    },
+    {
+      "url": "https://github.com/un-e2e/skills.git/git-upload-pack",
+      "method": "POST",
+      "host": "github.com",
+      "phase": "automatic-failure",
+      "answered": "head ccccccc"
+    },
+    {
+      "url": "https://github.com/un-e2e/agents.git/git-upload-pack",
+      "method": "POST",
+      "host": "github.com",
+      "phase": "automatic-failure",
+      "answered": "head eeeeeee"
+    },
+    {
+      "url": "https://codeload.github.com/un-e2e/agents/tar.gz/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "method": "GET",
+      "host": "codeload.github.com",
+      "phase": "automatic-failure",
+      "answered": "archive eeeeeee"
+    },
+    {
+      "url": "https://github.com/un-e2e/agents.git/git-upload-pack",
+      "method": "POST",
+      "host": "github.com",
+      "phase": "automatic-failure-retry",
+      "answered": "head eeeeeee"
+    },
+    {
+      "url": "https://github.com/un-e2e/skills.git/git-upload-pack",
+      "method": "POST",
+      "host": "github.com",
+      "phase": "automatic-failure-retry",
+      "answered": "head ccccccc"
+    },
+    {
+      "url": "https://github.com/un-e2e/agents.git/git-upload-pack",
+      "method": "POST",
+      "host": "github.com",
+      "phase": "automatic-failure-retry",
+      "answered": "head eeeeeee"
+    },
+    {
+      "url": "https://codeload.github.com/un-e2e/agents/tar.gz/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee",
+      "method": "GET",
+      "host": "codeload.github.com",
+      "phase": "automatic-failure-retry",
+      "answered": "archive eeeeeee"
+    },
+    {
+      "url": "https://github.com/un-e2e/agents.git/git-upload-pack",
+      "method": "POST",
+      "host": "github.com",
+      "phase": "short-interval",
+      "answered": "head eeeeeee"
+    },
+    {
+      "url": "https://github.com/un-e2e/agents.git/git-upload-pack",
+      "method": "POST",
+      "host": "github.com",
+      "phase": "throttled-pass",
+      "answered": "503 throttled"
+    },
+    {
+      "url": "https://github.com/un-e2e/agents.git/git-upload-pack",
+      "method": "POST",
+      "host": "github.com",
+      "phase": "after-throttle",
+      "answered": "head fffffff"
+    },
+    {
+      "url": "https://github.com/un-e2e/skills.git/git-upload-pack",
+      "method": "POST",
+      "host": "github.com",
+      "phase": "after-throttle",
+      "answered": "head ddddddd"
+    }
+  ],
+  "frames": [
+    "{\"type\":\"connected\"}",
+    "{\"type\":\"update_notifications_changed\"}",
+    "{\"type\":\"update_notifications_changed\"}",
+    "{\"type\":\"connected\"}",
+    "{\"type\":\"update_notifications_changed\"}",
+    "{\"type\":\"update_notifications_changed\"}",
+    "{\"type\":\"update_notifications_changed\"}",
+    "{\"type\":\"update_notifications_changed\"}",
+    "{\"type\":\"connected\"}",
+    "{\"type\":\"update_settings_changed\"}",
+    "{\"type\":\"update_notifications_changed\"}",
+    "{\"type\":\"update_notifications_changed\"}",
+    "{\"type\":\"update_notifications_changed\"}",
+    "{\"type\":\"update_settings_changed\"}",
+    "{\"type\":\"update_notifications_changed\"}",
+    "{\"type\":\"update_notifications_changed\"}",
+    "{\"type\":\"update_notifications_changed\"}",
+    "{\"type\":\"update_notifications_changed\"}",
+    "{\"type\":\"update_notifications_changed\"}",
+    "{\"type\":\"update_notifications_changed\"}",
+    "{\"type\":\"update_settings_changed\"}",
+    "{\"type\":\"update_settings_changed\"}",
+    "{\"type\":\"update_settings_changed\"}",
+    "{\"type\":\"update_settings_changed\"}"
+  ]
+}

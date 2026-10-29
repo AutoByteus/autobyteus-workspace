@@ -4,7 +4,6 @@
     <div class="flex justify-between items-center mb-6 pb-4 border-b">
       <div>
          <button @click="$emit('cancel')" class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
-          <span class="i-heroicons-arrow-left-20-solid w-5 h-5 mr-2 -ml-1"></span>
           Back
         </button>
       </div>
@@ -36,22 +35,59 @@
             :disabled="store.getLoading || !jsonString" 
             class="px-6 py-3 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 disabled:bg-indigo-300 text-base font-semibold"
         >
-          <span v-if="store.getLoading" class="i-heroicons-arrow-path-20-solid w-5 h-5 animate-spin mr-2"></span>
+          <Icon v-if="store.getLoading" icon="heroicons:arrow-path-20-solid" class="w-5 h-5 animate-spin mr-2" />
           {{ store.getLoading ? 'Importing...' : 'Import Configurations' }}
         </button>
       </div>
+
+    <!-- Values stored in the vault -->
+    <div v-if="storedSecrets.length > 0" id="bulk-import-stored-secrets" class="mt-4 rounded-md border border-indigo-200 bg-indigo-50 p-4 text-sm text-indigo-900">
+      <p class="font-semibold">{{ t('tools.components.tools.McpBulkImportView.stored_as_secrets') }}</p>
+      <ul class="mt-2 space-y-1">
+        <li v-for="stored in storedSecrets" :key="`${stored.serverId}:${stored.field}`" class="font-mono">
+          {{ stored.serverId }} · {{ stored.field }}
+        </li>
+      </ul>
+    </div>
+
+    <!-- Imported secret references this node does not hold -->
+    <div v-if="needsSecret.length > 0" id="bulk-import-needs-secret" class="mt-4 rounded-md border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900">
+      <p class="font-semibold">{{ t('tools.components.tools.McpBulkImportView.needs_secret') }}</p>
+      <ul class="mt-2 space-y-1">
+        <li v-for="missing in needsSecret" :key="`${missing.serverId}:${missing.field}`" class="font-mono">
+          {{ missing.serverId }} · {{ missing.field }}
+        </li>
+      </ul>
+    </div>
+
+    <!-- Entries that were not imported -->
+    <div v-if="failures.length > 0" id="bulk-import-failures" ref="failuresRef" class="mt-4 rounded-md border border-red-200 bg-red-50 p-4 text-sm text-red-800">
+      <p class="font-semibold">{{ t('tools.components.tools.McpBulkImportView.entries_not_imported') }}</p>
+      <ul class="mt-2 space-y-1">
+        <li v-for="failure in failures" :key="failure.serverId">
+          <span class="font-mono font-semibold">{{ failure.serverId }}</span>: {{ failure.reason }}
+        </li>
+      </ul>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { Icon } from '@iconify/vue';
 import { ref, watch, onMounted, nextTick } from 'vue';
 import { useToolManagementStore } from '~/stores/toolManagementStore';
 import { type ToastType } from '~/composables/useToasts';
+import { useLocalization } from '~/composables/useLocalization';
 
 const emit = defineEmits(['cancel', 'save-complete', 'show-toast']);
 const store = useToolManagementStore();
+const { t } = useLocalization();
 
 const jsonString = ref('');
+const failures = ref<Array<{ serverId: string; reason: string }>>([]);
+const storedSecrets = ref<Array<{ serverId: string; field: string }>>([]);
+const needsSecret = ref<Array<{ serverId: string; field: string }>>([]);
+const failuresRef = ref<HTMLElement | null>(null);
 const textareaRef = ref<HTMLTextAreaElement | null>(null);
 
 const placeholderJson = `{
@@ -84,35 +120,43 @@ watch(jsonString, () => {
 });
 
 const runImport = async () => {
+    failures.value = [];
+    storedSecrets.value = [];
+    needsSecret.value = [];
     try {
         const result = await store.importMcpServerConfigs(jsonString.value);
-        
-        let toastType: ToastType = 'error'; // Default to error
-        
-        // The backend now correctly sets `success` to false if any imports fail.
-        // We can provide more nuanced feedback based on the counts.
-        if (result.success) { // This means failed_count is 0
-            toastType = 'success';
-        } else {
-            if (result.imported_count > 0) {
-                // Partial success: some imported, some failed.
-                toastType = 'info';
-            } else {
-                // Total failure: none imported, some failed.
-                toastType = 'error';
-            }
+        failures.value = result.failures;
+        storedSecrets.value = result.storedSecrets;
+        needsSecret.value = result.needsSecret;
+        if (failures.value.length > 0) {
+            // The list is below a tall editor; bring it into view so the toast's "see below" holds.
+            nextTick(() => failuresRef.value?.scrollIntoView?.({ block: 'nearest', behavior: 'smooth' }));
         }
+        const key = 'tools.components.tools.McpBulkImportView';
+        const imported = result.importedCount;
+        const failed = result.failedCount;
 
-        emit('show-toast', { 
-            message: result.message, 
-            type: toastType 
-        });
-
-        // If the operation was successful (even with 0 imports) or a partial success (some imported),
-        // emit the save-complete event. The parent view is responsible for listening to this and performing navigation.
-        // This ensures the user is returned to the server list on any non-failure state.
-        if (result.success || result.imported_count > 0) {
+        if (result.success) {
+            // The view closes on success, so the toast names the values stored in the vault and those to enter again.
+            const names = (fields: Array<{ serverId: string; field: string }>) =>
+                fields.map(entry => `${entry.serverId} ${entry.field}`).join(', ');
+            const importedMessage = storedSecrets.value.length > 0
+                ? t(`${key}.import_succeeded_with_secrets`, { count: imported, fields: names(storedSecrets.value) })
+                : t(`${key}.import_succeeded`, { count: imported });
+            const message = needsSecret.value.length > 0
+                ? `${importedMessage} ${t(`${key}.import_needs_secret`, { fields: names(needsSecret.value) })}`
+                : importedMessage;
+            emit('show-toast', { message, type: (needsSecret.value.length > 0 ? 'info' : 'success') as ToastType });
+            // The parent returns to the server list.
             emit('save-complete');
+        } else if (failed === 0) {
+            // The input itself was rejected (e.g. invalid JSON); the server's message says why.
+            emit('show-toast', { message: result.message, type: 'error' as ToastType });
+        } else if (imported > 0) {
+            // Stay here so the failed entries below can be read and fixed; the list was refreshed.
+            emit('show-toast', { message: t(`${key}.import_partial`, { imported, failed }), type: 'info' as ToastType });
+        } else {
+            emit('show-toast', { message: t(`${key}.import_none`, { failed }), type: 'error' as ToastType });
         }
     } catch (e: any) {
         emit('show-toast', { message: e.message, type: 'error' as ToastType });

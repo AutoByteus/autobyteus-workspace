@@ -1,0 +1,14 @@
+# API-L11 (desktop, AC-015 through the UI): packaged desktop iso-50179-e4cd (build of 8c283c6acc); Download on the Active row (Granite) → Ready; New task page (create) and the Task page of desktop-demo-3 (edit description) in "Desktop demo" (Not indexed, 8 Tasks); the read-only projectTaskIndexes polled every 250 ms (no search); then Settings and meaning searches; Mon Oct 19 15:59:56 CEST 2026
+Granite Ready after 7696 ms
+{"created":true,"uiSaveMs":84,"at":1792418406186,"hash":"#/projects/project_8fb6050d-cf42-425e-84c6-f42eed6528c9?notice=task-created"}
+{"edited":"desktop-demo-3","uiSaveMs":107,"at":1792418406394,"description":"Garden irrigation controller waters the plants at the wrong hour after daylight "}
++28 ms after the edit save: Desktop demo NOT_INDEXED total 9
++2886 ms after the edit save: Desktop demo INDEXING 0/9
++3141 ms after the edit save: Desktop demo INDEXING 8/9
++3399 ms after the edit save: Desktop demo READY total 9
+Settings: [('Desktop demo', 'Ready · 9 Tasks')] | Load Projects Not indexed: 20
+meaning search, created Task:
+{"ms":35,"matches":[{"taskId":"project_task_2132f697-ed7f-4bde-a956-bfdad75d5f2c","match":"MEANING"}],"meaningSearch":{"state":"READY","phase":null,"done":null,"total":null,"reason":null}}
+meaning search, edited Task:
+{"ms":34,"matches":[{"taskId":"project_task_cba0352a-e229-4653-aebb-15d9da3ffa52","match":"MEANING"}],"meaningSearch":{"state":"READY","phase":null,"done":null,"total":null,"reason":null}}
+t33 taskId = project_task_cba0352a-e229-4653-aebb-15d9da3ffa52

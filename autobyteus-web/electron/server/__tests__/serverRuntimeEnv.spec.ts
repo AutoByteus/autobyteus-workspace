@@ -63,6 +63,7 @@ describe('buildServerProcessEnv — inherit-caller (production)', () => {
       AUTOBYTEUS_DATA_DIR: '/tmp/isolated-root/server-data',
       AUTOBYTEUS_SERVER_HOST: 'http://127.0.0.1:31041',
       ...runtimeOverrides,
+      AUTOBYTEUS_DESKTOP_EMBEDDED_NODE: '1',
     }
 
     const env = buildServerProcessEnv(input())
@@ -93,6 +94,17 @@ describe('buildServerProcessEnv — inherit-caller (production)', () => {
     const env = buildServerProcessEnv(input({ runtimeOverrides: { AUTOBYTEUS_SERVER_HOST: 'http://override' } }))
     expect(env.AUTOBYTEUS_SERVER_HOST).toBe('http://override')
   })
+
+  it('marks the server as the desktop\'s own node; no inherited or override value changes it (AR-005)', () => {
+    for (const policy of ['inherit-caller', 'isolated-baseline'] as const) {
+      const env = buildServerProcessEnv(input({
+        policy,
+        callerEnv: { ...productionLikeCallerEnv, AUTOBYTEUS_DESKTOP_EMBEDDED_NODE: '0' },
+        runtimeOverrides: { AUTOBYTEUS_DESKTOP_EMBEDDED_NODE: '' },
+      }))
+      expect(env.AUTOBYTEUS_DESKTOP_EMBEDDED_NODE).toBe('1')
+    }
+  })
 })
 
 describe('buildServerProcessEnv — isolated-baseline (e2e)', () => {
@@ -118,6 +130,7 @@ describe('buildServerProcessEnv — isolated-baseline (e2e)', () => {
       AUTOBYTEUS_SERVER_HOST: 'http://127.0.0.1:31041',
       AUTOBYTEUS_BROWSER_BRIDGE_BASE_URL: 'http://127.0.0.1:41234',
       AUTOBYTEUS_BROWSER_BRIDGE_TOKEN: 'browser-token',
+      AUTOBYTEUS_DESKTOP_EMBEDDED_NODE: '1',
     })
   })
 
@@ -139,6 +152,23 @@ describe('buildServerProcessEnv — isolated-baseline (e2e)', () => {
     }
     expect(env.DATABASE_URL).not.toContain('.autobyteus')
     expect(env.AUTOBYTEUS_DATA_DIR).toBe('/tmp/isolated-root/server-data')
+  })
+
+  it('forwards the test-vault selector so an isolated instance uses the test vault', () => {
+    const env = buildServerProcessEnv(input({
+      policy: 'isolated-baseline',
+      callerEnv: { ...productionLikeCallerEnv, AUTOBYTEUS_TEST_VAULT: '/Users/tester/.autobyteus-test/vault' },
+    }))
+    expect(env.AUTOBYTEUS_TEST_VAULT).toBe('/Users/tester/.autobyteus-test/vault')
+    expect(env).not.toHaveProperty('OPENAI_API_KEY')
+  })
+
+  it('does not forward a blank test-vault selector', () => {
+    const env = buildServerProcessEnv(input({
+      policy: 'isolated-baseline',
+      callerEnv: { ...productionLikeCallerEnv, AUTOBYTEUS_TEST_VAULT: '  ' },
+    }))
+    expect(env).not.toHaveProperty('AUTOBYTEUS_TEST_VAULT')
   })
 
   it('forces sqlite even when the caller sets another DB_TYPE', () => {

@@ -6,7 +6,7 @@ import { describe, expect, it, vi } from 'vitest';
 import { readFileSync } from 'node:fs';
 const io = vi.hoisted(() => ({ getRunConfig: vi.fn(), runModelOptions: vi.fn(), updateStoppedRunConfig: vi.fn(),
   archiveStoredRun: vi.fn(), deleteStoredRun: vi.fn() }));
-const memberViews = vi.hoisted(() => ({ getProjection: vi.fn(), getActiveTracePage: vi.fn() }));
+const memberViews = vi.hoisted(() => ({ getProjection: vi.fn(), getActiveTracePage: vi.fn(), getFileChanges: vi.fn() }));
 vi.mock('../../../../../src/api/graphql/studio-application-api-services.js', () => ({ getStudioAgentOrgRunService: () => io }));
 vi.mock('../../../../../src/run-history/services/agent-org-member-run-view-projection-service.js', () => ({ getAgentOrgMemberRunViewProjectionService: () => memberViews }));
 import { AgentOrgRunResolver } from '../../../../../src/api/graphql/types/agent-org-run.js';
@@ -16,9 +16,14 @@ const tree = { schemaVersion: 1, subjectKind: 'agent_org', createdAt: '2026-09-1
     orgRunId: 'org', defaultLaunchConfiguration: { runtimeKind: 'autobyteus', llmModelIdentifier: 'model', llmConfig: null,
       autoExecuteTools: false, workspaceRootPath: '/workspace' }, members: [], taskExecutions: [] } };
 
+// type-graphql adds a resolver's argument metadata again on every schema build in one process, so
+// the full schema is built once and shared.
+let fullSchema: ReturnType<typeof buildGraphqlSchema> | null = null;
+const sharedGraphqlSchema = () => fullSchema ??= buildGraphqlSchema();
+
 describe('whole AgentOrg model configuration GraphQL transport', () => {
   it('binds distinct Org member projection and trace-page public arguments exactly', async () => {
-    const schema = await buildGraphqlSchema();
+    const schema = await sharedGraphqlSchema();
     const variables = { orgRunId: 'org-123', memberAddress: '/director', agentRunId: 'agent-456', beforeCursor: 'cursor-789' };
     memberViews.getProjection.mockResolvedValue({ agentRunId: variables.agentRunId, memberAddress: variables.memberAddress,
       conversation: [], activities: [], summary: null, lastActivityAt: null, hasEarlierActiveTraceEvents: false });
@@ -37,6 +42,19 @@ describe('whole AgentOrg model configuration GraphQL transport', () => {
     }`, variableValues: variables });
     expect(trace.errors).toBeUndefined();
     expect(memberViews.getActiveTracePage).toHaveBeenCalledExactlyOnceWith('org-123', '/director', 'agent-456', 'cursor-789');
+  });
+
+  it('binds the Org member file-change list to its org run, member address and agent run', async () => {
+    const schema = await sharedGraphqlSchema();
+    memberViews.getFileChanges.mockResolvedValue([{ id: 'agent-456:docs/a.md', runId: 'agent-456', path: 'docs/a.md', type: 'file',
+      status: 'available', sourceTool: 'write_file', sourceInvocationId: null, content: null,
+      createdAt: '2026-10-19T00:00:00Z', updatedAt: '2026-10-19T00:00:00Z' }]);
+    const result = await graphql({ schema, source: `query($orgRunId: String!, $memberAddress: String!, $agentRunId: String!) {
+      getAgentOrgMemberFileChanges(orgRunId: $orgRunId, memberAddress: $memberAddress, agentRunId: $agentRunId) { id runId path status }
+    }`, variableValues: { orgRunId: 'org-123', memberAddress: '/director', agentRunId: 'agent-456' } });
+    expect(result.errors).toBeUndefined();
+    expect(result.data).toEqual({ getAgentOrgMemberFileChanges: [{ id: 'agent-456:docs/a.md', runId: 'agent-456', path: 'docs/a.md', status: 'available' }] });
+    expect(memberViews.getFileChanges).toHaveBeenCalledExactlyOnceWith('org-123', '/director', 'agent-456');
   });
 
   it('executes the production web read/options/mutation documents and keeps nullable llmConfig explicit', async () => {

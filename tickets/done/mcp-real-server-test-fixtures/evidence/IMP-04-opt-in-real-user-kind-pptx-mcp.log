@@ -1,0 +1,50 @@
+# Check: IMP-04
+# Command: env -i PATH="$PATH" HOME=<temp> TMPDIR="$TMPDIR" RUN_REAL_MCP_SERVER_E2E=1 AUTOBYTEUS_MCPS_DIR=/Users/normy/autobyteus_org/autobyteus_mcps pnpm -C autobyteus-ts exec vitest run tests/integration/tools/mcp/real-user-kind-mcp-server.test.ts
+# Commit: baaee3a150 (test code; HEAD c4b4a4dca4 adds only the TESTING.md row)
+# Environment: macOS 26.5.2, node v22.23.1, uv 0.10.2 (Homebrew 2026-02-10)
+# Date: 2026-10-19
+
+## User repo before (git status --porcelain; HEAD)
+?? .codex/
+?? .codex_artifacts/
+?? autobyteus-image-audio/
+?? chatterbox/
+?? parler-tts-demo/
+?? qwen-image-cli/
+?? task-plans/
+?? vibevoice-official/
+?? z-image/
+aa09165a6a9a18cb165f7cef8218c3b219c4abe2
+
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-real-server-test-fixtures/autobyteus-ts
+
+2026-10-19 15:03:57,242 - __main__ - INFO - AUTOBYTEUS_AGENT_WORKSPACE not set. Using default CWD.
+2026-10-19 15:03:57,247 - __main__ - INFO - Starting PPTX Image MCP server with stdio transport...
+2026-10-19 15:03:57,267 - mcp.server.lowlevel.server - INFO - Processing request of type ListToolsRequest
+stdout | tests/integration/tools/mcp/real-user-kind-mcp-server.test.ts > Real user-kind MCP server: pptx-mcp > lists the server tools from a temp copy, leaving the source folder unchanged
+[real-mcp-server] pptx-mcp: 4 tools: create_ppt_from_images, replace_slide_with_image, append_images_as_slides, combine_images
+
+ ✓ tests/integration/tools/mcp/real-user-kind-mcp-server.test.ts (1 test) 4944ms
+     ✓ lists the server tools from a temp copy, leaving the source folder unchanged  4819ms
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  15:03:52
+   Duration  5.28s (transform 58ms, setup 31ms, import 210ms, tests 4.94s, environment 0ms)
+
+
+## User repo after (git status --porcelain; HEAD)
+?? .codex/
+?? .codex_artifacts/
+?? autobyteus-image-audio/
+?? chatterbox/
+?? parler-tts-demo/
+?? qwen-image-cli/
+?? task-plans/
+?? vibevoice-official/
+?? z-image/
+aa09165a6a9a18cb165f7cef8218c3b219c4abe2
+
+## diff before/after git status: identical
+## diff before/after pptx-mcp file mtimes+sizes (outside .venv, 13 files): identical

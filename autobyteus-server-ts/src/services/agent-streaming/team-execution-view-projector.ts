@@ -30,6 +30,15 @@ import type { CollaborationCommunicationMessage } from "../../agent-collaboratio
 import { projectTeamAgentEventMessage } from "./team-agent-event-websocket-projector.js";
 import { projectTeamAgentStatusSnapshotDto } from "./team-agent-status-websocket-projector.js";
 import { projectTeamReferenceFile } from "../../agent-team-execution/services/team-reference-file-projection.js";
+import { TeamExecutionIndex } from "../../agent-team-execution/services/team-execution-index.js";
+import { isPublicMessage } from "./public-message-scope.js";
+import { projectTeamRemoteEvent } from "./team-remote-event-projector.js";
+import type { RemoteTaskExecutionDto } from "@autobyteus/agent-presentation-contracts";
+
+const agentsOf = (tree: TeamRunExecutionTreeSnapshot) => {
+  const index = new TeamExecutionIndex(tree);
+  return (agentRunId: string) => index.getAgent(agentRunId) !== null;
+};
 
 const projectReference = (ownerId: string, filePath: string, timestamp: string): TeamReferenceFileDto => {
   const reference = projectTeamReferenceFile(ownerId, filePath, timestamp);
@@ -46,6 +55,8 @@ export const projectTeamExecutionViewSnapshot = (
   rootTeamRunId: string,
   snapshot: RootTeamRunPackageSnapshot,
   baseChangeSequence: number,
+  /** autobyteus-278: the runs this Team delegated to other nodes, with their nodes' names. */
+  remoteTaskExecutions: readonly RemoteTaskExecutionDto[],
 ): TeamStreamServerMessage => parseTeamStreamServerMessage({
   type: "TEAM_EXECUTION_VIEW_SNAPSHOT",
   payload: {
@@ -53,9 +64,10 @@ export const projectTeamExecutionViewSnapshot = (
     base_change_sequence: baseChangeSequence,
     execution_tree: projectExecutionTree(snapshot.tree),
     closed_task_executions: snapshot.closedTaskExecutions.map(projectTaskExecutionReference),
-    messages: snapshot.messages.messages.map(projectCommunicationMessage),
+    messages: snapshot.messages.messages.filter((message) => isPublicMessage(message, agentsOf(snapshot.tree))).map(projectCommunicationMessage),
     agent_statuses: snapshot.statuses.map(projectTeamAgentStatusSnapshotDto),
     agent_input_states: snapshot.inputStates,
+    remote_task_executions: remoteTaskExecutions,
   },
 });
 
@@ -97,6 +109,8 @@ export const projectSequencedTeamRunEvent = (
         change_sequence: changeSequence,
         task_executions: event.taskExecutions.map(projectTaskExecutionReference),
       } });
+    case TeamRunEventSourceType.REMOTE:
+      return projectTeamRemoteEvent(event.event, changeSequence);
     case TeamRunEventSourceType.DELEGATED_LAUNCH_SELECTIONS:
       return parseTeamStreamServerMessage({ type: "DELEGATED_LAUNCH_SELECTIONS_CHANGED", payload: {
         change_sequence: changeSequence,
@@ -157,17 +171,20 @@ export const projectExecutionTree = (tree: TeamRunExecutionTreeSnapshot): TeamRu
   },
 });
 
-const projectLaunchSource = (source: LaunchConfigurationSource): LaunchConfigurationSourceDto => ({
-  origin: source.origin,
-  fallbacks: source.fallbacks.map((fallback) => ({
+const projectLaunchSource = (source: LaunchConfigurationSource): LaunchConfigurationSourceDto => {
+  const fallbacks = source.fallbacks.map((fallback) => ({
     layer: fallback.layer, runtime_kind: fallback.runtimeKind, llm_model_identifier: fallback.llmModelIdentifier,
     reason: fallback.reason, detail: fallback.detail,
-  })),
-});
-/** A recorded Team member's own launch fields, emitted only when recorded. */
+  }));
+  return source.origin === "model_router"
+    ? { origin: source.origin, fallbacks, choice_reason: source.choiceReason, task_kind: source.taskKind }
+    : { origin: source.origin, fallbacks };
+};
+/** A Team copy member's complete launch and follower fact; its own launch source only when recorded. */
 const projectMemberLaunch = (member: RecordedMemberLaunch) => ({
-  ...(member.launchConfiguration ? { launch_configuration: projectLaunchConfiguration(member.launchConfiguration) } : {}),
-  ...(member.launchSource ? { launch_source: projectLaunchSource(member.launchSource) } : {}),
+  launch_configuration: projectLaunchConfiguration(member.launchConfiguration),
+  follows_team: member.followsTeam,
+  ...optionalSource("launch_source", member.launchSource),
 });
 /** A user model choice, emitted only when recorded. */
 const optionalSelection = <K extends "user_launch_selection" | "user_team_launch_selection" | "selection">(key: K, selection: UserLaunchSelection | undefined) =>
@@ -203,11 +220,11 @@ const projectTaskExecution = (execution: TaskExecution): TaskExecutionDto => {
     kind: "task_agent", address: execution.address, agent_run_id: execution.agentRunId,
     platform_agent_run_id: execution.platformAgentRunId,
     delegator_agent_run_id: execution.delegatorAgentRunId ?? null, started_at: execution.startedAt,
-    ...(execution.source ? { source: {
-      kind: "agent" as const, agent_definition_id: execution.source.agentDefinitionId,
+    source: {
+      kind: "agent", agent_definition_id: execution.source.agentDefinitionId,
       launch_configuration: projectLaunchConfiguration(execution.source.launchConfiguration),
       ...optionalSource("launch_source", execution.source.launchSource),
-    } } : {}),
+    },
     ...optionalSelection("user_launch_selection", execution.userLaunchSelection),
   };
   return {
@@ -215,8 +232,8 @@ const projectTaskExecution = (execution: TaskExecution): TaskExecutionDto => {
     members: execution.members.map(projectTaskTeamMember),
     task_executions: execution.taskExecutions.map(projectTaskExecution),
     delegator_agent_run_id: execution.delegatorAgentRunId ?? null, started_at: execution.startedAt,
-    ...(execution.source ? { source: {
-      kind: "agent_team" as const, team_definition_id: execution.source.teamDefinitionId,
+    source: {
+      kind: "agent_team", team_definition_id: execution.source.teamDefinitionId,
       coordinator_address: execution.source.coordinatorAddress,
       members: execution.source.members.map((member) => ({
         address: member.address, agent_definition_id: member.agentDefinitionId, ...projectMemberLaunch(member),
@@ -224,7 +241,7 @@ const projectTaskExecution = (execution: TaskExecution): TaskExecutionDto => {
       handoffs: execution.source.handoffs.map((handoff) => ({ from: handoff.from, to: handoff.to, rules: [...handoff.rules] })),
       default_launch_configuration: projectLaunchConfiguration(execution.source.defaultLaunchConfiguration),
       ...optionalSource("default_launch_source", execution.source.defaultLaunchSource),
-    } } : {}),
+    },
     ...optionalSelection("user_team_launch_selection", execution.userTeamLaunchSelection),
   };
 };

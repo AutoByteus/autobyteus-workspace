@@ -1,0 +1,30 @@
+Reproduction results recorded by the Solution Designer, 2026-10-24, macOS arm64 (Darwin 25.5.0), Node v22.23.1, chokidar 4.0.3.
+Method of every row: Measured (run) unless the row says Read. "Load" = 2 x ncpu (or more, as noted) `yes >/dev/null` processes.
+
+[Watcher: real AgentPackageFolderWatcher, recording sink; probe = probes/SD-watcher-probe.test.ts]
+Probe writes agents/scout (2 files) then agent-teams/squad (2 files) right after the watcher reports ready (+ DELAY ms),
+and counts runs where the sink never gets markFolderChanged(agent_team, squad) within 3 s.
+  DELAY=300, no load, 60 runs      : miss 0
+  DELAY=0,   no load, 80 runs      : miss 40   (p50 detect 54 ms)   -> watch not yet live right after "ready"
+  DELAY=0,   load,    80 runs      : miss 44
+  DELAY=300, load,    80 runs      : miss 2, both with agent folder events delivered (agent-marks=4)  <- the reported symptom
+  DELAY=300, load,   200 runs      : miss 6 (3%)   raw chokidar log of each miss: scout events arrive at +2..28 ms,
+                                     no raw fs.watch event for agent-teams/squad at all; both folders arrive only when a
+                                     later folder (squad2, written 3 s later) makes agent-teams report again.
+
+[Raw fs.watch, no chokidar; probes/SD-fswatch-lag.mjs, SD-fswatch-raw-two-dirs.mjs, SD-fswatch-handle-add-gap.mjs]
+  watch start -> first observed write (40 runs)           : p50 6 ms, p90 54 ms, max 60 ms (same under load: max 53 ms)
+  two dirs watched, write 300 ms later, load, 200 runs    : 0 misses
+  two dirs watched, write at once, load, 100 runs         : 12 misses on agent-teams, 27 on agents (stream not live yet)
+  handle-add control (ADD=0), 120 runs                    : 0 misses
+  a new fs.watch handle added by the handler of the first folder's event (what chokidar does for each new folder):
+     gap 0 ms : 2 of 120 missed   gap 2 ms : 1 of 120   gap 5 ms : 0 of 120   gap 10 ms : 1 of 120   (4 of 480 vs 0 of 120 for the control)
+
+[Type-graphql] Read: node_modules/type-graphql/build/esm/metadata/metadata-storage.js initCache() (rc.3) appends every @Arg param
+to paramsCache on every build. rc.4 (npm, 2026-02-26, dist-tag next) `initCache()` starts with `clearMapCaches()`.
+[LM Studio] Measured: LLMFactory.reinitialize() -> LM Studio models 0; LLMFactory.reloadModels(LMSTUDIO) -> 5; probes/SD-lmstudio-registry-probe.test.ts
+[managedExtensionService.spec] Measured: the case takes 1.5 s alone, 3.5 s with 3 x ncpu busy loops (default timeout 5 s).
+[Grok] Read: grok-build-capability.ts runProbe() PROBE_TIMEOUT_MS = 3000 per spawned command, a timeout is reported as GROK_CLI_UNSUPPORTED,
+the exact value the failing run received. Not reproduced: 4 of 4 passed (0.4-0.7 s) with 8 x ncpu busy loops.
+[vue-tsc 6.0.2, `npx vue-tsc --noEmit` in autobyteus-web, nuxt prepare done] 892 errors in total; the 7 in the five named spec files are
+in SD-vue-tsc-named-spec-errors.txt; the full log is SD-vue-tsc-web-full.log.gz.

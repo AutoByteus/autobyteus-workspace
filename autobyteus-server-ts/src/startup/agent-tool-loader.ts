@@ -8,8 +8,10 @@ export type RequiredAgentToolUnitKey =
   | "browser"
   | "task_delegation"
   | "project_tasks"
+  | "memory"
   | "agent_communication"
   | "agent_discovery"
+  | "agent_runtimes"
   | "published_artifact"
   | "media"
   | "search";
@@ -44,6 +46,7 @@ const coreSpec: LoaderSpec = {
 
 const serverOwnedSpecs: LoaderSpec[] = [
   {key: "project_tasks", displayName: "Project Task Tools", modulePath: "../agent-tools/project-tasks/project-task-native-tools.js", exportName: "registerProjectTaskTools"},
+  {key: "memory", displayName: "Memory Tools", modulePath: "../agent-tools/memory/memory-native-tools.js", exportName: "registerMemoryTools"},
   {
     key: "browser",
     displayName: "Browser Tools",
@@ -65,8 +68,14 @@ const serverOwnedSpecs: LoaderSpec[] = [
   {
     key: "agent_discovery",
     displayName: "Agent Discovery Tools",
-    modulePath: "../agent-tools/agent-discovery/list-available-agents-tool.js",
+    modulePath: "../agent-tools/agent-discovery/register-agent-discovery-tools.js",
     exportName: "registerAgentDiscoveryTools",
+  },
+  {
+    key: "agent_runtimes",
+    displayName: "Agent Runtime Tools",
+    modulePath: "../agent-tools/agent-runtimes/register-agent-runtimes-tools.js",
+    exportName: "registerAgentRuntimesTools",
   },
   {
     key: "published_artifact",

@@ -7,7 +7,7 @@ import { GetAgentOrgExecutionCheckpoint, GetAgentOrgRunInspection } from '~/grap
 
 const mocks = vi.hoisted(() => ({ query: vi.fn(), mutate: vi.fn(), activity: vi.fn(), terminate: vi.fn(), finalize: vi.fn() }))
 // Member artifacts are not under test here: answered empty without reaching the scenario's query mock.
-vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => ({ query: (options: any) => options.query?.definitions?.[0]?.name?.value === 'GetRunFileChanges' ? Promise.resolve({ data: { getRunFileChanges: [] } }) : mocks.query(options), mutate: mocks.mutate }) }))
+vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => ({ query: (options: any) => options.query?.definitions?.[0]?.name?.value === 'GetAgentOrgMemberFileChanges' ? Promise.resolve({ data: { getAgentOrgMemberFileChanges: [] } }) : mocks.query(options), mutate: mocks.mutate }) }))
 vi.mock('~/stores/windowNodeContextStore', () => ({ useWindowNodeContextStore: () => ({ waitForBoundBackendReady: async () => true, getBoundEndpoints: () => ({ orgWs: 'ws://example.test/org' }) }) }))
 vi.mock('~/utils/remoteAccess/authorizedTransport', () => ({ getActiveRemoteAccessCredential: () => null }))
 vi.mock('~/utils/remoteAccess/websocketAuth', () => ({ buildAuthenticatedWebSocketUrl: (url: string) => url }))
@@ -79,7 +79,7 @@ describe('retained Org disconnected recovery through real service/store/hydratio
     retained.contextFilePaths = [{ locator: '/draft/note.txt' } as never]
     if (address.startsWith('/team/')) {
       wrapper = mount(defineComponent({ setup: () => () => h(TeamWorkspaceSurface, { target: target.value as any }) }), {
-        global: { stubs: { AgentEventMonitor: true, SkillImprovementComposerCta: true, WorkspaceHeaderActions: true } },
+        global: { stubs: { AgentEventMonitor: true, WorkspaceHeaderActions: true } },
       })
       expect(wrapper.text()).toContain('Idle')
     }

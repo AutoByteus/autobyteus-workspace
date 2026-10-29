@@ -1,0 +1,53 @@
+# API-22 same-node E2E suites, switch on | cmd: cd autobyteus-server-ts && env -i PATH HOME=<temp> TMPDIR RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<fixture> ENABLE_REMOTE_COLLABORATION=true vitest run tests/e2e/projects tests/e2e/run-history tests/e2e/agent-team-runs tests/e2e/agent-org-runs --no-watch | code 31d46978ad | macOS 26.5.2, node v22.23.1 | 2026-10-20 (excerpt: per-file results and the failure summary; full log was /tmp/api22-switch-on.log, 5+ MB of server output)
+ ✓ tests/e2e/projects/project-task-boundaries.e2e.test.ts (14 tests) 7604ms
+ ✓ tests/e2e/projects/task-existing-copy-assignment.e2e.test.ts (9 tests | 2 skipped) 183823ms
+ ✓ tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts (7 tests | 1 skipped) 34847ms
+ ✓ tests/e2e/projects/projects-graphql.e2e.test.ts (12 tests) 1955ms
+ ❯ tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts (3 tests | 2 failed) 9470ms
+ ✓ tests/e2e/projects/delegated-copy-model-change.e2e.test.ts (6 tests) 26373ms
+ ✓ tests/e2e/projects/delegated-team-lazy-member-activation.e2e.test.ts (3 tests | 1 skipped) 114414ms
+ ✓ tests/e2e/run-history/run-projection-toolcalls-graphql.e2e.test.ts (6 tests) 243ms
+ ✓ tests/e2e/projects/project-change-feed.e2e.test.ts (7 tests) 9736ms
+ ✓ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts (9 tests) 1179ms
+ ✓ tests/e2e/projects/ad-hoc-task-delegation.e2e.test.ts (3 tests) 12102ms
+ ✓ tests/e2e/projects/collaboration-prompt-wording.e2e.test.ts (11 tests) 14471ms
+ ✓ tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts (1 test) 162233ms
+ ✓ tests/e2e/projects/projects-startup-migration.e2e.test.ts (6 tests) 32083ms
+ ✓ tests/e2e/projects/delegated-copy-member-contact-host.e2e.test.ts (1 test) 3370ms
+ ✓ tests/e2e/projects/task-closure-root-visibility.e2e.test.ts (3 tests) 10389ms
+ ✓ tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts (5 tests) 14255ms
+ ✓ tests/e2e/run-history/stopped-run-model-config-graphql.e2e.test.ts (2 tests) 10242ms
+ ✓ tests/e2e/projects/project-task-parts-live.e2e.test.ts (3 tests) 5108ms
+ ✓ tests/e2e/projects/collaboration-model-contract.e2e.test.ts (3 tests) 5642ms
+ ✓ tests/e2e/projects/project-task-context-files-delegation.e2e.test.ts (1 test) 2536ms
+ ✓ tests/e2e/agent-team-runs/team-run-config-graphql.e2e.test.ts (7 tests) 20512ms
+ ✓ tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts (2 tests) 3773ms
+ ✓ tests/e2e/projects/embedding-settings.e2e.test.ts (6 tests) 3634ms
+ ✓ tests/e2e/projects/project-task-search-model-unavailable.e2e.test.ts (2 tests) 519ms
+ ✓ tests/e2e/projects/agent-run-collaboration-member-file-changes.e2e.test.ts (3 tests) 2663ms
+ ✓ tests/e2e/run-history/standalone-unreadable-tree-containment.e2e.test.ts (2 tests) 5402ms
+ ✓ tests/e2e/projects/project-task-search.e2e.test.ts (3 tests) 701ms
+ ✓ tests/e2e/run-history/removed-remote-provider-saved-selection-graphql.e2e.test.ts (2 tests) 7614ms
+ ✓ tests/e2e/agent-org-runs/controlled-org-publication-http.e2e.test.ts (1 test) 1951ms
+ ✓ tests/e2e/run-history/removed-skill-access-mode-history-graphql.e2e.test.ts (1 test) 1988ms
+ ✓ tests/e2e/projects/project-mutation-node-locality.e2e.test.ts (1 test) 6174ms
+ ✓ tests/e2e/projects/delegation-forest-restore.e2e.test.ts (3 tests) 7869ms
+ ✓ tests/e2e/agent-org-runs/stopped-org-workspace-graphql.e2e.test.ts (1 test) 4237ms
+ ✓ tests/e2e/agent-org-runs/scoped-org-history-graphql.e2e.test.ts (1 test) 3967ms
+ ✓ tests/e2e/projects/hand-started-run-refusal.e2e.test.ts (1 test) 1524ms
+ ✓ tests/e2e/agent-team-runs/task-delegation-api-surface.e2e.test.ts (3 tests) 213ms
+ ❯ tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts:521:22
+ ❯ tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts:639:22
+ Test Files  1 failed | 36 passed (37)
+      Tests  2 failed | 148 passed | 4 skipped (154)
+   Duration  817.01s (transform 10.43s, setup 486ms, import 77.14s, tests 734.82s, environment 3ms)
+## failure summary
+ FAIL  tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > in every root, catalog copies run each agent on its own usable default, f
+AssertionError: expected [ …(3) ] to deeply equal []
++   "agent: AssertionError: expected { …(7) } to deeply equal { lead: { launch: null, …(1) }, …(6) }
++   "team: AssertionError: expected { …(7) } to deeply equal { lead: { launch: null, …(1) }, …(6) }
++   "org: AssertionError: expected { …(7) } to deeply equal { lead: { launch: null, …(1) }, …(6) }
+ FAIL  tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts > Delegated copies honor agent and team launch defaults in every root (real HTTP/WS/scoped MCP, availability and catalog probes; scripted AGY, fake Grok) > Agent and Team roots: an edited definition default leaves started copies 
+AssertionError: expected [ …(2) ] to deeply equal []
++   "agent: TypeError: Cannot read properties of undefined (reading 'members')
++   "team: TypeError: Cannot read properties of undefined (reading 'members')

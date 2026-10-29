@@ -1,0 +1,8 @@
+# API-08 — web mobile gate (AC-018)
+# Command: pnpm -C autobyteus-web exec vitest run __tests__/app.spec.ts
+# Code commit: c42bf2abc4 (+ uncommitted test change in autobyteus-web/__tests__/app.spec.ts); macOS 26.5.2, Node v22.23.1; 2026-10-20 15:26
+# Mutation control: app.vue showsNotifications forced to true → the mobile case fails (1 failed | 5 passed); source restored
+
+ ✓ __tests__/app.spec.ts (6 tests) 28ms
+ Test Files  1 passed (1)
+      Tests  6 passed (6)

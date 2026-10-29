@@ -1,0 +1,160 @@
+# API-13 — packaged isolated build checks a generic test feed (AC-003, REQ-019, design escalation trigger)
+# Steps: build:electron:mac at d76332c669 (code c42bf2abc4); node feed-server.mjs (loopback 58466, latest-mac.yml offering 1.5.8 + notes); pnpm --silent isolated-app start --from-worktree --keep --test-update-feed http://127.0.0.1:58466 → iso-58470-0628 (control 58470, server 58471); CDP attach-only steps state/open-panel/expand-row
+# macOS 26.5.2 arm64; 2026-10-20 15:28
+
+## isolated-app start result
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "start",
+  "result": {
+    "instanceId": "iso-58470-0628",
+    "pid": 69819,
+    "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/settings-update-notifications/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "backendUrl": "http://127.0.0.1:58471",
+    "graphqlUrl": "http://127.0.0.1:58471/graphql",
+    "controlEndpoint": "http://127.0.0.1:58470",
+    "controlPort": 58470,
+    "serverPort": 58471,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-WzxLSJ",
+    "ownsDataRoot": true,
+    "keepDataRoot": true,
+    "testUpdateFeedUrl": "http://127.0.0.1:58466",
+    "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-WzxLSJ/server-data/db/production.db",
+    "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-58470-0628.log"
+  }
+}
+
+## instance log: updater lines
+[2026-10-20T13:27:34.088Z] [INFO] [electron] [updater] Checking for update
+[2026-10-20T13:27:34.089Z] [INFO] [electron] [updater] Generated new staging user ID: 33f98c3f-f96e-5eaf-bce8-8513545d7baf
+[2026-10-20T13:27:34.097Z] [INFO] [electron] [updater] Found version 1.5.8 (url: AutoByteus-1.5.8-mac.zip)
+
+## feed request log (only metadata, no zip)
+{"at":"2026-10-20T13:27:34.094Z","method":"GET","url":"/latest-mac.yml?noCache=1k5cntsea","range":null,"ua":"electron-builder","status":200}
+
+## window state before opening (pill, no card, no toast)
+{
+  "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/settings-update-notifications/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat",
+  "title": "",
+  "sidebarEntry": {
+    "text": "1 update1 software update",
+    "ariaLabel": "1 update available: 1 software update",
+    "title": null
+  },
+  "pills": [
+    {
+      "text": "1 update",
+      "className": ""
+    }
+  ],
+  "centerOpen": false,
+  "centerEmpty": null,
+  "sections": [],
+  "rows": [],
+  "appUpdateNoticePresent": false,
+  "dialogs": [],
+  "toasts": [],
+  "appUpdate": {
+    "status": "available",
+    "currentVersion": "1.5.7-beta.4",
+    "currentVersionIsPrerelease": true,
+    "updateChannel": "stable",
+    "updateStaged": false,
+    "availableVersion": "1.5.8",
+    "downloadPercent": null,
+    "downloadTransferredBytes": null,
+    "downloadTotalBytes": null,
+    "releaseNotes": "API-E2E test release 1.5.8.\nNotification Center shows app, package and skill updates.",
+    "message": "Version 1.5.8 is available.",
+    "errorKind": null,
+    "errorOperation": null,
+    "checkedAt": "2026-10-20T13:27:34.098Z",
+    "notification": {
+      "version": "1.5.8",
+      "fromVersion": "1.5.7-beta.4",
+      "foundAt": "2026-10-20T13:27:34.097Z",
+      "read": false,
+      "state": "waiting",
+      "handledVersion": null,
+      "releasePageUrl": null
+    }
+  }
+}
+
+## after opening the panel + expanding the app row
+{
+  "url": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/settings-update-notifications/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat",
+  "title": "",
+  "sidebarEntry": {
+    "text": "1 update",
+    "ariaLabel": "1 update available: 1 software update",
+    "title": null
+  },
+  "pills": [
+    {
+      "text": "1 update",
+      "className": ""
+    }
+  ],
+  "centerOpen": true,
+  "centerEmpty": null,
+  "sections": [
+    {
+      "id": "notification-section-app",
+      "title": "Software update"
+    }
+  ],
+  "rows": [
+    {
+      "id": "notification-row-app",
+      "state": "waiting",
+      "name": "New: AutoByteus",
+      "change": "1.5.7-beta.41.5.8·1 min. ago",
+      "newDot": true,
+      "actions": [
+        "New: AutoByteus1.5.7-beta.41.5.8·1 min. ago",
+        "Download"
+      ],
+      "details": "API-E2E test release 1.5.8. Notification Center shows app, package and skill updates.",
+      "compare": null,
+      "releasePage": null,
+      "releaseNotes": "API-E2E test release 1.5.8. Notification Center shows app, package and skill updates.",
+      "progress": null,
+      "error": null
+    }
+  ],
+  "appUpdateNoticePresent": false,
+  "dialogs": [
+    {
+      "label": "notification-center-heading-v-0",
+      "text": "NotificationsSoftware updateNew: AutoByteus1.5.7-beta.41.5.8·1 min. agoDownloadAPI-E2E test release 1.5.8. Notification Center shows app, package and skill updates."
+    }
+  ],
+  "toasts": [],
+  "appUpdate": {
+    "status": "available",
+    "currentVersion": "1.5.7-beta.4",
+    "currentVersionIsPrerelease": true,
+    "updateChannel": "stable",
+    "updateStaged": false,
+    "availableVersion": "1.5.8",
+    "downloadPercent": null,
+    "downloadTransferredBytes": null,
+    "downloadTotalBytes": null,
+    "releaseNotes": "API-E2E test release 1.5.8.\nNotification Center shows app, package and skill updates.",
+    "message": "Version 1.5.8 is available.",
+    "errorKind": null,
+    "errorOperation": null,
+    "checkedAt": "2026-10-20T13:27:34.098Z",
+    "notification": {
+      "version": "1.5.8",
+      "fromVersion": "1.5.7-beta.4",
+      "foundAt": "2026-10-20T13:27:34.097Z",
+      "read": true,
+      "state": "waiting",
+      "handledVersion": null,
+      "releasePageUrl": null
+    }
+  }
+}

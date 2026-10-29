@@ -188,59 +188,58 @@ describe('LLMFactory metadata resolution', () => {
       max_context_tokens: 1000000,
       max_output_tokens: 384000
     });
-    const gemini35Flash = geminiModels.find((model) => model.model_identifier === 'gemini-3.5-flash');
-    expect(gemini35Flash).toMatchObject({
-      model_identifier: 'gemini-3.5-flash',
-      display_name: 'gemini-3.5-flash',
-      value: 'gemini-3.5-flash',
-      canonical_name: 'gemini-3.5-flash',
+    const gemini38Flash = geminiModels.find((model) => model.model_identifier === 'gemini-3.8-flash');
+    expect(gemini38Flash).toMatchObject({
+      model_identifier: 'gemini-3.8-flash',
+      display_name: 'gemini-3.8-flash',
+      value: 'gemini-3.8-flash',
+      canonical_name: 'gemini-3.8-flash',
       provider_type: LLMProvider.GEMINI,
       runtime: 'api',
       max_context_tokens: 1048576,
       max_input_tokens: 1048576,
       max_output_tokens: 65536
     });
-    expect(gemini35Flash?.config_schema).toMatchObject({
+    expect(gemini38Flash?.config_schema).toMatchObject({
       properties: {
         thinking_level: expect.objectContaining({
-          enum: ['minimal', 'low', 'medium', 'high']
+          enum: ['low', 'medium', 'high']
         }),
         include_thoughts: expect.objectContaining({
           type: 'boolean'
         })
       }
     });
-    expect(kimiModels.find((model) => model.model_identifier === 'kimi-k2.6')).toMatchObject({
+    expect(kimiModels.find((model) => model.model_identifier === 'kimi-k3')).toMatchObject({
       provider_type: LLMProvider.KIMI,
-      value: 'kimi-k2.6',
-      max_context_tokens: 256000
+      value: 'kimi-k3',
+      max_context_tokens: 1000000
     });
-    expect(kimiModels.find((model) => model.model_identifier === 'kimi-k2.6')?.config_schema).toBeUndefined();
-    expect(kimiModels.find((model) => model.model_identifier === 'kimi-k2.7-code')).toMatchObject({
-      provider_type: LLMProvider.KIMI,
-      value: 'kimi-k2.7-code',
-      max_context_tokens: 256000
+    expect(kimiModels.find((model) => model.model_identifier === 'kimi-k3')?.config_schema).toMatchObject({
+      properties: {
+        reasoning_effort: expect.objectContaining({ enum: ['low', 'high', 'max'], default: 'max' }),
+        thinking_type: expect.objectContaining({ enum: ['enabled'], default: 'enabled' })
+      }
     });
-    expect(kimiModels.find((model) => model.model_identifier === 'kimi-k2.7-code')?.config_schema).toBeUndefined();
-    const glm52 = glmModels.find((model) => model.model_identifier === 'glm-5.2');
-    expect(glm52).toMatchObject({
-      model_identifier: 'glm-5.2',
-      display_name: 'glm-5.2',
-      value: 'glm-5.2',
-      canonical_name: 'glm-5.2',
+    const glm53 = glmModels.find((model) => model.model_identifier === 'glm-5.3');
+    expect(glm53).toMatchObject({
+      model_identifier: 'glm-5.3',
+      display_name: 'glm-5.3',
+      value: 'glm-5.3',
+      canonical_name: 'glm-5.3',
       provider_type: LLMProvider.GLM,
       max_context_tokens: 1000000,
       max_input_tokens: 1000000,
       max_output_tokens: 128000
     });
-    expect(glm52?.config_schema).toMatchObject({
+    expect(glm53?.config_schema).toMatchObject({
       properties: {
         reasoning_effort: expect.objectContaining({
-          enum: ['high', 'max'],
+          enum: ['low', 'high', 'max'],
           default: 'max'
         }),
         thinking_type: expect.objectContaining({
-          enum: ['enabled', 'disabled'],
+          enum: ['enabled'],
           default: 'enabled'
         })
       }
@@ -249,7 +248,10 @@ describe('LLMFactory metadata resolution', () => {
     expect(deepseekModels.map((model) => model.model_identifier)).not.toContain('deepseek-reasoner');
     expect(kimiModels.map((model) => model.model_identifier)).not.toContain('kimi-k2.5');
     expect(kimiModels.map((model) => model.model_identifier)).not.toContain('kimi-k2-thinking');
+    expect(kimiModels.map((model) => model.model_identifier)).not.toContain('kimi-k2.6');
+    expect(kimiModels.map((model) => model.model_identifier)).not.toContain('kimi-k2.7-code');
     expect(glmModels.map((model) => model.model_identifier)).not.toContain('glm-5.1');
+    expect(glmModels.map((model) => model.model_identifier)).not.toContain('glm-5.2');
     expect(qwenModels.find((model) => model.model_identifier === 'qwen3-max')?.max_context_tokens).toBe(262144);
     expect(grokModels).toHaveLength(1);
     expect(grokModels[0]).toMatchObject({

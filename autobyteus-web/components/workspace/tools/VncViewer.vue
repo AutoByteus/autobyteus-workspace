@@ -25,13 +25,11 @@
 
 <script setup lang="ts">
 import { computed, onMounted } from 'vue';
-import { useRuntimeConfig } from 'nuxt/app';
 import { useServerSettingsStore } from '~/stores/serverSettings';
 import VncHostTile, { type VncHostConfig } from '~/components/workspace/tools/VncHostTile.vue';
 import { parseCommaSeparatedHosts } from '~/utils/vncHosts';
 
 const serverSettingsStore = useServerSettingsStore();
-const config = useRuntimeConfig();
 
 const VNC_HOSTS_KEY = 'AUTOBYTEUS_VNC_SERVER_HOSTS';
 const VNC_PASSWORD_KEYS = ['AUTOBYTEUS_VNC_SERVER_PASSWORD', 'AUTOBYTEUS_VNC_PASSWORD'];
@@ -50,7 +48,7 @@ const hosts = computed(() => {
 
 const vncPassword = computed(() => {
   const fromSettings = VNC_PASSWORD_KEYS.map(getSettingValue).find(Boolean);
-  return fromSettings || config.public.vncPassword || 'mysecretpassword';
+  return fromSettings || 'mysecretpassword';
 });
 
 onMounted(async () => {

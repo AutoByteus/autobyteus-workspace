@@ -1,0 +1,31 @@
+url file:///Users/normy/autobyteus_org/autobyteus-worktrees/runtime-lifecycle-design-review/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/settings
+{
+ "codex_app_server": {
+  "state": "up_to_date",
+  "installed": "Installed\nVersion\n0.163.0",
+  "status": "Up to date",
+  "account": "Signed in",
+  "updated": null
+ },
+ "claude_agent_sdk": {
+  "state": "up_to_date",
+  "installed": "Installed\nVersion\n2.1.304",
+  "status": "Up to date",
+  "account": "Signed in",
+  "updated": null
+ },
+ "antigravity_cli": {
+  "state": "up_to_date",
+  "installed": "Installed\nVersion\n1.4.3",
+  "status": "Up to date",
+  "account": "Signed in",
+  "updated": null
+ },
+ "grok_build": {
+  "state": "up_to_date",
+  "installed": "Installed\nVersion\n1.0.62",
+  "status": "Up to date",
+  "account": "Signed in",
+  "updated": null
+ }
+}

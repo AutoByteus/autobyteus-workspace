@@ -18,6 +18,8 @@ import {
   CODEX_SANDBOX_MODES,
 } from "../../../src/runtime-management/codex/codex-sandbox-mode-setting.js";
 import { FEATURED_CATALOG_ITEMS_SETTING_KEY } from "../../../src/config/featured-catalog-items-setting.js";
+import { CLAUDE_ONE_HOUR_PROMPT_CACHE_SETTING_KEY } from "../../../src/runtime-management/claude/claude-prompt-cache-setting.js";
+import { buildClaudeSdkSpawnEnvironment } from "../../../src/runtime-management/claude/client/claude-sdk-spawn-environment.js";
 import {
   DEFAULT_STREAMING_CONTENT_FLUSH_INTERVAL_MS,
   STREAMING_CONTENT_FLUSH_INTERVAL_SETTING_KEY,
@@ -386,6 +388,72 @@ describe("Server settings GraphQL e2e", () => {
     expect(envFileContents).not.toContain(
       `${CODEX_APP_SERVER_SANDBOX_SETTING_KEY}=danger_full_access`,
     );
+  });
+
+  it("saves the Claude one-hour prompt cache toggle through GraphQL, rejects other values, and the next Claude spawn follows it (autobyteus-273 AC-006)", async () => {
+    const originalClaudeCacheEnv = process.env[CLAUDE_ONE_HOUR_PROMPT_CACHE_SETTING_KEY];
+    const originalEnableOneHourEnv = process.env.ENABLE_PROMPT_CACHING_1H;
+    delete process.env[CLAUDE_ONE_HOUR_PROMPT_CACHE_SETTING_KEY];
+    delete process.env.ENABLE_PROMPT_CACHING_1H;
+    const updateMutation = `
+      mutation UpdateServerSetting($key: String!, $value: String!) {
+        updateServerSetting(key: $key, value: $value)
+      }
+    `;
+    const listQuery = `
+      query GetServerSettings {
+        getServerSettings { key value description isEditable isDeletable }
+      }
+    `;
+    type Listed = { getServerSettings: Array<{ key: string; value: string; description: string; isEditable: boolean; isDeletable: boolean }> };
+    const listedSetting = async () =>
+      (await execGraphql<Listed>(listQuery)).getServerSettings.find((entry) => entry.key === CLAUDE_ONE_HOUR_PROMPT_CACHE_SETTING_KEY);
+    // What the server hands the next Claude Code child (ClaudeSdkClient builds it from process.env at spawn time).
+    const nextSpawnOneHourVariable = () => buildClaudeSdkSpawnEnvironment(process.env).ENABLE_PROMPT_CACHING_1H;
+    const envFile = () => fs.readFileSync(path.join(tempDir, ".env"), "utf-8");
+
+    try {
+      // Never saved: not listed with a value, and the next spawn gets the default.
+      expect(await listedSetting()).toBeUndefined();
+      expect(nextSpawnOneHourVariable()).toBe("1");
+
+      const off = await execGraphql<{ updateServerSetting: string }>(updateMutation, {
+        key: CLAUDE_ONE_HOUR_PROMPT_CACHE_SETTING_KEY,
+        value: " false ",
+      });
+      expect(off.updateServerSetting).toContain("updated successfully");
+      expect(process.env[CLAUDE_ONE_HOUR_PROMPT_CACHE_SETTING_KEY]).toBe("false");
+      expect(envFile()).toContain(`${CLAUDE_ONE_HOUR_PROMPT_CACHE_SETTING_KEY}=false`);
+      expect(nextSpawnOneHourVariable()).toBeUndefined();
+      const listedOff = await listedSetting();
+      expect(listedOff).toMatchObject({ value: "false", isEditable: true, isDeletable: false });
+      expect(listedOff?.description).toContain("one-hour prompt cache");
+
+      for (const invalid of ["1h", "off", "TRUE", ""]) {
+        const rejected = await execGraphql<{ updateServerSetting: string }>(updateMutation, {
+          key: CLAUDE_ONE_HOUR_PROMPT_CACHE_SETTING_KEY,
+          value: invalid,
+        });
+        expect(rejected.updateServerSetting).not.toContain("updated successfully");
+        expect(process.env[CLAUDE_ONE_HOUR_PROMPT_CACHE_SETTING_KEY]).toBe("false");
+      }
+      expect(envFile()).toContain(`${CLAUDE_ONE_HOUR_PROMPT_CACHE_SETTING_KEY}=false`);
+
+      const on = await execGraphql<{ updateServerSetting: string }>(updateMutation, {
+        key: CLAUDE_ONE_HOUR_PROMPT_CACHE_SETTING_KEY,
+        value: "true",
+      });
+      expect(on.updateServerSetting).toContain("updated successfully");
+      expect(envFile()).toContain(`${CLAUDE_ONE_HOUR_PROMPT_CACHE_SETTING_KEY}=true`);
+      expect(envFile()).not.toContain(`${CLAUDE_ONE_HOUR_PROMPT_CACHE_SETTING_KEY}=false`);
+      expect((await listedSetting())?.value).toBe("true");
+      expect(nextSpawnOneHourVariable()).toBe("1");
+    } finally {
+      if (originalClaudeCacheEnv === undefined) delete process.env[CLAUDE_ONE_HOUR_PROMPT_CACHE_SETTING_KEY];
+      else process.env[CLAUDE_ONE_HOUR_PROMPT_CACHE_SETTING_KEY] = originalClaudeCacheEnv;
+      if (originalEnableOneHourEnv === undefined) delete process.env.ENABLE_PROMPT_CACHING_1H;
+      else process.env.ENABLE_PROMPT_CACHING_1H = originalEnableOneHourEnv;
+    }
   });
 
   it("discards and rejects the retired stream-parser key through the GraphQL settings boundary", async () => {

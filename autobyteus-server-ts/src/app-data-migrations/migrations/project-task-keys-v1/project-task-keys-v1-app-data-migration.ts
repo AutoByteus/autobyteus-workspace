@@ -1,18 +1,18 @@
 import type { Dirent } from "node:fs";
 import fs from "node:fs/promises";
 import path from "node:path";
-import { writeJsonFile } from "../../../persistence/file/store-utils.js";
-import { ProjectsLayout } from "../../../projects/stores/projects-layout.js";
-import { readProjectFile, readTaskFile } from "../../../projects/stores/project-store.js";
+import { writeJsonFile } from "../../frozen/server/persistence/file/store-utils.js";
+import { ProjectsLayout } from "../../frozen/server/projects/stores/projects-layout.js";
+import { readProjectFile, readTaskFile } from "../../frozen/server/projects/stores/project-store.js";
 import type {
   AppDataMigrationDefinition,
   AppDataMigrationExecutionResult,
   AppDataMigrationItemDetail,
   AppDataMigrationItemStatus,
 } from "../../domain/app-data-migration-types.js";
-import { PROJECTS_PER_FOLDER_V1_MIGRATION_ID } from "../projects-per-folder-v1/projects-per-folder-v1-app-data-migration.js";
 import { readReleasedProjectFileV2, readReleasedTaskFileV2, type ReleasedProjectV2 } from "./released-project-files-v2.js";
 import { formatTaskKeyV1, taskKeyPrefixOfV1, uniqueTaskKeyPrefixV1 } from "./task-key-prefix-v1.js";
+const PROJECTS_PER_FOLDER_V1_MIGRATION_ID = "20261005_projects_per_folder_v1";
 
 export const PROJECT_TASK_KEYS_V1_MIGRATION_ID = "20261017_project_task_keys_v1";
 

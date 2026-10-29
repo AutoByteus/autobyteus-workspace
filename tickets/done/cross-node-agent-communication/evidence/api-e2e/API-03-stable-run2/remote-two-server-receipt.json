@@ -1,0 +1,309 @@
+{
+  "cases": {
+    "RC-01": {
+      "inbound": {
+        "start": {
+          "status": 200,
+          "answer": {
+            "accepted": false,
+            "nodeId": "srv_CecegszLcDzrV9hhIizDPtjG2LHiSGjx",
+            "code": "REMOTE_COLLABORATION_OFF",
+            "message": "Remote collaboration is turned off on this node."
+          }
+        },
+        "message": {
+          "status": 200,
+          "answer": {
+            "accepted": false,
+            "nodeId": "srv_CecegszLcDzrV9hhIizDPtjG2LHiSGjx",
+            "code": "REMOTE_COLLABORATION_OFF",
+            "message": "Remote collaboration is turned off on this node."
+          }
+        }
+      },
+      "addWhileOff": {
+        "message": "Turn on Remote Collaboration before adding a peer node.",
+        "locations": [
+          {
+            "line": 1,
+            "column": 36
+          }
+        ],
+        "path": [
+          "addPeerNode"
+        ],
+        "extensions": {
+          "code": "REMOTE_COLLABORATION_OFF"
+        }
+      }
+    },
+    "RC-03": {
+      "unregisteredCaller": {
+        "status": 200,
+        "answer": {
+          "accepted": false,
+          "nodeId": "srv_CecegszLcDzrV9hhIizDPtjG2LHiSGjx",
+          "code": "PEER_NOT_REGISTERED",
+          "message": "The calling node is not a registered peer of this node."
+        }
+      },
+      "alphaPeers": {
+        "peers": [
+          {
+            "nodeId": "srv_CecegszLcDzrV9hhIizDPtjG2LHiSGjx",
+            "name": "beta-node",
+            "baseUrl": "http://127.0.0.1:63973",
+            "addedAt": "2026-10-20T15:02:28.098Z"
+          }
+        ]
+      },
+      "betaPeers": {
+        "peers": [
+          {
+            "nodeId": "srv_0aDTajOmrcv8mzXAPVnH-fEmdoXPHXnq",
+            "name": "alpha-node",
+            "baseUrl": "http://127.0.0.1:63974",
+            "addedAt": "2026-10-20T15:02:28.118Z"
+          }
+        ]
+      },
+      "notAutobyteus": {
+        "message": "http://127.0.0.1:64002 could not be reached: Unexpected token '<', \"<html>rout\"... is not valid JSON.",
+        "locations": [
+          {
+            "line": 1,
+            "column": 36
+          }
+        ],
+        "path": [
+          "addPeerNode"
+        ],
+        "extensions": {
+          "code": "PEER_UNREACHABLE"
+        }
+      },
+      "notFound": {
+        "message": "http://127.0.0.1:64002/missing could not be reached: HTTP 404.",
+        "locations": [
+          {
+            "line": 1,
+            "column": 36
+          }
+        ],
+        "path": [
+          "addPeerNode"
+        ],
+        "extensions": {
+          "code": "PEER_UNREACHABLE"
+        }
+      },
+      "dead": {
+        "message": "http://127.0.0.1:64004 could not be reached: fetch failed.",
+        "locations": [
+          {
+            "line": 1,
+            "column": 36
+          }
+        ],
+        "path": [
+          "addPeerNode"
+        ],
+        "extensions": {
+          "code": "PEER_UNREACHABLE"
+        }
+      },
+      "gateway": {
+        "mismatchStart": {
+          "status": 200,
+          "answer": {
+            "accepted": false,
+            "nodeId": "srv_CecegszLcDzrV9hhIizDPtjG2LHiSGjx",
+            "code": "PEER_IDENTITY_MISMATCH",
+            "message": "This request was meant for another node."
+          }
+        },
+        "mismatchMessage": {
+          "status": 200,
+          "answer": {
+            "accepted": false,
+            "nodeId": "srv_CecegszLcDzrV9hhIizDPtjG2LHiSGjx",
+            "code": "PEER_IDENTITY_MISMATCH",
+            "message": "This request was meant for another node."
+          }
+        },
+        "unregisteredStart": {
+          "status": 200,
+          "answer": {
+            "accepted": false,
+            "nodeId": "srv_CecegszLcDzrV9hhIizDPtjG2LHiSGjx",
+            "code": "PEER_NOT_REGISTERED",
+            "message": "The calling node is not a registered peer of this node."
+          }
+        },
+        "malformedStart": {
+          "status": 400,
+          "answer": {
+            "accepted": false,
+            "nodeId": "srv_CecegszLcDzrV9hhIizDPtjG2LHiSGjx",
+            "code": "REMOTE_REQUEST_INVALID",
+            "message": "toNodeId must be a non-empty trimmed string."
+          }
+        },
+        "malformedMessage": {
+          "status": 400,
+          "answer": {
+            "accepted": false,
+            "nodeId": "srv_CecegszLcDzrV9hhIizDPtjG2LHiSGjx",
+            "code": "REMOTE_REQUEST_INVALID",
+            "message": "kind must be 'work_packet' or 'message'."
+          }
+        }
+      },
+      "publishRefusals": {
+        "missingWorkspace": {
+          "message": "The workspace '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-1AwOZ2/beta/no-such-folder' is not a folder on this node.",
+          "locations": [
+            {
+              "line": 1,
+              "column": 39
+            }
+          ],
+          "path": [
+            "publishAgent"
+          ],
+          "extensions": {
+            "code": "LAUNCH_SETTINGS_INVALID"
+          }
+        },
+        "unknownModel": {
+          "message": "The model 'no-such-model' is not available on antigravity_cli.",
+          "locations": [
+            {
+              "line": 1,
+              "column": 39
+            }
+          ],
+          "path": [
+            "publishAgent"
+          ],
+          "extensions": {
+            "code": "LAUNCH_SETTINGS_INVALID"
+          }
+        }
+      },
+      "published": [
+        {
+          "agentDefinitionId": "fragile",
+          "definitionName": "Fragile",
+          "address": "/fragile",
+          "runtimeKind": "antigravity_cli",
+          "llmModelIdentifier": "gemini-3.8-flash-low",
+          "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-1AwOZ2/beta/fragile-workspace",
+          "autoExecuteTools": true
+        }
+      ],
+      "publishedFile": {
+        "publishedAgents": [
+          {
+            "agentDefinitionId": "fragile",
+            "runtimeKind": "antigravity_cli",
+            "llmModelIdentifier": "gemini-3.8-flash-low",
+            "llmConfig": null,
+            "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/remote-collab-two-server-1AwOZ2/beta/fragile-workspace",
+            "autoExecuteTools": true,
+            "publishedAt": "2026-10-20T15:02:28.354Z"
+          }
+        ]
+      }
+    },
+    "RC-20": {
+      "total": 2,
+      "counts": {
+        "status": 2
+      },
+      "headerNames": [
+        "accept",
+        "accept-encoding",
+        "accept-language",
+        "connection",
+        "host",
+        "sec-fetch-mode",
+        "user-agent"
+      ]
+    }
+  },
+  "nodes": {
+    "alpha": {
+      "nodeId": "srv_0aDTajOmrcv8mzXAPVnH-fEmdoXPHXnq",
+      "port": 63971,
+      "peerUrlOnBeta": "http://127.0.0.1:63974",
+      "canaryKeySaved": true
+    },
+    "beta": {
+      "nodeId": "srv_CecegszLcDzrV9hhIizDPtjG2LHiSGjx",
+      "port": 63972,
+      "peerUrlOnAlpha": "http://127.0.0.1:63973",
+      "canaryKeySaved": true
+    }
+  },
+  "captured": [
+    {
+      "seq": 1,
+      "at": 1792508548092,
+      "via": "toBeta",
+      "method": "GET",
+      "path": "/rest/remote-access/status",
+      "headers": {
+        "host": "127.0.0.1:63973",
+        "connection": "keep-alive",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate"
+      },
+      "body": null,
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "phoneAccessEnabled": false,
+        "pairingAvailable": false,
+        "compatibilityVersion": 1,
+        "serverInstanceId": "srv_CecegszLcDzrV9hhIizDPtjG2LHiSGjx",
+        "serverName": "AutoByteus Desktop"
+      }
+    },
+    {
+      "seq": 2,
+      "at": 1792508548114,
+      "via": "toAlpha",
+      "method": "GET",
+      "path": "/rest/remote-access/status",
+      "headers": {
+        "host": "127.0.0.1:63974",
+        "connection": "keep-alive",
+        "accept": "*/*",
+        "accept-language": "*",
+        "sec-fetch-mode": "cors",
+        "user-agent": "node",
+        "accept-encoding": "gzip, deflate"
+      },
+      "body": null,
+      "status": 200,
+      "outcome": "forwarded",
+      "answer": {
+        "phoneAccessEnabled": false,
+        "pairingAvailable": false,
+        "compatibilityVersion": 1,
+        "serverInstanceId": "srv_0aDTajOmrcv8mzXAPVnH-fEmdoXPHXnq",
+        "serverName": "AutoByteus Desktop"
+      }
+    }
+  ],
+  "cleanup": {
+    "rootRemoved": true,
+    "serversStopped": true,
+    "leftoverAgy": [],
+    "errors": []
+  }
+}

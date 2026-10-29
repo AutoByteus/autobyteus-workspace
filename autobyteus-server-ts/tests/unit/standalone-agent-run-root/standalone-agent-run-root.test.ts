@@ -18,7 +18,7 @@ import { createTaskExecutionIdentityCapabilities } from "../../../src/agent-team
 import { automaticCollaborationToolNames } from "../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
 import { StandaloneRootPackageStore } from "../../../src/standalone-agent-run-root/persistence/standalone-root-package-store.js";
 import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
-import { TokenUsageMigrationReadiness } from "../../../src/token-usage/providers/token-usage-migration-readiness.js";
+import { TokenUsageCapability } from "../../../src/token-usage/providers/token-usage-capability.js";
 import type { AgentRunMetadata } from "../../../src/run-history/store/agent-run-metadata-types.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import type { MemberExecutionContext } from "../../../src/agent-collaboration/execution/domain/member-execution-context.js";
@@ -29,128 +29,12 @@ import { InMemoryTaskExecutionResources, ingressOfOutcome } from "../../fixtures
 import { RootTaskExecutionLifecycle } from "../../../src/agent-collaboration/execution/task/root-task-execution-lifecycle.js";
 import { AgentRunEventType } from "../../../src/agent-execution/domain/agent-run-event.js";
 import { buildBackgroundTaskUpdatedPayload, type AgentBackgroundTaskStatus } from "../../../src/agent-execution/domain/agent-background-task.js";
+import { HOST, allAvailable, buildManager, cleanupDirectories, definitions, metadata, runnable } from "./helpers/standalone-root-harness.js";
 
-const allAvailable = { getRuntimeAvailability: async (runtimeKind) => ({ runtimeKind, enabled: true, reason: null }) };
-const runnable = {
-  validate: vi.fn(),
-  validateMany: async (inputs: readonly unknown[]) => inputs.map(() => ({ kind: "valid" as const, selection: { llmModelIdentifier: "m", llmConfig: null } })),
-} as unknown as RunModelSelectionValidator;
-
-const directories: string[] = [];
 afterEach(async () => {
   vi.restoreAllMocks();
-  await Promise.all(directories.splice(0).map((dir) => fs.rm(dir, { recursive: true, force: true })));
+  await cleanupDirectories();
 });
-
-const HOST = "research-assistant-run";
-
-const definitions = () => {
-  const agents = [
-    new AgentDefinition({ id: "research-assistant", name: "Research Assistant", description: "Researches", instructions: "x" }),
-    new AgentDefinition({ id: "code-reviewer", name: "Code Reviewer", description: "Reviews", instructions: "x" }),
-    new AgentDefinition({ id: "lead", name: "Lead", description: "Leads", instructions: "x" }),
-    new AgentDefinition({ id: "designer", name: "Designer", description: "Designs", instructions: "x" }),
-  ];
-  const teams = [new AgentTeamDefinition({
-    id: "product-team", name: "Product Team", description: "Product", instructions: "Ship the product UI.",
-    nodes: [new TeamMember({ memberName: "lead", ref: "lead", refScope: "shared" }), new TeamMember({ memberName: "designer", ref: "designer", refScope: "shared" })],
-    coordinatorMemberName: "lead",
-    handoffs: [{ from: "/lead", to: "/designer", rules: ["When UI work is needed."] }],
-  })];
-  return {
-    agents,
-    teams,
-    catalog: {
-      listAgentDefinitions: async () => agents,
-      listTeamDefinitions: async () => teams,
-      getAgentDefinition: async (id: string) => agents.find((agent) => agent.id === id) ?? null,
-      getTeamDefinition: async (id: string) => teams.find((team) => team.id === id) ?? null,
-    },
-  };
-};
-
-const metadata = (memoryDir: string, extra: Partial<AgentRunMetadata> = {}): AgentRunMetadata => ({
-  runId: HOST,
-  agentDefinitionId: "research-assistant",
-  workspaceRootPath: "/work",
-  memoryDir: path.join(memoryDir, "agents", HOST),
-  llmModelIdentifier: "gpt-host",
-  llmConfig: { effort: "high" },
-  autoExecuteTools: true,
-  runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-  platformAgentRunId: "thread-1",
-  startedAt: "2026-09-30T00:00:00.000Z",
-  ...extra,
-});
-
-/** The host is a standalone run owned elsewhere; this double records reservations and restores. */
-const hostRun = () => {
-  let active = true;
-  const reserved: string[] = [];
-  const published: unknown[] = [];
-  const run = {
-    runId: HOST,
-    isActive: () => active,
-    reserveUserMessage: vi.fn(async (message: { content: string }) => {
-      reserved.push(message.content);
-      return { reserved: true as const, reservation: { agentRunId: HOST, cancel: vi.fn(), commit: vi.fn(() => ({ release: vi.fn() })) } };
-    }),
-    publishEvent: vi.fn(async (event: unknown) => { published.push(event); }),
-    postUserMessage: vi.fn(async (_message: { content: string }, _options: unknown) => ({ accepted: true as const })),
-  };
-  return { run, reserved, published, crash: () => { active = false; }, restore: () => { active = true; } };
-};
-
-/** Production always binds the Task side; every delegated copy belongs to a Task. */
-const buildManager = async (taskExecutionResources: InMemoryTaskExecutionResources = new InMemoryTaskExecutionResources()) => {
-  vi.spyOn(TokenUsageMigrationReadiness.prototype, "assertCurrentSchemaReady").mockImplementation(() => undefined);
-  const handles = observeConfiguredHandles();
-  const memoryDir = await fs.mkdtemp(path.join(os.tmpdir(), "agent-root-")); directories.push(memoryDir);
-  const host = hostRun();
-  // The host's activation backend (the standalone lifecycle): records the root-built member context.
-  const contexts: MemberExecutionContext[] = [];
-  let currentMetadata = metadata(memoryDir);
-  const restores = vi.fn(async (_hostRunId: string, input: { memberExecutionContext: MemberExecutionContext | null }) => {
-    contexts.push(input.memberExecutionContext!);
-    host.restore();
-    return { run: host.run as never, metadata: currentMetadata };
-  });
-  const catalogFlag = vi.fn(async () => undefined);
-  let allocation = 0;
-  const { catalog } = definitions();
-  const directory = new ActiveCollaborationRootDirectory();
-  const manager = new StandaloneAgentRunRootManager({
-    memoryDir,
-    activeRootDirectory: directory,
-    definitions: { getAgentDefinitionById: (id) => catalog.getAgentDefinition(id) },
-    host: {
-      getActiveRun: () => (host.run.isActive() ? host.run as never : null),
-      activateHost: restores,
-      terminateHost: vi.fn(async () => {
-        const wasActive = host.run.isActive();
-        host.crash();
-        return { outcome: wasActive ? "terminated" as const : "not_active" as const, runtimeKind: null };
-      }),
-      readMetadata: async () => currentMetadata,
-      recordCollaborationPackageCreated: catalogFlag,
-    },
-    taskExecutionResources,
-    rootDependencies: {
-      taskExecutionResources,
-      flatTeamExecutionFactory: new FlatTeamExecutionFactory({ memoryLocator: new AgentRunMemoryLocator({ memoryDir }) }),
-      taskExecutionIdentity: createTaskExecutionIdentityCapabilities({ allocateForAgentDefinition: async (id) => `${id}-run-${++allocation}` }),
-      teamDefinitions: { getDefinitionById: (id) => catalog.getTeamDefinition(id) },
-      memoryLocator: new AgentRunMemoryLocator({ memoryDir }),
-      activityInspector: { inspect: vi.fn(() => ({ kind: "present" as const })) } as never,
-      collaboratorAdmission: createCollaboratorAdmission(catalog, runnable, allAvailable),
-    },
-  });
-  const hostIdentity = createCollaborationMemberExecutionIdentity({
-    root: createAgentRootExecutionIdentity(HOST), memberAddress: "/research_assistant", agentRunId: HOST,
-  });
-  return { manager, memoryDir, host, restores, contexts, catalogFlag, handles, directory, hostIdentity, store: new StandaloneRootPackageStore(),
-    setMetadata: (extra: Partial<AgentRunMetadata>) => { currentMetadata = metadata(memoryDir, extra); } };
-};
 
 /** Delegates the host's work to a catalog Agent copy; messaging never starts runs, only delegation does. */
 const delegateReviewer = async (root: { delegateToNewCopy: (...args: never[]) => Promise<unknown> }, f: Awaited<ReturnType<typeof buildManager>>, description = "Review") =>
@@ -172,8 +56,6 @@ describe("Agent root of a standalone run", () => {
     await f.manager.stopRoot(HOST);
     expect(await context!.tasks.delegateToNewCopy(context!.identity, { recipient_address: "/x", description: "d" }))
       .toEqual({ delegated: false, message: "This work is stopping or has stopped, so the message or delegation was not sent." });
-    f.setMetadata({ launchPurpose: "server_helper" });
-    expect(await f.manager.resolveRoot(HOST)).toBeNull();
     f.setMetadata({
       applicationExecutionContext: { applicationId: "app", bindingId: "b", producer: { agentRunId: HOST, displayName: "x" } } as never,
     });
@@ -197,7 +79,7 @@ describe("Agent root of a standalone run", () => {
     f.host.crash();
     const inspection = (await f.manager.getInspection(HOST))!;
     expect(f.restores).not.toHaveBeenCalled();
-    const projected = projectAgentCollaborationView(inspection);
+    const projected = projectAgentCollaborationView({ ...inspection, remoteTaskExecutions: [] });
     if (projected.root_subject_kind !== 'agent') throw new Error('Wrong root');
     expect(projected.root_agent.agent_input_states.map(s => s.agent_run_id).sort()).toEqual(["code-reviewer-run-1", "lead-run-2"]);
     expect(projected.root_agent.agent_input_states[0]!.state.entries.map(e => e.state)).toEqual(["held", "queued"]);
@@ -269,7 +151,7 @@ describe("Agent root of a standalone run", () => {
     for (const observed of f.handles.values()) Object.assign(observed.handle, { getInputStateSnapshots: () => [] });
     const snapshotConnection = await root.openPackageSnapshotConnection();
     const projected = projectAgentCollaborationView({ hostRunId: HOST, isActive: true,
-      snapshot: snapshotConnection.snapshot, baseChangeSequence: snapshotConnection.baseChangeSequence });
+      snapshot: snapshotConnection.snapshot, baseChangeSequence: snapshotConnection.baseChangeSequence, remoteTaskExecutions: [] });
     expect(projected.root_subject_kind === 'agent' && projected.root_agent.agent_statuses).toHaveLength(3);
     if (projected.root_subject_kind === 'agent') {
       expect(projected.root_agent.agent_statuses.every(s => s.recoverableBlock === null)).toBe(true);
@@ -397,7 +279,8 @@ describe("Agent root of a standalone run", () => {
 
   it("rejects the command entry for runs that cannot host delegated copies", async () => {
     const f = await buildManager();
-    let stored: AgentRunMetadata | null = metadata(f.memoryDir, { launchPurpose: "server_helper" });
+    // An application-owned run cannot host delegated copies.
+    let stored: AgentRunMetadata | null = metadata(f.memoryDir, { applicationExecutionContext: { applicationId: "app", bindingId: "b", producer: { agentRunId: HOST, displayName: "x" } } as never });
     const activateHost = vi.fn();
     const helper = new StandaloneAgentRunRootManager({
       memoryDir: f.memoryDir,
@@ -659,6 +542,23 @@ describe("StandaloneAgentRunRoot owns its host (REQ-001, REQ-004)", () => {
     expect(f.manager.getActive(HOST)).not.toBe(root);
   });
 
+  it("autobyteus-278 F-004: a run's end is reported after its host stopped, for Stop and history delete; a released listener hears nothing", async () => {
+    const f = await buildManager();
+    await f.manager.resolveRoot(HOST);
+    const terminateHost = (f.manager as unknown as { options: { host: { terminateHost: ReturnType<typeof vi.fn> } } }).options.host.terminateHost;
+    const ended = vi.fn();
+    const released = vi.fn();
+    f.manager.onRunEnded(HOST, ended);
+    f.manager.onRunEnded(HOST, released)();
+    await f.manager.stopRoot(HOST);
+    expect(ended).toHaveBeenCalledTimes(1);
+    expect(terminateHost.mock.invocationCallOrder[0]!).toBeLessThan(ended.mock.invocationCallOrder[0]!);
+    await f.manager.resolveRoot(HOST);
+    await f.manager.endRoot(HOST);
+    expect(ended).toHaveBeenCalledTimes(2);
+    expect(released).not.toHaveBeenCalled();
+  });
+
   it("Task DONE: closed copies are published before stopping, kept in the tree, and listed as closed live and in the stored read", async () => {
     const resources = new InMemoryTaskExecutionResources();
     resources.addTask("A"); resources.addTask("B");
@@ -684,7 +584,7 @@ describe("StandaloneAgentRunRoot owns its host (REQ-001, REQ-004)", () => {
 
     const live = await root.openPackageSnapshotConnection();
     expect(live.snapshot.closedTaskExecutions).toEqual([closedA]);
-    const view = projectAgentCollaborationView({ hostRunId: HOST, isActive: true, snapshot: live.snapshot, baseChangeSequence: live.baseChangeSequence });
+    const view = projectAgentCollaborationView({ hostRunId: HOST, isActive: true, snapshot: live.snapshot, baseChangeSequence: live.baseChangeSequence, remoteTaskExecutions: [] });
     live.close();
     expect(view.root_subject_kind === "agent" && view.root_agent.closed_task_executions).toEqual([closedA]);
     // The tree is never filtered: both copies stay recorded.

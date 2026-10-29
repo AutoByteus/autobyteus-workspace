@@ -1,0 +1,24 @@
+# Handoff — Architecture Review — remote-discovery (autobyteus-261)
+
+- From: Solution Designer, 2026-10-21. Classification: `Architecture Design Complete`, `task_size=Medium`, `architectural_risk=High`.
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/remote-discovery`, branch `codex/remote-discovery`, base `origin/personal` `8fbe77c461`. Finalization target: `origin/personal`. No release unless the user asks.
+- Original request: Task autobyteus-261 (full text: `/Users/normy/autobyteus_org/autobyteus-delivery-receipts/cross-node-follow-ups/autobyteus-261-full-task.md`). Agents list the available nodes and what a node offers, then delegate without being told the address. The wording follow-ups of 247 are merged in.
+- Approval: requirements `Approved` by the user (SR-002, quoted in the requirements doc). The tool wording is delegated by the user to the Solution Designer (DEC-406).
+- Documents:
+  - `tickets/in-progress/remote-discovery/requirements-doc.md`
+  - `investigation-notes.md`
+  - `design-spec.md`
+  - `solution-revision-record.md`
+  - `follow-ups.md` (empty)
+  - The contract change in `autobyteus-server-ts/docs/design/collaboration_model.md` (CM-12).
+- Classification evidence:
+  - It changes the contract between nodes (two request kinds; `target` replaces `targetName`).
+  - A node's catalog becomes readable by registered peers (trusted network, RSK-401).
+  - Approved agent-facing texts change.
+  - No persistence, no root changes.
+- Please check in particular:
+  - the remote listing bypasses the roots (design § Task Design Health Assessment);
+  - the new port beside `RemoteRunChannel`;
+  - the status mapping (every non-accepted outcome is `unavailable`);
+  - the one entry builder.
+- Expected output: the architecture review report; on Pass, the reviewer's handoff to implementation.

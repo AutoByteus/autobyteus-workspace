@@ -1,8 +1,7 @@
+import type { RootMessageAppend, RootMessageAppendResult } from "../../agent-collaboration/execution/communication/root-message-append.js";
 import { RootTaskPersistenceFinalizationIndeterminateError } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 import type { RunPackageFileWriteResult } from "../../run-history/store/atomic-run-package-file-commit-writer.js";
 import type { StandaloneRootPackageStore } from "../persistence/standalone-root-package-store.js";
-import type { CollaborationCommunicationMessage } from "../../agent-collaboration/execution/communication/collaboration-communication-message.js";
-import type { MessageLogOwner } from "../../run-history/store/task-agent-message-logs.js";
 import type {
   StandaloneRootMessagesFile,
   StandaloneRootTreeSnapshot,
@@ -32,6 +31,8 @@ export class StandaloneRootPersistenceCoordinator {
     store: StandaloneRootPackageStore;
     packageExists: boolean;
     getMessages(): StandaloneRootMessagesFile;
+    /** The current tree, for a package created by a run's first message (a run a peer node started). */
+    getTree(): StandaloneRootTreeSnapshot;
     onPackageCreated(): Promise<void>;
     enterPersistenceFailStop(error: Error): void;
   }>) {
@@ -104,24 +105,36 @@ export class StandaloneRootPersistenceCoordinator {
     });
   }
 
-  commitCommunication(input: Readonly<{
-    nextMessages: StandaloneRootMessagesFile;
-    /** The one message this commit adds, and the logs it belongs to (receiver's first; D-4). */
-    message: CollaborationCommunicationMessage;
-    logOwners: readonly MessageLogOwner[];
-    commitAfterDurability(): void;
-    cancelBeforeDurability(): void;
-  }>): Promise<Readonly<{ committed: true }> | Readonly<{ committed: false; code: string; message: string }>> {
+  /** One message: prepared, then appended to its logs under the lock; an indeterminate write is thrown. */
+  commitMessageAppend(append: RootMessageAppend): Promise<RootMessageAppendResult> {
     return this.withLock(async () => {
+      // A refused or conflicting message writes nothing, not even the package it would create.
+      const prepared = append.prepare();
+      if (prepared.kind !== "append") return { outcome: prepared.kind };
+      // A run a peer node started has no package until its first message (design § On-Disk item 8).
+      if (!this.created) {
+        for (const write of ["messages", "tree"] as const) {
+          const created = write === "messages"
+            ? await this.options.store.writeMessages(this.options.collaborationDir, this.options.getMessages())
+            : await this.options.store.writeTree(this.options.collaborationDir, this.options.getTree());
+          if (created.outcome === "not_renamed") {
+            append.cancelBeforeDurability();
+            return { outcome: "not_committed", cause: created.cause };
+          }
+          if (created.outcome === "renamed_finalization_indeterminate") this.latchAndThrow(created);
+        }
+        this.created = true;
+        await this.recordPackageCreated();
+      }
       const result = await this.options.store.appendMessage(
-        this.options.collaborationDir, this.options.hostRunId, input.message, input.logOwners);
+        this.options.collaborationDir, this.options.hostRunId, append.message, prepared.logOwners);
       if (result.outcome === "not_renamed") {
-        input.cancelBeforeDurability();
-        return { committed: false, code: "AGENT_ROOT_MESSAGE_HISTORY_COMMIT_FAILED", message: result.cause.message };
+        append.cancelBeforeDurability();
+        return { outcome: "not_committed", cause: result.cause };
       }
       if (result.outcome === "renamed_finalization_indeterminate") this.latchAndThrow(result);
-      this.finalize("communication_messages", input.commitAfterDurability);
-      return { committed: true };
+      this.finalize("communication_messages", () => append.commitAfterDurability());
+      return { outcome: "committed" };
     });
   }
 

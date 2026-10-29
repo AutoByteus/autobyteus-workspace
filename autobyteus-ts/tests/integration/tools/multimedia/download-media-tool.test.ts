@@ -4,10 +4,11 @@ import path from 'node:path';
 import os from 'node:os';
 import { DownloadMediaTool } from '../../../../src/tools/multimedia/download-media-tool.js';
 
-const LOCAL_SERVER_BASE_URL = process.env.AUTOBYTEUS_MEDIA_LOCAL_BASE_URL ?? 'http://192.168.2.124:29695';
-const LOCAL_FILES_TO_TEST: Array<[string, string, string]> = [
-  [`${LOCAL_SERVER_BASE_URL}/rest/files/images/nice_image.png`, 'test-image', '.png']
-];
+// A LAN media server exists only on the machine that sets this variable; without it the local case is skipped.
+const LOCAL_SERVER_BASE_URL = process.env.AUTOBYTEUS_MEDIA_LOCAL_BASE_URL?.trim() || null;
+const LOCAL_FILES_TO_TEST: Array<[string, string, string]> = LOCAL_SERVER_BASE_URL
+  ? [[`${LOCAL_SERVER_BASE_URL}/rest/files/images/nice_image.png`, 'test-image', '.png']]
+  : [];
 const PUBLIC_PDF_URL = process.env.AUTOBYTEUS_MEDIA_PDF_URL ?? 'https://arxiv.org/pdf/1706.03762';
 
 describe('DownloadMediaTool integration', () => {

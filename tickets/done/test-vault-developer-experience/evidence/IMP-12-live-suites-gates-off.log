@@ -1,0 +1,21 @@
+# IMP-12 the 15 migrated server live suites load and skip with gates off
+# commit 855842b8f1 | macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2 | 2026-10-19
+# command: pnpm -C autobyteus-server-ts exec vitest run <the 15 suites in tests/e2e/runtime listed below> --no-watch
+
+ ↓ tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts (36 tests | 36 skipped)
+ ↓ tests/e2e/runtime/agent-runtime-graphql.e2e.test.ts (21 tests | 21 skipped)
+ ↓ tests/e2e/runtime/all-runtime-send-message-matrix.e2e.test.ts (1 test | 1 skipped)
+ ↓ tests/e2e/runtime/autobyteus-anthropic-prompt-caching-live.e2e.test.ts (7 tests | 7 skipped)
+ ↓ tests/e2e/runtime/autobyteus-claude-5-5-live.e2e.test.ts (6 tests | 6 skipped)
+ ↓ tests/e2e/runtime/autobyteus-compaction-cache-reuse-live.e2e.test.ts (4 tests | 4 skipped)
+ ↓ tests/e2e/runtime/autobyteus-compaction-token-reading-live.e2e.test.ts (1 test | 1 skipped)
+ ↓ tests/e2e/runtime/autobyteus-native-output-limit-live.e2e.test.ts (11 tests | 11 skipped)
+ ↓ tests/e2e/runtime/autobyteus-native-output-limit-recovery-live.e2e.test.ts (15 tests | 15 skipped)
+ ↓ tests/e2e/runtime/autobyteus-team-runtime-graphql.e2e.test.ts (5 tests | 5 skipped)
+ ↓ tests/e2e/runtime/mixed-task-delegation.e2e.test.ts (4 tests | 4 skipped)
+ ↓ tests/e2e/runtime/mixed-team-runtime-graphql.e2e.test.ts (1 test | 1 skipped)
+ ↓ tests/e2e/runtime/skill-update-notice-live.e2e.test.ts (4 tests | 4 skipped)
+ ↓ tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts (4 tests | 4 skipped)
+ ↓ tests/e2e/runtime/work-journal-skill-improvement.e2e.test.ts (1 test | 1 skipped)
+ Test Files  15 skipped (15)
+      Tests  121 skipped (121)

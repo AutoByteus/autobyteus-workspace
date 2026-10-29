@@ -42,7 +42,9 @@ import { registerContextFileRoutes } from "../../../../src/api/rest/context-file
 import { AgentMemoryLayout } from "../../../../src/agent-memory/store/agent-memory-layout.js";
 import { ContextFileReadService } from "../../../../src/context-files/services/context-file-read-service.js";
 import {
+  testAgentCopySource,
   testAgentNode,
+  testCopyLaunch,
   testExecutionTree,
 } from "../../../fixtures/current-team-run-fixtures.js";
 
@@ -148,13 +150,13 @@ const writeExecutionTree = async (input: {
   const delegatorAgentRunId = rootAgents[0]!.agentRunId;
   const taskExecutions = [
     ...(input.tasks ?? []).map(entry => ({ ...entry, platformAgentRunId: null, delegatorAgentRunId,
-      startedAt: "2026-09-01T00:00:00.000Z" })),
+      startedAt: "2026-09-01T00:00:00.000Z", source: testAgentCopySource("member") })),
     // A Team copy of a flat team run is a catalog copy with its recorded source.
     ...(input.nested ?? []).map(entry => ({ address: entry.address, teamRunId: entry.teamRunId,
       members: [{ address: entry.agentAddress, agentRunId: entry.agentRunId, platformAgentRunId: null }],
       taskExecutions: [], delegatorAgentRunId, startedAt: "2026-09-01T00:00:00.000Z",
       source: { kind: "agent_team", teamDefinitionId: `team-${entry.teamRunId}`, coordinatorAddress: entry.agentAddress,
-        members: [{ address: entry.agentAddress, agentDefinitionId: "member" }], handoffs: [],
+        members: [{ address: entry.agentAddress, agentDefinitionId: "member", launchConfiguration: testCopyLaunch(), followsTeam: true }], handoffs: [],
         defaultLaunchConfiguration: tree.rootTeam.defaultLaunchConfiguration } })),
   ];
   const teamDir = new AgentMemoryLayout(input.memoryDir).getTeamDirPath({

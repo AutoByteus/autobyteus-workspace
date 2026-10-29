@@ -1,0 +1,657 @@
+# API-05 after commit=9715f94db0 2026-10-20T09:11:32Z cmd: env -i PATH HOME=$HOME USER LOGNAME TMPDIR CODEX_HOME=<throwaway> RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<worktree>/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs RUN_CODEX_MCP_E2E=1 RUN_LMSTUDIO_E2E=1 RUN_CLAUDE_E2E=1 RUN_GROK_E2E=1 MCP_MATRIX_E2E_EVIDENCE_DIR=<dir> pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts --no-watch --reporter=verbose
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-sdk-v2-migration/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/mcp-sdk-v2-migration/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:94705) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-sdk-v2-migration/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-sdk-v2-migration/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-runtime-matrix-e2e-cqVJMa
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-runtime-matrix-e2e-cqVJMa/.env
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-runtime-matrix-e2e-cqVJMa/.env
+[dotenv@17.3.1] injecting env (2) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-runtime-matrix-e2e-cqVJMa/.env -- tip: ⚙️  suppress all logs with { quiet: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-sdk-v2-migration/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-sdk-v2-migration/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-runtime-matrix-e2e-cqVJMa
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-runtime-matrix-e2e-cqVJMa/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-runtime-matrix-e2e-cqVJMa/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-runtime-matrix-e2e-cqVJMa/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-runtime-matrix-e2e-cqVJMa/memory
+============================================================
+Initialized server settings service with 20 predefined settings
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+AgentRunManager initialized.
+AgentRunManager initialized.
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-runtime-matrix-e2e-cqVJMa/temp_workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-runtime-matrix-e2e-cqVJMa/temp_workspace.
+Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-runtime-matrix-e2e-cqVJMa/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'read_media_file'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+Successfully registered tool definition: 'delegate_task'
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+Registered required tool unit: Task Delegation Tools
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+Successfully registered tool definition: 'list_available_agents'
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+Registered required tool unit: Agent Discovery Tools
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Registered required tool unit: Agent Communication Tools
+Registered required tool unit: Project Task Tools
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+Registered required tool unit: Browser Tools
+
+stderr | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+Successfully registered tool definition: 'search_web'
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+Server setting 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' updated
+Initialized 'AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID' with 'autobyteus-retrospective-skill-improver'.
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Configuring MCP server with ID: matrix_stdio
+Populating MCP server config cache for the first time...
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+MCP server config cache populated with 0 items.
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+In-memory cache: Added new MCP config matrix_stdio.
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+Attempting to discover and register tools for server ID: matrix_stdio
+
+stderr | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+Overwriting existing MCP config with server_id 'matrix_stdio'.
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+Successfully registered tool definition: 'matrix_stdio_echo'
+Successfully registered tool definition: 'matrix_stdio_add'
+Successfully registered tool definition: 'matrix_stdio_fail'
+Successfully registered tool definition: 'matrix_stdio_slow'
+Successfully registered tool definition: 'matrix_stdio_report_env_and_cwd'
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+Successfully discovered and registered 5 tools for server ID: matrix_stdio
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+Configuring MCP server with ID: matrix_http
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+In-memory cache: Added new MCP config matrix_http.
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+Attempting to discover and register tools for server ID: matrix_http
+
+stderr | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+Overwriting existing MCP config with server_id 'matrix_http'.
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+Successfully registered tool definition: 'matrix_http_auth_probe'
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP
+Successfully discovered and registered 1 tools for server ID: matrix_http
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > agy (scripted CLI): all three tool kinds through autobyteus_agent_tools
+Agent Definition created successfully with ID: mcp-matrix-agy-91a488
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > agy (scripted CLI): all three tool kinds through autobyteus_agent_tools
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-runtime-matrix-e2e-cqVJMa/workspace-agy
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-runtime-matrix-e2e-cqVJMa/workspace-agy.
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > agy (scripted CLI): all three tool kinds through autobyteus_agent_tools
+Created and registered workspace ID: agent_ws_2f389649c467e3f4de9785438209a7bb73f5091741d2f8bf272d89f16840d5ba
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > agy (scripted CLI): all three tool kinds through autobyteus_agent_tools
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-runtime-matrix-e2e-cqVJMa/workspace-agy
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-runtime-matrix-e2e-cqVJMa/workspace-agy.
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > agy (scripted CLI): all three tool kinds through autobyteus_agent_tools
+Reusing registered workspace ID: agent_ws_2f389649c467e3f4de9785438209a7bb73f5091741d2f8bf272d89f16840d5ba
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > agy (scripted CLI): all three tool kinds through autobyteus_agent_tools
+AGY compaction detection off for run mcp_matrix_agy_91a488_9c8681d79ea445d69eede74e5fd5285e: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > agy (scripted CLI): all three tool kinds through autobyteus_agent_tools
+Agent websocket attached for run mcp_matrix_agy_91a488_9c8681d79ea445d69eede74e5fd5285e
+Created agent session 7d8e109e-2499-44c6-8268-9030c5d06f05 for run mcp_matrix_agy_91a488_9c8681d79ea445d69eede74e5fd5285e
+Agent WebSocket connected: session=7d8e109e-2499-44c6-8268-9030c5d06f05, run=mcp_matrix_agy_91a488_9c8681d79ea445d69eede74e5fd5285e
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > agy (scripted CLI): all three tool kinds through autobyteus_agent_tools
+Closed agent session 7d8e109e-2499-44c6-8268-9030c5d06f05
+Agent WebSocket disconnected: 7d8e109e-2499-44c6-8268-9030c5d06f05
+
+ ✓ tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > agy (scripted CLI): all three tool kinds through autobyteus_agent_tools 721ms
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+Discovering LM Studio models from host: http://localhost:1234
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+Agent Definition created successfully with ID: mcp-matrix-native-f9654b
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-runtime-matrix-e2e-cqVJMa/workspace-native
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-runtime-matrix-e2e-cqVJMa/workspace-native.
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+Created and registered workspace ID: agent_ws_6727a5b2b71fe8e0114e4fdfebc715f4477d081de6c2cf364a019c67022b4574
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-runtime-matrix-e2e-cqVJMa/workspace-native
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-runtime-matrix-e2e-cqVJMa/workspace-native.
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+Reusing registered workspace ID: agent_ws_6727a5b2b71fe8e0114e4fdfebc715f4477d081de6c2cf364a019c67022b4574
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+MediaStorageService initialized. Media root: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-runtime-matrix-e2e-cqVJMa/media
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+AgentRuntimeState initialized for agent_id 'mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+Agent 'mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7': LLM instance 'LMStudioLLM' and 10 tools prepared and stored in state.
+AgentContext composed for agent_id 'mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7'. Config and State linked.
+Instantiating AgentRuntime for agent_id: 'mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7' with config: 'mcp-matrix-native-f9654b'.
+AgentWorker initialized for agent_id 'mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7'.
+Registered AgentContext for agent_id 'mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7'. Total registered contexts: 1
+AgentRuntime initialized for agent_id 'mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7'. Context registered.
+Agent facade initialized for agent_id 'mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7'.
+Agent 'mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7' created and stored successfully.
+Agent 'mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7' requesting runtime to start.
+AgentRuntime for 'mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7': Starting worker.
+AgentWorker 'mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7': Starting...
+AgentWorker 'mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7' asyncRun(): Starting.
+Agent 'mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7': Runtime init completed (event store initialized).
+Agent 'mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7': Runtime init completed (status deriver initialized).
+Agent 'mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7': Runtime init completed (AgentEventInbox initialized).
+Agent 'mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7': Runtime init completed (AgentEventScheduler initialized).
+Waiting for agent 'mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7' to become idle (timeout: 30s)...
+AgentEventStream (ID: 072d1fba-79d8-4966-91f8-57713f13a240) initialized for agent_id 'mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7'. Subscribed to notifier.
+Agent 'mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7': Starting direct runtime bootstrap lifecycle.
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+AgentExternalEventNotifier (NotifierID: bf9b2d06-666e-4568-8d41-285583c683a2, AgentID: mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+Agent 'mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7': Bootstrapper starting direct lifecycle execution.
+Agent 'mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7': Running bootstrap step 0 (McpServerPrewarmingStep).
+Agent 'mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7': Executing McpServerPrewarmingStep.
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+Agent 'mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7': Running bootstrap step 1 (SystemPromptProcessingStep).
+Agent 'mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7': Executing SystemPromptProcessingStep.
+Agent 'mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7': No configured skills. Skipping skill catalog.
+Agent 'mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7': Final processed system prompt configured and captured. Trace ID: rt_1792487502488_c40066b2-e1ff-4dd7-8ae6-001f6902c8aa. Final length: 4551.
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+Agent 'mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+AgentExternalEventNotifier (NotifierID: bf9b2d06-666e-4568-8d41-285583c683a2, AgentID: mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+AgentWorker 'mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7' initialized successfully. Entering main event scheduler loop.
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+Agent 'mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7' has become idle.
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+AgentEventStream (ID: 072d1fba-79d8-4966-91f8-57713f13a240) for 'mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+AgentEventStream (ID: 1cbbbb1d-66f9-431f-80f8-cd4b6cba314c) initialized for agent_id 'mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7'. Subscribed to notifier.
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+Agent websocket attached for run mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7
+Created agent session c1aa2fdf-4d91-42b9-93ed-b44ec8c27561 for run mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7
+Agent WebSocket connected: session=c1aa2fdf-4d91-42b9-93ed-b44ec8c27561, run=mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+AgentExternalEventNotifier (NotifierID: bf9b2d06-666e-4568-8d41-285583c683a2, AgentID: mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+AgentExternalEventNotifier (NotifierID: bf9b2d06-666e-4568-8d41-285583c683a2, AgentID: mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+Agent run 'mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7': UserInputContextBuildingProcessor completed. Final content length: 361
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+AgentExternalEventNotifier (NotifierID: bf9b2d06-666e-4568-8d41-285583c683a2, AgentID: mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+LlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: bf9b2d06-666e-4568-8d41-285583c683a2, AgentID: mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+AgentExternalEventNotifier (NotifierID: bf9b2d06-666e-4568-8d41-285583c683a2, AgentID: mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+AgentExternalEventNotifier (NotifierID: bf9b2d06-666e-4568-8d41-285583c683a2, AgentID: mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: bf9b2d06-666e-4568-8d41-285583c683a2, AgentID: mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+AgentExternalEventNotifier (NotifierID: bf9b2d06-666e-4568-8d41-285583c683a2, AgentID: mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+AgentExternalEventNotifier (NotifierID: bf9b2d06-666e-4568-8d41-285583c683a2, AgentID: mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+AgentExternalEventNotifier (NotifierID: bf9b2d06-666e-4568-8d41-285583c683a2, AgentID: mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: bf9b2d06-666e-4568-8d41-285583c683a2, AgentID: mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+Agent run 'mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7': UserInputContextBuildingProcessor completed. Final content length: 49
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+AgentExternalEventNotifier (NotifierID: bf9b2d06-666e-4568-8d41-285583c683a2, AgentID: mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+AgentExternalEventNotifier (NotifierID: bf9b2d06-666e-4568-8d41-285583c683a2, AgentID: mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+LlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: bf9b2d06-666e-4568-8d41-285583c683a2, AgentID: mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+AgentExternalEventNotifier (NotifierID: bf9b2d06-666e-4568-8d41-285583c683a2, AgentID: mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+AgentExternalEventNotifier (NotifierID: bf9b2d06-666e-4568-8d41-285583c683a2, AgentID: mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: bf9b2d06-666e-4568-8d41-285583c683a2, AgentID: mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+AgentExternalEventNotifier (NotifierID: bf9b2d06-666e-4568-8d41-285583c683a2, AgentID: mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+AgentExternalEventNotifier (NotifierID: bf9b2d06-666e-4568-8d41-285583c683a2, AgentID: mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+AgentExternalEventNotifier (NotifierID: bf9b2d06-666e-4568-8d41-285583c683a2, AgentID: mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: bf9b2d06-666e-4568-8d41-285583c683a2, AgentID: mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+Agent run 'mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7': UserInputContextBuildingProcessor completed. Final content length: 49
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+AgentExternalEventNotifier (NotifierID: bf9b2d06-666e-4568-8d41-285583c683a2, AgentID: mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+AgentExternalEventNotifier (NotifierID: bf9b2d06-666e-4568-8d41-285583c683a2, AgentID: mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+LlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: bf9b2d06-666e-4568-8d41-285583c683a2, AgentID: mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+AgentExternalEventNotifier (NotifierID: bf9b2d06-666e-4568-8d41-285583c683a2, AgentID: mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+AgentExternalEventNotifier (NotifierID: bf9b2d06-666e-4568-8d41-285583c683a2, AgentID: mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: bf9b2d06-666e-4568-8d41-285583c683a2, AgentID: mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+AgentExternalEventNotifier (NotifierID: bf9b2d06-666e-4568-8d41-285583c683a2, AgentID: mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+AgentExternalEventNotifier (NotifierID: bf9b2d06-666e-4568-8d41-285583c683a2, AgentID: mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+AgentExternalEventNotifier (NotifierID: bf9b2d06-666e-4568-8d41-285583c683a2, AgentID: mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: bf9b2d06-666e-4568-8d41-285583c683a2, AgentID: mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+Agent run 'mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7': UserInputContextBuildingProcessor completed. Final content length: 69
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+AgentExternalEventNotifier (NotifierID: bf9b2d06-666e-4568-8d41-285583c683a2, AgentID: mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+AgentExternalEventNotifier (NotifierID: bf9b2d06-666e-4568-8d41-285583c683a2, AgentID: mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+LlmStreamingResponseHandler finalized 1 tool invocations.
+AgentExternalEventNotifier (NotifierID: bf9b2d06-666e-4568-8d41-285583c683a2, AgentID: mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+AgentExternalEventNotifier (NotifierID: bf9b2d06-666e-4568-8d41-285583c683a2, AgentID: mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+AgentExternalEventNotifier (NotifierID: bf9b2d06-666e-4568-8d41-285583c683a2, AgentID: mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: bf9b2d06-666e-4568-8d41-285583c683a2, AgentID: mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+AgentExternalEventNotifier (NotifierID: bf9b2d06-666e-4568-8d41-285583c683a2, AgentID: mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+AgentExternalEventNotifier (NotifierID: bf9b2d06-666e-4568-8d41-285583c683a2, AgentID: mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+AgentExternalEventNotifier (NotifierID: bf9b2d06-666e-4568-8d41-285583c683a2, AgentID: mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7) emitted agent_tool_execution_succeeded. Kwarg keys for emit: agent_id,payload
+AgentExternalEventNotifier (NotifierID: bf9b2d06-666e-4568-8d41-285583c683a2, AgentID: mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+Agent run 'mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7': UserInputContextBuildingProcessor completed. Final content length: 60
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+AgentExternalEventNotifier (NotifierID: bf9b2d06-666e-4568-8d41-285583c683a2, AgentID: mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+AgentExternalEventNotifier (NotifierID: bf9b2d06-666e-4568-8d41-285583c683a2, AgentID: mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+AgentExternalEventNotifier (NotifierID: bf9b2d06-666e-4568-8d41-285583c683a2, AgentID: mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7) emitted agent_token_usage_updated. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+AgentExternalEventNotifier (NotifierID: bf9b2d06-666e-4568-8d41-285583c683a2, AgentID: mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+Agent run 'mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+AgentExternalEventNotifier (NotifierID: bf9b2d06-666e-4568-8d41-285583c683a2, AgentID: mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+AgentExternalEventNotifier (NotifierID: bf9b2d06-666e-4568-8d41-285583c683a2, AgentID: mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+AgentExternalEventNotifier (NotifierID: bf9b2d06-666e-4568-8d41-285583c683a2, AgentID: mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+AgentExternalEventNotifier (NotifierID: bf9b2d06-666e-4568-8d41-285583c683a2, AgentID: mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+Closed agent session c1aa2fdf-4d91-42b9-93ed-b44ec8c27561
+Agent WebSocket disconnected: c1aa2fdf-4d91-42b9-93ed-b44ec8c27561
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+Removing agent 'mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7'. Attempting graceful shutdown.
+Agent 'mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7' requesting runtime to stop (timeout: 10s).
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+AgentExternalEventNotifier (NotifierID: bf9b2d06-666e-4568-8d41-285583c683a2, AgentID: mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+AgentWorker 'mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7': Stop requested.
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+AgentExternalEventNotifier (NotifierID: bf9b2d06-666e-4568-8d41-285583c683a2, AgentID: mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7) emitted agent_status. Kwarg keys for emit: agent_id,payload
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+AgentExternalEventNotifier (NotifierID: bf9b2d06-666e-4568-8d41-285583c683a2, AgentID: mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7) emitted agent_status. Kwarg keys for emit: agent_id,payload
+AgentWorker 'mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7' asyncRun() loop has finished.
+AgentWorker 'mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7': Running shutdown sequence on worker loop.
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+AgentWorker 'mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7': Shutdown resource cleanup completed successfully.
+AgentWorker 'mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7': Shutdown sequence completed.
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+Unregistered AgentContext for agent_id 'mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7'.
+AgentRuntime for 'mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7': Context unregistered.
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+AgentRuntime for 'mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7' stop() method completed.
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+AgentEventStream (ID: 1cbbbb1d-66f9-431f-80f8-cd4b6cba314c) for 'mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7': close() called. Unsubscribing all listeners and signaling.
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds
+AgentEventStream (ID: 1cbbbb1d-66f9-431f-80f8-cd4b6cba314c) for 'mcp_matrix_native_f9654b_4e51ba4cba04467a86f38f83bfc4d9b7': close() called. Unsubscribing all listeners and signaling.
+
+ ✓ tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > native: an agent calls all three tool kinds 17218ms
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > claude: an agent calls all three tool kinds
+Agent Definition created successfully with ID: mcp-matrix-claude-71e89e
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > claude: an agent calls all three tool kinds
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-runtime-matrix-e2e-cqVJMa/workspace-claude
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-runtime-matrix-e2e-cqVJMa/workspace-claude.
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > claude: an agent calls all three tool kinds
+Created and registered workspace ID: agent_ws_5cd0328cf01523d82a14b41cf2a05b1b88533aec81802b15fc7ebe1f0dbd9167
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > claude: an agent calls all three tool kinds
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-runtime-matrix-e2e-cqVJMa/workspace-claude
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-runtime-matrix-e2e-cqVJMa/workspace-claude.
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > claude: an agent calls all three tool kinds
+Reusing registered workspace ID: agent_ws_5cd0328cf01523d82a14b41cf2a05b1b88533aec81802b15fc7ebe1f0dbd9167
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > claude: an agent calls all three tool kinds
+Agent websocket attached for run mcp_matrix_claude_71e89e_690f4e89061d4af5805bb343b597ff0f
+Created agent session 889d6a0d-ce22-4f5d-b8d9-34e6bd7c1c39 for run mcp_matrix_claude_71e89e_690f4e89061d4af5805bb343b597ff0f
+Agent WebSocket connected: session=889d6a0d-ce22-4f5d-b8d9-34e6bd7c1c39, run=mcp_matrix_claude_71e89e_690f4e89061d4af5805bb343b597ff0f
+
+(node:94705) [CLAUDE_SDK_CAN_USE_TOOL_SHADOWED] Warning: canUseTool will not be invoked for: create_task, mcp__autobyteus_agent_tools__create_task, update_task, mcp__autobyteus_agent_tools__update_task, matrix_stdio_report_env_and_cwd, mcp__autobyteus_agent_tools__matrix_stdio_report_env_and_cwd, matrix_http_auth_probe, mcp__autobyteus_agent_tools__matrix_http_auth_probe, send_message_to, mcp__autobyteus_agent_tools__send_message_to, delegate_task, mcp__autobyteus_agent_tools__delegate_task. Bare allowedTools entries auto-approve the whole tool before the callback is consulted. To gate every tool call, use a PreToolUse hook; or remove the bare names from allowedTools so they fall through to canUseTool. Allow rules from settings files can also shadow the callback but are not visible here.
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > claude: an agent calls all three tool kinds
+Closed agent session 889d6a0d-ce22-4f5d-b8d9-34e6bd7c1c39
+Agent WebSocket disconnected: 889d6a0d-ce22-4f5d-b8d9-34e6bd7c1c39
+
+ ✓ tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > claude: an agent calls all three tool kinds 10047ms
+ ↓ tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > codex: an agent calls all three tool kinds
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > grok: an agent calls all three tool kinds
+Agent Definition created successfully with ID: mcp-matrix-grok-b26f86
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > grok: an agent calls all three tool kinds
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-runtime-matrix-e2e-cqVJMa/workspace-grok
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-runtime-matrix-e2e-cqVJMa/workspace-grok.
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > grok: an agent calls all three tool kinds
+Created and registered workspace ID: agent_ws_accff61000d75056a235a809d8c731974ed03a51e05ff03640bcfa3b1f1075b7
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > grok: an agent calls all three tool kinds
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-runtime-matrix-e2e-cqVJMa/workspace-grok
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-runtime-matrix-e2e-cqVJMa/workspace-grok.
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > grok: an agent calls all three tool kinds
+Reusing registered workspace ID: agent_ws_accff61000d75056a235a809d8c731974ed03a51e05ff03640bcfa3b1f1075b7
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > grok: an agent calls all three tool kinds
+Agent websocket attached for run mcp_matrix_grok_b26f86_54e3c35324574d309b6e805ac72cae34
+Created agent session fb4bce3b-a8d1-4d11-956c-a301f714f230 for run mcp_matrix_grok_b26f86_54e3c35324574d309b6e805ac72cae34
+Agent WebSocket connected: session=fb4bce3b-a8d1-4d11-956c-a301f714f230, run=mcp_matrix_grok_b26f86_54e3c35324574d309b6e805ac72cae34
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > grok: an agent calls all three tool kinds
+Closed agent session fb4bce3b-a8d1-4d11-956c-a301f714f230
+Agent WebSocket disconnected: fb4bce3b-a8d1-4d11-956c-a301f714f230
+
+ ✓ tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > grok: an agent calls all three tool kinds 18697ms
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > codex MCP client (no model turn): all three tool kinds through autobyteus_agent_tools
+Agent Definition created successfully with ID: mcp-matrix-codex-c3aebb
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > codex MCP client (no model turn): all three tool kinds through autobyteus_agent_tools
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-runtime-matrix-e2e-cqVJMa/workspace-codex
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-runtime-matrix-e2e-cqVJMa/workspace-codex.
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > codex MCP client (no model turn): all three tool kinds through autobyteus_agent_tools
+Created and registered workspace ID: agent_ws_2ae4eafc45ccf99ae4e781464f5f0d3205d46fa0140c02383a4812b1716c22da
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > codex MCP client (no model turn): all three tool kinds through autobyteus_agent_tools
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-runtime-matrix-e2e-cqVJMa/workspace-codex
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mcp-runtime-matrix-e2e-cqVJMa/workspace-codex.
+
+stdout | tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > codex MCP client (no model turn): all three tool kinds through autobyteus_agent_tools
+Reusing registered workspace ID: agent_ws_2ae4eafc45ccf99ae4e781464f5f0d3205d46fa0140c02383a4812b1716c22da
+
+ ✓ tests/e2e/runtime/mcp-runtime-tool-matrix.e2e.test.ts > Runtime × MCP tool matrix: project tools, external stdio and external HTTP > codex MCP client (no model turn): all three tool kinds through autobyteus_agent_tools 470ms
+
+ Test Files  1 passed (1)
+      Tests  5 passed | 1 skipped (6)
+   Start at  11:11:32
+   Duration  56.15s (transform 5.54s, setup 35ms, import 7.92s, tests 47.69s, environment 0ms)
+

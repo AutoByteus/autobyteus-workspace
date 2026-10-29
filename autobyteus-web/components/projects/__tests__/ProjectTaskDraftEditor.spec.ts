@@ -5,14 +5,16 @@ import ProjectTaskDraftEditor from '../ProjectTaskDraftEditor.vue'
 import type { ProjectTask } from '~/types/project'
 
 let draft: any
-const push = vi.fn(), setSearch = vi.fn()
-vi.mock('vue-router', async (original) => ({...await original<typeof import('vue-router')>(), useRouter: () => ({push})}))
-vi.mock('~/composables/projects/useProjectTaskDraft', () => ({useProjectTaskDraft: () => draft}))
+const push = vi.fn(), setSearch = vi.fn(), route = {query: {} as Record<string, unknown>}
+const draftArgs = vi.fn()
+vi.mock('vue-router', async (original) => ({...await original<typeof import('vue-router')>(), useRouter: () => ({push}), useRoute: () => route}))
+vi.mock('~/composables/projects/useProjectTaskDraft', () => ({useProjectTaskDraft: (...args: unknown[]) => { draftArgs(...args); return draft }}))
 vi.mock('~/stores/voiceInputStore', () => ({useVoiceInputStore: () => ({transcriptTarget: null, latestResult: null, isRecording: false})}))
 vi.mock('~/stores/projectTaskStore', () => ({useProjectTaskStore: () => ({setSearch, getList: () => undefined, fetchTasks: vi.fn(async () => undefined), releaseRead: vi.fn()})}))
 
-const task = {taskId: 't1', taskKey: 'p1-1', description: 'Saved text', status: 'IN_PROGRESS', contextFiles: []} as unknown as ProjectTask
-function editor(saved?: ProjectTask) {
+const task = {taskId: 't1', taskKey: 'p1-1', title: 'Saved title', description: 'Saved text', status: 'IN_PROGRESS', contextFiles: []} as unknown as ProjectTask
+function editor(saved?: ProjectTask, title = saved?.title ?? 'New title') {
+  draft.title.value = title
   draft.text.value = saved?.description ?? ''
   const host = document.createElement('div')
   document.body.appendChild(host)
@@ -26,8 +28,9 @@ function editor(saved?: ProjectTask) {
 describe('ProjectTaskDraftEditor compact authoring', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    route.query = {}
     draft = {
-      text: ref(''), files: ref([]), dependsOn: ref([]), client: {}, draftId: ref(), pending: ref(false),
+      title: ref(''), text: ref(''), files: ref([]), dependsOn: ref([]), partOf: ref(null), client: {}, draftId: ref(), pending: ref(false),
       saving: ref(false), error: ref(''), blocked: ref(false),
       target: {key: 'draft', isCurrent: () => true, appendTranscript: vi.fn()},
       current: vi.fn(() => true), addFiles: vi.fn(), removeFile: vi.fn(),
@@ -45,6 +48,12 @@ describe('ProjectTaskDraftEditor compact authoring', () => {
     expect(wrapper.find('[aria-labelledby]').exists()).toBe(false)
     expect(wrapper.get('header').findAll('p')).toHaveLength(1)
     expect(wrapper.get('form > div').classes()).not.toContain('mt-5')
+    // A required one-line Title input above the description, in the Project name input's style (DEC-013).
+    expect(wrapper.get('label[for="task-page-title"]').text()).toBe('Title (required)')
+    expect(wrapper.get('#task-page-title').attributes()).toMatchObject({ type: 'text', placeholder: 'Name the task in one line' })
+    expect(wrapper.get('#task-page-title').attributes('maxlength')).toBeUndefined()
+    expect((wrapper.get('#task-page-title').element as HTMLInputElement).value).toBe(saved ? 'Saved title' : 'New title')
+    expect(wrapper.get('#task-page-title').element.compareDocumentPosition(wrapper.get('textarea').element) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
     expect(wrapper.get('label[for="task-page-description"]').text()).toBe('Description (required)')
     expect(wrapper.get('textarea').attributes('placeholder')).toBe('Describe the task…')
     expect(wrapper.get('textarea').attributes('aria-describedby')).toBeUndefined()
@@ -75,6 +84,22 @@ describe('ProjectTaskDraftEditor compact authoring', () => {
     wrapper.unmount()
   })
 
+  it.each([undefined, task])('focuses a blank title first, refusing to save, and clears the error once it is typed (%s) (REQ-004)', async (saved) => {
+    const wrapper = editor(saved, '  ')
+    await wrapper.get('textarea').setValue('A description')
+    await wrapper.get('form').trigger('submit')
+    await flushPromises()
+    expect(draft.save).not.toHaveBeenCalled()
+    expect(wrapper.get('#task-page-title-error').text()).toBe('Give the task a title.')
+    expect(wrapper.get('#task-page-title-error').attributes('role')).toBe('alert')
+    expect(wrapper.get('#task-page-title').attributes()).toMatchObject({ 'aria-invalid': 'true', 'aria-describedby': 'task-page-title-error' })
+    expect(document.activeElement).toBe(wrapper.get('#task-page-title').element)
+    await wrapper.get('#task-page-title').setValue('Named')
+    expect(wrapper.find('#task-page-title-error').exists()).toBe(false)
+    expect(wrapper.get('#task-page-title').attributes('aria-describedby')).toBeUndefined()
+    wrapper.unmount()
+  })
+
   it.each([undefined, task])('saves explicitly and navigates to the unchanged destination (%s)', async (saved) => {
     const wrapper = editor(saved)
     await wrapper.get('textarea').setValue('Reviewed\nMore context')
@@ -97,6 +122,17 @@ describe('ProjectTaskDraftEditor compact authoring', () => {
     expect((wrapper.get('textarea').element as HTMLTextAreaElement).value).toBe('Recoverable draft')
     expect(push).not.toHaveBeenCalled()
     wrapper.unmount()
+  })
+
+  it('"New part" (?partOf=<task ID>) starts New task with that parent; Edit task never takes it from the URL (REQ-018)', () => {
+    route.query = {partOf: 'parent-id'}
+    editor().unmount()
+    expect(draftArgs).toHaveBeenLastCalledWith('p1', undefined, 'parent-id')
+    editor(task).unmount()
+    expect(draftArgs).toHaveBeenLastCalledWith('p1', task, null)
+    route.query = {}
+    editor().unmount()
+    expect(draftArgs).toHaveBeenLastCalledWith('p1', undefined, null)
   })
 
   it('keeps pending save blocked', async () => {

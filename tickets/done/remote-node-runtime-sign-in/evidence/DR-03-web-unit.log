@@ -1,0 +1,109 @@
+# DR-03-web-unit — delivery post-integration rerun on ec4dcb177 (ticket branch + origin/personal 9e7a45880), Linux 7.0, node v22.23.2
+
+> autobyteus@1.5.8-beta.6 test:nuxt /home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/remote-node-runtime-sign-in/autobyteus-web
+> cross-env NUXT_TEST=true vitest --run components/settings/agent-runtimes localization/messages/__tests__
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Duplicated imports "getters", the one from "/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/remote-node-runtime-sign-in/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/remote-node-runtime-sign-in/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/remote-node-runtime-sign-in/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/remote-node-runtime-sign-in/autobyteus-web/stores/serverStore.ts" is used
+
+ RUN  v3.2.7 /home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/remote-node-runtime-sign-in/autobyteus-web
+
+Duplicated imports "getters", the one from "/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/remote-node-runtime-sign-in/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/remote-node-runtime-sign-in/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/remote-node-runtime-sign-in/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/home/ryan-ai/hdd_drive/autobyteus_org/autobyteus-worktrees/remote-node-runtime-sign-in/autobyteus-web/stores/serverStore.ts" is used
+stderr | localization/messages/__tests__/backgroundTaskPanelCatalog.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | localization/messages/__tests__/runSettingsCatalog.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | localization/messages/__tests__/agentOrgTicketSurfaceCatalog.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | localization/messages/__tests__/projectsCatalog.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | localization/messages/__tests__/flatTeamAgentOrgCatalog.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/agent-runtimes/__tests__/AgentRuntimesManager.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | localization/messages/__tests__/zhCnGlossaryConsistency.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | localization/messages/__tests__/agentOrgTicketSurfaceCatalog.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/agent-runtimes/__tests__/AgentRuntimesManager.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | localization/messages/__tests__/zhCnGlossaryConsistency.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | localization/messages/__tests__/projectsCatalog.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | localization/messages/__tests__/backgroundTaskPanelCatalog.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | localization/messages/__tests__/runSettingsCatalog.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | localization/messages/__tests__/flatTeamAgentOrgCatalog.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ localization/messages/__tests__/backgroundTaskPanelCatalog.spec.ts (2 tests) 11ms
+ ✓ localization/messages/__tests__/flatTeamAgentOrgCatalog.spec.ts (1 test) 5ms
+ ✓ localization/messages/__tests__/projectsCatalog.spec.ts (6 tests) 10ms
+ ✓ localization/messages/__tests__/agentOrgTicketSurfaceCatalog.spec.ts (3 tests) 14ms
+ ✓ localization/messages/__tests__/runSettingsCatalog.spec.ts (3 tests) 17ms
+ ✓ localization/messages/__tests__/zhCnGlossaryConsistency.spec.ts (2 tests) 273ms
+ ✓ components/settings/agent-runtimes/__tests__/AgentRuntimesManager.spec.ts (13 tests) 468ms
+stderr | localization/messages/__tests__/zhCnActionLabelConsistency.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | localization/messages/__tests__/agentRuntimesSettingsCatalog.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | localization/messages/__tests__/shellCatalog.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | localization/messages/__tests__/eventMonitorFeedCatalog.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | localization/messages/__tests__/zhCnActionLabelConsistency.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | localization/messages/__tests__/shellCatalog.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ localization/messages/__tests__/zhCnActionLabelConsistency.spec.ts (1 test) 4ms
+stdout | localization/messages/__tests__/agentRuntimesSettingsCatalog.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | localization/messages/__tests__/eventMonitorFeedCatalog.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ localization/messages/__tests__/shellCatalog.spec.ts (1 test) 3ms
+ ✓ localization/messages/__tests__/agentRuntimesSettingsCatalog.spec.ts (2 tests) 6ms
+ ✓ localization/messages/__tests__/eventMonitorFeedCatalog.spec.ts (1 test) 4ms
+
+ Test Files  11 passed (11)
+      Tests  35 passed (35)
+   Start at  13:59:44
+   Duration  17.16s (transform 7.67s, setup 93.12s, collect 1.24s, tests 817ms, environment 4.80s, prepare 3.96s)
+
+exit 0

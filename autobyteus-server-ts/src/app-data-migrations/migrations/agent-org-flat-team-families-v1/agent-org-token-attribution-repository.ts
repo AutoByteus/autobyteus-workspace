@@ -1,7 +1,7 @@
 import { Prisma, type PrismaClient } from "@prisma/client";
 import { isDeepStrictEqual } from "node:util";
 import { rootPrismaClient } from "repository_prisma";
-import { isAgentOrgTokenAttributionReady } from "../../../token-usage/domain/agent-org-token-attribution.js";
+import { isAgentOrgTokenAttributionReady } from "../../frozen/server/token-usage/domain/agent-org-token-attribution.js";
 
 const BATCH_SIZE = 250;
 type RawRecord = Record<string, unknown> & {

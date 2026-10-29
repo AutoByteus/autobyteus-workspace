@@ -1,0 +1,11 @@
+
+ ERROR  Cannot find any nuxt version from /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024
+
+    at loadNuxt (node_modules/.pnpm/@nuxt+kit@3.21.11_magicast@0.5.5/node_modules/@nuxt/kit/dist/index.mjs:3023:11)
+    at Object.run (node_modules/.pnpm/@nuxt+cli@3.37.0_@nuxt+schema@3.21.11_@parcel+watcher@2.5.6_cac@6.7.14_magicast@0.5.5/node_modules/@nuxt/cli/dist/prepare-kyMoAaxl.mjs:29:22)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async runCommand (node_modules/.pnpm/citty@0.2.2/node_modules/citty/dist/index.mjs:228:47)
+    at async runCommand (node_modules/.pnpm/citty@0.2.2/node_modules/citty/dist/index.mjs:217:5)
+    at async runMain (node_modules/.pnpm/citty@0.2.2/node_modules/citty/dist/index.mjs:394:10) 
+
+

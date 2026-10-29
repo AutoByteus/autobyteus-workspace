@@ -60,19 +60,17 @@ type RecordedTeamDefinitions = Readonly<{
 }>;
 
 /**
- * The definitions a team instance's tree record carries: a configured team node, or a task team copy's
- * catalog source. A task team recorded without a catalog source yields null.
+ * The definitions a team instance's tree record carries: a configured team node's, or a Team copy's
+ * from its own source.
  */
-export const instanceDefinitionsFromSource = (source: object): InstanceDefinitions | null => {
-  const recorded: RecordedTeamDefinitions | null = "coordinatorAddress" in source
-    ? source as unknown as RecordedTeamDefinitions
-    : "source" in source && source.source ? source.source as RecordedTeamDefinitions : null;
-  return recorded
-    ? Object.freeze({
-      teamDefinitionId: recorded.teamDefinitionId,
-      members: Object.freeze(recorded.members.map((member) => Object.freeze({ address: member.address, definitionId: member.agentDefinitionId }))),
-    })
-    : null;
+export const instanceDefinitionsFromSource = (
+  source: RecordedTeamDefinitions | Readonly<{ source: RecordedTeamDefinitions }>,
+): InstanceDefinitions => {
+  const recorded = "source" in source ? source.source : source;
+  return Object.freeze({
+    teamDefinitionId: recorded.teamDefinitionId,
+    members: Object.freeze(recorded.members.map((member) => Object.freeze({ address: member.address, definitionId: member.agentDefinitionId }))),
+  });
 };
 
 export const mentionViewerOf = (

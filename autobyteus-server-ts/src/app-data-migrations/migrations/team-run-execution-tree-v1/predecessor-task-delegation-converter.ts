@@ -1,5 +1,5 @@
-import { normalizePredecessorTaskDelegationRecordsFile } from "../../predecessor-task-delegation-records.js";
-import { normalizePredecessorTeamExecutionAddress } from "./predecessor-team-execution-address-normalizer.js";
+import { normalizePredecessorTaskDelegationRecordsFile } from "./predecessor-task-delegation-records.js";
+import { normalizePredecessorTeamExecutionAddress } from "../../frozen/team-run-execution-tree-v1/predecessor-team-execution-address-normalizer.js";
 
 type JsonRecord = Record<string, unknown>;
 

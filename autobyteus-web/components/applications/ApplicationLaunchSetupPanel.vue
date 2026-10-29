@@ -10,7 +10,6 @@
     >
       <div class="min-w-0 space-y-2">
         <div class="inline-flex items-center gap-2 rounded-full bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700">
-          <span class="i-heroicons-adjustments-horizontal-20-solid h-4 w-4"></span>
           <span>{{ $t('applications.components.applications.ApplicationLaunchSetupPanel.title') }}</span>
         </div>
         <h2 class="text-xl font-semibold text-slate-900">
@@ -219,10 +218,7 @@ import {
   type ApplicationSlotDraft,
   type ApplicationSlotEditorReadiness,
 } from '~/utils/application/applicationLaunchProfile'
-import {
-  buildLaunchSetupGateState,
-  type ApplicationLaunchSetupGateState,
-} from '~/utils/application/applicationSetupGate'
+import { buildLaunchSetupGateState, type ApplicationLaunchSetupGateState } from '~/utils/application/applicationSetupGate'
 
 const props = withDefaults(defineProps<{
   applicationId: string

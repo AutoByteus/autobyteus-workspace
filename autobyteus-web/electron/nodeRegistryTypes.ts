@@ -1,9 +1,8 @@
-export { EMBEDDED_NODE_ID } from '../types/node';
+export { EMBEDDED_ENTRY_ID, isNodeId } from '../types/node';
 export type {
   AddNodeRegistryChange,
-  CapabilityProbeState,
-  NodeCapabilities,
-  NodeProfile,
+  IdentifyNodeRegistryChange,
+  NodeEntry,
   NodeRegistryChange,
   NodeRegistrySnapshot,
   NodeType,

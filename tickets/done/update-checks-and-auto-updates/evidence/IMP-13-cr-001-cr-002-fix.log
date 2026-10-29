@@ -1,0 +1,17 @@
+IMP-13 | CR-001 / CR-002 fix (IR-002) | commit 985246c53b | macOS, Node v22.23.1 | 2026-10-23T21:01Z
+
+1. New tests with the two source files stashed (the fix absent), NUXT_TEST=true vitest run components/settings/__tests__/UpdateChecksCard.githubWait.spec.ts components/notifications/__tests__/NotificationCenter.automation.spec.ts:
+   × UpdateChecksCard GitHub wait on open (CR-001) > shows a wait the node learned after the settings were first read 22ms
+   × agent runtimes in the Notification Center (REQ-020..022) > with the runtime switch off, a waiting row no longer promises an automatic update (CR-002, REQ-022) 20ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  2 failed (2)
+      Tests  2 failed | 10 passed (12)
+
+2. With the fix: NUXT_TEST=true vitest run components/notifications components/settings stores services/updateNotifications tests/integration/app-font-size-fixed-px-audit.integration.test.ts:
+ Test Files  156 passed (156)
+      Tests  1373 passed (1373)
+
+3. Guards (autobyteus-web):
+[guard:web-boundary] Passed.
+[guard:localization-boundary] Passed.
+[audit:localization-literals] Passed with zero unresolved findings.

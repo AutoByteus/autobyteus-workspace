@@ -1,0 +1,9 @@
+IMP-09 after-sizes on synthesized data (no user data); commit: see implementation-handoff.md Checks Run
+synthesized open Tasks: 155; description bytes total: 343973
+result | before B | after B | change
+list_project_tasks (155 open Tasks) | 386253 | 33002 | -91.5%
+one Task in full (base list entry vs get_project_task; after adds a 202-byte title) | 3714 | 3861 | 4.0%
+update_task acknowledgement (after adds a 202-byte title) | 140 | 324 | 131.4%
+send_message_to refusal | 144 | 117 | -18.8%
+dom_snapshot (200 elements; before pretty) | 60542 | 36334 | -40.0%
+QR-001 list after/before: 8.5% (≤ 10% required)

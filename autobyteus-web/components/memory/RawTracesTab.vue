@@ -39,7 +39,7 @@
       <div
         v-for="(trace, index) in traces"
         :key="index"
-        class="rounded-md border border-gray-200 p-3"
+        class="rounded-lg border border-gray-200 bg-white p-4"
       >
         <div class="flex items-center justify-between text-xs text-gray-500">
           <span class="font-semibold">{{ trace.traceType }}</span>

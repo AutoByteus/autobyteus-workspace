@@ -34,6 +34,13 @@ export class EmbeddingVectorStore {
     return new Map(rows.map((row) => [row.item_id, { fingerprint: row.fingerprint, vector: fromBlob(row.vector) }]));
   }
 
+  /** Fingerprints only (no vectors) of a model's items in one collection; a store never created has none. */
+  readFingerprints(collection: string, modelId: string): Map<string, string> {
+    const rows = this.openExisting()?.prepare(`SELECT item_id, fingerprint FROM ${TABLE} WHERE collection = ? AND model_id = ?`)
+      .all(collection, modelId) as Array<{ item_id: string; fingerprint: string }> | undefined;
+    return new Map((rows ?? []).map((row) => [row.item_id, row.fingerprint]));
+  }
+
   upsert(collection: string, modelId: string, rows: readonly VectorRow[]): void {
     const db = this.open();
     const statement = db.prepare(`INSERT INTO ${TABLE} (collection, item_id, model_id, fingerprint, vector) VALUES (?, ?, ?, ?, ?)

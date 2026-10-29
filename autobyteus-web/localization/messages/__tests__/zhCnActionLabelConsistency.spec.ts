@@ -9,10 +9,9 @@ describe('zh-CN action-label consistency', () => {
     expect(zhCnAgentsMessages['agents.components.agents.AgentCard.run']).toBe('运行');
     expect(zhCnAgentTeamsMessages['agentTeams.components.agentTeams.AgentTeamCard.run']).toBe('运行');
     expect(zhCnMessages['runSettings.orgLaunch.run']).toBe('运行');
-    expect(zhCnMessages['settings.components.settings.NodeManager.addNode']).toBe('添加节点');
-    expect(zhCnMessages['settings.components.settings.NodeManager.open']).toBe('打开');
-    expect(zhCnMessages['settings.components.settings.NodeManager.rename']).toBe('重命名');
-    expect(zhCnMessages['settings.components.settings.NodeManager.remove']).toBe('移除');
+    // one-nodes-tab: the Nodes page's labels moved to the NodesPage catalog (Open and Rename are icon and name actions now).
+    expect(zhCnMessages['settings.components.settings.NodesPage.add.submit']).toBe('添加节点');
+    expect(zhCnMessages['settings.components.settings.NodesPage.dialog.confirmRemove']).toBe('移除');
     expect(zhCnMessages['settings.components.settings.TokenUsageStatistics.fetchStatistics']).toBe('获取统计数据');
   });
 });

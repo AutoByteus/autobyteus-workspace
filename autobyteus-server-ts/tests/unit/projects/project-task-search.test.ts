@@ -8,7 +8,8 @@ import { ProjectTaskService, resetProjectTaskServiceForTests } from "../../../sr
 import { resetProjectStoreForTests } from "../../../src/projects/stores/project-store.js";
 import { resetProjectTaskContextStoreForTests } from "../../../src/projects/context/project-task-context-store.js";
 import {
-  initializeProjectTaskSearchService, processProjectTaskSearchCleanup, ProjectTaskSearchService, releaseProjectTaskSearchService,
+  initializeProjectTaskSearchService, processProjectTaskSearchCleanup, processProjectTaskSearchMarks, ProjectTaskSearchService,
+  releaseProjectTaskSearchService,
 } from "../../../src/projects/search/project-task-search-service.js";
 import { createFakeEmbeddingIndex } from "../../helpers/fake-embedding-model.js";
 
@@ -18,7 +19,7 @@ const ids = (result: { matches: Array<{ task: { description: string }; match: st
 
 describe("ProjectTaskSearchService", () => {
   let root: string, projectId: string, tasks: ProjectTaskService, fake: Awaited<ReturnType<typeof createFakeEmbeddingIndex>>, search: ProjectTaskSearchService;
-  const create = (description: string) => tasks.createTask({ projectId, description });
+  const create = (description: string) => tasks.createTask({ projectId, title: description, description });
   const ready = async () => {
     for (let i = 0; i < 200; i++) {
       if ((await search.search(projectId, "docker")).meaningSearch.state === "ready") return;
@@ -32,8 +33,13 @@ describe("ProjectTaskSearchService", () => {
     reset();
     projectId = (await getProjectService().createProject({ name: "Search fixture" })).projectId;
     fake = await createFakeEmbeddingIndex();
-    tasks = new ProjectTaskService({ searchCleanup: processProjectTaskSearchCleanup });
-    search = initializeProjectTaskSearchService({ listTasks: (id) => tasks.listTasks(id), index: () => fake.index });
+    // As composed in production: search follows the Task service's post-commit marks (index-after-write kept out of the way here).
+    tasks = new ProjectTaskService({ searchCleanup: processProjectTaskSearchCleanup, changes: {
+      ...processProjectTaskSearchMarks, workerStatusChanged: () => undefined, projectChanged: () => undefined, projectRemoved: () => undefined,
+    } });
+    search = initializeProjectTaskSearchService({
+      listProjects: () => getProjectService().listProjectSummaries(), listTasks: (id) => tasks.listTasks(id), index: () => fake.index, indexAfterWriteMs: 60_000,
+    });
   });
   afterEach(async () => {
     vi.restoreAllMocks();
@@ -62,6 +68,18 @@ describe("ProjectTaskSearchService", () => {
       "meaning:Docker image fails on ARM servers", "meaning:Publish the docker container for arm64 hosts",
     ]);
     expect(ids(await search.search(projectId, "docker", { limit: 1 }))).toHaveLength(1);
+  });
+
+  it("finds a Task whose comment alone contains the query as an exact match; comments never change what meaning search indexes (task-comments AC-005, AC-016)", async () => {
+    const commented = await create("Release the desktop app");
+    await create("Sidebar collapse state is lost after restart");
+    await ready();
+    const before = await search.indexStatus();
+    await tasks.updateTaskById({ taskId: commented.taskId, addComment: "User decided: ship the ARM64 build first." });
+    expect(ids(await search.search(projectId, "arm64 BUILD"))).toEqual(["exact:Release the desktop app"]);
+    expect((await search.search(projectId, "arm64 build")).matches[0]!.task.comments.map((c) => c.text)).toEqual(["User decided: ship the ARM64 build first."]);
+    // Meaning items are descriptions only, so the comment leaves the index as it was (no reindex).
+    expect((await search.indexStatus()).map((p) => p.state)).toEqual(before.map((p) => p.state));
   });
 
   it("orders exact matches by meaning score, then by latest update", async () => {
@@ -117,5 +135,47 @@ describe("ProjectTaskSearchService", () => {
     const second = (await getProjectService().createProject({ name: "Second" })).projectId;
     expect(await new ProjectService().deleteProject(second)).toBe(true);
     expect(warn).toHaveBeenCalledWith("PROJECT_TASK_SEARCH_CLEANUP_FAILED", expect.objectContaining({ projectId: second, error: "disk full" }));
+  });
+
+  it("reports each Project's index state by name without starting any indexing, then indexes on request", async () => {
+    const second = (await getProjectService().createProject({ name: "Alpha" })).projectId;
+    await create("Docker image fails on ARM servers");
+    await create("Sidebar collapse state is lost after restart");
+    const sync = vi.spyOn(fake.index, "sync");
+    expect(await search.indexStatus()).toEqual([
+      { projectId: second, name: "Alpha", state: "ready", total: 0 },
+      { projectId, name: "Search fixture", state: "notIndexed", total: 2 },
+    ]);
+    expect(sync).not.toHaveBeenCalled();
+    expect(fake.files.ensure).not.toHaveBeenCalled();
+    await search.indexProject(projectId);
+    expect(sync).toHaveBeenCalledWith(`project-tasks/${projectId}`, expect.any(Array));
+    await ready();
+    expect((await search.indexStatus())[1]).toEqual({ projectId, name: "Search fixture", state: "ready", total: 2 });
+    await create("Show token usage and cost per conversation");
+    expect((await search.indexStatus())[1]).toMatchObject({ state: "needsUpdate", changed: 1, total: 3 });
+  });
+
+  it("indexes every Project that is not indexed or needs an update, and rebuilds one Project from scratch", async () => {
+    const second = (await getProjectService().createProject({ name: "Alpha" })).projectId;
+    await tasks.createTask({ projectId: second, title: "Price of the cloud plan", description: "Price of the cloud plan" });
+    await create("Docker image fails on ARM servers");
+    await search.indexProject(projectId);
+    await ready();
+    const sync = vi.spyOn(fake.index, "sync");
+    expect(await search.indexAllProjects()).toBe(1);
+    expect(sync.mock.calls.map(([collection]) => collection)).toEqual([`project-tasks/${second}`]);
+    expect(await search.indexAllProjects()).toBe(0);
+    for (let i = 0; i < 200 && (await search.indexStatus()).some((project) => project.state !== "ready"); i++) {
+      await new Promise((resolve) => setTimeout(resolve, 5));
+    }
+    const documentsBefore = fake.runner().documents.length;
+    const drop = vi.spyOn(fake.index, "dropCollection");
+    await search.rebuildProject(projectId);
+    expect(drop).toHaveBeenCalledWith(`project-tasks/${projectId}`);
+    await ready();
+    expect(fake.runner().documents.slice(documentsBefore)).toEqual(["Docker image fails on ARM servers"]);
+    await expect(search.indexProject("project_missing")).rejects.toMatchObject({ code: "PROJECT_NOT_FOUND" });
+    await expect(search.rebuildProject("project_missing")).rejects.toMatchObject({ code: "PROJECT_NOT_FOUND" });
   });
 });

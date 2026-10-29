@@ -1,4 +1,4 @@
-import { createChildContext } from './agentRunCollaborationChildContextFactory'
+import { createChildContext, createRemoteChildContext } from './agentRunCollaborationChildContextFactory'
 import {
   AgentRootExecutionViewDtoSchema,
   type AgentRunCollaborationViewDto,
@@ -40,7 +40,7 @@ export const buildAgentRunCollaborationContext = async (input: Readonly<{
   hostRunId: string
   view: AgentRunCollaborationViewDto
 }>): Promise<AgentRunCollaborationContext> => {
-  const index = new AgentRunCollaborationIndex(input.view.execution_tree)
+  const index = new AgentRunCollaborationIndex(input.view.execution_tree, input.view.remote_task_executions)
   const workspaces = new Map<string, Promise<WorkspaceMetadata | null>>()
   const workspaceFor = (root: string | null) => {
     if (!root) return Promise.resolve(null)
@@ -53,5 +53,9 @@ export const buildAgentRunCollaborationContext = async (input: Readonly<{
     context: createChildContext(child, input.view.execution_tree.createdAt,
       await workspaceFor(child.source.launchConfiguration.workspaceRootPath)),
   })))
-  return new AgentRunCollaborationContext({ hostRunId: input.hostRunId, view: input.view, entries })
+  // autobyteus-278: the agents of the runs this root delegated to other nodes, held like its copies.
+  const remote = [...index.remoteAgents.values()].map((child) => Object.freeze({
+    agentRunId: child.agentRunId, memberAddress: child.address, context: createRemoteChildContext(child, child.execution.started_at),
+  }))
+  return new AgentRunCollaborationContext({ hostRunId: input.hostRunId, view: input.view, entries: [...entries, ...remote] })
 }

@@ -1,7 +1,8 @@
-import { describe, it, expect } from 'vitest';
+import { expect } from 'vitest';
 import { OpenAILLM } from '../../../../src/llm/api/openai-llm.js';
 import { LLMModel } from '../../../../src/llm/models.js';
 import { LLMProvider } from '../../../../src/llm/providers.js';
+import { LLMConfig } from '../../../../src/llm/utils/llm-config.js';
 import { LLMUserMessage } from '../../../../src/llm/user-message.js';
 import { LlmStreamingResponseHandler } from '../../../../src/agent/streaming/handlers/llm-streaming-response-handler.js';
 import { SegmentEventType } from '../../../../src/agent/streaming/segments/segment-events.js';
@@ -9,9 +10,9 @@ import { defaultToolRegistry, ToolRegistry } from '../../../../src/tools/registr
 import { ToolDefinition } from '../../../../src/tools/registry/tool-definition.js';
 import { registerWriteFileTool } from '../../../../src/tools/file/write-file.js';
 import { OpenAiJsonSchemaFormatter } from '../../../../src/tools/usage/formatters/openai-json-schema-formatter.js';
+import { liveProviderTest } from '../../../../../test-support/test-vault/test-vault.js';
 
-const apiKey = process.env.OPENAI_API_KEY;
-const runIntegration = apiKey ? describe : describe.skip;
+const live = liveProviderTest('OpenAI');
 
 const TURN_ID = 'turn_test';
 
@@ -20,8 +21,8 @@ const resetRegistry = () => {
   registerWriteFileTool();
 };
 
-runIntegration('LlmStreamingResponseHandler (OpenAI live)', () => {
-  it('processes tool call stream into invocations', async () => {
+live.describe('LlmStreamingResponseHandler (OpenAI live)', () => {
+  live.it('processes tool call stream into invocations', async () => {
     resetRegistry();
     const toolDef = defaultToolRegistry.getToolDefinition('write_file');
     expect(toolDef).toBeDefined();
@@ -34,7 +35,7 @@ runIntegration('LlmStreamingResponseHandler (OpenAI live)', () => {
       value: 'gpt-5.4',
       canonicalName: 'gpt-5.4',
       provider: LLMProvider.OPENAI
-    }));
+    }), new LLMConfig());
 
     const events: any[] = [];
     const handler = new LlmStreamingResponseHandler({

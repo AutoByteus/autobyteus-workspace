@@ -119,6 +119,43 @@ Key features:
 - **Validation**: Checks for required server files before starting
 - **Port waiting**: Ensures port is free before binding
 
+### Backend port conflict recovery
+
+An occupied required backend endpoint produces a structured `port-conflict`
+diagnostic: port, inspection status, observation time, and current PID/executable
+identity where available. Owner lookup is bounded and advisory; denied, missing
+or racing inspection does not invent an owner. Full command arguments are not
+used as the default identity display. Non-address startup failures keep their
+own diagnosis.
+
+The default error surface shows the conflict and safe recovery without opening
+technical details. Restart Server controls only this application's managed
+backend; it cannot release another application's listener. Verify the other
+application, stop or reconfigure it independently, then retry. Resetting server
+data does not free a port and is not offered as conflict recovery. Retrying
+while the external owner remains leaves it untouched; a healthy retry clears
+the stale diagnostic. Port-owner information never authorizes automatic kills.
+
+### Confirmed backend and application shutdown
+
+Each managed backend child has a `ManagedBackendShutdownClient` bound to that
+captured child and the versioned `autobyteus.embedded-server.shutdown.v1`
+ready/request/complete/failed protocol. Capability readiness is separate from
+HTTP health. Graceful stop requests the backend's shared close owner, including
+startup cancellation; success requires a complete result and exit code zero,
+not merely signal delivery or pipe EOF. Missing/failed acknowledgement,
+disconnection and forced fallback remain incomplete cleanup, not clean success.
+Windows uses this application request before its bounded captured-child force
+fallback, so taskkill alone is not treated as graceful host cleanup.
+
+`ApplicationShutdown` prevents normal `will-quit` completion until shared
+resource cleanup finishes, with a 30-second application deadline and log flush.
+Repeated quit requests share the work; the updater's explicit installation path
+uses the same preparation. Backend restart and application quit drain the host's
+owned native command scope, including work retained after an agent ends;
+provider shutdown remains provider-owned. Ordinary agent stop does not acquire
+a new preview-killing policy. Failures are reported instead of declared clean.
+
 ### Delayed startup is informational
 
 Startup calls share one pending attempt, including port preflight. After 100 seconds
@@ -425,7 +462,8 @@ Flavor resolution:
 ### Electron Runtime Baseline
 
 The desktop runtime is pinned in `autobyteus-web/package.json` as exact
-`electron@42.4.1`. Keep this as an explicit, reviewed runtime baseline instead
+`electron@42.11.16` (Chromium 148, Node.js 24.19). Keep this as an explicit,
+reviewed runtime baseline instead
 of a semver range or minimum-fixed-version pin because Electron major upgrades
 change Chromium, Node.js, native-module ABI, packaging behavior, and updater
 behavior together.
@@ -495,20 +533,26 @@ ownership before changing the pin.
 ### Build Commands
 
 ```bash
-# Build for current platform
-npx ts-node build/scripts/build.ts
+# Build for the current platform (run from the repository root)
+pnpm -C autobyteus-web build:electron:mac        # macOS
+pnpm -C autobyteus-web build:electron:linux      # Linux (host architecture)
+pnpm -C autobyteus-web build:electron:windows    # Windows
 
-# Build for specific platform
-npx ts-node build/scripts/build.ts --linux
-npx ts-node build/scripts/build.ts --linux --x64
-npx ts-node build/scripts/build.ts --linux --arm64
-npx ts-node build/scripts/build.ts --windows
-npx ts-node build/scripts/build.ts --mac
+# Build for a specific Linux architecture
+pnpm -C autobyteus-web build:electron:linux:x64
+pnpm -C autobyteus-web build:electron:linux:arm64
 
 # Build for all platforms. The Linux target uses the native Linux host architecture
-# and fails if a Linux package is requested from a non-Linux host.
-npx ts-node build/scripts/build.ts
+# and fails if a Linux package is requested from a non-Linux host, so run it on Linux.
+pnpm -C autobyteus-web build:electron
 ```
+
+Each script runs the boundary guards, the web type check (`pnpm typecheck`, which first builds
+`@autobyteus/application-sdk-contracts`, so it needs no earlier build; see the Web typecheck layer in
+[TESTING.md](../../TESTING.md#test-layers)), `prepare-server`, `generate:electron` and `transpile-electron`, compiles
+`build/tsconfig.json`, then runs `build/dist/build.js` (the platform flag is passed to it). A type error in a
+production file, or test-file errors that no longer match `typecheck-baseline.json`, stop the build. The packaged
+Electron harness (`pnpm test:e2e:electron`) builds the current host with the matching script.
 
 The package keeps the ordinary `AutoByteus` product name, app ID, signing
 configuration, and release/update channel in both runtime profiles. E2E values
@@ -586,8 +630,8 @@ Auto-updates are powered by `electron-updater` in the main process via `electron
 
 ### Runtime Behavior
 
-- `AppUpdater` implements `AppUpdateController`. Isolated (`e2e`) launches register `DisabledAppUpdater` instead, which reports `status: 'disabled'` (see [Updates in isolated launches](#updates-in-isolated-launches)).
-- Startup auto-check runs only for packaged apps (dev/unpackaged mode is skipped).
+- `AppUpdater` implements `AppUpdateController`. Isolated (`e2e`) launches register `DisabledAppUpdater` instead, which reports `status: 'disabled'`, unless the launch names a test update feed (see [Updates in isolated launches](#updates-in-isolated-launches)).
+- Automatic checks (at launch and periodically, see [Automatic App Checks](#automatic-app-checks)) run only for packaged apps (dev/unpackaged mode is skipped).
 - Renderer windows receive normalized updater state via IPC channel `app-update-state`.
 - Manual check entrypoint is exposed in `Settings > Updates` (canonical UI location).
 - User actions from UI trigger IPC handlers:
@@ -595,6 +639,64 @@ Auto-updates are powered by `electron-updater` in the main process via `electron
   - `app-update:download`
   - `app-update:install`
   - `app-update:set-channel`
+  - `app-update:mark-notification-read`, `app-update:clear-notification` (the
+    Notification Center's intents; both return `AppUpdateState`)
+  - `app-update:set-auto-check` (`{ enabled, intervalMinutes }`; returns
+    `AppUpdateState`)
+- The handlers are registered by `electron/updater/appUpdateIpc.ts`.
+- Nothing downloads by itself (`autoDownload = false`). An available update is
+  announced only in the Notification Center (the self-opening card is gone).
+
+### Automatic App Checks
+
+`electron/updater/appUpdateCheckSchedule.ts` (`AppUpdateCheckSchedule`) is the
+one owner of the app's automatic update checks; `AppUpdater.startAutoCheck()`
+only starts it.
+
+- Its setting is `userData/app-update-checks.json`
+  (`{ enabled, intervalMinutes }`, default on and 60 minutes, 15 to 1440
+  minutes), read and written only through
+  `electron/updater/appUpdateCheckSettingsStore.ts`. A missing, unreadable or
+  invalid file reads as the default.
+- When on, it checks 8 s after start (`startup`), then one interval after the
+  previous check (`periodic`). It skips a check, and tries again an interval
+  later, while an app update is checking, downloading, downloaded (staged) or
+  installing (`AppUpdater.isBusy()`), or while `net.isOnline()` says the
+  machine is offline. When off, no automatic request is made; Check for Updates
+  still works.
+- `app-update:set-auto-check` goes to the schedule: it validates, saves, re-arms
+  from the last check and tells its one listener, through which `AppUpdater`
+  publishes `AppUpdateState.autoCheck`. `AppUpdater` never writes the setting or
+  re-arms the timer. `DisabledAppUpdater` reports `autoCheck: null` and starts
+  nothing.
+- A failed `startup` or `periodic` check is quiet in the renderer
+  (`errorOperation` `startup-check` / `periodic-check`,
+  `isQuietBackgroundAppUpdateError`); Settings → Updates shows it.
+- `checkedAt` marks a finished check (its result or its failure), not its start.
+- A periodic check that finds an update only announces it: nothing downloads
+  or installs without the user's press.
+
+### App Update Notification
+
+`electron/updater/appUpdateNotificationRecord.ts` keeps the app's update
+notification in `userData/app-update-notification.json`
+(`{ version, fromVersion, foundAt, read, handledVersion, handledAt }`; tolerant
+read, atomic write) and `AppUpdater` sends it as `AppUpdateState.notification`:
+
+- `update-available` creates a waiting, unread record for the version, or
+  replaces it when the version is newer.
+- At start, a waiting record becomes handled when the app runs another version
+  than when the update was found ("Updated to …").
+- `update-not-available` removes a waiting record (nothing was updated and the
+  version is no longer offered, for example after turning Beta off).
+- `mark-notification-read` marks a waiting record read; `clear-notification`
+  removes a handled one. A waiting record is never dismissed.
+- `releasePageUrl` is `https://github.com/<owner>/<repo>/releases/tag/v<version>`
+  from the packaged `app-update.yml` (`electron/updater/appReleasePage.ts`);
+  `null` under an e2e test feed.
+- After a restart the record exists before this process has seen the update:
+  Download first runs a manual check and downloads only if the update is
+  available again; otherwise the check's result is shown.
 
 ### Update Channel (Stable / Beta)
 
@@ -646,11 +748,12 @@ Renderer-visible update state must stay safe for display:
 - `shared/appUpdateTypes.ts` carries `errorKind` and `errorOperation`.
 - The renderer contract must not reintroduce a raw `error` / provider-message
   field for normal UI, Settings, or toast copy.
-- `utils/appUpdateErrorDisplay.ts` maps `errorKind` to localized notice,
-  Settings, and toast messages.
-- `stores/appUpdateStore.ts` suppresses visible card/toast noise for startup
-  `network` and `release-preparing` failures, while manual checks and
-  download/install failures still show concise recovery copy.
+- `utils/appUpdateErrorDisplay.ts` maps `errorKind` to localized Settings and
+  toast messages.
+- `stores/appUpdateStore.ts` raises no toast for any startup-check or
+  periodic-check failure (a check the user did not start stays quiet; Settings
+  → Updates shows the error), while manual checks and download/install failures
+  still show concise recovery copy.
 - Raw provider details such as `net::ERR_*`, `ERR_UPDATER_*`, provider URLs,
   YAML, stack traces, or file lists belong in the Electron main log with
   classification context, not in user-facing renderer text.
@@ -855,7 +958,12 @@ using a relative or missing root, or choosing an occupied listener fails closed
 before stateful startup. The backend keeps its current listener-bind policy;
 Electron and renderer clients use `127.0.0.1:<selected-port>`. E2E mode disables
 automatic update checks, downloads, and install-on-quit side effects, while the
-production updater remains unchanged.
+production updater remains unchanged. One optional e2e-only value points the
+updater at a local test feed instead (rejected in the production profile):
+
+```text
+AUTOBYTEUS_ELECTRON_TEST_UPDATE_FEED_URL=http://127.0.0.1:<port>[/path] (or http://localhost:<port>)
+```
 
 Do not persist these values in repository or production-data `.env` files, bake
 them into Nuxt/electron-builder output, or create an alternate app/product name.
@@ -911,12 +1019,17 @@ maps the launch profile to a policy:
 Both add the Electron-owned values: login-shell `PATH` when available,
 `ELECTRON_RUN_AS_NODE=1`, `PORT`/`SERVER_PORT`, `DATABASE_URL` and
 `AUTOBYTEUS_DATA_DIR` under the data root, `AUTOBYTEUS_SERVER_HOST`, `DB_TYPE`,
-and the browser-bridge runtime overrides. In `e2e` mode, production
+and the browser-bridge runtime overrides, then, last so that no inherited or
+override value changes it, `AUTOBYTEUS_DESKTOP_EMBEDDED_NODE=1` (the server is
+the desktop's own node, the only one that checks and updates the installed agent
+runtimes; see the server's `update_notifications.md`). In `e2e` mode, production
 `AUTOBYTEUS_*`, `DB_NAME`, provider keys and runtime settings that a caller
 inherited (for example an agent shell inside AutoByteus) therefore never reach
 the isolated server. Its settings come from its own data root's `.env`.
-Credentials for an isolated instance are provisioned with
-`pnpm secrets:import` against its database. If a server feature needs another
+The one forwarded AutoByteus variable is `AUTOBYTEUS_TEST_VAULT` (a location,
+never a key): an isolated instance started with it reads the test vault
+read-only for provider keys (see [TESTING.md](../../TESTING.md#test-vault)).
+If a server feature needs another
 system variable in isolated mode, add it to the baseline list; never spread
 `process.env` in a platform manager.
 
@@ -925,9 +1038,15 @@ system variable in isolated mode, add it to the baseline list; never spread
 Every launch registers one `AppUpdateController` for the `app-update:*` IPC
 contract. Production uses `AppUpdater`. The `e2e` profile uses
 `DisabledAppUpdater`, which answers with `status: 'disabled'`, refuses download,
-install and channel changes, and never checks. The renderer store keeps the
-update notice hidden and shows no toast. Settings → Updates shows a neutral
-"turned off" line without update controls.
+install and channel changes, and never checks. The renderer shows no app update
+and no toast. Settings → Updates shows a neutral "turned off" line without
+update controls.
+
+With `AUTOBYTEUS_ELECTRON_TEST_UPDATE_FEED_URL` (set by
+`pnpm isolated-app start --test-update-feed <url>`), the e2e profile uses
+`AppUpdater` with `setFeedURL({ provider: 'generic', url })`: the startup check
+runs against that feed, and the app update notification, Download and Install
+work as in production. The release page link is omitted under the test feed.
 
 #### Agent lifecycle (`pnpm isolated-app`) and the control port
 

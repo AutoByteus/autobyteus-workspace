@@ -11,6 +11,7 @@ import { getStandaloneRootTreePath } from "./standalone-root-tree-path.js";
 import { validateStandaloneRootTreePayload } from "./standalone-root-tree-schema.js";
 import { memoryRootOfCoordinatingDir } from "../../agent-memory/store/agent-memory-layout.js";
 import { STANDALONE_ROOT_TREE_SHAPE } from "../../run-history/store/coordinating-tree-shapes.js";
+import type { DelegatedFrom } from "../../run-history/store/agent-run-metadata-types.js";
 import { MessageLog } from "../../run-history/store/message-log.js";
 import { TaskAgentOwnFiles } from "../../run-history/store/task-agent-own-files.js";
 import {
@@ -18,7 +19,7 @@ import {
   composeMessageLogs,
   taskAgentLogOwners,
   TaskAgentMessageLogs,
-  type MessageLogOwner,
+  type StoredMessageLogOwner,
 } from "../../run-history/store/task-agent-message-logs.js";
 import type { CollaborationCommunicationMessage } from "../../agent-collaboration/execution/communication/collaboration-communication-message.js";
 import {
@@ -65,8 +66,12 @@ export class StandaloneRootPackageStore {
       composeTreeFileSync(STANDALONE_ROOT_TREE_SHAPE, raw, this.ownFiles(collaborationDir)), hostRunId);
   }
 
-  /** The stored view for a composed tree: the host's log and its loaded task agents' logs (D-4, L6); `null` without a log. */
-  async readMessages(collaborationDir: string, tree: StandaloneRootTreeFile): Promise<StandaloneRootMessagesFile | null> {
+  /**
+   * The stored view for a composed tree: the host's log and its loaded task agents' logs (D-4, L6); `null`
+   * without a log. `backLink` is the run's `delegatedFrom` when a peer node started it: the endpoint set includes
+   * its delegator (`agentRunIdsOfTree`), so its messages stay in view.
+   */
+  async readMessages(collaborationDir: string, tree: StandaloneRootTreeFile, backLink: DelegatedFrom | null = null): Promise<StandaloneRootMessagesFile | null> {
     const hostRunId = tree.host.agentRunId;
     const own = await this.readMessagesLog(collaborationDir, hostRunId);
     if (!own) return null;
@@ -74,7 +79,7 @@ export class StandaloneRootPackageStore {
     const logs = owners.length === 0 ? [] : await Promise.all(owners.map((owner) => this.taskLogs(collaborationDir).read(owner)));
     return Object.freeze({
       schemaVersion: 1, subjectKind: "agent", hostRunId,
-      messages: Object.freeze(composeMessageLogs([own.messages, ...logs], agentRunIdsOfTree(STANDALONE_ROOT_TREE_SHAPE, tree))),
+      messages: Object.freeze(composeMessageLogs([own.messages, ...logs], agentRunIdsOfTree(STANDALONE_ROOT_TREE_SHAPE, tree, backLink))),
     });
   }
 
@@ -100,7 +105,7 @@ export class StandaloneRootPackageStore {
     collaborationDir: string,
     hostRunId: string,
     message: CollaborationCommunicationMessage,
-    owners: readonly MessageLogOwner[],
+    owners: readonly StoredMessageLogOwner[],
   ): Promise<RunPackageFileWriteResult<"communication_messages">> {
     return appendMessageToOwnerLogs(owners, async (owner) => {
       if (owner.kind !== "coordinating") return this.taskLogs(collaborationDir).append(owner, message);

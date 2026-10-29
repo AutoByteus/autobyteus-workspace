@@ -1,0 +1,36 @@
+# API-07 — ad-hoc web type check (temporary probe; the web has no typecheck script)
+# command: <temp>/node_modules/.bin/vue-tsc --noEmit -p tsconfig.json (vue-tsc 3.3.13, typescript 5.9.3, installed in /tmp/rfcosr-api/vuetsc, not in the repo), cwd autobyteus-web
+# commit: 581fecdf8e (web code 03f2d4da05); date 2026-10-19T05:49:18Z; macOS 26.5.2, node v22.23.1
+# method: every error reported in a web file changed by cba6b85122..03f2d4da05 is matched against the lines that diff added
+
+project-wide errors (pre-existing baseline, no typecheck gate exists): 404
+errors in the 33 changed web files:       23 distinct (file+message)
+errors on lines added by this ticket: 0
+new files agentRunReadSubject.ts, runFileChangeContentPath.ts: 0 errors
+
+## errors in changed files, each on a line the ticket did not add
+components/workspace/agent/__tests__/ArtifactContentViewer.spec.ts(276,5): error TS18047: 'state.artifact' is possibly 'null'.
+components/workspace/agent/__tests__/ArtifactContentViewer.spec.ts(277,5): error TS18047: 'state.artifact' is possibly 'null'.
+components/workspace/agent/__tests__/ArtifactContentViewer.spec.ts(278,5): error TS18047: 'state.artifact' is possibly 'null'.
+components/workspace/agent/AgentEventMonitor.vue(10,8): error TS4104: The type 'readonly CompactionActivity[]' is 'readonly' and cannot be assigned to the mutable type 'CompactionActivity[]'.
+components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts(75,27): error TS2540: Cannot assign to 'is_active' because it is a read-only property.
+components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts(75,51): error TS2540: Cannot assign to 'agent_statuses' because it is a read-only property.
+components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts(118,19): error TS2352: Conversion of type '{ isAgentOrgDefinitionExpanded: () => true; isAgentOrgRunExpanded: () => true; isAgentOrgTeamExpanded: () => true
+components/workspace/history/__tests__/WorkspaceHistoryFamilyPublication.spec.ts(43,80): error TS2322: Type 'undefined' is not assignable to type 'AgentStreamingService | null'.
+components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts(98,59): error TS2339: Property 'exists' does not exist on type 'Omit<DOMWrapper<Element>, "exists">'.
+composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts(24,8): error TS2540: Cannot assign to 'is_active' because it is a read-only property.
+composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts(28,10): error TS2540: Cannot assign to 'teamRunId' because it is a read-only property.
+composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts(29,45): error TS2540: Cannot assign to 'agentRunId' because it is a read-only property.
+composables/__tests__/useWorkspaceHistorySubjectActions.coldHistory.spec.ts(32,8): error TS2540: Cannot assign to 'agent_statuses' because it is a read-only property.
+generated/graphql.ts(2,38): error TS2307: Cannot find module '@vue/apollo-composable' or its corresponding type declarations.
+generated/graphql.ts(3,36): error TS2307: Cannot find module '@vue/composition-api' or its corresponding type declarations.
+services/agentOrgExecution/__tests__/agentOrgContextHydration.spec.ts(146,12): error TS2540: Cannot assign to 'is_active' because it is a read-only property.
+services/agentOrgExecution/__tests__/agentOrgContextHydration.spec.ts(147,25): error TS2540: Cannot assign to 'agent_statuses' because it is a read-only property.
+services/runHydration/__tests__/teamRunContextHydrationService.spec.ts(106,44): error TS2339: Property 'push' does not exist on type 'readonly TaskExecutionDto[]'.
+stores/__tests__/agentOrgInspection.spec.ts(20,40): error TS2540: Cannot assign to 'is_active' because it is a read-only property.
+stores/__tests__/agentOrgInspection.spec.ts(21,21): error TS2540: Cannot assign to 'agent_statuses' because it is a read-only property.
+test-support/agentOrgApolloFixture.ts(1,103): error TS2307: Cannot find module '@apollo/client/core' or its corresponding type declarations.
+test-support/agentOrgApolloFixture.ts(28,26): error TS7006: Parameter 'operation' implicitly has an 'any' type.
+test-support/agentOrgApolloFixture.ts(28,67): error TS7006: Parameter 'observer' implicitly has an 'any' type.
+test-support/agentOrgApolloFixture.ts(50,8): error TS2540: Cannot assign to 'is_active' because it is a read-only property.
+test-support/agentOrgApolloFixture.ts(51,21): error TS2540: Cannot assign to 'agent_statuses' because it is a read-only property.

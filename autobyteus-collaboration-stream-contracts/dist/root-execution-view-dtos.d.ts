@@ -108,7 +108,7 @@ export declare const AgentOrgRootExecutionViewDtoSchema: z.ZodObject<{
                         platformAgentRunId: string | null;
                         delegatorAgentRunId?: string;
                         startedAt: string;
-                        source?: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
+                        source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
                         userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                     }> | Readonly<{
                         address: string;
@@ -125,12 +125,12 @@ export declare const AgentOrgRootExecutionViewDtoSchema: z.ZodObject<{
                             platformAgentRunId: string | null;
                             delegatorAgentRunId?: string;
                             startedAt: string;
-                            source?: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
+                            source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
                             userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                         }> | Readonly</*elided*/ any>)[];
                         delegatorAgentRunId?: string;
                         startedAt: string;
-                        source?: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
+                        source: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
                         userTeamLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                     }>, unknown, z.core.$ZodTypeInternals<Readonly<{
                         address: string;
@@ -138,7 +138,7 @@ export declare const AgentOrgRootExecutionViewDtoSchema: z.ZodObject<{
                         platformAgentRunId: string | null;
                         delegatorAgentRunId?: string;
                         startedAt: string;
-                        source?: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
+                        source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
                         userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                     }> | Readonly<{
                         address: string;
@@ -155,12 +155,12 @@ export declare const AgentOrgRootExecutionViewDtoSchema: z.ZodObject<{
                             platformAgentRunId: string | null;
                             delegatorAgentRunId?: string;
                             startedAt: string;
-                            source?: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
+                            source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
                             userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                         }> | Readonly</*elided*/ any>)[];
                         delegatorAgentRunId?: string;
                         startedAt: string;
-                        source?: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
+                        source: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
                         userTeamLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                     }>, unknown>>>;
                 }, z.core.$strict>]>>;
@@ -170,7 +170,7 @@ export declare const AgentOrgRootExecutionViewDtoSchema: z.ZodObject<{
                     platformAgentRunId: string | null;
                     delegatorAgentRunId?: string;
                     startedAt: string;
-                    source?: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
+                    source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
                     userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                 }> | Readonly<{
                     address: string;
@@ -187,12 +187,12 @@ export declare const AgentOrgRootExecutionViewDtoSchema: z.ZodObject<{
                         platformAgentRunId: string | null;
                         delegatorAgentRunId?: string;
                         startedAt: string;
-                        source?: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
+                        source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
                         userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                     }> | Readonly</*elided*/ any>)[];
                     delegatorAgentRunId?: string;
                     startedAt: string;
-                    source?: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
+                    source: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
                     userTeamLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                 }>, unknown, z.core.$ZodTypeInternals<Readonly<{
                     address: string;
@@ -200,7 +200,7 @@ export declare const AgentOrgRootExecutionViewDtoSchema: z.ZodObject<{
                     platformAgentRunId: string | null;
                     delegatorAgentRunId?: string;
                     startedAt: string;
-                    source?: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
+                    source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
                     userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                 }> | Readonly<{
                     address: string;
@@ -217,12 +217,12 @@ export declare const AgentOrgRootExecutionViewDtoSchema: z.ZodObject<{
                         platformAgentRunId: string | null;
                         delegatorAgentRunId?: string;
                         startedAt: string;
-                        source?: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
+                        source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
                         userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                     }> | Readonly</*elided*/ any>)[];
                     delegatorAgentRunId?: string;
                     startedAt: string;
-                    source?: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
+                    source: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
                     userTeamLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                 }>, unknown>>>;
             }, z.core.$strict>;
@@ -326,6 +326,142 @@ export declare const AgentOrgRootExecutionViewDtoSchema: z.ZodObject<{
                 }, z.core.$strict>>;
             }, z.core.$strict>;
         }, z.core.$strict>>;
+        remote_task_executions: z.ZodArray<z.ZodDiscriminatedUnion<[z.ZodObject<{
+            kind: z.ZodLiteral<"agent">;
+            address: z.ZodString;
+            agent_run_id: z.ZodString;
+            node_id: z.ZodString;
+            node_name: z.ZodString;
+            delegator_agent_run_id: z.ZodString;
+            started_at: z.ZodString;
+            launches: z.ZodOptional<z.ZodArray<z.ZodObject<{
+                address: z.ZodString;
+                runtime_kind: z.ZodString;
+                llm_model_identifier: z.ZodString;
+                source: z.ZodUnion<readonly [z.ZodObject<{
+                    origin: z.ZodEnum<{
+                        agent_default: "agent_default";
+                        team_default: "team_default";
+                        inherited: "inherited";
+                        configured: "configured";
+                    }>;
+                    fallbacks: z.ZodArray<z.ZodObject<{
+                        layer: z.ZodEnum<{
+                            agent_default: "agent_default";
+                            team_default: "team_default";
+                            model_router: "model_router";
+                        }>;
+                        runtime_kind: z.ZodNullable<z.ZodString>;
+                        llm_model_identifier: z.ZodNullable<z.ZodString>;
+                        reason: z.ZodEnum<{
+                            incomplete: "incomplete";
+                            runtime_unavailable: "runtime_unavailable";
+                            signed_out: "signed_out";
+                            model_unavailable: "model_unavailable";
+                            blocked: "blocked";
+                            model_settings_invalid: "model_settings_invalid";
+                            router_not_active: "router_not_active";
+                            router_failed: "router_failed";
+                        }>;
+                        detail: z.ZodString;
+                    }, z.core.$strict>>;
+                }, z.core.$strict>, z.ZodObject<{
+                    origin: z.ZodLiteral<"model_router">;
+                    fallbacks: z.ZodArray<z.ZodObject<{
+                        layer: z.ZodEnum<{
+                            agent_default: "agent_default";
+                            team_default: "team_default";
+                            model_router: "model_router";
+                        }>;
+                        runtime_kind: z.ZodNullable<z.ZodString>;
+                        llm_model_identifier: z.ZodNullable<z.ZodString>;
+                        reason: z.ZodEnum<{
+                            incomplete: "incomplete";
+                            runtime_unavailable: "runtime_unavailable";
+                            signed_out: "signed_out";
+                            model_unavailable: "model_unavailable";
+                            blocked: "blocked";
+                            model_settings_invalid: "model_settings_invalid";
+                            router_not_active: "router_not_active";
+                            router_failed: "router_failed";
+                        }>;
+                        detail: z.ZodString;
+                    }, z.core.$strict>>;
+                    choice_reason: z.ZodString;
+                    task_kind: z.ZodString;
+                }, z.core.$strict>]>;
+            }, z.core.$strict>>>;
+        }, z.core.$strict>, z.ZodObject<{
+            kind: z.ZodLiteral<"agent_team">;
+            address: z.ZodString;
+            team_run_id: z.ZodString;
+            node_id: z.ZodString;
+            node_name: z.ZodString;
+            coordinator_address: z.ZodString;
+            members: z.ZodArray<z.ZodObject<{
+                address: z.ZodString;
+                agent_run_id: z.ZodString;
+            }, z.core.$strict>>;
+            delegator_agent_run_id: z.ZodString;
+            started_at: z.ZodString;
+            launches: z.ZodOptional<z.ZodArray<z.ZodObject<{
+                address: z.ZodString;
+                runtime_kind: z.ZodString;
+                llm_model_identifier: z.ZodString;
+                source: z.ZodUnion<readonly [z.ZodObject<{
+                    origin: z.ZodEnum<{
+                        agent_default: "agent_default";
+                        team_default: "team_default";
+                        inherited: "inherited";
+                        configured: "configured";
+                    }>;
+                    fallbacks: z.ZodArray<z.ZodObject<{
+                        layer: z.ZodEnum<{
+                            agent_default: "agent_default";
+                            team_default: "team_default";
+                            model_router: "model_router";
+                        }>;
+                        runtime_kind: z.ZodNullable<z.ZodString>;
+                        llm_model_identifier: z.ZodNullable<z.ZodString>;
+                        reason: z.ZodEnum<{
+                            incomplete: "incomplete";
+                            runtime_unavailable: "runtime_unavailable";
+                            signed_out: "signed_out";
+                            model_unavailable: "model_unavailable";
+                            blocked: "blocked";
+                            model_settings_invalid: "model_settings_invalid";
+                            router_not_active: "router_not_active";
+                            router_failed: "router_failed";
+                        }>;
+                        detail: z.ZodString;
+                    }, z.core.$strict>>;
+                }, z.core.$strict>, z.ZodObject<{
+                    origin: z.ZodLiteral<"model_router">;
+                    fallbacks: z.ZodArray<z.ZodObject<{
+                        layer: z.ZodEnum<{
+                            agent_default: "agent_default";
+                            team_default: "team_default";
+                            model_router: "model_router";
+                        }>;
+                        runtime_kind: z.ZodNullable<z.ZodString>;
+                        llm_model_identifier: z.ZodNullable<z.ZodString>;
+                        reason: z.ZodEnum<{
+                            incomplete: "incomplete";
+                            runtime_unavailable: "runtime_unavailable";
+                            signed_out: "signed_out";
+                            model_unavailable: "model_unavailable";
+                            blocked: "blocked";
+                            model_settings_invalid: "model_settings_invalid";
+                            router_not_active: "router_not_active";
+                            router_failed: "router_failed";
+                        }>;
+                        detail: z.ZodString;
+                    }, z.core.$strict>>;
+                    choice_reason: z.ZodString;
+                    task_kind: z.ZodString;
+                }, z.core.$strict>]>;
+            }, z.core.$strict>>>;
+        }, z.core.$strict>], "kind">>;
     }, z.core.$strict>;
 }, z.core.$strict>;
 export declare const AgentRootExecutionViewDtoSchema: z.ZodObject<{
@@ -348,7 +484,7 @@ export declare const AgentRootExecutionViewDtoSchema: z.ZodObject<{
                 platformAgentRunId: string | null;
                 delegatorAgentRunId?: string;
                 startedAt: string;
-                source?: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
+                source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
                 userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
             }> | Readonly<{
                 address: string;
@@ -365,12 +501,12 @@ export declare const AgentRootExecutionViewDtoSchema: z.ZodObject<{
                     platformAgentRunId: string | null;
                     delegatorAgentRunId?: string;
                     startedAt: string;
-                    source?: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
+                    source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
                     userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                 }> | Readonly</*elided*/ any>)[];
                 delegatorAgentRunId?: string;
                 startedAt: string;
-                source?: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
+                source: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
                 userTeamLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
             }>, unknown, z.core.$ZodTypeInternals<Readonly<{
                 address: string;
@@ -378,7 +514,7 @@ export declare const AgentRootExecutionViewDtoSchema: z.ZodObject<{
                 platformAgentRunId: string | null;
                 delegatorAgentRunId?: string;
                 startedAt: string;
-                source?: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
+                source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
                 userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
             }> | Readonly<{
                 address: string;
@@ -395,12 +531,12 @@ export declare const AgentRootExecutionViewDtoSchema: z.ZodObject<{
                     platformAgentRunId: string | null;
                     delegatorAgentRunId?: string;
                     startedAt: string;
-                    source?: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
+                    source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
                     userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                 }> | Readonly</*elided*/ any>)[];
                 delegatorAgentRunId?: string;
                 startedAt: string;
-                source?: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
+                source: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
                 userTeamLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
             }>, unknown>>>;
         }, z.core.$strict>;
@@ -503,6 +639,142 @@ export declare const AgentRootExecutionViewDtoSchema: z.ZodObject<{
                 }, z.core.$strict>>;
             }, z.core.$strict>;
         }, z.core.$strict>>;
+        remote_task_executions: z.ZodArray<z.ZodDiscriminatedUnion<[z.ZodObject<{
+            kind: z.ZodLiteral<"agent">;
+            address: z.ZodString;
+            agent_run_id: z.ZodString;
+            node_id: z.ZodString;
+            node_name: z.ZodString;
+            delegator_agent_run_id: z.ZodString;
+            started_at: z.ZodString;
+            launches: z.ZodOptional<z.ZodArray<z.ZodObject<{
+                address: z.ZodString;
+                runtime_kind: z.ZodString;
+                llm_model_identifier: z.ZodString;
+                source: z.ZodUnion<readonly [z.ZodObject<{
+                    origin: z.ZodEnum<{
+                        agent_default: "agent_default";
+                        team_default: "team_default";
+                        inherited: "inherited";
+                        configured: "configured";
+                    }>;
+                    fallbacks: z.ZodArray<z.ZodObject<{
+                        layer: z.ZodEnum<{
+                            agent_default: "agent_default";
+                            team_default: "team_default";
+                            model_router: "model_router";
+                        }>;
+                        runtime_kind: z.ZodNullable<z.ZodString>;
+                        llm_model_identifier: z.ZodNullable<z.ZodString>;
+                        reason: z.ZodEnum<{
+                            incomplete: "incomplete";
+                            runtime_unavailable: "runtime_unavailable";
+                            signed_out: "signed_out";
+                            model_unavailable: "model_unavailable";
+                            blocked: "blocked";
+                            model_settings_invalid: "model_settings_invalid";
+                            router_not_active: "router_not_active";
+                            router_failed: "router_failed";
+                        }>;
+                        detail: z.ZodString;
+                    }, z.core.$strict>>;
+                }, z.core.$strict>, z.ZodObject<{
+                    origin: z.ZodLiteral<"model_router">;
+                    fallbacks: z.ZodArray<z.ZodObject<{
+                        layer: z.ZodEnum<{
+                            agent_default: "agent_default";
+                            team_default: "team_default";
+                            model_router: "model_router";
+                        }>;
+                        runtime_kind: z.ZodNullable<z.ZodString>;
+                        llm_model_identifier: z.ZodNullable<z.ZodString>;
+                        reason: z.ZodEnum<{
+                            incomplete: "incomplete";
+                            runtime_unavailable: "runtime_unavailable";
+                            signed_out: "signed_out";
+                            model_unavailable: "model_unavailable";
+                            blocked: "blocked";
+                            model_settings_invalid: "model_settings_invalid";
+                            router_not_active: "router_not_active";
+                            router_failed: "router_failed";
+                        }>;
+                        detail: z.ZodString;
+                    }, z.core.$strict>>;
+                    choice_reason: z.ZodString;
+                    task_kind: z.ZodString;
+                }, z.core.$strict>]>;
+            }, z.core.$strict>>>;
+        }, z.core.$strict>, z.ZodObject<{
+            kind: z.ZodLiteral<"agent_team">;
+            address: z.ZodString;
+            team_run_id: z.ZodString;
+            node_id: z.ZodString;
+            node_name: z.ZodString;
+            coordinator_address: z.ZodString;
+            members: z.ZodArray<z.ZodObject<{
+                address: z.ZodString;
+                agent_run_id: z.ZodString;
+            }, z.core.$strict>>;
+            delegator_agent_run_id: z.ZodString;
+            started_at: z.ZodString;
+            launches: z.ZodOptional<z.ZodArray<z.ZodObject<{
+                address: z.ZodString;
+                runtime_kind: z.ZodString;
+                llm_model_identifier: z.ZodString;
+                source: z.ZodUnion<readonly [z.ZodObject<{
+                    origin: z.ZodEnum<{
+                        agent_default: "agent_default";
+                        team_default: "team_default";
+                        inherited: "inherited";
+                        configured: "configured";
+                    }>;
+                    fallbacks: z.ZodArray<z.ZodObject<{
+                        layer: z.ZodEnum<{
+                            agent_default: "agent_default";
+                            team_default: "team_default";
+                            model_router: "model_router";
+                        }>;
+                        runtime_kind: z.ZodNullable<z.ZodString>;
+                        llm_model_identifier: z.ZodNullable<z.ZodString>;
+                        reason: z.ZodEnum<{
+                            incomplete: "incomplete";
+                            runtime_unavailable: "runtime_unavailable";
+                            signed_out: "signed_out";
+                            model_unavailable: "model_unavailable";
+                            blocked: "blocked";
+                            model_settings_invalid: "model_settings_invalid";
+                            router_not_active: "router_not_active";
+                            router_failed: "router_failed";
+                        }>;
+                        detail: z.ZodString;
+                    }, z.core.$strict>>;
+                }, z.core.$strict>, z.ZodObject<{
+                    origin: z.ZodLiteral<"model_router">;
+                    fallbacks: z.ZodArray<z.ZodObject<{
+                        layer: z.ZodEnum<{
+                            agent_default: "agent_default";
+                            team_default: "team_default";
+                            model_router: "model_router";
+                        }>;
+                        runtime_kind: z.ZodNullable<z.ZodString>;
+                        llm_model_identifier: z.ZodNullable<z.ZodString>;
+                        reason: z.ZodEnum<{
+                            incomplete: "incomplete";
+                            runtime_unavailable: "runtime_unavailable";
+                            signed_out: "signed_out";
+                            model_unavailable: "model_unavailable";
+                            blocked: "blocked";
+                            model_settings_invalid: "model_settings_invalid";
+                            router_not_active: "router_not_active";
+                            router_failed: "router_failed";
+                        }>;
+                        detail: z.ZodString;
+                    }, z.core.$strict>>;
+                    choice_reason: z.ZodString;
+                    task_kind: z.ZodString;
+                }, z.core.$strict>]>;
+            }, z.core.$strict>>>;
+        }, z.core.$strict>], "kind">>;
     }, z.core.$strict>;
 }, z.core.$strict>;
 export declare const RootExecutionViewDtoSchema: z.ZodDiscriminatedUnion<[z.ZodObject<{
@@ -613,7 +885,7 @@ export declare const RootExecutionViewDtoSchema: z.ZodDiscriminatedUnion<[z.ZodO
                         platformAgentRunId: string | null;
                         delegatorAgentRunId?: string;
                         startedAt: string;
-                        source?: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
+                        source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
                         userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                     }> | Readonly<{
                         address: string;
@@ -630,12 +902,12 @@ export declare const RootExecutionViewDtoSchema: z.ZodDiscriminatedUnion<[z.ZodO
                             platformAgentRunId: string | null;
                             delegatorAgentRunId?: string;
                             startedAt: string;
-                            source?: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
+                            source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
                             userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                         }> | Readonly</*elided*/ any>)[];
                         delegatorAgentRunId?: string;
                         startedAt: string;
-                        source?: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
+                        source: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
                         userTeamLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                     }>, unknown, z.core.$ZodTypeInternals<Readonly<{
                         address: string;
@@ -643,7 +915,7 @@ export declare const RootExecutionViewDtoSchema: z.ZodDiscriminatedUnion<[z.ZodO
                         platformAgentRunId: string | null;
                         delegatorAgentRunId?: string;
                         startedAt: string;
-                        source?: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
+                        source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
                         userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                     }> | Readonly<{
                         address: string;
@@ -660,12 +932,12 @@ export declare const RootExecutionViewDtoSchema: z.ZodDiscriminatedUnion<[z.ZodO
                             platformAgentRunId: string | null;
                             delegatorAgentRunId?: string;
                             startedAt: string;
-                            source?: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
+                            source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
                             userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                         }> | Readonly</*elided*/ any>)[];
                         delegatorAgentRunId?: string;
                         startedAt: string;
-                        source?: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
+                        source: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
                         userTeamLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                     }>, unknown>>>;
                 }, z.core.$strict>]>>;
@@ -675,7 +947,7 @@ export declare const RootExecutionViewDtoSchema: z.ZodDiscriminatedUnion<[z.ZodO
                     platformAgentRunId: string | null;
                     delegatorAgentRunId?: string;
                     startedAt: string;
-                    source?: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
+                    source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
                     userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                 }> | Readonly<{
                     address: string;
@@ -692,12 +964,12 @@ export declare const RootExecutionViewDtoSchema: z.ZodDiscriminatedUnion<[z.ZodO
                         platformAgentRunId: string | null;
                         delegatorAgentRunId?: string;
                         startedAt: string;
-                        source?: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
+                        source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
                         userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                     }> | Readonly</*elided*/ any>)[];
                     delegatorAgentRunId?: string;
                     startedAt: string;
-                    source?: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
+                    source: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
                     userTeamLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                 }>, unknown, z.core.$ZodTypeInternals<Readonly<{
                     address: string;
@@ -705,7 +977,7 @@ export declare const RootExecutionViewDtoSchema: z.ZodDiscriminatedUnion<[z.ZodO
                     platformAgentRunId: string | null;
                     delegatorAgentRunId?: string;
                     startedAt: string;
-                    source?: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
+                    source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
                     userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                 }> | Readonly<{
                     address: string;
@@ -722,12 +994,12 @@ export declare const RootExecutionViewDtoSchema: z.ZodDiscriminatedUnion<[z.ZodO
                         platformAgentRunId: string | null;
                         delegatorAgentRunId?: string;
                         startedAt: string;
-                        source?: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
+                        source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
                         userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                     }> | Readonly</*elided*/ any>)[];
                     delegatorAgentRunId?: string;
                     startedAt: string;
-                    source?: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
+                    source: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
                     userTeamLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                 }>, unknown>>>;
             }, z.core.$strict>;
@@ -831,6 +1103,142 @@ export declare const RootExecutionViewDtoSchema: z.ZodDiscriminatedUnion<[z.ZodO
                 }, z.core.$strict>>;
             }, z.core.$strict>;
         }, z.core.$strict>>;
+        remote_task_executions: z.ZodArray<z.ZodDiscriminatedUnion<[z.ZodObject<{
+            kind: z.ZodLiteral<"agent">;
+            address: z.ZodString;
+            agent_run_id: z.ZodString;
+            node_id: z.ZodString;
+            node_name: z.ZodString;
+            delegator_agent_run_id: z.ZodString;
+            started_at: z.ZodString;
+            launches: z.ZodOptional<z.ZodArray<z.ZodObject<{
+                address: z.ZodString;
+                runtime_kind: z.ZodString;
+                llm_model_identifier: z.ZodString;
+                source: z.ZodUnion<readonly [z.ZodObject<{
+                    origin: z.ZodEnum<{
+                        agent_default: "agent_default";
+                        team_default: "team_default";
+                        inherited: "inherited";
+                        configured: "configured";
+                    }>;
+                    fallbacks: z.ZodArray<z.ZodObject<{
+                        layer: z.ZodEnum<{
+                            agent_default: "agent_default";
+                            team_default: "team_default";
+                            model_router: "model_router";
+                        }>;
+                        runtime_kind: z.ZodNullable<z.ZodString>;
+                        llm_model_identifier: z.ZodNullable<z.ZodString>;
+                        reason: z.ZodEnum<{
+                            incomplete: "incomplete";
+                            runtime_unavailable: "runtime_unavailable";
+                            signed_out: "signed_out";
+                            model_unavailable: "model_unavailable";
+                            blocked: "blocked";
+                            model_settings_invalid: "model_settings_invalid";
+                            router_not_active: "router_not_active";
+                            router_failed: "router_failed";
+                        }>;
+                        detail: z.ZodString;
+                    }, z.core.$strict>>;
+                }, z.core.$strict>, z.ZodObject<{
+                    origin: z.ZodLiteral<"model_router">;
+                    fallbacks: z.ZodArray<z.ZodObject<{
+                        layer: z.ZodEnum<{
+                            agent_default: "agent_default";
+                            team_default: "team_default";
+                            model_router: "model_router";
+                        }>;
+                        runtime_kind: z.ZodNullable<z.ZodString>;
+                        llm_model_identifier: z.ZodNullable<z.ZodString>;
+                        reason: z.ZodEnum<{
+                            incomplete: "incomplete";
+                            runtime_unavailable: "runtime_unavailable";
+                            signed_out: "signed_out";
+                            model_unavailable: "model_unavailable";
+                            blocked: "blocked";
+                            model_settings_invalid: "model_settings_invalid";
+                            router_not_active: "router_not_active";
+                            router_failed: "router_failed";
+                        }>;
+                        detail: z.ZodString;
+                    }, z.core.$strict>>;
+                    choice_reason: z.ZodString;
+                    task_kind: z.ZodString;
+                }, z.core.$strict>]>;
+            }, z.core.$strict>>>;
+        }, z.core.$strict>, z.ZodObject<{
+            kind: z.ZodLiteral<"agent_team">;
+            address: z.ZodString;
+            team_run_id: z.ZodString;
+            node_id: z.ZodString;
+            node_name: z.ZodString;
+            coordinator_address: z.ZodString;
+            members: z.ZodArray<z.ZodObject<{
+                address: z.ZodString;
+                agent_run_id: z.ZodString;
+            }, z.core.$strict>>;
+            delegator_agent_run_id: z.ZodString;
+            started_at: z.ZodString;
+            launches: z.ZodOptional<z.ZodArray<z.ZodObject<{
+                address: z.ZodString;
+                runtime_kind: z.ZodString;
+                llm_model_identifier: z.ZodString;
+                source: z.ZodUnion<readonly [z.ZodObject<{
+                    origin: z.ZodEnum<{
+                        agent_default: "agent_default";
+                        team_default: "team_default";
+                        inherited: "inherited";
+                        configured: "configured";
+                    }>;
+                    fallbacks: z.ZodArray<z.ZodObject<{
+                        layer: z.ZodEnum<{
+                            agent_default: "agent_default";
+                            team_default: "team_default";
+                            model_router: "model_router";
+                        }>;
+                        runtime_kind: z.ZodNullable<z.ZodString>;
+                        llm_model_identifier: z.ZodNullable<z.ZodString>;
+                        reason: z.ZodEnum<{
+                            incomplete: "incomplete";
+                            runtime_unavailable: "runtime_unavailable";
+                            signed_out: "signed_out";
+                            model_unavailable: "model_unavailable";
+                            blocked: "blocked";
+                            model_settings_invalid: "model_settings_invalid";
+                            router_not_active: "router_not_active";
+                            router_failed: "router_failed";
+                        }>;
+                        detail: z.ZodString;
+                    }, z.core.$strict>>;
+                }, z.core.$strict>, z.ZodObject<{
+                    origin: z.ZodLiteral<"model_router">;
+                    fallbacks: z.ZodArray<z.ZodObject<{
+                        layer: z.ZodEnum<{
+                            agent_default: "agent_default";
+                            team_default: "team_default";
+                            model_router: "model_router";
+                        }>;
+                        runtime_kind: z.ZodNullable<z.ZodString>;
+                        llm_model_identifier: z.ZodNullable<z.ZodString>;
+                        reason: z.ZodEnum<{
+                            incomplete: "incomplete";
+                            runtime_unavailable: "runtime_unavailable";
+                            signed_out: "signed_out";
+                            model_unavailable: "model_unavailable";
+                            blocked: "blocked";
+                            model_settings_invalid: "model_settings_invalid";
+                            router_not_active: "router_not_active";
+                            router_failed: "router_failed";
+                        }>;
+                        detail: z.ZodString;
+                    }, z.core.$strict>>;
+                    choice_reason: z.ZodString;
+                    task_kind: z.ZodString;
+                }, z.core.$strict>]>;
+            }, z.core.$strict>>>;
+        }, z.core.$strict>], "kind">>;
     }, z.core.$strict>;
 }, z.core.$strict>, z.ZodObject<{
     root_subject_kind: z.ZodLiteral<"agent">;
@@ -852,7 +1260,7 @@ export declare const RootExecutionViewDtoSchema: z.ZodDiscriminatedUnion<[z.ZodO
                 platformAgentRunId: string | null;
                 delegatorAgentRunId?: string;
                 startedAt: string;
-                source?: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
+                source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
                 userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
             }> | Readonly<{
                 address: string;
@@ -869,12 +1277,12 @@ export declare const RootExecutionViewDtoSchema: z.ZodDiscriminatedUnion<[z.ZodO
                     platformAgentRunId: string | null;
                     delegatorAgentRunId?: string;
                     startedAt: string;
-                    source?: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
+                    source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
                     userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                 }> | Readonly</*elided*/ any>)[];
                 delegatorAgentRunId?: string;
                 startedAt: string;
-                source?: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
+                source: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
                 userTeamLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
             }>, unknown, z.core.$ZodTypeInternals<Readonly<{
                 address: string;
@@ -882,7 +1290,7 @@ export declare const RootExecutionViewDtoSchema: z.ZodDiscriminatedUnion<[z.ZodO
                 platformAgentRunId: string | null;
                 delegatorAgentRunId?: string;
                 startedAt: string;
-                source?: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
+                source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
                 userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
             }> | Readonly<{
                 address: string;
@@ -899,12 +1307,12 @@ export declare const RootExecutionViewDtoSchema: z.ZodDiscriminatedUnion<[z.ZodO
                     platformAgentRunId: string | null;
                     delegatorAgentRunId?: string;
                     startedAt: string;
-                    source?: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
+                    source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
                     userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                 }> | Readonly</*elided*/ any>)[];
                 delegatorAgentRunId?: string;
                 startedAt: string;
-                source?: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
+                source: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
                 userTeamLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
             }>, unknown>>>;
         }, z.core.$strict>;
@@ -1007,6 +1415,142 @@ export declare const RootExecutionViewDtoSchema: z.ZodDiscriminatedUnion<[z.ZodO
                 }, z.core.$strict>>;
             }, z.core.$strict>;
         }, z.core.$strict>>;
+        remote_task_executions: z.ZodArray<z.ZodDiscriminatedUnion<[z.ZodObject<{
+            kind: z.ZodLiteral<"agent">;
+            address: z.ZodString;
+            agent_run_id: z.ZodString;
+            node_id: z.ZodString;
+            node_name: z.ZodString;
+            delegator_agent_run_id: z.ZodString;
+            started_at: z.ZodString;
+            launches: z.ZodOptional<z.ZodArray<z.ZodObject<{
+                address: z.ZodString;
+                runtime_kind: z.ZodString;
+                llm_model_identifier: z.ZodString;
+                source: z.ZodUnion<readonly [z.ZodObject<{
+                    origin: z.ZodEnum<{
+                        agent_default: "agent_default";
+                        team_default: "team_default";
+                        inherited: "inherited";
+                        configured: "configured";
+                    }>;
+                    fallbacks: z.ZodArray<z.ZodObject<{
+                        layer: z.ZodEnum<{
+                            agent_default: "agent_default";
+                            team_default: "team_default";
+                            model_router: "model_router";
+                        }>;
+                        runtime_kind: z.ZodNullable<z.ZodString>;
+                        llm_model_identifier: z.ZodNullable<z.ZodString>;
+                        reason: z.ZodEnum<{
+                            incomplete: "incomplete";
+                            runtime_unavailable: "runtime_unavailable";
+                            signed_out: "signed_out";
+                            model_unavailable: "model_unavailable";
+                            blocked: "blocked";
+                            model_settings_invalid: "model_settings_invalid";
+                            router_not_active: "router_not_active";
+                            router_failed: "router_failed";
+                        }>;
+                        detail: z.ZodString;
+                    }, z.core.$strict>>;
+                }, z.core.$strict>, z.ZodObject<{
+                    origin: z.ZodLiteral<"model_router">;
+                    fallbacks: z.ZodArray<z.ZodObject<{
+                        layer: z.ZodEnum<{
+                            agent_default: "agent_default";
+                            team_default: "team_default";
+                            model_router: "model_router";
+                        }>;
+                        runtime_kind: z.ZodNullable<z.ZodString>;
+                        llm_model_identifier: z.ZodNullable<z.ZodString>;
+                        reason: z.ZodEnum<{
+                            incomplete: "incomplete";
+                            runtime_unavailable: "runtime_unavailable";
+                            signed_out: "signed_out";
+                            model_unavailable: "model_unavailable";
+                            blocked: "blocked";
+                            model_settings_invalid: "model_settings_invalid";
+                            router_not_active: "router_not_active";
+                            router_failed: "router_failed";
+                        }>;
+                        detail: z.ZodString;
+                    }, z.core.$strict>>;
+                    choice_reason: z.ZodString;
+                    task_kind: z.ZodString;
+                }, z.core.$strict>]>;
+            }, z.core.$strict>>>;
+        }, z.core.$strict>, z.ZodObject<{
+            kind: z.ZodLiteral<"agent_team">;
+            address: z.ZodString;
+            team_run_id: z.ZodString;
+            node_id: z.ZodString;
+            node_name: z.ZodString;
+            coordinator_address: z.ZodString;
+            members: z.ZodArray<z.ZodObject<{
+                address: z.ZodString;
+                agent_run_id: z.ZodString;
+            }, z.core.$strict>>;
+            delegator_agent_run_id: z.ZodString;
+            started_at: z.ZodString;
+            launches: z.ZodOptional<z.ZodArray<z.ZodObject<{
+                address: z.ZodString;
+                runtime_kind: z.ZodString;
+                llm_model_identifier: z.ZodString;
+                source: z.ZodUnion<readonly [z.ZodObject<{
+                    origin: z.ZodEnum<{
+                        agent_default: "agent_default";
+                        team_default: "team_default";
+                        inherited: "inherited";
+                        configured: "configured";
+                    }>;
+                    fallbacks: z.ZodArray<z.ZodObject<{
+                        layer: z.ZodEnum<{
+                            agent_default: "agent_default";
+                            team_default: "team_default";
+                            model_router: "model_router";
+                        }>;
+                        runtime_kind: z.ZodNullable<z.ZodString>;
+                        llm_model_identifier: z.ZodNullable<z.ZodString>;
+                        reason: z.ZodEnum<{
+                            incomplete: "incomplete";
+                            runtime_unavailable: "runtime_unavailable";
+                            signed_out: "signed_out";
+                            model_unavailable: "model_unavailable";
+                            blocked: "blocked";
+                            model_settings_invalid: "model_settings_invalid";
+                            router_not_active: "router_not_active";
+                            router_failed: "router_failed";
+                        }>;
+                        detail: z.ZodString;
+                    }, z.core.$strict>>;
+                }, z.core.$strict>, z.ZodObject<{
+                    origin: z.ZodLiteral<"model_router">;
+                    fallbacks: z.ZodArray<z.ZodObject<{
+                        layer: z.ZodEnum<{
+                            agent_default: "agent_default";
+                            team_default: "team_default";
+                            model_router: "model_router";
+                        }>;
+                        runtime_kind: z.ZodNullable<z.ZodString>;
+                        llm_model_identifier: z.ZodNullable<z.ZodString>;
+                        reason: z.ZodEnum<{
+                            incomplete: "incomplete";
+                            runtime_unavailable: "runtime_unavailable";
+                            signed_out: "signed_out";
+                            model_unavailable: "model_unavailable";
+                            blocked: "blocked";
+                            model_settings_invalid: "model_settings_invalid";
+                            router_not_active: "router_not_active";
+                            router_failed: "router_failed";
+                        }>;
+                        detail: z.ZodString;
+                    }, z.core.$strict>>;
+                    choice_reason: z.ZodString;
+                    task_kind: z.ZodString;
+                }, z.core.$strict>]>;
+            }, z.core.$strict>>>;
+        }, z.core.$strict>], "kind">>;
     }, z.core.$strict>;
 }, z.core.$strict>], "root_subject_kind">;
 /**
@@ -1065,7 +1609,7 @@ export declare const RootExecutionEventDtoSchema: z.ZodDiscriminatedUnion<[z.Zod
             platformAgentRunId: string | null;
             delegatorAgentRunId?: string;
             startedAt: string;
-            source?: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
+            source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
             userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
         }> | Readonly<{
             address: string;
@@ -1082,12 +1626,12 @@ export declare const RootExecutionEventDtoSchema: z.ZodDiscriminatedUnion<[z.Zod
                 platformAgentRunId: string | null;
                 delegatorAgentRunId?: string;
                 startedAt: string;
-                source?: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
+                source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
                 userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
             }> | Readonly</*elided*/ any>)[];
             delegatorAgentRunId?: string;
             startedAt: string;
-            source?: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
+            source: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
             userTeamLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
         }>, unknown, z.core.$ZodTypeInternals<Readonly<{
             address: string;
@@ -1095,7 +1639,7 @@ export declare const RootExecutionEventDtoSchema: z.ZodDiscriminatedUnion<[z.Zod
             platformAgentRunId: string | null;
             delegatorAgentRunId?: string;
             startedAt: string;
-            source?: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
+            source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
             userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
         }> | Readonly<{
             address: string;
@@ -1112,12 +1656,12 @@ export declare const RootExecutionEventDtoSchema: z.ZodDiscriminatedUnion<[z.Zod
                 platformAgentRunId: string | null;
                 delegatorAgentRunId?: string;
                 startedAt: string;
-                source?: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
+                source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
                 userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
             }> | Readonly</*elided*/ any>)[];
             delegatorAgentRunId?: string;
             startedAt: string;
-            source?: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
+            source: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
             userTeamLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
         }>, unknown>>;
     }, z.core.$strict>, z.ZodObject<{
@@ -1162,6 +1706,160 @@ export declare const RootExecutionEventDtoSchema: z.ZodDiscriminatedUnion<[z.Zod
                 selectedAt: z.ZodString;
             }, z.core.$strict>;
         }, z.core.$strict>]>>;
+    }, z.core.$strict>, z.ZodObject<{
+        kind: z.ZodLiteral<"remote_task_execution_started">;
+        execution: z.ZodDiscriminatedUnion<[z.ZodObject<{
+            kind: z.ZodLiteral<"agent">;
+            address: z.ZodString;
+            agent_run_id: z.ZodString;
+            node_id: z.ZodString;
+            node_name: z.ZodString;
+            delegator_agent_run_id: z.ZodString;
+            started_at: z.ZodString;
+            launches: z.ZodOptional<z.ZodArray<z.ZodObject<{
+                address: z.ZodString;
+                runtime_kind: z.ZodString;
+                llm_model_identifier: z.ZodString;
+                source: z.ZodUnion<readonly [z.ZodObject<{
+                    origin: z.ZodEnum<{
+                        agent_default: "agent_default";
+                        team_default: "team_default";
+                        inherited: "inherited";
+                        configured: "configured";
+                    }>;
+                    fallbacks: z.ZodArray<z.ZodObject<{
+                        layer: z.ZodEnum<{
+                            agent_default: "agent_default";
+                            team_default: "team_default";
+                            model_router: "model_router";
+                        }>;
+                        runtime_kind: z.ZodNullable<z.ZodString>;
+                        llm_model_identifier: z.ZodNullable<z.ZodString>;
+                        reason: z.ZodEnum<{
+                            incomplete: "incomplete";
+                            runtime_unavailable: "runtime_unavailable";
+                            signed_out: "signed_out";
+                            model_unavailable: "model_unavailable";
+                            blocked: "blocked";
+                            model_settings_invalid: "model_settings_invalid";
+                            router_not_active: "router_not_active";
+                            router_failed: "router_failed";
+                        }>;
+                        detail: z.ZodString;
+                    }, z.core.$strict>>;
+                }, z.core.$strict>, z.ZodObject<{
+                    origin: z.ZodLiteral<"model_router">;
+                    fallbacks: z.ZodArray<z.ZodObject<{
+                        layer: z.ZodEnum<{
+                            agent_default: "agent_default";
+                            team_default: "team_default";
+                            model_router: "model_router";
+                        }>;
+                        runtime_kind: z.ZodNullable<z.ZodString>;
+                        llm_model_identifier: z.ZodNullable<z.ZodString>;
+                        reason: z.ZodEnum<{
+                            incomplete: "incomplete";
+                            runtime_unavailable: "runtime_unavailable";
+                            signed_out: "signed_out";
+                            model_unavailable: "model_unavailable";
+                            blocked: "blocked";
+                            model_settings_invalid: "model_settings_invalid";
+                            router_not_active: "router_not_active";
+                            router_failed: "router_failed";
+                        }>;
+                        detail: z.ZodString;
+                    }, z.core.$strict>>;
+                    choice_reason: z.ZodString;
+                    task_kind: z.ZodString;
+                }, z.core.$strict>]>;
+            }, z.core.$strict>>>;
+        }, z.core.$strict>, z.ZodObject<{
+            kind: z.ZodLiteral<"agent_team">;
+            address: z.ZodString;
+            team_run_id: z.ZodString;
+            node_id: z.ZodString;
+            node_name: z.ZodString;
+            coordinator_address: z.ZodString;
+            members: z.ZodArray<z.ZodObject<{
+                address: z.ZodString;
+                agent_run_id: z.ZodString;
+            }, z.core.$strict>>;
+            delegator_agent_run_id: z.ZodString;
+            started_at: z.ZodString;
+            launches: z.ZodOptional<z.ZodArray<z.ZodObject<{
+                address: z.ZodString;
+                runtime_kind: z.ZodString;
+                llm_model_identifier: z.ZodString;
+                source: z.ZodUnion<readonly [z.ZodObject<{
+                    origin: z.ZodEnum<{
+                        agent_default: "agent_default";
+                        team_default: "team_default";
+                        inherited: "inherited";
+                        configured: "configured";
+                    }>;
+                    fallbacks: z.ZodArray<z.ZodObject<{
+                        layer: z.ZodEnum<{
+                            agent_default: "agent_default";
+                            team_default: "team_default";
+                            model_router: "model_router";
+                        }>;
+                        runtime_kind: z.ZodNullable<z.ZodString>;
+                        llm_model_identifier: z.ZodNullable<z.ZodString>;
+                        reason: z.ZodEnum<{
+                            incomplete: "incomplete";
+                            runtime_unavailable: "runtime_unavailable";
+                            signed_out: "signed_out";
+                            model_unavailable: "model_unavailable";
+                            blocked: "blocked";
+                            model_settings_invalid: "model_settings_invalid";
+                            router_not_active: "router_not_active";
+                            router_failed: "router_failed";
+                        }>;
+                        detail: z.ZodString;
+                    }, z.core.$strict>>;
+                }, z.core.$strict>, z.ZodObject<{
+                    origin: z.ZodLiteral<"model_router">;
+                    fallbacks: z.ZodArray<z.ZodObject<{
+                        layer: z.ZodEnum<{
+                            agent_default: "agent_default";
+                            team_default: "team_default";
+                            model_router: "model_router";
+                        }>;
+                        runtime_kind: z.ZodNullable<z.ZodString>;
+                        llm_model_identifier: z.ZodNullable<z.ZodString>;
+                        reason: z.ZodEnum<{
+                            incomplete: "incomplete";
+                            runtime_unavailable: "runtime_unavailable";
+                            signed_out: "signed_out";
+                            model_unavailable: "model_unavailable";
+                            blocked: "blocked";
+                            model_settings_invalid: "model_settings_invalid";
+                            router_not_active: "router_not_active";
+                            router_failed: "router_failed";
+                        }>;
+                        detail: z.ZodString;
+                    }, z.core.$strict>>;
+                    choice_reason: z.ZodString;
+                    task_kind: z.ZodString;
+                }, z.core.$strict>]>;
+            }, z.core.$strict>>>;
+        }, z.core.$strict>], "kind">;
+    }, z.core.$strict>, z.ZodObject<{
+        node_id: z.ZodString;
+        run_id: z.ZodString;
+        reachable: z.ZodBoolean;
+        title: z.ZodNullable<z.ZodString>;
+        statuses: z.ZodArray<z.ZodObject<{
+            agent_run_id: z.ZodString;
+            status: z.ZodEnum<{
+                error: "error";
+                offline: "offline";
+                initializing: "initializing";
+                idle: "idle";
+                running: "running";
+            }>;
+        }, z.core.$strict>>;
+        kind: z.ZodLiteral<"remote_task_execution_summary">;
     }, z.core.$strict>], "kind">;
 }, z.core.$strict>, z.ZodObject<{
     root_subject_kind: z.ZodLiteral<"agent">;
@@ -1209,7 +1907,7 @@ export declare const RootExecutionEventDtoSchema: z.ZodDiscriminatedUnion<[z.Zod
             platformAgentRunId: string | null;
             delegatorAgentRunId?: string;
             startedAt: string;
-            source?: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
+            source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
             userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
         }> | Readonly<{
             address: string;
@@ -1226,12 +1924,12 @@ export declare const RootExecutionEventDtoSchema: z.ZodDiscriminatedUnion<[z.Zod
                 platformAgentRunId: string | null;
                 delegatorAgentRunId?: string;
                 startedAt: string;
-                source?: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
+                source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
                 userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
             }> | Readonly</*elided*/ any>)[];
             delegatorAgentRunId?: string;
             startedAt: string;
-            source?: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
+            source: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
             userTeamLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
         }>, unknown, z.core.$ZodTypeInternals<Readonly<{
             address: string;
@@ -1239,7 +1937,7 @@ export declare const RootExecutionEventDtoSchema: z.ZodDiscriminatedUnion<[z.Zod
             platformAgentRunId: string | null;
             delegatorAgentRunId?: string;
             startedAt: string;
-            source?: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
+            source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
             userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
         }> | Readonly<{
             address: string;
@@ -1256,12 +1954,12 @@ export declare const RootExecutionEventDtoSchema: z.ZodDiscriminatedUnion<[z.Zod
                 platformAgentRunId: string | null;
                 delegatorAgentRunId?: string;
                 startedAt: string;
-                source?: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
+                source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
                 userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
             }> | Readonly</*elided*/ any>)[];
             delegatorAgentRunId?: string;
             startedAt: string;
-            source?: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
+            source: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
             userTeamLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
         }>, unknown>>;
     }, z.core.$strict>, z.ZodObject<{
@@ -1306,6 +2004,160 @@ export declare const RootExecutionEventDtoSchema: z.ZodDiscriminatedUnion<[z.Zod
                 selectedAt: z.ZodString;
             }, z.core.$strict>;
         }, z.core.$strict>]>>;
+    }, z.core.$strict>, z.ZodObject<{
+        kind: z.ZodLiteral<"remote_task_execution_started">;
+        execution: z.ZodDiscriminatedUnion<[z.ZodObject<{
+            kind: z.ZodLiteral<"agent">;
+            address: z.ZodString;
+            agent_run_id: z.ZodString;
+            node_id: z.ZodString;
+            node_name: z.ZodString;
+            delegator_agent_run_id: z.ZodString;
+            started_at: z.ZodString;
+            launches: z.ZodOptional<z.ZodArray<z.ZodObject<{
+                address: z.ZodString;
+                runtime_kind: z.ZodString;
+                llm_model_identifier: z.ZodString;
+                source: z.ZodUnion<readonly [z.ZodObject<{
+                    origin: z.ZodEnum<{
+                        agent_default: "agent_default";
+                        team_default: "team_default";
+                        inherited: "inherited";
+                        configured: "configured";
+                    }>;
+                    fallbacks: z.ZodArray<z.ZodObject<{
+                        layer: z.ZodEnum<{
+                            agent_default: "agent_default";
+                            team_default: "team_default";
+                            model_router: "model_router";
+                        }>;
+                        runtime_kind: z.ZodNullable<z.ZodString>;
+                        llm_model_identifier: z.ZodNullable<z.ZodString>;
+                        reason: z.ZodEnum<{
+                            incomplete: "incomplete";
+                            runtime_unavailable: "runtime_unavailable";
+                            signed_out: "signed_out";
+                            model_unavailable: "model_unavailable";
+                            blocked: "blocked";
+                            model_settings_invalid: "model_settings_invalid";
+                            router_not_active: "router_not_active";
+                            router_failed: "router_failed";
+                        }>;
+                        detail: z.ZodString;
+                    }, z.core.$strict>>;
+                }, z.core.$strict>, z.ZodObject<{
+                    origin: z.ZodLiteral<"model_router">;
+                    fallbacks: z.ZodArray<z.ZodObject<{
+                        layer: z.ZodEnum<{
+                            agent_default: "agent_default";
+                            team_default: "team_default";
+                            model_router: "model_router";
+                        }>;
+                        runtime_kind: z.ZodNullable<z.ZodString>;
+                        llm_model_identifier: z.ZodNullable<z.ZodString>;
+                        reason: z.ZodEnum<{
+                            incomplete: "incomplete";
+                            runtime_unavailable: "runtime_unavailable";
+                            signed_out: "signed_out";
+                            model_unavailable: "model_unavailable";
+                            blocked: "blocked";
+                            model_settings_invalid: "model_settings_invalid";
+                            router_not_active: "router_not_active";
+                            router_failed: "router_failed";
+                        }>;
+                        detail: z.ZodString;
+                    }, z.core.$strict>>;
+                    choice_reason: z.ZodString;
+                    task_kind: z.ZodString;
+                }, z.core.$strict>]>;
+            }, z.core.$strict>>>;
+        }, z.core.$strict>, z.ZodObject<{
+            kind: z.ZodLiteral<"agent_team">;
+            address: z.ZodString;
+            team_run_id: z.ZodString;
+            node_id: z.ZodString;
+            node_name: z.ZodString;
+            coordinator_address: z.ZodString;
+            members: z.ZodArray<z.ZodObject<{
+                address: z.ZodString;
+                agent_run_id: z.ZodString;
+            }, z.core.$strict>>;
+            delegator_agent_run_id: z.ZodString;
+            started_at: z.ZodString;
+            launches: z.ZodOptional<z.ZodArray<z.ZodObject<{
+                address: z.ZodString;
+                runtime_kind: z.ZodString;
+                llm_model_identifier: z.ZodString;
+                source: z.ZodUnion<readonly [z.ZodObject<{
+                    origin: z.ZodEnum<{
+                        agent_default: "agent_default";
+                        team_default: "team_default";
+                        inherited: "inherited";
+                        configured: "configured";
+                    }>;
+                    fallbacks: z.ZodArray<z.ZodObject<{
+                        layer: z.ZodEnum<{
+                            agent_default: "agent_default";
+                            team_default: "team_default";
+                            model_router: "model_router";
+                        }>;
+                        runtime_kind: z.ZodNullable<z.ZodString>;
+                        llm_model_identifier: z.ZodNullable<z.ZodString>;
+                        reason: z.ZodEnum<{
+                            incomplete: "incomplete";
+                            runtime_unavailable: "runtime_unavailable";
+                            signed_out: "signed_out";
+                            model_unavailable: "model_unavailable";
+                            blocked: "blocked";
+                            model_settings_invalid: "model_settings_invalid";
+                            router_not_active: "router_not_active";
+                            router_failed: "router_failed";
+                        }>;
+                        detail: z.ZodString;
+                    }, z.core.$strict>>;
+                }, z.core.$strict>, z.ZodObject<{
+                    origin: z.ZodLiteral<"model_router">;
+                    fallbacks: z.ZodArray<z.ZodObject<{
+                        layer: z.ZodEnum<{
+                            agent_default: "agent_default";
+                            team_default: "team_default";
+                            model_router: "model_router";
+                        }>;
+                        runtime_kind: z.ZodNullable<z.ZodString>;
+                        llm_model_identifier: z.ZodNullable<z.ZodString>;
+                        reason: z.ZodEnum<{
+                            incomplete: "incomplete";
+                            runtime_unavailable: "runtime_unavailable";
+                            signed_out: "signed_out";
+                            model_unavailable: "model_unavailable";
+                            blocked: "blocked";
+                            model_settings_invalid: "model_settings_invalid";
+                            router_not_active: "router_not_active";
+                            router_failed: "router_failed";
+                        }>;
+                        detail: z.ZodString;
+                    }, z.core.$strict>>;
+                    choice_reason: z.ZodString;
+                    task_kind: z.ZodString;
+                }, z.core.$strict>]>;
+            }, z.core.$strict>>>;
+        }, z.core.$strict>], "kind">;
+    }, z.core.$strict>, z.ZodObject<{
+        node_id: z.ZodString;
+        run_id: z.ZodString;
+        reachable: z.ZodBoolean;
+        title: z.ZodNullable<z.ZodString>;
+        statuses: z.ZodArray<z.ZodObject<{
+            agent_run_id: z.ZodString;
+            status: z.ZodEnum<{
+                error: "error";
+                offline: "offline";
+                initializing: "initializing";
+                idle: "idle";
+                running: "running";
+            }>;
+        }, z.core.$strict>>;
+        kind: z.ZodLiteral<"remote_task_execution_summary">;
     }, z.core.$strict>], "kind">;
 }, z.core.$strict>], "root_subject_kind">;
 export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.ZodObject<{
@@ -1429,7 +2281,7 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
                             platformAgentRunId: string | null;
                             delegatorAgentRunId?: string;
                             startedAt: string;
-                            source?: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
+                            source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
                             userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                         }> | Readonly<{
                             address: string;
@@ -1446,12 +2298,12 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
                                 platformAgentRunId: string | null;
                                 delegatorAgentRunId?: string;
                                 startedAt: string;
-                                source?: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
+                                source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
                                 userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                             }> | Readonly</*elided*/ any>)[];
                             delegatorAgentRunId?: string;
                             startedAt: string;
-                            source?: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
+                            source: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
                             userTeamLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                         }>, unknown, z.core.$ZodTypeInternals<Readonly<{
                             address: string;
@@ -1459,7 +2311,7 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
                             platformAgentRunId: string | null;
                             delegatorAgentRunId?: string;
                             startedAt: string;
-                            source?: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
+                            source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
                             userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                         }> | Readonly<{
                             address: string;
@@ -1476,12 +2328,12 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
                                 platformAgentRunId: string | null;
                                 delegatorAgentRunId?: string;
                                 startedAt: string;
-                                source?: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
+                                source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
                                 userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                             }> | Readonly</*elided*/ any>)[];
                             delegatorAgentRunId?: string;
                             startedAt: string;
-                            source?: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
+                            source: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
                             userTeamLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                         }>, unknown>>>;
                     }, z.core.$strict>]>>;
@@ -1491,7 +2343,7 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
                         platformAgentRunId: string | null;
                         delegatorAgentRunId?: string;
                         startedAt: string;
-                        source?: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
+                        source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
                         userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                     }> | Readonly<{
                         address: string;
@@ -1508,12 +2360,12 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
                             platformAgentRunId: string | null;
                             delegatorAgentRunId?: string;
                             startedAt: string;
-                            source?: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
+                            source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
                             userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                         }> | Readonly</*elided*/ any>)[];
                         delegatorAgentRunId?: string;
                         startedAt: string;
-                        source?: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
+                        source: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
                         userTeamLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                     }>, unknown, z.core.$ZodTypeInternals<Readonly<{
                         address: string;
@@ -1521,7 +2373,7 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
                         platformAgentRunId: string | null;
                         delegatorAgentRunId?: string;
                         startedAt: string;
-                        source?: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
+                        source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
                         userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                     }> | Readonly<{
                         address: string;
@@ -1538,12 +2390,12 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
                             platformAgentRunId: string | null;
                             delegatorAgentRunId?: string;
                             startedAt: string;
-                            source?: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
+                            source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
                             userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                         }> | Readonly</*elided*/ any>)[];
                         delegatorAgentRunId?: string;
                         startedAt: string;
-                        source?: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
+                        source: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
                         userTeamLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                     }>, unknown>>>;
                 }, z.core.$strict>;
@@ -1647,6 +2499,142 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
                     }, z.core.$strict>>;
                 }, z.core.$strict>;
             }, z.core.$strict>>;
+            remote_task_executions: z.ZodArray<z.ZodDiscriminatedUnion<[z.ZodObject<{
+                kind: z.ZodLiteral<"agent">;
+                address: z.ZodString;
+                agent_run_id: z.ZodString;
+                node_id: z.ZodString;
+                node_name: z.ZodString;
+                delegator_agent_run_id: z.ZodString;
+                started_at: z.ZodString;
+                launches: z.ZodOptional<z.ZodArray<z.ZodObject<{
+                    address: z.ZodString;
+                    runtime_kind: z.ZodString;
+                    llm_model_identifier: z.ZodString;
+                    source: z.ZodUnion<readonly [z.ZodObject<{
+                        origin: z.ZodEnum<{
+                            agent_default: "agent_default";
+                            team_default: "team_default";
+                            inherited: "inherited";
+                            configured: "configured";
+                        }>;
+                        fallbacks: z.ZodArray<z.ZodObject<{
+                            layer: z.ZodEnum<{
+                                agent_default: "agent_default";
+                                team_default: "team_default";
+                                model_router: "model_router";
+                            }>;
+                            runtime_kind: z.ZodNullable<z.ZodString>;
+                            llm_model_identifier: z.ZodNullable<z.ZodString>;
+                            reason: z.ZodEnum<{
+                                incomplete: "incomplete";
+                                runtime_unavailable: "runtime_unavailable";
+                                signed_out: "signed_out";
+                                model_unavailable: "model_unavailable";
+                                blocked: "blocked";
+                                model_settings_invalid: "model_settings_invalid";
+                                router_not_active: "router_not_active";
+                                router_failed: "router_failed";
+                            }>;
+                            detail: z.ZodString;
+                        }, z.core.$strict>>;
+                    }, z.core.$strict>, z.ZodObject<{
+                        origin: z.ZodLiteral<"model_router">;
+                        fallbacks: z.ZodArray<z.ZodObject<{
+                            layer: z.ZodEnum<{
+                                agent_default: "agent_default";
+                                team_default: "team_default";
+                                model_router: "model_router";
+                            }>;
+                            runtime_kind: z.ZodNullable<z.ZodString>;
+                            llm_model_identifier: z.ZodNullable<z.ZodString>;
+                            reason: z.ZodEnum<{
+                                incomplete: "incomplete";
+                                runtime_unavailable: "runtime_unavailable";
+                                signed_out: "signed_out";
+                                model_unavailable: "model_unavailable";
+                                blocked: "blocked";
+                                model_settings_invalid: "model_settings_invalid";
+                                router_not_active: "router_not_active";
+                                router_failed: "router_failed";
+                            }>;
+                            detail: z.ZodString;
+                        }, z.core.$strict>>;
+                        choice_reason: z.ZodString;
+                        task_kind: z.ZodString;
+                    }, z.core.$strict>]>;
+                }, z.core.$strict>>>;
+            }, z.core.$strict>, z.ZodObject<{
+                kind: z.ZodLiteral<"agent_team">;
+                address: z.ZodString;
+                team_run_id: z.ZodString;
+                node_id: z.ZodString;
+                node_name: z.ZodString;
+                coordinator_address: z.ZodString;
+                members: z.ZodArray<z.ZodObject<{
+                    address: z.ZodString;
+                    agent_run_id: z.ZodString;
+                }, z.core.$strict>>;
+                delegator_agent_run_id: z.ZodString;
+                started_at: z.ZodString;
+                launches: z.ZodOptional<z.ZodArray<z.ZodObject<{
+                    address: z.ZodString;
+                    runtime_kind: z.ZodString;
+                    llm_model_identifier: z.ZodString;
+                    source: z.ZodUnion<readonly [z.ZodObject<{
+                        origin: z.ZodEnum<{
+                            agent_default: "agent_default";
+                            team_default: "team_default";
+                            inherited: "inherited";
+                            configured: "configured";
+                        }>;
+                        fallbacks: z.ZodArray<z.ZodObject<{
+                            layer: z.ZodEnum<{
+                                agent_default: "agent_default";
+                                team_default: "team_default";
+                                model_router: "model_router";
+                            }>;
+                            runtime_kind: z.ZodNullable<z.ZodString>;
+                            llm_model_identifier: z.ZodNullable<z.ZodString>;
+                            reason: z.ZodEnum<{
+                                incomplete: "incomplete";
+                                runtime_unavailable: "runtime_unavailable";
+                                signed_out: "signed_out";
+                                model_unavailable: "model_unavailable";
+                                blocked: "blocked";
+                                model_settings_invalid: "model_settings_invalid";
+                                router_not_active: "router_not_active";
+                                router_failed: "router_failed";
+                            }>;
+                            detail: z.ZodString;
+                        }, z.core.$strict>>;
+                    }, z.core.$strict>, z.ZodObject<{
+                        origin: z.ZodLiteral<"model_router">;
+                        fallbacks: z.ZodArray<z.ZodObject<{
+                            layer: z.ZodEnum<{
+                                agent_default: "agent_default";
+                                team_default: "team_default";
+                                model_router: "model_router";
+                            }>;
+                            runtime_kind: z.ZodNullable<z.ZodString>;
+                            llm_model_identifier: z.ZodNullable<z.ZodString>;
+                            reason: z.ZodEnum<{
+                                incomplete: "incomplete";
+                                runtime_unavailable: "runtime_unavailable";
+                                signed_out: "signed_out";
+                                model_unavailable: "model_unavailable";
+                                blocked: "blocked";
+                                model_settings_invalid: "model_settings_invalid";
+                                router_not_active: "router_not_active";
+                                router_failed: "router_failed";
+                            }>;
+                            detail: z.ZodString;
+                        }, z.core.$strict>>;
+                        choice_reason: z.ZodString;
+                        task_kind: z.ZodString;
+                    }, z.core.$strict>]>;
+                }, z.core.$strict>>>;
+            }, z.core.$strict>], "kind">>;
         }, z.core.$strict>;
     }, z.core.$strict>, z.ZodObject<{
         root_subject_kind: z.ZodLiteral<"agent">;
@@ -1668,7 +2656,7 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
                     platformAgentRunId: string | null;
                     delegatorAgentRunId?: string;
                     startedAt: string;
-                    source?: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
+                    source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
                     userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                 }> | Readonly<{
                     address: string;
@@ -1685,12 +2673,12 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
                         platformAgentRunId: string | null;
                         delegatorAgentRunId?: string;
                         startedAt: string;
-                        source?: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
+                        source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
                         userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                     }> | Readonly</*elided*/ any>)[];
                     delegatorAgentRunId?: string;
                     startedAt: string;
-                    source?: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
+                    source: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
                     userTeamLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                 }>, unknown, z.core.$ZodTypeInternals<Readonly<{
                     address: string;
@@ -1698,7 +2686,7 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
                     platformAgentRunId: string | null;
                     delegatorAgentRunId?: string;
                     startedAt: string;
-                    source?: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
+                    source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
                     userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                 }> | Readonly<{
                     address: string;
@@ -1715,12 +2703,12 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
                         platformAgentRunId: string | null;
                         delegatorAgentRunId?: string;
                         startedAt: string;
-                        source?: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
+                        source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
                         userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                     }> | Readonly</*elided*/ any>)[];
                     delegatorAgentRunId?: string;
                     startedAt: string;
-                    source?: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
+                    source: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
                     userTeamLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                 }>, unknown>>>;
             }, z.core.$strict>;
@@ -1823,6 +2811,142 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
                     }, z.core.$strict>>;
                 }, z.core.$strict>;
             }, z.core.$strict>>;
+            remote_task_executions: z.ZodArray<z.ZodDiscriminatedUnion<[z.ZodObject<{
+                kind: z.ZodLiteral<"agent">;
+                address: z.ZodString;
+                agent_run_id: z.ZodString;
+                node_id: z.ZodString;
+                node_name: z.ZodString;
+                delegator_agent_run_id: z.ZodString;
+                started_at: z.ZodString;
+                launches: z.ZodOptional<z.ZodArray<z.ZodObject<{
+                    address: z.ZodString;
+                    runtime_kind: z.ZodString;
+                    llm_model_identifier: z.ZodString;
+                    source: z.ZodUnion<readonly [z.ZodObject<{
+                        origin: z.ZodEnum<{
+                            agent_default: "agent_default";
+                            team_default: "team_default";
+                            inherited: "inherited";
+                            configured: "configured";
+                        }>;
+                        fallbacks: z.ZodArray<z.ZodObject<{
+                            layer: z.ZodEnum<{
+                                agent_default: "agent_default";
+                                team_default: "team_default";
+                                model_router: "model_router";
+                            }>;
+                            runtime_kind: z.ZodNullable<z.ZodString>;
+                            llm_model_identifier: z.ZodNullable<z.ZodString>;
+                            reason: z.ZodEnum<{
+                                incomplete: "incomplete";
+                                runtime_unavailable: "runtime_unavailable";
+                                signed_out: "signed_out";
+                                model_unavailable: "model_unavailable";
+                                blocked: "blocked";
+                                model_settings_invalid: "model_settings_invalid";
+                                router_not_active: "router_not_active";
+                                router_failed: "router_failed";
+                            }>;
+                            detail: z.ZodString;
+                        }, z.core.$strict>>;
+                    }, z.core.$strict>, z.ZodObject<{
+                        origin: z.ZodLiteral<"model_router">;
+                        fallbacks: z.ZodArray<z.ZodObject<{
+                            layer: z.ZodEnum<{
+                                agent_default: "agent_default";
+                                team_default: "team_default";
+                                model_router: "model_router";
+                            }>;
+                            runtime_kind: z.ZodNullable<z.ZodString>;
+                            llm_model_identifier: z.ZodNullable<z.ZodString>;
+                            reason: z.ZodEnum<{
+                                incomplete: "incomplete";
+                                runtime_unavailable: "runtime_unavailable";
+                                signed_out: "signed_out";
+                                model_unavailable: "model_unavailable";
+                                blocked: "blocked";
+                                model_settings_invalid: "model_settings_invalid";
+                                router_not_active: "router_not_active";
+                                router_failed: "router_failed";
+                            }>;
+                            detail: z.ZodString;
+                        }, z.core.$strict>>;
+                        choice_reason: z.ZodString;
+                        task_kind: z.ZodString;
+                    }, z.core.$strict>]>;
+                }, z.core.$strict>>>;
+            }, z.core.$strict>, z.ZodObject<{
+                kind: z.ZodLiteral<"agent_team">;
+                address: z.ZodString;
+                team_run_id: z.ZodString;
+                node_id: z.ZodString;
+                node_name: z.ZodString;
+                coordinator_address: z.ZodString;
+                members: z.ZodArray<z.ZodObject<{
+                    address: z.ZodString;
+                    agent_run_id: z.ZodString;
+                }, z.core.$strict>>;
+                delegator_agent_run_id: z.ZodString;
+                started_at: z.ZodString;
+                launches: z.ZodOptional<z.ZodArray<z.ZodObject<{
+                    address: z.ZodString;
+                    runtime_kind: z.ZodString;
+                    llm_model_identifier: z.ZodString;
+                    source: z.ZodUnion<readonly [z.ZodObject<{
+                        origin: z.ZodEnum<{
+                            agent_default: "agent_default";
+                            team_default: "team_default";
+                            inherited: "inherited";
+                            configured: "configured";
+                        }>;
+                        fallbacks: z.ZodArray<z.ZodObject<{
+                            layer: z.ZodEnum<{
+                                agent_default: "agent_default";
+                                team_default: "team_default";
+                                model_router: "model_router";
+                            }>;
+                            runtime_kind: z.ZodNullable<z.ZodString>;
+                            llm_model_identifier: z.ZodNullable<z.ZodString>;
+                            reason: z.ZodEnum<{
+                                incomplete: "incomplete";
+                                runtime_unavailable: "runtime_unavailable";
+                                signed_out: "signed_out";
+                                model_unavailable: "model_unavailable";
+                                blocked: "blocked";
+                                model_settings_invalid: "model_settings_invalid";
+                                router_not_active: "router_not_active";
+                                router_failed: "router_failed";
+                            }>;
+                            detail: z.ZodString;
+                        }, z.core.$strict>>;
+                    }, z.core.$strict>, z.ZodObject<{
+                        origin: z.ZodLiteral<"model_router">;
+                        fallbacks: z.ZodArray<z.ZodObject<{
+                            layer: z.ZodEnum<{
+                                agent_default: "agent_default";
+                                team_default: "team_default";
+                                model_router: "model_router";
+                            }>;
+                            runtime_kind: z.ZodNullable<z.ZodString>;
+                            llm_model_identifier: z.ZodNullable<z.ZodString>;
+                            reason: z.ZodEnum<{
+                                incomplete: "incomplete";
+                                runtime_unavailable: "runtime_unavailable";
+                                signed_out: "signed_out";
+                                model_unavailable: "model_unavailable";
+                                blocked: "blocked";
+                                model_settings_invalid: "model_settings_invalid";
+                                router_not_active: "router_not_active";
+                                router_failed: "router_failed";
+                            }>;
+                            detail: z.ZodString;
+                        }, z.core.$strict>>;
+                        choice_reason: z.ZodString;
+                        task_kind: z.ZodString;
+                    }, z.core.$strict>]>;
+                }, z.core.$strict>>>;
+            }, z.core.$strict>], "kind">>;
         }, z.core.$strict>;
     }, z.core.$strict>], "root_subject_kind">;
 }, z.core.$strict>, z.ZodObject<{
@@ -1878,7 +3002,7 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
                 platformAgentRunId: string | null;
                 delegatorAgentRunId?: string;
                 startedAt: string;
-                source?: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
+                source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
                 userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
             }> | Readonly<{
                 address: string;
@@ -1895,12 +3019,12 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
                     platformAgentRunId: string | null;
                     delegatorAgentRunId?: string;
                     startedAt: string;
-                    source?: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
+                    source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
                     userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                 }> | Readonly</*elided*/ any>)[];
                 delegatorAgentRunId?: string;
                 startedAt: string;
-                source?: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
+                source: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
                 userTeamLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
             }>, unknown, z.core.$ZodTypeInternals<Readonly<{
                 address: string;
@@ -1908,7 +3032,7 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
                 platformAgentRunId: string | null;
                 delegatorAgentRunId?: string;
                 startedAt: string;
-                source?: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
+                source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
                 userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
             }> | Readonly<{
                 address: string;
@@ -1925,12 +3049,12 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
                     platformAgentRunId: string | null;
                     delegatorAgentRunId?: string;
                     startedAt: string;
-                    source?: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
+                    source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
                     userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                 }> | Readonly</*elided*/ any>)[];
                 delegatorAgentRunId?: string;
                 startedAt: string;
-                source?: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
+                source: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
                 userTeamLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
             }>, unknown>>;
         }, z.core.$strict>, z.ZodObject<{
@@ -1975,6 +3099,160 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
                     selectedAt: z.ZodString;
                 }, z.core.$strict>;
             }, z.core.$strict>]>>;
+        }, z.core.$strict>, z.ZodObject<{
+            kind: z.ZodLiteral<"remote_task_execution_started">;
+            execution: z.ZodDiscriminatedUnion<[z.ZodObject<{
+                kind: z.ZodLiteral<"agent">;
+                address: z.ZodString;
+                agent_run_id: z.ZodString;
+                node_id: z.ZodString;
+                node_name: z.ZodString;
+                delegator_agent_run_id: z.ZodString;
+                started_at: z.ZodString;
+                launches: z.ZodOptional<z.ZodArray<z.ZodObject<{
+                    address: z.ZodString;
+                    runtime_kind: z.ZodString;
+                    llm_model_identifier: z.ZodString;
+                    source: z.ZodUnion<readonly [z.ZodObject<{
+                        origin: z.ZodEnum<{
+                            agent_default: "agent_default";
+                            team_default: "team_default";
+                            inherited: "inherited";
+                            configured: "configured";
+                        }>;
+                        fallbacks: z.ZodArray<z.ZodObject<{
+                            layer: z.ZodEnum<{
+                                agent_default: "agent_default";
+                                team_default: "team_default";
+                                model_router: "model_router";
+                            }>;
+                            runtime_kind: z.ZodNullable<z.ZodString>;
+                            llm_model_identifier: z.ZodNullable<z.ZodString>;
+                            reason: z.ZodEnum<{
+                                incomplete: "incomplete";
+                                runtime_unavailable: "runtime_unavailable";
+                                signed_out: "signed_out";
+                                model_unavailable: "model_unavailable";
+                                blocked: "blocked";
+                                model_settings_invalid: "model_settings_invalid";
+                                router_not_active: "router_not_active";
+                                router_failed: "router_failed";
+                            }>;
+                            detail: z.ZodString;
+                        }, z.core.$strict>>;
+                    }, z.core.$strict>, z.ZodObject<{
+                        origin: z.ZodLiteral<"model_router">;
+                        fallbacks: z.ZodArray<z.ZodObject<{
+                            layer: z.ZodEnum<{
+                                agent_default: "agent_default";
+                                team_default: "team_default";
+                                model_router: "model_router";
+                            }>;
+                            runtime_kind: z.ZodNullable<z.ZodString>;
+                            llm_model_identifier: z.ZodNullable<z.ZodString>;
+                            reason: z.ZodEnum<{
+                                incomplete: "incomplete";
+                                runtime_unavailable: "runtime_unavailable";
+                                signed_out: "signed_out";
+                                model_unavailable: "model_unavailable";
+                                blocked: "blocked";
+                                model_settings_invalid: "model_settings_invalid";
+                                router_not_active: "router_not_active";
+                                router_failed: "router_failed";
+                            }>;
+                            detail: z.ZodString;
+                        }, z.core.$strict>>;
+                        choice_reason: z.ZodString;
+                        task_kind: z.ZodString;
+                    }, z.core.$strict>]>;
+                }, z.core.$strict>>>;
+            }, z.core.$strict>, z.ZodObject<{
+                kind: z.ZodLiteral<"agent_team">;
+                address: z.ZodString;
+                team_run_id: z.ZodString;
+                node_id: z.ZodString;
+                node_name: z.ZodString;
+                coordinator_address: z.ZodString;
+                members: z.ZodArray<z.ZodObject<{
+                    address: z.ZodString;
+                    agent_run_id: z.ZodString;
+                }, z.core.$strict>>;
+                delegator_agent_run_id: z.ZodString;
+                started_at: z.ZodString;
+                launches: z.ZodOptional<z.ZodArray<z.ZodObject<{
+                    address: z.ZodString;
+                    runtime_kind: z.ZodString;
+                    llm_model_identifier: z.ZodString;
+                    source: z.ZodUnion<readonly [z.ZodObject<{
+                        origin: z.ZodEnum<{
+                            agent_default: "agent_default";
+                            team_default: "team_default";
+                            inherited: "inherited";
+                            configured: "configured";
+                        }>;
+                        fallbacks: z.ZodArray<z.ZodObject<{
+                            layer: z.ZodEnum<{
+                                agent_default: "agent_default";
+                                team_default: "team_default";
+                                model_router: "model_router";
+                            }>;
+                            runtime_kind: z.ZodNullable<z.ZodString>;
+                            llm_model_identifier: z.ZodNullable<z.ZodString>;
+                            reason: z.ZodEnum<{
+                                incomplete: "incomplete";
+                                runtime_unavailable: "runtime_unavailable";
+                                signed_out: "signed_out";
+                                model_unavailable: "model_unavailable";
+                                blocked: "blocked";
+                                model_settings_invalid: "model_settings_invalid";
+                                router_not_active: "router_not_active";
+                                router_failed: "router_failed";
+                            }>;
+                            detail: z.ZodString;
+                        }, z.core.$strict>>;
+                    }, z.core.$strict>, z.ZodObject<{
+                        origin: z.ZodLiteral<"model_router">;
+                        fallbacks: z.ZodArray<z.ZodObject<{
+                            layer: z.ZodEnum<{
+                                agent_default: "agent_default";
+                                team_default: "team_default";
+                                model_router: "model_router";
+                            }>;
+                            runtime_kind: z.ZodNullable<z.ZodString>;
+                            llm_model_identifier: z.ZodNullable<z.ZodString>;
+                            reason: z.ZodEnum<{
+                                incomplete: "incomplete";
+                                runtime_unavailable: "runtime_unavailable";
+                                signed_out: "signed_out";
+                                model_unavailable: "model_unavailable";
+                                blocked: "blocked";
+                                model_settings_invalid: "model_settings_invalid";
+                                router_not_active: "router_not_active";
+                                router_failed: "router_failed";
+                            }>;
+                            detail: z.ZodString;
+                        }, z.core.$strict>>;
+                        choice_reason: z.ZodString;
+                        task_kind: z.ZodString;
+                    }, z.core.$strict>]>;
+                }, z.core.$strict>>>;
+            }, z.core.$strict>], "kind">;
+        }, z.core.$strict>, z.ZodObject<{
+            node_id: z.ZodString;
+            run_id: z.ZodString;
+            reachable: z.ZodBoolean;
+            title: z.ZodNullable<z.ZodString>;
+            statuses: z.ZodArray<z.ZodObject<{
+                agent_run_id: z.ZodString;
+                status: z.ZodEnum<{
+                    error: "error";
+                    offline: "offline";
+                    initializing: "initializing";
+                    idle: "idle";
+                    running: "running";
+                }>;
+            }, z.core.$strict>>;
+            kind: z.ZodLiteral<"remote_task_execution_summary">;
         }, z.core.$strict>], "kind">;
     }, z.core.$strict>, z.ZodObject<{
         root_subject_kind: z.ZodLiteral<"agent">;
@@ -2022,7 +3300,7 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
                 platformAgentRunId: string | null;
                 delegatorAgentRunId?: string;
                 startedAt: string;
-                source?: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
+                source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
                 userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
             }> | Readonly<{
                 address: string;
@@ -2039,12 +3317,12 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
                     platformAgentRunId: string | null;
                     delegatorAgentRunId?: string;
                     startedAt: string;
-                    source?: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
+                    source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
                     userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                 }> | Readonly</*elided*/ any>)[];
                 delegatorAgentRunId?: string;
                 startedAt: string;
-                source?: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
+                source: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
                 userTeamLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
             }>, unknown, z.core.$ZodTypeInternals<Readonly<{
                 address: string;
@@ -2052,7 +3330,7 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
                 platformAgentRunId: string | null;
                 delegatorAgentRunId?: string;
                 startedAt: string;
-                source?: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
+                source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
                 userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
             }> | Readonly<{
                 address: string;
@@ -2069,12 +3347,12 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
                     platformAgentRunId: string | null;
                     delegatorAgentRunId?: string;
                     startedAt: string;
-                    source?: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
+                    source: import("./agent-org-execution-dtos.js").TaskAgentExecutionSourceDto;
                     userLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
                 }> | Readonly</*elided*/ any>)[];
                 delegatorAgentRunId?: string;
                 startedAt: string;
-                source?: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
+                source: import("./agent-org-execution-dtos.js").TaskTeamExecutionSourceDto;
                 userTeamLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
             }>, unknown>>;
         }, z.core.$strict>, z.ZodObject<{
@@ -2119,6 +3397,160 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
                     selectedAt: z.ZodString;
                 }, z.core.$strict>;
             }, z.core.$strict>]>>;
+        }, z.core.$strict>, z.ZodObject<{
+            kind: z.ZodLiteral<"remote_task_execution_started">;
+            execution: z.ZodDiscriminatedUnion<[z.ZodObject<{
+                kind: z.ZodLiteral<"agent">;
+                address: z.ZodString;
+                agent_run_id: z.ZodString;
+                node_id: z.ZodString;
+                node_name: z.ZodString;
+                delegator_agent_run_id: z.ZodString;
+                started_at: z.ZodString;
+                launches: z.ZodOptional<z.ZodArray<z.ZodObject<{
+                    address: z.ZodString;
+                    runtime_kind: z.ZodString;
+                    llm_model_identifier: z.ZodString;
+                    source: z.ZodUnion<readonly [z.ZodObject<{
+                        origin: z.ZodEnum<{
+                            agent_default: "agent_default";
+                            team_default: "team_default";
+                            inherited: "inherited";
+                            configured: "configured";
+                        }>;
+                        fallbacks: z.ZodArray<z.ZodObject<{
+                            layer: z.ZodEnum<{
+                                agent_default: "agent_default";
+                                team_default: "team_default";
+                                model_router: "model_router";
+                            }>;
+                            runtime_kind: z.ZodNullable<z.ZodString>;
+                            llm_model_identifier: z.ZodNullable<z.ZodString>;
+                            reason: z.ZodEnum<{
+                                incomplete: "incomplete";
+                                runtime_unavailable: "runtime_unavailable";
+                                signed_out: "signed_out";
+                                model_unavailable: "model_unavailable";
+                                blocked: "blocked";
+                                model_settings_invalid: "model_settings_invalid";
+                                router_not_active: "router_not_active";
+                                router_failed: "router_failed";
+                            }>;
+                            detail: z.ZodString;
+                        }, z.core.$strict>>;
+                    }, z.core.$strict>, z.ZodObject<{
+                        origin: z.ZodLiteral<"model_router">;
+                        fallbacks: z.ZodArray<z.ZodObject<{
+                            layer: z.ZodEnum<{
+                                agent_default: "agent_default";
+                                team_default: "team_default";
+                                model_router: "model_router";
+                            }>;
+                            runtime_kind: z.ZodNullable<z.ZodString>;
+                            llm_model_identifier: z.ZodNullable<z.ZodString>;
+                            reason: z.ZodEnum<{
+                                incomplete: "incomplete";
+                                runtime_unavailable: "runtime_unavailable";
+                                signed_out: "signed_out";
+                                model_unavailable: "model_unavailable";
+                                blocked: "blocked";
+                                model_settings_invalid: "model_settings_invalid";
+                                router_not_active: "router_not_active";
+                                router_failed: "router_failed";
+                            }>;
+                            detail: z.ZodString;
+                        }, z.core.$strict>>;
+                        choice_reason: z.ZodString;
+                        task_kind: z.ZodString;
+                    }, z.core.$strict>]>;
+                }, z.core.$strict>>>;
+            }, z.core.$strict>, z.ZodObject<{
+                kind: z.ZodLiteral<"agent_team">;
+                address: z.ZodString;
+                team_run_id: z.ZodString;
+                node_id: z.ZodString;
+                node_name: z.ZodString;
+                coordinator_address: z.ZodString;
+                members: z.ZodArray<z.ZodObject<{
+                    address: z.ZodString;
+                    agent_run_id: z.ZodString;
+                }, z.core.$strict>>;
+                delegator_agent_run_id: z.ZodString;
+                started_at: z.ZodString;
+                launches: z.ZodOptional<z.ZodArray<z.ZodObject<{
+                    address: z.ZodString;
+                    runtime_kind: z.ZodString;
+                    llm_model_identifier: z.ZodString;
+                    source: z.ZodUnion<readonly [z.ZodObject<{
+                        origin: z.ZodEnum<{
+                            agent_default: "agent_default";
+                            team_default: "team_default";
+                            inherited: "inherited";
+                            configured: "configured";
+                        }>;
+                        fallbacks: z.ZodArray<z.ZodObject<{
+                            layer: z.ZodEnum<{
+                                agent_default: "agent_default";
+                                team_default: "team_default";
+                                model_router: "model_router";
+                            }>;
+                            runtime_kind: z.ZodNullable<z.ZodString>;
+                            llm_model_identifier: z.ZodNullable<z.ZodString>;
+                            reason: z.ZodEnum<{
+                                incomplete: "incomplete";
+                                runtime_unavailable: "runtime_unavailable";
+                                signed_out: "signed_out";
+                                model_unavailable: "model_unavailable";
+                                blocked: "blocked";
+                                model_settings_invalid: "model_settings_invalid";
+                                router_not_active: "router_not_active";
+                                router_failed: "router_failed";
+                            }>;
+                            detail: z.ZodString;
+                        }, z.core.$strict>>;
+                    }, z.core.$strict>, z.ZodObject<{
+                        origin: z.ZodLiteral<"model_router">;
+                        fallbacks: z.ZodArray<z.ZodObject<{
+                            layer: z.ZodEnum<{
+                                agent_default: "agent_default";
+                                team_default: "team_default";
+                                model_router: "model_router";
+                            }>;
+                            runtime_kind: z.ZodNullable<z.ZodString>;
+                            llm_model_identifier: z.ZodNullable<z.ZodString>;
+                            reason: z.ZodEnum<{
+                                incomplete: "incomplete";
+                                runtime_unavailable: "runtime_unavailable";
+                                signed_out: "signed_out";
+                                model_unavailable: "model_unavailable";
+                                blocked: "blocked";
+                                model_settings_invalid: "model_settings_invalid";
+                                router_not_active: "router_not_active";
+                                router_failed: "router_failed";
+                            }>;
+                            detail: z.ZodString;
+                        }, z.core.$strict>>;
+                        choice_reason: z.ZodString;
+                        task_kind: z.ZodString;
+                    }, z.core.$strict>]>;
+                }, z.core.$strict>>>;
+            }, z.core.$strict>], "kind">;
+        }, z.core.$strict>, z.ZodObject<{
+            node_id: z.ZodString;
+            run_id: z.ZodString;
+            reachable: z.ZodBoolean;
+            title: z.ZodNullable<z.ZodString>;
+            statuses: z.ZodArray<z.ZodObject<{
+                agent_run_id: z.ZodString;
+                status: z.ZodEnum<{
+                    error: "error";
+                    offline: "offline";
+                    initializing: "initializing";
+                    idle: "idle";
+                    running: "running";
+                }>;
+            }, z.core.$strict>>;
+            kind: z.ZodLiteral<"remote_task_execution_summary">;
         }, z.core.$strict>], "kind">;
     }, z.core.$strict>], "root_subject_kind">;
 }, z.core.$strict>, z.ZodObject<{
@@ -2223,6 +3655,15 @@ export declare const CollaborationStreamClientMessageSchema: z.ZodDiscriminatedU
         root_run_id: z.ZodString;
         target_agent_run_id: z.ZodString;
         command_id: z.ZodString;
+    }, z.core.$strict>;
+}, z.core.$strict>, z.ZodObject<{
+    type: z.ZodLiteral<"REFRESH_REMOTE_TASK_EXECUTIONS">;
+    payload: z.ZodObject<{
+        root_subject_kind: z.ZodEnum<{
+            agent: "agent";
+            agent_org: "agent_org";
+        }>;
+        root_run_id: z.ZodString;
     }, z.core.$strict>;
 }, z.core.$strict>], "type">;
 export type AgentTeamRootExecutionViewDto = z.infer<typeof AgentTeamRootExecutionViewDtoSchema>;

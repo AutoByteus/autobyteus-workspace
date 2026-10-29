@@ -16,13 +16,16 @@ import {
   parseApplicationBinding,
   parseConfiguredAgent,
   parseConfiguredTeam,
+  collectTaskExecutionRunIds,
   parseLaunchConfiguration,
+  parseRemoteTaskExecutions,
   parseTaskExecutions,
   requiredArray,
   requiredString,
   requireKeys,
-  validateCatalogCopyLayouts,
+  validateCopyLayouts,
   validateConfiguredPlacementUniqueness,
+  validateRemoteTaskExecutions,
   validateTaskExecutionDelegators,
 } from "./run-execution-tree-shared-record-schemas.js";
 
@@ -57,6 +60,7 @@ const parseRootOrg = (value: unknown): RootConfiguredAgentOrgExecutionNode => {
     defaultLaunchConfiguration: parseLaunchConfiguration(root.defaultLaunchConfiguration, "rootOrg.defaultLaunchConfiguration"),
     members,
     taskExecutions: parseTaskExecutions(root.taskExecutions, "rootOrg.taskExecutions"),
+    ...parseRemoteTaskExecutions(root.remoteTaskExecutions, "rootOrg.remoteTaskExecutions"),
   };
 };
 
@@ -85,7 +89,9 @@ const validateHandoffEndpoints = (tree: AgentOrgRunExecutionTreeFile): void => {
     ...members.flatMap((member) => "teamRunId" in member ? [member] : []),
   ];
   validateTaskExecutionDelegators(agents.values(), owners);
-  validateCatalogCopyLayouts(owners);
+  validateCopyLayouts(owners);
+  validateRemoteTaskExecutions(new Set([...agents.values(),
+    ...owners.flatMap((owner) => collectTaskExecutionRunIds(owner.taskExecutions))]), tree.rootOrg.remoteTaskExecutions);
 };
 
 /**

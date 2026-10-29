@@ -9,6 +9,9 @@ import type { ScopedAgentToolMcpSessionAuthority } from "../../agent-tools/mcp/a
 import { AgentRunIdentityAllocator } from "../services/agent-run-identity-allocator.js";
 import { AgentRunManager } from "../services/agent-run-manager.js";
 import { AgentRunMemoryRecorder } from "../../agent-memory/services/agent-run-memory-recorder.js";
+import { WorkJournalRunUpdater } from "../../agent-work-journal/services/work-journal-run-updater.js";
+import { getWorkJournalService } from "../../agent-work-journal/services/work-journal-service.js";
+import { McpServerInstanceManager } from "autobyteus-ts/tools/mcp/server-instance-manager.js";
 import { AgentRunResourceManager } from "../services/agent-run-resource-manager.js";
 import { AgentRunActivationRegistry } from "../runtime/agent-run-activation-registry.js";
 import { AgentRunProviderInputNormalizer } from "../input/agent-run-provider-input-normalizer.js";
@@ -50,7 +53,7 @@ import {
   releaseProcessRunFileChangeService,
 } from "../../services/run-file-changes/run-file-change-service.js";
 import { createGeneralProcessPublishedArtifactRelayService } from "../../application-orchestration/services/application-published-artifact-relay-service.js";
-import { TokenUsageMigrationReadiness } from "../../token-usage/providers/token-usage-migration-readiness.js";
+import { TokenUsageCapability } from "../../token-usage/providers/token-usage-capability.js";
 import type { WorkspaceManager } from "../../workspaces/workspace-manager.js";
 import type { RunModelSelectionValidator, RunModelSelectionService } from "../../llm-management/services/run-model-selection-service.js";
 import type { DefinitionAdmissionService } from "../../collaboration-definition-admission/services/definition-admission-service.js";
@@ -77,6 +80,8 @@ import {
   createCollaboratorDefinitionCatalog,
   releaseProcessCollaboratorAdmission,
 } from "../../agent-collaboration/collaborators/collaborator-definition-catalog.js";
+import { getInternalAgentVisibility } from "../../agent-definition/services/internal-agent-visibility.js";
+import { PROCESS_MODEL_ROUTING } from "../../model-routing/services/model-routing-binding.js";
 import type { AgentRunInputPreface } from "../domain/agent-run-input-preface.js";
 import type { AgentRunLifecycleObserver } from "../domain/agent-run-lifecycle-observer.js";
 
@@ -174,7 +179,8 @@ export class GeneralProcessRunSupervisor {
     const collaboratorAdmission = createCollaboratorAdmission(createCollaboratorDefinitionCatalog({
       agents: input.agentDefinitionService,
       teams: input.agentTeamDefinitionService,
-    }), input.modelSelectionValidator, getRuntimeAvailabilityService());
+      visibility: getInternalAgentVisibility(),
+    }), input.modelSelectionValidator, getRuntimeAvailabilityService(), PROCESS_MODEL_ROUTING);
     let collaboratorAdmissionBound = false;
     // The one process owner of live run file changes: it records FILE_CHANGE events and serves reads.
     const runFileChangeService = new RunFileChangeService({ workspaceManager });
@@ -206,7 +212,9 @@ export class GeneralProcessRunSupervisor {
         runFileChangeService,
         publishedArtifactRelayService: createGeneralProcessPublishedArtifactRelayService(),
         memoryRecorder,
+        workJournalUpdater: new WorkJournalRunUpdater({ memoryRecorder, journalService: getWorkJournalService() }),
         lifecycleObserver: input.platformInputNotices ?? null,
+        mcpServerInstances: McpServerInstanceManager.getInstance(),
       });
       const activationRegistry = new AgentRunActivationRegistry(resourceManager);
       const providerFactories = input.agentProviderFactoryBuilder.createForExecution({
@@ -282,7 +290,7 @@ export class GeneralProcessRunSupervisor {
           workspaceManager,
         }),
       });
-      const tokenUsageReadiness = new TokenUsageMigrationReadiness();
+      const tokenUsageReadiness = new TokenUsageCapability();
       const provisioningService = new AgentRunProvisioningService(memoryDir, {
         agentRunManager,
         metadataService,

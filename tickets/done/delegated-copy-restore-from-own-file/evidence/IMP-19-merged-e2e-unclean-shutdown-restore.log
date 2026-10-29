@@ -1,0 +1,119 @@
+# Check: IMP-19
+# Command: cd autobyteus-server-ts && env -i PATH="/Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.nvm/versions/node/v22.21.1/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin:/opt/homebrew/bin:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin" HOME="/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.h89S1Jqqb9" TMPDIR="/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/" RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-restore-from-own-file/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs pnpm exec vitest run tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts --no-watch --reporter=verbose
+# Commit: 26ad4ace20 (branch codex/delegated-copy-restore-from-own-file)
+# Environment: macOS 26.5.2, Node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-19T19:07:12Z
+
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-restore-from-own-file/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/delegated-copy-restore-from-own-file/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+stdout | tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:63096) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts > A delegated Team whose coordinator's log was damaged by an unclean shutdown (built server, scripted AGY) > USR-1 AC-005: 1,241 zero bytes after the coordinator's last record; 'continue' restores it, the end is cut and logged 247ms
+ ✓ tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts > A delegated Team whose coordinator's log was damaged by an unclean shutdown (built server, scripted AGY) > USR-2 AC-005 variant: a torn last record without a newline 175ms
+ ✓ tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts > A delegated Team whose coordinator's log was damaged by an unclean shutdown (built server, scripted AGY) > USR-3 AC-005 variant: a torn last record whose newline landed 168ms
+ ✓ tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts > A delegated Team whose coordinator's log was damaged by an unclean shutdown (built server, scripted AGY) > USR-4 AC-006: a damaged line before the last record is refused with the Team, coordinator, line and next step; the file is unchanged 56ms
+ ✓ tests/e2e/projects/unclean-shutdown-delegated-team-restore.e2e.test.ts > A delegated Team whose coordinator's log was damaged by an unclean shutdown (built server, scripted AGY) > USR-5 SCN-003: a new server process reads every repaired log fresh; another message keeps every record and nothing more is cut 2632ms
+
+ Test Files  1 passed (1)
+      Tests  5 passed (5)
+   Start at  21:07:13
+   Duration  20.13s (transform 5.56s, setup 24ms, import 7.79s, tests 11.86s, environment 0ms)
+
+
+# Exit code: 0

@@ -25,7 +25,7 @@ const orgInspectionResponse = (id = 'org-history') => {
     root_org: {
       base_change_sequence: 0, is_active: false, closed_task_executions: [], execution_tree: row.org,
       communication_messages: { schemaVersion: 1, subjectKind: 'agent_org', orgRunId: id, messages: [] },
-      agent_statuses: [], agent_input_states: [],
+      agent_statuses: [], agent_input_states: [], remote_task_executions: [],
     },
   } } };
 };
@@ -54,8 +54,8 @@ beforeEach(() => {
       summary: 'History member', lastActivityAt: '2026-09-03T00:00:00.000Z',
       conversation: [], activities: [], hasEarlierActiveTraceEvents: false,
     } } };
-    // Member hydration also reads the run's recorded file changes; this history has none.
-    if(name==='GetRunFileChanges') return { data: { getRunFileChanges: [] } };
+    // Member hydration also reads the member's recorded file changes through its org; this history has none.
+    if(name==='GetAgentOrgMemberFileChanges') return { data: { getAgentOrgMemberFileChanges: [] } };
     throw Error('Unexpected query '+name);
   });
 });

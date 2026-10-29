@@ -85,12 +85,12 @@ describe('SystemTaskNotificationSegment', () => {
     const wrapper = mountSegment([
       '[Platform notice — skill updated]',
       '',
-      'Your skill package `agent-package-creation` has been updated (/skills/agent-package-creation).',
+      'Your skill package `agent-package-creation` has been updated (`/skills/agent-package-creation`).',
       '',
       'Changed files:',
-      '- references/package-anti-patterns.md (changed)',
-      '- references/new-guide.md (added)',
-      '- scripts/old.sh (removed)',
+      '- `references/package-anti-patterns.md` (changed)',
+      '- `references/new-guide.md` (added)',
+      '- `scripts/old.sh` (removed)',
       '',
       'Re-read the updated files before continuing work that relies on this skill.',
       'Removed files are no longer available.',
@@ -110,5 +110,32 @@ describe('SystemTaskNotificationSegment', () => {
     // The closing lines are not swallowed into the last list item.
     expect(wrapper.findAll('li').at(-1)!.text()).not.toContain('Re-read');
     expect(wrapper.text()).not.toContain('SKILL.md');
+  });
+
+  it('shows the changed paths and the skill folder literally (autobyteus-320, AC-009)', () => {
+    // The text the server's builder now writes: every path and the folder as inline code.
+    const wrapper = mountSegment([
+      '[Platform notice — skill updated]',
+      '',
+      'Your skill package `py-tools` has been updated (`/skills/py_tools`).',
+      '',
+      'Changed files:',
+      '- `references/__init__.py` (added)',
+      '- `notes/*draft*.md` (changed)',
+      '- ``odd`name.md`` (removed)',
+      '',
+      'Re-read the updated files before continuing work that relies on this skill.',
+    ].join('\n'), 'system.skill_update_notifier');
+
+    expect(wrapper.findAll('li').map((item) => item.text())).toEqual([
+      'references/__init__.py (added)',
+      'notes/*draft*.md (changed)',
+      'odd`name.md (removed)',
+    ]);
+    expect(wrapper.findAll('code').map((code) => code.text())).toEqual([
+      'py-tools', '/skills/py_tools', 'references/__init__.py', 'notes/*draft*.md', 'odd`name.md',
+    ]);
+    expect(wrapper.find('strong').exists()).toBe(false);
+    expect(wrapper.find('em').exists()).toBe(false);
   });
 });

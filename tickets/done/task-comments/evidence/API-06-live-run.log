@@ -1,0 +1,13 @@
+# Case: API-06
+# Command: RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<abs>/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs TASK_COMMENTS_LIVE_E2E_EVIDENCE_DIR=<dir> pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/project-task-comments-live.e2e.test.ts --no-watch
+# Commit: code e014c349b8 (HEAD 1b83434652) + this round's test edits (committed with this evidence)
+# Environment: macOS darwin arm64; corepack pnpm 10.28.2; env -i PATH HOME=<resolved temp dir> TMPDIR
+# Date: 2026-10-22
+
+ ✓ tests/e2e/projects/project-task-comments-live.e2e.test.ts (4 tests) 2572ms
+     ✓ CMT-LIVE-001: comments added by the Manager's tool are in the feed and in a new task agent's work, after the description; a Task without comments has no block (AC-010, AC-001, REQ-007)  991ms
+     ✓ CMT-LIVE-002: DONE + a comment is one write; the same task agent's next Task carries that Task's comments (AC-001, AC-010 existing task agent)  473ms
+     ✓ CMT-LIVE-003: a Temp task has no comments: add_comment is refused and nothing is written, not even a combined status (AC-001)  402ms
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+exit=0

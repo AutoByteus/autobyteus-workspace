@@ -17,9 +17,10 @@
  *                (finish reason `length`) (RSK-004)
  * Output-limit recovery (Step 2) lives in `autobyteus-native-output-limit-recovery-live.e2e.test.ts`.
  *
- * Gate: RUN_NATIVE_OUTPUT_LIMIT_E2E=1 plus the provider keys (ANTHROPIC_API_KEY, OPENAI_API_KEY, DEEPSEEK_API_KEY,
- * GLM_API_KEY, VERTEX_AI_API_KEY, DASHSCOPE_API_KEY, GROK_API_KEY), saved into the test-owned database vault and never
- * logged. Run it with a clean environment (`env -i PATH=… HOME=… TMPDIR=…`) so no live-app variable leaks in; pass
+ * Gate: RUN_NATIVE_OUTPUT_LIMIT_E2E=1, with the provider keys (Anthropic, OpenAI, DeepSeek, GLM, Vertex Express, Qwen,
+ * Grok) in the test vault (AUTOBYTEUS_TEST_VAULT, see TESTING.md#test-vault; read-only, never logged). A case whose key
+ * is missing is reported as a skip. Run it with a clean environment (`env -i PATH=… HOME=… TMPDIR=…
+ * AUTOBYTEUS_TEST_VAULT=…`) so no live-app variable leaks in; pass
  * QWEN_BASE_URL for a regional Qwen endpoint. Uses real credits: OLM-E2E-001 generates one ~30K-token Opus answer
  * (several minutes); every other case is a one-word answer.
  * Optional: OUTPUT_LIMIT_E2E_ANTHROPIC_MODEL (default claude-opus-5-5), OUTPUT_LIMIT_E2E_<PROVIDER>_MODEL,
@@ -28,14 +29,18 @@
  */
 import { readFile, stat } from "node:fs/promises";
 import path from "node:path";
-import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
+import { afterAll, afterEach, beforeAll, describe, expect, it, type TestContext } from "vitest";
 import { LLMUserMessage } from "autobyteus-ts/llm/user-message.js";
 import { createAvailableLlm } from "../../../src/agent-execution/backends/autobyteus/available-llm-construction.js";
 import { NativeRuntimeLiveHarness, type LimitFields } from "../helpers/native-runtime-live-harness.js";
+import { localImportSecretIdForAlias } from "../../../src/secret-management/provisioning/local-import-credential-alias-registry.js";
+import { requireLiveCapability } from "../../../../test-support/test-vault/live-server-vault.js";
 
 const ENABLED = process.env.RUN_NATIVE_OUTPUT_LIMIT_E2E === "1";
 const describeLive = ENABLED ? describe : describe.skip;
-const hasKey = (alias: string) => Boolean(process.env[alias]?.trim());
+/** Skips the case with its reason when the live vault lacks the key the importer alias names (never a pass). */
+const requireKey = (context: TestContext, alias: string) =>
+  requireLiveCapability(context, String(localImportSecretIdForAlias(alias)));
 const STEP_TIMEOUT_MS = Number(process.env.OUTPUT_LIMIT_E2E_STEP_TIMEOUT_MS || 1_200_000);
 const EVIDENCE_DIR = process.env.OUTPUT_LIMIT_E2E_EVIDENCE_DIR?.trim() || null;
 const ANTHROPIC_MODEL = process.env.OUTPUT_LIMIT_E2E_ANTHROPIC_MODEL?.trim() || "claude-opus-5-5";
@@ -84,7 +89,8 @@ describeLive("AutoByteus native runtime output limits (live, wire-level)", () =>
   afterEach(async (context) => { await harness.finishCase(context); });
   afterAll(async () => { await harness.stop(); }, 180_000);
 
-  it.skipIf(!hasKey("ANTHROPIC_API_KEY"))("OLM-E2E-001: Anthropic unconfigured streams the model maximum and writes a file longer than 8,192 output tokens in one call", async () => {
+  it("OLM-E2E-001: Anthropic unconfigured streams the model maximum and writes a file longer than 8,192 output tokens in one call", async (testContext) => {
+    await requireKey(testContext, "ANTHROPIC_API_KEY");
     const model = await harness.catalogModel("ANTHROPIC", ANTHROPIC_MODEL);
     expect(model.maxOutputTokens, "catalog maximum output tokens").not.toBeNull();
     if (ANTHROPIC_MODEL === "claude-opus-5-5") expect(model.maxOutputTokens).toBe(128_000);
@@ -119,7 +125,8 @@ describeLive("AutoByteus native runtime output limits (live, wire-level)", () =>
     await harness.stopRun(session);
   }, STEP_TIMEOUT_MS + 120_000);
 
-  it.skipIf(!hasKey("ANTHROPIC_API_KEY"))("OLM-E2E-002: Anthropic run with max_tokens 4096 configured sends 4096 unchanged", async () => {
+  it("OLM-E2E-002: Anthropic run with max_tokens 4096 configured sends 4096 unchanged", async (testContext) => {
+    await requireKey(testContext, "ANTHROPIC_API_KEY");
     const model = await harness.catalogModel("ANTHROPIC", ANTHROPIC_MODEL);
     const session = await harness.startRun(agentDefinitionId, model.modelIdentifier, { max_tokens: 4096 });
     const { error } = await harness.runTurn(session, "OLM-002", PONG);
@@ -131,7 +138,8 @@ describeLive("AutoByteus native runtime output limits (live, wire-level)", () =>
     await harness.stopRun(session);
   }, STEP_TIMEOUT_MS);
 
-  it.skipIf(!hasKey("ANTHROPIC_API_KEY"))("OLM-E2E-003: Anthropic non-streaming call without a configured limit sends the bounded 8192 and succeeds", async () => {
+  it("OLM-E2E-003: Anthropic non-streaming call without a configured limit sends the bounded 8192 and succeeds", async (testContext) => {
+    await requireKey(testContext, "ANTHROPIC_API_KEY");
     const model = await harness.catalogModel("ANTHROPIC", ANTHROPIC_MODEL);
     harness.phase = "OLM-003";
     const llm = await createAvailableLlm(model.modelIdentifier);
@@ -154,7 +162,8 @@ describeLive("AutoByteus native runtime output limits (live, wire-level)", () =>
   }, STEP_TIMEOUT_MS);
 
   for (const providerCase of PROVIDER_CASES) {
-    it.skipIf(!hasKey(providerCase.keyAlias))(`${providerCase.id}: ${providerCase.providerId} ${providerCase.model} unconfigured sends the catalog maximum as ${providerCase.field} (or omits an unknown limit)`, async () => {
+    it(`${providerCase.id}: ${providerCase.providerId} ${providerCase.model} unconfigured sends the catalog maximum as ${providerCase.field} (or omits an unknown limit)`, async (testContext) => {
+      await requireKey(testContext, providerCase.keyAlias);
       if (providerCase.geminiMode) {
         await harness.gql("mutation($mode: GeminiSetupMode!) { useGeminiMode(mode: $mode) { setup { activeMode } } }", { mode: providerCase.geminiMode });
       }
@@ -171,7 +180,8 @@ describeLive("AutoByteus native runtime output limits (live, wire-level)", () =>
   }
 
   for (const providerCase of PROVIDER_CASES.filter((entry) => entry.field === "max_tokens")) {
-    it.skipIf(!hasKey(providerCase.keyAlias))(`OLM-E2E-010 (${providerCase.providerId}): a configured max_tokens 24 is sent as max_tokens and the provider applies it`, async () => {
+    it(`OLM-E2E-010 (${providerCase.providerId}): a configured max_tokens 24 is sent as max_tokens and the provider applies it`, async (testContext) => {
+      await requireKey(testContext, providerCase.keyAlias);
       const model = await harness.catalogModel(providerCase.providerId, providerCase.model);
       const session = await harness.startRun(agentDefinitionId, model.modelIdentifier, { max_tokens: 24 });
       const casePhase = `OLM-010-${providerCase.providerId}`;

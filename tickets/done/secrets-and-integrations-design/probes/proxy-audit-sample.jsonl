@@ -1,0 +1,6 @@
+{"run":"run-42","method":"GET","path":"/user","decision":"forwarded 200"}
+{"run":"run-42","method":"GET","path":"/user","decision":"forwarded 200"}
+{"run":"run-42","method":"POST","path":"/repos/o/r/delete","decision":"denied: not allowed"}
+{"run":null,"method":"GET","path":"/user","decision":"denied: capability"}
+{"run":"run-42","method":"GET","path":"/owner/repo.git/info/refs?service=git-upload-pack","decision":"forwarded 200"}
+{"run":"run-42","method":"GET","path":"/owner/repo.git/HEAD","decision":"denied: not allowed"}

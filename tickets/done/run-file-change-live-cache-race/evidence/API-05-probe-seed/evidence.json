@@ -1,0 +1,185 @@
+{
+  "mode": "seed",
+  "startedAt": "2026-10-19T09:22:12.975Z",
+  "stackRoot": "/Users/normy/autobyteus_org/autobyteus-worktrees/run-file-change-live-cache-race",
+  "stackHead": "4667ec6613",
+  "dirty": [],
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "cpus": 10,
+  "loadAtStart": [
+    92.1,
+    92.5,
+    111.6
+  ],
+  "cases": {
+    "SEED": {
+      "result": "Pass",
+      "description": "Seed hub, Team and Org runs with member files, plus 10 unrelated saved team runs, through public APIs",
+      "ms": 4636,
+      "load": [
+        99.7,
+        94.1,
+        112
+      ],
+      "details": {
+        "names": {
+          "manager": "OSR Manager",
+          "mate": "OSR Mate",
+          "sibling": "OSR Sibling",
+          "lead": "OSR Lead",
+          "peer": "OSR Peer",
+          "helper": "OSR Helper",
+          "team": "OSR Team",
+          "squad": "OSR Squad",
+          "org": "OSR Org",
+          "unrelatedTeam": "OSR Unrelated Team"
+        },
+        "workspace": "/tmp/rflcr-api/seed-small/workspace",
+        "archive": "/tmp/rflcr-api/seed-small/archive",
+        "hubRunId": "osr_manager_a2d86145b37249faaabee1abf207d808",
+        "teamRunId": "osr_team_f837884ccd714998b660cf4d6eebb7cd",
+        "orgRunId": "osr_org_1c5153d7534d4253b3a9cf081ad54ae9",
+        "copy": {
+          "agentRunId": "osr_helper_02728bde00584ee0b031abd4abdc9eae",
+          "address": "/osr_helper"
+        },
+        "teamTask": {
+          "agentRunId": "osr_helper_96cdde28f1eb4717ba93b39916cd9852",
+          "address": "/osr_helper"
+        },
+        "orgTask": {
+          "agentRunId": "osr_helper_a6a81c4ea01d45efb520492f0f4b5da6",
+          "address": "/osr_helper"
+        },
+        "squadTask": {
+          "agentRunId": "osr_helper_ff178a896888470d85e0c56d857507d1",
+          "address": "/osr_helper"
+        },
+        "files": [
+          {
+            "label": "standalone run",
+            "subject": {
+              "kind": "run",
+              "runId": "osr_manager_a2d86145b37249faaabee1abf207d808"
+            },
+            "path": "hub-notes.md",
+            "absolutePath": "/tmp/rflcr-api/seed-small/workspace/hub-notes.md",
+            "text": "Owner-scoped file of standalone run (hub-notes.md) a57aa495"
+          },
+          {
+            "label": "delegated copy",
+            "subject": {
+              "kind": "standaloneMember",
+              "hostRunId": "osr_manager_a2d86145b37249faaabee1abf207d808",
+              "memberAddress": "/osr_helper",
+              "agentRunId": "osr_helper_02728bde00584ee0b031abd4abdc9eae"
+            },
+            "path": "copy-notes.md",
+            "absolutePath": "/tmp/rflcr-api/seed-small/workspace/copy-notes.md",
+            "text": "Owner-scoped file of delegated copy (copy-notes.md) 558c658b"
+          },
+          {
+            "label": "team configured member",
+            "subject": {
+              "kind": "teamMember",
+              "teamRunId": "osr_team_f837884ccd714998b660cf4d6eebb7cd",
+              "memberAddress": "/manager",
+              "agentRunId": "osr_manager_a7a2463b458243d3ac9087b6b8adf56f"
+            },
+            "path": "team-manager-notes.md",
+            "absolutePath": "/tmp/rflcr-api/seed-small/workspace/team-manager-notes.md",
+            "text": "Owner-scoped file of team configured member (team-manager-notes.md) 70a7c70f"
+          },
+          {
+            "label": "team task agent",
+            "subject": {
+              "kind": "teamMember",
+              "teamRunId": "osr_team_f837884ccd714998b660cf4d6eebb7cd",
+              "memberAddress": "/osr_helper",
+              "agentRunId": "osr_helper_96cdde28f1eb4717ba93b39916cd9852"
+            },
+            "path": "team-task-agent-notes.md",
+            "absolutePath": "/tmp/rflcr-api/seed-small/workspace/team-task-agent-notes.md",
+            "text": "Owner-scoped file of team task agent (team-task-agent-notes.md) 5a45efb5"
+          },
+          {
+            "label": "org direct agent",
+            "subject": {
+              "kind": "agentOrgMember",
+              "orgRunId": "osr_org_1c5153d7534d4253b3a9cf081ad54ae9",
+              "memberAddress": "/manager",
+              "agentRunId": "osr_manager_e868b836fd6040b58573d31b987984d1"
+            },
+            "path": "org-manager-notes.md",
+            "absolutePath": "/tmp/rflcr-api/seed-small/workspace/org-manager-notes.md",
+            "text": "Owner-scoped file of org direct agent (org-manager-notes.md) 641e0a0c"
+          },
+          {
+            "label": "org member-team member",
+            "subject": {
+              "kind": "agentOrgMember",
+              "orgRunId": "osr_org_1c5153d7534d4253b3a9cf081ad54ae9",
+              "memberAddress": "/squad/lead",
+              "agentRunId": "osr_lead_9dd7bf68e78c4db895041efde269662a"
+            },
+            "path": "org-squad-lead-notes.md",
+            "absolutePath": "/tmp/rflcr-api/seed-small/workspace/org-squad-lead-notes.md",
+            "text": "Owner-scoped file of org member-team member (org-squad-lead-notes.md) d6633187"
+          },
+          {
+            "label": "org-root task agent",
+            "subject": {
+              "kind": "agentOrgMember",
+              "orgRunId": "osr_org_1c5153d7534d4253b3a9cf081ad54ae9",
+              "memberAddress": "/osr_helper",
+              "agentRunId": "osr_helper_a6a81c4ea01d45efb520492f0f4b5da6"
+            },
+            "path": "org-task-agent-notes.md",
+            "absolutePath": "/tmp/rflcr-api/seed-small/workspace/org-task-agent-notes.md",
+            "text": "Owner-scoped file of org-root task agent (org-task-agent-notes.md) 8992dd2a"
+          },
+          {
+            "label": "org member-team task agent",
+            "subject": {
+              "kind": "agentOrgMember",
+              "orgRunId": "osr_org_1c5153d7534d4253b3a9cf081ad54ae9",
+              "memberAddress": "/osr_helper",
+              "agentRunId": "osr_helper_ff178a896888470d85e0c56d857507d1"
+            },
+            "path": "org-squad-task-agent-notes.md",
+            "absolutePath": "/tmp/rflcr-api/seed-small/workspace/org-squad-task-agent-notes.md",
+            "text": "Owner-scoped file of org member-team task agent (org-squad-task-agent-notes.md) f7f85247"
+          }
+        ],
+        "unrelatedTeamRuns": 10,
+        "memoryFolders": {
+          "agent_org_run_history_index.json": 0,
+          "agent_orgs": 1,
+          "agent_teams": 11,
+          "agents": 5,
+          "run_history_index.json": 0,
+          "team_run_history_index.json": 0
+        }
+      }
+    }
+  },
+  "cleanup": {
+    "frontend": {
+      "pid": null,
+      "status": "not-running"
+    },
+    "backend": {
+      "pid": 79595,
+      "status": "terminated",
+      "exit": 0
+    }
+  },
+  "failures": [],
+  "finishedAt": "2026-10-19T09:22:21.318Z",
+  "loadAtEnd": [
+    99.7,
+    94.1,
+    112
+  ]
+}

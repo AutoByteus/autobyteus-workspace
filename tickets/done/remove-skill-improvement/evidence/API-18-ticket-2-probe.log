@@ -1,0 +1,9 @@
+(node:5435) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+DCP-003 Pass delegated-copy-model-change AC-001/002 (Org root, UI): a copy stopped from its Settings row (its Org sidebar stop icon goes away); its model changed and saved; the next message resumes it on that model
+DCR-003 Pass AC-011(a): a mounted Team member with its own auto-approve but the Team's model is recorded as following the Team in its copy (Grok); a Team-level model choice on a stopped configured-place Team copy reaches its following lead (AGY)
+DCP-003 Fail delegated-copy-model-change AC-001/002 (Org root, UI): a copy stopped from its Settings row (its Org sidebar stop icon goes away); its model changed and saved; the next message resumes it on that model — Timed out waiting for saved
+DCR-003 Pass AC-011(a): a mounted Team member with its own auto-approve but the Team's model is recorded as following the Team in its copy (Grok); a Team-level model choice on a stopped configured-place Team copy reaches its following lead (AGY)
+DCP-003 Fail delegated-copy-model-change AC-001/002 (Org root, UI): a copy stopped from its Settings row (its Org sidebar stop icon goes away); its model changed and saved; the next message resumes it on that model — Timed out waiting for saved
+DCR-003 Pass AC-011(a): a mounted Team member with its own auto-approve but the Team's model is recorded as following the Team in its copy (Grok); a Team-level model choice on a stopped configured-place Team copy reaches its following lead (AGY)
+Summary: 1 Pass, 1 Fail

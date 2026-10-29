@@ -1,3 +1,4 @@
+import { ServerProcessShutdown, StartupCancelled } from "./shutdown/server-process-shutdown.js";
 import type { FastifyInstance } from "fastify";
 import { initializePrisma, shutdownPrisma } from "repository_prisma";
 import { appConfigProvider } from "./config/app-config-provider.js";
@@ -8,42 +9,26 @@ import {
 import { createServerLogger, initializeServerAppLogger } from "./logging/server-app-logger.js";
 import { runMigrations } from "./startup/migrations.js";
 import { getAppDataMigrationRunner } from "./app-data-migrations/app-data-migration-runner.js";
-import { TEAM_RUN_EXECUTION_TREE_V2_MIGRATION_ID } from "./app-data-migrations/migrations/team-run-execution-tree-v2-app-data-migration.js";
-import { CUSTOM_PROVIDER_READABLE_ID_APP_DATA_MIGRATION_ID } from "./app-data-migrations/migrations/custom-provider-readable-id-app-data-migration.js";
 import { scheduleStudioBackgroundTasks } from "./startup/background-runner.js";
 import type { ServerOptions } from "./app.js";
+import { disableEnvironmentProviderApiKeySource } from "autobyteus-ts/secrets/provider-api-key-resolver.js";
 import { getSecretVaultRuntime } from "./secret-management/secret-vault-runtime.js";
+import { installRuntimeMcpSecretResolver } from "./secret-management/resolution/mcp-secret-resolver.js";
+import {
+  selectedTestVaultPaths,
+  selectSecretVaultSource,
+} from "./secret-management/secret-vault-source.js";
+import { TEST_VAULT_SETTING_NAME } from "autobyteus-ts/secrets/test-vault-setting.js";
 import { configureFileToolDeniedPaths } from "autobyteus-ts/tools/file/workspace-path-utils.js";
 import { RootRunPackageReadinessIndex } from "./run-history/services/root-run-package-readiness-index.js";
 import { exitWithEmbeddedServerPlatformFatal } from "./startup/embedded-server-platform-fatal.js";
 import { assertTokenUsageCurrentSchema } from "./startup/token-usage-current-schema-readiness.js";
 import { TokenUsageAnalyticsProjectionWriter } from "./token-usage/services/token-usage-analytics-projection-writer.js";
-import {
-  TOKEN_USAGE_RUN_RECORDS_V1_MIGRATION_ID,
-  configureTokenUsageMigrationReadiness,
-} from "./token-usage/providers/token-usage-migration-readiness.js";
+import { configureTokenUsageCapability } from "./token-usage/providers/token-usage-capability.js";
+import { applyCapabilityReadiness, markCapabilitiesPending } from "./startup/app-data-capability-readiness.js";
 import { buildStudioServer } from "./compositions/build-studio-server.js";
 
 const logger = createServerLogger("server.runtime");
-
-const registerShutdownHandlers = (app: FastifyInstance): void => {
-  let shuttingDown = false;
-  const shutdown = async (signal: string) => {
-    if (shuttingDown) return;
-    shuttingDown = true;
-    logger.info(`Received ${signal}. Shutting down server...`);
-    try {
-      await app.close();
-      logger.info("Server closed cleanly.");
-      process.exit(0);
-    } catch (error) {
-      logger.error(`Error during shutdown: ${String(error)}`);
-      process.exit(1);
-    }
-  };
-  process.once("SIGINT", () => void shutdown("SIGINT"));
-  process.once("SIGTERM", () => void shutdown("SIGTERM"));
-};
 
 const fatal = (input: {
   code: Parameters<typeof exitWithEmbeddedServerPlatformFatal>[0]["code"];
@@ -55,6 +40,14 @@ const fatal = (input: {
 };
 
 export async function startConfiguredServer(options: ServerOptions): Promise<void> {
+  const shutdown = new ServerProcessShutdown();
+  try { await initializeConfiguredServer(options, shutdown); }
+  finally { shutdown.settleStartup(); }
+}
+
+async function initializeConfiguredServer(options: ServerOptions, shutdown: ServerProcessShutdown): Promise<void> {
+  // The server owns its vault: autobyteus-ts must never read AUTOBYTEUS_TEST_VAULT itself here.
+  disableEnvironmentProviderApiKeySource();
   let loggingConfig: LoggingConfig = getLoggingConfigFromEnv(process.env);
   let serverLogPath: string | null = null;
   let prismaInitializationStarted = false;
@@ -86,18 +79,15 @@ export async function startConfiguredServer(options: ServerOptions): Promise<voi
     }
   };
 
+  shutdown.setCleanup(unwindProcessPrerequisites);
+  class StartupFailure extends Error {
+    constructor(readonly input: { code: Parameters<typeof fatal>[0]["code"]; summary: string }) { super(input.summary); }
+  }
   const fatalAfterPrerequisiteUnwind = async (input: {
-    code: Parameters<typeof fatal>[0]["code"];
-    summary: string;
-  }): Promise<never> => {
-    let summary = input.summary;
-    try {
-      await unwindProcessPrerequisites();
-    } catch (cleanupError) {
-      summary = `${summary}; prerequisite cleanup failed: ${String(cleanupError)}`;
-    }
-    return fatal({ code: input.code, summary, logPath: serverLogPath });
-  };
+    code: Parameters<typeof fatal>[0]["code"]; summary: string;
+  }): Promise<never> => { shutdown.checkpoint(); throw new StartupFailure(input); };
+
+  try {
 
   try {
     loggingConfig = getLoggingConfigFromEnv(process.env);
@@ -127,16 +117,22 @@ export async function startConfiguredServer(options: ServerOptions): Promise<voi
   }
 
   const databaseLocation = config.getOperationalDatabaseLocation();
+  const vaultSource = selectSecretVaultSource({
+    testVaultSetting: config.get(TEST_VAULT_SETTING_NAME),
+    appDataDir: config.getAppDataDir(),
+    databaseLocation,
+  });
   configureFileToolDeniedPaths([
     databaseLocation.databasePath,
     databaseLocation.rootKeyPath,
     `${databaseLocation.databasePath}-wal`,
     `${databaseLocation.databasePath}-shm`,
     `${databaseLocation.databasePath}-journal`,
+    ...selectedTestVaultPaths(vaultSource),
   ]);
   prismaInitializationStarted = true;
   try {
-    await initializePrisma({ datasourceUrl: databaseLocation.databaseUrl });
+    await shutdown.stage(() => initializePrisma({ datasourceUrl: databaseLocation.databaseUrl }));
   } catch (error) {
     await fatalAfterPrerequisiteUnwind({
       code: "APPLICATION_DATABASE_INITIALIZATION_FAILED",
@@ -145,16 +141,12 @@ export async function startConfiguredServer(options: ServerOptions): Promise<voi
   }
 
   try {
-    await assertTokenUsageCurrentSchema();
-    await new TokenUsageAnalyticsProjectionWriter().initializeCoverage();
-    configureTokenUsageMigrationReadiness({
-      kind: "CURRENT_SCHEMA_DEGRADED",
-      migrationStatus: "NOT_RUN",
-      logPath: null,
-    });
+    await shutdown.stage(() => assertTokenUsageCurrentSchema());
+    await shutdown.stage(() => new TokenUsageAnalyticsProjectionWriter().initializeCoverage());
+    markCapabilitiesPending();
   } catch (error) {
     const summary = `Required current token-usage schema is unavailable: ${String(error)}`;
-    configureTokenUsageMigrationReadiness({
+    configureTokenUsageCapability({
       kind: "CRITICAL_CURRENT_SCHEMA_FAILURE",
       reason: summary,
     });
@@ -166,16 +158,19 @@ export async function startConfiguredServer(options: ServerOptions): Promise<voi
 
   vaultInitializationStarted = true;
   try {
-    await getSecretVaultRuntime().initialize(databaseLocation);
+    await shutdown.stage(() => getSecretVaultRuntime().initialize(vaultSource));
   } catch (error) {
     await fatalAfterPrerequisiteUnwind({
       code: "SECRET_VAULT_INITIALIZATION_FAILED",
       summary: `Failed to initialize secret vault: ${String(error)}`,
     });
   }
+  // Every managed MCP server resolves its secret references through the vault runtime, from here on.
+  installRuntimeMcpSecretResolver();
 
   try {
-    const statuses = await getAppDataMigrationRunner().runPending();
+    const runner = getAppDataMigrationRunner();
+    const statuses = await shutdown.stage(() => runner.runPending());
     for (const migration of statuses) {
       if (migration.status === "FAILED" || migration.status === "RUNNING") {
         logger.warn(
@@ -184,48 +179,8 @@ export async function startConfiguredServer(options: ServerOptions): Promise<voi
         );
       }
     }
-    const tokenUsageStatus = statuses.find(
-      (status) => status.migrationId === TOKEN_USAGE_RUN_RECORDS_V1_MIGRATION_ID,
-    );
-    configureTokenUsageMigrationReadiness(
-      tokenUsageStatus?.status === "SUCCEEDED"
-        || tokenUsageStatus?.status === "SUCCEEDED_WITH_WARNINGS"
-        ? { kind: "READY" }
-        : {
-            kind: "CURRENT_SCHEMA_DEGRADED",
-            migrationStatus: tokenUsageStatus?.status ?? "MISSING",
-            logPath: tokenUsageStatus?.logPath ?? null,
-          },
-    );
-    await new RootRunPackageReadinessIndex(config.getMemoryDir()).rebuild();
-    const teamRunV2Status = statuses.find(
-      (status) => status.migrationId === TEAM_RUN_EXECUTION_TREE_V2_MIGRATION_ID,
-    );
-    if (teamRunV2Status?.status !== "SUCCEEDED") {
-      logger.warn(
-        `TeamRun execution-tree V2 migration did not report clean success; startup continues with strict current-package admission: ${JSON.stringify({
-          migrationId: TEAM_RUN_EXECUTION_TREE_V2_MIGRATION_ID,
-          displayName: teamRunV2Status?.displayName ?? null,
-          status: teamRunV2Status?.status ?? "MISSING",
-          attempts: teamRunV2Status?.attempts ?? null,
-          errorMessage: teamRunV2Status?.errorMessage ?? null,
-          logPath: teamRunV2Status?.logPath ?? null,
-        })}`,
-      );
-    }
-    const readableProviderStatus = statuses.find(
-      (status) => status.migrationId === CUSTOM_PROVIDER_READABLE_ID_APP_DATA_MIGRATION_ID,
-    );
-    if (
-      readableProviderStatus?.status !== "SUCCEEDED"
-      && readableProviderStatus?.status !== "SUCCEEDED_WITH_WARNINGS"
-    ) {
-      throw new Error([
-        "CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED",
-        readableProviderStatus?.status ?? "NOT_RUN",
-        readableProviderStatus?.logPath ?? "NO_LOG",
-      ].join(":"));
-    }
+    applyCapabilityReadiness(await shutdown.stage(() => runner.capabilityReadiness()));
+    await shutdown.stage(() => new RootRunPackageReadinessIndex(config.getMemoryDir()).rebuild());
   } catch (error) {
     await fatalAfterPrerequisiteUnwind({
       code: "APP_DATA_STARTUP_GATE_FAILED",
@@ -236,39 +191,43 @@ export async function startConfiguredServer(options: ServerOptions): Promise<voi
   let app!: FastifyInstance;
   let applicationRuntime!: Awaited<ReturnType<typeof buildStudioServer>>["applicationRuntime"];
   try {
-    const studioServer = await buildStudioServer({ appConfig: config, loggingConfig });
+    shutdown.checkpoint();
+    const studioServer = await buildStudioServer({ appConfig: config, loggingConfig,
+      onCleanupOwnershipTransferred: close => {
+        shutdown.setCleanup(close);
+        prismaInitializationStarted = false;
+        vaultInitializationStarted = false;
+      },
+    });
     app = studioServer.fastify;
     applicationRuntime = studioServer.applicationRuntime;
+    shutdown.setCleanup(() => app.close());
     prismaInitializationStarted = false;
     vaultInitializationStarted = false;
-    registerShutdownHandlers(app);
-    await applicationRuntime.lifecycle.prepareBeforeListen();
-    await studioServer.agentToolsMcpHost.listen();
-    await app.listen({ host: options.host, port: options.port });
+    shutdown.checkpoint();
+    await shutdown.stage(() => applicationRuntime.lifecycle.prepareBeforeListen());
+    await shutdown.stage(() => studioServer.agentToolsMcpHost.listen());
+    await shutdown.stage(() => app.listen({ host: options.host, port: options.port }));
     logger.info(`Server listening on ${options.host}:${options.port}`);
   } catch (error) {
-    if (app) await app.close().catch((closeError) => {
-      logger.error(`Failed to close Studio server after startup error: ${String(closeError)}`);
-    });
-    fatal({
-      code: "HTTP_SERVER_INITIALIZATION_FAILED",
-      summary: `Failed to initialize HTTP server: ${String(error)}`,
-      logPath: serverLogPath,
-    });
+    shutdown.checkpoint();
+    throw new StartupFailure({ code: "HTTP_SERVER_INITIALIZATION_FAILED", summary: `Failed to initialize HTTP server: ${String(error)}` });
   }
-
   try {
-    await applicationRuntime.lifecycle.recoverAfterListen();
+    await shutdown.stage(() => applicationRuntime.lifecycle.recoverAfterListen());
   } catch (error) {
-    await app.close().catch((closeError) => {
-      logger.error(`Failed to close Studio server after recovery error: ${String(closeError)}`);
-    });
-    fatal({
-      code: "APPLICATION_ORCHESTRATION_RECOVERY_FAILED",
-      summary: `Failed to complete application orchestration startup recovery: ${String(error)}`,
-      logPath: serverLogPath,
-    });
+    shutdown.checkpoint();
+    throw new StartupFailure({ code: "APPLICATION_ORCHESTRATION_RECOVERY_FAILED", summary: `Failed to complete application recovery: ${String(error)}` });
   }
 
-  await scheduleStudioBackgroundTasks();
+  await shutdown.stage(() => scheduleStudioBackgroundTasks());
+  } catch (error) {
+    if (error instanceof StartupCancelled || shutdown.requested) return;
+    let cleanupError = '';
+    try { await shutdown.cleanupOnce(); } catch (failure) { cleanupError = `; cleanup failed: ${String(failure)}`; }
+    const failure = error instanceof StartupFailure ? error.input : {
+      code: "HTTP_SERVER_INITIALIZATION_FAILED" as const, summary: String(error),
+    };
+    fatal({ ...failure, summary: failure.summary + cleanupError, logPath: serverLogPath });
+  }
 }

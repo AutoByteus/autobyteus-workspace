@@ -1,0 +1,19 @@
+IMP-TRIAL-09 — archived implementation attempt; not reusable current acceptance
+Step: ab-electron-focused; see failure analysis in implementation-check-ledger.md.
+Commit: evolving uncommitted IR-002 tree over2630c26f8 before f34ad8749; desktop setup build overlapped later fix commits. Exact source snapshot/invocation not retained, therefore no current-pass authority.
+Environment: macOS arm64 Node26.12.0, task-local packages; no provider gate.
+Log finished: 2026-10-24T18:34:15.139441+00:00
+
+
+ RUN  v3.2.7 /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-web/electron
+
+ ✓ server/__tests__/ManagedBackendShutdown.spec.ts (7 tests) 7ms
+ ✓ application/__tests__/ApplicationShutdown.spec.ts (2 tests) 4ms
+ ✓ server/__tests__/BaseServerManager.spec.ts (4 tests) 68ms
+ ✓ server/__tests__/StartupDelayLifecycle.spec.ts (13 tests) 73ms
+ ✓ server/__tests__/BackendPortAvailability.spec.ts (3 tests) 124ms
+
+ Test Files  5 passed (5)
+      Tests  29 passed (29)
+   Start at  20:34:14
+   Duration  414ms (transform 145ms, setup 0ms, collect 270ms, tests 277ms, environment 0ms, prepare 253ms)

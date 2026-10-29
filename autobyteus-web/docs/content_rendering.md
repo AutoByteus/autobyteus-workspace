@@ -56,7 +56,13 @@ flowchart TD
 | PDF       | `.pdf`                          | PdfViewer         |
 | Markdown  | `.md`, `.markdown`              | MarkdownPreviewer |
 | HTML      | `.html`, `.htm`                 | HtmlPreviewer     |
-| Excel     | `.xlsx`, `.xls`, `.csv`         | ExcelViewer       |
+| Excel     | `.xlsx`, `.xls`, `.xlsm`, `.csv` | ExcelViewer       |
+
+`ExcelViewer` parses spreadsheets with SheetJS CE (the `xlsx` package, installed
+from the integrity-pinned cdn.sheetjs.com tarball) and sanitises the generated
+sheet HTML with DOMPurify down to table structure (`table`, rows, cells, `br`,
+`colspan`/`rowspan`) before rendering. Hyperlinked cells show their text without
+a link.
 
 ## Shared Read-Only Viewer Surfaces
 
@@ -195,6 +201,14 @@ File explorer and artifact viewers intentionally follow the shared **Settings ->
 ## Markdown Rendering
 
 Markdown files are rendered using `MarkdownRenderer.vue`, which uses `markdown-it` for parsing. The parsing logic is encapsulated in `useMarkdownSegments.ts`.
+
+The rendered HTML is sanitized with DOMPurify (`sanitize(html, opts)` in
+`useMarkdownSegments.ts`, its only call). `autobyteus-web/package.json` pins
+`dompurify` exactly at `3.4.7`. Versions 3.4.8 and later read tag names through
+the `Node.prototype.nodeName` getter, which happy-dom (the `test:nuxt` DOM)
+returns as `""`, so headings disappear in the web tests. The app itself
+(Chromium/Electron) works with newer versions. Lift the pin only together with a
+test DOM that returns `nodeName`, and rerun `test:nuxt`.
 
 ### Conversation Progressive Rich Rendering
 

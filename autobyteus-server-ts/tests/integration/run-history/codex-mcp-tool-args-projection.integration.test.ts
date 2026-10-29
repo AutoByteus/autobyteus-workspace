@@ -39,8 +39,6 @@ const readRawTraces = (memoryDir: string) =>
     .getRunMemoryView(path.basename(memoryDir), {
       includeRawTraces: true,
       includeArchive: false,
-      includeEpisodic: false,
-      includeSemantic: false,
     }).rawTraces ?? [];
 
 const readPhysicalRawTraces = async (memoryDir: string): Promise<Record<string, unknown>[]> =>

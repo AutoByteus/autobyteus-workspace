@@ -1,4 +1,5 @@
-import { app, BrowserWindow, ipcMain } from 'electron';
+import * as path from 'path';
+import { app, BrowserWindow, net } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import type { ProgressInfo, UpdateInfo } from 'electron-updater';
 import type {
@@ -11,16 +12,12 @@ import { isAppUpdateChannelLocked } from '../../shared/appUpdateTypes';
 import { logger } from '../logger';
 import { classifyAppUpdateError } from './appUpdateErrorClassifier';
 import { isAppUpdateChannel, loadAppUpdateChannel, saveAppUpdateChannel } from './appUpdateChannelStore';
-import {
-  APP_UPDATE_IPC_CHECK,
-  APP_UPDATE_IPC_COMMAND_CHANNELS,
-  APP_UPDATE_IPC_DOWNLOAD,
-  APP_UPDATE_IPC_GET_STATE,
-  APP_UPDATE_IPC_INSTALL,
-  APP_UPDATE_IPC_SET_CHANNEL,
-  APP_UPDATE_STATE_CHANNEL,
-  type AppUpdateController,
-} from './appUpdateController';
+import { AppUpdateNotificationRecord } from './appUpdateNotificationRecord';
+import { resolveAppReleasePageUrl } from './appReleasePage';
+import { APP_UPDATE_STATE_CHANNEL, type AppUpdateController } from './appUpdateController';
+import { AppUpdateCheckSchedule, type AppUpdateCheckSource } from './appUpdateCheckSchedule';
+import { registerAppUpdateIpc } from './appUpdateIpc';
+import { buildErrorDedupeSignature, isPrereleaseVersion, normalizeReleaseNotes, toIsoNow } from './appUpdateStateFormat';
 
 const CHANNEL_RECHECK_STATUSES: ReadonlySet<AppUpdateStatus> = new Set([
   'idle',
@@ -29,50 +26,45 @@ const CHANNEL_RECHECK_STATUSES: ReadonlySet<AppUpdateStatus> = new Set([
   'error',
 ]);
 
-function isPrereleaseVersion(version: string): boolean {
-  return /^\d+\.\d+\.\d+-/.test(version);
-}
+/** While the app update is in one of these, no automatic check runs (REQ-014). */
+const BUSY_STATUSES: ReadonlySet<AppUpdateStatus> = new Set(['checking', 'downloading', 'downloaded', 'installing']);
 
-function toIsoNow(): string {
-  return new Date().toISOString();
-}
+const CHECK_OPERATIONS: Readonly<Record<AppUpdateCheckSource | 'manual', AppUpdateOperation>> = {
+  manual: 'manual-check',
+  startup: 'startup-check',
+  periodic: 'periodic-check',
+};
 
-function normalizeReleaseNotes(releaseNotes: UpdateInfo['releaseNotes']): string | null {
-  if (typeof releaseNotes === 'string') {
-    return releaseNotes;
-  }
-
-  if (Array.isArray(releaseNotes)) {
-    const notes = releaseNotes
-      .map((item) => (item && typeof item.note === 'string' ? item.note.trim() : ''))
-      .filter((item) => item.length > 0);
-
-    return notes.length > 0 ? notes.join('\n\n') : null;
-  }
-
-  return null;
-}
-
-function buildErrorDedupeSignature(
-  kind: string,
-  code: string | null,
-  diagnostic: string,
-): string {
-  const diagnosticHeadline = diagnostic
-    .split(/\r?\n/)
-    .find((line) => line.trim().length > 0)
-    ?.trim() ?? 'none';
-
-  return `${kind}:${code ?? 'none'}:${diagnosticHeadline}`;
-}
+type AppUpdaterOptions = {
+  prepareForInstall?: () => Promise<void>;
+  /** The launch check's delay (8 s by default). */
+  autoCheckDelayMs?: number;
+  /** Whether the machine is online; Electron's `net.isOnline()` by default. */
+  isOnline?: () => boolean;
+  /** e2e only: check this generic feed instead of the packaged GitHub feed (REQ-019). */
+  testFeedUrl?: string | null;
+  /** The packaged publish config (`app-update.yml`) the release link is read from. */
+  appUpdateConfigPath?: string | null;
+};
 
 export class AppUpdater implements AppUpdateController {
   private state: AppUpdateState;
   private initialized = false;
   private activeOperation: AppUpdateOperation | null = null;
   private lastErrorSignature: string | null = null;
+  private notificationRecord: AppUpdateNotificationRecord | null = null;
+  private schedule: AppUpdateCheckSchedule | null = null;
+  private readonly autoCheckDelayMs: number | undefined;
+  private readonly isOnline: () => boolean;
+  private readonly testFeedUrl: string | null;
+  private readonly appUpdateConfigPath: string | null;
 
-  constructor(private readonly autoCheckDelayMs: number = 8000) {
+  constructor(private readonly options: AppUpdaterOptions = {}) {
+    this.autoCheckDelayMs = options.autoCheckDelayMs;
+    this.isOnline = options.isOnline ?? (() => net.isOnline());
+    this.testFeedUrl = options.testFeedUrl ?? null;
+    this.appUpdateConfigPath = options.appUpdateConfigPath !== undefined ? options.appUpdateConfigPath
+      : process.resourcesPath ? path.join(process.resourcesPath, 'app-update.yml') : null;
     const currentVersion = app.getVersion();
     this.state = {
       status: 'idle',
@@ -89,6 +81,8 @@ export class AppUpdater implements AppUpdateController {
       errorKind: null,
       errorOperation: null,
       checkedAt: null,
+      notification: null,
+      autoCheck: null,
     };
   }
 
@@ -108,32 +102,52 @@ export class AppUpdater implements AppUpdateController {
       debug: (message: string) => logger.debug(`[updater] ${message}`),
     } as any;
 
-    this.state = { ...this.state, updateChannel: loadAppUpdateChannel(app.getPath('userData')) };
+    if (this.testFeedUrl) {
+      autoUpdater.setFeedURL({ provider: 'generic', url: this.testFeedUrl });
+    }
+    this.notificationRecord = new AppUpdateNotificationRecord(app.getPath('userData'), this.state.currentVersion);
+    const schedule = new AppUpdateCheckSchedule({
+      userDataPath: app.getPath('userData'),
+      target: this,
+      isOnline: this.isOnline,
+      launchDelayMs: this.autoCheckDelayMs,
+    });
+    // The schedule owns its settings; the state only follows them (AR-004).
+    schedule.onChange(() => this.applyState({ autoCheck: schedule.settings() }));
+    this.schedule = schedule;
+    this.state = {
+      ...this.state,
+      updateChannel: loadAppUpdateChannel(app.getPath('userData')),
+      notification: this.currentNotification(),
+      autoCheck: schedule.settings(),
+    };
     this.applyChannelPolicy();
 
     this.registerAutoUpdaterListeners();
-    this.registerIpcHandlers();
+    registerAppUpdateIpc(this, schedule);
     this.broadcastState();
   }
 
+  /** Starts the automatic checks (launch, then every interval) in packaged builds. */
   startAutoCheck(): void {
     if (!app.isPackaged) {
-      logger.info('Skipping startup auto-update check in unpackaged/dev runtime.');
+      logger.info('Skipping automatic update checks in unpackaged/dev runtime.');
       return;
     }
+    if (!this.initialized) this.initialize();
+    this.schedule?.start();
+  }
 
-    setTimeout(() => {
-      this.checkForUpdates('startup').catch((error) => {
-        this.handleError(error, 'Failed to check for updates at startup.', 'startup-check');
-      });
-    }, this.autoCheckDelayMs);
+  /** An app update is checking, downloading, downloaded (staged) or installing. */
+  isBusy(): boolean {
+    return BUSY_STATUSES.has(this.state.status) || this.state.updateStaged;
   }
 
   getState(): AppUpdateState {
     return { ...this.state };
   }
 
-  async checkForUpdates(source: 'manual' | 'startup' = 'manual'): Promise<AppUpdateState> {
+  async checkForUpdates(source: AppUpdateCheckSource | 'manual' = 'manual'): Promise<AppUpdateState> {
     if (!this.initialized) {
       this.initialize();
     }
@@ -155,15 +169,15 @@ export class AppUpdater implements AppUpdateController {
       return this.getState();
     }
 
-    const operation: AppUpdateOperation = source === 'startup' ? 'startup-check' : 'manual-check';
+    const operation = CHECK_OPERATIONS[source];
     this.activeOperation = operation;
 
+    // `checkedAt` marks a finished check: it is set by the result, not here (REQ-015).
     this.applyState({
       status: 'checking',
       message: 'Checking for updates...',
       errorKind: null,
       errorOperation: null,
-      checkedAt: toIsoNow(),
       downloadPercent: null,
       downloadTransferredBytes: null,
       downloadTotalBytes: null,
@@ -196,6 +210,15 @@ export class AppUpdater implements AppUpdateController {
 
     if (this.state.status === 'downloading') {
       return this.getState();
+    }
+
+    // After a restart the notification exists before this process has seen the update: check first.
+    if (this.state.status !== 'available' && this.state.notification?.state === 'waiting'
+      && this.state.status !== 'checking' && this.state.status !== 'downloaded') {
+      const checked = await this.checkForUpdates('manual');
+      if (checked.status !== 'available') {
+        return checked;
+      }
     }
 
     if (this.state.status !== 'available') {
@@ -247,8 +270,9 @@ export class AppUpdater implements AppUpdateController {
       errorOperation: null,
     });
 
-    setTimeout(() => {
+    setTimeout(async () => {
       try {
+        await this.options.prepareForInstall?.();
         autoUpdater.quitAndInstall(false, true);
       } catch (error) {
         this.handleError(error, 'Failed to install update and restart.', 'install');
@@ -276,6 +300,23 @@ export class AppUpdater implements AppUpdateController {
     return { accepted: true, persisted, state: this.getState() };
   }
 
+  markNotificationRead(): AppUpdateState {
+    if (this.notificationRecord?.markRead()) this.applyState({ notification: this.currentNotification() });
+    return this.getState();
+  }
+
+  clearNotification(): AppUpdateState {
+    if (this.notificationRecord?.clear()) this.applyState({ notification: this.currentNotification() });
+    return this.getState();
+  }
+
+  /** The release link names the packaged GitHub feed; a test feed has none (DEC-017). */
+  private currentNotification(): AppUpdateState['notification'] {
+    const configPath = this.testFeedUrl ? null : this.appUpdateConfigPath;
+    return this.notificationRecord?.toNotification(
+      (version) => configPath ? resolveAppReleasePageUrl(configPath, version) : null) ?? null;
+  }
+
   /**
    * Applies the channel to electron-updater before every check. Never set
    * `autoUpdater.channel`: its setter forces `allowDowngrade = true`.
@@ -292,12 +333,13 @@ export class AppUpdater implements AppUpdateController {
         message: 'Checking for updates...',
         errorKind: null,
         errorOperation: null,
-        checkedAt: toIsoNow(),
       });
     });
 
     autoUpdater.on('update-available', (updateInfo: UpdateInfo) => {
+      if (updateInfo.version) this.notificationRecord?.recordFound(updateInfo.version);
       this.applyState({
+        notification: this.currentNotification(),
         status: 'available',
         availableVersion: updateInfo.version || null,
         releaseNotes: normalizeReleaseNotes(updateInfo.releaseNotes),
@@ -314,7 +356,9 @@ export class AppUpdater implements AppUpdateController {
     });
 
     autoUpdater.on('update-not-available', () => {
+      this.notificationRecord?.recordNotAvailable();
       this.applyState({
+        notification: this.currentNotification(),
         status: 'no-update',
         availableVersion: null,
         releaseNotes: null,
@@ -351,25 +395,12 @@ export class AppUpdater implements AppUpdateController {
         errorKind: null,
         errorOperation: null,
         downloadPercent: 100,
-        checkedAt: toIsoNow(),
       });
     });
 
     autoUpdater.on('error', (error: Error) => {
       this.handleError(error, 'Auto-update failed.', this.activeOperation ?? 'updater-event');
     });
-  }
-
-  private registerIpcHandlers(): void {
-    for (const channel of APP_UPDATE_IPC_COMMAND_CHANNELS) {
-      ipcMain.removeHandler(channel);
-    }
-
-    ipcMain.handle(APP_UPDATE_IPC_GET_STATE, async () => this.getState());
-    ipcMain.handle(APP_UPDATE_IPC_CHECK, async () => await this.checkForUpdates('manual'));
-    ipcMain.handle(APP_UPDATE_IPC_DOWNLOAD, async () => await this.downloadUpdate());
-    ipcMain.handle(APP_UPDATE_IPC_INSTALL, async () => this.installUpdateAndRestart());
-    ipcMain.handle(APP_UPDATE_IPC_SET_CHANNEL, async (_event, channel: unknown) => await this.setUpdateChannel(channel));
   }
 
   private handleError(
@@ -399,12 +430,13 @@ export class AppUpdater implements AppUpdateController {
       error,
     );
 
+    const failedCheck = Object.values(CHECK_OPERATIONS).includes(classification.operation);
     this.applyState({
       status: 'error',
       message: classification.message,
       errorKind: classification.kind,
       errorOperation: classification.operation,
-      checkedAt: toIsoNow(),
+      ...(failedCheck ? { checkedAt: toIsoNow() } : {}),
     });
   }
 

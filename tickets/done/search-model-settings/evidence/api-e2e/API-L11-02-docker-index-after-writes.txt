@@ -1,0 +1,13 @@
+# API-L11 (AC-015, REQ-011): Docker node, Granite on disk and Ready; Alpha docs and Beta platform Not indexed; createProjectTask in Alpha and updateProjectTask (new description) on t11 in Beta through GraphQL (the UI mutations); save latency; then only the Settings page is polled (no search) until both Projects are Ready; then meaning searches for the new and edited text; the 20 Load Projects must stay Not indexed; commit 8c283c6acc; Mon Oct 19 14:57:10 CEST 2026
+before: [('Alpha docsNot ', 'Not indexed'), ('Beta platformN', 'Not indexed')]
+create saved in 70 ms {"createProjectTask":{"taskId":"project_task_68eca66f-a7b3-47e1-8201-fc28fcd2172e","taskKey":"alpha-docs-11"}}
+edit saved in 14 ms
+writes at 1792414631431
+both Ready after 11239 ms of polling (timeout False ): [('Alpha docsRead', 'Ready · 11 Tasks'), ('Beta platformR', 'Ready · 20 Tasks')]
+   seen: [[['Not indexed'], ['Not indexed']], [['Ready · 11 Tasks'], ['Ready · 20 Tasks']]]
+   Load Projects not indexed: 20 of 20
+meaning search for the new Task (Alpha):
+{"ms":42,"matches":[{"taskId":"project_task_68eca66f-a7b3-47e1-8201-fc28fcd2172e","match":"MEANING"}],"meaningSearch":{"state":"READY","phase":null,"done":null,"total":null,"reason":null}}
+meaning search for the edited Task (Beta):
+{"ms":43,"matches":[{"taskId":"project_task_26b6c9ba-8e95-4634-8523-5557196aa336","match":"MEANING"}],"meaningSearch":{"state":"READY","phase":null,"done":null,"total":null,"reason":null}}
+t11 = project_task_26b6c9ba-8e95-4634-8523-5557196aa336

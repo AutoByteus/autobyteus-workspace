@@ -1,4 +1,6 @@
+import type { Client } from '@modelcontextprotocol/client';
 import type { BaseMcpConfig } from '../types.js';
+import type { McpSecretResolver } from '../mcp-secret-resolver.js';
 
 export enum ServerState {
   DISCONNECTED = 'disconnected',
@@ -8,11 +10,8 @@ export enum ServerState {
   CLOSED = 'closed'
 }
 
-type ClientSessionLike = {
-  listTools: () => Promise<unknown>;
-  callTool: (...args: unknown[]) => Promise<unknown>;
-  close?: () => Promise<void> | void;
-};
+/** The part of the MCP SDK client that a managed server uses. */
+type ClientSessionLike = Pick<Client, 'listTools' | 'callTool' | 'close'>;
 
 type CleanupCallback = () => Promise<void> | void;
 
@@ -26,7 +25,11 @@ export abstract class BaseManagedMcpServer {
   private cleanupStack: CleanupCallback[] = [];
   private connectPromise: Promise<void> | null = null;
 
-  constructor(config: BaseMcpConfig) {
+  /**
+   * @param secretResolver resolves the config's secret references when the server connects. Without one, a config
+   * that holds a reference fails to connect with `McpSecretUnavailableError` (`VAULT_UNAVAILABLE`).
+   */
+  constructor(config: BaseMcpConfig, protected readonly secretResolver: McpSecretResolver | null = null) {
     this.config = config;
   }
 
@@ -62,13 +65,9 @@ export abstract class BaseManagedMcpServer {
     this.connectPromise = (async () => {
       try {
         this.cleanupStack = [];
-        this.clientSession = await this.createClientSession();
-
-        if (this.clientSession?.close) {
-          this.registerCleanup(async () => {
-            await this.clientSession?.close?.();
-          });
-        }
+        const session = await this.createClientSession();
+        this.clientSession = session;
+        this.registerCleanup(() => session.close());
 
         this.state = ServerState.CONNECTED;
       } catch (error) {
@@ -104,13 +103,7 @@ export abstract class BaseManagedMcpServer {
     }
 
     const result = await this.clientSession.listTools();
-    if (Array.isArray(result)) {
-      return result;
-    }
-    if (result && Array.isArray((result as { tools: unknown[] }).tools)) {
-      return (result as { tools: unknown[] }).tools;
-    }
-    return [];
+    return result.tools;
   }
 
   async callTool(toolName: string, argumentsPayload: Record<string, unknown>, options: { signal?: AbortSignal | null } = {}): Promise<unknown> {
@@ -122,14 +115,8 @@ export abstract class BaseManagedMcpServer {
       throw new Error(`Cannot call tool: client session not available for server '${this.serverId}'.`);
     }
 
-    const callTool = this.clientSession.callTool.bind(this.clientSession);
-    if (callTool.length >= 2) {
-      return await callTool(toolName, argumentsPayload, { timeout: DEFAULT_MCP_TOOL_CALL_TIMEOUT_MS, signal: options.signal ?? undefined });
-    }
-
-    return await callTool(
+    return await this.clientSession.callTool(
       { name: toolName, arguments: argumentsPayload },
-      undefined,
       { timeout: DEFAULT_MCP_TOOL_CALL_TIMEOUT_MS, signal: options.signal ?? undefined }
     );
   }

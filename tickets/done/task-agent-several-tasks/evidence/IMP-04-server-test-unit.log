@@ -1,0 +1,22 @@
+# Check: IMP-04
+# Command: pnpm -C autobyteus-server-ts test:unit
+# Commit tested: a18fe714cd (branch codex/task-agent-several-tasks)
+# Environment: macOS 26.5.2 (darwin), Node v22.23.1, pnpm 10.28.2; worktree install repaired with `pnpm install --frozen-lockfile` (no tracked change) after a first run failed on missing autobyteus-application-backend-sdk/node_modules
+# Date: 2026-10-23 13:31 CEST
+
+# Excerpt: failure scan and summary. Full log: IMP-04-server-test-unit.full.log.gz
+# Lines matching FAIL/× (expected platform-fatal JSON printed by startup-gate tests; no failing test):
+103:{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED:NOT_RUN:NO_LOG","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+104:{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED:RUNNING:/tmp/running.log","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+105:{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED:FAILED:/tmp/failed.log","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+106:{"protocol":"autobyteus.embedded-server.platform-fatal.v1","code":"APP_DATA_STARTUP_GATE_FAILED","summary":"Failed to run app data migrations: Error: migration state store unavailable","logPath":"/tmp/server-runtime-gate/logs/server.log"}
+
+# Summary:
+{"event":"managed_compaction_all_exit","stage":"backend-construction","completedTurns":0,"error":{"category":"Error","code":null,"status":null,"condition":null},"parentRequests":[],"parentResponses":[],"summaryRequests":[],"summaryResponses":[],"events":[]}
+
+ Test Files  794 passed | 4 skipped (798)
+      Tests  6518 passed | 7 skipped (6525)
+   Start at  13:15:53
+   Duration  648.52s (transform 16.58s, setup 10.18s, import 317.41s, tests 231.88s, environment 962ms)
+
+exit=0

@@ -1,0 +1,9 @@
+# Check: IMP-08
+# Command: pnpm -C autobyteus-server-ts test:integration:prepare && pnpm -C autobyteus-server-ts test:integration (full log: IMP-08-server-integration-full.log.gz). Ran on the working tree whose content equals a9b5230505 (b166e0db70 changes only one unit test).
+# Commit: a9b5230505
+# Environment: macOS 26.5.2, Node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-19T15:20:10Z
+
+ Test Files  78 passed | 19 skipped (97)
+      Tests  419 passed | 70 skipped (489)
+   Duration  213.93s (transform 9.06s, setup 807ms, import 77.35s, tests 126.66s, environment 7ms)

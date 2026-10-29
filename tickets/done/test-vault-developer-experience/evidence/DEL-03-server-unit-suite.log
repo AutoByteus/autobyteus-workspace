@@ -1,0 +1,5 @@
+# DEL-03 | pnpm -C autobyteus-server-ts test:unit | HEAD ee78ab81a1 | 2026-10-20T04:58:27Z
+ Test Files  752 passed | 4 skipped (756)
+      Tests  6201 passed | 7 skipped (6208)
+exit=0
+(the grep is now limited to the summary lines; no failing file appeared in the run)

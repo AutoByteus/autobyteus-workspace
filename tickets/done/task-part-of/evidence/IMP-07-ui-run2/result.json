@@ -1,0 +1,93 @@
+{
+  "results": [
+    {
+      "name": "board-1440",
+      "result": "Fail",
+      "error": "Error: {\"text\":\"Cross-node collaboration\",\"relations\":[\"task-parts-progress:2 of 5 done\"],\"pillTitle\":\"2 of 5 done · 1 cancelled\",\"lineTitle\":null}\n    at assert (file:///private/tmp/task-part-of-scripts/ui-check.mjs:15:42)\n    at file:///private/tmp/task-part-of-scripts/ui-check.mjs:29:3\n    at runNextTicks (node:internal/process/task_queues:64:5)\n    at process.processImmediate (node:internal/timers:452:9)\n    at process.callbackTrampoline (node:internal/async_hooks:130:17)\n    at async check (file:///private/tmp/task-part-of-scripts/ui-check.mjs:14:55)\n    at async file:///private/tmp/task-part-of-scripts/ui-check.mjs:22:1"
+    },
+    {
+      "name": "parent-page",
+      "result": "Fail",
+      "error": "Error: 2 of 5 done · 1 cancelled\n    at assert (file:///private/tmp/task-part-of-scripts/ui-check.mjs:15:42)\n    at file:///private/tmp/task-part-of-scripts/ui-check.mjs:43:3\n    at async check (file:///private/tmp/task-part-of-scripts/ui-check.mjs:14:55)\n    at async file:///private/tmp/task-part-of-scripts/ui-check.mjs:39:1"
+    },
+    {
+      "name": "delete-note",
+      "result": "Fail",
+      "error": "Error: Its 6 parts stay as separate Tasks.\n    at assert (file:///private/tmp/task-part-of-scripts/ui-check.mjs:15:42)\n    at file:///private/tmp/task-part-of-scripts/ui-check.mjs:57:3\n    at async check (file:///private/tmp/task-part-of-scripts/ui-check.mjs:14:55)\n    at async file:///private/tmp/task-part-of-scripts/ui-check.mjs:54:1"
+    },
+    {
+      "name": "part-page",
+      "result": "Pass",
+      "obs": {
+        "row": "autobyteus-1 In Progress Cross-node collaboration"
+      }
+    },
+    {
+      "name": "editor-new-part",
+      "result": "Pass",
+      "obs": {
+        "selected": "autobyteus-1 Cross-node collaboration In Progress",
+        "fields": [
+          "task-part-of-picker",
+          "task-dependency-picker"
+        ]
+      }
+    },
+    {
+      "name": "editor-search-blocked",
+      "result": "Pass",
+      "obs": {
+        "options": [
+          {
+            "text": "autobyteus-14 Ship the relay to the beta channel Already part of a Task",
+            "disabled": "true"
+          },
+          {
+            "text": "autobyteus-13 Ship the relay to the beta channel Already part of a Task",
+            "disabled": "true"
+          },
+          {
+            "text": "autobyteus-12 Drop legacy tables Already part of a Task",
+            "disabled": "true"
+          },
+          {
+            "text": "autobyteus-11 Old migration cleanup To Do",
+            "disabled": null
+          },
+          {
+            "text": "autobyteus-10 Sign-in illustration Already part of a Task",
+            "disabled": "true"
+          },
+          {
+            "text": "autobyteus-9 Welcome screen copy Already part of a Task",
+            "disabled": "true"
+          },
+          {
+            "text": "autobyteus-8 Onboarding redesign To Do",
+            "disabled": null
+          },
+          {
+            "text": "autobyteus-6 Test cross-node delegation end to end with two nodes and a scripted runtime Already part of a Task",
+            "disabled": "true"
+          }
+        ],
+        "chosen": "autobyteus-11 Old migration cleanup To Do"
+      }
+    },
+    {
+      "name": "editor-has-parts",
+      "result": "Pass",
+      "obs": {
+        "text": "This Task has parts, so it can't be part of another Task."
+      }
+    },
+    {
+      "name": "board-narrow-760",
+      "result": "Pass",
+      "obs": {
+        "lines": 12
+      }
+    }
+  ],
+  "errors": []
+}

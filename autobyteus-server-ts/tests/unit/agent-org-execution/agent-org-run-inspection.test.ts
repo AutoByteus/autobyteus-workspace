@@ -8,7 +8,7 @@ import { AgentOrgCommunicationMessagesStore } from '../../../src/agent-org-execu
 import { AgentOrgExecutionTreeLocationService } from '../../../src/agent-org-execution/services/agent-org-execution-tree-location-service.js';
 import { AgentOrgMemberRunViewProjectionService } from '../../../src/run-history/services/agent-org-member-run-view-projection-service.js';
 import { projectAgentOrgExecutionSnapshot } from '../../../src/services/agent-streaming/agent-org-execution-view-projector.js';
-import { testAgentOrgExecutionTree, testOrgAgentNode } from '../../fixtures/current-agent-org-run-fixtures.js';
+import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgAgentCopySource } from '../../fixtures/current-agent-org-run-fixtures.js';
 import { InMemoryTaskExecutionResources } from '../../fixtures/task-execution-resource-fixtures.js';
 
 const dirs: string[] = [];
@@ -20,7 +20,8 @@ const fixture = async (taskExecutionResources?: InMemoryTaskExecutionResources) 
     { ...testOrgAgentNode('/assistant', 'configured'), platformAgentRunId: 'configured-provider' },
   ] }));
   tree.rootOrg.taskExecutions = [{ address: '/assistant', agentRunId: 'task-run', platformAgentRunId: 'task-provider',
-    delegatorAgentRunId: 'configured', startedAt: tree.createdAt }];
+    // A copy of the configured assistant: activation recorded the placement's definition.
+    delegatorAgentRunId: 'configured', startedAt: tree.createdAt, source: testOrgAgentCopySource('definition-configured') }];
   const messages = { schemaVersion: 1, subjectKind: 'agent_org', orgRunId: 'org', messages: [] };
   await new AgentOrgRunExecutionTreeStore().write(dir, tree);
   await new AgentOrgCommunicationMessagesStore().write(dir, messages as never);
@@ -34,7 +35,7 @@ describe('strict read-only Org inspection', () => {
     const f = await fixture();
     const before = await Promise.all((await fs.readdir(f.dir)).map(async (name) => [name, await fs.readFile(path.join(f.dir, name), 'utf8')]));
     const result = await f.manager.getInspection('org');
-    const dto = projectAgentOrgExecutionSnapshot(result);
+    const dto = projectAgentOrgExecutionSnapshot({ ...result, remoteTaskExecutions: [] });
     expect(result).toMatchObject({ isActive: false, baseChangeSequence: 0, snapshot: { messages: f.messages } });
     expect(result.snapshot).not.toHaveProperty('tasks');
     expect(dto.root_org.execution_tree.rootOrg.taskExecutions).toEqual([expect.objectContaining({
@@ -60,7 +61,7 @@ describe('strict read-only Org inspection', () => {
     resources.close('A');
     const result = await f.manager.getInspection('org');
     expect(result.snapshot.closedTaskExecutions).toEqual([{ agentRunId: 'task-run' }]);
-    const dto = projectAgentOrgExecutionSnapshot(result);
+    const dto = projectAgentOrgExecutionSnapshot({ ...result, remoteTaskExecutions: [] });
     expect(dto.root_subject_kind === 'agent_org' && dto.root_org.closed_task_executions).toEqual([{ agentRunId: 'task-run' }]);
     expect(dto.root_subject_kind === 'agent_org' && dto.root_org.execution_tree.rootOrg.taskExecutions).toHaveLength(1);
     expect(f.manager.closedTaskExecutionsFor('org', f.tree)).toEqual([{ agentRunId: 'task-run' }]);

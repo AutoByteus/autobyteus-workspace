@@ -14,7 +14,7 @@ import { RootRunPackageReadinessIndex, resetRootRunPackageReadinessIndex } from 
 import { AgentOrgRunExecutionTreeStore } from "../../../src/run-history/store/agent-org-run-execution-tree-store.js";
 import { AgentOrgRunHistoryIndexStore } from "../../../src/run-history/store/agent-org-run-history-index-store.js";
 import { validateAgentOrgRunExecutionTreePayload } from "../../../src/run-history/store/agent-org-run-execution-tree-schema.js";
-import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../fixtures/current-agent-org-run-fixtures.js";
+import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgLaunchConfiguration, testOrgTeamNode } from "../../fixtures/current-agent-org-run-fixtures.js";
 
 const touch = async (filePath: string, mtime: number) => {
   await fs.mkdir(path.dirname(filePath), { recursive: true });
@@ -46,7 +46,8 @@ const orgTree = (orgRunId: string, orgDefinitionId: string, withTasks: boolean):
     rootOrg: {
       ...base.rootOrg,
       taskExecutions: [
-        { address: assertAgentTeamAddress("/ceo"), agentRunId: `${orgRunId}-task-ceo`, platformAgentRunId: null, delegatorAgentRunId: `${orgRunId}-ceo`, startedAt: "2026-09-01T00:01:00.000Z" },
+        { address: assertAgentTeamAddress("/ceo"), agentRunId: `${orgRunId}-task-ceo`, platformAgentRunId: null, delegatorAgentRunId: `${orgRunId}-ceo`, startedAt: "2026-09-01T00:01:00.000Z",
+          source: { kind: "agent", agentDefinitionId: "ceo", launchConfiguration: testOrgLaunchConfiguration() } },
         {
           address: assertAgentTeamAddress("/engineering"),
           teamRunId: `${orgRunId}-engineering-task`,
@@ -56,6 +57,11 @@ const orgTree = (orgRunId: string, orgDefinitionId: string, withTasks: boolean):
           taskExecutions: [],
           delegatorAgentRunId: `${orgRunId}-ceo`,
           startedAt: "2026-09-01T00:02:00.000Z",
+          source: {
+            kind: "agent_team", teamDefinitionId: "engineering", coordinatorAddress: assertAgentTeamAddress("/engineering/solution_designer"),
+            members: [{ address: assertAgentTeamAddress("/engineering/solution_designer"), agentDefinitionId: "designer", launchConfiguration: testOrgLaunchConfiguration(), followsTeam: true }],
+            handoffs: [], defaultLaunchConfiguration: testOrgLaunchConfiguration(),
+          },
         },
         // Delegated by a task-team member: linked at the coordinating run's top level (CM-7, U-5).
         {
@@ -67,7 +73,7 @@ const orgTree = (orgRunId: string, orgDefinitionId: string, withTasks: boolean):
           startedAt: "2026-09-01T00:03:00.000Z",
           source: {
             kind: "agent_team", teamDefinitionId: "review-team", coordinatorAddress: assertAgentTeamAddress("/engineering/review/reviewer"),
-            members: [{ address: assertAgentTeamAddress("/engineering/review/reviewer"), agentDefinitionId: "reviewer" }],
+            members: [{ address: assertAgentTeamAddress("/engineering/review/reviewer"), agentDefinitionId: "reviewer", launchConfiguration: testOrgLaunchConfiguration(), followsTeam: true }],
             handoffs: [], defaultLaunchConfiguration: base.rootOrg.defaultLaunchConfiguration,
           },
         },
@@ -105,13 +111,13 @@ describe("AgentOrgMemoryExplorerService", () => {
     await writeOrg("org-a-1", "org-a", true);
     await touch(orgDir("org-a-1", "org-a-1-ceo", "working_context_snapshot.json"), Date.parse("2026-09-01T01:00:00.000Z"));
     await touch(orgDir("org-a-1", "org-a-1-engineering", "org-a-1-designer", "raw_traces_active.jsonl"), Date.parse("2026-09-01T02:00:00.000Z"));
-    await touch(taskAgentDir("org-a-1-task-ceo", "episodic.jsonl"), Date.parse("2026-09-01T03:00:00.000Z"));
-    await touch(taskTeamDir("org-a-1-engineering-task", "org-a-1-task-team-designer", "semantic.jsonl"), Date.parse("2026-09-01T04:00:00.000Z"));
-    await touch(taskTeamDir("org-a-1-review", "org-a-1-reviewer", "semantic.jsonl"), Date.parse("2026-09-01T05:00:00.000Z"));
+    await touch(taskAgentDir("org-a-1-task-ceo", "raw_traces_active.jsonl"), Date.parse("2026-09-01T03:00:00.000Z"));
+    await touch(taskTeamDir("org-a-1-engineering-task", "org-a-1-task-team-designer", "raw_traces_active.jsonl"), Date.parse("2026-09-01T04:00:00.000Z"));
+    await touch(taskTeamDir("org-a-1-review", "org-a-1-reviewer", "raw_traces_active.jsonl"), Date.parse("2026-09-01T05:00:00.000Z"));
 
     // Org A, run 2: only the root agent has memory; newer.
     await writeOrg("org-a-2", "org-a");
-    await touch(orgDir("org-a-2", "org-a-2-ceo", "semantic.jsonl"), Date.parse("2026-09-02T01:00:00.000Z"));
+    await touch(orgDir("org-a-2", "org-a-2-ceo", "raw_traces_active.jsonl"), Date.parse("2026-09-02T01:00:00.000Z"));
 
     // Org B: no member memory at all -> not listed.
     await writeOrg("org-b-1", "org-b");
@@ -144,9 +150,7 @@ describe("AgentOrgMemoryExplorerService", () => {
       latestMemoryAt: "2026-09-02T01:00:00Z",
       memory: {
         latestMemoryAt: "2026-09-02T01:00:00Z",
-        hasWorkingContext: true,
-        hasEpisodic: true,
-        hasSemantic: true,
+        hasWorkJournal: false,
         hasRawTraces: true,
         hasRawArchive: false,
       },

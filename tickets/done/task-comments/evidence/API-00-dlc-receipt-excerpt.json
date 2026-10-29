@@ -1,0 +1,139 @@
+{
+ "header": {
+  "case": "API-00 / FU-003",
+  "command": "RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<abs>/tests/fixtures/agy-failure-cli.mjs DELEGATED_LAUNCH_DEFAULTS_E2E_EVIDENCE_DIR=<dir> pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts --no-watch -t \"catalog copies run each agent\"",
+  "commit": "1b83434652 (code e014c349b8; base 786055f3d7)",
+  "env": "macOS, env -i, resolved temp HOME",
+  "date": "2026-10-22",
+  "note": "The suite expects launch null for lead/offline/unoffered/badsettings/incomplete; the recorded members carry launchConfiguration (autobyteus-197 D-5)."
+ },
+ "agent.squadSource.members": [
+  {
+   "address": "/dlc_squad_4b8124/lead",
+   "launchConfiguration": {
+    "runtimeKind": "antigravity_cli",
+    "llmModelIdentifier": "gemini-3.8-flash-low",
+    "llmConfig": null,
+    "autoExecuteTools": true,
+    "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-aMSTh2/workspace"
+   },
+   "launchSource": null
+  },
+  {
+   "address": "/dlc_squad_4b8124/engineer",
+   "launchConfiguration": {
+    "runtimeKind": "grok_build",
+    "llmModelIdentifier": "grok-4.7",
+    "llmConfig": null,
+    "autoExecuteTools": true,
+    "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-aMSTh2/workspace"
+   },
+   "launchSource": {
+    "origin": "agent_default",
+    "fallbacks": []
+   }
+  },
+  {
+   "address": "/dlc_squad_4b8124/reviewer",
+   "launchConfiguration": {
+    "runtimeKind": "antigravity_cli",
+    "llmModelIdentifier": "dlc-alt-model",
+    "llmConfig": null,
+    "autoExecuteTools": true,
+    "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-aMSTh2/workspace"
+   },
+   "launchSource": {
+    "origin": "agent_default",
+    "fallbacks": []
+   }
+  },
+  {
+   "address": "/dlc_squad_4b8124/offline",
+   "launchConfiguration": {
+    "runtimeKind": "antigravity_cli",
+    "llmModelIdentifier": "gemini-3.8-flash-low",
+    "llmConfig": null,
+    "autoExecuteTools": true,
+    "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-aMSTh2/workspace"
+   },
+   "launchSource": {
+    "origin": "inherited",
+    "fallbacks": [
+     {
+      "layer": "agent_default",
+      "runtimeKind": "codex_app_server",
+      "llmModelIdentifier": "gpt-5.5",
+      "reason": "runtime_unavailable",
+      "detail": "Codex App Server command '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-fake-grok-n8pSNm/missing/codex' is not available."
+     }
+    ]
+   }
+  },
+  {
+   "address": "/dlc_squad_4b8124/unoffered",
+   "launchConfiguration": {
+    "runtimeKind": "antigravity_cli",
+    "llmModelIdentifier": "gemini-3.8-flash-low",
+    "llmConfig": null,
+    "autoExecuteTools": true,
+    "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-aMSTh2/workspace"
+   },
+   "launchSource": {
+    "origin": "inherited",
+    "fallbacks": [
+     {
+      "layer": "agent_default",
+      "runtimeKind": "antigravity_cli",
+      "llmModelIdentifier": "dlc-no-such-model",
+      "reason": "model_unavailable",
+      "detail": "The model 'dlc-no-such-model' is not available on antigravity_cli."
+     }
+    ]
+   }
+  },
+  {
+   "address": "/dlc_squad_4b8124/badsettings",
+   "launchConfiguration": {
+    "runtimeKind": "antigravity_cli",
+    "llmModelIdentifier": "gemini-3.8-flash-low",
+    "llmConfig": null,
+    "autoExecuteTools": true,
+    "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-aMSTh2/workspace"
+   },
+   "launchSource": {
+    "origin": "inherited",
+    "fallbacks": [
+     {
+      "layer": "agent_default",
+      "runtimeKind": "antigravity_cli",
+      "llmModelIdentifier": "gemini-3.8-flash-low",
+      "reason": "model_settings_invalid",
+      "detail": "Its model settings are invalid: This model has no adjustable settings."
+     }
+    ]
+   }
+  },
+  {
+   "address": "/dlc_squad_4b8124/incomplete",
+   "launchConfiguration": {
+    "runtimeKind": "antigravity_cli",
+    "llmModelIdentifier": "gemini-3.8-flash-low",
+    "llmConfig": null,
+    "autoExecuteTools": true,
+    "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/dlc-e2e-aMSTh2/workspace"
+   },
+   "launchSource": {
+    "origin": "inherited",
+    "fallbacks": [
+     {
+      "layer": "agent_default",
+      "runtimeKind": "antigravity_cli",
+      "llmModelIdentifier": null,
+      "reason": "incomplete",
+      "detail": "It names no model."
+     }
+    ]
+   }
+  }
+ ]
+}

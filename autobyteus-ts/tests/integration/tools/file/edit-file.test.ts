@@ -1,5 +1,6 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import fs from 'fs/promises';
+import os from 'os';
 import path from 'path';
 import { defaultToolRegistry } from '../../../../src/tools/registry/tool-registry.js';
 import { BaseTool } from '../../../../src/tools/base-tool.js';
@@ -10,6 +11,17 @@ const TOOL_NAME_EDIT_FILE = 'edit_file';
 type MockContext = { agentId: string; workspaceRootPath: string | null };
 
 describe('edit_file tool (integration)', () => {
+  const tempDirs: string[] = [];
+  const makeTempDir = async (): Promise<string> => {
+    const dir = await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(), 'tmp-edit-file-')));
+    tempDirs.push(dir);
+    return dir;
+  };
+
+  afterEach(async () => {
+    await Promise.all(tempDirs.splice(0).map((dir) => fs.rm(dir, { recursive: true, force: true })));
+  });
+
   beforeEach(() => {
     defaultToolRegistry.clear();
     registerEditFileTool();
@@ -18,7 +30,7 @@ describe('edit_file tool (integration)', () => {
   const getPatchTool = (): BaseTool => defaultToolRegistry.createTool(TOOL_NAME_EDIT_FILE) as BaseTool;
 
   it('edits file content on disk', async () => {
-    const tmpDir = await fs.mkdtemp(path.join(process.cwd(), 'tmp-edit-file-'));
+    const tmpDir = await makeTempDir();
     const filePath = path.join(tmpDir, 'sample.txt');
     await fs.writeFile(filePath, 'line1\nline2\nline3\n', 'utf-8');
     const patch = '@@\n line1\n-line2\n+line2 updated\n line3\n';
@@ -33,7 +45,7 @@ describe('edit_file tool (integration)', () => {
   });
 
   it('allows absolute paths outside the workspace root', async () => {
-    const tmpDir = await fs.mkdtemp(path.join(process.cwd(), 'tmp-edit-file-'));
+    const tmpDir = await makeTempDir();
     const workspaceDir = path.join(tmpDir, 'workspace');
     const outsidePath = path.join(tmpDir, 'sample.txt');
     await fs.mkdir(workspaceDir, { recursive: true });
@@ -50,7 +62,7 @@ describe('edit_file tool (integration)', () => {
   });
 
   it('resolves relative edit paths from an explicit absolute base directory', async () => {
-    const tmpDir = await fs.mkdtemp(path.join(process.cwd(), 'tmp-edit-file-'));
+    const tmpDir = await makeTempDir();
     const filePath = path.join(tmpDir, 'sample.txt');
     await fs.writeFile(filePath, 'line1\nline2\n', 'utf-8');
     const tool = getPatchTool();

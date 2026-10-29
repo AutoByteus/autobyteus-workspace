@@ -1,0 +1,199 @@
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.12 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/remote-runs-in-tree/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/remote-runs-in-tree/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+ [31m❯[39m tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts [2m([22m[2m37 tests[22m[2m | [22m[31m2 failed[39m[2m)[22m[33m 351359[2mms[22m[39m
+     [32m✓[39m RC-01 AC-101/AC-111: off by default; with the switch off, both inbound request kinds are refused 'turned off' and no peer can be added[32m 19[2mms[22m[39m
+     [33m[2m✓[22m[39m RC-02 AC-101: on a fresh node with the switch off, delegate_task naming a peer is refused 'turned off' and nothing is sent [33m 542[2mms[22m[39m
+     [32m✓[39m RC-03 AC-101/102/111, 245 AC-207: switched on, both nodes register each other with pinned identities; bad URLs record nothing; the gateway admits in order; there is no publish API[32m 113[2mms[22m[39m
+     [33m[2m✓[22m[39m RC-04 245 AC-202/203/204/207: beta refuses each target it can't start, with the reason, before anything starts; nothing is left on alpha [33m 2264[2mms[22m[39m
+     [33m[2m✓[22m[39m RC-05 AC-104/105: a standalone delegator delegates to Publisher on beta and the two runs message each other both ways (view open) [33m 3287[2mms[22m[39m
+     [33m[2m✓[22m[39m RC-06 AC-104/105/107: a Team coordinator delegates; messages both ways with the Team view open; a later local message appears; the other member is not permitted [33m 4212[2mms[22m[39m
+     [33m[2m✓[22m[39m RC-07 AC-104/105: an Org member delegates; messages both ways with the Org view open; a later local message appears [33m 1952[2mms[22m[39m
+     [33m[2m✓[22m[39m RC-08 AC-107: unlinked senders are refused on both nodes and the target receives nothing [33m 1968[2mms[22m[39m
+     [33m[2m✓[22m[39m RC-09 AC-108: files and saved Tasks across nodes are refused before anything is sent [33m 1911[2mms[22m[39m
+     [33m[2m✓[22m[39m RC-10 AC-109: a task agent on a Project Task delegates remotely; the remote run is a run of that Task; after DONE its messages are not delivered [33m 5020[2mms[22m[39m
+     [33m[2m✓[22m[39m RC-11 AC-109: after the delegator sets its Task DONE, its own message to the remote run is refused with the closed-Task reason and nothing is sent [33m 4296[2mms[22m[39m
+     [33m[2m✓[22m[39m RC-21 247 AC-301: a Team member on alpha delegates beta's shared Studio Team; beta starts a Team run whose members use their own or the Team's default, and only its coordinator starts [33m 649[2mms[22m[39m
+     [33m[2m✓[22m[39m RC-22 247 AC-303: the delegator and any member of the remote Team message each other; a never-started member starts; the team run ID gets the coordinator guidance; unlinked senders are refused [33m 3032[2mms[22m[39m
+     [33m[2m✓[22m[39m RC-23 247 AC-305: a saved Task to a remote Team is refused; after the delegator's Task is DONE, messages both ways are refused and the Team keeps running on beta [33m 5056[2mms[22m[39m
+     [33m[2m✓[22m[39m RC-25 247 RSK-301/DEC-304: when alpha's work packet to a just-started remote Team fails, beta keeps an unused Team run (no member starts); RC-12 shows its idle schedule stops it [33m 439[2mms[22m[39m
+[31m     [31m×[31m RC-31 278 AC-801/802/803, DEC-804: a standalone delegator's remote Agent is in its tree with node, title and status; its view is live; the owner messages it, interrupts it and stops it from alpha's window[39m[33m 27660[2mms[22m[39m
+[31m     [31m×[31m RC-32 278 DS-006 (C-2): when beta's own owner stops the remote run in beta's window, alpha's open view ends offline[39m[33m 16020[2mms[22m[39m
+     [33m[2m✓[22m[39m RC-33 278 AC-801/802/803/806: a Team delegator's tree has its remote Agent and its remote Team with members; a member's projection; the owner messages a never-messaged member [33m 345[2mms[22m[39m
+     [33m[2m✓[22m[39m RC-34 278 AC-801/803/806: an Org delegator's tree has its remote Agent with title and status; its projection; the owner messages it from the Org view [33m 323[2mms[22m[39m
+     [33m[2m✓[22m[39m RC-35 278 security: a registered peer that did not start the run is refused on all four routes; naming an agent outside the run is refused; summaries omit runs the caller did not start [33m 4026[2mms[22m[39m
+     [33m[2m✓[22m[39m RC-12 AC-106, 247 AC-304: the remote run and the remote Team on beta are shut down after the idle grace period, and a follow-up restores each with its conversation [33m 150841[2mms[22m[39m
+     [33m[2m✓[22m[39m RC-36 278 AC-805: after the idle grace a quiet remote run reads offline in alpha's view; a message from alpha's window restores it with its conversation [33m 402[2mms[22m[39m
+     [33m[2m✓[22m[39m RC-13 AC-106/REQ-108: after beta restarts, a follow-up restores the remote run; after alpha restarts, replies restore every root kind and wake the delegators [33m 10814[2mms[22m[39m
+     [33m[2m✓[22m[39m RC-24 247 REQ-307: beta's owner stops the peer-started Team during its idle grace; it shows as inactive in history; the delegator's next message restores it [33m 698[2mms[22m[39m
+     [33m[2m✓[22m[39m RC-26 261 AC-402/AC-404/AC-406/QR-402: an agent that selects the discovery tools lists exactly what beta offers, each entry only name, kind, address and description; listing writes nothing; every listed address is accepted by delegate_task; an agent without the tools does not have them [33m 4831[2mms[22m[39m
+     [33m[2m✓[22m[39m RC-27 261 AC-401/QR-401: list_available_nodes gives every registered peer in registration order with its status now — beta available; a stopped peer, a peer with the switch off and a peer that does not know alpha unavailable; list_available_agents gives each one's reason (the same as delegate_task); a peer that does not answer is unavailable within the bound [33m 44302[2mms[22m[39m
+     [33m[2m✓[22m[39m RC-28 261 AC-404/AC-407: with alpha's switch off both discovery calls are refused 'turned off' and nothing is sent; an unknown node gets the node-list hint (the same for delegate_task); a blank node gets the recovery text; without node the list is alpha's own [33m 1609[2mms[22m[39m
+     [33m[2m✓[22m[39m RC-29 261 AC-405: a Team that beta's owner adds between two listings appears in the second (nothing is cached) [33m 476[2mms[22m[39m
+     [33m[2m✓[22m[39m RC-30 269 AC-601/AC-602: a long description with line breaks titles the peer-started Agent and Team runs as one line of at most 100 characters, by the history's rule [33m 1065[2mms[22m[39m
+     [33m[2m✓[22m[39m RC-37 278 AC-804: with beta stopped, the view shows its remote runs unreachable within the bound and the rest works; after beta returns, Retry reads them again [33m 2313[2mms[22m[39m
+     [33m[2m✓[22m[39m RC-14 AC-106: a follow-up to a remote run whose history was deleted on beta is refused with 'not found' [33m 949[2mms[22m[39m
+     [33m[2m✓[22m[39m RC-15 QR-102: a partitioned or stopped peer is refused within the bound and the tool call never hangs; nothing is left on alpha [33m 42509[2mms[22m[39m
+     [33m[2m✓[22m[39m RC-16 AC-102: when beta's address reaches a different AutoByteus server, delegation and messages are refused with 'identity mismatch' [33m 441[2mms[22m[39m
+     [33m[2m✓[22m[39m RC-17 245 RU-1: after the owner changes Publisher's default to a model beta does not offer, new delegations are refused with that reason and a run already started still exchanges both ways [33m 909[2mms[22m[39m
+     [33m[2m✓[22m[39m RC-18 AC-101/SCN-107: turning the switch off on beta, then on alpha, refuses new requests with 'turned off' [33m 895[2mms[22m[39m
+     [33m[2m✓[22m[39m RC-19 AC-102: after a peer is removed, new requests in either direction are refused and run history stays [33m 690[2mms[22m[39m
+     [32m✓[39m RC-20 AC-111/REQ-113/REQ-114: every captured request between the nodes carries no credential and only the contract's fields[32m 10[2mms[22m[39m
+
+[31m⎯⎯⎯⎯⎯⎯⎯[39m[1m[41m Failed Tests 2 [49m[22m[31m⎯⎯⎯⎯⎯⎯⎯[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts[2m > [22mRemote collaboration slice 1 between two real server processes (scripted AGY runtime, capturing proxies)[2m > [22mRC-31 278 AC-801/802/803, DEC-804: a standalone delegator's remote Agent is in its tree with node, title and status; its view is live; the owner messages it, interrupts it and stops it from alpha's window
+[31m[1mAssertionError[22m: AC-802: the remote run's live output reaches alpha's view: expected false to be true // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- true[39m
+[31m+ false[39m
+
+[36m [2m❯[22m tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts:[2m1333:88[22m[39m
+    [90m1331|[39m     await until(() => liveIn(view.frames, beforeLive, "LIVE-FROM-BETA-…
+    [90m1332|[39m     const liveSeen = liveIn(view.frames, beforeLive, "LIVE-FROM-BETA-O…
+    [90m1333|[39m     expect.soft(liveSeen, "AC-802: the remote run's live output reache…
+    [90m   |[39m                                                                                        [31m^[39m
+    [90m1334|[39m
+    [90m1335|[39m     // DS-003: the stored conversation of the remote agent, read throu…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts[2m > [22mRemote collaboration slice 1 between two real server processes (scripted AGY runtime, capturing proxies)[2m > [22mRC-31 278 AC-801/802/803, DEC-804: a standalone delegator's remote Agent is in its tree with node, title and status; its view is live; the owner messages it, interrupts it and stops it from alpha's window
+[31m[1mAssertionError[22m: AC-803: the message and its answer show live in alpha's view: expected false to be true // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- true[39m
+[31m+ false[39m
+
+[36m [2m❯[22m tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts:[2m1352:135[22m[39m
+    [90m1350|[39m     expect(ownerEntry, "a user message of the run on beta").toMatchObj…
+    [90m1351|[39m     await until(() => liveIn(view.frames, beforeOwner, "OWNER-FROM-ALP…
+    [90m1352|[39m     expect.soft(liveIn(view.frames, beforeOwner, "OWNER-FROM-ALPHA"), …
+    [90m   |[39m                                                                                                                                       [31m^[39m
+    [90m1353|[39m     const reread = JSON.stringify((await alpha.gql(`query($h:String!,$…
+    [90m1354|[39m       { h: delegator.runId, a: "/publisher", r: r9 })).agentRunCollabo…
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯[22m[39m
+
+[41m[1m FAIL [22m[49m tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts[2m > [22mRemote collaboration slice 1 between two real server processes (scripted AGY runtime, capturing proxies)[2m > [22mRC-32 278 DS-006 (C-2): when beta's own owner stops the remote run in beta's window, alpha's open view ends offline
+[31m[1mAssertionError[22m: without a refresh, alpha's view ends offline when beta's owner stops the run (DS-006): expected false to be true // Object.is equality[39m
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- true[39m
+[31m+ false[39m
+
+[36m [2m❯[22m tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts:[2m1411:173[22m[39m
+    [90m1409|[39m     })();
+    [90m1410|[39m     expect(refreshed.statuses, "beta reports it offline").toEqual([]);
+    [90m1411|[39m     expect.soft(after.some((summary) => (summary.statuses as Rec[]).le…
+    [90m   |[39m                                                                                                                                                                             [31m^[39m
+    [90m1412|[39m     record("RC-32", { r10, terminated, summariesAfterOwnerStop: after,…
+    [90m1413|[39m   }, 180_000);
+
+[31m[2m⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯[22m[39m
+
+
+[2m Test Files [22m [1m[31m1 failed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[31m2 failed[39m[22m[2m | [22m[1m[32m35 passed[39m[22m[90m (37)[39m
+[2m   Start at [22m 15:55:33
+[2m   Duration [22m 352.14s[2m (transform 144ms, setup 42ms, import 201ms, tests 351.36s, environment 0ms)[22m
+
+exit=1

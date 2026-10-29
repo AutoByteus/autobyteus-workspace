@@ -1,10 +1,13 @@
 import { AgentConversationActivityInspector } from "../../agent-memory/services/agent-conversation-activity-inspector.js";
 import { AgentMemoryLocationService } from "../../agent-memory/services/agent-memory-location-service.js";
 import { AgentRunMemoryRecorder } from "../../agent-memory/services/agent-run-memory-recorder.js";
+import { WorkJournalRunUpdater } from "../../agent-work-journal/services/work-journal-run-updater.js";
+import { getWorkJournalService } from "../../agent-work-journal/services/work-journal-service.js";
 import { AgentRunActivationRegistry } from "../../agent-execution/runtime/agent-run-activation-registry.js";
 import { AgentRunIdentityAllocator } from "../../agent-execution/services/agent-run-identity-allocator.js";
 import { AgentRunManager } from "../../agent-execution/services/agent-run-manager.js";
 import { AgentRunProvisioningService } from "../../agent-execution/services/agent-run-provisioning-service.js";
+import { McpServerInstanceManager } from "autobyteus-ts/tools/mcp/server-instance-manager.js";
 import { AgentRunResourceManager } from "../../agent-execution/services/agent-run-resource-manager.js";
 import { AgentRunProviderInputNormalizer } from "../../agent-execution/input/agent-run-provider-input-normalizer.js";
 import { AgentRunService } from "../../agent-execution/services/agent-run-service.js";
@@ -30,7 +33,7 @@ import { PublishedArtifactPublicationService } from "../../services/published-ar
 import { PublishedArtifactSnapshotStore } from "../../services/published-artifacts/published-artifact-snapshot-store.js";
 import { RunFileChangeService } from "../../services/run-file-changes/run-file-change-service.js";
 import { TeamCommunicationStore } from "../../services/team-communication/team-communication-store.js";
-import { TokenUsageMigrationReadiness } from "../../token-usage/providers/token-usage-migration-readiness.js";
+import { TokenUsageCapability } from "../../token-usage/providers/token-usage-capability.js";
 import { ApplicationExecutionShutdownCoordinator } from "./application-execution-shutdown-coordinator.js";
 import type { ApplicationExecutionScopeBuildInput } from "./application-execution-scope-contracts.js";
 import { ContextFileLayout } from "../../context-files/store/context-file-layout.js";
@@ -46,6 +49,8 @@ export type ApplicationExecutionScopeKernel = Readonly<{
   publicationService: PublishedArtifactPublicationService;
   projectionService: PublishedArtifactProjectionService;
   memoryLocationService: AgentMemoryLocationService;
+  /** This scope's live agent runs (standalone and Team members), for counting them by runtime. */
+  activeAgentRuns: Pick<AgentRunManager, "listActiveRuns" | "getActiveRun">;
   abortConstruction(): void;
 }>;
 
@@ -99,6 +104,8 @@ export const buildApplicationExecutionScopeKernel = (
       runFileChangeService,
       publishedArtifactRelayService: relay,
       memoryRecorder,
+      workJournalUpdater: new WorkJournalRunUpdater({ memoryRecorder, journalService: getWorkJournalService() }),
+      mcpServerInstances: McpServerInstanceManager.getInstance(),
     });
     const activationRegistry = new AgentRunActivationRegistry(resourceManager);
     const projectionStore = new PublishedArtifactProjectionStore();
@@ -199,6 +206,7 @@ export const buildApplicationExecutionScopeKernel = (
         snapshotStore,
       }),
       memoryLocationService,
+      activeAgentRuns: agentRunManager,
       abortConstruction,
     });
     return kernel;
@@ -231,7 +239,7 @@ const buildRunServices = (
   },
 ) => {
   const { metadataService, historyCatalogService, agentRunIdentityAllocator } = kernel;
-  const tokenUsageReadiness = new TokenUsageMigrationReadiness();
+  const tokenUsageReadiness = new TokenUsageCapability();
   const provisioningService = new AgentRunProvisioningService(
     input.memoryDir,
     {

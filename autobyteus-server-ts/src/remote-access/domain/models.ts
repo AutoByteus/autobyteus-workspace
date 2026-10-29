@@ -9,6 +9,8 @@ export type RemoteAccessRouteClassification =
   | "TRUSTED_NETWORK_OWNER"
   | "TRUSTED_NETWORK_PROTECTED"
   | "TRUSTED_NETWORK_WEBSOCKET"
+  /** `/rest/remote/*`: requests from peer nodes (remote collaboration); admitted by its peer gateway. */
+  | "REMOTE_PEER"
   | "LOCAL_DEV_ONLY";
 
 export type RemoteAccessAuthMode = "trusted_network" | "loopback" | "mobile";

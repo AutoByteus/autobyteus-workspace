@@ -1,0 +1,10 @@
+ .../package.json                                   |   21 +-
+ autobyteus-application-backend-sdk/package.json    |    2 +-
+ autobyteus-application-frontend-sdk/package.json   |    1 -
+ .../package.json                                   |   17 +-
+ autobyteus-server-ts/package.json                  |    8 +-
+ autobyteus-team-stream-contracts/package.json      |    7 +-
+ autobyteus-ts/package.json                         |    8 +-
+ autobyteus-web/package.json                        |   32 +-
+ pnpm-lock.yaml                                     | 6834 ++++++++++----------
+ 9 files changed, 3421 insertions(+), 3509 deletions(-)

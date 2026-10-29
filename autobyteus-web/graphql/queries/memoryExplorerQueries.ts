@@ -6,7 +6,7 @@ export const LIST_MEMORY_EXPLORER_SOURCES = gql`
       key
       type
       label
-      sourceNodeId
+      memorySyncSourceId
       displayName
       readOnly
       lastImportedAt
@@ -31,9 +31,7 @@ export const LIST_AGENTS_WITH_MEMORY = gql`
         latestMemoryAt
         memory {
           latestMemoryAt
-          hasWorkingContext
-          hasEpisodic
-          hasSemantic
+          hasWorkJournal
           hasRawTraces
           hasRawArchive
         }
@@ -59,9 +57,7 @@ export const LIST_AGENT_RUNS_WITH_MEMORY = gql`
         lastUpdatedAt
         memory {
           latestMemoryAt
-          hasWorkingContext
-          hasEpisodic
-          hasSemantic
+          hasWorkJournal
           hasRawTraces
           hasRawArchive
         }
@@ -83,11 +79,11 @@ export const LIST_AGENT_TEAMS_WITH_MEMORY = gql`
         teamRunCount
         memberMemoryCount
         latestMemoryAt
+        isTaskTeam
+        startedByAgentName
         memory {
           latestMemoryAt
-          hasWorkingContext
-          hasEpisodic
-          hasSemantic
+          hasWorkJournal
           hasRawTraces
           hasRawArchive
         }
@@ -113,9 +109,7 @@ export const LIST_AGENT_TEAM_RUNS_WITH_MEMORY = gql`
         lastUpdatedAt
         memory {
           latestMemoryAt
-          hasWorkingContext
-          hasEpisodic
-          hasSemantic
+          hasWorkJournal
           hasRawTraces
           hasRawArchive
         }
@@ -136,9 +130,7 @@ export const LIST_AGENT_TEAM_RUNS_WITH_MEMORY = gql`
           lastUpdatedAt
           memory {
             latestMemoryAt
-            hasWorkingContext
-            hasEpisodic
-            hasSemantic
+            hasWorkJournal
             hasRawTraces
             hasRawArchive
           }
@@ -163,9 +155,7 @@ export const LIST_AGENT_ORGS_WITH_MEMORY = gql`
         latestMemoryAt
         memory {
           latestMemoryAt
-          hasWorkingContext
-          hasEpisodic
-          hasSemantic
+          hasWorkJournal
           hasRawTraces
           hasRawArchive
         }
@@ -191,9 +181,7 @@ export const LIST_AGENT_ORG_RUNS_WITH_MEMORY = gql`
         lastUpdatedAt
         memory {
           latestMemoryAt
-          hasWorkingContext
-          hasEpisodic
-          hasSemantic
+          hasWorkJournal
           hasRawTraces
           hasRawArchive
         }
@@ -214,9 +202,7 @@ export const LIST_AGENT_ORG_RUNS_WITH_MEMORY = gql`
           lastUpdatedAt
           memory {
             latestMemoryAt
-            hasWorkingContext
-            hasEpisodic
-            hasSemantic
+            hasWorkJournal
             hasRawTraces
             hasRawArchive
           }

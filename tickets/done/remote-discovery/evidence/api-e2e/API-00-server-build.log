@@ -1,0 +1,15 @@
+# API-00 server build | cmd: pnpm -C autobyteus-server-ts build | commit: d7bcd1b768 | 2026-10-21T10:08:19Z | 26.5.2, node v22.23.1
+> autobyteus-server-ts@0.1.1 build /Users/normy/autobyteus_org/autobyteus-worktrees/remote-discovery/autobyteus-server-ts
+> pnpm run build:full
+
+
+> autobyteus-server-ts@0.1.1 build:full /Users/normy/autobyteus_org/autobyteus-worktrees/remote-discovery/autobyteus-server-ts
+> node ./scripts/clean-build-output.mjs && tsc -p tsconfig.build.json && node ./scripts/copy-build-assets.mjs && node ./scripts/run-sanitized-built-in-agents-bootstrap-smoke.mjs
+
+AgentFactory (Singleton) initialized.
+(node:27827) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+exit=0
+# Brief Studio package (test:integration:prepare): applications/brief-studio/dist/importable-package/applications/brief-studio/application.json

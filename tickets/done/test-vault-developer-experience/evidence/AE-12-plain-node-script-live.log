@@ -1,0 +1,15 @@
+# AE-12 | AC-013 live | cd /private/tmp/tv-r3/plain && env <all *_API_KEY removed> AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault node probe.mjs live (source AE-15-probe-source.mjs.txt; imports only autobyteus-ts; no resolver, no setup, no test-support) | commit 3ae0b40f91 | 2026-10-20T04:51:56Z
+[AE-15] mode: live
+[AE-15] AUTOBYTEUS_TEST_VAULT set: true
+[AE-15] credential env names visible to script: []
+[AE-15] sqlite modules loaded before any key lookup: []
+[AE-15] deepseek completion length: 2
+[AE-15] deepseek completion non-empty: OK
+[AE-15] sqlite modules loaded after lookup: ["Internal Binding sqlite","NativeModule sqlite"]
+[AE-15] result: PASS
+exit=0
+## vault sha256 after
+b9a638234e8a5c949679aefb508d2a9260febb1c490bc3642588535628ea9929  ~/.autobyteus-test/vault/test-vault.db
+7ebe87b21eb5f3c5aa2ad24b80044fddd52236d070e85516a746738149b1baae  ~/.autobyteus-test/vault/test-vault.db.secret.key
+test-vault.db
+test-vault.db.secret.key

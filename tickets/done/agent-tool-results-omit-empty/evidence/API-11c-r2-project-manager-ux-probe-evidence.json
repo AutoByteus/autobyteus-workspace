@@ -1,0 +1,2371 @@
+{
+  "startedAt": "2026-10-25T10:08:28.967Z",
+  "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "cases": {
+    "PMU-001": {
+      "result": "Pass",
+      "description": "Projects list and board follow writes live (arrival highlight, counts)",
+      "durationMs": 5125,
+      "details": {
+        "projectArrivalMs": 19,
+        "arrivedRows": [
+          "project-task-row-project_task_af650546-58c1-4359-b2e8-e300eb7baf66"
+        ],
+        "feed": {
+          "total": 10,
+          "byType": {
+            "project_upserted": 6,
+            "task_upserted": 4
+          }
+        },
+        "errors": []
+      }
+    },
+    "PMU-002": {
+      "result": "Pass",
+      "description": "Agent root: live status, live move highlight, opening the worker, DONE → Offline muted",
+      "durationMs": 3135,
+      "details": {
+        "live": {
+          "state": "idle",
+          "openable": "true",
+          "tag": "BUTTON",
+          "name": "release notes writer pmuagent f7a8"
+        },
+        "done": {
+          "state": "offline",
+          "openable": "false",
+          "tag": "DIV",
+          "name": "release notes writer pmuagent f7a8"
+        },
+        "feed": {
+          "total": 13,
+          "byType": {
+            "task_upserted": 5,
+            "project_upserted": 5,
+            "task_worker_status": 3
+          }
+        },
+        "errors": []
+      }
+    },
+    "PMU-003": {
+      "result": "Pass",
+      "description": "Task Team root opens the coordinator expanded; Team- and Org-hosted roots open in their views",
+      "durationMs": 7859,
+      "details": {
+        "teamRoot": {
+          "state": "idle",
+          "openable": "true",
+          "tag": "BUTTON",
+          "name": "docs review team pmuagent f7a8"
+        },
+        "teamHosted": {
+          "line": {
+            "state": "idle",
+            "openable": "true",
+            "tag": "BUTTON",
+            "name": "release notes writer pmuagent f7a8"
+          },
+          "hostRoot": {
+            "kind": "agent_team",
+            "runId": "delivery_team_pmuagent_f7a8_d05b557b02a944fdb5dc0d138f940789"
+          },
+          "url": "http://127.0.0.1:49980/workspace"
+        },
+        "orgHosted": {
+          "line": {
+            "state": "idle",
+            "openable": "true",
+            "tag": "BUTTON",
+            "name": "worker"
+          },
+          "hostRoot": {
+            "kind": "agent_org",
+            "runId": "delivery_org_pmuagent_f7a8_1380703870cc41f28440b0ec4739cd7a"
+          },
+          "url": "http://127.0.0.1:49980/workspace?rootSubjectKind=agent_org&definitionId=delivery-org-pmuagent-f7a8&orgRunId=delivery_org_pmuagent_f7a8_1380703870cc41f28440b0ec4739cd7a&mode=active&agentRunId=release_notes_writer_pmuagent_f7a8_1e0020721f7b43e9831edfb14a51d201"
+        },
+        "feed": {
+          "total": 23,
+          "byType": {
+            "task_upserted": 8,
+            "project_upserted": 8,
+            "task_worker_status": 7
+          }
+        },
+        "errors": []
+      }
+    },
+    "PMU-004": {
+      "result": "Pass",
+      "description": "AR-002: a deleted hosting run makes the root not openable (terminated but listed stays openable)",
+      "durationMs": 3785,
+      "details": {
+        "listed": {
+          "state": "offline",
+          "openable": "true",
+          "tag": "BUTTON",
+          "name": "docs review team pmuagent f7a8"
+        },
+        "gone": {
+          "state": "offline",
+          "openable": "false",
+          "tag": "DIV",
+          "name": "docs review team pmuagent f7a8"
+        },
+        "errors": []
+      }
+    },
+    "PMU-005": {
+      "result": "Pass",
+      "description": "Temp tasks: header count, Open/Done board, read-only page, live move to Done",
+      "durationMs": 3183,
+      "details": {
+        "line": {
+          "state": "idle",
+          "openable": "true",
+          "tag": "BUTTON",
+          "name": "release notes writer pmutemp 2081"
+        },
+        "moved": "moved",
+        "feed": {
+          "total": 8,
+          "byType": {
+            "task_upserted": 5,
+            "task_worker_status": 3
+          }
+        },
+        "errors": []
+      }
+    },
+    "PMU-006": {
+      "result": "Pass",
+      "description": "F-006: a left-panel task row opens its conversation from another page",
+      "durationMs": 3306,
+      "details": {
+        "taskId": "ad_hoc_task_8f22361f-dd13-491e-886b-9d9ca5231d19",
+        "url": "http://127.0.0.1:49980/chat?id=manager_pmuf006_ee31_1943e58006dd42ca91e1f071a8f7a911",
+        "errors": []
+      }
+    },
+    "PMU-007": {
+      "result": "Pass",
+      "description": "Backend restart: reconnect + re-read (Offline), new writes; narrow layout",
+      "durationMs": 7481,
+      "details": {
+        "before": {
+          "state": "idle",
+          "openable": "true",
+          "tag": "BUTTON",
+          "name": "release notes writer pmuagent f7a8"
+        },
+        "restart": {
+          "before": 83245,
+          "after": 83914,
+          "starts": 2
+        },
+        "narrow": {
+          "board": {
+            "scrollWidth": 340,
+            "clientWidth": 340,
+            "ok": true
+          },
+          "taskPage": {
+            "scrollWidth": 340,
+            "clientWidth": 340,
+            "ok": true
+          },
+          "tempBoard": {
+            "scrollWidth": 340,
+            "clientWidth": 340,
+            "ok": true
+          }
+        },
+        "restartWindowErrors": 10
+      }
+    },
+    "PMU-008": {
+      "result": "Pass",
+      "description": "AC-012/013: left panel kept across Chat, Projects, board and Task page; run, Team member and Org rows open from Projects",
+      "durationMs": 4860,
+      "details": {
+        "steps": [
+          {
+            "label": "chat",
+            "path": "/chat",
+            "runRows": 1,
+            "runSelected": true,
+            "workerRowVisible": true,
+            "agentRowVisible": true
+          },
+          {
+            "label": "projects list",
+            "path": "/projects",
+            "runRows": 1,
+            "runSelected": true,
+            "workerRowVisible": true,
+            "agentRowVisible": true
+          },
+          {
+            "label": "board",
+            "path": "/projects/project_9b94be47-5038-44ac-b3cc-1edab106bd4b",
+            "runRows": 1,
+            "runSelected": true,
+            "workerRowVisible": true,
+            "agentRowVisible": true
+          },
+          {
+            "label": "task page",
+            "path": "/projects/project_9b94be47-5038-44ac-b3cc-1edab106bd4b/tasks/left-panel-726830-1",
+            "runRows": 1,
+            "runSelected": true,
+            "workerRowVisible": true,
+            "agentRowVisible": true
+          },
+          {
+            "label": "back in chat via the run row",
+            "path": "/chat",
+            "runRows": 1,
+            "runSelected": true,
+            "workerRowVisible": true,
+            "agentRowVisible": true
+          }
+        ],
+        "opened": {
+          "run": "http://127.0.0.1:49980/chat?id=manager_pmuleft_a818_c2d8d0f26bd04227aa4ce209eab25f1c",
+          "team": "http://127.0.0.1:49980/workspace",
+          "org": "http://127.0.0.1:49980/workspace?rootSubjectKind=agent_org&definitionId=delivery-org-pmuleft-a818&orgRunId=delivery_org_pmuleft_a818_e58832c5fd6c4950b08c199c546abd7c&mode=active&memberAddress=/manager"
+        }
+      }
+    },
+    "PMU-009": {
+      "result": "Pass",
+      "description": "AC-020/021/023: Temp task DONE, reopen (Offline), reactivation (openable), then the chat deleted from the left panel",
+      "durationMs": 11107,
+      "details": {
+        "done": {
+          "state": "offline",
+          "openable": "false",
+          "tag": "DIV",
+          "name": "release notes writer pmutempre 931c"
+        },
+        "reopened": {
+          "state": "offline",
+          "openable": "false",
+          "tag": "DIV",
+          "name": "release notes writer pmutempre 931c"
+        },
+        "reactivated": {
+          "state": "idle",
+          "openable": "true",
+          "tag": "BUTTON",
+          "name": "release notes writer pmutempre 931c"
+        },
+        "counts": {
+          "countBefore": "4 open",
+          "countAfter": "2 open"
+        }
+      }
+    },
+    "PMU-010": {
+      "result": "Pass",
+      "description": "AC-007: Couldn't start from a real start failure (board tooltip, Task page reason), then re-delegation",
+      "durationMs": 0,
+      "details": {
+        "skipped": "No deterministic real start failure remains for a delegated copy (collaboration-model-contract); rendering is unit-covered"
+      }
+    },
+    "PMU-011": {
+      "result": "Pass",
+      "description": "Two windows on the same node follow a write live",
+      "durationMs": 4932,
+      "details": {
+        "arrivalMs": {
+          "first": 43,
+          "second": 63
+        }
+      }
+    },
+    "PMU-012": {
+      "result": "Pass",
+      "description": "An Org-hosted root opened from a fresh Task page before the Org run is hydrated",
+      "durationMs": 2979,
+      "details": {
+        "url": "http://127.0.0.1:49980/workspace?rootSubjectKind=agent_org&definitionId=delivery-org-pmuorgcold-6e90&orgRunId=delivery_org_pmuorgcold_6e90_d08ef22df76149fabd9cb51afd879b2c&mode=active&agentRunId=release_notes_writer_pmuorgcold_6e90_cee0cd04cdb74447a535537f7448979f",
+        "workerRowSelected": true,
+        "hostRoot": {
+          "kind": "agent_org",
+          "runId": "delivery_org_pmuorgcold_6e90_d08ef22df76149fabd9cb51afd879b2c"
+        }
+      }
+    },
+    "PMU-013": {
+      "result": "Pass",
+      "description": "Compact cards: ~10,000-word and multi-line descriptions render ≤2+2 lines on the Project board and Temp tasks at 1440 and 1024; short labels; full text on the Task pages; search beyond the visible lines",
+      "durationMs": 11596,
+      "details": {
+        "descriptionChars": {
+          "huge": 98889,
+          "multi": 35939
+        },
+        "measured": {
+          "1024": {
+            "board": {
+              "huge": {
+                "summary": {
+                  "height": 48,
+                  "lineHeight": 24,
+                  "withinTwoLines": true,
+                  "display": "flow-root",
+                  "clamp": "2",
+                  "chars": 294,
+                  "text": "brief0 brief1 brief2 brief3 brief4 brief5 brief6 brief7 brief8 brief9 brief10 brief11 brief12 brief13 brief14 brief15 brief16 brief17 brief18 brief19 brief20 brief21 brief22 brief23 brief24 brief25 brief26 brief27 brief28 brief29 brief30 brief31 brief32 brief33 brief34 brief35 brief36 brief37…"
+                },
+                "preview": null,
+                "rowHeight": 76,
+                "label": "brief0 brief1 brief2 brief3 brief4 brief5 brief6 brief7 brief8 brief9 brief10 brief11 brief12 brief13 brief14 brief15…"
+              },
+              "multi": {
+                "summary": {
+                  "height": 48,
+                  "lineHeight": 24,
+                  "withinTwoLines": true,
+                  "display": "flow-root",
+                  "clamp": "2",
+                  "chars": 298,
+                  "text": "lead0 lead1 lead2 lead3 lead4 lead5 lead6 lead7 lead8 lead9 lead10 lead11 lead12 lead13 lead14 lead15 lead16 lead17 lead18 lead19 lead20 lead21 lead22 lead23 lead24 lead25 lead26 lead27 lead28 lead29 lead30 lead31 lead32 lead33 lead34 lead35 lead36 lead37 lead38 lead39 lead40 lead41 lead42 lead43…"
+                },
+                "preview": {
+                  "height": 40,
+                  "lineHeight": 20,
+                  "withinTwoLines": true,
+                  "display": "flow-root",
+                  "clamp": "2",
+                  "chars": 298,
+                  "text": "detail0x0 detail0x1 detail0x2 detail0x3 detail0x4 detail0x5 detail0x6 detail0x7 detail0x8 detail0x9 detail0x10 detail0x11 detail0x12 detail0x13 detail0x14 detail0x15 detail0x16 detail0x17 detail0x18 detail0x19 detail0x20 detail0x21 detail0x22 detail0x23 detail0x24 detail0x25 detail0x26 detail0x27…"
+                },
+                "rowHeight": 120,
+                "label": "lead0 lead1 lead2 lead3 lead4 lead5 lead6 lead7 lead8 lead9 lead10 lead11 lead12 lead13 lead14 lead15 lead16 lead17…"
+              },
+              "short": {
+                "summary": {
+                  "height": 24,
+                  "lineHeight": 24,
+                  "withinTwoLines": true,
+                  "display": "flow-root",
+                  "clamp": "2",
+                  "chars": 24,
+                  "text": "Write the release notes."
+                },
+                "preview": {
+                  "height": 20,
+                  "lineHeight": 20,
+                  "withinTwoLines": true,
+                  "display": "flow-root",
+                  "clamp": "2",
+                  "chars": 14,
+                  "text": "Keep it short."
+                },
+                "rowHeight": 76,
+                "label": "Write the release notes."
+              }
+            },
+            "temp": {
+              "huge": {
+                "summary": {
+                  "height": 48,
+                  "lineHeight": 24,
+                  "withinTwoLines": true,
+                  "display": "flow-root",
+                  "clamp": "2",
+                  "chars": 294,
+                  "text": "brief0 brief1 brief2 brief3 brief4 brief5 brief6 brief7 brief8 brief9 brief10 brief11 brief12 brief13 brief14 brief15 brief16 brief17 brief18 brief19 brief20 brief21 brief22 brief23 brief24 brief25 brief26 brief27 brief28 brief29 brief30 brief31 brief32 brief33 brief34 brief35 brief36 brief37…"
+                },
+                "preview": null,
+                "rowHeight": 112,
+                "label": "brief0 brief1 brief2 brief3 brief4 brief5 brief6 brief7 brief8 brief9 brief10 brief11 brief12 brief13 brief14 brief15…"
+              },
+              "multi": {
+                "summary": {
+                  "height": 48,
+                  "lineHeight": 24,
+                  "withinTwoLines": true,
+                  "display": "flow-root",
+                  "clamp": "2",
+                  "chars": 298,
+                  "text": "lead0 lead1 lead2 lead3 lead4 lead5 lead6 lead7 lead8 lead9 lead10 lead11 lead12 lead13 lead14 lead15 lead16 lead17 lead18 lead19 lead20 lead21 lead22 lead23 lead24 lead25 lead26 lead27 lead28 lead29 lead30 lead31 lead32 lead33 lead34 lead35 lead36 lead37 lead38 lead39 lead40 lead41 lead42 lead43…"
+                },
+                "preview": {
+                  "height": 40,
+                  "lineHeight": 20,
+                  "withinTwoLines": true,
+                  "display": "flow-root",
+                  "clamp": "2",
+                  "chars": 298,
+                  "text": "detail0x0 detail0x1 detail0x2 detail0x3 detail0x4 detail0x5 detail0x6 detail0x7 detail0x8 detail0x9 detail0x10 detail0x11 detail0x12 detail0x13 detail0x14 detail0x15 detail0x16 detail0x17 detail0x18 detail0x19 detail0x20 detail0x21 detail0x22 detail0x23 detail0x24 detail0x25 detail0x26 detail0x27…"
+                },
+                "rowHeight": 156,
+                "label": "lead0 lead1 lead2 lead3 lead4 lead5 lead6 lead7 lead8 lead9 lead10 lead11 lead12 lead13 lead14 lead15 lead16 lead17…"
+              }
+            }
+          },
+          "1440": {
+            "board": {
+              "huge": {
+                "summary": {
+                  "height": 48,
+                  "lineHeight": 24,
+                  "withinTwoLines": true,
+                  "display": "flow-root",
+                  "clamp": "2",
+                  "chars": 294,
+                  "text": "brief0 brief1 brief2 brief3 brief4 brief5 brief6 brief7 brief8 brief9 brief10 brief11 brief12 brief13 brief14 brief15 brief16 brief17 brief18 brief19 brief20 brief21 brief22 brief23 brief24 brief25 brief26 brief27 brief28 brief29 brief30 brief31 brief32 brief33 brief34 brief35 brief36 brief37…"
+                },
+                "preview": null,
+                "rowHeight": 76,
+                "label": "brief0 brief1 brief2 brief3 brief4 brief5 brief6 brief7 brief8 brief9 brief10 brief11 brief12 brief13 brief14 brief15…"
+              },
+              "multi": {
+                "summary": {
+                  "height": 48,
+                  "lineHeight": 24,
+                  "withinTwoLines": true,
+                  "display": "flow-root",
+                  "clamp": "2",
+                  "chars": 298,
+                  "text": "lead0 lead1 lead2 lead3 lead4 lead5 lead6 lead7 lead8 lead9 lead10 lead11 lead12 lead13 lead14 lead15 lead16 lead17 lead18 lead19 lead20 lead21 lead22 lead23 lead24 lead25 lead26 lead27 lead28 lead29 lead30 lead31 lead32 lead33 lead34 lead35 lead36 lead37 lead38 lead39 lead40 lead41 lead42 lead43…"
+                },
+                "preview": {
+                  "height": 40,
+                  "lineHeight": 20,
+                  "withinTwoLines": true,
+                  "display": "flow-root",
+                  "clamp": "2",
+                  "chars": 298,
+                  "text": "detail0x0 detail0x1 detail0x2 detail0x3 detail0x4 detail0x5 detail0x6 detail0x7 detail0x8 detail0x9 detail0x10 detail0x11 detail0x12 detail0x13 detail0x14 detail0x15 detail0x16 detail0x17 detail0x18 detail0x19 detail0x20 detail0x21 detail0x22 detail0x23 detail0x24 detail0x25 detail0x26 detail0x27…"
+                },
+                "rowHeight": 120,
+                "label": "lead0 lead1 lead2 lead3 lead4 lead5 lead6 lead7 lead8 lead9 lead10 lead11 lead12 lead13 lead14 lead15 lead16 lead17…"
+              },
+              "short": {
+                "summary": {
+                  "height": 24,
+                  "lineHeight": 24,
+                  "withinTwoLines": true,
+                  "display": "flow-root",
+                  "clamp": "2",
+                  "chars": 24,
+                  "text": "Write the release notes."
+                },
+                "preview": {
+                  "height": 20,
+                  "lineHeight": 20,
+                  "withinTwoLines": true,
+                  "display": "flow-root",
+                  "clamp": "2",
+                  "chars": 14,
+                  "text": "Keep it short."
+                },
+                "rowHeight": 76,
+                "label": "Write the release notes."
+              }
+            },
+            "temp": {
+              "huge": {
+                "summary": {
+                  "height": 48,
+                  "lineHeight": 24,
+                  "withinTwoLines": true,
+                  "display": "flow-root",
+                  "clamp": "2",
+                  "chars": 294,
+                  "text": "brief0 brief1 brief2 brief3 brief4 brief5 brief6 brief7 brief8 brief9 brief10 brief11 brief12 brief13 brief14 brief15 brief16 brief17 brief18 brief19 brief20 brief21 brief22 brief23 brief24 brief25 brief26 brief27 brief28 brief29 brief30 brief31 brief32 brief33 brief34 brief35 brief36 brief37…"
+                },
+                "preview": null,
+                "rowHeight": 112,
+                "label": "brief0 brief1 brief2 brief3 brief4 brief5 brief6 brief7 brief8 brief9 brief10 brief11 brief12 brief13 brief14 brief15…"
+              },
+              "multi": {
+                "summary": {
+                  "height": 48,
+                  "lineHeight": 24,
+                  "withinTwoLines": true,
+                  "display": "flow-root",
+                  "clamp": "2",
+                  "chars": 298,
+                  "text": "lead0 lead1 lead2 lead3 lead4 lead5 lead6 lead7 lead8 lead9 lead10 lead11 lead12 lead13 lead14 lead15 lead16 lead17 lead18 lead19 lead20 lead21 lead22 lead23 lead24 lead25 lead26 lead27 lead28 lead29 lead30 lead31 lead32 lead33 lead34 lead35 lead36 lead37 lead38 lead39 lead40 lead41 lead42 lead43…"
+                },
+                "preview": {
+                  "height": 40,
+                  "lineHeight": 20,
+                  "withinTwoLines": true,
+                  "display": "flow-root",
+                  "clamp": "2",
+                  "chars": 298,
+                  "text": "detail0x0 detail0x1 detail0x2 detail0x3 detail0x4 detail0x5 detail0x6 detail0x7 detail0x8 detail0x9 detail0x10 detail0x11 detail0x12 detail0x13 detail0x14 detail0x15 detail0x16 detail0x17 detail0x18 detail0x19 detail0x20 detail0x21 detail0x22 detail0x23 detail0x24 detail0x25 detail0x26 detail0x27…"
+                },
+                "rowHeight": 156,
+                "label": "lead0 lead1 lead2 lead3 lead4 lead5 lead6 lead7 lead8 lead9 lead10 lead11 lead12 lead13 lead14 lead15 lead16 lead17…"
+              }
+            }
+          }
+        },
+        "confirmationChars": 194,
+        "fullProject": true,
+        "fullTemp": true,
+        "errors": []
+      }
+    },
+    "PMU-014": {
+      "result": "Pass",
+      "description": "Compact-card edges: long Task with a context file and worker line, CJK hard cut, one unbroken 5,000-character token, 390 px; exactly 2 lines; short delete confirmation",
+      "durationMs": 13228,
+      "details": {
+        "measured": {
+          "390": {
+            "cards": {
+              "withFile": {
+                "text": {
+                  "summary": {
+                    "height": 48,
+                    "lineHeight": 24,
+                    "withinTwoLines": true,
+                    "display": "flow-root",
+                    "clamp": "2",
+                    "chars": 294,
+                    "text": "filed0 filed1 filed2 filed3 filed4 filed5 filed6 filed7 filed8 filed9 filed10 filed11 filed12 filed13 filed14 filed15 filed16 filed17 filed18 filed19 filed20 filed21 filed22 filed23 filed24 filed25 filed26 filed27 filed28 filed29 filed30 filed31 filed32 filed33 filed34 filed35 filed36 filed37…"
+                  },
+                  "preview": {
+                    "height": 40,
+                    "lineHeight": 20,
+                    "withinTwoLines": true,
+                    "display": "flow-root",
+                    "clamp": "2",
+                    "chars": 298,
+                    "text": "more0 more1 more2 more3 more4 more5 more6 more7 more8 more9 more10 more11 more12 more13 more14 more15 more16 more17 more18 more19 more20 more21 more22 more23 more24 more25 more26 more27 more28 more29 more30 more31 more32 more33 more34 more35 more36 more37 more38 more39 more40 more41 more42 more43…"
+                  },
+                  "rowHeight": 185,
+                  "label": "filed0 filed1 filed2 filed3 filed4 filed5 filed6 filed7 filed8 filed9 filed10 filed11 filed12 filed13 filed14 filed15…"
+                },
+                "layout": {
+                  "rowHeight": 185,
+                  "rowWidth": 306,
+                  "overflowX": false,
+                  "fileCount": {
+                    "visible": true,
+                    "inside": true
+                  },
+                  "root": {
+                    "visible": true,
+                    "inside": true
+                  }
+                }
+              },
+              "cjk": {
+                "text": {
+                  "summary": {
+                    "height": 48,
+                    "lineHeight": 24,
+                    "withinTwoLines": true,
+                    "display": "flow-root",
+                    "clamp": "2",
+                    "chars": 300,
+                    "text": "离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复…"
+                  },
+                  "preview": null,
+                  "rowHeight": 76,
+                  "label": "离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同…"
+                },
+                "layout": {
+                  "rowHeight": 76,
+                  "rowWidth": 306,
+                  "overflowX": false,
+                  "fileCount": null,
+                  "root": null
+                }
+              },
+              "token": {
+                "text": {
+                  "summary": {
+                    "height": 48,
+                    "lineHeight": 24,
+                    "withinTwoLines": true,
+                    "display": "flow-root",
+                    "clamp": "2",
+                    "chars": 300,
+                    "text": "https://example.com/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa…"
+                  },
+                  "preview": null,
+                  "rowHeight": 76,
+                  "label": "https://example.com/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa…"
+                },
+                "layout": {
+                  "rowHeight": 76,
+                  "rowWidth": 306,
+                  "overflowX": false,
+                  "fileCount": null,
+                  "root": null
+                }
+              },
+              "shortOne": {
+                "text": {
+                  "summary": {
+                    "height": 24,
+                    "lineHeight": 24,
+                    "withinTwoLines": true,
+                    "display": "flow-root",
+                    "clamp": "2",
+                    "chars": 13,
+                    "text": "Ship the FAQ."
+                  },
+                  "preview": null,
+                  "rowHeight": 52,
+                  "label": "Ship the FAQ."
+                },
+                "layout": {
+                  "rowHeight": 52,
+                  "rowWidth": 306,
+                  "overflowX": false,
+                  "fileCount": null,
+                  "root": null
+                }
+              }
+            },
+            "temp": {
+              "text": {
+                "summary": {
+                  "height": 48,
+                  "lineHeight": 24,
+                  "withinTwoLines": true,
+                  "display": "flow-root",
+                  "clamp": "2",
+                  "chars": 300,
+                  "text": "离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复…"
+                },
+                "preview": null,
+                "rowHeight": 112,
+                "label": "离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同…"
+              },
+              "layout": {
+                "rowHeight": 112,
+                "rowWidth": 306,
+                "overflowX": false,
+                "fileCount": null,
+                "root": {
+                  "visible": true,
+                  "inside": true
+                }
+              }
+            }
+          },
+          "1024": {
+            "cards": {
+              "withFile": {
+                "text": {
+                  "summary": {
+                    "height": 48,
+                    "lineHeight": 24,
+                    "withinTwoLines": true,
+                    "display": "flow-root",
+                    "clamp": "2",
+                    "chars": 294,
+                    "text": "filed0 filed1 filed2 filed3 filed4 filed5 filed6 filed7 filed8 filed9 filed10 filed11 filed12 filed13 filed14 filed15 filed16 filed17 filed18 filed19 filed20 filed21 filed22 filed23 filed24 filed25 filed26 filed27 filed28 filed29 filed30 filed31 filed32 filed33 filed34 filed35 filed36 filed37…"
+                  },
+                  "preview": {
+                    "height": 40,
+                    "lineHeight": 20,
+                    "withinTwoLines": true,
+                    "display": "flow-root",
+                    "clamp": "2",
+                    "chars": 298,
+                    "text": "more0 more1 more2 more3 more4 more5 more6 more7 more8 more9 more10 more11 more12 more13 more14 more15 more16 more17 more18 more19 more20 more21 more22 more23 more24 more25 more26 more27 more28 more29 more30 more31 more32 more33 more34 more35 more36 more37 more38 more39 more40 more41 more42 more43…"
+                  },
+                  "rowHeight": 185,
+                  "label": "filed0 filed1 filed2 filed3 filed4 filed5 filed6 filed7 filed8 filed9 filed10 filed11 filed12 filed13 filed14 filed15…"
+                },
+                "layout": {
+                  "rowHeight": 185,
+                  "rowWidth": 635,
+                  "overflowX": false,
+                  "fileCount": {
+                    "visible": true,
+                    "inside": true
+                  },
+                  "root": {
+                    "visible": true,
+                    "inside": true
+                  }
+                }
+              },
+              "cjk": {
+                "text": {
+                  "summary": {
+                    "height": 48,
+                    "lineHeight": 24,
+                    "withinTwoLines": true,
+                    "display": "flow-root",
+                    "clamp": "2",
+                    "chars": 300,
+                    "text": "离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复…"
+                  },
+                  "preview": null,
+                  "rowHeight": 76,
+                  "label": "离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同…"
+                },
+                "layout": {
+                  "rowHeight": 76,
+                  "rowWidth": 635,
+                  "overflowX": false,
+                  "fileCount": null,
+                  "root": null
+                }
+              },
+              "token": {
+                "text": {
+                  "summary": {
+                    "height": 48,
+                    "lineHeight": 24,
+                    "withinTwoLines": true,
+                    "display": "flow-root",
+                    "clamp": "2",
+                    "chars": 300,
+                    "text": "https://example.com/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa…"
+                  },
+                  "preview": null,
+                  "rowHeight": 76,
+                  "label": "https://example.com/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa…"
+                },
+                "layout": {
+                  "rowHeight": 76,
+                  "rowWidth": 635,
+                  "overflowX": false,
+                  "fileCount": null,
+                  "root": null
+                }
+              },
+              "shortOne": {
+                "text": {
+                  "summary": {
+                    "height": 24,
+                    "lineHeight": 24,
+                    "withinTwoLines": true,
+                    "display": "flow-root",
+                    "clamp": "2",
+                    "chars": 13,
+                    "text": "Ship the FAQ."
+                  },
+                  "preview": null,
+                  "rowHeight": 52,
+                  "label": "Ship the FAQ."
+                },
+                "layout": {
+                  "rowHeight": 52,
+                  "rowWidth": 635,
+                  "overflowX": false,
+                  "fileCount": null,
+                  "root": null
+                }
+              }
+            },
+            "temp": {
+              "text": {
+                "summary": {
+                  "height": 48,
+                  "lineHeight": 24,
+                  "withinTwoLines": true,
+                  "display": "flow-root",
+                  "clamp": "2",
+                  "chars": 300,
+                  "text": "离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复…"
+                },
+                "preview": null,
+                "rowHeight": 112,
+                "label": "离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同…"
+              },
+              "layout": {
+                "rowHeight": 112,
+                "rowWidth": 635,
+                "overflowX": false,
+                "fileCount": null,
+                "root": {
+                  "visible": true,
+                  "inside": true
+                }
+              }
+            }
+          },
+          "1440": {
+            "cards": {
+              "withFile": {
+                "text": {
+                  "summary": {
+                    "height": 48,
+                    "lineHeight": 24,
+                    "withinTwoLines": true,
+                    "display": "flow-root",
+                    "clamp": "2",
+                    "chars": 294,
+                    "text": "filed0 filed1 filed2 filed3 filed4 filed5 filed6 filed7 filed8 filed9 filed10 filed11 filed12 filed13 filed14 filed15 filed16 filed17 filed18 filed19 filed20 filed21 filed22 filed23 filed24 filed25 filed26 filed27 filed28 filed29 filed30 filed31 filed32 filed33 filed34 filed35 filed36 filed37…"
+                  },
+                  "preview": {
+                    "height": 40,
+                    "lineHeight": 20,
+                    "withinTwoLines": true,
+                    "display": "flow-root",
+                    "clamp": "2",
+                    "chars": 298,
+                    "text": "more0 more1 more2 more3 more4 more5 more6 more7 more8 more9 more10 more11 more12 more13 more14 more15 more16 more17 more18 more19 more20 more21 more22 more23 more24 more25 more26 more27 more28 more29 more30 more31 more32 more33 more34 more35 more36 more37 more38 more39 more40 more41 more42 more43…"
+                  },
+                  "rowHeight": 185,
+                  "label": "filed0 filed1 filed2 filed3 filed4 filed5 filed6 filed7 filed8 filed9 filed10 filed11 filed12 filed13 filed14 filed15…"
+                },
+                "layout": {
+                  "rowHeight": 185,
+                  "rowWidth": 338.328125,
+                  "overflowX": false,
+                  "fileCount": {
+                    "visible": true,
+                    "inside": true
+                  },
+                  "root": {
+                    "visible": true,
+                    "inside": true
+                  }
+                }
+              },
+              "cjk": {
+                "text": {
+                  "summary": {
+                    "height": 48,
+                    "lineHeight": 24,
+                    "withinTwoLines": true,
+                    "display": "flow-root",
+                    "clamp": "2",
+                    "chars": 300,
+                    "text": "离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复…"
+                  },
+                  "preview": null,
+                  "rowHeight": 76,
+                  "label": "离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同…"
+                },
+                "layout": {
+                  "rowHeight": 76,
+                  "rowWidth": 338.328125,
+                  "overflowX": false,
+                  "fileCount": null,
+                  "root": null
+                }
+              },
+              "token": {
+                "text": {
+                  "summary": {
+                    "height": 48,
+                    "lineHeight": 24,
+                    "withinTwoLines": true,
+                    "display": "flow-root",
+                    "clamp": "2",
+                    "chars": 300,
+                    "text": "https://example.com/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa…"
+                  },
+                  "preview": null,
+                  "rowHeight": 76,
+                  "label": "https://example.com/aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa…"
+                },
+                "layout": {
+                  "rowHeight": 76,
+                  "rowWidth": 338.328125,
+                  "overflowX": false,
+                  "fileCount": null,
+                  "root": null
+                }
+              },
+              "shortOne": {
+                "text": {
+                  "summary": {
+                    "height": 24,
+                    "lineHeight": 24,
+                    "withinTwoLines": true,
+                    "display": "flow-root",
+                    "clamp": "2",
+                    "chars": 13,
+                    "text": "Ship the FAQ."
+                  },
+                  "preview": null,
+                  "rowHeight": 52,
+                  "label": "Ship the FAQ."
+                },
+                "layout": {
+                  "rowHeight": 52,
+                  "rowWidth": 338.328125,
+                  "overflowX": false,
+                  "fileCount": null,
+                  "root": null
+                }
+              }
+            },
+            "temp": {
+              "text": {
+                "summary": {
+                  "height": 48,
+                  "lineHeight": 24,
+                  "withinTwoLines": true,
+                  "display": "flow-root",
+                  "clamp": "2",
+                  "chars": 300,
+                  "text": "离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复…"
+                },
+                "preview": null,
+                "rowHeight": 112,
+                "label": "离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同步所有更改离线同步让你在没有网络时继续工作并在恢复连接后自动同…"
+              },
+              "layout": {
+                "rowHeight": 112,
+                "rowWidth": 516.5,
+                "overflowX": false,
+                "fileCount": null,
+                "root": {
+                  "visible": true,
+                  "inside": true
+                }
+              }
+            }
+          }
+        },
+        "confirmation": "Delete task?\n\nDelete the task “Ship the FAQ.”? This cannot be undone.\n\nCancel\nDelete task"
+      }
+    },
+    "PMU-015": {
+      "result": "Pass",
+      "description": "Projects tab in the right panel: first tab, live board beside the chat, worker opens in the center and the tab stays, card → detail → back, choice remembered after reload (projects-always-on AC-006..010)",
+      "durationMs": 4607,
+      "details": {
+        "tabOrder": [
+          "projects",
+          "files",
+          "terminal",
+          "progress",
+          "usage",
+          "artifacts",
+          "vnc"
+        ],
+        "picked": "project:project_11b032c6-bfeb-46fd-9c61-9f8cfda9572d",
+        "lanes": [
+          1002,
+          1002,
+          1002
+        ],
+        "iconBoxes": [
+          {
+            "w": 16,
+            "h": 16,
+            "color": "rgb(71, 85, 105)"
+          },
+          {
+            "w": 16,
+            "h": 16,
+            "color": "rgb(29, 78, 216)"
+          }
+        ],
+        "errors": []
+      }
+    },
+    "PMU-016": {
+      "result": "Pass",
+      "description": "Projects tab in Team and Org conversations (worker opens, tab kept); constrained width: strip and drawer list Projects first",
+      "durationMs": 6691,
+      "details": {
+        "team": {
+          "order": [
+            "projects",
+            "files",
+            "teamMembers",
+            "terminal",
+            "progress",
+            "usage",
+            "artifacts",
+            "vnc"
+          ],
+          "url": "http://127.0.0.1:49980/workspace"
+        },
+        "org": {
+          "order": [
+            "projects",
+            "files",
+            "terminal",
+            "progress",
+            "usage",
+            "artifacts",
+            "vnc"
+          ],
+          "url": "http://127.0.0.1:49980/workspace?rootSubjectKind=agent_org&definitionId=delivery-org-pmutabroots-b18d&orgRunId=delivery_org_pmutabroots_b18d_116a0bf1cc3e4548839d261608bc1ce4&mode=active&agentRunId=release_notes_writer_pmutabroots_b18d_070d14d136084a53a55583e0cfe3ad4c"
+        },
+        "narrow": {
+          "width": 1100,
+          "stripOrder": [
+            "projects",
+            "files",
+            "teamMembers",
+            "terminal",
+            "progress",
+            "usage",
+            "artifacts",
+            "vnc"
+          ],
+          "drawerOrder": [
+            "projects",
+            "files",
+            "teamMembers",
+            "terminal",
+            "progress",
+            "usage",
+            "artifacts",
+            "vnc"
+          ]
+        }
+      }
+    },
+    "PMU-017": {
+      "result": "Pass",
+      "description": "Cancelled Tasks (task-closed-status): agent cancel hides the row behind \"Cancelled (N)\" beside Refresh, Cancelled as the last column (stacked last when narrow), keyboard, muted Cancelled pill vs Done, open counts, live reopen; Temp board/header/page; right-panel board and detail",
+      "durationMs": 10795,
+      "details": {
+        "cardBefore": "2 open tasks · No workspaces",
+        "toggleHidden": {
+          "text": "Cancelled (1)",
+          "pressed": "false",
+          "tag": "BUTTON",
+          "type": "button",
+          "title": "Show cancelled tasks",
+          "nextTestId": "project-tasks-refresh"
+        },
+        "togglePressed": {
+          "text": "Cancelled (1)",
+          "pressed": "true",
+          "tag": "BUTTON",
+          "type": "button",
+          "title": "Hide cancelled tasks",
+          "nextTestId": "project-tasks-refresh"
+        },
+        "lanes": [
+          {
+            "id": "project-task-column-TODO",
+            "top": 258,
+            "bottom": 396,
+            "left": 355,
+            "width": 251.25,
+            "gridWidth": 1053
+          },
+          {
+            "id": "project-task-column-IN_PROGRESS",
+            "top": 258,
+            "bottom": 396,
+            "left": 622.25,
+            "width": 251.25,
+            "gridWidth": 1053
+          },
+          {
+            "id": "project-task-column-DONE",
+            "top": 258,
+            "bottom": 396,
+            "left": 889.5,
+            "width": 251.25,
+            "gridWidth": 1053
+          },
+          {
+            "id": "project-task-column-CANCELLED",
+            "top": 258,
+            "bottom": 396,
+            "left": 1156.75,
+            "width": 251.25,
+            "gridWidth": 1053
+          }
+        ],
+        "closedRoot": {
+          "state": "offline",
+          "openable": "false",
+          "tag": "DIV",
+          "name": "release notes writer pmucancelled e00a"
+        },
+        "lanesOff": [
+          {
+            "id": "project-task-column-TODO",
+            "top": 258,
+            "bottom": 380,
+            "left": 355,
+            "width": 340.328125,
+            "gridWidth": 1053
+          },
+          {
+            "id": "project-task-column-IN_PROGRESS",
+            "top": 258,
+            "bottom": 380,
+            "left": 711.328125,
+            "width": 340.328125,
+            "gridWidth": 1053
+          },
+          {
+            "id": "project-task-column-DONE",
+            "top": 258,
+            "bottom": 380,
+            "left": 1067.65625,
+            "width": 340.34375,
+            "gridWidth": 1053
+          }
+        ],
+        "lanesNarrow": [
+          {
+            "id": "project-task-column-TODO",
+            "top": 416,
+            "bottom": 518,
+            "left": 66,
+            "width": 308,
+            "gridWidth": 308
+          },
+          {
+            "id": "project-task-column-IN_PROGRESS",
+            "top": 534,
+            "bottom": 656,
+            "left": 66,
+            "width": 308,
+            "gridWidth": 308
+          },
+          {
+            "id": "project-task-column-DONE",
+            "top": 672,
+            "bottom": 774,
+            "left": 66,
+            "width": 308,
+            "gridWidth": 308
+          },
+          {
+            "id": "project-task-column-CANCELLED",
+            "top": 790,
+            "bottom": 928,
+            "left": 66,
+            "width": 308,
+            "gridWidth": 308
+          }
+        ],
+        "narrowOverflow": {
+          "scrollWidth": 340,
+          "clientWidth": 340,
+          "ok": true
+        },
+        "pills": {
+          "cancelledPill": {
+            "text": "Cancelled",
+            "className": "rounded-full px-2.5 py-1 text-xs font-medium ring-1 ring-inset bg-white text-slate-500 ring-slate-300",
+            "background": "rgb(255, 255, 255)",
+            "color": "rgb(100, 116, 139)"
+          },
+          "donePill": {
+            "text": "Done",
+            "className": "rounded-full px-2.5 py-1 text-xs font-medium ring-1 ring-inset bg-emerald-50 text-emerald-800 ring-emerald-200",
+            "background": "rgb(236, 253, 245)",
+            "color": "rgb(6, 95, 70)"
+          }
+        },
+        "cardCancelled": "1 open task · No workspaces",
+        "reopened": {
+          "state": "offline",
+          "openable": "false",
+          "tag": "DIV",
+          "name": "release notes writer pmucancelled e00a"
+        },
+        "tempCounts": {
+          "openBefore": 6,
+          "openAfter": 5
+        },
+        "tempToggle": {
+          "text": "Cancelled (1)",
+          "pressed": "false",
+          "tag": "BUTTON",
+          "type": "button",
+          "title": "Show cancelled tasks",
+          "nextTestId": "temp-tasks-refresh"
+        },
+        "tempLanes": [
+          {
+            "id": "temp-task-lane-open",
+            "top": 204,
+            "bottom": 814,
+            "left": 355,
+            "width": 340.328125,
+            "gridWidth": 1053
+          },
+          {
+            "id": "temp-task-lane-done",
+            "top": 204,
+            "bottom": 814,
+            "left": 711.328125,
+            "width": 340.328125,
+            "gridWidth": 1053
+          },
+          {
+            "id": "temp-task-lane-cancelled",
+            "top": 204,
+            "bottom": 814,
+            "left": 1067.65625,
+            "width": 340.34375,
+            "gridWidth": 1053
+          }
+        ],
+        "tempPill": {
+          "text": "Cancelled",
+          "className": "rounded-full px-2.5 py-1 text-xs font-medium ring-1 ring-inset bg-white text-slate-500 ring-slate-300",
+          "background": "rgb(255, 255, 255)",
+          "color": "rgb(100, 116, 139)"
+        },
+        "panelToggle": {
+          "text": "Cancelled (1)",
+          "pressed": "false",
+          "tag": "BUTTON",
+          "type": "button",
+          "title": "Show cancelled tasks",
+          "nextTestId": "project-tasks-refresh"
+        },
+        "panelLanes": [
+          {
+            "id": "project-task-column-TODO",
+            "top": 247,
+            "bottom": 385,
+            "left": 1002,
+            "width": 426,
+            "gridWidth": 426
+          },
+          {
+            "id": "project-task-column-IN_PROGRESS",
+            "top": 401,
+            "bottom": 523,
+            "left": 1002,
+            "width": 426,
+            "gridWidth": 426
+          },
+          {
+            "id": "project-task-column-DONE",
+            "top": 539,
+            "bottom": 641,
+            "left": 1002,
+            "width": 426,
+            "gridWidth": 426
+          },
+          {
+            "id": "project-task-column-CANCELLED",
+            "top": 657,
+            "bottom": 759,
+            "left": 1002,
+            "width": 426,
+            "gridWidth": 426
+          }
+        ],
+        "panelPill": {
+          "text": "Cancelled",
+          "className": "flex-shrink-0 rounded-full px-2 py-0.5 text-xs font-medium ring-1 ring-inset bg-white text-slate-500 ring-slate-300",
+          "background": "rgb(255, 255, 255)",
+          "color": "rgb(100, 116, 139)"
+        }
+      }
+    },
+    "PMU-018": {
+      "result": "Pass",
+      "description": "Collapsed strip Workspaces: a worker opened from a Task card (Agent, Team with nested task Team, Org host) lights Workspaces; it docks the panel without navigating and reveals the row with focus; narrow drawer, short window, New chat",
+      "durationMs": 18507,
+      "details": {
+        "agent": {
+          "worker": {
+            "ingressAgentRunId": "release_notes_writer_pmustrip_ce25_d2537c57559845cd8839185feeeb32e8",
+            "hostRoot": {
+              "kind": "agent",
+              "runId": "manager_pmustrip_ce25_eb0459bb28d546a7bf15a62018e9f9e2"
+            }
+          },
+          "afterCollapse": {
+            "strip": true,
+            "workspacesLit": true,
+            "stripChatLit": false,
+            "panelChatLit": null,
+            "focus": "workspace-left-strip-workspaces"
+          },
+          "before": {
+            "strip": true,
+            "workspacesLit": true,
+            "stripChatLit": false,
+            "panelChatLit": null,
+            "focus": "BUTTON"
+          },
+          "revealed": {
+            "agentRunId": "release_notes_writer_pmustrip_ce25_d2537c57559845cd8839185feeeb32e8",
+            "test": "workspace-team-transient-execution-row",
+            "text": "RNrelease notes writer pmustrip ce25Temporary task agent · release notes writer ",
+            "visible": true,
+            "scrollTop": 261,
+            "scrollHeight": 707,
+            "clientHeight": 186,
+            "centreOffset": 0,
+            "focused": true,
+            "selectedRows": 1
+          },
+          "settled": {
+            "agentRunId": "release_notes_writer_pmustrip_ce25_d2537c57559845cd8839185feeeb32e8",
+            "test": "workspace-team-transient-execution-row",
+            "text": "RNrelease notes writer pmustrip ce25Strip journey hosted by the agent runTempora",
+            "visible": true,
+            "scrollTop": 213,
+            "scrollHeight": 677,
+            "clientHeight": 186,
+            "centreOffset": 9,
+            "focused": true,
+            "selectedRows": 1
+          },
+          "after": {
+            "strip": false,
+            "workspacesLit": null,
+            "stripChatLit": null,
+            "panelChatLit": false,
+            "focus": "workspace-team-transient-execution-row"
+          },
+          "url": "http://127.0.0.1:49980/chat?id=manager_pmustrip_ce25_eb0459bb28d546a7bf15a62018e9f9e2",
+          "selectionBefore": {
+            "route": "/chat?id=manager_pmustrip_ce25_eb0459bb28d546a7bf15a62018e9f9e2",
+            "subject": "{\"kind\":\"agent_run\",\"runId\":\"manager_pmustrip_ce25_eb0459bb28d546a7bf15a62018e9f9e2\"}",
+            "focusedMember": "",
+            "focusedRunId": null
+          },
+          "centerUnchanged": true
+        },
+        "team": {
+          "worker": {
+            "ingressAgentRunId": "release_notes_writer_pmustrip_ce25_c971c18aa8f0483c872d27bef921874a",
+            "hostRoot": {
+              "kind": "agent_team",
+              "runId": "delivery_team_pmustrip_ce25_deb3bdd4032040588e7f29119a96afea"
+            }
+          },
+          "afterCollapse": {
+            "strip": true,
+            "workspacesLit": true,
+            "stripChatLit": false,
+            "panelChatLit": null,
+            "focus": "workspace-left-strip-workspaces"
+          },
+          "before": {
+            "strip": true,
+            "workspacesLit": true,
+            "stripChatLit": false,
+            "panelChatLit": null,
+            "focus": "BUTTON"
+          },
+          "revealed": {
+            "agentRunId": "release_notes_writer_pmustrip_ce25_c971c18aa8f0483c872d27bef921874a",
+            "test": "workspace-team-transient-execution-row",
+            "text": "RreviewerTemporary task agent · reviewer · /docs_review_team_pmustrip_ce25/revie",
+            "visible": true,
+            "scrollTop": 440,
+            "scrollHeight": 841,
+            "clientHeight": 186,
+            "centreOffset": 0,
+            "focused": true,
+            "selectedRows": 1
+          },
+          "settled": {
+            "agentRunId": "release_notes_writer_pmustrip_ce25_c971c18aa8f0483c872d27bef921874a",
+            "test": "workspace-team-transient-execution-row",
+            "text": "RreviewerTemporary task agent · reviewer · /docs_review_team_pmustrip_ce25/revie",
+            "visible": true,
+            "scrollTop": 392,
+            "scrollHeight": 793,
+            "clientHeight": 186,
+            "centreOffset": 18,
+            "focused": true,
+            "selectedRows": 1
+          },
+          "after": {
+            "strip": false,
+            "workspacesLit": null,
+            "stripChatLit": null,
+            "panelChatLit": false,
+            "focus": "workspace-team-transient-execution-row"
+          },
+          "url": "http://127.0.0.1:49980/workspace",
+          "selectionBefore": {
+            "route": "/workspace",
+            "subject": "{\"kind\":\"team_run\",\"rootTeamRunId\":\"delivery_team_pmustrip_ce25_deb3bdd4032040588e7f29119a96afea\"}",
+            "focusedMember": "/docs_review_team_pmustrip_ce25/reviewer",
+            "focusedRunId": "release_notes_writer_pmustrip_ce25_c971c18aa8f0483c872d27bef921874a"
+          },
+          "centerUnchanged": true
+        },
+        "org": {
+          "worker": {
+            "ingressAgentRunId": "release_notes_writer_pmustrip_ce25_019ae6cbae2445e19cc503d9eb957bb2",
+            "hostRoot": {
+              "kind": "agent_org",
+              "runId": "delivery_org_pmustrip_ce25_709ebba434bd48e0ac550ab23fa0b10e"
+            }
+          },
+          "afterCollapse": {
+            "strip": true,
+            "workspacesLit": true,
+            "stripChatLit": false,
+            "panelChatLit": null,
+            "focus": "workspace-left-strip-workspaces"
+          },
+          "before": {
+            "strip": true,
+            "workspacesLit": true,
+            "stripChatLit": false,
+            "panelChatLit": null,
+            "focus": "BUTTON"
+          },
+          "revealed": {
+            "agentRunId": "release_notes_writer_pmustrip_ce25_019ae6cbae2445e19cc503d9eb957bb2",
+            "test": "agent-org-task-agent-row-release_notes_writer_pmustrip_ce25_019ae6cbae2445e19cc503d9eb957bb2",
+            "text": "Wworker",
+            "visible": true,
+            "scrollTop": 667,
+            "scrollHeight": 853,
+            "clientHeight": 186,
+            "centreOffset": 41,
+            "focused": true,
+            "selectedRows": 1
+          },
+          "settled": {
+            "agentRunId": "release_notes_writer_pmustrip_ce25_019ae6cbae2445e19cc503d9eb957bb2",
+            "test": "agent-org-task-agent-row-release_notes_writer_pmustrip_ce25_019ae6cbae2445e19cc503d9eb957bb2",
+            "text": "Wworker",
+            "visible": true,
+            "scrollTop": 619,
+            "scrollHeight": 805,
+            "clientHeight": 186,
+            "centreOffset": 41,
+            "focused": true,
+            "selectedRows": 1
+          },
+          "after": {
+            "strip": false,
+            "workspacesLit": null,
+            "stripChatLit": null,
+            "panelChatLit": false,
+            "focus": "agent-org-task-agent-row-release_notes_writer_pmustrip_ce25_019ae6cbae2445e19cc503d9eb957bb2"
+          },
+          "url": "http://127.0.0.1:49980/workspace?rootSubjectKind=agent_org&definitionId=delivery-org-pmustrip-ce25&orgRunId=delivery_org_pmustrip_ce25_709ebba434bd48e0ac550ab23fa0b10e&mode=active&agentRunId=release_notes_writer_pmustrip_ce25_019ae6cbae2445e19cc503d9eb957bb2",
+          "selectionBefore": {
+            "route": "/workspace?rootSubjectKind=agent_org&definitionId=delivery-org-pmustrip-ce25&orgRunId=delivery_org_pmustrip_ce25_709ebba434bd48e0ac550ab23fa0b10e&mode=active&agentRunId=release_notes_writer_pmustrip_ce25_019ae6cbae2445e19cc503d9eb957bb2",
+            "subject": "null",
+            "focusedMember": "",
+            "focusedRunId": null
+          },
+          "centerUnchanged": true
+        },
+        "narrow": {
+          "drawerRow": {
+            "agentRunId": "release_notes_writer_pmustrip_ce25_019ae6cbae2445e19cc503d9eb957bb2",
+            "test": "agent-org-task-agent-row-release_notes_writer_pmustrip_ce25_019ae6cbae2445e19cc503d9eb957bb2",
+            "text": "Wworker",
+            "visible": true,
+            "scrollTop": 387,
+            "scrollHeight": 853,
+            "clientHeight": 466,
+            "centreOffset": 181,
+            "focused": false,
+            "selectedRows": 1
+          },
+          "drawerClosed": {
+            "strip": true,
+            "workspacesLit": true,
+            "stripChatLit": false,
+            "panelChatLit": null,
+            "focus": "workspace-left-strip-workspaces"
+          }
+        },
+        "short": {
+          "dividerDisplay": "none",
+          "settingsBottom": 484,
+          "viewport": 500
+        },
+        "newChat": {
+          "onNewChat": {
+            "strip": true,
+            "workspacesLit": false,
+            "stripChatLit": true,
+            "panelChatLit": null,
+            "focus": "chat-message-input"
+          },
+          "kept": {
+            "route": "/chat",
+            "text": "Keep this draft text",
+            "selection": {
+              "route": "/chat",
+              "subject": "null",
+              "focusedMember": "",
+              "focusedRunId": null
+            },
+            "tree": {
+              "selected": [],
+              "scrollTop": 0,
+              "scrollHeight": 578,
+              "clientHeight": 578
+            },
+            "nav": {
+              "strip": false,
+              "workspacesLit": null,
+              "stripChatLit": null,
+              "panelChatLit": false,
+              "focus": "app-left-panel-run-history"
+            }
+          }
+        }
+      }
+    },
+    "PMU-019": {
+      "result": "Pass",
+      "description": "Collapsed strip Workspaces, other entries: nested task-Team member (non-coordinator) after a collapse, New chat first send, far-down Org worker (large scroll), slow history load with and without a user scroll first; highlight on the Org launch page, empty /workspace and /agents; page icon docks and navigates; in-app New chat, /agents and /projects after a run (no reveal off a run)",
+      "durationMs": 50966,
+      "details": {
+        "nestedMember": {
+          "nestedMember": {
+            "agentRunId": "fact_checker_pmustripmore_9e52_99addc2e2deb45b0a3d3dbd1a59c8480",
+            "address": "/docs_review_team_pmustripmore_9e52/editor",
+            "depth": "1"
+          },
+          "open": {
+            "nav": {
+              "strip": true,
+              "workspacesLit": true,
+              "stripChatLit": false,
+              "panelChatLit": null,
+              "focus": "workspace-left-strip-workspaces"
+            },
+            "url": "http://127.0.0.1:49980/workspace",
+            "selection": {
+              "route": "/workspace",
+              "subject": "{\"kind\":\"team_run\",\"rootTeamRunId\":\"delivery_team_pmustripmore_9e52_4d7bf7c002c1422290c37c70263c2258\"}",
+              "focusedMember": "/docs_review_team_pmustripmore_9e52/editor",
+              "focusedRunId": "fact_checker_pmustripmore_9e52_99addc2e2deb45b0a3d3dbd1a59c8480"
+            }
+          },
+          "revealed": {
+            "agentRunId": "fact_checker_pmustripmore_9e52_99addc2e2deb45b0a3d3dbd1a59c8480",
+            "test": "workspace-team-transient-execution-row",
+            "text": "EeditorTemporary task agent · editor · /docs_review_team_pmustripmore_9e52/edito",
+            "visible": true,
+            "scrollTop": 470,
+            "scrollHeight": 901,
+            "clientHeight": 186,
+            "centreOffset": 0,
+            "focused": true,
+            "selectedRows": 1
+          },
+          "settled": {
+            "agentRunId": "fact_checker_pmustripmore_9e52_99addc2e2deb45b0a3d3dbd1a59c8480",
+            "test": "workspace-team-transient-execution-row",
+            "text": "EeditorTemporary task agent · editor · /docs_review_team_pmustripmore_9e52/edito",
+            "visible": true,
+            "scrollTop": 422,
+            "scrollHeight": 853,
+            "clientHeight": 186,
+            "centreOffset": 18,
+            "focused": true,
+            "selectedRows": 1
+          }
+        },
+        "firstSend": {
+          "sentRunId": "release_notes_writer_pmustripmore_9e52_707645099cf948b099108991aca62214",
+          "open": {
+            "nav": {
+              "strip": true,
+              "workspacesLit": true,
+              "stripChatLit": false,
+              "panelChatLit": null,
+              "focus": "BODY"
+            },
+            "url": "http://127.0.0.1:49980/chat?id=release_notes_writer_pmustripmore_9e52_707645099cf948b099108991aca62214",
+            "selection": {
+              "route": "/chat?id=release_notes_writer_pmustripmore_9e52_707645099cf948b099108991aca62214",
+              "subject": "{\"kind\":\"agent_run\",\"runId\":\"release_notes_writer_pmustripmore_9e52_707645099cf948b099108991aca62214\"}",
+              "focusedMember": "",
+              "focusedRunId": null
+            }
+          },
+          "revealed": {
+            "agentRunId": "release_notes_writer_pmustripmore_9e52_707645099cf948b099108991aca62214",
+            "test": "workspace-agent-run-row",
+            "text": "Say hello from a collapsed panelnow",
+            "visible": true,
+            "scrollTop": 0,
+            "scrollHeight": 466,
+            "clientHeight": 466,
+            "centreOffset": -107,
+            "focused": false,
+            "selectedRows": 1
+          },
+          "settled": {
+            "agentRunId": "release_notes_writer_pmustripmore_9e52_707645099cf948b099108991aca62214",
+            "test": "workspace-agent-run-row",
+            "text": "Say hello from a collapsed panelnow",
+            "visible": true,
+            "scrollTop": 0,
+            "scrollHeight": 466,
+            "clientHeight": 466,
+            "centreOffset": -155,
+            "focused": true,
+            "selectedRows": 1
+          }
+        },
+        "farOrg": {
+          "longTree": {
+            "selected": [],
+            "scrollTop": 1299,
+            "scrollHeight": 1633,
+            "clientHeight": 186
+          },
+          "open": {
+            "nav": {
+              "strip": true,
+              "workspacesLit": true,
+              "stripChatLit": false,
+              "panelChatLit": null,
+              "focus": "BUTTON"
+            },
+            "url": "http://127.0.0.1:49980/workspace?rootSubjectKind=agent_org&definitionId=delivery-org-pmustripmore-9e52&orgRunId=delivery_org_pmustripmore_9e52_0a8d2eaf02ed45ec8ad08a56c9573c45&mode=active&agentRunId=release_notes_writer_pmustripmore_9e52_cb82849e51734e978256f54d11697900",
+            "selection": {
+              "route": "/workspace?rootSubjectKind=agent_org&definitionId=delivery-org-pmustripmore-9e52&orgRunId=delivery_org_pmustripmore_9e52_0a8d2eaf02ed45ec8ad08a56c9573c45&mode=active&agentRunId=release_notes_writer_pmustripmore_9e52_cb82849e51734e978256f54d11697900",
+              "subject": "null",
+              "focusedMember": "",
+              "focusedRunId": null
+            }
+          },
+          "revealed": {
+            "agentRunId": "release_notes_writer_pmustripmore_9e52_cb82849e51734e978256f54d11697900",
+            "test": "agent-org-task-agent-row-release_notes_writer_pmustripmore_9e52_cb82849e51734e978256f54d11697900",
+            "text": "Wworker",
+            "visible": true,
+            "scrollTop": 1495,
+            "scrollHeight": 1681,
+            "clientHeight": 186,
+            "centreOffset": 41,
+            "focused": true,
+            "selectedRows": 1
+          },
+          "settled": {
+            "agentRunId": "release_notes_writer_pmustripmore_9e52_cb82849e51734e978256f54d11697900",
+            "test": "agent-org-task-agent-row-release_notes_writer_pmustripmore_9e52_cb82849e51734e978256f54d11697900",
+            "text": "Wworker",
+            "visible": true,
+            "scrollTop": 1447,
+            "scrollHeight": 1633,
+            "clientHeight": 186,
+            "centreOffset": 41,
+            "focused": true,
+            "selectedRows": 1
+          },
+          "maxScroll": 1447
+        },
+        "slowStart": {
+          "takeover": {
+            "atMount": {
+              "row": null,
+              "workerRows": 0
+            },
+            "afterWheel": {
+              "selected": [],
+              "scrollTop": 0,
+              "scrollHeight": 186,
+              "clientHeight": 186
+            },
+            "end": {
+              "tree": {
+                "selected": [
+                  "agent-org-task-agent-row-release_notes_writer_pmustripmore_9e52_cb82849e51734e978256f54d11697900"
+                ],
+                "scrollTop": 0,
+                "scrollHeight": 1633,
+                "clientHeight": 186
+              },
+              "row": {
+                "agentRunId": "release_notes_writer_pmustripmore_9e52_cb82849e51734e978256f54d11697900",
+                "test": "agent-org-task-agent-row-release_notes_writer_pmustripmore_9e52_cb82849e51734e978256f54d11697900",
+                "text": "Wworker",
+                "visible": false,
+                "scrollTop": 0,
+                "scrollHeight": 1633,
+                "clientHeight": 186,
+                "centreOffset": 1488,
+                "focused": false,
+                "selectedRows": 1
+              },
+              "url": "http://127.0.0.1:49980/workspace?rootSubjectKind=agent_org&definitionId=delivery-org-pmustripmore-9e52&orgRunId=delivery_org_pmustripmore_9e52_0a8d2eaf02ed45ec8ad08a56c9573c45&mode=active&agentRunId=release_notes_writer_pmustripmore_9e52_cb82849e51734e978256f54d11697900"
+            }
+          },
+          "waited": {
+            "atMount": {
+              "row": null,
+              "workerRows": 0
+            },
+            "afterWheel": null,
+            "end": {
+              "tree": {
+                "selected": [
+                  "agent-org-task-agent-row-release_notes_writer_pmustripmore_9e52_cb82849e51734e978256f54d11697900"
+                ],
+                "scrollTop": 1447,
+                "scrollHeight": 1633,
+                "clientHeight": 186
+              },
+              "row": {
+                "agentRunId": "release_notes_writer_pmustripmore_9e52_cb82849e51734e978256f54d11697900",
+                "test": "agent-org-task-agent-row-release_notes_writer_pmustripmore_9e52_cb82849e51734e978256f54d11697900",
+                "text": "Wworker",
+                "visible": true,
+                "scrollTop": 1447,
+                "scrollHeight": 1633,
+                "clientHeight": 186,
+                "centreOffset": 41,
+                "focused": false,
+                "selectedRows": 1
+              },
+              "url": "http://127.0.0.1:49980/workspace?rootSubjectKind=agent_org&definitionId=delivery-org-pmustripmore-9e52&orgRunId=delivery_org_pmustripmore_9e52_0a8d2eaf02ed45ec8ad08a56c9573c45&mode=active&agentRunId=release_notes_writer_pmustripmore_9e52_cb82849e51734e978256f54d11697900"
+            }
+          }
+        },
+        "highlight": {
+          "onLaunch": {
+            "nav": {
+              "strip": true,
+              "workspacesLit": false,
+              "stripChatLit": false,
+              "panelChatLit": null,
+              "focus": "workspace-left-strip-workspaces"
+            },
+            "selection": {
+              "route": "/workspace?rootSubjectKind=agent_org&definitionId=delivery-org-pmustripmore-9e52&mode=configuration",
+              "subject": "{\"kind\":\"team_run\",\"rootTeamRunId\":\"delivery_team_pmustripmore_9e52_4d7bf7c002c1422290c37c70263c2258\"}",
+              "focusedMember": "/manager",
+              "focusedRunId": "manager_pmustripmore_9e52_1a55e0c1d5e3436c8815a3b09954552a"
+            }
+          },
+          "onEmpty": {
+            "nav": {
+              "strip": true,
+              "workspacesLit": false,
+              "stripChatLit": false,
+              "panelChatLit": null,
+              "focus": "workspace-left-strip-workspaces"
+            },
+            "selection": {
+              "route": "/workspace",
+              "subject": "null",
+              "focusedMember": "",
+              "focusedRunId": null
+            }
+          },
+          "onAgents": {
+            "agentsLit": true,
+            "workspacesLit": false
+          },
+          "pageIcon": "/projects"
+        },
+        "newChatInApp": {
+          "dockedOnNewChat": {
+            "selected": [
+              "workspace-team-member-delivery_team_pmustripmore_9e52_4d7bf7c002c1422290c37c70263c2258-/manager"
+            ],
+            "scrollTop": 1042,
+            "scrollHeight": 1591,
+            "clientHeight": 186
+          },
+          "inAppBefore": {
+            "nav": {
+              "strip": true,
+              "workspacesLit": false,
+              "stripChatLit": true,
+              "panelChatLit": null,
+              "focus": "chat-message-input"
+            },
+            "selection": {
+              "route": "/chat",
+              "subject": "{\"kind\":\"team_run\",\"rootTeamRunId\":\"delivery_team_pmustripmore_9e52_4d7bf7c002c1422290c37c70263c2258\"}",
+              "focusedMember": "/manager",
+              "focusedRunId": "manager_pmustripmore_9e52_1a55e0c1d5e3436c8815a3b09954552a"
+            }
+          },
+          "inAppAfter": {
+            "focus": "app-left-panel-run-history",
+            "route": "/chat",
+            "text": "Draft after a Team run",
+            "selection": {
+              "route": "/chat",
+              "subject": "{\"kind\":\"team_run\",\"rootTeamRunId\":\"delivery_team_pmustripmore_9e52_4d7bf7c002c1422290c37c70263c2258\"}",
+              "focusedMember": "/manager",
+              "focusedRunId": "manager_pmustripmore_9e52_1a55e0c1d5e3436c8815a3b09954552a"
+            },
+            "tree": {
+              "selected": [
+                "workspace-team-member-delivery_team_pmustripmore_9e52_4d7bf7c002c1422290c37c70263c2258-/manager"
+              ],
+              "scrollTop": 0,
+              "scrollHeight": 1591,
+              "clientHeight": 186
+            }
+          }
+        },
+        "agentsAfterAgentRun": {
+          "docked": {
+            "selected": [
+              "workspace-agent-run-row"
+            ],
+            "scrollTop": 0,
+            "scrollHeight": 186,
+            "clientHeight": 186
+          },
+          "before": {
+            "nav": {
+              "strip": true,
+              "workspacesLit": false,
+              "stripChatLit": false,
+              "panelChatLit": null,
+              "focus": "workspace-left-strip-workspaces"
+            },
+            "selection": {
+              "route": "/agents?view=list",
+              "subject": "{\"kind\":\"agent_run\",\"runId\":\"release_notes_writer_pmustripmore_9e52_707645099cf948b099108991aca62214\"}",
+              "focusedMember": "",
+              "focusedRunId": null
+            }
+          },
+          "after": {
+            "focus": "app-left-panel-run-history",
+            "selection": {
+              "route": "/agents?view=list",
+              "subject": "{\"kind\":\"agent_run\",\"runId\":\"release_notes_writer_pmustripmore_9e52_707645099cf948b099108991aca62214\"}",
+              "focusedMember": "",
+              "focusedRunId": null
+            },
+            "tree": {
+              "selected": [
+                "workspace-agent-run-row"
+              ],
+              "scrollTop": 0,
+              "scrollHeight": 186,
+              "clientHeight": 186
+            }
+          }
+        },
+        "projectsAfterTeamRun": {
+          "docked": {
+            "selected": [
+              "workspace-team-member-delivery_team_pmustripmore_9e52_4d7bf7c002c1422290c37c70263c2258-/manager"
+            ],
+            "scrollTop": 1042,
+            "scrollHeight": 1591,
+            "clientHeight": 186
+          },
+          "before": {
+            "nav": {
+              "strip": true,
+              "workspacesLit": false,
+              "stripChatLit": false,
+              "panelChatLit": null,
+              "focus": "workspace-left-strip-workspaces"
+            },
+            "selection": {
+              "route": "/projects",
+              "subject": "{\"kind\":\"team_run\",\"rootTeamRunId\":\"delivery_team_pmustripmore_9e52_4d7bf7c002c1422290c37c70263c2258\"}",
+              "focusedMember": "/manager",
+              "focusedRunId": "manager_pmustripmore_9e52_1a55e0c1d5e3436c8815a3b09954552a"
+            }
+          },
+          "after": {
+            "focus": "app-left-panel-run-history",
+            "selection": {
+              "route": "/projects",
+              "subject": "{\"kind\":\"team_run\",\"rootTeamRunId\":\"delivery_team_pmustripmore_9e52_4d7bf7c002c1422290c37c70263c2258\"}",
+              "focusedMember": "/manager",
+              "focusedRunId": "manager_pmustripmore_9e52_1a55e0c1d5e3436c8815a3b09954552a"
+            },
+            "tree": {
+              "selected": [
+                "workspace-team-member-delivery_team_pmustripmore_9e52_4d7bf7c002c1422290c37c70263c2258-/manager"
+              ],
+              "scrollTop": 0,
+              "scrollHeight": 1591,
+              "clientHeight": 186
+            }
+          }
+        }
+      }
+    },
+    "PMU-020": {
+      "result": "Pass",
+      "description": "Task summaries under delegated copy rows (Agent host: agent, task Team, Temp copies; Team host): one line for members and sub-work; spec values, hover; GraphQL answers; batched reads, no Task-list reads",
+      "durationMs": 8652,
+      "details": {
+        "listed": [
+          {
+            "kind": "task_agent",
+            "address": "/release_notes_writer_pmulocate_55ff",
+            "agentRunId": "release_notes_writer_pmulocate_55ff_5bf9b55a71564d2eb51069860b6ca294",
+            "height": 46,
+            "summary": "Ship the copy Task summary in the tree",
+            "label": "Temporary task agent, release notes writer pmulocate 55ff, level 1, idle, Started by manager pmulocate 55ff, /release_notes_writer_pmulocate_55ff, Task: Ship the copy Task summary in the tree"
+          },
+          {
+            "kind": "task_team",
+            "address": "/docs_review_team_pmulocate_55ff",
+            "agentRunId": null,
+            "height": 46,
+            "summary": "Review the locate journey with the docs review team and report back on every edge case found during the whole session",
+            "label": "Temporary task team, docs review team pmulocate 55ff, level 1, idle, Started by manager pmulocate 55ff, /docs_review_team_pmulocate_55ff, Task: Review the locate journey with the docs review team and report back on every edge case found during the whole session"
+          },
+          {
+            "kind": "task_team_child",
+            "address": "/docs_review_team_pmulocate_55ff/reviewer",
+            "agentRunId": "release_notes_writer_pmulocate_55ff_f6241629b8154e6a8572b58a442694be",
+            "height": 28,
+            "summary": null,
+            "label": "Temporary task agent, reviewer, level 2, idle, /docs_review_team_pmulocate_55ff/reviewer"
+          },
+          {
+            "kind": "task_team_child",
+            "address": "/docs_review_team_pmulocate_55ff/editor",
+            "agentRunId": "fact_checker_pmulocate_55ff_c82c13d1382746f590dd490288572c2e",
+            "height": 28,
+            "summary": null,
+            "label": "Temporary task agent, editor, level 2, offline, /docs_review_team_pmulocate_55ff/editor"
+          },
+          {
+            "kind": "task_agent",
+            "address": "/link_verifier_77d4",
+            "agentRunId": "link_verifier_77d4_ea8cf2011e6547ffbdbf0fbd61c9c5f0",
+            "height": 28,
+            "summary": null,
+            "label": "Temporary task agent, link verifier 77d4, level 1, idle, Started by release notes writer pmulocate 55ff, /link_verifier_77d4"
+          },
+          {
+            "kind": "task_agent",
+            "address": "/fact_checker_pmulocate_55ff",
+            "agentRunId": "fact_checker_pmulocate_55ff_075b5239624643bfa3df8941fcd6ec42",
+            "height": 46,
+            "summary": "Check the FAQ links.",
+            "label": "Temporary task agent, fact checker pmulocate 55ff, level 1, idle, Started by manager pmulocate 55ff, /fact_checker_pmulocate_55ff, Task: Check the FAQ links."
+          }
+        ],
+        "style": {
+          "fontSize": "11px",
+          "lineHeight": "16px",
+          "fontWeight": "400",
+          "color": "rgb(128, 128, 128)",
+          "gapAbove": 2,
+          "textLeftMinusName": 0,
+          "title": "Show Task in Projects: Ship the copy Task summary in the tree",
+          "ariaLabel": "Show Task in Projects: Ship the copy Task summary in the tree",
+          "ariaCurrent": null,
+          "ariaSelected": null,
+          "tag": "BUTTON"
+        },
+        "team": {
+          "weight": "400",
+          "ellipsis": "ellipsis",
+          "truncated": true,
+          "elbowFromRowTop": 14,
+          "chevronCentre": 14,
+          "nameCentre": 14
+        },
+        "hover": {
+          "color": "rgb(67, 56, 202)",
+          "line": "underline",
+          "offset": "2px"
+        },
+        "answers": [
+          {
+            "workerKind": "agent",
+            "workerRunId": "release_notes_writer_pmulocate_55ff_5bf9b55a71564d2eb51069860b6ca294",
+            "task": {
+              "taskId": "project_task_944cd898-8f37-4ba6-aabf-b870eb972491",
+              "projectId": "project_e608839d-04a3-4b13-8871-80aab7051cbf",
+              "description": "Ship the copy Task summary in the tree\nCALL_TOOL:{\"name\":\"delegate_task\",\"arguments\":{\"recipient_address\":\"/link_verifier_77d4\",\"description\":\"Check the links.\"}}",
+              "status": "TODO"
+            }
+          },
+          {
+            "workerKind": "agent",
+            "workerRunId": "fact_checker_pmulocate_55ff_075b5239624643bfa3df8941fcd6ec42",
+            "task": {
+              "taskId": "ad_hoc_task_6b3f96d9-87ce-42d3-a699-67c2a1c5201e",
+              "projectId": null,
+              "description": "Check the FAQ links.\nReport broken ones.",
+              "status": "TODO"
+            }
+          },
+          {
+            "workerKind": "agent",
+            "workerRunId": "link_verifier_77d4_ea8cf2011e6547ffbdbf0fbd61c9c5f0",
+            "task": null
+          },
+          {
+            "workerKind": "agent",
+            "workerRunId": "release_notes_writer_pmulocate_55ff_a1cbec804ef34e41958d7a48390d3a95",
+            "task": {
+              "taskId": "project_task_11b274fa-10be-48c5-82cc-c282932ea399",
+              "projectId": "project_45b362ad-c265-4352-b245-1b0cc35a8446",
+              "description": "Draft the release notes for the beta",
+              "status": "TODO"
+            }
+          },
+          {
+            "workerKind": "team",
+            "workerRunId": "docs_review_team_pmulocate_55ff_8ab9a5968f2645fcbaef14d7deeb06e4",
+            "task": {
+              "taskId": "project_task_641b0deb-1402-4300-bbc5-d9b9e3faddc6",
+              "projectId": "project_e608839d-04a3-4b13-8871-80aab7051cbf",
+              "description": "Review the locate journey with the docs review team and report back on every edge case found during the whole session",
+              "status": "TODO"
+            }
+          }
+        ],
+        "reads": [
+          {
+            "agentRunIds": [
+              "release_notes_writer_pmulocate_55ff_5bf9b55a71564d2eb51069860b6ca294",
+              "link_verifier_77d4_ea8cf2011e6547ffbdbf0fbd61c9c5f0",
+              "fact_checker_pmulocate_55ff_075b5239624643bfa3df8941fcd6ec42"
+            ],
+            "teamRunIds": [
+              "docs_review_team_pmulocate_55ff_8ab9a5968f2645fcbaef14d7deeb06e4"
+            ]
+          }
+        ],
+        "listScopes": [],
+        "teamHostSummary": "Draft the release notes for the beta",
+        "subWorkRunId": "link_verifier_77d4_ea8cf2011e6547ffbdbf0fbd61c9c5f0"
+      }
+    },
+    "PMU-021": {
+      "result": "Pass",
+      "description": "Show Task in Projects, docked: picker switch (remembered after reload), centred / focused / 2.4 s highlight, center and selection unchanged, Temp tasks, Enter opens, back from an open Task, only the latest highlighted, search kept / cleared, keyboard Tab / Enter / Space; a row click (agent copy, Team copy) opens the copy and locates nothing",
+      "durationMs": 18503,
+      "details": {
+        "first": {
+          "path": "/chat?id=manager_pmulocate_55ff_40b723be6112487bbb89d5877078c8dc",
+          "docked": true,
+          "drawer": false,
+          "picker": "project:project_e608839d-04a3-4b13-8871-80aab7051cbf",
+          "located": [
+            "project-task-row-project_task_944cd898-8f37-4ba6-aabf-b870eb972491"
+          ],
+          "focused": "project-task-row-project_task_944cd898-8f37-4ba6-aabf-b870eb972491"
+        },
+        "highlight": {
+          "centreOffset": 701,
+          "inView": false,
+          "atEdge": false,
+          "background": "rgb(238, 242, 255)",
+          "boxShadow": "rgb(99, 102, 241) 2px 0px 0px 0px inset",
+          "animation": "task-live-f1a92bd3"
+        },
+        "firstGeometry": {
+          "centreOffset": 40,
+          "inView": true,
+          "atEdge": true,
+          "background": "rgb(238, 242, 255)",
+          "boxShadow": "rgb(99, 102, 241) 2px 0px 0px 0px inset",
+          "animation": "task-live-f1a92bd3"
+        },
+        "afterHighlight": {
+          "path": "/chat?id=manager_pmulocate_55ff_40b723be6112487bbb89d5877078c8dc",
+          "docked": true,
+          "drawer": false,
+          "picker": "project:project_e608839d-04a3-4b13-8871-80aab7051cbf",
+          "located": [],
+          "focused": "project-task-row-project_task_944cd898-8f37-4ba6-aabf-b870eb972491"
+        },
+        "temp": {
+          "path": "/chat?id=manager_pmulocate_55ff_40b723be6112487bbb89d5877078c8dc",
+          "docked": true,
+          "drawer": false,
+          "picker": "temp",
+          "located": [
+            "project-task-row-ad_hoc_task_6b3f96d9-87ce-42d3-a699-67c2a1c5201e"
+          ],
+          "focused": "project-task-row-ad_hoc_task_6b3f96d9-87ce-42d3-a699-67c2a1c5201e"
+        },
+        "fromOpenTask": {
+          "path": "/chat?id=manager_pmulocate_55ff_40b723be6112487bbb89d5877078c8dc",
+          "docked": true,
+          "drawer": false,
+          "picker": "project:project_e608839d-04a3-4b13-8871-80aab7051cbf",
+          "located": [
+            "project-task-row-project_task_641b0deb-1402-4300-bbc5-d9b9e3faddc6"
+          ],
+          "focused": "project-task-row-project_task_641b0deb-1402-4300-bbc5-d9b9e3faddc6"
+        },
+        "twice": {
+          "path": "/chat?id=manager_pmulocate_55ff_40b723be6112487bbb89d5877078c8dc",
+          "docked": true,
+          "drawer": false,
+          "picker": "project:project_e608839d-04a3-4b13-8871-80aab7051cbf",
+          "located": [
+            "project-task-row-project_task_641b0deb-1402-4300-bbc5-d9b9e3faddc6"
+          ],
+          "focused": "project-task-row-project_task_641b0deb-1402-4300-bbc5-d9b9e3faddc6"
+        },
+        "searchKept": "ship the copy",
+        "searchCleared": "",
+        "keyboardFocus": {
+          "test": "workspace-task-worker-task-summary",
+          "ring": "rgb(255, 255, 255) 0px 0px 0px 0px, rgb(99, 102, 241) 0px 0px 0px 2px, rgba(0, 0, 0, 0) 0px 0px 0px 0px"
+        },
+        "pickerAfterReload": "project:project_e608839d-04a3-4b13-8871-80aab7051cbf",
+        "rowClick": {
+          "path": "/chat?id=manager_pmulocate_55ff_40b723be6112487bbb89d5877078c8dc",
+          "docked": true,
+          "drawer": false,
+          "picker": "project:project_e608839d-04a3-4b13-8871-80aab7051cbf",
+          "located": [],
+          "focused": null
+        },
+        "selectedSummaryColour": "rgb(67, 56, 202)",
+        "teamRowClick": {
+          "path": "/chat?id=manager_pmulocate_55ff_40b723be6112487bbb89d5877078c8dc",
+          "docked": true,
+          "drawer": false,
+          "picker": "project:project_e608839d-04a3-4b13-8871-80aab7051cbf",
+          "located": [],
+          "focused": null
+        },
+        "teamSummaryStillLocates": {
+          "path": "/chat?id=manager_pmulocate_55ff_40b723be6112487bbb89d5877078c8dc",
+          "docked": true,
+          "drawer": false,
+          "picker": "project:project_e608839d-04a3-4b13-8871-80aab7051cbf",
+          "located": [
+            "project-task-row-project_task_641b0deb-1402-4300-bbc5-d9b9e3faddc6"
+          ],
+          "focused": "project-task-row-project_task_641b0deb-1402-4300-bbc5-d9b9e3faddc6"
+        }
+      }
+    },
+    "PMU-022": {
+      "result": "Pass",
+      "description": "Show Task in Projects: hidden panel reopened docked; 900×800 drawer with reduced motion (static highlight); New chat start surface opens its tools",
+      "durationMs": 11696,
+      "details": {
+        "reopened": {
+          "path": "/chat?id=manager_pmulocate_55ff_40b723be6112487bbb89d5877078c8dc",
+          "docked": true,
+          "drawer": false,
+          "picker": "project:project_e608839d-04a3-4b13-8871-80aab7051cbf",
+          "located": [
+            "project-task-row-project_task_944cd898-8f37-4ba6-aabf-b870eb972491"
+          ],
+          "focused": "project-task-row-project_task_944cd898-8f37-4ba6-aabf-b870eb972491"
+        },
+        "drawer": {
+          "path": "/chat?id=manager_pmulocate_55ff_40b723be6112487bbb89d5877078c8dc",
+          "docked": false,
+          "drawer": true,
+          "picker": "project:project_e608839d-04a3-4b13-8871-80aab7051cbf",
+          "located": [
+            "project-task-row-project_task_944cd898-8f37-4ba6-aabf-b870eb972491"
+          ],
+          "focused": "project-task-row-project_task_944cd898-8f37-4ba6-aabf-b870eb972491"
+        },
+        "drawerGeometry": {
+          "centreOffset": 0,
+          "inView": true,
+          "atEdge": false,
+          "background": "rgb(238, 242, 255)",
+          "boxShadow": "rgb(99, 102, 241) 2px 0px 0px 0px inset",
+          "animation": "none"
+        },
+        "drawerLate": {
+          "centreOffset": 0,
+          "inView": true,
+          "atEdge": false,
+          "background": "rgb(238, 242, 255)",
+          "boxShadow": "rgb(99, 102, 241) 2px 0px 0px 0px inset",
+          "animation": "none"
+        },
+        "startSurfaceBefore": {
+          "path": "/chat",
+          "docked": false,
+          "drawer": false,
+          "picker": null,
+          "located": [],
+          "focused": null
+        },
+        "startSurface": {
+          "path": "/chat",
+          "docked": true,
+          "drawer": false,
+          "picker": "project:project_e608839d-04a3-4b13-8871-80aab7051cbf",
+          "located": [
+            "project-task-row-project_task_944cd898-8f37-4ba6-aabf-b870eb972491"
+          ],
+          "focused": "project-task-row-project_task_944cd898-8f37-4ba6-aabf-b870eb972491"
+        }
+      }
+    },
+    "PMU-023": {
+      "result": "Pass",
+      "description": "Show Task in Projects from pages with no right panel: Agents page (wide and narrow) opens the Agent run; Projects page opens the selected Team run without collapsing it; then locates",
+      "durationMs": 8469,
+      "details": {
+        "agentHost1440": {
+          "opened": {
+            "path": "/chat?id=manager_pmulocate_55ff_40b723be6112487bbb89d5877078c8dc",
+            "docked": true,
+            "drawer": false,
+            "picker": "temp",
+            "located": [
+              "project-task-row-ad_hoc_task_6b3f96d9-87ce-42d3-a699-67c2a1c5201e"
+            ],
+            "focused": "project-task-row-ad_hoc_task_6b3f96d9-87ce-42d3-a699-67c2a1c5201e"
+          },
+          "runCurrent": 1
+        },
+        "agentHost900": {
+          "opened": {
+            "path": "/chat?id=manager_pmulocate_55ff_40b723be6112487bbb89d5877078c8dc",
+            "docked": false,
+            "drawer": true,
+            "picker": "temp",
+            "located": [
+              "project-task-row-ad_hoc_task_6b3f96d9-87ce-42d3-a699-67c2a1c5201e"
+            ],
+            "focused": "project-task-row-ad_hoc_task_6b3f96d9-87ce-42d3-a699-67c2a1c5201e"
+          },
+          "runCurrent": 1
+        },
+        "teamHost": {
+          "teamOpened": {
+            "path": "/workspace",
+            "docked": true,
+            "drawer": false,
+            "picker": "project:project_45b362ad-c265-4352-b245-1b0cc35a8446",
+            "located": [
+              "project-task-row-project_task_11b274fa-10be-48c5-82cc-c282932ea399"
+            ],
+            "focused": "project-task-row-project_task_11b274fa-10be-48c5-82cc-c282932ea399"
+          },
+          "routeOfTeam": "/workspace",
+          "teamRowExpanded": "true",
+          "copyRowShown": 1,
+          "selection": {
+            "route": "/workspace",
+            "subject": "{\"kind\":\"team_run\",\"rootTeamRunId\":\"delivery_team_pmulocate_55ff_624dcfa3a5ea49eb82bec7f646647e0e\"}",
+            "focusedMember": "/manager",
+            "focusedRunId": "manager_pmulocate_55ff_3482dfe2519d4d2eba840a5c6a69fde2"
+          }
+        }
+      }
+    },
+    "PMU-024": {
+      "result": "Fail",
+      "description": "Live summaries without reload: rename; feed lost then reconnect re-read; follow-up Task by run ID (earlier in Done); cancelled just before the click → Cancelled lane and slate-300 pill, then the row leaves; Task delete; Project delete",
+      "durationMs": 3815,
+      "message": "[{\"message\":\"Variable \\\"$input\\\" got invalid value { projectId: \\\"project_ebb31f7e-fc6f-49f4-b54b-3ae2f0c39bdf\\\", taskId: \\\"project_task_9eed95b8-0b2e-450e-8cf3-027e4239f2db\\\", description: \\\"Write the changelog for 1.6\\\\nwith links\\\" }; Field \\\"title\\\" of required type \\\"String!\\\" was not provided.\",\"locations\":[{\"line\":1,\"column\":10}]}]",
+      "pages": [
+        {
+          "url": "http://127.0.0.1:49980/chat?id=manager_pmulocate_55ff_2a46dd6b2b3b418e93a499e4fd27b790",
+          "center": "MP\nCALL_TOOL:{\"name\":\"delegate_task\",\"argume…\nRunning\nYou\nCALL_TOOL:{\"name\":\"delegate_task\",\"arguments\":{\"recipient_address\":\"/release_notes_writer_pmulocate_55ff\",\"task_id\":\"project_task_9eed95b8-0b2e-450e-8cf3-027e4239f2db\"}}\nMP\nManager PmuLocate 55ff\n\nCALLED:{“content”:[{“type”:“text”,“text”:“{\"delegated\":true,\"target_kind\":\"agent\",\"target_agent_run_id\":\"release_notes_writer_pmulocate_55ff_e74004b2cd9142dc8b8c2953b04f7604\"}”}],“structuredContent”:{“delegated”:true,“target_kind”:“agent”,“target_agent_run_id”:“release_notes_writer_pmulocate_55ff_e74004b2cd9142dc8b8c2953b04f7604”}}\n\nYou\nCALL_T",
+          "console": [
+            "debug: [vite] connecting...",
+            "debug: [vite] connected.",
+            "log: serverStore: Initializing server config",
+            "log: serverStore: Not in Electron environment. Skipping server initialization.",
+            "info: <Suspense> is an experimental feature and its API will likely change.",
+            "log: ServerLoading: Component mounted with status: running",
+            "log: Workspace.vue: Mounted. Fetching server settings and loading profiles...",
+            "log: [useTerminalSession] Connecting to: ws://127.0.0.1:49979/ws/terminal/8c396b31-4910-4348-a90b-32a246385509",
+            "log: [useTerminalSession] Connected",
+            "log: Agent WebSocket connected",
+            "log: Agent WebSocket connected",
+            "log: Agent WebSocket connected",
+            "log: Agent WebSocket connected",
+            "log: Agent WebSocket connected",
+            "log: Agent WebSocket connected",
+            "log: Agent WebSocket connected",
+            "log: Agent WebSocket connected",
+            "log: Agent WebSocket connected",
+            "log: Agent WebSocket connected",
+            "log: Agent WebSocket connected",
+            "log: Agent WebSocket connected",
+            "log: Agent WebSocket connected",
+            "log: Agent WebSocket connected",
+            "log: Agent WebSocket connected",
+            "log: Agent WebSocket connected",
+            "log: Agent WebSocket connected",
+            "log: Agent WebSocket connected",
+            "log: Agent WebSocket connected",
+            "log: Agent WebSocket connected",
+            "log: [useTerminalSession] Disconnected: 1005 "
+          ]
+        }
+      ]
+    },
+    "PMU-025": {
+      "result": "Pass",
+      "description": "zh-CN: summary tooltip / accessible name and the row's accessible name; locate",
+      "durationMs": 3172,
+      "details": {
+        "text": "Ship the copy Task summary in the tree",
+        "title": "在项目中显示任务：Ship the copy Task summary in the tree",
+        "aria": "在项目中显示任务：Ship the copy Task summary in the tree",
+        "row": "临时任务智能体，release notes writer pmulocate 55ff，第 1 级，空闲, 由 manager pmulocate 55ff 启动，/release_notes_writer_pmulocate_55ff, 任务：Ship the copy Task summary in the tree",
+        "located": {
+          "path": "/chat?id=manager_pmulocate_55ff_40b723be6112487bbb89d5877078c8dc",
+          "docked": true,
+          "drawer": false,
+          "picker": "project:project_e608839d-04a3-4b13-8871-80aab7051cbf",
+          "located": [
+            "project-task-row-project_task_944cd898-8f37-4ba6-aabf-b870eb972491"
+          ],
+          "focused": "project-task-row-project_task_944cd898-8f37-4ba6-aabf-b870eb972491"
+        }
+      }
+    }
+  },
+  "cleanup": {
+    "browser": "closed",
+    "frontend": {
+      "pid": 83293,
+      "status": "terminated",
+      "exit": "SIGTERM"
+    },
+    "backend": {
+      "pid": 83914,
+      "status": "terminated",
+      "exit": 0
+    },
+    "dataRootRemoved": true
+  },
+  "failures": [
+    {
+      "id": "PMU-024",
+      "message": "[{\"message\":\"Variable \\\"$input\\\" got invalid value { projectId: \\\"project_ebb31f7e-fc6f-49f4-b54b-3ae2f0c39bdf\\\", taskId: \\\"project_task_9eed95b8-0b2e-450e-8cf3-027e4239f2db\\\", description: \\\"Write the changelog for 1.6\\\\nwith links\\\" }; Field \\\"title\\\" of required type \\\"String!\\\" was not provided.\",\"locations\":[{\"line\":1,\"column\":10}]}]"
+    }
+  ],
+  "feed": {
+    "total": 355,
+    "byType": {
+      "connected": 2,
+      "project_upserted": 119,
+      "task_upserted": 141,
+      "task_worker_status": 91,
+      "task_removed": 2
+    }
+  },
+  "stack": {
+    "backendUrl": "http://127.0.0.1:49979",
+    "frontendUrl": "http://127.0.0.1:49980",
+    "dataRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-AoRm82"
+  },
+  "browserVersion": "156.0.8078.47",
+  "warmup": {
+    "reloadsDuringWarmup": 0
+  },
+  "result": "Fail",
+  "finishedAt": "2026-10-25T10:12:48.820Z"
+}

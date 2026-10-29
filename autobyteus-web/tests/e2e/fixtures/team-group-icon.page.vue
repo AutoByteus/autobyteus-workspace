@@ -85,7 +85,8 @@ tree.rootOrg.taskExecutions = [...tree.rootOrg.taskExecutions, {
   address: '/product_team', teamRunId: 'product-run', delegatorAgentRunId: 'agent-director', startedAt: tree.createdAt, taskExecutions: [],
   members: [{ address: '/product_team/lead', agentRunId: 'product-lead', platformAgentRunId: null }],
   source: { kind: 'agent_team', teamDefinitionId: 'product-team', coordinatorAddress: '/product_team/lead', handoffs: [],
-    members: [{ address: '/product_team/lead', agentDefinitionId: 'lead' }], defaultLaunchConfiguration: tree.rootOrg.defaultLaunchConfiguration },
+    members: [{ address: '/product_team/lead', agentDefinitionId: 'lead', launchConfiguration: tree.rootOrg.defaultLaunchConfiguration, followsTeam: true }],
+    defaultLaunchConfiguration: tree.rootOrg.defaultLaunchConfiguration },
 }];
 const groups = [{ stableKey: 'agent_org_definition:org-definition', definitionId: 'org-definition', name: 'Preview Org', runs: [{
   stableKey: 'agent_org_run:org-run', rootSubjectKind: 'agent_org', rootRunId: 'org-run', createdAt: tree.createdAt,
@@ -97,7 +98,7 @@ const state = { ...treeState, agentOrgContextFor: () => null, isAgentOrgTerminat
 const actions = { onInspectAgentOrgExecution: () => inspections.value++, onSelectAgentOrgMember: () => selections.value++ } as any;
 const avatars = { showOrgAvatar: () => false, getOrgAvatarUrl: () => '', onOrgAvatarError: () => {} };
 const worker: TaskRootView = { kind: 'team', recipientAddress: '/software_engineering_team', ingressAgentRunId: 'preview-worker', teamRunId: 'preview-team', hostRoot: { kind: 'agent', runId: 'preview-host' }, start: 'started', startError: null, closed: false, status: 'idle' };
-const memory = { latestMemoryAt: null, hasWorkingContext: true, hasEpisodic: false, hasSemantic: false, hasRawTraces: false, hasRawArchive: false };
+const memory = { latestMemoryAt: null, hasWorkJournal: true, hasRawTraces: false, hasRawArchive: false };
 const configured: CollaborationMemoryGroup = { teamRunId: 'configured', address: '/review_team', displayName: 'Review Team', kind: 'CONFIGURED_TEAM', startedAt: null };
 const task: CollaborationMemoryGroup = { ...configured, teamRunId: 'task', kind: 'TASK_TEAM' };
 // A task Team that a member of the `task` Team copy delegated in turn (Teams are flat).

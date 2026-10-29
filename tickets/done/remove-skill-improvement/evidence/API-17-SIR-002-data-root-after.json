@@ -1,0 +1,22 @@
+{
+  "deleted": [
+    "memory/skill_improvement",
+    "memory/self_evolution",
+    "memory/agents/retrospective_skill_improver_1111",
+    "memory/agents/retrospective_skill_improver_2222",
+    "memory/agents/retrospective_skill_improver_3333",
+    "memory/agents/helper_run_5555",
+    "memory/agents/upgrade_agent_dc8f_b71cc534b2d2453ca124c8563c784f51/skill_improvement",
+    "memory/agent_teams/upgrade_team_dc8f_2cf00e8d38ec47ce9cfb67cc80ba2325/upgrade_member_dc8f_3bd88e75e97649ada9199c5f55ac96e1/skill_improvement",
+    "memory/agent_teams/upgrade_team_dc8f_2cf00e8d38ec47ce9cfb67cc80ba2325/upgrade_lead_dc8f_7deff1332d0940719c0cd9b2c5675959/self_evolution",
+    "agents/autobyteus-retrospective-skill-improver"
+  ],
+  "stillThere": [],
+  "changed": [],
+  "secondChanged": [],
+  "secondAdded": [],
+  "counts": {
+    "featurePaths": 10,
+    "keptFiles": 1201
+  }
+}

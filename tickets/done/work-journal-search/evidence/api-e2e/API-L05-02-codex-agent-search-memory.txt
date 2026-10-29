@@ -1,0 +1,26 @@
+# API-L05: AC-012, AC-002 (agent steps), AC-003, AC-004, AC-006 (own run left out) on the Codex entry form (MCP adapter, session owner run as the asking run)
+# Desktop iso-53567-504c; Project Task Manager with search_memory selected (API-L05-01-definition-search-memory-selected.png; agentDefinitions → 17 tools incl. search_memory); runtime Codex App Server; CODEX_HOME throwaway home
+# Every chat started from the UI (Agents → Run), one chat per question; complete index (meaning 7429/7429); 2026-10-26 18:56–19:41 UTC
+# Tool calls per run: private file autobyteus-delivery-receipts/work-journal-search-evidence/api-e2e/API-L05-codex-runs-tool-calls.txt (question texts, results and answers stay private; here: IDs, ranks, steps, redacted answers)
+# Ranks: position of the accepted run in each search_memory result ("asking run" never appears in its own results: checked in every result list)
+
+## With the user's phrasing "Please search your memory: …" (the user's direction during this run: that is how a user asks for memory)
+| Question | Model | Calls (search / read) | Accepted run in results | Answer |
+| Q07 (Chinese, racing game) | GPT-6-Sol medium | 1 / 1 | #2 (daily_assistant_6bf3d9…); its journal read at the matched lines | Right run, day (15 Aug 2026) and recorded game path, cites the Daily Assistant journal — 2 steps |
+| Q13 (when the desktop shell framework was bumped) | GPT-6-Sol medium | 2 / 0 | #3, then #2 (codex_df5ad5c0…) | Version and date from the accepted run's matches ("Electron 42.4.1 … June 20, 2026 …") — answered from snippets |
+| codename that exists in no earlier run ("orchidtundra5520") | GPT-6-Sol medium | 1 / 1 | — (only an earlier test chat that asked the same question) | "I don’t remember a prior project called orchidtundra5520. My memory search found only your message just now …" — honest, nothing invented |
+
+## The user's own words without "search your memory"
+| Q01 (DDNS, AC-003) | GPT-6.1-Sol low | 2 / 1 | #5, then #1 (codex_45ce…); read two other runs instead | Answered from a later Project Task Manager note; did not open the DDNS run |
+| Q01 (DDNS) | GPT-6-Sol medium | 7 / 6 | #6 … #1 (codex_45ce…); read the DDNS run's work_journal_000004.md at several ranges | Right run; router-based dynamic DNS with the provider named (redacted) — many steps |
+| Q07 (Chinese) | GPT-6.1-Sol low and GPT-6-Sol medium | 0 search_memory | — | Looked in Projects and the Codex login's ChatGPT connectors (sites.list_sites, magicpath.list_projects; read-only lists), then asked the user |
+| Q07 in English | GPT-6-Sol medium | 0 | — | Same as above |
+| Q13 | GPT-6-Sol medium | 0 | — | Asked for a repository |
+Observation O-1: without "memory" in the request, the opted-in Codex agent called search_memory only when the user said "Do you remember …" (Q01).
+
+## Ranking noise seen by agents
+In Q01 the runs above the DDNS run were this ticket's own design run (quotes the question) and earlier chats that asked the same question (the user's Project Task Manager on 21 Oct, and this run's own test chats); results are pointers, and the asking run itself is always left out.
+
+## Side effects (disclosed)
+- Following a pointer, the Q07 agent ran `ls -l` on the game path recorded in the 15 Aug journal (a path under the user's real ~/.autobyteus); read-only stat, nothing written.
+- The Codex login exposes the user's ChatGPT connectors; two unprompted chats listed Sites and MagicPath projects (read-only).

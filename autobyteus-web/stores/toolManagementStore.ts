@@ -1,12 +1,18 @@
 import { defineStore } from 'pinia';
 import { getApolloClient } from '~/utils/apolloClient'
 import { GET_TOOLS, GET_TOOLS_GROUPED_BY_CATEGORY } from '~/graphql/queries/toolQueries';
-import { GET_MCP_SERVERS, PREVIEW_MCP_SERVER_TOOLS } from '~/graphql/queries/mcpServerQueries';
+import {
+  GET_MCP_SECRET_MOVE_CANDIDATES,
+  GET_MCP_SECRET_SUGGESTION_RULE,
+  GET_MCP_SERVERS,
+  PREVIEW_MCP_SERVER_TOOLS,
+} from '~/graphql/queries/mcpServerQueries';
 import { 
   CONFIGURE_MCP_SERVER, 
   DELETE_MCP_SERVER,
   DISCOVER_AND_REGISTER_MCP_SERVER_TOOLS,
-  IMPORT_MCP_SERVER_CONFIGS
+  IMPORT_MCP_SERVER_CONFIGS,
+  MOVE_MCP_SECRETS_TO_VAULT,
 } from '~/graphql/mutations/mcpServerMutations';
 import { RELOAD_TOOL_SCHEMA } from '~/graphql/mutations/toolMutations';
 import type {
@@ -19,7 +25,16 @@ import type {
   PreviewMcpServerToolsQueryVariables,
   ReloadToolSchemaMutation,
   ReloadToolSchemaMutationVariables,
+  ImportMcpServerConfigsMutation,
+  ImportMcpServerConfigsMutationVariables,
+  GetMcpSecretSuggestionRuleQuery,
+  GetMcpSecretMoveCandidatesQuery,
+  MoveMcpSecretsToVaultMutation,
+  MoveMcpSecretsToVaultMutationVariables,
+  ToolOriginEnum,
 } from '~/generated/graphql';
+import type { McpSecretMatch, McpSecretSuggestionRule } from '~/utils/mcp/mcpConfigRows';
+import type { McpSecretMoveCandidate, McpSecretMoveResult, McpServer, McpServerField } from '~/types/mcpServer';
 
 // --- Interfaces ---
 
@@ -48,25 +63,11 @@ export interface ToolCategoryGroup {
   tools: Tool[];
 }
 
-export interface McpServer {
-  __typename: 'StdioMcpServerConfig' | 'StreamableHttpMcpServerConfig';
-  serverId: string;
-  transportType: 'STDIO' | 'STREAMABLE_HTTP';
-  enabled: boolean;
-  toolNamePrefix: string;
-  // Stdio
-  command?: string;
-  args?: string[];
-  env?: Record<string, string>;
-  cwd?: string;
-  // HTTP
-  url?: string;
-  token?: string;
-  headers?: Record<string, string>;
-}
+/** A previewed tool: the preview query returns only its name and description. */
+type PreviewedTool = Pick<Tool, 'name' | 'description'>;
 
 interface PreviewResult {
-  tools: Tool[];
+  tools: PreviewedTool[];
   isError: boolean;
   message: string;
 }
@@ -80,6 +81,10 @@ interface ToolManagementState {
   loading: boolean;
   error: any;
   previewResult: PreviewResult | null;
+  /** The server's secret suggestion rule (read once; the web never defines it). */
+  secretSuggestionRule: McpSecretSuggestionRule | null;
+  /** Plain values that look like secrets, offered for the move to the vault. */
+  secretMoveCandidates: McpSecretMoveCandidate[];
 }
 
 export const useToolManagementStore = defineStore('toolManagement', {
@@ -92,6 +97,8 @@ export const useToolManagementStore = defineStore('toolManagement', {
     loading: false,
     error: null,
     previewResult: null,
+    secretSuggestionRule: null,
+    secretMoveCandidates: [],
   }),
 
   getters: {
@@ -102,6 +109,8 @@ export const useToolManagementStore = defineStore('toolManagement', {
     getLoading: (state): boolean => state.loading,
     getError: (state): any => state.error,
     getPreviewResult: (state): PreviewResult | null => state.previewResult,
+    getSecretSuggestionRule: (state): McpSecretSuggestionRule | null => state.secretSuggestionRule,
+    getSecretMoveCandidates: (state): McpSecretMoveCandidate[] => state.secretMoveCandidates,
 
     // Getter that accepts an argument
     getToolsForServer: (state) => {
@@ -122,7 +131,8 @@ export const useToolManagementStore = defineStore('toolManagement', {
         const client = getApolloClient()
         const { data, errors } = await client.query<GetToolsGroupedByCategoryQuery, GetToolsGroupedByCategoryQueryVariables>({
           query: GET_TOOLS_GROUPED_BY_CATEGORY,
-          variables: { origin: 'LOCAL' },
+          // The enum's wire value; the generated enum is imported as a type only, so its module stays out of the bundle.
+          variables: { origin: 'LOCAL' as ToolOriginEnum },
           fetchPolicy: 'network-only',
         });
 
@@ -158,9 +168,79 @@ export const useToolManagementStore = defineStore('toolManagement', {
 
         const servers = (data?.mcpServers ?? []) as McpServer[];
         this.mcpServers = servers;
+        await this.fetchMcpSecretMoveCandidates();
       } catch (e) {
         this.error = e;
         console.error("Failed to fetch MCP servers:", e);
+        throw e;
+      } finally {
+        this.loading = false;
+      }
+    },
+
+    /** The secret suggestion rule; a failure leaves it unset (the server still forces always-secret fields). */
+    async fetchMcpSecretSuggestionRule(): Promise<McpSecretSuggestionRule | null> {
+      if (this.secretSuggestionRule) return this.secretSuggestionRule;
+      try {
+        const client = getApolloClient()
+        const { data, errors } = await client.query<GetMcpSecretSuggestionRuleQuery>({
+          query: GET_MCP_SECRET_SUGGESTION_RULE,
+          fetchPolicy: 'network-only',
+        });
+        if (errors && errors.length > 0) throw new Error(errors.map(e => e.message).join(', '));
+        const rule = data?.mcpSecretSuggestionRule;
+        this.secretSuggestionRule = rule
+          ? { nameKeywords: [...rule.nameKeywords], valuePrefixes: [...rule.valuePrefixes], alwaysSecretFields: [...rule.alwaysSecretFields] }
+          : null;
+      } catch (e) {
+        console.error('Failed to fetch the MCP secret suggestion rule:', e);
+      }
+      return this.secretSuggestionRule;
+    },
+
+    /** The move candidates; a failure leaves the list empty (the banner then stays hidden). */
+    async fetchMcpSecretMoveCandidates() {
+      try {
+        const client = getApolloClient()
+        const { data, errors } = await client.query<GetMcpSecretMoveCandidatesQuery>({
+          query: GET_MCP_SECRET_MOVE_CANDIDATES,
+          fetchPolicy: 'network-only',
+        });
+        if (errors && errors.length > 0) throw new Error(errors.map(e => e.message).join(', '));
+        this.secretMoveCandidates = (data?.mcpSecretMoveCandidates ?? []).map(candidate => ({
+          serverId: candidate.serverId,
+          field: candidate.field,
+          matchedBy: candidate.matchedBy as McpSecretMatch,
+        }));
+      } catch (e) {
+        this.secretMoveCandidates = [];
+        console.error('Failed to fetch MCP secret move candidates:', e);
+      }
+    },
+
+    /** Moves the selected plain values to the vault (the server writes a backup first), then refreshes the list. */
+    async moveMcpSecretsToVault(selection: McpServerField[]): Promise<McpSecretMoveResult> {
+      this.loading = true;
+      this.error = null;
+      try {
+        const client = getApolloClient()
+        const { data, errors } = await client.mutate<MoveMcpSecretsToVaultMutation, MoveMcpSecretsToVaultMutationVariables>({
+          mutation: MOVE_MCP_SECRETS_TO_VAULT,
+          variables: { selection: selection.map(({ serverId, field }) => ({ serverId, field })) },
+        });
+        if (errors && errors.length > 0) throw new Error(errors.map(e => e.message).join(', '));
+        const result = data?.moveMcpSecretsToVault;
+        if (!result) throw new Error('Failed to move MCP values to the vault: No data returned');
+        this.loading = false;
+        await this.fetchMcpServers();
+        return {
+          backupPath: result.backupPath ?? null,
+          moved: result.moved.map(({ serverId, field }) => ({ serverId, field })),
+          skipped: result.skipped.map(({ serverId, field }) => ({ serverId, field })),
+          serversFailingAfterMove: result.serversFailingAfterMove.map(({ serverId, reason }) => ({ serverId, reason })),
+        };
+      } catch (e) {
+        this.error = e;
         throw e;
       } finally {
         this.loading = false;
@@ -203,7 +283,7 @@ export const useToolManagementStore = defineStore('toolManagement', {
         const client = getApolloClient()
         const { data, errors } = await client.query<GetToolsQuery, GetToolsQueryVariables>({
           query: GET_TOOLS,
-          variables: { origin: 'MCP' },
+          variables: { origin: 'MCP' as ToolOriginEnum },
           fetchPolicy: 'network-only',
         });
 
@@ -239,7 +319,7 @@ export const useToolManagementStore = defineStore('toolManagement', {
             }
 
             this.previewResult = {
-                tools: (data?.previewMcpServerTools ?? []) as Tool[],
+                tools: data?.previewMcpServerTools ?? [],
                 isError: false,
                 message: ''
             };
@@ -348,7 +428,7 @@ export const useToolManagementStore = defineStore('toolManagement', {
       this.error = null;
       try {
         const client = getApolloClient()
-        const { data, errors } = await client.mutate({
+        const { data, errors } = await client.mutate<ImportMcpServerConfigsMutation, ImportMcpServerConfigsMutationVariables>({
           mutation: IMPORT_MCP_SERVER_CONFIGS,
           variables: { jsonString },
         });
@@ -357,7 +437,7 @@ export const useToolManagementStore = defineStore('toolManagement', {
         }
         if (data?.importMcpServerConfigs) {
           // Refresh the list of servers if at least one was successfully imported.
-          if (data.importMcpServerConfigs.imported_count > 0) {
+          if (data.importMcpServerConfigs.importedCount > 0) {
             await this.fetchMcpServers();
           }
           return data.importMcpServerConfigs;

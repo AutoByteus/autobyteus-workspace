@@ -1,0 +1,234 @@
+# IMP-27 evaluation after SR-006 (match facts): gates 1 and 2, words not found against the census (AC-001, AC-002, AC-007)
+# Command: env -i PATH="$PATH" HOME=/tmp/wjs-eval/home TMPDIR="$TMPDIR" node autobyteus-server-ts/scripts/evaluate-memory-search.mjs --memory-dir /tmp/wjs-copy/memory --index-dir /tmp/wjs-eval/index --model granite-embedding-small-english-r2 --questions <private file built from the private question set: Q30 left out, Q13 with its two rephrasings; 47 questions> --asking-run solution_designer_80624588913d473bac3ef7d8c3d4d305 --out <private>
+# Commit: e7a15930c3 (dist built at it, IMP-26)
+# Environment: macOS (Darwin 25.5.0, arm64, M1 Max), Node v22.23.1; isolated copy (3,680 runs, 7,426 cards, 1,084,815 chunks; index complete)
+# Date: 2026-10-27
+# Only IDs and numbers; the questions stay private.
+
+{
+  "questions": 31,
+  "gate1": {
+    "passed": 31,
+    "oneSearchTop10": 30,
+    "withinThreeSearches": 31
+  },
+  "gate2": {
+    "number1": 18,
+    "top3": 26,
+    "top3Share": 0.8387096774193549,
+    "mrr": 0.7288018433179723,
+    "p90Ms": 605,
+    "maxMs": 1041
+  },
+  "meaningPointers": {
+    "total": 156,
+    "textChunk": 27,
+    "cardPart": 33,
+    "firstRequest": 96,
+    "emptySnippet": 0
+  },
+  "unmaskedSecrets": 0,
+  "wordsNotFound": {
+    "questions": 47,
+    "mismatches": [],
+    "offTopic": 12,
+    "offTopicUnnamed": [
+      "N02"
+    ]
+  },
+  "perQuestion": [
+    {
+      "id": "Q01",
+      "rank": 1,
+      "foundAtSearch": 1,
+      "ms": 147
+    },
+    {
+      "id": "Q02",
+      "rank": 1,
+      "foundAtSearch": 1,
+      "ms": 89
+    },
+    {
+      "id": "Q03",
+      "rank": 1,
+      "foundAtSearch": 1,
+      "ms": 262
+    },
+    {
+      "id": "Q04",
+      "rank": 8,
+      "foundAtSearch": 1,
+      "ms": 115
+    },
+    {
+      "id": "Q05",
+      "rank": 1,
+      "foundAtSearch": 1,
+      "ms": 76
+    },
+    {
+      "id": "Q06",
+      "rank": 1,
+      "foundAtSearch": 1,
+      "ms": 77
+    },
+    {
+      "id": "Q07",
+      "rank": 5,
+      "foundAtSearch": 1,
+      "ms": 94
+    },
+    {
+      "id": "Q08",
+      "rank": 2,
+      "foundAtSearch": 1,
+      "ms": 222
+    },
+    {
+      "id": "Q09",
+      "rank": 2,
+      "foundAtSearch": 1,
+      "ms": 440
+    },
+    {
+      "id": "Q10",
+      "rank": 1,
+      "foundAtSearch": 1,
+      "ms": 99
+    },
+    {
+      "id": "Q11",
+      "rank": 1,
+      "foundAtSearch": 1,
+      "ms": 101
+    },
+    {
+      "id": "Q12",
+      "rank": 1,
+      "foundAtSearch": 1,
+      "ms": 148
+    },
+    {
+      "id": "Q13",
+      "rank": null,
+      "foundAtSearch": 3,
+      "ms": 235
+    },
+    {
+      "id": "Q14",
+      "rank": 8,
+      "foundAtSearch": 1,
+      "ms": 729
+    },
+    {
+      "id": "Q15",
+      "rank": 1,
+      "foundAtSearch": 1,
+      "ms": 428
+    },
+    {
+      "id": "Q16",
+      "rank": 1,
+      "foundAtSearch": 1,
+      "ms": 468
+    },
+    {
+      "id": "Q17",
+      "rank": 1,
+      "foundAtSearch": 1,
+      "ms": 605
+    },
+    {
+      "id": "Q18",
+      "rank": 1,
+      "foundAtSearch": 1,
+      "ms": 501
+    },
+    {
+      "id": "Q19",
+      "rank": 1,
+      "foundAtSearch": 1,
+      "ms": 110
+    },
+    {
+      "id": "Q20",
+      "rank": 2,
+      "foundAtSearch": 1,
+      "ms": 460
+    },
+    {
+      "id": "Q21",
+      "rank": 2,
+      "foundAtSearch": 1,
+      "ms": 216
+    },
+    {
+      "id": "Q22",
+      "rank": 1,
+      "foundAtSearch": 1,
+      "ms": 136
+    },
+    {
+      "id": "Q23",
+      "rank": 1,
+      "foundAtSearch": 1,
+      "ms": 124
+    },
+    {
+      "id": "Q24",
+      "rank": 1,
+      "foundAtSearch": 1,
+      "ms": 402
+    },
+    {
+      "id": "Q25",
+      "rank": 1,
+      "foundAtSearch": 1,
+      "ms": 1041
+    },
+    {
+      "id": "Q26",
+      "rank": 2,
+      "foundAtSearch": 1,
+      "ms": 1014
+    },
+    {
+      "id": "Q27",
+      "rank": 7,
+      "foundAtSearch": 1,
+      "ms": 397
+    },
+    {
+      "id": "Q28",
+      "rank": 2,
+      "foundAtSearch": 1,
+      "ms": 228
+    },
+    {
+      "id": "Q29",
+      "rank": 1,
+      "foundAtSearch": 1,
+      "ms": 100
+    },
+    {
+      "id": "Q31",
+      "rank": 2,
+      "foundAtSearch": 1,
+      "ms": 235
+    },
+    {
+      "id": "Q32",
+      "rank": 2,
+      "foundAtSearch": 1,
+      "ms": 514
+    }
+  ]
+}
+
+## compared with IMP-23 (default model, before SR-006)
+gate 1 31/31 (30 in one search), #1 18, top 3 26/31, MRR 0.7288: identical (ranking unchanged). Latency p90 605 ms, max 1,041 ms (host under load).
+
+## words not found (AC-007, R-14)
+mismatches []: for all 47 questions, every named word occurs in no journal and every word the census finds absent is named.
+Off-topic: 11 of 12 name their absent words. N02 names none: its words all occur in memory; its one rare word occurs only in the asking run's journal (the run that wrote the question file), which counts for absence by R-15. A question-set matter: N02 needs a key word that occurs nowhere, or another kind.

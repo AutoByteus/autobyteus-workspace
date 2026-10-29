@@ -29,6 +29,9 @@ import {
   type MemberRunStateCommit,
 } from '~/services/runHydration/memberRunStateHydration'
 import { fetchRunFileChanges } from '~/services/runHydration/runFileChangeHydrationService'
+import { createRemoteAgentContext } from '~/services/remoteRuns/remoteAgentContext'
+import { remoteTaskExecutionRunIdOf } from '@autobyteus/agent-presentation-contracts'
+import { useRemoteRunsStore } from '~/stores/remoteRunsStore'
 import {
   AgentOrgExecutionContext,
   type AgentOrgContextEntry,
@@ -154,7 +157,9 @@ export const stageAgentOrgExecutionContext = async (input: Readonly<{
       seed,
       await fetchMemberRunState({
         fetchProjection: () => fetchProjection(input.orgRunId, seed),
-        fetchFileChanges: () => fetchRunFileChanges(seed.agentRunId),
+        fetchFileChanges: () => fetchRunFileChanges({
+          kind: 'agentOrgMember', orgRunId: input.orgRunId, memberAddress: seed.address, agentRunId: seed.agentRunId,
+        }),
       }),
     )
     return Object.freeze({
@@ -167,9 +172,14 @@ export const stageAgentOrgExecutionContext = async (input: Readonly<{
     })
   }))
   if (input.isCurrent && !input.isCurrent()) throw new Error('AgentOrg hydration ownership released.')
+  // autobyteus-278: the agents of the runs this Org delegated to other nodes; each is read from its node when selected.
+  const remote = [...new AgentOrgExecutionViewIndex(input.view).remoteAgents.values()].map((agent) => Object.freeze({
+    entry: Object.freeze({ agentRunId: agent.agentRunId, memberAddress: agent.address,
+      context: createRemoteAgentContext(agent.agentRunId, agent.address, agent.execution.started_at) }) satisfies AgentOrgContextEntry,
+  }))
   const context = new AgentOrgExecutionContext({
     ...input,
-    entries: hydrated.map((item) => item.entry),
+    entries: [...hydrated, ...remote].map((item) => item.entry),
   })
   const memberRunStates = hydrated.map((item) => item.memberRunState)
   // Commits every member's staged state (activities, then artifacts) when the caller publishes the context.
@@ -178,4 +188,35 @@ export const stageAgentOrgExecutionContext = async (input: Readonly<{
       throw new Error(`AgentOrg activity changed before '${input.orgRunId}' hydration could commit.`)
     }
   } }
+}
+
+/**
+ * autobyteus-278: loads one remote child's stored conversation into the published Org context, read from its node by
+ * this node's server (the same member-projection query). Its files stay on its node. A load whose context is no
+ * longer published writes nothing; a failure marks the node unreachable for the opened view's notice.
+ */
+export const hydrateRemoteOrgMember = async (input: Readonly<{
+  orgRunId: string
+  context: AgentOrgExecutionContext
+  agentRunId: string
+  isCurrent(): boolean
+}>): Promise<void> => {
+  const remote = input.context.index.remoteAgents.get(input.agentRunId)
+  const agent = input.context.getAgentContext(input.agentRunId)
+  if (!remote || !agent) return
+  const remoteRuns = useRemoteRunsStore()
+  const runId = remoteTaskExecutionRunIdOf(remote.execution)
+  const seed: AgentSeed = Object.freeze({ address: remote.address, agentRunId: remote.agentRunId, agentDefinitionId: '',
+    launch: { runtimeKind: 'autobyteus', llmModelIdentifier: '', llmConfig: null, autoExecuteTools: true, workspaceRootPath: null } as AgentSeed['launch'] })
+  let state: MemberRunState<Projection>
+  try {
+    state = await fetchMemberRunState({ fetchProjection: () => fetchProjection(input.orgRunId, seed), fetchFileChanges: () => Promise.resolve([]) })
+  } catch (cause) {
+    if (input.isCurrent()) remoteRuns.markReachable(runId, false)
+    throw cause
+  }
+  if (!input.isCurrent()) return
+  remoteRuns.markReachable(runId, true)
+  commitMemberRunStates([applyProjection(agent, seed, state)])
+  input.context.markRemoteAgentLoaded(input.agentRunId)
 }

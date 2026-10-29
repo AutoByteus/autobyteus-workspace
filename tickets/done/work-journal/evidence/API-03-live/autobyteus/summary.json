@@ -1,0 +1,20 @@
+{
+  "runId": "work_journal_autobyteus_3fdc9dd6_7b40_4290_a5d4_211023ca6103460ba3853e4f6808fc10",
+  "runtimeKind": "autobyteus",
+  "model": "qwen/qwen3.6-35b-a3b:lmstudio@127.0.0.1:1234",
+  "toolCalls": [
+    "run_bash",
+    "read_file",
+    "read_file",
+    "write_file",
+    "edit_file"
+  ],
+  "toolResults": 5,
+  "toolEntries": [
+    "Command: ls → exit 0",
+    "Command: cat -n notes.txt → failed",
+    "Command: cat -n /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-live-PQTdW8/workspace-autobyteus/notes.txt → ok",
+    "Write file: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-live-PQTdW8/workspace-autobyteus/out.txt (1 lines) → ok",
+    "Edit file: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/work-journal-live-PQTdW8/workspace-autobyteus/out.txt (+1 −1) → ok"
+  ]
+}

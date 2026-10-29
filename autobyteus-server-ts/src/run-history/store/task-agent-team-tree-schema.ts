@@ -20,7 +20,8 @@ import { parseTaskAgentSection } from "./task-agent-own-file-schema.js";
 
 const parseMember = (value: unknown, label: string): TaskAgentTeamMemberNode => {
   const member = objectRecord(value, label);
-  requireKeys(member, ["address", "agentDefinitionId", "agentRunId", "platformAgentRunId"], label);
+  requireKeys(member, ["address", "agentDefinitionId", "agentRunId", "platformAgentRunId", "launchConfiguration", "followsTeam"], label);
+  if (typeof member.followsTeam !== "boolean") throw new Error(`${label}.followsTeam must be boolean.`);
   return {
     address: canonicalNonRootAddress(member.address, `${label}.address`),
     agentDefinitionId: requiredString(member.agentDefinitionId, `${label}.agentDefinitionId`),
@@ -28,7 +29,9 @@ const parseMember = (value: unknown, label: string): TaskAgentTeamMemberNode => 
     platformAgentRunId: nullableString(member.platformAgentRunId, `${label}.platformAgentRunId`),
     role: null,
     description: null,
-    ...parseOptionalLaunchFields(member, { launch: "launchConfiguration", source: "launchSource" }, label),
+    launchConfiguration: parseLaunchConfiguration(member.launchConfiguration, `${label}.launchConfiguration`),
+    followsTeam: member.followsTeam,
+    ...parseOptionalLaunchFields(member, { source: "launchSource" }, label),
     ...parseOptionalUserLaunchSelection(member, "userLaunchSelection", label),
   };
 };

@@ -563,8 +563,9 @@ describeCodexStandaloneDirect(
         toolAutoExecute: true,
       });
 
-      const senderAppServerClient =
-        await getCodexAppServerClientManager().getClient(senderWorkspaceRoot);
+      // The test holds its own lease on the sender workspace's App Server client (released after the runs end).
+      const senderClientLease = getCodexAppServerClientManager().beginAcquire(senderWorkspaceRoot);
+      const senderAppServerClient = await senderClientLease.acquire();
       let evidenceSequence = 0;
       const mcpStartupObservations: McpStartupObservation[] = [];
       const unbindMcpStartupObserver = senderAppServerClient.onNotification(
@@ -760,8 +761,9 @@ describeCodexStandaloneDirect(
           accepted: false,
           code: "TARGET_AGENT_RUN_NOT_ACTIVE",
           message: expect.stringContaining(`No running agent has the run id '${targetRunId}'`),
-          target_agent_run_id: null,
         });
+        // autobyteus-260 REQ-001: a refusal names no receiver; the field is absent, not null.
+        expect(inactivePublicResult).not.toHaveProperty("target_agent_run_id");
         expect(inactivePublicResult).not.toHaveProperty("result");
         console.log(
           "[LIVE-002 same-thread Agent Tools MCP call results]",
@@ -782,6 +784,7 @@ describeCodexStandaloneDirect(
         if (!targetTerminated) {
           await terminateAgentRun(targetRunId).catch(() => undefined);
         }
+        await senderClientLease.release();
       }
     }, 300_000);
   },

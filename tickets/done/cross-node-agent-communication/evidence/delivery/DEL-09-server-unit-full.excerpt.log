@@ -1,0 +1,14 @@
+# DEL-09 server unit full | integrated a58fbab73c | pnpm -C autobyteus-server-ts test:unit (excerpt: failures and summary)
+ ❯ tests/unit/projects/project-task-index-status.test.ts (8 tests | 1 failed) 1946ms
+     × indexes a Project soon after a Task create or edit with no search, one run per burst (REQ-011, AC-015) 145ms
+ FAIL  tests/unit/projects/project-task-index-status.test.ts > Project index status and index after writes > indexes a Project soon after a Task create or edit with no search, one run per burst (REQ-011, AC-015)
+AssertionError: expected "sync" to not be called at all, but actually been called 1 times
+ Test Files  1 failed | 776 passed | 4 skipped (781)
+      Tests  1 failed | 6392 passed | 7 skipped (6400)
+server-unit exit=1
+## project-task-index-status.test.ts alone, 5 runs (FU-009)
+      Tests  8 passed (8)
+      Tests  8 passed (8)
+      Tests  8 passed (8)
+      Tests  8 passed (8)
+      Tests  8 passed (8)

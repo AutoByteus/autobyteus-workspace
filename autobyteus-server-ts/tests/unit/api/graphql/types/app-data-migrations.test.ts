@@ -6,6 +6,7 @@ import { AppDataMigrationRecoveryAction } from "../../../../../src/app-data-migr
 const runnerMock = vi.hoisted(() => ({
   listStatuses: vi.fn(),
   runMigration: vi.fn(),
+  capabilityReadiness: vi.fn(),
 }));
 const rebuildTeamRunCatalog = vi.hoisted(() => vi.fn(async () => undefined));
 
@@ -19,11 +20,31 @@ vi.mock("../../../../../src/run-history/services/root-run-package-readiness-inde
 }));
 
 import { AppDataMigrationResolver } from "../../../../../src/api/graphql/types/app-data-migrations.js";
-import { TEAM_RUN_EXECUTION_TREE_V2_MIGRATION_ID } from "../../../../../src/app-data-migrations/migrations/team-run-execution-tree-v2-app-data-migration.js";
+import { getTokenUsageCapabilityState } from "../../../../../src/token-usage/providers/token-usage-capability.js";
+import { CustomLlmProviderStore } from "../../../../../src/llm-management/llm-providers/stores/custom-llm-provider-store.js";
+import { applyCapabilityReadiness } from "../../../../../src/startup/app-data-capability-readiness.js";
+
+const TEAM_RUN_EXECUTION_TREE_V2_MIGRATION_ID = "20260824_team_run_execution_tree_v2";
+const retried = (migrationId: string, status: "SUCCEEDED" | "SUCCEEDED_WITH_WARNINGS" | "FAILED") => ({
+  migrationId,
+  displayName: `Migration ${migrationId}`,
+  description: "test migration",
+  status,
+  requiredOnStartup: true,
+  recoveryAction: AppDataMigrationRecoveryAction.MANUAL_RETRY,
+  canRetry: status !== "SUCCEEDED",
+  attempts: 2,
+  startedAt: null,
+  completedAt: null,
+  summary: "Scanned 1; migrated 1; skipped 0; failed 0.",
+  errorMessage: null,
+  logPath: null,
+});
 
 describe("AppDataMigrationResolver", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    runnerMock.capabilityReadiness.mockResolvedValue({ token_usage_history: true, custom_llm_providers: true, node_identity: true, memory_sync: true });
   });
 
   it("publishes the runner-owned recovery action and derived retry capability through GraphQL", async () => {
@@ -89,5 +110,33 @@ describe("AppDataMigrationResolver", () => {
     expect(rebuildTeamRunCatalog).toHaveBeenCalledTimes(1);
     expect(runnerMock.runMigration.mock.invocationCallOrder[0])
       .toBeLessThan(rebuildTeamRunCatalog.mock.invocationCallOrder[0]!);
+  });
+
+  it("rebuilds admission and refreshes capabilities after a retry of any migration, so it takes effect without a restart (DS-003)", async () => {
+    applyCapabilityReadiness({ token_usage_history: false, custom_llm_providers: false, node_identity: true, memory_sync: true });
+    runnerMock.runMigration.mockResolvedValue(retried("20260803_custom_provider_readable_identity", "SUCCEEDED_WITH_WARNINGS"));
+
+    await expect(new AppDataMigrationResolver().runAppDataMigration("20260803_custom_provider_readable_identity"))
+      .resolves.toMatchObject({ success: true });
+
+    expect(rebuildTeamRunCatalog).toHaveBeenCalledTimes(1);
+    expect(runnerMock.capabilityReadiness).toHaveBeenCalledTimes(1);
+    expect(rebuildTeamRunCatalog.mock.invocationCallOrder[0])
+      .toBeLessThan(runnerMock.capabilityReadiness.mock.invocationCallOrder[0]!);
+    expect(getTokenUsageCapabilityState()).toEqual({ kind: "READY" });
+    await expect(new CustomLlmProviderStore("/tmp/app-data-migrations-resolver/no-such-data").listProviders()).resolves.toEqual([]);
+  });
+
+  it("leaves admission and capabilities untouched after a failed retry", async () => {
+    applyCapabilityReadiness({ token_usage_history: false, custom_llm_providers: true, node_identity: true, memory_sync: true });
+    runnerMock.runMigration.mockResolvedValue(retried("20260819_token_usage_run_records_v1", "FAILED"));
+
+    await expect(new AppDataMigrationResolver().runAppDataMigration("20260819_token_usage_run_records_v1"))
+      .resolves.toMatchObject({ success: false });
+
+    expect(rebuildTeamRunCatalog).not.toHaveBeenCalled();
+    expect(runnerMock.capabilityReadiness).not.toHaveBeenCalled();
+    expect(getTokenUsageCapabilityState()).toEqual({ kind: "HISTORY_MIGRATION_PENDING" });
+    applyCapabilityReadiness({ token_usage_history: true, custom_llm_providers: true, node_identity: true, memory_sync: true });
   });
 });

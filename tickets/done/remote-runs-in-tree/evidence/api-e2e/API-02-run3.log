@@ -1,0 +1,4 @@
+remote-runs-in-tree probe: Fail
+Error: the tree rows did not appear
+    at openTree (file:///Users/normy/autobyteus_org/autobyteus-worktrees/remote-runs-in-tree/autobyteus-web/tests/e2e/remote-runs-in-tree-probe.mjs:270:11)
+    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/remote-runs-in-tree/autobyteus-web/tests/e2e/remote-runs-in-tree-probe.mjs:275:3

@@ -1,0 +1,6 @@
+remote-nodes-page probe: Fail
+Error: the window received the same list
+    at assert (file:///Users/normy/autobyteus_org/autobyteus-worktrees/remote-nodes-page/autobyteus-web/tests/e2e/remote-nodes-page-probe.mjs:44:64)
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/remote-nodes-page/autobyteus-web/tests/e2e/remote-nodes-page-probe.mjs:254:3
+    at process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+exit=1

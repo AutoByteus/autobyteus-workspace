@@ -1,0 +1,30 @@
+IMP-05-native-1ad504
+Command (root, clean env): pnpm -C autobyteus-ts exec vitest run tests/unit/tools/terminal/command-execution
+Invocation: env -i PATH="$PATH" HOME="$HOME" TMPDIR="$TMPDIR" npm exec --yes --package=pnpm@10.28.2 -- <command>; tsc direct
+Commit: 1ad504c03
+Environment: macOS arm64; Node26.12.0; pnpm10.28.2
+Log finished: 2026-10-24T18:42:14.050772+00:00
+
+
+ RUN  v4.1.12 /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-ts
+
+ ✓ tests/unit/tools/terminal/command-execution/non-interactive-shell-resolver.test.ts (2 tests) 3ms
+ ✓ tests/unit/tools/terminal/command-execution/shell-command-executor.test.ts (1 test) 5ms
+ ✓ tests/unit/tools/terminal/command-execution/anchored-command-launcher.test.ts (5 tests) 8ms
+ ✓ tests/unit/tools/terminal/command-execution/process-group-observer.test.ts (6 tests) 16ms
+stdout | tests/unit/tools/terminal/command-execution/native-command-process-scope.test.ts > NativeCommandProcessScope > forces a TERM-resistant adopted HTTP child, confirms listener release and preserves prior RESULT
+{"check":"owned-survivor","pid":73151,"port":51290,"cleanup":{"outcomes":[{"outcome":"stopped"}]},"listenerReleased":true}
+
+ ✓ tests/unit/tools/terminal/command-execution/native-command-process-scope.test.ts (9 tests) 8303ms
+     ✓ retains fast shell survivors and drains them after the command/agent context ends  1067ms
+     ✓ forces a TERM-resistant adopted HTTP child, confirms listener release and preserves prior RESULT  1155ms
+     ✓ fails closed on observation denial, then retains the lease for a verified later close  863ms
+     ✓ returns fast/empty/nonzero commands and retires empty anchors  706ms
+     ✓ settles forced timeout without RESULT and keeps partial output  1770ms
+     ✓ host stop is not a tool timeout and duplicate close shares the promise  928ms
+     ✓ drains multiple groups collectively while an unrelated scope survives  1739ms
+
+ Test Files  5 passed (5)
+      Tests  23 passed (23)
+   Start at  20:42:05
+   Duration  8.55s (transform 341ms, setup 210ms, import 233ms, tests 8.33s, environment 0ms)

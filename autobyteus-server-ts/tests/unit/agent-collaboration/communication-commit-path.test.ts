@@ -3,26 +3,24 @@ import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { CollaborationCommunicationMessage } from "../../../src/agent-collaboration/execution/communication/collaboration-communication-message.js";
-import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { RootCommunicationEngine } from "../../../src/agent-collaboration/execution/communication/root-communication-engine.js";
-import type { RootCommunicationAdapter } from "../../../src/agent-collaboration/execution/communication/root-communication-adapter.js";
+import { createRootMessageAppend } from "../../../src/agent-collaboration/execution/communication/root-message-append.js";
 import { AgentOrgCommunicationMessagesStore } from "../../../src/agent-org-execution/persistence/agent-org-communication-messages-store.js";
-import { AgentOrgCommunicationAdapter } from "../../../src/agent-org-execution/services/agent-org-communication-adapter.js";
 import { AgentOrgRunPersistenceCoordinator } from "../../../src/agent-org-execution/services/agent-org-run-persistence-coordinator.js";
 import type { AgentOrgRunExecutionTreeStore } from "../../../src/run-history/store/agent-org-run-execution-tree-store.js";
 import { MessageLog } from "../../../src/run-history/store/message-log.js";
 import { COORDINATING_LOG } from "../../../src/run-history/store/task-agent-message-logs.js";
-import { createTeamCommunicationMessageAppendPlan } from "../../../src/services/team-communication/team-communication-message-append-plan.js";
+import { TeamRunPersistenceCoordinator } from "../../../src/agent-team-execution/services/team-run-persistence-coordinator.js";
 import { emptyStandaloneRootTree } from "../../../src/standalone-agent-run-root/domain/standalone-root-tree.js";
 import { StandaloneRootPackageStore } from "../../../src/standalone-agent-run-root/persistence/standalone-root-package-store.js";
-import { StandaloneRootCommunicationAdapter } from "../../../src/standalone-agent-run-root/services/standalone-root-communication-adapter.js";
+import { communicationPortDouble } from "./helpers/communication-port-double.js";
 import { StandaloneRootPersistenceCoordinator } from "../../../src/standalone-agent-run-root/services/standalone-root-persistence-coordinator.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode } from "../../fixtures/current-agent-org-run-fixtures.js";
 
 /**
  * The commit path after append-only message logs (REQ-001, REQ-002; AC-002; ARCH-F-002, ARCH-F-004):
  * only the new message is validated; a message whose id is already in the in-memory list is refused by
- * the adapter or the team append plan before anything is persisted (the guarantee that a log never holds
+ * the append under the root coordinator's lock before anything is persisted (the guarantee that a log never holds
  * a message twice; the stores append unconditionally); a package-creation retry after the log was written
  * and the tree write failed succeeds, because the first log write replaces the log.
  */
@@ -38,33 +36,17 @@ const message = (messageId: string, second: number, overrides: Partial<Collabora
   referenceFiles: Object.freeze([]), createdAt: `2026-10-18T10:00:${String(second).padStart(2, "0")}.000Z`, ...overrides,
 });
 const reservation = () => ({ agentRunId: "receiver", cancel: vi.fn(), commit: vi.fn(() => ({ release: vi.fn() })) });
-const appendInput = (current: readonly CollaborationCommunicationMessage[], next: CollaborationCommunicationMessage) => {
-  const reserved = reservation();
-  const committed: { messages: readonly CollaborationCommunicationMessage[] | null } = { messages: null };
-  return {
-    reserved, committed,
-    input: {
-      message: next, inputMessage: {} as never, reservation: reserved,
-      getCurrentMessages: () => current,
-      commitMessages: (messages: readonly CollaborationCommunicationMessage[]) => { committed.messages = messages; },
-    },
-  };
-};
-const persistence = () => ({
-  commitCommunication: vi.fn(async (input: { commitAfterDurability(): void }) => { input.commitAfterDurability(); return { committed: true as const }; }),
-});
+const okWrite = { outcome: "committed" as const, file: "communication_messages" };
 
 describe("RootCommunicationEngine", () => {
   const root = { rootSubjectKind: "agent_team", rootRunId: "team-1" } as never;
   const member = (agentRunId: string) => ({ root, memberAddress: `/${agentRunId}`, agentRunId } as never);
   const engineWith = (initialMessages: readonly CollaborationCommunicationMessage[]) => {
     const reserved = reservation();
-    const adapter: RootCommunicationAdapter = {
-      root, initialMessages, isOpen: () => true, assertDeliveryAllowed: () => undefined, isCurrentAgent: () => true,
-      buildRecipientInput: () => new AgentInputUserMessage("x"),
+    const adapter = communicationPortDouble(root, {
+      initialMessages,
       reserveRecipientInput: vi.fn(async () => ({ reserved: true as const, reservation: reserved as never })),
-      commitAppend: vi.fn(async (input) => { input.commitMessages(Object.freeze([...input.getCurrentMessages(), input.message])); return { committed: true as const }; }),
-    };
+    });
     return { engine: new RootCommunicationEngine(adapter), adapter };
   };
   const deliver = (engine: RootCommunicationEngine, referenceFiles: readonly string[] = []) => engine.deliver({
@@ -78,7 +60,7 @@ describe("RootCommunicationEngine", () => {
     expect(adapter.reserveRecipientInput).not.toHaveBeenCalled();
   });
 
-  it("keeps the committed list as the adapter formed it, without validating it again", async () => {
+  it("forms the committed list by appending, without validating it again", async () => {
     const { engine } = engineWith([message("old", 1)]);
     await expect(deliver(engine, ["/work/notes.md"])).resolves.toMatchObject({ accepted: true });
     const messages = engine.getMessages();
@@ -88,64 +70,66 @@ describe("RootCommunicationEngine", () => {
   });
 });
 
-describe("standalone and organization adapters", () => {
-  const adapters = () => {
-    const standalonePersistence = persistence();
-    const orgPersistence = persistence();
-    const common = {
-      isOpen: () => true, isCurrentAgent: () => true, messageLogOwnerOf: () => COORDINATING_LOG, assertDeliveryAllowed: () => undefined,
-      reserveRecipientInput: vi.fn(), replaceMessages: vi.fn(), publish: vi.fn(), presentCommittedMessage: vi.fn(),
-    };
-    return {
-      standalone: { persistence: standalonePersistence, code: "AGENT_ROOT_MESSAGE_COMMIT_CONFLICT", adapter: new StandaloneRootCommunicationAdapter({
-        ...common, root: { rootRunId: "host" } as never, persistence: standalonePersistence as never,
-        initial: { schemaVersion: 1, subjectKind: "agent", hostRunId: "host", messages: [] } }) },
-      org: { persistence: orgPersistence, code: "AGENT_ORG_MESSAGE_COMMIT_CONFLICT", adapter: new AgentOrgCommunicationAdapter({
-        ...common, root: { rootRunId: "org" } as never, persistence: orgPersistence as never,
-        initial: { schemaVersion: 1, subjectKind: "agent_org", orgRunId: "org", messages: [] } }) },
-    };
-  };
-
-  it.each(["standalone", "org"] as const)("%s: refuses a message whose id is already in memory, before persisting (no duplicate in any log)", async (family) => {
-    const { adapter, persistence: port, code } = adapters()[family];
-    const { input, reserved } = appendInput([message("m1", 1)], message("m1", 1));
-    expect(await adapter.commitAppend(input)).toMatchObject({ committed: false, code });
-    expect(reserved.cancel).toHaveBeenCalledTimes(1);
-    expect(port.commitCommunication).not.toHaveBeenCalled();
-  });
-
-  it.each(["standalone", "org"] as const)("%s: forms the next list by appending, without validating the history again", async (family) => {
-    const { adapter, persistence: port } = adapters()[family];
-    // A stored message the whole-list validation would have rejected (not a canonical timestamp).
-    const history = [message("old", 1, { createdAt: "yesterday" })];
-    const { input, committed } = appendInput(history, message("m2", 2));
-    expect(await adapter.commitAppend(input)).toEqual({ committed: true });
-    expect(port.commitCommunication).toHaveBeenCalledTimes(1);
-    expect(committed.messages?.map((entry) => entry.messageId)).toEqual(["old", "m2"]);
-  });
-});
-
-describe("team append plan", () => {
-  const plan = (current: readonly CollaborationCommunicationMessage[], next: CollaborationCommunicationMessage) => {
-    const reserved = reservation();
-    return { reserved, plan: createTeamCommunicationMessageAppendPlan({
-      rootTeamRunId: "team", message: next, inputMessage: {} as never, reservation: reserved as never, isAccepting: () => true,
-      getCurrent: () => ({ schemaVersion: 1, rootTeamRunId: "team", messages: current }), resolveLogOwners: () => [COORDINATING_LOG],
-      replaceCurrent: vi.fn(), publish: vi.fn(),
+/** Each root's real persistence coordinator, its log store replaced by a spy that always writes durably. */
+const coordinators = {
+  standalone: () => {
+    const store = { appendMessage: vi.fn(async () => okWrite) };
+    return { store, coordinator: new StandaloneRootPersistenceCoordinator({
+      hostRunId: "host", collaborationDir: "/memory/agents/host/collaboration", store: store as never, packageExists: true,
+      getMessages: () => ({ schemaVersion: 1, subjectKind: "agent", hostRunId: "host", messages: [] }),
+      getTree: () => { throw new Error("The package exists."); },
+      onPackageCreated: async () => undefined, enterPersistenceFailStop: vi.fn(),
+    } as never) };
+  },
+  org: () => {
+    const store = { appendMessage: vi.fn(async () => okWrite) };
+    return { store, coordinator: new AgentOrgRunPersistenceCoordinator({
+      orgRunId: "org", orgMemoryDir: "/memory/agent_orgs/org", executionTreeStore: {} as never,
+      communicationStore: store as never, enterPersistenceFailStop: vi.fn(),
     }) };
-  };
+  },
+  team: () => {
+    const store = { appendMessage: vi.fn(async () => okWrite) };
+    return { store, coordinator: new TeamRunPersistenceCoordinator({
+      rootTeamRunId: "team", teamMemoryDir: "/memory/agent_teams/team", executionTreeStore: {} as never,
+      communicationStore: store as never, enterPersistenceFailStop: vi.fn(),
+    }) };
+  },
+} as const;
 
-  it("refuses a message whose id is already in memory (TEAM_MESSAGE_COMMIT_CONFLICT)", () => {
-    const { plan: append, reserved } = plan([message("m1", 1)], message("m1", 1));
-    expect(append.prepareAgainstCurrent()).toMatchObject({ prepared: false, code: "TEAM_MESSAGE_COMMIT_CONFLICT" });
+/** One append for `next` against the list `current`, as the engine builds it for a same-root message. */
+const appendFor = (current: readonly CollaborationCommunicationMessage[], next: CollaborationCommunicationMessage) => {
+  const reserved = reservation();
+  const committed: { messages: readonly CollaborationCommunicationMessage[] | null } = { messages: null };
+  const control = createRootMessageAppend({
+    message: next,
+    receiver: { reservation: reserved as never, input: {} as never, checkTaskScope: () => undefined, present: vi.fn() },
+    isOpen: () => true,
+    getMessages: () => current,
+    setMessages: (messages) => { committed.messages = messages; },
+    logOwnersOf: () => [COORDINATING_LOG],
+    publishToRootView: vi.fn(),
+    scopeRefusalOf: () => null,
+  });
+  return { reserved, committed, append: control.append };
+};
+
+describe.each(Object.keys(coordinators) as (keyof typeof coordinators)[])("%s coordinator's commitMessageAppend", (kind) => {
+  it("refuses a message whose id is already in memory, before persisting (no duplicate in any log)", async () => {
+    const { coordinator, store } = coordinators[kind]();
+    const { append, reserved } = appendFor([message("m1", 1)], message("m1", 1));
+    expect(await coordinator.commitMessageAppend(append)).toEqual({ outcome: "conflict" });
     expect(reserved.cancel).toHaveBeenCalledTimes(1);
+    expect(store.appendMessage).not.toHaveBeenCalled();
   });
 
-  it("forms the next snapshot by appending, without validating the history again", () => {
-    const { plan: append } = plan([message("old", 1, { createdAt: "yesterday" })], message("m2", 2));
-    const prepared = append.prepareAgainstCurrent();
-    expect(prepared.prepared).toBe(true);
-    if (prepared.prepared) expect(prepared.commit.nextMessages.messages.map((entry) => entry.messageId)).toEqual(["old", "m2"]);
+  it("forms the next list by appending, without validating the history again", async () => {
+    const { coordinator, store } = coordinators[kind]();
+    // A stored message the whole-list validation would have rejected (not a canonical timestamp).
+    const { append, committed } = appendFor([message("old", 1, { createdAt: "yesterday" })], message("m2", 2));
+    expect(await coordinator.commitMessageAppend(append)).toEqual({ outcome: "committed" });
+    expect(store.appendMessage).toHaveBeenCalledTimes(1);
+    expect(committed.messages?.map((entry) => entry.messageId)).toEqual(["old", "m2"]);
   });
 });
 

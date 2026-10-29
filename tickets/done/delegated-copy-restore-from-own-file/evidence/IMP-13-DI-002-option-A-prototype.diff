@@ -1,0 +1,17 @@
+# Check: IMP-13 (DI-002 option A prototype; not committed)
+# Applied on top of commit 7d689455ad
+# Date: 2026-10-19T16:56:14Z
+
+diff --git a/autobyteus-server-ts/src/app-data-migrations/migrations/delegated-copy-own-file-complete-v1/delegated-copy-own-file-complete-v1-app-data-migration.ts b/autobyteus-server-ts/src/app-data-migrations/migrations/delegated-copy-own-file-complete-v1/delegated-copy-own-file-complete-v1-app-data-migration.ts
+index bd3ac58b4d..a8c032142f 100644
+--- a/autobyteus-server-ts/src/app-data-migrations/migrations/delegated-copy-own-file-complete-v1/delegated-copy-own-file-complete-v1-app-data-migration.ts
++++ b/autobyteus-server-ts/src/app-data-migrations/migrations/delegated-copy-own-file-complete-v1/delegated-copy-own-file-complete-v1-app-data-migration.ts
+@@ -85,6 +85,8 @@ export class DelegatedCopyOwnFileCompleteV1AppDataMigration implements AppDataMi
+   }
+ 
+   async execute(): Promise<AppDataMigrationExecutionResult> {
++    // DI-002 option A (prototype): act only once the predecessor is terminal.
++    if (await this.predecessorPending()) return this.result(0, [], true);
+     const writer = this.dependencies.writer ?? getAtomicRunPackageFileCommitWriter();
+     const trees = new Map<string, Promise<RawCoordinatingTree>>();
+     const details: AppDataMigrationItemDetail[] = [];

@@ -1,4 +1,5 @@
 import { buildInRunPlacements, type CollaboratorRootPort } from "../../agent-collaboration/collaborators/collaborator-root-port.js";
+import type { DelegationWork } from "../../model-routing/domain/model-routing-types.js";
 import { type MentionViewer } from "../../agent-collaboration/collaborators/mention-viewer.js";
 import type {
   CatalogTaskSource,
@@ -12,9 +13,8 @@ import type { TeamRunExecutionTreeSnapshot } from "../domain/team-run-execution-
 
 /** Catalog facts of one Team tree: the root Team and its configured Agents are in the run. */
 export const teamCollaboratorPortFor = (tree: TeamRunExecutionTreeSnapshot): CollaboratorRootPort => Object.freeze({
-  rootKind: "agent_team",
   isApplicationBound: tree.applicationBinding !== null,
-  rootLaunchConfiguration: () => tree.rootTeam.defaultLaunchConfiguration,
+  launchBase: () => Object.freeze({ kind: "inherited", launch: tree.rootTeam.defaultLaunchConfiguration }),
   ownDefinition: () => Object.freeze({ kind: "agent_team", definitionId: tree.rootTeam.teamDefinitionId }),
   inRunPlacementsByDefinition: () => buildInRunPlacements({
     configured: tree.rootTeam.members.map((member) => ({
@@ -42,7 +42,7 @@ export class TeamRunCollaborators {
 
   listAvailable(): Promise<readonly AvailableCollaborator[]> { return this.admission.policy.listEligible(this.port()); }
 
-  catalogTaskSource(input: Readonly<{ address: string; senderRunId: string }>): Promise<CatalogTaskSource | null> {
+  catalogTaskSource(input: Readonly<{ address: string; senderRunId: string; work: DelegationWork }>): Promise<CatalogTaskSource | null> {
     return this.admission.catalogTaskSource(this.port(), input);
   }
 

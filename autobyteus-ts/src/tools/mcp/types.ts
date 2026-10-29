@@ -1,8 +1,49 @@
+import type { SecretId } from '../../secrets/vault/secret-id.js';
+
 export enum McpTransportType {
   STDIO = 'stdio',
-  STREAMABLE_HTTP = 'streamable_http',
-  WEBSOCKET = 'websocket'
+  STREAMABLE_HTTP = 'streamable_http'
 }
+
+/** The stored pointer written in place of a secret value: the vault secret ID of its entry. */
+export type McpSecretReference = Readonly<{ vaultSecretId: SecretId }>;
+
+/** An env value, header value or token: a plain string, or a secret reference resolved at connect. */
+export type McpConfigValue = string | McpSecretReference;
+
+/** Which value of a server is meant: `env:<NAME>`, `header:<Name>` or `token` (names keep their case). */
+export type McpSecretField = `env:${string}` | `header:${string}` | 'token';
+
+/**
+ * The shape of a secret reference: exactly `{ vaultSecretId: <non-empty string> }`. The vault owns the ID's format;
+ * an ID it does not know resolves as missing.
+ */
+export const isMcpSecretReference = (value: unknown): value is McpSecretReference => {
+  if (typeof value !== 'object' || value === null || Array.isArray(value) || Object.keys(value).length !== 1) return false;
+  const id = (value as { vaultSecretId?: unknown }).vaultSecretId;
+  return typeof id === 'string' && id.trim().length > 0;
+};
+
+/** A string or a secret reference; anything else is `null`. */
+const parseMcpConfigValue = (value: unknown): McpConfigValue | null => {
+  if (typeof value === 'string') return value;
+  return isMcpSecretReference(value) ? { vaultSecretId: value.vaultSecretId } : null;
+};
+
+const parseMcpConfigValueRecord = (
+  value: unknown,
+  describe: () => string,
+): Record<string, McpConfigValue> => {
+  const invalid = () => new Error(`${describe()} must map names to strings or secret references.`);
+  if (value === null || typeof value !== 'object' || Array.isArray(value)) throw invalid();
+  const parsed: Record<string, McpConfigValue> = {};
+  for (const [name, entry] of Object.entries(value)) {
+    const parsedEntry = parseMcpConfigValue(entry);
+    if (parsedEntry === null) throw invalid();
+    parsed[name] = parsedEntry;
+  }
+  return parsed;
+};
 
 export class McpServerInstanceKey {
   readonly agentId: string;
@@ -62,14 +103,14 @@ export class BaseMcpConfig {
 export interface StdioMcpServerConfigData extends BaseMcpConfigData {
   command?: string | null;
   args?: string[];
-  env?: Record<string, string>;
+  env?: Record<string, McpConfigValue>;
   cwd?: string | null;
 }
 
 export class StdioMcpServerConfig extends BaseMcpConfig {
   command: string;
   args: string[];
-  env: Record<string, string>;
+  env: Record<string, McpConfigValue>;
   cwd: string | null;
 
   constructor(data: StdioMcpServerConfigData) {
@@ -95,23 +136,9 @@ export class StdioMcpServerConfig extends BaseMcpConfig {
       this.args = [];
     }
 
-    if (data.env !== undefined) {
-      if (data.env === null || typeof data.env !== 'object' || Array.isArray(data.env)) {
-        throw new Error(
-          `StdioMcpServerConfig '${this.server_id}' 'env' must be a Dict[str, str].`
-        );
-      }
-      for (const value of Object.values(data.env)) {
-        if (typeof value !== 'string') {
-          throw new Error(
-            `StdioMcpServerConfig '${this.server_id}' 'env' must be a Dict[str, str].`
-          );
-        }
-      }
-      this.env = data.env;
-    } else {
-      this.env = {};
-    }
+    this.env = data.env === undefined
+      ? {}
+      : parseMcpConfigValueRecord(data.env, () => `StdioMcpServerConfig '${this.server_id}' 'env'`);
 
     let cwd = data.cwd ?? null;
     if (cwd === '') {
@@ -128,14 +155,17 @@ export class StdioMcpServerConfig extends BaseMcpConfig {
 
 export interface StreamableHttpMcpServerConfigData extends BaseMcpConfigData {
   url?: string | null;
-  token?: string | null;
-  headers?: Record<string, string>;
+  token?: McpConfigValue | null;
+  headers?: Record<string, McpConfigValue>;
 }
+
+/** The HTTP values after secret references were resolved at connect. */
+export type ResolvedHttpMcpValues = Readonly<{ headers: Record<string, string>; token: string | null }>;
 
 export class StreamableHttpMcpServerConfig extends BaseMcpConfig {
   url: string;
-  token: string | null;
-  headers: Record<string, string>;
+  token: McpConfigValue | null;
+  headers: Record<string, McpConfigValue>;
 
   constructor(data: StreamableHttpMcpServerConfigData) {
     super(data);
@@ -149,152 +179,34 @@ export class StreamableHttpMcpServerConfig extends BaseMcpConfig {
     }
     this.url = url;
 
-    if (data.token !== undefined && data.token !== null && typeof data.token !== 'string') {
-      throw new Error(
-        `StreamableHttpMcpServerConfig '${this.server_id}' 'token' must be a string if provided.`
-      );
-    }
-    this.token = data.token ?? null;
-
-    if (data.headers !== undefined) {
-      if (data.headers === null || typeof data.headers !== 'object' || Array.isArray(data.headers)) {
+    if (data.token === undefined || data.token === null) {
+      this.token = null;
+    } else {
+      const token = parseMcpConfigValue(data.token);
+      if (token === null) {
         throw new Error(
-          `StreamableHttpMcpServerConfig '${this.server_id}' 'headers' must be a Dict[str, str].`
+          `StreamableHttpMcpServerConfig '${this.server_id}' 'token' must be a string or a secret reference if provided.`
         );
       }
-      for (const value of Object.values(data.headers)) {
-        if (typeof value !== 'string') {
-          throw new Error(
-            `StreamableHttpMcpServerConfig '${this.server_id}' 'headers' must be a Dict[str, str].`
-          );
-        }
-      }
-      this.headers = data.headers;
-    } else {
-      this.headers = {};
+      this.token = typeof token === 'string' ? token.trim() || null : token;
+    }
+
+    this.headers = data.headers === undefined
+      ? {}
+      : parseMcpConfigValueRecord(data.headers, () => `StreamableHttpMcpServerConfig '${this.server_id}' 'headers'`);
+
+    if (this.token && Object.keys(this.headers).some((name) => name.toLowerCase() === 'authorization')) {
+      throw new Error(
+        `Streamable HTTP MCP server '${this.server_id}' sets both 'token' and an 'Authorization' header; use one of them.`
+      );
     }
   }
-}
 
-export interface WebsocketMcpServerConfigData extends BaseMcpConfigData {
-  url?: string | null;
-  headers?: Record<string, string>;
-  subprotocols?: string[];
-  origin?: string | null;
-  open_timeout?: number | null;
-  ping_interval?: number | null;
-  ping_timeout?: number | null;
-  verify_tls?: boolean;
-  ca_file?: string | null;
-  client_cert?: string | null;
-  client_key?: string | null;
-}
-
-export class WebsocketMcpServerConfig extends BaseMcpConfig {
-  url: string;
-  headers: Record<string, string>;
-  subprotocols: string[];
-  origin: string | null;
-  open_timeout: number | null;
-  ping_interval: number | null;
-  ping_timeout: number | null;
-  verify_tls: boolean;
-  ca_file: string | null;
-  client_cert: string | null;
-  client_key: string | null;
-
-  constructor(data: WebsocketMcpServerConfigData) {
-    super(data);
-    this.transport_type = McpTransportType.WEBSOCKET;
-
-    const url = data.url;
-    if (url === undefined || url === null || typeof url !== 'string' || !url.trim()) {
-      throw new Error(
-        `WebsocketMcpServerConfig '${this.server_id}' 'url' must be a non-empty string.`
-      );
-    }
-
-    const normalizedUrl = url.trim().toLowerCase();
-    if (!normalizedUrl.startsWith('ws://') && !normalizedUrl.startsWith('wss://')) {
-      throw new Error(
-        `WebsocketMcpServerConfig '${this.server_id}' 'url' must start with ws:// or wss://.`
-      );
-    }
-    this.url = url;
-
-    if (data.headers !== undefined) {
-      if (data.headers === null || typeof data.headers !== 'object' || Array.isArray(data.headers)) {
-        throw new Error(
-          `WebsocketMcpServerConfig '${this.server_id}' 'headers' must be a Dict[str, str].`
-        );
-      }
-      for (const value of Object.values(data.headers)) {
-        if (typeof value !== 'string') {
-          throw new Error(
-            `WebsocketMcpServerConfig '${this.server_id}' 'headers' must be a Dict[str, str].`
-          );
-        }
-      }
-      this.headers = data.headers;
-    } else {
-      this.headers = {};
-    }
-
-    if (data.subprotocols !== undefined) {
-      if (!Array.isArray(data.subprotocols) || data.subprotocols.some((item) => typeof item !== 'string')) {
-        throw new Error(
-          `WebsocketMcpServerConfig '${this.server_id}' 'subprotocols' must be a list of strings.`
-        );
-      }
-      this.subprotocols = data.subprotocols;
-    } else {
-      this.subprotocols = [];
-    }
-
-    if (data.origin !== undefined && data.origin !== null && typeof data.origin !== 'string') {
-      throw new Error(
-        `WebsocketMcpServerConfig '${this.server_id}' 'origin' must be a string if provided.`
-      );
-    }
-    this.origin = data.origin ?? null;
-
-    this.open_timeout = data.open_timeout ?? 10.0;
-    this.ping_interval = data.ping_interval ?? null;
-    this.ping_timeout = data.ping_timeout ?? null;
-
-    for (const fieldName of ['open_timeout', 'ping_interval', 'ping_timeout'] as const) {
-      const value = this[fieldName];
-      if (value !== null && (typeof value !== 'number' || value <= 0)) {
-        throw new Error(
-          `WebsocketMcpServerConfig '${this.server_id}' '${fieldName}' must be a positive number when provided.`
-        );
-      }
-    }
-
-    if (data.verify_tls !== undefined && typeof data.verify_tls !== 'boolean') {
-      throw new Error(
-        `WebsocketMcpServerConfig '${this.server_id}' 'verify_tls' must be a boolean.`
-      );
-    }
-    this.verify_tls = data.verify_tls ?? true;
-
-    this.ca_file = data.ca_file ?? null;
-    this.client_cert = data.client_cert ?? null;
-    this.client_key = data.client_key ?? null;
-
-    for (const fieldName of ['ca_file', 'client_cert', 'client_key'] as const) {
-      const value = this[fieldName];
-      if (value !== null && typeof value !== 'string') {
-        throw new Error(
-          `WebsocketMcpServerConfig '${this.server_id}' '${fieldName}' must be a string path when provided.`
-        );
-      }
-    }
-
-    if (this.client_key && !this.client_cert) {
-      throw new Error(
-        `WebsocketMcpServerConfig '${this.server_id}' requires 'client_cert' when 'client_key' is provided.`
-      );
-    }
+  /**
+   * The headers sent on every request, from the resolved values: the configured headers, plus the token as a
+   * Bearer Authorization header.
+   */
+  requestHeaders(resolved: ResolvedHttpMcpValues): Record<string, string> {
+    return resolved.token ? { ...resolved.headers, Authorization: `Bearer ${resolved.token}` } : { ...resolved.headers };
   }
 }

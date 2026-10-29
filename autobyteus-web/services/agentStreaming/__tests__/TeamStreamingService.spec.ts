@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { AgentStatus } from '~/types/agent/AgentStatus';
+import type { AIMessage } from '~/types/conversation';
 import { TeamStreamingService } from '../TeamStreamingService';
 import { useAgentBackgroundTaskStore } from '~/stores/agentBackgroundTaskStore';
 import { isTeamMemberProjectionAuthoritative } from '~/services/runHydration/teamMemberProjectionHydrationService';
@@ -73,7 +74,7 @@ const snapshotPayload = (team: ReturnType<typeof buildTestTeamContext>, baseChan
   base_change_sequence: baseChangeSequence,
   closed_task_executions: [], execution_tree: team.view.getExecutionTree(),
   messages: team.view.listCommunicationMessages(),
-  agent_input_states: [],
+  agent_input_states: [], remote_task_executions: [],
   agent_statuses: team.view.listAgentContextEntries().map((entry) => ({
     agent_run_id: entry.agentRunId,
     member_address: entry.memberAddress,
@@ -148,8 +149,7 @@ describe('TeamStreamingService current AgentRun event dispatch', () => {
       change_sequence: 1, parent_team_run_id: rootTeamRunId,
       execution: {
         kind: 'task_agent', address: '/Student', agent_run_id: 'dynamic-task-run',
-        platform_agent_run_id: null, delegator_agent_run_id: teacherRunId, started_at: '2026-08-14T12:00:00.000Z',
-      },
+        platform_agent_run_id: null, delegator_agent_run_id: teacherRunId, started_at: '2026-08-14T12:00:00.000Z', source: { kind: 'agent', agent_definition_id: 'Student', launch_configuration: { runtime_kind: 'autobyteus', llm_model_identifier: 'test-model', llm_config: null, auto_execute_tools: false, workspace_root_path: null } } },
     });
 
     expect(team.view.hasAgentRun('dynamic-task-run')).toBe(true);
@@ -197,7 +197,7 @@ describe('TeamStreamingService current AgentRun event dispatch', () => {
     });
 
     expect(teacher.state.currentStatus).toBe(AgentStatus.Running);
-    expect(teacher.state.conversation.messages[0]?.segments[0]).toMatchObject({
+    expect((teacher.state.conversation.messages[0] as AIMessage | undefined)?.segments[0]).toMatchObject({
       content: 'Exact teacher output',
     });
     expect(persistentStudent.state.conversation.messages).toHaveLength(0);

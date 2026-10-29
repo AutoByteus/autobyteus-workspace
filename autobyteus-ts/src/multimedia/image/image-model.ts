@@ -7,7 +7,7 @@ import type { GeminiRuntimeResolver } from '../../utils/gemini-runtime.js';
 
 type ParameterSchemaInput = Record<string, unknown> | ParameterSchema | null | undefined;
 
-type ImageClientConstructor = new (model: ImageModel, config: MultimediaConfig, apiKeyResolver: ProviderApiKeyResolver, geminiRuntimeResolver?: GeminiRuntimeResolver) => BaseImageClient;
+type ImageClientConstructor = new (model: ImageModel, config: MultimediaConfig, apiKeyResolver?: ProviderApiKeyResolver, geminiRuntimeResolver?: GeminiRuntimeResolver) => BaseImageClient;
 
 export interface ImageModelOptions {
   name: string;
@@ -58,7 +58,7 @@ export class ImageModel {
 
   createClient(
     configOverride: MultimediaConfig | null | undefined,
-    apiKeyResolver: ProviderApiKeyResolver,
+    apiKeyResolver?: ProviderApiKeyResolver,
     geminiRuntimeResolver?: GeminiRuntimeResolver,
   ): BaseImageClient {
     let configToUse = this.defaultConfig;

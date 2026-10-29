@@ -1,0 +1,26 @@
+# AC-003 route probe on the BRANCH (fastify 5.12.7, @fastify/cors 11.3.1, MCP routes without the cors:false config), then diff against the base output of IMP-06
+# Check: IMP-08
+# Command: TEST_IMP_PROBE_OUT=/tmp/ab-impl/probe-branch.txt pnpm -C autobyteus-server-ts exec vitest run tests/integration/zz-imp-probe --no-watch 2>&1 | sed 's/\x1b\[[0-9;]*m//g' | grep -E 'Test Files|Tests |Error'; cat /tmp/ab-impl/probe-branch.txt; echo '--- diff base (IMP-06) vs branch, version line excluded ---'; diff <(grep -v 'PROBE fastify' /tmp/ab-impl/probe-base.txt) <(grep -v 'PROBE fastify' /tmp/ab-impl/probe-branch.txt) && echo 'NO DIFFERENCE in status codes or Access-Control-* / Vary headers'
+# Commit: bbd88fd3ea
+# Env: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-24T19:57:03Z
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+PROBE fastify 5.12.7
+PROBE mcp-gateway (studio order + cors) | POST no Origin | status=200 | {"vary":"Origin"}
+PROBE mcp-gateway (studio order + cors) | POST loopback Origin | status=200 | {"access-control-allow-origin":"http://127.0.0.1:3000","vary":"Origin"}
+PROBE mcp-gateway (studio order + cors) | POST non-loopback Origin | status=403 | {}
+PROBE mcp-gateway (studio order + cors) | OPTIONS preflight loopback | status=204 | {"access-control-allow-headers":"authorization, content-type, accept, mcp-protocol-version, mcp-session-id","access-control-allow-methods":"GET, POST, DELETE, OPTIONS","access-control-allow-origin":"http://127.0.0.1:3000","vary":"Origin"}
+PROBE mcp-gateway (studio order + cors) | OPTIONS preflight non-loopback | status=403 | {}
+PROBE mcp-gateway (studio order + cors) | OPTIONS no Origin | status=204 | {"access-control-allow-headers":"authorization, content-type, accept, mcp-protocol-version, mcp-session-id","access-control-allow-methods":"GET, POST, DELETE, OPTIONS"}
+PROBE agent-tools (own instance, no cors) | POST no Origin | status=200 | {}
+PROBE agent-tools (own instance, no cors) | POST loopback Origin | status=200 | {}
+PROBE agent-tools (own instance, no cors) | POST non-loopback Origin | status=403 | {}
+PROBE agent-tools (own instance, no cors) | OPTIONS preflight loopback | status=204 | {"access-control-allow-headers":"content-type, accept, mcp-protocol-version, mcp-session-id","access-control-allow-methods":"GET, POST, DELETE, OPTIONS","access-control-allow-origin":"http://127.0.0.1:3000","vary":"Origin"}
+PROBE agent-tools (own instance, no cors) | OPTIONS preflight non-loopback | status=403 | {}
+PROBE agent-tools (own instance, no cors) | OPTIONS no Origin | status=204 | {"access-control-allow-headers":"content-type, accept, mcp-protocol-version, mcp-session-id","access-control-allow-methods":"GET, POST, DELETE, OPTIONS"}
+--- diff base (IMP-06) vs branch, version line excluded ---
+NO DIFFERENCE in status codes or Access-Control-* / Vary headers
+
+# exit code: 0

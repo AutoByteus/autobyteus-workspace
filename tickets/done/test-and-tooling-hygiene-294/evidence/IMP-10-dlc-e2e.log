@@ -1,0 +1,12 @@
+# IMP-10-dlc-e2e.log DLC E2E gated (H-09, AC-011); receipt IMP-10-dlc-receipt.json
+# command: env -i PATH HOME=$HOME TMPDIR RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<abs>/agy-failure-cli.mjs DELEGATED_LAUNCH_DEFAULTS_E2E_EVIDENCE_DIR=<dir> pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts
+# commit: b5cc864214 tree
+# environment: macOS 26.5.2, node v22.23.1
+# date: 2026-10-27T19:33:13Z
+
+ ✓ tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts (3 tests) 18228ms
+     ✓ in every root, catalog copies run each agent on its own usable default, fall back with notes, and reuse recorded values  8369ms
+     ✓ Agent root: with the root's model retired, an agent that needs the inherited layer cannot be delegated (today's text, nothing added), and an outside message is not found; a usable own default still starts; a user `@` mention admits nothing (AC-006)  1732ms
+     ✓ Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it (AC-008)  6444ms
+ Test Files  1 passed (1)
+      Tests  3 passed (3)

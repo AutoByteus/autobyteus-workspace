@@ -1,0 +1,17 @@
+# IMP-16 validator consumers after F-002 (in autobyteus-server-ts): pnpm typecheck; npx vitest run tests/unit/run-history tests/unit/agent-org-execution tests/unit/app-data-migrations tests/unit/remote-collaboration tests/integration/collaboration-definition-admission/org-owned-team-local-agent.test.ts; commit 7a5a9af077; macOS, node v22.23.1; 2026-10-20T16:29:55Z
+> tsc -p tsconfig.build.json --noEmit
+
+typecheck exit=0
+stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > the per-run input gate (F-PENDING-FAILED, contract §5.4) > migrates ready runs, waits for a predecessor that can still convert a run, and preserves a tree no predecessor can read
+stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > the per-run input gate (F-PENDING-FAILED, contract §5.4) > migrates ready runs, waits for a predecessor that can still convert a run, and preserves a tree no predecessor can read
+stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > the per-run input gate (F-PENDING-FAILED, contract §5.4) > migrates ready runs, waits for a predecessor that can still convert a run, and preserves a tree no predecessor can read
+stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > the per-run input gate (F-PENDING-FAILED, contract §5.4) > migrates ready runs, waits for a predecessor that can still convert a run, and preserves a tree no predecessor can read
+stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > the per-run input gate (F-PENDING-FAILED, contract §5.4) > migrates ready runs, waits for a predecessor that can still convert a run, and preserves a tree no predecessor can read
+stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > the per-run input gate (F-PENDING-FAILED, contract §5.4) > migrates ready runs, waits for a predecessor that can still convert a run, and preserves a tree no predecessor can read
+stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > the per-run input gate (F-PENDING-FAILED, contract §5.4) > migrates ready runs, waits for a predecessor that can still convert a run, and preserves a tree no predecessor can read
+stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > the per-run input gate (F-PENDING-FAILED, contract §5.4) > migrates ready runs, waits for a predecessor that can still convert a run, and preserves a tree no predecessor can read
+stderr | tests/unit/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > the per-run input gate (F-PENDING-FAILED, contract §5.4) > migrates ready runs, waits for a predecessor that can still convert a run, and preserves a tree no predecessor can read
+ Test Files  138 passed (138)
+      Tests  910 passed (910)
+   Start at  18:30:12
+exit=0

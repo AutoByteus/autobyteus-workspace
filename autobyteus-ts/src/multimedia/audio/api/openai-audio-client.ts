@@ -8,7 +8,10 @@ import { BaseAudioClient } from '../base-audio-client.js';
 import { SpeechGenerationResponse } from '../../utils/response-types.js';
 import type { AudioModel } from '../audio-model.js';
 import type { MultimediaConfig } from '../../utils/multimedia-config.js';
-import type { ProviderApiKeyResolver } from '../../../secrets/provider-api-key-resolver.js';
+import {
+  resolveProviderApiKeyResolver,
+  type ProviderApiKeyResolver,
+} from '../../../secrets/provider-api-key-resolver.js';
 import { MultimediaProvider } from '../../providers.js';
 
 const AUDIO_TEMP_DIR = path.join(os.tmpdir(), 'autobyteus_audio');
@@ -25,9 +28,9 @@ async function saveAudioBytes(audioBytes: Uint8Array, fileExtension?: string | n
   private clientPromise: Promise<OpenAI> | null = null;
   private readonly apiKeyResolver: ProviderApiKeyResolver;
 
-  constructor(model: AudioModel, config: MultimediaConfig, apiKeyResolver: ProviderApiKeyResolver) {
+  constructor(model: AudioModel, config: MultimediaConfig, apiKeyResolver?: ProviderApiKeyResolver) {
     super(model, config);
-    this.apiKeyResolver = apiKeyResolver;
+    this.apiKeyResolver = resolveProviderApiKeyResolver(apiKeyResolver);
   }
 
   private async initializeClient(): Promise<OpenAI> {

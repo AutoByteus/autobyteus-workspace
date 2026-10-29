@@ -1,0 +1,12 @@
+API-06 get_project_task worker scope E2E (new durable file tests/e2e/projects/get-project-task-worker-scope.e2e.test.ts)
+Command: SCOPE_E2E_EVIDENCE_DIR=<dir> env -i PATH HOME=<temp> TMPDIR RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<abs>/agy-failure-cli.mjs pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/get-project-task-worker-scope.e2e.test.ts --no-watch
+Commit: source 17d631c704, dist built 08:05; macOS arm64 node 22; 2026-10-25
+
+ ✓ tests/e2e/projects/get-project-task-worker-scope.e2e.test.ts (6 tests) 13049ms
+     ✓ SCP-E2E-001 AC-015: each saved Task's first message names it and its Project (AGY agent, AGY Team, native agent); described work does not  1451ms
+     ✓ SCP-E2E-002 AC-012, AC-013 MCP route: workers read only their own Task; the manager reads any; unknown and other-Project keys are not found  1667ms
+     ✓ SCP-E2E-003 AC-012, AC-013 native route: the native task agent reads only its Task; the native mate on no Task reads any  625ms
+     ✓ SCP-E2E-004 AC-014: get_project_task is there only for agents whose definition lists it, on MCP and on the native request  558ms
+     ✓ SCP-E2E-006 MP-003: damaged run data found at start fails closed for the copy it belongs to; readable callers keep their scope  6237ms
+ Test Files  1 passed (1)
+      Tests  6 passed (6)

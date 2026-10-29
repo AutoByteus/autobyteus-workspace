@@ -2,7 +2,6 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {
   collaborationCopyAgentLaunch,
-  collaborationMemberFollowsTeam,
   agentOrgExecutionEventDtoSchema,
   agentRunCollaborationEventDtoSchema,
   taskExecutionDtoSchema,
@@ -12,10 +11,14 @@ const claude = { runtimeKind: "claude_agent_sdk", llmModelIdentifier: "opus", ll
 const sonnet = { llmModelIdentifier: "sonnet", llmConfig: { thinking: "low" }, selectedAt: "2026-10-13T00:00:00.000Z" };
 const haiku = { llmModelIdentifier: "haiku", llmConfig: null, selectedAt: "2026-10-13T00:00:00.000Z" };
 
+const agentSource = { kind: "agent", agentDefinitionId: "ie", launchConfiguration: claude };
+const teamSource = { kind: "agent_team", teamDefinitionId: "se", coordinatorAddress: "/se/lead", handoffs: [], defaultLaunchConfiguration: claude,
+  members: [{ address: "/se/lead", agentDefinitionId: "lead", launchConfiguration: claude, followsTeam: true }] };
+
 test("copy DTOs carry optional user choices; malformed ones are refused", () => {
-  const agent = { address: "/ie", agentRunId: "ie", platformAgentRunId: null, delegatorAgentRunId: "pm", startedAt: "t", userLaunchSelection: haiku };
+  const agent = { address: "/ie", agentRunId: "ie", platformAgentRunId: null, delegatorAgentRunId: "pm", startedAt: "t", source: agentSource, userLaunchSelection: haiku };
   assert.deepEqual(taskExecutionDtoSchema.parse(agent), agent);
-  const team = { address: "/se", teamRunId: "copy", taskExecutions: [], startedAt: "t", userTeamLaunchSelection: sonnet,
+  const team = { address: "/se", teamRunId: "copy", taskExecutions: [], startedAt: "t", source: teamSource, userTeamLaunchSelection: sonnet,
     members: [{ address: "/se/lead", agentRunId: "l", platformAgentRunId: null, userLaunchSelection: haiku }] };
   assert.deepEqual(taskExecutionDtoSchema.parse(team), team);
   assert.throws(() => taskExecutionDtoSchema.parse({ ...agent, userLaunchSelection: { llmModelIdentifier: "x" } }));
@@ -27,8 +30,6 @@ test("the copy launch rule: own choice, else the followed Team's, else started",
     { launch: { ...claude, llmModelIdentifier: "sonnet", llmConfig: { thinking: "low" } }, selected: "team" });
   assert.deepEqual(collaborationCopyAgentLaunch({ started: claude, followsTeam: false, teamSelection: sonnet, agentSelection: haiku }),
     { launch: { ...claude, llmModelIdentifier: "haiku", llmConfig: null }, selected: "agent" });
-  assert.equal(collaborationMemberFollowsTeam({}), true);
-  assert.equal(collaborationMemberFollowsTeam({ launchConfiguration: claude }), false);
 });
 
 test("a live Save's event carries each saved choice by run ID, on Org and Agent streams", () => {

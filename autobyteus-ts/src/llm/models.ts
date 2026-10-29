@@ -30,7 +30,7 @@ export interface LLMModelOptions {
   llmClass?: new (
     model: LLMModel,
     config: LLMConfig,
-    apiKeyResolver: ProviderApiKeyResolver,
+    apiKeyResolver?: ProviderApiKeyResolver,
     geminiRuntimeResolver?: GeminiRuntimeResolver,
   ) => BaseLLM;
   canonicalName: string;
@@ -118,7 +118,7 @@ export class LLMModel {
   public llmClass?: new (
     model: LLMModel,
     config: LLMConfig,
-    apiKeyResolver: ProviderApiKeyResolver,
+    apiKeyResolver?: ProviderApiKeyResolver,
     geminiRuntimeResolver?: GeminiRuntimeResolver,
   ) => BaseLLM;
   public defaultConfig: LLMConfig;

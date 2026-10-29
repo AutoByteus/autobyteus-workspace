@@ -1,0 +1,17 @@
+[2026-10-19T06:03:03.600Z] T-API start: Server time of owner-scoped list and content reads, member run-id reads and a scanning control (AC-010, QR-001, QR-002)
+[2026-10-19T06:03:04.705Z] T-API Pass
+[2026-10-19T06:03:24.116Z] B-001 start: Desktop: a delegated copy's file opens through the hub route (AC-001, REQ-007)
+[2026-10-19T06:03:28.333Z] B-001 Pass
+[2026-10-19T06:03:28.333Z] B-002 start: Desktop: a Team run's configured member and team task agent files open through the team route (AC-002, AC-003, REQ-007)
+[2026-10-19T06:03:35.401Z] B-002 Pass
+[2026-10-19T06:03:35.401Z] B-003 start: Desktop: an Org run's direct agent, member-team member, org-root and member-team task agent files open through the org route (AC-004, AC-005, REQ-007)
+[2026-10-19T06:03:47.785Z] B-003 Pass
+[2026-10-19T06:03:47.785Z] B-004 start: Desktop: a standalone run's own file opens through the run route (AC-006)
+[2026-10-19T06:03:51.939Z] B-004 Pass
+[2026-10-19T06:03:51.939Z] B-005 start: Desktop: a delegated copy's deleted file shows "File not found" through the hub route (AC-001 alternate, REQ-008)
+[2026-10-19T06:03:56.118Z] B-005 Pass
+[2026-10-19T06:03:56.118Z] B-006 start: Mobile (Phone Access): an agent run's file opens in the mobile Artifacts view through the run route (AC-012, REQ-007)
+[2026-10-19T06:03:59.653Z] B-006 Pass
+[2026-10-19T06:03:59.654Z] B-007 start: Mobile (Phone Access): a Team run member's file opens in the mobile Artifacts view through the team route (AC-012, REQ-007)
+[2026-10-19T06:04:02.723Z] B-007 Pass
+{"result":"Pass","cases":{"T-API":"Pass","B-001":"Pass","B-002":"Pass","B-003":"Pass","B-004":"Pass","B-005":"Pass","B-006":"Pass","B-007":"Pass"},"failures":[],"cleanup":{"frontend":{"pid":43008,"status":"terminated","exit":"SIGTERM"},"backend":{"pid":42347,"status":"terminated","exit":0},"dataCopyRemoved":"/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/owner-scoped-reads-run-sEoek7"},"evidencePath":"/Users/normy/autobyteus_org/autobyteus-worktrees/run-file-change-owner-scoped-reads/tickets/in-progress/run-file-change-owner-scoped-reads/evidence/API-05-06-large-seed-check/evidence.json"}

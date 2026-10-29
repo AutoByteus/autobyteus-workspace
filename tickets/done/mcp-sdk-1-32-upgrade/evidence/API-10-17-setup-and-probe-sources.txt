@@ -1,0 +1,353 @@
+# Case: API-10..17 setup record and temporary probe sources (harness and Codex direct test), for repeatability
+# Date: 2026-10-19
+
+== Test-owned copies (read-only git archive) ==
+<B>/{before,after}/video-audio-mcp  <- git -C autobyteus_mcps archive a947f1a^ video-audio-mcp   (last version with server.py; the user's current folder no longer has it)
+<B>/{before,after}/yt-dlp-mcp       <- git -C autobyteus_private_mcps archive HEAD yt-dlp-mcp
+<B>/media/parity-sample.mp4        <- video-audio-mcp/tests/sample.mp4 of that archive
+
+== uv sync --frozen per copy (fresh .venv from each copy's own uv.lock) ==
+before/video-audio-mcp: exit 0; python mcp 1.28.1
+before/yt-dlp-mcp: exit 0; python mcp 1.26.0
+after/video-audio-mcp: exit 0; python mcp 1.28.1
+after/yt-dlp-mcp: exit 0; python mcp 1.26.0
+
+== Throwaway CODEX_HOME ==
+<B>/codex-home/config.toml (empty), <B>/codex-home/auth.json -> ~/.codex/auth.json (symlink; never printed)
+
+== Server definitions imported (bulk import JSON, env removed; same on both sides except the side folder) ==
+const SERVERS = {
+  VideoAudioServer: { transport_type: 'stdio', command: 'uv', args: ['--directory', path.join(BASE, side, 'video-audio-mcp'), 'run', 'server.py'], tool_name_prefix: 'video_editing' },
+  'media-downloader': { transport_type: 'stdio', command: '/opt/homebrew/bin/uv', args: ['--directory', path.join(BASE, side, 'yt-dlp-mcp'), 'run', 'python', '-m', 'ytdlp_mcp.server'] },
+  parity_http: { transport_type: 'streamable_http', url: HTTP_URL, token: DUMMY, tool_name_prefix: 'parity_http' },
+  exit_at_start: { transport_type: 'stdio', command: 'node', args: ['-e', 'process.exit(1)'] },
+  hang_at_start: { transport_type: 'stdio', command: 'node', args: ['-e', 'setInterval(()=>{},1e9) /* parity-hang */'] },
+};
+
+== Harness source (<B>/harness/parity-harness.mjs) ==
+// Temporary API/E2E parity harness (ticket mcp-sdk-1-32-upgrade, IR-002 / SR-002 + SR-003).
+// Drives ONE isolated AutoByteus instance (before = SDK 1.30.0, after = 1.32.1) through its public
+// GraphQL, agent WebSocket and /mcp/gateway only. Value-free results; dummy credential only.
+// Usage: node parity-harness.mjs <side> <backendUrl> <baseDir> <sdkEsmDir> <runtimes comma list>
+// Writes <baseDir>/results/<side>.json and prints progress lines.
+import http from 'node:http';
+import fs from 'node:fs';
+import path from 'node:path';
+import { randomUUID } from 'node:crypto';
+
+const [side, BACKEND, BASE, SDK, runtimeArg] = process.argv.slice(2);
+const RUNTIMES = (runtimeArg ?? '').split(',').filter(Boolean);
+const { McpServer } = await import(`${SDK}/server/mcp.js`);
+const { StreamableHTTPServerTransport } = await import(`${SDK}/server/streamableHttp.js`);
+const { Client } = await import(`${SDK}/client/index.js`);
+const { StreamableHTTPClientTransport } = await import(`${SDK}/client/streamableHttp.js`);
+const DUMMY = 'test-dummy';
+const SAMPLE = path.join(BASE, 'media', 'parity-sample.mp4');
+const HTTP_MARKER = `MARKER-PARITY-HTTP-${side.toUpperCase()}`;
+const result = { side, backend: BACKEND, startedAt: new Date().toISOString(), servers: {}, matrix: {}, gateway: {}, notes: [] };
+const log = (...a) => console.log(new Date().toISOString().slice(11, 19), ...a);
+const save = () => { fs.mkdirSync(path.join(BASE, 'results'), { recursive: true }); fs.writeFileSync(path.join(BASE, 'results', `${side}.json`), JSON.stringify(result, null, 2)); };
+
+// ---- test-owned HTTP MCP server (requires the dummy Bearer token) ----
+const httpObs = [];
+const httpServer = http.createServer(async (req, res) => {
+  let raw = ''; for await (const c of req) raw += c;
+  const body = raw ? JSON.parse(raw) : undefined;
+  const auth = req.headers.authorization === undefined ? 'none' : req.headers.authorization === `Bearer ${DUMMY}` ? 'expected' : 'other';
+  httpObs.push({ method: req.method, rpc: body?.method ?? null, tool: body?.params?.name ?? null, auth });
+  if (auth !== 'expected') { res.writeHead(401).end('unauthorized'); return; }
+  const mcp = new McpServer({ name: 'parity-http', version: '1' });
+  mcp.tool('auth_probe', 'Returns this server\'s marker text. Takes no arguments.', async () => ({ content: [{ type: 'text', text: HTTP_MARKER }] }));
+  const t = new StreamableHTTPServerTransport({ sessionIdGenerator: undefined });
+  res.on('close', () => { void t.close(); void mcp.close(); });
+  await mcp.connect(t); await t.handleRequest(req, res, body);
+});
+await new Promise((r) => httpServer.listen(0, '127.0.0.1', r));
+const HTTP_URL = `http://127.0.0.1:${httpServer.address().port}/mcp`;
+
+const gql = async (query, variables, timeoutMs = 300_000) => {
+  const ctl = new AbortController(); const timer = setTimeout(() => ctl.abort(), timeoutMs);
+  try {
+    const res = await fetch(`${BACKEND}/graphql`, { method: 'POST', signal: ctl.signal, headers: { 'content-type': 'application/json' }, body: JSON.stringify({ query, variables }) });
+    return await res.json();
+  } finally { clearTimeout(timer); }
+};
+const timed = async (fn) => { const t0 = Date.now(); try { return { ok: true, value: await fn(), ms: Date.now() - t0 }; } catch (e) { return { ok: false, error: String(e?.name === 'AbortError' ? 'client wait limit reached (no response)' : e), ms: Date.now() - t0 }; } };
+
+const SERVERS = {
+  VideoAudioServer: { transport_type: 'stdio', command: 'uv', args: ['--directory', path.join(BASE, side, 'video-audio-mcp'), 'run', 'server.py'], tool_name_prefix: 'video_editing' },
+  'media-downloader': { transport_type: 'stdio', command: '/opt/homebrew/bin/uv', args: ['--directory', path.join(BASE, side, 'yt-dlp-mcp'), 'run', 'python', '-m', 'ytdlp_mcp.server'] },
+  parity_http: { transport_type: 'streamable_http', url: HTTP_URL, token: DUMMY, tool_name_prefix: 'parity_http' },
+  exit_at_start: { transport_type: 'stdio', command: 'node', args: ['-e', 'process.exit(1)'] },
+  hang_at_start: { transport_type: 'stdio', command: 'node', args: ['-e', 'setInterval(()=>{},1e9) /* parity-hang */'] },
+};
+const toInput = (id, c) => c.transport_type === 'streamable_http'
+  ? { serverId: id, transportType: 'STREAMABLE_HTTP', enabled: true, toolNamePrefix: c.tool_name_prefix ?? null, streamableHttpConfig: { url: c.url, token: c.token, headers: null } }
+  : { serverId: id, transportType: 'STDIO', enabled: true, toolNamePrefix: c.tool_name_prefix ?? null, stdioConfig: { command: c.command, args: c.args, env: null, cwd: null } };
+const PREVIEW = 'query($input: McpServerInput!) { previewMcpServerTools(input: $input) { name } }';
+const IMPORT = 'mutation($j: String!) { importMcpServerConfigs(jsonString: $j) { success message importedCount failedCount } }';
+const DISCOVER = 'mutation($id: String!) { discoverAndRegisterMcpServerTools(serverId: $id) { success message discoveredTools { name } } }';
+
+try {
+  result.health = (await fetch(`${BACKEND}/rest/health`)).status;
+  // ---- Check 2: preview, import, discover each server (AC-011, AC-012) ----
+  for (const [id, cfg] of Object.entries(SERVERS)) {
+    const waitLimit = id === 'hang_at_start' ? 150_000 : 300_000;
+    let responsiveness = null;
+    const previewPromise = timed(async () => gql(PREVIEW, { input: toInput(id, cfg) }, waitLimit));
+    if (id === 'hang_at_start') {
+      await new Promise((r) => setTimeout(r, 5_000));
+      const h = await timed(async () => (await fetch(`${BACKEND}/rest/health`)).status);
+      const q = await timed(async () => (await gql('query { mcpServers { __typename } }', {}, 10_000)).data ? 'ok' : 'error');
+      responsiveness = { healthDuringHang: h, graphqlDuringHang: q };
+    }
+    const p = await previewPromise;
+    const tools = p.ok ? p.value?.data?.previewMcpServerTools?.map((t) => t.name) ?? null : null;
+    result.servers[id] = { preview: { ms: p.ms, toolCount: tools?.length ?? null, tools, error: p.ok ? p.value?.errors?.[0]?.message ?? null : p.error }, responsiveness };
+    log(`preview ${id}: ${tools ? tools.length + ' tools' : 'error'} in ${p.ms} ms`);
+    save();
+  }
+  const imp = await gql(IMPORT, { j: JSON.stringify({ mcpServers: SERVERS }) });
+  result.import = imp.data?.importMcpServerConfigs ?? imp.errors;
+  log('import', JSON.stringify(result.import));
+  // The user's own mcps.json shape has no transport_type; record how bulk import treats it (no server is started).
+  const shape = await gql(IMPORT, { j: JSON.stringify({ mcpServers: { user_shape_probe: { command: 'node', args: ['--version'] } } }) });
+  result.importUserShape = shape.data?.importMcpServerConfigs ?? shape.errors;
+  for (const id of Object.keys(SERVERS)) {
+    const d = await timed(async () => gql(DISCOVER, { id }, id === 'hang_at_start' ? 150_000 : 300_000));
+    const v = d.ok ? d.value?.data?.discoverAndRegisterMcpServerTools : null;
+    result.servers[id].discover = { ms: d.ms, success: v?.success ?? null, toolCount: v?.discoveredTools?.length ?? null, message: v?.message ?? (d.ok ? JSON.stringify(d.value?.errors) : d.error) };
+    log(`discover ${id}: ${JSON.stringify(result.servers[id].discover).slice(0, 200)}`);
+    save();
+  }
+  result.health_after_servers = (await fetch(`${BACKEND}/rest/health`)).status;
+
+  // ---- Check 3: /mcp/gateway calls of external MCP-origin tools (AC-015) ----
+  const gw = new Client({ name: 'parity-gateway-client', version: '1' });
+  await gw.connect(new StreamableHTTPClientTransport(new URL(`${BACKEND}/mcp/gateway`)));
+  const gwTools = (await gw.listTools()).tools.map((t) => t.name);
+  result.gateway.toolCount = gwTools.length;
+  result.gateway.listsExternal = ['parity_http_auth_probe', 'video_editing_get_media_duration'].map((n) => [n, gwTools.includes(n)]);
+  const httpCall = await gw.callTool({ name: 'parity_http_auth_probe', arguments: {} });
+  const durCall = await gw.callTool({ name: 'video_editing_get_media_duration', arguments: { media_path: SAMPLE } });
+  await gw.close();
+  result.gateway.httpTool = { isError: httpCall.isError ?? false, text: httpCall.content?.map((c) => c.text).join('') };
+  result.gateway.stdioTool = { isError: durCall.isError ?? false, text: durCall.content?.map((c) => c.text).join('') };
+  log('gateway', JSON.stringify(result.gateway));
+  save();
+
+  // ---- SR-003 matrix: per runtime, project tools + external stdio + external HTTP (AC-014, AC-017) ----
+  const project = (await gql('mutation($input: CreateProjectInput!) { createProject(input: $input) { projectId name } }',
+    { input: { name: `Parity probe ${side}`, description: 'Test-owned project for the MCP SDK parity matrix.' } })).data?.createProject;
+  result.project = project;
+  const pickModel = async (runtime) => {
+    if (runtime === 'native') {
+      const c = await gql('mutation($p: String!, $r: String) { ensureProviderModelCatalog(providerId: $p, runtimeKind: $r) { llmModels { modelIdentifier } } }', { p: 'LMSTUDIO', r: 'autobyteus' });
+      return c.data?.ensureProviderModelCatalog?.llmModels?.map((m) => m.modelIdentifier).find((m) => m.includes('qwen3.6-35b-a3b')) ?? null;
+    }
+    const kind = { claude: 'claude_agent_sdk', codex: 'codex_app_server', agy: 'antigravity_cli', grok: 'grok_build' }[runtime];
+    const s = await gql('query($r: String) { providerModelCatalogSnapshots(runtimeKind: $r) { llmModels { modelIdentifier } } }', { r: kind });
+    const models = (s.data?.providerModelCatalogSnapshots ?? []).flatMap((p) => p.llmModels.map((m) => m.modelIdentifier));
+    const pref = { claude: ['haiku'], codex: ['gpt-5.6-luna'], agy: ['gemini-3.8-flash-low'], grok: [] }[runtime];
+    return { models, model: pref.find((m) => models.includes(m)) ?? models.find((m) => /flash|mini|fast|luna/i.test(m)) ?? models[0] ?? null };
+  };
+  const KIND = { native: 'autobyteus', claude: 'claude_agent_sdk', codex: 'codex_app_server', agy: 'antigravity_cli', grok: 'grok_build' };
+  const CONFIG = { native: { temperature: 0 }, codex: { reasoning_effort: 'low' } };
+  const TOOLS = ['create_task', 'update_task', 'video_editing_get_media_duration', 'parity_http_auth_probe'];
+  for (const runtime of RUNTIMES) {
+    const cell = { runtime };
+    result.matrix[runtime] = cell;
+    try {
+      const picked = await pickModel(runtime);
+      const model = typeof picked === 'string' || picked === null ? picked : picked.model;
+      cell.model = model;
+      if (!model) { cell.status = 'not run'; cell.reason = `no model listed for this runtime (${JSON.stringify(picked?.models ?? [])})`; save(); continue; }
+      const marker = `Parity probe ${runtime} ${side} ${randomUUID().slice(0, 8)}`;
+      const def = await gql('mutation($input: CreateAgentDefinitionInput!) { createAgentDefinition(input: $input) { id } }', { input: {
+        name: `parity-${runtime}-${side}-${randomUUID().slice(0, 6)}`, role: 'assistant', category: 'runtime-e2e',
+        description: 'MCP SDK parity probe agent.', toolNames: TOOLS,
+        instructions: 'You are a tool-calling test agent. Follow the user\'s numbered steps exactly, calling each named tool exactly once with the given arguments, in order. Do not call other tools or explore the environment. Then reply FINISHED.' } });
+      const defId = def.data?.createAgentDefinition?.id;
+      const ws = path.join(BASE, 'workspaces', `${side}-${runtime}`); fs.mkdirSync(ws, { recursive: true });
+      const run = await gql('mutation($input: CreateAgentRunInput!) { createAgentRun(input: $input) { success message runId } }', { input: {
+        agentDefinitionId: defId, workspaceRootPath: ws, llmModelIdentifier: model, llmConfig: CONFIG[runtime] ?? null, autoExecuteTools: true, runtimeKind: KIND[runtime] } });
+      if (!run.data?.createAgentRun?.success) { cell.status = 'fail'; cell.reason = `createAgentRun: ${run.data?.createAgentRun?.message ?? JSON.stringify(run.errors)}`; save(); continue; }
+      const runId = run.data.createAgentRun.runId;
+      const httpMark = httpObs.length;
+      const socket = new WebSocket(`${BACKEND.replace('http', 'ws')}/ws/agent/${runId}`);
+      const msgs = [];
+      socket.onmessage = (ev) => { try { const m = JSON.parse(String(ev.data)); if (typeof m.type === 'string') msgs.push({ type: m.type, payload: m.payload ?? {} }); } catch { /* ignore */ } };
+      await new Promise((r, j) => { socket.onopen = r; socket.onerror = j; });
+      const prompt = [
+        `1. Call create_task with project_id "${project.projectId}" and description "${marker}".`,
+        '2. Call update_task with the task_id that step 1 returned and status "DONE".',
+        `3. Call video_editing_get_media_duration with media_path "${SAMPLE}".`,
+        '4. Call parity_http_auth_probe with no arguments.',
+        'Then reply with the single word FINISHED.',
+      ].join('\n');
+      const msgId = `e2e-${randomUUID()}`;
+      socket.send(JSON.stringify({ type: 'SEND_MESSAGE', payload: { message_id: msgId, dedupe_key: `agent_run_input:e2e:${msgId}`, context_file_paths: [], image_urls: [], agent_run_id: runId, content: prompt } }));
+      const t0 = Date.now();
+      while (Date.now() - t0 < 420_000 && !msgs.some((m) => m.type === 'TURN_COMPLETED' || m.type === 'ERROR')) await new Promise((r) => setTimeout(r, 250));
+      cell.turnMs = Date.now() - t0;
+      cell.turnCompleted = msgs.some((m) => m.type === 'TURN_COMPLETED');
+      cell.errors = msgs.filter((m) => m.type === 'ERROR').map((m) => String(m.payload.message ?? m.payload.code ?? '').slice(0, 300));
+      const norm = (n) => String(n ?? '').split('__').at(-1);
+      const toolEvents = msgs.filter((m) => /^TOOL_EXECUTION_(SUCCEEDED|FAILED)$/.test(m.type)).map((m) => ({ type: m.type, tool: norm(m.payload.tool_name) }));
+      cell.toolEvents = toolEvents;
+      const ok = (t) => toolEvents.some((e) => e.tool === t && e.type === 'TOOL_EXECUTION_SUCCEEDED');
+      const wire = JSON.stringify(msgs);
+      const tasks = (await gql('query($p: String!) { projectTasks(projectId: $p) { taskKey description status } }', { p: project.projectId })).data?.projectTasks ?? [];
+      const task = tasks.find((t) => t.description === marker);
+      const httpCalls = httpObs.slice(httpMark).filter((o) => o.rpc === 'tools/call');
+      cell.projectTools = { createTaskSucceeded: ok('create_task'), updateTaskSucceeded: ok('update_task'), taskSaved: Boolean(task), taskStatus: task?.status ?? null };
+      cell.externalStdio = { succeeded: ok('video_editing_get_media_duration'), durationOnWire: Boolean(result.gateway.stdioTool?.text) && wire.includes(result.gateway.stdioTool.text) };
+      cell.externalHttp = { succeeded: ok('parity_http_auth_probe'), markerReceived: wire.includes(HTTP_MARKER), remoteToolCalls: httpCalls.map((o) => o.auth) };
+      cell.dummyOnWire = wire.includes(DUMMY);
+      cell.columns = {
+        // externalStdio also requires the gateway-verified duration text on the agent wire.
+        projectTools: cell.projectTools.createTaskSucceeded && cell.projectTools.updateTaskSucceeded && cell.projectTools.taskStatus === 'DONE' ? 'pass' : 'fail',
+        externalStdio: cell.externalStdio.succeeded && cell.externalStdio.durationOnWire ? 'pass' : 'fail',
+        externalHttp: cell.externalHttp.succeeded && cell.externalHttp.markerReceived && httpCalls.length > 0 && httpCalls.every((o) => o.auth === 'expected') ? 'pass' : 'fail',
+      };
+      cell.status = 'run';
+      socket.close();
+      await gql('mutation($id: String!) { terminateAgentRun(agentRunId: $id) { success } }', { id: runId }).catch(() => undefined);
+      log(`matrix ${runtime}: ${JSON.stringify(cell.columns)} turn ${cell.turnMs} ms`);
+    } catch (e) {
+      cell.status = 'fail'; cell.reason = String(e);
+      log(`matrix ${runtime}: error ${e}`);
+    }
+    save();
+  }
+} catch (e) {
+  result.error = String(e);
+} finally {
+  result.httpServerObservationsSummary = { total: httpObs.length, authValues: [...new Set(httpObs.map((o) => o.auth))] };
+  result.finishedAt = new Date().toISOString();
+  save();
+  httpServer.closeAllConnections(); httpServer.close();
+  log('done');
+}
+
+== Codex direct test source (<B>/harness/zz-parity-codex-direct-mcp.e2e.test.ts) ==
+/**
+ * TEMPORARY API/E2E parity probe (ticket mcp-sdk-1-32-upgrade, IR-002, API-17). Not committed to the product tree:
+ * copied into each worktree for one run and removed.
+ * The Codex account's model usage is exhausted, so Codex is driven without a model turn: a real Codex run starts its
+ * App Server thread with the run's autobyteus_agent_tools MCP server, and the test calls tools through Codex's own
+ * MCP client (`mcpServer/tool/call`): create_task, update_task, an external stdio tool (VideoAudioServer copy) and an
+ * external HTTP tool (test-owned server with the dummy token). Same file on SDK 1.30.0 and 1.32.1.
+ * Env: RUN_PARITY_CODEX=1, PARITY_SIDE_DIR=<test-owned side dir with video-audio-mcp>, PARITY_SAMPLE=<media file>,
+ * PARITY_EVIDENCE=<json output path>, CODEX_HOME=<throwaway home>.
+ */
+import "reflect-metadata";
+import fs from "node:fs/promises";
+import os from "node:os";
+import path from "node:path";
+import { randomUUID } from "node:crypto";
+import type { FastifyInstance } from "fastify";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { appConfigProvider } from "../../../src/config/app-config-provider.js";
+import { AGENT_TOOLS_MCP_SERVER_NAME } from "../../../src/agent-tools/mcp/agent-tool-mcp-session.js";
+import { getCodexThreadManager } from "../../../src/agent-execution/backends/codex/thread/codex-thread-manager.js";
+import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
+import { startAuthRequiredMcpServer, type AuthRequiredMcpServer } from "../helpers/auth-required-mcp-server.js";
+
+const enabled = process.env["RUN_PARITY_CODEX"] === "1";
+const suite = enabled ? describe : describe.skip;
+type CallResponse = { content?: Array<{ text?: string }>; isError?: boolean; structuredContent?: unknown };
+const text = (r: CallResponse) => (r.content ?? []).map((c) => c.text ?? "").join("");
+
+suite("Codex MCP client → Agent Tools MCP → project and external MCP tools (no model turn)", () => {
+  let dataDir = "";
+  let app: FastifyInstance;
+  let url: URL;
+  let httpServer: AuthRequiredMcpServer;
+  const sideDir = process.env["PARITY_SIDE_DIR"] ?? "";
+  const sample = process.env["PARITY_SAMPLE"] ?? "";
+  const gql = async <T>(query: string, variables?: Record<string, unknown>): Promise<T> => {
+    const res = await fetch(new URL("/graphql", url), { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ query, variables }) });
+    const body = await res.json() as { data?: T; errors?: unknown };
+    if (!body.data) throw new Error(JSON.stringify(body.errors));
+    return body.data;
+  };
+
+  beforeAll(async () => {
+    dataDir = await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(), "parity-codex-direct-")));
+    await fs.writeFile(path.join(dataDir, ".env"), "AUTOBYTEUS_SERVER_HOST=http://localhost:8000\nAPP_ENV=test\n");
+    appConfigProvider.config.setCustomAppDataDir(dataDir);
+    httpServer = await startAuthRequiredMcpServer({ requiredAuthorization: "Bearer test-dummy", marker: "MARKER-PARITY-CODEX-HTTP" });
+    const started = await startStudioE2eRuntimeServer();
+    app = started.fastify; url = started.mainUrl;
+  }, 120_000);
+  afterAll(async () => {
+    if (app) await app.close();
+    await httpServer?.close();
+    if (dataDir) await fs.rm(dataDir, { recursive: true, force: true });
+  }, 120_000);
+
+  it("calls create_task, update_task, an external stdio tool and an external HTTP tool through Codex's MCP client", async () => {
+    const evidence: Record<string, unknown> = {};
+    const servers = [
+      { serverId: "VideoAudioServer", transportType: "STDIO", enabled: true, toolNamePrefix: "video_editing",
+        stdioConfig: { command: "uv", args: ["--directory", path.join(sideDir, "video-audio-mcp"), "run", "server.py"], env: null, cwd: null } },
+      { serverId: "parity_http", transportType: "STREAMABLE_HTTP", enabled: true, toolNamePrefix: "parity_http",
+        streamableHttpConfig: { url: httpServer.url, token: "test-dummy", headers: null } },
+    ];
+    for (const input of servers) {
+      await gql("mutation($input: McpServerInput!) { configureMcpServer(input: $input) { savedConfig { __typename } } }", { input });
+      const d = await gql<{ discoverAndRegisterMcpServerTools: { success: boolean; message: string } }>(
+        "mutation($id: String!) { discoverAndRegisterMcpServerTools(serverId: $id) { success message } }", { id: input.serverId });
+      expect(d.discoverAndRegisterMcpServerTools.success, d.discoverAndRegisterMcpServerTools.message).toBe(true);
+    }
+    const project = (await gql<{ createProject: { projectId: string } }>(
+      "mutation($input: CreateProjectInput!) { createProject(input: $input) { projectId } }", { input: { name: "Parity codex direct" } })).createProject;
+    const tools = ["create_task", "update_task", "video_editing_get_media_duration", "parity_http_auth_probe"];
+    const def = (await gql<{ createAgentDefinition: { id: string } }>(
+      "mutation($input: CreateAgentDefinitionInput!) { createAgentDefinition(input: $input) { id } }",
+      { input: { name: `parity-codex-direct-${randomUUID().slice(0, 6)}`, role: "assistant", category: "runtime-e2e", description: "parity",
+        instructions: "Parity probe; the test calls tools directly.", toolNames: tools } })).createAgentDefinition;
+    const ws = path.join(dataDir, "workspace"); await fs.mkdir(ws);
+    const run = (await gql<{ createAgentRun: { success: boolean; message: string; runId: string } }>(
+      "mutation($input: CreateAgentRunInput!) { createAgentRun(input: $input) { success message runId } }",
+      { input: { agentDefinitionId: def.id, workspaceRootPath: ws, llmModelIdentifier: "gpt-5.6-luna", llmConfig: { reasoning_effort: "low" },
+        autoExecuteTools: true, runtimeKind: "codex_app_server" } })).createAgentRun;
+    expect(run.success, run.message).toBe(true);
+    const thread = getCodexThreadManager().getThread(run.runId);
+    expect(thread).toBeTruthy();
+    const call = async (tool: string, args: Record<string, unknown>) => {
+      const deadline = Date.now() + 60_000;
+      for (;;) {
+        try {
+          return await thread!.client.request<CallResponse>("mcpServer/tool/call", { threadId: thread!.threadId, server: AGENT_TOOLS_MCP_SERVER_NAME, tool, arguments: args });
+        } catch (error) {
+          if (Date.now() > deadline) throw error;
+          await new Promise((r) => setTimeout(r, 500));
+        }
+      }
+    };
+    const marker = `Parity codex direct ${randomUUID().slice(0, 8)}`;
+    const created = await call("create_task", { project_id: project.projectId, description: marker });
+    const createdResult = (JSON.parse(text(created)) as { task: { taskId: string; status: string } }).task;
+    const updated = await call("update_task", { task_id: createdResult.taskId, status: "DONE" });
+    const updatedResult = (JSON.parse(text(updated)) as { task?: { taskId: string; status: string } }).task ?? { taskId: "", status: text(updated).slice(0, 200) };
+    const duration = await call("video_editing_get_media_duration", { media_path: sample });
+    const httpMark = httpServer.toolCalls().length;
+    const probe = await call("parity_http_auth_probe", {});
+    const tasks = (await gql<{ projectTasks: Array<{ taskKey: string; description: string; status: string }> }>(
+      "query($p: String!) { projectTasks(projectId: $p) { taskKey description status } }", { p: project.projectId })).projectTasks;
+    Object.assign(evidence, {
+      createTask: { isError: created.isError ?? false, status: createdResult.status },
+      updateTask: { isError: updated.isError ?? false, status: updatedResult.status },
+      savedTask: tasks.find((t) => t.description === marker)?.status ?? null,
+      externalStdio: { isError: duration.isError ?? false, text: text(duration) },
+      externalHttp: { isError: probe.isError ?? false, text: text(probe), remoteToolCalls: httpServer.toolCalls().slice(httpMark).map((o) => o.auth) },
+    });
+    if (process.env["PARITY_EVIDENCE"]) await fs.writeFile(process.env["PARITY_EVIDENCE"], JSON.stringify(evidence, null, 2));
+    await gql("mutation($id: String!) { terminateAgentRun(agentRunId: $id) { success } }", { id: run.runId }).catch(() => undefined);
+    expect(evidence).toMatchObject({ createTask: { isError: false, status: "TODO" }, updateTask: { isError: false, status: "DONE" }, savedTask: "DONE",
+      externalStdio: { isError: false }, externalHttp: { isError: false, text: "MARKER-PARITY-CODEX-HTTP", remoteToolCalls: ["expected"] } });
+    expect(Number((evidence.externalStdio as { text: string }).text)).toBeGreaterThan(0);
+  }, 300_000);
+});

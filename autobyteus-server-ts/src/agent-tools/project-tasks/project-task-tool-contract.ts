@@ -1,8 +1,12 @@
 import { ParameterSchema, ParameterDefinition, ParameterType } from "autobyteus-ts/utils/parameter-schema.js";
 import { ProjectError } from "../../projects/domain/project-errors.js";
+import { normalizeCommentText } from "../../projects/domain/task-comments.js";
+import { normalizeTaskDescription, normalizeTaskTitle } from "../../projects/domain/task-text.js";
 import { PROJECT_TASK_STATUSES, validateTaskStatus } from "../../projects/domain/task-status.js";
-export const PROJECT_TASK_TOOL_NAMES = new Set(["list_projects", "list_project_tasks", "search_project_tasks", "create_project", "update_project", "create_task", "update_task"] as const);
-export type ProjectTaskToolName = "list_projects" | "list_project_tasks" | "search_project_tasks" | "create_project" | "update_project" | "create_task" | "update_task";
+export const PROJECT_TASK_TOOL_NAMES = new Set(["list_projects", "list_project_tasks", "search_project_tasks", "get_project_task", "create_project", "update_project", "create_task", "update_task"] as const);
+export type ProjectTaskToolName = "list_projects" | "list_project_tasks" | "search_project_tasks" | "get_project_task" | "create_project" | "update_project" | "create_task" | "update_task";
+/** The one Project Task tool whose result depends on the caller: a worker reads only the Task it works on (REQ-015). */
+export const GET_PROJECT_TASK_TOOL_NAME = "get_project_task" satisfies ProjectTaskToolName;
 export const isProjectTaskToolName = (name: string): name is ProjectTaskToolName =>
   PROJECT_TASK_TOOL_NAMES.has(name as ProjectTaskToolName);
 const statuses: string[] = [...PROJECT_TASK_STATUSES];
@@ -10,10 +14,11 @@ export const PROJECT_TASK_TOOL_DESCRIPTIONS: Record<ProjectTaskToolName, string>
   create_project: "Create a Project on the current node: required name, optional description and workspaces (absolute node-local folder paths; registration not required). Returns the saved Project (projectId, name, description, workspaces). Does not delegate work.",
   update_project: "Update a known Project by its project_id: name, description and/or workspaces. Omitted fields are kept; blank description clears. A supplied workspaces list replaces ALL links ([] unlinks all, folders are not deleted); retained links keep omitted descriptions. Returns the saved Project.",
   list_projects: "List every Project on the current node with its stable projectId, name and description. Does not select or change a Project.",
-  list_project_tasks: "List all Tasks in the explicit project_id, optionally filtered by exact TODO, IN_PROGRESS, DONE or CANCELLED status (CANCELLED = dropped as not needed). Each Task's taskId is its key (e.g. autobyteus-42): use it as the Task's ID in every tool. Returns descriptions, the Tasks each one depends on (dependsOn, by taskId), saved context-file references, each Task's open assignments (assignments) and its closed ones (closedAssignments, one per earlier assignment period, so you can find the task agent that did a DONE Task). Each assignment names the task agent: {kind: agent, agentRunId} for a task agent, or {kind: team, teamRunId, teamCoordinatorAgentRunId} for a task agent team; plus who assigned it (assignedBy) and whether the work was accepted (outcome); accepted work is not necessarily finished. Give a follow-up Task to a task agent with delegate_task and its target_agent_run_id (agentRunId) or target_team_run_id (teamRunId); talk with it using send_message_to and its run id (agentRunId, or teamCoordinatorAgentRunId for a task agent team). A Task whose assignments can't be read is marked assignments unavailable.",
-  search_project_tasks: "Search the Tasks of the explicit project_id with a sentence or a few words (query) describing the work: by meaning (related wording, paraphrases) and by exact text. Returns the best-matching Tasks first, at most limit (default 10, 1 to 30), each with its taskId (its key, e.g. autobyteus-42), status, a one-line summary (the description's first line) and match (exact: the description contains the query; meaning: related by meaning). meaningSearch says whether meaning search was used; when it is preparing or unavailable, note says why and which results are exact text matches only. Use it to check whether a Task already exists before creating one, and to find the Task the user refers to by description; use list_project_tasks when you need every Task or a Task's full details.",
-  create_task: "Create a Project Task: supply project_id and a required description (omit status and task_id); the new Task is TODO and gets the Project's next key as its taskId (e.g. autobyteus-42). Optional context_files: absolute local file paths copied into the new Task as context files. Same file types and 25 MiB limit as the app. Any invalid file fails the whole call with no change. Optional depends_on: the taskIds of Tasks of the same Project that come first (or that this Task follows up); it only informs and never stops work. Returns the recorded Task identity (projectId, taskId, status, dependsOn) plus attachedContextFiles [{storedFilename, displayName}] when files were attached. Does not delegate work; to give the Task to an agent, use delegate_task.",
-  update_task: "Update a Task by its task_id: a Project Task (its key, e.g. autobyteus-42), or the Task a description-only delegate_task created (it has no Project; delegate_task returned its task_id). Supply description and/or status (TODO, IN_PROGRESS, DONE, CANCELLED) and/or context_files and/or depends_on; never project_id.\nDONE means the work is finished; CANCELLED means the Task was dropped as not needed (not finished). Both stop the task agents whose current Task this is (never a task agent that has since been given another Task); their history is kept. Close a Task you delegated when its work is done.\nTo continue a closed Task with the same task agent, first set the Task to TODO or IN_PROGRESS; then, if you assigned the Task, message the task agent's run id (for a task agent team, its coordinator's run id): it continues with its conversation. A status change alone starts nothing. To give a task agent whose Task is DONE or CANCELLED a different Task, use delegate_task with its target_agent_run_id or target_team_run_id.\nOptional depends_on (Project Tasks only): the complete list of taskIds of Tasks of the same Project this Task depends on; it replaces the saved list, [] clears it. It only informs and never stops work.\nOptional context_files: absolute local file paths copied into a Project Task as context files; appended, never removed. Same file types and 25 MiB limit as the app; not for a Task with no Project. Any invalid file fails the whole call with no change. Unknown IDs fail; omitted fields, saved context and dependencies are kept. Returns the recorded Task identity (projectId is null for a Task with no Project) and status, plus dependsOn for a Project Task and attachedContextFiles when the call attached files.",
+  list_project_tasks: "List the Tasks in the explicit project_id, optionally filtered by exact TODO, IN_PROGRESS, DONE or CANCELLED status (CANCELLED = dropped as not needed). Each Task's taskId is its key (e.g. autobyteus-42): use it as the Task's ID in every tool. Each Task is a short entry: taskId, title, status, the Tasks it depends on (dependsOn, by taskId), the bigger Task it is part of (partOf, a taskId), its parts (parts, by taskId), its number of comments (commentCount) and its open assignments (assignments). A field with no value is left out (for example partOf when the Task is part of no bigger Task). Each assignment names the task agent: {kind: agent, agentRunId} for a task agent, or {kind: team, teamRunId, teamCoordinatorAgentRunId} for a task agent team; plus who assigned it (assignedBy) and whether the work was accepted (outcome); accepted work is not necessarily finished. Give a follow-up Task to a task agent with delegate_task and its target_agent_run_id (agentRunId) or target_team_run_id (teamRunId); talk with it using send_message_to and its run id (agentRunId, or teamCoordinatorAgentRunId for a task agent team). A Task whose assignments can't be read is marked assignmentsUnavailable. A Task's description, comments, context files and closed assignments are not listed; get_project_task, when you have it, reads one Task in full.",
+  search_project_tasks: "Search the Tasks of the explicit project_id with a sentence or a few words (query) describing the work: by meaning (related wording, paraphrases) and by exact text. Returns the best-matching Tasks first, at most limit (default 10, 1 to 30), each with its taskId (its key, e.g. autobyteus-42), status, partOf and parts (as in list_project_tasks), title, commentCount and match (exact: the title, the description or a comment contains the query; meaning: related by meaning); a field with no value is left out. meaningSearch is present only when meaning search was not fully used: it says whether it is preparing or unavailable, and note says why and which results are exact text matches only. Use it to check whether a Task already exists before creating one, and to find the Task the user refers to by description; use list_project_tasks when you need every Task, and get_project_task, when you have it, for one Task in full.",
+  get_project_task: "Read one Project Task in full: supply project_id and task_id (the Task's key, e.g. autobyteus-42, in any letter case, or its long ID). Returns projectId, taskId (its key), title, status, description, dependsOn and partOf and parts (by taskId), comments (their texts, oldest first), contextFiles ([{name, path}]: read a file by its path), assignments and closedAssignments (one per earlier assignment period; each as in list_project_tasks); a field with no value is left out. A task_id that names no Task of that Project fails with TASK_NOT_FOUND. If you work on a Task (it was delegated to you or to your task team, or you do part of a task agent's work), you can read only that Task; another Task fails with TASK_READ_OUT_OF_SCOPE. Read-only; Tasks with no Project are not read.",
+  create_task: "Create a Project Task: supply project_id, a required title (the Task's one-line name, shown wherever the Task is listed) and a required description (the Task's content); omit status and task_id. The new Task is TODO and gets the Project's next key as its taskId (e.g. autobyteus-42). Optional context_files: absolute local file paths copied into the new Task as context files. Same file types and 25 MiB limit as the app. Any invalid file fails the whole call with no change. Optional depends_on: the taskIds of Tasks of the same Project that come first (or that this Task follows up); it only informs and never stops work. Optional part_of: the taskId of the bigger Task in the same Project this Task is part of; one level only (a part can't have parts). Returns the recorded Task (projectId, taskId, title, status, dependsOn, partOf) plus attachedContextFiles [{name, path}] when files were attached; a field with no value is left out. Does not delegate work; to give the Task to an agent, use delegate_task.",
+  update_task: "Update a Task by its task_id: a Project Task (its key, e.g. autobyteus-42), or the Task a description-only delegate_task created (it has no Project; delegate_task returned its task_id). Supply title and/or description and/or status (TODO, IN_PROGRESS, DONE, CANCELLED) and/or context_files and/or depends_on and/or part_of and/or add_comment; never project_id.\nDONE means the work is finished; CANCELLED means the Task was dropped as not needed (not finished). Both end this Task's work for its task agents; a task agent is stopped when this was its last open Task; their history is kept. Close a Task you delegated when its work is done. Setting a Task that has parts to DONE or CANCELLED also sets its open parts the same way (ending their work for their task agents, as above); closedParts lists them.\nTo continue a closed Task with the same task agent, first set the Task to TODO or IN_PROGRESS; then, if you assigned the Task, message the task agent's run id (for a task agent team, its coordinator's run id): it continues with its conversation. A status change alone starts nothing. To give a task agent another Task, also while its other Tasks are open, use delegate_task with its target_agent_run_id or target_team_run_id.\nOptional title (Project Tasks only): the Task's new one-line name.\nOptional depends_on (Project Tasks only): the complete list of taskIds of Tasks of the same Project this Task depends on; it replaces the saved list, [] clears it. It only informs and never stops work.\nOptional part_of (Project Tasks only): the taskId of the bigger Task in the same Project this Task is part of; one level only (a part can't have parts); \"\" clears it.\nOptional add_comment (Project Tasks only): text added as a new comment at the end of the Task's comments; the description is not changed. Each call adds one comment.\nOptional context_files: absolute local file paths copied into a Project Task as context files; appended, never removed. Same file types and 25 MiB limit as the app; not for a Task with no Project. Any invalid file fails the whole call with no change. Unknown IDs fail; omitted fields, saved context, dependencies and the parent are kept. Returns the recorded Task identity (taskId; projectId and title for a Project Task) and status, plus dependsOn and partOf for a Project Task, attachedContextFiles [{name, path}] when the call attached files, closedParts when it closed parts and partsNotClosed when it could not close some of them; a field with no value is left out (a Task with no Project has no projectId, title, dependsOn or partOf).",
 };
 const contextFilesDefinition = (description: string) => new ParameterDefinition({
   name: "context_files", type: ParameterType.ARRAY, description, required: false, arrayItemSchema: { type: "string" },
@@ -21,6 +26,7 @@ const contextFilesDefinition = (description: string) => new ParameterDefinition(
 const dependsOnDefinition = (description: string) => new ParameterDefinition({
   name: "depends_on", type: ParameterType.ARRAY, description, required: false, arrayItemSchema: { type: "string" },
 });
+const partOfDefinition = (description: string) => new ParameterDefinition({ name: "part_of", type: ParameterType.STRING, description, required: false });
 const p = (name: string, description: string, required = false, enumValues?: string[]) => new ParameterDefinition({
   name, description, required, type: enumValues ? ParameterType.ENUM : ParameterType.STRING, ...(enumValues ? { enumValues } : {}),
 });
@@ -48,16 +54,25 @@ export function buildProjectTaskToolSchema(name: ProjectTaskToolName): Parameter
   ]);
   if (name === "create_task") return new ParameterSchema([
     p("project_id", "Project identity on the current node.", true),
+    p("title", "The Task's one-line name: trimmed, non-empty; no length limit.", true),
     p("description", "Trimmed non-empty Task content.", true),
     contextFilesDefinition("Absolute local file paths on this node to copy into the new Task's saved context. Same file types and 25 MiB limit as the app."),
     dependsOnDefinition("taskIds (keys, e.g. autobyteus-39) of Tasks in the same Project that this Task depends on."),
+    partOfDefinition("The taskId (key, e.g. autobyteus-25) of the bigger Task in the same Project this Task is part of; one level only (a part can't have parts)."),
   ]);
   if (name === "update_task") return new ParameterSchema([
     p("task_id", "The Task's ID: a Project Task's key (e.g. autobyteus-42), or the Task ID of a Task with no Project.", true),
+    p("title", "Project Tasks only: the Task's new one-line name, trimmed non-empty; omit to preserve."),
     p("description", "Trimmed non-empty Task content; omit to preserve."),
     p("status", "Explicit business status patch; omit to preserve.", false, statuses),
     contextFilesDefinition("Absolute local file paths on this node to copy into the Project Task's saved context (appended; never removes). Same file types and 25 MiB limit as the app."),
     dependsOnDefinition("Project Tasks only: the complete list of taskIds of Tasks in the same Project this Task depends on; replaces the saved list, [] clears it, omit to keep."),
+    partOfDefinition("Project Tasks only: the taskId of the bigger Task in the same Project this Task is part of; one level only (a part can't have parts). Replaces the saved one; \"\" clears it; omit to keep."),
+    p("add_comment", "Project Tasks only: text added as one new comment at the end of the Task's comments; the description is not changed."),
+  ]);
+  if (name === "get_project_task") return new ParameterSchema([
+    p("project_id", "Explicit Project identity on the current node.", true),
+    p("task_id", "The Task's ID: its key (e.g. autobyteus-42, any letter case) or its long ID, in that Project.", true),
   ]);
   if (name === "search_project_tasks") return new ParameterSchema([
     p("project_id", "Explicit Project identity on the current node.", true),
@@ -142,11 +157,15 @@ const plainInput = (raw: unknown): Record<string, unknown> => {
   if (!raw || typeof raw !== "object" || Array.isArray(raw)) invalid("Tool arguments must be an object.");
   return raw as Record<string, unknown>;
 };
+const taskTitle = (input: Record<string, unknown>): string | undefined => {
+  if (!Object.hasOwn(input, "title")) return undefined;
+  if (typeof input.title !== "string") invalid("title must be a string.");
+  return normalizeTaskTitle(input.title);
+};
 const taskDescription = (input: Record<string, unknown>): string | undefined => {
   if (!Object.hasOwn(input, "description")) return undefined;
   if (typeof input.description !== "string") invalid("description must be a string.");
-  if (!(input.description as string).trim()) throw new ProjectError("TASK_DESCRIPTION_REQUIRED", "Task description is required.");
-  return (input.description as string).trim();
+  return normalizeTaskDescription(input.description);
 };
 const taskContextFiles = (input: Record<string, unknown>): string[] | undefined => {
   if (!Object.hasOwn(input, "context_files")) return undefined;
@@ -168,39 +187,66 @@ const taskDependsOn = (input: Record<string, unknown>): string[] | undefined => 
   });
 };
 
-/** `create_task`: `{project_id, description, context_files?, depends_on?}`. `status` is rejected, and so is `task_id`. context_files and depends_on are shape-checked here only; the Task service owns their rules. */
+/** part_of: one Task reference (a key or ID), trimmed; "" (clearing, update_task only) is kept as "". The Task service resolves and validates it. */
+const taskPartOf = (input: Record<string, unknown>, clearable: boolean): string | undefined => {
+  if (!Object.hasOwn(input, "part_of")) return undefined;
+  if (typeof input.part_of !== "string") invalid("part_of must be a taskId string.");
+  const reference = (input.part_of as string).trim();
+  if (!reference && !clearable) invalid("part_of must be a non-empty taskId.");
+  return reference;
+};
+
+/** `create_task`: `{project_id, title, description, context_files?, depends_on?, part_of?}`. `status` is rejected, and so is `task_id`. context_files and depends_on are shape-checked here only; the Task service owns their rules. */
 export function parseCreateTaskInput(raw: unknown): Record<string, unknown> {
   const input = plainInput(raw);
-  rejectUnsupported(input, ["project_id", "description", "status", "context_files", "depends_on"]);
+  rejectUnsupported(input, ["project_id", "title", "description", "status", "context_files", "depends_on", "part_of"]);
   const result: Record<string, unknown> = {project_id: id(input, "project_id")};
   const hasStatus = Object.hasOwn(input, "status");
   if (hasStatus) result.status = validateTaskStatus(input.status);
+  const title = taskTitle(input);
+  if (title !== undefined) result.title = title;
   const description = taskDescription(input);
   if (description !== undefined) result.description = description;
   const contextFiles = taskContextFiles(input);
   if (contextFiles !== undefined) result.context_files = contextFiles;
   const dependsOn = taskDependsOn(input);
   if (dependsOn !== undefined) result.depends_on = dependsOn;
+  const partOf = taskPartOf(input, false);
+  if (partOf !== undefined) result.part_of = partOf;
   if (hasStatus) throw new ProjectError("TASK_CREATE_STATUS_UNSUPPORTED", "Omit status when creating a TODO Task.");
+  if (title === undefined) throw new ProjectError("TASK_TITLE_REQUIRED", "Task title is required.");
   if (description === undefined) throw new ProjectError("TASK_DESCRIPTION_REQUIRED", "Task description is required.");
   return result;
 }
 
-/** `update_task`: `{task_id, description?, status?, context_files?, depends_on?}`; a Task ID or key is unique, so `project_id` is rejected. At least one change is required (`depends_on: []` is one). */
+/** add_comment: a string, trimmed; blank is TASK_COMMENT_INVALID (refused, never ignored). */
+const taskComment = (input: Record<string, unknown>): string | undefined => {
+  if (!Object.hasOwn(input, "add_comment")) return undefined;
+  if (typeof input.add_comment !== "string") invalid("add_comment must be a string.");
+  return normalizeCommentText(input.add_comment);
+};
+
+/** `update_task`: `{task_id, title?, description?, status?, context_files?, depends_on?, part_of?, add_comment?}`; a Task ID or key is unique, so `project_id` is rejected. At least one change is required (`depends_on: []`, `part_of: ""` and `add_comment` are one). */
 export function parseUpdateTaskInput(raw: unknown): Record<string, unknown> {
   const input = plainInput(raw);
-  rejectUnsupported(input, ["task_id", "description", "status", "context_files", "depends_on"]);
+  rejectUnsupported(input, ["task_id", "title", "description", "status", "context_files", "depends_on", "part_of", "add_comment"]);
   const result: Record<string, unknown> = {task_id: id(input, "task_id")};
   const hasStatus = Object.hasOwn(input, "status");
   if (hasStatus) result.status = validateTaskStatus(input.status);
+  const title = taskTitle(input);
+  if (title !== undefined) result.title = title;
   const description = taskDescription(input);
   if (description !== undefined) result.description = description;
   const contextFiles = taskContextFiles(input);
   if (contextFiles !== undefined) result.context_files = contextFiles;
   const dependsOn = taskDependsOn(input);
   if (dependsOn !== undefined) result.depends_on = dependsOn;
-  if (!hasStatus && description === undefined && !(contextFiles?.length) && dependsOn === undefined) {
-    throw new ProjectError("TASK_PATCH_REQUIRED", "Supply description, status, context_files and/or depends_on to update a Task.");
+  const partOf = taskPartOf(input, true);
+  if (partOf !== undefined) result.part_of = partOf;
+  const addComment = taskComment(input);
+  if (addComment !== undefined) result.add_comment = addComment;
+  if (!hasStatus && title === undefined && description === undefined && !(contextFiles?.length) && dependsOn === undefined && partOf === undefined && addComment === undefined) {
+    throw new ProjectError("TASK_PATCH_REQUIRED", "Supply title, description, status, context_files, depends_on, part_of and/or add_comment to update a Task.");
   }
   return result;
 }
@@ -227,9 +273,14 @@ export function parseProjectTaskToolInput(name: ProjectTaskToolName, raw: unknow
   if (name === "update_task") return parseUpdateTaskInput(raw);
   if (name === "search_project_tasks") return parseSearchProjectTasksInput(raw);
   const input = plainInput(raw);
+  if (name === "get_project_task") {
+    rejectUnsupported(input, ["project_id", "task_id"]);
+    return {project_id: id(input, "project_id"), task_id: id(input, "task_id")};
+  }
   rejectUnsupported(input, name === "list_projects" ? [] : ["project_id", "status"]);
   if (name === "list_projects") return {};
   const result: Record<string, unknown> = {project_id: id(input, "project_id")};
   if (Object.hasOwn(input, "status")) result.status = validateTaskStatus(input.status);
   return result;
 }
+

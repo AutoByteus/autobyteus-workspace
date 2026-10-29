@@ -6,12 +6,12 @@ import { pathToFileURL } from 'node:url';
 import { initializePrisma, shutdownPrisma } from 'repository_prisma';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import { ApplicationDatabaseLocation } from '../../../src/config/application-database-location.js';
-import { runLocalEnvironmentImportCli } from '../../../src/secret-management/cli/import-local-environment-secrets.js';
-import { SecretVaultRuntime } from '../../../src/secret-management/secret-vault-runtime.js';
 import {
-  LocalEnvironmentSecretImportService,
-  type LocalImportConfirmationPort,
-} from '../../../src/secret-management/provisioning/local-environment-secret-import-service.js';
+  createTerminalImportDecision,
+  runLocalEnvironmentImportCli,
+} from '../../../src/secret-management/cli/import-local-environment-secrets.js';
+import { SecretVaultRuntime } from '../../../src/secret-management/secret-vault-runtime.js';
+import { LocalEnvironmentSecretImportService } from '../../../src/secret-management/provisioning/local-environment-secret-import-service.js';
 import {
   readTrackedTestEnvironment,
   removeOwnedTestRuntime,
@@ -23,13 +23,17 @@ import {
 const digest = (candidate: string): string =>
   createHash('sha256').update(fs.readFileSync(candidate)).digest('hex');
 
+// The secrets:import terminal decision over a scripted terminal.
 const confirmation = (
   response: string | null,
   direct = true,
-): LocalImportConfirmationPort => ({
-  isDirectTty: () => direct,
-  readChallenge: vi.fn().mockResolvedValue(response),
-});
+) => {
+  const terminal = {
+    isDirectTty: () => direct,
+    readChallenge: vi.fn().mockResolvedValue(response),
+  };
+  return Object.assign(createTerminalImportDecision(terminal), terminal);
+};
 
 const targetEnvironmentKeys = [
   'APP_ENV',
@@ -224,7 +228,7 @@ describe('explicit target database importer lifecycle', () => {
 
     await initializePrisma({ datasourceUrl: targetLocation.databaseUrl });
     const reopened = new SecretVaultRuntime();
-    await reopened.initialize(targetLocation);
+    await reopened.initialize({ kind: 'application', location: targetLocation });
     try {
       const management = reopened.requireService();
       await expect(management.getStatusForConsumer({

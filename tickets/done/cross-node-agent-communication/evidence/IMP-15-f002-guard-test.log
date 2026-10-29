@@ -1,0 +1,16 @@
+# IMP-15 F-002 guard test, before and after the fix (in autobyteus-server-ts): npx vitest run tests/unit/remote-collaboration/remote-link-walkers.test.ts
+# after: commit 7a5a9af077; before: the same test with the two validators from 7383e89a0f; macOS, node v22.23.1; 2026-10-20T16:29:50Z
+## after the fix (7a5a9af077)
+ ✓ tests/unit/remote-collaboration/remote-link-walkers.test.ts (12 tests) 233ms
+ Test Files  1 passed (1)
+      Tests  12 passed (12)
+exit=0
+## before the fix (validators from 7383e89a0f)
+     × a stored delegator ↔ remote message passes the admission scan and a restore 47ms
+     × keeps refusing an endpoint outside the run, equal endpoints, and a message with no local endpoint 2ms
+     × a stored delegator ↔ remote message passes the admission scan and a restore 40ms
+     × keeps refusing an endpoint outside the run, equal endpoints, and a message with no local endpoint 1ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 4 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  1 failed (1)
+      Tests  4 failed | 8 passed (12)
+exit=1

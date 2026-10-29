@@ -18,7 +18,7 @@ import { ContextFileLayout } from '../../../../src/context-files/store/context-f
 import { ContextFileLocalPathResolver } from '../../../../src/context-files/services/context-file-local-path-resolver.js';
 import { AgentMemoryLayout } from '../../../../src/agent-memory/store/agent-memory-layout.js';
 import { validateAgentOrgRunExecutionTreePayload } from '../../../../src/run-history/store/agent-org-run-execution-tree-schema.js';
-import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from '../../../fixtures/current-agent-org-run-fixtures.js';
+import { testAgentOrgExecutionTree, testOrgAgentCopySource, testOrgAgentNode, testOrgTeamCopySource, testOrgTeamNode } from '../../../fixtures/current-agent-org-run-fixtures.js';
 import { AgentRunProviderInputNormalizer } from '../../../../src/agent-execution/input/agent-run-provider-input-normalizer.js';
 import { AgentInputUserMessage } from 'autobyteus-ts/agent/message/agent-input-user-message.js';
 import { ContextFile } from 'autobyteus-ts/agent/message/context-file.js';
@@ -47,8 +47,10 @@ beforeEach(async () => {
   const team = testOrgTeamNode({ address: '/delivery', teamRunId: 'configured-team', coordinatorAddress: lead.address, members: [lead] });
   const raw = structuredClone(testAgentOrgExecutionTree({ orgRunId: 'org', members: [direct, team] })) as any;
   raw.rootOrg.taskExecutions = [
-    { address: direct.address, agentRunId: 'retained-direct', platformAgentRunId: null, delegatorAgentRunId: 'configured-direct', startedAt: '2026-09-01T00:00:01.000Z' },
-    { address: team.address, teamRunId: 'retained-team', members: [{ address: lead.address, agentRunId: 'retained-lead', platformAgentRunId: null }], taskExecutions: [], delegatorAgentRunId: 'configured-direct', startedAt: '2026-09-01T00:00:01.000Z' },
+    { address: direct.address, agentRunId: 'retained-direct', platformAgentRunId: null, delegatorAgentRunId: 'configured-direct', startedAt: '2026-09-01T00:00:01.000Z',
+      source: testOrgAgentCopySource(direct.agentDefinitionId) },
+    { address: team.address, teamRunId: 'retained-team', members: [{ address: lead.address, agentRunId: 'retained-lead', platformAgentRunId: null }], taskExecutions: [], delegatorAgentRunId: 'configured-direct', startedAt: '2026-09-01T00:00:01.000Z',
+      source: testOrgTeamCopySource({ teamDefinitionId: team.teamDefinitionId, coordinatorAddress: lead.address, memberAddresses: [lead.address] }) },
   ];
   const dir = new AgentMemoryLayout(memoryDir).getOrgDirPath('org');
   await new AgentOrgRunExecutionTreeStore().write(dir, validateAgentOrgRunExecutionTreePayload(raw, 'org'));

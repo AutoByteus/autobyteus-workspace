@@ -34,6 +34,8 @@ import type {
   StandaloneRootTreeSnapshot,
 } from "../domain/standalone-root-tree.js";
 import { StandaloneRootPersistenceCoordinator } from "./standalone-root-persistence-coordinator.js";
+import type { DelegatedFrom } from "../../run-history/store/agent-run-metadata-types.js";
+import type { RemoteRunChannel } from "../../agent-collaboration/execution/remote/remote-run-channel.js";
 
 export type StandaloneRootBuilderDependencies = Readonly<{
   flatTeamExecutionFactory: FlatTeamExecutionFactory;
@@ -46,6 +48,8 @@ export type StandaloneRootBuilderDependencies = Readonly<{
   activityInspector?: AgentConversationActivityInspector;
   workspaceManager?: Pick<WorkspaceManager, "ensureWorkspaceByRootPath">;
   collaboratorAdmission?: CollaboratorAdmission;
+  /** This node's channel to peer nodes; the process channel when not given. */
+  remoteRunChannel?: () => RemoteRunChannel | null;
 }>;
 
 /** Builds one complete standalone root (registries, callbacks, persistence, host handle) around a loaded package. */
@@ -59,6 +63,8 @@ export class StandaloneRootBuilder {
     collaborationDir: string;
     host: StandaloneHostAgentHandle;
     rootLaunchConfiguration: AgentLaunchConfiguration;
+    /** The back-link of a run a peer node delegated to this node. */
+    delegatedFrom: DelegatedFrom | null;
     onPackageCreated(): Promise<void>;
     onTerminated(root: StandaloneAgentRunRoot): void;
   }>): Promise<StandaloneAgentRunRoot> {
@@ -100,6 +106,7 @@ export class StandaloneRootBuilder {
       store: this.dependencies.packageStore,
       packageExists: input.packageExists,
       getMessages: () => run?.getCommunicationSnapshot() ?? input.messages,
+      getTree: () => run?.getExecutionTreeSnapshot() ?? input.tree,
       onPackageCreated: input.onPackageCreated,
       enterPersistenceFailStop: () => run?.enterPersistenceFailStop(),
     });
@@ -128,6 +135,9 @@ export class StandaloneRootBuilder {
       memoryLocator: this.dependencies.memoryLocator,
       activityInspector: this.dependencies.activityInspector,
       collaboratorAdmission: this.dependencies.collaboratorAdmission,
+      delegatedFrom: input.delegatedFrom,
+      remoteRunChannel: this.dependencies.remoteRunChannel,
+      agentRunManager: this.dependencies.agentRunManager,
       onTerminated: () => { if (run) input.onTerminated(run); },
     });
     run.activate();
@@ -171,6 +181,7 @@ export class StandaloneRootBuilder {
         root: input.identity.root,
         delegateToNewCopy: (caller, command) => input.requireRun().delegateToNewCopy({ identity: caller }, command),
         assignToExistingCopy: (caller, command) => input.requireRun().assignToExistingCopy({ identity: caller }, command),
+        ownedTaskOf: (caller) => input.requireRun().ownedTaskOf({ identity: caller }),
       }),
     });
   }

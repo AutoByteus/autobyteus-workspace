@@ -14,7 +14,7 @@ import { ContextFileLocalPathResolver } from "../../../src/context-files/service
 import { ContextFileDraftCleanupService } from "../../../src/context-files/services/context-file-draft-cleanup-service.js";
 import { ContextFileLayout } from "../../../src/context-files/store/context-file-layout.js";
 import { buildFinalContextFileLocator, type ContextFileFinalOwnerDescriptor } from "../../../src/context-files/domain/context-file-owner-types.js";
-import * as records from "../../../src/context-files/services/context-file-record-locators.js";
+import * as records from "../../../src/app-data-migrations/frozen/server/context-files/services/context-file-record-locators.js";
 import { assertContainedContextFile, assertContainedContextFileSync } from "../../../src/context-files/services/context-file-path-validation.js";
 import { RootRunPackageReadinessIndex } from "../../../src/run-history/services/root-run-package-readiness-index.js";
 
@@ -116,7 +116,7 @@ it("uses the containing nested Team ID, never its root ID, for async and sync at
   // A Team copy (a catalog copy, as every Team copy of a flat team run), written as the app writes it:
   // its own tree at `agent_teams/nested/`, its link in the team tree.
   tree.rootTeam.taskExecutions = [{address: "/nested", teamRunId: "nested", members: [{address: "/nested/worker", agentRunId: "nested-worker", platformAgentRunId: null}], taskExecutions: [], delegatorAgentRunId: "worker", startedAt: "2026-09-01T00:00:00.000Z",
-    source: {kind: "agent_team", teamDefinitionId: "nested-team", coordinatorAddress: "/nested/worker", members: [{address: "/nested/worker", agentDefinitionId: "nested-def"}], handoffs: [], defaultLaunchConfiguration: tree.rootTeam.defaultLaunchConfiguration}}];
+    source: {kind: "agent_team", teamDefinitionId: "nested-team", coordinatorAddress: "/nested/worker", members: [{address: "/nested/worker", agentDefinitionId: "nested-def", launchConfiguration: tree.rootTeam.defaultLaunchConfiguration, followsTeam: true}], handoffs: [], defaultLaunchConfiguration: tree.rootTeam.defaultLaunchConfiguration}}];
   await new TeamRunExecutionTreeStore().write(team, validateTeamRunExecutionTreePayload(tree, "team"));
   // A task agent team member keeps its memory inside the task team's own folder (contract L1).
   const nestedFile = path.join(path.dirname(team), "nested", "nested-worker", "context_files", filename);

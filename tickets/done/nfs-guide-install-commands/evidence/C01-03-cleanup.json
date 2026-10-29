@@ -1,0 +1,57 @@
+{
+  "case": "C01",
+  "date": "2026-10-26T07:05:35.752611+00:00",
+  "command": "python3 tickets/in-progress/nfs-guide-install-commands/evidence/C01-03-cleanup.py",
+  "commit": "ccc0c56d2d4fdf48815a19d73870798dcd8fadb9",
+  "environment": "Mac current worktree read-only input audit plus owned temporary-root cleanup",
+  "result": "Pass",
+  "attempts": [
+    {
+      "attempt": "R02-03-attempt-1",
+      "groups": [
+        85625,
+        86675
+      ],
+      "groupsAbsent": true,
+      "port": 53568,
+      "portClosed": true,
+      "root": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-guide-api003-dXCuZe",
+      "removedResidualRootNow": false,
+      "rootAbsent": true
+    },
+    {
+      "attempt": "R02-03-attempt-2",
+      "groups": [
+        90527,
+        92165
+      ],
+      "groupsAbsent": true,
+      "port": 53710,
+      "portClosed": true,
+      "root": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-guide-api003-gqNhYF",
+      "removedResidualRootNow": true,
+      "rootAbsent": true
+    },
+    {
+      "attempt": "R02-03-attempt-3",
+      "groups": [
+        7324,
+        8999
+      ],
+      "groupsAbsent": true,
+      "port": 56072,
+      "portClosed": true,
+      "root": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/nfs-guide-api003-4RsoEy",
+      "removedResidualRootNow": false,
+      "rootAbsent": true
+    }
+  ],
+  "sourceDiff": "",
+  "protectedCompared": 263,
+  "otherOwnerChanged": [],
+  "oldHistoryPrefixPreserved": true,
+  "implementationScratchAbsent": true,
+  "detailsPreservedInGuideDoc": true,
+  "retained": "Current ignored worktree dependencies and generated Nuxt cache; committed evidence. No task worktree removed.",
+  "limits": "No claim of host installer/NFS/backend/Electron/field qualification; no unrelated process control. Old driver cleanup ENOTEMPTY failures remain original; attempt2 residual root was removed only after verified group absence."
+}

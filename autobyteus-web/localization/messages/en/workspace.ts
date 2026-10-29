@@ -1,6 +1,8 @@
 import type { TranslationCatalog } from "../../runtime/types";
 
 const messages = {
+  "workspace.components.workspace.tools.BrowserPanel.back": "Back",
+  "workspace.components.workspace.tools.BrowserPanel.forward": "Forward",
   "workspace.components.conversation.SkillRequestChips.sentToTheAgentAs": "Sent to the agent as",
   "workspace.components.conversation.segments.SystemTaskNotificationSegment.skillUpdated": "Skill updated",
   "fileExplorer.workspaceUnavailable": "Workspace details are unavailable. Refresh or reopen Settings to load the saved workspace.",
@@ -118,6 +120,17 @@ const messages = {
   "workspace.components.workspace.config.TeamScopeConfigEditor.inherited": "Inherited",
   "workspace.components.progress.CompactionActivityItem.memory_compaction":
     "Memory compaction",
+  "workspace.components.progress.BackgroundTaskPanel.trackedExplanation": "Tracked commands continuing beyond their turn. Recent runtime observations, not all system processes.",
+  "workspace.components.progress.BackgroundTaskPanel.lastKnown": "Recorded / last-known rows; running counts are unconfirmed.",
+  "workspace.components.progress.BackgroundTaskPanel.loading": "Checking this agent’s background tasks…",
+  "workspace.components.progress.BackgroundTaskPanel.unavailable": "Current background-task inspection is unavailable.",
+  "workspace.components.progress.BackgroundTaskPanel.recordedCounts": "{{running}} last-known running · {{total}} recorded",
+  "workspace.components.progress.BackgroundTaskPanel.unconfirmedCounts": "Current count unavailable",
+  "workspace.components.progress.BackgroundTaskPanel.trackedEmpty": "No tracked background commands",
+  "workspace.components.progress.BackgroundTaskPanel.shellCommand": "Shell command",
+  "workspace.components.progress.BackgroundTaskPanel.status.unknown": "Unknown",
+  "workspace.components.progress.BackgroundTaskPanel.observed": "{{id}} · observed {{time}}",
+  "workspace.components.progress.BackgroundTaskPanel.exitCode": "Exit code {{code}}",
   "workspace.components.progress.BackgroundTaskPanel.title":
     "Background Tasks",
   "workspace.components.progress.BackgroundTaskPanel.counts":
@@ -155,11 +168,11 @@ const messages = {
   "workspace.components.progress.SystemInstructionActivityItem.aria_label":
     "{{title}}. {{source}}. {{availability}}. Captured {{time}}. {{count}} characters.",
   "workspace.components.progress.SystemInstructionActivityItem.source.native":
-    "AutoByteus-supplied · Native configured system prompt",
+    "AutoByteus-supplied · AutoByteus configured system prompt",
   "workspace.components.progress.SystemInstructionActivityItem.source.claude":
-    "AutoByteus-supplied · Claude SDK systemPrompt",
+    "AutoByteus-supplied · Claude Agent SDK systemPrompt",
   "workspace.components.progress.SystemInstructionActivityItem.source.codex":
-    "AutoByteus-supplied · Codex baseInstructions",
+    "AutoByteus-supplied · Codex App Server baseInstructions",
   "workspace.components.progress.SystemInstructionActivityItem.source.grok":
     "AutoByteus-supplied · Grok Build rules",
   "workspace.components.progress.SystemInstructionActivityItem.source.unknown":
@@ -282,13 +295,6 @@ const messages = {
     "Model",
   "workspace.components.launchConfig.RuntimeModelConfigFields.modelPlaceholder":
     "Select a model",
-  "workspace.components.workspace.skillImprovement.SkillImprovementComposerCta.improve_skills": "improve skills",
-  "workspace.components.workspace.skillImprovement.SkillImprovementComposerCta.standalone_scope": "this run",
-  "workspace.components.workspace.skillImprovement.SkillImprovementComposerCta.team_member_scope": "this member's run",
-  "workspace.components.workspace.skillImprovement.SkillImprovementComposerCta.aria_label": "improve skills {{scope}}",
-  "workspace.components.workspace.skillImprovement.SkillImprovementComposerCta.tooltip": "Start a visible Retrospective Skill Improver for {{scope}}. It may update configured skill packages or make no changes.",
-  "workspace.components.workspace.skillImprovement.SkillImprovementComposerCta.run_not_eligible": "This run is not eligible for Skill Improvement.",
-  "workspace.components.workspace.skillImprovement.SkillImprovementComposerCta.started_toast": "Improve skills started. Skills may be updated or no changes may be made.",
 } satisfies TranslationCatalog;
 
 export default messages;

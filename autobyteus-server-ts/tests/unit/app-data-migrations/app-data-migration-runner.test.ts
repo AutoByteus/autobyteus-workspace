@@ -5,6 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { AppDataMigrationRegistry } from "../../../src/app-data-migrations/app-data-migration-registry.js";
 import { AppDataMigrationRunner } from "../../../src/app-data-migrations/app-data-migration-runner.js";
 import type {
+  AppDataCapability,
   AppDataMigrationDefinition,
   AppDataMigrationRecordRepositoryLike,
   AppDataMigrationRecordSnapshot,
@@ -673,6 +674,47 @@ describe("AppDataMigrationRunner", () => {
     ]);
     expect(executeSucceeded).not.toHaveBeenCalled();
     expect(executeWarnings).not.toHaveBeenCalled();
+  });
+
+  it("answers a capability ready only when every migration holding it back has succeeded", async () => {
+    const repository = new InMemoryMigrationRepository();
+    const record = (migrationId: string, status: AppDataMigrationRecordSnapshot["status"]) => repository.records.set(migrationId, {
+      migrationId, displayName: migrationId, status, attempts: 1, startedAt: new Date(), completedAt: new Date(),
+      summary: persistedSummary, errorMessage: null, logPath: null,
+    });
+    const holding = (id: string, capability: AppDataCapability): AppDataMigrationDefinition =>
+      ({ ...createDefinition(id, vi.fn()), holdsBackCapabilities: [capability] });
+    const runner = new AppDataMigrationRunner(
+      new AppDataMigrationRegistry([
+        holding("m-history-a", "token_usage_history"),
+        holding("m-history-b", "token_usage_history"),
+        createDefinition("m-unrelated", vi.fn()),
+      ]),
+      repository,
+      { logsDir: tempDir },
+    );
+
+    // Not run yet: held back. A capability no registered migration declares is ready.
+    await expect(runner.capabilityReadiness()).resolves.toEqual({ token_usage_history: false, custom_llm_providers: true, node_identity: true, memory_sync: true });
+    record("m-history-a", "SUCCEEDED");
+    record("m-history-b", "FAILED");
+    await expect(runner.capabilityReadiness()).resolves.toEqual({ token_usage_history: false, custom_llm_providers: true, node_identity: true, memory_sync: true });
+    record("m-history-b", "RUNNING");
+    await expect(runner.capabilityReadiness()).resolves.toEqual({ token_usage_history: false, custom_llm_providers: true, node_identity: true, memory_sync: true });
+    record("m-history-b", "SUCCEEDED_WITH_WARNINGS");
+    await expect(runner.capabilityReadiness()).resolves.toEqual({ token_usage_history: true, custom_llm_providers: true, node_identity: true, memory_sync: true });
+  });
+
+  it("registers the token-usage, custom-provider, node-identity and Memory Sync migrations as the holders of their capabilities", () => {
+    const holders = new AppDataMigrationRegistry().listDefinitions()
+      .filter((definition) => (definition.holdsBackCapabilities ?? []).length > 0)
+      .map((definition) => [definition.id, definition.holdsBackCapabilities]);
+    expect(holders).toEqual([
+      ["20260819_token_usage_run_records_v1", ["token_usage_history"]],
+      ["20260803_custom_provider_readable_identity", ["custom_llm_providers"]],
+      ["20261024_node_identity_file_name", ["node_identity"]],
+      ["20261024_memory_sync_source_id_names", ["memory_sync"]],
+    ]);
   });
 
   it("exposes warning results for manual retry and records a successful retry attempt", async () => {

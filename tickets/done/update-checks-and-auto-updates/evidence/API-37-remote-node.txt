@@ -1,0 +1,38 @@
+# API-37 — a remote node (no embedded flag) has no runtime parts and makes no background runtime checks (AC-022, DEC-020, AR-005)
+# R: env -i PATH HOME=<temp> TMPDIR node autobyteus-server-ts/dist/app.js --port 60748 --data-dir /private/tmp/a210/rootR/server-data (worktree dist from the build); runtime commands = logging wrappers around the scripted CLIs; started 2026-10-23T21:33:25Z
+
+## R settings
+{
+  "data": {
+    "updateAutomationSettings": {
+      "intervals": {
+        "agentPackages": 30,
+        "skillSources": 30,
+        "agentRuntimes": 60
+      },
+      "automaticUpdates": {
+        "agentPackages": false,
+        "skillSources": false,
+        "agentRuntimes": false
+      },
+      "githubWaitUntil": null,
+      "desktopEmbeddedNode": false
+    }
+  }
+}
+## desktop window bound to R (window 2, nodeId remote-a782c78e…): Update checks card
+['auto-update-agent_package-toggle=false', 'auto-update-skill_source-toggle=false']
+['update-interval-packages-value=30', 'update-interval-skills-value=30']
+Update checksFind new versions of your GitHub agent packages and skill sources.Check for updates in the backgroundNo account or token is used. Nothing is sent to AutoByteus.ContactsPackages and skill sources: github.comAutomatic updates: GitHub downloads and each runtime's own update commandHow often to checkAgent packagesEveryminuteshoursSkill sourcesEveryminuteshours15 minutes to 24 hours. Very short intervals can 
+## same card in the embedded node's window
+['auto-update-agent_package-toggle=true', 'auto-update-skill_source-toggle=true', 'auto-update-agent_runtime-toggle=true']
+
+## every runtime command R ran (wrappers), observed until 21:39:32 (6 min, ≥ 4 ticks)
+2026-10-23T21:34:36Z codex --version
+2026-10-23T21:34:36Z claude --version
+2026-10-23T21:34:36Z claude --version
+2026-10-23T21:34:37Z grok --version
+2026-10-23T21:34:37Z grok agent --help
+2026-10-23T21:34:37Z agy --help
+2026-10-23T21:34:37Z agy models
+# These are the existing start-up capability probes of the model catalog (src/runtime-management/grok/grok-build-capability.ts 'agent --help', antigravity-cli-capability.ts 'models', version probes) during 'Background task Cache Pre-loading'. None of the update check's calls (grok 'update --check --json', vendor latest reads) ran; R has 0 update notifications.

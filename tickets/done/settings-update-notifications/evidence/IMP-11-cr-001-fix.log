@@ -1,0 +1,13 @@
+IMP-11 CR-001 fix: server typecheck + affected tests | cmds: tsc -p tsconfig.build.json --noEmit; vitest run tests/unit/update-notifications tests/unit/integrations tests/unit/compositions/update-notifications-composition.test.ts tests/unit/api/graphql/update-notifications-schema.test.ts tests/unit/skills/github/source-update-state.test.ts --no-watch | commit c42bf2abc4 | macOS | 2026-10-20
+tsc exit 0
+ ✓ tests/unit/api/graphql/update-notifications-schema.test.ts (3 tests) 164ms
+ ✓ tests/unit/skills/github/source-update-state.test.ts (3 tests) 170ms
+ ✓ tests/unit/integrations/github/github-rate-limit-gate.test.ts (8 tests) 70ms
+ ✓ tests/unit/compositions/update-notifications-composition.test.ts (2 tests) 66ms
+ ✓ tests/unit/update-notifications/update-notification-store.test.ts (4 tests) 30ms
+ ✓ tests/unit/update-notifications/update-check-scheduler.test.ts (8 tests) 13ms
+ ✓ tests/unit/update-notifications/update-notification-service.test.ts (19 tests) 12ms
+ ✓ tests/unit/update-notifications/update-checks-capability-service.test.ts (2 tests) 2ms
+ Test Files  8 passed (8)
+      Tests  49 passed (49)
+Reproduction: the CR-001 GraphQL test against the da74c13406 service: 'Tests  1 failed | 2 passed (3)' (× lists package notifications while the skill source registry is unreadable (CR-001)); with the fix: 3 passed.

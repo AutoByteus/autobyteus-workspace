@@ -43,7 +43,9 @@ const mergeHistoryRowWithContext = (
     row.isActive,
   );
   const lastActivityAt = context.state.conversation.updatedAt || row.lastActivityAt;
-  const liveSummary = resolveFirstUserMessageSummary(context.state.conversation);
+  // The stored title wins; the live first user message only fills a row that has none yet. For a
+  // peer-started run the first user message is the work packet, never the title.
+  const liveSummary = row.summary.trim() ? null : resolveFirstUserMessageSummary(context.state.conversation);
 
   return {
     ...row,

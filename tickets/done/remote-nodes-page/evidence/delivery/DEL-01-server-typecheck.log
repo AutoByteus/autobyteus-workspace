@@ -1,0 +1,5 @@
+# DEL-01 server typecheck | integrated 534ae78028 (origin/personal 00d8a7ce62) | pnpm install --frozen-lockfile; prebuild; pnpm -C autobyteus-server-ts typecheck
+> autobyteus-server-ts@0.1.1 typecheck /Users/normy/autobyteus_org/autobyteus-worktrees/remote-nodes-page/autobyteus-server-ts
+> tsc -p tsconfig.build.json --noEmit
+
+exit=0

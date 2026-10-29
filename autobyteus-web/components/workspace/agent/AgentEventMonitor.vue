@@ -53,9 +53,9 @@ import type { AbsoluteFilePathAction } from '~/utils/eventMonitorFilePaths/absol
 import {
   useEventMonitorActiveTraceBrowse,
 } from '~/services/eventMonitor/eventMonitorActiveTraceBrowse';
-import type {
-  EventMonitorActiveTraceBrowseSubject,
-} from '~/services/eventMonitor/eventMonitorActiveTracePageService';
+import type { AgentRunReadSubject } from '~/types/agent/agentRunReadSubject';
+import { useRemoteRun } from '~/composables/remoteRuns/useRemoteRun';
+import { useLocalization } from '~/composables/useLocalization';
 
 const props = defineProps<{
   conversation: Conversation;
@@ -67,7 +67,7 @@ const props = defineProps<{
   beforeSend?: () => void | Promise<void>;
   presentationRevision?: number;
   hasEarlierActiveTraceEvents?: boolean;
-  browseSubject: EventMonitorActiveTraceBrowseSubject;
+  browseSubject: AgentRunReadSubject;
   /** `/` skill tags in the box; standalone agent runs only. */
   skillTagging?: SkillTaggingCapability | null;
   /** Composer placeholder when there are no skill tags (e.g. "Message code reviewer…"). */
@@ -87,7 +87,11 @@ const browse = useEventMonitorActiveTraceBrowse({
   presentationRevision: () => props.presentationRevision ?? 0,
 });
 
+// autobyteus-278: a file path in a remote run's conversation names a file on the other node.
+const remote = useRemoteRun(() => effectiveRunId.value);
+const { t } = useLocalization();
 const handleFilePathAction = async (action: AbsoluteFilePathAction): Promise<void> => {
+  if (remote.value) { filePreviewStatus.value = t('remote.filePath', { node: remote.value.nodeName }); return; }
   // Keep the launcher effect boundary out of Markdown rendering and passive
   // message arrival. It is created only for explicit user activation.
   const originRunId = effectiveRunId.value;

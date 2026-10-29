@@ -27,7 +27,7 @@ describe("Project Task keys and dependencies (services)", () => {
   const readJson = async (file: string) => JSON.parse(await fs.readFile(file, "utf8"));
   const taskFile = (taskId: string, project = projectId) => layout.taskFile(project, taskId);
   const create = async (description: string, dependsOnTaskIds?: string[], project = projectId) =>
-    tasks.createTask({ projectId: project, description, ...(dependsOnTaskIds ? { dependsOnTaskIds } : {}) });
+    tasks.createTask({ projectId: project, title: description, description, ...(dependsOnTaskIds ? { dependsOnTaskIds } : {}) });
   const upserts = () => emitted.flatMap((m) => m.type === "task_upserted" && m.scope.kind === "project" ? [m.task] : []);
 
   beforeEach(async () => {
@@ -54,7 +54,7 @@ describe("Project Task keys and dependencies (services)", () => {
   describe("keys", () => {
     it("UI and agent-tool creates get the next key, which survives edits and status changes (AC-001, REQ-017)", async () => {
       const ui = await create("From the UI");
-      const tool = await tasks.createTaskWithLocalContextFiles({ projectId, description: "From an agent", localContextFiles: [] });
+      const tool = await tasks.createTaskWithLocalContextFiles({ projectId, title: "From an agent", description: "From an agent", localContextFiles: [] });
       expect([ui.taskKey, tool.taskKey]).toEqual(["autobyteus-1", "autobyteus-2"]);
       await tasks.updateTask({ projectId, taskId: ui.taskId, description: "Edited" });
       await tasks.updateTaskById({ taskId: ui.taskId, status: "IN_PROGRESS" });
@@ -196,7 +196,7 @@ describe("Project Task keys and dependencies (services)", () => {
       const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
       vi.spyOn(store, "updateTask").mockRejectedValueOnce(new Error("disk full"));
       await expect(tasks.deleteTask({ projectId, taskId: a.taskId })).resolves.toBe(true);
-      expect(warn).toHaveBeenCalledWith("TASK_DEPENDENCY_CLEANUP_FAILED", expect.objectContaining({ taskId: a.taskId }));
+      expect(warn).toHaveBeenCalledWith("TASK_RELATION_CLEANUP_FAILED", expect.objectContaining({ taskId: a.taskId }));
     });
 
     it("task_upserted carries taskKey and dependsOnTaskIds (AC-011)", async () => {

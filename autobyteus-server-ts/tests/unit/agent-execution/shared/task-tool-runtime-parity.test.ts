@@ -104,13 +104,22 @@ describe("task tool exposure and schemas across runtimes", () => {
             "description": "Trimmed non-empty Task content.",
             "type": "string",
           },
+          "part_of": {
+            "description": "The taskId (key, e.g. autobyteus-25) of the bigger Task in the same Project this Task is part of; one level only (a part can't have parts).",
+            "type": "string",
+          },
           "project_id": {
             "description": "Project identity on the current node.",
+            "type": "string",
+          },
+          "title": {
+            "description": "The Task's one-line name: trimmed, non-empty; no length limit.",
             "type": "string",
           },
         },
         "required": [
           "project_id",
+          "title",
           "description",
         ],
         "type": "object",
@@ -119,6 +128,10 @@ describe("task tool exposure and schemas across runtimes", () => {
     expect(buildProjectTaskToolSchema("update_task").toJsonSchema()).toMatchInlineSnapshot(`
       {
         "properties": {
+          "add_comment": {
+            "description": "Project Tasks only: text added as one new comment at the end of the Task's comments; the description is not changed.",
+            "type": "string",
+          },
           "context_files": {
             "description": "Absolute local file paths on this node to copy into the Project Task's saved context (appended; never removes). Same file types and 25 MiB limit as the app.",
             "items": {
@@ -137,6 +150,10 @@ describe("task tool exposure and schemas across runtimes", () => {
             "description": "Trimmed non-empty Task content; omit to preserve.",
             "type": "string",
           },
+          "part_of": {
+            "description": "Project Tasks only: the taskId of the bigger Task in the same Project this Task is part of; one level only (a part can't have parts). Replaces the saved one; "" clears it; omit to keep.",
+            "type": "string",
+          },
           "status": {
             "description": "Explicit business status patch; omit to preserve.",
             "enum": [
@@ -149,6 +166,10 @@ describe("task tool exposure and schemas across runtimes", () => {
           },
           "task_id": {
             "description": "The Task's ID: a Project Task's key (e.g. autobyteus-42), or the Task ID of a Task with no Project.",
+            "type": "string",
+          },
+          "title": {
+            "description": "Project Tasks only: the Task's new one-line name, trimmed non-empty; omit to preserve.",
             "type": "string",
           },
         },

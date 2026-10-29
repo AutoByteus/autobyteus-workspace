@@ -1,0 +1,123 @@
+IMP-TRIAL-03 — archived implementation attempt; not reusable current acceptance
+Step: ab-terminal-focused; see failure analysis in implementation-check-ledger.md.
+Commit: evolving uncommitted IR-002 tree over2630c26f8 before f34ad8749; desktop setup build overlapped later fix commits. Exact source snapshot/invocation not retained, therefore no current-pass authority.
+Environment: macOS arm64 Node26.12.0, task-local packages; no provider gate.
+Log finished: 2026-10-24T18:32:47.792600+00:00
+
+
+ RUN  v4.1.12 /Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024/autobyteus-ts
+
+ ✓ tests/unit/tools/terminal/command-execution/non-interactive-shell-resolver.test.ts (2 tests) 3ms
+ ❯ tests/unit/tools/terminal/command-execution/process-group-observer.test.ts (5 tests | 1 failed) 8ms
+   × requires exact-distro session/group/birth proof and revalidates before signalling 6ms
+   ✓ refuses unverified anchor 100 1 100 200 S 555
+ 1ms
+   ✓ refuses unverified anchor  0ms
+   ✓ refuses unverified anchor malformed 0ms
+   ✓ does not translate inspection denial into empty absence 0ms
+ ✓ tests/unit/tools/terminal/command-execution/shell-command-executor.test.ts (1 test) 5ms
+ ❯ tests/unit/tools/terminal/command-execution/anchored-command-launcher.test.ts (5 tests | 1 failed) 11ms
+   ✓ preserves successful RESULT across duplicate/late frames, exit and later background stop 3ms
+   ✓ rejects STARTED and resolves failure on explicit spawn failure 1ms
+   ✓ settles missing RESULT through bounded finishStop independently of pipe EOF 0ms
+   ✓ gives queued RESULT at most 50ms after unexpected control loss 1ms
+   × WSL launches setsid --wait in the exact distro and preserves no-newline user stderr 4ms
+ ✓ tests/unit/tools/terminal/background-process-manager.test.ts (3 tests) 2251ms
+     ✓ startCommand returns PID metadata and captures output  1400ms
+     ✓ stopProcess removes a managed process  849ms
+ ✓ tests/unit/tools/terminal/command-execution/native-command-process-scope.test.ts (7 tests) 6170ms
+     ✓ retains fast shell survivors and drains them after the command/agent context ends  1002ms
+     ✓ returns fast/empty/nonzero commands and retires empty anchors  649ms
+     ✓ settles forced timeout without RESULT and keeps partial output  1780ms
+     ✓ host stop is not a tool timeout and duplicate close shares the promise  928ms
+     ✓ drains multiple groups collectively while an unrelated scope survives  1740ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/tools/terminal/command-execution/anchored-command-launcher.test.ts > WSL launches setsid --wait in the exact distro and preserves no-newline user stderr
+AssertionError: expected [ '-e', …(1) ] to deeply equal [ '-d', 'TaskDistro', '--cd', …(5) ]
+
+- Expected
++ Received
+
+  [
+-   "-d",
+-   "TaskDistro",
+-   "--cd",
+-   "/tmp/task",
+-   "--exec",
+-   "setsid",
+-   "--wait",
+-   "bash",
++   "-e",
++   "
++ const { spawn } = require('node:child_process');
++ let launched = false;
++ function send(message) {
++   if (!process.connected) return process.exit(1);
++   process.send(message, error => { if (error) process.exit(1); });
++ }
++ process.on('SIGTERM', () => {});
++ process.on('disconnect', () => process.exit(1));
++ process.on('message', message => {
++   if (message.kind === 'START' && !launched) {
++     launched = true;
++     try {
++       const child = spawn(message.executable, message.args, {
++         cwd: message.cwd, env: message.env, detached: false,
++         stdio: ['ignore', 'inherit', 'inherit']
++       });
++       child.once('spawn', () => send({ kind: 'STARTED', pid: child.pid }));
++       child.once('error', error => send({ kind: 'SPAWN_FAILED', message: error.message.slice(0, 512) }));
++       child.once('exit', (code, signal) => send({ kind: 'RESULT', code, signal }));
++     } catch (error) { send({ kind: 'SPAWN_FAILED', message: String(error).slice(0, 512) }); }
++   } else if (message.kind === 'RELEASE') process.exit(0);
++ });
++ send({ kind: 'READY', pid: process.pid });
++ ",
+  ]
+
+ ❯ tests/unit/tools/terminal/command-execution/anchored-command-launcher.test.ts:48:28
+     46|     processTarget: { kind: 'wsl', wslExecutable: 'wsl.exe', distro: 'T…
+     47|   const args = mocks.spawn.mock.calls[0][1];
+     48|   expect(args.slice(0, 8)).toEqual(['-d', 'TaskDistro', '--cd', '/tmp/…
+       |                            ^
+     49|   const nonce = args[14]; // args: ... -c script argv0 nonce shell args
+     50|   expect(nonce).toMatch(/^[a-f0-9]{32}$/);
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/2]⎯
+
+ FAIL  tests/unit/tools/terminal/command-execution/process-group-observer.test.ts > requires exact-distro session/group/birth proof and revalidates before signalling
+AssertionError: expected [ 'wsl.exe', …(2) ] to match object [ 'wsl.exe', …(1) ]
+
+- Expected
++ Received
+
+@@ -7,6 +7,11 @@
+      "/bin/kill",
+      "-TERM",
+      "--",
+      "-100",
+    ],
++   {
++     "encoding": "utf8",
++     "maxBuffer": 32768,
++     "timeout": 500,
++   },
+  ]
+
+ ❯ tests/unit/tools/terminal/command-execution/process-group-observer.test.ts:10:33
+      8|   const group = await observer.establish(target, 100, Date.now() + 500…
+      9|   await observer.signal(group, 'TERM', Date.now() + 500);
+     10|   expect(run.mock.calls.at(-1)).toMatchObject(['wsl.exe', ['-d', 'Ubun…
+       |                                 ^
+     11|   stdout = '100 1 100 100 S 999\n';
+     12|   await expect(observer.signal(group, 'KILL', Date.now() + 500)).rejec…
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/2]⎯
+
+
+ Test Files  2 failed | 4 passed (6)
+      Tests  2 failed | 21 passed (23)
+   Start at  20:32:41
+   Duration  6.40s (transform 385ms, setup 272ms, import 252ms, tests 8.45s, environment 0ms)

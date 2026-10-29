@@ -1,0 +1,30 @@
+# IMP-18 meaning-strength calibration data for SR-005 (default model) and the R-9 trigger
+# Command: node <local script> on the isolated copy /tmp/wjs-copy/memory and index /tmp/wjs-eval/index: each question of the private SR-005 file (Q30 left out, Q13 with its rephrasings) searched once as the authoring run (MemorySearch.search, limit 10), plus EmbeddingIndex.nearest(limit 3000) over all cards (before the asking run is removed, R-11); then an offline search over k and Lf
+# Commit: d07abb8ab2 (dist from the IMP-14 build plus the 41501c5a41 evaluation emit; no source change yet)
+# Environment: macOS (Darwin 25.5.0, arm64, M1 Max), Node v22.23.1; granite-embedding-small-english-r2; 3,680 runs, 7,426 cards, readiness ready; load 10-12
+# Date: 2026-10-26
+# Only IDs and numbers; the questions stay private. Key words of the new off-topic cues verified absent in this index (chunk_vocab): pelicanmarigold9152, xylophonequartz7731, orchidtundra5520, falconsaffron3381, tortellini, bagpipe, sauerkraut, aquarium = 0 chunks each.
+
+## lift = score - (score at rank k); Lf must exceed every off-topic meaning lift and not exceed the best lift of each answerable question whose text matches are all weak
+model granite-embedding-small-english-r2
+k=  5: off-topic max lift 0.0184 (N04); answerable(text all weak) min best lift -0.0001 (Q08); feasible=False; gap=-0.0185; offTopic text not weak: ['OT-T3']
+k= 10: off-topic max lift 0.0239 (N04); answerable(text all weak) min best lift 0.0040 (Q08); feasible=False; gap=-0.0199; offTopic text not weak: ['OT-T3']
+k= 20: off-topic max lift 0.0266 (N04); answerable(text all weak) min best lift 0.0135 (Q07); feasible=False; gap=-0.0131; offTopic text not weak: ['OT-T3']
+k= 30: off-topic max lift 0.0302 (N04); answerable(text all weak) min best lift 0.0211 (Q07); feasible=False; gap=-0.0091; offTopic text not weak: ['OT-T3']
+k= 50: off-topic max lift 0.0333 (N04); answerable(text all weak) min best lift 0.0282 (Q07); feasible=False; gap=-0.0051; offTopic text not weak: ['OT-T3']
+k=100: off-topic max lift 0.0373 (N04); answerable(text all weak) min best lift 0.0465 (Q08); feasible=False; gap=0.0093; offTopic text not weak: ['OT-T3']
+k=200: off-topic max lift 0.0420 (N04); answerable(text all weak) min best lift 0.0535 (Q08); feasible=False; gap=0.0115; offTopic text not weak: ['OT-T3']
+k=300: off-topic max lift 0.0474 (OT-S2); answerable(text all weak) min best lift 0.0577 (Q08); feasible=False; gap=0.0103; offTopic text not weak: ['OT-T3']
+
+## The same without OT-T3
+k=100: Lf window (0.0373 N04, 0.0465 Q08] -> Lf=0.0419, margin ±0.0046; answerable best meaning lifts p25/p50/p75: 0.0295/0.0447/0.0472
+k=150: Lf window (0.0397 N04, 0.0502 Q08] -> Lf=0.0449, margin ±0.0052; answerable best meaning lifts p25/p50/p75: 0.0321/0.0498/0.0527
+k=200: Lf window (0.0420 N04, 0.0535 Q08] -> Lf=0.0477, margin ±0.0057; answerable best meaning lifts p25/p50/p75: 0.0344/0.0519/0.0567
+k=250: Lf window (0.0450 OT-S2, 0.0558 Q08] -> Lf=0.0504, margin ±0.0054; answerable best meaning lifts p25/p50/p75: 0.0363/0.0549/0.0602
+k=300: Lf window (0.0474 OT-S2, 0.0577 Q08] -> Lf=0.0526, margin ±0.0051; answerable best meaning lifts p25/p50/p75: 0.0377/0.0567/0.0635
+
+## OT-T3: text tier, not the meaning rule
+OT-T3 text strengths (first search): fair, then 9 weak. Its term weights (UD-019): decide df 5657 (idf 5.25), the absent word df 0 (14.59), supplier df 34 (10.36), contract df 91149 (2.39). A chunk holding decide + supplier + contract has 0.55 of the weight -> fair. Only one of its key words is absent; "supplier" is rare but present (34 chunks).
+
+## R-9 trigger
+Constraint 1 (every verified off-topic question ends only-weak) cannot be met on the default model by any k, Ls, Lf, because OT-T3 has a fair text match. Per R-9 the implementation stops and returns a Design Impact; no constraint is relaxed. Without OT-T3, k >= 100 meets constraints 1 and 2 (margins +/-0.0046 to +/-0.0057); constraint 3 (gates) holds by construction (strength does not rank).

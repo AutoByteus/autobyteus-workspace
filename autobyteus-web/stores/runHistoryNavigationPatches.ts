@@ -1,7 +1,6 @@
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import type { RunNavigationEffect } from '~/services/agentStreaming/agentStreamMutationEffects';
-import type { RunTreeWorkspaceNode } from '~/utils/runTreeProjection';
-import type { RunHistoryTeamExecutionRow, TeamTreeNode } from './runHistoryTypes';
+import type { RunHistoryTeamExecutionRow, TeamTreeNode, WorkspaceHistoryWorkspaceNode } from './runHistoryTypes';
 import {
   runHistoryExecutionRowIndexKey,
   runHistoryMemberIndexKey,
@@ -70,13 +69,15 @@ const patchStandalone = (
     occurredAt && !sameActivityBucket(run.lastActivityAt, occurredAt),
   );
   if (effect.kind === 'ACTIVITY' && !activityChanged) return state;
+  // A history row's stored title wins over the live first user message (SR-004).
+  const hasStoredTitle = run.source === 'history' && run.summary.trim().length > 0;
   const candidate = effect.kind === 'ACTIVITY'
     ? { ...run, lastActivityAt: occurredAt! }
     : {
         ...run,
         currentStatus: target.currentStatus,
         isActive: statusIsActive(target.currentStatus),
-        ...(target.summary === undefined ? {} : { summary: target.summary }),
+        ...(target.summary === undefined || hasStoredTitle ? {} : { summary: target.summary }),
         ...(activityChanged ? { lastActivityAt: occurredAt } : {}),
       };
   if (JSON.stringify(candidate) === JSON.stringify(run)) return state;
@@ -84,7 +85,7 @@ const patchStandalone = (
   runs[index.runIndex] = candidate;
   const agents = [...workspace.agents];
   agents[index.agentIndex] = { ...agent, runs };
-  const workspaceNodes: RunTreeWorkspaceNode[] = [...state.workspaceNodes];
+  const workspaceNodes: WorkspaceHistoryWorkspaceNode[] = [...state.workspaceNodes];
   workspaceNodes[index.workspaceIndex] = { ...workspace, agents };
   return { ...state, workspaceNodes };
 };

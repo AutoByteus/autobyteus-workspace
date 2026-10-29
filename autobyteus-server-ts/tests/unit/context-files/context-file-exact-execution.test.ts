@@ -23,7 +23,8 @@ it("finalizes and reads only the selected execution despite repeated address and
   const tree = testExecutionTree({ rootTeamRunId: "team", children: [testAgentNode("/worker", { agentRunId: "configured" })], coordinatorAddress: "/worker" });
   // Written as the app writes it: the task agent's own file at `agents/task/`, its link in the team tree.
   await new TeamRunExecutionTreeStore().write(teamDir, validateTeamRunExecutionTreePayload({ ...tree, rootTeam: { ...tree.rootTeam, taskExecutions: [
-    { address: "/worker", agentRunId: "task", platformAgentRunId: null, delegatorAgentRunId: "configured", startedAt: "2026-09-01T00:00:00.000Z" },
+    { address: "/worker", agentRunId: "task", platformAgentRunId: null, delegatorAgentRunId: "configured", startedAt: "2026-09-01T00:00:00.000Z",
+      source: { kind: "agent", agentDefinitionId: "worker", launchConfiguration: tree.rootTeam.defaultLaunchConfiguration } },
   ] } }, "team"));
   await fs.writeFile(path.join(teamDir, "team_communication_messages_active.jsonl"), "");
   const layout = new ContextFileLayout({ appDataDir: root, memoryDir });

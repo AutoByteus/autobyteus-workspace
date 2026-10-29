@@ -80,7 +80,7 @@ node from **Nodes -> Memory Sync**:
 - copy the backend-generated `mhub_...` source token when it is created or
   regenerated, because plaintext tokens are shown only once;
 - open each Docker, Kubernetes, or remote source node in its own node-bound
-  window, set a stable `sourceNodeId`, paste the hub URL/token, and run
+  window, set a stable `memorySyncSourceId`, paste the hub URL/token, and run
   **Test connection** before **Sync now** or background sync.
 
 On a source node, **Test connection** reports its result inline beside the
@@ -94,7 +94,7 @@ success timestamp still exists.
 
 The hub keeps local runtime memory in `memory/agents` and `memory/agent_teams`
 unchanged. Imported source corpora are stored separately under
-`memory/imports/<sourceNodeId>/` and appear in the Memory page source selector as
+`memory/imports/<memorySyncSourceId>/` and appear in the Memory page source selector as
 read-only imported memory. Imported memory is for browsing and future analysis;
 it is not local runnable state and does not enable restore/continue/delete
 actions.
@@ -370,8 +370,9 @@ CLIs receive their options directly. The launcher removes an inherited
 desktop process and overlays the three documented isolation variables. The
 isolated app's embedded server receives only a system-baseline environment, so
 production AutoByteus, database and provider settings from the caller never
-reach it. Provision credentials into the isolated database with
-`pnpm secrets:import`.
+reach it. For model access, start it with `AUTOBYTEUS_TEST_VAULT` set: the
+embedded server receives that selector and reads the test vault read-only (see
+[TESTING.md](TESTING.md#test-vault)).
 
 See the frontend [packaged Electron E2E guide](autobyteus-web/README.md#packaged-electron-e2e-launches)
 and the [canonical launch/ownership contract](autobyteus-web/docs/electron_packaging.md#packaged-e2e-launch-profile)

@@ -5,11 +5,13 @@ import {
   hydrateTeamRunContextForStreamRecovery,
 } from '../teamRunContextHydrationService';
 import { buildTestTeamContext, testAgentNode } from '~/test-support/currentTeamTestFixtures';
-import { GetRunFileChanges } from '~/graphql/queries/runHistoryQueries';
+import { GetRunFileChanges, GetTeamMemberFileChanges, GetTeamMemberRunProjection } from '~/graphql/queries/runHistoryQueries';
 import { useAgentActivityStore } from '~/stores/agentActivityStore';
 import { useRunFileChangesStore } from '~/stores/runFileChangesStore';
 import { commitTeamRunHydration, markCommittedTeamRunHydrationAuthority } from '../teamRunHydrationCommit';
 import { isTeamMemberProjectionAuthoritative } from '../teamMemberProjectionHydrationService';
+import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
+import { useRemoteRunsStore } from '~/stores/remoteRunsStore';
 
 const {
   queryMock,
@@ -53,7 +55,7 @@ describe('hydrateLiveTeamRunContext current V2 aggregate', () => {
     queryMock.mockImplementation(async ({ variables }: { variables: Record<string, unknown> }) => (
       variables.agentRunId
         ? { data: { getTeamMemberRunProjection: projection }, errors: [] }
-        : { data: { getTeamRunResumeConfig: { closedTaskExecutions: [],
+        : { data: { getTeamRunResumeConfig: { remoteTaskExecutions: [], closedTaskExecutions: [],
             teamRunId: 'team-live-recovery', isActive: true, executionTree: tree,
           } }, errors: [] }
     ));
@@ -77,18 +79,22 @@ describe('hydrateLiveTeamRunContext current V2 aggregate', () => {
     ]);
   });
 
+  /** A copy of the configured `/member-a` records that placement's snapshot (REQ-001). */
+  const memberACopySource = { kind: 'agent' as const, agent_definition_id: 'agent-a', launch_source: { origin: 'configured' as const, fallbacks: [] },
+    launch_configuration: { runtime_kind: 'codex_app_server' as const, llm_model_identifier: 'gpt-test', llm_config: null, auto_execute_tools: false, workspace_root_path: null } };
+
   it('hydrates the stored closed task executions so closed rows are absent from the first render (REQ-004)', async () => {
     const delegatedTree = buildTestTeamContext({
       teamRunId: 'team-live-recovery', teamDefinitionId: 'team-def-1', teamDefinitionName: 'Recovery Team',
       coordinatorAddress: '/member-a',
       rootChildren: [testAgentNode('/member-a', { agentRunId: 'run-a', agentDefinitionId: 'agent-a', llmModelIdentifier: 'gpt-test' })],
       taskExecutions: [{ kind: 'task_agent', address: '/member-a', agent_run_id: 'closed-copy', platform_agent_run_id: null,
-        delegator_agent_run_id: 'run-a', started_at: '2026-10-06T00:00:00.000Z' }],
+        delegator_agent_run_id: 'run-a', started_at: '2026-10-06T00:00:00.000Z', source: memberACopySource }],
     }).view.getExecutionTree();
     queryMock.mockImplementation(async ({ variables }: { variables: Record<string, unknown> }) => (
       variables.agentRunId
         ? { data: { getTeamMemberRunProjection: { agentRunId: variables.agentRunId, conversation: [], activities: [], hasEarlierActiveTraceEvents: false } }, errors: [] }
-        : { data: { getTeamRunResumeConfig: { closedTaskExecutions: [{ agentRunId: 'closed-copy' }],
+        : { data: { getTeamRunResumeConfig: { remoteTaskExecutions: [], closedTaskExecutions: [{ agentRunId: 'closed-copy' }],
             teamRunId: 'team-live-recovery', isActive: false, executionTree: delegatedTree,
           } }, errors: [] }
     ));
@@ -102,13 +108,16 @@ describe('hydrateLiveTeamRunContext current V2 aggregate', () => {
   });
 
   it.each([true, false])('hydrates a delegated execution as a standard navigable row under active=%s', async isActive => {
-    const retainedTree = structuredClone(tree);
-    retainedTree.root_team.task_executions.push({ kind: 'task_agent', address: '/member-a',
-      agent_run_id: 'retained-task', platform_agent_run_id: null, delegator_agent_run_id: 'run-a',
-      started_at: retainedTree.created_at });
+    const clonedTree = structuredClone(tree);
+    const retainedTree = { ...clonedTree, root_team: { ...clonedTree.root_team, task_executions: [
+      ...clonedTree.root_team.task_executions,
+      { kind: 'task_agent' as const, address: '/member-a',
+        agent_run_id: 'retained-task', platform_agent_run_id: null, delegator_agent_run_id: 'run-a',
+        started_at: clonedTree.created_at, source: memberACopySource },
+    ] } };
     queryMock.mockImplementation(async ({ variables }) => variables.agentRunId
       ? { data: { getTeamMemberRunProjection: { agentRunId: variables.agentRunId, conversation: [], activities: [], hasEarlierActiveTraceEvents: false } } }
-      : { data: { getTeamRunResumeConfig: { closedTaskExecutions: [], teamRunId: 'team-live-recovery', isActive, executionTree: retainedTree } } });
+      : { data: { getTeamRunResumeConfig: { remoteTaskExecutions: [], closedTaskExecutions: [], teamRunId: 'team-live-recovery', isActive, executionTree: retainedTree } } });
     const result = await hydrateLiveTeamRunContext({ teamRunId: 'team-live-recovery', agentRunId: 'retained-task',
       resolveWorkspaceMetadataByRootPath: vi.fn().mockResolvedValue(null), ensureWorkspaceByRootPath: vi.fn().mockResolvedValue(null) });
     const view = result.hydratedContext.view;
@@ -123,7 +132,7 @@ describe('hydrateLiveTeamRunContext current V2 aggregate', () => {
     queryMock.mockImplementation(async ({ variables }: { variables: Record<string, unknown> }) => (
       variables.agentRunId
         ? { data: { getTeamMemberRunProjection: null }, errors: [] }
-        : { data: { getTeamRunResumeConfig: { closedTaskExecutions: [],
+        : { data: { getTeamRunResumeConfig: { remoteTaskExecutions: [], closedTaskExecutions: [],
             teamRunId: 'team-live-recovery', isActive: true, executionTree: tree,
           } }, errors: [] }
     ));
@@ -153,7 +162,7 @@ describe('hydrateLiveTeamRunContext current V2 aggregate', () => {
     }).view.getExecutionTree();
     queryMock.mockImplementation(async ({ variables }: { variables: Record<string, unknown> }) => {
       if (!variables.agentRunId) {
-        return { data: { getTeamRunResumeConfig: { closedTaskExecutions: [],
+        return { data: { getTeamRunResumeConfig: { remoteTaskExecutions: [], closedTaskExecutions: [],
           teamRunId: 'team-live-recovery', isActive: true, executionTree: twoMemberTree,
         } }, errors: [] };
       }
@@ -179,7 +188,7 @@ describe('hydrateLiveTeamRunContext current V2 aggregate', () => {
   });
 
   it('rejects a requested root that disagrees with the execution tree', async () => {
-    queryMock.mockResolvedValue({ data: { getTeamRunResumeConfig: { closedTaskExecutions: [],
+    queryMock.mockResolvedValue({ data: { getTeamRunResumeConfig: { remoteTaskExecutions: [], closedTaskExecutions: [],
       teamRunId: 'foreign-root', isActive: false, executionTree: tree,
     } }, errors: [] });
     await expect(hydrateLiveTeamRunContext({
@@ -205,7 +214,7 @@ describe('hydrateLiveTeamRunContext current V2 aggregate', () => {
       if (variables.agentRunId) {
         return { data: { getTeamMemberRunProjection: emptyProjection }, errors: [] };
       }
-      return { data: { getTeamRunResumeConfig: { closedTaskExecutions: [],
+      return { data: { getTeamRunResumeConfig: { remoteTaskExecutions: [], closedTaskExecutions: [],
         teamRunId: 'team-live-recovery', isActive: true, executionTree: tree,
       } }, errors: [] };
     });
@@ -253,7 +262,7 @@ describe('hydrateLiveTeamRunContext current V2 aggregate', () => {
           lastActivityAt: null, hasEarlierActiveTraceEvents: false,
         } }, errors: [] };
       }
-      return { data: { getTeamRunResumeConfig: { closedTaskExecutions: [],
+      return { data: { getTeamRunResumeConfig: { remoteTaskExecutions: [], closedTaskExecutions: [],
         teamRunId: 'team-live-recovery', isActive: true, executionTree: tree,
       } }, errors: [] };
     });
@@ -281,7 +290,7 @@ describe('hydrateLiveTeamRunContext current V2 aggregate', () => {
         } }, errors: [] };
       }
       if (variables.agentRunId) return { data: { getTeamMemberRunProjection: projection }, errors: [] };
-      return { data: { getTeamRunResumeConfig: { closedTaskExecutions: [],
+      return { data: { getTeamRunResumeConfig: { remoteTaskExecutions: [], closedTaskExecutions: [],
         teamRunId: 'team-live-recovery', isActive: true, executionTree: tree,
       } }, errors: [] };
     });
@@ -314,17 +323,19 @@ describe('Team open loads each member artifact list with its run state', () => {
   const serve = (input: { isActive: boolean; failingArtifactsFor?: string }) => {
     const tree = twoMemberTree();
     queryMock.mockImplementation(async ({ query, variables }: { query: unknown; variables: Record<string, unknown> }) => {
-      if (query === GetRunFileChanges) {
-        return variables.runId === input.failingArtifactsFor
-          ? { data: null, errors: [{ message: `artifacts unavailable for ${String(variables.runId)}` }] }
-          : { data: { getRunFileChanges: [artifact(String(variables.runId), '1.png'), artifact(String(variables.runId), '2.png')] }, errors: [] };
+      if (query === GetRunFileChanges) throw new Error('team member artifacts are read through the team, not by run id');
+      if (query === GetTeamMemberFileChanges) {
+        expect(variables.teamRunId).toBe('team-artifacts');
+        return variables.agentRunId === input.failingArtifactsFor
+          ? { data: null, errors: [{ message: `artifacts unavailable for ${String(variables.agentRunId)}` }] }
+          : { data: { getTeamMemberFileChanges: [artifact(String(variables.agentRunId), '1.png'), artifact(String(variables.agentRunId), '2.png')] }, errors: [] };
       }
       if (variables.agentRunId) {
         return { data: { getTeamMemberRunProjection: {
           agentRunId: variables.agentRunId, conversation: [], activities: [], hasEarlierActiveTraceEvents: false,
         } }, errors: [] };
       }
-      return { data: { getTeamRunResumeConfig: { closedTaskExecutions: [], teamRunId: 'team-artifacts', isActive: input.isActive, executionTree: tree } }, errors: [] };
+      return { data: { getTeamRunResumeConfig: { remoteTaskExecutions: [], closedTaskExecutions: [], teamRunId: 'team-artifacts', isActive: input.isActive, executionTree: tree } }, errors: [] };
     });
   };
   const open = () => hydrateLiveTeamRunContext({
@@ -352,6 +363,11 @@ describe('Team open loads each member artifact list with its run state', () => {
     expect(paths('run-a')).toEqual(['/outputs/1.png', '/outputs/2.png']);
     expect(paths('run-b')).toEqual(['/outputs/1.png', '/outputs/2.png']);
     expect(isTeamMemberProjectionAuthoritative(candidate.hydratedContext, 'run-b')).toBe(true);
+    expect(queryMock.mock.calls.filter(([options]) => options.query === GetTeamMemberFileChanges).map(([options]) => options.variables))
+      .toEqual(expect.arrayContaining([
+        { teamRunId: 'team-artifacts', agentRunId: 'run-a' },
+        { teamRunId: 'team-artifacts', agentRunId: 'run-b' },
+      ]));
   });
 
   it('leaves a nonfocused member whose artifacts fail unhydrated, so it is loaded again on selection (AC-007)', async () => {
@@ -382,5 +398,45 @@ describe('Team open loads each member artifact list with its run state', () => {
     expect(() => commitTeamRunHydration(candidate)).toThrow("Team activity for 'team-artifacts' changed before projection commit.");
     expect(paths('run-a')).toEqual([]);
     expect(paths('run-b')).toEqual([]);
+  });
+});
+
+describe('a stopped Team root with remote runs (autobyteus-278)', () => {
+  beforeEach(() => {
+    setActivePinia(createPinia());
+    vi.clearAllMocks();
+    fetchTeamCommunicationMock.mockResolvedValue([]);
+  });
+
+  const remoteTeam = {
+    kind: 'agent_team' as const, address: '/marketing_team', team_run_id: 'marketing-run', node_id: 'srv_docker', node_name: 'docker',
+    coordinator_address: '/marketing_team/lead', members: [{ address: '/marketing_team/lead', agent_run_id: 'lead-run' }],
+    delegator_agent_run_id: 'run-a', started_at: '2026-10-23T08:00:00.000Z',
+  };
+
+  it('lists them from its stored view; committing registers them, and Retry reads one from its node', async () => {
+    const reads: string[] = [];
+    queryMock.mockImplementation(async ({ query, variables }: { query: unknown; variables: Record<string, unknown> }) => {
+      if (!variables.agentRunId) {
+        return { data: { getTeamRunResumeConfig: { remoteTaskExecutions: [remoteTeam], closedTaskExecutions: [],
+          teamRunId: 'team-live-recovery', isActive: false, executionTree: tree } }, errors: [] };
+      }
+      if (query === GetTeamMemberRunProjection) reads.push(String(variables.agentRunId));
+      return { data: { getTeamMemberRunProjection: { agentRunId: variables.agentRunId, conversation: [], activities: [], hasEarlierActiveTraceEvents: false } }, errors: [] };
+    });
+    const candidate = await hydrateLiveTeamRunContext({ teamRunId: 'team-live-recovery', agentRunId: 'run-a',
+      resolveWorkspaceMetadataByRootPath: vi.fn().mockResolvedValue(null), ensureWorkspaceByRootPath: vi.fn().mockResolvedValue(null) });
+    const view = candidate.hydratedContext.view;
+    expect(view.listNavigationRows().filter((row) => row.address.startsWith('/marketing_team')).map((row) => row.key))
+      .toEqual(['team:marketing-run', 'agent:lead-run']);
+    expect(reads).toEqual(['run-a']);
+
+    commitTeamRunHydration(candidate);
+    useAgentTeamContextsStore().addTeamContext(candidate.hydratedContext);
+    const remoteRuns = useRemoteRunsStore();
+    expect(remoteRuns.runOfAgentRun('lead-run')).toMatchObject({ runId: 'marketing-run', nodeName: 'docker' });
+    remoteRuns.retry('marketing-run');
+    await vi.waitFor(() => expect(remoteRuns.run('marketing-run')).toMatchObject({ reachable: true, checking: false }));
+    expect(reads).toEqual(['run-a', 'lead-run']);
   });
 });

@@ -5,10 +5,23 @@ import {
   McpToolRegistrar,
 } from "autobyteus-ts";
 import { McpServerInstanceManager } from "autobyteus-ts/tools/mcp/server-instance-manager.js";
-import { StdioMcpServerConfig } from "autobyteus-ts/tools/mcp/types.js";
+import { McpTransportType } from "autobyteus-ts/tools/mcp/types.js";
 import { defaultToolRegistry } from "autobyteus-ts/tools/registry/tool-registry.js";
 import { McpServerPersistenceProvider } from "../../../src/mcp-server-management/providers/persistence-provider.js";
 import { McpConfigService } from "../../../src/mcp-server-management/services/mcp-config-service.js";
+import type { StdioMcpServerDraft } from "../../../src/mcp-server-management/domain/mcp-server-draft.js";
+
+/** A stdio server draft with plain values only. */
+const stdioDraft = (serverId: string, args: string[], toolNamePrefix: string | null, env: Record<string, string> = {}): StdioMcpServerDraft => ({
+  serverId,
+  enabled: true,
+  toolNamePrefix,
+  transportType: McpTransportType.STDIO,
+  command: "node",
+  args,
+  cwd: null,
+  env: Object.entries(env).map(([name, value]) => ({ name, value: { kind: "plain", value } })),
+});
 
 const getSqliteEnv = () => {
   const scriptPath = process.env.TEST_SQLITE_MCP_SCRIPT_PATH;
@@ -36,14 +49,6 @@ const getGoogleSlidesEnv = () => {
   return { scriptPath, clientId, clientSecret, refreshToken };
 };
 
-const getConfigJsonEnv = (): string | null => {
-  const raw = process.env.TEST_MCP_CONFIG_JSON;
-  if (!raw) {
-    return null;
-  }
-  return raw;
-};
-
 const resetSingletons = () => {
   McpConfigService.resetInstance();
   (CoreMcpConfigService as any).instance = undefined;
@@ -59,9 +64,6 @@ describe("McpConfigService integration", () => {
 
   afterEach(async () => {
     const registrar = McpToolRegistrar.getInstance();
-    const instanceManager = McpServerInstanceManager.getInstance();
-    await instanceManager.cleanupAllMcpServerInstances();
-
     for (const tool of defaultToolRegistry.listTools()) {
       if (tool.metadata?.mcp_server_id) {
         registrar.unregisterToolsFromServer(String(tool.metadata.mcp_server_id));
@@ -75,29 +77,19 @@ describe("McpConfigService integration", () => {
 
   const sqliteEnv = getSqliteEnv();
   const googleEnv = getGoogleSlidesEnv();
-  const configJsonEnv = getConfigJsonEnv();
 
   const itSqlite = sqliteEnv ? it : it.skip;
   const itGoogle = googleEnv ? it : it.skip;
-  const itConfigJson = configJsonEnv ? it : it.skip;
 
   itSqlite("configures and discovers tools for a real sqlite MCP server", async () => {
     const env = sqliteEnv!;
 
     const service = McpConfigService.getInstance();
     const serverId = "real-sqlite-mcp-server";
-    const config = new StdioMcpServerConfig({
-      server_id: serverId,
-      command: "node",
-      args: [env.scriptPath, env.dbPath],
-      enabled: true,
-      tool_name_prefix: "db",
-    });
-
-    const savedConfig = await service.configureMcpServer(config);
+    const saved = await service.configureMcpServer(stdioDraft(serverId, [env.scriptPath, env.dbPath], "db"));
     await service.discoverAndRegisterToolsForServer(serverId);
 
-    expect(savedConfig.server_id).toBe(serverId);
+    expect(saved.config.server_id).toBe(serverId);
     const discovered = defaultToolRegistry.getToolsByMcpServer(serverId);
     expect(discovered.length).toBeGreaterThan(0);
     expect(discovered.every((tool) => tool.name.startsWith("db_"))).toBe(true);
@@ -113,23 +105,14 @@ describe("McpConfigService integration", () => {
 
     const service = McpConfigService.getInstance();
     const serverId = "google-slides-mcp";
-    const config = new StdioMcpServerConfig({
-      server_id: serverId,
-      command: "node",
-      args: [env.scriptPath],
-      env: {
-        GOOGLE_CLIENT_ID: env.clientId,
-        GOOGLE_CLIENT_SECRET: env.clientSecret,
-        GOOGLE_REFRESH_TOKEN: env.refreshToken,
-      },
-      enabled: true,
-      tool_name_prefix: "gslide",
-    });
-
-    const savedConfig = await service.configureMcpServer(config);
+    const saved = await service.configureMcpServer(stdioDraft(serverId, [env.scriptPath], "gslide", {
+      GOOGLE_CLIENT_ID: env.clientId,
+      GOOGLE_CLIENT_SECRET: env.clientSecret,
+      GOOGLE_REFRESH_TOKEN: env.refreshToken,
+    }));
     await service.discoverAndRegisterToolsForServer(serverId);
 
-    expect(savedConfig.server_id).toBe(serverId);
+    expect(saved.config.server_id).toBe(serverId);
     const discovered = defaultToolRegistry.getToolsByMcpServer(serverId);
     expect(discovered.length).toBeGreaterThan(0);
     expect(discovered.every((tool) => tool.name.startsWith("gslide_"))).toBe(true);
@@ -145,15 +128,7 @@ describe("McpConfigService integration", () => {
 
     const service = McpConfigService.getInstance();
     const serverId = "browser-sqlite-mcp-server";
-    const config = new StdioMcpServerConfig({
-      server_id: serverId,
-      command: "node",
-      args: [env.scriptPath, env.dbPath],
-      enabled: true,
-      tool_name_prefix: "browser",
-    });
-
-    const browserTools = await service.browserMcpServerTools(config);
+    const browserTools = await service.previewMcpServerTools(stdioDraft(serverId, [env.scriptPath, env.dbPath], "browser"));
     expect(browserTools.length).toBeGreaterThan(0);
     expect(browserTools.every((tool) => tool.name.startsWith("browser_"))).toBe(true);
 
@@ -167,14 +142,7 @@ describe("McpConfigService integration", () => {
 
     const service = McpConfigService.getInstance();
     const serverId = "real-sqlite-mcp-to-delete";
-    const config = new StdioMcpServerConfig({
-      server_id: serverId,
-      command: "node",
-      args: [env.scriptPath, env.dbPath],
-      enabled: true,
-    });
-
-    await service.configureMcpServer(config);
+    await service.configureMcpServer(stdioDraft(serverId, [env.scriptPath, env.dbPath], null));
     await service.discoverAndRegisterToolsForServer(serverId);
 
     expect(defaultToolRegistry.getToolsByMcpServer(serverId).length).toBeGreaterThan(0);
@@ -187,25 +155,4 @@ describe("McpConfigService integration", () => {
     const retrieved = await provider.getByServerId(serverId);
     expect(retrieved).toBeNull();
   });
-
-  itConfigJson(
-    "applies MCP config JSON from env and persists configs",
-    async () => {
-    const configJson = configJsonEnv!;
-    const service = McpConfigService.getInstance();
-    const result = await service.applyAndRegisterConfigsFromJson(configJson);
-
-    const parsed = JSON.parse(configJson) as { mcpServers?: Record<string, unknown> };
-    const serverIds = Object.keys(parsed.mcpServers ?? {});
-
-    expect(result.summary.total_processed).toBe(serverIds.length);
-
-    const provider = new McpServerPersistenceProvider();
-    for (const serverId of serverIds) {
-      const persisted = await provider.getByServerId(serverId);
-      expect(persisted).not.toBeNull();
-    }
-    },
-    30000,
-  );
 });

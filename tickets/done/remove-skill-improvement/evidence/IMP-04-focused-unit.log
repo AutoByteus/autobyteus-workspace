@@ -1,0 +1,935 @@
+# Check: IMP-04
+# Command: cd autobyteus-server-ts && pnpm exec vitest run tests/unit/app-data-migrations/remove-skill-improvement-data-migration.test.ts tests/unit/app-data-migrations/remove-self-evolution-run-metadata-migration.test.ts tests/unit/config/app-config.test.ts tests/unit/agent-communication/global-agent-run-message-router.test.ts tests/unit/built-in-agents tests/unit/agent-execution/standalone-agent-run-lifecycle-service.test.ts tests/unit/standalone-agent-run-root/standalone-agent-run-root.test.ts --no-watch --reporter=verbose
+# Commit: fc46a7b5fc (branch codex/remove-skill-improvement)
+# Environment: macOS 26.5.2, Node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-20T14:52:37Z
+
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+stdout | tests/unit/standalone-agent-run-root/standalone-agent-run-root.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:88794) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/standalone-agent-run-root/standalone-agent-run-root.test.ts > Agent root of a standalone run > captures hosted Agent/Team live inputs only, deduplicates recursive leaves, and keeps inspection non-restoring
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+
+ ✓ tests/unit/standalone-agent-run-root/standalone-agent-run-root.test.ts > Agent root of a standalone run > gives eligible hosts send_message_to and delegate_task but no task tools and no handoff rules; helpers and application runs get nothing 8ms
+ ✓ tests/unit/standalone-agent-run-root/standalone-agent-run-root.test.ts > Agent root of a standalone run > captures hosted Agent/Team live inputs only, deduplicates recursive leaves, and keeps inspection non-restoring 118ms
+ ✓ tests/unit/standalone-agent-run-root/standalone-agent-run-root.test.ts > Agent root of a standalone run > `@` resolves addresses and adds nothing; send_message_to never starts a run; delegated copies are messaged, handed off and wake the host 135ms
+ ✓ tests/unit/standalone-agent-run-root/standalone-agent-run-root.test.ts > Agent root of a standalone run > stops every delegated copy only on an explicit Stop, serves the stored view without restoring, and restores a copy on command 41ms
+ ✓ tests/unit/standalone-agent-run-root/standalone-agent-run-root.test.ts > Agent root of a standalone run > history delete after a host crash ends the lingering root and its children first, then deletes (CR-001/CR-002) 43ms
+ ✓ tests/unit/standalone-agent-run-root/standalone-agent-run-root.test.ts > Agent root of a standalone run > history delete of a crashed run without delegated copies ends its empty root and deletes (CR-002) 2ms
+ ✓ tests/unit/standalone-agent-run-root/standalone-agent-run-root.test.ts > Agent root of a standalone run > rejects the command entry for runs that cannot host delegated copies 2ms
+ ✓ tests/unit/standalone-agent-run-root/standalone-agent-run-root.test.ts > agent-initiated delegation of a standalone run > lists without creating the package; the host's own definition is not listed (AR-005) 2ms
+ ✓ tests/unit/standalone-agent-run-root/standalone-agent-run-root.test.ts > agent-initiated delegation of a standalone run > concurrent first delegations make one package and two root-level copies; `@` keeps resolving the address (AC-004, AC-010) 61ms
+ ✓ tests/unit/standalone-agent-run-root/standalone-agent-run-root.test.ts > agent-initiated delegation of a standalone run > a delegated copy member sees the host: `@` offers and resolves it as the run agent, it is listed, and messaging its address reaches the existing host (REQ-001..004, REQ-006) 61ms
+ ✓ tests/unit/standalone-agent-run-root/standalone-agent-run-root.test.ts > agent-initiated delegation of a standalone run > catalog copies record a source, stay one unit each, delegate onward and restore after Stop (AC-005/006/007) 149ms
+ ✓ tests/unit/standalone-agent-run-root/standalone-agent-run-root.test.ts > agent-initiated delegation of a standalone run > a copy-Team member's catalog copy goes to the root and restores as its own run (REQ-012, contract L1) 77ms
+ ✓ tests/unit/standalone-agent-run-root/standalone-agent-run-root.test.ts > StandaloneAgentRunRoot owns its host (REQ-001, REQ-004) > resolveRoot never starts the host; ensureHostReady does, once, with its member context 1ms
+ ✓ tests/unit/standalone-agent-run-root/standalone-agent-run-root.test.ts > StandaloneAgentRunRoot owns its host (REQ-001, REQ-004) > a host command readies the host, binds it, admits mentions, then posts the composed note with the caller's options (AR-002) 1ms
+ ✓ tests/unit/standalone-agent-run-root/standalone-agent-run-root.test.ts > StandaloneAgentRunRoot owns its host (REQ-001, REQ-004) > a failed mention on a stopped run posts nothing and leaves the host active (AR-001) 1ms
+ ✓ tests/unit/standalone-agent-run-root/standalone-agent-run-root.test.ts > StandaloneAgentRunRoot owns its host (REQ-001, REQ-004) > Stop ends every child before the host, then unregisters; the host-ready port answers again afterwards 37ms
+ ✓ tests/unit/standalone-agent-run-root/standalone-agent-run-root.test.ts > StandaloneAgentRunRoot owns its host (REQ-001, REQ-004) > Task DONE: closed copies are published before stopping, kept in the tree, and listed as closed live and in the stored read 60ms
+ ✓ tests/unit/standalone-agent-run-root/standalone-agent-run-root.test.ts > StandaloneAgentRunRoot owns its host (REQ-001, REQ-004) > reactivation: once the agent reopens the Task, the assigner's run-ID message restores the copy, delivers, and lists it again (AC-001/004/015, REQ-007/008) 52ms
+ ✓ tests/unit/standalone-agent-run-root/standalone-agent-run-root.test.ts > StandaloneAgentRunRoot owns its host (REQ-001, REQ-004) > existing-copy assignment: after A is DONE the assigner gives the copy Task B by its agent run ID; it is restored, listed again and receives B's work from the host (AC-003, REQ-003/008) 50ms
+ ✓ tests/unit/standalone-agent-run-root/standalone-agent-run-root.test.ts > StandaloneAgentRunRoot owns its host (REQ-001, REQ-004) > forwards only a delegated copy's ended background tasks to the task-execution lifecycle (hybrid idle shutdown) 37ms
+ ✓ tests/unit/standalone-agent-run-root/standalone-agent-run-root.test.ts > StandaloneAgentRunRoot owns its host (REQ-001, REQ-004) > rejects delegate_task to the caller's own address with COLLABORATION_SELF_TARGET_REJECTED and send_message_to guidance (AC-001, AC-004) 56ms
+stdout | tests/unit/agent-execution/standalone-agent-run-lifecycle-service.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:91017) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/agent-execution/standalone-agent-run-lifecycle-service.test.ts > StandaloneAgentRunLifecycleService > rejects a omitted root-selected model validator 1ms
+ ✓ tests/unit/agent-execution/standalone-agent-run-lifecycle-service.test.ts > StandaloneAgentRunLifecycleService > rejects a null root-selected model validator 0ms
+ ✓ tests/unit/agent-execution/standalone-agent-run-lifecycle-service.test.ts > StandaloneAgentRunLifecycleService > rejects a undefined root-selected model validator 0ms
+ ✓ tests/unit/agent-execution/standalone-agent-run-lifecycle-service.test.ts > StandaloneAgentRunLifecycleService > rejects a pre-existing run before any provider candidate is constructed while history is degraded 2ms
+ ✓ tests/unit/agent-execution/standalone-agent-run-lifecycle-service.test.ts > StandaloneAgentRunLifecycleService > shares one prepared activation and durably records the provider UUID before publication 53ms
+ ✓ tests/unit/agent-execution/standalone-agent-run-lifecycle-service.test.ts > StandaloneAgentRunLifecycleService > attaches the root-built host member context at config build and requires it for an eligible run (AR-003) 1ms
+ ✓ tests/unit/agent-execution/standalone-agent-run-lifecycle-service.test.ts > StandaloneAgentRunLifecycleService > activates application-owned runs without a member context and refuses one 0ms
+ ✓ tests/unit/agent-execution/standalone-agent-run-lifecycle-service.test.ts > StandaloneAgentRunLifecycleService > stops a live host and records it terminated; a host that is not running is left as is 0ms
+ ✓ tests/unit/agent-execution/standalone-agent-run-lifecycle-service.test.ts > StandaloneAgentRunLifecycleService > restores a started external run from only its exact durable provider identity 1ms
+ ✓ tests/unit/agent-execution/standalone-agent-run-lifecycle-service.test.ts > StandaloneAgentRunLifecycleService > fails closed for an invalid external provider identity null 0ms
+ ✓ tests/unit/agent-execution/standalone-agent-run-lifecycle-service.test.ts > StandaloneAgentRunLifecycleService > fails closed for an invalid external provider identity standalone-run-1 0ms
+ ✓ tests/unit/agent-execution/standalone-agent-run-lifecycle-service.test.ts > StandaloneAgentRunLifecycleService > restores native local state through the generic path and clears a legacy self binding 0ms
+ ✓ tests/unit/agent-execution/standalone-agent-run-lifecycle-service.test.ts > StandaloneAgentRunLifecycleService > aborts a prepared candidate and permits retry only when unchanged prepared metadata is confirmed 0ms
+ ✓ tests/unit/agent-execution/standalone-agent-run-lifecycle-service.test.ts > StandaloneAgentRunLifecycleService > quarantines an indeterminate started commit and never creates a replacement in-process 0ms
+ ✓ tests/unit/agent-execution/standalone-agent-run-lifecycle-service.test.ts > StandaloneAgentRunLifecycleService > validates and commits only the model configuration of an inactive run 1ms
+ ✓ tests/unit/agent-execution/standalone-agent-run-lifecycle-service.test.ts > StandaloneAgentRunLifecycleService > refuses a model-configuration update when the run became active 1ms
+ ✓ tests/unit/agent-execution/standalone-agent-run-lifecycle-service.test.ts > StandaloneAgentRunLifecycleService > holds restore behind a stopped-model-config commit in the same per-run lane 63ms
+ ✓ tests/unit/agent-execution/standalone-agent-run-lifecycle-service.test.ts > StandaloneAgentRunLifecycleService > orders the exact external command resolver after a stopped Save and restores the committed config 64ms
+ ✓ tests/unit/agent-execution/standalone-agent-run-lifecycle-service.test.ts > StandaloneAgentRunLifecycleService > returns RUN_ACTIVE when the exact external command resolver activates before Save 1ms
+ ✓ tests/unit/agent-execution/standalone-agent-run-lifecycle-service.test.ts > StandaloneAgentRunLifecycleService > hands mentions to the run's root and maps its admission outcome to the command ack 1ms
+ ✓ tests/unit/agent-execution/standalone-agent-run-lifecycle-service.test.ts > StandaloneAgentRunLifecycleService > returns the plain retryable error as the command ack and accepts the next send (AC-004, AC-008) 1ms
+ ✓ tests/unit/agent-execution/standalone-agent-run-lifecycle-service.test.ts > StandaloneAgentRunLifecycleService > never quarantines a reclaim refused while the previous runtime still owes its release 0ms
+ ✓ tests/unit/agent-execution/standalone-agent-run-lifecycle-service.test.ts > StandaloneAgentRunLifecycleService > keeps application-owned runs on the plain path: a mention is unavailable and nothing is posted 0ms
+ ✓ tests/unit/agent-execution/standalone-agent-run-lifecycle-service.test.ts > StandaloneAgentRunLifecycleService previous runtime release > releases a runtime that stopped by itself, then restores the same conversation (AC-002, AC-003) 3ms
+ ✓ tests/unit/agent-execution/standalone-agent-run-lifecycle-service.test.ts > StandaloneAgentRunLifecycleService previous runtime release > starts exactly one replacement, only after the previous runtime has stopped (AC-005) 63ms
+ ✓ tests/unit/agent-execution/standalone-agent-run-lifecycle-service.test.ts > StandaloneAgentRunLifecycleService previous runtime release > stops waiting after 30 s with the retryable error; a later send finds the finished release (QR-001) 54ms
+ ✓ tests/unit/agent-execution/standalone-agent-run-lifecycle-service.test.ts > StandaloneAgentRunLifecycleService previous runtime release > a later send joins a release still in flight after a timed-out wait 13ms
+ ✓ tests/unit/agent-execution/standalone-agent-run-lifecycle-service.test.ts > StandaloneAgentRunLifecycleService previous runtime release > a failed release is not quarantined and the next send retries it (AC-004, AC-008) 2ms
+stdout | tests/unit/app-data-migrations/remove-skill-improvement-data-migration.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:91019) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/app-data-migrations/remove-skill-improvement-data-migration.test.ts > 20261020_remove_skill_improvement_data > is registered last, required on startup and startup-only
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+
+ ✓ tests/unit/app-data-migrations/remove-skill-improvement-data-migration.test.ts > 20261020_remove_skill_improvement_data > is registered last, required on startup and startup-only 4ms
+ ✓ tests/unit/app-data-migrations/remove-skill-improvement-data-migration.test.ts > 20261020_remove_skill_improvement_data > finds nothing on a fresh data folder 4ms
+ ✓ tests/unit/app-data-migrations/remove-skill-improvement-data-migration.test.ts > 20261020_remove_skill_improvement_data > deletes exactly the feature's data and leaves everything else byte-identical (F-1..F-8b, AC-004) 51ms
+ ✓ tests/unit/app-data-migrations/remove-skill-improvement-data-migration.test.ts > 20261020_remove_skill_improvement_data > changes nothing on a second start 38ms
+ ✓ tests/unit/app-data-migrations/remove-skill-improvement-data-migration.test.ts > 20261020_remove_skill_improvement_data > keeps a records root with an unreadable source, and the runs only it names (F-8, AR-001) 41ms
+ ✓ tests/unit/app-data-migrations/remove-skill-improvement-data-migration.test.ts > 20261020_remove_skill_improvement_data > keeps the records until their helper runs are gone when a run folder cannot be deleted, and the next start finishes 32ms
+ ✓ tests/unit/app-data-migrations/remove-skill-improvement-data-migration.test.ts > 20261020_remove_skill_improvement_data > keeps the helper runs and records when the history rows cannot be written, and the next start removes them all 36ms
+ ✓ tests/unit/app-data-migrations/remove-skill-improvement-data-migration.test.ts > 20261020_remove_skill_improvement_data > only uses canonical run ids from the records: a record naming a path is ignored 5ms
+stdout | tests/unit/config/app-config.test.ts > AppConfig > throws if AUTOBYTEUS_SERVER_HOST is missing
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-x0btnI
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-x0btnI/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-x0btnI/.env
+[dotenv@17.3.1] injecting env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-x0btnI/.env -- tip: 🛡️ auth for agents: https://vestauth.com
+Environment variables loaded successfully
+
+stderr | tests/unit/config/app-config.test.ts > AppConfig > throws if AUTOBYTEUS_SERVER_HOST is missing
+CRITICAL: The 'AUTOBYTEUS_SERVER_HOST' environment variable is not set. This variable is mandatory and must be provided by the environment that launches the server (e.g., Docker Compose, Electron app, or a developer's .env file) to ensure correct URL generation for clients. The server cannot start without it.
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > initializes base URL and sqlite db path when sqlite DB config is selected
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-aooOSw
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-aooOSw/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-aooOSw/.env
+[dotenv@17.3.1] injecting env (3) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-aooOSw/.env -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-aooOSw
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-aooOSw/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-aooOSw/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-aooOSw/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-aooOSw/memory
+============================================================
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > preserves an explicit DATABASE_URL when sqlite DB config is selected
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-V4TxiY
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-V4TxiY/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-V4TxiY/.env
+[dotenv@17.3.1] injecting env (3) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-V4TxiY/.env -- tip: 🛡️ auth for agents: https://vestauth.com
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-V4TxiY
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-V4TxiY/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-V4TxiY/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-V4TxiY/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-V4TxiY/memory
+============================================================
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > delivers and projects a persisted SQLite DATABASE_URL
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-n2C47a
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-n2C47a/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-n2C47a/.env
+[dotenv@17.3.1] injecting env (4) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-n2C47a/.env -- tip: 🛡️ auth for agents: https://vestauth.com
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-n2C47a
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-n2C47a/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-n2C47a/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-n2C47a/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-n2C47a/memory
+============================================================
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > rejects a persisted non-SQLite DATABASE_URL
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-vk54ou
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-vk54ou/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-vk54ou/.env
+[dotenv@17.3.1] injecting env (4) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-vk54ou/.env -- tip: ⚙️  override existing env vars with { override: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+
+stderr | tests/unit/config/app-config.test.ts > AppConfig > rejects a persisted non-SQLite DATABASE_URL
+ERROR: Failed to initialize SQLite path: AppConfigError: DATABASE_URL must be a non-empty SQLite file URL.
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > resolves AUTOBYTEUS_LOG_DIR relative to app data dir
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-uvlvlN
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-uvlvlN/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-uvlvlN/.env
+[dotenv@17.3.1] injecting env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-uvlvlN/.env -- tip: ⚙️  suppress all logs with { quiet: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-uvlvlN
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-uvlvlN/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-uvlvlN/custom-logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-uvlvlN/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-uvlvlN/memory
+============================================================
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > throws if getBaseUrl is called before initialize
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > sets custom app data dir when valid
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-B5j9Px
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-B5j9Px/.env
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > accepts an initial app data dir in the constructor
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-DgKqbC
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > clears stale AUTOBYTEUS_MEMORY_DIR when switching to a custom app data dir
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-SB1LNo
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-SB1LNo/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-SB1LNo/.env
+[dotenv@17.3.1] injecting env (1) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-SB1LNo/.env -- tip: ⚙️  suppress all logs with { quiet: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-SB1LNo
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-SB1LNo/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-SB1LNo/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-SB1LNo/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-SB1LNo/memory
+============================================================
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > throws when setting custom app data dir after initialize
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-e0j3OB
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-e0j3OB/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-e0j3OB/.env
+[dotenv@17.3.1] injecting env (1) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-e0j3OB/.env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-e0j3OB
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-e0j3OB/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-e0j3OB/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-e0j3OB/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-e0j3OB/memory
+============================================================
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > throws when setting custom app data dir for non-existent path
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > returns additional skills dirs that exist
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+
+stderr | tests/unit/config/app-config.test.ts > AppConfig > returns additional skills dirs that exist
+Skill path does not exist or is not a directory: /nope
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > returns additional agent package roots that are absolute and exist
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+
+stderr | tests/unit/config/app-config.test.ts > AppConfig > returns additional agent package roots that are absolute and exist
+Agent package root path must be absolute and will be ignored: relative-source
+Agent package root path does not exist or is not a directory: /nope
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > returns every registered agent package root, including missing ones, absolute and deduplicated
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+
+stderr | tests/unit/config/app-config.test.ts > AppConfig > returns every registered agent package root, including missing ones, absolute and deduplicated
+Agent package root path must be absolute and will be ignored: relative-source
+Agent package root path must be absolute and will be ignored: relative-source
+Agent package root path does not exist or is not a directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-G92rv0/moved-away
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > returns additional application package roots that are absolute, existing, and deduplicated
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+
+stderr | tests/unit/config/app-config.test.ts > AppConfig > returns additional application package roots that are absolute, existing, and deduplicated
+Application package root path must be absolute and will be ignored: relative-root
+Application package root path does not exist or is not a directory: /nope
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > exposes md-centric agent/team path helpers
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-xuhH3m
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-xuhH3m/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-xuhH3m/.env
+[dotenv@17.3.1] injecting env (1) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-xuhH3m/.env -- tip: ⚙️  suppress all logs with { quiet: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-xuhH3m
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-xuhH3m/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-xuhH3m/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-xuhH3m/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-xuhH3m/memory
+============================================================
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > sets and gets config values and updates the env file
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-aMRVku
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-aMRVku/.env
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > discards the exact retired stream-parser key while preserving unrelated settings
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-UzjkTr
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-UzjkTr/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-UzjkTr/.env
+[dotenv@17.3.1] injecting env (3) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-UzjkTr/.env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-UzjkTr
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-UzjkTr/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-UzjkTr/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-UzjkTr/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-UzjkTr/memory
+============================================================
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > discards the removed Skill Improvement settings and leaves every other line byte-identical (F-7)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-tdNl5p
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-tdNl5p/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-tdNl5p/.env
+[dotenv@17.3.1] injecting env (7) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-tdNl5p/.env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-tdNl5p
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-tdNl5p/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-tdNl5p/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-tdNl5p/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-tdNl5p/memory
+============================================================
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > rejects the exact retired key through normal and durable writes
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-Gl6b6n
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > keeps the retired key inert in-session when its persisted file is read-only
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-KeOIOo
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-KeOIOo/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-KeOIOo/.env
+[dotenv@17.3.1] injecting env (3) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-KeOIOo/.env -- tip: ⚙️  override existing env vars with { override: true }
+Environment variables loaded successfully
+Could not update config file /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-KeOIOo/.env: Error: EACCES: permission denied, open '/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-KeOIOo/.env'. Changes will only be valid for the current session.
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-KeOIOo
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-KeOIOo/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-KeOIOo/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-KeOIOo/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-KeOIOo/memory
+============================================================
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > durably replaces the env file before publishing runtime state
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-7qcIvU
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-7qcIvU/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-7qcIvU/.env
+[dotenv@17.3.1] injecting env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-7qcIvU/.env -- tip: 🤖 agentic secret storage: https://dotenvx.com/as2
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-7qcIvU
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-7qcIvU/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-7qcIvU/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-7qcIvU/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-7qcIvU/memory
+============================================================
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > preserves the exact env file mode under a restrictive process umask
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-PHgXiG
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-PHgXiG/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-PHgXiG/.env
+[dotenv@17.3.1] injecting env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-PHgXiG/.env -- tip: ⚙️  write to custom object with { processEnv: myObject }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-PHgXiG
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-PHgXiG/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-PHgXiG/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-PHgXiG/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-PHgXiG/memory
+============================================================
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > keeps file and runtime state unchanged when durable replacement fails before commit
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-A1kRKD
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-A1kRKD/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-A1kRKD/.env
+[dotenv@17.3.1] injecting env (2) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-A1kRKD/.env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-A1kRKD
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-A1kRKD/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-A1kRKD/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-A1kRKD/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-A1kRKD/memory
+============================================================
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > requires initialization and retains the sensitive-setting guard for durable writes
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-Y9BiwO
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-Y9BiwO/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-Y9BiwO/.env
+[dotenv@17.3.1] injecting env (1) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-Y9BiwO/.env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-Y9BiwO
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-Y9BiwO/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-Y9BiwO/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-Y9BiwO/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-Y9BiwO/memory
+============================================================
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > creates temp workspace directory under the app data dir by default
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-NtFG8U
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-NtFG8U/.env
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > resolves AUTOBYTEUS_TEMP_WORKSPACE_DIR relative to app data dir
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-cBP2LT
+Updated config file path to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-cBP2LT/.env
+
+stdout | tests/unit/config/app-config.test.ts > AppConfig > loadEnvironment returns false when .env is missing
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+Custom app data directory set to: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-empty-uDPrIP
+Config file not found in new data directory: Error: Configuration file not found: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-empty-uDPrIP/.env
+loadEnvironment() is deprecated. Use initialize() instead.
+
+stderr | tests/unit/config/app-config.test.ts > AppConfig > loadEnvironment returns false when .env is missing
+Failed to load environment: Error: Configuration file not found: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-config-empty-uDPrIP/.env
+
+stdout | tests/unit/config/app-config.test.ts > saved retired speech selection migration > migrates gemini-3.1-flash-tts-preview before runtime and preserves unrelated bytes and mode
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-85dl2N
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-85dl2N/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-85dl2N/.env
+[dotenv@17.3.1] injecting env (3) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-85dl2N/.env -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-85dl2N
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-85dl2N/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-85dl2N/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-85dl2N/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-85dl2N/memory
+============================================================
+
+ ✓ tests/unit/config/app-config.test.ts > AppConfig > throws if AUTOBYTEUS_SERVER_HOST is missing 7ms
+ ✓ tests/unit/config/app-config.test.ts > AppConfig > initializes base URL and sqlite db path when sqlite DB config is selected 4ms
+ ✓ tests/unit/config/app-config.test.ts > AppConfig > preserves an explicit DATABASE_URL when sqlite DB config is selected 3ms
+ ✓ tests/unit/config/app-config.test.ts > AppConfig > delivers and projects a persisted SQLite DATABASE_URL 2ms
+ ✓ tests/unit/config/app-config.test.ts > AppConfig > rejects a persisted non-SQLite DATABASE_URL 2ms
+ ✓ tests/unit/config/app-config.test.ts > AppConfig > resolves AUTOBYTEUS_LOG_DIR relative to app data dir 2ms
+ ✓ tests/unit/config/app-config.test.ts > AppConfig > throws if getBaseUrl is called before initialize 0ms
+ ✓ tests/unit/config/app-config.test.ts > AppConfig > sets custom app data dir when valid 3ms
+ ✓ tests/unit/config/app-config.test.ts > AppConfig > accepts an initial app data dir in the constructor 1ms
+ ✓ tests/unit/config/app-config.test.ts > AppConfig > clears stale AUTOBYTEUS_MEMORY_DIR when switching to a custom app data dir 2ms
+ ✓ tests/unit/config/app-config.test.ts > AppConfig > throws when setting custom app data dir after initialize 2ms
+ ✓ tests/unit/config/app-config.test.ts > AppConfig > throws when setting custom app data dir for non-existent path 0ms
+ ✓ tests/unit/config/app-config.test.ts > AppConfig > returns additional skills dirs that exist 2ms
+ ✓ tests/unit/config/app-config.test.ts > AppConfig > returns additional agent package roots that are absolute and exist 2ms
+ ✓ tests/unit/config/app-config.test.ts > AppConfig > returns every registered agent package root, including missing ones, absolute and deduplicated 2ms
+ ✓ tests/unit/config/app-config.test.ts > AppConfig > returns additional application package roots that are absolute, existing, and deduplicated 1ms
+ ✓ tests/unit/config/app-config.test.ts > AppConfig > exposes md-centric agent/team path helpers 3ms
+ ✓ tests/unit/config/app-config.test.ts > AppConfig > sets and gets config values and updates the env file 2ms
+ ✓ tests/unit/config/app-config.test.ts > AppConfig > discards the exact retired stream-parser key while preserving unrelated settings 3ms
+ ✓ tests/unit/config/app-config.test.ts > AppConfig > discards the removed Skill Improvement settings and leaves every other line byte-identical (F-7) 4ms
+ ✓ tests/unit/config/app-config.test.ts > AppConfig > rejects the exact retired key through normal and durable writes 1ms
+ ✓ tests/unit/config/app-config.test.ts > AppConfig > keeps the retired key inert in-session when its persisted file is read-only 2ms
+ ✓ tests/unit/config/app-config.test.ts > AppConfig > durably replaces the env file before publishing runtime state 22ms
+ ✓ tests/unit/config/app-config.test.ts > AppConfig > preserves the exact env file mode under a restrictive process umask 9ms
+ ✓ tests/unit/config/app-config.test.ts > AppConfig > keeps file and runtime state unchanged when durable replacement fails before commit 9ms
+ ✓ tests/unit/config/app-config.test.ts > AppConfig > requires initialization and retains the sensitive-setting guard for durable writes 2ms
+ ✓ tests/unit/config/app-config.test.ts > AppConfig > creates temp workspace directory under the app data dir by default 1ms
+ ✓ tests/unit/config/app-config.test.ts > AppConfig > resolves AUTOBYTEUS_TEMP_WORKSPACE_DIR relative to app data dir 1ms
+ ✓ tests/unit/config/app-config.test.ts > AppConfig > loadEnvironment returns false when .env is missing 1ms
+stdout | tests/unit/config/app-config.test.ts > saved retired speech selection migration > migrates gemini-2.5-flash-tts before runtime and preserves unrelated bytes and mode
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-KMaV4J
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-KMaV4J/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-KMaV4J/.env
+[dotenv@17.3.1] injecting env (1) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-KMaV4J/.env -- tip: ⚙️  suppress all logs with { quiet: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-KMaV4J
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-KMaV4J/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-KMaV4J/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-KMaV4J/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-KMaV4J/memory
+============================================================
+
+stdout | tests/unit/config/app-config.test.ts > saved retired speech selection migration > migrates gemini-2.5-pro-tts before runtime and preserves unrelated bytes and mode
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-pMoBvA
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-pMoBvA/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-pMoBvA/.env
+[dotenv@17.3.1] injecting env (1) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-pMoBvA/.env -- tip: 🔐 encrypt with Dotenvx: https://dotenvx.com
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-pMoBvA
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-pMoBvA/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-pMoBvA/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-pMoBvA/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-pMoBvA/memory
+============================================================
+
+stdout | tests/unit/config/app-config.test.ts > saved retired speech selection migration > does not rewrite non-retired selection undefined
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-XnPpBf
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-XnPpBf/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-XnPpBf/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-XnPpBf/.env -- tip: ⚡️ secrets for agents: https://dotenvx.com/as2
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-XnPpBf
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-XnPpBf/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-XnPpBf/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-XnPpBf/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-XnPpBf/memory
+============================================================
+
+stdout | tests/unit/config/app-config.test.ts > saved retired speech selection migration > does not rewrite non-retired selection 
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-Ijp3r2
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-Ijp3r2/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-Ijp3r2/.env
+[dotenv@17.3.1] injecting env (1) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-Ijp3r2/.env -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-Ijp3r2
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-Ijp3r2/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-Ijp3r2/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-Ijp3r2/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-Ijp3r2/memory
+============================================================
+
+stdout | tests/unit/config/app-config.test.ts > saved retired speech selection migration > does not rewrite non-retired selection gemini-3.8-flash-lite-tts
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-wITpsn
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-wITpsn/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-wITpsn/.env
+[dotenv@17.3.1] injecting env (1) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-wITpsn/.env -- tip: ⚙️  enable debug logging with { debug: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-wITpsn
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-wITpsn/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-wITpsn/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-wITpsn/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-wITpsn/memory
+============================================================
+
+stdout | tests/unit/config/app-config.test.ts > saved retired speech selection migration > does not rewrite non-retired selection gpt-4o-mini-tts
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-sG5fen
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-sG5fen/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-sG5fen/.env
+[dotenv@17.3.1] injecting env (1) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-sG5fen/.env -- tip: ⚙️  load multiple .env files with { path: ['.env.local', '.env'] }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-sG5fen
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-sG5fen/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-sG5fen/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-sG5fen/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-sG5fen/memory
+============================================================
+
+stdout | tests/unit/config/app-config.test.ts > saved retired speech selection migration > does not rewrite non-retired selection unknown-model
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-lhz84H
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-lhz84H/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-lhz84H/.env
+[dotenv@17.3.1] injecting env (1) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-lhz84H/.env -- tip: ⚙️  specify custom .env file path with { path: '/custom/path/.env' }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-lhz84H
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-lhz84H/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-lhz84H/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-lhz84H/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-lhz84H/memory
+============================================================
+
+stdout | tests/unit/config/app-config.test.ts > saved retired speech selection migration > migrates the file but preserves an inherited current override
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-ifsfp7
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-ifsfp7/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-ifsfp7/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-ifsfp7/.env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+APP DATA DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-ifsfp7
+DB DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-ifsfp7/db
+LOGS DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-ifsfp7/logs
+DOWNLOAD DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-ifsfp7/download
+MEMORY DIRECTORY: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-ifsfp7/memory
+============================================================
+
+stdout | tests/unit/config/app-config.test.ts > saved retired speech selection migration > rejects an inherited retired override without rewriting the file
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-Sz9fEp
+Config file path: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-Sz9fEp/.env
+Loading environment from: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-Sz9fEp/.env
+[dotenv@17.3.1] injecting env (0) from ../../../../../../var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/speech-setting-Sz9fEp/.env -- tip: 🛠️  run anywhere with `dotenvx run -- yourcommand`
+Environment variables loaded successfully
+
+ ✓ tests/unit/config/app-config.test.ts > saved retired speech selection migration > migrates gemini-3.1-flash-tts-preview before runtime and preserves unrelated bytes and mode 9ms
+ ✓ tests/unit/config/app-config.test.ts > saved retired speech selection migration > migrates gemini-2.5-flash-tts before runtime and preserves unrelated bytes and mode 8ms
+ ✓ tests/unit/config/app-config.test.ts > saved retired speech selection migration > migrates gemini-2.5-pro-tts before runtime and preserves unrelated bytes and mode 9ms
+ ✓ tests/unit/config/app-config.test.ts > saved retired speech selection migration > does not rewrite non-retired selection undefined 2ms
+ ✓ tests/unit/config/app-config.test.ts > saved retired speech selection migration > does not rewrite non-retired selection  2ms
+ ✓ tests/unit/config/app-config.test.ts > saved retired speech selection migration > does not rewrite non-retired selection gemini-3.8-flash-lite-tts 1ms
+ ✓ tests/unit/config/app-config.test.ts > saved retired speech selection migration > does not rewrite non-retired selection gpt-4o-mini-tts 3ms
+ ✓ tests/unit/config/app-config.test.ts > saved retired speech selection migration > does not rewrite non-retired selection unknown-model 1ms
+ ✓ tests/unit/config/app-config.test.ts > saved retired speech selection migration > migrates the file but preserves an inherited current override 8ms
+ ✓ tests/unit/config/app-config.test.ts > saved retired speech selection migration > rejects an inherited retired override without rewriting the file 2ms
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:92239) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > neither creates nor rewrites the retired Project Task Manager; removing an installed copy is the migration's job
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-Ty6hlt
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > syncs only the registry-defined built-ins
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-nhn8eG
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > leaves the old compactor source intact and preserves standalone local agents
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-lyXWJ9
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > does not overwrite user package roots while syncing the app-data built-ins
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-03fbbH
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > does not overwrite user package roots while syncing the app-data built-ins
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-03fbbH
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > does not overwrite even invalid historical compactor instructions
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-zwyHs8
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > Daily Assistant (platform-owned) > creates the Daily Assistant at the stable default ID with the exact approved template and config
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-Gv72kE
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > Daily Assistant (platform-owned) > creates the Daily Assistant at the stable default ID with the exact approved template and config
+Initialized server settings service with 18 predefined settings
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > Daily Assistant (platform-owned) > refreshes an existing same-ID old identity without rewriting history or saved references
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-AZrYvZ
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > Daily Assistant (platform-owned) > replaces edited files and agent-local skills from the template on the next startup
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-lx3MM7
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > Daily Assistant (platform-owned) > replaces edited files and agent-local skills from the template on the next startup
+Agent Definition with ID autobyteus-daily-assistant updated successfully.
+
+stdout | tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > Daily Assistant (platform-owned) > recreates a missing file from the template
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-server-ts
+App data directory: /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-built-in-agents-sJA3iS
+
+ ✓ tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > neither creates nor rewrites the retired Project Task Manager; removing an installed copy is the migration's job 10ms
+ ✓ tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > syncs only the registry-defined built-ins 5ms
+ ✓ tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > leaves the old compactor source intact and preserves standalone local agents 8ms
+ ✓ tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > does not overwrite user package roots while syncing the app-data built-ins 8ms
+ ✓ tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > does not overwrite even invalid historical compactor instructions 5ms
+ ✓ tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > Daily Assistant (platform-owned) > creates the Daily Assistant at the stable default ID with the exact approved template and config 10ms
+ ✓ tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > Daily Assistant (platform-owned) > refreshes an existing same-ID old identity without rewriting history or saved references 5ms
+ ✓ tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > Daily Assistant (platform-owned) > replaces edited files and agent-local skills from the template on the next startup 26ms
+ ✓ tests/unit/built-in-agents/built-in-agent-bootstrapper.test.ts > BuiltInAgentBootstrapper > Daily Assistant (platform-owned) > recreates a missing file from the template 6ms
+ ✓ tests/unit/app-data-migrations/remove-self-evolution-run-metadata-migration.test.ts > RemoveSelfEvolutionRunMetadataMigration > removes standalone and recursive team member selfEvolutionEffective fields 11ms
+stdout | tests/unit/agent-communication/global-agent-run-message-router.test.ts
+AgentFactory (Singleton) initialized.
+
+(node:93135) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+ ✓ tests/unit/agent-communication/global-agent-run-message-router.test.ts > GlobalAgentRunMessageRouter > delivers to an active standalone run and emits a direct INTER_AGENT_MESSAGE without team projection fields 5ms
+ ✓ tests/unit/agent-communication/global-agent-run-message-router.test.ts > GlobalAgentRunMessageRouter > delivers to an active team-member AgentRun as the same direct route without Team Communication fields 0ms
+ ✓ tests/unit/agent-communication/global-agent-run-message-router.test.ts > GlobalAgentRunMessageRouter > confirms the exact accepting AgentRun when same-root delivery uses the Team owner 1ms
+ ✓ tests/unit/agent-communication/global-agent-run-message-router.test.ts > GlobalAgentRunMessageRouter > routes a same-root shut-down delegated target through the sender root so delivery can wake it 1ms
+ ✓ tests/unit/agent-communication/global-agent-run-message-router.test.ts > GlobalAgentRunMessageRouter > refuses a Team copy's team run ID with its coordinator's agent run ID, for same-root and cross-root senders (AC-012, REQ-009) 0ms
+ ✓ tests/unit/agent-communication/global-agent-run-message-router.test.ts > GlobalAgentRunMessageRouter > rejects unknown, inactive, preallocated, or recoverable-only targets via the same not-active result 0ms
+ ✓ tests/unit/agent-communication/global-agent-run-message-router.test.ts > GlobalAgentRunMessageRouter > does not emit an event when the active target rejects input 0ms
+ ✓ tests/unit/agent-communication/global-agent-run-message-router.test.ts > GlobalAgentRunMessageRouter > reports publication failure without rolling back accepted runtime delivery 0ms
+ ✓ tests/unit/built-in-agents/built-in-agent-templates.test.ts > retired compactor builtin > has neither a registry entry nor production template 2ms
+ ✓ tests/unit/built-in-agents/built-in-agent-templates.test.ts > retired project task manager builtin > has neither a registry entry nor production template 0ms
+
+ Test Files  8 passed (8)
+      Tests  116 passed (116)
+   Start at  16:52:37
+   Duration  11.95s (transform 3.95s, setup 119ms, import 8.83s, tests 1.78s, environment 1ms)
+
+
+# Exit code: 0

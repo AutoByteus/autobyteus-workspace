@@ -10,10 +10,18 @@
  *
  * `parse` recognizes only content that starts with exactly one of these sentence forms,
  * followed by a blank line or the end of the content.
+ *
+ * `parseSingleLine` recognizes the same forms in a stored run title, which the server compacts to
+ * one line (whitespace collapsed), so the instruction is followed by one space instead of a blank line:
+ *
+ *   parseSingleLine('Use the writer skill for this request. Draft a note')
+ *     → { skillNames: ['writer'], text: 'Draft a note' }
  */
 
 const SINGLE_SKILL_PATTERN = /^Use the (.+?) skill for this request\.(?:\n\n([\s\S]*))?$/;
 const MULTIPLE_SKILLS_PATTERN = /^Use these skills for this request: ([^\n]+?)\.(?:\n\n([\s\S]*))?$/;
+const SINGLE_SKILL_LINE_PATTERN = /^Use the (.+?) skill for this request\.(?: (.*))?$/;
+const MULTIPLE_SKILLS_LINE_PATTERN = /^Use these skills for this request: (.+?)\.(?: (.*))?$/;
 
 export interface ParsedSkillRequest {
   skillNames: string[];
@@ -35,12 +43,16 @@ export const compose = (skillNames: readonly string[], text: string): string => 
   return text.trim() ? `${instruction}\n\n${text}` : instruction;
 };
 
-export const parse = (content: string): ParsedSkillRequest | null => {
-  const single = SINGLE_SKILL_PATTERN.exec(content);
+const parseWith = (
+  content: string,
+  singlePattern: RegExp,
+  multiplePattern: RegExp,
+): ParsedSkillRequest | null => {
+  const single = singlePattern.exec(content);
   if (single) {
     return { skillNames: [single[1]!], text: single[2] ?? '' };
   }
-  const multiple = MULTIPLE_SKILLS_PATTERN.exec(content);
+  const multiple = multiplePattern.exec(content);
   if (multiple) {
     const skillNames = multiple[1]!.split(', ').map((name) => name.trim()).filter(Boolean);
     if (skillNames.length < 2) {
@@ -51,4 +63,10 @@ export const parse = (content: string): ParsedSkillRequest | null => {
   return null;
 };
 
-export const skillRequestInstruction = { compose, parse };
+export const parse = (content: string): ParsedSkillRequest | null =>
+  parseWith(content, SINGLE_SKILL_PATTERN, MULTIPLE_SKILLS_PATTERN);
+
+export const parseSingleLine = (title: string): ParsedSkillRequest | null =>
+  parseWith(title, SINGLE_SKILL_LINE_PATTERN, MULTIPLE_SKILLS_LINE_PATTERN);
+
+export const skillRequestInstruction = { compose, parse, parseSingleLine };

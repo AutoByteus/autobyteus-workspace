@@ -58,3 +58,15 @@ test('isolated launch environment preserves caller values, drops ELECTRON_RUN_AS
   })
   assert.equal(Object.isFrozen(env), true)
 })
+
+test('the test update feed reaches the app only through an explicit launch opt-in', () => {
+  const sourceEnv = { PATH: '/bin', AUTOBYTEUS_ELECTRON_TEST_UPDATE_FEED_URL: 'http://127.0.0.1:9999' }
+  const quiet = buildIsolatedLaunchEnvironment({ sourceEnv, launch: { port: 31001, dataRoot: '/tmp/root' } })
+  assert.equal(Object.hasOwn(quiet, 'AUTOBYTEUS_ELECTRON_TEST_UPDATE_FEED_URL'), false)
+
+  const withFeed = buildIsolatedLaunchEnvironment({
+    sourceEnv,
+    launch: { port: 31001, dataRoot: '/tmp/root', testUpdateFeedUrl: 'http://127.0.0.1:8123' },
+  })
+  assert.equal(withFeed.AUTOBYTEUS_ELECTRON_TEST_UPDATE_FEED_URL, 'http://127.0.0.1:8123')
+})

@@ -1,0 +1,33 @@
+# DEL-01-server-typecheck — server typecheck on the integrated state: FAILS, every error in src/app-data-migrations (base 1c9edce551, autobyteus-280)
+### pnpm -C autobyteus-server-ts typecheck
+# State: merge 4c2b43a3d7 (ticket code 985246c53b + tests 5faba271f5 + origin/personal 1c9edce551); macOS 26 arm64, Node v22.23.1; 2026-10-24
+
+src/app-data-migrations/frozen/autobyteus-ts/memory/migration/native-working-context-snapshot-shapes.ts(1,37): error TS2307: Cannot find module '../working-context.js' or its corresponding type declarations.
+src/app-data-migrations/frozen/autobyteus-ts/memory/migration/native-working-context-snapshot-shapes.ts(136,101): error TS7006: Parameter 'm' implicitly has an 'any' type.
+src/app-data-migrations/frozen/autobyteus-ts/memory/migration/native-working-context-snapshot-shapes.ts(139,38): error TS7006: Parameter 'c' implicitly has an 'any' type.
+src/app-data-migrations/frozen/autobyteus-ts/memory/migration/native-working-context-snapshot-v5-conversion.ts(1,36): error TS2307: Cannot find module '../models/raw-trace-item.js' or its corresponding type declarations.
+src/app-data-migrations/frozen/autobyteus-ts/memory/migration/native-working-context-snapshot-v5-conversion.ts(2,37): error TS2307: Cannot find module '../working-context.js' or its corresponding type declarations.
+src/app-data-migrations/frozen/autobyteus-ts/memory/migration/native-working-context-snapshot-v5-converter.ts(9,32): error TS2307: Cannot find module '../working-context.js' or its corresponding type declarations.
+src/app-data-migrations/frozen/autobyteus-ts/memory/migration/native-working-context-snapshot-v5-converter.ts(13,8): error TS2307: Cannot find module '../working-context-finalizer.js' or its corresponding type declarations.
+src/app-data-migrations/frozen/released-run-package-shapes/released-memory-locations-before-task-agent-own-run.ts(12,52): error TS2307: Cannot find module '../autobyteus-ts/memory/store/memory-file-names.js' or its corresponding type declarations.
+src/app-data-migrations/frozen/server/agent-memory/store/memory-file-store.ts(3,52): error TS2307: Cannot find module '../../../autobyteus-ts/memory/store/memory-file-names.js' or its corresponding type declarations.
+src/app-data-migrations/frozen/server/agent-memory/store/memory-file-store.ts(4,36): error TS2307: Cannot find module '../../../autobyteus-ts/memory/store/run-memory-file-store.js' or its corresponding type declarations.
+src/app-data-migrations/frozen/server/context-files/services/context-file-record-locators.ts(1,36): error TS2307: Cannot find module '../../../autobyteus-ts/memory/store/run-memory-file-store.js' or its corresponding type declarations.
+src/app-data-migrations/frozen/server/context-files/services/context-file-record-locators.ts(2,46): error TS2307: Cannot find module '../../../autobyteus-ts/memory/models/raw-trace-attachments.js' or its corresponding type declarations.
+src/app-data-migrations/migrations/agent-org-history-first-message-summary-v1/agent-org-history-first-message-summary-evidence-reader.ts(3,52): error TS2307: Cannot find module '../../frozen/autobyteus-ts/memory/store/memory-file-names.js' or its corresponding type declarations.
+src/app-data-migrations/migrations/agent-org-history-first-message-summary-v1/agent-org-history-first-message-summary-evidence-reader.ts(8,8): error TS2307: Cannot find module '../../frozen/autobyteus-ts/memory/store/raw-trace-archive-manifest.js' or its corresponding type declarations.
+src/app-data-migrations/migrations/migrate-native-working-context-snapshots-v5/migrate-native-working-context-snapshots-v5-migration.ts(9,36): error TS2307: Cannot find module '../../frozen/autobyteus-ts/memory/store/run-memory-file-store.js' or its corresponding type declarations.
+src/app-data-migrations/migrations/migrate-native-working-context-snapshots-v5/migrate-native-working-context-snapshots-v5-migration.ts(14,8): error TS2307: Cannot find module '../../frozen/autobyteus-ts/memory/store/memory-file-names.js' or its corresponding type declarations.
+src/app-data-migrations/migrations/migrate-native-working-context-snapshots-v5/migrate-native-working-context-snapshots-v5-migration.ts(15,45): error TS2307: Cannot find module '../../frozen/autobyteus-ts/memory/store/working-context-snapshot-store.js' or its corresponding type declarations.
+src/app-data-migrations/migrations/migrate-native-working-context-snapshots-v5/migrate-native-working-context-snapshots-v5-migration.ts(210,78): error TS7006: Parameter 'trace' implicitly has an 'any' type.
+src/app-data-migrations/migrations/raw-trace-active-file-name/raw-trace-active-file-name-migration-files.ts(4,52): error TS2307: Cannot find module '../../frozen/autobyteus-ts/memory/store/memory-file-names.js' or its corresponding type declarations.
+src/app-data-migrations/migrations/raw-trace-rotation-layout/raw-trace-rotation-layout-migration-files.ts(10,8): error TS2307: Cannot find module '../../frozen/autobyteus-ts/memory/store/raw-trace-archive-manifest.js' or its corresponding type declarations.
+src/app-data-migrations/migrations/raw-trace-rotation-layout/raw-trace-rotation-layout-migration-files.ts(151,56): error TS7006: Parameter 'entry' implicitly has an 'any' type.
+src/app-data-migrations/migrations/raw-trace-rotation-layout/raw-trace-rotation-layout-migration-files.ts(152,55): error TS7006: Parameter 'entry' implicitly has an 'any' type.
+src/app-data-migrations/migrations/raw-trace-rotation-layout/raw-trace-rotation-layout-migration-files.ts(163,38): error TS7006: Parameter 'entry' implicitly has an 'any' type.
+src/app-data-migrations/migrations/raw-trace-rotation-layout/raw-trace-rotation-layout-migration-files.ts(173,49): error TS7006: Parameter 'segment' implicitly has an 'any' type.
+src/app-data-migrations/migrations/raw-trace-rotation-layout/raw-trace-rotation-layout-migration-files.ts(192,55): error TS7006: Parameter 'entry' implicitly has an 'any' type.
+src/app-data-migrations/migrations/raw-trace-rotation-layout/raw-trace-rotation-layout-migration-run.ts(8,8): error TS2307: Cannot find module '../../frozen/autobyteus-ts/memory/store/raw-trace-archive-manifest.js' or its corresponding type declarations.
+src/app-data-migrations/migrations/remove-external-runtime-working-context-snapshots/remove-external-runtime-working-context-snapshots-migration.ts(4,52): error TS2307: Cannot find module '../../frozen/autobyteus-ts/memory/store/memory-file-names.js' or its corresponding type declarations.
+src/app-data-migrations/migrations/team-run-execution-tree-v1/team-run-history-index-reconciler.ts(3,52): error TS2307: Cannot find module '../../frozen/autobyteus-ts/memory/store/memory-file-names.js' or its corresponding type declarations.
+exit 2

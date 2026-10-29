@@ -60,6 +60,7 @@ export async function createNativeRootFixture(kind: 'agent' | 'agent_team', post
     });
     const catalog = {
       listAgentDefinitions: async () => agents,
+      isAgentHidden: () => false,
       listTeamDefinitions: async () => [team],
       getAgentDefinition: async (id: string) => agents.find(a => a.id === id) ?? null,
       getTeamDefinition: async (id: string) => id === 'team' ? team : null,
@@ -109,7 +110,10 @@ export async function createNativeRootFixture(kind: 'agent' | 'agent_team', post
             { address: '/team/peer' as never, agentRunId: 'dormant-peer', platformAgentRunId: null },
           ],
           source: { kind: 'agent_team', teamDefinitionId: 'team', coordinatorAddress: '/team/lead' as never, handoffs: [],
-            members: [{ address: '/team/lead' as never, agentDefinitionId: 'lead' }, { address: '/team/peer' as never, agentDefinitionId: 'peer' }],
+            members: [
+              { address: '/team/lead' as never, agentDefinitionId: 'lead', launchConfiguration: launch, followsTeam: true },
+              { address: '/team/peer' as never, agentDefinitionId: 'peer', launchConfiguration: launch, followsTeam: true },
+            ],
             defaultLaunchConfiguration: launch } };
     const store = new StandaloneRootPackageStore();
     const collaborationDir = new AgentMemoryLayout(memoryDir).getAgentRunCollaborationDirPath(HOST);

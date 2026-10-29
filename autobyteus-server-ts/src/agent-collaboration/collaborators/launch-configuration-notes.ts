@@ -1,8 +1,9 @@
+import { agentRuntimeName } from "@autobyteus/agent-presentation-contracts";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
 import type { AgentLaunchConfiguration } from "../../agent-team-execution/domain/team-run-config.js";
-import { effectiveMemberLaunchConfiguration } from "../../run-history/domain/run-execution-tree-shared-records.js";
 import { getAgentTeamAddressBasename } from "../domain/agent-team-address.js";
 import type {
+  ConfiguredLaunchLayer,
   LaunchConfigurationFallback,
   LaunchConfigurationOrigin,
   LaunchConfigurationSource,
@@ -13,34 +14,51 @@ import type { CollaboratorEntryPlan } from "./collaborator-entry-builder.js";
 export type LaunchConfigurationSourceWithName = Readonly<{
   name: string;
   subject: "agent" | "team";
-  launch: AgentLaunchConfiguration;
+  launch: Readonly<Pick<AgentLaunchConfiguration, "llmModelIdentifier"> & { runtimeKind: string }>;
   source: LaunchConfigurationSource;
 }>;
 
-const LAYER_LABEL: Readonly<Record<LaunchConfigurationFallback["layer"], string>> = {
+const LAYER_LABEL: Readonly<Record<ConfiguredLaunchLayer, string>> = {
   agent_default: "agent default",
   team_default: "team default",
 };
 const ORIGIN_LABEL: Readonly<Record<LaunchConfigurationOrigin, string>> = {
   agent_default: "its agent default",
   team_default: "its team default",
+  model_router: "chosen by the Model Router",
   inherited: "inherited from the run",
+  configured: "as configured in this run",
 };
 
 const configured = (fallback: LaunchConfigurationFallback): string =>
-  `${fallback.runtimeKind ?? "(no runtime)"} / ${fallback.llmModelIdentifier ?? "(no model)"}`;
+  `${fallback.runtimeKind ? agentRuntimeName(fallback.runtimeKind) : "(no runtime)"} / ${fallback.llmModelIdentifier ?? "(no model)"}`;
+
+/** What was skipped and why (supplement §§ 5, 7): a configured layer, or the Model Router not active or failing. */
+const skippedText = (fallback: LaunchConfigurationFallback): string => {
+  const detail = fallback.detail.replace(/\.$/, "");
+  if (fallback.layer === "model_router") {
+    return fallback.reason === "router_failed"
+      ? `Model Router could not choose (${detail})`
+      : `Model Routing is on but the Model Router is not usable (${detail})`;
+  }
+  return `its ${LAYER_LABEL[fallback.layer]} ${configured(fallback)} could not be used (${detail})`;
+};
 
 /**
- * Human text for every skipped configured layer (REQ-003, REQ-008): which agent, what was
- * configured, why it could not be used and what it runs on instead. No fallbacks, no notes.
+ * Human text for every launch the delegating agent should know about (REQ-003, REQ-008, REQ-009): one line per agent
+ * the Model Router chose for (runtime, model, task kind, reason), and one per skipped layer (which agent, what was
+ * configured or that the router could not choose, why, and what it runs on instead). Nothing else, no notes.
  */
 export const launchNotesOf = (sources: readonly LaunchConfigurationSourceWithName[]): string[] =>
-  sources.flatMap(({ name, subject, launch, source }) => source.fallbacks.map((fallback) => {
+  sources.flatMap(({ name, subject, launch, source }) => {
     const runsOn = subject === "team" ? "its members without their own default run on" : "it runs on";
-    const detail = fallback.detail.replace(/\.$/, "");
-    return `${name}: its ${LAYER_LABEL[fallback.layer]} ${configured(fallback)} could not be used (${detail}); `
-      + `${runsOn} ${launch.runtimeKind} / ${launch.llmModelIdentifier} (${ORIGIN_LABEL[source.origin]}).`;
-  }));
+    const target = `${agentRuntimeName(launch.runtimeKind)} / ${launch.llmModelIdentifier}`;
+    const skipped = source.fallbacks.map((fallback) =>
+      `${name}: ${skippedText(fallback)}; ${runsOn} ${target} (${ORIGIN_LABEL[source.origin]}).`);
+    if (source.origin !== "model_router") return skipped;
+    const reason = source.choiceReason.trim().replace(/([^.!?])$/, "$1.");
+    return [`${name}: runs on ${target}, chosen by the Model Router (${source.taskKind}): ${reason}`, ...skipped];
+  });
 
 /** The notes of one freshly resolved collaborator or catalog copy: the Agent, or the Team and each member. */
 export const entryPlanLaunchNotes = (plan: CollaboratorEntryPlan): string[] => {
@@ -52,7 +70,7 @@ export const entryPlanLaunchNotes = (plan: CollaboratorEntryPlan): string[] => {
     ...plan.members.flatMap((member) => member.launchSource ? [{
       name: getAgentTeamAddressBasename(member.address) ?? member.address,
       subject: "agent" as const,
-      launch: effectiveMemberLaunchConfiguration(plan, member),
+      launch: member.launchConfiguration,
       source: member.launchSource,
     }] : []),
   ]);

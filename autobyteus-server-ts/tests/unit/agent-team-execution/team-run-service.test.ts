@@ -5,7 +5,7 @@ import { TeamRunService } from "../../../src/agent-team-execution/services/team-
 import { TeamBackendKind } from "../../../src/agent-team-execution/domain/team-backend-kind.js";
 import { TeamRunEventSourceType, type TeamRunEvent } from "../../../src/agent-team-execution/domain/team-run-event.js";
 import { createTeamAgentExecutionBinding } from "../../../src/agent-team-execution/domain/team-agent-execution-binding.js";
-import { configureTokenUsageMigrationReadiness } from "../../../src/token-usage/providers/token-usage-migration-readiness.js";
+import { configureTokenUsageCapability } from "../../../src/token-usage/providers/token-usage-capability.js";
 
 const rootDefinition = {
   id: "team-def-1",
@@ -164,11 +164,7 @@ describe("TeamRunService current root lifecycle", () => {
   });
 
   it("blocks root, nested, delegated, and task-team restoration before the team backend constructs providers", async () => {
-    configureTokenUsageMigrationReadiness({
-      kind: "CURRENT_SCHEMA_DEGRADED",
-      migrationStatus: "FAILED",
-      logPath: null,
-    });
+    configureTokenUsageCapability({ kind: "HISTORY_MIGRATION_PENDING" });
     try {
       const { service, mocks } = createSubject();
       await expect(service.restoreTeamRun("team-with-nested-and-task-runs")).rejects.toMatchObject({
@@ -176,7 +172,7 @@ describe("TeamRunService current root lifecycle", () => {
       });
       expect(mocks.agentTeamRunManager.restoreTeamRun).not.toHaveBeenCalled();
     } finally {
-      configureTokenUsageMigrationReadiness({ kind: "READY" });
+      configureTokenUsageCapability({ kind: "READY" });
     }
   });
 
@@ -390,4 +386,15 @@ describe("TeamRunService current root lifecycle", () => {
     expect(mocks.agentTeamRunManager.createTeamRun).not.toHaveBeenCalled();
     expect(mocks.teamRunHistoryCatalogService.recordTeamRunCreated).not.toHaveBeenCalled();
   });
+
+  it("records a Team run's title by its ID (autobyteus-269: a peer's work packet); recordRunActivity uses the same path", async () => {
+    const { service, mocks } = createSubject();
+    await service.recordRunTitle("studio_team_b", "Draft the episode.");
+    await service.recordRunActivity({ teamRunId: "team-mixed-1" } as never, { summary: "First owner message" });
+    expect(mocks.teamRunHistoryCatalogService.recordTeamRunSummary.mock.calls).toEqual([
+      [{ teamRunId: "studio_team_b", summary: "Draft the episode." }],
+      [{ teamRunId: "team-mixed-1", summary: "First owner message" }],
+    ]);
+  });
 });
+

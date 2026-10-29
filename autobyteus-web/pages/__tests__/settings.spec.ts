@@ -4,6 +4,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { flushPromises, mount } from '@vue/test-utils'
 import { nextTick } from 'vue'
 import SettingsPage from '../settings.vue'
+import { Icon } from '@iconify/vue'
 
 const settingsPageSource = readFileSync(resolve(process.cwd(), 'pages/settings.vue'), 'utf8')
 
@@ -25,6 +26,7 @@ const translationMap: Record<string, string> = {
   'settings.page.sections.extensions': 'Extensions',
   'settings.page.sections.updates': 'Updates',
   'settings.page.serverSettings.quick': 'Basics',
+  'settings.page.serverSettings.embedding': 'Embedding',
   'settings.page.serverSettings.advanced': 'Advanced',
   'settings.page.serverSettings.migrations': 'Migrations',
 }
@@ -119,6 +121,25 @@ describe('settings page', () => {
     const sidebarText = wrapper.text()
     expect(sidebarText.indexOf('Server Settings')).toBeLessThan(sidebarText.indexOf('Updates'))
     expect(wrapper.get('[data-testid="settings-nav-back"]').attributes('aria-label')).toBe('Back to workspace')
+  })
+
+  it('shows the Settings menu items as text only and keeps the Back to Workspace arrow (autobyteus-320, AC-001)', () => {
+    windowNodeContextStoreMock.isEmbeddedWindow = false
+    const wrapper = mountSettings()
+    const nav = wrapper.get('nav')
+
+    const icons = nav.findAllComponents(Icon)
+    expect(icons).toHaveLength(1)
+    expect(icons[0]!.props('icon')).toBe('heroicons:arrow-left-20-solid')
+    expect(wrapper.get('[data-testid="settings-nav-back"]').findComponent(Icon).exists()).toBe(true)
+    // Every menu item (the top-level buttons other than Back) is its label alone.
+    const menuItems = nav.findAll('li > button').filter((button) => button.attributes('data-testid') !== 'settings-nav-back')
+    expect(menuItems.length).toBeGreaterThanOrEqual(12)
+    for (const item of menuItems) {
+      expect(item.findAll('svg, [class*="iconify"]'), item.text()).toHaveLength(0)
+      expect(item.element.children).toHaveLength(1)
+      expect(item.element.children[0]!.tagName).toBe('SPAN')
+    }
   })
 
   it('gives navigation and content usable full-width regions at narrow viewports while preserving the desktop row', () => {
@@ -334,6 +355,21 @@ describe('settings page', () => {
     await nextTick()
 
     expect(wrapper.get('[data-testid="section-server-settings"]').text()).toContain('mode=migrations')
+  })
+
+  it('supports the server settings embedding mode query and lists Embedding after Basics', async () => {
+    routeMock.query = { section: 'server-settings', mode: 'embedding' }
+    const wrapper = mountSettings()
+    await nextTick()
+
+    expect(wrapper.get('[data-testid="section-server-settings"]').text()).toContain('mode=embedding')
+    const items = wrapper.findAll('[data-testid^="settings-nav-server-settings-"]').map((item) => item.attributes('data-testid'))
+    expect(items).toEqual([
+      'settings-nav-server-settings-quick', 'settings-nav-server-settings-embedding',
+      'settings-nav-server-settings-advanced', 'settings-nav-server-settings-migrations',
+    ])
+    expect(wrapper.get('[data-testid="settings-nav-server-settings-embedding"]').text()).toBe('Embedding')
+    expect(wrapper.get('[data-testid="settings-nav-server-settings-embedding"]').classes()).toContain('font-medium')
   })
 
   it('keeps the default section for an unknown section query', async () => {

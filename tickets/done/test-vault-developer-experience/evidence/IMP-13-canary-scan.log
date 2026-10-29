@@ -1,0 +1,10 @@
+# IMP-13 canary scan (AC-011, QR-001): no secret value in output, logs, evidence or the committed diff
+# commit 855842b8f1 | macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2 | 2026-10-19
+# method: python3 -I scan; compares, in memory, the 3 synthetic canary values and every inherited *_API_KEY value of the agent shell (values never printed) against every captured log of this round, the setup logs and 'git diff d28c56d5de..HEAD -- . :!tickets'
+
+files scanned: 18
+inherited real key values checked: 12
+synthetic canary occurrences: 1
+real key value matches: 0
+note: the 1 synthetic occurrence is the test's own constant in test-vault-selection.e2e.test.ts (LMSTUDIO_CANARY), in the diff, not in any output
+evidence files scanned: 12; synthetic canary occurrences: 0; real key value matches: 0

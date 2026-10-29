@@ -1,0 +1,22 @@
+[
+ {
+  "toolName": "list_available_nodes",
+  "toolArgs": {},
+  "toolResult": "{\"nodes\":[{\"name\":\"beta-node\",\"status\":\"available\"}]}",
+  "toolError": null
+ },
+ {
+  "toolName": "list_available_agents",
+  "toolArgs": {
+   "node": "beta-node"
+  },
+  "toolResult": "{\"agents\":[{\"name\":\"Designer\",\"kind\":\"agent\",\"address\":\"/designer\",\"description\":\"Designs logos and posters\"},{\"name\":\"Copy Lead\",\"kind\":\"agent\",\"address\":\"/copy_lead\",\"description\":\"Leads copywriting\"},{\"name\":\"Copy Checker\",\"kind\":\"agent\",\"address\":\"/copy_checker\",\"description\":\"Checks copy\"},{\"name\":\"Copy Team\",\"kind\":\"agent_team\",\"address\":\"/copy_team\",\"description\":\"Writes and checks short copy\"}]}",
+  "toolError": null
+ },
+ {
+  "toolName": "list_available_agents",
+  "toolArgs": {},
+  "toolResult": "{\"agents\":[{\"name\":\"Claude Plain\",\"kind\":\"agent\",\"address\":\"/claude_plain\",\"description\":\"Coordinates work for the user\"}]}",
+  "toolError": null
+ }
+]

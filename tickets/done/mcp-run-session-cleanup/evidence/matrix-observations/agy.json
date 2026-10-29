@@ -1,0 +1,12 @@
+{
+  "runtime": "agy",
+  "taskStatus": "DONE",
+  "stdioEnvDelivered": true,
+  "stdioCwdDelivered": true,
+  "httpMarker": true,
+  "httpToolCalls": [
+    "expected"
+  ],
+  "dummyOnWire": false,
+  "stdioProcessGoneAfterTermination": true
+}

@@ -1,0 +1,277 @@
+{
+  "startedAt": "2026-10-24T20:14:33.669Z",
+  "cases": {
+    "xlsx-tabs": {
+      "cells": [
+        "Name",
+        "Qty",
+        "Price",
+        "Apple",
+        "3",
+        "1.25",
+        "Banana",
+        "12",
+        "0.5",
+        "Cherry",
+        "200",
+        "0.05"
+      ],
+      "tags": [
+        "table",
+        "tbody",
+        "td",
+        "tr"
+      ],
+      "attrs": [],
+      "tabs": [
+        {
+          "text": "Fruits",
+          "active": true
+        },
+        {
+          "text": "Notes",
+          "active": false
+        }
+      ],
+      "error": null,
+      "retry": false,
+      "tdCursor": "auto"
+    },
+    "xls": {
+      "cells": [
+        "Name",
+        "Qty",
+        "Price",
+        "Apple",
+        "3",
+        "1.25",
+        "Banana",
+        "12",
+        "0.5",
+        "Cherry",
+        "200",
+        "0.05"
+      ],
+      "tags": [
+        "table",
+        "tbody",
+        "td",
+        "tr"
+      ],
+      "attrs": [],
+      "tabs": [
+        {
+          "text": "Fruits",
+          "active": true
+        },
+        {
+          "text": "Notes",
+          "active": false
+        }
+      ],
+      "error": null,
+      "retry": false,
+      "tdCursor": "auto"
+    },
+    "xlsm": {
+      "cells": [
+        "Name",
+        "Qty",
+        "Price",
+        "Apple",
+        "3",
+        "1.25",
+        "Banana",
+        "12",
+        "0.5",
+        "Cherry",
+        "200",
+        "0.05"
+      ],
+      "tags": [
+        "table",
+        "tbody",
+        "td",
+        "tr"
+      ],
+      "attrs": [],
+      "tabs": [],
+      "error": null,
+      "retry": false,
+      "tdCursor": "auto"
+    },
+    "csv-url": {
+      "cells": [
+        "city",
+        "count",
+        "Oslo",
+        "7",
+        "Lima",
+        "12"
+      ],
+      "tags": [
+        "table",
+        "tbody",
+        "td",
+        "tr"
+      ],
+      "attrs": [],
+      "tabs": [],
+      "error": null,
+      "retry": false,
+      "tdCursor": "auto"
+    },
+    "csv-content": {
+      "cells": [
+        "a",
+        "b",
+        "c",
+        "1",
+        "2",
+        "3",
+        "4",
+        "5",
+        "6"
+      ],
+      "tags": [
+        "table",
+        "tbody",
+        "td",
+        "tr"
+      ],
+      "attrs": [],
+      "tabs": [],
+      "error": null,
+      "retry": false,
+      "tdCursor": "auto"
+    },
+    "merged": {
+      "cells": [
+        "Quarterly report",
+        "Q1",
+        "Q2",
+        "Q3",
+        "10",
+        "20",
+        "30"
+      ],
+      "tags": [
+        "table",
+        "tbody",
+        "td",
+        "tr"
+      ],
+      "attrs": [
+        "colspan"
+      ],
+      "tabs": [],
+      "error": null,
+      "retry": false,
+      "tdCursor": "auto"
+    },
+    "injection": {
+      "cells": [
+        "x\" onmouseover=\"window.__pwned=1\" data-y=\"",
+        "<img src=x onerror=\"window.__pwned=1\">",
+        "<script>window.__pwned=1</script>"
+      ],
+      "tags": [
+        "table",
+        "tbody",
+        "td",
+        "tr"
+      ],
+      "attrs": [],
+      "tabs": [],
+      "error": null,
+      "retry": false,
+      "tdCursor": "auto"
+    },
+    "links": {
+      "cells": [
+        "site",
+        "evil",
+        "plain"
+      ],
+      "tags": [
+        "table",
+        "tbody",
+        "td",
+        "tr"
+      ],
+      "attrs": [],
+      "tabs": [],
+      "error": null,
+      "retry": false,
+      "tdCursor": "auto"
+    },
+    "error": {
+      "cells": [],
+      "tags": [],
+      "attrs": [],
+      "tabs": [],
+      "error": "Failed to fetch",
+      "retry": true,
+      "tdCursor": null
+    }
+  },
+  "consoleErrors": [
+    "Failed to load resource: net::ERR_FILE_NOT_FOUND",
+    "[ExcelViewer] Error loading Excel file: TypeError: Failed to fetch\n    at fetchWithRemoteAccessCredential (http://127.0.0.1:53958/_nuxt/utils/remoteAccess/authorizedTransport.ts:40:10)\n    at authorizedFetch (http://127.0.0.1:53958/_nuxt/utils/remoteAccess/authorizedTransport.ts:31:10)\n    at loadExcel (http://127.0.0.1:53958/_nuxt/components/fileExplorer/viewers/ExcelViewer.vue:36:34)\n    at watch.immediate (http://127.0.0.1:53958/_nuxt/components/fileExplorer/viewers/ExcelViewer.vue:63:7)\n    at callWithErrorHandling (http://127.0.0.1:53958/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/fastify5-and-spreadsheet-parser/node_modules/.pnpm/@vue+runtime-core@3.5.44/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=ce07158c:197:19)\n    at callWithAsyncErrorHandling (http://127.0.0.1:53958/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/fastify5-and-spreadsheet-parser/node_modules/.pnpm/@vue+runtime-core@3.5.44/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=ce07158c:204:17)\n    at baseWatchOptions.call (http://127.0.0.1:53958/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/fastify5-and-spreadsheet-parser/node_modules/.pnpm/@vue+runtime-core@3.5.44/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=ce07158c:923:47)\n    at job (http://127.0.0.1:53958/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/fastify5-and-spreadsheet-parser/node_modules/.pnpm/@vue+reactivity@3.5.44/node_modules/@vue/reactivity/dist/reactivity.esm-bundler.js?v=ce07158c:1882:18)\n    at watch (http://127.0.0.1:53958/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/fastify5-and-spreadsheet-parser/node_modules/.pnpm/@vue+reactivity@3.5.44/node_modules/@vue/reactivity/dist/reactivity.esm-bundler.js?v=ce07158c:1918:7)\n    at doWatch (http://127.0.0.1:53958/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/fastify5-and-spreadsheet-parser/node_modules/.pnpm/@vue+runtime-core@3.5.44/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=ce07158c:952:23)",
+    "WebSocket connection to 'ws://127.0.0.1:9/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_UNSAFE_PORT",
+    "WebSocket connection to 'ws://127.0.0.1:9/ws/update-notifications' failed: Error in connection establishment: net::ERR_UNSAFE_PORT",
+    "Failed to load resource: net::ERR_FILE_NOT_FOUND",
+    "[ExcelViewer] Error loading Excel file: TypeError: Failed to fetch\n    at fetchWithRemoteAccessCredential (http://127.0.0.1:53958/_nuxt/utils/remoteAccess/authorizedTransport.ts:40:10)\n    at authorizedFetch (http://127.0.0.1:53958/_nuxt/utils/remoteAccess/authorizedTransport.ts:31:10)\n    at loadExcel (http://127.0.0.1:53958/_nuxt/components/fileExplorer/viewers/ExcelViewer.vue:36:34)\n    at callWithErrorHandling (http://127.0.0.1:53958/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/fastify5-and-spreadsheet-parser/node_modules/.pnpm/@vue+runtime-core@3.5.44/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=ce07158c:197:19)\n    at callWithAsyncErrorHandling (http://127.0.0.1:53958/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/fastify5-and-spreadsheet-parser/node_modules/.pnpm/@vue+runtime-core@3.5.44/node_modules/@vue/runtime-core/dist/runtime-core.esm-bundler.js?v=ce07158c:204:17)\n    at HTMLButtonElement.invoker (http://127.0.0.1:53958/_nuxt/@fs/Users/normy/autobyteus_org/autobyteus-worktrees/fastify5-and-spreadsheet-parser/node_modules/.pnpm/@vue+runtime-dom@3.5.44/node_modules/@vue/runtime-dom/dist/runtime-dom.esm-bundler.js?v=ce07158c:765:7)",
+    "WebSocket connection to 'ws://127.0.0.1:9/ws/agent-package-definitions' failed: Error in connection establishment: net::ERR_UNSAFE_PORT",
+    "WebSocket connection to 'ws://127.0.0.1:9/ws/update-notifications' failed: Error in connection establishment: net::ERR_UNSAFE_PORT"
+  ],
+  "pageErrors": [],
+  "cleanup": {
+    "devStopped": true,
+    "pageRemoved": true
+  },
+  "afterTabSwitch": {
+    "cells": [
+      "Second sheet only"
+    ],
+    "tags": [
+      "table",
+      "tbody",
+      "td",
+      "tr"
+    ],
+    "attrs": [],
+    "tabs": [
+      {
+        "text": "Fruits",
+        "active": false
+      },
+      {
+        "text": "Notes",
+        "active": true
+      }
+    ],
+    "error": null,
+    "retry": false,
+    "tdCursor": "auto"
+  },
+  "afterClicks": {
+    "pwned": null,
+    "urlUnchanged": true
+  },
+  "afterRetry": {
+    "cells": [],
+    "tags": [],
+    "attrs": [],
+    "tabs": [],
+    "error": "Failed to fetch",
+    "retry": true,
+    "tdCursor": null
+  },
+  "unexpectedConsoleErrors": [
+    "Failed to load resource: net::ERR_FILE_NOT_FOUND",
+    "Failed to load resource: net::ERR_FILE_NOT_FOUND"
+  ],
+  "verdict": "PASS",
+  "finishedAt": "2026-10-24T20:14:54.182Z"
+}

@@ -1,0 +1,13 @@
+# Check: IMP-09
+# Command: (cd autobyteus-server-ts && pnpm test:integration)
+# Commit: ea867f9708 (branch codex/work-journal)
+# Environment: macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-19T04:05:26Z
+
+# Excerpt of the full log (827422 bytes), kept outside the repository at /tmp/wj-evidence-full/IMP-09-test-integration.log
+
+ Test Files  77 passed | 19 skipped (96)
+      Tests  415 passed | 70 skipped (485)
+   Start at  06:05:27
+   Duration  223.09s (transform 10.18s, setup 914ms, import 84.12s, tests 128.19s, environment 7ms)
+# Exit status: 0

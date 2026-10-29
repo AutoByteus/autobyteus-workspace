@@ -15,6 +15,17 @@ const launch = {
   autoExecuteTools: false,
   workspaceRootPath: null,
 }
+const configured = { origin: 'configured' as const, fallbacks: [] }
+/** Copies of the configured `/team/member` and `/team` record their placement's snapshot (REQ-001). */
+const memberCopySource = { kind: 'agent' as const, agentDefinitionId: 'member-def', launchConfiguration: launch, launchSource: configured }
+const teamCopySource = {
+  kind: 'agent_team' as const, teamDefinitionId: 'team-def', coordinatorAddress: '/team/coordinator',
+  members: [
+    { address: '/team/coordinator', agentDefinitionId: 'coordinator-def', launchConfiguration: launch, followsTeam: true },
+    { address: '/team/member', agentDefinitionId: 'member-def', launchConfiguration: launch, followsTeam: true },
+  ],
+  handoffs: [], defaultLaunchConfiguration: launch, defaultLaunchSource: configured,
+}
 const view = (): AgentOrgExecutionViewDto => ({
   base_change_sequence: 4,
   is_active: true,
@@ -69,7 +80,7 @@ const view = (): AgentOrgExecutionViewDto => ({
     },
   },
   communication_messages: { schemaVersion: 1, subjectKind: 'agent_org', orgRunId: 'org-run', messages: [] },
-  agent_input_states: [],
+  agent_input_states: [], remote_task_executions: [],
   agent_statuses: [
     { member_address: '/direct', agent_run_id: 'agent-direct', status: 'idle', trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null },
     { member_address: '/team/coordinator', agent_run_id: 'agent-coordinator', status: 'idle', trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null },
@@ -106,7 +117,7 @@ const started = (execution: Partial<Record<string, unknown>> = {}): AgentOrgExec
   kind: 'task_execution_started', host_kind: 'root', host_run_id: 'org-run',
   execution: {
     address: '/team/member', agentRunId: 'agent-task-fresh', platformAgentRunId: null,
-    delegatorAgentRunId: 'agent-coordinator', startedAt: '2026-09-01T00:00:01.000Z',
+    delegatorAgentRunId: 'agent-coordinator', startedAt: '2026-09-01T00:00:01.000Z', source: memberCopySource,
     ...execution,
   } as StartedExecution,
 })
@@ -291,15 +302,14 @@ describe('AgentOrgExecutionContext', () => {
     const snapshot = view()
     snapshot.execution_tree.rootOrg.taskExecutions.push({
       address: '/team/member', agentRunId: 'agent-task-fresh', platformAgentRunId: null,
-      delegatorAgentRunId: 'agent-coordinator', startedAt: '2026-09-01T00:00:01.000Z',
-    }, {
+      delegatorAgentRunId: 'agent-coordinator', startedAt: '2026-09-01T00:00:01.000Z', source: memberCopySource }, {
       address: '/team', teamRunId: 'task-team-fresh',
       members: [{
         address: '/team/member', agentRunId: 'agent-task-team-member', platformAgentRunId: null,
       }, {
         address: '/team/coordinator', agentRunId: 'agent-task-team-coordinator', platformAgentRunId: null,
       }],
-      taskExecutions: [], delegatorAgentRunId: 'agent-coordinator', startedAt: '2026-09-01T00:00:01.500Z',
+      taskExecutions: [], delegatorAgentRunId: 'agent-coordinator', startedAt: '2026-09-01T00:00:01.500Z', source: teamCopySource,
     })
     snapshot.agent_statuses.push({
       member_address: '/team/member', agent_run_id: 'agent-task-fresh', status: 'idle',
@@ -405,8 +415,7 @@ describe('AgentOrgExecutionContext', () => {
     const snapshot = view()
     snapshot.execution_tree.rootOrg.taskExecutions.push({
       address: '/team/member', agentRunId: 'agent-task-fresh', platformAgentRunId: null,
-      delegatorAgentRunId: 'agent-coordinator', startedAt: '2026-09-01T00:00:01.000Z',
-    })
+      delegatorAgentRunId: 'agent-coordinator', startedAt: '2026-09-01T00:00:01.000Z', source: memberCopySource })
     snapshot.agent_statuses.push({
       member_address: '/team/member', agent_run_id: 'agent-task-fresh', status: 'idle',
       trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null,
@@ -432,7 +441,7 @@ describe('AgentOrgExecutionContext', () => {
       kind: 'task_execution_started', host_kind: 'root', host_run_id: 'org-run',
       execution: {
         address: '/team', teamRunId: 'team-task-fresh', members: [], taskExecutions: [],
-        delegatorAgentRunId: 'agent-coordinator', startedAt: '2026-09-01T00:00:01.000Z',
+        delegatorAgentRunId: 'agent-coordinator', startedAt: '2026-09-01T00:00:01.000Z', source: teamCopySource,
       },
     } as AgentOrgExecutionEventDto)).toBe('checkpoint_required')
 
@@ -448,8 +457,9 @@ describe('AgentOrgExecutionContext', () => {
     ['task execution kind', {
       kind: 'task_execution_started', host_kind: 'root', host_run_id: 'org-run',
       execution: {
+        // A Team execution whose recorded source is an Agent's.
         address: '/team/member', teamRunId: 'fresh-team', members: [], taskExecutions: [],
-        delegatorAgentRunId: 'agent-coordinator', startedAt: '2026-09-01T00:00:01.000Z',
+        delegatorAgentRunId: 'agent-coordinator', startedAt: '2026-09-01T00:00:01.000Z', source: memberCopySource,
       },
     } as AgentOrgExecutionEventDto],
     ['reused configured execution', started({ agentRunId: 'agent-member' })],

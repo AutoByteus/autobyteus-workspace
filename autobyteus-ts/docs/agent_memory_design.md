@@ -289,9 +289,31 @@ safe message. Repeated repair converges; an abandoned tool is not assumed to
 have succeeded. Archived raw history is not replayed as new conversation work.
 New-run initialization remains a separate path.
 
-The active JSONL reader preserves complete earlier records and truncates only a
-malformed final physical record from a partial append. Earlier malformed records
-remain integrity errors; relaxing root-version handling does not relax raw facts.
+Every memory JSONL file (active raw traces, episodic, semantic, archive
+segments) is read with one line rule, `src/memory/store/jsonl-log-file.ts`,
+working on byte offsets, never on decoded strings:
+
+- Zero bytes and whitespace at the start or end of a line, and lines made only
+  of them, are absent. After a power loss a file can keep its new size without
+  its data; that removes nothing from any record.
+- A line holding a zero byte between other bytes lost real bytes (or joins two
+  records) and is never a complete record.
+- The damaged end is everything after the last complete record's line when the
+  last non-empty line is not a complete record. Any other damaged line is an
+  integrity error, `JsonlLogDamagedError` ("line N of <file> is damaged"), and
+  is never repaired; relaxing root-version handling does not relax raw facts.
+
+`RunMemoryFileStore` cuts a damaged end (`repairJsonlDamagedEnd`: truncate to
+the last complete record's bytes, add a missing final `\n`, log one warning with
+file, bytes removed and records kept, never content) when it reads a file for
+use, and before its first append to each file path per store instance. That
+append check (`jsonlLogEndsCleanly`) scans at most the file's last 64 KiB with
+the same rule and falls back to the full repair when the end is not proven
+clean, so a torn last line whose `\n` did reach the disk is also cut. Archive
+segments are read with the rule but never cut (sealed files are not
+rewritten). Whole-file replacements of the active log, archive segments, the
+manifest and the snapshots go through `replaceFileDurably` (temp write, file
+sync, rename, folder sync). Individual appends are not synced.
 
 Provider-native assistant-turn metadata (`provider_native_assistant_turn`, for
 example Anthropic's ordered text/thinking/redacted-thinking/`tool_use` blocks)
@@ -546,9 +568,9 @@ and [frontend recovery/activity](../../autobyteus-web/docs/agent_execution_archi
 - `src/agent/compaction/compaction-recovery-controller.ts`
 - `src/memory/working-context-snapshot-serializer.ts`
 - `src/memory/restore/working-context-snapshot-bootstrapper.ts`
-- `src/memory/migration/native-working-context-snapshot-shapes.ts`
 - `src/memory/presentation/unicode-safe-text.ts`
 
 The server enables compaction with the policy only
 (`createEnabledMemoryCompactionConfiguration(new CompactionPolicy())`); startup
-conversion and its ledger remain in `src/app-data-migrations/` there.
+conversion and its ledger remain in `src/app-data-migrations/` there, including the released native
+snapshot v5 shapes and converter (`frozen/autobyteus-ts/memory/migration/`), which moved out of this library.

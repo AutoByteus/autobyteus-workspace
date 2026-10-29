@@ -1,0 +1,54 @@
+{
+  "version": 17,
+  "nodes": [
+    {
+      "id": "embedded-local",
+      "name": "Embedded Node",
+      "baseUrl": "http://127.0.0.1:52394",
+      "nodeType": "embedded",
+      "serverInstanceId": "srv_Un1yG-2euheca5DcbefbVQAEgNo-W5CE",
+      "isSystem": true,
+      "createdAt": "2026-09-01T10:00:00.000Z",
+      "updatedAt": "2026-10-23T05:39:15.332Z"
+    },
+    {
+      "id": "remote-docker-entry",
+      "name": "http://localhost:52284",
+      "baseUrl": "http://localhost:52284",
+      "nodeType": "remote",
+      "serverInstanceId": "srv_T7bfvX5kbsFKRtRMuFIqOea_y-o90CXP",
+      "isSystem": false,
+      "createdAt": "2026-09-02T10:00:00.000Z",
+      "updatedAt": "2026-10-23T05:39:15.377Z"
+    },
+    {
+      "id": "remote-oldbox-entry",
+      "name": "old box",
+      "baseUrl": "http://127.0.0.1:52285",
+      "nodeType": "remote",
+      "isSystem": false,
+      "createdAt": "2026-09-03T10:00:00.000Z",
+      "updatedAt": "2026-09-03T10:00:00.000Z"
+    },
+    {
+      "id": "remote-62889cf9-a1b1-4b31-8ce5-2fee57007fce",
+      "name": "labbox",
+      "baseUrl": "http://127.0.0.1:52286",
+      "nodeType": "remote",
+      "serverInstanceId": "srv_HMMez-JCZnjAEHvCLz5nsLPeZf4UxXnC",
+      "isSystem": false,
+      "createdAt": "2026-10-23T05:39:17.110Z",
+      "updatedAt": "2026-10-23T05:39:17.110Z"
+    },
+    {
+      "id": "remote-d553cd51-ba57-4bd1-a596-16695e8e4385",
+      "name": "peeronly",
+      "baseUrl": "http://127.0.0.1:52287",
+      "nodeType": "remote",
+      "serverInstanceId": "srv_8UcL3AAWPCGwaYm9AkpuK24IlQ02MZwq",
+      "isSystem": false,
+      "createdAt": "2026-10-23T05:39:21.824Z",
+      "updatedAt": "2026-10-23T05:39:21.824Z"
+    }
+  ]
+}

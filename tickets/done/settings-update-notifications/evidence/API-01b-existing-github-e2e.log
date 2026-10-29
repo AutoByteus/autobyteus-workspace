@@ -1,0 +1,36 @@
+# API-01b — existing GitHub package/skill server E2E suites (regression on the changed owners)
+# Command: env -i PATH="$PATH" HOME=<temp> TMPDIR="$TMPDIR" pnpm -C autobyteus-server-ts exec vitest run tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts --no-watch
+# HEAD = code c42bf2abc4; BASE = autobyteus-server-ts/src temporarily checked out from origin/personal 3d4d9d0a95 (restored afterwards; git status clean for src); macOS 26.5.2; 2026-10-20
+
+## HEAD, combined (8 runs)
+API-01b.log:       Tests  1 failed | 44 passed | 2 skipped (47) Error: new agent and Team listed: not met within 5000 ms
+API-01b-combined1.log:       Tests  1 failed | 44 passed | 2 skipped (47) Error: new agent and Team listed: not met within 5000 ms
+API-01b-combined2.log:       Tests  45 passed | 2 skipped (47) 
+API-01b-combined3.log:       Tests  1 failed | 44 passed | 2 skipped (47) Error: new agent and Team listed: not met within 5000 ms
+API-01b-combined4.log:       Tests  45 passed | 2 skipped (47) 
+API-01b-combined5.log:       Tests  45 passed | 2 skipped (47) 
+API-01b-combined6.log:       Tests  45 passed | 2 skipped (47) 
+API-01b-combined7.log:       Tests  45 passed | 2 skipped (47) 
+
+## HEAD, live-refresh file alone (2 runs)
+API-01b-rerun1.log:       Tests  8 passed | 2 skipped (10)
+API-01b-rerun2.log:       Tests  8 passed | 2 skipped (10)
+
+## BASE, combined (8 runs)
+API-01b-base1.log:       Tests  45 passed | 2 skipped (47) 
+API-01b-base2.log:       Tests  45 passed | 2 skipped (47) 
+API-01b-base3.log:       Tests  45 passed | 2 skipped (47) 
+API-01b-base4.log:       Tests  45 passed | 2 skipped (47) 
+API-01b-base5.log:       Tests  1 failed | 44 passed | 2 skipped (47) Error: new agent and Team listed: not met within 5000 ms
+API-01b-base6.log:       Tests  45 passed | 2 skipped (47) 
+API-01b-base7.log:       Tests  45 passed | 2 skipped (47) 
+API-01b-base8.log:       Tests  45 passed | 2 skipped (47) 
+
+## the failing assertion (identical on HEAD and BASE)
+ FAIL  tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts > Agent package definitions live refresh at the real server/wire boundary > DCF-E2E-002 (AC-001…005, AC-007, REQ-009, REQ-014): an imported package's files on disk reach GraphQL and the feed without Reload
+Error: new agent and Team listed: not met within 5000 ms; last value: {"agents":["autobyteus-daily-assistant","autobyteus-retrospective-skill-improver","planner","scout","team-local-agent:crew:lead"],"teams":["crew"]}
+
+## per-file results of a HEAD combined run
+ ✓ tests/e2e/agent-definitions/agent-package-definitions-live-refresh.e2e.test.ts (10 tests | 2 skipped) 16672ms
+ ✓ tests/e2e/skills/github-skill-sources-graphql.e2e.test.ts (29 tests) 5938ms
+ ✓ tests/e2e/agent-definitions/agent-packages-graphql.e2e.test.ts (8 tests) 615ms

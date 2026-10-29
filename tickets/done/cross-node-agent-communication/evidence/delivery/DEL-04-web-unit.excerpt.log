@@ -1,0 +1,4 @@
+# DEL-04 web full | integrated 4f03cce09d | pnpm -C autobyteus-web test:nuxt (excerpt)
+ Test Files  651 passed | 2 skipped (653)
+      Tests  4639 passed | 5 skipped (4644)
+web-tests exit=0

@@ -1,4 +1,4 @@
-import { describe, it, expect } from 'vitest';
+import { expect } from 'vitest';
 import { LlmStreamingResponseHandler } from '../../../../src/agent/streaming/handlers/llm-streaming-response-handler.js';
 import { GlmLLM } from '../../../../src/llm/api/glm-llm.js';
 import { LLMModel } from '../../../../src/llm/models.js';
@@ -7,21 +7,11 @@ import { LLMConfig } from '../../../../src/llm/utils/llm-config.js';
 import { LLMUserMessage } from '../../../../src/llm/user-message.js';
 import { CompleteResponse, ChunkResponse } from '../../../../src/llm/utils/response-types.js';
 import { Message, MessageRole, ToolCallPayload, ToolResultPayload } from '../../../../src/llm/utils/messages.js';
-import { skipIfProviderAccessError } from '../../helpers/provider-access.js';
+import { liveProviderTest } from '../../../../../test-support/test-vault/test-vault.js';
 
-const apiKey = process.env.GLM_API_KEY;
-const runIntegration = apiKey ? describe : describe.skip;
+const live = liveProviderTest('GLM');
 
 const TURN_ID = 'turn_test';
-
-const skipIfGlmProviderAccessError = (error: unknown): boolean => {
-  const message = String(error ?? '').toLowerCase();
-  if (message.includes('身份验证失败')) {
-    console.warn('[provider integration skip] GLM/glm-5.2: invalid_or_missing_credentials');
-    return true;
-  }
-  return skipIfProviderAccessError('GLM', 'glm-5.2', error);
-};
 
 const buildModel = () =>
   new LLMModel({
@@ -94,9 +84,9 @@ const runToolCallContinuation = async (llm: GlmLLM): Promise<void> => {
   expect((continuationResponse.content ?? '').trim().length).toBeGreaterThan(0);
 };
 
-runIntegration('GlmLLM Integration', () => {
-  it('should successfully make a simple completion call', async () => {
-    const llm = new GlmLLM(buildModel());
+live.describe('GlmLLM Integration', () => {
+  live.it('should successfully make a simple completion call', async () => {
+    const llm = new GlmLLM(buildModel(), new LLMConfig());
     const userMessage = new LLMUserMessage({
       content: 'Hello, GLM LLM! Please respond with a short greeting.'
     });
@@ -106,18 +96,13 @@ runIntegration('GlmLLM Integration', () => {
       expect(response).toBeInstanceOf(CompleteResponse);
       expect(typeof response.content).toBe('string');
       expect(response.content.length).toBeGreaterThan(0);
-    } catch (error) {
-      if (skipIfGlmProviderAccessError(error)) {
-        return;
-      }
-      throw error;
     } finally {
       await llm.cleanup();
     }
   }, 120000);
 
-  it('should stream response incrementally', async () => {
-    const llm = new GlmLLM(buildModel());
+  live.it('should stream response incrementally', async () => {
+    const llm = new GlmLLM(buildModel(), new LLMConfig());
     const userMessage = new LLMUserMessage({ content: 'Please write a short two-sentence greeting.' });
     const receivedTokens: string[] = [];
     let completeResponse = '';
@@ -133,18 +118,13 @@ runIntegration('GlmLLM Integration', () => {
 
       expect(receivedTokens.length).toBeGreaterThan(0);
       expect(completeResponse.length).toBeGreaterThan(0);
-    } catch (error) {
-      if (skipIfGlmProviderAccessError(error)) {
-        return;
-      }
-      throw error;
     } finally {
       await llm.cleanup();
     }
   }, 120000);
 
-  it('should support public sendUserMessage', async () => {
-    const llm = new GlmLLM(buildModel());
+  live.it('should support public sendUserMessage', async () => {
+    const llm = new GlmLLM(buildModel(), new LLMConfig());
     const userMessageText = 'Can you summarize the origin of the Python programming language?';
     const userMessage = new LLMUserMessage({ content: userMessageText });
 
@@ -153,18 +133,13 @@ runIntegration('GlmLLM Integration', () => {
       expect(response).toBeInstanceOf(CompleteResponse);
       expect(typeof response.content).toBe('string');
       expect(response.content.length).toBeGreaterThan(0);
-    } catch (error) {
-      if (skipIfGlmProviderAccessError(error)) {
-        return;
-      }
-      throw error;
     } finally {
       await llm.cleanup();
     }
   }, 120000);
 
-  it('should support public streamUserMessage', async () => {
-    const llm = new GlmLLM(buildModel());
+  live.it('should support public streamUserMessage', async () => {
+    const llm = new GlmLLM(buildModel(), new LLMConfig());
     const userMessageText = 'Please list three benefits of using Python.';
     const userMessage = new LLMUserMessage({ content: userMessageText });
     const receivedTokens: string[] = [];
@@ -181,31 +156,21 @@ runIntegration('GlmLLM Integration', () => {
 
       expect(receivedTokens.length).toBeGreaterThan(0);
       expect(completeResponse.length).toBeGreaterThan(0);
-    } catch (error) {
-      if (skipIfGlmProviderAccessError(error)) {
-        return;
-      }
-      throw error;
     } finally {
       await llm.cleanup();
     }
   }, 120000);
 
-  it('should support tool-call continuation without strict ordering errors', async () => {
-    const llm = new GlmLLM(buildModel());
+  live.it('should support tool-call continuation without strict ordering errors', async () => {
+    const llm = new GlmLLM(buildModel(), new LLMConfig());
     try {
       await runToolCallContinuation(llm);
-    } catch (error) {
-      if (skipIfGlmProviderAccessError(error)) {
-        return;
-      }
-      throw error;
     } finally {
       await llm.cleanup();
     }
   }, 120000);
 
-  it('accepts enabled thinking with max reasoning effort', async () => {
+  live.it('accepts enabled thinking with max reasoning effort', async () => {
     const llm = new GlmLLM(
       buildModel(),
       new LLMConfig({
@@ -224,17 +189,12 @@ runIntegration('GlmLLM Integration', () => {
       expect(response).toBeInstanceOf(CompleteResponse);
       expect(typeof response.content).toBe('string');
       expect((response.content ?? '').trim().length).toBeGreaterThan(0);
-    } catch (error) {
-      if (skipIfGlmProviderAccessError(error)) {
-        return;
-      }
-      throw error;
     } finally {
       await llm.cleanup();
     }
   }, 120000);
 
-  it('accepts disabled thinking without stale reasoning effort', async () => {
+  live.it('accepts disabled thinking without stale reasoning effort', async () => {
     const llm = new GlmLLM(
       buildModel(),
       new LLMConfig({
@@ -253,11 +213,6 @@ runIntegration('GlmLLM Integration', () => {
       expect(response).toBeInstanceOf(CompleteResponse);
       expect(typeof response.content).toBe('string');
       expect((response.content ?? '').trim().length).toBeGreaterThan(0);
-    } catch (error) {
-      if (skipIfGlmProviderAccessError(error)) {
-        return;
-      }
-      throw error;
     } finally {
       await llm.cleanup();
     }

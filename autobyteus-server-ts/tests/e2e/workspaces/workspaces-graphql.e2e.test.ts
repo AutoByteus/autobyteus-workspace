@@ -3,7 +3,7 @@ import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
 import { createRequire } from "node:module";
-import { beforeAll, beforeEach, afterEach, describe, expect, it, vi } from "vitest";
+import { afterAll, beforeAll, beforeEach, afterEach, describe, expect, it, vi } from "vitest";
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import { buildGraphqlSchema } from "../../../src/api/graphql/schema.js";
 import { AgentRunManager } from "../../../src/agent-execution/services/agent-run-manager.js";
@@ -42,6 +42,8 @@ const useIsolatedWorkspaceConfig = (
   vi.spyOn(appConfigProvider, "config", "get").mockReturnValue({
     getAppDataDir: () => appDataDir,
     getTempWorkspaceDir: () => configuredTempRoot,
+    // No server setting is configured (workspace listing reads the show-internal-agents setting).
+    get: () => undefined,
   } as any);
   resetWorkspaceRegistryStoreForTest();
 };
@@ -105,14 +107,21 @@ describe("Workspaces GraphQL e2e", () => {
   let graphql: typeof graphqlFn;
   let tempRoot: string;
   let initialIds: Set<string>;
+  let dataRoot: string;
 
   beforeAll(async () => {
+    dataRoot = fs.mkdtempSync(path.join(os.tmpdir(), "workspaces-graphql-appdata-"));
+    appConfigProvider.config.setCustomAppDataDir(dataRoot);
     schema = await buildGraphqlSchema();
     const require = createRequire(import.meta.url);
     const typeGraphqlRoot = path.dirname(require.resolve("type-graphql"));
     const graphqlPath = require.resolve("graphql", { paths: [typeGraphqlRoot] });
     const graphqlModule = await import(graphqlPath);
     graphql = graphqlModule.graphql as typeof graphqlFn;
+  });
+
+  afterAll(() => {
+    if (dataRoot) fs.rmSync(dataRoot, { recursive: true, force: true });
   });
 
   beforeEach(() => {

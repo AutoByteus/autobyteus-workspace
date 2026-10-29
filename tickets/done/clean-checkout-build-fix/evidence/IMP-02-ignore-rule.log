@@ -1,0 +1,19 @@
+# IMP-02 ignore rule (AC-002)
+# Command: git -C autobyteus-server-ts check-ignore -v <paths>
+# Commit: 204025a459
+# Date: 2026-10-23T23:26Z
+
+src/app-data-migrations/frozen/autobyteus-ts/memory/store/run-memory-file-store.ts -> not ignored
+src/app-data-migrations/frozen/autobyteus-ts/memory/working-context.ts -> not ignored
+tests/e2e/memory/memory-collaboration-graphql.e2e.test.ts -> not ignored
+memory/ -> autobyteus-server-ts/.gitignore:44:/memory/	memory/
+memory/agents/x/run_metadata.json -> autobyteus-server-ts/.gitignore:44:/memory/	memory/agents/x/run_metadata.json
+
+$ git diff 1c9edce551 HEAD -- autobyteus-server-ts/.gitignore
+--- a/autobyteus-server-ts/.gitignore
++++ b/autobyteus-server-ts/.gitignore
+-memory
+-!/tests/e2e/memory/
+-!/tests/e2e/memory/*.test.ts
++# Runtime data folder at the server root only; folders named `memory` in source are code.
++/memory/

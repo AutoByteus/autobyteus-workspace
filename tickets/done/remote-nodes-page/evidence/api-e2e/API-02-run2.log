@@ -1,0 +1,5 @@
+remote-nodes-page probe: Fail
+Error: returning asks every peer once: {"beta":1,"gamma":1,"delta":1,"epsilon":1,"zeta":1,"eta":1,"theta":0,"iota":1}
+    at assert (file:///Users/normy/autobyteus_org/autobyteus-worktrees/remote-nodes-page/autobyteus-web/tests/e2e/remote-nodes-page-probe.mjs:44:64)
+    at file:///Users/normy/autobyteus_org/autobyteus-worktrees/remote-nodes-page/autobyteus-web/tests/e2e/remote-nodes-page-probe.mjs:338:3
+exit=1

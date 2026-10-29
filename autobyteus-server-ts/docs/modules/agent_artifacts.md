@@ -43,7 +43,8 @@ Team Communication.
   - `src/api/rest/run-file-changes.ts`
 - Team Communication references for accepted `recipient_address` deliveries:
   - `src/agent-execution/events/processors/team-communication/team-communication-message-event-processor.ts`
-  - `src/services/team-communication/team-communication-service.ts`
+  - `src/agent-collaboration/execution/communication/root-communication-engine.ts` (with the Team root's `RootCommunicationPort`; see [Agent Communication](./agent_communication.md#teammate-delivery-path))
+  - `src/agent-collaboration/execution/communication/root-message-append.ts`
   - `src/services/team-communication/team-communication-store.ts`
   - `src/services/team-communication/team-communication-projection-service.ts`
   - `src/services/team-communication/team-communication-content-service.ts`
@@ -71,20 +72,33 @@ Team Communication.
   directory lineage uses TeamRun ids; it is deliberately not a logical member
   path or address encoding.
 - Hydrate active and historical Agent Artifact rows through
-  `RunFileChangeProjectionService` and `getRunFileChanges(runId)`. Active runs
-  are read from the one process `RunFileChangeService` that
+  `RunFileChangeProjectionService`, with a read that names the row's owner.
+  Active runs are read from the one process `RunFileChangeService` that
   `GeneralProcessRunSupervisor` binds (`getRunFileChangeService()`). It holds a
   live projection only for runs attached to it and reads any other run fresh
   from `file_changes.json`, so every recorded artifact stays listable and
   previewable without a restart.
-- A standalone run's delegated copies are listed through the hub-scoped
-  `agentRunCollaborationMemberFileChanges(hostRunId, memberAddress, agentRunId)`
-  (see [Standalone Agent Run Root](./standalone_agent_run_root.md)), which reads
-  only that run's tree and shares
-  `RunFileChangeProjectionService.getLocatedCollaborationMemberProjection` with the
-  run-id path.
-- Serve Agent Artifact bytes by `runId + canonical path` through
-  `/runs/:runId/file-change-content`.
+- List and serve Agent Artifacts per owner; each read reads only that owner's
+  tree (route table and response rules in
+  [Artifact File Serving](../features/artifact_file_serving_design.md)):
+  - standalone run: `getRunFileChanges(runId)` and
+    `/runs/:runId/file-change-content`. These serve standalone runs only
+    (decided by standalone run metadata, running or saved); any other run id
+    gets an empty list or 404, with no fallback search.
+  - team member: `getTeamMemberFileChanges(teamRunId, agentRunId)` and
+    `/team-runs/:teamRunId/agent-runs/:agentRunId/file-change-content`.
+  - org member: `getAgentOrgMemberFileChanges(orgRunId, memberAddress, agentRunId)`
+    and `/agent-org-runs/:orgRunId/agent-runs/:agentRunId/file-change-content?memberAddress=...`.
+  - a standalone run's delegated copy:
+    `agentRunCollaborationMemberFileChanges(hostRunId, memberAddress, agentRunId)`
+    and `/agent-collaborations/:hostRunId/agent-runs/:agentRunId/file-change-content?memberAddress=...`
+    (see [Standalone Agent Run Root](./standalone_agent_run_root.md)).
+- The family's member-view service locates a member inside the named root, and
+  `RunFileChangeProjectionService.getLocatedCollaborationMemberProjection` /
+  `resolveLocatedCollaborationMemberEntry` serve the located member: live while
+  the root runs, stored otherwise. Workspace-relative entries resolve against
+  the member's launch workspace from `locatedExecutionSource`, so team and org
+  task agents' files open like configured members' files.
 - Keep Team Communication message/reference storage for accepted team-route
   deliveries separate in the team run's message log (`agent_teams/<teamRunId>/team_communication_messages_*.jsonl`).
 - Treat source invocation ids as opaque tool-call identities when correlating

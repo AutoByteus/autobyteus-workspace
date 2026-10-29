@@ -1,0 +1,31 @@
+Check: IMP-02
+Commit: 956405c80778083455256a5dbe4edb2f583811db
+Environment: Darwin arm64
+v26.12.0
+Date: 2026-10-24T18:18:00Z
+Command: env -i PATH="$PATH" HOME="$HOME" TMPDIR="$TMPDIR" autobyteus-ts/node_modules/.bin/vitest run --config tickets/in-progress/backend-port-conflict-20261024/evidence/probe.config.mjs -t "IMP-01"
+Amendment: retain failed IMP-01 hypothesis; inspect continuity, not absence at the first snapshot.
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.12 [39m[90m/Users/normy/autobyteus-org/autobyteus-task-worktrees/backend-port-conflict-20261024[39m
+
+[90mstdout[2m | tickets/in-progress/backend-port-conflict-20261024/evidence/IMP-01-short-lived-anchor.probe.test.ts[2m > [22m[2mIMP-01: spawn and adoption observations need ownership continuity across leader exit
+[22m[39m{"check":"IMP-01","receipts":[{"leader":62909,"child":62917,"leaderObserved":true,"childObserved":false,"leaderAtAdoption":false,"childAtAdoption":true},{"leader":62925,"child":62933,"leaderObserved":true,"childObserved":false,"leaderAtAdoption":false,"childAtAdoption":true},{"leader":62941,"child":62949,"leaderObserved":true,"childObserved":false,"leaderAtAdoption":false,"childAtAdoption":true},{"leader":62957,"child":62965,"leaderObserved":true,"childObserved":false,"leaderAtAdoption":false,"childAtAdoption":true},{"leader":62973,"child":62981,"leaderObserved":true,"childObserved":false,"leaderAtAdoption":false,"childAtAdoption":true},{"leader":62989,"child":62997,"leaderObserved":true,"childObserved":false,"leaderAtAdoption":false,"childAtAdoption":true},{"leader":63005,"child":63013,"leaderObserved":true,"childObserved":false,"leaderAtAdoption":false,"childAtAdoption":true},{"leader":63021,"child":63029,"leaderObserved":true,"childObserved":false,"leaderAtAdoption":false,"childAtAdoption":true},{"leader":63037,"child":63045,"leaderObserved":true,"childObserved":false,"leaderAtAdoption":false,"childAtAdoption":true},{"leader":63053,"child":63061,"leaderObserved":true,"childObserved":false,"leaderAtAdoption":false,"childAtAdoption":true}],"observationsWithoutOverlappingOwnedAnchor":10}
+
+[90mstdout[2m | tickets/in-progress/backend-port-conflict-20261024/evidence/IMP-01-short-lived-anchor.probe.test.ts[2m > [22m[2mIMP-01: spawn and adoption observations need ownership continuity across leader exit
+[22m[39m{"check":"IMP-01","productionExecutor":true,"adoptedPid":63070,"adoptedCount":1,"resultReturned":true,"survivorAlive":true}
+
+[90mstdout[2m | tickets/in-progress/backend-port-conflict-20261024/evidence/IMP-01-short-lived-anchor.probe.test.ts[2m > [22m[2mIMP-01: spawn and adoption observations need ownership continuity across leader exit
+[22m[39m{"check":"IMP-01","fixtureChildren":[62917,62933,62949,62965,62981,62997,63013,63029,63045,63061,63070],"cleanupRemaining":[]}
+
+ [32m✓[39m tickets/in-progress/backend-port-conflict-20261024/evidence/IMP-01-short-lived-anchor.probe.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 781[2mms[22m[39m
+   [33m[2m✓[22m[39m IMP-01: spawn and adoption observations need ownership continuity across leader exit [33m 780[2mms[22m[39m
+ [2m[90m↓[39m[22m tickets/in-progress/backend-port-conflict-20261024/evidence/codex.probe.test.ts [2m([22m[2m1 test[22m[2m | [22m[33m1 skipped[39m[2m)[22m
+ [2m[90m↓[39m[22m tickets/in-progress/backend-port-conflict-20261024/evidence/group-stop.probe.test.ts [2m([22m[2m1 test[22m[2m | [22m[33m1 skipped[39m[2m)[22m
+ [2m[90m↓[39m[22m tickets/in-progress/backend-port-conflict-20261024/evidence/native-signal.probe.test.ts [2m([22m[2m1 test[22m[2m | [22m[33m1 skipped[39m[2m)[22m
+ [2m[90m↓[39m[22m tickets/in-progress/backend-port-conflict-20261024/evidence/shutdown.probe.test.ts [2m([22m[2m2 tests[22m[2m | [22m[33m2 skipped[39m[2m)[22m
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[2m | [22m[33m4 skipped[39m[90m (5)[39m
+[2m      Tests [22m [1m[32m1 passed[39m[22m[2m | [22m[33m5 skipped[39m[90m (6)[39m
+[2m   Start at [22m 20:18:01
+[2m   Duration [22m 1.60s[2m (transform 137ms, setup 0ms, import 248ms, tests 781ms, environment 0ms)[22m
+

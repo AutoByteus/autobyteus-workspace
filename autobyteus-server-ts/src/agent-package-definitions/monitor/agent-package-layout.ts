@@ -1,3 +1,5 @@
+import type { Dirent } from "node:fs";
+import fsPromises from "node:fs/promises";
 import path from "node:path";
 import type {
   AgentPackageDefinitionKind,
@@ -114,4 +116,29 @@ export const findDefinitionFolderForPath = (
   const layoutPath = locateInPackageLayout(root, targetPath);
   if (!layoutPath || layoutPath.segments.length === 0 || positionOf(layoutPath) === null) return null;
   return { kind: KIND_OF_FOLDER[layoutPath.kindFolder], folderId: layoutPath.segments[0]! };
+};
+
+/**
+ * Every directory that exists on disk under the package's kind folders and that the watcher must watch
+ * (the allow-list above, directories only). Reads directory names only, never file content. A directory
+ * that cannot be listed is skipped.
+ */
+export const listWatchedLayoutDirectories = async (root: RegisteredPackageRoot): Promise<string[]> => {
+  const found: string[] = [];
+  const visit = async (directory: string): Promise<void> => {
+    let entries: Dirent[];
+    try {
+      entries = await fsPromises.readdir(directory, { withFileTypes: true });
+    } catch {
+      return;
+    }
+    for (const entry of entries) {
+      const child = path.join(directory, entry.name);
+      if (!entry.isDirectory() || !isWatchedPackagePath(root, child, true)) continue;
+      found.push(child);
+      await visit(child);
+    }
+  };
+  for (const kindDir of Object.values(root.kindDirs)) await visit(path.resolve(kindDir));
+  return found;
 };

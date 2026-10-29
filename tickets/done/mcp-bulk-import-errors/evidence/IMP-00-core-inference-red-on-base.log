@@ -1,0 +1,100 @@
+# Check: IMP-00 new core inference tests on the base parser (expected red)
+# Command: pnpm -C autobyteus-ts exec vitest run tests/unit/tools/mcp/config-service.test.ts
+# Commit: 41be799edb (base autobyteus-ts/src/tools/mcp/config-service.ts) + the new tests
+# Environment: macOS 26.5.2, node v22.23.1
+# Date: 2026-10-20
+
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-bulk-import-errors/autobyteus-ts
+
+stderr | tests/unit/tools/mcp/config-service.test.ts > McpConfigService > adds configs and overwrites existing config
+Overwriting existing MCP config with server_id 'common_server'.
+
+ ❯ tests/unit/tools/mcp/config-service.test.ts (18 tests | 6 failed) 18ms
+     ✓ loads a single config from dict 2ms
+     ✓ loads multiple configs from dict 1ms
+     ✓ loads configs from file with list 1ms
+     ✓ loads configs from file with dict 1ms
+     ✓ rejects invalid config data 2ms
+     ✓ adds configs and overwrites existing config 1ms
+     ✓ removes configs and clears all configs 0ms
+     ✓ parses transport types 0ms
+     ✓ rejects the removed websocket transport and lists the supported transports 0ms
+     ✓ parses a single mcp config dict 0ms
+       × treats a non-empty url as streamable HTTP, and prefers it over a command 3ms
+       × treats a non-empty command as stdio 1ms
+       × names both options when neither is given ({}) 3ms
+       × names both options when neither is given ({"url":"  ","command":""}) 1ms
+       × names both options when neither is given ({"transport_type":""}) 1ms
+       ✓ uses an explicit transport_type or transportType as given 0ms
+       × rejects a transport_type that is not a string 0ms
+     ✓ rejects an imported HTTP server that sets both a token and an Authorization header 0ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/tools/mcp/config-service.test.ts > McpConfigService > transport inference without transport_type > treats a non-empty url as streamable HTTP, and prefers it over a command
+Error: Config data for server 'remote' is missing 'transport_type' field.
+ ❯ Function.parseMcpConfigDict src/tools/mcp/config-service.ts:137:13
+    135|     const transportTypeValue = configData['transport_type'];
+    136|     if (typeof transportTypeValue !== 'string' || !transportTypeValue)…
+    137|       throw new Error(`Config data for server '${serverId}' is missing…
+       |             ^
+    138|     }
+    139| 
+ ❯ tests/unit/tools/mcp/config-service.test.ts:233:37
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/6]⎯
+
+ FAIL  tests/unit/tools/mcp/config-service.test.ts > McpConfigService > transport inference without transport_type > treats a non-empty command as stdio
+Error: Config data for server 'local' is missing 'transport_type' field.
+ ❯ Function.parseMcpConfigDict src/tools/mcp/config-service.ts:137:13
+    135|     const transportTypeValue = configData['transport_type'];
+    136|     if (typeof transportTypeValue !== 'string' || !transportTypeValue)…
+    137|       throw new Error(`Config data for server '${serverId}' is missing…
+       |             ^
+    138|     }
+    139| 
+ ❯ tests/unit/tools/mcp/config-service.test.ts:240:38
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/6]⎯
+
+ FAIL  tests/unit/tools/mcp/config-service.test.ts > McpConfigService > transport inference without transport_type > names both options when neither is given ({})
+ FAIL  tests/unit/tools/mcp/config-service.test.ts > McpConfigService > transport inference without transport_type > names both options when neither is given ({"url":"  ","command":""})
+ FAIL  tests/unit/tools/mcp/config-service.test.ts > McpConfigService > transport inference without transport_type > names both options when neither is given ({"transport_type":""})
+AssertionError: expected [Function] to throw error including 'Config for server \'empty\' needs \'c…' but got 'Config data for server \'empty\' is m…'
+
+Expected: "Config for server 'empty' needs 'command' (stdio) or 'url' (streamable_http), or an explicit 'transport_type'."
+Received: "Config data for server 'empty' is missing 'transport_type' field."
+
+ ❯ tests/unit/tools/mcp/config-service.test.ts:246:75
+    244| 
+    245|     it.each([{}, { url: '  ', command: '' }, { transport_type: '' }])(…
+    246|       expect(() => McpConfigService.parseMcpConfigDict({ empty: entry …
+       |                                                                           ^
+    247|         "Config for server 'empty' needs 'command' (stdio) or 'url' (s…
+    248|       );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/6]⎯
+
+ FAIL  tests/unit/tools/mcp/config-service.test.ts > McpConfigService > transport inference without transport_type > rejects a transport_type that is not a string
+AssertionError: expected [Function] to throw error including '\'transport_type\' for server \'odd\'…' but got 'Config data for server \'odd\' is mis…'
+
+Expected: "'transport_type' for server 'odd' must be a string."
+Received: "Config data for server 'odd' is missing 'transport_type' field."
+
+ ❯ tests/unit/tools/mcp/config-service.test.ts:264:106
+    262| 
+    263|     it('rejects a transport_type that is not a string', () => {
+    264|       expect(() => McpConfigService.parseMcpConfigDict({ odd: { transp…
+       |                                                                                                          ^
+    265|         "'transport_type' for server 'odd' must be a string."
+    266|       );
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/6]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  6 failed | 12 passed (18)
+   Start at  05:15:01
+   Duration  198ms (transform 53ms, setup 17ms, import 53ms, tests 18ms, environment 0ms)
+

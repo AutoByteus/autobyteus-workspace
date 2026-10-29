@@ -1,0 +1,149 @@
+# IMP-23 meaning strength with the both-tiers merge and per-model rows (SR-005c): both models, values, margins, partial coverage
+# Commands:
+#   env -i PATH="$PATH" HOME=/tmp/wjs-eval/home TMPDIR="$TMPDIR" node autobyteus-server-ts/scripts/evaluate-memory-search.mjs --memory-dir /tmp/wjs-copy/memory --index-dir /tmp/wjs-eval/<index | index-leaf> --model <granite-embedding-small-english-r2 | mdbr-leaf-ir> --questions <private SR-005b file: Q30 left out, Q13 with its two rephrasings> --asking-run solution_designer_80624588913d473bac3ef7d8c3d4d305 --out <private>
+#   margins and partial coverage: <local script> over each model's per-run data (IMP-21 collection: each result run's text strengths and the raw nearest scores, limit 300)
+# Commit: 5617a04d02 (dist built at it, IMP-22)
+# Environment: macOS (Darwin 25.5.0, arm64, M1 Max), Node v22.23.1; isolated copy (3,680 runs, 7,426 cards; both indexes complete); host load 22-40
+# Date: 2026-10-26
+# Only IDs, ranks and numbers; the questions stay private.
+
+## Rows (MEANING_CALIBRATION in MemorySearchService)
+- granite-embedding-small-english-r2 (default): baselineRank 200, fairLift 0.0689, strongLift 0.0999.
+- mdbr-leaf-ir: baselineRank 20, fairLift 0.0429, strongLift 0.159.
+- Any other model: the default row, reported `verified: false` by the evaluation.
+
+## Default model (acceptance gates are measured here; AC-001 scope note)
+{
+ "meaningCalibration": {
+  "row": "granite-embedding-small-english-r2",
+  "calibration": {
+   "baselineRank": 200,
+   "fairLift": 0.0689,
+   "strongLift": 0.0999
+  },
+  "verified": true
+ },
+ "gate1": {
+  "passed": 31,
+  "oneSearchTop10": 30,
+  "withinThreeSearches": 31
+ },
+ "gate2": {
+  "number1": 18,
+  "top3": 26,
+  "top3Share": 0.8387096774193549,
+  "mrr": 0.7288018433179723,
+  "p90Ms": 537,
+  "maxMs": 874
+ },
+ "offTopic": {
+  "questions": 12,
+  "passed": 12,
+  "failed": []
+ },
+ "falseOnlyWeak": [],
+ "partial": [
+  {
+   "id": "N01",
+   "onlyWeak": false
+  },
+  {
+   "id": "N03",
+   "onlyWeak": false
+  },
+  {
+   "id": "OT-T2",
+   "onlyWeak": false
+  },
+  {
+   "id": "OT-T3",
+   "onlyWeak": false
+  }
+ ],
+ "unmaskedSecrets": 0,
+ "meaningPointers": {
+  "total": 181,
+  "textChunk": 52,
+  "cardPart": 33,
+  "firstRequest": 96,
+  "emptySnippet": 0
+ }
+}
+Constraint 1: 12/12 off-topic only-weak. Constraint 2: no false note. Constraint 3: gates as IMP-17 (31/31, 30 in one search, top 3 26, #1 18, MRR 0.7288). Pass.
+
+## LEAF-IR
+{
+ "meaningCalibration": {
+  "row": "mdbr-leaf-ir",
+  "calibration": {
+   "baselineRank": 20,
+   "fairLift": 0.0429,
+   "strongLift": 0.159
+  },
+  "verified": true
+ },
+ "gate1": {
+  "passed": 30,
+  "oneSearchTop10": 29,
+  "withinThreeSearches": 30
+ },
+ "gate2": {
+  "number1": 18,
+  "top3": 27,
+  "top3Share": 0.9,
+  "mrr": 0.7566666666666666,
+  "p90Ms": 510,
+  "maxMs": 842
+ },
+ "offTopic": {
+  "questions": 12,
+  "passed": 12,
+  "failed": []
+ },
+ "falseOnlyWeak": [],
+ "partial": [
+  {
+   "id": "N01",
+   "onlyWeak": false
+  },
+  {
+   "id": "N03",
+   "onlyWeak": false
+  },
+  {
+   "id": "OT-T2",
+   "onlyWeak": false
+  },
+  {
+   "id": "OT-T3",
+   "onlyWeak": true
+  }
+ ],
+ "unmaskedSecrets": 0,
+ "meaningPointers": {
+  "total": 178,
+  "textChunk": 54,
+  "cardPart": 30,
+  "firstRequest": 94,
+  "emptySnippet": 0
+ }
+}
+Constraint 1: 12/12. Constraint 2: no false note. Gates: LEAF-IR's own ranking, 30/31 (Q14 not found within 3 searches; a known limit of that model, unchanged by the strength rule, which does not rank). Pass for constraints 1 and 2.
+
+## Margins (Fair at the centre of each window; Strong at the answerable questions' 75th percentile of best lifts)
+granite-embedding-small-english-r2: k=200 Lf=0.0689; off-topic max lift 0.0611 (N05) margin +0.0078; meaning-reliant answerable min best 0.0768 (Q07) margin +0.0079; answerable best lifts n=31 p50/p75/p90 0.0889/0.0999/0.1272
+mdbr-leaf-ir: k=20 Lf=0.0429; off-topic max lift 0.0407 (OT-T1) margin +0.0022; meaning-reliant answerable min best 0.0451 (Q07) margin +0.0022; answerable best lifts n=31 p50/p75/p90 0.0896/0.1590/0.1722
+
+## Partial coverage (simulated; R-10 holds the only-weak note back while coverage is incomplete)
+granite-embedding-small-english-r2 k=200 Lf=0.0689: 50% embedded (approximate: candidates from the full top 300): off-topic with a Fair/Strong meaning match []; answerable with one 17/31
+granite-embedding-small-english-r2 k=200 Lf=0.0689: 25% embedded (approximate: candidates from the full top 300): off-topic with a Fair/Strong meaning match []; answerable with one 13/31
+granite-embedding-small-english-r2 k=200 Lf=0.0689: 10% embedded (approximate: candidates from the full top 300): off-topic with a Fair/Strong meaning match []; answerable with one 7/31
+mdbr-leaf-ir k=20 Lf=0.0429: 50% embedded (approximate: candidates from the full top 300): off-topic with a Fair/Strong meaning match ['N05', 'OT-C2', 'OT-C3']; answerable with one 28/31
+mdbr-leaf-ir k=20 Lf=0.0429: 25% embedded (approximate: candidates from the full top 300): off-topic with a Fair/Strong meaning match ['N02', 'N04', 'N05', 'OT-C2', 'OT-C4', 'OT-S3', 'OT-S4', 'OT-T1']; answerable with one 26/31
+mdbr-leaf-ir k=20 Lf=0.0429: 10% embedded (approximate: candidates from the full top 300): off-topic with a Fair/Strong meaning match ['N02', 'N04', 'N05', 'OT-C2', 'OT-C4', 'OT-S1', 'OT-S4', 'OT-T1']; answerable with one 23/31
+
+- Default model: no off-topic cue rates Fair or Strong at 50%, 25% or 10% embedded.
+- LEAF-IR: several off-topic cues rate Fair while it is partly embedded; with its ±0.0022 margin this is a known limit of that model.
+
+## Escalation trigger (R-9)
+If a re-check finds no row values that meet all three constraints on the default model, the implementer stops and returns a Design Impact to the Solution Designer; no constraint is relaxed.

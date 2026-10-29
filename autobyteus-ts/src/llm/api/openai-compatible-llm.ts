@@ -2,7 +2,10 @@ import type { ClientOptions as OpenAIClientOptions, OpenAI } from 'openai';
 import { BaseLLM, type LLMInvocationOptions } from '../base.js';
 import { LLMModel } from '../models.js';
 import { LLMConfig } from '../utils/llm-config.js';
-import type { ProviderApiKeyResolver } from '../../secrets/provider-api-key-resolver.js';
+import {
+  resolveProviderApiKeyResolver,
+  type ProviderApiKeyResolver,
+} from '../../secrets/provider-api-key-resolver.js';
 import { CompleteResponse, ChunkResponse } from '../utils/response-types.js';
 import {
   buildFinish,
@@ -54,13 +57,13 @@ export class OpenAICompatibleLLM extends BaseLLM {
     model: LLMModel,
     baseUrl: string,
     config: LLMConfig,
-    apiKeyResolver: ProviderApiKeyResolver,
+    apiKeyResolver: ProviderApiKeyResolver | undefined,
     apiKeyProviderId: string,
     clientOptions?: Pick<OpenAIClientOptions, 'fetch' | 'fetchOptions' | 'timeout'>,
     allowUnauthenticated = false,
   ) {
     super(model, config);
-    this.apiKeyResolver = apiKeyResolver;
+    this.apiKeyResolver = resolveProviderApiKeyResolver(apiKeyResolver);
     this.apiKeyProviderId = apiKeyProviderId;
     this.baseUrl = baseUrl;
     this.clientOptions = clientOptions;

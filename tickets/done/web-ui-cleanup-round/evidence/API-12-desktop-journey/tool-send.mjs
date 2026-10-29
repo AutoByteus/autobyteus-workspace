@@ -1,0 +1,11 @@
+import { createRequire } from 'node:module'
+const require = createRequire('/Users/normy/autobyteus_org/autobyteus-worktrees/web-ui-cleanup-round/autobyteus-web/package.json')
+const { chromium } = require('playwright-core')
+const [port, text] = process.argv.slice(2)
+const browser = await chromium.connectOverCDP(`http://127.0.0.1:${port}`)
+const page = browser.contexts().flatMap((c) => c.pages()).find((p) => p.url().includes('/renderer/index.html'))
+const box = page.locator('[data-test=chat-composer] textarea, [data-test=chat-composer] [contenteditable=true]').first()
+await box.click(); await page.keyboard.type(text); await page.waitForTimeout(300); await page.keyboard.press('Enter')
+await page.waitForTimeout(1500)
+console.log('sent; url', page.url().split('#')[1])
+process.exit(0)

@@ -11,7 +11,10 @@ import type { GeminiRuntimeInfo } from '../../../utils/gemini-helper.js';
 import { resolveModelForRuntime } from '../../../utils/gemini-model-mapping.js';
 import type { ImageModel } from '../image-model.js';
 import type { MultimediaConfig } from '../../utils/multimedia-config.js';
-import type { ProviderApiKeyResolver } from '../../../secrets/provider-api-key-resolver.js';
+import {
+  resolveProviderApiKeyResolver,
+  type ProviderApiKeyResolver,
+} from '../../../secrets/provider-api-key-resolver.js';
 import type { GeminiRuntimeResolver } from '../../../utils/gemini-runtime.js';
 
 type GeminiImageConfigField = 'aspect_ratio' | 'image_size';
@@ -94,9 +97,9 @@ export class GeminiImageClient extends BaseImageClient {
   private readonly apiKeyResolver: ProviderApiKeyResolver;
   private readonly runtimeResolver: GeminiRuntimeResolver;
 
-  constructor(model: ImageModel, config: MultimediaConfig, apiKeyResolver: ProviderApiKeyResolver, runtimeResolver?: GeminiRuntimeResolver) {
+  constructor(model: ImageModel, config: MultimediaConfig, apiKeyResolver?: ProviderApiKeyResolver, runtimeResolver?: GeminiRuntimeResolver) {
     super(model, config);
-    this.apiKeyResolver = apiKeyResolver;
+    this.apiKeyResolver = resolveProviderApiKeyResolver(apiKeyResolver);
     if (!runtimeResolver) throw new Error('GEMINI_RUNTIME_RESOLVER_REQUIRED');
     this.runtimeResolver = runtimeResolver;
   }

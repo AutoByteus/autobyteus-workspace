@@ -345,7 +345,7 @@ export default {
     });
     applicationBackendState.apiGatewayService = engineRuntime.backendGateway;
 
-    app = fastify({ maxParamLength: SERVER_ROUTE_PARAM_MAX_LENGTH });
+    app = fastify({ routerOptions: { maxParamLength: SERVER_ROUTE_PARAM_MAX_LENGTH } });
     await app.register(websocket);
     await app.register(async (restApp) => {
       const lifecycle = { awaitReady: async () => undefined } as never;

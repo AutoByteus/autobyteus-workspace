@@ -1,0 +1,9 @@
+IMP-10 / guard:localization-boundary; 2026-10-24T04:05:43.660047+00:00; commit 3d95a5c4a16759060983489735e77820661cff53; macOS arm64 Node22 private HOME/TMPDIR
+Command: ['pnpm', '-C', 'autobyteus-web', 'guard:localization-boundary']
+
+> autobyteus@1.5.9-beta.3 guard:localization-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r2/autobyteus-web
+> node ./scripts/guard-localization-boundary.mjs
+
+[guard:localization-boundary] Passed.
+
+exit=0

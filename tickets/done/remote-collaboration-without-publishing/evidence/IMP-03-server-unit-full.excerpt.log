@@ -1,0 +1,9 @@
+# IMP-03 full server unit suite: pnpm -C autobyteus-server-ts test:unit; commit 63f6635b6d; macOS, node v22.23.1; temp dirs only; 2026-10-21
+# excerpt: the changed areas and the summary. The full log is not committed.
+...
+ Test Files  779 passed | 4 skipped (783)
+      Tests  6400 passed | 7 skipped (6407)
+   Start at  05:42:07
+   Duration  559.78s (transform 14.93s, setup 8.70s, import 260.08s, tests 218.34s, environment 608ms)
+
+exit=0

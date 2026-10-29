@@ -1,0 +1,23 @@
+# API-L08 step 2, repeated with sub-navigation clicks (R-9 / D-2, REQ-009): desktop; Download ahead on EmbeddingGemma 2; while it runs, Server Settings → Advanced: AUTOBYTEUS_EMBEDDING_MODEL = embeddinggemma-2; back to Embedding; watch until Active · Ready; build d2bcb95d3a; Mon Oct 19 13:03:29 CEST 2026
+{"t":1792407812187,"downloadAhead":{"status":"Downloading","progress":"10 of 346 MB · 3%","preparing":null,"actions":["cancel"]}}
+{"t":1792407812385,"advancedSaved":"AUTOBYTEUS_EMBEDDING_MODEL Embedding model for meaning search of Project Tasks. Blank uses the default (granite-embeddin"}
+{"t":1792407813922,"afterSwitchGemma":{"status":"Active·Preparing…","progress":null,"preparing":"Downloading the model: 13 of 346 MB · 4%","actions":[]}}
+{"t":1792407813923,"afterSwitchGranite":{"status":"Downloaded","progress":null,"preparing":null,"actions":["use","remove"]}}
+{"t":1792407813925,"subtitle":"Using Google EmbeddingGemma 2."}
+{"t":1792407813926,"projects":["Not indexed"]}
+{"t":1792407814012,"gemma":{"status":"Active·Preparing…","progress":null,"preparing":"Downloading the model: 13 of 346 MB · 4%","actions":[]}}
+{"t":1792407814514,"gemma":{"status":"Active·Preparing…","progress":null,"preparing":"Downloading the model: 38 of 346 MB · 11%","actions":[]}}
+{"t":1792407816526,"gemma":{"status":"Active·Preparing…","progress":null,"preparing":"Downloading the model: 61 of 346 MB · 18%","actions":[]}}
+{"t":1792407818537,"gemma":{"status":"Active·Preparing…","progress":null,"preparing":"Downloading the model: 85 of 346 MB · 25%","actions":[]}}
+{"t":1792407820549,"gemma":{"status":"Active·Preparing…","progress":null,"preparing":"Downloading the model: 109 of 346 MB · 32%","actions":[]}}
+{"t":1792407822558,"gemma":{"status":"Active·Preparing…","progress":null,"preparing":"Downloading the model: 128 of 346 MB · 37%","actions":[]}}
+{"t":1792407824567,"gemma":{"status":"Active·Preparing…","progress":null,"preparing":"Downloading the model: 152 of 346 MB · 44%","actions":[]}}
+{"t":1792407826575,"gemma":{"status":"Active·Preparing…","progress":null,"preparing":"Downloading the model: 177 of 346 MB · 51%","actions":[]}}
+{"t":1792407828588,"gemma":{"status":"Active·Preparing…","progress":null,"preparing":"Downloading the model: 201 of 346 MB · 58%","actions":[]}}
+{"t":1792407830603,"gemma":{"status":"Active·Preparing…","progress":null,"preparing":"Downloading the model: 226 of 346 MB · 65%","actions":[]}}
+{"t":1792407832622,"gemma":{"status":"Active·Preparing…","progress":null,"preparing":"Downloading the model: 250 of 346 MB · 72%","actions":[]}}
+{"t":1792407834636,"gemma":{"status":"Active·Preparing…","progress":null,"preparing":"Downloading the model: 275 of 346 MB · 79%","actions":[]}}
+{"t":1792407836651,"gemma":{"status":"Active·Preparing…","progress":null,"preparing":"Downloading the model: 295 of 346 MB · 85%","actions":[]}}
+{"t":1792407838664,"gemma":{"status":"Active·Preparing…","progress":null,"preparing":"Downloading the model: 314 of 346 MB · 91%","actions":[]}}
+{"t":1792407840682,"gemma":{"status":"Active·Preparing…","progress":null,"preparing":"Downloading the model: 336 of 346 MB · 97%","actions":[]}}
+{"t":1792407842705,"gemma":{"status":"Active·Ready","progress":null,"preparing":null,"actions":[]}}

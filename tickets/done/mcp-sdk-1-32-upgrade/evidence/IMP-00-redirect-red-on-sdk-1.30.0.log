@@ -1,0 +1,38 @@
+# Check: IMP-00 redirect tests on SDK 1.30.0 (expected red)
+# Command: pnpm -C autobyteus-ts exec vitest run tests/unit/tools/mcp/http-managed-mcp-server.test.ts
+# Commit: 436b85ce93 (base, SDK 1.30.0) + new redirect tests only
+# Environment: macOS 26.5.2, node v22.23.1
+# Date: 2026-10-19
+# Note: on 1.30.0 the cross-origin case connects successfully (error is null), i.e. the 307 to server B was followed and B served the session.
+
+
+ RUN  v4.0.18 /Users/normy/autobyteus_org/autobyteus-worktrees/mcp-sdk-1-32-upgrade/autobyteus-ts
+
+ ❯ tests/unit/tools/mcp/http-managed-mcp-server.test.ts (6 tests | 1 failed) 127ms
+     ✓ sends configured headers on initialize, tool listing and tool call 60ms
+     ✓ sends the token as a Bearer Authorization header on every request 19ms
+     ✓ connects to an unauthenticated server without sending an Authorization header 18ms
+     ✓ fails to connect when the server rejects the configured credential 3ms
+       × does not follow a redirect to another origin, so the credential never reaches it 11ms
+       ✓ follows a redirect within the same origin 16ms
+
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/unit/tools/mcp/http-managed-mcp-server.test.ts > HttpManagedMcpServer with a real streamable HTTP MCP server > redirects > does not follow a redirect to another origin, so the credential never reaches it
+AssertionError: expected null to be an instance of Error
+ ❯ tests/unit/tools/mcp/http-managed-mcp-server.test.ts:230:21
+    228|       );
+    229| 
+    230|       expect(error).toBeInstanceOf(Error);
+       |                     ^
+    231|       expect((error as Error).message).toMatch(/redirect/i);
+    232|       expect((error as Error).message).not.toContain('test-dummy');
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  1 failed | 5 passed (6)
+   Start at  10:18:52
+   Duration  440ms (transform 50ms, setup 15ms, import 195ms, tests 127ms, environment 0ms)
+

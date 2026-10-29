@@ -1,32 +1,146 @@
 import { mount, flushPromises } from '@vue/test-utils';
 import { beforeEach, afterEach, describe, expect, it, vi } from 'vitest';
-const release = vi.hoisted(() => ({value:null as null | {tag:string;installerUrl:string;downloadUrl:string;qualifiedComputers:('macos'|'linux')[]}}));
-vi.mock('~/composables/useLocalization',()=>({useLocalization:()=>({t:(key:string)=>key.split('.').pop()})}));
+import { localizationRuntime } from '~/localization/runtime/localizationRuntime';
+import { nfsPublishedRelease, type NfsPublishedRelease } from '~/utils/nfsLauncherCommands';
 import NfsGuideCard from '../NfsGuideCard.vue';
-const wrappers: ReturnType<typeof mount>[]=[];
-const render=()=>{const wrapper=mount(NfsGuideCard,{props:{release:release.value}});wrappers.push(wrapper);return wrapper;};
-beforeEach(()=>{
-  release.value=null;vi.useFakeTimers();
-  Object.defineProperty(navigator,'clipboard',{configurable:true,value:{writeText:vi.fn().mockResolvedValue(undefined)}});
+
+const wrappers: ReturnType<typeof mount>[] = [];
+const render = (release: NfsPublishedRelease | null = nfsPublishedRelease) => {
+  const wrapper = mount(NfsGuideCard, { props: { release } }); wrappers.push(wrapper); return wrapper;
+};
+const installed = ['interactive', 'create', 'connect', 'status', 'reconnect', 'detach', 'version'];
+beforeEach(async () => {
+  await localizationRuntime.setPreference('en');
+  vi.useFakeTimers();
+  Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText: vi.fn().mockResolvedValue(undefined) } });
 });
-afterEach(()=>{wrappers.splice(0).forEach(w=>w.unmount());vi.useRealTimers();vi.restoreAllMocks();});
-const publishedFixture=()=>{release.value={tag:'test-fixture',installerUrl:'https://release.example.invalid/install.sh',downloadUrl:'https://release.example.invalid/download',qualifiedComputers:['macos','linux']};};
-describe('NFS guide',()=>{
-  it('unavailable state disables both commands and has no invented download',async()=>{
-    const w=render();expect(w.findAll('button')).toHaveLength(2);expect(w.get('#nfs-release-unavailable').text()).toBe('unavailable');
-    for(const button of w.findAll('button'))expect(button.attributes('disabled')).toBeDefined();
-    await w.get('button').trigger('click');expect(navigator.clipboard.writeText).not.toHaveBeenCalled();expect(w.find('a').exists()).toBe(false);
+afterEach(() => { wrappers.splice(0).forEach(w => w.unmount()); vi.useRealTimers(); vi.restoreAllMocks(); });
+
+describe('NFS guide', () => {
+  it.each(['en', 'zh-CN'] as const)('renders no guide anchors across descriptor states in %s', async locale => {
+    await localizationRuntime.setPreference(locale);
+    const notice = locale === 'en' ? 'Published installer: v0.1.0' : '已发布安装器：v0.1.0';
+    for (const release of [nfsPublishedRelease, { ...nfsPublishedRelease, availableComputers: ['macos'] as const }, null, { ...nfsPublishedRelease, downloadUrl: 'http://unsafe' }]) {
+      const w = render(release);
+      expect(w.findAll('a')).toHaveLength(0);
+      for (const label of ['View release downloads', 'Review the pinned installer script', '查看版本下载', '查看固定版本的安装脚本', 'Public CLI documentation and advanced flags', '公开命令行文档和高级参数']) {
+        expect(w.text()).not.toContain(label);
+      }
+      expect(w.text().includes(notice)).toBe(release !== null && release.downloadUrl.startsWith('https:'));
+      expect(w.text()).toContain(locale === 'en' ? 'URL shown in the command' : '命令中网址对应的安装脚本');
+    }
   });
-  it('copies only a qualified fixture command; accessible success resets and links its release',async()=>{
-    publishedFixture();const w=render();
-    await w.get('[data-testid="copy-nfs-macos"]').trigger('click');await flushPromises();
-    expect(navigator.clipboard.writeText).toHaveBeenCalledWith("curl -fsSL 'https://release.example.invalid/install.sh' | bash");
-    expect(w.get('[role="status"]').text()).toBe('copiedHint');expect(w.get('a').attributes('href')).toBe(release.value!.downloadUrl);
-    await vi.advanceTimersByTimeAsync(2000);expect(w.get('[role="status"]').text()).toBe('');
+  it.each(['en', 'zh-CN'] as const)('renders a concise unboxed tip and essential safety note in %s', async locale => {
+    await localizationRuntime.setPreference(locale);
+    const w = render();
+    const tip = w.get('[data-testid="nfs-folder-tip"]');
+    const note = w.get('[data-testid="nfs-safety-note"]');
+    const expected = locale === 'en' ? [
+      'Use the printed mount path as a normal folder.',
+      'Use only on a trusted private network',
+      'NFS is unencrypted—do not expose it to the internet.',
+      'If storage or the network goes offline, file operations and other work may stall. Restore connectivity before retrying.',
+    ] : [
+      '将输出的挂载路径用作普通文件夹。',
+      '仅用于受信任的私有网络',
+      'NFS 流量不加密，请勿将服务暴露到公共互联网。',
+      '存储或网络离线时，文件操作及其他工作可能停滞。请恢复连接后重试。',
+    ];
+    const footer = [tip.text(), ...note.findAll('p').map(p => p.text())];
+    expect(footer).toEqual(expected);
+    if (locale === 'en') expect(footer.join(' ').split(/\s+/).length).toBeLessThanOrEqual(60);
+    expect(tip.classes().some(c => /^(bg-|border|rounded)/.test(c))).toBe(false);
+    expect(tip.element.nextElementSibling).toBe(note.element);
+    expect(note.element.nextElementSibling).toBeNull();
+    expect(w.findAll('code')).toHaveLength(9);
+    expect(w.text()).not.toContain('settings.components');
+    for (const removed of ['physical-host', 'testing remains deferred', 'Checksums do not replace', '独立客户端', '仍待进行']) {
+      expect(w.text()).not.toContain(removed);
+    }
+    expect(w.text()).toContain(locale === 'en' ? 'macOS 26+ with APFS' : 'macOS 26+');
+    expect(w.text()).toContain('Ubuntu 24.04');
   });
-  it('shows clipboard failure without claiming success',async()=>{
-    publishedFixture();vi.mocked(navigator.clipboard.writeText).mockRejectedValue(Error('denied'));const w=render();
-    await w.get('[data-testid="copy-nfs-linux"]').trigger('click');await flushPromises();
-    expect(w.get('[role="status"]').text()).toBe('copyFailed');expect(w.get('[data-testid="copy-nfs-linux"]').text()).toBe('copy');
+  it.each([null, { ...nfsPublishedRelease, installerSha256: '' }, { ...nfsPublishedRelease, downloadUrl: 'http://unsafe' }])(
+    'disables invalid/unavailable installers and version notice but keeps prerequisite installed reference', async release => {
+      const w = render(release);
+      expect(w.get('#nfs-release-unavailable').text()).toContain('Install separately');
+      for (const id of ['macos', 'linux']) {
+        expect(w.get(`[data-testid="copy-nfs-${id}"]`).attributes('disabled')).toBeDefined();
+        await w.get(`[data-testid="copy-nfs-${id}"]`).trigger('click');
+      }
+      expect(navigator.clipboard.writeText).not.toHaveBeenCalled();
+      expect(w.findAll('a')).toHaveLength(0);
+      expect(w.text()).toContain('Run these only after installing');
+      expect(w.findAll('code')).toHaveLength(7);
+    },
+  );
+  it('only enables the available platform of a partial descriptor', () => {
+    const w = render({ ...nfsPublishedRelease, availableComputers: ['macos'] });
+    expect(w.get('[data-testid="copy-nfs-macos"]').attributes('disabled')).toBeUndefined();
+    expect(w.get('[data-testid="copy-nfs-linux"]').attributes('disabled')).toBeDefined();
+    expect(w.findAll('a')).toHaveLength(0);
+    expect(w.text()).toContain('Published installer: v0.1.0');
+  });
+  it('copies exactly each displayed command with one success lifecycle', async () => {
+    const w = render();
+    expect(w.findAll('code')).toHaveLength(9);
+    const labels = w.findAll('button').map(b => b.attributes('aria-label'));
+    expect(new Set(labels).size).toBe(9);
+    for (const id of ['macos', 'linux', ...installed]) {
+      const button = w.get(`[data-testid="copy-nfs-${id}"]`);
+      const card = button.element.parentElement!.parentElement!;
+      await button.trigger('click'); await flushPromises();
+      expect(navigator.clipboard.writeText).toHaveBeenLastCalledWith(card.querySelector('code')!.textContent);
+      expect(button.text()).toBe('Copied');
+      expect(w.get('[role="status"]').text()).toContain('Command copied');
+      await vi.advanceTimersByTimeAsync(2000); expect(w.get('[role="status"]').text()).toBe('');
+    }
+  });
+  it('does not start a second clipboard request while one is pending', async () => {
+    let resolve!: () => void;
+    vi.mocked(navigator.clipboard.writeText).mockImplementation(() => new Promise<void>(r => { resolve = r; }));
+    const w = render();
+    await w.get('[data-testid="copy-nfs-create"]').trigger('click');
+    expect(w.findAll('button').every(b => b.attributes('disabled') !== undefined)).toBe(true);
+    expect(w.get('[role="status"]').text()).toBe('');
+    await w.get('[data-testid="copy-nfs-macos"]').trigger('click');
+    expect(navigator.clipboard.writeText).toHaveBeenCalledTimes(1);
+    resolve(); await flushPromises();
+    expect(w.get('[data-testid="copy-nfs-create"]').text()).toBe('Copied');
+  });
+  it('clears stale success on denial and supports unavailable clipboard/manual selection', async () => {
+    const w = render();
+    await w.get('[data-testid="copy-nfs-version"]').trigger('click'); await flushPromises();
+    vi.mocked(navigator.clipboard.writeText).mockRejectedValue(Error('denied'));
+    await w.get('[data-testid="copy-nfs-linux"]').trigger('click'); await flushPromises();
+    expect(w.get('[role="status"]').text()).toContain('Select and copy');
+    expect(w.get('[data-testid="copy-nfs-version"]').text()).toBe('Copy');
+    Object.defineProperty(navigator, 'clipboard', { configurable: true, value: undefined });
+    await w.get('[data-testid="copy-nfs-status"]').trigger('click'); await flushPromises();
+    expect(w.get('[role="status"]').text()).toContain('Could not copy');
+  });
+  it.each(['resolve', 'reject'])('does not schedule state/timers after unmount on %s', async outcome => {
+    let resolve!: () => void, reject!: (e: Error) => void;
+    vi.mocked(navigator.clipboard.writeText).mockImplementation(() => new Promise<void>((a, b) => { resolve = a; reject = b; }));
+    const w = render();
+    await w.get('[data-testid="copy-nfs-detach"]').trigger('click');
+    w.unmount(); wrappers.splice(wrappers.indexOf(w), 1);
+    const timers = vi.getTimerCount();
+    if (outcome === 'resolve') resolve(); else reject(Error('denied'));
+    await flushPromises(); expect(vi.getTimerCount()).toBe(timers);
+  });
+  it('clears the success reset timer on unmount', async () => {
+    const w = render(); await w.get('[data-testid="copy-nfs-version"]').trigger('click'); await flushPromises();
+    const timers = vi.getTimerCount(); w.unmount(); wrappers.splice(wrappers.indexOf(w), 1);
+    expect(vi.getTimerCount()).toBe(timers - 1);
+  });
+  it('renders actual Chinese messages and still copies exact command bytes', async () => {
+    await localizationRuntime.setPreference('zh-CN');
+    const w = render();
+    expect(w.text()).toContain('1. 安装命令行工具'); expect(w.text()).toContain('NFS 流量不加密');
+    expect(w.text()).not.toContain('settings.components');
+    await w.get('[data-testid="copy-nfs-status"]').trigger('click'); await flushPromises();
+    expect(navigator.clipboard.writeText).toHaveBeenCalledWith('~/.local/bin/autobyteus-nfs status');
+    expect(w.get('[data-testid="copy-nfs-status"]').text()).toBe('已复制');
   });
 });

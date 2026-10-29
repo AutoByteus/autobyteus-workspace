@@ -12,7 +12,7 @@ import {
   composeMessageLogs,
   taskAgentLogOwners,
   TaskAgentMessageLogs,
-  type MessageLogOwner,
+  type StoredMessageLogOwner,
 } from "../../run-history/store/task-agent-message-logs.js";
 import { agentRunIdsOfTree } from "../../run-history/store/task-execution-tree-split.js";
 import type { AgentOrgRunExecutionTreeFile } from "../domain/agent-org-run-execution-tree.js";
@@ -64,7 +64,7 @@ export class AgentOrgCommunicationMessagesStore {
     orgDir: string,
     orgRunId: string,
     message: CollaborationCommunicationMessage,
-    owners: readonly MessageLogOwner[],
+    owners: readonly StoredMessageLogOwner[],
   ): Promise<RunPackageFileWriteResult<"communication_messages">> {
     return appendMessageToOwnerLogs(owners, async (owner) => {
       if (owner.kind !== "coordinating") return this.taskLogs(orgDir).append(owner, message);

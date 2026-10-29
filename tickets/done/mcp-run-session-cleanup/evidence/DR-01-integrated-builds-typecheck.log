@@ -1,0 +1,33 @@
+# Case: DR-01 core build, server typecheck and build
+# Command: pnpm -C autobyteus-ts build; pnpm -C autobyteus-server-ts typecheck; pnpm -C autobyteus-server-ts build
+# Commit: 98365d815d (codex/mcp-run-session-cleanup merged with origin/personal b5e4dd6cdc)
+# Environment: macOS 26 arm64, node v22.23.1, pnpm 10.28.2; tests under env -i PATH HOME=<resolved temp> TMPDIR
+# Date: 2026-10-19 (delivery, integrated state)
+
+## core-build (exit 0)
+
+> autobyteus-ts@1.0.0 build ~/autobyteus_org/autobyteus-worktrees/mcp-run-session-cleanup/autobyteus-ts
+> node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+
+[verify:runtime-deps] OK
+
+## server-typecheck (exit 0)
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+
+> autobyteus-server-ts@0.1.1 typecheck ~/autobyteus_org/autobyteus-worktrees/mcp-run-session-cleanup/autobyteus-server-ts
+> tsc -p tsconfig.build.json --noEmit
+
+
+## server-build (exit 0)
+
+
+> autobyteus-server-ts@0.1.1 build:full ~/autobyteus_org/autobyteus-worktrees/mcp-run-session-cleanup/autobyteus-server-ts
+> node ./scripts/clean-build-output.mjs && tsc -p tsconfig.build.json && node ./scripts/copy-build-assets.mjs && node ./scripts/run-sanitized-built-in-agents-bootstrap-smoke.mjs
+
+AgentFactory (Singleton) initialized.
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+

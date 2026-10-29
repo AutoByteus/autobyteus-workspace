@@ -20,7 +20,9 @@ import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.
 const MIGRATION_ID = "20261006_remove_built_in_project_task_manager";
 const RETIRED_ID = "autobyteus-project-task-manager";
 const REPOSITORY_ID = "project-task-manager";
-const BUILT_IN_IDS = ["autobyteus-daily-assistant", "autobyteus-retrospective-skill-improver"];
+const BUILT_IN_IDS = ["autobyteus-daily-assistant"];
+// Every built-in the startup installs under agents/, including the internal Model Router (hidden from the catalog).
+const INSTALLED_BUILT_IN_FOLDERS = ["autobyteus-daily-assistant", "autobyteus-model-router"];
 const FAILED_MESSAGE = "The retired built-in Project Task Manager folder could not be removed; the cleanup retries on the next start.";
 const installedCopyFixture = fileURLToPath(new URL("../../fixtures/app-data-migrations/retired-built-in-project-task-manager", import.meta.url));
 
@@ -335,7 +337,7 @@ describe("retired built-in Project Task Manager at the actual startup entrypoint
     const first = await studio();
     expect(await first.migration()).toMatchObject({ status: "SUCCEEDED", attempts: 1, summary: "Scanned 1; migrated 0; skipped 1; failed 0." });
     expect(await fs.readFile((await first.migration()).logPath, "utf8")).toContain("Not present.");
-    expect((await fs.readdir(path.join(root, "agents"))).sort()).toEqual(BUILT_IN_IDS);
+    expect((await fs.readdir(path.join(root, "agents"))).sort()).toEqual(INSTALLED_BUILT_IN_FOLDERS);
     const catalog = await first.catalog();
     expect(catalog.some(d => d.id === RETIRED_ID)).toBe(false);
     expect(projectTaskManagers(catalog)).toEqual([REPOSITORY_ID]);
@@ -343,7 +345,7 @@ describe("retired built-in Project Task Manager at the actual startup entrypoint
 
     const second = await studio();
     expect(await second.migration()).toMatchObject({ status: "SUCCEEDED", attempts: 1 });
-    expect((await fs.readdir(path.join(root, "agents"))).sort()).toEqual(BUILT_IN_IDS);
+    expect((await fs.readdir(path.join(root, "agents"))).sort()).toEqual(INSTALLED_BUILT_IN_FOLDERS);
   }, 180_000);
 
   it("E-004 standalone host first: a failed removal never blocks the host, the next host start removes it, and Studio shares the record", async () => {

@@ -1,7 +1,9 @@
 import { assertAgentTeamAddress, type AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
+import type { DelegationWork } from "../../model-routing/domain/model-routing-types.js";
 import { CollaborationContractError } from "../../agent-collaboration/domain/collaboration-contract-error.js";
 import { delegationTargetUnavailableMessage } from "../../agent-collaboration/collaborators/collaborator-errors.js";
-import { resolveDelegationPlacement } from "../../agent-collaboration/collaborators/catalog-delegation.js";
+import { resolveDelegationPlacement, sourcedPlacement } from "../../agent-collaboration/collaborators/catalog-delegation.js";
+import { configuredPlacementSource } from "../../agent-collaboration/collaborators/collaborator-source-projector.js";
 import {
   resolveMessageRecipient,
   type CollaborationMessagePlacement,
@@ -32,26 +34,25 @@ export class AgentOrgRecipientResolver {
   }
 
   /** CM-1 refusal first, then a configured placement outside the sender's own Team, then a catalog copy. */
-  resolveDelegationPlacement(sender: CollaborationMemberExecutionIdentity, addressInput: string): Promise<ResolvedAgentOrgRecipient> {
+  resolveDelegationPlacement(sender: CollaborationMemberExecutionIdentity, addressInput: string, work: DelegationWork): Promise<ResolvedAgentOrgRecipient> {
     const address = this.requireAddress(addressInput);
     return resolveDelegationPlacement({
       port: this.options.getIndex(),
       senderAgentRunId: sender.agentRunId,
       address,
       resolveInRun: () => this.resolveInRunDelegationPlacement(address),
-      catalogSource: () => this.options.collaborators.catalogTaskSource({ address, senderRunId: sender.agentRunId }),
+      catalogSource: () => this.options.collaborators.catalogTaskSource({ address, senderRunId: sender.agentRunId, work }),
     });
   }
 
-  /** A configured placement of the Org (CM-1 has already refused the sender's own Team). */
+  /**
+   * A configured placement of the Org (CM-1 has already refused the sender's own Team), with the snapshot
+   * its copy starts from: the placement as it is now, a Team's with its members' handoff rules in the Org.
+   */
   private resolveInRunDelegationPlacement(address: AgentTeamAddress): ResolvedAgentOrgRecipient {
     const index = this.options.getIndex();
     const configured = index.getConfiguredPlacement(address);
-    if (configured) {
-      return "agentRunId" in configured
-        ? Object.freeze({ kind: "agent", address })
-        : Object.freeze({ kind: "agent_team", address, coordinatorAddress: configured.coordinatorAddress });
-    }
+    if (configured) return sourcedPlacement(address, configuredPlacementSource(configured, index.tree.handoffs));
     throw new CollaborationContractError("COLLABORATION_TARGET_NOT_FOUND", delegationTargetUnavailableMessage(address));
   }
 

@@ -1,0 +1,1 @@
+export default async (page, args) => page.evaluate((id) => { const li = document.querySelector(`[data-testid="notification-row-${id}"]`); return li ? [...li.querySelectorAll('button')].map((b) => ({ text: b.textContent.trim(), disabled: b.disabled, aria: b.getAttribute('aria-label') })) : null; }, args.id);

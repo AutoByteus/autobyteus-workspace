@@ -1,0 +1,46 @@
+# API-09 word list (AC-901; design § Verification), head 260df99337; tracked files, excluding tickets/
+## serverInstanceId
+autobyteus-server-ts/docs/features/remote_access.md:125:- `remote-access/node-identity.json` stores the stable node ID (`nodeId`) used for same-node advertised URL verification. A node released before
+## sourceNodeId
+autobyteus-server-ts/docs/features/memory_sync.md:82:Data released before autobyteus-290 used the names `sourceNodeId`,
+## source-node.json
+autobyteus-server-ts/docs/features/memory_sync.md:83:`boundSourceNodeId` and `source-node.json`. The sealed startup migration
+## server-instance.json
+autobyteus-server-ts/docs/features/remote_access.md:125:- `remote-access/node-identity.json` stores the stable node ID (`nodeId`) used for same-node advertised URL verification. A node released before
+## node-registry.v1
+## mobile_session.v1
+## saved-node-profiles
+## selected-node-profile-id
+## selected_profile_id
+## list_available_nodes
+.github/release-notes/release-notes.md:11:  - **Let agents find the other node themselves.** Give an agent the new **list_available_nodes** and **list_available_agents** tools: it can then list the re
+autobyteus-server-ts/tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts:51: *   list_available_nodes, 290) does not have them (its MCP tool list,
+autobyteus-server-ts/tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts:612:    defs.oldNameScout = await agentDefinition(alpha, "Old Name Scout", ["list_available_nodes"]);
+autobyteus-server-ts/tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts:1709:  it("RC-26 261 AC-402/AC-404/AC-406/QR-402: an agent that selects the discovery tools lists exactly w
+autobyteus-server-ts/tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts:1719:    // 290 REQ-906 (the accepted exception): selecting only the former name `list_available_nodes` giv
+autobyteus-server-ts/tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts:1723:    expect(oldNameTools).not.toContain("list_available_nodes");
+## AvailableNode
+## RemoteNodeDiscovery
+## RemoteDiscoveryChannel
+## RemotePeer
+## isSystem
+autobyteus-web/tests/e2e/remote-nodes-page-probe.mjs:209:    capabilities: { terminal: true, fileExplorerStreaming: true }, capabilityProbeState: 'ready', isSystem: nodeType === 'embedded', createdAt,
+autobyteus-web/tests/e2e/remote-nodes-page-probe.mjs:360:    expect(releasedLeft === null && !stored.nodes.some(node => 'isSystem' in node), `autobyteus-290 SM-7 converted the released list: ${release
+autobyteus-web/tickets/multi_node_window_v1_ticket/MULTI_NODE_WINDOW_V1_DESIGN.md:148:  isSystem: boolean
+## NodeProfile
+autobyteus-web/tickets/multi_node_v1_ticket/MULTI_NODE_V1_DESIGN.md:64:| `/Users/normy/autobyteus_org/autobyteus-web/types/node.ts` | Node profile/runtime models | `NodeType`, `NodeProfile`, `NodeEndp
+autobyteus-web/tickets/multi_node_v1_ticket/MULTI_NODE_V1_DESIGN.md:103:export interface NodeProfile {
+autobyteus-web/tickets/multi_node_window_v1_ticket/MULTI_NODE_WINDOW_V1_DESIGN.md:106:| `/Users/normy/autobyteus_org/autobyteus-web/types/node.ts` | Node and registry contracts | `NodeType`, `NodeProf
+autobyteus-web/tickets/multi_node_window_v1_ticket/MULTI_NODE_WINDOW_V1_DESIGN.md:142:export interface NodeProfile {
+autobyteus-web/tickets/multi_node_window_v1_ticket/MULTI_NODE_WINDOW_V1_DESIGN.md:178:  nodes: NodeProfile[]
+autobyteus-web/tickets/multi_node_window_v1_ticket/MULTI_NODE_WINDOW_V1_IMPLEMENTATION_PLAN.md:25:- `NodeProfile`, `NodeEndpoints`, `WindowNodeContext`
+autobyteus-web/tickets/multi_node_window_v1_ticket/MULTI_NODE_WINDOW_V1_RUNTIME_SIMULATION.md:458:└── persist NodeProfile.capabilities + probeState [STATE]
+## SavedNodeProfile
+## MOBILE_NODE_ID
+## isServerInstanceId
+## getServerInstanceId
+## ServerInstanceIdentityService
+## compatibilityVersion
+autobyteus-ios/AutoByteusMobileCoreTests/ConnectionValidatorTests.swift:35:        let data = Data(#"{"phoneAccessEnabled":true,"pairingAvailable":true,"compatibilityVersion":0,"serverName":"Old Deskt
+## boundSourceNodeId
+autobyteus-server-ts/docs/features/memory_sync.md:83:`boundSourceNodeId` and `source-node.json`. The sealed startup migration

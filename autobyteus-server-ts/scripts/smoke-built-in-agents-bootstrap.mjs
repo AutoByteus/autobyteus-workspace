@@ -23,15 +23,15 @@ const assertDistTemplateAbsent = async (templateDirName) => {
 };
 
 const [
-  skillImproverDistAgentMdPath,
-  skillImproverDistAgentConfigPath,
   dailyAssistantDistAgentMdPath,
   dailyAssistantDistAgentConfigPath,
+  modelRouterDistAgentMdPath,
+  modelRouterDistAgentConfigPath,
 ] = await Promise.all([
-  assertDistAssetPresent("retrospective-skill-improver", "agent.md"),
-  assertDistAssetPresent("retrospective-skill-improver", "agent-config.json"),
   assertDistAssetPresent("daily-assistant", "agent.md"),
   assertDistAssetPresent("daily-assistant", "agent-config.json"),
+  assertDistAssetPresent("model-router", "agent.md"),
+  assertDistAssetPresent("model-router", "agent-config.json"),
 ]);
 await assertDistTemplateAbsent("memory-compactor");
 await assertDistTemplateAbsent("project-task-manager");
@@ -41,92 +41,45 @@ const { bootstrapBuiltInAgents } = await import(
 );
 const {
   DAILY_ASSISTANT_AGENT_DEFINITION_ID,
-  RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
+  MODEL_ROUTER_AGENT_DEFINITION_ID,
 } = await import(
   "../dist/built-in-agents/built-in-agent-registry.js"
-);
-const {
-  AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
-} = await import(
-  "../dist/services/server-settings-service.js"
 );
 
 const tempRoot = await fs.mkdtemp(path.join(os.tmpdir(), "autobyteus-built-in-agents-smoke-"));
 const agentsDir = path.join(tempRoot, "agents");
-const settingsByKey = new Map();
 
 const fakeAgentDefinitionService = {
   async getAgentDefinitionById(definitionId) {
-    return {
-      id: definitionId,
-      name: definitionId === RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID ? "Retrospective Skill Improver" : "Memory Compactor",
-    };
+    return { id: definitionId, name: "Daily Assistant" };
   },
   async reloadAgentPackageDefinitions() {},
 };
 
-const fakeServerSettingsService = {
-  getSettingValue(key) {
-    return settingsByKey.get(key) ?? null;
-  },
-  updateSetting(key, value) {
-    if (key === AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID) {
-      settingsByKey.set(key, value);
-      return [true, "ok"];
-    }
-    return [false, `unexpected setting key ${key}`];
-  },
-};
-
 try {
   const staleCompactorAgentDir = path.join(agentsDir, 'autobyteus-memory-compactor');
-  const staleSkillImproverAgentDir = path.join(agentsDir, RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID);
   const standaloneAgentDir = path.join(agentsDir, "daily-assistant");
   await fs.mkdir(staleCompactorAgentDir, { recursive: true });
-  await fs.mkdir(staleSkillImproverAgentDir, { recursive: true });
   await fs.mkdir(standaloneAgentDir, { recursive: true });
   await fs.writeFile(path.join(staleCompactorAgentDir, "agent.md"), "stale memory compactor", "utf8");
   await fs.writeFile(path.join(staleCompactorAgentDir, "agent-config.json"), "{\"toolNames\":[\"stale_tool\"]}", "utf8");
-  await fs.writeFile(path.join(staleSkillImproverAgentDir, "agent.md"), "stale skill improver", "utf8");
-  await fs.writeFile(path.join(staleSkillImproverAgentDir, "agent-config.json"), "{\"skillNames\":[\"stale_skill\"]}", "utf8");
   await fs.writeFile(path.join(standaloneAgentDir, "agent.md"), "standalone local agent", "utf8");
   await fs.writeFile(path.join(standaloneAgentDir, "agent-config.json"), "{\"toolNames\":[\"calendar\"]}", "utf8");
 
   const result = await bootstrapBuiltInAgents({
     agentsDir,
     agentDefinitionService: fakeAgentDefinitionService,
-    serverSettingsService: fakeServerSettingsService,
     logger: {
       info() {},
       warn() {},
     },
   });
 
-  assert.deepEqual(result.builtInAgents.map(item => item.agentDefinitionId).sort(), [
-    DAILY_ASSISTANT_AGENT_DEFINITION_ID,
-    RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID,
-  ].sort());
+  assert.deepEqual(result.builtInAgents.map(item => item.agentDefinitionId), [DAILY_ASSISTANT_AGENT_DEFINITION_ID, MODEL_ROUTER_AGENT_DEFINITION_ID]);
   assert.equal(result.refreshedCache, true);
-
-  const resultById = new Map(result.builtInAgents.map((item) => [item.agentDefinitionId, item]));
-  assert.equal(resultById.get(RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID).syncedAgentMd, true);
-  assert.equal(resultById.get(RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID).syncedAgentConfig, true);
 
   assert.equal(await fs.readFile(path.join(staleCompactorAgentDir, 'agent.md'), 'utf8'), 'stale memory compactor');
   assert.equal(await fs.readFile(path.join(staleCompactorAgentDir, 'agent-config.json'), 'utf8'), '{"toolNames":["stale_tool"]}');
-  const skillImproverAgentDir = path.join(agentsDir, RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID);
-  const [skillImproverAgentMd, skillImproverAgentConfig, skillImproverDistAgentMd, skillImproverDistAgentConfig] =
-    await Promise.all([
-      fs.readFile(path.join(skillImproverAgentDir, "agent.md"), "utf8"),
-      fs.readFile(path.join(skillImproverAgentDir, "agent-config.json"), "utf8"),
-      fs.readFile(skillImproverDistAgentMdPath, "utf8"),
-      fs.readFile(skillImproverDistAgentConfigPath, "utf8"),
-    ]);
-
-  assert.equal(skillImproverAgentMd, skillImproverDistAgentMd);
-  assert.equal(skillImproverAgentConfig, skillImproverDistAgentConfig);
-  assert.match(skillImproverAgentMd, /Retrospective Skill Improver/);
-  assert.equal(settingsByKey.get(AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID), RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID);
   await assert.rejects(
     () => fs.stat(path.join(agentsDir, "autobyteus-project-task-manager")),
     (error) => error && error.code === "ENOENT",
@@ -141,11 +94,14 @@ try {
     await fs.readFile(path.join(dailyAssistantAgentDir, "agent-config.json"), "utf8"),
     await fs.readFile(dailyAssistantDistAgentConfigPath, "utf8"),
   );
+  // autobyteus-32: the internal Model Router ships its instructions and tools the same way.
+  const modelRouterAgentDir = path.join(agentsDir, MODEL_ROUTER_AGENT_DEFINITION_ID);
+  assert.equal(await fs.readFile(path.join(modelRouterAgentDir, "agent.md"), "utf8"), await fs.readFile(modelRouterDistAgentMdPath, "utf8"));
+  assert.equal(await fs.readFile(path.join(modelRouterAgentDir, "agent-config.json"), "utf8"), await fs.readFile(modelRouterDistAgentConfigPath, "utf8"));
   await fs.writeFile(path.join(dailyAssistantAgentDir, "agent.md"), "user edited daily assistant", "utf8");
   const resyncResult = await bootstrapBuiltInAgents({
     agentsDir,
     agentDefinitionService: fakeAgentDefinitionService,
-    serverSettingsService: fakeServerSettingsService,
     logger: { info() {}, warn() {} },
   });
   const resyncById = new Map(resyncResult.builtInAgents.map((item) => [item.agentDefinitionId, item]));

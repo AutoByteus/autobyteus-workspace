@@ -1,0 +1,15 @@
+# API-03 — gated owner-scoped E2E, 10 consecutive runs (AC-003), fresh temporary HOME per run
+# command per run: env -i PATH=$PATH HOME=<fresh temp> TMPDIR=$TMPDIR RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<worktree>/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/owner-scoped-member-file-changes.e2e.test.ts --no-watch
+# commit: e44a2de1b1 (code c2bd6991b0); server dist built from the worktree; date 2026-10-19T09:19:10Z; macOS 26.5.2, node v22.23.1
+
+run 1: exit=0 Tests 2 passed (2) 
+run 2: exit=0 Tests 2 passed (2) 
+run 3: exit=0 Tests 2 passed (2) 
+run 4: exit=0 Tests 2 passed (2) 
+run 5: exit=0 Tests 2 passed (2) 
+run 6: exit=0 Tests 2 passed (2) 
+run 7: exit=0 Tests 2 passed (2) 
+run 8: exit=0 Tests 2 passed (2) 
+run 9: exit=0 Tests 2 passed (2) 
+run 10: exit=0 Tests 2 passed (2) 
+SUMMARY: 10 passed, 0 failed of 10 consecutive runs

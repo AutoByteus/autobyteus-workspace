@@ -16,6 +16,7 @@ import { AgyBackgroundTaskMonitor } from "../stream/agy-background-task-monitor.
 import { buildBackgroundTaskUpdatedPayload, type AgentBackgroundTask } from "../../../domain/agent-background-task.js";
 
 export class AgyAgentRunBackend implements AgentRunBackend {
+  readonly backgroundTaskInspection = { kind: 'event-stream' } as const;
   readonly compactionRecovery = { kind: "unsupported" } as const;
   readonly inputCapabilities = { activeTurnAppend: "unsupported" } as const;
   private readonly listeners = new Set<AgentRunSourceEventBatchListener>();

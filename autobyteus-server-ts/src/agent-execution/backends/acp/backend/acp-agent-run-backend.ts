@@ -27,6 +27,7 @@ export type AcpAgentRunBackendInput = Readonly<{
  * snapshot, and fail/terminate semantics. Session, bridge and converter stay internal.
  */
 export class AcpAgentRunBackend implements AgentRunBackend {
+  readonly backgroundTaskInspection = { kind: 'unsupported' } as const;
   readonly compactionRecovery = { kind: "unsupported" } as const;
   readonly inputCapabilities = { activeTurnAppend: "unsupported" } as const;
   private readonly listeners = new Set<AgentRunSourceEventBatchListener>();

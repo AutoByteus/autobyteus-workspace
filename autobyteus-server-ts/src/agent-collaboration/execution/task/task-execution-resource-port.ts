@@ -39,12 +39,17 @@ export interface TaskExecutionResourcePort {
    * or ID): its `taskId` (the only identity used afterwards), its agent-facing `taskReference` (for texts), and
    * its description and files. Unknown, DONE, CANCELLED or unreadable Tasks, and Tasks with no Project, reject.
    */
-  resolveAssignment(reference: string): Promise<Readonly<{ taskId: string; taskReference: string; description: string; referenceFiles: string[] }>>;
+  resolveAssignment(reference: string): Promise<Readonly<{ taskId: string; taskReference: string;
+    /** The Project the Task belongs to (it names the Task in the worker's first message). */ projectId: string;
+    /** Its title (routing requests and decision records name the Task by it). */ title: string; description: string;
+    /** The Task's comment texts, oldest first (they follow the description in the delegated work). */ comments: string[]; referenceFiles: string[] }>>;
   /**
    * Records the agent run `starting` before any of its resources are acquired; returns the Task it
    * joined. An `adHocTask` assignment first creates that Task (no Project) and returns its new ID.
    */
   linkNewTaskExecution(input: NewTaskExecutionLinkInput): Promise<Readonly<{ taskId: string }>>;
+  /** A Task's identity by its ID (a task agent's own Task, when it delegates part of its work; autobyteus-32 D1). */
+  describeTask(taskId: string): Promise<DelegatedTaskIdentityView>;
   markStarted(execution: TaskExecutionReference): Promise<void>;
   markFailed(execution: TaskExecutionReference, error: Readonly<{ code: string; message: string }>): Promise<void>;
   /**
@@ -77,10 +82,13 @@ export interface TaskExecutionResourcePort {
   /**
    * Read-only, advisory eligibility of assigning Task `taskId` to an existing copy (run before any
    * runtime step): all Task resource data readable; the Task exists, is unique and is not DONE or
-   * CANCELLED; the copy's current entry is a closed `assigned` entry made by `requestedBy`; some entry
-   * of the copy ever started; and `taskId` is not already its current Task. Rejects with a coded error.
+   * CANCELLED; the copy's current entry is an `assigned` entry made by `requestedBy` (it may hold other open
+   * Tasks); some entry of the copy ever started; and `taskId` is not its closed current Task. Rejects with a
+   * coded error.
    */
   assertAssignable(input: Readonly<{ execution: TaskExecutionReference; requestedBy: string; taskId: string }>): Promise<void>;
+  /** The agent-facing references of the copy's open Tasks other than `exceptTaskId`, oldest first (for the given-Task message). */
+  openTaskReferencesOf(execution: TaskExecutionReference, exceptTaskId: string): Promise<string[]>;
   /**
    * The commit: re-checks every eligibility condition under the copy's and then the Task's ordering
    * and appends the copy's new `starting` assignment entry to the Task (earlier entries are kept).
@@ -93,6 +101,9 @@ export interface TaskExecutionResourcePort {
   taskExecutionsStatusChanged(hostRoot: RootExecutionIdentity, references: readonly TaskExecutionReference[]): void;
 }
 
+/** A Task's key and Project (both null for a Task with no Project) and its title (else its description's first line). */
+export type DelegatedTaskIdentityView = Readonly<{ taskKey: string | null; projectId: string | null; title: string }>;
+
 /** A reactivation request: the assignment's agent run and the run asking for it. */
 export type TaskExecutionReopenInput = Readonly<{ execution: TaskExecutionReference; requestedBy: string }>;
 export type TaskExecutionReopenResult = Readonly<{ taskId: string; reopened: boolean }>;
@@ -100,9 +111,13 @@ export type TaskExecutionReopenResult = Readonly<{ taskId: string; reopened: boo
 /** Task → runtime: stop exactly these closed agent runs in one host root. `null`: the root is not active. */
 export type TaskExecutionReleaseRequest = (hostRoot: RootExecutionIdentity, executions: readonly TaskExecutionReference[])
   => Promise<readonly TaskExecutionStopResult[]> | null;
-export type TaskExecutionStopResult = Readonly<{
+/** The release of a run this root hosts: `stopped`, or why not. */
+export type TaskExecutionReleaseResult = Readonly<{
   execution: TaskExecutionReference; stopped: boolean; error?: Readonly<{ code: string; message: string }>;
 }>;
+/** A run on a peer node (AR-007): fenced by the closed Task, not stopped; `message` says where it keeps running. */
+export type TaskExecutionRemoteFence = Readonly<{ execution: TaskExecutionReference; outcome: "fenced_remote"; stopped: false; message: string }>;
+export type TaskExecutionStopResult = TaskExecutionReleaseResult | TaskExecutionRemoteFence;
 
 /** Coded port rejections; implementations throw errors carrying one of these `code`s. */
 export const TASK_EXECUTION_RESOURCE_REJECTION_CODES = ["TASK_AGENT_RESOURCE_CLOSED", "TASK_AGENT_RESOURCE_CONFLICT", "TASK_AGENT_RESOURCES_UNAVAILABLE", "TASK_AGENT_RESOURCE_OWNED_SENDER"] as const;

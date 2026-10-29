@@ -1,0 +1,25 @@
+# Check: IMP-13 (frontend rendered-result check)
+# Steps: built backend `autobyteus-server-ts/dist/app.js` (IMP-05 build; server source unchanged since) on a fresh temp
+#   data folder (env -i, private HOME and database), Nuxt dev (`pnpm dev --host 127.0.0.1 --port 3917`,
+#   BACKEND_NODE_BASE_URL=<backend>) as the browser probes do (TESTING.md "Browser probes"); pages opened and read in
+#   the agent browser (DOM script + screenshots).
+# Commit: a71e93a7f2 (branch codex/remove-skill-improvement); web source as committed in fc46a7b5fc
+# Environment: macOS 26.5.2, Node v22.23.1, pnpm 10.28.2, Chrome via the agent browser (viewport 834x738)
+# Date: 2026-10-20
+
+1. Settings -> Server Settings -> Basics (`/settings?section=server-settings&mode=basics`)
+   DOM read: feature toggle cards = ["applications-feature-toggle-card"]; page text mentions "skill improvement" or
+   "improve skills": false. Card headings in order: Applications, Default media models, Codex full access, Live response
+   streaming, Featured catalog items, Web Search Configuration, Compaction configuration.
+   Screenshot IMP-13-settings-basics-applications-then-media.png: the Applications card is followed directly by
+   Default media models, with the normal card spacing; no gap where the Skill Improvement card was.
+
+2. New chat composer (`/chat`, Daily Assistant)
+   DOM read: composer present; page text mentions "skill improvement" or "improve skills": false. Buttons: Choose what to
+   run, Upload files, Workspace, Auto-approve, Model, Thinking, Send message, Show tools (no "Improve skills").
+   Screenshot IMP-13-chat-composer.png: the composer renders as before.
+
+Not rendered: the composer of an existing standalone run and of a Team member (the surfaces that hosted the call to
+action, which showed only with the capability enabled). A fresh node has no runs, and creating one needs a configured
+model runtime. Those surfaces are covered by the updated unit specs (AgentWorkspaceSurface.spec.ts,
+AgentWorkspaceView.spec.ts, TeamWorkspaceView.spec.ts, TeamCanonicalPlus.spec.ts; IMP-08).

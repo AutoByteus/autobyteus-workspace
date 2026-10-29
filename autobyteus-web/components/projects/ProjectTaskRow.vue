@@ -19,10 +19,15 @@
       data-testid="project-task-row-link"
       @click="activation === 'select' && emit('select', task.taskId)"
     >
-      <span class="line-clamp-2 break-words text-sm font-medium leading-6 text-slate-800" data-testid="project-task-row-text">{{ summary }}</span>
+      <span class="line-clamp-2 break-words text-sm font-medium leading-6 text-slate-800" data-testid="project-task-row-text">{{ mainLine }}</span>
       <span v-if="preview" class="mt-1 line-clamp-2 break-words text-xs leading-5 text-slate-500" data-testid="project-task-row-preview">{{ preview }}</span>
       <!-- "Blocked by <key>" / "Dependency cancelled: <key>" (open Project Tasks only). -->
-      <span v-if="'taskKey' in task && task.dependsOnTaskIds.length" class="mt-2 flex" data-testid="project-task-row-dependency"><TaskDependencyBadge :task="task" :tasks="projectTasks" /></span>
+      <!-- Beside it, on one wrapping line: a parent's progress ("2 of 4 done") and a part's quiet "Part of <key>" (part-of). -->
+      <span v-if="hasDependency || hasProgress || hasParent" class="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1.5" data-testid="project-task-row-relations">
+        <span v-if="hasDependency" class="flex min-w-0 max-w-full" data-testid="project-task-row-dependency"><TaskDependencyBadge :task="projectTask!" :tasks="projectTasks" /></span>
+        <TaskPartsProgress v-if="hasProgress" :task="projectTask!" :tasks="projectTasks" />
+        <TaskPartOfMarker v-if="hasParent" :task="projectTask!" :tasks="projectTasks" />
+      </span>
       <span v-if="fileCount" class="mt-2 inline-flex items-center gap-1 text-xs text-slate-500" data-testid="task-row-file-count"><Icon icon="heroicons:paper-clip" class="h-3.5 w-3.5" aria-hidden="true" />{{ t(fileCount === 1 ? 'projects.ui.fileCountOne' : 'projects.ui.fileCount', {count: fileCount}) }}</span>
     </component>
     <ProjectTaskWorkers v-if="task.root" class="relative z-10" density="row" :root="task.root" />
@@ -35,14 +40,17 @@ import { Icon } from '@iconify/vue'
 import type { ProjectTask, TaskWithoutProject } from '~/types/project'
 import ProjectTaskWorkers from './ProjectTaskWorkers.vue'
 import TaskDependencyBadge from './TaskDependencyBadge.vue'
+import TaskPartsProgress from './TaskPartsProgress.vue'
+import TaskPartOfMarker from './TaskPartOfMarker.vue'
+import { parentOf, partsOf, partsProgressOf } from '~/utils/projects/taskParts'
 import { useLocalization } from '~/composables/useLocalization'
 import { useProjectTaskStore } from '~/stores/projectTaskStore'
 import { taskPagePath } from '~/utils/projects/taskPagePath'
 import { useTaskLocatorStore } from '~/stores/taskLocatorStore'
-import { taskCardPreview, taskCardSummary, taskSummaryLabel } from '~/utils/projects/taskSummary'
+import { descriptionFirstLine, descriptionFirstLineLabel, taskCardPreview, taskCardTitle, taskTitleLabel } from '~/utils/projects/taskText'
 
-// The first line is the summary; remaining lines are a quieter context preview. Each is bounded
-// before rendering and clamped to 2 lines by CSS; the Task page shows the full description.
+// The main line is a Project Task's title (a Temp task's first description line); the description's start is a quieter
+// context preview. Each is bounded before rendering and clamped to 2 lines by CSS; the Task page shows the full description.
 /**
  * `route` (the Projects pages): the row links to the Task page. `select` (the right panel's Projects
  * tab): it emits `select` so the Task opens inside the tab; same visuals.
@@ -53,9 +61,11 @@ const emit = defineEmits<{ (event: 'select', taskId: string): void }>()
 
 const {t} = useLocalization()
 const store = useProjectTaskStore()
-const summary = computed(() => taskCardSummary(props.task.description))
-const preview = computed(() => taskCardPreview(props.task.description))
-const label = computed(() => taskSummaryLabel(props.task.description))
+const isProjectTask = computed(() => 'projectId' in props.task)
+const line = computed(() => 'projectId' in props.task ? props.task.title : descriptionFirstLine(props.task.description))
+const mainLine = computed(() => taskCardTitle(line.value))
+const preview = computed(() => taskCardPreview({title: line.value, description: props.task.description}))
+const label = computed(() => isProjectTask.value ? taskTitleLabel(line.value) : descriptionFirstLineLabel(props.task.description))
 const taskRoute = computed(() => 'projectId' in props.task
   ? taskPagePath(props.task.projectId, props.task)
   : `/projects/temp-tasks/tasks/${props.task.taskId}`)
@@ -64,6 +74,11 @@ const live = computed(() => store.liveChanges[props.task.taskId] ?? null)
 // The Project's Tasks, for the dependency badge (a Temp task has none). Cards show no key: keys appear
 // where they link or refer to a Task (task-keys-declutter).
 const projectTasks = computed<ProjectTask[]>(() => 'projectId' in props.task ? store.getList(props.task.projectId)?.tasks ?? [] : [])
+const projectTask = computed<ProjectTask | null>(() => 'taskKey' in props.task ? props.task : null)
+const hasDependency = computed(() => Boolean(projectTask.value?.dependsOnTaskIds.length))
+// A parent shows its progress while it has parts that count; a part shows its parent (a Temp task has neither).
+const hasProgress = computed(() => Boolean(projectTask.value) && partsProgressOf(partsOf(projectTask.value!, projectTasks.value)).total > 0)
+const hasParent = computed(() => Boolean(projectTask.value) && parentOf(projectTask.value!, projectTasks.value) !== null)
 
 // "Show Task in Projects" (the tab's `select` cards): once the board made this Task visible, the card
 // scrolls to the centre (instant with reduced motion), takes focus (Enter opens the Task) and completes

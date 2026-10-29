@@ -1,4 +1,3 @@
-import { isDeepStrictEqual } from "node:util";
 import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import type { CollaborationHandoff } from "../../agent-collaboration/domain/collaboration-handoff.js";
 import type { LaunchConfigurationSource } from "../../agent-collaboration/domain/launch-configuration-source.js";
@@ -49,14 +48,14 @@ export type ConfiguredTeamExecutionNode = Readonly<{
 export type ConfiguredExecutionNode = ConfiguredAgentExecutionNode | ConfiguredTeamExecutionNode;
 
 /**
- * One member's own launch inside a recorded Team (a catalog Team copy).
- * `launchConfiguration` is present only when the member runs on its own agent default; absent,
- * the member runs on the Team's `defaultLaunchConfiguration` (every record written before
- * per-member values existed). `launchSource` is present only when the member's agent definition
- * had a default (used or skipped); absent, the member's source is the Team's.
+ * One member of a Team copy (D-5): `launchConfiguration` is the complete launch it started with, and
+ * `followsTeam` says whether a Team-level user selection reaches it. `launchSource` is display provenance
+ * only: present when the member's agent definition had a default (used or skipped), else the Team's
+ * applies (`effectiveMemberLaunchSource`); it never decides the launch or the following.
  */
 export type RecordedMemberLaunch = Readonly<{
-  launchConfiguration?: AgentLaunchConfiguration;
+  launchConfiguration: AgentLaunchConfiguration;
+  followsTeam: boolean;
   launchSource?: LaunchConfigurationSource;
 }>;
 
@@ -67,9 +66,9 @@ export type RecordedTeamLaunch = Readonly<{
 }>;
 
 /**
- * The definition snapshot of a task copy started from the catalog (a listed Agent that is not
- * in the run): what the copy ran with, so it restores without the catalog. `launchSource` is
- * absent on records written before sources existed ("not recorded").
+ * The snapshot a delegated copy runs with: its definition and the launch it started with, taken from the
+ * catalog or from a configured placement of the coordinating run when it started, so it restores from its
+ * own file alone. `launchSource` is absent on records written before sources existed ("not recorded").
  */
 export type TaskAgentExecutionSource = Readonly<{
   kind: "agent";
@@ -80,7 +79,10 @@ export type TaskAgentExecutionSource = Readonly<{
 
 export type TaskTeamExecutionSourceMember = Readonly<{ address: AgentTeamAddress; agentDefinitionId: string }> & RecordedMemberLaunch;
 
-/** The Team counterpart: its layout (mounted at the copy's address), handoffs and settings. */
+/**
+ * The Team counterpart: its layout (mounted at the copy's address), the handoff rules of its members
+ * (every rule starts at a member; it may lead to the coordinating run) and its settings.
+ */
 export type TaskTeamExecutionSource = Readonly<{
   kind: "agent_team";
   teamDefinitionId: string;
@@ -94,8 +96,7 @@ export type TaskExecutionSource = TaskAgentExecutionSource | TaskTeamExecutionSo
 /**
  * A delegated child Agent. Liveness (live / shut down) is runtime-only and never persisted.
  * `delegatorAgentRunId` is written for every new child; children recorded before it existed have none.
- * `source` is present only for a copy started from the catalog; absent, the copy's source is
- * the configured placement at its address.
+ * `source` is what the copy runs with (its snapshot); the configured placement at its address never is.
  */
 export type TaskAgentExecution = Readonly<{
   address: AgentTeamAddress;
@@ -103,7 +104,7 @@ export type TaskAgentExecution = Readonly<{
   platformAgentRunId: string | null;
   delegatorAgentRunId?: string;
   startedAt: IsoTimestamp;
-  source?: TaskAgentExecutionSource;
+  source: TaskAgentExecutionSource;
 }> & RecordedUserLaunchSelection;
 
 export type TaskTeamAgentExecution = Readonly<{
@@ -123,10 +124,70 @@ export type TaskTeamExecution = Readonly<{
   taskExecutions: readonly TaskExecution[];
   delegatorAgentRunId?: string;
   startedAt: IsoTimestamp;
-  source?: TaskTeamExecutionSource;
+  source: TaskTeamExecutionSource;
 }> & RecordedUserTeamLaunchSelection;
 
 export type TaskExecution = TaskAgentExecution | TaskTeamExecution;
+
+/**
+ * A delegated Agent run on a peer node (CM-10), recorded by the topmost coordinating run. On disk it is a
+ * `taskExecutions` entry with `nodeId` (absent `nodeId` means this node); in memory the store loads it into
+ * the root's own `remoteTaskExecutions` list, never into `taskExecutions`, so walkers of local copies never
+ * see it. It has no own file here: `agentRunId` is the ID the peer gave the run, `nodeId` the peer's server ID.
+ * In memory a remote link is kinded (`kind`); on disk the kind is not stored (a Team link has `teamRunId`).
+ */
+export type RemoteTaskAgentExecution = Readonly<{
+  kind: "agent";
+  address: AgentTeamAddress;
+  agentRunId: string;
+  nodeId: string;
+  delegatorAgentRunId: string;
+  startedAt: IsoTimestamp;
+  /** The launch the peer resolved for it (autobyteus-32 REQ-009); absent on links recorded before. */
+  launches?: readonly RemoteAgentLaunch[];
+}>;
+
+/**
+ * One agent's launch on a peer node as the peer resolved it (autobyteus-32 REQ-009): its address there (mounted at the
+ * catalog address), runtime, model and source (with the Model Router's reason and task kind when it chose).
+ */
+export type RemoteAgentLaunch = Readonly<{
+  address: string;
+  runtimeKind: string;
+  llmModelIdentifier: string;
+  source: LaunchConfigurationSource;
+}>;
+
+/** One member of a Team run on a peer node: its address in the Team and the run ID the peer gave it. */
+export type RemoteTeamMember = Readonly<{ address: AgentTeamAddress; agentRunId: string }>;
+
+/**
+ * A delegated Team run on a peer node (autobyteus-247), recorded like a remote Agent link. The peer allocated
+ * every member's run ID when it created the Team run, so the delegator reaches any member by run ID; the
+ * coordinator is the member at `coordinatorAddress` (each fact stored once).
+ */
+export type RemoteTaskTeamExecution = Readonly<{
+  kind: "agent_team";
+  address: AgentTeamAddress;
+  teamRunId: string;
+  nodeId: string;
+  coordinatorAddress: AgentTeamAddress;
+  members: readonly RemoteTeamMember[];
+  delegatorAgentRunId: string;
+  startedAt: IsoTimestamp;
+  /** Each member's launch as the peer resolved it (autobyteus-32 REQ-009); absent on links recorded before. */
+  launches?: readonly RemoteAgentLaunch[];
+}>;
+
+export type RemoteTaskExecution = RemoteTaskAgentExecution | RemoteTaskTeamExecution;
+
+/** The run ID a remote link names on its node: the Agent run, or the Team run. */
+export const remoteTaskExecutionRunId = (link: RemoteTaskExecution): string =>
+  link.kind === "agent" ? link.agentRunId : link.teamRunId;
+
+/** The coordinator's run ID of a remote Team link (validation keeps the coordinator among the members). */
+export const remoteTeamCoordinatorRunId = (link: RemoteTaskTeamExecution): string =>
+  link.members.find((member) => member.address === link.coordinatorAddress)!.agentRunId;
 
 export type TeamRunApplicationBinding = Readonly<{
   applicationId: string;
@@ -146,34 +207,6 @@ export const isTaskAgentExecution = (value: TaskExecution): value is TaskAgentEx
 
 export const isTaskTeamExecution = (value: TaskExecution): value is TaskTeamExecution =>
   "teamRunId" in value;
-
-/**
- * The launch a recorded Team member runs with: its own, else the Team's (DS-005). Every reader
- * of a catalog-Team-copy member's launch uses this; none reads the Team's
- * `defaultLaunchConfiguration` for a member directly.
- */
-export const effectiveMemberLaunchConfiguration = (
-  team: Pick<RecordedTeamLaunch, "defaultLaunchConfiguration">,
-  member: RecordedMemberLaunch,
-): AgentLaunchConfiguration => member.launchConfiguration ?? team.defaultLaunchConfiguration;
-
-/**
- * Whether a copy Team member follows its Team's launch, so a Team-level user
- * selection applies to it (AR-003):
- * - `recorded` (catalog Team copies): iff the member records no own launch;
- * - `configured` (copies of configured Team placements, which record no own-default fact): iff the
- *   member's configured launch equals the Team's (runtime, model and settings), the same equality
- *   the configured-Team editor uses.
- * A member's own user selection always wins over the Team's (see `effectiveCopyAgentLaunch`).
- */
-export const memberFollowsTeam = (input:
-  | Readonly<{ kind: "recorded"; member: RecordedMemberLaunch }>
-  | Readonly<{ kind: "configured"; team: AgentLaunchConfiguration; member: AgentLaunchConfiguration }>,
-): boolean => input.kind === "recorded"
-  ? input.member.launchConfiguration === undefined
-  : input.member.runtimeKind === input.team.runtimeKind
-    && input.member.llmModelIdentifier === input.team.llmModelIdentifier
-    && isDeepStrictEqual(input.member.llmConfig ?? null, input.team.llmConfig ?? null);
 
 export type EffectiveCopyAgentLaunch = Readonly<{
   launch: AgentLaunchConfiguration;
@@ -209,5 +242,5 @@ export const effectiveCopyAgentLaunch = (input: Readonly<{
 /** The recorded source of a Team member's launch: its own, else the Team's; null when not recorded. */
 export const effectiveMemberLaunchSource = (
   team: Pick<RecordedTeamLaunch, "defaultLaunchSource">,
-  member: RecordedMemberLaunch,
+  member: Pick<RecordedMemberLaunch, "launchSource">,
 ): LaunchConfigurationSource | null => member.launchSource ?? team.defaultLaunchSource ?? null;

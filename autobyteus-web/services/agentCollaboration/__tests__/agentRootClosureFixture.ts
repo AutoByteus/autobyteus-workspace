@@ -11,7 +11,8 @@ import { agentRootView, created, launch } from './agentRootFixture'
  */
 const agentSource = { kind: 'agent' as const, agentDefinitionId: 'computer-use', launchConfiguration: launch }
 const teamSource = { kind: 'agent_team' as const, teamDefinitionId: 'product-team', coordinatorAddress: '/product_team/prototyper', handoffs: [],
-  members: [{ address: '/product_team/prototyper', agentDefinitionId: 'prototyper' }, { address: '/product_team/bootstrapper', agentDefinitionId: 'bootstrapper' }],
+  members: [{ address: '/product_team/prototyper', agentDefinitionId: 'prototyper', launchConfiguration: launch, followsTeam: true },
+    { address: '/product_team/bootstrapper', agentDefinitionId: 'bootstrapper', launchConfiguration: launch, followsTeam: true }],
   defaultLaunchConfiguration: launch }
 
 export const closureView = (closed: Array<{ agentRunId: string } | { teamRunId: string }> = []) => {

@@ -1,3 +1,4 @@
+import type { AgentBackgroundTaskInspection } from '../domain/agent-background-task-view.js';
 import type { CompactionRetryRequest, CompactionRecoveryBlock } from "autobyteus-ts/memory/compaction/compaction-recovery.js";
 import type { AgentOperationResult } from "../domain/agent-operation-result.js";
 import type { AgentRunContext, RuntimeAgentRunContext } from "../domain/agent-run-context.js";
@@ -29,6 +30,7 @@ export interface AgentRunBackend {
   readonly runtimeKind: RuntimeKind;
   readonly inputCapabilities: AgentRunBackendInputCapabilities;
 
+  readonly backgroundTaskInspection: AgentBackgroundTaskInspection;
   readonly compactionRecovery: AgentRunCompactionRecoveryCapability;
   getContext(): AgentRunContext<RuntimeAgentRunContext>;
   isActive(): boolean;

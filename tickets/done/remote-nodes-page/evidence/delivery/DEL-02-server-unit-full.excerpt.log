@@ -1,0 +1,4 @@
+# DEL-02 server unit full | integrated 534ae78028 | pnpm -C autobyteus-server-ts test:unit (excerpt)
+ Test Files  788 passed | 4 skipped (792)
+      Tests  6467 passed | 7 skipped (6474)
+server-unit exit=0

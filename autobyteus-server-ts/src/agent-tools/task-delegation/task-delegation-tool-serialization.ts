@@ -1,4 +1,3 @@
-import { toJsonString } from "../json-utils.js";
 import {
   TaskDelegationError,
   type TaskDelegationOutcome,
@@ -29,7 +28,9 @@ export const toTaskDelegationToolErrorPayload = (
 /** The internal outcome as the tool's explicit-ID result (snake_case only at this edge). */
 export const toDelegateTaskResult = (outcome: TaskDelegationOutcome): DelegateTaskResult => {
   if (!outcome.delegated) return { delegated: false, message: outcome.message };
+  // `node`: the peer's name, for a task agent or a task agent team on a peer node (REQ-304).
   const extras = {
+    ...(outcome.node ? { node: outcome.node } : {}),
     ...(outcome.taskId ? { task_id: outcome.taskId } : {}),
     ...(outcome.launchNotes?.length ? { launch_notes: [...outcome.launchNotes] } : {}),
   };
@@ -38,6 +39,3 @@ export const toDelegateTaskResult = (outcome: TaskDelegationOutcome): DelegateTa
     : { delegated: true, target_kind: "team", target_team_run_id: outcome.copy.teamRunId,
       target_team_coordinator_agent_run_id: outcome.copy.teamCoordinatorAgentRunId, ...extras };
 };
-
-export const toTaskDelegationJsonString = (value: unknown): string =>
-  toJsonString(value, 2);

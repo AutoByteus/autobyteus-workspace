@@ -71,12 +71,12 @@
               <div v-for="item in argList" :key="item.id" class="flex items-center space-x-2">
                 <input type="text" v-model="item.value" :placeholder="$t('tools.components.tools.McpServerFormModal.argument')" class="block w-full shadow-sm text-base border-gray-300 rounded-md p-2">
                 <button @click="removeArgument(item.id)" class="p-2 text-gray-500 hover:text-red-600 rounded-full">
-                  <span class="i-heroicons-trash-20-solid w-5 h-5"></span>
+                  <Icon icon="heroicons:trash-20-solid" class="w-5 h-5" />
                 </button>
               </div>
             </div>
             <button @click="addArgument" class="mt-2 inline-flex items-center px-3 py-1.5 border border-dashed border-gray-400 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
-              <span class="i-heroicons-plus-20-solid w-5 h-5 mr-1 text-gray-500"></span>{{ $t('tools.components.tools.McpServerFormModal.add_argument') }}</button>
+              {{ $t('tools.components.tools.McpServerFormModal.add_argument') }}</button>
           </div>
           <div>
             <label for="stdio_cwd" class="block text-base font-medium text-gray-700">{{ $t('tools.components.tools.McpServerFormModal.current_working_directory_optional') }}</label>
@@ -84,18 +84,8 @@
           </div>
           <div>
             <label class="block text-base font-medium text-gray-700">{{ $t('tools.components.tools.McpServerFormModal.environment_variables') }}</label>
-            <div class="space-y-2 mt-1">
-              <div v-for="item in envList" :key="item.id" class="flex items-center space-x-2">
-                <input type="text" v-model="item.key" :placeholder="$t('tools.components.tools.McpServerFormModal.key')" class="block w-full shadow-sm text-base border-gray-300 rounded-md p-2 font-mono">
-                <span class="text-gray-500">=</span>
-                <input type="text" v-model="item.value" :placeholder="$t('tools.components.tools.McpServerFormModal.value')" class="block w-full shadow-sm text-base border-gray-300 rounded-md p-2">
-                <button @click="removeEnvVariable(item.id)" class="p-2 text-gray-500 hover:text-red-600 rounded-full">
-                  <span class="i-heroicons-trash-20-solid w-5 h-5"></span>
-                </button>
-              </div>
-            </div>
-            <button @click="addEnvVariable" class="mt-2 inline-flex items-center px-3 py-1.5 border border-dashed border-gray-400 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
-              <span class="i-heroicons-plus-20-solid w-5 h-5 mr-1 text-gray-500"></span>{{ $t('tools.components.tools.McpServerFormModal.add_variable') }}</button>
+            <p class="text-sm text-gray-500">{{ $t('tools.components.tools.McpServerFormModal.env_secret_hint') }}</p>
+            <McpConfigRows v-model="envRows" kind="env" :rule="rule" :server-id="savedServerId" @move-to-vault="moveFieldToVault" />
           </div>
         </div>
 
@@ -107,7 +97,24 @@
           </div>
           <div>
             <label for="http_token" class="block text-base font-medium text-gray-700">{{ $t('tools.components.tools.McpServerFormModal.token_optional') }}</label>
-            <input type="password" v-model="form.streamableHttpConfig.token" id="http_token" class="mt-1 block w-full shadow-sm text-base border-gray-300 rounded-md p-2">
+            <input type="password" v-model="token.value" id="http_token" autocomplete="off" aria-describedby="http_token_hint"
+                   :placeholder="token.stored && !token.remove ? $t('tools.components.tools.McpServerFormModal.token_leave_empty_to_keep') : ''"
+                   class="mt-1 block w-full shadow-sm text-base border-gray-300 rounded-md p-2">
+            <p v-if="tokenNote" class="mt-1 text-sm" :class="tokenNote.tone" data-testid="mcp-token-note">
+              {{ tokenNote.text }}
+              <button v-if="token.stored === 'PLAIN' && savedServerId && !token.remove" type="button"
+                      class="ml-1 font-medium text-indigo-600 hover:text-indigo-800 underline" data-testid="mcp-token-move"
+                      @click="moveFieldToVault('token')">{{ $t('tools.components.tools.McpServerFormModal.move_to_vault') }}</button>
+            </p>
+            <label v-if="token.stored" class="mt-1 inline-flex items-center text-sm text-gray-700">
+              <input v-model="token.remove" type="checkbox" class="h-4 w-4 mr-2 text-indigo-600 border-gray-300 rounded" data-testid="mcp-token-remove">
+              {{ $t('tools.components.tools.McpServerFormModal.remove_stored_token') }}
+            </label>
+            <p id="http_token_hint" class="mt-1 text-sm text-gray-500">{{ $t('tools.components.tools.McpServerFormModal.token_hint') }}</p>
+          </div>
+          <div>
+            <label class="block text-base font-medium text-gray-700">{{ $t('tools.components.tools.McpServerFormModal.headers') }}</label>
+            <McpConfigRows v-model="headerRows" kind="header" :rule="rule" :server-id="savedServerId" @move-to-vault="moveFieldToVault" />
           </div>
         </div>
       </div>
@@ -118,6 +125,7 @@
           <div>
             <label for="json-input" class="block text-base font-medium text-gray-700">{{ $t('tools.components.tools.McpServerFormModal.json_configuration') }}</label>
             <p class="text-sm text-gray-500">{{ $t('tools.components.tools.McpServerFormModal.paste_a_standard_mcpservers_json_object') }}</p>
+            <p class="text-sm text-gray-500">{{ $t('tools.components.tools.McpServerFormModal.json_keep_marker_hint') }}</p>
             <textarea 
                 id="json-input"
                 ref="jsonTextarea"
@@ -154,12 +162,12 @@
 
       <div class="flex items-center space-x-4">
         <button @click="runPreview" :disabled="store.getLoading" class="px-6 py-3 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:bg-green-300 text-base font-semibold">
-          <span v-if="store.getLoading" class="i-heroicons-arrow-path-20-solid w-5 h-5 animate-spin mr-2"></span>
+          <Icon v-if="store.getLoading" icon="heroicons:arrow-path-20-solid" class="w-5 h-5 animate-spin mr-2" />
           {{ store.getLoading ? 'Checking...' : 'Preview Tools' }}
         </button>
       
         <button @click="save" :disabled="store.getLoading" class="px-6 py-3 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 disabled:bg-indigo-300 text-base font-semibold">
-          <span v-if="store.getLoading" class="i-heroicons-arrow-path-20-solid w-5 h-5 animate-spin mr-2"></span>
+          <Icon v-if="store.getLoading" icon="heroicons:arrow-path-20-solid" class="w-5 h-5 animate-spin mr-2" />
           {{ store.getLoading ? 'Saving...' : 'Save Configuration' }}
         </button>
       </div>
@@ -168,15 +176,33 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, computed, reactive, onUnmounted, nextTick } from 'vue';
+import { Icon } from '@iconify/vue';
+import { ref, watch, computed, reactive, onMounted, onUnmounted, nextTick } from 'vue';
+import McpConfigRows from './McpConfigRows.vue';
 import { useToolManagementStore } from '~/stores/toolManagementStore';
-import type { McpServer } from '~/stores/toolManagementStore';
+import type { McpServer } from '~/types/mcpServer';
 import type { ToastType } from '~/composables/useToasts';
+import { useLocalization } from '~/composables/useLocalization';
+import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore';
+import { mcpSecretReviewState } from '~/utils/mcp/mcpSecretReviewState';
+import {
+  applySuggestedLock,
+  unlockedSuggestions,
+  rowsFromEntries,
+  tokenFromServer,
+  type McpConfigRow,
+  type McpTokenDraft,
+} from '~/utils/mcp/mcpConfigRows';
+import {
+  formStateFromJson,
+  formStateToInput,
+  formStateToJson,
+  type FormTransport,
+  type McpServerFormInput,
+  type McpServerFormState,
+} from '~/utils/mcp/mcpServerFormState';
 
-type EnvItem = { id: number; key: string; value: string };
 type ArgItem = { id: number; value: string };
-type FormTransport = 'STDIO' | 'STREAMABLE_HTTP';
-type McpServerFormInput = Record<string, any> & { serverId: string; transportType: FormTransport };
 
 const props = defineProps<{
   server: McpServer | null;
@@ -185,8 +211,12 @@ const props = defineProps<{
 const emit = defineEmits(['cancel', 'save-complete', 'show-toast']);
 
 const store = useToolManagementStore();
+const { t } = useLocalization();
+const key = 'tools.components.tools.McpServerFormModal';
 
 const isEditMode = computed(() => !!props.server);
+const savedServerId = computed(() => props.server?.serverId ?? null);
+const rule = computed(() => store.getSecretSuggestionRule);
 
 const createFreshForm = () => ({
   serverId: '',
@@ -196,20 +226,29 @@ const createFreshForm = () => ({
   stdioConfig: {
     command: '',
     args: [] as string[],
-    env: {} as Record<string, any>,
     cwd: '',
   },
   streamableHttpConfig: {
     url: '',
-    token: '',
-    headers: {},
   },
 });
 
 const form = reactive(createFreshForm());
-const envList = ref<EnvItem[]>([]);
+const envRows = ref<McpConfigRow[]>([]);
+const headerRows = ref<McpConfigRow[]>([]);
+const token = reactive<McpTokenDraft>(tokenFromServer(null));
 const argList = ref<ArgItem[]>([]);
 const syncOnSave = ref(true);
+
+const tokenNote = computed(() => {
+  if (!token.stored || token.remove) return null;
+  switch (token.stored) {
+    case 'CONFIGURED': return { text: t(`${key}.token_stored_in_vault`), tone: 'text-gray-500' };
+    case 'MISSING': return { text: t(`${key}.token_needs_secret_missing`), tone: 'text-red-700' };
+    case 'VAULT_UNAVAILABLE': return { text: t(`${key}.token_needs_secret_vault_unavailable`), tone: 'text-amber-700' };
+    default: return { text: t(`${key}.token_stored_as_plain_text`), tone: 'text-amber-700' };
+  }
+});
 
 // --- Tabs and JSON input ---
 const activeTab = ref('form');
@@ -238,179 +277,53 @@ watch(activeTab, (newTab) => {
     }
 });
 
+const currentState = (): McpServerFormState => ({
+  serverId: form.serverId,
+  transportType: form.transportType,
+  toolNamePrefix: form.toolNamePrefix,
+  enabled: form.enabled,
+  command: form.stdioConfig.command,
+  args: form.stdioConfig.args,
+  cwd: form.stdioConfig.cwd,
+  url: form.streamableHttpConfig.url,
+  envRows: envRows.value,
+  headerRows: headerRows.value,
+  token: { ...token },
+});
+
 const updateJsonFromForm = () => {
-    const serverId = form.serverId || 'new-server';
-    const config: any = {
-        transportType: form.transportType.toLowerCase(),
-        enabled: form.enabled,
-    };
-    if (form.toolNamePrefix) {
-        config.toolNamePrefix = form.toolNamePrefix;
-    }
-
-    if (form.transportType === 'STDIO') {
-        Object.assign(config, {
-            command: form.stdioConfig.command,
-            args: form.stdioConfig.args.length > 0 ? form.stdioConfig.args : undefined,
-            env: Object.keys(form.stdioConfig.env).length > 0 ? form.stdioConfig.env : undefined,
-            cwd: form.stdioConfig.cwd || undefined,
-        });
-    } else { // STREAMABLE_HTTP
-         Object.assign(config, {
-            url: form.streamableHttpConfig.url,
-            token: form.streamableHttpConfig.token || undefined,
-         });
-    }
-
-    Object.keys(config).forEach(key => config[key] === undefined && delete config[key]);
-
-    const output = {
-        mcpServers: {
-            [serverId]: config
-        }
-    };
-    jsonInput.value = JSON.stringify(output, null, 2);
+  jsonInput.value = formStateToJson(currentState());
 };
 
-const isRecord = (value: unknown): value is Record<string, any> => !!value && typeof value === 'object' && !Array.isArray(value);
+/** The form state from the JSON tab; `needsReview` asks for a look at the Form tab before saving. */
+const parseJsonState = () =>
+  formStateFromJson(jsonInput.value, currentState(), rule.value, isEditMode.value ? props.server!.serverId : null);
 
-const normalizeTransport = (config: Record<string, any>): FormTransport => {
-  const rawTransport = config.transportType ?? config.transport_type;
-  if (typeof rawTransport === 'string' && rawTransport.trim()) {
-    const normalized = rawTransport.trim().replace(/-/g, '_').toUpperCase();
-    if (normalized === 'STDIO' || normalized === 'STREAMABLE_HTTP') {
-      return normalized;
-    }
-    throw new Error(`Unsupported MCP transport type '${rawTransport}'.`);
-  }
-  if (typeof config.url === 'string' && config.url.trim()) return 'STREAMABLE_HTTP';
-  if (typeof config.command === 'string' && config.command.trim()) return 'STDIO';
-  throw new Error("MCP server JSON must include either 'command' for STDIO or 'url' for HTTP.");
-};
-
-const readRecord = (value: unknown, fieldName: string): Record<string, any> => {
-  if (value === undefined || value === null) return {};
-  if (!isRecord(value)) throw new Error(`'${fieldName}' must be a JSON object.`);
-  return value;
-};
-
-const readStringArray = (value: unknown, fieldName: string): string[] => {
-  if (value === undefined || value === null) return [];
-  if (!Array.isArray(value) || value.some(item => typeof item !== 'string')) {
-    throw new Error(`'${fieldName}' must be an array of strings.`);
-  }
-  return value;
-};
-
-const buildInputFromJson = (): McpServerFormInput => {
-  let parsed: unknown;
-  try {
-    parsed = JSON.parse(jsonInput.value);
-  } catch {
-    throw new Error('Invalid JSON syntax.');
-  }
-  if (!isRecord(parsed) || !isRecord(parsed.mcpServers)) {
-    throw new Error("Invalid JSON structure. Must contain a top-level 'mcpServers' object.");
-  }
-
-  const serverIds = Object.keys(parsed.mcpServers);
-  if (serverIds.length === 0) throw new Error("The 'mcpServers' object is empty.");
-  if (serverIds.length > 1) throw new Error('This form edits one MCP server at a time. Provide exactly one server or use Bulk Import.');
-
-  const jsonServerId = serverIds[0];
-  const config = parsed.mcpServers[jsonServerId];
-  if (!jsonServerId.trim()) throw new Error('MCP server ID cannot be empty.');
-  if (!isRecord(config)) throw new Error(`MCP server '${jsonServerId}' must be a JSON object.`);
-
-  const transportType = normalizeTransport(config);
-  const base = {
-    serverId: isEditMode.value ? props.server!.serverId : jsonServerId,
-    transportType,
-    toolNamePrefix: (config.toolNamePrefix ?? config.tool_name_prefix) || null,
-    enabled: config.enabled !== false,
-  };
-
-  if (transportType === 'STDIO') {
-    if (typeof config.command !== 'string' || !config.command.trim()) {
-      throw new Error("STDIO MCP server JSON must include a non-empty 'command'.");
-    }
-    return {
-      ...base,
-      stdioConfig: {
-        command: config.command,
-        args: readStringArray(config.args, 'args'),
-        env: readRecord(config.env, 'env'),
-        cwd: typeof config.cwd === 'string' && config.cwd ? config.cwd : null,
-      },
-      streamableHttpConfig: null,
-    };
-  }
-
-  if (typeof config.url !== 'string' || !config.url.trim()) {
-    throw new Error("HTTP MCP server JSON must include a non-empty 'url'.");
-  }
-  return {
-    ...base,
-    stdioConfig: null,
-    streamableHttpConfig: {
-      url: config.url,
-      token: typeof config.token === 'string' && config.token ? config.token : null,
-      headers: readRecord(config.headers, 'headers'),
-    },
-  };
-};
-
-const applyInputToForm = (input: McpServerFormInput) => {
+const applyStateToForm = (state: McpServerFormState) => {
   Object.assign(form, createFreshForm());
-  envList.value = [];
-  argList.value = [];
-
-  form.serverId = input.serverId;
-  form.transportType = input.transportType;
-  form.toolNamePrefix = input.toolNamePrefix || '';
-  form.enabled = input.enabled;
-
-  if (input.stdioConfig) {
-    form.stdioConfig.command = input.stdioConfig.command;
-    form.stdioConfig.cwd = input.stdioConfig.cwd || '';
-    form.stdioConfig.args = input.stdioConfig.args;
-    form.stdioConfig.env = input.stdioConfig.env;
-    argList.value = input.stdioConfig.args.map(arg => ({ id: Date.now() + Math.random(), value: arg }));
-    envList.value = Object.entries(input.stdioConfig.env).map(([key, value]) => ({ id: Date.now() + Math.random(), key, value: String(value) }));
-  } else if (input.streamableHttpConfig) {
-    form.streamableHttpConfig.url = input.streamableHttpConfig.url;
-    form.streamableHttpConfig.token = input.streamableHttpConfig.token || '';
-    form.streamableHttpConfig.headers = input.streamableHttpConfig.headers;
-  }
+  form.serverId = state.serverId;
+  form.transportType = state.transportType;
+  form.toolNamePrefix = state.toolNamePrefix;
+  form.enabled = state.enabled;
+  form.stdioConfig.command = state.command;
+  form.stdioConfig.cwd = state.cwd;
+  form.stdioConfig.args = state.args;
+  argList.value = state.args.map(arg => ({ id: Date.now() + Math.random(), value: arg }));
+  form.streamableHttpConfig.url = state.url;
+  envRows.value = state.envRows;
+  headerRows.value = state.headerRows;
+  Object.assign(token, state.token);
 };
 
 const applyJsonToForm = () => {
   try {
-    applyInputToForm(buildInputFromJson());
+    applyStateToForm(parseJsonState().state);
     emit('show-toast', { message: 'Successfully applied JSON to form. Switching to Form View.', type: 'success' as ToastType });
     activeTab.value = 'form';
   } catch (e: any) {
     emit('show-toast', { message: `Error parsing JSON: ${e.message}`, type: 'error' as ToastType });
   }
 };
-
-
-// --- Environment Variables ---
-const addEnvVariable = () => {
-  envList.value.push({ id: Date.now(), key: '', value: '' });
-};
-const removeEnvVariable = (id: number) => {
-  envList.value = envList.value.filter(item => item.id !== id);
-};
-watch(envList, (newList) => {
-  const newEnv: Record<string, any> = {};
-  newList.forEach(item => {
-    if (item.key) {
-      newEnv[item.key] = item.value;
-    }
-  });
-  form.stdioConfig.env = newEnv;
-}, { deep: true });
 
 // --- Arguments ---
 const addArgument = () => {
@@ -427,7 +340,9 @@ watch(argList, (newList) => {
 const populateFormFromServer = (server: McpServer | null) => {
   store.clearPreviewResult();
   Object.assign(form, createFreshForm()); // Reset form
-  envList.value = [];
+  envRows.value = [];
+  headerRows.value = [];
+  Object.assign(token, tokenFromServer(null));
   argList.value = [];
 
   if (server) {
@@ -443,18 +358,11 @@ const populateFormFromServer = (server: McpServer | null) => {
       if (server.args) {
         argList.value = server.args.map(arg => ({ id: Date.now() + Math.random(), value: arg }));
       }
-      form.stdioConfig.env = server.env || {};
-      if (server.env) {
-        envList.value = Object.entries(server.env).map(([key, value]) => ({
-          id: Date.now() + Math.random(),
-          key,
-          value: String(value)
-        }));
-      }
+      envRows.value = rowsFromEntries(server.env, 'env', rule.value);
     } else if (server.__typename === 'StreamableHttpMcpServerConfig') {
       form.streamableHttpConfig.url = server.url || '';
-      form.streamableHttpConfig.token = server.token || '';
-      form.streamableHttpConfig.headers = server.headers || {};
+      headerRows.value = rowsFromEntries(server.headers, 'header', rule.value);
+      Object.assign(token, tokenFromServer(server.tokenState));
     }
   }
 };
@@ -463,37 +371,21 @@ watch(() => props.server, (newVal) => {
     populateFormFromServer(newVal);
 }, { immediate: true });
 
+// The rule arrives after the first render: it locks the always-secret rows and pre-ticks new rows it matches.
+watch(rule, (value) => {
+  for (const row of envRows.value) applySuggestedLock(row, 'env', value);
+  for (const row of headerRows.value) applySuggestedLock(row, 'header', value);
+});
+
+onMounted(() => {
+  store.fetchMcpSecretSuggestionRule();
+});
 
 onUnmounted(() => {
     store.clearPreviewResult();
 });
 
-const buildInputFromForm = (): McpServerFormInput => {
-    const input: McpServerFormInput = {
-        serverId: form.serverId,
-        transportType: form.transportType,
-        toolNamePrefix: form.toolNamePrefix || null,
-        enabled: form.enabled,
-        stdioConfig: null,
-        streamableHttpConfig: null,
-    };
-    if (form.transportType === 'STDIO') {
-        input.stdioConfig = { 
-          ...form.stdioConfig,
-          cwd: form.stdioConfig.cwd || null,
-        };
-    } else if (form.transportType === 'STREAMABLE_HTTP') {
-        input.streamableHttpConfig = {
-          ...form.streamableHttpConfig,
-          token: form.streamableHttpConfig.token || null,
-        };
-    }
-    return input;
-}
-
-const buildActiveInput = (): McpServerFormInput => (
-  activeTab.value === 'json' ? buildInputFromJson() : buildInputFromForm()
-);
+const buildInputFromState = (state: McpServerFormState): McpServerFormInput => formStateToInput(state, rule.value);
 
 const setPreviewError = (message: string) => {
   store.$patch(state => {
@@ -508,7 +400,7 @@ const setPreviewError = (message: string) => {
 const runPreview = () => {
   let payload: McpServerFormInput;
   try {
-    payload = buildActiveInput();
+    payload = buildInputFromState(activeTab.value === 'json' ? parseJsonState().state : currentState());
   } catch (e: any) {
     setPreviewError(`Error parsing JSON: ${e.message}`);
     return;
@@ -525,7 +417,19 @@ const runPreview = () => {
 const save = async () => {
   let payload: McpServerFormInput;
   try {
-    payload = buildActiveInput();
+    if (activeTab.value === 'json') {
+      const { state, needsReview } = parseJsonState();
+      if (needsReview) {
+        // The rule locked new values: show them on the Form tab, so the user reviews them before saving.
+        applyStateToForm(state);
+        activeTab.value = 'form';
+        emit('show-toast', { message: t(`${key}.review_locked_values`), type: 'info' as ToastType });
+        return;
+      }
+      payload = buildInputFromState(state);
+    } else {
+      payload = buildInputFromState(currentState());
+    }
   } catch (e: any) {
     emit('show-toast', { message: `Error parsing JSON: ${e.message}`, type: 'error' as ToastType });
     return;
@@ -539,6 +443,7 @@ const save = async () => {
   try {
     // --- SAVE ---
     await store.configureMcpServer(payload);
+    markUnlockedSuggestionsReviewed(payload.serverId);
     emit('show-toast', { message: `Server '${payload.serverId}' saved successfully.`, type: 'success' as ToastType });
     
     // --- SYNC (if requested) ---
@@ -555,6 +460,41 @@ const save = async () => {
 
   } catch (saveError: any) {
     emit('show-toast', { message: `Failed to save server: ${saveError.message}`, type: 'error' as ToastType });
+  }
+};
+
+/** Rows the rule pre-locked that the user unlocked were saved plain on purpose: the move banner skips them (MDEC-006). */
+const nodeContext = useWindowNodeContextStore();
+const markUnlockedSuggestionsReviewed = (serverId: string) => {
+  const rows = form.transportType === 'STDIO' ? { list: envRows.value, kind: 'env' as const } : { list: headerRows.value, kind: 'header' as const };
+  const fields = unlockedSuggestions(rows.list, rows.kind, rule.value).map(field => ({ serverId, field }));
+  if (fields.length === 0) return;
+  mcpSecretReviewState.markReviewed(nodeContext.entryId, fields, [serverId, ...store.getMcpServers.map(server => server.serverId)]);
+};
+
+/** Moves one stored plain value of the saved server to the vault; the row then shows it as stored in the vault. */
+const moveFieldToVault = async (field: string) => {
+  const serverId = savedServerId.value;
+  if (!serverId) return;
+  try {
+    const result = await store.moveMcpSecretsToVault([{ serverId, field }]);
+    if (result.moved.length === 0) {
+      emit('show-toast', { message: t(`${key}.move_nothing_moved`, { field }), type: 'info' as ToastType });
+      return;
+    }
+    if (field === 'token') {
+      Object.assign(token, { stored: 'CONFIGURED', remove: false });
+    } else {
+      const [kind, ...rest] = field.split(':');
+      const name = rest.join(':');
+      const rows = kind === 'env' ? envRows : headerRows;
+      rows.value = rows.value.map(row => row.stored?.name === name
+        ? { ...row, name, value: '', locked: true, stored: { name, state: 'CONFIGURED', plainValue: null } }
+        : row);
+    }
+    emit('show-toast', { message: t(`${key}.move_done`, { field, backupPath: result.backupPath ?? '' }), type: 'success' as ToastType });
+  } catch (e: any) {
+    emit('show-toast', { message: `${t(`${key}.move_failed`)} ${e.message}`, type: 'error' as ToastType });
   }
 };
 

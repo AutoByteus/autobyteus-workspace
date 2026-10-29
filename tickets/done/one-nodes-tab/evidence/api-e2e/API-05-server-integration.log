@@ -1,0 +1,9 @@
+# API-05 server integration suite
+# Commands: pnpm -C autobyteus-server-ts test:integration:prepare; pnpm -C autobyteus-server-ts test:integration
+# Commit: 0a1e02ba09 (source = 23f3feb193); dist from API-00
+# Date: 2026-10-23T04:58:11Z  macOS 26.5.2, Node v22.23.1; env isolation by tests/setup/test-environment-isolation.ts
+# Excerpt (full log: API-05-server-integration.full.log)
+prepare exit=0
+ Test Files  78 passed | 20 skipped (98)
+      Tests  421 passed | 69 skipped (490)
+exit=0

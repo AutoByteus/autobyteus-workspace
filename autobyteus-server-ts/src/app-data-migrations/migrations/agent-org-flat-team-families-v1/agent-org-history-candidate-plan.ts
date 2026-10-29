@@ -1,13 +1,13 @@
 import fs from "node:fs/promises";
 import path from "node:path";
-import { AgentMemoryLayout } from "../../../agent-memory/store/agent-memory-layout.js";
-import { AgentOrgExecutionIndex } from "../../legacy/released-run-package-shapes/agent-org-execution-index-v1.js";
-import { validateTeamRunExecutionTreePayload } from "../../legacy/released-run-package-shapes/team-run-execution-tree-v2-schema.js";
-import { validateAgentOrgRunExecutionTreePayload } from "../../legacy/released-run-package-shapes/agent-org-run-execution-tree-v1-schema.js";
-import { getTeamRunExecutionTreePath } from "../../../run-history/store/team-run-execution-tree-path.js";
-import { getAgentOrgRunExecutionTreePath } from "../../../run-history/store/agent-org-run-execution-tree-path.js";
-import { TeamRunHistoryIndexStore } from "../../../run-history/store/team-run-history-index-store.js";
-import { AgentOrgRunHistoryIndexStore } from "../../../run-history/store/agent-org-run-history-index-store.js";
+import { AgentMemoryLayout } from "../../frozen/server/agent-memory/store/agent-memory-layout.js";
+import { AgentOrgExecutionIndex } from "./released-run-package-shapes/agent-org-execution-index-v1.js";
+import { validateTeamRunExecutionTreePayload } from "../../frozen/released-run-package-shapes/team-run-execution-tree-v2-schema.js";
+import { validateAgentOrgRunExecutionTreePayload } from "./released-run-package-shapes/agent-org-run-execution-tree-v1-schema.js";
+import { getTeamRunExecutionTreePath } from "../../frozen/server/run-history/store/team-run-execution-tree-path.js";
+import { getAgentOrgRunExecutionTreePath } from "../../frozen/server/run-history/store/agent-org-run-execution-tree-path.js";
+import { TeamRunHistoryIndexStore } from "../../frozen/server/run-history/store/team-run-history-index-store.js";
+import { AgentOrgRunHistoryIndexStore } from "../../frozen/server/run-history/store/agent-org-run-history-index-store.js";
 import { validateReleasedTeamRunV2 } from "./released-team-run-v2-schema.js";
 import { orgTreeTarget } from "./agent-org-runtime-tree-target.js";
 

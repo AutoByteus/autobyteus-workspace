@@ -1,23 +1,22 @@
-## What's New
-- **Readable Task keys.** Every Project Task now has a short, permanent key such as `autobyteus-42`, made from the Project name. Keys are never reused, and they stay the same when you rename the Project. Existing Tasks get their keys automatically the first time the app starts, numbered in the order they were created. The Task page shows the key with a copy button, and Task links use it (`…/tasks/autobyteus-42`). Older links still open the Task.
-- **"Depends on" for Project Tasks.** In New task or Edit task, choose which Tasks of the same Project come first. A card shows **Blocked by <key>** while one of them is still open, or **Dependency cancelled** if one was cancelled. The Task page lists **Depends on** and **Required by**. Dependencies only inform: nothing stops work from starting.
-- **Agents use Task keys.** Agents see and use the key as the Task ID, and they can set dependencies with `depends_on` on `create_task` and `update_task`. Older long Task IDs are still accepted.
-- **Team status in the Workspaces tree.** Every Team row shows a status dot, with the same colours as agents. It is blue while an agent in the Team is working, red when one has an error, green when the Team is idle, and grey when it is stopped. Teams that an agent delegated work to now show it too.
-- **Agents are told when a skill they use changes.** When a skill used by a running agent is edited on disk, the agent gets one notice, labelled **Skill updated**, asking it to re-read the skill. Idle agents are not woken; the notice arrives with their next message.
-- **Separate tools to create and update Projects and Tasks.** `create_project` and `update_project` join `create_or_update_project`. `create_task` and `update_task` replace `create_or_update_task`. Each tool has one meaning, and an agent has it only when its definition selects it.
+## Before You Update
+- **This release converts no data.** Nothing you have stored changes when you update from 1.5.9.
+- **Coming from a version before 1.5.9? Read the 1.5.9 notes first.** Updating converts your data once (Task titles, the new node vocabulary), so:
+  - back up first: quit AutoByteus and copy `~/.autobyteus/server-data` (on a Docker node, the server's data volume);
+  - going back to a version before 1.5.9 afterwards is still not supported. If you need to, open an issue at https://github.com/AutoByteus/autobyteus-workspace/issues and we will help;
+  - if you moved MCP secrets into the vault, keep the `mcps.json` backup AutoByteus wrote; earlier versions don't read vault references;
+  - agents that used `list_available_nodes` need `list_peer_nodes`.
+- **Update the desktop app and every remote or Docker node it connects to together.** Different versions of the app and a node are not supported together.
 
 ## Improvements
-- **Cleaner board and tree.** Board cards and the Workspaces-tree Task summary no longer show the Task key, so each card starts with its summary. Keys stay where they help you refer to a Task: the Task page, dependency lists, the picker, badges and links.
-- **One collaboration model.** Agents message others inside their run, and delegate to agents or teams outside it. Prompts and tool descriptions say this the same way on every runtime. An agent that tries to delegate to itself or a teammate is told to message instead.
-- **Clearer collaboration wording.** Agents get instructions written for their role, with each rule stated once. They reply to a report only when it asks for a reply, which stops back-and-forth acknowledgement loops.
-- **A run whose saved data can't be read** no longer affects the others. It is left out, or says its data can't be read, while everything else opens normally.
+- **Runtimes have one full name everywhere:** AutoByteus, Codex App Server, Claude Agent SDK, Antigravity CLI and Grok Build. The same names appear in the chat footer, the model menu, Run Settings, Settings → Agent Runtimes, Model Routing, application setup, Token Statistics, and the messages agents receive about delegated runs.
+- **A cleaner interface.** The Settings menu is text-only again, and the decorative icons that 1.5.9 made visible next to text labels are gone. Icons that carry meaning, such as search, folders and icon-only buttons, stay.
+- **Voice input in Memory → Search.** With the Voice Input extension on, the search box has the same microphone button as the chat input. What you say appears in the box, and the search runs when you press Search.
+- **Embedding settings show one "Waiting…" state** for a Project index that has not started yet, whether or not the model is ready.
 
 ## Fixes
-- **File Explorer editor:** finishing an earlier Save no longer overwrites what you typed after pressing Save.
-- Agents that only delegate work are no longer told to close Tasks they have no tool for.
+- **The "Skill updated" card shows file paths exactly as written.** Names such as `__init__.py` or `*draft*.md` are no longer shown as bold or italic text.
+- **Enter in the "Depends on" picker chooses the first Task you can choose,** even when the newest Task in the list is one that already depends on this Task.
 
 ## Upgrade Notes
-- **Update your agent definitions for the new tools.** `create_or_update_task` is removed. Agents that need Task tools must select `create_task` and/or `update_task`. `create_or_update_project` still works but is deprecated; select `create_project` and/or `update_project` instead. This includes the Project Task Manager package.
-- **Task keys are added on first start.** The first start of this version adds keys to existing Projects and Tasks. Nothing else in them changes.
-- **Teams inside task agent teams are no longer supported.** Runs saved by v1.4.53–v1.4.69 that put a team inside a task agent team are not shown, or report that their data can't be read. No file is changed or deleted.
-- Runs that earlier versions recorded as collaborators are converted into ordinary delegated runs on first start. Reach them by run ID.
+- **Docker.** The server image is `autobyteus/autobyteus-server:1.5.10`, and `:latest` and `:beta` now point to it. If you follow the beta track with the public launcher, you can return to stable with `autobyteus-docker upgrade --all --tag latest`, because this release is newer than every 1.5.10 beta.
+- **Desktop.** Installs on the beta track (Settings → Updates → Receive beta updates) that already have 1.5.10-beta.1 are offered this release as an update too.

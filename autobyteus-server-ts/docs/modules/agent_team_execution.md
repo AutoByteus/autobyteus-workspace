@@ -345,6 +345,46 @@ busy rejection. Codex may append to the exact active turn when AgentRun selects
 that capability; AutoByteus and Claude wait for a later turn. Team managers do
 not own another input queue or infer this policy from provider state.
 
+### Team Runs Started By A Peer Node
+
+A shared Agent Team that a peer node delegates to (see
+[Remote Collaboration](remote_collaboration.md)) runs here as an ordinary
+top-level Team run: it is in run history and can be opened, watched and
+stopped. `RemoteTeamRunStarter` creates it through `TeamRunService.createTeamRun`
+with each member's resolved launch (the temp workspace, auto-approve on) and an
+optional `delegatedFrom` `{nodeId, coordinatingRun, delegatorAgentRunId}`, which
+the root manager keeps on the tree (`team_run_execution_tree.json`, tolerant
+read: absent means not peer-started; exact write). Only the coordinator starts,
+when the peer's work packet reaches it; the others start when work reaches them.
+
+The root builds its remote links from the tree (`team-run-remote-links.ts`): the
+delegator is a `delegator` endpoint paired with every configured member, and
+`peerStartedTeamMembers(tree)` is the one member set the start answer and the
+pair rule use. Its message log and package validation include the delegator
+through `agentRunIdsOfTree`.
+
+Such a root has an idle shutdown, which local Team runs do not have:
+`RemoteTeamIdleShutdown` (`services/remote-team-idle-shutdown.ts`). It is a
+**quiet** shutdown, never the user Stop:
+
+- it arms on the delegated-child schedule's signals and grace setting
+  (`AUTOBYTEUS_TASK_EXECUTION_IDLE_SHUTDOWN_GRACE_MS`): an agent of the root
+  reports `idle`, `offline` or `error`, a background task ends, or a live lease
+  is released; it also arms once when the root opens, so a Team that never gets
+  work stops; an agent `running` or `initializing` cancels it;
+- on fire, `RootTeamRun.shutDownIfQuiet()` decides inside the root's gate: it
+  skips while the root has open child work or a live lease, and otherwise calls
+  the Team's own all-or-nothing `TeamRunBackend.tryPrepareTerminationIfQuiescent()`
+  (the same rule a Team copy's idle shutdown uses). A member waiting for tool
+  approval or with a running background task is not quiet, so nothing happens and
+  a later quiet signal re-arms;
+- a prepared termination is committed and the root ends as a Stop ends: the
+  manager unregisters it, keeping the package, catalog row, tree and history. No
+  member is interrupted.
+
+The next message from the peer restores it (`TeamRunService.resolveManagedTeamRun`),
+after the stored-link check, and wakes the member it is for.
+
 ## Stop, Retained History, And Later Delete
 
 The root lifecycle and stored-history lifecycle are intentionally separate:
@@ -438,9 +478,10 @@ own team: its own address, a teammate, or in a Team root any configured root
 placement, for a configured member; `COLLABORATION_SELF_TARGET_REJECTED` with
 `send_message_to` guidance, raised before any placement or Task link), then a
 configured member, then a listed catalog definition (see
-[Agent Communication](./agent_communication.md#delegated-catalog-copies)). Task sources
-come from `TeamTaskSourceResolver`: the copy's recorded `source`, else the
-configured placement at its address. An address that is none of these returns
+[Agent Communication](./agent_communication.md#delegated-catalog-copies)). Every
+placement carries the snapshot its copy starts from (a configured member's as it is
+now); the copy records it as its `source`, and `TeamTaskExecutionAdapter` projects only
+that `source` on activation and restore. An address that is none of these returns
 `{ delegated: false, message }` rather than failing the call. Input and
 admission failures (`VALIDATION_ERROR`, `INVALID_REFERENCE_FILE`,
 `ROOT_RUN_NOT_ACTIVE`) are tool errors raised before any preparation.
@@ -489,7 +530,9 @@ the work packet through that Team's exact configured coordinator ingress; only
 the coordinator starts, and the other members start when work reaches them (see
 [Root And Agent Lifecycle](#root-and-agent-lifecycle)). The
 work packet is the child's first message: the delegator's address and AgentRun
-ID, the description, and any reference files. The result is a strict union:
+ID, the description (for a saved Project Task, followed by its comments; see
+[Saved-ID Delegation](projects.md#saved-id-delegation-and-agent-run-resources)),
+and any reference files. The result is a strict union:
 
 ```text
 { delegated: true, target_kind: "agent", target_agent_run_id: "<Agent copy run ID>" }            // an Agent copy
@@ -560,8 +603,9 @@ carries no Task information.** Which copies, Team members and helpers belong to
 a Project Task is recorded only on the Task side, in that Task's
 `agent_run_resources.json`. The in-memory view loaded from it is reached
 through `TaskExecutionResourcePort`. That Task record, not the physical subtree or
-the definition/address, decides what DONE stops: a copy has one current Task,
-and DONE stops only copies whose current Task it is. The Manager, borrowed unowned
+the definition/address, decides what DONE stops: a copy may hold several open
+Tasks (its current one is the newest open), and DONE stops only copies that have
+an entry in that Task and no open Task left. The Manager, borrowed unowned
 runs and other Tasks are outside that set.
 
 The idle/wake rules below apply to unowned children and to Task-owned children
@@ -613,8 +657,12 @@ through the wake path below. Helpers stay closed. See
 - **Wake-on-message.** A `send_message_to` run-ID delivery from the same root,
   and an operator composer message, acquire a live lease for the target's chain.
   `assertRestorableChain` first checks that each shut-down ingress has readable
-  conversation activity; otherwise the delivery is rejected with
-  `TASK_EXECUTION_CONTEXT_UNAVAILABLE` and nothing is restored. The chain is then
+  conversation activity (a log's damaged end after an unclean shutdown does
+  not count against it); otherwise the delivery is rejected with
+  `TASK_EXECUTION_CONTEXT_UNAVAILABLE` and nothing is restored. The message
+  names the Agent or Team, its coordinator, the reason in plain words and the
+  next step (see [Agent Memory](agent_memory.md), "Conversation Activity
+  Classification For Restore"). The chain is then
   restored outermost-first in `restore` mode (native or external provider
   session) and the message is delivered. A restore failure returns
   `TASK_EXECUTION_RESTORE_FAILED` and re-arms whatever was already restored.
@@ -670,9 +718,14 @@ root-bound delivery intent without rewriting the sender/receiver into flat or
 representative identities. Team Communication persists the actual sender and
 receiver as exact `TeamExecutionAddress` values; explicit `reference_files` are
 structured metadata and natural message prose is not scanned for paths.
-An accepted delivery is projected once when the target AgentRun owns the input;
-later provider forwarding or terminal observation does not publish a duplicate
-Team Communication or member-input record.
+The message is saved to the Team's log before the target AgentRun may run it,
+through the one [teammate delivery path](./agent_communication.md#teammate-delivery-path):
+`RootTeamRun` builds its `RootCommunicationPort` (`team-communication-port.ts`:
+the Team recipient builder, `TEAM_*` codes, `COMMUNICATION` then `MEMBER_INPUT`
+events) and `TeamRunPersistenceCoordinator.commitMessageAppend` does the locked
+write. An accepted delivery is projected once, when the saved message is
+committed to the target AgentRun; later provider forwarding or terminal
+observation does not publish a duplicate Team Communication or member-input record.
 
 Successful logical messaging returns that existing Agent or AgentTeam
 coordinator run as flat `target_agent_run_id`; rejection returns null identity.
@@ -785,7 +838,9 @@ validated current package per root TeamRun:
   [Run History](./run_history.md), Message logs).
 
 On disk a team run's tree links its task agents (`{address, agentRunId |
-teamRunId, delegatorAgentRunId?, startedAt}`); each task agent's facts are in its
+teamRunId, delegatorAgentRunId?, startedAt}`; a link to a run on another node adds
+`nodeId` and has no own file here, see [Remote Collaboration](./remote_collaboration.md));
+each task agent's facts are in its
 own file (`agents/<id>/run_metadata.json` or `agent_teams/<id>/team_run_execution_tree.json`,
 each with a `taskAgent` section). `TeamRunExecutionTreeStore` composes today's
 records on load and splits them on save (a task agent's own file first, then its
@@ -855,9 +910,10 @@ fails and remains retry-visible.
 These released migrations keep their released behavior on skip-version
 installs. Where they classify shapes ("already current" versus "old") or read
 released task-records files, they import frozen strict copies from
-`src/app-data-migrations/legacy/released-run-package-shapes/` (Team tree V2,
+`src/app-data-migrations/frozen/released-run-package-shapes/` (Team tree V2,
 Org tree V1, task-records V1, Org state-package V1), never the current tolerant
-readers. Current runtime code never imports that module. The delegated-child
+readers. Current runtime code never imports the migration area
+(`tests/architecture/app-data-migration-boundaries.test.ts`). The delegated-child
 resource lifecycle added no migration of its own.
 
 The V1-to-V2 coordinator-derived Team default is a historical migration rule
@@ -887,6 +943,9 @@ history indexes are documented separately in [Agent Organization](./agent_orgs.m
 - `src/agent-team-execution/local/registries/task-team-execution-registry.ts`
 - `src/agent-team-execution/services/flat-team-topology-planner.ts`
 - `src/agent-team-execution/services/team-run-service.ts`
+- `src/agent-team-execution/services/remote-team-idle-shutdown.ts`
+- `src/agent-team-execution/domain/team-run-remote-links.ts`
+- `src/remote-collaboration/inbound/remote-team-run-starter.ts`
 - `src/agent-team-execution/services/agent-team-run-manager.ts`
 - `src/agent-team-execution/services/team-run-execution-tree-mutator.ts`
 - `src/agent-team-execution/services/team-run-persistence-coordinator.ts`
@@ -901,7 +960,7 @@ history indexes are documented separately in [Agent Organization](./agent_orgs.m
 - `src/config/task-execution-idle-shutdown-setting.ts`
 - `src/run-history/store/run-execution-tree-shared-record-schemas.ts`
 - `src/run-history/store/team-run-execution-tree-schema.ts`
-- `src/app-data-migrations/legacy/released-run-package-shapes`
+- `src/app-data-migrations/frozen/released-run-package-shapes`
 - `src/agent-execution/shared/runtime-agent-tool-exposure.ts`
 - `src/services/agent-streaming/agent-team-stream-handler.ts`
 - `src/services/agent-streaming/team-agent-event-websocket-projector.ts`

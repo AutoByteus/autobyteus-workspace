@@ -71,8 +71,8 @@ describeCodexManagerIntegration("CodexAppServerClientManager integration (live t
         }),
     });
 
-    const first = await manager.getClient(workspaceRoot);
-    const second = await manager.getClient(path.join(workspaceRoot, ".", "nested", ".."));
+    const first = await manager.beginAcquire(workspaceRoot).acquire();
+    const second = await manager.beginAcquire(path.join(workspaceRoot, ".", "nested", "..")).acquire();
 
     expect(first).toBe(second);
 
@@ -92,15 +92,16 @@ describeCodexManagerIntegration("CodexAppServerClientManager integration (live t
         }),
     });
 
-    const first = await manager.acquireClient(workspaceRoot);
+    const firstLease = manager.beginAcquire(workspaceRoot);
+    const first = await firstLease.acquire();
     const firstThreadId = await startThread(first, workspaceRoot);
 
-    await manager.releaseClient(workspaceRoot);
+    await firstLease.release();
     await expect(
       first.request("thread/read", { threadId: firstThreadId, includeTurns: true }),
     ).rejects.toThrow("not started");
 
-    const second = await manager.acquireClient(workspaceRoot);
+    const second = await manager.beginAcquire(workspaceRoot).acquire();
     const secondThreadId = await startThread(second, workspaceRoot);
 
     expect(second).not.toBe(first);

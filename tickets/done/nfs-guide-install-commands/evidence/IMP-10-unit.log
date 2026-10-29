@@ -1,0 +1,66 @@
+IMP-10 / unit; 2026-10-24T04:05:29.989347+00:00; commit 3d95a5c4a16759060983489735e77820661cff53; macOS arm64 Node22 private HOME/TMPDIR
+Command: ['pnpm', '-C', 'autobyteus-web', 'test:nuxt', 'utils/__tests__/nfsLauncherCommands.spec.ts', 'components/settings/__tests__/NfsGuideCard.spec.ts', 'components/settings/__tests__/NodeManager.spec.ts', 'components/settings/__tests__/DockerNodeStartGuideCard.spec.ts', 'utils/__tests__/dockerNodeLauncherCommands.spec.ts', '--run', '--maxWorkers=2']
+
+> autobyteus@1.5.9-beta.3 test:nuxt /Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r2/autobyteus-web
+> cross-env NUXT_TEST=true vitest utils/__tests__/nfsLauncherCommands.spec.ts components/settings/__tests__/NfsGuideCard.spec.ts components/settings/__tests__/NodeManager.spec.ts components/settings/__tests__/DockerNodeStartGuideCard.spec.ts utils/__tests__/dockerNodeLauncherCommands.spec.ts --run --maxWorkers=2
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r2/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r2/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r2/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r2/autobyteus-web/stores/serverStore.ts" is used
+
+ RUN  v3.2.7 /Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r2/autobyteus-web
+
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r2/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r2/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r2/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/nfs-guide-install-commands-r2/autobyteus-web/stores/serverStore.ts" is used
+stderr | components/settings/__tests__/NodeManager.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/NfsGuideCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/settings/__tests__/NodeManager.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/NfsGuideCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/__tests__/NodeManager.spec.ts (10 tests) 45ms
+ ✓ components/settings/__tests__/NfsGuideCard.spec.ts (13 tests) 106ms
+stderr | utils/__tests__/nfsLauncherCommands.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/DockerNodeStartGuideCard.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | utils/__tests__/nfsLauncherCommands.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/DockerNodeStartGuideCard.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/settings/__tests__/DockerNodeStartGuideCard.spec.ts (3 tests) 25ms
+stderr | utils/__tests__/dockerNodeLauncherCommands.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | utils/__tests__/dockerNodeLauncherCommands.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/__tests__/dockerNodeLauncherCommands.spec.ts (4 tests) 3ms
+ ✓ utils/__tests__/nfsLauncherCommands.spec.ts (24 tests) 2268ms
+   ✓ displayed install shell guards (ALL external commands are inert stubs) > macos: success  764ms
+   ✓ displayed install shell guards (ALL external commands are inert stubs) > linux: success  619ms
+   ✓ displayed install shell guards (ALL external commands are inert stubs) > linux: checksum-failure  302ms
+
+ Test Files  5 passed (5)
+      Tests  54 passed (54)
+   Start at  06:05:32
+   Duration  9.81s (transform 3.22s, setup 14.29s, collect 218ms, tests 2.45s, environment 720ms, prepare 482ms)
+
+
+exit=0

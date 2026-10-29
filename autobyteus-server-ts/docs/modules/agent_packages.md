@@ -17,7 +17,9 @@ package folder's auto-refresh state.
 
 ## Main Services And Stores
 
-- `src/agent-packages/services/agent-package-service.ts`
+- `src/agent-packages/services/agent-package-service.ts` (public boundary)
+- `src/agent-packages/services/github-agent-package-updates.ts` (the GitHub
+  check/update lifecycle, internal to the service)
 - `src/agent-packages/stores/agent-package-root-settings-store.ts`
 - `src/agent-packages/stores/agent-package-registry-store.ts`
 - `src/agent-packages/installers/github-agent-package-installer.ts`
@@ -28,7 +30,7 @@ package folder's auto-refresh state.
 | --- | --- | --- |
 | `BUILT_IN` | Platform-owned default package root. | Listed for inventory only; not removable, reloadable, checkable, or user-updatable. |
 | `LOCAL_PATH` | User-owned local folder linked into AutoByteus. | Import, remove, and explicit reload/rescan. Definition edits in the folder are also picked up automatically while the root is watched. AutoByteus validates and reads the folder but does not pull Git or mutate the source folder. |
-| `GITHUB_REPOSITORY` | AutoByteus-managed installation copied from a public GitHub repository archive. | Import, remove, update check, and explicit update through archive download/validation/replacement. No system `git` binary is required. The installed folder is watched like any other root; no polling or automatic download happens. |
+| `GITHUB_REPOSITORY` | AutoByteus-managed installation copied from a public GitHub repository archive. | Import, remove, update check, and explicit update through archive download/validation/replacement. No system `git` binary is required. The installed folder is watched like any other root. The node checks it in the background for [update notifications](./update_notifications.md) while the Update checks setting is on; nothing is downloaded or replaced without the user's Update, unless the user turned on automatic updates for agent packages (off by default; local changes are then replaced without asking). |
 
 ## GitHub Update State
 
@@ -59,6 +61,23 @@ The update status values are:
 - `NOT_APPLICABLE`: built-in/platform-owned packages do not expose user
   lifecycle actions.
 
+A known newer revision stays updatable: `updateInfo.canUpdate` is true whenever
+the latest known revision differs from the installed one, also after a failed
+later check (`CHECK_FAILED` keeps the latest known revision).
+
+## Concurrency And Update Notifications
+
+- Checks, updates and removals of one package run one at a time (per package
+  id). Each check and update reads its record inside that lock and builds every
+  write from it, so a background check never overwrites the installed revision
+  an update just wrote.
+- `listGitHubSourceUpdateStates()` projects every GitHub package's update facts
+  (installed and latest known revision, default branch, last check time) for the
+  [update notifications](./update_notifications.md).
+- `setGitHubSourceStateListener(listener)` sets the one listener that is told
+  after an import, removal, check or update settled (success or failure). A
+  listener error is logged and never fails the package action.
+
 ## GraphQL Contract
 
 `agentPackages` returns package inventory plus `updateInfo` for row actions and
@@ -70,7 +89,10 @@ copy. Mutations are thin adapters over `AgentPackageService`:
 - `reloadAgentPackage(packageId)` validates and rescans a local package without
   mutating its folder.
 - `checkAgentPackageUpdates(packageIds?)` refreshes managed GitHub
-  default-branch metadata for all or selected GitHub packages.
+  default-branch metadata for all or selected GitHub packages. A check (and an
+  update) reads the default branch and its head commit through git (`ls-refs`,
+  one `github.com` request, no REST API quota); an import still reads the REST
+  API for the repository's identity and visibility.
 - `updateAgentPackage(packageId)` downloads, validates, and replaces a managed
   GitHub package with the latest default-branch archive.
 
@@ -177,7 +199,11 @@ preserving the owning agent/team context for package-contained skills.
   sync private repositories locally, import the local path, and use local
   package reload after external updates.
 - GitHub update checks never modify package files. Check failures persist
-  `CHECK_FAILED` metadata and preserve the previous package state.
+  `CHECK_FAILED` metadata and preserve the previous package state, including the
+  latest known revision.
+- A check refused or answered by GitHub's rate limit fails like any other check
+  (`GitHub rate limit reached; try again after HH:MM.`); see
+  [update notifications](./update_notifications.md#github-rate-limits).
 - GitHub updates stage the new archive materialization, validate package shape,
   update registry metadata, reload the agent package definitions, and then commit
   the replacement. If metadata fetch, staging, validation, registry write,

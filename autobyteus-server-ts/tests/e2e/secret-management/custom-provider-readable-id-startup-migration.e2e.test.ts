@@ -7,7 +7,6 @@ import { PrismaClient } from '@prisma/client';
 import { afterEach, describe, expect, it } from 'vitest';
 import { runMigrations } from '../../../src/startup/migrations.js';
 import {
-  builtServerEntry,
   createSanitizedTestEnvironment,
   executeGraphql,
   materializeTestRuntime,
@@ -292,7 +291,7 @@ const seedLegacySecret = async (input: {
     appConfigProvider.initialize({ appDataDir: parsed.runtimeRoot }).initialize();
     await initializePrisma({ datasourceUrl: parsed.databaseUrl });
     const runtime = getSecretVaultRuntime();
-    await runtime.initialize(appConfigProvider.config.getOperationalDatabaseLocation());
+    await runtime.initialize({ kind: 'application', location: appConfigProvider.config.getOperationalDatabaseLocation() });
     await runtime.requireService().saveForConsumer({
       consumer: { kind: 'llm', providerId: parsed.providerId, credentialSlot: 'apiKey' },
       value: SecretValue.fromString(parsed.secret),
@@ -461,41 +460,6 @@ const closeFixture = async (server: http.Server): Promise<void> => {
   await new Promise<void>((resolve) => server.close(() => resolve()));
 };
 
-const startExpectingGateFailure = async (input: {
-  runtimeRoot: string;
-  database: DatabaseLocation;
-}): Promise<{ exitCode: number | null; output: string }> => {
-  const port = await reserveLoopbackPort();
-  materializeTestRuntime({
-    runtimeRoot: input.runtimeRoot,
-    databaseUrlOverride: input.database.databaseUrl,
-    serverUrlOverride: `http://127.0.0.1:${port}`,
-  });
-  const child = spawn(
-    process.execPath,
-    [builtServerEntry, '--host', '127.0.0.1', '--port', String(port), '--data-dir', input.runtimeRoot],
-    {
-      cwd: serverRoot,
-      env: createSanitizedTestEnvironment(),
-      stdio: 'pipe',
-    },
-  );
-  let output = '';
-  child.stdout.on('data', (chunk) => { output += chunk.toString('utf8'); });
-  child.stderr.on('data', (chunk) => { output += chunk.toString('utf8'); });
-  const result = await new Promise<{ exitCode: number | null; output: string }>((resolve, reject) => {
-    const timeout = setTimeout(() => {
-      child.kill('SIGKILL');
-      reject(new Error('READABLE_GATE_FAILURE_TIMEOUT'));
-    }, 120_000);
-    child.once('close', (exitCode) => {
-      clearTimeout(timeout);
-      resolve({ exitCode, output });
-    });
-  });
-  return result;
-};
-
 afterEach(async () => {
   for (const server of [...ownedServers]) {
     if (server.child.exitCode === null) {
@@ -508,6 +472,99 @@ afterEach(async () => {
     await removeOwnedTestRuntime(target.runtimeRoot, target.database);
   }
 });
+
+
+/** A GraphQL request whose error text the test reads (`executeGraphql` hides it). */
+const graphqlRaw = async (
+  serverUrl: string,
+  query: string,
+  variables: Record<string, unknown> = {},
+): Promise<{ data?: any; errorText: string }> => {
+  const response = await fetch(`${serverUrl}/graphql`, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ query, variables }),
+  });
+  const payload = await response.json() as { data?: any; errors?: Array<{ message?: string; extensions?: unknown }> };
+  return {
+    data: payload.data,
+    errorText: (payload.errors ?? []).map((error) => `${error.message ?? ''} ${JSON.stringify(error.extensions ?? {})}`).join('\n'),
+  };
+};
+
+const CREATE_CUSTOM_PROVIDER = `
+  mutation GateCreate($input: CustomProviderInputObject!) {
+    createCustomProvider(input: $input) { provider { id } apiKeyConfigured }
+  }
+`;
+
+/** The gate as Settings meets it: listing shows built-ins only; create and delete refuse with the capability code. */
+const expectCustomProvidersPending = async (serverUrl: string, databasePath: string): Promise<void> => {
+  const listed = (await providerCredentialSettings(serverUrl)).providerCredentialSettings;
+  expect(listed.length).toBeGreaterThan(0);
+  expect(listed.filter(({ provider }) => provider.id.startsWith('provider_'))).toEqual([]);
+  const secretsBefore = listSecretIds(databasePath);
+  const created = await graphqlRaw(serverUrl, CREATE_CUSTOM_PROVIDER, {
+    input: { name: 'Gate Probe Provider', baseUrl: 'http://127.0.0.1:9/v1', apiKey: 'gate-probe-secret' },
+  });
+  expect(created.errorText).toContain('CUSTOM_PROVIDERS_MIGRATION_PENDING');
+  const deleted = await graphqlRaw(serverUrl, `
+    mutation GateDelete($providerId: String!) { deleteCustomProvider(providerId: $providerId) { providerId deleted } }
+  `, { providerId: OLD_ID });
+  expect(deleted.errorText).toContain('CUSTOM_PROVIDERS_MIGRATION_PENDING');
+  expect(listSecretIds(databasePath)).toEqual(secretsBefore);
+};
+
+/** `createAgentRun` with the given model, as the run launcher sends it; returns its raw result. */
+const startAgentRun = async (serverUrl: string, runtimeRoot: string, label: string, llmModelIdentifier: string) => {
+  const agent = await executeGraphql<{ createAgentDefinition: { id: string } }>(serverUrl, `
+    mutation GateAgent($input: CreateAgentDefinitionInput!) { createAgentDefinition(input: $input) { id } }
+  `, {
+    input: {
+      name: `${label}-${Date.now()}`,
+      role: 'custom-provider gate validation agent',
+      description: 'Proves run admission while the custom-provider capability is pending.',
+      instructions: 'No external work.',
+      category: 'api-e2e',
+    },
+  });
+  const workspaceRootPath = path.join(runtimeRoot, `${label}-workspace`);
+  fs.mkdirSync(workspaceRootPath, { recursive: true, mode: 0o700 });
+  const result = await graphqlRaw(serverUrl, `
+    mutation GateRun($input: CreateAgentRunInput!) { createAgentRun(input: $input) { success runId message } }
+  `, {
+    input: {
+      agentDefinitionId: agent.createAgentDefinition.id,
+      workspaceRootPath,
+      llmModelIdentifier,
+      autoExecuteTools: false,
+      runtimeKind: 'autobyteus',
+    },
+  });
+  return { run: result.data?.createAgentRun as { success: boolean; runId: string | null; message: string } | undefined, errorText: result.errorText };
+};
+
+const terminateRun = async (serverUrl: string, runId: string): Promise<void> => {
+  const terminated = await executeGraphql<{ terminateAgentRun: { success: boolean } }>(serverUrl, `
+    mutation GateTerminate($runId: String!) { terminateAgentRun(agentRunId: $runId) { success } }
+  `, { runId });
+  expect(terminated.terminateAgentRun.success).toBe(true);
+};
+
+const builtInModelIdentifier = async (serverUrl: string): Promise<string> => {
+  const models = await executeGraphql<{
+    providerModelCatalogSnapshots: Array<{ llmModels: Array<{ modelIdentifier: string }> }>;
+  }>(serverUrl, `
+    query GateModels($runtimeKind: String) { providerModelCatalogSnapshots(runtimeKind: $runtimeKind) { llmModels { modelIdentifier } } }
+  `, { runtimeKind: 'autobyteus' });
+  const identifiers = models.providerModelCatalogSnapshots.flatMap(({ llmModels }) => llmModels.map(({ modelIdentifier }) => modelIdentifier));
+  expect(identifiers.filter((identifier) => identifier.includes(':provider_'))).toEqual([]);
+  const builtIn = identifiers.find((identifier) => identifier.trim());
+  expect(builtIn).toBeTruthy();
+  return builtIn!;
+};
+
+const modeBitsBind = process.platform !== 'win32' && process.getuid?.() !== 0;
 
 describe('custom-provider readable identity actual startup lifecycle', () => {
   it('takes V1 through secretless staging and exact selector transition to empty V3 across restart', async () => {
@@ -783,7 +840,9 @@ describe('custom-provider readable identity actual startup lifecycle', () => {
     expect(server.output()).not.toContain(secondSecret);
   }, 300_000);
 
-  it('blocks a fresh recent RUNNING record, then converges through the ordinary stale retry', async () => {
+  it('serves while a fresh recent RUNNING record holds custom providers back, then converges through the ordinary stale retry', async () => {
+    // The server starts while the migration is held (G-1 narrowed to the custom-provider capability, DEC-003): only
+    // custom providers are unavailable, with CUSTOM_PROVIDERS_MIGRATION_PENDING, and the released V2 file is untouched.
     const target = makeTarget('readable-running-gate');
     deploySchema(target.database);
     writeV2(target.runtimeRoot);
@@ -803,11 +862,20 @@ describe('custom-provider readable identity actual startup lifecycle', () => {
       await prisma.$disconnect();
     }
 
-    const blocked = await startExpectingGateFailure(target);
-    expect(blocked.exitCode).toBe(1);
-    expect(blocked.output).toContain('CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED:RUNNING:');
-    expect(blocked.output).not.toContain('Server listening on');
+    const held = await startBuiltTestServer({
+      runtimeRoot: target.runtimeRoot,
+      databaseUrlOverride: target.database.databaseUrl,
+    });
+    ownedServers.add(held);
+    expect((await fetch(`${held.serverUrl}/rest/health`)).status).toBe(200);
+    expect(held.output()).not.toContain('CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED');
+    expect(statusFor(await migrationStatuses(held.serverUrl), READABLE_MIGRATION_ID))
+      .toMatchObject({ status: 'RUNNING', attempts: 1 });
+    await expectCustomProvidersPending(held.serverUrl, target.database.databasePath);
     expect(readJson(customProviderPath(target.runtimeRoot))).toMatchObject({ version: 2 });
+    expect(readJson(paths.agentConfig).defaultLaunchConfig.llmModelIdentifier).toBe(OLD_IDENTIFIER);
+    await held.stop();
+    ownedServers.delete(held);
 
     const stalePrisma = new PrismaClient({ datasources: { db: { url: target.database.databaseUrl } } });
     try {
@@ -829,5 +897,92 @@ describe('custom-provider readable identity actual startup lifecycle', () => {
     expect(readJson(customProviderPath(target.runtimeRoot))).toEqual({ version: 3, providers: [] });
     expect(readJson(paths.agentConfig).defaultLaunchConfig.llmModelIdentifier)
       .toBe(READABLE_IDENTIFIER);
+  }, 300_000);
+
+  it.skipIf(!modeBitsBind)('serves while the custom-provider migrations cannot finish: custom providers refuse with the capability code while built-in runs start; Settings retries after the fix make them available without a restart (needs POSIX mode bits that bind: not root, not Windows)', async () => {
+    // A released V2 provider file in a provider folder the server cannot write to (a permission problem): its
+    // prerequisite, the V1 secret migration, cannot reset the file and ends FAILED, so the readable-identity migration
+    // does not run and holds the custom-provider capability back. The user restores write access and retries both in
+    // Settings -> Migrations (the same `runAppDataMigration` mutation), which refreshes the capability.
+    const target = makeTarget('readable-failed-gate');
+    deploySchema(target.database);
+    writeV2(target.runtimeRoot);
+    const paths = writeSelectorFixture(target.runtimeRoot);
+    const llmFolder = path.dirname(customProviderPath(target.runtimeRoot));
+    const v2Bytes = fs.readFileSync(customProviderPath(target.runtimeRoot));
+    fs.chmodSync(llmFolder, 0o555);
+    try {
+      expect(() => fs.writeFileSync(path.join(llmFolder, 'probe.tmp'), 'x')).toThrow();
+
+      const server = await startBuiltTestServer({
+        runtimeRoot: target.runtimeRoot,
+        databaseUrlOverride: target.database.databaseUrl,
+      });
+      ownedServers.add(server);
+      expect((await fetch(`${server.serverUrl}/rest/health`)).status).toBe(200);
+      const listed = await graphqlRaw(server.serverUrl, `
+        query GateStatuses { getAppDataMigrations { migrationId status attempts errorMessage canRetry } }
+      `);
+      expect(listed.errorText).toBe('');
+      const statusOf = (migrationId: string) => (listed.data.getAppDataMigrations as Array<{ migrationId: string }>)
+        .find((candidate) => candidate.migrationId === migrationId);
+      expect(statusOf(V1_MIGRATION_ID)).toMatchObject({
+        status: 'FAILED', attempts: 1, errorMessage: 'CUSTOM_PROVIDER_V1_RESET_UNAVAILABLE', canRetry: true,
+      });
+      expect(statusOf(READABLE_MIGRATION_ID)).toMatchObject({ status: 'NOT_RUN', attempts: 0, canRetry: true });
+      expect(fs.readFileSync(customProviderPath(target.runtimeRoot))).toEqual(v2Bytes);
+
+      // Settings: built-ins only; create and delete refused with the code, before any secret change.
+      await expectCustomProvidersPending(server.serverUrl, target.database.databasePath);
+      // Runs: a custom model is refused with the code; a built-in model starts.
+      const custom = await startAgentRun(server.serverUrl, target.runtimeRoot, 'gate-custom', OLD_IDENTIFIER);
+      expect(`${custom.run?.message ?? ''}\n${custom.errorText}`).toContain('CUSTOM_PROVIDERS_MIGRATION_PENDING');
+      expect(custom.run?.success ?? false).toBe(false);
+      const builtIn = await startAgentRun(server.serverUrl, target.runtimeRoot, 'gate-built-in', await builtInModelIdentifier(server.serverUrl));
+      expect(builtIn.errorText).toBe('');
+      expect(builtIn.run).toMatchObject({ success: true, runId: expect.any(String) });
+      await terminateRun(server.serverUrl, builtIn.run!.runId!);
+
+      // The fix, then the Settings retries in order: no restart.
+      fs.chmodSync(llmFolder, 0o755);
+      const retry = (migrationId: string) => graphqlRaw(server.serverUrl, `
+        mutation GateRetry($migrationId: String!) {
+          runAppDataMigration(migrationId: $migrationId) { success message migration { migrationId status attempts } }
+        }
+      `, { migrationId });
+      const v1Retried = await retry(V1_MIGRATION_ID);
+      expect(v1Retried.errorText).toBe('');
+      expect(v1Retried.data.runAppDataMigration).toMatchObject({
+        success: true,
+        migration: { migrationId: V1_MIGRATION_ID, status: expect.stringMatching(/^SUCCEEDED/), attempts: 2 },
+      });
+      // The V1 retry alone does not release the capability: the readable-identity migration still holds it back.
+      await expectCustomProvidersPending(server.serverUrl, target.database.databasePath);
+      const retried = await retry(READABLE_MIGRATION_ID);
+      expect(retried.errorText).toBe('');
+      expect(retried.data.runAppDataMigration).toMatchObject({
+        success: true,
+        migration: { migrationId: READABLE_MIGRATION_ID, status: 'SUCCEEDED', attempts: 1 },
+      });
+      expect(readJson(customProviderPath(target.runtimeRoot))).toEqual({ version: 3, providers: [] });
+      expect(readJson(paths.agentConfig).defaultLaunchConfig.llmModelIdentifier).toBe(READABLE_IDENTIFIER);
+
+      const secret = `readable-failed-gate-secret-${Date.now()}`;
+      const discovery = await startDiscoveryFixture(secret);
+      const created = await executeGraphql<{
+        createCustomProvider: { provider: { id: string }; apiKeyConfigured: boolean };
+      }>(server.serverUrl, CREATE_CUSTOM_PROVIDER, {
+        input: { name: PROVIDER_NAME, baseUrl: discovery.baseUrl, apiKey: secret },
+      });
+      expect(created.createCustomProvider).toEqual({ provider: { id: READABLE_ID }, apiKeyConfigured: true });
+      const ready = await waitForReadyProvider(server.serverUrl, READABLE_ID);
+      expect(ready.catalog.llmModels.map(({ modelIdentifier }) => modelIdentifier)).toContain(READABLE_IDENTIFIER);
+      const customAfter = await startAgentRun(server.serverUrl, target.runtimeRoot, 'gate-custom-after', READABLE_IDENTIFIER);
+      expect(customAfter.errorText).toBe('');
+      expect(customAfter.run).toMatchObject({ success: true, runId: expect.any(String) });
+      await terminateRun(server.serverUrl, customAfter.run!.runId!);
+    } finally {
+      fs.chmodSync(llmFolder, 0o755);
+    }
   }, 300_000);
 });

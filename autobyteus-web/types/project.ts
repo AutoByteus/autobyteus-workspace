@@ -23,7 +23,6 @@ export interface Project {
 /** CANCELLED: dropped as not needed, not completed. DONE and CANCELLED end the Task's work; only agents set status. */
 export type ProjectTaskStatus = 'TODO' | 'IN_PROGRESS' | 'DONE' | 'CANCELLED'
 
-/** A Project Task. It has no title: the description is its content, and its first line is its summary. */
 export interface ProjectTaskContextFile { storedFilename: string; displayName: string; mimeType: string; sizeBytes: number; locator?: string }
 export interface ProjectTaskContextDraft { draftId: string; storedFilenames: string[] }
 export interface ProjectTaskContextChanges { draftId?: string; addStoredFilenames?: string[]; removeStoredFilenames?: string[] }
@@ -50,10 +49,13 @@ export interface TaskRootView {
   status: TaskRootStatus
 }
 
+/** A Project Task: its title is its one-line name (given by its writer), its description its content. */
 export interface ProjectTask {
   contextFiles: ProjectTaskContextFile[]
   taskId: string
   projectId: string
+  /** The Task's one-line name, shown wherever the Task is listed; trimmed and not blank, no length limit. */
+  title: string
   description: string
   status: ProjectTaskStatus
   createdAt: string
@@ -67,6 +69,17 @@ export interface ProjectTask {
   taskKey: string
   /** Tasks of the same Project this Task depends on (informs only). An ID that names no current Task is ignored. */
   dependsOnTaskIds: string[]
+  /** The Task of the same Project this Task is a part of (its parent), or null. One level only; an ID that names no current Task is ignored. */
+  partOfTaskId: string | null
+  /** The comment thread, oldest first; add only (task-comments). */
+  comments: ProjectTaskComment[]
+}
+
+/** One comment of a Project Task: its number within the Task, the server time it was added (ISO), its text. */
+export interface ProjectTaskComment {
+  id: number
+  createdAt: string
+  text: string
 }
 
 /** A Task with no Project ("Temp task"): created by an agent's described delegation; read only. */
@@ -83,13 +96,12 @@ export interface TaskWithoutProject {
 /** A Task worker: a delegated task Agent or task Team copy that is a Task's latest assignment (its root). */
 export type TaskWorkerRef = { kind: 'agent'; agentRunId: string } | { kind: 'team'; teamRunId: string }
 
-/** A Task worker's current Task, from the server; `projectId` null means a Temp task. */
-export interface TaskWorkerTask {
+/** A Task worker's current Task, from the server: a Project Task with its title, or (`projectId` null) a Temp task, which has none. */
+export type TaskWorkerTask = {
   taskId: string
-  projectId: string | null
   description: string
   status: ProjectTaskStatus
-}
+} & ({ projectId: string; title: string } | { projectId: null; title: null })
 
 /** Where a Task lives in the change feed. */
 export type TaskScope = { kind: 'project'; projectId: string } | { kind: 'no_project' }
@@ -126,5 +138,6 @@ export type ProjectErrorCode =
   | 'WORKSPACE_PATH_INVALID'
   | 'WORKSPACE_ALREADY_LINKED'
   | 'WORKSPACE_LINK_NOT_FOUND'
+  | 'TASK_TITLE_REQUIRED'
   | 'TASK_DESCRIPTION_REQUIRED'
   | 'TASK_NOT_FOUND'

@@ -21,8 +21,7 @@ Delegation, `@` resolution and the candidate policy are shared by all roots; see
 
 ## Which runs have a root
 
-A standalone run has a root unless it is a server helper run (`launchPurpose: "server_helper"`,
-such as the skill improver) or an application-owned run (`applicationExecutionContext`). This one
+A standalone run has a root unless it is an application-owned run (`applicationExecutionContext`). This one
 rule (`isCollaborationEligibleStandaloneRun`) decides both the root and the host's member context.
 An eligible host always has `send_message_to` and `delegate_task` from
 its first turn and a short
@@ -94,8 +93,8 @@ operation gate: the sender's own Team instance first (REQ-007), then the host; a
 the sender's own address and any address inside a Team copy that contains the sender; the host
 address is the host's own address) with `send_message_to` guidance and
 `COLLABORATION_SELF_TARGET_REJECTED`, then a catalog copy with a recorded `source`, which
-`StandaloneRootTaskSourceResolver` reads first (the first copy creates the package). Every task
-execution of this tree carries its `source`. `listAvailableAgents(sender)` serves
+`StandaloneRootTaskExecutionAdapter` projects on activation and restore (the first copy creates
+the package). Every task execution of this tree carries its `source`. `listAvailableAgents(sender)` serves
 `list_available_agents` and never writes, so a run that only lists has no `collaboration/` package
 and no `hasCollaboration` flag (AR-005).
 
@@ -161,7 +160,7 @@ each. Deleting the host's run keeps its copies' folders (detached). The location
 
 - **`@` resolution.** A host SEND_MESSAGE with `mentions` on `/ws/agent/:runId` is resolved by the
   root after the host is ready (`AgentRunCommandCoordinator.post` →
-  `StandaloneAgentRunRoot.postUserMessage` → `StandaloneRootMessageDelivery.postToHost`); a child's
+  `StandaloneAgentRunRoot.postHostUserMessage` → `StandaloneRootMessageDelivery.postToHost`); a child's
   SEND_MESSAGE with `mentions` on the collaboration stream is resolved by the root
   (`resolveCollaboratorMentions`). Resolution adds nothing; the posted message carries the note
   steering the agent to `delegate_task`. An ineligible mention rejects the send with
@@ -186,15 +185,18 @@ each. Deleting the host's run keeps its copies' folders (detached). The location
   child's Agent Artifacts. Like the other two, it locates the child inside the named run's
   tree only, so its cost does not depend on how many other team, org or standalone runs are
   stored. It then reads through `RunFileChangeProjectionService.getLocatedCollaborationMemberProjection`,
-  the same active-versus-stored rule the run-id `getRunFileChanges` uses for collaboration
-  members:
+  the same active-versus-stored rule Team and Org member reads use:
   - While the host's root is active, the result is the child's live projection, as for Team
     members.
   - Otherwise it is the child's stored `file_changes.json`.
 
-  The run-id path still finds a copy through the stored-only cross-family lookup, so for
-  copies it always read the stored file. The web client opens a copy's artifacts through the
-  scoped query.
+  A child's file content is served the same way, hub-scoped, by
+  `/agent-collaborations/:hostRunId/agent-runs/:agentRunId/file-change-content?memberAddress=...&path=...`
+  (`StandaloneRootMemberViewProjectionService.resolveFileChangeEntry`); a child the hub does
+  not hold answers 404 `File change not found`. The run-id `getRunFileChanges` and
+  `/runs/:runId/file-change-content` serve the host's own files only: a child's run id gets an
+  empty list or 404, with no search of other trees. The web client opens a copy's list and
+  content through the hub-scoped reads.
   `collaboratorMentionCandidates(rootSubjectKind: "agent", rootRunId, focusedAgentRunId)` lists
   the `@` options for one focused agent (the host or a child). `focusedAgentRunId` is required
   for Agent roots, and the stored root answers per focused agent too.
@@ -231,6 +233,17 @@ survive an in-memory projection refresh, but a new inactive renderer does not sy
 compaction journal from Offline status. See
 [frontend activity](../../../autobyteus-web/docs/agent_execution_architecture.md#run-level-compaction-activity)
 and [memory](agent_memory.md) for the persistence boundaries.
+
+## Runs started by a peer node
+
+A run a peer node delegated to this node (CM-10) is an ordinary eligible standalone run whose
+`run_metadata.json` carries `delegatedFrom` `{nodeId, coordinatingRun, delegatorAgentRunId}`. Its root
+knows the delegator as its `delegator` endpoint (`RemoteRunLinks`), admits the work packet (the prepared
+host is activated, then the system task notification naming the delegator's node is posted), creates
+its `collaboration/` package with the first message, and shuts the host down after the idle grace period
+(`StandaloneHostIdleShutdown`); the next message restores it. A standalone host that delegated to a peer
+records the link in its tree (`taskExecutions` entry with `nodeId`). See
+[Remote Collaboration](remote_collaboration.md).
 
 ## Known limits
 

@@ -1,0 +1,77 @@
+# DEL-01 — clean-clone proof (Task constraint "prove from a clean clone"), 2026-10-27T13:10Z
+## 1. clone
+$ git clone -q --no-local --branch codex/model-router-standard-launch-selector --single-branch /Users/normy/autobyteus_org/autobyteus-workspace-superrepo /tmp/ab313-clone
+exit=0
+HEAD 8e43e74d7 — untracked/ignored dist before setup: 21
+## 2. setup (TESTING.md)
+$ env -i PATH=<user PATH> TMPDIR=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ HOME=/Users/normy pnpm install --frozen-lockfile --reporter=silent
+exit=0
+$ env -i PATH=<user PATH> TMPDIR=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ HOME=/Users/normy pnpm -C autobyteus-ts build
+> autobyteus-ts@1.0.0 build /private/tmp/ab313-clone/autobyteus-ts
+> node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+[verify:runtime-deps] OK
+exit=0
+$ env -i PATH=<user PATH> TMPDIR=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ HOME=/Users/normy pnpm -C autobyteus-server-ts prebuild
+> autobyteus-server-ts@0.1.1 prebuild /private/tmp/ab313-clone/autobyteus-server-ts
+> pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma
+> autobyteus-server-ts@0.1.1 prepare:shared /private/tmp/ab313-clone/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+Scope: 3 of 13 workspace projects
+autobyteus-ts build$ node ./scripts/clean-dist.mjs && tsc -p tsconfig.build.json && node ./scripts/verify-runtime-dependencies.mjs
+autobyteus-application-sdk-contracts build$ tsc -p tsconfig.build.json
+autobyteus-application-sdk-contracts build: Done
+autobyteus-ts build: [verify:runtime-deps] OK
+autobyteus-ts build: Done
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+Prisma schema loaded from prisma/schema.prisma
+✔ Generated Prisma Client (v5.22.0) to ./../node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 120ms
+exit=0
+$ env -i PATH=<user PATH> TMPDIR=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ HOME=/Users/normy pnpm -C autobyteus-web exec nuxt prepare
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+exit=0
+## 3. server typecheck
+exit=0
+## 4. server unit: tests/unit/model-routing/
+ Test Files  8 passed (8)
+      Tests  49 passed (49)
+## 5. web: ChatModelMenu + model-routing specs
+ Test Files  4 passed (4)
+      Tests  31 passed (31)
+## 6. web guards
+guard:web-boundary exit=0
+guard:localization-boundary exit=0
+audit:localization-literals exit=0
+## 7. server build
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+exit=0
+## 8. server E2E: model-routing-delegation (MR-01…09)
+ ✓ tests/e2e/model-routing/model-routing-delegation.e2e.test.ts (9 tests) 395245ms
+     ✓ MR-01 routing off (the default): a team copy runs as today — default, then the delegating run's launch — with no routing request and no record (AC-002)  782ms
+     ✓ MR-02 routing on: the router is asked once, for the members without a usable default; they start on its choice (another runtime); result lines, recorded sources, decisions by Task and statist
+     ✓ MR-03 an unusable answer goes back to the router and its correction is used; a silent router gives the inherited launch with the router-failure note within the bound (AC-004)  80513ms
+     ✓ MR-04 three delegations at once reach the router one per turn in arrival order; a request still waiting at 40 s is never sent and falls back as "busy" (AC-006)  84273ms
+     ✓ MR-05 a default on a model blocked by a used-up limit is skipped with "blocked until …" while routing is on, and used as today while off (AC-003)  17183ms
+     ✓ MR-06 the router set to a signed-out runtime: status SIGNED_OUT, and a delegation that needs it notes the inactive router (CR-002)  42029ms
+     ✓ MR-09 C-05/CR-005: after the router's CLI dies mid-turn, or its turn fails with an error, the next routings are the router's again  148719ms
+ Test Files  1 passed (1)
+      Tests  9 passed (9)
+## 9. server E2E: remote-delegation-two-server (RC-01…41)
+     ↓ RC-39 autobyteus-32 AC-005: with Model Routing off on beta, an agent and a Team no default covers are refused with beta's state; with the router not usable, with its reason
+     ↓ RC-41 autobyteus-32 QR-001/AC-005: a slow router answer within the bound starts the copy (past the former 20 s request bound); a router that does not answer is refused MODEL_ROUTER_FAILED wit
+ FAIL  tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts > Remote collaboration slice 1 between two real server processes (scripted AGY runtime, capturing proxies)
+ Test Files  1 failed (1)
+      Tests  41 skipped (41)
+# done 2026-10-27T13:20Z
+
+## 9b. the two-server suite needs its documented preparation (agent_runtimes.md, TESTING.md): pnpm -C autobyteus-server-ts test:integration:prepare
+prepare exit=0
+Generated importable package at /private/tmp/ab313-clone/applications/brief-studio/dist/importable-package
+Generated application root at /private/tmp/ab313-clone/applications/brief-studio/dist/importable-package/applications/brief-studio
+Integration test prerequisites are present.
+
+## 9c. server E2E: remote-delegation-two-server (RC-01…41), rerun after the preparation
+     ✓ RC-39 autobyteus-32 AC-005: with Model Routing off on beta, an agent and a Team no default covers are refused with beta's state; with the router not usable, with its reason  2538ms
+ Test Files  1 passed (1)
+      Tests  41 passed (41)

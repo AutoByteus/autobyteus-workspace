@@ -1,0 +1,60 @@
+// Test-owned two-node stack for the autobyteus-278 rendered check. Temp data roots, HOMEs and ports only.
+import fs from "node:fs"; import path from "node:path"; import net from "node:net"; import os from "node:os";
+import { spawn } from "node:child_process"; import { randomUUID } from "node:crypto";
+const WT = "/Users/normy/autobyteus_org/autobyteus-worktrees/remote-runs-in-tree/autobyteus-server-ts";
+const app = path.join(WT, "dist/app.js"); const cli = path.join(WT, "tests/fixtures/agy-failure-cli.mjs");
+const root = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), "278-stack-")));
+const MODEL = "gemini-3.8-flash-low";
+const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+const freePort = () => new Promise((res) => { const s = net.createServer(); s.listen(0, "127.0.0.1", () => { const p = s.address().port; s.close(() => res(p)); }); });
+const children = [];
+const start = async (name, port) => {
+  const dir = path.join(root, name); const data = path.join(dir, "data"), home = path.join(dir, "home"), ws = path.join(dir, "workspace");
+  for (const d of [data, home, ws]) fs.mkdirSync(d, { recursive: true });
+  const base = `http://127.0.0.1:${port}`;
+  fs.writeFileSync(path.join(data, ".env"), [`AUTOBYTEUS_SERVER_HOST=${base}`, "APP_ENV=test", "LOG_LEVEL=WARN", "HTTP_ACCESS_LOG_MODE=off", ""].join("\n"));
+  const env = { PATH: process.env.PATH, HOME: home, TMPDIR: os.tmpdir(), ANTIGRAVITY_CLI_COMMAND: cli, AGY_FAKE_CASE: "linked_skills",
+    AGY_FAKE_EXTRA_MODELS: "alt-model", APP_ENV: "test", LOG_LEVEL: "WARN", HTTP_ACCESS_LOG_MODE: "off", AUTOBYTEUS_SERVER_HOST: base };
+  const child = spawn(process.execPath, [app, "--host", "127.0.0.1", "--port", String(port), "--data-dir", data], { cwd: WT, env, stdio: ["ignore", "pipe", "pipe"] });
+  const log = fs.createWriteStream(path.join(dir, "server.log")); child.stdout.pipe(log); child.stderr.pipe(log); children.push(child);
+  for (let i = 0; i < 300; i++) { if (await fetch(`${base}/rest/health`).then((r) => r.ok, () => false)) break; await wait(300); }
+  const status = await (await fetch(`${base}/rest/remote-access/status`)).json();
+  const gql = async (query, variables) => { const b = await (await fetch(`${base}/graphql`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ query, variables }) })).json();
+    if (b.errors) throw new Error(JSON.stringify(b.errors)); return b.data; };
+  return { name, port, base, ws, nodeId: status.serverInstanceId, gql };
+};
+const stop = () => { for (const c of children) if (c.exitCode === null) c.kill("SIGTERM"); };
+process.on("SIGTERM", () => { stop(); setTimeout(() => process.exit(0), 3000); });
+process.on("SIGINT", () => { stop(); setTimeout(() => process.exit(0), 3000); });
+try {
+  const [pa, pb] = [await freePort(), await freePort()];
+  const alpha = await start("alpha", pa), beta = await start("beta", pb);
+  for (const n of [alpha, beta]) await n.gql(`mutation{setRemoteCollaborationEnabled(enabled:true){enabled}}`);
+  const add = `mutation($input:AddPeerNodeInput!){addPeerNode(input:$input){nodeId}}`;
+  await alpha.gql(add, { input: { nodeId: beta.nodeId, baseUrl: beta.base, name: "docker" } });
+  await beta.gql(add, { input: { nodeId: alpha.nodeId, baseUrl: alpha.base, name: "laptop" } });
+  const def = async (n, name, toolNames = [], dlc = null) => (await n.gql(`mutation($input:CreateAgentDefinitionInput!){createAgentDefinition(input:$input){id}}`,
+    { input: { name, role: "assistant", description: `${name}`, instructions: "Follow the user's request.", toolNames, ...(dlc ? { defaultLaunchConfig: dlc } : {}) } })).createAgentDefinition.id;
+  const agy = (m) => ({ runtimeKind: "antigravity_cli", llmModelIdentifier: m, llmConfig: null });
+  const publisher = await def(beta, "Publisher", [], agy(MODEL)); const checker = await def(beta, "Checker");
+  await beta.gql(`mutation($input:CreateAgentTeamDefinitionInput!){createAgentTeamDefinition(input:$input){id}}`, { input: { name: "Studio Team", description: "Studio Team",
+    instructions: "Work as a team.", coordinatorMemberName: "lead", nodes: [["lead", publisher], ["checker", checker]].map(([memberName, ref]) => ({ memberName, ref, refScope: "SHARED" })), defaultLaunchConfig: agy("alt-model") } });
+  const manager = await def(alpha, "Manager");
+  const run = (await alpha.gql(`mutation($input:CreateAgentRunInput!){createAgentRun(input:$input){success message runId}}`,
+    { input: { agentDefinitionId: manager, workspaceRootPath: alpha.ws, llmModelIdentifier: MODEL, llmConfig: null, autoExecuteTools: true, runtimeKind: "antigravity_cli" } })).createAgentRun;
+  if (!run.success) throw new Error(run.message);
+  const send = async (content) => {
+    const socket = new WebSocket(`ws://127.0.0.1:${alpha.port}/ws/agent/${run.runId}`);
+    await new Promise((res, rej) => { socket.onopen = res; socket.onerror = rej; });
+    await wait(500);
+    const id = randomUUID();
+    socket.send(JSON.stringify({ type: "SEND_MESSAGE", payload: { message_id: id, dedupe_key: `agent_run_input:stack:${id}`, context_file_paths: [], image_urls: [], agent_run_id: run.runId, content } }));
+    await wait(8000); socket.close();
+  };
+  const call = (args) => `CALL_TOOL:${JSON.stringify({ name: "delegate_task", arguments: args })}`;
+  await send(call({ node: "docker", recipient_address: "/publisher", description: "Draft the October newsletter for the product launch" }));
+  await send(call({ node: "docker", recipient_address: "/studio_team", description: "Plan the October campaign across channels" }));
+  fs.writeFileSync("/tmp/278-stack/state.json", JSON.stringify({ root, alpha: { port: alpha.port, nodeId: alpha.nodeId }, beta: { port: beta.port, nodeId: beta.nodeId }, managerRunId: run.runId }, null, 2));
+  console.log("READY", JSON.stringify({ alpha: alpha.port, beta: beta.port, run: run.runId }));
+} catch (error) { console.error("FAILED", error); stop(); process.exit(1); }
+setInterval(() => {}, 1 << 30);

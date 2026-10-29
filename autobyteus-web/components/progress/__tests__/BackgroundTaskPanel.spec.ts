@@ -17,6 +17,17 @@ const translate = (key: string, params: Record<string, unknown> = {}) => {
 };
 vi.mock('~/composables/useLocalization', () => ({ useLocalization: () => ({ t: translate }) }));
 
+// Existing streamed-provider rendering contract; the inspection integration has its own suite.
+vi.mock('~/composables/useBackgroundTaskPanelView', async () => {
+  const { computed, ref } = await import('vue');
+  const { useAgentBackgroundTaskStore } = await import('~/stores/agentBackgroundTaskStore');
+  return { useBackgroundTaskPanelView: (runId: { value: string }) => {
+    const store = useAgentBackgroundTaskStore();
+    return { tasks: computed(() => store.getTasks(runId.value)), counts: computed(() => store.getCounts(runId.value)),
+      mode: ref('event-stream'), confirmed: ref(true), snapshotView: ref(false) };
+  } };
+});
+
 import BackgroundTaskPanel from '../BackgroundTaskPanel.vue';
 
 const task = (overrides: Partial<BackgroundTask> = {}): BackgroundTask => ({

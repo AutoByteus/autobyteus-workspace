@@ -929,15 +929,6 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     expect(configButton.exists()).toBe(false);
   });
 
-  it('does not render Skill Improvement actions on run-history rows', async () => {
-    const wrapper = mountComponent();
-    await flushPromises();
-    await expandAgentGroup(wrapper);
-
-    expect(wrapper.find('button[aria-label="Improve skills from this run"]').exists()).toBe(false);
-    expect(wrapper.find('button[title="Improve skills from this run"]').exists()).toBe(false);
-  });
-
   it('renders grouped team rows under workspace and selects the team run when clicked', async () => {
     runHistoryState.workspaceGroups = [
       buildWorkspaceHistoryGroup({
@@ -2260,7 +2251,8 @@ describe('WorkspaceAgentRunsTreePanel', () => {
     let opened = false;
     const inspected = {
       orgRunId: 'org-run', isActive: false, phase: 'historical', executionTree: tree, view: { closed_task_executions: [] }, selectedAddress: null, selection: null,
-      index: { agents: new Map([['agent-task-lead', { agentRunId: 'agent-task-lead', address: '/team/lead' }]]), configured: new Set<string>() },
+      index: { agents: new Map([['agent-task-lead', { agentRunId: 'agent-task-lead', address: '/team/lead' }]]), configured: new Set<string>(),
+        addressOf: (agentRunId: string) => agentRunId === 'agent-task-lead' ? '/team/lead' : null },
     };
     const openForInspection = vi.spyOn(orgContexts, 'openForInspection').mockImplementation(async () => { opened = true; });
     vi.spyOn(orgContexts, 'contextFor').mockImplementation(((id: string) => opened && id === 'org-run' ? inspected : null) as never);

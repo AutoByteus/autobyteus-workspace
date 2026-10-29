@@ -9,7 +9,7 @@ import { MemberExecutionContextBuilder } from "./member-team-context-builder.js"
 import { RootTeamRun } from "../domain/root-team-run.js";
 import type { TeamRunConfig } from "../domain/team-run-config.js";
 import type { TeamRunEvent } from "../domain/team-run-event.js";
-import type { TeamRunLifecycleListener, TeamRunLifecycleSnapshot, TeamRunLifecycleUnsubscribe } from "../domain/team-run-lifecycle.js";
+import type { TeamRunEnding, TeamRunLifecycleListener, TeamRunLifecycleSnapshot, TeamRunLifecycleUnsubscribe } from "../domain/team-run-lifecycle.js";
 import type { RootEventListener } from "./team-run-event-publisher.js";
 import { buildInitialTeamRunExecutionTree, buildTeamRunConfigFromExecutionTree } from "./team-run-execution-tree-builder.js";
 import type { TeamCommunicationMessagesSnapshot } from "../../services/team-communication/team-communication-messages-file.js";
@@ -35,6 +35,9 @@ import { TeamExecutionIndex } from "./team-execution-index.js";
 import type { DelegatedLaunchModelOptions } from "../../agent-collaboration/collaborators/delegated-launch-selection-command.js";
 import type { DelegatedLaunchChange } from "../../agent-collaboration/domain/delegated-launch-selection.js";
 import { planStoppedTeamLaunchSave, teamDelegatedLaunchModelOptions } from "./team-run-delegated-launch-plan.js";
+import { storedRemoteLinkCheck, type RemoteInboundQuery, type StoredRemoteLinkCheck } from "../../agent-collaboration/execution/remote/remote-run-links.js";
+import { teamRunRemoteLinks } from "../domain/team-run-remote-links.js";
+import type { DelegatedFrom } from "../../run-history/store/agent-run-metadata-types.js";
 
 const required = (value: string, field: string): string => {
   const normalized = value.trim();
@@ -123,15 +126,18 @@ export class AgentTeamRunManager {
   async createTeamRun(input: {
     config: TeamRunConfig;
     teamDefinitionName: string;
+    /** A Team run a peer node starts (autobyteus-247): its back-link, kept on the tree. */
+    delegatedFrom?: DelegatedFrom;
   }): Promise<RootTeamRun> {
     this.assertRootAdmissionOpen();
     const rootTeamRunId = required(input.config.rootTeam.teamRunId, "rootTeamRunId");
     return this.withRootTransition(rootTeamRunId, async () => {
       if (this.hasManagedTeamRun(rootTeamRunId)) throw new Error(`RootTeamRun '${rootTeamRunId}' is already managed.`);
-      const tree = buildInitialTeamRunExecutionTree({
+      const initial = buildInitialTeamRunExecutionTree({
         config: input.config,
         teamDefinitionName: required(input.teamDefinitionName, "teamDefinitionName"),
       });
+      const tree = input.delegatedFrom ? Object.freeze({ ...initial, delegatedFrom: input.delegatedFrom }) : initial;
       const messages: TeamCommunicationMessagesSnapshot = Object.freeze({
         schemaVersion: 1,
         rootTeamRunId,
@@ -146,7 +152,7 @@ export class AgentTeamRunManager {
         mode: "fresh",
         persistInitialPackage: true,
         ...this.materializationDependencies(),
-        onTerminated: (terminated) => { this.unregister(rootTeamRunId, terminated); },
+        onTerminated: (terminated, ending) => { this.unregister(rootTeamRunId, terminated, ending); },
       });
       try {
         await this.packageCatalog.admit(rootTeamRunId);
@@ -184,7 +190,7 @@ export class AgentTeamRunManager {
         mode: "restore",
         persistInitialPackage: false,
         ...this.materializationDependencies(),
-        onTerminated: (terminated) => { this.unregister(rootTeamRunId, terminated); },
+        onTerminated: (terminated, ending) => { this.unregister(rootTeamRunId, terminated, ending); },
       });
       this.register(root);
       return root;
@@ -211,6 +217,15 @@ export class AgentTeamRunManager {
 
   hasManagedTeamRun(rootTeamRunIdInput: string): boolean {
     return this.getManagedTeamRun(rootTeamRunIdInput) !== null;
+  }
+
+  /** N-303 / N-304: a peer's request checked against an unmanaged Team run's stored links; it loads nothing. */
+  async storedRemoteLinkCheck(rootTeamRunIdInput: string, query: RemoteInboundQuery): Promise<StoredRemoteLinkCheck> {
+    const rootTeamRunId = required(rootTeamRunIdInput, "rootTeamRunId");
+    if (query.kind !== "owner" && this.hasManagedTeamRun(rootTeamRunId)) return "proceed";
+    const tree = this.getManagedTeamRun(rootTeamRunId)?.getExecutionTreeSnapshot()
+      ?? await this.executionTreeStore.read(this.teamMemoryDir(rootTeamRunId), rootTeamRunId);
+    return storedRemoteLinkCheck(tree ? teamRunRemoteLinks(() => tree) : null, query);
   }
 
   /** Closed (Task DONE or CANCELLED) task executions of the given (stored) tree of this root Team. */
@@ -306,7 +321,7 @@ export class AgentTeamRunManager {
 
   getLifecycleSnapshot(rootTeamRunId: string): TeamRunLifecycleSnapshot {
     const teamRunId = required(rootTeamRunId, "rootTeamRunId");
-    return { teamRunId, isActive: this.hasManagedTeamRun(teamRunId) };
+    return { teamRunId, isActive: this.hasManagedTeamRun(teamRunId), ending: null };
   }
 
   subscribeToLifecycle(rootTeamRunId: string, listener: TeamRunLifecycleListener): TeamRunLifecycleUnsubscribe {
@@ -331,7 +346,7 @@ export class AgentTeamRunManager {
       if (!root) return false;
       const result = await root.terminate();
       if (!result.accepted) return false;
-      return this.unregister(rootTeamRunId, root) || !this.managedRoots.has(rootTeamRunId);
+      return this.unregister(rootTeamRunId, root, "stopped") || !this.managedRoots.has(rootTeamRunId);
     } catch (error) {
       throw new AgentTeamTerminationError(String(error));
     }
@@ -415,7 +430,7 @@ export class AgentTeamRunManager {
       reservation.release();
       throw error;
     }
-    this.notify({ teamRunId: root.teamRunId, isActive: true });
+    this.notify({ teamRunId: root.teamRunId, isActive: true, ending: null });
   }
 
   /**
@@ -431,14 +446,14 @@ export class AgentTeamRunManager {
     if (!result.accepted) {
       throw new Error(`TEAM_RUN_STOP_INCOMPLETE: ${result.message ?? result.code ?? `TeamRun '${rootTeamRunId}' did not finish stopping.`}`);
     }
-    this.unregister(rootTeamRunId, root);
+    this.unregister(rootTeamRunId, root, "stopped");
   }
 
-  private unregister(rootTeamRunId: string, expected: RootTeamRun): boolean {
+  private unregister(rootTeamRunId: string, expected: RootTeamRun, ending: TeamRunEnding): boolean {
     if (this.managedRoots.get(rootTeamRunId) !== expected) return false;
     this.managedRoots.delete(rootTeamRunId);
     this.activeRootDirectory.unregister(createTeamRootExecutionIdentity(rootTeamRunId), expected);
-    this.notify({ teamRunId: rootTeamRunId, isActive: false });
+    this.notify({ teamRunId: rootTeamRunId, isActive: false, ending });
     return true;
   }
 

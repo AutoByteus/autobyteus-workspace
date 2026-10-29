@@ -1,0 +1,49 @@
+{
+  "id": "IMP-13",
+  "date": "2026-10-24T04:10:10.909380+00:00",
+  "commit": "3d95a5c4a16759060983489735e77820661cff53",
+  "step": "Observe owned preview ports/processes/page absent; remove exact private HOME/TMP setup",
+  "environment": "Darwin arm64",
+  "observations": [
+    {
+      "attempt": "IMP-11-current",
+      "port": 51525,
+      "portClosed": true,
+      "serverPid": 15008,
+      "pidAbsent": true,
+      "driverCleanup": {
+        "browser": "closed",
+        "nuxt": "closed",
+        "fixture": "removed"
+      }
+    },
+    {
+      "attempt": "IMP-11-final",
+      "port": 51588,
+      "portClosed": true,
+      "serverPid": 22343,
+      "pidAbsent": true,
+      "driverCleanup": {
+        "browser": "closed",
+        "nuxt": "closed",
+        "fixture": "removed"
+      }
+    },
+    {
+      "attempt": "IMP-11-verified",
+      "port": 51669,
+      "portClosed": true,
+      "serverPid": 28247,
+      "pidAbsent": true,
+      "driverCleanup": {
+        "browser": "closed",
+        "nuxt": "closed",
+        "fixture": "removed"
+      }
+    }
+  ],
+  "fixtureAbsent": true,
+  "scratchRemoved": "/Users/normy/nfs-guide-r2-imp-7uncw0tz",
+  "dependencies": "Ignored worktree node_modules/.nuxt retained for downstream; no unrelated resource removed",
+  "result": "Pass"
+}

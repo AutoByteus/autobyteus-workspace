@@ -1,0 +1,50 @@
+# AE-15 | plain node script /private/tmp/tv-r2/plain/probe.mjs (imports only autobyteus-ts via node_modules/autobyteus-ts -> worktree package, dist) | cwd /private/tmp/tv-r2/plain | env: real *_API_KEY removed, ANTHROPIC/OPENAI/DEEPSEEK_API_KEY=<env canaries> | commit a525ca02ac | 2026-10-20T04:04:41Z
+## run 1: only AUTOBYTEUS_TEST_VAULT=/private/tmp/tv-r2/v-full (fetch stubbed for api.deepseek.com)
+[AE-15] mode: stub
+[AE-15] AUTOBYTEUS_TEST_VAULT set: true
+[AE-15] credential env names visible to script: ["ANTHROPIC_API_KEY","DEEPSEEK_API_KEY","OPENAI_API_KEY"]
+[AE-15] sqlite modules loaded before any key lookup: []
+[AE-15] deepseek completion length: 8
+[AE-15] deepseek completion non-empty: OK
+[AE-15] bearer sha256 == vault canary: true
+[AE-15] bearer sha256 == env canary: false
+[AE-15] vault key sent, env key not sent: OK
+[AE-15] sqlite modules loaded after lookup: ["Internal Binding sqlite","NativeModule sqlite"]
+[AE-15] grok error: missing_api_key: missing capability provider.grok.api-key for GROK (test vault /private/tmp/tv-r2/v-full); add it with pnpm test-vault setup
+[AE-15] result: PASS
+exit=0
+## run 2: variable unset
+[AE-15] mode: stub
+[AE-15] AUTOBYTEUS_TEST_VAULT set: false
+[AE-15] credential env names visible to script: ["ANTHROPIC_API_KEY","DEEPSEEK_API_KEY","OPENAI_API_KEY"]
+[AE-15] sqlite modules loaded before any key lookup: []
+[AE-15] deepseek error: missing_api_key: API key not provided for DEEPSEEK. Configure the DEEPSEEK API key before sending a request.
+[AE-15] deepseek error contains API key not provided for DEEPSEEK: OK
+[AE-15] sqlite modules loaded after lookup: []
+[AE-15] grok error: missing_api_key: API key not provided for GROK. Configure the GROK API key before sending a request.
+[AE-15] result: PASS
+exit=0
+## run 3: selector inside production app data (~/.autobyteus/ae15-forbidden-probe; does not exist)
+[AE-15] mode: stub
+[AE-15] AUTOBYTEUS_TEST_VAULT set: true
+[AE-15] credential env names visible to script: ["ANTHROPIC_API_KEY","DEEPSEEK_API_KEY","OPENAI_API_KEY"]
+[AE-15] sqlite modules loaded before any key lookup: []
+[AE-15] deepseek error: TEST_VAULT_LOCATION_FORBIDDEN: TEST_VAULT_LOCATION_FORBIDDEN: /Users/normy/.autobyteus/ae15-forbidden-probe is inside the user's AutoByteus app data (key for DEEPSEEK)
+[AE-15] deepseek error contains TEST_VAULT_LOCATION_FORBIDDEN: OK
+[AE-15] sqlite modules loaded after lookup: ["Internal Binding sqlite","NativeModule sqlite"]
+[AE-15] grok error: TEST_VAULT_LOCATION_FORBIDDEN: TEST_VAULT_LOCATION_FORBIDDEN: /Users/normy/.autobyteus/ae15-forbidden-probe is inside the user's AutoByteus app data (key for GROK)
+[AE-15] result: PASS
+exit=0
+~/.autobyteus/ae15-forbidden-probe exists after run: no
+## run 4: selector at a missing directory
+[AE-15] mode: stub
+[AE-15] AUTOBYTEUS_TEST_VAULT set: true
+[AE-15] credential env names visible to script: ["ANTHROPIC_API_KEY","DEEPSEEK_API_KEY","OPENAI_API_KEY"]
+[AE-15] sqlite modules loaded before any key lookup: []
+[AE-15] deepseek error: TEST_VAULT_NOT_FOUND: TEST_VAULT_NOT_FOUND: no test vault in /private/tmp/tv-r2/no-vault-here; run pnpm test-vault setup (key for DEEPSEEK)
+[AE-15] deepseek error contains TEST_VAULT_NOT_FOUND: OK
+[AE-15] sqlite modules loaded after lookup: ["Internal Binding sqlite","NativeModule sqlite"]
+[AE-15] grok error: TEST_VAULT_NOT_FOUND: TEST_VAULT_NOT_FOUND: no test vault in /private/tmp/tv-r2/no-vault-here; run pnpm test-vault setup (key for GROK)
+[AE-15] result: PASS
+exit=0
+no-vault-here exists after run: no

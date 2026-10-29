@@ -10,14 +10,12 @@ import { taskExecutionReferenceKey, type TaskExecutionReference } from "../execu
 export const createRootHostedDelegatedLaunchCommand = (options: Readonly<{
   tasks: DelegatedLaunchRootPort["tasks"] & Readonly<{ closedTaskExecutions(): readonly TaskExecutionReference[] }>;
   forest: DelegatedLaunchRootPort["forest"];
-  readTaskSource: DelegatedLaunchRootPort["readTaskSource"];
   publishSelectionsChanged: DelegatedLaunchRootPort["publishSelectionsChanged"];
   /** Applies the selections to the current tree; equal to it when nothing changes. */
   isUnchanged(selections: DelegatedLaunchSelections): boolean;
   commitTree(selections: DelegatedLaunchSelections, afterDurability: () => void): Promise<void>;
 }>): DelegatedLaunchSelectionCommand => new DelegatedLaunchSelectionCommand({
   forest: options.forest,
-  readTaskSource: options.readTaskSource,
   isClosed: (reference) => options.tasks.closedTaskExecutions()
     .some((closed) => taskExecutionReferenceKey(closed) === taskExecutionReferenceKey(reference)),
   tasks: options.tasks,

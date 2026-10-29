@@ -21,7 +21,7 @@ const productTeamRun = {
   address: "/product_team", teamRunId: "product-team-run", delegatorAgentRunId: "host-run", startedAt: "2026-09-30T00:00:00.000Z",
   members: [{ address: "/product_team/lead", agentRunId: "lead-run", platformAgentRunId: null }], taskExecutions: [],
   source: { kind: "agent_team", teamDefinitionId: "product-team-def", coordinatorAddress: "/product_team/lead", handoffs: [],
-    members: [{ address: "/product_team/lead", agentDefinitionId: "lead-def" }], defaultLaunchConfiguration: launchConfiguration },
+    members: [{ address: "/product_team/lead", agentDefinitionId: "lead-def", launchConfiguration, followsTeam: true }], defaultLaunchConfiguration: launchConfiguration },
 };
 
 const agentView = (overrides = {}) => ({
@@ -47,6 +47,7 @@ const agentView = (overrides = {}) => ({
       }],
     },
     agent_input_states: [],
+    remote_task_executions: [],
     agent_statuses: [
       { member_address: "/code_reviewer", agent_run_id: "reviewer-run", status: "idle", trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null },
       { member_address: "/product_team/lead", agent_run_id: "lead-run", status: "offline", trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null },

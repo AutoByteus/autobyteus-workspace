@@ -1,0 +1,5 @@
+# IMP-20 a delegated run across the Skill Improvement data removal (in autobyteus-server-ts): npx vitest run tests/unit/remote-collaboration/delegated-run-metadata-across-migrations.test.ts; commit 300bf4c09a; macOS, node v22.23.1; 2026-10-20T18:36:43Z
+ ✓ tests/unit/remote-collaboration/delegated-run-metadata-across-migrations.test.ts (1 test) 44ms
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+exit=0

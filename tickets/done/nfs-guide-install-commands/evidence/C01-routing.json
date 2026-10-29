@@ -1,0 +1,38 @@
+{
+  "case": "C01",
+  "date": "2026-10-21T20:09:45.799Z",
+  "step": "Fresh post-evidence-commit routing selection",
+  "environment": "NFS guide direct validation",
+  "evidenceCommit": "cd9126c29de9bb1e597a0a49f382628360024357",
+  "classification": {
+    "task_size": "Small",
+    "architectural_risk": "Low",
+    "route": "Direct Low-Risk"
+  },
+  "result": "Pass",
+  "confidencePercent": 96.43,
+  "durableTestChanges": [],
+  "testReview": "Not Required — direct low-risk route",
+  "selected": {
+    "when": "When API/E2E validation passes on the direct route, the carried classification is task_size=Small or Medium and architectural_risk=Low, no durable test-code review is required by policy, and the complete validated package is ready for delivery, documentation sync, finalization, or release work.",
+    "recipient_address": "/software_engineering_team/delivery_engineer"
+  },
+  "rules": [
+    {
+      "when": "When API/E2E validation passes, the carried classification is task_size=Large or architectural_risk=High, and the cumulative evidence package requires proportional test-code review.",
+      "recipient_address": "/software_engineering_team/code_reviewer"
+    },
+    {
+      "when": "When API/E2E validation fails and the complete failure package requires focused failure-origin review by the code reviewer.",
+      "recipient_address": "/software_engineering_team/code_reviewer"
+    },
+    {
+      "when": "When API/E2E validation passes on the direct route, the carried classification is task_size=Small or Medium and architectural_risk=Low, no durable test-code review is required by policy, and the complete validated package is ready for delivery, documentation sync, finalization, or release work.",
+      "recipient_address": "/software_engineering_team/delivery_engineer"
+    },
+    {
+      "when": "When coverage investigation or test-validity analysis establishes a Requirement Gap, Design Impact or Unclear upstream issue before executable validation can proceed. Include the supported scenario basis and concrete evidence. Execution failures still follow the Code Reviewer failure-origin route.",
+      "recipient_address": "/software_engineering_team/solution_designer"
+    }
+  ]
+}

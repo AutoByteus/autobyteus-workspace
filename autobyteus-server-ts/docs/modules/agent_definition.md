@@ -8,7 +8,6 @@ Defines agent blueprints for shared standalone agents, team-local agents, and ap
 
 - `src/agent-definition`
 - `src/api/graphql/types/agent-definition.ts`
-- `src/agent-tools/agent-management`
 - `src/built-in-agents` (platform-provided built-in agent templates and startup sync)
 
 ## Main Service
@@ -114,14 +113,60 @@ Every agent definition carries `skillScope` (`AgentSkillScope`), persisted in `a
 
 `normalizeAgentSkillScope` in `src/agent-definition/domain/models.ts` is the single normalization point. Effective skill resolution for either scope is owned by `SkillService` (see `skills.md`); runtime factories never branch on the scope themselves.
 
+## Internal Agents
+
+An agent definition may carry `"internal": true` in its `agent-config.json`
+(shared, team-local and application-package definitions read it the same way;
+absent or anything but `true` is a normal agent). An internal agent is the
+system's own helper, such as the Model Router. `AgentDefinition.internal` holds
+it, `normalizeAgentConfigRecord` reads it, and `buildAgentConfigRecord` writes it
+only for an internal agent, so a save keeps it and a normal agent's file gains
+no key. GraphQL exposes it as `AgentDefinition.internal` (the Agents page's
+"Internal" badge).
+
+The server setting **Show internal agents** (`AUTOBYTEUS_SHOW_INTERNAL_AGENTS`,
+`true`/`false`, default off; `src/config/show-internal-agents-setting.ts`) is
+read on every call, so a change applies to the next list without a restart. It
+can be set in Settings → Server Settings → Basics or as an environment variable.
+
+`InternalAgentVisibility` (`src/agent-definition/services/internal-agent-visibility.ts`)
+is the one rule: a definition is hidden when it is internal and the setting is
+off. Every place where the user or an agent browses, picks or delegates asks it;
+none reads the setting or the attribute itself:
+
+| Surface | Owner that asks the rule |
+| --- | --- |
+| Agents page, every agent picker (new run, team members, Org placement, featured items), mobile apps, application resources | `AgentDefinitionService.getVisibleAgentDefinitions` (GraphQL `agentDefinitions`) |
+| `list_available_agents`, `@` candidates and `@` by ID, `delegate_task` catalog addresses, a peer node's available agents and delegation | `CollaboratorCandidatePolicy.isEligibleAgent` (the rule is injected through `createCollaboratorDefinitionCatalog`) |
+| Run history | `AgentRunHistoryService.listRunHistory` (rows of hidden definitions) |
+| Memory page | `AgentMemoryExplorerService` (the agent list and its runs) |
+
+While hidden, `delegate_task` to an internal agent's address gets the usual
+"not the address of an available agent or agent team" refusal, which reveals
+nothing. Hidden is not protected: opening a definition or a run by ID
+(`agentDefinition(id)`, the run projection) works
+whatever the setting, and system-started runs of internal agents run and are
+recorded as usual. Internal Agent Teams are not a feature; built-in agents stay
+excluded from collaboration whatever the setting.
+
+Tests: unit `tests/unit/agent-definition/internal-agents.test.ts` and
+`tests/unit/agent-collaboration/collaborators/internal-agent-eligibility.test.ts`;
+E2E `tests/e2e/agent-definitions/internal-agents.e2e.test.ts` (IA-01…05: list,
+save, run history and Memory page with a real recorded run, `list_available_agents`,
+`@` and `delegate_task` over Agent Tools MCP with the scripted AGY CLI
+(`RUN_AGY_FAILURE_E2E=1`), the setting); RC-38 in
+`tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts` (a
+peer's offer and delegation).
+
 ## Built-In Agent Sync
 
-Backend startup calls the unified built-in-agent bootstrapper in `src/built-in-agents/`. This subsystem owns platform built-in agent templates, syncs the registry-defined built-in agent ids into the normal runtime agent folder under `<appDataDir>/agents/`, resolves them through `AgentDefinitionService`, and initializes server settings that select infrastructure agents when required.
+Backend startup calls the unified built-in-agent bootstrapper in `src/built-in-agents/`. This subsystem owns platform built-in agent templates, syncs the registry-defined built-in agent ids into the normal runtime agent folder under `<appDataDir>/agents/`, and resolves them through `AgentDefinitionService`.
 
 Built-in templates are centralized under `src/built-in-agents/templates/`. Every built-in agent is platform-owned:
 
-- `retrospective-skill-improver/` syncs the shared `agents/autobyteus-retrospective-skill-improver/` definition with display name **Retrospective Skill Improver**. The persisted clean-state definition id is `autobyteus-retrospective-skill-improver`.
 - `daily-assistant/` syncs the shared `agents/autobyteus-daily-assistant/` definition with display name **Daily Assistant** and role **General Agent**. It is the default agent of the web Chat entry, ships with the general tool set (including `read_file` for cataloged `SKILL.md` files and opt-in `list_available_agents` for accessible specialist agents and teams) and `skillScope: ALL_INSTALLED`, and is exported as `DAILY_ASSISTANT_AGENT_DEFINITION_ID`.
+
+- `model-router/` syncs `agents/autobyteus-model-router/` (`MODEL_ROUTER_AGENT_DEFINITION_ID`), the **Model Router** agent: marked `"internal": true`, so it is hidden while "Show internal agents" is off, and run only by Model Routing in its own internal workspace (see [Model Routing](model_routing.md)).
 
 Daily Assistant is a displayed name, not a new definition:
 `autobyteus-daily-assistant`, the `daily-assistant/` template directory and
@@ -142,11 +187,10 @@ introduced.
 The built-in-agent bootstrapper owns this lifecycle:
 
 - every built-in has its `agent.md` and `agent-config.json` rewritten from the template on every startup, and its `skills/` folder mirrored from the template (removed when the template has none); app-data edits to those ids, including edits to the Daily Assistant's prompt, tools, model defaults, skill scope or agent-local skills, do not survive restart;
-- standalone local agents that are not listed in `BUILT_IN_AGENT_DEFINITIONS`, user package roots, and application-owned package definitions are not part of this sync;
-- `AUTOBYTEUS_RETROSPECTIVE_SKILL_IMPROVER_AGENT_DEFINITION_ID` is initialized to `autobyteus-retrospective-skill-improver` only when the setting is blank; and
-- built-in files are written for every built-in first, then one full reload of the agent package definitions (`reloadAgentPackageDefinitions()`) runs, and only then is each built-in resolved through `getAgentDefinitionById` and its setting default initialized.
+- standalone local agents that are not listed in `BUILT_IN_AGENT_DEFINITIONS`, user package roots, and application-owned package definitions are not part of this sync; and
+- built-in files are written for every built-in first, then one full reload of the agent package definitions (`reloadAgentPackageDefinitions()`) runs, and only then is each built-in resolved through `getAgentDefinitionById`.
 
-Internal infrastructure-agent customization belongs in the bundled source templates or in a separate user/package-managed agent selected by the relevant server setting.
+Built-in agent customization belongs in the bundled source templates; a user who wants a different agent creates their own definition.
 
 Do not add separate one-off built-in-agent bootstrappers or scatter platform
 templates under feature-runtime folders. Native compaction now constructs an

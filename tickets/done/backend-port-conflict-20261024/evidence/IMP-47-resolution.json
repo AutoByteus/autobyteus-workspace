@@ -1,0 +1,19 @@
+{
+  "priorReviewed": "36589947576fd4cfadc83420694c718aebc6f590",
+  "checkpoint": "72476797a",
+  "integratedBase": "67994daba0adf6eb8c6bc05827b5fab6b2975aa4",
+  "conflictsResolved": {
+    "autobyteus-web/generated/graphql.ts": "Complete repository regeneration from current compiled server schema and current operations; AgentBackgroundTask union preserved, memorySyncSourceId retained, failures only under ImportMcpServerConfigsResult",
+    "docs/design-cases.md": "Both additions to cases2/5 preserved; upstream Case8 retained; ticket process lifetime/continuity cases renumbered9/10. No live anchor references to old headings found in docs/ticket source."
+  },
+  "autoMergeAudit": [
+    "GraphQL schema registers both AgentBackgroundTaskViewResolver and AvailableAgentRuntimesResolver",
+    "ElectronApplication retains awaited ApplicationShutdown and updater preparation while adopting entry/node names and runElectronFileMigrations before reads",
+    "Both ambient Electron declarations still import shared ServerStatusSnapshot; ServerMonitor summary derived from store unchanged",
+    "Terminal tool wrappers now prune empty JSON under incoming serializer; scope, captures, anchors and ownership unchanged; false/zero retained by serializer",
+    "Codex inspection source and observational manager/registry unchanged; bindingRevision still increments on entryId or endpoint changes and panel fences it",
+    "Incoming input admit delegates reserve checks, does not alter root shutdown fence; general supervisor adds internal-agent visibility to catalog only"
+  ],
+  "validationPlan": "All applicable implementation scoped cases rerun; API-owned journey equivalents after source review; old build not integrated proof",
+  "generatedSha256": "4ce0dfb90d2c4f7111a0dd03785ffde112fed956e3ca65528c70e8783bfca8e8"
+}

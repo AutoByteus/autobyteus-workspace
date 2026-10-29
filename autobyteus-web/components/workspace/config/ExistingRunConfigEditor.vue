@@ -65,11 +65,14 @@ import {
   collaborationTaskExecutionLists,
 } from '~/services/collaborators/agentSourceSelectors'
 import {
+  agentRunIdsOf,
   collaborationDelegatedLaunchNodes,
   delegatedRowsByKey,
+  remoteDelegatedLaunchNodes,
   teamDelegatedLaunchNodes,
   type DelegatedRowControl,
 } from '~/utils/runSettings/delegatedLaunchRows'
+import { useRemoteRunsStore } from '~/stores/remoteRunsStore'
 import { useDelegatedLaunchDraftStore } from '~/stores/delegatedLaunchDraftStore'
 import { useAgentOrgContextsStore } from '~/stores/agentOrgContextsStore'
 import { planExistingTeamModelConfigPatches } from '~/services/runConfigEditing/existingTeamModelConfigDraft'
@@ -249,7 +252,23 @@ const delegatedControl = computed<DelegatedRowControl>(() => {
  * REQ-007 (SR-007): open delegated copies of the run. Team and Org runs read the
  * saved tree; a stopped Agent reads its Settings snapshot, an active Agent its live view. Closed copies are left out.
  */
-const delegatedRows = computed<readonly RunMemberNode[]>(() => {
+const delegatedRows = computed<readonly RunMemberNode[]>(() => [...localDelegatedRows.value, ...remoteDelegatedRows.value])
+/**
+ * autobyteus-32 REQ-009: the copies the run delegated to other nodes, read-only, with the launch each node chose. An
+ * Agent root reads its own view (live or the stopped snapshot); a Team or Org root the window's remote-run registry
+ * (the runs its own agents delegated).
+ */
+const remoteDelegatedRows = computed<readonly RunMemberNode[]>(() => {
+  const current = draft.value
+  if (!current) return []
+  const deps = { schemaFor, sameWorkspace: sameRunWorkspaceChoice }
+  if (current.kind === 'agent') {
+    const view = current.isActive ? useAgentRunCollaborationStore().contextFor(current.runId)?.view ?? null : current.delegatedSnapshot
+    return remoteDelegatedLaunchNodes(view?.remote_task_executions ?? [], deps)
+  }
+  return remoteDelegatedLaunchNodes(useRemoteRunsStore().executionsDelegatedBy(agentRunIdsOf(current.executionTree)), deps)
+})
+const localDelegatedRows = computed<readonly RunMemberNode[]>(() => {
   const current = draft.value
   if (!current) return []
   const deps = { schemaFor, sameWorkspace: sameRunWorkspaceChoice }
@@ -261,15 +280,10 @@ const delegatedRows = computed<readonly RunMemberNode[]>(() => {
     ? useAgentRunCollaborationStore().contextFor(current.runId)?.view ?? null : current.delegatedSnapshot) : null
   if (current.kind === 'agent' && !view) return []
   const org = current.kind === 'agent_org' ? current.executionTree.rootOrg : null
-  const configured = (org?.members ?? []).flatMap((member) => 'agentRunId' in member ? [member] : member.members)
-  const teams = (org?.members ?? []).flatMap((member) => 'teamRunId' in member ? [member] : [])
   return collaborationDelegatedLaunchNodes({
     taskExecutions: collaborationTaskExecutionLists({
       taskExecutions: org?.taskExecutions ?? view!.execution_tree.taskExecutions, members: org?.members ?? [],
     }),
-    launchAt: (address) => configured.find((agent) => agent.address === address)?.launchConfiguration
-      ?? teams.find((team) => team.address === address)?.defaultLaunchConfiguration ?? null,
-    coordinatorAt: (address) => teams.find((team) => team.address === address)?.coordinatorAddress ?? null,
     closed: current.kind === 'agent_org' ? history.agentOrgHistory.find((run) => run.rootRunId === current.orgRunId)?.closedTaskExecutions ?? []
       : view!.closed_task_executions,
   }, deps, delegatedControl.value)

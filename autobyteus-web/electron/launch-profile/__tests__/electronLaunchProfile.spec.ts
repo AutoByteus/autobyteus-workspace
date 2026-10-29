@@ -83,4 +83,38 @@ describe('Electron launch profile', () => {
     expect(setPath).toHaveBeenCalledWith('sessionData', plan?.sessionData)
     expect(setAppLogsPath).toHaveBeenCalledWith(plan?.logs)
   })
+
+  it('keeps app updates disabled in e2e unless a loopback test update feed is given (REQ-019)', () => {
+    const { production, selected } = fixture()
+    const e2eEnv = {
+      AUTOBYTEUS_ELECTRON_LAUNCH_PROFILE: 'e2e',
+      AUTOBYTEUS_ELECTRON_SERVER_PORT: '31003',
+      AUTOBYTEUS_ELECTRON_DATA_ROOT: selected,
+    }
+    const resolve = (extra: Record<string, string>) => resolveElectronLaunchProfile({
+      env: { ...e2eEnv, ...extra }, protectedPaths: [production],
+    })
+    const quiet = resolve({})
+    expect(quiet.name === 'e2e' && quiet.testUpdateFeedUrl).toBeNull()
+    expect(quiet.updaterEnabled).toBe(false)
+
+    const withFeed = resolve({ AUTOBYTEUS_ELECTRON_TEST_UPDATE_FEED_URL: 'http://127.0.0.1:8123' })
+    expect(withFeed.name === 'e2e' && withFeed.testUpdateFeedUrl).toBe('http://127.0.0.1:8123/')
+    expect(resolve({ AUTOBYTEUS_ELECTRON_TEST_UPDATE_FEED_URL: 'http://localhost:9000/feed/' }))
+      .toMatchObject({ testUpdateFeedUrl: 'http://localhost:9000/feed/' })
+
+    for (const rejected of ['https://127.0.0.1:8123', 'http://example.com:8123', 'http://127.0.0.1', 'not a url',
+      'http://user:pw@127.0.0.1:8123']) {
+      expect(() => resolve({ AUTOBYTEUS_ELECTRON_TEST_UPDATE_FEED_URL: rejected })).toThrow('AUTOBYTEUS_ELECTRON_TEST_UPDATE_FEED_URL')
+    }
+  })
+
+  it('rejects the test update feed in the production profile', () => {
+    const { production } = fixture()
+    expect(() => resolveElectronLaunchProfile({
+      env: { AUTOBYTEUS_ELECTRON_TEST_UPDATE_FEED_URL: 'http://127.0.0.1:8123' },
+      protectedPaths: [production],
+      productionBaseDataRoot: production,
+    })).toThrow('valid only')
+  })
 })

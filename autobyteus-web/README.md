@@ -329,8 +329,9 @@ an inherited `ELECTRON_RUN_AS_NODE`, and overlays
 `AUTOBYTEUS_ELECTRON_SERVER_PORT`, and
 `AUTOBYTEUS_ELECTRON_DATA_ROOT`. In the `e2e` profile the embedded server
 receives only a system-baseline environment (see the
-[server environment policy](docs/electron_packaging.md#isolated-server-environment));
-provision credentials into the isolated database with `pnpm secrets:import`.
+[server environment policy](docs/electron_packaging.md#isolated-server-environment)),
+plus `AUTOBYTEUS_TEST_VAULT` when the caller sets it, so an instance started with
+it reads the test vault for provider keys (see [TESTING.md](../TESTING.md#test-vault)).
 Do not place the three isolation values in a repository `.env`, production
 data-root `.env`, build profile, or alternate product name.
 

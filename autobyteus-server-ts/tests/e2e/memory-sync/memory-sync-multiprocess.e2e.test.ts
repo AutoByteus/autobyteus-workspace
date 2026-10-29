@@ -25,7 +25,7 @@ import {
 const require = createRequire(import.meta.url);
 const serverRoot = path.resolve(import.meta.dirname, "../../..");
 const appEntry = path.join(serverRoot, "dist", "app.js");
-const sourceNodeId = "multiprocess-source-node";
+const memorySyncSourceId = "multiprocess-source-node";
 const sourceRunId = "mp-source-run";
 const sourceTeamRunId = "mp-source-team-run";
 const flatTeamRunId = "mp-flat-team-run";
@@ -309,7 +309,7 @@ describe("Memory Sync multi-process backend e2e", () => {
       updateMemorySyncSourceConfig: {
         source: {
           enabled: boolean;
-          sourceNodeId: string | null;
+          memorySyncSourceId: string | null;
           hubBaseUrl: string | null;
           hubTokenConfigured: boolean;
           hubTokenPreview: string | null;
@@ -318,13 +318,13 @@ describe("Memory Sync multi-process backend e2e", () => {
     }>(sourceServer, `
       mutation ConfigureSource($input: UpdateMemorySyncSourceConfigInput!) {
         updateMemorySyncSourceConfig(input: $input) {
-          source { enabled sourceNodeId hubBaseUrl hubTokenConfigured hubTokenPreview }
+          source { enabled memorySyncSourceId hubBaseUrl hubTokenConfigured hubTokenPreview }
         }
       }
     `, {
       input: {
         enabled: true,
-        sourceNodeId,
+        memorySyncSourceId,
         displayName: "Real source server",
         hubBaseUrl: hubServer.baseUrl,
         hubToken: token,
@@ -335,7 +335,7 @@ describe("Memory Sync multi-process backend e2e", () => {
 
     expect(sourceConfig.updateMemorySyncSourceConfig.source).toMatchObject({
       enabled: true,
-      sourceNodeId,
+      memorySyncSourceId,
       hubBaseUrl: hubServer.baseUrl,
       hubTokenConfigured: true,
       hubTokenPreview: "••••••••",
@@ -343,17 +343,17 @@ describe("Memory Sync multi-process backend e2e", () => {
     expect(JSON.stringify(sourceConfig)).not.toContain(token);
 
     const connection = await graphql<{
-      testMemoryHubConnection: { ok: boolean; hubEnabled: boolean; authenticated: boolean; sourceNodeId: string };
+      testMemoryHubConnection: { ok: boolean; hubEnabled: boolean; authenticated: boolean; memorySyncSourceId: string };
     }>(sourceServer, `
       mutation TestConnection($input: TestMemoryHubConnectionInput!) {
-        testMemoryHubConnection(input: $input) { ok hubEnabled authenticated sourceNodeId }
+        testMemoryHubConnection(input: $input) { ok hubEnabled authenticated memorySyncSourceId }
       }
     `, { input: { mode: "SAVED" } });
     expect(connection.testMemoryHubConnection).toEqual({
       ok: true,
       hubEnabled: true,
       authenticated: true,
-      sourceNodeId,
+      memorySyncSourceId,
     });
 
     const syncResult = await graphql<{
@@ -371,7 +371,7 @@ describe("Memory Sync multi-process backend e2e", () => {
     expect(syncResult.startMemorySync.scannedFiles).toBeGreaterThanOrEqual(3);
     expect(syncResult.startMemorySync.changedFiles).toBeGreaterThanOrEqual(3);
 
-    const importRoot = path.join(hubServer.dataDir, "memory", "imports", sourceNodeId);
+    const importRoot = path.join(hubServer.dataDir, "memory", "imports", memorySyncSourceId);
     expect(fs.readFileSync(path.join(importRoot, "agents", sourceRunId, "raw_traces_active.jsonl"), "utf-8")).toContain("hello from real source server");
     expect(fs.existsSync(path.join(importRoot, "agents", sourceRunId, "run_metadata.json"))).toBe(true);
     expect(fs.existsSync(path.join(importRoot, "agents", sourceRunId, "upload.partial"))).toBe(false);
@@ -401,7 +401,7 @@ describe("Memory Sync multi-process backend e2e", () => {
           entries { teamRunId memberTargets { agentRunId } }
         }
       }
-    `, { source: { type: "IMPORTED", sourceNodeId }, teamDefinitionId: flatTeamDefinitionId });
+    `, { source: { type: "IMPORTED", memorySyncSourceId }, teamDefinitionId: flatTeamDefinitionId });
     expect(importedTeamRuns.listAgentTeamRunsWithMemory).toEqual({
       total: 1,
       entries: [{
@@ -421,7 +421,7 @@ describe("Memory Sync multi-process backend e2e", () => {
           includeRawTraces: true
         ) { rawTraces { id content } }
       }
-    `, { source: { type: "IMPORTED", sourceNodeId }, teamRunId: flatTeamRunId, agentRunId: flatTeamAgentRunId });
+    `, { source: { type: "IMPORTED", memorySyncSourceId }, teamRunId: flatTeamRunId, agentRunId: flatTeamAgentRunId });
     expect(importedTeamMemberView.getTeamMemberRunMemoryView.rawTraces).toEqual([
       expect.objectContaining({
         id: "mp-flat-team-trace",
@@ -429,10 +429,10 @@ describe("Memory Sync multi-process backend e2e", () => {
       }),
     ]);
 
-    const sourceMetadata = JSON.parse(fs.readFileSync(path.join(importRoot, "source-node.json"), "utf-8")) as { sourceNodeId: string; displayName: string | null; lastSyncStatus: string };
-    const manifest = JSON.parse(fs.readFileSync(path.join(importRoot, "sync-manifest.json"), "utf-8")) as { sourceNodeId: string; totals: { fileCount: number }; files: Record<string, unknown> };
-    expect(sourceMetadata).toMatchObject({ sourceNodeId, displayName: "Real source server", lastSyncStatus: "success" });
-    expect(manifest.sourceNodeId).toBe(sourceNodeId);
+    const sourceMetadata = JSON.parse(fs.readFileSync(path.join(importRoot, "memory-sync-source.json"), "utf-8")) as { memorySyncSourceId: string; displayName: string | null; lastSyncStatus: string };
+    const manifest = JSON.parse(fs.readFileSync(path.join(importRoot, "sync-manifest.json"), "utf-8")) as { memorySyncSourceId: string; totals: { fileCount: number }; files: Record<string, unknown> };
+    expect(sourceMetadata).toMatchObject({ memorySyncSourceId, displayName: "Real source server", lastSyncStatus: "success" });
+    expect(manifest.memorySyncSourceId).toBe(memorySyncSourceId);
     expect(manifest.totals.fileCount).toBeGreaterThanOrEqual(3);
     expect(Object.keys(manifest.files)).toEqual(expect.arrayContaining([
       `agents/${sourceRunId}/run_metadata.json`,
@@ -441,13 +441,13 @@ describe("Memory Sync multi-process backend e2e", () => {
     ]));
 
     const importedSources = await graphql<{
-      listMemoryExplorerSources: Array<{ key: string; type: string; sourceNodeId: string | null; readOnly: boolean }>;
+      listMemoryExplorerSources: Array<{ key: string; type: string; memorySyncSourceId: string | null; readOnly: boolean }>;
     }>(hubServer, `
-      query Sources { listMemoryExplorerSources { key type sourceNodeId readOnly } }
+      query Sources { listMemoryExplorerSources { key type memorySyncSourceId readOnly } }
     `);
     expect(importedSources.listMemoryExplorerSources).toEqual(expect.arrayContaining([
       expect.objectContaining({ key: "local", type: "LOCAL", readOnly: false }),
-      expect.objectContaining({ key: `imported:${sourceNodeId}`, type: "IMPORTED", sourceNodeId, readOnly: true }),
+      expect.objectContaining({ key: `imported:${memorySyncSourceId}`, type: "IMPORTED", memorySyncSourceId, readOnly: true }),
     ]));
 
     const importedAgents = await graphql<{
@@ -459,7 +459,7 @@ describe("Memory Sync multi-process backend e2e", () => {
           entries { agentDefinitionId runCount memory { hasRawTraces } }
         }
       }
-    `, { source: { type: "IMPORTED", sourceNodeId }, search: "mp-agent" });
+    `, { source: { type: "IMPORTED", memorySyncSourceId }, search: "mp-agent" });
     expect(importedAgents.listAgentsWithMemory).toMatchObject({
       total: 1,
       entries: [expect.objectContaining({ agentDefinitionId: "mp-agent", runCount: 1, memory: { hasRawTraces: true } })],

@@ -47,6 +47,8 @@ export interface AgentDefinition {
   ownerPackageId?: string | null
   ownerLocalApplicationId?: string | null
   defaultLaunchConfig?: DefaultLaunchConfig | null
+  /** An internal agent (the system's own helper); the server lists it only while "Show internal agents" is on. */
+  internal?: boolean
   /** Set when the agent is served from its last working version (file and reason). */
   loadIssue?: DefinitionLoadIssue | null
 }
@@ -206,7 +208,7 @@ export const useAgentDefinitionStore = defineStore('agentDefinition', () => {
       const { data, errors } = await client.mutate({
         mutation: CreateAgentDefinition,
         variables: { input },
-        update: (cache: any, result: { data?: { createAgentDefinition?: AgentDefinition | null } }) => {
+        update: (cache, result: { data?: { createAgentDefinition?: AgentDefinition | null } | null }) => {
           if (!result.data?.createAgentDefinition) {
             return
           }

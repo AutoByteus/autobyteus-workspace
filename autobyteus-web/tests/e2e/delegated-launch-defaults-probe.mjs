@@ -30,9 +30,11 @@
 //   DLP-005 (AC-006, REQ-004) Manager chat on a model that is then retired: a delegation that needs the inherited layer
 //           fails in the conversation with today's text and adds nothing, an outside message is not found; an own usable
 //           default works.
-//   DLP-006 (AC-009, QR-002) Agent and Team runs whose saved trees are given the pre-change shape (no sources, no member
-//           launches) while the backend is down, as after an upgrade: Settings shows "Source not recorded" and the Team
-//           values; a copy member then starts on the Team value.
+//   DLP-006 (AC-009, QR-002) Agent and Team runs whose Team copies' own files are given the released pre-change shape
+//           (no launch sources, no member launches, `taskAgent.origin`) while the backend is down, and whose own-file
+//           completion (20261019_delegated_copy_own_file_complete_v1) has not run, as after an upgrade: the restarted
+//           backend converts them; Settings shows "Source not recorded" and the Team values; a copy member then starts
+//           on the Team value.
 //   DLP-008 (AC-011, SR-005) The user's journey: a plain New chat from the Chat nav, text typed, the heading switcher
 //           to the Build team: its members are seeded (and the unusable default noted); the text and the root are kept.
 //   DLP-009 (AC-011, AC-012, SR-005) Carried starts seed members: New chat Team A → Team B (B's seeds only), New chat →
@@ -54,6 +56,12 @@
 //           after it has run, gets its own model in Settings: only its row changes; its next turn resumes its
 //           conversation on that model while the coordinator keeps its own.
 //   DCP-001..DCP-005 alone: pnpm -C autobyteus-web test:e2e:delegated-copy-model-change
+//   DCR-001..DCR-003 (delegated-copy-restore-from-own-file AC-001..AC-004, AC-011(a)): copies of configured placements in
+//           Team and Org runs restore from their own files after the slot is edited; see delegated-copy-own-file-cases.mjs.
+//           Alone: pnpm -C autobyteus-web test:e2e:delegated-copy-own-file
+//   SIR-001..SIR-002 (remove-skill-improvement BEH-003, AC-003, AC-004): send_message_to by run id through real tool
+//           calls; an upgrade around real runs removes the feature's data once; see skill-improvement-removal-cases.mjs.
+//           Alone: pnpm -C autobyteus-web test:e2e:skill-improvement-removal
 // Settings rows (SR-006) are the read-only member rows, collapsed until opened, with the same look as the Members list
 // (`model · runtime · approval · source`, Coordinator chip, an opened Team's card then its Members, "Notes: N" on a
 // collapsed Team); DLP-003 (running) and DLP-007 (stopped and running again) also read them as Settings opens them.
@@ -74,6 +82,9 @@
 // Focused SSR-001..004 cases are opt-in via test:e2e:settings-saved-model-refresh (see its case-module header).
 import { desktopAdapter } from './fixtures/settings-refresh-desktop.mjs'
 import { registerSavedRefreshCases } from './settings-saved-model-refresh-cases.mjs'
+import { registerDelegatedCopyOwnFileCases } from './delegated-copy-own-file-cases.mjs'
+import { registerSkillImprovementRemovalCases } from './skill-improvement-removal-cases.mjs'
+import { agentRuntimeName } from '@autobyteus/agent-presentation-contracts'
 import { spawn } from 'node:child_process'
 import { createWriteStream, existsSync } from 'node:fs'
 import fs from 'node:fs/promises'
@@ -83,6 +94,7 @@ import path from 'node:path'
 import process from 'node:process'
 import { randomUUID } from 'node:crypto'
 import { createRequire } from 'node:module'
+import { DatabaseSync } from 'node:sqlite'
 import { fileURLToPath, pathToFileURL } from 'node:url'
 
 const require = createRequire(import.meta.url)
@@ -220,15 +232,16 @@ const seed = async () => {
 }
 const address = (key) => `/${segment(names[key])}`
 /** The `launch_notes` sentence of the server's notes renderer for one skipped layer. */
-const noteText = ({ name, layer, runtime, model, detail, runsOn, origin, team = false }) => `${name}: its ${layer} default ${runtime ?? '(no runtime)'} / `
+// Launch notes name runtimes by their display names (autobyteus-320: one list, the contract's agentRuntimeName); kinds stay in launch values.
+const noteText = ({ name, layer, runtime, model, detail, runsOn, origin, team = false }) => `${name}: its ${layer} default ${runtime ? agentRuntimeName(runtime) : '(no runtime)'} / `
   + `${model ?? '(no model)'} could not be used (${detail.replace(/\.$/, '')}); ${team ? 'its members without their own default run on' : 'it runs on'} ${runsOn} (${origin}).`
 const squadNotes = () => {
-  const runsOn = `${AGY} / ${MODEL}`
+  const runsOn = `${agentRuntimeName(AGY)} / ${MODEL}`
   const inherited = 'inherited from the run'
   return [
-    noteText({ name: names.squad, layer: 'team', runtime: AGY, model: TEAM_NOT_OFFERED, detail: `The model '${TEAM_NOT_OFFERED}' is not available on ${AGY}.`, runsOn, origin: inherited, team: true }),
+    noteText({ name: names.squad, layer: 'team', runtime: AGY, model: TEAM_NOT_OFFERED, detail: `The model '${TEAM_NOT_OFFERED}' is not available on ${agentRuntimeName(AGY)}.`, runsOn, origin: inherited, team: true }),
     noteText({ name: 'offline', layer: 'agent', runtime: 'codex_app_server', model: 'gpt-5.5', detail: `Codex App Server command '${missingCodex}' is not available.`, runsOn, origin: inherited }),
-    noteText({ name: 'unoffered', layer: 'agent', runtime: AGY, model: NOT_OFFERED, detail: `The model '${NOT_OFFERED}' is not available on ${AGY}.`, runsOn, origin: inherited }),
+    noteText({ name: 'unoffered', layer: 'agent', runtime: AGY, model: NOT_OFFERED, detail: `The model '${NOT_OFFERED}' is not available on ${agentRuntimeName(AGY)}.`, runsOn, origin: inherited }),
     noteText({ name: 'badsettings', layer: 'agent', runtime: AGY, model: MODEL, detail: 'Its model settings are invalid: This model has no adjustable settings.', runsOn, origin: inherited }),
     noteText({ name: 'incomplete', layer: 'agent', runtime: AGY, model: null, detail: 'It names no model.', runsOn, origin: inherited }),
   ]
@@ -550,7 +563,7 @@ defineCase('DLP-003', 'AC-001/003/004/005/010: Manager chat from the UI; copies 
   await shot(page, 'DLP-003-conversation-squad-notes-1280', 1280)
   // Agent copies: the Pair (its unoffered member falls back to the team default) and the Writer (usable default, no note).
   r.pairCall = await callFromComposer(page, 'delegate Pair', 'delegate_task', { recipient_address: address('pair'), description: 'Pair work.' })
-  const pairNote = noteText({ name: 'unoffered', layer: 'agent', runtime: AGY, model: NOT_OFFERED, detail: `The model '${NOT_OFFERED}' is not available on ${AGY}.`, runsOn: `${AGY} / ${ALT}`, origin: 'its team default' })
+  const pairNote = noteText({ name: 'unoffered', layer: 'agent', runtime: AGY, model: NOT_OFFERED, detail: `The model '${NOT_OFFERED}' is not available on ${agentRuntimeName(AGY)}.`, runsOn: `${agentRuntimeName(AGY)} / ${ALT}`, origin: 'its team default' })
   assert(r.pairCall.includes('"delegated":true') && r.pairCall.includes(pairNote), 'Pair delegation note not shown', { call: r.pairCall, pairNote })
   r.writerCall = await callFromComposer(page, 'delegate Writer', 'delegate_task', { recipient_address: address('writer'), description: 'Write.' })
   assert(r.writerCall.includes('"delegated":true') && !r.writerCall.includes('launch_notes'), 'Writer delegation should carry no note', r.writerCall)
@@ -570,7 +583,7 @@ defineCase('DLP-003', 'AC-001/003/004/005/010: Manager chat from the UI; copies 
   r.teammateCall = await callFromComposer(page, 'teammate delegation', 'delegate_task', { recipient_address: `${address('squad')}/unoffered`, description: 'Teammate work.' })
   assert(r.teammateCall.includes('COLLABORATION_SELF_TARGET_REJECTED') && !r.teammateCall.includes('"delegated":true'), 'a teammate is refused, not delegated', r.teammateCall)
   r.helperCall = await callFromComposer(page, 'helper delegation', 'delegate_task', { recipient_address: address('badsettings'), description: 'Helper work.' })
-  const helperNote = noteText({ name: names.badsettings, layer: 'agent', runtime: AGY, model: MODEL, detail: 'Its model settings are invalid: This model has no adjustable settings.', runsOn: `${AGY} / ${MODEL}`, origin: 'inherited from the run' })
+  const helperNote = noteText({ name: names.badsettings, layer: 'agent', runtime: AGY, model: MODEL, detail: 'Its model settings are invalid: This model has no adjustable settings.', runsOn: `${agentRuntimeName(AGY)} / ${MODEL}`, origin: 'inherited from the run' })
   assert(r.helperCall.includes('"delegated":true') && r.helperCall.includes(helperNote), 'helper delegation note not shown', { call: r.helperCall, helperNote })
   r.helperAgainCall = await callFromComposer(page, 'helper again', 'delegate_task', { recipient_address: address('badsettings'), description: 'More helper work.' })
   assert(r.helperAgainCall.includes('"delegated":true') && r.helperAgainCall.includes(helperNote), 'each helper copy carries its note', r.helperAgainCall)
@@ -663,7 +676,7 @@ defineCase('DLP-005', 'AC-006/REQ-004: the root model is retired mid-run; delega
   r.runId = await startManagerChat(page, RETIRING, 'Hello. Marker DLP-005.')
   await waitFor('manager answered', async () => /DLP-005[\s\S]*OK/.test(await conversationText(page)), 60000)
   await offerAgyModels([MODEL, ALT])
-  const reason = `The model '${RETIRING}' is not available on ${AGY}.`
+  const reason = `The model '${RETIRING}' is not available on ${agentRuntimeName(AGY)}.`
   r.plainCall = await callFromComposer(page, 'delegate Plain', 'delegate_task', { recipient_address: address('plain'), description: 'Plain work.' })
   assert(!r.plainCall.includes('"delegated":true') && r.plainCall.includes(`${names.plain} cannot be delegated to: ${reason}`), 'delegation failure text', { call: r.plainCall, reason })
   r.squadCall = await callFromComposer(page, 'delegate Squad', 'delegate_task', { recipient_address: address('squad'), description: 'Squad work.' })
@@ -682,7 +695,12 @@ defineCase('DLP-005', 'AC-006/REQ-004: the root model is retired mid-run; delega
   return r
 })
 
-/** Strips the new optional launch fields from Team records in saved run trees (the shape every pre-change run has). */
+/**
+ * Gives the Team copies' own files the released pre-change shape (no launch sources, no member launches, `taskAgent.origin`;
+ * delegated-copy-restore-from-own-file D-5) and forgets the own-file completion, so the next start converts them as an
+ * upgrade from a release before it does.
+ */
+const OWN_FILE_COMPLETION_MIGRATION_ID = '20261019_delegated_copy_own_file_complete_v1'
 const stripToPreChangeShape = async (teamRunIds) => {
   const files = []
   const visit = async (dir) => {
@@ -699,14 +717,19 @@ const stripToPreChangeShape = async (teamRunIds) => {
   const stripTeam = (team) => {
     if (!team || !('defaultLaunchConfiguration' in team)) return
     delete team.defaultLaunchSource
-    for (const member of team.members) { delete member.launchConfiguration; delete member.launchSource }
+    for (const member of team.members) { delete member.launchConfiguration; delete member.launchSource; delete member.followsTeam }
     stripped += 1
   }
   for (const file of files) {
     const saved = JSON.parse(await fs.readFile(file, 'utf8'))
     for (const entry of objectsIn(saved)) if (teamRunIds.includes(entry.teamRunId)) { stripTeam(entry); stripTeam(entry.source) }
+    // A copy's own file (these are catalog copies) carries the released `origin`; a pre-change Team copy recorded no
+    // launch source (since the own-run layout, the Team's own launch source is `taskAgent.launchSource`).
+    if (saved.taskAgent) { const { launchSource: _source, ...taskAgent } = saved.taskAgent; saved.taskAgent = { ...taskAgent, origin: 'catalog' } }
     await fs.writeFile(file, JSON.stringify(saved, null, 2))
   }
+  const db = new DatabaseSync(fileURLToPath(dbUrl))
+  try { db.prepare('DELETE FROM app_data_migration_records WHERE migration_id = ?').run(OWN_FILE_COMPLETION_MIGRATION_ID) } finally { db.close() }
   return { files: files.map((f) => path.relative(dataRoot, f)), stripped }
 }
 
@@ -1501,6 +1524,17 @@ if (onlyCases?.some(id => id.startsWith('SSR-'))) registerSavedRefreshCases({ de
   agentTree, objectsIn, pick, teamCopies, membersOf, openSettings, backToConversation,
   openMember, chooseCopyModel, saveSettings, saveBarText, shot, agyLaunchDetailsOf, MODEL, ALT, MODEL_LABEL, ALT_LABEL,
   modelLocked, conversationText, typeAndSend })
+registerDelegatedCopyOwnFileCases({ defineCase, assert, waitFor, delay, sel, settle, shot, gql, callTool, objectsIn, pick,
+  newChatFor, chooseModel, typeAndSend, callFromComposer, conversationText, openSidebarAgent, openTeamRun, openSettings,
+  backToConversation, delegatedRows, rowsAt, openDrawer, closeDrawer, openMember, memberRow, saveSettings, saveBarText,
+  agyLaunchDetailsOf, teamTree, teamRunIds, AGY, GROK, MODEL, ALT, GROK_MODEL, MODEL_LABEL, ALT_LABEL,
+  env: () => ({ frontUrl, dataRoot, outDir }) })
+registerSkillImprovementRemovalCases({ defineCase, assert, waitFor, delay, sel, settle, shot, gql, callTool, objectsIn, pick,
+  newChatFor, chooseModel, typeAndSend, callFromComposer, conversationText, openAgentRun, openTeamRun,
+  agyLaunchDetailsOf, teamTree, teamRunIds, AGY, MODEL, ALT,
+  /** Quits the backend, runs `between` while it is down, and starts it again on the same data root. */
+  restartBackend: async (label, between) => { await stopOwned(backend); if (between) await between(); backend = await startBackend(label) },
+  env: () => ({ frontUrl, dataRoot, outDir, dbUrl }) })
 const desktopSurface = desktopAdapter({ webDir, outDir, chromium, assert, waitFor })
 let exitCode = 0
 try {

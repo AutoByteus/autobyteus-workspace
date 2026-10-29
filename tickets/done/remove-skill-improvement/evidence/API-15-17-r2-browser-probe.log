@@ -1,0 +1,35 @@
+# Case: API-15..API-17 round 2 (probe DLP/DCP/DCR + SIR-001..SIR-002)
+# Command: pnpm -C autobyteus-web test:e2e:delegated-launch-defaults --output-dir /tmp/ab205e2e/r2-probe-full --ledger-file /tmp/ab205e2e/r2-probe-full.ledger.md
+# Commit: 2147206408 (source = merge 5cfccd66c7; backend dist from IMP-17 on 5cfccd66c7)
+# Environment: macOS 26.5.2, Node v22.23.1, Google Chrome (headless), probe-owned temp data root and HOME
+# Date: 2026-10-20T17:16:41Z
+
+
+> autobyteus@1.5.8-beta.3 test:e2e:delegated-launch-defaults /Users/normy/autobyteus_org/autobyteus-worktrees/remove-skill-improvement/autobyteus-web
+> node tests/e2e/delegated-launch-defaults-probe.mjs --output-dir /tmp/ab205e2e/r2-probe-full --ledger-file /tmp/ab205e2e/r2-probe-full.ledger.md
+
+(node:84526) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+DLP-001 Pass AC-011/AC-013: New chat for a Team seeds members from their defaults; root changes keep seeded rows; member change and reset; Run launches what is shown
+DLP-002 Pass AC-012: Org launch page seeds the placed team from its team default and agents from their agent defaults; Run launches what is shown
+DLP-003 Pass AC-001/003/004/005/010: Manager chat from the UI; copies and a second Pair copy from its composer; teammate refusal, helper copy and Grok engineer from the copy lead's conversation; Settings rows
+DLP-004 Pass AC-010: Team run (New chat) and Org run (Org launch page) whose manager delegates the Squad and the Pair from the composer: Settings lists the rows
+DLP-005 Pass AC-006/REQ-004: the root model is retired mid-run; delegation that needs the inherited layer fails in the conversation with today's text and adds nothing, an outside message is not found; an own usable default still works
+DLP-006 Pass AC-009/QR-002: runs saved before this change (stripped while the backend is down, as after an upgrade) reopen: Settings shows "Source not recorded" and Team values; a copy member starts on the Team value
+DLP-008 Pass SR-005 (AC-011): plain New chat → typed text → heading switcher → a Team with member defaults: its members are seeded; the text and the root are kept
+DLP-009 Pass SR-005 (AC-011, AC-012): carried starts seed members: Team A → Team B (B's seeds only), New chat → Org (placed team and agents seeded; Run readback), Org launch page → Team (seeded)
+DLP-010 Pass Preserved (DS-006): "+" on a Team run copies its recorded member settings and seeds nothing
+DLP-007 Pass AC-008/DEC-008: copy A; the engineer's default edited in the Agents editor; copy B; Settings shows each copy's recorded values; stop and reopen from the UI; copy A's engineer then starts on Grok
+DCP-001 Pass delegated-copy-model-change AC-001/002/004/011, DEC-010: a running copy is locked with a stop icon; Stop from the sidebar; its model changed in Settings and saved; the next message resumes it on that model
+DCP-002 Pass delegated-copy-model-change AC-002/003, IR-002 (Team root, UI): a Team copy stopped from its sidebar row; its Team model changed and saved; the copy lead's "+" shows the choice without a reload; the next message resumes the lead on it
+DCP-003 Fail delegated-copy-model-change AC-001/002 (Org root, UI): a copy stopped from its Settings row (its Org sidebar stop icon goes away); its model changed and saved; the next message resumes it on that model — Timed out waiting for saved
+DCP-004 Pass delegated-copy-model-change AC-011, AC-005 (UI): the delegating agent wakes the copy while the user edits: Save is refused and records nothing; after a Save and an app (backend) restart the choice is shown and the copy resumes on it
+DCP-005 Pass delegated-copy-model-change REQ-001 (any member), AC-010 scenario (Team root, UI): one member of a Team copy, after it has run, gets its own model in Settings; the other rows stay as they were; its next turn resumes its conversation on that model while the coordinator keeps its own
+DCR-001 Pass AC-001..AC-004 (Team root): a copy of the configured member /worker records its own snapshot; after /worker is edited in the stopped run, it restores on its started model and own conversation, and a new copy starts on the edit
+DCR-002 Pass AC-001..AC-004 (Org root): copies of the direct agent /writer and the mounted Team /pair record their snapshots; after both slots are edited in the stopped Org, the copies restore on their started values and new copies start on the edits
+DCR-003 Fail AC-011(a): a mounted Team member with its own auto-approve but the Team's model is recorded as following the Team in its copy (Grok); a Team-level model choice on a stopped configured-place Team copy reaches its following lead (AGY) — Timed out waiting for saved
+SIR-001 Pass BEH-003: send_message_to by run id through real tool calls: standalone → standalone delivered, unknown run not active, Team member → member, a Team copy's run id refused naming its coordinator, its coordinator reached
+SIR-002 Pass AC-003/AC-004: an upgrade around real runs deletes exactly the feature data once; other files and .env byte-identical; a second start changes nothing; runs listed and resumed; no feature UI; retired keys refused
+Summary: 18 Pass, 2 Fail
+ ELIFECYCLE  Command failed with exit code 1.
+# Exit code: 1

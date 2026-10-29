@@ -404,7 +404,7 @@ describe('runProjectionConversation', () => {
     ]);
   });
 
-  it('ignores compaction projection entries while preserving ordered work trace replay', () => {
+  it('ignores compaction projection entries while preserving ordered tool replay', () => {
     const conversation = buildConversationFromProjection(
       'run-6',
       [

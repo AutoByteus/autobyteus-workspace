@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
+import { RemoteRunLinks } from "../../../src/agent-collaboration/execution/remote/remote-run-links.js";
 import { RuntimeKind } from '../../../src/runtime-management/runtime-kind-enum.js';
 import { testExecutionTree, testAgentNode } from '../../fixtures/current-team-run-fixtures.js';
 import { testAgentOrgExecutionTree, testOrgAgentNode } from '../../fixtures/current-agent-org-run-fixtures.js';
@@ -29,7 +30,7 @@ const forest = () => [{
   members: [{ address: '/workers/lead', agentRunId: 'A-lead', platformAgentRunId: null }],
   taskExecutions: [copy('A-child', devStamp)],
   source: { kind: 'agent_team', teamDefinitionId: 'workers', coordinatorAddress: '/workers/lead',
-    members: [{ address: '/workers/lead', agentDefinitionId: 'lead' }], handoffs: [], defaultLaunchConfiguration: launch },
+    members: [{ address: '/workers/lead', agentDefinitionId: 'lead', launchConfiguration: launch, followsTeam: true }], handoffs: [], defaultLaunchConfiguration: launch },
 }, copy('A-helper'), copy('B-worker'), copy('borrowed')];
 type Kind = 'agent' | 'agent_team' | 'agent_org';
 function subject(kind: Kind, tasks = forest()) {
@@ -94,9 +95,10 @@ function adapterFor(kind: Kind, h: ReturnType<typeof subject>, teams: { getManag
   publishers: { publish?: unknown; publishTaskExecutionsClosed?: unknown } = {}) {
   const common = { root: { rootSubjectKind: kind, rootRunId: 'root' }, getTree: () => h.tree, getIndex: () => h.index,
     teams: { getManaged: teams.getManaged, get: teams.getActive }, tokenUsageReadiness: {}, memoryLocator: {},
-    config: { rootTeam: { address: '/', children: [] }, children: [] }, callbacks: {}, ...publishers };
+    config: { rootTeam: { address: '/', children: [] }, children: [] }, callbacks: {}, ...publishers,
+    remoteLinks: new RemoteRunLinks({ remoteRuns: () => [] }) };
   return kind === 'agent_team' ? new TeamTaskExecutionAdapter({ ...common, rootTeamRunId: 'root',
-    teamRunResolver: teams, config: {}, tokenUsageMigrationReadiness: {} } as never)
+    teamRunResolver: teams, config: {}, tokenUsageReadiness: {} } as never)
     : kind === 'agent_org' ? new AgentOrgTaskExecutionAdapter(common as never)
     : new StandaloneRootTaskExecutionAdapter(common as never);
 }
@@ -182,7 +184,7 @@ it('fences owned input and messages in every root from the Task side alone, with
     expect(() => scope.assertInputAllowed('B-worker')).not.toThrow();
     expect(() => scope.assertInputAllowed('manager')).not.toThrow();
   }
-  expect(Object.keys(first).sort()).toEqual(['adapter', 'resources']);
+  expect(Object.keys(first).sort()).toEqual(['adapter', 'remoteRunLinks', 'resources']);
   // A damaged Task file fails closed for unknown copies only; unowned agents are never checked.
   resources.damaged.add('C');
   expect(() => first.assertInputAllowed('borrowed')).toThrow(expect.objectContaining({ code: 'TASK_AGENT_RESOURCES_UNAVAILABLE' }));

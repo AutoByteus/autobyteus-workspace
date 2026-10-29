@@ -1,0 +1,180 @@
+{
+  "startedAt": "2026-10-23T13:55:47.988Z",
+  "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "cases": {
+    "IMP-08": {
+      "result": "Pass",
+      "description": "AC-011: help line on both Task pages of a task agent with two open Tasks (en, zh-CN, 1440 and 390)",
+      "durationMs": 19787,
+      "details": {
+        "a": {
+          "kind": "agent",
+          "recipientAddress": "/release_notes_writer_pmuagent_63ea",
+          "ingressAgentRunId": "release_notes_writer_pmuagent_63ea_985d1974ec314ccd8df76315a535025e",
+          "teamRunId": null,
+          "start": "started",
+          "closed": false,
+          "status": "idle",
+          "hostRoot": {
+            "kind": "agent",
+            "runId": "manager_pmuagent_63ea_0b5cf5f0b31941e2b43ce3644b398958"
+          }
+        },
+        "b": {
+          "kind": "agent",
+          "recipientAddress": "/release_notes_writer_pmuagent_63ea",
+          "ingressAgentRunId": "release_notes_writer_pmuagent_63ea_985d1974ec314ccd8df76315a535025e",
+          "teamRunId": null,
+          "start": "started",
+          "closed": false,
+          "status": "idle",
+          "hostRoot": {
+            "kind": "agent",
+            "runId": "manager_pmuagent_63ea_0b5cf5f0b31941e2b43ce3644b398958"
+          }
+        },
+        "pages": {
+          "en-US-1440-A": {
+            "text": "This agent or team stops when its last open Task is Done or Cancelled.",
+            "fontSize": "12px",
+            "lineHeight": "20px",
+            "color": "rgb(148, 163, 184)",
+            "width": 926,
+            "height": 20,
+            "clipped": false,
+            "rootName": "release notes writer pmuagent 63ea"
+          },
+          "en-US-1440-B": {
+            "text": "This agent or team stops when its last open Task is Done or Cancelled.",
+            "fontSize": "12px",
+            "lineHeight": "20px",
+            "color": "rgb(148, 163, 184)",
+            "width": 926,
+            "height": 20,
+            "clipped": false,
+            "rootName": "release notes writer pmuagent 63ea"
+          },
+          "zh-CN-1440-A": {
+            "text": "这个智能体或团队会在它最后一个未完成的任务完成或取消后停止。",
+            "fontSize": "12px",
+            "lineHeight": "20px",
+            "color": "rgb(148, 163, 184)",
+            "width": 926,
+            "height": 20,
+            "clipped": false,
+            "rootName": "release notes writer pmuagent 63ea"
+          },
+          "zh-CN-1440-B": {
+            "text": "这个智能体或团队会在它最后一个未完成的任务完成或取消后停止。",
+            "fontSize": "12px",
+            "lineHeight": "20px",
+            "color": "rgb(148, 163, 184)",
+            "width": 926,
+            "height": 20,
+            "clipped": false,
+            "rootName": "release notes writer pmuagent 63ea"
+          },
+          "en-US-390-A": {
+            "text": "This agent or team stops when its last open Task is Done or Cancelled.",
+            "fontSize": "12px",
+            "lineHeight": "20px",
+            "color": "rgb(148, 163, 184)",
+            "width": 266,
+            "height": 40,
+            "clipped": false,
+            "rootName": "release notes writer pmuagent 63ea"
+          },
+          "en-US-390-B": {
+            "text": "This agent or team stops when its last open Task is Done or Cancelled.",
+            "fontSize": "12px",
+            "lineHeight": "20px",
+            "color": "rgb(148, 163, 184)",
+            "width": 266,
+            "height": 40,
+            "clipped": false,
+            "rootName": "release notes writer pmuagent 63ea"
+          },
+          "zh-CN-390-A": {
+            "text": "这个智能体或团队会在它最后一个未完成的任务完成或取消后停止。",
+            "fontSize": "12px",
+            "lineHeight": "20px",
+            "color": "rgb(148, 163, 184)",
+            "width": 266,
+            "height": 40,
+            "clipped": false,
+            "rootName": "release notes writer pmuagent 63ea"
+          },
+          "zh-CN-390-B": {
+            "text": "这个智能体或团队会在它最后一个未完成的任务完成或取消后停止。",
+            "fontSize": "12px",
+            "lineHeight": "20px",
+            "color": "rgb(148, 163, 184)",
+            "width": 266,
+            "height": 40,
+            "clipped": false,
+            "rootName": "release notes writer pmuagent 63ea"
+          },
+          "en-after-B-done-A": {
+            "text": "This agent or team stops when its last open Task is Done or Cancelled.",
+            "fontSize": "12px",
+            "lineHeight": "20px",
+            "color": "rgb(148, 163, 184)",
+            "width": 926,
+            "height": 20,
+            "clipped": false,
+            "rootName": "release notes writer pmuagent 63ea"
+          }
+        },
+        "bClosedHelpShown": 0,
+        "aAfter": {
+          "kind": "agent",
+          "recipientAddress": "/release_notes_writer_pmuagent_63ea",
+          "ingressAgentRunId": "release_notes_writer_pmuagent_63ea_985d1974ec314ccd8df76315a535025e",
+          "teamRunId": null,
+          "start": "started",
+          "closed": false,
+          "status": "idle",
+          "hostRoot": {
+            "kind": "agent",
+            "runId": "manager_pmuagent_63ea_0b5cf5f0b31941e2b43ce3644b398958"
+          }
+        }
+      }
+    }
+  },
+  "cleanup": {
+    "browser": "closed",
+    "frontend": {
+      "pid": 59109,
+      "status": "terminated",
+      "exit": "SIGTERM"
+    },
+    "backend": {
+      "pid": 58741,
+      "status": "terminated",
+      "exit": 0
+    },
+    "dataRootRemoved": true
+  },
+  "failures": [],
+  "feed": {
+    "total": 22,
+    "byType": {
+      "connected": 1,
+      "project_upserted": 9,
+      "task_upserted": 8,
+      "task_worker_status": 4
+    }
+  },
+  "stack": {
+    "backendUrl": "http://127.0.0.1:56290",
+    "frontendUrl": "http://127.0.0.1:56291",
+    "dataRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/project-manager-ux-wEuBcg"
+  },
+  "browserVersion": "156.0.8078.47",
+  "warmup": {
+    "reloadsDuringWarmup": 1
+  },
+  "result": "Pass",
+  "finishedAt": "2026-10-23T13:56:51.255Z"
+}

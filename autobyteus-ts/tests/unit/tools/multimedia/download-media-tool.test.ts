@@ -21,11 +21,11 @@ describe('DownloadMediaTool', () => {
     vi.restoreAllMocks();
   });
 
-  const mockAxiosStream = (contentType: string) => {
+  const mockAxiosStream = (contentType?: string) => {
     const dataStream = Readable.from([Buffer.from('test-bytes')]);
     vi.spyOn(axios, 'get').mockResolvedValue({
       data: dataStream,
-      headers: { 'content-type': contentType },
+      headers: contentType === undefined ? {} : { 'content-type': contentType },
       status: 200
     } as any);
   };
@@ -77,5 +77,28 @@ describe('DownloadMediaTool', () => {
     expect(fs.existsSync(savedPath)).toBe(true);
     expect(path.dirname(savedPath)).toBe(path.join(defaultRoot, 'reports'));
     expect(path.extname(savedPath)).toBe('.pdf');
+  });
+
+  const downloadInto = async (url: string, contentType?: string): Promise<string> => {
+    const tool = new DownloadMediaTool();
+    const workspaceRoot = path.join(tempDir, 'workspace');
+    await fsPromises.mkdir(workspaceRoot, { recursive: true });
+    mockAxiosStream(contentType);
+    const result = await tool.execute({ agentId: 'agent-3', workspaceRootPath: workspaceRoot }, {
+      url,
+      filename: 'media',
+      folder: 'out'
+    });
+    return result.replace('Successfully downloaded file to: ', '').trim();
+  };
+
+  it('takes the extension from the content-type, ignoring its parameters', async () => {
+    const savedPath = await downloadInto('http://example.com/download?id=1', 'image/png; charset=binary');
+    expect(path.extname(savedPath)).toBe('.png');
+  });
+
+  it('takes the extension from the URL when there is no content-type', async () => {
+    const savedPath = await downloadInto('http://example.com/files/photo.jpeg');
+    expect(path.extname(savedPath)).toBe('.jpeg');
   });
 });

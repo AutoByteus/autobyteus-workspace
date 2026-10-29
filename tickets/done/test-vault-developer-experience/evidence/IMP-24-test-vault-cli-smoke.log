@@ -1,0 +1,25 @@
+# IMP-24 test-vault CLI on the rebuilt server
+# IR-002 | commit 9498de5f8b | macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2 | 2026-10-20
+# command: AUTOBYTEUS_TEST_VAULT=<tmp>/vault node autobyteus-server-ts/dist/secret-management/cli/test-vault-cli.js <command>
+
+$ status
+TEST_VAULT <tmp>/vault
+STATE READY
+CONFIGURED provider.deepseek.api-key
+CONFIGURED provider.openai.api-key
+MISSING provider.anthropic.api-key
+$ setup again (skip)
+CONFIGURED 0
+SKIPPED 2
+REPLACED 0
+$ status with AUTOBYTEUS_TEST_VAULT=$HOME/.autobyteus/tv-never
+TEST_VAULT_FAILED TEST_VAULT_LOCATION_FORBIDDEN: /Users/normy/.autobyteus/tv-never is inside the user's AutoByteus app data
+exists after refusal: no
+$ remove
+TEST_VAULT <tmp>/vault
+REMOVED <tmp>/vault/test-vault.db
+REMOVED <tmp>/vault/test-vault.db.secret.key
+$ status after remove
+TEST_VAULT <tmp>/vault
+STATE NOT_FOUND
+REASON TEST_VAULT_NOT_FOUND: no test vault in <tmp>/vault; run pnpm test-vault setup

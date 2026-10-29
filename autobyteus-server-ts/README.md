@@ -181,7 +181,7 @@ cache; and the gateway logs. A missing root is skipped. A root that cannot be
 removed records `FAILED` without blocking startup, and the migration retries on
 the next start. Nothing outside those four roots is touched. The exact roots are
 defined in
-`src/app-data-migrations/migrations/remove-external-messaging-data-migration.ts`
+`src/app-data-migrations/migrations/remove-external-messaging-data/remove-external-messaging-data-migration.ts`
 and its registry entry. Prisma migration
 `20260924120000_remove_external_channel_tables` drops the two orphan receipt
 and delivery-event tables. Run history started from chat bindings stays
@@ -306,10 +306,10 @@ Runtime memory stays in the existing local roots:
 
 Hub imports are stored separately as read-only corpus data:
 
-- `memory/imports/<sourceNodeId>/agents/`
-- `memory/imports/<sourceNodeId>/agent_teams/`
-- `memory/imports/<sourceNodeId>/source-node.json`
-- `memory/imports/<sourceNodeId>/sync-manifest.json`
+- `memory/imports/<memorySyncSourceId>/agents/`
+- `memory/imports/<memorySyncSourceId>/agent_teams/`
+- `memory/imports/<memorySyncSourceId>/memory-sync-source.json`
+- `memory/imports/<memorySyncSourceId>/sync-manifest.json`
 
 Hub setup uses a user-confirmed advertised hub base URL. Candidate URLs are
 suggestions only; Docker, Kubernetes, LAN, VPN, and tailnet deployments must use
@@ -573,29 +573,17 @@ pnpm test:e2e
 This uses the existing test-owned Vitest setup and test runtime. Do not use a
 development database for tests.
 
-Useful real-provider checks against the same project test runtime:
+Useful real-provider checks against the same project test runtime, with keys
+from the [test vault](../TESTING.md#test-vault) (no import into the test
+database):
 
 ```bash
 # Report configured, missing, or unavailable capabilities without invoking them
-pnpm test:e2e:real:preflight
+AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault pnpm test:e2e:real:preflight
 
 # Execute every currently configured capability
-pnpm test:e2e:real
+AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault pnpm test:e2e:real
 ```
-
-To preview an explicit import into that test runtime, pass its canonical
-absolute SQLite file URL to the same generic importer:
-
-```bash
-pnpm secrets:import -- \
-  --source /absolute/path/to/assignments \
-  --database-url file:/absolute/path/to/autobyteus-server-ts/db/test.db \
-  --dry-run
-```
-
-There is no test-import wrapper. The importer does not read `.env.test` or the
-generated runtime `.env` and does not inherit a target from parent
-`DATABASE_URL`.
 
 Unavailable or unconfigured external capabilities are skipped and reported
 explicitly; they must not be represented as passed.

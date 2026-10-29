@@ -16,14 +16,18 @@ import {
   objectRecord,
   parseApplicationBinding,
   parseConfiguredAgent,
+  collectTaskExecutionRunIds,
   parseLaunchConfiguration,
+  parseRemoteTaskExecutions,
   parseTaskExecutions,
   requiredArray,
   requiredString,
   requireKeys,
-  validateCatalogCopyLayouts,
+  validateCopyLayouts,
+  validateRemoteTaskExecutions,
   validateTaskExecutionDelegators,
 } from "./run-execution-tree-shared-record-schemas.js";
+import { parseDelegatedFrom } from "./delegated-from-schema.js";
 
 const parseRootTeam = (value: unknown): RootConfiguredTeamExecutionNode => {
   const root = objectRecord(value, "rootTeam");
@@ -58,6 +62,7 @@ const parseRootTeam = (value: unknown): RootConfiguredTeamExecutionNode => {
     defaultLaunchConfiguration: parseLaunchConfiguration(root.defaultLaunchConfiguration, "rootTeam.defaultLaunchConfiguration"),
     members,
     taskExecutions: parseTaskExecutions(root.taskExecutions, "rootTeam.taskExecutions"),
+    ...parseRemoteTaskExecutions(root.remoteTaskExecutions, "rootTeam.remoteTaskExecutions"),
   };
 };
 
@@ -77,7 +82,9 @@ const validateInvariants = (tree: TeamRunExecutionTreeFile): void => {
     if (!byAddress.has(to)) throw new Error(`Handoff recipient '${to}' is not a configured Agent.`);
   }
   validateTaskExecutionDelegators(tree.rootTeam.members.map((member) => member.agentRunId), [tree.rootTeam]);
-  validateCatalogCopyLayouts([tree.rootTeam]);
+  validateCopyLayouts([tree.rootTeam]);
+  validateRemoteTaskExecutions(new Set([...tree.rootTeam.members.map((member) => member.agentRunId),
+    ...collectTaskExecutionRunIds(tree.rootTeam.taskExecutions)]), tree.rootTeam.remoteTaskExecutions);
 };
 
 /**
@@ -97,6 +104,9 @@ export const validateTeamRunExecutionTreePayload = (
     applicationBinding: parseApplicationBinding(payload.applicationBinding),
     handoffs: normalizeCollaborationHandoffs(payload.handoffs),
     rootTeam: parseRootTeam(payload.rootTeam),
+    // A Team run a peer node started (autobyteus-247); absent otherwise. A malformed section makes the tree
+    // unreadable, as for a standalone run's `run_metadata.json`.
+    ...(payload.delegatedFrom === undefined ? {} : { delegatedFrom: parseDelegatedFrom(payload.delegatedFrom) }),
   };
   if (expectedRootTeamRunId && tree.rootTeam.teamRunId !== expectedRootTeamRunId) {
     throw new Error(`Execution tree root '${tree.rootTeam.teamRunId}' does not match '${expectedRootTeamRunId}'.`);

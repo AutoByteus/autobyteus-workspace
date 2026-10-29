@@ -1,14 +1,14 @@
 import fs from "node:fs/promises";
 import path from "node:path";
 import { isDeepStrictEqual } from "node:util";
-import type { AtomicRunPackageFileCommitWriter } from "../../../run-history/store/atomic-run-package-file-commit-writer.js";
-import { MessageLog, type MessageLogBaseName } from "../../../run-history/store/message-log.js";
+import type { AtomicRunPackageFileCommitWriter } from "../../frozen/server/run-history/store/atomic-run-package-file-commit-writer.js";
+import { MessageLog, type MessageLogBaseName } from "../../frozen/server/run-history/store/message-log.js";
 import {
   validateAgentOrgCommunicationMessages,
   validateStandaloneRootMessages,
   validateTeamCommunicationMessagesPayload,
   type CollaborationCommunicationMessage,
-} from "../../legacy/released-run-package-shapes/released-message-logs-before-append-only.js";
+} from "../../frozen/released-run-package-shapes/released-message-logs-before-append-only.js";
 
 /** One JSON message log found on disk, and the append-only log it becomes (same folder). */
 export type JsonMessageLog = Readonly<{

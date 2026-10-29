@@ -1,83 +1,42 @@
+import type { Client, SdkHttpError } from '@modelcontextprotocol/client';
 import { BaseManagedMcpServer } from './base-managed-mcp-server.js';
 import type { StreamableHttpMcpServerConfig } from '../types.js';
-
-type ClientLike = {
-  connect?: (transport: unknown) => Promise<void>;
-  initialize?: () => Promise<void>;
-  close?: () => Promise<void> | void;
-  listTools: () => Promise<unknown>;
-  callTool: (...args: unknown[]) => Promise<unknown>;
-};
-
-type SdkModule = {
-  Client: new (...args: unknown[]) => ClientLike;
-  Transport: new (...args: unknown[]) => unknown;
-};
-
-async function loadSdk(): Promise<SdkModule> {
-  const [clientModule, transportModule] = await Promise.all([
-    import('@modelcontextprotocol/sdk/client/index.js'),
-    import('@modelcontextprotocol/sdk/client/streamableHttp.js')
-  ]);
-
-  const Client = (clientModule as any).Client ?? (clientModule as any).default?.Client;
-  const Transport =
-    (transportModule as any).StreamableHTTPClientTransport ??
-    (transportModule as any).StreamableHttpClientTransport ??
-    (transportModule as any).default;
-
-  if (!Client || !Transport) {
-    throw new Error('MCP SDK streamable HTTP client transport is unavailable.');
-  }
-
-  return { Client, Transport };
-}
+import { resolveMcpValue, resolveMcpValues } from '../mcp-secret-resolver.js';
 
 export class HttpManagedMcpServer extends BaseManagedMcpServer {
-  static sdkLoader: (() => Promise<SdkModule>) | null = null;
-
-  static setSdkLoader(loader: (() => Promise<SdkModule>) | null): void {
-    HttpManagedMcpServer.sdkLoader = loader;
-  }
-
-  protected async createClientSession(): Promise<ClientLike> {
+  protected async createClientSession(): Promise<Client> {
     const config = this.configObject as StreamableHttpMcpServerConfig;
-    const sdk = await (HttpManagedMcpServer.sdkLoader ?? loadSdk)();
+    // Loaded on first use, so importing this module does not load the MCP SDK.
+    const { Client, StreamableHTTPClientTransport, SdkHttpError } = await import('@modelcontextprotocol/client');
 
-    const transportOptions = {
-      url: config.url,
-      headers: config.headers ?? {}
+    // The SDK sends requestInit.headers on every POST and on the SSE GET. Its defaults are kept:
+    // redirects are followed only within the configured URL's origin (redirectPolicy 'same-origin'),
+    // and connect() runs the 2025 initialize handshake (versionNegotiation 'legacy').
+    // Secret references become values only here, for this transport's request headers.
+    const resolved = {
+      headers: await resolveMcpValues(config.headers, 'header', config.server_id, this.secretResolver),
+      token: config.token === null
+        ? null
+        : await resolveMcpValue(config.token, { serverId: config.server_id, field: 'token' }, this.secretResolver),
     };
+    const transport = new StreamableHTTPClientTransport(new URL(config.url), {
+      requestInit: { headers: config.requestHeaders(resolved) }
+    });
+    this.registerCleanup(() => transport.close());
 
-    let transport: unknown;
+    const client = new Client({ name: 'autobyteus', version: '1.0.0' });
     try {
-      transport = new sdk.Transport(config.url, transportOptions);
-    } catch {
-      transport = new sdk.Transport(transportOptions);
-    }
-
-    if (typeof (transport as { close?: () => void }).close === 'function') {
-      this.registerCleanup(() => (transport as { close: () => void }).close());
-    }
-
-    const client = this.createClientInstance(sdk.Client);
-
-    if (typeof client.connect === 'function') {
       await client.connect(transport);
+    } catch (error) {
+      // The SDK keeps the HTTP status on the error, not in its message.
+      throw SdkHttpError.isInstance(error) ? withHttpStatus(error) : error;
     }
-
-    if (typeof client.initialize === 'function') {
-      await client.initialize();
-    }
-
     return client;
   }
+}
 
-  private createClientInstance(ClientCtor: new (...args: any[]) => ClientLike): ClientLike {
-    try {
-      return new ClientCtor({ name: 'autobyteus', version: '1.0.0' });
-    } catch {
-      return new ClientCtor();
-    }
-  }
+/** The SDK's HTTP failure with its status first in the message, e.g. "HTTP 401 Unauthorized: Error POSTing to endpoint: …". */
+function withHttpStatus(error: SdkHttpError): Error {
+  const status = error.statusText ? `HTTP ${error.status} ${error.statusText}` : `HTTP ${error.status}`;
+  return new Error(`${status}: ${error.message}`, { cause: error });
 }

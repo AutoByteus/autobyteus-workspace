@@ -1,0 +1,11 @@
+# Case: API-12 RA-04 failure cause: system idle sleep during the run (read-only power log)
+# Command: pmset -g log | grep -E '^2026-10-23 2[2-3]:' | grep -E ' Sleep | Wake |DarkWake'
+# Date: 2026-10-23
+# The e2e run started 22:07:17 (vitest 'Start at'); RA-04 failed after 918570 ms ('Timed out waiting for Codex has an update again', a 20 s wall-clock until()).
+
+2026-10-23 22:13:31 +0200 Sleep               	Entering Sleep state due to 'Idle Sleep':TCPKeepAlive=active Using AC (Charge:100%) 906 secs  
+2026-10-23 22:28:37 +0200 DarkWake            	DarkWake from Deep Idle [CDNPB] : due to NUB.SPMISw3IRQ nub-spmi0.0x02 rtc/Maintenance Using AC (Charge:100%) 45 secs   
+2026-10-23 22:29:22 +0200 Sleep               	Entering Sleep state due to 'Maintenance Sleep':TCPKeepAlive=active Using AC (Charge:100%) 953 secs  
+2026-10-23 22:45:15 +0200 DarkWake            	DarkWake from Deep Idle [CDNPB] : due to NUB.SPMISw3IRQ nub-spmi0.0x02 rtc/Maintenance Using AC (Charge:100%) 45 secs   
+2026-10-23 22:46:00 +0200 Sleep               	Entering Sleep state due to 'Maintenance Sleep':TCPKeepAlive=active Using AC (Charge:100%) 923 secs  
+2026-10-23 23:01:23 +0200 DarkWake            	DarkWake from Deep Idle [CDNPB] : due to NUB.SPMISw3IRQ nub-spmi0.0x02 rtc/SleepService Using AC (Charge:100%)           

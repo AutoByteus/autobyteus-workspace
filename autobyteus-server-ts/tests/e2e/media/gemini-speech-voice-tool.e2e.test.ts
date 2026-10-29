@@ -31,7 +31,7 @@ vi.mock('../../../src/llm-management/services/model-availability-service.js', ()
 vi.mock('../../../src/llm-management/services/gemini-runtime-resolver-adapter.js', () => ({
   createGeminiRuntimeResolver: () => bindings.resolveRuntime,
 }));
-vi.mock('../../../src/secret-management/resolution/secret-management-provider-api-key-resolver.js', () => ({
+vi.mock('../../../src/secret-management/resolution/runtime-provider-api-key-resolvers.js', () => ({
   createMediaProviderApiKeyResolver: () => ({ resolve: bindings.resolveKey }),
 }));
 
@@ -57,7 +57,9 @@ const sentinel = 'synthetic-private-provider-body-voice-test';
 const executeSpeech = (generation_config?: Record<string, unknown>, prompt = 'Hello from the speech tool.') =>
   defaultToolRegistry.createTool(GENERATE_SPEECH_TOOL_NAME).execute({
     agentId: 'voice-tool-test', runId: 'voice-tool-test', workspaceRootPath: bindings.workspace,
-  }, { prompt, output_file_path: 'audio/speech.wav', ...(generation_config ? { generation_config } : {}) }) as Promise<{ file_path: string }>;
+  }, { prompt, output_file_path: 'audio/speech.wav', ...(generation_config ? { generation_config } : {}) })
+    // autobyteus-260 REQ-001/002: the native media tool returns the one rule's compact JSON text.
+    .then((text: unknown) => JSON.parse(text as string) as { file_path: string });
 
 beforeEach(async () => {
   bindings.workspace = await fs.mkdtemp(path.join(os.tmpdir(), 'gemini-voice-tool-e2e-'));

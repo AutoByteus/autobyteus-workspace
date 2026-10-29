@@ -1,0 +1,15 @@
+# Check: IMP-23
+# Command: bash /tmp/ab197/sweep.sh
+# Commit: 26ad4ace20 (branch codex/delegated-copy-restore-from-own-file)
+# Environment: macOS 26.5.2, Node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-19T19:12:09Z
+
+none TaskAgentOrigin / configured_place
+none resolvePlace / readTaskSource / TaskSourceResolver / ConfiguredPlaceResolver
+none configuredFollows / launchAt / coordinatorAt
+none memberFollowsTeam / effectiveMemberLaunchConfiguration / configuredTeamFollowerAddresses
+none absent-source checks for copies (!task.source, .source?.coordinator)
+none this.sources in the three task-execution adapters
+none stale ingressAgentRunId method
+
+# Exit code: 0

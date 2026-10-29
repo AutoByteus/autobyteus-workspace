@@ -4,27 +4,21 @@ import {
   providerCredentialCatalog,
   type ProviderCredentialCatalog,
 } from "../catalog/provider-credential-catalog.js";
-import {
-  decryptSecretEntry,
-  encryptSecretEntry,
-  SECRET_VAULT_NONCE_BYTES,
-  SECRET_VAULT_TAG_BYTES,
-} from "../crypto/secret-vault-crypto.js";
-import type { SecretConsumerIdentity, SecretId } from "../domain/secret-id.js";
+import { readSecretEntry } from "autobyteus-ts/secrets/vault/read-secret-entry.js";
+import { encryptSecretEntry } from "autobyteus-ts/secrets/vault/secret-vault-crypto.js";
+import type { SecretConsumerIdentity } from "../domain/secret-id.js";
+import type { SecretId } from "autobyteus-ts/secrets/vault/secret-id.js";
 import {
   SecretVaultError,
   type SecretStorageState,
   type SecretVaultHealth,
-} from "../domain/secret-vault-types.js";
-import type {
-  CustomProviderMigrationBatchReceipt,
-  SecretVaultRepository,
-} from "../persistence/secret-vault-repository.js";
+} from "autobyteus-ts/secrets/vault/secret-vault-types.js";
+import type { SecretVaultStore } from "autobyteus-ts/secrets/vault/secret-vault-store.js";
 import type {
   EncryptedSecretEntryRecord,
   SecretVaultBatchResult,
   SecretVaultMetadataRecord,
-} from "../persistence/secret-vault-persistence-types.js";
+} from "autobyteus-ts/secrets/vault/secret-vault-records.js";
 
 export type SecretOperationEvent = {
   operation:
@@ -32,9 +26,7 @@ export type SecretOperationEvent = {
     | "REMOVE"
     | "STATUS"
     | "RESOLVE"
-    | "SAVE_BATCH"
-    | "CREATE_MISSING_BATCH"
-    | "COMPENSATE_UNPUBLISHED_BATCH";
+    | "SAVE_BATCH";
   outcome: "SUCCEEDED" | "FAILED";
   correlationId: string;
 };
@@ -43,7 +35,7 @@ export type SecretOperationEventSink = (event: SecretOperationEvent) => void;
 
 export class SecretManagementService {
   constructor(
-    private readonly repository: SecretVaultRepository,
+    private readonly store: SecretVaultStore,
     private readonly rootKey: Buffer | null,
     private readonly metadata: SecretVaultMetadataRecord | null,
     private health: SecretVaultHealth,
@@ -59,7 +51,17 @@ export class SecretManagementService {
     const id = this.authorize(consumer);
     this.requireReady();
     return this.withEvent("STATUS", async () =>
-      await this.repository.hasEntry(id) ? "CONFIGURED" : "MISSING");
+      await this.store.hasEntry(id) ? "CONFIGURED" : "MISSING");
+  }
+
+  /** Value-free storage state of one known secret ID (test-vault status). */
+  async getStatusForSecretId(id: SecretId): Promise<SecretStorageState> {
+    if (!this.catalog.isKnownSecretId(id)) {
+      throw new SecretVaultError("ACCESS_DENIED", false, "SECRET_CONSUMER_NOT_AUTHORIZED");
+    }
+    this.requireReady();
+    return this.withEvent("STATUS", async () =>
+      await this.store.hasEntry(id) ? "CONFIGURED" : "MISSING");
   }
 
   async saveForConsumer(request: {
@@ -69,7 +71,7 @@ export class SecretManagementService {
     const id = this.authorize(request.consumer);
     const record = this.encrypt(id, request.value);
     try {
-      await this.withEvent("SAVE", () => this.repository.saveEntry(record));
+      await this.withEvent("SAVE", () => this.store.saveEntry(record));
     } finally {
       this.clearEncrypted(record);
     }
@@ -78,7 +80,7 @@ export class SecretManagementService {
   async removeForConsumer(consumer: SecretConsumerIdentity): Promise<void> {
     const id = this.authorize(consumer);
     this.requireReady();
-    await this.withEvent("REMOVE", () => this.repository.removeEntry(id));
+    await this.withEvent("REMOVE", () => this.store.removeEntry(id));
   }
 
   async saveBatch(
@@ -91,7 +93,7 @@ export class SecretManagementService {
     try {
       return await this.withEvent(
         "SAVE_BATCH",
-        () => this.repository.saveBatch(encrypted, overwrite, {
+        () => this.store.saveBatch(encrypted, overwrite, {
           encryptionDomainId: (this.metadata as SecretVaultMetadataRecord).encryptionDomainId,
           encryptionFormatVersion: (this.metadata as SecretVaultMetadataRecord).encryptionFormatVersion,
         }),
@@ -101,71 +103,21 @@ export class SecretManagementService {
     }
   }
 
-  async createMissingBatchForCustomProviderMigration(
-    entries: ReadonlyArray<{ secretId: SecretId; input: SecretValue }>,
-  ): Promise<CustomProviderMigrationBatchReceipt> {
-    this.requireReady();
-    this.authorizeCustomProviderMigrationBatch(entries);
-    const encrypted = entries.map((entry) => this.encrypt(entry.secretId, entry.input));
-    try {
-      return await this.withEvent(
-        "CREATE_MISSING_BATCH",
-        () => this.repository.createMissingBatchForCustomProviderMigration(
-          encrypted,
-          {
-            encryptionDomainId: (this.metadata as SecretVaultMetadataRecord).encryptionDomainId,
-            encryptionFormatVersion:
-              (this.metadata as SecretVaultMetadataRecord).encryptionFormatVersion,
-          },
-        ),
-      );
-    } finally {
-      for (const record of encrypted) this.clearEncrypted(record);
-    }
-  }
-
-  async compensateUnpublishedCustomProviderBatch(
-    receipt: CustomProviderMigrationBatchReceipt,
-  ): Promise<void> {
-    this.requireReady();
-    await this.withEvent(
-      "COMPENSATE_UNPUBLISHED_BATCH",
-      () => this.repository.compensateUnpublishedCustomProviderBatch(receipt),
-    );
-  }
-
   async resolveForUse(consumer: SecretConsumerIdentity): Promise<SecretValue> {
     const id = this.authorize(consumer);
     this.requireReady();
     return this.withEvent("RESOLVE", async () => {
-      const record = await this.repository.readEntry(id);
-      if (!record) throw new SecretVaultError("NOT_FOUND", false, "SECRET_NOT_FOUND");
-      if (
-        record.nonce.length !== SECRET_VAULT_NONCE_BYTES
-        || record.authenticationTag.length !== SECRET_VAULT_TAG_BYTES
-      ) {
-        this.markCorrupt();
-      }
-      let plaintext: Buffer;
       try {
-        plaintext = decryptSecretEntry(
+        return await readSecretEntry(
+          this.store,
           this.rootKey as Buffer,
-          (this.metadata as SecretVaultMetadataRecord).encryptionDomainId,
+          this.metadata as SecretVaultMetadataRecord,
           id,
-          {
-            nonce: record.nonce,
-            ciphertext: record.ciphertext,
-            authenticationTag: record.authenticationTag,
-          },
-          (this.metadata as SecretVaultMetadataRecord).encryptionFormatVersion,
         );
-      } catch (cause) {
-        this.markCorrupt(cause);
-      }
-      try {
-        return SecretValue.fromString(plaintext.toString("utf8"));
-      } finally {
-        plaintext.fill(0);
+      } catch (error) {
+        // A malformed or undecryptable stored entry marks the vault CORRUPT (by code).
+        if ((error as { code?: unknown }).code === "CORRUPT_VAULT") this.markCorrupt(error);
+        throw error;
       }
     });
   }
@@ -196,22 +148,6 @@ export class SecretManagementService {
         throw new SecretVaultError("ACCESS_DENIED", false, "SECRET_CONSUMER_NOT_AUTHORIZED");
       }
       ids.add(String(entry.secretId));
-    }
-  }
-
-  private authorizeCustomProviderMigrationBatch(
-    entries: ReadonlyArray<{ secretId: SecretId }>,
-  ): void {
-    const ids = new Set<string>();
-    for (const entry of entries) {
-      const id = String(entry.secretId);
-      if (
-        !/^provider\.openai-compatible\.provider_[a-z0-9_-]+\.api-key$/.test(id)
-        || ids.has(id)
-      ) {
-        throw new SecretVaultError("ACCESS_DENIED", false, "SECRET_CONSUMER_NOT_AUTHORIZED");
-      }
-      ids.add(id);
     }
   }
 

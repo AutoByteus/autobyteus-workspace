@@ -1,26 +1,26 @@
 import fs from "node:fs/promises";
-import { TeamBackendKind } from "../../../agent-team-execution/domain/team-backend-kind.js";
-import { ReleasedTeamRunConfig } from "../../legacy/released-team-run-config.js";
+import { TeamBackendKind } from "../../frozen/server/agent-team-execution/domain/team-backend-kind.js";
+import { ReleasedTeamRunConfig } from "../../frozen/released-team-run-config.js";
 import type {
   ReleasedAgentLaunchConfiguration,
   ReleasedTeamRunApplicationBinding,
   ReleasedTeamRunAgentNode,
   ReleasedTeamRunAgentTeamNode,
   ReleasedTeamRunNode,
-} from "../../legacy/released-team-run-config.js";
-import type { TeamRunExecutionTreeSnapshot } from "./team-run-execution-tree-v1-types.js";
+} from "../../frozen/released-team-run-config.js";
+import type { TeamRunExecutionTreeSnapshot } from "../../frozen/team-run-execution-tree-v1/team-run-execution-tree-v1-types.js";
 import { buildInitialTeamRunExecutionTree } from "./team-run-execution-tree-v1-builder.js";
-import { validateTeamRunExecutionTreePayload } from "./team-run-execution-tree-v1-schema.js";
+import { validateTeamRunExecutionTreePayload } from "../../frozen/team-run-execution-tree-v1/team-run-execution-tree-v1-schema.js";
 import { buildTokenExecutionEvidence, text } from "./predecessor-team-run-evidence.js";
 import { PredecessorPhysicalRunIndex } from "./predecessor-physical-run-index.js";
 import { convertPredecessorTeamPackageSubjects } from "./predecessor-task-package-converter.js";
-import { convertLegacyTeamRunMetadata } from "./predecessor-team-metadata-converter.js";
+import { convertLegacyTeamRunMetadata } from "../../frozen/team-run-execution-tree-v1/predecessor-team-metadata-converter.js";
 import { convertPredecessorTaskDelegationFile } from "./predecessor-task-delegation-converter.js";
 import type { TeamRunV1TokenRowDisposition } from "./token-usage-team-run-v1-row-planner.js";
 import type {
   TeamRunMemberMetadata,
   TeamRunSubTeamMemberMetadata,
-} from "../../legacy/team-run-metadata-types.js";
+} from "../../frozen/team-run-metadata-types.js";
 
 const missing = (error: unknown): boolean =>
   (error as NodeJS.ErrnoException | null)?.code === "ENOENT";
@@ -91,9 +91,9 @@ const materializeMigrationTeam = (
 };
 
 export type PlannedTeamRunV1Package = Readonly<{
-  executionTree: import("./team-run-execution-tree-v1-types.js").TeamRunExecutionTreeSnapshot;
-  taskRecords: import("../../legacy/released-run-package-shapes/team-task-delegation-record-v1.js").TaskDelegationRecordsSnapshot;
-  communicationMessages: import("../../../services/team-communication/team-communication-messages-file.js").TeamCommunicationMessagesSnapshot;
+  executionTree: import("../../frozen/team-run-execution-tree-v1/team-run-execution-tree-v1-types.js").TeamRunExecutionTreeSnapshot;
+  taskRecords: import("../../frozen/released-run-package-shapes/team-task-delegation-record-v1.js").TaskDelegationRecordsSnapshot;
+  communicationMessages: import("../../frozen/server/services/team-communication/team-communication-messages-file.js").TeamCommunicationMessagesSnapshot;
 }>;
 
 export const planPredecessorTeamRunV1Package = async (input: {

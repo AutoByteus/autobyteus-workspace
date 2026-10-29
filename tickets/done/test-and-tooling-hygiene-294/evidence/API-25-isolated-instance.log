@@ -1,0 +1,50 @@
+# API-25 isolated desktop instance lifecycle, commit 6af8819ede, package of API-24
+$ pnpm --silent isolated-app start --from-worktree
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "start",
+  "result": {
+    "instanceId": "iso-60457-9dbc",
+    "pid": 89584,
+    "executablePath": "/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-294/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus",
+    "backendUrl": "http://127.0.0.1:60458",
+    "graphqlUrl": "http://127.0.0.1:60458/graphql",
+    "controlEndpoint": "http://127.0.0.1:60457",
+    "controlPort": 60457,
+    "serverPort": 60458,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-8dspny",
+    "ownsDataRoot": true,
+    "keepDataRoot": false,
+    "testUpdateFeedUrl": null,
+    "databaseUrl": "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-8dspny/server-data/db/production.db",
+    "logPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-app/iso-60457-9dbc.log"
+  }
+}
+$ node api25-desktop-icons.mjs http://127.0.0.1:60457 <evidence>  (result: API-25-desktop-icons-result.json)
+$ pnpm --silent isolated-app stop iso-60457-9dbc
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "stop",
+  "result": {
+    "instanceId": "iso-60457-9dbc",
+    "wasRunning": true,
+    "forced": true,
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-isolated-root-8dspny",
+    "dataRootRemoved": true,
+    "controlPortReleased": true,
+    "serverPortReleased": true,
+    "logPath": null
+  }
+}
+$ pnpm --silent isolated-app list
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "list",
+  "result": {
+    "instances": []
+  }
+}
+data root exists after stop: no

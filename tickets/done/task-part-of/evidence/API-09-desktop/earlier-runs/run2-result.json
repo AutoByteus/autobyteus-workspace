@@ -1,0 +1,62 @@
+{
+  "evidence": {
+    "renderer": "file:///Users/normy/autobyteus_org/autobyteus-worktrees/task-part-of/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/settings",
+    "results": [
+      [
+        "J8-zh-CN",
+        "Pass",
+        null
+      ],
+      [
+        "J9-long-keys",
+        "Fail",
+        "locator.click: Timeout 30000ms exceeded."
+      ],
+      [
+        "J10-narrow-board",
+        "Fail",
+        "locator.click: Timeout 30000ms exceeded."
+      ],
+      [
+        "J11-step1-task",
+        "Fail",
+        "locator.click: Timeout 30000ms exceeded."
+      ]
+    ]
+  },
+  "results": [
+    {
+      "name": "J8-zh-CN",
+      "result": "Pass",
+      "obs": {
+        "pill": "5 个中已完成 2 个",
+        "pillTitle": "5 个中已完成 2 个 · 1 个已取消",
+        "lineTitle": "所属任务 autobyteus-1：Cross-node collaboration（进行中）",
+        "heading": "子任务",
+        "summary": "5 个中已完成 2 个 · 1 个已取消",
+        "hint": "将此任务设为已完成或已取消时，其未完成的子任务也会同样设置。",
+        "newPart": "新建子任务",
+        "deleteNote": "它的 6 个子任务将保留为独立任务。",
+        "hasParts": "此任务有子任务，因此不能成为其他任务的子任务。",
+        "partOfHeading": "所属任务",
+        "editorText": "所属任务 （选填） 此任务所属的 AutoByteus 中更大的任务。仅限一层：子任务不能再有自己的子任务。 autobyteus-1 Cross-node collaboration 进行中"
+      }
+    },
+    {
+      "name": "J9-long-keys",
+      "result": "Fail",
+      "error": "locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for getByText(/^(Back to workspace|返回工作区)$/).first()\n\n    at openBoard (/Users/normy/autobyteus_org/autobyteus-worktrees/task-part-of/tickets/in-progress/task-part-of/evidence/API-09-desktop/desktop-journey.mjs:42:65)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/task-part-of/tickets/in-progress/task-part-of/evidence/API-09-desktop/desktop-journey.mjs:239:3\n    at async check (/Users/normy/autobyteus_org/autobyteus-worktrees/task-part-of/tickets/in-progress/task-part-of/evidence/API-09-desktop/desktop-journey.mjs:32:111)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/task-part-of/tickets/in-progress/task-part-of/evidence/API-09-desktop/desktop-journey.mjs:238:1"
+    },
+    {
+      "name": "J10-narrow-board",
+      "result": "Fail",
+      "error": "locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for getByText(/^(Back to workspace|返回工作区)$/).first()\n\n    at openBoard (/Users/normy/autobyteus_org/autobyteus-worktrees/task-part-of/tickets/in-progress/task-part-of/evidence/API-09-desktop/desktop-journey.mjs:42:65)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/task-part-of/tickets/in-progress/task-part-of/evidence/API-09-desktop/desktop-journey.mjs:253:3\n    at async check (/Users/normy/autobyteus_org/autobyteus-worktrees/task-part-of/tickets/in-progress/task-part-of/evidence/API-09-desktop/desktop-journey.mjs:32:111)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/task-part-of/tickets/in-progress/task-part-of/evidence/API-09-desktop/desktop-journey.mjs:251:1"
+    },
+    {
+      "name": "J11-step1-task",
+      "result": "Fail",
+      "error": "locator.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for getByText(/^(Back to workspace|返回工作区)$/).first()\n\n    at openBoard (/Users/normy/autobyteus_org/autobyteus-worktrees/task-part-of/tickets/in-progress/task-part-of/evidence/API-09-desktop/desktop-journey.mjs:42:65)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/task-part-of/tickets/in-progress/task-part-of/evidence/API-09-desktop/desktop-journey.mjs:262:3\n    at async check (/Users/normy/autobyteus_org/autobyteus-worktrees/task-part-of/tickets/in-progress/task-part-of/evidence/API-09-desktop/desktop-journey.mjs:32:111)\n    at async file:///Users/normy/autobyteus_org/autobyteus-worktrees/task-part-of/tickets/in-progress/task-part-of/evidence/API-09-desktop/desktop-journey.mjs:261:1"
+    }
+  ],
+  "errors": []
+}

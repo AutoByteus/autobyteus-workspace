@@ -1,0 +1,114 @@
+{
+  "case": "R01",
+  "round": "API-REV-002",
+  "date": "2026-10-24T04:13:18.119968+00:00",
+  "command": "python3 tickets/in-progress/nfs-guide-install-commands/evidence/R01-02-reuse.py",
+  "environment": "macOS arm64, metadata/source inspection only",
+  "head": "4e308b716cf70ed5bc914ab780984e59df30af7f",
+  "testedImplementationCommit": "3d95a5c4a16759060983489735e77820661cff53",
+  "productDiffSinceTest": "",
+  "workingProductDiff": "",
+  "changedPaths": [
+    "autobyteus-web/components/settings/NfsGuideCard.vue",
+    "autobyteus-web/components/settings/__tests__/NfsGuideCard.spec.ts",
+    "autobyteus-web/docs/nfs_guide.md",
+    "autobyteus-web/localization/messages/en/settings.ts",
+    "autobyteus-web/localization/messages/zh-CN/settings.ts"
+  ],
+  "oldToCurrentChangedPathCount": 2062,
+  "oldSharedFoundationChanged": true,
+  "preservedPaths": [
+    "autobyteus-web/utils/nfsLauncherCommands.ts",
+    "autobyteus-web/components/settings/NodeManager.vue",
+    "autobyteus-web/components/settings/DockerNodeStartGuideCard.vue",
+    "autobyteus-web/utils/dockerNodeLauncherCommands.ts"
+  ],
+  "reused": [
+    {
+      "check": "unit",
+      "command": [
+        "pnpm",
+        "-C",
+        "autobyteus-web",
+        "test:nuxt",
+        "utils/__tests__/nfsLauncherCommands.spec.ts",
+        "components/settings/__tests__/NfsGuideCard.spec.ts",
+        "components/settings/__tests__/NodeManager.spec.ts",
+        "components/settings/__tests__/DockerNodeStartGuideCard.spec.ts",
+        "utils/__tests__/dockerNodeLauncherCommands.spec.ts",
+        "--run",
+        "--maxWorkers=2"
+      ],
+      "date": "2026-10-24T04:05:29.989347+00:00",
+      "commit": "3d95a5c4a16759060983489735e77820661cff53",
+      "exit": 0,
+      "log": "IMP-10-unit.log"
+    },
+    {
+      "check": "typecheck",
+      "command": [
+        "pnpm",
+        "-C",
+        "autobyteus-web",
+        "exec",
+        "tsc",
+        "--noEmit",
+        "--skipLibCheck",
+        "--target",
+        "es2022",
+        "--module",
+        "esnext",
+        "--moduleResolution",
+        "bundler",
+        "utils/nfsLauncherCommands.ts"
+      ],
+      "date": "2026-10-24T04:05:42.113272+00:00",
+      "commit": "3d95a5c4a16759060983489735e77820661cff53",
+      "exit": 0,
+      "log": "IMP-10-typecheck.log"
+    },
+    {
+      "check": "guard:web-boundary",
+      "command": [
+        "pnpm",
+        "-C",
+        "autobyteus-web",
+        "guard:web-boundary"
+      ],
+      "date": "2026-10-24T04:05:43.144837+00:00",
+      "commit": "3d95a5c4a16759060983489735e77820661cff53",
+      "exit": 0,
+      "log": "IMP-10-guard-web-boundary.log"
+    },
+    {
+      "check": "guard:localization-boundary",
+      "command": [
+        "pnpm",
+        "-C",
+        "autobyteus-web",
+        "guard:localization-boundary"
+      ],
+      "date": "2026-10-24T04:05:43.660047+00:00",
+      "commit": "3d95a5c4a16759060983489735e77820661cff53",
+      "exit": 0,
+      "log": "IMP-10-guard-localization-boundary.log"
+    },
+    {
+      "check": "audit:localization-literals",
+      "command": [
+        "pnpm",
+        "-C",
+        "autobyteus-web",
+        "audit:localization-literals"
+      ],
+      "date": "2026-10-24T04:05:44.026293+00:00",
+      "commit": "3d95a5c4a16759060983489735e77820661cff53",
+      "exit": 0,
+      "log": "IMP-10-audit-localization-literals.log"
+    }
+  ],
+  "componentPreview": "IMP-11-verified/result.json; current driver asserts partial version and null hidden, Pass/zero events",
+  "historicalOldAPI001Reused": false,
+  "newProductTestsExecuted": 0,
+  "result": "Pass"
+}

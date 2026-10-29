@@ -1,0 +1,238 @@
+{
+  "case": "L-03 and L-04 round 2 (live Claude sonnet router; delegator Claude haiku; real agy)",
+  "commit": "289209272f",
+  "command": "env -i PATH HOME(real, CLI sign-ins only) USER LOGNAME TMPDIR MR_PHASES=L-03 node L-probe-router-live-probe.mjs.txt <worktree> <out>  (L-01/L-02 confinement phases not run: SR-018)",
+  "what_to_look_for": "L-03-teach.knowledgeAfter contains the owner's writing rule; L-03-route and L-04 first/second delegate_task results contain \"chosen by the Model Router (writing)\"; L-04 killed one claude process; statusAfterSecond active true",
+  "router": {
+    "runId": "model_router_4c2bca149b2a4e71b7fd4d190d8e73dd",
+    "workspace": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-live-n0Kws2/node/internal-workspaces/autobyteus-model-router",
+    "autoExecuteTools": true,
+    "runtimeKind": "claude_agent_sdk",
+    "model": "sonnet"
+  },
+  "L-03-teach": {
+    "turn": {
+      "ms": 9022,
+      "tools": [
+        {
+          "type": "TOOL_EXECUTION_STARTED",
+          "tool": "Read",
+          "args": "{\"file_path\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-live-n0Kws2/node/internal-workspaces/autobyteus-model-router/knowledge.md\"}",
+          "result": "null",
+          "at": 3172
+        },
+        {
+          "type": "TOOL_EXECUTION_FAILED",
+          "tool": "Read",
+          "args": "{\"file_path\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-live-n0Kws2/node/internal-workspaces/autobyteus-model-router/knowledge.md\"}",
+          "result": "\"File does not exist. Note: your current working directory is /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-live-n0Kws2/node/internal-workspaces/autobyteus-model-router.\"",
+          "at": 3215
+        },
+        {
+          "type": "TOOL_EXECUTION_STARTED",
+          "tool": "Write",
+          "args": "{\"file_path\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-live-n0Kws2/node/internal-workspaces/autobyteus-model-router/knowledge.md\",\"content\":\"# Knowledge\\n\\n- Owner rule: for any writing task (documentation, release notes, prose), choose runtime `antigravity_cli` with model `gemini",
+          "result": "null",
+          "at": 5182
+        },
+        {
+          "type": "TOOL_APPROVED",
+          "tool": "Write",
+          "args": "{\"file_path\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-live-n0Kws2/node/internal-workspaces/autobyteus-model-router/knowledge.md\",\"content\":\"# Knowledge\\n\\n- Owner rule: for any writing task (documentation, release notes, prose), choose runtime `antigravity_cli` with model `gemini",
+          "result": "null",
+          "at": 5191
+        },
+        {
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "tool": "Write",
+          "args": "{\"file_path\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-live-n0Kws2/node/internal-workspaces/autobyteus-model-router/knowledge.md\",\"content\":\"# Knowledge\\n\\n- Owner rule: for any writing task (documentation, release notes, prose), choose runtime `antigravity_cli` with model `gemini",
+          "result": "\"File created successfully at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/mr-live-n0Kws2/node/internal-workspaces/autobyteus-model-router/knowledge.md (file state is current in your context \u2014 no need to Read it back)\"",
+          "at": 5201
+        }
+      ],
+      "text": "DONE. I saved the rule in `knowledge.md`. The file didn't exist yet, so I created it, and the rule is its only entry.\n\nThe rule says that for any writing task (documentation, release notes, prose) I choose `antigravity_cli` with `gemini-3.8-flash-low` and give the owner's rule as the reason. I also noted that I still never pick a blocked model.",
+      "errors": []
+    },
+    "knowledgeBefore": null,
+    "knowledgeAfter": "# Knowledge\n\n- Owner rule: for any writing task (documentation, release notes, prose), choose runtime `antigravity_cli` with model `gemini-3.8-flash-low`, and give that rule as the reason. (Still never choose a blocked model.)\n"
+  },
+  "L-03-route": {
+    "turn": {
+      "ms": 22046,
+      "tools": [
+        {
+          "type": "TOOL_EXECUTION_STARTED",
+          "tool": "delegate_task",
+          "args": "{\"recipient_address\":\"/writer_bot_f1ef\",\"description\":\"Write the release notes for version 2.0 of the app (three bullet points). Reply OK.\"}",
+          "result": "null",
+          "at": 2511
+        },
+        {
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "tool": "delegate_task",
+          "args": "{\"recipient_address\":\"/writer_bot_f1ef\",\"description\":\"Write the release notes for version 2.0 of the app (three bullet points). Reply OK.\"}",
+          "result": "\"{\\\"delegated\\\":true,\\\"target_kind\\\":\\\"agent\\\",\\\"target_agent_run_id\\\":\\\"writer_bot_f1ef_e49bf02c4630494485acb6b9344cbacb\\\",\\\"task_id\\\":\\\"ad_hoc_task_40468018-b467-4f0e-9f5a-70664e09a5ba\\\",\\\"launch_notes\\\":[\\\"Writer Bot f1ef: runs on antigravity_cli / gemini-3.8-flash-low, chosen by the Model Router (writing): Owner rule: for any writing task (documentation, release notes, prose), use antigravity_",
+          "at": 18841
+        }
+      ],
+      "text": "The launch notes say: \"Writer Bot f1ef: runs on antigravity_cli / gemini-3.8-flash-low, chosen by the Model Router (writing): Owner rule: for any writing task (documentation, release notes, prose), use antigravity_cli with gemini-3.8-flash-low.\"",
+      "errors": []
+    },
+    "decisions": {
+      "groups": [
+        {
+          "taskId": "ad_hoc_task_40468018-b467-4f0e-9f5a-70664e09a5ba",
+          "taskKey": null,
+          "projectId": null,
+          "taskTitle": "Write the release notes for version 2.0 of the app (three bullet points). Reply OK.",
+          "latestAt": "2026-10-27T04:03:20.484Z",
+          "delegations": [
+            {
+              "recordedAt": "2026-10-27T04:03:20.484Z",
+              "delegatingRunId": "probe_delegator_07bb_f4c185a8891e4b2cbde4575b0dd54344",
+              "delegatingAgentName": "probe_delegator_07bb",
+              "fromNode": null,
+              "copyAddress": "/writer_bot_f1ef",
+              "copyKind": "agent",
+              "records": [
+                {
+                  "recordedAt": "2026-10-27T04:03:20.484Z",
+                  "taskId": "ad_hoc_task_40468018-b467-4f0e-9f5a-70664e09a5ba",
+                  "taskKey": null,
+                  "projectId": null,
+                  "taskTitle": "Write the release notes for version 2.0 of the app (three bullet points). Reply OK.",
+                  "delegatingRunId": "probe_delegator_07bb_f4c185a8891e4b2cbde4575b0dd54344",
+                  "delegatingAgentName": "probe_delegator_07bb",
+                  "fromNode": null,
+                  "copyAddress": "/writer_bot_f1ef",
+                  "copyKind": "agent",
+                  "agentAddress": "/writer_bot_f1ef",
+                  "runtimeKind": "antigravity_cli",
+                  "llmModelIdentifier": "gemini-3.8-flash-low",
+                  "source": "model_router",
+                  "taskKind": "writing",
+                  "choiceReason": "Owner rule: for any writing task (documentation, release notes, prose), use antigravity_cli with gemini-3.8-flash-low.",
+                  "routerFailure": null,
+                  "skipped": []
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "totalTasks": 1
+    },
+    "status": {
+      "enabled": true,
+      "routerLaunch": {
+        "runtimeKind": "claude_agent_sdk",
+        "llmModelIdentifier": "sonnet"
+      },
+      "active": true,
+      "reasonCode": null,
+      "reasonParams": {},
+      "reasonText": null,
+      "agentRunId": "model_router_4c2bca149b2a4e71b7fd4d190d8e73dd"
+    }
+  },
+  "L-04": {
+    "killed": [
+      {
+        "pid": 10696,
+        "command": "/Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --model sonnet --permission-prompt-tool stdio --allowedTools list_available_agent_runtimes,mcp__autobyte"
+      }
+    ],
+    "afterKill": [],
+    "statusAfterKill": {
+      "enabled": true,
+      "routerLaunch": {
+        "runtimeKind": "claude_agent_sdk",
+        "llmModelIdentifier": "sonnet"
+      },
+      "active": true,
+      "reasonCode": null,
+      "reasonParams": {},
+      "reasonText": null,
+      "agentRunId": "model_router_4c2bca149b2a4e71b7fd4d190d8e73dd"
+    },
+    "first": {
+      "ms": 23059,
+      "tools": [
+        {
+          "type": "TOOL_EXECUTION_STARTED",
+          "tool": "delegate_task",
+          "args": "{\"recipient_address\":\"/writer_bot_f1ef\",\"description\":\"Write a one-line changelog entry for version 2.0.1. Reply OK.\"}",
+          "result": "null",
+          "at": 1303
+        },
+        {
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "tool": "delegate_task",
+          "args": "{\"recipient_address\":\"/writer_bot_f1ef\",\"description\":\"Write a one-line changelog entry for version 2.0.1. Reply OK.\"}",
+          "result": "\"{\\\"delegated\\\":true,\\\"target_kind\\\":\\\"agent\\\",\\\"target_agent_run_id\\\":\\\"writer_bot_f1ef_f0ea557b0b2e4d72a2cbed2680fa57d7\\\",\\\"task_id\\\":\\\"ad_hoc_task_6e5fc09f-4ed1-4c2f-9b0f-bdccd938b69c\\\",\\\"launch_notes\\\":[\\\"Writer Bot f1ef: runs on antigravity_cli / gemini-3.8-flash-low, chosen by the Model Router (writing): Owner rule: for any writing task (documentation, release notes, prose), use antigravity_",
+          "at": 19777
+        }
+      ],
+      "text": "The launch notes say: \"Writer Bot f1ef: runs on antigravity_cli / gemini-3.8-flash-low, chosen by the Model Router (writing): Owner rule: for any writing task (documentation, release notes, prose), use antigravity_cli with gemini-3.8-flash-low.\"",
+      "errors": []
+    },
+    "statusAfterFirst": {
+      "enabled": true,
+      "routerLaunch": {
+        "runtimeKind": "claude_agent_sdk",
+        "llmModelIdentifier": "sonnet"
+      },
+      "active": true,
+      "reasonCode": null,
+      "reasonParams": {},
+      "reasonText": null,
+      "agentRunId": "model_router_4c2bca149b2a4e71b7fd4d190d8e73dd"
+    },
+    "second": {
+      "ms": 21542,
+      "tools": [
+        {
+          "type": "TOOL_EXECUTION_STARTED",
+          "tool": "delegate_task",
+          "args": "{\"recipient_address\":\"/writer_bot_f1ef\",\"description\":\"Write a one-line changelog entry for version 2.0.2. Reply OK.\"}",
+          "result": "null",
+          "at": 1351
+        },
+        {
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "tool": "delegate_task",
+          "args": "{\"recipient_address\":\"/writer_bot_f1ef\",\"description\":\"Write a one-line changelog entry for version 2.0.2. Reply OK.\"}",
+          "result": "\"{\\\"delegated\\\":true,\\\"target_kind\\\":\\\"agent\\\",\\\"target_agent_run_id\\\":\\\"writer_bot_f1ef_ed09bca59a344a7ebdf291f841e23b02\\\",\\\"task_id\\\":\\\"ad_hoc_task_57b2f34c-10a2-4864-b3a3-27eedf99d7b6\\\",\\\"launch_notes\\\":[\\\"Writer Bot f1ef: runs on antigravity_cli / gemini-3.8-flash-low, chosen by the Model Router (writing): Owner rule: for any writing task (documentation, release notes, prose), use antigravity_",
+          "at": 18515
+        }
+      ],
+      "text": "The launch notes say: \"Writer Bot f1ef: runs on antigravity_cli / gemini-3.8-flash-low, chosen by the Model Router (writing): Owner rule: for any writing task (documentation, release notes, prose), use antigravity_cli with gemini-3.8-flash-low.\"",
+      "errors": []
+    },
+    "statusAfterSecond": {
+      "enabled": true,
+      "routerLaunch": {
+        "runtimeKind": "claude_agent_sdk",
+        "llmModelIdentifier": "sonnet"
+      },
+      "active": true,
+      "reasonCode": null,
+      "reasonParams": {},
+      "reasonText": null,
+      "agentRunId": "model_router_4c2bca149b2a4e71b7fd4d190d8e73dd"
+    },
+    "processesNow": [
+      {
+        "pid": 11754,
+        "command": "/Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --model sonnet --permission-prompt-tool stdio --resume=51bf176e-b5db-4d05-963f-98edb5237318 --allowedToo"
+      }
+    ]
+  },
+  "cleanup": {
+    "serverExited": true,
+    "removed": {
+      "tempRoot": true,
+      "homeProbeDir": true
+    }
+  }
+}

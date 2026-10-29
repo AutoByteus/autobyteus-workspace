@@ -1,0 +1,6 @@
+# IMP-14 application specs after FO-003 (rerun by impact: only the slot editor and its spec changed since IMP-12)
+# cmd: NUXT_TEST=true pnpm -C autobyteus-web exec vitest run components/applications --run --reporter=verbose
+# commit: 0e3029d503  env: macOS, Node v22.23.1  date: 2026-10-28T17:51Z
+
+ Test Files  8 passed (8)
+      Tests  29 passed (29)

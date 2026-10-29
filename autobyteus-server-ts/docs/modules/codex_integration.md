@@ -14,8 +14,11 @@ Supported Codex paths:
 Codex App Server keeps its established Codex-owned external account,
 configuration, `HOME`/`CODEX_HOME`, and launch-environment behavior. AutoByteus
 does not add a Codex secret definition, Store lookup, managed authentication
-mode, login/status API, rotation lifecycle, or synthetic account root. This is
-an explicit exclusion from Secret Management credential-vault governance.
+mode, rotation lifecycle, or synthetic account root. This is an explicit
+exclusion from Secret Management credential-vault governance. The one sign-in
+surface is Settings -> Agent Runtimes ([Agent Runtimes](./agent_runtimes.md)):
+it reads the account state through app-server `account/read` and can start
+Codex's own `codex login`; it never sees or stores the credential.
 `LOCAL_HARDENED` is limited to vault/file-root/value-safe custody and does not
 claim child-process environment isolation for Codex, Claude, terminal, or
 Electron. Operator-supplied ambient state inherited by Codex is runtime
@@ -234,7 +237,7 @@ Codex runtime runs now receive server-owned durable memory in addition to Codex-
   task-Agent runs append the task AgentRun id within the same resolved physical
   Team scope. Callers use `AgentMemoryLocationService`; they do not derive a
   directory from the logical member address.
-- `AgentRunManager` attaches the raw-trace-only `AgentRunMemoryRecorder`; the recorder captures accepted `AgentRun.postUserMessage(...)` commands plus normalized assistant, reasoning, and tool `AgentRunEvent`s.
+- `AgentRunManager` attaches the raw-trace-only `AgentRunMemoryRecorder`; the recorder captures user input the `AgentRun` forwards (posted, or committed from a held teammate slot) plus normalized assistant, reasoning, and tool `AgentRunEvent`s.
 - `ExternalRuntimeMemoryWriter` writes shared `RawTraceItem` rows through the `autobyteus-ts` `RunMemoryFileStore` primitives and restores sequencing/tool lifecycle from active plus complete rotated traces. It never loads or persists a WorkingContext snapshot; Codex thread state owns continuation.
 
 New Codex tool traces use the shared split physical contract. A `tool_call`

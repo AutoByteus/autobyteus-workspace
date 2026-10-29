@@ -1,8 +1,11 @@
 <template>
   <div class="server-settings-manager h-full flex flex-col overflow-hidden">
     <div class="flex-1 overflow-auto bg-slate-50 p-3 sm:p-5 md:p-8 md:pt-6">
+      <!-- Embedding has its own status, loading and error states; it does not wait for the raw settings. -->
+      <EmbeddingSettingsPanel v-if="activeTab === 'embedding'" />
+
       <div
-        v-if="isInitialLoading"
+        v-else-if="isInitialLoading"
         class="flex justify-center items-center py-8"
         data-testid="server-settings-initial-loading"
       >
@@ -139,7 +142,6 @@
                       :class="saveButtonClass"
                     >
                       <span v-if="isAddingNewSetting" class="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-600 inline-block"></span>
-                      <span v-else class="i-heroicons-check-20-solid w-4 h-4"></span>
                       <span>Save</span>
                     </button>
                   </td>
@@ -173,8 +175,9 @@ import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 import ServerMonitor from '~/components/server/ServerMonitor.vue'
 import ServerSettingsBasicsPanel from '~/components/settings/ServerSettingsBasicsPanel.vue'
 import ServerMigrationsManager from '~/components/settings/ServerMigrationsManager.vue'
+import EmbeddingSettingsPanel from '~/components/settings/embedding/EmbeddingSettingsPanel.vue'
 
-type SettingsTab = 'quick' | 'advanced' | 'migrations'
+type SettingsTab = 'quick' | 'embedding' | 'advanced' | 'migrations'
 type AdvancedPanel = 'raw-settings' | 'server-status'
 
 const saveButtonClass =

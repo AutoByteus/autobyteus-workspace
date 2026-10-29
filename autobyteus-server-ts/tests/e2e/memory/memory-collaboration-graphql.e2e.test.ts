@@ -22,6 +22,7 @@ import { TeamRunHistoryIndexStore } from "../../../src/run-history/store/team-ru
 import { TeamCommunicationStore } from "../../../src/services/team-communication/team-communication-store.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../fixtures/current-agent-org-run-fixtures.js";
 import { address, testAgentNode, testExecutionTree } from "../../fixtures/current-team-run-fixtures.js";
+import { configureMemorySyncCapability } from "../../../src/memory-sync/shared/memory-sync-capability.js";
 
 /**
  * Team and AgentOrg memory explorer + member memory view through the built GraphQL schema
@@ -35,8 +36,9 @@ const writeJsonl = (filePath: string, records: unknown[], mtimeIso: string) => {
   fs.utimesSync(filePath, at, at);
 };
 
+/** A run folder whose raw traces say `fact` (the user's message), so a view proves which folder it read. */
 const semantic = (runDir: string, fact: string, mtimeIso: string) =>
-  writeJsonl(path.join(runDir, "semantic.jsonl"), [{ id: fact, fact }], mtimeIso);
+  writeJsonl(path.join(runDir, "raw_traces_active.jsonl"), [{ trace_type: "user", content: fact, ts: 1, turn_id: "t1", seq: 1 }], mtimeIso);
 
 const writeTeamRoot = async (memoryRoot: string, tree: TeamRunExecutionTreeSnapshot, options: { sidecars?: boolean } = {}) => {
   const rootTeamRunId = tree.rootTeam.teamRunId;
@@ -57,13 +59,14 @@ const writeOrgRoot = async (memoryRoot: string, tree: AgentOrgRunExecutionTreeSn
 
 /** Writing team root: configured coordinator `/writer` plus its delegated task instance (flat Team V2 has no nested teams). */
 const writingTeamTree = (rootTeamRunId: string, createdAt: string): TeamRunExecutionTreeSnapshot => {
+  const writer = testAgentNode("/writer", { agentRunId: `${rootTeamRunId}-writer` });
   const base = testExecutionTree({
     rootTeamRunId,
     rootTeamDefinitionId: "gql-writing-team",
     teamDefinitionName: "Tree Writing Team",
     coordinatorAddress: "/writer",
     createdAt,
-    children: [testAgentNode("/writer", { agentRunId: `${rootTeamRunId}-writer` })],
+    children: [writer],
   });
   return {
     ...base,
@@ -75,6 +78,11 @@ const writingTeamTree = (rootTeamRunId: string, createdAt: string): TeamRunExecu
         platformAgentRunId: null,
         delegatorAgentRunId: `${rootTeamRunId}-writer`,
         startedAt: createdAt,
+        source: {
+          kind: "agent",
+          agentDefinitionId: writer.agentDefinitionId,
+          launchConfiguration: base.rootTeam.defaultLaunchConfiguration,
+        },
       }],
     },
   };
@@ -86,21 +94,27 @@ const writingTeamTree = (rootTeamRunId: string, createdAt: string): TeamRunExecu
  */
 const orgTree = (orgRunId: string, orgDefinitionId: string): AgentOrgRunExecutionTreeSnapshot => {
   const designer = testOrgAgentNode("/engineering/solution_designer", `${orgRunId}-designer`);
+  const ceo = testOrgAgentNode("/ceo", `${orgRunId}-ceo`);
+  const engineering = testOrgTeamNode({ address: "/engineering", teamRunId: `${orgRunId}-engineering`, coordinatorAddress: designer.address, members: [designer] });
   const base = testAgentOrgExecutionTree({
     orgRunId,
     orgDefinitionId,
     orgDefinitionName: "Tree Org Name",
-    members: [
-      testOrgAgentNode("/ceo", `${orgRunId}-ceo`),
-      testOrgTeamNode({ address: "/engineering", teamRunId: `${orgRunId}-engineering`, coordinatorAddress: designer.address, members: [designer] }),
-    ],
+    members: [ceo, engineering],
   });
   return validateAgentOrgRunExecutionTreePayload({
     ...base,
     rootOrg: {
       ...base.rootOrg,
       taskExecutions: [
-        { address: assertAgentTeamAddress("/ceo"), agentRunId: `${orgRunId}-task-ceo`, platformAgentRunId: null, delegatorAgentRunId: `${orgRunId}-ceo`, startedAt: "2026-09-01T00:01:00.000Z" },
+        {
+          address: assertAgentTeamAddress("/ceo"),
+          agentRunId: `${orgRunId}-task-ceo`,
+          platformAgentRunId: null,
+          delegatorAgentRunId: `${orgRunId}-ceo`,
+          startedAt: "2026-09-01T00:01:00.000Z",
+          source: { kind: "agent", agentDefinitionId: ceo.agentDefinitionId, launchConfiguration: ceo.launchConfiguration },
+        },
         {
           address: assertAgentTeamAddress("/engineering"),
           teamRunId: `${orgRunId}-engineering-task`,
@@ -108,13 +122,21 @@ const orgTree = (orgRunId: string, orgDefinitionId: string): AgentOrgRunExecutio
           taskExecutions: [],
           delegatorAgentRunId: `${orgRunId}-ceo`,
           startedAt: "2026-09-01T00:02:00.000Z",
+          source: {
+            kind: "agent_team",
+            teamDefinitionId: engineering.teamDefinitionId,
+            coordinatorAddress: designer.address,
+            members: [{ address: designer.address, agentDefinitionId: designer.agentDefinitionId, launchConfiguration: designer.launchConfiguration, followsTeam: true }],
+            handoffs: [],
+            defaultLaunchConfiguration: engineering.defaultLaunchConfiguration,
+          },
         },
       ],
     },
   }, orgRunId);
 };
 
-const MEMBER_FIELDS = "memberAddress displayName agentRunId agentDefinitionId executionKind startedAt groupPath { teamRunId address displayName kind startedAt } lastUpdatedAt memory { hasSemantic }";
+const MEMBER_FIELDS = "memberAddress displayName agentRunId agentDefinitionId executionKind startedAt groupPath { teamRunId address displayName kind startedAt } lastUpdatedAt memory { hasRawTraces }";
 
 type Group = { teamRunId: string; address: string; displayName: string; kind: string; startedAt: string | null };
 type Member = { memberAddress: string; displayName: string; agentRunId: string; agentDefinitionId: string | null; executionKind: string; startedAt: string | null; groupPath: Group[]; lastUpdatedAt: string | null };
@@ -138,6 +160,10 @@ describe("Memory collaboration (team + org) GraphQL e2e", () => {
   const orgDir = (...parts: string[]) => path.join(memoryDir, "agent_orgs", ...parts);
 
   beforeAll(async () => {
+
+    // Memory Sync's stored names are current in this fresh data (autobyteus-290 `memory_sync`).
+
+    configureMemorySyncCapability(true);
     tempRoot = fs.mkdtempSync(path.join(os.tmpdir(), "autobyteus-memory-collaboration-"));
     if (!config.isInitialized()) {
       config.setCustomAppDataDir(tempRoot);
@@ -206,7 +232,7 @@ describe("Memory collaboration (team + org) GraphQL e2e", () => {
     query Teams($search: String, $source: MemoryExplorerSourceInput) {
       listAgentTeamsWithMemory(search: $search, source: $source, page: 1, pageSize: 10) {
         total
-        entries { teamDefinitionId teamDefinitionName teamRunCount memberMemoryCount latestMemoryAt memory { hasSemantic } }
+        entries { teamDefinitionId teamDefinitionName teamRunCount memberMemoryCount latestMemoryAt memory { hasRawTraces } isTaskTeam startedByAgentName }
       }
     }
   `;
@@ -222,7 +248,7 @@ describe("Memory collaboration (team + org) GraphQL e2e", () => {
     query Orgs($search: String, $source: MemoryExplorerSourceInput) {
       listAgentOrgsWithMemory(search: $search, source: $source, page: 1, pageSize: 10) {
         total totalPages
-        entries { orgDefinitionId orgDefinitionName orgRunCount memberMemoryCount latestMemoryAt memory { hasSemantic hasRawTraces } }
+        entries { orgDefinitionId orgDefinitionName orgRunCount memberMemoryCount latestMemoryAt memory { hasRawTraces hasWorkJournal } }
       }
     }
   `;
@@ -236,36 +262,39 @@ describe("Memory collaboration (team + org) GraphQL e2e", () => {
   `;
   const teamMemberViewQuery = `
     query TeamMemberView($teamRunId: String!, $agentRunId: String!) {
-      getTeamMemberRunMemoryView(teamRunId: $teamRunId, agentRunId: $agentRunId, includeWorkingContext: false, includeEpisodic: false) {
-        runId semantic
+      getTeamMemberRunMemoryView(teamRunId: $teamRunId, agentRunId: $agentRunId, includeRawTraces: true) {
+        runId rawTraces { content }
       }
     }
   `;
   const orgMemberViewQuery = `
     query OrgMemberView($orgRunId: String!, $agentRunId: String!) {
-      getAgentOrgMemberRunMemoryView(orgRunId: $orgRunId, agentRunId: $agentRunId, includeWorkingContext: false, includeEpisodic: false) {
-        runId semantic
+      getAgentOrgMemberRunMemoryView(orgRunId: $orgRunId, agentRunId: $agentRunId, includeRawTraces: true) {
+        runId rawTraces { content }
       }
     }
   `;
 
   type TeamRunsData = { listAgentTeamRunsWithMemory: { total: number; page: number; totalPages: number; entries: Array<{ teamRunId: string; memberTargets: Member[] } & Record<string, unknown>> } };
   type OrgRunsData = { listAgentOrgRunsWithMemory: { total: number; page: number; totalPages: number; entries: Array<{ orgRunId: string; memberTargets: Member[] } & Record<string, unknown>> } };
-  type ViewData<K extends string> = Record<K, { runId: string; semantic: Array<{ fact: string }> | null }>;
+  type ViewData<K extends string> = Record<K, { runId: string; rawTraces: Array<{ content: string }> | null }>;
 
   it("lists admitted team roots only, grouped by definition, with the catalog name (AC-005, AC-003)", async () => {
     const data = await execGraphql<{ listAgentTeamsWithMemory: { total: number; entries: unknown[] } }>(teamsQuery);
-    expect(data.listAgentTeamsWithMemory).toEqual({
-      total: 1,
-      entries: [{
-        teamDefinitionId: "gql-writing-team",
-        teamDefinitionName: "Writing Team",
-        teamRunCount: 2,
-        memberMemoryCount: 1,
-        latestMemoryAt: "2026-08-15T02:00:00Z",
-        memory: { hasSemantic: true },
-      }],
+    const { total, entries } = data.listAgentTeamsWithMemory;
+    // Configured roots, plus the task teams their coordinating runs still link (UD-008), tagged.
+    expect(total).toBe(2);
+    expect(entries).toContainEqual({
+      teamDefinitionId: "gql-writing-team",
+      teamDefinitionName: "Writing Team",
+      teamRunCount: 2,
+      memberMemoryCount: 1,
+      latestMemoryAt: "2026-08-15T02:00:00Z",
+      memory: { hasRawTraces: true },
+      isTaskTeam: false,
+      startedByAgentName: null,
     });
+    expect(entries.filter((entry) => (entry as { isTaskTeam: boolean }).isTaskTeam)).toHaveLength(1);
   });
 
   it("lists team runs newest first with display names and each member's own run ID; searches and pages (AC-005, AC-010, AC-011)", async () => {
@@ -280,8 +309,8 @@ describe("Memory collaboration (team + org) GraphQL e2e", () => {
       lastUpdatedAt: "2026-08-15T02:00:00Z",
     });
     expect(page.entries[0]?.memberTargets).toEqual([
-      { memberAddress: "/writer", displayName: "writer", agentRunId: "gql-team-run-2-writer", agentDefinitionId: "agent-writer", executionKind: "CONFIGURED", startedAt: null, groupPath: [], lastUpdatedAt: "2026-08-15T01:00:00Z", memory: { hasSemantic: true } },
-      { memberAddress: "/writer", displayName: "writer", agentRunId: "gql-team-run-2-task-writer", agentDefinitionId: "agent-writer", executionKind: "TASK_AGENT", startedAt: "2026-08-15T00:00:00.000Z", groupPath: [], lastUpdatedAt: "2026-08-15T02:00:00Z", memory: { hasSemantic: true } },
+      { memberAddress: "/writer", displayName: "writer", agentRunId: "gql-team-run-2-writer", agentDefinitionId: "agent-writer", executionKind: "CONFIGURED", startedAt: null, groupPath: [], lastUpdatedAt: "2026-08-15T01:00:00Z", memory: { hasRawTraces: true } },
+      { memberAddress: "/writer", displayName: "writer", agentRunId: "gql-team-run-2-task-writer", agentDefinitionId: "agent-writer", executionKind: "TASK_AGENT", startedAt: "2026-08-15T00:00:00.000Z", groupPath: [], lastUpdatedAt: "2026-08-15T02:00:00Z", memory: { hasRawTraces: true } },
     ]);
     const runIds = async (search: string) =>
       (await execGraphql<TeamRunsData>(teamRunsQuery, { id: "gql-writing-team", search, page: 1, pageSize: 10 }))
@@ -299,12 +328,12 @@ describe("Memory collaboration (team + org) GraphQL e2e", () => {
     const view = (teamRunId: string, agentRunId: string) =>
       execGraphql<ViewData<"getTeamMemberRunMemoryView">>(teamMemberViewQuery, { teamRunId, agentRunId })
         .then((data) => data.getTeamMemberRunMemoryView);
-    await expect(view("gql-team-run-2", "gql-team-run-2-writer")).resolves.toMatchObject({ runId: "gql-team-run-2-writer", semantic: [expect.objectContaining({ fact: "team two" })] });
-    await expect(view("gql-team-run-2", "gql-team-run-2-task-writer")).resolves.toMatchObject({ semantic: [expect.objectContaining({ fact: "team two task" })] });
+    await expect(view("gql-team-run-2", "gql-team-run-2-writer")).resolves.toMatchObject({ runId: "gql-team-run-2-writer", rawTraces: [{ content: "team two" }] });
+    await expect(view("gql-team-run-2", "gql-team-run-2-task-writer")).resolves.toMatchObject({ rawTraces: [{ content: "team two task" }] });
     for (const [teamRunId, agentRunId] of [["gql-team-unadmitted", "gql-team-unadmitted-writer"], ["gql-team-missing", "gql-team-run-2-writer"], ["gql-team-run-1", "gql-team-run-2-writer"]]) {
       const empty = await view(teamRunId!, agentRunId!);
       expect(empty.runId).toBe(agentRunId);
-      expect(empty.semantic ?? null).toBeNull();
+      expect(empty.rawTraces ?? null).toBeNull();
     }
   });
 
@@ -338,7 +367,7 @@ describe("Memory collaboration (team + org) GraphQL e2e", () => {
         orgRunCount: 2,
         memberMemoryCount: 2,
         latestMemoryAt: "2026-09-02T01:00:00Z",
-        memory: { hasSemantic: true, hasRawTraces: false },
+        memory: { hasRawTraces: true, hasWorkJournal: false },
       }],
     });
     const search = await execGraphql<{ listAgentOrgsWithMemory: { entries: Array<{ orgDefinitionId: string }> } }>(orgsQuery, { search: "solution_designer" });
@@ -378,22 +407,22 @@ describe("Memory collaboration (team + org) GraphQL e2e", () => {
     const view = (orgRunId: string, agentRunId: string) =>
       execGraphql<ViewData<"getAgentOrgMemberRunMemoryView">>(orgMemberViewQuery, { orgRunId, agentRunId })
         .then((data) => data.getAgentOrgMemberRunMemoryView);
-    await expect(view("gql-org-a-1", "gql-org-a-1-designer")).resolves.toMatchObject({ runId: "gql-org-a-1-designer", semantic: [expect.objectContaining({ fact: "org designer" })] });
-    await expect(view("gql-org-a-1", "gql-org-a-1-task-ceo")).resolves.toMatchObject({ semantic: [expect.objectContaining({ fact: "org task ceo" })] });
-    await expect(view("gql-org-a-1", "gql-org-a-1-task-team-designer")).resolves.toMatchObject({ runId: "gql-org-a-1-task-team-designer", semantic: [expect.objectContaining({ fact: "org task team member" })] });
+    await expect(view("gql-org-a-1", "gql-org-a-1-designer")).resolves.toMatchObject({ runId: "gql-org-a-1-designer", rawTraces: [{ content: "org designer" }] });
+    await expect(view("gql-org-a-1", "gql-org-a-1-task-ceo")).resolves.toMatchObject({ rawTraces: [{ content: "org task ceo" }] });
+    await expect(view("gql-org-a-1", "gql-org-a-1-task-team-designer")).resolves.toMatchObject({ runId: "gql-org-a-1-task-team-designer", rawTraces: [{ content: "org task team member" }] });
     for (const [orgRunId, agentRunId] of [["gql-org-a-1", "missing-run"], ["gql-org-missing", "gql-org-a-1-ceo"]]) {
       const empty = await view(orgRunId!, agentRunId!);
       expect(empty.runId).toBe(agentRunId);
-      expect(empty.semantic ?? null).toBeNull();
+      expect(empty.rawTraces ?? null).toBeNull();
     }
   });
 
   it("serves an imported source: teams list from the import, while the org list is empty (AC-007 alternate)", async () => {
     const importRoot = path.join(memoryDir, "imports", "gql-collab-import");
     fs.mkdirSync(importRoot, { recursive: true });
-    fs.writeFileSync(path.join(importRoot, "source-node.json"), JSON.stringify({
+    fs.writeFileSync(path.join(importRoot, "memory-sync-source.json"), JSON.stringify({
       schemaVersion: 1,
-      sourceNodeId: "gql-collab-import",
+      memorySyncSourceId: "gql-collab-import",
       displayName: "Imported Collaboration Source",
       firstImportedAt: "2026-09-01T00:00:00.000Z",
       lastImportedAt: "2026-09-01T00:00:00.000Z",
@@ -403,7 +432,7 @@ describe("Memory collaboration (team + org) GraphQL e2e", () => {
     }), "utf-8");
     await writeTeamRoot(importRoot, writingTeamTree("gql-imported-team-run", "2026-08-20T00:00:00.000Z"));
     semantic(path.join(importRoot, "agent_teams", "gql-imported-team-run", "gql-imported-team-run-writer"), "imported", "2026-08-20T01:00:00.000Z");
-    const source = { type: "IMPORTED", sourceNodeId: "gql-collab-import" };
+    const source = { type: "IMPORTED", memorySyncSourceId: "gql-collab-import" };
 
     const teams = await execGraphql<{ listAgentTeamsWithMemory: { total: number; entries: Array<{ teamDefinitionId: string; teamRunCount: number }> } }>(teamsQuery, { source });
     expect(teams.listAgentTeamsWithMemory.entries.map((entry) => [entry.teamDefinitionId, entry.teamRunCount])).toEqual([["gql-writing-team", 1]]);

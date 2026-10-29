@@ -2,6 +2,7 @@ const ATTACHMENT_MIGRATION_ID = "20260926_team_context_file_execution_locators_v
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const READABLE_MIGRATION_ID = "20260803_custom_provider_readable_identity";
+const ALL_READY = { token_usage_history: true, custom_llm_providers: true, node_identity: true, memory_sync: true };
 
 const mocks = vi.hoisted(() => {
   const app = {
@@ -29,11 +30,13 @@ const mocks = vi.hoisted(() => {
       packageRegistryService: {},
     })),
     initializePrisma: vi.fn(async () => undefined),
+    disableEnvironmentKeySource: vi.fn(),
     shutdownPrisma: vi.fn(async () => undefined),
     runDatabaseMigrations: vi.fn(),
     assertTokenUsageCurrentSchema: vi.fn(async () => undefined),
-    configureTokenUsageMigrationReadiness: vi.fn(),
+    configureTokenUsageCapability: vi.fn(),
     runPending: vi.fn(),
+    capabilityReadiness: vi.fn(),
     rebuildTeamRunCatalog: vi.fn(async () => undefined),
     initializeSecretVault: vi.fn(async () => undefined),
     closeSecretVault: vi.fn(async () => undefined),
@@ -44,6 +47,10 @@ const mocks = vi.hoisted(() => {
   };
 });
 
+vi.mock("autobyteus-ts/secrets/provider-api-key-resolver.js", async (importOriginal) => ({
+  ...await importOriginal<typeof import("autobyteus-ts/secrets/provider-api-key-resolver.js")>(),
+  disableEnvironmentProviderApiKeySource: mocks.disableEnvironmentKeySource,
+}));
 vi.mock("repository_prisma", async (importOriginal) => ({
   ...await importOriginal<typeof import("repository_prisma")>(),
   initializePrisma: mocks.initializePrisma,
@@ -55,9 +62,8 @@ vi.mock("../../src/startup/migrations.js", () => ({
 vi.mock("../../src/startup/token-usage-current-schema-readiness.js", () => ({
   assertTokenUsageCurrentSchema: mocks.assertTokenUsageCurrentSchema,
 }));
-vi.mock("../../src/token-usage/providers/token-usage-migration-readiness.js", () => ({
-  TOKEN_USAGE_RUN_RECORDS_V1_MIGRATION_ID: "20260801_token_usage_run_records_v1",
-  configureTokenUsageMigrationReadiness: mocks.configureTokenUsageMigrationReadiness,
+vi.mock("../../src/token-usage/providers/token-usage-capability.js", () => ({
+  configureTokenUsageCapability: mocks.configureTokenUsageCapability,
 }));
 vi.mock("../../src/startup/background-runner.js", () => ({
   scheduleStudioBackgroundTasks: mocks.scheduleStudioBackgroundTasks,
@@ -65,22 +71,13 @@ vi.mock("../../src/startup/background-runner.js", () => ({
 vi.mock("../../src/compositions/build-studio-server.js", () => ({
   buildStudioServer: mocks.buildStudioServer,
 }));
-vi.mock("../../src/app-data-migrations/migrations/team-context-file-execution-locators-v1/team-context-file-execution-locators-v1-app-data-migration.js", () => ({
-  TEAM_CONTEXT_FILE_EXECUTION_LOCATORS_V1_MIGRATION_ID: "20260926_team_context_file_execution_locators_v1",
-}));
 vi.mock("../../src/app-data-migrations/app-data-migration-runner.js", () => ({
-  getAppDataMigrationRunner: () => ({ runPending: mocks.runPending }),
+  getAppDataMigrationRunner: () => ({ runPending: mocks.runPending, capabilityReadiness: mocks.capabilityReadiness }),
 }));
 vi.mock("../../src/run-history/services/root-run-package-readiness-index.js", () => ({
   RootRunPackageReadinessIndex: class {
     rebuild = mocks.rebuildTeamRunCatalog;
   },
-}));
-vi.mock("../../src/app-data-migrations/migrations/team-run-execution-tree-v2-app-data-migration.js", () => ({
-  TEAM_RUN_EXECUTION_TREE_V2_MIGRATION_ID: "20260824_team_run_execution_tree_v2",
-}));
-vi.mock("../../src/app-data-migrations/migrations/custom-provider-readable-id-app-data-migration.js", () => ({
-  CUSTOM_PROVIDER_READABLE_ID_APP_DATA_MIGRATION_ID: "20260803_custom_provider_readable_identity",
 }));
 vi.mock("../../src/secret-management/secret-vault-runtime.js", () => ({
   getSecretVaultRuntime: () => ({
@@ -97,6 +94,8 @@ vi.mock("../../src/config/app-config-provider.js", () => ({
       getLogsDir: () => "/tmp/server-runtime-gate/logs",
       getMemoryDir: () => "/tmp/server-runtime-gate/memory",
       getAppRootDir: () => "/tmp/server-runtime-gate",
+      getAppDataDir: () => "/tmp/server-runtime-gate",
+      get: () => undefined,
       getOperationalDatabaseUrl: () => "file:/tmp/server-runtime-gate/test.db",
       getOperationalDatabaseLocation: () => ({
         databasePath: "/tmp/server-runtime-gate/test.db",
@@ -129,6 +128,7 @@ vi.mock("../../src/logging/server-app-logger.js", () => ({
 }));
 
 import { startConfiguredServer } from "../../src/server-runtime.js";
+import { CustomLlmProviderStore } from "../../src/llm-management/llm-providers/stores/custom-llm-provider-store.js";
 
 const terminalReadableStatus = (status: "SUCCEEDED" | "SUCCEEDED_WITH_WARNINGS") => ({
   migrationId: READABLE_MIGRATION_ID,
@@ -136,14 +136,15 @@ const terminalReadableStatus = (status: "SUCCEEDED" | "SUCCEEDED_WITH_WARNINGS")
   logPath: "/tmp/server-runtime-gate/readable.log",
 });
 
-describe("Studio readable-provider migration startup gate", () => {
+describe("Studio app-data migration startup", () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.spyOn(process, "once").mockReturnValue(process);
+    vi.spyOn(process, "on").mockReturnValue(process);
     vi.spyOn(process, "exit").mockImplementation(((code: number) => {
       throw new Error(`process.exit:${code}`);
     }) as never);
     mocks.runPending.mockResolvedValue([{ migrationId: ATTACHMENT_MIGRATION_ID, status: "SUCCEEDED" }, terminalReadableStatus("SUCCEEDED")]);
+    mocks.capabilityReadiness.mockResolvedValue(ALL_READY);
   });
 
   afterEach(() => {
@@ -170,6 +171,14 @@ describe("Studio readable-provider migration startup gate", () => {
         datasourceUrl: "file:/tmp/server-runtime-gate/test.db",
       });
       expect(mocks.initializeSecretVault).toHaveBeenCalledTimes(1);
+      // AC-018: the server owns its vault; the autobyteus-ts environment default is off first.
+      expect(mocks.disableEnvironmentKeySource).toHaveBeenCalledTimes(1);
+      expect(mocks.disableEnvironmentKeySource.mock.invocationCallOrder[0])
+        .toBeLessThan(mocks.runDatabaseMigrations.mock.invocationCallOrder[0]!);
+      expect(mocks.initializeSecretVault).toHaveBeenCalledWith({
+        kind: "application",
+        location: expect.objectContaining({ databasePath: "/tmp/server-runtime-gate/test.db" }),
+      });
       expect(mocks.assertTokenUsageCurrentSchema.mock.invocationCallOrder[0])
         .toBeLessThan(mocks.initializeSecretVault.mock.invocationCallOrder[0]!);
       expect(mocks.runPending.mock.invocationCallOrder[0])
@@ -210,26 +219,40 @@ describe("Studio readable-provider migration startup gate", () => {
     expect(mocks.app.listen).toHaveBeenCalledTimes(1);
   });
 
+  it("marks every capability pending before the runner runs and applies its answer before admission is rebuilt", async () => {
+    await startConfiguredServer({ host: "127.0.0.1", port: 0 });
+
+    expect(mocks.configureTokenUsageCapability.mock.calls).toEqual([
+      [{ kind: "HISTORY_MIGRATION_PENDING" }],
+      [{ kind: "READY" }],
+    ]);
+    const [pending, ready] = mocks.configureTokenUsageCapability.mock.invocationCallOrder;
+    expect(mocks.assertTokenUsageCurrentSchema.mock.invocationCallOrder[0]).toBeLessThan(pending!);
+    expect(pending).toBeLessThan(mocks.runPending.mock.invocationCallOrder[0]!);
+    expect(mocks.runPending.mock.invocationCallOrder[0]).toBeLessThan(mocks.capabilityReadiness.mock.invocationCallOrder[0]!);
+    expect(ready).toBeLessThan(mocks.rebuildTeamRunCatalog.mock.invocationCallOrder[0]!);
+    await expect(new CustomLlmProviderStore("/tmp/server-runtime-gate/no-such-data").listProviders()).resolves.toEqual([]);
+  });
+
   it.each([
-    ["missing", [], "NOT_RUN", "NO_LOG"],
-    ["running", [{ migrationId: READABLE_MIGRATION_ID, status: "RUNNING", logPath: "/tmp/running.log" }], "RUNNING", "/tmp/running.log"],
-    ["failed", [{ migrationId: READABLE_MIGRATION_ID, status: "FAILED", logPath: "/tmp/failed.log" }], "FAILED", "/tmp/failed.log"],
+    ["missing", []],
+    ["running", [{ migrationId: READABLE_MIGRATION_ID, status: "RUNNING", logPath: "/tmp/running.log" }]],
+    ["failed", [{ migrationId: READABLE_MIGRATION_ID, status: "FAILED", logPath: "/tmp/failed.log" }]],
   ] as const)(
-    "blocks %s readable identity state before composition construction and unwinds process resources",
-    async (_label, statuses, expectedStatus, expectedLogPath) => {
+    "starts with only custom providers held back while the readable identity migration is %s (AC-004)",
+    async (_label, statuses) => {
       mocks.runPending.mockResolvedValueOnce([{ migrationId: ATTACHMENT_MIGRATION_ID, status: "SUCCEEDED" }, ...statuses]);
+      mocks.capabilityReadiness.mockResolvedValueOnce({ token_usage_history: true, custom_llm_providers: false, node_identity: true, memory_sync: true });
 
       await expect(startConfiguredServer({ host: "127.0.0.1", port: 0 }))
-        .rejects.toThrow("process.exit:1");
+        .resolves.toBeUndefined();
 
-      expect(mocks.buildStudioServer).not.toHaveBeenCalled();
-      expect(mocks.lifecycle.prepareBeforeListen).not.toHaveBeenCalled();
-      expect(mocks.app.listen).not.toHaveBeenCalled();
-      expect(mocks.closeSecretVault).toHaveBeenCalledTimes(1);
-      expect(mocks.shutdownPrisma).toHaveBeenCalledTimes(1);
-      expect(mocks.loggerError).toHaveBeenCalledWith(expect.stringContaining(
-        `CUSTOM_PROVIDER_READABLE_ID_STARTUP_BLOCKED:${expectedStatus}:${expectedLogPath}`,
-      ));
+      expect(mocks.buildStudioServer).toHaveBeenCalledTimes(1);
+      expect(mocks.app.listen).toHaveBeenCalledTimes(1);
+      expect(mocks.closeSecretVault).not.toHaveBeenCalled();
+      expect(mocks.configureTokenUsageCapability).toHaveBeenLastCalledWith({ kind: "READY" });
+      await expect(new CustomLlmProviderStore("/tmp/server-runtime-gate/no-such-data").listProviders())
+        .rejects.toMatchObject({ code: "CUSTOM_PROVIDERS_MIGRATION_PENDING" });
     },
   );
 
@@ -255,4 +278,31 @@ describe("Studio readable-provider migration startup gate", () => {
     expect(mocks.rebuildTeamRunCatalog.mock.invocationCallOrder[0]).toBeLessThan(mocks.buildStudioServer.mock.invocationCallOrder[0]!);
     expect(mocks.app.listen).toHaveBeenCalledTimes(1);
   });
+  it.each(['prisma', 'build', 'prepare', 'listen', 'recover', 'background'] as const)(
+    'cancels during %s without concurrent cleanup or subsequent startup stages', async phase => {
+      const handlers = new Map<string, (...args: any[]) => void>();
+      vi.mocked(process.on).mockImplementation(((event: string, handler: (...args: any[]) => void) => {
+        handlers.set(event, handler); return process;
+      }) as never);
+      vi.mocked(process.exit).mockImplementation((() => undefined) as never);
+      const stage = { prisma: mocks.initializePrisma, build: mocks.buildStudioServer,
+        prepare: mocks.lifecycle.prepareBeforeListen, listen: mocks.app.listen,
+        recover: mocks.lifecycle.recoverAfterListen, background: mocks.scheduleStudioBackgroundTasks }[phase];
+      let enter!: () => void, finish!: (value: any) => void;
+      const entered = new Promise<void>(resolve => enter = resolve);
+      stage.mockImplementationOnce((() => { enter(); return new Promise(resolve => finish = resolve); }) as never);
+      const starting = startConfiguredServer({ host: '127.0.0.1', port: 0 });
+      await entered; handlers.get('SIGTERM')!();
+      expect(mocks.app.close).not.toHaveBeenCalled(); expect(mocks.shutdownPrisma).not.toHaveBeenCalled();
+      finish(phase === 'build' ? { fastify: mocks.app, applicationRuntime: { lifecycle: mocks.lifecycle }, agentToolsMcpHost: mocks.agentToolsMcpHost } : undefined);
+      await starting; await new Promise(resolve => setImmediate(resolve));
+      if (phase === 'prisma') {
+        expect(mocks.buildStudioServer).not.toHaveBeenCalled(); expect(mocks.shutdownPrisma).toHaveBeenCalledOnce();
+      } else {
+        expect(mocks.app.close).toHaveBeenCalledOnce(); expect(mocks.shutdownPrisma).not.toHaveBeenCalled();
+      }
+      expect(process.exit).toHaveBeenCalledWith(0);
+      if (phase !== 'background') expect(mocks.scheduleStudioBackgroundTasks).not.toHaveBeenCalled();
+    });
+
 });

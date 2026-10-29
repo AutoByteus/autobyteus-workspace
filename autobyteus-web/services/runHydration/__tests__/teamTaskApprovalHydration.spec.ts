@@ -46,9 +46,12 @@ const harness = (subject = TASK, autoExecuteTools = false) => {
   emit('TEAM_EXECUTION_VIEW_SNAPSHOT', { root_team_run_id: ROOT, base_change_sequence: 0,
     closed_task_executions: [], execution_tree: team.view.getExecutionTree(), messages: [],
     agent_statuses: team.view.listAgentContextEntries().map(e => ({ agent_run_id: e.agentRunId, member_address: e.memberAddress, status: 'idle', trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null })),
-    agent_input_states: [] }) // recoverableBlock/agent_input_states are required since 6908ccff4
+    agent_input_states: [], remote_task_executions: [] }) // recoverableBlock/agent_input_states are required since 6908ccff4
+  const worker = team.view.getExecutionTree().root_team.members.find((member) => member.address === '/worker')!
   emit('TASK_EXECUTION_STARTED', { change_sequence: ++sequence, parent_team_run_id: ROOT,
-    execution: { kind: 'task_agent', address: '/worker', agent_run_id: TASK, platform_agent_run_id: null, delegator_agent_run_id: 'lead', started_at: '2026-09-14T10:00:00Z' } })
+    // A copy of the configured worker records the worker's snapshot when it starts.
+    execution: { kind: 'task_agent', address: '/worker', agent_run_id: TASK, platform_agent_run_id: null, delegator_agent_run_id: 'lead', started_at: '2026-09-14T10:00:00Z',
+      source: { kind: 'agent', agent_definition_id: worker.agent_definition_id, launch_configuration: worker.launch_configuration, launch_source: { origin: 'configured', fallbacks: [] } } } })
   expect(stream.isReady).toBe(true)
   expect(team.view.getFocusedAgentRunId()).toBe('lead')
   const context = team.view.getAgentContext(subject)!

@@ -1,0 +1,38 @@
+IMP-01 server-typecheck exit=0
+IMP-02 server-unit exit=0
+IMP-03 server-integration exit=0
+IMP-04 contracts-team exit=0
+IMP-05 contracts-collaboration exit=0
+IMP-06 contracts-dist-unchanged exit=0
+IMP-07 web-unit exit=0
+IMP-08 web-guards exit=0
+IMP-09 migration-focused-unit exit=0
+IMP-10 server-build exit=0
+IMP-11 e2e-startup-migrations exit=1
+IMP-12 e2e-production-upgrade exit=0
+done
+--- rerun on 3b6f970cfa (D-9) ---
+IMP-01 server-typecheck exit=0
+IMP-02 server-unit exit=0
+IMP-09 migration-focused-unit exit=0
+IMP-10 server-build exit=0
+IMP-11 e2e-startup-migrations exit=0
+IMP-12 e2e-production-upgrade exit=0
+done
+IMP-14 browser-delegated-launch-defaults exit=0 (commit 2253b8044b; Summary: 15 Pass, 0 Fail)
+--- rerun on 96de77efb3 (CR-001) ---
+IMP-01 server-typecheck exit=0
+IMP-02 server-unit exit=0
+IMP-07 web-unit exit=0
+done
+--- integration round on 26ad4ace20 (INT-001, merge of origin/personal @ ad784b0a8f) ---
+IMP-15 merged-server-typecheck exit=0
+IMP-16 merged-server-unit exit=0
+IMP-17 merged-server-integration exit=0
+IMP-18 merged-server-build exit=0
+IMP-19 merged-e2e-unclean-shutdown-restore exit=0
+IMP-20 merged-e2e-startup-upgrade exit=0
+IMP-21 merged-web-unit exit=0
+IMP-22 merged-web-guards exit=0
+IMP-23 merged-ac009-sweep exit=0
+done

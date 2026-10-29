@@ -2,16 +2,6 @@ import type { AppUpdateErrorKind, AppUpdateOperation, AppUpdateState } from '~/s
 
 const DEFAULT_ERROR_KIND: AppUpdateErrorKind = 'unknown';
 
-const NOTICE_MESSAGE_KEYS: Record<AppUpdateErrorKind, string> = {
-  network: 'shell.components.app.AppUpdateNotice.statusMessage.error.network',
-  'release-preparing': 'shell.components.app.AppUpdateNotice.statusMessage.error.releasePreparing',
-  metadata: 'shell.components.app.AppUpdateNotice.statusMessage.error.metadata',
-  download: 'shell.components.app.AppUpdateNotice.statusMessage.error.download',
-  install: 'shell.components.app.AppUpdateNotice.statusMessage.error.install',
-  unavailable: 'shell.components.app.AppUpdateNotice.statusMessage.error.unavailable',
-  unknown: 'shell.components.app.AppUpdateNotice.statusMessage.error.unknown',
-};
-
 const SETTINGS_MESSAGE_KEYS: Record<AppUpdateErrorKind, string> = {
   network: 'settings.components.settings.AboutSettingsManager.message.error.network',
   'release-preparing': 'settings.components.settings.AboutSettingsManager.message.error.releasePreparing',
@@ -36,10 +26,6 @@ function resolveKind(errorKind: AppUpdateErrorKind | null | undefined): AppUpdat
   return errorKind ?? DEFAULT_ERROR_KIND;
 }
 
-export function getAppUpdateNoticeErrorMessageKey(errorKind: AppUpdateErrorKind | null | undefined): string {
-  return NOTICE_MESSAGE_KEYS[resolveKind(errorKind)];
-}
-
 export function getSettingsAppUpdateErrorMessageKey(errorKind: AppUpdateErrorKind | null | undefined): string {
   return SETTINGS_MESSAGE_KEYS[resolveKind(errorKind)];
 }
@@ -48,14 +34,14 @@ export function getAppUpdateErrorToastMessageKey(errorKind: AppUpdateErrorKind |
   return TOAST_MESSAGE_KEYS[resolveKind(errorKind)];
 }
 
-export function isQuietStartupAppUpdateError(
-  state: Pick<AppUpdateState, 'status' | 'errorKind' | 'errorOperation'>,
+/**
+ * A check the user did not start (at launch or periodically) never raises a toast (DEC-016, REQ-025);
+ * Settings → Updates shows its error.
+ */
+export function isQuietBackgroundAppUpdateError(
+  state: Pick<AppUpdateState, 'status' | 'errorOperation'>,
 ): boolean {
-  if (state.status !== 'error' || state.errorOperation !== 'startup-check') {
-    return false;
-  }
-
-  return state.errorKind === 'network' || state.errorKind === 'release-preparing';
+  return state.status === 'error' && (state.errorOperation === 'startup-check' || state.errorOperation === 'periodic-check');
 }
 
 export function buildAppUpdateErrorToastSignature(

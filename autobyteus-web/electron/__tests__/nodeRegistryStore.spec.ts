@@ -2,8 +2,8 @@ import * as fsSync from 'fs'
 import * as os from 'os'
 import * as path from 'path'
 import { describe, expect, it, vi } from 'vitest'
-import { ensureEmbeddedNode, loadNodeRegistrySnapshot } from '../nodeRegistryStore'
-import { EMBEDDED_NODE_ID, type NodeRegistrySnapshot } from '../nodeRegistryTypes'
+import { ensureEmbeddedNode, identifyNodeEntry, loadNodeRegistrySnapshot, saveNodeRegistrySnapshot } from '../nodeRegistryStore'
+import { EMBEDDED_ENTRY_ID, type NodeRegistrySnapshot } from '../nodeRegistryTypes'
 import { PRODUCTION_EMBEDDED_SERVER_BASE_URL } from '../../shared/embeddedServerClientEndpoint'
 
 vi.mock('../logger', () => {
@@ -26,7 +26,6 @@ describe('nodeRegistryStore', () => {
           name: 'Remote Node',
           baseUrl: 'http://localhost:8000',
           nodeType: 'remote',
-          isSystem: false,
           createdAt: '2026-03-31T09:00:00.000Z',
           updatedAt: '2026-03-31T09:00:00.000Z',
         },
@@ -36,7 +35,7 @@ describe('nodeRegistryStore', () => {
     const nextSnapshot = ensureEmbeddedNode(snapshot, PRODUCTION_EMBEDDED_SERVER_BASE_URL)
 
     expect(nextSnapshot.version).toBe(3)
-    expect(nextSnapshot.nodes[0]?.id).toBe(EMBEDDED_NODE_ID)
+    expect(nextSnapshot.nodes[0]?.id).toBe(EMBEDDED_ENTRY_ID)
     expect(nextSnapshot.nodes[0]?.baseUrl).toBe(PRODUCTION_EMBEDDED_SERVER_BASE_URL)
   })
 
@@ -45,11 +44,10 @@ describe('nodeRegistryStore', () => {
       version: 7,
       nodes: [
         {
-          id: EMBEDDED_NODE_ID,
+          id: EMBEDDED_ENTRY_ID,
           name: 'Embedded Node',
           baseUrl: 'http://192.168.1.8:29695',
           nodeType: 'embedded',
-          isSystem: true,
           createdAt: '2026-03-31T09:00:00.000Z',
           updatedAt: '2026-03-31T09:00:00.000Z',
         },
@@ -68,11 +66,10 @@ describe('nodeRegistryStore', () => {
       version: 4,
       nodes: [
         {
-          id: EMBEDDED_NODE_ID,
+          id: EMBEDDED_ENTRY_ID,
           name: 'Embedded Node',
           baseUrl: PRODUCTION_EMBEDDED_SERVER_BASE_URL,
           nodeType: 'embedded',
-          isSystem: true,
           createdAt: '2026-03-31T09:00:00.000Z',
           updatedAt: '2026-03-31T09:00:00.000Z',
         },
@@ -85,7 +82,7 @@ describe('nodeRegistryStore', () => {
   it('drops legacy persisted browser pairing state while loading nodes', () => {
     const userDataPath = fsSync.mkdtempSync(path.join(os.tmpdir(), 'autobyteus-node-registry-'))
     fsSync.writeFileSync(
-      path.join(userDataPath, 'node-registry.v1.json'),
+      path.join(userDataPath, 'node-registry.json'),
       JSON.stringify(loadSnapshotWithLegacyBrowserPairing(), null, 2),
       'utf8',
     )
@@ -95,18 +92,75 @@ describe('nodeRegistryStore', () => {
     expect(nextSnapshot.nodes[1]?.id).toBe('remote-1')
     expect(nextSnapshot.nodes[1]).not.toHaveProperty('browserPairing')
   })
+
+  // one-nodes-tab, design § Persisted Data: `Directly Usable — No Migration`.
+  it('loads an entry written before one-nodes-tab without its probe fields, and the next save no longer has them', () => {
+    const userDataPath = fsSync.mkdtempSync(path.join(os.tmpdir(), 'autobyteus-node-registry-'))
+    const file = path.join(userDataPath, 'node-registry.json')
+    fsSync.writeFileSync(file, JSON.stringify({ version: 5, nodes: [
+      { id: EMBEDDED_ENTRY_ID, name: 'Embedded Node', baseUrl: PRODUCTION_EMBEDDED_SERVER_BASE_URL, nodeType: 'embedded',
+        capabilities: { terminal: true, fileExplorerStreaming: true }, capabilityProbeState: 'ready',
+        createdAt: '2026-03-31T09:00:00.000Z', updatedAt: '2026-03-31T09:00:00.000Z' },
+      { id: 'remote-ba22', name: 'http://localhost:8001', baseUrl: 'http://localhost:8001', nodeType: 'remote',
+        capabilities: { terminal: true, fileExplorerStreaming: true }, capabilityProbeState: 'ready',
+        createdAt: '2026-04-01T09:00:00.000Z', updatedAt: '2026-04-01T09:00:00.000Z' },
+    ] }), 'utf8')
+
+    const loaded = loadNodeRegistrySnapshot(userDataPath, PRODUCTION_EMBEDDED_SERVER_BASE_URL)
+
+    expect(loaded.version).toBe(5)
+    expect(loaded.nodes).toEqual([
+      { id: EMBEDDED_ENTRY_ID, name: 'Embedded Node', baseUrl: PRODUCTION_EMBEDDED_SERVER_BASE_URL, nodeType: 'embedded',
+        createdAt: '2026-03-31T09:00:00.000Z', updatedAt: '2026-03-31T09:00:00.000Z' },
+      { id: 'remote-ba22', name: 'http://localhost:8001', baseUrl: 'http://localhost:8001', nodeType: 'remote',
+        createdAt: '2026-04-01T09:00:00.000Z', updatedAt: '2026-04-01T09:00:00.000Z' },
+    ])
+    saveNodeRegistrySnapshot(userDataPath, loaded)
+    expect(fsSync.readFileSync(file, 'utf8')).not.toMatch(/capabilit/)
+  })
+
+  it('reads a valid nodeId and treats an invalid one as not learned yet', () => {
+    const userDataPath = fsSync.mkdtempSync(path.join(os.tmpdir(), 'autobyteus-node-registry-'))
+    const remote = (id: string, nodeId: unknown) => ({ id, name: id, baseUrl: `http://${id}:8000`, nodeType: 'remote', nodeId, createdAt: '2026-04-01T09:00:00.000Z', updatedAt: '2026-04-01T09:00:00.000Z' })
+    fsSync.writeFileSync(path.join(userDataPath, 'node-registry.json'), JSON.stringify({ version: 1, nodes: [
+      remote('a', SRV_A), remote('b', 'srv_short'), remote('c', 42), remote('d', 'not-an-id'),
+    ] }), 'utf8')
+
+    const loaded = loadNodeRegistrySnapshot(userDataPath, PRODUCTION_EMBEDDED_SERVER_BASE_URL)
+
+    expect(loaded.nodes.map((node) => [node.id, node.nodeId])).toEqual([
+      [EMBEDDED_ENTRY_ID, undefined], ['a', SRV_A], ['b', undefined], ['c', undefined], ['d', undefined]])
+    expect(loaded.nodes[2]).not.toHaveProperty('nodeId')
+  })
+
+  it('identify sets or replaces the ID of the named entry only, is the same array when equal, and refuses bad input', () => {
+    const nodes = loadSnapshotWithLegacyBrowserPairing().nodes.map(({ browserPairing: _ignored, ...node }: any) => node)
+    const set = identifyNodeEntry(nodes, { type: 'identify', entryId: 'remote-1', nodeId: SRV_A }, '2026-10-23T08:00:00.000Z')
+    expect(set[1]).toMatchObject({ id: 'remote-1', name: 'Remote Node', baseUrl: 'http://localhost:8000', nodeId: SRV_A,
+      updatedAt: '2026-10-23T08:00:00.000Z' })
+    expect(set[0]).toBe(nodes[0])
+    expect(nodes[1]).not.toHaveProperty('nodeId')
+    // The address now answers with another ID (a Docker node recreated with a fresh volume): it replaces the stored one.
+    const replaced = identifyNodeEntry(set, { type: 'identify', entryId: 'remote-1', nodeId: SRV_B }, '2026-10-23T09:00:00.000Z')
+    expect(replaced[1]?.nodeId).toBe(SRV_B)
+    expect(identifyNodeEntry(replaced, { type: 'identify', entryId: 'remote-1', nodeId: SRV_B }, 'later')).toBe(replaced)
+    expect(() => identifyNodeEntry(nodes, { type: 'identify', entryId: 'missing', nodeId: SRV_A }, 'now')).toThrow('Node does not exist')
+    expect(() => identifyNodeEntry(nodes, { type: 'identify', entryId: 'remote-1', nodeId: 'srv_x' }, 'now')).toThrow('Invalid node ID')
+  })
 })
+
+const SRV_A = 'srv_ibJioK7nAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
+const SRV_B = 'srv_freshVolumeBBBBBBBBBBBBBBBBBBBBBBBBB'
 
 function loadSnapshotWithLegacyBrowserPairing(): NodeRegistrySnapshot {
   return {
     version: 2,
     nodes: [
       {
-        id: EMBEDDED_NODE_ID,
+        id: EMBEDDED_ENTRY_ID,
         name: 'Embedded Node',
         baseUrl: PRODUCTION_EMBEDDED_SERVER_BASE_URL,
         nodeType: 'embedded',
-        isSystem: true,
         createdAt: '2026-03-31T09:00:00.000Z',
         updatedAt: '2026-03-31T09:00:00.000Z',
       },
@@ -115,7 +169,6 @@ function loadSnapshotWithLegacyBrowserPairing(): NodeRegistrySnapshot {
         name: 'Remote Node',
         baseUrl: 'http://localhost:8000',
         nodeType: 'remote',
-        isSystem: false,
         createdAt: '2026-03-31T09:00:00.000Z',
         updatedAt: '2026-03-31T09:00:00.000Z',
         browserPairing: {

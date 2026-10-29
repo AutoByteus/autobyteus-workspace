@@ -50,7 +50,7 @@ const cacheGeneration = ref(0);
 
 const terminalEndpointScope = computed(() =>
   createTerminalTargetCacheScope({
-    nodeId: windowNodeContextStore.nodeId,
+    entryId: windowNodeContextStore.entryId,
     terminalWs: windowNodeContextStore.boundEndpoints.terminalWs,
   }),
 );
