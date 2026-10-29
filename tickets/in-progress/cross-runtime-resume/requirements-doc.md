@@ -84,7 +84,7 @@ Findings must cite REQ/AC/BEH IDs. New behavior is a `Requirement Gap`.
 | REQ-007 | For a large journal the notice tells the agent to read the latest part fully and earlier parts by search or line range; the settings show the journal size when the runtime is switched. | BEH-002 | Must | F-03 |
 | REQ-008 | If the new runtime cannot read the run's folder, a bounded excerpt is included instead (after U-2). | BEH-006 | Should | U-2 |
 | REQ-009 | The stop reason is the provider's own message and structured code if given; nothing is classified. | BEH-004 | Should | autobyteus-314 C-01 |
-| REQ-010 | The switch is one record in the run's single raw-trace stream (from runtime, to runtime, time). The journal renderer derives each record's runtime from it (records before the first switch use the switch's `from`) and translates with that runtime's rules; no new raw-trace file is started at a switch. | BEH-002 | Must | F-01, F-07; user model 2026-10-29 |
+| REQ-010 | A switch writes one record (from runtime, to runtime, time) and starts a new raw-trace file at it, using the existing rotate-before-boundary primitive; the record is the first record of the new file. Each journal file is translated with the runtime of its raw file, found from the latest switch record at or before it (the first switch's `from` for earlier files). | BEH-002 | Must | F-01, F-07; user 2026-10-29 ("whichever is simpler"), DEC-7 |
 | REQ-011 | The chat shows a marker where the runtime changed (DEC-3), built from the same switch record. | BEH-005 | Should | User question |
 
 ## Acceptance Criteria
@@ -119,6 +119,7 @@ Findings must cite REQ/AC/BEH IDs. New behavior is a `Requirement Gap`.
 | DEC-3 | The chat shows a small marker at the switch ("Switched from Claude to Codex"). | **The user** (2026-10-29: "a marker in the chat where the runtime changed was a good marker") | The new agent's tone and tools change; the user sees why. |
 | DEC-4 | First slice: one standalone Agent; Teams, Orgs and delegated copies right after. | **Needs user** (scope; his example mentioned teams) | Recommended: yes, since a member needs its address, links and Task rules; not yet investigated. |
 | DEC-5 | Stop reason is the provider's message, never classified. | Solution Designer | Provider-error contract. |
+| DEC-7 | Rotate the raw-trace file at a switch (not one continuous stream). | Solution Designer (the user left it to the simpler/cleaner option) | One raw file = one runtime keeps the journal file a pure function of one raw file; `rotateActiveRawTracesBeforeBoundary` exists (compaction, retry-safe). |
 | DEC-6 | `run_summary.md` beside the raw traces, not inside `work_journal/`; written through a server tool. | Solution Designer, from the user's idea | `work_journal/` is derived and deletable. |
 
 ## Assumptions / Unknowns
