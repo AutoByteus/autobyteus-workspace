@@ -27,7 +27,7 @@ const factories: Record<string, () => BaseLLM> = {
   openai: () => new OpenAICompatibleLLM(model(LLMProvider.OPENAI), 'https://synthetic.invalid', config(), key, 'OPENAI'),
   responses: () => new OpenAIResponsesLLM(model(LLMProvider.OPENAI), 'https://synthetic.invalid', config(), key, 'OPENAI'),
   deepseek: () => new DeepSeekLLM(model(LLMProvider.DEEPSEEK), config(), key),
-  anthropic: () => new AnthropicLLM(model(LLMProvider.ANTHROPIC), config(), key),
+  anthropic: () => new AnthropicLLM(new LLMModel({ name: 'claude-opus-5', value: 'claude-opus-5', provider: LLMProvider.ANTHROPIC }), config(), key),
   geminiAiStudio: () => new GeminiLLM(model(LLMProvider.GEMINI), config(), key, geminiRuntimeResolver()),
   geminiExpress: () => new GeminiLLM(model(LLMProvider.GEMINI), config(), key, geminiRuntimeResolver({ kind: 'vertexExpress' })),
   geminiProject: () => new GeminiLLM(model(LLMProvider.GEMINI), config(), key, geminiRuntimeResolver({ kind: 'vertexProject', project: 'synthetic-project', location: 'global' })),

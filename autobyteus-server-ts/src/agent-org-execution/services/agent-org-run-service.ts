@@ -16,7 +16,7 @@ import type { WorkspaceManager } from "../../workspaces/workspace-manager.js";
 import type { DefinitionAdmissionService } from "../../collaboration-definition-admission/services/definition-admission-service.js";
 import type { AgentOrgRun } from "../domain/agent-org-run.js";
 import { AgentOrgRunManager } from "./agent-org-run-manager.js";
-import { AgentOrgRunPlanner } from "./agent-org-run-planner.js";
+import { AgentOrgRunPlanner, type ResolvedAgentOrgLaunchPlan } from "./agent-org-run-planner.js";
 import type { RunModelSelectionValidator } from "../../llm-management/services/run-model-selection-service.js";
 import type { AgentOrgRunHistoryCatalogService } from "../../run-history/services/agent-org-run-history-catalog-service.js";
 import { createRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
@@ -102,12 +102,10 @@ export class AgentOrgRunService {
       teamOverrides,
       agentOverrides,
     });
-    await this.validateCompleteConfiguration(resolved.launch);
+    const launch = await this.validateCompleteConfiguration(resolved.launch);
     const tree = await planner.build({
       definition,
-      rootConfiguration,
-      teamOverrides,
-      agentOverrides,
+      plan: { topology: resolved.topology, launch },
       applicationBinding: command.applicationBinding ?? null,
     });
     const run = await this.dependencies.manager.create(tree);
@@ -120,9 +118,14 @@ export class AgentOrgRunService {
     }
   }
 
+  /**
+   * Validates every placement's launch and returns the launch to build the tree from: the same placements,
+   * each with its validated (canonical) model selection, so no launch carries a setting its model does not
+   * declare. Inheritance is already resolved here, so no placement's selection is re-derived from another's.
+   */
   private async validateCompleteConfiguration(
-    launch: Awaited<ReturnType<AgentOrgRunPlanner["resolveConfiguration"]>>["launch"],
-  ): Promise<void> {
+    launch: ResolvedAgentOrgLaunchPlan["launch"],
+  ): Promise<ResolvedAgentOrgLaunchPlan["launch"]> {
     const entries = [
       ["/", launch.root] as const,
       ...[...launch.teams.entries()],
@@ -148,7 +151,8 @@ export class AgentOrgRunService {
       const address = results.length < entries.length ? entries[results.length]![0] : "/";
       throw coded("AGENT_ORG_CONFIGURATION_INVALID", `Invalid configuration for '${address}': Model validation returned an incomplete result.`);
     }
-    for (const [index, [address]] of entries.entries()) {
+    const canonical = new Map<string, AgentLaunchConfiguration>();
+    for (const [index, [address, configuration]] of entries.entries()) {
       const result = results[index]!;
       if (result.kind !== "valid") {
         const detail = result.kind === "invalid"
@@ -158,7 +162,12 @@ export class AgentOrgRunService {
             : "The selected model configuration schema is unavailable.";
         throw coded("AGENT_ORG_CONFIGURATION_INVALID", `Invalid configuration for '${address}': ${detail}`);
       }
+      canonical.set(address, Object.freeze({ ...configuration,
+        llmModelIdentifier: result.selection.llmModelIdentifier, llmConfig: result.selection.llmConfig }));
     }
+    const of = <K extends string>(entries: ReadonlyMap<K, AgentLaunchConfiguration>) =>
+      new Map([...entries.keys()].map((address) => [address, canonical.get(address)!] as const));
+    return Object.freeze({ root: canonical.get("/")!, teams: of(launch.teams), agents: of(launch.agents) });
   }
 
   async restore(agentOrgRunId: string): Promise<AgentOrgRun> {

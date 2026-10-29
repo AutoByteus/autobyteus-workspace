@@ -173,18 +173,21 @@ while thinking is on is owned by `utils/llmThinkingConfigAdapter.ts`:
 `hasThinkingSwitch`, `getThinkingDependentParamKeys`, `applyThinkingParamChoice`
 (menu choices) and `applyThinkingDependentEdit` (form edits).
 
-- **Schema with an on/off switch** (Claude `thinking_enabled`, DeepSeek-style
-  `thinking_type`): one "Thinking" list. It is `Off` followed by each effort
-  level (for example Off · Low · Medium · High · Xhigh · Max), or `Off · On` when
-  there is no effort list. Exactly one row is checked, and it matches what will
-  be sent. Picking a level turns thinking on at that level in one action.
-  Re-picking the stored level while Off also turns thinking on. Other dependent
-  settings (budget, display) appear below a divider, and changing one also turns
-  thinking on.
+- **Schema with an on/off switch** (Claude `thinking_enabled` — AutoByteus Claude
+  rows and the Claude Agent SDK runtime — and DeepSeek-style `thinking_type`): one
+  "Thinking" list. It is `Off` followed by each effort level (for example Off ·
+  Low · Medium · High · Xhigh · Max), or `Off · On` when there is no effort list.
+  Exactly one row is checked, and it matches what will be sent. Picking a level
+  turns thinking on at that level in one action; Off turns thinking off (the
+  AutoByteus runtime then sends no effort). Re-picking the stored level while Off
+  also turns thinking on. Any other dependent settings appear below a divider,
+  and changing one also turns thinking on. Claude rows offer no thinking display
+  setting.
 - **Trigger.** It reads "Off" when thinking is off, the active level when the
   model has an effort setting, and "On" otherwise. The bulb is muted when off.
-- **Other schemas** (for example Codex `reasoning_effort` with no switch) keep
-  the per-parameter menu, and a pick changes only that parameter.
+- **Other schemas** (for example Codex `reasoning_effort` with no switch, or the
+  effort-only Claude Opus 5.5 and Fable 5.1, whose thinking cannot be switched
+  off) keep the per-parameter menu, and a pick changes only that parameter.
 
 ## Start Surfaces
 

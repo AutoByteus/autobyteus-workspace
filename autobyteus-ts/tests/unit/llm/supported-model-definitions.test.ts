@@ -21,14 +21,13 @@ describe('current supported model definitions', () => {
       'gpt-5.6-sol', 'gpt-5.6-terra', 'gpt-5.6-luna', 'gpt-5.5', 'gpt-5.4', 'gpt-5.4-mini',
       'mistral-large-3', 'devstral-2', 'grok-4.7',
       'claude-fable-5-1', 'claude-fable-5', 'claude-opus-5', 'claude-opus-5-5',
-      'claude-opus-4.8', 'claude-opus-4.7', 'claude-sonnet-5-5', 'claude-sonnet-5', 'claude-sonnet-4.6',
-      'claude-haiku-5-5',
+      'claude-sonnet-5-5', 'claude-sonnet-5', 'claude-haiku-5-5',
       'deepseek-v4-flash', 'deepseek-v4-pro', 'gemini-3.1-pro-preview', 'gemini-3.8-flash',
       'kimi-k3', 'qwen3.7-max', 'qwen3.8-max', 'DeepSeek V4 Pro (Qwen)',
       'DeepSeek V4 Flash 0731 (Qwen)', 'GLM-5.2 (Qwen)', 'qwen3-max', 'glm-5.3', 'minimax-m3',
     ]);
     expect(new Set(supportedModelDefinitions.map(({ name }) => name)).size).toBe(supportedModelDefinitions.length);
-    expect(supportedModelDefinitions.slice(12, 22)).toEqual(anthropicSupportedModelDefinitions);
+    expect(supportedModelDefinitions.slice(12, 19)).toEqual(anthropicSupportedModelDefinitions);
     expect(supportedModelDefinitions.filter(({ provider }) => provider === LLMProvider.ANTHROPIC))
       .toEqual(anthropicSupportedModelDefinitions);
     expect(pricing(1, 2).toDict()).toMatchObject({
@@ -86,12 +85,11 @@ describe('current supported model definitions', () => {
         multimodalCapabilities: { image: 'supported' },
       });
       const schema = rows[0]!.configSchema?.toJsonSchema() as { properties: Record<string, unknown> };
-      expect(Object.keys(schema.properties).sort()).toEqual(['thinking_display', 'thinking_enabled']);
+      expect(Object.keys(schema.properties).sort()).toEqual(['reasoning_effort', 'thinking_enabled']);
     }
     const [sonnet] = supportedModelDefinitions.filter((item) => item.value === 'claude-sonnet-5-5');
     expect(sonnet!.configSchema?.toJsonSchema()).toMatchObject({ properties: {
       thinking_enabled: { default: false },
-      thinking_display: { enum: ['omitted', 'summarized'], default: 'summarized' },
     } });
     expect(sonnet!.defaultConfig.pricingConfig).toMatchObject({
       inputTokenPricing: 2, outputTokenPricing: 10, cachedInputReadTokenPricing: 0.1,
@@ -102,7 +100,6 @@ describe('current supported model definitions', () => {
     const [haiku] = supportedModelDefinitions.filter((item) => item.value === 'claude-haiku-5-5');
     expect(haiku!.configSchema?.toJsonSchema()).toMatchObject({ properties: {
       thinking_enabled: { default: false },
-      thinking_display: { enum: ['omitted', 'summarized'], default: 'omitted' },
     } });
     expect(haiku!.defaultConfig.pricingConfig).toMatchObject({
       inputTokenPricing: 0.1, outputTokenPricing: 0.5, cachedInputReadTokenPricing: 0.01,
@@ -115,6 +112,35 @@ describe('current supported model definitions', () => {
           cachedInputReadTokenPricing: 0.05, cachedInputWrite5mTokenPricing: 0.625, cachedInputWrite1hTokenPricing: 1 },
       ],
     });
+  });
+
+  it('gives every Claude row Anthropic effort with all five levels and the API default', () => {
+    const expectedDefaults: Record<string, string> = {
+      'claude-fable-5-1': 'high', 'claude-fable-5': 'high', 'claude-opus-5': 'high', 'claude-opus-5-5': 'medium',
+      'claude-sonnet-5-5': 'high', 'claude-sonnet-5': 'high', 'claude-haiku-5-5': 'medium',
+    };
+    expect(anthropicSupportedModelDefinitions.map(({ value }) => value).sort()).toEqual(Object.keys(expectedDefaults).sort());
+    for (const { value, configSchema } of anthropicSupportedModelDefinitions) {
+      expect(configSchema?.toJsonSchema(), value).toMatchObject({ properties: {
+        reasoning_effort: { enum: ['low', 'medium', 'high', 'xhigh', 'max'], default: expectedDefaults[value] },
+      } });
+    }
+  });
+
+  it('exposes no thinking display setting on any Claude row (AC-010)', () => {
+    for (const { value, configSchema } of anthropicSupportedModelDefinitions) {
+      const properties = (configSchema?.toJsonSchema() as { properties: Record<string, unknown> }).properties;
+      expect(properties, value).not.toHaveProperty('thinking_display');
+      expect(Object.keys(properties).every((key) => ['thinking_enabled', 'reasoning_effort'].includes(key)), value).toBe(true);
+    }
+  });
+
+  it('removes Claude rows below generation 5 without aliasing them', async () => {
+    for (const removed of ['claude-opus-4.8', 'claude-opus-4.7', 'claude-sonnet-4.6']) {
+      expect(supportedModelDefinitions.some(({ name }) => name === removed)).toBe(false);
+      await expect(LLMFactory.requireCurrentModelIdentifier(removed))
+        .rejects.toBeInstanceOf(CurrentModelSelectionRequiredError);
+    }
   });
 
   it('contains current named rows and removes the replaced curated identifiers', () => {
@@ -375,7 +401,7 @@ describe('current supported model definitions', () => {
     },
   );
 
-  it('defines exact Claude Fable 5.1 metadata and cache-aware Standard pricing without a manual thinking schema', async () => {
+  it('defines exact Claude Fable 5.1 metadata and cache-aware Standard pricing with an effort-only schema', async () => {
     const definitions = supportedModelDefinitions.filter((candidate) => candidate.name === 'claude-fable-5-1');
     expect(definitions).toHaveLength(1);
     const [definition] = definitions;
@@ -394,7 +420,11 @@ describe('current supported model definitions', () => {
         },
       },
     });
-    expect(definition?.configSchema).toBeUndefined();
+    expect(definition?.configSchema?.toJsonSchema()).toEqual({
+      type: 'object',
+      properties: { reasoning_effort: expect.objectContaining({ enum: ['low', 'medium', 'high', 'xhigh', 'max'], default: 'high' }) },
+      required: [],
+    });
     expect(definition?.defaultConfig.pricingConfig).toMatchObject({
       pricingEffectiveDate: '2026-09-01',
       inputTokenPricing: 10,

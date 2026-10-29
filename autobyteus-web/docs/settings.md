@@ -1656,7 +1656,10 @@ duplicated, or silently written back. Missing catalog/schema state keeps Save
 locked. These residual rules describe the unchanged saved model, not transfer
 of old settings into a replacement. The server revalidates every Agent/Team
 scope against its fixed runtime and selected model, returning field-addressed
-validation errors when applicable.
+validation errors when applicable. A setting the current schema no longer
+declares cannot be edited and is left out by the server when the run's settings
+are saved (it is not an error); read-only and historical views still show it as
+a residual until then.
 
 Save is enabled only for a stopped, editable, schema-ready, changed draft. The
 revision-free mutations are `updateStoppedAgentRunModelConfig`,
@@ -1739,9 +1742,9 @@ unavailable leaves **Advanced** collapsed initially, but still openable.
 Toggling a supported **Thinking** control ON opens **Advanced** automatically;
 toggling OFF after inspection does not force-collapse the section.
 When the schema has a thinking on/off switch, a user edit to a setting that only
-applies while thinking is on (for example `reasoning_effort`,
-`thinking_budget_tokens` or `thinking_display`) made under **Advanced** while
-**Thinking** is OFF also turns **Thinking** ON and keeps the edited value.
+applies while thinking is on (for example `reasoning_effort`) made under
+**Advanced** while **Thinking** is OFF also turns **Thinking** ON and keeps the
+edited value.
 `ModelConfigSection` routes these edits through `applyThinkingDependentEdit`
 (`utils/llmThinkingConfigAdapter.ts`), the same owner the Chat thinking menu uses.
 Automatic default and sanitize writes do not go through it and never turn

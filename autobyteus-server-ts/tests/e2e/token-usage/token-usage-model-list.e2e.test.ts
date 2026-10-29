@@ -172,9 +172,12 @@ describe('token usage related model-list GraphQL coverage', () => {
       expect(identifiers).toEqual(expect.arrayContaining([
         'claude-fable-5-1',
         'claude-fable-5',
-        'claude-opus-4.8',
+        'claude-opus-5',
         'claude-sonnet-5',
       ]));
+      for (const removed of ['claude-opus-4.8', 'claude-opus-4.7', 'claude-sonnet-4.6']) {
+        expect(identifiers).not.toContain(removed);
+      }
       expect(anthropicModels.filter((model) => model.modelIdentifier === 'claude-fable-5-1')).toHaveLength(1);
       expect(byIdentifier.get('claude-fable-5-1')).toMatchObject({
         name: 'claude-fable-5-1',
@@ -190,9 +193,9 @@ describe('token usage related model-list GraphQL coverage', () => {
         maxContextTokens: 1000000,
         maxOutputTokens: 128000,
       });
-      expect(byIdentifier.get('claude-opus-4.8')).toMatchObject({
-        value: 'claude-opus-4-8',
-        canonicalName: 'claude-opus-4.8',
+      expect(byIdentifier.get('claude-opus-5')).toMatchObject({
+        value: 'claude-opus-5',
+        canonicalName: 'claude-opus-5',
         maxContextTokens: 1000000,
         maxOutputTokens: 128000,
       });

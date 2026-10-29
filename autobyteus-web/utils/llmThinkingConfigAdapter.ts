@@ -20,7 +20,7 @@ export type ThinkingControlState = {
 
 const PROVIDER_KEYS: Record<ThinkingProvider, string[]> = {
   openai: ['reasoning_effort', 'reasoning_summary'],
-  claude: ['thinking_enabled', 'thinking_budget_tokens', 'thinking_display', 'reasoning_effort'],
+  claude: ['thinking_enabled', 'reasoning_effort'],
   gemini: ['thinking_level', 'include_thoughts'],
   typed: ['thinking_type', 'reasoning_effort'],
 };
@@ -245,12 +245,6 @@ export const applyThinkingToggle = (
     }
     case 'claude': {
       applyKey(next, schema, 'thinking_enabled', enabled);
-      if (enabled && next.thinking_budget_tokens === undefined) {
-        const budgetDefault = getValidSchemaDefault(schema.thinking_budget_tokens);
-        if (budgetDefault !== undefined) {
-          applyKey(next, schema, 'thinking_budget_tokens', budgetDefault);
-        }
-      }
       break;
     }
     case 'gemini': {
@@ -305,7 +299,7 @@ export const getThinkingToggleOwnedParamKeys = (
 ): string[] => getThinkingControlState(schema, null).toggleOwnedKeys;
 
 const DEPENDENT_KEYS: Partial<Record<ThinkingProvider, string[]>> = {
-  claude: ['reasoning_effort', 'thinking_budget_tokens', 'thinking_display'],
+  claude: ['reasoning_effort'],
   typed: ['reasoning_effort'],
 };
 
@@ -367,8 +361,7 @@ export const applyThinkingDependentEdit = (
 /**
  * The model's default thinking parameters, written explicitly: each thinking key the schema
  * declares at its effective default (what the thinking control shows for an empty config). A
- * Claude budget is only written with thinking on, and a typed effort only with thinking enabled,
- * as `applyThinkingToggle` does.
+ * typed effort is only written with thinking enabled, as `applyThinkingToggle` does.
  */
 export const getDefaultThinkingConfig = (
   schema: UiModelConfigSchema | null,
@@ -379,7 +372,6 @@ export const getDefaultThinkingConfig = (
     if (value !== undefined) next[key] = value;
   }
   const provider = detectThinkingProvider(schema);
-  if (provider === 'claude' && next.thinking_enabled !== true) removeKey(next, 'thinking_budget_tokens');
   if (provider === 'typed' && next.thinking_type !== 'enabled') removeKey(next, 'reasoning_effort');
   return next;
 };

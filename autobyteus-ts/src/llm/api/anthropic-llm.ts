@@ -28,10 +28,11 @@ import {
 } from '../../secrets/provider-api-key-resolver.js';
 import {
   applySafeProviderRequestKwargs,
-  cloneSafeProviderRequestKwargs,
 } from './provider-request-kwargs.js';
 import {
+  ANTHROPIC_EFFORT_LEVELS,
   resolveAnthropicModelRequestPolicy,
+  type AnthropicEffortLevel,
   type AnthropicModelRequestPolicy,
 } from './anthropic-model-request-policy.js';
 import type {
@@ -69,15 +70,6 @@ const splitLeadingSystemMessages = (messages: Message[]): { systemPrompt: string
   return { systemPrompt, remaining };
 };
 
-const ANTHROPIC_INTERNAL_EXTRA_PARAM_KEYS = new Set([
-  'thinking_enabled',
-  'thinking_budget_tokens',
-  'thinking_display'
-]);
-// Config extra params are forwarded to the request except internal toggles and
-// `cache_control`, which only the adapter decides (from the invocation's cache scope).
-const ANTHROPIC_EXCLUDED_EXTRA_PARAM_KEYS = new Set([...ANTHROPIC_INTERNAL_EXTRA_PARAM_KEYS, 'cache_control']);
-
 /** Anthropic `stop_reason` → normalized finish. `pause_turn` (server tools only) is unmapped. */
 const ANTHROPIC_FINISH_TABLE: LlmFinishTable = {
   end_turn: 'stop',
@@ -104,10 +96,34 @@ const ANTHROPIC_CONTROLLED_KWARG_KEYS = new Set(['stream', 'tools', 'cache_contr
 const isObjectRecord = (value: unknown): value is Record<string, unknown> =>
   Boolean(value) && typeof value === 'object' && !Array.isArray(value);
 
-const filterInternalExtraParams = (
-  extraParams: Record<string, unknown> | null | undefined
-): Record<string, unknown> => {
-  return cloneSafeProviderRequestKwargs(extraParams, { controlledKeys: ANTHROPIC_EXCLUDED_EXTRA_PARAM_KEYS });
+/**
+ * The run config settings this adapter interprets. A run's stored config reaches the adapter as
+ * `LLMConfig.extraParams`; only these keys are read, and no other config key is sent, so a key a
+ * catalog schema no longer declares stays inert in saved runs. Per-call kwargs are separate.
+ */
+type AnthropicOwnedConfig = {
+  /** `thinking_enabled`; undefined when the config does not set the switch. */
+  thinkingEnabled: boolean | undefined;
+  /** `reasoning_effort`; null when unset (nothing sent, the model default applies). */
+  effort: AnthropicEffortLevel | null;
+};
+
+/** Reads the owned config keys; an unknown effort level fails locally. */
+const readOwnedConfig = (
+  modelValue: string,
+  configExtraParams: Record<string, unknown> | null | undefined
+): AnthropicOwnedConfig => {
+  const enabled = configExtraParams?.thinking_enabled;
+  const effort = configExtraParams?.reasoning_effort;
+  if (effort !== undefined && effort !== null && !(ANTHROPIC_EFFORT_LEVELS as readonly unknown[]).includes(effort)) {
+    throw new Error(
+      `Anthropic model ${modelValue}: unknown effort '${String(effort)}'; use one of ${ANTHROPIC_EFFORT_LEVELS.join(', ')}.`
+    );
+  }
+  return {
+    thinkingEnabled: typeof enabled === 'boolean' ? enabled : undefined,
+    effort: effort === undefined || effort === null ? null : effort as AnthropicEffortLevel,
+  };
 };
 
 const isForcedToolChoice = (toolChoice: unknown): boolean =>
@@ -119,11 +135,11 @@ const validateStrictRequestRules = (
   request: Record<string, unknown>,
   modelValue: string,
   policy: AnthropicModelRequestPolicy,
-  configExtraParams: Record<string, unknown> | null | undefined,
+  thinkingEnabled: boolean | undefined,
   explicitThinking: unknown
 ): void => {
   if (policy.thinkingMode === 'adaptive_required') {
-    if (configExtraParams?.thinking_enabled === false || configExtraParams?.thinking_budget_tokens !== undefined ||
+    if (thinkingEnabled === false ||
         (explicitThinking !== undefined && (!isObjectRecord(explicitThinking) || explicitThinking.type !== 'adaptive'))) {
       throw new Error(
         `Anthropic model ${modelValue} supports adaptive thinking only; disabled and manual thinking are unavailable.`
@@ -138,12 +154,14 @@ const validateStrictRequestRules = (
   }
 };
 
-const adaptiveThinking = (
-  configExtraParams: Record<string, unknown> | null | undefined
-): Record<string, unknown> =>
-  configExtraParams?.thinking_display === 'summarized'
-    ? { type: 'adaptive', display: 'summarized' }
-    : { type: 'adaptive' };
+/** Sets `output_config.effort`, keeping any other `output_config` fields already on the request. */
+const applyEffort = (request: Record<string, unknown>, effort: AnthropicEffortLevel): void => {
+  const outputConfig = isObjectRecord(request.output_config) ? request.output_config : {};
+  request.output_config = { ...outputConfig, effort };
+};
+
+/** Adaptive thinking without `display`: Anthropic's default (`omitted`) applies. */
+const ADAPTIVE_THINKING: Readonly<Record<string, unknown>> = { type: 'adaptive' };
 
 /**
  * Keeps an explicit `thinking` param only in a shape the model accepts. Adaptive models
@@ -171,22 +189,15 @@ const sanitizeExplicitThinking = (
 /** Builds `thinking` from the schema toggle when the caller sent no explicit thinking. */
 const buildThinkingFromToggle = (
   policy: AnthropicModelRequestPolicy,
-  configExtraParams: Record<string, unknown> | null | undefined
+  enabled: boolean | undefined
 ): Record<string, unknown> | null => {
-  const enabled = configExtraParams?.thinking_enabled;
   switch (policy.thinkingMode) {
     case 'adaptive_required':
-      return adaptiveThinking(configExtraParams);
+      return { ...ADAPTIVE_THINKING };
     case 'adaptive':
-      if (enabled === true) return adaptiveThinking(configExtraParams);
+      if (enabled === true) return { ...ADAPTIVE_THINKING };
       if (enabled === false && policy.thinkingOffShape !== 'omit') return { type: policy.thinkingOffShape };
       return null;
-    case 'legacy_budget': {
-      if (enabled !== true) return null;
-      const budgetRaw = configExtraParams?.thinking_budget_tokens;
-      const budget = typeof budgetRaw === 'number' ? budgetRaw : Number(budgetRaw ?? 1024);
-      return { type: 'enabled', budget_tokens: Number.isFinite(budget) ? budget : 1024 };
-    }
   }
 };
 
@@ -198,13 +209,11 @@ const applyAnthropicRequestParams = (
 ): void => {
   const request = params as unknown as Record<string, unknown>;
   const policy = resolveAnthropicModelRequestPolicy(modelValue);
-  const providerExtraParams = filterInternalExtraParams(configExtraParams);
+  const owned = readOwnedConfig(modelValue, configExtraParams);
 
-  applySafeProviderRequestKwargs(request, providerExtraParams);
   applySafeProviderRequestKwargs(request, kwargs, { controlledKeys: ANTHROPIC_CONTROLLED_KWARG_KEYS });
 
-  const explicitThinking = kwargs.thinking ?? providerExtraParams.thinking;
-  validateStrictRequestRules(request, modelValue, policy, configExtraParams, explicitThinking);
+  validateStrictRequestRules(request, modelValue, policy, owned.thinkingEnabled, kwargs.thinking);
 
   if (Array.isArray(kwargs.tools)) {
     request.tools = kwargs.tools as ToolUnion[];
@@ -219,22 +228,20 @@ const applyAnthropicRequestParams = (
     }
   }
 
-  if (kwargs.thinking === undefined && providerExtraParams.thinking === undefined) {
-    const thinkingParam = buildThinkingFromToggle(policy, configExtraParams);
+  if (kwargs.thinking === undefined) {
+    const thinkingParam = buildThinkingFromToggle(policy, owned.thinkingEnabled);
     if (thinkingParam) {
       request.thinking = thinkingParam;
     }
   }
 
-  if (policy.thinkingMode !== 'legacy_budget') {
-    for (const key of ANTHROPIC_SAMPLING_PARAM_KEYS) {
-      delete request[key];
-    }
-    return;
+  // Off means thinking off at the model's default effort: a stored effort is not sent.
+  if (owned.effort !== null && owned.thinkingEnabled !== false) {
+    applyEffort(request, owned.effort);
   }
 
-  if (request.thinking === undefined && request.temperature === undefined) {
-    request.temperature = 0;
+  for (const key of ANTHROPIC_SAMPLING_PARAM_KEYS) {
+    delete request[key];
   }
 };
 

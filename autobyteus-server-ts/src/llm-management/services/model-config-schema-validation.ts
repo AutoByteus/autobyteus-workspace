@@ -110,33 +110,34 @@ const validateValue = (
   }
 };
 
+/**
+ * Validates a model config against the selected model's current schema and returns the canonical config.
+ * Top-level keys the schema does not declare (for example a setting a model no longer offers, kept in saved
+ * runs) are left out of the canonical config instead of being reported; a model without a schema takes no
+ * settings, so its canonical config is `null`. Declared keys are checked as before (type, enum, range,
+ * pattern, required, nested properties). When leaving keys out empties a config, the canonical config is
+ * `null`; a submitted `{}` is returned unchanged.
+ */
 export function validateModelConfigSchema(model: ModelInfo, llmConfig: unknown): ModelConfigValidationResult {
   if (llmConfig !== null && !isPlainObject(llmConfig)) {
     return { kind: "invalid", errors: [{ path: "llmConfig", message: "Model configuration must be null or an object." }] };
   }
-    if (model.config_schema == null) {
-      return llmConfig === null
-        ? { kind: "valid", config: null }
-        : { kind: "invalid", errors: [{ path: "llmConfig", message: "This model has no adjustable settings." }] };
+  if (model.config_schema == null) return { kind: "valid", config: null };
+  const normalized = normalizeSchema(model.config_schema);
+  if (!normalized) return { kind: "schema_unavailable" };
+  const config = llmConfig as Record<string, unknown> | null;
+  const errors: RunModelConfigFieldError[] = [];
+  for (const required of normalized.required) {
+    if (!config || !Object.hasOwn(config, required)) {
+      errors.push({ path: `llmConfig.${required}`, message: "Required value is missing." });
     }
-    const normalized = normalizeSchema(model.config_schema);
-    if (!normalized) return { kind: "schema_unavailable" };
-    const config = llmConfig as Record<string, unknown> | null;
-    const errors: RunModelConfigFieldError[] = [];
-    for (const required of normalized.required) {
-      if (!config || !Object.hasOwn(config, required)) {
-        errors.push({ path: `llmConfig.${required}`, message: "Required value is missing." });
-      }
-    }
-    for (const [key, value] of Object.entries(config ?? {})) {
-      const parameter = normalized.properties[key];
-      if (!parameter) {
-        errors.push({ path: `llmConfig.${key}`, message: "Setting is not supported by the selected runtime and model." });
-        continue;
-      }
-      validateValue(value, parameter, `llmConfig.${key}`, errors);
-    }
-    return errors.length
-      ? { kind: "invalid", errors }
-      : { kind: "valid", config: config ? structuredClone(config) : null };
+  }
+  const declared = Object.entries(config ?? {}).filter(([key]) => Object.hasOwn(normalized.properties, key));
+  for (const [key, value] of declared) {
+    validateValue(value, normalized.properties[key]!, `llmConfig.${key}`, errors);
+  }
+  if (errors.length) return { kind: "invalid", errors };
+  if (!config) return { kind: "valid", config: null };
+  const omittedAll = declared.length === 0 && Object.keys(config).length > 0;
+  return { kind: "valid", config: omittedAll ? null : structuredClone(Object.fromEntries(declared)) };
 }

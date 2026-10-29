@@ -181,8 +181,8 @@ describe('token usage ledger GraphQL provider semantics', () => {
       totalCost: 0.0032388,
       status: 'estimated',
       modelProvider: 'ANTHROPIC',
-      model: 'claude-sonnet-4-6',
-      pricingPolicyKey: 'catalog:anthropic:claude-sonnet-4-6',
+      model: 'claude-sonnet-5',
+      pricingPolicyKey: 'catalog:anthropic:claude-sonnet-5',
     }));
     await store.recordObservation(buildEvent({
       runId: anthropicRunId,
@@ -203,8 +203,8 @@ describe('token usage ledger GraphQL provider semantics', () => {
       totalCost: 0.039243,
       status: 'estimated',
       modelProvider: 'ANTHROPIC',
-      model: 'claude-sonnet-4-6',
-      pricingPolicyKey: 'catalog:anthropic:claude-sonnet-4-6',
+      model: 'claude-sonnet-5',
+      pricingPolicyKey: 'catalog:anthropic:claude-sonnet-5',
     }));
     await store.recordObservation(buildEvent({
       runId: customRunId,

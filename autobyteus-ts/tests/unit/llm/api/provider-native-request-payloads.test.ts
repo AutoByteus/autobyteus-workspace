@@ -479,7 +479,7 @@ describe('provider-native API request payloads', () => {
 
   it('captures Anthropic messages payload with strict assistant tool_use followed by result-block-first user tool_result blocks and no synthetic aggregate user text', async () => {
     let captured: any;
-    const llm = new AnthropicLLM(model(LLMProvider.ANTHROPIC, 'claude-sonnet-4-5'), commonConfig());
+    const llm = new AnthropicLLM(model(LLMProvider.ANTHROPIC, 'claude-opus-5'), commonConfig());
     (llm as any).clientPromise = Promise.resolve( {
       messages: {
         create: async (params: any) => {

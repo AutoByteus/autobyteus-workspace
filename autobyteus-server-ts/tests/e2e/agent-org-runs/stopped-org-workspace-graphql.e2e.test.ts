@@ -120,7 +120,7 @@ describe("stopped Org workspace real GraphQL lifecycle", () => {
       expect(await fs.readFile(treeFile, "utf8")).toBe(bytes);
     }
     const modelPatch = { scopeKind: "CONFIGURED_AGENT", scopeAddress: "/team/lead",
-      llmModelIdentifier: model.modelIdentifier, llmConfig: { unsupported_setting: true } };
+      llmModelIdentifier: model.modelIdentifier, llmConfig: { reasoning_effort: "not-a-level" } };
     await expect(updateConfig(first, { ...input, modelPatches: [modelPatch] }))
       .resolves.toMatchObject({ success: false, outcome: "VALIDATION_FAILED" });
     expect(await fs.readFile(treeFile, "utf8")).toBe(bytes);

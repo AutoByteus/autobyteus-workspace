@@ -1,0 +1,10 @@
+# IMP-16 server typecheck
+# command: corepack pnpm -C autobyteus-server-ts typecheck
+# commit: 47f44c3df (run on the identical working tree before the commit)
+# env: Linux 6.12.54-linuxkit, node v22.23.3, uid 0
+# date: 2026-10-29
+
+> autobyteus-server-ts@0.1.1 typecheck /home/autobyteus/workspace/.codex/worktrees/claude-anthropic-effort-control/autobyteus-server-ts
+> tsc -p tsconfig.build.json --noEmit
+
+exit 0
