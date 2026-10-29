@@ -102,9 +102,39 @@ A switch never edits or deletes them.
 - `agy-project/`, `runtime-skill-profiles/`: untouched.
 - `seen_skill_versions.json`: a switch is a fresh session, so the existing "new" activation gives the current skills; no change.
 
-### 3.7 Hand-over notice (not a file)
+### 3.7 Hand-over notice (the message the new backend receives; not a file)
 
-Delivered once through the existing next-input preface route. Delivered ⇔ a notice record after the switch record exists in the active segment (so a crash before delivery repeats it, never loses it). Content is specified in the design.
+One system message placed before the user's first input after the switch, through the existing next-input preface route, with its own system sender (like the skill-update notice), so the chat shows it as a system notice and the agent does not take it for the user's words. Sent once per switch. Delivered ⇔ a notice record after the switch record exists in the active segment (a crash before delivery repeats it, never loses it). Built by the server from facts only; no model writes it. Draft text (the design finalizes wording):
+
+```
+[System: runtime hand-over]
+You are continuing work that earlier colleagues started in this same run. The run's runtime
+changed: <from runtime/model> -> <to runtime/model> (at <time>). Reason the previous runtime stopped:
+<provider's own message, or "not known; the user changed the runtime">.
+
+Where the earlier work is (read these, oldest first):
+- Summary of the story so far: <run folder>/run_summary.md   (covers up to <trace id>; missing = none yet)
+- Journals (readable, one file per earlier colleague):
+  <file> | <runtime/model> | <period> | <size, lines>
+- Older work can be searched with search_memory; open the lines it points to.
+Journal size: <total> (about <n> tokens). Read the summary first, then the most recent journal file
+fully; read earlier files only by search or line range.
+
+What the user asked last: "<last user message, cut to 600 characters>"
+
+What does NOT carry over: the previous colleague's private reasoning; results of tool calls that were
+still running (<n> open calls: <tool names>); output longer than 40 lines (journal shortens it; the raw
+trace file linked in each entry has all of it); running processes and open sessions.
+
+Do this first:
+1. Read the summary and the journals as described and write what was done and what is open.
+2. Check the real state of the workspace (for example git status and git diff) before relying on notes.
+3. Verify any step whose result is unknown before repeating it; do not redo finished work.
+4. Replace <run folder>/run_summary.md with the story so far through the tool write_run_summary.
+5. Then continue the user's work and answer their message below.
+```
+
+The user's own message follows unchanged. Facts the notice needs and where each comes from: runtimes, models and time from the pending switch (3.1); stop reason from the same field; files, periods and sizes from the manifests; open calls from the last turn of the old segment; last user message from the raw traces.
 
 ## 4. Invariants (checkable)
 
