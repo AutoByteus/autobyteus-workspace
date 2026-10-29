@@ -3,7 +3,7 @@
 - Package: `release-smoke-new-run-skill-links` (Project Task autobyteus-149)
 - Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/release-smoke-new-run-skill-links`
 - Branch: `codex/release-smoke-new-run-skill-links`, base `origin/personal` @ `cba6b85122`
-- Implementation head: `8f37ab5eb8` (code and docs). The ticket folder and evidence are committed on top of it; see the delivery message for that commit.
+- Implementation head: `f9d1db2aa0` (IR-002: RELEASE.md Cost wording only). Code unchanged since `8f37ab5eb8` (IR-001). The ticket folder is committed on top of it; see the handoff message for that commit.
 
 ## Upstream Artifact Package
 
@@ -15,19 +15,19 @@
 - Supplemental task artifacts: `tickets/done/workspace-skill-collision-fix/` (evidence only)
 - Design review report: `N/A — not applicable`
 - Architecture review revision record: `N/A — not applicable`
-- Triggering rework report, revision record, or evidence: `N/A` (initial implementation)
+- Triggering rework report, revision record, or evidence: IR-002 — `handoff-sr-003-release-cost-wording.md` (SR-003, SR-004), FU-002 in `follow-ups.md`, API/E2E `api-e2e-execution-coverage-report.md` / `api-e2e-revision-record.md` (API-REV-001)
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework` (IR-002, docs only)
 - Implementation revision record: `tickets/in-progress/release-smoke-new-run-skill-links/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
-- Related solution revision IDs: `SR-001`
+- Current implementation revision ID: `IR-002`
+- Related solution revision IDs: `SR-001`, `SR-003`, `SR-004`
 - Related architecture-review revision IDs: `N/A`
 - Related code-review revision IDs: `N/A`
-- Related API/E2E revision IDs: `N/A`
+- Related API/E2E revision IDs: `API-REV-001`
 - Related delivery revision IDs: `N/A`
-- Triggering finding IDs: `N/A`
+- Triggering finding IDs: `FU-002` (taken into this ticket by SR-002/SR-003)
 
 What now exists:
 
@@ -40,10 +40,10 @@ What now exists:
    - header and `// Named by scripts/release_smoke.py` notes.
 4. `agy-linked-skills-transport.e2e.test.ts`: E09 (a brand-new run) and E10 (a brand-new, lazily started team member). Both use an imported package agent with a configured skill, in a workspace with `.claude/.codex/.grok/skills` links to that skill. The scripted CLI's `READ_SKILLS` must show the capsule linking exactly the package skill (target, SKILL.md, sibling file). For E10, the member's memory folder must be absent before its first message. Both check that the workspace links are untouched and that nothing else was written into the workspace. The header is updated.
 5. `configured-skill-on-demand-loading.e2e.test.ts`: two release smoke cases at factory level with the deterministic LLM: a brand-new run (memory folder absent) and a brand-new team member (team folder present, member folder absent), with the same package and linked workspace. One first message completes a turn. The model's system messages contain the skill's catalog entry, and its `SKILL.md` path resolves to the package skill. The memory folder exists afterwards and the links are untouched. `DeterministicLLM` now records the messages it receives; `createBackend` takes an optional workspace root and memory folder. A header comment was added.
-6. `RELEASE.md`: "Checks Before Tagging" lists the command, and a new `### Release smoke check` subsection gives When / Prerequisites / Cost / Pass / Failure and waiver, plus the beta.2 reason.
+6. `RELEASE.md`: "Checks Before Tagging" lists the command, and a new `### Release smoke check` subsection gives When / Prerequisites / Cost / Pass / Failure and waiver, plus the beta.2 reason. Since IR-002 the **Cost** bullet names the binding subscription quotas: Grok about 150–240k tokens per run against 600k per rolling 24 hours (roughly two runs a day), and Codex sharing the user's ChatGPT account quota. A quota refusal ("usage limit", 429) is handled like a runtime that cannot run: wait for the reset, or the user waives that runtime for this release and the waiver is recorded.
 7. `TESTING.md`: one "Test layers" row, in its own `docs(testing)` commit (`8f37ab5eb8`).
 
-Commits (base..head): `8e65be9e6f` baseline fix · `26a557f665` model pins · `3f02a176d4` AGY/native cases · `e918bb6c44` runner · `cbbb868f63` turn-error messages · `e8d2888695` runner names a failed suite hook · `6bd00b2f36` RELEASE.md · `8f37ab5eb8` TESTING.md.
+Commits (base..head): `8e65be9e6f` baseline fix · `26a557f665` model pins · `3f02a176d4` AGY/native cases · `e918bb6c44` runner · `cbbb868f63` turn-error messages · `e8d2888695` runner names a failed suite hook · `6bd00b2f36` RELEASE.md · `8f37ab5eb8` TESTING.md · `f9d1db2aa0` RELEASE.md Cost wording (IR-002).
 
 ## Routing Classification (Mandatory)
 
@@ -89,7 +89,7 @@ Commits (base..head): `8e65be9e6f` baseline fix · `26a557f665` model pins · `3
 
 ## Known Risks
 
-- **Grok free-usage quota (new, external).** Run 2 hit `429 … subscription:free-usage-exhausted … tokens (actual/limit): 612809/600000` on a rolling 24 h window (IMP-07). The total includes the user's own Grok use that day. Grok's skill lookup reads widely ("Let me search more broadly", `grep`/`run_bash`), so one smoke run spends far more Grok tokens than "five short turns" suggests. With the quota exhausted, the check fails closed with the 429 named. The release owner then waits for the window or asks for the user's waiver. The Solution Designer may want RELEASE.md to mention this; it is not added, because it is a cost fact beyond the approved guidance text.
+- **Grok free-usage quota (external; documented in RELEASE.md since IR-002).** Run 2 hit `429 … subscription:free-usage-exhausted … tokens (actual/limit): 612809/600000` on a rolling 24 h window (IMP-07). The total includes the user's own Grok use that day. Grok's skill lookup reads widely ("Let me search more broadly", `grep`/`run_bash`), so one smoke run spends far more Grok tokens than "five short turns" suggests. With the quota exhausted, the check fails closed with the 429 named. The release owner then waits for the window or asks for the user's waiver. RELEASE.md now states this (IR-002, SR-003), together with the Codex ChatGPT account quota that API/E2E hit on 2026-10-29.
 - **Grok team member and collision cases not yet proven after the baseline fix.** Run 1 (before the fix) passed Grok's new run + restore and its collision case; its team member failed only on the stale frame read. Run 2 (after the fix) passed new run + restore, then hit the quota. One Grok-enabled run after the quota resets is needed (API/E2E).
 - Live answers are stochastic, and there is no retry by design. So far every non-quota live case passed first time.
 - RSK-001/003 (expired login, retired model) produce named failures (IMP-08 shows the model case).
@@ -108,7 +108,7 @@ Commits (base..head): `8e65be9e6f` baseline fix · `26a557f665` model pins · `3
 - Backward-compatibility mechanisms introduced: `None`
 - Legacy old-behavior retained in scope: `No`
 - Dead code in the touched files and modules removed: `Yes` (stale `preferredModels` entries, `?? available[0]`)
-- Dead code found elsewhere, listed as follow-up: None
+- Dead code found elsewhere, added to `follow-ups.md`: None
 - Shared structures remain tight: `Yes` (`RequiredCase` has 4 fields; the live suite's runtime grouping is one suite-level constant, `SUITES_GROUPED_BY_RUNTIME`)
 - Canonical shared design guidance was reapplied during implementation: `Yes`
 - Changed source implementation files stayed within size guardrails: `Yes`
@@ -141,9 +141,11 @@ Commits (base..head): `8e65be9e6f` baseline fix · `26a557f665` model pins · `3
 | IMP-05 | AGY suite on its own, `RUN_AGY_FAILURE_E2E=1`, scripted CLI, temp HOME | `8f37ab5eb8` | macOS, vitest 4.0.18 | `agy-linked-skills-transport` + server AGY path | REQ-003, AC-003, AC-009 | Pass | `evidence/IMP-05-agy-suite.log` | E01–E10 all `passed` |
 | IMP-06 | `python3 scripts/release_smoke.py` (first full run) | `cba6b85122` + uncommitted changes (before `8e65be9e6f`) | macOS, signed-in CLIs | all three steps | AC-005 (real), REQ-005/006 | Fail, as expected: found the stale frame read | `evidence/IMP-06-smoke-run-1.txt` | 3 × `brand-new team member  FAIL  failed: AssertionError: expected '' to contain 'LINKCODE-…'`; `"text":""` with `"tools":["Skill"]` |
 | IMP-07 | `python3 scripts/release_smoke.py` | `e918bb6c44` | macOS, signed-in CLIs | all three steps | AC-001/002/003/006/008 (partial) | Fail on Grok's external quota; all other cases Pass | `evidence/IMP-07-smoke-run-2.txt` | 11 PASS; `grok brand-new team member FAIL`; `free-usage-exhausted`; `models {"claude": "haiku", "codex": "gpt-5.6-luna", "grok": "grok-4.7"}`; `git status --porcelain before == after: yes`; `duration live 99s, antigravity 19s, autobyteus 8s` |
+| IMP-09 | `python3 scripts/check_repository_artifact_hygiene.py`; review of the RELEASE.md diff against design-spec "Guidance For Implementation" (SR-003) | `f9d1db2aa0` | macOS, Python 3.9.6 | `RELEASE.md` Cost bullet only | AC-007, REQ-007 | Pass | `git show f9d1db2aa0 -- RELEASE.md` (the commit is the evidence) | exit 0; `- **Grok:** one run uses about 150–240k tokens against the free tier's 600k`; `- **Codex:** it uses the same ChatGPT account quota`; `wait for the reset, or the user waives that runtime` |
 | IMP-08 | negative: `PATH` without grok + `CODEX_E2E_MODEL=bogus-model-for-smoke` + a temporary broken native assertion (reverted) | `e8d2888695` + temporary edit | macOS | runner preflight/verdict, live model check, native case | AC-004, AC-005, AC-006 | Pass (fails as required, exit 1) | `evidence/IMP-08-smoke-negative.txt` | `grok … FAIL not available: grok not on PATH`; `codex model bogus-model-for-smoke is not offered; available: gpt-5.6-luna, …`; `autobyteus … FAIL failed: AssertionError`; `exit=1` |
 
 - Not run, and why:
+  - IR-002 is a docs-only change to RELEASE.md: no code, test or suite changed since `8f37ab5eb8`, so IMP-01..08 stay valid (TESTING.md "Rerun by impact"). Per SR-004 the user accepted the per-case proof for AC-001; no smoke rerun was made.
   - A fully green live smoke (AC-001) and Grok's team member and collision cases after the baseline fix: blocked by Grok's rolling 24 h free-usage quota (IMP-07). Left to API/E2E once the quota resets.
   - The full server E2E suite and other gated suites: not affected (test-only changes in three files) and owned by API/E2E or autobyteus-148.
   - The `docs(testing)` and RELEASE.md commits change no code; IMP-01..05 ran on `8f37ab5eb8`, which includes them.

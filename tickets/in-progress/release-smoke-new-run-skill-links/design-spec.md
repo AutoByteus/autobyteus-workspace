@@ -54,7 +54,7 @@ Add one release-smoke command that runs the live and scripted run-start scenario
   - the isolated desktop instance journey (DEC-006);
   - `test-support/live-e2e/` (`test:e2e:real`): it covers provider API keys, a different check.
 - Follow-ups:
-  - FU-1 (optional, for the user to decide): let `desktop-release.sh` refuse to tag without a passing smoke result for the tagged commit, if a documented step turns out not to be enough.
+  - FU-1 (declined by the user 2026-10-19; the documented RELEASE.md step is enough): let `desktop-release.sh` refuse to tag without a passing smoke result for the tagged commit. Not sent as a follow-up.
   - FU-2: TESTING.md's AGY sign-in known gap names `agy` 1.3.5 (checked 2026-10-14); the installed `agy` is 1.4.2. Re-check whether an isolated signed-in recipe now exists.
   - FU-3 (note for autobyteus-65): once CI runs server E2E, the AutoByteus smoke cases run there automatically (they are non-gated). The AGY cases also need `RUN_AGY_FAILURE_E2E=1` and `ANTIGRAVITY_CLI_COMMAND` set to the fixture.
 
@@ -303,7 +303,10 @@ None beyond a fixed required-case list (table-driven verdict).
   - **Command:** `python3 scripts/release_smoke.py`.
   - **What it covers:** it starts agent runs with configured skills the way users do, on all five runtimes. That includes a brand-new run, a brand-new team member with no memory folder yet, a run in a workspace whose `.claude/.codex/.grok/skills` link to the same skill, a restored run, and a different same-named skill.
   - **Prerequisites:** `claude`, `codex` and `grok` on `PATH` and signed in on this machine.
-  - **Cost:** about five short turns per live runtime on its cheapest model; Antigravity and AutoByteus run scripted, with no provider calls; a few minutes in total.
+  - **Cost** (revised SR-003, from API/E2E FU-002): about five short turns per live runtime on its cheapest model; Antigravity and AutoByteus run scripted, with no provider calls; a few minutes in total. State plainly that the binding limit is the live CLIs' subscription quotas, not money:
+    - **Grok:** one run uses about 150–240k tokens against the free tier's 600k per rolling 24 h (roughly two runs a day).
+    - **Codex:** it uses the same ChatGPT account quota as the user's other Codex work.
+    - A quota refusal, such as "usage limit" or a 429, is handled like a runtime that cannot run: wait for the reset, or the user waives that runtime for this release and the waiver is recorded.
   - **Pass:** exit 0. Put the printed summary in the delivery report.
   - **Failure, or a runtime that cannot run:** no tag. Find the cause first (TESTING.md Rule 9). The only exception is the user explicitly waiving a named runtime at the release decision; record the waiver and reason in the delivery report.
   - **Why:** one sentence about v1.5.6-beta.2.

@@ -9,8 +9,9 @@
 - Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`)
 - Requirements owner: Solution Designer
 - Date: 2026-10-19
-- Approved by and reference: `Solution Designer within the direction (user informed)`; reference: Solution Designer conversation message to the user, 2026-10-19 (approval summary at the end of the requirements phase)
+- Approved by and reference: `Solution Designer within the direction (user informed)`; reference: Solution Designer conversation message to the user, 2026-10-19 (approval summary at the end of the requirements phase). Confirmed by the `User` after a walkthrough, 2026-10-19: "I feel like it's a good one. If it is able to guard those problems, and we can just update the release … And this belongs to the project specific release strategy. I think it's good." The user keeps the full scope and a documented RELEASE.md step without script enforcement (FU-1 not wanted).
 - Exact approved requirements baseline / solution revision: this document at SR-001
+- Verification basis note (SR-004, 2026-10-29): AC-001's full passing run is accepted by the user with one gap. Codex was not rerun at the head because of the account usage limit, and its 2026-10-19 pass (IMP-07) stands. The user's words: "we can accept that the credit is not there and only codex app server is not tested … i will personally accept it".
 - Behavior-defining supplements and their approved versions: none
 
 ## Problem And Desired Outcome
