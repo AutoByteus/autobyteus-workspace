@@ -27,6 +27,10 @@
 | F-13 | Creating a run of an agent definition on a chosen runtime/model with a first message already exists (`AgentRunService.createAgentRun`/`prepareAgentRun`, launch configuration with runtime and model); no "continue in a new run" or fork exists. | Read (grep) |
 | F-14 | The restart-and-resume chain (autobyteus-283 to 289) restores the same run on the same runtime and sends a restart notice from a system sender (decisions DEC-1…DEC-8 of that Task, requirements Approved SR-002). Its record of mid-turn runs and its notice are reusable by this design; this ticket must not change them. | Read (own Task documents) |
 
+| F-15 | A run's chat history is built by the local-memory projection from raw traces and does not branch on the runtime kind; the runtime-specific projection providers are diagnostic. So the chat of a run continues across a runtime change without a history change. | Read (`agent-run-view-projection-service.ts`, `local-memory-run-view-projection-provider.ts`: no `runtimeKind` use) |
+| F-16 | The web UI already has the runtime-grouped model menu; for an existing run it is locked by one attribute (`runtime-locked` in `ExistingRunSettings.vue`). The server's stopped-run update (`StandaloneStoppedRunModelConfigUpdater`) validates the model against the run's recorded runtime and commits `llmModelIdentifier`+`llmConfig` only. | Read |
+| F-17 | A notice that rides along with a run's next input already exists: `AgentRunInputPreface` (`takePreface`/`prefaceDelivered`/`prefaceReturned`), used by the skill update notice with its own system sender. The hand-over notice can use it. | Read |
+
 ## Unknowns to settle before design is final
 
 | ID | Unknown | Cheap way to settle |
@@ -35,4 +39,5 @@
 | U-2 | Can each runtime's file tool read another run's `work_journal/` folder (Codex sandbox `workspace-write`, Claude permission mode, AGY `--add-dir`, Grok)? | Isolated instance, one read per runtime |
 | U-3 | What exactly is the agent identity question of autobyteus-309? | Ask the Project Task Manager |
 | U-4 | Does a fresh agent given the note (plus journal access) continue a run that was cut mid-work correctly? | Cut a copied run at several points; compare with the real continuation; needs a model (user's decision on sending copies to a provider) |
+| U-6 | Starting a run that has a run ID but no provider session on an external runtime (`platformAgentRunId` null): does activation start a new session, or refuse? And a native (AutoByteus) run switched to after external work has no or a stale `working_context_snapshot.json`: what does native restore do with it? | Read `standalone-agent-run-lifecycle-service.ts` resolveInsideTransition and native restore; scripted run |
 | U-5 | How a continuation link between two runs is stored and shown in history/Teams/Orgs (root run vs standalone host vs team member) | Read run-history and collaboration trees; design phase |
