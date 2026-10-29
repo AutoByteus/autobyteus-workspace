@@ -3,10 +3,13 @@
  * (real saved runs hold `thinking_display`) keep resuming and running, and the stale key never reaches
  * Anthropic (ticket claude-anthropic-effort-control, REQ-011 / AC-011).
  *
- * Real studio server in process (HTTP GraphQL + agent WebSocket), no provider credits: `globalThis.fetch`
- * answers Anthropic `POST /v1/messages` with a canned streamed reply and records each request body; every
- * other request (GraphQL to this server) goes to the real fetch. The server reads a synthetic Anthropic key
- * from a synthetic test vault (test-support `createSyntheticTestVault`, selected the way in-process suites do).
+ * Real studio server in process (HTTP GraphQL + agent WebSocket). `globalThis.fetch` records the body of every
+ * Anthropic `POST /v1/messages`; every other request (GraphQL to this server) goes to the real fetch.
+ *   - Default (no credits, runs with every suite): Anthropic is answered with a canned streamed reply, and the
+ *     server reads a synthetic key from a synthetic test vault (test-support `createSyntheticTestVault`).
+ *   - Live (`RUN_ANTHROPIC_STORED_CONFIG_LIVE=1` with `AUTOBYTEUS_TEST_VAULT`): requests go to the real
+ *     Anthropic API with the test vault's key, so Anthropic itself must accept the request sent after the
+ *     restore (4 short calls). A missing key is reported as a skip, never a pass.
  *
  * Per model (claude-opus-5-5 without a thinking switch, claude-sonnet-5-5 with one): create a run with a
  * current config, send a message, stop it, add `thinking_display: "omitted"` to the run's stored llmConfig
@@ -15,6 +18,7 @@
  * Run with a clean environment (TESTING.md), from the repository root:
  *   env -i PATH="$PATH" HOME=<temp> TMPDIR="$TMPDIR" corepack pnpm -C autobyteus-server-ts exec vitest run \
  *     tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts --no-watch
+ * Live: add `AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault RUN_ANTHROPIC_STORED_CONFIG_LIVE=1` after `env -i`.
  */
 import "reflect-metadata";
 import { randomUUID } from "node:crypto";
@@ -26,15 +30,16 @@ import WebSocket from "ws";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { TEST_VAULT_SETTING_NAME } from "autobyteus-ts/secrets/test-vault-setting.js";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
-import { closeLiveServerVault, initializeLiveServerVault } from "../../../../test-support/test-vault/live-server-vault.js";
+import { closeLiveServerVault, initializeLiveServerVault, requireLiveCapability } from "../../../../test-support/test-vault/live-server-vault.js";
 import { createSyntheticTestVault } from "../../../../test-support/test-vault/synthetic-test-vault.js";
-import { captureTestVaultSelection } from "../../../../test-support/test-vault/test-vault.js";
+import { captureTestVaultSelection, capturedTestVaultSetting } from "../../../../test-support/test-vault/test-vault-selection.js";
 import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 
 type Json = Record<string, unknown>;
 type WsMessage = { type: string; payload: Json };
 
+const LIVE = process.env.RUN_ANTHROPIC_STORED_CONFIG_LIVE === "1";
 const STALE_KEY = "thinking_display";
 const STEP_TIMEOUT_MS = 60_000;
 const wait = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
@@ -60,7 +65,9 @@ const MODELS: Array<{ model: string; llmConfig: Json; expectedThinking: Json; ex
 
 describe("AutoByteus Anthropic run resumes with a stored config key no schema declares (AC-011)", () => {
   const originalFetch = globalThis.fetch;
+  const previousTestVaultSetting = capturedTestVaultSetting();
   const anthropicBodies: Json[] = [];
+  const anthropicStatuses: number[] = [];
   let app: FastifyInstance | null = null;
   let mainUrl: URL;
   let dataDir = "";
@@ -144,6 +151,7 @@ describe("AutoByteus Anthropic run resumes with a stored config key no schema de
     expect(error, `${label} ERROR frame: ${JSON.stringify(error?.payload)}`).toBeUndefined();
     await waitFor(frames, from, (frame) => frame.type === "AGENT_STATUS" && frame.payload.status === "idle", `${label} idle`);
     expect(anthropicBodies.length, `${label}: one Anthropic request`).toBe(callsBefore + 1);
+    expect(anthropicStatuses[anthropicStatuses.length - 1], `${label}: Anthropic accepted the request`).toBe(200);
     return anthropicBodies[anthropicBodies.length - 1]!;
   };
 
@@ -151,18 +159,26 @@ describe("AutoByteus Anthropic run resumes with a stored config key no schema de
     globalThis.fetch = (async (input: Parameters<typeof fetch>[0], init?: Parameters<typeof fetch>[1]) => {
       const url = new URL(typeof input === "string" ? input : input instanceof URL ? input.href : input.url);
       if (url.hostname !== "api.anthropic.com" || url.pathname !== "/v1/messages") return originalFetch(input, init);
-      const raw = init?.body ?? (input instanceof Request ? await input.text() : null);
+      const raw = init?.body ?? (input instanceof Request ? await input.clone().text() : null);
       const body = JSON.parse(typeof raw === "string" ? raw : new TextDecoder().decode(raw as ArrayBuffer)) as Json;
       anthropicBodies.push(body);
+      if (LIVE) {
+        const response = await originalFetch(input, init);
+        anthropicStatuses.push(response.status);
+        return response;
+      }
+      anthropicStatuses.push(200);
       return new Response(cannedStream(String(body.model)), { status: 200, headers: { "content-type": "text/event-stream" } });
     }) as typeof fetch;
 
     dataDir = await mkdtemp(path.join(os.tmpdir(), "anthropic-stored-config-e2e-appdata-"));
     await writeFile(path.join(dataDir, ".env"), "AUTOBYTEUS_SERVER_HOST=http://localhost:8000\nAPP_ENV=test\n", "utf-8");
     appConfigProvider.config.setCustomAppDataDir(dataDir);
-    const vault = createSyntheticTestVault(path.join(dataDir, "synthetic-test-vault"),
-      { "provider.anthropic.api-key": "synthetic-anthropic-key-for-stored-config-e2e" });
-    captureTestVaultSelection({ [TEST_VAULT_SETTING_NAME]: vault.directory });
+    if (!LIVE) {
+      const vault = createSyntheticTestVault(path.join(dataDir, "synthetic-test-vault"),
+        { "provider.anthropic.api-key": "synthetic-anthropic-key-for-stored-config-e2e" });
+      captureTestVaultSelection({ [TEST_VAULT_SETTING_NAME]: vault.directory });
+    }
     await initializeLiveServerVault();
     const started = await startStudioE2eRuntimeServer();
     app = started.fastify;
@@ -188,14 +204,15 @@ describe("AutoByteus Anthropic run resumes with a stored config key no schema de
     await app?.close();
     app = null;
     await closeLiveServerVault();
-    captureTestVaultSelection({ [TEST_VAULT_SETTING_NAME]: "" });
+    captureTestVaultSelection({ [TEST_VAULT_SETTING_NAME]: previousTestVaultSetting ?? "" });
     globalThis.fetch = originalFetch;
     if (workspaceRootPath) await rm(workspaceRootPath, { recursive: true, force: true });
     if (dataDir) await rm(dataDir, { recursive: true, force: true });
   }, 120_000);
 
   for (const { model, llmConfig, expectedThinking, expectedEffort } of MODELS) {
-    it(`${model}: restore succeeds and the request after restore carries no stored stale key`, async () => {
+    it(`${model}: restore succeeds and the request after restore carries no stored stale key`, async (context) => {
+      if (LIVE) await requireLiveCapability(context, "provider.anthropic.api-key");
       const created = await gql<{ createAgentRun: { success: boolean; message: string; runId: string | null } }>(
         "mutation($input: CreateAgentRunInput!) { createAgentRun(input: $input) { success message runId } }",
         { input: { agentDefinitionId, workspaceRootPath, llmModelIdentifier: model, autoExecuteTools: true,
