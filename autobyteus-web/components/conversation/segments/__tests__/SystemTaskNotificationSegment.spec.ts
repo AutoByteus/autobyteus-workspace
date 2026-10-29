@@ -1,11 +1,10 @@
 import { describe, expect, it } from 'vitest';
 import { mount } from '@vue/test-utils';
 import SystemTaskNotificationSegment from '../SystemTaskNotificationSegment.vue';
-import enWorkspaceMessages from '~/localization/messages/en/workspace';
-import zhWorkspaceMessages from '~/localization/messages/zh-CN/workspace';
+import { getCatalog } from '~/localization/runtime/catalogRegistry';
 
-const enWorkspace = enWorkspaceMessages as Record<string, string>;
-const zhWorkspace = zhWorkspaceMessages as Record<string, string>;
+const enCatalog = getCatalog('en') as Record<string, string>;
+const zhCatalog = getCatalog('zh-CN') as Record<string, string>;
 
 const mountSegment = (content: string, senderId = 'system') => mount(SystemTaskNotificationSegment, {
   props: {
@@ -166,7 +165,7 @@ describe('SystemTaskNotificationSegment', () => {
 
   it('labels the tool list notice in both locales', () => {
     const key = 'workspace.components.conversation.segments.SystemTaskNotificationSegment.toolsUpdated';
-    expect(enWorkspace[key]).toBe('Tools updated');
-    expect(zhWorkspace[key]).toBeTruthy();
+    expect(enCatalog[key]).toBe('Tools updated');
+    expect(zhCatalog[key]).toBeTruthy();
   });
 });
