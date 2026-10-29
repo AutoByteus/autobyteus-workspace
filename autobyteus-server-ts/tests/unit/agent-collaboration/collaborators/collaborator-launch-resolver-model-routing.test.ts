@@ -53,7 +53,7 @@ const router = (options: { notActiveReason?: string | null; outcome?: ModelRouti
 const resolverWith = (port: { openDelegation(): Promise<DelegationRouting | null> }) => {
   const availability = { getRuntimeAvailability: vi.fn(async (runtimeKind: RuntimeKind) => ({ runtimeKind, enabled: true, reason: null })) };
   const validateMany = vi.fn(async (inputs: readonly { selection: { llmModelIdentifier: string } }[]) =>
-    inputs.map(({ selection }) => ({ kind: "valid", selection: { llmModelIdentifier: selection.llmModelIdentifier, llmConfig: null } })));
+    inputs.map(({ selection }) => ({ kind: "valid", selection: { llmModelIdentifier: selection.llmModelIdentifier, llmConfig: selection.llmConfig } })));
   const validator = { validate: vi.fn(), validateMany } as unknown as RunModelSelectionValidator;
   return new CollaboratorLaunchResolver({ usability: new LaunchUsabilityCheck({ availability, validator }), router: port });
 };

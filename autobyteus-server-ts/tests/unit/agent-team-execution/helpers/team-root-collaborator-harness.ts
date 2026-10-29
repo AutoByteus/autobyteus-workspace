@@ -46,8 +46,9 @@ export const admission = (runnable = true) => createCollaboratorAdmission({
   getTeamDefinition: async (id) => teams.find((team) => team.id === id) ?? null,
 }, {
   validate: vi.fn(),
-  validateMany: async (inputs: readonly unknown[]) => inputs.map(() => runnable
-    ? { kind: "valid" as const, selection: { llmModelIdentifier: "m", llmConfig: null } }
+  // A valid check returns the canonical selection; these launches declare every key, so it equals the input.
+  validateMany: async (inputs: readonly unknown[]) => inputs.map((input) => runnable
+    ? { kind: "valid" as const, selection: (input as { selection: { llmModelIdentifier: string; llmConfig: Readonly<Record<string, unknown>> | null } }).selection }
     : { kind: "model_unavailable" as const }),
 } as unknown as RunModelSelectionValidator, { getRuntimeAvailability: async (runtimeKind) => ({ runtimeKind, enabled: true, reason: null }) });
 

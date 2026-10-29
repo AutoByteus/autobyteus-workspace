@@ -12,7 +12,7 @@
 //
 // Definitions: Build team (no default) = lead, engineer (Grok), reviewer (AGY ALT), unoffered (AGY model not offered);
 // Pair team (default AGY ALT) = lead, engineer (Grok), unoffered; Squad team (default AGY model not offered) = lead,
-// engineer (Grok), reviewer (ALT), offline (Codex), unoffered, badsettings (AGY model + settings it has none of),
+// engineer (Grok), reviewer (ALT), offline (Codex), unoffered, badsettings (Grok model + an invalid value of its declared effort),
 // incomplete (runtime only); Writer (ALT); Plain (none); Org (default AGY) = writer + placed Pair; Host Org = manager.
 //
 // Cases:
@@ -207,7 +207,8 @@ const seed = async () => {
   await agent('writer', { runtimeKind: AGY, llmModelIdentifier: ALT })
   await agent('offline', { runtimeKind: 'codex_app_server', llmModelIdentifier: 'gpt-5.5' })
   await agent('unoffered', { runtimeKind: AGY, llmModelIdentifier: NOT_OFFERED })
-  await agent('badsettings', { runtimeKind: AGY, llmModelIdentifier: MODEL, llmConfig: { temperature: 0.2 } })
+  // An invalid value of a declared setting (a setting the model does not declare is left out, not refused: SR-004).
+  await agent('badsettings', { runtimeKind: GROK, llmModelIdentifier: GROK_MODEL, llmConfig: { reasoning_effort: 'ultra' } })
   await agent('incomplete', { runtimeKind: AGY })
   const team = async (key, members, coordinator, defaultLaunchConfig = null) => {
     names[key] = `${key[0].toUpperCase()}${key.slice(1)} Team ${randomUUID().slice(0, 4)}`
@@ -242,7 +243,7 @@ const squadNotes = () => {
     noteText({ name: names.squad, layer: 'team', runtime: AGY, model: TEAM_NOT_OFFERED, detail: `The model '${TEAM_NOT_OFFERED}' is not available on ${agentRuntimeName(AGY)}.`, runsOn, origin: inherited, team: true }),
     noteText({ name: 'offline', layer: 'agent', runtime: 'codex_app_server', model: 'gpt-5.5', detail: `Codex App Server command '${missingCodex}' is not available.`, runsOn, origin: inherited }),
     noteText({ name: 'unoffered', layer: 'agent', runtime: AGY, model: NOT_OFFERED, detail: `The model '${NOT_OFFERED}' is not available on ${agentRuntimeName(AGY)}.`, runsOn, origin: inherited }),
-    noteText({ name: 'badsettings', layer: 'agent', runtime: AGY, model: MODEL, detail: 'Its model settings are invalid: This model has no adjustable settings.', runsOn, origin: inherited }),
+    noteText({ name: 'badsettings', layer: 'agent', runtime: GROK, model: GROK_MODEL, detail: 'Its model settings are invalid: Value is not one of the supported options.', runsOn, origin: inherited }),
     noteText({ name: 'incomplete', layer: 'agent', runtime: AGY, model: null, detail: 'It names no model.', runsOn, origin: inherited }),
   ]
 }
@@ -583,7 +584,7 @@ defineCase('DLP-003', 'AC-001/003/004/005/010: Manager chat from the UI; copies 
   r.teammateCall = await callFromComposer(page, 'teammate delegation', 'delegate_task', { recipient_address: `${address('squad')}/unoffered`, description: 'Teammate work.' })
   assert(r.teammateCall.includes('COLLABORATION_SELF_TARGET_REJECTED') && !r.teammateCall.includes('"delegated":true'), 'a teammate is refused, not delegated', r.teammateCall)
   r.helperCall = await callFromComposer(page, 'helper delegation', 'delegate_task', { recipient_address: address('badsettings'), description: 'Helper work.' })
-  const helperNote = noteText({ name: names.badsettings, layer: 'agent', runtime: AGY, model: MODEL, detail: 'Its model settings are invalid: This model has no adjustable settings.', runsOn: `${agentRuntimeName(AGY)} / ${MODEL}`, origin: 'inherited from the run' })
+  const helperNote = noteText({ name: names.badsettings, layer: 'agent', runtime: GROK, model: GROK_MODEL, detail: 'Its model settings are invalid: Value is not one of the supported options.', runsOn: `${agentRuntimeName(AGY)} / ${MODEL}`, origin: 'inherited from the run' })
   assert(r.helperCall.includes('"delegated":true') && r.helperCall.includes(helperNote), 'helper delegation note not shown', { call: r.helperCall, helperNote })
   r.helperAgainCall = await callFromComposer(page, 'helper again', 'delegate_task', { recipient_address: address('badsettings'), description: 'More helper work.' })
   assert(r.helperAgainCall.includes('"delegated":true') && r.helperAgainCall.includes(helperNote), 'each helper copy carries its note', r.helperAgainCall)

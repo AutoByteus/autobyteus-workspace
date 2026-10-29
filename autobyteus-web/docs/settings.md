@@ -1656,7 +1656,10 @@ duplicated, or silently written back. Missing catalog/schema state keeps Save
 locked. These residual rules describe the unchanged saved model, not transfer
 of old settings into a replacement. The server revalidates every Agent/Team
 scope against its fixed runtime and selected model, returning field-addressed
-validation errors when applicable.
+validation errors when applicable. A setting the current schema no longer
+declares cannot be edited and is left out by the server when the run's settings
+are saved (it is not an error); read-only and historical views still show it as
+a residual until then.
 
 Save is enabled only for a stopped, editable, schema-ready, changed draft. The
 revision-free mutations are `updateStoppedAgentRunModelConfig`,

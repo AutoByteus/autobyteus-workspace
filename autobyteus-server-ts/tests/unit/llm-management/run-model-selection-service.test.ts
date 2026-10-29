@@ -101,14 +101,42 @@ describe('RunModelSelectionService', () => {
     await expect(service.validate({ context, selection })).resolves.toEqual({ kind: 'model_unavailable' });
     expect(catalog.runtimeModelSelectionCatalog).toHaveBeenCalledTimes(4);
   });
-  it('validates target schema for external models', async () => {
+  it('validates target schema for external models; undeclared top-level keys are left out, not reported', async () => {
     const { service, catalog } = harness();
     catalog.runtimeModelSelectionCatalog.mockResolvedValue(catalogView([{ model_identifier: 'current' }, { model_identifier: 'target', config_schema: {
       properties: { effort: { type: 'string', enum: ['low','high'] } }, required: ['effort'] } }]));
     await expect(service.validate({ context, selection: { ...selection, llmConfig: { effort: 'ultra', old: true } } })).resolves.toEqual({ kind: 'invalid', errors: [
       { path: 'llmConfig.effort', message: 'Value is not one of the supported options.' },
-      { path: 'llmConfig.old', message: 'Setting is not supported by the selected runtime and model.' },
     ] });
+    await expect(service.validate({ context, selection: { ...selection, llmConfig: { effort: 'high', old: true } } })).resolves.toEqual({ kind: 'valid',
+      selection: { llmModelIdentifier: 'target', llmConfig: { effort: 'high' } } });
+    await expect(service.validate({ context, selection: { ...selection, llmConfig: { old: true } } })).resolves.toEqual({ kind: 'invalid', errors: [
+      { path: 'llmConfig.effort', message: 'Required value is missing.' },
+    ] });
+  });
+
+  // claude-anthropic-effort-control SR-005 examples table: a saved Opus 5.5 config still holding the removed display setting.
+  it.each([
+    [{ reasoning_effort: 'high', thinking_display: 'omitted' }, { kind: 'valid', selection: { llmModelIdentifier: 'target', llmConfig: { reasoning_effort: 'high' } } }],
+    [{ reasoning_effort: 'ultra', thinking_display: 'omitted' }, { kind: 'invalid', errors: [
+      { path: 'llmConfig.reasoning_effort', message: 'Value is not one of the supported options.' }] }],
+    [{ thinking_display: 'omitted' }, { kind: 'valid', selection: { llmModelIdentifier: 'target', llmConfig: null } }],
+    [{}, { kind: 'valid', selection: { llmModelIdentifier: 'target', llmConfig: {} } }],
+    [null, { kind: 'valid', selection: { llmModelIdentifier: 'target', llmConfig: null } }],
+  ] as const)('canonicalizes %j against an effort-only schema', async (llmConfig, expected) => {
+    const { service, catalog } = harness();
+    catalog.runtimeModelSelectionCatalog.mockResolvedValue(catalogView([{ model_identifier: 'current' }, { model_identifier: 'target', config_schema: {
+      properties: { reasoning_effort: { type: 'string', enum: ['low', 'medium', 'high', 'xhigh', 'max'] } } } }]));
+    await expect(service.validate({ context, selection: { ...selection, llmConfig } })).resolves.toEqual(expected);
+  });
+
+  it('canonicalizes any config of a model without settings to null', async () => {
+    const { service, catalog } = harness();
+    catalog.runtimeModelSelectionCatalog.mockResolvedValue(catalogView([{ model_identifier: 'current' }, { model_identifier: 'target', config_schema: null }]));
+    await expect(service.validate({ context, selection: { ...selection, llmConfig: { old: true } } })).resolves.toEqual({ kind: 'valid',
+      selection: { llmModelIdentifier: 'target', llmConfig: null } });
+    await expect(service.validate({ context, selection: { ...selection, llmConfig: 'not an object' } })).resolves.toEqual({ kind: 'invalid', errors: [
+      { path: 'llmConfig', message: 'Model configuration must be null or an object.' }] });
   });
   it('validates mixed-runtime scopes independently against fresh catalog evidence', async () => {
     const { service, catalog, nativeCapacity } = harness(128000, 64000);

@@ -25,7 +25,7 @@ const catalog: CollaboratorDefinitionCatalog = {
 };
 const runnable = {
   validate: vi.fn(),
-  validateMany: async (inputs: readonly unknown[]) => inputs.map(() => ({ kind: "valid" as const, selection: { llmModelIdentifier: "m", llmConfig: null } })),
+  validateMany: async (inputs: readonly unknown[]) => inputs.map((input) => ({ kind: "valid" as const, selection: (input as { selection: { llmModelIdentifier: string; llmConfig: Readonly<Record<string, unknown>> | null } }).selection })),
 } as unknown as RunModelSelectionValidator;
 const launch = { runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "gpt", llmConfig: null, autoExecuteTools: false, workspaceRootPath: "/work" };
 

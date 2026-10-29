@@ -182,8 +182,11 @@ nullable current descriptor separately from replacement descriptors; a current
 ID is never rewritten merely because a recommended sibling is offered.
 
 The server validates submitted values against the selected model's current
-schema. Unknown keys,
-invalid types/ranges/enums, missing required values, unavailable models, and
+schema and saves only the canonical config it returns. Top-level keys the
+schema does not declare (for example a setting a model no longer offers, kept
+in saved runs) are left out of the saved config instead of refused; a model
+without a schema saves `null`. Invalid types/ranges/enums of declared keys,
+undeclared nested keys, missing required values, unavailable models, and
 unavailable schemas produce explicit non-success outcomes without persistence.
 Successful responses are `UPDATED` or `UNCHANGED`; other outcomes include
 `RUN_ACTIVE`, `RUN_ARCHIVED`, `NOT_FOUND`, `MODEL_UNAVAILABLE`,

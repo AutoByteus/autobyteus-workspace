@@ -52,7 +52,7 @@ const setup = (codexEnabled = true) => {
   const validator = {
     validate: vi.fn(),
     validateMany: vi.fn(async (inputs: readonly { selection: { llmModelIdentifier: string } }[]) =>
-      inputs.map(({ selection }) => ({ kind: "valid" as const, selection: { llmModelIdentifier: selection.llmModelIdentifier, llmConfig: null } }))),
+      inputs.map(({ selection }) => ({ kind: "valid" as const, selection: { llmModelIdentifier: selection.llmModelIdentifier, llmConfig: selection.llmConfig } }))),
   } as unknown as RunModelSelectionValidator;
   const availability = {
     getRuntimeAvailability: vi.fn(async (runtimeKind: RuntimeKind) => ({
