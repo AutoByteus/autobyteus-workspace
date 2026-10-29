@@ -11,15 +11,16 @@
 - Architecture Review Revision Record: `N/A — not applicable`
 - Implementation Handoff: `.../implementation-handoff.md` (IR-001)
 - Implementation Revision Record: `.../implementation-revision-record.md`
-- Code Review Report: `N/A — not applicable` (direct Medium / Low route)
-- Code Review Revision Record: `N/A — not applicable`
+- Code Review Report: `.../code-review-report.md` (CRR-001 failure origin CR-FO-001; CRR-002 Pass)
+- Code Review Revision Record: `.../code-review-revision-record.md`
+- Design Review (round 2): `.../design-review-report.md`, `.../architecture-review-revision-record.md` (ARCH-REV-002 pass)
 - Delivery Revision Record (delivery re-entry only): N/A
 - Relevant Delivery Revision IDs: N/A
 - API/E2E Revision Record (created after the first completed result): `.../api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-001`
-- Current Investigation Round: 1
-- Trigger: Implementation Complete IR-001 (implementation commit `574aa0bd7`, handoff commit `a2a5d0e47`), direct low-risk route.
-- Prior Investigation Reviewed: None (first round)
+- Current API/E2E Revision ID: `API-REV-002`
+- Current Investigation Round: 2
+- Trigger: Round 1 — Implementation Complete IR-001 (`574aa0bd7`). Round 2 — code review Pass CRR-002 of IR-002 (source `47f44c3df`, handoff `7daf47430`), SR-005, ARCH-REV-002; classification now Medium / High (reviewed route).
+- Prior Investigation Reviewed: round 1 (this file, API-REV-001)
 - Latest Authoritative Investigation: this file
 
 All paths are relative to the worktree `/home/autobyteus/workspace/.codex/worktrees/claude-anthropic-effort-control` (branch `codex/claude-anthropic-effort-control`).
@@ -183,3 +184,30 @@ None.
 - Reroute Required Before Validation Execution: `No`
 - Recommended Owner If Reroute Required: N/A
 - Notes: API-04/API-06 failed (see execution report); durable coverage of the edit path is deferred to the fix round because its expected behavior is a design decision.
+
+## Round 2 Plan (IR-002, SR-005)
+
+Basis added: DEC-011 (undeclared keys are left out of saved settings), AC-012 (stopped agent/team/Org edit with a stored `thinking_display` saves `UPDATED` without the key; opening the settings alone writes nothing; Org workspace-only edit succeeds without rewriting untouched configs; invalid declared values still refused), AC-013 (stored Claude launch configuration holding the key is usable / launches without it). RISK-6: schema-less models (e.g. AGY) now accept a non-null stored config as `null`.
+
+Rerun by impact: `git diff --name-only 574aa0bd7 47f44c3df` outside `tickets/` = 5 server src files (validator, Org planner + service, launch-usability check, collaborator resolver), server docs, server tests, one web probe, `autobyteus-web/docs/settings.md`. No `autobyteus-ts`, web source or catalog change.
+
+| Case | Decision | Reason |
+| --- | --- | --- |
+| API-01 | Still valid | ts / web / catalog code unchanged |
+| API-02 | Rerun (cheap, synthetic) | same server process; team create path unchanged, but rerun with API-03 in one file |
+| API-03 | Rerun (synthetic) | Org launch (`agent-org-run-service`/planner) changed |
+| API-04 | Rerun | validator changed (the fix) |
+| API-05 | Rerun (browser, cheap) | restore / unavailable-model path near the changed validator |
+| API-06 | Rerun (browser) | the fix; definition-surface part rerun as a regression check in the same session |
+| API-07, API-07b | Still valid | live suites create runs with declared keys only; validator behavior for declared keys unchanged; `AnthropicLLM` unchanged |
+| API-08 | Rerun (cheap) | repository audit |
+| IMP-17..IMP-21 | Reused (`Reused`) | ran on `47f44c3df` |
+
+New cases:
+
+| Case ID | Criteria | Boundary / Surface | Kind | Planned Command Or Steps | Why |
+| --- | --- | --- | --- | --- | --- |
+| API-09 | AC-012 (a)/(b) Org | browser: stopped Org run Edit Config — model edit; workspace-only edit | Journey | Org run created via GraphQL, stopped, stale key added to the test-owned Org tree; edit in the app; inspect stored tree | Org edit not run in round 1 |
+| API-10 | AC-012 "opening alone writes nothing", AC-012 alternate (invalid declared value still refused) | browser + GraphQL | Journey + probe | open Edit Config on a stale-key run, no change: Save not offered, file unchanged; GraphQL save with `reasoning_effort: "ultra"` + stale key | AC-012 clauses |
+| API-11 | AC-013 | browser: agent definition whose default launch config holds the key → Run Agent → send (real reply, test vault) | Journey | stored run config has no `thinking_display` | real launch surface for a stored launch config |
+| API-12 | RISK-6 | GraphQL against a schema-less runtime (scripted AGY fixture) | Temporary Probe | stopped AGY run save with a non-null config → `UPDATED`, stored `null` | behavior change flagged for review |

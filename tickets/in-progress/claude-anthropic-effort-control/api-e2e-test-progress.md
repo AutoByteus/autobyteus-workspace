@@ -24,3 +24,17 @@
 | 2026-10-29T20:49:26Z | API-08 | Started | | grep audit |
 | 2026-10-29T20:52:39Z | API-08 | Completed | Pass | only absence assertions in tests |
 | 2026-10-29T20:52:39Z | — | Checkpoint | | round 1 complete: Fail (API-04, API-06); report written; next: commit + failure-origin review |
+| 2026-10-29T22:28:21Z | — | Checkpoint | | round 2 started (IR-002 47f44c3df); plan in investigation 'Round 2 Plan' |
+| 2026-10-29T22:28:29Z | API-02 | Started | | round 2 rerun synthetic (with API-03) |
+| 2026-10-29T22:29:12Z | API-02 | Completed | Pass | r2 4/4 (API-03 same run) |
+| 2026-10-29T22:29:12Z | API-03 | Completed | Pass | r2, same run |
+| 2026-10-29T22:38:44Z | API-10 | Completed | Pass | open-only writes nothing; invalid declared value still refused |
+| 2026-10-29T22:38:44Z | API-06 | Completed | Pass | r2: agent + team old-run edit saved, key dropped |
+| 2026-10-29T22:38:44Z | API-09 | Completed | Pass | Org model edit + workspace-only edit saved; untouched configs not rewritten |
+| 2026-10-29T22:38:44Z | API-11 | Completed | Pass | launch from stale default launch config works (LYCHEE); new run keeps inert key -> FU-005 |
+| 2026-10-29T22:38:44Z | API-12 | Completed | Pass | AGY schema-less: non-null config -> canonical null |
+| 2026-10-29T22:38:44Z | API-05 | Completed | Pass | r2 rerun (fixture redone after my seeding-script error) |
+| 2026-10-29T22:38:44Z | API-04 | Completed | Pass | r2: covered by API-06/09 browser saves + reused IMP-17 (no separate probe) |
+| 2026-10-29T22:38:44Z | API-08 | Completed | Pass | r2 audit: tests only |
+| 2026-10-29T22:38:44Z | — | Checkpoint | | round 2 complete; next: report, revision record, commit, handoff |
+| 2026-10-29T22:40:15Z | — | Completed | Pass | round 2 Pass 95%; committing |
