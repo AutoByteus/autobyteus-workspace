@@ -481,7 +481,9 @@ separate local transport failure, not a synthetic acknowledgement.
 ### Platform Input Preface And Run Lifecycle Observer
 
 `AgentRunManager` accepts two optional generic ports. Neither carries any
-feature knowledge; the only current implementation is
+feature knowledge. The compositions pass one implementation of both,
+`AgentRunPlatformNotices` (`domain/agent-run-platform-notices.ts`), composed of
+the notice sources in order: [Tool List Updates](./tool_list_updates.md), then
 [Skill Update Notices](./skill_update_notices.md).
 
 - **`AgentRunLifecycleObserver`** (`domain/agent-run-lifecycle-observer.ts`):
@@ -491,8 +493,10 @@ feature knowledge; the only current implementation is
   - `runReleased(run)` is reported by `AgentRunResourceManager` after a
     successful release. Every removal path goes through it.
 - **`AgentRunInputPreface`** (`domain/agent-run-input-preface.ts`):
-  `takePreface(run)`, `prefaceDelivered(run, preface, turnId)` and
-  `prefaceReturned(run, preface)`.
+  `takePreface(run, { dispatchKind })`, `prefaceDelivered(run, preface, turnId)`
+  and `prefaceReturned(run, preface)`. `dispatchKind` is `start_turn` or
+  `append_to_active_turn`; a source whose notice belongs to a turn start (a
+  Codex or Grok run waiting for a reopen) returns nothing for an append.
   - In `executeInputDispatch`, after normalization, `AgentRun` asks the port
     for a pending preface. It does so only when the claimed message is an
     **external** input. Compaction-recovery dispatches
@@ -508,6 +512,29 @@ feature knowledge; the only current implementation is
     failed, uncertain, `undeliveredRetryAsStart`) returns it.
   - A failing port never affects the input.
   - Admission state and the backend dispatch contract are unchanged.
+- **`AgentRunPlatformNotices`** asks its sources in order and hands over the
+  first notice, so one dispatch carries at most one notice; another source's
+  notice waits for the next input. It remembers which source handed which
+  notice and settles only that source, and it fans the lifecycle calls out to
+  every source, each guarded.
+
+### Tool List Changes On The Backend Contract
+
+`AgentRunBackend` (and `AgentRun`, as a thin boundary) has two operations for
+[Tool List Updates](./tool_list_updates.md):
+
+- `applyDefinitionTools(definition)` resolves the runtime's tools from the
+  definition and gives them to the runtime. It returns
+  `{ kind: "unchanged" | "applied" | "on_next_turn", toolNames }`, where
+  `toolNames` are the names the agent calls, now or at its next turn start.
+  `AgentRun` rejects it on a stopped run.
+- `getToolNames()` returns the names the runtime has now.
+
+AutoByteus (`Agent.replaceTools`), Claude and AGY apply at once (`applied`).
+Codex and Grok set `reopenPending` (`on_next_turn`) and reopen their runtime
+session inside the next `start_turn` dispatch; a failed reopen fails that
+dispatch with `RUNTIME_SESSION_REOPEN_FAILED` (the input is not sent) and emits
+the `restart_run` notice.
 
 `GeneralProcessRunSupervisor` receives both ports as `platformInputNotices` from
 the studio and standalone compositions.
@@ -748,9 +775,10 @@ the model has not seen. A turn the CLI starts itself is preceded by a
 `SYSTEM_TASK_NOTIFICATION` (`sender_id: "system.claude_background_task"`), for
 example `Background task completed: <description> (<status>)`. For external
 runtimes, agent memory records system notices from an allow-list of senders as
-`system_task_notification` traces: these Claude background-task notices and
-skill update notices (`system.skill_update_notifier`, see
-[Skill Update Notices](./skill_update_notices.md)). Run-history replay shows
+`system_task_notification` traces: these Claude background-task notices, skill
+update notices (`system.skill_update_notifier`, see
+[Skill Update Notices](./skill_update_notices.md)) and tool list notices
+(`system.tool_list_update_notifier`, see [Tool List Updates](./tool_list_updates.md)). Run-history replay shows
 them in the conversation.
 
 The registry also owns the live Background Tasks view. A task enters it when the

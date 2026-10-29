@@ -93,13 +93,12 @@ AutoByteus runs to Grok's shared leader process.
 **Create path.**
 
 1. The factory prepares the workspace, the composed Carpenter prompt,
-   configured skills, and, when tools are exposed, the run-scoped Agent Tools
-   MCP session.
+   configured skills, and the run-scoped Agent Tools MCP session (every run has
+   one, even with an empty tool list).
 2. It spawns the process and runs `initialize`. Client capabilities are
    `fs:false, terminal:false`.
 3. It checks the capabilities the product needs: `loadSession` for restore,
-   and HTTP MCP when tools are exposed. Anything missing is named in an
-   explicit error.
+   and HTTP MCP. Anything missing is named in an explicit error.
 4. It opens `session/new` with the workspace `cwd`, an HTTP `mcpServers`
    entry, and `_meta` containing exactly `rules` and `yoloMode`.
 5. It records the supplied system instructions. The Grok `sessionId`
@@ -112,7 +111,25 @@ AutoByteus runs to Grok's shared leader process.
 guidance stays intact. The system-instructions Activity records the exact
 string AutoByteus supplied.
 
-**MCP readiness gate.** When Agent Tools are exposed, the session waits up to
+Spawning, `initialize`, opening (`new` or `load`) and the MCP readiness gate
+live in `AcpSessionLauncher` (`backends/acp/session/acp-session-launcher.ts`),
+shared by creation, restore and the reopen below. The run's
+`AcpPreparationOwner` is the single holder of its process, connection and
+session: the launcher records each handle in it as soon as it exists, the
+backend reads them from it, and releasing the run closes exactly what it holds
+then.
+
+**Tool list changes.** Grok reads its tool list only when a session is opened.
+After a definition change the server enforces removal at once, and the next
+turn start reopens the session: the open process is ended first (its event and
+failure sinks detached, so the exit is not a run failure; the skills stay),
+then a new process loads the same `sessionId` with the current descriptor. If
+the reopen fails, the input is not sent, the run shows "Couldn't give this run
+its new tools." with a restart button, and the run stays active and idle with
+no runtime session until the next turn start retries. See
+[Tool List Updates](./tool_list_updates.md).
+
+**MCP readiness gate.** The session waits up to
 15 s for `_x.ai/mcp/server_status{name:"autobyteus_agent_tools",
 status:"ready"}`. If the server is unavailable or the wait times out,
 activation fails with an error naming the server. Grok would otherwise
