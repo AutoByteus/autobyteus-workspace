@@ -1,0 +1,8 @@
+# autobyteus-324 IR-004: API-05 e2e re-run unchanged (implementation-scoped)
+# cmd: env -i PATH HOME=<resolved temp> TMPDIR npx vitest run tests/e2e/runtime/tool-list-reopen-failure.e2e.test.ts (scripted ACP agent; no provider credits)
+# base: fbd00b2f53 + uncommitted IR-004 changes; date 2026-10-29T19:16:07Z
+ACP_REOPEN_FAILED: run=reopen_failure_51ab34_42acbe6aa2e341bfa5b5928567af12c2: Error: ACP connection closed
+ ✓ tests/e2e/runtime/tool-list-reopen-failure.e2e.test.ts (1 test) 7819ms
+     ✓ fails the message with the plain message, touches no other run, and retries at the next message  7542ms
+ Test Files  1 passed (1)
+      Tests  1 passed (1)

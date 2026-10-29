@@ -1,0 +1,61 @@
+{
+  "header": "API-06 browser probe TLU-001: pnpm -C autobyteus-web test:e2e:tool-list-updates --output-dir <fresh dir>; working tree at 5ee923081a plus the uncommitted probe files; ENV-5; 2026-10-29",
+  "result": "Pass",
+  "ms": 38183,
+  "details": {
+    "name": "Tool List 1c30",
+    "projectId": "project_db1a600e-a7e1-4910-8bf4-14b866a98781",
+    "definitionId": "tool-list-1c30",
+    "runId": "tool_list_1c30_b49c79a5c00f49fcb1ad0cd292aee841",
+    "alpha1": "{\"content\":[{\"type\":\"text\",\"text\":\"{\"projects\":[{\"projectId\":\"project_db1a600e-a7e1-4910-8bf4-14b866a98781\",\"name\":\"TLU Project 1c30\"}]}\"}],\"structuredContent\":{\"projects\":[{\"projectId\":\"project_db1a600e-a7e1-4910-8bf4-14b866a98781\",\"name\":\"TLU Project 1c30\"}]}}\n\nContext Files (0)\n(drag, paste, or upload)\nProjects\nFiles\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nBackground Tasks\nCurrent count unavailable\nActivity\n0 Events\nNo activity history yet.",
+    "toolsAfterAdd": [
+      "list_projects",
+      "list_project_tasks"
+    ],
+    "beta": "{\"content\":[{\"type\":\"text\",\"text\":\"{\"projectId\":\"project_db1a600e-a7e1-4910-8bf4-14b866a98781\"}\"}],\"structuredContent\":{\"projectId\":\"project_db1a600e-a7e1-4910-8bf4-14b866a98781\"}}\n\nContext Files (0)\n(drag, paste, or upload)\nProjects\nFiles\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nBackground Tasks\nCurrent count unavailable\nActivity\n0 Events\nNo activity history yet.",
+    "cardsAfterAdd": [
+      "Tools updatedNow available: list_project_tasks."
+    ],
+    "toolsAfterRemove": [
+      "list_project_tasks"
+    ],
+    "refusedCall": {
+      "name": "list_projects",
+      "arguments": {
+        "marker": "TLU-1c30-removed"
+      },
+      "error": {
+        "message": "Tool is not enabled for this session",
+        "code": -32602
+      }
+    },
+    "cardsAfterRemove": [
+      "Tools updatedNow available: list_project_tasks.",
+      "Tools updatedNo longer available: list_projects."
+    ],
+    "terminate": {
+      "success": true,
+      "message": "Agent run terminated successfully."
+    },
+    "alpha2": "{\"content\":[{\"type\":\"text\",\"text\":\"{\"projects\":[{\"projectId\":\"project_db1a600e-a7e1-4910-8bf4-14b866a98781\",\"name\":\"TLU Project 1c30\"}]}\"}],\"structuredContent\":{\"projects\":[{\"projectId\":\"project_db1a600e-a7e1-4910-8bf4-14b866a98781\",\"name\":\"TLU Project 1c30\"}]}}\n\nContext Files (0)\n(drag, paste, or upload)\nProjects\nFiles\nTerminal\nActivity\nToken\nArtifacts\nVNC Viewer\nBackground Tasks\nCurrent count unavailable\nActivity\n0 Events\nNo activity history yet.",
+    "cardsAfterRestore": [
+      "Tools updatedNow available: list_project_tasks.",
+      "Tools updatedNo longer available: list_projects.",
+      "Tools updatedNow available: list_projects."
+    ]
+  },
+  "browserErrors": [],
+  "cleanup": [
+    {
+      "pid": 51398,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 51342,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/delegated-launch-defaults-7Vt951"
+    }
+  ]
+}

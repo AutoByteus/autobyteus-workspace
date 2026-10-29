@@ -4,7 +4,7 @@ import os from "node:os";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
 import { spawnSync } from "node:child_process";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterAll, afterEach, beforeAll, describe, expect, it } from "vitest";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { AgentRun } from "../../../src/agent-execution/domain/agent-run.js";
 import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-context.js";
@@ -29,11 +29,26 @@ import { createAgentProviderFactoryBuilder } from "../../../src/agent-execution/
 import { getWorkspaceManager } from "../../../src/workspaces/workspace-manager.js";
 import { getClaudeSdkClient } from "../../../src/runtime-management/claude/client/claude-sdk-client.js";
 import { getClaudeWorkspaceSkillMaterializer } from "../../../src/agent-execution/backends/claude/claude-workspace-skill-materializer.js";
+import { startAgentToolsMcpTestHost } from "../../helpers/agent-tools-mcp-test-host.js";
 
 const claudeBinaryReady = spawnSync("claude", ["--version"], {
   stdio: "ignore",
 }).status === 0;
 const liveClaudeTestsEnabled = process.env.RUN_CLAUDE_E2E === "1";
+
+// Every run has an Agent Tools MCP session, so a live Claude run needs a live endpoint.
+let agentToolsTestHost: Awaited<ReturnType<typeof startAgentToolsMcpTestHost>> | null = null;
+const requireAgentToolsTestHost = () => {
+  if (!agentToolsTestHost) throw new Error("The Agent Tools MCP test host is not started.");
+  return agentToolsTestHost;
+};
+beforeAll(async () => {
+  if (liveClaudeTestsEnabled) agentToolsTestHost = await startAgentToolsMcpTestHost();
+});
+afterAll(async () => {
+  await agentToolsTestHost?.close();
+  agentToolsTestHost = null;
+});
 const describeClaudeBackendIntegration =
   claudeBinaryReady && liveClaudeTestsEnabled ? describe : describe.skip;
 
@@ -212,7 +227,7 @@ const createFactory = (input: {
         toolNames: input.toolNames ?? [],
       }),
     } as never,
-    agentToolMcpRunSessions: { activateForRun: () => ({ kind: "not_exposed" as const }), deactivateForRun: () => 0 },
+    agentToolMcpRunSessions: requireAgentToolsTestHost().runSessions,
     applicationAgentTools: null,
   }).claude;
   const sessionManager = (factory as unknown as {

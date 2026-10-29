@@ -12,6 +12,7 @@ import { AgentToolMcpSessionService } from "../../../src/agent-tools/mcp/agent-t
 import { AgentToolMcpToolExecutor } from "../../../src/agent-tools/mcp/agent-tool-mcp-tool-executor.js";
 import { AgentToolsMcpMethodDispatcher } from "../../../src/agent-tools/mcp/agent-tools-mcp-method-dispatcher.js";
 import { AgentToolsMcpLocalAccessGate } from "../../../src/agent-tools/mcp/agent-tools-mcp-local-access.js";
+import { AgentToolsMcpSessionStreams } from "../../../src/agent-tools/mcp/agent-tools-mcp-session-streams.js";
 import { registerAgentToolsMcpRoutes } from "../../../src/agent-tools/mcp/agent-tools-mcp-routes.js";
 import type { ActiveAgentToolMcpRunSession } from "../../../src/agent-tools/mcp/agent-tool-mcp-session-authority.js";
 import {
@@ -309,7 +310,9 @@ describe("Brief Studio production application Agent Tool through MCP", () => {
     const sessionRegistry = new AgentToolMcpSessionRegistry();
     const mcpCatalog = new AgentToolMcpCatalog({ adapters: [] });
     app = fastify();
+    const streams = new AgentToolsMcpSessionStreams();
     await registerAgentToolsMcpRoutes(app, {
+      streams,
       registry: sessionRegistry,
       dispatcher: new AgentToolsMcpMethodDispatcher({
         catalog: mcpCatalog,
@@ -321,6 +324,7 @@ describe("Brief Studio production application Agent Tool through MCP", () => {
     const sessionService = new AgentToolMcpSessionService({
       registry: sessionRegistry,
       catalog: mcpCatalog,
+      streams,
       getLocalBaseUrl: () => "http://127.0.0.1:1",
       executionCapabilities: {
         publishedArtifactPublisher: { publishManyForRun: vi.fn(async () => []) },
@@ -397,7 +401,7 @@ describe("Brief Studio production application Agent Tool through MCP", () => {
         }],
       },
     });
-    expect(generalSession).toEqual({ kind: "not_exposed" });
+    expect(generalSession).toMatchObject({ kind: "active", descriptor: { enabledTools: [] } });
 
     const alphaResult = await postMcp(app, alphaSession, {
       jsonrpc: "2.0",

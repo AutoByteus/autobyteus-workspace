@@ -5,7 +5,18 @@ import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-in
 import type { AgentOperationResult } from "../../domain/agent-operation-result.js";
 import type { AgentRunContext, RuntimeAgentRunContext } from "../../domain/agent-run-context.js";
 import { RuntimeKind } from "../../../runtime-management/runtime-kind-enum.js";
-import type { AgentRunBackend, AgentRunCompactionRecoveryCapability, AgentRunSourceEventBatchListener } from "../agent-run-backend.js";
+import type {
+  AgentRunBackend,
+  AgentRunCompactionRecoveryCapability,
+  AgentRunSourceEventBatchListener,
+  AgentRunToolListApplyResult,
+} from "../agent-run-backend.js";
+import type { BaseTool } from "autobyteus-ts/tools/base-tool.js";
+import type { AgentDefinition } from "../../../agent-definition/domain/models.js";
+import {
+  isSameRuntimeAgentToolExposure,
+  type RuntimeAgentToolExposure,
+} from "../../shared/runtime-agent-tool-exposure.js";
 import type {
   AgentRunBackendInputDispatch,
   AgentRunBackendInputDispatchResult,
@@ -53,12 +64,24 @@ export type AutoByteusAgentLike = {
     message?: string;
   };
   stop?: (timeout?: number) => Promise<void> | void;
+  replaceTools?: (tools: readonly BaseTool[]) => Promise<void>;
 };
+
+/**
+ * The run's tools: the exposure it was last given, the exposure a definition selects (names only,
+ * nothing built), and how that definition's tools are built for the run.
+ */
+export type AutoByteusRunTools = Readonly<{
+  exposure: RuntimeAgentToolExposure;
+  exposureOf(definition: AgentDefinition): RuntimeAgentToolExposure;
+  build(definition: AgentDefinition, exposure: RuntimeAgentToolExposure): BaseTool[];
+}>;
 
 type AutoByteusAgentRunBackendOptions = {
   isActive: () => boolean;
   removeAgent: (runId: string, shutdownTimeout: number) => Promise<boolean>;
   pendingSystemInstructionCapture?: SystemInstructionTraceRecord | null;
+  tools: AutoByteusRunTools;
 };
 
 type StreamSession = {
@@ -97,6 +120,7 @@ export class AutoByteusAgentRunBackend implements AgentRunBackend {
   private lifecycleState: "active" | "terminating" | "terminated" = "active";
   private terminationPromise: Promise<AgentOperationResult> | null = null;
   private readonly pendingSystemInstructionEvent: PendingSystemInstructionEvent;
+  private toolExposure: RuntimeAgentToolExposure;
 
   constructor(
     context: AgentRunContext<RuntimeAgentRunContext>,
@@ -109,6 +133,30 @@ export class AutoByteusAgentRunBackend implements AgentRunBackend {
     this.pendingSystemInstructionEvent = new PendingSystemInstructionEvent(
       options.pendingSystemInstructionCapture,
     );
+    this.toolExposure = options.tools.exposure;
+  }
+
+  /**
+   * The native agent lists its tools at every LLM call, so a new tool set applies from its next
+   * call; a tool call already running keeps its instance.
+   */
+  async applyDefinitionTools(definition: AgentDefinition): Promise<AgentRunToolListApplyResult> {
+    // Names first: an unchanged list builds nothing.
+    const exposure = this.options.tools.exposureOf(definition);
+    if (isSameRuntimeAgentToolExposure(this.toolExposure, exposure)) {
+      return { kind: "unchanged", toolNames: this.getToolNames() };
+    }
+    if (typeof this.agent.replaceTools !== "function") {
+      throw new Error(`AutoByteus agent '${this.runId}' cannot replace its tools.`);
+    }
+    // The agent keeps the instance of every tool whose name stays.
+    await this.agent.replaceTools(this.options.tools.build(definition, exposure));
+    this.toolExposure = exposure;
+    return { kind: "applied", toolNames: this.getToolNames() };
+  }
+
+  getToolNames(): readonly string[] {
+    return Object.keys(this.agent.context?.state.toolInstances ?? {});
   }
 
   getContext(): AgentRunContext<RuntimeAgentRunContext> {

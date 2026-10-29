@@ -1,0 +1,22 @@
+# API-07 Claude (claude_agent_sdk, haiku) tool lifecycle frames on the run WebSocket for one Agent Tools call (list_projects). Head 5ee923081a, 2026-10-29, ENV-4.
+# Temporary vitest e2e (copy of live-tool-list-updates.e2e.test.ts setup, one turn: 'Call the list_projects tool once, then reply with exactly: DONE-1'), removed after the run; clean env with real HOME for the Claude sign-in.
+
+## A: autoExecuteTools=true
+SEGMENT_START id=toolu_019qpxSxGopErwcRLkKZeGrZ tool=tool_call reason=-
+TOOL_EXECUTION_STARTED id=toolu_019qpxSxGopErwcRLkKZeGrZ tool=list_projects reason=-
+TOOL_APPROVED id=toolu_019qpxSxGopErwcRLkKZeGrZ tool=list_projects reason=auto_execute_tools_enabled
+SEGMENT_END id=toolu_019qpxSxGopErwcRLkKZeGrZ tool=None reason=-
+TOOL_EXECUTION_SUCCEEDED id=toolu_019qpxSxGopErwcRLkKZeGrZ tool=list_projects reason=-
+SEGMENT_START id=tool_list_live_58167e_3400929596cb47e88016379abf959e3d:turn:b0535f9b-ac38-445e-8f5f-01876a2c6344:claude-text:msg_011CgX6d4FkVRUDgXuadqBYn:0 tool=text reason=-
+SEGMENT_END id=tool_list_live_58167e_3400929596cb47e88016379abf959e3d:turn:b0535f9b-ac38-445e-8f5f-01876a2c6344:claude-text:msg_011CgX6d4FkVRUDgXuadqBYn:0 tool=None reason=-
+projection: [["message", null], ["tool_call", "list_projects"], ["message", null]]
+
+## B: autoExecuteTools=false (the agent_tools_enabled path)
+SEGMENT_START id=toolu_01CFEfVt42tX5oepU1LndYtG tool=tool_call reason=-
+TOOL_EXECUTION_STARTED id=toolu_01CFEfVt42tX5oepU1LndYtG tool=list_projects reason=-
+TOOL_APPROVED id=toolu_01CFEfVt42tX5oepU1LndYtG tool=list_projects reason=agent_tools_enabled
+SEGMENT_END id=toolu_01CFEfVt42tX5oepU1LndYtG tool=None reason=-
+TOOL_EXECUTION_SUCCEEDED id=toolu_01CFEfVt42tX5oepU1LndYtG tool=list_projects reason=-
+SEGMENT_START id=tool_list_live_9db269_0fac3b5414ea46fe9b5a4fa2fe580b72:turn:70e138e6-3b88-46ac-a67f-ae1ac7b8ac90:claude-text:msg_011CgX6fVg2SCnaazBR7i215:0 tool=text reason=-
+SEGMENT_END id=tool_list_live_9db269_0fac3b5414ea46fe9b5a4fa2fe580b72:turn:70e138e6-3b88-46ac-a67f-ae1ac7b8ac90:claude-text:msg_011CgX6fVg2SCnaazBR7i215:0 tool=None reason=-
+projection: [["message", null], ["tool_call", "list_projects"], ["message", null]]

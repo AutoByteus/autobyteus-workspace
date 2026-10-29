@@ -92,6 +92,7 @@ export class SkillUpdateNoticeService implements AgentRunInputPreface, AgentRunL
 
   // --- the next external input (AgentRunInputPreface) ---
 
+  /** Any dispatch kind can carry a skill notice: the runtime reads skill files when it needs them. */
   async takePreface(run: AgentRun): Promise<AgentRunPreface | null> {
     if (this.closed) return null;
     // A restored run's first input waits for its check against what it saw before; any other

@@ -79,6 +79,13 @@ a filesystem sandbox or proof that every relative provider action will land
 there. User/provider-owned workspace skills and MCP configurations may still
 be visible alongside the AutoByteus-configured skills of the agent definition.
 
+The run-scoped MCP configuration is always written, even when the agent selects
+no Agent Tools tools, and carries only `disabled: false` and the run's
+`serverUrl` (no transport header: AGY 1.4.10 holds the server's GET stream and
+re-lists its tools when the server sends `notifications/tools/list_changed`, so
+a definition change applies from AGY's next model call; see
+[Tool List Updates](./tool_list_updates.md)).
+
 Before writing the run-scoped MCP configuration, activation reads (never
 modifies) the selected workspace's `.agents/mcp_config.json` and the global
 `~/.gemini/config/mcp_config.json` to detect a user-defined server with the

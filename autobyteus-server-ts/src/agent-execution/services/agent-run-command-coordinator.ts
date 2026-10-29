@@ -1,6 +1,9 @@
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { AgentStatusPayload } from "../domain/agent-status-payload.js";
 import type { AgentRunInputLifecycle } from "../input/agent-run-input-contract.js";
+import { createUnsentInputFailureObserver } from "../input/unsent-input-failure-observer.js";
+import type { AgentRunEvent } from "../domain/agent-run-event.js";
+import { getAgentRunEventMessageMapper } from "../../services/agent-streaming/agent-run-event-message-mapper.js";
 import { AgentRunService, getAgentRunService } from "./agent-run-service.js";
 import {
   AgentRunCommandRegistry,
@@ -116,7 +119,15 @@ export class AgentRunCommandCoordinator {
    */
   private async post(record: AgentRunCommandRecord, input: AgentRunCommandCoordinatorInput): Promise<StandaloneRunPostResult> {
     const message = this.withCommandMetadata(input.message, record);
-    const postOptions = { lifecycleObserver: (fact: AgentRunInputLifecycle) => this.applyInputLifecycle(record, fact) };
+    // An input that fails before it is sent (e.g. a tool-list reopen failure) is otherwise silent on the
+    // run's stream: it is shown as a run ERROR there, once (autobyteus-324 SR-010).
+    const unsentFailure = createUnsentInputFailureObserver({
+      runId: record.runId, publish: (event) => this.publishRunEvent(record.runId, event),
+    });
+    const postOptions = { lifecycleObserver: (fact: AgentRunInputLifecycle) => {
+      this.applyInputLifecycle(record, fact);
+      unsentFailure(fact);
+    } };
     const onActiveRunReady = (run: AgentRun) => {
       this.clearOverlayForCommand(record);
       input.onActiveRunReady?.(run);
@@ -290,6 +301,14 @@ export class AgentRunCommandCoordinator {
       this.broadcaster.publishToRun(runId, new ServerMessage(ServerMessageType.AGENT_STATUS, payload));
     } catch (error) {
       logger.warn(`Failed to publish command status for run '${runId}'.`, error);
+    }
+  }
+
+  private publishRunEvent(runId: string, event: AgentRunEvent): void {
+    try {
+      this.broadcaster.publishToRun(runId, getAgentRunEventMessageMapper().map(event));
+    } catch (error) {
+      logger.warn(`Failed to publish input failure for run '${runId}'.`, error);
     }
   }
 

@@ -145,6 +145,14 @@ mask an incomplete update response. Healthy saves return the server's explicit
 completeness, not warning suppression, fabricated defaults, or a cache-refetch
 workaround. Existing diagnostic badges and save/navigation behavior are unchanged.
 
+Saving a changed tool list also changes the definition's runs that already exist; the user
+does not stop or restart them. AutoByteus, Claude and Antigravity runs take the new list at
+once, Codex and Grok runs at their next message, a stopped run when it is restored, and each
+run shows a "Tools updated" card. A removed tool is refused from the save on. A save without a
+tool change shows nothing. See the server's
+[Tool List Updates](../../autobyteus-server-ts/docs/modules/tool_list_updates.md) and the card
+in [agent_execution_architecture.md](./agent_execution_architecture.md).
+
 ## Live Agent Package Definition Refresh
 
 `app.vue` retains the node's `/ws/agent-package-definitions` feed

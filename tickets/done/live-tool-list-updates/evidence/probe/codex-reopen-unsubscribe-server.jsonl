@@ -1,0 +1,15 @@
+{"t":"2026-10-29T11:13:13.672Z","kind":"listening","port":39953}
+{"t":"2026-10-29T11:13:15.162Z","kind":"rpc","methods":["initialize"],"names":[null],"accept":"text/event-stream, application/json","session":null,"ua":"codex-mcp-client/0.165.0"}
+{"t":"2026-10-29T11:13:15.168Z","kind":"rpc","methods":["notifications/initialized"],"names":[null],"accept":"text/event-stream, application/json","session":"05bff7ee-405f-4ef7-9dd4-b6d42e99c202","ua":"codex-mcp-client/0.165.0"}
+{"t":"2026-10-29T11:13:15.170Z","kind":"http","http":"GET","accept":"text/event-stream, application/json","session":"05bff7ee-405f-4ef7-9dd4-b6d42e99c202","ua":"codex-mcp-client/0.165.0"}
+{"t":"2026-10-29T11:13:15.171Z","kind":"rpc","methods":["tools/list"],"names":[null],"accept":"text/event-stream, application/json","session":"05bff7ee-405f-4ef7-9dd4-b6d42e99c202","ua":"codex-mcp-client/0.165.0"}
+{"t":"2026-10-29T11:13:19.431Z","kind":"notify","reason":"add-beta","getStreams":1,"tools":["probe_alpha","probe_beta"]}
+{"t":"2026-10-29T11:13:26.497Z","kind":"http","http":"GET-closed","session":"05bff7ee-405f-4ef7-9dd4-b6d42e99c202"}
+{"t":"2026-10-29T11:13:26.497Z","kind":"http","http":"DELETE","session":"05bff7ee-405f-4ef7-9dd4-b6d42e99c202"}
+{"t":"2026-10-29T11:13:26.547Z","kind":"rpc","methods":["initialize"],"names":[null],"accept":"text/event-stream, application/json","session":null,"ua":"codex-mcp-client/0.165.0"}
+{"t":"2026-10-29T11:13:26.547Z","kind":"notify-on-post"}
+{"t":"2026-10-29T11:13:26.549Z","kind":"rpc","methods":["notifications/initialized"],"names":[null],"accept":"text/event-stream, application/json","session":"486f7e6b-0d89-455d-a8d0-a7d5838fa9cd","ua":"codex-mcp-client/0.165.0"}
+{"t":"2026-10-29T11:13:26.550Z","kind":"http","http":"GET","accept":"text/event-stream, application/json","session":"486f7e6b-0d89-455d-a8d0-a7d5838fa9cd","ua":"codex-mcp-client/0.165.0"}
+{"t":"2026-10-29T11:13:26.552Z","kind":"rpc","methods":["tools/list"],"names":[null],"accept":"text/event-stream, application/json","session":"486f7e6b-0d89-455d-a8d0-a7d5838fa9cd","ua":"codex-mcp-client/0.165.0"}
+{"t":"2026-10-29T11:13:30.582Z","kind":"http","http":"GET-closed","session":"486f7e6b-0d89-455d-a8d0-a7d5838fa9cd"}
+{"t":"2026-10-29T11:13:30.582Z","kind":"http","http":"DELETE","session":"486f7e6b-0d89-455d-a8d0-a7d5838fa9cd"}

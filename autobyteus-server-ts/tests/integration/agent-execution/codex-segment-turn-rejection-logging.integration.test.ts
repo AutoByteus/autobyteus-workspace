@@ -31,6 +31,7 @@ import { CodexClientThreadRouter } from "../../../src/agent-execution/backends/c
 import { CodexAppServerClient } from "../../../src/runtime-management/codex/client/codex-app-server-client.js";
 import { CodexAppServerClientManager } from "../../../src/runtime-management/codex/client/codex-app-server-client-manager.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+import { activatedAgentToolMcpRunSessionsStub } from "../../helpers/agent-tool-mcp-run-sessions-stub.js";
 
 const DETAILED = "[CodexSegmentTurnAdmissionRejected]";
 const SUMMARY = "[CodexSegmentTurnAdmissionRejectedSummary]";
@@ -85,7 +86,7 @@ async function harness() {
       } }),
     });
     const thread = await manager.createThread(context, () => undefined);
-    const backend = new CodexAgentRunBackend(context, thread, manager);
+    const backend = new CodexAgentRunBackend(context, thread, manager, activatedAgentToolMcpRunSessionsStub(context.runId));
     const run = new AgentRun({ context, backend, providerInputNormalizer: { normalizeForProvider: dispatch => dispatch } });
     const events: AgentRunEvent[] = [];
     run.subscribeToEvents(event => events.push(event));

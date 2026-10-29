@@ -1,0 +1,12 @@
+{"t":"2026-10-29T09:15:57.816Z","kind":"listening","port":39937}
+{"t":"2026-10-29T09:15:59.950Z","kind":"rpc","methods":["server/discover"],"names":[null],"accept":"text/event-stream, application/json","session":null,"ua":"grok-cli/1.0.70"}
+{"t":"2026-10-29T09:15:59.962Z","kind":"rpc","methods":["initialize"],"names":[null],"accept":"text/event-stream, application/json","session":null,"ua":"grok-cli/1.0.70"}
+{"t":"2026-10-29T09:15:59.970Z","kind":"rpc","methods":["notifications/initialized"],"names":[null],"accept":"text/event-stream, application/json","session":"a6d1f4c8-2c75-42d2-baff-fec50a4f13d6","ua":"grok-cli/1.0.70"}
+{"t":"2026-10-29T09:15:59.972Z","kind":"http","http":"GET","accept":"text/event-stream, application/json","session":"a6d1f4c8-2c75-42d2-baff-fec50a4f13d6","ua":"grok-cli/1.0.70"}
+{"t":"2026-10-29T09:15:59.973Z","kind":"rpc","methods":["tools/list"],"names":[null],"accept":"text/event-stream, application/json","session":"a6d1f4c8-2c75-42d2-baff-fec50a4f13d6","ua":"grok-cli/1.0.70"}
+{"t":"2026-10-29T09:19:03.942Z","kind":"notify","reason":"add-beta","getStreams":1,"tools":["probe_alpha","probe_beta"]}
+{"t":"2026-10-29T09:22:06.957Z","kind":"notify","reason":"remove-alpha","getStreams":1,"tools":["probe_beta"]}
+{"t":"2026-10-29T09:23:18.284Z","kind":"rpc","methods":["tools/call"],"names":["probe_alpha"],"accept":"text/event-stream, application/json","session":"a6d1f4c8-2c75-42d2-baff-fec50a4f13d6","ua":"grok-cli/1.0.70"}
+{"t":"2026-10-29T09:23:18.287Z","kind":"notify-on-post"}
+{"t":"2026-10-29T09:24:26.952Z","kind":"rpc","methods":["tools/call"],"names":["probe_alpha"],"accept":"text/event-stream, application/json","session":"a6d1f4c8-2c75-42d2-baff-fec50a4f13d6","ua":"grok-cli/1.0.70"}
+{"t":"2026-10-29T09:24:30.366Z","kind":"http","http":"GET-closed","session":"a6d1f4c8-2c75-42d2-baff-fec50a4f13d6"}

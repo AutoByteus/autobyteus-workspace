@@ -7,7 +7,8 @@ import type { RuntimeAgentToolExposure } from "../../../shared/runtime-agent-too
 export class ClaudeAgentRunContext {
   readonly sessionConfig: ClaudeSessionConfig;
   readonly carpenterSystemPrompt: string;
-  readonly runtimeToolExposure: RuntimeAgentToolExposure;
+  /** Replaced when the run's definition changes its tools; later process generations read it. */
+  runtimeToolExposure: RuntimeAgentToolExposure;
   readonly configuredSkills: Skill[];
   readonly materializedConfiguredSkills: MaterializedWorkspaceSkill[];
   readonly sessionId: string | null;

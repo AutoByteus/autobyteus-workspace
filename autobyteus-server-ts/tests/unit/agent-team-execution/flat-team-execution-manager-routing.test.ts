@@ -133,7 +133,9 @@ describe("FlatTeamExecutionManager exact direct AgentRun routing", () => {
     await expect(manager.executeDirectAgentCommand(codeReviewerRunId, { kind: "interrupt" }))
       .resolves.toEqual({ accepted: true });
 
-    expect(runs.get(codeReviewerRunId)?.postUserMessage).toHaveBeenCalledWith(message);
+    expect(runs.get(codeReviewerRunId)?.postUserMessage).toHaveBeenCalledWith(message,
+      // A failed dispatch reaches the member's Team stream as a run ERROR (autobyteus-324 SR-009).
+      { lifecycleObserver: expect.any(Function) });
     expect(runs.get(codeReviewerRunId)?.approveToolInvocation).toHaveBeenCalledWith("inv-1", true, "approved");
     expect(runs.get(codeReviewerRunId)?.interrupt).toHaveBeenCalledOnce();
     expect(runs.has(solutionDesignerRunId)).toBe(false);
@@ -160,7 +162,8 @@ describe("FlatTeamExecutionManager exact direct AgentRun routing", () => {
     }).prepare();
     prepared.sealForCommit();
     prepared.commitAfterDurability().releaseWork(() => undefined);
-    await vi.waitFor(() => expect(runs.get(taskAgentRunId)?.postUserMessage).toHaveBeenCalledWith(initial));
+    await vi.waitFor(() => expect(runs.get(taskAgentRunId)?.postUserMessage).toHaveBeenCalledWith(initial,
+      { lifecycleObserver: expect.any(Function) }));
 
     await expect(manager.executeDirectAgentCommand(taskAgentRunId, { kind: "interrupt" }))
       .resolves.toEqual({ accepted: true });

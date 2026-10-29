@@ -10,6 +10,7 @@ import { AgentRunEventType, type AgentRunEvent } from "../../../../../src/agent-
 import type { AgyStreamMessage } from "../../../../../src/agent-execution/backends/antigravity/stream/agy-stream-message.js";
 import { Skill } from "../../../../../src/skills/domain/models.js";
 import { AgentCreationError } from "../../../../../src/agent-execution/errors.js";
+import { createAgentToolMcpRunSessionsStub } from "../../../../helpers/agent-tool-mcp-run-sessions-stub.js";
 const { start, stop, streamListeners } = vi.hoisted(() => ({ start: vi.fn(), stop: vi.fn(),
   streamListeners: [] as Array<(message: unknown) => void> }));
 
@@ -52,6 +53,8 @@ describe("AGY backend capability admission and preserved bindings", () => {
     base = await fs.mkdtemp(path.join(os.tmpdir(), "agy-factory-unit-"));
     workspace = path.join(base, "workspace");
     await fs.mkdir(workspace);
+    // The capsule checks the user-level AGY MCP config for a name collision: keep it in the fixture.
+    vi.spyOn(os, "homedir").mockReturnValue(base);
     instructions = "Original identity";
     initOverride = {};
     conversationId = null;
@@ -68,7 +71,7 @@ describe("AGY backend capability admission and preserved bindings", () => {
         instructions, toolNames: [], skillNames: [] }) } as never,
       { resolveSkillScope: () => "CONFIGURED", hasEffectiveSkills: () => false, resolveConfiguredSkillBindingsForAgent: () => [] } as never,
       { resolveWorkingDirectory: async () => workspace } as never,
-      { activateForRun: () => ({ kind: "not_exposed" }) } as never,
+      createAgentToolMcpRunSessionsStub() as never,
     );
     config = new AgentRunConfig({ agentDefinitionId: "test-agent", llmModelIdentifier: "test-model",
       autoExecuteTools: true, workspaceId: "workspace", memoryDir: path.join(base, "memory"),
@@ -92,7 +95,7 @@ describe("AGY backend capability admission and preserved bindings", () => {
         { getAgentDefinitionById: async () => ({ name: "Test agent", description: "Unit test", instructions, toolNames: [], skillNames: [] }) } as never,
         { resolveSkillScope: () => scope, hasEffectiveSkills: () => true, resolveConfiguredSkillBindingsForAgent: () => [binding] } as never,
         { resolveWorkingDirectory: async () => workspace } as never,
-        { activateForRun: () => ({ kind: "not_exposed" }) } as never,
+        createAgentToolMcpRunSessionsStub() as never,
       );
       const preloaded = new AgentRunConfig({ ...config } as never);
       if (outcome === "rejects") {

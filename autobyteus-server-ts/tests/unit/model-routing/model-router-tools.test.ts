@@ -67,7 +67,9 @@ describe("The Model Router agent's tools per runtime (AC-011)", () => {
     });
     expect(tooling.sendMessageToToolingEnabled).toBe(false);
     expect(tooling.taskDelegationToolingEnabled).toBe(false);
-    expect(tooling.allowedTools.filter((name) => !name.startsWith("mcp__"))).toEqual(["list_available_agent_runtimes", "submit_launch_choices"]);
+    expect(tooling.agentToolsMcpEnabledToolNames).toEqual(["list_available_agent_runtimes", "submit_launch_choices"]);
+    // Agent Tools are allowed per call from the run's current descriptor, never through allowedTools (autobyteus-324).
+    expect(tooling.allowedTools).toEqual([]);
   });
 
 

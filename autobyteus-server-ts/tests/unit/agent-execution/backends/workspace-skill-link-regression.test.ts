@@ -32,6 +32,7 @@ import type { CodexAppServerClient } from "../../../../src/runtime-management/co
 import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
 import { Skill } from "../../../../src/skills/domain/models.js";
 import { FAKE_ACP_AGENT, fixturePath, fixtureSessionId } from "./acp/acp-fake-agent-harness.js";
+import { createAgentToolMcpRunSessionsStub } from "../../../helpers/agent-tool-mcp-run-sessions-stub.js";
 
 type Runtime = "claude" | "codex" | "grok";
 type Scope = "CONFIGURED" | "ALL_INSTALLED";
@@ -106,9 +107,9 @@ const prepare = async (runtime: Runtime, input: { scope: Scope; restore: boolean
     const fixture = input.restore ? "load" : "prompt";
     const factory = new AcpAgentRunBackendFactory({
       launchProfile: { agentLabel: "Fake Grok", command: () => process.execPath, args: () => [FAKE_ACP_AGENT],
-        env: (base) => ({ ...base, FAKE_ACP_FIXTURE: fixturePath(fixture) }), normalizeModels: () => [] },
+        env: (base) => ({ ...base, FAKE_ACP_FIXTURE: fixturePath(fixture), FAKE_ACP_REPORT_MCP_READY: "1" }), normalizeModels: () => [] },
       sessionProfile: grokBuildSessionProfile, definitions: definitions as never, skills: skills as never,
-      workspaces: resolver, mcpSessions: { activateForRun: vi.fn(() => ({ kind: "inactive" })) } as never,
+      workspaces: resolver, mcpSessions: createAgentToolMcpRunSessionsStub() as never,
       skillMaterializer: materializer,
     });
     const runConfig = config(RuntimeKind.GROK_BUILD, input.memoryDir);
@@ -138,7 +139,7 @@ const prepare = async (runtime: Runtime, input: { scope: Scope; restore: boolean
     return { release: () => bootstrapper.releaseSkills(owned), materialized: context.runtimeContext.materializedConfiguredSkills };
   }
   const materializer = new WorkspaceSkillMaterializer(CODEX_WORKSPACE_SKILL_MATERIALIZATION_PROFILE);
-  const bootstrapper = new CodexThreadBootstrapper({ activateForRun: () => ({ kind: "not_exposed" }) } as never, materializer,
+  const bootstrapper = new CodexThreadBootstrapper(createAgentToolMcpRunSessionsStub() as never, materializer,
     resolver as never, definitions as never, skills as never, codexClientManager(runtime));
   const runConfig = config(RuntimeKind.CODEX_APP_SERVER, input.memoryDir);
   const context = input.restore

@@ -1,7 +1,7 @@
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { expect, it } from "vitest";
+import { expect, it, onTestFinished } from "vitest";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { AgentRunConfig } from "../../../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../../../src/agent-execution/domain/agent-run-context.js";
@@ -10,6 +10,7 @@ import { AgyAgentRunBackendFactory } from "../../../../../src/agent-execution/ba
 import { AgyAgentRunContext } from "../../../../../src/agent-execution/backends/antigravity/backend/agy-agent-run-context.js";
 import type { AgyAgentRunBackend } from "../../../../../src/agent-execution/backends/antigravity/backend/agy-agent-run-backend.js";
 import { AgentRunEventType } from "../../../../../src/agent-execution/domain/agent-run-event.js";
+import { startAgentToolsMcpTestHost } from "../../../../helpers/agent-tools-mcp-test-host.js";
 
 const ask = async (backend: AgyAgentRunBackend, question: string): Promise<string> => {
   const events: { eventType: AgentRunEventType; payload: Record<string, unknown> }[] = [];
@@ -27,6 +28,8 @@ const ask = async (backend: AgyAgentRunBackend, question: string): Promise<strin
 
 it.skipIf(process.env.AGY_LIVE !== "1")("restores the exact AGY conversation, immutable identity and workspace binding", async () => {
   const base = await fs.mkdtemp(path.join(os.tmpdir(), "agy-restore-live-"));
+  const agentTools = await startAgentToolsMcpTestHost();
+  onTestFinished(() => agentTools.close());
   const workspace = path.join(base, "workspace");
   const changedWorkspace = path.join(base, "changed-workspace");
   await fs.mkdir(workspace); await fs.mkdir(changedWorkspace);
@@ -37,7 +40,7 @@ it.skipIf(process.env.AGY_LIVE !== "1")("restores the exact AGY conversation, im
       instructions: definitionInstructions, toolNames: [], skillNames: [] }) } as never,
     { resolveSkillScope: () => "CONFIGURED", resolveConfiguredSkillBindingsForAgent: () => [] } as never,
     { resolveWorkingDirectory: async () => selectedWorkspace } as never,
-    { activateForRun: () => ({ kind: "not_exposed" }) } as never,
+    agentTools.runSessions,
   );
   const config = new AgentRunConfig({ agentDefinitionId: "restore-agent", llmModelIdentifier: "gemini-3.8-flash-low",
     autoExecuteTools: true, workspaceId: "workspace", memoryDir: path.join(base, "memory"),

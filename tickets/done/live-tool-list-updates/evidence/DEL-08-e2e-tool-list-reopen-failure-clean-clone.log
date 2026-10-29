@@ -1,0 +1,7 @@
+# Summary of the clean-clone run (/tmp/ab324-clone at 6fae6761d3); full log 20650 bytes, trimmed to summaries, skips and failures.
+ACP_REOPEN_FAILED: run=reopen_failure_84cae3_d99c49ba57684eb69a91c0026c4b9c12: Error: ACP connection closed
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  21:26:12
+   Duration  23.15s (transform 10.67s, setup 50ms, import 14.49s, tests 7.72s, environment 0ms)
+exit=0

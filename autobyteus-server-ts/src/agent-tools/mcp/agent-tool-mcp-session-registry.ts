@@ -7,6 +7,7 @@ import {
   type AgentToolMcpSession,
   type AgentToolMcpSessionOwnerIdentity,
   type AgentToolMcpSessionResolveResult,
+  type AgentToolMcpSessionToolExposureRecord,
 } from "./agent-tool-mcp-session.js";
 import {
   deriveAgentToolMcpRunSessionId,
@@ -38,26 +39,40 @@ export class AgentToolMcpSessionRegistry {
         `Agent Tools MCP run session '${sessionId}' is already active.`,
       );
     }
-    const session: AgentToolMcpSession = {
+    const session: AgentToolMcpSession = Object.freeze({
       sessionId,
       owner,
       sender: input.sender,
       runtimeKind: input.runtimeKind ?? input.sender.runtimeKind ?? null,
-      runtimeExposure: cloneRuntimeExposure(input.runtimeExposure),
       executionContext: cloneAgentToolMcpExecutionContext(input.executionContext),
       executionCapabilities: cloneAgentToolMcpSessionExecutionCapabilities(
         input.executionCapabilities,
       ),
-      enabledTools: Object.freeze([...input.enabledTools]) as string[],
-      toolRoutes: cloneAgentToolMcpToolRouteTable(input.toolRoutes),
-      configuredMcpToolSources: Object.freeze(
-        (input.configuredMcpToolSources ?? [])
-          .map((source) => Object.freeze(cloneConfiguredMcpAgentToolSource(source))),
-      ) as ConfiguredMcpAgentToolSource[],
       createdAt: this.now(),
       toolExecutionObserver: input.toolExecutionObserver ?? null,
-    };
+      ...freezeToolExposure(input),
+    });
     this.sessions.set(sessionId, session);
+    return session;
+  }
+
+  /**
+   * Replaces a session's tool exposure as one new frozen record, so a request
+   * reads either the old exposure or the new one, never a mix.
+   */
+  replaceToolExposure(
+    sessionId: string,
+    exposure: AgentToolMcpSessionToolExposureRecord,
+  ): AgentToolMcpSession {
+    const current = this.sessions.get(sessionId as AgentToolMcpRunSessionId);
+    if (!current) {
+      throw new Error(`Agent Tools MCP run session '${sessionId}' is not active.`);
+    }
+    const session: AgentToolMcpSession = Object.freeze({
+      ...current,
+      ...freezeToolExposure(exposure),
+    });
+    this.sessions.set(current.sessionId, session);
     return session;
   }
 
@@ -90,6 +105,21 @@ const normalizeOwner = (
 ): AgentToolMcpSessionOwnerIdentity => cloneAgentToolMcpSessionOwnerIdentity({
   ...owner,
   runId: normalizeStoredAgentRunId(owner.runId),
+});
+
+const freezeToolExposure = (
+  exposure: AgentToolMcpSessionToolExposureRecord,
+): Pick<
+  AgentToolMcpSession,
+  "runtimeExposure" | "enabledTools" | "toolRoutes" | "configuredMcpToolSources"
+> => ({
+  runtimeExposure: Object.freeze(cloneRuntimeExposure(exposure.runtimeExposure)),
+  enabledTools: Object.freeze([...exposure.enabledTools]) as string[],
+  toolRoutes: cloneAgentToolMcpToolRouteTable(exposure.toolRoutes),
+  configuredMcpToolSources: Object.freeze(
+    (exposure.configuredMcpToolSources ?? [])
+      .map((source) => Object.freeze(cloneConfiguredMcpAgentToolSource(source))),
+  ) as ConfiguredMcpAgentToolSource[],
 });
 
 const cloneRuntimeExposure = (

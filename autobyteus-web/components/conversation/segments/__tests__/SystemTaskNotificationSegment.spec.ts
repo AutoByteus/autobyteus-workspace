@@ -1,6 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import { mount } from '@vue/test-utils';
 import SystemTaskNotificationSegment from '../SystemTaskNotificationSegment.vue';
+import enWorkspaceMessages from '~/localization/messages/en/workspace';
+import zhWorkspaceMessages from '~/localization/messages/zh-CN/workspace';
+
+const enWorkspace = enWorkspaceMessages as Record<string, string>;
+const zhWorkspace = zhWorkspaceMessages as Record<string, string>;
 
 const mountSegment = (content: string, senderId = 'system') => mount(SystemTaskNotificationSegment, {
   props: {
@@ -137,5 +142,31 @@ describe('SystemTaskNotificationSegment', () => {
     ]);
     expect(wrapper.find('strong').exists()).toBe(false);
     expect(wrapper.find('em').exists()).toBe(false);
+  });
+
+  // The text `buildToolListUpdateNoticeText` produces (server, tool-list-updates).
+  const TOOLS_NOTICE = [
+    '[Platform notice — tools updated]',
+    '',
+    'Your tools changed. Now available: get_project_task, send_message_to. No longer available: search_memory.',
+  ].join('\n');
+
+  it('labels the tool list notice "Tools updated" and shows only what changed, live or replayed', () => {
+    for (const wrapper of [
+      mountSegment(TOOLS_NOTICE, 'system.tool_list_update_notifier'),
+      mountSegment(TOOLS_NOTICE, 'system'),
+    ]) {
+      expect(wrapper.get('[data-testid="system-task-notification-label"]').text()).toBe('Tools updated');
+      expect(wrapper.get('[data-testid="system-task-notification-segment"]').attributes('aria-label')).toBe('Tools updated');
+      expect(wrapper.text()).toContain('Now available: get_project_task, send_message_to. No longer available: search_memory.');
+      expect(wrapper.text()).not.toContain('[Platform notice');
+      expect(wrapper.text()).not.toContain('Your tools changed.');
+    }
+  });
+
+  it('labels the tool list notice in both locales', () => {
+    const key = 'workspace.components.conversation.segments.SystemTaskNotificationSegment.toolsUpdated';
+    expect(enWorkspace[key]).toBe('Tools updated');
+    expect(zhWorkspace[key]).toBeTruthy();
   });
 });

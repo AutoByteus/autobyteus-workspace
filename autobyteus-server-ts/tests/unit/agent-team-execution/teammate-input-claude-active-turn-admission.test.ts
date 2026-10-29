@@ -16,6 +16,7 @@ import { ClaudeProviderSessionLifecycle } from "../../../src/agent-execution/bac
 import type { ResolvedInterAgentMessageDeliveryRequest } from "../../../src/agent-team-execution/domain/inter-agent-message-delivery.js";
 import { assertAgentTeamAddress } from "../../../src/agent-collaboration/domain/agent-team-address.js";
 import { buildInterAgentDeliveryInputMessage } from "../../../src/agent-team-execution/services/inter-agent-message-runtime-builders.js";
+import { createAgentToolMcpRunSessionsStub } from "../../helpers/agent-tool-mcp-run-sessions-stub.js";
 
 const buildRequest = (): ResolvedInterAgentMessageDeliveryRequest => {
   const senderIdentity = {
@@ -92,9 +93,7 @@ describe("teammate input admission into a running Claude turn (the teammate path
           new Map(),
           () => undefined,
         ),
-        agentToolMcpRunSessions: {
-          activateForRun: vi.fn(() => ({ kind: "not_exposed" })),
-        } as never,
+        agentToolMcpRunSessions: createAgentToolMcpRunSessionsStub() as never,
         isRunSessionActive: () => true,
         terminateRunSession: vi.fn(async () => undefined),
       },

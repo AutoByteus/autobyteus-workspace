@@ -18,6 +18,7 @@ import { MemoryIngestInputProcessor } from '../input-processor/memory-ingest-inp
 import { AgentRuntime } from '../runtime/agent-runtime.js';
 import { initializeLogging } from '../../utils/logger.js';
 import { generateReadableAgentId } from './agent-id.js';
+import { buildToolInstanceMap } from '../context/agent-tool-instances.js';
 
 const normalizeExplicitMemoryDir = (value: string | null | undefined): string | null => {
   if (typeof value !== 'string') {
@@ -56,29 +57,11 @@ export class AgentFactory extends Singleton {
   }
 
   private prepareToolInstances(agentId: string, config: AgentConfig): Record<string, BaseTool> {
-    const toolInstances: Record<string, BaseTool> = {};
     if (!config.tools || config.tools.length === 0) {
       console.info(`Agent '${agentId}': No tools provided in config.`);
-      return toolInstances;
+      return {};
     }
-
-    for (const toolInstance of config.tools) {
-      const nameResolver = (toolInstance as any).getName;
-      const instanceName =
-        typeof nameResolver === 'function'
-          ? (toolInstance as any).getName()
-          : (toolInstance.constructor as typeof BaseTool).getName();
-
-      if (toolInstances[instanceName]) {
-        console.warn(
-          `Agent '${agentId}': Duplicate tool name '${instanceName}' encountered. The last one will be used.`
-        );
-      }
-
-      toolInstances[instanceName] = toolInstance;
-    }
-
-    return toolInstances;
+    return buildToolInstanceMap(agentId, config.tools);
   }
 
   private prepareSkills(agentId: string, config: AgentConfig): void {
