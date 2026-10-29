@@ -16,7 +16,7 @@
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
 - Relevant Implementation Revision IDs: IR-001, IR-002, IR-003
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-005`
+- Current Code Review Revision ID: `CRR-007` (round 6; CRR-006 was the separate test review)
 - Current Review Round: 5
 - Round 5 Review Scope: `Targeted Delta Review`. `git diff fbd00b2f53 011275b49a` stays within CR-005's files and behavior:
   - the shared observer, moved (`git mv`) from `agent-collaboration/.../member-input-failure-observer.ts` to `agent-execution/input/unsent-input-failure-observer.ts`, with its rule unchanged;
@@ -50,6 +50,22 @@
 - Exact Failing Commands / Execution Mode: `env -i PATH HOME USER LOGNAME TMPDIR pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/tool-list-reopen-failure.e2e.test.ts --no-watch`. Real Studio server; the scripted ACP agent stands in for Grok through `GROK_BUILD_COMMAND`, and the agent process exits before `session/load` on the reopen
 - Failure Evidence Paths: `evidence/api-e2e/API-05-reopen-failure-e2e.log`, `evidence/api-e2e/API-05-failed-send-frames.jsonl`
 - Delivery Revision Record: N/A
+
+## Round 6: Delivery-Stage Local Fix (IR-005, DR-001)
+
+- **Trigger.** Delivery's build-only desktop release run `40950729360` on `personal` @ `be9e78dc93` failed at `pnpm guard:localization-boundary`. This ticket's `SystemTaskNotificationSegment.spec.ts` imported `~/localization/messages/en/workspace` and `~/localization/messages/zh-CN/workspace` directly (added in `a9cc802d99`, kept in `c4da95428e`), and the guard forbids that. No tag was made.
+- **Scope.** `Targeted Delta Review`: `137ce572aa` changes one test file (+5/−6). `78cb1d499f` is ticket records only. The branch was fast-forwarded to `origin/personal` @ `4fb1c1640d` first (an ancestor of `137ce572aa`), with nothing reverted.
+- **Verified.**
+  - Both locales are now read with `getCatalog('en')` / `getCatalog('zh-CN')` from `~/localization/runtime/catalogRegistry`, the pattern the guard allows (as in `ServerMigrationsManager.spec.ts`).
+  - The assertions are unchanged (the en label is exactly "Tools updated"; the zh-CN label is present).
+  - No production code changed.
+- **Checks** (`evidence/ir-005-localization-guard-fix.log`, each guard on its own exit code):
+  - `guard:web-boundary` 0; `guard:localization-boundary` 0, and it exits 1 against the old spec, which reproduces DR-001; `audit:localization-literals` 0.
+  - The spec: 8/8.
+  - Nuxt: 668 files / 4,860 passed.
+  - Electron: one failure on the first run (`PortOwnerInspectorFaults.spec.ts`, a deadline fixture under load, nothing under `electron/` changed by this ticket), then 11/11 alone and 279/279 on rerun.
+- **Review gap noted.** No source review round ran the localization guard, and the web checks recorded in earlier rounds listed only the web suite and typecheck. The build gate `build:electron*` runs `guard:localization-boundary` (`autobyteus-web/package.json`). This is the same class of check gap as autobyteus-320 CRR-002.
+- **Result:** `Pass`.
 
 ## Round 5: CR-005 Rework (IR-004, SR-010, ARCH-REV-010)
 
@@ -295,6 +311,7 @@ None.
 
 ## Latest Authoritative Result
 
+- Review Decision (round 6, delivery-stage Local Fix IR-005): `Pass`. DR-001's guard failure is resolved by the one-file spec fix; no production change
 - Review Decision (round 5): `Pass`. CR-001…CR-005 resolved; scorecard 9.5/10, every category ≥ 9.3; recipient API/E2E Engineer
 - Review Decision (round 4, failure-origin): `Fail`. Failure origin: a pre-existing missing single-run failure display after admission, which blocks AC-007; design gap (the SR-007…SR-009 premise); review gap acknowledged (CRR-002/003). Classification `Design Impact` → Solution Designer (CR-005)
 - Review Decision (round 3): `Pass`

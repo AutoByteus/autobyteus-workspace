@@ -10,6 +10,7 @@
 | CRR-004 | `code-review-report.md` | API/E2E Failure-Origin Review / API-REV-001 Fail (API-05) | Pass (CRR-003) | Fail: Design Impact → Solution Designer | CR-005 new |
 | CRR-005 | `code-review-report.md` | Implementation Review / IR-004 (Targeted Delta Review) | Fail (CRR-004) | Pass (9.5/10) | CR-005 resolved |
 | CRR-006 | `api-e2e-test-review-report.md` | Proportional API/E2E Test Review / API-REV-002 | Pass (CRR-005, source review) | Pass | None |
+| CRR-007 | `code-review-report.md` | Implementation Review / IR-005 (delivery-stage Local Fix, DR-001) | Pass (CRR-005) | Pass | None |
 
 ## Revision Entries
 
@@ -175,3 +176,28 @@ None
 - Material score or classification changes: N/A
 - Recommended recipient: Delivery Engineer
 - Remaining risks or uncertainty: API-04 (the real Grok run) is owed; FU-004 is cosmetic and outside this ticket
+
+### CRR-007 — Delivery-stage Local Fix: localization guard (DR-001)
+
+- Canonical review report updated: `code-review-report.md` (the round-6 section; Latest Result)
+- Review entry point and round: Implementation Review, round 6 (delivery re-entry)
+- Review scope: `Targeted Delta Review` (one test file, `137ce572aa`)
+- Triggering role, report path, and finding or scenario IDs: Delivery Engineer (DR-001: the build-only release run `40950729360` failed `guard:localization-boundary`) through the Implementation Engineer (IR-005)
+- Relevant solution revision IDs: N/A
+- Relevant architecture-review revision IDs: N/A
+- Relevant implementation revision IDs: IR-005
+- Relevant API/E2E revision IDs: N/A (no behavior change)
+- Relevant delivery revision IDs: DR-001
+- Prior authoritative result: CRR-005 `Pass`
+- Current authoritative result: `Pass`
+- What changed in the review result and why: the spec reads its locales through `getCatalog`, not by direct message-file imports. The guard passes, and fails on the old spec. Assertions are unchanged and no production code changed. Noted as a check gap: earlier rounds never ran the localization guard
+- Supported product scenario / material-premise basis changes: none
+
+#### Prior Finding Resolution
+
+None
+
+- New or remaining finding IDs: None
+- Material score or classification changes: N/A
+- Recommended recipient: API/E2E Engineer (pass rule), so delivery can proceed: the three guards on their own, the build-only release run, then the release smoke check
+- Remaining risks or uncertainty: an Electron fixture is load-sensitive (`PortOwnerInspectorFaults.spec.ts`), outside this ticket
