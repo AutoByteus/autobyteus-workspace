@@ -82,7 +82,14 @@ failing to start; no check before tagging started a run.
   this machine.
 - **Cost:** about five short turns per live runtime (Claude, Codex, Grok), each
   on its cheapest model. Antigravity and AutoByteus run scripted, with no
-  provider calls. A few minutes in total.
+  provider calls. A few minutes in total. The binding limit is the live CLIs'
+  subscription quotas, not money:
+  - **Grok:** one run uses about 150–240k tokens against the free tier's 600k
+    per rolling 24 hours, roughly two runs a day.
+  - **Codex:** it uses the same ChatGPT account quota as your other Codex work.
+  - A quota refusal, such as "usage limit" or a 429, is handled like a runtime
+    that cannot run: wait for the reset, or the user waives that runtime for
+    this release and the waiver is recorded.
 - **Pass:** exit 0. Put the printed summary in the delivery report.
 - **Failure, or a runtime that cannot run:** no tag. The summary names the
   runtime, the scenario and the reason, and the step logs stay in the temp
