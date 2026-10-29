@@ -91,3 +91,39 @@ Live tool list updates (server, autobyteus-ts, web), with durable e2e and browse
 ## Finalization And Release Record
 
 Recorded below after the merge, the checks before tagging, the tag and the rollout.
+
+### Repository Finalization (completed)
+
+- Ticket branch `codex/live-tool-list-updates`: archive commit `6688c93e90`, pushed after the Secret Gate passed.
+- `git merge --no-ff` into `personal` → `be9e78dc93`.
+- On the merged state: Secret Gate PASS, `check_repository_artifact_hygiene.py` exit 0, `check_licensing.py` consistent.
+- Pushed `e82d03b0f9..be9e78dc93 HEAD -> personal`.
+
+### Checks Before Tagging
+
+- Secret Gate over the release range: `scripts/check_secrets.sh v1.5.11-beta.1..HEAD`, 30 commits, PASS.
+- Release smoke check on `be9e78dc93`, after `pnpm install` and server `prebuild` (summary in `evidence/DEL-10-release-smoke-merged-state.txt`):
+  - Claude 3/3 PASS; Codex 3/3 PASS; Antigravity 2/2 PASS; AutoByteus 2/2 PASS.
+  - Grok 3/3 FAIL: `429 Too Many Requests: subscription:free-usage-exhausted … grok-4.7`. That is the quota refusal the user waived for this release.
+  - Exit 1 because of Grok only.
+- **Build-only release run `40950729360` on `personal` @ `be9e78dc93`: FAILED.**
+  - "Build Linux x64" and "Build Linux ARM64" failed in their "Build Electron" step. The build chain's first gates are `guard:web-boundary` (Passed) and then `guard:localization-boundary`, which reported:
+
+    ```
+    [guard:localization-boundary] Failed.
+    components/conversation/segments/__tests__/SystemTaskNotificationSegment.spec.ts:4: direct localization/messages import is forbidden outside localization/runtime and localization/messages.
+    components/conversation/segments/__tests__/SystemTaskNotificationSegment.spec.ts:5: direct localization/messages import is forbidden outside localization/runtime and localization/messages.
+    ```
+
+  - The two imports (`~/localization/messages/en/workspace`, `~/localization/messages/zh-CN/workspace`) came with this ticket (`a9cc802d99`, `c4da95428e`); the file at base `9f7c9c10a6` does not have them.
+  - Every desktop target runs the same chain, so every desktop build fails the same way.
+- **Delivery's own miss:** the clean-clone guard step (DEL-07) ran the three guards as one group, so only the last guard's exit code counted, and its summary filter kept only "Passed" lines. The localization-boundary failure was therefore not seen before the merge. `evidence/DEL-07-web-guards-clean-clone.log` shows only two "Passed" lines, not three. That log is wrong to read as a pass.
+
+### Release Status: Blocked
+
+- **No tag was created and nothing was published; no version number is used.** `v1.5.11-beta.2` is still free.
+- `personal` @ `be9e78dc93` fails the desktop build's first gate. The merge is not undone; the fix goes forward on `personal`.
+- Classification: `Local Fix`, test source introduced by this ticket. Recipient: the implementation engineer (handoff rule "a code or packaging Local Fix that must be corrected by implementation before finalization can continue").
+- The fix needed: read the messages through the localization runtime in `SystemTaskNotificationSegment.spec.ts`, as other specs do, so `guard:localization-boundary` passes.
+- After the fix: delivery reruns all three web guards, each with its own exit code, then the build-only release run and the release smoke check (Grok waived). Then the tag.
+- The ticket worktree is kept for the fix; cleanup is deferred.
