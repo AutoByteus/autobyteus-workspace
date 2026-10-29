@@ -3,29 +3,33 @@
 ## Review Round Meta
 
 - Review Entry Point: `Implementation Review`
-- Requirements Doc Reviewed As Context: `requirements-doc.md` (approved SR-001; SR-002 additions within the direction)
-- Investigation Notes Reviewed As Context: `investigation-notes.md` (E-12, E-13 for Codex `thread/unsubscribe` statuses and the reopen)
-- Solution Revision Record Reviewed As Context: `solution-revision-record.md` (SR-001…SR-004)
-- Design Spec Reviewed As Context: `design-spec.md` (SR-004, plus the step-5 clarification in `119bf31636`)
-- Supplemental Task Artifacts Reviewed As Context: `evidence/probe/*` (names and the Codex reopen drivers), `evidence/real-runs/README.md`, `evidence/local-checks.log`
-- Relevant Solution Revision IDs: SR-001…SR-004
-- Design Review Report Reviewed As Context: `design-review-report.md` (ARCH-REV-004, Pass)
+- Requirements Doc Reviewed As Context: `requirements-doc.md` (SR-007; REQ-010, AC-007, SCN-004 and the UI section changed; DEC-008 and DEC-009 are the user's decisions)
+- Investigation Notes Reviewed As Context: `investigation-notes.md` (round 1; unchanged for the delta)
+- Solution Revision Record Reviewed As Context: `solution-revision-record.md` (SR-001…SR-009)
+- Design Spec Reviewed As Context: `design-spec.md` (SR-009)
+- Supplemental Task Artifacts Reviewed As Context: `evidence/local-checks.log` (IR-002 block)
+- Relevant Solution Revision IDs: SR-005…SR-009 (this round); SR-001…SR-004 (carried forward)
+- Design Review Report Reviewed As Context: `design-review-report.md` (ARCH-REV-009, Pass)
 - Architecture Review Revision Record Reviewed As Context: `architecture-review-revision-record.md`
-- Relevant Architecture Review Revision IDs: ARCH-REV-001…ARCH-REV-004
-- Implementation Handoff Reviewed As Context: `implementation-handoff.md` (IR-001)
+- Relevant Architecture Review Revision IDs: ARCH-REV-005…ARCH-REV-009
+- Implementation Handoff Reviewed As Context: `implementation-handoff.md` (IR-002)
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
-- Relevant Implementation Revision IDs: IR-001
+- Relevant Implementation Revision IDs: IR-001, IR-002
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-001`
-- Current Review Round: 1
-- Review Scope: `Full Review`
-- Review Scope Evidence (round >1): N/A
-- Trigger: implementation complete (IR-001), `Large`/`High` → source review
-- Prior Review Round Reviewed: none
-- Latest Authoritative Round: 1
+- Current Code Review Revision ID: `CRR-002`
+- Current Review Round: 2
+- Review Scope: `Full Re-Audit`
+- Review Scope Evidence (round >1): the delta `git diff 5f3923c4cd c4da95428e` (27 files) goes beyond the prior findings' files:
+  - a new behavior in `agent-collaboration/execution/backends/configured-agent-execution-handle.ts` (SR-009);
+  - the shared reopen helper's contract (`runtimeSessionReopenFailedResult`);
+  - web removals across the store, the segment, the payload and segment types, and the handler.
+
+  I reran every structural check and the full scorecard. Evidence for code unchanged since round 1 (DS-001…DS-006 apart from the reopen failure path) is carried forward from CRR-001.
+- Trigger: IR-002 (rework for CRR-001, after SR-005…SR-009 and ARCH-REV-009 Pass)
+- Prior Review Round Reviewed: 1 (CRR-001: CR-001, CR-002, CR-003)
+- Latest Authoritative Round: 2
 - Coverage Investigation / Execution Coverage Report / API/E2E Revision Record: N/A
 - Delivery Revision Record: N/A
-- Failing Scenario IDs / Commands / Evidence: N/A
 
 ## Routing Classification Review
 
@@ -33,154 +37,129 @@
 - Architectural risk: `High`
 - Selected route: `Implementation Review`
 - Independent source review required by the classification: `Yes`
-- Classification evidence or correction required: confirmed. The change spans 82 source files (excluding tests) across `agent-tools/mcp`, five backends, `agent-execution` domain, `autobyteus-ts` and the web. It changes every external runtime's MCP connection and adds a reopen of live runtime sessions.
+- Classification evidence or correction required: confirmed (unchanged by the rework)
 
 ## Review Scope
 
-- Changed implementation and behavior reviewed: `git diff 9f7c9c10a6 5f3923c4cd` (the code), DS-001…DS-006. `f8affdd0fe` adds only ticket files.
+- Changed implementation and behavior reviewed: `git diff 5f3923c4cd c4da95428e`. `7fe017eda4` and `60d9d78d43` add ticket documents only.
 - Files / areas reviewed:
-  - **Server, new:**
-    - `tool-list-updates/**` (service, diff, notice builder, seen store, composition);
-    - `agent-run-platform-notices.ts`;
-    - `agent-definition-change-signal.ts`;
-    - `agent-tools-mcp-session-streams.ts`;
-    - `acp-session-launcher.ts`;
-    - `runtime-session-reopen.ts`.
-  - **Server, changed:**
-    - `agent-tools/mcp/*` (session, registry, service, authority, scoped authority, host, routes, http gate, dispatcher);
-    - Claude (session state, backend, run context, session, query and tooling options, tool-use coordinator, MCP server builders);
-    - AGY (backend, factory, MCP materializer, capsule);
-    - native (backend, factory);
-    - Codex (backend, factory, run context, bootstrapper, thread manager);
-    - ACP/Grok (backend, factory, session profile);
-    - `agent-run.ts`, the preface port and dispatch, the backend contract, `runtime-agent-tool-exposure.ts`;
-    - the three signal sources and both compositions;
-    - the memory accumulator.
-  - **autobyteus-ts:** `agent.ts` (`replaceTools`), `agent-tool-instances.ts`, `agent-factory.ts`, `llm-phase-tools.ts`, `tool-cleanup-step.ts`.
-  - **Web:** `SystemTaskNotificationSegment.vue`, `AIMessage.vue`, `agentRunStore.restartRunWithNewTools`, payload and segment `action`, localization.
-  - **Tests:** the new and changed suites listed in the handoff (read for the behaviors they claim).
-  - **Docs:** `tool_list_updates.md`.
-- Unchanged context read:
-  - the Codex thread router (`codex-client-thread-router.ts:41-56`: routing by the run context's current thread ID);
-  - `codex-thread.ts:160,230-233`;
-  - the native tool lookup (`agent-context.ts:121`);
-  - the dispatch path of the ACP factory release (`acp-agent-run-backend-factory.ts:70-92`);
-  - `agentTeamRunStore` (no single-member stop or restore);
-  - GraphQL `restoreAgentRun`.
-- Explicit exclusions: FU-001 and FU-002 (recorded follow-ups); real Codex and Grok model runs (DEC-004; owed by API/E2E).
+  - **Server:**
+    - `configured-agent-execution-handle.ts` (`postMessage` lifecycle observer);
+    - `runtime-session-reopen.ts`;
+    - the Codex and ACP backends (failure path);
+    - the ACP factory and backend input (`workingDirectory`);
+    - `claude-agent-tools-mcp-session-state.ts`, `claude-session.ts`;
+    - `system-task-notification-senders.ts`.
+  - **Web:**
+    - `SystemTaskNotificationSegment.vue`, en and zh-CN strings;
+    - `AIMessage.vue`, `agentRunStore.ts`, `messageTypes.ts`, `types/segments.ts`, the handler (now identical to base: `git diff 9f7c9c10a6 c4da95428e` lists none of them).
+  - **Tests:** the new Team-member integration test, the reopen tests, the routing test and `TeamStreamingService.spec.ts`.
+  - **Docs:** `tool_list_updates.md`, `agent_execution.md`, `grok_build_runtime.md`, web `agent_execution_architecture.md`.
+- Unchanged context read for the delta:
+  - `agent-run-input-lifecycle.ts:7-46` (where `failed` facts for turn and runtime failures come from);
+  - `agent-run-input-admission-state.ts:316-340`;
+  - `configured-agent-execution-handle.ts:460-470` (`bindEvents`: every run event goes to the Team stream);
+  - `agent-run-error-evidence.ts`.
+- Explicit exclusions: as round 1 (FU-001, FU-002; Codex and Grok live runs, DEC-004).
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
-- Approved requirements basis understood: REQ-001…REQ-010 and AC-001…AC-008, with DEC-001 (automatic reopen), DEC-004, DEC-006 (one notice per input, tools first) and DEC-007 (a failed reopen does not send the message). Preserved: BEH-003, BEH-004, and the invariant "never offered a tool the definition does not list".
-- Design-spec behavior map verified against the implementation: DS-001…DS-006 are implemented as specified (traces below). The SR-004 Grok owner model and the step-5 clarification (keep the existing instance of every name that stays) are followed.
-- Design review report and round confirmed: ARCH-REV-004 Pass. AR-001…AR-008 resolutions are present in the code.
-- Behavior-basis status: `Confirmed`, except BEH-004/REQ-010 for a Team member run, which is `Unclear` (CR-001).
-- Changed or newly discovered behavior: the restart action for a Team member stops the whole Team. That behavior is not in the approved requirements or the design (CR-001).
-- Remaining material ambiguity: what "Restart this run with the new tools" does for a Team member (CR-001).
+- Approved requirements basis understood:
+  - REQ-010 and AC-007 now say that a failed reopen fails the message with "Couldn't give this run its new tools (<cause>). Send your message again to retry, or stop and resume the run.", shown as failed messages are, with no button and no card.
+  - The next message retries.
+  - No other run or Team member is stopped.
+  - Verification is also for a Team member.
+- Design-spec behavior map verified against the implementation: the SR-005…SR-007 removals are complete (the completion grep is empty for the server, the web and the docs; I reran it). SR-009's Team-member path is built as designed, but it also fires for failures the run already publishes itself (CR-004).
+- Design review report and round confirmed: ARCH-REV-009 Pass.
+- Behavior-basis status: `Confirmed`.
+- Changed or newly discovered behavior: none beyond the approved SR-005…SR-009.
+- Remaining material ambiguity: none.
 
 | Behavior ID | Current Status | Current Implementation Path And Lifecycle Evidence | Contradicting / Newly Discovered Evidence |
 | --- | --- | --- | --- |
-| BEH-001 (DS-001, DS-003, DS-004, DS-005, DS-006) | Confirmed | **Signal sources.** `AgentDefinitionChangeSignal` is fed by the reloader publisher (`agent-package-definition-feed-composition.ts:36-39`), the application-owned save (`agent-definition-service.ts:364-365`) and the committed package commands (`application-package-command-service.ts` after each `runPackageTransition`). **Service.** `ToolListUpdateService.onDefinitionsChanged` runs coalesced passes and re-reads each run's definition by ID, then calls `run.applyDefinitionTools`. It diffs against the seen record and marks the run dirty. **Delivery.** A busy run on an immediate runtime gets the notice by post. Other runs get it as a preface on the next input, which on Codex/Grok waits for a `start_turn`. **Backends.** Claude replaces the run context exposure and the session. AGY replaces the session. Native compares names first, then `Agent.replaceTools`. Codex and Grok replace the session and set `reopenPending`; the reopen runs inside `start_turn` only (`codex-agent-run-backend.ts:147-150`, `acp-agent-run-backend.ts:136-140`) | — |
-| BEH-002 (DS-002) | Confirmed | `replaceForRun` re-resolves through the catalog and replaces one frozen record (`agent-tool-mcp-session-registry.ts`, `replaceToolExposure`), then notifies the held GET streams. `tools/call` reads the record per request. Native looks up the instance at execution (`agent-context.ts:121`), and `resolveTurnToolNames` treats an empty instance set as "no tools" (`llm-phase-tools.ts:6-8`). Claude's approval checks the current descriptor per call, and `allowedTools` no longer lists Agent Tools | — |
-| BEH-003 | Confirmed | The skill service sits behind `AgentRunPlatformNotices`, second in order, and ignores the dispatch kind. Integration "keeps the skill notice unchanged behind the composite" | — |
-| BEH-004 / REQ-010 (single run) | Confirmed | Failure notice `{ sender_id, content, action: "restart_run" }`. On the web, the button runs `terminateRun` + `RestoreAgentRun` + reconnect (`agentRunStore.ts:430-452`) | — |
-| BEH-004 / REQ-010 (Team member) | **Unclear** | `restartRunWithNewTools` finds the member's Team and calls `terminateTeamRun(rootTeamRunId)`; there is no restore (`agentRunStore.ts:431-433`) | REQ-010 asks for "a one-click 'Restart this run with the new tools' that keeps the conversation". AC-007 says "the button restarts it with the new tools and the conversation". The product has no single-member stop or restore (`agentTeamRunStore` offers only `terminateTeamRun`; GraphQL has only `restoreAgentRun` for single runs). The design's spine ("the existing stop + restore of the same run") does not exist for a member. The handoff records the Team stop as an assumption, and `tool_list_updates.md:86-88` documents it, but no upstream artifact approves it (CR-001) |
+| BEH-001…BEH-003 (DS-001…DS-006) | Confirmed (carried forward from CRR-001) | Unchanged by IR-002 apart from the reopen failure result | — |
+| BEH-004 / REQ-010, single run | Confirmed | The Codex (`codex-agent-run-backend.ts` `reopenWithCurrentTools`) and ACP failure paths return `runtimeSessionReopenFailedResult(error)`. That is `forwarded: false`, code `RUNTIME_SESSION_REOPEN_FAILED`, the approved text, and no event published. `reopenPending` stays set; the run's existing failed-input display shows it | — |
+| BEH-004 / REQ-010, Team member | Confirmed for the reopen failure; **regression for other failures** (CR-004) | `ConfiguredAgentExecutionHandle.postMessage` passes a `lifecycleObserver`, and a `failed` fact publishes `ERROR {code, message}` to the Team stream. The new integration test proves the reopen case and isolates the member | The observer fires on **every** `failed` fact. `failed` also comes from `observeTurnFailure` and `observeRuntimeFailure`, which are derived from the run's own `ERROR` events (`agent-run-input-lifecycle.ts:33-46`), and those events already reach the Team stream through `bindEvents` (`configured-agent-execution-handle.ts:463-468`). Probe: one ordinary failed member turn produces two `ERROR` entries (`evidence/CRR-002-probe-team-member-duplicate-error.log`) |
 
 ## Supported Product Scenario And Reachability Gate (Mandatory)
 
 | Scenario ID | Related Behavior / Contract IDs | Kind | Actor / Initiator | Coherent Goal Or Governing Event | Supported Entry Surface / Event | Scenario Shape | Forward Production Path / Lifecycle | Expected Outcome / Consequence | Independent Evidence | Scenario Validity | Review Use |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| SCN-001…SCN-003, SCN-005 | BEH-001…BEH-003 | User | The user | Change a running agent's tools | Definition edit, package reload, application package command; restore | Normal | DS-001…DS-006 | As AC-001…AC-006 and AC-008 | Requirements; probes; real runs (native, Claude, AGY) | Supported Normal Scenario | Use |
-| SCN-004 (single run) | REQ-010, AC-007 | User | The user | Recover from a failed reopen | Failure card button | Explicit Edge | Codex/Grok reopen fails → notice → stop + restore | Run restarted with the new tools | Requirements SCN-004 | Supported Explicit Edge Scenario | Use |
-| SCN-004-TEAM | REQ-010, AC-007, REQ-001 ("alone or as a team member") | User | The user | Recover a Team member's failed reopen (for example the PM in a Team, the user's own case) | Failure card button in the member's conversation | Explicit Edge | Member run on Codex/Grok → reopen fails → button → `terminateTeamRun` | Approved: "restarts it". Implemented: the whole Team is stopped (other members too, including any mid-turn) and nothing is restored | REQ-001 and UC-001 include Team members. The problem statement's PM use case. Handoff Downstream Hints (Team member runs on Codex/Grok) | Supported Explicit Edge Scenario | Use |
-| MP-CODEX-RETRY | DS-004 step 6 | Contract | Codex app-server | Retry after `thread/unsubscribe` succeeded and `thread/resume` failed | Next `start_turn` | Explicit Edge | The retry sends `thread/unsubscribe` on an already-unsubscribed thread | Must not error | `thread/unsubscribe` statuses `notLoaded`/`notSubscribed`/`unsubscribed` (investigation E-12, generated types 0.165) | Supported | Use (premise confirmed) |
+| SCN-001…SCN-005 | as round 1 | — | — | — | — | — | — | — | CRR-001 | Supported | Use (carried forward) |
+| SCN-004 (single run, Team member) | REQ-010, AC-007 | User | The user | Recover from a failed reopen by sending again | Next message | Explicit Edge | Failed dispatch → failed-message error; next `start_turn` retries | Plain error; no other member stopped | Requirements SR-007 | Supported Explicit Edge Scenario | Use |
+| SCN-TEAM-TURN-ERROR | BEH-004 preserved; existing failed-turn display | User/System | The user messages a Team member; the member's runtime turn fails (provider error, rate limit, an account out of credit as during this ticket's real runs) | See the failure once | Team member conversation | Normal | Direct input → forwarded → run publishes a turn-terminal `ERROR` → Team stream (`bindEvents`); the input state also derives `failed` → the new observer publishes a second `ERROR` | Approved and existing: the error once. Observed: twice | Probe; code read | Supported Normal Scenario | Use |
 
 ### Candidate Finding And Mechanism Gate
 
 | Candidate ID | Observation Or Mechanism | Scenario / Contract ID | Independent Trigger | Forward Path / Lifecycle / Consequence | Evidence | Disposition | Scope, if promoted | Reason / Proportionate Response |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| C-01 | The restart button for a Team member stops the whole Team and restores nothing | SCN-004-TEAM; REQ-010, AC-007 | Reopen failure for a member run | Every member of the Team stops, including any mid-turn. The label says "Restart this run"; the run is only restored by the user's next message | `agentRunStore.ts:431-433`; no member restart in the product; docs `tool_list_updates.md:86-88` | Promote → **CR-001** | This ticket (Design Impact) | The approved outcome cannot be built for a member without a product decision. The design assumed a stop + restore of the same run, which exists only for single runs. The Solution Designer decides (see Classification) |
-| C-02 | `claude-session.ts` crosses the 500-line limit | Size rule | — | 487 → 501 effective lines; the added `getAgentToolNames`/`applyToolExposure` | Line count | Promote → **CR-002** | This ticket | The change takes the file over the limit. Place the added logic in its owner. `ClaudeAgentToolsMcpSessionState` already owns `replaceExposure` and has the run context, so it can also set `runtimeContext.runtimeToolExposure`. Keep `ClaudeSession` to a one-line forward, or let the backend reach the state through an existing accessor |
-| C-03 | ACP reopen spawns into `context.runtimeContext.workingDirectory ?? "."` | DS-004 (Grok) | — | `AcpAgentRunContext.workingDirectory` is `string \| null`, but `bindBackend` always sets it (`acp-agent-run-backend-factory.ts:157-159`), so the fallback is unreachable. If it were ever hit, it would silently spawn Grok in the server's working directory | `acp-agent-run-backend.ts` (`reopenWithCurrentTools`); `acp-agent-run-context.ts:4-5` | Promote → **CR-003** | This ticket | An unreachable defensive fallback with a wrong outcome (Principles 7, 13). Give the backend the non-null directory the run was opened in (for example in `AcpAgentRunBackendInput`), with no fallback |
-| C-04 | Retry of a Codex reopen after a partly-failed reopen (unsubscribed, resume failed) | MP-CODEX-RETRY | — | The retry repeats `thread/unsubscribe` | E-12: `notSubscribed` is a status, not an error | Reject | — | The premise holds |
-| C-05 | A Codex no-history reopen sets `runtimeContext.threadId` directly instead of `CodexThread.setThreadId` (which also clears the background-task view) | DS-004 step 4 | — | Only a thread with no started turn reaches this branch, so it has no background tasks to clear. Routing reads the run context (`codex-client-thread-router.ts:47-49`, `codex-thread.ts:160`) | Code read | Reject | — | No observable consequence |
-| C-06 | Stop pressed while a Grok reopen is in flight | — | Two concurrent user actions | `launcher.open` sets the owner's handles synchronously, so release closes them. A spurious failure notice may follow | Code read | Reject | — | A concurrent action with no product contract (Principle 6); no leak |
-| C-07 | Claude asks the user to approve a removed tool that the CLI still calls from its cached list, before the server refuses it | REQ-004 | Claude calls a removed tool in the window before it re-lists | `canUseTool` → not in descriptor → normal approval → user prompt → server refuses | `claude-session-query-options.ts`; design DS-003 ("any other tool goes through the existing approval logic") | Reject | — | The design accepts it, removal is still enforced, and the window is brief (Claude re-lists on notification). Recorded as a residual risk for API/E2E |
-| C-08 | `getToolNames()` on Claude activates the session if it is not yet active | — | Run publish (`trackRun`) | Activation happens a little earlier than the first query, with the same inputs; once only | `claude-session.ts` `getAgentToolNames` | Reject | — | Idempotent and harmless. A side effect in a getter is noted, not a defect |
-| C-09 | Native `replaceTools` cleans up a removed tool while a call to it may be running | REQ-004 | Removing a tool the agent is using at that moment | The running call may fail | `agent.ts` `replaceTools` | Reject | — | REQ-004 makes a removed tool unavailable from the save, so a failing in-flight call of a removed tool fits the requirement |
+| C-10 | The handle's `postMessage` observer republishes a run `ERROR` for every `failed` fact, including turn and runtime failures the run already publishes. A Team member's failed turn shows its error twice; a runtime failure shows one extra error per pending input | SCN-TEAM-TURN-ERROR; SR-009 design ("so there is no single-run duplicate"), BEH-004 preserved display | An ordinary failed turn of a Team member | See the Behavior table; the second entry carries code `RUNTIME_TURN_FAILED` and no error scope or effect | `evidence/CRR-002-probe-team-member-duplicate-error.log` (two entries: `PROVIDER_ERROR` then `RUNTIME_TURN_FAILED`, same message) | Promote → **CR-004** | This ticket (introduced by IR-002) | Publish only for a failure the run did not publish itself: an input that failed **before it was forwarded** (no `forwarded` fact preceded the `failed` fact). That is the reopen failure and the other undispatched failures SR-009 targets. This is within the design's own no-duplicate premise, so no design change is needed |
+| C-11 | The new integration test accepts either code (`/^(RUNTIME_SESSION_REOPEN_FAILED\|RUNTIME_REJECTED)$/`), and the observer falls back to `"RUNTIME_REJECTED"` when `fact.code` is empty | AC-007 | — | `fact.code` is typed `string`; a dispatch failure carries the backend's code | Test; `agent-run-input-contract.ts:56-60` | Promote (with CR-004) | This ticket | Assert the exact code. Keep the fallback only if an empty code can really occur, and say where |
+| C-12 | `configured-agent-execution-handle.ts` is at 498 effective lines (485 before) | Size rule | — | The CR-004 fix adds lines to a file at 498 | Line count | Promote (constraint on CR-004) | This ticket | The fix must keep the file at or below 500. Put the "failed before forwarding" decision in a small owned helper if needed |
+| C-13 | The ERROR the handle publishes has no evidence (no error scope or effect) | SR-009 | — | The presentation shows it as a generic error, and it does not change the member's status, as designed | Design SR-009 ("no evidence") | Reject | — | As designed |
+| C-14 | The removed CR-001 code: anything left? | SR-005…SR-007 removal plan | — | — | The completion grep (server, web, autobyteus-ts, docs) is empty; the five web files are identical to base | Reject | — | Clean |
 
 ## Structural / Design Checks
 
 | Check | Result | Evidence | Required Action |
 | --- | --- | --- | --- |
-| Task design health assessment is present, evidence-backed, and preserved | Pass | One run operation (`applyDefinitionTools`) with one caller. A replaceable, always-present session. The composite notice port. `tool-list-updates` imports no backend and no `agent-tools` | — |
-| Implementation matches approved behavior-defining supplemental artifacts | Pass | None behavior-defining; probes followed (Codex sequence, Grok end-then-load) | — |
-| Data-flow spine inventory clarity and preservation | Pass | DS-001…DS-006 map to code one to one | — |
-| Ownership boundary preservation and clarity | Pass | Only the session service changes exposure. Only the streams owner writes streams. Backends never diff or notify (except the reopen-failure event, as designed). The Grok owner is the single holder of the process | — |
-| Off-spine concern clarity | Pass | Diff, notice builder and seen store sit beside the service; keepalive and close sit in the streams owner | — |
-| Existing capability/subsystem reuse | Pass | Skill-notice ports, the store rules (copied, as designed), the exposure resolver, Codex `resumeRemoteThread`; ACP launch extracted, not duplicated | — |
-| Reusable owned structures | Pass | `agent-tool-instances.ts` shared by the factory, shutdown and `replaceTools`; `runtime-session-reopen.ts` shared by Codex and ACP | — |
-| Shared-structure/data-model tightness | Pass | `AgentRunToolListApplyResult` has three kinds with one meaning each. `AgentToolMcpSessionToolExposureRecord` is a tight subset | — |
-| Repeated coordination ownership | Pass | No per-runtime listeners; one service drives all | — |
-| Empty indirection | Pass | `AgentRun.applyDefinitionTools`/`getToolNames` are the designed thin boundary (an active check) | — |
-| Separation of concerns and file responsibility | Fail | CR-002: `claude-session.ts` goes over 500 | CR-002 |
-| Ownership-driven dependency check | Pass | Directions as designed; backends depend on the authority only | — |
-| Authoritative Boundary Rule | Pass | Backends use `AgentToolMcpRunSessionAuthority` (replace/describe), never the registry or streams. The scoped authority checks ownership (`assertOwnsRun`) | — |
-| File placement | Pass | New files in the designed folders | — |
+| Task design health assessment is present, evidence-backed, and preserved | Pass | Unchanged owners; the failure is a plain dispatch result owned by the backend | — |
+| Implementation matches approved behavior-defining supplemental artifacts | Pass | None | — |
+| Data-flow spine inventory clarity and preservation | Pass | DS-004 failure branch simplified to the result; SR-009's Team path is one observer | — |
+| Ownership boundary preservation and clarity | Pass | The handle owns its Team stream publication; the run is not changed | — |
+| Off-spine concern clarity | Pass | — | — |
+| Existing capability/subsystem reuse | Pass | The existing failed-input display and the Team `ERROR` presentation | — |
+| Reusable owned structures | Pass | `runtimeSessionReopenFailedResult` shared by Codex and ACP | — |
+| Shared-structure/data-model tightness | Pass | The `action` field is removed from the payload and segment types | — |
+| Repeated coordination ownership | Pass | — | — |
+| Empty indirection | Pass | `ClaudeSession` keeps two one-line forwards to the state's owner methods (CR-002), which are needed because the backend holds the session | — |
+| Separation of concerns and file responsibility | Pass | CR-002: `claude-session.ts` is at 490 effective lines; the logic sits in `ClaudeAgentToolsMcpSessionState` | — (see C-12 for the CR-004 fix) |
+| Ownership-driven dependency check | Pass | — | — |
+| Authoritative Boundary Rule | Pass | — | — |
+| File placement | Pass | — | — |
 | Flat-vs-over-split layout | Pass | — | — |
-| Interface boundary clarity | Pass | `takePreface(run, { dispatchKind })`; `replaceForRun({ runId, runtimeExposure })`; `describeForRun(runId)`; `reopenThread(runContext, appServerConfig)`; `AcpSessionLauncher.open({ owner, mode, … })` | — |
-| Naming quality / one vocabulary | Pass | "Tools updated", "reopen", "turn start" as in the design's Terminology | — |
-| No unjustified duplication | Pass | Codex and ACP share the reopen notice and result helpers. The two `applyDefinitionTools` bodies have the same shape but different owners, as designed | — |
-| Patch-on-patch complexity control | Pass | Clean replacements (no `not_exposed` remnants) | — |
-| Dead code removed in touched files | Fail (minor) | All designed removals were made: the AGY header and its 405 branch, `sendSseCompatibilityResponse`, `listChanged: false`, `not_exposed` and its null branches, the Claude cached activation, `allowedTools` Agent Tools names, the `DeferredEventSink`. CR-003 remains as an unreachable fallback | CR-003 |
-| Test scenarios and assertions are clear and requirement-aligned | Pass | **Integration** (11 tool-list cases), named by AC: AC-005 revert, AC-006 restore, DEC-006 one notice, the busy post, turn-start gating. **Codex** reopen: 8 cases, including the retry, a revert, a change during the reopen and an append while pending. **ACP**: 5 cases, including the three ownership tests. **Routes**: held stream frames, removal refused at once, the official SDK client receiving `list_changed` | — |
-| Test fixtures/helpers reusable, structure coherent | Pass | The shared `agent-tool-mcp-run-sessions-stub.ts` and `agent-tools-mcp-test-host.ts` | — |
-| No stale, duplicated, or compatibility-only tests | Pass | `allowedTools` assertions updated to the design; no tests remain for `not_exposed` | — |
-| API/E2E readiness | Pass | All suites green; gated e2e `live-tool-list-updates.e2e.test.ts` present for Codex/Grok when credit returns | — |
+| Interface boundary clarity | Pass | `runtimeSessionReopenFailedResult(error)`; `AcpAgentRunBackendInput.workingDirectory: string` | — |
+| Naming quality / one vocabulary | Pass | The sender comment narrowed to the one notice | — |
+| No unjustified duplication | Fail | CR-004: a duplicate Team-stream `ERROR` for run-published failures | CR-004 |
+| Patch-on-patch complexity control | Pass | The rework removes code (+272/−295) instead of layering on the button | — |
+| Dead code removed in touched files | Pass | CR-003 resolved (no fallback); Codex `publishSourceEvents` removed with its only use; the button, notice and strings all removed | — |
+| Test scenarios and assertions are clear and requirement-aligned | Fail (minor) | The reopen tests assert the plain failure and that no event is published. The Team test proves member isolation with a real handle, run and adapter, but accepts either code (C-11), and no test covers an ordinary member turn failure (where CR-004 shows) | With CR-004: assert the exact code; add a case for a failed forwarded turn (one ERROR) |
+| Test fixtures/helpers reusable, structure coherent | Pass | — | — |
+| No stale, duplicated, or compatibility-only tests | Pass | Button and notice tests removed; spec key checks removed with the strings | — |
+| API/E2E readiness | Fail | CR-004 changes what every Team member's failed turn shows | CR-004 |
 
 ## Source File Size And Structure Audit
 
-Changed source files over 220 effective non-empty lines (others are under 220):
+The delta's changed source files over 220 effective lines:
 
-| Source File | Before | After | `>500` | `>220` Delta | SoC / Ownership | Placement | Classification | Action |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| `backends/claude/session/claude-session.ts` | 487 | 501 | **Fail — this change takes it over** | +14 | The added logic belongs to `ClaudeAgentToolsMcpSessionState` | Pass | Local Fix | CR-002 |
-| `backends/autobyteus/autobyteus-agent-run-backend-factory.ts` | 468 | 494 | Pass | +26 (tool build closure) | Pass (the factory owns how tools are built at activation; reused) | Pass | — | — |
-| `backends/claude/session/claude-session-tool-use-coordinator.ts` | 480 | 490 | Pass | +10 | Pass | Pass | — | — |
-| `agent-execution/domain/agent-run.ts` | 459 | 470 | Pass | +11 | Pass | Pass | — | — |
-| `compositions/build-studio-server.ts` | 419 | 439 | Pass | +20 wiring | Pass | Pass | — | — |
-| `standalone-application-host/start-standalone-application-host.ts` | 358 | 368 | Pass | +10 | Pass | Pass | — | — |
-| `agent-definition/services/agent-definition-service.ts` | 356 | 363 | Pass | +7 | Pass | Pass | — | — |
-| `backends/codex/backend/codex-agent-run-backend.ts` | 256 | 341 | Pass | +85 (apply + reopen) | Pass (the backend owns `reopenPending`, as designed) | Pass | — | — |
-| `backends/autobyteus/autobyteus-agent-run-backend.ts` | 299 | 344 | Pass | +45 | Pass | Pass | — | — |
-| `tool-list-updates/services/tool-list-update-service.ts` | new | 307 | Pass | new | Pass (one owner: tracking, passes, delivery, seen writes, as designed) | Pass | — | — |
-| `backends/codex/thread/codex-thread-manager.ts` | 234 | 269 | Pass | +35 | Pass | Pass | — | — |
-| `agent-tools/mcp/scoped-agent-tool-mcp-session-authority.ts` | 227 | 262 | Pass | +35 | Pass | Pass | — | — |
-| `backends/acp/backend/acp-agent-run-backend.ts` | 120 | 250 | Pass | +130 (reopen, no-session operations) | Pass (the backend owns the reopen; the launcher owns spawning) | Pass | — | — |
-| `autobyteus-web/stores/agentRunStore.ts` | 456 | 488 | Pass | +32 | See CR-001 (behavior) | Pass | — | — |
+| Source File | Base | Round 1 | Now | `>500` | `>220` Delta | SoC / Ownership | Placement | Classification | Action |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `backends/claude/session/claude-session.ts` | 487 | 501 | 490 | Pass | +3 | Pass | Pass | Resolved (CR-002) | — |
+| `agent-collaboration/execution/backends/configured-agent-execution-handle.ts` | 485 | 485 | 498 | Pass (close) | +13 | Pass | Pass | — | Keep ≤ 500 with the CR-004 fix (C-12) |
+| `backends/acp/backend/acp-agent-run-backend.ts` | 120 | 250 | 249 | Pass | — | Pass | Pass | — | — |
+| `backends/codex/backend/codex-agent-run-backend.ts` | 256 | 341 | 330 | Pass | — | Pass | Pass | — | — |
+| `autobyteus-web/stores/agentRunStore.ts` | 456 | 488 | 456 (identical to base) | Pass | — | Pass | Pass | — | — |
+
+All other round-1 rows are unchanged and carried forward.
 
 ## Legacy / Backward-Compatibility Verdict
 
 | Check | Result | Notes |
 | --- | --- | --- |
-| No backward-compatibility mechanisms in changed scope | Pass | The AGY header and the one-shot SSE are removed outright |
-| No legacy old-behavior retention | Pass | — |
-| Dead code removed in touched files | Fail (minor) | CR-003 |
-| Persisted-data transition decision followed | Pass | `seen_tool_names.json` is additive; "no record" means "has seen the current list" (`trackRun`); store rules copied (tolerant read, atomic `wx` write, never creates the folder) |
+| No backward-compatibility mechanisms in changed scope | Pass | — |
+| No legacy old-behavior retention | Pass | No compatibility read of the removed `action` field |
+| Dead code removed in touched files | Pass | CR-003 resolved |
+| Persisted-data transition decision followed | Pass | Unchanged; the failure notice was never recorded, so nothing stored needs cleanup |
 | No version-specific dual reads/writes | Pass | — |
-| Transition mechanics match the design | Pass | N/A (no migration) |
+| Transition mechanics match the design | Pass | N/A |
 
 ## Dead / Obsolete / Legacy Items Requiring Removal
 
-| Item / Path | Type | Evidence | Why | Required Action |
-| --- | --- | --- | --- | --- |
-| `?? "."` in `AcpAgentRunBackend.reopenWithCurrentTools` (`acp-agent-run-backend.ts`) | `DormantPath` | `bindBackend` always passes `prepared.workingDirectory` | An unreachable fallback with a wrong outcome | CR-003 |
+None.
 
 ## Docs-Impact Verdict
 
-- Docs impact: `Yes`, done in the change (step 7).
-- Files: `tool_list_updates.md` (new), `agent_tools_mcp_server.md`, `agent_execution.md`, `skill_update_notices.md`, `grok_build_runtime.md`, `antigravity_cli_runtime.md`, web `agent_execution_architecture.md`.
-- The Team-member restart wording in `tool_list_updates.md:86-88` follows whatever CR-001 decides.
+- Docs impact: `Yes`, done. `tool_list_updates.md`, `agent_execution.md`, `grok_build_runtime.md` and web `agent_execution_architecture.md` describe the plain failed message; no button or card text remains (grep empty). After CR-004, the Team-member sentence should say "a failed message that was not sent".
 
 ## Additional Material Premise Validation
 
@@ -188,48 +167,35 @@ Changed source files over 220 effective non-empty lines (others are under 220):
 
 | Premise ID | Current Status | Changed Evidence / Reason |
 | --- | --- | --- |
-| ARCH-REV-001…004 premises (Codex reopen, Grok end-then-load, zero-tool sessions, owner model) | Confirmed | Implemented as designed. Live model proof for Codex/Grok is still owed (DEC-004, credit) |
-
-### `MP-CODEX-RETRY` — a Codex reopen retried after a partly-failed reopen
-
-- Origin: `New`
-- Related approved requirement or established contract: DS-004 step 6 ("the next `start_turn` repeats from step 2"); AC-007 ("until then, the next message tries the reopen again")
-- Relevant behavior ID(s): BEH-001, BEH-004
-- Coherent product goal or governing event: the user sends again after a failed reopen
-- Scenario validity: `Supported Explicit Edge Scenario`
-- Initiating basis kind: `User`
-- Independent product-supported initiating trigger or applicable governing contract: the next message after the failure card
-- Support evidence: AC-007
-- Forward production path: `dispatchUserInput(start_turn)` → `reopenWithCurrentTools` → `reopenThread` → `thread/unsubscribe` (thread already unsubscribed) → `thread/resume`
-- Lifecycle preconditions and material consequence at the claimed point: an error here would make every retry fail until a restart
-- Reachability: `Reachable`
-- Review consequence / proportionate response: no finding. Codex 0.165 reports `notSubscribed` as a status of `thread/unsubscribe` (investigation E-12)
+| Round-1 premises; MP-CODEX-RETRY | Confirmed | Unchanged |
+| SR-009 "no single-run duplicate" | Reclassified (CR-004) | It holds for the single-run path. On the Team stream the run's own `ERROR` events are forwarded by `bindEvents`, so republishing on every `failed` fact duplicates turn and runtime failures. The design's intent (the undispatched failure) still holds; only the trigger set must narrow |
 
 ## Review Scorecard (Mandatory)
 
-- Overall score (`/10`): 9.2
+- Overall score (`/10`): 9.3
 - Score calculation note: simple average of the ten categories, for trend visibility only.
 
 | Priority | Category | Score | Why This Score | What Is Weak / Holding It Down | What Should Improve |
 | --- | --- | --- | --- | --- | --- |
-| 1 | Data-Flow Spine Inventory and Clarity | 9.5 | DS-001…DS-006 are each readable in code with one governing owner | — | — |
-| 2 | Ownership Clarity and Boundary Encapsulation | 9.5 | The design's ownership rules hold; the Grok owner is the single holder; backends use only the authority | — | — |
-| 3 | API / Interface / Query / Command Clarity | 9.4 | Small, explicit interfaces; the dispatch kind is explicit; the result kinds have one meaning each | `getToolNames` on Claude activates lazily (C-08, rejected) | — |
-| 4 | Separation of Concerns and File Placement | 8.9 | Placement as designed; new capability area mirrors skill notices | CR-002: `claude-session.ts` > 500 | Move the added logic to `ClaudeAgentToolsMcpSessionState` |
-| 5 | Shared-Structure / Data-Model Tightness and Reusable Owned Structures | 9.4 | Tight exposure record; shared helpers extracted (`agent-tool-instances`, `runtime-session-reopen`) | — | — |
-| 6 | Naming Quality and Local Readability | 9.4 | Clear names and comments that state why; vocabulary consistent with the design | — | — |
-| 7 | API/E2E Readiness | 9.3 | All suites green; three runtimes proven in real runs; gated e2e ready | Codex/Grok live proof owed (DEC-004, accepted) | API/E2E runs them when credit returns |
-| 8 | Runtime Correctness And Behavioral Fidelity | 8.6 | Removal, notice, reopen, retry and revert paths traced and correct | CR-001: the Team-member restart contradicts REQ-010/AC-007's "restarts it", and stops other members | Upstream decision, then implement it |
-| 9 | No Backward-Compatibility / No Legacy Retention | 9.6 | Every designed legacy path removed; no wrappers | — | — |
-| 10 | Cleanup Completeness | 9.0 | The removal plan was applied fully | CR-003: an unreachable `?? "."` fallback | Pass the non-null working directory |
+| 1 | Data-Flow Spine Inventory and Clarity | 9.5 | The failure branch is now a plain result; the Team path is one observer | — | — |
+| 2 | Ownership Clarity and Boundary Encapsulation | 9.5 | CR-002 moved the logic to its owner; the handle owns its stream | — | — |
+| 3 | API / Interface / Query / Command Clarity | 9.5 | Simpler reopen-result contract; non-null `workingDirectory` | — | — |
+| 4 | Separation of Concerns and File Placement | 9.3 | CR-002 resolved | The handle is at 498/500 (C-12) | Keep it ≤ 500 with the fix |
+| 5 | Shared-Structure / Data-Model Tightness and Reusable Owned Structures | 9.5 | `action` removed; one shared result helper | — | — |
+| 6 | Naming Quality and Local Readability | 9.4 | Clear comments, approved text | — | — |
+| 7 | API/E2E Readiness | 9.0 | Suites green; the Team reopen proven with real parts | CR-004 shows on every failed Team-member turn; the test accepts either code | Fix CR-004; add the forwarded-turn case |
+| 8 | Runtime Correctness And Behavioral Fidelity | 8.7 | Reopen failure correct on single runs and Team members | CR-004: duplicate error for ordinary Team-member turn and runtime failures (probe) | Publish only for failures before forwarding |
+| 9 | No Backward-Compatibility / No Legacy Retention | 9.6 | Clean removal | — | — |
+| 10 | Cleanup Completeness | 9.5 | Completion grep empty; CR-003 resolved | — | — |
 
 ## Findings
 
-| ID | Severity | Location | Problem | Required Action | Classification / Owner |
-| --- | --- | --- | --- | --- | --- |
-| CR-001 | Blocking | `autobyteus-web/stores/agentRunStore.ts:424-452` (`restartRunWithNewTools`); `autobyteus-server-ts/docs/modules/tool_list_updates.md:86-88` | For a Team member run, "Restart this run with the new tools" calls `terminateTeamRun` on the member's Team: every member stops (one mid-turn loses its turn), and nothing is restored. REQ-010 and AC-007 require the button to restart *the run* with the new tools and the conversation. The design's restart spine ("the existing stop + restore of the same run") does not exist for a Team member: the product has no single-member stop or restore. The implementation chose the Team stop on its own (handoff "Important Assumptions"), and no requirement or design revision approves it. This is a supported path, because REQ-001 covers Team members and the user's own case (the PM) is a Team | The Solution Designer decides the member behavior and revises the design (and, if the outcome changes, the requirements with the user). Options: (a) the button stops **and restores** the Team (the existing Team restore), with a label that says so; (b) accept "stop the Team; your next message restores it", with the wording and the user informed; (c) add a member-level restart (new capability; likely out of scope). Implementation then follows the decision | `Design Impact` → Solution Designer |
-| CR-002 | Required | `autobyteus-server-ts/src/agent-execution/backends/claude/session/claude-session.ts` (`getAgentToolNames`, `applyToolExposure`) | The change takes the file from 487 to 501 effective lines, over the 500 limit | Put the added logic in its owner, `ClaudeAgentToolsMcpSessionState` (it already owns `replaceExposure` and has the run context, so it can set `runtimeContext.runtimeToolExposure` too). Keep `ClaudeSession` at or below 500 | `Local Fix` → Implementation (after CR-001's decision, in the same round) |
-| CR-003 | Minor | `autobyteus-server-ts/src/agent-execution/backends/acp/backend/acp-agent-run-backend.ts` (`reopenWithCurrentTools`: `workingDirectory ?? "."`) | An unreachable fallback (the factory always sets the directory) that, if hit, would spawn Grok in the server's working directory | Pass the run's working directory to the backend as a non-null value (for example in `AcpAgentRunBackendInput`) and use it without a fallback | `Local Fix` → Implementation (with CR-002) |
+| ID | Severity | Status | Location | Problem | Required Action | Classification / Owner |
+| --- | --- | --- | --- | --- | --- | --- |
+| CR-001 | — | **Resolved** | — | The Team-member restart | Resolved upstream (DEC-008, DEC-009; SR-005…SR-009). The button, the notice and all their consumers are removed; the completion grep is empty | — |
+| CR-002 | — | **Resolved** | `claude-session.ts` | Over 500 | Now 490; the logic sits in `ClaudeAgentToolsMcpSessionState` (`currentToolNames`, `applyExposure`) | — |
+| CR-003 | — | **Resolved** | `acp-agent-run-backend.ts` | `?? "."` fallback | `AcpAgentRunBackendInput.workingDirectory: string` from `bindBackend`, used directly | — |
+| CR-004 | Blocking | New | `autobyteus-server-ts/src/agent-collaboration/execution/backends/configured-agent-execution-handle.ts` (`postMessage`, the `lifecycleObserver`) | The observer publishes a run `ERROR` for **every** `failed` fact. `failed` facts also come from the run's own turn-terminal and runtime-global `ERROR` events (`agent-run-input-lifecycle.ts:33-46`), and the handle already forwards those events to the Team stream (`bindEvents`, `:463-468`). Result: every ordinary failed turn of a Team member's direct input shows its error twice in the member's conversation (the second with code `RUNTIME_TURN_FAILED` and no scope or effect), and a runtime failure adds one extra error per pending input. Proven by probe (`evidence/CRR-002-probe-team-member-duplicate-error.log`). This regresses existing behavior (BEH-004 preserved: failed messages show as they do today) on a common path | Publish only for an input that failed **before it was forwarded** (no `forwarded` fact before the `failed` fact), which is the reopen failure and the other undispatched failures that SR-009 targets and that the run never publishes. Also: tighten the integration test to the exact code `RUNTIME_SESSION_REOPEN_FAILED`; add a case where a forwarded member turn fails and exactly one `ERROR` reaches the Team stream; drop the `"RUNTIME_REJECTED"` fallback unless an empty code can occur; keep the file ≤ 500 effective lines | `Local Fix` → Implementation |
 
 ## Follow-ups
 
@@ -237,27 +203,23 @@ Changed source files over 220 effective non-empty lines (others are under 220):
 
 ## Classification
 
-- `Design Impact` (CR-001), owned by the Solution Designer. The design's REQ-010 spine is incomplete for a supported path (Team members), and the implementation filled the gap with unapproved behavior. If the decision changes the approved outcome, it is a Requirement Gap for the Solution Designer to take to the user.
-- CR-002 and CR-003 are implementation `Local Fix` items. I route them through the Solution Designer with CR-001, so that one revision round covers all three. They need no design change.
-- The task size and risk classification stands.
+- `Local Fix`, owned by the Implementation Engineer. This is a bounded defect introduced by IR-002. The fix is inside the design's own premise (SR-009: an undispatched failure, no duplicate), so no requirement or design revision is needed.
 
 ## Recommended Recipient
 
-- Solution Designer (rule: Design Impact). After the decision: implementation (CR-001 as decided, CR-002, CR-003), then source review again (`Targeted Delta Review` if the changes stay in these files), then API/E2E.
+- Implementation Engineer. Then source review again (`Targeted Delta Review`: the handle, the Team test, and the docs sentence), then API/E2E.
 
 ## Residual Risks
 
-- Codex and Grok live model runs are owed (DEC-004; credit). The reopen is proven by the protocol probes and fake-agent tests only.
-- C-07: Claude may show an approval prompt for a removed tool in the brief window before it re-lists, when auto-execute is off. The server still refuses the call. API/E2E may observe this in the real Claude run.
-- Claude now emits the approved event for every Agent Tools call (`agent_tools_enabled`). API/E2E should check that the run view shows no new noise for collaboration tools.
+- As round 1: Codex and Grok live runs are owed (DEC-004); the Claude approval prompt for a removed tool in the re-list window (C-07); Claude's `agent_tools_enabled` approved events.
 
 ## Latest Authoritative Result
 
 - Review Decision: `Fail`
 - Review Entry Point: `Implementation Review`
-- Supported Product Scenario Gate: `Pass` (SCN-004-TEAM is supported and promoted)
-- Material-Premise Gate: `Pass`
-- Score Summary: 9.2/10. Below 9.2: Runtime Correctness 8.6 (CR-001), Separation of Concerns 8.9 (CR-002), Cleanup 9.0 (CR-003)
+- Supported Product Scenario Gate: `Pass`
+- Material-Premise Gate: `Pass` (SR-009 premise reclassified with evidence)
+- Score Summary: 9.3/10. Below 9.2: Runtime Correctness 8.7 (CR-004), API/E2E Readiness 9.0 (CR-004)
 - Failure Origin: N/A
-- Recommended Recipient: Solution Designer
-- Notes: Otherwise a strong implementation. Every designed removal was made. The Codex and Grok reopen sequences, the Grok single owner, coalescing, revert handling and turn-start gating were all traced and found correct. The checks in `evidence/local-checks.log` ran on code commit `5f3923c4cd` and were not rerun.
+- Recommended Recipient: Implementation Engineer
+- Notes: CR-001, CR-002 and CR-003 are resolved. Checks in `evidence/local-checks.log` (IR-002) were reused. I ran one temporary probe for CR-004; it was removed, and its output is saved as evidence.
