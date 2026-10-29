@@ -2,6 +2,7 @@ import {
   applyThinkingParamChoice,
   applyThinkingToggle,
   getThinkingControlState,
+  getIndependentThinkingParamKeys,
   getThinkingDependentParamKeys,
   getThinkingParamKeys,
   getThinkingToggleOwnedParamKeys,
@@ -14,30 +15,23 @@ import { resolveEffectiveConfigValue, type UiModelConfigSchema } from '~/utils/l
  * Presentation model of the chat composer's thinking menu. It owns no thinking semantics: every
  * option carries the config it produces, computed through the thinking adapter.
  *
- * - `merged`: models with an on/off switch show one list, `Off` then each effort level (or `On`),
- *   with the other dependent settings (budget, display) below it.
+ * - `merged`: models with an on/off switch show `Off`, then `On` or, when effort only applies with
+ *   thinking on (typed switch), each effort level; then the settings that apply with thinking on
+ *   and off (Claude effort, always checked); then the other settings that only apply while thinking
+ *   is on (display).
  * - `parameters`: every other model shows one group per thinking parameter.
  */
 type ThinkingConfig = Record<string, unknown>
-type Translate = (key: string) => string
+type Translate = (key: string, params?: Record<string, string>) => string
+
+const EFFORT_KEY = 'reasoning_effort'
 
 export type ChatThinkingOption = { id: string; label: string; checked: boolean; next: ThinkingConfig | null }
-export type ChatThinkingParameter = {
-  key: string
-  label: string
-  kind: 'choice' | 'number'
-  options: ChatThinkingOption[]
-  value: number | ''
-  minimum: number | null
-  maximum: number | null
-  applyNumber: (value: number) => ThinkingConfig | null
-}
+export type ChatThinkingParameter = { key: string; label: string; options: ChatThinkingOption[] }
 export type ChatThinkingMenu =
   | { mode: 'hidden' }
   | { mode: 'merged'; title: string; primary: ChatThinkingOption[]; secondary: ChatThinkingParameter[]; summary: string; active: boolean }
   | { mode: 'parameters'; parameters: ChatThinkingParameter[]; summary: string; active: boolean }
-
-const EFFORT_KEY = 'reasoning_effort'
 
 const optionLabel = (value: unknown, t: Translate): string => {
   if (value === true) return t('chat.thinking.on')
@@ -45,7 +39,7 @@ const optionLabel = (value: unknown, t: Translate): string => {
   return humanizeThinkingValue(String(value))
 }
 
-/** One parameter group; `choose` produces the config for a picked value, `showSelection` hides checks. */
+/** One choice group; `choose` produces the config for a picked value, `showSelection` hides checks. */
 const buildParameter = (
   schema: UiModelConfigSchema,
   config: ThinkingConfig | null,
@@ -58,34 +52,21 @@ const buildParameter = (
   if (!param) return null
   const value = resolveEffectiveConfigValue(param, config?.[key])
   const label = param.title?.trim() || humanizeThinkingValue(key)
-  const base = { key, label, value: '' as const, minimum: null, maximum: null, applyNumber: (entry: number) => choose(entry) }
   const choices = Array.isArray(param.enum) && param.enum.length
     ? param.enum
     : param.type === 'boolean' ? [true, false] : null
-  if (choices) {
-    const current = param.type === 'boolean' && !param.enum?.length ? value === true : value
-    return {
-      ...base,
-      kind: 'choice',
-      options: choices.map((entry) => ({
-        id: String(entry),
-        label: optionLabel(entry, t),
-        checked: showSelection && Object.is(entry, current),
-        next: choose(entry),
-      })),
-    }
+  if (!choices) return null
+  const current = param.type === 'boolean' && !param.enum?.length ? value === true : value
+  return {
+    key,
+    label,
+    options: choices.map((entry) => ({
+      id: String(entry),
+      label: optionLabel(entry, t),
+      checked: showSelection && Object.is(entry, current),
+      next: choose(entry),
+    })),
   }
-  if (param.type === 'integer' || param.type === 'number') {
-    return {
-      ...base,
-      kind: 'number',
-      options: [],
-      value: showSelection && typeof value === 'number' ? value : '',
-      minimum: param.minimum ?? null,
-      maximum: param.maximum ?? null,
-    }
-  }
-  return null
 }
 
 const buildMergedMenu = (
@@ -94,33 +75,47 @@ const buildMergedMenu = (
   t: Translate,
 ): ChatThinkingMenu => {
   const state = getThinkingControlState(schema, config)
+  const choose = (key: string) => (value: unknown) => applyThinkingParamChoice(schema, config, key, value)
   const dependentKeys = getThinkingDependentParamKeys(schema)
+  // An effort that only applies with thinking on (typed switch) merges into the primary list.
   const effortParam = schema[EFFORT_KEY]
-  const effortLevels = dependentKeys.includes(EFFORT_KEY) && Array.isArray(effortParam?.enum) && effortParam.enum.length
+  const dependentEffortLevels = dependentKeys.includes(EFFORT_KEY) && Array.isArray(effortParam?.enum) && effortParam.enum.length
     ? effortParam.enum
     : null
-  const effectiveEffort = effortLevels && effortParam ? resolveEffectiveConfigValue(effortParam, config?.[EFFORT_KEY]) : undefined
+  const dependentEffort = dependentEffortLevels && effortParam ? resolveEffectiveConfigValue(effortParam, config?.[EFFORT_KEY]) : undefined
 
   const off: ChatThinkingOption = { id: 'off', label: t('chat.thinking.off'), checked: !state.enabled, next: applyThinkingToggle(schema, false, config) }
-  const levels: ChatThinkingOption[] = effortLevels
-    ? effortLevels.map((level) => ({
+  const onOptions: ChatThinkingOption[] = dependentEffortLevels
+    ? dependentEffortLevels.map((level) => ({
       id: String(level),
       label: optionLabel(level, t),
-      checked: state.enabled && Object.is(effectiveEffort, level),
-      next: applyThinkingParamChoice(schema, config, EFFORT_KEY, level),
+      checked: state.enabled && Object.is(dependentEffort, level),
+      next: choose(EFFORT_KEY)(level),
     }))
     : [{ id: 'on', label: t('chat.thinking.on'), checked: state.enabled, next: applyThinkingToggle(schema, true, config) }]
 
-  const secondary = dependentKeys
-    .filter((key) => !(effortLevels && key === EFFORT_KEY))
-    .map((key) => buildParameter(schema, config, key, t, (value) => applyThinkingParamChoice(schema, config, key, value), state.enabled))
+  const independent = getIndependentThinkingParamKeys(schema)
+    .map((key) => buildParameter(schema, config, key, t, choose(key), true))
+    .filter((parameter): parameter is ChatThinkingParameter => parameter !== null)
+  const dependent = dependentKeys
+    .filter((key) => !(dependentEffortLevels && key === EFFORT_KEY))
+    .map((key) => buildParameter(schema, config, key, t, choose(key), state.enabled))
     .filter((parameter): parameter is ChatThinkingParameter => parameter !== null)
 
-  let summary = t('chat.thinking.on')
-  if (!state.enabled) summary = t('chat.thinking.off')
-  else if (effortLevels && effectiveEffort !== undefined) summary = optionLabel(effectiveEffort, t)
+  const stateLabel = state.enabled ? t('chat.thinking.on') : t('chat.thinking.off')
+  const independentEffort = independent[0]?.options.find((option) => option.checked)?.label
+  let summary = stateLabel
+  if (independentEffort) summary = t('chat.thinking.summaryWithEffort', { state: stateLabel, effort: independentEffort })
+  else if (state.enabled && dependentEffort !== undefined) summary = optionLabel(dependentEffort, t)
 
-  return { mode: 'merged', title: t('chat.thinking.title'), primary: [off, ...levels], secondary, summary, active: state.enabled }
+  return {
+    mode: 'merged',
+    title: t('chat.thinking.title'),
+    primary: [off, ...onOptions],
+    secondary: [...independent, ...dependent],
+    summary,
+    active: state.enabled,
+  }
 }
 
 const buildParametersMenu = (
@@ -137,10 +132,8 @@ const buildParametersMenu = (
     .filter((parameter): parameter is ChatThinkingParameter => parameter !== null)
   if (!parameters.length) return { mode: 'hidden' }
 
-  const primary = parameters.find((parameter) => parameter.kind === 'choice')
-  const primaryChecked = primary?.options.find((option) => option.checked)
-  let summary = t('chat.thinking.title')
-  if (primary) summary = primaryChecked ? primaryChecked.label : t('chat.thinking.default')
+  const primaryChecked = parameters[0]!.options.find((option) => option.checked)
+  const summary = primaryChecked ? primaryChecked.label : t('chat.thinking.default')
 
   return { mode: 'parameters', parameters, summary, active: getThinkingControlState(schema, config).enabled }
 }

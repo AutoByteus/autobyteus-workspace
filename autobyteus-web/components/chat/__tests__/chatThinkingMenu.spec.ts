@@ -6,8 +6,10 @@ const labels: Record<string, string> = {
   'chat.thinking.on': 'On',
   'chat.thinking.off': 'Off',
   'chat.thinking.default': 'Default',
+  'chat.thinking.summaryWithEffort': '{{state}} · {{effort}}',
 }
-const t = (key: string) => labels[key] ?? key
+const t = (key: string, params?: Record<string, string>) =>
+  (labels[key] ?? key).replace(/\{\{(\w+)\}\}/g, (_match, name: string) => params?.[name] ?? '')
 
 const claudeSdkSchema = {
   thinking_enabled: { type: 'boolean', default: false },
@@ -17,9 +19,17 @@ const deepSeekV4Schema = {
   thinking_type: { type: 'string', enum: ['enabled', 'disabled'], default: 'enabled' },
   reasoning_effort: { type: 'string', enum: ['high', 'max'], default: 'high' },
 }
-const anthropicBudgetSchema = {
-  thinking_enabled: { type: 'boolean', title: 'Thinking enabled', default: false },
-  thinking_budget_tokens: { type: 'integer', title: 'Thinking budget tokens', default: 1024, minimum: 1024, maximum: 32000 },
+const effortLevels = ['low', 'medium', 'high', 'xhigh', 'max']
+/** AutoByteus Claude row with a switch (e.g. claude-sonnet-5-5). */
+const anthropicSwitchSchema = {
+  thinking_enabled: { type: 'boolean', default: false },
+  thinking_display: { type: 'string', enum: ['omitted', 'summarized'], default: 'summarized' },
+  reasoning_effort: { type: 'string', title: 'Reasoning effort', enum: effortLevels, default: 'high' },
+}
+/** claude-opus-5-5: adaptive thinking always on, no switch. */
+const anthropicOpus55Schema = {
+  thinking_display: { type: 'string', enum: ['omitted', 'summarized'], default: 'omitted' },
+  reasoning_effort: { type: 'string', title: 'Reasoning effort', enum: effortLevels, default: 'medium' },
 }
 const anthropicAdaptiveSchema = {
   thinking_enabled: { type: 'boolean', default: false },
@@ -41,32 +51,73 @@ describe('buildChatThinkingMenu', () => {
     expect(buildChatThinkingMenu({ temperature: { type: 'number', default: 1 } }, null, t)).toEqual({ mode: 'hidden' })
   })
 
-  it('merges the Claude SDK switch and effort into one list: Off · levels (AC-001, AC-004)', () => {
+  it('shows the Claude SDK switch as Off · On with an independent effort group (AC-005)', () => {
     const menu = merged(buildChatThinkingMenu(claudeSdkSchema, null, t))
     expect(menu.title).toBe('Thinking')
-    expect(menu.primary.map((option) => option.label)).toEqual(['Off', 'Low', 'Medium', 'High', 'Xhigh', 'Max'])
+    expect(menu.primary.map((option) => option.label)).toEqual(['Off', 'On'])
     expect(checkedIds(menu)).toEqual(['off'])
-    expect(menu.summary).toBe('Off')
+    expect(menu.summary).toBe('Off · Medium')
     expect(menu.active).toBe(false)
-    expect(menu.secondary).toEqual([])
-    expect(pick(menu, 'high')).toEqual({ thinking_enabled: true, reasoning_effort: 'high' })
+    expect(menu.secondary.map((parameter) => parameter.key)).toEqual(['reasoning_effort'])
+    const effort = menu.secondary[0]!
+    expect(effort.options.map((option) => [option.label, option.checked])).toEqual([
+      ['Low', false], ['Medium', true], ['High', false], ['Xhigh', false], ['Max', false],
+    ])
+    expect(pick(menu, 'on')).toEqual({ thinking_enabled: true })
   })
 
-  it('follows the design examples table for the Claude SDK schema', () => {
-    const storedOff = merged(buildChatThinkingMenu(claudeSdkSchema, { thinking_enabled: false, reasoning_effort: 'medium' }, t))
-    expect(checkedIds(storedOff)).toEqual(['off'])
-    expect(storedOff.summary).toBe('Off')
-    expect(pick(storedOff, 'medium')).toEqual({ thinking_enabled: true, reasoning_effort: 'medium' })
+  it('keeps thinking off for low/medium/high and turns it on for xhigh/max (AC-005)', () => {
+    const off = merged(buildChatThinkingMenu(claudeSdkSchema, { thinking_enabled: false, reasoning_effort: 'medium' }, t))
+    const next = (id: string) => off.secondary[0]!.options.find((option) => option.id === id)!.next
+    expect(next('low')).toEqual({ thinking_enabled: false, reasoning_effort: 'low' })
+    expect(next('high')).toEqual({ thinking_enabled: false, reasoning_effort: 'high' })
+    expect(next('xhigh')).toEqual({ thinking_enabled: true, reasoning_effort: 'xhigh' })
+    expect(next('max')).toEqual({ thinking_enabled: true, reasoning_effort: 'max' })
 
-    const high = merged(buildChatThinkingMenu(claudeSdkSchema, { thinking_enabled: true, reasoning_effort: 'high' }, t))
-    expect(checkedIds(high)).toEqual(['high'])
-    expect(high.summary).toBe('High')
-    expect(high.active).toBe(true)
-    expect(pick(high, 'off')).toEqual({ thinking_enabled: false, reasoning_effort: 'high' })
+    const on = merged(buildChatThinkingMenu(claudeSdkSchema, { thinking_enabled: true, reasoning_effort: 'low' }, t))
+    expect(on.secondary[0]!.options.find((option) => option.id === 'medium')!.next)
+      .toEqual({ thinking_enabled: true, reasoning_effort: 'medium' })
+  })
 
-    const onDefault = merged(buildChatThinkingMenu(claudeSdkSchema, { thinking_enabled: true }, t))
-    expect(checkedIds(onDefault)).toEqual(['medium'])
-    expect(onDefault.summary).toBe('Medium')
+  it('turning thinking off with xhigh or max selected falls back to high (AC-005)', () => {
+    const max = merged(buildChatThinkingMenu(claudeSdkSchema, { thinking_enabled: true, reasoning_effort: 'max' }, t))
+    expect(checkedIds(max)).toEqual(['on'])
+    expect(max.summary).toBe('On · Max')
+    expect(max.active).toBe(true)
+    expect(pick(max, 'off')).toEqual({ thinking_enabled: false, reasoning_effort: 'high' })
+
+    const low = merged(buildChatThinkingMenu(claudeSdkSchema, { thinking_enabled: true, reasoning_effort: 'low' }, t))
+    expect(pick(low, 'off')).toEqual({ thinking_enabled: false, reasoning_effort: 'low' })
+  })
+
+  it('orders an AutoByteus Claude switch row as Off · On, effort, then display (AC-005, DEC-006)', () => {
+    const off = merged(buildChatThinkingMenu(anthropicSwitchSchema, { thinking_enabled: false, reasoning_effort: 'low' }, t))
+    expect(off.primary.map((option) => option.id)).toEqual(['off', 'on'])
+    expect(off.secondary.map((parameter) => parameter.key)).toEqual(['reasoning_effort', 'thinking_display'])
+    expect(off.secondary[0]!.label).toBe('Reasoning effort')
+    expect(off.summary).toBe('Off · Low')
+    // Display stays dependent: no check while off, and choosing it turns thinking on.
+    expect(off.secondary[1]!.options.every((option) => !option.checked)).toBe(true)
+    expect(off.secondary[1]!.options[0]!.next).toEqual({ thinking_enabled: true, reasoning_effort: 'low', thinking_display: 'omitted' })
+
+    const onDefault = merged(buildChatThinkingMenu(anthropicSwitchSchema, { thinking_enabled: true }, t))
+    expect(onDefault.summary).toBe('On · High')
+    expect(onDefault.secondary[0]!.options.find((option) => option.checked)?.id).toBe('high')
+  })
+
+  it('offers Opus 5.5 its effort levels as the Thinking menu, Medium checked by default (AC-006)', () => {
+    const menu = buildChatThinkingMenu(anthropicOpus55Schema, null, t) as Parameters
+    expect(menu.mode).toBe('parameters')
+    expect(menu.summary).toBe('Medium')
+    expect(menu.parameters.map((parameter) => parameter.key)).toEqual(['reasoning_effort'])
+    expect(menu.parameters[0]!.options.map((option) => [option.label, option.checked])).toEqual([
+      ['Low', false], ['Medium', true], ['High', false], ['Xhigh', false], ['Max', false],
+    ])
+    expect(menu.parameters[0]!.options[4]!.next).toEqual({ reasoning_effort: 'max' })
+
+    const fable51 = buildChatThinkingMenu({ reasoning_effort: anthropicSwitchSchema.reasoning_effort }, null, t) as Parameters
+    expect(fable51.mode).toBe('parameters')
+    expect(fable51.summary).toBe('High')
   })
 
   it('merges the DeepSeek V4 typed switch: Off · High · Max (AC-002)', () => {
@@ -79,23 +130,6 @@ describe('buildChatThinkingMenu', () => {
     expect(checkedIds(on)).toEqual(['max'])
     expect(on.summary).toBe('Max')
     expect(pick(on, 'off')).toEqual({ thinking_type: 'disabled' })
-  })
-
-  it('shows Off · On plus a budget field for a switch without an effort list (AC-003, AC-005 alternate)', () => {
-    const off = merged(buildChatThinkingMenu(anthropicBudgetSchema, { thinking_enabled: false }, t))
-    expect(off.primary.map((option) => option.label)).toEqual(['Off', 'On'])
-    expect(checkedIds(off)).toEqual(['off'])
-    expect(off.summary).toBe('Off')
-    expect(off.secondary).toHaveLength(1)
-    const budget = off.secondary[0]!
-    expect(budget).toMatchObject({ key: 'thinking_budget_tokens', label: 'Thinking budget tokens', kind: 'number', value: '', minimum: 1024, maximum: 32000 })
-    expect(budget.applyNumber(4096)).toEqual({ thinking_enabled: true, thinking_budget_tokens: 4096 })
-    expect(pick(off, 'on')).toEqual({ thinking_enabled: true, thinking_budget_tokens: 1024 })
-
-    const on = merged(buildChatThinkingMenu(anthropicBudgetSchema, { thinking_enabled: true, thinking_budget_tokens: 2048 }, t))
-    expect(checkedIds(on)).toEqual(['on'])
-    expect(on.summary).toBe('On')
-    expect(on.secondary[0]!.value).toBe(2048)
   })
 
   it('shows display settings as a secondary group that auto-enables and shows no check while off', () => {

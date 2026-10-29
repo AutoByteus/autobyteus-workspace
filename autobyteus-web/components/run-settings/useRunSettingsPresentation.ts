@@ -38,7 +38,7 @@ export function useRunSettingsPresentation() {
     values.llmModelIdentifier ? catalog.schemaFor(values.runtimeKind, values.llmModelIdentifier) : null
 
   const thinkingMenu = (values: RunSettingsValues) =>
-    buildChatThinkingMenu(schemaOf(values), values.llmConfig, (key) => t(key))
+    buildChatThinkingMenu(schemaOf(values), values.llmConfig, (key, params) => t(key, params))
 
   const modelOptionLabels = (): ModelOptionLabels => ({
     default: t('chat.modelOption.default'),

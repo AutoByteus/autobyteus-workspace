@@ -109,12 +109,6 @@ describe('LLMFactory metadata resolution', () => {
         },
       },
     });
-    expect(anthropicModels.find((model) => model.model_identifier === 'claude-opus-4.7')).toMatchObject({
-      provider_type: LLMProvider.ANTHROPIC,
-      value: 'claude-opus-4-7',
-      max_context_tokens: 1000000,
-      max_output_tokens: 128000
-    });
     const claudeOpus5 = anthropicModels.find((model) => model.model_identifier === 'claude-opus-5');
     expect(claudeOpus5).toMatchObject({
       model_identifier: 'claude-opus-5',
@@ -129,21 +123,15 @@ describe('LLMFactory metadata resolution', () => {
     expect(claudeOpus5?.config_schema).toMatchObject({
       properties: {
         thinking_enabled: expect.objectContaining({ type: 'boolean' }),
-        thinking_display: expect.objectContaining({ enum: ['omitted', 'summarized'] })
+        thinking_display: expect.objectContaining({ enum: ['omitted', 'summarized'] }),
+        reasoning_effort: expect.objectContaining({ enum: ['low', 'medium', 'high', 'xhigh', 'max'], default: 'high' })
       }
     });
-    expect(claudeOpus5?.config_schema?.properties ?? {}).not.toHaveProperty('thinking_budget_tokens');
     expect(anthropicModels.find((model) => model.model_identifier === 'claude-fable-5')).toMatchObject({
       provider_type: LLMProvider.ANTHROPIC,
       value: 'claude-fable-5',
       max_context_tokens: 1000000,
       max_input_tokens: 1000000,
-      max_output_tokens: 128000
-    });
-    expect(anthropicModels.find((model) => model.model_identifier === 'claude-opus-4.8')).toMatchObject({
-      provider_type: LLMProvider.ANTHROPIC,
-      value: 'claude-opus-4-8',
-      max_context_tokens: 1000000,
       max_output_tokens: 128000
     });
     const claudeSonnet5 = anthropicModels.find((model) => model.model_identifier === 'claude-sonnet-5');
@@ -157,11 +145,14 @@ describe('LLMFactory metadata resolution', () => {
     expect(claudeSonnet5?.config_schema).toMatchObject({
       properties: {
         thinking_enabled: expect.objectContaining({ type: 'boolean' }),
-        thinking_display: expect.objectContaining({ enum: ['omitted', 'summarized'] })
+        thinking_display: expect.objectContaining({ enum: ['omitted', 'summarized'] }),
+        reasoning_effort: expect.objectContaining({ enum: ['low', 'medium', 'high', 'xhigh', 'max'], default: 'high' })
       }
     });
-    expect(claudeSonnet5?.config_schema?.properties ?? {}).not.toHaveProperty('thinking_budget_tokens');
-    expect(anthropicModels.map((model) => model.model_identifier)).not.toContain('claude-sonnet-4.8');
+    const anthropicIdentifiers = anthropicModels.map((model) => model.model_identifier);
+    for (const removed of ['claude-sonnet-4.8', 'claude-opus-4.8', 'claude-opus-4.7', 'claude-sonnet-4.6']) {
+      expect(anthropicIdentifiers).not.toContain(removed);
+    }
     const deepseekV4Flash = deepseekModels.find((model) => model.model_identifier === 'deepseek-v4-flash');
     expect(deepseekV4Flash).toMatchObject({
       provider_type: LLMProvider.DEEPSEEK,
@@ -330,7 +321,16 @@ describe('LLMFactory metadata resolution', () => {
       max_input_tokens: 1_000_000,
       max_output_tokens: 128_000,
     });
-    expect(fable?.config_schema).toBeUndefined();
+    expect(Object.keys(fable?.config_schema?.properties ?? {})).toEqual(['reasoning_effort']);
+    expect(fable?.config_schema).toMatchObject({
+      properties: { reasoning_effort: { enum: ['low', 'medium', 'high', 'xhigh', 'max'], default: 'high' } },
+    });
+    expect(anthropicModels.find((model) => model.model_identifier === 'claude-opus-5-5')?.config_schema).toMatchObject({
+      properties: {
+        thinking_display: { enum: ['omitted', 'summarized'], default: 'omitted' },
+        reasoning_effort: { enum: ['low', 'medium', 'high', 'xhigh', 'max'], default: 'medium' },
+      },
+    });
     expect(anthropicModels.map((model) => model.model_identifier)).not.toContain('claude-fable-5.1');
   });
 

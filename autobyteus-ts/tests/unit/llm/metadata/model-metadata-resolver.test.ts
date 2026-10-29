@@ -82,16 +82,16 @@ describe('ModelMetadataResolver', () => {
 
   it('merges matching live fields independently, falls back to static fields, and caches one provider load', async () => {
     const { resolver, loadMetadata } = resolverWith(LLMProvider.ANTHROPIC, [[
-      'claude-sonnet-4-6',
+      'claude-sonnet-5',
       { maxContextTokens: 1_200_000, maxInputTokens: null, maxOutputTokens: 64_000 },
     ]]);
 
     const liveMetadata = await resolver.resolve(
-      lookup(LLMProvider.ANTHROPIC, 'claude-sonnet-4-6'),
+      lookup(LLMProvider.ANTHROPIC, 'claude-sonnet-5'),
       staticMetadata,
     );
     const staticFallback = await resolver.resolve(
-      lookup(LLMProvider.ANTHROPIC, 'claude-opus-4-7'),
+      lookup(LLMProvider.ANTHROPIC, 'claude-opus-5'),
       staticMetadata,
     );
 

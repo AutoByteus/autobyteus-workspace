@@ -83,26 +83,32 @@ const expectNoSampling = (params: Record<string, unknown>) => {
 const expectNoInternalThinkingFields = (params: Record<string, unknown>) => {
   expect(params).not.toHaveProperty('thinking_enabled');
   expect(params).not.toHaveProperty('thinking_display');
-  expect(params).not.toHaveProperty('thinking_budget_tokens');
+  expect(params).not.toHaveProperty('reasoning_effort');
 };
 
 describe.each(['sync', 'stream'] as const)('AnthropicLLM Claude 5.5 request shaping (%s)', (transport) => {
   beforeEach(() => mockCreate.mockReset());
 
   it('sends between_tools for Sonnet 5.5 with thinking off by default (AC-004)', async () => {
-    expect(schemaDefaults('claude-sonnet-5-5')).toEqual({ thinking_enabled: false, thinking_display: 'summarized' });
+    expect(schemaDefaults('claude-sonnet-5-5')).toEqual({
+      thinking_enabled: false, thinking_display: 'summarized', reasoning_effort: 'high',
+    });
     const params = await sendWith(transport, buildLlm('claude-sonnet-5-5', schemaDefaults('claude-sonnet-5-5')));
     expect(params.model).toBe('claude-sonnet-5-5');
     expect(params.thinking).toEqual({ type: 'between_tools' });
+    expect(params.output_config).toEqual({ effort: 'high' });
     expectNoSampling(params);
     expectNoInternalThinkingFields(params);
   });
 
   it('sends disabled for Haiku 5.5 with thinking off by default (AC-005)', async () => {
-    expect(schemaDefaults('claude-haiku-5-5')).toEqual({ thinking_enabled: false, thinking_display: 'omitted' });
+    expect(schemaDefaults('claude-haiku-5-5')).toEqual({
+      thinking_enabled: false, thinking_display: 'omitted', reasoning_effort: 'medium',
+    });
     const params = await sendWith(transport, buildLlm('claude-haiku-5-5', schemaDefaults('claude-haiku-5-5')));
     expect(params.model).toBe('claude-haiku-5-5');
     expect(params.thinking).toEqual({ type: 'disabled' });
+    expect(params.output_config).toEqual({ effort: 'medium' });
     expectNoSampling(params);
     expectNoInternalThinkingFields(params);
   });
@@ -123,7 +129,7 @@ describe.each(['sync', 'stream'] as const)('AnthropicLLM Claude 5.5 request shap
   it.each(['claude-sonnet-5-5', 'claude-haiku-5-5'] as const)(
     'never sends sampling parameters, a manual budget or the provider default temperature to %s (AC-007)',
     async (id) => {
-      const manual = await sendWith(transport, buildLlm(id, { thinking_enabled: true, thinking_budget_tokens: 32_000 }), {
+      const manual = await sendWith(transport, buildLlm(id, { thinking_enabled: true }), {
         thinking: { type: 'enabled', budget_tokens: 32_000 }, temperature: 0.2, top_p: 0.9, top_k: 40,
       });
       expect(manual).not.toHaveProperty('thinking');

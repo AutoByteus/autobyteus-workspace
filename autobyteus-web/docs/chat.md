@@ -170,21 +170,28 @@ server, which rejects run input with empty text.
 `ChatThinkingControl.vue` renders the menu model built by `buildChatThinkingMenu`
 (`components/chat/chatThinkingMenu.ts`). The rule that some settings only apply
 while thinking is on is owned by `utils/llmThinkingConfigAdapter.ts`:
-`hasThinkingSwitch`, `getThinkingDependentParamKeys`, `applyThinkingParamChoice`
-(menu choices) and `applyThinkingDependentEdit` (form edits).
+`hasThinkingSwitch`, `getThinkingDependentParamKeys`,
+`getIndependentThinkingParamKeys`, `applyThinkingParamChoice` (menu choices),
+`applyThinkingToggle` and `applyThinkingDependentEdit` (form edits).
 
-- **Schema with an on/off switch** (Claude `thinking_enabled`, DeepSeek-style
-  `thinking_type`): one "Thinking" list. It is `Off` followed by each effort
-  level (for example Off · Low · Medium · High · Xhigh · Max), or `Off · On` when
-  there is no effort list. Exactly one row is checked, and it matches what will
-  be sent. Picking a level turns thinking on at that level in one action.
-  Re-picking the stored level while Off also turns thinking on. Other dependent
-  settings (budget, display) appear below a divider, and changing one also turns
-  thinking on.
-- **Trigger.** It reads "Off" when thinking is off, the active level when the
-  model has an effort setting, and "On" otherwise. The bulb is muted when off.
-- **Other schemas** (for example Codex `reasoning_effort` with no switch) keep
-  the per-parameter menu, and a pick changes only that parameter.
+- **Claude schema with a switch** (`thinking_enabled`: AutoByteus Claude rows and
+  the Claude Agent SDK runtime): `Off · On`, then the effort group ("Reasoning
+  effort": Low · Medium · High · Xhigh · Max), then display. Effort is
+  independent of the switch and always shows its checked level (the model
+  default when unset). Low/Medium/High keep the thinking state; Xhigh and Max
+  need thinking on, so picking one while Off turns thinking on, and turning
+  thinking Off while one is chosen sets effort to High (the backend refuses the
+  combination too). Display only applies while thinking is on: it shows no check
+  while Off, and choosing it turns thinking on.
+- **Typed switch** (DeepSeek-style `thinking_type`): one "Thinking" list, `Off`
+  followed by each effort level (for example Off · High · Max). Exactly one row
+  is checked; picking a level turns thinking on at that level in one action.
+- **Trigger.** For a Claude switch schema it reads the state and the effort
+  ("Off · Low", "On · High"). For a typed switch it reads "Off" or the active
+  level. The bulb is muted when off.
+- **Other schemas** (for example Codex `reasoning_effort`, or Claude Opus 5.5 and
+  Fable 5.1, whose thinking cannot be switched off) keep the per-parameter menu
+  and the trigger shows the effective level; a pick changes only that parameter.
 
 ## Start Surfaces
 

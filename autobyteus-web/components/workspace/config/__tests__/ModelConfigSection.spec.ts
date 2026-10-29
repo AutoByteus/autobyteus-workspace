@@ -653,18 +653,23 @@ describe('ModelConfigSection', () => {
   describe('thinking-dependent Advanced edits (chat-composer-polish REQ-008)', () => {
     const claudeSchema = {
       thinking_enabled: { type: 'boolean', default: false },
-      reasoning_effort: { type: 'string', title: 'Reasoning Effort', enum: ['low', 'medium', 'high'], default: 'medium' },
+      reasoning_effort: { type: 'string', title: 'Reasoning Effort', enum: ['low', 'medium', 'high', 'xhigh', 'max'], default: 'medium' },
       temperature: { type: 'number', minimum: 0, maximum: 1, default: 0.7 },
     };
 
-    it('turns the Thinking toggle on when an Advanced effort is changed while off (AC-010)', async () => {
+    it('keeps Claude thinking off for an Advanced effort up to high and turns it on for xhigh/max (claude-anthropic-effort-control AC-005)', async () => {
       const wrapper = mount(ModelConfigSection, {
         props: { modelConfig: { thinking_enabled: false }, schema: claudeSchema },
       });
       await wrapper.get('select#config-reasoning_effort').setValue('high');
-      expect(wrapper.emitted('update:config')?.at(-1)?.[0]).toEqual({ thinking_enabled: true, reasoning_effort: 'high' });
+      expect(wrapper.emitted('update:config')?.at(-1)?.[0]).toEqual({ thinking_enabled: false, reasoning_effort: 'high' });
 
-      await wrapper.setProps({ modelConfig: { thinking_enabled: true, reasoning_effort: 'high' } });
+      await wrapper.setProps({ modelConfig: { thinking_enabled: false, reasoning_effort: 'high' } });
+      expect(wrapper.getComponent({ name: 'ModelConfigBasic' }).props('enabled')).toBe(false);
+      await wrapper.get('select#config-reasoning_effort').setValue('max');
+      expect(wrapper.emitted('update:config')?.at(-1)?.[0]).toEqual({ thinking_enabled: true, reasoning_effort: 'max' });
+
+      await wrapper.setProps({ modelConfig: { thinking_enabled: true, reasoning_effort: 'max' } });
       expect(wrapper.getComponent({ name: 'ModelConfigBasic' }).props('enabled')).toBe(true);
     });
 

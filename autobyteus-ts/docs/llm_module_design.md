@@ -88,7 +88,7 @@ new built-in enum value for every saved endpoint.
     `LLMFactory.ensureInitialized()` is called. It:
     - Registers supported built-in API models from
       `src/llm/supported-model-definitions.ts` (for example `gpt-6-astra`, `gpt-5.5`,
-      current Anthropic rows such as `claude-opus-5`, `claude-fable-5-1`, `claude-fable-5`, `claude-opus-4.8`,
+      current Anthropic rows such as `claude-opus-5`, `claude-fable-5-1`, `claude-fable-5`,
       and `claude-sonnet-5`, `deepseek-v4-flash`, `gemini-3.5-flash`, and
       the Kimi `kimi-k2.6` / `kimi-k2.7-code` /
       `kimi-k2.7-code-highspeed` rows).
@@ -169,12 +169,11 @@ Current examples of provider-specific model rules:
   support, plus trusted cache-read/cache-write and >272K input-tier pricing.
   Do not add the unsuffixed `gpt-5.6` alias as a fourth row or broaden older
   OpenAI schemas with `max`.
-- Current Anthropic adaptive-thinking rows (`claude-opus-5`,
-  `claude-opus-4.8`, `claude-opus-4.7`, `claude-sonnet-5`, and
-  `claude-fable-5`) use adaptive
-  thinking rather than fixed-budget extended thinking. The adapter strips
-  provider-invalid manual thinking budgets and unsupported sampling fields
-  (`temperature`, `top_p`, `top_k`) for these rows. Do not add a
+- Every Anthropic row uses adaptive thinking rather than fixed-budget extended
+  thinking and exposes Anthropic effort (`reasoning_effort`, sent as
+  `output_config.effort`). The adapter strips provider-invalid manual thinking
+  budgets and unsupported sampling fields (`temperature`, `top_p`, `top_k`).
+  Claude rows below generation 5 are not in the catalog. Do not add a
   `claude-sonnet-4.8` alias unless Anthropic publishes that exact API ID, and
   do not make Fable 5 a default or fallback without a separate product
   decision.

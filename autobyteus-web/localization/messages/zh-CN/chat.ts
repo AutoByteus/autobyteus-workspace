@@ -60,6 +60,7 @@ const chatMessages = {
   'chat.thinking.on': '开',
   'chat.thinking.off': '关',
   'chat.thinking.default': '默认',
+  'chat.thinking.summaryWithEffort': '{{state}} · {{effort}}',
   'chat.thinking.triggerAria': '思考：{{value}}。更改',
   'chat.skills.headerPrefix': '匹配的技能',
   'chat.skills.headerHint': '↑↓ 移动，Enter 添加',

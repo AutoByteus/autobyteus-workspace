@@ -1739,9 +1739,12 @@ unavailable leaves **Advanced** collapsed initially, but still openable.
 Toggling a supported **Thinking** control ON opens **Advanced** automatically;
 toggling OFF after inspection does not force-collapse the section.
 When the schema has a thinking on/off switch, a user edit to a setting that only
-applies while thinking is on (for example `reasoning_effort`,
-`thinking_budget_tokens` or `thinking_display`) made under **Advanced** while
-**Thinking** is OFF also turns **Thinking** ON and keeps the edited value.
+applies while thinking is on (for example DeepSeek `reasoning_effort` or Claude
+`thinking_display`) made under **Advanced** while **Thinking** is OFF also turns
+**Thinking** ON and keeps the edited value. Claude `reasoning_effort` applies with
+thinking on and off: editing it to low/medium/high keeps **Thinking** as it is,
+and only `xhigh`/`max` turn **Thinking** ON; turning **Thinking** OFF while
+`xhigh`/`max` is set changes effort to `high`.
 `ModelConfigSection` routes these edits through `applyThinkingDependentEdit`
 (`utils/llmThinkingConfigAdapter.ts`), the same owner the Chat thinking menu uses.
 Automatic default and sanitize writes do not go through it and never turn

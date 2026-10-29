@@ -271,7 +271,7 @@ The current latest-model support set is summarized in
 - Anthropic `claude-opus-5-5` (verified 2026-09-23),
   `claude-opus-5` (verified 2026-07-31; standard pricing effective
   2026-07-24), `claude-fable-5-1` (verified 2026-09-22), `claude-fable-5`,
-  `claude-opus-4.8`, `claude-sonnet-5-5` and `claude-haiku-5-5` (verified
+  `claude-sonnet-5-5` and `claude-haiku-5-5` (verified
   2026-10-09), and `claude-sonnet-5`
   with exact Claude API values and no
   `claude-sonnet-4.8` alias. Fable 5 is catalog-available only, not a default
@@ -298,16 +298,17 @@ Provider adapters own request-shape differences:
   `cache_write_tokens` detail fields into generic cache-creation input usage.
 - `AnthropicLLM` shapes requests from one exact-value per-model table,
   `anthropic-model-request-policy.ts` (thinking mode, toggle-off shape, forced
-  `tool_choice` rejection); every catalog row has an explicit entry, including
-  the fixed-budget `claude-sonnet-4-6`.
+  `tool_choice` rejection) and the effort vocabulary; every catalog row has an
+  explicit entry and any other model value fails locally.
   Sonnet 5.5 with thinking off sends `{ type: "between_tools" }` and rejects a
   forced `tool_choice` locally; Haiku 5.5 and Sonnet 5 send `{ type: "disabled" }`.
-- `AnthropicLLM` maps current Claude adaptive-thinking config for Opus 5,
-  Opus 4.8, Opus 4.7, Sonnet 5.5, Sonnet 5, Haiku 5.5, and Fable 5 without sending fixed thinking budgets,
-  manual-budget overrides, or unsupported sampling fields (`temperature`,
-  `top_p`, `top_k`). It also filters AutoByteus-internal invocation kwargs
-  before Anthropic Messages API calls. Older Claude rows keep the legacy
-  fixed-budget path unless a separate provider migration changes them.
+- `AnthropicLLM` maps Claude adaptive-thinking config for every catalog row
+  without sending fixed thinking budgets, manual-budget overrides, or
+  unsupported sampling fields (`temperature`, `top_p`, `top_k`). It maps a
+  configured `reasoning_effort` to `output_config.effort` (never a top-level
+  field; nothing when unset) and fails locally on an unknown level or on
+  `xhigh`/`max` with `thinking_enabled: false`. It also filters
+  AutoByteus-internal invocation kwargs before Anthropic Messages API calls.
 - Opus 5.5 uses an adaptive-only schema and preflight: fixed-budget thinking,
   unsupported sampling parameters and forced `tool_choice` are rejected before
   the Messages SDK call.

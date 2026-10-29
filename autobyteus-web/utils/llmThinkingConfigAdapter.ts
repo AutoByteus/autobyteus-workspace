@@ -20,7 +20,7 @@ export type ThinkingControlState = {
 
 const PROVIDER_KEYS: Record<ThinkingProvider, string[]> = {
   openai: ['reasoning_effort', 'reasoning_summary'],
-  claude: ['thinking_enabled', 'thinking_budget_tokens', 'thinking_display', 'reasoning_effort'],
+  claude: ['thinking_enabled', 'thinking_display', 'reasoning_effort'],
   gemini: ['thinking_level', 'include_thoughts'],
   typed: ['thinking_type', 'reasoning_effort'],
 };
@@ -70,6 +70,19 @@ const preferredGeminiLevel = (
   if (enumIncludes(param, 'medium')) return 'medium';
   return nonOffEnumValue(param, ['minimal']);
 };
+
+/**
+ * Claude effort levels that need thinking on (Anthropic rejects them with thinking off on several
+ * models); turning thinking off while one is chosen falls back to `high`. The backend refuses the
+ * combination too.
+ */
+const CLAUDE_THINKING_REQUIRED_EFFORT_LEVELS: readonly unknown[] = ['xhigh', 'max'];
+const CLAUDE_THINKING_OFF_EFFORT_FALLBACK = 'high';
+
+const claudeEffortRequiresThinking = (
+  schema: UiModelConfigSchema | null,
+  config: ThinkingConfig | null | undefined,
+): boolean => CLAUDE_THINKING_REQUIRED_EFFORT_LEVELS.includes(effectiveValue(schema, config, 'reasoning_effort'));
 
 const positiveOpenAiValue = (
   param: UiModelConfigParameterSchema | null | undefined,
@@ -245,11 +258,9 @@ export const applyThinkingToggle = (
     }
     case 'claude': {
       applyKey(next, schema, 'thinking_enabled', enabled);
-      if (enabled && next.thinking_budget_tokens === undefined) {
-        const budgetDefault = getValidSchemaDefault(schema.thinking_budget_tokens);
-        if (budgetDefault !== undefined) {
-          applyKey(next, schema, 'thinking_budget_tokens', budgetDefault);
-        }
+      if (!enabled && claudeEffortRequiresThinking(schema, next)
+        && enumIncludes(schema.reasoning_effort, CLAUDE_THINKING_OFF_EFFORT_FALLBACK)) {
+        applyKey(next, schema, 'reasoning_effort', CLAUDE_THINKING_OFF_EFFORT_FALLBACK);
       }
       break;
     }
@@ -305,8 +316,13 @@ export const getThinkingToggleOwnedParamKeys = (
 ): string[] => getThinkingControlState(schema, null).toggleOwnedKeys;
 
 const DEPENDENT_KEYS: Partial<Record<ThinkingProvider, string[]>> = {
-  claude: ['reasoning_effort', 'thinking_budget_tokens', 'thinking_display'],
+  claude: ['thinking_display'],
   typed: ['reasoning_effort'],
+};
+
+/** Keys of a switch schema that apply with thinking on and off (Claude effort). */
+const INDEPENDENT_KEYS: Partial<Record<ThinkingProvider, string[]>> = {
+  claude: ['reasoning_effort'],
 };
 
 /**
@@ -330,8 +346,34 @@ export const getThinkingDependentParamKeys = (
 };
 
 /**
+ * Keys of a switch schema that are neither the switch nor dependent on it: they keep their value
+ * and stay selectable with thinking on and off. Empty unless `hasThinkingSwitch`.
+ */
+export const getIndependentThinkingParamKeys = (
+  schema: UiModelConfigSchema | null,
+): string[] => {
+  const provider = detectThinkingProvider(schema);
+  if (!provider || !hasThinkingSwitch(schema)) return [];
+  return (INDEPENDENT_KEYS[provider] ?? []).filter((key) => hasKey(schema, key));
+};
+
+/**
+ * A user choice or edit that leaves Claude thinking off with a thinking-required effort (xhigh,
+ * max) turns thinking on, so the result is always a combination the backend accepts.
+ */
+const enableThinkingForChosenClaudeEffort = (
+  schema: UiModelConfigSchema | null,
+  next: ThinkingConfig | null,
+): ThinkingConfig | null => {
+  if (detectThinkingProvider(schema) !== 'claude' || !hasThinkingSwitch(schema)) return next;
+  if (getThinkingControlState(schema, next).enabled || !claudeEffortRequiresThinking(schema, next)) return next;
+  return applyThinkingToggle(schema, true, next);
+};
+
+/**
  * The user explicitly chose `value` for thinking parameter `key` (for example a menu item). A
- * dependent key also turns thinking on, keeping the chosen value; other keys are written as is.
+ * dependent key also turns thinking on, keeping the chosen value; a Claude effort that needs
+ * thinking (xhigh, max) turns it on too; other keys are written as is.
  */
 export const applyThinkingParamChoice = (
   schema: UiModelConfigSchema | null,
@@ -342,13 +384,14 @@ export const applyThinkingParamChoice = (
   const next: ThinkingConfig = { ...(config ?? {}), [key]: value };
   return getThinkingDependentParamKeys(schema).includes(key)
     ? applyThinkingToggle(schema, true, next)
-    : next;
+    : enableThinkingForChosenClaudeEffort(schema, next);
 };
 
 /**
  * A form emitted `next` after a user edit of `previous`. Choosing a new value for a dependent setting
- * while thinking is off turns thinking on and keeps the chosen value. Every other edit, including
- * clearing a dependent value, passes through unchanged.
+ * while thinking is off turns thinking on and keeps the chosen value, and so does choosing a Claude
+ * effort that needs thinking. Every other edit, including clearing a dependent value, passes through
+ * unchanged.
  */
 export const applyThinkingDependentEdit = (
   schema: UiModelConfigSchema | null,
@@ -356,19 +399,18 @@ export const applyThinkingDependentEdit = (
   next: ThinkingConfig | null | undefined,
 ): ThinkingConfig | null => {
   const dependentKeys = getThinkingDependentParamKeys(schema);
-  if (dependentKeys.length === 0) return next ?? null;
+  if (dependentKeys.length === 0 && getIndependentThinkingParamKeys(schema).length === 0) return next ?? null;
   if (getThinkingControlState(schema, previous).enabled) return next ?? null;
   if (getThinkingControlState(schema, next).enabled) return next ?? null;
   const chosen = dependentKeys.some((key) =>
     next?.[key] !== undefined && !Object.is(previous?.[key], next[key]));
-  return chosen ? applyThinkingToggle(schema, true, next) : next ?? null;
+  return chosen ? applyThinkingToggle(schema, true, next) : enableThinkingForChosenClaudeEffort(schema, next ?? null);
 };
 
 /**
  * The model's default thinking parameters, written explicitly: each thinking key the schema
  * declares at its effective default (what the thinking control shows for an empty config). A
- * Claude budget is only written with thinking on, and a typed effort only with thinking enabled,
- * as `applyThinkingToggle` does.
+ * typed effort is only written with thinking enabled, as `applyThinkingToggle` does.
  */
 export const getDefaultThinkingConfig = (
   schema: UiModelConfigSchema | null,
@@ -379,7 +421,6 @@ export const getDefaultThinkingConfig = (
     if (value !== undefined) next[key] = value;
   }
   const provider = detectThinkingProvider(schema);
-  if (provider === 'claude' && next.thinking_enabled !== true) removeKey(next, 'thinking_budget_tokens');
   if (provider === 'typed' && next.thinking_type !== 'enabled') removeKey(next, 'reasoning_effort');
   return next;
 };

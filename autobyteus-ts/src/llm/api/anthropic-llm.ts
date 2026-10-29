@@ -31,7 +31,10 @@ import {
   cloneSafeProviderRequestKwargs,
 } from './provider-request-kwargs.js';
 import {
+  ANTHROPIC_EFFORT_LEVELS,
+  ANTHROPIC_THINKING_REQUIRED_EFFORT_LEVELS,
   resolveAnthropicModelRequestPolicy,
+  type AnthropicEffortLevel,
   type AnthropicModelRequestPolicy,
 } from './anthropic-model-request-policy.js';
 import type {
@@ -71,8 +74,8 @@ const splitLeadingSystemMessages = (messages: Message[]): { systemPrompt: string
 
 const ANTHROPIC_INTERNAL_EXTRA_PARAM_KEYS = new Set([
   'thinking_enabled',
-  'thinking_budget_tokens',
-  'thinking_display'
+  'thinking_display',
+  'reasoning_effort'
 ]);
 // Config extra params are forwarded to the request except internal toggles and
 // `cache_control`, which only the adapter decides (from the invocation's cache scope).
@@ -123,7 +126,7 @@ const validateStrictRequestRules = (
   explicitThinking: unknown
 ): void => {
   if (policy.thinkingMode === 'adaptive_required') {
-    if (configExtraParams?.thinking_enabled === false || configExtraParams?.thinking_budget_tokens !== undefined ||
+    if (configExtraParams?.thinking_enabled === false ||
         (explicitThinking !== undefined && (!isObjectRecord(explicitThinking) || explicitThinking.type !== 'adaptive'))) {
       throw new Error(
         `Anthropic model ${modelValue} supports adaptive thinking only; disabled and manual thinking are unavailable.`
@@ -136,6 +139,36 @@ const validateStrictRequestRules = (
   if (policy.rejectsForcedToolChoice && isForcedToolChoice(request.tool_choice)) {
     throw new Error(`Anthropic model ${modelValue} does not support forced tool choice.`);
   }
+};
+
+/**
+ * Reads the configured effort. Unset → null (nothing sent, the model default applies).
+ * An unknown level, or a thinking-required level with the thinking switch off, fails locally.
+ */
+const resolveConfiguredEffort = (
+  modelValue: string,
+  configExtraParams: Record<string, unknown> | null | undefined
+): AnthropicEffortLevel | null => {
+  const effort = configExtraParams?.reasoning_effort;
+  if (effort === undefined || effort === null) {
+    return null;
+  }
+  if (!(ANTHROPIC_EFFORT_LEVELS as readonly unknown[]).includes(effort)) {
+    throw new Error(
+      `Anthropic model ${modelValue}: unknown effort '${String(effort)}'; use one of ${ANTHROPIC_EFFORT_LEVELS.join(', ')}.`
+    );
+  }
+  const level = effort as AnthropicEffortLevel;
+  if (configExtraParams?.thinking_enabled === false && ANTHROPIC_THINKING_REQUIRED_EFFORT_LEVELS.includes(level)) {
+    throw new Error(`Anthropic model ${modelValue}: effort '${level}' requires thinking on.`);
+  }
+  return level;
+};
+
+/** Sets `output_config.effort`, keeping any other `output_config` fields already on the request. */
+const applyEffort = (request: Record<string, unknown>, effort: AnthropicEffortLevel): void => {
+  const outputConfig = isObjectRecord(request.output_config) ? request.output_config : {};
+  request.output_config = { ...outputConfig, effort };
 };
 
 const adaptiveThinking = (
@@ -181,12 +214,6 @@ const buildThinkingFromToggle = (
       if (enabled === true) return adaptiveThinking(configExtraParams);
       if (enabled === false && policy.thinkingOffShape !== 'omit') return { type: policy.thinkingOffShape };
       return null;
-    case 'legacy_budget': {
-      if (enabled !== true) return null;
-      const budgetRaw = configExtraParams?.thinking_budget_tokens;
-      const budget = typeof budgetRaw === 'number' ? budgetRaw : Number(budgetRaw ?? 1024);
-      return { type: 'enabled', budget_tokens: Number.isFinite(budget) ? budget : 1024 };
-    }
   }
 };
 
@@ -205,6 +232,7 @@ const applyAnthropicRequestParams = (
 
   const explicitThinking = kwargs.thinking ?? providerExtraParams.thinking;
   validateStrictRequestRules(request, modelValue, policy, configExtraParams, explicitThinking);
+  const effort = resolveConfiguredEffort(modelValue, configExtraParams);
 
   if (Array.isArray(kwargs.tools)) {
     request.tools = kwargs.tools as ToolUnion[];
@@ -226,15 +254,12 @@ const applyAnthropicRequestParams = (
     }
   }
 
-  if (policy.thinkingMode !== 'legacy_budget') {
-    for (const key of ANTHROPIC_SAMPLING_PARAM_KEYS) {
-      delete request[key];
-    }
-    return;
+  if (effort !== null) {
+    applyEffort(request, effort);
   }
 
-  if (request.thinking === undefined && request.temperature === undefined) {
-    request.temperature = 0;
+  for (const key of ANTHROPIC_SAMPLING_PARAM_KEYS) {
+    delete request[key];
   }
 };
 

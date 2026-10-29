@@ -3,28 +3,22 @@ import { createStaticModelMetadata } from './supported-model-static-metadata.js'
 import { LLMConfig } from './utils/llm-config.js';
 import { ParameterSchema, ParameterDefinition, ParameterType } from '../utils/parameter-schema.js';
 import { AnthropicLLM } from './api/anthropic-llm.js';
+import { ANTHROPIC_EFFORT_LEVELS, type AnthropicEffortLevel } from './api/anthropic-model-request-policy.js';
 import { LLMProvider } from './providers.js';
 import { pricing } from './supported-model-pricing.js';
 
-const claudeSchema = new ParameterSchema([
+/** Anthropic effort (`output_config.effort`); the default equals the model's API default. */
+const claudeEffortParameter = (defaultValue: AnthropicEffortLevel): ParameterDefinition =>
   new ParameterDefinition({
-    name: 'thinking_enabled',
-    type: ParameterType.BOOLEAN,
-    description: 'Enable extended thinking summaries in Claude responses',
+    name: 'reasoning_effort',
+    type: ParameterType.ENUM,
+    description: 'Anthropic effort: how much Claude spends on thinking, text and tool calls. Xhigh and max need thinking on.',
     required: false,
-    defaultValue: false
-  }),
-  new ParameterDefinition({
-    name: 'thinking_budget_tokens',
-    type: ParameterType.INTEGER,
-    description: 'Token budget for extended thinking (min 1024)',
-    required: false,
-    defaultValue: 1024,
-    minValue: 1024
-  })
-]);
+    defaultValue,
+    enumValues: [...ANTHROPIC_EFFORT_LEVELS],
+  });
 
-const claudeAdaptiveThinkingSchema = new ParameterSchema([
+const claudeAdaptiveThinkingSchema = (effortDefault: AnthropicEffortLevel): ParameterSchema => new ParameterSchema([
   new ParameterDefinition({
     name: 'thinking_enabled',
     type: ParameterType.BOOLEAN,
@@ -39,7 +33,8 @@ const claudeAdaptiveThinkingSchema = new ParameterSchema([
     required: false,
     defaultValue: 'omitted',
     enumValues: ['omitted', 'summarized']
-  })
+  }),
+  claudeEffortParameter(effortDefault),
 ]);
 
 const claudeOpus55Schema = new ParameterSchema([
@@ -51,7 +46,10 @@ const claudeOpus55Schema = new ParameterSchema([
     defaultValue: 'omitted',
     enumValues: ['omitted', 'summarized'],
   }),
+  claudeEffortParameter('medium'),
 ]);
+
+const claudeFable51Schema = new ParameterSchema([claudeEffortParameter('high')]);
 
 const claudeSonnet55Schema = new ParameterSchema([
   new ParameterDefinition({
@@ -68,7 +66,8 @@ const claudeSonnet55Schema = new ParameterSchema([
     required: false,
     defaultValue: 'summarized',
     enumValues: ['omitted', 'summarized']
-  })
+  }),
+  claudeEffortParameter('high'),
 ]);
 
 export const anthropicSupportedModelDefinitions: SupportedModelDefinition[] = [
@@ -80,6 +79,7 @@ export const anthropicSupportedModelDefinitions: SupportedModelDefinition[] = [
       pricingEffectiveDate: '2026-09-01',
       cachedInputReadTokenPricing: 0.25, cachedInputWrite5mTokenPricing: 12.5, cachedInputWrite1hTokenPricing: 20,
     }) }),
+    configSchema: claudeFable51Schema,
   },
   {
     name: 'claude-fable-5',
@@ -94,7 +94,7 @@ export const anthropicSupportedModelDefinitions: SupportedModelDefinition[] = [
       cachedInputWrite5mTokenPricing: 12.5,
       cachedInputWrite1hTokenPricing: 20.0,
     }) }),
-    configSchema: claudeAdaptiveThinkingSchema
+    configSchema: claudeAdaptiveThinkingSchema('high')
   },
   {
     name: 'claude-opus-5',
@@ -109,7 +109,7 @@ export const anthropicSupportedModelDefinitions: SupportedModelDefinition[] = [
       cachedInputWrite5mTokenPricing: 6.25,
       cachedInputWrite1hTokenPricing: 10.0,
     }) }),
-    configSchema: claudeAdaptiveThinkingSchema
+    configSchema: claudeAdaptiveThinkingSchema('high')
   },
   {
     name: 'claude-opus-5-5',
@@ -126,35 +126,6 @@ export const anthropicSupportedModelDefinitions: SupportedModelDefinition[] = [
       cachedInputWrite1hTokenPricing: 8,
     }) }),
     configSchema: claudeOpus55Schema,
-  },
-  {
-    name: 'claude-opus-4.8',
-    value: 'claude-opus-4-8',
-    provider: LLMProvider.ANTHROPIC,
-    llmClass: AnthropicLLM,
-    compactionSummaryMode: 'cached_conversation',
-    canonicalName: 'claude-opus-4.8', staticMetadata: createStaticModelMetadata(1000000, 1000000, 128000, 'https://platform.claude.com/docs/en/about-claude/models/overview', '2026-07-07'),
-    defaultConfig: new LLMConfig({ pricingConfig: pricing(5.0, 25.0, {
-      pricingEffectiveDate: '2026-07-07',
-      cachedInputReadTokenPricing: 0.5,
-      cachedInputWrite5mTokenPricing: 6.25,
-      cachedInputWrite1hTokenPricing: 10.0,
-    }) }),
-    configSchema: claudeAdaptiveThinkingSchema
-  },
-  {
-    name: 'claude-opus-4.7',
-    value: 'claude-opus-4-7',
-    provider: LLMProvider.ANTHROPIC,
-    llmClass: AnthropicLLM,
-    compactionSummaryMode: 'cached_conversation',
-    canonicalName: 'claude-opus-4.7', staticMetadata: createStaticModelMetadata(1000000, 1000000, 128000, 'https://platform.claude.com/docs/en/about-claude/models/overview', '2026-04-25'),
-    defaultConfig: new LLMConfig({ pricingConfig: pricing(5.0, 25.0, {
-      cachedInputReadTokenPricing: 0.5,
-      cachedInputWrite5mTokenPricing: 6.25,
-      cachedInputWrite1hTokenPricing: 10.0,
-    }) }),
-    configSchema: claudeAdaptiveThinkingSchema
   },
   {
     name: 'claude-sonnet-5-5',
@@ -185,21 +156,7 @@ export const anthropicSupportedModelDefinitions: SupportedModelDefinition[] = [
       cachedInputWrite5mTokenPricing: 2.5,
       cachedInputWrite1hTokenPricing: 4.0,
     }) }),
-    configSchema: claudeAdaptiveThinkingSchema
-  },
-  {
-    name: 'claude-sonnet-4.6',
-    value: 'claude-sonnet-4-6',
-    provider: LLMProvider.ANTHROPIC,
-    llmClass: AnthropicLLM,
-    compactionSummaryMode: 'cached_conversation',
-    canonicalName: 'claude-sonnet-4.6', staticMetadata: createStaticModelMetadata(1000000, 1000000, 64000, 'https://platform.claude.com/docs/en/about-claude/models/overview', '2026-04-09'),
-    defaultConfig: new LLMConfig({ pricingConfig: pricing(3.0, 15.0, {
-      cachedInputReadTokenPricing: 0.3,
-      cachedInputWrite5mTokenPricing: 3.75,
-      cachedInputWrite1hTokenPricing: 6.0,
-    }) }),
-    configSchema: claudeSchema
+    configSchema: claudeAdaptiveThinkingSchema('high')
   },
   {
     name: 'claude-haiku-5-5',
@@ -226,6 +183,6 @@ export const anthropicSupportedModelDefinitions: SupportedModelDefinition[] = [
         },
       ],
     }) }),
-    configSchema: claudeAdaptiveThinkingSchema,
+    configSchema: claudeAdaptiveThinkingSchema('medium'),
   },
 ];
