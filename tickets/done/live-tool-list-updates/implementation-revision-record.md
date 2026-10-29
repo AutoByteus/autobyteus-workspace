@@ -10,6 +10,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | IR-002 | Architecture Reviewer / `design-review-report.md` / ARCH-REV-009 (Pass), after Code Reviewer CRR-001 | CR-001 (via SR-005…SR-009), CR-002, CR-003 | `Design Impact Rework` + `Local Fix` | `SR-009`, `ARCH-REV-009`, `CRR-001` | Ready for Code Review |
 | IR-003 | Code Reviewer / `code-review-report.md` / CRR-002 (Fail) | CR-004 | `Local Fix` | `SR-009`, `CRR-002` | Ready for Code Review |
 | IR-004 | Architecture Reviewer / `design-review-report.md` / ARCH-REV-010 (Pass), after API/E2E round 1 (API-05) and failure-origin review CRR-004 | API-05 (CRR-004 Design Impact) | `Design Impact Rework` | `SR-010`, `ARCH-REV-010`, `CRR-004` | Ready for Code Review |
+| IR-005 | Delivery Engineer / `release-deployment-report.md` / DR-001 (Blocked: build-only release run `40950729360` failed `guard:localization-boundary`) | DR-001 | `Local Fix` | `DR-001` | Ready for Code Review |
 
 ## Revision Entries
 
@@ -91,4 +92,14 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
   - New `tests/integration/agent-execution/single-run-unsent-input-failure.integration.test.ts` (real coordinator, real AgentRun): a reopen failure gives exactly one `ERROR` frame with `RUNTIME_SESSION_REOPEN_FAILED` and the message; a sent turn that then fails gives no coordinator `ERROR` frame (the run's own ERROR is published by the run). The first case fails against the coordinator without the change.
   - The API-05 e2e (`tests/e2e/runtime/tool-list-reopen-failure.e2e.test.ts`), unchanged, now passes (`evidence/ir-004-api-05-rerun.log`).
 - Local validation and result: see `implementation-handoff.md` (IR-004 block) and `evidence/local-checks.log`.
+
+### IR-005 — DR-001: the notice spec reads its messages through the localization runtime
+
+- Triggering role, report path, and round: `/software_engineering_team/delivery_engineer`, `release-deployment-report.md` / `delivery-revision-record.md`, DR-001. The build-only desktop release run `40950729360` on `personal` @ `be9e78dc93` failed "Build Linux x64" and "Build Linux ARM64" at `pnpm guard:localization-boundary`.
+- Triggering finding IDs: DR-001.
+- Classification: `Local Fix` (this ticket's test code; introduced in `a9cc802d99`, kept in `c4da95428e`). My earlier web checks ran the suites and the typecheck but not this guard, which is how it got through.
+- Prior authoritative result: merged on `personal` @ `be9e78dc93`; delivery blocker record `4fb1c1640d`.
+- Current authoritative result: the IR-005 commit on `codex/live-tool-list-updates`, fast-forwarded to `origin/personal` @ `4fb1c1640d` first (no revert).
+- Implementation delta: `autobyteus-web/components/conversation/segments/__tests__/SystemTaskNotificationSegment.spec.ts` no longer imports `~/localization/messages/en/workspace` and `~/localization/messages/zh-CN/workspace`. It reads both locales through `getCatalog('en')` / `getCatalog('zh-CN')` from `~/localization/runtime/catalogRegistry`, as `ServerMigrationsManager.spec.ts` does. The assertions are unchanged: the en label is exactly "Tools updated", the zh-CN label exists, and the "Tools updated" card tests are untouched.
+- Local validation and result: `evidence/ir-005-localization-guard-fix.log`. Each guard was run on its own with its own exit code: `guard:web-boundary` 0, `guard:localization-boundary` 0 (1 against the old file), `audit:localization-literals` 0 (zero unresolved findings). The spec passes 8/8. In the full web suite, Nuxt passed 668 files / 4,860 tests. Electron's first run had one failure in `PortOwnerInspectorFaults.spec.ts`: the deadline fixture's child was killed at 1000 ms before it wrote its pid file, because the machine was loaded. This ticket touches nothing under `electron/`. The file passed 11/11 alone, and the Electron re-run passed 279/279.
 
