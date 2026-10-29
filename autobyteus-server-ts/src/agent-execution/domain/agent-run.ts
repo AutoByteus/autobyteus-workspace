@@ -6,7 +6,8 @@ import type { AgentInputStateDto } from "@autobyteus/agent-presentation-contract
 import { observeAgentRunInputEvents } from "../input/agent-run-input-lifecycle.js";
 import { AgentRunCompactionRecovery } from "../input/agent-run-compaction-recovery.js";
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
-import type { AgentRunBackend } from "../backends/agent-run-backend.js";
+import type { AgentRunBackend, AgentRunToolListApplyResult } from "../backends/agent-run-backend.js";
+import type { AgentDefinition } from "../../agent-definition/domain/models.js";
 import { dispatchRuntimeEvent } from "../backends/shared/runtime-event-dispatch.js";
 import { AgentRunEventDispatchQueue } from "../events/agent-run-event-dispatch-queue.js";
 import { dispatchProcessedAgentRunEvents } from "../events/dispatch-processed-agent-run-events.js";
@@ -153,6 +154,18 @@ export class AgentRun {
   get config() { return this.context.config; }
   isActive(): boolean { return this.backend.isActive(); }
   getPlatformAgentRunId() { return this.backend.getPlatformAgentRunId(); }
+
+  /**
+   * Gives the runtime the tools of this definition: at once where it can take them, otherwise at
+   * its next turn start (see `AgentRunBackend.applyDefinitionTools`). Rejected on a stopped run.
+   */
+  async applyDefinitionTools(definition: AgentDefinition): Promise<AgentRunToolListApplyResult> {
+    if (!this.backend.isActive()) throw new Error(`Agent run '${this.runId}' is not active.`);
+    return this.backend.applyDefinitionTools(definition);
+  }
+
+  /** The tool names the runtime has now (the names the agent calls). */
+  getToolNames(): readonly string[] { return this.backend.getToolNames(); }
 
   async inspectBackgroundTasks(): Promise<AgentBackgroundTaskView> {
     const inspection = this.backend.backgroundTaskInspection;
@@ -355,7 +368,7 @@ export class AgentRun {
       let dispatch = this.providerInputNormalizer.normalizeForProvider(input.claim.dispatch);
       normalized = true;
       if (canCarryPreface(input.recovery !== null, dispatch.message)) {
-        input.preface = await this.prefaces.take();
+        input.preface = await this.prefaces.take(dispatch.kind);
         if (input.preface) dispatch = combinePreface(dispatch, input.preface);
       }
       result = await this.backend.dispatchUserInput(dispatch);

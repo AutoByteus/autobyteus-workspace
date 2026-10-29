@@ -79,6 +79,8 @@ export interface SystemTaskNotificationSegment {
   type: 'system_task_notification';
   senderId: string;
   content: string;
+  /** An action the notice offers, e.g. `restart_run`. */
+  action?: string | null;
 }
 
 export interface InterAgentMessageSegment {

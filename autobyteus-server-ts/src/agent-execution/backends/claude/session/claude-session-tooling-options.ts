@@ -68,7 +68,6 @@ export const resolveClaudeSessionToolingOptions = (input: {
     input.agentToolsMcpEnabledToolNames ?? configuredAgentToolsMcpToolNames,
   );
   const allowedTools = resolveAllowedToolNames({
-    agentToolsMcpEnabledToolNames,
     hasMaterializedSkills: input.hasMaterializedSkills,
   });
 
@@ -140,17 +139,18 @@ const normalizeToolNames = (toolNames: Iterable<string> | null | undefined): str
   ),
 ];
 
+/**
+ * The tools the Claude CLI allows without asking: only `Skill`. Agent Tools are not listed here,
+ * because the list can change during the run (autobyteus-324); the tool-use coordinator allows a
+ * tool that is in the run's current Agent Tools descriptor.
+ */
 const resolveAllowedToolNames = (input: {
-  agentToolsMcpEnabledToolNames: string[];
   hasMaterializedSkills: boolean;
-}): string[] => {
-  const allowedTools = new Set<string>();
-  if (input.hasMaterializedSkills) {
-    allowedTools.add("Skill");
-  }
-  for (const toolName of input.agentToolsMcpEnabledToolNames) {
-    allowedTools.add(toolName);
-    allowedTools.add(buildClaudeAgentToolsMcpToolName(toolName));
-  }
-  return [...allowedTools];
-};
+}): string[] => (input.hasMaterializedSkills ? ["Skill"] : []);
+
+/** Whether a Claude tool name is one of these Agent Tools (as its MCP tool name or bare). */
+export const isEnabledClaudeAgentToolsMcpTool = (
+  enabledToolNames: readonly string[],
+  claudeToolName: string,
+): boolean => enabledToolNames.some((toolName) =>
+  claudeToolName === toolName || claudeToolName === buildClaudeAgentToolsMcpToolName(toolName));

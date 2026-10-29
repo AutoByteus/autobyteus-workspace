@@ -108,6 +108,7 @@ const createSession = (requestedToolNames: string[] = [], input: {
     }),
   });
 
+  const describeForRun = vi.fn(() => activateForRun.mock.results.at(-1)?.value.descriptor);
   const session = new ClaudeSession({
     runContext,
     providerSessionLifecycle: ClaudeProviderSessionLifecycle.reserveNew(
@@ -120,6 +121,7 @@ const createSession = (requestedToolNames: string[] = [], input: {
       } as any,
       sdkClient: sdkClient as any,
       toolingCoordinator: {
+        handleToolPermissionCheck: vi.fn(async () => ({ behavior: "allow" })),
         processToolLifecycleChunk: vi.fn(),
         processToolLifecycleContentBlock: vi.fn(),
         requestToolApprovalDecision: vi.fn(),
@@ -127,7 +129,7 @@ const createSession = (requestedToolNames: string[] = [], input: {
       } as any,
       agentToolMcpRunSessions: {
         activateForRun,
-        describeForRun: vi.fn(() => activateForRun.mock.results.at(-1)?.value.descriptor),
+        describeForRun,
       } as any,
       isRunSessionActive: () => true,
       terminateRunSession: vi.fn(async () => undefined),
@@ -147,6 +149,7 @@ const createSession = (requestedToolNames: string[] = [], input: {
     submit,
     openStreamingSession,
     activateForRun,
+    describeForRun,
   };
 };
 
@@ -173,7 +176,7 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
     expect(openStreamingSession).toHaveBeenCalledWith(
       expect.objectContaining({
         systemPrompt: expect.not.stringContaining("## AgentTeam Addressing"),
-        allowedTools: ["read_page", "mcp__autobyteus_agent_tools__read_page"],
+        allowedTools: [],
       }),
     );
     expect(activateForRun).toHaveBeenCalledTimes(1);
@@ -205,18 +208,7 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
         systemPrompt: expect.stringContaining(
           "## AgentTeam Addressing",
         ),
-        allowedTools: expect.arrayContaining([
-          "send_message_to",
-          "mcp__autobyteus_agent_tools__send_message_to",
-          "get_handoff_rules",
-          "mcp__autobyteus_agent_tools__get_handoff_rules",
-          "open_tab",
-          "read_page",
-          "mcp__autobyteus_agent_tools__open_tab",
-          "mcp__autobyteus_agent_tools__read_page",
-          "delegate_task",
-          "mcp__autobyteus_agent_tools__delegate_task",
-        ]),
+        allowedTools: [],
       }),
     );
   });
@@ -241,14 +233,7 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
         systemPrompt: expect.stringContaining(
           "Relative addresses, bare names, `../`, backslashes, and `/` itself are not valid recipients.",
         ),
-        allowedTools: [
-          "get_handoff_rules",
-          "mcp__autobyteus_agent_tools__get_handoff_rules",
-          "send_message_to",
-          "mcp__autobyteus_agent_tools__send_message_to",
-          "delegate_task",
-          "mcp__autobyteus_agent_tools__delegate_task",
-        ],
+        allowedTools: [],
       }),
     );
   });
@@ -384,10 +369,7 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
     );
     expect(openStreamingSession).toHaveBeenCalledWith(
       expect.objectContaining({
-        allowedTools: [
-          "publish_artifacts",
-          "mcp__autobyteus_agent_tools__publish_artifacts",
-        ],
+        allowedTools: [],
       }),
     );
   });
@@ -406,12 +388,7 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
     );
     expect(openStreamingSession).toHaveBeenCalledWith(
       expect.objectContaining({
-        allowedTools: [
-          "generate_image",
-          "mcp__autobyteus_agent_tools__generate_image",
-          "generate_speech",
-          "mcp__autobyteus_agent_tools__generate_speech",
-        ],
+        allowedTools: [],
       }),
     );
   });
@@ -448,14 +425,7 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
         systemPrompt: expect.stringContaining(
           "To get a task done outside your team, use `delegate_task` with the address of an agent or agent team.",
         ),
-        allowedTools: [
-          "delegate_task",
-          "mcp__autobyteus_agent_tools__delegate_task",
-          "get_handoff_rules",
-          "mcp__autobyteus_agent_tools__get_handoff_rules",
-          "send_message_to",
-          "mcp__autobyteus_agent_tools__send_message_to",
-        ],
+        allowedTools: [],
       }),
     );
   });
@@ -474,10 +444,7 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
     );
     expect(openStreamingSession).toHaveBeenCalledWith(
       expect.objectContaining({
-        allowedTools: [
-          "db_query",
-          "mcp__autobyteus_agent_tools__db_query",
-        ],
+        allowedTools: [],
       }),
     );
   });
@@ -513,12 +480,40 @@ describe("ClaudeSession browser/send_message_to/publish_artifacts gating", () =>
     );
     expect(openStreamingSession).toHaveBeenCalledWith(
       expect.objectContaining({
-        allowedTools: [
-          "publish_artifacts",
-          "mcp__autobyteus_agent_tools__publish_artifacts",
-        ],
+        allowedTools: [],
       }),
     );
   });
 
+
+  it("lists no Agent Tools in allowedTools and allows a tool in the run's current descriptor per call (autobyteus-324)", async () => {
+    const { session, submit, openStreamingSession, describeForRun } = createSession(["read_page"]);
+    await submit("hello");
+    const options = openStreamingSession.mock.calls[0]![0] as {
+      allowedTools: string[];
+      canUseTool: (toolName: string, input: Record<string, unknown>, options: Record<string, unknown>) => Promise<unknown>;
+    };
+    expect(options.allowedTools).toEqual([]);
+    const coordinator = (session as unknown as { dependencies: { toolingCoordinator: { handleToolPermissionCheck: ReturnType<typeof vi.fn> } } })
+      .dependencies.toolingCoordinator;
+
+    await options.canUseTool("mcp__autobyteus_agent_tools__read_page", {}, {});
+    expect(coordinator.handleToolPermissionCheck).toHaveBeenLastCalledWith(
+      expect.anything(), "mcp__autobyteus_agent_tools__read_page", {}, {}, { autoApproveReason: "agent_tools_enabled" },
+    );
+    await options.canUseTool("Bash", {}, {});
+    expect(coordinator.handleToolPermissionCheck).toHaveBeenLastCalledWith(
+      expect.anything(), "Bash", {}, {}, { autoApproveReason: null },
+    );
+
+    // The descriptor changed during the run: the removed tool now goes through the normal approval.
+    describeForRun.mockReturnValue({
+      name: "autobyteus_agent_tools", transport: "streamable_http",
+      serverUrl: "http://127.0.0.1:3000/mcp/agent-tools/session-gating", enabledTools: [],
+    });
+    await options.canUseTool("mcp__autobyteus_agent_tools__read_page", {}, {});
+    expect(coordinator.handleToolPermissionCheck).toHaveBeenLastCalledWith(
+      expect.anything(), "mcp__autobyteus_agent_tools__read_page", {}, {}, { autoApproveReason: null },
+    );
+  });
 });

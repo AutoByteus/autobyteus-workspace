@@ -222,6 +222,8 @@ export interface InterAgentMessagePayload {
 export interface SystemTaskNotificationPayload {
   sender_id: string;
   content: string;
+  /** An action the notice offers, e.g. `restart_run` (restart the run with its new tools). */
+  action?: string | null;
 }
 
 export interface ArtifactPersistedPayload {

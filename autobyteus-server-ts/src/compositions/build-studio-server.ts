@@ -73,6 +73,8 @@ import type { TaskExecutionResourcePort } from "../agent-collaboration/execution
 import { composeProjectTaskExecutionResources, releaseProjectTaskExecutionResources } from "./project-task-execution-resource-composition.js";
 import { composeAgentPackageDefinitionFeed, type AgentPackageDefinitionFeed } from "./agent-package-definition-feed-composition.js";
 import { createSkillUpdateNotices, type SkillUpdateNotices } from "../skill-update-notices/skill-update-notices.js";
+import { createToolListUpdates, type ToolListUpdates } from "../tool-list-updates/tool-list-updates.js";
+import { AgentRunPlatformNotices } from "../agent-execution/domain/agent-run-platform-notices.js";
 import { composeUpdateNotifications, type UpdateNotifications } from "./update-notifications-composition.js";
 import { composeAgentRuntimeStatus, type AgentRuntimeStatusHandle } from "./agent-runtime-status-composition.js";
 import { composeModelRouting } from "./model-routing-composition.js";
@@ -93,6 +95,7 @@ const closeStudioProcessResources = async (input: {
   generalProcessAuthority: ScopedAgentToolMcpSessionAuthority | null;
   generalProcessRunSupervisor: GeneralProcessRunSupervisor | null;
   skillUpdateNotices: SkillUpdateNotices | null;
+  toolListUpdates: ToolListUpdates | null;
   updateNotifications: UpdateNotifications | null;
   taskExecutionResources: TaskExecutionResourcePort | null;
   studioApiHandle: StudioApiHandle | null;
@@ -110,6 +113,12 @@ const closeStudioProcessResources = async (input: {
     await input.agentRuntimeStatus?.close();
   } catch (error) {
     console.warn("AGENT_RUNTIME_STATUS_CLOSE_FAILED", error);
+  }
+  try {
+    // Tool list updates stop first (no new passes), so no run is changed while runs stop.
+    await input.toolListUpdates?.close();
+  } catch (error) {
+    console.warn("TOOL_LIST_UPDATES_CLOSE_FAILED", error);
   }
   try {
     // Skill notices stop first (watcher, then service), so none go out while runs stop.
@@ -241,6 +250,7 @@ export const buildStudioServer = async (input: {
   let generalProcessAuthority: ScopedAgentToolMcpSessionAuthority | null = null;
   let generalProcessRunSupervisor: GeneralProcessRunSupervisor | null = null;
   let skillUpdateNotices: SkillUpdateNotices | null = null;
+  let toolListUpdates: ToolListUpdates | null = null;
   let updateNotifications: UpdateNotifications | null = null;
   let taskExecutionResources: TaskExecutionResourcePort | null = null;
   let studioApiHandle: StudioApiHandle | null = null;
@@ -261,6 +271,7 @@ export const buildStudioServer = async (input: {
       generalProcessAuthority,
       generalProcessRunSupervisor,
       skillUpdateNotices,
+      toolListUpdates,
       updateNotifications,
       taskExecutionResources,
       studioApiHandle,
@@ -301,6 +312,10 @@ export const buildStudioServer = async (input: {
     skillUpdateNotices = createSkillUpdateNotices({
       agentDefinitionService: hostDefinitionServices.agentDefinitionService,
     });
+    toolListUpdates = createToolListUpdates({
+      agentDefinitionService: hostDefinitionServices.agentDefinitionService,
+      definitionChanges: hostDefinitionServices.agentDefinitionChanges,
+    });
     generalProcessRunSupervisor = createGeneralProcessRunSupervisor({
       memoryDir: input.appConfig.getMemoryDir(),
       contextFilePathEnvironment,
@@ -313,7 +328,8 @@ export const buildStudioServer = async (input: {
       agentToolMcpSessionAuthority: generalProcessAuthority,
       modelSelectionValidator,
       taskExecutionResources,
-      platformInputNotices: skillUpdateNotices.service,
+      // One notice slot: tool list updates first, then skill notices (one notice per input).
+      platformInputNotices: new AgentRunPlatformNotices([toolListUpdates.service, skillUpdateNotices.service]),
     });
     generalProcessAuthority = null;
     releaseRemoteCollaboration = composeStudioRemoteCollaboration({

@@ -282,6 +282,7 @@ export class CodexThreadBootstrapper {
         dynamicToolHandlers: buildCodexDynamicToolHandlerMap(
           dynamicToolRegistrations,
         ),
+        runtimeToolExposure,
         threadId: existingRuntimeContext?.threadId ?? null,
         activeTurnId: existingRuntimeContext?.activeTurnId ?? null,
       }),

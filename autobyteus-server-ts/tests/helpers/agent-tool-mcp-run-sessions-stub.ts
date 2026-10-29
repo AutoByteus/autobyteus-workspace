@@ -5,6 +5,7 @@ import {
   type AgentToolMcpDescriptor,
 } from "../../src/agent-tools/mcp/agent-tool-mcp-session.js";
 import { deriveAgentToolMcpRunSessionId } from "../../src/agent-tools/mcp/agent-tool-mcp-run-session-id.js";
+import { buildRuntimeAgentToolExposure } from "../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
 import type {
   ActiveAgentToolMcpRunSession,
   AgentToolMcpRunSessionActivationInput,
@@ -71,3 +72,27 @@ export const createAgentToolMcpRunSessionsStub = (options: Readonly<{
     deactivateForRun: vi.fn((runId: string): number => (descriptors.delete(runId.trim()) ? 1 : 0)),
   };
 };
+
+/** A stub with this run already activated (a backend reads the run's descriptor when it is built). */
+export const activatedAgentToolMcpRunSessionsStub = (runId: string, enabledTools: readonly string[] = []) => {
+  const stub = createAgentToolMcpRunSessionsStub({ enabledTools: () => enabledTools });
+  stub.activateForRun({
+    owner: { runId },
+    sender: { senderRunId: runId } as never,
+    runtimeExposure: buildRuntimeAgentToolExposure([...enabledTools]),
+  });
+  return stub;
+};
+
+/** The AGY backend's Agent Tools binding for a test run. */
+export const stubAgyAgentTools = (runId: string, enabledTools: readonly string[] = []) => ({
+  runSessions: activatedAgentToolMcpRunSessionsStub(runId, enabledTools),
+  exposure: buildRuntimeAgentToolExposure([...enabledTools]),
+});
+
+/** The native backend's tools option for a test run: no tools, and nothing built. */
+export const stubAutoByteusRunTools = () => ({
+  exposure: buildRuntimeAgentToolExposure([]),
+  exposureOf: () => buildRuntimeAgentToolExposure([]),
+  build: () => [],
+});

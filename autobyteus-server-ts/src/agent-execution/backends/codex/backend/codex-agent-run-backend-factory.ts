@@ -9,20 +9,24 @@ import type { CodexThreadBootstrapper } from "./codex-thread-bootstrapper.js";
 import type { CodexThreadCleanup } from "./codex-thread-cleanup.js";
 import { CodexAgentRunBackend } from "./codex-agent-run-backend.js";
 import type { AgentRunBackendFactory } from "../../agent-run-backend-factory.js";
+import type { AgentToolMcpRunSessionExposure } from "../../../../agent-tools/mcp/agent-tool-mcp-session-authority.js";
 
 
 export class CodexAgentRunBackendFactory implements AgentRunBackendFactory {
   private readonly threadManager: CodexThreadManager;
   private readonly threadBootstrapper: CodexThreadBootstrapper;
   private readonly threadCleanup: CodexThreadCleanup;
+  private readonly agentToolSessions: AgentToolMcpRunSessionExposure;
   constructor(
     threadManager: CodexThreadManager,
     threadBootstrapper: CodexThreadBootstrapper,
     threadCleanup: CodexThreadCleanup,
+    agentToolSessions: AgentToolMcpRunSessionExposure,
   ) {
     this.threadManager = threadManager;
     this.threadBootstrapper = threadBootstrapper;
     this.threadCleanup = threadCleanup;
+    this.agentToolSessions = agentToolSessions;
   }
 
   beginPreparation(request: AgentRunBackendPreparationRequest) {
@@ -41,7 +45,7 @@ export class CodexAgentRunBackendFactory implements AgentRunBackendFactory {
           ? await this.threadManager.createThread(runContext, assertAccepting)
           : await this.threadManager.restoreThread(runContext, assertAccepting);
         assertAccepting();
-        return new CodexAgentRunBackend(runContext, thread, this.threadManager);
+        return new CodexAgentRunBackend(runContext, thread, this.threadManager, this.agentToolSessions);
       },
       releaseResources: async () => {
         const errors: unknown[] = [];

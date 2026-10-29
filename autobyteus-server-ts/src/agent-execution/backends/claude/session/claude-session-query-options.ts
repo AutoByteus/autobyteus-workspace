@@ -6,7 +6,7 @@ import { claudeSessionReasoningOptions } from "./claude-session-config.js";
 import type { ClaudeProcessDiagnostics } from "./claude-process-diagnostics.js";
 import { buildClaudeSessionMcpServerConfig } from "./claude-session-mcp-server-config.js";
 import type { ClaudeSessionToolUseCoordinator } from "./claude-session-tool-use-coordinator.js";
-import { resolveClaudeSessionToolingOptions } from "./claude-session-tooling-options.js";
+import { isEnabledClaudeAgentToolsMcpTool, resolveClaudeSessionToolingOptions } from "./claude-session-tooling-options.js";
 
 /** The SDK query options for one CLI process generation of a Claude run session. */
 export const resolveClaudeSessionQueryOptions = async (input: {
@@ -30,6 +30,12 @@ export const resolveClaudeSessionQueryOptions = async (input: {
     ...toolingInput,
     agentToolsMcpEnabledToolNames: agentToolsMcpDescriptor.enabledTools,
   });
+  // A tool in the run's current Agent Tools list is allowed as `allowedTools` allowed it before;
+  // the list is read per call because it can change during the run.
+  const autoApproveReason = (toolName: string): string | null =>
+    isEnabledClaudeAgentToolsMcpTool(input.agentToolsMcpSessionState.ensureDescriptor(runContext).enabledTools, toolName)
+      ? "agent_tools_enabled"
+      : null;
   const mcpServers = await buildClaudeSessionMcpServerConfig({ agentToolsMcpDescriptor });
   return {
     systemPrompt: runContext.runtimeContext.carpenterSystemPrompt,
@@ -42,6 +48,8 @@ export const resolveClaudeSessionQueryOptions = async (input: {
     ...claudeSessionReasoningOptions(sessionConfig),
     stderr: (data: string) => input.diagnostics.append(data),
     canUseTool: (toolName, toolInput, toolOptions) =>
-      input.toolingCoordinator.handleToolPermissionCheck(runContext, toolName, toolInput, toolOptions),
+      input.toolingCoordinator.handleToolPermissionCheck(runContext, toolName, toolInput, toolOptions, {
+        autoApproveReason: autoApproveReason(toolName),
+      }),
   };
 };

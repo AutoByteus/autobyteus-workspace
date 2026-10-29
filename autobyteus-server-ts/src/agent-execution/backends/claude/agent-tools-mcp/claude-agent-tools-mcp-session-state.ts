@@ -4,6 +4,7 @@ import type {
   AgentToolMcpSessionOwnerIdentity,
 } from "../../../../agent-tools/mcp/agent-tool-mcp-session.js";
 import type { AgentToolMcpRunSessionAuthority } from "../../../../agent-tools/mcp/agent-tool-mcp-session-authority.js";
+import type { RuntimeAgentToolExposure } from "../../../shared/runtime-agent-tool-exposure.js";
 import type { ClaudeRunContext } from "../backend/claude-agent-run-context.js";
 import { getAgentTeamAddressBasename } from "../../../../agent-collaboration/domain/agent-team-address.js";
 
@@ -46,6 +47,16 @@ export class ClaudeAgentToolsMcpSessionState {
     });
     this.active = true;
     return result.descriptor;
+  }
+
+  /**
+   * Gives the run's session this exposure (the run context already holds it): replaced when the
+   * session is active, otherwise activated with it. Returns the current descriptor.
+   */
+  replaceExposure(runContext: ClaudeRunContext, runtimeExposure: RuntimeAgentToolExposure): AgentToolMcpDescriptor {
+    if (this.closed) throw new Error("Claude run MCP admission is closed.");
+    if (!this.active) return this.ensureDescriptor(runContext);
+    return this.runSessions.replaceForRun({ runId: runContext.runId, runtimeExposure });
   }
 
   release(runId: string): void {

@@ -44,6 +44,7 @@ import {
   type ClaudeSdkStreamingSession,
 } from "../../../../runtime-management/claude/client/claude-sdk-streaming-session.js";
 import type { ClaudeSdkQueryKind, ClaudeSdkSelectedBinding } from "../../../domain/claude-sdk-usage.js";
+import type { RuntimeAgentToolExposure } from "../../../shared/runtime-agent-tool-exposure.js";
 
 type ClaudeSessionStatus = "OFFLINE" | "IDLE" | "RUNNING" | "ERROR";
 
@@ -190,6 +191,21 @@ export class ClaudeSession {
   }
 
   releaseAgentToolsMcp(): void { this.agentToolsMcpSessionState.release(this.runId); }
+
+  /** The Agent Tools names the run has now (its Agent Tools MCP session is activated once). */
+  getAgentToolNames(): readonly string[] {
+    return this.agentToolsMcpSessionState.ensureDescriptor(this.runContext).enabledTools;
+  }
+
+  /**
+   * Gives the run these tools from its next model call: the run context keeps the exposure for
+   * later process generations, and the Agent Tools session is replaced (the CLI re-lists over its
+   * GET stream). Returns the Agent Tools names now enabled.
+   */
+  applyToolExposure(runtimeExposure: RuntimeAgentToolExposure): readonly string[] {
+    this.runContext.runtimeContext.runtimeToolExposure = runtimeExposure;
+    return this.agentToolsMcpSessionState.replaceExposure(this.runContext, runtimeExposure).enabledTools;
+  }
 
   clearRuntimeListeners(): void {
     this.listeners.clear();
