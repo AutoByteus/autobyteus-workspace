@@ -124,9 +124,10 @@ After a definition change the server enforces removal at once, and the next
 turn start reopens the session: the open process is ended first (its event and
 failure sinks detached, so the exit is not a run failure; the skills stay),
 then a new process loads the same `sessionId` with the current descriptor. If
-the reopen fails, the input is not sent, the run shows "Couldn't give this run
-its new tools." with a restart button, and the run stays active and idle with
-no runtime session until the next turn start retries. See
+the reopen fails, the input is not sent: the message fails with "Couldn't give
+this run its new tools (<cause>). Send your message again to retry, or stop and
+resume the run.", and the run stays active and idle with no runtime session until
+the next turn start retries. See
 [Tool List Updates](./tool_list_updates.md).
 
 **MCP readiness gate.** The session waits up to

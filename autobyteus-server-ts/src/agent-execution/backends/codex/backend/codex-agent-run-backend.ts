@@ -16,7 +16,6 @@ import {
   resolveRuntimeAgentToolExposure,
 } from "../../../shared/runtime-agent-tool-exposure.js";
 import {
-  buildRuntimeSessionReopenFailedNotice,
   isSameToolNameSet,
   runtimeSessionReopenFailedResult,
 } from "../../shared/runtime-session-reopen.js";
@@ -277,8 +276,8 @@ export class CodexAgentRunBackend implements AgentRunBackend {
 
   /**
    * Reopens the thread with the run's current Agent Tools descriptor. On failure the input is not
-   * sent (it would reach a thread without the new tools), the run shows the failure notice, and
-   * the next turn start tries again. A save during the reopen keeps `reopenPending` set.
+   * sent (it would reach a thread without the new tools): the dispatch fails with a plain message,
+   * and the next turn start tries again. A save during the reopen keeps `reopenPending` set.
    */
   private async reopenWithCurrentTools(): Promise<AgentRunBackendInputDispatchResult | null> {
     let reopenedWith: readonly string[];
@@ -288,8 +287,7 @@ export class CodexAgentRunBackend implements AgentRunBackend {
       reopenedWith = descriptor.enabledTools;
     } catch (error) {
       logger.error(`Codex thread reopen failed for run '${this.runId}': ${String(error)}`);
-      await this.publishSourceEvents([buildRuntimeSessionReopenFailedNotice(this.runId)]);
-      return runtimeSessionReopenFailedResult("Codex", error);
+      return runtimeSessionReopenFailedResult(error);
     }
     this.openedToolNames = [...reopenedWith];
     this.reopenPending = !isSameToolNameSet(
@@ -297,16 +295,6 @@ export class CodexAgentRunBackend implements AgentRunBackend {
       this.openedToolNames,
     );
     return null;
-  }
-
-  private async publishSourceEvents(events: readonly AgentRunEvent[]): Promise<void> {
-    for (const listener of this.sourceListeners) {
-      try {
-        await listener(events);
-      } catch (error) {
-        logger.error(`Failed to publish Codex run event for run '${this.runId}': ${String(error)}`);
-      }
-    }
   }
 
   private async handleAppServerMessage(event: CodexThreadEventMessage): Promise<void> {

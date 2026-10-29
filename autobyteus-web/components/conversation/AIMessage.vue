@@ -51,7 +51,6 @@
             <SystemTaskNotificationSegment
               v-else-if="segment.type === 'system_task_notification'"
               :segment="segment"
-              :run-id="runId"
               :enable-event-monitor-file-actions="enableEventMonitorFileActions"
               @file-path-action="emit('file-path-action', $event)"
             />

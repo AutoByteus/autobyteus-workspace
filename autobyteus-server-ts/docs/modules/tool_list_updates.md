@@ -24,8 +24,9 @@ notice of what changed, and the user sees a "Tools updated" card in the run.
 - `src/agent-definition/services/agent-definition-change-signal.ts`
 - `src/agent-execution/domain/agent-run-platform-notices.ts`
 - backends: `applyDefinitionTools` / `getToolNames` on each `AgentRunBackend`;
-  `src/agent-execution/backends/shared/runtime-session-reopen.ts` (the failure
-  notice); `src/agent-execution/backends/acp/session/acp-session-launcher.ts`
+  `src/agent-execution/backends/shared/runtime-session-reopen.ts` (the failed
+  dispatch); `src/agent-execution/backends/acp/session/acp-session-launcher.ts`
+- Team members: `ConfiguredAgentExecutionHandle.postMessage` (a failed input as a run `ERROR`)
 - Agent Tools endpoint: `replaceForRun` / `describeForRun` and
   `AgentToolsMcpSessionStreams` (see [Agent Tools MCP Server](./agent_tools_mcp_server.md#live-tool-list))
 
@@ -78,14 +79,23 @@ A reopen happens only inside a `start_turn` dispatch, with no active turn. An
   `AcpPreparationOwner`, the single holder of the process.
 
 On success the backend recomputes `reopenPending` (a save during the reopen is
-not lost). On failure the input is not sent: the dispatch fails with
-`RUNTIME_SESSION_REOPEN_FAILED`, the run emits a `SYSTEM_TASK_NOTIFICATION`
-(`sender_id: "system.tool_list_update_notifier"`, content "Couldn't give this
-run its new tools.", `action: "restart_run"`), and the next turn start tries
-again. A Grok run with a failed reopen stays active and idle with no runtime
-session. The web shows the notice with a "Restart this run with the new tools"
-button (the existing stop + restore; for a Team member, the Team is stopped and
-its next message restores it).
+not lost). On failure the input is not sent, and there is no notice: the
+dispatch fails with `RUNTIME_SESSION_REOPEN_FAILED` and the message "Couldn't
+give this run its new tools (<cause>). Send your message again to retry, or stop
+and resume the run." The next turn start tries again. A Grok run with a failed
+reopen stays active and idle with no runtime session.
+
+The message is shown the way every failed message is:
+
+- a single run: the input lifecycle marks the command failed with that message
+  (`AgentRunCommandCoordinator`);
+- a Team member: `ConfiguredAgentExecutionHandle.postMessage` passes a
+  lifecycle observer that publishes a run `ERROR { code, message }` (no error
+  evidence) to the Team stream through `publishAgentEvent`; the web shows it as
+  an error in that member's conversation. It is not published through the run,
+  so nothing records or shows it twice, and it is not replayed.
+
+Stop, then resume, stays the user's manual way to restart a run.
 
 ## Notice
 
@@ -135,8 +145,8 @@ passes and record writes in progress).
 
 - The service never touches runtime details; it calls
   `AgentRun.applyDefinitionTools` and `getToolNames`.
-- Backends never diff or notify the agent. Their only event is the reopen
-  failure notice.
+- Backends never diff or notify the agent, and publish no notice events: a
+  failed reopen is only a failed dispatch.
 - Only the session service changes a session's exposure, and only
   `AgentToolsMcpSessionStreams` writes to the held GET streams.
 - `AgentRun` knows only the composite port, never the sources.

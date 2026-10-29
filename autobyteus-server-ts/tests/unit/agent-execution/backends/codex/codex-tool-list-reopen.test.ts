@@ -9,7 +9,6 @@ import { CodexThreadManager } from "../../../../../src/agent-execution/backends/
 import { CodexApprovalPolicy } from "../../../../../src/agent-execution/backends/codex/thread/codex-thread-config.js";
 import { RuntimeKind } from "../../../../../src/runtime-management/runtime-kind-enum.js";
 import { buildRuntimeAgentToolExposure } from "../../../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
-import { TOOL_LIST_UPDATE_NOTICE_SENDER_ID } from "../../../../../src/agent-execution/domain/system-task-notification-senders.js";
 import type { CodexAppServerClient } from "../../../../../src/runtime-management/codex/client/codex-app-server-client.js";
 import type { CodexAppServerClientManager } from "../../../../../src/runtime-management/codex/client/codex-app-server-client-manager.js";
 import type { CodexClientThreadRouter } from "../../../../../src/agent-execution/backends/codex/thread/codex-client-thread-router.js";
@@ -160,21 +159,21 @@ describe("CodexAgentRunBackend tool list changes", () => {
     expect(threadManager.reopenThread).not.toHaveBeenCalled();
   });
 
-  it("fails the turn start when the reopen fails: no input sent, the failure notice shown, and retried next time", async () => {
+  it("fails the turn start with a plain message when the reopen fails: no input sent, no notice, and retried next time", async () => {
     const { backend, threadManager, thread, events, definition, start } = createBackend();
     vi.spyOn(console, "error").mockImplementation(() => undefined);
     await backend.applyDefinitionTools(definition(["alpha", "beta"]));
     threadManager.reopenThread.mockRejectedValueOnce(new Error("resume refused"));
 
     const failed = await start();
-    expect(failed).toMatchObject({ forwarded: false, code: "RUNTIME_SESSION_REOPEN_FAILED", turnId: null });
-    expect(failed.message).toContain("resume refused");
+    expect(failed).toEqual({
+      forwarded: false,
+      code: "RUNTIME_SESSION_REOPEN_FAILED",
+      message: "Couldn't give this run its new tools (resume refused). Send your message again to retry, or stop and resume the run.",
+      turnId: null,
+    });
     expect(thread.startInput).not.toHaveBeenCalled();
-    expect(events.map((event) => event.payload)).toEqual([{
-      sender_id: TOOL_LIST_UPDATE_NOTICE_SENDER_ID,
-      content: "Couldn't give this run its new tools.",
-      action: "restart_run",
-    }]);
+    expect(events).toEqual([]);
     expect(backend.getToolNames()).toEqual(["alpha"]);
 
     expect(await start()).toMatchObject({ forwarded: true });

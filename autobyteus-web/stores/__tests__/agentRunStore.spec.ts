@@ -510,39 +510,6 @@ describe('agentRunStore', () => {
         expect(runHistoryStoreMock.refreshTreeQuietly).toHaveBeenCalled();
     });
 
-    it('restartRunWithNewTools stops the run, restores it and reconnects its stream (autobyteus-324 REQ-010)', async () => {
-        const store = useAgentRunStore();
-        mockAgentContext.isSubscribed = true;
-        mockAgentContext.state.runId = 'run-1';
-        store.connectToAgentStream('run-1');
-        mutateMock
-            .mockResolvedValueOnce({ data: { terminateAgentRun: { success: true, message: 'ok' } }, errors: [] })
-            .mockResolvedValueOnce({ data: { restoreAgentRun: { success: true, message: 'ok', runId: 'run-1' } }, errors: [] });
-
-        const result = await store.restartRunWithNewTools('run-1');
-
-        expect(result).toBe(true);
-        expect(mutateMock.mock.calls.at(-2)?.[0]).toMatchObject({ variables: { agentRunId: 'run-1' } });
-        expect(mutateMock.mock.calls.at(-1)?.[0]).toMatchObject({ variables: { agentRunId: 'run-1' } });
-        expect(runHistoryStoreMock.markRunAsInactive).toHaveBeenCalledWith('run-1');
-        expect(runHistoryStoreMock.markRunAsActive).toHaveBeenCalledWith('run-1');
-        expect(store.isAgentStreamReady('run-1')).toBe(true);
-    });
-
-    it('restartRunWithNewTools leaves the run stopped when its restore fails', async () => {
-        const store = useAgentRunStore();
-        mockAgentContext.isSubscribed = true;
-        mockAgentContext.state.runId = 'run-1';
-        store.connectToAgentStream('run-1');
-        mutateMock
-            .mockResolvedValueOnce({ data: { terminateAgentRun: { success: true, message: 'ok' } }, errors: [] })
-            .mockResolvedValueOnce({ data: { restoreAgentRun: { success: false, message: 'no', runId: null } }, errors: [] });
-        vi.spyOn(console, 'error').mockImplementation(() => undefined);
-
-        expect(await store.restartRunWithNewTools('run-1')).toBe(false);
-        expect(runHistoryStoreMock.markRunAsActive).not.toHaveBeenCalledWith('run-1');
-    });
-
     it('terminateRun should teardown local runtime and skip backend for temp runs', async () => {
         const store = useAgentRunStore();
         mockAgentContext.isSubscribed = true;

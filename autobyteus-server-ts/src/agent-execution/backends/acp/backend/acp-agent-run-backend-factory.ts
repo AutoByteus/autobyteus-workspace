@@ -160,6 +160,7 @@ export class AcpAgentRunBackendFactory implements AgentRunBackendFactory {
       context: new AgentRunContext({
         runId, config, runtimeContext: new AcpAgentRunContext(sessionId, prepared.workingDirectory),
       }),
+      workingDirectory: prepared.workingDirectory,
       owner, sink, launcher: this.launcher,
       agentTools: { runSessions: this.deps.mcpSessions, exposure: prepared.exposure, openedToolNames: prepared.descriptor.enabledTools },
       pendingSystemInstruction: trace, cleanup: release,

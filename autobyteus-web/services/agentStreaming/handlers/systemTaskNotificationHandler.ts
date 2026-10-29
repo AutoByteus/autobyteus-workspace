@@ -16,7 +16,6 @@ export function handleSystemTaskNotification(
     type: 'system_task_notification',
     senderId: payload.sender_id,
     content: payload.content,
-    ...(payload.action ? { action: payload.action } : {}),
   };
 
   aiMessage.segments.push(segment);

@@ -59,6 +59,21 @@ export class ClaudeAgentToolsMcpSessionState {
     return this.runSessions.replaceForRun({ runId: runContext.runId, runtimeExposure });
   }
 
+  /** The Agent Tools names the run has now (the session is activated once). */
+  currentToolNames(runContext: ClaudeRunContext): readonly string[] {
+    return this.ensureDescriptor(runContext).enabledTools;
+  }
+
+  /**
+   * Gives the run these tools from its next model call: the run context keeps the exposure for
+   * later process generations, and the Agent Tools session is replaced (the CLI re-lists over its
+   * GET stream). Returns the Agent Tools names now enabled.
+   */
+  applyExposure(runContext: ClaudeRunContext, runtimeExposure: RuntimeAgentToolExposure): readonly string[] {
+    runContext.runtimeContext.runtimeToolExposure = runtimeExposure;
+    return this.replaceExposure(runContext, runtimeExposure).enabledTools;
+  }
+
   release(runId: string): void {
     this.closed = true;
     this.runSessions.deactivateForRun(runId);

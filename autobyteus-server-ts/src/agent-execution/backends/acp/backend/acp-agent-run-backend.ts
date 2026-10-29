@@ -18,7 +18,6 @@ import {
   type RuntimeAgentToolExposure,
 } from "../../../shared/runtime-agent-tool-exposure.js";
 import {
-  buildRuntimeSessionReopenFailedNotice,
   isSameToolNameSet,
   runtimeSessionReopenFailedResult,
 } from "../../shared/runtime-session-reopen.js";
@@ -34,6 +33,8 @@ const logger = { warn: (...args: unknown[]) => console.warn(...args) };
 
 export type AcpAgentRunBackendInput = Readonly<{
   context: AcpRunContext;
+  /** The directory the run's session was opened in; a reopen opens the session there again. */
+  workingDirectory: string;
   /** The single holder of the run's process, connection and session; the backend keeps no copies. */
   owner: AcpPreparationOwner;
   /** The sink of the session the owner holds now. */
@@ -213,7 +214,7 @@ export class AcpAgentRunBackend implements AgentRunBackend {
    *    run failure, and the run's skills stay (they belong to `cleanup`);
    * 2. a new process loads the same session into the owner with the current descriptor.
    * On failure the half-opened process is ended, the run is left with no runtime session,
-   * `reopenPending` stays set, the failure notice is shown, and the input is not sent.
+   * `reopenPending` stays set, and the dispatch fails with a plain message (the input is not sent).
    */
   private async reopenWithCurrentTools(): Promise<AgentRunBackendInputDispatchResult | null> {
     const { owner, launcher, context } = this.input;
@@ -225,7 +226,7 @@ export class AcpAgentRunBackend implements AgentRunBackend {
       this.sink = sink;
       await launcher.open({
         owner, runId: this.runId, config: context.config,
-        workingDirectory: context.runtimeContext.workingDirectory ?? ".",
+        workingDirectory: this.input.workingDirectory,
         descriptor, sink, assertAccepting: () => this.assertActive(),
         mode: "load", sessionId: this.getPlatformAgentRunId(),
       });
@@ -235,9 +236,7 @@ export class AcpAgentRunBackend implements AgentRunBackend {
       await this.endSessionAsReopen();
       this.reopenPending = true;
       logger.warn(`ACP_REOPEN_FAILED: run=${this.runId}: ${String(error)}`);
-      this.publish([buildRuntimeSessionReopenFailedNotice(this.runId)]);
-      await this.eventQueue;
-      return runtimeSessionReopenFailedResult(launcher.agentLabel, error);
+      return runtimeSessionReopenFailedResult(error);
     }
     this.openedToolNames = [...openedWith];
     this.reopenPending = !isSameToolNameSet(

@@ -533,8 +533,9 @@ the notice sources in order: [Tool List Updates](./tool_list_updates.md), then
 AutoByteus (`Agent.replaceTools`), Claude and AGY apply at once (`applied`).
 Codex and Grok set `reopenPending` (`on_next_turn`) and reopen their runtime
 session inside the next `start_turn` dispatch; a failed reopen fails that
-dispatch with `RUNTIME_SESSION_REOPEN_FAILED` (the input is not sent) and emits
-the `restart_run` notice.
+dispatch with `RUNTIME_SESSION_REOPEN_FAILED` and a plain message (the input is
+not sent; no notice). A Team member's failed direct input reaches its Team stream
+as a run `ERROR` (see [Tool List Updates](./tool_list_updates.md)).
 
 `GeneralProcessRunSupervisor` receives both ports as `platformInputNotices` from
 the studio and standalone compositions.

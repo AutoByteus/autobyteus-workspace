@@ -4,9 +4,7 @@ import { defineStore } from 'pinia';
 import { skillRequestInstruction } from '~/utils/skills/skillRequestInstruction';
 import { mentionsPresentInText, toCollaboratorMentionDtos } from '~/utils/collaborators/collaboratorMentionText';
 import { getApolloClient } from '~/utils/apolloClient'
-import { CancelPreparedAgentRun, PrepareAgentRun, RestoreAgentRun, TerminateAgentRun } from '~/graphql/mutations/agentMutations';
-import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
-import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore';
+import { CancelPreparedAgentRun, PrepareAgentRun, TerminateAgentRun } from '~/graphql/mutations/agentMutations';
 import { useAgentContextsStore } from '~/stores/agentContextsStore';
 import {
   AgentStreamingService,
@@ -419,37 +417,6 @@ export const useAgentRunStore = defineStore('agentRun', {
       }
 
       return service.interruptGeneration(createClientInterruptCommandId());
-    },
-
-    /**
-     * @action restartRunWithNewTools
-     * @description The existing stop + restore of a run, with the same conversation: its runtime
-     * session is opened again with the tools its definition has now. A Team member's run is
-     * restarted with its Team: the Team is stopped, and its next message restores it.
-     */
-    async restartRunWithNewTools(runId: string): Promise<boolean> {
-      const team = useAgentTeamContextsStore().allTeamRuns
-        .find((candidate) => candidate.view.getAgentContext(runId));
-      if (team) return useAgentTeamRunStore().terminateTeamRun(team.view.getRootTeamRunId());
-      if (!(await this.terminateRun(runId))) return false;
-      try {
-        const { data, errors } = await getApolloClient().mutate({
-          mutation: RestoreAgentRun,
-          variables: { agentRunId: runId },
-        });
-        if (errors && errors.length > 0) {
-          throw new Error(errors.map((e: { message: string }) => e.message).join(', '));
-        }
-        const result = (data as any)?.restoreAgentRun;
-        if (!result?.success) throw new Error(result?.message || `Failed to restore run '${runId}'.`);
-        useRunHistoryStore().markRunAsActive(runId);
-        await this.ensureAgentStreamConnected(runId);
-        return true;
-      } catch (error) {
-        // The run stays stopped; its next message restores it.
-        console.error(`Error restarting run '${runId}':`, error);
-        return false;
-      }
     },
 
     /**

@@ -14,7 +14,6 @@ import { AcpAgentRunBackendFactory } from "../../../../../src/agent-execution/ba
 import type { AcpAgentRunBackend } from "../../../../../src/agent-execution/backends/acp/backend/acp-agent-run-backend.js";
 import { AcpAgentRunContext } from "../../../../../src/agent-execution/backends/acp/backend/acp-agent-run-context.js";
 import { grokBuildSessionProfile } from "../../../../../src/agent-execution/backends/grok/grok-build-session-profile.js";
-import { TOOL_LIST_UPDATE_NOTICE_SENDER_ID } from "../../../../../src/agent-execution/domain/system-task-notification-senders.js";
 import { createAgentToolMcpRunSessionsStub } from "../../../../helpers/agent-tool-mcp-run-sessions-stub.js";
 import { FAKE_ACP_AGENT, fixturePath, fixtureSessionId, readFixture, waitFor, writeCustomFixture, type FixtureRow } from "./acp-fake-agent-harness.js";
 
@@ -126,17 +125,16 @@ describe("AcpAgentRunBackend tool list reopen (Grok)", () => {
     expect(run.cleanupSkills).toHaveBeenCalledOnce();
   });
 
-  it("leaves no runtime session after a failed reopen: notice shown, input not sent, every operation safe, retried next turn start", async () => {
+  it("leaves no runtime session after a failed reopen: a plain failed dispatch, input not sent, every operation safe, retried next turn start", async () => {
     const run = await createRestoredRun([failingLoadFixture(), fixturePath("load")]);
     vi.spyOn(console, "warn").mockImplementation(() => undefined);
     await run.backend.applyDefinitionTools(run.definition(["alpha", "beta"]));
 
     const failed = await run.start();
     expect(failed).toMatchObject({ forwarded: false, code: "RUNTIME_SESSION_REOPEN_FAILED", turnId: null });
-    expect(failed.message).toContain("Session not found.");
+    expect(failed.message).toMatch(/^Couldn't give this run its new tools \(.*Session not found\..*\)\. Send your message again to retry, or stop and resume the run\.$/);
     await waitFor(() => run.alive().length === 0);
-    expect(run.events.filter((event) => event.eventType === AgentRunEventType.SYSTEM_TASK_NOTIFICATION).map((event) => event.payload))
-      .toEqual([{ sender_id: TOOL_LIST_UPDATE_NOTICE_SENDER_ID, content: "Couldn't give this run its new tools.", action: "restart_run" }]);
+    expect(run.events.some((event) => event.eventType === AgentRunEventType.SYSTEM_TASK_NOTIFICATION)).toBe(false);
     expect(run.events.some((event) => event.eventType === AgentRunEventType.TURN_STARTED)).toBe(false);
 
     expect(run.backend.isActive()).toBe(true);

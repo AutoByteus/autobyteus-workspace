@@ -1,38 +1,18 @@
-import { AgentRunEventType, type AgentRunEvent } from "../../domain/agent-run-event.js";
-import { TOOL_LIST_UPDATE_NOTICE_SENDER_ID } from "../../domain/system-task-notification-senders.js";
 import type { AgentRunBackendInputDispatchResult } from "../../input/agent-run-input-contract.js";
 
 /** The code of a turn-start dispatch that failed because the runtime session could not be reopened. */
 export const RUNTIME_SESSION_REOPEN_FAILED = "RUNTIME_SESSION_REOPEN_FAILED";
 
-/** The action of the failure notice: the web offers a restart (stop, then restore) of the run. */
-export const RESTART_RUN_NOTICE_ACTION = "restart_run";
-
-export const RUNTIME_SESSION_REOPEN_FAILED_NOTICE = "Couldn't give this run its new tools.";
-
 /**
- * The run's notice that its runtime session could not be reopened with its new tools (Codex,
- * Grok). The web shows it with a "Restart this run with the new tools" button.
+ * The failed dispatch of a turn start whose runtime session could not be reopened with the run's
+ * new tools (Codex, Grok). The input is not sent: it would reach a session without the new tools.
+ * The message is shown as every failed message is; the next turn start tries again.
  */
-export const buildRuntimeSessionReopenFailedNotice = (runId: string): AgentRunEvent => ({
-  eventType: AgentRunEventType.SYSTEM_TASK_NOTIFICATION,
-  runId,
-  payload: {
-    sender_id: TOOL_LIST_UPDATE_NOTICE_SENDER_ID,
-    content: RUNTIME_SESSION_REOPEN_FAILED_NOTICE,
-    action: RESTART_RUN_NOTICE_ACTION,
-  },
-  statusHint: null,
-});
-
-/** The failed dispatch: the input is not sent, because the runtime session lacks the new tools. */
-export const runtimeSessionReopenFailedResult = (
-  runtimeLabel: string,
-  error: unknown,
-): AgentRunBackendInputDispatchResult => ({
+export const runtimeSessionReopenFailedResult = (error: unknown): AgentRunBackendInputDispatchResult => ({
   forwarded: false,
   code: RUNTIME_SESSION_REOPEN_FAILED,
-  message: `${runtimeLabel} could not reopen its session with the new tools: ${error instanceof Error ? error.message : String(error)}`,
+  message: `Couldn't give this run its new tools (${error instanceof Error ? error.message : String(error)}). `
+    + "Send your message again to retry, or stop and resume the run.",
   turnId: null,
 });
 
