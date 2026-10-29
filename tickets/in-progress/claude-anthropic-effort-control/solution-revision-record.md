@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | SR-001 | Mixed (Requirements + Design) | Task autobyteus-8; user clarifications 2026-10-29 | N/A | N/A | Requirements Approved (User); Design Ready | BEH-001..006; REQ-001..009 | Baseline requirements, design, classification Medium / Low |
 | SR-002 | Requirements | Implementation engineer Requirement Gap 2026-10-29 (user changed the thinking UX after reviewing the rendered menu) | Requirement Gap (user change) | Approved | Approved (User); design Ready (SR-002) | BEH-001/002/004/006/007; REQ-004/005/009/010/011; AC-003..006, AC-010, AC-011; DEC-003..010 | Approved; design revised; Medium / Low |
+| SR-003 | Design (+ user decision) | Code review failure-origin CRR-001 (API-REV-001) | CR-FO-001 | Requirements Approved; design Ready | Requirements Approved (DEC-011, AC-012 added); design Ready | REQ-011, SCN-005; AC-012; DEC-011 | Editable drafts drop undeclared keys; Medium / Low |
 
 ## Revision Entries
 
@@ -49,3 +50,17 @@
 - Design revised (design-spec.md SR-002): web returns to the existing one-list presentation; `thinking_display` removed; `AnthropicLLM` reads only owned config keys, never sends `display`, sends effort only while thinking is not off; SR-001 refusal and independent-effort web work dropped. Classification unchanged: Medium / Low.
 - Applied handoff-rule outcome: Medium / Low → implementation engineer (handoff.md).
 - Next action: implementation resumes from WIP 781823e77 per the SR-002 delta table.
+
+### SR-003 — Stopped-run edit with keys the model no longer declares (CR-FO-001)
+
+- Phase and classification: Design Impact, plus a user decision on the fix (data migration vs. draft alignment).
+- Trigger: code reviewer failure-origin review CRR-001 (run code_reviewer_f508c1c78d90441bb3752d9aec202e29), confirming API/E2E API-REV-001: stopped agent/team runs with stored `thinking_display` fail Save with VALIDATION_FAILED (API-04, API-06); Org edit uses the same path.
+- Root cause: SR-002 design premise "edit surfaces drop stale keys" was false for stopped-run edit cards (`preserve-invalid-draft`), SRC-022.
+- Options presented to the user: (A) registered data migration removing `thinking_display` from saved runs (user's proposal); (B) editable drafts leave out undeclared keys. Recommendation B (guideline §3: removing an obsolete field needs no migration; covers future removed settings; no history rewrite).
+- User decision 2026-10-29: "I like option B better" (DEC-011).
+- Intended behavior changed: No for REQ-011 (saved runs keep working, now including edit); AC-012 makes the edit leg explicit; documented product rule refined (undeclared keys are not editable, savable or sent).
+- Canonical sections changed: requirements-doc.md (revision ID, AC-012, DEC-011), investigation-notes.md (SRC-022), design-spec.md (SR-003 Delta, file mapping, escalation trigger).
+- Classification: Medium / Low (unchanged).
+- Applied handoff-rule outcome: Medium / Low → implementation engineer.
+- Downstream impact: implementation fix; then code review and API/E2E rerun API-04, API-06 and the Org edit path; other validated cases stay valid unless autobyteus-ts or the catalog change.
+- Next action: implementation.

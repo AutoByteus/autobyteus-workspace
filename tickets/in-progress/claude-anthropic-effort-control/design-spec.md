@@ -2,8 +2,8 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-002`
-- Approved requirements baseline: `requirements-doc.md` at SR-002, approved by the User on 2026-10-29 (Solution Designer conversation; references in the requirements Document Status). SR-001 design is superseded by this revision; its unchanged parts are restated here.
+- Current solution revision ID: `SR-003`
+- Approved requirements baseline: `requirements-doc.md` at SR-002 (User, 2026-10-29), with SR-003 adding DEC-011 / AC-012 (User chose option B for the stopped-run edit fix, 2026-10-29). SR-001 design is superseded; unchanged parts are restated here.
 - Behavior-defining supplements: None.
 - Design status: `Ready`
 - Canonical investigation-notes path: `/home/autobyteus/workspace/.codex/worktrees/claude-anthropic-effort-control/tickets/in-progress/claude-anthropic-effort-control/investigation-notes.md`
@@ -20,6 +20,18 @@
 | Web | budget removal | revert the independent-effort presentation: claude keys `thinking_enabled`, `reasoning_effort`; effort is the switch's dependent key again (existing merged list "Off · Low … Max"); remove `getIndependentThinkingParamKeys`, the xhigh/max web rule, the `chat.thinking.summaryWithEffort` key and the `ChatThinkingControl` height change if it was only for the extra groups; remove `thinking_display` handling |
 | Docs/tests | as SR-001 | follow the above |
 
+## SR-003 Delta (Design Impact CR-FO-001)
+
+- Finding: a stopped AutoByteus agent/team/Org run whose stored `llmConfig` holds `thinking_display` cannot save settings changes: editable stopped-run cards pass `preserve-invalid-draft` (`RuntimeModelConfigFields.vue` L82), so `ModelConfigSection` skips `sanitizeModelConfigAgainstSchema` (L271-280) and the hidden key reaches server validation (SRC-022, evidence API-04/API-06). SR-002's premise "edit surfaces drop them" was wrong for this surface.
+- Decision (DEC-011, user): editable model-settings drafts leave out keys the current schema does not declare. Invalid values of declared keys keep today's behavior (kept, shown with their field error, Save blocked).
+- Owner: `ModelConfigSection.vue`'s schema-alignment step (the existing place that aligns a draft to the schema). With `preserveInvalidDraft`, it still drops undeclared keys and only preserves unrepresentable values of declared keys. Put the key filter in `utils/llmConfigSchema.ts` next to `sanitizeModelConfigAgainstSchema` (e.g. `withoutUndeclaredModelConfigKeys(schema, config)`), so both share one definition of "declared".
+- Dirty/write constraint: the drop is an automatic alignment, not a user edit. Opening a stopped run's settings must not by itself enable Save or write anything (dirty stays a semantic comparison per `docs/agent_execution_architecture.md` L1449-1454). When the user saves a real change, the payload carries the config without undeclared keys. If the existing dirty comparison would treat the automatic drop as a change, compare against the original projected to declared keys (in the existing-run draft owners) rather than adding a separate flag.
+- Coverage: agent, team and Org stopped-run edits all render `RuntimeModelConfigFields` → `ModelConfigSection`; verify the Org draft (`existingAgentOrgModelConfigDraft.ts`) and team draft (`existingTeamModelConfigDraft.ts`) use the emitted config for their payloads.
+- Unchanged: read-only/historical views still list undeclared keys as residuals (`projectHistoricalModelConfigFields`); launch surfaces already sanitize; server validation unchanged; no data migration (option A rejected, DEC-011).
+- Docs: `autobyteus-web/docs/settings.md` L1652-1660 and `docs/agent_execution_architecture.md` L1477-1483 — add: a key the current schema no longer declares cannot be edited, saved or sent; editable drafts leave it out; historical/read-only views still show it as a residual.
+- Tests: web unit test of `ModelConfigSection` with `preserveInvalidDraft` (undeclared key dropped as automatic; invalid declared value preserved with error); existing-run draft tests showing no dirty state from opening alone and a saved payload without the key (agent, team, Org); rerun API-04, API-06 and the Org edit path (AC-012).
+- Classification unchanged: Medium / Low (one shared web component + helper + docs/tests; no API, persistence or ownership change).
+
 ## Current-State Read
 
 - The AutoByteus Claude catalog (`autobyteus-ts/src/llm/anthropic-supported-model-definitions.ts`, SRC-002/003) declares per-model schemas; on the base none declares effort; Opus 5.5 declares only `thinking_display`; Fable 5.1 nothing.
@@ -34,7 +46,7 @@
 - Size rationale: production delta in 3 autobyteus-ts files (catalog, request policy, Anthropic adapter) and 3 web files (thinking adapter, thinking menu builder, schema-defaults helper); docs/tests in existing places. No new file, subsystem, API, route or persistence code. SR-002 shrinks the web delta.
 - Architectural risk: `Low`
 - Risk rationale: existing owners absorb the change; the new request field is additive and measured (PRB-001/002/003); persisted data directly usable through the adapter's owned-key projection; Claude Agent SDK runtime untouched.
-- Escalation trigger: return a Design Impact if (a) resuming a saved run whose config holds `thinking_display` is blocked by a server validation path (not only the adapter), (b) another production caller relies on raw forwarding of Anthropic config extra params, (c) a remaining model rejects a documented effort level live, or (d) another production caller constructs `AnthropicLLM` with a non-catalog model value.
+- Escalation trigger: return a Design Impact if (a′) the automatic drop cannot be kept from marking stopped-run drafts dirty without changing the draft owners' dirty contract, (a) resuming a saved run whose config holds `thinking_display` is blocked by a server validation path (not only the adapter), (b) another production caller relies on raw forwarding of Anthropic config extra params, (c) a remaining model rejects a documented effort level live, or (d) another production caller constructs `AnthropicLLM` with a non-catalog model value.
 
 ## Architecture Investigation Evidence
 
@@ -56,7 +68,7 @@ Add `reasoning_effort` to every Claude catalog schema and remove `thinking_displ
 ## Change Scope (Mandatory)
 
 - In scope: UC-001..UC-004. Areas: `autobyteus-ts/src/llm` Anthropic catalog/policy/adapter; `autobyteus-web` thinking adapter, menu builder, schema-defaults helper; docs and tests describing these.
-- Derived consumers: catalog schema → server GraphQL `configSchema` and `model-config-schema-validation` (no change); web `normalizeModelConfigSchema` → thinking adapter/menu (changed), `modelOptions.otherModelSettingKeys` (no change; with display gone Opus 5.5 has no other-setting row), `explicitModelConfig`/`getDefaultThinkingConfig` (writes `thinking_enabled:false` and the effort default for switch rows, effort default for no-switch rows — harmless: effort is not sent while off, and the default equals the API default), ModelConfigSection form (follows adapter; stale `thinking_display` dropped by existing `sanitizeModelConfigAgainstSchema`), historical views (stale keys shown as residuals, existing rule).
+- Derived consumers: catalog schema → server GraphQL `configSchema` and `model-config-schema-validation` (no change); web `normalizeModelConfigSchema` → thinking adapter/menu (changed), `modelOptions.otherModelSettingKeys` (no change; with display gone Opus 5.5 has no other-setting row), `explicitModelConfig`/`getDefaultThinkingConfig` (writes `thinking_enabled:false` and the effort default for switch rows, effort default for no-switch rows — harmless: effort is not sent while off, and the default equals the API default), ModelConfigSection form (follows adapter; launch surfaces drop stale keys via `sanitizeModelConfigAgainstSchema`; stopped-run edit surfaces drop undeclared keys per SR-003), historical views (stale keys shown as residuals, existing rule).
 - Deliberately left alone: Claude Agent SDK runtime presentation and backend (FU-003); per-model off shapes (FU-001); prompt caching; non-Anthropic providers; per-call kwargs forwarding in `AnthropicLLM`; per-message effort.
 - Follow-ups: FU-001, FU-002, FU-003.
 
@@ -256,6 +268,8 @@ As final mapping.
 | `autobyteus-web/utils/llmConfigSchema.ts` | defaults helper | budget block removed (WIP) |
 | `autobyteus-web/localization/messages/{en,zh-CN}/chat.ts` | i18n | remove `chat.thinking.summaryWithEffort` |
 | `autobyteus-web/components/run-settings/useRunSettingsPresentation.ts` | presentation | revert WIP change if it only served the independent group |
+| `autobyteus-web/components/workspace/config/ModelConfigSection.vue` | settings form | SR-003: schema alignment drops undeclared keys even with `preserveInvalidDraft` (automatic) |
+| `autobyteus-web/utils/llmConfigSchema.ts` | schema helpers | SR-003: undeclared-key filter shared with `sanitizeModelConfigAgainstSchema` |
 
 ## Applied Patterns (If Any)
 

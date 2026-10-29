@@ -54,3 +54,11 @@ Handoff rule matched: "Architecture Design Complete with task_size=Small or Medi
 - Design delta: see design-spec.md "SR-002 Delta Against The SR-001 Implementation". Key items: `AnthropicLLM` reads only owned config keys (stored `thinking_display` in real user runs must not reach Anthropic, AC-011); no effort while off (refusal dropped); web reverts to the existing merged list with dependent effort.
 - Classification unchanged: Medium / Low → implementation engineer.
 - Follow-ups: FU-001, FU-002 (from implementation), FU-003 (Claude SDK Off + stored effort).
+
+## SR-003 revision (2026-10-29) — Design Impact CR-FO-001
+
+- Problem: stopped-run settings Save fails for saved runs holding `thinking_display` (agent, team; Org by code), because editable stopped-run cards preserve the hidden key and the server rejects it.
+- User decision (DEC-011): no data migration; editable model-settings drafts leave out keys the current schema does not declare. Invalid values of declared keys keep today's preserve-and-show-error behavior.
+- Design: design-spec.md "SR-003 Delta". Fix in `ModelConfigSection.vue` schema alignment, with a shared helper in `utils/llmConfigSchema.ts`. Opening settings alone must not make the draft dirty or write. Update the docs (settings.md, agent_execution_architecture.md). Add tests (AC-012).
+- Reruns: API-04, API-06, Org edit path.
+- Classification: Medium / Low → implementation engineer.
