@@ -1,0 +1,19 @@
+# API-05/API-06 fixtures (synthesized or generated on this machine, 2026-10-29T21:30:01Z; removed after the run)
+red.png:   ffmpeg -f lavfi -i color=c=red:s=64x64 -frames:v 1 red.png
+blue.mp4:  ffmpeg -f lavfi -i color=c=blue:s=128x128:d=2 -c:v libx264 -pix_fmt yuv420p blue.mp4
+hello.m4a: copy of autobyteus-ts/tests/data/test_audio.m4a (spoken 'hello')
+notes.txt: five text lines
+cups.pdf:  cupsfilter note.txt (macOS print pipeline); chrome.pdf: Chrome --headless=new --print-to-pdf
+note.docx: textutil -convert docx; note.rtf: textutil -convert rtf; note.zip: zip
+os-keyboard.pdf, os-premiumcard-logo.pdf: copies of /System/Library/Audio/MIDI Devices/Generic/Images/Keyboard.pdf and /System/Library/PrivateFrameworks/PhotoPrintProduct.framework/Versions/A/Resources/PremiumCard-logo.pdf
+
+## pre-execution sample: NUL in the first 8,000 bytes of OS-shipped PDFs (find /System/Library /Library /Applications -name '*.pdf' | head -400; read-only)
+PDFs 400; no NUL in first 8000: 79; of those no NUL at all: 2; NUL only after 8000: 77
+sizes of no-NUL files: min 9525 median 18433 max 224814
+no-NUL files > 50 KB: 8
+   224814 bytes, first NUL at 42388 , bytes>127 in first 8000: 7 /System/Library/PrivateFrameworks/PhotoPrintProduct.framework/Versions/A/Resources/PremiumCard-logo.pdf
+   179143 bytes, first NUL at 47551 , bytes>127 in first 8000: 7 /System/Library/PrivateFrameworks/ScreenSharing.framework/Versions/A/Resources/overlay-control.pdf
+   70831 bytes, first NUL at 25274 , bytes>127 in first 8000: 4 /System/Library/Audio/MIDI Devices/Generic/Images/DrumMachine.pdf
+   69940 bytes, first NUL at 32001 , bytes>127 in first 8000: 4 /System/Library/Audio/MIDI Devices/Generic/Images/Keyboard.pdf
+   68962 bytes, first NUL at 22760 , bytes>127 in first 8000: 7 /System/Library/PrivateFrameworks/LoginUIKit.framework/Versions/A/Frameworks/LoginUICore.framework/Versions/A/Resources/shiftRight.pdf
+   68275 bytes, first NUL at 22280 , bytes>127 in first 8000: 7 /System/Library/PrivateFrameworks/LoginUIKit.framework/Versions/A/Frameworks/LoginUICore.framework/Versions/A/Resources/shiftLeft.pdf
