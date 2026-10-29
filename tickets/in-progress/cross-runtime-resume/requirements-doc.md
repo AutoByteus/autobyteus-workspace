@@ -8,7 +8,7 @@
 - Request / ticket: Project Task `autobyteus-316` (Project `project_a1377344-25db-482a-97cc-ecfdb0fb495a`). Blocks `autobyteus-314`.
 - Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), for the user (2026-10-27)
 - Requirements owner: Solution Designer
-- Approval: `Not yet` for SR-003. Needs the user: DEC-3 and DEC-4 (below).
+- Approval: `Not yet` for SR-003. DEC-3 is decided by the user (marker in the chat). Needs the user: DEC-4 (single agent first, or members of teams in the first delivery).
 - Behavior-defining supplements: none. Evidence: `investigation-notes.md`; probe `probes/handover_note_probe.py`.
 
 ## Problem And Desired Outcome
@@ -116,7 +116,7 @@ Findings must cite REQ/AC/BEH IDs. New behavior is a `Requirement Gap`.
 | --- | --- | --- | --- |
 | DEC-1 | **Same run, runtime changed** (supersedes SR-002's "new linked run"). | **The user** (2026-10-29) | One agent for the user; a separate run would split the chat (his point). Feasible: history comes from raw traces (F-15) and the runtime lock is one attribute in the settings UI (F-16). Costs: journal needs file-level runtime (REQ-010); the old session is dropped. |
 | DEC-2 | **The next colleague summarizes** from the notice; summary in `run_summary.md`. | **The user** | Works at the failure; no extra model. |
-| DEC-3 | The chat shows a small marker at the switch ("Switched from Claude to Codex"). | **Needs user** (visible behavior) | Recommended: yes, because the new agent's tone and tools change and the user should see why. |
+| DEC-3 | The chat shows a small marker at the switch ("Switched from Claude to Codex"). | **The user** (2026-10-29: "a marker in the chat where the runtime changed was a good marker") | The new agent's tone and tools change; the user sees why. |
 | DEC-4 | First slice: one standalone Agent; Teams, Orgs and delegated copies right after. | **Needs user** (scope; his example mentioned teams) | Recommended: yes, since a member needs its address, links and Task rules; not yet investigated. |
 | DEC-5 | Stop reason is the provider's message, never classified. | Solution Designer | Provider-error contract. |
 | DEC-6 | `run_summary.md` beside the raw traces, not inside `work_journal/`; written through a server tool. | Solution Designer, from the user's idea | `work_journal/` is derived and deletable. |
