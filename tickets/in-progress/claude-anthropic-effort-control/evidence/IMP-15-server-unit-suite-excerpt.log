@@ -1,0 +1,40 @@
+# IMP-15 full server unit suite
+# command: corepack pnpm -C autobyteus-server-ts test:unit (pnpm via corepack shim)
+# commit: 47f44c3df (run on the identical working tree before the commit)
+# env: Linux 6.12.54-linuxkit, node v22.23.3, uid 0
+# date: 2026-10-29
+ FAIL  tests/architecture/agent-provider-composition-boundaries.test.ts
+ FAIL  tests/unit/agent-execution/backends/acp/acp-agent-session.test.ts
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts
+ FAIL  tests/unit/agent-package-definitions/unreadable-package-root.test.ts
+ FAIL  tests/unit/application-backend/socratic-live-tutor-renderer.test.ts [ tests/unit/application-backend/socratic-live-tutor-renderer.test.ts ]
+ FAIL  tests/unit/application-backend/socratic-runtime-lifecycle.test.ts [ tests/unit/application-backend/socratic-runtime-lifecycle.test.ts ]
+ FAIL  tests/unit/config/app-config.test.ts
+ FAIL  tests/unit/remote-collaboration/remote-delegation-receiver.test.ts
+ Test Files  8 failed | 857 passed | 5 skipped (870)
+      Tests  13 failed | 7281 passed | 11 skipped (7305)
+
+## Failures after the fix of remote-delegation-receiver.test.ts (a constant test fake, fixed in 47f44c3df):
+## Each remaining one also fails with the 5 changed src files reverted (isolated reruns, 2 runs each mode):
+- agent-package-folder-watcher, unreadable-package-root, app-config 'read-only': uid 0 (root) can list unreadable folders and write read-only files
+- socratic-live-tutor-renderer, socratic-runtime-lifecycle: load error 'No such built-in module: node:'
+- agent-provider-composition-boundaries: 'Test timed out in 5000ms.' in both modes
+- acp-agent-session 'agent exit mid-turn': intermittent (5 of 9 runs, both modes)
+
+## Union of failing tests across 2 runs with the change (with1/with2) and 2 without (without1/without2), count = occurrences in the 4 runs + the full run + earlier reruns:
+      9  FAIL  tests/architecture/agent-provider-composition-boundaries.test.ts > agent provider composition boundaries > closes complete Agent manager and AgentRun construction to production roots
+      9  FAIL  tests/architecture/agent-provider-composition-boundaries.test.ts > agent provider composition boundaries > keeps context translation provider-neutral and all path authority explicit
+      7  FAIL  tests/architecture/agent-provider-composition-boundaries.test.ts > agent provider composition boundaries > selects one host validator and propagates it to the two exact lifecycle roots
+      5  FAIL  tests/unit/agent-execution/backends/acp/acp-agent-session.test.ts > AcpAgentSession over recorded Grok traffic > turns an agent exit mid-turn into an interrupted turn plus a runtime err
+      9  FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher catch-up request > allows another repair after a folder is added or removed
+      1  FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher catch-up request > drops the request of a watch that was re-armed and asks again fo
+      9  FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher catch-up request > re-arms quietly once when a definition folder on disk is not in 
+      9  FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher catch-up request > repairs a folder that stays unwatched only once, warns, and reco
+      9  FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > reports UNAVAILABLE for a root whose definition folder cannot be listed, and re-a
+      9  FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > starts a registered root that is missing as FOLDER_MISSING and arms it when it ap
+      9  FAIL  tests/unit/agent-package-definitions/unreadable-package-root.test.ts > an unreadable registered package folder > does not block population: other packages, admission and Teams stay avai
+      9  FAIL  tests/unit/agent-package-definitions/unreadable-package-root.test.ts > an unreadable registered package folder > keeps the folder's definitions at their last loaded version with an issu
+      9  FAIL  tests/unit/application-backend/socratic-live-tutor-renderer.test.ts [ tests/unit/application-backend/socratic-live-tutor-renderer.test.ts ]
+      9  FAIL  tests/unit/application-backend/socratic-runtime-lifecycle.test.ts [ tests/unit/application-backend/socratic-runtime-lifecycle.test.ts ]
+      9  FAIL  tests/unit/config/app-config.test.ts > AppConfig > keeps the retired key inert in-session when its persisted file is read-only
+      3  FAIL  tests/unit/remote-collaboration/remote-delegation-receiver.test.ts > RemoteDelegationReceiver resolves through the shared catalog admission > AC-201 / AC-205: prepares a run of the Agen

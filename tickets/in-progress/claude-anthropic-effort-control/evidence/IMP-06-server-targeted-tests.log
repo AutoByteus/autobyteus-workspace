@@ -15,3 +15,14 @@
  ✓ tests/integration/llm/llm-factory-metadata-resolution.test.ts (4 tests) 67ms
  Test Files  1 passed (1)
       Tests  4 passed (4)
+
+## Rerun on 47f44c3df (IR-002 changed server code), 2026-10-29T22:20:30Z: AC-011 resume e2e (synthetic; now incl. the API/E2E team and Org resume cases), pricing unit, Claude converter unit
+ ✓ tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts (4 tests) 7616ms
+     ✓ claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key  552ms
+     ✓ claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key  366ms
+     ✓ team run: restore succeeds and every member's request after restore carries no stored stale key  654ms
+     ✓ Org run: restore succeeds and the member requests after restore carry no stored stale key  5181ms
+ ✓ tests/unit/token-usage/pricing/token-price-config-provider.test.ts (20 tests) 43ms
+ ✓ tests/unit/agent-execution/backends/claude/events/claude-session-event-converter.test.ts (34 tests) 13ms
+ Test Files  3 passed (3)
+      Tests  58 passed (58)
