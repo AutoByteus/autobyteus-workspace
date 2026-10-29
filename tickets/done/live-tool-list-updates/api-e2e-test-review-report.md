@@ -1,6 +1,13 @@
 # API/E2E Test Review Report
 
-## Review Meta
+## Round 2 (API-REV-003): Not Applicable
+
+- Trigger: API/E2E `Pass` at API-REV-003 after the delivery-stage Local Fix IR-005 (test-only web spec, reviewed in CRR-007).
+- No durable API/E2E test file changed: `git diff db27b28223 b404e0b519` over `tool-list-reopen-failure.e2e.test.ts`, `tool-list-update-cases.mjs` and `delegated-launch-defaults-probe.mjs` is empty, and `b404e0b519` touches only ticket files. The IR-005 spec change is implementation-owned and was reviewed in CRR-007.
+- API-05 reran on `1c454e1ec1`: "Tests 1 passed (1)" (`evidence/api-e2e/API-05-round3-rerun.log`).
+- Result: `Not Applicable`. Recommended recipient: `delivery_engineer`. API-04 (the real Grok CLI run) is still owed; see Latest Authoritative Result.
+
+## Review Meta (Round 1)
 
 - Review Round: 1
 - Trigger: API/E2E `Pass` at API-REV-002 for every case that can run now. API-04 (the real Grok CLI run) is owed because of the user's Grok usage limit
@@ -64,8 +71,8 @@ Non-blocking notes (no action required for delivery; for whoever next touches th
 
 ## Latest Authoritative Result
 
-- Result: `Pass`
-- Changed durable test paths reviewed: the four above
+- Result: `Not Applicable` (round 2, API-REV-003). Round 1: `Pass`
+- Changed durable test paths reviewed: none in round 2; the four above in round 1
 - Unresolved finding IDs: None
 - Recommended Recipient: `delivery_engineer`
 - Notes:

@@ -8,6 +8,7 @@ The latest coverage investigation and execution coverage report remain authorita
 | --- | --- | --- | --- | --- |
 | API-REV-001 | Code reviewer, `code-review-report.md` CRR-003 Pass, round 1 | IR-002, IR-003, CRR-003, SR-007 | N/A | Fail / 72% |
 | API-REV-002 | Code reviewer, `code-review-report.md` CRR-005 Pass, round 2 | IR-004, SR-010, ARCH-REV-010, CRR-004, CRR-005 | Fail / 72% | Pass (API-04 owed) / 94% |
+| API-REV-003 | Code reviewer, `code-review-report.md` CRR-007 Pass (delivery Local Fix IR-005, DR-001), round 3 | DR-001, IR-005, CRR-007 | Pass (API-04 owed) / 94% | Pass (API-04 owed) / 94% |
 
 ## Revision Entries
 
@@ -54,3 +55,24 @@ None.
 - New or remaining failure IDs: none
 - Recommended owner: code reviewer (proportional test-code review)
 - Remaining risks, blocked evidence, or untested scope: the real Grok CLI run (API-04), tomorrow; FU-004 (cosmetic, existing replay placement)
+
+### API-REV-003 — Round 3: test-only fix IR-005; round 2 results stand
+
+- Triggering role, report path, and round: code reviewer, `code-review-report.md` (CRR-007 Pass), round 3
+- Triggering finding or case IDs: DR-001 (`guard:localization-boundary` in the build-only release run); IR-005 `137ce572aa`
+- Related revision IDs: DR-001, IR-005, CRR-007
+- Why this revision was recorded: a code change after API-REV-002 (test-only) and a fast-forward to `origin/personal`
+- Coverage decisions or durable test paths changed: none
+- Cases added, changed, removed, or rechecked: API-05 rerun on `1c454e1ec1` (Pass). The other cases are kept: no source file changed since `5ee923081a`, and this round's tests are unchanged since `db27b28223`
+- Commands, environment, fixture, or broader-validation delta: none
+
+#### Prior Failure Resolution
+
+None.
+
+- Canonical artifacts and sections updated: report (Round), progress log, `evidence/api-e2e/API-05-round3-rerun.log`
+- Prior result and confidence: Pass (API-04 owed), 94%
+- Current result and confidence: Pass (API-04 owed), 94%
+- New or remaining failure IDs: none
+- Recommended owner: delivery (via the code reviewer)
+- Remaining risks, blocked evidence, or untested scope: the real Grok CLI run (API-04), when the user's credits are back; FU-004
