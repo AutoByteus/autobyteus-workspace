@@ -1,0 +1,12 @@
+# Check: IMP-11-web-full
+# Command (in /Users/normy/autobyteus_org/autobyteus-worktrees/integration-credential-proxy/autobyteus-web, clean env: env -i PATH HOME=<temp> TMPDIR): pnpm -s exec vitest run
+# Commit: 2529eaaec1 (branch codex/integration-credential-proxy)
+# Environment: macOS 26.5.2 arm64, node v22.23.1, git 2.50.1
+# Date: 2026-10-30T08:34:15Z
+# Excerpt of IMP-11-web-full.log (the full log is next to this file): summary, failing tests and their first error lines.
+
+      Tests  1 failed | 4864 passed | 2 skipped (4867)
+ FAIL  utils/__tests__/nfsLauncherCommands.spec.ts > displayed install shell guards (ALL external commands are inert stubs) > macos: success
+ Test Files  1 failed | 668 passed (669)
+# Exit code: 1
+Error: Test timed out in 5000ms.

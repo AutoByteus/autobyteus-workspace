@@ -1,3 +1,5 @@
+import type { IntegrationRunAccess } from "../../../credential-proxy/integration-run-access.js";
+import { integrationShellCustomData } from "./autobyteus-integration-shell-environment.js";
 import type { NativeCommandProcessScope } from "autobyteus-ts";
 import fs from "node:fs/promises";
 import {
@@ -100,6 +102,8 @@ export type AutoByteusAgentRunBackendFactoryOptions = {
   registries?: Partial<ProcessorRegistries>;
   waitForIdle?: AutoByteusAgentIdleWaiter;
   applicationAgentTools?: ApplicationAgentToolCapability | null;
+  /** The run's integration variables (`null`: this host's runs get no integration access). */
+  integrationRunAccess?: IntegrationRunAccess | null;
 };
 
 export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory {
@@ -452,6 +456,7 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
       ...(options.applicationExecutionContext
         ? { [APPLICATION_EXECUTION_CONTEXT_KEY]: options.applicationExecutionContext }
         : {}),
+      ...integrationShellCustomData(this.options.integrationRunAccess, { runId, agentDefinitionId }),
     };
 
     // Compaction always summarizes on the agent's own model (core-owned summarizer).

@@ -1,0 +1,17 @@
+{
+  "runtime": "antigravity_cli (scripted CLI)",
+  "probe": {
+    "result": {
+      "apiHttp": "skipped",
+      "gitStatus": -1,
+      "psStatus": 0,
+      "psEnvStatus": 0
+    },
+    "address": null,
+    "gitConfig": [],
+    "terminalPrompt": null,
+    "issueNumber": null,
+    "lsRemoteHead": false,
+    "tokenInShellOutputs": []
+  }
+}

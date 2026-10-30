@@ -112,6 +112,29 @@ delegated run, …) are defined in the
   pre-locked it). The move banner leaves it out; the per-row hint still offers
   the move. Kept per device and node (`mcpSecretReviewState`).
 
+## Integrations
+
+- **Integration:** an outside service the agents a user chooses may use from
+  their shell through the credential proxy, with the user's token kept in the
+  node's vault (GitHub first). Its app-owned definition (`IntegrationDefinition`)
+  fixes its hosts, auth format, allowed paths and shell variables; a skill can't
+  change it. Not the server folder `src/integrations/github/`, which is the
+  public GitHub client for package and skill sources (no token).
+- **Credential proxy:** the server's loopback listener that forwards an allowed
+  run's calls to an integration, adding the token. Not the General MCP Gateway or
+  the Agent Tools MCP Server.
+- **Run pass:** the unguessable value in a run's proxy address
+  (`/r/<pass>/…`). One per run, live while the run is active, revoked when the
+  run is released or its activation fails. It is not the token and not a
+  session.
+- **Agent access (integration):** the agent definitions the user ticked on an
+  integration's card (`agentDefinitionIds`). A run gets the integration only if
+  its agent is ticked, including as a team member. Not tool or skill access.
+- **Connected (integration):** the node holds a token GitHub accepted
+  (`connected` with the token's `login`). Not "agent access".
+- **Activity record:** one line of `<app-data-dir>/integrations/activity.jsonl`
+  per proxied call or refusal (no token, pass, query, headers or bodies).
+
 ## Project Tasks
 
 - **Title:** a Project Task's one-line name, given by its writer (an agent's

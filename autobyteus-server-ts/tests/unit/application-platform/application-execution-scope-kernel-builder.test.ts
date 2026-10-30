@@ -255,6 +255,8 @@ describe("buildApplicationExecutionScopeKernel construction transaction", () => 
       agentDefinitionService: harness.buildInput.agentDefinitionService,
       agentToolMcpRunSessions: harness.authority.runSessions,
       applicationAgentTools: harness.buildInput.applicationAgentTools,
+      // The standalone application host's runs get no integration access in this step.
+      integrationRunAccess: null,
     });
     expect(harness.complete).toHaveBeenCalledWith({
       executionCapabilities: {

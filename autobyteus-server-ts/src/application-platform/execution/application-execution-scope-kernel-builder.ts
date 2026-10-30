@@ -106,6 +106,8 @@ export const buildApplicationExecutionScopeKernel = (
       memoryRecorder,
       workJournalUpdater: new WorkJournalRunUpdater({ memoryRecorder, journalService: getWorkJournalService() }),
       mcpServerInstances: McpServerInstanceManager.getInstance(),
+      // The standalone application host gives its runs no integration access in this step.
+      integrationRunAccess: null,
     });
     const activationRegistry = new AgentRunActivationRegistry(resourceManager);
     const projectionStore = new PublishedArtifactProjectionStore();
@@ -129,6 +131,7 @@ export const buildApplicationExecutionScopeKernel = (
         agentDefinitionService: input.agentDefinitionService,
         agentToolMcpRunSessions: authority.runSessions,
         applicationAgentTools: input.applicationAgentTools,
+        integrationRunAccess: null,
       });
     const agentRunManager = new AgentRunManager({
       autoByteusBackendFactory: providerFactories.autoByteus,
@@ -140,6 +143,7 @@ export const buildApplicationExecutionScopeKernel = (
       memoryRecorder,
       providerInputNormalizer,
       agentToolMcpRunSessionDeactivator: authority.runSessions,
+      integrationRunAccess: null,
     });
     const metadataService = new AgentRunMetadataService(input.memoryDir);
     const historyCatalogService = new AgentRunHistoryCatalogService(

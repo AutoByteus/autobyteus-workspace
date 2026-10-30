@@ -198,6 +198,34 @@ describe("AGY backend capability admission and preserved bindings", () => {
     expect(start).toHaveBeenCalledTimes(1);
   });
 
+  it("starts an allowed run's AGY process, on create and restore, with the server's environment plus its integration variables (DS-002)", async () => {
+    const variables = { AUTOBYTEUS_GITHUB_API_URL: "http://127.0.0.1:5555/r/rp_test-dummy/github/api", GIT_TERMINAL_PROMPT: "0" };
+    const environmentForRun = vi.fn((run: { agentDefinitionId: string }) => (run.agentDefinitionId === "test-agent" ? variables : {}));
+    const withAccess = new AgyAgentRunBackendFactory(
+      { getAgentDefinitionById: async () => ({ name: "Test agent", description: "Unit test", instructions, toolNames: [], skillNames: [] }) } as never,
+      { resolveSkillScope: () => "CONFIGURED", hasEffectiveSkills: () => false, resolveConfiguredSkillBindingsForAgent: () => [] } as never,
+      { resolveWorkingDirectory: async () => workspace } as never,
+      createAgentToolMcpRunSessionsStub() as never,
+      { environmentForRun, revokeForRun: vi.fn() },
+    );
+    const initial = await prepareAndReleaseOnFailure(withAccess.beginPreparation({ kind: "new", config, runId: "run" }));
+    await initial.terminate();
+    const restored = await prepareAndReleaseOnFailure(withAccess.beginPreparation({ kind: "restore", context: initial.getContext() }));
+    await restored.terminate();
+    expect(environmentForRun).toHaveBeenCalledWith({ runId: "run", agentDefinitionId: "test-agent" }, process.env);
+    expect(start).toHaveBeenCalledTimes(2);
+    for (const [input] of start.mock.calls) {
+      expect(input.env).toMatchObject(variables);
+      expect(input.env.PATH).toBe(process.env.PATH);
+    }
+    expect(process.env.AUTOBYTEUS_GITHUB_API_URL).toBeUndefined();
+
+    const other = new AgentRunConfig({ ...config, agentDefinitionId: "other-agent", memoryDir: path.join(base, "memory-other") } as never);
+    const unallowed = await prepareAndReleaseOnFailure(withAccess.beginPreparation({ kind: "new", config: other, runId: "run-other" }));
+    await unallowed.terminate();
+    expect(start.mock.calls[2]![0]).not.toHaveProperty("env");
+  });
+
   describe("compaction detection version gate (REQ-A04)", () => {
     const checkpoint = (conversation: string): AgyStreamMessage => ({ event: "step_update", step_update: {
       conversation_id: conversation, step_index: 9, state: "DONE", step_type: "checkpoint", duration_seconds: 7.293076 } });

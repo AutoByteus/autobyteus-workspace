@@ -66,6 +66,7 @@ describe('Server settings Compaction failure journey', () => {
         LiveResponseStreamingCard: true,
         FeaturedCatalogItemsCard: true,
         WebSearchConfigurationCard: true,
+        GitHubIntegrationCard: true,
         UpdateChecksCard: true,
       },
     },

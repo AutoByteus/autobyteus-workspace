@@ -1,3 +1,6 @@
+import type { JsonObject } from "../codex-app-server-json.js";
+import type { IntegrationRunAccess } from "../../../../credential-proxy/integration-run-access.js";
+import { buildCodexIntegrationThreadConfig } from "./codex-integration-thread-config.js";
 import type { ProviderPreparationGuard } from "../../provider-preparation-guard.js";
 import fs from "node:fs";
 import path from "node:path";
@@ -201,6 +204,7 @@ export class CodexThreadBootstrapper {
     agentDefinitionService: AgentDefinitionService = AgentDefinitionService.getInstance(),
     skillService: SkillService = SkillService.getInstance(),
     clientManager: CodexAppServerClientManager = getCodexAppServerClientManager(),
+    private readonly integrationRunAccess: IntegrationRunAccess | null = null,
   ) {
     if (!agentToolMcpRunSessions) {
       throw new Error("Codex Agent Tools MCP run-session activator is required.");
@@ -258,11 +262,14 @@ export class CodexThreadBootstrapper {
       workingDirectory,
       baseInstructions: carpenterSystemPrompt,
       developerInstructions: null,
-      appServerConfig: this.createAgentToolsMcpAppServerConfig({
-        runContext,
-        runtimeToolExposure,
-        workingDirectory,
-      }),
+      appServerConfig: {
+        ...this.createAgentToolsMcpAppServerConfig({ runContext, runtimeToolExposure, workingDirectory }),
+        ...buildCodexIntegrationThreadConfig(
+          this.integrationRunAccess?.environmentForRun(
+            { runId: runContext.runId, agentDefinitionId: runContext.config.agentDefinitionId }, process.env) ?? {},
+          resolveEffectiveCodexSandboxModeForRunConfig(runContext.config),
+        ),
+      },
       dynamicToolRegistrations,
     });
     const materializedConfiguredSkills = await this.prepareWorkspaceSkills({
@@ -294,7 +301,7 @@ export class CodexThreadBootstrapper {
     workingDirectory: string;
     baseInstructions: string | null;
     developerInstructions: string | null;
-    appServerConfig: ReturnType<typeof materializeCodexAgentToolsMcpThreadConfig> | null;
+    appServerConfig: JsonObject | null;
     dynamicToolRegistrations: CodexDynamicToolRegistration[] | null;
   }): CodexThreadConfig {
     return buildCodexThreadConfig({

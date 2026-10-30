@@ -36,6 +36,7 @@ import { ApplicationPackageResolver } from './types/application-packages.js';
 import { AppDataMigrationResolver } from './types/app-data-migrations.js';
 import { DateTimeScalar } from './scalars/date-time.js';
 import { SecretStorageResolver } from './types/secret-storage.js';
+import { GitHubIntegrationResolver } from './types/github-integration.js';
 import { DefinitionProblemsResolver } from './types/definition-problems.js';
 import { AgentPackageDefinitionsResolver } from './types/agent-package-definitions.js';
 import { CollaborationRootHistoryResolver } from './types/collaboration-root-history.js';
@@ -88,6 +89,7 @@ export async function buildGraphqlSchema() {
       AppDataMigrationResolver,
       UpdateNotificationResolver,
       SecretStorageResolver,
+      GitHubIntegrationResolver,
       DefinitionProblemsResolver,
       AgentPackageDefinitionsResolver,
       CollaborationRootHistoryResolver,

@@ -67,6 +67,8 @@ export type ClaudeSdkStreamingSessionOptions = {
   thinking?: Readonly<{ type: "adaptive" | "disabled" }>;
   debugFile?: string;
   effort?: "low" | "medium" | "high" | "xhigh" | "max";
+  /** Variables added to this run session's CLI process (the run's integration variables); never a credential. */
+  extraEnvironment?: Readonly<Record<string, string>>;
 };
 
 export type ClaudeSdkQueryLike = AsyncIterable<unknown> & {
@@ -241,7 +243,8 @@ export class ClaudeSdkClient {
         control.assertAccepting();
         const queryFn = this.resolveFunction(sdk, "query");
         if (!queryFn) throw new Error("Claude SDK query API is unavailable.");
-        const spawnEnvironment = await this.resolveSpawnEnvironment();
+        // Only the run session's spawn gets the run's variables (not the model-listing or control queries).
+        const spawnEnvironment = { ...(await this.resolveSpawnEnvironment()), ...(options.extraEnvironment ?? {}) };
         control.assertAccepting();
         if (asString(spawnEnvironment.CLAUDE_CODE_DISABLE_BACKGROUND_TASKS)) logger.warn("Claude CLI background tasks disabled by inherited CLAUDE_CODE_DISABLE_BACKGROUND_TASKS operator environment.");
         const queryOptions = this.buildQueryOptions(options, spawnEnvironment);
