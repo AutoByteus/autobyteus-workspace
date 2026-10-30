@@ -76,8 +76,8 @@ afterEach(async () => {
 });
 
 describe("MemorySyncSourceIdNamesMigration (SM-2 … SM-5)", () => {
-  it("is registered last, required on startup, startup-only, and holds back memory_sync", () => {
-    const last = new AppDataMigrationRegistry().listDefinitions().at(-1)!;
+  it("is registered after every other storage rename but the raw-trace one, required on startup, startup-only, and holds back memory_sync", () => {
+    const last = new AppDataMigrationRegistry().listDefinitions().at(-2)!;
     expect(last.id).toBe(MEMORY_SYNC_SOURCE_ID_NAMES_MIGRATION_ID);
     expect(last).toMatchObject({ requiredOnStartup: true, executionPolicy: "STARTUP_ONLY", holdsBackCapabilities: ["memory_sync"] });
   });

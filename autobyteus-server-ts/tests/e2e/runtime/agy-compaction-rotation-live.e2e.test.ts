@@ -124,7 +124,7 @@ suite("real AGY automatic compaction rotates AutoByteus raw traces", () => {
     await sendTurn("Reply with exactly: OK AFTER");
 
     for (const compaction of compactions()) {
-      expect(compaction.payload).toMatchObject({ kind: "provider_compaction_boundary", runtime_kind: "ANTIGRAVITY",
+      expect(compaction.payload).toMatchObject({ kind: "provider_compaction_boundary", runtime_kind: "antigravity_cli",
         provider: "antigravity", source_surface: "antigravity.checkpoint", status: "compacted", trigger: "auto",
         rotation_eligible: true });
       expect(String(compaction.payload["boundary_key"])).toMatch(/^agy:[^:]+:checkpoint:\d+$/);

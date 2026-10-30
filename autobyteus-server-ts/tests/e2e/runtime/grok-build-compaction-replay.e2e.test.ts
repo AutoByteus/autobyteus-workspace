@@ -146,7 +146,7 @@ describe("Grok Build compaction over GraphQL/WebSocket (recorded Grok 1.0.46 rep
       const events = compactions(run.messages);
       expect(events.map((event) => event.status)).toEqual(["compacting", "compacted", "compacting", "compacted", "compacting", "compacted"]);
       for (let index = 0; index < events.length; index += 2) {
-        expect(events[index + 1]).toMatchObject({ provider: "grok", runtime_kind: "GROK_BUILD", trigger: "auto",
+        expect(events[index + 1]).toMatchObject({ provider: "grok", runtime_kind: "grok_build", trigger: "auto",
           source_surface: "grok.auto_compact_completed", rotation_eligible: true, provider_event_id: events[index]!.provider_event_id,
           pre_tokens: expect.any(Number), post_tokens: expect.any(Number), duration_ms: expect.any(Number) });
         expect(events[index]).toMatchObject({ rotation_eligible: false, trigger: "auto", source_surface: "grok.auto_compact_started" });

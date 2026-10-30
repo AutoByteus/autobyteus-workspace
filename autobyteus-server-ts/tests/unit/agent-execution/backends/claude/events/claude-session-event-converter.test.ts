@@ -1081,7 +1081,7 @@ describe("ClaudeSessionEventConverter", () => {
       statusHint: null,
       payload: {
         kind: "provider_compaction_boundary",
-        runtime_kind: "CLAUDE",
+        runtime_kind: "claude_agent_sdk",
         provider: "claude",
         source_surface: "claude.status_compacting",
         boundary_key: "claude:session-1:claude.status_compacting:op-1:turn-1",
@@ -1116,7 +1116,7 @@ describe("ClaudeSessionEventConverter", () => {
 
     expect(boundary?.payload).toEqual({
       kind: "provider_compaction_boundary",
-      runtime_kind: "CLAUDE",
+      runtime_kind: "claude_agent_sdk",
       provider: "claude",
       source_surface: "claude.compact_boundary",
       boundary_key: "claude:session-1:claude.compact_boundary:boundary-1:turn-1",

@@ -84,7 +84,7 @@ describe("AGY checkpoint steps as provider compaction boundaries", () => {
       statusHint: null,
       payload: {
         kind: "provider_compaction_boundary",
-        runtime_kind: "ANTIGRAVITY",
+        runtime_kind: "antigravity_cli",
         provider: "antigravity",
         source_surface: "antigravity.checkpoint",
         boundary_key: "agy:5bd8c148-aa5c-4f18-a0e8-1c2f52782771:checkpoint:9",

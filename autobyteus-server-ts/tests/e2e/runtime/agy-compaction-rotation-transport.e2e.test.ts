@@ -110,7 +110,7 @@ suite("AGY automatic compaction through app WebSocket, memory and history", () =
     expect(compactions).toHaveLength(1);
     const conversationId = String(compactions[0]!.payload["provider_session_id"]);
     expect(compactions[0]!.payload).toMatchObject({
-      kind: "provider_compaction_boundary", runtime_kind: "ANTIGRAVITY", provider: "antigravity",
+      kind: "provider_compaction_boundary", runtime_kind: "antigravity_cli", provider: "antigravity",
       source_surface: "antigravity.checkpoint", boundary_key: `agy:${conversationId}:checkpoint:4`,
       provider_event_id: "checkpoint:4", status: "compacted", trigger: "auto", rotation_eligible: true, duration_ms: 7293,
     });

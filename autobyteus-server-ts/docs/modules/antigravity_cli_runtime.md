@@ -392,7 +392,7 @@ It sends no started phase, summary, or token figures in the stream.
 `AgyStreamEventConverter` maps a `checkpoint` step with state `DONE` to one
 `COMPACTION_STATUS` event (`buildAgyCompactionStatusPayload`): a
 rotation-eligible `provider_compaction_boundary` with runtime kind
-`ANTIGRAVITY`, provider `antigravity`, source surface `antigravity.checkpoint`,
+`antigravity_cli` (the `RuntimeKind` value), provider `antigravity`, source surface `antigravity.checkpoint`,
 boundary key `agy:<conversation_id>:checkpoint:<step_index>`,
 `provider_event_id` `checkpoint:<step_index>`, status `compacted`, trigger
 `auto`, and `duration_ms` from `duration_seconds`. The shared memory recorder
