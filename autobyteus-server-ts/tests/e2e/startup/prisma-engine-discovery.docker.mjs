@@ -1,19 +1,19 @@
 /**
  * Current-built Linux Prisma/native startup + retained-HOME/data recreation regression.
- * Prerequisites: Node22+, installed workspace (TypeScript), pnpm, Docker, network to
- * official binaries.prisma.sh, a local immutable server image with the root-pnpm
- * graph. No credentials/models. Serialize against other worktree builds.
+ * Prerequisites: Node22+, installed workspace, pnpm, Docker, network to
+ * official binaries.prisma.sh, a local immutable server image (built-in server package at
+ * /opt/autobyteus/server-package). No credentials/models. Serialize against other builds.
  *
  * env -i PATH="$PATH" HOME=<private> TMPDIR=<private> \
  *   RUN_PRISMA_ENGINE_DOCKER_E2E=1 pnpm -C autobyteus-server-ts \
  *   test:e2e:prisma-engine-discovery:docker --image sha256:<id> --output-dir <new-dir>
- * Optional --baseline-ref defaults to the known pre-fix source commit below.
  * Gate off prints SKIP (not Pass), without Docker/build/download operations.
  *
  * Cases: API002 builds this worktree, audits EVERY image dist file (only migrations
- * outputs may differ); API003 original resolver selects an official pinned,
- * checksummed incompatible cache and actual native RPC fails, matching native RPC
- * succeeds; API004 normal no-pin entrypoint/schema/HTTP + GraphQL-created definition;
+ * outputs may differ); API003 puts an official pinned, checksummed incompatible engine
+ * cache in the retained HOME: its schema engine fails actual native RPC, and the current
+ * resolver still selects the package's bundled engines, whose native RPC succeeds;
+ * API004 normal no-pin entrypoint/schema/HTTP + GraphQL-created definition;
  * API005 distinct-container recreation over SAME owned HOME/data, current source,
  * repeated health, API data and unchanged incompatible-cache bytes.
  *
@@ -53,7 +53,6 @@ const image = option('--image');
 assert.match(image ?? '', /^sha256:[a-f0-9]{64}$/, 'Provide a local immutable --image sha256:ID');
 const output = path.resolve(option('--output-dir') ?? '');
 assert(option('--output-dir') && !fs.existsSync(output), '--output-dir must be new');
-const baseline = option('--baseline-ref', 'e22245f097c208e66065302cfc30814cc5ffd14f');
 const wrongRevision = 'c2990dca591cba766e3b7ef5d9e8a84796e47ab7';
 fs.mkdirSync(output, { recursive: true, mode: 0o700 });
 const root = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), 'api-prisma-docker-')));
@@ -127,7 +126,7 @@ const home = path.join(root, 'home'); const data = path.join(root, 'data');
 const fixture = path.join(root, 'fixture'); const dist = path.join(root, 'dist');
 for (const d of [home, data, fixture]) fs.mkdirSync(d, { mode: 0o700 });
 const mounts = () => ['--mount', `type=bind,src=${home},dst=/root`, '--mount', `type=bind,src=${data},dst=/home/autobyteus/data`,
-  '--mount', `type=bind,src=${dist},dst=/app/autobyteus-server-ts/dist,readonly`];
+  '--mount', `type=bind,src=${dist},dst=/opt/autobyteus/server-package/dist,readonly`];
 const authPaths = ['.codex/auth.json', '.claude/.credentials.json', '.gemini/antigravity-cli/antigravity-oauth-token'];
 function assertSignedOut() { for (const p of authPaths) assert(!fs.existsSync(path.join(home, p)), `Unexpected credential ${p}`); }
 async function download(url) {
@@ -135,29 +134,30 @@ async function download(url) {
   assert.equal(r.status, 200, `Official fixture unavailable ${url}`);
   return Buffer.from(await r.arrayBuffer());
 }
-// Executed inside the owned image. Imported functions are actual base/current owners,
-// not a rewritten resolver; native JSON-RPC process is real and database-free.
+// Executed inside the owned image. Imported functions are the package's actual owners,
+// not a rewritten resolver; native JSON-RPC process is real and database-free. The
+// incompatible cache sits in the mounted HOME (WRONG_ENGINE_CACHE), where a retained
+// /root keeps it across recreation.
 const native = String.raw`
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {createRequire} from 'node:module';
 import path from 'node:path';
 import {spawn,execFileSync} from 'node:child_process';
-import {resolvePrismaEnginePair as oldResolve} from '/fixture/base.mjs';
-import {resolvePrismaEnginePair,buildPrismaCommandEnv} from '/app/autobyteus-server-ts/dist/startup/migrations.js';
-const app='/app/autobyteus-server-ts';
+import {resolvePrismaEnginePair,buildPrismaCommandEnv} from '/opt/autobyteus/server-package/dist/startup/migrations.js';
+const app='/opt/autobyteus/server-package';
 assert(!process.env.PRISMA_QUERY_ENGINE_LIBRARY && !process.env.PRISMA_SCHEMA_ENGINE_BINARY);
+const wrongSchemaEngine=process.env.WRONG_ENGINE_CACHE+'/schema-engine'; assert(fs.existsSync(wrongSchemaEngine));
 const cli=fs.realpathSync(app+'/node_modules/prisma/build/index.js');
 const req=createRequire(cli); const engines=fs.realpathSync(req.resolve('@prisma/engines/package.json'));
 const version=JSON.parse(fs.readFileSync(createRequire(engines).resolve('@prisma/engines-version/package.json'),'utf8')).prisma.enginesVersion;
-const old=oldResolve(app,{}); const current=resolvePrismaEnginePair(app,{});
-assert.equal(old.source,'cache'); assert(old.sourcePath.includes('c2990dca591cba766e3b7ef5d9e8a84796e47ab7'));
+const current=resolvePrismaEnginePair(app,{});
 assert.equal(current.source,'bundled'); assert.equal(current.sourcePath,path.dirname(engines));
 assert.notEqual(version,'c2990dca591cba766e3b7ef5d9e8a84796e47ab7');
 const queryVersion=createRequire(import.meta.url)(current.queryEngineLibrary).version();
 const schemaVersion=execFileSync(current.schemaEngineBinary,['--version'],{encoding:'utf8'}).trim();
-const oldVersion=execFileSync(old.schemaEngineBinary,['--version'],{encoding:'utf8'}).trim();
-assert.equal(queryVersion.commit,version); assert(schemaVersion.includes(version)); assert(oldVersion.includes('c2990dca591cba766e3b7ef5d9e8a84796e47ab7'));
+const wrongVersion=execFileSync(wrongSchemaEngine,['--version'],{encoding:'utf8'}).trim();
+assert.equal(queryVersion.commit,version); assert(schemaVersion.includes(version)); assert(wrongVersion.includes('c2990dca591cba766e3b7ef5d9e8a84796e47ab7'));
 async function rpc(binary) {
  return await new Promise((resolve,reject)=>{
   const child=spawn(binary,[],{stdio:['pipe','pipe','pipe']}); let text='',errors=''; let settled=false;
@@ -169,11 +169,11 @@ async function rpc(binary) {
   child.stdin.write(JSON.stringify({jsonrpc:'2.0',id:1,method:'listMigrationDirectories',params:{migrationsDirectoryPath:app+'/prisma/migrations'}})+'\n');
  });
 }
-const wrongRpc=await rpc(old.schemaEngineBinary); assert.equal(wrongRpc.error?.code,-32601);
+const wrongRpc=await rpc(wrongSchemaEngine); assert.equal(wrongRpc.error?.code,-32601);
 const matchingRpc=await rpc(current.schemaEngineBinary); assert(Array.isArray(matchingRpc.result?.migrations)); assert(matchingRpc.result.migrations.length>0);
 const env=buildPrismaCommandEnv({appRoot:app,databaseUrl:'file:/home/autobyteus/data/canonical.db',baseEnv:{DATABASE_URL:'file:/stale.db',KEEP:'sentinel'}});
 assert.equal(env.DATABASE_URL,'file:/home/autobyteus/data/canonical.db'); assert.equal(env.KEEP,'sentinel');assert.equal(env.PRISMA_SCHEMA_ENGINE_BINARY,current.schemaEngineBinary);
-console.log(JSON.stringify({cli,engines,version,old,current,queryVersion,schemaVersion,oldVersion,wrongRpc,matchingRpc,canonicalEnv:true}));
+console.log(JSON.stringify({cli,engines,version,current,queryVersion,schemaVersion,wrongSchemaEngine,wrongVersion,wrongRpc,matchingRpc,canonicalEnv:true}));
 `;
 async function health(name, round) {
   const mapping = docker(['port', name, '8000/tcp']).stdout.trim();
@@ -207,10 +207,10 @@ async function graphql(url, query, variables) {
 function start(name) {
   register(name);
   const id = docker(['run','-d','--pull','never','--name',name,'--label',label,'-p','127.0.0.1::8000',...mounts(),
-    '-e','AUTOBYTEUS_SKIP_SYNC=1',image]).stdout.trim();
+    image]).stdout.trim();
   const inspected=JSON.parse(docker(['inspect','--format','{{json .Mounts}}',name]).stdout);
   assert.deepEqual(inspected.filter(x=>x.Type==='bind').map(x=>[x.Source,x.Destination,x.RW]).sort(),[
-    [home,'/root',true],[data,'/home/autobyteus/data',true],[dist,'/app/autobyteus-server-ts/dist',false]].sort());
+    [home,'/root',true],[data,'/home/autobyteus/data',true],[dist,'/opt/autobyteus/server-package/dist',false]].sort());
   save(name+'.json',{id,image,mounts:inspected}); return id;
 }
 try {
@@ -223,19 +223,16 @@ try {
   assert(!(meta.Config.Env??[]).some(v=>/^PRISMA_(QUERY_ENGINE_LIBRARY|SCHEMA_ENGINE_BINARY)=/.test(v)));
   const auditName=runId+'-audit';register(auditName);
   docker(['create','--name',auditName,'--label',label,'--network','none','--entrypoint','node',image,'--version']);
-  const imageDist=path.join(root,'image-dist');docker(['cp',auditName+':/app/autobyteus-server-ts/dist',imageDist]);
+  const imageDist=path.join(root,'image-dist');docker(['cp',auditName+':/opt/autobyteus/server-package/dist',imageDist]);
   const originalManifest=manifest(imageDist);
   const differences=[...new Set([...Object.keys(originalManifest),...Object.keys(currentManifest)])].sort().filter(k=>originalManifest[k]!==currentManifest[k]);
   save('dist-audit.json',{image,os:meta.Os,architecture:meta.Architecture,originalManifest,currentManifest,differences});
   assert(differences.every(k=>/^startup\/migrations\.(js|js\.map|d\.ts|d\.ts\.map)$/.test(k)), 'Unrelated image dist differs: build owned current monorepo image; do not mount');
   remove(auditName);
   const source=fs.readFileSync(path.join(server,'src/startup/migrations.ts'));
-  const baseSource=command('git',['show',baseline+':autobyteus-server-ts/src/startup/migrations.ts']).stdout;
-  const { default:ts }=await import('typescript');
-  fs.writeFileSync(path.join(fixture,'base.mjs'),ts.transpileModule(baseSource,{compilerOptions:{target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.ESNext}}).outputText);
   fs.writeFileSync(path.join(fixture,'native.mjs'),native);
   save('build-identity.json',{head:command('git',['rev-parse','HEAD']).stdout.trim(),tree:command('git',['rev-parse','HEAD^{tree}']).stdout.trim(),
-    workingDiff:command('git',['diff','--stat']).stdout,sourceSha256:sha(source),distManifestSha256:sha(JSON.stringify(currentManifest)),baseline,baseSourceSha256:sha(baseSource),image});
+    workingDiff:command('git',['diff','--stat']).stdout,sourceSha256:sha(source),distManifestSha256:sha(JSON.stringify(currentManifest)),image});
   event(activeCase,'Pass',`${Object.keys(currentManifest).length} dist entries audited; ${differences.length} allowed changes`);
   activeCase='API003';event(activeCase,'Started','official incompatible cache/native RPC');
   const target=meta.Architecture==='arm64'?'linux-arm64-openssl-3.0.x':'debian-openssl-3.0.x';
@@ -251,9 +248,10 @@ try {
   save('native-fixture.json',{revision:wrongRevision,target,receipts});const wrongBefore=manifest(cache);
   assertSignedOut();const nativeName=runId+'-native';register(nativeName);
   const nativeResult=docker(['run','--rm','-i','--pull','never','--name',nativeName,'--label',label,'--network','none',...mounts(),
-    '--mount',`type=bind,src=${fixture},dst=/fixture,readonly`,'--entrypoint','node',image,'/fixture/native.mjs']);
+    '--mount',`type=bind,src=${fixture},dst=/fixture,readonly`,'-e',`WRONG_ENGINE_CACHE=/root/.cache/prisma/master/${wrongRevision}/${target}`,
+    '--entrypoint','node',image,'/fixture/native.mjs']);
   save('native-proof.json',JSON.parse(nativeResult.stdout.trim()));remove(nativeName);
-  assert.deepEqual(manifest(cache),wrongBefore);event(activeCase,'Pass','original cache RPC -32601; current bundled native revision/RPC pass');
+  assert.deepEqual(manifest(cache),wrongBefore);event(activeCase,'Pass','incompatible cache RPC -32601; current resolver selects bundled despite the cache; bundled native revision/RPC pass');
   activeCase='API004';event(activeCase,'Started','normal no-pin backend startup');
   const first=runId+'-first';const id1=start(first);const url1=await health(first,'first');
   const input={name:runId,role:'owned Prisma lifecycle fixture',description:'Retained-data proof; no model execution',instructions:'Do not run',category:'api-e2e'};

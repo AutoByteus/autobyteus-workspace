@@ -211,7 +211,7 @@ Pushing a `v*` tag starts four independent workflows:
 | Desktop Release | macOS ARM64 and x64 (`.dmg`, `.zip`, blockmaps), Linux x64 and ARM64 AppImages, the Windows `.exe`, and the `latest*.yml` updater metadata, on the GitHub release |
 | Android APK Release | The signed APK and its `.sha256`, on the same GitHub release |
 | iOS App Store Connect Release | A TestFlight upload |
-| Server Docker Release | `autobyteus/autobyteus-server:X.Y.Z[-beta.N]`. A stable tag also moves `:latest`; the newest tag, stable or beta, moves `:beta` |
+| Server Docker Release | `autobyteus/autobyteus-server:X.Y.Z[-beta.N]`. A stable tag also moves `:latest`; the newest tag, stable or beta, moves `:beta`. Then, on the GitHub release, the signed server package per architecture (`x64`, `arm64`): `autobyteus-server-X.Y.Z[-beta.N]-linux-<arch>.tar.gz`, `.json` and `.json.sig` |
 
 A release is done only when all four have succeeded. Watch the four runs
 together, not one after another, and act on the first failure. Desktop builds
@@ -226,7 +226,7 @@ gh run list --limit 4   # repeat every few minutes until all four have finished
 gh release view vX.Y.Z[-beta.N] --json isPrerelease,assets --jq '{pre: .isPrerelease, assets: [.assets[].name]}'
 ```
 
-Compare the assets with the table above: a complete release has 17. Until all
+Compare the assets with the table above: a complete release has 23. Until all
 four runs have succeeded and the assets are complete, the release is in
 progress: report it as "tagged, workflows running", never as released. The
 workflows publish independently, so a desktop failure still leaves the Android
@@ -331,6 +331,7 @@ What the release workflows build, validate and need.
   - signed Android APK on the same GitHub Release
   - iOS simulator build/test workflow artifacts, plus signed `.ipa` upload to App Store Connect/TestFlight when iOS publish secrets are configured
   - Docker Hub server image for `linux/amd64,linux/arm64`
+  - signed server packages for `linux-x64` and `linux-arm64` on the same GitHub Release (archive, description, signature), taken out of the pushed image
 - Release notes:
   - Stable GitHub Releases use curated user-facing notes from `.github/release-notes/release-notes.md` when that file exists in the tagged revision.
   - The release helper prepares that file from the ticket `release-notes.md`.
@@ -394,6 +395,10 @@ What the release workflows build, validate and need.
 - Required GitHub repository secrets for Docker Hub publish:
   - `DOCKERHUB_USERNAME`
   - `DOCKERHUB_TOKEN`
+- Required GitHub repository secret for server package publish:
+  - `SERVER_PACKAGE_SIGNING_KEY`: the Ed25519 private key that signs server packages. Created once with `node scripts/server-package/generate-signing-key.mjs`, which sets the secret through `gh` and writes the matching public key to `autobyteus-server-ts/docker/server-package-signing-key.pem`. The package job checks each signature against that public key and fails when they do not match. A new key pair (`--replace`) makes every older image refuse newer packages.
+- Server Docker system level:
+  - the workflow runs `node scripts/server-package/check-system-level.mjs` before it builds; it fails when the image's system part (the pinned base images or the Dockerfile runtime stage up to its end-of-system-part marker) changed without a new level in `autobyteus-server-ts/docker/system-level.json`. Raise the level and the hash it prints in the same change.
 - Optional GitHub repository variable:
   - `DOCKERHUB_IMAGE_NAME`
   - use this if the image repo should not be `autobyteus/autobyteus-server`

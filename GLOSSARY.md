@@ -30,6 +30,27 @@ delegated run, …) are defined in the
   (`NodeEntry.nodeId`) when it reaches the node.
 - **Client address:** the network address a request came from
   (`normalizeClientAddress`, `isLoopbackClientAddress`). It is not a peer.
+- **Server package:** one release's server for one architecture: a
+  self-contained folder with `server-package.json`, `package.json`, `dist/`,
+  `prisma/`, `node_modules/` and `mobile-web/`. A release publishes it as
+  `autobyteus-server-<version>-linux-<arch>.tar.gz` with its **package
+  description** (`.json`: `server-package.json` plus the archive's name,
+  SHA-256 and sizes) and the description's **signature** (`.json.sig`,
+  Ed25519). It is not called a build or a bundle.
+- **Built-in server package:** the server package inside a Docker image, at
+  `/opt/autobyteus/server-package`. For a default-variant image it is the same
+  folder that image's release publishes; a `zh` image builds its own and
+  publishes none.
+- **Starter:** the program in a Docker image that runs the node's server
+  package and replaces it on request. It is not the launcher: the launcher is
+  the host command `autobyteus-docker`.
+- **In-place update:** replacing a Docker node's server package inside its
+  running container. Moving a node to a new image stays an *upgrade*
+  (`autobyteus-docker upgrade`).
+- **System level:** a whole number naming what a Docker image provides beyond
+  Node and the architecture: its base image, system tools and agent CLIs
+  (`system-level.json`). An image provides one level; a server package needs
+  one.
 - **Sibling:** a run shown at the same level as another run in the run tree
   (for example a task agent's run lifted beside its parent's other children).
   It is not a peer.

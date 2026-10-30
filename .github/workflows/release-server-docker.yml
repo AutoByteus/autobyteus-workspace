@@ -143,6 +143,35 @@ jobs:
       - name: Check licensing consistency
         run: python3 scripts/check_licensing.py
 
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      # Fails when the image's system part changed without a new system level, and picks the
+      # pinned base image digest of this run's variant from system-level.json.
+      - name: Check system level
+        id: system_level
+        env:
+          VARIANT_LABEL: ${{ needs.prepare-release.outputs.variant_label }}
+          RELEASE_REF: ${{ needs.prepare-release.outputs.release_ref }}
+        run: |
+          set -euo pipefail
+
+          LEVEL_FILE="autobyteus-server-ts/docker/system-level.json"
+          if [[ ! -f "${LEVEL_FILE}" ]]; then
+            echo "::error::${RELEASE_REF} predates server packages (no ${LEVEL_FILE}). Re-publish it with the workflow of that ref: gh workflow run release-server-docker.yml --ref ${RELEASE_REF} -f release_tag=<tag>"
+            exit 1
+          fi
+
+          node scripts/server-package/check-system-level.mjs
+          DIGEST="$(jq -r --arg variant "${VARIANT_LABEL}" '.baseImages[$variant] // empty' "${LEVEL_FILE}")"
+          if [[ -z "${DIGEST}" ]]; then
+            echo "::error::${LEVEL_FILE} has no base image digest for the variant '${VARIANT_LABEL}'."
+            exit 1
+          fi
+          echo "base_image_digest=${DIGEST}" >> "${GITHUB_OUTPUT}"
+
       - name: Free runner disk space
         run: |
           set -euxo pipefail
@@ -175,6 +204,7 @@ jobs:
           context: .
           file: autobyteus-server-ts/docker/Dockerfile.monorepo
           build-args: |
+            BASE_IMAGE_DIGEST=${{ steps.system_level.outputs.base_image_digest }}
             CLI_INSTALL_CACHE_BUSTER=${{ github.run_id }}
           platforms: linux/amd64,linux/arm64
           push: true
@@ -191,7 +221,7 @@ jobs:
           context: .
           file: autobyteus-server-ts/docker/Dockerfile.monorepo
           build-args: |
-            BASE_IMAGE_TAG=${{ needs.prepare-release.outputs.build_variant }}
+            BASE_IMAGE_DIGEST=${{ steps.system_level.outputs.base_image_digest }}
             CLI_INSTALL_CACHE_BUSTER=${{ github.run_id }}
           platforms: linux/amd64,linux/arm64
           push: true
@@ -248,4 +278,119 @@ jobs:
             echo "### Beta tag"
             echo ""
             echo "${DECISION}"
+          } >> "${GITHUB_STEP_SUMMARY}"
+
+  # Takes the built-in server package out of the pushed image for each architecture, so the
+  # published package is the image's own, then describes, signs and uploads it to the release.
+  # The zh variant publishes no package: its nodes update from the default variant's packages.
+  publish-server-package:
+    name: Publish Server Package (${{ matrix.platform }})
+    needs: [prepare-release, build-and-push]
+    if: ${{ needs.prepare-release.outputs.build_variant == '' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [linux/amd64, linux/arm64]
+    steps:
+      - name: Checkout workspace
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ needs.prepare-release.outputs.release_ref }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Free runner disk space
+        run: |
+          set -euxo pipefail
+          sudo rm -rf \
+            /usr/share/dotnet \
+            /usr/local/lib/android \
+            /usr/local/share/boost \
+            /opt/ghc \
+            /opt/hostedtoolcache/CodeQL || true
+          docker system prune -af || true
+          df -h /
+
+      - name: Extract the built-in server package
+        env:
+          IMAGE: ${{ needs.prepare-release.outputs.image_name }}:${{ needs.prepare-release.outputs.normalized_tag }}
+          PLATFORM: ${{ matrix.platform }}
+        run: |
+          set -euo pipefail
+
+          docker create --platform "${PLATFORM}" --name server-package-source "${IMAGE}" >/dev/null
+          docker cp server-package-source:/opt/autobyteus/server-package "${RUNNER_TEMP}/server-package"
+          docker rm server-package-source >/dev/null
+
+      - name: Archive, describe and sign the server package
+        id: package
+        env:
+          NORMALIZED_TAG: ${{ needs.prepare-release.outputs.normalized_tag }}
+          SERVER_PACKAGE_SIGNING_KEY: ${{ secrets.SERVER_PACKAGE_SIGNING_KEY }}
+        run: |
+          set -euo pipefail
+
+          PACKAGE_DIR="${RUNNER_TEMP}/server-package"
+          ASSET_DIR="${RUNNER_TEMP}/server-package-assets"
+          mkdir -p "${ASSET_DIR}"
+          ARCH="$(node -p 'require(process.argv[1]).arch' "${PACKAGE_DIR}/server-package.json")"
+          ASSET_BASE="${ASSET_DIR}/autobyteus-server-${NORMALIZED_TAG}-linux-${ARCH}"
+
+          tar --sort=name --owner=0 --group=0 --numeric-owner -C "${PACKAGE_DIR}" -cf - . | gzip -n > "${ASSET_BASE}.tar.gz"
+          node scripts/server-package/describe-server-package.mjs description \
+            --package-dir "${PACKAGE_DIR}" \
+            --archive "${ASSET_BASE}.tar.gz" \
+            --version "${NORMALIZED_TAG}" \
+            --out "${ASSET_BASE}.json"
+          node scripts/server-package/sign-server-package.mjs \
+            --description "${ASSET_BASE}.json" \
+            --public-key autobyteus-server-ts/docker/server-package-signing-key.pem
+          echo "asset_base=${ASSET_BASE}" >> "${GITHUB_OUTPUT}"
+
+      # The Desktop Release or the Android APK Release workflow creates the GitHub release,
+      # whichever gets there first; wait for it (up to 30 minutes).
+      - name: Wait for the GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ needs.prepare-release.outputs.release_tag }}
+        run: |
+          set -euo pipefail
+
+          for _ in $(seq 1 60); do
+            if gh release view "${RELEASE_TAG}" >/dev/null 2>&1; then
+              exit 0
+            fi
+            sleep 30
+          done
+          echo "::error::The GitHub release ${RELEASE_TAG} did not appear within 30 minutes; the server package was not published."
+          exit 1
+
+      # Archive first, then the description, then its signature. When a re-publish replaces them
+      # (--clobber), a node that reads the new description and signature always finds the new
+      # archive; one that read the old pair gets ARCHIVE_MISMATCH once, and a retry succeeds.
+      - name: Upload the server package to the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          RELEASE_TAG: ${{ needs.prepare-release.outputs.release_tag }}
+          ASSET_BASE: ${{ steps.package.outputs.asset_base }}
+        run: |
+          set -euo pipefail
+
+          for suffix in .tar.gz .json .json.sig; do
+            gh release upload "${RELEASE_TAG}" "${ASSET_BASE}${suffix}" --clobber
+          done
+          {
+            echo "### Server package (${{ matrix.platform }})"
+            echo ""
+            for suffix in .tar.gz .json .json.sig; do
+              echo "- \`$(basename "${ASSET_BASE}${suffix}")\`"
+            done
           } >> "${GITHUB_STEP_SUMMARY}"

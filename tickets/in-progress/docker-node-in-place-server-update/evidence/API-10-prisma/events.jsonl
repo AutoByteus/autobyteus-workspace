@@ -1,0 +1,8 @@
+{"time":"2026-10-30T16:15:14.510Z","caseId":"API002","result":"Started","details":"current build and whole-dist audit"}
+{"time":"2026-10-30T16:15:36.462Z","caseId":"API002","result":"Pass","details":"5749 dist entries audited; 0 allowed changes"}
+{"time":"2026-10-30T16:15:36.463Z","caseId":"API003","result":"Started","details":"official incompatible cache/native RPC"}
+{"time":"2026-10-30T16:15:38.719Z","caseId":"API003","result":"Pass","details":"incompatible cache RPC -32601; current resolver selects bundled despite the cache; bundled native revision/RPC pass"}
+{"time":"2026-10-30T16:15:38.719Z","caseId":"API004","result":"Started","details":"normal no-pin backend startup"}
+{"time":"2026-10-30T16:15:48.408Z","caseId":"API004","result":"Pass","details":"HTTP200/statusok x3; representative definition created through GraphQL"}
+{"time":"2026-10-30T16:15:48.409Z","caseId":"API005","result":"Started","details":"actual removal and same-state recreation"}
+{"time":"2026-10-30T16:15:58.382Z","caseId":"API005","result":"Pass","details":"different container ID; same mounts/source; API data and wrong-cache bytes preserved; HTTP200/statusok x3"}

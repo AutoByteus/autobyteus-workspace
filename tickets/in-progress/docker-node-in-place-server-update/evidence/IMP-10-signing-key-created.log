@@ -1,0 +1,16 @@
+# IMP-10 creation of the server package signing key
+# Command: node scripts/server-package/generate-signing-key.mjs   (the user was told in the conversation before it ran; no browser confirmation was needed)
+# Commit: 01c56f1b95 (the public key it wrote is committed there). Environment: macOS arm64, gh signed in as ryan-zheng-teki with repo scope. Date: 2026-10-30
+
+## Script output (the private key went to gh on stdin only; it was never printed or written to disk)
+Set the secret SERVER_PACKAGE_SIGNING_KEY on AutoByteus/autobyteus-workspace and wrote the public key .../autobyteus-server-ts/docker/server-package-signing-key.pem. Commit the public key.
+
+## gh secret list -R AutoByteus/autobyteus-workspace (name and update time only)
+SERVER_PACKAGE_SIGNING_KEY 2026-10-30T15:54:14Z
+
+## Committed public key (autobyteus-server-ts/docker/server-package-signing-key.pem at 01c56f1b95)
+-----BEGIN PUBLIC KEY-----
+MCowBQYDK2VwAyEAnM0ynDerYgcL4hqokt//kbECZGvPsPeijFtSmF7cUdg=
+-----END PUBLIC KEY-----
+
+## Not verifiable locally: that the secret matches this public key. The release's sign step checks it (sign-server-package.mjs fails on a mismatch).

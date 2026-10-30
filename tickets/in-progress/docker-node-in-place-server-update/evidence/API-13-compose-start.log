@@ -1,0 +1,146 @@
+# API-13 compose start: docker-start.sh up --build-local -p ab305-api-compose
+# Commit: 4c356d69b7; Date: 2026-10-30T16:31:00Z; Environment: macOS arm64, Docker 29.0.1, Docker Compose version v2.40.3-desktop.1
+CHECK PASS: no autobyteus-server:latest image exists before the run (so the tag is this run's)
+CHECK PASS: no volumes of project ab305-api-compose exist before the run
+
+## up --build-local (build output in /private/tmp/ab305-api-e2e/logs/API-13-build.full.log)
+ Volume ab305-api-compose_autobyteus-server-root-home  Created
+ Volume ab305-api-compose_autobyteus-server-chromium-profile  Creating
+ Volume ab305-api-compose_autobyteus-server-chromium-profile  Created
+ Container ab305-api-compose-autobyteus-server-1  Creating
+ Container ab305-api-compose-autobyteus-server-1  Created
+ Container ab305-api-compose-autobyteus-server-1  Starting
+ Container ab305-api-compose-autobyteus-server-1  Started
+[2026-10-30 17:36:19] Instance ab305-api-compose is up.
+Endpoints:
+  Backend: http://localhost:55684
+  GraphQL: http://localhost:55684/graphql
+  noVNC:   http://localhost:55686
+CHECK PASS: docker-start.sh up exited 0
+
+## container and volumes
+container e09b3f85734984d7a04bec7080014ab379384e72c600fa9a42c8c5fe1497d300 image sha256:aeec83ab5f46106724cbfd4f62a16f92ec3c4e302b39e9c9f57fe384cd52a242 (autobyteus-server:latest)
+volume ab305-api-compose_autobyteus-server-workspace -> /app/autobyteus-server-ts/workspace rw=true
+volume ab305-api-compose_autobyteus-server-data -> /home/autobyteus/data rw=true
+volume ab305-api-compose_autobyteus-server-root-home -> /root rw=true
+volume ab305-api-compose_autobyteus-server-chromium-profile -> /home/vncuser/.config/chromium rw=true
+volume ab305-api-compose_autobyteus-server-server-packages -> /home/autobyteus/server-packages rw=true
+env AUTOBYTEUS_BIND_HOST=0.0.0.0 AUTOBYTEUS_SERVER_PORT=8000 LOG_LEVEL=INFO AUTOBYTEUS_DATA_DIR=/home/autobyteus/data DB_TYPE=sqlite AUTOBYTEUS_VNC_SERVER_HOSTS=localhost:55686 AUTOBYTEUS_SERVER_HOST=http://127.0.0.1:29695 APP_ENV=production PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin USER_UID=1000 USER_GID=1000 IMAGE_VARIANT=default DEBIAN_FRONTEND=noninteractive DISPLAY=:99 SCREEN_RESOLUTION=1920x1080x24 XDG_RUNTIME_DIR=/run/user/1000 GTK_IM_MODULE=fcitx QT_IM_MODULE=fcitx XMODIFIERS=@im=fcitx SDL_IM_MODULE=fcitx LANG=en_US.UTF-8 LANGUAGE=en_US:en LC_ALL=en_US.UTF-8 NODE_ENV=production BROWSER=/usr/local/bin/open-vnc-browser-url.sh HOME=/root 
+CHECK PASS: server-packages volume mounted at /home/autobyteus/server-packages
+CHECK PASS: five project volumes exist
+DRIVER    VOLUME NAME
+local     ab305-api-compose_autobyteus-server-chromium-profile
+local     ab305-api-compose_autobyteus-server-data
+local     ab305-api-compose_autobyteus-server-root-home
+local     ab305-api-compose_autobyteus-server-server-packages
+local     ab305-api-compose_autobyteus-server-workspace
+health: {"status":"ok","message":"Server is running"}
+CHECK PASS: compose node healthy 3x on http://127.0.0.1:55684
+server cwd: /opt/autobyteus/server-package
+CHECK PASS: server runs from /opt/autobyteus/server-package
+CHECK PASS: no AUTOBYTEUS_WORKSPACE_ROOT or AUTOBYTEUS_SKIP_SYNC or git-sync variables in the container env
+CHECK PASS: server-packages volume is empty (step 1 writes nothing there)
+{
+  "version": "1.5.11-beta.5",
+  "arch": "arm64",
+  "nodeModuleVersion": "127",
+  "systemLevel": 1,
+  "dataMigrations": [
+    "app-data/agent-org-flat-team-families-v1",
+    "app-data/agent-org-history-first-message-summary-v1",
+    "app-data/append-only-message-logs-v1",
+    "app-data/collaborators-to-delegated-runs-v1",
+    "app-data/custom-provider-readable-id",
+    "app-data/custom-provider-v1",
+    "app-data/delegated-copy-own-file-complete-v1",
+    "app-data/memory-sync-source-id-names",
+    "app-data/migrate-native-working-context-snapshots-v5",
+    "app-data/node-identity-file-name",
+    "app-data/project-task-keys-v1",
+    "app-data/project-task-titles",
+    "app-data/projects-per-folder-v1",
+    "app-data/raw-trace-active-file-name",
+    "app-data/raw-trace-rotation-layout",
+    "app-data/remove-built-in-project-task-manager",
+    "app-data/remove-external-messaging-data",
+    "app-data/remove-external-runtime-working-context-snapshots",
+    "app-data/remove-global-skill-discovery-mode",
+    "app-data/remove-self-evolution-run-metadata",
+    "app-data/remove-skill-improvement-data",
+    "app-data/remove-work-trace-exports",
+    "app-data/run-history-index-v2",
+    "app-data/task-agent-own-run-v1",
+    "app-data/team-agent-memory-layout",
+    "app-data/team-communication-projection-address",
+    "app-data/team-context-file-execution-locators-v1",
+    "app-data/team-run-execution-tree-v1",
+    "app-data/team-run-execution-tree-v2",
+    "app-data/team-run-history-index-v2",
+    "app-data/team-run-metadata-member-tree",
+    "app-data/token-usage-custom-provider-model-value-backfill",
+    "app-data/token-usage-provider-name-snapshot-backfill",
+    "app-data/token-usage-run-records-v1",
+    "prisma/20260203074245_init",
+    "prisma/20260208094000_add_external_channel_tables",
+    "prisma/20260209174500_add_channel_message_receipt_turn_id",
+    "prisma/20260209213000_remove_agent_conversation_tables",
+    "prisma/20260210101500_add_agent_avatar",
+    "prisma/20260210192000_add_agent_team_avatar",
+    "prisma/20260211214500_add_sync_columns_and_tombstones",
+    "prisma/20260212070000_remove_workflow_definition",
+    "prisma/20260309103000_add_channel_binding_launch_preset",
+    "prisma/20260310153000_add_channel_binding_team_definition_id",
+    "prisma/20260331102000_remove_channel_bindings_table",
+    "prisma/20260331130000_receipt_lifecycle_and_remove_channel_idempotency",
+    "prisma/20260517090000_add_app_data_migration_records",
+    "prisma/20260624090000_add_token_usage_ledger_events",
+    "prisma/20260625193000_token_usage_component_pricing_explainability",
+    "prisma/20260629120000_add_token_usage_display_fields",
+    "prisma/20260702093000_token_usage_execution_address",
+    "prisma/20260726090000_add_secret_vault",
+    "prisma/20260730090000_add_token_usage_provider_name",
+    "prisma/20260801090000_token_usage_member_display_name",
+    "prisma/20260814090000_team_run_execution_tree_v1",
+    "prisma/20260819090000_add_token_usage_run_records",
+    "prisma/20260820090000_redesign_app_data_migration_summary",
+    "prisma/20260822090000_add_token_usage_analytics",
+    "prisma/20260923130000_add_claude_sdk_usage_state",
+    "prisma/20260924120000_remove_external_channel_tables",
+    "prisma/20261009120000_token_meter_context_readings"
+  ]
+}
+
+CHECK PASS: /mobile/ served (200)
+autobyteus_server                RUNNING   pid 57, uptime 0:00:07
+chrome                           RUNNING   pid 42, uptime 0:00:07
+copyq                            RUNNING   pid 36, uptime 0:00:07
+dbus                             RUNNING   pid 31, uptime 0:00:07
+disable_screensaver              EXITED    Oct 30 04:36 PM
+fcitx                            RUNNING   pid 34, uptime 0:00:07
+socat                            RUNNING   pid 47, uptime 0:00:07
+tigervnc                         RUNNING   pid 32, uptime 0:00:07
+websockify                       RUNNING   pid 56, uptime 0:00:07
+xfce                             RUNNING   pid 33, uptime 0:00:07
+
+## down --volumes --delete-state
+ Container ab305-api-compose-autobyteus-server-1  Stopping
+ Container ab305-api-compose-autobyteus-server-1  Stopped
+ Container ab305-api-compose-autobyteus-server-1  Removing
+ Container ab305-api-compose-autobyteus-server-1  Removed
+ Volume ab305-api-compose_autobyteus-server-workspace  Removing
+ Volume ab305-api-compose_autobyteus-server-data  Removing
+ Volume ab305-api-compose_autobyteus-server-chromium-profile  Removing
+ Volume ab305-api-compose_autobyteus-server-root-home  Removing
+ Volume ab305-api-compose_autobyteus-server-server-packages  Removing
+ Network ab305-api-compose_default  Removing
+ Volume ab305-api-compose_autobyteus-server-data  Removed
+ Volume ab305-api-compose_autobyteus-server-workspace  Removed
+ Volume ab305-api-compose_autobyteus-server-server-packages  Removed
+ Volume ab305-api-compose_autobyteus-server-chromium-profile  Removed
+ Volume ab305-api-compose_autobyteus-server-root-home  Removed
+ Network ab305-api-compose_default  Removed
+[2026-10-30 17:36:29] Deleted state: /Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-in-place-server-update/autobyteus-server-ts/docker/.runtime/ab305-api-compose.env
+CHECK PASS: project container removed
+CHECK PASS: project volumes removed
+
+CHECK FAILURES: 0
