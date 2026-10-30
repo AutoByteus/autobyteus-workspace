@@ -38,17 +38,17 @@ pendingRuntimeSwitch?: {
 }
 ```
 
-- Written by the settings save of a **stopped, unarchived, standalone agent run** that is not application-owned and not system-owned (`isCollaborationEligibleStandaloneRun`). A second save before the first message keeps the first `from`. A save that selects the original runtime again (`from.runtimeKind`) writes `from` back as the binding and clears the field (nothing happened).
-- Cleared by the activation commit (3.3 step 5). The history of switches is not duplicated here (it is in the raw-trace manifest and the marker records).
+- Written by the settings save of a **stopped, unarchived, standalone agent run** that is not application-owned and not system-owned (`isCollaborationEligibleStandaloneRun`). A second save before the first message keeps the first `from`. A save that selects the original runtime again (`from.runtimeKind`) is the undo: the original session ID (`from.platformAgentRunId`) is restored and the field is cleared, and the model and settings the user chose in that save are written (a different model of the original runtime is kept, not lost).
+- Cleared by the activation commit (3.3 step 4). The history of switches is not duplicated here (it is in the raw-trace manifest and the marker records).
 - Optional field whose absence means "no pending switch": **Directly Usable — No Migration** (data-migration guideline § 2: a compatible change).
 
 ### 3.2 `raw_traces_manifest.json` (existing; one new `boundary_type` value)
 
-*Read:* `RawTraceArchiveSegmentEntry {index, file_name, boundary_type, boundary_key, boundary_trace_id, runtime_kind, source_event, archived_at, first/last_trace_id, first/last_ts, record_count, status}`; `boundary_type` is the union `native_compaction | provider_compaction_boundary` (`autobyteus-ts/src/memory/store/raw-trace-archive-manifest.ts:8-11`). *Measured:* every one of 3,786 segments in the user's 820 runs has a `runtime_kind` and its file; no orphan. The spelling in data is the short label: `CODEX` 3,648, `AUTOBYTEUS` 61, `CLAUDE` 75, `ANTIGRAVITY` 2 (and `GROK_BUILD` in the Grok payload, *Read* `grok-build-compaction-status-payload.ts:51`).
+*Read:* `RawTraceArchiveSegmentEntry {index, file_name, boundary_type, boundary_key, boundary_trace_id, runtime_kind, source_event, archived_at, first/last_trace_id, first/last_ts, record_count, status}`; `boundary_type` is the union `native_compaction | provider_compaction_boundary` (`autobyteus-ts/src/memory/store/raw-trace-archive-manifest.ts:8-11`). *Measured (re-measured 2026-10-30: 825 manifests, 3,794 segments; the figures below are from the first measurement):* every one of 3,786 segments in the user's 820 runs has a `runtime_kind` and its file; no orphan. The spelling in data is the short label: `CODEX` 3,648, `AUTOBYTEUS` 61, `CLAUDE` 75, `ANTIGRAVITY` 2 (and `GROK_BUILD` in the Grok payload, *Read* `grok-build-compaction-status-payload.ts:51`).
 
 New value: `boundary_type: "runtime_switch"` (one added member of the library's union), `source_event: "runtime_switch"`, `boundary_key: "runtime_switch:<runId>:<requestedAt>"` (the idempotency key), `boundary_trace_id` = the marker's id, `runtime_kind` = the label of the **archived** records' runtime (the previous agent), in the existing spelling. One owner maps `RuntimeKind` ⇄ label (`agent-memory`), instead of five string literals in five backends.
 
-**Runtime of a segment (lookup rule):** an archived segment → its entry's `runtime_kind`; the active file → the run's current runtime (`run_metadata.json`).
+**Runtime of a segment (lookup rule):** an archived segment → its entry's `runtime_kind`. The open (active) file → the runtime that wrote it: `pendingRuntimeSwitch.from.runtimeKind` while a switch is pending (the metadata already holds the new runtime, the open file still holds the previous runtime's records), otherwise `run_metadata.runtimeKind`. One function derives this fact (`openRawTraceRuntimeKind(metadata)`, `run-history`, beside the metadata type) and the journal's callers use it (`memory-run-discovery.ts:146` supplies the journal target's runtime for standalone runs); a live run has no pending switch, so its own runtime is the same fact.
 
 ### 3.3 The switch marker (a platform notice record; no new raw-trace record type)
 
@@ -58,10 +58,18 @@ New value: `boundary_type: "runtime_switch"` (one added member of the library's 
 1. Read metadata: `pendingRuntimeSwitch` present → the switch activation (else the normal restore or prepared start). The switch decides on the explicit field only; `platformAgentRunId` is null until step 4 (I-6) but is not the condition.
 2. Prepare the new backend as a fresh session (`beginActivation({kind:"new", runId, config}).prepare()`, the same call a prepared run uses); validate; nothing is published.
 3. Switch recorder (`agent-memory`): if the active file does not yet contain a record with the key as correlation id, append the marker; rotate the active file before it (`RunMemoryFileStore.rotateActiveRawTracesBeforeBoundary`, idempotent by `boundary_key`; with nothing before the marker it moves nothing and the marker simply starts the file).
-4. Commit metadata through the lifecycle's existing `persistAndPublish`: new `platformAgentRunId`, `pendingRuntimeSwitch` removed.
+4. Commit metadata through the lifecycle's existing `persistAndPublish`, which writes through `AgentRunHistoryCatalogService.recordRunStarted`; that writer gains one explicit input, `clearPendingRuntimeSwitch`, because today it overrides only `runtimeKind`, `platformAgentRunId` and `startedAt` and would leave the pending field in the file (`agent-run-history-catalog-service.ts:202-232`). Stored before → stored after (and the target `persistAndPublish` compares against):
+   ```
+   before: { runId, runtimeKind: "codex_app_server", llmModelIdentifier: "…", llmConfig: {…}, platformAgentRunId: null,
+             startedAt: "2026-10-29T…", pendingRuntimeSwitch: { requestedAt: "2026-10-30T10:00:00Z",
+               from: { runtimeKind: "claude_agent_sdk", llmModelIdentifier: "…", llmConfig: {…}, platformAgentRunId: "sess-1" } }, … }
+   after:  { runId, runtimeKind: "codex_app_server", llmModelIdentifier: "…", llmConfig: {…}, platformAgentRunId: "thread-9",
+             startedAt: "2026-10-29T…" (unchanged), … }          // no pendingRuntimeSwitch key
+   ```
+   The run history row's `terminatedAt` is reset by the same call, as for any reactivation. **Retry rule:** a commit that did not land leaves the stored metadata equal to the pending original; `persistAndPublish` then aborts its candidate and the next send retries (one boolean, `unchangedIsRetryable`, true for a prepared start and for a switch, with `original` carrying the pending metadata).
 5. Publish the run; register the hand-over facts in memory for the first input (3.6).
 
-**Failure behavior (supported scenario: an activation that fails and is sent again, the existing retry of `activateOnce`):** a failure before step 3 changed nothing but a discarded candidate; a failure of step 4 after step 3 leaves the metadata pending, and the retry finds the marker (by the key) and skips step 3; after 4 it is a normal run. The marker is never written twice for one key. A process crash is not a supported scenario of this design; one consequence is stated for honesty: a crash after 4 and before the first input loses the in-memory hand-over notice only (the marker and journals remain; the user can restate the task).
+**Failure behavior (supported scenario: an activation that fails and is sent again, the existing retry of `activateOnce`):** a failure before step 3 changed nothing but a discarded candidate; a throw from step 3 aborts the candidate (`abortForRetry`) before the error propagates, as `validateCandidateOrAbort` does; a failure of step 4 after step 3 leaves the metadata pending, and the retry finds the marker (by the key) and skips step 3; after 4 it is a normal run. The marker is never written twice for one key. A process crash is not a supported scenario of this design; one consequence is stated for honesty: a crash after 4 and before the first input loses the in-memory hand-over notice only (the marker and journals remain; the user can restate the task).
 
 *Reproduced* (`probes/runtime-switch-folder.probe.test.ts`, real `RunMemoryFileStore`, synthetic data): after the marker and the rotation the folder holds `raw_traces_000001.jsonl` (the 8 old records) and `raw_traces_active.jsonl` (marker first, then the new records appended); the manifest has one `complete` entry `runtime_switch` / `CLAUDE` / 8 records; a second rotation with the same key returns `null` and moves nothing; the marker exists once.
 
@@ -101,12 +109,12 @@ Facts and where each comes from: the journal files, their periods, sizes and lin
 | I-1 | `runId`, `memoryDir`, `agentDefinitionId`, `workspaceRootPath`, `startedAt` of `run_metadata.json` never change at a switch. |
 | I-2 | Every manifest segment has a `runtime_kind` and its file exists; every `raw_traces_NNNNNN.jsonl` is in the manifest. |
 | I-3 | The first record of the active file after a `runtime_switch` segment is a `system_task_notification` whose id equals the entry's `boundary_trace_id` and whose correlation id equals its `boundary_key`. |
-| I-4 | The `runtime_kind` label of the archived segment before a switch equals the label of `from.runtimeKind` of the switch that made it; the active file's runtime is `run_metadata.runtimeKind`. |
+| I-4 | The `runtime_kind` label of the archived segment before a switch equals the label of `from.runtimeKind` of the switch that made it; the open file's runtime is `openRawTraceRuntimeKind(metadata)`: `from.runtimeKind` while a switch is pending, otherwise `run_metadata.runtimeKind`. |
 | I-5 | No two manifest entries share a `boundary_key`; one marker record per key. |
-| I-6 | `pendingRuntimeSwitch` present ⇒ no marker with its key exists yet, or the activation has not committed: `platformAgentRunId` is null until the commit. |
+| I-6 | `pendingRuntimeSwitch` present ⇒ the activation has not committed: `platformAgentRunId` is null until the commit, and the commit removes the field in the same write that sets the session ID. A marker with the key may already exist (a failed activation sent again finds it). |
 | I-7 | No segment holds records of two runtimes (the rotation precedes the first record of the new runtime). |
 | I-8 | Old segments and old journal files are byte-unchanged by a switch. |
-| I-9 | The journal manifest entry of a file has `runtime_kind` equal to the segment's runtime by the 3.2 rule. |
+| I-9 | The journal manifest entry of a file has `runtime_kind` equal to the file's runtime by the 3.2 rule (an archived segment: its entry; the open file: `openRawTraceRuntimeKind(metadata)`). |
 
 ## 5. Validation (what has been done, what is planned)
 
