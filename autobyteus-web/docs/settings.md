@@ -248,6 +248,33 @@ Model Router (an agent definition with `"internal": true`).
   switch in a real browser against a real node with a file-authored internal
   agent.
 
+## Server Settings: GitHub
+
+Settings -> Server Settings -> Basics contains a node-bound **GitHub** card
+(`components/settings/GitHubIntegrationCard.vue`, store
+`stores/githubIntegrationStore.ts`). It lets the agents the user ticks use GitHub
+from their shell (curl, `gh api`, git) through the node's credential proxy. The
+token stays in the node's vault, and agents never see it.
+
+- **Token.** The user pastes a GitHub token and saves it. The server checks it
+  with GitHub before storing it. The field is cleared after saving, and the
+  value is never returned or shown again. The status pill reads **Connected as
+  @login** or **Not connected**. **Test** checks the stored token again;
+  **Remove** deletes it. Coded errors have their own messages, for example "GitHub
+  rejected the token" (`TOKEN_REJECTED`) or a vault that is unavailable; no
+  message contains the token.
+- **Agents that may use GitHub.** One checkbox per agent definition. Only ticked
+  agents' runs get the GitHub address and the git redirection, including when
+  they run as team members. Unticking takes effect at once for running runs;
+  ticking applies to the agent's next run.
+- Server side (run pass, proxy, the variables a run's shell gets, errors and
+  limits): [Credential Proxy](../../autobyteus-server-ts/docs/modules/credential_proxy.md),
+  including the
+  [Integration-Author Contract](../../autobyteus-server-ts/docs/modules/credential_proxy.md#integration-author-contract).
+- Tests: `components/settings/__tests__/GitHubIntegrationCard.spec.ts`;
+  `tests/e2e/github-integration-card-probe.mjs`
+  (`pnpm test:e2e:github-integration-card`).
+
 ## Nodes: Manage Nodes (one list)
 
 Vocabulary ([Glossary](../../GLOSSARY.md#nodes)): a *node* is one server with its node ID
