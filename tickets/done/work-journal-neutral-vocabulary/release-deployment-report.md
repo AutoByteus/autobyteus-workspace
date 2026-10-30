@@ -2,7 +2,7 @@
 
 ## Release / Publication / Deployment Scope
 
-Repository finalization into `origin/personal` only. No release, tag, publication or deployment (see Release Decision).
+Repository finalization into `origin/personal` (DR-001), then beta release `v1.5.11-beta.5` (DR-002; see Release Decision).
 
 ## Project Release Guide
 
