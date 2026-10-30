@@ -5,6 +5,13 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 MONOREPO_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
 DOCKERFILE_PATH="${MONOREPO_ROOT}/autobyteus-server-ts/docker/Dockerfile.monorepo"
 
+# The base image digest of a variant, from system-level.json (the one record of the pinned bases).
+# shellcheck disable=SC2016 # the node program, not the shell, expands its template
+base_image_digest() {
+  node -e 'const d = require(process.argv[1]).baseImages[process.argv[2]]; if (!d) { console.error(`No base image for the variant ${process.argv[2]} in ${process.argv[1]}`); process.exit(1) } console.log(d)' \
+    "${SCRIPT_DIR}/system-level.json" "$1"
+}
+
 IMAGE_NAME="${IMAGE_NAME:-autobyteus/autobyteus-server}"
 BUILDER_NAME="${BUILDER_NAME:-multi-platform-builder}"
 PLATFORMS="linux/amd64,linux/arm64"
@@ -33,7 +40,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 if [[ -n "${VARIANT}" ]]; then
-  EXTRA_ARGS+=("--build-arg" "BASE_IMAGE_TAG=${VARIANT}")
+  EXTRA_ARGS+=("--build-arg" "BASE_IMAGE_DIGEST=$(base_image_digest "${VARIANT}")")
   VERSION="${VERSION}-${VARIANT}"
   TAG_LATEST="latest-${VARIANT}"
 else

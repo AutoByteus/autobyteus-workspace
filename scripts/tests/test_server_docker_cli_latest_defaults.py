@@ -85,7 +85,7 @@ class ServerDockerCliLatestDefaultsTest(unittest.TestCase):
         self.assertNotIn("|| true", layer)
 
     def test_no_runtime_installer_or_home_override_is_added(self) -> None:
-        for name in ("entrypoint.sh", "bootstrap.sh", "supervisor-autobyteus-server.conf"):
+        for name in ("entrypoint.sh", "supervisor-autobyteus-server.conf"):
             content = (DOCKERFILE.parent / name).read_text(encoding="utf-8")
             self.assertNotIn("@xai-official/grok", content)
             self.assertNotIn("antigravity.google/cli/install.sh", content)

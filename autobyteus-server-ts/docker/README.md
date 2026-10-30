@@ -432,6 +432,11 @@ If you only want to build the image without starting it:
 ./build.sh --variant zh
 ```
 
+The runtime stage starts from the `autobyteus/chrome-vnc` base pinned by
+digest. `system-level.json` records the digest of each base variant;
+`--variant zh` builds from the `zh` digest, and a plain `docker build` uses the
+default digest in `Dockerfile.monorepo`.
+
 By default, the server Dockerfile asks npm for the current `latest` dist-tag of
 the npm-distributed CLIs:
 
@@ -474,6 +479,38 @@ docker buildx build \
   .
 ```
 
+## Server Package And System Level
+
+The image runs its server from the **built-in server package** at
+`/opt/autobyteus/server-package`: the deployed server with its own
+`node_modules` (native modules built for the image's Node and architecture),
+its Prisma client, the mobile web and `server-package.json`. That file records
+the release version, the architecture, the Node module version, the system
+level the package needs and its data migration folders. Each release publishes
+the same folder per architecture (see GitHub Release Automation).
+
+To get this worktree's server package for the host architecture without
+building the whole image:
+
+```bash
+docker buildx build -f autobyteus-server-ts/docker/Dockerfile.monorepo \
+  --target server-package --output type=local,dest=<new folder> .
+```
+
+The **system level** is a whole number naming what an image provides beyond
+Node and the architecture: the base image and the runtime stage of
+`Dockerfile.monorepo` up to the line
+`# ---- end of the system part (system-level.json) ----` (system tools and agent
+CLIs). `system-level.json` records the level, the base image digests and the
+SHA-256 of these inputs. Any change to them needs a new level:
+
+```bash
+node scripts/server-package/check-system-level.mjs
+```
+
+fails and prints the new level and hash to put into `system-level.json`. The
+release workflow runs the same check before it builds.
+
 ## CLI Packaging Regression Checks
 
 From the repository root, run the network-free packaging checks:
@@ -481,6 +518,7 @@ From the repository root, run the network-free packaging checks:
 ```bash
 python3 -m unittest discover -s scripts/tests -p 'test_server_docker*.py' -v
 python3 -m unittest discover -s scripts/tests -p test_docker_build_context_sources.py -v
+python3 -m unittest scripts/tests/test_server_package_release.py -v
 ```
 
 For a locally built **full production image**, run the opt-in offline check:
@@ -517,7 +555,14 @@ Workflow file: `.github/workflows/release-server-docker.yml`
 What it does:
 - Triggers on Git tags (e.g. `v1.2.3`).
 - Runs the licensing release gate `python3 scripts/check_licensing.py` right after checking out the release ref. The release fails before any build if it fails.
+- Checks the system level (`scripts/server-package/check-system-level.mjs`) and takes the base image digest of the run's variant from `system-level.json`. A release ref without `system-level.json` (from before server packages) is refused: re-publish it with that ref's own workflow (`gh workflow run release-server-docker.yml --ref <tag> -f release_tag=<tag>`).
 - Builds `autobyteus-server-ts/docker/Dockerfile.monorepo` for `linux/amd64,linux/arm64` from the repository root. The runtime image contains `/app/LICENSE`, `/app/LICENSING.md` and `/app/NOTICE` and carries the label `org.opencontainers.image.licenses="AGPL-3.0-only"`. The same files and label are declared in the separate `autobyteus-message-gateway/docker/Dockerfile`.
+- For the default variant, publishes the image's built-in server package for each architecture on the GitHub release of the tag. Per architecture (`x64`, `arm64`) it takes `/opt/autobyteus/server-package` out of the pushed image and uploads three files:
+  - `autobyteus-server-<version>-linux-<arch>.tar.gz`: the package folder;
+  - `autobyteus-server-<version>-linux-<arch>.json`: the package description (`server-package.json` plus the archive's name, SHA-256, size and unpacked size);
+  - `autobyteus-server-<version>-linux-<arch>.json.sig`: the base64 Ed25519 signature of the description, made with the `SERVER_PACKAGE_SIGNING_KEY` secret and checked against `server-package-signing-key.pem` before upload.
+
+  The job waits up to 30 minutes for the Desktop Release workflow to create the GitHub release. A manual re-publish replaces the files (archive first, then description, then signature). The `zh` variant publishes no package.
 - Push-tag releases publish only the default runtime image.
 - Stable default releases publish:
   - `<image>:<version>`
@@ -543,6 +588,7 @@ Required GitHub repository secrets:
 
 - `DOCKERHUB_USERNAME`
 - `DOCKERHUB_TOKEN`
+- `SERVER_PACKAGE_SIGNING_KEY`: the Ed25519 private key that signs server packages. It is created once with `node scripts/server-package/generate-signing-key.mjs`, which writes the public key to `autobyteus-server-ts/docker/server-package-signing-key.pem` (commit it) and sets the secret through `gh` without showing the private key. Rotating it (`--replace`) makes every older image refuse newer packages.
 
 Optional GitHub repository variable:
 
@@ -587,6 +633,7 @@ Source helper named volumes (per Compose project):
 - `<project>_autobyteus-server-data`: `.env`, SQLite DB, logs, media, memory
 - `<project>_autobyteus-server-root-home`: in-container root home, including file-backed CLI configuration/auth state (see CLI Auth Model)
 - `<project>_autobyteus-server-chromium-profile`: private Chromium browser profile state at `/home/vncuser/.config/chromium`
+- `<project>_autobyteus-server-server-packages`: server packages for in-place updates at `/home/autobyteus/server-packages`
 
 Server data directory in container: `/home/autobyteus/data`
 

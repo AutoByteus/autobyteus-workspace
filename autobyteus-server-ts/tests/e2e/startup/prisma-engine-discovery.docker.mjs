@@ -1,8 +1,8 @@
 /**
  * Current-built Linux Prisma/native startup + retained-HOME/data recreation regression.
  * Prerequisites: Node22+, installed workspace (TypeScript), pnpm, Docker, network to
- * official binaries.prisma.sh, a local immutable server image with the root-pnpm
- * graph. No credentials/models. Serialize against other worktree builds.
+ * official binaries.prisma.sh, a local immutable server image (built-in server package at
+ * /opt/autobyteus/server-package). No credentials/models. Serialize against other builds.
  *
  * env -i PATH="$PATH" HOME=<private> TMPDIR=<private> \
  *   RUN_PRISMA_ENGINE_DOCKER_E2E=1 pnpm -C autobyteus-server-ts \
@@ -127,7 +127,7 @@ const home = path.join(root, 'home'); const data = path.join(root, 'data');
 const fixture = path.join(root, 'fixture'); const dist = path.join(root, 'dist');
 for (const d of [home, data, fixture]) fs.mkdirSync(d, { mode: 0o700 });
 const mounts = () => ['--mount', `type=bind,src=${home},dst=/root`, '--mount', `type=bind,src=${data},dst=/home/autobyteus/data`,
-  '--mount', `type=bind,src=${dist},dst=/app/autobyteus-server-ts/dist,readonly`];
+  '--mount', `type=bind,src=${dist},dst=/opt/autobyteus/server-package/dist,readonly`];
 const authPaths = ['.codex/auth.json', '.claude/.credentials.json', '.gemini/antigravity-cli/antigravity-oauth-token'];
 function assertSignedOut() { for (const p of authPaths) assert(!fs.existsSync(path.join(home, p)), `Unexpected credential ${p}`); }
 async function download(url) {
@@ -144,8 +144,8 @@ import {createRequire} from 'node:module';
 import path from 'node:path';
 import {spawn,execFileSync} from 'node:child_process';
 import {resolvePrismaEnginePair as oldResolve} from '/fixture/base.mjs';
-import {resolvePrismaEnginePair,buildPrismaCommandEnv} from '/app/autobyteus-server-ts/dist/startup/migrations.js';
-const app='/app/autobyteus-server-ts';
+import {resolvePrismaEnginePair,buildPrismaCommandEnv} from '/opt/autobyteus/server-package/dist/startup/migrations.js';
+const app='/opt/autobyteus/server-package';
 assert(!process.env.PRISMA_QUERY_ENGINE_LIBRARY && !process.env.PRISMA_SCHEMA_ENGINE_BINARY);
 const cli=fs.realpathSync(app+'/node_modules/prisma/build/index.js');
 const req=createRequire(cli); const engines=fs.realpathSync(req.resolve('@prisma/engines/package.json'));
@@ -207,10 +207,10 @@ async function graphql(url, query, variables) {
 function start(name) {
   register(name);
   const id = docker(['run','-d','--pull','never','--name',name,'--label',label,'-p','127.0.0.1::8000',...mounts(),
-    '-e','AUTOBYTEUS_SKIP_SYNC=1',image]).stdout.trim();
+    image]).stdout.trim();
   const inspected=JSON.parse(docker(['inspect','--format','{{json .Mounts}}',name]).stdout);
   assert.deepEqual(inspected.filter(x=>x.Type==='bind').map(x=>[x.Source,x.Destination,x.RW]).sort(),[
-    [home,'/root',true],[data,'/home/autobyteus/data',true],[dist,'/app/autobyteus-server-ts/dist',false]].sort());
+    [home,'/root',true],[data,'/home/autobyteus/data',true],[dist,'/opt/autobyteus/server-package/dist',false]].sort());
   save(name+'.json',{id,image,mounts:inspected}); return id;
 }
 try {
@@ -223,7 +223,7 @@ try {
   assert(!(meta.Config.Env??[]).some(v=>/^PRISMA_(QUERY_ENGINE_LIBRARY|SCHEMA_ENGINE_BINARY)=/.test(v)));
   const auditName=runId+'-audit';register(auditName);
   docker(['create','--name',auditName,'--label',label,'--network','none','--entrypoint','node',image,'--version']);
-  const imageDist=path.join(root,'image-dist');docker(['cp',auditName+':/app/autobyteus-server-ts/dist',imageDist]);
+  const imageDist=path.join(root,'image-dist');docker(['cp',auditName+':/opt/autobyteus/server-package/dist',imageDist]);
   const originalManifest=manifest(imageDist);
   const differences=[...new Set([...Object.keys(originalManifest),...Object.keys(currentManifest)])].sort().filter(k=>originalManifest[k]!==currentManifest[k]);
   save('dist-audit.json',{image,os:meta.Os,architecture:meta.Architecture,originalManifest,currentManifest,differences});

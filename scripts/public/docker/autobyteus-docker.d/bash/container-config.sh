@@ -22,7 +22,6 @@ run_container() {
     --label "${LAUNCHER_LABEL_KEY}=${LAUNCHER_LABEL_VALUE}" \
     --label "${NODE_LABEL_KEY}=${node_name}" \
     --label "${CONFIG_LABEL_KEY}=${config_hash}" \
-    -e AUTOBYTEUS_WORKSPACE_ROOT=/app \
     -e AUTOBYTEUS_DATA_DIR=/home/autobyteus/data \
     -e AUTOBYTEUS_BIND_HOST=0.0.0.0 \
     -e AUTOBYTEUS_SERVER_PORT=8000 \
@@ -31,7 +30,6 @@ run_container() {
     -e APP_ENV=production \
     -e DB_TYPE=sqlite \
     -e LOG_LEVEL=INFO \
-    -e AUTOBYTEUS_SKIP_SYNC=1 \
     -e "AUTOBYTEUS_TEMP_WORKSPACE_DIR=${TEMP_WORKSPACE_ENV_VALUE}" \
     -v "${volume_prefix}-workspace:/app/autobyteus-server-ts/workspace" \
     -v "${volume_prefix}-data:/home/autobyteus/data" \
