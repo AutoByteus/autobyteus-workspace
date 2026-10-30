@@ -10,6 +10,8 @@
 | SR-004 | Design | Architecture design after approval (SR-003) | N/A | Approved; design N/A | Approved; design Ready | DEC-016 revised (per-node volume); design D-*/C1–C4 | `design-spec.md` written; Large / High |
 | SR-005 | Design (+ editorial requirements) | ARCH-REV-001 Fail (`design-review-report.md`) | AR-001..AR-012 | Design Ready (SR-004) | Design Ready (revised) | REQ-003, REQ-006, DEC-005, SCN-001 (editorial); design | All findings resolved; re-review |
 | SR-006 | Evidence (editorial) | ARCH-REV-002 Pass with note N-1 | N-1 | Design Ready (SR-005) | Design Ready | DEC-016 wording; design file rows | Wording aligned; no behavior or design change |
+| SR-007 | Evidence | Delivery Completed, step 1 (DR-001) | N/A | Step 1 in delivery | Step 1 finalized | PRQ-001 delivered | Receipt verified; steps 2–5 continue |
+| SR-008 | Evidence | ARCH-REV-003 Pass (step 2) | N/A | Step 2 at review | Step 2 at implementation | — | Pass recorded; no forwarding |
 
 ## Revision Entries
 
@@ -114,3 +116,18 @@
 - Intended behavior changed: `No`. Design decisions changed: `No` (editorial).
 - Open with the user: confirmation of DEC-016's download figure (non-blocking).
 - Next action: implementation of build step 1; before `gh secret set SERVER_PACKAGE_SIGNING_KEY`, the user is told.
+
+### SR-007 — Step 1 delivery receipt verified
+
+- Trigger: `Delivery Completed` for build step 1, DR-001 (delivery engineer, 2026-10-30)
+- Verification: `delivery-receipt-verification-step1.md`. The merge is `eec6522b27`; `origin/personal` is at `77fb8bf2d1`; reviews and evidence are present; there was no release, by the RELEASE.md default.
+- PRQ-001 (autobyteus-284) is delivered, in the base. PRQ-002 (285, 287) is still open.
+- Intended behavior and design: unchanged.
+- Next action: build step 2 on the reviewed design SR-005.
+
+### SR-008 — ARCH-REV-003 Pass for step 2 recorded
+
+- Trigger: the architecture review `ARCH-REV-003`, **Pass** (SR-005 basis applies to step 2; SR-006 and SR-007 checked), Large / High.
+- The reviewer routed step 2 to `/software_engineering_team/implementation_engineer` itself, with one non-blocking note: supervisord's `stopwaitsecs` must be above the server's 10 s shutdown bound. The Solution Designer does not forward it again.
+- Intended behavior and design: unchanged.
+- Next action: implementation of build step 2.
