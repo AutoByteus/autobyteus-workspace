@@ -145,3 +145,7 @@
 - Follow-ups: FU-007 added (an incomplete shutdown stops "Install update and restart"; matters for unattended updates).
 - Requirements: unchanged (SR-007). Classification: Medium / High (unchanged). Routing: `/architecture_reviewer`,
   ARCH-REV-003.
+- 2026-10-30, review result recorded: **ARCH-REV-003 Pass** on SR-008 (basis SR-002 + SR-007). AR-004 to AR-006 are
+  resolved. Cosmetic N-9 (a duplicate `ServerProcessShutdown` constructor row in the interface table) was passed to
+  implementation by the reviewer as "one constructor". The reviewer routed to `/software_engineering_team/implementation_engineer`.
+  Report: `design-review-report.md`. No design change.
