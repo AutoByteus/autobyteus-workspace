@@ -78,7 +78,7 @@ Per `GLOSSARY.md`: agent runtime, `RuntimeKind` values. **Old label:** one of th
 
 - Stored subject: `raw_traces_manifest.json`, one per run with archived segments, under `agents/<run>`, `agent_teams/<team>/<member>`, `agent_orgs/<org>/<team>/<member>` (825 here; compact JSON; keys `schema_version`, `next_segment_index`, `segments[]` with `runtime_kind` in each).
 - Relevant change: the value of `segments[].runtime_kind`: old label → `RuntimeKind` value. Also new writes.
-- Normal reader/writer behavior: the library writes the manifest durably through `replaceFileDurably` and reads it with a tolerant projection; no reader depends on the value (F-03), so the converted data is read exactly like the old.
+- Normal reader/writer behavior: the library writes the manifest compactly and durably (`JSON.stringify` through `replaceFileDurably`, `raw-trace-archive-manager.ts:177`) and reads it by passing `segments` through as stored without inspecting `runtime_kind` (`readManifest`, `:62-73`); no reader depends on the value (F-03), so the converted data is read exactly like the old, and the next rotation writes the converted entries back as they are. The migration writes the same compact form.
 - Invariants under direct use: unchanged by the conversion: entry order, indexes, keys, `status`, counts, file names.
 - Constraints: raw-trace records and segment files are not touched; one manifest at a time; the server is not running agents during the startup run.
 - **Decision: `Migration Required`** (DESIGN rule 10; the user's decision DEC-1). Direct use and rebuild are insufficient: the data cannot be rebuilt (the manifest is the archive's index) and leaving the labels forces a permanent mapping or a guessing fallback in 316.
