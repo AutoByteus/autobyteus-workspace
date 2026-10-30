@@ -45,3 +45,12 @@ My own progress log while tests run. Read it first whenever the run is picked ba
 | 2026-10-30T17:54Z | API-21/API-22 | Completed | Pass | run 2: CHECK FAILURES: 0; PowerShell new-container bug reproduced, FU-006; dind, its volume, helper images and test root removed |
 | 2026-10-30T17:54Z | API-13 | Started | — | compose up --no-build with step2 tagged autobyteus-server:latest; evidence/API-13-step2-compose.log |
 | 2026-10-30T17:57Z | API-13 | Completed | Pass | CHECK FAILURES: 0; project removed; autobyteus-server:latest untagged |
+
+## Round 3 — build step 3 (API-REV-003)
+
+| Time | Case ID | Event | Result | Note (what is running and where, what to do next) |
+| --- | --- | --- | --- | --- |
+| 2026-10-30T19:36Z | setup | Started | — | throwaway key, built-in package of step3 image, signed test packages (IMP3 harness) under /private/tmp/ab305-api-e2e/s3 |
+| 2026-10-30T19:45Z | setup | Completed | Pass | key pair, package A from step3 image (1.5.11-beta.5), packages 1.5.12..1.5.20 signed with the throwaway key |
+| 2026-10-30T19:45Z | API-31..API-36 | Started | — | dind journeys phases 1-4; script api3x-launcher-update.sh; evidence/API-3x-launcher-update.log |
+| 2026-10-30T20:04Z | API-31..API-36 | Completed | Pass | 69 CHECK PASS; 2 over-strict step-print checks (polling; target and result printed); dind, images, temp root and throwaway key removed |
