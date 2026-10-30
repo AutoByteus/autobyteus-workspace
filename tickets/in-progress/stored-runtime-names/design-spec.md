@@ -4,7 +4,7 @@
 
 - Current solution revision ID: `SR-002`
 - Approved requirements baseline: `requirements-doc.md` SR-002, `Approved` (the user on DEC-1…3, the Solution Designer within the direction for the rest). Behavior-defining supplements: none.
-- Design status: `Ready` (the user's approval of the design before any build is still required by the Task).
+- Design status: `Approved by the user` for the build (2026-10-30: "I trust your judgment … let's go"), after the architecture review ARCH-REV-001 Pass and its three clarifications. The user also accepted leaving the 7,532 old label copies inside old trace records.
 - Canonical investigation-notes path: `/Users/normy/autobyteus_org/autobyteus-worktrees/stored-runtime-names/tickets/in-progress/stored-runtime-names/investigation-notes.md` (F-01…F-11)
 - Authorities read (2026-10-30): `architecture-design.md`, `design-principles.md` (Principles 1–15, structural triggers, health assessment); `DESIGN.md` (rules 1–10); `GLOSSARY.md` (Agent Runtimes); `TESTING.md`; `autobyteus-server-ts/docs/design/data_migration_guideline.md` (sections 1–10).
 - Project design-principle conflicts or discrepancies: none. This change removes the discrepancy autobyteus-316's review raised (DESIGN rule 10).

@@ -8,7 +8,7 @@
 - Request / ticket: Project Task `autobyteus-343` (Project `project_a1377344-25db-482a-97cc-ecfdb0fb495a`). Blocks `autobyteus-316`.
 - Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), for the user; the user's decision came in the Solution Designer's conversation about 316.
 - Requirements owner: Solution Designer
-- Approval: the user, in the conversation (2026-10-30): he chose to do this ticket first, then answered my recommendation (imports left alone, no per-file backup) with "i like your recommended solution". The Solution Designer approves the rest within the direction. The Task still requires his approval of the DESIGN before any build; nothing is written to his data before that.
+- Approval: the user, in the conversation (2026-10-30): he chose to do this ticket first, then answered my recommendation (imports left alone, no per-file backup) with "i like your recommended solution". The Solution Designer approves the rest within the direction. He approved the DESIGN for the build on 2026-10-30 ("I trust your judgment … let's go") and accepted leaving the old label copies inside old trace records. His real data changes only through the released migration, when he updates the app.
 - Behavior-defining supplements: none. Evidence: `investigation-notes.md`.
 
 ## Problem And Desired Outcome
