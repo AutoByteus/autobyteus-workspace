@@ -81,7 +81,7 @@ Every section has: **(a)** built-ins its translation already converts (contract 
 - **(a) Built-ins converted today:** `run_bash`, `start_background_process` → Command (background); `read_file`, `read_url` → Command; `write_file` → Write file; `edit_file` → Edit file; `search_web` → Search web; `read_media_file` → a media marker.
 - **(b) New converters:** `get_process_output{pid, lines}` → `Read output of background process <pid>`; `stop_background_process` → `Stop background process <pid>` (38 and 11 lines; native-only tools).
 - **(c) Wrapping / names:** platform tools are recorded under their plain names; native results are unwrapped by its own translation (exists).
-- **(d) Generic on purpose:** `download_media`, `video_editing_get_media_duration`, `generate_video` family of user-visible media helpers are platform media tools (§3) when named there; the rest (`replace_in_file`, `find`, `submit_task_result`) stay generic.
+- **(d) Generic on purpose:** native-only tools with few calls: `download_media` 18, `video_editing_get_media_duration` 18, `convert_video_format` 2, `download_video` 2, `replace_in_file` 3, `find` 1, `submit_task_result` 1. (`generate_video` is a platform media tool, §3.)
 - **(e) Skill load:** a read of the skill's `SKILL.md` by absolute path (205 `Command:` lines); the exact path pattern is to be confirmed in the design (`Unclear`).
 
 ## 5. A skill-file read on any runtime (the rule each runtime applies to its own path pattern)
