@@ -167,3 +167,9 @@ None.
 - Proceed To API/E2E Execution: `Yes`
 - Repository-Resident Durable Coverage Will Be Added / Updated / Removed: `No`
 - Reroute Required Before Validation Execution: `No`
+
+## Round 1 addendum — API-11 (the user's request, 2026-10-30)
+
+| Case ID | Criteria | Boundary / Surface | Kind | Planned Command Or Steps | Why |
+| --- | --- | --- | --- | --- | --- |
+| API-11 | AC-002 (real use), F-1 generality | image read on `gpt-5.6-terra`, `gpt-6-astra`, `gpt-6-luna`, `gpt-6-sol` (2 runs each) and on LM Studio `qwen/qwen3.6-35b-a3b` (2 runs); audio and video on the Qwen model (1 run) | Temporary Probe | the journey probe with API-11 cells (plain definition with `read_file`), same server setup; LM Studio at `localhost:1234`, nothing loaded before the run; the model the run loads is unloaded afterwards (TESTING.md: one local-model run at a time, unload what you loaded) | the user asked whether newer OpenAI models and the local default Qwen model also fill line arguments; LM Studio models' capabilities are `unknown`, so their media loads (DEC-003) |

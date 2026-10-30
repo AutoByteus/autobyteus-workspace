@@ -24,3 +24,7 @@
 | 2026-10-29 22:30 | API-06 | Completed | Fail | R1 Gemini pass (red/hello/blue; docs refused; os-keyboard.pdf returned as text); R2 gpt-5.4-mini Daily Assistant: all media refused on line args (2 runs) |
 | 2026-10-29 22:30 | API-07 | Completed | Pass | journals: media markers for R1; refusals for R2 and API-10 |
 | 2026-10-29 22:31 | — | Completed | Fail | round 1 result recorded (F-1, F-2, F-3); committing |
+| 2026-10-30 04:53 | API-11 | Started | | newer OpenAI models + LM Studio qwen3.6-35b-a3b (LM Studio: nothing loaded before) |
+| 2026-10-30 05:08 | API-11 | Checkpoint | | run 1 stopped: gpt-6-sol turn streamed >300 s; results only saved at the end (lost); Qwen never ran; probe now saves per cell and records hung cells; run 2 |
+| 2026-10-30 05:42 | API-11 | Checkpoint | | run 2: all OpenAI cells refused by provider (no credits remaining); Qwen image read path-only, 2/2 succeeded; Qwen audio/video loaded but model saw only metadata; file names leak answers -> run 3 with neutral names (Qwen, Gemini, Grok) |
+| 2026-10-30 05:44 | API-11 | Completed | Pass | run 3 neutral names: Qwen green x3 (audio/video not delivered), Gemini green/hello/yellow, Grok green; OpenAI newer models not tested (no credits); Qwen unloaded |

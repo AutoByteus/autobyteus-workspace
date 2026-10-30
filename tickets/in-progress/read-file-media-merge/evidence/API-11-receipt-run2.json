@@ -1,0 +1,213 @@
+{
+  "startedAt": "2026-10-30T04:09:11.381Z",
+  "runs": {},
+  "catalog": {
+    "OPENAI": [
+      "gpt-5.4",
+      "gpt-5.4-mini",
+      "gpt-5.5",
+      "gpt-5.6-luna",
+      "gpt-5.6-sol",
+      "gpt-5.6-terra",
+      "gpt-6-astra",
+      "gpt-6-luna",
+      "gpt-6-sol"
+    ],
+    "LMSTUDIO": [
+      "deepseek-ocr:lmstudio@localhost:1234",
+      "google/gemma-4-26b-a4b:lmstudio@localhost:1234",
+      "qwen/qwen3.6-35b-a3b:lmstudio@localhost:1234",
+      "text-embedding-nomic-embed-text-v1.5:lmstudio@localhost:1234"
+    ]
+  },
+  "api11": [
+    {
+      "label": "image on gpt-5.6-terra",
+      "model": "gpt-5.6-terra",
+      "rep": 1,
+      "runId": "api11_plain_1793333351843_1b97d4f24d74404ebc8a54ad5e819d32",
+      "outcome": "idle",
+      "seconds": 241,
+      "calls": [],
+      "assistantTail": "",
+      "assistantChars": 0,
+      "errors": [
+        "{\"code\":\"LLM_PROVIDER_ERROR\",\"message\":\"Error in OPENAI Responses API streaming: You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/.\",\"error_scope\":\"turn\",\"error_effect\":\"diagnostic\",\"turn_id\":\"turn_0001\"}"
+      ]
+    },
+    {
+      "label": "image on gpt-5.6-terra",
+      "model": "gpt-5.6-terra",
+      "rep": 2,
+      "runId": "api11_plain_1793333351843_92753692d44f4789946faca7dca5d659",
+      "outcome": "idle",
+      "seconds": 241,
+      "calls": [],
+      "assistantTail": "",
+      "assistantChars": 0,
+      "errors": [
+        "{\"code\":\"LLM_PROVIDER_ERROR\",\"message\":\"Error in OPENAI Responses API streaming: You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/.\",\"error_scope\":\"turn\",\"error_effect\":\"diagnostic\",\"turn_id\":\"turn_0001\"}"
+      ]
+    },
+    {
+      "label": "image on gpt-6-astra",
+      "model": "gpt-6-astra",
+      "rep": 1,
+      "runId": "api11_plain_1793333351843_2641204460604e94b155a70b82592a46",
+      "outcome": "idle",
+      "seconds": 241,
+      "calls": [],
+      "assistantTail": "",
+      "assistantChars": 0,
+      "errors": [
+        "{\"code\":\"LLM_PROVIDER_ERROR\",\"message\":\"Error in OPENAI Responses API streaming: You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/.\",\"error_scope\":\"turn\",\"error_effect\":\"diagnostic\",\"turn_id\":\"turn_0001\"}"
+      ]
+    },
+    {
+      "label": "image on gpt-6-astra",
+      "model": "gpt-6-astra",
+      "rep": 2,
+      "runId": "api11_plain_1793333351843_6403aa44afbb412bb93b1b63fe3d75f6",
+      "outcome": "idle",
+      "seconds": 241,
+      "calls": [],
+      "assistantTail": "",
+      "assistantChars": 0,
+      "errors": [
+        "{\"code\":\"LLM_PROVIDER_ERROR\",\"message\":\"Error in OPENAI Responses API streaming: You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/.\",\"error_scope\":\"turn\",\"error_effect\":\"diagnostic\",\"turn_id\":\"turn_0001\"}"
+      ]
+    },
+    {
+      "label": "image on gpt-6-luna",
+      "model": "gpt-6-luna",
+      "rep": 1,
+      "runId": "api11_plain_1793333351843_ddc315b0dbfa4649b1e073280e5a9b8f",
+      "outcome": "idle",
+      "seconds": 241,
+      "calls": [],
+      "assistantTail": "",
+      "assistantChars": 0,
+      "errors": [
+        "{\"code\":\"LLM_PROVIDER_ERROR\",\"message\":\"Error in OPENAI Responses API streaming: You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/.\",\"error_scope\":\"turn\",\"error_effect\":\"diagnostic\",\"turn_id\":\"turn_0001\"}"
+      ]
+    },
+    {
+      "label": "image on gpt-6-luna",
+      "model": "gpt-6-luna",
+      "rep": 2,
+      "runId": "api11_plain_1793333351843_810dc925d14a46939aaba959373e877a",
+      "outcome": "idle",
+      "seconds": 241,
+      "calls": [],
+      "assistantTail": "",
+      "assistantChars": 0,
+      "errors": [
+        "{\"code\":\"LLM_PROVIDER_ERROR\",\"message\":\"Error in OPENAI Responses API streaming: You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/.\",\"error_scope\":\"turn\",\"error_effect\":\"diagnostic\",\"turn_id\":\"turn_0001\"}"
+      ]
+    },
+    {
+      "label": "image on gpt-6-sol",
+      "model": "gpt-6-sol",
+      "rep": 1,
+      "runId": "api11_plain_1793333351843_674f5930797c4f62a2e6614ddee4a145",
+      "outcome": "idle",
+      "seconds": 241,
+      "calls": [],
+      "assistantTail": "",
+      "assistantChars": 0,
+      "errors": [
+        "{\"code\":\"LLM_PROVIDER_ERROR\",\"message\":\"Error in OPENAI Responses API streaming: You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/.\",\"error_scope\":\"turn\",\"error_effect\":\"diagnostic\",\"turn_id\":\"turn_0001\"}"
+      ]
+    },
+    {
+      "label": "image on gpt-6-sol",
+      "model": "gpt-6-sol",
+      "rep": 2,
+      "runId": "api11_plain_1793333351843_c8cea86f7a474010b1b5de6998fc2590",
+      "outcome": "idle",
+      "seconds": 241,
+      "calls": [],
+      "assistantTail": "",
+      "assistantChars": 0,
+      "errors": [
+        "{\"code\":\"LLM_PROVIDER_ERROR\",\"message\":\"Error in OPENAI Responses API streaming: You have no credits remaining. Add credits to continue using the API at https://platform.openai.com/settings/organization/billing/.\",\"error_scope\":\"turn\",\"error_effect\":\"diagnostic\",\"turn_id\":\"turn_0001\"}"
+      ]
+    },
+    {
+      "label": "image on LM Studio qwen3.6-35b-a3b",
+      "model": "qwen/qwen3.6-35b-a3b:lmstudio@localhost:1234",
+      "rep": 1,
+      "runId": "api11_plain_1793333351843_b3e1861592e54ef89569b10fc5bd70ce",
+      "outcome": "idle",
+      "seconds": 36,
+      "calls": [
+        {
+          "tool": "read_file",
+          "args": {
+            "path": "/tmp/ab328/fixtures/red.png"
+          },
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "error": null,
+          "resultKind": "{\"uri\":\"/tmp/ab328/fixtures/red.png\",\"fileType\":\"image\",\"fileName\":\"red.png\",\"metadata\":{}}"
+        }
+      ],
+      "assistantTail": " read an image file and determine its main color. Let me use the read_file tool to view the image.\n\n\n{\"path\":\"/tmp/ab328/fixtures/red.png\"}The user showed me an image of a solid red square. The file is named \"red.png\" and the image is clearly red. The user asked for the main color in one word.\n\n\nRed",
+      "assistantChars": 320,
+      "errors": []
+    },
+    {
+      "label": "image on LM Studio qwen3.6-35b-a3b",
+      "model": "qwen/qwen3.6-35b-a3b:lmstudio@localhost:1234",
+      "rep": 2,
+      "runId": "api11_plain_1793333351843_5a8bc478c64247fc84523c801b7a2513",
+      "outcome": "idle",
+      "seconds": 4,
+      "calls": [
+        {
+          "tool": "read_file",
+          "args": {
+            "path": "/tmp/ab328/fixtures/red.png"
+          },
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "error": null,
+          "resultKind": "{\"uri\":\"/tmp/ab328/fixtures/red.png\",\"fileType\":\"image\",\"fileName\":\"red.png\",\"metadata\":{}}"
+        }
+      ],
+      "assistantTail": "file. They want me to use the read_file tool to look at it and then answer with one word. Let me read the file.\n\n\n{\"path\":\"/tmp/ab328/fixtures/red.png\"}The user asked for the main color of the image /tmp/ab328/fixtures/red.png. I just viewed it and it is a solid red image. The answer is \"Red\".\n\n\nRed",
+      "assistantChars": 352,
+      "errors": []
+    },
+    {
+      "label": "audio and video on LM Studio qwen3.6-35b-a3b",
+      "model": "qwen/qwen3.6-35b-a3b:lmstudio@localhost:1234",
+      "rep": 1,
+      "runId": "api11_plain_1793333351843_c764001dc5eb4d9b94f690b1d5b3a645",
+      "outcome": "idle",
+      "seconds": 7,
+      "calls": [
+        {
+          "tool": "read_file",
+          "args": {
+            "path": "/tmp/ab328/fixtures/hello.m4a"
+          },
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "error": null,
+          "resultKind": "{\"uri\":\"/tmp/ab328/fixtures/hello.m4a\",\"fileType\":\"audio\",\"fileName\":\"hello.m4a\",\"metadata\":{}}"
+        },
+        {
+          "tool": "read_file",
+          "args": {
+            "path": "/tmp/ab328/fixtures/blue.mp4"
+          },
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "error": null,
+          "resultKind": "{\"uri\":\"/tmp/ab328/fixtures/blue.mp4\",\"fileType\":\"video\",\"fileName\":\"blue.mp4\",\"metadata\":{}}"
+        }
+      ],
+      "assistantTail": " word spoken in the audio, or UNAVAILABLE>\nVIDEO_COLOR=<main color of the video, or UNAVAILABLE>\n\nSince the read_file tool only returns metadata (which is empty), I cannot determine the spoken word or the video color. I should report UNAVAILABLE for both.\n\n\nSPOKEN=UNAVAILABLE\nVIDEO_COLOR=UNAVAILABLE",
+      "assistantChars": 1020,
+      "errors": []
+    }
+  ],
+  "finishedAt": "2026-10-30T04:42:04.821Z"
+}
