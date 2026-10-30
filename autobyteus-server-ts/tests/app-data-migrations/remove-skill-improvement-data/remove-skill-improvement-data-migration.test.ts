@@ -45,11 +45,11 @@ const byItem = (result: Awaited<ReturnType<typeof migrate>>) =>
   Object.fromEntries(result.summary.details.map((detail) => [detail.itemId, `${detail.status} ${detail.message}`]));
 
 describe("20261020_remove_skill_improvement_data", () => {
-  it("is registered after every run-tree migration (only the autobyteus-290 stored-name renames follow), required on startup and startup-only", () => {
+  it("is registered after every run-tree migration (only the autobyteus-290 stored-name renames and the raw-trace manifest runtime names follow), required on startup and startup-only", () => {
     const definitions = new AppDataMigrationRegistry().listDefinitions();
-    expect(definitions.at(-3)?.id).toBe(REMOVE_SKILL_IMPROVEMENT_DATA_MIGRATION_ID);
-    expect(definitions.at(-3)).toMatchObject({ requiredOnStartup: true, executionPolicy: "STARTUP_ONLY" });
-    expect(definitions.slice(-2).map((definition) => definition.id)).toEqual(["20261024_node_identity_file_name", "20261024_memory_sync_source_id_names"]);
+    expect(definitions.at(-4)?.id).toBe(REMOVE_SKILL_IMPROVEMENT_DATA_MIGRATION_ID);
+    expect(definitions.at(-4)).toMatchObject({ requiredOnStartup: true, executionPolicy: "STARTUP_ONLY" });
+    expect(definitions.slice(-3).map((definition) => definition.id)).toEqual(["20261024_node_identity_file_name", "20261024_memory_sync_source_id_names", "20261030_raw_trace_manifest_runtime_names"]);
   });
 
   it("finds nothing on a fresh data folder", async () => {

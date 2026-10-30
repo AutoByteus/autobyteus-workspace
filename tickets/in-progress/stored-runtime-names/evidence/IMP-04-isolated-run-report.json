@@ -1,0 +1,67 @@
+{
+  "status": "SUCCEEDED",
+  "seconds": 6.383,
+  "summary": "Scanned 825; migrated 825; skipped 0; failed 0.",
+  "errorMessage": null,
+  "censusBefore": {
+    "manifests": 962,
+    "counts": {
+      "agent_orgs": {
+        "CLAUDE": 3,
+        "CODEX": 213
+      },
+      "agent_teams": {
+        "CODEX": 3386,
+        "CLAUDE": 68,
+        "AUTOBYTEUS": 3
+      },
+      "agents": {
+        "CODEX": 49,
+        "CLAUDE": 12,
+        "AUTOBYTEUS": 58,
+        "ANTIGRAVITY": 2
+      },
+      "imports": {
+        "CODEX": 682,
+        "ANTIGRAVITY": 71,
+        "AUTOBYTEUS": 3
+      }
+    }
+  },
+  "censusAfter": {
+    "manifests": 962,
+    "counts": {
+      "agent_orgs": {
+        "claude_agent_sdk": 3,
+        "codex_app_server": 213
+      },
+      "agent_teams": {
+        "codex_app_server": 3386,
+        "claude_agent_sdk": 68,
+        "autobyteus": 3
+      },
+      "agents": {
+        "codex_app_server": 49,
+        "claude_agent_sdk": 12,
+        "autobyteus": 58,
+        "antigravity_cli": 2
+      },
+      "imports": {
+        "CODEX": 682,
+        "ANTIGRAVITY": 71,
+        "AUTOBYTEUS": 3
+      }
+    }
+  },
+  "filesCompared": 969,
+  "ownManifestsChanged": 825,
+  "ownManifestsUnchanged": 0,
+  "contentDiffersFromExpected": 0,
+  "importsChanged": 0,
+  "otherFilesChanged": 0,
+  "secondRunStatus": "SUCCEEDED",
+  "secondRunMigrated": 0,
+  "secondRunFilesChanged": 0,
+  "leftoverTemp": 0,
+  "importsHash": "bbc077b479a59a73b94904e5235286d6c9681a1ca55fae560dc69a7ee5d4a35d"
+}
