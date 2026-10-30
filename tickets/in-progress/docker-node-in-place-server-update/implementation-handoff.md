@@ -8,6 +8,7 @@
 - Solution revision record: `solution-revision-record.md`
 - Design spec: `design-spec.md`, "Change / Refactor Sequence" step 4, and "Concrete Examples" (row states)
 - Supplemental task artifacts: `handoff-step-4.md`, `delivery-receipt-verification-step3.md`, `options-report.md`, `follow-ups.md`
+- Code review of IR-004: `Pass`, CRR-007 (`code-review-report.md`, `code-review-revision-record.md`). All five assumptions, N-4 and CR3-N1 are confirmed. Q-1 is recorded as the non-blocking CR4-N1: one-nodes-tab REQ-706 covers only the connection-details fixing buttons, so a confirmation is an optional product choice for the Solution Designer. No code change.
 - Earlier rounds:
   - step 1: IR-001;
   - step 2: IR-002;
