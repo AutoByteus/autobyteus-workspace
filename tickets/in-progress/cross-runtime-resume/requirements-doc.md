@@ -35,7 +35,7 @@
 | Actor | Goal | Required outcome | Constraint |
 | --- | --- | --- | --- |
 | User | Keep the work going when a runtime is out | One action, no re-explaining | Cost of reading is visible |
-| New agent | Take over | Knows where the earlier work is recorded and what is not in it | Verifies before repeating |
+| New agent | Take over | Knows where the earlier work is recorded | Verifies before repeating |
 | Model Router (later) | Act on a failed choice | Can start the same hand-over | Not in this ticket (autobyteus-314; `follow-ups.md` FU-004) |
 
 ## Scope Guardrail (Mandatory)
