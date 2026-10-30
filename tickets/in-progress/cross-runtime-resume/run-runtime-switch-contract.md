@@ -2,7 +2,7 @@
 
 Status: **Draft for the design** (requirements SR-003, `Ready for Approval`; DEC-4 open). This is the contract the design, the code and the checks are written against, like `work-journal-contract.md` for the journal. It changes nothing by itself. Every statement marked *Measured* was checked on the user's real memory (read-only, 2026-10-29); *Read* means read in code; *Decision* is this contract's choice; *Open* is settled in the design phase by the named unknown.
 
-Words: **run** = one agent run identified by `runId` (the platform's agent-run ID, never changes); **provider binding** = `runtimeKind` + model + model settings + `platformAgentRunId` (the provider's own session ID); **switch** = replacing the provider binding of a stopped run; **segment** = one raw-trace file (`raw_traces_NNNNNN.jsonl`, or the active file); **colleague** = the backend that ran a segment.
+Words: **run** = one agent run identified by `runId` (the platform's agent-run ID, never changes); **provider binding** = `runtimeKind` + model + model settings + `platformAgentRunId` (the provider's own session ID); **switch** = replacing the provider binding of a stopped run; **segment** = one raw-trace file (`raw_traces_NNNNNN.jsonl`, or the active file); **previous agent** = the backend that ran an earlier segment.
 
 ## 1. Principle
 
@@ -54,7 +54,7 @@ pendingRuntimeSwitch?: {
 *Read:* `RawTraceArchiveSegmentEntry` has `index, file_name, boundary_type, boundary_key, boundary_trace_id, runtime_kind, source_event, archived_at, first/last_trace_id, first/last_ts, record_count, status`. `boundary_type` is `native_compaction | provider_compaction_boundary`.
 *Measured:* 820 runs have segment files, all with a manifest; 3,786 segments, **every** one has `runtime_kind` (`CODEX` 3,648, `AUTOBYTEUS` 61, `CLAUDE` 75, `ANTIGRAVITY` 2); no segment file is missing from its manifest and no manifest entry lacks its file.
 
-New value: `boundary_type: "runtime_switch"`, `source_event: "runtime_switch"`, `boundary_key: "runtime_switch:<runId>:<requestedAt>"` (idempotency key), `boundary_trace_id` = the id of the switch record, `runtime_kind` = the runtime of the **archived** records (the old colleague), in the manifest's existing spelling (`CODEX`, `CLAUDE`, `ANTIGRAVITY`, `AUTOBYTEUS`, and the Grok spelling the Grok recorder uses; *Open U-8*: the single mapping function from `RuntimeKind`).
+New value: `boundary_type: "runtime_switch"`, `source_event: "runtime_switch"`, `boundary_key: "runtime_switch:<runId>:<requestedAt>"` (idempotency key), `boundary_trace_id` = the id of the switch record, `runtime_kind` = the runtime of the **archived** records (the previous agent), in the manifest's existing spelling (`CODEX`, `CLAUDE`, `ANTIGRAVITY`, `AUTOBYTEUS`, and the Grok spelling the Grok recorder uses; *Open U-8*: the single mapping function from `RuntimeKind`).
 **Runtime of a segment (the lookup rule):** archived segment → its manifest entry's `runtime_kind`; the active segment → `run_metadata.runtimeKind`. No scanning of records.
 
 ### 3.3 Switch record (new raw-trace record type `runtime_switch`)
@@ -88,7 +88,7 @@ One journal file per raw-trace file stays. Each journal file is rendered with **
 
 ### 3.5 `run_summary.md` (optional; written by the agent; not derived)
 
-The hand-over notice suggests this path (`<run folder>/run_summary.md`, beside the raw traces, not inside the derived `work_journal/`) as the place to leave a summary for the next colleague. *Decision (the user, 2026-10-30):* the system does not limit what the agent does: no tool, no size limit, no required headings, no required header line, no requirement that it is written at all. The agent writes it with its normal file tool, if it wants and if its runtime allows (*Open U-2*). If the file exists, the next notice lists it; nothing validates it. It is copied by memory sync like any file in the folder; memory search does not index it in this slice.
+The hand-over notice suggests this path (`<run folder>/run_summary.md`, beside the raw traces, not inside the derived `work_journal/`) as the place to leave a summary for the next agent. *Decision (the user, 2026-10-30):* the system does not limit what the agent does: no tool, no size limit, no required headings, no required header line, no requirement that it is written at all. The agent writes it with its normal file tool, if it wants and if its runtime allows (*Open U-2*). If the file exists, the next notice lists it; nothing validates it. It is copied by memory sync like any file in the folder; memory search does not index it in this slice.
 
 ### 3.6 Files that belong to one backend
 
