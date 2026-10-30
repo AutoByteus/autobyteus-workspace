@@ -139,6 +139,66 @@ describe("WorkJournalService.ensureCurrent (DS-004)", () => {
     renders.mockRestore();
   });
 
+  describe("neutral vocabulary: no migration, the journal is rendered again (AC-008, AC-009)", () => {
+    const neutralRun = () => {
+      const records = [
+        { id: "rt_1", seq: 1, ts: 1790056801, turn_id: "t1", trace_type: "tool_call", tool_name: "Skill", tool_call_id: "c1", tool_args: { skill: "python-style" } },
+        { id: "rt_2", seq: 2, ts: 1790056802, turn_id: "t1", trace_type: "tool_result", tool_name: "Skill", tool_call_id: "c1", tool_result: "Launching skill: python-style" },
+        { id: "rt_3", seq: 3, ts: 1790056803, turn_id: "t1", trace_type: "tool_call", tool_name: "send_message_to", tool_call_id: "c2", tool_args: { recipient_address: "/reviewer", content: "done" } },
+        { id: "rt_4", seq: 4, ts: 1790056804, turn_id: "t1", trace_type: "tool_result", tool_name: "send_message_to", tool_call_id: "c2", tool_result: "{\"accepted\": true}" },
+      ];
+      writeActive(runDir, records);
+      rotateActive(runDir);
+    };
+    const closedPath = () => path.join(journalDir(runDir), "work_journal_000001.md");
+    const manifestPath = () => path.join(journalDir(runDir), "work_journal_manifest.json");
+
+    it("exposes the revision it renders with, one owner for the value", () => {
+      expect(new WorkJournalService().rendererRevision).toBe(WORK_JOURNAL_RENDERER_REVISION);
+    });
+
+    it("a journal written by revision 1 in the old wording is replaced in place by the next ensureCurrent", async () => {
+      neutralRun();
+      const service = new WorkJournalService();
+      await service.ensureCurrent(target());
+      // What revision 1 wrote for this raw file.
+      const old = read(closedPath()).replace("Load skill: python-style → ok", "Tool: Skill skill=\"python-style\" → ok")
+        .replace("Message to /reviewer → delivered", "Tool: send_message_to recipient_address=\"/reviewer\" content=\"done\" → ok");
+      expect(old).toContain("Tool: Skill");
+      fs.writeFileSync(closedPath(), old);
+      fs.writeFileSync(manifestPath(), JSON.stringify({ ...manifest(runDir), renderer_revision: 1 }));
+      const changes: string[] = [];
+      service.onJournalChanged((change) => changes.push(change.runId));
+
+      await service.ensureCurrent(target());
+      const rendered = read(closedPath());
+      expect(rendered).toContain("Load skill: python-style → ok");
+      expect(rendered).toContain("Message to /reviewer → delivered");
+      expect(rendered).not.toContain("Tool: Skill");
+      expect(manifest(runDir).renderer_revision).toBe(WORK_JOURNAL_RENDERER_REVISION);
+      expect(changes).toEqual(["run_journal_1"]);
+
+      // A second call changes nothing.
+      const writes = vi.spyOn(WorkJournalStore.prototype, "writeJournalFile");
+      await service.ensureCurrent(target());
+      expect(writes).not.toHaveBeenCalled();
+      writes.mockRestore();
+    });
+
+    it("regenerate renders every file again although revision and runtime match; without it the file is reused", async () => {
+      neutralRun();
+      const service = new WorkJournalService();
+      await service.ensureCurrent(target());
+      const good = read(closedPath());
+      fs.writeFileSync(closedPath(), "stale text\n");
+
+      await service.ensureCurrent(target());
+      expect(read(closedPath())).toBe("stale text\n");
+      await service.ensureCurrent(target(), { regenerate: true });
+      expect(read(closedPath())).toBe(good);
+    });
+  });
+
   it("an unreadable manifest is treated as absent; old runs get their journal the first time it is needed", async () => {
     writeActive(runDir, turnRecords("turn_1", "ls", "a.ts"));
     rotateActive(runDir);

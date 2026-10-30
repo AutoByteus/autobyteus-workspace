@@ -1,9 +1,13 @@
+import fs from "node:fs";
+import os from "node:os";
+import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { readJournalEntries } from "../../../src/agent-work-journal/reading/journal-entry-reader.js";
 import { buildJournalCard, JOURNAL_CARD_MAX_CHARACTERS } from "../../../src/memory-search/index/journal-card-builder.js";
 import { chunkJournalEntries, JOURNAL_CHUNK_MAX_CHARACTERS } from "../../../src/memory-search/index/journal-chunker.js";
 import { containsTerm, queryTerms, toFtsPhrase, toFtsQuery, toIndexText } from "../../../src/memory-search/index/memory-text-normalizer.js";
 import { bestCardPerRun } from "../../../src/memory-search/search/memory-search-service.js";
+import { rawTraceFingerprint } from "../../../src/memory-search/pipeline/journals-step.js";
 import { maskSecrets } from "../../../src/memory-search/search/secret-masker.js";
 import {
   normalizeMemorySearchDefaultLimitForPersistence,
@@ -54,6 +58,39 @@ describe("memory text normalizer", () => {
   it("indexes ideographs as single tokens and queries them as phrases", () => {
     expect(toIndexText("做了兔子 ok")).toBe(" 做  了  兔  子  ok");
     expect(toFtsQuery(["兔子", "ddns", "a\"b"])).toBe("\"兔 子\" OR \"ddns\" OR \"a\"\"b\"");
+  });
+});
+
+describe("journal fingerprint (AC-008)", () => {
+  it("holds the raw-trace stamps and the renderer revision, so a new revision changes it and an empty folder has none", () => {
+    const dir = fs.mkdtempSync(path.join(os.tmpdir(), "fingerprint-"));
+    try {
+      expect(rawTraceFingerprint(dir, 2)).toBe("");
+      fs.writeFileSync(path.join(dir, "raw_traces_active.jsonl"), "{}\n");
+      const first = rawTraceFingerprint(dir, 2);
+      expect(first).toMatch(/^raw_traces_active\.jsonl:3:\d+\|renderer:2$/);
+      expect(rawTraceFingerprint(dir, 2)).toBe(first);
+      expect(rawTraceFingerprint(dir, 3)).not.toBe(first);
+    } finally {
+      fs.rmSync(dir, { recursive: true, force: true });
+    }
+  });
+});
+
+describe("neutral journal lines for readers and cards (AC-010)", () => {
+  it("new heads are actions: the entry reader and the card builder take them like any other", () => {
+    const text = journal([
+      "[10:00:00] User: ship the fix",
+      "[10:00:01] Load skill: python-style → ok",
+      "[10:00:02] Message to /reviewer (task_result) → delivered",
+      "           done.",
+      "[10:00:03] Tool: lookup_price (via acme_prices) sku=\"S\" → ok",
+      "[10:00:04] Agent: Sent.",
+    ]);
+    const reading = readJournalEntries(text);
+    expect(reading.entries.map((entry) => entry.kind)).toEqual(["request", "action", "action", "action", "reply"]);
+    expect(buildJournalCard("Codex", reading.entries).text).toContain(
+      "Did: Load skill: python-style → ok; Message to /reviewer (task_result) → delivered; Tool: lookup_price (via acme_prices) sku=\"S\" → ok");
   });
 });
 

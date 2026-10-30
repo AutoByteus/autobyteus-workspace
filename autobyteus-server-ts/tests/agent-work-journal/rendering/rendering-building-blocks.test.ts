@@ -52,6 +52,11 @@ describe("lines, outcomes and envelopes", () => {
     expect(cutLongLine("😀😀😀", 2)).toBe("😀😀…[+1 chars]");
   });
 
+  it("an accepted message is delivered, which is not the same as ok (AC-004)", () => {
+    expect(formatOutcome({ kind: "delivered" })).toEqual({ text: "delivered", errorOutput: null });
+    expect(formatOutcome({ kind: "ok", note: null }).text).toBe("ok");
+  });
+
   it("a long or multi-line error is shown as output, a short one inline", () => {
     expect(formatOutcome({ kind: "failed", error: "boom" })).toEqual({ text: "failed: boom", errorOutput: null });
     expect(formatOutcome({ kind: "failed", error: "a\nb" })).toEqual({ text: "failed", errorOutput: "a\nb" });
