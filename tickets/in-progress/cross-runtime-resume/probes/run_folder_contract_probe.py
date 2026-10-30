@@ -1,6 +1,6 @@
 """Probe (not production code): check the run-folder invariants of run-runtime-switch-contract.md on run folders.
 Read-only. Usage: python3 -I run_folder_contract_probe.py <memory-root> [--limit N]
-Checks I-2 (manifest/segment consistency; also for team/org member folders, which have no run_metadata.json), I-5, I-6, I-9; I-1/I-3/I-4/I-7/I-8 apply once switches exist (reported 'n/a')."""
+Checks I-2 (manifest/segment consistency; also for team/org member folders, which have no run_metadata.json), I-5, I-6; I-1/I-3/I-4/I-7/I-8 apply once switches exist (reported 'n/a')."""
 import sys, os, json, glob, re, collections
 root = sys.argv[1]
 res = collections.Counter(); bad = []
@@ -27,10 +27,6 @@ for d in dirs:
         try: meta = json.load(open(d + 'run_metadata.json'))
         except Exception: bad.append((d, 'metadata unreadable'))
     if meta.get('pendingRuntimeSwitch') and meta.get('platformAgentRunId'): bad.append((d, 'I-6 pending switch with a session id'))
-    sp = d + 'run_summary.md'
-    if os.path.exists(sp):
-        first = open(sp, errors='replace').readline()
-        if not re.match(r'<!-- run_summary run=\S+ by=\S+ at=\S+ covers_through=\S+ -->', first): bad.append((d, 'I-9 bad summary header'))
     res['segments'] += len(entries); res['switch_segments'] += len(keys)
 print(dict(res)); print('violations:', len(bad))
 for b in bad[:10]: print(' ', b)

@@ -18,7 +18,7 @@ One run folder. The run keeps its `runId`, its folder, its chat and its history 
   raw_traces_000003.jsonl                 # archived segment: Claude records, ends before switch record #2
   raw_traces_active.jsonl                 # open segment: starts with switch record #2, then Codex records
   raw_traces_manifest.json                # one entry per archived segment, with its runtime_kind (3.2)
-  run_summary.md                          # NEW: the colleagues' "story so far" (3.5); not derived
+  run_summary.md                          # OPTIONAL, written by an agent if it wants (3.5); not derived
   work_journal/                           # derived, deletable, rebuilt from raw traces (3.4)
     work_journal_000001.md … work_journal_000003.md, work_journal_active.md, work_journal_manifest.json
   file_changes.json  communication_messages_active.jsonl  seen_skill_versions.json
@@ -27,7 +27,7 @@ One run folder. The run keeps its `runId`, its folder, its chat and its history 
   agy-project/  runtime-skill-profiles/   # owned by the Antigravity / Codex-Claude backends (3.6)
 ```
 
-Ownership: raw traces + manifest = memory recorders (`RunMemoryFileStore`); `run_metadata.json` = the standalone lifecycle service only (existing rule); `work_journal/` = journal service only; `run_summary.md` = the run summary tool only; native and provider files = their backend.
+Ownership: raw traces + manifest = memory recorders (`RunMemoryFileStore`); `run_metadata.json` = the standalone lifecycle service only (existing rule); `work_journal/` = journal service only; `run_summary.md` = the agent (optional); native and provider files = their backend.
 
 ## 3. Files and data model
 
@@ -86,14 +86,9 @@ It is the **first record of the new active segment**. No secrets: model settings
 
 One journal file per raw-trace file stays. Each journal file is rendered with **its segment's runtime** (3.2 lookup rule), so Claude records get Claude's tool translation and Codex records Codex's. The journal manifest's `runtime_kind` moves from the run to each file entry (a missing per-file value reads as "render again", the existing tolerance). The switch record renders as `Notice: Runtime switched from <X> to <Y>` as the first entry of its file, with the stop reason if any. *Decision:* `WORK_JOURNAL_RENDERER_REVISION` is **not** raised: files without a switch record render byte-identically, so the 3,700+ existing journals are not rebuilt.
 
-### 3.5 `run_summary.md` (new; not derived; beside the raw traces)
+### 3.5 `run_summary.md` (optional; written by the agent; not derived)
 
-Not inside `work_journal/`, which is derived and deletable. Written only by the server tool `write_run_summary` (the run's own folder, fixed path), by atomic temp-file rename (same pattern as the journal store), **replaced** each time, maximum 16 KB (*Decision*, adjustable), secrets masked. Plain Markdown with a server-written first line the agent cannot change:
-
-```
-<!-- run_summary run=<runId> by=<runtime>/<model> at=<ISO> covers_through=<last raw-trace id at write time> -->
-```
-followed by the agent's text, which the hand-over notice asks to use these headings: `## Story so far`, `## Open work and next step`, `## Decisions`, `## Files and where they are`, `## Not verified`. `covers_through` lets the next colleague read the journal only after that point. It is copied by memory sync like any file; memory search does not index it in this slice.
+The hand-over notice suggests this path (`<run folder>/run_summary.md`, beside the raw traces, not inside the derived `work_journal/`) as the place to leave a summary for the next colleague. *Decision (the user, 2026-10-30):* the system does not limit what the agent does: no tool, no size limit, no required headings, no required header line, no requirement that it is written at all. The agent writes it with its normal file tool, if it wants and if its runtime allows (*Open U-2*). If the file exists, the next notice lists it; nothing validates it. It is copied by memory sync like any file in the folder; memory search does not index it in this slice.
 
 ### 3.6 Files that belong to one backend
 
@@ -104,7 +99,7 @@ A switch never edits or deletes them.
 
 ### 3.7 Hand-over notice (the message the new backend receives; not a file)
 
-One system message placed before the user's first input after the switch, through the existing next-input preface route, with its own system sender (like the skill-update notice), so the chat shows it as a system notice and the agent does not take it for the user's words. Sent once per switch. Delivered ⇔ a notice record after the switch record exists in the active segment (a crash before delivery repeats it, never loses it). Built by the server from facts only; no model writes it. Draft text (the design finalizes wording):
+One system message placed before the user's first input after the switch, through the existing next-input preface route, with its own system sender (like the skill-update notice), so the chat shows it as a system notice and the agent does not take it for the user's words. Sent once per switch. Delivered ⇔ a notice record after the switch record exists in the active segment (a crash before delivery repeats it, never loses it). Built by the server from facts only; no model writes it. Draft text (the design finalizes wording). It gives facts and pointers and lets the agent decide how to proceed:
 
 ```
 [System: runtime hand-over]
@@ -112,26 +107,21 @@ You are continuing work that earlier colleagues started in this same run. The ru
 changed: <from runtime/model> -> <to runtime/model> (at <time>). Reason the previous runtime stopped:
 <provider's own message, or "not known; the user changed the runtime">.
 
-Where the earlier work is (read these, oldest first):
-- Summary of the story so far: <run folder>/run_summary.md   (covers up to <trace id>; missing = none yet)
+The earlier work, oldest first:
 - Journals (readable, one file per earlier colleague):
   <file> | <runtime/model> | <period> | <size, lines>
+- A summary left by an earlier colleague, if any: <run folder>/run_summary.md
 - Older work can be searched with search_memory; open the lines it points to.
-Journal size: <total> (about <n> tokens). Read the summary first, then the most recent journal file
-fully; read earlier files only by search or line range.
+Journal size: <total> (about <n> tokens).
 
 What the user asked last: "<last user message, cut to 600 characters>"
 
-What does NOT carry over: the previous colleague's private reasoning; results of tool calls that were
-still running (<n> open calls: <tool names>); output longer than 40 lines (journal shortens it; the raw
-trace file linked in each entry has all of it); running processes and open sessions.
+What the journals do not contain: the previous colleague's private reasoning; results of tool calls
+that were still running (<n> open calls: <tool names>); output longer than 40 lines (each journal
+entry links to the raw trace with all of it); running processes and open sessions.
 
-Do this first:
-1. Read the summary and the journals as described and write what was done and what is open.
-2. Check the real state of the workspace (for example git status and git diff) before relying on notes.
-3. Verify any step whose result is unknown before repeating it; do not redo finished work.
-4. Replace <run folder>/run_summary.md with the story so far through the tool write_run_summary.
-5. Then continue the user's work and answer their message below.
+Read what you need, check the real state of the workspace, and continue the user's work. If it helps
+the next colleague, you may leave a summary at <run folder>/run_summary.md.
 ```
 
 The user's own message follows unchanged. Facts the notice needs and where each comes from: runtimes, models and time from the pending switch (3.1); stop reason from the same field; files, periods and sizes from the manifests; open calls from the last turn of the old segment; last user message from the raw traces.
@@ -148,7 +138,7 @@ The user's own message follows unchanged. Facts the notice needs and where each 
 | I-6 | `pendingRuntimeSwitch` present ⇒ `platformAgentRunId` is null and no switch record with that key exists yet. |
 | I-7 | Every record written by one backend lies in segments whose runtime is that backend's (no segment holds two runtimes' records). |
 | I-8 | Old segments and old journal files are byte-unchanged by a switch. |
-| I-9 | `run_summary.md` first line parses; `covers_through` is a trace id present in the run. |
+| I-9 | `run_summary.md`, if present, is a regular file in the run folder (no other check). |
 
 ## 5. Validation plan (before and after the build)
 

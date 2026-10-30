@@ -23,7 +23,7 @@
 | --- | --- | --- | --- | --- | --- |
 | BEH-001 | User | SCN-001, SCN-002 | A stopped run's settings let the user change the model only; the runtime is locked. | The settings of a stopped standalone run also let him choose another available runtime and a model of it; saving keeps the same run (same ID, same chat, same history row). | Restore on the same runtime; the model-only edit. |
 | BEH-002 | System | SCN-001, SCN-003 | The first message after a restore is just the user's text. | When the run's runtime was changed since its last session, the first message after the change carries a system hand-over notice before the user's text: where the earlier journals and `run_summary.md` are, the stop reason when known, what does not carry over, and instructions to read, summarize into `run_summary.md`, check the workspace, verify and continue. | The journal stays derived and read-only. |
-| BEH-003 | System | SCN-003 | No runtime-neutral run summary exists (F-12). | `run_summary.md` per run, beside the raw traces, written by the agent through a server tool; each hand-over replaces it with the "story so far". | Raw traces, journal, memory search unchanged. |
+| BEH-003 | System | SCN-003 | No runtime-neutral run summary exists (F-12). | `run_summary.md` is an optional file beside the raw traces, written by the agent if it wants; no tool or limits. | Raw traces, journal, memory search unchanged. |
 | BEH-004 | User | SCN-001 | The saved data does not say why a run stopped (F-04). | The settings and the notice show the stop reason when the live error event was seen, as the provider's own message; nothing is classified. | Provider-error contract. |
 | BEH-005 | User | SCN-001 | One conversation per run. | The conversation shows the earlier messages unchanged (history comes from the raw traces, not from a runtime: F-15) and a marker at the switch (DEC-3). | History projection. |
 | BEH-006 | System | SCN-004 | Unknown whether another runtime's file tool can read the run's folder (U-2). | If it cannot, the notice carries a bounded excerpt. | — |
@@ -77,10 +77,10 @@ Findings must cite REQ/AC/BEH IDs. New behavior is a `Requirement Gap`.
 | ID | Requirement | Behaviors | Priority | Source |
 | --- | --- | --- | --- | --- |
 | REQ-001 | A stopped, unarchived standalone Agent run's settings offer the available runtimes and, for the chosen runtime, its models; saving validates the pair against the runtime, keeps the run ID, workspace and history, drops the previous runtime's session binding, and records the switch (time, from runtime, to runtime). | BEH-001 | Must | User, 2026-10-29 |
-| REQ-002 | The first input after a switch is preceded by a system hand-over notice (BEH-002 content: earlier journal folder and files in order, `run_summary.md` if any, stop reason when known, the user's last request, what does not carry over, instructions to read, summarize, check the workspace's real state, verify before repeating, continue). The notice is sent once per switch. | BEH-002, BEH-004 | Must | User model |
+| REQ-002 | The first input after a switch is preceded by a system hand-over notice with facts and pointers: earlier journal files in order with runtime, period and size, `run_summary.md` if it exists, stop reason when known, the user's last request, and what the journals do not contain. It does not prescribe how the agent proceeds. The notice is sent once per switch. | BEH-002, BEH-004 | Must | User model |
 | REQ-003 | The run's journal is made current from its raw traces before the notice is built. | BEH-002 | Must | F-05 |
-| REQ-005 | A server tool lets the run write its own `run_summary.md` in its run folder (replace, not append; secrets masked; size limit); the next hand-over names it. | BEH-003 | Must | User, 2026-10-29 |
-| REQ-006 | The notice says what does not carry over and tells the agent to verify before repeating a step whose result is unknown. | BEH-002 | Must | F-02, F-08 |
+| REQ-005 | The hand-over notice may suggest `run_summary.md` in the run folder as the place for a summary for the next colleague; the system provides no tool and sets no size, format or requirement for it, and lists the file in the next notice if it exists. | BEH-003 | Should | User, 2026-10-30: "we do not limit it" |
+| REQ-006 | The notice says what does not carry over (including open tool calls whose result is unknown). | BEH-002 | Must | F-02, F-08 |
 | REQ-007 | For a large journal the notice tells the agent to read the latest part fully and earlier parts by search or line range; the settings show the journal size when the runtime is switched. | BEH-002 | Must | F-03 |
 | REQ-008 | If the new runtime cannot read the run's folder, a bounded excerpt is included instead (after U-2). | BEH-006 | Should | U-2 |
 | REQ-009 | The stop reason is the provider's own message and structured code if given; nothing is classified. | BEH-004 | Should | autobyteus-314 C-01 |
@@ -93,7 +93,7 @@ Findings must cite REQ/AC/BEH IDs. New behavior is a `Requirement Gap`.
 | --- | --- | --- | --- | --- |
 | AC-001 | REQ-001 | Stop a run, switch to another available runtime and model, save | Same run ID and chat; metadata shows the new runtime and no old session ID; the switch is recorded | Test + real run |
 | AC-002 | REQ-002, 003 | Send a message after the switch | The runtime receives the notice then the user's text; the journal in the notice is current; a second message has no notice | Test |
-| AC-003 | REQ-005 | The agent finishes its summary | `run_summary.md` exists and is replaced on the next hand-over | Test + real run |
+| AC-003 | REQ-005 | A summary file exists at the next switch | The notice lists it; no tool, size or format is enforced | Test |
 | AC-004 | REQ-006, 007 | Large journal | Notice instructs partial reading; settings show sizes | Test |
 | AC-005 | REQ-009 | Run stopped by a scripted usage-limit error | Settings and notice show the provider's message | Test on a scripted runtime |
 | AC-006 | REQ-010 | A run with Claude then Codex files | Each journal file uses its runtime's translation | Test |
@@ -115,12 +115,12 @@ Findings must cite REQ/AC/BEH IDs. New behavior is a `Requirement Gap`.
 | ID | Decision | Owner | Reasoning |
 | --- | --- | --- | --- |
 | DEC-1 | **Same run, runtime changed** (supersedes SR-002's "new linked run"). | **The user** (2026-10-29) | One agent for the user; a separate run would split the chat (his point). Feasible: history comes from raw traces (F-15) and the runtime lock is one attribute in the settings UI (F-16). Costs: journal needs file-level runtime (REQ-010); the old session is dropped. |
-| DEC-2 | **The next colleague summarizes** from the notice; summary in `run_summary.md`. | **The user** | Works at the failure; no extra model. |
+| DEC-2 | **The next colleague reads and decides**; it may summarize into `run_summary.md`. No tool, no limits (decided 2026-10-30). | **The user** | Works at the failure; no extra model; the agent is capable of deciding. |
 | DEC-3 | The chat shows a small marker at the switch ("Switched from Claude to Codex"). | **The user** (2026-10-29: "a marker in the chat where the runtime changed was a good marker") | The new agent's tone and tools change; the user sees why. |
 | DEC-4 | First slice: one standalone Agent; Teams, Orgs and delegated copies right after. | **Needs user** (scope; his example mentioned teams) | Recommended: yes, since a member needs its address, links and Task rules; not yet investigated. |
 | DEC-5 | Stop reason is the provider's message, never classified. | Solution Designer | Provider-error contract. |
 | DEC-7 | Rotate the raw-trace file at a switch (not one continuous stream). | Solution Designer (the user left it to the simpler/cleaner option) | One raw file = one runtime keeps the journal file a pure function of one raw file; `rotateActiveRawTracesBeforeBoundary` exists (compaction, retry-safe). |
-| DEC-6 | `run_summary.md` beside the raw traces, not inside `work_journal/`; written through a server tool. | Solution Designer, from the user's idea | `work_journal/` is derived and deletable. |
+| DEC-6 | The suggested summary file sits beside the raw traces, not inside `work_journal/`. | Solution Designer, from the user's idea | `work_journal/` is derived and deletable. |
 
 ## Assumptions / Unknowns
 
