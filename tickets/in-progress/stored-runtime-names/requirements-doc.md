@@ -2,13 +2,13 @@
 
 ## Document Status
 
-- Status: `Ready for Approval` (SR-001). Two decisions need the user (DEC-2, DEC-3); everything else is within his direction ("first keep the data and code clean", 2026-10-30).
-- Current solution revision ID: `SR-001`
+- Status: `Approved` (SR-002). DEC-2 and DEC-3 are the user's own decisions (his words: "i like your recommended solution"; "we do have benefits making the data and code cleaner and consistent", 2026-10-30).
+- Current solution revision ID: `SR-002`
 - Package identifier: `stored-runtime-names`
 - Request / ticket: Project Task `autobyteus-343` (Project `project_a1377344-25db-482a-97cc-ecfdb0fb495a`). Blocks `autobyteus-316`.
 - Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), for the user; the user's decision came in the Solution Designer's conversation about 316.
 - Requirements owner: Solution Designer
-- Approval: `Not yet` (waiting for the user's answers on DEC-2 and DEC-3).
+- Approval: the user, in the conversation (2026-10-30): he chose to do this ticket first, then answered my recommendation (imports left alone, no per-file backup) with "i like your recommended solution". The Solution Designer approves the rest within the direction. The Task still requires his approval of the DESIGN before any build; nothing is written to his data before that.
 - Behavior-defining supplements: none. Evidence: `investigation-notes.md`.
 
 ## Problem And Desired Outcome
@@ -108,8 +108,8 @@ Findings must cite a REQ/AC/BEH ID. New behavior is a `Requirement Gap`.
 | ID | Decision | Owner | Reasoning |
 | --- | --- | --- | --- |
 | DEC-1 | Migrate (not map): the labels are a second name for the `RuntimeKind` value of the same field; convert the manifests and write the new spelling. | **The user** (2026-10-30) | DESIGN rule 10; one clean spelling in data and code. |
-| DEC-2 | **Memory Sync imports are not rewritten.** Recommended. | **Needs user** | An import is a mirror of another node's files (137 manifests, 756 entries here), tracked with a hash per file in its `sync-manifest.json`; rewriting it means also rewriting that bookkeeping and touching mirrored data, and the owning node's own migration plus sync refreshes the mirror. Cost of excluding: until then, an imported run's archived segments carry the old spelling and autobyteus-316 reads them as "runtime unknown" (the generic journal rendering), a graceful downgrade for old imported runs only. Alternative: include imports and update their `sync-manifest.json` entries (sha256, size) in the same step, as the active-file-name migration did for its rename. |
-| DEC-3 | **No per-file backup.** Recommended. | **Needs user** (the Task: "real data changes only on his approval and after a backup") | The rewrite changes only the value of one key per entry, atomically (temporary file then rename, so the old file stays valid until the rename); it is deterministic and invertible by the frozen table; an older build does not read the field (F-03); the guideline asks to justify every backup (§7) and the precedents' backup files are litter next to every run. Alternative: a `raw_traces_manifest.json.backup-<time>` next to each converted manifest (825 small files here) — or take your own copy of `~/.autobyteus/server-data/memory` before updating. |
+| DEC-2 | **Memory Sync imports are not rewritten.** | **The user** (2026-10-30: "i like your recommended solution") | An import is a mirror of another node's files (137 manifests, 756 entries here), tracked with a hash per file in its `sync-manifest.json`; rewriting it means also rewriting that bookkeeping and touching mirrored data, and the owning node's own migration plus sync refreshes the mirror. Cost of excluding: until then, an imported run's archived segments carry the old spelling and autobyteus-316 reads them as "runtime unknown" (the generic journal rendering), a graceful downgrade for old imported runs only. Alternative: include imports and update their `sync-manifest.json` entries (sha256, size) in the same step, as the active-file-name migration did for its rename. |
+| DEC-3 | **No per-file backup.** | **The user** (2026-10-30: "i like your recommended solution"; the Task: "real data changes only on his approval and after a backup": his approval is given for the released migration, and no real data is touched before the build) | The rewrite changes only the value of one key per entry, atomically (temporary file then rename, so the old file stays valid until the rename); it is deterministic and invertible by the frozen table; an older build does not read the field (F-03); the guideline asks to justify every backup (§7) and the precedents' backup files are litter next to every run. Alternative: a `raw_traces_manifest.json.backup-<time>` next to each converted manifest (825 small files here) — or take your own copy of `~/.autobyteus/server-data/memory` before updating. |
 | DEC-4 | The 7,532 label copies inside old trace records stay. | Solution Designer, within the Task | Out of scope in the Task; never read; Principle 5. |
 | DEC-5 | `STARTUP_ONLY`, `requiredOnStartup`, no held-back capability. | Solution Designer | Running agents rotate (write) manifests while the server runs, so a manual retry could race; restart-to-retry is safe. Nothing in production waits for the conversion (the first reader treats an unknown spelling as "runtime unknown"). |
 | DEC-6 | The migration is registered after `20260707_raw_trace_active_file_name` and `20260617_raw_trace_rotation_layout` (declared as prerequisites). | Solution Designer | F-08. |
@@ -120,4 +120,4 @@ U-1 (a pending segment carries the label too) and U-2 (no real `GROK_BUILD` samp
 
 ## Readiness Check
 
-Requirements are stable, linked and testable. They stay `Ready for Approval` until the user answers DEC-2 and DEC-3 (data and backup decisions).
+Requirements are stable, linked and testable and approved (SR-002). Design next; the user's approval of the design comes before any build.

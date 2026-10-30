@@ -27,9 +27,9 @@
 
 | ID | Unknown | Cheap way to settle |
 | --- | --- | --- |
-| U-1 | A `pending` manifest segment (a rotation interrupted before completion) in other users' data: does it carry a label too? | Read `RawTraceArchiveManager` pending entries (same `runtime_kind` field, written at the same call); fixture for it |
+| U-1 | A `pending` manifest segment: does it carry a label too? | **Settled (Read):** pending and complete entries come from the same builder (`raw-trace-archive-manager.ts:215-240`), so a pending entry carries `runtime_kind` too; the migration converts every entry whatever its status; fixture for it |
 | U-2 | `GROK_BUILD` has no real-data sample | Fixture from the code's payload |
-| U-3 | Whether Memory Sync imports should be rewritten (F-09c) | Design decision with the user (requirements DEC-2) |
+| U-3 | Whether Memory Sync imports should be rewritten (F-09c) | Decided as default: not rewritten (requirements DEC-2); restated at the design approval |
 
 ## Supplement inventory
 
