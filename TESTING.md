@@ -191,10 +191,15 @@ test, not its whole suite. A second full run of a suite proves nothing the first
   them when the change needs real-provider proof).
 - **Docker server nodes.** Never test against the user's node containers or their volumes
   (`/root` holds each node's CLI sign-ins). Start a test-owned container from the same image,
-  bound to `127.0.0.1` on a free port and without the user's volumes, so its runtime CLIs
-  start signed out. To run this worktree's server in it, mount
-  `autobyteus-server-ts/dist` read-only over `/app/autobyteus-server-ts/dist`, after checking
-  that the image's `dist` differs only in the files you changed. If a signed-in CLI is needed,
+  bound to `127.0.0.1` on a free port and with fresh test-owned volumes, never the user's, so
+  its runtime CLIs start signed out. The image runs its server from its built-in server package
+  at `/opt/autobyteus/server-package`. To run this worktree's server in it, build this
+  worktree's server package for the image's platform
+  (`docker buildx build -f autobyteus-server-ts/docker/Dockerfile.monorepo --target server-package --output type=local,dest=<new folder> .`)
+  and mount that folder read-only over `/opt/autobyteus/server-package`. A change only in
+  `dist` may instead mount `autobyteus-server-ts/dist` read-only over
+  `/opt/autobyteus/server-package/dist`, after checking that the image's `dist` differs only in
+  the files you changed. If a signed-in CLI is needed,
   stream only its credential file from a node container into the test container without
   writing it to the host, e.g. `docker exec <node> tar -C <dir> -cf - <file> | docker exec -i
   <test> tar -C <dir> -xf -`. Remove the container with `docker rm -f -v` afterwards.
