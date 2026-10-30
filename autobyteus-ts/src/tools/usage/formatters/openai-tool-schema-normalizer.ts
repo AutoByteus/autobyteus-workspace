@@ -2,7 +2,9 @@ export interface OpenAiToolSchemaOptions {
   /**
    * Strict OpenAI function tools require all fields to be required with nullable
    * optional semantics. That transform is intentionally not enabled in this
-   * change, so strict remains gated/off by default.
+   * change, so strict remains gated/off by default. The Responses API treats an
+   * omitted `strict` as true, so `OpenAIResponsesLLM` sends `strict: false`
+   * explicitly; Chat Completions treats an omitted `strict` as false.
    */
   strict?: false;
 }
