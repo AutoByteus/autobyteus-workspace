@@ -17,7 +17,7 @@ describe('current supported model definitions', () => {
 
   it('keeps one ordered aggregate and one contiguous Anthropic provider sublist', () => {
     expect(supportedModelDefinitions.map(({ name }) => name)).toEqual([
-      'gpt-6-astra', 'gpt-6-sol', 'gpt-6-luna',
+      'gpt-6.1-terra', 'gpt-6-astra', 'gpt-6-sol', 'gpt-6-luna',
       'gpt-5.6-sol', 'gpt-5.6-terra', 'gpt-5.6-luna', 'gpt-5.5', 'gpt-5.4', 'gpt-5.4-mini',
       'mistral-large-3', 'devstral-2', 'grok-4.7',
       'claude-fable-5-1', 'claude-fable-5', 'claude-opus-5', 'claude-opus-5-5',
@@ -27,7 +27,7 @@ describe('current supported model definitions', () => {
       'DeepSeek V4 Flash 0731 (Qwen)', 'GLM-5.2 (Qwen)', 'qwen3-max', 'glm-5.3', 'minimax-m3',
     ]);
     expect(new Set(supportedModelDefinitions.map(({ name }) => name)).size).toBe(supportedModelDefinitions.length);
-    expect(supportedModelDefinitions.slice(12, 19)).toEqual(anthropicSupportedModelDefinitions);
+    expect(supportedModelDefinitions.slice(13, 20)).toEqual(anthropicSupportedModelDefinitions);
     expect(supportedModelDefinitions.filter(({ provider }) => provider === LLMProvider.ANTHROPIC))
       .toEqual(anthropicSupportedModelDefinitions);
     expect(pricing(1, 2).toDict()).toMatchObject({
@@ -293,6 +293,69 @@ describe('current supported model definitions', () => {
           input_price_per_million: 4,
           output_price_per_million: 18,
           cached_input_read_price_per_million: 0.4,
+        },
+      ],
+    });
+  });
+
+  it('defines exact GPT-6.1 Terra metadata, reasoning schema, media capabilities and both pricing tiers', async () => {
+    const definitions = supportedModelDefinitions.filter((candidate) => candidate.name === 'gpt-6.1-terra');
+    expect(definitions).toHaveLength(1);
+    const [definition] = definitions;
+    expect(definition).toMatchObject({
+      name: 'gpt-6.1-terra',
+      value: 'gpt-6.1-terra',
+      canonicalName: 'gpt-6.1-terra',
+      provider: LLMProvider.OPENAI,
+      staticMetadata: {
+        maxContextTokens: 1_050_000,
+        maxInputTokens: 922_000,
+        maxOutputTokens: 128_000,
+        multimodalCapabilities: { image: 'supported', audio: 'unsupported', video: 'unsupported' },
+        provenance: {
+          sourceUrl: 'https://developers.openai.com/api/docs/models/gpt-6.1-terra',
+          verifiedAt: '2026-10-30',
+        },
+      },
+    });
+    expect(definition?.configSchema?.toJsonSchema()).toMatchObject({
+      properties: {
+        reasoning_effort: { default: 'medium', enum: ['none', 'low', 'medium', 'high', 'xhigh', 'max'] },
+      },
+    });
+    expect(definition?.defaultConfig.pricingConfig).toMatchObject({
+      pricingEffectiveDate: '2026-10-30',
+      inputTokenPricing: 1,
+      outputTokenPricing: 5,
+      cachedInputReadTokenPricing: 0.05,
+      cachedInputWriteTokenPricing: 1.25,
+    });
+
+    await expect(LLMFactory.getModelPricingInfo({
+      modelIdentifier: 'gpt-6.1-terra',
+      modelProvider: LLMProvider.OPENAI,
+    })).resolves.toMatchObject({
+      pricing_status: 'trusted',
+      input_price_per_million: 1,
+      output_price_per_million: 5,
+      cached_input_read_price_per_million: 0.05,
+      cached_input_write_price_per_million: 1.25,
+      input_price_tiers: [
+        {
+          tier_id: 'standard_le_272k',
+          max_input_tokens: 272_000,
+          input_price_per_million: 1,
+          output_price_per_million: 5,
+          cached_input_read_price_per_million: 0.05,
+          cached_input_write_price_per_million: 1.25,
+        },
+        {
+          tier_id: 'long_context_gt_272k',
+          max_input_tokens: null,
+          input_price_per_million: 2,
+          output_price_per_million: 7.5,
+          cached_input_read_price_per_million: 0.1,
+          cached_input_write_price_per_million: 2.5,
         },
       ],
     });

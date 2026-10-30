@@ -1,0 +1,32 @@
+# Check: IMP-06 AC-001 outcome: the factory lists gpt-6.1-terra; read_file with a terra model loads an image and refuses audio and video
+# Command: (cd /Users/normy/autobyteus_org/autobyteus-worktrees/openai-gpt-6-1-terra/autobyteus-ts && env -i PATH="$PATH" HOME=<temp> TMPDIR="$TMPDIR" pnpm exec vitest run tests/zz-terra-ac001.test.ts)
+#   temporary test: LLMFactory.listModelsByProvider(OPENAI); LLMFactory.createLLM('gpt-6.1-terra') (no request sent); readFile on synthesized PNG, WAV and MP4 with that LLM on the context; file removed afterwards
+# Commit: 2d076b0ce7 (branch codex/openai-gpt-6-1-terra; base includes autobyteus-328 read_file media reads)
+# Environment: macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2; clean environment
+# Date: 2026-10-30 local
+# Result: passed. The factory list is sorted by identifier (catalog order is asserted by the unit test, IMP-03). PNG loaded as a ContextFile; WAV and MP4 refused with the capability message.
+
+{
+ "openaiModels": [
+  "gpt-5.4",
+  "gpt-5.4-mini",
+  "gpt-5.5",
+  "gpt-5.6-luna",
+  "gpt-5.6-sol",
+  "gpt-5.6-terra",
+  "gpt-6-astra",
+  "gpt-6-luna",
+  "gpt-6-sol",
+  "gpt-6.1-terra"
+ ],
+ "capabilities": {
+  "image": "supported",
+  "audio": "unsupported",
+  "video": "unsupported"
+ },
+ "reads": {
+  "photo.png": "loaded ContextFile",
+  "voice.wav": "refused: The selected model does not support audio input. The audio file was not loaded. Continue without audio analysis and do not claim to have inspected it.",
+  "clip.mp4": "refused: The selected model does not support video input. The video file was not loaded. Continue without video analysis and do not claim to have inspected it."
+ }
+}

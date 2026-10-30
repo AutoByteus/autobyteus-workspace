@@ -30,7 +30,7 @@ const sanitize = (text: string) => text.replace(/agtrun_[A-Za-z0-9_-]{43}/g, "<r
   let failure: unknown;
   const cleanup: Record<string, unknown> = {};
   const evidence = process.env.CODEX_NATIVE_POLICY_EVIDENCE_DIR;
-  const model = process.env.CODEX_NATIVE_POLICY_MODEL || "gpt-6.1-sol";
+  const model = process.env.CODEX_NATIVE_POLICY_MODEL || "gpt-6.1-terra";
   const ledger = process.env.CODEX_NATIVE_POLICY_LEDGER;
   const binary = process.env.CODEX_NATIVE_POLICY_BINARY || "codex";
   try {

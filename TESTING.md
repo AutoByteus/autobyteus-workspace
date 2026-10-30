@@ -143,6 +143,9 @@ test, not its whole suite. A second full run of a suite proves nothing the first
   most one agent run or suite that uses a local model at a time, never in parallel, and prefer a
   small, fast model (for example `qwen/qwen3.6-35b-a3b`, the gated LM Studio suite's default via
   `LMSTUDIO_TARGET_TEXT_MODEL`). Unload any model your run loaded just-in-time when you finish.
+- **Live Codex model.** Live Codex tests use `gpt-6.1-terra`, with reasoning effort `medium`
+  unless the test needs more (the cheapest current model; override a test's model variable only
+  when the test needs another).
 - **Runtimes without a model.** `autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs`
   (`ANTIGRAVITY_CLI_COMMAND=<absolute path>`, `RUN_AGY_FAILURE_E2E=1`) is a scripted AGY CLI:
   a message containing `CALL_TOOL:{…}` makes that agent call the real tool. Use it to drive
