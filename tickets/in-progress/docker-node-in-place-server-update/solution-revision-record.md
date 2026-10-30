@@ -14,6 +14,8 @@
 | SR-008 | Evidence | ARCH-REV-003 Pass (step 2) | N/A | Step 2 at review | Step 2 at implementation | — | Pass recorded; no forwarding |
 | SR-009 | Mixed (Evidence + Design) | Delivery Completed, step 2 (DR-002); RU-23, CR2-N1 | RU-23, CR2-N1 | Step 2 in delivery | Step 2 finalized; design delta for step 3 | REQ-011, REQ-012 (protected) | Receipt verified; step-3 delta to review |
 | SR-010 | Evidence | ARCH-REV-004 Pass (step 3) | N/A | Step 3 at review | Step 3 at implementation | — | Pass recorded; no forwarding |
+| SR-011 | Evidence | Delivery Completed, step 3 + beta v1.5.11-beta.6 (DR-003) | CR3-N1 | Step 3 in delivery | Step 3 finalized and released (beta) | AC-011 GitHub part closed | Receipt verified; step 4 to review |
+| SR-012 | Evidence | ARCH-REV-005 Pass (step 4) | N/A | Step 4 at review | Step 4 at implementation | — | Pass recorded; no forwarding |
 
 ## Revision Entries
 
@@ -151,3 +153,21 @@
 - The reviewer routed step 3 to `/software_engineering_team/implementation_engineer` itself, with non-blocking notes: N-2 (`updateBlocker` is computed by UpdateService's one gate rule) and N-3 (the launcher `status` tolerates a node without a starter). The Solution Designer does not forward it again.
 - Intended behavior and design: unchanged.
 - Next action: implementation of build step 3.
+
+### SR-011 — Step 3 receipt and beta v1.5.11-beta.6 verified
+
+- Trigger: `Delivery Completed` for build step 3, plus beta v1.5.11-beta.6 at the user's request (DR-003, 2026-10-30)
+- Verification: `delivery-receipt-verification-step3.md`. The merge, tag, 23 assets, 4/4 workflows and Docker tags were checked with `git` and `gh`. Step 1's open AC-011 GitHub check is closed.
+- Intended behavior and design: unchanged. CR3-N1 and the stale `previous` observation go to step 4 implementation.
+- Next action: step 4 (desktop) via architecture review, on the reviewed design SR-005/SR-009.
+
+### SR-012 — ARCH-REV-005 Pass for step 4 recorded
+
+- Trigger: the architecture review `ARCH-REV-005`, **Pass** (SR-005 + SR-009 basis applies to step 4; SR-010 and SR-011 checked), Large / High.
+- Placement of the carried items:
+  - CR3-N1 stays in `SelfCheck`, with its output going to the starter log only (AC-012);
+  - the stale-`previous` cleanup is optional, and if done it goes in `PackageStore.choose`.
+- Note N-4 passed to implementation: map `inPlaceUpdate: "error"` and a failed GET to row states.
+- The reviewer routed step 4 to `/software_engineering_team/implementation_engineer` itself; the Solution Designer does not forward it again.
+- Intended behavior and design: unchanged.
+- Next action: implementation of build step 4.

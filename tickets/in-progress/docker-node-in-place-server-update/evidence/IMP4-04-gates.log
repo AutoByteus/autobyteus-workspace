@@ -1,0 +1,11 @@
+# IMP4-04 gates
+# Command: check_licensing; artifact hygiene; secret gate origin/personal..HEAD
+# Commit: deead7bf05
+# Environment: macOS arm64, v22.23.1
+# Date: 2026-10-30T22:30Z
+
+Licensing is consistent.
+Tracked files scanned: 7587
+artifact hygiene exit 0
+secret gate: scanning 1 commit(s) in origin/personal..HEAD
+secret gate: PASS (no secrets found)
