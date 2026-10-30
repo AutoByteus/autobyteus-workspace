@@ -1,113 +1,99 @@
-# Run Runtime Switch Contract — files on disk and the data model (autobyteus-316)
+# Run Runtime Switch Contract — files on disk and the data model (autobyteus-316), v2
 
-Status: **Draft for the design** (requirements SR-003, `Ready for Approval`; DEC-4 open). This is the contract the design, the code and the checks are written against, like `work-journal-contract.md` for the journal. It changes nothing by itself. Every statement marked *Measured* was checked on the user's real memory (read-only, 2026-10-29); *Read* means read in code; *Decision* is this contract's choice; *Open* is settled in the design phase by the named unknown.
+Status: **v2, aligned with the design** (SR-004). It replaces v1 of 2026-10-29: the switch marker is now a platform notice record (not a new raw-trace record type), the journal manifest records each file's runtime, the settings save records only a pending switch, and the folder test (§5) has been run. Every statement marked *Read* is from code on `origin/personal` @ `9d59ab82ec`; *Reproduced* was run on synthetic data in an isolated temp folder (`probes/runtime-switch-folder.probe.test.ts`); *Measured* is a read-only count on the user's real memory.
 
-Words: **run** = one agent run identified by `runId` (the platform's agent-run ID, never changes); **provider binding** = `runtimeKind` + model + model settings + `platformAgentRunId` (the provider's own session ID); **switch** = replacing the provider binding of a stopped run; **segment** = one raw-trace file (`raw_traces_NNNNNN.jsonl`, or the active file); **previous agent** = the backend that ran an earlier segment.
+Words: **run** = one agent run identified by `runId` (never changes); **provider binding** = `runtimeKind` + model + model settings + `platformAgentRunId` (the provider's own session ID); **switch** = replacing the provider binding of a stopped standalone agent run; **segment** = one raw-trace file (`raw_traces_NNNNNN.jsonl` or the active file); **previous agent** = the backend that ran an earlier segment.
 
 ## 1. Principle
 
-One run folder. The run keeps its `runId`, its folder, its chat and its history row. A switch replaces only the provider binding and starts a new segment. Nothing the old backend wrote is edited or deleted. History is append-only; the current binding is the one mutable fact (`run_metadata.json`).
+One run folder. The run keeps its `runId`, folder, chat and history row. A switch replaces only the provider binding and starts a new raw-trace segment. Nothing the previous agent wrote is edited or deleted. History is append-only; the current binding is the one mutable fact (`run_metadata.json`).
 
-## 2. Layout of a run folder (run switched Codex → Claude → Codex)
+## 2. Layout of a run folder (run switched Codex → Claude)
 
 ```
-<run memory folder>/                      # unchanged location; runId unchanged
-  run_metadata.json                       # CURRENT binding (+ pending switch, see 3.1)
-  raw_traces_000001.jsonl                 # archived segment: Codex records (compaction boundary)
-  raw_traces_000002.jsonl                 # archived segment: Codex records, ends before the switch record #1
-  raw_traces_000003.jsonl                 # archived segment: Claude records, ends before switch record #2
-  raw_traces_active.jsonl                 # open segment: starts with switch record #2, then Codex records
-  raw_traces_manifest.json                # one entry per archived segment, with its runtime_kind (3.2)
+<run memory folder>/                      # location and runId unchanged
+  run_metadata.json                       # CURRENT binding (+ pendingRuntimeSwitch between the settings save and the first message, 3.1)
+  raw_traces_000001.jsonl                 # archived segment: the Codex records, ends before the switch marker
+  raw_traces_active.jsonl                 # open segment: first record = the switch marker (a platform notice), then Claude's records
+  raw_traces_manifest.json                # one entry per archived segment: boundary_type "runtime_switch", runtime_kind of the archived records (3.2)
   run_summary.md                          # OPTIONAL, written by an agent if it wants (3.5); not derived
-  work_journal/                           # derived, deletable, rebuilt from raw traces (3.4)
-    work_journal_000001.md … work_journal_000003.md, work_journal_active.md, work_journal_manifest.json
-  file_changes.json  communication_messages_active.jsonl  seen_skill_versions.json
-  context_files/  collaboration/          # runtime-neutral, unchanged by a switch
-  working_context_snapshot.json           # native backend only (3.6)
-  agy-project/  runtime-skill-profiles/   # owned by the Antigravity / Codex-Claude backends (3.6)
+  work_journal/                           # derived, deletable, rebuilt from raw traces
+    work_journal_000001.md  work_journal_active.md  work_journal_manifest.json   # manifest entries carry each file's runtime (3.4)
+  file_changes.json  communication_messages_active.jsonl  seen_skill_versions.json  context_files/  collaboration/   # runtime-neutral, untouched
+  working_context_snapshot.json           # native runtime only (3.6)
+  agy-project/  runtime-skill-profiles/   # owned by their backends (3.6)
 ```
 
-Ownership: raw traces + manifest = memory recorders (`RunMemoryFileStore`); `run_metadata.json` = the standalone lifecycle service only (existing rule); `work_journal/` = journal service only; `run_summary.md` = the agent (optional); native and provider files = their backend.
+Writers: raw traces and their manifest = the memory recorders / `RunMemoryFileStore`; `run_metadata.json` = the standalone lifecycle service only (existing rule); `work_journal/` = the journal service only; `run_summary.md` = the agent (optional).
 
 ## 3. Files and data model
 
-### 3.1 `run_metadata.json` (existing file; one new optional field)
+### 3.1 `run_metadata.json` (existing; one new optional field, parsed by its own schema file like `delegatedFrom`)
 
-*Scope:* standalone Agent runs (first delivery, DEC-4). *Measured:* only 525 of 3,721 run folders have this file; a team or org member keeps its binding (`platformAgentRunId`, runtime) in the team's or org's tree instead (`team_run_execution_tree.json`, with the existing no-conversation binding replacement). The member case is the second delivery and gets its own section here; sections 3.2 to 3.7 (segments, switch record, journal, summary) are identical for members.
-
-Existing fields keep their meaning (`runId`, `agentDefinitionId`, `workspaceRootPath`, `memoryDir`, `llmModelIdentifier`, `llmConfig`, `autoExecuteTools`, `runtimeKind`, `platformAgentRunId`, `preparedAt`, `startedAt`, …). A switch changes `runtimeKind`, `llmModelIdentifier`, `llmConfig`, `platformAgentRunId` and sets:
+*Read:* the store normalizes by explicit fields (`agent-run-metadata-store.ts:34-56`), so a new field must be added to its normalizer; `systemRunOwner` and `delegatedFrom` are the precedents for optional markers. A switch changes `runtimeKind`, `llmModelIdentifier`, `llmConfig`, sets `platformAgentRunId: null` and records:
 
 ```ts
 pendingRuntimeSwitch?: {
-  requestedAt: string;                 // ISO time of the settings save
-  from: { runtimeKind: RuntimeKind; llmModelIdentifier: string; platformAgentRunId: string | null };
+  requestedAt: string;                                   // ISO time of the settings save; part of the switch key
+  from: { runtimeKind: RuntimeKind; llmModelIdentifier: string;
+          llmConfig: Record<string, unknown> | null; platformAgentRunId: string | null };   // the whole previous binding
 }
 ```
 
-- Written by the settings save (stopped run only). It records only what the new backend's records and notice need: when, and what the run was on before. `platformAgentRunId` becomes `null`. A second save before the first message keeps the first `from` (so A→B→A before any message is a no-op and clears the field).
-- Cleared by the activation commit (3.3 step 6).
-- *Decision:* this is the only new persisted "state"; the history of switches is not duplicated here (it is in the raw traces and manifest).
+- Written by the settings save of a **stopped, unarchived, standalone agent run** that is not application-owned and not system-owned (`isCollaborationEligibleStandaloneRun`). A second save before the first message keeps the first `from`. A save that selects the original runtime again (`from.runtimeKind`) writes `from` back as the binding and clears the field (nothing happened).
+- Cleared by the activation commit (3.3 step 5). The history of switches is not duplicated here (it is in the raw-trace manifest and the marker records).
+- Optional field whose absence means "no pending switch": **Directly Usable — No Migration** (data-migration guideline § 2: a compatible change).
 
 ### 3.2 `raw_traces_manifest.json` (existing; one new `boundary_type` value)
 
-*Read:* `RawTraceArchiveSegmentEntry` has `index, file_name, boundary_type, boundary_key, boundary_trace_id, runtime_kind, source_event, archived_at, first/last_trace_id, first/last_ts, record_count, status`. `boundary_type` is `native_compaction | provider_compaction_boundary`.
-*Measured:* 820 runs have segment files, all with a manifest; 3,786 segments, **every** one has `runtime_kind` (`CODEX` 3,648, `AUTOBYTEUS` 61, `CLAUDE` 75, `ANTIGRAVITY` 2); no segment file is missing from its manifest and no manifest entry lacks its file.
+*Read:* `RawTraceArchiveSegmentEntry {index, file_name, boundary_type, boundary_key, boundary_trace_id, runtime_kind, source_event, archived_at, first/last_trace_id, first/last_ts, record_count, status}`; `boundary_type` is the union `native_compaction | provider_compaction_boundary` (`autobyteus-ts/src/memory/store/raw-trace-archive-manifest.ts:8-11`). *Measured:* every one of 3,786 segments in the user's 820 runs has a `runtime_kind` and its file; no orphan. The spelling in data is the short label: `CODEX` 3,648, `AUTOBYTEUS` 61, `CLAUDE` 75, `ANTIGRAVITY` 2 (and `GROK_BUILD` in the Grok payload, *Read* `grok-build-compaction-status-payload.ts:51`).
 
-New value: `boundary_type: "runtime_switch"`, `source_event: "runtime_switch"`, `boundary_key: "runtime_switch:<runId>:<requestedAt>"` (idempotency key), `boundary_trace_id` = the id of the switch record, `runtime_kind` = the runtime of the **archived** records (the previous agent), in the manifest's existing spelling (`CODEX`, `CLAUDE`, `ANTIGRAVITY`, `AUTOBYTEUS`, and the Grok spelling the Grok recorder uses; *Open U-8*: the single mapping function from `RuntimeKind`).
-**Runtime of a segment (the lookup rule):** archived segment → its manifest entry's `runtime_kind`; the active segment → `run_metadata.runtimeKind`. No scanning of records.
+New value: `boundary_type: "runtime_switch"` (one added member of the library's union), `source_event: "runtime_switch"`, `boundary_key: "runtime_switch:<runId>:<requestedAt>"` (the idempotency key), `boundary_trace_id` = the marker's id, `runtime_kind` = the label of the **archived** records' runtime (the previous agent), in the existing spelling. One owner maps `RuntimeKind` ⇄ label (`agent-memory`), instead of five string literals in five backends.
 
-### 3.3 Switch record (new raw-trace record type `runtime_switch`)
+**Runtime of a segment (lookup rule):** an archived segment → its entry's `runtime_kind`; the active file → the run's current runtime (`run_metadata.json`).
 
-Added to the closed `RuntimeMemoryTraceType` union next to `provider_compaction_boundary`, whose shape it follows (payload in the record's result field):
+### 3.3 The switch marker (a platform notice record; no new raw-trace record type)
 
-```ts
-{ id, ts, turn_id: null, trace_type: "runtime_switch", source_event: "runtime_switch",
-  tool_result: { switch_key: string;                       // = boundary_key
-                 from: { runtime_kind, model, platform_agent_run_id|null };
-                 to:   { runtime_kind, model } } }
-```
+*Why not a new trace type:* the history projection turns raw `system_task_notification` records into chat notices and ignores unknown types (`raw-trace-to-historical-replay-events.ts:201-216`), and the journal already renders them as `Notice:`; so a notice gives the chat marker and the journal line with no change to either reader. Record: `trace_type: "system_task_notification"`, `sender_id: "system.runtime_handover"` (a new sender id beside the existing ones in `system-task-notification-senders.ts`, also added to `RECORDED_SYSTEM_NOTICE_SENDER_IDS` for the live notice below), content one short line: `Runtime switched from <Codex> (<model>) to <Claude> (<model>).` Its id is deterministic from the key (`rt_switch_<hash of key>`) so a retry can see it.
 
-It is the **first record of the new active segment**. No secrets: model settings are not copied (only the model identifier); provider messages are redacted by the existing redaction.
+**Write order at the first message after a switch** (inside the run's existing transition lane, `StandaloneAgentRunLifecycleService.withTransition`):
+1. Read metadata: `pendingRuntimeSwitch` present and `platformAgentRunId` null → the switch activation (else the normal restore).
+2. Prepare the new backend as a fresh session (`beginActivation({kind:"new", runId, config}).prepare()`, the same call a prepared run uses); validate; nothing is published.
+3. Switch recorder (`agent-memory`): if the active file does not yet contain the marker id, append the marker; rotate the active file before it (`RunMemoryFileStore.rotateActiveRawTracesBeforeBoundary`, idempotent by `boundary_key`; with nothing before the marker it moves nothing and the marker simply starts the file).
+4. Commit metadata through the lifecycle's existing `persistAndPublish`: new `platformAgentRunId`, `pendingRuntimeSwitch` removed.
+5. Publish the run; register the hand-over facts in memory for the first input (3.7).
 
-**Write order at the first message after a switch (the activation)** — one lane per run (the existing transition lane):
-1. Read metadata; `pendingRuntimeSwitch` present → switch activation (else normal restore).
-2. Prepare the new backend as a fresh session (`beginActivation({kind:"new", runId, config})`); nothing is published yet.
-3. Make the old runtime's journal current (`ensureCurrent`, before the rotation moves the records).
-4. Append the switch record to the active file; rotate before it (`rotateActiveRawTracesBeforeBoundary`, `boundaryKey` as above). If the active file has no records before the marker nothing is archived (the primitive returns `null`) and the record simply starts the file.
-5. Commit metadata with the new `platformAgentRunId` (existing `persistAndPublish`).
-6. Publish the run; clear `pendingRuntimeSwitch` in the same metadata commit as step 5.
-7. Deliver the hand-over notice with the user's first input (3.7).
+**Crash behavior:** before step 3 nothing changed but a discarded candidate; between 3 and 4 the metadata is still pending and the retry finds the marker and the manifest key and skips step 3; after 4 it is a normal run. The marker is never written twice for one key. A crash after 4 and before the first input loses the in-memory hand-over notice only (an interrupted-execution edge, outside the supported scenarios; the user can restate the task).
 
-**Crash behavior (idempotent by `boundary_key`):** before step 4 → nothing changed except a discarded candidate; between 4 and 5 → on retry the key is found in the manifest/active file, steps 3–4 are skipped (the existing retry-from-marker rule), 5–7 run; after 5 → normal. A switch record is never written twice for one key.
+*Reproduced* (`probes/runtime-switch-folder.probe.test.ts`, real `RunMemoryFileStore`, synthetic data): after the marker and the rotation the folder holds `raw_traces_000001.jsonl` (the 8 old records) and `raw_traces_active.jsonl` (marker first, then the new records appended); the manifest has one `complete` entry `runtime_switch` / `CLAUDE` / 8 records; a second rotation with the same key returns `null` and moves nothing; the marker exists once.
 
-### 3.4 `work_journal/` (existing, derived)
+### 3.4 `work_journal/` (derived)
 
-One journal file per raw-trace file stays. Each journal file is rendered with **its segment's runtime** (3.2 lookup rule), so Claude records get Claude's tool translation and Codex records Codex's. The journal manifest's `runtime_kind` moves from the run to each file entry (a missing per-file value reads as "render again", the existing tolerance). The switch record renders as `Notice: Runtime switched from <X> to <Y>` as the first entry of its file, *Decision:* the switch itself does not need `WORK_JOURNAL_RENDERER_REVISION` raised (files without a switch record render byte-identically). The separate neutral-vocabulary revision (`work-journal-neutral-vocabulary-contract.md`) does raise it; if both are built, the rebuild happens once.
+One journal file per raw-trace file stays. Each file is rendered with **its segment's runtime** (3.2 lookup rule) so a previous agent's tool calls get that runtime's rules. *Reproduced* (today's code on the probe folder): both files are rendered with the single runtime passed for the run; Claude's `Bash` call in the archived file prints as `Tool: Bash command="git status"` instead of `Command: git status` when the run's current runtime is Codex, which is why the per-file runtime is required. The journal manifest's entries gain `runtime_kind` (the file's runtime); the reuse check compares per file; an entry without it means "render again" (the manifest is derived data: no migration, no renderer revision change, because no existing run has a switch). The marker renders as `Notice: Runtime switched from … to ….` as the first entry of the new file.
 
 ### 3.5 `run_summary.md` (optional; written by the agent; not derived)
 
-The hand-over notice suggests this path (`<run folder>/run_summary.md`, beside the raw traces, not inside the derived `work_journal/`) as the place to leave a summary for the next agent. *Decision (the user, 2026-10-30):* the system does not limit what the agent does: no tool, no size limit, no required headings, no required header line, no requirement that it is written at all. The agent writes it with its normal file tool, if it wants and if its runtime allows (*Open U-2*). If the file exists, the next notice lists it; nothing validates it. It is copied by memory sync like any file in the folder; memory search does not index it in this slice.
+The hand-over notice suggests `<run folder>/run_summary.md` as the place for a summary for the next agent. The system does not limit what the agent does: no tool, no size limit, no required headings or header, no requirement that it is written (the user, 2026-10-30). The agent writes it with its normal file tool if it wants and its runtime allows (`Unclear` until the real run, REQ-008). If it exists, the next notice lists it; nothing validates it. It sits beside the raw traces, not inside the derived `work_journal/`.
 
 ### 3.6 Files that belong to one backend
 
 A switch never edits or deletes them.
-- `working_context_snapshot.json` (native runtime only: *Read* its only writer and reader is the native memory manager in `autobyteus-ts/src/memory/`; the server only counts it as memory for listing and has migrations for it. *Measured* in 313 native runs; 2 Antigravity runs from 2026-06-15 still hold an old schema-v4 copy, left from before the migration `remove-external-runtime-working-context-snapshots`, and nothing reads them): after a switch away it stays as is. A native activation after a switch starts with an empty working context and relies on the hand-over (*Open U-7*: confirm what native `new` does with an existing snapshot and raw traces; if it overwrites, that is accepted because the old content is in the journal; if it fails, the design adds a rename step).
-- `agy-project/`, `runtime-skill-profiles/`: untouched.
-- `seen_skill_versions.json`: a switch is a fresh session, so the existing "new" activation gives the current skills; no change.
+- `working_context_snapshot.json` (the native runtime only, *Read*: its only writer and reader is the native memory manager; two old Antigravity copies from before the 2026-07-31 cleanup migration are unread): after a switch away it stays. A native activation on a folder that has it starts a fresh working context: `createAgentWithId` builds the memory manager with no restore options, and the snapshot is only read by `restoreAgent` (`agent-factory.ts:93-119,167-179`); the memory store appends to the existing active file (`file-store.ts`, `run-memory-file-store.ts:115-150`); the native turn ids restart at `turn_0001` on every agent construction, restores included (`turn-tracker.ts`, no caller passes a start), so a switch adds no new risk there. The old content is in the journals and the hand-over.
+- `agy-project/`, `runtime-skill-profiles/`: untouched. `seen_skill_versions.json`: the fresh session gets the current skills.
 
-### 3.7 Hand-over notice (the message the new backend receives; not a file)
+### 3.7 Hand-over notice (the message the new agent receives)
 
-One system message placed before the user's first input after the switch, through the existing next-input preface route, with its own system sender (like the skill-update notice), so the chat shows it as a system notice and the agent does not take it for the user's words. Sent once per switch. Delivered ⇔ a notice record after the switch record exists in the active segment (a crash before delivery repeats it, never loses it). Built by the server from facts only; no model writes it. Draft text (the design finalizes wording). Facts and pointers only; the agent decides how to proceed. The user's last request is not repeated (the user's message follows the notice, and the journal has the history):
+A platform notice delivered through the existing next-input route (`AgentRunPlatformNotices`, a third source beside the tool-list and skill-update notices), with its own system sender, so the agent does not take it for the user's words. It has two texts (the preface type already separates them): the **model text** (below), and the **presentation** (the one short marker line of 3.3, published live as the run's system notice). It is sent once per switch with the first external input and built by the server from facts only; no model writes it. Facts and pointers only; the agent decides how to proceed; the user's last request is not repeated (the user's message follows the notice and the journal has the history):
 
 ```
 [System: runtime hand-over]
 This run was worked on by a previous agent on a different runtime: <from runtime/model>, now
-<to runtime/model>. 
+<to runtime/model>.
+
 Its work is recorded in work journals: <run folder>/work_journal/
 - Readable Markdown, one file per earlier stretch of work, oldest first:
-  work_journal_000001.md, work_journal_000002.md, ... and work_journal_active.md for the latest.
-  <file> | <runtime/model> | <period> | <size, lines>
-- Entries look like "[HH:MM:SS] User: ...", "Agent: ...", "Command: ... -> ok", "Tool: ...".
+  <file> | <runtime/model> | <period> | <size, lines>   (one line per file; work_journal_active.md is the latest)
+- Entries look like "[HH:MM:SS] User: …", "Agent: …", "Command: … → ok", "Edit file: …", "Message to … → delivered".
   Each entry ends with a link to the raw trace record with the full content; long output is shortened.
 - To see what was done most recently, read the end of work_journal_active.md. For earlier work or the
   original request, read the earlier files or search them (search_memory).
@@ -116,7 +102,7 @@ Its work is recorded in work journals: <run folder>/work_journal/
 A summary left by an earlier agent may exist at <run folder>/run_summary.md.
 ```
 
-The user's own message follows unchanged. Facts the notice needs and where each comes from: runtimes, models and time from the pending switch (3.1); journal files, periods and sizes from the journal and raw-trace manifests.
+Facts and where each comes from: runtimes and models from the pending switch (3.1) and the current binding; the journal files, periods, sizes and each file's runtime from the journal service (`ensureCurrent`, `listJournalFiles`, the per-file runtime of 3.4). If the notice cannot be delivered with the first input (the dispatch is rejected or requeued) it stays pending in memory for the next input (the existing preface settle rules).
 
 ## 4. Invariants (checkable)
 
@@ -124,20 +110,24 @@ The user's own message follows unchanged. Facts the notice needs and where each 
 | --- | --- |
 | I-1 | `runId`, `memoryDir`, `agentDefinitionId`, `workspaceRootPath`, `startedAt` of `run_metadata.json` never change at a switch. |
 | I-2 | Every manifest segment has a `runtime_kind` and its file exists; every `raw_traces_NNNNNN.jsonl` is in the manifest. |
-| I-3 | A segment with `boundary_type: runtime_switch` is followed (in the next segment) by a first record of type `runtime_switch` whose `switch_key` equals the entry's `boundary_key`. |
-| I-4 | The `runtime_kind` of the archived segment before a switch equals `tool_result.from.runtime_kind`; the active segment's runtime equals `run_metadata.runtimeKind` and the last switch record's `to`. |
-| I-5 | No two switch records share a `switch_key`. |
-| I-6 | `pendingRuntimeSwitch` present ⇒ `platformAgentRunId` is null and no switch record with that key exists yet. |
-| I-7 | Every record written by one backend lies in segments whose runtime is that backend's (no segment holds two runtimes' records). |
+| I-3 | The first record of the active file after a `runtime_switch` segment is a `system_task_notification` whose id equals the entry's `boundary_trace_id`. |
+| I-4 | The `runtime_kind` label of the archived segment before a switch equals the label of `from.runtimeKind` of the switch that made it; the active file's runtime is `run_metadata.runtimeKind`. |
+| I-5 | No two manifest entries share a `boundary_key`; one marker record per key. |
+| I-6 | `pendingRuntimeSwitch` present ⇒ no marker with its key exists yet, or the activation has not committed: `platformAgentRunId` is null until the commit. |
+| I-7 | No segment holds records of two runtimes (the rotation precedes the first record of the new runtime). |
 | I-8 | Old segments and old journal files are byte-unchanged by a switch. |
 | I-9 | `run_summary.md`, if present, is a regular file in the run folder (no other check). |
+| I-10 | The journal manifest entry of a file has `runtime_kind` equal to the segment's runtime by the 3.2 rule. |
 
-## 5. Validation plan (before and after the build)
+## 5. Validation (what has been done, what is planned)
 
-1. **Now (done):** the manifest facts in 3.2 *Measured*; probe `probes/run_folder_contract_probe.py` checked I-2, I-5, I-6, I-9 on all 3,721 real run folders and 3,786 segments (read-only): 0 violations, 0 existing switch segments, so the contract starts from a clean baseline.
-2. **Design phase:** U-7 (native `new` on an existing folder) and U-8 (runtime-name mapping) *Reproduced* on a copy.
-3. **Build:** the same probe, extended with I-1, I-3, I-4, I-7, I-8, runs on folders produced by (a) tests with scripted runtimes including a crash injected at each point of 3.3, (b) a real switch on isolated data (two available runtimes). A failing invariant is a failing test.
+1. **Done, on the real data (read-only):** the manifest facts of 3.2 and probe `probes/run_folder_contract_probe.py`: I-2, I-5, I-6 on all 3,724 run folders and 3,792 segments, 0 violations, 0 switch segments.
+2. **Done, isolated and synthetic (the folder test, U-7):** `probes/runtime-switch-folder.probe.test.ts`: the rotation and marker sequence of 3.3, its idempotence, and today's journal rendering one runtime for every file (3.4). Output: `evidence/folder-test-output.txt`.
+3. **Read:** the native memory manager on an existing folder (3.6).
+4. **Build:** tests with scripted runtimes including a crash injected at each point of 3.3, the same probe extended with I-1, I-3, I-4, I-7, I-8, I-10 on folders the tests produce, and a real switch on isolated data between two available runtimes.
 
 ## 6. Decision log
 
-- *2026-10-30, the user:* no stop reason anywhere. The new agent continues the work whatever stopped the previous one; the reason is not recorded, shown or sent. This removes the failure record (FU-001), the `stopReason` field, and the stop-reason requirement.
+- 2026-10-29, the user: the runtime is a setting of the same run; rotate at a switch or not "whichever is simpler" (decided: rotate, DEC-7); a marker in the chat (DEC-3).
+- 2026-10-30, the user: no stop reason; no summary tool or limits; the notice says "previous agent" and describes the journals instead of repeating the last message.
+- 2026-10-30, the user: the first delivery covers a single standalone agent; teams come later (DEC-4).
