@@ -28,7 +28,8 @@
 
 ## Release
 
-- `No release`: not requested and `RELEASE.md` makes none the default. The change ships with the next release. The upgrade re-renders journals once after the first start (about 2 minutes) and then re-embeds changed cards in the background (about 22 minutes on the measured node); the index file may keep about 200 MB of free pages (+0.5% live size). No rollback concern beyond that: the journals are derived and rebuilt from raw traces.
+- Beta `v1.5.11-beta.5`, released at the user's request after finalization (first finalization had no release by the guide's default). Release smoke 13 of 13, build-only desktop run, then the tag: Desktop, Android, iOS and Docker workflows all succeeded; GitHub pre-release with 17 assets. Details: `release-deployment-report.md`.
+- Upgrade effect: the first catch-up pass renders every journal again (about 2 minutes on the measured node), then changed cards are embedded in the background (about 22 minutes); the index file may keep about 200 MB of free pages (+0.5% live size). Journals are derived data, so nothing is lost; no rollback concern beyond reverting and rebuilding.
 
 ## For The Solution Designer
 

@@ -56,8 +56,8 @@ Repository finalization into `origin/personal` only. No release, tag, publicatio
 
 ## Release Decision
 
-- Decision: `No release`
-- Decided by: the release guide's default; the user did not ask for a release. A beta or stable release remains available.
+- Decision: `Beta` (`v1.5.11-beta.5`)
+- Decided by: the user, after the ticket was finalized ("release a new beta version", 2026-10-30). Delivery round DR-002. The first finalization (DR-001) was `No release` by the guide's default.
 
 ## Docs Sync Result
 
@@ -72,7 +72,8 @@ Repository finalization into `origin/personal` only. No release, tag, publicatio
 
 ## Version / Tag / Release Commit
 
-Not applicable: no release.
+- Version `1.5.11-beta.5` (`python3 scripts/release_versions.py next-beta`; highest stable base unchanged, previous tag `v1.5.11-beta.4`)
+- Release commit `d31c92adfc` `chore(release): bump workspace release version to 1.5.11-beta.5` (`autobyteus-web/package.json`), annotated tag `v1.5.11-beta.5`, on `finalize/work-journal-neutral-vocabulary` cut from `origin/personal` @ `8df659441f`; pushed `8df659441f..d31c92adfc` to `origin/personal`, then the tag
 
 ## Repository Finalization
 
@@ -95,9 +96,17 @@ Checks on the final state: Secret Gate `scripts/check_secrets.sh origin/personal
 
 ## Release / Publication / Deployment
 
-- Applicable: `No`
-- Release/publication/deployment result: `Not required`
-- Release notes handoff result: `Not required`
+- Applicable: `Yes` (DR-002)
+- Method: `Project Release Guide` — `bash scripts/desktop-release.sh beta --branch finalize/work-journal-neutral-vocabulary --no-push`, then push the branch and the tag
+- Checks before tagging, on the merged `personal` state (`8df659441f`, a fresh worktree after `pnpm install --frozen-lockfile` and `pnpm -C autobyteus-server-ts prebuild`):
+  - `check_licensing.py` pass; `check_repository_artifact_hygiene.py` pass; `scripts/check_secrets.sh v1.5.11-beta.4..HEAD` PASS (19 commits)
+  - `python3 scripts/release_smoke.py`: PASS on all 13 scenarios (claude, codex, grok x3 each; antigravity x2; autobyteus x2), models `{"claude": "haiku", "codex": "gpt-5.6-luna", "grok": "grok-4.7"}`, duration live 106s. Two earlier attempts failed before running any scenario ("grok model grok-4.7 is not offered; available: grok-4.5, grok-4.6", then with `GROK_E2E_MODEL=grok-4.5`: "not offered; available: grok-4.7"): the installed Grok CLI's model list changed between calls. The third attempt, with the unmodified default, passed once `grok models` listed grok-4.7. No runtime was waived.
+  - Build-only `pnpm release:test --ref personal`: run 41045537436 on `8df659441f`, success (27m18s)
+- Pipelines (tag push 2026-10-30 11:33Z): Android APK Release 41048930574 success (5m51s); iOS App Store Connect Release 41048930527 success (17m35s); Desktop Release 41048930554 success (27m23s); Server Docker Release 41048930573 success
+- Published artifacts checked: `gh release view v1.5.11-beta.5`: pre-release `true`, 17 assets (Android APK + `.sha256`; Linux x64 and ARM64 AppImages; macOS ARM64 and x64 `.dmg`, `.zip` and blockmaps; Windows `.exe`; `latest.yml`, `latest-mac.yml`, `latest-linux.yml`, `latest-linux-arm64.yml`). The Docker image `autobyteus/autobyteus-server:1.5.11-beta.5` was published by the Docker workflow (success); not pulled.
+- Release/publication/deployment result: `Completed`
+- Release notes handoff result: `Not required` (a beta uses GitHub generated notes)
+- Proposed guide fix (not applied; the project owns the guide): the smoke suite pins `grok-4.7` as its default Grok model (`workspace-skill-links-live.e2e.test.ts`), but the Grok CLI's offered list varies between calls, so the check can fail before running anything; add a line to the smoke check section: "if the whole live suite fails with `grok model … is not offered`, run `grok models` and rerun; set `GROK_E2E_MODEL` only to a model that list shows".
 
 ## Post-Finalization Cleanup
 
@@ -109,7 +118,7 @@ Checks on the final state: Secret Gate `scripts/check_secrets.sh origin/personal
 
 ## Release Notes Summary
 
-- Release notes status: `Not required` (no release; the guide uses ticket notes for a stable release only)
+- Release notes status: `Not required` (beta: GitHub generated notes)
 
 ## Environment Or Persisted-Data Transition Notes
 
@@ -122,6 +131,8 @@ Checks on the final state: Secret Gate `scripts/check_secrets.sh origin/personal
 Revert the merge on `personal` if journals read wrongly or the first catch-up pass fails in a way the tests did not show. Journals are derived data: after a revert, a Rebuild regenerates them from the raw traces. Nothing is released, so no rollout exists to roll back.
 
 ## Final Status
+
+- DR-002 (beta `v1.5.11-beta.5`): tagged, all four workflows succeeded, 17 assets, pre-release. Release worktree `release-work-journal-neutral-vocabulary` and branch `finalize/work-journal-neutral-vocabulary` removed afterwards.
 
 - Verification complete (from the evidence): `Yes`
 - Repository finalization complete: `Yes` (`personal` @ `615f04cf49`, plus this record commit)
