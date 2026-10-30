@@ -15,6 +15,8 @@ import type { AcpAgentLaunchProfile } from "../../../../../src/runtime-managemen
 import { AcpAgentRunBackendFactory } from "../../../../../src/agent-execution/backends/acp/backend/acp-agent-run-backend-factory.js";
 import type { AcpAgentRunBackend } from "../../../../../src/agent-execution/backends/acp/backend/acp-agent-run-backend.js";
 import { AcpAgentRunContext } from "../../../../../src/agent-execution/backends/acp/backend/acp-agent-run-context.js";
+import { AcpAgentProcess } from "../../../../../src/runtime-management/acp/acp-agent-process.js";
+import type { IntegrationRunAccess } from "../../../../../src/credential-proxy/integration-run-access.js";
 import { grokBuildSessionProfile } from "../../../../../src/agent-execution/backends/grok/grok-build-session-profile.js";
 import { getGrokWorkspaceSkillMaterializer } from "../../../../../src/agent-execution/backends/grok/grok-workspace-skill-materializer.js";
 import {
@@ -53,6 +55,7 @@ const launchProfileFor = (fixture: string, recordFile: string, reportMcpReady: b
 const createFactory = (fixture: string, options: {
   /** The fixture carries its own MCP server status rows; otherwise the fake agent reports ready. */
   fixtureReportsMcp?: boolean; skillScope?: "CONFIGURED" | "ALL_INSTALLED"; skillMaterializer?: unknown;
+  integrationRunAccess?: IntegrationRunAccess;
 } = {}) => {
   const recordFile = path.join(tempDir("acp-record-"), "client.jsonl");
   const workingDirectory = tempDir("acp-ws-");
@@ -68,6 +71,7 @@ const createFactory = (fixture: string, options: {
     workspaces: { resolveWorkingDirectory: async () => workingDirectory },
     mcpSessions: mcpSessions as unknown as AgentToolMcpRunSessionActivator,
     skillMaterializer: (options.skillMaterializer ?? getGrokWorkspaceSkillMaterializer()) as ReturnType<typeof getGrokWorkspaceSkillMaterializer>,
+    integrationRunAccess: options.integrationRunAccess ?? null,
   });
   const recorded = () => fs.existsSync(recordFile)
     ? fs.readFileSync(recordFile, "utf8").split("\n").filter(Boolean).map((line) => JSON.parse(line)) : [];
@@ -114,6 +118,26 @@ describe("AcpAgentRunBackendFactory", () => {
     expect(types.filter((type) => type === AgentRunEventType.SYSTEM_INSTRUCTIONS_SUPPLIED)).toHaveLength(1);
     expect(types[1]).toBe(AgentRunEventType.TURN_STARTED);
     expect(backend.getLifecycleSnapshot()).toMatchObject({ availability: "active", phase: "idle", currentTurn: { kind: "NONE" } });
+  });
+
+  it("starts an allowed run's agent process with the launch profile's environment plus its integration variables (DS-002)", async () => {
+    const variables = { AUTOBYTEUS_GITHUB_API_URL: "http://127.0.0.1:5555/r/rp_test-dummy/github/api", GIT_TERMINAL_PROMPT: "0" };
+    const environmentForRun = vi.fn((run: { agentDefinitionId: string }) => (run.agentDefinitionId === "def-1" ? variables : {}));
+    const spawn = vi.spyOn(AcpAgentProcess, "spawn");
+    try {
+      const { factory } = createFactory(fixturePath("prompt"), { integrationRunAccess: { environmentForRun, revokeForRun: vi.fn() } });
+      backends.push(await factory.beginPreparation({ kind: "new", config: config(), runId: "run-1" }).prepare());
+      expect(environmentForRun).toHaveBeenCalledWith({ runId: "run-1", agentDefinitionId: "def-1" }, process.env);
+      const env = spawn.mock.calls[0]![0].env as Record<string, string>;
+      expect(env).toMatchObject({ ...variables, FAKE_ACP_FIXTURE: fixturePath("prompt"), PATH: process.env.PATH });
+      expect(process.env.AUTOBYTEUS_GITHUB_API_URL).toBeUndefined();
+
+      const { factory: other } = createFactory(fixturePath("prompt"), { integrationRunAccess: { environmentForRun, revokeForRun: vi.fn() } });
+      backends.push(await other.beginPreparation({ kind: "new", config: config({ agentDefinitionId: "def-2" }), runId: "run-2" }).prepare());
+      expect(spawn.mock.calls[1]![0].env).not.toHaveProperty("AUTOBYTEUS_GITHUB_API_URL");
+    } finally {
+      spawn.mockRestore();
+    }
   });
 
   it.each([["CONFIGURED", "fail"], ["ALL_INSTALLED", "prefer_workspace"]] as const)(

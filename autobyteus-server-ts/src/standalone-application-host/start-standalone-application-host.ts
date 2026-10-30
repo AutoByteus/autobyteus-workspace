@@ -260,6 +260,8 @@ export const startStandaloneApplicationHost = async (
         definitionAdmissionService: hostDefinitionServices.definitionAdmissionService,
         workspaceManager,
         agentProviderFactoryBuilder,
+        // The standalone application host gives its runs no integration access in this step.
+        integrationRunAccess: null,
         agentToolMcpSessionAuthority: generalProcessAuthority,
         modelSelectionValidator,
         taskExecutionResources,

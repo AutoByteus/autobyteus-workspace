@@ -1,3 +1,4 @@
+import type { IntegrationRunAccess } from "../../../../credential-proxy/integration-run-access.js";
 import type { AgentRunConfig } from "../../../domain/agent-run-config.js";
 import type { AgentRunEvent } from "../../../domain/agent-run-event.js";
 import { AgentCreationError } from "../../../errors.js";
@@ -72,6 +73,7 @@ export class AcpSessionLauncher {
   constructor(private readonly deps: Readonly<{
     launchProfile: AcpAgentLaunchProfile;
     sessionProfile: AcpAgentSessionProfile;
+    integrationRunAccess?: IntegrationRunAccess | null;
   }>) {}
 
   get agentLabel(): string { return this.deps.launchProfile.agentLabel; }
@@ -83,7 +85,12 @@ export class AcpSessionLauncher {
     const process = AcpAgentProcess.spawn({
       command: launchProfile.command(),
       args: launchProfile.args({ model: config.llmModelIdentifier, reasoningEffort: reasoningEffortOf(config) }),
-      env: launchProfile.env(globalThis.process.env),
+      // The run's integration variables (a reopen keeps the run's pass).
+      env: {
+        ...launchProfile.env(globalThis.process.env),
+        ...this.deps.integrationRunAccess?.environmentForRun(
+          { runId: request.runId, agentDefinitionId: config.agentDefinitionId }, globalThis.process.env),
+      },
       cwd: request.workingDirectory,
     });
     owner.process = process;

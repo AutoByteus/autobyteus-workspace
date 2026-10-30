@@ -314,6 +314,8 @@ describe("standalone application host latest-Personal prerequisite lifecycle", (
       workspaceManager: mocks.workspaceManager,
       agentProviderFactoryBuilder: mocks.providerFactoryBuilder,
       agentToolMcpSessionAuthority: mocks.generalAuthority,
+      // A standalone application host has no credential proxy: its runs get no integration variables.
+      integrationRunAccess: null,
       modelSelectionValidator: expect.anything(),
       taskExecutionResources: expect.objectContaining({ ownerOf: expect.any(Function), linkNewTaskExecution: expect.any(Function) }),
       platformInputNotices: expect.objectContaining({

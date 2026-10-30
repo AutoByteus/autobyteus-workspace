@@ -66,6 +66,7 @@ const createSupervisorInput = () => {
     workspaceManager: WorkspaceManager.getInstance(),
     agentProviderFactoryBuilder: createProviderBuilder(),
     agentToolMcpSessionAuthority: createAuthority(),
+    integrationRunAccess: null,
     modelSelectionValidator: { validate: vi.fn(), validateMany: vi.fn(), listOptions: vi.fn() },
     taskExecutionResources: { ownerOf: vi.fn(() => null) } as unknown as TaskExecutionResourcePort,
   };
@@ -197,7 +198,7 @@ describe("GeneralProcessRunSupervisor ownership", () => {
     for (const property of [
       "memoryDir", "contextFilePathEnvironment", "agentDefinitionService", "agentTeamDefinitionService",
       "agentOrgDefinitionService", "definitionAdmissionService", "workspaceManager", "agentProviderFactoryBuilder",
-      "agentToolMcpSessionAuthority", "modelSelectionValidator",
+      "agentToolMcpSessionAuthority", "integrationRunAccess", "modelSelectionValidator",
     ] as const) {
       const invalid = { ...createSupervisorInput() } as Record<string, unknown>;
       delete invalid[property];

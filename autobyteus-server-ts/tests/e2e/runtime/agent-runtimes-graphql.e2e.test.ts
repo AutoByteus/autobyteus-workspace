@@ -106,6 +106,7 @@ describe("Settings → Agent Runtimes GraphQL e2e (real studio server, scripted 
     const studio = await buildStudioServer({ appConfig: appConfigProvider.config, loggingConfig: LOGGING });
     await studio.applicationRuntime.lifecycle.prepareBeforeListen();
     await studio.agentToolsMcpHost.listen();
+    await studio.credentialProxyHost.listen();
     const address = await studio.fastify.listen({ port: 0, host: "127.0.0.1" });
     await studio.applicationRuntime.lifecycle.recoverAfterListen();
     fastify = studio.fastify;

@@ -283,7 +283,12 @@ export class CodexAgentRunBackend implements AgentRunBackend {
     let reopenedWith: readonly string[];
     try {
       const descriptor = this.agentToolSessions.describeForRun(this.runId);
-      await this.threadManager.reopenThread(this.runContext, materializeCodexAgentToolsMcpThreadConfig(descriptor));
+      // The new Agent Tools part replaces only `mcp_servers`: the run's integration part (shell variables and
+      // sandbox network) stays as the thread was prepared.
+      await this.threadManager.reopenThread(this.runContext, {
+        ...(this.runContext.runtimeContext.codexThreadConfig.appServerConfig ?? {}),
+        ...materializeCodexAgentToolsMcpThreadConfig(descriptor),
+      });
       reopenedWith = descriptor.enabledTools;
     } catch (error) {
       logger.error(`Codex thread reopen failed for run '${this.runId}': ${String(error)}`);

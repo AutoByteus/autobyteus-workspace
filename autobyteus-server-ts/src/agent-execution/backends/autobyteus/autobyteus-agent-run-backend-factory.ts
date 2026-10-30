@@ -1,3 +1,4 @@
+import type { IntegrationRunAccess } from "../../../credential-proxy/integration-run-access.js";
 import type { NativeCommandProcessScope } from "autobyteus-ts";
 import fs from "node:fs/promises";
 import {
@@ -90,6 +91,15 @@ type AgentLike = {
 
 type AutoByteusRuntimeAgentLike = AgentLike & AutoByteusAgentLike;
 
+/**
+ * The run's integration variables for its shell commands (core's `terminalChildEnvironment` seam, which replaces
+ * `process.env` for the run's children): nothing when the run has none.
+ */
+const integrationShellEnvironment = (variables: Readonly<Record<string, string>>): Record<string, unknown> =>
+  Object.keys(variables).length === 0
+    ? {}
+    : { terminalChildEnvironment: (): NodeJS.ProcessEnv => ({ ...process.env, ...variables }) };
+
 export type AutoByteusAgentRunBackendFactoryOptions = {
   nativeCommandProcessScope: NativeCommandProcessScope;
   agentFactory?: AutoByteusAgentFactoryLike;
@@ -100,6 +110,8 @@ export type AutoByteusAgentRunBackendFactoryOptions = {
   registries?: Partial<ProcessorRegistries>;
   waitForIdle?: AutoByteusAgentIdleWaiter;
   applicationAgentTools?: ApplicationAgentToolCapability | null;
+  /** The run's integration variables (`null`: this host's runs get no integration access). */
+  integrationRunAccess?: IntegrationRunAccess | null;
 };
 
 export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory {
@@ -452,6 +464,9 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
       ...(options.applicationExecutionContext
         ? { [APPLICATION_EXECUTION_CONTEXT_KEY]: options.applicationExecutionContext }
         : {}),
+      ...integrationShellEnvironment(
+        this.options.integrationRunAccess?.environmentForRun({ runId, agentDefinitionId }, process.env) ?? {},
+      ),
     };
 
     // Compaction always summarizes on the agent's own model (core-owned summarizer).

@@ -1,3 +1,4 @@
+import type { IntegrationRunAccess } from "../../credential-proxy/integration-run-access.js";
 import type { AgentRunBackendFactory } from "../backends/agent-run-backend-factory.js";
 import { AgentRun } from "../domain/agent-run.js";
 import type {
@@ -47,6 +48,8 @@ export type AgentRunManagerOptions = Readonly<{
   memoryRecorder: AgentRunMemoryRecorder;
   providerInputNormalizer: Pick<AgentRunProviderInputNormalizer, "normalizeForProvider">;
   agentToolMcpRunSessionDeactivator: AgentToolMcpRunSessionDeactivator;
+  /** Ends a run's credential-proxy pass when its activation fails before it is attached (`null`: none). */
+  integrationRunAccess: Pick<IntegrationRunAccess, "revokeForRun"> | null;
   /** Supplies platform notices that ride along with each run's next external input (none by default). */
   inputPreface?: AgentRunInputPreface | null;
   /** Told when a run is published (the matching release is reported by the resource manager). */
@@ -64,6 +67,7 @@ export class AgentRunManager {
   private readonly memoryRecorder: AgentRunMemoryRecorder;
   private readonly providerInputNormalizer: Pick<AgentRunProviderInputNormalizer, "normalizeForProvider">;
   private readonly agentToolMcpRunSessionDeactivator: AgentToolMcpRunSessionDeactivator;
+  private readonly integrationRunAccess: Pick<IntegrationRunAccess, "revokeForRun"> | null;
   private readonly inputPreface: AgentRunInputPreface | null;
   private readonly lifecycleObserver: Pick<AgentRunLifecycleObserver, "runPublished"> | null;
   private readonly activations = new Set<AgentRunActivationOperation>();
@@ -123,6 +127,7 @@ export class AgentRunManager {
     this.providerInputNormalizer = options.providerInputNormalizer;
     this.agentToolMcpRunSessionDeactivator =
       options.agentToolMcpRunSessionDeactivator;
+    this.integrationRunAccess = options.integrationRunAccess ?? null;
     this.activationRegistry = options.activationRegistry;
     this.inputPreface = options.inputPreface ?? null;
     this.lifecycleObserver = options.lifecycleObserver ?? null;
@@ -161,7 +166,11 @@ export class AgentRunManager {
         onPublished: run => this.notifyPublished(run, request.kind),
         validateRun: run => { if (expectedPlatformId && run.getPlatformAgentRunId() !== expectedPlatformId) throw new PlatformAgentRunRestoreError(); },
         onTerminal: () => { this.activations.delete(operation); },
-        deactivateMcp: () => { this.agentToolMcpRunSessionDeactivator.deactivateForRun(runId); },
+        // The run's local sessions: its Agent Tools MCP session and its credential-proxy pass (AR-002).
+        releaseLocalSessions: () => {
+          this.agentToolMcpRunSessionDeactivator.deactivateForRun(runId);
+          this.integrationRunAccess?.revokeForRun(runId);
+        },
       });
       this.activations.add(operation);
       return operation;

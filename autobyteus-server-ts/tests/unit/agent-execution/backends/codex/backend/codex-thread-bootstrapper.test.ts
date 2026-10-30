@@ -1,3 +1,4 @@
+import type { IntegrationRunAccess } from "../../../../../../src/credential-proxy/integration-run-access.js";
 import { testCodexLeaseManager } from "../../../../../fixtures/agent-run-preparation-fixtures.js";
 import { createAgentRootExecutionIdentity, createCollaborationMemberExecutionIdentity } from "../../../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import path from "node:path";
@@ -144,6 +145,7 @@ const createBootstrapper = (input: {
   agentToolsDescriptor?: AgentToolMcpDescriptor;
   materializeImplementation?: WorkspaceSkillMaterializer["materializeConfiguredWorkspaceSkills"];
   skillScope?: "CONFIGURED" | "ALL_INSTALLED";
+  integrationRunAccess?: IntegrationRunAccess | null;
 }) => {
   const workspaceSkillMaterializer = createMaterializerMock();
   if (input.materializeImplementation) {
@@ -195,6 +197,7 @@ const createBootstrapper = (input: {
     agentDefinitionService,
     skillService,
     clientManager,
+    input.integrationRunAccess ?? null,
   );
 
   return {
@@ -293,6 +296,48 @@ describe("CodexThreadBootstrapper", () => {
     );
 
     warnSpy.mockRestore();
+  });
+
+  describe("integration variables (DS-002, DEC-011)", () => {
+    const API_URL = "http://127.0.0.1:5555/r/rp_test-dummy/github/api";
+    const access: IntegrationRunAccess = {
+      environmentForRun: vi.fn(() => ({ AUTOBYTEUS_GITHUB_API_URL: API_URL, GIT_TERMINAL_PROMPT: "0" })),
+      revokeForRun: vi.fn(),
+    };
+    const guard = { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined };
+
+    it("sets the run's shell variables and opens the workspace-write sandbox's network, on create and restore", async () => {
+      process.env.CODEX_APP_SERVER_SANDBOX = "workspace-write";
+      const { bootstrapper } = createBootstrapper({ skills: [], requestImplementation: async () => ({ data: [] }), integrationRunAccess: access });
+
+      for (const runContext of [
+        await bootstrapper.bootstrapForCreate(createRunContext({ autoExecuteTools: false }), guard),
+        await bootstrapper.bootstrapForRestore(createRestoreRunContext({ autoExecuteTools: false }), guard),
+      ]) {
+        expect(runContext.runtimeContext.codexThreadConfig.appServerConfig).toMatchObject({
+          mcp_servers: expect.any(Object),
+          shell_environment_policy: { set: { AUTOBYTEUS_GITHUB_API_URL: API_URL, GIT_TERMINAL_PROMPT: "0" } },
+          sandbox_workspace_write: { network_access: true },
+        });
+      }
+    });
+
+    it("leaves full access and read-only sandboxes as they are, and runs without variables unchanged", async () => {
+      process.env.CODEX_APP_SERVER_SANDBOX = "read-only";
+      const withAccess = createBootstrapper({ skills: [], requestImplementation: async () => ({ data: [] }), integrationRunAccess: access });
+      const auto = await withAccess.bootstrapper.bootstrapForCreate(createRunContext({ autoExecuteTools: true }), guard);
+      const readOnly = await withAccess.bootstrapper.bootstrapForCreate(createRunContext({ autoExecuteTools: false }), guard);
+      for (const runContext of [auto, readOnly]) {
+        expect(runContext.runtimeContext.codexThreadConfig.appServerConfig).toHaveProperty("shell_environment_policy");
+        expect(runContext.runtimeContext.codexThreadConfig.appServerConfig).not.toHaveProperty("sandbox_workspace_write");
+      }
+
+      process.env.CODEX_APP_SERVER_SANDBOX = "workspace-write";
+      const without = createBootstrapper({ skills: [], requestImplementation: async () => ({ data: [] }),
+        integrationRunAccess: { environmentForRun: () => ({}), revokeForRun: vi.fn() } });
+      const plain = await without.bootstrapper.bootstrapForCreate(createRunContext({ autoExecuteTools: false }), guard);
+      expect(Object.keys(plain.runtimeContext.codexThreadConfig.appServerConfig ?? {})).toEqual(["mcp_servers"]);
+    });
   });
 
   it("uses danger-full-access as the effective Codex sandbox for auto-approved runs", async () => {

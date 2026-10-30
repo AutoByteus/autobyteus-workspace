@@ -20,7 +20,8 @@ export function beginAgentRunActivation(input: {
   registry: AgentRunActivationRegistry;
   preparation: AgentRunBackendPreparation;
   constructRun(backend: AgentRunBackend): AgentRun;
-  deactivateMcp(): void;
+  /** Releases the run's local sessions (Agent Tools MCP session, credential-proxy pass) when it is not attached. */
+  releaseLocalSessions(): void;
   validateRun?(run: AgentRun): void;
   onTerminal?(): void;
   /** After the run is published (never for an aborted activation). */
@@ -33,7 +34,7 @@ export function beginAgentRunActivation(input: {
   let preparation: Promise<AgentRunActivationCandidate> | null = null;
   let settled = false;
   let attachmentsAttempted = false;
-  let mcpReleased = false;
+  let localSessionsReleased = false;
   let releaseAttempt: Promise<AgentRunPrivateRelease> | null = null;
   const assertAccepting = () => { if (cancelled) throw new Error(`AgentRun '${runId}' activation cancelled.`); };
   const operation: AgentRunActivationOperation = Object.freeze({
@@ -96,7 +97,7 @@ export function beginAgentRunActivation(input: {
           const released = input.registry.releasePrepared(input.claim, run);
           errors.push(...released.errors);
         } else {
-          if (!mcpReleased) try { input.deactivateMcp(); mcpReleased = true; } catch (error) { errors.push(error); }
+          if (!localSessionsReleased) try { input.releaseLocalSessions(); localSessionsReleased = true; } catch (error) { errors.push(error); }
         }
         if (errors.length) {
           const error = new AggregateError(errors, `Exact AgentRun '${input.claim.runId}' cleanup failed.`);

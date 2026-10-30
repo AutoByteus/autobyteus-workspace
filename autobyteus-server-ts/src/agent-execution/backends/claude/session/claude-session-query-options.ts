@@ -1,3 +1,4 @@
+import type { IntegrationRunAccess } from "../../../../credential-proxy/integration-run-access.js";
 import type { ClaudeRunContext } from "../backend/claude-agent-run-context.js";
 import type { ClaudeAgentToolsMcpSessionState } from "../agent-tools-mcp/claude-agent-tools-mcp-session-state.js";
 import type { ClaudeSdkSessionBinding } from "../../../../runtime-management/claude/client/claude-sdk-session-binding.js";
@@ -15,6 +16,7 @@ export const resolveClaudeSessionQueryOptions = async (input: {
   diagnostics: ClaudeProcessDiagnostics;
   agentToolsMcpSessionState: ClaudeAgentToolsMcpSessionState;
   toolingCoordinator: ClaudeSessionToolUseCoordinator;
+  integrationRunAccess: IntegrationRunAccess | null;
 }): Promise<ClaudeSdkStreamingSessionOptions> => {
   const { runContext } = input;
   const sessionConfig = runContext.runtimeContext.sessionConfig;
@@ -37,6 +39,9 @@ export const resolveClaudeSessionQueryOptions = async (input: {
       ? "agent_tools_enabled"
       : null;
   const mcpServers = await buildClaudeSessionMcpServerConfig({ agentToolsMcpDescriptor });
+  // The run's integration variables for the CLI's shell; the run keeps one pass across process generations.
+  const extraEnvironment = input.integrationRunAccess?.environmentForRun(
+    { runId: runContext.runId, agentDefinitionId: runContext.config.agentDefinitionId }, process.env) ?? {};
   return {
     systemPrompt: runContext.runtimeContext.carpenterSystemPrompt,
     sessionBinding: input.binding,
@@ -46,6 +51,7 @@ export const resolveClaudeSessionQueryOptions = async (input: {
     allowedTools: toolingOptions.allowedTools,
     permissionMode: sessionConfig.permissionMode,
     ...claudeSessionReasoningOptions(sessionConfig),
+    ...(Object.keys(extraEnvironment).length > 0 ? { extraEnvironment } : {}),
     stderr: (data: string) => input.diagnostics.append(data),
     canUseTool: (toolName, toolInput, toolOptions) =>
       input.toolingCoordinator.handleToolPermissionCheck(runContext, toolName, toolInput, toolOptions, {
