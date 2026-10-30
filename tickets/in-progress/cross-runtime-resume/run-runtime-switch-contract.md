@@ -54,12 +54,12 @@ New value: `boundary_type: "runtime_switch"` (one added member of the library's 
 
 ### 3.3 The switch marker (a platform notice record; no new raw-trace record type)
 
-*Why not a new trace type:* the history projection turns raw `system_task_notification` records into chat notices and ignores unknown types (`raw-trace-to-historical-replay-events.ts:201-216`), and the journal already renders them as `Notice:`; so a notice gives the chat marker and the journal line with no change to either reader. Record: `trace_type: "system_task_notification"`, `sender_id: "system.runtime_handover"` (a new sender id beside the existing ones in `system-task-notification-senders.ts`, also added to `RECORDED_SYSTEM_NOTICE_SENDER_IDS` for the live notice below), content one short line: `Runtime switched from <Codex> (<model>) to <Claude> (<model>).` Its id is deterministic from the key (`rt_switch_<hash of key>`) so a retry can see it.
+*Why not a new trace type:* the history projection turns raw `system_task_notification` records into chat notices and ignores unknown types (`raw-trace-to-historical-replay-events.ts:201-216`), and the journal already renders them as `Notice:`; so a notice gives the chat marker and the journal line with no change to either reader. Record: `trace_type: "system_task_notification"`, `sender_id: "system.runtime_handover"` (a new sender id beside the existing ones in `system-task-notification-senders.ts`, also added to `RECORDED_SYSTEM_NOTICE_SENDER_IDS` for the live notice below), content one short line: `Runtime switched from <Codex> (<model>) to <Claude> (<model>).` It carries the boundary key as its `correlation_id` (the memory writer's notice branch is extended to keep a correlation id, as the compaction boundary branch does), so a retry finds it with the store's existing lookup by correlation id (`findActiveRawTraceByCorrelationId`), the way the provider compaction boundary recorder does.
 
 **Write order at the first message after a switch** (inside the run's existing transition lane, `StandaloneAgentRunLifecycleService.withTransition`):
 1. Read metadata: `pendingRuntimeSwitch` present and `platformAgentRunId` null → the switch activation (else the normal restore).
 2. Prepare the new backend as a fresh session (`beginActivation({kind:"new", runId, config}).prepare()`, the same call a prepared run uses); validate; nothing is published.
-3. Switch recorder (`agent-memory`): if the active file does not yet contain the marker id, append the marker; rotate the active file before it (`RunMemoryFileStore.rotateActiveRawTracesBeforeBoundary`, idempotent by `boundary_key`; with nothing before the marker it moves nothing and the marker simply starts the file).
+3. Switch recorder (`agent-memory`): if the active file does not yet contain a record with the key as correlation id, append the marker; rotate the active file before it (`RunMemoryFileStore.rotateActiveRawTracesBeforeBoundary`, idempotent by `boundary_key`; with nothing before the marker it moves nothing and the marker simply starts the file).
 4. Commit metadata through the lifecycle's existing `persistAndPublish`: new `platformAgentRunId`, `pendingRuntimeSwitch` removed.
 5. Publish the run; register the hand-over facts in memory for the first input (3.7).
 
@@ -110,7 +110,7 @@ Facts and where each comes from: runtimes and models from the pending switch (3.
 | --- | --- |
 | I-1 | `runId`, `memoryDir`, `agentDefinitionId`, `workspaceRootPath`, `startedAt` of `run_metadata.json` never change at a switch. |
 | I-2 | Every manifest segment has a `runtime_kind` and its file exists; every `raw_traces_NNNNNN.jsonl` is in the manifest. |
-| I-3 | The first record of the active file after a `runtime_switch` segment is a `system_task_notification` whose id equals the entry's `boundary_trace_id`. |
+| I-3 | The first record of the active file after a `runtime_switch` segment is a `system_task_notification` whose id equals the entry's `boundary_trace_id` and whose correlation id equals its `boundary_key`. |
 | I-4 | The `runtime_kind` label of the archived segment before a switch equals the label of `from.runtimeKind` of the switch that made it; the active file's runtime is `run_metadata.runtimeKind`. |
 | I-5 | No two manifest entries share a `boundary_key`; one marker record per key. |
 | I-6 | `pendingRuntimeSwitch` present ⇒ no marker with its key exists yet, or the activation has not committed: `platformAgentRunId` is null until the commit. |
