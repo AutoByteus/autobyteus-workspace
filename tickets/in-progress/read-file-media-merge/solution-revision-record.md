@@ -9,6 +9,7 @@
 | SR-003 | Design | Architecture design on the SR-002 basis | N/A | N/A | Design Ready | REQ-001..008 | `design-spec.md`; Medium / Low |
 | SR-004 | Mixed | The user's decision on binary files, 2026-10-29 | DEC-004 | Approved / Design Ready | Approved / Design Ready | BEH-011, REQ-009, AC-009 | FU-001 moved into scope |
 | SR-005 | Mixed | CRR-001/CRR-002 (API-REV-001/002 Fail): CR-001, CR-002, CR-003; the user's DEC-005 | CR-001..003 | Approved / Design Ready | Approved / Design Ready | BEH-012, REQ-010, AC-010, DEC-005, DEC-006 | root cause proven and fixed in scope |
+| SR-006 | Mixed | CRR-003 (API-REV-003): CR-004 | CR-004 | Approved / Design Ready | Approved / Design Ready | BEH-011, REQ-009, AC-009, DEC-007, DEC-008 | detection rule replaced after two failed windows; measured |
 
 ## Revision Entries
 
@@ -44,3 +45,12 @@
 - Decisions: DEC-005 (user): fix in this ticket; BEH-004 refusal stays. DEC-006 (Solution Designer): whole-buffer NUL scan. CR-003 article fix; line-argument descriptions improved; media line-range refusal text says not loaded.
 - Requirements: BEH-012, REQ-010, AC-010 (user-approved via DEC-005). Classification: Medium / Low unchanged (one request field, restoring the non-strict behaviour our schema code already intends; Chat Completions and other providers unchanged).
 - Next: the revision to implementation.
+
+### SR-006 — CR-004: text with stray NUL bytes refused (second failed correction of the binary rule)
+
+- Trigger: code review CRR-003 of API-REV-003: 173 tracked logs with NULs inside readable text refused by DEC-006's whole-file scan; the Daily Assistant had to use `run_bash strings` (API-13).
+- Classification: the second correction of the same requirement failed (8,000-byte window, then whole file), so the rule itself was re-examined instead of a third tuning (skill: Recovery). Intended behaviour unchanged (binary refused, readable text read; the user's DEC-004); the premise "text files contain no NUL byte" corrected in BEH-011 and REQ-009.
+- New rule DEC-007, measured by the Solution Designer on the reviewer's samples (`evidence/SD-04-nul-utf8-rule-results.jsonl`, script `SD-04-nul-utf8-rule-measure.mjs.txt`): logs 172/173 read (1 embeds raw SQLite pages), PDFs 398/400 refused, ZIP/gzip/SQLite refused, UTF-16/Latin-1/plain read.
+- DEC-008: AC-005 accepted on the Vertex Express run (user informed 2026-10-30).
+- The `strict: false` fix (`53d149a4cc`) was validated by API/E2E on 8 models; not source-reviewed on the direct route (one request field matching the schema code's stated intent); no extra review requested.
+- Classification unchanged: Medium / Low. Next: the revision to implementation.

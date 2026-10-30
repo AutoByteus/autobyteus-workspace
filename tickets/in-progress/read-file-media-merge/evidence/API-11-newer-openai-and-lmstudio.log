@@ -4,7 +4,7 @@
 Error: Timed out: idle; recent SEGMENT_CONTENT,SEGMENT_CONTENT,SEGMENT_CONTENT,SEGMENT_CONTENT,SEGMENT_CONTENT,SEGMENT_CONTENT,SEGMENT_CONTENT,SEGMENT_CONTENT,SEGMENT_CONTENT,SEGMENT_CONTENT,SEGMENT_CONTENT,SEGMENT_CONTENT,SEGMENT_CONTENT,SEGMENT_CONTENT,SEGMENT_CONTENT
       Tests  1 failed | 2 skipped (3)
 exit: 1
-LM Studio after the run: No models are currently loaded.  To load a model, run:      lms load <model path> 
+LM Studio after the run: No models are currently loaded.  To load a model, run:      lms load <model path>
 
 ## run 2 (per-cell receipt, hung cells recorded and terminated, 240 s per turn), 2026-10-30T04:08:55Z; LM Studio before: No models are currently loaded.
  ✓ tests/e2e/runtime/zz-api11-read-file-media-models.e2e.test.ts > API-06 read_file media journey on real providers > API-11: image read on newer OpenAI models and LM Studio Qwen; audio and video on Qwen 1973137ms

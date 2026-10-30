@@ -4,10 +4,11 @@
 All paths below are relative to the ticket directory
 `/Users/normy/autobyteus_org/autobyteus-worktrees/read-file-media-merge/tickets/in-progress/read-file-media-merge`.
 
-- Requirements: `requirements-doc.md`, approved through SR-002 (DEC-001, DEC-002), SR-004 (DEC-004: REQ-009 / AC-009 / BEH-011) and SR-005 (DEC-005: REQ-010 / AC-010 / BEH-012; DEC-006: whole-file NUL scan).
+- Requirements: `requirements-doc.md`, approved through SR-002 (DEC-001, DEC-002), SR-004 (DEC-004: REQ-009 / AC-009 / BEH-011) SR-005 (DEC-005: REQ-010 / AC-010 / BEH-012; DEC-006, now replaced) and SR-006 (DEC-007: binary = NUL byte and invalid UTF-8; DEC-008: AC-005 accepted on the Vertex Express run).
 - Investigation: `investigation-notes.md`; the earlier investigation `autobyteus-327/investigation-notes-327.md` and `autobyteus-327/requirements-doc-327.md`.
 - Completed design: `design-spec.md` (SR-005; SR-003 base, SR-004 binary branch, SR-005 rows in Final File Responsibility Mapping); Task Size And Architectural Risk section.
-- Solution history: `solution-revision-record.md` (SR-001…SR-005); `handoff-architecture-design-complete.md` (section Revision SR-005).
+- Solution history: `solution-revision-record.md` (SR-001…SR-006); `handoff-architecture-design-complete.md` (sections Revision SR-005 and SR-006); `evidence/SD-04-*` (the DEC-007 measurement).
+- Triggering reports for IR-003: `code-review-report.md` round 2 (CR-004: text with stray NUL bytes refused, after API/E2E API-REV-003 F-4).
 - Triggering reports for IR-002: `code-review-report.md` (CRR-001/CRR-002: CR-001, CR-002, CR-003, a failure-origin round after API/E2E failed), with `api-e2e-execution-coverage-report.md` (API-REV-001/002) and the Solution Designer's experiment `evidence/SD-02-*`.
 - Follow-ups: `follow-ups.md` (FU-001 moved into this ticket by the user; FU-002…FU-006 stay follow-ups).
 - Architecture review, Product design supplements: **N/A** (Medium / Low, direct route). Code review only as the failure-origin round above.
@@ -18,8 +19,8 @@ All paths below are relative to the ticket directory
 
 `read_file` now reads by kind, in this order after the shared path rule:
 1. **Media.** An image, audio or video file (by extension, `utils/media-file-kind.ts`) goes to the new `tools/file/read-file-media.ts`. It returns a `ContextFile`, which the agent loop attaches to the next turn. It refuses a missing or non-regular path, an empty file, and a kind the model's capability marks `unsupported`; `unknown` loads. Any `start_line`/`end_line` on a media file (including `0`, `-1`, or a reversed range) is refused before the numeric checks with `start_line and end_line apply to text files only; '<path>' is an image|an audio|a video file, so it was not loaded. Call read_file again without start_line and end_line, and do not claim to have inspected the file before it is loaded.`
-2. **Binary.** Any other file is read once. If it contains a NUL byte anywhere (DEC-006; previously the first 8,000 bytes), it is refused with `The file '<path>' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files.`
-3. **Text.** Otherwise the same bytes are decoded as UTF-8 and processed exactly as before.
+2. **Binary.** Any other file is read once. If it contains a NUL byte **and** is not valid UTF-8 (`new TextDecoder('utf-8', { fatal: true })` throws; DEC-007, IR-003), it is refused with `The file '<path>' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files.`
+3. **Text.** Otherwise the same bytes are decoded as UTF-8 and processed exactly as before. That includes text with stray NUL bytes, such as Electron build logs, and files without a NUL (Latin-1 included). Earlier rounds used a NUL in the first 8,000 bytes (IR-001) or anywhere (IR-002, DEC-006); both are replaced.
 
 **OpenAI Responses** (REQ-010, IR-002): `OpenAIResponsesLLM.normalizeTools` sends every function tool with `strict: false`. The API treats an omitted `strict` as true, which made GPT-5 models fill every optional argument (SD-02), so image reads came with line ranges and were refused (CR-001). A tool already in Responses shape that sets its own `strict` keeps it; hosted tools pass through unchanged. `start_line`/`end_line` descriptions now read "First line to return (1-based, inclusive). Text files only; omit to start at line 1." and "Last line to return (1-based, inclusive). Text files only; omit to read to the end."
 
@@ -43,7 +44,9 @@ The removal and its follow-on changes:
     - `53d149a4cc` fix(ts): OpenAI Responses sends function tools with `strict: false` (REQ-010, CR-001)
     - `815b6e175a` fix(ts): `read_file` scans the whole file for NUL and says a refused media read was not loaded (CR-002, CR-001 message, CR-003, descriptions, docs)
     - `438e6c1cde` test(ts): gated live check of GPT-5 tool arguments through a native agent (AC-010)
-- Implementation cycle: rework after a failure-origin code review. Current revision **IR-002** in `implementation-revision-record.md` (IR-001 initial).
+  - IR-003 (SR-006):
+    - `063ddf845e` fix(ts): `read_file` refuses a file as binary only when it has a NUL byte and is not valid UTF-8 (CR-004, DEC-007)
+- Implementation cycle: rework after a failure-origin code review. Current revision **IR-003** in `implementation-revision-record.md` (IR-001 initial, IR-002 SR-005).
 
 ## Routing Classification
 - `task_size` **Medium**, `architectural_risk` **Low**: confirmed again for IR-002. SR-005 adds one field on the OpenAI Responses request (`strict: false`, the default the codebase already intended per `openai-tool-schema-normalizer.ts`) and local `read_file` changes; no contract, persistence or boundary change.
@@ -65,7 +68,7 @@ The removal and its follow-on changes:
 | BEH-008 / REQ-006 / AC-006 stored names | No code change: the existing resolver skips unknown names, and `AUTOBYTEUS_DEFAULT_TOOL_NAMES` always adds `read_file` | New server case in `autobyteus-agent-tool-resolver.test.ts`: a definition naming only `read_media_file` resolves to `run_bash, read_file, edit_file, write_file` with a "not found in registry" warning and no error, and its stored `toolNames` are not modified. No migration added |
 | BEH-009 / REQ-007 / AC-007 Work Journal | `autobyteus-translation.ts`: `readFile` renders a context-file value as `cat <path>` plus the media marker, and text as before; `readMediaFile` is kept for recorded history; shared `mediaReadRecorded` | `runtime-translations.test.ts`: `read_file` image, audio and error cases, plus the recorded `read_media_file` case |
 | BEH-010 / REQ-008 / AC-008 Daily Assistant | `built-in-agents/templates/daily-assistant/agent-config.json` | `built-in-agent-bootstrapper.test.ts` expects the template without `read_media_file`. The 16 public package files are handed over below |
-| BEH-011 / REQ-009 / AC-009 binary refusal | `read-file.ts`: after the media check, `fileBytes.includes(0)` on the single read (whole buffer, DEC-006) | `read-file-binary.test.ts` (refused: a PDF-like file, a PDF-like file whose first NUL is after 30 KB, a ZIP, seeded random bytes, an ELF, a 100 KB file whose only NUL is its last byte, a binary file with line arguments; read as before: non-ASCII UTF-8 numbered and plain, an empty text file). Failed before REQ-009 (`IMP-02`); the two late-NUL cases fail on the IR-001 code (`IMP-11`). Byte-identity run: all 296 tracked NUL files refused (`IMP-12`). Native-agent case: a PDF-like file is refused, no attachment, no `%PDF` in the request. Residual by design: a binary file with no NUL at all is decoded as text |
+| BEH-011 / REQ-009 / AC-009 binary refusal | `read-file.ts`: after the media check, on the single read: `fileBytes.includes(0) && !isValidUtf8(fileBytes)` (module-level strict `TextDecoder`) → refuse; otherwise `toString('utf8')` as before (DEC-007) | `read-file-binary.test.ts` (13). **Refused:** a PDF-like file, a PDF-like file whose first NUL is after 30 KB, a real deflated ZIP, gzip, seeded random bytes, an aarch64 ELF header, and a binary file with line arguments; each sample self-checks that it has a NUL and is invalid UTF-8. **Read as before** (the oracle is the pre-ticket decode-and-loop): the tracked Electron build log `autobyteus-server-ts/tickets/done/agent-runtime-default-core-tools/logs/delivery/electron-build-mac-20260814T174700Z.log` (542 NULs) numbered and plain, UTF-8 text with a NUL after 100 KB, Latin-1, BOM-less UTF-16LE, non-ASCII UTF-8, an empty file. History: failed before REQ-009 (`IMP-02`); 3 cases fail on the IR-002 rule (`IMP-15`). **Real files** (`IMP-15`): two macOS PDFs whose first NUL is past 8,000 bytes, and a `zip`-made ZIP, are refused; Latin-1 reads as before. Byte identity: 201,744 comparisons identical, 103 tracked files refused (`IMP-15`). Native-agent case: a PDF-like file refused. **Residuals:** a binary file with no NUL byte is decoded as text (2 of 400 PDFs); a **UTF-16 file with a byte-order mark** is refused (`FF FE` is invalid UTF-8; before this ticket it was returned as garbled text) |
 | BEH-012 / REQ-010 / AC-010 OpenAI tool arguments | `openai-responses-llm.ts` `normalizeTools`: nested function tools → Responses shape plus `strict: false`; flat function tools without `strict` get `strict: false`; others unchanged. Used by `sendMessages` and `streamMessages` | **Unit:** `provider-native-request-payloads.test.ts` asserts the exact `tools` body for both entry points (fails 2/2 before the fix, `IMP-10`). **Live** (test vault, real `AgentRuntime` + `OpenAILLM` + production `ToolSchemaProvider`): `openai-read-file-strict-live.test.ts` on `gpt-5.4-mini` and `gpt-5.5`, 2/2 each. One `read_file` call with only `path` on a synthesized red PNG, answer "Red"; `write_file` with exactly `path` and `content` (`IMP-14`) |
 
 Scope guardrail respected: **Yes**. No change to:
@@ -148,7 +151,7 @@ Evidence is in `evidence/`; each log starts with its command, commit, environmen
    - Round 3 totals: 389 files passed, 3 failed (above), 26 skipped. The 3 failed terminal and process-scope files then passed alone (25/25).
 6. **Server** `test:unit` (`IMP-05`): exit 0. 864 files passed, 5 skipped; 7,303 tests passed. This includes `tests/agent-work-journal` (the new `read_file` media cases), `tests/architecture` and the Daily Assistant bootstrapper test. The AC-006 resolver file was collected before I added its case. Run alone it passes 9/9 (`IMP-07`).
 7. **Typechecks** (`IMP-06`): `autobyteus-ts` `tsc -p tsconfig.build.json` exit 0; server `typecheck` exit 0. A fresh worktree first needs `pnpm -C autobyteus-server-ts prebuild` (exit 0).
-8. **Gated Gemini m4a live test** (`IMP-08`): **skipped, not passed.** I ran it with the test vault and both gates. The provider refused the vault's Gemini credential (`invalid_or_missing_credentials`), so no request was sent. AC-005's live part remains open until the vault's Gemini key is valid.
+8. **Gated Gemini m4a live test** (`IMP-08`): **skipped, not passed** by me. AC-005 is now accepted on API/E2E's Vertex Express run (API-04, DEC-008). I ran it with the test vault and both gates. The provider refused the vault's Gemini credential (`invalid_or_missing_credentials`), so no request was sent. AC-005's live part remains open until the vault's Gemini key is valid.
 9. `git grep read_media_file` (AC-005): see the trace above. `git diff --check e82d03b0f9..HEAD` is clean except API/E2E's `evidence/API-11-newer-openai-and-lmstudio.log` (one trailing space, not mine to edit).
 
 ### IR-002 checks (SR-005)
@@ -165,7 +168,14 @@ Evidence is in `evidence/`; each log starts with its command, commit, environmen
     - Server: 16 files, 179 tests (Work Journal, native resolver, built-in agents). I did not rerun the full server `test:unit`: SR-005 changes no server code, and no server test refers to the changed strings or tool shape (searched).
     - Typechecks: `autobyteus-ts` and server both exit 0.
 
-Not run: the realistic server or isolated-app journey with a real model after IR-002, Electron, and the web UI. This change has no web or UI part; the Work Journal is covered by unit rendering tests.
+### IR-003 checks (SR-006, `IMP-15`)
+15. Focused file tools plus the native-agent flow: 15 files, 155 tests passed (`read-file-binary` 13/13). On the IR-002 rule, 3 new cases fail: the build log, the stray-NUL text and BOM-less UTF-16.
+16. Real files, copied to `/tmp`: two macOS PDFs whose first NUL is past 8,000 bytes are refused, a `zip`-made ZIP is refused, and Latin-1 reads as before. A UTF-16LE file *with* a BOM is refused; this is flagged to the Solution Designer as a residual of DEC-007.
+17. Byte identity against the base: 67,248 text files × 3 = 201,744 identical comparisons, and 103 tracked files refused (296 under DEC-006).
+18. Full `autobyteus-ts` suite: 389 files passed, 3 failed: 7 terminal, `run_bash` and approval tests (FU-003, at load average 13). The same run JIT-loaded the LM Studio model, which I unloaded afterwards. The 3 files pass alone (23/23). Every changed and new test passed.
+19. Typecheck exit 0. SR-006 changes no server code, so server suites were not rerun.
+
+Not run: the realistic server or isolated-app journey with a real model after IR-003, Electron, and the web UI. This change has no web or UI part; the Work Journal is covered by unit rendering tests.
 
 ## Environment / Cleanup / Delivery Notes
 - No server, app, browser or database was started. Temporary homes and test directories were under `/tmp`. The temporary comparison files (`src/tools/file/zz-read-file-base.ts`, `tests/zz-compare-text.test.ts`) were removed before committing.
@@ -187,4 +197,5 @@ Not run: the realistic server or isolated-app journey with a real model after IR
   - SCN-F2: the OS PDF sample (API-05), where 77 of the 79 misses should now be refused and 2 remain with no NUL.
   - SCN-F3: the message wording.
 - Other OpenAI tools: `strict: false` affects every function tool on the Responses path, not only `read_file`. A quick tool-calling sanity pass on another tool with optional arguments (for example `run_bash` `cwd`/`timeout_seconds`) through the server is worth doing.
-- The Gemini m4a live test (AC-005) once the test vault's Gemini key is valid. It is gated: `AUTOBYTEUS_TEST_VAULT`, `RUN_LIVE_PROVIDER_TESTS=1` and `AUTOBYTEUS_RUN_GEMINI_M4A_LIVE=1`, as in `IMP-08`. It uses a costly Pro model, so run it once.
+- AC-005: accepted on the Vertex Express run (DEC-008); no AI Studio run needed.
+- IR-003: re-run SCN-F4, an agent reading a build log with stray NULs through the real server (your API-12/13). Also re-check SCN-F2 on the OS PDF sample under the new rule (SD-04: 398/400 refused).

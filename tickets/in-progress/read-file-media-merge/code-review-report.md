@@ -15,12 +15,12 @@
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
 - Relevant Implementation Revision IDs: IR-001
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-002`
-- Current Review Round: 1
+- Current Code Review Revision ID: `CRR-003`
+- Current Review Round: 2 (failure-origin)
 - Review Scope: `N/A` (failure-origin round)
 - Trigger: API/E2E Fail, API-REV-001 (confidence 80%), supplemented by API-REV-002 (still Fail, 80%)
 - Prior Review Round Reviewed: N/A (no earlier code review on this ticket)
-- Latest Authoritative Round: 1
+- Latest Authoritative Round: 2
 - Coverage Investigation Reviewed: `api-e2e-coverage-investigation.md`
 - Execution Coverage Report Reviewed: `api-e2e-execution-coverage-report.md`
 - API/E2E Revision Record Reviewed: `api-e2e-revision-record.md` (API-REV-001)
@@ -133,13 +133,51 @@
   - That is the LLM layer's pre-existing silent drop (FU-002). This ticket doesn't change it.
 - F-1 has not been checked on newer OpenAI models.
 
+## Round 2 — Failure Origin of F-4 (API-REV-003)
+
+- Trigger: the API/E2E round for IR-002 is a Fail (API-REV-003, 87%).
+  - F-1, F-2 and F-3 are resolved: 8 of 8 OpenAI models send only `path` and see the image; 77 of 79 late-NUL PDFs are refused; the messages are right.
+  - New failure: F-4.
+- Evidence: `evidence/API-12-nul-file-census.log`, `API-13-round2-receipt.json`, `API-13-round2-journey.log`. Code at `438e6c1cde` (`815b6e175a`: the whole-file NUL scan, DEC-006).
+- Prior findings: CR-001, CR-002 and CR-003 are resolved, per API-REV-003's real-provider evidence. The CR-001 fix (`53d149a4cc`, OpenAI Responses tools sent with `strict: false`) is outside this failure-origin entry point and was not re-reviewed here.
+
+### CR-004 — Text files with a stray NUL byte are refused as binary (F-4)
+
+- Scenario (SCN-F4, Supported Normal Scenario): a user asks a native agent to read a build or tool log in the workspace. In real use (API-13), the Daily Assistant was refused and recovered only because it also has `run_bash`; an agent with only `read_file` cannot read the log at all.
+- Evidence (API-12):
+  - Of 21,147 tracked `.log` files, 173 contain NUL bytes; 167 are Electron build logs. The NUL sits inside readable text, for example `[nuxt] kit:compatibility\x00: 0.388ms`.
+  - In the sample shown, a 102 KB log carries 542 NULs (about 0.5%) and a 12.9 MB log carries 542 (about 0.004%).
+  - Before this ticket, `read_file` returned these as text.
+  - IR-001's 8,000-byte window already refused 79 of them. IR-002's whole-file scan (DEC-006) refuses all 173, which are 94 of its 95 newly refused files.
+- Failure origin: `Requirement Gap`.
+  - The code does what the approved rule says: refuse any non-media file with a NUL byte (DEC-004, DEC-006).
+  - The rule rests on a premise the requirements state twice and the evidence contradicts: "text reads unchanged (text files contain no NUL byte)" (BEH-011, preserved column) and "text files contain none" (REQ-009, feasibility).
+  - So two approved behaviours conflict on real files: BEH-001 (text reads unchanged) and BEH-011 (binary refused). Choosing between them, or a rule that serves both, is the user's decision through the Solution Designer. AC-009 tested only NUL-free text, so the acceptance criteria did not expose it.
+- Review gap, mine:
+  - My round-1 recommendation for CR-002 (scan the whole buffer) weighed only PDFs and widened this regression from 79 to 173 files.
+  - The NUL-free-text premise was in the requirements I reviewed against, and I did not test it against the repository's own files.
+- Options for the Solution Designer (data from API-05 and API-12):
+  1. **A ratio rule:** count NUL bytes plus invalid-UTF-8 sequences in the decoded text, and refuse above a threshold.
+     - In these samples the separation is wide: the logs are at 0.5% or less, while the two late-NUL PDFs returned as text carried U+FFFD at about 6% and 26% of their characters.
+     - A threshold of a few percent separates them, but it needs measuring on the PDF sample, the census and Latin-1 text before it is fixed. It changes no format list.
+  2. **Known binary signatures** (PDF, ZIP/OOXML, gzip, SQLite …) **plus a ratio.** This is closest to "PDF refused", but it is a format list, which DEC-004 excluded.
+  3. **Accept the limit:** text with a NUL byte is refused, and the release note says so.
+  4. **Return such text with the NULs removed or replaced.** This changes the result text for those files, which BEH-001 preserves byte for byte.
+- Proportionate response: no implementation change until the user decides. Whichever rule is chosen should get AC cases built from the real files: one Electron build log, one late-NUL PDF and one Latin-1 text file.
+
+### Classification and routing (round 2)
+
+- CR-004: `Requirement Gap` → Solution Designer (with the user's decision; DEC-004 is a user decision).
+
 ## Latest Authoritative Result
 
 - Review Decision: `Fail` (failure origin confirmed)
-- Review Entry Point: `API/E2E Failure-Origin Review`
+- Review Entry Point: `API/E2E Failure-Origin Review` (round 2)
 - Supported Product Scenario Gate: `Pass`
 - Material-Premise Gate: `Pass`
 - Score Summary: N/A (failure-origin round)
-- Failure Origin: CR-001 Requirement Gap; CR-002 Design Impact; CR-003 implementation defect (Local Fix)
+- Failure Origin: CR-004, Requirement Gap. The approved premise "text files contain no NUL byte" is false for real build logs.
 - Recommended Recipient: Solution Designer
-- Notes: everything else API/E2E measured holds. Gemini read the image, audio and video; Grok's capability refusals worked; Work Journal markers; AC-006; the user-produced PDFs, DOCX and ZIP were refused.
+- Notes:
+  - CR-001, CR-002 and CR-003 are resolved, per API-REV-003.
+  - AC-005's AI Studio live test still needs the user (quota or key).
