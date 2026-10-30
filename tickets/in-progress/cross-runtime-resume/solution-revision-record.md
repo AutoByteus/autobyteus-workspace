@@ -49,3 +49,7 @@
 ### SR-003 note 4 (2026-10-30)
 
 - The user: do not repeat the last user message in the notice (the agent can read the journal; the user's message follows); describe the journals' format and order instead; say "previous agent", not "colleague". Contract 3.7 and REQ-002 updated. Still `Ready for Approval`; DEC-4 open.
+
+### SR-003 note 5 (2026-10-30)
+
+- The user: the reason a run stopped is not needed. DEC-5 reversed: no stop reason recorded, shown or sent. Removed: `pendingRuntimeSwitch.stopReason`, the record's `stop_reason`, the notice line, BEH-004, REQ-009, AC-005. Effect: FU-001 (failed-turn trace record) is no longer needed by this ticket; autobyteus-314 may still need it for the Model Router. Still `Ready for Approval`; DEC-4 open.

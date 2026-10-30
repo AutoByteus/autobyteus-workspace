@@ -41,11 +41,10 @@ Existing fields keep their meaning (`runId`, `agentDefinitionId`, `workspaceRoot
 pendingRuntimeSwitch?: {
   requestedAt: string;                 // ISO time of the settings save
   from: { runtimeKind: RuntimeKind; llmModelIdentifier: string; platformAgentRunId: string | null };
-  stopReason?: { message: string; code?: string };   // provider's own words, redacted; never classified
 }
 ```
 
-- Written by the settings save (stopped run only). `platformAgentRunId` becomes `null`. A second save before the first message keeps the first `from` (so A→B→A before any message is a no-op and clears the field).
+- Written by the settings save (stopped run only). It records only what the new backend's records and notice need: when, and what the run was on before. `platformAgentRunId` becomes `null`. A second save before the first message keeps the first `from` (so A→B→A before any message is a no-op and clears the field).
 - Cleared by the activation commit (3.3 step 6).
 - *Decision:* this is the only new persisted "state"; the history of switches is not duplicated here (it is in the raw traces and manifest).
 
@@ -65,8 +64,7 @@ Added to the closed `RuntimeMemoryTraceType` union next to `provider_compaction_
 { id, ts, turn_id: null, trace_type: "runtime_switch", source_event: "runtime_switch",
   tool_result: { switch_key: string;                       // = boundary_key
                  from: { runtime_kind, model, platform_agent_run_id|null };
-                 to:   { runtime_kind, model };
-                 stop_reason?: { message, code? } } }
+                 to:   { runtime_kind, model } } }
 ```
 
 It is the **first record of the new active segment**. No secrets: model settings are not copied (only the model identifier); provider messages are redacted by the existing redaction.
@@ -84,7 +82,7 @@ It is the **first record of the new active segment**. No secrets: model settings
 
 ### 3.4 `work_journal/` (existing, derived)
 
-One journal file per raw-trace file stays. Each journal file is rendered with **its segment's runtime** (3.2 lookup rule), so Claude records get Claude's tool translation and Codex records Codex's. The journal manifest's `runtime_kind` moves from the run to each file entry (a missing per-file value reads as "render again", the existing tolerance). The switch record renders as `Notice: Runtime switched from <X> to <Y>` as the first entry of its file, with the stop reason if any. *Decision:* `WORK_JOURNAL_RENDERER_REVISION` is **not** raised: files without a switch record render byte-identically, so the 3,700+ existing journals are not rebuilt.
+One journal file per raw-trace file stays. Each journal file is rendered with **its segment's runtime** (3.2 lookup rule), so Claude records get Claude's tool translation and Codex records Codex's. The journal manifest's `runtime_kind` moves from the run to each file entry (a missing per-file value reads as "render again", the existing tolerance). The switch record renders as `Notice: Runtime switched from <X> to <Y>` as the first entry of its file, *Decision:* `WORK_JOURNAL_RENDERER_REVISION` is **not** raised: files without a switch record render byte-identically, so the 3,700+ existing journals are not rebuilt.
 
 ### 3.5 `run_summary.md` (optional; written by the agent; not derived)
 
@@ -104,8 +102,7 @@ One system message placed before the user's first input after the switch, throug
 ```
 [System: runtime hand-over]
 This run was worked on by a previous agent on a different runtime: <from runtime/model>, now
-<to runtime/model>. Reason it stopped: <provider's own message, or "the user changed the runtime">.
-
+<to runtime/model>. 
 Its work is recorded in work journals: <run folder>/work_journal/
 - Readable Markdown, one file per earlier stretch of work, oldest first:
   work_journal_000001.md, work_journal_000002.md, ... and work_journal_active.md for the latest.
@@ -119,7 +116,7 @@ Its work is recorded in work journals: <run folder>/work_journal/
 A summary left by an earlier agent may exist at <run folder>/run_summary.md.
 ```
 
-The user's own message follows unchanged. Facts the notice needs and where each comes from: runtimes, models and time from the pending switch (3.1); stop reason from the same field; journal files, periods and sizes from the journal and raw-trace manifests.
+The user's own message follows unchanged. Facts the notice needs and where each comes from: runtimes, models and time from the pending switch (3.1); journal files, periods and sizes from the journal and raw-trace manifests.
 
 ## 4. Invariants (checkable)
 
@@ -140,3 +137,7 @@ The user's own message follows unchanged. Facts the notice needs and where each 
 1. **Now (done):** the manifest facts in 3.2 *Measured*; probe `probes/run_folder_contract_probe.py` checked I-2, I-5, I-6, I-9 on all 3,721 real run folders and 3,786 segments (read-only): 0 violations, 0 existing switch segments, so the contract starts from a clean baseline.
 2. **Design phase:** U-7 (native `new` on an existing folder) and U-8 (runtime-name mapping) *Reproduced* on a copy.
 3. **Build:** the same probe, extended with I-1, I-3, I-4, I-7, I-8, runs on folders produced by (a) tests with scripted runtimes including a crash injected at each point of 3.3, (b) a real switch on isolated data (two available runtimes). A failing invariant is a failing test.
+
+## 6. Decision log
+
+- *2026-10-30, the user:* no stop reason anywhere. The new agent continues the work whatever stopped the previous one; the reason is not recorded, shown or sent. This removes the failure record (FU-001), the `stopReason` field, and the stop-reason requirement.
