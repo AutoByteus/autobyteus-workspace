@@ -82,7 +82,7 @@ It is the **first record of the new active segment**. No secrets: model settings
 
 ### 3.4 `work_journal/` (existing, derived)
 
-One journal file per raw-trace file stays. Each journal file is rendered with **its segment's runtime** (3.2 lookup rule), so Claude records get Claude's tool translation and Codex records Codex's. The journal manifest's `runtime_kind` moves from the run to each file entry (a missing per-file value reads as "render again", the existing tolerance). The switch record renders as `Notice: Runtime switched from <X> to <Y>` as the first entry of its file, *Decision:* `WORK_JOURNAL_RENDERER_REVISION` is **not** raised: files without a switch record render byte-identically, so the 3,700+ existing journals are not rebuilt.
+One journal file per raw-trace file stays. Each journal file is rendered with **its segment's runtime** (3.2 lookup rule), so Claude records get Claude's tool translation and Codex records Codex's. The journal manifest's `runtime_kind` moves from the run to each file entry (a missing per-file value reads as "render again", the existing tolerance). The switch record renders as `Notice: Runtime switched from <X> to <Y>` as the first entry of its file, *Decision:* the switch itself does not need `WORK_JOURNAL_RENDERER_REVISION` raised (files without a switch record render byte-identically). The separate neutral-vocabulary revision (`work-journal-neutral-vocabulary-contract.md`) does raise it; if both are built, the rebuild happens once.
 
 ### 3.5 `run_summary.md` (optional; written by the agent; not derived)
 
