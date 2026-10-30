@@ -49,3 +49,15 @@ Read this first when picking the run back up. Only add rows.
 | 2026-10-30 13:55 | API-09 | Started |  | before baseline: busy SIGTERM on BASE server build |
 | 2026-10-30 14:03 | API-09 | Completed | Observed | base: no exit 31 s after SIGTERM, tools alive; Claude CLI+zsh+python orphaned after server SIGKILL (killed by recorded PID) |
 | 2026-10-30 14:03 | — | Completed | Fail | round result: Fail (F-API-001 Local Fix, F-API-002 Unclear); cleanup done (checkouts, temp roots, instances, processes) |
+| 2026-10-30 14:13 | round 2 | Started |  | IR-002 rerun plan in investigation § Round 2; F-API-002 -> FU-008 out of scope |
+| 2026-10-30 14:15 | API-00 | Completed | Pass | round 2 clean checkout /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-api2.zP1abU/clean @68cff9e385; server built |
+| 2026-10-30 14:15 | API-02/03 | Completed | Pass | R2: 2 passed; sweepLines [] busy and idle |
+| 2026-10-30 14:15 | API-04/05/06 | Started |  | R2 live mixed |
+| 2026-10-30 14:16 | API-04/05/06 | Completed | Pass | R2: terminate 98/762 ms; SIGTERM 4 busy roots exit 0 1332 ms, sweep lines none; idle 59 ms none; history as round 1 |
+| 2026-10-30 14:16 | API-17 | Started |  | wedged runtime (SIGSTOP codex app-server) bounded exit |
+| 2026-10-30 14:17 | API-17 | Completed | Pass | bounded exit 11622 ms code 1; sweep '1 process(es) and 2 process group(s)' real targets; 0 survivors; EPERM on zombie groups under the stopped app-server (emulation artifact) |
+| 2026-10-30 14:17 | API-00 | Checkpoint |  | R2 desktop build started |
+| 2026-10-30 14:25 | API-00 | Completed | Pass | R2 desktop build 8m10s, bundles fixed reader |
+| 2026-10-30 14:25 | API-10/API-11 | Started |  | R2 desktop reruns |
+| 2026-10-30 14:30 | API-10/API-11 | Completed | Pass | R2 desktop: idle 258/321 ms, busy quit 1068/1171 ms, 0 sweep lines on clean exits; one real target in relaunched idle session (startup agy/grok probes, peek confirmed) |
+| 2026-10-30 14:30 | round 2 | Completed | Pass | API-REV-002 Pass 94.1%; cleanup next |

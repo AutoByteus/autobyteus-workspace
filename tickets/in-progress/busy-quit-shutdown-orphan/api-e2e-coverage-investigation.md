@@ -210,3 +210,20 @@ None at planning time. Any surviving process class is a `Design Impact` (design-
 - Reroute Required Before Validation Execution: `No`
 - Recommended Owner If Reroute Required: N/A
 - Notes: builds and live runs wait for other worktrees' heavy runs to finish (TESTING.md "One heavy run at a time").
+
+## Round 2 (API-REV-002) — rerun plan after IR-002 / CRR-003
+
+- Trigger: code reviewer, CRR-003 Pass of IR-002 (code `83a73f24d7`, docs `b128df38dd`, review `68cff9e385`).
+- Prior unresolved failures: F-API-001 (rechecked first); F-API-002 is now follow-up FU-008, out of scope (CRR-002, CR-C9).
+- Delta: `git diff --name-only bf2857ca29 83a73f24d7` outside tickets = `autobyteus-server-ts/src/utils/process-tree.ts` and two unit test files (plus this round's own durable tests from `55ddc71839`). `readProcessTable` is used by the server sweep (every POSIX server exit) and by AGY's group listing. The desktop copy (`electron/server/serverProcessTree.ts`) and every other source file are unchanged, but the packaged app bundles the server, so desktop reruns need a fresh build.
+
+| Case | Decision | Reason |
+| --- | --- | --- |
+| API-R2 | Reused: IMP-10, IMP-11 | Unit cases for the reader/sweep/AGY on `83a73f24d7`, failing on IR-001's reader |
+| API-02, API-03 | **Rerun** (clean checkout of `68cff9e385`) | API-02 recorded the sweep line; own evidence on the fixed build |
+| API-04/05/06 (mixed) | **Rerun** | Clean busy exit (4 roots) and idle exit must log no sweep line; terminate and continuity re-recorded on the new build |
+| API-17 (new) | **Add** | Bounded forced exit with real targets: a busy Codex run whose `codex app-server` is `SIGSTOP`ped cannot end its turn, so cleanup reaches the 10 s bound; the sweep must log and remove the real targets (app-server, tool groups) |
+| API-10, API-11 | **Rerun** (desktop, fresh build) | Idle desktop quit and busy desktop quit (with Restart server = API-15) must log no sweep line |
+| API-01, API-06R, API-07, API-08, API-09, API-11B/C/D, API-12, API-13 | Still valid | Their outcomes (exit code, timing, survivors, continuity) do not depend on the dropped row (the `ps` pid was always gone before the signal); API-13's force path is desktop code (unchanged) with a stopped server that never sweeps; API-01 is the standalone host (no sweep) |
+
+- Round 2 decision: proceed; no durable coverage changes; no reroute. F-API-002 is recorded as out of scope (FU-008).

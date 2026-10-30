@@ -1,0 +1,8 @@
+[+2.9s] server started {"label":"first","pid":8221,"port":62635}
+[+4.3s] models {"codex":"gpt-6.1-terra","claude":"claude-haiku-4-5-20251001"}
+[+4.9s] standalone sent {"label":"wedged-codex","runtime":"codex","runId":"probe_agent_bq284lmvuzxims_a47005554fc14be6a33c175399302426"}
+[+9.0s] busy {"label":"wedged-codex","marker":"BQ284Lmvuzxims_wedged","pid":9877,"ppid":8278,"pgid":9877,"afterMs":4124}
+[+9.1s] codex app-server stopped (SIGSTOP) {"pid":8278,"ppid":8221,"pgid":8188,"command":"codex app-server -c agents.enabled=false"}
+[+9.1s] busy {"label":"wedged-codex","marker":"BQ284Lmvuzxims_wedged","pid":9877,"ppid":8278,"pgid":9877,"afterMs":54}
+[+23.5s] shutdown {"case":"API-17","serverPid":8221,"exit":{"code":1,"signal":null,"at":1793366220459},"elapsedMs":11622,"runs":[{"label":"wedged-codex","kind":"agent","runtime":"codex","runId":"probe_agent_bq284lmvuzxims_a47005554fc14be6a33c175399302426","toolCommand":{"pid":9877,"ppid":8278,"pgid":9877,"aliveAfter":false}}],"before":3,"survivors":[],"markedLeft":[],"shutdownLog":["[20.67] Server shutdown exceeded
+{"result":"Completed","error":null,"fallbackCleanup":0}

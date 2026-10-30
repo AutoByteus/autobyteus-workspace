@@ -23,7 +23,7 @@ import assert from 'node:assert/strict';
 const [mode, serverDirArg, evidenceArg] = process.argv.slice(2);
 const serverDir = resolve(serverDirArg), evidence = resolve(evidenceArg);
 const WebSocket = createRequire(join(serverDir, 'package.json'))('ws');
-const caseId = mode === 'mixed' ? 'API-04-05-06' : mode === 'history' ? 'API-06H' : mode === 'repeat' ? 'API-06R' : mode === 'baseline' ? 'API-09' : 'API-07';
+const caseId = mode === 'mixed' ? 'API-04-05-06' : mode === 'history' ? 'API-06H' : mode === 'repeat' ? 'API-06R' : mode === 'baseline' ? 'API-09' : mode === 'wedged-runtime' ? 'API-17' : 'API-07';
 const own = await fs.realpath(await fs.mkdtemp(join(tmpdir(), `bq284-live-${mode}-`)));
 const data = join(own, 'data'), workspace = join(own, 'workspace'), codexHome = join(own, 'codex-home');
 for (const d of [data, workspace, codexHome]) await fs.mkdir(d);
@@ -194,6 +194,19 @@ try {
     const started = Date.now(); s2.child.kill('SIGTERM'); await wait(() => s2.exit, 'idle exit', 20_000);
     record.idleShutdown = { exit: s2.exit, elapsedMs: s2.exit.at - started, shutdownLog: s2.log.split('\n').filter(l => /process-tree sweep|exceeded 10s/.test(l)) };
     log('idle shutdown', record.idleShutdown);
+  } else if (mode === 'wedged-runtime') {
+    // API-17: a runtime that cannot end its turn (its `codex app-server` is SIGSTOPped while the run is busy), so the
+    // graceful cleanup reaches the 10 s bound and the sweep must log and remove the real targets.
+    const marker = `${runTag}_wedged`;
+    const run = { ...(await standalone(s1, 'codex', 'wedged-codex', busyText(marker))), marker };
+    await waitBusy(s1, marker, 'wedged-codex');
+    const appServer = descendants(s1.pid).find(r => /codex app-server/.test(r.command));
+    assert(appServer, 'codex app-server not found');
+    process.kill(appServer.pid, 'SIGSTOP');
+    record.stoppedAppServer = appServer; record.stoppedForCleanup = [appServer.pid];
+    log('codex app-server stopped (SIGSTOP)', appServer);
+    await shutdownCase(s1, 'API-17', [run]);
+    record['API-17'].appServerAliveAfter = alive(appServer.pid);
   } else if (mode === 'baseline') {
     // API-09 "before" baseline: the same busy SIGTERM against a server build WITHOUT the change (base checkout).
     const runs = [];
@@ -257,6 +270,7 @@ finally {
   for (const ws of sockets) ws.terminate();
   for (const s of servers) if (!s.exit) { s.child.kill('SIGTERM'); await wait(() => s.exit, 'cleanup exit', 20_000).catch(() => { s.child.kill('SIGKILL'); }); log('cleanup stopped server', s.pid); }
   await delay(500);
+  for (const pid of record.stoppedForCleanup ?? []) if (alive(pid)) { try { process.kill(pid, 'SIGCONT'); process.kill(pid, 'SIGKILL'); record.stoppedKilledByProbe = true; } catch {} }
   if (record.baselineTreeToClean) { record.baselineLeftAfterServerKill = record.baselineTreeToClean.filter(r => alive(r.pid)); for (const r of record.baselineLeftAfterServerKill) { try { process.kill(r.pid, 'SIGKILL'); } catch {} } }
   const left = markedProcs();
   for (const row of left) { try { process.kill(row.pid, 'SIGKILL'); } catch {} }

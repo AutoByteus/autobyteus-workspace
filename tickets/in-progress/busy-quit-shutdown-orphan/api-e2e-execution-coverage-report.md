@@ -6,10 +6,10 @@ All paths below are relative to `/Users/normy/autobyteus_org/autobyteus-worktree
 ## Round
 
 - Coverage investigation: `api-e2e-coverage-investigation.md`
-- API/E2E revision record and current revision ID: `api-e2e-revision-record.md`, `API-REV-001`
+- API/E2E revision record and current revision ID: `api-e2e-revision-record.md`, `API-REV-002`
 - Test progress log: `api-e2e-test-progress.md`
-- Round and trigger: round 1; CRR-001 Pass (code `bf2857ca29`, handoff `9e00c6fafd`, review docs `b520b51c9e`).
-- Prior round reviewed: N/A
+- Round and trigger: **round 2**; CRR-003 Pass of IR-002 (code `83a73f24d7`, IR-002 docs `b128df38dd`, review docs `68cff9e385`). Round 1 was triggered by CRR-001 (code `bf2857ca29`).
+- Prior round reviewed: round 1 (API-REV-001, `Fail`: F-API-001, F-API-002). Rerun plan: investigation § Round 2. Round-2 rows carry `R2` in their evidence names; rows without it are round 1 and stay valid per that plan.
 - Deviations from the investigation's plan, and why:
   - **Added** API-06R (server-level repeats), API-09 (the "before" baseline on a base build), API-11B/API-11C/API-11D (bisection of the API-11R1 stall), API-11R1 (the first API-11 run, kept under its own ID because it differs from the repeat).
   - **API-14 not executed:** pressing Install in an isolated instance makes ShipIt relaunch the app outside the `e2e` profile against the user's real data (TESTING Rule 2; precedent `tickets/done/settings-update-notifications`, AC-007). See the AC-009 row and Not Tested.
@@ -23,7 +23,7 @@ All paths below are relative to `/Users/normy/autobyteus_org/autobyteus-worktree
 - Architectural risk: `High`
 - Input route: `Reviewed` (ARCH-REV-003 Pass, CRR-001 Pass)
 - Successful-output route: `Code Review` (proportional test-code review on Pass)
-- Proportional test-code review decision: `Not Applicable` this round. The result is `Fail`, so failure-origin review is requested. The added durable tests (below) go with the next round's test-code review.
+- Proportional test-code review decision: `Required` (round 2 `Pass` on the reviewed High route): the durable tests in `55ddc71839` and IR-002's unit test changes. Round 1 requested failure-origin review instead.
 
 ## Tested Builds And Environments
 
@@ -32,6 +32,7 @@ All paths below are relative to `/Users/normy/autobyteus_org/autobyteus-worktree
 | ENV-1 | `b520b51c9e` (code `bf2857ca29`), clean detached checkout; test-only `55ddc71839` for API-01..03 | macOS 26 (Darwin 25.5.0) arm64, Node 22.23.1 | `pnpm install --frozen-lockfile --offline`; `pnpm -C autobyteus-server-ts prebuild && build` (`dist/app.js`) | Server probes: `node dist/app.js --port <free> --data-dir <owned>`, data `.env` `APP_ENV=test`; real `HOME`/`USER`/`LOGNAME`; throwaway `CODEX_HOME` (only `check_for_update_on_startup = false` + `auth.json` symlink); `AUTOBYTEUS_AGENT_PACKAGE_ROOTS=''` |
 | ENV-2 | same clean checkout | same | `pnpm -C autobyteus-web build:electron:mac` → `electron-dist/mac-arm64/AutoByteus.app` 1.5.11-beta.4 (ad hoc) | `pnpm isolated-app start --from-worktree --data-root <owned>`; `CODEX_HOME` passed through; the app writes its own production `.env`; driven over CDP (Playwright) and GraphQL on the instance's port |
 | ENV-3 | base `origin/personal` @ `1a4453e553`, clean detached checkout | same | base server build | Used only for fail-before (API-02/03) and the "before" baseline (API-09) |
+| ENV-5 | `68cff9e385` (code `83a73f24d7`), clean detached checkout | macOS 26 arm64, Node 22.23.1 | server build + `build:electron:mac` (8 m 10 s), packaged reader carries the fix | Same settings as ENV-1/ENV-2 (round 2) |
 | ENV-4 | ENV-2 build, **copy** with temporary `[BQ-DIAG]` stderr lines | same | patched copy of `Resources/server/dist` (build-studio-server close/onClose, supervisor `closeInternal`, `AgentRunManager.stopAllAgentRuns` per-run fence, `ServerProcessShutdown`, native-command-shutdown) | Diagnostics only (API-11D). Copy and patch removed; never committed |
 | Live models | — | — | Codex CLI `codex-cli 0.166.0`, model `gpt-6.1-terra`, `reasoning_effort: medium`; Claude Code `2.1.314`, model `claude-haiku-4-5-20251001`; Python 3.9.6 | Busy = agent runs a foreground `python3 -c "import time; time.sleep(900)" <run marker>` |
 
@@ -60,17 +61,24 @@ All paths below are relative to `/Users/normy/autobyteus_org/autobyteus-worktree
 | API-11D | F-API-002 hunt | API-11 ×4 on ENV-4 (diagnostic copy) | `DESKTOP_APP=<copy> … busy-quit …` ×4 | ENV-4 | Not reproduced | `API-11D-iterations.txt`, `API-11D-clean-stage-timeline.log` | `serverGoneMs` 1022, 1583, 1329, 1326; timeline order Org stop (~0.8 s) → Team → standalone fences (~20 ms) → finishes → sweep | Diagnostics removed; see F-API-002 |
 | API-12 | AC-004(b), AC-009 | Isolated desktop: busy Codex+Claude → `kill -TERM <Electron main pid>` only | `… busy-sigterm …` | ENV-2 | Pass | `API-12-*` | `"serverGoneMs":779,"electronGoneMs":831,"survivors":[]`; `Server process exited with code 0`; relaunch `"exactlyOne":true` | — |
 | API-13 | AC-004 forced path, AC-011 (real runtimes), AC-009, U-A3, CR-C5 | Isolated desktop: busy Codex+Claude → `SIGSTOP` the embedded server → user quit | `… wedged-quit …` | ENV-2 | Pass | `API-13-*` | `Force-stopping the server and 5 recorded descendant target(s)` (12:51:15.484); `Server process exited with code null` (.499); `"serverGoneMs":20204,"electronGoneMs":21795,"survivors":[],"markedLeft":[]`, both tools `"aliveAfter":false`; relaunch `"exactlyOne":true` | U-A3: window expiry → snapshot ≈ 0.18 s; Electron exit 1.6 s after the SIGKILL (1.5 s grace). The log "Backend exit not confirmed" comes from the 20 s graceful timeout that every forced path reports (`stopManagedBackend`), not from a `ps` stall (CR-C5 not triggered) |
+| API-R2 | CR-001 / F-API-001 | Repository checks | Reused IMP-10, IMP-11 | — | Pass | implementation-handoff Checks Run | per IMP row | Ran on `83a73f24d7`; reader/sweep/AGY unit cases fail on IR-001's reader |
+| API-02 (R2) | AC-001, AC-002, AC-010, F-API-001 recheck | as API-02 | same vitest command on ENV-5 | ENV-5 | Pass | `API-02-03-R2-vitest-clean.log`, `API-02-R2-server-fixture-clean.json` | `Tests  2 passed (2)`; terminate `"elapsedMs": 72`; shutdown `"elapsedMs": 759`, `"code": 0`, **`"sweepLines": []`**; idle exit 56 ms; 0 sweep lines in both server logs | F-API-001 resolved |
+| API-03 (R2) | AC-008 | as API-03 | same | ENV-5 | Pass | `API-03-R2-application-fixture-clean.json` | `"foregroundGone": true`, `"status":"TERMINATED"` | — |
+| API-04/05/06 (R2) | AC-001, AC-002, AC-010, F-API-001 recheck | as round 1 | `API-live-server-probe.mjs mixed` on ENV-5 | ENV-5 | Pass | `API-04-05-06-R2-result.json`, `API-04-05-06-R2-run.log`, `API-04-05-06-R2-server-*.log`, `API-04-05-06-R2-ws-frames.json` | Codex terminate `"elapsedMs":98`, Claude `762`; SIGTERM with 4 busy roots `"code":0`, `"elapsedMs":1332`, `"survivors": []`, **`"shutdownLog": []`**; idle `"elapsedMs":59`, **`"shutdownLog":[]`**; history as round 1 | Clean busy and idle exits log no sweep line |
+| API-17 | AC-002/AC-003 live analog, REQ-002/003, F-API-001 (real targets still logged) | Real server; busy Codex run whose `codex app-server` is `SIGSTOP`ped (cannot end its turn); SIGTERM | `API-live-server-probe.mjs wedged-runtime` on ENV-5 | ENV-5 | Pass | `API-17-result.json`, `API-17-run.log`, `API-17-server-first.log` | `Server shutdown exceeded 10s; forcing exit`; `Server process-tree sweep: 1 process(es) and 2 process group(s) still running` (app-server; code-mode-host and tool groups); `"exit":{"code":1`, `"elapsedMs":11622`; `"survivors": []`, `"appServerAliveAfter": false` | Two `could not SIGKILL group … EPERM` lines: those groups' processes were already dead but unreapable under the stopped parent; reaped once it was SIGKILLed (emulation artifact) |
+| API-10 (R2) | AC-005, AC-009, F-API-001 recheck | as API-10 | `API-desktop-probe.mjs idle` on ENV-5 | ENV-5 | Pass | `API-10-R2-*` | `"serverGoneMs":258,"electronGoneMs":321`; relaunch `"exactlyOne":true`; 0 sweep lines in session 1. Session 2 (quit ≈ 1.8 s after "ready"): one real target, `1791`/`1893` ms, exit 0 | The real target: the server's startup runtime-capability probes (`agy --help`, `agy models`, Grok check) run ≈ 1.5 s after ready (observed with a separate startup peek); the sweep ends them within the grace |
+| API-11 (R2) / API-15 (R2) | AC-004(a), AC-006, AC-009, F-API-001 recheck | as API-11 | `API-desktop-probe.mjs busy-quit` on ENV-5 | ENV-5 | Pass | `API-11-R2-*` | restart `"oldServerAlive":false,"toolAliveAfter":false`; busy quit `"serverGoneMs":1068,"electronGoneMs":1171,"survivors":[]`; 0 sweep lines in both sessions; every `Server process exited with code 0`; relaunch `"exactlyOne":true`; 4/4 `continued` | — |
 | API-14 | SCN-003c, N-5 | Update install while busy | — | — | Not Tested | — | — | Unsafe here (see Round). `prepareForInstall` awaits the same memoized `ApplicationShutdown.stop()` as quit. A clean busy stop resolves (API-11/11B/12: exit code 0, no "Application shutdown incomplete"), so `quitAndInstall` would run (IMP-07 covers that wiring). A stalled stop (API-11R1) or a forced stop (API-13) rejects, so the install would not start (N-5/FU-007) |
 
 ## Acceptance-Criteria Proof
 
 | Acceptance-Criteria ID | Critical | Proven By Case IDs | Result | For A User-Only Part |
 | --- | --- | --- | --- | --- |
-| AC-001 | Yes | API-04 (Codex 82 ms), API-05 (Claude 772 ms), API-02 (native 75 ms; fails on base) | Proven | — |
-| AC-002 | Yes | API-06 (4 busy roots, exit 0 in 1.27 s, 0 survivors), API-06R ×4, API-07, API-02, API-11/11B/12 (desktop), API-09 (base contrast) | Proven, with the intermittent stall F-API-002 (1 of 15 busy shutdowns hit the 10 s bound; contained by the forced path, exit 1) | — |
-| AC-003 | Yes | API-R1 (IMP-03) | Proven (deterministic) | — |
-| AC-004 | Yes | API-11/11R1 (a), API-12 (b), API-13 (forced), API-11B | Proven: no server, CLI or tool command after any quit; quit in 0.8–1.0 s when turns are interrupted, 10.8 s in R1, 21.8 s on a wedged server (≤ 20 s + force) | — |
-| AC-005 | No | API-10 | Proven (0.26 s Electron exit, idle) | — |
+| AC-001 | Yes | API-04 (Codex 82 / R2 98 ms), API-05 (Claude 772 / R2 762 ms), API-02 (native 75 / R2 72 ms; fails on base) | Proven | — |
+| AC-002 | Yes | API-06 (+R2: exit 0 in 1.33 s), API-06R ×4, API-07, API-02 (+R2), API-17 (bounded path with real targets), API-11/11B/12 (desktop), API-09 (base contrast) | Proven. The one stall in round 1 (F-API-002) is follow-up FU-008, out of scope; the bound and sweep contained it | — |
+| AC-003 | Yes | API-R1 (IMP-03), API-17 (live analog: a runtime that cannot end its turn → bound → sweep → exit 1 ≤ 11.6 s, nothing left) | Proven | — |
+| AC-004 | Yes | API-11/11R1/API-11 R2 (a), API-12 (b), API-13 (forced), API-11B | Proven: no server, CLI or tool command after any quit; quit in 0.8–1.0 s when turns are interrupted, 10.8 s in R1, 21.8 s on a wedged server (≤ 20 s + force) | — |
+| AC-005 | No | API-10 (+R2: 0.32 s) | Proven (0.26–0.32 s Electron exit when idle; ≈ 1.9 s only if quit within ≈ 1.5 s of startup, while the startup runtime probes run) | — |
 | AC-006 | Yes | API-11, API-11R1, API-11B (agent, Team, Org; Codex and Claude: restore + reply) | Proven | — |
 | AC-007 | Yes | API-R1 (IMP-07/08/09), API-01 | Proven | — |
 | AC-008 | Yes | API-03 (real application host; fails on base), API-R1 (IMP-02) | Proven | — |
@@ -79,6 +87,12 @@ All paths below are relative to `/Users/normy/autobyteus_org/autobyteus-worktree
 | AC-011 | Yes | API-R1 (IMP-04), API-13 (real Codex/Claude children under a wedged server) | Proven | — |
 
 ## Findings
+
+Round 2 resolution:
+- F-API-001: **resolved** by IR-002 (`83a73f24d7`). Evidence: API-02 (R2) `"sweepLines": []`; API-04/05/06 (R2) busy and idle `"shutdownLog": []`; API-10/11 (R2) no sweep line on clean exits. API-17 and API-10 (R2) session 2 show that real targets are still logged.
+- F-API-002: **out of scope**, follow-up **FU-008** (`follow-ups.md`; CRR-002 CR-C9). The stall is in the Org root-shutdown stage, which this ticket does not change, and the bound plus sweep contained it. Leading candidate (Read only, unproven, from CRR-003): `AgentOrgRun.terminateOnce` awaits `operationGate.closeAndDrain()` before the member fence.
+
+Round 1 findings as recorded:
 
 - **F-API-001 — the server sweep selects its own `ps` reader (preliminary: `Local Fix`, implementation engineer).**
   - Where: `autobyteus-server-ts/src/utils/process-tree.ts` `readProcessTable()` (`execFileSync('ps', ['-A', '-o', 'pid=,ppid=,pgid='])`). The `ps` child lists itself, with `ppid` = server pid and `pgid` = server group. `terminateServerProcessTree` then selects it as one "descendant in the server's own group".
@@ -102,23 +116,30 @@ All paths below are relative to `/Users/normy/autobyteus_org/autobyteus-worktree
 
 ## Validation Confidence Scorecard (Mandatory)
 
+Round 2 scores. Post-repository = after the reused IMP checks and the durable API-01..03; final = after the live and desktop runs of both rounds. Round 1's scorecard (final 91.7%) is in API-REV-001.
+
 | Confidence Category | Post-Repository Score | Final Score | What Supports It (Case IDs) | Residual Uncertainty | What Could Improve It |
 | --- | --- | --- | --- | --- | --- |
-| Requirement and acceptance-criteria proof | 70% | 92% | Every AC proven directly (table above) | F-API-002 cause; update-restart part of AC-009 not exercisable | Root cause of F-API-002; a signed update install |
-| Changed-boundary execution directness | 75% | 95% | Real `dist/app.js` SIGTERM (API-02/06/07), real Terminate (API-04/05), real application host (API-03), packaged desktop quit/SIGTERM/force (API-10..13) | — | — |
-| Cross-boundary integration realism and mock gap | 65% | 95% | Live Codex/Claude CLIs and tool groups, Team and Org roots, desktop ↔ server | Native runs use scripted inference (the native tool path is real) | — |
-| Environment, configuration, identity, and fixture fidelity | 80% | 92% | Clean checkout, isolated data roots and instances, throwaway `CODEX_HOME`, host logins | Server probes use `APP_ENV=test`; ad hoc build; no Windows | — |
-| Failure, edge-case, lifecycle, and recovery evidence | 70% | 84% | Wedged server (API-13), base contrast (API-09), EOF/SIGTERM premise (API-08), relaunch continuity, repeats | F-API-002 unexplained; F-API-001; update install not run | Cause of F-API-002 proven and fixed or classified |
-| User-surface, browser, and desktop-shell confidence | 60% | 92% | API-10..13 on the packaged build, relaunch + continue | Update install not exercised | — |
-| Durable regression coverage quality and relevance | 90% | 92% | API-01..03 (new tests fail on base), IMP-01..09 | Live-runtime and desktop journeys stay temporary probes (paid/credentialed) | — |
+| Requirement and acceptance-criteria proof | 72% | 95% | Every AC proven directly on the fixed build (table above) | AC-009's update-restart part not exercisable here (conditional in the AC) | A signed update install by the user |
+| Changed-boundary execution directness | 78% | 96% | Real `dist/app.js` SIGTERM incl. the bounded path (API-02/06/07/17), real Terminate, real application host, packaged desktop quit/SIGTERM/force | — | — |
+| Cross-boundary integration realism and mock gap | 65% | 95% | Live Codex/Claude CLIs and tool groups, Team and Org roots, desktop ↔ server | Native runs use scripted inference (native tool path real) | — |
+| Environment, configuration, identity, and fixture fidelity | 80% | 94% | Clean checkouts of both commits, isolated data roots/instances, throwaway `CODEX_HOME`, packaged production `.env` on the desktop | Server probes use `APP_ENV=test`; ad hoc build | — |
+| Failure, edge-case, lifecycle, and recovery evidence | 72% | 93% | Wedged runtime (API-17), wedged server (API-13), base contrast (API-09), EOF/SIGTERM premise (API-08), repeats (API-06R/11B/11C/11D), relaunch continuity | FU-008 (out of scope, contained); the update install not run (N-5/FU-007) | FU-008's owner; a signed install |
+| User-surface, browser, and desktop-shell confidence | 60% | 93% | API-10..13 (+R2) on packaged builds, relaunch + continue | Update install not exercised | — |
+| Durable regression coverage quality and relevance | 90% | 93% | API-01..03 (new tests fail on base, pass on R1 and R2), IMP-01..12 | Live-runtime and desktop journeys stay temporary probes (paid/credentialed) | — |
 
-- Overall post-repository confidence: 73% (simple average)
-- Overall final confidence: 91.7% (simple average)
+- Overall post-repository confidence: 74% (simple average)
+- Overall final confidence: 94.1% (simple average)
 - Calculation method: simple average of the seven categories.
-- Every critical acceptance criterion directly proven, apart from parts only the user can check: `Yes` (AC-009's update-restart part is conditional and was unsafe to run here).
-- Any final applicable category below `90%`: `Yes`: failure/edge/lifecycle 84% (F-API-002, F-API-001).
-- Default final confidence target of `95%` met: `No`.
-- Confidence-limiting residual risks: F-API-002; F-API-001; the update install path (N-5/FU-007); Windows (out of the platform guardrail).
+- Every critical acceptance criterion directly proven, apart from parts only the user can check: `Yes`.
+- Any final applicable category below `90%`: `No`.
+- Default final confidence target of `95%` met: `No` (94.1%). The gap is bounded and no in-scope surface can close it safely:
+  - the update install would relaunch the app outside the isolated profile onto the user's data (TESTING Rule 2);
+  - FU-008 is out of scope by the review's classification and was contained in every run;
+  - Windows is outside the platform guardrail.
+
+  Surfaces chosen to close the earlier gap: repeats and bisection (API-06R, API-11 R2, 11B/C/D), the bounded path with real targets (API-17), and the desktop reruns on the fixed build.
+- Confidence-limiting residual risks: FU-008; the update install path (N-5/FU-007); Windows.
 
 ## Broader Validation Decision (Mandatory)
 
@@ -152,7 +173,7 @@ All paths below are relative to `/Users/normy/autobyteus_org/autobyteus-worktree
 | `autobyteus-server-ts/tests/e2e/shutdown/busy-run-stop-now-fixture.mjs` | Added | API-02 | — |
 | `autobyteus-server-ts/tests/e2e/shutdown/busy-application-terminate-fixture.mjs` | Added | API-03 | — |
 
-- Added or updated paths attached for proportional test-code review: `Not Applicable` this round (result `Fail`); attached for the failure-origin reviewer's reference.
+- Added or updated paths attached for proportional test-code review: `Yes` (round 2).
 - Diff or repository evidence supplied for removed paths: none removed.
 
 ## Dependencies Mocked Or Emulated
@@ -173,6 +194,7 @@ All paths below are relative to `/Users/normy/autobyteus_org/autobyteus-worktree
 | Diagnostic app copy with `[BQ-DIAG]` lines (ENV-4) | Yes | Removed with the temp root; never committed | Removed |
 | Temp data roots, `CODEX_HOME`s, workspaces | Yes | Removed by each probe/fixture (`rootRemoved: true`) | Removed |
 | Temporary probes `evidence/API-live-server-probe.mjs`, `API-desktop-probe.mjs`, `API-08-claude-eof-probe.mjs` | Yes | Kept as evidence (not repository test code) | Kept |
+| Round 2: clean checkout of `68cff9e385` (run temp root `bq284-api2.*`), probe temp roots, isolated instances incl. one from a failed startup peek (`iso-64168-4c27`, data root `peek-root`) | Yes | `isolated-app stop` of my instance only (another `iso-62788-45ad` belongs to someone else and was left alone); `git worktree remove`; temp root removed | Removed |
 | Claude session history | No (user's Claude project history) | Each live Claude run adds a session for its temp workspace | Recorded here |
 
 ## Residual Risks And Measurements (N-3, N-5/FU-007, N-7, CR-C1, CR-C5, U-A1..U-A3)
@@ -182,7 +204,7 @@ All paths below are relative to `/Users/normy/autobyteus_org/autobyteus-worktree
 | N-3 (Terminate has no bound of its own) | Not hit by user or application Terminate: Codex 48–82 ms, Claude 387–772 ms, native 75 ms, application 102 ms across 3+3+1+1 live/real runs. F-API-002 may be the same mechanism at shutdown (unproven). | API-04, API-05, API-02, API-03 |
 | N-5 / FU-007 (expired bound or force → exit 1 → update install not started) | **Observed twice**: API-11R1 (bound expired → `Server process exited with code 1` → `Application shutdown incomplete` → `app.exit(1)`) and API-13 (forced path → `ShutdownIncompleteError`). Clean busy stops exit 0 (API-11, API-11B, API-12), so a clean busy update would proceed to `quitAndInstall`. | API-11R1, API-13, API-11, API-12 |
 | N-7 (cut cleanup runs beside the sweep; post-snapshot spawns; startup-failure exit) | In API-11R1 the sweep ran at the bound and the server exited 0.63 s later. No process spawned after the snapshot was observed (0 survivors). The startup-failure exit was not exercised (not a shutdown trigger in this ticket). | API-11R1 |
-| CR-C1 (worst case ≈ 14.25 s) | Largest observed server exit: 10.76 s (API-11R1). The desktop's 20 s window was never reached by a running server. | API-11R1 |
+| CR-C1 (worst case ≈ 14.25 s) | Largest observed server exits: 10.76 s (API-11R1) and 11.62 s on the bounded path with SIGKILL of survivors (API-17). The desktop's 20 s window was never reached by a running server. | API-11R1, API-17 |
 | CR-C5 (`ps` stall on the desktop force path) | Not triggered: snapshot ≈ 0.18 s. The "Backend exit not confirmed" text in API-13 comes from the graceful-window timeout carried by every forced `ShutdownIncompleteError`, not from the force confirmation. | API-13 |
 | U-A1 | 3 busy + 2 idle Claude runs: exit 0 in 2.76 s. No Design Impact. | API-07 |
 | U-A2 | Codex 0.166.0; Claude Code 2.1.314. Claude CLI still survives stdin EOF (≥ 15 s with its tool command); SIGTERM ends both in < 1 s. Base build reproduces the E9 orphan after a server SIGKILL. | API-08, API-09 |
@@ -190,18 +212,15 @@ All paths below are relative to `/Users/normy/autobyteus_org/autobyteus-worktree
 
 ## Preliminary Classification (On `Fail`)
 
+Round 1 only (API-REV-001); resolved in round 2 (see Findings).
+
 - F-API-001: `Local Fix`, owner implementation engineer (small change in `readProcessTable`/the sweep selection, plus a unit case).
 - F-API-002: `Unclear`. The stall sits in or before the predecessor's Org/Team root-shutdown stage (out of this ticket's changed code), but its cause is not established. The failure-origin review decides whether it is this ticket, a follow-up (with the bound and sweep as accepted containment), or a design question for the Solution Designer (stopping the update path being blocked, N-5/FU-007).
 
 ## Latest Authoritative Result
 
-- Result: `Fail`
-- Criteria not proven, or parts only the user can check: none unproven. AC-009's update-restart part was not exercised (unsafe; conditional in the AC).
-- Preliminary classification and recommended owner: F-API-001 `Local Fix` → implementation engineer; F-API-002 `Unclear` → failure-origin review.
-- Next recipient from `get_handoff_rules`: code reviewer (failure-origin review).
-- Notes: everything else holds.
-  - Terminate interrupts on Codex, Claude, native and applications.
-  - Busy server shutdown exits 0 in about 1 s with nothing left.
-  - Desktop quit, SIGTERM and the wedged-server force leave no process.
-  - Relaunch gives one server and continues agent, Team and Org runs.
-  - `terminatedAt` is preserved. U-A1, U-A2 and U-A3 are measured.
+- Result: `Pass` (round 2, API-REV-002)
+- Criteria not proven, or parts only the user can check (IDs): none unproven. AC-009's app-update-restart part was not exercised (unsafe here; conditional in the AC).
+- Preliminary classification and recommended owner: N/A (Pass). F-API-001 resolved; F-API-002 = FU-008 (out of scope).
+- Next recipient from `get_handoff_rules`: code reviewer, for proportional test-code review of the durable tests (`55ddc71839`) and IR-002's unit tests.
+- Notes: round 1's Fail and its findings are kept above and in `api-e2e-revision-record.md` (API-REV-001).
