@@ -123,6 +123,7 @@ Facts and where each comes from: runtimes and models from the pending switch (3.
 
 1. **Done, on the real data (read-only):** the manifest facts of 3.2 and probe `probes/run_folder_contract_probe.py`: I-2, I-5, I-6 on all 3,724 run folders and 3,792 segments, 0 violations, 0 switch segments.
 2. **Done, isolated and synthetic (the folder test, U-7):** `probes/runtime-switch-folder.probe.test.ts`: the rotation and marker sequence of 3.3, its idempotence, and today's journal rendering one runtime for every file (3.4). Output: `evidence/folder-test-output.txt`.
+2b. **Done, isolated and synthetic (data-model validation, 2026-10-30):** `probes/runtime-switch-data-model.probe.test.ts`, output `evidence/data-model-validation-output.txt`: Claude work → switch → Codex work → switch back → Claude work, with the real store, raw-trace readers, journal renderer and chat projection: I-2, I-3, I-4, I-5, I-7, I-8 pass; each journal file reads correctly with its own runtime and shows the marker as its first entry; the chat projection yields both markers in order; today's service prints the Codex file wrongly with the run's current runtime.
 3. **Read:** the native memory manager on an existing folder (3.6).
 4. **Build:** tests with scripted runtimes including a crash injected at each point of 3.3, the same probe extended with I-1, I-3, I-4, I-7, I-8, I-10 on folders the tests produce, and a real switch on isolated data between two available runtimes.
 
