@@ -1,0 +1,9 @@
+# Check: IMP-01-server-typecheck
+# Command (in /Users/normy/autobyteus_org/autobyteus-worktrees/integration-credential-proxy/autobyteus-server-ts, clean env: env -i PATH HOME=<temp> TMPDIR): pnpm -s typecheck
+# Commit: 2529eaaec1 (branch codex/integration-credential-proxy)
+# Environment: macOS 26.5.2 arm64, node v22.23.1, git 2.50.1
+# Date: 2026-10-30T08:31:56Z
+
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+# Exit code: 0
