@@ -25,6 +25,7 @@ The GitHub credential proxy as designed:
 - **Web:** `GitHubIntegrationCard` on Server Settings → Basics, its store, documents, codegen, en/zh-CN text.
 - **Docs:** `credential_proxy.md` (with the integration-author contract, REQ-012), `secret_management.md`, `GLOSSARY.md` (Integrations), `docs/design-cases.md` (Case 5), `TESTING.md`.
 
+- Commits: code `84602c9a38`…`2529eaaec1`; ticket artifacts and evidence `9f0aefd4c5` (this file updated in the next commit only to name it). Branch `codex/integration-credential-proxy`, base origin/personal `8760c83788`.
 - Implementation cycle: `Initial`
 - Implementation revision record: `implementation-revision-record.md`
 - Current implementation revision ID: `IR-001`
