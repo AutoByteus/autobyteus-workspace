@@ -131,3 +131,17 @@
   `forceStop` sweep. A note keeps the resume step's recording point (nothing interrupted before
   `ServerProcessShutdown` cleanup starts).
 - Classification: Medium / High (unchanged). Routing: `/architecture_reviewer`, review round ARCH-REV-002 on SR-007.
+
+## SR-008 — 2026-10-30 — Design revision for ARCH-REV-002 (Fail, Design Impact) (autobyteus-284)
+- Trigger: ARCH-REV-002 on SR-007 from `/software_engineering_team/architecture_reviewer`: Fail. AR-004 (Medium,
+  blocking): the sweep's win32 result was unspecified, so every Windows quit and update could report `failed`. AR-005
+  (Low): an in-process test would run the real sweep. AR-006 (Low): drop the "2 s → 3 s" seam; asynchronous desktop
+  `ps`. Notes N-5 to N-8. Report: `design-review-report.md`.
+- Evidence: E-A33 to E-A35 (the reviewer's premises, `Read`).
+- Design changes: sweep outcomes `not-applicable | confirmed | unconfirmed`, only `unconfirmed` fails (AR-004, with a
+  win32 test); injected sweep in every `ServerProcessShutdown` test, and the in-process server-runtime test mocks it
+  (AR-005); 2 s force confirmation kept, `stopManagedBackend` unchanged, async desktop table read (AR-006); N-5, N-7 and
+  Windows residuals under Risks; the N-6 doc sentence; FU-005 names three readers.
+- Follow-ups: FU-007 added (an incomplete shutdown stops "Install update and restart"; matters for unattended updates).
+- Requirements: unchanged (SR-007). Classification: Medium / High (unchanged). Routing: `/architecture_reviewer`,
+  ARCH-REV-003.

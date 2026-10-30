@@ -1,8 +1,14 @@
-# Architecture Design Complete — busy-quit-shutdown-orphan (SR-007)
+# Architecture Design Complete — busy-quit-shutdown-orphan (SR-008)
 
 From `/solution_designer`, 2026-10-30. Task `autobyteus-284` (Project `project_a1377344-25db-482a-97cc-ecfdb0fb495a`),
 requested by `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`). The SR-003 handoff
 that stood in this file before is in git history.
+
+## SR-008 (2026-10-30): revision for ARCH-REV-002
+- ARCH-REV-002 failed SR-007 on AR-004 (blocking), with AR-005 and AR-006 low. All three are folded into
+  `design-spec.md` § "SR-008 Changes", with notes N-5 to N-8 recorded. FU-007 was added (an incomplete shutdown stops an
+  update install). Requirements are unchanged.
+- Requested: a short re-review, **ARCH-REV-003**. The rest of this file describes SR-007 and still applies.
 
 ## Result
 - Classification: `Architecture Design Complete`. **task_size = Medium, architectural_risk = High.**

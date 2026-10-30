@@ -7,6 +7,7 @@ The latest `design-review-report.md` remains authoritative.
 | Revision ID | Review Round / Trigger | Related Solution Revision IDs | Prior Decision | Current Decision | Affected Finding IDs |
 | --- | --- | --- | --- | --- | --- |
 | ARCH-REV-001 | Round 1 / initial review of SR-003 | SR-002, SR-003 | N/A | Fail (Design Impact) | AR-001, AR-002, AR-003 |
+| ARCH-REV-002 | Round 2 / review of SR-007 after the rebase onto `1a4453e553` | SR-002, SR-006, SR-007 | Fail (Design Impact) | Fail (Design Impact) | AR-001–AR-003 resolved; AR-004 (blocking), AR-005, AR-006 new |
 
 ## Revision Entries
 
@@ -41,3 +42,40 @@ None (first round).
 - Material classification changes: none. The classification stays Large/High.
 - Recommended recipient: `/solution_designer`.
 - Remaining risks or uncertainty: whether native and AGY interrupts end their turns, which determines how reachable the forced path is for them.
+
+### ARCH-REV-002 — SR-007: prior findings resolved; the sweep's off-POSIX result must be specified
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/busy-quit-shutdown-orphan/tickets/in-progress/busy-quit-shutdown-orphan/design-review-report.md`
+- Review round and trigger: Round 2. `/software_engineering_team/solution_designer` sent SR-007 as `Architecture Design Complete` (Medium/High) on 2026-10-30.
+- Triggering role, report path, and finding IDs: Solution Designer; `architecture-design-handoff.md`; it answers AR-001–AR-003.
+- Relevant solution revision IDs: SR-002 and SR-007 (approval); SR-006 and SR-007 (design).
+- Prior authoritative decision: Fail (Design Impact).
+- Current authoritative decision: Fail (Design Impact).
+- What changed:
+  - The basis was re-confirmed at `1cec2d134a` (docs only on `1a4453e553`).
+  - `backend-port-conflict-20261024` shipped `ServerProcessShutdown` (unbounded), `NativeCommandProcessScope`, `ApplicationShutdown` and `stopManagedBackend`.
+  - D2 now extends `ServerProcessShutdown`. D3 is now only the POSIX `forceStop`.
+  - All four spines were redrawn against code.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-001 | Open (Low) | Resolved | SR-004, SR-007 (DEC-005, AC-008, DS-001b) | Ten call sites re-grepped; the application callers enter `AgentRunManager.terminateAgentRun` |
+| AR-002 | Open (Medium, blocking) | Resolved (shipped code, obsolete for this design) | SR-006 (E-A27) | `applicationShutdown.ts:9-28`: one memoized stop; `quit()` prevents until prepared |
+| AR-003 | Open (Medium, blocking) | Resolved | SR-004, SR-006 (E-A9–E-A11, E-A26) | (a) native foreground is aborted by the interrupt and drained by the scope; (b) native background is stopped by the scope at shutdown, and on Terminate it is FU-003 (outside REQ-003); (c) the forced path: the server sweep plus the D3 tree force; (d) a non-leader `kill` takes the SIGTERM path with the server's own bound and sweep |
+
+- New or remaining finding IDs:
+  - **AR-004** (Medium, blocking): define the sweep result where it cannot or does not run. "Not applicable" on win32 must not become exit 1 / IPC `failed`; otherwise every Windows quit ends in `app.exit(1)` and every Windows update install is aborted (P-004).
+  - **AR-005** (Low): `server-runtime-app-data-migration-gate.test.ts` runs the real sweep in-process. Add it to the file mapping and mock the sweep (P-005).
+  - **AR-006** (Low): drop "raise 2 s to 3 s if needed". The 2 s already holds (`managedBackendStop.ts:28-29`). The desktop `ps` read is asynchronous.
+- Non-blocking notes:
+  - N-3 (carried);
+  - N-5 (an expired bound aborts an update install; extend U-A1 to idle Claude runs);
+  - N-6 (a fence that is not accepted leaves the run fenced but active);
+  - N-7 (a post-snapshot spawn; the startup-failure exit is not swept);
+  - N-8 (three process-table readers).
+  - N-1, N-2 and N-4 from ARCH-REV-001 are obsolete with the shipped code.
+- Material classification changes: Large/High → Medium/High, agreed.
+- Recommended recipient: `/software_engineering_team/solution_designer`.
+- Remaining risks or uncertainty: U-A1 (several Claude runs against the 10 s bound), U-A2 (CLI versions) and U-A3 (now only an observation) remain for validation.

@@ -254,6 +254,16 @@
   Claude CLI end its tool commands within the 2 s force confirmation? Validation measures it with a wedged-server test
   double.
 
+## ARCH-REV-002 premises checked (SR-008, 2026-10-30)
+- `Read` at `1a4453e553`, confirming the reviewer's evidence:
+  - E-A33: `agy-background-process-groups.ts:58` returns `[]` on win32, so the moved helper does not define the sweep's
+    win32 result; `managedBackendShutdownClient.ts` rejects on IPC `failed`; `appUpdater.ts:273-279` shows the install
+    error and does not call `quitAndInstall` when `prepareForInstall` rejects (AR-004, N-5, FU-007).
+  - E-A34: `tests/unit/server-runtime-app-data-migration-gate.test.ts:289-313` runs `startConfiguredServer` in-process,
+    fires the captured SIGTERM handler and asserts `process.exit(0)` (AR-005).
+  - E-A35: `managedBackendStop.ts` takes the force deadline before `force()` and `waitForChildExit` returns at once for
+    an exited child, so a SIGKILL of the server inside `forceStop` is confirmed without more budget (AR-006).
+
 ## Supplement Inventory
 | Supplement | Purpose | Status |
 | --- | --- | --- |

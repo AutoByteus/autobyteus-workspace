@@ -1,7 +1,9 @@
 # Design Spec — busy-quit-shutdown-orphan
 
 ## Solution And Approval Basis
-- Current solution revision ID: `SR-007` (2026-10-30, autobyteus-284): DEC-005 and DEC-007 approved; the design is
+- Current solution revision ID: `SR-008` (2026-10-30, autobyteus-284): design revision for ARCH-REV-002 (Fail:
+  AR-004 blocking; AR-005, AR-006 low; notes N-5 to N-8). See "SR-008 Changes" below. Requirements unchanged.
+- SR-007 (2026-10-30): DEC-005 and DEC-007 approved; the design is
   SR-006's with those two answers applied. SR-006 (2026-10-30) It revises SR-004/SR-005 after
   `backend-port-conflict-20261024` (merged to `personal` 2026-10-26) built part of the earlier D2 and D3. The SR-004
   and SR-005 versions of this file are in git history (`git log -- tickets/in-progress/busy-quit-shutdown-orphan/design-spec.md`);
@@ -22,6 +24,32 @@
 - Investigation notes: `investigation-notes.md` (E1–E9, RC-1 to RC-5, E-A1 to E-A32, U-A1 to U-A3).
 - Workspace: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/busy-quit-shutdown-orphan`, branch
   `codex/busy-quit-shutdown-orphan`, base `origin/personal` @ `1a4453e553` (rebased 2026-10-30). Target `personal`.
+
+## SR-008 Changes (ARCH-REV-002)
+- **AR-004 (sweep outcome off POSIX):** the sweep result has three outcomes, `not-applicable` (win32: no `ps`, no
+  signals), `confirmed` and `unconfirmed` (POSIX only). Only `unconfirmed` sets exit 1 / IPC `failed`. On Windows the
+  exit code depends only on the cleanup and the bound, as today, so a clean Windows quit or update still reports
+  `complete`. The residual wording is corrected: `taskkill /f /t` is the net only on the Windows **forced** path; after
+  a clean Windows exit nothing sweeps (accepted under the Windows scope guardrail). The POSIX "table unreadable →
+  unconfirmed" rule stays, with its consequence named: exit 1, IPC n/a on POSIX, and on the desktop
+  `ShutdownIncompleteError` → the quit ends through `app.exit(1)` and an update install is not started (N-5).
+- **AR-005 (unit tests never reach the real sweep):** `ServerProcessShutdown` takes the sweep as an injected
+  dependency; `server-process-shutdown.test.ts` injects a fake; `server-runtime-app-data-migration-gate.test.ts`
+  (in-process `startConfiguredServer` + SIGTERM, `:289-313`) mocks `shutdown/server-process-tree-sweep.js` and awaits
+  the request before asserting `exit`. Both added to the file mapping.
+- **AR-006 (desktop force budget):** the existing 2 s force confirmation is kept; `stopManagedBackend` is not changed.
+  D3 SIGKILLs the server right after the snapshot, so the exit is confirmed at once; the 1.5 s descendant grace runs
+  inside `forceStop`. Worst case ≈ 20 s + ≤ 2 s `ps` + 1.5 s ≈ 23.5 s, inside the 30 s `ApplicationShutdown` ceiling.
+  The desktop copy reads the process table **asynchronously** (`execFile`, 2 s timeout), so Electron main is not
+  blocked during quit. U-A3 becomes an observation.
+- **N-5:** an expired bound gives exit 1, which (backend-port-conflict's policy) stops an update install. Today every
+  busy update ends on the force path and is stopped that way, so this ticket improves the common case. U-A1 is extended
+  to idle Claude runs, and validation records whether a busy update install completes. The updater's handling of an
+  incomplete shutdown is outside this ticket (FU-007).
+- **N-6:** `agent_execution.md` gets one sentence: a fence that is not accepted leaves the run root-fenced but active;
+  Terminate reports the existing not-found/rejected result and a retry runs a new fence attempt.
+- **N-7:** accepted residuals, recorded under Risks.
+- **N-8:** FU-005 now names the three process-table readers.
 
 ## SR-006 Delta Against SR-004/SR-005
 | Part | SR-004/SR-005 | Today's code (E-A25 to E-A28) | SR-006 |
@@ -100,7 +128,7 @@ it spawned, and make the desktop's last-resort force stop the server's whole tre
   - the Claude process owner's own release sequence (E-A17);
   - composer Stop (DEC-003), a data-root guard (DEC-004), native background processes on run Terminate (FU-003);
   - Docker, supervisord and launcher stop timeouts (FU-004).
-- Follow-ups: `follow-ups.md` FU-001 to FU-005.
+- Follow-ups: `follow-ups.md` FU-001 to FU-007.
 
 ## Relevant Behavior And Production-Path Map (Mandatory)
 | BEH | Kind | REQ / AC | Trigger | Existing behavior (evidence) | Change or preserved outcome | Target path / spine |
@@ -132,7 +160,8 @@ it spawned, and make the desktop's last-resort force stop the server's whole tre
 - Deferrals and residual risk:
   - FU-001 (DEC-003), FU-002 (DEC-004), FU-003 (native background on run Terminate), FU-004 (Docker grace),
     FU-005 (two process-table readers across packages);
-  - the server-side sweep is POSIX only; on Windows the desktop's `taskkill /f /t` remains the net;
+  - the server-side sweep is POSIX only (`not-applicable` on win32); on Windows the desktop's `taskkill /f /t` is the net
+    only on the forced path, and after a clean Windows exit nothing sweeps (Windows scope guardrail);
   - user Terminate stays unbounded if a runtime accepts an interrupt but never ends its turn (N-3). AC-001 is the gate.
 
 ## Terminology
@@ -238,7 +267,8 @@ N/A.
 | `AgentRunManager.terminateAgentRun(runId): Promise<boolean>` | Stop now (`false` also when the fence is not accepted) |
 | `AgentRunManager.stopAllAgentRuns(): Promise<void>` | Fence all concurrently, then finish one by one |
 | `new ServerProcessShutdown(runtime, { cleanupTimeoutMs, sweep, now/timers })` | Existing owner; gains the bound and an injectable sweep (default: the real one) |
-| `terminateServerProcessTree(deps): Promise<{ targets: number; confirmed: boolean }>` | One sweep of `process.pid`'s descendants; injectable table, kill, clock |
+| `terminateServerProcessTree(deps): Promise<{ outcome: 'not-applicable' } \| { outcome: 'confirmed'; targets: number } \| { outcome: 'unconfirmed'; targets: number; reason: string }>` | One sweep of `process.pid`'s descendants; `not-applicable` on win32 (no `ps`, no signals); injectable platform, table, kill, clock |
+| `new ServerProcessShutdown(runtime, { cleanupTimeoutMs, sweep })` | The sweep is injected (default: `terminateServerProcessTree`); only `unconfirmed` sets exit 1 / IPC `failed` |
 | `selectDescendantProcessGroups(rows, rootPid, excludedPgids)`, `selectDescendantPidsInGroup(rows, rootPid, pgid)` | Pure selection |
 | `BaseServerManager.forceStop(proc)` (POSIX) | Tree sweep of the server |
 
@@ -279,10 +309,12 @@ All boundaries are singular, with explicit identity. Low risk.
 | `autobyteus-server-ts/src/agent-execution/backends/antigravity/stream/agy-stream-process.ts` | Modify | Use the utility (`selectDescendantProcessGroups(rows, agyPid, [agyPgid, serverPgid])`) |
 | `autobyteus-server-ts/tests/unit/agent-execution/backends/antigravity/agy-background-process-groups.test.ts` | Move | To `tests/unit/utils/process-tree.test.ts`, generalized |
 | `autobyteus-server-ts/tests/unit/agent-execution/backends/antigravity/agy-stream-process.test.ts` | Modify | Mock the moved utility |
-| `autobyteus-server-ts/tests/unit/shutdown/server-process-shutdown.test.ts` | Modify | Bound, sweep order, exit codes, IPC `failed` on expiry |
+| `autobyteus-server-ts/tests/unit/shutdown/server-process-shutdown.test.ts` | Modify | Inject a fake sweep in every case; bound, sweep order, exit codes, IPC `failed` on expiry or `unconfirmed`; win32 case: clean close → `not-applicable` → exit 0 and IPC `complete`, no `ps` (AR-004) |
+| `autobyteus-server-ts/tests/unit/shutdown/server-process-tree-sweep.test.ts` | Add | Targets, re-parenting, never the root group, ESRCH/EPERM, unreadable table → `unconfirmed`, win32 → `not-applicable` |
+| `autobyteus-server-ts/tests/unit/server-runtime-app-data-migration-gate.test.ts` | Modify | Mock `shutdown/server-process-tree-sweep.js`; await the request before asserting `exit` (AR-005) |
 | `autobyteus-web/electron/server/baseServerManager.ts` | Modify | POSIX `forceStop` sweep (the 20 s window is unchanged, DEC-007) |
-| `autobyteus-web/electron/server/serverProcessTree.ts` | Add | Desktop copy of the selection |
-| `autobyteus-server-ts/docs/modules/agent_execution.md` | Modify | Replace the "Known limit (server shutdown with a busy run)" paragraph (`:307-314`) with the stop-now and bounded-shutdown behavior |
+| `autobyteus-web/electron/server/serverProcessTree.ts` | Add | Desktop copy of the selection, with an **asynchronous** table read (`execFile`, 2 s timeout) |
+| `autobyteus-server-ts/docs/modules/agent_execution.md` | Modify | Replace the "Known limit (server shutdown with a busy run)" paragraph (`:307-314`) with the stop-now and bounded-shutdown behavior, plus one sentence on a fence that is not accepted (N-6) |
 | `autobyteus-server-ts/docs/modules/antigravity_cli_runtime.md` | Modify | Name the moved helper (`:317`) |
 | `autobyteus-web/docs/electron_packaging.md` | Modify | § Confirmed backend and application shutdown (`:139-173`): the POSIX force sweeps the tree; the server's own 10 s bound |
 
@@ -300,10 +332,10 @@ No new folders. `utils/process-tree.ts` is concern-agnostic (shared by AGY and t
 | --- | --- | --- |
 | Stop-now | `const fenced = await run.fenceInputAndInterruptForRootShutdown(); if (!fenced.accepted) return false; …prepare → finish` | Changing `AgentRunTermination.prepare` |
 | Shutdown fence | `await Promise.allSettled(active.map(r => r.fenceInputAndInterruptForRootShutdown()))`, then the existing loop; a rejected or not-accepted fence goes to `errors` and that run is skipped | Fencing inside the sequential loop |
-| Bound | `const expired = await raceWithTimeout(this.cleanupOnce(), cleanupTimeoutMs); if (expired) { log; code = 1 }` then **always** `const sweep = await this.sweep(); if (!sweep.confirmed) code = 1;` then the existing IPC result and exit | Sweeping only on expiry (native groups the scope left unconfirmed and late CLIs would survive a clean close) |
+| Bound | `const expired = await raceWithTimeout(this.cleanupOnce(), cleanupTimeoutMs); if (expired) { log; code = 1 }` then **always** `const sweep = await this.sweep(); if (sweep.outcome === 'unconfirmed') code = 1;` then the existing IPC result and exit (`not-applicable` and `confirmed` leave the code as it is) | Sweeping only on expiry (native groups the scope left unconfirmed and late CLIs would survive a clean close) |
 | Bound start | The 10 s starts after the startup barrier settles (existing semantics: a cancelled stage stops at its next checkpoint) | Cutting a migration stage mid-write; the desktop window covers a hung startup |
-| Sweep targets | Record pids (root's group) and descendant-led pgids **before** signalling; SIGKILL only recorded survivors; skip ESRCH; log EPERM and continue; report `confirmed: false` when a recorded target is still alive | Re-listing after SIGTERM (re-parented processes escape); signalling the root's own group; signalling by port |
-| Desktop force | SIGTERM the descendant targets first (the Claude CLI and Codex app-server end their tool commands on SIGTERM, E3/E9), SIGKILL the server, then ≤ 1.5 s and SIGKILL survivors, all inside the force confirmation budget (raise it from 2 s to 3 s if needed) | SIGKILL of the server alone (Claude orphaned, E9); an immediate SIGKILL of the CLIs (Codex orphans its commands on its own SIGKILL, E3) |
+| Sweep targets | Record pids (root's group) and descendant-led pgids **before** signalling; SIGKILL only recorded survivors; skip ESRCH; log EPERM and continue; report `unconfirmed` when the table cannot be read or a recorded target is still alive; on win32 return `not-applicable` without running anything | Re-listing after SIGTERM (re-parented processes escape); signalling the root's own group; signalling by port |
+| Desktop force | SIGTERM the descendant targets first (the Claude CLI and Codex app-server end their tool commands on SIGTERM, E3/E9), SIGKILL the server, then ≤ 1.5 s and SIGKILL survivors, inside `forceStop`; the existing 2 s confirmation in `stopManagedBackend` is kept (the server is already dead after the SIGKILL); the table is read with async `execFile` | SIGKILL of the server alone (Claude orphaned, E9); an immediate SIGKILL of the CLIs (Codex orphans its commands on its own SIGKILL, E3) |
 
 ## Backward-Compatibility Rejection Log (Mandatory)
 | Candidate | Decision |
@@ -316,15 +348,16 @@ No new folders. `utils/process-tree.ts` is concern-agnostic (shared by AGY and t
 1. Move the process-tree utility; re-point AGY; move its test and keep it green.
 2. D1 plus tests: fence before prepare; fence not accepted → `false`; concurrent stopAll fence; application-scope
    manager covered by the same code; `stopAllAgentRuns` writes no `terminatedAt` (AC-010).
-3. D2 plus tests: hung cleanup → 10 s → sweep → exit 1 and IPC `failed`; clean close → sweep with no targets → fast
-   exit 0; sweep with an unconfirmed survivor → exit 1; target selection including re-parenting and never the root
-   group; ESRCH/EPERM handling.
+3. D2 plus tests (a fake sweep in every `ServerProcessShutdown` test; AR-005): hung cleanup → 10 s → sweep → exit 1
+   and IPC `failed`; clean close → sweep with no targets → fast exit 0; `unconfirmed` → exit 1; win32 → `not-applicable`
+   → exit 0 and IPC `complete`, no `ps` (AR-004); sweep unit tests for selection, re-parenting, never the root group,
+   ESRCH/EPERM, unreadable table; the in-process server-runtime test mocks the sweep.
 4. D3 plus tests: POSIX force removes the server and its recorded descendants (AC-011, deterministic double); the
    20 s window and the Windows path unchanged (existing tests stay green).
 5. Docs.
 6. Validation (API/E2E): live AC-001/002 on Codex and Claude plus a native run with a background process; AC-003
    deterministic; isolated desktop AC-004/005/006/009/011 with process-tree snapshots; the updater install path; U-A1 to
-   U-A3; the "before" baseline of today's busy quit on the same build without the change where cheap.
+   U-A3 (U-A1 extended to idle Claude runs, N-5; record whether a busy update install completes); the "before" baseline of today's busy quit on the same build without the change where cheap.
 
 ## Key Tradeoffs
 - **Bound inside the existing owner** instead of a new file: one owner for signals, IPC, exit and now the bound.
@@ -335,8 +368,15 @@ No new folders. `utils/process-tree.ts` is concern-agnostic (shared by AGY and t
   busy Claude runs reach the bound.
 
 ## Risks
-- `ps` missing in minimal Linux images: the sweep logs and reports unconfirmed; the container stop still kills the tree
-  (E-A7).
+- `ps` missing in minimal Linux images: the sweep logs and reports `unconfirmed` → exit 1; the container stop still kills
+  the tree (E-A7).
+- N-5: an expired bound gives exit 1; on the desktop the quit ends through `app.exit(1)` and an update install is not
+  started (backend-port-conflict's policy; FU-007). Measured in validation (U-A1).
+- N-7: after the bound expires the cut cleanup keeps running beside the sweep, and a process spawned after the snapshot
+  is not swept (low: run activation and native admission are already closed). The startup-failure exit
+  (`server-runtime.ts:226-232`) is neither bounded nor swept; it is not a shutdown trigger in this ticket.
+- Windows: no server-side sweep, and `ClaudeSdkProcessOwner` skips SIGTERM on win32 (`claude-sdk-process-owner.ts:135`);
+  accepted under the Windows scope guardrail, unchanged by this ticket.
 - PID reuse within 1.5 s is negligible; only recorded targets are signalled.
 - Native background processes still outlive a run **Terminate** (FU-003, unchanged).
 
@@ -344,7 +384,8 @@ No new folders. `utils/process-tree.ts` is concern-agnostic (shared by AGY and t
 - D1: do not edit `AgentRunTermination`.
 - D2: keep `ServerProcessShutdown`'s memoized request, startup barrier and IPC contract; inject timers, table, kill and
   exit; keep the sweep's `ps` timeout at 2 s.
-- D3: change only POSIX `forceStop`; keep the 20 s window, `stopManagedBackend` and the Windows manager.
+- D3: change only POSIX `forceStop`; keep the 20 s window, the 2 s confirmation, `stopManagedBackend` and the Windows
+  manager; read the table asynchronously.
 - Validation must include process-tree snapshots (PID/PPID/PGID) for Codex, Claude and native, showing zero survivors,
   and record the CLI versions (U-A2). Prove from a clean clone of the final branch with isolated app data (the desktop
   `e2e` profile or a temporary data root); never the user's installed app or data.

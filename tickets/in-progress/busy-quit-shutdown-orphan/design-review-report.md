@@ -2,257 +2,378 @@
 
 ## Review Round Meta
 
-- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/busy-quit-shutdown-orphan/tickets/in-progress/busy-quit-shutdown-orphan/requirements-doc.md` (Approved, SR-002)
-- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/busy-quit-shutdown-orphan/tickets/in-progress/busy-quit-shutdown-orphan/investigation-notes.md` (E1–E9, RC-1–RC-5, E-A1–E-A7)
-- Upstream Solution Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/busy-quit-shutdown-orphan/tickets/in-progress/busy-quit-shutdown-orphan/solution-revision-record.md` (SR-001–SR-003)
-- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/busy-quit-shutdown-orphan/tickets/in-progress/busy-quit-shutdown-orphan/design-spec.md` (SR-003)
-- Supplemental Task Artifacts Reviewed:
-  - `evidence/`, the E1–E9 logs (relied on as summarized in the investigation notes);
-  - `evidence/e6-electron-quit/`.
-- Relevant Solution Revision IDs: SR-002 (approval), SR-003 (design)
+- Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/busy-quit-shutdown-orphan/tickets/in-progress/busy-quit-shutdown-orphan/requirements-doc.md` (Approved, SR-002 + SR-007)
+- Upstream Investigation Notes: `/Users/normy/autobyteus_org/autobyteus-worktrees/busy-quit-shutdown-orphan/tickets/in-progress/busy-quit-shutdown-orphan/investigation-notes.md` (E1–E9, RC-1–RC-5, E-A1–E-A32, U-A1–U-A3)
+- Upstream Solution Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/busy-quit-shutdown-orphan/tickets/in-progress/busy-quit-shutdown-orphan/solution-revision-record.md` (SR-001–SR-007)
+- Reviewed Design Spec: `/Users/normy/autobyteus_org/autobyteus-worktrees/busy-quit-shutdown-orphan/tickets/in-progress/busy-quit-shutdown-orphan/design-spec.md` (SR-007)
+- Supplemental Task Artifacts Reviewed: `evidence/` (relied on as summarized in the investigation notes); `follow-ups.md` (FU-001–FU-006); `architecture-design-handoff.md`.
+- Relevant Solution Revision IDs: SR-002 and SR-007 (approval), SR-006 and SR-007 (design)
 - Architecture Review Revision Record: `/Users/normy/autobyteus_org/autobyteus-worktrees/busy-quit-shutdown-orphan/tickets/in-progress/busy-quit-shutdown-orphan/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-001`
-- Current Review Round: 1
-- Trigger: SR-003 `Architecture Design Complete` (Large/High) from `/solution_designer`.
-- Prior Review Round Reviewed: N/A
-- Latest Authoritative Round: 1
-- Current-State Evidence Basis: worktree `codex/busy-quit-shutdown-orphan` @ `5f3aefd24` (docs only on top of `424a33147`), base `02d6ddf05`. Code read:
+- Current Architecture Review Revision ID: `ARCH-REV-002`
+- Current Review Round: 2
+- Trigger: SR-007 `Architecture Design Complete` (Medium/High) from `/software_engineering_team/solution_designer`, 2026-10-30.
+- Prior Review Round Reviewed: ARCH-REV-001 (SR-003, Fail)
+- Latest Authoritative Round: 2
+- Current-State Evidence Basis: worktree `codex/busy-quit-shutdown-orphan` @ `1cec2d134a`. It is docs only on top of `origin/personal` @ `1a4453e553` (`git diff --stat 1a4453e553 HEAD` touches only the ticket folder). Code opened at the cited lines:
   - Server:
-    - `agent-run-manager.ts` 185–320: `prepareAgentRunTermination`, `terminateAgentRun`, `stopAllAgentRuns`.
-    - Every caller of those three methods in `src`:
-      - the GraphQL `agent-run.ts:184` → `agent-run-service.ts:140`;
-      - `standalone-agent-run-lifecycle-service.ts:108`;
-      - `configured-agent-execution-handle.ts:201`;
-      - `general-process-run-supervisor.ts:427`;
-      - `application-orchestration-host-service.ts:340` (`terminateRunBinding`, reached from `application-engine-context-capability-handler.ts:44`);
-      - `application-execution-scope.ts:47` (the application SDK's `terminateAgentRun`);
-      - `application-execution-shutdown-coordinator.ts:30` (scope close).
-    - `application-platform-lifecycle.ts:166-181`: the platform stops, including execution scope close.
-    - `build-studio-server.ts:282-287`: `onClose` runs the application lifecycle stop, then `closeProcessResources`.
-    - `server-runtime.ts:29-46`.
-  - Runtimes and tools:
-    - `autobyteus-ts/.../shell-command-executor.ts:36-41, 80-110`: `detached: true`, with an abort-signal stop of the group.
-    - `autobyteus-ts/.../background-process-manager.ts:204-240`: `detached: true`. `stopAll()` has **no caller** in `autobyteus-ts` or `autobyteus-server-ts` `src`.
-    - `background-process-context.ts`: one manager per agent context.
-    - `agy-stream-process.ts:36, 66-85`: AGY is spawned in the server's group. Per the `stop()` doc comment, its background daemons are in their own groups and "survive a SIGTERM of AGY alone".
+    - `src/shutdown/server-process-shutdown.ts` (whole file): memoized `request()`, startup barrier, unbounded `cleanupOnce()`, IPC result, `exit`.
+    - `src/server-runtime.ts:42-46, 190-233`: `setCleanup(() => app.close())`. The startup-failure path runs `cleanupOnce()` and then `exitWithEmbeddedServerPlatformFatal`.
+    - `src/compositions/native-command-shutdown.ts:8`: native scope closed in `preClose`.
+    - `agent-run-manager.ts:203-313`: `prepareAgentRunTermination`, `terminateAgentRun`, `stopAllAgentRuns` (sequential).
+    - `agent-run-termination.ts:56-200`: `prepare`, `fenceForRootShutdown`, `prepareTerminationOnce`, `forceTerminate`.
+    - `agent-run.ts:295`: the fence entry.
+    - Callers of the stop-now entry points (10 call sites by grep; same set as E-A14):
+      - `agent-run-service.ts:126-155` (`stopRoot` first, then `terminateAgentRun`; `false` → `notFound`);
+      - `standalone-agent-run-lifecycle-service.ts:108-117` (`false` → `rejected`);
+      - `standalone-agent-run-root-manager.ts:202-262` (`stopAll` stops root children before hosts);
+      - `general-process-run-supervisor.ts:464-495` (Org → Team → standalone roots → `stopAllAgentRuns`);
+      - the application orchestration and application execution scope callers.
+    - `agy-background-process-groups.ts` (whole file; win32 → `[]`); `agy-stream-process.ts:80-120`.
+    - `claude-sdk-process-owner.ts:86-140`: not detached; EOF, then 2 s, then SIGTERM except on win32.
+    - No `detached: true` spawn in `autobyteus-server-ts/src`.
+    - `docker/Dockerfile.monorepo` runtime base is `autobyteus/chrome-vnc`.
+    - Tests: `tests/unit/shutdown/server-process-shutdown.test.ts`; `tests/unit/server-runtime-app-data-migration-gate.test.ts:289-313`; `vitest.config.ts` (`pool: "forks"`).
   - Desktop:
-    - `electronApplication.ts:331-345, 391-408`: `stop()` returns early on re-entry (`hasShutdownRun`) and clears the before-quit timer.
-    - `baseServerManager.ts:184-245`: a single-PID SIGTERM, then SIGKILL after 5 s.
-    - `macOSServerManager.ts:39-59`: not detached.
-    - `updater/appUpdater.ts:252`: `quitAndInstall(false, true)`.
-    - `main.ts:56`: `app.exit(1)` only on a startup failure.
+    - `managedBackendStop.ts` (whole file);
+    - `baseServerManager.ts:40, 175-195`;
+    - `managedBackendShutdownClient.ts` (whole file);
+    - `windowsServerManager.ts:30-110`;
+    - `application/applicationShutdown.ts` (whole file);
+    - `application/electronApplication.ts:59, 73-75, 348-350`;
+    - `updater/appUpdater.ts:272-280`.
+  - Docs: `agent_execution.md:307-314`, `antigravity_cli_runtime.md:317`, `electron_packaging.md:139`. All cited lines match the design.
 
 ## Routing Classification Review
 
-- Task size: `Large`. Architectural risk: `High`. Agreed:
-  - three process layers: the server run lifecycle, the server process and the Electron quit lifecycle;
-  - stop semantics change for every standalone run on every runtime;
-  - process-group signalling is added.
-- Independent Architecture Review required: `Yes`.
+- Task size: `Medium`. Architectural risk: `High`.
+- Classification rationale reviewed. Agreed:
+  - Medium: two packages, existing owners only (`AgentRunManager`, `ServerProcessShutdown`, `BaseServerManager`), one helper moved, and one small sweep file added.
+  - High:
+    - stop semantics change for every standalone and application run on every runtime (concurrency with input admission and the fence);
+    - process-tree signalling at every server exit and on the desktop force path;
+    - a changed exit-code and IPC-result contract.
+- Independent Architecture Review required by the classification: `Yes`.
 
 ## Upstream Behavior And Production-Path Basis Confirmation
 
-- Overall Basis Status: `Confirmed with gaps`. The approved intent is clear. Two parts of the production-path map are incomplete: the callers of the changed entry points (AR-001), and process ownership outside the server's group (AR-003).
-- Approved intent:
-  - REQ-001: Terminate interrupts, for user Terminate and server shutdown.
-  - REQ-002: shutdown is bounded at 10 s.
-  - REQ-003: no runtime CLI or tool command started by the server outlives shutdown, graceful or forced, on every runtime that spawns processes. ASM-002 is explicitly assigned to architecture investigation.
-  - REQ-004: quit waits up to 15 s, then force-stops.
-  - REQ-005: continuity is preserved.
-- Scope guardrail: DEC-003 (Codex Stop gap) and DEC-004 (data-root guard) are out of scope, as are the root-hosted child fence semantics.
+- Overall Basis Status: `Confirmed`.
+- Approved requirements:
+  - REQ-001 (Terminate interrupts, including an application's terminate, DEC-005);
+  - REQ-002 (10 s server bound);
+  - REQ-003 (no leftover runtime CLI or tool command, graceful or forced);
+  - REQ-004 (desktop waits ≤ 20 s, DEC-007, then force-stops the server and everything it started);
+  - REQ-005 (continuity);
+  - BEH-007 (shutdown never writes `terminatedAt`).
+- Relevant existing behavior confirmed in code:
+  - RC-1 holds: `prepareTerminationOnce` interrupts only in the recoverable-block branch.
+  - RC-2 holds: `request()` awaits `cleanupOnce()` with no bound.
+  - The POSIX `forceStop` sends `SIGKILL` to the server PID only.
+  - `ApplicationShutdown` already memoizes one stop and defers `will-quit`.
+- Scope guardrail confirmed:
+  - In scope: UC-001 to UC-004.
+  - Out of scope: DEC-003, DEC-004, root-hosted child fencing, and Windows handling "beyond honoring the same bounds … unless design finds a gap".
+  - Preserved: BEH-005, BEH-007, idle quit speed, and the Terminate/Stop results seen by the UI.
+- Every prospective blocking `Design Impact` finding is traceable to an approved ID: `Yes` (AR-004 → BEH-004 preserved, AC-005, AC-009).
+- Remaining material ambiguity: none in the requirements basis. The open technical point is the sweep's result where it does not run (AR-004).
+- Statements about existing code the design relies on: all opened at their cited lines and correct. One wording issue: "on Windows the desktop's `taskkill /f /t` remains the net" is true only on the forced path. A clean Windows exit never reaches `forceStop` (see Residual Risks).
 
-| BEH | Alignment | Evidence | Target Path | Status | Action |
-| --- | --- | --- | --- | --- | --- |
-| BEH-001 User Terminate | Pass | Pass (E8; code) | Pass in substance, but the D1 entry point has unmapped application callers | Confirmed with gap | AR-001 |
-| BEH-002 Bounded shutdown | Pass | Pass (E1, E5, E7; code) | Pass. D1 fences all, then the D2 10 s race | Confirmed | — |
-| BEH-003 No leftover processes | Pass | Partial: Codex and Claude established; native, AGY and non-leader forced exit not | Partial | Gap | AR-003 |
-| BEH-004 Quit waits | Pass | Pass (E6) | The semantics are right, but the shape allows a re-entrant early exit | Gap | AR-002 |
-| BEH-005 Continuity | Pass | Pass (T-08c) | Pass. Persistence is untouched | Confirmed | — |
+| Behavior ID | Kind | Design Alignment | Trigger / Evidence | Target Path / Spine | Status | Required Action |
+| --- | --- | --- | --- | --- | --- | --- |
+| BEH-001 (user) | User | Pass | Pass (E8; `agent-run-service.ts:126-155`) | Pass (DS-001) | Confirmed | — |
+| BEH-001 (app) | Contract | Pass (DEC-005) | Pass (E-A8, E-A14; call sites re-grepped) | Pass (DS-001b; no extra code) | Confirmed | — |
+| BEH-002 | Operational | Pass | Pass (E-A25; `server-process-shutdown.ts:33-48`) | Pass (DS-002) | Confirmed | — |
+| BEH-003 | Operational | Pass | Pass (E3, E9, E-A26, E-A28) | Pass, except the sweep's result off POSIX (AR-004) | Confirmed | AR-004 |
+| BEH-004 | User | Pass (DEC-007) | Pass (E-A27, E-A28; `managedBackendStop.ts`) | Pass on POSIX (DS-003). A Windows quit or update depends on AR-004 | Confirmed | AR-004 |
+| BEH-005, BEH-007 | User / Operational | Pass | Pass (E-A15: only Terminate/delete/archive write `terminatedAt`) | Pass (preserved; D1 writes no history) | Confirmed | — |
 
 ## Supplemental Artifact Coherence Verdict
 
-| Artifact | Purpose | Linked | Complete | Consistent | Status | Action |
+| Artifact | Purpose | Linked | Complete | Consistent | Status | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
-| `evidence/` (E1–E9, Electron probe) | Pass | Pass | Pass for Codex, Claude and Electron. Not run for native or AGY (see AR-003) | Pass | Evidence | — |
+| `evidence/` (E1–E9) | Pass | Pass | Pass | Pass | Pass (Evidence) | — |
+| `follow-ups.md` | Pass | Pass | Pass | Pass | Pass | Optional: FU-005 can name the desktop copy as a third reader |
+| `tickets/done/backend-port-conflict-20261024/` (on `personal`) | Pass | Pass | Pass | Pass (D2/D3 extend its owners; its "never report unconfirmed cleanup as clean" policy is kept) | Pass | — |
 
 ## Task Design Health Assessment Verdict
 
-Pass.
-- `Missing Invariant` in existing owners is evidence-backed:
-  - the stop-now owners lack "interrupt before terminate";
-  - the process owners lack "bounded exit, no survivors".
-- No new subsystem is needed. One small new file is justified.
+| Assessment Area | Result | Evidence | Required Action |
+| --- | --- | --- | --- |
+| Assessment is present for the current task posture | Pass | `Bug Fix`, current design issue `Yes` | — |
+| Root-cause classification is explicit and evidence-backed | Pass | `Missing Invariant` in three owners; RC-1, RC-2 and the POSIX force confirmed in code | — |
+| Refactor decision is explicit | Pass | `Yes, small`: the AGY selector moves to `src/utils` because a second owner needs it | — |
+| Refactor decision is reflected in concrete sections | Pass | File mapping, removal plan, dependency rules | — |
 
 ## Spine Inventory Verdict
 
-| Spine | Verdict | Notes |
-| --- | --- | --- |
-| DS-001 Terminate | Pass, with AR-001 | The spine is correct for user Terminate. The application-initiated terminate spines that enter the same owner are not listed. |
-| DS-002 Server shutdown | Pass | `onClose` runs the application platform stop (scope close → per-scope `stopAllAgentRuns`, which also gets D1), then `closeProcessResources`. Add the application step to the spine for accuracy. |
-| DS-003 Desktop quit | Fail (AR-002) | The re-entry state is not owned by a single in-flight stop promise. |
-| Bounded: `stopServer` state machine; server forced exit | Pass | The timeline is coherent: the server forces itself at 10 s, plus 1.5 s grace, which is under the desktop's 15 s. |
+| Spine | Readable | Narrative | Facade vs Owner | Naming | One Owner Per Node, In Order | Off-Spine Kept Off | Verdict |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| DS-001 Terminate | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DS-001b Application terminate | Pass | Pass | Pass | Pass | Pass | Pass | Pass |
+| DS-002 Server shutdown | Pass | Pass | Pass | Pass | Pass: `ServerProcessShutdown` drives barrier → bounded cleanup → sweep → result → exit | Pass (logging) | Pass, with AR-004 on the sweep result |
+| DS-003 Desktop quit | Pass | Pass | Pass | Pass | Pass: `ApplicationShutdown` → `stopManagedBackend` → POSIX `forceStop` | Pass | Pass, with AR-006 wording |
+| Bounded: sweep; `request()`; desktop force | Pass | Pass | N/A | Pass | Pass | Pass | Pass |
 
-## Boundary / Dependency / Interface Verdicts
+DS-002 call order was redrawn against code:
 
-| Item | Verdict | Notes |
-| --- | --- | --- |
-| D1 in `AgentRunManager` (owner of stop-now); callers do not fence themselves | Pass | `prepareTermination` is unchanged, which preserves the Team/Org/copy drain-and-cancel flows (E-A2 verified at `configured-agent-execution-handle.ts:201`). |
-| `server-process-shutdown.ts` owns the bound and the forced exit | Pass | Injectable timers, kill and exit. |
-| `BaseServerManager.stopServer` owns signals and escalation; `ElectronApplication` owns quit sequencing | Pass, with AR-002 | — |
-| Env flag `AUTOBYTEUS_SERVER_PROCESS_GROUP_LEADER` | Pass (see N-1) | — |
+1. `request()` → `startupSettled`.
+2. `cleanupOnce()` = `app.close()`:
+   1. `preClose`: native scope close, ≤ 3 s;
+   2. `onClose`: application lifecycle stop, which runs the application-scope `stopAllAgentRuns`;
+   3. `closeProcessResources`;
+   4. `GeneralProcessRunSupervisor.closeInternal`: Org → Team → standalone roots (children only, `standalone-agent-run-root-manager.ts:250-262`) → `stopAllAgentRuns`.
+3. New: the 10 s race, then the sweep.
+4. The IPC result, then `exit`.
 
-## Review-Focus Verdicts
+The fence for a busy host runs at the last supervisor stage. Earlier stages are bounded by the existing child fences (F-2, 5 s each for a rejected interrupt), and the 10 s bound covers the sum.
 
-1. **Limiting D1 to `terminateAgentRun` and `stopAllAgentRuns`:**
-   - **Correct.** The Team, Org, task-copy and Mixed-Team flows use `prepareAgentRunTermination`/`tryPrepare…` with cancellation. Changing `prepareTermination` would break their drain-and-cancel contract.
-   - **Incomplete map.** The two entry points have more callers than the design lists (AR-001). The application-scope `stopAllAgentRuns` is part of server close, so it is correctly in SCN-002. The application-initiated `terminateAgentRun` paths need an explicit disposition.
-2. **Process group versus a per-runtime registry:**
-   - **Correct for runtime CLIs.** CLIs inherit the server's group and clean their tool commands on SIGTERM (E3, E9). The Claude CLI is SDK-spawned, so a global registry cannot enumerate it (E-A4).
-   - **Not sufficient alone.** Group signalling cannot reach processes deliberately placed in other groups, whose owner does not clean them on SIGTERM: native AutoByteus shell and background commands, and AGY daemons. Those need their existing owners invoked, not a new global registry (AR-003).
-3. **Env-flag contract:** sound. The spawner knows it created a group leader, and the server never signals a group it does not lead. See N-1 for scoping and the rationale wording.
-4. **Deferring `will-quit`:**
-   - The semantics are sound: defer, stop once, then `app.quit()`.
-   - The shape guidance is unsafe given today's `stop()` (AR-002).
-   - The update path needs verification (N-2).
+## Boundary Encapsulation Verdict
 
-## Existing Capability Reuse / Allocation / File Mapping
+| Boundary / Owner | Public Entry Clear | Internals Stay Internal | Bypass Controlled | Verdict | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `AgentRunManager` stop-now methods | Pass | Pass | Pass | Pass | Callers do not fence themselves. `AgentRunTermination` is unchanged |
+| `ServerProcessShutdown` | Pass | Pass | Pass | Pass | Bound, sweep call, result and exit stay in one owner. No second shutdown file |
+| `server-process-tree-sweep.ts` | Pass | Pass | Pass | Pass | Holds no policy. The caller decides the exit code |
+| `utils/process-tree.ts` | Pass | Pass | Pass | Pass | Pure selection plus primitives, shared by AGY and the sweep |
+| `BaseServerManager.forceStop` (POSIX) | Pass | Pass | Pass | Pass | `stopManagedBackend` and the Windows manager stay untouched |
 
-- Pass for the fence reuse, the new `server-process-shutdown.ts` and the desktop manager extensions.
-- AR-003 may add calls into existing native and AGY owners. That is reuse, not a new subsystem.
+## Dependency Direction / Forbidden Shortcut Verdict
 
-## Removal / Legacy Verdict
+| Owner / Boundary | Allowed Clear | Forbidden Explicit | Direction Coherent | Verdict | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `server-runtime` → `shutdown/*` → `utils/process-tree` | Pass | Pass | Pass | Pass | `utils` imports only Node |
+| `agy-stream-process` → `utils/process-tree` | Pass | Pass | Pass | Pass | No re-export shim |
+| Desktop `serverProcessTree.ts` ← `BaseServerManager` only | Pass | Pass | Pass | Pass | Electron main cannot import server code, so the copy is justified |
 
-Pass. The unbounded close, the 5 s single-PID SIGKILL and the non-deferred `will-quit` are replaced. There are no compatibility flags.
+## Interface Boundary Verdict
 
-## Persisted-Data Transition Verdict
+| Interface | Subject | Singular | Identity | Generic Risk | Verdict |
+| --- | --- | --- | --- | --- | --- |
+| `AgentRunManager.terminateAgentRun(runId): Promise<boolean>` | Pass | Pass | Pass | Low | Pass |
+| `AgentRunManager.stopAllAgentRuns()` | Pass | Pass | Pass | Low | Pass |
+| `new ServerProcessShutdown(runtime, { cleanupTimeoutMs, sweep, timers })` | Pass | Pass | Pass | Low | Pass, but the default-sweep seam needs the AR-005 test note |
+| `terminateServerProcessTree(deps): { targets, confirmed }` | Pass | Pass | Pass | Low | **Fail (AR-004)**: the result where no table can be read, notably win32, is unspecified |
+| `selectDescendantProcessGroups(rows, rootPid, excludedPgids)`, `selectDescendantPidsInGroup(rows, rootPid, pgid)` | Pass | Pass | Pass | Low | Pass |
+| `BaseServerManager.forceStop(proc)` (POSIX) | Pass | Pass | Pass | Low | Pass |
 
-Pass: `Not Affected`. Losing the interrupted turn's partial work is an approved acceptable loss.
+## Existing Capability / Subsystem Reuse Verdict
+
+| Need | Checked | Decision Sound | New Piece Justified | Verdict | Notes |
+| --- | --- | --- | --- | --- | --- |
+| Interrupt and cancel queued input | Pass | Pass (reuse the fence) | N/A | Pass | — |
+| Shutdown signals, IPC, exit | Pass | Pass (extend `ServerProcessShutdown`) | N/A | Pass | — |
+| Native commands | Pass | Pass (reuse the scope; the sweep is only a net) | N/A | Pass | — |
+| Process-table selection | Pass | Pass (move AGY's selector) | Pass | Pass | `ProcessGroupObserver` not reused, with a reason (FU-005) |
+| Desktop escalation | Pass | Pass (extend `forceStop` only) | Pass (desktop copy) | Pass | — |
+
+## Subsystem / Capability-Area Allocation Verdict
+
+| Area | Allocation Clear | Decision Sound | Supports Spine Owners | Verdict | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `agent-execution/services` | Pass | Pass | Pass | Pass | — |
+| `src/shutdown` | Pass | Pass | Pass | Pass | — |
+| `src/utils` | Pass | Pass | Pass | Pass | — |
+| `autobyteus-web/electron/server` | Pass | Pass | Pass | Pass | — |
+
+## Reusable Owned Structures Verdict
+
+| Structure | Extraction Evaluated | Shared File Sound | Ownership Clear | Verdict | Notes |
+| --- | --- | --- | --- | --- | --- |
+| Descendant selection (AGY + sweep) | Pass | Pass | Pass | Pass | — |
+| Desktop copy of the selection | Pass | Pass | Pass | Pass | About 40 lines, tested on both sides. Readers across packages are FU-005 |
+
+## Shared Structure / Data Model Tightness Verdict
+
+| Structure | One Meaning Per Field | No Redundancy | Overlap Controlled | Core vs Variant | Verdict | Notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| Sweep result `{ targets, confirmed }` | Fail (AR-004) | Pass | Pass | N/A | Fail | `confirmed` must have one meaning where the sweep cannot or does not run |
+
+- Derived consumers of the changed structures, each with a decision (Principle 11): `Pass`. AGY stream, its tests and its doc line are covered.
+- Each domain word keeps one meaning, and each concept one name (Principle 15): `Pass`. "Server", "embedded server" and "process-tree sweep" are used consistently, with no glossary change.
+
+## File Responsibility Mapping Verdict
+
+| File | Singular | Matches Owner | Re-Tightened | Verdict | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `agent-run-manager.ts` | Pass | Pass | N/A | Pass | — |
+| `shutdown/server-process-shutdown.ts` | Pass | Pass | N/A | Pass | — |
+| `shutdown/server-process-tree-sweep.ts` | Pass | Pass | N/A | Pass | AR-004 result semantics |
+| `utils/process-tree.ts` (moved) | Pass | Pass | Pass | Pass | — |
+| `agy-stream-process.ts` and its tests | Pass | Pass | Pass | Pass | — |
+| `tests/unit/shutdown/server-process-shutdown.test.ts` | Pass | Pass | N/A | Pass | — |
+| `tests/unit/server-runtime-app-data-migration-gate.test.ts` | — | — | — | **Missing (AR-005)** | It runs `startConfiguredServer` in-process and fires SIGTERM, so the default real sweep would run inside the test worker |
+| `baseServerManager.ts`, `serverProcessTree.ts` | Pass | Pass | N/A | Pass | AR-006 wording |
+| Three docs | Pass | Pass | N/A | Pass | Line references verified |
+
+## Subsystem / Folder / File Placement Verdict
+
+| Path | Placement Clear | Folder Matches | Risk | Verdict | Notes |
+| --- | --- | --- | --- | --- | --- |
+| `src/shutdown/server-process-tree-sweep.ts` | Pass | Pass | Low | Pass | Next to its only caller |
+| `src/utils/process-tree.ts` | Pass | Pass | Low | Pass | Concern-agnostic |
+| `electron/server/serverProcessTree.ts` | Pass | Pass | Low | Pass | — |
+
+## Removal / Decommission Completeness Verdict
+
+| Item | Named | Replacement Clear | Scope Explicit | Verdict | Notes |
+| --- | --- | --- | --- | --- | --- |
+| Unbounded `await this.cleanupOnce()` | Pass | Pass | Pass | Pass | — |
+| `agy-background-process-groups.ts` and its test location | Pass | Pass | Pass | Pass | No shim |
+| POSIX single-PID `SIGKILL` | Pass | Pass | Pass | Pass | — |
+| Dead code in touched files | Pass | N/A | Pass | Pass | None found |
+
+## Legacy / Backward-Compatibility Verdict
+
+| Area | Wrapper / Dual Path | Clean Cut Explicit | Verdict | Notes |
+| --- | --- | --- | --- | --- |
+| AGY helper re-export | No | Pass | Pass | Rejected in the log |
+| A flag to restore drain-on-terminate | No | Pass | Pass | Rejected |
+| A second shutdown owner | No | Pass | Pass | Rejected |
+
+## Persisted-Data Transition Verdict (When Applicable)
+
+| Area | Decision | Evidence | Proportionate | Migration Safety | Verdict | Notes |
+| --- | --- | --- | --- | --- | --- | --- |
+| Run history, conversations | `Not Affected` | Pass (E-A15) | Pass | N/A | Pass | The interrupted turn's work is an approved acceptable loss |
 
 ## Change / Refactor Safety Verdict
 
-Pass for D1 and D2 sequencing and tests. D3 needs AR-002's re-entry test.
+| Area | Realistic | Seams Explicit | Cleanup Explicit | Verdict |
+| --- | --- | --- | --- | --- |
+| Step 1: move the utility, re-point AGY | Pass | Pass | Pass | Pass |
+| Step 2: D1 and tests | Pass | Pass | Pass | Pass |
+| Step 3: D2 and tests | Pass | Fail (AR-005: one existing in-process test is not listed) | Pass | Pass after AR-005 |
+| Step 4: D3 and tests | Pass | Pass | Pass | Pass |
+| Steps 5–6: docs, validation | Pass | Pass | Pass | Pass |
 
 ## Example Adequacy Verdict
 
-Fail for the deferred-quit example (AR-002). The other examples are good: stop-now ordering, the concurrent fence, flag-gated group signalling, and grace before kill.
+| Topic | Needed | Present | Avoided Shape | Verdict | Notes |
+| --- | --- | --- | --- | --- | --- |
+| Stop-now fence first | Yes | Pass | Pass | Pass | — |
+| Concurrent shutdown fence | Yes | Pass | Pass | Pass | — |
+| Bound, then always the sweep | Yes | Pass | Pass | Pass, except the off-POSIX result (AR-004) | — |
+| Bound start after the barrier | Yes | Pass | Pass | Pass | — |
+| Sweep targets | Yes | Pass | Pass | Pass | Record before signalling, never the root's own group, never by port |
+| Desktop force order | Yes | Pass | Pass | Pass | Remove the "raise to 3 s if needed" seam (AR-006) |
 
-## Material Premise Validation
+## Material Premise Validation (Only When Needed)
 
-### `P-001`: the user quits again while a busy quit is still waiting (AR-002)
+### `P-004`: a Windows desktop quit or update reaches the server-side sweep on win32 (AR-004)
 
-- Requirement: REQ-004, AC-004.
-- Initiating basis: `User`.
-  - Surface: the app menu or dock **Quit** (Cmd+Q). The app keeps running while `will-quit` is deferred.
-  - Action: press Quit again because the app has not exited. A second OS SIGTERM to main is the same path.
+- Related requirement / contract: REQ-004; BEH-004 preserved ("Normal quit with an idle app stays quick"); AC-005; AC-009 (the update restart); the Scope Guardrail on Windows ("honoring the same bounds").
+- Behavior IDs: BEH-004, BEH-003.
+- Initiating basis kind: `User`. A Windows desktop user quits from the menu, or installs an update (`Install update and restart`).
+- Support evidence: Windows is a shipped desktop target (`windowsServerManager.ts`). The updater's `prepareForInstall: () => this.stop()` (`electronApplication.ts:73-75`, `appUpdater.ts:275`).
 - Forward path:
-  1. Quit #1: `before-quit` arms the 8 s timer → `will-quit` is prevented → `stop()` sets `hasShutdownRun` and clears the timer → `stopServer` (up to 15 s; the busy forced path is about 11.5 s).
-  2. Quit #2: `before-quit` re-arms a new 8 s timer → `will-quit`, where the design's example calls `this.stop()` again.
-  3. `stop()` returns at once (`if (this.hasShutdownRun) return`, `electronApplication.ts:392`).
-  4. `.finally` sets `serverStopped = true` and calls `app.quit()`.
-  5. `will-quit` passes through, and Electron exits while `stopServer` is still pending.
-  6. The re-armed 8 s timer reaches the same state even without a second press, if the stop takes more than 8 s after quit #2.
-- Consequence: main exits before the server's group escalation, and the server or its CLIs are orphaned. This recreates RC-3/E6, in the busy case this ticket targets.
-- Reachability: `Reachable`. It drives AR-002.
+  1. `ApplicationShutdown.stop()` → `stopServer` → `stopManagedBackend` → `WindowsServerManager.requestGracefulStop` → `ManagedBackendShutdownClient.stop` sends the IPC `request`.
+  2. Server: `ServerProcessShutdown.request()` → cleanup → **sweep (D2: "always")**.
+  3. If the sweep reports `confirmed: false` because no process table can be read (the design: "`ps` missing … reports unconfirmed"; `ps` does not exist on Windows) → `code = 1` → IPC `failed`.
+  4. `managedBackendShutdownClient.ts:38` rejects with "Backend reported incomplete cleanup" → `managedBackendStop.ts:33` throws `ShutdownIncompleteError`.
+  5. Quit: `app.exit(1)` (`electronApplication.ts:350`). Update: `prepareForInstall` rejects, so `quitAndInstall` never runs (`appUpdater.ts:275-278`).
+- Lifecycle preconditions and consequence: none beyond a normal Windows quit or update. Every Windows quit would end on the failure path, and every Windows update install would be aborted, with the server already stopped.
+- Reachability: `Reachable`, if the implementation follows the design's own "cannot confirm → unconfirmed → exit 1" rule on win32. The design states that the sweep is "POSIX only", but not what it returns there or how that maps to the exit code.
+- Review consequence: AR-004 (blocking, small).
 
-### `P-002`: forced exit, or plain termination, leaves server-spawned detached processes (AR-003)
+### `P-005`: the default real sweep runs inside the repository test suite (AR-005)
 
-- Requirement: REQ-003, AC-002, AC-003, ASM-002.
-- Governing contract: REQ-003 ("graceful or forced … every runtime that spawns processes"). SCN-002 names `kill`/Docker stop. AC-003 defines the forced path with a test double.
-- Code facts:
-  - Native AutoByteus foreground shell commands and background processes are spawned `detached: true`, each in its own group. The server's group SIGTERM/SIGKILL cannot reach them.
-  - `BackgroundProcessManager.stopAll()` has no caller. Native background processes started by the `start_background_process` tool are not stopped by run termination or shutdown on *any* path.
-  - AGY daemons survive a SIGTERM to AGY alone (code comment). On the forced path the group SIGTERM reaches AGY but not its daemons.
-  - Non-leader forced exit (`kill <pid>` of a CLI-launched server): the server exits alone. The Claude CLI survives EOF (E9).
-- Reachability:
-  - Native background processes: `Reachable` on every shutdown. The agent uses the product's `start_background_process` tool, then the user quits.
-  - Native foreground command and AGY daemons on the forced path: `Unclear`. It depends on whether a native or AGY interrupt ends the turn; this is the ASM-002 investigation the requirements assigned to architecture.
-  - Non-leader forced path: conditional on the forced path, which the approved AC-003 governs.
+- Related contract: AC-007 (existing suites stay green); the escalation trigger "the sweep signals something the server did not spawn".
+- Initiating basis kind: `Contract` (the repository's own test suite).
+- Forward path:
+  1. `tests/unit/server-runtime-app-data-migration-gate.test.ts:289-313` calls `startConfiguredServer` in the vitest fork worker. `server-runtime.ts:43` constructs `new ServerProcessShutdown()` with defaults.
+  2. The test fires the captured SIGTERM handler and expects `process.exit(0)` after one `setImmediate`.
+  3. With "injectable sweep (default: the real one)", `request()` runs a real `ps` and signals descendants of the worker's `process.pid`. With an asynchronous sweep, `exit` is not yet called when the test asserts.
+- Reachability: `Reachable`.
+- Review consequence: AR-005 (Low, non-blocking).
 
-### `P-003`: an application terminates a busy run (AR-001)
+ARCH-REV-001's premises are resolved:
 
-- Basis: governing contract.
-  - The application backend SDK's `terminateRunBinding` goes through `application-engine-context-capability-handler.ts:44` to `ApplicationOrchestrationHostService.terminateRunBinding` and then `terminateAgentRun`.
-  - The application execution scope also exposes `terminateAgentRun`.
-- No bundled application calls these, but the SDK surface is public.
-- Consequence: an application's explicit terminate changes from drain to interrupt with D1. This is benign and consistent with REQ-001's "Terminating a run … interrupts", but it is not mapped or dispositioned.
-- Reachability: `Reachable` (contract). Low consequence.
+- P-001 (re-entrant quit): shipped `ApplicationShutdown` memoizes one stop (`applicationShutdown.ts:9-28`).
+- P-002 (processes outside the server's group): the sweep and the native scope (E-A11, E-A26).
+- P-003 (an application terminates a busy run): DEC-005 approved.
 
 ## Unresolved Approved-Behavior Or Current-State Gaps
 
-- The ASM-002 investigation is incomplete for native AutoByteus and AGY (AR-003).
+None.
 
 ## Review Decision
 
-`Fail`
+`Fail`. D1, D2 and D3 are structurally sound. One small blocking correction (AR-004) and two low notes (AR-005, AR-006) must be folded into the design spec.
 
 ## Findings
 
-### `AR-001` (Low; Design Impact; not blocking on its own): the D1 production-path map omits application callers
+### `AR-004` (Medium; blocking; Design Impact): the sweep's result where it cannot or does not run is unspecified, and the stated rule turns every Windows quit and update into a failure
 
-- Protects: REQ-001, and preserved behavior (Terminate results).
+- Protects: BEH-004 preserved (idle quit), AC-005, AC-009 (the update restart), REQ-004. See P-004.
+- Scope status: `Within Approved Scope`. Changes approved behavior: `No`. The fix prevents a regression.
 - Evidence:
-  - `application-orchestration-host-service.ts:340`, reached from the application engine capability (`application-engine-context-capability-handler.ts:44`);
-  - `application-execution-scope.ts:47`;
-  - `application-execution-shutdown-coordinator.ts:30`, through `application-platform-lifecycle.ts:178` and `build-studio-server.ts:284`.
-- Proportionate response:
-  - Add these callers to the behavior map and DS-001/DS-002.
-  - State the disposition: application-initiated terminate intentionally shares stop-now semantics under REQ-001, and the application-scope stop is part of SCN-002.
-  - If the designer considers application-initiated terminate outside REQ-001's approved meaning, route it as a Requirement Gap rather than leaving it implicit.
+  - design-spec Risks: "`ps` missing … the sweep logs and reports unconfirmed".
+  - Shape table: "`if (!sweep.confirmed) code = 1`".
+  - Health assessment: "the server-side sweep is POSIX only".
+  - `managedBackendShutdownClient.ts:38`; `managedBackendStop.ts:22, 33`; `electronApplication.ts:73-75, 350`; `appUpdater.ts:275-278`.
+  - The AGY helper today returns `[]` on win32 (`agy-background-process-groups.ts:58`), so moving it does not settle the question.
+- Required update:
+  - In the sweep interface, distinguish **not applicable** (win32: the sweep is not run, or reports no targets) from **unconfirmed** (POSIX: the table could not be read, or a recorded target survived).
+  - Only *unconfirmed* sets exit 1 / IPC `failed`. On Windows the exit code depends only on the cleanup and the bound, as today.
+  - Add a unit case: on win32 a clean close gives exit 0 and IPC `complete`, and no `ps` runs.
+  - Keep the POSIX "`ps` unreadable → unconfirmed" rule, which matches backend-port-conflict's policy. Name its consequence: exit 1, and on the desktop a quit that ends through `app.exit(1)`.
+  - Correct the residual wording: `taskkill /f /t` is the net only on the Windows **forced** path. After a clean Windows exit nothing sweeps, which is accepted under the Windows scope guardrail.
+- Proportionate: a one-paragraph spec change and one test. No new mechanism.
+- Recipient: Solution Designer.
 
-### `AR-002` (Medium; blocking; Design Impact): deferred `will-quit` must be keyed to one in-flight stop promise
+### `AR-005` (Low; non-blocking; Design Impact): an existing in-process test would run the real sweep
 
-- Protects: REQ-004, AC-004 (P-001).
-- Evidence: `electronApplication.ts:391-395`. `stop()` returns immediately on re-entry and clears only the first before-quit timer. The design's shape example (`void this.stop().finally(() => { this.serverStopped = true; app.quit(); })`) therefore marks the app stopped on a second quit, or on the re-armed timer, while the first stop is pending.
-- Proportionate response:
-  - Make the quit deferral depend on a single memoized stop promise, for example `this.stopping ??= this.stopOnce()`, with `stop()` returning it.
-  - Set "stopped" and call `app.quit()` only when *that* promise settles.
-  - Re-entrant `will-quit` (a second Cmd+Q, a second SIGTERM, the re-armed 8 s timer) stays prevented until then.
-  - Correct the example and the "before-quit 8 s timer stays harmless" sentence to rest on this invariant.
-  - Add a unit test: a second `app.quit()` during a pending `stopServer` does not exit before it settles.
+- Protects: AC-007. See P-005.
+- Scope status: `Within Approved Scope`. Changes approved behavior: `No`.
+- Evidence: `server-runtime-app-data-migration-gate.test.ts:289-313`; `server-runtime.ts:43`; `vitest.config.ts:15` (`pool: "forks"`).
+- Required update:
+  - Add this test to the file mapping (Modify: mock `shutdown/server-process-tree-sweep.js`, and await the request before asserting `exit`).
+  - State that unit tests never reach the real sweep: the existing `server-process-shutdown.test.ts` cases construct `new ServerProcessShutdown(proc)` with a fake runtime, and also need an injected sweep.
+- Recipient: Solution Designer (fold into the spec). The implementer may apply it directly if the designer prefers.
 
-### `AR-003` (Medium; blocking; Design Impact with an Unclear part): REQ-003 coverage outside the server's process group is not established
+### `AR-006` (Low; non-blocking; Design Impact): the desktop force budget is a conditional seam that contradicts "`stopManagedBackend` unchanged"
 
-- Protects: REQ-003, AC-002, AC-003. ASM-002 was assigned to architecture by the requirements.
-- Evidence: P-002 code facts.
-- Proportionate response: complete ASM-002 by code read and, where needed, a probe, then disposition each case.
-  - **(a) Native foreground commands.** Does the native interrupt or terminate abort the running `ShellCommandExecutor` (its `signal` → group stop) so the graceful path leaves nothing? Record the evidence.
-  - **(b) Native background processes.** `BackgroundProcessManager.stopAll()` is never called, so these survive Terminate and shutdown today on every path.
-    - Either give them a stop owner in the existing native termination path (for example, the native backend's terminate stops its context's manager), or
-    - if the product intends them to outlive the run, return it as a Requirement Gap (it conflicts with BEH-003 as approved).
-  - **(c) Forced path (desktop leader).** Server-owned detached groups (native) and AGY daemons are not reached by the group signal.
-    - Either signal the server-tracked groups synchronously in the forced exit, using the existing owners' known PGIDs and no new global registry, or
-    - record an explicit residual with user approval.
-  - **(d) Forced path (non-leader, `kill <pid>`).** The Claude CLI survives EOF. Either state a mechanism, or record the residual explicitly against SCN-002/AC-003 for approval. E-A7 covers Docker and terminals, not a plain `kill`.
-- Keep process-group signalling as the primary mechanism for runtime CLIs. This finding does **not** ask for a global process registry.
+- Protects: REQ-004, AC-004, AC-011.
+- Scope status: `Within Approved Scope`. Changes approved behavior: `No`.
+- Evidence:
+  - `managedBackendStop.ts:28-29`: `forceDeadline` is taken before `await force()`, the remainder goes to `waitForChildExit`, and that function returns at once when the child has already exited (`:8`).
+  - The force path always ends in `ShutdownIncompleteError` (`:33`).
+  - Because D3 sends `SIGKILL` to the server right after the snapshot, the exit is confirmed whatever the 1.5 s grace.
+  - Worst case: 20 s + ≤ 2 s `ps` + 1.5 s ≈ 23.5 s, inside the 30 s `ApplicationShutdown` ceiling.
+- Required update:
+  - Replace "raise it from 2 s to 3 s if needed" with "the 2 s confirmation is kept; no change to `stopManagedBackend`".
+  - Require the desktop copy to read the table asynchronously (`execFile`, 2 s timeout), not `execFileSync` as the AGY helper does, so Electron main is not blocked during quit.
+  - U-A3 then becomes an observation, not a budget question.
+- Recipient: Solution Designer.
 
 ## Classification
 
-`Design Impact`. AR-003's investigation part is `Unclear` until ASM-002 is completed. AR-003(b) or (d) may become a `Requirement Gap` if the designer proposes narrowing REQ-003.
+`Design Impact` (AR-004 blocking; AR-005 and AR-006 low).
 
 ## Recommended Recipient
 
-`/solution_designer`
+`/software_engineering_team/solution_designer`
 
-## Residual Risks / Non-Blocking Notes
+## Residual Risks
 
-- **N-1 (env flag).**
-  - Read `AUTOBYTEUS_SERVER_PROCESS_GROUP_LEADER` once at startup and remove it from `process.env`. Otherwise runtime CLIs and tool commands inherit it; for example, an agent launching a development AutoByteus server as a tool command.
-  - Treat `ESRCH` from `process.kill(-pid)` as "already gone".
-  - Correct the rationale in the shape table:
-    - `process.kill(-process.pid)` can only target a group whose ID equals the server's own PID, so it cannot signal a parent shell's group.
-    - The real hazard of an unconditional group signal is killing co-members of a shell job the server happens to lead, such as pipeline peers.
-- **N-2 (updater).** Verify `autoUpdater.quitAndInstall(false, true)` (`appUpdater.ts:252`) with the deferred `will-quit` on macOS and Windows, as the design's Risks already list.
-- **N-3 (user Terminate bound).**
-  - Terminate has no D2-style bound. An accepted interrupt whose turn never ends still leaves Terminate pending; that is today's unbounded wait narrowed to a non-ending runtime.
-  - AC-001's live Codex/Claude check is the gate. Acceptable as a residual.
-- **N-4 (second signal to the server).** With the `once` handlers kept, a second SIGTERM in the first 10 s takes Node's default action and skips the CLI-cleanup grace. This is acceptable as today's operator escape hatch, provided the desktop never sends a second SIGTERM (AR-002's single stop promise ensures that).
-- Carried: the DEC-003/DEC-004 follow-ups; Windows relies on the existing `taskkill /t` with the new 15 s bound.
+- **N-3 (carried):** user Terminate has no D2-style bound. A runtime that accepts an interrupt but never ends its turn keeps Terminate pending. AC-001 is the gate.
+- **N-5 (new): exit 1 after an expired bound aborts an update install.** This is backend-port-conflict's policy: `prepareForInstall` rejects, and `ApplicationShutdown` memoizes the rejected stop. Today a busy update always ends on the force path, so the design improves the common case. However, a slow but healthy shutdown that passes 10 s now exits 1 where it used to exit 0. For example, several Claude runs at about 2 s each for EOF release (E-A17), possibly idle ones too. Suggest that U-A1 also measures idle Claude runs and records the updater consequence. The design's escalation trigger ("the bound cuts a cleanup that would have finished") already applies.
+- **N-6:** a fence that is not accepted leaves the run root-fenced but active. The user sees `notFound`/`rejected`, which are existing result shapes, and a retry runs a new fence attempt (F-3). This is acceptable. Worth one sentence in `agent_execution.md`.
+- **N-7:**
+  - After the bound expires, the cut cleanup keeps running beside the sweep. A process spawned after the snapshot is not swept. This is low: activation and native admission are closed, and the native scope closed at `preClose`.
+  - The startup-failure exit (`server-runtime.ts:226-232`) is neither bounded nor swept. It is not a shutdown trigger in this ticket.
+- **N-8:** after this ticket there are three process-table readers: `ProcessGroupObserver`, `utils/process-tree` and the desktop copy. FU-005 can name the third.
+- Windows: there is no server-side sweep, and `ClaudeSdkProcessOwner` skips SIGTERM on win32 (`claude-sdk-process-owner.ts:135`). This is accepted under the Windows scope guardrail and unchanged by this ticket.
 
 ## Latest Authoritative Result
 
 - Review Decision: `Fail`
-- Material-Premise Gate:
-  - P-001: `Reachable`, drives AR-002.
-  - P-002: partly `Reachable` (native background processes), partly `Unclear` (native/AGY forced path); drives AR-003.
-  - P-003: `Reachable` (contract), low consequence; drives AR-001.
-- Notes: D1 and D2 are structurally sound. AR-002 is a small, concrete correction. AR-003 requires completing ASM-002 and dispositioning each process owner outside the server's group.
+- Material-Premise Gate: `Pass`. P-004 is `Reachable` and drives AR-004. P-005 is `Reachable` and drives AR-005. The ARCH-REV-001 premises are resolved.
+- Notes:
+  - Prior findings: AR-001 resolved (DEC-005, DS-001b); AR-002 resolved by shipped `ApplicationShutdown`; AR-003 resolved (native scope plus the always-run sweep plus the D3 tree force).
+  - Review focus answers:
+    1. Interrupt-first at the two entry points breaks no caller. The drain flows are untouched.
+    2. The bound after the barrier and the always-run sweep are sound. Exit and IPC semantics match backend-port-conflict except off POSIX (AR-004).
+    3. The sweep is correctly a net beside `NativeCommandProcessScope`.
+    4. The D3 order fits in the existing 2 s (AR-006).
+    5. The recording point holds: the fence runs inside `app.close()`, and no `terminatedAt` is written.
+  - A re-review of AR-004, plus any AR-005 and AR-006 edits, is expected to be short.
