@@ -49,7 +49,7 @@ A stopped standalone Agent run's settings let the user pick another runtime and 
   - Work Journal manifest (per-file runtime): readers — memory search's journals step (uses file versions and hashes, not the runtime), the journal reader tools. Decision: unchanged outputs for a run that never switched; the journal file text is rendered the same, so content hashes and the evidence hash stay equal and memory search re-indexes nothing.
   - Chat history projection and journal renderer: both already handle `system_task_notification`; no change.
 - Deliberately left alone: team members, Org members, delegated copies (FU-003); agent- or Model-Router-started switch (FU-004); the restart notice of 283–289 (FU-005); the five backends' own runtime-label literals (FU-006); the stop reason (FU-001, not needed); the journal wording (done by 331); the native `working_context_snapshot.json` (a switch to or from native never edits it).
-- Follow-ups: FU-003, FU-004, FU-005, FU-006 (in `follow-ups.md`); FU-001, FU-002 stay as recorded.
+- Follow-ups: FU-003, FU-004, FU-005, FU-006 (in `follow-ups.md`); FU-001 stays as recorded.
 
 ## Relevant Behavior And Production-Path Map (Mandatory)
 
