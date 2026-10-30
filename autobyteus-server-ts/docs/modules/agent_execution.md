@@ -321,13 +321,18 @@ server's own cleanup (`app.close()`) at most 10 s
 (`SERVER_SHUTDOWN_TIMEOUT_MS`), counted from when startup has settled. It then
 always runs one process-tree sweep (`server-process-tree-sweep.ts`): it records
 the server's descendants in its own process group and the groups led by a
-descendant, sends SIGTERM, waits up to 1.5 s, and SIGKILLs the recorded
-survivors. The server's own group and anything selected by port are never
-signalled. The exit code is 1, and the Windows IPC result `failed`, when the
-cleanup failed, the bound expired, or the sweep could not confirm that every
-target is gone (for example when `ps` cannot be read). On Windows the sweep is
-not applicable: there the exit code depends only on the cleanup and the bound,
-and nothing is swept after a clean exit.
+descendant, sends SIGTERM, waits up to 1.5 s, SIGKILLs the recorded
+survivors, and waits up to 0.5 s more for them to be gone (a killed direct
+child stays visible until the server reaps it). The server's own group and
+anything selected by port are never signalled. The exit code is 1, and the
+Windows IPC result `failed`, when the cleanup failed, the bound expired, or the
+sweep could not confirm that every target is gone (for example when `ps` cannot
+be read). On Windows the sweep is not applicable: there the exit code depends
+only on the cleanup and the bound, and nothing is swept after a clean exit. A
+busy shutdown normally exits in about a second once its turns are interrupted;
+the worst case is about 14.25 s (the 10 s bound, one `ps` read of up to 2 s,
+the 1.5 s grace, the 0.5 s kill confirmation and the IPC flush), inside the
+desktop's 20 s wait.
 
 ## Stopped Model Configuration And Restore Serialization
 
