@@ -1,0 +1,25 @@
+# IMP3-09 — see IMP3-proof-run-proof.sh (case_volume) or IMP3-proof-run-stops.sh; commit c72107a0fd (image above); test-owned containers and volumes only (label autobyteus.validation=ab305-s3), removed afterwards
+# S3-04 NOT_ENOUGH_SPACE before the stop, NO_PACKAGES_VOLUME, and the stable and beta tracks
+# image: autobyteus-server-305-test:step3-testkey sha256:3f6701699cacc110cb787f88141a69fbd8e2b19135c51b76c42db2c42dac4f69; release source: AUTOBYTEUS_SERVER_PACKAGE_SOURCE in the image
+# date: 2026-10-30T19:17Z
+
+## a 900 MB server-packages volume: the package needs its archive, its unpacked size and 512 MB
+before: version=1.5.11-beta.5 pid=108 source=builtIn state.json={"current":{"source":"builtIn","version":"1.5.11-beta.5"}}
+result: {"state":"refused","targetVersion":"1.5.12","step":"checking","code":"NOT_ENOUGH_SPACE","message":"The update to 1.5.12 needs 1.56 GB free on the server-packages volume; 0.88 GB is free.","startedAt":"2026-10-30T19:17:19.800Z","finishedAt":"2026-10-30T19:17:19.822Z","requestedFrom":"host command"}
+after: version=1.5.11-beta.5 pid=108 source=builtIn state.json={"current":{"source":"builtIn","version":"1.5.11-beta.5"}} (unchanged)
+
+## a 1.9 GB server-packages volume: room for the package, not for the package and a data copy (1.5.13 brings a migration)
+before: version=1.5.11-beta.5 pid=106 source=builtIn state.json={"current":{"source":"builtIn","version":"1.5.11-beta.5"}}
+result: {"state":"refused","targetVersion":"1.5.13","step":"checking","code":"NOT_ENOUGH_SPACE","message":"The update to 1.5.13 needs 2.06 GB free on the server-packages volume (the package and a copy of the data folder); 1.86 GB is free.","startedAt":"2026-10-30T19:17:25.887Z","finishedAt":"2026-10-30T19:17:25.910Z","requestedFrom":"host command"}
+after: version=1.5.11-beta.5 pid=106 source=builtIn state.json={"current":{"source":"builtIn","version":"1.5.11-beta.5"}} (unchanged)
+
+## no server-packages volume
+status: {"version":"1.5.11-beta.5","state":"running","server":{"pid":106,"packageVersion":"1.5.11-beta.5","source":"builtIn"},"update":{"state":"idle","targetVersion":null,"step":null,"code":null,"message":null,"startedAt":null,"finishedAt":null,"requestedFrom":null},"updateBlocker":{"code":"NO_PACKAGES_VOLUME","message":"/home/autobyteus/server-packages is not this node's own volume, so an update would be lost when the container is recreated. Reinstall the launcher, then run: autobyteus-docker upgrade --all"}}
+$ update --version 1.5.12: {"refused":"NO_PACKAGES_VOLUME","message":"/home/autobyteus/server-packages is not this node's own volume, so an update would be lost when the container is recreated. Reinstall the launcher, then run: autobyteus-docker upgrade --all"}
+ exit=2
+C1: {"inPlaceUpdate":"available","version":"1.5.11-beta.5","update":{"state":"idle","targetVersion":null,"step":null,"code":null,"message":null,"startedAt":null,"finishedAt":null,"requestedFrom":null},"updateBlocker":{"code":"NO_PACKAGES_VOLUME","message":"/home/autobyteus/server-packages is not this node's own volume, so an update would be lost when the container is recreated. Reinstall the launcher, then run: autobyteus-docker upgrade --all"}}
+
+## tracks (the source's latest redirect names 1.5.12; its feed lists 1.5.13, 1.5.12, 1.5.11-beta.5)
+$ update --track stable: {"accepted":true,"version":"1.5.12"}
+$ update --track beta: {"accepted":true,"version":"1.5.13"}
+result: succeeded

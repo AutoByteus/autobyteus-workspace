@@ -29,6 +29,7 @@ BASH_LAUNCHER_SOURCES = [
     BASH_MODULE_DIR / "core.sh",
     BASH_MODULE_DIR / "container-config.sh",
     BASH_MODULE_DIR / "docker-runtime.sh",
+    BASH_MODULE_DIR / "node-update.sh",
     BASH_MODULE_DIR / "commands.sh",
 ]
 POWERSHELL_LAUNCHER_SOURCES = [
@@ -36,6 +37,7 @@ POWERSHELL_LAUNCHER_SOURCES = [
     POWERSHELL_MODULE_DIR / "Core.ps1",
     POWERSHELL_MODULE_DIR / "ContainerConfig.ps1",
     POWERSHELL_MODULE_DIR / "DockerRuntime.ps1",
+    POWERSHELL_MODULE_DIR / "NodeUpdate.ps1",
     POWERSHELL_MODULE_DIR / "Commands.ps1",
 ]
 PUBLIC_LAUNCHER_SOURCES = BASH_LAUNCHER_SOURCES + POWERSHELL_LAUNCHER_SOURCES
@@ -1168,6 +1170,15 @@ case "${1:-}" in
   logs)
     printf 'fake logs\n'
     exit 0
+    ;;
+  exec)
+    # `exec <container> sh -c <script> <arg0> <starter cli> <args...>`: runs the launcher's own
+    # script on the host, with FAKE_STARTER_CLI (a test double of cli.mjs) as the starter command.
+    name="$2"
+    read_meta "$name" || exit 1
+    [[ -n "${FAKE_STARTER_CLI:-}" && "$3" == "sh" && "$4" == "-c" ]] || exit 1
+    script="$5"; arg0="$6"; shift 7
+    exec sh -c "$script" "$arg0" "$FAKE_STARTER_CLI" "$@"
     ;;
 esac
 

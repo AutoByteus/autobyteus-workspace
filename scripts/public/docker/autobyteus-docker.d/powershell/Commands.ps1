@@ -79,6 +79,7 @@ function Show-Status([string]$FilterName) {
         $status = & docker inspect --format '{{.State.Status}}' $state.containerName 2>$null
       }
       '{0,-24} {1,-24} {2,-14} http://localhost:{3} ({4})' -f $state.nodeName, $state.containerName, $status, $state.backendPort, $state.imageRef | Write-Host
+      Write-StarterLine $state.containerName ([string]$status)
       $any = $true
     }
   }
@@ -127,13 +128,14 @@ function Invoke-AutoByteusDocker {
   $cmd = if ($CommandArgs.Count -gt 0) { $CommandArgs[0] } else { 'help' }
   if ($cmd -in @('help', '-h', '--help')) { Show-AutoByteusDockerHelp; return }
 
-  $stopAll = $false; $nameArg = ''; $nameSeen = $false; $nameOptionCount = 0; $tag = $Script:DefaultTag; $image = $Script:DefaultImage; $imageRefOverrideExplicit = $false; $extra = @(); $destroyNodeName = ''
+  $stopAll = $false; $nameArg = ''; $nameSeen = $false; $nameOptionCount = 0; $tag = $Script:DefaultTag; $image = $Script:DefaultImage; $imageRefOverrideExplicit = $false; $extra = @(); $destroyNodeName = ''; $version = ''
   for ($i = 1; $i -lt $CommandArgs.Count; $i += 1) {
     switch ($CommandArgs[$i]) {
       '--all' { $stopAll = $true }
       '--name' { $i += 1; if ($i -ge $CommandArgs.Count -or $CommandArgs[$i].StartsWith('-')) { Fail-Launcher '--name requires a value' }; $nameArg = $CommandArgs[$i]; $nameSeen = $true; $nameOptionCount += 1 }
       '--tag' { $i += 1; if ($i -ge $CommandArgs.Count) { Fail-Launcher '--tag requires a value' }; $tag = $CommandArgs[$i]; $imageRefOverrideExplicit = $true }
       '--image' { $i += 1; if ($i -ge $CommandArgs.Count) { Fail-Launcher '--image requires a value' }; $image = $CommandArgs[$i]; $imageRefOverrideExplicit = $true }
+      '--version' { $i += 1; if ($i -ge $CommandArgs.Count -or $CommandArgs[$i].StartsWith('-')) { Fail-Launcher '--version requires a value' }; $version = $CommandArgs[$i] }
       { $_ -in @('-h', '--help') } { Show-AutoByteusDockerHelp; return }
       default {
         if (-not $nameArg -and $cmd -in @('urls', 'ports', 'status', 'ps', 'stop', 'logs')) { $nameArg = $CommandArgs[$i] }
@@ -142,10 +144,11 @@ function Invoke-AutoByteusDocker {
     }
   }
 
-  if ($cmd -notin @('new-container', 'upgrade', 'destroy', 'reset', 'workspace', 'storage', 'urls', 'ports', 'status', 'ps', 'stop', 'logs')) {
+  if ($cmd -notin @('new-container', 'upgrade', 'destroy', 'reset', 'workspace', 'storage', 'urls', 'ports', 'status', 'ps', 'stop', 'logs', 'update')) {
     Show-AutoByteusDockerHelp
     exit 1
   }
+  if ($version -and $cmd -ne 'update') { Fail-Launcher '--version applies only to update.' }
 
   if ($cmd -in @('new-container', 'upgrade', 'destroy', 'reset', 'storage') -and $extra.Count -gt 0) {
     Fail-Launcher "Unknown $cmd option(s): $($extra -join ' ')"
@@ -207,6 +210,12 @@ function Invoke-AutoByteusDocker {
     { $_ -in @('urls', 'ports') } { Show-Urls $nodeName }
     { $_ -in @('status', 'ps') } { Show-Status $(if ($nameArg) { $nodeName } else { '' }) }
     'stop' { Stop-Nodes $nodeName $stopAll }
+    'update' {
+      if ($extra.Count -gt 0) { Fail-Launcher "Unknown update option(s): $($extra -join ' ')" }
+      if ($stopAll -and $nameArg) { Fail-Launcher 'update accepts --all or --name <node>, not both.' }
+      if ($imageRefOverrideExplicit) { Fail-Launcher 'update keeps each node''s image; use --version to choose the server version.' }
+      Update-Nodes $nodeName $stopAll $version
+    }
     'logs' { Show-Logs $nodeName $extra }
     default { Show-AutoByteusDockerHelp; exit 1 }
   }

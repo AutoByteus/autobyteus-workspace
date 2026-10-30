@@ -119,11 +119,13 @@ LABEL org.opencontainers.image.licenses="AGPL-3.0-only"
 
 RUN mkdir -p /home/autobyteus/workspace /home/autobyteus/data /home/autobyteus/server-packages /root
 
-# The starter runs the node's server package (built-in or installed in <node>-server-packages) and
-# reads what this image provides from /opt/autobyteus/system-level.
+# The starter runs the node's server package (built-in or installed in <node>-server-packages),
+# reads what this image provides from /opt/autobyteus/system-level, and accepts only server packages
+# whose descriptions are signed for the public key it carries.
 COPY --from=server-package / /opt/autobyteus/server-package
 COPY --from=builder /out/system-level /opt/autobyteus/system-level
 COPY autobyteus-server-ts/docker/starter/*.mjs /opt/autobyteus/starter/
+COPY autobyteus-server-ts/docker/server-package-signing-key.pem /opt/autobyteus/starter/server-package-signing-key.pem
 COPY autobyteus-server-ts/docker/supervisor-autobyteus-server.conf /etc/supervisor/conf.d/supervisor-autobyteus-server.conf
 COPY autobyteus-server-ts/docker/entrypoint.sh /usr/local/bin/entrypoint.sh
 COPY autobyteus-server-ts/docker/open-vnc-browser-url.sh /usr/local/bin/open-vnc-browser-url.sh

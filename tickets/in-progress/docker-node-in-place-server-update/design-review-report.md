@@ -9,8 +9,8 @@
 - Supplemental Task Artifacts Reviewed: `options-report.md` (approved at SR-003), `follow-ups.md` (FU-001..FU-004), `handoff-architecture-design-complete.md`
 - Relevant Solution Revision IDs: `SR-003` (approval basis), `SR-004` (first design), `SR-005` (revision for ARCH-REV-001)
 - Architecture Review Revision Record: `architecture-review-revision-record.md` (same folder)
-- Current Architecture Review Revision ID: `ARCH-REV-003` (confirmation of the SR-005 basis for build step 2; the full review result below is from ARCH-REV-002)
-- Current Review Round: `3`
+- Current Architecture Review Revision ID: `ARCH-REV-004` (build step 3 with the SR-009 delta; the full review result below is from ARCH-REV-002; step-2 confirmation ARCH-REV-003)
+- Current Review Round: `4`
 - Trigger: round 2, Solution Designer `Architecture Design Complete`, SR-005, Large / High (revision for ARCH-REV-001 Fail). Round 3, Solution Designer `Architecture Design Complete` for build step 2 (`handoff-step-2.md`), design unchanged at SR-005, with SR-006 (editorial) and SR-007 (step 1 receipt).
 - Prior Review Round Reviewed: `1` (ARCH-REV-001, Fail, AR-001..AR-012); `2` (ARCH-REV-002, Pass)
 - Latest Authoritative Round: `3`
@@ -30,6 +30,28 @@
 - **Step 2 scope** (`handoff-step-2.md`): starter boot, recovery and cleanup; selection with `NEEDS_NEW_IMAGE`; `ServerSupervisor`; C2 status and `cli.mjs status`; C1 GET with `AUTOBYTEUS_STARTER_SOCKET`; supervisord runs the starter; launcher volume, config hash and IMAGE_REF → track table; the e2e PID from `cli.mjs status`; CR-N1. All of it is covered by the reviewed sections DS-003, DS-007, C1, C2, C4 and the Change Scope.
 - **Implementation note (non-blocking):** supervisord's default `stopwaitsecs` is 10 s. The server's cleanup bound is also 10 s, plus its sweep. When supervisord stops the program, the starter forwards SIGTERM and waits, and supervisord may SIGKILL the starter before the server, in its own process group, has exited. On `docker stop` the container ends anyway (Docker's own 10 s grace, unchanged from today). Setting `stopwaitsecs` in `supervisor-autobyteus-server.conf` above the server bound (for example 30 s) keeps DS-007's "stop child → exit 0" true for a supervisord-initiated stop. This is a configuration line in a file step 2 already changes. It is not a design change.
 - **Decision:** the ARCH-REV-002 `Pass` applies to build step 2.
+
+## Step 3 Review: SR-009 Delta (ARCH-REV-004)
+
+- **Basis:**
+  - steps 1 and 2 are finalized (merges `eec6522b27`, `a0f4b491f7`; `origin/personal` @ `6b34f900b6`);
+  - step 3 scope = SR-005 step 3 (reviewed in ARCH-REV-002) plus the SR-009 delta;
+  - the design-spec diff against its committed version contains only the delta (checked with `git diff`).
+- **Step 2 as built supports step 3:**
+  - `ServerSupervisor` owns the child and its `exited` promise (`starter/server-supervisor.mjs:9, 44-71`); step 3 adds `beginUpdate`/`endUpdate` and `UpdateRun` as designed;
+  - `stopwaitsecs=30` is set (`supervisor-autobyteus-server.conf:8`);
+  - the step-2 decisions D-1..D-3 passed code review CRR-003. D-1 (socket opened after start) does not affect step 3: requests reach `UpdateService` only through the open socket. D-2 moves the IMAGE_REF → track table and the launcher `status` into this step, where the delta schedules them.
+- **RU-23, the `NO_PACKAGES_VOLUME` gate. Pass.**
+  - Supported scenario: a node created or recreated by an installed v6 launcher, or by an old compose file, without `<node>-server-packages`. The step-2 API-12 evidence shows this path. Without the volume, an in-place update would leave `state.json` and the package in the container layer. The next recreation then runs the older built-in package on migrated data (MP-001's consequence, against REQ-012).
+  - The proportionate response: refuse in the single gate owner, with an explicit code, and record nothing. This is an explicit rule with its own result, not behavior by absence.
+  - Detection via `/proc/self/mountinfo`, with the mount point equal to `/home/autobyteus/server-packages`, is sound: the Dockerfile only `mkdir`s the folder (`Dockerfile.monorepo:120`, no `VOLUME`), so an image-declared anonymous volume cannot pass the gate.
+  - This is not new product policy: it is a refusal that keeps an approved requirement true, with a user action ("reinstall the launcher, then `upgrade --all`").
+- **`updateBlocker` in C2/C1. Pass.** An optional field added under the frozen-contract rule (DEC-007; fields may be added). See N-2.
+- **CR2-N1, launcher `status` shows the starter's state. Pass.** It uses the frozen `cli.mjs status` and closes the step-2 gap for `needsNewImage`. See N-3.
+- **Non-blocking implementation notes:**
+  - **N-2, one owner for the blocker:** `updateBlocker` must come from `UpdateService`'s own gate rule (the same function `request()` uses), so status always reports exactly what a request would refuse (Principle 11). Its `NEEDS_NEW_IMAGE` case restates `state: "needsNewImage"`. That is acceptable as a different aspect (whether a request can succeed, against what runs), as long as both come from the one rule. In `needsNewImage` no server runs, so the desktop never receives it through C1; only `cli.mjs status` and the launcher show it.
+  - **N-3, launcher `status` against a node with no starter:** a new launcher may meet a stopped container, or a container from an image before step 2 (no `cli.mjs`; a user who reinstalled the launcher before `upgrade --all`). In that case `status` should print the starter state as not available and still show the rest, rather than fail. `update` refuses there with a clear message.
+- **Decision:** `Pass` for build step 3 with the SR-009 delta.
 - Current-State Evidence Basis: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-in-place-server-update`, branch `codex/docker-node-in-place-server-update`, base `origin/personal` @ `9d59ab82ec`. The round-1 code reads still apply; no code changed. Round 2 re-checked the revised design sections against them, and the SR-005 edits to the requirements and investigation notes.
 
 ## Routing Classification Review

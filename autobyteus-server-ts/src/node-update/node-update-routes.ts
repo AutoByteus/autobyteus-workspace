@@ -6,7 +6,8 @@ import { starterClientFromEnvironment, type StarterClient } from "./starter-clie
  * update, for the desktop. A thin relay to the starter (C2), which alone knows the node's version.
  *
  * GET /rest/node-update?target=<version> →
- *   { inPlaceUpdate: "available", version, target?, update, message? } from the starter;
+ *   { inPlaceUpdate: "available", version, target?, update, message?, updateBlocker? } from the starter
+ *     (`updateBlocker` { code, message }: why this node would refuse any update now);
  *   { inPlaceUpdate: "unavailable", version: null } when no starter runs this server
  *     (AUTOBYTEUS_STARTER_SOCKET absent: an embedded or development server);
  *   { inPlaceUpdate: "error", version: null, message } when the starter does not answer.
@@ -26,13 +27,14 @@ export async function registerNodeUpdateRoutes(
       return { inPlaceUpdate: "error", version: null, message: `The node's starter did not answer: ${(error as Error).message}` };
     }
     if (answer.statusCode !== 200) return reply.code(answer.statusCode).send(answer.body);
-    const { version, target, update, message } = answer.body;
+    const { version, target, update, message, updateBlocker } = answer.body;
     return {
       inPlaceUpdate: "available",
       version,
       ...(target === undefined ? {} : { target }),
       update,
       ...(message === undefined ? {} : { message }),
+      ...(updateBlocker === undefined ? {} : { updateBlocker }),
     };
   });
 }

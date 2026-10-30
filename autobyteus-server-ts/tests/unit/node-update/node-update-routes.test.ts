@@ -56,6 +56,14 @@ describe("GET /rest/node-update (C1)", () => {
     expect(starter.paths).toEqual(["/status?target=1.5.11-beta.5"]);
   });
 
+  it("passes the starter's update blocker on", async () => {
+    const updateBlocker = { code: "NO_PACKAGES_VOLUME", message: "Reinstall the launcher, then run: autobyteus-docker upgrade --all" };
+    const starter = await fakeStarter(() => ({ statusCode: 200, body: { version: "1.5.11", state: "running", update: idleUpdate, updateBlocker } }));
+    const app = await appWith(new StarterClient(starter.socketPath));
+    const response = await app.inject({ method: "GET", url: "/rest/node-update" });
+    expect(response.json()).toEqual({ inPlaceUpdate: "available", version: "1.5.11", update: idleUpdate, updateBlocker });
+  });
+
   it("asks without a target when none is given", async () => {
     const starter = await fakeStarter(() => ({ statusCode: 200, body: { version: "1.5.11", state: "running", update: idleUpdate } }));
     const app = await appWith(new StarterClient(starter.socketPath));

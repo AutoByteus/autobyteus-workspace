@@ -29,6 +29,22 @@ export class UpdateStatus {
     return { ...IDLE_UPDATE, ...(readJsonFile(this.#file) ?? {}) }
   }
 
+  /** A new update starts; every later step is written before it runs (DS-005). */
+  startUpdate({ targetVersion, requestedFrom }) {
+    writeJsonFile(this.#file, {
+      ...IDLE_UPDATE, state: 'running', targetVersion, step: 'checking', startedAt: new Date().toISOString(), requestedFrom,
+    })
+  }
+
+  setStep(step) {
+    writeJsonFile(this.#file, { ...this.readUpdate(), step })
+  }
+
+  /** The update ends: `succeeded`, `refused` or `failed`, with its code and message. */
+  finishUpdate({ state, code = null, message }) {
+    writeJsonFile(this.#file, { ...this.readUpdate(), state, code, message, finishedAt: new Date().toISOString() })
+  }
+
   /** Records that the update in progress ended without finishing (container stop, crash). */
   markInterrupted(message) {
     writeJsonFile(this.#file, {
@@ -44,8 +60,20 @@ export class UpdateStatus {
     this.#node = { version, state: 'needsNewImage', server: null, message }
   }
 
-  /** The C2 status, with the relation of `target` to this node's version when one is given. */
-  status(target) {
+  /** This node's version: the version of the package chosen at boot or switched to by an update. */
+  get nodeVersion() {
+    return this.#node.version
+  }
+
+  get needsNewImage() {
+    return this.#node.state === 'needsNewImage'
+  }
+
+  /**
+   * The C2 status, with the relation of `target` to this node's version when one is given, and the
+   * reason an update request would be refused for this node, when there is one (UpdateService's gate).
+   */
+  status(target, updateBlocker) {
     const { version, state, server, message } = this.#node
     const result = { version, state }
     if (server) result.server = server
@@ -56,6 +84,7 @@ export class UpdateStatus {
     }
     result.update = this.readUpdate()
     if (message) result.message = message
+    if (updateBlocker) result.updateBlocker = updateBlocker
     return result
   }
 }

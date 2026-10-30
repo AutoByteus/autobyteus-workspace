@@ -8,6 +8,7 @@ The latest coverage investigation (`api-e2e-coverage-investigation.md`) and exec
 | --- | --- | --- | --- | --- |
 | API-REV-001 | Code reviewer, `code-review-report.md` (CRR-001 Pass), round 1 | SR-005, ARCH-REV-002, IR-001, CRR-001 | N/A | Pass / 95% |
 | API-REV-002 | Code reviewer, `code-review-report.md` (CRR-003 Pass), round 2 (build step 2) | SR-005 (SR-006/007), ARCH-REV-003, IR-002, CRR-003 | Pass / 95% (step 1) | Pass / 94.7% |
+| API-REV-003 | Code reviewer, `code-review-report.md` (CRR-005 Pass), round 3 (build step 3) | SR-009/SR-010, ARCH-REV-004, IR-003, CRR-005 | Pass / 94.7% (step 2) | Pass / 94.7% |
 
 ## Revision Entries
 
@@ -74,3 +75,40 @@ The latest coverage investigation (`api-e2e-coverage-investigation.md`) and exec
   - CR2-N1 (accepted);
   - RU-23 (installed-launcher nodes keep starter state in the container layer; relevant to step 3);
   - amd64 not rerun.
+
+### API-REV-003 — Build step 3 (in-place update by command)
+
+- Triggering role, report path, and round: code reviewer, `code-review-report.md`, CRR-005 Pass; API/E2E round 3.
+- Triggering finding or case IDs: none; the reviewer's four coverage items and the handoff's hints.
+- Related revision IDs: SR-009/SR-010, ARCH-REV-004, IR-003, CRR-005.
+- Why: build step 3 is a new scope. Steps 1 and 2 are merged (`eec6522b27`, `a0f4b491f7`).
+- Coverage decisions or durable test paths changed: none.
+- Cases:
+  - API-30 reused (IMP3-01..IMP3-10);
+  - new journeys, all Pass:
+    - API-31: step-2 node → upgrade → update by track; `update --all` over four tracks; `status` for every node state; AC-006 both ways;
+    - API-32: rollback, no retry, restart, a second update, seven refusals, log scan;
+    - API-33: RU-23;
+    - API-36: PowerShell `status`/`update`.
+- Commands, environment, fixture delta:
+  - a docker.io registry mirror in the test daemon, so the track table sees the real repository name;
+  - a throwaway signing key and packages built with the implementation's harness;
+  - the release source runs inside the test daemon;
+  - nothing is from the implementation's `/tmp/ab305/proof` except the harness scripts, which are in the evidence.
+
+#### Prior Failure Resolution
+
+None. No round-2 failure was open. In this round, two step-print checks were over-strict (launcher polling) and are recorded in the report, not as a failure.
+
+- Canonical artifacts updated:
+  - the investigation and the report rewritten for round 3 (round-2 versions at `c052bb1aff`);
+  - the progress log section "Round 3".
+- Prior result and confidence: Pass, 94.7% (step 2)
+- Current result and confidence: Pass, 94.7% (the 95% target is missed only on durable PowerShell execution coverage, FU-006)
+- New or remaining failure IDs: none
+- Recommended owner: code reviewer
+- Remaining risks:
+  - the production key and GitHub source (first release, user-only);
+  - the step-3 release notes must tell users to reinstall the launcher (RU-23);
+  - FU-006;
+  - the stale `state.json` `previous` after an image change (observation).

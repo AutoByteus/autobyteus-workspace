@@ -1,191 +1,138 @@
-# API/E2E Coverage Investigation — autobyteus-305, build step 2 (starter and server-packages volume)
+# API/E2E Coverage Investigation — autobyteus-305, build step 3 (in-place update by command)
 
-The plan: what must be proven, how, the decisions about existing tests, and the planned cases. Results are in `api-e2e-execution-coverage-report.md`.
+The plan for round 3. Results are in `api-e2e-execution-coverage-report.md`. Earlier rounds:
 
-Round 1 validated build step 1 (API-REV-001, Pass; step 1 is merged into `personal` as `eec6522b27`). Its plan is in git at `48c2d82ea1` and summarized in `api-e2e-revision-record.md`. This file is now the round-2 plan, for build step 2.
+- round 1: step 1, API-REV-001; plan at `48c2d82ea1`;
+- round 2: step 2, API-REV-002; plan at `c052bb1aff`.
+
+Both steps are merged into `personal`.
 
 ## Investigation Meta
 
-All paths are in the ticket folder `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-in-place-server-update/tickets/in-progress/docker-node-in-place-server-update/`.
+All paths are in `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-in-place-server-update/tickets/in-progress/docker-node-in-place-server-update/`.
 
 - Requirements Doc: `requirements-doc.md` (Approved, SR-003)
 - Investigation Notes: `investigation-notes.md`
-- Solution Revision Record: `solution-revision-record.md` (SR-005; SR-006 wording; SR-007 step-1 receipt)
-- Design Spec: `design-spec.md` (SR-005), "Change / Refactor Sequence" step 2; DS-003, DS-007, C1/C2/C4
-- Supplemental Task Artifacts: `handoff-step-2.md`, `delivery-receipt-verification-step1.md`, `options-report.md`, `follow-ups.md`
-- Design Review Report: `design-review-report.md` (ARCH-REV-003, Pass)
+- Solution Revision Record: `solution-revision-record.md` (up to SR-010)
+- Design Spec: `design-spec.md` (SR-009), "Change / Refactor Sequence" step 3; DS-002, DS-006, DS-007
+- Supplemental Task Artifacts: `handoff-step-3.md`, `delivery-receipt-verification-step2.md`, `options-report.md`, `follow-ups.md` (FU-001..FU-006)
+- Design Review Report: `design-review-report.md` (ARCH-REV-004, Pass; N-2, N-3)
 - Architecture Review Revision Record: `architecture-review-revision-record.md`
-- Implementation Handoff: `implementation-handoff.md` (IR-002)
+- Implementation Handoff: `implementation-handoff.md` (IR-003)
 - Implementation Revision Record: `implementation-revision-record.md`
-- Code Review Report: `code-review-report.md` (CRR-003, Pass, 9.5/10; CR2-N1)
+- Code Review Report: `code-review-report.md` (CRR-005, Pass, 9.5/10; CR3-N1)
 - Code Review Revision Record: `code-review-revision-record.md`
-- Delivery Revision Record (delivery re-entry only): `N/A` for step 2 (step 1: DR-001)
-- API/E2E Revision Record: `api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-002` (this round)
-- Current Investigation Round: `2`
-- Trigger: code review Pass of build step 2 (CRR-003), message from `/software_engineering_team/code_reviewer`
-- Prior Investigation Reviewed: round 1 (step 1), `48c2d82ea1`
-- Latest Authoritative Investigation: this file, round 2
+- API/E2E Revision Record: `api-e2e-revision-record.md`; this round `API-REV-003`
+- Current Investigation Round: `3`
+- Trigger: code review Pass of build step 3 (CRR-005)
+- Prior Investigation Reviewed: round 2 (`c052bb1aff`). Nothing is open from it; FU-006 is a follow-up and RU-23 was taken into step 3 (SR-009).
 
 ## Current Requirement And Design Basis
 
-Build step 2:
+Step 3 adds the in-place update by command:
 
-- **Starter under supervisord.** At boot it recovers an interrupted trial and cleans up leftovers, then chooses (DS-003) one of three outcomes:
-  - the installed package, when it fits and is not older than the built-in one;
-  - the built-in package, when it fits and is not older than the newest version that already ran, which it records as current;
-  - `NEEDS_NEW_IMAGE`: no server; the starter stays up and serves its status.
-- **`ServerSupervisor` owns the server child (DS-007):** its own process group; the server's exit ends the starter with the same code; SIGTERM leads to a bounded stop.
-- **C2 status:** `GET /status[?target=]` on the starter socket, and `cli.mjs status`.
-- **C1 `GET /rest/node-update`:** route class `TRUSTED_NETWORK_OWNER`, so phones are refused. It answers `unavailable` without `AUTOBYTEUS_STARTER_SOCKET` and `error` when the starter does not answer, and passes a 400 from the starter on.
-- **Launcher (bash and PowerShell):** the `<node>-server-packages` volume, config hash v7, the storage text. The PowerShell module `ContainerConfig.ps1` is new.
+- **Entry:** `autobyteus-docker update [--name <node> | --all] [--version <v>]` (bash and PowerShell). Without `--version`, the node's saved image ref decides the track: `autobyteus/autobyteus-server:latest` → stable, `:beta` → beta; a pinned tag or a custom image is refused with "pass --version". The launcher runs `cli.mjs update`, which calls C2 `POST /updates`, then follows `cli.mjs status` to the result.
+- **Gates:** `UpdateService` checks INVALID_VERSION → NO_PACKAGES_VOLUME / NEEDS_NEW_IMAGE → UPDATE_RUNNING → track → NOT_NEWER.
+- **`UpdateRun` (DS-006):**
+  - checking: download, signature, binding, fit, SHA;
+  - preparing: unpack, package match, space, self-check;
+  - restarting: stop, data copy when the package brings a new migration, trial;
+  - confirming: health, then alive 60 s;
+  - then commit, or rollback with the data restored.
+- **Stops (DS-007):** a stop before the switch aborts the run; a stop after it halts the run, and the next boot recovers.
+- **RU-23:** without its own server-packages mount, a node refuses with NO_PACKAGES_VOLUME and its status carries `updateBlocker`.
+- **CR2-N1:** the launcher's `status` shows each node's starter state, or "not available" for a stopped container or a pre-starter image (N-3).
 
-In scope this round:
+In scope: AC-002, AC-003, AC-004, AC-005, AC-006, AC-008, AC-012, AC-013, the RU-23 gate and the DS-007 stop rows.
 
-- BEH-001 / REQ-012 / AC-006, the boot-selection part. The in-place install that makes "installed" reachable comes with step 3; IMP2-08 covered it by writing state.
-- BEH-007 / REQ-011, the status part.
-- AC-009, the phone part.
-- DS-003 and DS-007.
-- The DEC-014 first move to the starter image.
+Not in scope: AC-001, AC-009 (request part) and AC-010 (step 4); AC-007 (step 5).
 
-Not in scope: AC-001..AC-005, AC-007, AC-008, AC-010, AC-012 and AC-013 (steps 3–5). CR2-N1 says the launcher's `status` does not show `NEEDS_NEW_IMAGE` until step 3. That is accepted and gets recorded, not failed.
+The implementation proved the starter's behavior in a real container (IMP3-06..IMP3-10) by driving `cli.mjs` and C1 directly. The real launcher against real Docker was not run, and neither was PowerShell.
 
 ## Supported Scenarios And Real Usage
 
-- Designer and reviewer scenarios covered:
-  - **SCN-006 / CR2-S1:** first move to the starter image with `upgrade --all`.
-  - **CR2-S2:** server crash. Reused from IMP2-07.
-  - **CR2-S3:** container stop and start.
-  - **CR2-S4:** retargeting to an older image gives `NEEDS_NEW_IMAGE`.
-  - **CR2-S5:** C1 from the trusted network, and from a phone.
-- Real-use scenarios added from investigating the implemented behavior:
-  - **RU-21, from the published `:beta`:** the next release carries steps 1 and 2 together. The published `:beta` has the `/app` layout and no starter, so most users go straight from it to the starter image. Trigger: the installed launcher's node, then the reinstalled launcher's `upgrade --all`.
-  - **RU-22, from a step-1 image:** nodes built from `personal` after step 1 (the handoff's hint).
-  - **RU-23, installed launcher not refreshed:** a user who has not reinstalled the launcher (v6, no server-packages volume) upgrades to the starter image. The starter then keeps `state.json` in the container layer. That is fine in step 2, but it matters for step 3 (observation only).
-  - **RU-24, PowerShell launcher actually run** (Windows owners): `new-container`, `storage`, `upgrade --all` against a real daemon. Before this round it was never executed, only parsed.
-  - **RU-25, compose users with the starter image:** the compose file mounts `autobyteus-server-server-packages`, and the starter records its state there.
-  - **RU-26, the launcher's own `stop`, then plain `upgrade --all`:** the launcher's `docker start` path. The starter boots again over the same `state.json`.
-- Technically possible but contrived (not tested): CC-06 (supervisord SIGKILL of the starter while a server ignores SIGTERM for more than 30 s). The reviewer rejected it as unreachable with the bounded shutdown.
-
-## Changed Behavior Summary
-
-| Behavior ID / Boundary | Change Type | Upstream Evidence | Coverage Consequence |
-| --- | --- | --- | --- |
-| Starter as the supervisord program; boot selection (DS-003) | Added | IR-002 trace; IMP2-01, IMP2-06, IMP2-08 | Reuse the unit and container checks. Through the launcher: first move (API-12 A/B/C), stop/start (API-12 A), `NEEDS_NEW_IMAGE` by retargeting (API-12 D) |
-| `ServerSupervisor` (DS-007) | Added | IMP2-01, IMP2-07 | Reuse (crash, stop timing). `docker stop`/`start` through API-12 |
-| C2 status and `cli.mjs status` | Added | IMP2-01, IMP2-06 | API-12 (each phase), API-10 (the probe reads the pid from it) |
-| C1 `GET /rest/node-update`, route class | Added | IMP2-03, IMP2-06 (made-up phone bearer) | API-21: a real node, a real paired phone credential (403) with a positive control, targets newer/same/older/invalid |
-| Launcher volume, hash v7, storage text (bash) | Changed | IMP2-02 (fake docker) | API-12 on a real daemon |
-| PowerShell launcher (`ContainerConfig.ps1`) | Changed | IMP2-02 text contract only; parse skipped | API-14 parse; API-22 real run against a real daemon |
-| Prisma probe pid source | Changed | diff | API-10 |
-| Persisted data | Preserved (`Not Affected`); new starter state | handoff | API-12: data from `:beta` and step 1 read back; `state.json` across restarts |
+- Designer scenarios:
+  - **SCN-002 / UC-002:** the node owner updates a node by command, to a named version or to the newest on the node's track.
+  - **SCN-003:** refusals before anything changes.
+  - **SCN-004:** a new version that does not come up.
+  - **SCN-005:** a package that needs a newer image.
+  - **SCN-006 / AC-006:** moving to a new image after an in-place update.
+- Real-use scenarios added:
+  - **RU-31, step-2 nodes:** a node a user made with the current `personal` launcher (step 2, with its volume) gets the step-3 image by `upgrade --all`, then updates in place. This is the reviewer's item 2.
+  - **RU-32, several nodes:** `update --all` across nodes on different tracks: `latest`, `beta`, a pinned tag, a custom image.
+  - **RU-33, nodes the launcher cannot update:** `status` and `update` against a stopped container and against a pre-starter image (N-3).
+  - **RU-34, after a failed update:** the failed version is not retried by itself, including across a container restart, and the owner's next update works. This is the reviewer's item 3.
+  - **RU-35, an older installed launcher:** a node created by the step-1 (v6) launcher has no volume. The new launcher's `update` refuses NO_PACKAGES_VOLUME, `status` says why, and `upgrade --all` fixes it.
+  - **RU-36, Windows owners:** PowerShell `update` and `status`.
+  - **RU-37, a later image upgrade:** after the in-place update, a new `:beta` image arrives with an older built-in package (the node keeps its installed one), then with a newer one (the node runs the image's).
+- Technically possible but contrived (not tested): none beyond those the design and review set aside.
 
 ## Changed Surface And Boundary Classification
 
-| Surface / Boundary | Affected? | Actual Changed Boundary | Repository Evidence Available | Material Risk Not Exercised By That Evidence | Candidate Broader Validation Mode |
+| Surface / Boundary | Affected? | Changed Boundary | Repository Evidence | Material Risk Not Exercised By It | Broader Mode |
 | --- | --- | --- | --- | --- | --- |
-| Domain / backend logic | Yes | Starter selection, supervision, status | 26 starter tests with real child processes (IMP2-01) | The real image, real volumes, the launcher's lifecycle | Lifecycle (API-12) |
-| API / transport / contract | Yes | C1 (frozen), C2 (frozen), route class | Unit tests with fastify inject (IMP2-03); container curl (IMP2-06) | A real paired phone credential; the C1 relay over the real socket in a launcher node | Live API (API-21) |
-| Frontend component / state | No | — | — | — | — |
-| Browser integration / user journey | Indirect | Nodes page against a starter-run Docker node | Address probe | Starter in the way of the browser journey | Browser probe (API-11) |
-| Authentication / session / permissions | Yes | `TRUSTED_NETWORK_OWNER` on `/rest/node-update` | Route-policy unit test | Real phone credential | API-21 |
-| Desktop renderer / shell | No | — | — | — | — |
-| Process / lifecycle | Yes | supervisord → starter → server; container stop/start; recreate | IMP2-06/07/08 on bare containers | Launcher-managed recreate with the volume; restart over state | API-12, API-22, API-13 |
-| Persisted-data transition | Preserved + new state | `state.json`/`update.json` in the volume | Unit; IMP2-08 | Survival across stop/start and recreate | API-12 |
-| Worker / queue / distributed | No | — | — | — | — |
-| External integration | No new | — | — | — | — |
+| Domain / backend logic | Yes | Starter update service, run, verifier, store, self-check, data copy | 48 starter tests (IMP3-01); container proofs IMP3-06..10 | — | Reuse |
+| API / transport / contract | Yes | C2 `POST /updates`, `cli.mjs update` (frozen), C1 `updateBlocker` | IMP3-01, IMP3-03, IMP3-06/09 | Through the launcher's JSON reading | Lifecycle (launcher) |
+| Process / lifecycle | Yes | Update in a launcher-managed container; restart after rollback; image upgrades after an in-place update | IMP3-06..10 (bare containers) | Launcher-managed recreate with the volume; `update --all` | Lifecycle |
+| CLI | Yes | bash and PowerShell `update`, `status` | Fake-docker tests (bash); text contract (PowerShell) | Real docker exec, real JSON from a real starter, real waits; PowerShell never run | CLI on a test-owned daemon |
+| Persisted data | Yes | Data copy and restore; installed packages in the volume | IMP3-06/08/10 | Data written by the released server, through the launcher | Lifecycle |
+| Supply chain | Yes | Signature with the image's key | IMP3-07 (test key) | The production key: first release only | — |
+| Browser / desktop | No (step 4) | — | — | — | — |
 
 ## Project Execution Discovery
 
-- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-in-place-server-update`, branch `codex/docker-node-in-place-server-update`, HEAD `5939cc48be`. The code is in `b1029fc1b0`; `82e2e7f931` changes `TESTING.md` only.
-- Testing guideline: `TESTING.md` of the worktree. It now has a "Docker starter" layer (`pnpm -C autobyteus-server-ts test:starter`), and the Docker rule covers package choice in test nodes. No closer guideline exists.
-- Instructions learned or carried from round 1:
-  - **O-1:** `upgrade --all` reaches every launcher-labelled container on the daemon, so the launcher runs only on a test-owned `docker:dind` daemon.
-  - **O-3:** the launcher always pulls, so images come from a registry inside dind.
-- **O-5, emulating "a newer release image":** `NEEDS_NEW_IMAGE` through the launcher needs a node that ran a newer version than an image's built-in package, and the only step-2 image is `1.5.11-beta.5`. I derive an image from `step2` whose `server-package.json` says `1.5.12-beta.1`, which is the only field the selection reads (`package-store.mjs choose`). It is named and recorded as an emulation. A real rebuild with a bumped version would only add build time.
-- **O-6, running the PowerShell launcher:** `pwsh` is not on the host. A throwaway image, `mcr.microsoft.com/dotnet/sdk:8.0` (arm64, pwsh 7.4) plus the docker CLI from `docker:cli`, runs the real `autobyteus-docker.ps1` inside dind's network namespace. It uses `AUTOBYTEUS_DOCKER_STATE_DIR`/`AUTOBYTEUS_DOCKER_SHARED_WORKSPACE_DIR`, which `Core.ps1` honors, and a test root at the same path in both containers. This is Linux `pwsh`, not Windows: the Windows default paths (`%LOCALAPPDATA%`) are not exercised.
-- Phone credential (API-21): the real pairing flow on the node. The pairing URL must be one a phone can reach: `pairing-url-policy.ts` refuses loopback (learned in the first run). The rerun pairs with the node's private address. `PUT /rest/remote-access/settings {phoneAccessEnabled:true}`, then `POST /rest/remote-access/pairing-sessions`, then `POST /rest/remote-access/pairing-exchanges` gives an `mra_…` credential. That flow is taken from `tests/e2e/remote-access/phone-access-running-routes.e2e.test.ts`. The device is revoked afterwards.
-- Secrets: none needed.
-
-| Instruction / Configuration Path | Authority / Purpose | Commands, Setup, Or Constraints Learned |
-| --- | --- | --- |
-| `TESTING.md` § Docker server nodes, § Environments, § Browser probes, Rerun by impact | As round 1 | Rebuild the worktree's `dist` after the base merge before the probes mount it |
-| `autobyteus-server-ts/docker/README.md` | Starter usage | `docker exec <container> node /opt/autobyteus/starter/cli.mjs status` |
-| `autobyteus-server-ts/docker/starter/*.mjs` | Selection, status shape | `choose()` reads only `server-package.json` and `state.json`; the C2 `version`/`state`/`server`/`update`/`target.relation` fields |
-| `src/node-update/*.ts`, `remote-access-route-policy.ts`, `src/api/rest/remote-access.ts` | C1 and pairing | As above |
-| Launcher bash/PowerShell | As round 1 | v7 hash; `server_packages_volume` |
-
-| Component / Dependency | Start / Setup | Readiness | Stop / Cleanup |
-| --- | --- | --- | --- |
-| Worktree install and build | `pnpm install`, `prebuild`, `nuxt prepare`, `pnpm -C autobyteus-server-ts build` | exit 0 | untracked outputs |
-| `ab305-api-dind` + registry | as round 1 | `docker info` | `docker rm -f -v`, volume rm |
-| Derived image `ab305-api-step2-labelled-1.5.12-beta.1` | `docker build` from `step2` (one `RUN` editing `server-package.json`) | inspect | `docker image rm` |
-| pwsh helper image `ab305-api-pwsh-docker` | `FROM mcr.microsoft.com/dotnet/sdk:8.0` + `COPY --from=docker:cli` | `pwsh -v`, `docker version` | `docker image rm` (with its bases) |
-| Compose project `ab305-api-compose` | `docker-start.sh up --no-build -p ab305-api-compose` with `step2` tagged `autobyteus-server:latest` (a tag owned by this run; none exists) | health | `down --volumes --delete-state`; untag |
+- Worktree HEAD `213d86955a` (docs only on top of `a17033dc30`). Code commits: `31df015657`, `4985104751`, `c72107a0fd`; `71604951d4` changes only tests and RELEASE.md. The image `autobyteus-server-305-test:step3` was built from a clean clone of `c72107a0fd`, so the starter in it is the reviewed code.
+- Testing guideline: `TESTING.md` (unchanged by step 3). Constraints as in rounds 1–2: O-1 (dind), O-3 (registry).
+- **O-7, the track table needs the default repository name.** `update_track_for_image_ref` resolves a track only for `autobyteus/autobyteus-server:latest|beta`, and `new-container`/`upgrade` always `docker pull`. Inside the test daemon, `dockerd --registry-mirror=http://127.0.0.1:5000` serves `docker.io/autobyteus/autobyteus-server:<tag>` from the test registry, which holds the step-3 test-key image under `beta`, `latest` and `1.5.11-beta.5`. The pull therefore goes through Docker's normal mirror path, and the launcher sees the real repository name. Docker Hub is not reached for that repository.
+- **O-8, test release and key:**
+  - a fresh throwaway Ed25519 key pair (never committed; the private key is deleted at cleanup);
+  - packages built with the implementation's harness `IMP3-proof-make-packages.sh`, which uses the repository's `describe-server-package.mjs` and `sign-server-package.mjs`, from the step-3 image's own built-in package;
+  - the local release source `IMP3-proof-release-source.mjs` as a container in the test daemon (stable `1.5.12`, feed `1.5.13,1.5.12`);
+  - test images `FROM` step 3 with the test public key and `AUTOBYTEUS_SERVER_PACKAGE_SOURCE=http://<test daemon bridge gateway>:18080/releases`. This is the design's test-only source variable.
+- **O-9, versions:** the harness publishes 1.5.12 (plain), 1.5.13 (migration), 1.5.14 (migration, exits 30 s after start), 1.5.15 (system level 99), 1.5.16 (archive altered), 1.5.17 (older pair renamed), 1.5.18 (other key), 1.5.20 (exits at start); 1.5.19 is absent. The AC-006 images are the test image again with another ID (built-in `1.5.11-beta.5`), and the test image with `server-package.json` labelled `1.5.21` (O-5 emulation, as in round 2).
+- PowerShell: Linux `pwsh` 7.4 with the docker CLI in the test daemon's network namespace. Nodes are created by a patched copy (FU-006); the unpatched launcher runs `update` and `status`.
 
 ## Persisted Data Transition Coverage Basis
 
-- Decision: `Not Affected` for the data folder. The new starter state (`state.json`, `update.json`) has one writer and a tolerant reader.
-- Representative existing data:
-  - an agent definition created through GraphQL on `:beta` (phase A) and on step 1 (phase B), plus a `/root` file;
-  - after the move, `state.json` records `{current:{source:"builtIn",version:"1.5.11-beta.5"}}`, and it survives `docker stop`/`start` and the launcher's `stop` + `upgrade --all`.
-- Evidence planned: API-12.
+- Decision: `Not Affected` for formats. DEC-005 byte copy and restore; installed packages and starter state in the node's volume.
+- Planned evidence:
+  - data written through GraphQL by the node's earlier version is read back after a successful migration update (1.5.13) and after a rollback (1.5.14);
+  - the test migration's table exists after 1.5.13 and is absent after the 1.5.14 rollback;
+  - `data-copy` is absent after both.
 
 ## Existing Durable Coverage Inventory
 
-| Path / Test | Current Assertion Or Intent | Related | Validity Decision | Evidence | Action |
-| --- | --- | --- | --- | --- | --- |
-| `autobyteus-server-ts/docker/starter/tests/*.test.mjs` (26) | Selection, recovery, supervision, socket, CLI | DS-003, DS-007, C2 | Still Valid | IMP2-01 | Reuse |
-| `tests/unit/node-update/node-update-routes.test.ts`, `route-policy.test.ts` | C1 relay outcomes; phone 403 | REQ-011, AC-009 | Still Valid | IMP2-03 | Reuse; API-21 adds the real-credential path |
-| `scripts/tests/test_public_docker_launcher_*.py` | Launcher args, v7 hash, volume, storage (fake docker); PowerShell text contract | BEH-001 | Still Valid | IMP2-02 | Reuse; API-12/API-22 add the real daemon |
-| `…shared_workspace.py::test_powershell_launcher_parses_when_pwsh_is_available` | Parses `autobyteus-docker.ps1`, `Core.ps1`, `DockerRuntime.ps1`, `Commands.ps1` | RU-24 | Still Valid: the source list already includes `ContainerConfig.ps1` (test file line 37) | read | Run its command in a real `pwsh` (API-14) |
-| `prisma-engine-discovery.docker.mjs` | pid from `cli.mjs status` | RU-4 | Still Valid | diff | Run (API-10) |
-| `nodes-docker-address-probe.mjs` | unchanged | RU-4 | Still Valid | — | Run (API-11) |
+| Path / Test | Intent | Validity | Action |
+| --- | --- | --- | --- |
+| `autobyteus-server-ts/docker/starter/tests/*.test.mjs` (48) | All starter behavior, incl. the update flow with real processes and archives | Still Valid (IMP3-01) | Reuse |
+| `scripts/tests/test_public_docker_launcher_update.py` (8) and the other launcher tests | bash `update`/`status` against the fake docker running the real in-container script with a fake `cli.mjs`; PowerShell text contract | Still Valid (IMP3-02) | Reuse; API-31 and API-36 add real docker and a real starter |
+| `tests/unit/node-update/node-update-routes.test.ts` | C1 incl. `updateBlocker` | Still Valid (IMP3-03) | Reuse |
+| Docker probes (Prisma, nodes address) | Unchanged by step 3 | Still Valid | Not rerun: step 3 does not change the server, the package build or the start (the image's start path is exercised by every API-3x node) |
 
 ## Planned Cases
 
-| Case ID | Criteria | Boundary / Surface | Kind | Planned Command Or Steps (`Reused`: check ID) | Why |
+| Case ID | Criteria | Surface | Kind | Planned Steps (`Reused`: check ID) | Why |
 | --- | --- | --- | --- | --- | --- |
-| API-20 | AC-006 (selection), REQ-011, AC-009, DS-003, DS-007, BEH-001, REQ-013 | Starter units, launcher fakes, server units, lints, image build, container boot/C1/supervision/selection | Reused | IMP2-01..IMP2-08 | `git diff --name-only 82e2e7f931 5939cc48be` touches only `tickets/`; IMP2-05..08 used `b1029fc1b0` inputs, and only `TESTING.md` changed after it. Each has a header and a look-for line |
-| API-10 | RU-4 | Prisma Docker probe on `step2` (pid from `cli.mjs status`) | Existing Test | as round 1, `--image sha256:50b3211b4b38…`, `--output-dir evidence/API-10-step2-prisma` | Hint 5 |
-| API-11 | RU-4 | Nodes page browser probe with a `step2` Docker node | Existing Test | as round 1, `--docker-image=autobyteus-server-305-test:step2`, `--output-dir=evidence/API-11-step2-nodes-docker-address` | Hint 5 |
-| API-12 | CR2-S1, CR2-S3, CR2-S4, RU-21..23, RU-26, BEH-001, REQ-012/AC-006 selection, BEH-007 | Real bash launchers on a test-owned dind daemon | Journey | **A** (RU-21): `origin/personal` launcher `new-container --tag beta`, seed, new launcher `upgrade --all --image <step2>`; volume, v7 label, starter and `cli.mjs status`, `state.json`, data kept; `storage` lists the volume; `docker stop`/`start`; launcher `stop` + plain `upgrade --all`. **B** (RU-22): same from a step-1 image. **C** (RU-23): `origin/personal` launcher `upgrade --all --image <step2>` (no volume), starter state in the container layer; then the new launcher's plain `upgrade --all` recreates once (v7) and mounts the volume. **D** (CR2-S4): new launcher on the labelled `1.5.12-beta.1` image, then `upgrade --all --image <step2>` (older): `NEEDS_NEW_IMAGE`, no server, the starter up for 60 s with the same pid (no restart loop), the message in `cli.mjs status` and the log, and what the launcher's `status` shows (CR2-N1); then back to the newer image, which runs again | Hints 1–3; the real launcher lifecycle is not durable-automatable here (needs a second daemon) |
-| API-21 | AC-009 (phone), REQ-011, C1 | C1 on a real launcher node | Journey (in API-12 phase A) | `GET /rest/node-update` without and with `target` newer/same/older/`latest` (400); pair a phone through the public pairing flow, then C1 with its bearer (403 `REMOTE_ACCESS_AUTH_INVALID`); positive control: the same credential on `GET /rest/remote-access/status` or GraphQL works; revoke | Hint 4 |
-| API-14 | RU-24 | PowerShell sources in a real `pwsh` | Temporary Probe | the durable test's command with all 5 module files | Hint 6 |
-| API-22 | RU-24, BEH-001 | The real PowerShell launcher against the dind daemon | Journey | Helper image; `pwsh autobyteus-docker.ps1 new-container --tag beta` → `storage` → `upgrade --all --image <step2>` → checks as API-12 A (volume, v7, starter, health) → `destroy --all` keeps volumes | Hint 6; never executed before |
-| API-13 | RU-25 | Compose with the step-2 image | Journey | `docker-start.sh up --no-build -p ab305-api-compose` with `step2` tagged `autobyteus-server:latest`; starter running, `state.json` in the project's server-packages volume; down | The compose volume now has a reader |
-| API-15 | — | amd64 | Not run | — | No step-2 amd64 image. The starter is architecture-independent JavaScript, its architecture fit is unit-tested (IMP2-01), and the package build is unchanged since step 1's amd64 proof |
+| API-30 | AC-002..AC-006, AC-008, AC-012, AC-013, RU-23, DS-006, DS-007 | Starter, launcher fakes, C1, lints, image, container proofs | Reused | IMP3-01..IMP3-10 | Only `tickets/` changed after `71604951d4`; IMP3-05..10 used the `c72107a0fd` image, and `71604951d4` touches only tests and RELEASE.md |
+| API-31 | AC-002, AC-006, AC-008, DEC-005, RU-31, RU-32, RU-33, RU-37, CR2-N1, N-3 | Real bash launchers on a test-owned daemon | Journey, phase 1 | Step-2 launcher (`origin/personal`) node on the step-2 image (with volume), seed, new launcher `upgrade --all --tag beta` (step-3 test image). Then `update --name autobyteus-server-0` (no version → beta → 1.5.13, migration): same container and image, data kept, table created, copy gone, C1 1.5.13. Add nodes on `latest`, pinned `1.5.11-beta.5` and a custom ref. `update --all` (no version): 0 NOT_NEWER, 1 → stable 1.5.12, 2 pinned refusal, 3 custom refusal. `update --all --version 1.5.12`: 0 and 1 NOT_NEWER, 2 and 3 update. `status` for all. Stop node 3 → `status` "not available (container exited)", `update` → "not running". A pre-starter node (step 1) → `status` "not available (no starter answer…)", `update` → "did not answer … upgrade --all". New `:beta` images: built-in 1.5.11-beta.5 with another ID → node 0 recreated, still 1.5.13 (installed); built-in labelled 1.5.21 → node 0 runs 1.5.21 (built-in) | Reviewer items 1 and 2; AC-006 through the launcher |
+| API-32 | AC-003, AC-004, AC-005, AC-013, AC-008, AC-012, RU-34 | Real bash launcher, a fresh node on `beta` | Journey, phase 2 | Seed; `update --version 1.5.14` → `failed (FAILED_AFTER_SWITCH)`, old version, table absent, data kept. 90 s with no new attempt; `docker restart` → still 1.5.11-beta.5, still the failed state. `update --version 1.5.12` → success (second update after the rollback). Refusals through the launcher: 1.5.12 again (NOT_NEWER), 1.5.15 (NEEDS_NEW_IMAGE + command), 1.5.16 (ARCHIVE_MISMATCH), 1.5.17 (DESCRIPTION_MISMATCH), 1.5.18 (SIGNATURE_INVALID), 1.5.19 (NO_PACKAGE_FOR_VERSION), `latest` (INVALID_VERSION); each leaves the same server pid and `state.json`. Log scan for the test key and credentials | Reviewer item 3; refusals through the real launcher |
+| API-33 | RU-23, RU-35 | Step-1 (v6) launcher node, new launcher | Journey, phase 3 | v6 `new-container --tag beta` (no volume) → new `status` "in-place update unavailable: …"; `update --version 1.5.12` → `refused (NO_PACKAGES_VOLUME)`; new `upgrade --all` (v7, volume) → `status` without the blocker | The RU-23 user path |
+| API-36 | RU-36 | PowerShell launcher (Linux `pwsh`) | Journey, phase 4 | Node by the patched copy on `beta`; unpatched `status`, `update` (no version → 1.5.13), `status`, `update --version 1.5.12` (NOT_NEWER), stopped container `status`/`update` | Reviewer item 4 |
 
 - Test progress log needed: `Yes`
 
 ## Durable Coverage To Add / Update / Remove
 
-- To add: none. The launcher journeys need a second Docker daemon and multi-GB images, so they stay ticket journeys.
-- To update: none (the PowerShell parse test already lists `ContainerConfig.ps1`).
-- To remove: none.
-
-## Live Environment And Fixture Plan
-
-- Order (one heavy run at a time): install/build → API-10 → API-11 → API-14 → dind: API-12 (A–D, with API-21 inside A) → API-22 → teardown → API-13.
-- Evidence: probe folders; journey transcripts with `CHECK PASS/FAIL` lines; `cli.mjs status` JSON; `state.json`; launcher output.
-- Cleanup: as round 1, plus the derived and helper images and the `autobyteus-server:latest` tag. Not touched: `autobyteus-server-0/1/2` and their volumes, the implementation's `autobyteus-server-305-test:*` images, `ab305-extract`.
+None. These journeys need a second Docker daemon, a registry mirror, signed multi-hundred-MB packages and several 9 GB images, so they stay ticket journeys. The durable layers are the starter tests and the fake-docker launcher tests.
 
 ## Not Tested / Infeasible / Deferred
 
-| Behavior / Boundary | Reason | Risk | Only The User Can Check? | Required Follow-Up Or Escalation |
+| Behavior / Boundary | Reason | Risk | Only The User Can Check? | Follow-Up |
 | --- | --- | --- | --- | --- |
-| amd64 step-2 image | No image; the starter is JavaScript | Low | No | — |
-| PowerShell launcher on Windows (default `%LOCALAPPDATA%` paths, Docker Desktop for Windows) | No Windows host | Low: the change is in the run args, hash and text, all exercised on Linux `pwsh` | No | — |
-| PowerShell `new-container` / fresh port pick | Pre-existing `Get-UsedPorts` bug found in API-22 (round-2 execution); identical on `origin/personal` | Windows owners cannot create nodes with the PowerShell launcher | No | FU-006 (follow-up; the step-2 paths are proven with the unpatched launcher) |
-| The launcher `status` line for `NEEDS_NEW_IMAGE` | Step 3 (D-2, CR2-N1) | Accepted by review | No | Step 3 |
-
-## Ambiguities Or Reroute Triggers
-
-None known at planning.
+| The production key and GitHub-hosted packages | Needs a release | The first release proves it | Yes (a release needs the user) | Delivery at the first release with step 3 |
+| amd64 | No step-3 amd64 image; the starter is JavaScript; `tar` and `node` are the image's | Low | No | — |
+| Windows PowerShell host | No Windows host | Low (platform-neutral logic) | No | — |
 
 ## Investigation Decision
 
-- Proceed To API/E2E Execution: `Yes`
-- Repository-Resident Durable Coverage Will Be Added / Updated / Removed: `No`
-- Reroute Required Before Validation Execution: `No`
-- Notes: none
+- Proceed: `Yes`. Durable changes: `No`. Reroute: `No`.

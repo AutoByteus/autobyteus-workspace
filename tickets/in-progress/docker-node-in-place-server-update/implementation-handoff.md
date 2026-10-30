@@ -1,175 +1,182 @@
-# Implementation Handoff — autobyteus-305, build step 2 (starter and server-packages volume)
+# Implementation Handoff — autobyteus-305, build step 3 (in-place update by command)
 
 ## Upstream Artifact Package
 
-- Upstream review applicability and handoff-rule result: Large / High, independent architecture review selected. ARCH-REV-003 `Pass` confirms that the ARCH-REV-002 Pass of SR-005 covers step 2 (`design-review-report.md`, `architecture-review-revision-record.md`).
+- Upstream review applicability and handoff-rule result: Large / High, independent architecture review selected. ARCH-REV-004 `Pass` for SR-009, which is SR-005 plus the step-3 delta: RU-23 (`NO_PACKAGES_VOLUME`, `updateBlocker`) and CR2-N1 (launcher `status`). Reports: `design-review-report.md`, `architecture-review-revision-record.md`.
 - Requirements doc: `requirements-doc.md` (Approved, SR-003)
 - Investigation notes: `investigation-notes.md`
-- Solution revision record: `solution-revision-record.md` (SR-005 design; SR-006 wording; SR-007 step 1 receipt)
-- Design spec: `design-spec.md` (SR-005), "Change / Refactor Sequence" step 2
-- Supplemental task artifacts: `handoff-step-2.md`, `delivery-receipt-verification-step1.md`, `options-report.md`, `follow-ups.md`
-- Design review report: `design-review-report.md` (ARCH-REV-003 Pass)
-- Architecture review revision record: `architecture-review-revision-record.md`
-- Code review of IR-002: `Pass`, CRR-003 (`code-review-report.md`, `code-review-revision-record.md`). D-1..D-3 and the C2 `version` meaning confirmed. Non-blocking CR2-N1 (NEEDS_NEW_IMAGE shows in the launcher's `status` only from step 3) goes to the Solution Designer and delivery and needs no code change; the launcher `status` comes with step 3 (D-2).
-- Earlier round: build step 1 (IR-001) passed code review (CRR-001) and API/E2E, and was finalized into `personal` (merge `eec6522b27`, DR-001). Its record is `implementation-revision-record.md` IR-001 and the step-1 evidence `evidence/IMP-*`.
+- Solution revision record: `solution-revision-record.md` (up to SR-009)
+- Design spec: `design-spec.md` (SR-009), "Change / Refactor Sequence" step 3
+- Supplemental task artifacts: `handoff-step-3.md`, `delivery-receipt-verification-step2.md`, `options-report.md`, `follow-ups.md`
+- Code review of IR-003: `Pass`, CRR-005 (`code-review-report.md`, `code-review-revision-record.md`). All seven assumptions are confirmed, and CR2-N1 is resolved. The non-blocking CR3-N1 is taken with step 4 or before delivery, not now, so the code under API/E2E stays unchanged: SelfCheck should report "exited with code N before answering" and keep the candidate's last output lines in the starter log.
+- Earlier rounds:
+  - step 1: IR-001, passed CRR-001, finalized (DR-001);
+  - step 2: IR-002, passed CRR-003 and API/E2E (API-REV-002), finalized (DR-002, merge `a0f4b491f7`).
+  - Their evidence: `evidence/IMP-*`, `evidence/IMP2-*`.
 
 All paths are in `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-in-place-server-update/tickets/in-progress/docker-node-in-place-server-update/`.
 
 ## Current Implementation Summary
 
-Build step 2: **the starter and the server-packages volume.** supervisord now runs the starter, which chooses and runs the node's server package and serves its status. The server relays that status to the desktop over C1 `GET /rest/node-update`. The launcher gives every node a `<node>-server-packages` volume. Nothing updates in place yet (step 3).
+Build step 3: **the in-place update by command.** A Docker node replaces its server package inside its running container on `autobyteus-docker update` or `cli.mjs update`:
+- it downloads the package and verifies its signature and binding;
+- it checks that the package fits and that there is space for the package and, when needed, a data copy;
+- it self-checks the package on loopback;
+- it stops the old server, takes the data copy when the update brings a migration, and starts the new version as a trial;
+- then it confirms and commits, or rolls back (data restored).
 
-- Implementation cycle: `Initial` (for step 2)
-- Implementation revision record: `implementation-revision-record.md`
-- Current implementation revision ID: `IR-002`
-- Related solution revision IDs: `SR-005` (SR-006, SR-007)
-- Related architecture-review revision IDs: `ARCH-REV-003`
-- Related code-review revision IDs: `N/A` for step 2 (step 1: CRR-001, CRR-002)
-- Related API/E2E revision IDs: `N/A` for step 2
-- Related delivery revision IDs: `N/A` for step 2 (step 1: DR-001)
-- Triggering finding IDs: `N/A`. Carried from step 1: CR-N1 (code side) is done here; CR-N2 and CR-N3 were already done in step-1 delivery.
-- Branch and commits: `codex/docker-node-in-place-server-update`, base `origin/personal` @ `77fb8bf2d1`:
-  - `b1029fc1b0` feat(docker): the starter runs the node's server package
-  - `82e2e7f931` docs(testing): the Docker starter test layer and its package choice in test nodes
-  - the ticket-documents commit that carries this handoff and the `IMP2-*` evidence
+The launcher (bash and PowerShell) gets `update` with the IMAGE_REF → track table, and its `status` shows what each node's starter runs. Nodes without their own server-packages volume refuse with `NO_PACKAGES_VOLUME` and report it in their status as `updateBlocker`. The desktop UI (C1 POST, the row) is step 4.
+
+- Implementation cycle: `Initial` (for step 3)
+- Implementation revision record: `implementation-revision-record.md`, current `IR-003`
+- Related solution revision IDs: `SR-009`
+- Related architecture-review revision IDs: `ARCH-REV-004`
+- Related code-review / API/E2E / delivery revision IDs: `N/A` for step 3
+- Triggering finding IDs: `N/A`. ARCH-REV-004 notes N-2 (one gate rule for status and request) and N-3 (launcher `status` and `update` against stopped or pre-starter containers) are applied.
+- Branch and commits: `codex/docker-node-in-place-server-update`, base `origin/personal` @ `6b34f900b6`:
+  - `31df015657` feat(docker): in-place server update by command
+  - `4985104751` fix(docker): a stopping starter leaves an update past its switch to the next boot
+  - `c72107a0fd` fix(docker): boot deletes server packages nothing refers to
+  - `71604951d4` test(docker): DS-006 download and package-match failures; RELEASE.md in-place update
+  - the ticket-documents commit with this handoff and the `IMP3-*` evidence
+  - The two `fix` commits are defects found by my own container proof (see IR-003).
 - Not pushed. No release.
 
 ## Routing Classification (Mandatory)
 
-- Task size: `Large`
-- Architecture risk: `High`
-- Design classification section: design-spec.md "Task Size And Architectural Risk (Mandatory)"
+- Task size: `Large`; Architecture risk: `High` (design-spec.md "Task Size And Architectural Risk")
 - Classification confirmed or changed: `Confirmed`
-- Evidence and rationale: step 2 adds a new process owner between supervisord and the server, the frozen contracts C1, C2 (status) and C4 (start), a server route, launcher changes in two shells with a config-hash bump (every node is recreated once), and boot recovery code that restores the data folder. No escalation trigger fired:
-  - the server does not write into its app root: the installed package runs from the volume (IMP2-08 F);
-  - the server's bounded stop (autobyteus-284) ends within the starter's limit: a supervisord stop took 0.14 s (IMP2-07 C).
+- Rationale: step 3 delivers the supply-chain path (signature, binding, fit), the data copy and restore, a process state machine across a stop of the starter itself, a new frozen request surface (C2 `POST /updates`, the `cli.mjs update` arguments) and the launcher command in two shells. None of the design's escalation triggers fired:
+  - the package is byte-identical (step 1);
+  - the app root is read-only (step 2);
+  - the bounded stop: the old server stopped within the limit in every proof run (no `update-stop-timeout` in the logs);
+  - the data copy stays in the node's own volume.
 - Selected route: `Code Review`
-- Lightweight self-review for the direct route: `Not Applicable`
-- New design impact or escalation trigger: `None`. The deviations D-1..D-3 below stay within the design's intent and are for the reviewer to confirm.
+- New design impact: `None`. The decisions below stay inside the design.
 
 ## Reviewed Behavior Implementation Trace
 
-| Behavior ID | Approved Change / Preserved Outcome | Implemented Production Path / Key Files | Result / Notes |
+| Behavior / AC | Approved Change | Implemented Path / Key Files | Result |
 | --- | --- | --- | --- |
-| BEH-001 / REQ-012 / AC-006 (DS-003) | The node keeps the newest version it already ran; an older image's built-in package never replaces it; when nothing it may run fits, `NEEDS_NEW_IMAGE` | `starter/starter.mjs` (`NodeStarter.run`: recovery and cleanup → `PackageStore.choose` → `ServerSupervisor.start` or refuse → socket); `starter/package-store.mjs` (`choose`, the three outcomes; `state.json`); `starter/system-facts.mjs` (fit: Node module version, architecture, system level from `/opt/autobyteus/system-level`) | Done. Unit: 8 package-store cases (IMP2-01). Container: NEEDS_NEW_IMAGE with no server, the starter up and no restart loop; an older current → the built-in package becomes current; an installed newer package runs from the volume (IMP2-08) |
-| DS-007 (mode supervising) | One owner of the server child; the server's exit ends the starter with its code; SIGTERM → stop the server → exit 0 | `starter/server-supervisor.mjs`: spawn `node <pkg>/dist/app.js --host --port --data-dir` (C4) detached (own group), cwd the package, `AUTOBYTEUS_STARTER_SOCKET` in env; stop: SIGTERM, 120 s, SIGKILL of the group; the group is killed after every exit; a start waits up to 30 s for a free port; `exitCodeOf` (128 + signal) | Done. Unit: 5 cases with real child processes (IMP2-01). Container: SIGKILL of the server → exit 137 → supervisord restart → new server; `supervisorctl stop` → exit 0 in 0.14 s (IMP2-07) |
-| DS-003 recovery and cleanup | An interrupted trial is rolled back (data copy restored), the update recorded `failed: INTERRUPTED`; leftovers removed | `NodeStarter.#recoverAndClean`; `PackageStore.rollBackTrial`, `removeLeftovers`; `starter/data-copy.mjs` (`restore`, repeatable; `delete`); `UpdateStatus.markInterrupted` | Done and unit-tested (IMP2-01: 2 boot cases). A trial can arise only from step 3 on (D-3) |
-| BEH-007 / REQ-011 (C2 status, C1 GET) | The node reports its version, its last update and whether a new image is needed | C2: `starter/starter-socket.mjs` `GET /status[?target=]` on `/run/autobyteus/starter.sock` (0600), `starter/update-status.mjs` (the node's version, `server`, `update.json` as `UpdateState`, `target.relation`); `starter/cli.mjs status` (one JSON line, exit 0/1). C1: `src/node-update/node-update-routes.ts`, `src/node-update/starter-client.ts`; registered in `src/api/rest/index.ts`; `TRUSTED_NETWORK_OWNER` in `remote-access-route-policy.ts` | Done. Unit: C1 6 cases, route policy (phone 403), socket 400 (IMP2-01, IMP2-03). Container: CLI and C1 answers, phone 403, `INVALID_VERSION` 400 (IMP2-06) |
-| Launcher (DS-002 groundwork) | `<node>-server-packages` volume, config hash, storage text | bash `container-config.sh` (run args, hash input, storage text moved here), `core.sh` (`CONFIG_HASH_VERSION` v7, `SERVER_PACKAGES_CONTAINER_PATH`); PowerShell new `ContainerConfig.ps1` (`Get-StateConfigHash`, `Get-ContainerRunArgs`, `Write-StorageForNode` moved from `DockerRuntime.ps1`), `Core.ps1`, entry module list | Done (IMP2-02 launcher tests). The IMAGE_REF → track table is deferred to step 3 (D-2) |
-| Image | supervisord runs the starter | `Dockerfile.monorepo` (after the system-part marker: `/opt/autobyteus/system-level`, `/opt/autobyteus/starter/*.mjs`, `/home/autobyteus/server-packages`); `supervisor-autobyteus-server.conf` (`exec node /opt/autobyteus/starter/starter.mjs`, `stopwaitsecs=30` per the reviewer's note) | Done (IMP2-05, IMP2-06). System level unchanged: the system part did not change |
-| Derived consumers | e2e test takes the server pid from the starter | `prisma-engine-discovery.docker.mjs`: `cli.mjs status` → `server.pid` | Done (syntax checked; the run is left to API/E2E) |
-| CR-N1 (step 1, code side) | The way-out command for a zh re-publish names `-f publish_zh=true` | "Check system level" step of `release-server-docker.yml` | Done (IMP2-02: step test for default and zh) |
+| BEH-003, REQ-001/002/004/009/015, AC-002, AC-008, AC-013 | Update by command to an exact or track-resolved newer version, verified, in the same container | `starter/cli.mjs update` → C2 `POST /updates` (`starter-socket.mjs`) → `UpdateService.request` (`update-service.mjs`: gates INVALID_VERSION → nodeBlocker (NO_PACKAGES_VOLUME, NEEDS_NEW_IMAGE) → UPDATE_RUNNING → track via `ReleaseSource.resolveTrack` → NOT_NEWER; request log with `requestedFrom`) → `UpdateRun` (`update-run.mjs`, DS-006 in call order) with `ReleaseSource` (`release-source.mjs`), `PackageVerifier` (`package-verifier.mjs`), `PackageStore` (unpack with the image's `tar`, install, trial transitions, `deleteOthers`), `SelfCheck` (`self-check.mjs`), `DataCopy` (`data-copy.mjs`), `UpdateStatus` (steps written before they run) | Container: 1.5.11-beta.5 → 1.5.12 → 1.5.13, same container ID and image ID, C1 shows the new version; NOT_NEWER exit 2; NO_PACKAGE_FOR_VERSION; tracks stable/beta (IMP3-06, -07, -09) |
+| BEH-004, REQ-005, AC-003 | Any refusal before the switch changes nothing | Every pre-switch error removes this run's files (`#removeFiles`), keeps `state.json`, and leaves the old server running | Container: SIGNATURE_INVALID (other key), DESCRIPTION_MISMATCH (older signed pair renamed), ARCHIVE_MISMATCH, NEEDS_NEW_IMAGE, NO_PACKAGE_FOR_VERSION: the same pid, the same state each time (IMP3-07). Unit: 10 refusal/failure codes incl. SELF_CHECK_FAILED, DOWNLOAD_FAILED, a package/description mismatch after unpack (IMP3-01) |
+| BEH-004, REQ-006, AC-004, DEC-005 | A new version that does not come up: the old version back, on its pre-update data when the update migrated | `UpdateRun.#switch`: needsCopy decided and space checked before the stop; copy complete before `beginTrial`; confirm = health within 180 s then alive 60 s; rollback = stop → restore → `rollBackTrial` → delete copy → discard → start old → `endUpdate` | Container: 1.5.14 migrates (table created), exits after 30 s → FAILED_AFTER_SWITCH, table gone, old version; 1.5.20 exits at start → FAILED_AFTER_SWITCH (IMP3-07, -08) |
+| DS-007 (modes, stops) | One owner of the child; supervised and updating modes; a stop before the point of no return aborts, after it halts and the next boot recovers | `server-supervisor.mjs` (`beginUpdate`/`endUpdate`, `supervisedExit`, `shutdown`), `server-process.mjs` (spawn/stop/health shared with SelfCheck), `starter.mjs` (`run`, `stop` → `UpdateService.stopRun`), `UpdateRun.abort/halt` | Container: a stop during the trial, during the data copy (806 MB of 6 GB copied), and a kill during the restore (595 MB of 6 GB restored). Each next boot ended with the old version on intact data, `INTERRUPTED`, and no leftover packages (IMP3-08, -10). Unit: SERVER_EXITED_DURING_UPDATE, a stop before the switch, a stop during the trial (IMP3-01) |
+| REQ-008, AC-005 | A package that needs a newer image is refused with the command | `PackageVerifier.checkFit` → NEEDS_NEW_IMAGE with `autobyteus-docker upgrade --all --tag <version>` | Container: system level 99 (IMP3-07) |
+| QR/space, DEC-005 | Not enough space is refused before the stop | `UpdateRun.#prepare`: archive + unpacked + 512 MB, plus data size + 10 % + 512 MB when needsCopy; re-checked after the stop | Container: 900 MB volume (package) and 1.9 GB volume (package + copy) refused, nothing changed (IMP3-09) |
+| RU-23 (SR-009) | `NO_PACKAGES_VOLUME` gate and `updateBlocker` | `system-facts.mjs` `isOwnMount` (`/proc/self/mountinfo` field 5); `UpdateService.nodeBlocker` is the one rule for both the request gate and the status (`status()` → `UpdateStatus.status(target, blocker)`), N-2; C1 passes `updateBlocker` on (`node-update-routes.ts`) | Container without the volume: status and C1 show the blocker; the request is refused with the same message (IMP3-09) |
+| REQ-012, AC-006 | A recreated container keeps the newest installed version | Step-2 selection, with the installed package from this step | Container: recreated from the same image after 1.5.13 → still 1.5.13 (installed) (IMP3-06) |
+| REQ-013, AC-012 | No secrets in logs | The starter logs names, versions, codes and messages only; the signing key never reaches a node | Container: the supervisor logs and state JSON of a full run, 28 KB, have no `PRIVATE KEY` and none of the test key's lines (IMP3-06) |
+| DS-002, CR2-N1 | Launcher `update` (bash, PowerShell) with the track table; `status` shows the starter's state | bash `node-update.sh` (`starter_call` runs `cli.mjs` in the container and reads its JSON with the container's own node; `update_track_for_image_ref`; `update_node` follows the steps; `print_starter_line`); `commands.sh` (`update`, `--version`), `core.sh` help; PowerShell `NodeUpdate.ps1`, `Commands.ps1`, `Core.ps1`; entry module lists | Bash: 8 tests against the fake docker, whose `exec` runs the launcher's real in-container script with a fake `cli.mjs`: steps and result, failure exit code, the track table incl. a pinned and a custom image, `--all`, option refusals, a pre-starter image, and the status lines incl. "not available" (N-3) (IMP3-02). PowerShell: text contract only (no `pwsh`) |
 
 - Changes stayed within the requirements doc's Scope Guardrail: `Yes`
 
 ## Key Files Or Areas
 
-- Starter (new, Node built-ins only): `autobyteus-server-ts/docker/starter/`
-  - `starter.mjs` (NodeStarter), `server-supervisor.mjs`, `package-store.mjs`, `update-status.mjs`, `starter-socket.mjs`, `cli.mjs`, `data-copy.mjs`;
-  - small owned helpers: `release-version.mjs`, `system-facts.mjs`, `state-file.mjs` (atomic JSON writes), `starter-log.mjs`, `starter-paths.mjs`;
-  - `tests/*.test.mjs` (26 tests, `pnpm -C autobyteus-server-ts test:starter`).
-- Server: `src/node-update/node-update-routes.ts`, `src/node-update/starter-client.ts`, `src/api/rest/index.ts`, `src/api/security/remote-access-route-policy.ts`; tests `tests/unit/node-update/node-update-routes.test.ts`, `tests/unit/remote-access/route-policy.test.ts`.
-- Image: `autobyteus-server-ts/docker/Dockerfile.monorepo`, `supervisor-autobyteus-server.conf`.
-- Launcher: `scripts/public/docker/autobyteus-docker.d/bash/{core,container-config,docker-runtime}.sh`, `powershell/{Core,ContainerConfig,DockerRuntime}.ps1`, `autobyteus-docker.ps1`.
-- Shared version vectors: `scripts/tests/release_version_vectors.json`, used by `test_release_versions.py` and `starter/tests/release-version.test.mjs`.
-- Docs: `autobyteus-server-ts/docker/README.md` (starter, `cli.mjs status`, volume), `README.md`, `autobyteus-server-ts/README.md` (volume), `TESTING.md` (starter layer; package choice in test nodes; own commit).
+- Starter (`autobyteus-server-ts/docker/starter/`, Node built-ins and the image's `tar`):
+  - new: `update-service.mjs`, `update-run.mjs`, `release-source.mjs`, `package-verifier.mjs`, `self-check.mjs`, `server-process.mjs`, `update-error.mjs`;
+  - changed: `server-supervisor.mjs`, `package-store.mjs`, `data-copy.mjs`, `update-status.mjs`, `system-facts.mjs`, `starter-socket.mjs`, `cli.mjs`, `starter.mjs`, `starter-paths.mjs`;
+  - tests: `tests/update-flow.test.mjs` (new) and the extended fixtures. 48 starter tests in all.
+- Server: `src/node-update/node-update-routes.ts` (`updateBlocker`), its test.
+- Image: `Dockerfile.monorepo` copies the public key to `/opt/autobyteus/starter/server-package-signing-key.pem`. The system part is unchanged, so the level stays 1.
+- Launcher: bash `node-update.sh` (new), `commands.sh`, `core.sh`, entry; PowerShell `NodeUpdate.ps1` (new), `Commands.ps1`, `Core.ps1`, entry. Tests: `scripts/tests/test_public_docker_launcher_update.py` (new); the shared fake docker gains `exec`.
+- Docs: `autobyteus-server-ts/docker/README.md` (in-place update section, the starter's `update` form, the test source variable), `README.md` (launcher `update`), `RELEASE.md` (Deployment).
 
 ## Important Assumptions
 
-Deviations and decisions inside the design, for the reviewer to confirm:
+Decisions inside the design, for the reviewer to confirm:
 
-- **D-1, boot order:** the design orders the boot socket → selection → start. The starter runs selection → start → socket. The C2 status then always describes a chosen state, with no "starting" value outside the frozen `state` enum. The socket is still listening before the server can use it: the server reaches the starter only while serving a C1 request, which it cannot do before it listens (seconds later).
-- **D-2, launcher track table and status deferred to step 3:**
-  - The IMAGE_REF → track table has no user until the launcher's `update` command (step 3); adding it now would be dead code (Principle 7).
-  - The launcher's `status` printing the starter's state (DS-003 step 5) needs the same parsing of the CLI's JSON as `update`, so both go with step 3.
-  - Until then, `NEEDS_NEW_IMAGE` is visible with `docker exec <container> node /opt/autobyteus/starter/cli.mjs status` (documented in the Docker README) and in the node's log.
-- **D-3, recovery before it is reachable:** boot recovery of a trial (DS-003 step 1) is implemented in step 2, as scoped, with `DataCopy.restore`/`delete`. A trial is first recorded by step 3's `UpdateRun`; until then only unit tests reach this path. `DataCopy.take` and `needsCopy` come with step 3.
-- **C2 status field meaning (frozen now):**
-  - `version` is the node's version: the chosen package's version, or in `needsNewImage` the newest version that already ran (`state.current`);
-  - `server` (`pid`, `packageVersion`, `source`) is present only while a server runs;
-  - `update` is `update.json` merged over an idle `UpdateState`, keeping fields this starter does not know;
-  - a `target` that is not a release version is answered `400 { code: "INVALID_VERSION", message }`, and C1 passes that 400 on.
-- **`cli.mjs` socket:** `AUTOBYTEUS_STARTER_SOCKET` overrides the default `/run/autobyteus/starter.sock`, the same variable the server uses. Tests use it; `docker exec` uses the default.
-- **Supervision details:**
-  - after any server exit the starter kills the server's process group, so nothing it left outlives it (R-06);
-  - before a start it waits up to 30 s for the port to be free, then starts anyway and logs `server-port-still-in-use`;
-  - an exit by signal is passed on as 128 + the signal number (SIGKILL → 137);
-  - `stopwaitsecs=30` follows the reviewer's note.
-- **File size rule:** `DockerRuntime.ps1` (556 lines) and `docker-runtime.sh` (511) were over 500. The volume and storage text could not be added there, so PowerShell's config hash, run arguments and storage text moved to the new `ContainerConfig.ps1` (mirroring bash's `container-config.sh`), and bash's `print_storage_for_node` moved to `container-config.sh`. Now: 482 and 492 lines.
-- **Config hash v7:** the new volume and its target are hash inputs, so `upgrade --all` recreates every node once and mounts the volume (DEC-014).
+- **Refused versus failed** (the `state` in `UpdateState`):
+  - `refused`: the request cannot be met, and nothing was changed. INVALID_VERSION, NOT_NEWER, UPDATE_RUNNING, NO_PACKAGES_VOLUME, NEEDS_NEW_IMAGE, NO_PACKAGE_FOR_VERSION, SIGNATURE_INVALID, DESCRIPTION_MISMATCH, ARCHIVE_MISMATCH, and NOT_ENOUGH_SPACE before the stop.
+  - `failed`: something went wrong while doing it. DOWNLOAD_FAILED, SELF_CHECK_FAILED, SERVER_EXITED_DURING_UPDATE, FAILED_AFTER_SWITCH, INTERRUPTED, and NOT_ENOUGH_SPACE after the stop.
+  - An unexpected error is `failed` with `code: null` and its message.
+- **Request gates answer at once:** the C2/CLI answer is the gate result (202 `accepted` with the resolved version, 409 `refused`). A refused request leaves `update.json` alone. Every later outcome, including NO_PACKAGE_FOR_VERSION, goes to `update.json`; `cli.mjs update` returns at acceptance, as frozen.
+- **Step names (frozen with C2):** `checking`, `downloading`, `preparing`, `restarting`, `confirming`, `rollingBack`. On success `step` keeps its last value (`confirming`).
+- **A stop past the point of no return halts the run** (DS-007 rows "updating, steps 4–7 or rollback | SIGTERM"). The trial stays recorded and the next boot rolls it back. My proof first showed the run racing the exit (see IR-003).
+- **Boot cleanup also deletes every installed package other than the current and the previous one** (DEC-013). This removes a package left by an update stopped after its download, and the interrupted trial's package. Before this fix, about 1 GB stayed on the volume (IR-003).
+- **During the trial** the status already reports the trial's pid and version (`setRunning`). On rollback it reports the old version again; until then its `version` is the trial's. The update state says `confirming`.
+- **The rollback records `failed` once the old server is spawned,** not once it answers its health check (supervision takes over from there).
+- **Unpacking uses the image's `tar`** (`tar -xzf … --no-same-owner`), after the archive's SHA-256 matched the signed description; Node has no built-in tar.
+- **`STOP_TIMEOUT`** (old server stopped by force) is logged and appended to the success message; it is not a result code.
+- **Launcher JSON:** bash reads the CLI's JSON with the container's own `node`, because the host may have no JSON tool. It accepts only the known field names before assigning them (`printf -v`).
+- **Proof without the launcher on this machine:** the launcher's default node names (`autobyteus-server-0..`) collide with the user's containers, so the real-container proof drove `cli.mjs` and C1 directly. The launcher's own logic is proven against the fake docker.
 
 ## Known Risks
 
-- **The first image with the starter on a user's node:** `upgrade --all` recreates every node (new image and v7 hash). The new, empty `<node>-server-packages` volume makes the starter run the built-in package and record it. Not run on a launcher-managed test node here; listed for API/E2E.
-- **A supervisord SIGKILL of the starter:** after `stopwaitsecs`, the detached server would outlive it, holding the port; the next starter waits 30 s for the port, then starts and the server fails to bind. This needs a server that ignores SIGTERM for more than 30 s, which the bounded shutdown of autobyteus-284 prevents. `docker stop` ends every process anyway.
-- **PowerShell:** no `pwsh` on this machine, so the PowerShell launcher was checked by the text-contract tests only (its parse tests skip: `skipped=2`), not executed.
+- **The release that ships step 3:** its notes must tell launcher users to reinstall the launcher (`curl … | bash -s -- install`, or the PowerShell equivalent), then run `autobyteus-docker upgrade --all` (RU-23). Nodes made by an older launcher refuse with `NO_PACKAGES_VOLUME` until then. For delivery.
+- **The real release path is still unproven:** GitHub-hosted packages and the production signing key are exercised only by the first release. The proof used the same scripts with a test key and a local source.
+- **PowerShell** was not executed (no `pwsh`); its `update` and `status` are text-checked only.
+- **During a data copy or restore the starter stays busy:**
+  - the copy is asynchronous, so status still answers;
+  - the restore is synchronous: a SIGTERM waits for it, and `docker stop`'s 10 s may SIGKILL the starter during a large restore. The next boot then repeats the restore (proven: IMP3-10).
 
 ## Task Design Health Assessment Implementation Check
 
-- Reviewed change posture: `Larger Requirement` (feature)
-- Reviewed root-cause classification: `No Design Issue Found`
-- Reviewed refactor decision: `No Refactor Needed`. The size-rule moves in the launcher are file placement, not a redesign.
-- Implementation matched the reviewed assessment: `Yes`
-- Routed as `Design Impact`: `N/A`
-- Evidence / notes: the server needed only the thin C1 relay; the starter owns everything else.
+- Change posture `Larger Requirement`; root cause `No Design Issue Found`; refactor `No Refactor Needed`.
+- Implementation matched the reviewed assessment: `Yes`. Spawning and stopping a server moved into `server-process.mjs`, shared by ServerSupervisor and SelfCheck (no duplicate), with ServerSupervisor still the only owner of the node's child.
 
 ## Legacy / Compatibility Removal Check
 
-- Backward-compatibility mechanisms introduced: `None`. A container from an older image keeps its old entry; the new image has only the starter (DEC-014).
-- Legacy old-behavior retained in scope: `No`
-- Dead code in the touched files and modules removed: `Yes`. `supervisorctl pid` is no longer used by the e2e test. No new code is without a caller except the recovery path (D-3, scoped by the design).
-- Dead code found elsewhere, added to `follow-ups.md`: none new
-- Shared structures remain tight: `Yes` (`state.json` entries `{ source, version }`; one `UpdateState` shape; one owner of the node's version)
-- Canonical shared design guidance reapplied: `Yes`
-- Size guardrails: `Yes`. The largest new source file is `package-store.mjs` (124 lines); the files over 500 lines were shrunk, not grown.
-- Notes: none
+- Backward-compatibility mechanisms introduced: `None`; legacy retained: `No`.
+- Dead code in touched files removed: `Yes`. The step-2 deferrals D-2 (track table, launcher status) are now used.
+- Shared structures tight: `Yes` (one `UpdateState`, one gate rule for blocker and request, one `UpdateError` with `code` and `outcome`).
+- Size guardrails: `Yes`. The largest starter file is `update-run.mjs` (202 lines); the launcher runtime files stay at 492/482 lines; the new modules are 127 and 95 lines.
 
 ## Persisted Data / State Transition Check
 
-- Approved decision: `Not Affected` for the data folder's formats; new starter state (`state.json`, `update.json`) with one writer and a tolerant reader
-- Implementation follows it: `Yes`. Both files are written atomically (temporary file, then rename). The reader treats a missing file as no state, and update fields it does not know are kept.
+- Approved decision: `Not Affected` for the data formats; a byte copy and restore of the data folder per DEC-005; starter state with one writer.
+- Implementation follows it: `Yes`:
+  - the copy is written to `data-copy.partial` and renamed when complete;
+  - `beginTrial` is written only after that;
+  - restore clears and copies (repeatable);
+  - `state.json` and `update.json` are written atomically.
 - Deviation: `None`
 
 ## Environment Or Dependency Notes
 
-- The local test image `autobyteus-server-305-test:step2` (`sha256:50b3211b4b38…`, arm64) is kept for reuse; the step-1 images too. All test containers and volumes were removed (`docker rm -f -v`, `docker volume rm`). The user's nodes `autobyteus-server-0/1/2` and their volumes were not touched.
+- Local images kept for reuse:
+  - `autobyteus-server-305-test:step3` (clean clone of `c72107a0fd`);
+  - `autobyteus-server-305-test:step3-testkey` (test key and local source; built from IMP3-proof-Dockerfile.testkey).
+- The proof's packages and test key are under `/tmp/ab305/proof/`. The throwaway private key was never committed or printed.
+- All test containers and volumes were removed (label `autobyteus.validation=ab305-s3`: 0 left). The user's nodes `autobyteus-server-0/1/2` and their volumes were not touched.
 
 ## Checks Run
 
-Evidence is in `evidence/` (files `IMP2-*`).
+Evidence is in `evidence/` (`IMP3-*`). The proof harness is the `IMP3-proof-*` files.
 
 | Check ID | Command Or Steps | Commit Tested | Environment | Code It Exercises | Behavior / Criteria IDs | Result | Evidence Files | Look For |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| IMP2-01 | `pnpm -C autobyteus-server-ts test:starter` | `82e2e7f931` | macOS arm64, Node 22 | all starter modules: selection, recovery, supervision with real child processes, socket, CLI, version vectors | AC-006, DS-003, DS-007, REQ-011 | Pass | `IMP2-01-starter-tests.log` | `# pass 26`, `# fail 0` |
-| IMP2-02 | `python3 -m unittest discover -s scripts/tests -p 'test_*.py' -v` | `82e2e7f931` | macOS arm64 | launcher (bash; PowerShell text contract), shared version vectors, workflow steps incl. CR-N1 | BEH-001, CR-N1 | Pass | `IMP2-02-script-tests.log` | `Ran 176 tests` … `OK (skipped=2)` |
-| IMP2-03 | `vitest run tests/unit/node-update tests/unit/remote-access tests/unit/api tests/architecture`; `pnpm -C autobyteus-server-ts typecheck` | `82e2e7f931` | macOS arm64 | C1 route and client, route policy, REST, tracked-import guard | REQ-011, AC-009 (phone) | Pass | `IMP2-03-server-unit-and-typecheck.log` | `Tests  294 passed (294)`, `typecheck exit 0` |
-| IMP2-04 | actionlint, shellcheck (vs base), check-system-level, licensing, hygiene, secret gate | `82e2e7f931` | macOS arm64 | workflow, launcher shell, level | REQ-013 | Pass | `IMP2-04-lint-and-gates.log` | `secret gate: PASS`, `System level 1: … unchanged` |
-| IMP2-05 | `docker buildx build --load --platform linux/arm64 … -t autobyteus-server-305-test:step2 .` | `b1029fc1b0` inputs | Docker 29.0.1 | Dockerfile, starter copy, system-level file | — | Pass | `IMP2-05-image-build.log` | `COPY autobyteus-server-ts/docker/starter/*.mjs /opt/autobyteus/starter/`, `exit 0` |
-| IMP2-06 | test container with test-owned volumes; `cli.mjs status`; C1 with targets; invalid target; phone bearer; process tree, socket mode, env | `b1029fc1b0` | arm64 | starter boot, C2, C1, route class, C4 env | REQ-011, AC-009, C4 | Pass | `IMP2-06-container-boot-status-c1.log` | `"relation":"newer"`, `400`, `403`, `server pgid: 101, starter pgid: 51`, `srw-------` |
-| IMP2-07 | SIGKILL of the server; `supervisorctl stop` / `start` | `b1029fc1b0` | arm64 | DS-007 supervising | DS-007, R-04, R-06 | Pass | `IMP2-07-container-supervision.log` | `exit status 137; not expected` then a new pid; `stopped: autobyteus_server (exit status 0)`, `stop took .137` s |
-| IMP2-08 | state written on the test volume while stopped: newer current (NEEDS_NEW_IMAGE), older current, installed 1.5.12 | `b1029fc1b0` | arm64 | DS-003 selection in the image | AC-006, REQ-012 | Pass | `IMP2-08-container-selection.log` | `"state":"needsNewImage"` + `RUNNING … uptime 0:00:19`; `"source":"installed"` + `server cwd: /home/autobyteus/server-packages/packages/1.5.12` |
+| IMP3-01 | `pnpm -C autobyteus-server-ts test:starter` | `71604951d4` | macOS arm64, Node 22 | all starter modules; update-flow with real processes, a local source, real archives, signed descriptions | AC-002..AC-006, AC-008, AC-013, DS-006, DS-007 | Pass | `IMP3-01-starter-tests.log` | `# pass 48`, `# fail 0` |
+| IMP3-02 | `python3 -m unittest discover -s scripts/tests -p 'test_*.py' -v` | `71604951d4` | macOS arm64 | launcher `update`/`status` (bash), track table, PowerShell text contract, earlier script tests | DS-002, CR2-N1, N-3 | Pass | `IMP3-02-script-tests.log` | `Ran 184 tests` … `OK (skipped=2)` |
+| IMP3-03 | server unit tests around C1; `pnpm -C autobyteus-server-ts typecheck` | `71604951d4` | macOS arm64 | C1 incl. `updateBlocker`, route policy | REQ-011 | Pass | `IMP3-03-server-unit-and-typecheck.log` | `Tests  295 passed (295)`, `typecheck exit 0` |
+| IMP3-04 | actionlint, shellcheck (vs base), `node --check`, system level, licensing, hygiene, secret gate | `71604951d4` | macOS arm64 | workflow, launcher, starter | REQ-013 | Pass | `IMP3-04-lint-and-gates.log` | `secret gate: PASS`, `System level 1` |
+| IMP3-05 | image build from a clean clone; test image | `c72107a0fd` | Docker 29.0.1 | Dockerfile, key copy | — | Pass | `IMP3-05-image-build-clean-clone.log` | `COPY …server-package-signing-key.pem`, `exit 0` |
+| IMP3-06 | S3-01: updates by command 1.5.11-beta.5 → 1.5.12 → 1.5.13 (migration), NOT_NEWER, log scan, recreation | `c72107a0fd` | test container + volumes, local source | DS-006 success path, DataCopy, commit, C1, selection | AC-002, AC-006, AC-008, AC-012, DEC-005 | Pass | `IMP3-06-proof-updates-by-command.log` | `same container: yes, same image: yes`; `table after: 1; data copy after: absent`; `PRIVATE KEY: 0`; `after recreation: version=1.5.13` |
+| IMP3-07 | S3-02: NEEDS_NEW_IMAGE, ARCHIVE_MISMATCH, DESCRIPTION_MISMATCH, SIGNATURE_INVALID, NO_PACKAGE_FOR_VERSION; a trial that exits at start | `c72107a0fd` | same | gates and verification, rollback | AC-003, AC-004, AC-005, AC-013 | Pass | `IMP3-07-proof-refusals.log` | `(unchanged)` after each code; `FAILED_AFTER_SWITCH: 1.5.20 did not come up (it exited with code 3 …` |
+| IMP3-08 | S3-03: migrate-then-fail with restore; container stop during the trial | `c72107a0fd` | same | rollback, restore, boot recovery | AC-004, DS-007 | Pass | `IMP3-08-proof-rollback-and-stops.log` | `table after rollback: 0`; after the trial stop `INTERRUPTED … this node runs 1.5.11-beta.5 again`, `table: 0` |
+| IMP3-09 | S3-04: NOT_ENOUGH_SPACE (package; package + copy), NO_PACKAGES_VOLUME, tracks | `c72107a0fd` | tmpfs volumes, no volume | space checks, RU-23, ReleaseSource | RU-23, DEC-005, DS-002 | Pass | `IMP3-09-proof-space-volume-tracks.log` | `needs 2.06 GB … (the package and a copy of the data folder)`; `"updateBlocker":{"code":"NO_PACKAGES_VOLUME"`; `--track beta: {"accepted":true,"version":"1.5.13"}` |
+| IMP3-10 | S3-05: `docker stop` during the copy, `docker kill` during the restore (6 GB data file) | `c72107a0fd` | same | DS-007 halt, boot cleanup and repeatable restore | DS-003, DS-007, DEC-005 | Pass | `IMP3-10-proof-stop-during-copy-and-restore.log` | `data-copy.partial 806M` → `INTERRUPTED`, `data file intact: yes`, no package left; kill at `595M` restored → `trial-rolled-back … dataRestored:true` |
 
 - Not run, and why:
-  - PowerShell execution: no `pwsh` here;
-  - `test:e2e:prisma-engine-discovery:docker` (now reads the pid from `cli.mjs status`) and `test:e2e:nodes-docker-address`: heavy probe-owned stacks, left to API/E2E;
-  - the launcher's `upgrade --all` from a step-1 image to the step-2 image on a test-owned node: API/E2E;
-  - an amd64 build of the step-2 image: the starter is architecture-independent JavaScript, and the package build is unchanged from step 1 (amd64 proven in IMP-04/IMP-07);
-  - the full server `test:unit`: only the route registration and route policy changed in the server; the suites around them ran (IMP2-03).
+  - the launcher against real Docker (its node names collide with the user's containers on this machine): left to API/E2E with test-owned names;
+  - PowerShell (no `pwsh`);
+  - the real GitHub release path with the production key (needs a release);
+  - amd64 (the starter is architecture-independent and the image build is unchanged since step 1);
+  - the Docker e2e probes (unchanged by step 3).
 
 ## Frontend Rendered-Result Check (When Applicable)
 
-`Not Applicable`: step 2 changes no rendered frontend. The desktop UI is step 4.
+`Not Applicable`: no rendered frontend changes in step 3 (the Nodes row is step 4).
 
 ## Downstream Coverage Hints / Suggested Scenarios
 
-- Launcher on test-owned nodes only (never `autobyteus-server-0/1/2`):
-  - `new-container` with a step-2 image: the volume exists and `storage` lists it;
-  - `upgrade --all` from a step-1 image: the node is recreated once (v7), the data is kept, the starter runs the built-in package.
-- `docker stop` / `docker start` of a node: the starter boots again and selects the same package (`state.json` is kept in the volume).
-- C1 from a desktop on the trusted network and from a phone credential, against a real node.
-- The two Docker e2e probes against `autobyteus-server-305-test:step2`.
+- The launcher on real Docker with test-owned node names (for example a state dir and a copy of the launcher with another `NODE_NAME_PREFIX`):
+  - `update`, `update --all`, and `update` without `--version` on `latest`/`beta`/pinned images;
+  - `status` with a stopped container and with a pre-starter image (N-3).
+- An upgrade from a step-2 image node with its volume, then an in-place update.
+- A second update after a rollback, to check that the failed version is not retried by itself.
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required
 
-- The launcher upgrade path and the Docker e2e probes listed above.
-- Step 2 delivers no in-place update yet: AC-001..AC-005, AC-008 and AC-013 come with steps 3 and 4.
+- The launcher path above; PowerShell where `pwsh` is available.
+- AC-001 (from the desktop) and AC-009/AC-010 come with step 4; AC-007 with step 5.

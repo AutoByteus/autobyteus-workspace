@@ -1,0 +1,3 @@
+FROM autobyteus-server-305-test:step3
+COPY keys/test.pub /opt/autobyteus/starter/server-package-signing-key.pem
+ENV AUTOBYTEUS_SERVER_PACKAGE_SOURCE=http://host.docker.internal:<port>/releases

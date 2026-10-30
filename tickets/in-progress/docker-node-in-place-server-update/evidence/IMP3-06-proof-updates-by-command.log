@@ -1,0 +1,50 @@
+# IMP3-06 — see IMP3-proof-run-proof.sh (case_happy) or IMP3-proof-run-stops.sh; commit c72107a0fd (image above); test-owned containers and volumes only (label autobyteus.validation=ab305-s3), removed afterwards
+# S3-01 updates by command: plain, with a data migration, NOT_NEWER, and an image recreation (AC-002, AC-006, AC-008)
+# image: autobyteus-server-305-test:step3-testkey sha256:3f6701699cacc110cb787f88141a69fbd8e2b19135c51b76c42db2c42dac4f69; release source: AUTOBYTEUS_SERVER_PACKAGE_SOURCE in the image
+# date: 2026-10-30T19:11Z
+
+before: version=1.5.11-beta.5 pid=103 source=builtIn state.json={"current":{"source":"builtIn","version":"1.5.11-beta.5"}}
+container d75e85cad5c42ecbd96199f8eed56a50947b247ee33bde02e17867e672165337 image sha256:3f6701699cacc110cb787f88141a69fbd8e2b19135c51b76c42db2c42dac4f69
+$ cli.mjs update --version 1.5.12  (exit code next)
+{"accepted":true,"version":"1.5.12"}
+exit=0
+result: {"state":"succeeded","targetVersion":"1.5.12","step":"confirming","code":null,"message":"Updated to 1.5.12.","startedAt":"2026-10-30T19:11:46.764Z","finishedAt":"2026-10-30T19:12:59.692Z","requestedFrom":"host command"}
+after: version=1.5.12 pid=756 source=installed state.json={"current":{"source":"installed","version":"1.5.12"},"previous":{"source":"builtIn","version":"1.5.11-beta.5"}}
+same container: yes, same image: yes
+C1: {"inPlaceUpdate":"available","version":"1.5.12","target":{"version":"1.5.12","relation":"same"},"update":{"state":"succeeded","targetVersion":"1.5.12","step":"confirming","code":null,"message":"Updated to 1.5.12.","startedAt":"2026-10-30T19:11:46.764Z","finishedAt":"2026-10-30T19:12:59.692Z","requestedFrom":"host command"}}
+files: downloads packages state.json update.json packages/1.5.12 
+
+## a data migration (1.5.13 adds prisma migration 20261030120000_test_305_1_5_13)
+table before: 0
+data copy during the trial: present
+result: {"state":"succeeded","targetVersion":"1.5.13","step":"confirming","code":null,"message":"Updated to 1.5.13.","startedAt":"2026-10-30T19:13:00.732Z","finishedAt":"2026-10-30T19:14:12.978Z","requestedFrom":"host command"}
+after: version=1.5.13 pid=1859 source=installed state.json={"current":{"source":"installed","version":"1.5.13"},"previous":{"source":"installed","version":"1.5.12"}}
+table after: 1; data copy after: absent
+packages kept (current and previous): packages/1.5.12 packages/1.5.13 
+
+## AC-008: not newer
+$ update --version 1.5.13: {"refused":"NOT_NEWER","message":"This node runs 1.5.13; 1.5.13 is not newer."}
+ exit=2
+$ update --version 1.5.12: {"refused":"NOT_NEWER","message":"This node runs 1.5.13; 1.5.12 is not newer."}
+ exit=2
+after: version=1.5.13 pid=1859 source=installed state.json={"current":{"source":"installed","version":"1.5.13"},"previous":{"source":"installed","version":"1.5.12"}}
+
+## AC-012: no key material or credentials in the node's logs and state
+log and state bytes scanned:    28159
+PRIVATE KEY: 0; test key body lines: 0
+starter log lines:
+{"time":"2026-10-30T19:11:46.764Z","starter":"update-requested","version":"1.5.12","requestedFrom":"host command"}
+{"time":"2026-10-30T19:11:46.764Z","starter":"update-started","version":"1.5.12","requestedFrom":"host command"}
+{"time":"2026-10-30T19:11:57.598Z","starter":"self-check-passed","version":"1.5.12"}
+{"time":"2026-10-30T19:12:59.692Z","starter":"update-succeeded","version":"1.5.12"}
+{"time":"2026-10-30T19:13:00.731Z","starter":"update-requested","version":"1.5.13","requestedFrom":"host command"}
+{"time":"2026-10-30T19:13:00.732Z","starter":"update-started","version":"1.5.13","requestedFrom":"host command"}
+{"time":"2026-10-30T19:13:10.847Z","starter":"self-check-passed","version":"1.5.13"}
+{"time":"2026-10-30T19:14:12.978Z","starter":"update-succeeded","version":"1.5.13"}
+{"time":"2026-10-30T19:14:14.502Z","starter":"update-requested","version":"1.5.13","requestedFrom":"host command"}
+{"time":"2026-10-30T19:14:14.502Z","starter":"update-refused","code":"NOT_NEWER","message":"This node runs 1.5.13; 1.5.13 is not newer.","requestedFrom":"host command"}
+{"time":"2026-10-30T19:14:14.604Z","starter":"update-requested","version":"1.5.12","requestedFrom":"host command"}
+{"time":"2026-10-30T19:14:14.604Z","starter":"update-refused","code":"NOT_NEWER","message":"This node runs 1.5.13; 1.5.12 is not newer.","requestedFrom":"host command"}
+
+## AC-006: the container is recreated from the same image (built-in 1.5.11-beta.5 is older than the installed 1.5.13)
+after recreation: version=1.5.13 pid=99 source=installed state.json={"current":{"source":"installed","version":"1.5.13"},"previous":{"source":"installed","version":"1.5.12"}}
