@@ -21,7 +21,7 @@ All paths below are relative to the ticket directory
 2. **Binary.** Any other file is read once. If it contains a NUL byte anywhere (DEC-006; previously the first 8,000 bytes), it is refused with `The file '<path>' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files.`
 3. **Text.** Otherwise the same bytes are decoded as UTF-8 and processed exactly as before.
 
-**OpenAI Responses** (REQ-010, IR-002): `OpenAIResponsesLLM.normalizeTools` sends every function tool with `strict: false`. The API treats an omitted `strict` as true, which made GPT-5 models fill every optional argument (SD-02), so image reads came with line ranges and were refused (CR-001). A tool already in Responses shape that sets its own `strict` keeps it; hosted tools pass through unchanged. `start_line`/`end_line` descriptions now read "First line to return (1-based, inclusive). Text files only; omit to start at line 1." and "Last line to return (1-based, inclusive). Text files only; omit to read to the end." 
+**OpenAI Responses** (REQ-010, IR-002): `OpenAIResponsesLLM.normalizeTools` sends every function tool with `strict: false`. The API treats an omitted `strict` as true, which made GPT-5 models fill every optional argument (SD-02), so image reads came with line ranges and were refused (CR-001). A tool already in Responses shape that sets its own `strict` keeps it; hosted tools pass through unchanged. `start_line`/`end_line` descriptions now read "First line to return (1-based, inclusive). Text files only; omit to start at line 1." and "Last line to return (1-based, inclusive). Text files only; omit to read to the end."
 
 The removal and its follow-on changes:
 - `ReadMediaFile` (`read_media_file`) is removed with its exports, registration and tests.
@@ -149,7 +149,7 @@ Evidence is in `evidence/`; each log starts with its command, commit, environmen
 6. **Server** `test:unit` (`IMP-05`): exit 0. 864 files passed, 5 skipped; 7,303 tests passed. This includes `tests/agent-work-journal` (the new `read_file` media cases), `tests/architecture` and the Daily Assistant bootstrapper test. The AC-006 resolver file was collected before I added its case. Run alone it passes 9/9 (`IMP-07`).
 7. **Typechecks** (`IMP-06`): `autobyteus-ts` `tsc -p tsconfig.build.json` exit 0; server `typecheck` exit 0. A fresh worktree first needs `pnpm -C autobyteus-server-ts prebuild` (exit 0).
 8. **Gated Gemini m4a live test** (`IMP-08`): **skipped, not passed.** I ran it with the test vault and both gates. The provider refused the vault's Gemini credential (`invalid_or_missing_credentials`), so no request was sent. AC-005's live part remains open until the vault's Gemini key is valid.
-9. `git grep read_media_file` (AC-005): see the trace above. `git diff --check` is clean.
+9. `git grep read_media_file` (AC-005): see the trace above. `git diff --check e82d03b0f9..HEAD` is clean except API/E2E's `evidence/API-11-newer-openai-and-lmstudio.log` (one trailing space, not mine to edit).
 
 ### IR-002 checks (SR-005)
 10. **Responses `strict: false`** (`IMP-10`): the new unit cases fail 2/2 before the fix (the tools lack `strict`) and pass after; the whole file passes 13/13.

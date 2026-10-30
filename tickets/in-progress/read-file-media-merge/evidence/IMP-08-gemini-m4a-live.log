@@ -23,5 +23,3 @@ stderr | tests/integration/agent/gemini-read-file-m4a-live.test.ts > Gemini read
       Tests  1 skipped (1)
    Start at  21:42:40
    Duration  1.72s (transform 762ms, setup 70ms, import 1.18s, tests 302ms, environment 0ms)
-
-

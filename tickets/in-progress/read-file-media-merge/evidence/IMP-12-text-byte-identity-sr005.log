@@ -16,5 +16,3 @@ files 67333: text 67037 (comparisons 201111), binary 296
       Tests  1 passed (1)
    Start at  06:40:22
    Duration  153.82s (transform 222ms, setup 94ms, import 187ms, tests 153.31s, environment 0ms)
-
-

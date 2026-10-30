@@ -625,5 +625,3 @@ autobyteus-application-backend-sdk build: Done
 
 > autobyteus-server-ts@0.1.1 typecheck /Users/normy/autobyteus_org/autobyteus-worktrees/read-file-media-merge/autobyteus-server-ts
 > tsc -p tsconfig.build.json --noEmit
-
-

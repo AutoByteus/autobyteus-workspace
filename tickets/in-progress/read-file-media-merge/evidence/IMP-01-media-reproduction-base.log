@@ -153,9 +153,9 @@ Error {
 }
 
 + Received:
-"1: 
+"1:
 2: \x1a
-3: 
+3:
 4: -�IEND�B`�"
 
  ❯ tests/integration/tools/file/read-file-media.test.ts:97:81
@@ -287,4 +287,3 @@ Received: "Could not read file at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf
       Tests  15 failed | 3 passed (18)
    Start at  20:51:25
    Duration  257ms (transform 88ms, setup 37ms, import 75ms, tests 36ms, environment 0ms)
-
