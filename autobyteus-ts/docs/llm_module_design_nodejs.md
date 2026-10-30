@@ -484,7 +484,7 @@ converted, the renderer must fail before provider invocation with an actionable
 media-conversion error rather than silently sending a text-only request.
 
 The direct-Gemini `.m4a` path has an opt-in live proof in
-`tests/integration/agent/gemini-read-media-file-m4a-live.test.ts`. Default test
+`tests/integration/agent/gemini-read-file-m4a-live.test.ts`. Default test
 runs keep it skipped unless `AUTOBYTEUS_RUN_GEMINI_M4A_LIVE=1` is set. The
 fixture at `tests/data/test_audio.m4a` is a small synthetic/non-private spoken
 sample; the live test renders the assembled request's exact local file bytes
