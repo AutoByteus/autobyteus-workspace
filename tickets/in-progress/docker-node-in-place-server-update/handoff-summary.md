@@ -1,49 +1,63 @@
-# Handoff Summary — autobyteus-305, build step 1 (signed server package)
+# Handoff Summary — autobyteus-305, build step 2 (starter and server-packages volume)
+
+This summary holds the latest delivery (DR-002, step 2). Step 1's summary (DR-001: signed server package, merged as `eec6522b27`) is in git at `77fb8bf2d1`.
 
 ## What This Delivery Contains
 
-Build step 1 of 5 of the design spec: **signed server package**. Each step is reviewed and merged on its own. Steps 2–5 (starter and server volume, in-place update by command, desktop, mid-turn runs come back) are not built yet.
+Build step 2 of 5. Steps 3–5 (in-place update by command, desktop, mid-turn runs come back) are not built yet.
 
-- The Docker image runs its server from a built-in server package at `/opt/autobyteus/server-package` (supervisord still starts `node dist/app.js`; no starter yet).
-- Each default-variant release will publish, per architecture (`x64`, `arm64`), `autobyteus-server-<version>-linux-<arch>.tar.gz`, `.json` (description) and `.json.sig` (Ed25519 signature) on the GitHub release, taken out of the pushed image. A complete release now has 23 assets (was 17).
-- Base images are pinned by digest in `autobyteus-server-ts/docker/system-level.json`. The release workflow refuses an image whose system part changed without a new level.
-- Removed: `bootstrap.sh` and the dead `AUTOBYTEUS_WORKSPACE_ROOT` / `AUTOBYTEUS_SKIP_SYNC` variables (launcher, compose, `.env.example`).
-- New GitHub secret `SERVER_PACKAGE_SIGNING_KEY` (set 2026-10-30, IMP-10); public key in `autobyteus-server-ts/docker/server-package-signing-key.pem`.
-- Docs: DESIGN.md rule 9 exception, GLOSSARY, RELEASE.md, TESTING.md, Docker README.
+- **Starter:** supervisord now runs `/opt/autobyteus/starter/starter.mjs`, which runs the node's server package as its child (own process group). It forwards a stop to the server and exits with the server's code on a crash, so supervisord restarts it.
+- **Package choice at each start:** an installed package (from the volume) if it fits this image and is not older than the built-in one; otherwise the built-in package unless the node already ran a newer version; otherwise no server and `NEEDS_NEW_IMAGE`. The starter stays up and names the image and the launcher command.
+- **Starter state** (`state.json`, `update.json`) lives in the new per-node volume `<node>-server-packages` at `/home/autobyteus/server-packages`. The bash and PowerShell launchers mount it, with config hash `v7`. Compose mounts `autobyteus-server-server-packages`.
+- **C2 and C1:** the starter answers on a socket (`cli.mjs status`); the server relays it as `GET /rest/node-update[?target=<version>]` (route class `TRUSTED_NETWORK_OWNER`: phones get 403). `inPlaceUpdate: "unavailable"` is returned on servers without a starter (desktop, development).
+- **CR-N1 from step 1 is done:** the workflow's way-out command now prints `-f publish_zh=true` for a zh run.
+- Docs: Docker README (starter, selection, status), root and server READMEs (volume), TESTING.md (starter test layer), and `remote_access.md` (route, added by delivery).
 
 ## Classification And Route
 
-- Task size `Large`, architectural risk `High`, route `Reviewed`: SR-005 → ARCH-REV-002 Pass → IR-001 → CRR-001 Pass (9.5/10) → API-REV-001 Pass (95%) → CRR-002 Pass → delivery DR-001.
+- Task size `Large`, architectural risk `High`, route `Reviewed`: SR-005 (SR-006/007) → ARCH-REV-003 → IR-002 → CRR-003 Pass (9.5/10) → API-REV-002 Pass (94.7%) → CRR-004 Not Applicable (no durable test changed) → delivery DR-002.
 
 ## Integration
 
-- Method: merge of `origin/personal` @ `e4bebdc858` into the ticket branch (`a85cf65c52`), after a checkpoint commit of the review records (`44620de716`). The base brought autobyteus-284 (bounded shutdown); no file overlaps with this ticket.
-- Post-integration checks (DEL-01): 174 script tests OK (2 skipped as before), system level unchanged, actionlint and shellcheck clean, licensing, artifact hygiene and secret gate pass.
-- Integrated-state image (DEL-02): arm64 image built from the merged tree (`server-package.json: 1.5.11-beta.5 linux-arm64, … 61 migrations`); container healthy in 8 s, `/mobile/` 200, GraphQL answers, server cwd `/opt/autobyteus/server-package`, the base's 284 shutdown code inside the package, no `bootstrap.sh`. Container and image removed.
+- `origin/personal` was still `77fb8bf2d1` (the step-1 finalization), so the branch was already current and nothing was merged. API/E2E tested `6637b54d46`, whose code equals `b1029fc1b0`. Everything after it is ticket documents only.
+- Delivery checks on the delivered state (DEL-03): 26/26 starter tests, 176 script tests OK (2 skipped), system level 1 unchanged, licensing, hygiene and secret gate pass.
 
 ## Verification
 
-Verified from the evidence (details in `release-deployment-report.md`): AC-011's local part, BEH-001 (preserved) and the removal plan are directly proven. AC-011's GitHub part (the real release run with the real secret) can only be proven by a release. A release can only be cut after this merge, and none was requested.
+Verified from the evidence (details in `release-deployment-report.md`). Every step-2 critical criterion is directly proven:
+- the starter's package choice incl. `NEEDS_NEW_IMAGE`;
+- the move to the starter image by bash v6 and v7 launchers, PowerShell and compose, with all volumes and data kept;
+- the C1/C2 status;
+- the phone refusal with a real paired phone;
+- the starter's supervision.
 
-## Open Until The First Release (whoever cuts it)
+The 94.7% confidence is 0.3 under the 95% target. The gap is durable PowerShell execution coverage, which is FU-006's pre-existing gap. API/E2E executed every step-2 PowerShell path once (API-22).
 
-The first release after this merge is the first real run of the `publish-server-package` job. Whoever cuts it must check:
+## Decisions And Notes For The Solution Designer
 
-1. `gh release view vX.Y.Z[-beta.N] --json assets` lists **23** assets, including the six `autobyteus-server-<v>-linux-{x64,arm64}.{tar.gz,json,json.sig}`.
-2. One published `autobyteus-server-<v>-linux-<arch>.tar.gz`, unpacked, is identical to `/opt/autobyteus/server-package` in that release's image (files, links, modes; the method is in `evidence/IMP-06-manifest.sh`).
-3. The package job did not time out waiting for the release (30 minutes) and did not fail on the secret/key pair.
+- **CR2-N1 (a release between step 2 and step 3), accepted by delivery as an interim.** After a newer version ran, a node retargeted to an older image (`upgrade --all --tag <older>`) runs no server, and the launcher's `status` still says "running". The refusal shows only in the node log and in `docker exec <c> node /opt/autobyteus/starter/cli.mjs status` (Docker README).
+  - Before step 2, the same action started an older server on data a newer one may have migrated, so this is safer, not a regression.
+  - It needs a deliberate downgrade (a non-goal), and REQ-011's status is reported through C1/C2 as required.
+  - So a release may fall between step 2 and step 3. If the user wants the launcher `status` line before such a release, that is a small change to bring forward from step 3.
+- **RU-23, for the step-3 design and the release notes of the release that ships step 3.**
+  - A node that an installed v6 launcher recreates has no `<node>-server-packages` volume, so starter state stays in the container layer. In step 2 that loses nothing: the next boot chooses the built-in package again.
+  - From step 3, a package installed in place on such a node would be lost at that launcher's next recreate on an image change.
+  - The new launcher (from `personal`, `autobyteus-docker.sh … install`) adds the volume on its next `upgrade --all` (API-12 phase C).
+  - Users must reinstall the launcher, and the step-3 release notes must say so. The step-3 design may also want the update to refuse when the volume is missing.
+- **The launcher is installed from the `personal` branch.** This merge changes the launcher for anyone who reinstalls it now, before any release. API-12 phase A covers that: the v7 launcher on the published `:beta` (old layout) recreates once, mounts the unused volume and keeps everything.
+- **FU-006** (added by API/E2E): the PowerShell launcher's fresh port pick (`new-container`, `reset`) is broken since `517a0bce53`, the same on `origin/personal`. It is a pre-existing follow-up for the Solution Designer to send.
 
-A package job failure leaves a partial release in the RELEASE.md sense. Nodes do not read packages before step 3, so users are not affected in the meantime.
+## Still Open From Step 1 (unchanged)
 
-## Not Done Here
+No release has been cut since step 1's merge (newest `v1.5.11-beta.5`, before it). On the first release after it, whoever cuts it must:
+1. check that it has 23 assets;
+2. unpack one published `autobyteus-server-<v>-linux-<arch>.tar.gz` and compare it with that image's `/opt/autobyteus/server-package` (`evidence/IMP-06-manifest.sh`);
+3. confirm the package job neither timed out nor failed on the secret/key pair.
 
-- CR-N1 code side: the workflow's "Check system level" error message should print `-f publish_zh=true` for a zh run (the Docker README already says it). Left to implementation with step 2.
-- Follow-ups FU-001..FU-005 are unchanged (`follow-ups.md`). Delivery added none.
-- Prerequisite PRQ-001 (autobyteus-284, bounded shutdown) merged into `personal` on 2026-10-30 (`c0a4409a9b`), so it is in the base now. PRQ-002 (285/287) is still open.
+That release will also ship step 2 (the starter) if this merge lands first, so CR2-N1 applies to it.
 
 ## Where Things Are
 
-- Merged into `personal` with `--no-ff` as `eec6522b27` (pushed; Secret Gate PASS before both pushes). No release.
-- Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-in-place-server-update`, branch `codex/docker-node-in-place-server-update`. Kept for steps 2–5.
-- Ticket folder stays at `tickets/in-progress/docker-node-in-place-server-update/`, because the ticket continues with step 2.
-- Local test images kept by implementation: `autobyteus-server-305-test:step1`, `:step1-amd64`; leftover created container `ab305-extract` (implementation's).
+- Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-in-place-server-update`, branch `codex/docker-node-in-place-server-update`. Kept for steps 3–5.
+- Ticket folder stays at `tickets/in-progress/docker-node-in-place-server-update/`.
+- Implementation's local images `autobyteus-server-305-test:step1`, `:step1-amd64`, `:step2` and container `ab305-extract` are left to their owner. The user's nodes `autobyteus-server-0/1/2` were never touched.

@@ -1,57 +1,55 @@
-# Docs Sync Report — autobyteus-305, build step 1 (signed server package)
+# Docs Sync Report — autobyteus-305, build step 2 (starter and server-packages volume)
+
+This report holds the latest delivery round (DR-002, step 2). The step-1 report (DR-001) is in git at `77fb8bf2d1`.
 
 ## Scope
 
-- Ticket: autobyteus-305, Docker nodes update their server in place (`docker-node-in-place-server-update`). Delivers **build step 1 of 5** (design-spec "Change / Refactor Sequence": each step is reviewed and merged on its own).
-- Trigger: code reviewer CRR-002 Pass (post-API/E2E test-code review), after API-REV-001 Pass (95%), CRR-001 Pass, IR-001, ARCH-REV-002 Pass, SR-005.
-- Bootstrap base reference: `origin/personal` @ `9d59ab82ec`
-- Integrated base reference used for docs sync: `origin/personal` @ `e4bebdc858` (merged into the ticket branch as `a85cf65c52`; brings autobyteus-284, bounded shutdown)
-- Post-integration verification reference: `evidence/DEL-01-post-integration-checks.log`, `evidence/DEL-02-integrated-image-start.log`, `evidence/DEL-02-integrated-image-build-excerpt.log`
+- Ticket: autobyteus-305, Docker nodes update their server in place (`docker-node-in-place-server-update`). Delivers **build step 2 of 5**.
+- Trigger: code reviewer CRR-004 (`Not Applicable`, no durable test changed) after API-REV-002 Pass (94.7%), CRR-003 Pass (9.5/10), IR-002, ARCH-REV-003.
+- Bootstrap base reference for this step: `origin/personal` @ `77fb8bf2d1` (step 1 merged as `eec6522b27`)
+- Integrated base reference used for docs sync: `origin/personal` @ `77fb8bf2d1`. It had not moved, so the branch was already current.
+- Post-integration verification reference: `evidence/DEL-03-step2-delivery-checks.log`
 
 ## Why Docs Were Updated
 
-- Summary: implementation already changed the long-lived docs for step 1 (DESIGN.md rule 9 exception, GLOSSARY terms, RELEASE.md 23 assets + secret + level check, TESTING.md package-layout test node, Docker README). Delivery checked them against the integrated state and fixed the three wording notes from code review (CR-N1 docs side, CR-N2, CR-N3).
-- Why this should live in long-lived project docs: the release asset set, the signing secret, the system-level rule and the package layout change how every future release and Docker change is made, not only this ticket.
+- Summary: implementation documented the starter, its package choice, `cli.mjs status`, the `<node>-server-packages` volume (Docker README, root README, server README) and the starter test layer (TESTING.md, own commit `82e2e7f931`). Delivery found one long-lived doc that the new REST route made incomplete: the remote-access route list.
+- Why this should live in long-lived project docs: the route list in `remote_access.md` is the reference for which routes refuse phone credentials. A route missing there hides that `GET /rest/node-update` is owner-only.
 
 ## Long-Lived Docs Reviewed
 
-| Doc Path | Why It Was Reviewed | Result (`Updated`/`No change`/`Needs follow-up`) | Notes |
+| Doc Path | Why It Was Reviewed | Result | Notes |
 | --- | --- | --- | --- |
-| `DESIGN.md` | Rule 9 exception (C1–C4) added by implementation | No change | Matches DEC-007 and the design spec |
-| `GLOSSARY.md` | New Nodes terms | Updated | CR-N3: "built-in server package" is the published folder only for default-variant images |
-| `RELEASE.md` | 23 assets, `SERVER_PACKAGE_SIGNING_KEY`, system-level check, Server Docker row | No change | Accurate on the integrated state; the base's 284 merge did not touch it |
-| `TESTING.md` | Docker test-node rule rewritten for the package layout (own commit `5c33c1b7b0`) | No change | IMP-08 ran the recipe |
-| `autobyteus-server-ts/docker/README.md` | Release automation and package description | Updated | CR-N2: Desktop **or** Android workflow creates the release; CR-N1 docs side: way-out command needs `-f publish_zh=true` for zh |
-| `.github/workflows/release-server-docker.yml` (comment only) | Same wording as the README | Updated | CR-N2 comment; no step body changed (actionlint and 174 script tests rerun, DEL-01) |
-| `README.md` (root) Docker section | Mentions launcher volumes and `/app/autobyteus-server-ts/workspace` | No change | The workspace volume stays mounted by design (FU-004); the new launcher volume comes in step 2, which updates this section |
-| `autobyteus-server-ts/README.md` Docker section | Same volume list; `docker build -f …Dockerfile.monorepo` | No change | Still accurate |
+| `autobyteus-server-ts/docker/README.md` | Starter, selection, `NEEDS_NEW_IMAGE`, `cli.mjs status`, new volume, `test:starter` | No change | Accurate against API-12 and IMP2-08 |
+| `README.md` (root), `autobyteus-server-ts/README.md` | Launcher volume lists (step 1 deferred the new volume to step 2) | No change | Both list `<node>-server-packages` |
+| `TESTING.md` | Docker starter test layer; test-node package choice | No change | Matches IMP2-01 and the probes |
+| `autobyteus-server-ts/docs/features/remote_access.md` | Lists the trusted-network owner routes | Updated | Added `GET /rest/node-update` |
+| `GLOSSARY.md` | "Starter" defined in step 1 | No change | Still accurate |
+| `DESIGN.md` | Rule 9 exception names C1 `/rest/node-update` | No change | — |
+| `RELEASE.md` | Release assets, level check | No change | Step 2 adds no release asset; the starter sits after the system-part marker (level unchanged, DEL-03) |
 
 ## Docs Updated
 
 | Doc Path | Type Of Update | What Changed | Why |
 | --- | --- | --- | --- |
-| `GLOSSARY.md` | Wording | "Built-in server package": for a default-variant image it is the folder the release publishes; a `zh` image builds its own and publishes none | CR-N3 (design DS-004 form 3) |
-| `autobyteus-server-ts/docker/README.md` | Wording | The package job waits for the release that the Desktop Release or the Android APK Release workflow creates; the old-ref way-out command adds `-f publish_zh=true` for zh | CR-N2; docs side of CR-N1 |
-| `.github/workflows/release-server-docker.yml` | Comment | Same Desktop-or-Android wording above "Wait for the GitHub release" | CR-N2 |
+| `autobyteus-server-ts/docs/features/remote_access.md` | Route list | `GET /rest/node-update` under trusted-network owner routes, with what it returns on servers without a starter | New route in `remote-access-route-policy.ts` (route class `TRUSTED_NETWORK_OWNER`) |
 
 ## Durable Design / Runtime Knowledge Promoted
 
 | Topic | What Future Readers Need To Understand | Source Ticket Artifact(s) | Target Long-Lived Doc |
 | --- | --- | --- | --- |
-| Server package and its release assets | Each default release publishes per architecture the archive, description and signature, taken from the pushed image | design-spec DS-004, implementation-handoff | `RELEASE.md`, Docker README, GLOSSARY (implementation) |
-| System level | Any edit to the image's system part needs a level raise in `system-level.json` | design-spec DS-004 | `RELEASE.md` Workflow Reference, Docker README (implementation) |
-| Rule 9 exception | Only C1–C4 stay stable across versions | DEC-007 | `DESIGN.md` (implementation) |
+| Starter package choice | Installed package if it fits and is not older than built-in; else built-in unless older than the newest version that ran; else `NEEDS_NEW_IMAGE` with no server | design-spec DS-003 | Docker README (implementation) |
+| Starter status | `docker exec <c> node /opt/autobyteus/starter/cli.mjs status`; starter log lines in the supervisord log | design-spec DS-007 | Docker README (implementation) |
+| C1 route class | `/rest/node-update` refuses phones | AC-009 | `remote_access.md` (delivery) |
 
 ## Removed / Replaced Components Recorded
 
 | Old Component / Path / Concept | What Replaced It | Where The New Truth Is Documented |
 | --- | --- | --- |
-| `/app/autobyteus-server-ts` server layout | `/opt/autobyteus/server-package` (built-in server package) | GLOSSARY, Docker README, TESTING.md |
-| `bootstrap.sh`, `AUTOBYTEUS_WORKSPACE_ROOT`, `AUTOBYTEUS_SKIP_SYNC` | Nothing (dead) | Docker README (variables removed) |
-| Base image by floating tag (`BASE_IMAGE_TAG`) | Digest pinned in `system-level.json` | RELEASE.md, Docker README |
+| supervisord program `node dist/app.js` in the built-in package | supervisord runs the starter, which runs the chosen package | Docker README |
+| Launcher config hash `v6` | `v7` (adds the server-packages volume) | Launcher code; Docker README volume list |
 
 ## Delivery Continuation
 
 - Result: `Pass`
 - Next delivery action: verification from evidence, then repository finalization into `personal` (no release).
-- Notes: CR-N1's code side (the workflow's error message should print `-f publish_zh=true` for a zh run) is a step-body change. It is not taken in delivery and stays with implementation for step 2, as `implementation-handoff.md` records.
+- Notes: CR-N1's code side (step 1) was done in step 2 (`release-server-docker.yml` prints `-f publish_zh=true` for zh; IMP2-02).

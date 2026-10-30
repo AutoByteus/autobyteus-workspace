@@ -38,6 +38,7 @@ The route policy classifies every HTTP request before normal route handling:
   - `GET /rest/remote-access/devices/revoked`
   - `DELETE /rest/remote-access/devices/:deviceId`
   - `DELETE /rest/remote-access/devices`
+  - `GET /rest/node-update` (a Docker node's server package version and in-place update state, relayed from its starter; `inPlaceUpdate: "unavailable"` on servers no starter runs; see `autobyteus-server-ts/docker/README.md` and the DESIGN.md rule 9 exception)
 - Trusted-network protected routes:
   - `POST /graphql`
   - protected REST families such as media, files, uploads, workspaces, context files, drafts, runs, team runs, run file changes, team communication, application backend routes, and application bundle assets
