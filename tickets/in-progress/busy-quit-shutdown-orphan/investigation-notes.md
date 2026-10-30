@@ -224,6 +224,36 @@
   Code 2.1.283). Validation records the versions and re-checks the E9 orphaning (Claude survives EOF) because the
   sweep design rests on it.
 
+## Second re-check against an updated personal (SR-006, 2026-10-30)
+- **Trigger:** the user: "do the analysis again, the origin personal branch has been updated a lot".
+- **Rebase:** `git fetch origin`; 421 new commits since `d74f75a51a`. The six docs-only ticket commits rebased cleanly
+  onto `origin/personal` @ `1a4453e553`. Head after rebase `102a34f134`.
+- **The important change:** ticket `backend-port-conflict-20261024` (merged to personal 2026-10-26, merge `86bf04a785`,
+  archived in `tickets/done/backend-port-conflict-20261024/`; main code commit `f34ad8749f` "own native command groups
+  and await backend shutdown") built part of what this ticket designed. It was approved for owned-background cleanup
+  at application/backend shutdown and port-conflict diagnosis. It explicitly kept agent stop and idle policy unchanged
+  (its DEC-001, BEH-003) and made no claim about busy runs or runtime CLIs ("Existing Codex/AGY/Claude shutdown tests
+  remain controls; no new universal provider claim", its design-spec line 247).
+- SR-005's E-A16 (server shutdown) and E-A21 (desktop) are **superseded** by E-A25 to E-A28 below. The other SR-005
+  findings still hold at `1a4453e553` (re-read: E-A13 stop-now owners, E-A14 callers, E-A15 `terminatedAt` writers,
+  E-A17 Claude process owner, E-A18 AGY helper, E-A19 other spawned processes, E-A22 relaunch port wait).
+- All findings are `Read` at `1a4453e553` unless marked otherwise. Nothing was run in this round.
+
+| ID | Area | Observation at `1a4453e553` | Effect on the design |
+| --- | --- | --- | --- |
+| E-A25 | Server shutdown owner (new) | `src/shutdown/server-process-shutdown.ts`: `ServerProcessShutdown` is the one owner of SIGINT/SIGTERM and the Windows IPC request (`:18-23`, handlers with `on`, memoized `request()` at `:33-48`). It waits for the startup barrier, runs `cleanupOnce()` (set to `app.close()`, `server-runtime.ts:204`), sends `complete`/`failed` over IPC when present, then `exit(0/1)`. **There is no time bound on `cleanupOnce()`.** A second SIGTERM no longer takes Node's default action (the request is memoized), so only SIGKILL ends a hung server. | RC-2 still holds. D2 moves into this owner: bound the cleanup at 10 s, then always the sweep. No new `server-process-shutdown` file. N-4 no longer applies. |
+| E-A26 | Native commands (new) | `NativeCommandProcessScope` (`autobyteus-ts/.../native-command-process-scope.ts`) owns every native command (foreground `run_bash` and background processes) in an anchored process group. The server closes it first in Fastify `preClose` (`native-command-shutdown.ts:8`) with a 3 s collective deadline (`:129-132`), with verified absence and an `unconfirmed` report; `onClose` aggregates it with the rest of cleanup (`build-studio-server.ts:409`). `BackgroundProcessManager.stopAll()` (`background-process-manager.ts:88`) still has no caller outside it; a run Terminate still leaves native background work alone (their DEC-001). | Native commands at server shutdown are covered without the sweep; the sweep stays the net for runtime CLIs, their tool commands and AGY daemons on a forced or bounded exit. FU-003 (native background on run Terminate) unchanged. |
+| E-A27 | Desktop quit (new) | `electron/application/applicationShutdown.ts`: one memoized `stop()` with a 30 s ceiling; `quit()` prevents `will-quit` until the stop settles, then `app.quit()`, or `app.exit(1)` on failure. `electronApplication.ts:59, 347-350, 405-411` wire it. The 8 s `before-quit` timer and `hasShutdownRun` are gone. The updater calls `prepareForInstall: () => this.stop()` before `quitAndInstall` (`electronApplication.ts:73-75`, `appUpdater.ts:275-276`). | AR-002 (one stop promise, re-entry) and RC-3's "quit does not wait" are **solved**. D3's memoized stop and `will-quit` deferral are dropped from this design. |
+| E-A28 | Desktop server stop (new) | `baseServerManager.ts:40` `gracefulShutdownTimeoutMs = 20000`; `stopServer` (`:175-187`) → `stopManagedBackend` (`managedBackendStop.ts`): graceful = SIGTERM, wait up to 20 s (`:189-192`); then `forceStop` = **SIGKILL of the server PID only** (`:193-195`) and up to 2 s to confirm exit. macOS/Linux spawn has no IPC and is not detached (`macOSServerManager.ts:42, 59`). Windows (`windowsServerManager.ts:38, 56-70`): spawn with an IPC channel, graceful = IPC `request` through `ManagedBackendShutdownClient`, force = `taskkill /pid /f /t` (whole tree). | The desktop waits now, but its force on macOS/Linux kills only the server. With busy runs the server does not finish (RC-1, RC-2), so today a busy quit takes about 20 s and then SIGKILLs the server: the Claude CLI and its commands survive (E9); Codex cleans up on EOF (E9). D3 shrinks to: force on POSIX sweeps the server's tree. The window value is DEC-007. |
+| E-A29 | Bound arithmetic (replaces E-A23) | With D2: native drain ≤ 3 s is inside the 10 s cleanup bound; after the bound, one `ps` (≤ 2 s timeout, usually ~20 ms) + 1.5 s grace + IPC flush ≤ 250 ms. The server's own worst case is about 13.75 s, typically ~11.6 s; a busy quit with interrupting runs is expected in a few seconds (U-A1). Desktop: graceful window (20 s today, 15 s approved in DEC-002) + 2 s force confirmation, inside the 30 s app ceiling. | A 15 s desktop window leaves ~1.25 s margin over the server's worst case; 20 s leaves ~6 s. Recommendation in DEC-007: keep 20 s. Docker/supervisord 10 s (FU-004) should become about 15 s. |
+| E-A30 | Windows graceful stop | The desktop now asks the Windows server to shut down over IPC before `taskkill /f /t` (E-A28). autobyteus-283's FU-001 ("Windows `taskkill` without `/f` may never run the graceful close") is answered in code by backend-port-conflict; it was not verified on a Windows host (its handoff summary: "Actual Windows/WSL … remain unclaimed"). | Nothing for this ticket. Reported to the Project Task Manager with the result. |
+| E-A31 | Two process-table readers | `autobyteus-ts` `ProcessGroupObserver` (`process-group-observer.ts`, async `ps` with deadline and birth identity, for native command groups) and AGY's `agy-background-process-groups.ts` (sync `ps -A -o pid=,ppid=,pgid=`) both read the process table. Both existed before this ticket. | The design keeps moving AGY's selector for the server sweep (one shared selector for AGY and the sweep); merging the two readers across packages is FU-005. |
+| E-A32 | Other new code since SR-005 | Credential proxy (`src/credential-proxy/`, an in-process loopback server closed in `closeProcessResources`, `build-studio-server.ts:144`); live tool-list updates; model routing; `read_file` media. None spawns processes or changes the stop-now path. The stop-now callers are the same seven call sites (line moves only: `general-process-run-supervisor.ts:486`, `agent-run-service.ts:143`). | No design change. |
+
+- U-A1 and U-A2 (SR-005) still apply. **U-A3:** when the desktop force path is taken, does the sweep's SIGTERM of the
+  Claude CLI end its tool commands within the 2 s force confirmation? Validation measures it with a wedged-server test
+  double.
+
 ## Supplement Inventory
 | Supplement | Purpose | Status |
 | --- | --- | --- |

@@ -84,3 +84,34 @@
 - Approval: DEC-005 asked of the user again (2026-10-26). REQ-001 to REQ-005 remain approved (SR-002).
 - Classification: Large / High (unchanged). Routing after DEC-005: `/architecture_reviewer` (ARCH-REV-002 of SR-004 +
   SR-005).
+
+## SR-006 — 2026-10-30 — Second re-check after backend-port-conflict landed (autobyteus-284)
+- Trigger: the user: "do the analysis again, the origin personal branch has been updated a lot". The solution-designer
+  skill was also updated (2026-10-27: feasibility evidence per requirement; challenge requirements the evidence
+  contradicts); its changed files were re-read.
+- Prior status: requirements Ready for Approval (DEC-005), design SR-004/SR-005 Ready pending DEC-005. Current status:
+  requirements Ready for Approval (DEC-005, DEC-007), design SR-006 Ready pending both.
+- Workspace: six docs-only commits rebased cleanly onto `origin/personal` @ `1a4453e553` (421 commits after
+  `d74f75a51a`).
+- Evidence added: E-A25 to E-A32 (all `Read`), U-A3. SR-005's E-A16 and E-A21 superseded.
+- Main finding: `backend-port-conflict-20261024` (merged 2026-10-26) shipped `ServerProcessShutdown` (no bound),
+  `NativeCommandProcessScope` (native commands drained at shutdown), `ApplicationShutdown` (quit waits for one memoized
+  stop; updater prepares through it) and `stopManagedBackend` (20 s window, POSIX force = SIGKILL of the server PID only;
+  Windows IPC + `taskkill /f /t`). RC-1 and RC-2 still hold; RC-3 is solved except the POSIX force, which orphans the
+  Claude CLI (E9).
+- Requirements changes: problem statement and BEH-003/BEH-004 current behavior updated; Feasibility evidence column
+  added to the requirements table (template change); AC-004 bound follows DEC-007; AC-011 added (desktop force leaves no
+  child, within REQ-003/REQ-004, Solution Designer). New `Needs user` decision **DEC-007**: the approved 15 s desktop
+  window versus the shipped 20 s (recommended: keep 20 s).
+- Design changes: D1 unchanged. D2 moves into the existing `ServerProcessShutdown` (10 s bound after the startup
+  barrier, then always a sweep; exit 1 and IPC `failed` on expiry or unconfirmed sweep); new
+  `src/shutdown/server-process-tree-sweep.ts`; the AGY helper still moves to `src/utils/process-tree.ts`. D3 shrinks to
+  the POSIX `forceStop` tree sweep and the window constant; memoized stop and `will-quit` deferral dropped (shipped).
+  Docs to update named with lines.
+- Follow-ups: FU-003 updated (native background now stopped at shutdown, still not on Terminate); FU-004 value 20 s;
+  FU-005 added (two process-table readers).
+- For the Project Task Manager: autobyteus-283's FU-001 (Windows graceful stop) is answered in code by
+  backend-port-conflict's IPC shutdown request (E-A30), not verified on Windows.
+- Classification: **Medium / High** (was Large / High; D3 shrank). Routing after DEC-005 and DEC-007:
+  `/architecture_reviewer` (ARCH-REV-002 of SR-006). ARCH-REV-001's AR-002 is satisfied by shipped code; AR-001 and
+  AR-003 dispositions carry over.
