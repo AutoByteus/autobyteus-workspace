@@ -1,0 +1,8 @@
+Check IMP-03: focused checks in a clean clone of the branch
+Commands: pnpm -C autobyteus-server-ts exec vitest run tests/app-data-migrations tests/architecture tests/unit/agent-memory tests/unit/agent-execution/backends tests/unit/services/agent-streaming --no-watch ; pnpm -C autobyteus-ts exec vitest run tests/unit/memory --no-watch
+Commit: f5f9ee3221
+Environment: macOS Darwin 25.5.0, fresh clone in /tmp
+Date: 2026-10-30
+---
+server: Test Files 203 passed | 4 skipped (207); Tests 2076 passed | 6 skipped (2082)
+library memory: Test Files 42 passed (42); Tests 312 passed (312)

@@ -39,7 +39,7 @@ describe('RawTraceArchiveManager', () => {
       boundaryType: 'provider_compaction_boundary',
       boundaryKey: 'codex:thread:boundary:full-key',
       boundaryTraceId: 'rt-marker',
-      runtimeKind: 'CODEX',
+      runtimeKind: 'codex_app_server',
       sourceEvent: 'codex.thread_compacted',
     });
 
@@ -65,7 +65,7 @@ describe('RawTraceArchiveManager', () => {
       boundaryType: 'provider_compaction_boundary',
       boundaryKey: 'codex:thread:boundary:full-key',
       boundaryTraceId: 'rt-marker',
-      runtimeKind: 'CODEX',
+      runtimeKind: 'codex_app_server',
       sourceEvent: 'codex.thread_compacted',
     });
 
@@ -165,7 +165,7 @@ describe('RawTraceArchiveManager', () => {
       boundaryType: 'provider_compaction_boundary',
       boundaryKey: 'boundary-1',
       boundaryTraceId: 'rt-marker',
-      runtimeKind: 'CODEX',
+      runtimeKind: 'codex_app_server',
       sourceEvent: 'codex.thread_compacted',
     });
 

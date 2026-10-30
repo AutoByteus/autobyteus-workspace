@@ -113,7 +113,7 @@ describe("Grok Build compaction notifications", () => {
     const input = { sessionId: "s", turnId: "t", operationId: "s-47", details: {}, trigger: null, reason: null } as const;
     expect(buildGrokBuildCompactionStatusPayload({ ...input, phase: "started", eventId: "s-47", trigger: "auto",
       details: { tokens_used: 29164, context_window: 256000, percentage: 11, reason: "Context window 11% full" } })).toEqual({
-      kind: "provider_compaction_boundary", runtime_kind: "GROK_BUILD", provider: "grok", source_surface: "grok.auto_compact_started",
+      kind: "provider_compaction_boundary", runtime_kind: "grok_build", provider: "grok", source_surface: "grok.auto_compact_started",
       provider_session_id: "s", provider_event_id: "s-47", provider_timestamp: null, turn_id: "t", semantic_compaction: false,
       boundary_key: "grok:s:started:s-47", status: "compacting", rotation_eligible: false, trigger: "auto",
       tokens_used: 29164, context_window: 256000, percentage: 11,

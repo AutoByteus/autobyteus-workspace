@@ -199,7 +199,7 @@ const archivePrefix = (runDir: string, prefix: string, activeRows: Record<string
       boundaryType: "provider_compaction_boundary",
       boundaryKey: `${prefix}:boundary`,
       boundaryTraceId: `${prefix}-boundary`,
-      runtimeKind: "AUTOBYTEUS",
+      runtimeKind: "autobyteus",
       sourceEvent: "api-e2e",
     });
     if (!segment) throw new Error("Expected an archived segment");
@@ -536,7 +536,7 @@ describe("recent run projection GraphQL e2e", () => {
       boundaryType: "provider_compaction_boundary",
       boundaryKey: "system-instruction:boundary",
       boundaryTraceId: "system-instruction-boundary",
-      runtimeKind: "AUTOBYTEUS",
+      runtimeKind: "autobyteus",
       sourceEvent: "api-e2e",
     });
     if (!segment) throw new Error("Expected the system-instruction prefix to rotate");

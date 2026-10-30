@@ -1,3 +1,4 @@
+import { RuntimeKind } from "../../../runtime-management/runtime-kind-enum.js";
 import type {
   AcpCompactionPhase,
   AcpCompactionStatusInput,
@@ -48,7 +49,7 @@ export const interpretGrokCompactionUpdate = (
 export const buildGrokBuildCompactionStatusPayload = (input: AcpCompactionStatusInput): Record<string, unknown> => {
   const base = {
     kind: "provider_compaction_boundary",
-    runtime_kind: "GROK_BUILD",
+    runtime_kind: RuntimeKind.GROK_BUILD,
     provider: "grok",
     source_surface: SOURCE_SURFACES[input.phase],
     provider_session_id: input.sessionId,

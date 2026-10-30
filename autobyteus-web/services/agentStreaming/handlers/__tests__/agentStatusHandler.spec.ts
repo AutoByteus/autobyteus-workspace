@@ -367,7 +367,7 @@ describe('agentStatusHandler', () => {
       // Payload shapes emitted by the server's Claude compaction tracker (status → failed).
       const base = {
         kind: 'provider_compaction_boundary',
-        runtime_kind: 'CLAUDE',
+        runtime_kind: 'claude_agent_sdk',
         provider: 'claude',
         provider_session_id: 'session-1',
         provider_event_id: 'operation-2',
@@ -418,7 +418,7 @@ describe('agentStatusHandler', () => {
       // Payload shape emitted by the server's AGY checkpoint mapping (one event per compaction).
       const agyCheckpoint = (stepIndex: number, turnId: string, durationMs: number) => ({
         kind: 'provider_compaction_boundary',
-        runtime_kind: 'ANTIGRAVITY',
+        runtime_kind: 'antigravity_cli',
         provider: 'antigravity',
         source_surface: 'antigravity.checkpoint',
         boundary_key: `agy:conversation-1:checkpoint:${stepIndex}`,
@@ -465,7 +465,7 @@ describe('agentStatusHandler', () => {
       // emitted when the turn ended before item/completed (interrupt).
       const base = {
         kind: 'provider_compaction_boundary',
-        runtime_kind: 'CODEX',
+        runtime_kind: 'codex_app_server',
         provider: 'codex',
         provider_thread_id: 'thread-1',
         provider_event_id: 'item-1',
@@ -511,7 +511,7 @@ describe('agentStatusHandler', () => {
       // Payload shapes from the server's Grok builder (ACP converter pairs by operation id).
       const grok = (fields: Record<string, unknown>) => ({
         kind: 'provider_compaction_boundary',
-        runtime_kind: 'GROK_BUILD',
+        runtime_kind: 'grok_build',
         provider: 'grok',
         provider_session_id: 'session-1',
         provider_timestamp: null,
