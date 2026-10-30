@@ -4,7 +4,9 @@ All ticket paths are under `/Users/normy/autobyteus_org/autobyteus-worktrees/bus
 
 ## Review Round Meta
 
-- Review Entry Point: `Implementation Review`
+> **Latest round: 2, API/E2E Failure-Origin Review (CRR-002).** It covers F-API-001 and F-API-002 from API-REV-001. The implementation-review sections below (behavior basis, structural checks, size audit, legacy, docs) are carried forward unchanged from round 1 (CRR-001). This round adds candidates CR-C8 and CR-C9, finding CR-001, the score note under the scorecard, FU-008, and new Classification, Recipient and Latest Result sections.
+
+- Review Entry Point: `API/E2E Failure-Origin Review` (round 2); round 1 was `Implementation Review`
 - Requirements Doc Reviewed As Context: `requirements-doc.md` (Approved, SR-002 + SR-007)
 - Investigation Notes Reviewed As Context: `investigation-notes.md` (cited entries E-A2, E-A3, E-A8, E-A15, E-A25 to E-A29)
 - Solution Revision Record Reviewed As Context: `solution-revision-record.md` (SR-001 to SR-008)
@@ -18,16 +20,29 @@ All ticket paths are under `/Users/normy/autobyteus_org/autobyteus-worktrees/bus
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
 - Relevant Implementation Revision IDs: IR-001
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-001`
-- Current Review Round: `1`
-- Review Scope: `Full Review`
-- Review Scope Evidence (round >1): N/A
-- Trigger: implementation engineer, IR-001 ready for source review (code `bf2857ca29`, handoff `9e00c6fafd`)
-- Prior Review Round Reviewed: N/A
-- Latest Authoritative Round: 1
-- Coverage Investigation / Execution Coverage Report / API/E2E Revision Record: N/A (implementation review)
+- Current Code Review Revision ID: `CRR-002`
+- Current Review Round: `2`
+- Review Scope: `N/A` (failure-origin round)
+- Trigger: API/E2E engineer, API-REV-001 `Fail`, with F-API-001 and F-API-002.
+  - Code `bf2857ca29`, validated from a clean checkout of `b520b51c9e`.
+  - Durable tests `55ddc71839`; reports `2783cc1609`.
+- Prior Review Round Reviewed: round 1 (CRR-001, `Pass`)
+- Latest Authoritative Round: 2
+- Coverage Investigation Reviewed: `api-e2e-coverage-investigation.md`
+- Execution Coverage Report Reviewed: `api-e2e-execution-coverage-report.md`
+- API/E2E Revision Record Reviewed: `api-e2e-revision-record.md`
+- Relevant API/E2E Revision IDs: API-REV-001
+- Project testing guideline: `TESTING.md` (Rule 9, "find its cause first"; see F-API-002 below)
 - Delivery Revision Record: N/A
-- Failing Scenario IDs / Commands / Evidence: N/A
+- Failing Scenario IDs:
+  - F-API-001: every POSIX server exit (API-02, API-04-05-06 idle shutdown, API-10, every desktop session);
+  - F-API-002: API-11R1, 1 of 15 busy shutdowns.
+- Exact Failing Commands / Execution Mode:
+  - F-API-001: any server SIGTERM, for example `RUN_BUSY_STOP_NOW_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/shutdown/busy-run-stop-now.e2e.test.ts --no-watch`;
+  - F-API-002: `node evidence/API-desktop-probe.mjs busy-quit evidence` from a clean checkout (isolated packaged desktop).
+- Failure Evidence Paths (`evidence/`):
+  - F-API-001: `API-02-server-fixture-clean.json` (`sweepLines`), `API-04-05-06-result.json` (`idleShutdown.shutdownLog`), `API-10-app-0-server.log`;
+  - F-API-002: `API-11R1-app-0-server.log` (lines 261–294), `API-11R1-result.json`, `API-11D-clean-stage-timeline.log`, `API-11-result.json`.
 
 ## Routing Classification Review
 
@@ -91,6 +106,15 @@ All ticket paths are under `/Users/normy/autobyteus_org/autobyteus-worktrees/bus
 | CR-C5 | Desktop `forceStop`: if `ps` fails right at its 2 s timeout, the server is SIGKILLed with no time left in the 2 s confirmation, so `waitForChildExit` gets a non-positive timeout and reports "Backend exit not confirmed" | SCN-003 (AC-011) | `ps` stalls for 2 s on the desktop | `stopManagedBackend` throws `ShutdownIncompleteError` on every forced path anyway, and the server has already been SIGKILLed. The only difference is the diagnostic text and that `stopped` may not be emitted before `app.exit(1)`. | `managedBackendStop.ts` force block; `baseServerManager.ts` `forceStop` | Reject | — | The trigger has no evidence (U-A3 observes the `ps` duration), and the consequence is diagnostic only: the quit outcome is the same. Not a finding. Noted under Residual Risks for U-A3. |
 | CR-C6 | The desktop `serverProcessTree.ts` duplicates the server selection | Design § Key Tradeoffs (Electron main cannot import server code); FU-005 | — | About 40 lines of selection plus small signal and poll helpers; tested on both sides | Design; `serverProcessTree.spec.ts`; `process-tree.test.ts` | Reject | — | Approved by the design and tracked in FU-005. |
 | CR-C7 | The server sweep reads the table with a synchronous `execFileSync` (≤ 2 s) | Design § Guidance For Implementation (keep the sync reader; FU-005) | — | It blocks the event loop at most 2 s after the bounded cleanup, inside the exit budget | `utils/process-tree.ts` `readProcessTable` | Reject | — | Approved by the design; the handoff states the assumption. |
+
+### Round 2 candidates (failure-origin)
+
+| Candidate ID | Observation Or Mechanism | Scenario / Contract ID | Independent Trigger | Forward Path / Lifecycle / Consequence | Evidence | Disposition | Scope, if promoted | Reason / Proportionate Response |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| CR-C8 (F-API-001) | The server sweep selects its own `ps` reader as a target | SCN-002 (every POSIX server exit); design § Ownership Boundaries ("targets only descendants of its root pid, recorded before signalling"), § Off-Spine Concerns ("log … target counts when non-zero") | Any server SIGTERM, idle or busy | `terminateServerProcessTree` → `readProcessTable()` = `execFileSync('ps', …)`. The `ps` child is a child of `process.pid` in the server's group and lists itself. `selectDescendantPidsInGroup(rows, process.pid, rootPgid)` therefore selects it. `spawnSync` has already reaped it, so the sweep SIGTERMs a free pid (ESRCH in practice, with a pid-reuse window), and on every exit it logs that one process "still running". The diagnostic contract fails and the result inflates `targets`. Outcome and exit code are unaffected. | **Reproduced** by API/E2E on every exit, idle exits included (`API-02-server-fixture-clean.json` `sweepLines`, `API-10-app-0-server.log`; in API-11D every exit logs "1 process(es)"). **Read**: `utils/process-tree.ts:21-23`, `server-process-tree-sweep.ts` target selection. Not affected: AGY (its root is AGY's pid, and the reader is the server's child); the desktop copy (its reader is Electron's child, and the root is the server). | Promote | This ticket | CR-001, a `Local Fix` for implementation. Proportionate fix: in the shared reader, drop the reader's own row (for example `spawnSync`, then filter `row.pid !== result.pid`), so every caller gets a table without the reader. Add a unit case with the reader's row in the table. |
+| CR-C9 (F-API-002) | One 10 s stall of the graceful cleanup in a busy desktop quit (Org + Team + standalone roots), contained by the bound and the sweep | SCN-002 / SCN-003 (AC-002, AC-004); requirements § Out Of Scope ("Changing how root-hosted children (Team, Org, collaborators) are fenced and interrupted") | Busy desktop user quit (API-11R1) | Order in the clean timeline (`API-11D-clean-stage-timeline.log`): native drain (bounded at 3 s) → application lifecycle stop (an empty application scope here, ~1 ms) → `stopAllAgentOrgRuns` (~0.8 s: the Org's Claude member is fenced and released) → Team → standalone roots → `stopAllAgentRuns`. In R1 nothing after the Org stage happened: neither Codex thread was released and the standalone Claude CLI was not released. At the 10 s sweep, three CLIs (one Codex app-server and two Claude CLIs, plus the `ps` reader of CR-C8 = "4 process(es)") and all four tool groups were still alive (`API-11R1-result.json` `quit.tools`). The Org's Claude CLI then exited 143 on the sweep's SIGTERM. A Claude interrupt normally ends its tool (E5), and the CLI ends within 1 s of SIGTERM (API-08). So within 10 s the Org stage neither interrupted its Claude member's tool effectively nor reached its release. No "root shutdown interrupt rejected" warning was logged, so no interrupt was rejected. Consequence: exit 1 at 10.76 s, `app.exit(1)`; an update install would not start (N-5/FU-007). Containment held: 0 survivors, one server on relaunch, all 4 roots continued. | **Read**: R1 server log lines 261–294 against the clean stage timeline. Only the Org stage can block for 10 s: the native drain is bounded at 3 s and the application scope was empty. `git diff origin/personal...bf2857ca29` touches nothing in `agent-org-execution`, `agent-collaboration`, `agent-team-execution`, `agent-execution/domain` or `runtime-management`. **Not reproduced** in 12 repeats (API-11, 11B, 11C, 11D ×4 instrumented, 06R ×4). The root cause inside the Org stage (the fence never running, for example behind the run's dispatch queue or the member's readiness wait; an interrupt accepted with no effect; or the prepare quiescence wait) is **not established**. | Promote | Follow-up (FU-008) | It is outside this ticket's changed code and inside the Scope Guardrail's Out Of Scope root-child fencing. The ticket's own guarantee (REQ-002/REQ-003: bound, force, exit, no leftovers) did its job and every AC was proven. On the base build the same stall would be hidden inside the unbounded wait. Recorded with its narrowed location and reproduction material, not closed as flaky (see the TESTING Rule 9 note). Reclassify if a reproduction places the stall in this ticket's code, for example the application-scope `stopAllAgentRuns` or the bound. |
+
+**TESTING.md Rule 9 note:** Rule 9 says never to close a failure as "pre-existing" or "flaky" without its cause. F-API-002 is not closed. It is recorded as its own item (FU-008), with the cause narrowed so far (the stage, the untouched code, the observed process state) and the reproduction for the owner of the root-shutdown code. That is Rule 9's third case ("a product defect not caused by your change and too large for the current work"). Its root cause is still open. This follows the skill's Ticket Scope rule, which goes beyond Rule 9's wording, and I record that here.
 
 ## Structural / Design Checks
 
@@ -186,21 +210,37 @@ No new material premises: CR-C1 to CR-C7 are recorded in the gate above.
 | 9 | No Backward-Compatibility / No Legacy Retention | 9.6 | Clean move with no shim; old paths removed | — | — |
 | 10 | Cleanup Completeness | 9.5 | Old file, its test path and its mock are removed; no stale references | — | — |
 
+**Round 2 score note (failure-origin; the scorecard is not repeated):** CR-001 lowers category 8, Runtime Correctness And Behavioral Fidelity, from 9.3 to 9.0. The sweep violates its own target invariant (it records only live descendants it may signal) and its log contract on every POSIX exit. All other categories stand.
+
+**Review gap:** round 1 should have caught CR-001. The source shows `readProcessTable()` spawning `ps` as a child of `process.pid`, and the sweep selecting `process.pid`'s descendants in its own group from that same table. The unit tests use a fake table, so they could not show it. CR-C9 could not reasonably have been detected in source review: it is in code this change does not touch and appeared once in 15 live runs.
+
 ## Findings
 
-None.
+### CR-001 — The server sweep counts and signals its own `ps` reader (F-API-001)
+
+- Candidate: CR-C8. Contract: design § Ownership Boundaries and § Off-Spine Concerns; behavior BEH-003.
+- Where: `autobyteus-server-ts/src/utils/process-tree.ts` `readProcessTable()` (`execFileSync('ps', ['-A', '-o', 'pid=,ppid=,pgid='])`), consumed by `src/shutdown/server-process-tree-sweep.ts`.
+- Evidence: reproduced on every POSIX server exit, idle ones included. Each logs `Server process-tree sweep: 1 process(es) and 0 process group(s) still running; sending SIGTERM.` (API-02, API-10, API-11D).
+- Consequence: a false "still running" diagnostic on every exit, which defeats the marker that validation and operators use; a SIGTERM to a reaped pid, with a small pid-reuse window; inflated `targets`. The outcome stays `confirmed` and the exit code stays 0.
+- Required action (`Local Fix`, implementation engineer):
+  - make the shared reader return the table without its own `ps` row (for example `spawnSync` and drop `result.pid`);
+  - add a unit case in which the reader's row is present and is not selected or signalled;
+  - leave AGY and the desktop copy unchanged: they are not affected, and no new branch is needed for them.
+- After the fix: source review (a targeted delta), then API/E2E. In its next round, API/E2E checks that an idle exit logs no sweep line.
 
 ## Follow-ups
 
-- Follow-ups this review added: None. CR-C6 and CR-C7 are already covered by FU-005; the FU-004 arithmetic moves to ≈ 14.25 s and stays inside its suggested 20 s.
+- Follow-ups this review added: **FU-008** (F-API-002, the intermittent 10 s stall in the Org root-shutdown stage; see CR-C9). Round 1 added none. CR-C6 and CR-C7 are covered by FU-005. The FU-004 arithmetic moves to ≈ 14.25 s, inside its suggested 20 s.
 
 ## Classification
 
-N/A: the review passes.
+- CR-001 (F-API-001): `Local Fix`, owned by implementation.
+- F-API-002: not a classification of this ticket. It is a follow-up (FU-008), and API/E2E records it as out of scope with this ID in its next round.
 
 ## Recommended Recipient
 
-- `Pass`: API/E2E engineer (primary pass rule); then an informational notice to the implementation engineer.
+- Implementation engineer, by the rule "API/E2E failure-origin review confirms that the owning problem is an implementation defect".
+- F-API-002 needs no separate message. The fixed package comes back through source review and API/E2E, where it is recorded as out of scope (FU-008).
 
 ## Residual Risks
 
@@ -208,15 +248,19 @@ N/A: the review passes.
 - CR-C5: if `ps` on the desktop stalls to its 2 s timeout, the force confirmation reports "Backend exit not confirmed" although the server was SIGKILLed. The diagnostic is the only effect; U-A3 should note the `ps` duration.
 - Worst-case server exit is now ≈ 14.25 s (10 s + ≤ 2 s `ps` + 1.5 s + 0.5 s + IPC flush), inside the 20 s desktop window. FU-004's text says 13.75 s; the Solution Designer may refresh the number when sending it.
 
+- Round 2: F-API-002 (FU-008). A busy quit can occasionally take about 10.8 s and end with exit 1, which blocks an update install (N-5/FU-007). The bound and the sweep contain it. Its cause is open, and it matters for autobyteus-285's unattended update and resume.
+
 ## Latest Authoritative Result
 
-- Review Decision: `Pass`
-- Review Entry Point: `Implementation Review`
-- Supported Product Scenario Gate: `Pass`
+- Review Decision: `Fail` (round 2, failure-origin)
+- Review Entry Point: `API/E2E Failure-Origin Review`
+- Supported Product Scenario Gate: `Pass` (SCN-002 and SCN-003 still represent approved behavior; both failures enter through real server and desktop exits)
 - Material-Premise Gate: `Pass`
-- Score Summary: 9.4 / 10; every category ≥ 9.2
-- Failure Origin: N/A
-- Recommended Recipient: API/E2E engineer
+- Score Summary: round 1 at 9.4 / 10, with category 8 now at 9.0 (CR-001)
+- Failure Origin:
+  - F-API-001: implementation defect in this change (CR-001), and a round 1 review gap;
+  - F-API-002: outside this change's code, in the Org root-shutdown stage, out of scope; root cause not established; follow-up FU-008.
+- Recommended Recipient: implementation engineer (`Local Fix` CR-001)
 - Notes:
-  - The implementer's three points were reviewed and accepted: CR-C1, CR-C2, CR-C3.
-  - Reviewed code `bf2857ca29` and handoff `9e00c6fafd` on `codex/busy-quit-shutdown-orphan`.
+  - Round 1 (CRR-001) passed the implementation review of `bf2857ca29`. The implementer's three points there (CR-C1 to CR-C3) still stand.
+  - The durable tests in `55ddc71839` get the proportional test-code review after the next API/E2E pass.
