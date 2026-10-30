@@ -8,6 +8,7 @@ The latest `design-review-report.md` remains authoritative.
 | --- | --- | --- | --- | --- | --- |
 | ARCH-REV-001 | Round 1 / initial review of SR-003 | SR-002, SR-003 | N/A | Fail (Design Impact) | AR-001, AR-002, AR-003 |
 | ARCH-REV-002 | Round 2 / review of SR-007 after the rebase onto `1a4453e553` | SR-002, SR-006, SR-007 | Fail (Design Impact) | Fail (Design Impact) | AR-001–AR-003 resolved; AR-004 (blocking), AR-005, AR-006 new |
+| ARCH-REV-003 | Round 3 / re-review of SR-008 | SR-007, SR-008 | Fail (Design Impact) | Pass | AR-004, AR-005, AR-006 resolved |
 
 ## Revision Entries
 
@@ -79,3 +80,31 @@ None (first round).
 - Material classification changes: Large/High → Medium/High, agreed.
 - Recommended recipient: `/software_engineering_team/solution_designer`.
 - Remaining risks or uncertainty: U-A1 (several Claude runs against the 10 s bound), U-A2 (CLI versions) and U-A3 (now only an observation) remain for validation.
+
+### ARCH-REV-003 — SR-008: AR-004 to AR-006 resolved; Pass
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/busy-quit-shutdown-orphan/tickets/in-progress/busy-quit-shutdown-orphan/design-review-report.md`
+- Review round and trigger: Round 3. `/software_engineering_team/solution_designer` sent SR-008, the design revision for ARCH-REV-002.
+- Triggering role, report path, and finding IDs: Solution Designer; `architecture-design-handoff.md` and design-spec § "SR-008 Changes"; AR-004, AR-005, AR-006.
+- Relevant solution revision IDs: SR-007 (approval, unchanged); SR-008 (design).
+- Prior authoritative decision: Fail (Design Impact).
+- Current authoritative decision: Pass.
+- What changed:
+  - SR-008 is docs only (head `000da22578`; `git diff 1cec2d134a HEAD` touches only the ticket folder), so the round-2 code basis still applies.
+  - The spec, investigation notes (E-A33 to E-A35) and follow-ups (FU-005, FU-007) were checked against the findings.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-004 | Open (Medium, blocking) | Resolved | SR-008; E-A33 | Changes in design-spec: the sweep interface lists `not-applicable` \| `confirmed` \| `unconfirmed`; the Bound example sets exit 1 only on `unconfirmed`; Sweep targets returns `not-applicable` on win32; the server-process-shutdown test file has a win32 case (exit 0, IPC `complete`, no `ps`); the `taskkill` residual says forced path only |
+| AR-005 | Open (Low) | Resolved | SR-008; E-A34 | The file mapping adds `server-runtime-app-data-migration-gate.test.ts` (mock the sweep, await the request) and a fake sweep in every `ServerProcessShutdown` test; change sequence step 3 |
+| AR-006 | Open (Low) | Resolved | SR-008; E-A35 | Changes in design-spec: the Desktop force row and Guidance D3 keep the 2 s and leave `stopManagedBackend` unchanged; `serverProcessTree.ts` uses async `execFile` with a 2 s timeout |
+
+- New or remaining finding IDs: none.
+- Non-blocking notes:
+  - N-3, N-5 (FU-007), N-6, N-7 and N-8 are carried and recorded in the spec.
+  - N-9 (cosmetic): `new ServerProcessShutdown` appears twice in the Interface Boundary Mapping. Implement one constructor.
+- Material classification changes: none (Medium/High).
+- Recommended recipient: `/software_engineering_team/implementation_engineer`, with an informational notification to the Solution Designer.
+- Remaining risks or uncertainty: U-A1, U-A2 and U-A3 remain for validation.
