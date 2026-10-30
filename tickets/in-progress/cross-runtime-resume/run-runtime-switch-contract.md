@@ -99,32 +99,27 @@ A switch never edits or deletes them.
 
 ### 3.7 Hand-over notice (the message the new backend receives; not a file)
 
-One system message placed before the user's first input after the switch, through the existing next-input preface route, with its own system sender (like the skill-update notice), so the chat shows it as a system notice and the agent does not take it for the user's words. Sent once per switch. Delivered ⇔ a notice record after the switch record exists in the active segment (a crash before delivery repeats it, never loses it). Built by the server from facts only; no model writes it. Draft text (the design finalizes wording). It gives facts and pointers and lets the agent decide how to proceed:
+One system message placed before the user's first input after the switch, through the existing next-input preface route, with its own system sender (like the skill-update notice), so the chat shows it as a system notice and the agent does not take it for the user's words. Sent once per switch. Delivered ⇔ a notice record after the switch record exists in the active segment (a crash before delivery repeats it, never loses it). Built by the server from facts only; no model writes it. Draft text (the design finalizes wording). Facts and pointers only; the agent decides how to proceed. The user's last request is not repeated (the user's message follows the notice, and the journal has the history):
 
 ```
 [System: runtime hand-over]
-You are continuing work that earlier colleagues started in this same run. The run's runtime
-changed: <from runtime/model> -> <to runtime/model> (at <time>). Reason the previous runtime stopped:
-<provider's own message, or "not known; the user changed the runtime">.
+This run was worked on by a previous agent on a different runtime: <from runtime/model>, now
+<to runtime/model>. Reason it stopped: <provider's own message, or "the user changed the runtime">.
 
-The earlier work, oldest first:
-- Journals (readable, one file per earlier colleague):
+Its work is recorded in work journals: <run folder>/work_journal/
+- Readable Markdown, one file per earlier stretch of work, oldest first:
+  work_journal_000001.md, work_journal_000002.md, ... and work_journal_active.md for the latest.
   <file> | <runtime/model> | <period> | <size, lines>
-- A summary left by an earlier colleague, if any: <run folder>/run_summary.md
-- Older work can be searched with search_memory; open the lines it points to.
-Journal size: <total> (about <n> tokens).
-
-What the user asked last: "<last user message, cut to 600 characters>"
-
-What the journals do not contain: the previous colleague's private reasoning; results of tool calls
-that were still running (<n> open calls: <tool names>); output longer than 40 lines (each journal
-entry links to the raw trace with all of it); running processes and open sessions.
-
-Read what you need, check the real state of the workspace, and continue the user's work. If it helps
-the next colleague, you may leave a summary at <run folder>/run_summary.md.
+- Entries look like "[HH:MM:SS] User: ...", "Agent: ...", "Command: ... -> ok", "Tool: ...".
+  Each entry ends with a link to the raw trace record with the full content; long output is shortened.
+- To see what was done most recently, read the end of work_journal_active.md. For earlier work or the
+  original request, read the earlier files or search them (search_memory).
+- Not in the journals: the previous agent's private reasoning, and results of tool calls that were still
+  running when it stopped.
+A summary left by an earlier agent may exist at <run folder>/run_summary.md.
 ```
 
-The user's own message follows unchanged. Facts the notice needs and where each comes from: runtimes, models and time from the pending switch (3.1); stop reason from the same field; files, periods and sizes from the manifests; open calls from the last turn of the old segment; last user message from the raw traces.
+The user's own message follows unchanged. Facts the notice needs and where each comes from: runtimes, models and time from the pending switch (3.1); stop reason from the same field; journal files, periods and sizes from the journal and raw-trace manifests.
 
 ## 4. Invariants (checkable)
 
