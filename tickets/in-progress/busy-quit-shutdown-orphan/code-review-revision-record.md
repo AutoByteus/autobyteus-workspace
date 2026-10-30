@@ -8,6 +8,7 @@ The latest `code-review-report.md` (or `api-e2e-test-review-report.md`) is autho
 | --- | --- | --- | --- | --- | --- |
 | CRR-001 | `code-review-report.md` | Implementation Review, round 1 (IR-001) | N/A | Pass | None |
 | CRR-002 | `code-review-report.md` | API/E2E Failure-Origin Review, round 2 (API-REV-001 F-API-001, F-API-002) | Pass | Fail: CR-001 `Local Fix` (implementation); F-API-002 → FU-008 | CR-001 |
+| CRR-003 | `code-review-report.md` | Implementation Review, round 3, Targeted Delta (IR-002) | Fail | Pass | CR-001 (resolved) |
 
 ## Revision Entries
 
@@ -62,3 +63,30 @@ None (CRR-001 had no findings).
 - Material score or classification changes: category 8 goes from 9.3 to 9.0 (CR-001); Medium / High unchanged
 - Recommended recipient: implementation engineer
 - Remaining risks or uncertainty: the root cause of F-API-002 (FU-008), which would reclassify if a reproduction places it in this ticket's code; N-5/FU-007, which F-API-002 makes concrete for autobyteus-285.
+
+### CRR-003 — Targeted delta review of IR-002 (CR-001 fix)
+
+- Canonical review report updated: `code-review-report.md` (§ Round 3 Delta Review; Latest Authoritative Result)
+- Review entry point and round: Implementation Review, round 3
+- Review scope: `Targeted Delta Review`. The delta touches only CR-001's file (`src/utils/process-tree.ts`) and its two unit test files; the reader's signature and throw contract are unchanged.
+- Triggering role, report path, and finding or scenario IDs: implementation engineer, `implementation-handoff.md` (IR-002; code `83a73f24d7`, docs and evidence `b128df38dd`), CR-001
+- Relevant solution revision IDs: SR-008
+- Relevant architecture-review revision IDs: ARCH-REV-003
+- Relevant implementation revision IDs: IR-002
+- Relevant API/E2E revision IDs: API-REV-001
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: `Fail` (CRR-002)
+- Current authoritative result: `Pass`
+- What changed in the review result and why: CR-001 is fixed in the one owner of table reading. `spawnSync` drops the reader's own row, and errors and non-zero exits still throw. The new cases fail on IR-001's reader. The gated real-process E2E shows no sweep line on an idle exit.
+- Supported product scenario / material-premise basis changes: None.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR-001 | Open (`Local Fix`) | Resolved | IR-002, `83a73f24d7` | Diff of `process-tree.ts`; `IMP-10-cr001-reader-focused.log` (63 passed); `IMP-10-fail-before-ir001.log` (4 failed on IR-001's reader); `IMP-12-busy-stop-now-e2e.log` (`sweepLines after fix: []`) |
+
+- New or remaining finding IDs: None
+- Material score or classification changes: category 8 goes from 9.0 back to 9.3; overall 9.4. Medium / High unchanged.
+- Recommended recipient: API/E2E engineer
+- Remaining risks or uncertainty: F-API-002 (FU-008), whose leading Read-only candidate, gate drain before the fence in `AgentOrgRun.terminateOnce`, is not yet in FU-008; N-3, N-5/FU-007.

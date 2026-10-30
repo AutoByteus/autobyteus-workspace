@@ -4,9 +4,30 @@ All ticket paths are under `/Users/normy/autobyteus_org/autobyteus-worktrees/bus
 
 ## Review Round Meta
 
-> **Latest round: 2, API/E2E Failure-Origin Review (CRR-002).** It covers F-API-001 and F-API-002 from API-REV-001. The implementation-review sections below (behavior basis, structural checks, size audit, legacy, docs) are carried forward unchanged from round 1 (CRR-001). This round adds candidates CR-C8 and CR-C9, finding CR-001, the score note under the scorecard, FU-008, and new Classification, Recipient and Latest Result sections.
+> **Latest round: 3, Implementation Review, Targeted Delta Review (CRR-003), `Pass`.** It covers IR-002, the fix for CR-001.
+> - Rounds 1 and 2 are kept below: the implementation review (CRR-001) and the failure-origin review (CRR-002: CR-001 and FU-008).
+> - § Round 3 Delta Review and the updated Latest Authoritative Result supersede the round 2 decision.
 
-- Review Entry Point: `API/E2E Failure-Origin Review` (round 2); round 1 was `Implementation Review`
+## Round 3 Delta Review (CRR-003)
+
+- Trigger: implementation engineer, IR-002 (code `83a73f24d7`, docs and evidence `b128df38dd`).
+- Review Scope: `Targeted Delta Review`.
+  - Evidence: `git diff bf2857ca29 83a73f24d7` touches only `src/utils/process-tree.ts`, `tests/unit/utils/process-tree.test.ts` and `tests/unit/shutdown/server-process-tree-sweep.test.ts` (outside the ticket folder, besides the API/E2E durable tests already in `55ddc71839`).
+  - This stays inside CR-001's file and behavior. There is no change to the data-flow spine, the shared interfaces or the data shapes: `readProcessTable(): ProcessRow[]` keeps its signature and its throw-on-unreadable contract.
+- **CR-001: Resolved.**
+  - `readProcessTable` now uses `spawnSync` with the same arguments, the same 2 s timeout and the same stdio.
+  - It throws on `result.error`: ENOENT, ETIMEDOUT when the timeout kills `ps`, and ENOBUFS. It also throws on a non-zero or signalled exit (`status !== 0`). That is the same contract `execFileSync` had, so the sweep's `unconfirmed` path and AGY's error path behave as before.
+  - It drops the row whose pid is `result.pid`, the reader itself. The fix lives in the one owner of table reading (Principle 11: one owner derives the fact). AGY and the desktop copy are unchanged, with no new branches, which matches CR-001's required action.
+- Tests:
+  - A reader row that is the server's child in the server's group is dropped and not selected.
+  - A non-zero exit throws.
+  - An idle server whose only child is the reader gives `confirmed, 0`, no signal and no log line, through the default reader.
+  - The 4 new or updated cases fail on IR-001's reader (`IMP-10-fail-before-ir001.log`: `Tests  4 failed | 17 passed`).
+- Checks: IMP-10 (63 passed), IMP-11 (typecheck), and IMP-12, the gated real-process E2E, where an idle SIGTERM exit gives `shutdown.sweepLines after fix: []`. I reran none of them: they ran on `83a73f24d7`, and nothing they exercise changed afterwards. The IMP-01 to IMP-09 rows for the code this round does not touch still apply.
+- Carried forward unchanged from round 1: the structural checks, the size audit (`process-tree.ts` grows from 80 to about 89 effective lines, still Pass), legacy and docs. The scorecard is unchanged from round 1 (9.4 / 10). Category 8, Runtime Correctness, goes back from round 2's 9.0 to 9.3.
+- New findings: None. F-API-002 stays follow-up FU-008, not part of this round. Its leading candidate since round 2, `RootOperationGate.closeAndDrain()` running before the member fence in `AgentOrgRun.terminateOnce`, is not yet recorded in FU-008 (it is Read-only and unproven). The Solution Designer may add it when sending FU-008.
+
+- Review Entry Point (round 2): `API/E2E Failure-Origin Review`; round 1 was `Implementation Review`
 - Requirements Doc Reviewed As Context: `requirements-doc.md` (Approved, SR-002 + SR-007)
 - Investigation Notes Reviewed As Context: `investigation-notes.md` (cited entries E-A2, E-A3, E-A8, E-A15, E-A25 to E-A29)
 - Solution Revision Record Reviewed As Context: `solution-revision-record.md` (SR-001 to SR-008)
@@ -251,6 +272,21 @@ No new material premises: CR-C1 to CR-C7 are recorded in the gate above.
 - Round 2: F-API-002 (FU-008). A busy quit can occasionally take about 10.8 s and end with exit 1, which blocks an update install (N-5/FU-007). The bound and the sweep contain it. Its cause is open, and it matters for autobyteus-285's unattended update and resume.
 
 ## Latest Authoritative Result
+
+**Round 3 (CRR-003), authoritative:**
+
+- Review Decision: `Pass`
+- Review Entry Point: `Implementation Review` (`Targeted Delta Review`)
+- Supported Product Scenario Gate: `Pass`
+- Material-Premise Gate: `Pass`
+- Score Summary: 9.4 / 10; every category ≥ 9.2 (category 8 back to 9.3, CR-001 resolved)
+- Recommended Recipient: API/E2E engineer
+- Notes:
+  - Validated code: `83a73f24d7`.
+  - API/E2E next round: confirm that an idle server exit logs no "Server process-tree sweep:" line; record F-API-002 as out of scope with FU-008.
+  - After an API/E2E pass, the durable tests from `55ddc71839` and IR-002's test changes go to the proportional test-code review.
+
+**Round 2 (CRR-002), superseded:**
 
 - Review Decision: `Fail` (round 2, failure-origin)
 - Review Entry Point: `API/E2E Failure-Origin Review`
