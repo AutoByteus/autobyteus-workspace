@@ -161,7 +161,7 @@ See `investigation-notes.md` § Supported Scenarios (SCN-001 to SCN-005 with val
 | DEC-002 | REQ-009 (Rebuild regenerates) is in scope as `Should` | Solution Designer | The user asked how to regenerate on demand; the button exists; one option through three functions |
 | DEC-003 | Journals without a recorded runtime stay generic; deriving their runtime is FU-001 | Solution Designer | Another functionality (run metadata and import); everything this ticket delivers works without it |
 | DEC-004 | Tools the user installed himself keep the generic line | Solution Designer | The platform cannot know what they do; the name is their only identity |
-| DEC-005 | The one-time re-index cost (estimated of the order of 50 minutes of background work for 82% of the cards, E-15) is accepted as inherent to the user's direction and is told to the user; the design lets him see the measured number before approving the build | Solution Designer, user informed | No alternative changes 82% of the journal text without re-embedding it |
+| DEC-005 | The one-time re-index cost (regeneration and re-chunking at the first start after the update; re-embedding of 82% of the cards, of the order of 50 minutes of background work, at the first search or live update, E-15) is accepted as inherent to the user's direction and is told to the user; the validation reports the measured numbers before finalization | Solution Designer, user informed | No alternative changes 82% of the journal text without re-embedding it |
 
 ## Traceability
 
