@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- |
 | API-REV-001 | Implementation Engineer, `implementation-handoff.md`, IR-001 (direct route) | SR-004, IR-001 | N/A | Fail / 80% |
 | API-REV-002 | the user's request (2026-10-30): newer OpenAI models and LM Studio Qwen | — | Fail / 80% | Fail / 80% (unchanged; F-1 to F-3 stand) |
+| API-REV-003 | Implementation Engineer, IR-002 (SR-005) | SR-005, IR-002, CRR-001, CRR-002 | Fail / 80% | Fail / 87% (F-1..F-3 resolved; F-4 new) |
 
 ## Revision Entries
 
@@ -38,3 +39,24 @@ None.
 - Correction: API-06 R1 and API-09 used file names that give the answers (`red.png`, `hello.m4a`, `blue.mp4`); API-11 run 3 repeats with neutral names and confirms delivery.
 - Prior result and confidence: Fail, 80%. Current: Fail, 80% (F-1, F-2, F-3 unchanged).
 - Remaining: F-1 on newer OpenAI models needs OpenAI credits (the user).
+
+### API-REV-003 — Round 2 for IR-002: F-1, F-2, F-3 resolved; F-4 (text logs with a stray NUL refused)
+
+- Triggering role, report path, and round: Implementation Engineer, `implementation-handoff.md` IR-002 (SR-005).
+- Related revision IDs: SR-005, IR-002, CRR-001, CRR-002.
+- Cases: API-01b (reused IMP-10..14), API-12 (census), API-05 round 2, API-14, API-13.
+- Coverage decisions or durable test paths changed: none.
+
+#### Prior Failure Resolution
+
+| Prior Case / Failure Reference | Previous Classification | Current Resolution | Case IDs Now Proving It |
+| --- | --- | --- | --- |
+| F-1 OpenAI models fill line arguments (API-06 R2, API-08, API-09) | Requirement Gap | Resolved by REQ-010 `strict: false`: 8 of 8 OpenAI models send only `path` | API-13 |
+| F-2 late-NUL PDFs read as text (API-05) | Design Impact / Requirement Gap | Resolved by DEC-006 for 77 of 79; 2 without NUL remain (stated residual) | API-05 round 2 |
+| F-3 `a image` | Local Fix | Resolved | API-14 |
+
+- Correction of round 1: the 201 files refused by the 8,000-byte window included 79 text build logs; round 1 did not look at them.
+- Prior result and confidence: Fail, 80%. Current: Fail, 87%.
+- New or remaining failure IDs: F-4.
+- Recommended owner: failure-origin review (Code Reviewer); preliminary F-4 `Requirement Gap` (Solution Designer, user decision).
+- Remaining: AC-005's durable live test in AI Studio mode (the user).

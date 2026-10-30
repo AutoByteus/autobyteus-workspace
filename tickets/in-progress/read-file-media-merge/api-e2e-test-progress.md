@@ -28,3 +28,10 @@
 | 2026-10-30 05:08 | API-11 | Checkpoint | | run 1 stopped: gpt-6-sol turn streamed >300 s; results only saved at the end (lost); Qwen never ran; probe now saves per cell and records hung cells; run 2 |
 | 2026-10-30 05:42 | API-11 | Checkpoint | | run 2: all OpenAI cells refused by provider (no credits remaining); Qwen image read path-only, 2/2 succeeded; Qwen audio/video loaded but model saw only metadata; file names leak answers -> run 3 with neutral names (Qwen, Gemini, Grok) |
 | 2026-10-30 05:44 | API-11 | Completed | Pass | run 3 neutral names: Qwen green x3 (audio/video not delivered), Gemini green/hello/yellow, Grok green; OpenAI newer models not tested (no credits); Qwen unloaded |
+| 2026-10-30 06:56 | API-12 | Completed | Fail | census: 296 non-media NUL files; 173 tracked .log files (167 Electron build logs) refused as binary, readable before the ticket (F-4) |
+| 2026-10-30 06:58 | API-05 | Started | | round 2: 79 late-NUL OS PDFs + generated docs; API-14 wording in the same probe |
+| 2026-10-30 06:58 | API-05 | Completed | Pass | round 2: 77/79 late-NUL OS PDFs refused, 2 without NUL read as text (DEC-006 residual); docs refused |
+| 2026-10-30 06:58 | API-14 | Completed | Pass | new message and articles for all kinds and line values (0/0, -1/-1 included); media loads without line args; text range works; build.log refused (F-4) |
+| 2026-10-30 06:59 | API-13 | Started | | round 2 journey: 8 OpenAI models image; Daily Assistant gpt-5.4-mini (media, run_bash cwd, text range, build log); Gemini; Grok |
+| 2026-10-30 07:03 | API-13 | Completed | Fail | F-1 fixed: 8/8 OpenAI models path-only, green; Daily Assistant media/capability refusals/text range/run_bash OK; build.log refused as binary (F-4; agent worked around with strings); Gemini, Grok OK |
+| 2026-10-30 07:04 | — | Completed | Fail | round 2 recorded: F-1..F-3 resolved; F-4 new; committing |

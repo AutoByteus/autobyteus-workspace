@@ -17,10 +17,10 @@
 - Relevant Delivery Revision IDs: N/A
 - API/E2E Revision Record: `api-e2e-revision-record.md` (after the first result)
 - Current API/E2E Revision ID: `API-REV-001`
-- Current Investigation Round: 1
+- Current Investigation Round: 2
 - Trigger: implementation handoff IR-001 from `/software_engineering_team/implementation_engineer`, 2026-10-29 (direct low-risk route)
 - Prior Investigation Reviewed: none
-- Latest Authoritative Investigation: this file, round 1
+- Latest Authoritative Investigation: this file, round 2 (§ Round 2)
 
 Ticket folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/read-file-media-merge/tickets/in-progress/read-file-media-merge/`. Code: branch `codex/read-file-media-merge`, HEAD `3a336f7a4a` (last code commit `16b3e2452d`; after it only ticket documents), base `origin/personal` `e82d03b0f9`.
 
@@ -173,3 +173,20 @@ None.
 | Case ID | Criteria | Boundary / Surface | Kind | Planned Command Or Steps | Why |
 | --- | --- | --- | --- | --- | --- |
 | API-11 | AC-002 (real use), F-1 generality | image read on `gpt-5.6-terra`, `gpt-6-astra`, `gpt-6-luna`, `gpt-6-sol` (2 runs each) and on LM Studio `qwen/qwen3.6-35b-a3b` (2 runs); audio and video on the Qwen model (1 run) | Temporary Probe | the journey probe with API-11 cells (plain definition with `read_file`), same server setup; LM Studio at `localhost:1234`, nothing loaded before the run; the model the run loads is unloaded afterwards (TESTING.md: one local-model run at a time, unload what you loaded) | the user asked whether newer OpenAI models and the local default Qwen model also fill line arguments; LM Studio models' capabilities are `unknown`, so their media loads (DEC-003) |
+
+## Round 2 — IR-002 (SR-005: REQ-010 `strict: false`, DEC-006 whole-file NUL scan, CR-001..003)
+
+- Upstream added: `requirements-doc.md` SR-005 (BEH-012, REQ-010, AC-010, DEC-005, DEC-006), `design-spec.md` SR-005, `code-review-report.md` CRR-001/CRR-002 (failure-origin review), `implementation-handoff.md` IR-002 (IMP-10..IMP-14).
+- Code delta since round 1 (`b262b5e7a0..17e2dfbc6c`): `openai-responses-llm.ts` (`strict: false` on every function tool), `read-file.ts` (media line-range refusal first, new message, articles; whole-file NUL scan; `start_line`/`end_line` descriptions), a normalizer comment, tests, docs.
+- Rerun by impact: everything that sends tools to OpenAI (Responses path: `OpenAILLM`), and every `read_file` path. Gemini, Grok and LM Studio do not use the Responses path, but their `read_file` path changed: one Gemini and one Grok check.
+- Finding before execution (F-4, from the census API-12): 173 of 21,147 tracked `.log` files contain a NUL byte (167 Electron build logs, typically one stray NUL inside readable text, e.g. `[nuxt] kit:compatibility\x00: 0.388ms`). Before this ticket `read_file` returned them as text; the 8,000-byte window refused 79 of them (part of round 1's "201 NUL files refused", which I accepted without looking), and the whole-file scan refuses all 173. This contradicts BEH-001's premise "text files contain no NUL byte".
+
+### Round 2 Planned Cases
+
+| Case ID | Criteria | Boundary / Surface | Kind | Planned Command Or Steps | Why |
+| --- | --- | --- | --- | --- | --- |
+| API-01b | AC-001, AC-004, AC-009, AC-010 (unit, live) | repository checks | Reused | IMP-10, IMP-11, IMP-12, IMP-13, IMP-14 | only ticket documents changed after `438e6c1cde`; IMP-12's 296 refused files are re-read in API-12 |
+| API-12 | BEH-001, BEH-011, DEC-006 | which tracked files the NUL scan refuses | Temporary Probe | census of tracked non-media files with a NUL, by extension and position | the 95 newly refused files had not been looked at |
+| API-05 (rerun) | AC-009, BEH-011 | real PDFs | Temporary Probe | `read_file` on copies of the 79 OS-shipped PDFs that the 8,000-byte window missed, and the generated documents | DEC-006's claim: 77 refused, 2 (no NUL) read |
+| API-14 | AC-004, CR-001/CR-003 wording | media line-range refusal | Temporary Probe | `read_file` on PNG, M4A, MP4 with `start_line`/`end_line` (1/1, 0/0, -1/-1) | exact messages and order |
+| API-13 | AC-002, AC-003, AC-008, AC-010, BEH-012, F-4 | server journey on real providers | Temporary Probe | the journey probe (in-process studio server, test vault, neutral file names): image read on `gpt-5.4-mini`, `gpt-5.5`, `gpt-5.6-luna/sol/terra`, `gpt-6-astra/luna/sol` (plain agent); `gpt-5.4-mini` as the Daily Assistant: image, audio and video (audio/video: capability refusal), `run_bash` with a working directory, a line range on a text file when asked, and an Electron build log with a late NUL; Gemini image/audio/video; Grok image; arguments recorded from `TOOL_EXECUTION_STARTED`; Work Journal of one run | SCN-F1, the sanity check of other tools with optional arguments (`strict: false` applies to every function tool), and F-4 in real use |

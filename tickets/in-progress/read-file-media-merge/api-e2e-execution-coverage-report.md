@@ -3,9 +3,9 @@
 ## Round
 
 - Coverage investigation (the plan; it lists the upstream documents): `api-e2e-coverage-investigation.md`
-- API/E2E revision record and current revision ID: `api-e2e-revision-record.md`, `API-REV-001`
+- API/E2E revision record and current revision ID: `api-e2e-revision-record.md`, `API-REV-003`
 - Test progress log: `api-e2e-test-progress.md`
-- Round and trigger: round 1, implementation handoff IR-001 (direct low-risk route)
+- Round and trigger: round 1, implementation handoff IR-001 (direct low-risk route); **round 2 (current), IR-002 (SR-005)** (§ Round 2)
 - Prior round reviewed: none
 - Deviations from the investigation's plan, and why:
   - API-06's run 1 assertions read the tool path from the result event, which does not carry the arguments; the probe was fixed to take them from `TOOL_EXECUTION_STARTED` and rerun (run 2). The run-1 receipt is kept.
@@ -124,10 +124,78 @@
 - **F-3 — `Local Fix`** (implementation): the line-range refusal reads `is a image file` (`read-file.ts` L80 chooses `an` only for audio); the handoff states `an image`.
 - Not this ticket: FU-005 (the live-test helper misclassifies Gemini's 429 quota error as a credential error).
 
-## Latest Authoritative Result
+## Round 1 Result (superseded by § Round 2)
 
 - Result: `Fail`
 - Criteria not proven, or parts only the user can check: AC-005's durable live test in AI Studio mode (the user: the Google project's quota or a working key); the ACs as written are otherwise proven, and F-1 and F-2 are real-use failures of UC-002 and BEH-011.
 - Preliminary classification and recommended owner: F-1 `Requirement Gap` and F-2 `Design Impact`/`Requirement Gap` (Solution Designer, user decision); F-3 `Local Fix` (implementation).
 - Next recipient from `get_handoff_rules`: `/software_engineering_team/code_reviewer` (failure-origin review of an execution failure).
 - Notes: follow-up FU-005 added.
+
+## Round 2 — IR-002 (SR-005: `strict: false`, whole-file NUL scan, message and articles)
+
+- Trigger: IR-002 (`53d149a4cc`, `815b6e175a`, `438e6c1cde`; HEAD `17e2dfbc6c`), answering CRR-001/CRR-002 after API-REV-001/002.
+- Plan: investigation § Round 2. Environment: ENV-1 and ENV-2 as in round 1, at `17e2dfbc6c`; the OpenAI test key has credits again.
+
+### Round 2 Cases
+
+| Case ID | Criteria | Boundary / Surface | Command Or Steps | Env | Result | Evidence Files | Look For | Notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| API-01b | AC-001, AC-004, AC-009, AC-010 (unit and live) | repository checks | Reused: IMP-10, IMP-11, IMP-12, IMP-13, IMP-14 | (IMP) | Pass | (IMP) | (IMP) | code unchanged since; IMP-12's "binary 296 (all refused)" is examined in API-12 |
+| API-12 | BEH-001, BEH-011, DEC-006 | what the NUL scan refuses | census of tracked non-media files with a NUL byte | ENV-1 | **Fail** | `API-12-nul-file-census.log` | `first NUL after 8,000 bytes (newly refused by DEC-006): 95 [('.log', 94), ('.pdf', 1)]`; `tracked .log files: 21147 ; containing NUL: 173 ; Electron build logs among them: 167`; context `[nuxt] kit:compatibi…\x00…` | F-4. The files refused within the first 8,000 bytes are `.gz` 88, `.log` 79, `.z` 20, `.db`, `.jar`, `.bin` …: the 79 logs were already refused in round 1, which I did not catch (I accepted IMP-03's "201 NUL files refused" without looking at them) |
+| API-05 (round 2) | AC-009, BEH-011 | real PDFs and generated documents | temporary probe (`API-05-API-14-round2-probe.test.ts.txt`, deleted from the tree): `read_file` on copies of the 79 OS-shipped PDFs the 8,000-byte window missed, and the generated PDFs, DOCX and ZIP | ENV-1 | Pass | `API-05-API-14-round2-receipt.json` (`documents`) | 77 of 79 `refused`; `text` only `024-ScriptSucceeded.pdf` and `025-ScriptFailed.pdf`, both `firstNul -1`; `chrome.pdf`, `cups.pdf`, `note.docx`, `note.zip` refused | the 2 are DEC-006's stated residual (no NUL at all) |
+| API-14 | AC-004, CR-001/CR-003 | media line-range refusal | same probe: PNG, M4A, MP4 with `start_line`/`end_line` 1/1, 0/0, −1/−1, start only, end only; then no line arguments; a text range; the build log | ENV-1 | Pass | `API-05-API-14-round2-receipt.json` (`mediaLineRanges`, `textLineRange`, `buildLog`) | `… '/tmp/ab328/fixtures/picture.png' is an image file, so it was not loaded. Call read_file again without start_line and end_line, and do not claim …`; `is an audio file`; `is a video file`; 0/0 and −1/−1 get the same message; without line arguments `context file` per kind; text 2–3 `text`; build log `refused` | F-3 fixed |
+| API-13 | AC-002, AC-003, AC-008, AC-010, BEH-012, F-4 | server journey on real providers | temporary probe (`API-13-round2-journey-probe.e2e.test.ts.txt`): neutral names (`picture.png` green, `recording.m4a` says "hello", `clip.mp4` yellow); image on `gpt-5.4-mini`, `gpt-5.5`, `gpt-5.6-luna`, `gpt-5.6-sol`, `gpt-5.6-terra`, `gpt-6-astra`, `gpt-6-luna`, `gpt-6-sol` (plain agent); `gpt-5.4-mini` as the Daily Assistant: image + audio + video, `pwd` in a working directory, lines 2–3 of a text file, an Electron build log (one NUL at byte 8,200); Gemini 3.8 Flash image + audio + video; Grok 4.7 image; the Work Journal of the Daily Assistant media run | ENV-2 | **Fail** (F-4); everything else Pass | `API-13-round2-journey.log`, `API-13-round2-receipt.json` | each OpenAI model: one call `{"path":"/tmp/ab328/fixtures/picture.png"}` → `SUCCEEDED`, answer `green`/`Green` (8 of 8); Daily Assistant: image `SUCCEEDED`, audio and video `The selected model does not support audio input. …` / `… video input …`, answer `IMAGE_COLOR=green / SPOKEN=UNAVAILABLE / VIDEO_COLOR=UNAVAILABLE`; `run_bash` `{"command":"pwd","cwd":"/tmp/ab328/fixtures/work","timeout_seconds":30}` → `/private/tmp/ab328/fixtures/work`; text `{"path":…notes.txt,"start_line":2,"end_line":3,"include_line_numbers":true}` → `2: line two: bravo 3: line three: charlie`; build log `read_file` `FAILED` `… is a binary file and cannot be read as text …`, then the agent ran `strings` through `run_bash`; Gemini `IMAGE_COLOR=green`, `SPOKEN=hello`, `VIDEO_COLOR=yellow`; Grok `Green.`; journal `cat /tmp/ab328/fixtures/picture.png → ok` / `[image, not reproduced]` and the two refusals | `timeout_seconds: 30` equals the schema's `defaultValue: 30` (`run-bash.ts`): no invented value. The OpenAI models use optional arguments when the request needs them (`cwd`, the line range) and leave them out otherwise |
+
+### Round 2 Prior-Failure Resolution
+
+| Failure | Round 2 Result | Proven By |
+| --- | --- | --- |
+| F-1 OpenAI models fill line arguments on media reads | Resolved: 8 of 8 OpenAI models send only `path` and see the image | API-13 |
+| F-2 PDFs with a late NUL read as text | Resolved for 77 of 79; 2 without any NUL remain, as DEC-006 states | API-05 round 2 |
+| F-3 `a image` | Resolved | API-14 |
+
+### Round 2 Acceptance-Criteria Proof (changes from round 1)
+
+| Acceptance-Criteria ID | Critical | Proven By Case IDs | Result |
+| --- | --- | --- | --- |
+| AC-001 | Yes | API-01b (IMP-12) for files without NUL; API-12 | **Not Proven in real use**: 173 tracked text logs with a stray NUL, readable before this ticket, are refused (F-4) |
+| AC-002 | Yes | API-13 (8 OpenAI models, Gemini, Grok, neutral names), round 1 | Proven |
+| AC-003 | Yes | API-13 (Daily Assistant on `gpt-5.4-mini`), round 1 API-10 | Proven |
+| AC-004 | Yes | API-14, API-01b | Proven |
+| AC-008 | Yes | API-13 | Proven, and the Daily Assistant now reads images on OpenAI |
+| AC-009 | Yes | API-05 round 2, API-14, API-01b | Proven as written |
+| AC-010 | Yes | API-13 (8 models, `run_bash`, a text range), API-01b (IMP-10, IMP-14) | Proven |
+| AC-005 | Yes | round 1 API-02, API-04 | as round 1: the durable live test in AI Studio mode needs the user (quota or key) |
+| AC-006, AC-007 | Yes | round 1; API-13 journal | Proven |
+
+### Round 2 Validation Confidence Scorecard
+
+| Confidence Category | Score | What Supports It | Residual Uncertainty | What Could Improve It |
+| --- | --- | --- | --- | --- |
+| Requirement and acceptance-criteria proof | 75% | API-13, API-14, API-05 | F-4: text files with a stray NUL refused | the upstream decision, then API-12/API-13 build-log case |
+| Changed-boundary execution directness | 96% | real server, 10 real models, real files | — | — |
+| Cross-boundary integration realism and mock gap | 94% | OpenAI ×8, Gemini, Grok live | Anthropic and Kimi accounts unavailable (round 1) | — |
+| Environment, configuration, identity, and fixture fidelity | 94% | clean env, test vault, neutral names, real logs and PDFs | AI Studio quota (AC-005 durable test) | — |
+| Failure, edge-case, lifecycle, and recovery evidence | 80% | refusals with the right messages; models recover or report honestly | F-4 | — |
+| User-surface, browser, and desktop-shell confidence | N/A | no web or desktop change | — | — |
+| Durable regression coverage quality and relevance | 85% | IMP-10/11/14 cover the fixes | no durable case for a text log with a stray NUL (it would pin the current refusal) | after the decision |
+
+- Overall round-2 confidence: 87% (simple average of the six applicable categories); categories below 90%: requirement proof, failure evidence, durable coverage.
+
+### Round 2 Failures
+
+- **F-4 — text files with a stray NUL byte are refused as binary** (BEH-001, AC-001 in real use; REQ-009, DEC-004, DEC-006). The detection's premise "text files contain no NUL byte" does not hold for real logs: 173 of the repository's 21,147 tracked `.log` files contain NUL bytes (167 Electron build logs; typically one NUL inside readable text, e.g. `[nuxt] kit:compatibility\x00: 0.388ms`). Before this ticket `read_file` returned them as text; the 8,000-byte window (round 1) already refused 79 of them, and the whole-file scan (DEC-006) refuses all 173. On the real server, the Daily Assistant asked to read such a build log got `The file '…/build.log' is a binary file and cannot be read as text…`; it recovered through `run_bash strings`, which an agent with only `read_file` cannot do. Expected (BEH-001): text reads unchanged. Observed: refused. Round 1 missed it (I accepted the 201 refused files without looking at them).
+
+## Preliminary Classification (On `Fail`, round 2)
+
+- **F-4 — `Requirement Gap`** (owner: Solution Designer, user decision). The refusal rule is approved behaviour (REQ-009 with DEC-004/DEC-006); keeping text with stray NUL bytes readable while refusing PDFs and archives needs a different rule, for example refusing only when the bytes are not mostly text (a NUL count or ratio, or invalid UTF-8 beyond a threshold), or known binary signatures (`%PDF-`, `PK\x03\x04`, gzip) plus a NUL ratio, or accepting the limit. Each changes approved behaviour or its documented limit.
+- F-1, F-2, F-3: resolved.
+
+## Latest Authoritative Result
+
+- Result: `Fail` (round 2)
+- Criteria not proven, or parts only the user can check: AC-001 in real use (F-4); AC-005's durable live test in AI Studio mode (the user: the Google project's quota or a working key).
+- Preliminary classification and recommended owner: F-4 `Requirement Gap` (Solution Designer, user decision).
+- Next recipient from `get_handoff_rules`: `/software_engineering_team/code_reviewer` (failure-origin review of an execution failure).
+- Notes: F-1, F-2 and F-3 are resolved; the OpenAI `strict: false` change works on all 8 models tried and keeps needed optional arguments (`cwd`, line ranges).
