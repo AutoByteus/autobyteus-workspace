@@ -34,6 +34,7 @@ BASH_LAUNCHER_SOURCES = [
 POWERSHELL_LAUNCHER_SOURCES = [
     POWERSHELL_LAUNCHER,
     POWERSHELL_MODULE_DIR / "Core.ps1",
+    POWERSHELL_MODULE_DIR / "ContainerConfig.ps1",
     POWERSHELL_MODULE_DIR / "DockerRuntime.ps1",
     POWERSHELL_MODULE_DIR / "Commands.ps1",
 ]
@@ -233,6 +234,7 @@ class PublicDockerLauncherSharedWorkspaceTest(unittest.TestCase):
             self.assertIn("autobyteus-server-0-data:/home/autobyteus/data", run_args)
             self.assertIn("autobyteus-server-0-root-home:/root", run_args)
             self.assertIn("autobyteus-server-0-chromium-profile:/home/vncuser/.config/chromium", run_args)
+            self.assertIn("autobyteus-server-0-server-packages:/home/autobyteus/server-packages", run_args)
             self.assertIn("AUTOBYTEUS_TEMP_WORKSPACE_DIR=/home/autobyteus/workspace", run_args)
             self.assertIn("--cap-add", run_args)
             self.assertIn("SYS_ADMIN", run_args)
@@ -301,6 +303,7 @@ class PublicDockerLauncherSharedWorkspaceTest(unittest.TestCase):
             self.assertIn("my-node-data -> /home/autobyteus/data", storage)
             self.assertIn("my-node-root-home -> /root", storage)
             self.assertIn("my-node-chromium-profile -> /home/vncuser/.config/chromium", storage)
+            self.assertIn("my-node-server-packages -> /home/autobyteus/server-packages", storage)
             self.assertIn("my-node-workspace -> /app/autobyteus-server-ts/workspace", storage)
             self.assertIn(f"{shared_root / 'nodes' / 'my-node'} -> /home/autobyteus/workspace", storage)
             self.assertIn(f"{shared_root / 'shared'} -> /home/autobyteus/shared", storage)
@@ -711,7 +714,11 @@ class PublicDockerLauncherSharedWorkspaceTest(unittest.TestCase):
         powershell_text = read_combined_text(POWERSHELL_LAUNCHER_SOURCES)
 
         for text in (bash_text, powershell_text):
-            self.assertIn("v6", text)
+            self.assertIn("v7", text)
+            self.assertIn("server_packages_volume", text)
+            self.assertIn("server_packages_target", text)
+            self.assertIn("-server-packages", text)
+            self.assertIn("/home/autobyteus/server-packages", text)
             self.assertNotIn(REMOVED_NODE_PROFILE_ENV, text)
             self.assertNotIn(REMOVED_PROFILE_LABEL, text)
             self.assertIn("saved image refs", text)

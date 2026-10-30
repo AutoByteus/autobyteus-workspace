@@ -59,7 +59,8 @@ RUN pnpm --filter autobyteus-server-ts deploy /out/server-package --legacy \
   && node /app/scripts/server-package/describe-server-package.mjs package-json \
     --package-dir /out/server-package \
     --version "$(node -p "require('/app/autobyteus-web/package.json').version")" \
-    --system-level-file /app/autobyteus-server-ts/docker/system-level.json
+    --system-level-file /app/autobyteus-server-ts/docker/system-level.json \
+  && node -p "require('/app/autobyteus-server-ts/docker/system-level.json').level" > /out/system-level
 
 FROM scratch AS server-package
 COPY --from=builder /out/server-package /
@@ -116,9 +117,13 @@ WORKDIR /app
 COPY LICENSE LICENSING.md NOTICE /app/
 LABEL org.opencontainers.image.licenses="AGPL-3.0-only"
 
-RUN mkdir -p /home/autobyteus/workspace /home/autobyteus/data /root
+RUN mkdir -p /home/autobyteus/workspace /home/autobyteus/data /home/autobyteus/server-packages /root
 
+# The starter runs the node's server package (built-in or installed in <node>-server-packages) and
+# reads what this image provides from /opt/autobyteus/system-level.
 COPY --from=server-package / /opt/autobyteus/server-package
+COPY --from=builder /out/system-level /opt/autobyteus/system-level
+COPY autobyteus-server-ts/docker/starter/*.mjs /opt/autobyteus/starter/
 COPY autobyteus-server-ts/docker/supervisor-autobyteus-server.conf /etc/supervisor/conf.d/supervisor-autobyteus-server.conf
 COPY autobyteus-server-ts/docker/entrypoint.sh /usr/local/bin/entrypoint.sh
 COPY autobyteus-server-ts/docker/open-vnc-browser-url.sh /usr/local/bin/open-vnc-browser-url.sh
