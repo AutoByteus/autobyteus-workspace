@@ -1,0 +1,40 @@
+# API-10 prisma-engine-discovery Docker probe, round 1, commit 4a968218e9 (before the probe update)
+# Command: env -i PATH="$PATH" HOME=<private tmp> TMPDIR=<private tmp> RUN_PRISMA_ENGINE_DOCKER_E2E=1 pnpm -C autobyteus-server-ts test:e2e:prisma-engine-discovery:docker --image sha256:ae18d6c1a66ef2e7a497f3ba239ae457b3a69b73658bf14fba918dcb523082ce --output-dir evidence/API-10-prisma-round1-fail
+# Environment: macOS arm64, Docker 29.0.1, Node v22.23.1; image autobyteus-server-305-test:step1 (arm64)
+# Date: 2026-10-30; Case: API-10. Receipts in this folder: events.jsonl, dist-audit.json, native-proof.json, health-*.json, startup-*.log, recreation-proof.json, cleanup.json
+
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+> autobyteus-server-ts@0.1.1 test:e2e:prisma-engine-discovery:docker /Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-in-place-server-update/autobyteus-server-ts
+> node tests/e2e/startup/prisma-engine-discovery.docker.mjs --image sha256:ae18d6c1a66ef2e7a497f3ba239ae457b3a69b73658bf14fba918dcb523082ce --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-in-place-server-update/tickets/in-progress/docker-node-in-place-server-update/evidence/API-10-prisma
+
+API002 Started current build and whole-dist audit
+API002 Pass 5749 dist entries audited; 0 allowed changes
+API003 Started official incompatible cache/native RPC
+API003 Fail AssertionError [ERR_ASSERTION]: docker run --rm -i: node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+'bundled' !== 'cache'
+
+    at file:///fixture/native.mjs:15:8
+    at ModuleJob.run (node:internal/modules/esm/module_job:343:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:681:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5) {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 'bundled',
+  expected: 'cache',
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v22.23.3
+
+
+1 !== 0
+
+ ELIFECYCLE  Command failed with exit code 1.
+exit 1

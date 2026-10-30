@@ -1,0 +1,40 @@
+# API-10 cause of round-1 failure (stage API003)
+# Command: docker run --rm --network none --entrypoint sh <image> -c "ls -d <pnpm engine dirs>"; git show e22245f0:autobyteus-server-ts/src/startup/migrations.ts (listBundledPrismaEngineDirs)
+# Commit: 4a968218e9; images autobyteus-server-305-test:step1 (sha256:ae18d6c1a66e…) and autobyteus/autobyteus-server:beta (9657209ba499)
+# Environment: macOS arm64, Docker 29.0.1; Date: 2026-10-30T16:14:02Z; Case: API-10
+
+## Baseline resolver candidate dirs (e22245f0:migrations.ts:85-105)
+function listBundledPrismaEngineDirs(appRoot: string): string[] {
+  const candidates = [path.join(appRoot, "node_modules", "@prisma", "engines")];
+  const pnpmRoot = path.join(appRoot, "node_modules", ".pnpm");
+
+  if (!fs.existsSync(pnpmRoot)) {
+    return candidates;
+  }
+
+  try {
+    const pnpmEntries = fs.readdirSync(pnpmRoot, { withFileTypes: true });
+    for (const entry of pnpmEntries) {
+      if (!entry.isDirectory()) continue;
+      if (!entry.name.startsWith("@prisma+engines@")) continue;
+      candidates.push(path.join(pnpmRoot, entry.name, "node_modules", "@prisma", "engines"));
+    }
+  } catch {
+    return candidates;
+  }
+
+  return candidates;
+}
+
+## step-1 image: appRoot=/opt/autobyteus/server-package
+node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines
+libquery_engine-linux-arm64-openssl-3.0.x.so.node
+schema-engine-linux-arm64-openssl-3.0.x
+
+## published :beta image: appRoot=/app/autobyteus-server-ts
+ls: cannot access '/app/autobyteus-server-ts/node_modules/.pnpm': No such file or directory
+ls: cannot access '/app/autobyteus-server-ts/node_modules/@prisma/engines': No such file or directory
+/app/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines
+
+## round-1 failing event
+{"time":"2026-10-30T16:12:33.240Z","caseId":"API003","result":"Fail","details":"AssertionError [ERR_ASSERTION]: docker run --rm -i: node:internal/modules/run_main:123\n    triggerUncaughtException(\n    ^\n\nAssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n'bundled' !== 'cache'\n\n    at file:///fixture/native.mjs:15:8\n    at ModuleJob.run (node:internal/modules/esm/module

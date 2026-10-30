@@ -1,0 +1,12 @@
+{
+  "command": [
+    "docker",
+    "rm",
+    "-f",
+    "-v",
+    "api-prisma-e1a244ad-8cf-audit"
+  ],
+  "exit": 0,
+  "stdout": "api-prisma-e1a244ad-8cf-audit\n",
+  "stderr": ""
+}
