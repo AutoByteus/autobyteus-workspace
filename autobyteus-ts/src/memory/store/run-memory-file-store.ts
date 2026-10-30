@@ -31,6 +31,9 @@ import {
   type RawTraceArchiveResult,
 } from './raw-trace-archive-manager.js';
 
+/** The value the server's `RuntimeKind.AUTOBYTEUS` stores; this library has no enum of its own. */
+const NATIVE_RUNTIME_KIND = 'autobyteus';
+
 const traceId = (item: Record<string, unknown>): string | null =>
   typeof item.id === 'string' && item.id.length > 0 ? item.id : null;
 
@@ -269,7 +272,7 @@ export class RunMemoryFileStore {
       this.archiveAndRewriteActive(removed, keep, {
         boundaryType: 'native_compaction',
         boundaryKey,
-        runtimeKind: 'AUTOBYTEUS',
+        runtimeKind: NATIVE_RUNTIME_KIND,
         sourceEvent: 'native_compaction',
       });
       return;
@@ -312,7 +315,7 @@ export class RunMemoryFileStore {
     const boundaryKey = nativeCompactionSelectionBoundaryKey(ids);
     const result = this.archiveManager.archiveRecords(selected, {
       boundaryType: 'native_compaction', boundaryKey,
-      runtimeKind: 'AUTOBYTEUS', sourceEvent: 'native_compaction',
+      runtimeKind: NATIVE_RUNTIME_KIND, sourceEvent: 'native_compaction',
     });
     if (!result) throw new Error('Compaction archive preparation failed.');
     const archivedIds = this.archiveManager.readCompleteSegmentTraceIds(boundaryKey);
