@@ -1,0 +1,79 @@
+# Investigation Notes — autobyteus-331 (Work Journal: neutral vocabulary)
+
+## Investigation Meta
+
+- Package identifier: `work-journal-neutral-vocabulary` (Project Task `autobyteus-331`, Project `project_a1377344-25db-482a-97cc-ecfdb0fb495a`). Requested by `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), for the user. Split out of autobyteus-316 on the Solution Designer's suggestion; the user decided on 2026-10-30 that this is worked first.
+- Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/work-journal-neutral-vocabulary`, branch `codex/work-journal-neutral-vocabulary`, base `origin/personal` @ `a0a038967c` (fetched 2026-10-30; it contains autobyteus-328, which removed `read_media_file`). Finalization target: `origin/personal`, merged by the delivery engineer per `RELEASE.md`.
+- Authorities read (2026-10-30): `requirements-engineering.md`, `finding-the-cause.md`, `ticket-scope.md`, `architecture-design.md`, `design-principles.md` (all 15 principles, structural triggers, health assessment, size and risk), `design-spec-template.md`; project `DESIGN.md` (rules 1–9 and the best practices), `AGENTS.md`; `autobyteus-server-ts/docs/modules/agent_work_journal.md`, `memory_search.md`, `agent_memory.md`; `autobyteus-server-ts/docs/design/data_migration_guideline.md` (checklist read for the persisted-data decision).
+- Evidence labels: **Read** (source or docs), **Measured** (scripted read-only count over the user's real memory; counts only, nothing copied out), **Reproduced** (run). Real journals were never copied out; every fixture and example is synthetic.
+- Supplements (inventory at the end): the contract and the analysis, in this folder.
+
+## Initial Request And Clarifications
+
+The user (2026-10-30, via the Project Task Manager): the journals should be semantically neutral so a human or an agent on another runtime reads the same words for the same action: "a skill load should read as a skill load, not as a tool called Skill"; he doubted a tool name such as `send_message_to` needs to appear; he asked for the rare runtime-only tools to be translated as well (`TodoWrite`, `Agent`, `ToolSearch`, `Task*`, `Workflow`, Codex `js`, `speak`), for a clear table per runtime, for complete synthetic examples per runtime, and said the translation belongs in the journal's own converters, with no change to the platform. He asked how journals are regenerated; no migration. He delegated the wording decisions ("you know the best").
+
+## Source Log
+
+| ID | Source |
+| --- | --- |
+| S1 | `autobyteus-server-ts/src/agent-work-journal/rendering/work-journal-file-renderer.ts` (lookup in `toolEntry`, entry formatting) |
+| S2 | `rendering/runtimes/runtime-translation.ts` and the five `*-translation.ts` files |
+| S3 | `rendering/journal-actions.ts`, `generic-tool-line.ts`, `tool-outcome.ts`, `result-envelopes.ts`, `non-tool-record-lines.ts` |
+| S4 | `services/work-journal-service.ts` (`reconcile`), `domain/work-journal-models.ts`, `store/work-journal-store.ts`, `services/work-journal-run-updater.ts` |
+| S5 | `reading/journal-entry-reader.ts` (the one parser of the format) and its consumers |
+| S6 | `memory-search/pipeline/journals-step.ts`, `memory-index-pipeline.ts`, `index/journal-card-builder.ts`, `index/journal-chunker.ts` |
+| S7 | Tool registry: `agent-tools/mcp/providers/default-agent-tool-mcp-adapter-providers.ts`, the `*-tool-contract.ts` files |
+| S8 | Tests: `tests/agent-work-journal/**` |
+| S9 | Real journals and raw traces under `~/.autobyteus/server-data/memory` (read-only counts) |
+| S10 | `tickets/done/work-journal/work-journal-contract.md` (the contract this revises) and `tickets/done/work-journal-search/` (memory-search evaluation) |
+
+## Findings
+
+| ID | Finding | How established |
+| --- | --- | --- |
+| E-01 | The renderer is one pure class. `toolEntry` unwraps the call (`translation.unwrapCall`), looks the name up in the run's runtime table (`translation.builtInTools.get`) and otherwise prints the generic line (`work-journal-file-renderer.ts:132-150`, lookup at 143, generic at 146). So the extension points are exactly two: more rows in a runtime's table, and a step between the table and the generic rule. | Read (S1) |
+| E-02 | A runtime translation is `{label, builtInTools: Map<name, BuiltInConverter>, normalizeResult, unwrapCall?, normalizeAgentText?, normalizeUserText?}` (`runtime-translation.ts:40-52`); a converter is `(call, result) => BuiltInLine {head, outcome, parts}` (`:32-34`). Each translation file is 97–156 lines. | Read (S2) |
+| E-03 | Every runtime already turns its file, shell and web built-ins into the same neutral lines through shared helpers: `commandLine` (`journal-actions.ts:20`), `convertedCommandLine` (`:88`), `writeFileLine`, `editFileLine`, `searchWebLine`. All shell and read converters funnel into `commandLine`. | Read (S2, S3) |
+| E-04 | The outcome vocabulary is a closed union: `ok`, `exit`, `failed`, `denied`, `rejected`, `interrupted`, `timed_out`, `no_result`, `started` (`tool-outcome.ts:4-13`), formatted in one switch (`:30-40`). There is no `delivered`; a message the platform refuses (`{accepted:false,…}`) is a successful tool call and prints `→ ok` today. | Read (S3); Reproduced on the synthetic Claude and AGY traces: "Message to /nobody … was: … → ok" (contract §11, group 5) |
+| E-05 | The journal's only parser is `readJournalEntries`; an entry's kind comes from its head: `User`, `Message from` = request; `Agent` = reply; `Notice` = notice; `Turn interrupted`, `Record (` = note; **everything else = action** (`journal-entry-reader.ts:40-46`). New neutral heads (`Load skill:`, `Message to …`, `Browser: …`) are therefore actions without any change; none starts with a request, reply, notice or note prefix. Nothing outside `rendering/` matches the text `Tool:` or `Command:` in `src/` (grep). | Read (S5) |
+| E-06 | Memory search builds, per journal file, chunks of whole entries and a card (`Did: a; b; c`, the file's distinct action **heads**, each cut at 90 characters, up to 25; `journal-card-builder.ts:29-43`). A changed head changes the card text, so the card's meaning embedding and the text chunks are recomputed **for changed files only** (the pipeline works by content hash; `memory_search.md` § pipeline). Neutral heads are shorter and carry meaning, so cards get better, but every changed card is re-embedded. | Read (S6) |
+| E-07 | A closed journal file is reused only while the manifest's `renderer_revision` equals `WORK_JOURNAL_RENDERER_REVISION` and the runtime matches (`work-journal-service.ts:152-156`). The constant is **1**, and autobyteus-328 changed the renderer's output (media marker) without raising it: already-rendered journals kept the old text. The documented rule is that a rule change raises the number and closed files are rebuilt without a migration (`agent_work_journal.md:109`). | Read (S4) |
+| E-08 | A journal is only refreshed when a live run ends a turn, or when memory search's Journals step sees a changed raw-trace fingerprint for the run (`journals-step.ts:55`). `rawTraceFingerprint` is built from raw-trace file names, sizes and times (`:32`); it does not contain the renderer revision. So a revision bump alone refreshes a run only when it next ends a turn or its raw traces change: old runs would keep the old wording until the Memory page's **Rebuild** (which drops stored fingerprints). `start()` queues a `catchUp` pass when the index was built before (`memory-index-pipeline.ts:102-105`), which is the right moment for the regeneration. | Read (S6) |
+| E-09 | Today's Rebuild does not regenerate journals: it visits every run, but `reconcile` reuses each closed file whose revision matches, so only the open file is rendered again. A forced regeneration therefore needs an explicit option. | Read (`journals-step.ts`, `work-journal-service.ts:152-176`) |
+| E-10 | Tool names: the platform's static tool set is built from twelve adapter providers (`default-agent-tool-mcp-adapter-providers.ts:16-29`). On this base the project-task tools are `list_projects`, `list_project_tasks`, `search_project_tasks`, `get_project_task`, `create_project`, `update_project`, `create_task`, `update_task` (`project-task-tool-contract.ts:6`); `submit_launch_choices` (the Model Router's tool, `submit-launch-choices-contract.ts`) exists and was missing from the contract's first version. `create_or_update_task`, `create_or_update_project` and `manage_task` appear only in journals of earlier runs. | Read (S7); Measured (S9) |
+| E-11 | autobyteus-328 removed `read_media_file` and made `read_file` read images, audio and video; the renderer keeps `read_media_file` as recorded history (`autobyteus-translation.ts:103-110`, table row at 146) and renders a media read as the media marker (`result-envelopes.ts`, `mediaReadRecorded`). The precedent: a renderer table keeps names of tools that no longer exist. | Read (S2) |
+| E-12 | Coverage of the contract's names: of 46,793 `Tool:` lines in the user's journals, **44,431 (95.0%)** are tools the contract converts; the other 2,362 (5.0%, 62 names) are tools the user installed himself (ssh 189+139+…, video editing, email) and `run_bash`/`Read`/`Write`/`Edit`-style raw runtime names in journals whose runtime is not recorded. | Measured (S9) |
+| E-13 | 226 of 3,716 journals (6%) have no recorded runtime, mostly imported from another node; they use the generic rule for every tool, so they print raw runtime names (`Bash` 1,191, `Read` 344, `Write` 123). The raw-trace manifest of such a run already records each archived segment's runtime (`runtime_kind`), so a runtime could be derived; that is outside this ticket (follow-up FU-001). | Measured (S9) + Read |
+| E-14 | The skill folder name above `<name>/SKILL.md` in `Command:` lines: `skills`, `autobyteus-skills`, `autobyteus-private-skills`, `.system` are skills folders; `agents`, `autobyteus-mcps`, `origin` are not (counts in contract §5). Plain single-path reads are 83% of AutoByteus, 85% of Antigravity, 51% (at least) of Codex and 23% (at least) of Claude skill-file command lines; the rest are `cd … && cat`, several files, `ls`, `grep`. | Measured (S9) |
+| E-15 | How much changes: **6,159 of 7,509 journal files (82%), 1.62 of 1.79 GB, in 3,063 of 3,716 runs** contain at least one line this revision changes (a converted tool, a skill read, a qualified name). Each changed file is re-chunked and its card re-embedded. The memory-search evaluation reported about 1 h for the whole index on an M1 Max (CPU embedding; `memory-search-evaluation-report.md:177`); a pass over 82% of the cards is therefore of the order of 50 minutes in the background (searches are served first). **Not measured for this change**: the shadow render must measure it. | Measured (counts) + Read (report); the time is an estimate |
+| E-16 | Existing tests: `tests/agent-work-journal/rendering/{work-journal-file-renderer,runtime-translations,rendering-building-blocks}.test.ts` (708 lines) assert today's lines and will change where a line changes; `tests/unit/memory-search/memory-search-index-units.test.ts` builds cards from journal text. Test fixtures are hand-built records (`journal-record-fixtures.ts`; TESTING.md: never copy real user records). | Read (S8) |
+| E-17 | The current Claude session does not remove built-in tools (`allowedTools` only auto-approves; no `tools`/`disallowedTools`), so `TodoWrite`, `Agent`, `ToolSearch` can return; they are converted although rare (8, 10, 4 calls, last used June to September 2026). | Read + Measured (earlier round, 316 analysis § 9) |
+| E-18 | A runtime-independent skill rule is possible because every runtime's table already produces the neutral commands `cat -n <path>` (reads), `sed -n '<range>' <path>` and `head` (shell): the check can sit in the shared `commandLine` helper once (E-03). | Read (S2, S3) + the synthetic traces' real renderer output (contract §11) |
+| E-19 | Environment: the main checkout's built workspace packages are older than this base (`agentRuntimeName` missing), so renderer tests cannot run from it; the build phase needs a normal dependency install in the worktree. Design evidence here is by reading plus the earlier isolated renderer runs on an older base (the synthetic examples). | Reproduced (failed probe), noted for implementation |
+
+## Supported Scenarios (basis)
+
+| ID | Scenario | Validity | Evidence |
+| --- | --- | --- | --- |
+| SCN-001 | An agent on runtime B, or a person, reads a journal written on runtime A (the Memory page; `search_memory` then a file read; a continuing agent) and sees the same words for the same action | Supported Normal Scenario (the Task's goal; the user, 2026-10-30) | Task; E-12 |
+| SCN-002 | The user updates the app; the first memory-index catch-up regenerates every journal in the background | Supported Normal Scenario (the user: "no migration, regenerate") | E-07, E-08 |
+| SCN-003 | The user presses Rebuild on the Memory page and every journal is regenerated | Supported Explicit Edge Scenario (the user asked how to regenerate on demand; the button exists) | E-09 |
+| SCN-004 | A journal of an old run contains a tool that no longer exists (`create_or_update_task`, `read_media_file`) | Supported Normal Scenario (journals are rebuilt from raw traces for every run, old runs included) | E-10, E-11 |
+| SCN-005 | A journal of an imported run with no recorded runtime | Technically supported today, **out of scope** (stays generic); follow-up FU-001 | E-13 |
+
+## Unknowns And Risks
+
+| ID | Unknown | How it is settled |
+| --- | --- | --- |
+| U-1 | Real time and memory of regenerating and re-indexing 82% of the journals | Shadow render on an isolated copy of the memory, in the implementation/validation phase (REQ-009) |
+| U-2 | Whether memory-search quality changes with neutral heads | Re-run the evaluation's known-answer queries (`tickets/done/work-journal-search/probes`) on the shadow render; report |
+| U-3 | The share of skill-file commands the S1 rule converts, and wrong labels | Shadow render counts per rule and a sample read of converted lines (counts and neutral snippets only) |
+| U-4 | Exact argument shapes of tools never seen in the data (`generate_video`, `publish_artifacts`, `list_available_agent_runtimes`) | The converters read defensively (missing argument → "(… not recorded)" per old principle 9); fixtures from the tool parameter schemas |
+
+## Supplement Inventory
+
+| Path | Purpose | Status |
+| --- | --- | --- |
+| `work-journal-neutral-vocabulary-contract.md` | Behavior-defining: the neutral vocabulary (tables per runtime and for the platform, rules, decisions N-1…N-9, synthetic examples) | Canonical for this ticket; part of the approval basis |
+| `journal-neutrality-analysis.md` | Evidence of the analysis of 3,716 real journals | Evidence only |
+| `probes/build_examples.py`, `probes/render-examples.probe.test.ts` | Reproduce the contract's §11 examples with the real renderer | Reproduction; the implementation starts from them (the prototype's `neutral()` lines are the first fixtures) |
