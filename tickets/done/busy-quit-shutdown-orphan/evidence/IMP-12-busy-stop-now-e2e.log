@@ -1,0 +1,11 @@
+# IMP-12
+# Command: pnpm -C autobyteus-server-ts build; RUN_BUSY_STOP_NOW_E2E=1 TEST_BUSY_STOP_EVIDENCE_DIR=<dir> TEST_BUSY_STOP_LABEL=IMP-12 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/shutdown/busy-run-stop-now.e2e.test.ts --no-watch
+# Commit: 83a73f24d7 content (built and run before commit; same source)
+# Environment: macOS 26.5.2, node v22.23.1
+# Date: 2026-10-30
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+
+shutdown.sweepLines after fix: []
+before (API-02-server-fixture-clean.json): ['Server process-tree sweep: 1 process(es) and 0 process group(s) still running; sending SIGTERM.']

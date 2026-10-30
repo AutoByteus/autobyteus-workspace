@@ -1,0 +1,35 @@
+worker(server)=82625
+before:
+82657 82625 82569 codex app-server
+84219 82657 84219 sleep 300
+SIGKILL server at 09:34:00
+--- +3s after server SIGKILL
+13434 22963 22050 /Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --thin
+16859 22963 22050 /Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --thin
+18866 22963 22050 /Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --thin
+23249 22963 22050 codex app-server
+25410 22963 22050 /Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --thin
+27434 22963 22050 /Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --thin
+28079 22963 22050 /Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --thin
+31029 22963 22050 /Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --thin
+38634 22963 22050 /Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --thin
+55796 22963 22050 /Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --thin
+70894 22963 22050 /Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --thin
+73652 22963 22050 /Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --thin
+84148 22963 22050 /Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --thin
+92292 22963 22050 /Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --thin
+--- +15s after server SIGKILL
+13434 22963 22050 /Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --thin
+16859 22963 22050 /Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --thin
+18866 22963 22050 /Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --thin
+23249 22963 22050 codex app-server
+25410 22963 22050 /Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --thin
+27434 22963 22050 /Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --thin
+28079 22963 22050 /Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --thin
+31029 22963 22050 /Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --thin
+38634 22963 22050 /Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --thin
+55796 22963 22050 /Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --thin
+70894 22963 22050 /Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --thin
+73652 22963 22050 /Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --thin
+84148 22963 22050 /Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --thin
+92292 22963 22050 /Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --thin

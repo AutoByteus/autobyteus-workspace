@@ -1,0 +1,4 @@
+"busy user quit","electronPid":44942,"serverPid":47396,"serverGoneMs":1022,"electronGoneMs":1073
+"busy user quit","electronPid":55291,"serverPid":57701,"serverGoneMs":1583,"electronGoneMs":1583
+"busy user quit","electronPid":64349,"serverPid":66780,"serverGoneMs":1329,"electronGoneMs":1381
+"busy user quit","electronPid":74474,"serverPid":77019,"serverGoneMs":1326,"electronGoneMs":1377

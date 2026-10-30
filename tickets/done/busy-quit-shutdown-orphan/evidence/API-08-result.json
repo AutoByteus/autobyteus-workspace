@@ -1,0 +1,184 @@
+{
+  "case": "API-08",
+  "date": "2026-10-30T12:25:42.642Z",
+  "version": "2.1.314 (Claude Code)",
+  "marker": "BQ284EOFmvuy40z6",
+  "steps": [
+    {
+      "at": "3.1",
+      "step": "eof busy",
+      "value": {
+        "cli": 56513,
+        "tool": 57170,
+        "toolPpid": 57169,
+        "toolPgid": 57169
+      }
+    },
+    {
+      "at": "18.1",
+      "step": "eof after eof",
+      "value": {
+        "action": "eof",
+        "cliPid": 56513,
+        "toolPid": 57170,
+        "cliExit": null,
+        "samples": [
+          {
+            "afterMs": 1000,
+            "cliAlive": true,
+            "toolAlive": true
+          },
+          {
+            "afterMs": 3000,
+            "cliAlive": true,
+            "toolAlive": true
+          },
+          {
+            "afterMs": 5000,
+            "cliAlive": true,
+            "toolAlive": true
+          },
+          {
+            "afterMs": 10000,
+            "cliAlive": true,
+            "toolAlive": true
+          },
+          {
+            "afterMs": 15000,
+            "cliAlive": true,
+            "toolAlive": true
+          }
+        ],
+        "cleanupSigtermCliAlive": false,
+        "cleanupSigtermToolAlive": false
+      }
+    },
+    {
+      "at": "24.0",
+      "step": "sigterm busy",
+      "value": {
+        "cli": 57207,
+        "tool": 57833,
+        "toolPpid": 57832,
+        "toolPgid": 57832
+      }
+    },
+    {
+      "at": "39.0",
+      "step": "sigterm after sigterm",
+      "value": {
+        "action": "sigterm",
+        "cliPid": 57207,
+        "toolPid": 57833,
+        "cliExit": {
+          "code": 143,
+          "signal": null,
+          "at": 1793363167379,
+          "afterMs": 732
+        },
+        "samples": [
+          {
+            "afterMs": 1000,
+            "cliAlive": false,
+            "toolAlive": false
+          },
+          {
+            "afterMs": 3000,
+            "cliAlive": false,
+            "toolAlive": false
+          },
+          {
+            "afterMs": 5000,
+            "cliAlive": false,
+            "toolAlive": false
+          },
+          {
+            "afterMs": 10000,
+            "cliAlive": false,
+            "toolAlive": false
+          },
+          {
+            "afterMs": 15000,
+            "cliAlive": false,
+            "toolAlive": false
+          }
+        ]
+      }
+    }
+  ],
+  "eof": {
+    "action": "eof",
+    "cliPid": 56513,
+    "toolPid": 57170,
+    "cliExit": null,
+    "samples": [
+      {
+        "afterMs": 1000,
+        "cliAlive": true,
+        "toolAlive": true
+      },
+      {
+        "afterMs": 3000,
+        "cliAlive": true,
+        "toolAlive": true
+      },
+      {
+        "afterMs": 5000,
+        "cliAlive": true,
+        "toolAlive": true
+      },
+      {
+        "afterMs": 10000,
+        "cliAlive": true,
+        "toolAlive": true
+      },
+      {
+        "afterMs": 15000,
+        "cliAlive": true,
+        "toolAlive": true
+      }
+    ],
+    "cleanupSigtermCliAlive": false,
+    "cleanupSigtermToolAlive": false
+  },
+  "sigterm": {
+    "action": "sigterm",
+    "cliPid": 57207,
+    "toolPid": 57833,
+    "cliExit": {
+      "code": 143,
+      "signal": null,
+      "at": 1793363167379,
+      "afterMs": 732
+    },
+    "samples": [
+      {
+        "afterMs": 1000,
+        "cliAlive": false,
+        "toolAlive": false
+      },
+      {
+        "afterMs": 3000,
+        "cliAlive": false,
+        "toolAlive": false
+      },
+      {
+        "afterMs": 5000,
+        "cliAlive": false,
+        "toolAlive": false
+      },
+      {
+        "afterMs": 10000,
+        "cliAlive": false,
+        "toolAlive": false
+      },
+      {
+        "afterMs": 15000,
+        "cliAlive": false,
+        "toolAlive": false
+      }
+    ]
+  },
+  "result": "Completed",
+  "leftAfterProbe": []
+}

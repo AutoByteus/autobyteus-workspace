@@ -304,14 +304,35 @@ quiescent, or until `ROOT_SHUTDOWN_REJECTED_INTERRUPT_QUIESCENCE_TIMEOUT_MS`
 is final; after a not-accepted or failed attempt, the next Stop opens a new
 attempt.
 
-**Known limit (server shutdown with a busy run).** Server shutdown
-(`closeProcessResources` → `stopAll`) does not interrupt an in-flight turn; it
-waits for the turn to finish. When the desktop app quits while an agent is
-mid-turn, Electron exits after about 30 s, but the embedded server, its runtime
-process (observed with the Codex app server) and the agent's commands keep
-running as orphans until the turn ends. That can be unbounded for a long or
-hung tool, and a relaunch can start a second server on the same data. This is
-the existing behavior, not a design guarantee.
+**Stop now: Terminate and server shutdown interrupt a busy turn.**
+`AgentRunManager.terminateAgentRun` (user Terminate, history delete/archive and
+an application's terminate) first runs the same fence
+(`fenceInputAndInterruptForRootShutdown`): it interrupts the active turn and
+cancels queued input that has not started, then prepares and finishes the
+termination as before. `stopAllAgentRuns` (server shutdown) fences every run
+at once, then finishes them one by one. A fence that is not accepted leaves the
+run root-fenced but active: Terminate reports the existing not-found/rejected
+result, a retry runs a new fence attempt, and shutdown reports that run as not
+stopped. Neither path writes run history; only the Terminate, delete and archive
+callers record `terminatedAt`, so runs stopped by a shutdown stay resumable.
+
+**Bounded server shutdown.** `ServerProcessShutdown` (`src/shutdown/`) gives the
+server's own cleanup (`app.close()`) at most 10 s
+(`SERVER_SHUTDOWN_TIMEOUT_MS`), counted from when startup has settled. It then
+always runs one process-tree sweep (`server-process-tree-sweep.ts`): it records
+the server's descendants in its own process group and the groups led by a
+descendant, sends SIGTERM, waits up to 1.5 s, SIGKILLs the recorded
+survivors, and waits up to 0.5 s more for them to be gone (a killed direct
+child stays visible until the server reaps it). The server's own group and
+anything selected by port are never signalled. The exit code is 1, and the
+Windows IPC result `failed`, when the cleanup failed, the bound expired, or the
+sweep could not confirm that every target is gone (for example when `ps` cannot
+be read). On Windows the sweep is not applicable: there the exit code depends
+only on the cleanup and the bound, and nothing is swept after a clean exit. A
+busy shutdown normally exits in about a second once its turns are interrupted;
+the worst case is about 14.25 s (the 10 s bound, one `ps` read of up to 2 s,
+the 1.5 s grace, the 0.5 s kill confirmation and the IPC flush), inside the
+desktop's 20 s wait.
 
 ## Stopped Model Configuration And Restore Serialization
 

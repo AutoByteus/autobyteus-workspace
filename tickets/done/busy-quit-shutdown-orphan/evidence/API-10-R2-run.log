@@ -1,0 +1,10 @@
+[+10.5s] isolated-app {"args":["start","--from-worktree","--data-root","/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-idle-an9qm0/data-root"],"exit":0,"ok":true,"error":null}
+[+11.2s] instance started {"label":"first","instanceId":"iso-63507-4f93","electronPid":52806,"serverPid":54202,"serverPort":63508,"servers":1}
+[+15.7s] idle quit observed {"label":"idle quit","electronPid":52806,"serverPid":54202,"serverGoneMs":258,"electronGoneMs":321,"before":6,"survivors":[],"markedLeft":[],"serversForDataAfter":[],"tools":[]}
+[+15.8s] isolated-app {"args":["stop","iso-63507-4f93"],"exit":0,"ok":true,"error":null}
+[+21.6s] isolated-app {"args":["start","--from-worktree","--data-root","/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-idle-an9qm0/data-root"],"exit":0,"ok":true,"error":null}
+[+21.9s] instance started {"label":"second","instanceId":"iso-63637-5a50","electronPid":54883,"serverPid":55860,"serverPort":63638,"servers":1}
+[+22.3s] relaunch check {"label":"second","serversForData":[{"pid":55860,"ppid":54883,"pgid":54883,"command":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-api2.zP1abU/clean/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus … t 63638 --data-dir /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-idle-an9qm0/data-root/server-data"}],"exactlyOne":true,"previousSessionLeft":[]}
+[+25.6s] second idle quit observed {"label":"second idle quit","electronPid":54883,"serverPid":55860,"serverGoneMs":1791,"electronGoneMs":1893,"before":7,"survivors":[],"markedLeft":[],"serversForDataAfter":[],"tools":[]}
+[+25.8s] isolated-app {"args":["stop","iso-63637-5a50"],"exit":0,"ok":true,"error":null}
+{"result":"Completed","error":null,"fallbackCleanup":0}

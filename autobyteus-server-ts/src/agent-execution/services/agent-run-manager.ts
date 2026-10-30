@@ -285,6 +285,8 @@ export class AgentRunManager {
     try {
       const activeRun = this.getActiveRun(normalizedRunId);
       if (!activeRun) return false;
+      // Stop now: interrupt the active turn and cancel unstarted queued input before preparing.
+      if (!(await activeRun.fenceInputAndInterruptForRootShutdown()).accepted) return false;
       const prepared = await this.prepareAgentRunTermination(activeRun);
       return (await prepared.commit().finish()).accepted;
     } catch (error) {
@@ -309,7 +311,15 @@ export class AgentRunManager {
     const snapshot = this.activationRegistry.snapshotForStop();
     errors.push(...snapshot.pruningErrors);
 
-    for (const run of snapshot.activeRuns) {
+    // Fence every run at once so busy turns are interrupted together; then finish them in order.
+    const fences = await Promise.allSettled(snapshot.activeRuns.map((run) => run.fenceInputAndInterruptForRootShutdown()));
+    for (const [index, run] of snapshot.activeRuns.entries()) {
+      const fence = fences[index]!;
+      if (fence.status === "rejected") { errors.push(fence.reason); continue; }
+      if (!fence.value.accepted) {
+        errors.push(new Error(`Agent run '${run.runId}' did not accept the stop fence: ${fence.value.message ?? "no reason"}`));
+        continue;
+      }
       try {
         const prepared = await this.prepareAgentRunTermination(run);
         const termination = await prepared.commit().finish();

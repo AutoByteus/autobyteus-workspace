@@ -1,0 +1,26 @@
+# DEL-01 post-integration checks (integrated state 927f7e846c + delivery docs edits)
+
+## typecheck
+typecheck exit 0
+
+## server-unit
+ Test Files  27 passed | 4 skipped (31)
+      Tests  409 passed | 6 skipped (415)
+   Duration  25.73s (transform 3.56s, setup 365ms, import 13.65s, tests 8.38s, environment 2ms)
+exit 0
+
+## electron
+ Test Files  2 passed (2)
+      Tests  6 passed (6)
+   Duration  2.43s (transform 107ms, setup 0ms, collect 233ms, tests 2.10s, environment 0ms, prepare 133ms)
+exit 0
+
+## server-unit-full
+ Test Files  881 passed | 5 skipped (886)
+      Tests  7495 passed | 9 skipped (7504)
+   Duration  631.11s (transform 16.00s, setup 9.37s, import 264.81s, tests 276.82s, environment 837ms)
+exit 0
+
+## build
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+build exit 0

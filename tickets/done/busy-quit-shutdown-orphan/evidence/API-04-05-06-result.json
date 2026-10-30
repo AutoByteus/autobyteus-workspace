@@ -1,0 +1,681 @@
+{
+  "case": "API-04-05-06",
+  "mode": "mixed",
+  "serverDir": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-api.Gy1t06/clean/autobyteus-server-ts",
+  "date": "2026-10-30T12:16:52.741Z",
+  "own": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-mixed-L7DExt",
+  "runTag": "BQ284Lmvuxso3p",
+  "versions": {
+    "codex": "codex-cli 0.166.0",
+    "claude": "2.1.314 (Claude Code)",
+    "node": "v22.23.1",
+    "python3": "Python 3.9.6"
+  },
+  "steps": [
+    {
+      "at": "3.6",
+      "step": "server started",
+      "value": {
+        "label": "first",
+        "pid": 35711,
+        "port": 55631
+      }
+    },
+    {
+      "at": "4.8",
+      "step": "models",
+      "value": {
+        "codex": "gpt-6.1-terra",
+        "claude": "claude-haiku-4-5-20251001"
+      }
+    },
+    {
+      "at": "5.3",
+      "step": "standalone sent",
+      "value": {
+        "label": "API-04",
+        "runtime": "codex",
+        "runId": "probe_agent_bq284lmvuxso3p_cf54f2d92fb44d8ca6ec48c02bbf0239"
+      }
+    },
+    {
+      "at": "9.6",
+      "step": "busy",
+      "value": {
+        "label": "API-04",
+        "marker": "BQ284Lmvuxso3p_API-04",
+        "pid": 37096,
+        "ppid": 35788,
+        "pgid": 37096,
+        "afterMs": 4325
+      }
+    },
+    {
+      "at": "9.8",
+      "step": "terminate",
+      "value": {
+        "case": "API-04",
+        "runtime": "codex",
+        "runId": "probe_agent_bq284lmvuxso3p_cf54f2d92fb44d8ca6ec48c02bbf0239",
+        "marker": "BQ284Lmvuxso3p_API-04",
+        "result": {
+          "success": true,
+          "message": "Agent run terminated successfully."
+        },
+        "elapsedMs": 82,
+        "toolCommand": {
+          "pid": 37096,
+          "ppid": 35788,
+          "pgid": 37096,
+          "command": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python -c import time; time.sleep(900) BQ284Lmvuxso3p_API-04",
+          "aliveAfter": false
+        },
+        "treeAtBusy": [
+          {
+            "pid": 35788,
+            "ppid": 35711,
+            "pgid": 35678,
+            "command": "codex app-server -c agents.enabled=false"
+          },
+          {
+            "pid": 37095,
+            "ppid": 35788,
+            "pgid": 37095,
+            "command": "/Users/normy/.codex/packages/standalone/releases/0.166.0-aarch64-apple-darwin/bin/codex-code-mode-host"
+          },
+          {
+            "pid": 37096,
+            "ppid": 35788,
+            "pgid": 37096,
+            "command": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python -c import time; time.sleep(900) BQ284Lmvuxso3p_API-04"
+          }
+        ],
+        "markedLeft": []
+      }
+    },
+    {
+      "at": "10.1",
+      "step": "standalone sent",
+      "value": {
+        "label": "API-05",
+        "runtime": "claude",
+        "runId": "probe_agent_bq284lmvuxso3p_8b66f83bdc9e48a9a770e1ccae714fc0"
+      }
+    },
+    {
+      "at": "14.5",
+      "step": "busy",
+      "value": {
+        "label": "API-05",
+        "marker": "BQ284Lmvuxso3p_API-05",
+        "pid": 37957,
+        "ppid": 37209,
+        "pgid": 37957,
+        "afterMs": 4360
+      }
+    },
+    {
+      "at": "15.4",
+      "step": "terminate",
+      "value": {
+        "case": "API-05",
+        "runtime": "claude",
+        "runId": "probe_agent_bq284lmvuxso3p_8b66f83bdc9e48a9a770e1ccae714fc0",
+        "marker": "BQ284Lmvuxso3p_API-05",
+        "result": {
+          "success": true,
+          "message": "Agent run terminated successfully."
+        },
+        "elapsedMs": 772,
+        "toolCommand": {
+          "pid": 37957,
+          "ppid": 37209,
+          "pgid": 37957,
+          "command": "/bin/zsh -c source /Users/normy/.claude/shell-snapshots/snapshot-zsh-1793362626102-4h5aw4.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin unalias  … ; \\builtin unset -f -- 'unsetenv'; } >/dev/null 2>&1 || true && eval 'python3 -c \"import time; time.sleep(900)\" BQ284Lmvuxso3p_API-05' < /dev/null && pwd -P >| /tmp/claude-9399-cwd",
+          "aliveAfter": false
+        },
+        "treeAtBusy": [
+          {
+            "pid": 37209,
+            "ppid": 35711,
+            "pgid": 35678,
+            "command": "/Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --model claude-haiku-4-5-20251001 --permission-prompt-tool stdio --disallowedTools AskUserQuestion,Agent … FTlokc9YmTHZYAYpdE\",\"alwaysLoad\":true}}} --setting-sources=user,project,local --permission-mode default --include-partial-messages --session-id=86913fed-4b7a-4175-9f40-e39dbac5d198"
+          },
+          {
+            "pid": 37957,
+            "ppid": 37209,
+            "pgid": 37957,
+            "command": "/bin/zsh -c source /Users/normy/.claude/shell-snapshots/snapshot-zsh-1793362626102-4h5aw4.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin unalias  … ; \\builtin unset -f -- 'unsetenv'; } >/dev/null 2>&1 || true && eval 'python3 -c \"import time; time.sleep(900)\" BQ284Lmvuxso3p_API-05' < /dev/null && pwd -P >| /tmp/claude-9399-cwd"
+          },
+          {
+            "pid": 37958,
+            "ppid": 37957,
+            "pgid": 37957,
+            "command": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python -c import time; time.sleep(900) BQ284Lmvuxso3p_API-05"
+          }
+        ],
+        "markedLeft": []
+      }
+    },
+    {
+      "at": "15.8",
+      "step": "standalone sent",
+      "value": {
+        "label": "sa-codex",
+        "runtime": "codex",
+        "runId": "probe_agent_bq284lmvuxso3p_558d3e2319b6494c8c9901dcab6e15d1"
+      }
+    },
+    {
+      "at": "16.1",
+      "step": "standalone sent",
+      "value": {
+        "label": "sa-claude",
+        "runtime": "claude",
+        "runId": "probe_agent_bq284lmvuxso3p_966896a6b4ee48b98912ef340b660b7a"
+      }
+    },
+    {
+      "at": "17.2",
+      "step": "team sent",
+      "value": {
+        "label": "team-codex",
+        "runtime": "codex",
+        "teamRunId": "probe_team_bq284lmvuxso3p_d6d5604dde554f2391446d3b6d73b78a",
+        "memberRunId": "probe_team_coordinator_bq284lmvuxso3p_d385f0edaa2749aba9587ddc3a6c0b03"
+      }
+    },
+    {
+      "at": "19.0",
+      "step": "org sent",
+      "value": {
+        "label": "org-claude",
+        "runtime": "claude",
+        "orgRunId": "probe_org_bq284lmvuxso3p_234dd0c633d84c1f9c747f8b11e3427f",
+        "memberRunId": "probe_org_manager_bq284lmvuxso3p_d6062a4b03c04915921865217092beea"
+      }
+    },
+    {
+      "at": "21.2",
+      "step": "busy",
+      "value": {
+        "label": "sa-codex",
+        "marker": "BQ284Lmvuxso3p_sa-codex",
+        "pid": 40507,
+        "ppid": 38041,
+        "pgid": 40507,
+        "afterMs": 2228
+      }
+    },
+    {
+      "at": "21.3",
+      "step": "busy",
+      "value": {
+        "label": "sa-claude",
+        "marker": "BQ284Lmvuxso3p_sa-claude",
+        "pid": 40506,
+        "ppid": 38612,
+        "pgid": 40506,
+        "afterMs": 55
+      }
+    },
+    {
+      "at": "21.3",
+      "step": "busy",
+      "value": {
+        "label": "team-codex",
+        "marker": "BQ284Lmvuxso3p_team-codex",
+        "pid": 40508,
+        "ppid": 38041,
+        "pgid": 40508,
+        "afterMs": 54
+      }
+    },
+    {
+      "at": "22.9",
+      "step": "busy",
+      "value": {
+        "label": "org-claude",
+        "marker": "BQ284Lmvuxso3p_org-claude",
+        "pid": 41121,
+        "ppid": 39958,
+        "pgid": 41121,
+        "afterMs": 1568
+      }
+    },
+    {
+      "at": "27.1",
+      "step": "shutdown",
+      "value": {
+        "case": "API-06",
+        "serverPid": 35711,
+        "exit": {
+          "code": 0,
+          "signal": null,
+          "at": 1793362638465
+        },
+        "elapsedMs": 1272,
+        "runs": [
+          {
+            "label": "sa-codex",
+            "kind": "agent",
+            "runtime": "codex",
+            "runId": "probe_agent_bq284lmvuxso3p_558d3e2319b6494c8c9901dcab6e15d1",
+            "toolCommand": {
+              "pid": 40507,
+              "ppid": 38041,
+              "pgid": 40507,
+              "aliveAfter": false
+            }
+          },
+          {
+            "label": "sa-claude",
+            "kind": "agent",
+            "runtime": "claude",
+            "runId": "probe_agent_bq284lmvuxso3p_966896a6b4ee48b98912ef340b660b7a",
+            "toolCommand": {
+              "pid": 40506,
+              "ppid": 38612,
+              "pgid": 40506,
+              "aliveAfter": false
+            }
+          },
+          {
+            "label": "team-codex",
+            "kind": "team",
+            "runtime": "codex",
+            "runId": "probe_team_coordinator_bq284lmvuxso3p_d385f0edaa2749aba9587ddc3a6c0b03",
+            "toolCommand": {
+              "pid": 40508,
+              "ppid": 38041,
+              "pgid": 40508,
+              "aliveAfter": false
+            }
+          },
+          {
+            "label": "org-claude",
+            "kind": "org",
+            "runtime": "claude",
+            "runId": "probe_org_manager_bq284lmvuxso3p_d6062a4b03c04915921865217092beea",
+            "toolCommand": {
+              "pid": 41121,
+              "ppid": 39958,
+              "pgid": 41121,
+              "aliveAfter": false
+            }
+          }
+        ],
+        "before": 10,
+        "survivors": [],
+        "markedLeft": [],
+        "shutdownLog": [
+          "Server process-tree sweep: 1 process(es) and 0 process group(s) still running; sending SIGTERM."
+        ]
+      }
+    },
+    {
+      "at": "30.1",
+      "step": "server started",
+      "value": {
+        "label": "second",
+        "pid": 41249,
+        "port": 55812
+      }
+    },
+    {
+      "at": "30.1",
+      "step": "history after relaunch",
+      "value": {
+        "userTerminated": [
+          {
+            "case": "API-04",
+            "runId": "probe_agent_bq284lmvuxso3p_cf54f2d92fb44d8ca6ec48c02bbf0239",
+            "listed": true,
+            "terminatedAt": "2026-10-30T12:17:02.449Z"
+          },
+          {
+            "case": "API-05",
+            "runId": "probe_agent_bq284lmvuxso3p_8b66f83bdc9e48a9a770e1ccae714fc0",
+            "listed": true,
+            "terminatedAt": "2026-10-30T12:17:07.982Z"
+          }
+        ],
+        "shutdownStopped": [
+          {
+            "label": "sa-codex",
+            "runId": "probe_agent_bq284lmvuxso3p_558d3e2319b6494c8c9901dcab6e15d1",
+            "listed": true,
+            "terminatedAt": null
+          },
+          {
+            "label": "sa-claude",
+            "runId": "probe_agent_bq284lmvuxso3p_966896a6b4ee48b98912ef340b660b7a",
+            "listed": true,
+            "terminatedAt": null
+          }
+        ],
+        "teamRoot": [
+          {
+            "teamRunId": "probe_team_bq284lmvuxso3p_d6d5604dde554f2391446d3b6d73b78a",
+            "listed": true,
+            "terminatedAt": null
+          }
+        ]
+      }
+    },
+    {
+      "at": "30.3",
+      "step": "idle shutdown",
+      "value": {
+        "exit": {
+          "code": 0,
+          "signal": null,
+          "at": 1793362642879
+        },
+        "elapsedMs": 55,
+        "shutdownLog": [
+          "Server process-tree sweep: 1 process(es) and 0 process group(s) still running; sending SIGTERM."
+        ]
+      }
+    }
+  ],
+  "API-04": {
+    "case": "API-04",
+    "runtime": "codex",
+    "runId": "probe_agent_bq284lmvuxso3p_cf54f2d92fb44d8ca6ec48c02bbf0239",
+    "marker": "BQ284Lmvuxso3p_API-04",
+    "result": {
+      "success": true,
+      "message": "Agent run terminated successfully."
+    },
+    "elapsedMs": 82,
+    "toolCommand": {
+      "pid": 37096,
+      "ppid": 35788,
+      "pgid": 37096,
+      "command": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python -c import time; time.sleep(900) BQ284Lmvuxso3p_API-04",
+      "aliveAfter": false
+    },
+    "treeAtBusy": [
+      {
+        "pid": 35788,
+        "ppid": 35711,
+        "pgid": 35678,
+        "command": "codex app-server -c agents.enabled=false"
+      },
+      {
+        "pid": 37095,
+        "ppid": 35788,
+        "pgid": 37095,
+        "command": "/Users/normy/.codex/packages/standalone/releases/0.166.0-aarch64-apple-darwin/bin/codex-code-mode-host"
+      },
+      {
+        "pid": 37096,
+        "ppid": 35788,
+        "pgid": 37096,
+        "command": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python -c import time; time.sleep(900) BQ284Lmvuxso3p_API-04"
+      }
+    ],
+    "markedLeft": []
+  },
+  "API-05": {
+    "case": "API-05",
+    "runtime": "claude",
+    "runId": "probe_agent_bq284lmvuxso3p_8b66f83bdc9e48a9a770e1ccae714fc0",
+    "marker": "BQ284Lmvuxso3p_API-05",
+    "result": {
+      "success": true,
+      "message": "Agent run terminated successfully."
+    },
+    "elapsedMs": 772,
+    "toolCommand": {
+      "pid": 37957,
+      "ppid": 37209,
+      "pgid": 37957,
+      "command": "/bin/zsh -c source /Users/normy/.claude/shell-snapshots/snapshot-zsh-1793362626102-4h5aw4.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin unalias  … ; \\builtin unset -f -- 'unsetenv'; } >/dev/null 2>&1 || true && eval 'python3 -c \"import time; time.sleep(900)\" BQ284Lmvuxso3p_API-05' < /dev/null && pwd -P >| /tmp/claude-9399-cwd",
+      "aliveAfter": false
+    },
+    "treeAtBusy": [
+      {
+        "pid": 37209,
+        "ppid": 35711,
+        "pgid": 35678,
+        "command": "/Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --model claude-haiku-4-5-20251001 --permission-prompt-tool stdio --disallowedTools AskUserQuestion,Agent … FTlokc9YmTHZYAYpdE\",\"alwaysLoad\":true}}} --setting-sources=user,project,local --permission-mode default --include-partial-messages --session-id=86913fed-4b7a-4175-9f40-e39dbac5d198"
+      },
+      {
+        "pid": 37957,
+        "ppid": 37209,
+        "pgid": 37957,
+        "command": "/bin/zsh -c source /Users/normy/.claude/shell-snapshots/snapshot-zsh-1793362626102-4h5aw4.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin unalias  … ; \\builtin unset -f -- 'unsetenv'; } >/dev/null 2>&1 || true && eval 'python3 -c \"import time; time.sleep(900)\" BQ284Lmvuxso3p_API-05' < /dev/null && pwd -P >| /tmp/claude-9399-cwd"
+      },
+      {
+        "pid": 37958,
+        "ppid": 37957,
+        "pgid": 37957,
+        "command": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python -c import time; time.sleep(900) BQ284Lmvuxso3p_API-05"
+      }
+    ],
+    "markedLeft": []
+  },
+  "API-06": {
+    "case": "API-06",
+    "serverPid": 35711,
+    "exit": {
+      "code": 0,
+      "signal": null,
+      "at": 1793362638465
+    },
+    "elapsedMs": 1272,
+    "runs": [
+      {
+        "label": "sa-codex",
+        "kind": "agent",
+        "runtime": "codex",
+        "runId": "probe_agent_bq284lmvuxso3p_558d3e2319b6494c8c9901dcab6e15d1",
+        "toolCommand": {
+          "pid": 40507,
+          "ppid": 38041,
+          "pgid": 40507,
+          "aliveAfter": false
+        }
+      },
+      {
+        "label": "sa-claude",
+        "kind": "agent",
+        "runtime": "claude",
+        "runId": "probe_agent_bq284lmvuxso3p_966896a6b4ee48b98912ef340b660b7a",
+        "toolCommand": {
+          "pid": 40506,
+          "ppid": 38612,
+          "pgid": 40506,
+          "aliveAfter": false
+        }
+      },
+      {
+        "label": "team-codex",
+        "kind": "team",
+        "runtime": "codex",
+        "runId": "probe_team_coordinator_bq284lmvuxso3p_d385f0edaa2749aba9587ddc3a6c0b03",
+        "toolCommand": {
+          "pid": 40508,
+          "ppid": 38041,
+          "pgid": 40508,
+          "aliveAfter": false
+        }
+      },
+      {
+        "label": "org-claude",
+        "kind": "org",
+        "runtime": "claude",
+        "runId": "probe_org_manager_bq284lmvuxso3p_d6062a4b03c04915921865217092beea",
+        "toolCommand": {
+          "pid": 41121,
+          "ppid": 39958,
+          "pgid": 41121,
+          "aliveAfter": false
+        }
+      }
+    ],
+    "before": [
+      {
+        "pid": 38041,
+        "ppid": 35711,
+        "pgid": 35678,
+        "command": "codex app-server -c agents.enabled=false"
+      },
+      {
+        "pid": 38612,
+        "ppid": 35711,
+        "pgid": 35678,
+        "command": "/Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --model claude-haiku-4-5-20251001 --permission-prompt-tool stdio --disallowedTools AskUserQuestion,Agent … BI1YNOpSozcgmgvzo8\",\"alwaysLoad\":true}}} --setting-sources=user,project,local --permission-mode default --include-partial-messages --session-id=6615f602-1515-4e8d-b49d-2e2ec06ce82f"
+      },
+      {
+        "pid": 39958,
+        "ppid": 35711,
+        "pgid": 35678,
+        "command": "/Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --model claude-haiku-4-5-20251001 --permission-prompt-tool stdio --disallowedTools AskUserQuestion,Agent … e994aVodxde_pLjQ54\",\"alwaysLoad\":true}}} --setting-sources=user,project,local --permission-mode default --include-partial-messages --session-id=f1a39063-7ed7-4df8-bc4a-23580d0c80d2"
+      },
+      {
+        "pid": 40484,
+        "ppid": 38041,
+        "pgid": 40484,
+        "command": "/Users/normy/.codex/packages/standalone/releases/0.166.0-aarch64-apple-darwin/bin/codex-code-mode-host"
+      },
+      {
+        "pid": 40506,
+        "ppid": 38612,
+        "pgid": 40506,
+        "command": "/bin/zsh -c source /Users/normy/.claude/shell-snapshots/snapshot-zsh-1793362633038-5cvz1f.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin unalias  … builtin unset -f -- 'unsetenv'; } >/dev/null 2>&1 || true && eval 'python3 -c \"import time; time.sleep(900)\" BQ284Lmvuxso3p_sa-claude' < /dev/null && pwd -P >| /tmp/claude-a1fb-cwd"
+      },
+      {
+        "pid": 40507,
+        "ppid": 38041,
+        "pgid": 40507,
+        "command": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python -c import time; time.sleep(900) BQ284Lmvuxso3p_sa-codex"
+      },
+      {
+        "pid": 40508,
+        "ppid": 38041,
+        "pgid": 40508,
+        "command": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python -c import time; time.sleep(900) BQ284Lmvuxso3p_team-codex"
+      },
+      {
+        "pid": 41121,
+        "ppid": 39958,
+        "pgid": 41121,
+        "command": "/bin/zsh -c source /Users/normy/.claude/shell-snapshots/snapshot-zsh-1793362634694-wmemat.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin unalias  … uiltin unset -f -- 'unsetenv'; } >/dev/null 2>&1 || true && eval 'python3 -c \"import time; time.sleep(900)\" BQ284Lmvuxso3p_org-claude' < /dev/null && pwd -P >| /tmp/claude-cb23-cwd"
+      },
+      {
+        "pid": 40509,
+        "ppid": 40506,
+        "pgid": 40506,
+        "command": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python -c import time; time.sleep(900) BQ284Lmvuxso3p_sa-claude"
+      },
+      {
+        "pid": 41124,
+        "ppid": 41121,
+        "pgid": 41121,
+        "command": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python -c import time; time.sleep(900) BQ284Lmvuxso3p_org-claude"
+      }
+    ],
+    "survivors": [],
+    "markedLeft": [],
+    "shutdownLog": [
+      "Server process-tree sweep: 1 process(es) and 0 process group(s) still running; sending SIGTERM."
+    ]
+  },
+  "rawHistoryAfterRelaunch": [
+    {
+      "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-mixed-L7DExt/workspace",
+      "agentDefinitions": [
+        {
+          "agentName": "Probe Agent BQ284Lmvuxso3p",
+          "runs": [
+            {
+              "runId": "probe_agent_bq284lmvuxso3p_966896a6b4ee48b98912ef340b660b7a",
+              "terminatedAt": null,
+              "isActive": false
+            },
+            {
+              "runId": "probe_agent_bq284lmvuxso3p_558d3e2319b6494c8c9901dcab6e15d1",
+              "terminatedAt": null,
+              "isActive": false
+            },
+            {
+              "runId": "probe_agent_bq284lmvuxso3p_8b66f83bdc9e48a9a770e1ccae714fc0",
+              "terminatedAt": "2026-10-30T12:17:07.982Z",
+              "isActive": false
+            },
+            {
+              "runId": "probe_agent_bq284lmvuxso3p_cf54f2d92fb44d8ca6ec48c02bbf0239",
+              "terminatedAt": "2026-10-30T12:17:02.449Z",
+              "isActive": false
+            }
+          ]
+        }
+      ],
+      "teamDefinitions": [
+        {
+          "teamDefinitionName": "Probe Team BQ284Lmvuxso3p",
+          "runs": [
+            {
+              "teamRunId": "probe_team_bq284lmvuxso3p_d6d5604dde554f2391446d3b6d73b78a",
+              "terminatedAt": null
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "history": {
+    "userTerminated": [
+      {
+        "case": "API-04",
+        "runId": "probe_agent_bq284lmvuxso3p_cf54f2d92fb44d8ca6ec48c02bbf0239",
+        "listed": true,
+        "terminatedAt": "2026-10-30T12:17:02.449Z"
+      },
+      {
+        "case": "API-05",
+        "runId": "probe_agent_bq284lmvuxso3p_8b66f83bdc9e48a9a770e1ccae714fc0",
+        "listed": true,
+        "terminatedAt": "2026-10-30T12:17:07.982Z"
+      }
+    ],
+    "shutdownStopped": [
+      {
+        "label": "sa-codex",
+        "runId": "probe_agent_bq284lmvuxso3p_558d3e2319b6494c8c9901dcab6e15d1",
+        "listed": true,
+        "terminatedAt": null
+      },
+      {
+        "label": "sa-claude",
+        "runId": "probe_agent_bq284lmvuxso3p_966896a6b4ee48b98912ef340b660b7a",
+        "listed": true,
+        "terminatedAt": null
+      }
+    ],
+    "teamRoot": [
+      {
+        "teamRunId": "probe_team_bq284lmvuxso3p_d6d5604dde554f2391446d3b6d73b78a",
+        "listed": true,
+        "terminatedAt": null
+      }
+    ]
+  },
+  "idleShutdown": {
+    "exit": {
+      "code": 0,
+      "signal": null,
+      "at": 1793362642879
+    },
+    "elapsedMs": 55,
+    "shutdownLog": [
+      "Server process-tree sweep: 1 process(es) and 0 process group(s) still running; sending SIGTERM."
+    ]
+  },
+  "result": "Completed",
+  "fallbackCleanup": [],
+  "rootRemoved": true
+}
