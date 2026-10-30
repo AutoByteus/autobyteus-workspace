@@ -1,5 +1,5 @@
 {
-  "_about": "Work Journal category 1: each runtime's built-in tools that map to a journal action. Keys are runtime kinds; tool names are as recorded in raw traces (after AutoByteus's adapters). Every name NOT listed for the run's runtime (other built-ins, MCP tools, AutoByteus shared tools) uses the generic Tool rule (work-journal-contract.md section 5). Source of truth: work-journal-contract.md section 4.",
+  "_about": "Work Journal category 1: each runtime's built-in tools that map to a journal action. Keys are runtime kinds; tool names are as recorded in raw traces (after AutoByteus's adapters). Tools only one runtime has are in _runtime_only (same table, neutral-vocabulary contract §4). Every name NOT listed for the run's runtime (other built-ins, MCP tools, AutoByteus shared tools) uses the generic Tool rule (work-journal-contract.md section 5). Source of truth: work-journal-contract.md section 4.",
   "claude_agent_sdk": {
     "Bash": "Command",
     "Monitor": "Command",
@@ -46,6 +46,38 @@
     "edit_file": "Edit file",
     "search_web": "Search web",
     "read_media_file": "Command"
+  },
+  "_runtime_only": {
+    "claude_agent_sdk": {
+      "Skill": "Load skill",
+      "TodoWrite": "Update to-do list",
+      "Agent": "Spawn sub-agent",
+      "ToolSearch": "Look up tools",
+      "TaskCreate": "Create task",
+      "TaskUpdate": "Update task",
+      "TaskOutput": "Read output of background task",
+      "TaskStop": "Stop background task",
+      "Workflow": "Run workflow"
+    },
+    "codex_app_server": {
+      "js": "Run JavaScript",
+      "js_reset": "Reset JavaScript environment",
+      "js_add_node_module_dir": "Add JavaScript module folder",
+      "speak": "Speak"
+    },
+    "antigravity_cli": {
+      "Bash": "Command"
+    },
+    "grok_build": {},
+    "autobyteus": {
+      "get_process_output": "Read output of background task",
+      "stop_background_process": "Stop background task",
+      "replace_in_file": "Edit file",
+      "download_media": "Download file",
+      "download_video": "Download video",
+      "convert_video_format": "Convert video",
+      "submit_task_result": "Submit task result"
+    }
   },
   "_wrappers": {
     "antigravity_cli": {

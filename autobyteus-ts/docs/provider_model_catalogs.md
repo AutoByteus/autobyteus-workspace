@@ -70,6 +70,7 @@ or credentials.
 
 | Surface | User-Facing Model ID | Provider API Value | Provider | Verified On | Implementation Notes |
 | --- | --- | --- | --- | --- | --- |
+| LLM | `gpt-6.1-terra` | `gpt-6.1-terra` | OpenAI | 2026-10-30 | Exact Responses ID; 1.05M context / 922k input / 128k output, none..max reasoning schema (default medium), images only. Standard $1 input / $0.05 cache read / $1.25 cache write / $5 output per MTok, with the full-request tier above 272k input tokens (cache read is 5% of input, passed to `createOpenAILongContextPricing` explicitly; the helper's default stays 10%). The model live Codex tests use (TESTING.md). |
 | LLM | `gpt-6-astra` | `gpt-6-astra` | OpenAI | 2026-09-22 | Exact ID; uses the Responses path, a direct-API low/medium/high/xhigh/max reasoning schema (default medium), 1.05M context / 128k output metadata, and Standard cache-aware pricing with a full-request tier above 272k input tokens. Codex runtime capabilities remain dynamically owned. |
 | LLM | `gpt-6-sol` | `gpt-6-sol` | OpenAI | 2026-09-23 | Exact Responses ID; 1.05M context / 128k output, direct-API reasoning schema, Standard $2 input / $10 output per MTok before the existing full-request long-context tier. Codex discovery and entitlement remain separate. |
 | LLM | `gpt-6-luna` | `gpt-6-luna` | OpenAI | 2026-09-23 | Exact Responses ID; 1.05M context / 128k output, direct-API reasoning schema, Standard $0.10 input / $0.50 output per MTok before the existing full-request long-context tier. Codex discovery and entitlement remain separate. |
@@ -328,7 +329,7 @@ credit, and negotiated prices are not inferred.
 
 ### OpenAI Responses Models
 
-Official OpenAI text models such as `gpt-6-astra`, `gpt-6-sol`, `gpt-6-luna`, `gpt-5.5`, `gpt-5.6-sol`,
+Official OpenAI text models such as `gpt-6.1-terra`, `gpt-6-astra`, `gpt-6-sol`, `gpt-6-luna`, `gpt-5.5`, `gpt-5.6-sol`,
 `gpt-5.6-terra`, and `gpt-5.6-luna` use the `OpenAIResponsesLLM` path and the
 Responses API input-item history format. The three GPT-5.6 rows preserve their
 exact provider IDs; do not add the unsuffixed `gpt-5.6` alias as a fourth

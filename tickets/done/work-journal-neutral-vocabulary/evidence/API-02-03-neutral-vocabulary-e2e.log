@@ -1,0 +1,188 @@
+# API-02/API-03 durable E2E
+# command: pnpm exec vitest run tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts --no-watch --reporter=verbose
+# commit: 40fb8233d5 (+ uncommitted new test file API-02/03)
+# environment: macOS Darwin 25.5.0, env -i, throwaway HOME, cwd autobyteus-server-ts
+# date: 2026-10-30T10:37:31Z
+
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.12 [39m[90m/Users/normy/autobyteus_org/autobyteus-worktrees/work-journal-neutral-vocabulary/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/work-journal-neutral-vocabulary/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+[90mstdout[2m | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts
+[22m[39mAgentFactory (Singleton) initialized.
+
+(node:26994) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+[90mstderr[2m | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary through the real memory pipeline (autobyteus-331)[2m > [22m[2mbuild: every runtime's converted cases read in their neutral line through the Memory page reader (AC-001…006, AC-010)
+
+[90mstderr[2m | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary through the real memory pipeline (autobyteus-331)[2m > [22m[2mbuild: every runtime's converted cases read in their neutral line through the Memory page reader (AC-001…006, AC-010)
+
+[90mstderr[2m | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary through the real memory pipeline (autobyteus-331)[2m > [22m[2mbuild: every runtime's converted cases read in their neutral line through the Memory page reader (AC-001…006, AC-010)
+
+[90mstderr[2m | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary through the real memory pipeline (autobyteus-331)[2m > [22m[2mbuild: every runtime's converted cases read in their neutral line through the Memory page reader (AC-001…006, AC-010)
+
+[90mstderr[2m | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary through the real memory pipeline (autobyteus-331)[2m > [22m[2mbuild: every runtime's converted cases read in their neutral line through the Memory page reader (AC-001…006, AC-010)
+
+[90mstderr[2m | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary through the real memory pipeline (autobyteus-331)[2m > [22m[2mbuild: the same job reads the same on every runtime: a skill load, a message, a refused message (AC-012 through the pipeline)
+
+[90mstderr[2m | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary through the real memory pipeline (autobyteus-331)[2m > [22m[2mbuild: the same job reads the same on every runtime: a skill load, a message, a refused message (AC-012 through the pipeline)
+
+[90mstderr[2m | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary through the real memory pipeline (autobyteus-331)[2m > [22m[2mbuild: the same job reads the same on every runtime: a skill load, a message, a refused message (AC-012 through the pipeline)
+
+[90mstderr[2m | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary through the real memory pipeline (autobyteus-331)[2m > [22m[2mbuild: the same job reads the same on every runtime: a skill load, a message, a refused message (AC-012 through the pipeline)
+
+[90mstderr[2m | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary through the real memory pipeline (autobyteus-331)[2m > [22m[2mbuild: the same job reads the same on every runtime: a skill load, a message, a refused message (AC-012 through the pipeline)
+
+ [32m✓[39m tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts[2m > [22mWork Journal neutral vocabulary through the real memory pipeline (autobyteus-331)[2m > [22mbuild: every runtime's converted cases read in their neutral line through the Memory page reader (AC-001…006, AC-010)[32m 118[2mms[22m[39m
+[90mstderr[2m | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary through the real memory pipeline (autobyteus-331)[2m > [22m[2mbuild: the neutral words are what search_memory's API finds (the Journals step feeds the text index) (AC-010)
+
+[90mstderr[2m | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary through the real memory pipeline (autobyteus-331)[2m > [22m[2mbuild: the neutral words are what search_memory's API finds (the Journals step feeds the text index) (AC-010)
+
+[90mstderr[2m | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary through the real memory pipeline (autobyteus-331)[2m > [22m[2mbuild: the neutral words are what search_memory's API finds (the Journals step feeds the text index) (AC-010)
+
+[90mstderr[2m | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary through the real memory pipeline (autobyteus-331)[2m > [22m[2mbuild: the neutral words are what search_memory's API finds (the Journals step feeds the text index) (AC-010)
+
+[90mstderr[2m | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary through the real memory pipeline (autobyteus-331)[2m > [22m[2mbuild: the neutral words are what search_memory's API finds (the Journals step feeds the text index) (AC-010)
+
+[90mstderr[2m | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary through the real memory pipeline (autobyteus-331)[2m > [22m[2man update: journals written by an earlier revision (AC-008, AC-009)[2m > [22m[2mthe first catch-up pass replaces every journal in place, leaves the raw traces untouched; a second start renders nothing
+
+[90mstderr[2m | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary through the real memory pipeline (autobyteus-331)[2m > [22m[2man update: journals written by an earlier revision (AC-008, AC-009)[2m > [22m[2mthe first catch-up pass replaces every journal in place, leaves the raw traces untouched; a second start renders nothing
+
+[90mstderr[2m | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary through the real memory pipeline (autobyteus-331)[2m > [22m[2man update: journals written by an earlier revision (AC-008, AC-009)[2m > [22m[2mthe first catch-up pass replaces every journal in place, leaves the raw traces untouched; a second start renders nothing
+
+[90mstderr[2m | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary through the real memory pipeline (autobyteus-331)[2m > [22m[2man update: journals written by an earlier revision (AC-008, AC-009)[2m > [22m[2mthe first catch-up pass replaces every journal in place, leaves the raw traces untouched; a second start renders nothing
+
+ [32m✓[39m tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts[2m > [22mWork Journal neutral vocabulary through the real memory pipeline (autobyteus-331)[2m > [22mbuild: the same job reads the same on every runtime: a skill load, a message, a refused message (AC-012 through the pipeline)[32m 57[2mms[22m[39m
+ [32m✓[39m tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts[2m > [22mWork Journal neutral vocabulary through the real memory pipeline (autobyteus-331)[2m > [22mbuild: the neutral words are what search_memory's API finds (the Journals step feeds the text index) (AC-010)[32m 80[2mms[22m[39m
+[90mstderr[2m | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary through the real memory pipeline (autobyteus-331)[2m > [22m[2man update: journals written by an earlier revision (AC-008, AC-009)[2m > [22m[2mthe first catch-up pass replaces every journal in place, leaves the raw traces untouched; a second start renders nothing
+
+[90mstderr[2m | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary through the real memory pipeline (autobyteus-331)[2m > [22m[2man update: journals written by an earlier revision (AC-008, AC-009)[2m > [22m[2mthe first catch-up pass replaces every journal in place, leaves the raw traces untouched; a second start renders nothing
+
+[90mstderr[2m | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary through the real memory pipeline (autobyteus-331)[2m > [22m[2man update: journals written by an earlier revision (AC-008, AC-009)[2m > [22m[2mthe first catch-up pass replaces every journal in place, leaves the raw traces untouched; a second start renders nothing
+
+[90mstderr[2m | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary through the real memory pipeline (autobyteus-331)[2m > [22m[2man update: journals written by an earlier revision (AC-008, AC-009)[2m > [22m[2mthe first catch-up pass replaces every journal in place, leaves the raw traces untouched; a second start renders nothing
+
+[90mstderr[2m | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary through the real memory pipeline (autobyteus-331)[2m > [22m[2man update: journals written by an earlier revision (AC-008, AC-009)[2m > [22m[2mthe first catch-up pass replaces every journal in place, leaves the raw traces untouched; a second start renders nothing
+
+[90mstderr[2m | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary through the real memory pipeline (autobyteus-331)[2m > [22m[2man update: journals written by an earlier revision (AC-008, AC-009)[2m > [22m[2mthe first catch-up pass replaces every journal in place, leaves the raw traces untouched; a second start renders nothing
+
+[90mstderr[2m | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary through the real memory pipeline (autobyteus-331)[2m > [22m[2man update: journals written by an earlier revision (AC-008, AC-009)[2m > [22m[2mRebuild regenerates a closed file whose manifest already has the current revision; Index now leaves it
+
+[90mstderr[2m | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary through the real memory pipeline (autobyteus-331)[2m > [22m[2man update: journals written by an earlier revision (AC-008, AC-009)[2m > [22m[2mRebuild regenerates a closed file whose manifest already has the current revision; Index now leaves it
+
+[90mstderr[2m | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary through the real memory pipeline (autobyteus-331)[2m > [22m[2man update: journals written by an earlier revision (AC-008, AC-009)[2m > [22m[2mRebuild regenerates a closed file whose manifest already has the current revision; Index now leaves it
+
+[90mstderr[2m | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary through the real memory pipeline (autobyteus-331)[2m > [22m[2man update: journals written by an earlier revision (AC-008, AC-009)[2m > [22m[2mRebuild regenerates a closed file whose manifest already has the current revision; Index now leaves it
+
+[90mstderr[2m | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary through the real memory pipeline (autobyteus-331)[2m > [22m[2man update: journals written by an earlier revision (AC-008, AC-009)[2m > [22m[2mRebuild regenerates a closed file whose manifest already has the current revision; Index now leaves it
+
+[90mstderr[2m | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary through the real memory pipeline (autobyteus-331)[2m > [22m[2man update: journals written by an earlier revision (AC-008, AC-009)[2m > [22m[2mRebuild regenerates a closed file whose manifest already has the current revision; Index now leaves it
+
+[90mstderr[2m | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary through the real memory pipeline (autobyteus-331)[2m > [22m[2man update: journals written by an earlier revision (AC-008, AC-009)[2m > [22m[2mRebuild regenerates a closed file whose manifest already has the current revision; Index now leaves it
+
+[90mstderr[2m | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary through the real memory pipeline (autobyteus-331)[2m > [22m[2man update: journals written by an earlier revision (AC-008, AC-009)[2m > [22m[2mRebuild regenerates a closed file whose manifest already has the current revision; Index now leaves it
+
+[90mstderr[2m | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary through the real memory pipeline (autobyteus-331)[2m > [22m[2man update: journals written by an earlier revision (AC-008, AC-009)[2m > [22m[2mRebuild regenerates a closed file whose manifest already has the current revision; Index now leaves it
+
+[90mstderr[2m | tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts[2m > [22m[2mWork Journal neutral vocabulary through the real memory pipeline (autobyteus-331)[2m > [22m[2man update: journals written by an earlier revision (AC-008, AC-009)[2m > [22m[2mRebuild regenerates a closed file whose manifest already has the current revision; Index now leaves it
+
+ [32m✓[39m tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts[2m > [22mWork Journal neutral vocabulary through the real memory pipeline (autobyteus-331)[2m > [22man update: journals written by an earlier revision (AC-008, AC-009)[2m > [22mthe first catch-up pass replaces every journal in place, leaves the raw traces untouched; a second start renders nothing[32m 239[2mms[22m[39m
+ [32m✓[39m tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts[2m > [22mWork Journal neutral vocabulary through the real memory pipeline (autobyteus-331)[2m > [22man update: journals written by an earlier revision (AC-008, AC-009)[2m > [22mRebuild regenerates a closed file whose manifest already has the current revision; Index now leaves it[32m 116[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m5 passed[39m[22m[90m (5)[39m
+[2m   Start at [22m 11:37:32
+[2m   Duration [22m 11.95s[2m (transform 7.80s, setup 40ms, import 10.38s, tests 678ms, environment 0ms)[22m
+
+EXIT 0

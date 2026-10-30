@@ -129,7 +129,7 @@ suite("Work Journal kept current, closed files written once, and rebuilt for an 
     await until(async () => (await journal("work_journal_active.md")).includes("BEFORE_COMPACTION_REPLY"), "open file has turn 1");
     const open1 = await journal("work_journal_active.md");
     expect(open1).toContain("# Work Journal — run " + runId);
-    expect(open1).toContain("Runtime Antigravity · file active (open)");
+    expect(open1).toContain("Runtime Antigravity CLI · file active (open)");
     expect(open1).toContain("This journal records past work.");
     expect(open1).toContain("User: First message before compaction.");
     expect(open1).toContain("Agent: BEFORE_COMPACTION_REPLY");

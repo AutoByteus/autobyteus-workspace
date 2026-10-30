@@ -1,0 +1,63 @@
+# Check: IMP-05 one live gpt-6.1-terra call through the autobyteus-ts catalog (outcome check)
+# Command: (cd /Users/normy/autobyteus_org/autobyteus-worktrees/openai-gpt-6-1-terra/autobyteus-ts && env -i PATH="$PATH" HOME=<temp> TMPDIR="$TMPDIR" AUTOBYTEUS_TEST_VAULT=/Users/normy/.autobyteus-test/vault RUN_LIVE_PROVIDER_TESTS=1 pnpm exec vitest run tests/integration/zz-terra-live.test.ts)
+#   The temporary gated test: LLMFactory.createLLM('gpt-6.1-terra') (catalog definition, OpenAILLM Responses path, key from the test vault, never printed) with reasoning_effort medium;
+#   one prompt "Reply with exactly: terra-ok"; LLMFactory.getModelPricingInfo for the model. File deleted after the run.
+# Commit: 2d076b0ce7 (branch codex/openai-gpt-6-1-terra)
+# Environment: macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2; clean environment: env -i PATH="$PATH" HOME=<temp, resolved> TMPDIR="$TMPDIR"
+# Date: 2026-10-30 local
+# Result: passed. Answer "terra-ok"; 22 input / 6 output tokens; usage tagged model gpt-6.1-terra; pricing trusted, $1 input / $5 output / $0.05 cache read per MTok.
+
+ ✓ tests/integration/zz-terra-live.test.ts (1 test) 4789ms
+     ✓ answers one small prompt through the catalog definition  4788ms
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  12:39:08
+   Duration  5.73s (transform 479ms, setup 53ms, import 794ms, tests 4.79s, environment 0ms)
+
+===== record (no key) =====
+{
+ "modelValue": "gpt-6.1-terra",
+ "provider": "OPENAI",
+ "reasoningEffort": "medium",
+ "content": "terra-ok",
+ "usage": {
+  "input_tokens": 22,
+  "output_tokens": 6,
+  "total_tokens": 28,
+  "usage_scope": "per_call",
+  "model_provider": "OPENAI",
+  "provider_name": "OpenAI",
+  "model_identifier": "gpt-6.1-terra",
+  "model_value": "gpt-6.1-terra",
+  "input_token_semantic": "gross_includes_cache",
+  "cache_state": "zero_reported",
+  "standard_input_tokens": null,
+  "cache_miss_input_tokens": null,
+  "cache_read_input_tokens": 0,
+  "cache_creation_input_tokens": 0,
+  "cache_creation_5m_input_tokens": null,
+  "cache_creation_1h_input_tokens": null,
+  "reasoning_output_tokens": 0,
+  "billable_input_tokens": null,
+  "billable_output_tokens": null,
+  "raw_usage_json": {
+   "input_tokens": 22,
+   "input_tokens_details": {
+    "cache_write_tokens": 0,
+    "cached_tokens": 0
+   },
+   "output_tokens": 6,
+   "output_tokens_details": {
+    "reasoning_tokens": 0
+   },
+   "total_tokens": 28
+  },
+  "quality_flags": []
+ },
+ "pricing": {
+  "status": "trusted",
+  "input": 1,
+  "output": 5,
+  "cacheRead": 0.05
+ }
+}

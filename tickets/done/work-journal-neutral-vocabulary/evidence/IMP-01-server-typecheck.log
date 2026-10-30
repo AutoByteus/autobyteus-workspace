@@ -1,0 +1,12 @@
+Check IMP-01: pnpm -C autobyteus-server-ts typecheck
+Commit: 32cb0034e4
+Environment: macOS (Darwin 25.5.0)
+Date: 2026-10-30
+---
+> autobyteus-server-ts@0.1.1 pretypecheck /Users/normy/autobyteus_org/autobyteus-worktrees/work-journal-neutral-vocabulary/autobyteus-server-ts
+> pnpm prepare:shared
+> autobyteus-server-ts@0.1.1 prepare:shared /Users/normy/autobyteus_org/autobyteus-worktrees/work-journal-neutral-vocabulary/autobyteus-server-ts
+> pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build
+> autobyteus-server-ts@0.1.1 typecheck /Users/normy/autobyteus_org/autobyteus-worktrees/work-journal-neutral-vocabulary/autobyteus-server-ts
+> tsc -p tsconfig.build.json --noEmit
+EXIT 0

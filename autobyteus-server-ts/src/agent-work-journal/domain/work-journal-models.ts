@@ -4,7 +4,7 @@ import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js"
  * Identifies the rendering rules. A closed journal file is reused only when it was written by
  * this revision (a cache key for derived output, not a schema version of the manifest).
  */
-export const WORK_JOURNAL_RENDERER_REVISION = 1;
+export const WORK_JOURNAL_RENDERER_REVISION = 2;
 
 /**
  * One run's journal: the run, its own memory folder, and its runtime as recorded. `null` means no
