@@ -23,6 +23,7 @@ const mountComponent = () => mount(ServerSettingsBasicsPanel, {
       LiveResponseStreamingCard: { template: '<div data-testid="live-response-streaming-card-stub">Live response</div>' },
       FeaturedCatalogItemsCard: { template: '<div data-testid="featured-catalog-items-card-stub">Featured Catalog</div>' },
       WebSearchConfigurationCard: webSearchStub,
+      GitHubIntegrationCard: { template: '<div data-testid="github-integration-card-stub">GitHub</div>' },
       CompactionConfigCard: { template: '<div data-testid="compaction-config-card-stub">Compaction</div>' },
     },
   },
@@ -47,6 +48,7 @@ describe('ServerSettingsBasicsPanel', () => {
     expect(wrapper.find('[data-testid="live-response-streaming-card-stub"]').exists()).toBe(true)
     expect(wrapper.find('[data-testid="featured-catalog-items-card-stub"]').exists()).toBe(true)
     expect(wrapper.find('[data-testid="web-search-configuration-card-stub"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="github-integration-card-stub"]').exists()).toBe(true)
     expect(wrapper.find('[data-testid="compaction-config-card-stub"]').exists()).toBe(true)
     expect(wrapper.find('[data-testid="streaming-parser-card"]').exists()).toBe(false)
     expect(wrapper.find('[data-testid="streaming-parser-toggle"]').exists()).toBe(false)
