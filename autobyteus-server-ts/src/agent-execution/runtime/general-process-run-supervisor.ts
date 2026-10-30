@@ -1,3 +1,4 @@
+import type { IntegrationRunAccess } from "../../credential-proxy/integration-run-access.js";
 import { DelegatedLaunchSelectionService } from "../../run-history/services/delegated-launch-selection-service.js";
 import type { AgentDefinitionService } from "../../agent-definition/services/agent-definition-service.js";
 import type { AgentTeamDefinitionService } from "../../agent-team-definition/services/agent-team-definition-service.js";
@@ -95,6 +96,11 @@ export type GeneralProcessRunSupervisorInput = Readonly<{
   workspaceManager: WorkspaceManager;
   agentProviderFactoryBuilder: AgentProviderFactoryBuilder;
   agentToolMcpSessionAuthority: ScopedAgentToolMcpSessionAuthority;
+  /**
+   * The studio's credential proxy: runs of allowed agents get its variables; their passes end at release. `null`
+   * (the standalone application host): its runs get no integration access in this step.
+   */
+  integrationRunAccess: IntegrationRunAccess | null;
   modelSelectionValidator: RunModelSelectionValidator & Pick<RunModelSelectionService, "listOptions" | "listOptionsMany">;
   /** Neutral Task agent resource port from the host composition, forwarded to every root builder. */
   taskExecutionResources: TaskExecutionResourcePort;
@@ -124,6 +130,7 @@ const requireGeneralProcessRunSupervisorInput = (
     || !input.workspaceManager
     || !input.agentProviderFactoryBuilder
     || !input.agentToolMcpSessionAuthority
+    || input.integrationRunAccess === undefined
     || !input.modelSelectionValidator
     || typeof input.modelSelectionValidator.validate !== "function"
     || typeof input.modelSelectionValidator.listOptions !== "function"
@@ -215,12 +222,14 @@ export class GeneralProcessRunSupervisor {
         workJournalUpdater: new WorkJournalRunUpdater({ memoryRecorder, journalService: getWorkJournalService() }),
         lifecycleObserver: input.platformInputNotices ?? null,
         mcpServerInstances: McpServerInstanceManager.getInstance(),
+        integrationRunAccess: input.integrationRunAccess,
       });
       const activationRegistry = new AgentRunActivationRegistry(resourceManager);
       const providerFactories = input.agentProviderFactoryBuilder.createForExecution({
         agentDefinitionService: input.agentDefinitionService,
         agentToolMcpRunSessions: input.agentToolMcpSessionAuthority.runSessions,
         applicationAgentTools: null,
+        integrationRunAccess: input.integrationRunAccess,
       });
       agentRunManager = AgentRunManager.initializeProcessInstance({
         autoByteusBackendFactory: providerFactories.autoByteus,
@@ -233,6 +242,7 @@ export class GeneralProcessRunSupervisor {
         providerInputNormalizer,
         agentToolMcpRunSessionDeactivator:
           input.agentToolMcpSessionAuthority.runSessions,
+        integrationRunAccess: input.integrationRunAccess,
         inputPreface: input.platformInputNotices ?? null,
         lifecycleObserver: input.platformInputNotices ?? null,
       });

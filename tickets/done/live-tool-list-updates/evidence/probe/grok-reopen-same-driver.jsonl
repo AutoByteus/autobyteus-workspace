@@ -1,0 +1,7 @@
+{"t":"2026-10-29T11:14:09.791Z","kind":"process","label":"first"}
+{"t":"2026-10-29T11:14:10.359Z","kind":"initialized","loadSession":true}
+{"t":"2026-10-29T11:14:10.499Z","kind":"session","sessionId":"01a1875e-0d42-7082-943f-60c1eee321bd"}
+{"t":"2026-10-29T11:14:14.528Z","kind":"control","state":{"tools":["probe_alpha","probe_beta"],"getStreams":1}}
+{"t":"2026-10-29T11:14:16.529Z","kind":"load_begin"}
+{"t":"2026-10-29T11:14:16.542Z","kind":"loaded"}
+{"t":"2026-10-29T11:14:21.544Z","kind":"end"}

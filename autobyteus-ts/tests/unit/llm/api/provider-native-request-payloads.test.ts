@@ -479,7 +479,7 @@ describe('provider-native API request payloads', () => {
 
   it('captures Anthropic messages payload with strict assistant tool_use followed by result-block-first user tool_result blocks and no synthetic aggregate user text', async () => {
     let captured: any;
-    const llm = new AnthropicLLM(model(LLMProvider.ANTHROPIC, 'claude-sonnet-4-5'), commonConfig());
+    const llm = new AnthropicLLM(model(LLMProvider.ANTHROPIC, 'claude-opus-5'), commonConfig());
     (llm as any).clientPromise = Promise.resolve( {
       messages: {
         create: async (params: any) => {
@@ -619,6 +619,73 @@ describe('provider-native API request payloads', () => {
     expect(captured.include).toEqual(['file_search_call.results', 'reasoning.encrypted_content']);
     expectNoLegacyProviderText(captured);
   });
+
+  // read-file-media-merge REQ-010 / AC-010: the Responses API treats an omitted `strict` as true, and GPT-5 models
+  // then fill every optional argument (SD-02). Each function tool is sent with `strict: false`.
+  it.each(['sendMessages', 'streamMessages'] as const)(
+    'sends every OpenAI Responses function tool with strict: false (%s)',
+    async (entry) => {
+      let captured: any;
+      const llm = new OpenAIResponsesLLM(
+        model(LLMProvider.OPENAI, 'gpt-5.5'),
+        'OPENAI_API_KEY',
+        'https://api.openai.com/v1',
+        commonConfig(),
+      );
+      (llm as any).clientPromise = Promise.resolve({
+        responses: {
+          create: async (params: any) => {
+            captured = params;
+            if (params.stream) {
+              return (async function* () {
+                yield { type: 'response.completed', response: { usage: { input_tokens: 1, output_tokens: 1, total_tokens: 2 } } };
+              })();
+            }
+            return {
+              output: [{ type: 'message', content: [{ type: 'output_text', text: 'ok' }] }],
+              usage: { input_tokens: 1, output_tokens: 1, total_tokens: 2 }
+            };
+          }
+        }
+      });
+      const flatFunctionTool = {
+        type: 'function',
+        name: 'already_flat',
+        description: 'A function tool already in Responses shape.',
+        parameters: { type: 'object', properties: { note: { type: 'string' } } }
+      };
+      const hostedTool = { type: 'web_search' };
+      const tools = [...commonTools, flatFunctionTool, hostedTool];
+
+      if (entry === 'sendMessages') {
+        await llm.sendMessages(messagesFor('openai_responses'), { tools });
+      } else {
+        for await (const _chunk of llm.streamMessages(messagesFor('openai_responses'), { tools })) {
+          // drain
+        }
+      }
+
+      expect(captured.tools).toEqual([
+        {
+          type: 'function',
+          name: 'get_weather',
+          description: 'Return weather for a city.',
+          parameters: commonTools[0].function.parameters,
+          strict: false
+        },
+        {
+          type: 'function',
+          name: 'get_time',
+          description: 'Return local time for a city.',
+          parameters: commonTools[1].function.parameters,
+          strict: false
+        },
+        { ...flatFunctionTool, strict: false },
+        { type: 'web_search' }
+      ]);
+      expect(flatFunctionTool).not.toHaveProperty('strict');
+    }
+  );
 
   it('submits the canonical GPT-5.6 model and max reasoning effort through Responses', async () => {
     let captured: any;

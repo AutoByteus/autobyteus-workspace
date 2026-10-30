@@ -232,7 +232,7 @@ describe("BuiltInAgentBootstrapper", () => {
           "list_tabs", "navigate_to", "open_tab", "run_script", "screenshot",
           "get_process_output", "start_background_process", "stop_background_process",
           "download_media", "edit_image", "generate_image", "generate_speech",
-          "read_media_file", "list_available_agents",
+          "list_available_agents",
         ],
         skillNames: [],
         skillScope: "ALL_INSTALLED",

@@ -124,7 +124,7 @@ describe("ApplicationReentryService application-tool participant lifecycle", () 
     });
 
     const token = await service.prepareParticipants(["removed", "invalid"]);
-    const setupRequired = "Application setup is required: invalid/slot:draftingTeam: Codex authentication is unavailable: no logged-in account.";
+    const setupRequired = "Application setup is required: invalid/slot:draftingTeam: Codex App Server authentication is unavailable: no logged-in account.";
     await service.recoverParticipants(token, ["invalid"], new Map([["invalid", setupRequired]]));
 
     // A not-ready application is quarantined with its readiness reason (autobyteus-296, AC-006).

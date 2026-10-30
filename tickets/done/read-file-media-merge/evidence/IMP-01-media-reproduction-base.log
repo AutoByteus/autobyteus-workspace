@@ -1,0 +1,289 @@
+# Check: IMP-01 reproduction: read_file on media files, before the change
+# Command: (cd /Users/normy/autobyteus_org/autobyteus-worktrees/read-file-media-merge/autobyteus-ts && pnpm exec vitest run tests/integration/tools/file/read-file-media.test.ts)
+# Commit: source e82d03b0f9 (origin/personal, unchanged read_file) with the new test file only; branch codex/read-file-media-merge
+# Environment: macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-29T20:51:25 local
+# Expected: fails. The base read_file returns a PNG, WAV or MP4 as numbered garbled lines (see the first assertion). Raw control bytes from the garbled output are written as \xNN escapes so the log stays text.
+
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/read-file-media-merge/autobyteus-ts
+
+stdout | tests/integration/tools/file/read-file-media.test.ts > read_file on media files > returns photo.png as a context file of its kind, not as text
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/integration/tools/file/read-file-media.test.ts > read_file on media files > returns voice.wav as a context file of its kind, not as text
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/integration/tools/file/read-file-media.test.ts > read_file on media files > returns clip.mp4 as a context file of its kind, not as text
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/integration/tools/file/read-file-media.test.ts > read_file on media files > resolves a relative media path against an absolute base_dir
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/integration/tools/file/read-file-media.test.ts > read_file on media files > loads media when the model capability is unknown
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/integration/tools/file/read-file-media.test.ts > read_file on media files > ignores include_line_numbers for media
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/integration/tools/file/read-file-media.test.ts > read_file on media files > refuses photo.png when the model does not support its kind
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/integration/tools/file/read-file-media.test.ts > read_file on media files > refuses voice.wav when the model does not support its kind
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/integration/tools/file/read-file-media.test.ts > read_file on media files > refuses clip.mp4 when the model does not support its kind
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/integration/tools/file/read-file-media.test.ts > read_file on media files > refuses only the kind the model does not support
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/integration/tools/file/read-file-media.test.ts > read_file on media files > refuses an empty media file
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/integration/tools/file/read-file-media.test.ts > read_file on media files > refuses line ranges on a media file ({ start_line: 1 })
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/integration/tools/file/read-file-media.test.ts > read_file on media files > refuses line ranges on a media file ({ end_line: 3 })
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/integration/tools/file/read-file-media.test.ts > read_file on media files > refuses line ranges on a media file ({ start_line: 1, end_line: 2 })
+Successfully registered tool definition: 'read_file'
+
+stdout | tests/integration/tools/file/read-file-media.test.ts > read_file on media files > refuses a directory named like a media file
+Successfully registered tool definition: 'read_file'
+
+ ❯ tests/integration/tools/file/read-file-media.test.ts (18 tests | 15 failed) 36ms
+     × returns photo.png as a context file of its kind, not as text 7ms
+     × returns voice.wav as a context file of its kind, not as text 1ms
+     × returns clip.mp4 as a context file of its kind, not as text 3ms
+     × resolves a relative media path against an absolute base_dir 3ms
+     × loads media when the model capability is unknown 2ms
+     × ignores include_line_numbers for media 1ms
+     × refuses photo.png when the model does not support its kind 2ms
+     × refuses voice.wav when the model does not support its kind 1ms
+     × refuses clip.mp4 when the model does not support its kind 2ms
+     × refuses only the kind the model does not support 1ms
+     × refuses an empty media file 1ms
+     × refuses line ranges on a media file ({ start_line: 1 }) 1ms
+     × refuses line ranges on a media file ({ end_line: 3 }) 1ms
+     × refuses line ranges on a media file ({ start_line: 1, end_line: 2 }) 1ms
+     × refuses a directory named like a media file 3ms
+
+⎯⎯⎯⎯⎯⎯ Failed Tests 15 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/tools/file/read-file-media.test.ts > read_file on media files > returns photo.png as a context file of its kind, not as text
+AssertionError: expected '1: \n2: \u001a\n3: \n4: -\ufffd\u0000…' to be an instance of ContextFile
+ ❯ tests/integration/tools/file/read-file-media.test.ts:58:20
+     56|     const result = await tool().execute(contextWith(allSupported), { p…
+     57|
+     58|     expect(result).toBeInstanceOf(ContextFile);
+       |                    ^
+     59|     expect(result).toMatchObject({ uri: filePath, fileName: name, file…
+     60|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/15]⎯
+
+ FAIL  tests/integration/tools/file/read-file-media.test.ts > read_file on media files > returns voice.wav as a context file of its kind, not as text
+AssertionError: expected '1: RIFF$\u0000\u0000\u0000WAVEfmt \u0…' to be an instance of ContextFile
+ ❯ tests/integration/tools/file/read-file-media.test.ts:58:20
+     56|     const result = await tool().execute(contextWith(allSupported), { p…
+     57|
+     58|     expect(result).toBeInstanceOf(ContextFile);
+       |                    ^
+     59|     expect(result).toMatchObject({ uri: filePath, fileName: name, file…
+     60|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/15]⎯
+
+ FAIL  tests/integration/tools/file/read-file-media.test.ts > read_file on media files > returns clip.mp4 as a context file of its kind, not as text
+AssertionError: expected '1: \u0000\u0000\u0000\u0018ftypmp42\u…' to be an instance of ContextFile
+ ❯ tests/integration/tools/file/read-file-media.test.ts:58:20
+     56|     const result = await tool().execute(contextWith(allSupported), { p…
+     57|
+     58|     expect(result).toBeInstanceOf(ContextFile);
+       |                    ^
+     59|     expect(result).toMatchObject({ uri: filePath, fileName: name, file…
+     60|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/15]⎯
+
+ FAIL  tests/integration/tools/file/read-file-media.test.ts > read_file on media files > resolves a relative media path against an absolute base_dir
+AssertionError: expected '1: \n2: \u001a\n3: \n4: -\ufffd\u0000…' to be an instance of ContextFile
+ ❯ tests/integration/tools/file/read-file-media.test.ts:67:20
+     65|     const result = await tool().execute(contextWith(), { path: 'photo.…
+     66|
+     67|     expect(result).toBeInstanceOf(ContextFile);
+       |                    ^
+     68|     expect(result).toMatchObject({ uri: filePath, fileType: ContextFil…
+     69|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[4/15]⎯
+
+ FAIL  tests/integration/tools/file/read-file-media.test.ts > read_file on media files > loads media when the model capability is unknown
+AssertionError: expected '1: RIFF$\u0000\u0000\u0000WAVEfmt \u0…' to be an instance of ContextFile
+ ❯ tests/integration/tools/file/read-file-media.test.ts:79:20
+     77|     );
+     78|
+     79|     expect(result).toBeInstanceOf(ContextFile);
+       |                    ^
+     80|   });
+     81|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[5/15]⎯
+
+ FAIL  tests/integration/tools/file/read-file-media.test.ts > read_file on media files > ignores include_line_numbers for media
+AssertionError: expected '\n\u001a\n\n-\ufffd\u0000\u0000\u0000…' to be an instance of ContextFile
+ ❯ tests/integration/tools/file/read-file-media.test.ts:87:20
+     85|     const result = await tool().execute(contextWith(), { path: filePat…
+     86|
+     87|     expect(result).toBeInstanceOf(ContextFile);
+       |                    ^
+     88|   });
+     89|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[6/15]⎯
+
+ FAIL  tests/integration/tools/file/read-file-media.test.ts > read_file on media files > refuses photo.png when the model does not support its kind
+AssertionError: promise resolved "'1: \n2: \u001a\n3: \n4: -\ufffd\u0000…'" instead of rejecting
+
+- Expected:
+Error {
+  "message": "rejected promise",
+}
+
++ Received:
+"1:
+2: \x1a
+3:
+4: -�IEND�B`�"
+
+ ❯ tests/integration/tools/file/read-file-media.test.ts:97:81
+     95|     const filePath = await write(name, bytes);
+     96|
+     97|     await expect(tool().execute(contextWith(allUnsupported), { path: f…
+       |                                                                                 ^
+     98|   });
+     99|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[7/15]⎯
+
+ FAIL  tests/integration/tools/file/read-file-media.test.ts > read_file on media files > refuses voice.wav when the model does not support its kind
+AssertionError: promise resolved "'1: RIFF$\u0000\u0000\u0000WAVEfmt \u0…'" instead of rejecting
+
+- Expected:
+Error {
+  "message": "rejected promise",
+}
+
++ Received:
+"1: RIFF$WAVEfmt \x10\x01\x01D��X\x01\x02\x10data"
+
+ ❯ tests/integration/tools/file/read-file-media.test.ts:97:81
+     95|     const filePath = await write(name, bytes);
+     96|
+     97|     await expect(tool().execute(contextWith(allUnsupported), { path: f…
+       |                                                                                 ^
+     98|   });
+     99|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[8/15]⎯
+
+ FAIL  tests/integration/tools/file/read-file-media.test.ts > read_file on media files > refuses clip.mp4 when the model does not support its kind
+AssertionError: promise resolved "'1: \u0000\u0000\u0000\u0018ftypmp42\u…'" instead of rejecting
+
+- Expected:
+Error {
+  "message": "rejected promise",
+}
+
++ Received:
+"1: \x18ftypmp42mp42isom"
+
+ ❯ tests/integration/tools/file/read-file-media.test.ts:97:81
+     95|     const filePath = await write(name, bytes);
+     96|
+     97|     await expect(tool().execute(contextWith(allUnsupported), { path: f…
+       |                                                                                 ^
+     98|   });
+     99|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[9/15]⎯
+
+ FAIL  tests/integration/tools/file/read-file-media.test.ts > read_file on media files > refuses only the kind the model does not support
+AssertionError: expected '1: \n2: \u001a\n3: \n4: -\ufffd\u0000…' to be an instance of ContextFile
+ ❯ tests/integration/tools/file/read-file-media.test.ts:105:62
+    103|     const context = contextWith({ image: 'supported', audio: 'unsuppor…
+    104|
+    105|     await expect(tool().execute(context, { path: imagePath })).resolve…
+       |                                                              ^
+    106|     await expect(tool().execute(context, { path: audioPath })).rejects…
+    107|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[10/15]⎯
+
+ FAIL  tests/integration/tools/file/read-file-media.test.ts > read_file on media files > refuses an empty media file
+AssertionError: promise resolved "''" instead of rejecting
+
+- Expected:
+Error {
+  "message": "rejected promise",
+}
+
++ Received:
+""
+
+ ❯ tests/integration/tools/file/read-file-media.test.ts:112:67
+    110|     const filePath = await write('empty.png', Buffer.alloc(0));
+    111|
+    112|     await expect(tool().execute(contextWith(), { path: filePath }))
+       |                                                                   ^
+    113|       .rejects.toThrow(`The media file '${filePath}' is empty and was …
+    114|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[11/15]⎯
+
+ FAIL  tests/integration/tools/file/read-file-media.test.ts > read_file on media files > refuses line ranges on a media file ({ start_line: 1 })
+ FAIL  tests/integration/tools/file/read-file-media.test.ts > read_file on media files > refuses line ranges on a media file ({ end_line: 3 })
+ FAIL  tests/integration/tools/file/read-file-media.test.ts > read_file on media files > refuses line ranges on a media file ({ start_line: 1, end_line: 2 })
+AssertionError: promise resolved "'1: \u0000\u0000\u0000\u0018ftypmp42\u…'" instead of rejecting
+
+- Expected:
+Error {
+  "message": "rejected promise",
+}
+
++ Received:
+"1: \x18ftypmp42mp42isom"
+
+ ❯ tests/integration/tools/file/read-file-media.test.ts:123:77
+    121|     const filePath = await write('clip.mp4', MP4_BYTES);
+    122|
+    123|     await expect(tool().execute(contextWith(), { path: filePath, ...ra…
+       |                                                                             ^
+    124|       .rejects.toThrow('start_line and end_line apply to text files on…
+    125|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[12/15]⎯
+
+ FAIL  tests/integration/tools/file/read-file-media.test.ts > read_file on media files > refuses a directory named like a media file
+AssertionError: expected [Function] to throw error including 'is not a regular file' but got 'Could not read file at /private/var/f…'
+
+Expected: "is not a regular file"
+Received: "Could not read file at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/read-file-media-EXeXMa/album.png: EISDIR: illegal operation on a directory, read"
+
+ ❯ tests/integration/tools/file/read-file-media.test.ts:137:66
+    135|     await fs.mkdir(dirPath);
+    136|
+    137|     await expect(tool().execute(contextWith(), { path: dirPath })).rej…
+       |                                                                  ^
+    138|   });
+    139|
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[13/15]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  15 failed | 3 passed (18)
+   Start at  20:51:25
+   Duration  257ms (transform 88ms, setup 37ms, import 75ms, tests 36ms, environment 0ms)

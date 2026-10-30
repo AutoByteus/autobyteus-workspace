@@ -2118,6 +2118,7 @@ describe("application framework architecture boundaries", () => {
       { key: "task_delegation", name: undefined, modulePath: "../agent-tools/task-delegation/register-task-delegation-tools.js", exportName: "registerTaskDelegationTools" },
       { key: "agent_communication", name: undefined, modulePath: "../agent-tools/agent-communication/register-agent-communication-tools.js", exportName: "registerAgentCommunicationTools" },
       { key: "agent_discovery", name: undefined, modulePath: "../agent-tools/agent-discovery/register-agent-discovery-tools.js", exportName: "registerAgentDiscoveryTools" },
+      { key: "agent_runtimes", name: undefined, modulePath: "../agent-tools/agent-runtimes/register-agent-runtimes-tools.js", exportName: "registerAgentRuntimesTools" },
       { key: "published_artifact", name: undefined, modulePath: "../agent-tools/published-artifacts/register-published-artifact-tools.js", exportName: "registerPublishedArtifactTools" },
       { key: "media", name: undefined, modulePath: "../agent-tools/media/register-media-tools.js", exportName: "registerMediaTools" },
       { key: "search", name: undefined, modulePath: "../agent-tools/search/register-search-tool.js", exportName: "registerProvisionedSearchTool" },
@@ -2129,6 +2130,7 @@ describe("application framework architecture boundaries", () => {
       { key: undefined, name: "Cache Pre-loading", modulePath: "./cache-preloader.js", exportName: "runCachePreloading" },
       { key: undefined, name: "MCP Tool Registration", modulePath: "./mcp-loader.js", exportName: "runMcpToolRegistration" },
       { key: undefined, name: "Memory Sync Worker", modulePath: "./memory-sync-worker-loader.js", exportName: "loadMemorySyncWorker" },
+      { key: undefined, name: "Memory Search", modulePath: "./memory-search-loader.js", exportName: "startMemorySearch" },
     ]);
 
     const serverRuntimePath = join(
@@ -2996,6 +2998,8 @@ describe("application framework architecture boundaries", () => {
       );
     }).sort();
     expect(definitionGetterOccurrences).toEqual([
+      // Default factory of the internal-agent rule over the process definitions (autobyteus-308); the class takes an injected source.
+      "autobyteus-server-ts/src/agent-definition/services/internal-agent-visibility.ts",
       "autobyteus-server-ts/src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend-factory.ts",
       "autobyteus-server-ts/src/agent-execution/backends/claude/backend/claude-session-bootstrapper.ts",
       "autobyteus-server-ts/src/agent-execution/backends/codex/backend/codex-thread-bootstrapper.ts",
@@ -3008,16 +3012,6 @@ describe("application framework architecture boundaries", () => {
       "autobyteus-server-ts/src/agent-team-definition/services/agent-team-definition-service.ts",
       "autobyteus-server-ts/src/agent-team-execution/services/member-team-context-builder.ts",
       "autobyteus-server-ts/src/agent-team-execution/services/team-run-service.ts",
-      "autobyteus-server-ts/src/agent-tools/agent-management/create-agent-definition.ts",
-      "autobyteus-server-ts/src/agent-tools/agent-management/delete-agent-definition.ts",
-      "autobyteus-server-ts/src/agent-tools/agent-management/get-agent-definition.ts",
-      "autobyteus-server-ts/src/agent-tools/agent-management/list-agent-definitions.ts",
-      "autobyteus-server-ts/src/agent-tools/agent-management/update-agent-definition.ts",
-      "autobyteus-server-ts/src/agent-tools/agent-team-management/create-agent-team-definition.ts",
-      "autobyteus-server-ts/src/agent-tools/agent-team-management/delete-agent-team-definition.ts",
-      "autobyteus-server-ts/src/agent-tools/agent-team-management/get-agent-team-definition.ts",
-      "autobyteus-server-ts/src/agent-tools/agent-team-management/list-agent-team-definitions.ts",
-      "autobyteus-server-ts/src/agent-tools/agent-team-management/update-agent-team-definition.ts",
       "autobyteus-server-ts/src/built-in-agents/built-in-agent-bootstrapper.ts",
       "autobyteus-server-ts/src/run-history/services/agent-run-history-catalog-service.ts",
     ].sort());
@@ -3048,6 +3042,8 @@ describe("application framework architecture boundaries", () => {
     }).sort();
     expect(ambientRunServiceImports).toEqual([
       "autobyteus-server-ts/src/agent-execution/services/agent-run-command-coordinator.ts:getAgentRunService",
+      // Composition root of Model Routing (autobyteus-32): binds the Model Router agent's injected run port to the process's run service.
+      "autobyteus-server-ts/src/compositions/model-routing-composition.ts:getAgentRunService",
       "autobyteus-server-ts/src/services/agent-streaming/agent-stream-handler.ts:getAgentRunService",
       "autobyteus-server-ts/src/services/agent-streaming/agent-team-stream-handler.ts:getTeamRunService",
     ].sort());

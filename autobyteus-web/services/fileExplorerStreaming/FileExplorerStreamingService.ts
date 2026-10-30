@@ -140,6 +140,8 @@ export class FileExplorerStreamingService {
   private handleMessage(data: string): void {
     try {
       const message = JSON.parse(data) as ServerMessage;
+      // Kept unnarrowed for the unknown-type log below (the switch narrows `message` to never there).
+      const messageType: string = message.type;
 
       switch (message.type) {
         case 'CONNECTED':
@@ -169,7 +171,7 @@ export class FileExplorerStreamingService {
           break;
 
         default:
-          console.warn('[FileExplorerStreaming] Unknown message type:', message.type);
+          console.warn('[FileExplorerStreaming] Unknown message type:', messageType);
       }
     } catch (error) {
       console.error('[FileExplorerStreaming] Failed to parse message:', error);

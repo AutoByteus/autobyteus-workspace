@@ -64,8 +64,9 @@ const setup = (options: { codexEnabled?: boolean; prepareFails?: string; modelRo
   };
   const validator = {
     validate: vi.fn(),
-    validateMany: vi.fn(async (inputs: readonly { selection: { llmModelIdentifier: string } }[]) =>
-      inputs.map(({ selection }) => ({ kind: "valid" as const, selection: { llmModelIdentifier: selection.llmModelIdentifier, llmConfig: null } }))),
+    // A valid check returns the canonical selection; these configs declare every key, so it equals the input.
+    validateMany: vi.fn(async (inputs: readonly { selection: { llmModelIdentifier: string; llmConfig: Readonly<Record<string, unknown>> | null } }[]) =>
+      inputs.map(({ selection }) => ({ kind: "valid" as const, selection: { llmModelIdentifier: selection.llmModelIdentifier, llmConfig: selection.llmConfig } }))),
   } as unknown as RunModelSelectionValidator;
   const availability = {
     getRuntimeAvailability: vi.fn(async (runtimeKind: RuntimeKind) => {

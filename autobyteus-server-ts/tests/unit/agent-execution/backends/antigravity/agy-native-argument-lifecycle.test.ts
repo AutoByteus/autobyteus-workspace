@@ -9,6 +9,7 @@ import { AgentRun } from "../../../../../src/agent-execution/domain/agent-run.js
 import { AgyAgentRunBackend } from "../../../../../src/agent-execution/backends/antigravity/backend/agy-agent-run-backend.js";
 import { AgentRunEventType, type AgentRunEvent } from "../../../../../src/agent-execution/domain/agent-run-event.js";
 import type { AgyStreamMessage } from "../../../../../src/agent-execution/backends/antigravity/stream/agy-stream-message.js";
+import { stubAgyAgentTools } from "../../../../helpers/agent-tool-mcp-run-sessions-stub.js";
 
 const conversationId = "cb90a226-a23b-49cd-bc64-0128b9dcfa00";
 const full = { TargetFile: "/owned.txt", CodeContent: "exact\n🙂", Overwrite: false };
@@ -32,7 +33,7 @@ const setup = () => {
   const process = new FakeProcess();
   const backend = new AgyAgentRunBackend({ runId: "native-run", config: {
     runtimeKind: "antigravity_cli", llmModelIdentifier: "gemini",
-  }, runtimeContext: { conversationId } } as never, process as never);
+  }, runtimeContext: { conversationId } } as never, process as never, { compactionDetection: false }, stubAgyAgentTools("native-run"));
   backends.push(backend);
   const events: AgentRunEvent[] = [];
   backend.subscribeToSourceEventBatches(async (batch) => { events.push(...batch); });

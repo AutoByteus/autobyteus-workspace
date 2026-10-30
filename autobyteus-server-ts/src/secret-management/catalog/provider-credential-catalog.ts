@@ -21,6 +21,14 @@ export const TEST_ONLY_SECRET_IDS = Object.freeze({
   githubToken: secretId("test.github.token"),
 });
 
+/**
+ * The vault entry of each integration's credential. Not a fixed ID for batch import or test-vault status: only the
+ * GitHub card stores it (`isKnownSecretId` does not accept it).
+ */
+const INTEGRATION_BINDINGS: Readonly<Record<string, string>> = Object.freeze({
+  github: "integration.github.token",
+});
+
 /** A vault secret ID of an MCP secret: `mcp.<uuid>`, a new one per stored value. */
 const MCP_SECRET_ID_PATTERN = /^mcp\.[0-9a-f-]{36}$/;
 
@@ -42,6 +50,11 @@ export class ProviderCredentialCatalog {
     if (consumer.kind === "mcpServer") {
       if (!MCP_SECRET_ID_PATTERN.test(String(consumer.vaultSecretId))) throw notAuthorized();
       return consumer.vaultSecretId;
+    }
+    if (consumer.kind === "integration") {
+      const mapped = INTEGRATION_BINDINGS[consumer.integrationId];
+      if (!mapped) throw notAuthorized();
+      return secretId(mapped);
     }
     if (consumer.kind === "agentRuntime") {
       if (consumer.runtimeKind === "claude_agent_sdk" && consumer.credentialSlot === "apiKey") {

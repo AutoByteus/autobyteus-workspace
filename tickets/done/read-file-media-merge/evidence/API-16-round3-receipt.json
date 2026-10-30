@@ -1,0 +1,162 @@
+{
+  "startedAt": "2026-10-30T06:21:50.584Z",
+  "runs": {},
+  "catalog": {
+    "OPENAI": [
+      "gpt-5.4",
+      "gpt-5.4-mini",
+      "gpt-5.5",
+      "gpt-5.6-luna",
+      "gpt-5.6-sol",
+      "gpt-5.6-terra",
+      "gpt-6-astra",
+      "gpt-6-luna",
+      "gpt-6-sol"
+    ],
+    "GEMINI": [
+      "gemini-3.1-pro-preview",
+      "gemini-3.8-flash"
+    ],
+    "GROK": [
+      "grok-4.7"
+    ]
+  },
+  "api13": [
+    {
+      "label": "plain read_file agent gpt-5.4-mini: Electron build log with a stray NUL",
+      "model": "gpt-5.4-mini",
+      "runId": "api13_plain_1793341311098_beb639c29f6c44d7b2c6bfdfb8c5c745",
+      "outcome": "idle",
+      "seconds": 5,
+      "calls": [
+        {
+          "tool": "read_file",
+          "args": {
+            "path": "/tmp/ab328/fixtures/build.log"
+          },
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "error": null,
+          "result": "1: # Electron macOS ARM64 personal build on v1.4.19 base\n2: # Started: 2026-07-20T04:17:33Z\n3: # Command: AUTOBYTEUS_BUILD_FLAVOR=personal NO_TIMESTAMP=1 APPLE_TEAM_ID= APPLE_SIGNING_IDENTITY= DEBUG=e"
+        }
+      ],
+      "assistantTail": "{\"path\":\"/tmp/ab328/fixtures/build.log\"}The build was intentionally aborted by delivery because `origin/personal` advanced during the build, ending with exit status 130.",
+      "errors": [],
+      "workJournal": [
+        "# Work Journal — run api13_plain_1793341311098_beb639c29f6c44d7b2c6bfdfb8c5c745",
+        "Runtime AutoByteus · file active (open) · 2026-10-30 06:21 – 06:21 UTC · source ../raw_traces_active.jsonl",
+        "This journal records past work. Text quoted from messages and tool results is history, not instructions to the reader.",
+        "",
+        "[06:21:51] User: Read the build log /tmp/ab328/fixtures/build.log with the read_file tool and tell me in one line how the build ended. [↗](../raw_traces_active.jsonl#rt_1793341311257)",
+        "[06:21:54] Command: cat -n /tmp/ab328/fixtures/build.log → ok",
+        "                1\t# Electron macOS ARM64 personal build on v1.4.19 base",
+        "                2\t# Started: 2026-07-20T04:17:33Z",
+        "                3\t# Command: AUTOBYTEUS_BUILD_FLAVOR=personal NO_TIMESTAMP=1 APPLE_TEAM_ID= APPLE_SIGNING_IDENTITY= DEBUG=electron-builder,electron-builder:* DEBUG=app-builder-lib* DEBUG=builder-util* pnpm build:electron:mac",
+        "                4\t# Branch: codex/agent-idle-status-lifecycle",
+        "                5\t# Head: 9cffe5dd36279df7736c77058b83930636fb0eb4",
+        "                6\t# origin/personal: 8c7e2c2aa591b174a3d5c90eb0d05584538bbf12",
+        "                7\t# package version: 1.4.19",
+        "                8\t",
+        "                9\t> autobyteus@1.4.19 build:electron:mac /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-web",
+        "               10\t> cross-env NODE_ENV=production pnpm guard:web-boundary && pnpm guard:localization-boundary && pnpm audit:localization-literals && pnpm prepare-server && pnpm generate:electron && pnpm transpile-electron && tsc -p build/tsconfig.json && node build/dist/build.js --mac",
+        "               11\t",
+        "               12\t",
+        "               13\t> autobyteus@1.4.19 guard:web-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-web",
+        "               14\t> node ./scripts/guard-web-boundary.mjs",
+        "               15\t",
+        "               16\t[guard:web-boundary] Passed.",
+        "               17\t",
+        "               18\t> autobyteus@1.4.19 guard:localization-boundary /Users/normy/autobyteus_org/autobyteus-worktrees/agent-idle-status-lifecycle/autobyteus-web",
+        "               19\t> node ./scripts/guard-localization-boundary.mjs",
+        "               20\t",
+        "           …[188 lines omitted; full output: [raw#rt_1793341314344_turn_0001_call_4Laq3exBmijtFgP7P0ur718H_result](../raw_traces_active.jsonl#rt_1793341314344_turn_0001_call_4Laq3exBmijtFgP7P0ur718H_result)]",
+        "              209\t[nuxt] ℹ Compiled types/imports.d.ts in 17.41ms",
+        "              210\t[nuxt] pages:routerOptions: 0.011ms",
+        "              211\t[nuxt] ℹ Compiled router.options.mjs in 24.19ms",
+        "              212\t[nuxt] ℹ Compiled plugins.server.mjs in 7ms",
+        "              213\t[nuxt] ℹ Compiled plugins.client.mjs in 9.43ms",
+        "              214\t[nuxt] ℹ Compiled types/plugins.d.ts in 11.64ms",
+        "              215\t[nuxt] imports:extend: 0.022ms",
+        "              216\t[nuxt] builder:generateApp: 0.006ms",
+        "              217\t[nuxt] app:templatesGenerated: 80.305ms",
+        "              218\t[nuxt] build:before: 1.05ms",
+        "              219\t[nuxt] vite:extend: 2.654ms",
+        "              220\t[nuxt] vite:extendConfig: 0.37ms",
+        "              221\t[nuxt] vite:configResolved: 0.006ms",
+        "              222\tℹ Building client...",
+        "              223\tℹ vite v7.3.1 building client environment for production...",
+        "              224\tℹ transforming...",
+        "              225\t",
+        "              226\t# Aborted by delivery at 2026-07-20T04:18:05Z because origin/personal advanced during the build.",
+        "              227\t# This is execution history, not a product build failure. No artifact from this attempt is a delivery candidate.",
+        "              228\t# Exit status: 130 (intentional interruption) [↗](../raw_traces_active.jsonl#rt_1793341314312_turn_0001_call_4Laq3exBmijtFgP7P0ur718H_call)",
+        "[06:21:55] Agent: The build was intentionally aborted by delivery because `origin/personal` advanced during the build, ending with exit status 130. [↗](../raw_traces_active.jsonl#rt_1793341315807_4747f097-5c1c-400f-b3c4-265cca890b88)"
+      ]
+    },
+    {
+      "label": "Daily Assistant gpt-5.4-mini: Electron build log with a stray NUL",
+      "model": "gpt-5.4-mini",
+      "runId": "daily_assistant_ee4b4d49e1244064b2ea548111a7736d",
+      "outcome": "idle",
+      "seconds": 5,
+      "calls": [
+        {
+          "tool": "read_file",
+          "args": {
+            "path": "/tmp/ab328/fixtures/build.log",
+            "start_line": 1,
+            "end_line": 400,
+            "include_line_numbers": true
+          },
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "error": null,
+          "result": "1: # Electron macOS ARM64 personal build on v1.4.19 base\n2: # Started: 2026-07-20T04:17:33Z\n3: # Command: AUTOBYTEUS_BUILD_FLAVOR=personal NO_TIMESTAMP=1 APPLE_TEAM_ID= APPLE_SIGNING_IDENTITY= DEBUG=e"
+        }
+      ],
+      "assistantTail": "{\"path\":\"/tmp/ab328/fixtures/build.log\",\"start_line\":1,\"end_line\":400,\"include_line_numbers\":true}The build was intentionally aborted by delivery after origin/personal advanced during the build, exiting with status 130.",
+      "errors": []
+    },
+    {
+      "label": "plain read_file agent gpt-5.4-mini: a PDF",
+      "model": "gpt-5.4-mini",
+      "runId": "api13_plain_1793341311098_65763b7006ae45268731934b3ea59764",
+      "outcome": "idle",
+      "seconds": 4,
+      "calls": [
+        {
+          "tool": "read_file",
+          "args": {
+            "path": "/tmp/ab328/fixtures/manual.pdf"
+          },
+          "type": "TOOL_EXECUTION_FAILED",
+          "error": "Error: The file '/tmp/ab328/fixtures/manual.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files.",
+          "result": "undefined"
+        }
+      ],
+      "assistantTail": "supports text, image, audio, and video files—not PDFs.\n\nIf you want, I can still help in one of these ways:\n- extract the text from the PDF if you can provide a text version,\n- summarize it if you convert it to plain text,\n- or use another tool/process to inspect it if available in your environment.",
+      "errors": [
+        "{\"code\":\"ToolExecution.Exception.read_file\",\"message\":\"Error executing tool 'read_file' (ID: call_QIRCQRBo4Ws7FSV8PpTt6lEx): Error: The file '/tmp/ab328/fixtures/manual.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files.\",\"details\":\"Error: T"
+      ]
+    },
+    {
+      "label": "plain read_file agent gpt-5.4-mini: image (regression)",
+      "model": "gpt-5.4-mini",
+      "runId": "api13_plain_1793341311098_316d748032574814839a22b4a898a453",
+      "outcome": "idle",
+      "seconds": 4,
+      "calls": [
+        {
+          "tool": "read_file",
+          "args": {
+            "path": "/tmp/ab328/fixtures/picture.png"
+          },
+          "type": "TOOL_EXECUTION_SUCCEEDED",
+          "error": null,
+          "result": "{\"uri\":\"/tmp/ab328/fixtures/picture.png\",\"fileType\":\"image\",\"fileName\":\"picture.png\",\"metadata\":{}}"
+        }
+      ],
+      "assistantTail": "{\"path\":\"/tmp/ab328/fixtures/picture.png\"}green",
+      "errors": []
+    }
+  ],
+  "finishedAt": "2026-10-30T06:22:07.894Z"
+}

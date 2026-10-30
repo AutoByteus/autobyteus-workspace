@@ -1,3 +1,4 @@
+import type { IntegrationRunAccess } from "../../../../credential-proxy/integration-run-access.js";
 import fs from "node:fs/promises";
 import { workspaceCollisionPolicyForScope } from "../../shared/workspace-skill-collision-policy.js";
 import { createBackendPreparation } from "../../agent-run-backend-preparation.js";
@@ -18,9 +19,12 @@ import {
 import type { AgentDefinitionService } from "../../../../agent-definition/services/agent-definition-service.js";
 import type { SkillService } from "../../../../skills/services/skill-service.js";
 import type { ClaudeWorkspaceResolver } from "../../claude/claude-workspace-resolver.js";
-import type { AgentToolMcpRunSessionActivator } from "../../../../agent-tools/mcp/agent-tool-mcp-session-authority.js";
+import type {
+  AgentToolMcpRunSessionActivator,
+  AgentToolMcpRunSessionExposure,
+} from "../../../../agent-tools/mcp/agent-tool-mcp-session-authority.js";
 import type { AgentToolMcpDescriptor } from "../../../../agent-tools/mcp/agent-tool-mcp-session.js";
-import { resolveRuntimeAgentToolExposure } from "../../../shared/runtime-agent-tool-exposure.js";
+import { resolveRuntimeAgentToolExposure, type RuntimeAgentToolExposure } from "../../../shared/runtime-agent-tool-exposure.js";
 import { composeSharedCarpenterPrompt } from "../../../prompt/carpenter-prompt-composer.js";
 import { buildAgentRunMessageSenderContext } from "../../../../agent-communication/domain/agent-run-message-sender.js";
 import { getAgentTeamAddressBasename } from "../../../../agent-collaboration/domain/agent-team-address.js";
@@ -30,7 +34,9 @@ export class AgyAgentRunBackendFactory implements AgentRunBackendFactory {
     private readonly definitions: AgentDefinitionService,
     private readonly skills: SkillService,
     private readonly workspaces: ClaudeWorkspaceResolver,
-    private readonly mcpSessions: AgentToolMcpRunSessionActivator,
+    private readonly mcpSessions: AgentToolMcpRunSessionActivator & AgentToolMcpRunSessionExposure,
+    /** The run's integration variables for the AGY process (`null`: none on this host). */
+    private readonly integrationRunAccess: IntegrationRunAccess | null = null,
   ) {}
 
   beginPreparation(request: AgentRunBackendPreparationRequest) {
@@ -53,13 +59,14 @@ export class AgyAgentRunBackendFactory implements AgentRunBackendFactory {
     const bindings = this.skills.resolveConfiguredSkillBindingsForAgent(definition);
     const identity = composeSharedCarpenterPrompt({ agentDefinition: definition, memberExecutionContext: config.memberExecutionContext });
     assertAccepting();
-    const descriptor = this.activateMcp(runId, config, workspacePath, definition);
+    const exposure = resolveRuntimeAgentToolExposure(definition, config.memberExecutionContext);
+    const descriptor = this.activateMcp(runId, config, workspacePath, exposure);
     const capsule = await createAgyRunCapsule({ runId, memoryDir, workspacePath, identity,
       agentDefinitionId: config.agentDefinitionId, configuredSkillBindings: bindings,
       workspaceCollisionPolicy: workspaceCollisionPolicyForScope(this.skills.resolveSkillScope(definition)),
       mcpDescriptor: descriptor });
     assertAccepting();
-    return this.launch(config, runId, capsule, null, assertAccepting, ownProcess);
+    return this.launch(config, runId, capsule, null, exposure, assertAccepting, ownProcess);
   }
 
   private async restoreBackend(context: AgentRunContext<RuntimeAgentRunContext>, assertAccepting: () => void, ownProcess: (process: AgyStreamProcess) => void): Promise<AgyAgentRunBackend> {
@@ -78,21 +85,27 @@ export class AgyAgentRunBackendFactory implements AgentRunBackendFactory {
     if (!definition) throw new Error(`AGY_AGENT_DEFINITION_MISSING: ${config.agentDefinitionId}`);
     // Restore retains the immutable main-agent text, even when the definition has been edited.
     assertAccepting();
-    const descriptor = this.activateMcp(context.runId, config, saved.workspacePath, definition);
+    const exposure = resolveRuntimeAgentToolExposure(definition, config.memberExecutionContext);
+    const descriptor = this.activateMcp(context.runId, config, saved.workspacePath, exposure);
     const capsule = await restoreAgyRunCapsule({ runId: context.runId, memoryDir,
       selectedWorkspacePath: currentWorkspace, mcpDescriptor: descriptor });
     assertAccepting();
-    return this.launch(config, context.runId, capsule, conversationId, assertAccepting, ownProcess);
+    return this.launch(config, context.runId, capsule, conversationId, exposure, assertAccepting, ownProcess);
   }
 
-  private async launch(config: AgentRunConfig, runId: string, capsule: AgyRunCapsule, expectedId: string | null, assertAccepting: () => void, ownProcess: (process: AgyStreamProcess) => void): Promise<AgyAgentRunBackend> {
+  private async launch(config: AgentRunConfig, runId: string, capsule: AgyRunCapsule, expectedId: string | null,
+    exposure: RuntimeAgentToolExposure, assertAccepting: () => void, ownProcess: (process: AgyStreamProcess) => void): Promise<AgyAgentRunBackend> {
     const compactionDetection = await this.resolveCompactionDetection(runId);
     const process = new AgyStreamProcess();
     ownProcess(process);
+    const integrationVariables = this.integrationRunAccess?.environmentForRun(
+      { runId, agentDefinitionId: config.agentDefinitionId }, globalThis.process.env) ?? {};
     assertAccepting();
       const init = await process.start({ capsulePath: capsule.path, agentName: capsule.manifest.agentName,
         workspacePath: capsule.manifest.workspacePath, model: config.llmModelIdentifier,
-        conversationId: expectedId });
+        conversationId: expectedId,
+        // Without integration variables the process inherits the server's environment, as before.
+        ...(Object.keys(integrationVariables).length > 0 ? { env: { ...globalThis.process.env, ...integrationVariables } } : {}) });
       if (expectedId && init.conversation_id !== expectedId) throw new Error("AGY_CONVERSATION_ID_CONFLICT: exact restore returned a different conversation.");
       if (init.init.agent !== capsule.manifest.agentName) throw new Error("AGY_AGENT_NOT_LOADED: CLI did not select the generated main agent.");
       if (init.init.model !== config.llmModelIdentifier) throw new Error("AGY_MODEL_MISMATCH: CLI selected another model.");
@@ -102,7 +115,8 @@ export class AgyAgentRunBackendFactory implements AgentRunBackendFactory {
       if (init.init.permission_mode !== "always-proceed") throw new Error("AGY_PERMISSION_MODE_MISMATCH");
       assertAccepting();
       return new AgyAgentRunBackend(new AgentRunContext({ runId, config,
-        runtimeContext: new AgyAgentRunContext(init.conversation_id) }), process, { compactionDetection });
+        runtimeContext: new AgyAgentRunContext(init.conversation_id) }), process, { compactionDetection },
+        { runSessions: this.mcpSessions, exposure });
   }
 
   /** Compaction checkpoints are mapped only on the AGY version proven to stream them. */
@@ -114,7 +128,7 @@ export class AgyAgentRunBackendFactory implements AgentRunBackendFactory {
     return supported;
   }
 
-  private activateMcp(runId: string, config: AgentRunConfig, workspacePath: string, definition: NonNullable<Awaited<ReturnType<AgentDefinitionService["getAgentDefinitionById"]>>>): AgentToolMcpDescriptor | null {
+  private activateMcp(runId: string, config: AgentRunConfig, workspacePath: string, exposure: RuntimeAgentToolExposure): AgentToolMcpDescriptor {
     const member = config.memberExecutionContext;
     const result = this.mcpSessions.activateForRun({
       owner: member ? { runId, collaborationIdentity: member.identity,
@@ -122,12 +136,12 @@ export class AgyAgentRunBackendFactory implements AgentRunBackendFactory {
       sender: buildAgentRunMessageSenderContext({ senderRunId: runId,
         senderName: member ? getAgentTeamAddressBasename(member.identity.memberAddress) : config.agentDefinitionId,
         runtimeKind: config.runtimeKind, memberExecutionContext: member }),
-      runtimeExposure: resolveRuntimeAgentToolExposure(definition, member),
+      runtimeExposure: exposure,
       executionContext: { workingDirectory: workspacePath, memoryDir: config.memoryDir,
         applicationExecutionContext: config.applicationExecutionContext },
       runtimeKind: config.runtimeKind,
     });
-    return result.kind === "active" ? result.descriptor : null;
+    return result.descriptor;
   }
 
   private async assertAvailable(config: AgentRunConfig): Promise<void> {

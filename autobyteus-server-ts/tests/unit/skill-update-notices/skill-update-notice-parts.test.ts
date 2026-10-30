@@ -10,6 +10,7 @@ import { diffSkillVersion } from "../../../src/skill-update-notices/services/ski
 import {
   buildSkillUpdateNoticeMessage,
   buildSkillUpdateNoticeText,
+  inlineCode,
 } from "../../../src/skill-update-notices/services/skill-update-notice-builder.js";
 import { SKILL_UPDATE_NOTICE_SENDER_ID } from "../../../src/agent-execution/domain/system-task-notification-senders.js";
 import type { SkillFolderSnapshot } from "../../../src/skill-update-notices/domain/skill-update-notice-types.js";
@@ -98,6 +99,19 @@ describe("diffSkillVersion", () => {
   });
 });
 
+describe("inlineCode (autobyteus-320, AC-009)", () => {
+  it.each([
+    ["references/__init__.py", "`references/__init__.py`"],
+    ["notes/*draft*.md", "`notes/*draft*.md`"],
+    ["a`b.md", "``a`b.md``"],
+    ["x``y", "```x``y```"],
+    ["`start.md", "`` `start.md ``"],
+    ["end`", "`` end` ``"],
+  ])("wraps %s so it renders literally", (text, expected) => {
+    expect(inlineCode(text)).toBe(expected);
+  });
+});
+
 describe("skill update notice text and message", () => {
   const updated = (skillName: string, files: Array<[string, "changed" | "added" | "removed"]>) => ({
     kind: "updated" as const, skillName, skillDir: `/skills/${skillName}`,
@@ -111,11 +125,11 @@ describe("skill update notice text and message", () => {
     expect(text).toBe([
       "[Platform notice — skill updated]",
       "",
-      "Your skill package `agent-package-creation` has been updated (/skills/agent-package-creation).",
+      "Your skill package `agent-package-creation` has been updated (`/skills/agent-package-creation`).",
       "",
       "Changed files:",
-      "- references/a.md (changed)",
-      "- references/b.md (changed)",
+      "- `references/a.md` (changed)",
+      "- `references/b.md` (changed)",
       "",
       "Re-read the updated files before continuing work that relies on this skill.",
     ].join("\n"));
@@ -128,9 +142,9 @@ describe("skill update notice text and message", () => {
     ]);
     expect(text).toContain([
       "Changed files:",
-      "- SKILL.md (changed)",
-      "- references/new.md (added)",
-      "- scripts/old.sh (removed)",
+      "- `SKILL.md` (changed)",
+      "- `references/new.md` (added)",
+      "- `scripts/old.sh` (removed)",
       "",
       "Re-read the updated files before continuing work that relies on this skill.",
       "Removed files are no longer available.",
@@ -145,10 +159,10 @@ describe("skill update notice text and message", () => {
     expect(text).toBe([
       "[Platform notice — skill updated]",
       "",
-      "Your skill package `code-review` has been updated (/skills/code-review).",
+      "Your skill package `code-review` has been updated (`/skills/code-review`).",
       "",
       "Changed files:",
-      "- references/a.md (changed)",
+      "- `references/a.md` (changed)",
       "",
       "Your skill package `deep-research` is no longer available.",
       "",
@@ -173,7 +187,7 @@ describe("skill update notice text and message", () => {
     const files = Array.from({ length: 25 }, (_, index) => `references/r${String(index).padStart(2, "0")}.md`);
     const text = buildSkillUpdateNoticeText([updated("code-review", files.map((file) => [file, "changed"]))]);
     const listed = text.split("\n").filter((line) => line.startsWith("- "));
-    expect(listed).toEqual([...files.slice(0, 10).map((file) => `- ${file} (changed)`), "- …and 15 more files"]);
+    expect(listed).toEqual([...files.slice(0, 10).map((file) => `- \`${file}\` (changed)`), "- …and 15 more files"]);
   });
 
   it("builds the busy-run message as a SYSTEM, notice-only platform message without a native auto-notification", () => {
@@ -235,5 +249,24 @@ describe("SeenSkillVersionsStore", () => {
     expect(await store.read({ runId: "helper", memoryDir: null })).toEqual(versions);
     store.forget({ runId: "helper", memoryDir: null });
     expect(await store.read({ runId: "helper", memoryDir: null })).toBeNull();
+  });
+});
+
+describe("skill update notice paths are literal (autobyteus-320, AC-009)", () => {
+  it("puts the skill folder and each changed path in inline code, also a path with a backtick", () => {
+    const text = buildSkillUpdateNoticeText([{
+      kind: "updated", skillName: "py-tools", skillDir: "/skills/py_tools",
+      files: [
+        { path: "references/__init__.py", status: "added" },
+        { path: "notes/*draft*.md", status: "changed" },
+        { path: "odd`name.md", status: "removed" },
+      ],
+    }]);
+    expect(text).toContain("Your skill package `py-tools` has been updated (`/skills/py_tools`).");
+    expect(text).toContain([
+      "- `references/__init__.py` (added)",
+      "- `notes/*draft*.md` (changed)",
+      "- ``odd`name.md`` (removed)",
+    ].join("\n"));
   });
 });

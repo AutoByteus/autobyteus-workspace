@@ -1,6 +1,7 @@
+import { createCredentialProxyHost, type CredentialProxyHost } from "../credential-proxy/credential-proxy-host.js";
 import { NativeCommandShutdown } from "./native-command-shutdown.js";
 import { CONTEXT_FILE_MAX_BYTES } from "../context-files/domain/context-file-upload-policy.js";
-import fastify, { type FastifyInstance } from "fastify";
+import fastify, { LogController, type FastifyInstance } from "fastify";
 import cors from "@fastify/cors";
 import multipart from "@fastify/multipart";
 import websocket from "@fastify/websocket";
@@ -73,6 +74,8 @@ import type { TaskExecutionResourcePort } from "../agent-collaboration/execution
 import { composeProjectTaskExecutionResources, releaseProjectTaskExecutionResources } from "./project-task-execution-resource-composition.js";
 import { composeAgentPackageDefinitionFeed, type AgentPackageDefinitionFeed } from "./agent-package-definition-feed-composition.js";
 import { createSkillUpdateNotices, type SkillUpdateNotices } from "../skill-update-notices/skill-update-notices.js";
+import { createToolListUpdates, type ToolListUpdates } from "../tool-list-updates/tool-list-updates.js";
+import { AgentRunPlatformNotices } from "../agent-execution/domain/agent-run-platform-notices.js";
 import { composeUpdateNotifications, type UpdateNotifications } from "./update-notifications-composition.js";
 import { composeAgentRuntimeStatus, type AgentRuntimeStatusHandle } from "./agent-runtime-status-composition.js";
 import { composeModelRouting } from "./model-routing-composition.js";
@@ -80,6 +83,8 @@ import { composeModelRouting } from "./model-routing-composition.js";
 export type StudioServer = Readonly<{
   fastify: FastifyInstance;
   agentToolsMcpHost: AgentToolsMcpHost;
+  /** The loopback credential proxy for integrations; listened next to the Agent Tools MCP host. */
+  credentialProxyHost: CredentialProxyHost;
   applicationRuntime: ApplicationPlatformRuntime;
   packageRegistryService: ApplicationPackageRegistryService;
 }>;
@@ -90,9 +95,11 @@ const closeStudioProcessResources = async (input: {
   hostDefinitionServices: HostDefinitionServices;
   agentPackageDefinitionFeed: AgentPackageDefinitionFeed | null;
   agentToolsMcpHost: AgentToolsMcpHost | null;
+  credentialProxyHost: CredentialProxyHost | null;
   generalProcessAuthority: ScopedAgentToolMcpSessionAuthority | null;
   generalProcessRunSupervisor: GeneralProcessRunSupervisor | null;
   skillUpdateNotices: SkillUpdateNotices | null;
+  toolListUpdates: ToolListUpdates | null;
   updateNotifications: UpdateNotifications | null;
   taskExecutionResources: TaskExecutionResourcePort | null;
   studioApiHandle: StudioApiHandle | null;
@@ -112,6 +119,12 @@ const closeStudioProcessResources = async (input: {
     console.warn("AGENT_RUNTIME_STATUS_CLOSE_FAILED", error);
   }
   try {
+    // Tool list updates stop first (no new passes), so no run is changed while runs stop.
+    await input.toolListUpdates?.close();
+  } catch (error) {
+    console.warn("TOOL_LIST_UPDATES_CLOSE_FAILED", error);
+  }
+  try {
     // Skill notices stop first (watcher, then service), so none go out while runs stop.
     await input.skillUpdateNotices?.close();
   } catch (error) {
@@ -127,6 +140,11 @@ const closeStudioProcessResources = async (input: {
       try {
         await input.agentToolsMcpHost?.close();
       } finally {
+        try {
+          await input.credentialProxyHost?.close();
+        } catch (error) {
+          console.warn("CREDENTIAL_PROXY_CLOSE_FAILED", error);
+        }
         try {
           input.studioApiHandle?.close();
         } finally {
@@ -201,6 +219,7 @@ const createStudioApplicationServices = (input: {
     registry: input.packages.packageRegistryService,
     provider: input.packages.bundleProvider,
     catalogTransition: applicationRuntime.hostManagement.catalogTransition,
+    definitionChanges: input.definitions.agentDefinitionChanges,
   });
   return { applicationRuntime, packageCommandService };
 };
@@ -218,7 +237,10 @@ export const buildStudioServer = async (input: {
   });
   let agentPackageDefinitionFeed: AgentPackageDefinitionFeed | null = null;
   try {
-    agentPackageDefinitionFeed = await composeAgentPackageDefinitionFeed({ reloader: hostDefinitionServices.agentPackageDefinitions.reloader });
+    agentPackageDefinitionFeed = await composeAgentPackageDefinitionFeed({
+      reloader: hostDefinitionServices.agentPackageDefinitions.reloader,
+      definitionChanges: hostDefinitionServices.agentDefinitionChanges,
+    });
   } catch (error) {
     await nativeShutdown.close(async () => { hostDefinitionServices.close(); });
     throw error;
@@ -234,9 +256,11 @@ export const buildStudioServer = async (input: {
     console.warn("DEFINITION_ADMISSION_STARTUP_SCAN_FAILED", error);
   }
   let agentToolsMcpHost: AgentToolsMcpHost | null = null;
+  let credentialProxyHost: CredentialProxyHost | null = null;
   let generalProcessAuthority: ScopedAgentToolMcpSessionAuthority | null = null;
   let generalProcessRunSupervisor: GeneralProcessRunSupervisor | null = null;
   let skillUpdateNotices: SkillUpdateNotices | null = null;
+  let toolListUpdates: ToolListUpdates | null = null;
   let updateNotifications: UpdateNotifications | null = null;
   let taskExecutionResources: TaskExecutionResourcePort | null = null;
   let studioApiHandle: StudioApiHandle | null = null;
@@ -254,9 +278,11 @@ export const buildStudioServer = async (input: {
       hostDefinitionServices,
       agentPackageDefinitionFeed,
       agentToolsMcpHost,
+      credentialProxyHost,
       generalProcessAuthority,
       generalProcessRunSupervisor,
       skillUpdateNotices,
+      toolListUpdates,
       updateNotifications,
       taskExecutionResources,
       studioApiHandle,
@@ -277,6 +303,7 @@ export const buildStudioServer = async (input: {
     agentToolsMcpHost = createAgentToolsMcpHost({
       loggingConfig: input.loggingConfig,
     });
+    credentialProxyHost = createCredentialProxyHost();
     const agentProviderFactoryBuilder = createProcessAgentProviderFactoryBuilder({
       workspaceManager, nativeCommandProcessScope: nativeShutdown.scope,
     });
@@ -297,6 +324,10 @@ export const buildStudioServer = async (input: {
     skillUpdateNotices = createSkillUpdateNotices({
       agentDefinitionService: hostDefinitionServices.agentDefinitionService,
     });
+    toolListUpdates = createToolListUpdates({
+      agentDefinitionService: hostDefinitionServices.agentDefinitionService,
+      definitionChanges: hostDefinitionServices.agentDefinitionChanges,
+    });
     generalProcessRunSupervisor = createGeneralProcessRunSupervisor({
       memoryDir: input.appConfig.getMemoryDir(),
       contextFilePathEnvironment,
@@ -307,9 +338,11 @@ export const buildStudioServer = async (input: {
       workspaceManager,
       agentProviderFactoryBuilder,
       agentToolMcpSessionAuthority: generalProcessAuthority,
+      integrationRunAccess: credentialProxyHost.runAccess,
       modelSelectionValidator,
       taskExecutionResources,
-      platformInputNotices: skillUpdateNotices.service,
+      // One notice slot: tool list updates first, then skill notices (one notice per input).
+      platformInputNotices: new AgentRunPlatformNotices([toolListUpdates.service, skillUpdateNotices.service]),
     });
     generalProcessAuthority = null;
     releaseRemoteCollaboration = composeStudioRemoteCollaboration({
@@ -369,8 +402,8 @@ export const buildStudioServer = async (input: {
 
     const app = fastify({
       logger: getFastifyLoggerOptions(input.loggingConfig),
-      disableRequestLogging: true,
-      maxParamLength: SERVER_ROUTE_PARAM_MAX_LENGTH,
+      logController: new LogController({ disableRequestLogging: true }),
+      routerOptions: { maxParamLength: SERVER_ROUTE_PARAM_MAX_LENGTH },
     });
     nativeShutdown.install(app);
     app.addHook("onClose", async () => nativeShutdown.close(async () => {
@@ -411,6 +444,7 @@ export const buildStudioServer = async (input: {
       return Object.freeze({
         fastify: app,
         agentToolsMcpHost,
+        credentialProxyHost,
         applicationRuntime: currentApplicationRuntime,
         packageRegistryService: packages.packageRegistryService,
       });

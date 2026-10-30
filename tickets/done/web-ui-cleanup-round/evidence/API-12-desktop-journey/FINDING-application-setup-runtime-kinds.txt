@@ -1,0 +1,19 @@
+# API-12 finding: the Application launch setup shows runtime KINDS, not names (REQ-003)
+# Isolated desktop instance iso-50076-407f of this worktree (commit a26305a2a7; code = b34c2a36ea's code commits), 2026-10-28.
+# Applications enabled, Brief Studio imported, Applications -> Brief Studio -> Open app (launch setup, before entering the app).
+
+DOM capture of [data-testid=application-launch-authority-summary] while "Show technical details" was still closed:
+{
+ "visible": true,
+ "technicalToggle": "Show technical details",
+ "text": "PACKAGE BASELINE /researcher · codex_app_server · gpt-5.6-luna /writer · codex_app_server · gpt-5.6-luna SELECTED RESOURCE BASELINE /researcher · codex_app_server · gpt-5.6-luna /writer · codex_app_server · gpt-5.6-luna SAVED HOST OVERRIDE ABSENT No saved override EFFECTIVE CONFIGURATION /researcher · codex_app_server · gpt-5.6-luna PACKAGE_TEAM_DEFAULT:bundle-team__6170706c69636f6…"
+}
+
+Same page, same moment: the runtime selects of the slot editor show the full names:
+[ "Use application default runtime", "AutoByteus", "Codex App Server", "Claude Agent SDK", "Grok Build", "Antigravity CLI" ]
+
+Source (unchanged by autobyteus-320):
+autobyteus-web/components/applications/setup/ApplicationExecutionResourceSlotEditor.vue:52  {{ leaf.memberAddress ?? leaf.displayName }} · {{ leaf.runtimeKind }} · {{ leaf.llmModelIdentifier }}   (Package baseline)
+autobyteus-web/components/applications/setup/ApplicationExecutionResourceSlotEditor.vue:64  … · {{ leaf.runtimeKind }} · …   (Selected resource baseline)
+autobyteus-web/components/applications/setup/ApplicationExecutionResourceSlotEditor.vue:88  … · {{ leaf.runtimeKind }} · …   (Effective configuration)
+A grep for templates printing a runtime kind directly (`{{ … runtimeKind }}`) finds only these three.

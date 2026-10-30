@@ -1,0 +1,29 @@
+{"t":"2026-10-29T09:08:11.812Z","kind":"init","conversation":"04713edc-2d2a-4b97-a44b-a7c1f2daa7fb"}
+{"t":"2026-10-29T09:08:11.814Z","kind":"turn","n":1}
+{"t":"2026-10-29T09:08:14.267Z","kind":"text","text":""}
+{"t":"2026-10-29T09:08:14.267Z","kind":"tool_step","state":"ACTIVE","tool":"view_file","mcpTool":null,"server":null,"output":"null"}
+{"t":"2026-10-29T09:08:14.267Z","kind":"tool_step","state":"DONE","tool":"view_file","mcpTool":null,"server":null,"output":"\"1 lines, 130 bytes\""}
+{"t":"2026-10-29T09:08:16.701Z","kind":"text","text":""}
+{"t":"2026-10-29T09:08:16.702Z","kind":"tool_step","state":"ACTIVE","tool":"call_mcp_tool","mcpTool":"probe_alpha","server":"probe","output":"null"}
+{"t":"2026-10-29T09:08:16.702Z","kind":"tool_step","state":"DONE","tool":"call_mcp_tool","mcpTool":"probe_alpha","server":"probe","output":"\"PROBE_ALPHA_OK_7319\""}
+{"t":"2026-10-29T09:08:18.098Z","kind":"text","text":"\n"}
+{"t":"2026-10-29T09:08:18.099Z","kind":"result","status":"SUCCESS","response":"PROBE_ALPHA_OK_7319\n","error":null}
+{"t":"2026-10-29T09:08:18.130Z","kind":"control","action":"add-beta","state":{"tools":["probe_alpha","probe_beta"],"getStreams":0}}
+{"t":"2026-10-29T09:08:21.131Z","kind":"turn","n":2}
+{"t":"2026-10-29T09:08:23.660Z","kind":"text","text":""}
+{"t":"2026-10-29T09:08:23.660Z","kind":"tool_step","state":"ACTIVE","tool":"list_dir","mcpTool":null,"server":null,"output":"null"}
+{"t":"2026-10-29T09:08:23.660Z","kind":"tool_step","state":"DONE","tool":"list_dir","mcpTool":null,"server":null,"output":"\"probe_alpha.json\""}
+{"t":"2026-10-29T09:08:26.052Z","kind":"text","text":"BETA_TOOL\n"}
+{"t":"2026-10-29T09:08:26.078Z","kind":"result","status":"SUCCESS","response":"NO_BETA_TOOL\n","error":null}
+{"t":"2026-10-29T09:08:26.084Z","kind":"control","action":"remove-alpha","state":{"tools":["probe_beta"],"getStreams":0}}
+{"t":"2026-10-29T09:08:29.087Z","kind":"turn","n":3}
+{"t":"2026-10-29T09:08:31.876Z","kind":"text","text":""}
+{"t":"2026-10-29T09:08:31.876Z","kind":"tool_step","state":"ACTIVE","tool":"call_mcp_tool","mcpTool":"probe_alpha","server":"probe","output":"null"}
+{"t":"2026-10-29T09:08:31.876Z","kind":"tool_step","state":"ERROR","tool":"call_mcp_tool","mcpTool":"probe_alpha","server":"probe","output":"\"REFUSED: tool 'probe_alpha' is not available.\""}
+{"t":"2026-10-29T09:08:33.963Z","kind":"text","text":"\n"}
+{"t":"2026-10-29T09:08:33.964Z","kind":"result","status":"SUCCESS","response":"NO_ALPHA_TOOL\n","error":null}
+{"t":"2026-10-29T09:08:33.964Z","kind":"end","stderrTail":""}
+{"t":"2026-10-29T09:08:33.965Z","kind":"result","status":"ERROR","response":"NO_ALPHA_TOOL\n","error":"stream input cancelled: context canceled"}
+{"t":"2026-10-29T09:11:11.816Z","kind":"turn_timeout","n":1}
+{"t":"2026-10-29T09:11:21.139Z","kind":"turn_timeout","n":2}
+{"t":"2026-10-29T09:11:29.093Z","kind":"turn_timeout","n":3}

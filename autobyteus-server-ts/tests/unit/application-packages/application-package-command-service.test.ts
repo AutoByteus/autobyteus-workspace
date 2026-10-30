@@ -172,4 +172,54 @@ describe("ApplicationPackageCommandService catalog-transition boundary", () => {
       "transition.rollback.staged",
     ]);
   });
+
+  it("signals an agent definition change after a committed import, reload or removal, and never after a failed one", async () => {
+    const root = await fs.mkdtemp(path.join(os.tmpdir(), "package-command-signal-"));
+    tempRoots.push(root);
+    await fs.mkdir(path.join(root, "applications"));
+    const notifyChanged = vi.fn();
+    const target = {
+      packageId: "local:pkg",
+      packageRootPath: root,
+      sourceKind: "LOCAL_PATH",
+      managedInstallPath: null,
+      isPlatformOwned: false,
+      isRemovable: true,
+    };
+    const registry = {
+      getBuiltInRootPath: () => path.join(root, "built-in"),
+      getBundledSourceRootPath: () => path.join(root, "bundled"),
+      addAdditionalRootPath: vi.fn(),
+      upsertLinkedLocalPackage: vi.fn(async () => undefined),
+      listApplicationPackages: vi.fn(async () => []),
+      removeAdditionalRootPath: vi.fn(),
+      removePackageRecord: vi.fn(async () => undefined),
+      findRegistryEntryById: vi.fn(async () => target),
+      findPackageRecord: vi.fn(async () => null),
+      listAdditionalRootPaths: vi.fn(() => [root]),
+      ensureBuiltInMaterialized: vi.fn(async () => undefined),
+    };
+    let fail = false;
+    const catalogTransition = {
+      runPackageTransition: vi.fn(async (mutation: { applyBeforeStage: () => Promise<unknown> }) => {
+        await mutation.applyBeforeStage();
+        if (fail) throw new Error("transition failed");
+      }),
+    };
+    const service = new ApplicationPackageCommandService({
+      registry,
+      provider: { validatePackageRoot: vi.fn(async () => undefined) },
+      catalogTransition,
+      definitionChanges: { notifyChanged },
+    } as never);
+
+    await service.importApplicationPackage({ sourceKind: "LOCAL_PATH", source: root });
+    await service.reloadApplicationPackage("local:pkg");
+    await service.removeApplicationPackage("local:pkg");
+    expect(notifyChanged).toHaveBeenCalledTimes(3);
+
+    fail = true;
+    await expect(service.reloadApplicationPackage("local:pkg")).rejects.toThrow("transition failed");
+    expect(notifyChanged).toHaveBeenCalledTimes(3);
+  });
 });

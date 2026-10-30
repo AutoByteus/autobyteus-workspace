@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { runtimeKindToLabel } from '~/types/agent/AgentRunConfig'
+import { agentRuntimeName } from '@autobyteus/agent-presentation-contracts'
 import { existingRunModelHelpKey } from '../existingRunModelHelp'
 import { autoExecuteForNewRuntimeSelection, withNewRuntimeOverridePolicy } from '../agentRunRuntimeDraftPolicy'
 import { getSystemInstructionSourceKey } from '~/services/activity/runActivityPresentation'
@@ -9,7 +9,7 @@ import zhCN from '~/localization/messages/zh-CN/workspace'
 
 describe('Grok Build runtime presentation', () => {
   it('labels the runtime and its token usage as Grok Build', () => {
-    expect(runtimeKindToLabel('grok_build')).toBe('Grok Build')
+    expect(agentRuntimeName('grok_build')).toBe('Grok Build')
     expect(createTokenUsageStatisticsFormatter((key) => key).formatRuntimeKind('grok_build')).toBe('Grok Build')
   })
 

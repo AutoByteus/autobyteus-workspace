@@ -1,0 +1,21 @@
+# IMP-18 existing server e2e suites updated for the new contract
+# command: env -i ... vitest run tests/e2e/run-history/stopped-run-model-config-graphql.e2e.test.ts tests/e2e/agent-org-runs/stopped-org-workspace-graphql.e2e.test.ts; env -i ... RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<repo>/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs vitest run tests/e2e/projects/delegated-copy-model-change.e2e.test.ts; same gate: tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts
+# commit: 47f44c3df (run on the identical working tree before the commit)
+# env: Linux 6.12.54-linuxkit, node v22.23.3, uid 0
+# date: 2026-10-29
+## stopped-run model config + Org workspace
+ ✓ tests/e2e/run-history/stopped-run-model-config-graphql.e2e.test.ts (2 tests) 37051ms
+ ✓ tests/e2e/agent-org-runs/stopped-org-workspace-graphql.e2e.test.ts (1 test) 16025ms
+ Test Files  2 passed (2)
+      Tests  3 passed (3)
+## delegated-copy-model-change (scripted AGY)
+ ✓ tests/e2e/projects/delegated-copy-model-change.e2e.test.ts (6 tests) 31565ms
+ Test Files  1 passed (1)
+      Tests  6 passed (6)
+## delegated-launch-config-defaults (scripted AGY + fake Grok)
+ ✓ tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts (3 tests) 18066ms
+     ✓ in every root, catalog copies run each agent on its own usable default, fall back with notes, and reuse recorded values  8386ms
+     ✓ Agent root: with the root's model retired, an agent that needs the inherited layer cannot be delegated (today's text, nothing added), and an outside message is not found; a usable own default still starts; a user `@` mention admits nothing (AC-006)  1001ms
+     ✓ Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it (AC-008)  7061ms
+ Test Files  1 passed (1)
+      Tests  3 passed (3)

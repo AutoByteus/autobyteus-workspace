@@ -16,6 +16,7 @@ import { CodexClientThreadRouter } from '../../../../../src/agent-execution/back
 import { CodexAppServerClient } from '../../../../../src/runtime-management/codex/client/codex-app-server-client.js';
 import { CodexAppServerClientManager } from '../../../../../src/runtime-management/codex/client/codex-app-server-client-manager.js';
 import type { CodexThreadCleanup } from '../../../../../src/agent-execution/backends/codex/backend/codex-thread-cleanup.js';
+import { activatedAgentToolMcpRunSessionsStub } from "../../../../helpers/agent-tool-mcp-run-sessions-stub.js";
 
 const deferred = () => {
   let resolve!: () => void;
@@ -42,7 +43,7 @@ async function harness() {
       } }),
     });
     const thread = await manager.createThread(context, () => undefined);
-    const backend = new CodexAgentRunBackend(context, thread, manager);
+    const backend = new CodexAgentRunBackend(context, thread, manager, activatedAgentToolMcpRunSessionsStub(context.runId));
     return { context, thread, backend, makeRun: () => new AgentRun({ context, backend,
       providerInputNormalizer: { normalizeForProvider: dispatch => dispatch } }) };
   };

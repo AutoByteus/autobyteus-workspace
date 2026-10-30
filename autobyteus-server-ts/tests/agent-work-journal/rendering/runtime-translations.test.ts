@@ -7,7 +7,7 @@ import { RecordBuilder, entryLines, render } from "../journal-record-fixtures.js
 
 const ORACLE = JSON.parse(fs.readFileSync(
   path.resolve(__dirname, "../../fixtures/agent-work-journal/work-journal-builtin-tools.json"), "utf8",
-)) as Record<string, Record<string, string>>;
+)) as Record<string, Record<string, string>> & { _runtime_only: Record<string, Record<string, string>> };
 
 /** Entry lines of one call → result, times removed. */
 const lines = (runtime: RuntimeKind, name: string, args: Record<string, unknown>, result: unknown, error: string | null = null) => {
@@ -18,8 +18,9 @@ const lines = (runtime: RuntimeKind, name: string, args: Record<string, unknown>
 
 describe("built-in tables match work-journal-builtin-tools.json (contract §4 oracle)", () => {
   for (const runtime of Object.values(RuntimeKind)) {
-    it(`${runtime} built-in names equal the oracle`, () => {
-      expect([...getRuntimeTranslation(runtime).builtInTools.keys()].sort()).toEqual(Object.keys(ORACLE[runtime]!).sort());
+    it(`${runtime} built-in and runtime-only names equal the oracle`, () => {
+      expect([...getRuntimeTranslation(runtime).builtInTools.keys()].sort())
+        .toEqual([...Object.keys(ORACLE[runtime]!), ...Object.keys(ORACLE._runtime_only[runtime]!)].sort());
     });
   }
 
@@ -105,9 +106,13 @@ describe("Claude (contract §4, §6)", () => {
       ]);
   });
 
-  it("a Claude non-built-in (Skill, TodoWrite) uses the generic rule", () => {
+  it("Skill is a skill load; its own text is not repeated", () => {
     expect(lines(claude, "Skill", { skill: "implementation-engineer" }, "Launching skill")).toEqual([
-      "Tool: Skill skill=\"implementation-engineer\" → ok", "           Launching skill"]);
+      "Load skill: implementation-engineer → ok"]);
+  });
+
+  it("a Claude tool that has no converter (a user's own) uses the generic rule", () => {
+    expect(lines(claude, "mcp_unknown_tool", { a: 1 }, "x")).toEqual(["Tool: mcp_unknown_tool a=1 → ok", "           x"]);
   });
 });
 
@@ -147,10 +152,10 @@ describe("Codex (contract §4)", () => {
       .toEqual(["Search web: find \"token\" in https://a.b → ok (results not recorded)"]);
   });
 
-  it("Codex-qualified MCP names and MCP envelopes use the generic rule", () => {
+  it("Codex-qualified MCP names show the tool and its server; MCP envelopes use the generic rule", () => {
     expect(lines(codex, "plugin_management.search_plugins", { query: "x" },
       { content: [{ type: "text", text: "found 2" }], structuredContent: null, isError: false, _meta: null }))
-      .toEqual(["Tool: plugin_management.search_plugins query=\"x\" → ok", "           found 2"]);
+      .toEqual(["Tool: search_plugins (via plugin_management) query=\"x\" → ok", "           found 2"]);
   });
 });
 
@@ -198,11 +203,22 @@ describe("Antigravity (contract §4, §6)", () => {
     expect(lines(agy, "replace_file_content", { TargetFile: "/w/r.md" }, done(null))).toEqual(["Edit file: /w/r.md (change not recorded) → ok"]);
   });
 
-  it("older call_mcp_tool records are unwrapped, then use the generic rule; denied envelopes", () => {
+  it("older call_mcp_tool records are unwrapped, then use the platform line; denied envelopes", () => {
     expect(lines(agy, "call_mcp_tool", { ServerName: "autobyteus_agent_tools", ToolName: "get_handoff_rules", Arguments: {} },
-      done("{\"handoffs\":[]}"))).toEqual(["Tool: get_handoff_rules → ok", "           {\"handoffs\":[]}"]);
-    expect(lines(agy, "manage_task", { action: "list", toolAction: "x" }, { provider_state: "DONE", output: null, status: "denied", reason: "policy" }))
-      .toEqual(["Tool: manage_task action=\"list\" → denied: policy"]);
+      done("{\"handoffs\":[]}"))).toEqual(["Check handoff rules → ok", "           {\"handoffs\":[]}"]);
+    expect(lines(agy, "manage_task", { Action: "list", toolAction: "x" }, { provider_state: "DONE", output: null, status: "denied", reason: "policy" }))
+      .toEqual(["Project task: list → denied: policy"]);
+  });
+
+  it("a server-qualified name shows the tool and its server, also inside call_mcp_tool", () => {
+    expect(lines(agy, "mcp__acme_prices__lookup_price", { sku: "S" }, done("10"))).toEqual([
+      "Tool: lookup_price (via acme_prices) sku=\"S\" → ok", "           10"]);
+    expect(lines(agy, "call_mcp_tool", { ServerName: "acme_prices", ToolName: "mcp__acme_prices__lookup_price", Arguments: { sku: "S" } }, done("10")))
+      .toEqual(["Tool: lookup_price (via acme_prices) sku=\"S\" → ok", "           10"]);
+  });
+
+  it("a shell tool recorded as Bash is a command", () => {
+    expect(lines(agy, "Bash", { command: "ls", description: "list" }, done("a"))).toEqual(["Command: ls → ok", "           a"]);
   });
 });
 
@@ -244,13 +260,22 @@ describe("AutoByteus (contract §4, §6)", () => {
       .toEqual(["Command: sleep 99 → timed out"]);
   });
 
-  it("start_background_process, read_file (numbered and not), read_media_file, read_url", () => {
+  it("start_background_process, read_file (numbered and not, and media), read_media_file (recorded history), read_url", () => {
     expect(lines(autobyteus, "start_background_process", { command: "npm run dev", cwd: "/w" }, { pid: 11240, status: "running" }))
       .toEqual(["Command: npm run dev (in /w) (background) → started pid 11240"]);
     expect(lines(autobyteus, "read_file", { path: "/w/SKILL.md" }, "1: ---\n2: name: x")).toEqual([
       "Command: cat -n /w/SKILL.md → ok", "                1\t---", "                2\tname: x"]);
     expect(lines(autobyteus, "read_file", { path: "/w/a", start_line: 5, end_line: 6, include_line_numbers: false }, "e\nf")[0])
       .toBe("Command: sed -n '5,6p' /w/a → ok");
+    // read_file on an image, audio or video file records a context file (autobyteus-328): the media marker, no numbering.
+    expect(lines(autobyteus, "read_file", { path: "/w/p.png" }, { uri: "/w/p.png", fileType: "image", fileName: "p.png" }))
+      .toEqual(["Command: cat /w/p.png → ok", "           [image, not reproduced]"]);
+    expect(lines(autobyteus, "read_file", { path: "/w/v.wav" }, { uri: "/w/v.wav", fileType: "audio" }))
+      .toEqual(["Command: cat /w/v.wav → ok", "           [audio, not reproduced]"]);
+    expect(lines(autobyteus, "read_file", { path: "/w/p.png" }, null,
+      "The selected model does not support image input. The image file was not loaded.")[0])
+      .toBe("Command: cat -n /w/p.png → failed: The selected model does not support image input. The image file was not loaded.");
+    // Recorded history: runs from before autobyteus-328 keep their read_media_file calls.
     expect(lines(autobyteus, "read_media_file", { file_path: "/w/p.png" }, { uri: "/w/p.png", fileType: "image" })).toEqual([
       "Command: cat /w/p.png → ok", "           [image, not reproduced]"]);
     expect(lines(autobyteus, "read_url", { url: "https://a.b", output_format: "text" }, "page")[0]).toBe("Command: curl https://a.b → ok");
@@ -270,7 +295,17 @@ describe("AutoByteus (contract §4, §6)", () => {
     expect(lines(autobyteus, "run_bash", { command: "x" }, null, "user_interrupt")).toEqual(["Command: x → interrupted"]);
   });
 
-  it("get_process_output and download_media use the generic rule", () => {
-    expect(lines(autobyteus, "get_process_output", { process_id: "p1" }, "log")[0]).toBe("Tool: get_process_output process_id=\"p1\" → ok");
+  it("runtime-only tools: process output and stop, replace_in_file, downloads, conversion, task result", () => {
+    expect(lines(autobyteus, "get_process_output", { pid: 7, lines: 5 }, { output: "log" })).toEqual([
+      "Read output of background task 7 → ok", "           log"]);
+    expect(lines(autobyteus, "stop_background_process", { pid: 7 }, { stopped: true })).toEqual(["Stop background task 7 → ok"]);
+    expect(lines(autobyteus, "replace_in_file", { path: "/w/a.ts", old_text: "a", new_text: "b" }, "ok")).toEqual([
+      "Edit file: /w/a.ts (+1 −1) → ok", "           -a", "           +b"]);
+    expect(lines(autobyteus, "download_media", { url: "https://x/y.png", filename: "y.png", folder: "img" }, "done"))
+      .toEqual(["Download file: https://x/y.png to img/y.png → ok"]);
+    expect(lines(autobyteus, "download_video", { url: "https://x/v", format: "mp4" }, "done")).toEqual(["Download video: https://x/v (mp4) → ok"]);
+    expect(lines(autobyteus, "convert_video_format", { input_video_path: "a.mp4", output_video_path: "a.webm", target_format: "webm" }, "done"))
+      .toEqual(["Convert video: a.mp4 to webm (a.webm) → ok"]);
+    expect(lines(autobyteus, "submit_task_result", { message: "done" }, "ok")).toEqual(["Submit task result → ok", "           done"]);
   });
 });

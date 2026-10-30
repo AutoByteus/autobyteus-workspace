@@ -1,3 +1,4 @@
+import type { TranslationParams } from '~/localization/runtime/types'
 import { MAX_UPDATE_INTERVAL_MINUTES, MIN_UPDATE_INTERVAL_MINUTES } from '~/types/updateNotifications'
 
 export type IntervalUnit = 'minutes' | 'hours'
@@ -13,7 +14,7 @@ export const isValidIntervalMinutes = (minutes: number): boolean =>
   Number.isInteger(minutes) && minutes >= MIN_UPDATE_INTERVAL_MINUTES && minutes <= MAX_UPDATE_INTERVAL_MINUTES
 
 /** "30 minutes", "1 hour", "90 minutes" for sentences; `t` is the localization function. */
-export const describeInterval = (minutes: number, t: (key: string, params?: Record<string, unknown>) => string): string => {
+export const describeInterval = (minutes: number, t: (key: string, params?: TranslationParams) => string): string => {
   const { value, unit } = splitInterval(minutes)
   return t(`settings.notifications.interval.${unit}.${value === 1 ? 'one' : 'other'}`, { count: value })
 }

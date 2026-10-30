@@ -1,0 +1,42 @@
+# API-06b-smoke-signed-out-no-grok
+# case: API-06b (AC-004, REQ-005; SCN-004b / RSK-001: Claude and Codex not signed in, Grok not installed)
+# command: B=/tmp/api-e2e-149/bin-nogrok (links to claude, codex, node only; grok exists in both ~/.grok/bin and ~/.local/bin, so both are hidden)
+#          TH=$(cd "$(mktemp -d /tmp/api-e2e-149/home-XXXXXX)" && pwd -P)
+#          env -i PATH="$B:/usr/bin:/bin:/usr/sbin:/sbin" HOME="$TH" USER="$USER" LOGNAME="$LOGNAME" TMPDIR="$TMPDIR" python3 scripts/release_smoke.py
+# commit: 27e197bd724bbcce9db74d021efe851fcccde4d7
+# environment: macOS (Darwin 25.5.0), Python 3.9.6; claude 2.1.302, codex-cli 0.163.0
+# date: 2026-10-19T03:56:37Z
+# shows: fail-closed in about 60 s, exit 1, no hang. Claude: "CLAUDE_RUNTIME_AUTHENTICATION_FAILED: Not logged in · Please
+#        run /login" on each case. Codex: the preflight line names "codex not signed in"; its rows show the turn's
+#        "Reconnecting... n/5" errors. Grok: "not available: grok not on PATH". No provider call succeeded (no login).
+
+## runner output
+preflight: grok not available: grok not on PATH
+preflight: codex not available: ~/.codex/auth.json missing (codex not signed in)
+running live (claude, codex, grok): tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts
+running antigravity (antigravity): tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts
+running autobyteus (autobyteus): tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts
+
+Release smoke check
+runtime     scenario                                 result  reason
+claude      new run + restore, linked workspace      FAIL    failed: AssertionError: turn errors: {"code":"CLAUDE_RUNTIME_TURN_FAILED","message":"CLAUDE_RUNTIME_AUTHENTICATION_FAILED: Not logged in · Please run /login","error_scope":"turn","error_effect":"terminal","turn_id":"link_probe_agent_d6808855_751d188a454148458004f38596a2f8cb:turn:886fc67c-c61b-4920-9793-d4fb
+claude      brand-new team member                    FAIL    failed: AssertionError: turn errors: {"code":"CLAUDE_RUNTIME_TURN_FAILED","message":"CLAUDE_RUNTIME_AUTHENTICATION_FAILED: Not logged in · Please run /login","error_scope":"turn","error_effect":"terminal","turn_id":"link_probe_agent_d6808855_400f91dc94fe44caa908de3d55aabd5e:turn:888e724f-a048-4ad6-bb14-1e7d
+claude      different same-named skill               FAIL    failed: AssertionError: turn errors: {"code":"CLAUDE_RUNTIME_TURN_FAILED","message":"CLAUDE_RUNTIME_AUTHENTICATION_FAILED: Not logged in · Please run /login","error_scope":"turn","error_effect":"terminal","turn_id":"link_probe_all_d6808855_2f6f6632b9134b6f9a268a0a35cf4014:turn:9fb9d952-ff33-49c6-a10d-291ab9
+codex       new run + restore, linked workspace      FAIL    failed: AssertionError: turn errors: {"code":"RUNTIME_ERROR","message":"Reconnecting... 2/5","error_scope":"turn","error_effect":"diagnostic","turn_id":"01a1524e-2141-7660-bb63-4d3c16e5dc48"} | {"code":"RUNTIME_ERROR","message":"Reconnecting... 3/5","error_scope":"turn","error_effect":"diagnostic","turn_id"
+codex       brand-new team member                    FAIL    failed: AssertionError: turn errors: {"code":"RUNTIME_ERROR","message":"Reconnecting... 2/5","error_scope":"turn","error_effect":"diagnostic","turn_id":"01a1524e-27e2-7062-827a-c9d864e321df","change_sequence":13,"agent_run_id":"link_probe_agent_d6808855_758b6c12049d40ddad7ea380b8912b91"} | {"code":"RUNTIME_
+codex       different same-named skill               FAIL    failed: AssertionError: turn errors: {"code":"RUNTIME_ERROR","message":"Reconnecting... 2/5","error_scope":"turn","error_effect":"diagnostic","turn_id":"01a1524e-2f14-7011-b70a-bedf4c4de858"}: expected [ Array(1) ] to deeply equal []
+grok        new run + restore, linked workspace      FAIL    not available: grok not on PATH
+grok        brand-new team member                    FAIL    not available: grok not on PATH
+grok        different same-named skill               FAIL    not available: grok not on PATH
+antigravity brand-new run, linked workspace          PASS
+antigravity brand-new team member, linked workspace  PASS
+autobyteus  brand-new run, linked workspace          PASS
+autobyteus  brand-new team member, linked workspace  PASS
+
+commit    27e197bd724bbcce9db74d021efe851fcccde4d7
+models    {"claude": "haiku", "codex": "gpt-5.6-luna"}
+duration  live 36s, antigravity 18s, autobyteus 7s
+result    FAIL
+logs      /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/release-smoke-bn81nebl
+exit=1
+2026-10-19T03:57:41Z

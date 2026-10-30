@@ -1,0 +1,49 @@
+{
+  "codexAppServerConfig": {
+    "mcp_servers": {
+      "autobyteus_agent_tools": {
+        "url": "http://127.0.0.1:55195/mcp/agent-tools/agtrun_KI8yy4uYRtibLiLGkjNgaTBtlGpxGI--xgYSvJEyQNE",
+        "enabled_tools": [],
+        "startup_timeout_sec": 5
+      }
+    }
+  },
+  "threadId": "01a18783-ff8b-7032-b02f-13ee4d6fe7dc",
+  "endpointExchanges": [
+    {
+      "method": "POST",
+      "rpcMethod": "initialize"
+    },
+    {
+      "method": "POST",
+      "rpcMethod": "notifications/initialized"
+    },
+    {
+      "method": "POST",
+      "rpcMethod": "tools/list"
+    }
+  ],
+  "codexMcpNotifications": [
+    {
+      "method": "mcpServer/startupStatus/updated",
+      "params": {
+        "threadId": "01a18783-ff8b-7032-b02f-13ee4d6fe7dc",
+        "name": "autobyteus_agent_tools",
+        "status": "starting",
+        "error": null,
+        "failureReason": null
+      }
+    },
+    {
+      "method": "mcpServer/startupStatus/updated",
+      "params": {
+        "threadId": "01a18783-ff8b-7032-b02f-13ee4d6fe7dc",
+        "name": "autobyteus_agent_tools",
+        "status": "ready",
+        "error": null,
+        "failureReason": null
+      }
+    }
+  ],
+  "codexStderrTail": "\u001b[2m2026-10-29T11:55:37.437787Z\u001b[0m \u001b[31mERROR\u001b[0m \u001b[2mcodex_api::endpoint::responses_websocket\u001b[0m\u001b[2m:\u001b[0m failed to connect to websocket: HTTP error: 401 Unauthorized, url: wss://api.openai.com/v1/responses\n"
+}

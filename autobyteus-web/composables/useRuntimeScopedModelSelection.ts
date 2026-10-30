@@ -1,7 +1,7 @@
+import { agentRuntimeName } from '@autobyteus/agent-presentation-contracts'
 import { computed, ref, watch, type Ref } from 'vue'
 import {
   DEFAULT_AGENT_RUNTIME_KIND,
-  runtimeKindToLabel,
   type AgentRuntimeKind,
 } from '~/types/agent/AgentRunConfig'
 import {
@@ -146,7 +146,7 @@ export const useRuntimeScopedModelSelection = (params: {
     for (const availability of runtimeAvailabilityStore.availabilities) {
       optionByKind.set(availability.runtimeKind, {
         value: availability.runtimeKind,
-        label: runtimeKindToLabel(availability.runtimeKind),
+        label: agentRuntimeName(availability.runtimeKind),
         enabled: runtimeAvailabilityStore.isRuntimeEnabled(availability.runtimeKind),
       })
     }
@@ -154,7 +154,7 @@ export const useRuntimeScopedModelSelection = (params: {
     if (selectedRuntimeKind && !optionByKind.has(selectedRuntimeKind)) {
       optionByKind.set(selectedRuntimeKind, {
         value: selectedRuntimeKind,
-        label: runtimeKindToLabel(selectedRuntimeKind),
+        label: agentRuntimeName(selectedRuntimeKind),
         enabled: runtimeAvailabilityStore.isRuntimeEnabled(selectedRuntimeKind),
       })
     }

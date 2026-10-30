@@ -36,6 +36,8 @@ const suite = enabled ? describe : describe.skip;
 
 type Wire = { type: string; payload: Record<string, unknown> };
 type FileChangeRow = { runId: string; path: string; sourceTool: string; status: string };
+/** Whose artifacts are read: a standalone run by its run ID, or a Team member through its team run (owner routes). */
+type ArtifactOwner = { runId: string; teamRunId?: string };
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 const PNG = Buffer.from("89504e470d0a1a0a0000000d4948445200000001000000010806000000" +
   "1f15c4890000000d49444154789c6360000002000154a24f5d0000000049454e44ae426082", "hex");
@@ -60,30 +62,35 @@ suite("AGY multi-image turn: every generated image stays previewable (fake AGY t
     if (!response.ok || !body.data || body.errors?.length) throw new Error(JSON.stringify(body.errors ?? body));
     return body.data;
   };
-  const listArtifacts = async (runId: string): Promise<FileChangeRow[]> => (await graphql<{
-    getRunFileChanges: FileChangeRow[] }>(
-    "query($runId: String!) { getRunFileChanges(runId: $runId) { runId path sourceTool status } }", { runId }))
-    .getRunFileChanges;
-  const preview = async (runId: string, filePath: string) => {
-    const response = await fetch(new URL(
-      `/rest/runs/${encodeURIComponent(runId)}/file-change-content?path=${encodeURIComponent(filePath)}`, url));
+  const listArtifacts = async (owner: ArtifactOwner): Promise<FileChangeRow[]> => owner.teamRunId
+    ? (await graphql<{ getTeamMemberFileChanges: FileChangeRow[] }>(
+      "query($teamRunId: String!, $agentRunId: String!) { getTeamMemberFileChanges(teamRunId: $teamRunId, agentRunId: $agentRunId) { runId path sourceTool status } }",
+      { teamRunId: owner.teamRunId, agentRunId: owner.runId })).getTeamMemberFileChanges
+    : (await graphql<{ getRunFileChanges: FileChangeRow[] }>(
+      "query($runId: String!) { getRunFileChanges(runId: $runId) { runId path sourceTool status } }", { runId: owner.runId }))
+      .getRunFileChanges;
+  const preview = async (owner: ArtifactOwner, filePath: string) => {
+    const route = owner.teamRunId
+      ? `/rest/team-runs/${encodeURIComponent(owner.teamRunId)}/agent-runs/${encodeURIComponent(owner.runId)}/file-change-content`
+      : `/rest/runs/${encodeURIComponent(owner.runId)}/file-change-content`;
+    const response = await fetch(new URL(`${route}?path=${encodeURIComponent(filePath)}`, url));
     return { status: response.status, contentType: response.headers.get("content-type"),
       cacheControl: response.headers.get("cache-control"), body: Buffer.from(await response.arrayBuffer()) };
   };
   const imageBytes = (step: number) => Buffer.concat([PNG, Buffer.from(`image-${step}`)]);
-  const expectPreviews = async (runId: string, images: Map<number, string>) => {
+  const expectPreviews = async (owner: ArtifactOwner, images: Map<number, string>) => {
     for (const [step, image] of images) {
-      const observed = await preview(runId, image);
+      const observed = await preview(owner, image);
       expect(observed.status, `${image}: ${observed.body.toString()}`).toBe(200);
       expect(observed.contentType).toMatch(/^image\/png/);
       expect(observed.cacheControl).toBe("no-store");
       expect(observed.body.equals(imageBytes(step))).toBe(true);
     }
   };
-  const expectListed = async (runId: string, images: Map<number, string>) => {
-    const rows = await listArtifacts(runId);
+  const expectListed = async (owner: ArtifactOwner, images: Map<number, string>) => {
+    const rows = await listArtifacts(owner);
     expect(rows.map((row) => row.path).sort()).toEqual([...images.values()].sort());
-    for (const row of rows) expect(row).toMatchObject({ runId, sourceTool: "generated_output", status: "available" });
+    for (const row of rows) expect(row).toMatchObject({ runId: owner.runId, sourceTool: "generated_output", status: "available" });
   };
 
   /** Plants AGY's step output and the image bytes, as AGY persists them before it reports the step DONE. */
@@ -143,7 +150,7 @@ suite("AGY multi-image turn: every generated image stays previewable (fake AGY t
    * opened every earlier image and listed the artifacts, as happens while the user watches the Artifacts tab.
    */
   const runWatchedImageTurn = async (input: {
-    runId: string; send: () => void; messages: Wire[]; script: ReturnType<typeof scriptImageTurn>;
+    owner: ArtifactOwner; send: () => void; messages: Wire[]; script: ReturnType<typeof scriptImageTurn>;
     images: Map<number, string>; completedTurns: number;
   }) => {
     const { conversationId, steps, gate } = input.script;
@@ -155,8 +162,8 @@ suite("AGY multi-image turn: every generated image stays previewable (fake AGY t
         await waitFor(input.messages, imageFileChange(input.images.get(step)!), `FILE_CHANGE image ${step}`);
         // The user opens the newly produced image and every earlier one, then the tab re-hydrates the list.
         const shown = new Map([...input.images].filter(([s]) => s <= step));
-        await expectPreviews(input.runId, shown);
-        await expectListed(input.runId, shown);
+        await expectPreviews(input.owner, shown);
+        await expectListed(input.owner, shown);
       }
     } finally {
       // On a failed assertion, let the scripted turn finish so the run can be terminated and cleaned up.
@@ -219,12 +226,13 @@ suite("AGY multi-image turn: every generated image stays previewable (fake AGY t
     agentRunIds.push(runId);
     const images = new Map<number, string>();
     const first = await openSocket(`/ws/agent/${runId}`);
-    await runWatchedImageTurn({ runId, messages: first.messages, script: firstTurn, images,
+    const owner: ArtifactOwner = { runId };
+    await runWatchedImageTurn({ owner, messages: first.messages, script: firstTurn, images,
       completedTurns: 1,
       send: () => sendE2eSendMessageCommand(first.socket, { agent_run_id: runId, content: "Generate three images." }) });
     // Reopening the Artifacts tab later in the same active run (no restart).
-    await expectListed(runId, images);
-    await expectPreviews(runId, images);
+    await expectListed(owner, images);
+    await expectPreviews(owner, images);
 
     // E-003 (SCN-003 with real recorded data): the terminated run is read from disk.
     const terminated = (await graphql<{ terminateAgentRun: { success: boolean } }>(
@@ -232,8 +240,8 @@ suite("AGY multi-image turn: every generated image stays previewable (fake AGY t
       { agentRunId: runId })).terminateAgentRun;
     expect(terminated.success).toBe(true);
     first.socket.close();
-    await expectListed(runId, images);
-    await expectPreviews(runId, images);
+    await expectListed(owner, images);
+    await expectPreviews(owner, images);
 
     // Re-activation of a run that already has file_changes.json: earlier and new images are all served.
     const secondTurn = scriptImageTurn(conversationId, [4, 5]);
@@ -241,15 +249,15 @@ suite("AGY multi-image turn: every generated image stays previewable (fake AGY t
       "mutation($agentRunId: String!) { restoreAgentRun(agentRunId: $agentRunId) { success message runId } }",
       { agentRunId: runId })).restoreAgentRun;
     expect(restored, restored.message).toMatchObject({ success: true, runId });
-    await expectListed(runId, images);
-    await expectPreviews(runId, images);
+    await expectListed(owner, images);
+    await expectPreviews(owner, images);
     const second = await openSocket(`/ws/agent/${runId}`);
-    await runWatchedImageTurn({ runId, messages: second.messages, script: secondTurn, images,
+    await runWatchedImageTurn({ owner, messages: second.messages, script: secondTurn, images,
       completedTurns: 1,
       send: () => sendE2eSendMessageCommand(second.socket, { agent_run_id: runId, content: "Generate two more." }) });
     expect(images.size).toBe(5);
-    await expectListed(runId, images);
-    await expectPreviews(runId, images);
+    await expectListed(owner, images);
+    await expectPreviews(owner, images);
   }, 120_000);
 
   it("E-002/E-004 Team member: images previewable during the turn and after the team run is terminated", async () => {
@@ -284,18 +292,20 @@ suite("AGY multi-image turn: every generated image stays previewable (fake AGY t
 
     const images = new Map<number, string>();
     const team = await openSocket(`/ws/agent-team/${teamRunId}`);
-    await runWatchedImageTurn({ runId: memberRunId!, messages: team.messages, script,
+    // A Team member's artifacts are read through its team run (getTeamMemberFileChanges and the team-run route).
+    const creator: ArtifactOwner = { teamRunId, runId: memberRunId! };
+    await runWatchedImageTurn({ owner: creator, messages: team.messages, script,
       images, completedTurns: 1,
       send: () => sendE2eSendMessageCommand(team.socket, { agent_run_id: memberRunId, content: "Generate three images." }) });
-    await expectListed(memberRunId!, images);
-    await expectPreviews(memberRunId!, images);
+    await expectListed(creator, images);
+    await expectPreviews(creator, images);
 
     const terminated = (await graphql<{ terminateAgentTeamRun: { success: boolean } }>(
       "mutation($teamRunId: String!) { terminateAgentTeamRun(teamRunId: $teamRunId) { success } }",
       { teamRunId })).terminateAgentTeamRun;
     expect(terminated.success).toBe(true);
     team.socket.close();
-    await expectListed(memberRunId!, images);
-    await expectPreviews(memberRunId!, images);
+    await expectListed(creator, images);
+    await expectPreviews(creator, images);
   }, 120_000);
 });

@@ -1,0 +1,9 @@
+# API-05 command: env -i PATH HOME=<temp> RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<abs>/tests/fixtures/agy-failure-cli.mjs WORK_JOURNAL_E2E_EVIDENCE_DIR=<evidence>/API-05-scripted-agy pnpm exec vitest run tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts --no-watch
+# commit 40fb8233d5 + uncommitted new test; date 2026-10-30T10:44:49Z
+# earlier attempts (not kept): default case failed the turn; linked_skills CALL_TOOL turn recorded only reply text (no tool_call in raw traces); then case mcp_calls.
+
+ ✓ tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts (1 test) 988ms
+     ✓ a refused message and a handoff-rules read are journalled in neutral words  420ms
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Duration  11.18s (transform 7.30s, setup 64ms, import 9.68s, tests 988ms, environment 0ms)

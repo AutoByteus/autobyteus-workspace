@@ -151,7 +151,8 @@ describe("list_available_agents (REQ-001/002)", () => {
     const selected = options([LIST_AVAILABLE_AGENTS_TOOL_NAME], withLister());
     expect(selected.listAvailableAgentsToolingEnabled).toBe(true);
     expect(selected.agentToolsMcpEnabledToolNames).toContain(LIST_AVAILABLE_AGENTS_TOOL_NAME);
-    expect(selected.allowedTools).toContain(buildClaudeAgentToolsMcpToolName(LIST_AVAILABLE_AGENTS_TOOL_NAME));
+    // Allowed per call from the run's current descriptor, not through allowedTools (autobyteus-324).
+    expect(selected.allowedTools).not.toContain(buildClaudeAgentToolsMcpToolName(LIST_AVAILABLE_AGENTS_TOOL_NAME));
     expect(options([], withLister()).agentToolsMcpEnabledToolNames).not.toContain(LIST_AVAILABLE_AGENTS_TOOL_NAME);
     expect(options([LIST_AVAILABLE_AGENTS_TOOL_NAME], withoutLister()).listAvailableAgentsToolingEnabled).toBe(false);
   });

@@ -2,7 +2,7 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import zlib from "node:zlib";
-import { expect, it } from "vitest";
+import { expect, it, onTestFinished } from "vitest";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { ContextFile } from "autobyteus-ts/agent/message/context-file.js";
 import { ContextFileType } from "autobyteus-ts/agent/message/context-file-type.js";
@@ -11,6 +11,7 @@ import { createAgyRunCapsule } from "../../../../../src/agent-execution/backends
 import { AgyStreamProcess } from "../../../../../src/agent-execution/backends/antigravity/stream/agy-stream-process.js";
 import type { AgyStreamMessage } from "../../../../../src/agent-execution/backends/antigravity/stream/agy-stream-message.js";
 import { buildAgyUserMessageText } from "../../../../../src/agent-execution/backends/antigravity/input/agy-user-message-text.js";
+import { activateAgentToolsMcpTestRun, startAgentToolsMcpTestHost } from "../../../../helpers/agent-tools-mcp-test-host.js";
 
 // Opt-in (AGY_LIVE=1): the installed `agy` CLI and real model calls. AC-006: an attached image reaches
 // the AGY agent through the path text, the agent opens it with view_file and sees its actual content.
@@ -44,6 +45,8 @@ const solidPng = (size: number, [r, g, b]: [number, number, number]) => {
 
 it.skipIf(process.env.AGY_LIVE !== "1")("lets the AGY agent open an attached image with view_file and read an attached file", async () => {
   const base = await fs.mkdtemp(path.join(os.tmpdir(), "agy-image-live-"));
+  const agentTools = await startAgentToolsMcpTestHost();
+  onTestFinished(() => agentTools.close());
   const workspacePath = path.join(base, "workspace");
   const attachments = path.join(base, "attachments"); // outside the workspace, like server-data uploads
   await fs.mkdir(workspacePath); await fs.mkdir(attachments);
@@ -52,7 +55,8 @@ it.skipIf(process.env.AGY_LIVE !== "1")("lets the AGY agent open an attached ima
   await fs.writeFile(imagePath, solidPng(64, [220, 20, 20]));
   await fs.writeFile(notePath, "NOTE-MARKER-4721\n");
   const capsule = await createAgyRunCapsule({ agentDefinitionId: "test-agent", runId: "image-live", memoryDir: path.join(base, "memory"),
-    workspacePath, identity: "You are an AutoByteus test agent.", configuredSkillBindings: [], mcpDescriptor: null });
+    workspacePath, identity: "You are an AutoByteus test agent.", configuredSkillBindings: [],
+    mcpDescriptor: activateAgentToolsMcpTestRun(agentTools.runSessions, "image-live") });
   const text = buildAgyUserMessageText(new AgentInputUserMessage(
     "What colour is the attached image, and what marker is written in the attached text file? Reply as: <colour> <marker>.",
     SenderType.USER, [new ContextFile(imagePath, ContextFileType.IMAGE), new ContextFile(notePath, ContextFileType.TEXT)]));

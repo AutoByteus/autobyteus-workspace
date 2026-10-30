@@ -1,7 +1,6 @@
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import type { RunNavigationEffect } from '~/services/agentStreaming/agentStreamMutationEffects';
-import type { RunTreeWorkspaceNode } from '~/utils/runTreeProjection';
-import type { RunHistoryTeamExecutionRow, TeamTreeNode } from './runHistoryTypes';
+import type { RunHistoryTeamExecutionRow, TeamTreeNode, WorkspaceHistoryWorkspaceNode } from './runHistoryTypes';
 import {
   runHistoryExecutionRowIndexKey,
   runHistoryMemberIndexKey,
@@ -86,7 +85,7 @@ const patchStandalone = (
   runs[index.runIndex] = candidate;
   const agents = [...workspace.agents];
   agents[index.agentIndex] = { ...agent, runs };
-  const workspaceNodes: RunTreeWorkspaceNode[] = [...state.workspaceNodes];
+  const workspaceNodes: WorkspaceHistoryWorkspaceNode[] = [...state.workspaceNodes];
   workspaceNodes[index.workspaceIndex] = { ...workspace, agents };
   return { ...state, workspaceNodes };
 };

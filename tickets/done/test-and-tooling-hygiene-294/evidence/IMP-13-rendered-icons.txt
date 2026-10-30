@@ -1,0 +1,13 @@
+# IMP-13 rendered check of the converted icons (H-28, AC-029; implementation self-check, not API/E2E sign-off)
+# steps: server built from this branch and started on a temp data root (IMP-12); `nuxi dev` of autobyteus-web against it
+#        (probe env recipe); Chrome tab on /settings; DOM read with run_script; then MCP Servers → Add Server → Add Argument.
+# commit: 6fa5f443c6
+# environment: macOS 26.5.2, node v22.23.1, Nuxt dev server, Iconify API reachable
+# date: 2026-10-27T19:29:29Z
+Settings navigation (pages/settings.vue, 13 former class icons + Back): every entry renders an <svg> of 20×20 px:
+  Back to Workspace, API Keys, Agent Runtimes, Model Routing, Token Statistics, Display, Language, Local Tools,
+  MCP Servers, Application Packages, Agent Packages, Server Settings, Extensions, Updates → svg true, [20,20]
+MCP Servers list (McpServerList.vue): "Bulk Import" svg [16,16]; "Add Server" svg [16,16]
+Add MCP Server (McpServerFormModal.vue): "+ Add Argument" icon visible; after Add Argument the row's delete button svg [20,20] (trash)
+Screenshots: IMP-13-settings-nav-icons.png, IMP-13-mcp-add-server-icons.png, IMP-13-mcp-argument-row-icons.png
+Before this change the same elements were empty <span class="i-heroicons-…"> (no CSS provides those classes).

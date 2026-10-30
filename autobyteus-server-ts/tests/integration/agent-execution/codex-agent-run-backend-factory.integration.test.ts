@@ -31,7 +31,6 @@ import { getWorkspaceManager } from "../../../src/workspaces/workspace-manager.j
 import { createAgentProviderFactoryBuilder } from "../../../src/agent-execution/providers/agent-provider-factory-builder.js";
 import { createAgentToolsMcpHost, type AgentToolsMcpHost } from "../../../src/agent-tools/mcp/agent-tools-mcp-host.js";
 import type {
-  AgentToolMcpRunSessionActivator,
   ScopedAgentToolMcpSessionAuthority,
 } from "../../../src/agent-tools/mcp/agent-tool-mcp-session-authority.js";
 import { PublishedArtifactPublicationService } from "../../../src/services/published-artifacts/published-artifact-publication-service.js";
@@ -216,25 +215,21 @@ const createFactory = async (input: {
   toolNames?: string[];
 }) => {
   const inert = Object.freeze({}) as never;
-  let agentToolMcpRunSessions: AgentToolMcpRunSessionActivator = {
-    activateForRun: () => ({ kind: "not_exposed" as const }),
-  };
-  if (input.toolNames?.length) {
-    const host = createAgentToolsMcpHost({ loggingConfig: testLoggingConfig });
-    const authority = host.sessionAuthorities.begin({
-      scopeIdentity: `codex-live:${input.runId}`,
-    }).complete({
-      executionCapabilities: {
-        publishedArtifactPublisher: new PublishedArtifactPublicationService(),
-        applicationAgentTools: null,
-      },
-      assertExecutionCapabilitiesReady: () => undefined,
-    });
-    await host.listen();
-    activeAgentToolsMcpHosts.push(host);
-    activeAgentToolsMcpAuthorities.push(authority);
-    agentToolMcpRunSessions = authority.runSessions;
-  }
+  // Every run has an Agent Tools MCP session, so Codex always gets a live endpoint.
+  const host = createAgentToolsMcpHost({ loggingConfig: testLoggingConfig });
+  const authority = host.sessionAuthorities.begin({
+    scopeIdentity: `codex-live:${input.runId}`,
+  }).complete({
+    executionCapabilities: {
+      publishedArtifactPublisher: new PublishedArtifactPublicationService(),
+      applicationAgentTools: null,
+    },
+    assertExecutionCapabilitiesReady: () => undefined,
+  });
+  await host.listen();
+  activeAgentToolsMcpHosts.push(host);
+  activeAgentToolsMcpAuthorities.push(authority);
+  const agentToolMcpRunSessions = authority.runSessions;
 
   const builder = createAgentProviderFactoryBuilder({
     workspaceManager: getWorkspaceManager(),

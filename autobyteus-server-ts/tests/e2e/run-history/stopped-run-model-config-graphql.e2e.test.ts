@@ -378,11 +378,11 @@ describe("stopped run model-config GraphQL lifecycle", () => {
     await expect(updateAgent(first.serverUrl, {
       agentRunId: runId,
       llmModelIdentifier: model,
-      llmConfig: { unsupported_setting: true },
+      llmConfig: { reasoning_effort: "not-a-level" },
     })).resolves.toMatchObject({
       success: false,
       outcome: "VALIDATION_FAILED",
-      fieldErrors: [{ path: "llmConfig.unsupported_setting" }],
+      fieldErrors: [{ path: "llmConfig.reasoning_effort" }],
       canonicalSelection: { llmModelIdentifier: model, llmConfig: INITIAL_CONFIG },
     });
     expect(fs.readFileSync(metadataPath, "utf8")).toBe(stoppedFile);
@@ -607,12 +607,12 @@ describe("stopped run model-config GraphQL lifecycle", () => {
       patches: [{
         scopeKind: "CONFIGURED_AGENT",
         scopeAddress: "/reviewer", llmModelIdentifier: model,
-        llmConfig: { unsupported_setting: true },
+        llmConfig: { reasoning_effort: "not-a-level" },
       }],
     })).resolves.toMatchObject({
       success: false,
       outcome: "VALIDATION_FAILED",
-      fieldErrors: [{ path: "patches[/reviewer].llmConfig.unsupported_setting" }],
+      fieldErrors: [{ path: "patches[/reviewer].llmConfig.reasoning_effort" }],
     });
     expect(fs.readFileSync(treePath, "utf8")).toBe(stoppedFile);
 

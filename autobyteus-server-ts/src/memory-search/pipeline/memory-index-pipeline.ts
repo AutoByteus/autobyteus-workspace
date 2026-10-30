@@ -32,7 +32,7 @@ export type PassRequest =
   | Readonly<{ kind: "runs"; memoryDirs: ReadonlySet<string> }>;
 
 type Embeddings = Pick<EmbeddingIndex, "sync" | "dropCollection" | "activeModelOnDisk" | "fingerprintItems" | "collectionStatus">;
-type Journals = Pick<WorkJournalService, "ensureCurrent" | "journalFileVersions" | "readJournalFile" | "onJournalChanged">;
+type Journals = Pick<WorkJournalService, "ensureCurrent" | "rendererRevision" | "journalFileVersions" | "readJournalFile" | "onJournalChanged">;
 
 export type MemoryIndexPipelineDependencies = Readonly<{
   store: MemorySearchStore;
@@ -285,11 +285,12 @@ export class MemoryIndexPipeline {
     if (request.kind !== "runs") {
       const stored = new Map(this.deps.store.listRuns().map(({ run, rawFingerprint }) => [run.runKey, rawFingerprint]));
       const ownCalls = {
-        ensureCurrent: async (target: Parameters<Journals["ensureCurrent"]>[0]) => {
+        rendererRevision: this.deps.journals.rendererRevision,
+        ensureCurrent: async (target: Parameters<Journals["ensureCurrent"]>[0], options?: Parameters<Journals["ensureCurrent"]>[1]) => {
           const memoryDir = path.resolve(target.memoryDir);
           this.ownJournalCalls.add(memoryDir);
           try {
-            return await this.deps.journals.ensureCurrent(target);
+            return await this.deps.journals.ensureCurrent(target, options);
           } finally {
             this.ownJournalCalls.delete(memoryDir);
           }
@@ -297,7 +298,7 @@ export class MemoryIndexPipeline {
       };
       const kept = await makeJournalsCurrent(ownCalls,
         runs.map((run) => ({ run, storedFingerprint: stored.get(run.runKey) ?? null })),
-        (done) => { step.done = done; }, () => this.disposed);
+        (done) => { step.done = done; }, () => this.disposed, request.kind === "rebuild");
       for (const [runKey, fingerprint] of kept) this.deps.store.setRawFingerprint(runKey, fingerprint);
     }
     Object.assign(step, { state: "done", done: runs.length });

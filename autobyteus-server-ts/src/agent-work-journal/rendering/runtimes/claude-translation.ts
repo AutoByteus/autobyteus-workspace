@@ -1,3 +1,5 @@
+import { agentRuntimeName } from "@autobyteus/agent-presentation-contracts";
+import { RuntimeKind } from "../../../runtime-management/runtime-kind-enum.js";
 import {
   asInteger,
   asText,
@@ -10,12 +12,22 @@ import {
   shellWord,
   toCatNumberedLinesLoose,
 } from "../command-text.js";
-import { commandLine, convertedCommandLine, editFileLine, searchWebLine, writeFileLine } from "../journal-actions.js";
+import {
+  backgroundOutputLine,
+  commandLine,
+  confirmedOutcome,
+  convertedCommandLine,
+  editFileLine,
+  loadSkillLine,
+  searchWebLine,
+  stopBackgroundTaskLine,
+  writeFileLine,
+} from "../journal-actions.js";
 import { splitLines } from "../output-shortener.js";
-import { normalizeRecordedResult } from "../result-envelopes.js";
+import { compactJson, normalizeRecordedResult } from "../result-envelopes.js";
 import { diffTexts, type TextDiff } from "../text-diff.js";
-import type { NormalizedToolResult } from "../tool-outcome.js";
-import type { BuiltInConverter, RecordedResult, RuntimeTranslation } from "./runtime-translation.js";
+import { NO_RESULT, type NormalizedToolResult } from "../tool-outcome.js";
+import type { BodyPart, BuiltInConverter, RecordedResult, RuntimeTranslation } from "./runtime-translation.js";
 
 /** Claude Agent SDK: contract §4 (Claude table) and §6 (Claude runtime texts). */
 
@@ -134,8 +146,77 @@ const webSearch: BuiltInConverter = (call, result) => {
   return searchWebLine(query ? [query] : [], normalized(result));
 };
 
+/** `Skill` loads a skill's instructions: the same line as reading its file (contract §5). */
+const skill: BuiltInConverter = (call, result) =>
+  loadSkillLine(asText(call.args.skill) ?? "(name not recorded)", normalized(result));
+
+const TODO_STATUS: Readonly<Record<string, string>> = { completed: "done", in_progress: "doing", pending: "todo" };
+
+/** `Update to-do list (<n> items)`, the items below as `[done]`, `[doing]`, `[todo]`. */
+const todoWrite: BuiltInConverter = (call, result) => {
+  const items = Array.isArray(call.args.todos)
+    ? call.args.todos.filter((item): item is Record<string, unknown> => !!item && typeof item === "object")
+    : [];
+  const settled = confirmedOutcome(normalized(result));
+  const lines = items.map((item) => `[${TODO_STATUS[asText(item.status) ?? ""] ?? asText(item.status) ?? "todo"}] ${asText(item.content) ?? "(item not recorded)"}`);
+  return {
+    head: `Update to-do list (${items.length} item${items.length === 1 ? "" : "s"})`,
+    outcome: settled.outcome,
+    parts: [...(lines.length ? [{ kind: "message" as const, text: lines.join("\n") }] : []), ...settled.parts],
+  };
+};
+
+/** `Spawn sub-agent: <description>`, the task text and the result below. */
+const agent: BuiltInConverter = (call, result) => {
+  const prompt = asText(call.args.prompt);
+  const recorded = normalized(result) ?? NO_RESULT;
+  const description = asText(call.args.description) ?? splitLines(prompt ?? "")[0] ?? "(task not recorded)";
+  const parts: BodyPart[] = [
+    ...(prompt ? [{ kind: "message" as const, text: prompt }] : []),
+    ...(recorded.output ? [{ kind: "output" as const, text: recorded.output }] : []),
+  ];
+  return { head: `Spawn sub-agent: ${description}${isTrue(call.args.run_in_background) ? " (background)" : ""}`, outcome: recorded.outcome, parts };
+};
+
+const toolSearch: BuiltInConverter = (call, result) => {
+  const recorded = normalized(result) ?? NO_RESULT;
+  return {
+    head: `Look up tools: ${JSON.stringify(asText(call.args.query) ?? "")}`,
+    outcome: recorded.outcome,
+    parts: recorded.output ? [{ kind: "output", text: recorded.output }] : [],
+  };
+};
+
+/** The agent's own task list (not the project's board). */
+const taskCreate: BuiltInConverter = (call, result) => {
+  const { outcome, parts } = confirmedOutcome(normalized(result));
+  return { head: `Create task: ${asText(call.args.subject) ?? "(subject not recorded)"}`, outcome, parts };
+};
+
+const taskUpdate: BuiltInConverter = (call, result) => {
+  const { outcome, parts } = confirmedOutcome(normalized(result));
+  const status = asText(call.args.status);
+  return { head: `Update task ${asText(call.args.taskId) ?? "(id not recorded)"}${status ? `: ${status}` : ""}`, outcome, parts };
+};
+
+const taskOutput: BuiltInConverter = (call, result) => backgroundOutputLine(asText(call.args.task_id), normalized(result));
+
+const taskStop: BuiltInConverter = (call, result) => stopBackgroundTaskLine(asText(call.args.task_id), normalized(result));
+
+/** `Run workflow: <name>`, its arguments below. */
+const workflow: BuiltInConverter = (call, result) => {
+  const { outcome, parts } = confirmedOutcome(normalized(result));
+  const args = call.args.args;
+  const text = typeof args === "string" ? asText(args) : args === undefined || args === null ? null : compactJson(args);
+  return {
+    head: `Run workflow: ${asText(call.args.name) ?? "(name not recorded)"}`,
+    outcome,
+    parts: [...(text ? [{ kind: "message" as const, text }] : []), ...parts],
+  };
+};
+
 export const claudeTranslation: RuntimeTranslation = Object.freeze({
-  label: "Claude",
+  label: agentRuntimeName(RuntimeKind.CLAUDE_AGENT_SDK),
   builtInTools: new Map<string, BuiltInConverter>([
     ["Bash", bash],
     ["Monitor", monitor],
@@ -148,6 +229,15 @@ export const claudeTranslation: RuntimeTranslation = Object.freeze({
     ["MultiEdit", edit],
     ["NotebookEdit", notebookEdit],
     ["WebSearch", webSearch],
+    ["Skill", skill],
+    ["TodoWrite", todoWrite],
+    ["Agent", agent],
+    ["ToolSearch", toolSearch],
+    ["TaskCreate", taskCreate],
+    ["TaskUpdate", taskUpdate],
+    ["TaskOutput", taskOutput],
+    ["TaskStop", taskStop],
+    ["Workflow", workflow],
   ]),
   normalizeResult: normalizeClaudeResult,
 });

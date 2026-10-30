@@ -1,0 +1,82 @@
+# Check: IMP-05-codex-thread-config-merge-R4
+# Command (in /Users/normy/autobyteus_org/autobyteus-worktrees/integration-credential-proxy/tickets/in-progress/integration-credential-proxy/evidence/probe, clean env: env -i PATH HOME=<temp> TMPDIR): node r4-codex-thread-config-merge.mjs
+# Commit: 32f14bfd4d (branch codex/integration-credential-proxy)
+# Environment: macOS 26.5.2 arm64, node v22.23.1, git 2.50.1
+# Date: 2026-10-30T08:10:13Z
+
+{
+  "codex": "codex-cli 0.166.0",
+  "userConfig": {
+    "shell_environment_policy": {
+      "inherit": "core",
+      "set": {
+        "USER_OWN_VAR": "from-user-config"
+      }
+    },
+    "sandbox_workspace_write": {
+      "writable_roots": [
+        "<temp>/extra"
+      ]
+    }
+  },
+  "results": [
+    {
+      "case": "E1 env, no thread config (baseline)",
+      "sandbox": "danger-full-access",
+      "threadConfig": null,
+      "turn": "completed",
+      "observed": "USER_OWN_VAR=from-user-config THREAD_VAR=<unset> SERVER_ONLY_VAR=<unset>"
+    },
+    {
+      "case": "E2 env, nested {shell_environment_policy:{set:{...}}}",
+      "sandbox": "danger-full-access",
+      "threadConfig": {
+        "shell_environment_policy": {
+          "set": {
+            "THREAD_VAR": "from-thread-config"
+          }
+        }
+      },
+      "turn": "completed",
+      "observed": "USER_OWN_VAR=from-user-config THREAD_VAR=from-thread-config SERVER_ONLY_VAR=<unset>"
+    },
+    {
+      "case": "E3 env, dotted shell_environment_policy.set.THREAD_VAR",
+      "sandbox": "danger-full-access",
+      "threadConfig": {
+        "shell_environment_policy.set.THREAD_VAR": "from-thread-config"
+      },
+      "turn": "completed",
+      "observed": "USER_OWN_VAR=from-user-config THREAD_VAR=from-thread-config SERVER_ONLY_VAR=<unset>"
+    },
+    {
+      "case": "S1 workspace-write, no thread config (baseline)",
+      "sandbox": "workspace-write",
+      "threadConfig": null,
+      "turn": "completed",
+      "observed": "WRITABLE_ROOT=kept LOOPBACK=blocked"
+    },
+    {
+      "case": "S2 workspace-write, nested {sandbox_workspace_write:{network_access:true}}",
+      "sandbox": "workspace-write",
+      "threadConfig": {
+        "sandbox_workspace_write": {
+          "network_access": true
+        }
+      },
+      "turn": "completed",
+      "observed": "WRITABLE_ROOT=kept LOOPBACK=reachable"
+    },
+    {
+      "case": "S3 workspace-write, dotted sandbox_workspace_write.network_access",
+      "sandbox": "workspace-write",
+      "threadConfig": {
+        "sandbox_workspace_write.network_access": true
+      },
+      "turn": "completed",
+      "observed": "WRITABLE_ROOT=kept LOOPBACK=reachable"
+    }
+  ]
+}
+
+# Exit code: 0

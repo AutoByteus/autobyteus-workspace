@@ -6,6 +6,10 @@ deploying. A generic delivery process covers the order of the steps. This file
 holds what is specific to this repository, and for this repository it wins
 where the two differ.
 
+Read the copy on `origin/personal`, for example in the ticket worktree after
+integrating the latest base, not the one in the main checkout: that checkout
+is often behind and may lack newer rules.
+
 For what each release workflow builds, signs and validates, and for the
 required secrets, see [Workflow Reference](#workflow-reference) at the end of
 this file.
@@ -84,12 +88,14 @@ The user decides at verification. There are three options:
 ## Checks Before Tagging
 
 Run these checks on the merged `personal` state. The release workflows run
-the first two too, but by then the tag is already pushed.
+the first two too, but by then the tag is already pushed. They do not run the
+release smoke check.
 
 ```bash
 python3 scripts/check_licensing.py
 python3 scripts/check_repository_artifact_hygiene.py
 scripts/check_secrets.sh <previous-release-tag>..HEAD   # Secret Gate over everything the release adds
+python3 scripts/release_smoke.py
 ```
 
 The hygiene check rejects these tracked paths:
@@ -106,6 +112,57 @@ The hygiene check rejects these tracked paths:
 Ticket evidence is the usual source. For example, a log named after a script
 such as `web-audit:localization-literals.log` broke the `v1.5.2-beta.1`
 Windows build at checkout. Name evidence files with `-` instead of `:`.
+
+### Release smoke check
+
+`python3 scripts/release_smoke.py` starts agent runs with configured skills the
+way users do, on all five runtimes: Claude, Codex, Grok, Antigravity and
+AutoByteus. It covers a brand-new run, a brand-new team member with no memory
+folder yet, a run in a workspace whose `.claude/.codex/.grok/skills` link to
+the same skill, a restored run, and a different same-named skill. v1.5.6-beta.2
+shipped in two betas with runs in such a workspace, and every brand-new run,
+failing to start; no check before tagging started a run.
+
+- **When:** before every beta and stable tag, on the merged state you will
+  tag, after `pnpm install` and `pnpm -C autobyteus-server-ts prebuild`.
+- **Prerequisites:** `claude`, `codex` and `grok` on `PATH` and signed in on
+  this machine.
+- **Cost:** about five short turns per live runtime (Claude, Codex, Grok), each
+  on its cheapest model. Antigravity and AutoByteus run scripted, with no
+  provider calls. A few minutes in total. The binding limit is the live CLIs'
+  subscription quotas, not money:
+  - **Grok:** one run uses about 150–240k tokens against the free tier's 600k
+    per rolling 24 hours, roughly two runs a day.
+  - **Codex:** it uses the same ChatGPT account quota as your other Codex work.
+  - A quota refusal, such as "usage limit" or a 429, is handled like a runtime
+    that cannot run: wait for the reset, or the user waives that runtime for
+    this release and the waiver is recorded.
+- **Pass:** exit 0. Put the printed summary in the delivery report.
+- **Failure, or a runtime that cannot run:** no tag. The summary names the
+  runtime, the scenario and the reason, and the step logs stay in the temp
+  folder it prints. Find the cause first (TESTING.md Rule 9). The only
+  exception is the user explicitly waiving a named runtime at the release
+  decision. Record the waiver and its reason in the delivery report.
+
+### Build-only release run
+
+Before every tag, beta or stable, run the desktop release workflow build-only
+on the merge you pushed to `personal`, and tag only after it passes:
+
+```bash
+pnpm release:test --ref personal   # builds all five desktop targets; publishes nothing
+gh run list --workflow release-desktop.yml --limit 1
+gh run watch <run-id> --exit-status   # about 25 minutes
+```
+
+- Local builds and clean clones do not replace this run. They usually have
+  the workspace packages' `*/dist/` already built (TESTING.md's install order
+  builds them), while a release runner starts from `pnpm install` alone.
+- Do not skip it because a change "does not touch the build". That judgement
+  is how `v1.5.9-beta.14` shipped without desktop assets (see
+  [Case Studies](#case-studies)).
+- If it fails, nothing is published and no version number is used up. Fix the
+  problem on `personal` and run it again.
 
 ## Cutting The Release
 
@@ -144,8 +201,6 @@ git push origin vX.Y.Z[-beta.N]
   checks a version.
 - Release notes are user-facing and functional. Leave internal IDs, review
   rounds and file paths out.
-- Build-only validation, with no GitHub release published:
-  `pnpm release:test --ref personal`.
 
 ## Watching The Rollout
 
@@ -158,15 +213,22 @@ Pushing a `v*` tag starts four independent workflows:
 | iOS App Store Connect Release | A TestFlight upload |
 | Server Docker Release | `autobyteus/autobyteus-server:X.Y.Z[-beta.N]`. A stable tag also moves `:latest`; the newest tag, stable or beta, moves `:beta` |
 
-A release is done only when all four have succeeded:
+A release is done only when all four have succeeded. Watch the four runs
+together, not one after another, and act on the first failure. Desktop builds
+can fail within minutes while Docker is still running:
 
 ```bash
-gh run list --limit 4
-gh run watch <run-id> --exit-status
+gh run list --limit 4   # the four run IDs of the tag
+for id in <run-id-1> <run-id-2> <run-id-3> <run-id-4>; do
+  gh run watch "$id" --exit-status > "/tmp/release-watch-$id.log" 2>&1 &
+done
+gh run list --limit 4   # repeat every few minutes until all four have finished
 gh release view vX.Y.Z[-beta.N] --json isPrerelease,assets --jq '{pre: .isPrerelease, assets: [.assets[].name]}'
 ```
 
-Compare the assets with the table above: a complete release has 17. The
+Compare the assets with the table above: a complete release has 17. Until all
+four runs have succeeded and the assets are complete, the release is in
+progress: report it as "tagged, workflows running", never as released. The
 workflows publish independently, so a desktop failure still leaves the Android
 APK, the TestFlight build and the Docker image published. That is a partial
 release. Record it as one.
@@ -184,6 +246,42 @@ release. Record it as one.
   with `gh run rerun <run-id> --failed`, or republish an existing tag with
   `pnpm release:manual-dispatch vX.Y.Z --ref personal`. Do not dispatch manually
   right after a fresh tag push. The push has already started the workflows.
+
+## Case Studies
+
+### `v1.5.9-beta.14`: a new build step failed only on the release runners (2026-10-28)
+
+- **What happened:**
+  - A ticket added the web type check (`pnpm typecheck`) to every
+    `build:electron*` chain, before `prepare-server`.
+  - The check reads the types of `@autobyteus/application-sdk-contracts` from
+    its `dist/`, which the chain builds only inside `prepare-server`.
+  - On the release runners, which start from `pnpm install`, the check found
+    no types (`TS2307: Cannot find module …`) and stopped all five desktop
+    builds.
+  - Android, iOS and Docker published, so the GitHub release had 2 of 17
+    assets: a partial release.
+- **Why every check passed before the tag:**
+  - Every local run had the shared packages built already, including two
+    clean clones that followed TESTING.md's install order.
+  - No run used the release job's order (install, then the build chain), and
+    no build-only release run was made.
+- **Why it was seen late:**
+  - The delivery watched the four runs one after another, starting with
+    Docker, so the desktop failure at minute 5 went unseen for about 30
+    minutes.
+  - The release had been reported as released while the runs were still
+    going. The user found the failure on the Actions page.
+- **Also:** the delivery read this guide from the main checkout, which was
+  behind and lacked the [Secret Gate](#secret-gate). The gate was run late; it
+  passed.
+- **Rules added from it:**
+  - [Build-only release run](#build-only-release-run) before every tag;
+  - watch the four runs together, and report a release only when it is
+    complete ([Watching The Rollout](#watching-the-rollout));
+  - read this guide from `origin/personal`.
+- **Recovery:** the tag stays. The fix goes to `personal` and ships as the
+  next beta.
 
 ## Rollback
 

@@ -459,7 +459,8 @@ describe('TokenUsageMeterPanel', () => {
     const primary = wrapper.get('[data-test="token-usage-primary"]').text();
     expect(primary).toContain('25M');
     expect(primary).toContain('$22.60');
-    expect(primary).toContain('codex_app_server');
+    expect(primary).toContain('Codex App Server');
+    expect(primary).not.toContain('codex_app_server');
     expect(primary).toContain('199 reports');
     expect(primary).not.toContain('2 reports');
   });
@@ -961,7 +962,8 @@ describe('TokenUsageMeterPanel', () => {
     const primary = wrapper.get('[data-test="token-usage-primary"]').text();
     expect(primary).toContain('25M');
     expect(primary).toContain('$22.60');
-    expect(primary).toContain('codex_app_server');
+    expect(primary).toContain('Codex App Server');
+    expect(primary).not.toContain('codex_app_server');
     expect(primary).toContain('199 reports');
     expect(wrapper.get('[data-test="team-token-total-row"]').text()).toContain('30M');
   });

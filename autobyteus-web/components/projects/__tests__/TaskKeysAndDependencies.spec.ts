@@ -221,6 +221,27 @@ describe('TaskDependencyPicker (UXJ-003, VIS-007–009, QR-004)', () => {
     wrapper.unmount()
   })
 
+  it('with the options already loaded and the newest a loop, Enter chooses the first choosable Task (autobyteus-320, AC-010)', async () => {
+    // Editing t2: t4 and t3 depend on it (loops), t1 is choosable; nothing changes the options after mount.
+    seed([task(1), task(2), task(3, 'TODO', ['t2']), task(4, 'TODO', ['t3'])])
+    const { wrapper, model } = mountPicker('t2')
+    await input(wrapper).trigger('click')
+    expect(optionIds(wrapper)).toEqual(['t4', 't3', 't1'])
+    expect(input(wrapper).attributes('aria-activedescendant')).toBe(wrapper.findAll('[role="option"]')[2]!.attributes('id'))
+    await input(wrapper).trigger('keydown', { key: 'Enter' })
+    expect(model.value).toEqual(['t1'])
+    wrapper.unmount()
+  })
+
+  it('with only loop options, Enter chooses nothing', async () => {
+    seed([task(2), task(3, 'TODO', ['t2'])])
+    const { wrapper, model } = mountPicker('t2')
+    await input(wrapper).trigger('click')
+    await input(wrapper).trigger('keydown', { key: 'Enter' })
+    expect(model.value).toEqual([])
+    wrapper.unmount()
+  })
+
   it('removes a chosen Task with its labelled ×, returning focus to the search', async () => {
     seed([task(1), task(2)])
     const { wrapper, model } = mountPicker('t2', ['t1'])

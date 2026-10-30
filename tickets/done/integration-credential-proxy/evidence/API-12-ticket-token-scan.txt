@@ -1,0 +1,41 @@
+# Case: API-12 — token scan of the ticket folder (all documents and evidence) and the new test files (temporary probe; paths and counts only)
+# Command: node /tmp/s311/scan/token-scan.mjs tickets/in-progress/integration-credential-proxy autobyteus-server-ts/tests/e2e/credential-proxy autobyteus-server-ts/tests/fixtures/agy-shell-env-probe-cli.mjs autobyteus-server-ts/tests/fixtures/github-proxy-shell-probe.sh
+# Commit: b95bad702f + this round's uncommitted files; date 2026-10-30T09:36:18Z
+# Also: no unmasked run pass (rp_ followed by 20+ characters) in API/E2E evidence: see the count line
+
+{
+  "tickets/in-progress/integration-credential-proxy": {
+    "files": 72,
+    "filesWithToken": []
+  },
+  "autobyteus-server-ts/tests/e2e/credential-proxy": {
+    "files": 3,
+    "filesWithToken": []
+  },
+  "autobyteus-server-ts/tests/fixtures/agy-shell-env-probe-cli.mjs": {
+    "files": 1,
+    "filesWithToken": []
+  },
+  "autobyteus-server-ts/tests/fixtures/github-proxy-shell-probe.sh": {
+    "files": 1,
+    "filesWithToken": []
+  }
+}
+unmasked-pass-files: 0
+
+## Rescan after the last evidence and documents (2026-10-30T09:39:41Z)
+{
+  "tickets/in-progress/integration-credential-proxy": {
+    "files": 75,
+    "filesWithToken": []
+  },
+  "autobyteus-server-ts/tests/e2e/credential-proxy": {
+    "files": 3,
+    "filesWithToken": []
+  },
+  "autobyteus-server-ts/tests/fixtures": {
+    "files": 100,
+    "filesWithToken": []
+  }
+}
+unmasked-pass-files: 0

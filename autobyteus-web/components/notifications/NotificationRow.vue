@@ -49,9 +49,9 @@
     </div>
 
     <!-- An automatic update's result: what changed, without a click (REQ-008). -->
-    <p v-if="autoUpdated" class="mt-0.5 flex flex-wrap items-center gap-x-1.5 text-xs leading-5 text-gray-500" data-testid="notification-row-auto-changed">
+    <p v-if="autoUpdated && row.kind !== 'app'" class="mt-0.5 flex flex-wrap items-center gap-x-1.5 text-xs leading-5 text-gray-500" data-testid="notification-row-auto-changed">
       <template v-if="row.handledAt"><span :title="fullLocalTime(row.handledAt, locale)" data-testid="notification-row-time">{{ shortRelativeTime(row.handledAt, locale) }}</span><span aria-hidden="true">·</span></template>
-      <a v-if="row.kind !== 'app' && row.kind !== 'agent_runtime'" :href="compareUrlOf(row)" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 rounded font-medium text-sky-700 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-500" data-testid="notification-row-compare">
+      <a v-if="row.kind !== 'agent_runtime'" :href="compareUrlOf(row)" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 rounded font-medium text-sky-700 hover:underline focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-500" data-testid="notification-row-compare">
         {{ $t('settings.notifications.compare') }}<Icon icon="heroicons:arrow-top-right-on-square-20-solid" class="h-3.5 w-3.5" aria-hidden="true" />
       </a>
       <span v-else-if="row.kind === 'agent_runtime'">{{ $t('settings.notifications.outcome.from', { version: row.installedRevision }) }}</span>
@@ -60,7 +60,7 @@
       {{ $t(`settings.notifications.runtime.blocked.${row.runningAgentCount === 1 ? 'one' : 'other'}`, { count: row.runningAgentCount }) }}
       <template v-if="row.outcome === 'AUTO_WAITING' && runtimeAutomatic"> {{ $t('settings.notifications.runtime.blockedAuto') }}</template>
     </p>
-    <p v-if="row.state === 'waiting' && row.outcome === 'AUTO_FAILED'" class="mt-1.5 rounded-md bg-red-50 px-2.5 py-1.5 text-xs leading-5 text-red-800" role="alert" data-testid="notification-row-auto-failed">
+    <p v-if="row.kind !== 'app' && row.state === 'waiting' && row.outcome === 'AUTO_FAILED'" class="mt-1.5 rounded-md bg-red-50 px-2.5 py-1.5 text-xs leading-5 text-red-800" role="alert" data-testid="notification-row-auto-failed">
       {{ $t('settings.notifications.outcome.failed') }}
       <span v-if="row.outcomeReason" class="block whitespace-pre-line break-words text-red-700">{{ row.outcomeReason }}</span>
     </p>

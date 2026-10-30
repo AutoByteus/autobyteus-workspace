@@ -5,6 +5,7 @@ import { AgentRunEventType } from "../../../../../src/agent-execution/domain/age
 import { CodexAgentRunBackend } from "../../../../../src/agent-execution/backends/codex/backend/codex-agent-run-backend.js";
 import { CodexThread } from "../../../../../src/agent-execution/backends/codex/thread/codex-thread.js";
 import { CodexThreadEventName } from "../../../../../src/agent-execution/backends/codex/events/codex-thread-event-name.js";
+import { activatedAgentToolMcpRunSessionsStub } from "../../../../helpers/agent-tool-mcp-run-sessions-stub.js";
 
 vi.mock("../../../../../src/token-usage/pricing/token-price-config-provider.js", () => ({
   TokenPriceConfigProvider: class TokenPriceConfigProvider {
@@ -128,6 +129,7 @@ const createBackend = (overrides: Record<string, unknown> = {}) => {
       runContext as any,
       codexThread as any,
       threadManager as any,
+      activatedAgentToolMcpRunSessionsStub(runContext.runId),
     ),
   };
 };

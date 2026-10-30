@@ -27,6 +27,7 @@ import embeddingSettingsMessages from './embeddingSettings';
 import agentRuntimesSettingsMessages from './agentRuntimesSettings';
 import modelRoutingSettingsMessages from './modelRoutingSettings';
 import projectMessages from './projects';
+import voiceInputMessages from './voiceInput';
 import generatedShellMessages from './shell.generated';
 import shellMessages from './shell';
 import generatedSkillsMessages from './skills.generated';
@@ -69,6 +70,7 @@ const zhCnMessages: TranslationCatalog = {
   ...agentRuntimesSettingsMessages,
   ...modelRoutingSettingsMessages,
   ...projectMessages,
+  ...voiceInputMessages,
   ...generatedShellMessages,
   ...shellMessages,
   ...generatedSkillsMessages,

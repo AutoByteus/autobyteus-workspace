@@ -8,7 +8,6 @@ Defines agent blueprints for shared standalone agents, team-local agents, and ap
 
 - `src/agent-definition`
 - `src/api/graphql/types/agent-definition.ts`
-- `src/agent-tools/agent-management`
 - `src/built-in-agents` (platform-provided built-in agent templates and startup sync)
 
 ## Main Service
@@ -141,12 +140,11 @@ none reads the setting or the attribute itself:
 | `list_available_agents`, `@` candidates and `@` by ID, `delegate_task` catalog addresses, a peer node's available agents and delegation | `CollaboratorCandidatePolicy.isEligibleAgent` (the rule is injected through `createCollaboratorDefinitionCatalog`) |
 | Run history | `AgentRunHistoryService.listRunHistory` (rows of hidden definitions) |
 | Memory page | `AgentMemoryExplorerService` (the agent list and its runs) |
-| `list_agent_definitions` | the tool (the agent-management tools are currently registered on no node: `registerAgentManagementTools()` has no caller; follow-up FU-001 of autobyteus-308) |
 
 While hidden, `delegate_task` to an internal agent's address gets the usual
 "not the address of an available agent or agent team" refusal, which reveals
 nothing. Hidden is not protected: opening a definition or a run by ID
-(`agentDefinition(id)`, `get_agent_definition`, the run projection) works
+(`agentDefinition(id)`, the run projection) works
 whatever the setting, and system-started runs of internal agents run and are
 recorded as usual. Internal Agent Teams are not a feature; built-in agents stay
 excluded from collaboration whatever the setting.

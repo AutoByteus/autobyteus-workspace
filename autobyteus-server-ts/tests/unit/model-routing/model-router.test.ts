@@ -85,13 +85,13 @@ describe("ModelRouter (DS-003)", () => {
     await expect(notSet!.route(routingRequest())).resolves.toEqual({ kind: "not_active", reason: "the router has no runtime/model" });
     await expect(setup().router.status()).resolves.toMatchObject({ enabled: true, active: false, reasonCode: "ROUTER_NOT_SET" });
     turnOn("antigravity_cli", "gemini");
-    await expect(setup().router.status()).resolves.toMatchObject({ reasonCode: "SIGNED_OUT", reasonText: "Antigravity is signed out" });
+    await expect(setup().router.status()).resolves.toMatchObject({ reasonCode: "SIGNED_OUT", reasonText: "Antigravity CLI is signed out" });
     turnOn("claude_agent_sdk", "opus");
     await expect(setup().router.status()).resolves.toMatchObject({ reasonCode: "MODEL_NOT_OFFERED" });
     turnOn("codex_app_server", "gpt-sol");
     await expect(setup("answer", nodeFacts({ codexBlocked: true })).router.status()).resolves.toMatchObject({
       active: false, reasonCode: "MODEL_BLOCKED", reasonParams: { until: "2026-10-30T20:57:00.000Z", limit: "weekly" },
-      reasonText: "Codex · gpt-sol is blocked until 2026-10-30 20:57 UTC (weekly)",
+      reasonText: "Codex App Server · gpt-sol is blocked until 2026-10-30 20:57 UTC (weekly)",
     });
     await expect(setup().router.status()).resolves.toMatchObject({ active: true, reasonCode: null, agentRunId: "router_run_1" });
   });

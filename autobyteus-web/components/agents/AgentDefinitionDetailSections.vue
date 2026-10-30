@@ -10,7 +10,7 @@
         </div>
         <div>
           <p class="text-xs uppercase tracking-wide text-gray-500">{{ $t('agents.components.agents.AgentDetail.defaultRuntime') }}</p>
-          <p class="mt-1 text-sm text-gray-700">{{ agentDef.defaultLaunchConfig?.runtimeKind || $t('agents.components.agents.AgentDetail.notSet') }}</p>
+          <p class="mt-1 text-sm text-gray-700">{{ agentDef.defaultLaunchConfig?.runtimeKind ? agentRuntimeName(agentDef.defaultLaunchConfig.runtimeKind) : $t('agents.components.agents.AgentDetail.notSet') }}</p>
         </div>
         <div>
           <p class="text-xs uppercase tracking-wide text-gray-500">{{ $t('agents.components.agents.AgentDetail.defaultModel') }}</p>
@@ -63,6 +63,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
+import { agentRuntimeName } from '@autobyteus/agent-presentation-contracts';
 import type { AgentDefinition } from '~/stores/agentDefinitionStore';
 import ExpandableInstructionCard from '~/components/common/ExpandableInstructionCard.vue';
 import { useLocalization } from '~/composables/useLocalization';

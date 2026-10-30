@@ -1,0 +1,16 @@
+# API-05 full scenario with the visibility check as expect.soft (head 9e21e20f8a): only that check fails; not sent, no notice, run B untouched, retry with session/load + notice all pass
+ACP_REOPEN_FAILED: run=reopen_failure_3ec010_8c0fb4d1d7ef41028a097432bd773c71: Error: ACP connection closed
+     × fails the message with the plain message, touches no other run, and retries at the next message 7471ms
+AssertionError: the run's stream shows the failed message: expected [] to deeply equal [ { code: StringMatching{…}, …(1) } ]
+- Expected
++ Received
+ ❯ tests/e2e/runtime/tool-list-reopen-failure.e2e.test.ts:163:85
+      Tests  1 failed (1)
+# API-05 durable test as committed (hard expect), head 9e21e20f8a
+ACP_REOPEN_FAILED: run=reopen_failure_2d4ad8_244f9308e33941fba3c73a04893247c8: Error: ACP connection closed
+     × fails the message with the plain message, touches no other run, and retries at the next message 4855ms
+AssertionError: the run's stream shows the failed message: expected [] to deeply equal [ { code: StringMatching{…}, …(1) } ]
+- Expected
++ Received
+ ❯ tests/e2e/runtime/tool-list-reopen-failure.e2e.test.ts:163:80
+      Tests  1 failed (1)

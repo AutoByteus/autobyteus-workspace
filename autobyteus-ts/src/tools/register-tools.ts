@@ -9,7 +9,6 @@ import { registerGetBackgroundProcessesTool } from './terminal/tools/get-backgro
 import { registerGetProcessOutputTool } from './terminal/tools/get-process-output.js';
 import { registerStopBackgroundProcessTool } from './terminal/tools/stop-background-process.js';
 import { Search } from './search-tool.js';
-import { ReadMediaFile } from './multimedia/media-reader-tool.js';
 import { DownloadMediaTool } from './multimedia/download-media-tool.js';
 import { ReadUrl } from './web/read-url-tool.js';
 
@@ -28,7 +27,6 @@ export function registerTools(): void {
   registerStopBackgroundProcessTool();
 
   registerToolClass(Search);
-  registerToolClass(ReadMediaFile);
   registerToolClass(DownloadMediaTool);
   registerToolClass(ReadUrl);
 

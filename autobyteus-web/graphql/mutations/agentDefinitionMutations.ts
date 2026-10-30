@@ -25,6 +25,7 @@ const AgentDefinitionMutationFields = gql`
     ownerApplicationName
     ownerPackageId
     ownerLocalApplicationId
+    internal
     defaultLaunchConfig {
       llmModelIdentifier
       runtimeKind

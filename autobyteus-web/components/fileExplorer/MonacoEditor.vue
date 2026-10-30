@@ -15,12 +15,10 @@ const normalizeWordWrapInput = (value: unknown): WordWrapSetting | null => {
   if (value === true) return 'on';
   if (value === false) return 'off';
   if (typeof value === 'string') {
-    const normalized = value.toLowerCase() as WordWrapSetting;
-    if (['off', 'on', 'wordwrapcolumn', 'bounded'].includes(normalized)) {
-      // Monaco expects exact casing for wordWrap values
-      if (normalized === 'wordwrapcolumn') return 'wordWrapColumn';
-      return normalized as WordWrapSetting;
-    }
+    const normalized: string = value.toLowerCase();
+    // Monaco expects exact casing for wordWrap values
+    if (normalized === 'wordwrapcolumn') return 'wordWrapColumn';
+    if (normalized === 'off' || normalized === 'on' || normalized === 'bounded') return normalized;
   }
   return null;
 };

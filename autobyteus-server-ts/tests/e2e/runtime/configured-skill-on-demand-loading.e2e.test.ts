@@ -3,15 +3,17 @@ import "reflect-metadata";
 import os from "node:os";
 import path from "node:path";
 import { createRequire } from "node:module";
-import { mkdir, mkdtemp, readFile, realpath, rm, writeFile } from "node:fs/promises";
+import { access, lstat, mkdir, mkdtemp, readdir, readFile, realpath, rm, symlink, writeFile } from "node:fs/promises";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import type { graphql as graphqlFn, GraphQLSchema } from "graphql";
 import { AgentFactory } from "autobyteus-ts/agent/factory/agent-factory.js";
 import type { AgentContext } from "autobyteus-ts/agent/context/agent-context.js";
+import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { BaseLLM } from "autobyteus-ts/llm/base.js";
 import { LLMModel } from "autobyteus-ts/llm/models.js";
 import { LLMProvider } from "autobyteus-ts/llm/providers.js";
 import { LLMConfig } from "autobyteus-ts/llm/utils/llm-config.js";
+import { MessageRole, type Message } from "autobyteus-ts/llm/utils/messages.js";
 import {
   ChunkResponse,
   CompleteResponse,
@@ -33,15 +35,40 @@ import { AgentToolRegistryReadiness } from "../../../src/startup/agent-tool-load
 import { getGeneralProcessPublishedArtifactPublisher } from "../../../src/services/published-artifacts/published-artifact-publication-service.js";
 import { configureE2eStudioApplicationApiServices } from "../helpers/studio-application-api-services.js";
 
+/**
+ * Native AutoByteus at the factory level, with a deterministic LLM (no provider call): configured skills are
+ * cataloged in the system prompt and read on demand.
+ *
+ * Not gated: `pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts --no-watch`
+ * The two "release smoke" cases are AutoByteus's cases in the release smoke check (`python3 scripts/release_smoke.py`,
+ * RELEASE.md), which names their titles: keep them stable, or update the runner's required-case list with them.
+ */
 class DeterministicLLM extends BaseLLM {
-  protected async _sendMessagesToLLM(): Promise<CompleteResponse> {
+  /** The messages of each call, so a test can see what the model received. */
+  readonly calls: Array<Array<{ role: MessageRole; content: string }>> = [];
+
+  private record(messages: Message[]): void {
+    this.calls.push(messages.map((message) => ({ role: message.role, content: message.content ?? "" })));
+  }
+
+  protected async _sendMessagesToLLM(messages: Message[]): Promise<CompleteResponse> {
+    this.record(messages);
     return new CompleteResponse({ content: "ready" });
   }
 
-  protected async *_streamMessagesToLLM(): AsyncGenerator<ChunkResponse, void, unknown> {
+  protected async *_streamMessagesToLLM(messages: Message[]): AsyncGenerator<ChunkResponse, void, unknown> {
+    this.record(messages);
     yield new ChunkResponse({ content: "ready", is_complete: true });
   }
 }
+
+const waitFor = async (predicate: () => boolean, label: string, timeoutMs = 10_000): Promise<void> => {
+  const deadline = Date.now() + timeoutMs;
+  while (!predicate()) {
+    if (Date.now() > deadline) throw new Error(`Timed out waiting for ${label}`);
+    await new Promise((resolve) => setTimeout(resolve, 50));
+  }
+};
 
 const createDeterministicLLM = (): DeterministicLLM =>
   new DeterministicLLM(
@@ -64,6 +91,7 @@ describe("Configured skill on-demand loading active native runtime e2e", () => {
   const preparations = new Set<AgentRunBackendPreparation>();
   const preparationByBackend = new Map<AutoByteusAgentRunBackend, AgentRunBackendPreparation>();
   const llms = new Set<DeterministicLLM>();
+  const llmByRunId = new Map<string, DeterministicLLM>();
 
   beforeAll(async () => {
     dataRoot = await realpath(
@@ -153,11 +181,13 @@ describe("Configured skill on-demand loading active native runtime e2e", () => {
   const createBackend = async (input: {
     agentDefinitionId: string;
     runId: string;
+    workspaceRoot?: string;
+    memoryDir?: string;
   }): Promise<AutoByteusAgentRunBackend> => {
     const workspace = {
       workspaceId: "configured_skill_workspace",
       getName: () => "Configured Skill Workspace",
-      getBasePath: () => workspaceRoot,
+      getBasePath: () => input.workspaceRoot ?? workspaceRoot,
     };
     const factory = new AutoByteusAgentRunBackendFactory({ nativeCommandProcessScope: new NativeCommandProcessScope(),
       agentDefinitionService: AgentDefinitionService.getInstance(),
@@ -166,6 +196,7 @@ describe("Configured skill on-demand loading active native runtime e2e", () => {
       createLLM: async () => {
         const llm = createDeterministicLLM();
         llms.add(llm);
+        llmByRunId.set(input.runId, llm);
         return llm;
       },
       workspaceManager: {
@@ -182,7 +213,7 @@ describe("Configured skill on-demand loading active native runtime e2e", () => {
         llmModelIdentifier: "configured-skill-e2e",
         autoExecuteTools: true,
         workspaceId: workspace.workspaceId,
-        memoryDir: path.join(dataRoot, "memory", input.runId),
+        memoryDir: input.memoryDir ?? path.join(dataRoot, "memory", input.runId),
         runtimeKind: RuntimeKind.AUTOBYTEUS,
       }),
     });
@@ -463,6 +494,115 @@ describe("Configured skill on-demand loading active native runtime e2e", () => {
       await readTool!.execute(runtimeContext, { path: enabledEntryPath, include_line_numbers: false }),
     ).toContain(enabledBody);
 
+    await terminateBackend(backend);
+  }, 30_000);
+
+  // Release smoke: the user's setup from the v1.5.6-beta.2 regression. An imported package agent has a configured
+  // skill at <package>/agents/<agent>/skills/<skill>, and the workspace's .claude/.codex/.grok/skills/<skill> are
+  // absolute links to that folder. The run is brand-new: its memory folder does not exist yet.
+  const RUNTIME_SKILL_FOLDERS = [".claude", ".codex", ".grok"];
+  const importLinkedSkillPackage = async (label: string) => {
+    const unique = `${label}_${Date.now()}_${Math.random().toString(16).slice(2)}`;
+    const packageRoot = path.join(dataRoot, `package-${unique}`);
+    const agentId = `linked_agent_${unique}`;
+    const skillName = `linked_skill_${unique}`;
+    const description = `Linked package skill fixture ${unique}`;
+    const agentDir = path.join(packageRoot, "agents", agentId);
+    const skillDir = path.join(agentDir, "skills", skillName);
+    await mkdir(skillDir, { recursive: true });
+    await writeFile(path.join(agentDir, "agent.md"), ["---", `name: ${agentId}`,
+      "description: Native package agent with a configured skill", "---", "", "Follow the user's instructions."].join("\n"));
+    await writeFile(path.join(agentDir, "agent-config.json"), JSON.stringify({ skillNames: [skillName] }, null, 2));
+    await writeFile(path.join(skillDir, "SKILL.md"), ["---", `name: ${skillName}`, `description: ${description}`, "---", "",
+      `LINKED_SKILL_BODY_${unique}`, ""].join("\n"));
+    await execGraphql(
+      `mutation ImportAgentPackage($input: ImportAgentPackageInput!) { importAgentPackage(input: $input) { packageId } }`,
+      { input: { sourceKind: "LOCAL_PATH", source: packageRoot } },
+    );
+    const definition = await execGraphql<{ agentDefinition: { skillNames: string[] } | null }>(
+      `query AgentDefinition($id: String!) { agentDefinition(id: $id) { skillNames } }`,
+      { id: agentId },
+    );
+    expect(definition.agentDefinition?.skillNames).toEqual([skillName]);
+
+    const workspace = path.join(dataRoot, `workspace-${unique}`);
+    for (const folder of RUNTIME_SKILL_FOLDERS) {
+      await mkdir(path.join(workspace, folder, "skills"), { recursive: true });
+      await symlink(skillDir, path.join(workspace, folder, "skills", skillName));
+    }
+    return { unique, agentId, skillName, description, skillDir, workspace };
+  };
+
+  type LinkedSkillPackage = Awaited<ReturnType<typeof importLinkedSkillPackage>>;
+
+  /** One first message completes a turn, and the model received the configured skill's catalog entry. */
+  const expectFirstTurnReceivesSkill = async (
+    backend: AutoByteusAgentRunBackend,
+    runId: string,
+    pkg: LinkedSkillPackage,
+  ): Promise<void> => {
+    expect(backend.isActive()).toBe(true);
+    const llm = llmByRunId.get(runId)!;
+    const content = `release smoke first message ${pkg.unique}`;
+    const unsubscribe = backend.subscribeToSourceEventBatches(async () => undefined);
+    try {
+      const dispatched = await backend.dispatchUserInput({
+        kind: "start_turn",
+        message: new AgentInputUserMessage(content),
+      });
+      expect(dispatched.forwarded).toBe(true);
+      const turnCall = () => llm.calls.find((call) => call.some((message) => message.content.includes(content)));
+      await waitFor(() => turnCall() !== undefined && backend.getLifecycleSnapshot().phase === "idle", "first turn");
+      const system = turnCall()!.filter((message) => message.role === MessageRole.SYSTEM)
+        .map((message) => message.content).join("\n");
+      expect(system).toContain(`- **${pkg.skillName}**: ${pkg.description}`);
+      const entry = /- \*\*SKILL\.md:\*\* `(.+?)`/.exec(system.slice(system.indexOf(`- **${pkg.skillName}**`)))?.[1];
+      expect(entry && await realpath(entry)).toBe(await realpath(path.join(pkg.skillDir, "SKILL.md")));
+    } finally {
+      unsubscribe();
+    }
+  };
+
+  /** The user's links are still there and point at the package skill; nothing else was written into the workspace. */
+  const expectLinksUntouched = async (pkg: LinkedSkillPackage): Promise<void> => {
+    expect((await readdir(pkg.workspace)).sort()).toEqual(RUNTIME_SKILL_FOLDERS);
+    for (const folder of RUNTIME_SKILL_FOLDERS) {
+      const link = path.join(pkg.workspace, folder, "skills", pkg.skillName);
+      expect((await lstat(link)).isSymbolicLink(), link).toBe(true);
+      expect(await realpath(link)).toBe(await realpath(pkg.skillDir));
+    }
+  };
+
+  // Named by scripts/release_smoke.py
+  it("starts a brand-new run of an imported agent with a configured skill in a workspace with same-skill links and gives the model the skill (release smoke)", async () => {
+    const pkg = await importLinkedSkillPackage("new_run");
+    const runId = `linked-new-run-${pkg.unique}`;
+    const memoryDir = path.join(dataRoot, "memory", "agents", runId);
+    await expect(access(memoryDir)).rejects.toThrow();
+
+    const backend = await createBackend({ agentDefinitionId: pkg.agentId, runId, workspaceRoot: pkg.workspace, memoryDir });
+    await expectFirstTurnReceivesSkill(backend, runId, pkg);
+
+    await expect(access(memoryDir)).resolves.toBeUndefined();
+    await expectLinksUntouched(pkg);
+    await terminateBackend(backend);
+  }, 30_000);
+
+  // Named by scripts/release_smoke.py
+  it("starts a brand-new team member of an imported agent with a configured skill in a workspace with same-skill links and gives the model the skill (release smoke)", async () => {
+    const pkg = await importLinkedSkillPackage("team_member");
+    const runId = `linked-member-${pkg.unique}`;
+    // A team member that starts lazily: the team folder exists, the member's own memory folder does not yet.
+    const teamMemoryDir = path.join(dataRoot, "memory", "agent_teams", `linked-team-${pkg.unique}`);
+    await mkdir(teamMemoryDir, { recursive: true });
+    const memoryDir = path.join(teamMemoryDir, runId);
+    await expect(access(memoryDir)).rejects.toThrow();
+
+    const backend = await createBackend({ agentDefinitionId: pkg.agentId, runId, workspaceRoot: pkg.workspace, memoryDir });
+    await expectFirstTurnReceivesSkill(backend, runId, pkg);
+
+    await expect(access(memoryDir)).resolves.toBeUndefined();
+    await expectLinksUntouched(pkg);
     await terminateBackend(backend);
   }, 30_000);
 });

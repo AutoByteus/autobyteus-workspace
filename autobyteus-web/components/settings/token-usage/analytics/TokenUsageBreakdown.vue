@@ -81,6 +81,7 @@
 </template>
 
 <script setup lang="ts">
+import { agentRuntimeName } from '@autobyteus/agent-presentation-contracts';
 import { computed, reactive, watch } from 'vue';
 import { useLocalization } from '~/composables/useLocalization';
 import type {
@@ -115,11 +116,10 @@ const props = defineProps<{
 const emit = defineEmits<{ 'update:grouping': [value: TokenUsageAnalyticsGrouping] }>();
 const { t, resolvedLocale } = useLocalization();
 const expandedRows = reactive(new Set<string>());
-const runtimeLabels: Record<string, string> = { autobyteus: 'Autobyteus', codex_app_server: 'Codex', claude_agent_sdk: 'Claude SDK', grok_build: 'Grok Build' };
 const notAvailable = computed(() => t('settings.components.settings.TokenUsageAnalytics.notAvailable'));
 const integer = (value: number) => new Intl.NumberFormat(resolvedLocale.value).format(value);
 const percent = (value: number) => new Intl.NumberFormat(resolvedLocale.value, { style: 'percent', maximumFractionDigits: 1 }).format(value);
-const runtime = (value: string) => runtimeLabels[value] ?? value;
+const runtime = (value: string) => agentRuntimeName(value);
 const groupingLabel = computed(() => props.grouping === 'RUNTIME_MODEL'
   ? t('settings.components.settings.TokenUsageAnalytics.runtimeModel')
   : t(`settings.components.settings.TokenUsageAnalytics.${props.grouping.toLowerCase()}`));

@@ -1,0 +1,46 @@
+// TEMPORARY API/E2E probe (autobyteus-328 round 3: API-12, API-15, API-05); deleted after the run.
+// The real read_file over: tracked files with a NUL ($API_NUL_LIST), generated binaries and encodings ($API_GEN_DIR),
+// copies of OS binaries ($API_OSBIN_DIR) and 400 OS PDFs ($API_PDF_DIR). Receipt: $API_RECEIPT.
+import { describe, expect, it } from 'vitest';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import { BaseTool } from '../../../../src/tools/base-tool.js';
+import { defaultToolRegistry } from '../../../../src/tools/registry/tool-registry.js';
+import { registerReadFileTool } from '../../../../src/tools/file/read-file.js';
+
+const read = (filePath: string) =>
+  (defaultToolRegistry.createTool('read_file') as BaseTool).execute({ agentId: 'api-round3', workspaceRootPath: null }, { path: filePath });
+const outcome = async (filePath: string) => {
+  const bytes = await fs.readFile(filePath);
+  const base = { file: filePath, size: bytes.length, nul: bytes.filter((b) => b === 0).length };
+  try {
+    const result = await read(filePath);
+    return { ...base, outcome: typeof result === 'string' ? 'text' : 'context file', chars: typeof result === 'string' ? result.length : undefined,
+      head: typeof result === 'string' ? result.slice(0, 80) : undefined };
+  } catch (error) {
+    const message = (error as Error).message;
+    return { ...base, outcome: /is a binary file/.test(message) ? 'refused (binary)' : 'error', message: message.slice(0, 160) };
+  }
+};
+const dirFiles = async (dir: string) => (await fs.readdir(dir)).sort().map((name) => path.join(dir, name));
+
+describe('API round 3 read_file probe', () => {
+  it('records outcomes', async () => {
+    defaultToolRegistry.clear();
+    registerReadFileTool();
+    const receipt: Record<string, unknown> = {};
+    const groups: Record<string, string[]> = {
+      trackedNul: (await fs.readFile(process.env.API_NUL_LIST!, 'utf8')).split('\n').filter(Boolean),
+      generated: await dirFiles(process.env.API_GEN_DIR!),
+      osBinaries: await dirFiles(process.env.API_OSBIN_DIR!),
+      osPdfs: await dirFiles(process.env.API_PDF_DIR!),
+    };
+    for (const [group, files] of Object.entries(groups)) {
+      const rows = [];
+      for (const file of files) rows.push(await outcome(file));
+      receipt[group] = rows;
+    }
+    await fs.writeFile(process.env.API_RECEIPT!, `${JSON.stringify(receipt, null, 2)}\n`);
+    expect(Object.keys(receipt).length).toBe(4);
+  }, 600_000);
+});

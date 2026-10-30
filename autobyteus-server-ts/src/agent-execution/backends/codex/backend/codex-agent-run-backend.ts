@@ -4,7 +4,22 @@ import {
   CodexThreadEventConverter,
 } from "../events/codex-thread-event-converter.js";
 import type { AgentOperationResult } from "../../../domain/agent-operation-result.js";
-import type { AgentRunBackend, AgentRunSourceEventBatchListener } from "../../agent-run-backend.js";
+import type {
+  AgentRunBackend,
+  AgentRunSourceEventBatchListener,
+  AgentRunToolListApplyResult,
+} from "../../agent-run-backend.js";
+import type { AgentDefinition } from "../../../../agent-definition/domain/models.js";
+import type { AgentToolMcpRunSessionExposure } from "../../../../agent-tools/mcp/agent-tool-mcp-session-authority.js";
+import {
+  isSameRuntimeAgentToolExposure,
+  resolveRuntimeAgentToolExposure,
+} from "../../../shared/runtime-agent-tool-exposure.js";
+import {
+  isSameToolNameSet,
+  runtimeSessionReopenFailedResult,
+} from "../../shared/runtime-session-reopen.js";
+import { materializeCodexAgentToolsMcpThreadConfig } from "../agent-tools-mcp/codex-agent-tools-mcp-materializer.js";
 import type { CodexRunContext } from "./codex-agent-run-context.js";
 import { projectCodexAgentLifecycleSnapshot } from "../events/codex-status-projector.js";
 import type { CodexThreadEventMessage } from "../thread/codex-thread.js";
@@ -43,15 +58,23 @@ export class CodexAgentRunBackend implements AgentRunBackend {
   private readonly eventConverter: CodexThreadEventConverter;
   private unsubscribeFromThread: (() => void) | null = null;
   private readonly pendingSystemInstructionEvent: PendingSystemInstructionEvent;
+  private readonly agentToolSessions: AgentToolMcpRunSessionExposure;
+  /** The Agent Tools names the thread was opened (or last reopened) with: what the agent has now. */
+  private openedToolNames: readonly string[];
+  /** The run's Agent Tools changed since the thread was opened: the next turn start reopens it. */
+  private reopenPending = false;
 
   constructor(
     runContext: CodexRunContext,
     codexThread: CodexThread,
     threadManager: CodexThreadManager,
+    agentToolSessions: AgentToolMcpRunSessionExposure,
   ) {
     this.runContext = runContext;
     this.codexThread = codexThread;
     this.threadManager = threadManager;
+    this.agentToolSessions = agentToolSessions;
+    this.openedToolNames = [...agentToolSessions.describeForRun(runContext.runId).enabledTools];
     this.pendingSystemInstructionEvent = new PendingSystemInstructionEvent(
       codexThread.takePendingSystemInstructionCapture(),
     );
@@ -118,11 +141,18 @@ export class CodexAgentRunBackend implements AgentRunBackend {
   async dispatchUserInput(
     dispatch: AgentRunBackendInputDispatch,
   ): Promise<AgentRunBackendInputDispatchResult> {
+    // Codex reads its tool list only when a thread is opened: a turn start reopens it first.
+    // An append goes to the current thread unchanged.
+    if (dispatch.kind === "start_turn" && this.reopenPending) {
+      const failed = await this.reopenWithCurrentTools();
+      if (failed) return failed;
+    }
     try {
       await this.pendingSystemInstructionEvent.publishOnce(this.runId, this.sourceListeners);
       const result = dispatch.kind === "start_turn"
         ? await this.codexThread.startInput(dispatch.message)
         : await this.codexThread.appendInput(dispatch.message, dispatch.turnId);
+      if (dispatch.kind === "start_turn") this.runContext.runtimeContext.hasConversationHistory = true;
       return {
         forwarded: true,
         turnId: result.turnId,
@@ -218,6 +248,58 @@ export class CodexAgentRunBackend implements AgentRunBackend {
     this.unsubscribeFromThread?.();
     this.unsubscribeFromThread = null;
     return platformAgentRunId;
+  }
+
+  /**
+   * The server enforces the new list at once; Codex itself takes it when its thread is reopened,
+   * at the next turn start (`reopenPending`). A change reverted before then needs no reopen.
+   */
+  async applyDefinitionTools(definition: AgentDefinition): Promise<AgentRunToolListApplyResult> {
+    const runtimeContext = this.runContext.runtimeContext;
+    const exposure = resolveRuntimeAgentToolExposure(definition, this.runContext.config.memberExecutionContext);
+    if (isSameRuntimeAgentToolExposure(runtimeContext.runtimeToolExposure, exposure)) {
+      return this.reopenPending
+        ? { kind: "on_next_turn", toolNames: [...this.agentToolSessions.describeForRun(this.runId).enabledTools] }
+        : { kind: "unchanged", toolNames: [...this.openedToolNames] };
+    }
+    const descriptor = this.agentToolSessions.replaceForRun({ runId: this.runId, runtimeExposure: exposure });
+    runtimeContext.runtimeToolExposure = exposure;
+    this.reopenPending = !isSameToolNameSet(descriptor.enabledTools, this.openedToolNames);
+    return this.reopenPending
+      ? { kind: "on_next_turn", toolNames: [...descriptor.enabledTools] }
+      : { kind: "unchanged", toolNames: [...this.openedToolNames] };
+  }
+
+  getToolNames(): readonly string[] {
+    return [...this.openedToolNames];
+  }
+
+  /**
+   * Reopens the thread with the run's current Agent Tools descriptor. On failure the input is not
+   * sent (it would reach a thread without the new tools): the dispatch fails with a plain message,
+   * and the next turn start tries again. A save during the reopen keeps `reopenPending` set.
+   */
+  private async reopenWithCurrentTools(): Promise<AgentRunBackendInputDispatchResult | null> {
+    let reopenedWith: readonly string[];
+    try {
+      const descriptor = this.agentToolSessions.describeForRun(this.runId);
+      // The new Agent Tools part replaces only `mcp_servers`: the run's integration part (shell variables and
+      // sandbox network) stays as the thread was prepared.
+      await this.threadManager.reopenThread(this.runContext, {
+        ...(this.runContext.runtimeContext.codexThreadConfig.appServerConfig ?? {}),
+        ...materializeCodexAgentToolsMcpThreadConfig(descriptor),
+      });
+      reopenedWith = descriptor.enabledTools;
+    } catch (error) {
+      logger.error(`Codex thread reopen failed for run '${this.runId}': ${String(error)}`);
+      return runtimeSessionReopenFailedResult(error);
+    }
+    this.openedToolNames = [...reopenedWith];
+    this.reopenPending = !isSameToolNameSet(
+      this.agentToolSessions.describeForRun(this.runId).enabledTools,
+      this.openedToolNames,
+    );
+    return null;
   }
 
   private async handleAppServerMessage(event: CodexThreadEventMessage): Promise<void> {

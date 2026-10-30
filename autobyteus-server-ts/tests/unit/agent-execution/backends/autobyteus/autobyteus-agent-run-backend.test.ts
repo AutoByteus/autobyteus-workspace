@@ -6,6 +6,7 @@ import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-u
 import { AgentRunConfig } from "../../../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../../../src/agent-execution/domain/agent-run-context.js";
 import { AutoByteusAgentRunBackend } from "../../../../../src/agent-execution/backends/autobyteus/autobyteus-agent-run-backend.js";
+import { stubAutoByteusRunTools } from "../../../../helpers/agent-tool-mcp-run-sessions-stub.js";
 
 const createBackend = (overrides: {
   agent?: Partial<ConstructorParameters<typeof AutoByteusAgentRunBackend>[1]>;
@@ -52,6 +53,7 @@ const createBackend = (overrides: {
     isActive: overrides.isActive ?? (() => true),
     removeAgent,
     pendingSystemInstructionCapture: overrides.pendingSystemInstructionCapture,
+    tools: stubAutoByteusRunTools(),
   });
 
   return {

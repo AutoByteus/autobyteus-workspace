@@ -17,6 +17,7 @@ import { AutoByteusAgentRunBackend } from '../../../src/agent-execution/backends
 import { AgentRunProviderInputNormalizer } from '../../../src/agent-execution/input/agent-run-provider-input-normalizer.js';
 import { AgentRunCommandCoordinator } from '../../../src/agent-execution/services/agent-run-command-coordinator.js';
 import { AgentRunCommandRegistry } from '../../../src/agent-execution/services/agent-run-command-registry.js';
+import { stubAutoByteusRunTools } from "../../helpers/agent-tool-mcp-run-sessions-stub.js";
 
 export const summary = COMPACTION_SUMMARY_HEADINGS.map(h => `## ${h}\n- Preserve the approved scope; do not deploy.`).join('\n\n');
 export async function eventually(check: () => unknown) {
@@ -62,7 +63,7 @@ export async function createRecoveryFixture(postResponse = false) {
   await eventually(()=>native.currentStatus==='idle');
   const context=new AgentRunContext({ runId:native.agentId, runtimeContext:native.context,
     config:new AgentRunConfig({ agentDefinitionId:'test', llmModelIdentifier:'parent', autoExecuteTools:false, runtimeKind:'autobyteus' }) });
-  const backend=new AutoByteusAgentRunBackend(context,native,{ isActive:()=>native.isRunning, removeAgent:async()=>{ await native.stop(2); return true; } });
+  const backend=new AutoByteusAgentRunBackend(context,native,{ isActive:()=>native.isRunning, removeAgent:async()=>{ await native.stop(2); return true; }, tools: stubAutoByteusRunTools() });
   const forwarded=vi.fn();
   const normalizer=new AgentRunProviderInputNormalizer({ resolve:()=>null });
   const run=new AgentRun({context,backend,providerInputNormalizer:normalizer,commandObservers:[{onUserMessageForwarded:forwarded}]});

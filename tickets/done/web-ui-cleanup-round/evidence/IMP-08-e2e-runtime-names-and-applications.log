@@ -1,0 +1,39 @@
+# IMP-08 server e2e affected by the runtime names (AC-004, AC-007), run on the item-2 server code before its commit
+# (server src identical to 2b53fd8ad3 for everything these exercise; the item-4 notice builder is not reached by them)
+# cmds: env -i PATH="$PATH" HOME=<temp> TMPDIR="$TMPDIR" [RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<abs>/tests/fixtures/agy-failure-cli.mjs] pnpm -C autobyteus-server-ts exec vitest run <file> --no-watch
+# after pnpm -C autobyteus-server-ts test:integration:prepare and pnpm -C autobyteus-server-ts build; env: macOS, Node v22.23.1; date: 2026-10-28
+# model-routing-delegation failed 2 here (two expectations built from kinds in the test); fixed in the test and rerun on HEAD as IMP-04.
+# available-agent-runtimes-graphql e2e: 6 passed (run separately, same session).
+
+== prepare
+Generated importable package at /Users/normy/autobyteus_org/autobyteus-worktrees/web-ui-cleanup-round/applications/brief-studio/dist/importable-package
+Generated application root at /Users/normy/autobyteus_org/autobyteus-worktrees/web-ui-cleanup-round/applications/brief-studio/dist/importable-package/applications/brief-studio
+Integration test prerequisites are present.
+== build
+(Use `node --trace-warnings ...` to show where the warning was created)
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+dist/app.js
+== tests/e2e/projects/delegated-launch-config-defaults.e2e.test.ts
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+== tests/e2e/model-routing/model-routing-delegation.e2e.test.ts
+     × MR-03 an unusable answer goes back to the router and its correction is used; a silent router gives the inherited launch with the router-failure note within the bound (AC-004) 81748ms
+     × MR-05 a default on a model blocked by a used-up limit is skipped with "blocked until …" while routing is on, and used as today while off (AC-003) 9380ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: expected 'MR solo 8c07: Model Router could not …' to contain 'antigravity_cli / gemini-3.8-flash-lo…'
+AssertionError: {"delegated":true,"target_kind":"agent","target_agent_run_id":"mr_blocked_8775_eebfa3f3851e4d0b979936a55f1b1464","task_id":"ad_hoc_task_f1f2f4fc-2b05-4103-9b89-f8ae19f9bebd","launch_notes":["MR blocked 8775: runs on Antigravity CLI / gemini-3.8
+ Test Files  1 failed (1)
+      Tests  2 failed | 7 passed (9)
+== tests/e2e/remote-collaboration/remote-delegation-two-server.e2e.test.ts
+ Test Files  1 passed (1)
+      Tests  41 passed (41)
+== tests/e2e/runtime/application-import-codex-launch.e2e.test.ts
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+== tests/e2e/runtime/application-reload-repair.e2e.test.ts
+ Test Files  1 passed (1)
+      Tests  5 passed (5)
+== tests/e2e/runtime/agent-runtimes-running-agents.e2e.test.ts
+ Test Files  1 passed (1)
+      Tests  4 passed (4)

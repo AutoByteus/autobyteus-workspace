@@ -1,0 +1,23 @@
+# API-12 round 2: CODEX_HOME=<throwaway> pnpm --silent isolated-app start --build -> BUILD_FAILED (pnpm build:electron:mac exit 1); commit de7482b46f (code 1a4bfd2ae9); macOS 26.5.2, Node v22.23.1; 2026-10-28T17:46:15Z
+# start result:
+{
+  "schemaVersion": 1,
+  "ok": false,
+  "command": "start",
+  "error": {
+    "code": "BUILD_FAILED",
+    "message": "pnpm build:electron:mac failed with exit code 1 in /Users/normy/autobyteus_org/autobyteus-worktrees/web-ui-cleanup-round/autobyteus-web"
+  }
+}
+
+# build log excerpt (typecheck gate):
+[typecheck] Nuxt app (tsconfig.json): 273 errors, exit 2, 34.0s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 1.6s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.7s
+Production files must have no type errors:
+components/applications/setup/ApplicationExecutionResourceSlotEditor.vue(52,78): error TS2345: Argument of type 'string | null' is not assignable to parameter of type 'string'.
+  Type 'null' is not assignable to type 'string'.
+components/applications/setup/ApplicationExecutionResourceSlotEditor.vue(64,78): error TS2345: Argument of type 'string | null' is not assignable to parameter of type 'string'.
+  Type 'null' is not assignable to type 'string'.
+[typecheck] production errors: 2; test-file errors: 298 in 139 files (baseline 298 in 139 files)
+[typecheck] FAIL

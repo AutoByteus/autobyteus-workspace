@@ -34,8 +34,9 @@ export const cleanupDirectories = () => Promise.all(directories.splice(0).map((d
 
 export const validator = (runnable = true) => ({
   validate: vi.fn(),
-  validateMany: vi.fn(async (inputs: readonly unknown[]) => inputs.map(() => runnable
-    ? { kind: "valid" as const, selection: { llmModelIdentifier: "m", llmConfig: null } }
+  // A valid check returns the canonical selection; these launches declare every key, so it equals the input.
+  validateMany: vi.fn(async (inputs: readonly unknown[]) => inputs.map((input) => runnable
+    ? { kind: "valid" as const, selection: (input as { selection: { llmModelIdentifier: string; llmConfig: Readonly<Record<string, unknown>> | null } }).selection }
     : { kind: "model_unavailable" as const })),
 }) as unknown as RunModelSelectionValidator;
 

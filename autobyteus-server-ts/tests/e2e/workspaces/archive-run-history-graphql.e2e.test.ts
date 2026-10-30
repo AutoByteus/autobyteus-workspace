@@ -68,16 +68,23 @@ vi.mock("../../../src/agent-team-execution/services/agent-team-run-manager.js", 
   },
 }));
 
-vi.mock("../../../src/agent-definition/services/agent-definition-service.js", () => ({
-  AgentDefinitionService: {
-    getInstance: () => ({
-      getAgentDefinitionById: vi.fn(async (agentDefinitionId: string) => ({
-        id: agentDefinitionId,
-        name: agentDefinitionId === "agent-def-e2e" ? "E2E Agent" : agentDefinitionId,
-      })),
-    }),
-  },
-}));
+vi.mock("../../../src/agent-definition/services/agent-definition-service.js", () => {
+  // The definitions this suite's runs use; neither is internal, so the internal-agent rule hides none of their runs.
+  const describeDefinition = (agentDefinitionId: string) => ({
+    id: agentDefinitionId,
+    name: agentDefinitionId === "agent-def-e2e" ? "E2E Agent" : agentDefinitionId,
+    internal: false,
+  });
+  return {
+    AgentDefinitionService: {
+      getInstance: () => ({
+        getAgentDefinitionById: vi.fn(async (agentDefinitionId: string) => describeDefinition(agentDefinitionId)),
+        getAgentDefinitionsWithTeamLocal: vi.fn(async () =>
+          ["agent-def-e2e", "agent-def-group"].map(describeDefinition)),
+      }),
+    },
+  };
+});
 
 vi.mock("../../../src/run-history/services/agent-run-history-service.js", async () => {
   const actual = await vi.importActual<

@@ -20,6 +20,7 @@ import { CodexAppServerClientManager } from "../../../../../src/runtime-manageme
 import { CodexClientThreadRouter } from "../../../../../src/agent-execution/backends/codex/thread/codex-client-thread-router.js";
 import { RuntimeKind } from "../../../../../src/runtime-management/runtime-kind-enum.js";
 import { CodexModelCatalog } from "../../../../../src/llm-management/services/codex-model-catalog.js";
+import { activatedAgentToolMcpRunSessionsStub } from "../../../../helpers/agent-tool-mcp-run-sessions-stub.js";
 
 const codexBinaryReady = spawnSync("codex", ["--version"], {
   stdio: "ignore",
@@ -172,7 +173,8 @@ describeLiveProbe("Codex long-turn cadence probe", () => {
       const thread = await threadManager.createThread(runContext);
       await waitFor(() => thread.startup.status === "ready", 20_000, "thread startup");
 
-      const backend = new CodexAgentRunBackend(runContext as never, thread as never, threadManager as never);
+      const backend = new CodexAgentRunBackend(runContext as never, thread as never, threadManager as never,
+        activatedAgentToolMcpRunSessionsStub((runContext as { runId: string }).runId) as never);
 
       const eventTimes: number[] = [];
       const eventTypes: string[] = [];

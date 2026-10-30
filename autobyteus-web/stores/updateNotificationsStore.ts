@@ -8,7 +8,7 @@ import { useSkillSourcesStore } from '~/stores/skillSourcesStore'
 import { useSkillStore } from '~/stores/skillStore'
 import { useSkillNamesStore } from '~/stores/skillNamesStore'
 import { useUpdateAutomationStore } from '~/stores/updateAutomationStore'
-import { runtimeName } from '~/components/settings/agent-runtimes/agentRuntimesPresentation'
+import { agentRuntimeName } from '@autobyteus/agent-presentation-contracts'
 import { showsAgentRuntimeUpdates } from '~/utils/ownNodeWindow'
 import type { AgentRuntime } from '~/types/agentRuntimes'
 import {
@@ -134,7 +134,7 @@ export const useUpdateNotificationsStore = defineStore('updateNotifications', ()
       const waiting = entry.state === 'WAITING'
       const runtime = kind === 'agent_runtime'
       return {
-        id, kind, sourceId: entry.sourceId, name: runtime ? runtimeName(entry.name) : entry.name,
+        id, kind, sourceId: entry.sourceId, name: runtime ? agentRuntimeName(entry.name) : entry.name,
         repositoryUrl: entry.repositoryUrl, branch: entry.defaultBranch,
         installedRevision: entry.installedRevision, latestRevision: entry.latestRevision, foundAt: entry.foundAt,
         unread: !entry.read && (waiting || entry.outcome === 'AUTO_UPDATED'),

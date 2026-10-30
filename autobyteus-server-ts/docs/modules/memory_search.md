@@ -69,8 +69,9 @@ One `MemoryIndexPipeline` builds and updates the memory index. Steps, in order:
    team and org execution trees, task teams (`TaskTeamRootMemorySource`), else the folder's name. A run's
    `runKey` is its folder relative to the memory folder.
 2. **Journals**: for each run whose raw-trace fingerprint changed (file names, sizes and times, including the old
-   `raw_traces_archive/` layout), `WorkJournalService.ensureCurrent`. A run whose journal fails is skipped with a
-   warning and tried again on the next pass.
+   `raw_traces_archive/` layout) **and the journal renderer revision** (`WorkJournalService.rendererRevision`, so a new
+   wording renders every journal once), `WorkJournalService.ensureCurrent`; a Rebuild passes `regenerate`, which
+   renders every file again. A run whose journal fails is skipped with a warning and tried again on the next pass.
 3. **Text index**: each journal file whose content hash changed is chunked again (whole entries up to 2,000
    characters, split at day changes; a longer entry split by lines) and its journal card built again.
 4. **Meaning index**: the **complete** card set is passed to `EmbeddingIndex.sync("memory-journal-cards", …)`,
@@ -158,3 +159,5 @@ The facade adds `coverage`, holds `wordsNotFound` back while the Text step is in
 A change to chunking, cards, query handling or ordering is measured first with the evaluation command on an
 **isolated copy** of a memory folder (never `~/.autobyteus`): see `scripts/evaluate-memory-search.md`. Gate 1 (the
 right run in the top 10 within 3 searches) must stay at 100%; gate 2 (top 3, latency) must not get worse.
+A change of the [Work Journal](agent_work_journal.md#vocabulary) wording moves individual ranks (cards and chunks are built from
+journal text): judge it on gate 1 plus the measured gate 2, as the vocabulary change did (top 3 26 to 25 of 31, gate 1 31 of 31).

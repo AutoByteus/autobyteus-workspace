@@ -77,7 +77,7 @@ declare global {
       openExternalLink: (url: string) => Promise<{ success: boolean; error?: string }>;
       readLogFile: (
         filePath: string,
-      ) => Promise<{ success: boolean; content?: string; filePath?: string; error?: string }>;
+      ) => Promise<{ success: true; content: string; filePath: string } | { success: false; error: string }>;
       readLocalTextFile: (
         filePath: string,
       ) => Promise<{

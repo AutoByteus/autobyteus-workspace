@@ -7,7 +7,7 @@ import { AgentRunEventType } from "../../agent-execution/domain/agent-run-event.
 import { MODEL_ROUTER_REQUEST_SENDER_ID } from "../../agent-execution/domain/system-task-notification-senders.js";
 import type { AgentRunInputLifecycle } from "../../agent-execution/input/agent-run-input-contract.js";
 import type { NodeRuntimesReading } from "../../available-agent-runtimes/available-agent-runtimes-report.js";
-import { agentRuntimeDisplayName } from "../../available-agent-runtimes/available-agent-runtimes-service.js";
+import { agentRuntimeName } from "@autobyteus/agent-presentation-contracts";
 import { formatBlockTime, reportedModel } from "../../launch-preferences/launch-usability-check.js";
 import type {
   DelegationRouting,
@@ -48,7 +48,7 @@ type Inactive = Readonly<{ code: ModelRoutingReasonCode; params: Readonly<Record
 /** Is the router's launch usable in the node's facts (supplement § 4)? Null when it is. */
 const inactiveReason = (launch: ModelRouterLaunch | null, facts: NodeRuntimesReading | null): Inactive | null => {
   if (!launch) return { code: "ROUTER_NOT_SET", params: {}, text: "the router has no runtime/model" };
-  const runtime = agentRuntimeDisplayName(launch.runtimeKind);
+  const runtime = agentRuntimeName(launch.runtimeKind);
   const subject = { runtime: launch.runtimeKind, model: launch.llmModelIdentifier };
   if (!facts) return { code: "REPORT_UNREADABLE", params: subject, text: "this node's runtimes could not be read" };
   if (facts.signedOutRuntimes.has(launch.runtimeKind)) return { code: "SIGNED_OUT", params: subject, text: `${runtime} is signed out` };

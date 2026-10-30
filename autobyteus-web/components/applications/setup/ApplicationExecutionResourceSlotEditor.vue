@@ -49,7 +49,7 @@
           :key="`baseline:${leaf.memberAddress ?? leaf.agentDefinitionId}`"
           class="mt-2"
         >
-          {{ leaf.memberAddress ?? leaf.displayName }} · {{ leaf.runtimeKind }} · {{ leaf.llmModelIdentifier }}
+          {{ leaf.memberAddress ?? leaf.displayName }} · {{ runtimeLabel(leaf.runtimeKind) }} · {{ leaf.llmModelIdentifier }}
         </p>
       </div>
       <div v-if="selectedBaseline">
@@ -61,7 +61,7 @@
           :key="`selected:${leaf.memberAddress ?? leaf.agentDefinitionId}`"
           class="mt-2"
         >
-          {{ leaf.memberAddress ?? leaf.displayName }} · {{ leaf.runtimeKind }} · {{ leaf.llmModelIdentifier }}
+          {{ leaf.memberAddress ?? leaf.displayName }} · {{ runtimeLabel(leaf.runtimeKind) }} · {{ leaf.llmModelIdentifier }}
         </p>
       </div>
       <div>
@@ -85,7 +85,7 @@
           :key="`effective:${leaf.memberAddress ?? leaf.agentDefinitionId}`"
           class="mt-2"
         >
-          {{ leaf.memberAddress ?? leaf.displayName }} · {{ leaf.runtimeKind }} · {{ leaf.llmModelIdentifier }}
+          {{ leaf.memberAddress ?? leaf.displayName }} · {{ runtimeLabel(leaf.runtimeKind) }} · {{ leaf.llmModelIdentifier }}
           <span class="mt-1 block text-slate-500">
             {{ formatProvenance(leaf.provenance.runtimeKind) }} · {{ formatProvenance(leaf.provenance.llmModelIdentifier) }}
           </span>
@@ -189,6 +189,7 @@
 
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
+import { agentRuntimeName } from '@autobyteus/agent-presentation-contracts'
 import type {
   ApplicationExecutionResourceRef,
   ApplicationExecutionResourceSummary,
@@ -217,6 +218,9 @@ import {
   type ApplicationTeamLaunchProfileDraft,
 } from '~/utils/application/applicationLaunchProfile'
 import type { ApplicationSelectionPreviewState } from '~/composables/useApplicationLaunchSelectionPreviews'
+
+/** A leaf's runtime by its name; a baseline leaf without one (`runtimeKind: null`) shows nothing, like its model. */
+const runtimeLabel = (runtimeKind: string | null): string => (runtimeKind ? agentRuntimeName(runtimeKind) : '')
 
 const props = withDefaults(defineProps<{
   view: ApplicationLaunchSlotView

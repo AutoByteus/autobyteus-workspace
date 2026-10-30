@@ -15,7 +15,7 @@
     "typecheck:claude-interrupt-resume-e2e": "pnpm prepare:shared && tsc -p tsconfig.claude-interrupt-resume-e2e.json --noEmit",
     "pretest": "pnpm prepare:shared",
     "test": "vitest",
-    "test:unit": "vitest run tests/unit tests/app-data-migrations --exclude \"**/*.integration.test.ts\"",
+    "test:unit": "vitest run tests/unit tests/app-data-migrations tests/architecture tests/agent-work-journal --exclude \"**/*.integration.test.ts\"",
     "test:integration": "node ./scripts/integration-test-prerequisites.mjs check && vitest run tests/integration .integration.test.ts",
     "test:integration:prepare": "node ./scripts/integration-test-prerequisites.mjs prepare",
     "cleanup:codex-e2e-history": "node ./scripts/cleanup-codex-e2e-run-history.mjs",

@@ -124,6 +124,13 @@ governance and keeps its Codex-owned authentication behavior.
   resolves them, when a managed MCP server connects. An `mcp.*` ID is not a
   fixed ID: `isKnownSecretId` (batch import, test-vault status) does not accept
   it. See [MCP Server Management](mcp_server_management.md#secret-values).
+- **Integration tokens** use the consumer kind `integration`
+  (`{ kind: "integration", integrationId: "github" }`), bound to the fixed ID
+  `integration.github.token`. Only `IntegrationConnectionService` saves or
+  removes it (after GitHub accepts the token), and only the credential proxy
+  resolves it, per forwarded call. The ID is not in `isKnownSecretId`: it is not
+  a provider credential for batch import or test-vault status. See
+  [Credential Proxy](credential_proxy.md).
 - Provider clients take a `ProviderApiKeyResolver` and call it lazily when
   constructing the SDK/client for an authorized operation. The server always
   passes its own resolver. autobyteus-ts owns the vault format's read side
@@ -474,5 +481,6 @@ read-only `SecretVaultInspectionService`.
 
 - [LLM Management](./llm_management.md)
 - [Agent Execution](./agent_execution.md)
+- [Credential Proxy](./credential_proxy.md)
 - [Server environment and data-directory strategy](../URL_GENERATION_AND_ENV_STRATEGY.md)
 - [Electron packaging and reset behavior](../../../autobyteus-web/docs/electron_packaging.md)

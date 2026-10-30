@@ -135,8 +135,8 @@ describe('TokenUsageModelStatisticsTable', () => {
 
     expect(wrapper.text()).toContain('Runtime');
     expect(wrapper.text()).toMatch(/Llm model/i);
-    expect(wrapper.text()).toContain('Codex');
-    expect(wrapper.text()).toContain('Autobyteus');
+    expect(wrapper.text()).toContain('Codex App Server');
+    expect(wrapper.text()).toContain('AutoByteus');
     expect(wrapper.text()).toContain('Unknown');
     expect(wrapper.text()).toContain('Autobyteus:gpt-shared');
     expect(wrapper.text()).toContain('cache hit 20.0%');

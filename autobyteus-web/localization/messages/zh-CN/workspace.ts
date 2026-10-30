@@ -5,6 +5,7 @@ const messages = {
   "workspace.components.workspace.tools.BrowserPanel.forward": "前进",
   "workspace.components.conversation.SkillRequestChips.sentToTheAgentAs": "发送给智能体的内容",
   "workspace.components.conversation.segments.SystemTaskNotificationSegment.skillUpdated": "技能已更新",
+  "workspace.components.conversation.segments.SystemTaskNotificationSegment.toolsUpdated": "工具已更新",
   "fileExplorer.workspaceUnavailable": "工作目录信息暂不可用。请刷新或重新打开设置以加载已保存的工作目录。",
   "workspace.teamCopy.loading": "正在读取已保存的团队配置…",
   "workspace.runModelConfig.modelRequired": "启动前请选择模型。",
@@ -168,11 +169,11 @@ const messages = {
   "workspace.components.progress.SystemInstructionActivityItem.aria_label":
     "{{title}}。{{source}}。{{availability}}。捕获于 {{time}}。{{count}} 个字符。",
   "workspace.components.progress.SystemInstructionActivityItem.source.native":
-    "由 AutoByteus 提供 · Native 已配置系统提示词",
+    "由 AutoByteus 提供 · AutoByteus 已配置系统提示词",
   "workspace.components.progress.SystemInstructionActivityItem.source.claude":
-    "由 AutoByteus 提供 · Claude SDK systemPrompt",
+    "由 AutoByteus 提供 · Claude Agent SDK systemPrompt",
   "workspace.components.progress.SystemInstructionActivityItem.source.codex":
-    "由 AutoByteus 提供 · Codex baseInstructions",
+    "由 AutoByteus 提供 · Codex App Server baseInstructions",
   "workspace.components.progress.SystemInstructionActivityItem.source.grok":
     "由 AutoByteus 提供 · Grok Build rules",
   "workspace.components.progress.SystemInstructionActivityItem.source.unknown":

@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
 import * as VueApolloComposable from '@vue/apollo-composable';
-import * as VueCompositionApi from '@vue/composition-api';
+import * as VueCompositionApi from 'vue';
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = Maybe<T>;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -1443,6 +1443,14 @@ export type ImportMcpServerConfigsResult = {
   success: Scalars['Boolean']['output'];
 };
 
+export type IntegrationConnectionStatus = {
+  __typename?: 'IntegrationConnectionStatus';
+  agentDefinitionIds: Array<Scalars['String']['output']>;
+  connected: Scalars['Boolean']['output'];
+  connectedAt?: Maybe<Scalars['String']['output']>;
+  login?: Maybe<Scalars['String']['output']>;
+};
+
 export type McpConfigEntry = {
   __typename?: 'McpConfigEntry';
   name: Scalars['String']['output'];
@@ -1844,6 +1852,7 @@ export type Mutation = {
   checkGitHubSkillSourceUpdates: SkillSourceOperationResult;
   clearUpdateNotification: Array<UpdateNotification>;
   configureMcpServer: ConfigureMcpServerResult;
+  connectGitHubIntegration: IntegrationConnectionStatus;
   createAgentDefinition: AgentDefinition;
   createAgentOrgDefinition: AgentOrgDefinition;
   createAgentOrgRun: AgentOrgRunMutationResult;
@@ -1872,6 +1881,7 @@ export type Mutation = {
   deleteStoredRun: DeleteStoredRunMutationResult;
   deleteStoredTeamRun: DeleteStoredTeamRunMutationResult;
   disableSkill: Skill;
+  disconnectGitHubIntegration: IntegrationConnectionStatus;
   discoverAndRegisterMcpServerTools: DiscoverAndRegisterMcpServerToolsResult;
   downloadEmbeddingModel: Scalars['Boolean']['output'];
   enableSkill: Skill;
@@ -1920,6 +1930,7 @@ export type Mutation = {
   saveQwenConfiguration: QwenConfigurationCommandResult;
   setApplicationsEnabled: ApplicationsCapability;
   setAutomaticUpdates: UpdateAutomationSettings;
+  setGitHubIntegrationAgentAccess: IntegrationConnectionStatus;
   setModelRouterLaunch: Scalars['JSON']['output'];
   setModelRoutingEnabled: Scalars['JSON']['output'];
   setRemoteCollaborationEnabled: RemoteCollaborationCapabilityGql;
@@ -1933,6 +1944,7 @@ export type Mutation = {
   terminateAgentOrgRun: AgentOrgRunMutationResult;
   terminateAgentRun: TerminateAgentRunResult;
   terminateAgentTeamRun: TerminateAgentTeamRunResult;
+  testGitHubIntegration: IntegrationConnectionStatus;
   testMemoryHubConnection: MemoryHubConnectionTestResultGql;
   updateAgentDefinition: AgentDefinition;
   updateAgentOrgDefinition: AgentOrgDefinition;
@@ -2043,6 +2055,11 @@ export type MutationClearUpdateNotificationArgs = {
 
 export type MutationConfigureMcpServerArgs = {
   input: McpServerInput;
+};
+
+
+export type MutationConnectGitHubIntegrationArgs = {
+  token: Scalars['String']['input'];
 };
 
 
@@ -2405,6 +2422,11 @@ export type MutationSetApplicationsEnabledArgs = {
 export type MutationSetAutomaticUpdatesArgs = {
   enabled: Scalars['Boolean']['input'];
   kind: UpdateNotificationKind;
+};
+
+
+export type MutationSetGitHubIntegrationAgentAccessArgs = {
+  agentDefinitionIds: Array<Scalars['String']['input']>;
 };
 
 
@@ -2828,6 +2850,7 @@ export type Query = {
   getTeamRunExecutionCheckpoint: TeamRunExecutionCheckpointPayload;
   getTeamRunResumeConfig: TeamRunResumeConfigPayload;
   getTeamRunTokenUsageSummary: TokenUsageRunSummaryGraphql;
+  githubIntegration: IntegrationConnectionStatus;
   health: HealthStatus;
   listAgentOrgRunsWithMemory: AgentOrgRunMemoryPage;
   listAgentOrgsWithMemory: AgentOrgWithMemoryPage;
@@ -4554,21 +4577,21 @@ export type RemoveApplicationPackageMutationVariables = Exact<{
 
 export type RemoveApplicationPackageMutation = { __typename?: 'Mutation', removeApplicationPackage: Array<{ __typename?: 'ApplicationPackage', packageId: string, displayName: string, sourceKind: ApplicationPackageSourceKind, sourceSummary?: string | null, applicationCount: number, isPlatformOwned: boolean, isRemovable: boolean }> };
 
-export type AgentDefinitionMutationFieldsFragment = { __typename: 'AgentDefinition', id: string, name: string, role?: string | null, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, toolNames: Array<string>, inputProcessorNames: Array<string>, llmResponseProcessorNames: Array<string>, toolExecutionResultProcessorNames: Array<string>, toolInvocationPreprocessorNames: Array<string>, lifecycleProcessorNames: Array<string>, skillNames: Array<string>, skillScope: AgentSkillScope, ownershipScope: AgentDefinitionOwnershipScope, ownerTeamId?: string | null, ownerTeamName?: string | null, ownerApplicationId?: string | null, ownerApplicationName?: string | null, ownerPackageId?: string | null, ownerLocalApplicationId?: string | null, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null, loadIssue?: { __typename?: 'DefinitionLoadIssue', code: string, reason: string, definitionPath: string, packageRoot: string } | null };
+export type AgentDefinitionMutationFieldsFragment = { __typename: 'AgentDefinition', id: string, name: string, role?: string | null, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, toolNames: Array<string>, inputProcessorNames: Array<string>, llmResponseProcessorNames: Array<string>, toolExecutionResultProcessorNames: Array<string>, toolInvocationPreprocessorNames: Array<string>, lifecycleProcessorNames: Array<string>, skillNames: Array<string>, skillScope: AgentSkillScope, ownershipScope: AgentDefinitionOwnershipScope, ownerTeamId?: string | null, ownerTeamName?: string | null, ownerApplicationId?: string | null, ownerApplicationName?: string | null, ownerPackageId?: string | null, ownerLocalApplicationId?: string | null, internal: boolean, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null, loadIssue?: { __typename?: 'DefinitionLoadIssue', code: string, reason: string, definitionPath: string, packageRoot: string } | null };
 
 export type CreateAgentDefinitionMutationVariables = Exact<{
   input: CreateAgentDefinitionInput;
 }>;
 
 
-export type CreateAgentDefinitionMutation = { __typename?: 'Mutation', createAgentDefinition: { __typename: 'AgentDefinition', id: string, name: string, role?: string | null, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, toolNames: Array<string>, inputProcessorNames: Array<string>, llmResponseProcessorNames: Array<string>, toolExecutionResultProcessorNames: Array<string>, toolInvocationPreprocessorNames: Array<string>, lifecycleProcessorNames: Array<string>, skillNames: Array<string>, skillScope: AgentSkillScope, ownershipScope: AgentDefinitionOwnershipScope, ownerTeamId?: string | null, ownerTeamName?: string | null, ownerApplicationId?: string | null, ownerApplicationName?: string | null, ownerPackageId?: string | null, ownerLocalApplicationId?: string | null, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null, loadIssue?: { __typename?: 'DefinitionLoadIssue', code: string, reason: string, definitionPath: string, packageRoot: string } | null } };
+export type CreateAgentDefinitionMutation = { __typename?: 'Mutation', createAgentDefinition: { __typename: 'AgentDefinition', id: string, name: string, role?: string | null, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, toolNames: Array<string>, inputProcessorNames: Array<string>, llmResponseProcessorNames: Array<string>, toolExecutionResultProcessorNames: Array<string>, toolInvocationPreprocessorNames: Array<string>, lifecycleProcessorNames: Array<string>, skillNames: Array<string>, skillScope: AgentSkillScope, ownershipScope: AgentDefinitionOwnershipScope, ownerTeamId?: string | null, ownerTeamName?: string | null, ownerApplicationId?: string | null, ownerApplicationName?: string | null, ownerPackageId?: string | null, ownerLocalApplicationId?: string | null, internal: boolean, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null, loadIssue?: { __typename?: 'DefinitionLoadIssue', code: string, reason: string, definitionPath: string, packageRoot: string } | null } };
 
 export type UpdateAgentDefinitionMutationVariables = Exact<{
   input: UpdateAgentDefinitionInput;
 }>;
 
 
-export type UpdateAgentDefinitionMutation = { __typename?: 'Mutation', updateAgentDefinition: { __typename: 'AgentDefinition', id: string, name: string, role?: string | null, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, toolNames: Array<string>, inputProcessorNames: Array<string>, llmResponseProcessorNames: Array<string>, toolExecutionResultProcessorNames: Array<string>, toolInvocationPreprocessorNames: Array<string>, lifecycleProcessorNames: Array<string>, skillNames: Array<string>, skillScope: AgentSkillScope, ownershipScope: AgentDefinitionOwnershipScope, ownerTeamId?: string | null, ownerTeamName?: string | null, ownerApplicationId?: string | null, ownerApplicationName?: string | null, ownerPackageId?: string | null, ownerLocalApplicationId?: string | null, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null, loadIssue?: { __typename?: 'DefinitionLoadIssue', code: string, reason: string, definitionPath: string, packageRoot: string } | null } };
+export type UpdateAgentDefinitionMutation = { __typename?: 'Mutation', updateAgentDefinition: { __typename: 'AgentDefinition', id: string, name: string, role?: string | null, description: string, instructions: string, category?: string | null, avatarUrl?: string | null, toolNames: Array<string>, inputProcessorNames: Array<string>, llmResponseProcessorNames: Array<string>, toolExecutionResultProcessorNames: Array<string>, toolInvocationPreprocessorNames: Array<string>, lifecycleProcessorNames: Array<string>, skillNames: Array<string>, skillScope: AgentSkillScope, ownershipScope: AgentDefinitionOwnershipScope, ownerTeamId?: string | null, ownerTeamName?: string | null, ownerApplicationId?: string | null, ownerApplicationName?: string | null, ownerPackageId?: string | null, ownerLocalApplicationId?: string | null, internal: boolean, defaultLaunchConfig?: { __typename?: 'DefaultLaunchConfig', llmModelIdentifier?: string | null, runtimeKind?: string | null, llmConfig?: any | null } | null, loadIssue?: { __typename?: 'DefinitionLoadIssue', code: string, reason: string, definitionPath: string, packageRoot: string } | null } };
 
 export type DeleteAgentDefinitionMutationVariables = Exact<{
   id: Scalars['String']['input'];
@@ -4889,6 +4912,30 @@ export type CreateFileOrFolderMutationVariables = Exact<{
 
 
 export type CreateFileOrFolderMutation = { __typename?: 'Mutation', createFileOrFolder: string };
+
+export type ConnectGitHubIntegrationMutationVariables = Exact<{
+  token: Scalars['String']['input'];
+}>;
+
+
+export type ConnectGitHubIntegrationMutation = { __typename?: 'Mutation', connectGitHubIntegration: { __typename?: 'IntegrationConnectionStatus', connected: boolean, login?: string | null, connectedAt?: string | null, agentDefinitionIds: Array<string> } };
+
+export type TestGitHubIntegrationMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type TestGitHubIntegrationMutation = { __typename?: 'Mutation', testGitHubIntegration: { __typename?: 'IntegrationConnectionStatus', connected: boolean, login?: string | null, connectedAt?: string | null, agentDefinitionIds: Array<string> } };
+
+export type DisconnectGitHubIntegrationMutationVariables = Exact<{ [key: string]: never; }>;
+
+
+export type DisconnectGitHubIntegrationMutation = { __typename?: 'Mutation', disconnectGitHubIntegration: { __typename?: 'IntegrationConnectionStatus', connected: boolean, login?: string | null, connectedAt?: string | null, agentDefinitionIds: Array<string> } };
+
+export type SetGitHubIntegrationAgentAccessMutationVariables = Exact<{
+  agentDefinitionIds: Array<Scalars['String']['input']> | Scalars['String']['input'];
+}>;
+
+
+export type SetGitHubIntegrationAgentAccessMutation = { __typename?: 'Mutation', setGitHubIntegrationAgentAccess: { __typename?: 'IntegrationConnectionStatus', connected: boolean, login?: string | null, connectedAt?: string | null, agentDefinitionIds: Array<string> } };
 
 export type CredentialSettingFieldsFragment = { __typename?: 'ProviderCredentialSettingObject', apiKeyConfigured: boolean, provider: { __typename?: 'CatalogProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, catalogMode: string } };
 
@@ -5459,6 +5506,11 @@ export type GetFolderChildrenQueryVariables = Exact<{
 
 
 export type GetFolderChildrenQuery = { __typename?: 'Query', folderChildren: string };
+
+export type GetGitHubIntegrationQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetGitHubIntegrationQuery = { __typename?: 'Query', githubIntegration: { __typename?: 'IntegrationConnectionStatus', connected: boolean, login?: string | null, connectedAt?: string | null, agentDefinitionIds: Array<string> } };
 
 export type GetProviderCredentialSettingsQueryVariables = Exact<{
   runtimeKind?: InputMaybe<Scalars['String']['input']>;
@@ -6324,6 +6376,7 @@ export const AgentDefinitionMutationFieldsFragmentDoc = gql`
   ownerApplicationName
   ownerPackageId
   ownerLocalApplicationId
+  internal
   defaultLaunchConfig {
     llmModelIdentifier
     runtimeKind
@@ -8718,6 +8771,126 @@ export function useCreateFileOrFolderMutation(options: VueApolloComposable.UseMu
   return VueApolloComposable.useMutation<CreateFileOrFolderMutation, CreateFileOrFolderMutationVariables>(CreateFileOrFolderDocument, options);
 }
 export type CreateFileOrFolderMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<CreateFileOrFolderMutation, CreateFileOrFolderMutationVariables>;
+export const ConnectGitHubIntegrationDocument = gql`
+    mutation ConnectGitHubIntegration($token: String!) {
+  connectGitHubIntegration(token: $token) {
+    connected
+    login
+    connectedAt
+    agentDefinitionIds
+  }
+}
+    `;
+
+/**
+ * __useConnectGitHubIntegrationMutation__
+ *
+ * To run a mutation, you first call `useConnectGitHubIntegrationMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useConnectGitHubIntegrationMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useConnectGitHubIntegrationMutation({
+ *   variables: {
+ *     token: // value for 'token'
+ *   },
+ * });
+ */
+export function useConnectGitHubIntegrationMutation(options: VueApolloComposable.UseMutationOptions<ConnectGitHubIntegrationMutation, ConnectGitHubIntegrationMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<ConnectGitHubIntegrationMutation, ConnectGitHubIntegrationMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<ConnectGitHubIntegrationMutation, ConnectGitHubIntegrationMutationVariables>(ConnectGitHubIntegrationDocument, options);
+}
+export type ConnectGitHubIntegrationMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<ConnectGitHubIntegrationMutation, ConnectGitHubIntegrationMutationVariables>;
+export const TestGitHubIntegrationDocument = gql`
+    mutation TestGitHubIntegration {
+  testGitHubIntegration {
+    connected
+    login
+    connectedAt
+    agentDefinitionIds
+  }
+}
+    `;
+
+/**
+ * __useTestGitHubIntegrationMutation__
+ *
+ * To run a mutation, you first call `useTestGitHubIntegrationMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useTestGitHubIntegrationMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useTestGitHubIntegrationMutation();
+ */
+export function useTestGitHubIntegrationMutation(options: VueApolloComposable.UseMutationOptions<TestGitHubIntegrationMutation, TestGitHubIntegrationMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<TestGitHubIntegrationMutation, TestGitHubIntegrationMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<TestGitHubIntegrationMutation, TestGitHubIntegrationMutationVariables>(TestGitHubIntegrationDocument, options);
+}
+export type TestGitHubIntegrationMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<TestGitHubIntegrationMutation, TestGitHubIntegrationMutationVariables>;
+export const DisconnectGitHubIntegrationDocument = gql`
+    mutation DisconnectGitHubIntegration {
+  disconnectGitHubIntegration {
+    connected
+    login
+    connectedAt
+    agentDefinitionIds
+  }
+}
+    `;
+
+/**
+ * __useDisconnectGitHubIntegrationMutation__
+ *
+ * To run a mutation, you first call `useDisconnectGitHubIntegrationMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useDisconnectGitHubIntegrationMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useDisconnectGitHubIntegrationMutation();
+ */
+export function useDisconnectGitHubIntegrationMutation(options: VueApolloComposable.UseMutationOptions<DisconnectGitHubIntegrationMutation, DisconnectGitHubIntegrationMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<DisconnectGitHubIntegrationMutation, DisconnectGitHubIntegrationMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<DisconnectGitHubIntegrationMutation, DisconnectGitHubIntegrationMutationVariables>(DisconnectGitHubIntegrationDocument, options);
+}
+export type DisconnectGitHubIntegrationMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<DisconnectGitHubIntegrationMutation, DisconnectGitHubIntegrationMutationVariables>;
+export const SetGitHubIntegrationAgentAccessDocument = gql`
+    mutation SetGitHubIntegrationAgentAccess($agentDefinitionIds: [String!]!) {
+  setGitHubIntegrationAgentAccess(agentDefinitionIds: $agentDefinitionIds) {
+    connected
+    login
+    connectedAt
+    agentDefinitionIds
+  }
+}
+    `;
+
+/**
+ * __useSetGitHubIntegrationAgentAccessMutation__
+ *
+ * To run a mutation, you first call `useSetGitHubIntegrationAgentAccessMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useSetGitHubIntegrationAgentAccessMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useSetGitHubIntegrationAgentAccessMutation({
+ *   variables: {
+ *     agentDefinitionIds: // value for 'agentDefinitionIds'
+ *   },
+ * });
+ */
+export function useSetGitHubIntegrationAgentAccessMutation(options: VueApolloComposable.UseMutationOptions<SetGitHubIntegrationAgentAccessMutation, SetGitHubIntegrationAgentAccessMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<SetGitHubIntegrationAgentAccessMutation, SetGitHubIntegrationAgentAccessMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<SetGitHubIntegrationAgentAccessMutation, SetGitHubIntegrationAgentAccessMutationVariables>(SetGitHubIntegrationAgentAccessDocument, options);
+}
+export type SetGitHubIntegrationAgentAccessMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<SetGitHubIntegrationAgentAccessMutation, SetGitHubIntegrationAgentAccessMutationVariables>;
 export const SaveProviderApiKeyDocument = gql`
     mutation SaveProviderApiKey($providerId: String!, $apiKey: String!) {
   saveProviderApiKey(providerId: $providerId, apiKey: $apiKey) {
@@ -11529,6 +11702,36 @@ export function useGetFolderChildrenLazyQuery(variables?: GetFolderChildrenQuery
   return VueApolloComposable.useLazyQuery<GetFolderChildrenQuery, GetFolderChildrenQueryVariables>(GetFolderChildrenDocument, variables, options);
 }
 export type GetFolderChildrenQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetFolderChildrenQuery, GetFolderChildrenQueryVariables>;
+export const GetGitHubIntegrationDocument = gql`
+    query GetGitHubIntegration {
+  githubIntegration {
+    connected
+    login
+    connectedAt
+    agentDefinitionIds
+  }
+}
+    `;
+
+/**
+ * __useGetGitHubIntegrationQuery__
+ *
+ * To run a query within a Vue component, call `useGetGitHubIntegrationQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetGitHubIntegrationQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useGetGitHubIntegrationQuery();
+ */
+export function useGetGitHubIntegrationQuery(options: VueApolloComposable.UseQueryOptions<GetGitHubIntegrationQuery, GetGitHubIntegrationQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetGitHubIntegrationQuery, GetGitHubIntegrationQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetGitHubIntegrationQuery, GetGitHubIntegrationQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetGitHubIntegrationQuery, GetGitHubIntegrationQueryVariables>(GetGitHubIntegrationDocument, {}, options);
+}
+export function useGetGitHubIntegrationLazyQuery(options: VueApolloComposable.UseQueryOptions<GetGitHubIntegrationQuery, GetGitHubIntegrationQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetGitHubIntegrationQuery, GetGitHubIntegrationQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetGitHubIntegrationQuery, GetGitHubIntegrationQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetGitHubIntegrationQuery, GetGitHubIntegrationQueryVariables>(GetGitHubIntegrationDocument, {}, options);
+}
+export type GetGitHubIntegrationQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetGitHubIntegrationQuery, GetGitHubIntegrationQueryVariables>;
 export const GetProviderCredentialSettingsDocument = gql`
     query GetProviderCredentialSettings($runtimeKind: String) {
   providerCredentialSettings(runtimeKind: $runtimeKind) {

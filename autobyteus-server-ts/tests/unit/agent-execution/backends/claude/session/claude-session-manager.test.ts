@@ -9,10 +9,11 @@ import { ClaudeSessionManager } from "../../../../../../src/agent-execution/back
 import { buildRuntimeAgentToolExposure } from "../../../../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
 import { RuntimeKind } from "../../../../../../src/runtime-management/runtime-kind-enum.js";
 import { createFakeClaudeSdkClient, flushClaudeSession } from "../../../../../helpers/fake-claude-streaming-sdk.js";
+import { createAgentToolMcpRunSessionsStub } from "../../../../../helpers/agent-tool-mcp-run-sessions-stub.js";
 
 const RESTORED_SESSION_ID = "22222222-2222-4222-8222-222222222222";
 
-const createManager = (sdkClient: unknown, activator = { activateForRun: vi.fn(), deactivateForRun: vi.fn(() => 0) }) =>
+const createManager = (sdkClient: unknown, activator: unknown = createAgentToolMcpRunSessionsStub()) =>
   new ClaudeSessionManager(
     activator as never,
     {} as never,

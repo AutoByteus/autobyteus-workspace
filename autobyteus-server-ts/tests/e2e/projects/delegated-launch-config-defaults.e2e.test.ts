@@ -1,4 +1,5 @@
 import "reflect-metadata";
+import { agentRuntimeName } from "@autobyteus/agent-presentation-contracts";
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
@@ -24,7 +25,8 @@ import { grokAcpFixturePath } from "../helpers/grok-fake-cli.js";
 // - Grok Build: the recorded-fixture fake CLI (`prompt.jsonl`), a second real runtime for mixed-runtime copies;
 // - Codex: `CODEX_APP_SERVER_COMMAND` names a missing file, so a Codex default is deterministically unavailable.
 // Definitions (no team default except where stated): Squad = lead (none), engineer (Grok), reviewer (AGY ALT), offline
-// (Codex), unoffered (AGY model not offered), badsettings (AGY model + settings it has none of), incomplete (runtime only),
+// (Codex), unoffered (AGY model not offered), badsettings (Grok model + an invalid value of its declared effort; a setting
+// the model does not declare is left out, not refused, claude-anthropic-effort-control SR-004), incomplete (runtime only),
 // Squad team default AGY with a model not offered. Pair = lead (none), engineer (Grok), unoffered; Pair team default ALT.
 // Cases (each root): DLC-001 catalog Team copy: recorded per-member launch/source, five notes in `launch_notes`;
 // DLC-002 members start on their resolved runtime/model (Grok session; AGY argv `--model`); DLC-003 agent copies, with and
@@ -36,9 +38,11 @@ import { grokAcpFixturePath } from "../helpers/grok-fake-cli.js";
 // text and adds nothing; an outside `send_message_to` is not found; an agent with a usable default still starts; a user `@`
 // mention only resolves.
 // Agent and Team roots: DLC-007 a definition default edited after a copy started: the copy keeps its recorded values
-// through root stop/restore; a new copy uses the new default; DLC-008 the saved tree is given the pre-change shape
-// (no sources, no member launches) for two Team copies: restore loads, sources read "not recorded" and
-// members run on the Team value.
+// through root stop/restore; a new copy uses the new default; DLC-008 two Team copies restored with the root keep their
+// recorded member launches and sources, and their members start on their recorded models. (The released shape without
+// member launches is converted by the startup migration, covered by
+// tests/app-data-migrations/delegated-copy-own-file-complete-v1; autobyteus-197 D-5.)
+// Every Team-copy member records a complete launch and `followsTeam` (true while it runs on the copy's team value).
 // About 30 seconds. `DELEGATED_LAUNCH_DEFAULTS_E2E_EVIDENCE_DIR` keeps a JSON receipt.
 // Run: env -i PATH="$PATH" HOME="$HOME" TMPDIR="$TMPDIR" RUN_AGY_FAILURE_E2E=1 \
 //   ANTIGRAVITY_CLI_COMMAND=$PWD/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs \
@@ -67,7 +71,6 @@ const NOT_OFFERED = "dlc-no-such-model";
 const TEAM_NOT_OFFERED = "dlc-no-such-team-model";
 const GROK_MODEL = "grok-4.7";
 const FAKE_GROK_SCRIPT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../fixtures/grok-acp/fake-grok-cli.mjs");
-const TREE_FILES = new Set(["collaboration_tree.json", "team_run_execution_tree.json", "agent_org_run_execution_tree.json"]);
 const SQUAD = ["lead", "engineer", "reviewer", "offline", "unoffered", "badsettings", "incomplete"] as const;
 type Kind = "agent" | "team" | "org";
 type Frame = { type: string; payload: Record<string, any> };
@@ -108,7 +111,7 @@ const sourceOf = (value: Rec | null | undefined) => value ? { origin: value.orig
   layer: entry.layer, runtimeKind: f(entry, "runtimeKind"), model: f(entry, "llmModelIdentifier"), reason: entry.reason, detail: entry.detail })) } : null;
 /** The `launch_notes` sentence of the notes renderer (launch-configuration-notes.ts) for one skipped layer. */
 const noteText = (input: { name: string; layer: "agent" | "team"; runtime: string | null; model: string | null; detail: string;
-  runsOn: string; origin: string; team?: boolean }) => `${input.name}: its ${input.layer} default ${input.runtime ?? "(no runtime)"} / `
+  runsOn: string; origin: string; team?: boolean }) => `${input.name}: its ${input.layer} default ${input.runtime ? agentRuntimeName(input.runtime) : "(no runtime)"} / `
   + `${input.model ?? "(no model)"} could not be used (${input.detail.replace(/\.$/, "")}); `
   + `${input.team ? "its members without their own default run on" : "it runs on"} ${input.runsOn} (${input.origin}).`;
 
@@ -171,21 +174,6 @@ suite("Delegated copies honor agent and team launch defaults in every root (real
     const index = active.findIndex((run) => run.rootId === rootId);
     if (index >= 0) active.splice(index, 1);
   };
-  /** Saved root tree files under the data dir that mention one of `markers`. */
-  const savedTreeFiles = async (markers: readonly string[]) => {
-    const found: string[] = [];
-    const visit = async (dir: string): Promise<void> => {
-      for (const entry of await fs.readdir(dir, { withFileTypes: true })) {
-        const file = path.join(dir, entry.name);
-        if (entry.isDirectory()) { if (entry.name !== "agy-project" && entry.name !== ".agents") await visit(file); continue; }
-        if (!entry.isFile() || !TREE_FILES.has(entry.name)) continue;
-        const text = await fs.readFile(file, "utf8").catch(() => "");
-        if (markers.some((marker) => text.includes(marker))) found.push(file);
-      }
-    };
-    await visit(dataDir);
-    return found;
-  };
 
   beforeAll(async () => {
     dataDir = await fs.mkdtemp(path.join(os.tmpdir(), "dlc-e2e-"));
@@ -217,7 +205,7 @@ suite("Delegated copies honor agent and team launch defaults in every root (real
     await agentDefinition("reviewer", [], { runtimeKind: AGY, llmModelIdentifier: ALT });
     await agentDefinition("offline", [], { runtimeKind: "codex_app_server", llmModelIdentifier: "gpt-5.5" });
     await agentDefinition("unoffered", [], { runtimeKind: AGY, llmModelIdentifier: NOT_OFFERED });
-    await agentDefinition("badsettings", [], { runtimeKind: AGY, llmModelIdentifier: MODEL, llmConfig: { temperature: 0.2 } });
+    await agentDefinition("badsettings", [], { runtimeKind: GROK, llmModelIdentifier: GROK_MODEL, llmConfig: { reasoning_effort: "ultra" } });
     await agentDefinition("incomplete", [], { runtimeKind: AGY });
     await teamDefinition("squad", { lead: "worker", engineer: "engineer", reviewer: "reviewer", offline: "offline", unoffered: "unoffered",
       badsettings: "badsettings", incomplete: "incomplete" }, { runtimeKind: AGY, llmModelIdentifier: TEAM_NOT_OFFERED });
@@ -351,15 +339,15 @@ suite("Delegated copies honor agent and team launch defaults in every root (real
     return { result, copy: copy!, teamRunId: f(copy, "teamRunId") as string, members };
   };
   const memberSources = (source: Rec) => Object.fromEntries((source.members as Rec[]).map((member) => [String(member.address).split("/").pop(),
-    { launch: launchOf(f(member, "launchConfiguration")), source: sourceOf(f(member, "launchSource")) }]));
+    { launch: launchOf(f(member, "launchConfiguration")), source: sourceOf(f(member, "launchSource")), followsTeam: f(member, "followsTeam") }]));
   const inheritedLaunch = () => ({ runtimeKind: AGY, model: MODEL, llmConfig: null, workspace, autoExecuteTools: true });
   const ownLaunch = (runtimeKind: string, model: string) => ({ runtimeKind, model, llmConfig: null, workspace, autoExecuteTools: true });
   const fallback = (reason: string, runtimeKind: string | null, model: string | null, detail: string, layer = "agent_default") =>
     ({ layer, runtimeKind, model, reason, detail });
   const squadFallbacks = () => ({
     offline: fallback("runtime_unavailable", "codex_app_server", "gpt-5.5", `Codex App Server command '${missingCodex}' is not available.`),
-    unoffered: fallback("model_unavailable", AGY, NOT_OFFERED, `The model '${NOT_OFFERED}' is not available on ${AGY}.`),
-    badsettings: fallback("model_settings_invalid", AGY, MODEL, "Its model settings are invalid: This model has no adjustable settings."),
+    unoffered: fallback("model_unavailable", AGY, NOT_OFFERED, `The model '${NOT_OFFERED}' is not available on ${agentRuntimeName(AGY)}.`),
+    badsettings: fallback("model_settings_invalid", GROK, GROK_MODEL, "Its model settings are invalid: Value is not one of the supported options."),
     incomplete: fallback("incomplete", AGY, null, "It names no model."),
   });
   const agentNote = (name: string, entry: ReturnType<typeof fallback>, runsOn: string, origin: string) =>
@@ -374,21 +362,22 @@ suite("Delegated copies honor agent and team launch defaults in every root (real
     // DLC-001 (AC-001, AC-002 member layer, AC-005, AC-015 shape, REQ-002): a catalog Team copy, each agent resolved alone.
     const squad = await delegateTeam(root, "squad");
     const reasons = squadFallbacks();
-    const teamFallback = fallback("model_unavailable", AGY, TEAM_NOT_OFFERED, `The model '${TEAM_NOT_OFFERED}' is not available on ${AGY}.`, "team_default");
+    const teamFallback = fallback("model_unavailable", AGY, TEAM_NOT_OFFERED, `The model '${TEAM_NOT_OFFERED}' is not available on ${agentRuntimeName(AGY)}.`, "team_default");
     const source = f(squad.copy, "source");
     record.squadSource = source;
     expect(launchOf(f(source, "defaultLaunchConfiguration"))).toEqual(inheritedLaunch());
     expect(sourceOf(f(source, "defaultLaunchSource"))).toEqual({ origin: "inherited", fallbacks: [teamFallback] });
     expect(memberSources(source)).toEqual({
-      lead: { launch: null, source: null },
-      engineer: { launch: ownLaunch(GROK, GROK_MODEL), source: { origin: "agent_default", fallbacks: [] } },
-      reviewer: { launch: ownLaunch(AGY, ALT), source: { origin: "agent_default", fallbacks: [] } },
-      offline: { launch: null, source: { origin: "inherited", fallbacks: [reasons.offline] } },
-      unoffered: { launch: null, source: { origin: "inherited", fallbacks: [reasons.unoffered] } },
-      badsettings: { launch: null, source: { origin: "inherited", fallbacks: [reasons.badsettings] } },
-      incomplete: { launch: null, source: { origin: "inherited", fallbacks: [reasons.incomplete] } },
+      // A member that follows the team records the copy's team value (here inherited from the run) as its launch.
+      lead: { launch: inheritedLaunch(), source: null, followsTeam: true },
+      engineer: { launch: ownLaunch(GROK, GROK_MODEL), source: { origin: "agent_default", fallbacks: [] }, followsTeam: false },
+      reviewer: { launch: ownLaunch(AGY, ALT), source: { origin: "agent_default", fallbacks: [] }, followsTeam: false },
+      offline: { launch: inheritedLaunch(), source: { origin: "inherited", fallbacks: [reasons.offline] }, followsTeam: true },
+      unoffered: { launch: inheritedLaunch(), source: { origin: "inherited", fallbacks: [reasons.unoffered] }, followsTeam: true },
+      badsettings: { launch: inheritedLaunch(), source: { origin: "inherited", fallbacks: [reasons.badsettings] }, followsTeam: true },
+      incomplete: { launch: inheritedLaunch(), source: { origin: "inherited", fallbacks: [reasons.incomplete] }, followsTeam: true },
     });
-    const runsOnRoot = `${AGY} / ${MODEL}`;
+    const runsOnRoot = `${agentRuntimeName(AGY)} / ${MODEL}`;
     expect(squad.result.launch_notes).toEqual([
       noteText({ name: names.squad!, layer: "team", runtime: AGY, model: TEAM_NOT_OFFERED, detail: teamFallback.detail, runsOn: runsOnRoot,
         origin: "inherited from the run", team: true }),
@@ -474,14 +463,15 @@ suite("Delegated copies honor agent and team launch defaults in every root (real
     // resolved on its own again (each copy records its own snapshot), with the same notes.
     const pairFallback = squadFallbacks().unoffered;
     const pairDelegation = await delegateTeam(root, "pair");
-    expect(JSON.stringify(pairDelegation.result.launch_notes)).toContain(agentNote("unoffered", pairFallback, `${AGY} / ${ALT}`, "its team default"));
+    expect(JSON.stringify(pairDelegation.result.launch_notes)).toContain(agentNote("unoffered", pairFallback, `${agentRuntimeName(AGY)} / ${ALT}`, "its team default"));
     const pairSource = f(pairDelegation.copy, "source");
     expect(launchOf(f(pairSource, "defaultLaunchConfiguration"))).toEqual(ownLaunch(AGY, ALT));
     expect(sourceOf(f(pairSource, "defaultLaunchSource"))).toEqual({ origin: "team_default", fallbacks: [] });
     expect(memberSources(pairSource)).toEqual({
-      lead: { launch: null, source: null },
-      engineer: { launch: ownLaunch(GROK, GROK_MODEL), source: { origin: "agent_default", fallbacks: [] } },
-      unoffered: { launch: null, source: { origin: "team_default", fallbacks: [pairFallback] } },
+      // Members following the team record the Pair's team default (ALT) as their launch.
+      lead: { launch: ownLaunch(AGY, ALT), source: null, followsTeam: true },
+      engineer: { launch: ownLaunch(GROK, GROK_MODEL), source: { origin: "agent_default", fallbacks: [] }, followsTeam: false },
+      unoffered: { launch: ownLaunch(AGY, ALT), source: { origin: "team_default", fallbacks: [pairFallback] }, followsTeam: true },
     });
     await until(async () => (await agyLaunches()).some((entry) => entry.runId === pairDelegation.members.lead!.agentRunId), `${kind}: pair lead started`, 60_000);
     expect((await agyLaunches()).filter((entry) => entry.runId === pairDelegation.members.lead!.agentRunId).map((entry) => entry.model)).toEqual([ALT]);
@@ -528,7 +518,7 @@ suite("Delegated copies honor agent and team launch defaults in every root (real
     root.sendToManager("Hello. Marker ROOT-STARTED.");
     await until(async () => /ROOT-STARTED[\s\S]*OK/.test(await root.conversationText({ address: "/", agentRunId: root.managerRunId })), "root answered", 60_000);
     process.env["AGY_FAKE_EXTRA_MODELS"] = ALT;
-    const reason = `The model '${RETIRING}' is not available on ${AGY}.`;
+    const reason = `The model '${RETIRING}' is not available on ${agentRuntimeName(AGY)}.`;
     const before = await root.liveTree();
     const delegated = await root.managerCalls(callTool("delegate_task", { recipient_address: `/${segment(names.worker!)}`, description: "Plain work." }));
     expect(delegated.delegated ?? false, JSON.stringify(delegated)).toBe(false);
@@ -570,7 +560,7 @@ suite("Delegated copies honor agent and team launch defaults in every root (real
     return { record, root, first, pairAddress, pairCopy };
   };
 
-  it("Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it; a pre-change saved tree restores on the Team value (AC-008, AC-009)", async () => {
+  it("Agent and Team roots: an edited definition default leaves started copies on their recorded values through stop/restore; new copies use it (AC-008)", async () => {
     const prepared = await Promise.all((["agent", "team"] as const).map(lifecycleScenario));
     const edited = await graphql(`mutation($input:UpdateAgentDefinitionInput!){updateAgentDefinition(input:$input){id defaultLaunchConfig{runtimeKind llmModelIdentifier}}}`,
       { input: { id: ids.engineer, defaultLaunchConfig: { runtimeKind: AGY, llmModelIdentifier: ALT, llmConfig: null } } });
@@ -579,44 +569,31 @@ suite("Delegated copies honor agent and team launch defaults in every root (real
       const kind = root.kind;
       expect(memberSources(f(teamCopyOf(await root.liveTree(), first.members.lead!.agentRunId), "source")).engineer!.launch).toEqual(ownLaunch(GROK, GROK_MODEL));
       const second = await delegateTeam(root, "squad");
-      expect(memberSources(f(second.copy, "source")).engineer).toEqual({ launch: ownLaunch(AGY, ALT), source: { origin: "agent_default", fallbacks: [] } });
+      expect(memberSources(f(second.copy, "source")).engineer).toEqual({ launch: ownLaunch(AGY, ALT), source: { origin: "agent_default", fallbacks: [] }, followsTeam: false });
       record.copies = { first: first.teamRunId, second: second.teamRunId };
 
-      // Root stop. DLC-008 (AC-009): copy B and the Pair copy get the pre-change shape (no sources, no member launches).
+      // DLC-008: record copy B's and the Pair copy's member launches and sources, stop the root, restore it.
+      const recordedSource = (tree: unknown, coordinatorRunId: string) => f(teamCopyOf(tree, coordinatorRunId), "source");
+      const beforeStop = await root.liveTree();
+      const secondRecorded = recordedSource(beforeStop, second.members.lead!.agentRunId);
+      const pairRecorded = recordedSource(beforeStop, pairCopy.members.lead!.agentRunId);
       root.closeChannels();
       await terminate(kind, root.rootId);
       await wait(2_000);
-      const targets = [second.teamRunId, pairCopy.teamRunId];
-      const files = await savedTreeFiles(targets);
-      expect(files.length, `${kind}: saved trees`).toBeGreaterThan(0);
-      const stripTeam = (team: Rec | undefined) => {
-        if (!team || !("defaultLaunchConfiguration" in team)) return;
-        delete team.defaultLaunchSource;
-        for (const member of team.members as Rec[]) { delete member.launchConfiguration; delete member.launchSource; }
-      };
-      let stripped = 0;
-      for (const file of files) {
-        const saved = JSON.parse(await fs.readFile(file, "utf8"));
-        for (const entry of objectsIn(saved)) {
-          if (!targets.includes(entry.teamRunId)) continue;
-          stripTeam(entry); stripTeam(entry.source); stripped += 1;
-        }
-        // A task agent team owns its facts: its own tree keeps the team's default launch source in `taskAgent.launchSource`
-        // (delegated-copy-own-run-memory contract §3.2), which the store composes back as `defaultLaunchSource`.
-        if (saved.taskAgent && targets.includes(saved.rootTeam?.teamRunId)) delete saved.taskAgent.launchSource;
-        await fs.writeFile(file, JSON.stringify(saved, null, 2));
-      }
-      expect(stripped, `${kind}: stripped records`).toBeGreaterThan(0);
       await root.reconnect();
       const restored = await root.liveTree();
-      const secondSource = f(teamCopyOf(restored, second.members.lead!.agentRunId), "source");
-      expect(f(secondSource, "defaultLaunchSource") ?? null).toBeNull();
-      expect(memberSources(secondSource).engineer).toEqual({ launch: null, source: null });
-      const restoredPair = f(teamCopyOf(restored, pairCopy.members.lead!.agentRunId), "source");
-      expect(f(restoredPair, "defaultLaunchSource") ?? null).toBeNull();
-      expect(memberSources(restoredPair).engineer).toEqual({ launch: null, source: null });
+      const secondSource = recordedSource(restored, second.members.lead!.agentRunId);
+      const restoredPair = recordedSource(restored, pairCopy.members.lead!.agentRunId);
+      // The restored copies keep every recorded member launch, source and team-following flag, and the team's source.
+      expect(memberSources(secondSource)).toEqual(memberSources(secondRecorded));
+      expect(sourceOf(f(secondSource, "defaultLaunchSource"))).toEqual(sourceOf(f(secondRecorded, "defaultLaunchSource")));
+      expect(memberSources(restoredPair)).toEqual(memberSources(pairRecorded));
+      expect(sourceOf(f(restoredPair, "defaultLaunchSource"))).toEqual(sourceOf(f(pairRecorded, "defaultLaunchSource")));
+      expect(memberSources(secondSource).engineer).toEqual({ launch: ownLaunch(AGY, ALT), source: { origin: "agent_default", fallbacks: [] }, followsTeam: false });
+      expect(memberSources(restoredPair).engineer).toEqual({ launch: ownLaunch(GROK, GROK_MODEL), source: { origin: "agent_default", fallbacks: [] }, followsTeam: false });
 
-      // Restored copy A (recorded, AC-008): its engineer's first start is on Grok. Pre-change copy B: on the Team value.
+      // Restored copy A (recorded, AC-008): its engineer's first start is on Grok. Restored copy B: its engineer and
+      // reviewer start on their recorded model (ALT).
       const grokFrom = (await grokSessions()).length;
       const agyFrom = (await agyLaunches()).length;
       const toFirst = await root.agentCalls(first.members.lead!, callTool("send_message_to", { recipient_address: first.members.engineer!.address, content: "List it." }));
@@ -626,10 +603,10 @@ suite("Delegated copies honor agent and team launch defaults in every root (real
       expect(await launchesAfter(agyFrom, first.members.engineer!.agentRunId)).toEqual([]);
       for (const name of ["engineer", "reviewer"] as const) {
         const sent = await root.agentCalls(second.members.lead!, callTool("send_message_to", { recipient_address: second.members[name]!.address,
-          content: `Old-shape work for ${name}.` }));
+          content: `Restored work for ${name}.` }));
         expect(sent, JSON.stringify(sent)).toMatchObject({ accepted: true });
         await until(async () => (await launchesAfter(agyFrom, second.members[name]!.agentRunId)).length > 0, `${kind}: copy B ${name} started`, 60_000);
-        expect((await launchesAfter(agyFrom, second.members[name]!.agentRunId)).map((entry) => entry.model)).toEqual([MODEL]);
+        expect((await launchesAfter(agyFrom, second.members[name]!.agentRunId)).map((entry) => entry.model)).toEqual([ALT]);
       }
       record.restore = { secondSource, restoredPair, agyLaunches: (await agyLaunches()).slice(agyFrom), grokSessions: (await grokSessions()).slice(grokFrom) };
       root.closeChannels();

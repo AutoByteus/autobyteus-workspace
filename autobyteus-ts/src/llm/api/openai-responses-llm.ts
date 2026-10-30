@@ -145,6 +145,11 @@ export class OpenAIResponsesLLM extends BaseLLM {
     return filtered;
   }
 
+  /**
+   * Function tools go out with `strict: false`. The Responses API treats an omitted `strict` as true, and GPT-5
+   * models then fill every optional argument of every tool; our schemas are not strict-mode schemas (see
+   * `openai-tool-schema-normalizer.ts`), so optional arguments must stay optional.
+   */
   private normalizeTools(tools: Record<string, unknown>[]): Record<string, unknown>[] {
     return tools.map((tool) => {
       if (tool?.type === 'function' && isRecord(tool.function)) {
@@ -153,8 +158,12 @@ export class OpenAIResponsesLLM extends BaseLLM {
           type: 'function',
           name: typeof fn.name === 'string' ? fn.name : undefined,
           description: typeof fn.description === 'string' ? fn.description : undefined,
-          parameters: fn.parameters
+          parameters: fn.parameters,
+          strict: false
         };
+      }
+      if (tool?.type === 'function' && tool.strict === undefined) {
+        return { ...tool, strict: false };
       }
       return tool;
     });

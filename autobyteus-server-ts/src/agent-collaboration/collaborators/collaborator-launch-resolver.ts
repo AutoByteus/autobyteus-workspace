@@ -2,6 +2,7 @@ import type { AgentLaunchConfiguration } from "../../agent-team-execution/domain
 import type { DefaultLaunchConfig } from "../../launch-preferences/default-launch-config.js";
 import {
   LaunchModelCheckError,
+  type InheritedLaunchVerdict,
   type LaunchUsabilityCheck,
   type LaunchVerdict,
 } from "../../launch-preferences/launch-usability-check.js";
@@ -110,8 +111,11 @@ export class CollaboratorLaunchResolver {
     routing: DelegationRouting | null,
   ): Promise<CollaboratorEntryPlan[]> {
     const routerActive = routing !== null && routing.notActiveReason === null;
-    const inherited = base.kind === "inherited" ? cloneLaunch(base.launch) : null;
-    const verdicts = await this.checkConfigured(plans, base, inherited, routing);
+    const delegatorLaunch = base.kind === "inherited" ? cloneLaunch(base.launch) : null;
+    const verdicts = await this.checkConfigured(plans, base, delegatorLaunch, routing);
+    // The inherited layer launches the checked, canonical copy of the delegator's launch. When that check failed the
+    // raw copy stays (as before): every member that would take it is refused with the check's reason.
+    const inherited = verdicts.inherited?.usable === true ? verdicts.inherited.launch : delegatorLaunch;
     const verdictOf = (key: object): LayerVerdict | null => verdicts.layers.get(key) ?? null;
 
     // Steps 1–2 for every agent of every plan.
@@ -166,7 +170,7 @@ export class CollaboratorLaunchResolver {
       }
       const fallbacks = routerFailure ? [...planned.fallbacks, routerFailure] : planned.fallbacks;
       if (!inherited) return noUsableLayer(plan, planned.fallbacks, routerState);
-      if (verdicts.inheritedFailure !== null) throw new CollaboratorAddError(plan.name, verdicts.inheritedFailure);
+      if (verdicts.inherited?.usable === false) throw new CollaboratorAddError(plan.name, verdicts.inherited.detail);
       return { launch: inherited, source: source("inherited", fallbacks) };
     };
 
@@ -245,7 +249,7 @@ export class CollaboratorLaunchResolver {
   }
 
   /**
-   * Every configured candidate's verdict and the inherited layer's failure, in one batch: the node's facts (U3, U4b)
+   * Every configured candidate's verdict and the inherited layer's verdict, in one batch: the node's facts (U3, U4b)
    * only while Model Routing is on.
    */
   private async checkConfigured(
@@ -253,7 +257,7 @@ export class CollaboratorLaunchResolver {
     base: CollaboratorLaunchBase,
     inherited: AgentLaunchConfiguration | null,
     routing: DelegationRouting | null,
-  ): Promise<Readonly<{ layers: ReadonlyMap<object, LayerVerdict>; inheritedFailure: string | null }>> {
+  ): Promise<Readonly<{ layers: ReadonlyMap<object, LayerVerdict>; inherited: InheritedLaunchVerdict | null }>> {
     const candidates: { key: object; layer: ConfiguredLaunchLayer; value: DefaultLaunchConfig }[] = [];
     const consider = (key: object, layer: ConfiguredLaunchLayer, value: DefaultLaunchConfig | null) => {
       if (value) candidates.push({ key, layer, value });
@@ -284,7 +288,7 @@ export class CollaboratorLaunchResolver {
             { usable: false, reason: "incomplete", detail: "It names no model." }) })
           : Object.freeze({ usable: false, fallback: configuredFallback(candidate.layer, candidate.value, verdict) }));
     });
-    return { layers, inheritedFailure: result.inheritedFailure };
+    return { layers, inherited: result.inherited };
   }
 }
 

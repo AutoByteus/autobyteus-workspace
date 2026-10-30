@@ -1,0 +1,8 @@
+{"t":"2026-10-29T11:14:08.795Z","kind":"listening","port":39955}
+{"t":"2026-10-29T11:14:10.538Z","kind":"rpc","methods":["server/discover"],"names":[null],"accept":"text/event-stream, application/json","session":null,"ua":"grok-cli/1.0.70"}
+{"t":"2026-10-29T11:14:10.542Z","kind":"rpc","methods":["initialize"],"names":[null],"accept":"text/event-stream, application/json","session":null,"ua":"grok-cli/1.0.70"}
+{"t":"2026-10-29T11:14:10.547Z","kind":"rpc","methods":["notifications/initialized"],"names":[null],"accept":"text/event-stream, application/json","session":"e2f240f7-fa17-48f1-afab-e6f0592a3e3c","ua":"grok-cli/1.0.70"}
+{"t":"2026-10-29T11:14:10.552Z","kind":"http","http":"GET","accept":"text/event-stream, application/json","session":"e2f240f7-fa17-48f1-afab-e6f0592a3e3c","ua":"grok-cli/1.0.70"}
+{"t":"2026-10-29T11:14:10.552Z","kind":"rpc","methods":["tools/list"],"names":[null],"accept":"text/event-stream, application/json","session":"e2f240f7-fa17-48f1-afab-e6f0592a3e3c","ua":"grok-cli/1.0.70"}
+{"t":"2026-10-29T11:14:14.524Z","kind":"notify","reason":"add-beta","getStreams":1,"tools":["probe_alpha","probe_beta"]}
+{"t":"2026-10-29T11:14:21.976Z","kind":"http","http":"GET-closed","session":"e2f240f7-fa17-48f1-afab-e6f0592a3e3c"}

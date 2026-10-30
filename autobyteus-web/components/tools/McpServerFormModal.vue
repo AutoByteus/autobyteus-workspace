@@ -71,12 +71,12 @@
               <div v-for="item in argList" :key="item.id" class="flex items-center space-x-2">
                 <input type="text" v-model="item.value" :placeholder="$t('tools.components.tools.McpServerFormModal.argument')" class="block w-full shadow-sm text-base border-gray-300 rounded-md p-2">
                 <button @click="removeArgument(item.id)" class="p-2 text-gray-500 hover:text-red-600 rounded-full">
-                  <span class="i-heroicons-trash-20-solid w-5 h-5"></span>
+                  <Icon icon="heroicons:trash-20-solid" class="w-5 h-5" />
                 </button>
               </div>
             </div>
             <button @click="addArgument" class="mt-2 inline-flex items-center px-3 py-1.5 border border-dashed border-gray-400 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
-              <span class="i-heroicons-plus-20-solid w-5 h-5 mr-1 text-gray-500"></span>{{ $t('tools.components.tools.McpServerFormModal.add_argument') }}</button>
+              {{ $t('tools.components.tools.McpServerFormModal.add_argument') }}</button>
           </div>
           <div>
             <label for="stdio_cwd" class="block text-base font-medium text-gray-700">{{ $t('tools.components.tools.McpServerFormModal.current_working_directory_optional') }}</label>
@@ -162,12 +162,12 @@
 
       <div class="flex items-center space-x-4">
         <button @click="runPreview" :disabled="store.getLoading" class="px-6 py-3 bg-green-600 text-white rounded-md hover:bg-green-700 disabled:bg-green-300 text-base font-semibold">
-          <span v-if="store.getLoading" class="i-heroicons-arrow-path-20-solid w-5 h-5 animate-spin mr-2"></span>
+          <Icon v-if="store.getLoading" icon="heroicons:arrow-path-20-solid" class="w-5 h-5 animate-spin mr-2" />
           {{ store.getLoading ? 'Checking...' : 'Preview Tools' }}
         </button>
       
         <button @click="save" :disabled="store.getLoading" class="px-6 py-3 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 disabled:bg-indigo-300 text-base font-semibold">
-          <span v-if="store.getLoading" class="i-heroicons-arrow-path-20-solid w-5 h-5 animate-spin mr-2"></span>
+          <Icon v-if="store.getLoading" icon="heroicons:arrow-path-20-solid" class="w-5 h-5 animate-spin mr-2" />
           {{ store.getLoading ? 'Saving...' : 'Save Configuration' }}
         </button>
       </div>
@@ -176,6 +176,7 @@
 </template>
 
 <script setup lang="ts">
+import { Icon } from '@iconify/vue';
 import { ref, watch, computed, reactive, onMounted, onUnmounted, nextTick } from 'vue';
 import McpConfigRows from './McpConfigRows.vue';
 import { useToolManagementStore } from '~/stores/toolManagementStore';

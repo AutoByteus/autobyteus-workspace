@@ -1,3 +1,4 @@
+import type { IntegrationRunAccess } from "../../../../credential-proxy/integration-run-access.js";
 import type { ClaudeRunContext } from "../backend/claude-agent-run-context.js";
 import type { ClaudeAgentToolsMcpSessionState } from "../agent-tools-mcp/claude-agent-tools-mcp-session-state.js";
 import type { ClaudeSdkSessionBinding } from "../../../../runtime-management/claude/client/claude-sdk-session-binding.js";
@@ -6,7 +7,7 @@ import { claudeSessionReasoningOptions } from "./claude-session-config.js";
 import type { ClaudeProcessDiagnostics } from "./claude-process-diagnostics.js";
 import { buildClaudeSessionMcpServerConfig } from "./claude-session-mcp-server-config.js";
 import type { ClaudeSessionToolUseCoordinator } from "./claude-session-tool-use-coordinator.js";
-import { resolveClaudeSessionToolingOptions } from "./claude-session-tooling-options.js";
+import { isEnabledClaudeAgentToolsMcpTool, resolveClaudeSessionToolingOptions } from "./claude-session-tooling-options.js";
 
 /** The SDK query options for one CLI process generation of a Claude run session. */
 export const resolveClaudeSessionQueryOptions = async (input: {
@@ -15,6 +16,7 @@ export const resolveClaudeSessionQueryOptions = async (input: {
   diagnostics: ClaudeProcessDiagnostics;
   agentToolsMcpSessionState: ClaudeAgentToolsMcpSessionState;
   toolingCoordinator: ClaudeSessionToolUseCoordinator;
+  integrationRunAccess: IntegrationRunAccess | null;
 }): Promise<ClaudeSdkStreamingSessionOptions> => {
   const { runContext } = input;
   const sessionConfig = runContext.runtimeContext.sessionConfig;
@@ -23,18 +25,23 @@ export const resolveClaudeSessionQueryOptions = async (input: {
     hasMaterializedSkills: runContext.runtimeContext.materializedConfiguredSkills.length > 0,
     memberExecutionContext: runContext.config.memberExecutionContext,
   };
-  const configuredToolingOptions = resolveClaudeSessionToolingOptions(toolingInput);
-  const agentToolsMcpDescriptor = (
-    configuredToolingOptions.agentToolsMcpToolingRequested ||
-    runContext.runtimeContext.runtimeToolExposure.requestedToolNames.length > 0
-  )
-    ? input.agentToolsMcpSessionState.ensureDescriptor(runContext)
-    : null;
+  // Every run has an Agent Tools MCP session, even with an empty tool list,
+  // so a tool added during the run is reachable without a restart.
+  const agentToolsMcpDescriptor = input.agentToolsMcpSessionState.ensureDescriptor(runContext);
   const toolingOptions = resolveClaudeSessionToolingOptions({
     ...toolingInput,
-    agentToolsMcpEnabledToolNames: agentToolsMcpDescriptor?.enabledTools ?? [],
+    agentToolsMcpEnabledToolNames: agentToolsMcpDescriptor.enabledTools,
   });
+  // A tool in the run's current Agent Tools list is allowed as `allowedTools` allowed it before;
+  // the list is read per call because it can change during the run.
+  const autoApproveReason = (toolName: string): string | null =>
+    isEnabledClaudeAgentToolsMcpTool(input.agentToolsMcpSessionState.ensureDescriptor(runContext).enabledTools, toolName)
+      ? "agent_tools_enabled"
+      : null;
   const mcpServers = await buildClaudeSessionMcpServerConfig({ agentToolsMcpDescriptor });
+  // The run's integration variables for the CLI's shell; the run keeps one pass across process generations.
+  const extraEnvironment = input.integrationRunAccess?.environmentForRun(
+    { runId: runContext.runId, agentDefinitionId: runContext.config.agentDefinitionId }, process.env) ?? {};
   return {
     systemPrompt: runContext.runtimeContext.carpenterSystemPrompt,
     sessionBinding: input.binding,
@@ -44,8 +51,11 @@ export const resolveClaudeSessionQueryOptions = async (input: {
     allowedTools: toolingOptions.allowedTools,
     permissionMode: sessionConfig.permissionMode,
     ...claudeSessionReasoningOptions(sessionConfig),
+    ...(Object.keys(extraEnvironment).length > 0 ? { extraEnvironment } : {}),
     stderr: (data: string) => input.diagnostics.append(data),
     canUseTool: (toolName, toolInput, toolOptions) =>
-      input.toolingCoordinator.handleToolPermissionCheck(runContext, toolName, toolInput, toolOptions),
+      input.toolingCoordinator.handleToolPermissionCheck(runContext, toolName, toolInput, toolOptions, {
+        autoApproveReason: autoApproveReason(toolName),
+      }),
   };
 };

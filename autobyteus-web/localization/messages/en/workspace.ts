@@ -5,6 +5,7 @@ const messages = {
   "workspace.components.workspace.tools.BrowserPanel.forward": "Forward",
   "workspace.components.conversation.SkillRequestChips.sentToTheAgentAs": "Sent to the agent as",
   "workspace.components.conversation.segments.SystemTaskNotificationSegment.skillUpdated": "Skill updated",
+  "workspace.components.conversation.segments.SystemTaskNotificationSegment.toolsUpdated": "Tools updated",
   "fileExplorer.workspaceUnavailable": "Workspace details are unavailable. Refresh or reopen Settings to load the saved workspace.",
   "workspace.teamCopy.loading": "Reading saved Team configuration…",
   "workspace.runModelConfig.modelRequired": "Select a model before launch.",
@@ -168,11 +169,11 @@ const messages = {
   "workspace.components.progress.SystemInstructionActivityItem.aria_label":
     "{{title}}. {{source}}. {{availability}}. Captured {{time}}. {{count}} characters.",
   "workspace.components.progress.SystemInstructionActivityItem.source.native":
-    "AutoByteus-supplied · Native configured system prompt",
+    "AutoByteus-supplied · AutoByteus configured system prompt",
   "workspace.components.progress.SystemInstructionActivityItem.source.claude":
-    "AutoByteus-supplied · Claude SDK systemPrompt",
+    "AutoByteus-supplied · Claude Agent SDK systemPrompt",
   "workspace.components.progress.SystemInstructionActivityItem.source.codex":
-    "AutoByteus-supplied · Codex baseInstructions",
+    "AutoByteus-supplied · Codex App Server baseInstructions",
   "workspace.components.progress.SystemInstructionActivityItem.source.grok":
     "AutoByteus-supplied · Grok Build rules",
   "workspace.components.progress.SystemInstructionActivityItem.source.unknown":

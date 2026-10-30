@@ -59,7 +59,6 @@ export type ClaudeSdkStreamingSessionOptions = {
   sessionBinding: ClaudeSdkSessionBinding;
   model: string;
   workingDirectory: string | null;
-  env?: Record<string, string | undefined>;
   mcpServers?: Record<string, unknown> | null;
   allowedTools?: Iterable<string> | null;
   permissionMode?: ClaudeSdkPermissionMode;
@@ -68,6 +67,8 @@ export type ClaudeSdkStreamingSessionOptions = {
   thinking?: Readonly<{ type: "adaptive" | "disabled" }>;
   debugFile?: string;
   effort?: "low" | "medium" | "high" | "xhigh" | "max";
+  /** Variables added to this run session's CLI process (the run's integration variables); never a credential. */
+  extraEnvironment?: Readonly<Record<string, string>>;
 };
 
 export type ClaudeSdkQueryLike = AsyncIterable<unknown> & {
@@ -242,7 +243,8 @@ export class ClaudeSdkClient {
         control.assertAccepting();
         const queryFn = this.resolveFunction(sdk, "query");
         if (!queryFn) throw new Error("Claude SDK query API is unavailable.");
-        const spawnEnvironment = await this.resolveSpawnEnvironment(options.env);
+        // Only the run session's spawn gets the run's variables (not the model-listing or control queries).
+        const spawnEnvironment = { ...(await this.resolveSpawnEnvironment()), ...(options.extraEnvironment ?? {}) };
         control.assertAccepting();
         if (asString(spawnEnvironment.CLAUDE_CODE_DISABLE_BACKGROUND_TASKS)) logger.warn("Claude CLI background tasks disabled by inherited CLAUDE_CODE_DISABLE_BACKGROUND_TASKS operator environment.");
         const queryOptions = this.buildQueryOptions(options, spawnEnvironment);
@@ -349,18 +351,15 @@ export class ClaudeSdkClient {
     };
   }
 
-  private async resolveSpawnEnvironment(
-    explicitEnvironment?: Record<string, string | undefined>,
-  ): Promise<Record<string, string | undefined>> {
-    const effectiveEnvironment = explicitEnvironment ?? process.env;
-    if (resolveClaudeSdkAuthMode(effectiveEnvironment) !== "api-key") {
-      return explicitEnvironment ?? buildClaudeSdkSpawnEnvironment(effectiveEnvironment);
+  private async resolveSpawnEnvironment(): Promise<Record<string, string | undefined>> {
+    if (resolveClaudeSdkAuthMode(process.env) !== "api-key") {
+      return buildClaudeSdkSpawnEnvironment(process.env);
     }
 
     try {
       const apiKey = await this.resolveClaudeApiKey();
       return buildClaudeSdkSpawnEnvironment(
-        effectiveEnvironment,
+        process.env,
         apiKey.revealToTrustedConsumer(),
       );
     } catch {

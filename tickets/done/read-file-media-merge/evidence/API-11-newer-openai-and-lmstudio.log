@@ -1,0 +1,19 @@
+# API-11 temporary probe (from the API-06 journey probe; deleted after): env -i PATH HOME=<temp> TMPDIR AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault RUN_API06_JOURNEY=1 API06_FIXTURES=/tmp/ab328/fixtures API06_RECEIPT=<evidence>/API-11-receipt.json pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/zz-api11-read-file-media-models.e2e.test.ts --no-watch --reporter=verbose
+# commit f09f93f787, 2026-10-30T03:54:06Z, macOS arm64; LM Studio server on :1234, before the run: No models are currently loaded.
+ × tests/e2e/runtime/zz-api11-read-file-media-models.e2e.test.ts > API-06 read_file media journey on real providers > API-11: image read on newer OpenAI models and LM Studio Qwen; audio and video on Qwen 784760ms
+Error: Timed out: idle; recent SEGMENT_CONTENT,SEGMENT_CONTENT,SEGMENT_CONTENT,SEGMENT_CONTENT,SEGMENT_CONTENT,SEGMENT_CONTENT,SEGMENT_CONTENT,SEGMENT_CONTENT,SEGMENT_CONTENT,SEGMENT_CONTENT,SEGMENT_CONTENT,SEGMENT_CONTENT,SEGMENT_CONTENT,SEGMENT_CONTENT,SEGMENT_CONTENT
+      Tests  1 failed | 2 skipped (3)
+exit: 1
+LM Studio after the run: No models are currently loaded.  To load a model, run:      lms load <model path>
+
+## run 2 (per-cell receipt, hung cells recorded and terminated, 240 s per turn), 2026-10-30T04:08:55Z; LM Studio before: No models are currently loaded.
+ ✓ tests/e2e/runtime/zz-api11-read-file-media-models.e2e.test.ts > API-06 read_file media journey on real providers > API-11: image read on newer OpenAI models and LM Studio Qwen; audio and video on Qwen 1973137ms
+      Tests  1 passed | 2 skipped (3)
+exit: 0
+LM Studio after the run:  IDENTIFIER              MODEL                   STATUS    SIZE        CONTEXT    PARALLEL    LOAD CONFIG    DEVICE    TTL      qwen/qwen3.6-35b-a3b    qwen/qwen3.6-35b-a3b    IDLE      20.43 GB    26
+
+## run 3: neutral file names (picture.png green, recording.m4a 'hello', clip.mp4 yellow) on Qwen, Gemini 3.8 Flash, Grok 4.7, 2026-10-30T04:42:48Z; LM Studio before: qwen loaded by run 2
+ ✓ tests/e2e/runtime/zz-api11-read-file-media-models.e2e.test.ts > API-06 read_file media journey on real providers > API-11: image read on newer OpenAI models and LM Studio Qwen; audio and video on Qwen 39592ms
+      Tests  1 passed | 2 skipped (3)
+exit: 0
+LM Studio after unloading the model run 2 loaded: No models are currently loaded.

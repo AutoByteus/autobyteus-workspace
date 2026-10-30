@@ -1,0 +1,8 @@
+# FINAL both new files + gated fixed test, same final source. command: env -i PATH HOME=<temp> RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<abs>/agy-failure-cli.mjs pnpm exec vitest run tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts --no-watch
+# date 2026-10-30T10:45:28Z
+
+ ✓ tests/e2e/runtime/work-journal-restore-transport.e2e.test.ts (1 test) 1006ms
+ ✓ tests/e2e/runtime/work-journal-neutral-vocabulary-scripted-agy.e2e.test.ts (1 test) 599ms
+ ✓ tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts (5 tests) 547ms
+ Test Files  3 passed (3)
+      Tests  7 passed (7)

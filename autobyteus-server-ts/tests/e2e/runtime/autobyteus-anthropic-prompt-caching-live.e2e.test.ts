@@ -9,9 +9,10 @@
  * changed is rejected with a 400 instead of being silently dropped. The wrapper records each request body exactly
  * as production built it, plus status and usage. APC-E2E-008 proves the harness is enforcing.
  *
- * The user's messages ask for a dependency-cycle audit over plain data files (reasoning after every read), and the run
- * uses the user-selectable `thinking_display: "summarized"`, so adaptive thinking happens at tool steps the way it does
- * in real agent work. The files hold data only, never instructions. (An arithmetic "compute the next file" chain was
+ * The user's messages ask for a dependency-cycle audit over plain data files (reasoning after every read), so
+ * adaptive thinking happens at tool steps the way it does in real agent work. Thinking display is Anthropic's default
+ * (`omitted`): the returned thinking blocks carry empty text with the full signature, which is what continuation
+ * must keep and pass back. The files hold data only, never instructions. (An arithmetic "compute the next file" chain was
  * tried first and is refused by the model's safety classifier, see the ticket's refusal probe.)
  *
  * Cases (one agent run, sequential, in this order):
@@ -76,9 +77,7 @@ const CATALOG_PRICES: Record<string, { tiers: Array<{ maxGrossInput: number | nu
   ] },
 };
 /** The thinking-On llmConfig the app writes for the model's schema (Opus 5.5 has no toggle). */
-const RUN_LLM_CONFIG: Json = MODEL === "claude-opus-5-5"
-  ? { thinking_display: "summarized" }
-  : { thinking_enabled: true, thinking_display: "summarized" };
+const RUN_LLM_CONFIG: Json = MODEL === "claude-opus-5-5" ? {} : { thinking_enabled: true };
 const CHUNK_COUNT = 30;
 const AUDIT = "After each file, carefully check whether any component depends on itself directly or through components "
   + "seen in earlier files, and keep a running list of such cycles.";

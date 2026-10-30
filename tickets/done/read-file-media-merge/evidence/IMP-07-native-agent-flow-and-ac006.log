@@ -1,0 +1,107 @@
+# Check: IMP-07 read_file media through a native agent (scripted model) and the AC-006 resolver case; discrimination against the base read_file
+# Commands:
+#   (cd /Users/normy/autobyteus_org/autobyteus-worktrees/read-file-media-merge && env -i … pnpm -C autobyteus-ts exec vitest run tests/integration/agent/read-file-media-native-agent-flow.test.ts)
+#   (cd /Users/normy/autobyteus_org/autobyteus-worktrees/read-file-media-merge && env -i … pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-tool-resolver.test.ts --no-watch)
+#   discrimination: read-file.ts temporarily replaced by `git show origin/personal:autobyteus-ts/src/tools/file/read-file.ts`, the native test run, the file restored (git status clean afterwards)
+# Commit: source 020b9ef311 plus the two test files committed right after as 90c6204a3b
+# Environment: macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2; clean environment: env -i PATH="$PATH" HOME=<temp, resolved> TMPDIR="$TMPDIR"
+# Date: 2026-10-29, 21:30:52 / 21:30:56 / 21:31:22 local
+# Result: native flow 3 passed; resolver 9 passed; against the base read_file the native flow fails 3 of 3
+
+===== native agent flow =====
+ ✓ tests/integration/agent/read-file-media-native-agent-flow.test.ts (3 tests) 191ms
+ Test Files  1 passed (1)
+      Tests  3 passed (3)
+   Start at  21:30:52
+   Duration  3.29s (transform 2.31s, setup 96ms, import 2.84s, tests 191ms, environment 0ms)
+
+===== resolver (AC-006) =====
+ ✓ tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-tool-resolver.test.ts (9 tests) 19ms
+ Test Files  1 passed (1)
+      Tests  9 passed (9)
+   Start at  21:30:56
+   Duration  13.66s (transform 9.64s, setup 91ms, import 12.49s, tests 19ms, environment 0ms)
+
+===== native agent flow against the base read_file (expected to fail) =====
+Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+
+ FAIL  tests/integration/agent/read-file-media-native-agent-flow.test.ts > read_file media through a native agent (integration) > attaches an image, audio and video read with read_file to the next model request
+AssertionError: expected { image: [], audio: [], video: [] } to deeply equal { …(3) }
+
+- Expected
++ Received
+
+  {
+-   "audio": [
+-     "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/read-file-native-agent-jeVKVg/voice.wav",
+-   ],
+-   "image": [
+-     "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/read-file-native-agent-jeVKVg/photo.png",
+-   ],
+-   "video": [
+-     "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/read-file-native-agent-jeVKVg/clip.mp4",
+-   ],
++   "audio": [],
++   "image": [],
++   "video": [],
+  }
+
+ ❯ tests/integration/agent/read-file-media-native-agent-flow.test.ts:165:38
+    163|
+    164|     expect(mediaIn(llm.requests[0])).toEqual({ image: [], audio: [], v…
+    165|     expect(mediaIn(llm.requests[1])).toEqual({
+       |                                      ^
+    166|       image: [path.join(workspace, 'photo.png')],
+    167|       audio: [path.join(workspace, 'voice.wav')],
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+
+ FAIL  tests/integration/agent/read-file-media-native-agent-flow.test.ts > read_file media through a native agent (integration) > refuses the image on a model without image input and still attaches audio and video
+AssertionError: expected { image: [], audio: [], video: [] } to deeply equal { image: [], …(2) }
+
+- Expected
++ Received
+
+  {
+-   "audio": [
+-     "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/read-file-native-agent-ZzofhD/voice.wav",
+-   ],
++   "audio": [],
+    "image": [],
+-   "video": [
+-     "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/read-file-native-agent-ZzofhD/clip.mp4",
+-   ],
++   "video": [],
+  }
+
+ ❯ tests/integration/agent/read-file-media-native-agent-flow.test.ts:178:38
+    176|     const llm = await runAgent({ image: 'unsupported', audio: 'support…
+    177|
+    178|     expect(mediaIn(llm.requests[1])).toEqual({
+       |                                      ^
+    179|       image: [],
+    180|       audio: [path.join(workspace, 'voice.wav')],
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+
+ FAIL  tests/integration/agent/read-file-media-native-agent-flow.test.ts > read_file media through a native agent (integration) > refuses a non-media binary file and attaches nothing
+AssertionError: expected '[{"role":"system","content":"read_fil…' to contain 'The file \'/private/var/folders/7w/9r…'
+
+Expected: "The file '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/read-file-native-agent-BF5nZH/report.pdf' is a binary file and cannot be read as text."
+Received: "[{"role":"system","content":"read_file media native agent flow.","reasoning_content":null,"image_urls":[],"audio_urls":[],"video_urls":[],"tool_payload":null,"metadata":{"autobyteus_memory_provenance":{"kind":"single","rawTraceIds":[],"turnId":null}}},{"role":"user","content":"Read the files.","reasoning_content":null,"image_urls":[],"audio_urls":[],"video_urls":[],"tool_payload":null,"metadata":{"autobyteus_memory_provenance":{"kind":"composed_user","constituents":[{"kind":"current_user","textRange":{"start":0,"end":15},"rawTraceIds":["rt_1793305885375"],"turnId":"turn_0001","imageRange":{"start":0,"end":0},"audioRange":{"start":0,"end":0},"videoRange":{"start":0,"end":0}}]}}},{"role":"assistant","content":"","reasoning_content":null,"image_urls":[],"audio_urls":[],"video_urls":[],"tool_payload":{"toolCalls":[{"id":"call_pdf","name":"read_file","arguments":{"path":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/read-file-native-agent-BF5nZH/report.pdf"}}]},"metadata":{"autobyteus_memory_provenance":{"kind":"single","rawTraceIds":["rt_1793305885377_8e2892ea-a57b-4ceb-a439-d2c44e3bc7be","rt_1793305885378_turn_0001_call_pdf_call"],"turnId":"turn_0001"}}},{"role":"tool","content":null,"reasoning_content":null,"image_urls":[],"audio_urls":[],"video_urls":[],"tool_payload":{"toolCallId":"call_pdf","toolName":"read_file","toolResult":"1: %PDF-1.4\n2: \u0000����\n3: %%EOF\n","toolError":null},"metadata":{"autobyteus_memory_provenance":{"kind":"single","rawTraceIds":["rt_1793305885379_turn_0001_call_pdf_result"],"turnId":"turn_0001"}}}]"
+
+ ❯ tests/integration/agent/read-file-media-native-agent-flow.test.ts:196:30
+    194|     expect(mediaIn(llm.requests[1])).toEqual({ image: [], audio: [], v…
+    195|     const continuationText = JSON.stringify(llm.requests[1]);
+    196|     expect(continuationText).toContain(`The file '${pdfPath}' is a bin…
+       |                              ^
+    197|     expect(continuationText).not.toContain('%PDF');
+    198|   });
+
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+
+
+ Test Files  1 failed (1)
+      Tests  3 failed (3)
+   Start at  21:31:22
+   Duration  3.14s (transform 2.31s, setup 116ms, import 2.62s, tests 197ms, environment 0ms)

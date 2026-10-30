@@ -210,7 +210,7 @@
         :disabled="isSubmitting || fileUploadStore.isUploading"
         class="inline-flex justify-center py-3 px-6 border border-transparent shadow-sm text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
       >
-        <span v-if="isSubmitting" class="animate-spin h-5 w-5 mr-3 i-heroicons-arrow-path-20-solid" viewBox="0 0 24 24"></span>
+        <Icon v-if="isSubmitting" icon="heroicons:arrow-path-20-solid" class="animate-spin h-5 w-5 mr-3" />
         {{ submitButtonText }}
       </button>
     </div>
@@ -218,6 +218,7 @@
 </template>
 
 <script setup lang="ts">
+import { Icon } from '@iconify/vue';
 import { reactive, watch, toRefs, computed, onMounted, ref } from 'vue';
 import { useLocalization } from '~/composables/useLocalization';
 import { useAgentDefinitionOptionsStore } from '~/stores/agentDefinitionOptionsStore';

@@ -31,6 +31,7 @@ import type {
   GetMcpSecretMoveCandidatesQuery,
   MoveMcpSecretsToVaultMutation,
   MoveMcpSecretsToVaultMutationVariables,
+  ToolOriginEnum,
 } from '~/generated/graphql';
 import type { McpSecretMatch, McpSecretSuggestionRule } from '~/utils/mcp/mcpConfigRows';
 import type { McpSecretMoveCandidate, McpSecretMoveResult, McpServer, McpServerField } from '~/types/mcpServer';
@@ -62,8 +63,11 @@ export interface ToolCategoryGroup {
   tools: Tool[];
 }
 
+/** A previewed tool: the preview query returns only its name and description. */
+type PreviewedTool = Pick<Tool, 'name' | 'description'>;
+
 interface PreviewResult {
-  tools: Tool[];
+  tools: PreviewedTool[];
   isError: boolean;
   message: string;
 }
@@ -127,7 +131,8 @@ export const useToolManagementStore = defineStore('toolManagement', {
         const client = getApolloClient()
         const { data, errors } = await client.query<GetToolsGroupedByCategoryQuery, GetToolsGroupedByCategoryQueryVariables>({
           query: GET_TOOLS_GROUPED_BY_CATEGORY,
-          variables: { origin: 'LOCAL' },
+          // The enum's wire value; the generated enum is imported as a type only, so its module stays out of the bundle.
+          variables: { origin: 'LOCAL' as ToolOriginEnum },
           fetchPolicy: 'network-only',
         });
 
@@ -278,7 +283,7 @@ export const useToolManagementStore = defineStore('toolManagement', {
         const client = getApolloClient()
         const { data, errors } = await client.query<GetToolsQuery, GetToolsQueryVariables>({
           query: GET_TOOLS,
-          variables: { origin: 'MCP' },
+          variables: { origin: 'MCP' as ToolOriginEnum },
           fetchPolicy: 'network-only',
         });
 
@@ -314,7 +319,7 @@ export const useToolManagementStore = defineStore('toolManagement', {
             }
 
             this.previewResult = {
-                tools: (data?.previewMcpServerTools ?? []) as Tool[],
+                tools: data?.previewMcpServerTools ?? [],
                 isError: false,
                 message: ''
             };

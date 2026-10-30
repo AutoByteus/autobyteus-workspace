@@ -35,7 +35,6 @@
         @click="$emit('view-tools', server.serverId)"
       >
         <div v-if="server.toolNamePrefix" class="flex items-center text-sm">
-          <span class="i-heroicons-tag-20-solid w-4 h-4 text-gray-400 mr-2 flex-shrink-0"></span>
           <span class="text-gray-500 mr-2">{{ $t('tools.components.tools.McpServerCard.prefix') }}</span>
           <code class="text-gray-800 font-semibold">{{ server.toolNamePrefix }}</code>
         </div>
@@ -43,12 +42,10 @@
         <!-- STDIO Details -->
         <template v-if="server.__typename === 'StdioMcpServerConfig'">
           <div class="flex items-start text-sm">
-            <span class="i-heroicons-command-line-20-solid w-4 h-4 text-gray-400 mr-2 flex-shrink-0 mt-0.5"></span>
             <span class="text-gray-500 mr-2">{{ $t('tools.components.tools.McpServerCard.command') }}</span>
             <code class="text-gray-800 break-all">{{ server.command }}</code>
           </div>
           <div v-if="server.cwd" class="flex items-start text-sm">
-            <span class="i-heroicons-folder-open-20-solid w-4 h-4 text-gray-400 mr-2 flex-shrink-0 mt-0.5"></span>
             <span class="text-gray-500 mr-2">{{ $t('tools.components.tools.McpServerCard.cwd') }}</span>
             <code class="text-gray-800 break-all">{{ server.cwd }}</code>
           </div>
@@ -57,7 +54,6 @@
         <!-- HTTP Details -->
         <template v-if="server.__typename === 'StreamableHttpMcpServerConfig'">
            <div class="flex items-start text-sm">
-            <span class="i-heroicons-globe-alt-20-solid w-4 h-4 text-gray-400 mr-2 flex-shrink-0 mt-0.5"></span>
             <span class="text-gray-500 mr-2">URL:</span>
             <code class="text-gray-800 break-all">{{ server.url }}</code>
           </div>
@@ -70,7 +66,6 @@
           class="inline-flex items-center px-3 py-1.5 border border-transparent text-sm font-medium rounded-md text-cyan-700 bg-cyan-100 hover:bg-cyan-200"
           title="Discover and register tools for this server"
         >
-          <span class="i-heroicons-sparkles-20-solid w-4 h-4 mr-1.5"></span>
           Sync Tools
         </button>
         <button

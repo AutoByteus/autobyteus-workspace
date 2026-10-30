@@ -1,3 +1,4 @@
+import { agentRuntimeName } from "@autobyteus/agent-presentation-contracts";
 import type { AgentOperationResult } from "../../agent-execution/domain/agent-operation-result.js";
 import type { AgentLaunchConfiguration } from "../../agent-team-execution/domain/team-run-config.js";
 import { getAgentTeamAddressBasename } from "../domain/agent-team-address.js";
@@ -30,7 +31,7 @@ const ORIGIN_LABEL: Readonly<Record<LaunchConfigurationOrigin, string>> = {
 };
 
 const configured = (fallback: LaunchConfigurationFallback): string =>
-  `${fallback.runtimeKind ?? "(no runtime)"} / ${fallback.llmModelIdentifier ?? "(no model)"}`;
+  `${fallback.runtimeKind ? agentRuntimeName(fallback.runtimeKind) : "(no runtime)"} / ${fallback.llmModelIdentifier ?? "(no model)"}`;
 
 /** What was skipped and why (supplement §§ 5, 7): a configured layer, or the Model Router not active or failing. */
 const skippedText = (fallback: LaunchConfigurationFallback): string => {
@@ -51,7 +52,7 @@ const skippedText = (fallback: LaunchConfigurationFallback): string => {
 export const launchNotesOf = (sources: readonly LaunchConfigurationSourceWithName[]): string[] =>
   sources.flatMap(({ name, subject, launch, source }) => {
     const runsOn = subject === "team" ? "its members without their own default run on" : "it runs on";
-    const target = `${launch.runtimeKind} / ${launch.llmModelIdentifier}`;
+    const target = `${agentRuntimeName(launch.runtimeKind)} / ${launch.llmModelIdentifier}`;
     const skipped = source.fallbacks.map((fallback) =>
       `${name}: ${skippedText(fallback)}; ${runsOn} ${target} (${ORIGIN_LABEL[source.origin]}).`);
     if (source.origin !== "model_router") return skipped;

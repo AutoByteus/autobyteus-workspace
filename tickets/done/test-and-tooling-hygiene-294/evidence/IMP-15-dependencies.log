@@ -1,0 +1,19 @@
+# IMP-15 dependency declarations keep every package version (Dependency Rules, R-2)
+# command: pnpm install --frozen-lockfile; pnpm -C autobyteus-web why <pkg> --depth 0; package-key diff of pnpm-lock.yaml vs origin/personal
+# commit: 6fa5f443c6
+# environment: macOS 26.5.2, node v22.23.1, pnpm 10.28.2
+# date: 2026-10-27T19:33:29Z
+
+Done in 1.8s using pnpm v10.28.2
+
+@apollo/client 3.14.0
+graphql 16.12.0
+@vue/apollo-composable 4.2.2
+vite 7.3.7
+vue-bundle-renderer 2.4.0
+vue-tsc 3.3.13
+typescript 5.9.3
+@types/qrcode 1.5.6
+
+package entries removed: []
+package entries added: ["'@types/qrcode@1.5.6'", "'@volar/language-core@2.4.28'", "'@volar/source-map@2.4.28'", "'@volar/typescript@2.4.28'", "'@vue/language-core@3.3.13'", 'alien-signals@3.2.1', 'vscode-uri@3.2.0', 'vue-tsc@3.3.13']

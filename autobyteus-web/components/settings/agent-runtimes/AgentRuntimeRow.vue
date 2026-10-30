@@ -132,9 +132,10 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import { Icon } from '@iconify/vue'
+import { agentRuntimeName } from '@autobyteus/agent-presentation-contracts'
 import type { AgentRuntime } from '~/types/agentRuntimes'
 import {
-  canSignInHere, canUpdateHere, isBlockedByAgents, isSigningIn, isUpdating, offersSignIn, offersUpdate, runtimeName,
+  canSignInHere, canUpdateHere, isBlockedByAgents, isSigningIn, isUpdating, offersSignIn, offersUpdate,
   updateFailed, type AgentRuntimeNodeAccess,
 } from './agentRuntimesPresentation'
 
@@ -146,7 +147,7 @@ const secondaryButton = 'inline-flex min-h-9 items-center whitespace-nowrap roun
 const primaryButton = 'inline-flex min-h-9 items-center justify-center whitespace-nowrap rounded-md bg-gray-900 px-3 py-1.5 text-sm font-medium text-white transition-colors hover:bg-gray-800 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-1'
 
 const id = computed(() => props.runtime.runtimeKind)
-const name = computed(() => runtimeName(props.runtime.runtimeKind))
+const name = computed(() => agentRuntimeName(props.runtime.runtimeKind))
 /** On a remote node the copy says where sign-in happens: on that node. */
 const ownNode = computed(() => props.nodeAccess === 'own')
 const updating = computed(() => isUpdating(props.runtime))

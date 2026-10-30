@@ -1,0 +1,69 @@
+# API-04 temporary probe: stopped-run model-setting Save on runs whose stored llmConfig holds thinking_display (server GraphQL)
+# steps: temporary it() appended to autobyteus-anthropic-stored-config-resume.e2e.test.ts (removed afterwards): create Opus 5.5 agent run and 2-member team run, stop, add thinking_display to stored llmConfig, read getAgentRunResumeConfig, call updateStoppedAgentRunModelConfig / updateStoppedTeamRunModelConfigs with and without the stale key
+# command: env -i PATH HOME=/tmp/api-e2e-home TMPDIR=/tmp corepack pnpm exec vitest run <file> --no-watch -t TMP-EDIT-PROBE
+# commit: a2a5d0e47 + test working tree; env: Linux, Node v22.23.3, in-process server, no provider calls; date: 2026-10-29
+
+TMP_EDIT_PROBE [
+ {
+  "case": "agent resume config",
+  "resume": {
+   "metadataConfig": {
+    "llmModelIdentifier": "claude-opus-5-5",
+    "llmConfig": {
+     "reasoning_effort": "max",
+     "thinking_display": "omitted"
+    }
+   },
+   "modelConfigEditability": {
+    "editable": true,
+    "reason": null
+   }
+  }
+ },
+ {
+  "case": "agent save stale+high",
+  "r": {
+   "success": false,
+   "outcome": "VALIDATION_FAILED",
+   "message": "Model settings are invalid.",
+   "fieldErrors": [
+    {
+     "path": "llmConfig.thinking_display",
+     "message": "Setting is not supported by the selected runtime and model."
+    }
+   ]
+  }
+ },
+ {
+  "case": "agent save high only",
+  "r": {
+   "success": true,
+   "outcome": "UPDATED",
+   "message": "Model settings updated. They will be used when this run resumes.",
+   "fieldErrors": []
+  }
+ },
+ {
+  "case": "team save stale+high",
+  "r": {
+   "success": false,
+   "outcome": "VALIDATION_FAILED",
+   "message": "One or more Team model settings are invalid.",
+   "fieldErrors": [
+    {
+     "path": "patches[/lead].llmConfig.thinking_display",
+     "message": "Setting is not supported by the selected runtime and model."
+    }
+   ]
+  }
+ },
+ {
+  "case": "team save high only",
+  "r": {
+   "success": true,
+   "outcome": "UPDATED",
+   "message": "Team model settings updated. They will be used when this team resumes.",
+   "fieldErrors": []
+  }
+ }
+]

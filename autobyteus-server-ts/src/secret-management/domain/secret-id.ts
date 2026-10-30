@@ -18,7 +18,12 @@ export type SecretConsumerIdentity =
       credentialSlot: "apiKey";
     }
   /** An MCP server value stored as a vault entry (`mcp.<uuid>`); its owner and field live in `mcps.json`. */
-  | { kind: "mcpServer"; vaultSecretId: SecretId };
+  | { kind: "mcpServer"; vaultSecretId: SecretId }
+  /** An integration's credential (the credential proxy adds it to a run's outbound calls). */
+  | { kind: "integration"; integrationId: IntegrationId };
+
+/** The integrations the app defines (the credential proxy's app-owned definitions). */
+export type IntegrationId = "github";
 
 export const serializeSecretConsumerIdentity = (consumer: SecretConsumerIdentity): string => {
   switch (consumer.kind) {
@@ -28,6 +33,8 @@ export const serializeSecretConsumerIdentity = (consumer: SecretConsumerIdentity
       return `${consumer.kind}:${consumer.runtimeKind}:${consumer.credentialSlot}`;
     case "mcpServer":
       return `${consumer.kind}:${consumer.vaultSecretId}`;
+    case "integration":
+      return `${consumer.kind}:${consumer.integrationId}`;
     default:
       return `${consumer.kind}:${consumer.providerId}:${consumer.credentialSlot}`;
   }

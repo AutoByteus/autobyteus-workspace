@@ -1,0 +1,17 @@
+# IMP-05-agy-suite
+# command: (in autobyteus-server-ts) env -i PATH="$PATH" HOME=<temp, resolved> TMPDIR="$TMPDIR" RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=/Users/normy/autobyteus_org/autobyteus-worktrees/release-smoke-new-run-skill-links/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs ./node_modules/.bin/vitest run tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts --no-watch --reporter=json
+# commit: 8f37ab5eb8bfaa835fc2ad178cdd91db21d38797
+# environment: macOS (Darwin 25.5.0), node v22.23.1, vitest 4.0.18, clean env with temp HOME
+# date: 2026-10-19T03:44Z
+# vitest exit code: 0
+
+passed | AGY linked skills and always auto-approve through the server (scripted CLI) | E01: Chat (Daily Assistant, all installed skills) starts with a skill holding a local environment and reads it
+passed | AGY linked skills and always auto-approve through the server (scripted CLI) | E02: an all-installed run skips a skill the workspace already owns, with a warning, and keeps the others (AC-0
+passed | AGY linked skills and always auto-approve through the server (scripted CLI) | E03: a named skill that cannot be used fails the run with the skill and reason, not a generic error (AC-005, R
+passed | AGY linked skills and always auto-approve through the server (scripted CLI) | E04: in a Team with auto-approve stored off, a member's named-skill failure names the skill and reason, and th
+passed | AGY linked skills and always auto-approve through the server (scripted CLI) | E05: an Org member launched with auto-approve stored off runs with skip-permissions (AC-006)
+passed | AGY linked skills and always auto-approve through the server (scripted CLI) | E06: a child started by an AGY agent's delegate_task call, configured with auto-approve off, runs with skip-pe
+passed | AGY linked skills and always auto-approve through the server (scripted CLI) | E07: a linked run resumes after its skill folder was deleted, without that skill and with a warning (AC-008, A
+passed | AGY linked skills and always auto-approve through the server (scripted CLI) | E08: a run created before this change, with a copied skill folder and auto-approve stored off, resumes as befo
+passed | AGY linked skills and always auto-approve through the server (scripted CLI) | E09: a brand-new run of an imported agent with a configured skill starts in a workspace with same-skill links 
+passed | AGY linked skills and always auto-approve through the server (scripted CLI) | E10: a brand-new team member with a configured skill starts on its first message in a workspace with same-skil

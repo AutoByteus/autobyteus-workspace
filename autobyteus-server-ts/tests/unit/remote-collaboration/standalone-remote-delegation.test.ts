@@ -333,7 +333,7 @@ describe("remote delegation between two standalone runs, in process (slice 1 ste
     await expect(delegate(a, { recipient_address: "/unknown" })).resolves.toEqual({ delegated: false, message: 'Node "docker" has no Agent or Agent Team at /unknown that can be delegated to. If you have list_available_agents, call it with this node to see what it offers.' });
     b.models.available = false;
     await expect(delegate(a)).resolves.toEqual({ delegated: false,
-      message: `The Agent Publisher on node "docker" cannot run there: The model 'sonnet' is not available on claude_agent_sdk, and Model Routing is off on node "docker".` });
+      message: `The Agent Publisher on node "docker" cannot run there: The model 'sonnet' is not available on Claude Agent SDK, and Model Routing is off on node "docker".` });
     b.models.available = true;
     bOn = false;
     await expect(delegate(a)).resolves.toEqual({ delegated: false, message: 'Remote collaboration is turned off on node "docker", so it refused the request.' });

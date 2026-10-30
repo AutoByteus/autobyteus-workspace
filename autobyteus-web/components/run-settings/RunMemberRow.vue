@@ -248,7 +248,7 @@ const LAYER_LABEL_KEY: Readonly<Record<RunMemberLaunchFallback['layer'], string>
   team_default: 'runSettings.delegated.layer.team_default',
 }
 const modelOf = (runtimeKind: string | null, llmModelIdentifier: string | null): string =>
-  [runtimeKind ? presentation.runtimeShortLabel(runtimeKind) : null, llmModelIdentifier].filter(Boolean).join(' · ') || '—'
+  [runtimeKind ? presentation.runtimeLabel(runtimeKind) : null, llmModelIdentifier].filter(Boolean).join(' · ') || '—'
 /** An own default a fresh start could not use (it follows its parent), or a recorded fallback of a copy. */
 const noteText = (note: RunMemberNote): string => note.kind === 'unusable_default'
   ? t('runSettings.members.defaultUnusable', { model: modelOf(note.runtimeKind, note.llmModelIdentifier), reason: t(UNUSABLE_REASON_KEY[note.reason]) })
@@ -272,7 +272,7 @@ const summary = computed(() => {
   const values = props.node.values
   const parts: string[] = []
   if (props.node.fields.includes('workspace')) parts.push(presentation.workspaceName(values.workspace))
-  if (values.llmModelIdentifier) parts.push(`${presentation.modelLabel(values)} · ${presentation.runtimeShortLabel(values.runtimeKind)}`)
+  if (values.llmModelIdentifier) parts.push(`${presentation.modelLabel(values)} · ${presentation.runtimeLabel(values.runtimeKind)}`)
   parts.push(...setModelOptionLabels(presentation.modelOptions(values)))
   parts.push(presentation.approvalLabel(values))
   if (props.node.sourceKey) parts.push(t(SOURCE_LABEL_KEY[props.node.sourceKey]))

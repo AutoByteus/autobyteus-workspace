@@ -1,7 +1,7 @@
 <template>
   <li class="py-5" :data-testid="`available-runtime-${entry.runtime}`">
     <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-      <h4 class="text-base font-semibold text-gray-900">{{ runtimeKindToLabel(entry.runtime) }}</h4>
+      <h4 class="text-base font-semibold text-gray-900">{{ agentRuntimeName(entry.runtime) }}</h4>
       <span
         v-if="external?.signIn === 'not checked'"
         class="inline-flex items-center gap-1.5 text-sm text-amber-700"
@@ -70,7 +70,7 @@
 
 <script setup lang="ts">
 import { computed } from 'vue'
-import { runtimeKindToLabel } from '~/types/agent/AgentRunConfig'
+import { agentRuntimeName } from '@autobyteus/agent-presentation-contracts'
 import type { AutoByteusEntry, AvailableAgentRuntimeEntry, ExternalAgentRuntimeEntry } from '~/types/availableAgentRuntimes'
 import AvailableModelList from './AvailableModelList.vue'
 import { isAutoByteusEntry, localTime, unknownReason } from './availableAgentRuntimesPresentation'

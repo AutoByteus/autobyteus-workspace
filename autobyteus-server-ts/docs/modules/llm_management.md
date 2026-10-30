@@ -184,11 +184,24 @@ endpoint URL and does not perform alias, suffix, family, or fuzzy matching.
 `llmModelIdentifier` + `llmConfig` selections. It resolves the selected exact
 identifier through `ModelCatalogService` using the saved runtime and workspace.
 The extracted `model-config-schema-validation.ts` retains the schema algorithm:
-it normalizes either supported catalog schema representation and validates only
-submitted current-schema keys. It
-returns distinct model-unavailable, schema-unavailable, and field-validation
-results; it does not guess a replacement model, silently drop an unsupported
-key, or write a rendered default merely because the UI displayed it.
+it normalizes either supported catalog schema representation and validates the
+submitted keys the current schema declares. Top-level keys the schema does not
+declare are left out of the canonical config (`validation.selection`) instead of
+producing an error, and a model without a schema canonicalizes any config to
+`null`; when leaving keys out empties a config, the canonical config is `null`
+(a submitted `{}` stays `{}`). It returns distinct model-unavailable,
+schema-unavailable, and field-validation results; it does not guess a
+replacement model or write a rendered default merely because the UI displayed it.
+
+Every caller of `validate`/`validateMany` stores or launches only the canonical
+selection it gets back, never its raw input: stopped-run saves (agent, team,
+AgentOrg), delegated-copy selections, the Model Router launch setting, AgentOrg
+launch (the execution tree is built from each placement's canonical config), and
+`LaunchUsabilityCheck` (a usable candidate or inherited launch carries the
+canonical selection). So no validated save, edit or launch carries a setting the
+selected model does not declare. Resuming a saved run and launching a new
+standalone agent or team run do not go through this check; there the runtime
+adapters receive the stored config (`AnthropicLLM` reads only the keys it owns).
 
 Replacement for Claude Agent SDK, Codex App Server, Antigravity CLI, and
 Grok Build requires fresh membership in that runtime/workspace **offered** catalog and

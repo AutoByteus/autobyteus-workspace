@@ -1,0 +1,178 @@
+# API-09 autobyteus-message-gateway build, typecheck, test, Docker build
+# clean clone /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab294-clone.tmxUngS47b/repo, commit dfef14abc6, 2026-10-27T20:25:45Z, node v22.23.1, docker 29.0.1
+$ ls autobyteus-message-gateway/scripts
+ls: autobyteus-message-gateway/scripts: No such file or directory
+$ grep runtime-package autobyteus-message-gateway/package.json autobyteus-message-gateway/.gitignore
+(no match: 1)
+$ pnpm install --frozen-lockfile
+Lockfile is up to date, resolution step is skipped
+Progress: resolved 1, reused 0, downloaded 0, added 0
+Packages: +175
+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+Progress: resolved 175, reused 175, downloaded 0, added 175, done
+.../node_modules/@whiskeysockets/baileys preinstall$ node ./engine-requirements.js
+.../node_modules/@whiskeysockets/baileys preinstall: Done
+
+dependencies:
++ @fastify/cors 11.3.1
++ @whiskeysockets/baileys 6.7.24
++ fastify 5.12.7
+
+devDependencies:
++ @types/node 25.9.9
++ typescript 5.9.3
++ vitest 4.1.12
+
+Done in 1.1s using pnpm v10.28.2
+exit: 0
+$ pnpm build
+
+> autobyteus-message-gateway@1.4.79 build /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab294-clone.tmxUngS47b/repo/autobyteus-message-gateway
+> tsc -p tsconfig.build.json
+
+exit: 0
+$ pnpm typecheck
+
+> autobyteus-message-gateway@1.4.79 typecheck /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab294-clone.tmxUngS47b/repo/autobyteus-message-gateway
+> tsc -p tsconfig.json --noEmit
+
+exit: 0
+$ pnpm test
+
+> autobyteus-message-gateway@1.4.79 test /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab294-clone.tmxUngS47b/repo/autobyteus-message-gateway
+> vitest run --passWithNoTests
+
+
+ RUN  v4.1.12 /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab294-clone.tmxUngS47b/repo/autobyteus-message-gateway
+
+
+ Test Files  86 passed (86)
+      Tests  268 passed (268)
+   Start at  21:25:53
+   Duration  2.29s (transform 1.85s, setup 0ms, import 5.81s, tests 3.60s, environment 5ms)
+
+exit: 0
+
+$ docker build -f autobyteus-message-gateway/docker/Dockerfile -t ab294-gateway-test:local .   (repo root context, clean clone)
+#0 building with "desktop-linux" instance using docker driver
+
+#1 [internal] load build definition from Dockerfile
+#1 transferring dockerfile: 1.44kB done
+#1 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/node:20-bookworm-slim
+#2 ...
+
+#3 [auth] library/node:pull token for registry-1.docker.io
+#3 DONE 0.0s
+
+#2 [internal] load metadata for docker.io/library/node:20-bookworm-slim
+#2 DONE 1.2s
+
+#4 [internal] load .dockerignore
+#4 transferring context: 282B 0.0s done
+#4 DONE 0.0s
+
+#5 [ 1/11] FROM docker.io/library/node:20-bookworm-slim@sha256:2cf067cfed83d5ea958367df9f966191a942351a2df77d6f0193e162b5febfc0
+#5 resolve docker.io/library/node:20-bookworm-slim@sha256:2cf067cfed83d5ea958367df9f966191a942351a2df77d6f0193e162b5febfc0 0.0s done
+#5 DONE 0.0s
+
+#6 [internal] load build context
+#6 transferring context: 509.05kB 0.0s done
+#6 DONE 0.0s
+
+#7 [ 5/11] RUN apt-get update   && apt-get install -y --no-install-recommends python3 make g++   && rm -rf /var/lib/apt/lists/*
+#7 CACHED
+
+#8 [ 2/11] WORKDIR /app
+#8 CACHED
+
+#9 [ 3/11] COPY LICENSE LICENSING.md NOTICE /app/
+#9 CACHED
+
+#10 [ 4/11] RUN corepack enable
+#10 CACHED
+
+#11 [ 6/11] WORKDIR /app/autobyteus-message-gateway
+#11 CACHED
+
+#12 [ 7/11] COPY autobyteus-message-gateway/package.json autobyteus-message-gateway/pnpm-lock.yaml autobyteus-message-gateway/pnpm-workspace.yaml ./
+#12 DONE 0.1s
+
+#13 [ 8/11] RUN pnpm install --frozen-lockfile
+#13 0.503 ! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+#13 2.783 Lockfile is up to date, resolution step is skipped
+#13 2.814 Progress: resolved 1, reused 0, downloaded 0, added 0
+#13 2.854 Packages: +174
+#13 2.854 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#13 3.164 
+#13 3.164    ╭───────────────────────────────────────────────╮
+#13 3.164    │                                               │
+#13 3.164    │     Update available! 10.28.2 → 12.15.0.      │
+#13 3.164    │     Changelog: https://pnpm.io/v/12.15.0      │
+#13 3.164    │   To update, run: corepack use pnpm@12.15.0   │
+#13 3.164    │                                               │
+#13 3.164    ╰───────────────────────────────────────────────╯
+#13 3.164 
+#13 3.817 Progress: resolved 174, reused 0, downloaded 138, added 137
+#13 3.835 Packages are hard linked from the content-addressable store to the virtual store.
+#13 3.835   Content-addressable store is at: /root/.local/share/pnpm/store/v10
+#13 3.835   Virtual store is at:             node_modules/.pnpm
+#13 4.818 Progress: resolved 174, reused 0, downloaded 171, added 171
+#13 5.824 Progress: resolved 174, reused 0, downloaded 172, added 172
+#13 6.327 Progress: resolved 174, reused 0, downloaded 174, added 174, done
+#13 6.372 .../node_modules/protobufjs postinstall$ node scripts/postinstall
+#13 6.403 .../node_modules/protobufjs postinstall: Done
+#13 6.418 .../node_modules/@whiskeysockets/baileys preinstall$ node ./engine-requirements.js
+#13 6.448 .../node_modules/@whiskeysockets/baileys preinstall: Done
+#13 6.583 
+#13 6.583 dependencies:
+#13 6.583 + @fastify/cors 11.3.1
+#13 6.583 + @whiskeysockets/baileys 6.7.24
+#13 6.583 + fastify 5.12.7
+#13 6.583 
+#13 6.583 devDependencies:
+#13 6.583 + @types/node 25.9.9
+#13 6.583 + typescript 5.9.3
+#13 6.583 + vitest 4.1.12
+#13 6.583 
+#13 6.603 Done in 4.1s using pnpm v10.28.2
+#13 DONE 7.0s
+
+#14 [ 9/11] COPY autobyteus-message-gateway/LICENSE autobyteus-message-gateway/tsconfig.json autobyteus-message-gateway/tsconfig.build.json ./
+#14 DONE 0.1s
+
+#15 [10/11] COPY autobyteus-message-gateway/src ./src
+#15 DONE 0.0s
+
+#16 [11/11] RUN pnpm build
+#16 0.342 
+#16 0.342 > autobyteus-message-gateway@1.4.79 build /app/autobyteus-message-gateway
+#16 0.342 > tsc -p tsconfig.build.json
+#16 0.342 
+#16 DONE 4.1s
+
+#17 exporting to image
+#17 exporting layers
+#17 exporting layers 5.9s done
+#17 exporting manifest sha256:771e653987c7e7b1f390adf04c3f597683fe2ffc724644657d574a8dcc6f74fe done
+#17 exporting config sha256:efa6a2405fa78182a7017d9ab78f4f91983fa08ffb43e665feb9b9d1bfa00ebb done
+#17 exporting attestation manifest sha256:2639cd6d625818f08aef21e458a9da3f75663a10c53864ce8394bd9064cb74fa done
+#17 exporting manifest list sha256:d0dc2444b4503bf7af59dc4397db3e276e38d21073cb75e4990f0e035b04391d done
+#17 naming to docker.io/library/ab294-gateway-test:local done
+#17 unpacking to docker.io/library/ab294-gateway-test:local
+#17 unpacking to docker.io/library/ab294-gateway-test:local 4.0s done
+#17 DONE 10.0s
+
+real	0m23.443s
+user	0m0.202s
+sys	0m0.306s
+exit: 0
+$ docker run --rm --entrypoint ls ab294-gateway-test:local dist | head
+application
+bootstrap
+config
+domain
+external-channel
+$ docker rmi ab294-gateway-test:local
+exit: 0

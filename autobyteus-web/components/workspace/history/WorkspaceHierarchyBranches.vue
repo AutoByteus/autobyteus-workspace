@@ -23,7 +23,7 @@
 <script setup lang="ts">
 withDefaults(defineProps<{
   depth: number;
-  continuingAncestorDepths: number[];
+  continuingAncestorDepths: readonly number[];
   hasFollowingSibling: boolean;
   /** `name-line`: the elbow meets the first (name) line of a two-line row instead of the row's centre. */
   anchor?: 'center' | 'name-line';

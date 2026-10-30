@@ -1,0 +1,9 @@
+# API-02/03/04 temporary probe (saved as API-02-04-terra-probe.e2e.test.ts.txt; deleted after): env -i PATH HOME=$HOME USER LOGNAME TMPDIR CODEX_HOME=<temp: auth.json symlink, model_reasoning_effort = "medium"> AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault RUN_API06_JOURNEY=1 API06_FIXTURES=/tmp/ab336/fixtures API06_RECEIPT=<evidence>/API-02-04-terra-receipt.json pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/zz-api336-terra.e2e.test.ts --no-watch --reporter=verbose
+# commit fb1c738f19, 2026-10-30T11:54:50Z, codex-cli 0.166.0; real HOME/USER/LOGNAME for the Codex login (TESTING.md), server data root test-owned
+ ✓ tests/e2e/runtime/zz-api336-terra.e2e.test.ts > API-06 read_file media journey on real providers > API-336: terra in the server catalog, a native run and a Codex run with cost estimates 27207ms
+      Tests  1 passed | 2 skipped (3)
+exit: 0
+## run 2 (cost query fixed: no status/output fields), 2026-10-30T11:56:09Z
+ ✓ tests/e2e/runtime/zz-api336-terra.e2e.test.ts > API-06 read_file media journey on real providers > API-336: terra in the server catalog, a native run and a Codex run with cost estimates 25345ms
+      Tests  1 passed | 2 skipped (3)
+exit: 0

@@ -1,6 +1,6 @@
 import { randomBytes } from "node:crypto";
 import type { NodeRuntimesReading } from "../../available-agent-runtimes/available-agent-runtimes-report.js";
-import { agentRuntimeDisplayName } from "../../available-agent-runtimes/available-agent-runtimes-service.js";
+import { agentRuntimeName } from "@autobyteus/agent-presentation-contracts";
 import { blockedDetail, reportedModel } from "../../launch-preferences/launch-usability-check.js";
 import type { LaunchChoice, RoutingRequest } from "../domain/model-routing-types.js";
 
@@ -117,7 +117,7 @@ export class ModelRoutingSessions {
       return `${runtime} is not an available runtime on this node now (see list_available_agent_runtimes).`;
     }
     const found = reportedModel(facts, runtime, model);
-    if (!found) return `${agentRuntimeDisplayName(runtime)} does not offer the model ${model} on this node.`;
+    if (!found) return `${agentRuntimeName(runtime)} does not offer the model ${model} on this node.`;
     return found.blocked ? blockedDetail(model, found.blocked) : null;
   }
 }

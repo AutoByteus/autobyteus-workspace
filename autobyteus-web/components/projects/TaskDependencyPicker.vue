@@ -114,7 +114,8 @@ const options = computed(() => {
     .slice(0, 8)
     .map((task) => ({ task, cycle: cycle.value.has(task.taskId) }))
 })
-watch(options, () => { active.value = Math.max(0, options.value.findIndex((item) => !item.cycle)) })
+// The active option is always a choosable one, also before the options first change (Enter never lands on a loop).
+watch(options, () => { active.value = Math.max(0, options.value.findIndex((item) => !item.cycle)) }, { immediate: true })
 
 const move = (step: number) => {
   open.value = true

@@ -6,9 +6,9 @@
  *
  * Cases:
  *   C55-E2E-001  the catalog (GraphQL) lists each model exactly once with 1M/1M/128K limits and the thinking schema
- *                (toggle default off; display default Sonnet 5.5 `summarized`, Haiku 5.5 `omitted`) (AC-001, REQ-005/008)
+ *                (toggle default off; effort default Sonnet 5.5 `high`, Haiku 5.5 `medium`; no display setting) (AC-001, REQ-005/008)
  *   C55-E2E-002  Sonnet 5.5, thinking Off: tool turn; every call sends exactly `thinking: {type: "between_tools"}`
- *   C55-E2E-003  Sonnet 5.5, thinking On:  `{type: "adaptive", display: "summarized"}`
+ *   C55-E2E-003  Sonnet 5.5, thinking On:  `{type: "adaptive"}` (never `display`)
  *   C55-E2E-004  Haiku 5.5, thinking Off:  `{type: "disabled"}`
  *   C55-E2E-005  Haiku 5.5, thinking On:   `{type: "adaptive"}`
  *                For 002..005 every call is accepted (200), streams `max_tokens: 128000`, carries no temperature/top_p/top_k,
@@ -49,16 +49,16 @@ const FILE_COUNT = 3;
 
 type ModelExpectation = {
   value: string;
-  displayDefault: "summarized" | "omitted";
+  effortDefault: "high" | "medium";
   offShape: Json;
   onShape: Json;
 };
 const SONNET_5_5: ModelExpectation = {
-  value: "claude-sonnet-5-5", displayDefault: "summarized",
-  offShape: { type: "between_tools" }, onShape: { type: "adaptive", display: "summarized" },
+  value: "claude-sonnet-5-5", effortDefault: "high",
+  offShape: { type: "between_tools" }, onShape: { type: "adaptive" },
 };
 const HAIKU_5_5: ModelExpectation = {
-  value: "claude-haiku-5-5", displayDefault: "omitted",
+  value: "claude-haiku-5-5", effortDefault: "medium",
   offShape: { type: "disabled" }, onShape: { type: "adaptive" },
 };
 
@@ -164,7 +164,7 @@ describeLive("AutoByteus native runtime: Claude Sonnet 5.5 and Haiku 5.5 (live)"
   /** The llmConfig the app writes for a fresh run: schema defaults explicitly, Thinking toggle as chosen. */
   const appLlmConfig = (value: string, thinkingEnabled: boolean): Json => {
     const props = schemaProps(row(value).configSchema);
-    return { thinking_enabled: thinkingEnabled, thinking_display: props.thinking_display?.default };
+    return { thinking_enabled: thinkingEnabled, reasoning_effort: props.reasoning_effort?.default };
   };
 
   beforeAll(async () => {
@@ -201,10 +201,10 @@ describeLive("AutoByteus native runtime: Claude Sonnet 5.5 and Haiku 5.5 (live)"
       expect(entry.maxContextTokens).toBe(1_000_000);
       expect(entry.maxInputTokens).toBe(1_000_000);
       expect(entry.maxOutputTokens).toBe(MAX_OUTPUT_TOKENS);
-      expect(Object.keys(props).sort(), `${model.value} schema keys`).toEqual(["thinking_display", "thinking_enabled"]);
+      expect(Object.keys(props).sort(), `${model.value} schema keys`).toEqual(["reasoning_effort", "thinking_enabled"]);
       expect(props.thinking_enabled!.default, `${model.value} toggle default`).toBe(false);
-      expect(props.thinking_display!.default, `${model.value} display default`).toBe(model.displayDefault);
-      expect(props.thinking_display!.enum).toEqual(["omitted", "summarized"]);
+      expect(props.reasoning_effort!.default, `${model.value} effort default`).toBe(model.effortDefault);
+      expect(props.reasoning_effort!.enum).toEqual(["low", "medium", "high", "xhigh", "max"]);
     }
     harness.recordCase("C55-E2E-001", details);
   }, 120_000);

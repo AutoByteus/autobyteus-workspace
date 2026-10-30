@@ -29,6 +29,7 @@ export const startStudioE2eRuntimeServer = async (
   try {
     await studio.applicationRuntime.lifecycle.prepareBeforeListen();
     await studio.agentToolsMcpHost.listen();
+    await studio.credentialProxyHost.listen();
     const address = await studio.fastify.listen({
       port: 0,
       host: requestedHost,

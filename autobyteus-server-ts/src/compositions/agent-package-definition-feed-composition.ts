@@ -5,6 +5,7 @@ import {
   type ParentFolderWatchFactory,
 } from "../agent-package-definitions/monitor/agent-package-folder-watcher.js";
 import type { AgentPackageDefinitionReloader } from "../agent-package-definitions/services/agent-package-definition-reloader.js";
+import type { AgentDefinitionChangeSignal } from "../agent-definition/services/agent-definition-change-signal.js";
 
 /** The studio server's agent package folder watcher and change feed around the process agent package definitions. */
 export type AgentPackageDefinitionFeed = Readonly<{
@@ -20,6 +21,8 @@ export type AgentPackageDefinitionFeed = Readonly<{
  */
 export const composeAgentPackageDefinitionFeed = async (input: {
   reloader: AgentPackageDefinitionReloader;
+  /** Told about every announced reload, so running agents can take their definitions' tools. */
+  definitionChanges: Pick<AgentDefinitionChangeSignal, "notifyChanged">;
   createWatcher?: PackageFolderWatchFactory;
   createParentFolderWatch?: ParentFolderWatchFactory;
 }): Promise<AgentPackageDefinitionFeed> => {
@@ -30,7 +33,10 @@ export const composeAgentPackageDefinitionFeed = async (input: {
     createParentFolderWatch: input.createParentFolderWatch,
   });
   AgentPackageFolderWatcher.bindProcessInstance(watcher);
-  input.reloader.setPublisher((changedLists) => hub.broadcast({ type: "agent_package_definitions_changed", changedLists: [...changedLists] }));
+  input.reloader.setPublisher((changedLists) => {
+    hub.broadcast({ type: "agent_package_definitions_changed", changedLists: [...changedLists] });
+    input.definitionChanges.notifyChanged();
+  });
   input.reloader.setRegistrationListener((roots) => watcher.syncPackageFolders(roots));
   await watcher.syncPackageFolders(input.reloader.listPackageRoots());
 

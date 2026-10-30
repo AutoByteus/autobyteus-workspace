@@ -1,3 +1,5 @@
+import { agentRuntimeName } from "@autobyteus/agent-presentation-contracts";
+import { RuntimeKind } from "../../../runtime-management/runtime-kind-enum.js";
 import {
   asText,
   catCommand,
@@ -80,7 +82,7 @@ const webSearch: BuiltInConverter = (call, result) => {
 };
 
 export const grokTranslation: RuntimeTranslation = Object.freeze({
-  label: "Grok Build",
+  label: agentRuntimeName(RuntimeKind.GROK_BUILD),
   builtInTools: new Map<string, BuiltInConverter>([
     ["run_bash", runBash],
     ["read_file", readFile],

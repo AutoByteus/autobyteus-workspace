@@ -34,11 +34,13 @@ Run commands from the repository root. `pnpm -C <dir>` runs a package's script.
 | Web unit and component tests | Nuxt components, stores, composables, utilities (colocated `__tests__`) | `pnpm -C autobyteus-web test:nuxt` |
 | Electron main-process tests | Electron main, preload, launch profile, server manager, updater | `pnpm -C autobyteus-web test:electron` |
 | Web guards | Web boundary and localization rules | `pnpm -C autobyteus-web guard:web-boundary`, `guard:localization-boundary`, `audit:localization-literals` |
+| Web typecheck | Nuxt app, Electron main and build scripts under their own configs; production files must have no errors, test files may not exceed `typecheck-baseline.json`. A lower count also fails until `pnpm -C autobyteus-web typecheck:update-baseline` shrinks the baseline; the update refuses growth. It builds the shared types it reads (`@autobyteus/application-sdk-contracts`) first, so it runs right after `pnpm install`. The desktop build runs it | `pnpm -C autobyteus-web typecheck` |
 | Workspace native-to-web integration | Native producer/FIFO and web hydration at a workspace-owned boundary (`test-support/`) | `pnpm test:native-input-history` |
 | Server unit / integration | Backend logic and in-process integration | `pnpm -C autobyteus-server-ts test:unit`; `test:integration:prepare` once, then `test:integration`; one file: `pnpm -C autobyteus-server-ts exec vitest run <path> --no-watch` |
 | Server typecheck | Production `src` under the build type policy | `pnpm -C autobyteus-server-ts typecheck` |
-| Server E2E | Real HTTP/GraphQL/WebSocket boundaries on a test-owned server and database (`tests/e2e/`) | `pnpm test:e2e`, or one file with `vitest run` as above |
+| Server E2E | Real HTTP/GraphQL/WebSocket boundaries on a test-owned server and database (`tests/e2e/`). Suites that import the Brief Studio sample application need `pnpm -C autobyteus-server-ts test:integration:prepare` once and fail naming it otherwise | `pnpm test:e2e`, or one file with `vitest run` as above |
 | Gated runtime suites | Real or scripted runtimes and providers (`RUN_*` gates in `autobyteus-server-ts/tests/e2e/`) | The gate and command are in the test file |
+| Release smoke | New runs with configured skills start on every runtime, in the user's skill setup | `python3 scripts/release_smoke.py`; see [RELEASE.md](RELEASE.md#release-smoke-check) |
 | Core library tests | `autobyteus-ts` runtime, tools, LLM layer (credential-free; live provider tests stay skipped without their gate) | `pnpm -C autobyteus-ts test`; one folder: `pnpm -C autobyteus-ts exec vitest run tests/unit` |
 | Core library MCP integration | The MCP client against the repository's tiny real MCP servers (Python via `uv`, else Node), stdio and HTTP; an opt-in check against a real `uv` server folder | `env -i PATH="$PATH" HOME=<temp> TMPDIR="$TMPDIR" pnpm -C autobyteus-ts exec vitest run tests/integration/tools/mcp`; the opt-in gate is in the file header |
 | Other packages | SDKs, contracts, message gateway | `pnpm -C <package> test` |
@@ -46,6 +48,10 @@ Run commands from the repository root. `pnpm -C <dir>` runs a package's script.
 | Packaged Electron harness | Packaged launch, isolation and cleanup | `pnpm -C autobyteus-web test:e2e:electron`, `test:e2e:electron:isolation`, `test:e2e:isolated-app` |
 | Isolated desktop instance | The real desktop app of a worktree build, driven like a user | `pnpm --silent isolated-app start --build`; see [Isolated AutoByteus Instances](docs/isolated-app-instances.md) |
 | iOS wrapper (macOS + Xcode) | Release contract, core unit tests, simulator smoke | See [autobyteus-ios/README.md](autobyteus-ios/README.md) |
+
+Web specs that exercise HTML sanitisation (DOMPurify) declare `// @vitest-environment jsdom`: the
+default happy-dom lets DOMPurify skip nodes, so injected markup survives there although a real DOM
+removes it.
 
 ## Choosing the path
 
@@ -137,6 +143,9 @@ test, not its whole suite. A second full run of a suite proves nothing the first
   most one agent run or suite that uses a local model at a time, never in parallel, and prefer a
   small, fast model (for example `qwen/qwen3.6-35b-a3b`, the gated LM Studio suite's default via
   `LMSTUDIO_TARGET_TEXT_MODEL`). Unload any model your run loaded just-in-time when you finish.
+- **Live Codex model.** Live Codex tests use `gpt-6.1-terra`, with reasoning effort `medium`
+  unless the test needs more (the cheapest current model; override a test's model variable only
+  when the test needs another).
 - **Runtimes without a model.** `autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs`
   (`ANTIGRAVITY_CLI_COMMAND=<absolute path>`, `RUN_AGY_FAILURE_E2E=1`) is a scripted AGY CLI:
   a message containing `CALL_TOOL:{…}` makes that agent call the real tool. Use it to drive
@@ -171,6 +180,15 @@ test, not its whole suite. A second full run of a suite proves nothing the first
     `AUTOBYTEUS_COMPACTION_TRIGGER_RATIO`.
   - Claude: `CLAUDE_CODE_AUTO_COMPACT_WINDOW` (in-process suites only), or a manual
     `/compact`.
+
+  Prove compaction with the deterministic layers: the core library and server unit tests
+  (including the shared live-compaction boundary tests, which make no provider calls) and
+  scripted runtimes with a lowered threshold. A live compaction run against a real model is not
+  required proof for a ticket and not a gate: it needs a real provider key or signed-in CLI and
+  enough input to reach the compaction threshold, and its outcome depends on the model, so a live
+  failure alone is not a defect. Run one only when the user asks for it. This applies to
+  compaction only: other real-provider runs with a small input keep the rule under Gates (run
+  them when the change needs real-provider proof).
 - **Docker server nodes.** Never test against the user's node containers or their volumes
   (`/root` holds each node's CLI sign-ins). Start a test-owned container from the same image,
   bound to `127.0.0.1` on a free port and without the user's volumes, so its runtime CLIs
@@ -210,8 +228,9 @@ environment variables: test setups delete inherited `*_API_KEY` variables.
   secret IDs (never values); `pnpm test-vault remove` deletes the vault files.
 - **Test-only secrets.** A live check may need a secret that is not a provider key. Its alias in
   the source file maps to a test-only secret ID: `AUTOBYTEUS_TEST_GITHUB_TOKEN=…` is stored as
-  `test.github.token`, which the GitHub MCP live check (`RUN_GITHUB_MCP_E2E=1`) reads and sends
-  once to a server with its own vault. Only `test-vault setup` accepts these aliases;
+  `test.github.token`, which the GitHub MCP live check (`RUN_GITHUB_MCP_E2E=1`) and the GitHub
+  credential proxy live check (`RUN_GITHUB_PROXY_E2E=1`) read and send once to a server with its
+  own vault. Only `test-vault setup` accepts these aliases;
   `secrets:import` into an application vault refuses them.
 - **Read-only, like a test database.** A server started with the variable reads the test vault
   instead of its own: `pnpm test:e2e:real` (its preflight prints `Vault: test vault …`), an
@@ -238,6 +257,7 @@ AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault pnpm test:e2e:real:preflight
 AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault pnpm test:e2e:real -- --scenarios=deepseek.llm
 AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault RUN_DEEPSEEK_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/agent-initiated-collaborators.e2e.test.ts --no-watch
 AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault RUN_GITHUB_MCP_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/mcp/mcp-github-remote-live.e2e.test.ts --no-watch
+AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault RUN_GITHUB_PROXY_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/credential-proxy/github-credential-proxy-live.e2e.test.ts --no-watch
 AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault pnpm --silent isolated-app start --build
 ```
 

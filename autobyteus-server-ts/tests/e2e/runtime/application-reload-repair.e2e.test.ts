@@ -31,6 +31,7 @@ import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 import type { FastifyInstance } from "fastify";
 import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
+import { assertBriefStudioPackageBuilt, BRIEF_STUDIO_PACKAGE } from "../helpers/brief-studio-package.js";
 import { createGraphqlClient, fakeRuntimeState, installVendorSourceStub } from "../helpers/agent-runtimes-e2e-harness.js";
 
 const fake = await vi.hoisted(async () => {
@@ -38,11 +39,9 @@ const fake = await vi.hoisted(async () => {
   return prepareFakeRuntimes({ label: "application-reload-repair-e2e", grokInstalled: true });
 });
 
-const BRIEF_STUDIO_PACKAGE = path.resolve(process.cwd(), "..", "applications/brief-studio/dist/importable-package");
-const packageBuilt = fs.existsSync(path.join(BRIEF_STUDIO_PACKAGE, "applications", "brief-studio", "application.json"));
 const MODEL = "gpt-5.6-luna";
 
-describe.skipIf(!packageBuilt)("Application reload and repair (real studio server, Brief Studio, scripted CLIs)", () => {
+describe("Application reload and repair (real studio server, Brief Studio, scripted CLIs)", () => {
   const states = fakeRuntimeState(fake.stateDir);
   let fastify: FastifyInstance;
   let url: URL;
@@ -110,6 +109,7 @@ describe.skipIf(!packageBuilt)("Application reload and repair (real studio serve
   };
 
   beforeAll(async () => {
+    assertBriefStudioPackageBuilt();
     states.set("codex-account", "signedIn");
     states.set("codex-models", MODEL);
     // No AUTOBYTEUS_APPLICATION_PACKAGE_ROOTS: the application is imported while the server runs.
@@ -162,7 +162,7 @@ describe.skipIf(!packageBuilt)("Application reload and repair (real studio serve
       expect(quarantined.status, brief(quarantined.body)).toBe(503);
       expect(quarantined.body.availabilityState).toBe("QUARANTINED");
       expect(String(quarantined.body.detail)).toContain("Application setup is required:");
-      expect(String(quarantined.body.detail)).toContain("Codex authentication is unavailable");
+      expect(String(quarantined.body.detail)).toContain("Codex App Server authentication is unavailable");
 
       states.set("codex-account", "signedIn");
       const repaired = await repair(applicationId);
@@ -214,7 +214,7 @@ describe.skipIf(!packageBuilt)("Application reload and repair (real studio serve
       await gql(`mutation($packageId: String!) { reloadApplicationPackage(packageId: $packageId) { packageId } }`, { packageId });
       const quarantined = await rest("GET", `/applications/${encodeURIComponent(applicationId)}/execution-resource-configurations`);
       expect(quarantined.status, brief(quarantined.body)).toBe(503);
-      expect(String(quarantined.body.detail)).toContain("Codex authentication is unavailable");
+      expect(String(quarantined.body.detail)).toContain("Codex App Server authentication is unavailable");
       // The run's runtime process dies while the application is quarantined: the run's event waits for dispatch.
       process.kill(runtimePids[0]!, "SIGKILL");
       await until(async () => childPids("app-server").includes(runtimePids[0]!), (alive) => !alive, "the runtime process is gone");

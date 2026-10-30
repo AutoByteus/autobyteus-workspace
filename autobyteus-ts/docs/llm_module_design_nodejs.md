@@ -271,7 +271,7 @@ The current latest-model support set is summarized in
 - Anthropic `claude-opus-5-5` (verified 2026-09-23),
   `claude-opus-5` (verified 2026-07-31; standard pricing effective
   2026-07-24), `claude-fable-5-1` (verified 2026-09-22), `claude-fable-5`,
-  `claude-opus-4.8`, `claude-sonnet-5-5` and `claude-haiku-5-5` (verified
+  `claude-sonnet-5-5` and `claude-haiku-5-5` (verified
   2026-10-09), and `claude-sonnet-5`
   with exact Claude API values and no
   `claude-sonnet-4.8` alias. Fable 5 is catalog-available only, not a default
@@ -298,16 +298,19 @@ Provider adapters own request-shape differences:
   `cache_write_tokens` detail fields into generic cache-creation input usage.
 - `AnthropicLLM` shapes requests from one exact-value per-model table,
   `anthropic-model-request-policy.ts` (thinking mode, toggle-off shape, forced
-  `tool_choice` rejection); every catalog row has an explicit entry, including
-  the fixed-budget `claude-sonnet-4-6`.
+  `tool_choice` rejection) and the effort vocabulary; every catalog row has an
+  explicit entry and any other model value fails locally.
   Sonnet 5.5 with thinking off sends `{ type: "between_tools" }` and rejects a
   forced `tool_choice` locally; Haiku 5.5 and Sonnet 5 send `{ type: "disabled" }`.
-- `AnthropicLLM` maps current Claude adaptive-thinking config for Opus 5,
-  Opus 4.8, Opus 4.7, Sonnet 5.5, Sonnet 5, Haiku 5.5, and Fable 5 without sending fixed thinking budgets,
-  manual-budget overrides, or unsupported sampling fields (`temperature`,
-  `top_p`, `top_k`). It also filters AutoByteus-internal invocation kwargs
-  before Anthropic Messages API calls. Older Claude rows keep the legacy
-  fixed-budget path unless a separate provider migration changes them.
+- `AnthropicLLM` maps Claude adaptive-thinking config for every catalog row
+  without sending fixed thinking budgets, manual-budget overrides, or
+  unsupported sampling fields (`temperature`, `top_p`, `top_k`). It maps a
+  configured `reasoning_effort` to `output_config.effort` (never a top-level
+  field; nothing when unset or while thinking is off) and fails locally on an
+  unknown level. From the run config it reads only `thinking_enabled` and
+  `reasoning_effort` and sends no other config key; it never sends
+  `thinking.display`. It also filters AutoByteus-internal invocation kwargs
+  before Anthropic Messages API calls.
 - Opus 5.5 uses an adaptive-only schema and preflight: fixed-budget thinking,
   unsupported sampling parameters and forced `tool_choice` are rejected before
   the Messages SDK call.
@@ -411,7 +414,7 @@ text-history fallback remains. Text-only tool-result continuations render the ex
 and do not append an extra aggregate `role: "user"` message containing tool
 results. If a processed tool result includes context-file media, the request
 keeps a user/media carrier so the media can be sent; that carrier uses semantic
-completed-tool wording such as `The read_media_file tool call completed
+completed-tool wording such as `The read_file tool call completed
 successfully.` rather than internal continuation labels or generated tool-call
 formatting instructions.
 
@@ -481,7 +484,7 @@ converted, the renderer must fail before provider invocation with an actionable
 media-conversion error rather than silently sending a text-only request.
 
 The direct-Gemini `.m4a` path has an opt-in live proof in
-`tests/integration/agent/gemini-read-media-file-m4a-live.test.ts`. Default test
+`tests/integration/agent/gemini-read-file-m4a-live.test.ts`. Default test
 runs keep it skipped unless `AUTOBYTEUS_RUN_GEMINI_M4A_LIVE=1` is set. The
 fixture at `tests/data/test_audio.m4a` is a small synthetic/non-private spoken
 sample; the live test renders the assembled request's exact local file bytes
@@ -544,10 +547,10 @@ the old synthetic aggregate user message. Renderer unit coverage also verifies
 semantic media-carrier wording for OpenAI-compatible and Gemini payloads. Broader integration tests remain under `tests/integration/llm/...`.
 
 Direct-Gemini media continuation coverage also includes
-`tests/integration/agent/read-media-file-continuation-flow.test.ts` for the
-local `read_media_file -> LLMUserMessage.audio_urls -> Gemini inlineData` path
+`tests/integration/agent/read-file-media-continuation-flow.test.ts` for the
+local `read_file (media) -> LLMUserMessage.audio_urls -> Gemini inlineData` path
 and the env-gated
-`tests/integration/agent/gemini-read-media-file-m4a-live.test.ts` for live
+`tests/integration/agent/gemini-read-file-m4a-live.test.ts` for live
 `.m4a` provider acceptance.
 
 ## 10. Where to Update

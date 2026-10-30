@@ -1,6 +1,5 @@
 import type { DecisionLaunchSource, ModelRoutingStatus } from '~/types/modelRouting'
-import { runtimeKindToLabel } from '~/types/agent/AgentRunConfig'
-import { runtimeShortLabel } from '~/utils/chat/chatDefaults'
+import { agentRuntimeName } from '@autobyteus/agent-presentation-contracts'
 
 type T = (key: any, params?: Record<string, string | number>) => string
 /** A model's label in its runtime's catalog (the model menu's; the model ID until the catalog has loaded). */
@@ -50,13 +49,13 @@ export const routerProblem = (
   if (!status || !status.enabled || status.active || !status.reasonCode) return ''
   const params = status.reasonParams
   const runtimeKind = params.runtime ?? status.routerLaunch?.runtimeKind ?? ''
-  const runtime = runtimeKindToLabel(runtimeKind)
+  const runtime = agentRuntimeName(runtimeKind)
   const model = modelLabel(runtimeKind, params.model ?? status.routerLaunch?.llmModelIdentifier ?? '')
   switch (status.reasonCode) {
     case 'ROUTER_NOT_SET': return t('settings.modelRouting.problem.notSet')
     case 'MODEL_BLOCKED': return params.until
-      ? t('settings.modelRouting.problem.blockedUntil', { runtime: runtimeShortLabel(runtimeKind), model, time: shortDate(Date.parse(params.until), locale), by: params.limit ?? '' })
-      : t('settings.modelRouting.problem.blocked', { runtime: runtimeShortLabel(runtimeKind), model, by: params.limit ?? '' })
+      ? t('settings.modelRouting.problem.blockedUntil', { runtime, model, time: shortDate(Date.parse(params.until), locale), by: params.limit ?? '' })
+      : t('settings.modelRouting.problem.blocked', { runtime, model, by: params.limit ?? '' })
     case 'MODEL_NOT_OFFERED': return t('settings.modelRouting.problem.modelMissing', { runtime, model })
     case 'RUNTIME_UNAVAILABLE': return t('settings.modelRouting.problem.runtimeMissing', { runtime })
     case 'SIGNED_OUT': return t('settings.modelRouting.problem.signedOut', { runtime })

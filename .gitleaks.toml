@@ -157,3 +157,16 @@ commits = ["c798a7e70c3bc467346710f522c3b4cd289cbb59"]
 paths = [
   '''^autobyteus-server-ts/extensions/messaging-gateway/config/(gateway\.env|provider-config\.json)$''',
 ]
+# memory search (autobyteus-185): the secret masker's unit test
+# (`tests/unit/memory-search/memory-search-index-units.test.ts`) feeds an
+# AWS-key-shaped fixture: `AKIA` followed by the consecutive alphabet run
+# `ABCDEFGHIJKLMNOP`, beside equally synthetic `sk-abcdef…` and `ghp_abcdef…`
+# values. Checked by shape and context (release v1.5.9, autobyteus-319); never
+# tested at a provider. Only that exact value, and only for the AWS rule.
+[[allowlists]]
+description = "Synthetic AWS-key fixture AKIA + ABCDEFGHIJKLMNOP in the masker test (aws-access-token rule only)"
+targetRules = ["aws-access-token"]
+regexTarget = "secret"
+regexes = [
+  '''^AKIAABCDEFGHIJKLMNOP$''',
+]

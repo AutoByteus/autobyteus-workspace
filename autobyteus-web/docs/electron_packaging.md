@@ -547,8 +547,11 @@ pnpm -C autobyteus-web build:electron:linux:arm64
 pnpm -C autobyteus-web build:electron
 ```
 
-Each script runs the boundary guards, `prepare-server`, `generate:electron` and `transpile-electron`, compiles
-`build/tsconfig.json`, then runs `build/dist/build.js` (the platform flag is passed to it). The packaged
+Each script runs the boundary guards, the web type check (`pnpm typecheck`, which first builds
+`@autobyteus/application-sdk-contracts`, so it needs no earlier build; see the Web typecheck layer in
+[TESTING.md](../../TESTING.md#test-layers)), `prepare-server`, `generate:electron` and `transpile-electron`, compiles
+`build/tsconfig.json`, then runs `build/dist/build.js` (the platform flag is passed to it). A type error in a
+production file, or test-file errors that no longer match `typecheck-baseline.json`, stop the build. The packaged
 Electron harness (`pnpm test:e2e:electron`) builds the current host with the matching script.
 
 The package keeps the ordinary `AutoByteus` product name, app ID, signing

@@ -1,4 +1,5 @@
 import { resolve as resolvePath } from "node:path";
+import { agentRuntimeName } from "@autobyteus/agent-presentation-contracts";
 import type { ModelInfo } from "autobyteus-ts/llm/models.js";
 import { LLMRuntime } from "autobyteus-ts/llm/runtimes.js";
 import type { LlmProviderService } from "../../llm-management/llm-providers/services/llm-provider-service.js";
@@ -101,12 +102,12 @@ implements ApplicationProviderCredentialReadinessPort {
       case "provider":
         return this.readProviderReadiness(authority.providerId);
       case "codex_workspace":
-        return toReadiness("Codex", await this.dependencies.signInReader.read(
+        return toReadiness(agentRuntimeName(RuntimeKind.CODEX_APP_SERVER), await this.dependencies.signInReader.read(
           RuntimeKind.CODEX_APP_SERVER,
           { cwd: authority.workspaceRootPath },
         ));
       case "claude_process":
-        return toReadiness("Claude", await this.dependencies.signInReader.read(
+        return toReadiness(agentRuntimeName(RuntimeKind.CLAUDE_AGENT_SDK), await this.dependencies.signInReader.read(
           RuntimeKind.CLAUDE_AGENT_SDK,
           { cwd: process.cwd() },
         ));

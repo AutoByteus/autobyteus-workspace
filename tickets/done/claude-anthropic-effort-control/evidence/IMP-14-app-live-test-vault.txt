@@ -1,0 +1,29 @@
+# IMP-14 app check with real Anthropic replies (test vault): AC-002, AC-003/AC-004 (off + stored max), AC-011 (restore with stored thinking_display)
+# steps: isolated backend `node autobyteus-server-ts/dist/app.js` (owned temp data root, sanitized env, throwaway HOME,
+#        AUTOBYTEUS_TEST_VAULT=/root/.autobyteus-test/vault; autobyteus-ts dist built from 574aa0bd7 src)
+#        + `pnpm -C autobyteus-web dev` against it; headless Chrome via the agent browser tool; clicks on data-test controls.
+# backend log: "[secret-management.vault] Secret vault: test vault /root/.autobyteus-test/vault (read-only)"
+# commit: 574aa0bd7; env: Linux, Node v22; date: 2026-10-29. 3 real Anthropic calls.
+
+## Case 1: claude-opus-5-5, Thinking "Max" (composer), New chat  [AC-002, AC-006]
+trigger after pick: Max
+stored run llmConfig (run_metadata.json): {"reasoning_effort": "max"}
+prompt "Reply with exactly the word: PINEAPPLE" -> assistant reply "PINEAPPLE"; no error; status Idle
+screenshot: IMP-14-app-opus55-max-reply.png
+
+## Case 2: claude-sonnet-5-5, pick Max then Off (composer), New chat  [AC-003/AC-004, REQ-005]
+trigger after Max: Max; after Off: Off
+stored run llmConfig: {"thinking_enabled": false, "reasoning_effort": "max"}
+  (before SR-002 this sent between_tools + effort max, which Anthropic rejects with 400, PRB-002)
+prompt "Reply with exactly the word: MANGO" -> assistant reply "MANGO"; no error; status Idle
+
+## Case 3: case-1 run stopped (terminateAgentRun), stored llmConfig given "thinking_display": "omitted" on disk
+##         (the shape in real user data, SRC-019), reopened from the app URL and sent a message  [AC-011, REQ-011]
+stored llmConfig before reopening: {"reasoning_effort": "max", "thinking_display": "omitted"}
+page showed the run as stopped before sending; prompt "Reply with exactly the word: KIWI" -> reply "KIWI"; no error; Idle;
+earlier PINEAPPLE exchange still in history.
+stored llmConfig after the turn: unchanged (still holds "thinking_display": "omitted": no data rewritten)
+screenshot: IMP-14-app-restored-run-stored-display-reply.png
+
+backend.log: 0 lines matching "Error in Anthropic" / Anthropic 400.
+Request bodies are not visible from the app; the exact body for these shapes is asserted by IMP-13 (server, live) and the adapter unit tests.

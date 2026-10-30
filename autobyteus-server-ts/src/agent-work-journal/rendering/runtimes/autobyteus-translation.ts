@@ -1,3 +1,5 @@
+import { agentRuntimeName } from "@autobyteus/agent-presentation-contracts";
+import { RuntimeKind } from "../../../runtime-management/runtime-kind-enum.js";
 import path from "node:path";
 import {
   asInteger,
@@ -8,12 +10,21 @@ import {
   startEndRange,
   toCatNumberedLinesLoose,
 } from "../command-text.js";
-import { commandLine, convertedCommandLine, editFileLine, searchWebLine, writeFileLine } from "../journal-actions.js";
+import {
+  backgroundOutputLine,
+  commandLine,
+  confirmedOutcome,
+  convertedCommandLine,
+  editFileLine,
+  searchWebLine,
+  stopBackgroundTaskLine,
+  writeFileLine,
+} from "../journal-actions.js";
 import { splitLines } from "../output-shortener.js";
 import { interruptedFromError, mediaMarker, normalizeRecordedResult } from "../result-envelopes.js";
-import { readPatch } from "../text-diff.js";
+import { diffTexts, readPatch } from "../text-diff.js";
 import type { NormalizedToolResult } from "../tool-outcome.js";
-import type { BuiltInConverter, RecordedResult, RuntimeTranslation } from "./runtime-translation.js";
+import type { BuiltInConverter, BuiltInLine, RecordedResult, RuntimeTranslation } from "./runtime-translation.js";
 
 /** AutoByteus native: contract §4 (AutoByteus table) and §6 (AutoByteus texts). */
 
@@ -68,10 +79,30 @@ const startBackgroundProcess: BuiltInConverter = (call, result) => {
   return commandLine(asText(call.args.command), [...(cwd ? [`in ${cwd}`] : []), "background"], recorded);
 };
 
-/** Recorded as `1: …`; shown as `cat -n` in the common number layout. */
+/**
+ * A recorded context-file value (the file was loaded for the model to see): the media marker, as for a Claude image
+ * read; null for any other result.
+ */
+const mediaReadRecorded = (result: RecordedResult | null) => {
+  const value = asRecord(result?.value);
+  if (!result || !value || result.error) return null;
+  return {
+    outcome: { kind: "ok" as const, note: null },
+    output: mediaMarker(
+      asText(value.fileType) ?? asText(value.file_type) ?? "media",
+      asText(value.mimeType) ?? asText(value.mime_type),
+      asInteger(value.size) ?? asInteger(value.sizeBytes),
+    ),
+  };
+};
+
+/** Text: recorded as `1: …`, shown as `cat -n` in the common number layout. An image, audio or video file: the media marker. */
 const readFile: BuiltInConverter = (call, result) => {
+  const filePath = asText(call.args.path) ?? "(path not recorded)";
+  const media = mediaReadRecorded(result);
+  if (media) return convertedCommandLine(`cat ${shellWord(filePath)}`, media);
   const numbered = call.args.include_line_numbers !== false;
-  const command = catCommand(asText(call.args.path) ?? "(path not recorded)", numbered,
+  const command = catCommand(filePath, numbered,
     startEndRange(call.args.start_line, call.args.end_line));
   const read = normalized(result);
   const output = read?.output ?? null;
@@ -80,21 +111,14 @@ const readFile: BuiltInConverter = (call, result) => {
     : read);
 };
 
-/** The file was loaded for viewing: the media marker, as for a Claude image read. */
-const readMediaFile: BuiltInConverter = (call, result) => {
-  const value = asRecord(result?.value);
-  const recorded = result && value && !result.error
-    ? {
-      outcome: { kind: "ok" as const, note: null },
-      output: mediaMarker(
-        asText(value.fileType) ?? asText(value.file_type) ?? "media",
-        asText(value.mimeType) ?? asText(value.mime_type),
-        asInteger(value.size) ?? asInteger(value.sizeBytes),
-      ),
-    }
-    : normalized(result);
-  return convertedCommandLine(`cat ${shellWord(asText(call.args.file_path) ?? "(path not recorded)")}`, recorded);
-};
+/**
+ * Recorded history: `read_media_file` was removed (autobyteus-328; read_file reads media now), but runs recorded before
+ * keep their calls, rendered as the media marker.
+ */
+const readMediaFile: BuiltInConverter = (call, result) => convertedCommandLine(
+  `cat ${shellWord(asText(call.args.file_path) ?? "(path not recorded)")}`,
+  mediaReadRecorded(result) ?? normalized(result),
+);
 
 const readUrl: BuiltInConverter = (call, result) =>
   convertedCommandLine(curlCommand(asText(call.args.url)), normalized(result));
@@ -118,8 +142,60 @@ const searchWeb: BuiltInConverter = (call, result) => {
   return searchWebLine(query ? [query] : [], normalized(result));
 };
 
+/** The output of a background process: its recorded `output` field when the result is a record. */
+const processOutput: BuiltInConverter = (call, result) => {
+  const value = asRecord(result?.value);
+  const recorded = normalized(result);
+  const output = typeof value?.output === "string" && !result?.error
+    ? { ...recorded!, output: value.output.length ? value.output : null }
+    : recorded;
+  return backgroundOutputLine(asText(call.args.pid) ?? (asInteger(call.args.pid)?.toString() ?? null), output);
+};
+
+const stopProcess: BuiltInConverter = (call, result) =>
+  stopBackgroundTaskLine(asInteger(call.args.pid)?.toString() ?? asText(call.args.pid), normalized(result));
+
+const replaceInFile: BuiltInConverter = (call, result) => editFileLine(
+  joinedPath(call.args, "path"),
+  typeof call.args.old_text === "string" && typeof call.args.new_text === "string"
+    ? diffTexts(call.args.old_text, call.args.new_text)
+    : null,
+  [],
+  normalized(result),
+);
+
+const confirmed = (head: string, result: RecordedResult | null): BuiltInLine => {
+  const { outcome, parts } = confirmedOutcome(normalized(result));
+  return { head, outcome, parts };
+};
+
+const downloadMedia: BuiltInConverter = (call, result) => {
+  const target = [asText(call.args.folder), asText(call.args.filename)].filter((part): part is string => part !== null).join("/");
+  return confirmed(`Download file: ${asText(call.args.url) ?? "(URL not recorded)"}${target ? ` to ${target}` : ""}`, result);
+};
+
+const downloadVideo: BuiltInConverter = (call, result) => {
+  const format = asText(call.args.format);
+  return confirmed(`Download video: ${asText(call.args.url) ?? "(URL not recorded)"}${format ? ` (${format})` : ""}`, result);
+};
+
+const convertVideoFormat: BuiltInConverter = (call, result) => {
+  const format = asText(call.args.target_format);
+  const output = asText(call.args.output_video_path);
+  return confirmed(
+    `Convert video: ${asText(call.args.input_video_path) ?? "(input not recorded)"}${format ? ` to ${format}` : ""}${output ? ` (${output})` : ""}`,
+    result,
+  );
+};
+
+const submitTaskResult: BuiltInConverter = (call, result) => {
+  const line = confirmed("Submit task result", result);
+  const message = asText(call.args.message);
+  return message === null ? line : { ...line, parts: [{ kind: "message", text: message }, ...line.parts] };
+};
+
 export const autobyteusTranslation: RuntimeTranslation = Object.freeze({
-  label: "AutoByteus",
+  label: agentRuntimeName(RuntimeKind.AUTOBYTEUS),
   builtInTools: new Map<string, BuiltInConverter>([
     ["run_bash", runBash],
     ["start_background_process", startBackgroundProcess],
@@ -129,6 +205,13 @@ export const autobyteusTranslation: RuntimeTranslation = Object.freeze({
     ["edit_file", editFile],
     ["search_web", searchWeb],
     ["read_media_file", readMediaFile],
+    ["get_process_output", processOutput],
+    ["stop_background_process", stopProcess],
+    ["replace_in_file", replaceInFile],
+    ["download_media", downloadMedia],
+    ["download_video", downloadVideo],
+    ["convert_video_format", convertVideoFormat],
+    ["submit_task_result", submitTaskResult],
   ]),
   normalizeResult: normalizeAutobyteusResult,
   /** XML tool markup in agent text: the same call has its own line. */

@@ -21,6 +21,8 @@ import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadat
  *
  * Run: RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<abs>/tests/fixtures/agy-failure-cli.mjs \
  *   pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts --no-watch
+ * E09/E10 are Antigravity's cases in the release smoke check (`python3 scripts/release_smoke.py`, RELEASE.md), which
+ * names their titles: keep them stable, or update the runner's required-case list with them.
  */
 const fakeCommand = process.env["ANTIGRAVITY_CLI_COMMAND"] ?? "";
 const enabled = process.env["RUN_AGY_FAILURE_E2E"] === "1" &&
@@ -425,5 +427,117 @@ suite("AGY linked skills and always auto-approve through the server (scripted CL
     expect(resumed?.argv).toContain("--conversation");
     expect(resumed?.argv).toContain(SKIP_PERMISSIONS);
     expect(await fs.readFile(path.join(legacyRoot, "marker.md"), "utf8")).toBe("SIBLING-LEGACY-3307\n");
+  }, 90_000);
+
+  // E09/E10 (release smoke): the user's setup from the v1.5.6-beta.2 regression. An imported package agent has a
+  // configured skill at <package>/agents/<agent>/skills/<skill>, and the workspace's .claude/.codex/.grok/skills/<skill>
+  // are absolute links to that folder. Antigravity reads none of those folders; its capsule links the skill.
+  let linkedPackage: Promise<{ agentId: string; skillName: string; skillDir: string; marker: string }> | null = null;
+  const importLinkedSkillPackage = () => (linkedPackage ??= (async () => {
+    const unique = randomUUID().slice(0, 8);
+    const packageRoot = await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(), "agy-linked-package-")));
+    cleanup.push(() => fs.rm(packageRoot, { recursive: true, force: true }));
+    const agentId = `agy-package-agent-${unique}`;
+    const skillName = `agy-package-skill-${unique}`;
+    const marker = `PKG-${unique}`;
+    const agentDir = path.join(packageRoot, "agents", agentId);
+    const skillDir = path.join(agentDir, "skills", skillName);
+    await fs.mkdir(skillDir, { recursive: true });
+    await fs.writeFile(path.join(agentDir, "agent.md"), ["---", `name: ${agentId}`,
+      "description: AGY package agent with a configured skill", "---", "", "Follow the user's instructions."].join("\n"));
+    await fs.writeFile(path.join(agentDir, "agent-config.json"), JSON.stringify({ skillNames: [skillName] }, null, 2));
+    await fs.writeFile(path.join(skillDir, "SKILL.md"), ["---", `name: ${skillName}`,
+      "description: Package skill fixture", "---", "", `SKILL-MD-${marker}`, ""].join("\n"));
+    await fs.writeFile(path.join(skillDir, "marker.md"), `SIBLING-${marker}\n`);
+    await graphql("mutation($input: ImportAgentPackageInput!) { importAgentPackage(input: $input) { packageId } }",
+      { input: { sourceKind: "LOCAL_PATH", source: packageRoot } });
+    const definition = await graphql<{ agentDefinition: { skillNames: string[] } | null }>(
+      "query($id: String!) { agentDefinition(id: $id) { skillNames } }", { id: agentId });
+    expect(definition.agentDefinition?.skillNames).toEqual([skillName]);
+    return { agentId, skillName, skillDir, marker };
+  })());
+  const RUNTIME_SKILL_FOLDERS = [".claude", ".codex", ".grok"];
+  const linkedWorkspace = async (label: string, skillName: string, skillDir: string): Promise<string> => {
+    const workspace = await createWorkspace(label);
+    for (const folder of RUNTIME_SKILL_FOLDERS) {
+      await fs.mkdir(path.join(workspace, folder, "skills"), { recursive: true });
+      await fs.symlink(skillDir, path.join(workspace, folder, "skills", skillName));
+    }
+    return workspace;
+  };
+  /** The user's links are still there and point at the package skill; nothing else was written into the workspace. */
+  const expectLinksUntouched = async (workspace: string, skillName: string, skillDir: string): Promise<void> => {
+    expect((await fs.readdir(workspace)).sort()).toEqual(RUNTIME_SKILL_FOLDERS);
+    for (const folder of RUNTIME_SKILL_FOLDERS) {
+      const link = path.join(workspace, folder, "skills", skillName);
+      expect((await fs.lstat(link)).isSymbolicLink(), link).toBe(true);
+      expect(await fs.realpath(link)).toBe(skillDir);
+    }
+  };
+  const expectPackageSkillLinked = (frames: Frame[], pkg: { skillName: string; skillDir: string; marker: string }) =>
+    expect(reportedSkills(frames)).toEqual([{ name: pkg.skillName, symlink: true, target: pkg.skillDir,
+      skillMd: expect.stringContaining(`SKILL-MD-${pkg.marker}`), marker: `SIBLING-${pkg.marker}` }]);
+
+  // Named by scripts/release_smoke.py
+  it("E09: a brand-new run of an imported agent with a configured skill starts in a workspace with same-skill links and reaches the skill (release smoke)", async () => {
+    const pkg = await importLinkedSkillPackage();
+    const workspace = await linkedWorkspace("new-run-links", pkg.skillName, pkg.skillDir);
+
+    const runId = await prepareRun(pkg.agentId, workspace);
+    const frames = await ask(runId, "READ_SKILLS");
+
+    expectPackageSkillLinked(frames, pkg);
+    expect(JSON.stringify(frames)).not.toContain("Failed to prepare agent run");
+    const [launch] = await launchesFor(runId);
+    expect(launch?.argv).toContain("--new-project");
+    expect(await fs.realpath(launch!.cwd)).toBe(await fs.realpath(capsule(runId)));
+    await expectLinksUntouched(workspace, pkg.skillName, pkg.skillDir);
+  }, 60_000);
+
+  // Named by scripts/release_smoke.py
+  it("E10: a brand-new team member with a configured skill starts on its first message in a workspace with same-skill links and reaches the skill (release smoke)", async () => {
+    const pkg = await importLinkedSkillPackage();
+    const workspace = await linkedWorkspace("team-links", pkg.skillName, pkg.skillDir);
+    const team = await graphql<{ createAgentTeamDefinition: { id: string } }>(
+      "mutation($input: CreateAgentTeamDefinitionInput!) { createAgentTeamDefinition(input: $input) { id } }",
+      { input: { name: `agy-package-team-${randomUUID().slice(0, 8)}`, description: "AGY package skill team",
+        instructions: "Answer.", coordinatorMemberName: "lead", nodes: [
+          { memberName: "lead", ref: pkg.agentId, refScope: "SHARED" },
+          { memberName: "designer", ref: pkg.agentId, refScope: "SHARED" }] } });
+    const teamDefinitionId = team.createAgentTeamDefinition.id;
+    cleanup.push(() => graphql("mutation($id: String!) { deleteAgentTeamDefinition(id: $id) { success } }", { id: teamDefinitionId }));
+    const config = { llmModelIdentifier: MODEL, llmConfig: null, autoExecuteTools: false, runtimeKind: "antigravity_cli",
+      workspaceRootPath: workspace };
+    const created = await graphql<{ createAgentTeamRun: { success: boolean; message: string; teamRunId: string | null } }>(
+      "mutation($input: CreateAgentTeamRunInput!) { createAgentTeamRun(input: $input) { success message teamRunId } }",
+      { input: { teamDefinitionId, teamConfigs: [{ teamAddress: "/", ...config }], memberConfigs: [
+        { memberAddress: "/lead", agentDefinitionId: pkg.agentId, ...config },
+        { memberAddress: "/designer", agentDefinitionId: pkg.agentId, ...config }] } });
+    expect(created.createAgentTeamRun.success, created.createAgentTeamRun.message).toBe(true);
+    const teamRunId = created.createAgentTeamRun.teamRunId!;
+    cleanup.push(() => graphql("mutation($id: String!) { terminateAgentTeamRun(teamRunId: $id) { success } }", { id: teamRunId }));
+    const resume = await graphql<{ getTeamRunResumeConfig: { executionTree: Record<string, unknown> } }>(
+      "query($teamRunId: String!) { getTeamRunResumeConfig(teamRunId: $teamRunId) { executionTree } }", { teamRunId });
+    const designerRunId = flattenE2eConfiguredAgentExecutions(resume.getTeamRunResumeConfig.executionTree)
+      .find((member) => member.memberName === "designer")!.agentRunId;
+    // Brand-new: the member's own memory folder does not exist before its first message.
+    const teamMemoryDir = path.join(dataDir, "memory", "agent_teams", teamRunId);
+    expect((await fs.readdir(teamMemoryDir).catch(() => [] as string[])).filter((entry) => entry.includes(designerRunId)))
+      .toEqual([]);
+    const { socket, frames } = await open(`/ws/agent-team/${teamRunId}`);
+
+    sendE2eSendMessageCommand(socket, { agent_run_id: designerRunId, content: "READ_SKILLS" });
+    await until(frames, "designer TURN_COMPLETED", (f) => f.type === "TURN_COMPLETED" && f.payload["agent_run_id"] === designerRunId);
+    await wait(200);
+    socket.close();
+
+    // The Team socket sends text as SEGMENT_CONTENT_BATCH items, each with its agent_run_id.
+    const designerText = frames.flatMap((f) => f.type === "SEGMENT_CONTENT_BATCH"
+      ? f.payload["items"] as Array<Record<string, unknown>> : [])
+      .filter((item) => item["agent_run_id"] === designerRunId);
+    expectPackageSkillLinked(designerText.map((payload) => ({ type: "SEGMENT_CONTENT", payload })), pkg);
+    expect(JSON.stringify(frames)).not.toContain("Failed to prepare agent run");
+    expect((await launchesFor(designerRunId))[0]?.argv).toContain("--new-project");
+    await expectLinksUntouched(workspace, pkg.skillName, pkg.skillDir);
   }, 90_000);
 });

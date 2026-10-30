@@ -78,7 +78,7 @@ export const fileExplorerTreeActions = {
     source: 'mutation' | 'stream' = 'stream',
   ) {
     const wsState = this._getOrCreateWorkspaceState(workspaceId)
-    const effectiveEvent = source === 'stream'
+    const effectiveEvent: FileSystemChangeEvent = source === 'stream'
       ? this.consumeRecentStructuralChangeEchoes(workspaceId, event)
       : event
 

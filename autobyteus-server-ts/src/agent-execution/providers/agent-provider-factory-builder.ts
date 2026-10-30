@@ -26,6 +26,7 @@ import { ClaudeSessionBootstrapper } from "../backends/claude/backend/claude-ses
 import { ClaudeSessionManager } from "../backends/claude/session/claude-session-manager.js";
 import type { ClaudeSdkClient } from "../../runtime-management/claude/client/claude-sdk-client.js";
 import type { ApplicationAgentToolCapability } from "../../application-agent-tools/services/application-agent-tool-capability.js";
+import type { IntegrationRunAccess } from "../../credential-proxy/integration-run-access.js";
 
 export type AgentProviderFactoryBuilderProcessInput = Readonly<{
   workspaceManager: WorkspaceManager;
@@ -64,6 +65,8 @@ export interface AgentProviderFactoryBuilder {
     agentDefinitionService: AgentDefinitionService;
     agentToolMcpRunSessions: AgentToolMcpRunSessionAuthority;
     applicationAgentTools: ApplicationAgentToolCapability | null;
+    /** The runs' integration access (`null`: this host's runs get none). */
+    integrationRunAccess: IntegrationRunAccess | null;
   }>): AgentProviderFactorySet;
 }
 
@@ -153,6 +156,7 @@ export const createAgentProviderFactoryBuilder = (
       agentDefinitionService: AgentDefinitionService;
       agentToolMcpRunSessions: AgentToolMcpRunSessionAuthority;
       applicationAgentTools: ApplicationAgentToolCapability | null;
+      integrationRunAccess: IntegrationRunAccess | null;
     }>): AgentProviderFactorySet => {
       requireRecord(input, "execution input");
       requireLeaf(input.agentDefinitionService, "agentDefinitionService");
@@ -162,6 +166,12 @@ export const createAgentProviderFactoryBuilder = (
           "Agent provider factory builder applicationAgentTools disposition is required.",
         );
       }
+      if (!("integrationRunAccess" in input) || input.integrationRunAccess === undefined) {
+        throw new Error(
+          "Agent provider factory builder integrationRunAccess disposition is required.",
+        );
+      }
+      const integrationRunAccess = input.integrationRunAccess;
 
       const codexBootstrapper = new CodexThreadBootstrapper(
         input.agentToolMcpRunSessions,
@@ -170,12 +180,14 @@ export const createAgentProviderFactoryBuilder = (
         input.agentDefinitionService,
         process.skillService,
         process.codex.clientManager,
+        integrationRunAccess,
       );
       const claudeSessionManager = new ClaudeSessionManager(
         input.agentToolMcpRunSessions,
         process.workspaceManager,
         process.claude.sdkClient,
         process.claude.workspaceSkillMaterializer,
+        integrationRunAccess,
       );
       return Object.freeze({
         autoByteus: new AutoByteusAgentRunBackendFactory({
@@ -188,20 +200,24 @@ export const createAgentProviderFactoryBuilder = (
           registries: process.autoByteus.processorRegistries,
           waitForIdle: process.autoByteus.waitForIdle,
           applicationAgentTools: input.applicationAgentTools,
+          integrationRunAccess,
         }),
         codex: new CodexAgentRunBackendFactory(
           process.codex.threadManager,
           codexBootstrapper,
           process.codex.threadCleanup,
+          input.agentToolMcpRunSessions,
         ),
         antigravity: new AgyAgentRunBackendFactory(
           input.agentDefinitionService, process.skillService,
           new ClaudeWorkspaceResolver(process.workspaceManager), input.agentToolMcpRunSessions,
+          integrationRunAccess,
         ),
         grok: createGrokBuildAgentRunBackendFactory({
           definitions: input.agentDefinitionService, skills: process.skillService,
           workspaces: new ClaudeWorkspaceResolver(process.workspaceManager),
           mcpSessions: input.agentToolMcpRunSessions,
+          integrationRunAccess,
         }),
         claude: new ClaudeAgentRunBackendFactory(
           claudeSessionManager,

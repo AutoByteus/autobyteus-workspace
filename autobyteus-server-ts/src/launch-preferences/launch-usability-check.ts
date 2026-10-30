@@ -4,11 +4,12 @@ import type {
   AvailableModel,
   NodeRuntimesReading,
 } from "../available-agent-runtimes/available-agent-runtimes-report.js";
-import { agentRuntimeDisplayName } from "../available-agent-runtimes/available-agent-runtimes-service.js";
+import { agentRuntimeName } from "@autobyteus/agent-presentation-contracts";
 import type {
   RunModelSelectionValidationResult,
   RunModelSelectionValidator,
 } from "../llm-management/services/run-model-selection-service.js";
+import type { RunModelSelection } from "../llm-management/domain/run-model-selection.js";
 import type { RuntimeAvailabilityService } from "../runtime-management/runtime-availability-service.js";
 import type { RuntimeKind } from "../runtime-management/runtime-kind-enum.js";
 import type { DefaultLaunchConfig } from "./default-launch-config.js";
@@ -19,17 +20,23 @@ export type LaunchUsabilityContext = Readonly<{ workspaceRootPath: string | null
 /**
  * A candidate's verdict: its complete launch; or, with the node's facts given, a runtime-only default whose runtime is
  * usable (the Model Router then chooses a model on it, supplement § 3.2); or why it cannot be used.
+ * A usable launch carries the validated (canonical) model selection, never the candidate's raw settings.
  */
 export type LaunchVerdict =
   | Readonly<{ usable: true; launch: AgentLaunchConfiguration }>
   | Readonly<{ usable: "runtime_only"; runtimeKind: string }>
   | Readonly<{ usable: false; reason: LaunchConfigurationFallbackReason; detail: string }>;
 
+/** The inherited launch's model check: usable with its canonical launch, or the reason it is not. */
+export type InheritedLaunchVerdict =
+  | Readonly<{ usable: true; launch: AgentLaunchConfiguration }>
+  | Readonly<{ usable: false; detail: string }>;
+
 export type LaunchUsabilityResult = Readonly<{
   /** One per candidate, in order. */
   verdicts: readonly LaunchVerdict[];
-  /** The inherited launch's model-check failure; null when it is usable or there is none. */
-  inheritedFailure: string | null;
+  /** The inherited launch's verdict; null when there is no inherited launch. */
+  inherited: InheritedLaunchVerdict | null;
 }>;
 
 /** An exact error a batch check raises when the model check itself could not run. */
@@ -46,10 +53,14 @@ const incompleteDetail = (value: DefaultLaunchConfig): string => !value.runtimeK
   ? "It names neither a runtime nor a model."
   : !value.runtimeKind ? "It names no runtime." : "It names no model.";
 
+/** The launch with its validated model selection: only settings the selected model declares. */
+const canonicalLaunch = (launch: AgentLaunchConfiguration, selection: RunModelSelection): AgentLaunchConfiguration =>
+  Object.freeze({ ...launch, llmModelIdentifier: selection.llmModelIdentifier, llmConfig: selection.llmConfig });
+
 /** Today's runnability wording for a model check that did not pass (kept identical for the inherited layer). */
 export const invalidModelMessage = (launch: AgentLaunchConfiguration, result: RunModelSelectionValidationResult | undefined): string =>
   !result ? "Its model could not be checked."
-    : result.kind === "model_unavailable" ? `The model '${launch.llmModelIdentifier}' is not available on ${launch.runtimeKind}.`
+    : result.kind === "model_unavailable" ? `The model '${launch.llmModelIdentifier}' is not available on ${agentRuntimeName(launch.runtimeKind)}.`
       : result.kind === "schema_unavailable" ? `The settings of model '${launch.llmModelIdentifier}' could not be checked.`
         : result.kind === "invalid" ? `Its model settings are invalid: ${result.errors.map((error) => error.message).join("; ")}`
           : "";
@@ -82,7 +93,8 @@ export const reportedModel = (facts: NodeRuntimesReading, runtimeKind: string, l
  * valid (one `validateMany` over the inherited launch and every remaining candidate, which shares the catalog
  * evidence, QR-001), U4b not blocked by a used-up limit. U3 and U4b come from the node's runtime facts and apply only
  * when they are given (Model Routing on, DEC-022); without them the check is today's. The inherited launch keeps
- * today's model check only.
+ * today's model check only. Every usable launch it returns (a candidate's, the inherited one) carries the validated,
+ * canonical model selection, so a launched copy never takes a setting its model does not declare.
  */
 export class LaunchUsabilityCheck {
   constructor(private readonly dependencies: Readonly<{
@@ -132,7 +144,7 @@ export class LaunchUsabilityCheck {
     }
     const offset = input.inherited ? 1 : 0;
     const toValidate = [...(input.inherited ? [input.inherited] : []), ...checked.map((index) => launches.get(index)!)];
-    if (toValidate.length === 0) return Object.freeze({ verdicts: Object.freeze(verdicts as LaunchVerdict[]), inheritedFailure: null });
+    if (toValidate.length === 0) return Object.freeze({ verdicts: Object.freeze(verdicts as LaunchVerdict[]), inherited: null });
     let results: RunModelSelectionValidationResult[];
     try {
       results = await this.dependencies.validator.validateMany(toValidate.map((launch) => ({
@@ -160,10 +172,14 @@ export class LaunchUsabilityCheck {
       const blocked = input.facts ? reportedModel(input.facts, launch.runtimeKind, launch.llmModelIdentifier)?.blocked : undefined;
       verdicts[index] = blocked
         ? Object.freeze({ usable: false, reason: "blocked", detail: blockedDetail(launch.llmModelIdentifier, blocked) })
-        : Object.freeze({ usable: true, launch });
+        : Object.freeze({ usable: true, launch: canonicalLaunch(launch, result.selection) });
     });
-    const inheritedFailure = !input.inherited || results[0]?.kind === "valid" ? null : invalidModelMessage(input.inherited, results[0]);
-    return Object.freeze({ verdicts: Object.freeze(verdicts as LaunchVerdict[]), inheritedFailure });
+    const inheritedResult = results[0];
+    const inherited: InheritedLaunchVerdict | null = !input.inherited ? null
+      : inheritedResult?.kind === "valid"
+        ? Object.freeze({ usable: true, launch: canonicalLaunch(input.inherited, inheritedResult.selection) })
+        : Object.freeze({ usable: false, detail: invalidModelMessage(input.inherited, inheritedResult) });
+    return Object.freeze({ verdicts: Object.freeze(verdicts as LaunchVerdict[]), inherited });
   }
 
   /** U2 available, then U3 signed in (only with the node's facts): why the runtime cannot be used, or null. */
@@ -171,7 +187,7 @@ export class LaunchUsabilityCheck {
     const reason = unavailable.get(runtimeKind);
     if (reason) return Object.freeze({ usable: false, reason: "runtime_unavailable", detail: reason });
     if (facts?.signedOutRuntimes.has(runtimeKind)) {
-      return Object.freeze({ usable: false, reason: "signed_out", detail: `${agentRuntimeDisplayName(runtimeKind)} is signed out.` });
+      return Object.freeze({ usable: false, reason: "signed_out", detail: `${agentRuntimeName(runtimeKind)} is signed out.` });
     }
     return null;
   }
@@ -181,9 +197,9 @@ export class LaunchUsabilityCheck {
     const checked = await Promise.all(runtimes.map(async (runtimeKind) => {
       try {
         const result = await this.dependencies.availability.getRuntimeAvailability(runtimeKind);
-        return [runtimeKind, result.enabled ? null : result.reason ?? `Runtime '${runtimeKind}' is not available.`] as const;
+        return [runtimeKind, result.enabled ? null : result.reason ?? `${agentRuntimeName(runtimeKind)} is not available.`] as const;
       } catch (error) {
-        return [runtimeKind, `Runtime '${runtimeKind}' could not be checked: ${messageOf(error)}`] as const;
+        return [runtimeKind, `${agentRuntimeName(runtimeKind)} could not be checked: ${messageOf(error)}`] as const;
       }
     }));
     return new Map(checked.filter((entry): entry is readonly [RuntimeKind, string] => entry[1] !== null));

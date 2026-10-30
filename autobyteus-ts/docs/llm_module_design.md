@@ -88,7 +88,7 @@ new built-in enum value for every saved endpoint.
     `LLMFactory.ensureInitialized()` is called. It:
     - Registers supported built-in API models from
       `src/llm/supported-model-definitions.ts` (for example `gpt-6-astra`, `gpt-5.5`,
-      current Anthropic rows such as `claude-opus-5`, `claude-fable-5-1`, `claude-fable-5`, `claude-opus-4.8`,
+      current Anthropic rows such as `claude-opus-5`, `claude-fable-5-1`, `claude-fable-5`,
       and `claude-sonnet-5`, `deepseek-v4-flash`, `gemini-3.5-flash`, and
       the Kimi `kimi-k2.6` / `kimi-k2.7-code` /
       `kimi-k2.7-code-highspeed` rows).
@@ -169,12 +169,11 @@ Current examples of provider-specific model rules:
   support, plus trusted cache-read/cache-write and >272K input-tier pricing.
   Do not add the unsuffixed `gpt-5.6` alias as a fourth row or broaden older
   OpenAI schemas with `max`.
-- Current Anthropic adaptive-thinking rows (`claude-opus-5`,
-  `claude-opus-4.8`, `claude-opus-4.7`, `claude-sonnet-5`, and
-  `claude-fable-5`) use adaptive
-  thinking rather than fixed-budget extended thinking. The adapter strips
-  provider-invalid manual thinking budgets and unsupported sampling fields
-  (`temperature`, `top_p`, `top_k`) for these rows. Do not add a
+- Every Anthropic row uses adaptive thinking rather than fixed-budget extended
+  thinking and exposes Anthropic effort (`reasoning_effort`, sent as
+  `output_config.effort`). The adapter strips provider-invalid manual thinking
+  budgets and unsupported sampling fields (`temperature`, `top_p`, `top_k`).
+  Claude rows below generation 5 are not in the catalog. Do not add a
   `claude-sonnet-4.8` alias unless Anthropic publishes that exact API ID, and
   do not make Fable 5 a default or fallback without a separate product
   decision.
@@ -476,7 +475,7 @@ lines, or aggregate `Status: Success` markers; the next LLM request is assembled
 from the existing working context and rendered through the provider's native
 channel. If a continuation carries context-file media, the request may append a
 user/media carrier, but its text is limited to semantic completed-tool wording
-such as `The read_media_file tool call completed successfully.` and must not
+such as `The read_file tool call completed successfully.` and must not
 include internal continuation labels or generated tool-call formatting guidance.
 
 OpenAI Responses is stricter than Chat Completions-style history for reasoning
@@ -573,7 +572,7 @@ collapsed when effective **Thinking** is OFF or unavailable; toggling a supporte
 | GPT-5.5          | `reasoning_effort` | ENUM    | Dropdown / schema-backed Thinking state | `{reasoning_effort: "high"}` |
 | Gemini 3 / 3.5 Flash | `thinking_level`   | ENUM    | Dropdown / schema-backed Thinking state | `{thinking_level: "high"}`   |
 | Current Claude adaptive rows | `thinking_enabled` | BOOLEAN | Basic Thinking toggle | `{thinking: {type: "adaptive"}}` |
-| Current Claude adaptive rows | `thinking_display` | ENUM    | Dropdown   | `{thinking: {type: "adaptive", display: "summarized"}}` |
+| Current Claude rows | `reasoning_effort` | ENUM    | Thinking list (Off · levels; levels only without a toggle) | `{output_config: {effort: "high"}}` (not sent while thinking is off) |
 | DeepSeek V4      | `thinking_type`    | ENUM    | Basic Thinking toggle | `{thinking: {type: "enabled"}}` |
 | DeepSeek V4      | `reasoning_effort` | ENUM    | Dropdown   | `{reasoning_effort: "max"}` |
 | Zhipu GLM 5.2     | `thinking_type`    | ENUM    | Basic Thinking toggle | `{thinking: {type: "enabled"}}`   |

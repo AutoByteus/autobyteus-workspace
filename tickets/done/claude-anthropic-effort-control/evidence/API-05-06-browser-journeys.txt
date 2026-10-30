@@ -1,0 +1,46 @@
+# API-05 / API-06 browser journeys (web-equivalent renderer) against a real backend
+# stack: backend `node autobyteus-server-ts/dist/app.js --host 127.0.0.1 --port 18080 --data-dir <owned temp root>`
+#        (dist + autobyteus-ts dist rebuilt from this worktree at a2a5d0e47; env -i PATH, throwaway HOME,
+#        AUTOBYTEUS_TEST_VAULT=/root/.autobyteus-test/vault read-only; own SQLite DB in the temp root)
+#        + `BACKEND_NODE_BASE_URL=http://127.0.0.1:18080 nuxt dev --port 13000`; headless Chromium via the agent browser tool;
+#        assertions by DOM scripts (data-test / aria attributes / innerText), screenshots as support.
+# seed: GraphQL (createAgentDefinition, createAgentRun, createAgentTeamDefinition, createAgentTeamRun, terminate*);
+#       then, in the test-owned stored JSON only: thinking_display:"omitted" added to every stored llmConfig of one agent run and
+#       one 2-member team run (the shape of the user's saved runs, SRC-019); llmModelIdentifier rewritten to claude-opus-4-7 in a
+#       second agent run; a definition created with defaultLaunchConfig claude-opus-4-7.
+# commit: a2a5d0e47; env: Linux, Node v22.23.3; date: 2026-10-29. No provider calls were made in these journeys.
+
+## API-05 (AC-007 alternate): saved configs naming a removed model
+run apie2e_assistant_f27b…4373 (stored model claude-opus-4-7), Edit Config card:
+  "Model | claude-opus-4-7 | AutoByteus | No longer offered by AutoByteus. Choose another model before this run resumes. | Thinking | Not available for this model"
+  (screenshot API-05-removed-model-run-settings.png); page stays usable, no error overlay.
+GraphQL restoreAgentRun on that run: {"success":false,"message":"Error: MODEL_IDENTIFIER_NOT_AVAILABLE","runId":null}
+  getAgentRunResumeConfig: llmModelIdentifier "claude-opus-4-7", modelConfigEditability {"editable":true}
+definition apie2e-removed-model-def: detail page "PREFERRED MODEL claude-opus-4-7"; Edit page LLM config:
+  "Model | claude-opus-4-7 | The selected model is unavailable for the current runtime. Retry" (screenshot API-05-removed-model-definition-edit.png)
+model menu in the definition editor (AutoByteus, Anthropic): claude-fable-5, claude-fable-5-1, claude-haiku-5-5, claude-opus-5,
+  claude-opus-5-5, claude-sonnet-5, claude-sonnet-5-5 (7 rows; no gen-4 row)
+
+## API-06 (AC-005/AC-006 on Agent Configuration = definition editing)
+definition apie2e-opus-default (claude-opus-5-5): Thinking row "Use the model settings below to control thinking."; Advanced
+  select #agent-definition-reasoning_effort options [low, medium, high, xhigh, max], value "medium"; "Thinking display" text: false;
+  "Not available for this model": false (screenshot API-06-definition-opus55-effort.png)
+  pick max -> Save Changes -> agent-config.json defaultLaunchConfig {"llmModelIdentifier":"claude-opus-5-5","llmConfig":{"reasoning_effort":"max"}}
+same definition, model -> claude-sonnet-5-5: Thinking switch off (bg-gray-200), effort select value "high", no display control
+  (screenshot API-06-definition-sonnet55-off.png); pick xhigh while off -> switch turns on (bg-blue-600);
+  Save -> agent-config.json llmConfig {"reasoning_effort":"xhigh","thinking_enabled":true}
+
+## API-06 / API-04 (REQ-011, SCN-005-E): edit an old stopped run whose stored llmConfig holds thinking_display
+agent run apie2e_assistant_5faf…24fd, stored llmConfig {"reasoning_effort":"max","thinking_display":"omitted"}:
+  Edit Config card: "Model claude-opus-5-5 | Thinking Max"; no residual row, no mention of thinking display anywhere on the page.
+  Thinking menu: Low | Medium | High | Xhigh | Max ✓ -> pick High -> "Unsaved changes" -> Save ->
+  role=alert "Model settings are invalid."; Save stays pending (screenshot API-06-old-run-edit-save-refused.png);
+  stored llmConfig afterwards unchanged: {'reasoning_effort': 'max', 'thinking_display': 'omitted'}
+control: fresh stopped run apie2e_assistant_e08d…a52f, stored {"reasoning_effort":"max"} (no stale key), same steps ->
+  "Saved. Changes apply when this run resumes."; stored {'reasoning_effort': 'high'}
+team run apie2e_team_da74…1bfe (root default + 2 members hold thinking_display): Edit Config, team Thinking Max -> High -> Save ->
+  role=alert "One or more Team model settings are invalid." (screenshot API-06-old-team-run-edit-save-refused.png);
+  team_run_execution_tree.json still holds thinking_display 3x.
+server cause (API-04-stopped-edit-stale-key-server.txt): the Save payload keeps the stored key, and strict validation answers
+  fieldErrors [{"path":"llmConfig.thinking_display","message":"Setting is not supported by the selected runtime and model."}]
+  (team: "patches[/lead].llmConfig.thinking_display"); the same Save without the key is UPDATED.

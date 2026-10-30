@@ -336,6 +336,43 @@ describe("MemorySearch (pipeline and search over Work Journals)", () => {
     await until(async () => (await memory.search("container on a raspberry")).results[0]?.runId === "designer_1");
   });
 
+  describe("neutral vocabulary: journals are rendered again after an update, with no migration (AC-008, AC-009)", () => {
+    const calls = (spy: ReturnType<typeof vi.spyOn>) => spy.mock.calls.map((call) => (call as unknown[])[1]);
+
+    it("a new renderer revision changes every run's fingerprint: the next pass renders every journal again; an unchanged one renders none", async () => {
+      memory.startIndexing();
+      await built(memory);
+      memory.shutdown();
+
+      const ensure = vi.spyOn(journals, "ensureCurrent");
+      memory = create();
+      memory.start();
+      await built(memory);
+      expect(ensure).not.toHaveBeenCalled();
+      memory.shutdown();
+
+      vi.spyOn(journals, "rendererRevision", "get").mockReturnValue(journals.rendererRevision + 1);
+      memory = create();
+      memory.start();
+      await until(() => ensure.mock.calls.length >= 4);
+      expect(ensure.mock.calls.map((call) => path.basename(call[0].memoryDir)).sort()).toEqual(["asker", "codex_ddns", "designer_1", "game_bot"]);
+      expect(calls(ensure)).toEqual([{ regenerate: false }, { regenerate: false }, { regenerate: false }, { regenerate: false }]);
+    });
+
+    it("Rebuild asks every journal to be regenerated; Index now does not", async () => {
+      const ensure = vi.spyOn(journals, "ensureCurrent");
+      memory.startIndexing();
+      await built(memory);
+      expect(calls(ensure)).toEqual([{ regenerate: false }, { regenerate: false }, { regenerate: false }, { regenerate: false }]);
+
+      ensure.mockClear();
+      expect(memory.rebuild()).toBe(true);
+      await built(memory);
+      expect(ensure).toHaveBeenCalledTimes(4);
+      expect(calls(ensure)).toEqual([{ regenerate: true }, { regenerate: true }, { regenerate: true }, { regenerate: true }]);
+    });
+  });
+
   it("after an embedding model switch keeps text current, skips the meaning index and says so until Rebuild", async () => {
     memory.startIndexing();
     await built(memory);

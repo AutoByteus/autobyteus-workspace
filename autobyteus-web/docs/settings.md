@@ -248,6 +248,33 @@ Model Router (an agent definition with `"internal": true`).
   switch in a real browser against a real node with a file-authored internal
   agent.
 
+## Server Settings: GitHub
+
+Settings -> Server Settings -> Basics contains a node-bound **GitHub** card
+(`components/settings/GitHubIntegrationCard.vue`, store
+`stores/githubIntegrationStore.ts`). It lets the agents the user ticks use GitHub
+from their shell (curl, `gh api`, git) through the node's credential proxy. The
+token stays in the node's vault, and agents never see it.
+
+- **Token.** The user pastes a GitHub token and saves it. The server checks it
+  with GitHub before storing it. The field is cleared after saving, and the
+  value is never returned or shown again. The status pill reads **Connected as
+  @login** or **Not connected**. **Test** checks the stored token again;
+  **Remove** deletes it. Coded errors have their own messages, for example "GitHub
+  rejected the token" (`TOKEN_REJECTED`) or a vault that is unavailable; no
+  message contains the token.
+- **Agents that may use GitHub.** One checkbox per agent definition. Only ticked
+  agents' runs get the GitHub address and the git redirection, including when
+  they run as team members. Unticking takes effect at once for running runs;
+  ticking applies to the agent's next run.
+- Server side (run pass, proxy, the variables a run's shell gets, errors and
+  limits): [Credential Proxy](../../autobyteus-server-ts/docs/modules/credential_proxy.md),
+  including the
+  [Integration-Author Contract](../../autobyteus-server-ts/docs/modules/credential_proxy.md#integration-author-contract).
+- Tests: `components/settings/__tests__/GitHubIntegrationCard.spec.ts`;
+  `tests/e2e/github-integration-card-probe.mjs`
+  (`pnpm test:e2e:github-integration-card`).
+
 ## Nodes: Manage Nodes (one list)
 
 Vocabulary ([Glossary](../../GLOSSARY.md#nodes)): a *node* is one server with its node ID
@@ -626,11 +653,11 @@ shows what its Model Router chose (server side:
   is off or a save runs. A changed launch starts a new router run (its
   `knowledge.md` stays).
 - **Names** (autobyteus-313): the page names runtimes and models as the rest of
-  the app does (`modelRoutingNames.ts`): a runtime on its own by
-  `runtimeKindToLabel` ("Claude Agent SDK"), a model with its runtime as the model
-  menu does (the catalog's model label and `runtimeShortLabel`, "claude-sonnet-5-5
-  Claude SDK"), on Configuration, Decisions, Overview, Runtimes and the problem
-  line. Labels load with each runtime's catalog; until then a model reads as its
+  the app does (`modelRoutingNames.ts`): a runtime by its one name
+  (`agentRuntimeName`, "Claude Agent SDK"; `GLOSSARY.md`, Agent Runtimes), a model
+  with its runtime as the model menu does (the catalog's model label and the
+  runtime's name, "claude-sonnet-5-5 Claude Agent SDK"), on Configuration,
+  Decisions, Overview, Runtimes and the problem line. Labels load with each runtime's catalog; until then a model reads as its
   ID. On Runtimes, a model the catalog does not have keeps the report's name.
 - **Decisions** (`modelRoutingDecisions`): one entry per started copy, newest
   first, pages of 8 from the server, filter All / Model Router / Not the router.
@@ -1656,7 +1683,10 @@ duplicated, or silently written back. Missing catalog/schema state keeps Save
 locked. These residual rules describe the unchanged saved model, not transfer
 of old settings into a replacement. The server revalidates every Agent/Team
 scope against its fixed runtime and selected model, returning field-addressed
-validation errors when applicable.
+validation errors when applicable. A setting the current schema no longer
+declares cannot be edited and is left out by the server when the run's settings
+are saved (it is not an error); read-only and historical views still show it as
+a residual until then.
 
 Save is enabled only for a stopped, editable, schema-ready, changed draft. The
 revision-free mutations are `updateStoppedAgentRunModelConfig`,
@@ -1739,9 +1769,9 @@ unavailable leaves **Advanced** collapsed initially, but still openable.
 Toggling a supported **Thinking** control ON opens **Advanced** automatically;
 toggling OFF after inspection does not force-collapse the section.
 When the schema has a thinking on/off switch, a user edit to a setting that only
-applies while thinking is on (for example `reasoning_effort`,
-`thinking_budget_tokens` or `thinking_display`) made under **Advanced** while
-**Thinking** is OFF also turns **Thinking** ON and keeps the edited value.
+applies while thinking is on (for example `reasoning_effort`) made under
+**Advanced** while **Thinking** is OFF also turns **Thinking** ON and keeps the
+edited value.
 `ModelConfigSection` routes these edits through `applyThinkingDependentEdit`
 (`utils/llmThinkingConfigAdapter.ts`), the same owner the Chat thinking menu uses.
 Automatic default and sanitize writes do not go through it and never turn
