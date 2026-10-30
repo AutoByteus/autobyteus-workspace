@@ -1,6 +1,6 @@
 # Work Journal Contract — neutral vocabulary revision (proposal, autobyteus-316)
 
-Status: **Draft for the user to edit** (the wording is his decision). It revises `tickets/done/work-journal/work-journal-contract.md` ("the contract", SR-014 state). Nothing changes in the journal until the design is approved and built. Evidence: `journal-neutrality-analysis.md` (counts over 3,716 real journals, read-only) and the renderer code in `autobyteus-server-ts/src/agent-work-journal/rendering/`.
+Status: **Decided by the designer on the user's delegation, 2026-10-30** ("you know the best"): N-1 to N-7 below are decided as recommended; the wording of each line stays editable by the user until the design is approved. It revises `tickets/done/work-journal/work-journal-contract.md` ("the contract", SR-014 state). Nothing changes in the journal until the design is approved and built. Evidence: `journal-neutrality-analysis.md` (counts over 3,716 real journals, read-only) and the renderer code in `autobyteus-server-ts/src/agent-work-journal/rendering/`.
 
 **How this document is organized (v2, after the user's remark):** §3 is the **platform** (tools every runtime has, one table). §4 has **one table per runtime**: one row per tool the runtime records, with what the tool does, how the journal shows it today, how it will show it, and whether that is a change. Nothing runtime-specific is in §3.
 
@@ -167,7 +167,7 @@ A server-qualified name is shown as the tool and its server: `<server>.<tool>` (
 | §5 generic rule | Qualified names (§6 above). |
 | §9 coverage | Add the neutrality check and the completeness test (§9 below). |
 | §11 D1 | Superseded by this revision (the user's decision of 2026-10-30). |
-| renderer revision | `WORK_JOURNAL_RENDERER_REVISION` is raised (entries change): closed files render again and memory search re-indexes the changed files. |
+| renderer revision | `WORK_JOURNAL_RENDERER_REVISION` is raised (entries change): closed files render again and memory search re-indexes the changed files. Decision N-7: no migration; `rawTraceFingerprint` includes the revision so the first pass after the update regenerates every journal. |
 
 ## 8. Before and after (structure only, content elided)
 
@@ -197,16 +197,17 @@ AGY      before:  [11:21:02] Tool: send_message_to → failed: {"accepted":false
 5. **Reading test (U-4):** an agent on a different runtime reads a rendered journal and says what was done; compared with the real work.
 6. Existing journal tests stay green; a file with no converted entry still renders byte-identically.
 
-## 10. Decisions for the user
+## 10. Decisions (decided 2026-10-30 by the Solution Designer; the user delegated them: "you know the best")
 
-| ID | Question | Recommendation |
+| ID | Decision | Reasoning |
 | --- | --- | --- |
-| N-1 | Line style: label style (`Message to X (type) → delivered`) or sentence style (`Sent a message to X → delivered`)? | Label style: it matches the five existing actions; sentence style would mix two styles in one file. |
-| N-2 | Skill detection (§5): S1 or S2? | S1 for plain reads only. |
-| N-3 | The raw tool name is not shown in converted lines (the raw-trace link has it). OK? | Yes (the user's own proposal); re-check memory-search quality in the shadow render. |
-| N-4 | Qualified names (§6) as `(via <server>)`? | Yes. |
-| N-5 | The wording of each line in §3 and in the NEW rows of §4. | The user edits. |
-| N-6 | Claude's own task list is worded `Create task` / `Update task`, so the platform's board is worded `Create project task` / `Update project task` to keep the two apart. OK? | Yes; otherwise a reader cannot tell the agent's own list from the project's board. |
+| N-1 | Label style (`Message to X (type) → delivered`), not sentences. | It matches the five existing actions and `Message from X:`; sentences would mix two styles in one file. |
+| N-2 | A plain read (`cat`, `sed -n`, `head`) of one path ending `/skills/<name>/SKILL.md` becomes `Load skill: <name>` (S1); anything else stays a `Command:`. | The skill text was in the agent's context either way, so the line stays true. |
+| N-3 | The raw tool name is not shown in converted lines; the raw-trace link has it. | The user's own proposal. Memory search will match the new words; re-check its quality in the shadow render (§9). |
+| N-4 | Server-qualified names are shown as `Tool: <tool> (via <server>)`. | Readable, and the name of an unknown tool is kept. |
+| N-5 | The wording of §3 and §4 and the examples (§11) is the working wording. | The user can edit it until the design is approved. |
+| N-6 | Claude's own task list is `Create task` / `Update task`; the platform's board is `Create project task` / `Update project task`. | A reader must be able to tell the agent's own list from the project's board. |
+| N-7 | **No migration.** The journal is derived data (a rebuild from the raw traces is its design: `agent_work_journal.md`: "when the rendering rules change, increase [the renderer revision] and closed files are rebuilt without a migration"). The change raises `WORK_JOURNAL_RENDERER_REVISION`. Nothing is deleted by hand. | `reconcile` reuses a closed file only when the manifest's revision equals the current one, so the next `ensureCurrent` of any run re-renders its closed files. One gap: `ensureCurrent` runs only when a live run ends a turn or when memory search's Journals step finds a changed raw-trace fingerprint, and the fingerprint does not include the revision. So the design adds the renderer revision to the fingerprint (`rawTraceFingerprint`): the first memory-index pass after the update then regenerates every journal and re-indexes what changed. Until that pass finishes, old and new wording can coexist; that is accepted (derived data, rebuilt in the background). |
 
 ## 11. Examples: one complete synthetic trace per runtime
 

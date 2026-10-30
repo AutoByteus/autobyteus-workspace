@@ -57,3 +57,7 @@
 ### SR-003 note 6 (2026-10-30)
 
 - Journal neutrality (Task comment of 2026-10-30; user decisions): describe what was done in neutral words, not by tool name; converters live inside the journal module as independent strategies (no change to tools or runtimes); the existing contract's D1 (no labels for shared tools) is reversed. New supplement: `journal-neutrality-analysis.md` (evidence) and `work-journal-neutral-vocabulary-contract.md` (proposal; wording is the user's). Not yet part of an approved requirements baseline: it needs the user's wording decisions (N-1…N-5) and his go on scope (first slice N0 only, or N1).
+
+### SR-003 note 7 (2026-10-30)
+
+- The user delegated the neutral-vocabulary wording decisions ("you know the best"): N-1…N-6 decided as recommended and N-7 added: no migration, renderer revision bump, fingerprint includes the revision (`work-journal-neutral-vocabulary-contract.md` §10). The neutral-vocabulary work is a separate piece from the runtime switch and can be built first; the user still approves the design before any build.
