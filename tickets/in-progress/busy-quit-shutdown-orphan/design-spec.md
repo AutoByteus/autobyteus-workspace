@@ -350,3 +350,8 @@ No new folders. `utils/process-tree.ts` is concern-agnostic (shared by AGY and t
   and record the CLI versions (U-A2). Prove from a clean clone of the final branch with isolated app data (the desktop
   `e2e` profile or a temporary data root); never the user's installed app or data.
 - Record any surviving process class as a Design Impact.
+- Next step of restart-and-resume (autobyteus-285, not this ticket): it will record which runs are busy at the start of
+  shutdown, before anything is interrupted, and resume them after the restart with a system notice. This design keeps
+  that possible: nothing is interrupted before `ServerProcessShutdown.request()` starts its cleanup (the fence runs
+  inside `app.close()`), and shutdown never marks runs as terminated (BEH-007, AC-010), so an interrupted run stays
+  resumable. Do not add interrupting work ahead of that point.
