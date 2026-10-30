@@ -20,7 +20,7 @@ The latest `docs-sync-report.md`, `handoff-summary.md` and `release-deployment-r
 - Handoff summary: `handoff-summary.md`.
 - Release/publication/deployment report: `release-deployment-report.md`.
 - Integration and post-integration verification: checkpoint `cfa15cfb53` (architecture reviewer's uncommitted ARCH-REV-003 record); merge of `origin/personal` @ `9d59ab82ec` → `927f7e846c`, no conflicts; DEL-01a–f Pass.
-- Verification and finalization state: verified from the evidence (every critical AC directly proven; no user check needed); finalization recorded in the release report.
+- Verification and finalization state: verified from the evidence (every critical AC directly proven; no user check needed); merged `--no-ff` into `personal` as `c0a4409a9b` and pushed; no release.
 - Terminal return to the Solution Designer: `Sent` after finalization and cleanup.
 - Why this baseline was recorded: first completed delivery round.
 - Next recipient/action: `/software_engineering_team/solution_designer` (terminal receipt; send the follow-ups).
