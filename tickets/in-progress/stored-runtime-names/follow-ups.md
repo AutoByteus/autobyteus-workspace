@@ -1,0 +1,5 @@
+# Follow-ups
+
+| ID | Found by (role, document) | What is wrong, where | Evidence | Why it is outside this ticket | Urgent (`Yes`/`No`) | Suggested Task description | Sent (to, date) |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| FU-001 | Code reviewer, `code-review-report.md` (CRR-001) | Three test fixtures of another field still spell a team member's `runtimeKind` as `'AUTOBYTEUS'`: `autobyteus-web/components/workspace/history/__tests__/WorkspaceAgentRunsTreePanel.spec.ts:1040,1047` and `autobyteus-server-ts/tests/e2e/workspaces/workspace-run-history-graphql.e2e.test.ts:142,253` (same class as the design-exempted `runHistoryStore.spec.ts:68`). | Implementation handoff, Important Assumptions; `grep` of the three lines. | The field is the team-member launch runtime, not the manifest runtime; the design exempted the class; nothing the ticket delivers depends on it. | No | Replace the old label in these fixtures with `RuntimeKind` values (`autobyteus`) and extend the source check to test fixtures. | |
