@@ -1,0 +1,52 @@
+# DEL-10 beta v1.5.11-beta.6 rollout and first-release package checks, 2026-10-30T21:57:29Z
+## workflows of the tag (all completed/success)
+Desktop Release success: Resolve Release Metadata=success, Build Linux ARM64=success, Build Windows x64=success, Build macOS ARM64=success, Build Linux x64=success, Build macOS Intel x64=success, Publish GitHub Release=success
+Android APK Release success: Resolve Android Release Metadata=success, Build Android APK=success, Publish Android APK To GitHub Release=success
+iOS App Store Connect Release success: Resolve iOS Release Metadata=success, Build And Test iOS App=success, Validate iOS Publish Secrets=success, Archive And Upload To App Store Connect=success
+Server Docker Release success: Resolve Release Metadata=success, Build And Push Server Image=success, Publish Server Package (linux/amd64)=success, Publish Server Package (linux/arm64)=success
+## release
+pre=true draft=false assets=23
+autobyteus-server-1.5.11-beta.6-linux-arm64.json
+autobyteus-server-1.5.11-beta.6-linux-arm64.json.sig
+autobyteus-server-1.5.11-beta.6-linux-arm64.tar.gz
+autobyteus-server-1.5.11-beta.6-linux-x64.json
+autobyteus-server-1.5.11-beta.6-linux-x64.json.sig
+autobyteus-server-1.5.11-beta.6-linux-x64.tar.gz
+AutoByteus_personal_android-1.5.11-beta.6-release.apk
+AutoByteus_personal_android-1.5.11-beta.6-release.apk.sha256
+AutoByteus_personal_linux-arm64-1.5.11-beta.6.AppImage
+AutoByteus_personal_linux-x64-1.5.11-beta.6.AppImage
+AutoByteus_personal_macos-arm64-1.5.11-beta.6.dmg
+AutoByteus_personal_macos-arm64-1.5.11-beta.6.dmg.blockmap
+AutoByteus_personal_macos-arm64-1.5.11-beta.6.zip
+AutoByteus_personal_macos-arm64-1.5.11-beta.6.zip.blockmap
+AutoByteus_personal_macos-x64-1.5.11-beta.6.dmg
+AutoByteus_personal_macos-x64-1.5.11-beta.6.dmg.blockmap
+AutoByteus_personal_macos-x64-1.5.11-beta.6.zip
+AutoByteus_personal_macos-x64-1.5.11-beta.6.zip.blockmap
+AutoByteus_personal_windows-1.5.11-beta.6.exe
+latest-linux-arm64.yml
+latest-linux.yml
+latest-mac.yml
+latest.yml
+GitHub Latest: v1.5.10
+## Docker Hub
+1.5.11-beta.6: "sha256:68965197f9b29c35b6964d2584868d8225b21e4b3d711aff2ff20aa234539857"
+beta: "sha256:68965197f9b29c35b6964d2584868d8225b21e4b3d711aff2ff20aa234539857"
+latest: "sha256:a1c22e2e4186d874c83944628e3f7ea9eea0057a5d590149c1addd18e13fa7cd"
+## signature and archive (node verify.mjs: Ed25519 over the description with autobyteus-server-ts/docker/server-package-signing-key.pem)
+description: version 1.5.11-beta.6, arm64 systemLevel 1, nodeModuleVersion 127, dataMigrations 62, archive {"name":"autobyteus-server-1.5.11-beta.6-linux-arm64.tar.gz","sha256":"0bcd09ca9a815b325d7843f87d69eeb310549ab4c83cd3cb5ce344166293c9e7","size":279848640,"unpackedSize":823162775}
+signature verifies with the committed production public key: true
+archive sha256 0bcd09ca9a815b325d7843f87d69eeb310549ab4c83cd3cb5ce344166293c9e7 matches the description
+a description changed to 1.5.11-beta.7 verifies: false
+x64 description signature verifies with the committed production public key: true
+## manifest comparison (evidence/IMP-06-manifest.sh run inside the published image sha256:68965197f9b2… for both trees)
+image entries:    45360
+archive entries:    45360
+BYTE-IDENTICAL: published autobyteus-server-1.5.11-beta.6-linux-arm64.tar.gz == /opt/autobyteus/server-package in autobyteus/autobyteus-server:1.5.11-beta.6 (files, links, modes)
+## published image starter against the real GitHub releases (test container, test volume)
+published image health after 4x2s: {"status":"ok","message":"Server is running"}
+status: {"version":"1.5.11-beta.6","state":"running","server":{"pid":101,"packageVersion":"1.5.11-beta.6","source":"builtIn"},"update":{"state":"idle","targetVersion":null,"step":null,"code":null,"message":nu
+update --track beta: {"refused":"NOT_NEWER","message":"This node runs 1.5.11-beta.6; 1.5.11-beta.6 is not newer."}
+update --track stable: {"refused":"NOT_NEWER","message":"This node runs 1.5.11-beta.6; 1.5.10 is not newer."}
+cleanup: container and volume removed

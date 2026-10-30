@@ -75,4 +75,15 @@ The latest docs sync report, handoff summary and release/deployment report are a
 
 #### Finalization And Release Record
 
-To be completed after the merge and the release.
+- Ticket branch: delivery commit `d5a9024922`, pushed (Secret Gate PASS).
+- Merge: `--no-ff` into `personal` as `0a223aa397`, pushed `a8d7c87564..0a223aa397` (target unchanged at both fetches).
+- Release smoke: Grok refused by its free-tier quota (run 1: 1 of 3 scenarios; run 2: 3 of 3); **the user waived Grok** ("waive grok"). All other runtimes passed both runs.
+- Build-only run 1 (`41121610105`) failed: the `macos-14` brownout, plus a transient npm 404 (tslib 2.9.1 minutes after publish). FU-007 and FU-008 were recorded.
+- **On the user's instruction**, delivery moved the desktop macOS jobs to `macos-15` (merge `f6a5c85175`); FU-007 is resolved. Build-only run 2 (`41124044082`) succeeded.
+- Release: `scripts/desktop-release.sh beta` → `35d33852ef` + tag `v1.5.11-beta.6`; pushed `personal` and the tag.
+- All four workflows succeeded: Desktop `41127864410`, Android `41127864415`, iOS `41127864440`, Docker `41127864490` incl. both Publish Server Package jobs.
+- Published: 23/23 assets, pre-release, "Latest" stays v1.5.10; Docker `:1.5.11-beta.6` = `:beta`, `:latest` unchanged.
+- AC-011 GitHub part proven: production-key signatures, archive SHA-256, byte-identical to the image's package (45,360 entries); the published starter reads real GitHub.
+- Release body: the ticket's `release-notes.md` added above the generated notes (deviation recorded).
+- Cleanup: worktree and ticket branch kept for steps 4–5; local finalize branch deleted; delivery's test artifacts and pulled image removed.
+- Terminal return to the Solution Designer: sent after this record is on `personal`.

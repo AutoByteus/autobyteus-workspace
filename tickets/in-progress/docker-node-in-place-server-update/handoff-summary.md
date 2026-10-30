@@ -39,7 +39,17 @@ Verified from the evidence (`release-deployment-report.md`). AC-002, AC-003, AC-
 
 ## Release
 
-The user asked for a new beta once the audit passed: v1.5.11-beta.6, carrying steps 1–3. Its course and results are in `release-deployment-report.md`.
+The user asked for a new beta once the audit passed: **v1.5.11-beta.6 is released**, carrying steps 1–3.
+
+- 4/4 workflows succeeded and 23/23 assets are published; it is a pre-release, and "Latest" stays v1.5.10. Docker `:1.5.11-beta.6` = `:beta`; `:latest` is unchanged.
+- **The step-1 first-release checks passed:**
+  - the production key verifies both descriptions;
+  - the published arm64 archive is byte-identical to the image's built-in package;
+  - the published image's starter reads the real GitHub releases.
+- On the way, the user waived Grok in the release smoke check (quota exhausted).
+- Also on the user's instruction, delivery moved the desktop macOS builds to `macos-15`: the `macos-14` brownout had cancelled the first build-only run, and the image retires on Nov 2 (FU-007, resolved).
+- The release page has the Docker section with the launcher-reinstall instruction above the generated notes.
+- Details: `release-deployment-report.md`.
 
 ## Notes For The Solution Designer
 

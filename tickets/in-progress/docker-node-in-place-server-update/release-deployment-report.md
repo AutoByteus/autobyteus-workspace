@@ -80,15 +80,51 @@ Repository finalization of build step 3 of 5 into `personal`, then the **beta re
 
 ## Repository Finalization
 
-To be completed in the DR-003 Finalization Record.
+- Ticket branch commit result: `Completed`: `d5a9024922` (delivery records), after checkpoint `fed31bb5fb` and base merge `f0b2b43dbc`
+- Ticket branch push result: `Completed` (Secret Gate PASS before the push)
+- Finalization target remote / branch: `origin` / `personal`
+- Target advanced after verification: `No` (`a8d7c87564` at both fetches)
+- Merge into target result: `Completed`: `--no-ff` merge `0a223aa397`; Secret Gate PASS on the merged state; tree equal to the verified ticket branch
+- Push target branch result: `Completed`: `a8d7c87564..0a223aa397`
+- Repository finalization status: `Completed`
 
 ## Release / Publication / Deployment
 
-To be completed after the release.
+- Applicable: `Yes` (the user asked for a beta)
+- Method: `Project Release Guide` (RELEASE.md: checks before tagging, release smoke, build-only run, `scripts/desktop-release.sh beta --branch finalize/… --no-push`, push `personal` and the tag, watch the four workflows together)
+- Checks before tagging, on the state tagged (`f6a5c85175`), `evidence/DEL-09-pretag-checks-and-release-smoke-run2.log`: licensing consistent; hygiene passed; `scripts/check_secrets.sh v1.5.11-beta.5..HEAD` PASS (95 commits).
+- **Release smoke and the user's Grok waiver:**
+  - Run 1 on `0a223aa397` (`evidence/DEL-06-release-smoke-run1.log`): Claude 3/3, Codex 3/3, Antigravity 2/2, AutoByteus 2/2 PASS; Grok 2/3, with "different same-named skill" refused by Grok's quota (`429 … subscription:free-usage-exhausted … tokens (actual/limit): 604934/600000`).
+  - The user waived Grok for this beta ("waive grok", 2026-10-30). Reason: the free tier's rolling 24-hour quota was used up by the day's earlier releases; it is not a product failure.
+  - Run 2 on `f6a5c85175`: the same PASS set; all three Grok scenarios hit the same quota refusal (6× `free-usage-exhausted`), covered by the waiver.
+- **Build-only release run:**
+  - Run 1, `41121610105` on `0a223aa397`, failed (`evidence/DEL-07-build-only-run-1.log`). Both macOS jobs were cancelled by GitHub's scheduled `macos-14` brownout (the image retires 2026-11-02). Windows got `npm 404` for `tslib-2.9.1.tgz`, published 3 minutes before the build while its tarball propagated (transient; HTTP 200 at 20:25 UTC).
+  - The user then instructed delivery to fix the CI pipeline ("We should update our Mac build, the CI pipeline … It belongs to you"). Delivery moved both desktop macOS jobs to `macos-15` (still Apple silicon; the x64 app was and is cross-built), with the target list in `autobyteus-web/docs/github-actions-tag-build.md`: commit `3359d828b1` on `codex/release-desktop-macos-15`, merged `--no-ff` into `personal` as `f6a5c85175`, with the Secret Gate passed. This resolves FU-007.
+  - Run 2, `41124044082` on `f6a5c85175`: **success**, all five desktop targets incl. the macOS signing-policy and node-pty validations (`evidence/DEL-08-build-only-run-2.log`).
+- Version / tag / release commit: `chore(release): bump workspace release version to 1.5.11-beta.6` `35d33852ef`, annotated tag `v1.5.11-beta.6`; `personal` re-fetched (still `f6a5c85175`) and pushed `f6a5c85175..35d33852ef`; tag pushed 21:01:52 UTC.
+- Pipelines triggered and their results (`evidence/DEL-10-beta-rollout-and-package-checks.log`), all **success**:
+  - Desktop Release `41127864410`: all five builds and Publish.
+  - Android APK Release `41127864415`.
+  - iOS App Store Connect Release `41127864440`: build, test, archive and TestFlight upload.
+  - Server Docker Release `41127864490`: image, plus **Publish Server Package** for `linux/amd64` and `linux/arm64`.
+- Published artifacts checked against what the release should produce:
+  - GitHub release `v1.5.11-beta.6`: pre-release, not draft, **23/23 assets**, including the six `autobyteus-server-1.5.11-beta.6-linux-{arm64,x64}.{tar.gz,json,json.sig}`. GitHub "Latest" remains `v1.5.10`.
+  - Docker Hub: `:1.5.11-beta.6` and `:beta` = `sha256:68965197f9b2…`; `:latest` unchanged (`sha256:a1c22e2e4186…`).
+  - **AC-011 GitHub part, proven:**
+    - both descriptions verify with the committed production public key;
+    - the arm64 archive's SHA-256 matches its description;
+    - a tampered description is rejected;
+    - the unpacked arm64 archive is byte-identical (45,360 entries: files, links, modes) to `/opt/autobyteus/server-package` in the published image;
+    - the package job neither timed out nor failed on the key pair.
+  - Published image starter against the real GitHub releases: `update --track beta` → `NOT_NEWER` (this release found as newest beta); `--track stable` → `NOT_NEWER` (1.5.10).
+- Release notes handoff result: `Used`. GitHub generated notes, as RELEASE.md says for betas, with the ticket's `release-notes.md` added above them by `gh release edit` after all four workflows had finished. Assets and tag were untouched (see the deviation).
+- Release/publication/deployment result: `Completed`
+- Not provable yet: the first real in-place update needs a release newer than this one (it is from 1.5.11-beta.6 to the next).
 
 ## Post-Finalization Cleanup
 
-- Worktree and branch: `Not required` (kept for steps 4–5). Delivery's image, container and volume for DEL-05: removed.
+- Worktree and ticket branch: `Not required` (kept for steps 4–5). Local `finalize/…` branch deleted. Branch `codex/release-desktop-macos-15` (merged) left on the remote, like the ticket branch.
+- Delivery's test images, containers and volumes (DEL-05 and the release checks), the pulled `autobyteus/autobyteus-server:1.5.11-beta.6` tag and the temporary download folders: removed. The user's nodes `autobyteus-server-0/1/2` were not touched.
 
 ## Release Notes Summary
 
@@ -97,6 +133,15 @@ To be completed after the release.
 ## Environment Or Persisted-Data Transition Notes
 
 - Step 3: `Not Affected` for data formats; DEC-005 copy and restore during an update. The beta also carries autobyteus-343's app-data migration, whose rollback statement is in that ticket's own release notes (`tickets/done/stored-runtime-names/release-notes.md`).
+
+## Final Status
+
+- Verification complete: `Yes` (from the evidence)
+- Repository finalization complete: `Yes` (`personal` @ `0a223aa397`, then the CI fix `f6a5c85175` and the release commit `35d33852ef`)
+- Applicable release complete: `Yes`: beta `v1.5.11-beta.6`, 4/4 workflows, 23/23 assets
+- Applicable safe cleanup complete or not required: `Yes`
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
 
 ## Rollback Criteria
 
