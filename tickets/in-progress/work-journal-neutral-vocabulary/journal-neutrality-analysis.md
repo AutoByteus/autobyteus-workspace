@@ -34,7 +34,7 @@ Also normalized: a read becomes `Command: cat …`, a search `grep`, a fetch `cu
 
 Runtime-only names seen: **Claude**: `Skill` 680, `Agent` 10, `TodoWrite` 8, `TaskUpdate` 7, `TaskCreate` 4, `ToolSearch` 4, `TaskOutput`, `TaskStop`, `Workflow`. **Codex**: `js` 4,056 (its script REPL) and `speak` 349 (these two may be MCP tools installed on the node, not Codex built-ins: `Unclear`), `js_reset`, `js_add_node_module_dir`, many user MCP tools (ssh, video). **Antigravity**: `manage_task` 34 (an older name of the task tool). **AutoByteus**: `get_process_output`, `stop_background_process`, `download_media`. The platform tools shared by all (21 names) include `send_message_to`, `get_handoff_rules`, `delegate_task`, `run_script`, `screenshot`, `open_tab`, `navigate_to`, `create_or_update_task`.
 
-Journals whose runtime is **not recorded** (226 of 3,716, 6%, mostly imported from another node) get the generic rule for everything: raw `Tool: Bash` 1,191, `Read` 344, `Write` 123, `Edit` 91, `run_bash` 378, `write_file` 73 appear there unnormalized.
+Journals whose runtime is **not recorded** (226 of 3,716, 6%; local runs: 209 standalone agents and 17 team members, mostly without run metadata) get the generic rule for everything: raw `Tool: Bash` 1,191, `Read` 344, `Write` 123, `Edit` 91, `run_bash` 378, `write_file` 73 appear there unnormalized.
 
 ### 3.2 A skill load has three shapes (the user's example)
 

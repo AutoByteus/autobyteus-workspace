@@ -57,7 +57,7 @@
 ### Out Of Scope
 
 - Changing any tool, runtime backend, raw trace, the run-history, or other platform code (the user, 2026-10-30).
-- Journals without a recorded runtime (226): they keep the generic rule; deriving a runtime for them is FU-001.
+- Journals without a recorded runtime (226 local runs without run metadata): they keep the generic rule; deriving a runtime for them is FU-001. Imported journals (`memory/imports/`) are copies rendered by their source node; this node never re-renders them.
 - Wording for tools the user installed (ssh, video, email, `speak` if installed): they use the generic rule.
 - A per-run regenerate action or a new screen; a startup scan of all journals.
 - The runtime switch of autobyteus-316; changes to the memory-search index design, its ranking or its tool.
