@@ -6,7 +6,7 @@
   `backend-port-conflict-20261024` (merged to `personal` 2026-10-26) built part of the earlier D2 and D3. The SR-004
   and SR-005 versions of this file are in git history (`git log -- tickets/in-progress/busy-quit-shutdown-orphan/design-spec.md`);
   their decisions that still apply are carried here, and the SR-006 delta is listed below.
-- Approved requirements: `requirements-doc.md`, Approved in SR-002 (DEC-001 cancel queued input; DEC-002 10 s / 15 s;
+- Approved requirements: `requirements-doc.md`, Approved in SR-002 and SR-007 (DEC-001 cancel queued input; DEC-002 10 s server bound, its desktop 15 s replaced by DEC-007 = 20 s; DEC-005 = yes;
   DEC-003 and DEC-004 not in this ticket). Added within the direction: DEC-006 (BEH-007, AC-009, AC-010) in SR-005;
   AC-011 in SR-006.
 - **User decisions applied (SR-007):**

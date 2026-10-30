@@ -177,7 +177,7 @@
 ## Traceability
 | REQ | UC | BEH | AC | SCN |
 | --- | --- | --- | --- | --- |
-| REQ-001 | UC-001, UC-002 | BEH-001, BEH-002 | AC-001, AC-002 | SCN-001, SCN-002 |
+| REQ-001 | UC-001, UC-002 | BEH-001, BEH-002 | AC-001, AC-002, AC-008 | SCN-001, SCN-002 |
 | REQ-002 | UC-002 | BEH-002 | AC-002, AC-003 | SCN-002 |
 | REQ-003 | UC-002 | BEH-003 | AC-002, AC-003 | SCN-002 |
 | REQ-004 | UC-003 | BEH-004 | AC-004, AC-005, AC-009, AC-011 | SCN-003 |
