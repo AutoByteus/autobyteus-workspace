@@ -94,3 +94,7 @@
 ### SR-004 note 5 (2026-10-30)
 
 - The user: write the notice as one person handing over to another: the person reads the latest journal to know where things stand and may, if they want, look further back; it is up to them. Notice rewritten accordingly (contract 3.6; REQ-002). Intended behavior unchanged in substance (facts and pointers); design stays `Draft`.
+
+### SR-004 note 6 (2026-10-30)
+
+- The user: `search_memory` searches the memory of every run on the node (GLOSSARY.md, Memory search), not one run's journals, so the notice must not point to it. Sentence removed from the notice (contract 3.6). The notice points only to the run's own journal folder.
