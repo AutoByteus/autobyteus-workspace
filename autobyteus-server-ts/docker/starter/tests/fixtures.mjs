@@ -20,7 +20,7 @@ const arg = (name) => process.argv[process.argv.indexOf(name) + 1]
 const behaviorFile = new URL('./behavior.json', import.meta.url)
 const behavior = existsSync(behaviorFile) ? JSON.parse(readFileSync(behaviorFile, 'utf8')) : {}
 const supervised = Boolean(process.env.AUTOBYTEUS_STARTER_SOCKET)
-if (behavior.exitImmediately !== undefined) process.exit(behavior.exitImmediately)
+if (behavior.exitImmediately !== undefined) { console.error('fake server: cannot start'); process.exit(behavior.exitImmediately) }
 if (behavior.writeDataFile && supervised) writeFileSync(path.join(arg('--data-dir'), behavior.writeDataFile), 'written by the new version')
 if (behavior.exitWhenSupervised !== undefined && supervised) process.exit(behavior.exitWhenSupervised)
 const server = http.createServer((request, response) => {

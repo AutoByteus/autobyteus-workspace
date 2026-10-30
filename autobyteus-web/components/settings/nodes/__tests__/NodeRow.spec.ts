@@ -21,7 +21,8 @@ const settled = (overrides: Partial<RowView> = {}): RowView => ({
 })
 const mountRow = (current: Row, view: RowView) => {
   h.list.views[current.key] = view
-  return mount(NodeRow, { props: { row: current } })
+  // The server version line has its own tests (NodeServerUpdate.spec.ts).
+  return mount(NodeRow, { props: { row: current }, global: { stubs: { NodeServerUpdate: true } } })
 }
 const get = (wrapper: ReturnType<typeof mountRow>, id: string) => wrapper.get(`[data-testid="${id}-${B}"]`)
 /** The line's text as it reads (HTML collapses whitespace). */
@@ -47,6 +48,11 @@ describe('NodeRow', () => {
     expect(get(wrapper, 'node-remove').attributes('aria-label')).toBe('Remove studio')
     expect(wrapper.find(`[data-testid="node-line-${B}"]`).exists()).toBe(false)
     expect(summary(wrapper)).toBe('1 Agent')
+  })
+
+  it('shows the server version line for a remote node only', () => {
+    expect(mountRow(row(), settled()).findComponent({ name: 'NodeServerUpdate' }).exists()).toBe(true)
+    expect(mountRow(row({ isEmbedded: true }), settled()).findComponent({ name: 'NodeServerUpdate' }).exists()).toBe(false)
   })
 
   it('checking: spinner dot, "Checking … up to 20 seconds.", switch disabled', () => {

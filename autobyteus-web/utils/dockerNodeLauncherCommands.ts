@@ -7,6 +7,7 @@ export type DockerLauncherCommandId =
   | 'windows-powershell-install'
   | 'direct-new-container'
   | 'direct-upgrade-all'
+  | 'direct-update-all'
   | 'direct-destroy-all'
   | 'direct-destroy-node'
   | 'direct-reset'
@@ -99,6 +100,16 @@ export function buildDockerNodeLauncherCommands(): DockerLauncherCommand[] {
       titleKey: 'settings.components.settings.DockerNodeStartGuideCard.commands.upgradeAll.title',
       descriptionKey: 'settings.components.settings.DockerNodeStartGuideCard.commands.upgradeAll.description',
       command: buildDirectLauncherCommand(['upgrade', '--all']),
+      isPrimary: true,
+    },
+    {
+      id: 'direct-update-all',
+      phase: 'direct',
+      platform: 'installed-cli',
+      platformLabelKey: INSTALLED_CLI_PLATFORM_LABEL_KEY,
+      titleKey: 'settings.components.settings.DockerNodeStartGuideCard.commands.updateAll.title',
+      descriptionKey: 'settings.components.settings.DockerNodeStartGuideCard.commands.updateAll.description',
+      command: buildDirectLauncherCommand(['update', '--all']),
       isPrimary: true,
     },
     {

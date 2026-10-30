@@ -12,23 +12,29 @@ type FakeAnswer = { statusCode: number; body: unknown };
 const cleanups: Array<() => Promise<void>> = [];
 afterEach(async () => { while (cleanups.length > 0) await cleanups.pop()!(); });
 
-/** A fake starter socket that records the request paths and answers with `answer(path)`. */
-async function fakeStarter(answer: (requestPath: string) => FakeAnswer): Promise<{ socketPath: string; paths: string[] }> {
+/** A fake starter socket that records the requests and answers with `answer(path)`. */
+async function fakeStarter(answer: (requestPath: string) => FakeAnswer): Promise<{ socketPath: string; paths: string[]; bodies: unknown[] }> {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), "node-update-"));
   const socketPath = path.join(dir, "starter.sock");
   const paths: string[] = [];
+  const bodies: unknown[] = [];
   const server = http.createServer((request, response) => {
-    paths.push(request.url ?? "");
-    const { statusCode, body } = answer(request.url ?? "");
-    response.writeHead(statusCode, { "content-type": "application/json" });
-    response.end(JSON.stringify(body));
+    let text = "";
+    request.on("data", (chunk) => { text += chunk; });
+    request.on("end", () => {
+      paths.push(`${request.method} ${request.url ?? ""}`);
+      if (text) bodies.push(JSON.parse(text));
+      const { statusCode, body } = answer(request.url ?? "");
+      response.writeHead(statusCode, { "content-type": "application/json" });
+      response.end(JSON.stringify(body));
+    });
   });
   await new Promise<void>((resolve) => server.listen(socketPath, resolve));
   cleanups.push(async () => {
     await new Promise<void>((resolve) => server.close(() => resolve()));
     fs.rmSync(dir, { recursive: true, force: true });
   });
-  return { socketPath, paths };
+  return { socketPath, paths, bodies };
 }
 
 async function appWith(starter: StarterClient | null): Promise<FastifyInstance> {
@@ -53,7 +59,7 @@ describe("GET /rest/node-update (C1)", () => {
       inPlaceUpdate: "available", version: "1.5.11-beta.4",
       target: { version: "1.5.11-beta.5", relation: "newer" }, update: idleUpdate,
     });
-    expect(starter.paths).toEqual(["/status?target=1.5.11-beta.5"]);
+    expect(starter.paths).toEqual(["GET /status?target=1.5.11-beta.5"]);
   });
 
   it("passes the starter's update blocker on", async () => {
@@ -69,7 +75,7 @@ describe("GET /rest/node-update (C1)", () => {
     const app = await appWith(new StarterClient(starter.socketPath));
     const response = await app.inject({ method: "GET", url: "/rest/node-update" });
     expect(response.json()).toEqual({ inPlaceUpdate: "available", version: "1.5.11", update: idleUpdate });
-    expect(starter.paths).toEqual(["/status"]);
+    expect(starter.paths).toEqual(["GET /status"]);
   });
 
   it("passes the starter's refusal of an invalid target on as 400", async () => {
@@ -98,5 +104,38 @@ describe("GET /rest/node-update (C1)", () => {
     expect(starterClientFromEnvironment({})).toBeNull();
     expect(starterClientFromEnvironment({ AUTOBYTEUS_STARTER_SOCKET: "" })).toBeNull();
     expect(starterClientFromEnvironment({ AUTOBYTEUS_STARTER_SOCKET: "/run/autobyteus/starter.sock" })).toBeInstanceOf(StarterClient);
+  });
+});
+
+describe("POST /rest/node-update (C1)", () => {
+  it("relays the request to the starter with this request's client address, and its acceptance", async () => {
+    const starter = await fakeStarter(() => ({ statusCode: 202, body: { accepted: true, version: "1.5.12" } }));
+    const app = await appWith(new StarterClient(starter.socketPath));
+    const response = await app.inject({ method: "POST", url: "/rest/node-update", payload: { version: "1.5.12" }, remoteAddress: "192.168.2.20" });
+    expect(response.statusCode).toBe(202);
+    expect(response.json()).toEqual({ accepted: true, version: "1.5.12" });
+    expect(starter.paths).toEqual(["POST /updates"]);
+    expect(starter.bodies).toEqual([{ version: "1.5.12", requestedFrom: "192.168.2.20" }]);
+  });
+
+  it("passes a refusal on as 409 with the starter's code and message", async () => {
+    const refusal = { refused: "NOT_NEWER", message: "This node runs 1.5.12; 1.5.12 is not newer." };
+    const starter = await fakeStarter(() => ({ statusCode: 409, body: refusal }));
+    const app = await appWith(new StarterClient(starter.socketPath));
+    const response = await app.inject({ method: "POST", url: "/rest/node-update", payload: { version: "1.5.12" } });
+    expect(response.statusCode).toBe(409);
+    expect(response.json()).toEqual(refusal);
+  });
+
+  it("answers 400 without a version, 409 without a starter, and 502 when the starter does not answer", async () => {
+    const withStarter = await appWith(new StarterClient(path.join(os.tmpdir(), "no-such-starter.sock")));
+    expect((await withStarter.inject({ method: "POST", url: "/rest/node-update", payload: {} })).statusCode).toBe(400);
+    const noAnswer = await withStarter.inject({ method: "POST", url: "/rest/node-update", payload: { version: "1.5.12" } });
+    expect(noAnswer.statusCode).toBe(502);
+    expect(noAnswer.json().message).toMatch(/^The node's starter did not answer: /);
+    const embedded = await appWith(null);
+    const unavailable = await embedded.inject({ method: "POST", url: "/rest/node-update", payload: { version: "1.5.12" } });
+    expect(unavailable.statusCode).toBe(409);
+    expect(unavailable.json().refused).toBe("IN_PLACE_UPDATE_UNAVAILABLE");
   });
 });
