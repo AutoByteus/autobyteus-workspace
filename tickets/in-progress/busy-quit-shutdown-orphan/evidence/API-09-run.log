@@ -1,0 +1,9 @@
+[+2.1s] server started {"label":"first","pid":98312,"port":60558}
+[+3.2s] models {"codex":"gpt-6.1-terra","claude":"claude-haiku-4-5-20251001"}
+[+3.9s] standalone sent {"label":"base-codex","runtime":"codex","runId":"probe_agent_bq284lmvuz5qoy_d2aebdccdfe2451db45383117f076c49"}
+[+4.2s] standalone sent {"label":"base-claude","runtime":"claude","runId":"probe_agent_bq284lmvuz5qoy_130e109d119c4219bacf5117cf651c58"}
+[+9.2s] busy {"label":"base-codex","marker":"BQ284Lmvuz5qoy_base-codex","pid":1038,"ppid":98679,"pgid":1038,"afterMs":4990}
+[+9.3s] busy {"label":"base-claude","marker":"BQ284Lmvuz5qoy_base-claude","pid":854,"ppid":99278,"pgid":854,"afterMs":46}
+[+42.0s] shutdown {"case":"API-09","serverPid":98312,"exit":null,"elapsedMs":null,"runs":[{"label":"base-codex","kind":"agent","runtime":"codex","runId":"probe_agent_bq284lmvuz5qoy_d2aebdccdfe2451db45383117f076c49","toolCommand":{"pid":1038,"ppid":98679,"pgid":1038,"aliveAfter":true}},{"label":"base-claude","kind":"agent","runtime":"claude","runId":"probe_agent_bq284lmvuz5qoy_130e109d119c4219bacf5117cf651c58","tool
+[+62.1s] cleanup stopped server 98312
+{"result":"Completed","error":null,"fallbackCleanup":0}

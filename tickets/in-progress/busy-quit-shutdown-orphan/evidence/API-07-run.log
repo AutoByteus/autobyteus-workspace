@@ -1,0 +1,14 @@
+[+2.1s] server started {"label":"first","pid":41996,"port":55842}
+[+3.2s] models {"codex":"gpt-6.1-terra","claude":"claude-haiku-4-5-20251001"}
+[+3.7s] standalone sent {"label":"idle-1","runtime":"claude","runId":"probe_agent_bq284lmvuxtl5a_b3a413455d3748d1a2f897ccc96170c0"}
+[+5.4s] idle ready {"label":"idle-1","runId":"probe_agent_bq284lmvuxtl5a_b3a413455d3748d1a2f897ccc96170c0"}
+[+5.7s] standalone sent {"label":"idle-2","runtime":"claude","runId":"probe_agent_bq284lmvuxtl5a_594cc7c3527344d295636612f0056483"}
+[+8.5s] idle ready {"label":"idle-2","runId":"probe_agent_bq284lmvuxtl5a_594cc7c3527344d295636612f0056483"}
+[+8.8s] standalone sent {"label":"busy-1","runtime":"claude","runId":"probe_agent_bq284lmvuxtl5a_015b63ab34864be7b51e0ace3c7599a6"}
+[+9.1s] standalone sent {"label":"busy-2","runtime":"claude","runId":"probe_agent_bq284lmvuxtl5a_245b5f8dd0654461ad98e278f566bc24"}
+[+9.4s] standalone sent {"label":"busy-3","runtime":"claude","runId":"probe_agent_bq284lmvuxtl5a_e99ad8c3fbfc497e9df83f2a4cc81557"}
+[+12.3s] busy {"label":"busy-1","marker":"BQ284Lmvuxtl5a_busy-1","pid":43605,"ppid":42390,"pgid":43605,"afterMs":2798}
+[+12.6s] busy {"label":"busy-2","marker":"BQ284Lmvuxtl5a_busy-2","pid":43882,"ppid":42401,"pgid":43882,"afterMs":357}
+[+12.7s] busy {"label":"busy-3","marker":"BQ284Lmvuxtl5a_busy-3","pid":43846,"ppid":42431,"pgid":43846,"afterMs":58}
+[+18.3s] shutdown {"case":"API-07","serverPid":41996,"exit":{"code":0,"signal":null,"at":1793362672564},"elapsedMs":2764,"runs":[{"label":"busy-1","kind":"agent","runtime":"claude","runId":"probe_agent_bq284lmvuxtl5a_015b63ab34864be7b51e0ace3c7599a6","toolCommand":{"pid":43605,"ppid":42390,"pgid":43605,"aliveAfter":false}},{"label":"busy-2","kind":"agent","runtime":"claude","runId":"probe_agent_bq284lmvuxtl5a_245b5
+{"result":"Completed","error":null,"fallbackCleanup":0}

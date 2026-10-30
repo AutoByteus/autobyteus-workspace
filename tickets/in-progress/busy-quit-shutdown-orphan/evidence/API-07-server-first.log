@@ -1,0 +1,270 @@
+# API-07 server first pid 41996; mode many; 2026-10-30T12:17:35.566Z
+Platform detection: Windows=false
+App root directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-api.Gy1t06/clean/autobyteus-server-ts
+App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-many-UJweJs/data
+Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-many-UJweJs/data/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-many-UJweJs/data/.env
+◇ injected env (2) from ../../../bq284-live-many-UJweJs/data/.env // tip: ⌁ auth for agents [www.vestauth.com]
+Environment variables loaded successfully
+Server public base URL configured to: http://127.0.0.1:55842
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-api.Gy1t06/clean/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://127.0.0.1:55842
+APP ROOT DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-api.Gy1t06/clean/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-many-UJweJs/data
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-many-UJweJs/data/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-many-UJweJs/data/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-many-UJweJs/data/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-many-UJweJs/data/memory
+============================================================
+AgentFactory (Singleton) initialized.
+Running Prisma migrations...
+Using Prisma engine overrides from bundled: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-api.Gy1t06/clean/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "test.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-many-UJweJs/data/db/test.db"
+
+SQLite database test.db created at file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-many-UJweJs/data/db/test.db
+
+27 migrations found in prisma/migrations
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+      
+All migrations have been successfully applied.
+Database migrations completed successfully.
+(node:41996) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+prisma:info Starting a sqlite pool with 21 connections.
+[2026-10-30T12:17:37.282Z] [INFO] [secret-management.vault] Secret vault: application database
+Initialized server settings service with 33 predefined settings
+AgentRunManager initialized.
+AgentRunManager initialized.
+Loading workspace packages to trigger registration...
+Successfully loaded workspace packages.
+Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-many-UJweJs/data/temp_workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-many-UJweJs/data/temp_workspace.
+Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-many-UJweJs/data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+Registered required tool unit: Core Tools
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+Registered required tool unit: Agent Discovery Tools
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+Registered required tool unit: Agent Runtime Tools
+Registered required tool unit: Browser Tools
+Successfully registered tool definition: 'publish_artifacts'
+Registered required tool unit: Published Artifact Tools
+Successfully registered tool definition: 'search_memory'
+Registered required tool unit: Memory Tools
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+Registered required tool unit: Agent Communication Tools
+Overwriting existing tool definition for name: 'search_web'
+Successfully registered tool definition: 'search_web'
+Registered required tool unit: Search Tools
+{"level":30,"time":1793362657585,"pid":41996,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:55856"}
+{"level":30,"time":1793362657612,"pid":41996,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:55842"}
+{"level":30,"time":1793362657612,"pid":41996,"hostname":"MacBookPro","msg":"Server listening at http://192.168.2.158:55842"}
+{"level":30,"time":1793362657612,"pid":41996,"hostname":"MacBookPro","msg":"Server listening at http://100.127.30.107:55842"}
+[2026-10-30T12:17:37.612Z] [INFO] [server.runtime] Server listening on 0.0.0.0:55842
+Scheduling Studio-only non-critical startup tasks...
+Background cache pre-loading process has started.
+CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+Populating MCP server config cache for the first time...
+Running MCP tool registration background task...
+Loading and registering all MCP server configurations from file...
+Background task 'Memory Sync Worker' completed successfully.
+Background task 'Memory Search' completed successfully.
+MCP server config cache populated with 0 items.
+Found 0 total MCP server configs.
+Synchronized cached configurations with the core MCP config service.
+Pre-loaded 0 MCP server configs into cache.
+Finished loading and registering all MCP server configurations.
+Background task 'MCP Tool Registration' completed successfully.
+Pre-loaded 32 LLM models into cache.
+Pre-loaded 7 image models into cache.
+Pre-loaded 3 audio models into cache.
+Background application cache pre-loading completed.
+Background task 'Cache Pre-loading' completed successfully.
+Agent Definition created successfully with ID: probe-agent-bq284lmvuxtl5a
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-many-UJweJs/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-many-UJweJs/workspace.
+Created and registered workspace ID: agent_ws_01e94d220b48c8286ed401f1bef2be75c2fec87f4ebee08614120731e2c58af5
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-many-UJweJs/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-many-UJweJs/workspace.
+Reusing registered workspace ID: agent_ws_01e94d220b48c8286ed401f1bef2be75c2fec87f4ebee08614120731e2c58af5
+Agent websocket attached for run probe_agent_bq284lmvuxtl5a_b3a413455d3748d1a2f897ccc96170c0
+Created agent session 7b8241a2-264e-46ec-8ee8-4602d37c6793 for run probe_agent_bq284lmvuxtl5a_b3a413455d3748d1a2f897ccc96170c0
+Agent WebSocket connected: session=7b8241a2-264e-46ec-8ee8-4602d37c6793, run=probe_agent_bq284lmvuxtl5a_b3a413455d3748d1a2f897ccc96170c0
+{"level":40,"time":1793362659764,"pid":41996,"hostname":"MacBookPro","reqId":"req-1","method":"POST","url":"/mcp/agent-tools/agtrun_tiL7r6JNu9uArC4jqu5ZfH9vH5VEQigt6v1HwVdkpTw","statusCode":400,"elapsedMs":0.8588749999998981,"msg":"http request completed"}
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-many-UJweJs/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-many-UJweJs/workspace.
+Reusing registered workspace ID: agent_ws_01e94d220b48c8286ed401f1bef2be75c2fec87f4ebee08614120731e2c58af5
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-many-UJweJs/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-many-UJweJs/workspace.
+Reusing registered workspace ID: agent_ws_01e94d220b48c8286ed401f1bef2be75c2fec87f4ebee08614120731e2c58af5
+Agent websocket attached for run probe_agent_bq284lmvuxtl5a_594cc7c3527344d295636612f0056483
+Created agent session 2cfd0317-aa4f-4999-8f06-8a48f29fbd1d for run probe_agent_bq284lmvuxtl5a_594cc7c3527344d295636612f0056483
+Agent WebSocket connected: session=2cfd0317-aa4f-4999-8f06-8a48f29fbd1d, run=probe_agent_bq284lmvuxtl5a_594cc7c3527344d295636612f0056483
+{"level":40,"time":1793362661534,"pid":41996,"hostname":"MacBookPro","reqId":"req-7","method":"POST","url":"/mcp/agent-tools/agtrun_pYhHBXVOHj38T00r78v0FM-f9rnvel2mOxHYDh5cEw0","statusCode":400,"elapsedMs":0.3594999999995707,"msg":"http request completed"}
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-many-UJweJs/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-many-UJweJs/workspace.
+Reusing registered workspace ID: agent_ws_01e94d220b48c8286ed401f1bef2be75c2fec87f4ebee08614120731e2c58af5
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-many-UJweJs/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-many-UJweJs/workspace.
+Reusing registered workspace ID: agent_ws_01e94d220b48c8286ed401f1bef2be75c2fec87f4ebee08614120731e2c58af5
+Agent websocket attached for run probe_agent_bq284lmvuxtl5a_015b63ab34864be7b51e0ace3c7599a6
+Created agent session b639fbd0-9a0c-49df-9f39-3434ea5df85c for run probe_agent_bq284lmvuxtl5a_015b63ab34864be7b51e0ace3c7599a6
+Agent WebSocket connected: session=b639fbd0-9a0c-49df-9f39-3434ea5df85c, run=probe_agent_bq284lmvuxtl5a_015b63ab34864be7b51e0ace3c7599a6
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-many-UJweJs/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-many-UJweJs/workspace.
+Reusing registered workspace ID: agent_ws_01e94d220b48c8286ed401f1bef2be75c2fec87f4ebee08614120731e2c58af5
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-many-UJweJs/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-many-UJweJs/workspace.
+Reusing registered workspace ID: agent_ws_01e94d220b48c8286ed401f1bef2be75c2fec87f4ebee08614120731e2c58af5
+Agent websocket attached for run probe_agent_bq284lmvuxtl5a_245b5f8dd0654461ad98e278f566bc24
+Created agent session 7f8c7122-5cba-4c58-b003-239683b1bec1 for run probe_agent_bq284lmvuxtl5a_245b5f8dd0654461ad98e278f566bc24
+Agent WebSocket connected: session=7f8c7122-5cba-4c58-b003-239683b1bec1, run=probe_agent_bq284lmvuxtl5a_245b5f8dd0654461ad98e278f566bc24
+{"level":40,"time":1793362664615,"pid":41996,"hostname":"MacBookPro","reqId":"req-d","method":"POST","url":"/mcp/agent-tools/agtrun_HSP3KzakBy_JB1UELOz6u7J_9mKVkgZNig2GXCFuVI4","statusCode":400,"elapsedMs":0.4081669999995938,"msg":"http request completed"}
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-many-UJweJs/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-many-UJweJs/workspace.
+Reusing registered workspace ID: agent_ws_01e94d220b48c8286ed401f1bef2be75c2fec87f4ebee08614120731e2c58af5
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-many-UJweJs/workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-many-UJweJs/workspace.
+Reusing registered workspace ID: agent_ws_01e94d220b48c8286ed401f1bef2be75c2fec87f4ebee08614120731e2c58af5
+Agent websocket attached for run probe_agent_bq284lmvuxtl5a_e99ad8c3fbfc497e9df83f2a4cc81557
+Created agent session eb38bdc8-25a0-425b-a223-7dfac0b41812 for run probe_agent_bq284lmvuxtl5a_e99ad8c3fbfc497e9df83f2a4cc81557
+Agent WebSocket connected: session=eb38bdc8-25a0-425b-a223-7dfac0b41812, run=probe_agent_bq284lmvuxtl5a_e99ad8c3fbfc497e9df83f2a4cc81557
+{"level":40,"time":1793362664896,"pid":41996,"hostname":"MacBookPro","reqId":"req-j","method":"POST","url":"/mcp/agent-tools/agtrun_luuhcqcJB-DL5O3kgruofWGaMhIru1qeX4UczofFACY","statusCode":400,"elapsedMs":0.2574170000007143,"msg":"http request completed"}
+{"level":40,"time":1793362665264,"pid":41996,"hostname":"MacBookPro","reqId":"req-p","method":"POST","url":"/mcp/agent-tools/agtrun_lG9uZo7BTYqaRx_QbwXem7182MKDQl_MkUwpH3_ifKY","statusCode":400,"elapsedMs":0.24875000000065484,"msg":"http request completed"}
+Closed agent session 7b8241a2-264e-46ec-8ee8-4602d37c6793
+Agent WebSocket disconnected: 7b8241a2-264e-46ec-8ee8-4602d37c6793
+Closed agent session 2cfd0317-aa4f-4999-8f06-8a48f29fbd1d
+Agent WebSocket disconnected: 2cfd0317-aa4f-4999-8f06-8a48f29fbd1d
+Closed agent session b639fbd0-9a0c-49df-9f39-3434ea5df85c
+Agent WebSocket disconnected: b639fbd0-9a0c-49df-9f39-3434ea5df85c
+Closed agent session eb38bdc8-25a0-425b-a223-7dfac0b41812
+Agent WebSocket disconnected: eb38bdc8-25a0-425b-a223-7dfac0b41812
+Closed agent session 7f8c7122-5cba-4c58-b003-239683b1bec1
+Agent WebSocket disconnected: 7f8c7122-5cba-4c58-b003-239683b1bec1
+Server process-tree sweep: 1 process(es) and 0 process group(s) still running; sending SIGTERM.

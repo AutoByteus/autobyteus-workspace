@@ -1,0 +1,520 @@
+[
+ {
+  "at": "3.4",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_b3a413455d3748d1a2f897ccc96170c0",
+  "type": "CONNECTED",
+  "payload": "{\"agent_id\":\"probe_agent_bq284lmvuxtl5a_b3a413455d3748d1a2f897ccc96170c0\",\"session_id\":\"7b8241a2-264e-46ec-8ee8-4602d37c6793\"}"
+ },
+ {
+  "at": "3.4",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_b3a413455d3748d1a2f897ccc96170c0",
+  "type": "AGENT_STATUS",
+  "payload": "{\"status\":\"idle\",\"recoverableBlock\":null,\"agent_id\":\"probe_agent_bq284lmvuxtl5a_b3a413455d3748d1a2f897ccc96170c0\"}"
+ },
+ {
+  "at": "3.4",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_b3a413455d3748d1a2f897ccc96170c0",
+  "type": "AGENT_INPUT_STATE",
+  "payload": "{\"run_instance_id\":\"67f99049-0666-42b2-9c71-eaddc0c05277\",\"revision\":1,\"entries\":[],\"recoverableBlock\":null}"
+ },
+ {
+  "at": "3.7",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_b3a413455d3748d1a2f897ccc96170c0",
+  "type": "AGENT_STATUS",
+  "payload": "{\"status\":\"initializing\",\"recoverableBlock\":null,\"agent_id\":\"probe_agent_bq284lmvuxtl5a_b3a413455d3748d1a2f897ccc96170c0\"}"
+ },
+ {
+  "at": "3.7",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_b3a413455d3748d1a2f897ccc96170c0",
+  "type": "AGENT_INPUT_STATE",
+  "payload": "{\"run_instance_id\":\"67f99049-0666-42b2-9c71-eaddc0c05277\",\"revision\":2,\"entries\":[{\"sequence\":1,\"message_id\":\"668cee23-525f-4e2b-b62e-42e503fb0ad4\",\"dedupe_key\":\"agent_run_input:668cee23-525f-4e2b-b62e-42e503fb0ad4\",\"turn_id\":null,\"state\":\"queued\",\"content\":\"Reply with the single word READY and noth"
+ },
+ {
+  "at": "3.7",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_b3a413455d3748d1a2f897ccc96170c0",
+  "type": "AGENT_COMMAND_ACK",
+  "payload": "{\"command_type\":\"SEND_MESSAGE\",\"run_id\":\"probe_agent_bq284lmvuxtl5a_b3a413455d3748d1a2f897ccc96170c0\",\"message_id\":\"668cee23-525f-4e2b-b62e-42e503fb0ad4\",\"dedupe_key\":\"agent_run_input:668cee23-525f-4e2b-b62e-42e503fb0ad4\",\"state\":\"accepted\",\"accepted\":true,\"duplicate\":false,\"status\":{\"status\":\"runni"
+ },
+ {
+  "at": "3.7",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_b3a413455d3748d1a2f897ccc96170c0",
+  "type": "AGENT_STATUS",
+  "payload": "{\"status\":\"running\",\"recoverableBlock\":null,\"agent_id\":\"probe_agent_bq284lmvuxtl5a_b3a413455d3748d1a2f897ccc96170c0\"}"
+ },
+ {
+  "at": "3.7",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_b3a413455d3748d1a2f897ccc96170c0",
+  "type": "TURN_STARTED",
+  "payload": "{\"turnId\":\"probe_agent_bq284lmvuxtl5a_b3a413455d3748d1a2f897ccc96170c0:turn:c9f13b15-c764-4ede-9ff6-a95ae5ddb6b4\",\"turn_id\":\"probe_agent_bq284lmvuxtl5a_b3a413455d3748d1a2f897ccc96170c0:turn:c9f13b15-c764-4ede-9ff6-a95ae5ddb6b4\"}"
+ },
+ {
+  "at": "3.7",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_b3a413455d3748d1a2f897ccc96170c0",
+  "type": "AGENT_INPUT_STATE",
+  "payload": "{\"run_instance_id\":\"67f99049-0666-42b2-9c71-eaddc0c05277\",\"revision\":3,\"entries\":[{\"sequence\":1,\"message_id\":\"668cee23-525f-4e2b-b62e-42e503fb0ad4\",\"dedupe_key\":\"agent_run_input:668cee23-525f-4e2b-b62e-42e503fb0ad4\",\"turn_id\":\"probe_agent_bq284lmvuxtl5a_b3a413455d3748d1a2f897ccc96170c0:turn:c9f13b15"
+ },
+ {
+  "at": "3.7",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_b3a413455d3748d1a2f897ccc96170c0",
+  "type": "SYSTEM_INSTRUCTIONS_SUPPLIED",
+  "payload": "{\"trace_id\":\"rt_1793362659234_c0a72f0a-0793-4c28-9a37-28360bdb96b5\",\"content\":\"## Agent Identity\\n\\n- Name: Probe Agent BQ284Lmvuxtl5a\\n- Description: busy quit live probe\\n\\n### Responsibilities and Boundaries\\n\\nFollow the user instructions exactly. Use your shell tool to run commands.\\n\\n## Worki"
+ },
+ {
+  "at": "3.7",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_b3a413455d3748d1a2f897ccc96170c0",
+  "type": "AGENT_INPUT_STATE",
+  "payload": "{\"run_instance_id\":\"67f99049-0666-42b2-9c71-eaddc0c05277\",\"revision\":4,\"entries\":[{\"sequence\":1,\"message_id\":\"668cee23-525f-4e2b-b62e-42e503fb0ad4\",\"dedupe_key\":\"agent_run_input:668cee23-525f-4e2b-b62e-42e503fb0ad4\",\"turn_id\":\"probe_agent_bq284lmvuxtl5a_b3a413455d3748d1a2f897ccc96170c0:turn:c9f13b15"
+ },
+ {
+  "at": "5.4",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_b3a413455d3748d1a2f897ccc96170c0",
+  "type": "SEGMENT_START",
+  "payload": "{\"id\":\"probe_agent_bq284lmvuxtl5a_b3a413455d3748d1a2f897ccc96170c0:turn:c9f13b15-c764-4ede-9ff6-a95ae5ddb6b4:claude-text:msg_011CgYQbHu5pYfThYER1NqJd:0\",\"turn_id\":\"probe_agent_bq284lmvuxtl5a_b3a413455d3748d1a2f897ccc96170c0:turn:c9f13b15-c764-4ede-9ff6-a95ae5ddb6b4\",\"segment_type\":\"text\",\"metadata\":"
+ },
+ {
+  "at": "5.4",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_b3a413455d3748d1a2f897ccc96170c0",
+  "type": "SEGMENT_END",
+  "payload": "{\"id\":\"probe_agent_bq284lmvuxtl5a_b3a413455d3748d1a2f897ccc96170c0:turn:c9f13b15-c764-4ede-9ff6-a95ae5ddb6b4:claude-text:msg_011CgYQbHu5pYfThYER1NqJd:0\",\"turn_id\":\"probe_agent_bq284lmvuxtl5a_b3a413455d3748d1a2f897ccc96170c0:turn:c9f13b15-c764-4ede-9ff6-a95ae5ddb6b4\",\"metadata\":null,\"interrupted\":fal"
+ },
+ {
+  "at": "5.4",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_b3a413455d3748d1a2f897ccc96170c0",
+  "type": "TURN_COMPLETED",
+  "payload": "{\"turnId\":\"probe_agent_bq284lmvuxtl5a_b3a413455d3748d1a2f897ccc96170c0:turn:c9f13b15-c764-4ede-9ff6-a95ae5ddb6b4\",\"turn_id\":\"probe_agent_bq284lmvuxtl5a_b3a413455d3748d1a2f897ccc96170c0:turn:c9f13b15-c764-4ede-9ff6-a95ae5ddb6b4\"}"
+ },
+ {
+  "at": "5.4",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_b3a413455d3748d1a2f897ccc96170c0",
+  "type": "AGENT_STATUS",
+  "payload": "{\"status\":\"idle\",\"recoverableBlock\":null,\"agent_id\":\"probe_agent_bq284lmvuxtl5a_b3a413455d3748d1a2f897ccc96170c0\"}"
+ },
+ {
+  "at": "5.4",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_b3a413455d3748d1a2f897ccc96170c0",
+  "type": "AGENT_INPUT_STATE",
+  "payload": "{\"run_instance_id\":\"67f99049-0666-42b2-9c71-eaddc0c05277\",\"revision\":5,\"entries\":[],\"recoverableBlock\":null}"
+ },
+ {
+  "at": "5.5",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_594cc7c3527344d295636612f0056483",
+  "type": "CONNECTED",
+  "payload": "{\"agent_id\":\"probe_agent_bq284lmvuxtl5a_594cc7c3527344d295636612f0056483\",\"session_id\":\"2cfd0317-aa4f-4999-8f06-8a48f29fbd1d\"}"
+ },
+ {
+  "at": "5.5",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_594cc7c3527344d295636612f0056483",
+  "type": "AGENT_STATUS",
+  "payload": "{\"status\":\"idle\",\"recoverableBlock\":null,\"agent_id\":\"probe_agent_bq284lmvuxtl5a_594cc7c3527344d295636612f0056483\"}"
+ },
+ {
+  "at": "5.5",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_594cc7c3527344d295636612f0056483",
+  "type": "AGENT_INPUT_STATE",
+  "payload": "{\"run_instance_id\":\"ae14d437-6c82-4253-8fdd-d14d6041a393\",\"revision\":1,\"entries\":[],\"recoverableBlock\":null}"
+ },
+ {
+  "at": "5.7",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_594cc7c3527344d295636612f0056483",
+  "type": "AGENT_STATUS",
+  "payload": "{\"status\":\"initializing\",\"recoverableBlock\":null,\"agent_id\":\"probe_agent_bq284lmvuxtl5a_594cc7c3527344d295636612f0056483\"}"
+ },
+ {
+  "at": "5.7",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_594cc7c3527344d295636612f0056483",
+  "type": "AGENT_INPUT_STATE",
+  "payload": "{\"run_instance_id\":\"ae14d437-6c82-4253-8fdd-d14d6041a393\",\"revision\":2,\"entries\":[{\"sequence\":1,\"message_id\":\"585eb224-c7af-43e8-bc0a-10dd28adbd77\",\"dedupe_key\":\"agent_run_input:585eb224-c7af-43e8-bc0a-10dd28adbd77\",\"turn_id\":null,\"state\":\"queued\",\"content\":\"Reply with the single word READY and noth"
+ },
+ {
+  "at": "5.7",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_594cc7c3527344d295636612f0056483",
+  "type": "AGENT_COMMAND_ACK",
+  "payload": "{\"command_type\":\"SEND_MESSAGE\",\"run_id\":\"probe_agent_bq284lmvuxtl5a_594cc7c3527344d295636612f0056483\",\"message_id\":\"585eb224-c7af-43e8-bc0a-10dd28adbd77\",\"dedupe_key\":\"agent_run_input:585eb224-c7af-43e8-bc0a-10dd28adbd77\",\"state\":\"accepted\",\"accepted\":true,\"duplicate\":false,\"status\":{\"status\":\"runni"
+ },
+ {
+  "at": "5.7",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_594cc7c3527344d295636612f0056483",
+  "type": "AGENT_STATUS",
+  "payload": "{\"status\":\"running\",\"recoverableBlock\":null,\"agent_id\":\"probe_agent_bq284lmvuxtl5a_594cc7c3527344d295636612f0056483\"}"
+ },
+ {
+  "at": "5.7",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_594cc7c3527344d295636612f0056483",
+  "type": "TURN_STARTED",
+  "payload": "{\"turnId\":\"probe_agent_bq284lmvuxtl5a_594cc7c3527344d295636612f0056483:turn:f1bc47d4-16bc-4aaf-9d7e-81ea7ee63799\",\"turn_id\":\"probe_agent_bq284lmvuxtl5a_594cc7c3527344d295636612f0056483:turn:f1bc47d4-16bc-4aaf-9d7e-81ea7ee63799\"}"
+ },
+ {
+  "at": "5.7",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_594cc7c3527344d295636612f0056483",
+  "type": "AGENT_INPUT_STATE",
+  "payload": "{\"run_instance_id\":\"ae14d437-6c82-4253-8fdd-d14d6041a393\",\"revision\":3,\"entries\":[{\"sequence\":1,\"message_id\":\"585eb224-c7af-43e8-bc0a-10dd28adbd77\",\"dedupe_key\":\"agent_run_input:585eb224-c7af-43e8-bc0a-10dd28adbd77\",\"turn_id\":\"probe_agent_bq284lmvuxtl5a_594cc7c3527344d295636612f0056483:turn:f1bc47d4"
+ },
+ {
+  "at": "5.7",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_594cc7c3527344d295636612f0056483",
+  "type": "SYSTEM_INSTRUCTIONS_SUPPLIED",
+  "payload": "{\"trace_id\":\"rt_1793362661296_7c069e69-f83f-4d17-bb8f-4dfb3ce905a0\",\"content\":\"## Agent Identity\\n\\n- Name: Probe Agent BQ284Lmvuxtl5a\\n- Description: busy quit live probe\\n\\n### Responsibilities and Boundaries\\n\\nFollow the user instructions exactly. Use your shell tool to run commands.\\n\\n## Worki"
+ },
+ {
+  "at": "5.7",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_594cc7c3527344d295636612f0056483",
+  "type": "AGENT_INPUT_STATE",
+  "payload": "{\"run_instance_id\":\"ae14d437-6c82-4253-8fdd-d14d6041a393\",\"revision\":4,\"entries\":[{\"sequence\":1,\"message_id\":\"585eb224-c7af-43e8-bc0a-10dd28adbd77\",\"dedupe_key\":\"agent_run_input:585eb224-c7af-43e8-bc0a-10dd28adbd77\",\"turn_id\":\"probe_agent_bq284lmvuxtl5a_594cc7c3527344d295636612f0056483:turn:f1bc47d4"
+ },
+ {
+  "at": "8.3",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_594cc7c3527344d295636612f0056483",
+  "type": "SEGMENT_START",
+  "payload": "{\"id\":\"probe_agent_bq284lmvuxtl5a_594cc7c3527344d295636612f0056483:turn:f1bc47d4-16bc-4aaf-9d7e-81ea7ee63799:claude-text:msg_011CgYQbRCdEQTmkvf62FzH2:0\",\"turn_id\":\"probe_agent_bq284lmvuxtl5a_594cc7c3527344d295636612f0056483:turn:f1bc47d4-16bc-4aaf-9d7e-81ea7ee63799\",\"segment_type\":\"text\",\"metadata\":"
+ },
+ {
+  "at": "8.3",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_594cc7c3527344d295636612f0056483",
+  "type": "SEGMENT_END",
+  "payload": "{\"id\":\"probe_agent_bq284lmvuxtl5a_594cc7c3527344d295636612f0056483:turn:f1bc47d4-16bc-4aaf-9d7e-81ea7ee63799:claude-text:msg_011CgYQbRCdEQTmkvf62FzH2:0\",\"turn_id\":\"probe_agent_bq284lmvuxtl5a_594cc7c3527344d295636612f0056483:turn:f1bc47d4-16bc-4aaf-9d7e-81ea7ee63799\",\"metadata\":null,\"interrupted\":fal"
+ },
+ {
+  "at": "8.3",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_594cc7c3527344d295636612f0056483",
+  "type": "TURN_COMPLETED",
+  "payload": "{\"turnId\":\"probe_agent_bq284lmvuxtl5a_594cc7c3527344d295636612f0056483:turn:f1bc47d4-16bc-4aaf-9d7e-81ea7ee63799\",\"turn_id\":\"probe_agent_bq284lmvuxtl5a_594cc7c3527344d295636612f0056483:turn:f1bc47d4-16bc-4aaf-9d7e-81ea7ee63799\"}"
+ },
+ {
+  "at": "8.3",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_594cc7c3527344d295636612f0056483",
+  "type": "AGENT_STATUS",
+  "payload": "{\"status\":\"idle\",\"recoverableBlock\":null,\"agent_id\":\"probe_agent_bq284lmvuxtl5a_594cc7c3527344d295636612f0056483\"}"
+ },
+ {
+  "at": "8.3",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_594cc7c3527344d295636612f0056483",
+  "type": "AGENT_INPUT_STATE",
+  "payload": "{\"run_instance_id\":\"ae14d437-6c82-4253-8fdd-d14d6041a393\",\"revision\":5,\"entries\":[],\"recoverableBlock\":null}"
+ },
+ {
+  "at": "8.5",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_015b63ab34864be7b51e0ace3c7599a6",
+  "type": "CONNECTED",
+  "payload": "{\"agent_id\":\"probe_agent_bq284lmvuxtl5a_015b63ab34864be7b51e0ace3c7599a6\",\"session_id\":\"b639fbd0-9a0c-49df-9f39-3434ea5df85c\"}"
+ },
+ {
+  "at": "8.5",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_015b63ab34864be7b51e0ace3c7599a6",
+  "type": "AGENT_STATUS",
+  "payload": "{\"status\":\"idle\",\"recoverableBlock\":null,\"agent_id\":\"probe_agent_bq284lmvuxtl5a_015b63ab34864be7b51e0ace3c7599a6\"}"
+ },
+ {
+  "at": "8.5",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_015b63ab34864be7b51e0ace3c7599a6",
+  "type": "AGENT_INPUT_STATE",
+  "payload": "{\"run_instance_id\":\"227367fb-b2c8-42c1-8512-b9584685242e\",\"revision\":1,\"entries\":[],\"recoverableBlock\":null}"
+ },
+ {
+  "at": "8.8",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_015b63ab34864be7b51e0ace3c7599a6",
+  "type": "AGENT_STATUS",
+  "payload": "{\"status\":\"initializing\",\"recoverableBlock\":null,\"agent_id\":\"probe_agent_bq284lmvuxtl5a_015b63ab34864be7b51e0ace3c7599a6\"}"
+ },
+ {
+  "at": "8.8",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_015b63ab34864be7b51e0ace3c7599a6",
+  "type": "AGENT_INPUT_STATE",
+  "payload": "{\"run_instance_id\":\"227367fb-b2c8-42c1-8512-b9584685242e\",\"revision\":2,\"entries\":[{\"sequence\":1,\"message_id\":\"7a0f1348-b5f3-47ff-83da-4bb778127849\",\"dedupe_key\":\"agent_run_input:7a0f1348-b5f3-47ff-83da-4bb778127849\",\"turn_id\":null,\"state\":\"queued\",\"content\":\"Run exactly this shell command in the for"
+ },
+ {
+  "at": "8.8",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_015b63ab34864be7b51e0ace3c7599a6",
+  "type": "AGENT_COMMAND_ACK",
+  "payload": "{\"command_type\":\"SEND_MESSAGE\",\"run_id\":\"probe_agent_bq284lmvuxtl5a_015b63ab34864be7b51e0ace3c7599a6\",\"message_id\":\"7a0f1348-b5f3-47ff-83da-4bb778127849\",\"dedupe_key\":\"agent_run_input:7a0f1348-b5f3-47ff-83da-4bb778127849\",\"state\":\"accepted\",\"accepted\":true,\"duplicate\":false,\"status\":{\"status\":\"runni"
+ },
+ {
+  "at": "8.8",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_015b63ab34864be7b51e0ace3c7599a6",
+  "type": "AGENT_STATUS",
+  "payload": "{\"status\":\"running\",\"recoverableBlock\":null,\"agent_id\":\"probe_agent_bq284lmvuxtl5a_015b63ab34864be7b51e0ace3c7599a6\"}"
+ },
+ {
+  "at": "8.8",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_015b63ab34864be7b51e0ace3c7599a6",
+  "type": "TURN_STARTED",
+  "payload": "{\"turnId\":\"probe_agent_bq284lmvuxtl5a_015b63ab34864be7b51e0ace3c7599a6:turn:e8d33225-e4bf-472a-b1d0-354f5068e4e6\",\"turn_id\":\"probe_agent_bq284lmvuxtl5a_015b63ab34864be7b51e0ace3c7599a6:turn:e8d33225-e4bf-472a-b1d0-354f5068e4e6\"}"
+ },
+ {
+  "at": "8.8",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_015b63ab34864be7b51e0ace3c7599a6",
+  "type": "AGENT_INPUT_STATE",
+  "payload": "{\"run_instance_id\":\"227367fb-b2c8-42c1-8512-b9584685242e\",\"revision\":3,\"entries\":[{\"sequence\":1,\"message_id\":\"7a0f1348-b5f3-47ff-83da-4bb778127849\",\"dedupe_key\":\"agent_run_input:7a0f1348-b5f3-47ff-83da-4bb778127849\",\"turn_id\":\"probe_agent_bq284lmvuxtl5a_015b63ab34864be7b51e0ace3c7599a6:turn:e8d33225"
+ },
+ {
+  "at": "8.8",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_015b63ab34864be7b51e0ace3c7599a6",
+  "type": "SYSTEM_INSTRUCTIONS_SUPPLIED",
+  "payload": "{\"trace_id\":\"rt_1793362664362_954aa57a-e985-4ce2-bec7-2d4ac84f29ed\",\"content\":\"## Agent Identity\\n\\n- Name: Probe Agent BQ284Lmvuxtl5a\\n- Description: busy quit live probe\\n\\n### Responsibilities and Boundaries\\n\\nFollow the user instructions exactly. Use your shell tool to run commands.\\n\\n## Worki"
+ },
+ {
+  "at": "8.8",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_015b63ab34864be7b51e0ace3c7599a6",
+  "type": "AGENT_INPUT_STATE",
+  "payload": "{\"run_instance_id\":\"227367fb-b2c8-42c1-8512-b9584685242e\",\"revision\":4,\"entries\":[{\"sequence\":1,\"message_id\":\"7a0f1348-b5f3-47ff-83da-4bb778127849\",\"dedupe_key\":\"agent_run_input:7a0f1348-b5f3-47ff-83da-4bb778127849\",\"turn_id\":\"probe_agent_bq284lmvuxtl5a_015b63ab34864be7b51e0ace3c7599a6:turn:e8d33225"
+ },
+ {
+  "at": "8.9",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_245b5f8dd0654461ad98e278f566bc24",
+  "type": "CONNECTED",
+  "payload": "{\"agent_id\":\"probe_agent_bq284lmvuxtl5a_245b5f8dd0654461ad98e278f566bc24\",\"session_id\":\"7f8c7122-5cba-4c58-b003-239683b1bec1\"}"
+ },
+ {
+  "at": "8.9",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_245b5f8dd0654461ad98e278f566bc24",
+  "type": "AGENT_STATUS",
+  "payload": "{\"status\":\"idle\",\"recoverableBlock\":null,\"agent_id\":\"probe_agent_bq284lmvuxtl5a_245b5f8dd0654461ad98e278f566bc24\"}"
+ },
+ {
+  "at": "8.9",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_245b5f8dd0654461ad98e278f566bc24",
+  "type": "AGENT_INPUT_STATE",
+  "payload": "{\"run_instance_id\":\"7d16d3f3-a90e-4722-bf6d-bb8ddc9aaaee\",\"revision\":1,\"entries\":[],\"recoverableBlock\":null}"
+ },
+ {
+  "at": "9.1",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_245b5f8dd0654461ad98e278f566bc24",
+  "type": "AGENT_STATUS",
+  "payload": "{\"status\":\"initializing\",\"recoverableBlock\":null,\"agent_id\":\"probe_agent_bq284lmvuxtl5a_245b5f8dd0654461ad98e278f566bc24\"}"
+ },
+ {
+  "at": "9.1",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_245b5f8dd0654461ad98e278f566bc24",
+  "type": "AGENT_INPUT_STATE",
+  "payload": "{\"run_instance_id\":\"7d16d3f3-a90e-4722-bf6d-bb8ddc9aaaee\",\"revision\":2,\"entries\":[{\"sequence\":1,\"message_id\":\"80ca22bd-121b-45c2-8968-0bb3deed6e36\",\"dedupe_key\":\"agent_run_input:80ca22bd-121b-45c2-8968-0bb3deed6e36\",\"turn_id\":null,\"state\":\"queued\",\"content\":\"Run exactly this shell command in the for"
+ },
+ {
+  "at": "9.1",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_245b5f8dd0654461ad98e278f566bc24",
+  "type": "AGENT_COMMAND_ACK",
+  "payload": "{\"command_type\":\"SEND_MESSAGE\",\"run_id\":\"probe_agent_bq284lmvuxtl5a_245b5f8dd0654461ad98e278f566bc24\",\"message_id\":\"80ca22bd-121b-45c2-8968-0bb3deed6e36\",\"dedupe_key\":\"agent_run_input:80ca22bd-121b-45c2-8968-0bb3deed6e36\",\"state\":\"accepted\",\"accepted\":true,\"duplicate\":false,\"status\":{\"status\":\"runni"
+ },
+ {
+  "at": "9.1",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_245b5f8dd0654461ad98e278f566bc24",
+  "type": "AGENT_STATUS",
+  "payload": "{\"status\":\"running\",\"recoverableBlock\":null,\"agent_id\":\"probe_agent_bq284lmvuxtl5a_245b5f8dd0654461ad98e278f566bc24\"}"
+ },
+ {
+  "at": "9.1",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_245b5f8dd0654461ad98e278f566bc24",
+  "type": "TURN_STARTED",
+  "payload": "{\"turnId\":\"probe_agent_bq284lmvuxtl5a_245b5f8dd0654461ad98e278f566bc24:turn:07169126-a659-4587-b1e5-5b1e41ad9512\",\"turn_id\":\"probe_agent_bq284lmvuxtl5a_245b5f8dd0654461ad98e278f566bc24:turn:07169126-a659-4587-b1e5-5b1e41ad9512\"}"
+ },
+ {
+  "at": "9.1",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_245b5f8dd0654461ad98e278f566bc24",
+  "type": "AGENT_INPUT_STATE",
+  "payload": "{\"run_instance_id\":\"7d16d3f3-a90e-4722-bf6d-bb8ddc9aaaee\",\"revision\":3,\"entries\":[{\"sequence\":1,\"message_id\":\"80ca22bd-121b-45c2-8968-0bb3deed6e36\",\"dedupe_key\":\"agent_run_input:80ca22bd-121b-45c2-8968-0bb3deed6e36\",\"turn_id\":\"probe_agent_bq284lmvuxtl5a_245b5f8dd0654461ad98e278f566bc24:turn:07169126"
+ },
+ {
+  "at": "9.1",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_245b5f8dd0654461ad98e278f566bc24",
+  "type": "SYSTEM_INSTRUCTIONS_SUPPLIED",
+  "payload": "{\"trace_id\":\"rt_1793362664672_fad71bc2-f1d2-4a36-ae08-665eeb3ada5b\",\"content\":\"## Agent Identity\\n\\n- Name: Probe Agent BQ284Lmvuxtl5a\\n- Description: busy quit live probe\\n\\n### Responsibilities and Boundaries\\n\\nFollow the user instructions exactly. Use your shell tool to run commands.\\n\\n## Worki"
+ },
+ {
+  "at": "9.1",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_245b5f8dd0654461ad98e278f566bc24",
+  "type": "AGENT_INPUT_STATE",
+  "payload": "{\"run_instance_id\":\"7d16d3f3-a90e-4722-bf6d-bb8ddc9aaaee\",\"revision\":4,\"entries\":[{\"sequence\":1,\"message_id\":\"80ca22bd-121b-45c2-8968-0bb3deed6e36\",\"dedupe_key\":\"agent_run_input:80ca22bd-121b-45c2-8968-0bb3deed6e36\",\"turn_id\":\"probe_agent_bq284lmvuxtl5a_245b5f8dd0654461ad98e278f566bc24:turn:07169126"
+ },
+ {
+  "at": "9.2",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_e99ad8c3fbfc497e9df83f2a4cc81557",
+  "type": "CONNECTED",
+  "payload": "{\"agent_id\":\"probe_agent_bq284lmvuxtl5a_e99ad8c3fbfc497e9df83f2a4cc81557\",\"session_id\":\"eb38bdc8-25a0-425b-a223-7dfac0b41812\"}"
+ },
+ {
+  "at": "9.2",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_e99ad8c3fbfc497e9df83f2a4cc81557",
+  "type": "AGENT_STATUS",
+  "payload": "{\"status\":\"idle\",\"recoverableBlock\":null,\"agent_id\":\"probe_agent_bq284lmvuxtl5a_e99ad8c3fbfc497e9df83f2a4cc81557\"}"
+ },
+ {
+  "at": "9.2",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_e99ad8c3fbfc497e9df83f2a4cc81557",
+  "type": "AGENT_INPUT_STATE",
+  "payload": "{\"run_instance_id\":\"1251aa75-0983-4b89-afeb-ee8cafd845ae\",\"revision\":1,\"entries\":[],\"recoverableBlock\":null}"
+ },
+ {
+  "at": "9.5",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_e99ad8c3fbfc497e9df83f2a4cc81557",
+  "type": "AGENT_STATUS",
+  "payload": "{\"status\":\"initializing\",\"recoverableBlock\":null,\"agent_id\":\"probe_agent_bq284lmvuxtl5a_e99ad8c3fbfc497e9df83f2a4cc81557\"}"
+ },
+ {
+  "at": "9.5",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_e99ad8c3fbfc497e9df83f2a4cc81557",
+  "type": "AGENT_INPUT_STATE",
+  "payload": "{\"run_instance_id\":\"1251aa75-0983-4b89-afeb-ee8cafd845ae\",\"revision\":2,\"entries\":[{\"sequence\":1,\"message_id\":\"4fd87310-21f0-46ec-9611-d245b38579ac\",\"dedupe_key\":\"agent_run_input:4fd87310-21f0-46ec-9611-d245b38579ac\",\"turn_id\":null,\"state\":\"queued\",\"content\":\"Run exactly this shell command in the for"
+ },
+ {
+  "at": "9.5",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_e99ad8c3fbfc497e9df83f2a4cc81557",
+  "type": "AGENT_COMMAND_ACK",
+  "payload": "{\"command_type\":\"SEND_MESSAGE\",\"run_id\":\"probe_agent_bq284lmvuxtl5a_e99ad8c3fbfc497e9df83f2a4cc81557\",\"message_id\":\"4fd87310-21f0-46ec-9611-d245b38579ac\",\"dedupe_key\":\"agent_run_input:4fd87310-21f0-46ec-9611-d245b38579ac\",\"state\":\"accepted\",\"accepted\":true,\"duplicate\":false,\"status\":{\"status\":\"runni"
+ },
+ {
+  "at": "9.5",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_e99ad8c3fbfc497e9df83f2a4cc81557",
+  "type": "AGENT_STATUS",
+  "payload": "{\"status\":\"running\",\"recoverableBlock\":null,\"agent_id\":\"probe_agent_bq284lmvuxtl5a_e99ad8c3fbfc497e9df83f2a4cc81557\"}"
+ },
+ {
+  "at": "9.5",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_e99ad8c3fbfc497e9df83f2a4cc81557",
+  "type": "TURN_STARTED",
+  "payload": "{\"turnId\":\"probe_agent_bq284lmvuxtl5a_e99ad8c3fbfc497e9df83f2a4cc81557:turn:cc066cf4-a333-48fb-8294-8ddd5b2247e3\",\"turn_id\":\"probe_agent_bq284lmvuxtl5a_e99ad8c3fbfc497e9df83f2a4cc81557:turn:cc066cf4-a333-48fb-8294-8ddd5b2247e3\"}"
+ },
+ {
+  "at": "9.5",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_e99ad8c3fbfc497e9df83f2a4cc81557",
+  "type": "AGENT_INPUT_STATE",
+  "payload": "{\"run_instance_id\":\"1251aa75-0983-4b89-afeb-ee8cafd845ae\",\"revision\":3,\"entries\":[{\"sequence\":1,\"message_id\":\"4fd87310-21f0-46ec-9611-d245b38579ac\",\"dedupe_key\":\"agent_run_input:4fd87310-21f0-46ec-9611-d245b38579ac\",\"turn_id\":\"probe_agent_bq284lmvuxtl5a_e99ad8c3fbfc497e9df83f2a4cc81557:turn:cc066cf4"
+ },
+ {
+  "at": "9.5",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_e99ad8c3fbfc497e9df83f2a4cc81557",
+  "type": "SYSTEM_INSTRUCTIONS_SUPPLIED",
+  "payload": "{\"trace_id\":\"rt_1793362664981_69fd54a8-559b-4dcc-8adf-2ef05c6eaf54\",\"content\":\"## Agent Identity\\n\\n- Name: Probe Agent BQ284Lmvuxtl5a\\n- Description: busy quit live probe\\n\\n### Responsibilities and Boundaries\\n\\nFollow the user instructions exactly. Use your shell tool to run commands.\\n\\n## Worki"
+ },
+ {
+  "at": "9.5",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_e99ad8c3fbfc497e9df83f2a4cc81557",
+  "type": "AGENT_INPUT_STATE",
+  "payload": "{\"run_instance_id\":\"1251aa75-0983-4b89-afeb-ee8cafd845ae\",\"revision\":4,\"entries\":[{\"sequence\":1,\"message_id\":\"4fd87310-21f0-46ec-9611-d245b38579ac\",\"dedupe_key\":\"agent_run_input:4fd87310-21f0-46ec-9611-d245b38579ac\",\"turn_id\":\"probe_agent_bq284lmvuxtl5a_e99ad8c3fbfc497e9df83f2a4cc81557:turn:cc066cf4"
+ },
+ {
+  "at": "11.4",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_015b63ab34864be7b51e0ace3c7599a6",
+  "type": "SEGMENT_START",
+  "payload": "{\"id\":\"toolu_0117TS8z2MUsqqKtj4wWxZVr\",\"turn_id\":\"probe_agent_bq284lmvuxtl5a_015b63ab34864be7b51e0ace3c7599a6:turn:e8d33225-e4bf-472a-b1d0-354f5068e4e6\",\"segment_type\":\"tool_call\",\"metadata\":{\"tool_name\":\"Bash\",\"arguments\":{\"command\":\"python3 -c \\\"import time; time.sleep(900)\\\" BQ284Lmvuxtl5a_busy-1"
+ },
+ {
+  "at": "11.4",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_015b63ab34864be7b51e0ace3c7599a6",
+  "type": "TOOL_EXECUTION_STARTED",
+  "payload": "{\"invocation_id\":\"toolu_0117TS8z2MUsqqKtj4wWxZVr\",\"tool_name\":\"Bash\",\"turn_id\":\"probe_agent_bq284lmvuxtl5a_015b63ab34864be7b51e0ace3c7599a6:turn:e8d33225-e4bf-472a-b1d0-354f5068e4e6\",\"arguments\":{\"command\":\"python3 -c \\\"import time; time.sleep(900)\\\" BQ284Lmvuxtl5a_busy-1\"}}"
+ },
+ {
+  "at": "11.4",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_015b63ab34864be7b51e0ace3c7599a6",
+  "type": "TOOL_APPROVED",
+  "payload": "{\"invocation_id\":\"toolu_0117TS8z2MUsqqKtj4wWxZVr\",\"tool_name\":\"Bash\",\"turn_id\":\"probe_agent_bq284lmvuxtl5a_015b63ab34864be7b51e0ace3c7599a6:turn:e8d33225-e4bf-472a-b1d0-354f5068e4e6\",\"arguments\":{\"command\":\"python3 -c \\\"import time; time.sleep(900)\\\" BQ284Lmvuxtl5a_busy-1\"},\"reason\":\"auto_execute_to"
+ },
+ {
+  "at": "11.6",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_e99ad8c3fbfc497e9df83f2a4cc81557",
+  "type": "SEGMENT_START",
+  "payload": "{\"id\":\"toolu_01H44ViCETHodB4d2q1NjNcG\",\"turn_id\":\"probe_agent_bq284lmvuxtl5a_e99ad8c3fbfc497e9df83f2a4cc81557:turn:cc066cf4-a333-48fb-8294-8ddd5b2247e3\",\"segment_type\":\"tool_call\",\"metadata\":{\"tool_name\":\"Bash\",\"arguments\":{\"command\":\"python3 -c \\\"import time; time.sleep(900)\\\" BQ284Lmvuxtl5a_busy-3"
+ },
+ {
+  "at": "11.6",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_e99ad8c3fbfc497e9df83f2a4cc81557",
+  "type": "TOOL_EXECUTION_STARTED",
+  "payload": "{\"invocation_id\":\"toolu_01H44ViCETHodB4d2q1NjNcG\",\"tool_name\":\"Bash\",\"turn_id\":\"probe_agent_bq284lmvuxtl5a_e99ad8c3fbfc497e9df83f2a4cc81557:turn:cc066cf4-a333-48fb-8294-8ddd5b2247e3\",\"arguments\":{\"command\":\"python3 -c \\\"import time; time.sleep(900)\\\" BQ284Lmvuxtl5a_busy-3\",\"timeout\":600000}}"
+ },
+ {
+  "at": "11.6",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_e99ad8c3fbfc497e9df83f2a4cc81557",
+  "type": "TOOL_APPROVED",
+  "payload": "{\"invocation_id\":\"toolu_01H44ViCETHodB4d2q1NjNcG\",\"tool_name\":\"Bash\",\"turn_id\":\"probe_agent_bq284lmvuxtl5a_e99ad8c3fbfc497e9df83f2a4cc81557:turn:cc066cf4-a333-48fb-8294-8ddd5b2247e3\",\"arguments\":{\"command\":\"python3 -c \\\"import time; time.sleep(900)\\\" BQ284Lmvuxtl5a_busy-3\",\"timeout\":600000},\"reason\""
+ },
+ {
+  "at": "11.7",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_245b5f8dd0654461ad98e278f566bc24",
+  "type": "SEGMENT_START",
+  "payload": "{\"id\":\"toolu_01HNFwGWE9QfCM4e7WNk8oSf\",\"turn_id\":\"probe_agent_bq284lmvuxtl5a_245b5f8dd0654461ad98e278f566bc24:turn:07169126-a659-4587-b1e5-5b1e41ad9512\",\"segment_type\":\"tool_call\",\"metadata\":{\"tool_name\":\"Bash\",\"arguments\":{\"command\":\"python3 -c \\\"import time; time.sleep(900)\\\" BQ284Lmvuxtl5a_busy-2"
+ },
+ {
+  "at": "11.7",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_245b5f8dd0654461ad98e278f566bc24",
+  "type": "TOOL_EXECUTION_STARTED",
+  "payload": "{\"invocation_id\":\"toolu_01HNFwGWE9QfCM4e7WNk8oSf\",\"tool_name\":\"Bash\",\"turn_id\":\"probe_agent_bq284lmvuxtl5a_245b5f8dd0654461ad98e278f566bc24:turn:07169126-a659-4587-b1e5-5b1e41ad9512\",\"arguments\":{\"command\":\"python3 -c \\\"import time; time.sleep(900)\\\" BQ284Lmvuxtl5a_busy-2\",\"timeout\":600000}}"
+ },
+ {
+  "at": "11.7",
+  "route": "agent",
+  "id": "probe_agent_bq284lmvuxtl5a_245b5f8dd0654461ad98e278f566bc24",
+  "type": "TOOL_APPROVED",
+  "payload": "{\"invocation_id\":\"toolu_01HNFwGWE9QfCM4e7WNk8oSf\",\"tool_name\":\"Bash\",\"turn_id\":\"probe_agent_bq284lmvuxtl5a_245b5f8dd0654461ad98e278f566bc24:turn:07169126-a659-4587-b1e5-5b1e41ad9512\",\"arguments\":{\"command\":\"python3 -c \\\"import time; time.sleep(900)\\\" BQ284Lmvuxtl5a_busy-2\",\"timeout\":600000},\"reason\""
+ }
+]

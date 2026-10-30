@@ -1,0 +1,206 @@
+[2026-10-30T12:39:25.398Z] [INFO] [electron] Application started
+[2026-10-30T12:39:25.473Z] [INFO] [electron] Creating server manager for platform: darwin
+[2026-10-30T12:39:25.513Z] [INFO] [electron] Browser bridge started on http://127.0.0.1:57767
+[2026-10-30T12:39:25.521Z] [INFO] [electron] ServerStatusManager: Starting internal server
+[2026-10-30T12:39:25.521Z] [INFO] [electron] ServerStatusManager: Emitting status change: starting
+[2026-10-30T12:39:25.521Z] [INFO] [electron.server.base-server-manager] Server installation directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-api.Gy1t06/clean/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server
+[2026-10-30T12:39:25.521Z] [INFO] [electron.server.base-server-manager] App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-quit-Pn0xU2/data-root/server-data
+[2026-10-30T12:39:25.522Z] [INFO] [electron] Server entrypoint: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-api.Gy1t06/clean/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/app.js
+[2026-10-30T12:39:26.497Z] [INFO] [electron] Loaded PATH from bash login shell
+[2026-10-30T12:39:26.498Z] [INFO] [electron] Login shell PATH: /Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.nvm/versions/node/v22.21.1/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.nvm/versions/node/v22.21.1/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.nvm/versions/node/v22.21.1/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin:/opt/homebrew/bin:/Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.nvm/versions/node/v22.21.1/bin:/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home/bin:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin
+[2026-10-30T12:39:26.498Z] [INFO] [electron] Using PATH from login shell
+[2026-10-30T12:39:26.498Z] [INFO] [electron] Starting server with port: 57764
+[2026-10-30T12:39:26.498Z] [INFO] [electron] Setting AUTOBYTEUS_SERVER_HOST to: http://127.0.0.1:57764
+[2026-10-30T12:39:26.498Z] [INFO] [electron] Working directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-api.Gy1t06/clean/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server
+[2026-10-30T12:39:26.498Z] [INFO] [electron] App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-quit-Pn0xU2/data-root/server-data
+[2026-10-30T12:39:26.498Z] [INFO] [electron] Executing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-api.Gy1t06/clean/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-api.Gy1t06/clean/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/app.js --port 57764 --data-dir /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-quit-Pn0xU2/data-root/server-data
+[2026-10-30T12:39:26.499Z] [INFO] [electron] Server process spawned with PID: 8307
+[2026-10-30T12:39:26.561Z] [INFO] [electron.embedded-server.stdout] Platform detection: Windows=false
+[2026-10-30T12:39:26.562Z] [INFO] [electron.embedded-server.stdout] App root directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-api.Gy1t06/clean/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server
+[2026-10-30T12:39:26.562Z] [INFO] [electron.embedded-server.stdout] App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-quit-Pn0xU2/data-root/server-data
+[2026-10-30T12:39:26.562Z] [INFO] [electron.embedded-server.stdout] Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-quit-Pn0xU2/data-root/server-data/.env
+[2026-10-30T12:39:26.562Z] [INFO] [electron.embedded-server.stdout] Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-quit-Pn0xU2/data-root/server-data/.env
+[2026-10-30T12:39:26.562Z] [INFO] [electron.embedded-server.stdout] ◇ injected env (3) from ../../../../../../../../../bq284-desk-busy-quit-Pn0xU2/data-root/server-data/.env // tip: ⌘ override existing { override: true }
+[2026-10-30T12:39:26.562Z] [INFO] [electron.embedded-server.stdout] Environment variables loaded successfully
+[2026-10-30T12:39:26.562Z] [INFO] [electron.embedded-server.stdout] Server public base URL configured to: http://127.0.0.1:57764
+[2026-10-30T12:39:26.562Z] [INFO] [electron.embedded-server.stdout] === Starting logging configuration ===
+[2026-10-30T12:39:26.562Z] [INFO] [electron.embedded-server.stdout] Logging config file is ignored in Node.js: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-api.Gy1t06/clean/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/logging_config.ini
+[2026-10-30T12:39:26.562Z] [INFO] [electron.embedded-server.stdout] ============================================================
+[2026-10-30T12:39:26.562Z] [INFO] [electron.embedded-server.stdout] SERVER PUBLIC URL: http://127.0.0.1:57764
+[2026-10-30T12:39:26.562Z] [INFO] [electron.embedded-server.stdout] APP ROOT DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-api.Gy1t06/clean/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server
+[2026-10-30T12:39:26.562Z] [INFO] [electron.embedded-server.stdout] APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-quit-Pn0xU2/data-root/server-data
+[2026-10-30T12:39:26.562Z] [INFO] [electron.embedded-server.stdout] DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-quit-Pn0xU2/data-root/server-data/db
+[2026-10-30T12:39:26.562Z] [INFO] [electron.embedded-server.stdout] LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-quit-Pn0xU2/data-root/server-data/logs
+[2026-10-30T12:39:26.562Z] [INFO] [electron.embedded-server.stdout] DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-quit-Pn0xU2/data-root/server-data/download
+[2026-10-30T12:39:26.562Z] [INFO] [electron.embedded-server.stdout] MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-quit-Pn0xU2/data-root/server-data/memory
+[2026-10-30T12:39:26.562Z] [INFO] [electron.embedded-server.stdout] ============================================================
+[2026-10-30T12:39:27.269Z] [INFO] [electron.embedded-server.stdout] AgentFactory (Singleton) initialized.
+[2026-10-30T12:39:27.392Z] [INFO] [electron.embedded-server.stdout] Running Prisma migrations...
+[2026-10-30T12:39:27.393Z] [INFO] [electron.embedded-server.stdout] Using Prisma engine overrides from bundled: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-api.Gy1t06/clean/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+[2026-10-30T12:39:27.572Z] [INFO] [electron.embedded-server.stdout] Prisma schema loaded from prisma/schema.prisma
+[2026-10-30T12:39:27.574Z] [INFO] [electron.embedded-server.stdout] Datasource "db": SQLite database "production.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-quit-Pn0xU2/data-root/server-data/db/production.db"
+[2026-10-30T12:39:27.594Z] [INFO] [electron.embedded-server.stdout] 27 migrations found in prisma/migrations
+[2026-10-30T12:39:27.596Z] [INFO] [electron.embedded-server.stdout] No pending migrations to apply.
+[2026-10-30T12:39:27.615Z] [INFO] [electron.embedded-server.stdout] Database migrations completed successfully.
+[2026-10-30T12:39:27.621Z] [INFO] [electron.embedded-server.stdout] prisma:info Starting a sqlite pool with 21 connections.
+[2026-10-30T12:39:27.628Z] [INFO] [electron.embedded-server.stdout] [2026-10-30T12:39:27.628Z] [INFO] [secret-management.vault] Secret vault: application database
+[2026-10-30T12:39:27.639Z] [INFO] [electron.embedded-server.stdout] Initialized server settings service with 33 predefined settings
+[2026-10-30T12:39:27.668Z] [INFO] [electron.embedded-server.stdout] AgentRunManager initialized.
+[2026-10-30T12:39:27.669Z] [INFO] [electron.embedded-server.stdout] AgentRunManager initialized.
+[2026-10-30T12:39:27.726Z] [INFO] [electron.embedded-server.stdout] Loading workspace packages to trigger registration...
+[2026-10-30T12:39:27.726Z] [INFO] [electron.embedded-server.stdout] Successfully loaded workspace packages.
+[2026-10-30T12:39:27.726Z] [INFO] [electron.embedded-server.stdout] Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-quit-Pn0xU2/data-root/server-data/temp_workspace
+[2026-10-30T12:39:27.727Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-quit-Pn0xU2/data-root/server-data/temp_workspace.
+[2026-10-30T12:39:27.727Z] [INFO] [electron.embedded-server.stdout] Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-quit-Pn0xU2/data-root/server-data/temp_workspace with fixed ID 'temp_ws_default'
+[2026-10-30T12:39:27.727Z] [INFO] [electron.embedded-server.stdout] Temp workspace created and cached with ID: temp_ws_default
+[2026-10-30T12:39:27.727Z] [INFO] [electron.embedded-server.stdout] Registering agent customization processors...
+[2026-10-30T12:39:27.727Z] [INFO] [electron.embedded-server.stdout] Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+[2026-10-30T12:39:27.727Z] [INFO] [electron.embedded-server.stdout] Registered input processor 'WorkspacePathSanitizationProcessor'.
+[2026-10-30T12:39:27.727Z] [INFO] [electron.embedded-server.stdout] Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+[2026-10-30T12:39:27.727Z] [INFO] [electron.embedded-server.stdout] Registered input processor 'UserInputContextBuildingProcessor'.
+[2026-10-30T12:39:27.727Z] [INFO] [electron.embedded-server.stdout] LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+[2026-10-30T12:39:27.727Z] [INFO] [electron.embedded-server.stdout] Registered LLM response processor 'MediaUrlTransformerProcessor'.
+[2026-10-30T12:39:27.727Z] [INFO] [electron.embedded-server.stdout] Agent customization processor registration complete.
+[2026-10-30T12:39:27.727Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_file'
+[2026-10-30T12:39:27.727Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'write_file'
+[2026-10-30T12:39:27.728Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'edit_file'
+[2026-10-30T12:39:27.728Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'run_bash'
+[2026-10-30T12:39:27.728Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'start_background_process'
+[2026-10-30T12:39:27.728Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_background_processes'
+[2026-10-30T12:39:27.728Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_process_output'
+[2026-10-30T12:39:27.728Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'stop_background_process'
+[2026-10-30T12:39:27.728Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'search_web'
+[2026-10-30T12:39:27.728Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'download_media'
+[2026-10-30T12:39:27.728Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_url'
+[2026-10-30T12:39:27.728Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Core Tools
+[2026-10-30T12:39:27.736Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_project_task'
+[2026-10-30T12:39:27.737Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_projects'
+[2026-10-30T12:39:27.737Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_project_tasks'
+[2026-10-30T12:39:27.737Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'search_project_tasks'
+[2026-10-30T12:39:27.737Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'create_project'
+[2026-10-30T12:39:27.737Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'update_project'
+[2026-10-30T12:39:27.737Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'create_task'
+[2026-10-30T12:39:27.737Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'update_task'
+[2026-10-30T12:39:27.737Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'delegate_task'
+[2026-10-30T12:39:27.737Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'generate_image'
+[2026-10-30T12:39:27.737Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'edit_image'
+[2026-10-30T12:39:27.737Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'generate_speech'
+[2026-10-30T12:39:27.737Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'generate_video'
+[2026-10-30T12:39:27.737Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Project Task Tools
+[2026-10-30T12:39:27.737Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Task Delegation Tools
+[2026-10-30T12:39:27.737Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Media Tools
+[2026-10-30T12:39:27.737Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_available_agents'
+[2026-10-30T12:39:27.737Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_peer_nodes'
+[2026-10-30T12:39:27.737Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Agent Discovery Tools
+[2026-10-30T12:39:27.737Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_available_agent_runtimes'
+[2026-10-30T12:39:27.737Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'submit_launch_choices'
+[2026-10-30T12:39:27.737Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Agent Runtime Tools
+[2026-10-30T12:39:27.737Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'open_tab'
+[2026-10-30T12:39:27.737Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'navigate_to'
+[2026-10-30T12:39:27.738Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'close_tab'
+[2026-10-30T12:39:27.738Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_tabs'
+[2026-10-30T12:39:27.738Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_page'
+[2026-10-30T12:39:27.738Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'screenshot'
+[2026-10-30T12:39:27.738Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'dom_snapshot'
+[2026-10-30T12:39:27.738Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'run_script'
+[2026-10-30T12:39:27.738Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'set_device_emulation'
+[2026-10-30T12:39:27.738Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Browser Tools
+[2026-10-30T12:39:27.738Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'publish_artifacts'
+[2026-10-30T12:39:27.738Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Published Artifact Tools
+[2026-10-30T12:39:27.738Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'search_memory'
+[2026-10-30T12:39:27.738Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Memory Tools
+[2026-10-30T12:39:27.738Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'send_message_to'
+[2026-10-30T12:39:27.738Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_handoff_rules'
+[2026-10-30T12:39:27.738Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Agent Communication Tools
+[2026-10-30T12:39:27.739Z] [ERROR] [electron.embedded-server.stderr] Overwriting existing tool definition for name: 'search_web'
+[2026-10-30T12:39:27.739Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'search_web'
+[2026-10-30T12:39:27.739Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Search Tools
+[2026-10-30T12:39:27.751Z] [INFO] [electron.embedded-server.stdout] {"level":30,"time":1793363967750,"pid":8307,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:57782"}
+[2026-10-30T12:39:27.768Z] [INFO] [electron.embedded-server.stdout] {"level":30,"time":1793363967768,"pid":8307,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:57764"}
+[2026-10-30T12:39:27.768Z] [INFO] [electron.embedded-server.stdout] {"level":30,"time":1793363967768,"pid":8307,"hostname":"MacBookPro","msg":"Server listening at http://192.168.2.158:57764"}
+[2026-10-30T12:39:27.768Z] [INFO] [electron.embedded-server.stdout] {"level":30,"time":1793363967768,"pid":8307,"hostname":"MacBookPro","msg":"Server listening at http://100.127.30.107:57764"}
+[2026-10-30T12:39:27.768Z] [INFO] [electron.embedded-server.stdout] [2026-10-30T12:39:27.768Z] [INFO] [server.runtime] Server listening on 0.0.0.0:57764
+[2026-10-30T12:39:27.769Z] [INFO] [electron.embedded-server.stdout] Scheduling Studio-only non-critical startup tasks...
+[2026-10-30T12:39:27.771Z] [INFO] [electron.embedded-server.stdout] Background cache pre-loading process has started.
+[2026-10-30T12:39:27.771Z] [INFO] [electron.embedded-server.stdout] CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+[2026-10-30T12:39:27.771Z] [INFO] [electron.embedded-server.stdout] Populating MCP server config cache for the first time...
+[2026-10-30T12:39:27.771Z] [INFO] [electron.embedded-server.stdout] Running MCP tool registration background task...
+[2026-10-30T12:39:27.771Z] [INFO] [electron.embedded-server.stdout] Loading and registering all MCP server configurations from file...
+[2026-10-30T12:39:27.772Z] [INFO] [electron.embedded-server.stdout] Background task 'Memory Sync Worker' completed successfully.
+[2026-10-30T12:39:27.772Z] [INFO] [electron.embedded-server.stdout] Background task 'Memory Search' completed successfully.
+[2026-10-30T12:39:27.772Z] [INFO] [electron.embedded-server.stdout] MCP server config cache populated with 0 items.
+[2026-10-30T12:39:27.772Z] [INFO] [electron.embedded-server.stdout] Found 0 total MCP server configs.
+[2026-10-30T12:39:27.772Z] [INFO] [electron.embedded-server.stdout] Synchronized cached configurations with the core MCP config service.
+[2026-10-30T12:39:27.772Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 0 MCP server configs into cache.
+[2026-10-30T12:39:27.773Z] [INFO] [electron.embedded-server.stdout] Finished loading and registering all MCP server configurations.
+[2026-10-30T12:39:27.773Z] [INFO] [electron.embedded-server.stdout] Background task 'MCP Tool Registration' completed successfully.
+[2026-10-30T12:39:27.773Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 32 LLM models into cache.
+[2026-10-30T12:39:27.773Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 7 image models into cache.
+[2026-10-30T12:39:27.773Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 3 audio models into cache.
+[2026-10-30T12:39:27.773Z] [INFO] [electron.embedded-server.stdout] Background application cache pre-loading completed.
+[2026-10-30T12:39:27.773Z] [INFO] [electron.embedded-server.stdout] Background task 'Cache Pre-loading' completed successfully.
+[2026-10-30T12:39:28.026Z] [INFO] [electron.server.base-server-manager] Server health check successful, server is ready
+[2026-10-30T12:39:28.026Z] [INFO] [electron] ServerStatusManager: Server is ready
+[2026-10-30T12:39:28.026Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-30T12:39:28.124Z] [INFO] [electron] Creating node-bound window for entryId=embedded-local; url=file:///private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-api.Gy1t06/clean/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html
+[2026-10-30T12:39:28.401Z] [INFO] [electron.embedded-server.stdout] Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-quit-Pn0xU2/workspace
+[2026-10-30T12:39:28.401Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-quit-Pn0xU2/workspace.
+[2026-10-30T12:39:28.401Z] [INFO] [electron.embedded-server.stdout] Created and registered workspace ID: agent_ws_8993eb696bae4da536c91cb549149f4fec7c8e0238ebb2d26a45ce86d25979f6
+[2026-10-30T12:39:28.417Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-30T12:39:28.419Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-30T12:39:28.430Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-30T12:39:28.431Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-30T12:39:28.572Z] [INFO] [electron.embedded-server.stdout] Agent websocket attached for run desk_agent_bq284dmvuyku7k_773eb48f9ccd4431b80ad8a6eeb9a573
+[2026-10-30T12:39:28.572Z] [INFO] [electron.embedded-server.stdout] Created agent session d1538fca-387e-44cb-9137-99c4ca50dc4a for run desk_agent_bq284dmvuyku7k_773eb48f9ccd4431b80ad8a6eeb9a573
+[2026-10-30T12:39:28.572Z] [INFO] [electron.embedded-server.stdout] Agent WebSocket connected: session=d1538fca-387e-44cb-9137-99c4ca50dc4a, run=desk_agent_bq284dmvuyku7k_773eb48f9ccd4431b80ad8a6eeb9a573
+[2026-10-30T12:39:30.392Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-30T12:39:30.397Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-30T12:39:32.462Z] [INFO] [electron.embedded-server.stdout] Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-quit-Pn0xU2/workspace
+[2026-10-30T12:39:32.462Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-quit-Pn0xU2/workspace.
+[2026-10-30T12:39:32.462Z] [INFO] [electron.embedded-server.stdout] Reusing registered workspace ID: agent_ws_8993eb696bae4da536c91cb549149f4fec7c8e0238ebb2d26a45ce86d25979f6
+[2026-10-30T12:39:32.491Z] [INFO] [electron.embedded-server.stdout] Agent websocket attached for run desk_agent_bq284dmvuyku7k_9794d77dad124d31b9309fbf86af7125
+[2026-10-30T12:39:32.491Z] [INFO] [electron.embedded-server.stdout] Created agent session cef4828f-2063-4834-9910-f5bbbc481db5 for run desk_agent_bq284dmvuyku7k_9794d77dad124d31b9309fbf86af7125
+[2026-10-30T12:39:32.491Z] [INFO] [electron.embedded-server.stdout] Agent WebSocket connected: session=cef4828f-2063-4834-9910-f5bbbc481db5, run=desk_agent_bq284dmvuyku7k_9794d77dad124d31b9309fbf86af7125
+[2026-10-30T12:39:32.877Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1793363972877,"pid":8307,"hostname":"MacBookPro","reqId":"req-4","method":"POST","url":"/mcp/agent-tools/agtrun_QpCivwTPQpC9kV37UjPqKJT9tJqGikUcUSwhMyyDgk0","statusCode":400,"elapsedMs":0.2992500000000291,"msg":"http request completed"}
+[2026-10-30T12:39:33.494Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-30T12:39:33.497Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-30T12:39:33.517Z] [INFO] [electron.embedded-server.stdout] Agent websocket attached for run desk_agent_bq284dmvuyku7k_9794d77dad124d31b9309fbf86af7125
+[2026-10-30T12:39:33.517Z] [INFO] [electron.embedded-server.stdout] Created agent session 404f3d55-3923-4e56-aa89-6df4d94d4eff for run desk_agent_bq284dmvuyku7k_9794d77dad124d31b9309fbf86af7125
+[2026-10-30T12:39:33.517Z] [INFO] [electron.embedded-server.stdout] Agent WebSocket connected: session=404f3d55-3923-4e56-aa89-6df4d94d4eff, run=desk_agent_bq284dmvuyku7k_9794d77dad124d31b9309fbf86af7125
+[2026-10-30T12:39:33.533Z] [INFO] [electron.embedded-server.stdout] Agent websocket attached for run desk_agent_bq284dmvuyku7k_773eb48f9ccd4431b80ad8a6eeb9a573
+[2026-10-30T12:39:33.533Z] [INFO] [electron.embedded-server.stdout] Created agent session da50c52a-7c7c-4459-a552-2c87a18f8c84 for run desk_agent_bq284dmvuyku7k_773eb48f9ccd4431b80ad8a6eeb9a573
+[2026-10-30T12:39:33.533Z] [INFO] [electron.embedded-server.stdout] Agent WebSocket connected: session=da50c52a-7c7c-4459-a552-2c87a18f8c84, run=desk_agent_bq284dmvuyku7k_773eb48f9ccd4431b80ad8a6eeb9a573
+[2026-10-30T12:39:34.385Z] [INFO] [electron.embedded-server.stdout] Agent team websocket attached for team run desk_team_bq284dmvuyku7k_6809ee786ccf463d8e421b7fabaac2c1
+[2026-10-30T12:39:34.386Z] [INFO] [electron.embedded-server.stdout] Created agent session cf58da89-0d09-442e-adb2-0c6a515c4eed for run desk_team_bq284dmvuyku7k_6809ee786ccf463d8e421b7fabaac2c1
+[2026-10-30T12:39:34.389Z] [INFO] [electron.embedded-server.stdout] Agent Team WebSocket connected: session=cf58da89-0d09-442e-adb2-0c6a515c4eed, run=desk_team_bq284dmvuyku7k_6809ee786ccf463d8e421b7fabaac2c1
+[2026-10-30T12:39:35.397Z] [INFO] [electron.embedded-server.stdout] Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-quit-Pn0xU2/workspace
+[2026-10-30T12:39:35.397Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-quit-Pn0xU2/workspace.
+[2026-10-30T12:39:35.398Z] [INFO] [electron.embedded-server.stdout] Reusing registered workspace ID: agent_ws_8993eb696bae4da536c91cb549149f4fec7c8e0238ebb2d26a45ce86d25979f6
+[2026-10-30T12:39:35.403Z] [ERROR] [electron.embedded-server.stderr] [CodexClientThreadRouter] app-server message was not routed {
+[2026-10-30T12:39:35.403Z] [ERROR] [electron.embedded-server.stderr]   kind: 'notification',
+[2026-10-30T12:39:35.403Z] [ERROR] [electron.embedded-server.stderr]   method: 'deprecationNotice',
+[2026-10-30T12:39:35.403Z] [ERROR] [electron.embedded-server.stderr]   requestId: undefined,
+[2026-10-30T12:39:35.403Z] [ERROR] [electron.embedded-server.stderr]   threadCount: 2,
+[2026-10-30T12:39:35.403Z] [ERROR] [electron.embedded-server.stderr]   paramKeys: [ 'summary', 'details' ]
+[2026-10-30T12:39:35.403Z] [ERROR] [electron.embedded-server.stderr] }
+[2026-10-30T12:39:38.491Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-10-30T12:39:38.492Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-10-30T12:39:38.515Z] [INFO] [electron.embedded-server.stdout] Agent team websocket attached for team run desk_team_bq284dmvuyku7k_6809ee786ccf463d8e421b7fabaac2c1
+[2026-10-30T12:39:38.515Z] [INFO] [electron.embedded-server.stdout] Created agent session ae15f9b8-5310-41ed-a41c-1ffe1e8b7fcc for run desk_team_bq284dmvuyku7k_6809ee786ccf463d8e421b7fabaac2c1
+[2026-10-30T12:39:38.516Z] [INFO] [electron.embedded-server.stdout] Agent Team WebSocket connected: session=ae15f9b8-5310-41ed-a41c-1ffe1e8b7fcc, run=desk_team_bq284dmvuyku7k_6809ee786ccf463d8e421b7fabaac2c1
+[2026-10-30T12:39:39.717Z] [INFO] [electron.embedded-server.stdout] Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-quit-Pn0xU2/workspace
+[2026-10-30T12:39:39.717Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-quit-Pn0xU2/workspace.
+[2026-10-30T12:39:39.718Z] [INFO] [electron.embedded-server.stdout] Reusing registered workspace ID: agent_ws_8993eb696bae4da536c91cb549149f4fec7c8e0238ebb2d26a45ce86d25979f6
+[2026-10-30T12:39:39.943Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1793363979942,"pid":8307,"hostname":"MacBookPro","reqId":"req-d","method":"POST","url":"/mcp/agent-tools/agtrun_ZyoLKu7_GpBdeXn8BwA9AGhxNDvxmahnoSTB5NL7n_c","statusCode":400,"elapsedMs":0.26991699999962293,"msg":"http request completed"}
+[2026-10-30T12:39:42.220Z] [INFO] [electron.embedded-server.stdout] Closed agent session cf58da89-0d09-442e-adb2-0c6a515c4eed
+[2026-10-30T12:39:42.220Z] [INFO] [electron.embedded-server.stdout] Closed agent session cef4828f-2063-4834-9910-f5bbbc481db5
+[2026-10-30T12:39:42.220Z] [INFO] [electron.embedded-server.stdout] Agent WebSocket disconnected: cef4828f-2063-4834-9910-f5bbbc481db5
+[2026-10-30T12:39:42.220Z] [INFO] [electron.embedded-server.stdout] Closed agent session d1538fca-387e-44cb-9137-99c4ca50dc4a
+[2026-10-30T12:39:42.220Z] [INFO] [electron.embedded-server.stdout] Agent WebSocket disconnected: d1538fca-387e-44cb-9137-99c4ca50dc4a
+[2026-10-30T12:39:42.220Z] [INFO] [electron.embedded-server.stdout] Closed agent session ae15f9b8-5310-41ed-a41c-1ffe1e8b7fcc
+[2026-10-30T12:39:42.220Z] [INFO] [electron.embedded-server.stdout] Closed agent session da50c52a-7c7c-4459-a552-2c87a18f8c84
+[2026-10-30T12:39:42.221Z] [INFO] [electron.embedded-server.stdout] Agent WebSocket disconnected: da50c52a-7c7c-4459-a552-2c87a18f8c84
+[2026-10-30T12:39:42.221Z] [INFO] [electron.embedded-server.stdout] Closed agent session 404f3d55-3923-4e56-aa89-6df4d94d4eff
+[2026-10-30T12:39:42.221Z] [INFO] [electron.embedded-server.stdout] Agent WebSocket disconnected: 404f3d55-3923-4e56-aa89-6df4d94d4eff
+[2026-10-30T12:39:43.772Z] [ERROR] [electron.embedded-server.stderr] Server process-tree sweep: 1 process(es) and 0 process group(s) still running; sending SIGTERM.
+[2026-10-30T12:39:43.783Z] [INFO] [electron.server.base-server-manager] Server process exited with code 0
