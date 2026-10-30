@@ -153,6 +153,10 @@ describe("Grok Build compaction over GraphQL/WebSocket (recorded Grok 1.0.46 rep
       }
       await wait(300);
       expect(await segments(run.runId)).toBe(3);
+      // Each archive segment's runtime in the manifest is the RuntimeKind value of the payload (autobyteus-343, REQ-001).
+      const manifest = JSON.parse(await fs.readFile(path.join(dataDir, "memory", "agents", run.runId, "raw_traces_manifest.json"), "utf8")) as
+        { segments: Array<{ runtime_kind: unknown }> };
+      expect(manifest.segments.map((segment) => segment.runtime_kind)).toEqual(["grok_build", "grok_build", "grok_build"]);
       expect(await markerStatuses(run.runId)).toEqual(["compacting", "compacted", "compacting", "compacted", "compacting", "compacted"]);
       const reopened = await history(run.runId);
       const rows = reopened.activities.filter((activity) => activity.kind === "compaction");
