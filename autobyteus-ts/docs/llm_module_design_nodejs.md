@@ -414,7 +414,7 @@ text-history fallback remains. Text-only tool-result continuations render the ex
 and do not append an extra aggregate `role: "user"` message containing tool
 results. If a processed tool result includes context-file media, the request
 keeps a user/media carrier so the media can be sent; that carrier uses semantic
-completed-tool wording such as `The read_media_file tool call completed
+completed-tool wording such as `The read_file tool call completed
 successfully.` rather than internal continuation labels or generated tool-call
 formatting instructions.
 
@@ -484,7 +484,7 @@ converted, the renderer must fail before provider invocation with an actionable
 media-conversion error rather than silently sending a text-only request.
 
 The direct-Gemini `.m4a` path has an opt-in live proof in
-`tests/integration/agent/gemini-read-media-file-m4a-live.test.ts`. Default test
+`tests/integration/agent/gemini-read-file-m4a-live.test.ts`. Default test
 runs keep it skipped unless `AUTOBYTEUS_RUN_GEMINI_M4A_LIVE=1` is set. The
 fixture at `tests/data/test_audio.m4a` is a small synthetic/non-private spoken
 sample; the live test renders the assembled request's exact local file bytes
@@ -547,10 +547,10 @@ the old synthetic aggregate user message. Renderer unit coverage also verifies
 semantic media-carrier wording for OpenAI-compatible and Gemini payloads. Broader integration tests remain under `tests/integration/llm/...`.
 
 Direct-Gemini media continuation coverage also includes
-`tests/integration/agent/read-media-file-continuation-flow.test.ts` for the
-local `read_media_file -> LLMUserMessage.audio_urls -> Gemini inlineData` path
+`tests/integration/agent/read-file-media-continuation-flow.test.ts` for the
+local `read_file (media) -> LLMUserMessage.audio_urls -> Gemini inlineData` path
 and the env-gated
-`tests/integration/agent/gemini-read-media-file-m4a-live.test.ts` for live
+`tests/integration/agent/gemini-read-file-m4a-live.test.ts` for live
 `.m4a` provider acceptance.
 
 ## 10. Where to Update

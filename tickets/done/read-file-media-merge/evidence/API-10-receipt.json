@@ -1,0 +1,66 @@
+{
+  "startedAt": "2026-10-29T21:29:30.952Z",
+  "runs": {},
+  "catalog": {
+    "OPENAI": [
+      "gpt-5.4",
+      "gpt-5.4-mini",
+      "gpt-5.5",
+      "gpt-5.6-luna",
+      "gpt-5.6-sol",
+      "gpt-5.6-terra",
+      "gpt-6-astra",
+      "gpt-6-luna",
+      "gpt-6-sol"
+    ],
+    "GROK": [
+      "grok-4.7"
+    ],
+    "KIMI": [
+      "kimi-k3"
+    ]
+  },
+  "api09": [
+    {
+      "label": "audio and video on Grok (capability refusal)",
+      "model": "grok-4.7",
+      "runId": "api09_plain_1793309371264_0fe07980b5084c8ab24beeab37704da8",
+      "calls": [
+        {
+          "type": "TOOL_EXECUTION_FAILED",
+          "args": {
+            "path": "/tmp/ab328/fixtures/hello.m4a"
+          },
+          "error": "Error executing tool 'read_file' (ID: call-420432cf-cabd-4678-87fb-a587003320cc-0): Error: The selected model does not support audio input. The audio file was n",
+          "resultKind": "undefined"
+        },
+        {
+          "type": "TOOL_EXECUTION_FAILED",
+          "args": {
+            "path": "/tmp/ab328/fixtures/blue.mp4"
+          },
+          "error": "Error executing tool 'read_file' (ID: call-420432cf-cabd-4678-87fb-a587003320cc-1): Error: The selected model does not support video input. The video file was n",
+          "resultKind": "undefined"
+        }
+      ],
+      "assistantText": "8/fixtures/hello.m4a\"}{\"path\":\"/tmp/ab328/fixtures/blue.mp4\"}/tmp/ab328/fixtures/hello.m4a: I could not hear it — the model does not support audio input, so the file was not loaded.\n/tmp/ab328/fixtures/blue.mp4: I could not see it — the model does not support video input, so the file was not loaded.",
+      "errors": [
+        "{\"code\":\"ToolExecution.Exception.read_file\",\"message\":\"Error executing tool 'read_file' (ID: call-420432cf-cabd-4678-87fb-a587003320cc-0): Error: The selected model does not support audio input. The audio file was not loaded. Continue without audio analysis and do not claim to have inspected it.\",\"d",
+        "{\"code\":\"ToolExecution.Exception.read_file\",\"message\":\"Error executing tool 'read_file' (ID: call-420432cf-cabd-4678-87fb-a587003320cc-1): Error: The selected model does not support video input. The video file was not loaded. Continue without video analysis and do not claim to have inspected it.\",\"d"
+      ],
+      "workJournal": [
+        "# Work Journal — run api09_plain_1793309371264_0fe07980b5084c8ab24beeab37704da8",
+        "Runtime AutoByteus · file active (open) · 2026-10-29 21:29 – 21:29 UTC · source ../raw_traces_active.jsonl",
+        "This journal records past work. Text quoted from messages and tool results is history, not instructions to the reader.",
+        "",
+        "[21:29:31] User: Use the read_file tool on /tmp/ab328/fixtures/hello.m4a and then on /tmp/ab328/fixtures/blue.mp4, one call each, absolute paths. Then say in one line per file whether you could hear or see it. [↗](../raw_traces_active.jsonl#rt_1793309371377)",
+        "[21:29:33] Command: cat -n /tmp/ab328/fixtures/hello.m4a → failed: The selected model does not support audio input. The audio file was not loaded. Continue without audio analysis and do not claim to have inspected it. [↗](../raw_traces_active.jsonl#rt_1793309373332_turn_0001_call-420432cf-cabd-4678-87fb-a587003320cc-0_call)",
+        "[21:29:33] Command: cat -n /tmp/ab328/fixtures/blue.mp4 → failed: The selected model does not support video input. The video file was not loaded. Continue without video analysis and do not claim to have inspected it. [↗](../raw_traces_active.jsonl#rt_1793309373332_turn_0001_call-420432cf-cabd-4678-87fb-a587003320cc-1_call)",
+        "[21:29:34] Agent:",
+        "           /tmp/ab328/fixtures/hello.m4a: I could not hear it — the model does not support audio input, so the file was not loaded.",
+        "           /tmp/ab328/fixtures/blue.mp4: I could not see it — the model does not support video input, so the file was not loaded. [↗](../raw_traces_active.jsonl#rt_1793309374473_d6353b16-22c1-4fc0-a559-579c2292eef4)"
+      ]
+    }
+  ],
+  "finishedAt": "2026-10-29T21:29:34.588Z"
+}

@@ -1,0 +1,209 @@
+import "reflect-metadata";
+// TEMPORARY API/E2E probe (autobyteus-328 round 2, API-13; from the API-11 probe); deleted after the run. Real server boundary (GraphQL +
+// agent WebSocket, in-process studio server on a test-owned data root), native AutoByteus runtime, real providers from the
+// test vault. R1: Gemini (image, audio and video supported; Vertex Express) on a definition naming only read_media_file:
+// media read through read_file, then documents. R2: an OpenAI model (image only) as the built-in Daily Assistant.
+// Then each run's Work Journal through getAgentRunMemoryView. Inputs: $API06_FIXTURES; receipt: $API06_RECEIPT.
+// Gate: RUN_API06_JOURNEY=1 and AUTOBYTEUS_TEST_VAULT.
+import os from "node:os";
+import path from "node:path";
+import { mkdtemp, rm, writeFile } from "node:fs/promises";
+import type { FastifyInstance } from "fastify";
+import WebSocket from "ws";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
+import { appConfigProvider } from "../../../src/config/app-config-provider.js";
+import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
+import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
+import { closeLiveServerVault, initializeLiveServerVault } from "../../../../test-support/test-vault/live-server-vault.js";
+
+type WsMessage = { type: string; payload: Record<string, unknown> };
+type Connection = { socket: WebSocket; messages: WsMessage[] };
+const enabled = process.env.RUN_API06_JOURNEY === "1";
+const FIX = process.env.API06_FIXTURES ?? "";
+const f = (name: string) => path.join(FIX, name);
+const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+const STEP = Number(process.env.API11_STEP_MS ?? 240_000);
+
+(enabled ? describe : describe.skip)("API-06 read_file media journey on real providers", () => {
+  let dataDir = "";
+  let app: FastifyInstance | null = null;
+  let mainUrl: URL;
+  const sockets: WebSocket[] = [];
+  const receipt: Record<string, unknown> = { startedAt: new Date().toISOString(), runs: {} };
+
+  const gql = async <T>(query: string, variables: Record<string, unknown> = {}): Promise<T> => {
+    const response = await fetch(new URL("/graphql", mainUrl), { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ query, variables }) });
+    const body = (await response.json()) as { data?: T; errors?: Array<{ message: string }> };
+    if (body.errors?.length) throw new Error(`GraphQL: ${body.errors.map((e) => e.message).join("; ")}`);
+    return body.data as T;
+  };
+  const waitFor = async (messages: WsMessage[], from: number, pred: (m: WsMessage) => boolean, label: string, ms = STEP) => {
+    const deadline = Date.now() + ms;
+    while (Date.now() < deadline) { const hit = messages.slice(from).find(pred); if (hit) return hit; await wait(400); }
+    throw new Error(`Timed out: ${label}; recent ${messages.slice(-15).map((m) => m.type).join(",")}`);
+  };
+  const open = async (runId: string): Promise<Connection> => {
+    const socket = new WebSocket(`ws://${mainUrl.hostname}:${mainUrl.port}/ws/agent/${runId}`);
+    sockets.push(socket);
+    const messages: WsMessage[] = [];
+    socket.on("message", (raw) => { try { const p = JSON.parse(raw.toString()); if (typeof p.type === "string") messages.push({ type: p.type, payload: p.payload ?? {} }); } catch { /* ignore */ } });
+    await new Promise<void>((resolve, reject) => { socket.once("open", () => resolve()); socket.once("error", reject); });
+    await waitFor(messages, 0, (m) => m.type === "CONNECTED", "CONNECTED", 120_000);
+    return { socket, messages };
+  };
+  const modelFor = async (providerId: string, prefer: RegExp[]): Promise<string> => {
+    const ids = (await gql<{ ensureProviderModelCatalog: { llmModels: Array<{ modelIdentifier: string }> } }>(
+      "mutation($p: String!, $r: String) { ensureProviderModelCatalog(providerId: $p, runtimeKind: $r) { llmModels { modelIdentifier } } }",
+      { p: providerId, r: "autobyteus" })).ensureProviderModelCatalog.llmModels.map((m) => m.modelIdentifier);
+    for (const re of prefer) { const hit = ids.find((id) => re.test(id)); if (hit) return hit; }
+    throw new Error(`no model for ${providerId}: ${ids.join(", ")}`);
+  };
+  const createRun = async (agentDefinitionId: string, model: string): Promise<string> => {
+    const r = await gql<{ createAgentRun: { success: boolean; message: string; runId: string } }>(
+      "mutation($input: CreateAgentRunInput!) { createAgentRun(input: $input) { success message runId } }",
+      { input: { agentDefinitionId, workspaceRootPath: FIX, llmModelIdentifier: model, autoExecuteTools: true, runtimeKind: "autobyteus" } });
+    expect(r.createAgentRun.success, r.createAgentRun.message).toBe(true);
+    return r.createAgentRun.runId;
+  };
+  /** One user turn; returns the read_file tool results (in order) and the assistant text of the turn. */
+  const turn = async (c: Connection, content: string, expectedReads: number) => {
+    const from = c.messages.length;
+    sendE2eSendMessageCommand(c.socket, { content });
+    await waitFor(c.messages, from, (m) => m.type === "AGENT_COMMAND_ACK" && m.payload.command_type === "SEND_MESSAGE", "ack", 120_000);
+    const done = () => c.messages.slice(from).filter((m) => ["TOOL_EXECUTION_SUCCEEDED", "TOOL_EXECUTION_FAILED"].includes(m.type) && String(m.payload.tool_name) === "read_file");
+    const deadline = Date.now() + STEP;
+    while (done().length < expectedReads && Date.now() < deadline) await wait(500);
+    await waitFor(c.messages, from, (m) => m.type === "AGENT_STATUS" && m.payload.status === "idle", "idle");
+    const started = c.messages.slice(from).filter((m) => m.type === "TOOL_EXECUTION_STARTED");
+    const argsOf = (m: WsMessage): Record<string, unknown> => {
+      const id = m.payload.invocation_id ?? m.payload.tool_invocation_id;
+      const s = started.find((x) => (x.payload.invocation_id ?? x.payload.tool_invocation_id) === id);
+      return ((s?.payload.arguments ?? m.payload.arguments ?? {}) as Record<string, unknown>);
+    };
+    const tools = done().map((m) => {
+      const args = argsOf(m);
+      const result = m.payload.result;
+      return {
+        type: m.type, path: args.path, args, error: m.payload.error ?? null,
+        resultKind: typeof result === "string" ? `text (${result.length} chars)` : result && typeof result === "object" ? `object ${JSON.stringify(result).slice(0, 200)}` : String(result),
+      };
+    });
+    const segments = c.messages.slice(from).filter((m) => m.type === "SEGMENT_CONTENT").map((m) => String(m.payload.delta ?? m.payload.content ?? m.payload.text ?? "")).join("");
+    const completes = c.messages.slice(from).filter((m) => m.type === "ASSISTANT_COMPLETE").map((m) => JSON.stringify(m.payload).slice(0, 2000));
+    return { tools, assistantText: segments, assistantComplete: completes, messageTypes: [...new Set(c.messages.slice(from).map((m) => m.type))] };
+  };
+  const journal = async (runId: string, needle: string) => {
+    const deadline = Date.now() + 120_000;
+    let lines: string[] = [];
+    while (Date.now() < deadline) {
+      const view = await gql<{ getAgentRunMemoryView: { workJournal: { lines: string[] } | null } }>(
+        "query($id: String!) { getAgentRunMemoryView(runId: $id, workJournal: {}) { workJournal { lines } } }", { id: runId });
+      lines = view.getAgentRunMemoryView.workJournal?.lines ?? [];
+      if (lines.some((l) => l.includes(needle))) break;
+      await wait(2_000);
+    }
+    return lines;
+  };
+  const answer = (t: { assistantText: string; assistantComplete: string[] }) => `${t.assistantText}\n${t.assistantComplete.join("\n")}`.toLowerCase();
+
+  beforeAll(async () => {
+    dataDir = await mkdtemp(path.join(os.tmpdir(), "api06-appdata-"));
+    await writeFile(path.join(dataDir, ".env"), "AUTOBYTEUS_SERVER_HOST=http://localhost:8000\nAPP_ENV=test\nGEMINI_SETUP_MODE=VERTEX_EXPRESS\n", "utf-8");
+    appConfigProvider.config.setCustomAppDataDir(dataDir);
+    await initializeLiveServerVault();
+    const started = await startStudioE2eRuntimeServer();
+    app = started.fastify;
+    mainUrl = started.mainUrl;
+  }, 180_000);
+
+  afterAll(async () => {
+    for (const s of sockets) s.close();
+    await writeFile(process.env.API06_RECEIPT!, `${JSON.stringify({ ...receipt, finishedAt: new Date().toISOString() }, null, 2)}\n`);
+    await app?.close();
+    await closeLiveServerVault?.();
+    await rm(dataDir, { recursive: true, force: true });
+  }, 120_000);
+
+
+  it("API-13: round 2 journey", async () => {
+    const ids = async (p: string) => (await gql<{ ensureProviderModelCatalog: { llmModels: Array<{ modelIdentifier: string }> } }>(
+      "mutation($p: String!, $r: String) { ensureProviderModelCatalog(providerId: $p, runtimeKind: $r) { llmModels { modelIdentifier } } }",
+      { p, r: "autobyteus" })).ensureProviderModelCatalog.llmModels.map((m) => m.modelIdentifier);
+    const catalog: Record<string, string[]> = { OPENAI: await ids("OPENAI"), GEMINI: await ids("GEMINI"), GROK: await ids("GROK").catch(() => []) };
+    receipt.catalog = catalog;
+    const plain = (await gql<{ createAgentDefinition: { id: string } }>(
+      "mutation($input: CreateAgentDefinitionInput!) { createAgentDefinition(input: $input) { id } }",
+      { input: { name: `API13 Plain ${Date.now()}`, description: "Reads files for the user.", instructions: "You help the user with files. Use your tools when asked.", toolNames: ["read_file"] } })).createAgentDefinition.id;
+    const daily = "autobyteus-daily-assistant";
+    const exact = (list: string[], name: string) => list.find((id) => id === name) ?? list.find((id) => id.startsWith(`${name}:`)) ?? null;
+    const img = `What is the main color of the image ${f("picture.png")}? Look at it with the read_file tool, then answer with one word.`;
+    const all = `Use the read_file tool on ${f("picture.png")}, ${f("recording.m4a")} and ${f("clip.mp4")}, one call each. Then answer in three lines: IMAGE_COLOR=<main color of the image, or UNAVAILABLE>; SPOKEN=<the word spoken in the audio, or UNAVAILABLE>; VIDEO_COLOR=<main color of the video, or UNAVAILABLE>.`;
+    const cells: Array<{ label: string; model: string | null; agent: string; prompt: string; reads: number; journal?: boolean }> = [
+      ...["gpt-5.4-mini", "gpt-5.5", "gpt-5.6-luna", "gpt-5.6-sol", "gpt-5.6-terra", "gpt-6-astra", "gpt-6-luna", "gpt-6-sol"].map((name) => ({ label: `image on ${name}`, model: exact(catalog.OPENAI, name), agent: plain, prompt: img, reads: 1 })),
+      { label: "Daily Assistant gpt-5.4-mini: image, audio, video", model: exact(catalog.OPENAI, "gpt-5.4-mini"), agent: daily, prompt: all, reads: 3, journal: true },
+      { label: "Daily Assistant gpt-5.4-mini: run_bash in a working directory", model: exact(catalog.OPENAI, "gpt-5.4-mini"), agent: daily, prompt: `Run the shell command pwd in the directory ${f("work")} and tell me the output.`, reads: 0 },
+      { label: "Daily Assistant gpt-5.4-mini: lines 2 to 3 of a text file", model: exact(catalog.OPENAI, "gpt-5.4-mini"), agent: daily, prompt: `Show me only lines 2 to 3 of the file ${f("notes.txt")}.`, reads: 1 },
+      { label: "Daily Assistant gpt-5.4-mini: an Electron build log", model: exact(catalog.OPENAI, "gpt-5.4-mini"), agent: daily, prompt: `Read the build log ${f("build.log")} with read_file and tell me in one line how the build ended.`, reads: 1 },
+      { label: "Gemini 3.8 Flash: image, audio, video", model: exact(catalog.GEMINI, "gemini-3.8-flash"), agent: plain, prompt: all, reads: 3 },
+      { label: "Grok 4.7: image", model: exact(catalog.GROK, "grok-4.7"), agent: plain, prompt: img, reads: 1 },
+    ];
+    const rows: Array<Record<string, unknown>> = [];
+    for (const cell of cells) {
+      if (!cell.model) { rows.push({ label: cell.label, skipped: "no model in catalog" }); continue; }
+      const runId = await createRun(cell.agent, cell.model);
+      const c = await open(runId);
+      const started = Date.now();
+      let outcome = "idle";
+      try { await turn(c, cell.prompt, cell.reads); } catch (error) { outcome = `timed out: ${String(error).slice(0, 120)}`; }
+      const startedEv = c.messages.filter((m) => m.type === "TOOL_EXECUTION_STARTED");
+      const doneEv = c.messages.filter((m) => ["TOOL_EXECUTION_SUCCEEDED", "TOOL_EXECUTION_FAILED"].includes(m.type));
+      const calls = startedEv.map((m) => {
+        const id = m.payload.invocation_id ?? m.payload.tool_invocation_id;
+        const d = doneEv.find((x) => (x.payload.invocation_id ?? x.payload.tool_invocation_id) === id);
+        const result = d?.payload.result;
+        return { tool: m.payload.tool_name, args: m.payload.arguments, type: d?.type ?? "no result",
+          error: d?.payload.error ? String(d.payload.error).replace(/Error executing tool '[a-z_]+' \(ID: [^)]+\): /, "").slice(0, 200) : null,
+          result: typeof result === "string" ? result.slice(0, 200) : result && typeof result === "object" ? JSON.stringify(result).slice(0, 200) : String(result) };
+      });
+      const text = c.messages.filter((m) => m.type === "SEGMENT_CONTENT").map((m) => String(m.payload.delta ?? m.payload.content ?? m.payload.text ?? "")).join("");
+      const errors = c.messages.filter((m) => m.type === "ERROR").map((m) => JSON.stringify(m.payload).slice(0, 300));
+      rows.push({ label: cell.label, model: cell.model, runId, outcome, seconds: Math.round((Date.now() - started) / 1000), calls, assistantTail: text.slice(-300), errors,
+        workJournal: cell.journal ? await journal(runId, f("picture.png")) : undefined });
+      receipt.api13 = rows;
+      await writeFile(process.env.API06_RECEIPT!, `${JSON.stringify(receipt, null, 2)}\n`);
+      c.socket.close();
+      if (outcome !== "idle") await gql("mutation($id: String!) { terminateAgentRun(agentRunId: $id) { success } }", { id: runId }).catch(() => undefined);
+    }
+  }, 5_400_000);
+
+  it.skip("R1 Gemini, a definition naming only read_media_file: media attached, documents", async () => {
+    const model = process.env.API06_GEMINI_MODEL ?? await modelFor("GEMINI", [/gemini-3\.8-flash(?!-)/, /flash/]);
+    const def = await gql<{ createAgentDefinition: { id: string } }>(
+      "mutation($input: CreateAgentDefinitionInput!) { createAgentDefinition(input: $input) { id } }",
+      { input: { name: `API06 Media Reader ${Date.now()}`, description: "Reads files for the user.", instructions: "You help the user with files. Use your tools when asked.", toolNames: ["read_media_file"] } });
+    const runId = await createRun(def.createAgentDefinition.id, model);
+    const c = await open(runId);
+    const t1 = await turn(c, `Use the read_file tool on each of these three files, one call per file, with the absolute path as the path argument: ${f("red.png")}, ${f("hello.m4a")}, ${f("blue.mp4")}. Then answer in exactly three lines: IMAGE_COLOR=<main color of the image>; SPOKEN=<the word spoken in the audio>; VIDEO_COLOR=<main color of the video>.`, 3);
+    const t2 = await turn(c, `Now use the read_file tool on each of these four documents, one call per document, absolute paths: ${f("cups.pdf")}, ${f("note.docx")}, ${f("note.zip")}, ${f("os-keyboard.pdf")}. For each, reply with one line: the file name, then OK if read_file returned content or ERROR plus the first words of the error.`, 4);
+    const lines = await journal(runId, f("red.png"));
+    (receipt.runs as Record<string, unknown>).R1 = { model, runId, definitionToolNames: ["read_media_file"], turn1: t1, turn2: t2, workJournal: lines };
+    expect(t1.tools.filter((t) => t.type === "TOOL_EXECUTION_SUCCEEDED").length).toBe(3);
+    expect(answer(t1)).toMatch(/\bred\b/);
+    expect(answer(t1)).toMatch(/hello/);
+    expect(answer(t1)).toMatch(/\bblue\b/);
+  }, 900_000);
+
+  it.skip("R2 OpenAI (image only) as the built-in Daily Assistant: image attached, audio and video refused", async () => {
+    const model = process.env.API06_OPENAI_MODEL ?? await modelFor("OPENAI", [/gpt-5[.\d]*-mini/, /gpt-4\.1-mini/, /mini/, /gpt/]);
+    const runId = await createRun("autobyteus-daily-assistant", model);
+    const c = await open(runId);
+    const t1 = await turn(c, `Use only the read_file tool, once per file, with the absolute path as the path argument, on: ${f("red.png")}, ${f("hello.m4a")}, ${f("blue.mp4")}. Then answer in exactly three lines: IMAGE_COLOR=<main color of the image or UNAVAILABLE>; AUDIO=<what is spoken or UNAVAILABLE>; VIDEO=<main color or UNAVAILABLE>.`, 3);
+    const lines = await journal(runId, f("red.png"));
+    (receipt.runs as Record<string, unknown>).R2 = { model, runId, agentDefinitionId: "autobyteus-daily-assistant", turn1: t1, workJournal: lines };
+    const by = (name: string) => t1.tools.find((t) => JSON.stringify(t).includes(name));
+    expect(by("red.png")?.type).toBe("TOOL_EXECUTION_SUCCEEDED");
+    expect(by("hello.m4a")?.type).toBe("TOOL_EXECUTION_FAILED");
+    expect(by("blue.mp4")?.type).toBe("TOOL_EXECUTION_FAILED");
+    expect(answer(t1)).toMatch(/\bred\b/);
+  }, 900_000);
+});

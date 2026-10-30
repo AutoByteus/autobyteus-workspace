@@ -1,0 +1,32 @@
+# Check: IMP-14 AC-010 live: GPT-5 tool arguments through a native agent with strict: false
+# Command: (cd /Users/normy/autobyteus_org/autobyteus-worktrees/read-file-media-merge && env -i PATH="$PATH" HOME=<temp> TMPDIR="$TMPDIR" AUTOBYTEUS_TEST_VAULT=/Users/normy/.autobyteus-test/vault RUN_LIVE_PROVIDER_TESTS=1 [OPENAI_STRICT_LIVE_MODEL=gpt-5.5] OPENAI_STRICT_LIVE_RECORD=/tmp/h328/ac010-record.jsonl pnpm -C autobyteus-ts exec vitest run tests/integration/agent/openai-read-file-strict-live.test.ts)
+# Commit: 438e6c1cde (test) on 815b6e175a source
+# Environment: macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2; clean environment: env -i PATH="$PATH" HOME=<temp, resolved> TMPDIR="$TMPDIR"; OpenAI key from the test vault; real AgentRuntime, OpenAILLM (Responses), production ToolSchemaProvider, real read_file and write_file
+# Date: 2026-10-30 local
+# Result: gpt-5.4-mini 2/2 passed; gpt-5.5 2/2 passed. Image read: one read_file call with only `path`, no error, answer "Red"/"red" (file name swatch.png gives no hint).
+#   write_file with an absolute path: arguments exactly `path` and `content`, no invented base_dir; file content "hello".
+#   One run per model, small input. Strict-omitted behaviour (the failure) is the Solution Designer's SD-02 run 2; not rerun live to save credits.
+
+===== gpt-5.4-mini =====
+ ✓ tests/integration/agent/openai-read-file-strict-live.test.ts (2 tests) 8627ms
+     ✓ reads a synthesized image through read_file with only path and names its color  3472ms
+     ✓ calls write_file with an absolute path without inventing base_dir  5154ms
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  06:44:42
+   Duration  10.27s (transform 1.09s, setup 69ms, import 1.41s, tests 8.63s, environment 0ms)
+
+===== gpt-5.5 =====
+ ✓ tests/integration/agent/openai-read-file-strict-live.test.ts (2 tests) 9029ms
+     ✓ reads a synthesized image through read_file with only path and names its color  3555ms
+     ✓ calls write_file with an absolute path without inventing base_dir  5472ms
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Start at  06:45:04
+   Duration  11.10s (transform 1.32s, setup 81ms, import 1.76s, tests 9.03s, environment 0ms)
+
+===== recorded turns (JSON lines: model, prompt, tool calls with arguments, tool errors, answer) =====
+{"model":"gpt-5.4-mini","prompt":"Look at the image /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/openai-strict-live-gFTfq6/swatch.png with the read_file tool and tell me its main color. Answer with one word.","calls":[{"name":"read_file","args":{"path":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/openai-strict-live-gFTfq6/swatch.png"}}],"results":[{"name":"read_file","error":null}],"answer":"\nRed"}
+{"model":"gpt-5.4-mini","prompt":"Use the write_file tool to create the file /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/openai-strict-live-lCXFyE/note.txt containing exactly the text: hello","calls":[{"name":"write_file","args":{"path":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/openai-strict-live-lCXFyE/note.txt","content":"hello"}}],"results":[{"name":"write_file","error":null}],"answer":"\nDone."}
+{"model":"gpt-5.5","prompt":"Look at the image /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/openai-strict-live-KTJq1l/swatch.png with the read_file tool and tell me its main color. Answer with one word.","calls":[{"name":"read_file","args":{"path":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/openai-strict-live-KTJq1l/swatch.png"}}],"results":[{"name":"read_file","error":null}],"answer":"\nred"}
+{"model":"gpt-5.5","prompt":"Use the write_file tool to create the file /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/openai-strict-live-prEV9J/note.txt containing exactly the text: hello","calls":[{"name":"write_file","args":{"path":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/openai-strict-live-prEV9J/note.txt","content":"hello"}}],"results":[{"name":"write_file","error":null}],"answer":"\nDone"}

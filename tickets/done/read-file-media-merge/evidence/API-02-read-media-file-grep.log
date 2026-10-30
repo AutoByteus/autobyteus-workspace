@@ -1,0 +1,16 @@
+# API-02 git grep -n read_media_file at 3a336f7a4a in autobyteus-ts and autobyteus-server-ts (src, tests, docs), 2026-10-29T20:53:11Z
+autobyteus-server-ts/src/agent-work-journal/rendering/runtimes/autobyteus-translation.ts:106: * Recorded history: `read_media_file` was removed (autobyteus-328; read_file reads media now), but runs re
+autobyteus-server-ts/src/agent-work-journal/rendering/runtimes/autobyteus-translation.ts:146:    ["read_media_file", readMediaFile],
+autobyteus-server-ts/tests/agent-work-journal/rendering/runtime-translations.test.ts:247:  it("start_background_process, read_file (numbered and not, and media), read_media_file (recorded history), re
+autobyteus-server-ts/tests/agent-work-journal/rendering/runtime-translations.test.ts:262:    // Recorded history: runs from before autobyteus-328 keep their read_media_file calls.
+autobyteus-server-ts/tests/agent-work-journal/rendering/runtime-translations.test.ts:263:    expect(lines(autobyteus, "read_media_file", { file_path: "/w/p.png" }, { uri: "/w/p.png", fileType: "image"
+autobyteus-server-ts/tests/fixtures/agent-work-journal/work-journal-builtin-tools.json:48:    "read_media_file": "Command"
+autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-tool-resolver.test.ts:135:  it('launches an agent whose definition names only the removed read_media_file with read
+autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-tool-resolver.test.ts:136:    const requestedToolNames = ['read_media_file'];
+autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-tool-resolver.test.ts:139:      description: 'A definition saved before read_media_file was removed.',
+autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-tool-resolver.test.ts:152:    expect(logger.warn).toHaveBeenCalledWith(expect.stringContaining("'read_media_file'")
+autobyteus-server-ts/tests/unit/agent-execution/backends/autobyteus/autobyteus-agent-tool-resolver.test.ts:156:    expect(agentDefinition.toolNames).toEqual(['read_media_file']);
+Binary file autobyteus-server-ts/tickets/done/agent-runtime-default-core-tools/logs/delivery/electron-build-mac-20260814T174700Z.log matches
+autobyteus-ts/docs/tool_schema_and_configuration.md:150:`read_media_file` tool was removed; a stored definition that still names it
+autobyteus-ts/tickets/done/tool_schema_best_practices_investigation/schema-best-practice-compliance-report.json:312:    "read_media_file": {
+count: 14

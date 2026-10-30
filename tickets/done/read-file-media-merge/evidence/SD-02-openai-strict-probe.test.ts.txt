@@ -1,0 +1,37 @@
+// Solution Designer experiment (autobyteus-328): does OpenAI's Responses API fill every optional tool argument because
+// our request omits `strict` (SDK default: true)? Same read_file tool our adapter sends, strict omitted vs strict: false.
+// Copy to autobyteus-ts/tests/integration/zz-tmp-strict-probe.test.ts, write the read_file OpenAI schema to
+// /tmp/schema328/openai.json, run:
+//   env -i PATH="$PATH" HOME="$HOME" TMPDIR="$TMPDIR" AUTOBYTEUS_TEST_VAULT="$HOME/.autobyteus-test/vault" RUN_LIVE_PROVIDER_TESTS=1 \
+//     pnpm -C autobyteus-ts exec vitest run tests/integration/zz-tmp-strict-probe.test.ts
+// Results: /tmp/strict328/results.json (arguments only, never the key). Delete the copy afterwards.
+import fs from 'node:fs/promises';
+import { it } from 'vitest';
+import OpenAI from 'openai';
+import { resolveProviderApiKeyResolver } from '../../src/secrets/provider-api-key-resolver.js';
+
+const runs = process.env.RUN_LIVE_PROVIDER_TESTS === '1' ? it : it.skip;
+runs('strict probe', async () => {
+  const schema = JSON.parse(await fs.readFile('/tmp/schema328/openai.json', 'utf8')).function;
+  await fs.mkdir('/tmp/strict328/files', { recursive: true });
+  await fs.writeFile('/tmp/strict328/files/red.png', Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8DwHwAFBQIAX8jx0gAAAABJRU5ErkJggg==', 'base64'));
+  await fs.writeFile('/tmp/strict328/files/notes.txt', 'line one\nline two\n');
+  const secret = await resolveProviderApiKeyResolver().resolve('openai');
+  const client = new OpenAI({ apiKey: secret.revealToTrustedConsumer() });
+  const prompts = [
+    'Look at the image /tmp/strict328/files/red.png and tell me its main color. Use the read_file tool.',
+    'Read the file /tmp/strict328/files/notes.txt and tell me its first line. Use the read_file tool.',
+  ];
+  const results: unknown[] = [];
+  const models = (process.env.PROBE_MODELS ?? 'gpt-5.4-mini,gpt-5.5').split(',');
+  for (const model of models) for (const variant of ['strict-omitted', 'strict-false'] as const) for (const prompt of prompts) for (let trial = 0; trial < 2; trial++) {
+    const tool: Record<string, unknown> = { type: 'function', name: schema.name, description: schema.description, parameters: schema.parameters };
+    if (variant === 'strict-false') tool.strict = false;
+    try {
+      const r: any = await client.responses.create({ model, input: prompt, tools: [tool as any], tool_choice: { type: 'function', name: 'read_file' } as any, reasoning: { effort: 'low' } as any });
+      const call = (r.output ?? []).find((o: any) => o.type === 'function_call');
+      results.push({ model, variant, file: prompt.includes('png') ? 'png' : 'txt', trial, args: call ? JSON.parse(call.arguments) : null });
+    } catch (e: any) { results.push({ model, variant, trial, error: String(e?.status ?? '') + ' ' + String(e?.message ?? e).slice(0, 160) }); }
+  }
+  await fs.writeFile('/tmp/strict328/results.json', JSON.stringify(results, null, 1));
+}, 600_000);

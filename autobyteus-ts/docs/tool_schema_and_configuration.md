@@ -136,6 +136,25 @@ inspection. The default registry does not define the retired
 `replace_in_file` or `insert_in_file` tools and no compatibility alias restores
 them.
 
+`read_file` also reads image, audio and video files, chosen by extension
+(`src/utils/media-file-kind.ts`; the media branch is
+`src/tools/file/read-file-media.ts`). Instead of text it returns a context file,
+which the agent loop attaches to the next turn for the model to see. For these
+files `start_line`/`end_line` are refused with a message saying the file was
+not loaded, `include_line_numbers` is ignored, an
+empty file is refused, and a kind the current model's capability marks
+`unsupported` is refused with a message saying the file was not loaded
+(`unknown` loads). The same path contract and denied paths apply. Any other
+file is read once; it is refused as binary (PDF, Office documents, archives,
+executables) when it contains a NUL byte and is not valid UTF-8. Otherwise those
+bytes are decoded as UTF-8 text exactly as before, including text with stray NUL
+bytes such as build logs. A binary file with no NUL byte at all (rare; 2 of 400
+sampled PDFs) is still decoded as text, and a UTF-16 file that starts with a
+byte-order mark is refused. The separate
+`read_media_file` tool was removed; a stored definition that still names it
+starts as described below and reads media through `read_file`, which every
+native agent has.
+
 Agent definitions persist tool names as strings. Existing configurations are
 not rewritten when a registered tool is removed: the normal AutoByteus resolver
 warns and skips an unknown name while continuing to instantiate the remaining
@@ -282,6 +301,13 @@ Strict function tools remain intentionally gated off by default. Current
 `required`; enabling `function.strict: true` safely would require a future
 nullable-required optional-field conversion. The normalizer therefore rejects
 attempts to enable strict mode until that transform exists.
+
+The OpenAI Responses API treats an omitted `strict` as `true`, unlike Chat
+Completions, where it defaults to `false`. With strict mode on, GPT-5 models fill
+every optional argument of every tool (for example `start_line`/`end_line` on an
+image read). `OpenAIResponsesLLM.normalizeTools` (`src/llm/api/openai-responses-llm.ts`)
+therefore sends every function tool with `strict: false`; only a tool passed in
+already in Responses shape with its own `strict` keeps that value.
 
 ### 4.6 MCP-Origin JSON Schema Mapping
 

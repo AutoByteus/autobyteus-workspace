@@ -25,6 +25,17 @@ const clearEnv = (): void => {
   delete process.env.AUTOBYTEUS_LOG_CONSOLE;
 };
 
+// The logger writes through fs.createWriteStream, which opens the file and writes asynchronously:
+// wait for the last expected line instead of a fixed delay (a fixed 25 ms failed under full-suite load).
+const readLogWhenContains = async (filePath: string, text: string, timeoutMs = 5000): Promise<string> => {
+  const deadline = Date.now() + timeoutMs;
+  for (;;) {
+    const output = fs.existsSync(filePath) ? fs.readFileSync(filePath, 'utf8') : '';
+    if (output.includes(text) || Date.now() >= deadline) return output;
+    await new Promise((resolve) => setTimeout(resolve, 10));
+  }
+};
+
 describe('logger initialization', () => {
   beforeEach(() => {
     vi.resetModules();
@@ -51,8 +62,7 @@ describe('logger initialization', () => {
     initializeLogging();
     console.info('second');
 
-    await new Promise((resolve) => setTimeout(resolve, 25));
-    const output = fs.readFileSync(filePath, 'utf8');
+    const output = await readLogWhenContains(filePath, 'second');
     expect(output).toContain('first');
     expect(output).toContain('second');
     fs.rmSync(tmpDir, { recursive: true, force: true });
@@ -71,11 +81,12 @@ describe('logger initialization', () => {
     process.env.AUTOBYTEUS_LOG_FILE = filePath;
     initializeLogging();
     console.info('two');
+    console.error('three'); // written at the new level, after 'two' would have been
 
-    await new Promise((resolve) => setTimeout(resolve, 25));
-    const output = fs.readFileSync(filePath, 'utf8');
+    const output = await readLogWhenContains(filePath, 'three');
     expect(output).toContain('one');
     expect(output).not.toContain('two');
+    expect(output).toContain('three');
     fs.rmSync(tmpDir, { recursive: true, force: true });
   });
 });
