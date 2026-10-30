@@ -231,7 +231,7 @@ The value both sides need — the switch itself (`RuntimeSwitch`: key, previous 
 | Previous backend | previous agent (user-facing), earlier segment (code) | Yes | Yes | Low | The notice says "previous agent" |
 | Stored runtime spelling | raw trace runtime label | Yes | No: documented discrepancy 1 (stored `CODEX` vs `codex_app_server`) | Medium | FU-006 |
 | The stopped-run edit | `…ModelConfig` family | No: it now carries the agent runtime | No: documented discrepancy 2 | Medium | FU-007 (rename with the team family) |
-| Runtime names in text | Claude Agent SDK, Codex App Server (`agentRuntimeName`) | Yes | Yes (GLOSSARY: no short forms) | Low | Marker, notice and UI use the glossary names |
+| Runtime names in text | Claude Agent SDK, Codex App Server (`agentRuntimeName`) | Yes | Yes (GLOSSARY: no short forms) | Low | The marker and the UI use the glossary names; the notice names no agent runtime |
 
 ## Existing Capability / Subsystem Reuse Check
 
