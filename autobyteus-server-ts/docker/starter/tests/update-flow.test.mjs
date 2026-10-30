@@ -3,7 +3,7 @@
 // descriptions signed with the fixture key. Each case records what the node runs before and after.
 import assert from 'node:assert/strict'
 import { generateKeyPairSync } from 'node:crypto'
-import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
+import { existsSync, readdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
 import { after, test } from 'node:test'
 import { NodeStarter } from '../starter.mjs'
@@ -115,6 +115,9 @@ test('refusals before anything changes: the old server keeps serving with the sa
   await publishPackage(source, node.privateKey, { version: '1.5.24', tamper: ({ archiveBytes }) => ({ archiveBytes: Buffer.concat([archiveBytes, Buffer.from('x')]) }) })
   await publishPackage(source, node.privateKey, { version: '1.5.25', tamper: ({ archiveBytes }) => { const changed = Buffer.from(archiveBytes); changed[changed.length - 10] ^= 0xff; return { archiveBytes: changed } } })
   await publishPackage(source, node.privateKey, { version: '1.5.26', behavior: { exitImmediately: 1 } })
+  await publishPackage(source, node.privateKey, { version: '1.5.27', describe: (d) => ({ ...d, dataMigrations: ['prisma/not-in-the-archive'] }) })
+  await publishPackage(source, node.privateKey, { version: '1.5.28' })
+  rmSync(path.join(source.dir, 'v1.5.28', `autobyteus-server-1.5.28-linux-${process.arch}.tar.gz`))
   const { port } = await boot(node, source)
   const before = await status(node)
   const cases = [
@@ -126,6 +129,8 @@ test('refusals before anything changes: the old server keeps serving with the sa
     ['1.5.24', 'refused', 'ARCHIVE_MISMATCH'],
     ['1.5.25', 'refused', 'ARCHIVE_MISMATCH'],
     ['1.5.26', 'failed', 'SELF_CHECK_FAILED'],
+    ['1.5.27', 'refused', 'DESCRIPTION_MISMATCH'],
+    ['1.5.28', 'failed', 'DOWNLOAD_FAILED'],
   ]
   for (const [version, outcome, code] of cases) {
     await t.test(`${version}: ${code}`, async () => {
@@ -140,9 +145,6 @@ test('refusals before anything changes: the old server keeps serving with the sa
       assert.equal((await serverAnswer(port)).status, 'ok')
     })
   }
-  const lastStatus = await status(node)
-  assert.match(lastStatus.update.message, /did not start/)
-  assert.match((await runCli(node.paths.socket, 'status')).body.update.message, /1\.5\.26/)
   assert.ok((await status(node)).update.finishedAt)
 })
 

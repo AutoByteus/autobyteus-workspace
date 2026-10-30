@@ -140,10 +140,11 @@ export async function startReleaseSource({ stable, feed = [] } = {}) {
 
 /**
  * Builds a package, archives it with tar, and publishes archive, description and signature in the
- * release source for `version` (as the release workflow does). `privateKey` signs; `tamper` may
- * change { description, archiveBytes } before they are written. Returns the description.
+ * release source for `version` (as the release workflow does). `describe` may change the description
+ * before it is signed; `tamper` may change { descriptionBytes, archiveBytes } after. Returns the
+ * description.
  */
-export async function publishPackage(source, privateKey, { version, publishAs = version, tamper, ...packageOptions }) {
+export async function publishPackage(source, privateKey, { version, publishAs = version, tamper, describe = (d) => d, ...packageOptions }) {
   const { createHash, sign } = await import('node:crypto')
   const { execFileSync } = await import('node:child_process')
   const { readFileSync, statSync } = await import('node:fs')
@@ -160,6 +161,7 @@ export async function publishPackage(source, privateKey, { version, publishAs = 
     ...JSON.parse(readFileSync(path.join(packageDir, 'server-package.json'), 'utf8')),
     archive: { name: `${name}.tar.gz`, sha256: createHash('sha256').update(archiveBytes).digest('hex'), size: archiveBytes.length, unpackedSize },
   }
+  description = describe(description)
   const descriptionBytes = Buffer.from(`${JSON.stringify(description, null, 2)}\n`)
   const signature = sign(null, descriptionBytes, privateKey).toString('base64')
   let publishedDescription = descriptionBytes
