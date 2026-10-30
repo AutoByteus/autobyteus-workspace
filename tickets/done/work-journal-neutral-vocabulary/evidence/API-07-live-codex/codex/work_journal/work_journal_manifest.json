@@ -1,0 +1,14 @@
+{
+  "run_id": "work_journal_codex_368def37_a285_4dcd_8670_fbd30_5f838399d2dd4390a5b0de3e5ee40166",
+  "runtime_kind": "codex_app_server",
+  "renderer_revision": 2,
+  "files": [
+    {
+      "journal_file": "work_journal_active.md",
+      "source_file": "raw_traces_active.jsonl",
+      "source_record_count": 12,
+      "state": "open",
+      "content_sha256": "66b87a56babb91690703d7769c6c559b80f8a15c9976123880be603c34cecc80"
+    }
+  ]
+}

@@ -14,7 +14,13 @@ import { commandLine, convertedCommandLine, editFileLine, writeFileLine } from "
 import { interruptedFromError, normalizeRecordedResult } from "../result-envelopes.js";
 import { diffTexts } from "../text-diff.js";
 import { okWith, type NormalizedToolResult } from "../tool-outcome.js";
-import type { BuiltInConverter, RecordedCall, RecordedResult, RuntimeTranslation } from "./runtime-translation.js";
+import type {
+  BuiltInConverter,
+  QualifiedToolName,
+  RecordedCall,
+  RecordedResult,
+  RuntimeTranslation,
+} from "./runtime-translation.js";
 
 /** Antigravity CLI: contract §4 (Antigravity table) and §6 (AGY envelope and texts). */
 
@@ -115,6 +121,16 @@ const replaceFileContent: BuiltInConverter = (call, result) => editFileLine(
   normalized(result),
 );
 
+/** A shell tool recorded under the name `Bash`: the same command line as `run_command`. */
+const bash: BuiltInConverter = (call, result) => commandLine(asText(call.args.command), [], normalized(result));
+
+/** Antigravity qualifies another server's tool as `mcp__<server>__<tool>`. */
+const QUALIFIED = /^mcp__(.+?)__(.+)$/;
+const splitToolName = (name: string): QualifiedToolName | null => {
+  const match = QUALIFIED.exec(name);
+  return match ? { server: match[1]!, tool: match[2]! } : null;
+};
+
 export const antigravityTranslation: RuntimeTranslation = Object.freeze({
   label: agentRuntimeName(RuntimeKind.ANTIGRAVITY_CLI),
   builtInTools: new Map<string, BuiltInConverter>([
@@ -125,7 +141,9 @@ export const antigravityTranslation: RuntimeTranslation = Object.freeze({
     ["list_dir", listDir],
     ["write_to_file", writeToFile],
     ["replace_file_content", replaceFileContent],
+    ["Bash", bash],
   ]),
   normalizeResult: normalizeAgyResult,
   unwrapCall,
+  splitToolName,
 });

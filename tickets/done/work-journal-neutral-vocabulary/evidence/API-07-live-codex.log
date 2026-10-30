@@ -1,0 +1,8 @@
+# API-07 command: env -i PATH HOME=$HOME USER LOGNAME TMPDIR RUN_CODEX_E2E=1 WORK_JOURNAL_E2E_EVIDENCE_DIR=<evidence>/API-07-live-codex pnpm exec vitest run tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts --no-watch
+# commit 40fb8233d5 + new tests; date 2026-10-30T10:47:21Z
+
+ ✓ tests/e2e/runtime/work-journal-live-runtimes.e2e.test.ts (4 tests | 3 skipped) 12914ms
+     ✓ Codex: journal current after the turn  12604ms
+ Test Files  1 passed (1)
+      Tests  1 passed | 3 skipped (4)
+   Duration  22.92s (transform 7.11s, setup 42ms, import 9.51s, tests 12.91s, environment 0ms)

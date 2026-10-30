@@ -38,7 +38,12 @@ const formatArguments = (args: Readonly<Record<string, unknown>>): { inline: str
   return { inline, blocks };
 };
 
-export const genericToolLine = (call: RecordedCall, result: NormalizedToolResult | null): BuiltInLine => {
+/** `server` is set for a server-qualified name: `Tool: <tool> (via <server>) …`. */
+export const genericToolLine = (
+  call: RecordedCall,
+  result: NormalizedToolResult | null,
+  server: string | null = null,
+): BuiltInLine => {
   const name = call.name.trim() ? call.name : "(name not recorded)";
   const { inline, blocks } = formatArguments(call.args);
   const recorded = result ?? NO_RESULT;
@@ -46,7 +51,7 @@ export const genericToolLine = (call: RecordedCall, result: NormalizedToolResult
   const resultPart: BodyPart[] = output === null ? []
     : blocks.length ? [{ kind: "labeled_result", text: output }] : [{ kind: "output", text: output }];
   return {
-    head: [`Tool: ${name}`, ...inline].join(" "),
+    head: [`Tool: ${name}`, ...(server ? [`(via ${server})`] : []), ...inline].join(" "),
     outcome: recorded.outcome,
     parts: [...blocks, ...resultPart],
   };

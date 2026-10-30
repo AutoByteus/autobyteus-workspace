@@ -25,6 +25,8 @@ const sha256 = (text: string): string => createHash("sha256").update(text, "utf-
 /** Most lines one `readJournalLines` call returns. */
 export const MAX_JOURNAL_LINES_PER_READ = 400;
 
+export type WorkJournalEnsureOptions = Readonly<{ regenerate?: boolean }>;
+
 export type WorkJournalServiceDependencies = Readonly<{
   store?: WorkJournalStore;
   renderer?: WorkJournalFileRenderer;
@@ -55,10 +57,18 @@ export class WorkJournalService {
     this.createRawTraceSource = deps.createRawTraceSource ?? defaultRawTraceSource;
   }
 
-  /** Makes the run's journal current and returns its package. Errors reach the caller. */
-  ensureCurrent(target: WorkJournalTarget): Promise<WorkJournalPackage> {
+  /** The revision of the rendering rules, for consumers that must know when journals are rendered again. */
+  get rendererRevision(): number {
+    return WORK_JOURNAL_RENDERER_REVISION;
+  }
+
+  /**
+   * Makes the run's journal current and returns its package. Errors reach the caller. `regenerate`
+   * renders every file again whatever the stored files and revision say (memory search's Rebuild).
+   */
+  ensureCurrent(target: WorkJournalTarget, options: WorkJournalEnsureOptions = {}): Promise<WorkJournalPackage> {
     const memoryDir = path.resolve(target.memoryDir);
-    return this.serialized(memoryDir, () => this.reconcile({ ...target, memoryDir }));
+    return this.serialized(memoryDir, () => this.reconcile({ ...target, memoryDir }, options.regenerate === true));
   }
 
   /** Called after `ensureCurrent` wrote or removed a journal file. Returns the unsubscribe. */
@@ -143,7 +153,7 @@ export class WorkJournalService {
     }
   }
 
-  private async reconcile(target: WorkJournalTarget): Promise<WorkJournalPackage> {
+  private async reconcile(target: WorkJournalTarget, regenerate: boolean): Promise<WorkJournalPackage> {
     const { memoryDir } = target;
     const rawRunId = path.basename(memoryDir);
     const source = this.createRawTraceSource(memoryDir);
@@ -151,6 +161,7 @@ export class WorkJournalService {
     const previous = await this.store.readManifest(memoryDir);
     // Closed files are reusable only when today's rules for this runtime produced them.
     const reusable = previous
+      && !regenerate
       && previous.renderer_revision === WORK_JOURNAL_RENDERER_REVISION
       && previous.runtime_kind === target.runtimeKind
       ? new Map(previous.files.map((file) => [file.journal_file, file]))

@@ -3,6 +3,8 @@ import { splitLines } from "./output-shortener.js";
 /** Contract §7: what happened to one tool call. `kind` is the single outcome discriminator. */
 export type ToolOutcome =
   | Readonly<{ kind: "ok"; note: string | null }>
+  /** A message the platform accepted for its recipient (`ok` says only that the call ran). */
+  | Readonly<{ kind: "delivered" }>
   | Readonly<{ kind: "exit"; code: number }>
   | Readonly<{ kind: "failed"; error: string | null }>
   | Readonly<{ kind: "denied"; reason: string | null }>
@@ -16,6 +18,7 @@ export type ToolOutcome =
 export type NormalizedToolResult = Readonly<{ outcome: ToolOutcome; output: string | null }>;
 
 export const OK: ToolOutcome = Object.freeze({ kind: "ok", note: null });
+export const DELIVERED: ToolOutcome = Object.freeze({ kind: "delivered" });
 export const okWith = (note: string): ToolOutcome => ({ kind: "ok", note });
 export const NO_RESULT: NormalizedToolResult = Object.freeze({
   outcome: Object.freeze({ kind: "no_result" as const }),
@@ -28,6 +31,7 @@ const INLINE_ERROR_CHARS = 200;
 export const formatOutcome = (outcome: ToolOutcome): Readonly<{ text: string; errorOutput: string | null }> => {
   switch (outcome.kind) {
     case "ok": return { text: outcome.note ? `ok (${outcome.note})` : "ok", errorOutput: null };
+    case "delivered": return { text: "delivered", errorOutput: null };
     case "exit": return { text: `exit ${outcome.code}`, errorOutput: null };
     case "failed": {
       const error = outcome.error?.trim() ?? "";
