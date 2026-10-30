@@ -36,7 +36,7 @@ What was built, inside `autobyteus-server-ts/src/agent-work-journal` plus two me
 - Design classification section / evidence reference: design-spec § Task Size And Architectural Risk
 - Classification confirmed or changed: `Confirmed`
 - Evidence and rationale for confirmation or change: the change stayed inside the journal module and two memory-search pipeline files; no tool, runtime backend, run metadata, raw trace, API, route, persistence format or security boundary was touched; the shadow render measured the one blast-radius item (re-index) at about 22 minutes of background embedding for the changed cards and +0.5% live index size, within the design's estimate (about 50 minutes). No escalation trigger fired.
-- Selected route (`Direct API/E2E`/`Code Review`/`Solution Designer`): `Direct API/E2E` (rule returned by `get_handoff_rules`; see the message). Two items go to the Solution Designer as information first: FU-003 and the gate-2 reading (Known Risks).
+- Selected route (`Direct API/E2E`/`Code Review`/`Solution Designer`): `Direct API/E2E` (rule returned by `get_handoff_rules`: Small/Medium + Low, self-review complete). Two items stay open for the Solution Designer's decision and travel in this package: FU-003 (`follow-ups.md`) and the gate-2 reading (Known Risks); neither blocks validation.
 - Lightweight implementation self-review completed for the direct route: `Yes` (below)
 - New design impact or escalation trigger: `None`
 
