@@ -18,7 +18,7 @@
 - Handoff summary: `handoff-summary.md`
 - Release/publication/deployment report: `release-deployment-report.md`
 - Integration and post-integration verification: merged `origin/personal` @ `f13dec395f` → `8b53331099`, no conflicts; DR-01…03 Pass, including the live GitHub check and the scripted runtime-shell cells
-- Verification and finalization state: verified from the evidence, no user check needed; Secret Gate `PASS`; finalization per `RELEASE.md` (see the report)
+- Verification and finalization state: verified from the evidence, no user check needed; Secret Gate `PASS`; ticket branch `c6b63506a1` pushed; merged `--no-ff` into `personal` as `a11bef0f32` (`f13dec395f..a11bef0f32`); beta `v1.5.11-beta.4` published (release commit `30afe31ccd`, 4/4 workflows, 17/17 assets, Docker `:1.5.11-beta.4` and `:beta`); worktree and local branches removed after the record push
 - Terminal return to the Solution Designer: `Sent` after finalization, the beta and cleanup
 - Terminal return message/reference: the DR-001 message to `/software_engineering_team/solution_designer`
 - Why this baseline was recorded: first completed delivery result
