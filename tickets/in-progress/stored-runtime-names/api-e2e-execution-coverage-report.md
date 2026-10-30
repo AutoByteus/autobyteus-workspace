@@ -74,7 +74,7 @@ The AC-006 user-only part is not a gap: the criterion is a real-shaped isolated 
 | User-surface, browser, and desktop-shell confidence | N/A | N/A | no UI change: the Settings page lists migrations generically and was not changed; its server side (`getAppDataMigrations`) is exercised | a rendered Settings page was not viewed | — |
 | Durable regression coverage quality and relevance | 94% | 96% | two new durable E2E files, two updated suites; mutation-checked; failure of a weak fixture (M2) led to a stronger one | gated live suites stay gated | — |
 
-- Overall post-repository confidence: 94.7%
+- Overall post-repository confidence: 94.0%
 - Overall final confidence: 95.3%
 - Calculation method: simple average of the six applicable categories, post (95+96+91+94+94+94)/6, final (96+96+94+95+95+96)/6
 - Every critical acceptance criterion directly proven, apart from parts only the user can check: `Yes`
@@ -86,7 +86,7 @@ The AC-006 user-only part is not a gap: the criterion is a real-shaped isolated 
 
 - Decision: `Required` (executed)
 - Execution mode: `Lifecycle` (built-server startup/restart), `Worker or Distributed` (hub + source), `Live API` (Grok)
-- Confidence gap or residual risk it addresses, and the expected gain: the migration had never run inside the real server (registry wiring, prerequisites, GraphQL record, restart), nor had the sync path met a converted manifest; post-repository score 94.7% → final 95.3%.
+- Confidence gap or residual risk it addresses, and the expected gain: the migration had never run inside the real server (registry wiring, prerequisites, GraphQL record, restart), nor had the sync path met a converted manifest; post-repository score 94.0% → final 95.3%.
 - Browser validation needed: No. No UI changed.
 - If `Required`: done as API-02, API-03, API-06, API-08.
 

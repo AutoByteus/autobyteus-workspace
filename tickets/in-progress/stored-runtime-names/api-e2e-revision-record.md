@@ -26,7 +26,7 @@ None. (The first live Grok run failed once before reaching this ticket's code; i
 
 - Canonical artifacts and sections updated: `api-e2e-coverage-investigation.md`, `api-e2e-execution-coverage-report.md`, `api-e2e-test-progress.md`
 - Prior result and confidence: N/A
-- Current result and confidence: Pass / 95.3% (post-repository 94.7%)
+- Current result and confidence: Pass / 95.3% (post-repository 94.0%)
 - New or remaining failure IDs: none
 - Recommended owner: Code reviewer (test-code review), then Delivery
 - Remaining risks, blocked evidence, or untested scope: Claude/Codex/native compaction through a running server; live AGY; the user's real node (first start after update); a real `GROK_BUILD` manifest sample.
