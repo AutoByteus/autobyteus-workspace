@@ -1,6 +1,6 @@
 # API-10 cause of round-1 failure (stage API003)
 # Command: docker run --rm --network none --entrypoint sh <image> -c "ls -d <pnpm engine dirs>"; git show e22245f0:autobyteus-server-ts/src/startup/migrations.ts (listBundledPrismaEngineDirs)
-# Commit: 4a968218e9; images autobyteus-server-305-test:step1 (sha256:ae18d6c1a66e…) and autobyteus/autobyteus-server:beta (9657209ba499)
+# Commit: 30aaef9284 (probe as of 01c56f1b95); images autobyteus-server-305-test:step1 (sha256:ae18d6c1a66e…) and autobyteus/autobyteus-server:beta (9657209ba499)
 # Environment: macOS arm64, Docker 29.0.1; Date: 2026-10-30T16:14:02Z; Case: API-10
 
 ## Baseline resolver candidate dirs (e22245f0:migrations.ts:85-105)
