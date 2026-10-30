@@ -11,6 +11,7 @@
 - Design review report: `.../design-review-report.md` (ARCH-REV-002, Pass)
 - Architecture review revision record: `.../architecture-review-revision-record.md`
 - Triggering rework report: `N/A` (initial implementation of step 1)
+- Code review of IR-001: `Pass`, CRR-001 (`code-review-report.md`, `code-review-revision-record.md`). Non-blocking notes CR-N1 (zh way-out command), CR-N2 (Android can create the release too) and CR-N3 (GLOSSARY wording for zh images) are taken with step 2 or before delivery.
 
 All paths are in the ticket folder
 `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-in-place-server-update/tickets/in-progress/docker-node-in-place-server-update/`.
