@@ -81,12 +81,11 @@ A platform notice delivered through the existing next-input route (`AgentRunPlat
 
 ```
 [System: runtime hand-over]
-This run was worked on by a previous agent on a different agent runtime: <from agent runtime/model>, now
-<to agent runtime/model>.
+Another agent (the previous agent) worked on this run before you.
 
 Its work is recorded in work journals: <run folder>/work_journal/
 - Readable Markdown, one file per earlier stretch of work, oldest first:
-  <file> | <agent runtime/model> | <period> | <size, lines>   (one line per file; work_journal_active.md is the latest)
+  <file> | <period> | <size, lines>   (one line per file; work_journal_active.md is the latest)
 - Entries look like "[HH:MM:SS] User: …", "Agent: …", "Command: … → ok", "Edit file: …", "Message to … → delivered".
   Each entry ends with a link to the raw trace record with the full content; long output is shortened.
 - To see what was done most recently, read the end of work_journal_active.md. For earlier work or the
@@ -95,7 +94,7 @@ Its work is recorded in work journals: <run folder>/work_journal/
   running when it stopped.
 ```
 
-Facts and where each comes from: runtimes and models from the pending switch (3.1) and the current binding; the journal files, periods, sizes and each file's runtime from the journal service (`ensureCurrent`, `listJournalFiles`, the per-file runtime of 3.4). If the notice cannot be delivered with the first input (the dispatch is rejected or requeued) it stays pending in memory for the next input (the existing preface settle rules).
+Facts and where each comes from: the journal files, their periods, sizes and lines from the journal service (`ensureCurrent`, `listJournalFiles`). The notice names no agent runtime or model: the agent acts on where the work is recorded, not on which product recorded it (the user, 2026-10-30). The runtimes appear only in the chat marker (3.3), which is for the user, and inside the journal service, which uses each file's runtime to render it (3.4). If the notice cannot be delivered with the first input (the dispatch is rejected or requeued) it stays pending in memory for the next input (the existing preface settle rules).
 
 ## 4. Invariants (checkable)
 
