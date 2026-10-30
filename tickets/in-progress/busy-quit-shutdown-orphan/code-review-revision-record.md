@@ -9,6 +9,7 @@ The latest `code-review-report.md` (or `api-e2e-test-review-report.md`) is autho
 | CRR-001 | `code-review-report.md` | Implementation Review, round 1 (IR-001) | N/A | Pass | None |
 | CRR-002 | `code-review-report.md` | API/E2E Failure-Origin Review, round 2 (API-REV-001 F-API-001, F-API-002) | Pass | Fail: CR-001 `Local Fix` (implementation); F-API-002 → FU-008 | CR-001 |
 | CRR-003 | `code-review-report.md` | Implementation Review, round 3, Targeted Delta (IR-002) | Fail | Pass | CR-001 (resolved) |
+| CRR-004 | `api-e2e-test-review-report.md` | Proportional API/E2E Test-Code Review (API-REV-002 Pass) | Pass (CRR-003) | Pass | None |
 
 ## Revision Entries
 
@@ -90,3 +91,28 @@ None (CRR-001 had no findings).
 - Material score or classification changes: category 8 goes from 9.0 back to 9.3; overall 9.4. Medium / High unchanged.
 - Recommended recipient: API/E2E engineer
 - Remaining risks or uncertainty: F-API-002 (FU-008), whose leading Read-only candidate, gate drain before the fence in `AgentOrgRun.terminateOnce`, is not yet in FU-008; N-3, N-5/FU-007.
+
+### CRR-004 — Proportional test-code review after API-REV-002 Pass
+
+- Canonical review report updated: `api-e2e-test-review-report.md` (new)
+- Review entry point and round: Successful API/E2E Test-Code Review, round 1
+- Review scope: `N/A` (test review)
+- Triggering role, report path, and finding or scenario IDs: API/E2E engineer, `api-e2e-execution-coverage-report.md` (API-REV-002, `Pass`, 94.1%), API-02, API-03
+- Relevant solution revision IDs: SR-008
+- Relevant architecture-review revision IDs: ARCH-REV-003
+- Relevant implementation revision IDs: IR-001, IR-002
+- Relevant API/E2E revision IDs: API-REV-001, API-REV-002
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: `Pass` (CRR-003, source review)
+- Current authoritative result: `Pass`, with no findings
+- What changed in the review result and why: the three added gated real-process E2E files (`55ddc71839`) and IR-002's two unit test updates were reviewed. They assert approved outcomes only, enter through the real triggers, are isolated with owned roots and run tags, and fail on the base build. The repeated small fixture helpers across `tests/e2e/shutdown/*-fixture.mjs` follow the folder's self-contained convention and are recorded as a note, not a finding.
+- Supported product scenario / material-premise basis changes: None.
+
+#### Prior Finding Resolution
+
+None.
+
+- New or remaining finding IDs: None
+- Material score or classification changes: None; Medium / High
+- Recommended recipient: delivery engineer
+- Remaining risks or uncertainty: FU-008, N-5/FU-007 (the update install was not run), Windows; the architecture reviewer's uncommitted ARCH-REV-003 doc edits.
