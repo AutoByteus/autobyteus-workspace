@@ -10,6 +10,7 @@
 - Requirements owner: Solution Designer
 - Date: 2026-10-30
 - Approved by and reference: `Solution Designer within the direction (user informed)`. Reference: the Solution Designer's message to the user in this conversation of 2026-10-30, which states the intended behavior, the decisions made and the cost note. The wording decisions N-1…N-9 were delegated by the user ("you know the best", 2026-10-30) and are recorded in the contract §10; the requirements contain no `Needs user` decision.
+- Design approval: by the user, 2026-10-30 ("Yeah, I like your recommendation. Let's go."), recorded in `solution-revision-record.md` SR-002 and `design-spec.md`.
 - Exact approved requirements baseline: this document at `SR-001` with the supplement `work-journal-neutral-vocabulary-contract.md` (the vocabulary, §3 to §11).
 - Behavior-defining supplements: `work-journal-neutral-vocabulary-contract.md` (canonical copy in this folder; approved with this baseline). Evidence supplement: `journal-neutrality-analysis.md`.
 
