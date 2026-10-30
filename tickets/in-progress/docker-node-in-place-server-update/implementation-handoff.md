@@ -10,6 +10,7 @@
 - Supplemental task artifacts: `handoff-step-2.md`, `delivery-receipt-verification-step1.md`, `options-report.md`, `follow-ups.md`
 - Design review report: `design-review-report.md` (ARCH-REV-003 Pass)
 - Architecture review revision record: `architecture-review-revision-record.md`
+- Code review of IR-002: `Pass`, CRR-003 (`code-review-report.md`, `code-review-revision-record.md`). D-1..D-3 and the C2 `version` meaning confirmed. Non-blocking CR2-N1 (NEEDS_NEW_IMAGE shows in the launcher's `status` only from step 3) goes to the Solution Designer and delivery and needs no code change; the launcher `status` comes with step 3 (D-2).
 - Earlier round: build step 1 (IR-001) passed code review (CRR-001) and API/E2E, and was finalized into `personal` (merge `eec6522b27`, DR-001). Its record is `implementation-revision-record.md` IR-001 and the step-1 evidence `evidence/IMP-*`.
 
 All paths are in `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-in-place-server-update/tickets/in-progress/docker-node-in-place-server-update/`.
