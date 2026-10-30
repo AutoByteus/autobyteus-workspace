@@ -69,7 +69,8 @@ Restore and chat on the same runtime; the model-only edit; journal derivation an
 
 ### Prerequisites
 
-None. `FU-001` (a trace record for a failed turn) is not needed: the stop reason is dropped (DEC-5). The neutral journal vocabulary (autobyteus-331) is delivered and released.
+- **PRE-1 (a separate ticket, first; the user decided 2026-10-30):** one spelling for the agent runtime in stored raw-trace data. The raw-trace manifests and the compaction payloads store `CODEX`/`CLAUDE`/`ANTIGRAVITY`/`GROK_BUILD`/`AUTOBYTEUS` while everything else stores the `RuntimeKind` values; 316 reads the runtime of each archived raw-trace file (REQ-012) and must not keep a permanent label mapping (`DESIGN.md` rule 10). The prerequisite writes the `RuntimeKind` values and migrates the manifests with a sealed migration. Evidence and the suggested Task: `prerequisite-stored-runtime-names.md`. 316 is `Waiting For Prerequisite`.
+- `FU-001` (a trace record for a failed turn) is not needed: the stop reason is dropped (DEC-5). The neutral journal vocabulary (autobyteus-331) is delivered and released.
 
 ### Review Authority
 
