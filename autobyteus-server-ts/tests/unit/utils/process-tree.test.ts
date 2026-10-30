@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 
-const execFileSync = vi.hoisted(() => vi.fn());
-vi.mock("node:child_process", () => ({ execFileSync }));
+const spawnSync = vi.hoisted(() => vi.fn());
+vi.mock("node:child_process", () => ({ spawnSync }));
 
 import {
   parseProcessTable,
@@ -34,7 +34,7 @@ garbage line
 `;
 const rows = parseProcessTable(PROCESS_TABLE);
 
-afterEach(() => { vi.restoreAllMocks(); execFileSync.mockReset(); });
+afterEach(() => { vi.restoreAllMocks(); spawnSync.mockReset(); });
 
 describe("descendant process-group selection", () => {
   it("selects only groups led by a live descendant of the root", () => {
@@ -68,16 +68,28 @@ describe("descendant pids in one group", () => {
 });
 
 describe("process-table reading", () => {
+  const psResult = (stdout: string, pid = 999) => ({ pid, stdout, status: 0, signal: null, error: undefined });
+
   it("reads through one bounded ps call", () => {
-    execFileSync.mockReturnValue(PROCESS_TABLE);
+    spawnSync.mockReturnValue(psResult(PROCESS_TABLE));
     expect(readProcessTable()).toEqual(rows);
-    expect(execFileSync).toHaveBeenCalledWith("ps", ["-A", "-o", "pid=,ppid=,pgid="],
+    expect(spawnSync).toHaveBeenCalledWith("ps", ["-A", "-o", "pid=,ppid=,pgid="],
       expect.objectContaining({ encoding: "utf8", timeout: 2000 }));
   });
 
+  it("drops the ps reader's own row, so the caller never selects its reader", () => {
+    // The reader (999) is the server's (100) child in the server's group and lists itself.
+    spawnSync.mockReturnValue(psResult(`${PROCESS_TABLE}  999   100   100\n`, 999));
+    const table = readProcessTable();
+    expect(table.map((row) => row.pid)).not.toContain(999);
+    expect(selectDescendantPidsInGroup(table, 100, 100)).toEqual([200, 201]);
+  });
+
   it("throws when the table cannot be read", () => {
-    execFileSync.mockImplementation(() => { throw new Error("spawn ps ENOENT"); });
+    spawnSync.mockReturnValue({ pid: 0, stdout: "", status: null, signal: null, error: new Error("spawn ps ENOENT") });
     expect(() => readProcessTable()).toThrow("ENOENT");
+    spawnSync.mockReturnValue({ pid: 999, stdout: "", status: 1, signal: null, error: undefined });
+    expect(() => readProcessTable()).toThrow("ps exited with 1");
   });
 });
 

@@ -1,4 +1,4 @@
-import { execFileSync } from "node:child_process";
+import { spawnSync } from "node:child_process";
 import process from "node:process";
 
 /**
@@ -17,10 +17,19 @@ export const parseProcessTable = (output: string): ProcessRow[] => output.split(
   return [{ pid, ppid, pgid }];
 });
 
-/** Reads the whole process table through one bounded `ps` call. Throws when it cannot be read. */
-export const readProcessTable = (): ProcessRow[] => parseProcessTable(execFileSync("ps", ["-A", "-o", "pid=,ppid=,pgid="], {
-  encoding: "utf8", timeout: PS_TIMEOUT_MS, stdio: ["ignore", "pipe", "ignore"],
-}));
+/**
+ * Reads the whole process table through one bounded `ps` call. Throws when it cannot be read. The
+ * `ps` reader lists itself as a child of the caller; its row is dropped, so no caller ever selects
+ * (or signals) the reader as one of its own processes.
+ */
+export const readProcessTable = (): ProcessRow[] => {
+  const result = spawnSync("ps", ["-A", "-o", "pid=,ppid=,pgid="], {
+    encoding: "utf8", timeout: PS_TIMEOUT_MS, stdio: ["ignore", "pipe", "ignore"],
+  });
+  if (result.error) throw result.error;
+  if (result.status !== 0) throw new Error(`ps exited with ${result.status ?? result.signal}`);
+  return parseProcessTable(result.stdout).filter((row) => row.pid !== result.pid);
+};
 
 const selectDescendants = (rows: readonly ProcessRow[], rootPid: number): ProcessRow[] => {
   const children = new Map<number, ProcessRow[]>();

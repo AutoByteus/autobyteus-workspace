@@ -1,4 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
+
+const spawnSync = vi.hoisted(() => vi.fn());
+vi.mock("node:child_process", () => ({ spawnSync }));
 import { terminateServerProcessTree, type ProcessTreeSweepDeps } from "../../../src/shutdown/server-process-tree-sweep.js";
 import { parseProcessTable } from "../../../src/utils/process-tree.js";
 
@@ -120,5 +123,16 @@ describe("server process-tree sweep", () => {
     await expect(terminateServerProcessTree({ ...h.deps, platform: "win32" })).resolves.toEqual({ outcome: "not-applicable" });
     expect(h.deps.readTable).not.toHaveBeenCalled();
     expect(h.signals).toEqual([]);
+  });
+
+  it("never counts or signals its own ps reader (default reader, idle server)", async () => {
+    // An idle server (100) whose only child at snapshot time is the `ps` reader (999) itself.
+    spawnSync.mockReturnValue({ pid: 999, stdout: "   50 1 50\n  100 50 50\n  999 100 50\n", status: 0, signal: null, error: undefined });
+    const h = harness();
+    const { readTable: _ignored, ...deps } = h.deps;
+    await expect(terminateServerProcessTree(deps)).resolves.toEqual({ outcome: "confirmed", targets: 0 });
+    expect(spawnSync).toHaveBeenCalledOnce();
+    expect(h.signals).toEqual([]);
+    expect(h.deps.log).not.toHaveBeenCalled();
   });
 });
