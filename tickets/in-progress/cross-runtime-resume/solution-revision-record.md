@@ -86,3 +86,7 @@
 ### SR-004 note 3 (2026-10-30)
 
 - The user: the next agent does not need to know the previous or its own agent runtime. The hand-over notice no longer names any agent runtime or model, and the file list shows file, period and size only (contract 3.6; REQ-002; `listJournalFiles` unchanged). The chat marker for the user still names both runtimes and models (DEC-3). Intended behavior narrowed; design stays `Draft`.
+
+### SR-004 note 4 (2026-10-30)
+
+- The user: remove the "Not in the journals" lines (the previous agent's private reasoning, results of tool calls still running). Removed from the hand-over notice (contract 3.6); REQ-006 withdrawn; REQ-002 and AC-004 updated. Intended behavior narrowed; design stays `Draft`.

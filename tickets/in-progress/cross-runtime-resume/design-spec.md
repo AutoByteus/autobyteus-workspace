@@ -44,7 +44,7 @@ A stopped standalone Agent run's settings let the user pick another runtime and 
 
 ## Change Scope (Mandatory)
 
-- In scope: UC-001, UC-002 (requirements) — the settings choice and save, the switch activation, marker and rotation, the hand-over notice, the per-file journal runtime, the chat marker label, validation as a fresh selection; REQ-001…003, 006, 007, 010…013.
+- In scope: UC-001, UC-002 (requirements) — the settings choice and save, the switch activation, marker and rotation, the hand-over notice, the per-file journal runtime, the chat marker label, validation as a fresh selection; REQ-001…003, 007, 010…013.
 - Derived consumers, when a stored or shared structure changes:
   - Raw-trace manifest (new boundary type): readers of `boundary_type` — the raw-trace file source (lists segments; no branch on type), the compaction recorders (own types only). Decision: no reader branches on the type except the new journal-runtime lookup; verify by grep at implementation.
   - `run_metadata.json` (new optional field): readers — history catalog, resume-config service (tolerates null `platformAgentRunId`), run listings. Decision: no reader needs the field except the lifecycle service and the updater; a test opens, lists and views a pending-switch run.
@@ -58,7 +58,7 @@ A stopped standalone Agent run's settings let the user pick another runtime and 
 | Behavior ID | Kind | Approved Requirement / Intent And Acceptance-Criteria IDs | Approved Trigger Or Governing Contract | Relevant Existing Behavior And Evidence Reference | Approved Change Or Preserved Outcome | Target Production Path / Lifecycle And Spine ID(s) |
 | --- | --- | --- | --- | --- | --- | --- |
 | BEH-001 | User | REQ-001, 013; AC-001 | User saves the settings of a stopped standalone Agent run with another runtime/model | Model-only edit; runtime locked (F-25, F-30) | Same run; pending switch recorded; ineligible runs rejected | DS-001 |
-| BEH-002 | System | REQ-002, 003, 006, 007, 010; AC-002, 004, 009 | First input to a run with a pending switch | Restore or prepared start only (F-26) | Switch activation: new session, marker + rotation, notice before the user's text, once | DS-002 |
+| BEH-002 | System | REQ-002, 003, 007, 010; AC-002, 004, 009 | First input to a run with a pending switch | Restore or prepared start only (F-26) | Switch activation: new session, marker + rotation, notice before the user's text, once | DS-002 |
 | BEH-005 | User | REQ-011; AC-002 | Chat shows the run | History from raw traces (F-15, F-28) | Marker where the runtime changed, live and on reload | DS-002 (marker record, live presentation) |
 | BEH-007 | System | REQ-012; AC-006 | Journal is made current | One runtime for all files (F-24) | Per-file runtime; runs that never switched unchanged | DS-003 |
 
@@ -87,7 +87,7 @@ Per `GLOSSARY.md`: **agent runtime** (what runs an agent; never "LLM runtime"), 
 
 - **Agent runtime switch:** replacing the agent runtime, model and model settings of a stopped standalone Agent run, keeping the run. It is made real at the run's next input.
 - **Pending agent runtime switch:** the user's choice, saved in the run's metadata, before that input.
-- **Hand-over notice:** the system notice the new agent receives with that input (where the journals are, how they are laid out, what is not in them).
+- **Hand-over notice:** the system notice the new agent receives with that input (where the journals are, how they are laid out).
 - **Switch marker:** the notice record that starts the new raw-trace file; shown in the chat and the journal.
 - **Previous agent:** the agent that worked on the run on the earlier agent runtime (wording toward the agent; in code, the earlier segment).
 

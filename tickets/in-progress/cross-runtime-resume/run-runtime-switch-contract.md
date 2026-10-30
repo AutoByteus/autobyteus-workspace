@@ -90,8 +90,6 @@ Its work is recorded in work journals: <run folder>/work_journal/
   Each entry ends with a link to the raw trace record with the full content; long output is shortened.
 - To see what was done most recently, read the end of work_journal_active.md. For earlier work or the
   original request, read the earlier files or search them (search_memory).
-- Not in the journals: the previous agent's private reasoning, and results of tool calls that were still
-  running when it stopped.
 ```
 
 Facts and where each comes from: the journal files, their periods, sizes and lines from the journal service (`ensureCurrent`, `listJournalFiles`). The notice names no agent runtime or model: the agent acts on where the work is recorded, not on which product recorded it (the user, 2026-10-30). The runtimes appear only in the chat marker (3.3), which is for the user, and inside the journal service, which uses each file's runtime to render it (3.4). If the notice cannot be delivered with the first input (the dispatch is rejected or requeued) it stays pending in memory for the next input (the existing preface settle rules).
