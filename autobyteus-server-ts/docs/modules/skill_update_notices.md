@@ -123,7 +123,7 @@ Do not rely on a skill that is no longer available.
 
 ## Lifecycle And Composition
 
-- `build-studio-server.ts` and `start-standalone-application-host.ts` create the subsystem and pass it to `GeneralProcessRunSupervisor` as `platformInputNotices`. The supervisor wires it into `AgentRunManager` as `inputPreface` and `lifecycleObserver`.
+- `build-studio-server.ts` and `start-standalone-application-host.ts` create the subsystem and pass its service, behind `AgentRunPlatformNotices` together with [Tool List Updates](./tool_list_updates.md) (tool list first, then skills), to `GeneralProcessRunSupervisor` as `platformInputNotices`. The supervisor wires that single slot into `AgentRunManager` as `inputPreface` and `lifecycleObserver`. One input carries at most one notice: when both are pending, the tool list notice goes with this input and the skill notice with the next. The skill service ignores the dispatch kind.
 - Shutdown closes the notices (watcher, then service, then the tracker, which waits for tracking and record writes in progress) before the run supervisor.
 
 ## Ownership Rules

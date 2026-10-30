@@ -1,0 +1,9 @@
+# API-04 Grok live e2e attempt 2026-10-29T18:56:18Z commit 9e21e20f8a; grok 1.0.70 (f50904eaee6c) [stable]
+     × call alpha; add beta; call beta with the conversation kept; remove alpha; alpha is refused 120814ms
+Error: Timed out waiting for DONE-1; got [{"kind":"message","role":"user","content":"Remember this codeword: OKAPI-2504. Call the list_projects tool once, then reply with exactly: DONE-1","media":null,"ts":1793300190.092}]
+      Tests  1 failed (1)
+exit=1
+
+# direct probe (grok -p 'Reply with exactly: OK' --model grok-4.7) in an empty dir:
+You’ve reached your free Grok Build usage limit for now. Get SuperGrok for much higher limits, or try again later: https://grok.com/supergrok?referrer=grok-build
+Error: You’ve reached your free Grok Build usage limit for now. Get SuperGrok for much higher limits, or try again later: https://grok.com/supergrok?referrer=grok-build

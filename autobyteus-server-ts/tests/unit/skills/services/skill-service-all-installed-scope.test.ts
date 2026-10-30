@@ -2,9 +2,10 @@ import fs from "node:fs";
 import fsp from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { AgentDefinition } from "../../../../src/agent-definition/domain/models.js";
 import { createAgyRunCapsule } from "../../../../src/agent-execution/backends/antigravity/capsule/agy-run-capsule.js";
+import { stubAgentToolMcpDescriptor } from "../../../helpers/agent-tool-mcp-run-sessions-stub.js";
 import { WorkspaceSkillMaterializer } from "../../../../src/agent-execution/backends/shared/workspace-skill-materializer.js";
 import { SkillService } from "../../../../src/skills/services/skill-service.js";
 
@@ -188,6 +189,8 @@ describe("SkillService ALL_INSTALLED skill scope", () => {
 
     it("AGY: the run capsule links every layout, including the bundled agent-private skill", async () => {
       const workspace = await fsp.mkdtemp(path.join(tempRoot, "agy-workspace-"));
+      // The capsule checks the user-level AGY MCP config for a name collision: keep it in the temp root.
+      const homedir = vi.spyOn(os, "homedir").mockReturnValue(tempRoot);
       const capsule = await createAgyRunCapsule({
         agentDefinitionId: "autobyteus-daily-assistant",
         runId: "agy-all-installed",
@@ -196,8 +199,8 @@ describe("SkillService ALL_INSTALLED skill scope", () => {
         identity: "Identity",
         workspaceCollisionPolicy: "prefer_workspace",
         configuredSkillBindings: service.resolveConfiguredSkillBindingsForAgent(dailyAssistant()),
-        mcpDescriptor: null,
-      });
+        mcpDescriptor: stubAgentToolMcpDescriptor("agy-all-installed"),
+      }).finally(() => homedir.mockRestore());
 
       for (const name of ["global-writer", "nested-reviewer", "paper-digest", "team-handbook", "wireframe"]) {
         expect(fs.lstatSync(path.join(capsule.path, ".agents", "skills", name)).isSymbolicLink()).toBe(true);

@@ -1,0 +1,31 @@
+6823d55920 Merge live-tool-list-updates DR-002 (notice spec reads its messages through the localization runtime; build guard fix) (autobyteus-324)
+ M tickets/done/live-tool-list-updates/api-e2e-test-progress.md
+running live (claude, codex, grok): tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts
+running antigravity (antigravity): tests/e2e/runtime/agy-linked-skills-transport.e2e.test.ts
+running autobyteus (autobyteus): tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts
+
+Release smoke check
+runtime     scenario                                 result  reason
+claude      new run + restore, linked workspace      PASS
+claude      brand-new team member                    PASS
+claude      different same-named skill               PASS
+codex       new run + restore, linked workspace      PASS
+codex       brand-new team member                    PASS
+codex       different same-named skill               PASS
+grok        new run + restore, linked workspace      FAIL    failed: AssertionError: turn errors: {"code":"ACP_PROMPT_FAILED","message":"Rate limited: API error (status 429 Too Many Requests): subscription:free-usage-exhausted: You've used all the included free usage for model grok-4.7 for now. Usage resets over a rolling 24-hour window — tokens (actual/limit): 60406
+grok        brand-new team member                    FAIL    failed: AssertionError: turn errors: {"code":"ACP_PROMPT_FAILED","message":"Rate limited: API error (status 429 Too Many Requests): subscription:free-usage-exhausted: You've used all the included free usage for model grok-4.7 for now. Usage resets over a rolling 24-hour window — tokens (actual/limit): 60406
+grok        different same-named skill               FAIL    failed: AssertionError: turn errors: {"code":"ACP_PROMPT_FAILED","message":"Rate limited: API error (status 429 Too Many Requests): subscription:free-usage-exhausted: You've used all the included free usage for model grok-4.7 for now. Usage resets over a rolling 24-hour window — tokens (actual/limit): 60406
+antigravity brand-new run, linked workspace          PASS
+antigravity brand-new team member, linked workspace  PASS
+autobyteus  brand-new run, linked workspace          PASS
+autobyteus  brand-new team member, linked workspace  PASS
+worktree    left unchanged                           FAIL    git status changed:  M tickets/done/live-tool-list-updates/api-e2e-test-progress.md
+
+commit    6823d559200b65d573de4c7b61ad759e4aacc849
+models    {"claude": "haiku", "codex": "gpt-5.6-luna", "grok": "grok-4.7"}
+duration  live 82s, antigravity 24s, autobyteus 12s
+result    FAIL
+logs      /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/release-smoke-dg_7evw_
+exit=1
+
+[exited with code 0]

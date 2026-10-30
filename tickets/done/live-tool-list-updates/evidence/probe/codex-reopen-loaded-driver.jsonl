@@ -1,0 +1,17 @@
+{"t":"2026-10-29T11:13:32.082Z","kind":"thread","threadId":"01a1875d-7731-7ba1-9e7d-c0163c37e57c","variant":"loaded"}
+{"t":"2026-10-29T11:13:32.083Z","kind":"notification","method":"mcpServer/startupStatus/updated","params":"{\"threadId\":\"01a1875d-7731-7ba1-9e7d-c0163c37e57c\",\"name\":\"node_repl\",\"status\":\"starting\",\"error\":null,\"failureReason\":null}"}
+{"t":"2026-10-29T11:13:32.083Z","kind":"notification","method":"mcpServer/startupStatus/updated","params":"{\"threadId\":\"01a1875d-7731-7ba1-9e7d-c0163c37e57c\",\"name\":\"probe\",\"status\":\"starting\",\"error\":null,\"failureReason\":null}"}
+{"t":"2026-10-29T11:13:32.083Z","kind":"notification","method":"mcpServer/startupStatus/updated","params":"{\"threadId\":\"01a1875d-7731-7ba1-9e7d-c0163c37e57c\",\"name\":\"cua_repl\",\"status\":\"starting\",\"error\":null,\"failureReason\":null}"}
+{"t":"2026-10-29T11:13:32.083Z","kind":"notification","method":"mcpServer/startupStatus/updated","params":"{\"threadId\":\"01a1875d-7731-7ba1-9e7d-c0163c37e57c\",\"name\":\"codex_apps\",\"status\":\"starting\",\"error\":null,\"failureReason\":null}"}
+{"t":"2026-10-29T11:13:32.083Z","kind":"notification","method":"mcpServer/startupStatus/updated","params":"{\"threadId\":\"01a1875d-7731-7ba1-9e7d-c0163c37e57c\",\"name\":\"probe\",\"status\":\"ready\",\"error\":null,\"failureReason\":null}"}
+{"t":"2026-10-29T11:13:32.439Z","kind":"notification","method":"mcpServer/startupStatus/updated","params":"{\"threadId\":\"01a1875d-7731-7ba1-9e7d-c0163c37e57c\",\"name\":\"node_repl\",\"status\":\"ready\",\"error\":null,\"failureReason\":null}"}
+{"t":"2026-10-29T11:13:32.748Z","kind":"notification","method":"mcpServer/startupStatus/updated","params":"{\"threadId\":\"01a1875d-7731-7ba1-9e7d-c0163c37e57c\",\"name\":\"codex_apps\",\"status\":\"ready\",\"error\":null,\"failureReason\":null}"}
+{"t":"2026-10-29T11:13:32.813Z","kind":"notification","method":"mcpServer/startupStatus/updated","params":"{\"threadId\":\"01a1875d-7731-7ba1-9e7d-c0163c37e57c\",\"name\":\"probe\",\"status\":\"ready\",\"error\":null,\"failureReason\":null}"}
+{"t":"2026-10-29T11:13:32.815Z","kind":"notification","method":"mcpServer/startupStatus/updated","params":"{\"threadId\":\"01a1875d-7731-7ba1-9e7d-c0163c37e57c\",\"name\":\"cua_repl\",\"status\":\"ready\",\"error\":null,\"failureReason\":null}"}
+{"t":"2026-10-29T11:13:33.357Z","kind":"injected"}
+{"t":"2026-10-29T11:13:36.361Z","kind":"loaded","label":"after start","data":"{\"data\":[\"01a1875d-7731-7ba1-9e7d-c0163c37e57c\"],\"nextCursor\":null}"}
+{"t":"2026-10-29T11:13:36.389Z","kind":"control","state":{"tools":["probe_alpha","probe_beta"],"getStreams":1}}
+{"t":"2026-10-29T11:13:38.390Z","kind":"resume_begin"}
+{"t":"2026-10-29T11:13:38.402Z","kind":"resumed","threadId":"01a1875d-7731-7ba1-9e7d-c0163c37e57c"}
+{"t":"2026-10-29T11:13:42.408Z","kind":"loaded","label":"after resume","data":"{\"data\":[\"01a1875d-7731-7ba1-9e7d-c0163c37e57c\"],\"nextCursor\":null}"}
+{"t":"2026-10-29T11:13:42.410Z","kind":"end"}

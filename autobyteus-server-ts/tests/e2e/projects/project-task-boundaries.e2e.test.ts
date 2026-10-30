@@ -132,9 +132,10 @@ describe("Project Task production HTTP boundaries", () => {
       assertExecutionCapabilitiesReady: () => undefined,
     });
     const activate = (runId: string, selected: string[]) => authority.runSessions.activateForRun({ owner: { runId }, sender: buildAgentRunMessageSenderContext({ senderRunId: runId, senderName: runId }), runtimeExposure: buildRuntimeAgentToolExposure(selected) });
-    expect(activate("unselected", []).kind).toBe("not_exposed");
+    // Every run gets a session; an unselected run's list is empty.
+    expect(activate("unselected", []).descriptor.enabledTools).toEqual([]);
     // task-tool-split AC-007: a configuration that still lists the removed name gets no task tool and no launch error.
-    expect(activate("legacy-task-tool-name", ["create_or_update_task"]).kind).toBe("not_exposed");
+    expect(activate("legacy-task-tool-name", ["create_or_update_task"]).descriptor.enabledTools).toEqual([]);
     const selected = activate("selected", names); expect(selected.kind).toBe("active");
     if (selected.kind !== "active") throw new Error("Selected session absent"); mcpUrl = selected.descriptor.serverUrl;
     expect(selected.descriptor.enabledTools).toEqual(names);

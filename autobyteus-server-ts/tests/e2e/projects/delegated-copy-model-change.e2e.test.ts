@@ -34,7 +34,7 @@ import { fileURLToPath } from "node:url";
 //   running (AC-002, DEC-008); a Team choice reaches the follower lead and a never-started follower, not the member with
 //   its own default (AC-003, AC-004); the nested copy resumes on its started model (REQ-006).
 // DCM-007 the copy woken by its delegating agent during the edit refuses the Save and records nothing (AC-011); settings
-//   the model does not have are refused (AC-006); the Team stream publishes the saved choice; the provider stops offering
+//   that are not an object are refused (AC-006; undeclared settings are left out, SR-004); the Team stream publishes the saved choice; the provider stops offering
 //   the chosen model before the resume: the failure is visible, nothing starts, the conversation is kept, and after the
 //   user picks another model the copy resumes the same conversation on it (REQ-008).
 // DCM-008 one member of a Team copy (the reviewer, after it has run; REQ-001 "any member", the AC-010 scenario): the copy is
@@ -564,9 +564,10 @@ suite("A delegated copy's model changed by the user: stop, choose, resume (real 
     expect(refused).toMatchObject({ success: false, outcome: "COPY_RUNNING" });
     expect(refused.message).toMatch(/running/i);
     expect((await copyRecord()).user_launch_selection ?? null).toBeNull();
-    // AC-006: settings the model does not have are refused.
+    // AC-006: invalid settings are refused and nothing is recorded. (Settings the model does not declare are left out of the
+    // saved config instead of refused since claude-anthropic-effort-control SR-004; settings that are not an object stay invalid.)
     await expect(stop(root.rootKind, root.rootId, { agentRunId: copyRunId })).resolves.toMatchObject({ outcome: "STOPPED" });
-    const invalid = await update(root.rootKind, root.rootId, [{ agentRunId: copyRunId, selection: { llmModelIdentifier: MODEL, llmConfig: { temperature: 0.2 } } }]);
+    const invalid = await update(root.rootKind, root.rootId, [{ agentRunId: copyRunId, selection: { llmModelIdentifier: MODEL, llmConfig: ["temperature", 0.2] } }]);
     expect(invalid).toMatchObject({ success: false, outcome: "VALIDATION_FAILED" });
     expect(invalid.fieldErrors.length).toBeGreaterThan(0);
     expect((await copyRecord()).user_launch_selection ?? null).toBeNull();

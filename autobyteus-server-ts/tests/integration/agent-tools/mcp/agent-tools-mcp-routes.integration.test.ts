@@ -19,6 +19,7 @@ import { AgentToolMcpSessionService } from "../../../../src/agent-tools/mcp/agen
 import { AgentToolsMcpMethodDispatcher } from "../../../../src/agent-tools/mcp/agent-tools-mcp-method-dispatcher.js";
 import { AgentToolMcpToolExecutor } from "../../../../src/agent-tools/mcp/agent-tool-mcp-tool-executor.js";
 import { AgentToolsMcpLocalAccessGate } from "../../../../src/agent-tools/mcp/agent-tools-mcp-local-access.js";
+import { AgentToolsMcpSessionStreams } from "../../../../src/agent-tools/mcp/agent-tools-mcp-session-streams.js";
 import { toAgentToolMcpOperationResult } from "../../../../src/agent-tools/mcp/agent-tool-mcp-adapter.js";
 import { PublishArtifactsMcpAdapterProvider } from "../../../../src/agent-tools/mcp/providers/publish-artifacts-mcp-adapter-provider.js";
 import { PUBLISH_ARTIFACTS_TOOL_NAME } from "../../../../src/services/published-artifacts/published-artifact-tool-contract.js";
@@ -57,12 +58,17 @@ const registerRoutes = async (
   app: FastifyInstance,
   registry: AgentToolMcpSessionRegistry,
   dispatcher: AgentToolsMcpMethodDispatcher,
-): Promise<void> => {
+  streams: AgentToolsMcpSessionStreams = new AgentToolsMcpSessionStreams(),
+): Promise<AgentToolsMcpSessionStreams> => {
   await registerAgentToolsMcpRoutes(app, {
     registry,
     dispatcher,
     localAccessGate: new AgentToolsMcpLocalAccessGate(),
+    streams,
   });
+  // Held GET streams keep Fastify from closing; the product host ends them first.
+  app.addHook("preClose", async () => streams.closeAll());
+  return streams;
 };
 
 const activateSession = (
@@ -217,7 +223,7 @@ describe("Agent Tools MCP tokenless route integration", () => {
     expect(initialize.json()).toMatchObject({
       result: {
         protocolVersion: "2025-03-26",
-        capabilities: { tools: { listChanged: false } },
+        capabilities: { tools: { listChanged: true } },
         serverInfo: { name: "autobyteus_agent_tools" },
       },
     });
@@ -260,20 +266,12 @@ describe("Agent Tools MCP tokenless route integration", () => {
     });
     expect(notification.statusCode).toBe(202);
 
-    const sse = await app.inject({
+    const notAcceptable = await app.inject({
       method: "GET",
       url: sessionUrl(enabledSessionId),
-      headers: { accept: "text/event-stream" },
+      headers: { accept: "application/json" },
     });
-    expect(sse.statusCode).toBe(200);
-    expect(sse.body).toContain("autobyteus_agent_tools ready");
-
-    const streamableOnly = await app.inject({
-      method: "GET",
-      url: sessionUrl(enabledSessionId),
-      headers: { accept: "text/event-stream", "x-autobyteus-mcp-transport": "streamable-http" },
-    });
-    expect(streamableOnly.statusCode).toBe(405);
+    expect(notAcceptable.statusCode).toBe(406);
 
     const called = await post(enabledSessionId, {
       jsonrpc: "2.0",
@@ -669,7 +667,7 @@ describe("Agent Tools MCP route-backed execution", () => {
       catalog,
       toolExecutor: new AgentToolMcpToolExecutor({ catalog }),
     });
-    await registerRoutes(app, registry, dispatcher);
+    const streams = await registerRoutes(app, registry, dispatcher);
     await app.listen({ host: "127.0.0.1", port: 0 });
     const address = app.server.address();
     if (!address || typeof address === "string") {
@@ -678,6 +676,7 @@ describe("Agent Tools MCP route-backed execution", () => {
     const service = new AgentToolMcpSessionService({
       registry,
       catalog,
+      streams,
       getLocalBaseUrl: () => "http://127.0.0.1:" + address.port,
       executionCapabilities: {
         publishedArtifactPublisher: { publishManyForRun: vi.fn(async () => []) },
@@ -716,6 +715,238 @@ describe("Agent Tools MCP route-backed execution", () => {
         isError: true,
         structuredContent: { code: "REMOTE_FAILURE" },
       });
+    } finally {
+      await client.close();
+      await app.close();
+    }
+  });
+});
+
+describe("Agent Tools MCP live tool list", () => {
+  const toolAdapter = (name: string, calls: string[]) => ({
+    definition: {
+      name,
+      description: `Tool ${name}`,
+      inputSchema: { type: "object" as const, properties: {}, required: [] },
+    },
+    isAvailable: () => true,
+    execute: async () => {
+      calls.push(name);
+      return toAgentToolMcpOperationResult({ accepted: true, code: "OK", message: `${name} ran` });
+    },
+  });
+
+  const startServer = async () => {
+    const calls: string[] = [];
+    const app = fastify();
+    const registry = new AgentToolMcpSessionRegistry();
+    const catalog = new AgentToolMcpCatalog({
+      adapters: [toolAdapter("alpha", calls), toolAdapter("beta", calls)],
+    });
+    const dispatcher = new AgentToolsMcpMethodDispatcher({
+      catalog,
+      toolExecutor: new AgentToolMcpToolExecutor({ catalog }),
+    });
+    const streams = await registerRoutes(app, registry, dispatcher);
+    await app.listen({ host: "127.0.0.1", port: 0 });
+    const address = app.server.address();
+    if (!address || typeof address === "string") {
+      throw new Error("Expected Fastify to listen on a loopback TCP port.");
+    }
+    const baseUrl = "http://127.0.0.1:" + address.port;
+    const service = new AgentToolMcpSessionService({
+      registry,
+      catalog,
+      streams,
+      getLocalBaseUrl: () => baseUrl,
+      executionCapabilities: {
+        publishedArtifactPublisher: { publishManyForRun: vi.fn(async () => []) },
+        applicationAgentTools: null,
+      },
+    });
+    return { app, registry, streams, service, calls, baseUrl };
+  };
+
+  /** Reads SSE text from a held GET stream until `predicate` holds or the timeout passes. */
+  const openStreamReader = async (url: string) => {
+    const controller = new AbortController();
+    const response = await fetch(url, {
+      headers: { accept: "text/event-stream" },
+      signal: controller.signal,
+    });
+    const reader = response.body!.getReader();
+    const decoder = new TextDecoder();
+    let text = "";
+    let ended = false;
+    const readUntil = async (predicate: (text: string) => boolean, timeoutMs = 3_000) => {
+      const deadline = Date.now() + timeoutMs;
+      while (!predicate(text)) {
+        if (ended) throw new Error(`Stream ended before the expected frame. Got: ${text}`);
+        const remaining = deadline - Date.now();
+        if (remaining <= 0) throw new Error(`Timed out waiting for a frame. Got: ${text}`);
+        const chunk = await Promise.race([
+          reader.read(),
+          new Promise<"timeout">((resolve) => setTimeout(() => resolve("timeout"), remaining)),
+        ]);
+        if (chunk === "timeout") continue;
+        if (chunk.done) {
+          ended = true;
+          continue;
+        }
+        text += decoder.decode(chunk.value, { stream: true });
+      }
+      return text;
+    };
+    const waitForEnd = async (timeoutMs = 3_000) => {
+      const deadline = Date.now() + timeoutMs;
+      while (!ended) {
+        const remaining = deadline - Date.now();
+        if (remaining <= 0) throw new Error("Timed out waiting for the stream to end.");
+        const chunk = await Promise.race([
+          reader.read().catch(() => ({ done: true as const, value: undefined })),
+          new Promise<"timeout">((resolve) => setTimeout(() => resolve("timeout"), remaining)),
+        ]);
+        if (chunk !== "timeout" && chunk.done) ended = true;
+      }
+    };
+    return {
+      response,
+      readUntil,
+      waitForEnd,
+      close: () => controller.abort(),
+    };
+  };
+
+  const LIST_CHANGED_FRAME =
+    'event: message\ndata: {"jsonrpc":"2.0","method":"notifications/tools/list_changed"}\n\n';
+
+  it("holds the GET stream and sends tools/list_changed when the run's tools are replaced", async () => {
+    const { app, service, streams } = await startServer();
+    try {
+      const activation = service.activateForRun({
+        owner: { runId: "run-live" },
+        sender,
+        runtimeExposure: buildRuntimeAgentToolExposure(["alpha"]),
+      });
+      const stream = await openStreamReader(activation.descriptor.serverUrl);
+      expect(stream.response.status).toBe(200);
+      expect(stream.response.headers.get("content-type")).toContain("text/event-stream");
+      await stream.readUntil((text) => text.startsWith(": open\n\n"));
+      expect(streams.countOpenStreams(activation.sessionId)).toBe(1);
+
+      service.replaceForRun({
+        runId: "run-live",
+        runtimeExposure: buildRuntimeAgentToolExposure(["alpha", "beta"]),
+      });
+      await stream.readUntil((text) => text.includes(LIST_CHANGED_FRAME));
+
+      stream.close();
+      await vi.waitFor(() => expect(streams.countOpenStreams(activation.sessionId)).toBe(0));
+    } finally {
+      await app.close();
+    }
+  });
+
+  it("sends keepalive comments on a held stream and ends it when the session closes", async () => {
+    const app = fastify();
+    const registry = new AgentToolMcpSessionRegistry();
+    const catalog = new AgentToolMcpCatalog({ adapters: [] });
+    const streams = await registerRoutes(
+      app,
+      registry,
+      new AgentToolsMcpMethodDispatcher({ catalog, toolExecutor: new AgentToolMcpToolExecutor({ catalog }) }),
+      new AgentToolsMcpSessionStreams({ keepaliveIntervalMs: 50 }),
+    );
+    await app.listen({ host: "127.0.0.1", port: 0 });
+    const address = app.server.address();
+    if (!address || typeof address === "string") throw new Error("Expected a TCP port.");
+    try {
+      const session = activateSession(registry, "run-keepalive", []);
+      const stream = await openStreamReader(
+        "http://127.0.0.1:" + address.port + sessionUrl(session.sessionId),
+      );
+      await stream.readUntil((text) => text.includes(": keepalive\n\n"));
+      streams.closeSession(session.sessionId);
+      await stream.waitForEnd();
+      expect(streams.countOpenStreams(session.sessionId)).toBe(0);
+    } finally {
+      await app.close();
+    }
+  });
+
+  it("refuses a removed tool from the next request on, and serves an empty list", async () => {
+    const { app, service, calls } = await startServer();
+    try {
+      const activation = service.activateForRun({
+        owner: { runId: "run-remove" },
+        sender,
+        runtimeExposure: buildRuntimeAgentToolExposure([]),
+      });
+      expect(activation.descriptor.enabledTools).toEqual([]);
+      const post = (payload: unknown) => fetch(activation.descriptor.serverUrl, {
+        method: "POST",
+        headers: requestHeaders(),
+        body: JSON.stringify(payload),
+      }).then((response) => response.json());
+      const listNames = async () => ((await post({
+        jsonrpc: "2.0", id: "list", method: "tools/list", params: {},
+      })).result.tools as { name: string }[]).map((tool) => tool.name);
+      const callTool = (name: string) => post({
+        jsonrpc: "2.0", id: `call-${name}`, method: "tools/call", params: { name, arguments: {} },
+      });
+
+      expect(await listNames()).toEqual([]);
+      expect((await callTool("alpha")).error).toMatchObject({
+        message: expect.stringContaining("Tool is not enabled for this session"),
+      });
+
+      service.replaceForRun({ runId: "run-remove", runtimeExposure: buildRuntimeAgentToolExposure(["alpha"]) });
+      expect(await listNames()).toEqual(["alpha"]);
+      expect((await callTool("alpha")).result).toMatchObject({
+        content: [{ type: "text", text: "alpha ran" }],
+      });
+
+      service.replaceForRun({ runId: "run-remove", runtimeExposure: buildRuntimeAgentToolExposure(["beta"]) });
+      expect(await listNames()).toEqual(["beta"]);
+      expect((await callTool("alpha")).error).toMatchObject({
+        message: expect.stringContaining("Tool is not enabled for this session"),
+      });
+      expect((await callTool("beta")).result).toMatchObject({
+        content: [{ type: "text", text: "beta ran" }],
+      });
+
+      service.replaceForRun({ runId: "run-remove", runtimeExposure: buildRuntimeAgentToolExposure([]) });
+      expect(await listNames()).toEqual([]);
+      expect(calls).toEqual(["alpha", "beta"]);
+    } finally {
+      await app.close();
+    }
+  });
+
+  it("lets the official SDK client receive tools/list_changed and re-list", async () => {
+    const { app, service } = await startServer();
+    const changed = vi.fn();
+    const client = new Client({ name: "autobyteus-live-tool-list-probe", version: "0.0.1" });
+    client.setNotificationHandler("notifications/tools/list_changed", changed);
+    try {
+      const activation = service.activateForRun({
+        owner: { runId: "run-sdk-live" },
+        sender,
+        runtimeExposure: buildRuntimeAgentToolExposure(["alpha"]),
+      });
+      await client.connect(new StreamableHTTPClientTransport(new URL(activation.descriptor.serverUrl)));
+      expect(client.getServerCapabilities()?.tools?.listChanged).toBe(true);
+      expect((await client.listTools()).tools.map((tool) => tool.name)).toEqual(["alpha"]);
+
+      // The SDK opens its GET stream in the background after initialization.
+      await vi.waitFor(() => {
+        service.replaceForRun({
+          runId: "run-sdk-live",
+          runtimeExposure: buildRuntimeAgentToolExposure(["beta"]),
+        });
+        expect(changed).toHaveBeenCalled();
+      }, { timeout: 3_000, interval: 100 });
+      expect((await client.listTools()).tools.map((tool) => tool.name)).toEqual(["beta"]);
     } finally {
       await client.close();
       await app.close();

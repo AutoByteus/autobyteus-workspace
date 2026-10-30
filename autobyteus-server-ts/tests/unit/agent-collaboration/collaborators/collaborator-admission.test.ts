@@ -66,7 +66,9 @@ const harness = (options: { invalid?: boolean } = {}) => {
     validate: vi.fn(),
     validateMany: vi.fn(async (inputs) => {
       steps.push(`validate:${inputs.length}`);
-      return inputs.map(() => options.invalid ? { kind: "model_unavailable" as const } : { kind: "valid" as const, selection: { llmModelIdentifier: "gpt", llmConfig: null } });
+      // A valid check returns the canonical selection; these inputs declare every key, so it equals the input.
+      return inputs.map(({ selection }) => options.invalid ? { kind: "model_unavailable" as const }
+        : { kind: "valid" as const, selection: { llmModelIdentifier: selection.llmModelIdentifier, llmConfig: selection.llmConfig } });
     }),
   } as unknown as RunModelSelectionValidator;
   return { steps, admission: createCollaboratorAdmission(catalog, validator, { getRuntimeAvailability: async (runtimeKind) => ({ runtimeKind, enabled: true, reason: null }) }) };

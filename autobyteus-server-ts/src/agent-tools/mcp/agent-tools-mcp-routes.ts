@@ -14,9 +14,9 @@ import {
   registerAgentToolsMcpRequestGate,
   sendHttpError,
   sendMethodNotAllowed,
-  sendSseCompatibilityResponse,
 } from "./agent-tools-mcp-http-gate.js";
 import type { AgentToolsMcpLocalAccessGate } from "./agent-tools-mcp-local-access.js";
+import type { AgentToolsMcpSessionStreams } from "./agent-tools-mcp-session-streams.js";
 
 const MCP_ROUTE = "/mcp/agent-tools/:sessionId";
 const SUPPORTED_PROTOCOL_VERSIONS = new Set(["2025-03-26", "2025-06-18", "2025-11-25"]);
@@ -26,6 +26,7 @@ export type AgentToolsMcpRouteDependencies = Readonly<{
   registry: AgentToolMcpSessionRegistry;
   dispatcher: AgentToolsMcpMethodDispatcher;
   localAccessGate: AgentToolsMcpLocalAccessGate;
+  streams: AgentToolsMcpSessionStreams;
 }>;
 
 type AgentToolsMcpRouteParams = {
@@ -36,7 +37,7 @@ export async function registerAgentToolsMcpRoutes(
   app: FastifyInstance,
   deps: AgentToolsMcpRouteDependencies,
 ): Promise<void> {
-  const { registry, dispatcher, localAccessGate } = deps;
+  const { registry, dispatcher, localAccessGate, streams } = deps;
 
   registerAgentToolsMcpRequestGate(app, registry, localAccessGate);
   await app.register(async (mcpApp) => {
@@ -44,7 +45,13 @@ export async function registerAgentToolsMcpRoutes(
 
     mcpApp.all<{ Params: AgentToolsMcpRouteParams; Body: unknown }>(
       MCP_ROUTE,
-      async (request, reply) => handleAgentToolsMcpRequest({ request, reply, registry, dispatcher }),
+      async (request, reply) => handleAgentToolsMcpRequest({
+        request,
+        reply,
+        registry,
+        dispatcher,
+        streams,
+      }),
     );
   });
 }
@@ -68,8 +75,9 @@ const handleAgentToolsMcpRequest = async (input: {
   reply: FastifyReply;
   registry: AgentToolMcpSessionRegistry;
   dispatcher: AgentToolsMcpMethodDispatcher;
+  streams: AgentToolsMcpSessionStreams;
 }) => {
-  const { request, reply, registry, dispatcher } = input;
+  const { request, reply, registry, dispatcher, streams } = input;
   if (request.method === "OPTIONS") {
     return handleOptions(request, reply);
   }
@@ -92,13 +100,12 @@ const handleAgentToolsMcpRequest = async (input: {
     return sendMethodNotAllowed(reply);
   }
   if (request.method === "GET") {
-    // AGY 1.2.10 probes GET first and treats a successful SSE response as a
-    // legacy standalone stream. Its run-scoped header selects Streamable HTTP.
-    if (readSingleHeader(request.headers["x-autobyteus-mcp-transport"]) === "streamable-http")
-      return sendMethodNotAllowed(reply);
     if (!accepts(request, ["text/event-stream"]))
       return sendHttpError(reply, 406, "not_acceptable", "Not Acceptable");
-    return sendSseCompatibilityResponse(reply);
+    // The held server-to-client stream: it carries
+    // `notifications/tools/list_changed` when the session's tools change.
+    streams.open(resolvedSession.session.sessionId, reply);
+    return reply;
   }
 
   if (!isJsonContentType(readSingleHeader(request.headers["content-type"]))) {

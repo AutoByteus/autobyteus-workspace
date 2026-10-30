@@ -45,10 +45,10 @@ const setup = (options: { unavailable?: Partial<Record<string, string>>; verdict
       return { runtimeKind, enabled: !reason, reason: reason ?? null };
     }),
   };
-  const validateMany = vi.fn(async (inputs: readonly { context: { runtimeKind: string; workspaceRootPath: string }; selection: { llmModelIdentifier: string } }[]) =>
+  const validateMany = vi.fn(async (inputs: readonly { context: { runtimeKind: string; workspaceRootPath: string }; selection: { llmModelIdentifier: string; llmConfig: unknown } }[]) =>
     inputs.map(({ context, selection }) => {
       const kind = options.verdict?.(context.runtimeKind, selection.llmModelIdentifier) ?? "valid";
-      return kind === "valid" ? { kind, selection: { llmModelIdentifier: selection.llmModelIdentifier, llmConfig: null } }
+      return kind === "valid" ? { kind, selection: { llmModelIdentifier: selection.llmModelIdentifier, llmConfig: selection.llmConfig } }
         : kind === "invalid" ? { kind, errors: [{ path: "effort", message: "effort must be one of low, high" }] }
           : { kind };
     }));

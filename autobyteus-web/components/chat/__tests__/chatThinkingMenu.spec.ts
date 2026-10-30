@@ -17,13 +17,15 @@ const deepSeekV4Schema = {
   thinking_type: { type: 'string', enum: ['enabled', 'disabled'], default: 'enabled' },
   reasoning_effort: { type: 'string', enum: ['high', 'max'], default: 'high' },
 }
-const anthropicBudgetSchema = {
-  thinking_enabled: { type: 'boolean', title: 'Thinking enabled', default: false },
-  thinking_budget_tokens: { type: 'integer', title: 'Thinking budget tokens', default: 1024, minimum: 1024, maximum: 32000 },
-}
-const anthropicAdaptiveSchema = {
+const effortLevels = ['low', 'medium', 'high', 'xhigh', 'max']
+/** AutoByteus Claude switch row (e.g. claude-sonnet-5-5, claude-fable-5). */
+const anthropicSwitchSchema = {
   thinking_enabled: { type: 'boolean', default: false },
-  thinking_display: { type: 'string', enum: ['summarized', 'omitted'], default: 'summarized' },
+  reasoning_effort: { type: 'string', title: 'Reasoning effort', enum: effortLevels, default: 'high' },
+}
+/** claude-opus-5-5 / claude-fable-5-1: thinking always on, effort only. */
+const anthropicEffortOnlySchema = {
+  reasoning_effort: { type: 'string', title: 'Reasoning effort', enum: effortLevels, default: 'medium' },
 }
 
 type Merged = Extract<ChatThinkingMenu, { mode: 'merged' }>
@@ -81,32 +83,29 @@ describe('buildChatThinkingMenu', () => {
     expect(pick(on, 'off')).toEqual({ thinking_type: 'disabled' })
   })
 
-  it('shows Off · On plus a budget field for a switch without an effort list (AC-003, AC-005 alternate)', () => {
-    const off = merged(buildChatThinkingMenu(anthropicBudgetSchema, { thinking_enabled: false }, t))
-    expect(off.primary.map((option) => option.label)).toEqual(['Off', 'On'])
+  it('shows an AutoByteus Claude switch row as one list Off · levels, without a display group (claude-anthropic-effort-control AC-005)', () => {
+    const off = merged(buildChatThinkingMenu(anthropicSwitchSchema, { thinking_enabled: false, reasoning_effort: 'max' }, t))
+    expect(off.primary.map((option) => option.label)).toEqual(['Off', 'Low', 'Medium', 'High', 'Xhigh', 'Max'])
     expect(checkedIds(off)).toEqual(['off'])
     expect(off.summary).toBe('Off')
-    expect(off.secondary).toHaveLength(1)
-    const budget = off.secondary[0]!
-    expect(budget).toMatchObject({ key: 'thinking_budget_tokens', label: 'Thinking budget tokens', kind: 'number', value: '', minimum: 1024, maximum: 32000 })
-    expect(budget.applyNumber(4096)).toEqual({ thinking_enabled: true, thinking_budget_tokens: 4096 })
-    expect(pick(off, 'on')).toEqual({ thinking_enabled: true, thinking_budget_tokens: 1024 })
+    expect(off.secondary).toEqual([])
+    expect(pick(off, 'high')).toEqual({ thinking_enabled: true, reasoning_effort: 'high' })
 
-    const on = merged(buildChatThinkingMenu(anthropicBudgetSchema, { thinking_enabled: true, thinking_budget_tokens: 2048 }, t))
-    expect(checkedIds(on)).toEqual(['on'])
-    expect(on.summary).toBe('On')
-    expect(on.secondary[0]!.value).toBe(2048)
+    const onDefault = merged(buildChatThinkingMenu(anthropicSwitchSchema, { thinking_enabled: true }, t))
+    expect(checkedIds(onDefault)).toEqual(['high'])
+    expect(onDefault.summary).toBe('High')
+    expect(pick(onDefault, 'off')).toEqual({ thinking_enabled: false })
   })
 
-  it('shows display settings as a secondary group that auto-enables and shows no check while off', () => {
-    const off = merged(buildChatThinkingMenu(anthropicAdaptiveSchema, null, t))
-    const display = off.secondary[0]!
-    expect(display.key).toBe('thinking_display')
-    expect(display.options.map((option) => [option.label, option.checked])).toEqual([['Summarized', false], ['Omitted', false]])
-    expect(display.options[1]!.next).toEqual({ thinking_enabled: true, thinking_display: 'omitted' })
-
-    const on = merged(buildChatThinkingMenu(anthropicAdaptiveSchema, { thinking_enabled: true }, t))
-    expect(on.secondary[0]!.options.map((option) => option.checked)).toEqual([true, false])
+  it('offers Opus 5.5 / Fable 5.1 their effort levels with the default checked (claude-anthropic-effort-control AC-006)', () => {
+    const menu = buildChatThinkingMenu(anthropicEffortOnlySchema, null, t) as Parameters
+    expect(menu.mode).toBe('parameters')
+    expect(menu.summary).toBe('Medium')
+    expect(menu.parameters.map((parameter) => parameter.key)).toEqual(['reasoning_effort'])
+    expect(menu.parameters[0]!.options.map((option) => [option.label, option.checked])).toEqual([
+      ['Low', false], ['Medium', true], ['High', false], ['Xhigh', false], ['Max', false],
+    ])
+    expect(menu.parameters[0]!.options[4]!.next).toEqual({ reasoning_effort: 'max' })
   })
 
   it('keeps the per-parameter presentation for OpenAI schemas (AC-006)', () => {

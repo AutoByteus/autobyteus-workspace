@@ -27,7 +27,8 @@ import { InMemoryTaskExecutionResources } from "../../../fixtures/task-execution
 export const allAvailable = { getRuntimeAvailability: async (runtimeKind) => ({ runtimeKind, enabled: true, reason: null }) };
 export const runnable = {
   validate: vi.fn(),
-  validateMany: async (inputs: readonly unknown[]) => inputs.map(() => ({ kind: "valid" as const, selection: { llmModelIdentifier: "m", llmConfig: null } })),
+  // A valid check returns the canonical selection; these launches declare every key, so it equals the input.
+  validateMany: async (inputs: readonly unknown[]) => inputs.map((input) => ({ kind: "valid" as const, selection: (input as { selection: { llmModelIdentifier: string; llmConfig: Readonly<Record<string, unknown>> | null } }).selection })),
 } as unknown as RunModelSelectionValidator;
 
 export const directories: string[] = [];

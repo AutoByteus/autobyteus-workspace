@@ -106,6 +106,13 @@ export type AgentToolMcpActivateSessionInput = {
   toolExecutionObserver?: AgentToolMcpToolExecutionObserver | null;
 };
 
+export type AgentToolMcpSessionToolExposureRecord = Readonly<{
+  runtimeExposure: RuntimeAgentToolExposure;
+  enabledTools: readonly string[];
+  toolRoutes: AgentToolMcpToolRouteTable;
+  configuredMcpToolSources?: readonly ConfiguredMcpAgentToolSource[];
+}>;
+
 export type AgentToolMcpSessionResolveFailureReason = "missing_session";
 
 export type AgentToolMcpSessionResolveResult =

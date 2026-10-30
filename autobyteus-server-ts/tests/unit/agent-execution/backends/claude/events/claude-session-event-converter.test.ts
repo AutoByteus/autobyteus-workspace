@@ -1040,7 +1040,7 @@ describe("ClaudeSessionEventConverter", () => {
         usage_scope: "per_turn",
         model_provider: "ANTHROPIC",
         provider_name: null,
-        model_identifier: "claude-sonnet-4-6",
+        model_identifier: "claude-sonnet-5",
         reported_input_tokens: 100,
         reported_output_tokens: 20,
         reported_total_tokens: 120,

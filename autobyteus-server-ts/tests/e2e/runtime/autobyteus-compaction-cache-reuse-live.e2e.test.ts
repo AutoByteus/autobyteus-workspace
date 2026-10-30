@@ -208,7 +208,7 @@ describeLive("AutoByteus native compaction on the agent's own model with a cache
     const workspace = await harness.makeWorkspace(chunkFiles());
     for (const [key, value] of Object.entries(highTrigger(agentOutputLimit))) await setSetting(key, value);
     const session = await harness.startRun(auditorDefinitionId, model.modelIdentifier,
-      { thinking_display: "summarized", ...(maxTokens ? { max_tokens: maxTokens } : {}) }, workspace);
+      { ...(maxTokens ? { max_tokens: maxTokens } : {}) }, workspace);
     turnOk(`${prefix}-T1`, await runTurn(session, `${prefix}-T1`, `Audit chunk-01.txt through chunk-12.txt using the read_file tool, one file per tool call, in order. ${AUDIT} At the end, reply with the cycles in one sentence.`));
     turnOk(`${prefix}-T2`, await runTurn(session, `${prefix}-T2`, `Continue the audit with chunk-13.txt through chunk-20.txt using the read_file tool, one file per tool call, in order. ${AUDIT} At the end, reply with any new cycles in one sentence.`));
     triggerSettings = lowTrigger(agentOutputLimit, observedPrompt(harness.callsOf(`${prefix}-T2`)));

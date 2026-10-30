@@ -1,0 +1,75 @@
+# autobyteus-324 implementation-scoped checks (IR-001)
+# commit: 5f3923c4cd (branch codex/live-tool-list-updates; base origin/personal 9f7c9c10a6)
+# env: macOS 25.5.0, node v22.23.1; server suites under env -i PATH HOME=<resolved temp> TMPDIR
+# date: 2026-10-29T16:46:06Z
+
+## server typecheck — pnpm -C autobyteus-server-ts typecheck
+errors: 0
+
+## server unit — vitest run tests/unit tests/app-data-migrations tests/architecture tests/agent-work-journal --exclude "**/*.integration.test.ts"
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  3 failed | 866 passed | 5 skipped (874)
+      Tests  3 failed | 7329 passed | 9 skipped (7341)
+(the 3 failures: tracked-imports, before the new files were committed — passes after commit, see architecture below;
+ model-router-tools and list-available-agents-tool asserted Agent Tools in Claude allowedTools — updated to the design and re-run: 3 files / 19 tests passed)
+
+## server architecture after commit — vitest run tests/architecture
+Test Files  7 passed (7) / Tests 54 passed (54)
+
+## server integration — pnpm test:integration (after test:integration:prepare)
+ Test Files  81 passed | 20 skipped (101)
+      Tests  457 passed | 69 skipped (526)
+
+## autobyteus-ts unit — pnpm -C autobyteus-ts exec vitest run tests/unit
+ Test Files  311 passed (311)
+      Tests  2082 passed (2082)
+
+## web — NUXT_TEST=true vitest run (all)
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 2 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  1 failed | 667 passed (668)
+      Tests  2 failed | 4861 passed | 2 skipped (4865)
+(the 1 failing file, codex-turn-lifecycle-native-to-live-projection, built the Codex backend without its new required run-sessions argument — fixed in 5f3923c4cd and re-run: 2 passed)
+
+## web typecheck — pnpm -C autobyteus-web typecheck
+production errors: 0; test-file errors: 298 in 139 files (baseline 298 in 139 files); PASS
+
+## new / focused suites
+- tests/integration/tool-list-updates: 11 passed
+- tests/unit/agent-execution/backends/codex/codex-tool-list-reopen.test.ts: 8 passed
+- tests/unit/agent-execution/backends/acp (incl. acp-tool-list-reopen, 5 new): 55 passed
+- tests/unit/agent-execution/backends/immediate-tool-list-apply.test.ts: 3 passed
+- tests/unit/tool-list-updates: 5 passed; autobyteus-ts agent-replace-tools: 2 passed
+- tests/integration/agent-tools/mcp (held stream, list_changed, removal, empty list, SDK client): passed
+- web SystemTaskNotificationSegment.spec 10 passed; agentRunStore.spec 28 passed
+
+# ---- IR-002 (CRR-001 rework, SR-005…SR-009, ARCH-REV-009) ----
+# date: 2026-10-29T18:17:28Z; same environment rules
+## server typecheck: 0 errors
+## server unit (full): Test Files 1 failed | 868 passed | 5 skipped (874); Tests 2 failed | 7330 passed | 9 skipped
+   the 2 failures: flat-team-execution-manager-routing asserted postUserMessage's exact arguments, which now carry the
+   member lifecycleObserver (SR-009) — updated; re-run tests/unit/agent-team-execution + agent-collaboration + agent-org-execution: 99 files / 872 tests passed
+## server integration (full, after prepare): Test Files 82 passed | 20 skipped (102); Tests 458 passed | 69 skipped (incl. the new team-member-reopen-failure test, verified to fail without the handle change)
+## web typecheck: production errors 0; test-file errors 298 in 139 files (baseline); PASS
+## web (full): Test Files 668 passed; Tests 4860 passed | 2 skipped
+## completion grep (server src/tests/docs, web): restart_run, restartRunWithNewTools, RESTART_RUN, ReopenFailedNotice, toolsReopenFailed, toolsNotUpdated, tool_list_update_failed, TOOL_LIST_UPDATE_FAILED, RUNTIME_SESSION_REOPEN_FAILED_NOTICE, isToolsReopenFailure, restartWithNewTools: all 0
+## real run re-check after CR-002: Claude (haiku) pass — evidence/real-runs/ir-002/live-tool-list-claude_agent_sdk.json
+
+# ---- IR-003 (CRR-002 CR-004) ----
+# date: 2026-10-29T18:48:01Z; same environment rules
+## server typecheck: 0 errors
+## server unit (full): Tests 1 failed | 7335 passed | 9 skipped — the failure is tracked-imports for the new, then-uncommitted
+   member-input-failure-observer.ts; architecture re-run after commit below
+## server integration (full): Test Files 82 passed | 20 skipped; Tests 459 passed | 69 skipped
+## team-member-reopen-failure.integration.test.ts: 2 passed; the sent-turn case fails when the observer publishes on every failed fact (IR-002 behavior)
+## related unit suites (agent-collaboration, agent-team-execution, agent-org-execution): 100 files / 876 tests passed
+## configured-agent-execution-handle.ts non-blank lines: base 485, now 487
+
+# ---- IR-004 (SR-010, ARCH-REV-010; API-05 / CRR-004) ----
+# date: 2026-10-29T19:35:02Z; same environment rules
+## server typecheck: 0 errors
+## server unit (full): Test Files 870 passed | 5 skipped; Tests 7336 passed | 9 skipped
+## server integration (full): Test Files 83 passed | 20 skipped; Tests 461 passed | 69 skipped
+   (incl. new single-run-unsent-input-failure.integration.test.ts: 2 passed; its reopen case fails against the coordinator without the change)
+## API-05 e2e unchanged: passed (evidence/ir-004-api-05-rerun.log)
+## web: only docs changed this round (agent_execution_architecture.md); suites not re-run
+## agent-run-command-coordinator.ts non-blank lines: base 320, now 338

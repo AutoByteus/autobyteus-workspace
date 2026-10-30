@@ -1,0 +1,9 @@
+# IMP-19 web browser probe DLP-003 (updated badsettings notes), real backend dist/app.js rebuilt from 47f44c3df src + Nuxt dev + Chromium
+# command: env -i ... ANTIGRAVITY_CLI_COMMAND=<repo>/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs corepack pnpm -C autobyteus-web test:e2e:delegated-launch-defaults --output-dir <fresh> --cases DLP-003
+# commit: 47f44c3df (run on the identical working tree before the commit)
+# env: Linux 6.12.54-linuxkit, node v22.23.3, uid 0
+# date: 2026-10-29
+> node tests/e2e/delegated-launch-defaults-probe.mjs --output-dir /tmp/claude-effort-dlp003-out-27854 --cases DLP-003
+DLP-003 Pass AC-001/003/004/005/010: Manager chat from the UI; copies and a second Pair copy from its composer; teammate refusal, helper copy and Grok engineer from the copy lead's conversation; Settings rows
+Summary: 1 Pass, 0 Fail
+screenshots in the (uncommitted) output dir: DLP-003-conversation-squad-notes-1280.png, DLP-003-copy-lead-conversation-1280.png

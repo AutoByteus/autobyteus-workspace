@@ -13,13 +13,14 @@ import { ClaudeSessionBootstrapper } from "../../../src/agent-execution/backends
 import { getCodexWorkspaceSkillMaterializer } from "../../../src/agent-execution/backends/codex/codex-workspace-skill-materializer.js";
 import { getClaudeWorkspaceSkillMaterializer } from "../../../src/agent-execution/backends/claude/claude-workspace-skill-materializer.js";
 import { createGrokBuildAgentRunBackendFactory } from "../../../src/agent-execution/backends/grok/grok-build-agent-run-backend-factory.js";
+import { createAgentToolMcpRunSessionsStub } from "../../helpers/agent-tool-mcp-run-sessions-stub.js";
 
 export async function runtimeFixture(root: string, adapter: "codex" | "claude" | "grok", scope: "CONFIGURED" | "ALL_INSTALLED") {
   const workspace = path.join(root, "workspace"); fs.mkdirSync(workspace);
   const definition = new AgentDefinition({ id: "fixture-agent", name: "Fixture", role: "assistant", description: "Skill preparation fixture", instructions: "Use writer", skillNames: ["api-writer"], skillScope: scope });
   const definitions = { getAgentDefinitionById: async () => definition };
   const workspaces = { resolveWorkingDirectory: async () => workspace };
-  const mcpSessions = { activateForRun: () => ({ kind: "not_exposed" }) };
+  const mcpSessions = createAgentToolMcpRunSessionsStub();
   const skills = SkillService.getInstance();
   const runtimeKind = { codex: RuntimeKind.CODEX_APP_SERVER, claude: RuntimeKind.CLAUDE_AGENT_SDK, grok: RuntimeKind.GROK_BUILD }[adapter];
   const config = () => new AgentRunConfig({ agentDefinitionId: "fixture-agent", llmModelIdentifier: "fixture", runtimeKind, workspaceId: "fixture-workspace", autoExecuteTools: false });
@@ -31,7 +32,7 @@ export async function runtimeFixture(root: string, adapter: "codex" | "claude" |
       return { data: [{ skills: discoverCurrent ? [{ name: "api-writer", enabled: true, path: skills.getSkill("api-writer")!.rootPath }] : [] }] };
     } }), release: async () => {} }),
   } as never) : adapter === "claude" ? new ClaudeSessionBootstrapper(workspaces as never, getClaudeWorkspaceSkillMaterializer(), definitions as never, skills) : null;
-  const envKeys = ["GROK_BUILD_COMMAND", "FAKE_ACP_FIXTURE", "FAKE_ACP_RECORD"];
+  const envKeys = ["GROK_BUILD_COMMAND", "FAKE_ACP_FIXTURE", "FAKE_ACP_RECORD", "FAKE_ACP_REPORT_MCP_READY"];
   const saved = envKeys.map(key => process.env[key]);
   if (adapter === "grok") {
     const fixtures = fileURLToPath(new URL("../../fixtures/grok-acp/", import.meta.url));
@@ -41,6 +42,8 @@ export async function runtimeFixture(root: string, adapter: "codex" | "claude" |
     process.env.GROK_BUILD_COMMAND = wrapper;
     process.env.FAKE_ACP_FIXTURE = path.join(fixtures, "handshake.jsonl");
     process.env.FAKE_ACP_RECORD = path.join(root, "acp.jsonl");
+    // Every run configures the Agent Tools MCP server; the fake agent reports it ready as Grok does.
+    process.env.FAKE_ACP_REPORT_MCP_READY = "1";
   }
   const factory = adapter === "grok" ? createGrokBuildAgentRunBackendFactory({ definitions: definitions as never, skills, workspaces, mcpSessions: mcpSessions as never }) : null;
   return {

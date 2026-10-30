@@ -33,13 +33,6 @@ export const handleOptions = (request: FastifyRequest, reply: FastifyReply) => {
   return reply.code(204).send();
 };
 
-export const sendSseCompatibilityResponse = (reply: FastifyReply) => reply
-  .code(200)
-  .header("cache-control", "no-cache")
-  .header("connection", "keep-alive")
-  .type("text/event-stream; charset=utf-8")
-  .send(": autobyteus_agent_tools ready\n\n");
-
 export const sendMethodNotAllowed = (reply: FastifyReply) => reply
   .code(405)
   .header("allow", ALLOWED_METHODS)

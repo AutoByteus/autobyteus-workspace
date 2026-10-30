@@ -1,0 +1,14 @@
+# API-02/API-03 live: AC-011 single + team + Org restore with stored thinking_display against the real Anthropic API
+# command (autobyteus-server-ts): env -i PATH="$PATH" HOME=/tmp/api-e2e-home TMPDIR=/tmp AUTOBYTEUS_TEST_VAULT=/root/.autobyteus-test/vault RUN_ANTHROPIC_STORED_CONFIG_LIVE=1 AUTOBYTEUS_LIVE_STRICT=1 corepack pnpm exec vitest run tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts --no-watch
+# commit: a2a5d0e47 + API/E2E test additions (working tree); env: Linux, Node v22.23.3, real Anthropic (12 short calls); date: 2026-10-29
+# each post-restore request asserts HTTP 200 from Anthropic, no thinking_display / display, thinking + output_config.effort as configured
+
+[2026-10-29T20:27:21.172Z] [INFO] [secret-management.vault] Secret vault: test vault /root/.autobyteus-test/vault (read-only)
+ ✓ tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts (4 tests) 28743ms
+     ✓ claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key  4360ms
+     ✓ claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key  3046ms
+     ✓ team run: restore succeeds and every member's request after restore carries no stored stale key  6809ms
+     ✓ Org run: restore succeeds and the member requests after restore carry no stored stale key  13820ms
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+   Duration  60.16s (transform 20.96s, setup 185ms, import 29.67s, tests 28.74s, environment 1ms)

@@ -58,6 +58,7 @@ const mocks = vi.hoisted(() => {
     agentTeamDefinitionService: {},
     agentOrgDefinitionService: {},
     definitionAdmissionService: { scan: vi.fn(async () => []) },
+    agentDefinitionChanges: { subscribe: vi.fn(() => () => undefined) },
     close: vi.fn(),
   };
   const workspaceManager = {};

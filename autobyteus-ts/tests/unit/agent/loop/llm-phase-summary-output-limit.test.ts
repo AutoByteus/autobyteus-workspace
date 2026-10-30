@@ -48,7 +48,7 @@ const contextOf = (model: LLMModel, config: LLMConfig) => resolveLlmRequestCapac
 describe('summary output-limit override (REQ-009, design Intended Change 11 worked examples, AC-011)', () => {
   const deepseek = catalogModel('deepseek-v4-pro');
   const deepseekExpected = Math.min(SUMMARY_OUTPUT_TOKEN_FLOOR, deepseek.maxOutputTokens!, Math.floor(deepseek.maxContextTokens! / 4));
-  const budgetThinking = (budget: number) => ({ thinking_enabled: true, thinking_budget_tokens: budget });
+  const adaptiveThinking = { thinking_enabled: true, reasoning_effort: 'high' };
 
   it.each([
     ['Opus 5.5, maxTokens 1,024', catalogModel('claude-opus-5-5'), new LLMConfig({ maxTokens: 1024 }), 1024, 128_000, 1_000_000, 16_384],
@@ -56,10 +56,10 @@ describe('summary output-limit override (REQ-009, design Intended Change 11 work
     ['Ollama, no output metadata, no maxTokens, num_ctx 8,192', ollamaModel(8192), new LLMConfig(), null, null, 8192, null],
     ['Ollama, maxTokens 1,024, num_ctx 8,192', ollamaModel(8192), new LLMConfig({ maxTokens: 1024 }), 1024, null, 8192, 2048],
     ['Ollama, maxTokens 1,024, num_ctx 32,768', ollamaModel(32_768), new LLMConfig({ maxTokens: 1024 }), 1024, null, 32_768, 8192],
-    ['Sonnet 4.6, budget thinking 20,000, no maxTokens', catalogModel('claude-sonnet-4-6'),
-      new LLMConfig({ extraParams: budgetThinking(20_000) }), 64_000, 64_000, 1_000_000, null],
-    ['Sonnet 4.6, maxTokens 8,192, budget 4,096', catalogModel('claude-sonnet-4-6'),
-      new LLMConfig({ maxTokens: 8192, extraParams: budgetThinking(4096) }), 8192, 64_000, 1_000_000, 16_384],
+    ['Sonnet 5, adaptive thinking, no maxTokens', catalogModel('claude-sonnet-5'),
+      new LLMConfig({ extraParams: adaptiveThinking }), 128_000, 128_000, 1_000_000, null],
+    ['Sonnet 5, maxTokens 8,192, adaptive thinking', catalogModel('claude-sonnet-5'),
+      new LLMConfig({ maxTokens: 8192, extraParams: adaptiveThinking }), 8192, 128_000, 1_000_000, 16_384],
     ['DeepSeek scenario, maxTokens 1,024', deepseek, new LLMConfig({ maxTokens: 1024 }), 1024, deepseek.maxOutputTokens, deepseek.maxContextTokens, deepseekExpected],
   ] as const)('%s', (_label, model, config, agentLimit, modelMax, context, expected) => {
     expect(config.maxTokens ?? model.maxOutputTokens ?? null).toBe(agentLimit);

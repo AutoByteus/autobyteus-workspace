@@ -25,7 +25,8 @@ import { grokAcpFixturePath } from "../helpers/grok-fake-cli.js";
 // - Grok Build: the recorded-fixture fake CLI (`prompt.jsonl`), a second real runtime for mixed-runtime copies;
 // - Codex: `CODEX_APP_SERVER_COMMAND` names a missing file, so a Codex default is deterministically unavailable.
 // Definitions (no team default except where stated): Squad = lead (none), engineer (Grok), reviewer (AGY ALT), offline
-// (Codex), unoffered (AGY model not offered), badsettings (AGY model + settings it has none of), incomplete (runtime only),
+// (Codex), unoffered (AGY model not offered), badsettings (Grok model + an invalid value of its declared effort; a setting
+// the model does not declare is left out, not refused, claude-anthropic-effort-control SR-004), incomplete (runtime only),
 // Squad team default AGY with a model not offered. Pair = lead (none), engineer (Grok), unoffered; Pair team default ALT.
 // Cases (each root): DLC-001 catalog Team copy: recorded per-member launch/source, five notes in `launch_notes`;
 // DLC-002 members start on their resolved runtime/model (Grok session; AGY argv `--model`); DLC-003 agent copies, with and
@@ -204,7 +205,7 @@ suite("Delegated copies honor agent and team launch defaults in every root (real
     await agentDefinition("reviewer", [], { runtimeKind: AGY, llmModelIdentifier: ALT });
     await agentDefinition("offline", [], { runtimeKind: "codex_app_server", llmModelIdentifier: "gpt-5.5" });
     await agentDefinition("unoffered", [], { runtimeKind: AGY, llmModelIdentifier: NOT_OFFERED });
-    await agentDefinition("badsettings", [], { runtimeKind: AGY, llmModelIdentifier: MODEL, llmConfig: { temperature: 0.2 } });
+    await agentDefinition("badsettings", [], { runtimeKind: GROK, llmModelIdentifier: GROK_MODEL, llmConfig: { reasoning_effort: "ultra" } });
     await agentDefinition("incomplete", [], { runtimeKind: AGY });
     await teamDefinition("squad", { lead: "worker", engineer: "engineer", reviewer: "reviewer", offline: "offline", unoffered: "unoffered",
       badsettings: "badsettings", incomplete: "incomplete" }, { runtimeKind: AGY, llmModelIdentifier: TEAM_NOT_OFFERED });
@@ -346,7 +347,7 @@ suite("Delegated copies honor agent and team launch defaults in every root (real
   const squadFallbacks = () => ({
     offline: fallback("runtime_unavailable", "codex_app_server", "gpt-5.5", `Codex App Server command '${missingCodex}' is not available.`),
     unoffered: fallback("model_unavailable", AGY, NOT_OFFERED, `The model '${NOT_OFFERED}' is not available on ${agentRuntimeName(AGY)}.`),
-    badsettings: fallback("model_settings_invalid", AGY, MODEL, "Its model settings are invalid: This model has no adjustable settings."),
+    badsettings: fallback("model_settings_invalid", GROK, GROK_MODEL, "Its model settings are invalid: Value is not one of the supported options."),
     incomplete: fallback("incomplete", AGY, null, "It names no model."),
   });
   const agentNote = (name: string, entry: ReturnType<typeof fallback>, runsOn: string, origin: string) =>

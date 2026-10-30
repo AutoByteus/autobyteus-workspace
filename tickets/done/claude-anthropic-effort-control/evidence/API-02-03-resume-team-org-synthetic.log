@@ -1,0 +1,12 @@
+# API-02/API-03 AC-011 team + Org restore with stored thinking_display (synthetic mode)
+# command (autobyteus-server-ts): env -i PATH="$PATH" HOME=/tmp/api-e2e-home TMPDIR=/tmp corepack pnpm exec vitest run tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts --no-watch
+# commit: a2a5d0e47 + API/E2E test additions (working tree); env: Linux, Node v22.23.3, in-process studio server, synthetic test vault, canned Anthropic stream; date: 2026-10-29
+
+ ✓ tests/e2e/runtime/autobyteus-anthropic-stored-config-resume.e2e.test.ts (4 tests) 8614ms
+     ✓ claude-opus-5-5: restore succeeds and the request after restore carries no stored stale key  908ms
+     ✓ claude-sonnet-5-5: restore succeeds and the request after restore carries no stored stale key  329ms
+     ✓ team run: restore succeeds and every member's request after restore carries no stored stale key  485ms
+     ✓ Org run: restore succeeds and the member requests after restore carry no stored stale key  5367ms
+ Test Files  1 passed (1)
+      Tests  4 passed (4)
+   Duration  38.21s (transform 19.38s, setup 166ms, import 27.93s, tests 8.61s, environment 0ms)

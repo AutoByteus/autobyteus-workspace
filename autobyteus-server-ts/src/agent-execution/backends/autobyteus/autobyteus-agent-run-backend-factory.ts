@@ -43,6 +43,7 @@ import { resolveAutoByteusRuntimeAgentToolExposure } from "./autobyteus-runtime-
 import { createAvailableLlm } from "./available-llm-construction.js";
 import type { ApplicationAgentToolCapability } from "../../../application-agent-tools/services/application-agent-tool-capability.js";
 import { resolveApplicationAwareAgentTools } from "./application-agent-tools/application-agent-tool-composer.js";
+import type { RuntimeAgentToolExposure } from "../../shared/runtime-agent-tool-exposure.js";
 
 const logger = {
   info: (...args: unknown[]) => console.info(...args),
@@ -223,6 +224,7 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
         runtimeContext: (agent as AutoByteusRuntimeAgentLike).context ?? null,
       }),
       agent as AutoByteusRuntimeAgentLike,
+      built.runtimeToolExposure,
     );
   }
 
@@ -269,6 +271,7 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
         runtimeContext: (agent as AutoByteusRuntimeAgentLike).context ?? context.runtimeContext,
       }),
       agent as AutoByteusRuntimeAgentLike,
+      built.runtimeToolExposure,
     );
   }
 
@@ -276,7 +279,11 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
     options: AgentRunConfig,
     runId: string,
     ownLlm: (llm: BaseLLM) => void,
-  ): Promise<{ agentConfig: AgentConfig; resolvedRunConfig: AgentRunConfig }> {
+  ): Promise<{
+    agentConfig: AgentConfig;
+    resolvedRunConfig: AgentRunConfig;
+    runtimeToolExposure: RuntimeAgentToolExposure;
+  }> {
     const {
       agentDefinitionId,
       llmModelIdentifier,
@@ -451,6 +458,7 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
     const memoryCompaction = createEnabledMemoryCompactionConfiguration(new CompactionPolicy());
 
     return {
+      runtimeToolExposure,
       resolvedRunConfig: new AgentRunConfig({
         agentDefinitionId,
         llmModelIdentifier,
@@ -488,12 +496,30 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
   private createBackendFromAgent(
     context: AgentRunContext<RuntimeAgentRunContext>,
     agent: AutoByteusRuntimeAgentLike,
+    runtimeToolExposure: RuntimeAgentToolExposure,
   ): AutoByteusAgentRunBackend {
     const pendingSystemInstructionCapture = agent.context?.state.takePendingSystemInstructionCapture() ?? null;
+    const config = context.config;
     return new AutoByteusAgentRunBackend(context, agent, {
       isActive: () => this.resolveAutoByteusAgent(agent.agentId) !== null,
       removeAgent: async (runId: string, shutdownTimeout: number) => this.agentFactory.removeAgent(runId, shutdownTimeout),
       pendingSystemInstructionCapture,
+      tools: {
+        exposure: runtimeToolExposure,
+        exposureOf: (agentDefinition) =>
+          resolveAutoByteusRuntimeAgentToolExposure(agentDefinition, config.memberExecutionContext),
+        // The run's tools from a definition, built exactly as at activation.
+        build: (agentDefinition, exposure) => resolveApplicationAwareAgentTools({
+          agentDefinition,
+          runtimeToolExposure: exposure,
+          senderRunId: context.runId,
+          runtimeKind: config.runtimeKind,
+          memberExecutionContext: config.memberExecutionContext,
+          applicationExecutionContext: config.applicationExecutionContext,
+          capability: this.applicationAgentTools,
+          logger,
+        }).tools,
+      },
     });
   }
   private resolveAutoByteusAgent(runId: string): AutoByteusRuntimeAgentLike | null {

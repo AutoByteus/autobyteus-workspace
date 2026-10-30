@@ -167,4 +167,26 @@ describe("AgentOrg launch with the integrated RunModelSelectionService", () => {
     expect(h.create).not.toHaveBeenCalled();
     expect(h.capacity.resolveMany).not.toHaveBeenCalled();
   });
+
+  // claude-anthropic-effort-control AC-013: a launch configuration still holding a setting the models no longer
+  // declare launches, and the tree holds only each placement's validated (canonical) config.
+  it("builds the tree from canonical configs, leaving out settings the models do not declare, with inheritance unchanged", async () => {
+    const h = harness();
+    const input = command();
+    Object.assign(input.rootConfiguration, { llmConfig: { effort: "low", thinking_display: "omitted" } });
+    Object.assign(input.teamOverrides[0]!.configuration, { llmConfig: { effort: "high", thinking_display: "summarized" } });
+    Object.assign(input.agentOverrides[0]!.configuration, { llmConfig: { thinking_display: "omitted" } });
+    const run = await h.service.create(input);
+    const tree = run.getExecutionTreeSnapshot();
+    expect(tree.rootOrg.defaultLaunchConfiguration.llmConfig).toEqual({ effort: "low" });
+    expect(tree.rootOrg.members[0]).toMatchObject({ address: "/direct",
+      launchConfiguration: { llmModelIdentifier: "agent-model", llmConfig: null } });
+    // The Team's lead follows the Team's (canonical) launch, not the root's.
+    expect(tree.rootOrg.members[1]).toMatchObject({ address: "/team",
+      defaultLaunchConfiguration: { llmModelIdentifier: "team-model", llmConfig: { effort: "high" } },
+      members: [{ address: "/team/lead", launchConfiguration: { llmModelIdentifier: "team-model", llmConfig: { effort: "high" } } }],
+    });
+    expect(JSON.stringify(tree)).not.toContain("thinking_display");
+    expect(h.create).toHaveBeenCalledOnce();
+  });
 });

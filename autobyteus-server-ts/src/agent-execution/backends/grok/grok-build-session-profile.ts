@@ -35,13 +35,14 @@ export const grokBuildSessionProfile: AcpAgentSessionProfile = Object.freeze({
     yoloMode: input.autoExecuteTools,
   }),
 
-  mcpServers: (descriptor: AgentToolMcpDescriptor | null): McpServer[] => descriptor
-    ? [{ type: "http", name: descriptor.name, url: descriptor.serverUrl, headers: [] }]
-    : [],
+  mcpServers: (descriptor: AgentToolMcpDescriptor): McpServer[] => [
+    { type: "http", name: descriptor.name, url: descriptor.serverUrl, headers: [] },
+  ],
 
-  mcpReadiness: (descriptor: AgentToolMcpDescriptor | null): AcpMcpReadinessRequirement | null => descriptor
-    ? { serverName: descriptor.name, timeoutMs: GROK_MCP_READY_TIMEOUT_MS }
-    : null,
+  mcpReadiness: (descriptor: AgentToolMcpDescriptor): AcpMcpReadinessRequirement | null => ({
+    serverName: descriptor.name,
+    timeoutMs: GROK_MCP_READY_TIMEOUT_MS,
+  }),
 
   projectToolCall: projectGrokToolCall,
 

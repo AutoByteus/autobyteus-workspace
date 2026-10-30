@@ -43,6 +43,22 @@ export type RuntimeAgentToolExposure = {
   listPeerNodesEnabled: boolean;
 };
 
+/** Whether two exposures select the same tools (each is derived from its requested names). */
+export const isSameRuntimeAgentToolExposure = (
+  left: RuntimeAgentToolExposure,
+  right: RuntimeAgentToolExposure,
+): boolean => {
+  const leftNames = [...new Set(left.requestedToolNames)].sort();
+  const rightNames = [...new Set(right.requestedToolNames)].sort();
+  return leftNames.length === rightNames.length
+    && leftNames.every((name, index) => name === rightNames[index])
+    && left.sendMessageToEnabled === right.sendMessageToEnabled
+    && left.getHandoffRulesEnabled === right.getHandoffRulesEnabled
+    && left.publishArtifactsEnabled === right.publishArtifactsEnabled
+    && left.listAvailableAgentsEnabled === right.listAvailableAgentsEnabled
+    && left.listPeerNodesEnabled === right.listPeerNodesEnabled;
+};
+
 export const resolveRuntimeAgentToolExposure = (agentDefinition: {
   toolNames?: string[] | null;
 } | null, memberExecutionContext?: MemberExecutionContext | null): RuntimeAgentToolExposure =>

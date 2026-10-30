@@ -1,0 +1,8 @@
+# Summary of the clean-clone run (/tmp/ab324-clone at 6fae6761d3); full log 2182355 bytes, trimmed to summaries, skips and failures.
+ ✓ tests/integration/isolated-launch-marker.integration.test.ts (4 tests | 1 skipped) 5ms
+ ✓ tests/integration/product-license-packaging.integration.test.ts (4 tests | 1 skipped) 4ms
+ Test Files  668 passed (668)
+      Tests  4860 passed | 2 skipped (4862)
+   Start at  21:29:20
+   Duration  391.66s (transform 42.61s, setup 2572.15s, collect 306.12s, tests 125.89s, environment 216.15s, prepare 128.37s)
+exit=0

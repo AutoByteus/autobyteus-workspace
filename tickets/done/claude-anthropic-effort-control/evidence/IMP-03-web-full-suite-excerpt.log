@@ -1,0 +1,16 @@
+# IMP-03 full web unit suite
+# command: corepack pnpm -C autobyteus-web test:nuxt --run
+# commit: 574aa0bd7
+# env: Linux 6.12.54-linuxkit, node v22.23.3
+# date: 2026-10-29 (run before this excerpt was written; full log too large to commit)
+⎯⎯⎯⎯ Unhandled Rejection ⎯⎯⎯⎯⎯
+ReferenceError: Element is not defined
+This error originated in "components/workspace/history/__tests__/AgentRunTaskRowsLeave.spec.ts" test file. It doesn't mean the error was thrown inside the file itself, but while it was running.
+ Test Files  668 passed (668)
+      Tests  4857 passed | 2 skipped (4859)
+     Errors  1 error
+
+## The 1 unhandled error: ReferenceError 'Element is not defined' after teardown of components/workspace/history/__tests__/AgentRunTaskRowsLeave.spec.ts.
+That spec imports none of the changed files. Rerun alone 5 times: on the 574aa0bd7 web code 4 runs -> the error in 1, none in 3;
+with the four changed web files reverted to base 1 run -> none. Intermittent (a leave-transition timer firing after teardown), not caused
+by this change. All 668 files / 4857 tests passed in the full run.

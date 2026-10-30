@@ -1,0 +1,9 @@
+{"t":"2026-10-29T09:02:58.420Z","kind":"listening","port":39932}
+{"t":"2026-10-29T09:02:59.913Z","kind":"rpc","methods":["initialize"],"names":[null],"accept":"text/event-stream, application/json","session":null,"ua":"codex-mcp-client/0.165.0"}
+{"t":"2026-10-29T09:02:59.915Z","kind":"rpc","methods":["notifications/initialized"],"names":[null],"accept":"text/event-stream, application/json","session":"338acb7e-b367-4e9d-98c8-6e13bce6a43e","ua":"codex-mcp-client/0.165.0"}
+{"t":"2026-10-29T09:02:59.915Z","kind":"http","http":"GET","accept":"text/event-stream, application/json","session":"338acb7e-b367-4e9d-98c8-6e13bce6a43e","ua":"codex-mcp-client/0.165.0"}
+{"t":"2026-10-29T09:02:59.916Z","kind":"rpc","methods":["tools/list"],"names":[null],"accept":"text/event-stream, application/json","session":"338acb7e-b367-4e9d-98c8-6e13bce6a43e","ua":"codex-mcp-client/0.165.0"}
+{"t":"2026-10-29T09:03:01.941Z","kind":"notify","reason":"add-beta","getStreams":1,"tools":["probe_alpha","probe_beta"]}
+{"t":"2026-10-29T09:03:05.610Z","kind":"notify","reason":"remove-alpha","getStreams":1,"tools":["probe_beta"]}
+{"t":"2026-10-29T09:03:09.404Z","kind":"http","http":"GET-closed","session":"338acb7e-b367-4e9d-98c8-6e13bce6a43e"}
+{"t":"2026-10-29T09:03:09.405Z","kind":"http","http":"DELETE","session":"338acb7e-b367-4e9d-98c8-6e13bce6a43e"}

@@ -4,6 +4,7 @@ import type { AgentOperationResult } from "../../../agent-execution/domain/agent
 import { AgentRunConfig } from "../../../agent-execution/domain/agent-run-config.js";
 import type { AgentRun } from "../../../agent-execution/domain/agent-run.js";
 import { isAgentRunEvent } from "../../../agent-execution/domain/agent-run-event.js";
+import { createUnsentInputFailureObserver } from "../../../agent-execution/input/unsent-input-failure-observer.js";
 import type {
   AgentRunInputOptions,
   AgentRunInputRejectionCode,
@@ -142,7 +143,8 @@ export class ConfiguredAgentExecutionHandle implements RetainedAgentExecutionCon
     }
     const run = start.run;
     this.assertInputAllowed();
-    const result = await run.postUserMessage(message);
+    const result = await run.postUserMessage(message, { lifecycleObserver: createUnsentInputFailureObserver({ runId: run.runId,
+      publish: (event) => this.options.callbacks.publishAgentEvent(this.identity, { kind: "agent_run", event }) }) });
     if (result.accepted) {
       this.options.callbacks.publishAgentEvent(this.identity, { kind: "member_input", message });
     } else this.publishCommandStatus("error", result.message ?? null);
