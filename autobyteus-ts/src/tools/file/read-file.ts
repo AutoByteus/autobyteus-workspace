@@ -44,6 +44,17 @@ argumentSchema.addParameter(new ParameterDefinition({
 
 type AgentContextLike = { agentId: string; workspaceRootPath?: string | null } & MediaReadContext;
 
+const strictUtf8Decoder = new TextDecoder('utf-8', { fatal: true });
+
+function isValidUtf8(bytes: Uint8Array): boolean {
+  try {
+    strictUtf8Decoder.decode(bytes);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export async function readFile(
   context: AgentContextLike,
   filePath: string,
@@ -95,9 +106,9 @@ export async function readFile(
     const message = error instanceof Error ? error.message : String(error);
     throw new Error(`Could not read file at ${finalPath}: ${message}`);
   }
-  // A NUL byte anywhere marks a file as binary; text files contain none. The whole buffer is scanned because many
-  // PDFs have their first NUL after the first 8,000 bytes (DEC-006).
-  if (fileBytes.includes(0)) {
+  // Binary (DEC-007): a NUL byte AND bytes that are not valid UTF-8. Text with stray NULs (for example build logs) is
+  // valid UTF-8 and reads as before; files without a NUL byte are never refused.
+  if (fileBytes.includes(0) && !isValidUtf8(fileBytes)) {
     throw new Error(
       `The file '${finalPath}' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files.`
     );

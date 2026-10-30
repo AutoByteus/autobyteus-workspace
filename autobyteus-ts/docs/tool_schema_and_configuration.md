@@ -145,10 +145,12 @@ not loaded, `include_line_numbers` is ignored, an
 empty file is refused, and a kind the current model's capability marks
 `unsupported` is refused with a message saying the file was not loaded
 (`unknown` loads). The same path contract and denied paths apply. Any other
-file is read once; if it contains a NUL byte anywhere it is refused as binary
-(PDF, Office documents, archives, executables), otherwise those bytes are
-decoded as UTF-8 text exactly as before. A binary file with no NUL byte at all
-(rare; 2 of 400 sampled PDFs) is still decoded as text. The separate
+file is read once; it is refused as binary (PDF, Office documents, archives,
+executables) when it contains a NUL byte and is not valid UTF-8. Otherwise those
+bytes are decoded as UTF-8 text exactly as before, including text with stray NUL
+bytes such as build logs. A binary file with no NUL byte at all (rare; 2 of 400
+sampled PDFs) is still decoded as text, and a UTF-16 file that starts with a
+byte-order mark is refused. The separate
 `read_media_file` tool was removed; a stored definition that still names it
 starts as described below and reads media through `read_file`, which every
 native agent has.

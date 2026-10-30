@@ -1,26 +1,94 @@
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import fs from 'node:fs/promises';
+import { readFileSync } from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import zlib from 'node:zlib';
 import { BaseTool } from '../../../../src/tools/base-tool.js';
 import { defaultToolRegistry } from '../../../../src/tools/registry/tool-registry.js';
 import { registerReadFileTool } from '../../../../src/tools/file/read-file.js';
 
-// read_file refuses non-media binary files (autobyteus-328 REQ-009, DEC-006): a NUL byte anywhere in the file means
-// binary; text, including non-ASCII UTF-8 and empty files, reads exactly as before. Synthesized files.
+// read_file refuses non-media binary files (autobyteus-328 REQ-009, DEC-007): a file is binary when it contains a NUL
+// byte AND is not valid UTF-8. Text with stray NUL bytes (build logs), files without NUL (Latin-1 included), UTF-16
+// text that is valid UTF-8, non-ASCII UTF-8 and empty files read exactly as before this ticket. Synthesized files, plus
+// one tracked Electron build log from this repository (AC-009).
 const binaryMessage = (filePath: string) =>
   `The file '${filePath}' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files.`;
+
+const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../../../../..');
+const ELECTRON_BUILD_LOG = path.join(
+  repoRoot,
+  'autobyteus-server-ts/tickets/done/agent-runtime-default-core-tools/logs/delivery/electron-build-mac-20260814T174700Z.log',
+);
+
+const isValidUtf8 = (bytes: Uint8Array): boolean => {
+  try {
+    new TextDecoder('utf-8', { fatal: true }).decode(bytes);
+    return true;
+  } catch {
+    return false;
+  }
+};
+
+/** read_file's result before this ticket: UTF-8 decode, then the line loop (the oracle for "read as before"). */
+const readAsBefore = (bytes: Buffer, includeLineNumbers: boolean): string => {
+  const lines = (bytes.toString('utf8').match(/.*(?:\n|$)/g) ?? []).filter((line) => line !== '');
+  return lines
+    .map((line, index) => {
+      if (!includeLineNumbers) return line;
+      const hasNewline = line.endsWith('\n');
+      return `${index + 1}: ${hasNewline ? line.slice(0, -1) : line}${hasNewline ? '\n' : ''}`;
+    })
+    .join('');
+};
+
+const crcTable = Array.from({ length: 256 }, (_, n) => {
+  let c = n;
+  for (let k = 0; k < 8; k += 1) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1;
+  return c >>> 0;
+});
+const crc32 = (bytes: Buffer): number => {
+  let c = 0xffffffff;
+  for (const byte of bytes) c = crcTable[(c ^ byte) & 0xff] ^ (c >>> 8);
+  return (c ^ 0xffffffff) >>> 0;
+};
+/** A real one-entry ZIP archive with a deflated member, laid out as `zip` writes it. */
+const zipOf = (name: string, data: Buffer): Buffer => {
+  const compressed = zlib.deflateRawSync(data);
+  const fileName = Buffer.from(name, 'utf8');
+  const fields = (header: Buffer, offset: number) => {
+    header.writeUInt16LE(20, offset); // version needed
+    header.writeUInt16LE(0, offset + 2); // flags
+    header.writeUInt16LE(8, offset + 4); // deflate
+    header.writeUInt16LE(0x6000, offset + 6); // time 12:00
+    header.writeUInt16LE(0x5b5d, offset + 8); // date 2025-10-29
+    header.writeUInt32LE(crc32(data), offset + 10);
+    header.writeUInt32LE(compressed.length, offset + 14);
+    header.writeUInt32LE(data.length, offset + 18);
+    header.writeUInt16LE(fileName.length, offset + 22);
+  };
+  const local = Buffer.alloc(30);
+  local.writeUInt32LE(0x04034b50, 0);
+  fields(local, 4);
+  const central = Buffer.alloc(46);
+  central.writeUInt32LE(0x02014b50, 0);
+  central.writeUInt16LE(20, 4); // version made by
+  fields(central, 6);
+  const end = Buffer.alloc(22);
+  end.writeUInt32LE(0x06054b50, 0);
+  end.writeUInt16LE(1, 8);
+  end.writeUInt16LE(1, 10);
+  end.writeUInt32LE(central.length + fileName.length, 12);
+  end.writeUInt32LE(local.length + fileName.length + compressed.length, 16);
+  return Buffer.concat([local, fileName, compressed, central, fileName, end]);
+};
 
 // A minimal PDF-like file: a text header, then a binary stream with a NUL byte, as real PDFs carry.
 const PDF_LIKE = Buffer.concat([
   Buffer.from('%PDF-1.7\n%âãÏÓ\n1 0 obj\n<< /Length 4 >>\nstream\n', 'latin1'),
   Buffer.from([0x78, 0x9c, 0x00, 0x01]),
   Buffer.from('\nendstream\nendobj\n%%EOF\n', 'latin1'),
-]);
-// An empty ZIP archive with one stored entry header: local file header signature, version and zero fields (NUL bytes).
-const ZIP = Buffer.from([
-  0x50, 0x4b, 0x03, 0x04, 0x14, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
-  0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x05, 0x00, 0x00, 0x00, 0x61, 0x2e, 0x74, 0x78, 0x74,
 ]);
 // A PDF-like file whose first NUL byte comes after 30 KB of text-like objects, as in 77 of 400 sampled OS PDFs (API-05).
 const PDF_LATE_NUL = Buffer.concat([
@@ -30,7 +98,15 @@ const PDF_LATE_NUL = Buffer.concat([
   Buffer.from([0x78, 0x9c, 0x00, 0x01]),
   Buffer.from('\nendstream\nendobj\n%%EOF\n', 'latin1'),
 ]);
-// Random bytes with a NUL inside the first 8,000 bytes (fixed seed, so the test is repeatable).
+const ZIP = zipOf('notes.txt', Buffer.from('Quarterly notes: revenue up, costs flat.\n'.repeat(40)));
+const GZIP = zlib.gzipSync(Buffer.from('Quarterly notes: revenue up, costs flat.\n'.repeat(40)));
+// An ELF header for a 64-bit little-endian aarch64 executable (e_machine 0xB7).
+const ELF = Buffer.concat([
+  Buffer.from([0x7f, 0x45, 0x4c, 0x46, 0x02, 0x01, 0x01, 0x00]),
+  Buffer.alloc(8),
+  Buffer.from([0x02, 0x00, 0xb7, 0x00, 0x01, 0x00, 0x00, 0x00]),
+]);
+// Random bytes with a NUL byte (fixed seed, so the test is repeatable).
 const randomBytes = (length: number): Buffer => {
   const bytes = Buffer.alloc(length);
   let seed = 0x2f6b9d3;
@@ -67,9 +143,11 @@ describe('read_file on non-media binary files', () => {
     ['report.pdf', PDF_LIKE],
     ['long-report.pdf', PDF_LATE_NUL],
     ['archive.zip', ZIP],
+    ['notes.txt.gz', GZIP],
     ['blob.bin', randomBytes(9000)],
-    ['program', Buffer.from([0x7f, 0x45, 0x4c, 0x46, 0x02, 0x01, 0x01, 0x00])],
+    ['program', ELF],
   ])('refuses %s', async (name, bytes) => {
+    expect(bytes.includes(0) && !isValidUtf8(bytes)).toBe(true); // the sample is binary by DEC-007's definition
     const filePath = await write(name, bytes);
 
     await expect(read({ path: filePath })).rejects.toThrow(binaryMessage(filePath));
@@ -82,11 +160,36 @@ describe('read_file on non-media binary files', () => {
       .rejects.toThrow(binaryMessage(filePath));
   });
 
-  it('refuses a file whose only NUL byte is its last byte, far past the first 8,000 bytes', async () => {
-    expect(PDF_LATE_NUL.indexOf(0)).toBeGreaterThan(30000);
-    const filePath = await write('late-nul.txt', `${'a'.repeat(100000)}\u0000`);
+  it('reads the tracked Electron build log with stray NUL bytes exactly as before this ticket', async () => {
+    const bytes = readFileSync(ELECTRON_BUILD_LOG);
+    expect(bytes.indexOf(0)).toBeGreaterThan(-1);
+    expect(isValidUtf8(bytes)).toBe(true);
 
-    await expect(read({ path: filePath, include_line_numbers: false })).rejects.toThrow(binaryMessage(filePath));
+    await expect(read({ path: ELECTRON_BUILD_LOG })).resolves.toBe(readAsBefore(bytes, true));
+    await expect(read({ path: ELECTRON_BUILD_LOG, include_line_numbers: false })).resolves.toBe(bytes.toString('utf8'));
+  });
+
+  it('reads UTF-8 text with a stray NUL byte far past the first 8,000 bytes as before', async () => {
+    const bytes = Buffer.from(`${'a'.repeat(100000)}\u0000tail\n`);
+    const filePath = await write('late-nul.log', bytes);
+
+    await expect(read({ path: filePath, include_line_numbers: false })).resolves.toBe(bytes.toString('utf8'));
+  });
+
+  it('reads Latin-1 text (no NUL byte) as before', async () => {
+    const bytes = Buffer.from('Grüße aus Zürich\nçà et là\n', 'latin1');
+    expect(isValidUtf8(bytes)).toBe(false);
+    const filePath = await write('latin1.txt', bytes);
+
+    await expect(read({ path: filePath })).resolves.toBe(readAsBefore(bytes, true));
+  });
+
+  it('reads UTF-16LE text without a byte-order mark (valid UTF-8 with NUL bytes) as before', async () => {
+    const bytes = Buffer.from('Hello\nWorld\n', 'utf16le');
+    expect(bytes.includes(0) && isValidUtf8(bytes)).toBe(true);
+    const filePath = await write('utf16.txt', bytes);
+
+    await expect(read({ path: filePath })).resolves.toBe(readAsBefore(bytes, true));
   });
 
   it('reads UTF-8 text with non-ASCII characters exactly as before', async () => {
