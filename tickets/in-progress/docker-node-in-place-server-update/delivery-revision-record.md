@@ -53,4 +53,12 @@ The latest docs sync report, handoff summary and release/deployment report are a
 
 #### Finalization Record
 
-To be completed after the push.
+- Delivery commit on the ticket branch: `095240268b` (docs sync, delivery records, DEL-03, the code reviewer's CRR-003/CRR-004 records).
+- Secret Gate: `origin/personal..codex/docker-node-in-place-server-update` PASS (6 commits) before the push; PASS again on the merged state.
+- Ticket branch pushed: `origin/codex/docker-node-in-place-server-update` @ `095240268b`.
+- Target re-fetched after verification: `origin/personal` still `77fb8bf2d1`; no re-integration needed; the merged tree equals the verified ticket branch tree.
+- Merge: `finalize/docker-node-in-place-server-update` from `origin/personal`, `git merge --no-ff` → `a0f4b491f7`; re-fetched before the push, unchanged.
+- Push: `origin personal` `77fb8bf2d1..a0f4b491f7`. A branch push starts no workflow.
+- Release: none (RELEASE.md default; the user did not ask).
+- Cleanup: worktree and branch kept for steps 3–5; ticket folder kept in `tickets/in-progress/`; the local `finalize/…` branch is deleted after this record is pushed.
+- Terminal return to the Solution Designer: sent after this record is on `personal`.

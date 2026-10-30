@@ -79,10 +79,14 @@ None.
 
 - Bootstrap context source: requirements doc Workspace line and RELEASE.md Finalization Target
 - Ticket branch: `codex/docker-node-in-place-server-update`
-- Ticket branch commit result: recorded in DR-002 Finalization Record
-- Ticket branch push result: recorded in DR-002 Finalization Record
+- Ticket branch commit result: `Completed`: `095240268b`
+- Ticket branch push result: `Completed` (Secret Gate PASS before the push)
 - Finalization target remote / branch: `origin` / `personal`
-- Repository finalization status: recorded in DR-002 Finalization Record
+- Target advanced after verification: `No` (`77fb8bf2d1` at every fetch)
+- Re-integration before final merge result: `Not needed`
+- Merge into target result: `Completed`: `--no-ff` merge `a0f4b491f7`; Secret Gate PASS on the merged state; tree equal to the verified ticket branch
+- Push target branch result: `Completed`: `77fb8bf2d1..a0f4b491f7`
+- Repository finalization status: `Completed`
 
 ## Release / Publication / Deployment
 
@@ -125,7 +129,9 @@ DEL-03 above; IMP2-01..IMP2-08 and API-10..API-14, API-20..API-22 per the implem
 ## Final Status
 
 - Verification complete: `Yes` (from the evidence)
-- Repository finalization complete: recorded in DR-002
+- Repository finalization complete: `Yes` (`personal` @ `a0f4b491f7`)
 - Applicable release/deployment/rollout complete or not required: `Yes` (`Not required`)
 - Applicable safe cleanup complete or not required: `Yes` (`Not required`)
 - Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to the Solution Designer: `Yes`, after this record reached `personal`

@@ -58,6 +58,8 @@ That release will also ship step 2 (the starter) if this merge lands first, so C
 
 ## Where Things Are
 
+- Merged into `personal` with `--no-ff` as `a0f4b491f7` (pushed; Secret Gate PASS before both pushes). No release.
+
 - Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-in-place-server-update`, branch `codex/docker-node-in-place-server-update`. Kept for steps 3–5.
 - Ticket folder stays at `tickets/in-progress/docker-node-in-place-server-update/`.
 - Implementation's local images `autobyteus-server-305-test:step1`, `:step1-amd64`, `:step2` and container `ab305-extract` are left to their owner. The user's nodes `autobyteus-server-0/1/2` were never touched.
