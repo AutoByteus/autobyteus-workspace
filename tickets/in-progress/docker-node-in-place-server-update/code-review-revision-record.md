@@ -12,6 +12,8 @@ The latest `code-review-report.md` (or `api-e2e-test-review-report.md`) is autho
 | CRR-004 | `api-e2e-test-review-report.md` | Proportional test-code review, build step 2 / API-REV-002 Pass | Pass (CRR-003) | Not Applicable | None |
 | CRR-005 | `code-review-report.md` | Implementation Review, round 3 (build step 3) / IR-003 | Pass (CRR-003 step 2) | Pass | None blocking; note CR3-N1 |
 | CRR-006 | `api-e2e-test-review-report.md` | Proportional test-code review, build step 3 / API-REV-003 Pass | Pass (CRR-005) | Not Applicable | None |
+| CRR-007 | `code-review-report.md` | Implementation Review, round 4 (build step 4) / IR-004 | Pass (CRR-005 step 3) | Pass | None blocking; note CR4-N1 |
+| CRR-008 | `api-e2e-test-review-report.md` | Proportional test-code review, build step 4 / API-REV-004 Pass | Pass (CRR-007) | Not Applicable | None |
 
 ## Revision Entries
 
@@ -170,3 +172,58 @@ None (CR3-N1 remains an open non-blocking note for implementation).
 - Material score or classification changes: N/A
 - Recommended recipient: delivery engineer
 - Remaining risks or uncertainty: production key and GitHub source only at the first release; RU-23 release-notes instruction; CR3-N1
+
+### CRR-007 — Build step 4 (desktop: node version and "Update to <version>"): implementation review, Pass
+
+- Canonical review report updated: `code-review-report.md` (now holds the step-4 result)
+- Review entry point and round: Implementation Review, round 4 (first for step 4)
+- Review scope: `Full Re-Audit` of the step-4 delta: desktop store and row, C1 POST, the self-check message (18 files)
+- Triggering role, report path, and finding or scenario IDs: Implementation Engineer, `implementation-handoff.md` (IR-004); SCN-001, AC-009, AC-010
+- Relevant solution revision IDs: `SR-005`, `SR-009`
+- Relevant architecture-review revision IDs: `ARCH-REV-005`
+- Relevant implementation revision IDs: `IR-004`
+- Relevant API/E2E revision IDs: N/A (step 4)
+- Relevant delivery revision IDs: N/A (step 4)
+- Prior authoritative result: `Pass` (CRR-005, step 3)
+- Current authoritative result: `Pass`, 9.5/10, all categories ≥ 9.3
+- What changed in the review result and why:
+  - the step-4 code was reviewed against SR-005/SR-009 and N-4;
+  - the five assumptions are confirmed;
+  - Q-1 was checked against one-nodes-tab REQ-706, which governs the connection-details fixing buttons, not this button. It is recorded as optional product refinement CR4-N1.
+- Supported product scenario / material-premise basis changes: none
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR3-N1 (non-blocking) | Open | Resolved | IR-004 | `self-check.mjs`: an exit-code message when the candidate exited; last 40 output lines to the starter log; `update-flow.test.mjs` case |
+
+- New or remaining finding IDs: none blocking. Non-blocking: CR4-N1 (optional confirmation before a node update; product choice for the Solution Designer)
+- Material score or classification changes: N/A
+- Recommended recipient: API/E2E engineer (primary); implementation engineer informed
+- Remaining risks or uncertainty: real-app paths only unit-tested (zh-CN, Downloading, long restart); old nodes show the generic "Not reachable" (N-4); mid-turn runs until step 5
+
+### CRR-008 — Build step 4: proportional test-code review, Not Applicable
+
+- Canonical review report updated: `api-e2e-test-review-report.md` (now holds the step-4 result)
+- Review entry point and round: Successful API/E2E test-code review, round 4 (build step 4)
+- Review scope: `N/A` (test review)
+- Triggering role, report path, and finding or scenario IDs: API/E2E Engineer, `api-e2e-execution-coverage-report.md` (API-REV-004; API-41)
+- Relevant solution revision IDs: `SR-005`, `SR-009`
+- Relevant architecture-review revision IDs: `ARCH-REV-005`
+- Relevant implementation revision IDs: `IR-004`
+- Relevant API/E2E revision IDs: `API-REV-004`
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: CRR-007 `Pass` (source review)
+- Current authoritative result: `Not Applicable`. No durable test changed; `6412b7e4fd..506b8de736` touches only ticket files.
+- What changed in the review result and why: nothing to review. The run-1 fixture faults in the evidence driver were redone in run 2. API/E2E's product observations are noted for the Solution Designer and delivery: the N-4 visibility of pre-step-2 nodes, English node messages in zh-CN, and CR4-N1.
+- Supported product scenario / material-premise basis changes: none
+
+#### Prior Finding Resolution
+
+None (CR4-N1 remains an optional product note).
+
+- New or remaining finding IDs: none
+- Material score or classification changes: N/A
+- Recommended recipient: delivery engineer
+- Remaining risks or uncertainty: release-notes wording for N-4 and RU-23; production key and GitHub source at the first release; mid-turn runs until step 5

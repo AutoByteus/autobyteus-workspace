@@ -1,0 +1,9 @@
+# IMP4-05 step-4 image from a clean clone of deead7bf05, and the test image
+# Commands: docker buildx build --load --platform linux/arm64 -f autobyteus-server-ts/docker/Dockerfile.monorepo -t autobyteus-server-305-test:step4 .  (in /tmp/ab305/clean at deead7bf05)
+#   docker build -f IMP4-proof-Dockerfile.testkey -t autobyteus-server-305-test:step4-testkey .  (test public key, local source, built-in labelled 1.5.11-beta.5 so the app's 1.5.11-beta.6 is newer)
+# Package published to the local source: the step-4 image's own built-in package (1.5.11-beta.6), archived, described and signed with the throwaway test key by the repository's scripts
+
+#41 25.85 Wrote server-package.json: 1.5.11-beta.6 linux-arm64, Node modules 127, system level 1, 62 migrations
+exit 0
+image step4 sha256:d95cb9e4327546e2758d6ccb05bbd12afb2f923f4e2ab41998b38d178d5f5540
+image step4-testkey sha256:86052e47832b78f1b0f57f142e77a6ea539361a70ade56ac69e8ee6afeaf87fa

@@ -9,6 +9,7 @@ The latest coverage investigation (`api-e2e-coverage-investigation.md`) and exec
 | API-REV-001 | Code reviewer, `code-review-report.md` (CRR-001 Pass), round 1 | SR-005, ARCH-REV-002, IR-001, CRR-001 | N/A | Pass / 95% |
 | API-REV-002 | Code reviewer, `code-review-report.md` (CRR-003 Pass), round 2 (build step 2) | SR-005 (SR-006/007), ARCH-REV-003, IR-002, CRR-003 | Pass / 95% (step 1) | Pass / 94.7% |
 | API-REV-003 | Code reviewer, `code-review-report.md` (CRR-005 Pass), round 3 (build step 3) | SR-009/SR-010, ARCH-REV-004, IR-003, CRR-005 | Pass / 94.7% (step 2) | Pass / 94.7% |
+| API-REV-004 | Code reviewer, `code-review-report.md` (CRR-007 Pass), round 4 (build step 4) | SR-005 + SR-009, ARCH-REV-005, IR-004, CRR-007 | Pass / 94.7% (step 3) | Pass / 94.7% |
 
 ## Revision Entries
 
@@ -112,3 +113,37 @@ None. No round-2 failure was open. In this round, two step-print checks were ove
   - the step-3 release notes must tell users to reinstall the launcher (RU-23);
   - FU-006;
   - the stale `state.json` `previous` after an image change (observation).
+
+### API-REV-004 — Build step 4 (desktop: node version and "Update to <version>")
+
+- Triggering role, report path, and round: code reviewer, `code-review-report.md`, CRR-007 Pass; API/E2E round 4.
+- Triggering items: the reviewer's eight coverage items.
+- Related revision IDs: SR-005, SR-009, ARCH-REV-005, IR-004, CRR-007.
+- Why: build step 4 is a new scope. Steps 1–3 are merged and released (v1.5.11-beta.6, DR-003).
+- Coverage decisions or durable test paths changed: none.
+- Cases:
+  - API-40 reused (IMP4-01..06);
+  - API-41: the real desktop app (isolated worktree build) against test-owned nodes on the host daemon; all eight items Pass.
+- Environment delta from round 3:
+  - no dind: the nodes run on the host daemon with unique names, their own label and fresh volumes, and no launcher label, because the desktop must reach them on `127.0.0.1`;
+  - a host-loopback release source with per-variant prefixes and a throttled variant;
+  - the real bash launcher for the host-started update, with a one-node state dir.
+
+#### Prior Failure Resolution
+
+| Prior Case / Failure Reference | Previous Classification | Current Resolution | Case IDs Now Proving It |
+| --- | --- | --- | --- |
+| Round 3: none open | — | — | — |
+| API-41 run 1: "Copied" not seen | Fixture timing (synchronous read of an asynchronous copy) | Run 2 reads it 500 ms later: "Copied"; clipboard holds the command | API-41 run 2 |
+| API-41 run 1: R row stayed "Not reachable" after `docker start` | Fixture: a random host port reassigned on start (61852 → 62239); the row polled the registered address every 10 s, as designed | R2 with a fixed host port, as the launcher gives: recovered within one 10 s poll | API-41 run 2 (R2) |
+
+- Canonical artifacts updated: the investigation and the report rewritten for round 4 (round-3 versions at `e7e76ac2c0`); the progress log section "Round 4".
+- Prior result and confidence: Pass, 94.7% (step 3)
+- Current result and confidence: Pass, 94.7% (the 95% target is missed only because the desktop journeys are not durable automation)
+- New or remaining failure IDs: none
+- Recommended owner: code reviewer
+- Remaining risks, for the Solution Designer (product):
+  - English node reasons in zh-CN rows;
+  - "Not reachable." under reachable pre-starter nodes (N-4), which includes the user's current nodes until `upgrade --all`;
+  - CR4-N1 (no confirmation).
+- Also: FU-006.

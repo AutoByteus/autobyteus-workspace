@@ -9,6 +9,7 @@ The latest docs sync report, handoff summary and release/deployment report are a
 | DR-001 | Build step 1 (signed server package): CRR-002 Pass | N/A | Delivery Completed for step 1: merged into `personal`, no release | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `evidence/DEL-01-*`, `evidence/DEL-02-*` |
 | DR-002 | Build step 2 (starter and server-packages volume): CRR-004 Not Applicable after API-REV-002 Pass | DR-001 Delivery Completed (step 1) | Delivery Completed for step 2: merged into `personal`, no release | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md` (rewritten for step 2; step-1 versions in git at `77fb8bf2d1`), `evidence/DEL-03-*` |
 | DR-003 | Build step 3 (in-place update by command): CRR-006 Not Applicable after API-REV-003 Pass; the user asked for a beta | DR-002 Delivery Completed (step 2) | See the DR-003 entry | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md` (rewritten for step 3; step-2 versions at `6b34f900b6`), `release-notes.md`, `evidence/DEL-04-*`, `evidence/DEL-05-*` |
+| DR-004 | Build step 4 (desktop: node version and "Update to <version>"): CRR-008 Not Applicable after API-REV-004 Pass | DR-003 Delivery Completed (step 3, beta v1.5.11-beta.6) | See the DR-004 entry | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md` (rewritten for step 4; step-3 versions at `1bed6deeaf`), `release-notes.md`, `evidence/DEL-11-*` |
 
 ## Revision Entries
 
@@ -87,3 +88,21 @@ The latest docs sync report, handoff summary and release/deployment report are a
 - Release body: the ticket's `release-notes.md` added above the generated notes (deviation recorded).
 - Cleanup: worktree and ticket branch kept for steps 4–5; local finalize branch deleted; delivery's test artifacts and pulled image removed.
 - Terminal return to the Solution Designer: sent after this record is on `personal`.
+
+### DR-004 — Build step 4 merged into `personal` without a release
+
+- Delivery round and trigger: fourth delivery round, build step 4. CRR-008 `Not Applicable` (no durable test changed) after API-REV-004 Pass (94.7%) and CRR-007 Pass.
+- Prior authoritative result: DR-003, Delivery Completed for step 3 and beta v1.5.11-beta.6 (`personal` @ `1bed6deeaf`).
+- Integration: base `1bed6deeaf` unchanged, already current; DEL-11 confirmation checks passed.
+- Verification: from the evidence, sufficient. Every row state is settled by the design or ARCH-REV-005 N-4.
+- Docs: `autobyteus-web/docs/settings.md` (server line, polling) and `remote_access.md` (`POST /rest/node-update`). `release-notes.md` rewritten for the release that ships step 4.
+- Decisions recorded:
+  - N-4 visibility, CR4-N1 and the zh-CN English reasons passed to the Solution Designer as product choices;
+  - the user's nodes run the pre-step-1 `:beta` (read-only check), so they will show "Not reachable." until the reinstall and `upgrade --all`;
+  - CR3-N1 is fixed in step 4's code.
+- Release: none (RELEASE.md default; not requested for step 4).
+- Next recipient/action: finalize, then terminal return to the Solution Designer; step 5 waits for autobyteus-285/287.
+
+#### Finalization Record
+
+To be completed after the push.

@@ -1,0 +1,14 @@
+# IMP4-03 server C1 tests and typecheck; starter tests
+# Command: vitest run tests/unit/node-update tests/unit/remote-access tests/architecture; pnpm typecheck; pnpm -C autobyteus-server-ts test:starter
+# Commit: deead7bf05
+# Environment: macOS arm64, v22.23.1
+# Date: 2026-10-30T22:29Z
+
+ Test Files  17 passed (17)
+      Tests  126 passed (126)
+server typecheck exit 0
+# Subtest: CR3-N1: a candidate that exits says so, and its output reaches the starter log only
+ok 28 - CR3-N1: a candidate that exits says so, and its output reaches the starter log only
+# tests 49
+# pass 49
+# fail 0

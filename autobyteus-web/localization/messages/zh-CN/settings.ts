@@ -398,6 +398,8 @@ const settingsMessages = {
   'settings.components.settings.DockerNodeStartGuideCard.commands.newContainer.description': '拉取最新镜像并创建下一个编号的 Docker 容器；可用时优先使用连续易读的主机端口。',
   'settings.components.settings.DockerNodeStartGuideCard.commands.upgradeAll.title': '升级所有 Docker 节点',
   'settings.components.settings.DockerNodeStartGuideCard.commands.upgradeAll.description': '使用每个节点保存的镜像引用重新创建所有已管理容器，同时保留命名卷。',
+  'settings.components.settings.DockerNodeStartGuideCard.commands.updateAll.title': '更新所有 Docker 节点的服务器',
+  'settings.components.settings.DockerNodeStartGuideCard.commands.updateAll.description': '在每个运行中的节点内把服务器更新到其镜像通道上的最新版本，保留容器和镜像。加上 --version <版本> 可指定版本。',
   'settings.components.settings.DockerNodeStartGuideCard.commands.destroyAll.title': '销毁所有 Docker 节点',
   'settings.components.settings.DockerNodeStartGuideCard.commands.destroyAll.description': '移除所有已管理容器和未使用的旧镜像，同时保留命名卷。',
   'settings.components.settings.DockerNodeStartGuideCard.commands.destroyNode.title': '销毁一个 Docker 节点',

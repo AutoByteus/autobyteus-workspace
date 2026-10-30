@@ -148,6 +148,20 @@ test('refusals before anything changes: the old server keeps serving with the sa
   assert.ok((await status(node)).update.finishedAt)
 })
 
+test('CR3-N1: a candidate that exits says so, and its output reaches the starter log only', async () => {
+  const { node, source } = await setUp()
+  await publishPackage(source, node.privateKey, { version: '1.5.12', behavior: { exitImmediately: 4 } })
+  const { log } = await boot(node, source)
+  await update(node, '--version', '1.5.12')
+  const after = await finished(node)
+  assert.deepEqual([after.update.state, after.update.code], ['failed', 'SELF_CHECK_FAILED'])
+  assert.equal(after.update.message,
+    'The server package 1.5.12 did not start: it exited with code 4 before answering its health check.')
+  const entry = log.entries.find((logged) => logged.event === 'self-check-failed')
+  assert.deepEqual([entry.version, entry.code, entry.output], ['1.5.12', 4, ['fake server: cannot start']])
+  assert.equal(JSON.stringify(after).includes('"output"'), false, 'the output is not in the status')
+})
+
 test('NOT_ENOUGH_SPACE is refused before the stop, with what is needed and free', async () => {
   const { node, source } = await setUp()
   await publishPackage(source, node.privateKey, { version: '1.5.12' })

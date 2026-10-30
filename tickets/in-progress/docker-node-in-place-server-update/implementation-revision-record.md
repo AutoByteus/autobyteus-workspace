@@ -9,6 +9,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | IR-001 | Architecture Reviewer, `design-review-report.md`, round 2 (Pass) | N/A (N-1 notes followed) | `Initial Baseline` | `SR-005`, `ARCH-REV-002`; `CRR-*`, `API-REV-*`, `DR-*`: N/A | Build step 1 implemented, ready for code review |
 | IR-002 | Architecture Reviewer, `design-review-report.md` (ARCH-REV-003 Pass), build step 2 | N/A (carried: CR-N1 code side) | `Initial Baseline` (step 2) | `SR-005`..`SR-007`, `ARCH-REV-003`; step 1: `CRR-001`, `DR-001` | Build step 2 implemented, ready for code review |
 | IR-003 | Architecture Reviewer, `design-review-report.md` (ARCH-REV-004 Pass), build step 3 | N/A (N-2, N-3 applied) | `Initial Baseline` (step 3) | `SR-009`, `ARCH-REV-004`; step 2: `CRR-003`, `API-REV-002`, `DR-002` | Build step 3 implemented, ready for code review |
+| IR-004 | Architecture Reviewer, `design-review-report.md` (ARCH-REV-005 Pass), build step 4 | N/A (N-4 and CR3-N1 applied) | `Initial Baseline` (step 4) | `SR-005`, `SR-009`, `ARCH-REV-005`; step 3: `CRR-005`, `DR-003` | Build step 4 implemented, ready for code review |
 
 ## Revision Entries
 
@@ -117,4 +118,33 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
   - the launcher on real Docker and PowerShell execution are left to API/E2E;
   - the release that ships step 3 must tell launcher users to reinstall the launcher, then `upgrade --all` (RU-23);
   - the production key and the GitHub path are proven only by a release.
+
+### IR-004 — Build step 4: the desktop's version line and "Update to <version>"
+
+- Triggering role, report path, and round: Architecture Reviewer, `design-review-report.md` (ARCH-REV-005 Pass), after step 3 was finalized and released in beta v1.5.11-beta.6 (DR-003)
+- Triggering finding IDs: N/A. Applied: N-4 (the C1 `error` row, a failed GET outside an update) and CR3-N1 (the self-check message and output tail). The optional `previous` cleanup is left out.
+- Classification: `Initial Baseline` for build step 4
+- Prior authoritative result: IR-003 (step 3), passed CRR-005, delivered
+- Current authoritative result: step 4 implemented and checked (IMP4-01..IMP4-06 Pass); Large / High confirmed; route Code Review
+- Related solution revision IDs: `SR-005`, `SR-009`
+- Related architecture-review revision IDs: `ARCH-REV-005`
+- Related code-review / API/E2E / delivery revision IDs: N/A (step 4)
+- Why this revision is recorded: the next build step (design-spec "Change / Refactor Sequence", step 4)
+- Approved behavior or requirement IDs affected: BEH-002, BEH-007; REQ-003, REQ-007, REQ-011; AC-001, AC-009, AC-010; DEC-018; DS-001, DS-005
+- Implementation delta:
+  - C1 `POST /rest/node-update` (relay with `requestedFrom` = the client address);
+  - `nodeServerUpdateStore` and `NodeServerUpdate.vue` under remote rows, with en and zh-CN texts;
+  - the guide card's `update --all`;
+  - the starter's self-check message and output tail.
+- Changed files or areas: commit `deead7bf05`; see the handoff's Key Files
+- Local validation and result: IMP4-01..IMP4-06 Pass:
+  - the full web suite (4889 tests), the guards and both typechecks;
+  - the server route tests and the starter tests;
+  - the real desktop app (an isolated worktree build) updating a test Docker node from 1.5.11-beta.5 to 1.5.11-beta.6 by the button, in the same container, with AC-009 and AC-010 shown on the node side.
+- Next recipient or routing: Code Reviewer (Large / High), per `get_handoff_rules`
+- Remaining limitations or risks:
+  - Q-1, whether the update button should confirm first, is open for the Solution Designer;
+  - zh-CN was not rendered;
+  - "Downloading…" and the long-down path were not seen in the real app (both unit-tested);
+  - AC-007 is step 5.
 

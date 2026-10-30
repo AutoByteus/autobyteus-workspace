@@ -19,9 +19,16 @@ export class StarterClient {
     return this.request("GET", `/status${query}`);
   }
 
-  private request(method: string, path: string): Promise<StarterAnswer> {
+  /** C2 `POST /updates`: 202 { accepted, version } or 409 { refused, message }. */
+  requestUpdate(version: string, requestedFrom: string): Promise<StarterAnswer> {
+    return this.request("POST", "/updates", { version, requestedFrom });
+  }
+
+  private request(method: string, path: string, body?: unknown): Promise<StarterAnswer> {
+    const payload = body === undefined ? undefined : JSON.stringify(body);
     return new Promise((resolve, reject) => {
-      const outgoing = http.request({ socketPath: this.socketPath, method, path, timeout: STARTER_TIMEOUT_MS }, (response) => {
+      const headers = payload ? { "content-type": "application/json", "content-length": Buffer.byteLength(payload) } : {};
+      const outgoing = http.request({ socketPath: this.socketPath, method, path, headers, timeout: STARTER_TIMEOUT_MS }, (response) => {
         let text = "";
         response.setEncoding("utf8");
         response.on("data", (chunk: string) => { text += chunk; });
@@ -35,7 +42,7 @@ export class StarterClient {
       });
       outgoing.on("timeout", () => outgoing.destroy(new Error(`The starter did not answer within ${STARTER_TIMEOUT_MS / 1000} s`)));
       outgoing.on("error", reject);
-      outgoing.end();
+      outgoing.end(payload);
     });
   }
 }

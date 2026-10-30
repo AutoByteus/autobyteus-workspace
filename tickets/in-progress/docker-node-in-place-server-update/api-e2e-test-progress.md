@@ -54,3 +54,13 @@ My own progress log while tests run. Read it first whenever the run is picked ba
 | 2026-10-30T19:45Z | setup | Completed | Pass | key pair, package A from step3 image (1.5.11-beta.5), packages 1.5.12..1.5.20 signed with the throwaway key |
 | 2026-10-30T19:45Z | API-31..API-36 | Started | — | dind journeys phases 1-4; script api3x-launcher-update.sh; evidence/API-3x-launcher-update.log |
 | 2026-10-30T20:04Z | API-31..API-36 | Completed | Pass | 69 CHECK PASS; 2 over-strict step-print checks (polling; target and result printed); dind, images, temp root and throwaway key removed |
+
+## Round 4 — build step 4 (API-REV-004)
+
+| Time | Case ID | Event | Result | Note (what is running and where, what to do next) |
+| --- | --- | --- | --- | --- |
+| 2026-10-30T22:39Z | setup | Started | — | throwaway key, package A from the step4 image, signed variants good/fail/lvl99 of 1.5.11-beta.6 under /private/tmp/ab305-api-e2e/s4 |
+| 2026-10-30T22:49Z | setup | Completed | Pass | packages good/fail/lvl99 signed with the throwaway key; release source on 127.0.0.1:61155 (good throttled 4 MB/s); test image ab305-api4-node:testkey; isolated app iso-61359-e30d (control 61359) built from the worktree |
+| 2026-10-30T22:49Z | API-41 | Started | — | desktop driver drive.mjs; evidence/API-41-desktop/ |
+| 2026-10-30T23:14Z | API-41 | Checkpoint | — | run 1 done: 3 CHECK FAIL: copy 'Copied' (read at once; to diagnose), R did not recover (fixture: random host port reassigned on docker start, 61852 -> 62239; the row polled the old address every 10 s); run 2 in the same window: copy probe + R2 with a fixed host port |
+| 2026-10-30T23:24Z | API-41 | Completed | Pass | run 2: CHECK FAILURES 0 (copy 'Copied', R2 recovered within one poll); run 1 failures were fixture faults; app stopped, test nodes, volumes, image, source and throwaway key removed |

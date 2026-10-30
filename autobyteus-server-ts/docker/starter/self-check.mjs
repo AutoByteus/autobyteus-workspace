@@ -5,12 +5,30 @@
 //   an environment built from scratch: PATH, NODE_ENV, HOME and AUTOBYTEUS_TEMP_WORKSPACE_DIR only
 //   (no inherited AUTOBYTEUS_* variable, no starter socket);
 //   host 127.0.0.1 and a free port.
-// The folder is deleted afterwards, whatever the result.
+// The folder is deleted afterwards, whatever the result. When the candidate does not answer, the last
+// lines of its output go to the starter log only (they never reach update.json or the status).
 import { randomBytes } from 'node:crypto'
 import { mkdirSync, rmSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
-import { freePort, spawnServer, stopServer, waitForHealth } from './server-process.mjs'
+import { exitCodeOf, freePort, spawnServer, stopServer, waitForHealth } from './server-process.mjs'
 import { fail } from './update-error.mjs'
+
+const OUTPUT_TAIL_LINES = 40
+
+/** Keeps the last lines written to a stream. */
+function outputTail(streams) {
+  let lines = []
+  let partial = ''
+  for (const stream of streams) {
+    stream.setEncoding('utf8')
+    stream.on('data', (chunk) => {
+      const parts = (partial + chunk).split('\n')
+      partial = parts.pop()
+      lines = [...lines, ...parts].slice(-OUTPUT_TAIL_LINES)
+    })
+  }
+  return () => [...lines, ...(partial ? [partial] : [])].slice(-OUTPUT_TAIL_LINES)
+}
 
 export class SelfCheck {
   #packagesRoot
@@ -43,12 +61,19 @@ export class SelfCheck {
     const onAbort = () => { if (candidate) void stopServer(candidate, this.#stopMs, this.#log) }
     signal?.addEventListener('abort', onAbort)
     try {
-      candidate = await spawnServer({ packageDir: serverPackage.dir, host: '127.0.0.1', port, dataDir, env, stdio: 'ignore', log: this.#log })
+      candidate = await spawnServer({
+        packageDir: serverPackage.dir, host: '127.0.0.1', port, dataDir, env, stdio: ['ignore', 'pipe', 'pipe'], log: this.#log,
+      })
+      const tail = outputTail([candidate.process.stdout, candidate.process.stderr])
+      let ended = null
+      candidate.exited.then((exit) => { ended = exit })
       const healthy = await waitForHealth(port, this.#timeoutMs, candidate.exited)
       if (signal?.aborted) throw signal.reason
       if (!healthy) {
-        throw fail('SELF_CHECK_FAILED',
-          `The server package ${serverPackage.version} did not start: no health answer within ${this.#timeoutMs / 1000} s.`)
+        this.#log('self-check-failed', { version: serverPackage.version, ...(ended ?? {}), output: tail() })
+        throw fail('SELF_CHECK_FAILED', `The server package ${serverPackage.version} did not start: ` + (ended
+          ? `it exited with code ${exitCodeOf(ended)} before answering its health check.`
+          : `no health answer within ${this.#timeoutMs / 1000} s.`))
       }
       this.#log('self-check-passed', { version: serverPackage.version })
     } finally {

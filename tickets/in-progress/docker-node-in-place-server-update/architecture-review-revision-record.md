@@ -10,6 +10,7 @@ The latest `design-review-report.md` (same folder) is authoritative. This record
 | ARCH-REV-002 | Round 2 / Solution Designer revision for ARCH-REV-001 (SR-005, Large / High) | SR-003, SR-005 | Fail | Pass | AR-001..AR-012 resolved; N-1 non-blocking note |
 | ARCH-REV-003 | Round 3 / basis confirmation for build step 2 (`handoff-step-2.md`) | SR-005, SR-006, SR-007 | Pass | Pass | N-1 closed (SR-006); no new findings |
 | ARCH-REV-004 | Round 4 / build step 3 with the SR-009 delta (`handoff-step-3.md`) | SR-005, SR-009 | Pass | Pass | No findings; non-blocking notes N-2, N-3 |
+| ARCH-REV-005 | Round 5 / basis confirmation for build step 4 (`handoff-step-4.md`) | SR-005, SR-009, SR-011 | Pass | Pass | No findings; non-blocking note N-4 |
 
 ## Revision Entries
 
@@ -140,3 +141,26 @@ None open.
   - the DEC-016 figure is awaiting the user's confirmation;
   - step 5 waits for autobyteus-285 and -287;
   - the release notes of the release that ships step 3 must tell launcher users to reinstall the launcher.
+
+### ARCH-REV-005 — The basis confirmed for build step 4 (desktop)
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-in-place-server-update/tickets/in-progress/docker-node-in-place-server-update/design-review-report.md` (section "Step 4 Basis Confirmation")
+- Review round and trigger: round 5; Solution Designer run `solution_designer_f2a096fe80af461e9d7c04ea18dfd6fc`, `Architecture Design Complete` for build step 4 (`handoff-step-4.md`); step 3 finalized, beta v1.5.11-beta.6 released (`origin/personal` @ `1bed6deeaf`)
+- Relevant solution revision IDs: `SR-005`, `SR-009` (design); `SR-010`, `SR-011` (evidence)
+- Prior authoritative decision: `Pass` (ARCH-REV-004)
+- Current authoritative decision: `Pass`, applying to build step 4
+- What changed:
+  - Checked that there is no design or requirements change (`git diff` empty).
+  - Checked that step 3 as built supports step 4: C1 GET shape, the owner route class for all methods on `/rest/node-update`, the starter's request path.
+  - Placed the carried items: CR3-N1 inside `SelfCheck`, with output only to the starter log (AC-012); the stale `previous` cleanup is optional and, if done, in `PackageStore.choose`.
+
+#### Prior Finding Resolution
+
+None open. N-2 and N-3 were implementation notes for step 3.
+
+- New or remaining finding IDs: none. Non-blocking note N-4: a row state for `inPlaceUpdate: "error"` and for a failed GET.
+- Material classification changes: none (Large / High)
+- Recommended recipient: Implementation Engineer (build step 4); informational notification to the Solution Designer
+- Remaining risks or uncertainty:
+  - the DEC-016 figure is awaiting the user's confirmation;
+  - step 5 waits for autobyteus-285 and -287.

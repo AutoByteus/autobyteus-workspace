@@ -1,0 +1,20 @@
+# IMP4-01 web unit and component tests (full suite)
+# Command: pnpm -C autobyteus-web test:nuxt --run
+# Commit: deead7bf05
+# Environment: macOS arm64, v22.23.1
+# Date: 2026-10-30T22:25Z
+
+stderr | components/settings/nodes/__tests__/NodeRow.spec.ts
+stdout | components/settings/nodes/__tests__/NodeRow.spec.ts
+ ✓ components/settings/nodes/__tests__/NodeRow.spec.ts (13 tests) 60ms
+stderr | components/settings/nodes/__tests__/NodeServerUpdate.spec.ts
+stderr | components/settings/nodes/__tests__/nodeServerUpdateStore.spec.ts
+stdout | components/settings/nodes/__tests__/NodeServerUpdate.spec.ts
+ ✓ components/settings/nodes/__tests__/NodeServerUpdate.spec.ts (12 tests) 85ms
+stdout | components/settings/nodes/__tests__/nodeServerUpdateStore.spec.ts
+ ✓ components/settings/nodes/__tests__/nodeServerUpdateStore.spec.ts (9 tests) 57ms
+stderr | utils/__tests__/dockerNodeLauncherCommands.spec.ts
+stdout | utils/__tests__/dockerNodeLauncherCommands.spec.ts
+ ✓ utils/__tests__/dockerNodeLauncherCommands.spec.ts (4 tests) 4ms
+ Test Files  671 passed (671)
+      Tests  4889 passed (4889)
