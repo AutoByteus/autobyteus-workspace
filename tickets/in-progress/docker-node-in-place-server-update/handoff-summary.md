@@ -49,6 +49,8 @@ None requested for step 4. RELEASE.md's default is no release, and the user's ea
 
 ## Where Things Are
 
+- Merged into `personal` with `--no-ff` as `db0881a96e` (pushed; Secret Gate PASS before both pushes). No release.
+
 - Worktree and branch kept for step 5; ticket folder in `tickets/in-progress/`.
 - The untracked `autobyteus-web/electron-dist` from API/E2E's isolated build is ignored by git and was not committed.
 - The user's nodes were only read (`docker ps`/`inspect`), never changed.
