@@ -1,0 +1,21 @@
+# IMP-05 the image runs its built-in server package (test container)
+# Command: docker run -d --name ab305-step1-test --label autobyteus.validation=ab305 -p 127.0.0.1:<free port>:8000 -e AUTOBYTEUS_SERVER_HOST=http://localhost:<port> autobyteus-server-305-test:step1 (no user volumes; anonymous volumes only), then the probes below
+# Commit: 01c56f1b95; image sha256:ae18d6c1a66e (IMP-03)
+# Environment: macOS arm64 host, Docker 29.0.1, container bound to 127.0.0.1:53199
+# Date: 2026-10-30T15:57Z. Observed first health 4 s after docker run (IMP-05 row).
+
+$ curl http://127.0.0.1:53199/rest/health
+{"status":"ok","message":"Server is running"}
+$ curl -o /dev/null -w '%{http_code}' http://127.0.0.1:53199/mobile/
+200
+$ POST /graphql { __typename }
+{"data":{"__typename":"Query"}}
+$ supervisorctl status autobyteus_server
+autobyteus_server                RUNNING   pid 55, uptime 0:24:28
+server cmdline: node dist/app.js --host 0.0.0.0 --port 8000 --data-dir /home/autobyteus/data 
+server cwd: /opt/autobyteus/server-package
+APP ROOT line: APP ROOT DIRECTORY: /opt/autobyteus/server-package
+migrations: Database migrations completed successfully.
+bootstrap present: no
+/app contents: LICENSE LICENSING.md NOTICE 
+old layout present: no

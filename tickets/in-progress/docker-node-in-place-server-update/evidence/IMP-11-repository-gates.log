@@ -1,0 +1,11 @@
+# IMP-11 repository gates on the branch
+# Commands: python3 scripts/check_licensing.py; python3 scripts/check_repository_artifact_hygiene.py; scripts/check_secrets.sh origin/personal..HEAD
+# Commit: 5c33c1b7b0 (01c56f1b95 + docs(testing)). Environment: macOS arm64, gitleaks via check_secrets.sh. Date: 2026-10-30
+
+Licensing is consistent.
+Tracked files scanned: 7535
+check_licensing exit 0
+artifact hygiene exit 0
+secret gate: scanning 2 commit(s) in origin/personal..5c33c1b7b0
+secret gate: PASS (no secrets found)
+secret gate exit 0
