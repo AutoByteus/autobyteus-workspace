@@ -131,6 +131,21 @@ describe("ClaudeSdkClient", () => {
     },
   );
 
+  it("adds the run's integration variables to the run session's CLI spawn only", async () => {
+    const queryFn = vi.fn(() => createMockQuery());
+    const client = new ClaudeSdkClient(vi.fn());
+    client.setCachedModuleForTesting({ query: queryFn });
+    stubProcessEnvironment({ CLAUDE_AGENT_SDK_AUTH_MODE: "cli", HOME: "/synthetic/home" });
+    const extraEnvironment = { AUTOBYTEUS_GITHUB_API_URL: "http://127.0.0.1:5555/r/rp_test-dummy/github/api", GIT_TERMINAL_PROMPT: "0" };
+
+    await client.beginStreamingSession({ resolveOptions: () => ({ ...baseOptions(), extraEnvironment }) }).open();
+
+    const call = queryFn.mock.calls[0]?.[0] as { options: Record<string, unknown> & { env: Record<string, string> } };
+    expect(call.options.env).toEqual({ ...process.env, ENABLE_PROMPT_CACHING_1H: "1", ...extraEnvironment });
+    expect(call.options).not.toHaveProperty("extraEnvironment");
+    expect(process.env.AUTOBYTEUS_GITHUB_API_URL).toBeUndefined();
+  });
+
   it("sets neither v1.4.78 policy variable, so Claude CLI background-task and Bash timeout defaults apply (AC-010)", async () => {
     vi.stubEnv("CLAUDE_CODE_DISABLE_BACKGROUND_TASKS", undefined);
     vi.stubEnv("BASH_MAX_TIMEOUT_MS", undefined);

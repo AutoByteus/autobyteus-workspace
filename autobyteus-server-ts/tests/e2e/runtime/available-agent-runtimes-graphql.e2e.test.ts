@@ -195,6 +195,7 @@ describe("list_available_agent_runtimes / availableAgentRuntimes e2e (real studi
     const studio = await buildStudioServer({ appConfig: appConfigProvider.config, loggingConfig: LOGGING });
     await studio.applicationRuntime.lifecycle.prepareBeforeListen();
     await studio.agentToolsMcpHost.listen();
+    await studio.credentialProxyHost.listen();
     const address = await studio.fastify.listen({ port: 0, host: "127.0.0.1" });
     await studio.applicationRuntime.lifecycle.recoverAfterListen();
     fastify = studio.fastify;

@@ -117,6 +117,7 @@ describe("AgentProviderFactoryBuilder", () => {
           agentDefinitionService: {},
           agentToolMcpRunSessions: {},
           applicationAgentTools: null,
+          integrationRunAccess: null,
         };
         if (omit) delete input[field];
         else input[field] = value;
@@ -126,15 +127,23 @@ describe("AgentProviderFactoryBuilder", () => {
     }
 
     for (const input of [
-      { agentDefinitionService: {}, agentToolMcpRunSessions: {} },
+      { agentDefinitionService: {}, agentToolMcpRunSessions: {}, integrationRunAccess: null },
       {
         agentDefinitionService: {},
         agentToolMcpRunSessions: {},
         applicationAgentTools: undefined,
+        integrationRunAccess: null,
       },
     ]) {
       expect(() => builder.createForExecution(input as never))
         .toThrow("applicationAgentTools disposition is required");
+    }
+    for (const input of [
+      { agentDefinitionService: {}, agentToolMcpRunSessions: {}, applicationAgentTools: null },
+      { agentDefinitionService: {}, agentToolMcpRunSessions: {}, applicationAgentTools: null, integrationRunAccess: undefined },
+    ]) {
+      expect(() => builder.createForExecution(input as never))
+        .toThrow("integrationRunAccess disposition is required");
     }
   });
 
@@ -147,16 +156,26 @@ describe("AgentProviderFactoryBuilder", () => {
     const runSessionsB = { activateForRun: vi.fn() };
     const capabilityA = { marker: "application-capability-a" };
     const capabilityB = { marker: "application-capability-b" };
+    const integrationRunAccess = { environmentForRun: vi.fn(() => ({})), revokeForRun: vi.fn() };
     const first = builder.createForExecution({
       agentDefinitionService: definitionA as never,
       agentToolMcpRunSessions: runSessionsA as never,
       applicationAgentTools: capabilityA as never,
+      integrationRunAccess,
     });
     const second = builder.createForExecution({
       agentDefinitionService: definitionB as never,
       agentToolMcpRunSessions: runSessionsB as never,
       applicationAgentTools: capabilityB as never,
+      integrationRunAccess: null,
     });
+    // Each runtime's factory applies the run access it was given (the same one for every runtime).
+    expect((first.autoByteus as unknown as { options: Record<string, unknown> }).options.integrationRunAccess).toBe(integrationRunAccess);
+    expect((first.codex as unknown as Record<string, Record<string, unknown>>).threadBootstrapper!.integrationRunAccess).toBe(integrationRunAccess);
+    expect((first.claude as unknown as Record<string, Record<string, unknown>>).sessionManager!.integrationRunAccess).toBe(integrationRunAccess);
+    expect((first.antigravity as unknown as Record<string, unknown>).integrationRunAccess).toBe(integrationRunAccess);
+    expect((first.grok as unknown as { deps: Record<string, unknown> }).deps.integrationRunAccess).toBe(integrationRunAccess);
+    expect((second.antigravity as unknown as Record<string, unknown>).integrationRunAccess).toBeNull();
 
     expect(Object.isFrozen(builder)).toBe(true);
     expect(Object.isFrozen(first)).toBe(true);
@@ -220,6 +239,7 @@ describe("AgentProviderFactoryBuilder", () => {
         agentDefinitionService: {} as never,
         agentToolMcpRunSessions: { activateForRun: vi.fn() } as never,
         applicationAgentTools: null,
+        integrationRunAccess: null,
       });
 
     expect((factory.autoByteus as unknown as Record<string, unknown>).applicationAgentTools)

@@ -1,3 +1,4 @@
+import type { IntegrationRunAccess } from "../../../credential-proxy/integration-run-access.js";
 import type { AgentDefinitionService } from "../../../agent-definition/services/agent-definition-service.js";
 import type { SkillService } from "../../../skills/services/skill-service.js";
 import type { AgentToolMcpRunSessionActivator, AgentToolMcpRunSessionExposure } from "../../../agent-tools/mcp/agent-tool-mcp-session-authority.js";
@@ -15,6 +16,7 @@ export const createGrokBuildAgentRunBackendFactory = (input: Readonly<{
   skills: SkillService;
   workspaces: AcpWorkingDirectoryResolver;
   mcpSessions: AgentToolMcpRunSessionActivator & AgentToolMcpRunSessionExposure;
+  integrationRunAccess: IntegrationRunAccess | null;
 }>): AcpAgentRunBackendFactory => new AcpAgentRunBackendFactory({
   launchProfile: grokBuildLaunchProfile,
   sessionProfile: grokBuildSessionProfile,
@@ -23,4 +25,5 @@ export const createGrokBuildAgentRunBackendFactory = (input: Readonly<{
   workspaces: input.workspaces,
   mcpSessions: input.mcpSessions,
   skillMaterializer: getGrokWorkspaceSkillMaterializer(),
+  integrationRunAccess: input.integrationRunAccess,
 });

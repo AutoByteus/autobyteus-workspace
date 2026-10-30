@@ -19,14 +19,19 @@ const mocks = vi.hoisted(() => {
   const agentToolsMcpHost = {
     listen: vi.fn(async () => "http://127.0.0.1:54321"),
   };
+  const credentialProxyHost = {
+    listen: vi.fn(async () => "http://127.0.0.1:54322"),
+  };
   return {
     app,
     lifecycle,
     agentToolsMcpHost,
+    credentialProxyHost,
     buildStudioServer: vi.fn(async () => ({
       fastify: app,
       applicationRuntime: { lifecycle },
       agentToolsMcpHost,
+      credentialProxyHost,
       packageRegistryService: {},
     })),
     initializePrisma: vi.fn(async () => undefined),
@@ -190,6 +195,9 @@ describe("Studio app-data migration startup", () => {
         .toBeLessThan(mocks.agentToolsMcpHost.listen.mock.invocationCallOrder[0]!);
       expect(mocks.agentToolsMcpHost.listen.mock.invocationCallOrder[0])
         .toBeLessThan(mocks.app.listen.mock.invocationCallOrder[0]!);
+      // The credential proxy listens before the HTTP server, so a run started at once gets its address.
+      expect(mocks.credentialProxyHost.listen.mock.invocationCallOrder[0])
+        .toBeLessThan(mocks.app.listen.mock.invocationCallOrder[0]!);
       expect(mocks.app.listen).toHaveBeenCalledWith({ host: "127.0.0.1", port: 0 });
       expect(mocks.lifecycle.recoverAfterListen).toHaveBeenCalledTimes(1);
       expect(mocks.scheduleStudioBackgroundTasks).toHaveBeenCalledTimes(1);
@@ -294,7 +302,7 @@ describe("Studio app-data migration startup", () => {
       const starting = startConfiguredServer({ host: '127.0.0.1', port: 0 });
       await entered; handlers.get('SIGTERM')!();
       expect(mocks.app.close).not.toHaveBeenCalled(); expect(mocks.shutdownPrisma).not.toHaveBeenCalled();
-      finish(phase === 'build' ? { fastify: mocks.app, applicationRuntime: { lifecycle: mocks.lifecycle }, agentToolsMcpHost: mocks.agentToolsMcpHost } : undefined);
+      finish(phase === 'build' ? { fastify: mocks.app, applicationRuntime: { lifecycle: mocks.lifecycle }, agentToolsMcpHost: mocks.agentToolsMcpHost, credentialProxyHost: mocks.credentialProxyHost } : undefined);
       await starting; await new Promise(resolve => setImmediate(resolve));
       if (phase === 'prisma') {
         expect(mocks.buildStudioServer).not.toHaveBeenCalled(); expect(mocks.shutdownPrisma).toHaveBeenCalledOnce();

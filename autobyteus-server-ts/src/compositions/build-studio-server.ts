@@ -1,3 +1,4 @@
+import { createCredentialProxyHost, type CredentialProxyHost } from "../credential-proxy/credential-proxy-host.js";
 import { NativeCommandShutdown } from "./native-command-shutdown.js";
 import { CONTEXT_FILE_MAX_BYTES } from "../context-files/domain/context-file-upload-policy.js";
 import fastify, { LogController, type FastifyInstance } from "fastify";
@@ -82,6 +83,8 @@ import { composeModelRouting } from "./model-routing-composition.js";
 export type StudioServer = Readonly<{
   fastify: FastifyInstance;
   agentToolsMcpHost: AgentToolsMcpHost;
+  /** The loopback credential proxy for integrations; listened next to the Agent Tools MCP host. */
+  credentialProxyHost: CredentialProxyHost;
   applicationRuntime: ApplicationPlatformRuntime;
   packageRegistryService: ApplicationPackageRegistryService;
 }>;
@@ -92,6 +95,7 @@ const closeStudioProcessResources = async (input: {
   hostDefinitionServices: HostDefinitionServices;
   agentPackageDefinitionFeed: AgentPackageDefinitionFeed | null;
   agentToolsMcpHost: AgentToolsMcpHost | null;
+  credentialProxyHost: CredentialProxyHost | null;
   generalProcessAuthority: ScopedAgentToolMcpSessionAuthority | null;
   generalProcessRunSupervisor: GeneralProcessRunSupervisor | null;
   skillUpdateNotices: SkillUpdateNotices | null;
@@ -136,6 +140,11 @@ const closeStudioProcessResources = async (input: {
       try {
         await input.agentToolsMcpHost?.close();
       } finally {
+        try {
+          await input.credentialProxyHost?.close();
+        } catch (error) {
+          console.warn("CREDENTIAL_PROXY_CLOSE_FAILED", error);
+        }
         try {
           input.studioApiHandle?.close();
         } finally {
@@ -247,6 +256,7 @@ export const buildStudioServer = async (input: {
     console.warn("DEFINITION_ADMISSION_STARTUP_SCAN_FAILED", error);
   }
   let agentToolsMcpHost: AgentToolsMcpHost | null = null;
+  let credentialProxyHost: CredentialProxyHost | null = null;
   let generalProcessAuthority: ScopedAgentToolMcpSessionAuthority | null = null;
   let generalProcessRunSupervisor: GeneralProcessRunSupervisor | null = null;
   let skillUpdateNotices: SkillUpdateNotices | null = null;
@@ -268,6 +278,7 @@ export const buildStudioServer = async (input: {
       hostDefinitionServices,
       agentPackageDefinitionFeed,
       agentToolsMcpHost,
+      credentialProxyHost,
       generalProcessAuthority,
       generalProcessRunSupervisor,
       skillUpdateNotices,
@@ -292,6 +303,7 @@ export const buildStudioServer = async (input: {
     agentToolsMcpHost = createAgentToolsMcpHost({
       loggingConfig: input.loggingConfig,
     });
+    credentialProxyHost = createCredentialProxyHost();
     const agentProviderFactoryBuilder = createProcessAgentProviderFactoryBuilder({
       workspaceManager, nativeCommandProcessScope: nativeShutdown.scope,
     });
@@ -326,6 +338,7 @@ export const buildStudioServer = async (input: {
       workspaceManager,
       agentProviderFactoryBuilder,
       agentToolMcpSessionAuthority: generalProcessAuthority,
+      integrationRunAccess: credentialProxyHost.runAccess,
       modelSelectionValidator,
       taskExecutionResources,
       // One notice slot: tool list updates first, then skill notices (one notice per input).
@@ -431,6 +444,7 @@ export const buildStudioServer = async (input: {
       return Object.freeze({
         fastify: app,
         agentToolsMcpHost,
+        credentialProxyHost,
         applicationRuntime: currentApplicationRuntime,
         packageRegistryService: packages.packageRegistryService,
       });

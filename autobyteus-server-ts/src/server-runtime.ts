@@ -207,6 +207,7 @@ async function initializeConfiguredServer(options: ServerOptions, shutdown: Serv
     shutdown.checkpoint();
     await shutdown.stage(() => applicationRuntime.lifecycle.prepareBeforeListen());
     await shutdown.stage(() => studioServer.agentToolsMcpHost.listen());
+    await shutdown.stage(() => studioServer.credentialProxyHost.listen());
     await shutdown.stage(() => app.listen({ host: options.host, port: options.port }));
     logger.info(`Server listening on ${options.host}:${options.port}`);
   } catch (error) {

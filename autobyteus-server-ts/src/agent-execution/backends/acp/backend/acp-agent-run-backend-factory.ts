@@ -1,3 +1,4 @@
+import type { IntegrationRunAccess } from "../../../../credential-proxy/integration-run-access.js";
 import { workspaceCollisionPolicyForScope } from "../../shared/workspace-skill-collision-policy.js";
 import type { SystemInstructionTraceRecord } from "autobyteus-ts";
 import { createBackendPreparation, type AgentRunBackendPreparation } from "../../agent-run-backend-preparation.js";
@@ -47,6 +48,8 @@ export type AcpAgentRunBackendFactoryDependencies = Readonly<{
   mcpSessions: AgentToolMcpRunSessionActivator & AgentToolMcpRunSessionExposure;
   skillMaterializer: WorkspaceSkillMaterializer;
   instructionCapture?: SystemInstructionCaptureService;
+  /** The run's integration variables for the agent process (`null`: none on this host). */
+  integrationRunAccess: IntegrationRunAccess | null;
 }>;
 
 type PreparedRun = Readonly<{
@@ -65,7 +68,9 @@ type PreparedRun = Readonly<{
  */
 export class AcpAgentRunBackendFactory implements AgentRunBackendFactory {
   constructor(private readonly deps: AcpAgentRunBackendFactoryDependencies) {
-    this.launcher = new AcpSessionLauncher({ launchProfile: deps.launchProfile, sessionProfile: deps.sessionProfile });
+    this.launcher = new AcpSessionLauncher({
+      launchProfile: deps.launchProfile, sessionProfile: deps.sessionProfile, integrationRunAccess: deps.integrationRunAccess,
+    });
   }
 
   beginPreparation(request: AgentRunBackendPreparationRequest): AgentRunBackendPreparation {

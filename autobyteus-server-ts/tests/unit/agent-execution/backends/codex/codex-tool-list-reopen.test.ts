@@ -18,7 +18,9 @@ import { activatedAgentToolMcpRunSessionsStub } from "../../../../helpers/agent-
 
 // The Codex reopen sequence (design: "Codex reopen sequence"), measured in evidence/probe/drive-codex-reopen.mjs.
 
-const createRunContext = (runId: string, threadId: string | null, toolNames: string[] = ["alpha"]) => new AgentRunContext({
+const createRunContext = (
+  runId: string, threadId: string | null, toolNames: string[] = ["alpha"], extraAppServerConfig: Record<string, unknown> = {},
+) => new AgentRunContext({
   runId,
   config: new AgentRunConfig({
     runtimeKind: RuntimeKind.CODEX_APP_SERVER, agentDefinitionId: "def", llmModelIdentifier: "gpt",
@@ -28,7 +30,8 @@ const createRunContext = (runId: string, threadId: string | null, toolNames: str
     codexThreadConfig: {
       model: null, workingDirectory: "/tmp/codex-reopen", reasoningEffort: null, serviceTier: null,
       approvalPolicy: CodexApprovalPolicy.ON_REQUEST, sandbox: "workspace-write", baseInstructions: null,
-      developerInstructions: null, appServerConfig: { mcp_servers: { autobyteus_agent_tools: { enabled_tools: toolNames } } },
+      developerInstructions: null,
+      appServerConfig: { ...extraAppServerConfig, mcp_servers: { autobyteus_agent_tools: { enabled_tools: toolNames } } } as never,
       dynamicTools: [],
     },
     runtimeToolExposure: buildRuntimeAgentToolExposure(toolNames),
@@ -102,8 +105,8 @@ describe("CodexThreadManager.reopenThread", () => {
   });
 });
 
-const createBackend = (input: { toolNames?: string[] } = {}) => {
-  const context = createRunContext("run-codex", "thread-1", input.toolNames ?? ["alpha"]);
+const createBackend = (input: { toolNames?: string[]; extraAppServerConfig?: Record<string, unknown> } = {}) => {
+  const context = createRunContext("run-codex", "thread-1", input.toolNames ?? ["alpha"], input.extraAppServerConfig);
   const runSessions = activatedAgentToolMcpRunSessionsStub("run-codex", input.toolNames ?? ["alpha"]);
   let turns = 0;
   const thread = {
@@ -146,6 +149,20 @@ describe("CodexAgentRunBackend tool list changes", () => {
 
     await start("again");
     expect(threadManager.reopenThread).toHaveBeenCalledOnce();
+  });
+
+  it("keeps the run's integration variables and sandbox network access in the reopened thread's config (DS-002)", async () => {
+    const integration = {
+      shell_environment_policy: { set: { AUTOBYTEUS_GITHUB_API_URL: "http://127.0.0.1:5555/r/rp_test-dummy/github/api" } },
+      sandbox_workspace_write: { network_access: true },
+    };
+    const { backend, threadManager, definition, start } = createBackend({ extraAppServerConfig: integration });
+    await backend.applyDefinitionTools(definition(["alpha", "beta"]));
+    await start();
+    expect(threadManager.reopenThread.mock.calls[0]![1]).toMatchObject({
+      ...integration,
+      mcp_servers: { autobyteus_agent_tools: { enabled_tools: ["alpha", "beta"] } },
+    });
   });
 
   it("sends an append to the current thread unchanged while a reopen is pending", async () => {

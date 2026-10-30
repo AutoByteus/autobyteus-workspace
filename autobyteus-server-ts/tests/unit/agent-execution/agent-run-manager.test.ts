@@ -7,6 +7,8 @@ import type { AgentOperationResult } from "../../../src/agent-execution/domain/a
 import { AgentRunManager } from "../../../src/agent-execution/services/agent-run-manager.js";
 import { AgentRunResourceManager } from "../../../src/agent-execution/services/agent-run-resource-manager.js";
 import { AgentRunActivationRegistry } from "../../../src/agent-execution/runtime/agent-run-activation-registry.js";
+import { RunPassRegistry } from "../../../src/credential-proxy/run-pass-registry.js";
+import type { IntegrationRunAccess } from "../../../src/credential-proxy/integration-run-access.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import {
   PreviousRuntimeReleasePendingError,
@@ -81,6 +83,7 @@ const createManagerFixture = (input: {
   memoryRecorder?: unknown;
   agentToolMcpRunSessionDeactivator?: AgentToolMcpRunSessionDeactivator;
   lifecycleObserver?: { runPublished: ReturnType<typeof vi.fn> };
+  integrationRunAccess?: IntegrationRunAccess | null;
 }) => {
   const runSessions = input.agentToolMcpRunSessionDeactivator
     ?? createRecordingAgentToolMcpRunSessionDeactivator().deactivator;
@@ -101,6 +104,7 @@ const createManagerFixture = (input: {
       publishedArtifactRelayService,
       memoryRecorder, workJournalUpdater: { attachToRun: vi.fn(() => vi.fn()) },
       mcpServerInstances: { cleanupMcpServerInstancesForAgent: async () => undefined },
+      integrationRunAccess: input.integrationRunAccess ?? null,
     }),
   );
   const autoByteusDefinition = input.autoByteusBackendFactory ?? unavailableBackendFactory;
@@ -121,6 +125,7 @@ const createManagerFixture = (input: {
       memoryRecorder,
       providerInputNormalizer: { normalizeForProvider: (dispatch) => dispatch },
       agentToolMcpRunSessionDeactivator: runSessions,
+      integrationRunAccess: input.integrationRunAccess ?? null,
       lifecycleObserver: input.lifecycleObserver ?? null,
     }),
   };
@@ -275,6 +280,49 @@ describe("AgentRunManager candidate lifecycle", () => {
     }));
     candidate.commitPublication();
     expect(manager.getActiveRun(candidate.runId)?.getPlatformAgentRunId()).toBe(platformAgentRunId);
+  });
+
+  it("ends the credential-proxy pass a backend got during an activation that fails before attachment (AR-002)", async () => {
+    const passes = new RunPassRegistry();
+    const integrationRunAccess: IntegrationRunAccess = {
+      environmentForRun: (run) => ({ AUTOBYTEUS_GITHUB_API_URL: `http://127.0.0.1:1/r/${passes.issue(run)}/github/api` }),
+      revokeForRun: (runId) => passes.revoke(runId),
+    };
+    let pass = "";
+    const manager = createManager({
+      codexBackendFactory: {
+        // The backend prepares the run (issuing its pass), then the activation fails on the identity check.
+        createBackend: vi.fn(async (config: AgentRunConfig, runId: string) => {
+          pass = /\/r\/(rp_[^/]+)\//.exec(integrationRunAccess.environmentForRun(
+            { runId, agentDefinitionId: config.agentDefinitionId }, {}).AUTOBYTEUS_GITHUB_API_URL!)![1]!;
+          return createBackend({ runId: "different-run" });
+        }),
+        restoreBackend: vi.fn(),
+      },
+      integrationRunAccess,
+    });
+
+    await expect(manager.beginActivation({ kind: "new", runId: "run-failed-activation", config: createConfig() }).prepare())
+      .rejects.toThrow("different exact AgentRun identity");
+
+    expect(pass).toMatch(/^rp_/);
+    expect(passes.lookup(pass)).toBeNull();
+  });
+
+  it("ends an attached run's credential-proxy pass when the run is released", async () => {
+    const passes = new RunPassRegistry();
+    const pass = passes.issue({ runId: "run-released", agentDefinitionId: "agent-a" });
+    const manager = createManager({
+      codexBackendFactory: { createBackend: vi.fn(async () => createBackend({ runId: "run-released" })), restoreBackend: vi.fn() },
+      integrationRunAccess: { environmentForRun: () => ({}), revokeForRun: (runId) => passes.revoke(runId) },
+    });
+    const candidate = await manager.beginActivation({ kind: "new", runId: "run-released", config: createConfig() }).prepare();
+    candidate.commitPublication();
+    expect(passes.lookup(pass)).not.toBeNull();
+
+    await expect(manager.terminateAgentRun("run-released")).resolves.toBe(true);
+
+    expect(passes.lookup(pass)).toBeNull();
   });
 
   it("aborts a mismatched platform restore privately and leaves confirmed cleanup retryable", async () => {
