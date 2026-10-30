@@ -49,7 +49,7 @@ describe("AgentConversationActivityInspector", () => {
       boundaryType: "provider_compaction_boundary",
       boundaryKey: "test-boundary",
       boundaryTraceId: "boundary-1",
-      runtimeKind: "AUTOBYTEUS",
+      runtimeKind: "autobyteus",
       sourceEvent: "unit-test",
     })).not.toBeNull();
 

@@ -146,13 +146,17 @@ describe("Grok Build compaction over GraphQL/WebSocket (recorded Grok 1.0.46 rep
       const events = compactions(run.messages);
       expect(events.map((event) => event.status)).toEqual(["compacting", "compacted", "compacting", "compacted", "compacting", "compacted"]);
       for (let index = 0; index < events.length; index += 2) {
-        expect(events[index + 1]).toMatchObject({ provider: "grok", runtime_kind: "GROK_BUILD", trigger: "auto",
+        expect(events[index + 1]).toMatchObject({ provider: "grok", runtime_kind: "grok_build", trigger: "auto",
           source_surface: "grok.auto_compact_completed", rotation_eligible: true, provider_event_id: events[index]!.provider_event_id,
           pre_tokens: expect.any(Number), post_tokens: expect.any(Number), duration_ms: expect.any(Number) });
         expect(events[index]).toMatchObject({ rotation_eligible: false, trigger: "auto", source_surface: "grok.auto_compact_started" });
       }
       await wait(300);
       expect(await segments(run.runId)).toBe(3);
+      // Each archive segment's runtime in the manifest is the RuntimeKind value of the payload (autobyteus-343, REQ-001).
+      const manifest = JSON.parse(await fs.readFile(path.join(dataDir, "memory", "agents", run.runId, "raw_traces_manifest.json"), "utf8")) as
+        { segments: Array<{ runtime_kind: unknown }> };
+      expect(manifest.segments.map((segment) => segment.runtime_kind)).toEqual(["grok_build", "grok_build", "grok_build"]);
       expect(await markerStatuses(run.runId)).toEqual(["compacting", "compacted", "compacting", "compacted", "compacting", "compacted"]);
       const reopened = await history(run.runId);
       const rows = reopened.activities.filter((activity) => activity.kind === "compaction");

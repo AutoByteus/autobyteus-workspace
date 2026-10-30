@@ -282,7 +282,7 @@ session, pairs a completion with the open start in order, and uses the start's
 event id as the operation id (`provider_event_id`) so live and history views
 show one activity. A completion without a start is a manual compaction.
 `buildGrokBuildCompactionStatusPayload` gives the `COMPACTION_STATUS` payloads
-their Grok identity (`runtime_kind GROK_BUILD`, provider `grok`):
+their Grok identity (`runtime_kind grok_build`, the `RuntimeKind` value, provider `grok`):
 
 | Phase | Source surface | Status | Rotation | Details |
 | --- | --- | --- | --- | --- |

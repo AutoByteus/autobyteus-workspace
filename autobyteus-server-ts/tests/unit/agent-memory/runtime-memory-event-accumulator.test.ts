@@ -834,7 +834,7 @@ describe("RuntimeMemoryEventAccumulator", () => {
 
     accumulator.recordRunEvent(event(AgentRunEventType.COMPACTION_STATUS, {
       ...base,
-      runtime_kind: "CODEX",
+      runtime_kind: "codex_app_server",
       provider: "codex",
       source_surface: "codex.context_compaction_started",
       boundary_key: "codex:thread-1:compaction-1:compacting",
@@ -843,7 +843,7 @@ describe("RuntimeMemoryEventAccumulator", () => {
     }));
     accumulator.recordRunEvent(event(AgentRunEventType.COMPACTION_STATUS, {
       ...base,
-      runtime_kind: "CLAUDE",
+      runtime_kind: "claude_agent_sdk",
       provider: "claude",
       source_surface: "claude.compaction_failed",
       boundary_key: "claude:session-1:claude.compaction_failed:op-1:turn-1",
@@ -854,7 +854,7 @@ describe("RuntimeMemoryEventAccumulator", () => {
     }));
     accumulator.recordRunEvent(event(AgentRunEventType.COMPACTION_STATUS, {
       ...base,
-      runtime_kind: "CLAUDE",
+      runtime_kind: "claude_agent_sdk",
       provider: "claude",
       source_surface: "claude.compact_boundary",
       boundary_key: "claude:session-1:claude.compact_boundary:boundary-1:turn-1",
@@ -897,7 +897,7 @@ describe("RuntimeMemoryEventAccumulator", () => {
     const accumulator = createAccumulator(memoryDir, writer);
     const checkpoint = event(AgentRunEventType.COMPACTION_STATUS, {
       kind: "provider_compaction_boundary",
-      runtime_kind: "ANTIGRAVITY",
+      runtime_kind: "antigravity_cli",
       provider: "antigravity",
       source_surface: "antigravity.checkpoint",
       boundary_key: "agy:conversation-1:checkpoint:9",
@@ -924,9 +924,31 @@ describe("RuntimeMemoryEventAccumulator", () => {
     expect(active[0]).toMatchObject({
       traceType: "provider_compaction_boundary",
       content: "Provider-owned context compaction boundary: antigravity/antigravity.checkpoint",
-      toolResult: expect.objectContaining({ runtime_kind: "ANTIGRAVITY", status: "compacted", trigger: "auto",
+      toolResult: expect.objectContaining({ runtime_kind: "antigravity_cli", status: "compacted", trigger: "auto",
         duration_ms: 7293, provider_event_id: "checkpoint:9", rotation_eligible: true }),
     });
+  });
+
+  it("stores the RuntimeKind value in the manifest entry and records no boundary whose runtime is not a RuntimeKind (AC-001)", async () => {
+    const memoryDir = await mkTempDir();
+    const writer = new ExternalRuntimeMemoryWriter({ memoryDir });
+    const accumulator = createAccumulator(memoryDir, writer);
+    const boundary = (runtimeKind: unknown, key: string) => event(AgentRunEventType.COMPACTION_STATUS, {
+      kind: "provider_compaction_boundary", runtime_kind: runtimeKind, provider: "codex",
+      source_surface: "codex.thread_compacted", boundary_key: key, status: "compacted", rotation_eligible: true,
+      semantic_compaction: false, turn_id: "turn-1",
+    });
+    for (const label of ["CODEX", "CLAUDE", "codex_app_server_typo", "", 7, null]) {
+      writer.appendRawTrace({ traceType: "assistant", turnId: "turn-1", content: `before ${String(label)}`, sourceEvent: "test" });
+      accumulator.recordRunEvent(boundary(label, `bad:${String(label)}`));
+    }
+    const store = new RunMemoryFileStore(memoryDir);
+    expect(store.readRawTraceArchiveManifest().segments).toEqual([]);
+    expect(store.listTurnRawTracesOrdered().every((trace) => trace.traceType !== "provider_compaction_boundary")).toBe(true);
+
+    writer.appendRawTrace({ traceType: "assistant", turnId: "turn-1", content: "before", sourceEvent: "test" });
+    accumulator.recordRunEvent(boundary("codex_app_server", "good:1"));
+    expect(store.readRawTraceArchiveManifest().segments.map((segment) => segment.runtime_kind)).toEqual(["codex_app_server"]);
   });
 
   it("writes provider compaction markers and rotates settled active traces into segmented archives", async () => {
@@ -953,7 +975,7 @@ describe("RuntimeMemoryEventAccumulator", () => {
     }));
     accumulator.recordRunEvent(event(AgentRunEventType.COMPACTION_STATUS, {
       kind: "provider_compaction_boundary",
-      runtime_kind: "CODEX",
+      runtime_kind: "codex_app_server",
       provider: "codex",
       source_surface: "codex.thread_compacted",
       boundary_key: "codex:thread-1:compaction-1",
@@ -998,7 +1020,7 @@ describe("RuntimeMemoryEventAccumulator", () => {
     const accumulator = createAccumulator(memoryDir);
     const boundaryPayload = {
       kind: "provider_compaction_boundary",
-      runtime_kind: "CODEX",
+      runtime_kind: "codex_app_server",
       provider: "codex",
       source_surface: "codex.thread_compacted",
       boundary_key: "codex:thread-1:compaction-1",
@@ -1099,7 +1121,7 @@ describe("RuntimeMemoryEventAccumulator", () => {
     const replayAccumulator = createAccumulator(memoryDir);
     replayAccumulator.recordRunEvent(event(AgentRunEventType.COMPACTION_STATUS, {
       kind: "provider_compaction_boundary",
-      runtime_kind: "CODEX",
+      runtime_kind: "codex_app_server",
       provider: "codex",
       source_surface: "codex.thread_compacted",
       boundary_key: boundaryKey,

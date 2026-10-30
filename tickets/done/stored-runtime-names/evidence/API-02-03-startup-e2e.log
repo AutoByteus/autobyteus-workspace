@@ -1,0 +1,8 @@
+# API-02/API-03 command: env -i PATH HOME=<temp> TMPDIR pnpm exec vitest run tests/e2e/app-data-migrations/raw-trace-manifest-runtime-names-startup.e2e.test.ts --no-watch --reporter=verbose
+# commit dd56f6de6c (+ new test file); dist built from dd56f6de6c; macOS Darwin 25.5.0; date 2026-10-30T18:47:21Z
+
+ ✓ tests/e2e/app-data-migrations/raw-trace-manifest-runtime-names-startup.e2e.test.ts > Stored runtime names of raw-trace manifests on startup (built Studio) > converts this node's own manifests once, keeps everything else byte-identical, and does nothing on the next start 3878ms
+ ✓ tests/e2e/app-data-migrations/raw-trace-manifest-runtime-names-startup.e2e.test.ts > Stored runtime names of raw-trace manifests on startup (built Studio) > keeps an unusable manifest as it is and says why, converts the rest, and ends with warnings 3629ms
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Duration  7.97s (transform 43ms, setup 41ms, import 18ms, tests 7.51s, environment 0ms)

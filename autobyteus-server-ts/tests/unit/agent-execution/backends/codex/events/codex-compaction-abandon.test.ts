@@ -77,7 +77,7 @@ describe("Codex abandoned compaction close (real app-server notifications)", () 
       statusHint: null,
       payload: {
         kind: "provider_compaction_boundary",
-        runtime_kind: "CODEX",
+        runtime_kind: "codex_app_server",
         provider: "codex",
         source_surface: "codex.context_compaction_abandoned",
         boundary_key: `codex:${THREAD}:${INTERRUPTED}:failed`,
