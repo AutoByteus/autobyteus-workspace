@@ -1,0 +1,19 @@
+{
+  "command": [
+    "docker",
+    "create",
+    "--name",
+    "api-prisma-a73a37eb-fc6-audit",
+    "--label",
+    "autobyteus.prisma-e2e=api-prisma-a73a37eb-fc6",
+    "--network",
+    "none",
+    "--entrypoint",
+    "node",
+    "sha256:50b3211b4b38e5ec1acd4ed39b9ecd000445bf365ea5cdab19face738b55eac9",
+    "--version"
+  ],
+  "exit": 0,
+  "stdout": "432648114ca79c4938635b64e111cb841a809cbb508247c68ed8b86dda29731c\n",
+  "stderr": ""
+}

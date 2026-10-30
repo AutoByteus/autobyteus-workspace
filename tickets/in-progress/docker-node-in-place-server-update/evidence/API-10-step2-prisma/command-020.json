@@ -1,0 +1,12 @@
+{
+  "command": [
+    "docker",
+    "rm",
+    "-f",
+    "-v",
+    "api-prisma-a73a37eb-fc6-first"
+  ],
+  "exit": 0,
+  "stdout": "api-prisma-a73a37eb-fc6-first\n",
+  "stderr": ""
+}
