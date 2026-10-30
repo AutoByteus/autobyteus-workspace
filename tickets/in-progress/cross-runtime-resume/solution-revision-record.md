@@ -98,3 +98,9 @@
 ### SR-004 note 6 (2026-10-30)
 
 - The user: `search_memory` searches the memory of every run on the node (GLOSSARY.md, Memory search), not one run's journals, so the notice must not point to it. Sentence removed from the notice (contract 3.6). The notice points only to the run's own journal folder.
+
+### SR-004 note 7 (2026-10-30) — design re-audited; user's go to architecture review
+
+- Trigger: the user: "use your design principle to review your design once again; if it's nice then send to architecture review."
+- Second audit (full read of `design-spec.md` against Principles 1–15 and the structural triggers): six consistency fixes — the eligibility rule is decided by the server only (a line still said "web decision"); the `RuntimeHandoverNotices.register` signature is `register(runId)` in both places; "crash-sensitive" → "retry-sensitive"; the size rationale lists three packages and eight subsystems (about 30 files); the persisted-data text no longer says the notice contains runtime names; the service chain (`StudioRunModelConfigService`, `AgentRunService`) added to the file mapping. REQ-007 and AC-004 reworded to match the notice (where to start; earlier journals are there). Result: no principle fails; two vocabulary discrepancies stay documented for the user (FU-006, FU-007).
+- Status: requirements `Approved` (SR-004); design `Ready`. Classification unchanged: Task size `Large`, architectural risk `High`. The user's final approval before any build is still required by the Task and is asked after the architecture review.

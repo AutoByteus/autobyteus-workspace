@@ -84,7 +84,7 @@ Findings must cite REQ/AC/BEH IDs. New behavior is a `Requirement Gap`.
 | REQ-003 | The run's journal is made current from its raw traces before the notice is built. | BEH-002 | Must | F-05 |
 | REQ-005 | Withdrawn 2026-10-30 (user: no round summary, no added complexity). | — | — | User |
 | REQ-006 | Withdrawn 2026-10-30 (user): the notice does not list what the journals lack. | — | — | User |
-| REQ-007 | For a large journal the notice tells the agent to read the end of the latest file and earlier files by search or line range. | BEH-002 | Must | F-03 |
+| REQ-007 | The notice tells the agent where to start (the latest journal) and that the earlier journals are there if it wants them; the agent decides what to read. | BEH-002 | Must | F-03; user, 2026-10-30 |
 | REQ-008 | Withdrawn 2026-10-30 (user): no excerpt fallback. | — | — | User |
 | REQ-010 | A switch is made at the first input after it: a marker is written as the first record of a new raw-trace file (the earlier records are archived by the existing rotate-before-boundary primitive, idempotent for a retry), so one raw-trace file never holds two runtimes. A failure before the new session exists changes nothing visible; a retry never writes two markers. | BEH-002 | Must | F-23; DEC-7 |
 | REQ-011 | The chat shows a marker where the agent runtime changed (DEC-3), built from the marker record; it names both agent runtimes and models. | BEH-005 | Should | User question, DEC-3 |
@@ -97,7 +97,7 @@ Findings must cite REQ/AC/BEH IDs. New behavior is a `Requirement Gap`.
 | --- | --- | --- | --- | --- |
 | AC-001 | REQ-001, 013 | Stop a run, switch to another available runtime and model, save | Same run ID and chat; metadata shows the new runtime and no old session ID and a pending switch; selecting the original runtime again clears it; a member or delegated run is rejected | Test + real run |
 | AC-002 | REQ-002, 003, 010 | Send a message after the switch | The previous records are archived, the marker is the first record of the active file, the runtime receives the notice then the user's text; the journal named in the notice is current; a second message has no notice; the chat shows the marker | Test |
-| AC-004 | REQ-007 | Large journal | The notice instructs partial reading | Test |
+| AC-004 | REQ-007 | Several journal files | The notice names the latest journal as the place to start and lists the earlier ones | Test |
 | AC-006 | REQ-012 | A run with Claude Agent SDK then Codex App Server files | Each journal file uses its runtime's translation; a run that never switched renders as before | Test |
 | AC-007 | Preserved | Same-runtime restore; model-only edit | Unchanged | Existing suites |
 | AC-008 | REQ-001…003, 010 | Real run: two available runtimes on a copied, isolated data root | The new agent receives the notice and opens the journals it names (what it does with them is its model's work; no quality promise) | Real run |
