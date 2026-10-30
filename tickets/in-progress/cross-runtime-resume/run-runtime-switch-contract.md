@@ -77,19 +77,19 @@ A switch never edits or deletes them.
 
 ### 3.6 Hand-over notice (the message the new agent receives)
 
-A platform notice delivered through the existing next-input route (`AgentRunPlatformNotices`, a third source beside the tool-list and skill-update notices), with its own system sender, so the agent does not take it for the user's words. It has two texts (the preface type already separates them): the **model text** (below), and the **presentation** (the one short marker line of 3.3, published live as the run's system notice). It is sent once per switch with the first external input and built by the server from facts only; no model writes it. Facts and pointers only; the agent decides how to proceed; the user's last request is not repeated (the user's message follows the notice and the journal has the history):
+A platform notice delivered through the existing next-input route (`AgentRunPlatformNotices`, a third source beside the tool-list and skill-update notices), with its own system sender, so the agent does not take it for the user's words. It has two texts (the preface type already separates them): the **model text** (below), and the **presentation** (the one short marker line of 3.3, published live as the run's system notice). It is sent once per switch with the first external input and built by the server from facts only; no model writes it. Written as one person handing over to another: it says there was earlier work, where the journal is, where to start, and that the rest is there if wanted. Facts and pointers only; the agent decides what to read and how to proceed; the user's last request is not repeated (the user's message follows the notice and the journal has the history):
 
 ```
 [System: runtime hand-over]
-Another agent (the previous agent) worked on this run before you.
+Another agent worked on this run before you and kept a work journal as it went. You are taking over.
 
-Its work is recorded in work journals: <run folder>/work_journal/
-- Readable Markdown, one file per earlier stretch of work, oldest first:
-  <file> | <period> | <size, lines>   (one line per file; work_journal_active.md is the latest)
-- Entries look like "[HH:MM:SS] User: …", "Agent: …", "Command: … → ok", "Edit file: …", "Message to … → delivered".
-  Each entry ends with a link to the raw trace record with the full content; long output is shortened.
-- To see what was done most recently, read the end of work_journal_active.md. For earlier work or the
-  original request, read the earlier files or search them (search_memory).
+The journals are in <run folder>/work_journal/. The latest one, work_journal_active.md, shows what was
+done most recently, so it is a good place to start. The earlier ones are there too, oldest first, if you
+want to look further back:
+  <file> | <period> | <size, lines>     (one line per file)
+
+Each entry is one line, such as "[HH:MM:SS] User: …", "Agent: …" or "Command: … → ok", and ends with a
+link to the full record. Long output is shortened. You can also search the journals with search_memory.
 ```
 
 Facts and where each comes from: the journal files, their periods, sizes and lines from the journal service (`ensureCurrent`, `listJournalFiles`). The notice names no agent runtime or model: the agent acts on where the work is recorded, not on which product recorded it (the user, 2026-10-30). The runtimes appear only in the chat marker (3.3), which is for the user, and inside the journal service, which uses each file's runtime to render it (3.4). If the notice cannot be delivered with the first input (the dispatch is rejected or requeued) it stays pending in memory for the next input (the existing preface settle rules).

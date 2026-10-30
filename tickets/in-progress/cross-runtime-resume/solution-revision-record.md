@@ -90,3 +90,7 @@
 ### SR-004 note 4 (2026-10-30)
 
 - The user: remove the "Not in the journals" lines (the previous agent's private reasoning, results of tool calls still running). Removed from the hand-over notice (contract 3.6); REQ-006 withdrawn; REQ-002 and AC-004 updated. Intended behavior narrowed; design stays `Draft`.
+
+### SR-004 note 5 (2026-10-30)
+
+- The user: write the notice as one person handing over to another: the person reads the latest journal to know where things stand and may, if they want, look further back; it is up to them. Notice rewritten accordingly (contract 3.6; REQ-002). Intended behavior unchanged in substance (facts and pointers); design stays `Draft`.
