@@ -2,7 +2,7 @@
 
 Status: **Draft for the user to edit** (the wording is his decision). It revises `tickets/done/work-journal/work-journal-contract.md` ("the contract", SR-014 state). Nothing changes in the journal until the design is approved and built. Evidence: `journal-neutrality-analysis.md` (counts over 3,716 real journals, read-only) and the renderer code in `autobyteus-server-ts/src/agent-work-journal/rendering/`.
 
-**How this document is organized (v2, after the user's remark):** §3 is the **platform** (tools every runtime has, one table). §4 has **one section per runtime** with the same five parts each: what its translation converts today, the new converters that belong to that runtime, its wrapping and name rules, what stays generic on purpose, and how a skill load looks there. Nothing runtime-specific is in §3.
+**How this document is organized (v2, after the user's remark):** §3 is the **platform** (tools every runtime has, one table). §4 has **one table per runtime**: one row per tool the runtime records, with what the tool does, how the journal shows it today, how it will show it, and whether that is a change. Nothing runtime-specific is in §3.
 
 ## 1. Why, and what this reverses
 
@@ -40,49 +40,101 @@ Style follows the existing actions (`Command:`, `Write file:`, `Edit file:`, `Se
 
 Recipient forms are printed as the call gave them (name, address or run ID); a converter never invents one.
 
-## 4. Runtimes — one section each
+## 4. Runtimes — one table each
 
-Every section has: **(a)** built-ins its translation already converts (contract §4, unchanged), **(b)** new converters that belong to this runtime, **(c)** wrapping and name rules, **(d)** left generic on purpose, **(e)** how a skill load looks here. Counts are `Tool:` lines (or `Command:` lines for skill reads) in the user's real journals.
+**How to read each table.** *Tool* is the name the runtime records. *What it does* is plain words. *Today* is the line the journal prints now. *After* is the line it will print. *Status* is one of: **Same** (no change; the journal already shows it in neutral words), **NEW** (a new converter or rule), **Generic** (left on purpose as a `Tool: <name> …` line; it is rare or only the user's own tool). *Lines* counts the lines in the user's real journals (only given for NEW and Generic rows).
 
 ### 4.1 Claude Agent SDK (`claude_agent_sdk`)
 
-- **(a) Built-ins converted today:** `Bash`, `Monitor` → Command; `Read`, `Grep`, `Glob` → Command (`cat -n`, `grep`, `find`); `WebFetch` → Command (`curl`); `Write` → Write file; `Edit`, `MultiEdit`, `NotebookEdit` → Edit file; `WebSearch` → Search web.
-- **(b) New converters:** `Skill{skill}` → `Load skill: <name> → ok` (644 lines; its result text "Launching skill: x" is Claude's own wording and is dropped).
-- **(c) Wrapping / names:** results are unwrapped by `normalizeClaudeResult` (exists). Claude records platform tools under their plain names, so nothing to strip. `Notice: Background task completed: …` lines (913) are Claude's background-task notices; unchanged.
-- **(d) Generic on purpose** (rare, last used between June and September 2026): `TodoWrite` 8, `Agent` 10 (its sub-agent), `ToolSearch` 4, `TaskCreate` 4, `TaskUpdate` 7, `TaskOutput` 2, `TaskStop` 1, `Workflow` 1. They are not removed by our session configuration (no `tools`/`disallowedTools` is passed), only unused.
-- **(e) Skill load:** the `Skill` tool call (b). The CLI inserts the skill's `SKILL.md` into the model's context after it (checked in a real session file); our traces keep only the call and "Launching skill: x". A skill-file read by `Read`/`Bash` (895 lines, path `/.claude/skills/<name>/SKILL.md`) follows the same rule as the other runtimes (§5).
+| Tool | What it does | Today | After | Status | Lines |
+| --- | --- | --- | --- | --- | ---: |
+| `Bash` | runs a shell command | `Command: <command>` | same | Same | |
+| `Monitor` | watches a command running in the background | `Command: <command> (background)` | same | Same | |
+| `Read` | reads a file | `Command: cat -n <path>` | same | Same | |
+| `Grep` | searches inside files | `Command: grep …` | same | Same | |
+| `Glob` | finds files by name | `Command: find …` | same | Same | |
+| `WebFetch` | fetches a web page (Claude records its summary, not the page) | `Command: curl <url> (summarized: "<question>")` | same | Same | |
+| `Write` | creates or overwrites a file | `Write file: <path> (<n> lines)` | same | Same | |
+| `Edit`, `MultiEdit` | changes part of a file | `Edit file: <path> (+<added> −<removed>)` and the diff | same | Same | |
+| `NotebookEdit` | edits a notebook cell | `Edit file: <path> (notebook cell …)` | same | Same | |
+| `WebSearch` | searches the web | `Search web: "<query>"` | same | Same | |
+| `Skill` | loads a skill's instructions into the agent's context | `Tool: Skill skill="x" → ok` and the text "Launching skill: x" | `Load skill: x → ok` | **NEW** | 644 |
+| `Read` / `Bash` on a skill file `…/.claude/skills/x/SKILL.md` | the same load, done as a file read | `Command: cat -n …/SKILL.md` | `Load skill: x → ok` (rule §5, decision N-2) | **NEW** | 895 |
+| `TodoWrite` | keeps a checklist | `Tool: TodoWrite …` | same | Generic | 8 |
+| `Agent` | starts a sub-agent | `Tool: Agent …` | same | Generic | 10 |
+| `ToolSearch` | looks up tool definitions | `Tool: ToolSearch …` | same | Generic | 4 |
+| `TaskCreate`, `TaskUpdate` | an older task list | `Tool: TaskCreate …` | same | Generic | 4 and 7 |
+| `TaskOutput`, `TaskStop`, `Workflow` | background tasks and workflows | `Tool: … ` | same | Generic | 2, 1, 1 |
+
+Other facts: Claude's results are unwrapped already (`normalizeClaudeResult`). It records the platform's tools under their plain names, so nothing is stripped. `Notice: Background task completed: …` lines (913) are Claude's background-task notices and stay. The Generic tools were last used between June and September 2026; our session configuration does not remove them (no `tools` or `disallowedTools` is passed), they are only unused. After a `Skill` call the Claude CLI inserts the skill's `SKILL.md` into the model's context (checked in a real session file); our traces keep only the call and "Launching skill: x".
 
 ### 4.2 Codex (`codex_app_server`)
 
-- **(a) Built-ins converted today:** `run_bash` → Command; `edit_file` → Edit file; `search_web` → Search web. (Its file reads arrive as shell commands, so they are already `Command:`; its file changes and web search are recorded under AutoByteus names by the adapter.)
-- **(b) New converters:** none specific. (The skill-file read is a §5 rule applied to its path pattern.)
-- **(c) Wrapping / names:** another MCP server's tools are qualified as `<server>.<tool>` (for example `plugin_management.search_plugins`): shown as `Tool: <tool> (via <server>)` by the generic rule (§6). Platform tools are recorded under plain names.
-- **(d) Generic on purpose:** `js` 4,056 (a script runner in a computer-use environment; the code inside uses objects only Codex has, so its content cannot be neutral), `js_reset` 13, `js_add_node_module_dir` 16, `speak` 349, and many user-installed tools (ssh, video, audio). `js` and `speak` are probably installed on the node, not Codex built-ins: `Unclear`.
-- **(e) Skill load:** a shell read of `<…>/.codex/skills/<name>/SKILL.md` (10,014 `Command:` lines; also `…/runtime-skill-profiles/…`), through the §5 rule.
+| Tool | What it does | Today | After | Status | Lines |
+| --- | --- | --- | --- | --- | ---: |
+| `run_bash` | runs a shell command; Codex also reads files this way | `Command: <command>` | same | Same | |
+| `edit_file` | changes files (Codex's adapter records its patches under this name) | `Edit file: <path> (+<added> −<removed>)` and the diff | same | Same | |
+| `search_web` | searches the web | `Search web: "<query>"` | same | Same | |
+| shell read of `…/.codex/skills/x/SKILL.md` | loads a skill, done as a file read | `Command: sed -n '1,220p' …/SKILL.md` | `Load skill: x → ok` (rule §5, N-2) | **NEW** | 10,014 |
+| a tool of another server, named `<server>.<tool>` | e.g. `plugin_management.search_plugins` | `Tool: plugin_management.search_plugins …` | `Tool: search_plugins (via plugin_management) …` (§6) | **NEW** | few |
+| `js`, `js_reset`, `js_add_node_module_dir` | run JavaScript in a computer-use environment | `Tool: js code=… title=…` | same | Generic | 4,056 / 13 / 16 |
+| `speak` | speaks text aloud | `Tool: speak text=…` | same | Generic | 349 |
+| tools you installed (ssh, video, audio …) | anything | `Tool: <name> …` | same | Generic | many |
+
+Other facts: Codex records the platform's tools under plain names. The code inside `js` uses objects only Codex has, so its content can never be neutral. `js` and `speak` are probably installed on the node and not Codex built-ins (`Unclear`).
 
 ### 4.3 Antigravity (`antigravity_cli`)
 
-- **(a) Built-ins converted today:** `run_command` → Command; `view_file` → Command (`cat`); `grep_search`, `find_by_name`, `list_dir` → Command; `write_to_file` → Write file; `replace_file_content` → Edit file.
-- **(b) New converters:** none specific.
-- **(c) Wrapping / names:** `call_mcp_tool` wraps a call (`unwrapCall` exists, 23 calls). Other MCP servers' tools are qualified as `mcp__<server>__<tool>`: shown as `Tool: <tool> (via <server>)` (§6). Argument keys of `send_message_to` differ (`content` as inline key in 3 calls): the platform converter reads them. `AGY provider_state` envelopes are removed (exists).
-- **(d) Generic on purpose:** `Bash` 2 (an AGY-recorded name; unclear), plus user-installed tools.
-- **(e) Skill load:** a read of `<…>/.agents/skills/<name>/SKILL.md` (139 `Command:` lines), through §5.
+| Tool | What it does | Today | After | Status | Lines |
+| --- | --- | --- | --- | --- | ---: |
+| `run_command` | runs a shell command | `Command: <command>` | same | Same | |
+| `view_file` | reads a file (Antigravity usually records only its size) | `Command: cat <path>` (content not recorded) | same | Same | |
+| `grep_search` | searches inside files | `Command: grep …` | same | Same | |
+| `find_by_name` | finds files by name | `Command: find …` | same | Same | |
+| `list_dir` | lists a folder | `Command: ls -p <path>` | same | Same | |
+| `write_to_file` | creates or overwrites a file | `Write file: <path> (<n> lines)` | same | Same | |
+| `replace_file_content` | changes part of a file | `Edit file: <path> (+<added> −<removed>)` | same | Same | |
+| `call_mcp_tool` | a wrapper around another tool's call | shown as the wrapped tool's own line | same | Same | 23 |
+| a tool of another server, named `mcp__<server>__<tool>` | anything | `Tool: mcp__x__y …` | `Tool: y (via x) …` (§6) | **NEW** | few |
+| read of `…/.agents/skills/x/SKILL.md` | loads a skill, done as a file read | `Command: cat …/SKILL.md` | `Load skill: x → ok` (§5, N-2) | **NEW** | 139 |
+| `Bash` | a shell tool recorded under this name | `Tool: Bash …` | same | Generic | 2 |
+
+Other facts: `send_message_to` arrives with different argument keys here (`content` inline, in 3 calls); the platform converter (§3) reads them. Antigravity's `provider_state` wrapper is removed already.
 
 ### 4.4 Grok Build (`grok_build`)
 
-- **(a) Built-ins converted today:** `run_bash` → Command; `read_file` → Command; `grep`, `list_dir` → Command; `web_fetch` → Command (`curl`); `write_file` → Write file; `edit_file` → Edit file; `web_search` → Search web.
-- **(b) New converters:** none specific.
-- **(c) Wrapping / names:** its recorded names are mostly AutoByteus names.
-- **(d) Generic on purpose:** `search_tool` 1. Only one real journal exists; every claim about Grok is `Unclear` until more runs are recorded.
-- **(e) Skill load:** skills are linked into the run workspace; the path pattern is not yet known from data (`Unclear`).
+| Tool | What it does | Today | After | Status | Lines |
+| --- | --- | --- | --- | --- | ---: |
+| `run_bash` | runs a shell command | `Command: <command>` | same | Same | |
+| `read_file` | reads a file | `Command: cat -n <path>` | same | Same | |
+| `grep`, `list_dir` | searches inside files, lists a folder | `Command: grep …`, `Command: ls …` | same | Same | |
+| `web_fetch` | fetches a web page | `Command: curl <url>` | same | Same | |
+| `write_file` | creates or overwrites a file | `Write file: <path> (<n> lines)` | same | Same | |
+| `edit_file` | changes part of a file | `Edit file: <path> (+<added> −<removed>)` | same | Same | |
+| `web_search` | searches the web | `Search web: "<query>"` | same | Same | |
+| `search_tool` | unclear | `Tool: search_tool …` | same | Generic | 1 |
+| skill load | skills are linked into the run's workspace | unknown | unknown | `Unclear` | — |
+
+Only one real Grok journal exists, so everything about Grok beyond its table is `Unclear` until more runs are recorded.
 
 ### 4.5 AutoByteus native (`autobyteus`)
 
-- **(a) Built-ins converted today:** `run_bash`, `start_background_process` → Command (background); `read_file`, `read_url` → Command; `write_file` → Write file; `edit_file` → Edit file; `search_web` → Search web; `read_media_file` → a media marker.
-- **(b) New converters:** `get_process_output{pid, lines}` → `Read output of background process <pid>`; `stop_background_process` → `Stop background process <pid>` (38 and 11 lines; native-only tools).
-- **(c) Wrapping / names:** platform tools are recorded under their plain names; native results are unwrapped by its own translation (exists).
-- **(d) Generic on purpose:** native-only tools with few calls: `download_media` 18, `video_editing_get_media_duration` 18, `convert_video_format` 2, `download_video` 2, `replace_in_file` 3, `find` 1, `submit_task_result` 1. (`generate_video` is a platform media tool, §3.)
-- **(e) Skill load:** a read of the skill's `SKILL.md` by absolute path (205 `Command:` lines); the exact path pattern is to be confirmed in the design (`Unclear`).
+| Tool | What it does | Today | After | Status | Lines |
+| --- | --- | --- | --- | --- | ---: |
+| `run_bash` | runs a shell command | `Command: <command>` | same | Same | |
+| `start_background_process` | starts a command in the background | `Command: <command> (background)` | same | Same | |
+| `read_file` | reads a file | `Command: cat -n <path>` | same | Same | |
+| `read_url` | fetches a web page | `Command: curl <url>` | same | Same | |
+| `write_file` | creates or overwrites a file | `Write file: <path> (<n> lines)` | same | Same | |
+| `edit_file` | changes part of a file | `Edit file: <path> (+<added> −<removed>)` | same | Same | |
+| `search_web` | searches the web | `Search web: "<query>"` | same | Same | |
+| `read_media_file` | opens an image, audio or video for viewing | a media marker, e.g. `[image image/png, 2.9 KB, not reproduced]` | same | Same | |
+| `get_process_output` | reads the output of a background process | `Tool: get_process_output pid=… lines=…` | `Read output of background process <pid>` | **NEW** | 38 |
+| `stop_background_process` | stops a background process | `Tool: stop_background_process pid=…` | `Stop background process <pid>` | **NEW** | 11 |
+| read of the skill's `SKILL.md` by absolute path | loads a skill, done as a file read | `Command: cat -n …/SKILL.md` | `Load skill: x → ok` (§5, N-2) | **NEW**; the exact path pattern is to be confirmed in the design (`Unclear`) | 205 |
+| `download_media`, `video_editing_get_media_duration`, `convert_video_format`, `download_video`, `replace_in_file`, `find`, `submit_task_result` | native-only helpers | `Tool: <name> …` | same | Generic | 18, 18, 2, 2, 3, 1, 1 |
+
+Other facts: AutoByteus records the platform's tools under plain names. (`generate_video` is a platform media tool, §3.)
 
 ## 5. A skill-file read on any runtime (the rule each runtime applies to its own path pattern)
 
