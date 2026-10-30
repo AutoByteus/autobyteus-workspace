@@ -5,7 +5,8 @@
 // Boot (DS-003), in order:
 //   1. recovery: an update trial that a container stop or crash interrupted is rolled back (the data
 //      copy restored when one was taken), and the update is recorded as failed: INTERRUPTED;
-//   2. cleanup: leftovers of an interrupted download, unpack, self-check or data copy are removed;
+//   2. cleanup: leftovers of an interrupted download, unpack, self-check or data copy are removed,
+//      and every installed package other than the current and the previous one;
 //   3. selection (PackageStore.choose): run the installed or the built-in package, or NEEDS_NEW_IMAGE;
 //   4. start (ServerSupervisor) or refuse: on NEEDS_NEW_IMAGE no server runs and the starter stays up,
 //      serving its status, so supervisord does not restart it in a loop;
@@ -107,7 +108,6 @@ export class NodeStarter {
     if (trial) {
       if (trial.dataCopy) this.#dataCopy.restore()
       this.#store.rollBackTrial()
-      this.#store.discard(trial.version)
       this.#updateStatus.markInterrupted(
         `The update to ${trial.version} was interrupted; this node runs ${trial.previous.version} again.`)
       this.#log('trial-rolled-back', { version: trial.version, previous: trial.previous.version, dataRestored: Boolean(trial.dataCopy) })
@@ -116,6 +116,8 @@ export class NodeStarter {
     }
     this.#dataCopy.delete()
     this.#store.removeLeftovers()
+    // An update stopped after its download keeps a package nothing refers to (DEC-013 keeps two).
+    this.#store.deleteOthers()
   }
 }
 

@@ -5,7 +5,7 @@ import path from 'node:path'
 import { afterEach, test } from 'node:test'
 import { fileURLToPath } from 'node:url'
 import { NodeStarter } from '../starter.mjs'
-import { freePort, makeStarterRoot, memoryLog, writeState } from './fixtures.mjs'
+import { freePort, installPackage, makeStarterRoot, memoryLog, writeState } from './fixtures.mjs'
 
 const TEST_LIMITS = { stopMs: 5_000, portFreeMs: 2_000, selfCheckMs: 10_000, confirmHealthMs: 10_000, confirmAliveMs: 1_000, spareBytes: 0 }
 const CLI = fileURLToPath(new URL('../cli.mjs', import.meta.url))
@@ -122,6 +122,7 @@ test('boot rolls back an interrupted trial, restores its data copy and records I
 
 test('without a trial, boot deletes a partial data copy and marks a running update INTERRUPTED', async () => {
   const { paths, dataDir } = makeStarterRoot({ builtInVersion: '1.5.11' })
+  installPackage(paths, { version: '1.5.13' })
   mkdirSync(dataDir, { recursive: true })
   writeFileSync(path.join(dataDir, 'keep'), 'data')
   mkdirSync(path.join(paths.packagesRoot, 'data-copy'), { recursive: true })
@@ -132,6 +133,7 @@ test('without a trial, boot deletes a partial data copy and marks a running upda
   assert.equal(readFileSync(path.join(dataDir, 'keep'), 'utf8'), 'data')
   const update = JSON.parse(readFileSync(path.join(paths.packagesRoot, 'update.json'), 'utf8'))
   assert.deepEqual([update.state, update.code], ['failed', 'INTERRUPTED'])
+  assert.equal(existsSync(path.join(paths.packagesRoot, 'packages', '1.5.13')), false, 'a package nothing refers to is deleted')
   await starter.stop('SIGTERM')
   await running
 })
