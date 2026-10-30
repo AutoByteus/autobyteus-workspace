@@ -93,7 +93,7 @@ The hand-over notice suggests this path (`<run folder>/run_summary.md`, beside t
 ### 3.6 Files that belong to one backend
 
 A switch never edits or deletes them.
-- `working_context_snapshot.json` (native only; *Measured* present in 313 native runs and 2 AGY): after a switch away it stays as is. A native activation after a switch starts with an empty working context and relies on the hand-over (*Open U-7*: confirm what native `new` does with an existing snapshot and raw traces; if it overwrites, that is accepted because the old content is in the journal; if it fails, the design adds a rename step).
+- `working_context_snapshot.json` (native runtime only: *Read* its only writer and reader is the native memory manager in `autobyteus-ts/src/memory/`; the server only counts it as memory for listing and has migrations for it. *Measured* in 313 native runs; 2 Antigravity runs from 2026-06-15 still hold an old schema-v4 copy, left from before the migration `remove-external-runtime-working-context-snapshots`, and nothing reads them): after a switch away it stays as is. A native activation after a switch starts with an empty working context and relies on the hand-over (*Open U-7*: confirm what native `new` does with an existing snapshot and raw traces; if it overwrites, that is accepted because the old content is in the journal; if it fails, the design adds a rename step).
 - `agy-project/`, `runtime-skill-profiles/`: untouched.
 - `seen_skill_versions.json`: a switch is a fresh session, so the existing "new" activation gives the current skills; no change.
 
