@@ -10,28 +10,29 @@
 - Supplemental task artifacts: `evidence/` (E1–E9), `follow-ups.md` (FU-001 to FU-007), `architecture-design-handoff.md`
 - Design review report: `.../busy-quit-shutdown-orphan/design-review-report.md` (round 3, Pass)
 - Architecture review revision record: `.../busy-quit-shutdown-orphan/architecture-review-revision-record.md` (ARCH-REV-003)
-- Triggering rework report, revision record, or evidence, when applicable: N/A (initial round)
+- Triggering rework report, revision record, or evidence, when applicable: `code-review-report.md` round 2 (CRR-002), `code-review-revision-record.md`; `api-e2e-execution-coverage-report.md`; evidence `API-02-server-fixture-clean.json` (`sweepLines`), `API-10-app-0-server.log`
 
 All ticket paths are under `/Users/normy/autobyteus_org/autobyteus-worktrees/busy-quit-shutdown-orphan/tickets/in-progress/busy-quit-shutdown-orphan/`.
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework` (IR-002, Local Fix CR-001; IR-001 was the initial round)
 - Implementation revision record: `implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
+- Current implementation revision ID: `IR-002`
 - Related solution revision IDs: SR-008 (design); SR-002, SR-007 (approval)
 - Related architecture-review revision IDs: ARCH-REV-003
-- Related code-review revision IDs: N/A
-- Related API/E2E revision IDs: N/A
+- Related code-review revision IDs: CRR-001 (Pass), CRR-002 (Fail: CR-001)
+- Related API/E2E revision IDs: API-REV-001 (Fail: F-API-001 → CR-001; F-API-002 → FU-008, not implementation-owned)
 - Related delivery revision IDs: N/A
-- Triggering finding IDs: N/A
-- Branch `codex/busy-quit-shutdown-orphan`; base `origin/personal` @ `1a4453e553`; implementation commit `bf2857ca29`; handoff documents and evidence in the following docs commit.
+- Triggering finding IDs: CR-001
+- Branch `codex/busy-quit-shutdown-orphan`; base `origin/personal` @ `1a4453e553`; implementation commits `bf2857ca29` (IR-001) and `83a73f24d7` (IR-002); handoff documents and evidence in the docs commits that follow each.
 
 What it does, in the design's order:
 
 1. **Process-tree utility moved.** `src/utils/process-tree.ts` owns `parseProcessTable`, `readProcessTable` (sync `ps -A -o pid=,ppid=,pgid=`, 2 s timeout, throws when unreadable), `selectDescendantProcessGroups(rows, rootPid, excludedPgids)`, `selectDescendantPidsInGroup(rows, rootPid, pgid)`, `signalProcessGroups`, `processGroupsInactive`. It imports only Node. AGY's `agy-stream-process.ts` keeps its behavior through a private `listAgyBackgroundProcessGroups(agyPid)` = win32 → `[]`, else `selectDescendantProcessGroups(rows, agyPid, [agyPgid, serverPgid])`. `agy-background-process-groups.ts` is removed with no shim; its test moved to `tests/unit/utils/process-tree.test.ts`. The aggregate error text changed from "Exact AGY process-group signal failed." to "Exact process-group signal failed." (no caller matches on it).
 2. **D1 stop-now.** `AgentRunManager.terminateAgentRun`: `fenceInputAndInterruptForRootShutdown()` first; not accepted → `false` (callers' existing not-found/rejected mapping), then prepare → finish as before. `stopAllAgentRuns`: after the existing activation release and snapshot, `Promise.allSettled` fences every snapshot run at once, then the existing sequential prepare → finish loop; a rejected fence or a not-accepted fence is pushed to `errors` and that run is skipped (reported in the existing `AggregateError`). `AgentRunTermination` unchanged; the manager writes no history (AC-010).
 3. **D2 bounded server shutdown.** One constructor (N-9): `new ServerProcessShutdown(runtime = process, { cleanupTimeoutMs = SERVER_SHUTDOWN_TIMEOUT_MS (10 s), sweep = terminateServerProcessTree, timers = global })`. `request()`: startup barrier → `cleanupWithinBound()` (race of `cleanupOnce()` against the bound; expired → log "Server shutdown exceeded 10s; forcing exit", code 1; the cut cleanup keeps running, N-7) → **always** `sweep()` → `unconfirmed` sets code 1 (a sweep that throws is treated as `unconfirmed`, so exit is never skipped) → existing IPC result → `exit`. The IPC flush timer now uses the injected timers too.
+   `readProcessTable` (IR-002, CR-001) runs `ps` with `spawnSync` and drops the row of the `ps` reader itself, so the sweep never selects, counts or signals its own reader.
    `src/shutdown/server-process-tree-sweep.ts` → `terminateServerProcessTree(deps)`: win32 → `not-applicable` (no `ps`, no signals); table unreadable or server missing → `unconfirmed`; targets = descendants in the server's own group (pids) + descendant-led groups (−pgid), recorded once; none → `confirmed, 0`; else SIGTERM (ESRCH skipped, other errors logged, continue) → poll ≤ 1.5 s (`PROCESS_TREE_GRACE_MS`) → SIGKILL recorded survivors → poll ≤ 0.5 s → `confirmed` or `unconfirmed` naming survivors. Liveness uses `kill(target, 0)`; only ESRCH proves absence.
 4. **D3 desktop POSIX force.** `BaseServerManager.forceStop`: async `ps` via `execFile` (2 s timeout) → `selectServerTreeTargets(rows, serverPid)` → SIGTERM the targets → SIGKILL the server → `waitForTargetsGone(targets, 1500)` → SIGKILL survivors. Unreadable table → warns and kills the server only (as before). `electron/server/serverProcessTree.ts` is the desktop copy (Electron main cannot import server code). The 20 s window, the 2 s confirmation in `stopManagedBackend`, `ApplicationShutdown` and `WindowsServerManager` are unchanged.
 5. **Docs** updated (see Key Files).
@@ -151,6 +152,15 @@ Implementation commit: `bf2857ca29` (on `d28594dc01`). Environment: macOS 26 (Da
 | IMP-08 | `pnpm -C autobyteus-server-ts test:unit` (full) | `bf2857ca29` content, before commit | macOS, Node 22 | all server unit suites | AC-007 (server) | Pass except tracked-imports (files not yet in git; see IMP-09) | `IMP-08-server-unit-suite-excerpt.log` | `Tests  1 failed \| 7400 passed \| 9 skipped (7410)`, the failure lists only this ticket's new files |
 | IMP-09 | `pnpm -C autobyteus-server-ts exec vitest run tests/architecture/tracked-imports.test.ts --no-watch` | `bf2857ca29` | macOS, Node 22 | tracked-import hygiene | AC-007 | Pass | `IMP-09-tracked-imports.log` | `Tests  2 passed (2)` |
 
+IR-002 (CR-001) checks, on `83a73f24d7`:
+
+| Check ID | Command Or Steps | Commit Tested | Environment | Code It Exercises | Behavior / Criteria IDs | Result | Evidence Files | Look For |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| IMP-10 | `pnpm -C autobyteus-server-ts exec vitest run tests/unit/utils/process-tree.test.ts tests/unit/shutdown tests/unit/agent-execution/backends/antigravity/agy-stream-process.test.ts tests/unit/server-runtime-app-data-migration-gate.test.ts --no-watch`; fail-before: reader and sweep tests with IR-001's `process-tree.ts` | `83a73f24d7` | macOS, Node 22 | `utils/process-tree.ts` reader, sweep, AGY, gate wiring | BEH-003, CR-001 | Pass (4 cases fail on IR-001's reader) | `IMP-10-cr001-reader-focused.log`, `IMP-10-fail-before-ir001.log` | `Tests  63 passed (63)`; before: `Tests  4 failed \| 17 passed (21)` |
+| IMP-11 | `pnpm -C autobyteus-server-ts typecheck` | `83a73f24d7` content | macOS, Node 22 | server `src` | — | Pass | `IMP-11-server-typecheck.log` | `exit 0` |
+| IMP-12 | `pnpm -C autobyteus-server-ts build`, then `RUN_BUSY_STOP_NOW_E2E=1 … vitest run tests/e2e/shutdown/busy-run-stop-now.e2e.test.ts` (API/E2E's gated test, local scripted inference) | `83a73f24d7` content | macOS, Node 22, real server process | real server SIGTERM exit with the real sweep | BEH-003, CR-001 | Pass | `IMP-12-busy-stop-now-e2e.log`, `IMP-12-busy-run-stop-now.json`, `IMP-12-busy-application-terminate.json` | `Tests  2 passed (2)`; `"sweepLines": []` (API-02 logged `1 process(es)`) |
+
+- Rerun scope for IR-002: only `utils/process-tree.ts` and two test files changed since `bf2857ca29`; IMP-01 to IMP-09 rows for other code stay valid. The full server unit suite was not rerun (no shared foundation changed); IMP-10 covers every test that exercises the reader.
 - Not run, and why: server `test:integration` and E2E (API/E2E's scope; no integration test exercises the changed stop path beyond the unit/in-process ones above); live runtime (Codex/Claude) and isolated desktop journeys (AC-001, AC-002, AC-004–AC-006, AC-008 live, AC-009, AC-010 relaunch, U-A1–U-A3) are API/E2E-owned.
 
 ## Frontend Rendered-Result Check (When Applicable)
