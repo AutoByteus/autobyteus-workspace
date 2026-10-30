@@ -6,8 +6,8 @@ import { BaseTool } from '../../../../src/tools/base-tool.js';
 import { defaultToolRegistry } from '../../../../src/tools/registry/tool-registry.js';
 import { registerReadFileTool } from '../../../../src/tools/file/read-file.js';
 
-// read_file refuses non-media binary files (autobyteus-328 REQ-009): a NUL byte in the first 8,000 bytes (git's
-// heuristic) means binary; text, including non-ASCII UTF-8 and empty files, reads exactly as before. Synthesized files.
+// read_file refuses non-media binary files (autobyteus-328 REQ-009, DEC-006): a NUL byte anywhere in the file means
+// binary; text, including non-ASCII UTF-8 and empty files, reads exactly as before. Synthesized files.
 const binaryMessage = (filePath: string) =>
   `The file '${filePath}' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files.`;
 
@@ -21,6 +21,14 @@ const PDF_LIKE = Buffer.concat([
 const ZIP = Buffer.from([
   0x50, 0x4b, 0x03, 0x04, 0x14, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
   0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x05, 0x00, 0x00, 0x00, 0x61, 0x2e, 0x74, 0x78, 0x74,
+]);
+// A PDF-like file whose first NUL byte comes after 30 KB of text-like objects, as in 77 of 400 sampled OS PDFs (API-05).
+const PDF_LATE_NUL = Buffer.concat([
+  Buffer.from('%PDF-1.4\n', 'latin1'),
+  Buffer.from('1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n'.repeat(700), 'latin1'),
+  Buffer.from('3 0 obj\n<< /Length 4 >>\nstream\n', 'latin1'),
+  Buffer.from([0x78, 0x9c, 0x00, 0x01]),
+  Buffer.from('\nendstream\nendobj\n%%EOF\n', 'latin1'),
 ]);
 // Random bytes with a NUL inside the first 8,000 bytes (fixed seed, so the test is repeatable).
 const randomBytes = (length: number): Buffer => {
@@ -57,6 +65,7 @@ describe('read_file on non-media binary files', () => {
 
   it.each([
     ['report.pdf', PDF_LIKE],
+    ['long-report.pdf', PDF_LATE_NUL],
     ['archive.zip', ZIP],
     ['blob.bin', randomBytes(9000)],
     ['program', Buffer.from([0x7f, 0x45, 0x4c, 0x46, 0x02, 0x01, 0x01, 0x00])],
@@ -73,11 +82,11 @@ describe('read_file on non-media binary files', () => {
       .rejects.toThrow(binaryMessage(filePath));
   });
 
-  it('reads a NUL byte after the first 8,000 bytes as text, as before', async () => {
-    const content = `${'a'.repeat(8000)}\u0000tail`;
-    const filePath = await write('late-nul.txt', content);
+  it('refuses a file whose only NUL byte is its last byte, far past the first 8,000 bytes', async () => {
+    expect(PDF_LATE_NUL.indexOf(0)).toBeGreaterThan(30000);
+    const filePath = await write('late-nul.txt', `${'a'.repeat(100000)}\u0000`);
 
-    await expect(read({ path: filePath, include_line_numbers: false })).resolves.toBe(content);
+    await expect(read({ path: filePath, include_line_numbers: false })).rejects.toThrow(binaryMessage(filePath));
   });
 
   it('reads UTF-8 text with non-ASCII characters exactly as before', async () => {

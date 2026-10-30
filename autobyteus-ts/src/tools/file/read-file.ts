@@ -25,13 +25,13 @@ addFileToolPathParameters(argumentSchema);
 argumentSchema.addParameter(new ParameterDefinition({
   name: 'start_line',
   type: ParameterType.INTEGER,
-  description: "Parameter 'start_line' for tool 'read_file' (text files only).",
+  description: 'First line to return (1-based, inclusive). Text files only; omit to start at line 1.',
   required: false
 }));
 argumentSchema.addParameter(new ParameterDefinition({
   name: 'end_line',
   type: ParameterType.INTEGER,
-  description: "Parameter 'end_line' for tool 'read_file' (text files only).",
+  description: 'Last line to return (1-based, inclusive). Text files only; omit to read to the end.',
   required: false
 }));
 argumentSchema.addParameter(new ParameterDefinition({
@@ -41,9 +41,6 @@ argumentSchema.addParameter(new ParameterDefinition({
   required: false,
   defaultValue: true
 }));
-
-/** A NUL byte in the first 8,000 bytes marks a file as binary (git's heuristic); text files contain none. */
-const BINARY_SNIFF_BYTES = 8000;
 
 type AgentContextLike = { agentId: string; workspaceRootPath?: string | null } & MediaReadContext;
 
@@ -55,6 +52,20 @@ export async function readFile(
   endLine?: number | null,
   includeLineNumbers: boolean = true
 ): Promise<string | ContextFile> {
+  const finalPath = resolveFileToolPath(context, filePath, baseDir);
+
+  const mediaKind = getMediaFileKindFromPath(finalPath);
+  if (mediaKind) {
+    const hasLineRange = (startLine !== undefined && startLine !== null) || (endLine !== undefined && endLine !== null);
+    if (hasLineRange) {
+      throw new Error(
+        `start_line and end_line apply to text files only; '${finalPath}' is ${mediaKind === 'video' ? 'a' : 'an'} ${mediaKind} file, ` +
+          'so it was not loaded. Call read_file again without start_line and end_line, and do not claim to have inspected the file before it is loaded.'
+      );
+    }
+    return readMediaFileAsContextFile(context, finalPath, mediaKind);
+  }
+
   if (startLine !== undefined && startLine !== null && startLine < 1) {
     throw new Error(`start_line must be >= 1 when provided; got ${startLine}.`);
   }
@@ -71,17 +82,6 @@ export async function readFile(
     throw new Error(`end_line (${endLine}) must be >= start_line (${startLine}).`);
   }
 
-  const finalPath = resolveFileToolPath(context, filePath, baseDir);
-
-  const mediaKind = getMediaFileKindFromPath(finalPath);
-  if (mediaKind) {
-    const hasLineRange = (startLine !== undefined && startLine !== null) || (endLine !== undefined && endLine !== null);
-    if (hasLineRange) {
-      throw new Error(`start_line and end_line apply to text files only; '${finalPath}' is ${mediaKind === 'audio' ? 'an' : 'a'} ${mediaKind} file.`);
-    }
-    return readMediaFileAsContextFile(context, finalPath, mediaKind);
-  }
-
   try {
     await fs.access(finalPath);
   } catch {
@@ -95,7 +95,9 @@ export async function readFile(
     const message = error instanceof Error ? error.message : String(error);
     throw new Error(`Could not read file at ${finalPath}: ${message}`);
   }
-  if (fileBytes.subarray(0, BINARY_SNIFF_BYTES).includes(0)) {
+  // A NUL byte anywhere marks a file as binary; text files contain none. The whole buffer is scanned because many
+  // PDFs have their first NUL after the first 8,000 bytes (DEC-006).
+  if (fileBytes.includes(0)) {
     throw new Error(
       `The file '${finalPath}' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files.`
     );

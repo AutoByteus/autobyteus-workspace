@@ -113,15 +113,33 @@ describe('read_file on media files', () => {
       .rejects.toThrow(`The media file '${filePath}' is empty and was not loaded.`);
   });
 
+  // Includes the values GPT-5 models sent before strict: false (API-09): 0/0, -1/-1, 1/999999.
   it.each([
     [{ start_line: 1 }],
     [{ end_line: 3 }],
     [{ start_line: 1, end_line: 2 }],
-  ])('refuses line ranges on a media file (%o)', async (range) => {
+    [{ start_line: 0, end_line: 0 }],
+    [{ start_line: -1, end_line: -1 }],
+    [{ start_line: 1, end_line: 999999 }],
+    [{ start_line: 5, end_line: 2 }],
+  ])('refuses line ranges on a media file, saying it was not loaded (%o)', async (range) => {
     const filePath = await write('clip.mp4', MP4_BYTES);
 
-    await expect(tool().execute(contextWith(), { path: filePath, ...range }))
-      .rejects.toThrow('start_line and end_line apply to text files only');
+    await expect(tool().execute(contextWith(allSupported), { path: filePath, ...range })).rejects.toThrow(
+      `start_line and end_line apply to text files only; '${filePath}' is a video file, so it was not loaded. ` +
+        'Call read_file again without start_line and end_line, and do not claim to have inspected the file before it is loaded.',
+    );
+  });
+
+  it.each([
+    ['photo.png', PNG_BYTES, 'an image file'],
+    ['voice.wav', WAV_BYTES, 'an audio file'],
+    ['clip.mp4', MP4_BYTES, 'a video file'],
+  ])('names %s in the line-range refusal with the right article', async (name, bytes, phrase) => {
+    const filePath = await write(name, bytes);
+
+    await expect(tool().execute(contextWith(allSupported), { path: filePath, start_line: 1 }))
+      .rejects.toThrow(`'${filePath}' is ${phrase}, so it was not loaded.`);
   });
 
   it('refuses a missing media file', async () => {
