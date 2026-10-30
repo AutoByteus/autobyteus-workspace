@@ -71,3 +71,7 @@
 - Contract: `run-runtime-switch-contract.md` v2 (marker as a platform notice record, boundary type `runtime_switch`, per-file journal runtime, pending switch holds the whole previous binding).
 - Follow-ups recorded: FU-003 (teams, Org members, delegated copies), FU-004 (agent-/Router-started switch), FU-005 (order with the restart notice).
 - Approval impact: the requirements basis is approved; the DESIGN needs the user's approval before any build (Task constraint). Remaining gaps: U-2 (file tool access per runtime) and U-4 (quality of a real continuation) are checked in the real run.
+
+### SR-004 note 1 (2026-10-30)
+
+- The user: no round summary for now ("I don't want to have complexity"). Removed: the optional `run_summary.md` (contract 3.5, I-9, layout line), the notice line pointing at it, REQ-005 (withdrawn), BEH-003 (withdrawn), UC-003, AC-003, DEC-6 (withdrawn), follow-up FU-002 (a system-made summary is not asked for). DEC-2 now says: no summary tool, no summary file, no limits. Contract sections renumbered (3.5 = files of one backend, 3.6 = hand-over notice, I-9 = journal runtime per file). Intended behavior narrowed, not widened; design status stays `Draft` (awaiting the user's approval).

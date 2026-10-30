@@ -42,7 +42,7 @@ A stopped standalone Agent run's settings let the user pick another runtime and 
 
 ## Change Scope (Mandatory)
 
-- In scope: UC-001, UC-002, UC-003 (requirements) — the settings choice and save, the switch activation, marker and rotation, the hand-over notice, the per-file journal runtime, the chat marker label, validation as a fresh selection; REQ-001…003, 005…008, 010…013.
+- In scope: UC-001, UC-002 (requirements) — the settings choice and save, the switch activation, marker and rotation, the hand-over notice, the per-file journal runtime, the chat marker label, validation as a fresh selection; REQ-001…003, 006…008, 010…013.
 - Derived consumers, when a stored or shared structure changes:
   - Raw-trace manifest (new boundary type): readers of `boundary_type` — the raw-trace file source (lists segments; no branch on type), the compaction recorders (own types only). Decision: no reader branches on the type except the new journal-runtime lookup; verify by grep at implementation.
   - `run_metadata.json` (new optional field): readers — history catalog, resume-config service (tolerates null `platformAgentRunId`), run listings. Decision: no reader needs the field except the lifecycle service and the updater; a test opens, lists and views a pending-switch run.
@@ -56,8 +56,7 @@ A stopped standalone Agent run's settings let the user pick another runtime and 
 | Behavior ID | Kind | Approved Requirement / Intent And Acceptance-Criteria IDs | Approved Trigger Or Governing Contract | Relevant Existing Behavior And Evidence Reference | Approved Change Or Preserved Outcome | Target Production Path / Lifecycle And Spine ID(s) |
 | --- | --- | --- | --- | --- | --- | --- |
 | BEH-001 | User | REQ-001, 013; AC-001 | User saves the settings of a stopped standalone Agent run with another runtime/model | Model-only edit; runtime locked (F-25, F-30) | Same run; pending switch recorded; ineligible runs rejected | DS-001 |
-| BEH-002 | System | REQ-002, 003, 005…008, 010; AC-002…004, 009 | First input to a run with a pending switch | Restore or prepared start only (F-26) | Switch activation: new session, marker + rotation, notice before the user's text, once | DS-002 |
-| BEH-003 | System | REQ-005; AC-003 | Agent writes `run_summary.md` if it wants | Nothing | Optional file; listed in the next notice; nothing validates it | DS-002 (builder lists it) |
+| BEH-002 | System | REQ-002, 003, 006…008, 010; AC-002, 004, 009 | First input to a run with a pending switch | Restore or prepared start only (F-26) | Switch activation: new session, marker + rotation, notice before the user's text, once | DS-002 |
 | BEH-005 | User | REQ-011; AC-002 | Chat shows the run | History from raw traces (F-15, F-28) | Marker where the runtime changed, live and on reload | DS-002 (marker record, live presentation) |
 | BEH-006 | System | REQ-008 | New runtime cannot read the run folder | Unknown (U-2) | Excerpt fallback only if the real run shows it is needed | DS-002 (builder), decided after the real run |
 | BEH-007 | System | REQ-012; AC-006 | Journal is made current | One runtime for all files (F-24) | Per-file runtime; runs that never switched unchanged | DS-003 |
@@ -66,7 +65,7 @@ A stopped standalone Agent run's settings let the user pick another runtime and 
 
 | Artifact Path | Purpose | Related Requirement / Acceptance-Criteria IDs | Relationship To This Design | Status / Approval Applicability |
 | --- | --- | --- | --- | --- |
-| `run-runtime-switch-contract.md` | Layout, data model, write order, invariants | REQ-001, 002, 005, 010, 012; AC-001…009 | The data contract this design implements; section numbers are cited below | v2, approved with this design |
+| `run-runtime-switch-contract.md` | Layout, data model, write order, invariants | REQ-001, 002, 010, 012; AC-001…009 | The data contract this design implements; section numbers are cited below | v2, approved with this design |
 | `probes/runtime-switch-folder.probe.test.ts`, `evidence/folder-test-output.txt` | Folder test | REQ-010, 012 | Evidence for rotation/marker/journal findings; the test is reused and extended in the build | Evidence |
 
 ## Task Design Health Assessment (Mandatory)
@@ -96,12 +95,12 @@ Per `GLOSSARY.md`: Agent, Agent Run, Agent Runtime, Work Journal, Raw Trace. Tas
 
 ## Persisted Data / State Transition Decision (Mandatory When Persisted Data May Be Affected)
 
-- Stored subject, location, representative shape, and approximate volume: (a) `run_metadata.json`, one per run (525 on this machine) — a new optional `pendingRuntimeSwitch`; (b) `raw_traces_manifest.json`, 3,786 segment entries in 820 runs — a new `boundary_type` value used only by new switches; (c) `work_journal/work_journal_manifest.json`, one per run (~4,000) — a per-file `runtime_kind`; (d) new `run_summary.md` (optional, agent-written).
+- Stored subject, location, representative shape, and approximate volume: (a) `run_metadata.json`, one per run (525 on this machine) — a new optional `pendingRuntimeSwitch`; (b) `raw_traces_manifest.json`, 3,786 segment entries in 820 runs — a new `boundary_type` value used only by new switches; (c) `work_journal/work_journal_manifest.json`, one per run (~4,000) — a per-file `runtime_kind`.
 - Relevant code-model, serialization, semantic, or physical-store change: (a) optional field with its own parse and normalizer line, the way `delegatedFrom` was added; (b) one more union member; old entries and readers unaffected; (c) manifest shape change of derived data.
 - Normal reader/writer behavior and representative evidence: (a) absence means "no pending switch"; (b) no existing entry has the new type, every existing entry is read as before (Measured, notes F-21); (c) the store drops an entry without the new field and the run is rendered again (store `readManifest` already drops invalid entries as "render again").
-- Required semantics and invariants under direct use: contract §4 I-1…I-10; for runs that never switched the journal text is byte-identical, so content hashes and the evidence hash are unchanged (verified by the test over the real-shaped fixtures and, read-only, by comparing a re-render of an isolated copy with the stored files).
+- Required semantics and invariants under direct use: contract §4 I-1…I-9; for runs that never switched the journal text is byte-identical, so content hashes and the evidence hash are unchanged (verified by the test over the real-shaped fixtures and, read-only, by comparing a re-render of an isolated copy with the stored files).
 - Physical-store, privacy/security, disposal/rebuild, and operational constraints: no secrets are written (the marker and notice contain runtime names, model names and file paths); journals are derived and deletable; no user data is read outside the run's own folder; experiments use isolated copies only.
-- Decision: (a) `Directly Usable — No Migration`; (b) `Directly Usable — No Migration`; (c) `Discard or Rebuild` (derived; rebuilt from raw traces on the next `ensureCurrent`/catch-up with no model call); (d) `Not Affected` (new, optional).
+- Decision: (a) `Directly Usable — No Migration`; (b) `Directly Usable — No Migration`; (c) `Discard or Rebuild` (derived; rebuilt from raw traces on the next `ensureCurrent`/catch-up with no model call).
 - Decision rationale, including concrete benefit versus I/O, downtime, corruption, recovery, and rollout cost: a migration would rewrite ~4,000 derived files to add a field the renderer recomputes anyway. Cost of the rebuild: each run renders once on its next catch-up (CPU and disk, no model, no network) — the same kind of one-time pass that autobyteus-331's revision change already caused; content is unchanged so nothing is re-indexed.
 - Acceptance criteria or design constraints supported by this decision: AC-006, AC-007, AC-009; DESIGN rule 7 (a run's unreadable manifest only renders that run again).
 
@@ -112,7 +111,7 @@ Data Migration Guideline §2 checklist: new persisted fields are optional and re
 | Spine ID | Scope | Related Behavior ID(s) | Start | End | Governing Owner | Why It Matters |
 | --- | --- | --- | --- | --- | --- | --- |
 | DS-001 | Primary End-to-End | BEH-001 | User changes runtime/model in the settings of a stopped run and saves | `run_metadata.json` holds the new binding and the pending switch | Stopped-run model-config updater (server) with `existingRunConfigStore` (web) | The user's only action; must be undoable and safe |
-| DS-002 | Primary End-to-End | BEH-002, 003, 005, 006 | The user's first message to the run | The new agent receives notice + message; chat shows the marker | `StandaloneAgentRunLifecycleService` (transition lane) | The ordered, crash-sensitive heart of the feature |
+| DS-002 | Primary End-to-End | BEH-002, 005, 006 | The user's first message to the run | The new agent receives notice + message; chat shows the marker | `StandaloneAgentRunLifecycleService` (transition lane) | The ordered, crash-sensitive heart of the feature |
 | DS-003 | Bounded Local | BEH-007 | `ensureCurrent` for a run with several raw files | Each journal file rendered with its own runtime | `WorkJournalService` | Without it, earlier work reads wrongly |
 
 ## Primary Execution Spine(s)
@@ -276,7 +275,7 @@ Server paths under `autobyteus-server-ts/src/`, library under `autobyteus-ts/src
 | `api/graphql/types/agent-run.ts` | File (change) | GraphQL | `runtimeKind` in the input; rejection messages | Existing mutation | Decisions |
 | `runtime-handover-notices/runtime-handover-notices.ts` | File (new) | Composition entry | Creates the service | Mirrors `tool-list-updates.ts` | Logic |
 | `runtime-handover-notices/services/runtime-handover-notice-service.ts` | File (new) | Notice | Pending state; implements `AgentRunInputPreface` | The port | Journal rendering |
-| `runtime-handover-notices/services/runtime-handover-notice-builder.ts` | File (new) | Notice text | Pure text from facts (contract §3.7) | Pure and testable | I/O |
+| `runtime-handover-notices/services/runtime-handover-notice-builder.ts` | File (new) | Notice text | Pure text from facts (contract §3.6) | Pure and testable | I/O |
 | `compositions/build-studio-server.ts` | File (change) | Composition | Add the third source and pass the service to the lifecycle | Where the two others are wired | Logic |
 | `agent-work-journal/domain/work-journal-models.ts`, `store/work-journal-store.ts`, `services/work-journal-service.ts` | Files (change) | Journal | Per-file `runtime_kind`; remove run-level; `listJournalFiles` returns `runtimeKind`; lookup rule | DS-003 | Label spelling |
 | `autobyteus-web/components/run-settings/ExistingRunSettings.vue`, `RunSettingsCard.vue` | Files (change) | Settings | Unlock the runtime for eligible runs; draft carries `runtimeKind`; hint line | Existing | Server rules |
@@ -298,7 +297,7 @@ Server paths under `autobyteus-server-ts/src/`, library under `autobyteus-ts/src
 | --- | --- | --- | --- |
 | Where the switch happens | At the first input, in the activation, after the new session exists | At the settings save (archiving and a marker for a switch the user may undo, and nothing to retry the new session) | A save is a form edit; the real work belongs where a run is started |
 | Marker | An ordinary notice record the existing readers show | A new record type with new readers in the projection, the journal and the web | Fewer changed readers |
-| Notice | Server-built from facts, journals named | A model-written summary or a fixed journal excerpt copied into the prompt | The user: the agent reads and decides; no limits |
+| Notice | Server-built from facts, journals named | A model-written summary, a summary file, or a fixed journal excerpt copied into the prompt | The user: the agent reads and decides; no limits |
 
 ## Backward-Compatibility Rejection Log (Mandatory)
 
@@ -342,6 +341,6 @@ N/A.
 ## Guidance For Implementation
 
 - Reproduction to start from, from the investigation notes: `probes/runtime-switch-folder.probe.test.ts` (copy into `autobyteus-server-ts/tests/`, run `./node_modules/.bin/vitest run <file>` from `autobyteus-server-ts`; it turns into the permanent test of the recorder and the journal's per-file runtime).
-- Tests (TESTING.md layers): library type; server unit — label mapping, recorder (rotation, marker, idempotence), journal per-file runtime and reuse, commit function (switch, undo, repeated switch keeps the first `from`), updater (eligible/ineligible, fresh-selection validation), notice builder (text, partial-reading instruction, lists `run_summary.md` when present, says "previous agent", does not repeat the user's message), notice service (once per switch, `prefaceReturned` keeps it pending); server integration — lifecycle `activateSwitched` with scripted runtimes: success order, failure of the new session (nothing changed), crash after marker (retry completes with one marker and one archived segment), existing restore and prepared cases unchanged, pending-switch run opens/lists; GraphQL contract; web — store/menu/settings unit tests, browser probe of the settings journey.
+- Tests (TESTING.md layers): library type; server unit — label mapping, recorder (rotation, marker, idempotence), journal per-file runtime and reuse, commit function (switch, undo, repeated switch keeps the first `from`), updater (eligible/ineligible, fresh-selection validation), notice builder (text, partial-reading instruction, says "previous agent", does not repeat the user's message), notice service (once per switch, `prefaceReturned` keeps it pending); server integration — lifecycle `activateSwitched` with scripted runtimes: success order, failure of the new session (nothing changed), crash after marker (retry completes with one marker and one archived segment), existing restore and prepared cases unchanged, pending-switch run opens/lists; GraphQL contract; web — store/menu/settings unit tests, browser probe of the settings journey.
 - Real run (TESTING.md rule 1–2: worktree build, isolated instance, never the user's data): `pnpm --silent isolated-app start --build` with imported credentials; a throwaway workspace; a Claude run does a small multi-step task, is stopped by hand (a usage limit cannot be produced on demand; the switch path is identical because no stop reason is recorded), its settings switched to Codex, one message sent; check: same run ID and chat, marker, notice received, the new agent reads the journals and continues, `raw_traces_000001.jsonl` holds the Claude records, journals translated per file. A scripted Antigravity run covers U-2 for that runtime. Record the evidence in the validation report. Clean up the instance.
 - Done means (Task): the user has approved this design; then in this slice a run stopped on one runtime continues on another with the work carried over, shown by the tests and the real run on isolated data; merged to `personal`. No release unless asked. Prove from a clean clone.
