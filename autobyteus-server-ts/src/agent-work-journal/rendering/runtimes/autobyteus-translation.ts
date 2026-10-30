@@ -10,12 +10,21 @@ import {
   startEndRange,
   toCatNumberedLinesLoose,
 } from "../command-text.js";
-import { commandLine, convertedCommandLine, editFileLine, searchWebLine, writeFileLine } from "../journal-actions.js";
+import {
+  backgroundOutputLine,
+  commandLine,
+  confirmedOutcome,
+  convertedCommandLine,
+  editFileLine,
+  searchWebLine,
+  stopBackgroundTaskLine,
+  writeFileLine,
+} from "../journal-actions.js";
 import { splitLines } from "../output-shortener.js";
 import { interruptedFromError, mediaMarker, normalizeRecordedResult } from "../result-envelopes.js";
-import { readPatch } from "../text-diff.js";
+import { diffTexts, readPatch } from "../text-diff.js";
 import type { NormalizedToolResult } from "../tool-outcome.js";
-import type { BuiltInConverter, RecordedResult, RuntimeTranslation } from "./runtime-translation.js";
+import type { BuiltInConverter, BuiltInLine, RecordedResult, RuntimeTranslation } from "./runtime-translation.js";
 
 /** AutoByteus native: contract §4 (AutoByteus table) and §6 (AutoByteus texts). */
 
@@ -133,6 +142,58 @@ const searchWeb: BuiltInConverter = (call, result) => {
   return searchWebLine(query ? [query] : [], normalized(result));
 };
 
+/** The output of a background process: its recorded `output` field when the result is a record. */
+const processOutput: BuiltInConverter = (call, result) => {
+  const value = asRecord(result?.value);
+  const recorded = normalized(result);
+  const output = typeof value?.output === "string" && !result?.error
+    ? { ...recorded!, output: value.output.length ? value.output : null }
+    : recorded;
+  return backgroundOutputLine(asText(call.args.pid) ?? (asInteger(call.args.pid)?.toString() ?? null), output);
+};
+
+const stopProcess: BuiltInConverter = (call, result) =>
+  stopBackgroundTaskLine(asInteger(call.args.pid)?.toString() ?? asText(call.args.pid), normalized(result));
+
+const replaceInFile: BuiltInConverter = (call, result) => editFileLine(
+  joinedPath(call.args, "path"),
+  typeof call.args.old_text === "string" && typeof call.args.new_text === "string"
+    ? diffTexts(call.args.old_text, call.args.new_text)
+    : null,
+  [],
+  normalized(result),
+);
+
+const confirmed = (head: string, result: RecordedResult | null): BuiltInLine => {
+  const { outcome, parts } = confirmedOutcome(normalized(result));
+  return { head, outcome, parts };
+};
+
+const downloadMedia: BuiltInConverter = (call, result) => {
+  const target = [asText(call.args.folder), asText(call.args.filename)].filter((part): part is string => part !== null).join("/");
+  return confirmed(`Download file: ${asText(call.args.url) ?? "(URL not recorded)"}${target ? ` to ${target}` : ""}`, result);
+};
+
+const downloadVideo: BuiltInConverter = (call, result) => {
+  const format = asText(call.args.format);
+  return confirmed(`Download video: ${asText(call.args.url) ?? "(URL not recorded)"}${format ? ` (${format})` : ""}`, result);
+};
+
+const convertVideoFormat: BuiltInConverter = (call, result) => {
+  const format = asText(call.args.target_format);
+  const output = asText(call.args.output_video_path);
+  return confirmed(
+    `Convert video: ${asText(call.args.input_video_path) ?? "(input not recorded)"}${format ? ` to ${format}` : ""}${output ? ` (${output})` : ""}`,
+    result,
+  );
+};
+
+const submitTaskResult: BuiltInConverter = (call, result) => {
+  const line = confirmed("Submit task result", result);
+  const message = asText(call.args.message);
+  return message === null ? line : { ...line, parts: [{ kind: "message", text: message }, ...line.parts] };
+};
+
 export const autobyteusTranslation: RuntimeTranslation = Object.freeze({
   label: agentRuntimeName(RuntimeKind.AUTOBYTEUS),
   builtInTools: new Map<string, BuiltInConverter>([
@@ -144,6 +205,13 @@ export const autobyteusTranslation: RuntimeTranslation = Object.freeze({
     ["edit_file", editFile],
     ["search_web", searchWeb],
     ["read_media_file", readMediaFile],
+    ["get_process_output", processOutput],
+    ["stop_background_process", stopProcess],
+    ["replace_in_file", replaceInFile],
+    ["download_media", downloadMedia],
+    ["download_video", downloadVideo],
+    ["convert_video_format", convertVideoFormat],
+    ["submit_task_result", submitTaskResult],
   ]),
   normalizeResult: normalizeAutobyteusResult,
   /** XML tool markup in agent text: the same call has its own line. */

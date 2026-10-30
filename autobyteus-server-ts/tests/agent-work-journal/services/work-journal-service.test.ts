@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { WORK_JOURNAL_RENDERER_REVISION } from "../../../src/agent-work-journal/domain/work-journal-models.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { WorkJournalService, getWorkJournalService } from "../../../src/agent-work-journal/services/work-journal-service.js";
 import { WorkJournalStore } from "../../../src/agent-work-journal/store/work-journal-store.js";
@@ -44,7 +45,7 @@ describe("WorkJournalService.ensureCurrent (DS-004)", () => {
     expect(manifest(runDir)).toEqual({
       run_id: "run_journal_1",
       runtime_kind: "claude_agent_sdk",
-      renderer_revision: 1,
+      renderer_revision: WORK_JOURNAL_RENDERER_REVISION,
       files: [{
         journal_file: "work_journal_active.md",
         source_file: "raw_traces_active.jsonl",
