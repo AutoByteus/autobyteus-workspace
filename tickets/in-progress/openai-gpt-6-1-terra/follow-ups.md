@@ -1,0 +1,5 @@
+# Follow-ups — openai-gpt-6-1-terra (autobyteus-336)
+
+| ID | Found by (role, document) | What is wrong, where | Evidence | Why it is outside this ticket | Urgent (`Yes`/`No`) | Suggested Task description | Sent (to, date) |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| FU-001 | Solution Designer, `investigation-notes.md` | Native OpenAI live tests in `autobyteus-ts` default to older models: `tests/integration/agent/openai-single-agent-flow.test.ts` L21 (`gpt-5.5`, $5/$30), `openai-read-file-strict-live.test.ts` L43 (`gpt-5.4-mini`), `tests/integration/llm/api/openai-llm.test.ts`, `openai-llm-image.test.ts`, `api-tool-call-handler-live.test.ts` (`gpt-5.5`/`gpt-5.4`) | the cited lines; the user: "we will use the 6.1T as the model for testing" | The Task names the live Codex tests; the user asked to keep this ticket minimal | No | **Native OpenAI live tests: default to gpt-6.1-terra** and extend the TESTING.md test-model rule to them (terra is cheaper than gpt-5.5 and gpt-5.4, close to gpt-5.4-mini). | |
