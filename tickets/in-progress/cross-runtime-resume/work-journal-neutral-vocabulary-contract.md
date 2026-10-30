@@ -80,13 +80,13 @@ Other facts: Claude's results are unwrapped already (`normalizeClaudeResult`). I
 | `search_web` | searches the web | `Search web: "<query>"` | same | Same | |
 | shell read of `…/.codex/skills/x/SKILL.md` | loads a skill, done as a file read | `Command: sed -n '1,220p' …/SKILL.md` | `Load skill: x → ok` (rule §5, N-2) | **NEW** | 10,014 |
 | a tool of another server, named `<server>.<tool>` | e.g. `plugin_management.search_plugins` | `Tool: plugin_management.search_plugins …` | `Tool: search_plugins (via plugin_management) …` (§6) | **NEW** | few |
-| `js` | runs a script in a computer-use environment | `Tool: js code=… title=…` | `Run script: <title>`, the code below | **NEW** | 4,056 |
-| `js_reset` | resets that script environment | `Tool: js_reset` | `Reset script environment` | **NEW** | 13 |
-| `js_add_node_module_dir` | adds a module folder to that environment | `Tool: js_add_node_module_dir path=…` | `Add script module folder: <path>` | **NEW** | 16 |
+| `js` | runs JavaScript in a computer-use environment | `Tool: js code=… title=…` | `Run JavaScript: <title>`, the code below | **NEW** | 4,056 |
+| `js_reset` | resets that JavaScript environment | `Tool: js_reset` | `Reset JavaScript environment` | **NEW** | 13 |
+| `js_add_node_module_dir` | adds a module folder to that JavaScript environment | `Tool: js_add_node_module_dir path=…` | `Add JavaScript module folder: <path>` | **NEW** | 16 |
 | `speak` | speaks text aloud | `Tool: speak text=… play=…` | `Speak: "<text>"` (`(not played)` when `play` is false) | **NEW** | 349 |
 | tools you installed yourself (ssh, video editing, audio …) | anything; the platform cannot know | `Tool: <name> …` | same | Generic | many |
 
-Other facts: Codex records the platform's tools under plain names. The label of `js` is neutral, but the code inside it uses objects only Codex has, so its content cannot be neutral; the line still tells a reader that a script was run. `js` and `speak` are probably installed on the node and not Codex built-ins (`Unclear`); they are converted by name in this table either way.
+Other facts: Codex records the platform's tools under plain names. The label of `js` is neutral, but the code inside it uses objects only Codex has, so its content cannot be neutral; the line still tells a reader that JavaScript was run. `js` and `speak` are probably installed on the node and not Codex built-ins (`Unclear`); they are converted by name in this table either way.
 
 ### 4.3 Antigravity (`antigravity_cli`)
 
@@ -206,3 +206,255 @@ AGY      before:  [11:21:02] Tool: send_message_to → failed: {"accepted":false
 | N-4 | Qualified names (§6) as `(via <server>)`? | Yes. |
 | N-5 | The wording of each line in §3 and in the NEW rows of §4. | The user edits. |
 | N-6 | Claude's own task list is worded `Create task` / `Update task`, so the platform's board is worded `Create project task` / `Update project task` to keep the two apart. OK? | Yes; otherwise a reader cannot tell the agent's own list from the project's board. |
+
+## 11. Examples: the same small job on each runtime
+
+**What this is.** One short, invented job ("in the shipping service, `calc_fee` should round to cents; fix it, run the tests, tell the reviewer"), recorded the way each runtime records it. For each runtime: the **raw trace** (the records as the runtime wrote them, key fields only), then the **journal after this revision**. A line marked `◀` is one this revision changes; the text after `was:` is what the journal prints today. The records are hand-built (the project never copies real user records into documents). The unmarked lines are the **real output of today's renderer** on these records (run in an isolated test, nothing of your data touched). The marked lines are written by hand from §3 and §4, because the new converters are not built yet.
+
+To keep each example short, a runtime shows only the steps it does differently; the closing table at the end of this section lines the five up.
+
+### 11.1 Claude Agent SDK
+
+**Raw trace** (one record per line):
+
+```
+{"type":"user","text":"In the shipping service, calc_fee should round to cents. Fix it and run the tests. Tell the reviewer when done."}
+{"type":"tool_call","tool":"Skill","args":{"skill":"python-style"}}
+{"type":"tool_result","tool":"Skill","result":"Launching skill: python-style"}
+{"type":"tool_call","tool":"Read","args":{"file_path":"/work/shipping/fees.py"}}
+{"type":"tool_result","tool":"Read","result":"     1\tdef calc_fee(w):\n     2\t    return w * 0.35\n"}
+{"type":"tool_call","tool":"Edit","args":{"file_path":"/work/shipping/fees.py","old_string":"    return w * 0.35","new_string":"    return round(w * 0.35, 2)"}}
+{"type":"tool_result","tool":"Edit","result":"The file /work/shipping/fees.py has been updated successfully."}
+{"type":"tool_call","tool":"Bash","args":{"command":"pytest -q tests/test_fees.py"}}
+{"type":"tool_result","tool":"Bash","error":"Exit code 1\nFAILED test_fee_rounds_to_cents: expected 10.50, got 10.4999"}
+{"type":"tool_call","tool":"Bash","args":{"command":"pytest -q tests/test_fees.py"}}
+{"type":"tool_result","tool":"Bash","result":"1 passed in 0.02s"}
+{"type":"tool_call","tool":"TodoWrite","args":{"todos":[{"content":"Round the fee","status":"completed","activeForm":"Rounding"},{"content":"Tell the reviewer","status":"in_progress","activeForm":"Telling"}]}}
+{"type":"tool_result","tool":"TodoWrite","result":"Todos have been modified successfully"}
+{"type":"tool_call","tool":"send_message_to","args":{"recipient_address":"/reviewer","message_type":"task_result","content":"calc_fee now rounds to cents; tests pass.","reference_files":["/work/shipping/fees.py"]}}
+{"type":"tool_result","tool":"send_message_to","result":"{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Message delivered.\",\"target_agent_run_id\":\"reviewer_run_1\"}"}
+{"type":"assistant","text":"Done. calc_fee rounds to cents and the test passes; the reviewer has been told."}
+```
+
+**Journal after this revision:**
+
+```
+# Work Journal — run run_test_1
+Runtime Claude · file active (open) · 2026-09-22 06:00 – 06:00 UTC · source ../raw_traces_active.jsonl
+
+[06:00:01] User: In the shipping service, calc_fee should round to cents. Fix it and run the tests. Tell the reviewer when done. [↗](../raw_traces_active.jsonl#rt_001)
+[06:00:02] Load skill: python-style → ok [↗](../raw_traces_active.jsonl#rt_002)   ◀ was: Tool: Skill skill="python-style" and the text "Launching skill: python-style"
+[06:00:04] Command: cat -n /work/shipping/fees.py → ok
+                1	def calc_fee(w):
+                2	    return w * 0.35 [↗](../raw_traces_active.jsonl#rt_004)
+[06:00:06] Edit file: /work/shipping/fees.py (+1 −1) → ok
+           -    return w * 0.35
+           +    return round(w * 0.35, 2) [↗](../raw_traces_active.jsonl#rt_006)
+[06:00:08] Command: pytest -q tests/test_fees.py → exit 1
+           FAILED test_fee_rounds_to_cents: expected 10.50, got 10.4999 [↗](../raw_traces_active.jsonl#rt_008)
+[06:00:10] Command: pytest -q tests/test_fees.py → ok
+           1 passed in 0.02s [↗](../raw_traces_active.jsonl#rt_010)
+[06:00:12] Update to-do list (2 items) → ok   ◀ was: Tool: TodoWrite todos=[…]
+           [done] Round the fee
+           [doing] Tell the reviewer [↗](../raw_traces_active.jsonl#rt_012)
+[06:00:14] Message to /reviewer (task_result) → delivered   ◀ was: Tool: send_message_to recipient_address=… {"accepted":true,…}
+           calc_fee now rounds to cents; tests pass.
+           Files: /work/shipping/fees.py [↗](../raw_traces_active.jsonl#rt_014)
+[06:00:16] Agent: Done. calc_fee rounds to cents and the test passes; the reviewer has been told. [↗](../raw_traces_active.jsonl#rt_016)
+```
+
+### 11.2 Codex
+
+**Raw trace** (one record per line):
+
+```
+{"type":"user","text":"In the shipping service, calc_fee should round to cents. Fix it and run the tests. Tell the reviewer when done."}
+{"type":"tool_call","tool":"run_bash","args":{"command":"sed -n '1,120p' /home/me/.codex/skills/python-style/SKILL.md","cwd":"/work/shipping"}}
+{"type":"tool_result","tool":"run_bash","result":"# Python style\nUse round() for money."}
+{"type":"tool_call","tool":"run_bash","args":{"command":"cat -n fees.py","cwd":"/work/shipping"}}
+{"type":"tool_result","tool":"run_bash","result":"     1\tdef calc_fee(w):\n     2\t    return w * 0.35\n"}
+{"type":"tool_call","tool":"edit_file","args":{"path":"/work/shipping/fees.py","patch":"@@ -1,2 +1,2 @@\n def calc_fee(w):\n-    return w * 0.35\n+    return round(w * 0.35, 2)\n"}}
+{"type":"tool_result","tool":"edit_file","result":{"success":true}}
+{"type":"tool_call","tool":"run_bash","args":{"command":"pytest -q tests/test_fees.py","cwd":"/work/shipping"}}
+{"type":"tool_result","tool":"run_bash","result":"1 passed in 0.02s"}
+{"type":"tool_call","tool":"js","args":{"code":"await page.goto('http://localhost:8000/fees'); nodeRepl.write(await page.title());","title":"Open the fee page"}}
+{"type":"tool_result","tool":"js","result":"Fee calculator"}
+{"type":"tool_call","tool":"send_message_to","args":{"recipient_name":"reviewer","message_type":"task_result","content":"calc_fee now rounds to cents; tests pass."}}
+{"type":"tool_result","tool":"send_message_to","result":"{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Message delivered.\",\"target_agent_run_id\":\"reviewer_run_1\"}"}
+{"type":"assistant","text":"Done. calc_fee rounds to cents and the test passes; the reviewer has been told."}
+```
+
+**Journal after this revision:**
+
+```
+# Work Journal — run run_test_1
+Runtime Codex · file active (open) · 2026-09-22 06:00 – 06:00 UTC · source ../raw_traces_active.jsonl
+
+[06:00:01] User: In the shipping service, calc_fee should round to cents. Fix it and run the tests. Tell the reviewer when done. [↗](../raw_traces_active.jsonl#rt_001)
+[06:00:02] Load skill: python-style → ok [↗](../raw_traces_active.jsonl#rt_002)   ◀ was: Command: sed -n '1,120p' …/.codex/skills/python-style/SKILL.md
+[06:00:04] Command: cat -n fees.py (in /work/shipping) → ok
+                1	def calc_fee(w):
+                2	    return w * 0.35 [↗](../raw_traces_active.jsonl#rt_004)
+[06:00:06] Edit file: /work/shipping/fees.py (+1 −1) → ok
+            def calc_fee(w):
+           -    return w * 0.35
+           +    return round(w * 0.35, 2) [↗](../raw_traces_active.jsonl#rt_006)
+[06:00:08] Command: pytest -q tests/test_fees.py (in /work/shipping) → ok
+           1 passed in 0.02s [↗](../raw_traces_active.jsonl#rt_008)
+[06:00:10] Run JavaScript: Open the fee page → ok   ◀ was: Tool: js code=… title=…
+           await page.goto('http://localhost:8000/fees'); nodeRepl.write(await page.title());
+           Fee calculator [↗](../raw_traces_active.jsonl#rt_010)
+[06:00:12] Message to reviewer (task_result) → delivered   ◀ was: Tool: send_message_to recipient_name=… {"accepted":true,…}
+           calc_fee now rounds to cents; tests pass. [↗](../raw_traces_active.jsonl#rt_012)
+[06:00:14] Agent: Done. calc_fee rounds to cents and the test passes; the reviewer has been told. [↗](../raw_traces_active.jsonl#rt_014)
+```
+
+### 11.3 Antigravity
+
+**Raw trace** (one record per line):
+
+```
+{"type":"user","text":"In the shipping service, calc_fee should round to cents. Fix it and run the tests. Tell the reviewer when done."}
+{"type":"tool_call","tool":"view_file","args":{"AbsolutePath":"/home/me/.agents/skills/python-style/SKILL.md"}}
+{"type":"tool_result","tool":"view_file","result":"# Python style\nUse round() for money."}
+{"type":"tool_call","tool":"view_file","args":{"AbsolutePath":"/work/shipping/fees.py"}}
+{"type":"tool_result","tool":"view_file","result":"def calc_fee(w):\n    return w * 0.35\n"}
+{"type":"tool_call","tool":"replace_file_content","args":{"TargetFile":"/work/shipping/fees.py","TargetContent":"    return w * 0.35","ReplacementContent":"    return round(w * 0.35, 2)"}}
+{"type":"tool_result","tool":"replace_file_content","result":"ok"}
+{"type":"tool_call","tool":"run_command","args":{"CommandLine":"pytest -q tests/test_fees.py","Cwd":"/work/shipping"}}
+{"type":"tool_result","tool":"run_command","result":"1 passed in 0.02s"}
+{"type":"tool_call","tool":"call_mcp_tool","args":{"ToolName":"mcp__acme_prices__lookup_price","Arguments":{"sku":"BOX-S"}}}
+{"type":"tool_result","tool":"call_mcp_tool","result":"{\"price\": 10.5}"}
+{"type":"tool_call","tool":"call_mcp_tool","args":{"ToolName":"send_message_to","Arguments":{"recipient_address":"/reviewer","message_type":"task_result","content":"calc_fee now rounds to cents; tests pass."}}}
+{"type":"tool_result","tool":"call_mcp_tool","result":"{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Message delivered.\",\"target_agent_run_id\":\"reviewer_run_1\"}"}
+{"type":"assistant","text":"Done. calc_fee rounds to cents and the test passes; the reviewer has been told."}
+```
+
+**Journal after this revision:**
+
+```
+# Work Journal — run run_test_1
+Runtime Antigravity · file active (open) · 2026-09-22 06:00 – 06:00 UTC · source ../raw_traces_active.jsonl
+
+[06:00:01] User: In the shipping service, calc_fee should round to cents. Fix it and run the tests. Tell the reviewer when done. [↗](../raw_traces_active.jsonl#rt_001)
+[06:00:02] Load skill: python-style → ok [↗](../raw_traces_active.jsonl#rt_002)   ◀ was: Command: cat …/.agents/skills/python-style/SKILL.md
+[06:00:04] Command: cat /work/shipping/fees.py → ok
+           def calc_fee(w):
+               return w * 0.35 [↗](../raw_traces_active.jsonl#rt_004)
+[06:00:06] Edit file: /work/shipping/fees.py (+1 −1) → ok
+           -    return w * 0.35
+           +    return round(w * 0.35, 2) [↗](../raw_traces_active.jsonl#rt_006)
+[06:00:08] Command: pytest -q tests/test_fees.py (in /work/shipping) → ok
+           1 passed in 0.02s [↗](../raw_traces_active.jsonl#rt_008)
+[06:00:10] Tool: lookup_price (via acme_prices) sku="BOX-S" → ok   ◀ was: Tool: mcp__acme_prices__lookup_price sku=…
+           {"price": 10.5} [↗](../raw_traces_active.jsonl#rt_010)
+[06:00:12] Message to /reviewer (task_result) → delivered   ◀ was: Tool: send_message_to recipient_address=… {"accepted":true,…}
+           calc_fee now rounds to cents; tests pass. [↗](../raw_traces_active.jsonl#rt_012)
+[06:00:14] Agent: Done. calc_fee rounds to cents and the test passes; the reviewer has been told. [↗](../raw_traces_active.jsonl#rt_014)
+```
+
+### 11.4 Grok Build
+
+**Raw trace** (one record per line):
+
+```
+{"type":"user","text":"In the shipping service, calc_fee should round to cents. Fix it and run the tests. Tell the reviewer when done."}
+{"type":"tool_call","tool":"read_file","args":{"file_path":"/work/shipping/fees.py"}}
+{"type":"tool_result","tool":"read_file","result":"1: def calc_fee(w):\n2:     return w * 0.35\n"}
+{"type":"tool_call","tool":"edit_file","args":{"file_path":"/work/shipping/fees.py","old_string":"    return w * 0.35","new_string":"    return round(w * 0.35, 2)"}}
+{"type":"tool_result","tool":"edit_file","result":"ok"}
+{"type":"tool_call","tool":"run_bash","args":{"command":"pytest -q tests/test_fees.py"}}
+{"type":"tool_result","tool":"run_bash","result":"1 passed in 0.02s"}
+{"type":"tool_call","tool":"web_search","args":{"query":"python round half even money"}}
+{"type":"tool_result","tool":"web_search","result":"Python's round() uses banker's rounding."}
+{"type":"tool_call","tool":"send_message_to","args":{"recipient_address":"/reviewer","message_type":"task_result","content":"calc_fee now rounds to cents; tests pass."}}
+{"type":"tool_result","tool":"send_message_to","result":"{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Message delivered.\",\"target_agent_run_id\":\"reviewer_run_1\"}"}
+{"type":"assistant","text":"Done. calc_fee rounds to cents and the test passes; the reviewer has been told."}
+```
+
+**Journal after this revision:**
+
+```
+# Work Journal — run run_test_1
+Runtime Grok Build · file active (open) · 2026-09-22 06:00 – 06:00 UTC · source ../raw_traces_active.jsonl
+
+[06:00:01] User: In the shipping service, calc_fee should round to cents. Fix it and run the tests. Tell the reviewer when done. [↗](../raw_traces_active.jsonl#rt_001)
+[06:00:02] Command: cat -n /work/shipping/fees.py → ok
+                1	def calc_fee(w):
+                2	    return w * 0.35 [↗](../raw_traces_active.jsonl#rt_002)
+[06:00:04] Edit file: /work/shipping/fees.py (+1 −1) → ok
+           -    return w * 0.35
+           +    return round(w * 0.35, 2) [↗](../raw_traces_active.jsonl#rt_004)
+[06:00:06] Command: pytest -q tests/test_fees.py → ok
+           1 passed in 0.02s [↗](../raw_traces_active.jsonl#rt_006)
+[06:00:08] Search web: "python round half even money" → ok
+           Python's round() uses banker's rounding. [↗](../raw_traces_active.jsonl#rt_008)
+[06:00:10] Message to /reviewer (task_result) → delivered   ◀ was: Tool: send_message_to recipient_address=… {"accepted":true,…}
+           calc_fee now rounds to cents; tests pass. [↗](../raw_traces_active.jsonl#rt_010)
+[06:00:12] Agent: Done. calc_fee rounds to cents and the test passes; the reviewer has been told. [↗](../raw_traces_active.jsonl#rt_012)
+```
+
+Grok has no skill load in this example: its skill-path pattern is not yet known (`Unclear`, §4.4).
+
+### 11.5 AutoByteus native
+
+**Raw trace** (one record per line):
+
+```
+{"type":"user","text":"In the shipping service, calc_fee should round to cents. Fix it and run the tests. Tell the reviewer when done."}
+{"type":"tool_call","tool":"read_file","args":{"path":"/home/me/skills/python-style/SKILL.md"}}
+{"type":"tool_result","tool":"read_file","result":"1: # Python style\n2: Use round() for money."}
+{"type":"tool_call","tool":"read_file","args":{"path":"/work/shipping/fees.py"}}
+{"type":"tool_result","tool":"read_file","result":"1: def calc_fee(w):\n2:     return w * 0.35\n"}
+{"type":"tool_call","tool":"edit_file","args":{"path":"/work/shipping/fees.py","patch":"@@ -1,2 +1,2 @@\n def calc_fee(w):\n-    return w * 0.35\n+    return round(w * 0.35, 2)\n"}}
+{"type":"tool_result","tool":"edit_file","result":"ok"}
+{"type":"tool_call","tool":"start_background_process","args":{"command":"pytest -q tests/","cwd":"/work/shipping"}}
+{"type":"tool_result","tool":"start_background_process","result":{"pid":4242}}
+{"type":"tool_call","tool":"get_process_output","args":{"pid":4242,"lines":20}}
+{"type":"tool_result","tool":"get_process_output","result":{"output":"1 passed in 0.02s"}}
+{"type":"tool_call","tool":"send_message_to","args":{"recipient_name":"reviewer","content":"calc_fee now rounds to cents; tests pass."}}
+{"type":"tool_result","tool":"send_message_to","result":"{\"accepted\":true,\"code\":\"DELIVERED\",\"message\":\"Message delivered.\",\"target_agent_run_id\":\"reviewer_run_1\"}"}
+{"type":"assistant","text":"Done. calc_fee rounds to cents and the test passes; the reviewer has been told."}
+```
+
+**Journal after this revision:**
+
+```
+# Work Journal — run run_test_1
+Runtime AutoByteus · file active (open) · 2026-09-22 06:00 – 06:00 UTC · source ../raw_traces_active.jsonl
+
+[06:00:01] User: In the shipping service, calc_fee should round to cents. Fix it and run the tests. Tell the reviewer when done. [↗](../raw_traces_active.jsonl#rt_001)
+[06:00:02] Load skill: python-style → ok [↗](../raw_traces_active.jsonl#rt_002)   ◀ was: Command: cat -n …/skills/python-style/SKILL.md
+[06:00:04] Command: cat -n /work/shipping/fees.py → ok
+                1	def calc_fee(w):
+                2	    return w * 0.35 [↗](../raw_traces_active.jsonl#rt_004)
+[06:00:06] Edit file: /work/shipping/fees.py (+1 −1) → ok
+            def calc_fee(w):
+           -    return w * 0.35
+           +    return round(w * 0.35, 2) [↗](../raw_traces_active.jsonl#rt_006)
+[06:00:08] Command: pytest -q tests/ (in /work/shipping) (background) → started pid 4242 [↗](../raw_traces_active.jsonl#rt_008)
+[06:00:10] Read output of background task 4242 → ok   ◀ was: Tool: get_process_output pid=4242 lines=20 {"output":"…"}
+           1 passed in 0.02s [↗](../raw_traces_active.jsonl#rt_010)
+[06:00:12] Message to reviewer → delivered   ◀ was: Tool: send_message_to recipient_name=… {"accepted":true,…}
+           calc_fee now rounds to cents; tests pass. [↗](../raw_traces_active.jsonl#rt_012)
+[06:00:14] Agent: Done. calc_fee rounds to cents and the test passes; the reviewer has been told. [↗](../raw_traces_active.jsonl#rt_014)
+```
+
+The skill path here is invented; the real AutoByteus pattern is to be confirmed in the design (§4.5).
+
+### 11.6 The five runtimes side by side
+
+Same job, same three steps. **Today** each runtime shows a different line; **after** every runtime shows the same neutral line (the recipient is printed as the call gave it).
+
+| Step | Claude | Codex | Antigravity | Grok | AutoByteus |
+| --- | --- | --- | --- | --- | --- |
+| **Skill loaded: today** | `Tool: Skill skill="python-style"` | `Command: sed -n '1,120p' …/.codex/skills/…/SKILL.md` | `Command: cat …/.agents/skills/…/SKILL.md` | not known | `Command: cat -n …/skills/…/SKILL.md` |
+| **Skill loaded: after** | `Load skill: python-style → ok` | same | same | not known | same |
+| **Message sent: today** | `Tool: send_message_to recipient_address="/reviewer" … {"accepted":true,…}` | `Tool: send_message_to recipient_name="reviewer" …` | `Tool: send_message_to recipient_address=… ` (it arrives wrapped in `call_mcp_tool`) | `Tool: send_message_to recipient_address=…` | `Tool: send_message_to recipient_name=… ` |
+| **Message sent: after** | `Message to /reviewer (task_result) → delivered` | `Message to reviewer (task_result) → delivered` | `Message to /reviewer (task_result) → delivered` | `Message to /reviewer (task_result) → delivered` | `Message to reviewer → delivered` |
+| **Runtime-only tool: today** | `Tool: TodoWrite todos=[…]` | `Tool: js code=… title=…` | `Tool: mcp__acme_prices__lookup_price …` | — | `Tool: get_process_output pid=… {"output":…}` |
+| **Runtime-only tool: after** | `Update to-do list (2 items) → ok` | `Run JavaScript: Open the fee page → ok` | `Tool: lookup_price (via acme_prices) …` | — | `Read output of background task 4242 → ok` |
+
+A reader on any runtime now sees the same words for the same event. What still differs is only what is genuinely different: the recipient form the sender used, a tool only one runtime or one user has, and the cwd note of a command.
+
+**How to reproduce the unmarked lines.** `probes/render-examples.probe.test.ts` holds the synthetic records. Copy it to `autobyteus-server-ts/tests/agent-work-journal/` in a worktree with dependencies installed and run it with vitest; it writes the rendered journals to `/tmp/xrr-examples.json`. It uses the renderer's own test fixtures and touches no data directory (delete the copy afterwards; it is not part of any suite).
