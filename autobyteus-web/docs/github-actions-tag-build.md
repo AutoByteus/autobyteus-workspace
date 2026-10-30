@@ -65,8 +65,8 @@ The tag decides who is offered a desktop build:
 
 This workflow currently builds and publishes:
 
-- macOS Apple Silicon (ARM64) on `macos-14`
-- macOS Intel x64 on `macos-14`
+- macOS Apple Silicon (ARM64) on `macos-15`
+- macOS Intel x64 on `macos-15` (cross-built on Apple Silicon)
 - Linux x64 AppImage on `ubuntu-22.04`
 - Linux ARM64 AppImage on `ubuntu-24.04-arm`
 - Windows x64 installer on `windows-2022`
