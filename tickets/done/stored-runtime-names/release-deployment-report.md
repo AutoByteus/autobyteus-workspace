@@ -71,7 +71,15 @@ Not applicable: no release.
 
 ## Repository Finalization
 
-TBD
+- Bootstrap context source: ticket bootstrap and `RELEASE.md` Finalization Target
+- Ticket branch: `codex/stored-runtime-names`; commit `Completed` (docs sync, delivery artifacts, ticket moved to `tickets/done/`); push `Completed` after Secret Gate PASS
+- Finalization target: `origin/personal`; advanced after verification: `No` (stayed at `6b34f900b6`)
+- Re-integration before final merge: `Not needed`
+- Target branch update: `Completed` (`finalize/stored-runtime-names` from `origin/personal`)
+- Merge into target: `Completed` (`--no-ff`, merge commit `31eb1fb5d3`; Secret Gate PASS and artifact hygiene pass on the merged state)
+- Push target branch: `Completed` (`6b34f900b6..31eb1fb5d3`); a record-only commit follows
+- Repository finalization status: `Completed`
+- Blocker: none
 
 ## Release / Publication / Deployment
 
@@ -79,7 +87,10 @@ TBD
 
 ## Post-Finalization Cleanup
 
-TBD
+- Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/stored-runtime-names`
+- Worktree cleanup and prune: `Completed` (after the record commit; only untracked build output and installed packages)
+- Local branches `codex/stored-runtime-names` and `finalize/stored-runtime-names`: `Completed` (deleted after merge into `origin/personal` was confirmed)
+- Remote branch `origin/codex/stored-runtime-names`: `Completed` (deleted; commits are in `personal`)
 
 ## Release Notes Summary
 
@@ -99,4 +110,9 @@ Revert the merge on `personal` only if the migration or the compaction writers m
 
 ## Final Status
 
-TBD
+- Verification complete (from the evidence): `Yes`
+- Repository finalization complete: `Yes` (`personal` @ `31eb1fb5d3`, plus this record commit)
+- Applicable release/deployment/rollout complete or not required: `Yes` (not required)
+- Applicable safe cleanup complete or not required: `Yes`
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`; sent to the Solution Designer: `Yes`

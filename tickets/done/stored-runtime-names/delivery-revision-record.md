@@ -18,8 +18,8 @@
 - Handoff summary: `handoff-summary.md`
 - Release/publication/deployment report: `release-deployment-report.md`
 - Integration and post-integration verification: merged `origin/personal` @ `6b34f900b6` (`9f8634f0fd`); `evidence/DEL-01-post-integration-checks.md` all pass
-- Verification and finalization state: verified from the evidence, no user check; finalization recorded in the release/deployment report
-- Terminal return to the Solution Designer: see the terminal message
+- Verification and finalization state: verified from the evidence, no user check; finalized with `--no-ff` merge `31eb1fb5d3` into `origin/personal`; Secret Gate pass before the first push and on the merged state; ticket branch and worktree cleaned up
+- Terminal return to the Solution Designer: `Sent` (after the record commit)
 - Why this baseline was recorded: first delivery result
 - Next recipient/action: Solution Designer verifies the receipt and sends the follow-ups
 - Remaining blockers, rollback concerns, or untested scope: none blocking; untested listed in `handoff-summary.md`
