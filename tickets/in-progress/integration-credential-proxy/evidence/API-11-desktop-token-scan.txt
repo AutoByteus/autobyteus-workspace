@@ -1,0 +1,21 @@
+# Case: API-11 — token scan of the isolated instance after stop (temporary probe, read-only; paths and counts only)
+# Command: SCAN_MARKER=GITHUB_PROXY_PROBE_DONE node /tmp/s311/scan/token-scan.mjs <data root /private/tmp/s311/desktop-root> <instance log> <desktop throwaway CODEX_HOME>  (script source: API-09-cli-home-token-scan.txt)
+# Commit: b95bad702f (code 2529eaaec1); macOS 26.5.2 arm64; date 2026-10-30T09:35:27Z
+
+{
+  "/private/tmp/s311/desktop-root": {
+    "files": 133,
+    "filesWithToken": [],
+    "filesWithMarker": 2
+  },
+  "<instance log>": {
+    "files": 1,
+    "filesWithToken": [],
+    "filesWithMarker": 0
+  },
+  "<desktop CODEX_HOME>": {
+    "files": 482,
+    "filesWithToken": [],
+    "filesWithMarker": 2
+  }
+}
