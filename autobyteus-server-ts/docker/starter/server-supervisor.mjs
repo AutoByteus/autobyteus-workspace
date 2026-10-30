@@ -1,25 +1,15 @@
-// The one owner of the server child that runs now: it spawns it, stops it and reports its exit.
+// The one owner of the node's server child that runs now: it spawns it, stops it and reports its exit.
 //
-// Start (C4): `node <package>/dist/app.js --host --port --data-dir`, working directory the package,
-// in its own process group, with AUTOBYTEUS_STARTER_SOCKET in its environment. Stop: SIGTERM to the
-// server (its own shutdown is bounded), at most `stopMs`, then SIGKILL of its process group. After
-// every exit the group is killed too, so nothing the server left behind outlives it, and a start
-// first waits for the server port to be free.
+// Start (C4): the package's server in its own process group, with AUTOBYTEUS_STARTER_SOCKET in its
+// environment, after the server port is free. Stop: SIGTERM, at most `stopMs`, then SIGKILL of the
+// group. After every exit the group is killed too, so nothing the server left behind outlives it.
 //
-// Mode `supervising` (DS-007): the `exited` promise that start() returns is the server's exit; its
-// one awaiter (the boot) ends the starter with the server's exit code, and supervisord starts again.
-import { spawn } from 'node:child_process'
-import net from 'node:net'
-import { constants as osConstants } from 'node:os'
-import path from 'node:path'
-
-const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
-
-/** The exit code that reports how the server ended: its own code, or 128 + the signal number. */
-export function exitCodeOf({ code, signal }) {
-  if (code !== null && code !== undefined) return code
-  return 128 + (osConstants.signals[signal] ?? 0)
-}
+// Modes (DS-007), one awaiter of an exit at a time:
+//   supervising  an exit resolves `supervisedExit`; the boot awaits it and ends the starter with the
+//                server's exit code (supervisord starts it again);
+//   updating     between beginUpdate() and endUpdate() an exit is only a step result: UpdateRun
+//                awaits the `exited` promise start() returned.
+import { portInUse, sleep, spawnServer, stopServer } from './server-process.mjs'
 
 export class ServerSupervisor {
   #host
@@ -29,7 +19,13 @@ export class ServerSupervisor {
   #stopMs
   #portFreeMs
   #log
+  #mode = 'supervising'
   #child = null
+  #lastExit = null
+  #closed = false
+  #resolveSupervisedExit
+  /** Resolves with { code, signal } when the server exits while supervising. */
+  supervisedExit = new Promise((resolve) => { this.#resolveSupervisedExit = resolve })
 
   constructor({ host, port, dataDir, socketPath, stopMs, portFreeMs, log }) {
     this.#host = host
@@ -41,77 +37,69 @@ export class ServerSupervisor {
     this.#log = log
   }
 
-  /** Starts a package's server. Resolves once it is spawned, with its pid and its `exited` promise. */
-  async start(serverPackage) {
-    if (this.#child) throw new Error('A server is already running')
-    await this.#waitForFreePort()
-    const child = spawn(process.execPath, [
-      path.join(serverPackage.dir, 'dist', 'app.js'),
-      '--host', this.#host, '--port', String(this.#port), '--data-dir', this.#dataDir,
-    ], {
-      cwd: serverPackage.dir,
-      detached: true,
-      stdio: 'inherit',
-      env: { ...process.env, AUTOBYTEUS_STARTER_SOCKET: this.#socketPath },
-    })
-    const exited = new Promise((resolve) => {
-      child.once('exit', (code, signal) => {
-        this.#killGroup(child.pid)
-        this.#child = null
-        this.#log('server-exited', { pid: child.pid, version: serverPackage.version, code, signal })
-        resolve({ code, signal })
-      })
-    })
-    await new Promise((resolve, reject) => {
-      child.once('spawn', resolve)
-      child.once('error', reject)
-    })
-    this.#child = { process: child, exited }
-    this.#log('server-started', { pid: child.pid, version: serverPackage.version, source: serverPackage.source })
-    return { pid: child.pid, exited }
+  get port() {
+    return this.#port
   }
 
-  /** Stops the running server: SIGTERM, then after `stopMs` SIGKILL of its group. */
+  /** The package of the server running now, or null. */
+  get running() {
+    return this.#child?.serverPackage ?? null
+  }
+
+  /** Starts a package's server. Resolves once it is spawned, with its pid and its `exited` promise. */
+  async start(serverPackage) {
+    if (this.#closed) throw new Error('The starter is stopping; no server is started')
+    if (this.#child) throw new Error('A server is already running')
+    await this.#waitForFreePort()
+    const child = await spawnServer({
+      packageDir: serverPackage.dir, host: this.#host, port: this.#port, dataDir: this.#dataDir,
+      env: { ...process.env, AUTOBYTEUS_STARTER_SOCKET: this.#socketPath }, log: this.#log,
+    })
+    const pid = child.process.pid
+    const exited = child.exited.then((ended) => {
+      if (this.#child?.process === child.process) this.#child = null
+      this.#lastExit = ended
+      this.#log('server-exited', { pid, version: serverPackage.version, ...ended })
+      if (this.#mode === 'supervising') this.#resolveSupervisedExit(ended)
+      return ended
+    })
+    this.#child = { ...child, exited, serverPackage }
+    this.#log('server-started', { pid, version: serverPackage.version, source: serverPackage.source })
+    return { pid, exited }
+  }
+
+  /** Stops the running server. Resolves { forced } once it has exited. */
   async stop() {
     const running = this.#child
     if (!running) return { forced: false }
-    running.process.kill('SIGTERM')
-    let timer
-    const limit = new Promise((resolve) => { timer = setTimeout(() => resolve('limit'), this.#stopMs) })
-    const outcome = await Promise.race([running.exited.then(() => 'exited'), limit])
-    clearTimeout(timer)
-    if (outcome === 'limit') {
-      this.#log('server-stop-timeout', { pid: running.process.pid, limitMs: this.#stopMs })
-      this.#killGroup(running.process.pid)
-      await running.exited
-    }
-    return { forced: outcome === 'limit' }
+    return stopServer(running, this.#stopMs, this.#log)
   }
 
-  #killGroup(pid) {
-    try {
-      process.kill(-pid, 'SIGKILL')
-    } catch (error) {
-      if (error.code !== 'ESRCH') this.#log('server-group-kill-failed', { pid, error: error.code })
-    }
+  /** The starter is stopping: stops the server, and no server is started from now on. */
+  async shutdown() {
+    this.#closed = true
+    return this.stop()
+  }
+
+  /** From now on a server exit belongs to the update that called this. */
+  beginUpdate() {
+    this.#mode = 'updating'
+  }
+
+  /** Hands the server back to supervision; if it is already gone, supervision sees that exit now. */
+  endUpdate() {
+    this.#mode = 'supervising'
+    if (!this.#child) this.#resolveSupervisedExit(this.#lastExit ?? { code: 1, signal: null })
   }
 
   async #waitForFreePort() {
     const deadline = Date.now() + this.#portFreeMs
-    while (await this.#portInUse()) {
+    while (await portInUse(this.#port)) {
       if (Date.now() >= deadline) {
         this.#log('server-port-still-in-use', { port: this.#port, waitedMs: this.#portFreeMs })
         return
       }
       await sleep(250)
     }
-  }
-
-  #portInUse() {
-    return new Promise((resolve) => {
-      const socket = net.connect({ host: '127.0.0.1', port: this.#port })
-      socket.once('connect', () => { socket.destroy(); resolve(true) })
-      socket.once('error', () => resolve(false))
-    })
   }
 }

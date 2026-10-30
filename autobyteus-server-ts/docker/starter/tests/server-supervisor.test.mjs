@@ -3,7 +3,8 @@ import { readFileSync } from 'node:fs'
 import net from 'node:net'
 import path from 'node:path'
 import { afterEach, test } from 'node:test'
-import { exitCodeOf, ServerSupervisor } from '../server-supervisor.mjs'
+import { exitCodeOf } from '../server-process.mjs'
+import { ServerSupervisor } from '../server-supervisor.mjs'
 import { freePort, makePackage, memoryLog, tempDir } from './fixtures.mjs'
 
 const envKeys = ['FAKE_SERVER_IGNORE_SIGTERM', 'FAKE_SERVER_CHILD_PID_FILE', 'FAKE_SERVER_EXIT_CODE']

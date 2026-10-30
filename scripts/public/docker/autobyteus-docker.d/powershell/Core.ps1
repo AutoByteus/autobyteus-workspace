@@ -36,7 +36,9 @@ Commands:
   workspace apply    Recreate node(s) to apply shared workspace bind mounts safely
   storage            Show named volumes and host bind mounts for node(s)
   urls | ports       Show Backend, GraphQL, noVNC, VNC, and debug URLs
-  status | ps        Show managed Docker nodes
+  status | ps        Show managed Docker nodes and the server version each runs
+  update [--name <node> | --all] [--version <X.Y.Z[-beta.N]>]
+                     Update the server inside running node(s), keeping the container and image
   logs               Show Docker logs for a managed node
   stop [--all]       Stop one or all managed Docker nodes
   help               Show this help
@@ -48,7 +50,14 @@ Options:
   --tag <tag>        Docker image tag (default: $Script:DefaultTag; explicit upgrade --all retargets all nodes)
   --image <image>    Docker image repository or full image ref (default: $Script:DefaultImage; explicit upgrade --all retargets all nodes)
   --all              Required for upgrade/destroy; also applies stop/status/workspace/storage to all managed nodes
+  --version <ver>    For update: the server version to update to (default: the newest on the node's track)
   -h, --help         Show this help
+
+In-place update (update):
+  Without --version a node follows its saved image tag: latest or latest-zh -> the newest stable
+  release, beta -> the newest release, beta or stable. A node pinned to a version tag or using another
+  image needs --version. Only newer, signed server packages are accepted; a failed update leaves the
+  old version running. A server that needs a newer system than the image has needs upgrade --all.
 
 Release tracks:
   latest             Newest stable release (default). Plain upgrade --all keeps nodes on their saved tag.

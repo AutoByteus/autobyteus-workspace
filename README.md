@@ -234,6 +234,14 @@ on `latest-zh`):
 autobyteus-docker upgrade --all
 ```
 
+Update the server inside a running node, without a new image or container
+(see [the Docker guide](autobyteus-server-ts/docker/README.md) for tracks and
+refusals):
+
+```bash
+autobyteus-docker update [--name <node> | --all] [--version <X.Y.Z>]
+```
+
 To intentionally retarget every managed node to a new tag or image, make that
 explicit:
 

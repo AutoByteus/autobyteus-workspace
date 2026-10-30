@@ -127,6 +127,7 @@ show_status() {
       status="$(docker inspect --format '{{.State.Status}}' "$container" 2>/dev/null || printf 'unknown')"
     fi
     printf '%-24s %-24s %-14s http://localhost:%s (%s)\n' "$name" "$container" "$status" "${BACKEND_PORT:-?}" "$image"
+    print_starter_line "$container" "$status"
     any=1
   done
   shopt -u nullglob
@@ -168,7 +169,7 @@ show_logs() {
 }
 
 main() {
-  local cmd="${1:-help}" stop_all=0 name_arg="" name_seen=0 name_option_count=0 tag="$DEFAULT_TAG" image="$DEFAULT_IMAGE" image_ref_override_explicit=0 extra=() destroy_node_name=""
+  local cmd="${1:-help}" stop_all=0 name_arg="" name_seen=0 name_option_count=0 tag="$DEFAULT_TAG" image="$DEFAULT_IMAGE" image_ref_override_explicit=0 extra=() destroy_node_name="" version=""
   [[ "$cmd" == "help" || "$cmd" == "--help" || "$cmd" == "-h" ]] && { usage; return; }
   shift || true
   while [[ $# -gt 0 ]]; do
@@ -177,6 +178,7 @@ main() {
       --name) [[ $# -gt 1 && "$2" != -* ]] || fail "--name requires a value"; name_arg="$2"; name_seen=1; name_option_count=$((name_option_count + 1)); shift 2 ;;
       --tag) [[ $# -gt 1 ]] || fail "--tag requires a value"; tag="$2"; image_ref_override_explicit=1; shift 2 ;;
       --image) [[ $# -gt 1 ]] || fail "--image requires a value"; image="$2"; image_ref_override_explicit=1; shift 2 ;;
+      --version) [[ $# -gt 1 && "$2" != -* ]] || fail "--version requires a value"; version="$2"; shift 2 ;;
       -h|--help) usage; return ;;
       --) shift; extra+=("$@"); break ;;
       *) if [[ -z "$name_arg" && "$cmd" =~ ^(urls|ports|status|ps|stop|logs)$ ]]; then name_arg="$1"; else extra+=("$1"); fi; shift ;;
@@ -186,9 +188,10 @@ main() {
   local node_name image_ref workspace_action
 
   case "$cmd" in
-    new-container|upgrade|destroy|reset|workspace|storage|urls|ports|status|ps|stop|logs) ;;
+    new-container|upgrade|destroy|reset|workspace|storage|urls|ports|status|ps|stop|logs|update) ;;
     *) usage; exit 1 ;;
   esac
+  [[ -z "$version" || "$cmd" == "update" ]] || fail "--version applies only to update."
 
   case "$cmd" in
     new-container|upgrade|destroy|reset|storage)
@@ -280,6 +283,12 @@ main() {
       ;;
     status|ps) if [[ -n "$name_arg" ]]; then show_status "$node_name"; else show_status ""; fi ;;
     stop) stop_nodes "$node_name" "$stop_all" ;;
+    update)
+      [[ "${#extra[@]}" -eq 0 ]] || fail "Unknown update option(s): ${extra[*]}"
+      [[ "$stop_all" != "1" || -z "$name_arg" ]] || fail "update accepts --all or --name <node>, not both."
+      [[ "$image_ref_override_explicit" != "1" ]] || fail "update keeps each node's image; use --version to choose the server version."
+      update_nodes "$node_name" "$stop_all" "$version"
+      ;;
     logs) show_logs "$node_name" "${extra[@]}" ;;
     *) usage; exit 1 ;;
   esac

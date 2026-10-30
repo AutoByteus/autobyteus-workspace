@@ -6,11 +6,16 @@
 //   <root>/packages/<version>/   installed server packages; packages/.<version>.partial while unpacking
 //   <root>/downloads/            archives being downloaded
 //   <root>/self-check-*/         a self-check's temporary environment
-import { readdirSync, rmSync } from 'node:fs'
+import { execFile } from 'node:child_process'
+import { mkdirSync, readdirSync, renameSync, rmSync } from 'node:fs'
+import { promisify } from 'node:util'
 import path from 'node:path'
 import { compareReleaseVersions } from './release-version.mjs'
 import { readJsonFile, writeJsonFile } from './state-file.mjs'
 import { misfitReason } from './system-facts.mjs'
+import { fail } from './update-error.mjs'
+
+const execFileAsync = promisify(execFile)
 
 export class PackageStore {
   #root
@@ -35,7 +40,18 @@ export class PackageStore {
     writeJsonFile(this.#statePath, state)
   }
 
-  /** An interrupted trial ends: the version that ran before it is current again. */
+  /** The trial of a new version starts; written only once the data copy, if any, is complete. */
+  beginTrial({ version, previous, dataCopy }) {
+    this.#writeState({ ...this.readState(), trial: { source: 'installed', version, previous, dataCopy } })
+  }
+
+  /** The trial version is confirmed: it is current, the version before it is previous. */
+  commitTrial() {
+    const { trial, ...state } = this.readState()
+    this.#writeState({ ...state, current: { source: 'installed', version: trial.version }, previous: trial.previous })
+  }
+
+  /** A trial that did not come up, or was interrupted, ends: the version before it is current again. */
   rollBackTrial() {
     const { trial, ...state } = this.readState()
     this.#writeState({ ...state, current: trial.previous })
@@ -54,6 +70,54 @@ export class PackageStore {
       if (name.startsWith('.') && name.endsWith('.partial')) remove(path.join(this.#root, 'packages', name))
     }
     if (removed.length > 0) this.#log('leftovers-removed', { paths: removed })
+  }
+
+  /** Where an archive is downloaded to. */
+  downloadPath(name) {
+    const downloads = path.join(this.#root, 'downloads')
+    mkdirSync(downloads, { recursive: true })
+    return path.join(downloads, name)
+  }
+
+  removeDownload(name) {
+    rmSync(path.join(this.#root, 'downloads', name), { force: true })
+  }
+
+  /** Unpacks a verified archive into packages/.<version>.partial and returns that folder. */
+  async unpack(archiveFile, version) {
+    const partial = path.join(this.#root, 'packages', `.${version}.partial`)
+    rmSync(partial, { recursive: true, force: true })
+    mkdirSync(partial, { recursive: true })
+    try {
+      await execFileAsync('tar', ['-xzf', archiveFile, '-C', partial, '--no-same-owner'], { maxBuffer: 1024 * 1024 })
+    } catch (error) {
+      rmSync(partial, { recursive: true, force: true })
+      throw fail('DOWNLOAD_FAILED', `Unpacking the server package ${version} failed: ${error.stderr?.trim() || error.message}`)
+    }
+    return partial
+  }
+
+  /** Moves an unpacked, matched package to packages/<version>. */
+  install(partial, version, packageJson) {
+    const dir = path.join(this.#root, 'packages', version)
+    rmSync(dir, { recursive: true, force: true })
+    renameSync(partial, dir)
+    return { dir, source: 'installed', version, packageJson }
+  }
+
+  /** Removes an installed package an update did not switch to. */
+  discard(version) {
+    rmSync(path.join(this.#root, 'packages', `.${version}.partial`), { recursive: true, force: true })
+    rmSync(path.join(this.#root, 'packages', version), { recursive: true, force: true })
+  }
+
+  /** Keeps the current and the previous package (DEC-013) and deletes every other installed one. */
+  deleteOthers() {
+    const { current, previous } = this.readState()
+    const keep = new Set([current, previous].filter((entry) => entry?.source === 'installed').map((entry) => entry.version))
+    for (const name of this.#list(path.join(this.#root, 'packages'))) {
+      if (!name.startsWith('.') && !keep.has(name)) rmSync(path.join(this.#root, 'packages', name), { recursive: true, force: true })
+    }
   }
 
   #list(folder) {

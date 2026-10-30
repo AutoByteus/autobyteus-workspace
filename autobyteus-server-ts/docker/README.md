@@ -105,6 +105,34 @@ on `latest-zh`):
 autobyteus-docker upgrade --all
 ```
 
+**Update a node's server in place**
+
+A node can replace its server inside its running container, without pulling a
+new image or recreating the container:
+
+```bash
+autobyteus-docker update                         # autobyteus-server-0, newest release on its track
+autobyteus-docker update --name autobyteus-server-1 --version 1.5.12
+autobyteus-docker update --all                   # every managed node in turn
+```
+
+Without `--version`, a node follows its saved image tag: `latest` and
+`latest-zh` nodes take the newest stable release, `beta` nodes the newest
+release, beta or stable. A node pinned to a version tag or running another image
+needs `--version`. The node downloads the server package of that release,
+checks its AutoByteus signature and that it fits the image, starts it once on
+its own, and only then restarts into it. The command prints the steps and the
+result. Any refusal or failure before the switch changes nothing; if the new
+version does not come up, the old version runs again (on the data as it was,
+when the update brought a data migration). `autobyteus-docker status` shows the
+version each node runs, an update in progress, and why a node cannot update in
+place. When a release needs more than the image provides, the node refuses with
+the `upgrade --all --tag <version>` command to use instead.
+
+Nodes created by a launcher from before in-place updates have no
+`<node>-server-packages` volume and refuse with `NO_PACKAGES_VOLUME`. Reinstall
+the launcher, then run `autobyteus-docker upgrade --all` once.
+
 **Release tracks: `latest` and `beta`**
 
 - `latest` is the newest **stable** release. This is the default, and nodes on
@@ -508,7 +536,16 @@ Ask the starter what it runs:
 docker exec <container> node /opt/autobyteus/starter/cli.mjs status
 ```
 
-It prints one JSON line, for example
+An update by command runs inside the container as
+`node /opt/autobyteus/starter/cli.mjs update (--version <X.Y.Z[-beta.N]> | --track stable|beta)`;
+the launcher's `update` uses it. It prints the starter's answer (`accepted`, or
+`refused` with a code) and returns; `status` then shows the update's `step` and
+result. Test containers can point the starter at a local release source with
+`AUTOBYTEUS_SERVER_PACKAGE_SOURCE=<base URL>`; packages from it still need a
+signature for the public key the image carries
+(`/opt/autobyteus/starter/server-package-signing-key.pem`).
+
+`status` prints one JSON line, for example
 `{"version":"1.5.12","state":"running","server":{"pid":57,"packageVersion":"1.5.12","source":"builtIn"},"update":{"state":"idle",…}}`,
 or `"state":"needsNewImage"` with a `message` naming the
 `autobyteus-docker upgrade --all --tag <version>` command. The starter's own
