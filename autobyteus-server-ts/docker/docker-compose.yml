@@ -9,7 +9,6 @@ services:
     security_opt:
       - seccomp=unconfined
     environment:
-      AUTOBYTEUS_WORKSPACE_ROOT: /app
       AUTOBYTEUS_DATA_DIR: /home/autobyteus/data
       AUTOBYTEUS_BIND_HOST: 0.0.0.0
       AUTOBYTEUS_SERVER_PORT: 8000
@@ -18,17 +17,6 @@ services:
       APP_ENV: ${APP_ENV:-production}
       DB_TYPE: ${DB_TYPE:-sqlite}
       LOG_LEVEL: ${LOG_LEVEL:-INFO}
-      # Git / GitHub setup (optional runtime sync)
-      GITHUB_PAT: ${GITHUB_PAT:-}
-      GITHUB_USERNAME: ${GITHUB_USERNAME:-}
-      GITHUB_EMAIL: ${GITHUB_EMAIL:-}
-      AUTOBYTEUS_GIT_AUTH_MODE: ${AUTOBYTEUS_GIT_AUTH_MODE:-pat}
-      AUTOBYTEUS_SKIP_SYNC: ${AUTOBYTEUS_SKIP_SYNC:-1}
-      AUTOBYTEUS_REF: ${AUTOBYTEUS_REF:-main}
-      AUTOBYTEUS_SERVER_REF: ${AUTOBYTEUS_SERVER_REF:-main}
-      AUTOBYTEUS_TS_REF: ${AUTOBYTEUS_TS_REF:-main}
-      AUTOBYTEUS_SERVER_TS_REPO_URL: ${AUTOBYTEUS_SERVER_TS_REPO_URL:-}
-      AUTOBYTEUS_TS_REPO_URL: ${AUTOBYTEUS_TS_REPO_URL:-}
     ports:
       - "${AUTOBYTEUS_BACKEND_PORT:-8001}:8000"
       - "${AUTOBYTEUS_VNC_PORT:-5908}:5900"
@@ -39,6 +27,7 @@ services:
       - autobyteus-server-data:/home/autobyteus/data
       - autobyteus-server-root-home:/root
       - autobyteus-server-chromium-profile:/home/vncuser/.config/chromium
+      - autobyteus-server-server-packages:/home/autobyteus/server-packages
     restart: unless-stopped
 
 volumes:
@@ -46,3 +35,4 @@ volumes:
   autobyteus-server-data:
   autobyteus-server-root-home:
   autobyteus-server-chromium-profile:
+  autobyteus-server-server-packages:

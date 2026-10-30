@@ -1,0 +1,64 @@
+# API-22 cause: the PowerShell launcher new-container fails on a fresh port pick
+# Steps: pwsh 7.4.22 (mcr.microsoft.com/dotnet/sdk:8.0 + docker CLI) in the test dind daemon network namespace; autobyteus-docker.ps1 new-container --tag beta with an empty state dir, for this branch and for origin/personal (77fb8bf2d1, step 1); then a minimal PowerShell demonstration
+# Commit: 6637b54d46; Date: 2026-10-30T17:52:08Z; Case: API-22
+
+## this branch (step 2)
+[AutoByteus Docker] Checking image autobyteus/autobyteus-server:beta
+ERR: You cannot call a method on a null-valued expression.
+at Pick-Port, /launcher/autobyteus-docker.d/powershell/DockerRuntime.ps1: line 137
+at Select-Ports, /launcher/autobyteus-docker.d/powershell/DockerRuntime.ps1: line 148
+at Start-Node, /launcher/autobyteus-docker.d/powershell/DockerRuntime.ps1: line 319
+at New-Container, /launcher/autobyteus-docker.d/powershell/DockerRuntime.ps1: line 476
+at Invoke-AutoByteusDocker, /launcher/autobyteus-docker.d/powershell/Commands.ps1: line 174
+at autobyteus-docker, /launcher/autobyteus-docker.ps1: line 114
+at <ScriptBlock>, /launcher/autobyteus-docker.ps1: line 118
+at <ScriptBlock>, <No file>: line 1
+
+## origin/personal (step 1): same failure, so step 2 did not introduce it
+[AutoByteus Docker] Checking image autobyteus/autobyteus-server:beta
+ERR: You cannot call a method on a null-valued expression.
+at Pick-Port, /launcher/autobyteus-docker.d/powershell/DockerRuntime.ps1: line 137
+at Select-Ports, /launcher/autobyteus-docker.d/powershell/DockerRuntime.ps1: line 148
+at Start-Node, /launcher/autobyteus-docker.d/powershell/DockerRuntime.ps1: line 365
+at New-Container, /launcher/autobyteus-docker.d/powershell/DockerRuntime.ps1: line 550
+at Invoke-AutoByteusDocker, /launcher/autobyteus-docker.d/powershell/Commands.ps1: line 174
+at autobyteus-docker, /launcher/autobyteus-docker.ps1: line 114
+at <ScriptBlock>, /launcher/autobyteus-docker.ps1: line 118
+at <ScriptBlock>, <No file>: line 1
+
+## the code (DockerRuntime.ps1)
+115:function Get-UsedPorts {
+116-  $ports = [System.Collections.Generic.HashSet[int]]::new()
+117-  if (Test-Path (Get-StateDir)) {
+118-    Get-ChildItem -Path (Get-StateDir) -Filter '*.json' | ForEach-Object {
+119-      try {
+120-        $state = Get-Content -Raw -Path $_.FullName | ConvertFrom-Json
+121-        foreach ($port in @($state.backendPort, $state.vncPort, $state.noVncPort, $state.debugPort)) {
+122-          if ($port) { [void]$ports.Add([int]$port) }
+123-        }
+124-      } catch { }
+125-    }
+126-  }
+127-  $ports
+130:function Pick-Port($UsedPorts, [Nullable[int]]$Preferred) {
+131-  if ($Preferred.HasValue -and -not $UsedPorts.Contains($Preferred.Value) -and (Test-PortAvailable $Preferred.Value)) {
+132-    [void]$UsedPorts.Add($Preferred.Value)
+133-    return $Preferred.Value
+134-  }
+
+## cause: PowerShell unrolls a collection a function returns through the pipeline
+(script: evidence/API-22-cause-demo.ps1)
+0 port(s): '$p' returns null; ',$p' returns System.Collections.Generic.HashSet`1[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]
+1 port(s): '$p' returns System.Int32; ',$p' returns System.Collections.Generic.HashSet`1[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]
+2 port(s): '$p' returns System.Object[]; ',$p' returns System.Collections.Generic.HashSet`1[[System.Int32, System.Private.CoreLib, Version=8.0.0.0, Culture=neutral, PublicKeyToken=7cec85d7bea7798e]]
+empty set .Contains: You cannot call a method on a null-valued expression.
+one-port set .Add: Method invocation failed because [System.Int32] does not contain a method named 'Add'.
+
+## history
+9076542c07 2026-05-31 fix(docker): persist chromium profile volumes
+517a0bce53 2026-05-12 chore(ticket): checkpoint docker end user start flow
+
+## reach: Select-Ports (the only caller of Pick-Port) runs only when there is no saved state or after a bind failure (DockerRuntime.ps1 Start-Node), so new-container, reset, and a recreate after "Saved ports are unavailable" fail; upgrade --all of an existing node keeps its saved ports
+144:function Select-Ports([bool]$PreferDefaults) {
+302:        Write-LauncherInfo "Saved ports are unavailable; recreating $NodeName with fresh ports."
+319:      $ports = Select-Ports $PreferDefaults

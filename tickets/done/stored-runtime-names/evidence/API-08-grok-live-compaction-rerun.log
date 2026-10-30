@@ -1,0 +1,5 @@
+# API-08 diagnosis rerun with GROK_E2E_EVIDENCE_DIR=/tmp/grok-e2e-evidence. date 2026-10-30T18:58:20Z
+
+ ✓ tests/e2e/runtime/grok-build-compaction-live.e2e.test.ts (1 test) 97509ms
+     ✓ closes an interrupted automatic compaction as failed, then archives automatic and manual compactions  95124ms
+      Tests  1 passed (1)

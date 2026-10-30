@@ -84,6 +84,26 @@ how to apply them; they do not replace user-approved product requirements.
    not saved data: data written by an older version must still be read, as rule 7
    and the Data Migration Guideline require.
 
+   **The one exception: the node-update contracts.** A Docker node's in-place
+   update has a newer desktop or release meet an older node, so these four
+   contracts are frozen across versions (the user's decision for
+   autobyteus-305):
+   - **C1**, the node's `/rest/node-update` REST surface (status and update
+     request);
+   - **C2**, the starter's socket API and its host command
+     `node /opt/autobyteus/starter/cli.mjs` (arguments, one-line JSON output,
+     exit codes);
+   - **C3**, the server package description, its signature and the package's
+     own `server-package.json`;
+   - **C4**, how the starter starts a server package:
+     `node dist/app.js --host --port --data-dir`, `AUTOBYTEUS_STARTER_SOCKET`
+     in its environment, SIGTERM to stop it, `GET /rest/health` when it
+     listens.
+
+   They grow only by optional fields and new codes; nothing is renamed or
+   removed. A client shows the `message` of a code it does not know. Every other
+   contract stays a clean cut.
+
 ## Work in two phases: clean functionality, then evidence-led refinement
 
 **Phase 1 — clean architecture and working functionality.** Start from the

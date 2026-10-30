@@ -38,6 +38,7 @@ Run commands from the repository root. `pnpm -C <dir>` runs a package's script.
 | Workspace native-to-web integration | Native producer/FIFO and web hydration at a workspace-owned boundary (`test-support/`) | `pnpm test:native-input-history` |
 | Server unit / integration | Backend logic and in-process integration | `pnpm -C autobyteus-server-ts test:unit`; `test:integration:prepare` once, then `test:integration`; one file: `pnpm -C autobyteus-server-ts exec vitest run <path> --no-watch` |
 | Server typecheck | Production `src` under the build type policy | `pnpm -C autobyteus-server-ts typecheck` |
+| Docker starter | The starter in the server image (`autobyteus-server-ts/docker/starter/`): package selection, supervision, its socket and command, with fake server packages | `pnpm -C autobyteus-server-ts test:starter` |
 | Server E2E | Real HTTP/GraphQL/WebSocket boundaries on a test-owned server and database (`tests/e2e/`). Suites that import the Brief Studio sample application need `pnpm -C autobyteus-server-ts test:integration:prepare` once and fail naming it otherwise | `pnpm test:e2e`, or one file with `vitest run` as above |
 | Gated runtime suites | Real or scripted runtimes and providers (`RUN_*` gates in `autobyteus-server-ts/tests/e2e/`) | The gate and command are in the test file |
 | Release smoke | New runs with configured skills start on every runtime, in the user's skill setup | `python3 scripts/release_smoke.py`; see [RELEASE.md](RELEASE.md#release-smoke-check) |
@@ -191,10 +192,16 @@ test, not its whole suite. A second full run of a suite proves nothing the first
   them when the change needs real-provider proof).
 - **Docker server nodes.** Never test against the user's node containers or their volumes
   (`/root` holds each node's CLI sign-ins). Start a test-owned container from the same image,
-  bound to `127.0.0.1` on a free port and without the user's volumes, so its runtime CLIs
-  start signed out. To run this worktree's server in it, mount
-  `autobyteus-server-ts/dist` read-only over `/app/autobyteus-server-ts/dist`, after checking
-  that the image's `dist` differs only in the files you changed. If a signed-in CLI is needed,
+  bound to `127.0.0.1` on a free port and with fresh test-owned volumes, never the user's, so
+  its runtime CLIs start signed out. The image runs its server from its built-in server package
+  at `/opt/autobyteus/server-package`, which its starter runs while the node's
+  `<node>-server-packages` volume holds no newer package (fresh volumes never do). To run this
+  worktree's server in it, build this worktree's server package for the image's platform
+  (`docker buildx build -f autobyteus-server-ts/docker/Dockerfile.monorepo --target server-package --output type=local,dest=<new folder> .`)
+  and mount that folder read-only over `/opt/autobyteus/server-package`. A change only in
+  `dist` may instead mount `autobyteus-server-ts/dist` read-only over
+  `/opt/autobyteus/server-package/dist`, after checking that the image's `dist` differs only in
+  the files you changed. If a signed-in CLI is needed,
   stream only its credential file from a node container into the test container without
   writing it to the host, e.g. `docker exec <node> tar -C <dir> -cf - <file> | docker exec -i
   <test> tar -C <dir> -xf -`. Remove the container with `docker rm -f -v` afterwards.

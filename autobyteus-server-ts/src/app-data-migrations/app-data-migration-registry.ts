@@ -12,6 +12,7 @@ import { CustomProviderMigrationNameSnapshotReader } from "./frozen/custom-provi
 import type { AppDataMigrationDefinition } from "./domain/app-data-migration-types.js";
 import { RunHistoryIndexV2AppDataMigration } from "./migrations/run-history-index-v2/run-history-index-v2-migration.js";
 import { RawTraceRotationLayoutMigration } from "./migrations/raw-trace-rotation-layout/raw-trace-rotation-layout-migration.js";
+import { RawTraceManifestRuntimeNamesMigration } from "./migrations/raw-trace-manifest-runtime-names/raw-trace-manifest-runtime-names-migration.js";
 import { RawTraceActiveFileNameMigration } from "./migrations/raw-trace-active-file-name/raw-trace-active-file-name-migration.js";
 import { TeamRunHistoryIndexV2AppDataMigration } from "./migrations/team-run-history-index-v2/team-run-history-index-v2-migration.js";
 import { TeamRunMetadataMemberTreeMigration } from "./migrations/team-run-metadata-member-tree/team-run-metadata-member-tree-migration.js";
@@ -156,6 +157,8 @@ const registeredMigrations = (): AppDataMigrationDefinition[] => {
     new NodeIdentityFileNameMigration(appDataDir),
     // Memory Sync's stored names follow the code (autobyteus-290 SM-2 … SM-5); holds back `memory_sync`.
     new MemorySyncSourceIdNamesMigration(appDataDir, memoryDir),
+    // The runtime of each archived raw-trace segment follows the code's RuntimeKind values (autobyteus-343).
+    new RawTraceManifestRuntimeNamesMigration(memoryDir),
   ];
 };
 

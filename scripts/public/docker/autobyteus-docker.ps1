@@ -4,7 +4,7 @@ param(
 )
 
 $ErrorActionPreference = 'Stop'
-$Script:AutoByteusDockerPowerShellModules = @('Core.ps1', 'DockerRuntime.ps1', 'Commands.ps1')
+$Script:AutoByteusDockerPowerShellModules = @('Core.ps1', 'ContainerConfig.ps1', 'DockerRuntime.ps1', 'Commands.ps1')
 $Script:AutoByteusDockerPublicSourceBaseDefault = 'https://raw.githubusercontent.com/AutoByteus/autobyteus-workspace/personal/scripts/public/docker'
 $Script:AutoByteusDockerPowerShellEntryName = 'autobyteus-docker.ps1'
 

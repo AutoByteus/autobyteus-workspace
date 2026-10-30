@@ -1,6 +1,9 @@
 # syntax=docker/dockerfile:1
 
-ARG BASE_IMAGE_TAG=latest
+# The chrome-vnc base image, pinned by digest. system-level.json lists the digest of each base
+# variant; the zh release passes its digest, and check-system-level.mjs keeps this default equal
+# to baseImages.default.
+ARG BASE_IMAGE_DIGEST=sha256:b2fde77f3bd7c73d412ea59d42e3b65290bae9f39d1ce85b5aaaac5d869596f4
 ARG CODEX_CLI_VERSION=latest
 ARG CLAUDE_CODE_VERSION=latest
 
@@ -41,12 +44,28 @@ RUN pnpm -C autobyteus-server-ts exec prisma generate --schema prisma/schema.pri
 RUN pnpm -C autobyteus-server-ts build
 RUN pnpm -C autobyteus-web build:mobile-web
 
-FROM autobyteus/chrome-vnc:${BASE_IMAGE_TAG} AS runtime
-WORKDIR /app
+# The server package: the deployed server with its own node_modules (native modules built for this
+# Node and architecture), its Prisma client, the mobile web and server-package.json. The image
+# carries it as its built-in server package; the release publishes the same folder per architecture.
+# The deploy links the server itself into node_modules/.pnpm/node_modules, pointing back at its
+# workspace folder outside the package; that link is removed (nothing resolves the server by name).
+COPY scripts/server-package ./scripts/server-package
+RUN pnpm --filter autobyteus-server-ts deploy /out/server-package --legacy \
+  && cd /out/server-package \
+  && rm node_modules/.pnpm/node_modules/autobyteus-server-ts \
+  && node_modules/.bin/prisma generate --schema prisma/schema.prisma \
+  && node /app/autobyteus-web/scripts/onnxruntime-web-packaging.mjs /out/server-package \
+  && cp -r /app/autobyteus-web/dist-mobile/public /out/server-package/mobile-web \
+  && node /app/scripts/server-package/describe-server-package.mjs package-json \
+    --package-dir /out/server-package \
+    --version "$(node -p "require('/app/autobyteus-web/package.json').version")" \
+    --system-level-file /app/autobyteus-server-ts/docker/system-level.json \
+  && node -p "require('/app/autobyteus-server-ts/docker/system-level.json').level" > /out/system-level
 
-# AutoByteus licence files and OCI licence label.
-COPY LICENSE LICENSING.md NOTICE /app/
-LABEL org.opencontainers.image.licenses="AGPL-3.0-only"
+FROM scratch AS server-package
+COPY --from=builder /out/server-package /
+
+FROM autobyteus/chrome-vnc@${BASE_IMAGE_DIGEST} AS runtime
 
 ARG CODEX_CLI_VERSION
 ARG CLAUDE_CODE_VERSION
@@ -90,36 +109,27 @@ RUN echo "CLI install cache buster: ${CLI_INSTALL_CACHE_BUSTER}" \
   && printf '%s\n' "$grok_version" | grep -E '[0-9]+\.[0-9]+\.[0-9]+' \
   && rm -rf "$probe_home"
 
-RUN mkdir -p /home/autobyteus/workspace /home/autobyteus/data /root
+# ---- end of the system part (system-level.json) ----
 
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/autobyteus-ts/node_modules ./autobyteus-ts/node_modules
-COPY --from=builder /app/autobyteus-ts/dist ./autobyteus-ts/dist
-COPY --from=builder /app/autobyteus-ts/package.json ./autobyteus-ts/package.json
-COPY --from=builder /app/autobyteus-application-sdk-contracts/dist ./autobyteus-application-sdk-contracts/dist
-COPY --from=builder /app/autobyteus-application-sdk-contracts/package.json ./autobyteus-application-sdk-contracts/package.json
-COPY --from=builder /app/autobyteus-agent-presentation-contracts/node_modules ./autobyteus-agent-presentation-contracts/node_modules
-COPY --from=builder /app/autobyteus-agent-presentation-contracts/dist ./autobyteus-agent-presentation-contracts/dist
-COPY --from=builder /app/autobyteus-agent-presentation-contracts/package.json ./autobyteus-agent-presentation-contracts/package.json
-COPY --from=builder /app/autobyteus-collaboration-stream-contracts/node_modules ./autobyteus-collaboration-stream-contracts/node_modules
-COPY --from=builder /app/autobyteus-collaboration-stream-contracts/dist ./autobyteus-collaboration-stream-contracts/dist
-COPY --from=builder /app/autobyteus-collaboration-stream-contracts/package.json ./autobyteus-collaboration-stream-contracts/package.json
-COPY --from=builder /app/autobyteus-team-stream-contracts/node_modules ./autobyteus-team-stream-contracts/node_modules
-COPY --from=builder /app/autobyteus-team-stream-contracts/dist ./autobyteus-team-stream-contracts/dist
-COPY --from=builder /app/autobyteus-team-stream-contracts/package.json ./autobyteus-team-stream-contracts/package.json
-COPY --from=builder /app/autobyteus-server-ts/node_modules ./autobyteus-server-ts/node_modules
-COPY --from=builder /app/autobyteus-server-ts/dist ./autobyteus-server-ts/dist
-COPY --from=builder /app/autobyteus-server-ts/prisma ./autobyteus-server-ts/prisma
-COPY --from=builder /app/autobyteus-server-ts/package.json ./autobyteus-server-ts/package.json
-COPY --from=builder /app/autobyteus-web/dist-mobile/public ./autobyteus-server-ts/mobile-web
+WORKDIR /app
+
+# AutoByteus licence files and OCI licence label.
+COPY LICENSE LICENSING.md NOTICE /app/
+LABEL org.opencontainers.image.licenses="AGPL-3.0-only"
+
+RUN mkdir -p /home/autobyteus/workspace /home/autobyteus/data /home/autobyteus/server-packages /root
+
+# The starter runs the node's server package (built-in or installed in <node>-server-packages) and
+# reads what this image provides from /opt/autobyteus/system-level.
+COPY --from=server-package / /opt/autobyteus/server-package
+COPY --from=builder /out/system-level /opt/autobyteus/system-level
+COPY autobyteus-server-ts/docker/starter/*.mjs /opt/autobyteus/starter/
 COPY autobyteus-server-ts/docker/supervisor-autobyteus-server.conf /etc/supervisor/conf.d/supervisor-autobyteus-server.conf
-COPY autobyteus-server-ts/docker/bootstrap.sh /usr/local/bin/autobyteus-bootstrap.sh
 COPY autobyteus-server-ts/docker/entrypoint.sh /usr/local/bin/entrypoint.sh
 COPY autobyteus-server-ts/docker/open-vnc-browser-url.sh /usr/local/bin/open-vnc-browser-url.sh
 COPY autobyteus-server-ts/docker/xdg-open-root-bridge.sh /usr/local/bin/xdg-open
 COPY autobyteus-server-ts/docker/exo-open-root-bridge.sh /usr/local/bin/exo-open
 RUN chmod +x \
-  /usr/local/bin/autobyteus-bootstrap.sh \
   /usr/local/bin/entrypoint.sh \
   /usr/local/bin/open-vnc-browser-url.sh \
   /usr/local/bin/xdg-open \

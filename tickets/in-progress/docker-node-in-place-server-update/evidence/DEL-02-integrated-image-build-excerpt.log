@@ -1,0 +1,61 @@
+# DEL-02 integrated-state image build, 2026-10-30T16:43:14Z, HEAD a85cf65c52
+#10 [builder  1/30] FROM docker.io/library/node:22-bookworm@sha256:18a6d90fd60542269850c80ca03b29b1d9b14d6b221ac7ee8e35b0d33ef904bd
+#11 [runtime  1/13] FROM docker.io/autobyteus/chrome-vnc@sha256:b2fde77f3bd7c73d412ea59d42e3b65290bae9f39d1ce85b5aaaac5d869596f4
+#13 [builder 19/30] COPY autobyteus-collaboration-stream-contracts ./autobyteus-collaboration-stream-contracts
+#14 [builder 14/30] RUN pnpm install --no-frozen-lockfile
+#15 [builder  7/30] COPY autobyteus-application-sdk-contracts/package.json autobyteus-application-sdk-contracts/tsconfig.build.json autobyteus-application-sdk-contracts/tsconfig.json ./autobyteus-application-sdk-contracts/
+#16 [builder  6/30] COPY autobyteus-ts/scripts ./autobyteus-ts/scripts
+#17 [builder 11/30] COPY autobyteus-team-stream-contracts/package.json autobyteus-team-stream-contracts/tsconfig.build.json autobyteus-team-stream-contracts/tsconfig.json ./autobyteus-team-stream-contracts/
+#18 [builder  5/30] COPY autobyteus-ts/package.json autobyteus-ts/tsconfig.build.json autobyteus-ts/tsconfig.json ./autobyteus-ts/
+#19 [builder  2/30] WORKDIR /app
+#20 [builder  4/30] COPY pnpm-workspace.yaml pnpm-lock.yaml package.json ./
+#21 [builder  9/30] COPY autobyteus-agent-presentation-contracts/package.json autobyteus-agent-presentation-contracts/tsconfig.build.json autobyteus-agent-presentation-contracts/tsconfig.json ./autobyteus-agent-presentation-contracts/
+#22 [builder 13/30] COPY autobyteus-web/package.json ./autobyteus-web/
+#23 [builder 17/30] COPY autobyteus-application-backend-sdk ./autobyteus-application-backend-sdk
+#24 [builder 10/30] COPY autobyteus-collaboration-stream-contracts/package.json autobyteus-collaboration-stream-contracts/tsconfig.build.json autobyteus-collaboration-stream-contracts/tsconfig.json ./autobyteus-collaboration-stream-contracts/
+#25 [builder  3/30] RUN corepack enable
+#26 [builder 18/30] COPY autobyteus-agent-presentation-contracts ./autobyteus-agent-presentation-contracts
+#27 [builder 12/30] COPY autobyteus-server-ts/package.json autobyteus-server-ts/tsconfig.json ./autobyteus-server-ts/
+#28 [builder 16/30] COPY autobyteus-application-sdk-contracts ./autobyteus-application-sdk-contracts
+#29 [builder  8/30] COPY autobyteus-application-backend-sdk/package.json autobyteus-application-backend-sdk/tsconfig.build.json autobyteus-application-backend-sdk/tsconfig.json ./autobyteus-application-backend-sdk/
+#30 [builder 15/30] COPY autobyteus-ts ./autobyteus-ts
+#31 [builder 20/30] COPY autobyteus-team-stream-contracts ./autobyteus-team-stream-contracts
+#32 [runtime  2/13] RUN apt-get update   && apt-get install -y --no-install-recommends git ripgrep curl ca-certificates   && rm -rf /var/lib/apt/lists/*
+#33 [builder 21/30] COPY autobyteus-server-ts ./autobyteus-server-ts
+#32 [runtime  2/13] RUN apt-get update   && apt-get install -y --no-install-recommends git ripgrep curl ca-certificates   && rm -rf /var/lib/apt/lists/*
+#34 [builder 22/30] COPY autobyteus-web ./autobyteus-web
+#32 [runtime  2/13] RUN apt-get update   && apt-get install -y --no-install-recommends git ripgrep curl ca-certificates   && rm -rf /var/lib/apt/lists/*
+#35 [builder 23/30] RUN pnpm -C autobyteus-agent-presentation-contracts build
+#36 [builder 24/30] RUN pnpm -C autobyteus-collaboration-stream-contracts build
+#32 [runtime  2/13] RUN apt-get update   && apt-get install -y --no-install-recommends git ripgrep curl ca-certificates   && rm -rf /var/lib/apt/lists/*
+#37 [builder 25/30] RUN pnpm -C autobyteus-team-stream-contracts build
+#38 [builder 26/30] RUN pnpm -C autobyteus-server-ts exec prisma generate --schema prisma/schema.prisma
+#32 [runtime  2/13] RUN apt-get update   && apt-get install -y --no-install-recommends git ripgrep curl ca-certificates   && rm -rf /var/lib/apt/lists/*
+#39 [runtime  3/13] RUN echo "CLI install cache buster: 0"   && npm install -g   "@openai/codex@latest"   "@anthropic-ai/claude-code@latest"   && cli_scratch="$(mktemp -d)"   && mkdir -p "${cli_scratch}/home" "${cli_scratch}/agy-bin"   && GROK_HOME="${cli_scratch}/grok" npm install -g --include=optional --ignore-scripts=false "@xai-official/grok@latest"   && curl -fsSL --compressed https://antigravity.google/cli/install.sh -o "${cli_scratch}/agy-install.sh"   && test "$(head -c 2 "${cli_scratch}/agy-install.sh")" = '#!'   && HOME="${cli_scratch}/home" bash "${cli_scratch}/agy-install.sh" --dir "${cli_scratch}/agy-bin"   && test -x "${cli_scratch}/agy-bin/agy"   && agy_version="$(HOME="${cli_scratch}/home" timeout 30s "${cli_scratch}/agy-bin/agy" --version)"   && printf '%s\n' "$agy_version" | grep -E '[0-9]+\.[0-9]+\.[0-9]+'   && install -m 0755 "${cli_scratch}/agy-bin/agy" /usr/local/bin/agy   && rm -rf "$cli_scratch"   && grok_native="$(readlink -f "$(command -v grok)")"   && test "$grok_native" = "$(npm root -g)/@xai-official/grok/bin/grok-native"   && test -x "$grok_native"   && test "$(od -An -tx1 -N4 "$grok_native" | tr -d ' \n')" = '7f454c46'   && test "$(command -v agy)" = /usr/local/bin/agy   && probe_home="$(mktemp -d)"   && agy_version="$(HOME="$probe_home" timeout 30s agy --version)"   && grok_version="$(HOME="$probe_home" timeout 30s grok --version)"   && printf 'Installed agy: %s\n' "$agy_version"   && printf '%s\n' "$agy_version" | grep -E '[0-9]+\.[0-9]+\.[0-9]+'   && printf 'Installed grok: %s\n' "$grok_version"   && printf '%s\n' "$grok_version" | grep -E '[0-9]+\.[0-9]+\.[0-9]+'   && rm -rf "$probe_home"
+#40 [builder 27/30] RUN pnpm -C autobyteus-server-ts build
+#39 [runtime  3/13] RUN echo "CLI install cache buster: 0"   && npm install -g   "@openai/codex@latest"   "@anthropic-ai/claude-code@latest"   && cli_scratch="$(mktemp -d)"   && mkdir -p "${cli_scratch}/home" "${cli_scratch}/agy-bin"   && GROK_HOME="${cli_scratch}/grok" npm install -g --include=optional --ignore-scripts=false "@xai-official/grok@latest"   && curl -fsSL --compressed https://antigravity.google/cli/install.sh -o "${cli_scratch}/agy-install.sh"   && test "$(head -c 2 "${cli_scratch}/agy-install.sh")" = '#!'   && HOME="${cli_scratch}/home" bash "${cli_scratch}/agy-install.sh" --dir "${cli_scratch}/agy-bin"   && test -x "${cli_scratch}/agy-bin/agy"   && agy_version="$(HOME="${cli_scratch}/home" timeout 30s "${cli_scratch}/agy-bin/agy" --version)"   && printf '%s\n' "$agy_version" | grep -E '[0-9]+\.[0-9]+\.[0-9]+'   && install -m 0755 "${cli_scratch}/agy-bin/agy" /usr/local/bin/agy   && rm -rf "$cli_scratch"   && grok_native="$(readlink -f "$(command -v grok)")"   && test "$grok_native" = "$(npm root -g)/@xai-official/grok/bin/grok-native"   && test -x "$grok_native"   && test "$(od -An -tx1 -N4 "$grok_native" | tr -d ' \n')" = '7f454c46'   && test "$(command -v agy)" = /usr/local/bin/agy   && probe_home="$(mktemp -d)"   && agy_version="$(HOME="$probe_home" timeout 30s agy --version)"   && grok_version="$(HOME="$probe_home" timeout 30s grok --version)"   && printf 'Installed agy: %s\n' "$agy_version"   && printf '%s\n' "$agy_version" | grep -E '[0-9]+\.[0-9]+\.[0-9]+'   && printf 'Installed grok: %s\n' "$grok_version"   && printf '%s\n' "$grok_version" | grep -E '[0-9]+\.[0-9]+\.[0-9]+'   && rm -rf "$probe_home"
+#41 [builder 28/30] RUN pnpm -C autobyteus-web build:mobile-web
+#39 [runtime  3/13] RUN echo "CLI install cache buster: 0"   && npm install -g   "@openai/codex@latest"   "@anthropic-ai/claude-code@latest"   && cli_scratch="$(mktemp -d)"   && mkdir -p "${cli_scratch}/home" "${cli_scratch}/agy-bin"   && GROK_HOME="${cli_scratch}/grok" npm install -g --include=optional --ignore-scripts=false "@xai-official/grok@latest"   && curl -fsSL --compressed https://antigravity.google/cli/install.sh -o "${cli_scratch}/agy-install.sh"   && test "$(head -c 2 "${cli_scratch}/agy-install.sh")" = '#!'   && HOME="${cli_scratch}/home" bash "${cli_scratch}/agy-install.sh" --dir "${cli_scratch}/agy-bin"   && test -x "${cli_scratch}/agy-bin/agy"   && agy_version="$(HOME="${cli_scratch}/home" timeout 30s "${cli_scratch}/agy-bin/agy" --version)"   && printf '%s\n' "$agy_version" | grep -E '[0-9]+\.[0-9]+\.[0-9]+'   && install -m 0755 "${cli_scratch}/agy-bin/agy" /usr/local/bin/agy   && rm -rf "$cli_scratch"   && grok_native="$(readlink -f "$(command -v grok)")"   && test "$grok_native" = "$(npm root -g)/@xai-official/grok/bin/grok-native"   && test -x "$grok_native"   && test "$(od -An -tx1 -N4 "$grok_native" | tr -d ' \n')" = '7f454c46'   && test "$(command -v agy)" = /usr/local/bin/agy   && probe_home="$(mktemp -d)"   && agy_version="$(HOME="$probe_home" timeout 30s agy --version)"   && grok_version="$(HOME="$probe_home" timeout 30s grok --version)"   && printf 'Installed agy: %s\n' "$agy_version"   && printf '%s\n' "$agy_version" | grep -E '[0-9]+\.[0-9]+\.[0-9]+'   && printf 'Installed grok: %s\n' "$grok_version"   && printf '%s\n' "$grok_version" | grep -E '[0-9]+\.[0-9]+\.[0-9]+'   && rm -rf "$probe_home"
+#39 43.41 ERROR: logging before google.Init: I1030 16:44:14.717690       1 installer.go:27] Running Antigravity CLI setup...
+#41 [builder 28/30] RUN pnpm -C autobyteus-web build:mobile-web
+#42 [runtime  4/13] WORKDIR /app
+#43 [runtime  5/13] COPY LICENSE LICENSING.md NOTICE /app/
+#44 [runtime  6/13] RUN mkdir -p /home/autobyteus/workspace /home/autobyteus/data /root
+#41 [builder 28/30] RUN pnpm -C autobyteus-web build:mobile-web
+#45 [builder 29/30] COPY scripts/server-package ./scripts/server-package
+#46 [builder 30/30] RUN pnpm --filter autobyteus-server-ts deploy /out/server-package --legacy   && cd /out/server-package   && rm node_modules/.pnpm/node_modules/autobyteus-server-ts   && node_modules/.bin/prisma generate --schema prisma/schema.prisma   && node /app/autobyteus-web/scripts/onnxruntime-web-packaging.mjs /out/server-package   && cp -r /app/autobyteus-web/dist-mobile/public /out/server-package/mobile-web   && node /app/scripts/server-package/describe-server-package.mjs package-json     --package-dir /out/server-package     --version "$(node -p "require('/app/autobyteus-web/package.json').version")"     --system-level-file /app/autobyteus-server-ts/docker/system-level.json
+#46 25.23 Wrote server-package.json: 1.5.11-beta.5 linux-arm64, Node modules 127, system level 1, 61 migrations
+#47 [server-package 1/1] COPY --from=builder /out/server-package /
+#48 [runtime  7/13] COPY --from=server-package / /opt/autobyteus/server-package
+#49 [runtime  8/13] COPY autobyteus-server-ts/docker/supervisor-autobyteus-server.conf /etc/supervisor/conf.d/supervisor-autobyteus-server.conf
+#50 [runtime  9/13] COPY autobyteus-server-ts/docker/entrypoint.sh /usr/local/bin/entrypoint.sh
+#51 [runtime 10/13] COPY autobyteus-server-ts/docker/open-vnc-browser-url.sh /usr/local/bin/open-vnc-browser-url.sh
+#52 [runtime 11/13] COPY autobyteus-server-ts/docker/xdg-open-root-bridge.sh /usr/local/bin/xdg-open
+#53 [runtime 12/13] COPY autobyteus-server-ts/docker/exo-open-root-bridge.sh /usr/local/bin/exo-open
+#54 [runtime 13/13] RUN chmod +x   /usr/local/bin/entrypoint.sh   /usr/local/bin/open-vnc-browser-url.sh   /usr/local/bin/xdg-open   /usr/local/bin/exo-open
+build exit 0
+
+#55 exporting to oci image format
+#55 sending tarball 51.6s done
+#55 DONE 86.6s
+build exit 0

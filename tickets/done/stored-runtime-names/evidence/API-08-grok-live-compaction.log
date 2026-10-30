@@ -1,0 +1,9 @@
+# API-08 (Grok live) command: env -i PATH HOME=$HOME USER LOGNAME TMPDIR RUN_GROK_E2E=1 pnpm exec vitest run tests/e2e/runtime/grok-build-compaction-live.e2e.test.ts --no-watch
+# commit dd56f6de6c; grok 1.0.70; date 2026-10-30T18:54:41Z
+
+     × closes an interrupted automatic compaction as failed, then archives automatic and manual compactions 184266ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+Error: Timed out waiting for automatic compaction start: AGENT_STATUS,AGENT_INPUT_STATE,AGENT_COMMAND_ACK,AGENT_STATUS,TURN_STARTED,AGENT_INPUT_STATE,AGENT_INPUT_STATE,SEGMENT_START,SEGMENT_CONTENT,SEGMENT_END,SEGMENT_START,SEGMENT_CONTENT,SEGMENT_END,TOKEN_USAGE_UPDATED,TURN_COMPLETED,AGENT_STATUS,
+ Test Files  1 failed (1)
+      Tests  1 failed (1)
+   Duration  196.67s (transform 6.97s, setup 40ms, import 9.45s, tests 186.65s, environment 0ms)

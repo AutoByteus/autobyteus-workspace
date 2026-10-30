@@ -65,7 +65,7 @@ Common files/directories:
 - `raw_traces_active.jsonl` — active ordered original raw trace records,
   including strict run-scoped `system_instruction` rows when the exact runtime
   handoff was captured.
-- `raw_traces_manifest.json` — completed raw-trace archive descriptors owned by `RawTraceArchiveManager`.
+- `raw_traces_manifest.json` — completed raw-trace archive descriptors owned by `RawTraceArchiveManager`. Each segment's `runtime_kind` is the `RuntimeKind` value of the runtime that compacted (for example `codex_app_server`, `autobyteus`), or `null` when none was recorded.
 - `raw_traces_<zero-padded-index>.jsonl` — immutable raw-trace archives. Native compaction prepares selected new activity before snapshot commit; a failed preparation/publication can leave copied archive evidence without a successful new summary.
 - `episodic.jsonl` and `semantic.jsonl` — historical compacted output rows; current direct compaction does not append them, and the server no longer reads them (the memory view and the Memory page dropped them). Existing files stay on disk; the library code is FU-003 of `work-journal-search`.
 - `compaction_lineage.jsonl` — historical append-only lineage, not current continuation authority and not a normal compaction/restore dependency.
@@ -78,6 +78,8 @@ There is no current compacted-memory manifest or pointer. The destructive
 current known fields with zero/one compacted region independently of historical
 category/lineage presence. It performs ordinary active-raw unmatched-tool repair
 before full validation and normal save; it does not generate a new summary.
+
+Startup app-data migration `20261030_raw_trace_manifest_runtime_names` (`raw-trace-manifest-runtime-names`) converts the `runtime_kind` of every manifest segment of this node's own runs (`agents/<run>`, `agent_teams/<team>/<member>`, `agent_orgs/<org>/<team>/<member>`) from the older short labels (`CODEX`, `CLAUDE`, `ANTIGRAVITY`, `GROK_BUILD`, `AUTOBYTEUS`) to the `RuntimeKind` values, through a validated temporary file `raw_traces_manifest.json.tmp` and an atomic rename. A manifest it cannot use is kept as it is and reported (`SUCCEEDED_WITH_WARNINGS`). Memory Sync imports, the label copies inside old trace records, and the archived `raw_traces_archive_manifest.json` backups keep the old spelling and are never read; code reads a segment's runtime with `runtimeKindFromString`, with no mapping. An older build does not read the field, so a rollback works; entries an older build writes after a rollback keep the old spelling after a later re-upgrade, because the migration does not run again.
 
 Startup app-data migration `20260707_raw_trace_active_file_name` renames existing active `raw_traces.jsonl` files to `raw_traces_active.jsonl` for local and imported memory corpora. Runtime steady state reads and writes only `raw_traces_active.jsonl`; the old active filename is not a compatibility alias.
 

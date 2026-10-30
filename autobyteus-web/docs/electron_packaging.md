@@ -148,6 +148,17 @@ disconnection and forced fallback remain incomplete cleanup, not clean success.
 Windows uses this application request before its bounded captured-child force
 fallback, so taskkill alone is not treated as graceful host cleanup.
 
+The desktop waits up to 20 s for the server to exit; the server bounds its own
+cleanup at 10 s and then sweeps the processes it started, so a busy quit
+normally ends within seconds. Only when the server does not exit in that window
+does the force step run. On macOS/Linux it stops the server's whole tree, not
+the server alone (`BaseServerManager.forceStop`, `serverProcessTree.ts`): it
+reads the process table asynchronously (2 s timeout) and records the server's
+descendants in its process group and the groups they lead, sends them SIGTERM
+(runtime CLIs end their own tool commands on SIGTERM, not on SIGKILL or EOF),
+SIGKILLs the server, and after up to 1.5 s SIGKILLs the recorded survivors. The
+2 s exit confirmation is unchanged. Windows keeps `taskkill /pid <pid> /f /t`.
+
 `ApplicationShutdown` prevents normal `will-quit` completion until shared
 resource cleanup finishes, with a 30-second application deadline and log flush.
 Repeated quit requests share the work; the updater's explicit installation path

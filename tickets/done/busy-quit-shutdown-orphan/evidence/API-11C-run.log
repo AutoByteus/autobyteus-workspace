@@ -1,0 +1,10 @@
+[+3.1s] isolated-app {"args":["start","--from-worktree","--data-root","/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-restart-then-quit-0nzAYR/data-root"],"exit":0,"ok":true,"error":null}
+[+3.3s] instance started {"label":"first","instanceId":"iso-57422-8f41","electronPid":96811,"serverPid":97724,"serverPort":57423,"servers":1}
+[+4.4s] models {"codex":"gpt-6.1-terra","claude":"claude-haiku-4-5-20251001"}
+[+4.6s] standalone sent {"label":"restart-codex","runtime":"codex","kind":"agent","runId":"desk_agent_bq284dmvuyjx99_6f9c6df283f9420cbc07890cc576de88","rootId":"desk_agent_bq284dmvuyjx99_6f9c6df283f9420cbc07890cc576de88"}
+[+9.7s] busy {"label":"restart-codex","pid":99238,"ppid":97880,"pgid":99238}
+[+13.0s] restart observed {"oldServerPid":97724,"newServerPid":99293,"readyMs":1753,"oldServerAlive":false,"toolAliveAfter":false}
+[+23.2s] after-restart samples [{"atMs":1753,"runs":[{"runId":"desk_agent_bq284dmvuyjx99_6f9c6df283f9420cbc07890cc576de88","isActive":false,"status":"offline","statusSource":"HISTORICAL_METADATA","terminatedAt":null}],"tree":5},{"atMs":6802,"runs":[{"runId":"desk_agent_bq284dmvuyjx99_6f9c6df283f9420cbc07890cc576de88","isActive":false,"status":"offline","statusSource":"HISTORICAL_METADATA","terminatedAt":null}],"tree":5},{"atMs":11860,"runs":[{"runId":"desk_agent_bq284dmvuyjx99_6f9c6df283f9420cbc07890cc576de88","isActive":fals
+[+24.5s] quit after busy restart observed {"label":"quit after busy restart","electronPid":96811,"serverPid":99293,"serverGoneMs":207,"electronGoneMs":207,"before":6,"survivors":[],"markedLeft":[],"serversForDataAfter":[],"tools":[]}
+[+24.6s] isolated-app {"args":["stop","iso-57422-8f41"],"exit":0,"ok":true,"error":null}
+{"result":"Completed","error":null,"fallbackCleanup":0}

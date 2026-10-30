@@ -1,0 +1,15 @@
+Check IMP-02: pnpm -C autobyteus-server-ts test:unit (worktree), first run
+Commit: 9d6552c5a3 plus the isolated-run evidence (no source change since)
+Environment: macOS Darwin 25.5.0
+Date: 2026-10-30
+---
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/app-data-migrations/collaborators-to-delegated-runs-v1/collaborators-to-delegated-runs-v1-app-data-migration.test.ts > 20261015_collaborators_to_delegated_runs_v1 > is registered right before task-agent-own-run (then the append-only log conversion), required on startup and startup-only
+ FAIL  tests/app-data-migrations/delegated-copy-own-file-complete-v1/delegated-copy-own-file-complete-v1-app-data-migration.test.ts > 20261019_delegated_copy_own_file_complete_v1 > is registered after every run-tree migration (only the Skill Improvement data removal and the autobyteus-290 stored-name renames follow), required on startup and startup-only
+ FAIL  tests/app-data-migrations/remove-skill-improvement-data/remove-skill-improvement-data-migration.test.ts > 20261020_remove_skill_improvement_data > is registered after every run-tree migration (only the autobyteus-290 stored-name renames follow), required on startup and startup-only
+ Test Files  3 failed | 880 passed | 5 skipped (888)
+      Tests  3 failed | 7521 passed | 9 skipped (7533)
+   Duration  632.29s (transform 15.85s, setup 9.69s, import 271.13s, tests 270.43s, environment 837ms)
+EXIT 1
+---
+Cause of the 3 failures: three older tests pin the tail of the registry list and did not know the new last migration (collaborators-to-delegated-runs-v1, delegated-copy-own-file-complete-v1, remove-skill-improvement-data). Fixed in f5f9ee3221; their folder (tests/app-data-migrations, 67 files, 585 tests) passed after the fix. Rerun of the rest was not needed: nothing else changed.

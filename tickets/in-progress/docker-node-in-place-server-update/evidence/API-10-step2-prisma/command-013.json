@@ -1,0 +1,25 @@
+{
+  "command": [
+    "docker",
+    "run",
+    "-d",
+    "--pull",
+    "never",
+    "--name",
+    "api-prisma-a73a37eb-fc6-first",
+    "--label",
+    "autobyteus.prisma-e2e=api-prisma-a73a37eb-fc6",
+    "-p",
+    "127.0.0.1::8000",
+    "--mount",
+    "type=bind,src=/private/tmp/ab305-api-e2e/tmp-WPAh/api-prisma-docker-BDfNrG/home,dst=/root",
+    "--mount",
+    "type=bind,src=/private/tmp/ab305-api-e2e/tmp-WPAh/api-prisma-docker-BDfNrG/data,dst=/home/autobyteus/data",
+    "--mount",
+    "type=bind,src=/private/tmp/ab305-api-e2e/tmp-WPAh/api-prisma-docker-BDfNrG/dist,dst=/opt/autobyteus/server-package/dist,readonly",
+    "sha256:50b3211b4b38e5ec1acd4ed39b9ecd000445bf365ea5cdab19face738b55eac9"
+  ],
+  "exit": 0,
+  "stdout": "9a39c356a667bd9bb3f57fcbf2dcb60953b44a3812ed79b9d737b72365b4d38d\n",
+  "stderr": ""
+}

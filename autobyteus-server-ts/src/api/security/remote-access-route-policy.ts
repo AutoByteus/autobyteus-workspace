@@ -81,6 +81,7 @@ export const classifyHttpRoute = (
     || path === "/rest/remote-access/devices/revoked"
     || /^\/rest\/remote-access\/devices\/[^/]+$/.test(path)
     || path === "/rest/remote-access/settings"
+    || path === "/rest/node-update"
   ) {
     return "TRUSTED_NETWORK_OWNER";
   }

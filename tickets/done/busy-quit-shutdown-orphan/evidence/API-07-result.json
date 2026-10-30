@@ -1,0 +1,317 @@
+{
+  "case": "API-07",
+  "mode": "many",
+  "serverDir": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-api.Gy1t06/clean/autobyteus-server-ts",
+  "date": "2026-10-30T12:17:35.566Z",
+  "own": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-many-UJweJs",
+  "runTag": "BQ284Lmvuxtl5a",
+  "versions": {
+    "codex": "codex-cli 0.166.0",
+    "claude": "2.1.314 (Claude Code)",
+    "node": "v22.23.1",
+    "python3": "Python 3.9.6"
+  },
+  "steps": [
+    {
+      "at": "2.1",
+      "step": "server started",
+      "value": {
+        "label": "first",
+        "pid": 41996,
+        "port": 55842
+      }
+    },
+    {
+      "at": "3.2",
+      "step": "models",
+      "value": {
+        "codex": "gpt-6.1-terra",
+        "claude": "claude-haiku-4-5-20251001"
+      }
+    },
+    {
+      "at": "3.7",
+      "step": "standalone sent",
+      "value": {
+        "label": "idle-1",
+        "runtime": "claude",
+        "runId": "probe_agent_bq284lmvuxtl5a_b3a413455d3748d1a2f897ccc96170c0"
+      }
+    },
+    {
+      "at": "5.4",
+      "step": "idle ready",
+      "value": {
+        "label": "idle-1",
+        "runId": "probe_agent_bq284lmvuxtl5a_b3a413455d3748d1a2f897ccc96170c0"
+      }
+    },
+    {
+      "at": "5.7",
+      "step": "standalone sent",
+      "value": {
+        "label": "idle-2",
+        "runtime": "claude",
+        "runId": "probe_agent_bq284lmvuxtl5a_594cc7c3527344d295636612f0056483"
+      }
+    },
+    {
+      "at": "8.5",
+      "step": "idle ready",
+      "value": {
+        "label": "idle-2",
+        "runId": "probe_agent_bq284lmvuxtl5a_594cc7c3527344d295636612f0056483"
+      }
+    },
+    {
+      "at": "8.8",
+      "step": "standalone sent",
+      "value": {
+        "label": "busy-1",
+        "runtime": "claude",
+        "runId": "probe_agent_bq284lmvuxtl5a_015b63ab34864be7b51e0ace3c7599a6"
+      }
+    },
+    {
+      "at": "9.1",
+      "step": "standalone sent",
+      "value": {
+        "label": "busy-2",
+        "runtime": "claude",
+        "runId": "probe_agent_bq284lmvuxtl5a_245b5f8dd0654461ad98e278f566bc24"
+      }
+    },
+    {
+      "at": "9.4",
+      "step": "standalone sent",
+      "value": {
+        "label": "busy-3",
+        "runtime": "claude",
+        "runId": "probe_agent_bq284lmvuxtl5a_e99ad8c3fbfc497e9df83f2a4cc81557"
+      }
+    },
+    {
+      "at": "12.3",
+      "step": "busy",
+      "value": {
+        "label": "busy-1",
+        "marker": "BQ284Lmvuxtl5a_busy-1",
+        "pid": 43605,
+        "ppid": 42390,
+        "pgid": 43605,
+        "afterMs": 2798
+      }
+    },
+    {
+      "at": "12.6",
+      "step": "busy",
+      "value": {
+        "label": "busy-2",
+        "marker": "BQ284Lmvuxtl5a_busy-2",
+        "pid": 43882,
+        "ppid": 42401,
+        "pgid": 43882,
+        "afterMs": 357
+      }
+    },
+    {
+      "at": "12.7",
+      "step": "busy",
+      "value": {
+        "label": "busy-3",
+        "marker": "BQ284Lmvuxtl5a_busy-3",
+        "pid": 43846,
+        "ppid": 42431,
+        "pgid": 43846,
+        "afterMs": 58
+      }
+    },
+    {
+      "at": "18.3",
+      "step": "shutdown",
+      "value": {
+        "case": "API-07",
+        "serverPid": 41996,
+        "exit": {
+          "code": 0,
+          "signal": null,
+          "at": 1793362672564
+        },
+        "elapsedMs": 2764,
+        "runs": [
+          {
+            "label": "busy-1",
+            "kind": "agent",
+            "runtime": "claude",
+            "runId": "probe_agent_bq284lmvuxtl5a_015b63ab34864be7b51e0ace3c7599a6",
+            "toolCommand": {
+              "pid": 43605,
+              "ppid": 42390,
+              "pgid": 43605,
+              "aliveAfter": false
+            }
+          },
+          {
+            "label": "busy-2",
+            "kind": "agent",
+            "runtime": "claude",
+            "runId": "probe_agent_bq284lmvuxtl5a_245b5f8dd0654461ad98e278f566bc24",
+            "toolCommand": {
+              "pid": 43882,
+              "ppid": 42401,
+              "pgid": 43882,
+              "aliveAfter": false
+            }
+          },
+          {
+            "label": "busy-3",
+            "kind": "agent",
+            "runtime": "claude",
+            "runId": "probe_agent_bq284lmvuxtl5a_e99ad8c3fbfc497e9df83f2a4cc81557",
+            "toolCommand": {
+              "pid": 43846,
+              "ppid": 42431,
+              "pgid": 43846,
+              "aliveAfter": false
+            }
+          }
+        ],
+        "before": 11,
+        "survivors": [],
+        "markedLeft": [],
+        "shutdownLog": [
+          "Server process-tree sweep: 1 process(es) and 0 process group(s) still running; sending SIGTERM."
+        ]
+      }
+    }
+  ],
+  "claudeCliCount": 5,
+  "API-07": {
+    "case": "API-07",
+    "serverPid": 41996,
+    "exit": {
+      "code": 0,
+      "signal": null,
+      "at": 1793362672564
+    },
+    "elapsedMs": 2764,
+    "runs": [
+      {
+        "label": "busy-1",
+        "kind": "agent",
+        "runtime": "claude",
+        "runId": "probe_agent_bq284lmvuxtl5a_015b63ab34864be7b51e0ace3c7599a6",
+        "toolCommand": {
+          "pid": 43605,
+          "ppid": 42390,
+          "pgid": 43605,
+          "aliveAfter": false
+        }
+      },
+      {
+        "label": "busy-2",
+        "kind": "agent",
+        "runtime": "claude",
+        "runId": "probe_agent_bq284lmvuxtl5a_245b5f8dd0654461ad98e278f566bc24",
+        "toolCommand": {
+          "pid": 43882,
+          "ppid": 42401,
+          "pgid": 43882,
+          "aliveAfter": false
+        }
+      },
+      {
+        "label": "busy-3",
+        "kind": "agent",
+        "runtime": "claude",
+        "runId": "probe_agent_bq284lmvuxtl5a_e99ad8c3fbfc497e9df83f2a4cc81557",
+        "toolCommand": {
+          "pid": 43846,
+          "ppid": 42431,
+          "pgid": 43846,
+          "aliveAfter": false
+        }
+      }
+    ],
+    "before": [
+      {
+        "pid": 42358,
+        "ppid": 41996,
+        "pgid": 41963,
+        "command": "/Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --model claude-haiku-4-5-20251001 --permission-prompt-tool stdio --disallowedTools AskUserQuestion,Agent … 5VEQigt6v1HwVdkpTw\",\"alwaysLoad\":true}}} --setting-sources=user,project,local --permission-mode default --include-partial-messages --session-id=e24d0241-126a-45c5-ab71-debf2ca9469e"
+      },
+      {
+        "pid": 42376,
+        "ppid": 41996,
+        "pgid": 41963,
+        "command": "/Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --model claude-haiku-4-5-20251001 --permission-prompt-tool stdio --disallowedTools AskUserQuestion,Agent … rnvel2mOxHYDh5cEw0\",\"alwaysLoad\":true}}} --setting-sources=user,project,local --permission-mode default --include-partial-messages --session-id=0b94356e-c951-43ed-960f-6aeb629f4091"
+      },
+      {
+        "pid": 42390,
+        "ppid": 41996,
+        "pgid": 41963,
+        "command": "/Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --model claude-haiku-4-5-20251001 --permission-prompt-tool stdio --disallowedTools AskUserQuestion,Agent … mKVkgZNig2GXCFuVI4\",\"alwaysLoad\":true}}} --setting-sources=user,project,local --permission-mode default --include-partial-messages --session-id=84700247-1a04-4552-b047-9df1ddda1458"
+      },
+      {
+        "pid": 42401,
+        "ppid": 41996,
+        "pgid": 41963,
+        "command": "/Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --model claude-haiku-4-5-20251001 --permission-prompt-tool stdio --disallowedTools AskUserQuestion,Agent … hIru1qeX4UczofFACY\",\"alwaysLoad\":true}}} --setting-sources=user,project,local --permission-mode default --include-partial-messages --session-id=849e0a63-898d-4e1e-8c8e-4f74fde24742"
+      },
+      {
+        "pid": 42431,
+        "ppid": 41996,
+        "pgid": 41963,
+        "command": "/Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --model claude-haiku-4-5-20251001 --permission-prompt-tool stdio --disallowedTools AskUserQuestion,Agent … MKDQl_MkUwpH3_ifKY\",\"alwaysLoad\":true}}} --setting-sources=user,project,local --permission-mode default --include-partial-messages --session-id=651c7455-0903-4d12-bfc7-6ae237916709"
+      },
+      {
+        "pid": 43605,
+        "ppid": 42390,
+        "pgid": 43605,
+        "command": "/bin/zsh -c source /Users/normy/.claude/shell-snapshots/snapshot-zsh-1793362666973-9vvvsi.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin unalias  … ; \\builtin unset -f -- 'unsetenv'; } >/dev/null 2>&1 || true && eval 'python3 -c \"import time; time.sleep(900)\" BQ284Lmvuxtl5a_busy-1' < /dev/null && pwd -P >| /tmp/claude-bf9f-cwd"
+      },
+      {
+        "pid": 43846,
+        "ppid": 42431,
+        "pgid": 43846,
+        "command": "/bin/zsh -c source /Users/normy/.claude/shell-snapshots/snapshot-zsh-1793362667163-rio0hc.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin unalias  … ; \\builtin unset -f -- 'unsetenv'; } >/dev/null 2>&1 || true && eval 'python3 -c \"import time; time.sleep(900)\" BQ284Lmvuxtl5a_busy-3' < /dev/null && pwd -P >| /tmp/claude-bab4-cwd"
+      },
+      {
+        "pid": 43882,
+        "ppid": 42401,
+        "pgid": 43882,
+        "command": "/bin/zsh -c source /Users/normy/.claude/shell-snapshots/snapshot-zsh-1793362667293-c61rc2.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin unalias  … ; \\builtin unset -f -- 'unsetenv'; } >/dev/null 2>&1 || true && eval 'python3 -c \"import time; time.sleep(900)\" BQ284Lmvuxtl5a_busy-2' < /dev/null && pwd -P >| /tmp/claude-90e5-cwd"
+      },
+      {
+        "pid": 43622,
+        "ppid": 43605,
+        "pgid": 43605,
+        "command": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python -c import time; time.sleep(900) BQ284Lmvuxtl5a_busy-1"
+      },
+      {
+        "pid": 43849,
+        "ppid": 43846,
+        "pgid": 43846,
+        "command": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python -c import time; time.sleep(900) BQ284Lmvuxtl5a_busy-3"
+      },
+      {
+        "pid": 43883,
+        "ppid": 43882,
+        "pgid": 43882,
+        "command": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python -c import time; time.sleep(900) BQ284Lmvuxtl5a_busy-2"
+      }
+    ],
+    "survivors": [],
+    "markedLeft": [],
+    "shutdownLog": [
+      "Server process-tree sweep: 1 process(es) and 0 process group(s) still running; sending SIGTERM."
+    ],
+    "idleRuns": [
+      "probe_agent_bq284lmvuxtl5a_b3a413455d3748d1a2f897ccc96170c0",
+      "probe_agent_bq284lmvuxtl5a_594cc7c3527344d295636612f0056483"
+    ]
+  },
+  "result": "Completed",
+  "fallbackCleanup": [],
+  "rootRemoved": true
+}

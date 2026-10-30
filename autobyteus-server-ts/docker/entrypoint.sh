@@ -5,9 +5,7 @@ log() {
   printf '[%s] %s\n' "$(date --iso-8601=seconds)" "$*"
 }
 
-WORKSPACE_ROOT="/app"
 DATA_DIR="${AUTOBYTEUS_DATA_DIR:-/home/autobyteus/data}"
-BIND_HOST="${AUTOBYTEUS_BIND_HOST:-0.0.0.0}"
 SERVER_PORT="${AUTOBYTEUS_SERVER_PORT:-8000}"
 
 mkdir -p "${DATA_DIR}"
@@ -25,14 +23,6 @@ AUTOBYTEUS_SERVER_HOST=${AUTOBYTEUS_SERVER_HOST}
 DB_TYPE=${DB_TYPE:-sqlite}
 LOG_LEVEL=${LOG_LEVEL:-INFO}
 ENVEOF
-fi
-
-/usr/local/bin/autobyteus-bootstrap.sh
-
-SERVER_ENTRY="${WORKSPACE_ROOT}/autobyteus-server-ts/dist/app.js"
-if [[ ! -f "${SERVER_ENTRY}" ]]; then
-  log "error: server entrypoint not found at ${SERVER_ENTRY}"
-  exit 1
 fi
 
 # If base image has an entrypoint, handover to it. Otherwise start supervisord.

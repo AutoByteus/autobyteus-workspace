@@ -1,0 +1,19 @@
+# API-10 (round 2, step 2) prisma-engine-discovery Docker probe
+# Command: env -i PATH="$PATH" HOME=<private tmp> TMPDIR=<private tmp> RUN_PRISMA_ENGINE_DOCKER_E2E=1 pnpm -C autobyteus-server-ts test:e2e:prisma-engine-discovery:docker --image sha256:50b3211b4b38e5ec1acd4ed39b9ecd000445bf365ea5cdab19face738b55eac9 --output-dir evidence/API-10-step2-prisma
+# Commit: 6637b54d46 (code b1029fc1b0); image autobyteus-server-305-test:step2 (arm64); Environment: macOS arm64, Docker 29.0.1, Node v22.23.1; Date: 2026-10-30T17:26Z; Case: API-10
+# The server pid comes from the starter (cli.mjs status, server.pid): backend-first.json, backend-recreated.json
+
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+> autobyteus-server-ts@0.1.1 test:e2e:prisma-engine-discovery:docker /Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-in-place-server-update/autobyteus-server-ts
+> node tests/e2e/startup/prisma-engine-discovery.docker.mjs --image sha256:50b3211b4b38e5ec1acd4ed39b9ecd000445bf365ea5cdab19face738b55eac9 --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-in-place-server-update/tickets/in-progress/docker-node-in-place-server-update/evidence/API-10-step2-prisma
+
+API002 Started current build and whole-dist audit
+API002 Pass 5758 dist entries audited; 0 allowed changes
+API003 Started official incompatible cache/native RPC
+API003 Pass incompatible cache RPC -32601; current resolver selects bundled despite the cache; bundled native revision/RPC pass
+API004 Started normal no-pin backend startup
+API004 Pass HTTP200/statusok x3; representative definition created through GraphQL
+API005 Started actual removal and same-state recreation
+API005 Pass different container ID; same mounts/source; API data and wrong-cache bytes preserved; HTTP200/statusok x3
+exit 0

@@ -1,0 +1,180 @@
+{
+  "case": "API-17",
+  "mode": "wedged-runtime",
+  "serverDir": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-api2.zP1abU/clean/autobyteus-server-ts",
+  "date": "2026-10-30T13:16:38.164Z",
+  "own": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-wedged-runtime-HQ0vd3",
+  "runTag": "BQ284Lmvuzxims",
+  "versions": {
+    "codex": "codex-cli 0.166.0",
+    "claude": "2.1.314 (Claude Code)",
+    "node": "v22.23.1",
+    "python3": "Python 3.9.6"
+  },
+  "steps": [
+    {
+      "at": "2.9",
+      "step": "server started",
+      "value": {
+        "label": "first",
+        "pid": 8221,
+        "port": 62635
+      }
+    },
+    {
+      "at": "4.3",
+      "step": "models",
+      "value": {
+        "codex": "gpt-6.1-terra",
+        "claude": "claude-haiku-4-5-20251001"
+      }
+    },
+    {
+      "at": "4.9",
+      "step": "standalone sent",
+      "value": {
+        "label": "wedged-codex",
+        "runtime": "codex",
+        "runId": "probe_agent_bq284lmvuzxims_a47005554fc14be6a33c175399302426"
+      }
+    },
+    {
+      "at": "9.0",
+      "step": "busy",
+      "value": {
+        "label": "wedged-codex",
+        "marker": "BQ284Lmvuzxims_wedged",
+        "pid": 9877,
+        "ppid": 8278,
+        "pgid": 9877,
+        "afterMs": 4124
+      }
+    },
+    {
+      "at": "9.1",
+      "step": "codex app-server stopped (SIGSTOP)",
+      "value": {
+        "pid": 8278,
+        "ppid": 8221,
+        "pgid": 8188,
+        "command": "codex app-server -c agents.enabled=false"
+      }
+    },
+    {
+      "at": "9.1",
+      "step": "busy",
+      "value": {
+        "label": "wedged-codex",
+        "marker": "BQ284Lmvuzxims_wedged",
+        "pid": 9877,
+        "ppid": 8278,
+        "pgid": 9877,
+        "afterMs": 54
+      }
+    },
+    {
+      "at": "23.5",
+      "step": "shutdown",
+      "value": {
+        "case": "API-17",
+        "serverPid": 8221,
+        "exit": {
+          "code": 1,
+          "signal": null,
+          "at": 1793366220459
+        },
+        "elapsedMs": 11622,
+        "runs": [
+          {
+            "label": "wedged-codex",
+            "kind": "agent",
+            "runtime": "codex",
+            "runId": "probe_agent_bq284lmvuzxims_a47005554fc14be6a33c175399302426",
+            "toolCommand": {
+              "pid": 9877,
+              "ppid": 8278,
+              "pgid": 9877,
+              "aliveAfter": false
+            }
+          }
+        ],
+        "before": 3,
+        "survivors": [],
+        "markedLeft": [],
+        "shutdownLog": [
+          "[20.67] Server shutdown exceeded 10s; forcing exit",
+          "[20.70] Server process-tree sweep: 1 process(es) and 2 process group(s) still running; sending SIGTERM.",
+          "[22.23] Server process-tree sweep: 3 target(s) survived SIGTERM; sending SIGKILL.",
+          "[22.23] Server process-tree sweep could not SIGKILL group 9849: Error: kill EPERM",
+          "[22.23] Server process-tree sweep could not SIGKILL group 9877: Error: kill EPERM"
+        ]
+      }
+    }
+  ],
+  "stoppedAppServer": {
+    "pid": 8278,
+    "ppid": 8221,
+    "pgid": 8188,
+    "command": "codex app-server -c agents.enabled=false"
+  },
+  "stoppedForCleanup": [
+    8278
+  ],
+  "API-17": {
+    "case": "API-17",
+    "serverPid": 8221,
+    "exit": {
+      "code": 1,
+      "signal": null,
+      "at": 1793366220459
+    },
+    "elapsedMs": 11622,
+    "runs": [
+      {
+        "label": "wedged-codex",
+        "kind": "agent",
+        "runtime": "codex",
+        "runId": "probe_agent_bq284lmvuzxims_a47005554fc14be6a33c175399302426",
+        "toolCommand": {
+          "pid": 9877,
+          "ppid": 8278,
+          "pgid": 9877,
+          "aliveAfter": false
+        }
+      }
+    ],
+    "before": [
+      {
+        "pid": 8278,
+        "ppid": 8221,
+        "pgid": 8188,
+        "command": "codex app-server -c agents.enabled=false"
+      },
+      {
+        "pid": 9849,
+        "ppid": 8278,
+        "pgid": 9849,
+        "command": "/Users/normy/.codex/packages/standalone/releases/0.166.0-aarch64-apple-darwin/bin/codex-code-mode-host"
+      },
+      {
+        "pid": 9877,
+        "ppid": 8278,
+        "pgid": 9877,
+        "command": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python -c import time; time.sleep(900) BQ284Lmvuzxims_wedged"
+      }
+    ],
+    "survivors": [],
+    "markedLeft": [],
+    "shutdownLog": [
+      "[20.67] Server shutdown exceeded 10s; forcing exit",
+      "[20.70] Server process-tree sweep: 1 process(es) and 2 process group(s) still running; sending SIGTERM.",
+      "[22.23] Server process-tree sweep: 3 target(s) survived SIGTERM; sending SIGKILL.",
+      "[22.23] Server process-tree sweep could not SIGKILL group 9849: Error: kill EPERM",
+      "[22.23] Server process-tree sweep could not SIGKILL group 9877: Error: kill EPERM"
+    ],
+    "appServerAliveAfter": false
+  },
+  "result": "Completed",
+  "fallbackCleanup": [],
+  "rootRemoved": true
+}

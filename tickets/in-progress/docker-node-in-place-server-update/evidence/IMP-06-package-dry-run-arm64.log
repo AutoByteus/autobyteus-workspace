@@ -1,0 +1,37 @@
+# IMP-06 CI package job dry run, linux/arm64 (AC-011, QR-001)
+# Steps: the workflow's own run blocks, extracted from .github/workflows/release-server-docker.yml at 01c56f1b95 with the scripts/tests helper extract_step:
+#   1. 'Extract the built-in server package' on the host with real docker: IMAGE=autobyteus-server-305-test:step1 PLATFORM=linux/arm64
+#   2. 'Archive, describe and sign the server package' in node:22-bookworm (GNU tar 1.34), NORMALIZED_TAG=1.5.11-beta.5,
+#      SERVER_PACKAGE_SIGNING_KEY = a throwaway test key; its public key placed at autobyteus-server-ts/docker/server-package-signing-key.pem in the dry-run checkout
+#   3. byte identity: IMP-06-manifest.sh (type, mode, path, sha256 or link target of every entry, LC_ALL=C order) run inside the image on
+#      /opt/autobyteus/server-package and in node:22-bookworm on the unpacked archive; cmp of the two lists
+#   4. signature and description checks with node:crypto
+# Not run: 'Wait for the GitHub release' and 'Upload' (they need the real release; covered with a fake gh in IMP-01)
+# Commit: 01c56f1b95. Environment: macOS arm64 host, Docker 29.0.1. Date: 2026-10-30
+
+## Step 2 output
+Wrote autobyteus-server-1.5.11-beta.5-linux-arm64.json: autobyteus-server-1.5.11-beta.5-linux-arm64.tar.gz, 279750692 bytes, sha256 bfbdbf881deff04e69a6082c832f5e9900ac0056907ab31a069d94a7b4b15f61
+Signed /d/runner/server-package-assets/autobyteus-server-1.5.11-beta.5-linux-arm64.json; the signature verifies with autobyteus-server-ts/docker/server-package-signing-key.pem
+
+## Assets
+3532 autobyteus-server-1.5.11-beta.5-linux-arm64.json
+88 autobyteus-server-1.5.11-beta.5-linux-arm64.json.sig
+279750692 autobyteus-server-1.5.11-beta.5-linux-arm64.tar.gz
+
+## Byte identity
+entries in image /opt/autobyteus/server-package: 45296
+entries in unpacked archive: 45296
+BYTE-IDENTICAL: archive content == image /opt/autobyteus/server-package (files, links, modes)
+f2728fbc60b2cac014b6019d7373274a1f9ff0e5a5d737ead66af39342329168  manifest-image.txt
+f2728fbc60b2cac014b6019d7373274a1f9ff0e5a5d737ead66af39342329168  manifest-archive.txt
+
+## Signature and description
+signature verifies with the test public key: true
+a description changed to 1.5.11-beta.6 verifies: false
+description without archive equals the package server-package.json: true
+archive sha256 equals description: true
+archive: {"name":"autobyteus-server-1.5.11-beta.5-linux-arm64.tar.gz","sha256":"bfbdbf881deff04e69a6082c832f5e9900ac0056907ab31a069d94a7b4b15f61","size":279750692,"unpackedSize":822862962}
+description head: {"version":"1.5.11-beta.5","arch":"arm64","nodeModuleVersion":"127","systemLevel":1,"dataMigrations":61}
+private key text in outputs/assets: 0
+
+## QR-001: download per node = archive size 279750692 bytes = 0.28 GB (limit 0.35 GB)

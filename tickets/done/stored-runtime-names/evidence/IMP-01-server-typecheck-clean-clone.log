@@ -1,0 +1,6 @@
+Check IMP-01: pnpm -C autobyteus-server-ts typecheck (clean clone of the branch)
+Commit: f5f9ee3221
+Environment: macOS Darwin 25.5.0, fresh git clone in /tmp, pnpm install --frozen-lockfile, pnpm -C autobyteus-server-ts prebuild
+Date: 2026-10-30
+---
+typecheck exit 0

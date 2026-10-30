@@ -1,0 +1,20 @@
+# IMP-08
+# Command: pnpm -C autobyteus-server-ts test:unit (full suite; excerpt: summary and the only failure)
+# Commit: bf2857ca29 content, run before commit (new files untracked at the time)
+# Environment: macOS 26.5.2, node v22.23.1
+# Date: 2026-10-30
+
+Only failure: tests/architecture/tracked-imports.test.ts, because the new files were not yet in git; it passes on bf2857ca29 (IMP-09). Full log not committed (674 lines of mostly migration/warning noise).
+
+     × finds no tracked code importing an untracked file in this repository 1799ms
+ FAIL  tests/architecture/tracked-imports.test.ts > tracked imports > finds no tracked code importing an untracked file in this repository
++ Tracked code importing files that are not tracked: 6
++  - autobyteus-server-ts/src/agent-execution/backends/antigravity/stream/agy-stream-process.ts -> ../../../../utils/process-tree.js
++  - autobyteus-server-ts/src/shutdown/server-process-shutdown.ts -> ./server-process-tree-sweep.js
++  - autobyteus-server-ts/tests/unit/agent-execution/backends/antigravity/agy-stream-process.test.ts -> ../../../../../src/utils/process-tree.js
++  - autobyteus-server-ts/tests/unit/shutdown/server-process-shutdown.test.ts -> ../../../src/shutdown/server-process-tree-sweep.js
++  - autobyteus-server-ts/tests/unit/utils/process-tree.test.ts -> ../../../src/utils/process-tree.js
++  - autobyteus-web/electron/server/baseServerManager.ts -> ./serverProcessTree
+ Test Files  1 failed | 874 passed | 5 skipped (880)
+      Tests  1 failed | 7400 passed | 9 skipped (7410)
+   Duration  621.31s (transform 15.43s, setup 9.26s, import 262.53s, tests 270.17s, environment 836ms)

@@ -1,3 +1,4 @@
+import { RuntimeKind } from "../../../../runtime-management/runtime-kind-enum.js";
 /**
  * Maps one AGY `checkpoint` DONE step (one automatic compaction) to the runtime-neutral
  * COMPACTION_STATUS payload. AGY reports only completion, so the single event is the completed,
@@ -10,7 +11,7 @@ export const buildAgyCompactionStatusPayload = (input: {
   durationSeconds: number | null;
 }): Record<string, unknown> => ({
   kind: "provider_compaction_boundary",
-  runtime_kind: "ANTIGRAVITY",
+  runtime_kind: RuntimeKind.ANTIGRAVITY_CLI,
   provider: "antigravity",
   source_surface: "antigravity.checkpoint",
   boundary_key: `agy:${input.conversationId}:checkpoint:${input.stepIndex}`,

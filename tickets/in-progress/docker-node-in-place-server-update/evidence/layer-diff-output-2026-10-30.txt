@@ -1,0 +1,74 @@
+== arm64
+1.5.10: 57 layers, 2540.8 MB compressed
+1.5.11-beta.1: 57 layers, 2540.8 MB compressed
+1.5.11-beta.2: 57 layers, 2553.0 MB compressed
+1.5.11-beta.3: 57 layers, 2561.0 MB compressed
+1.5.11-beta.4: 57 layers, 2561.1 MB compressed
+1.5.11-beta.5: 57 layers, 2561.0 MB compressed
+1.5.10 -> 1.5.11-beta.1: 30 new layers, 1378.7 MB to download
+   layer 27: 14.0 MB
+   layer 28: 831.3 MB
+   layer 30: 525.7 MB
+   layer 46: 2.7 MB
+   layer 49: 4.1 MB
+1.5.11-beta.1 -> 1.5.11-beta.2: 30 new layers, 1390.9 MB to download
+   layer 27: 14.0 MB
+   layer 28: 843.5 MB
+   layer 30: 525.7 MB
+   layer 46: 2.7 MB
+   layer 49: 4.1 MB
+1.5.11-beta.2 -> 1.5.11-beta.3: 30 new layers, 1399.0 MB to download
+   layer 27: 14.0 MB
+   layer 28: 851.6 MB
+   layer 30: 525.7 MB
+   layer 46: 2.7 MB
+   layer 49: 4.1 MB
+1.5.11-beta.3 -> 1.5.11-beta.4: 30 new layers, 1399.0 MB to download
+   layer 27: 14.0 MB
+   layer 28: 851.6 MB
+   layer 30: 525.7 MB
+   layer 46: 2.7 MB
+   layer 49: 4.1 MB
+1.5.11-beta.4 -> 1.5.11-beta.5: 30 new layers, 1399.0 MB to download
+   layer 27: 14.0 MB
+   layer 28: 851.6 MB
+   layer 30: 525.7 MB
+   layer 46: 2.7 MB
+   layer 49: 4.1 MB
+== amd64
+1.5.10: 57 layers, 2591.9 MB compressed
+1.5.11-beta.1: 57 layers, 2591.9 MB compressed
+1.5.11-beta.2: 57 layers, 2604.7 MB compressed
+1.5.11-beta.3: 57 layers, 2614.9 MB compressed
+1.5.11-beta.4: 57 layers, 2615.0 MB compressed
+1.5.11-beta.5: 57 layers, 2615.0 MB compressed
+1.5.10 -> 1.5.11-beta.1: 30 new layers, 1413.1 MB to download
+   layer 27: 14.0 MB
+   layer 28: 862.6 MB
+   layer 30: 528.9 MB
+   layer 46: 2.7 MB
+   layer 49: 4.1 MB
+1.5.11-beta.1 -> 1.5.11-beta.2: 30 new layers, 1425.9 MB to download
+   layer 27: 14.0 MB
+   layer 28: 875.4 MB
+   layer 30: 528.9 MB
+   layer 46: 2.7 MB
+   layer 49: 4.1 MB
+1.5.11-beta.2 -> 1.5.11-beta.3: 30 new layers, 1436.1 MB to download
+   layer 27: 14.0 MB
+   layer 28: 885.6 MB
+   layer 30: 528.9 MB
+   layer 46: 2.7 MB
+   layer 49: 4.1 MB
+1.5.11-beta.3 -> 1.5.11-beta.4: 30 new layers, 1436.1 MB to download
+   layer 27: 14.0 MB
+   layer 28: 885.6 MB
+   layer 30: 528.9 MB
+   layer 46: 2.7 MB
+   layer 49: 4.1 MB
+1.5.11-beta.4 -> 1.5.11-beta.5: 30 new layers, 1436.2 MB to download
+   layer 27: 14.0 MB
+   layer 28: 885.6 MB
+   layer 30: 528.9 MB
+   layer 46: 2.7 MB
+   layer 49: 4.1 MB

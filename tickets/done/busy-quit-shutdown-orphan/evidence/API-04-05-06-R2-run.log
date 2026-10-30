@@ -1,0 +1,21 @@
+[+2.4s] server started {"label":"first","pid":99775,"port":62438}
+[+3.6s] models {"codex":"gpt-6.1-terra","claude":"claude-haiku-4-5-20251001"}
+[+4.3s] standalone sent {"label":"API-04","runtime":"codex","runId":"probe_agent_bq284lmvuzwn0b_43d8e504b7164b379e8266012d959a82"}
+[+10.0s] busy {"label":"API-04","marker":"BQ284Lmvuzwn0b_API-04","pid":2140,"ppid":242,"pgid":2140,"afterMs":5646}
+[+10.2s] terminate {"case":"API-04","runtime":"codex","runId":"probe_agent_bq284lmvuzwn0b_43d8e504b7164b379e8266012d959a82","marker":"BQ284Lmvuzwn0b_API-04","result":{"success":true,"message":"Agent run terminated successfully."},"elapsedMs":98,"toolCommand":{"pid":2140,"ppid":242,"pgid":2140,"command":"/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/
+[+10.5s] standalone sent {"label":"API-05","runtime":"claude","runId":"probe_agent_bq284lmvuzwn0b_88da1c42bde44e44920abcf55ea5be40"}
+[+14.1s] busy {"label":"API-05","marker":"BQ284Lmvuzwn0b_API-05","pid":3560,"ppid":2573,"pgid":3560,"afterMs":3539}
+[+14.9s] terminate {"case":"API-05","runtime":"claude","runId":"probe_agent_bq284lmvuzwn0b_88da1c42bde44e44920abcf55ea5be40","marker":"BQ284Lmvuzwn0b_API-05","result":{"success":true,"message":"Agent run terminated successfully."},"elapsedMs":762,"toolCommand":{"pid":3560,"ppid":2573,"pgid":3560,"command":"/bin/zsh -c source /Users/normy/.claude/shell-snapshots/snapshot-zsh-1793366170113-j7lj7l.sh 2>/dev/null || tru
+[+15.3s] standalone sent {"label":"sa-codex","runtime":"codex","runId":"probe_agent_bq284lmvuzwn0b_58f95b11202348129fb7f5eeed3f321b"}
+[+15.6s] standalone sent {"label":"sa-claude","runtime":"claude","runId":"probe_agent_bq284lmvuzwn0b_46f50d5c77a240a9844656484fbc558b"}
+[+16.8s] team sent {"label":"team-codex","runtime":"codex","teamRunId":"probe_team_bq284lmvuzwn0b_team_codex_ff28464b49b7417cb86329b2cf23b9c9","memberRunId":"probe_team_coordinator_team_codex_bq284lmvuzwn0b_41e6a57974c54b838522697225e18dbf"}
+[+18.7s] org sent {"label":"org-claude","runtime":"claude","orgRunId":"probe_org_bq284lmvuzwn0b_org_claude_bdcc0388404744a190dbf51665906fa8","memberRunId":"probe_org_manager_org_claude_bq284lmvuzwn0b_fbfd4b7ffb1e46fdaafc13e73c9352ff"}
+[+20.0s] busy {"label":"sa-codex","marker":"BQ284Lmvuzwn0b_sa-codex","pid":6042,"ppid":3645,"pgid":6042,"afterMs":1306}
+[+20.1s] busy {"label":"sa-claude","marker":"BQ284Lmvuzwn0b_sa-claude","pid":6039,"ppid":4140,"pgid":6039,"afterMs":50}
+[+21.0s] busy {"label":"team-codex","marker":"BQ284Lmvuzwn0b_team-codex","pid":6205,"ppid":3645,"pgid":6205,"afterMs":961}
+[+22.6s] busy {"label":"org-claude","marker":"BQ284Lmvuzwn0b_org-claude","pid":6723,"ppid":5564,"pgid":6723,"afterMs":1576}
+[+26.7s] shutdown {"case":"API-06","serverPid":99775,"exit":{"code":0,"signal":null,"at":1793366182687},"elapsedMs":1332,"runs":[{"label":"sa-codex","kind":"agent","runtime":"codex","runId":"probe_agent_bq284lmvuzwn0b_58f95b11202348129fb7f5eeed3f321b","toolCommand":{"pid":6042,"ppid":3645,"pgid":6042,"aliveAfter":false}},{"label":"sa-claude","kind":"agent","runtime":"claude","runId":"probe_agent_bq284lmvuzwn0b_46f5
+[+30.0s] server started {"label":"second","pid":7149,"port":62612}
+[+30.0s] history after relaunch {"userTerminated":[{"case":"API-04","runId":"probe_agent_bq284lmvuzwn0b_43d8e504b7164b379e8266012d959a82","listed":true,"terminatedAt":"2026-10-30T13:16:07.283Z"},{"case":"API-05","runId":"probe_agent_bq284lmvuzwn0b_88da1c42bde44e44920abcf55ea5be40","listed":true,"terminatedAt":"2026-10-30T13:16:12.036Z"}],"shutdownStopped":[{"label":"sa-codex","runId":"probe_agent_bq284lmvuzwn0b_58f95b11202348129
+[+30.3s] idle shutdown {"exit":{"code":0,"signal":null,"at":1793366187272},"elapsedMs":59,"shutdownLog":[]}
+{"result":"Completed","error":null,"fallbackCleanup":0}

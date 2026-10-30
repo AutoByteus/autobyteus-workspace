@@ -131,9 +131,10 @@ describe("20261015_collaborators_to_delegated_runs_v1", () => {
     // Only later steps that write no run tree or message log follow: the work-trace export removal, the
     // completion of delegated copies' own files (they write own files only), and the removal of the Skill
     // Improvement feature's data (it deletes whole helper runs and their history rows), and the stored-name renames of
-    // autobyteus-290 (SM-1 touches only `remote-access/`; SM-2 … SM-5 only Memory Sync's files).
+    // autobyteus-290 (SM-1 touches only `remote-access/`; SM-2 … SM-5 only Memory Sync's files), and the raw-trace
+    // manifest runtime names (autobyteus-343: it rewrites one value in each manifest, not a run tree or a message log).
     expect(definitions.slice(index + 3).map((definition) => definition.id))
-      .toEqual(["20261019_remove_work_trace_exports", "20261019_delegated_copy_own_file_complete_v1", "20261020_remove_skill_improvement_data", "20261024_node_identity_file_name", "20261024_memory_sync_source_id_names"]);
+      .toEqual(["20261019_remove_work_trace_exports", "20261019_delegated_copy_own_file_complete_v1", "20261020_remove_skill_improvement_data", "20261024_node_identity_file_name", "20261024_memory_sync_source_id_names", "20261030_raw_trace_manifest_runtime_names"]);
     expect(ours.id).toBe(COLLABORATORS_TO_DELEGATED_RUNS_V1_MIGRATION_ID);
     expect(ours).toMatchObject({ id: "20261015_collaborators_to_delegated_runs_v1", requiredOnStartup: true, executionPolicy: "STARTUP_ONLY" });
   });

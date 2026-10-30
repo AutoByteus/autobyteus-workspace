@@ -1,0 +1,8 @@
+# IMP-10
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/unit/utils/process-tree.test.ts tests/unit/shutdown tests/unit/agent-execution/backends/antigravity/agy-stream-process.test.ts tests/unit/server-runtime-app-data-migration-gate.test.ts --no-watch
+# Commit: 83a73f24d7
+# Environment: macOS 26.5.2, node v22.23.1
+# Date: 2026-10-30
+
+ Test Files  5 passed (5)
+      Tests  63 passed (63)

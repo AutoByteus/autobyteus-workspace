@@ -1,11 +1,26 @@
 import { spawn, type ChildProcessWithoutNullStreams } from "node:child_process";
 import { antigravityCommand } from "../../../../runtime-management/antigravity-cli-capability.js";
 import { parseAgyStreamMessage, type AgyStreamMessage } from "./agy-stream-message.js";
-import { listAgyBackgroundProcessGroups, signalProcessGroups, processGroupsInactive } from "./agy-background-process-groups.js";
+import {
+  processGroupsInactive, readProcessTable, selectDescendantProcessGroups, signalProcessGroups,
+} from "../../../../utils/process-tree.js";
 
 const MAX_LINE = 2 * 1024 * 1024;
 const MAX_STDERR = 4096;
 const BACKGROUND_GROUP_KILL_DELAY_MS = 1_500;
+
+/**
+ * AGY runs each background command (e.g. a daemon started with `IsDaemon`) in its own process group
+ * under the AGY process. Those groups survive a SIGTERM of AGY, so they are found while AGY is still
+ * alive: groups led by an AGY descendant, never AGY's own group or this server's group. macOS/Linux
+ * only; Windows is not covered.
+ */
+const listAgyBackgroundProcessGroups = (agyPid: number): number[] => {
+  if (process.platform === "win32") return [];
+  const rows = readProcessTable();
+  const excluded = [agyPid, process.pid].flatMap((pid) => rows.find((row) => row.pid === pid)?.pgid ?? []);
+  return selectDescendantProcessGroups(rows, agyPid, excluded);
+};
 
 export class AgyStreamProcess {
   private child: ChildProcessWithoutNullStreams | null = null;

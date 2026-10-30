@@ -22,6 +22,7 @@ SUPPORTED_DOCKERFILES = (PRIMARY_DOCKERFILE,)
 SERVER_DOCKER_DIR = Path("autobyteus-server-ts/docker")
 # Intentional absence expectations, not supported commands or build inputs.
 RETIRED_ASSETS = (
+    "autobyteus-server-ts/docker/bootstrap.sh",
     "docker/.gitignore",
     "docker/Dockerfile.allinone",
     "docker/Dockerfile.remote-server",
@@ -89,11 +90,14 @@ class DockerBuildContextSourcesTest(unittest.TestCase):
                     f"COPY {package}/package.json {package}/tsconfig.build.json {package}/tsconfig.json ./{package}/",
                     f"COPY {package} ./{package}",
                     f"RUN pnpm -C {package} build",
-                    *(f"COPY --from=builder /app/{package}/{part} ./{package}/{part}"
-                      for part in ("node_modules", "dist", "package.json")),
                 )
                 for instruction in expected:
                     self.assertIn(instruction, instructions)
+        # The deployed server package carries the built contracts into the image.
+        self.assertTrue(any(i.startswith("RUN pnpm --filter autobyteus-server-ts deploy /out/server-package --legacy")
+                            for i in instructions))
+        self.assertIn("COPY --from=builder /out/server-package /", instructions)
+        self.assertIn("COPY --from=server-package / /opt/autobyteus/server-package", instructions)
 
     def assert_retired_assets_absent(self, root: Path) -> None:
         for asset in RETIRED_ASSETS:

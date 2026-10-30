@@ -1,3 +1,4 @@
+import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type { ContextFileReference } from "autobyteus-ts/agent/message/context-file-reference.js";
 import type { RawTraceMedia } from "autobyteus-ts/memory/models/raw-trace-item.js";
 
@@ -91,7 +92,7 @@ export type RuntimeMemoryTraceInput =
 
 export type ProviderCompactionBoundaryPayload = {
   kind: "provider_compaction_boundary";
-  runtime_kind: "CODEX" | "CLAUDE" | string;
+  runtime_kind: RuntimeKind;
   provider: "codex" | "claude" | string;
   source_surface:
     | "codex.thread_compacted"

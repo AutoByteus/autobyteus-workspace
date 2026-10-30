@@ -1,0 +1,18 @@
+# DEL-03 step-2 delivery checks, 2026-10-30T18:01:19Z, base origin/personal 77fb8bf2d1 (already current: merge-base 77fb8bf2d1), HEAD c052bb1aff + docs-sync edit to autobyteus-server-ts/docs/features/remote_access.md (uncommitted at run time)
+## pnpm -C autobyteus-server-ts test:starter
+# tests 26
+# pass 26
+# fail 0
+## python3 -m unittest discover -s scripts/tests -p 'test_*.py'
+Ran 176 tests in 51.315s
+
+OK (skipped=2)
+## check-system-level
+System level 1: the system part is unchanged (b3ac8ccc78945c0713eed6cb5ce06fa23cc60ff61b72d14126c23ad3c4103562)
+## check_licensing
+Licensing is consistent.
+## check_repository_artifact_hygiene
+Repository artifact hygiene check passed.
+## secret gate origin/personal..HEAD
+secret gate: scanning 5 commit(s) in origin/personal..HEAD
+secret gate: PASS (no secrets found)
