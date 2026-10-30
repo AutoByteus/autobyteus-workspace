@@ -353,7 +353,8 @@ jobs:
             --public-key autobyteus-server-ts/docker/server-package-signing-key.pem
           echo "asset_base=${ASSET_BASE}" >> "${GITHUB_OUTPUT}"
 
-      # The Desktop Release workflow creates the GitHub release; wait for it (up to 30 minutes).
+      # The Desktop Release or the Android APK Release workflow creates the GitHub release,
+      # whichever gets there first; wait for it (up to 30 minutes).
       - name: Wait for the GitHub release
         env:
           GH_TOKEN: ${{ github.token }}

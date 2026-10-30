@@ -38,8 +38,9 @@ delegated run, …) are defined in the
   SHA-256 and sizes) and the description's **signature** (`.json.sig`,
   Ed25519). It is not called a build or a bundle.
 - **Built-in server package:** the server package inside a Docker image, at
-  `/opt/autobyteus/server-package`, the same folder that image's release
-  publishes.
+  `/opt/autobyteus/server-package`. For a default-variant image it is the same
+  folder that image's release publishes; a `zh` image builds its own and
+  publishes none.
 - **Starter:** the program in a Docker image that runs the node's server
   package and replaces it on request. It is not the launcher: the launcher is
   the host command `autobyteus-docker`.
