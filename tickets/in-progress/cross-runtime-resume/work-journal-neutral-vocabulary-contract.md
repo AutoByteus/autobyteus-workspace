@@ -31,7 +31,7 @@ Style follows the existing actions (`Command:`, `Write file:`, `Edit file:`, `Se
 | Message sent | `Message to <recipient> (<type>) → delivered` or `→ failed: <platform's own message>` | The message text; `Files: <paths>` | `send_message_to`: `recipient_name`, `recipient_address`, `target_agent_run_id`, `content`, `message_type`, `reference_files`; result `{accepted, code, message}` |
 | Task handed over | `Delegate task to <recipient> → <outcome>` | The task description | `delegate_task` |
 | Handoff rules read | `Check handoff rules → ok` | Rules returned (shortened) | `get_handoff_rules` |
-| Task board | `Create task: <title>`, `Update task <id>: <changes>`, `Read task <id>`, `List tasks (<filter>)`, `Search tasks "<query>"` | Task text / comment | `create_task`, `update_task`, `create_or_update_task`, `get_project_task`, `list_project_tasks`, `search_project_tasks`, `create_project`, `update_project`, `create_or_update_project`, `list_projects` (and the older name `manage_task`, seen on Antigravity) |
+| Task board | `Create project task: <title>`, `Update project task <id>: <changes>`, `Read project task <id>`, `List project tasks (<filter>)`, `Search project tasks "<query>"` | Task text / comment | `create_task`, `update_task`, `create_or_update_task`, `get_project_task`, `list_project_tasks`, `search_project_tasks`, `create_project`, `update_project`, `create_or_update_project`, `list_projects` (and the older name `manage_task{Action, TaskId}`, seen on Antigravity: `Project task: <Action> <id>`) |
 | Browser | `Browser: open <url>`, `Browser: go to <url>`, `Browser: close tab`, `Browser: list tabs`, `Browser: read page`, `Browser: screenshot`, `Browser: page snapshot`, `Browser: run script`, `Browser: set device emulation <device>` | Script text; result shortened | `open_tab`, `navigate_to`, `close_tab`, `list_tabs`, `read_page`, `screenshot`, `dom_snapshot`, `run_script`, `set_device_emulation` |
 | Media | `Generate image: "<prompt>"`, `Edit image: "<instruction>"`, `Generate speech`, `Generate video: "<prompt>"` | File written (path) | `generate_image`, `edit_image`, `generate_speech`, `generate_video` |
 | Discovery | `List available agents`, `List peer nodes`, `List available agent runtimes` | Result shortened | `list_available_agents`, `list_peer_nodes`, `list_available_agent_runtimes` |
@@ -60,13 +60,16 @@ Recipient forms are printed as the call gave them (name, address or run ID); a c
 | `WebSearch` | searches the web | `Search web: "<query>"` | same | Same | |
 | `Skill` | loads a skill's instructions into the agent's context | `Tool: Skill skill="x" → ok` and the text "Launching skill: x" | `Load skill: x → ok` | **NEW** | 644 |
 | `Read` / `Bash` on a skill file `…/.claude/skills/x/SKILL.md` | the same load, done as a file read | `Command: cat -n …/SKILL.md` | `Load skill: x → ok` (rule §5, decision N-2) | **NEW** | 895 |
-| `TodoWrite` | keeps a checklist | `Tool: TodoWrite …` | same | Generic | 8 |
-| `Agent` | starts a sub-agent | `Tool: Agent …` | same | Generic | 10 |
-| `ToolSearch` | looks up tool definitions | `Tool: ToolSearch …` | same | Generic | 4 |
-| `TaskCreate`, `TaskUpdate` | an older task list | `Tool: TaskCreate …` | same | Generic | 4 and 7 |
-| `TaskOutput`, `TaskStop`, `Workflow` | background tasks and workflows | `Tool: … ` | same | Generic | 2, 1, 1 |
+| `TodoWrite` | keeps a to-do list (items with a status) | `Tool: TodoWrite todos=[…]` | `Update to-do list (<n> items) → ok`, the items below as `[done]`, `[doing]`, `[todo]` | **NEW** | 8 |
+| `Agent` | starts a sub-agent with a task | `Tool: Agent description=… prompt=…` | `Spawn sub-agent: <description>` (`(background)` when run in the background), the task text below | **NEW** | 10 |
+| `ToolSearch` | looks up tool definitions | `Tool: ToolSearch query=…` | `Look up tools: "<query>"` | **NEW** | 4 |
+| `TaskCreate` | adds an item to the agent's own task list | `Tool: TaskCreate subject=… description=…` | `Create task: <subject>` | **NEW** | 4 |
+| `TaskUpdate` | changes an item of that list | `Tool: TaskUpdate taskId=… status=…` | `Update task <id>: <status>` | **NEW** | 7 |
+| `TaskOutput` | reads the output of a background task | `Tool: TaskOutput task_id=…` | `Read output of background task <id>` | **NEW** | 2 |
+| `TaskStop` | stops a background task | `Tool: TaskStop task_id=…` | `Stop background task <id>` | **NEW** | 1 |
+| `Workflow` | runs a named workflow | `Tool: Workflow name=… args=…` | `Run workflow: <name>`, the arguments below | **NEW** | 1 |
 
-Other facts: Claude's results are unwrapped already (`normalizeClaudeResult`). It records the platform's tools under their plain names, so nothing is stripped. `Notice: Background task completed: …` lines (913) are Claude's background-task notices and stay. The Generic tools were last used between June and September 2026; our session configuration does not remove them (no `tools` or `disallowedTools` is passed), they are only unused. After a `Skill` call the Claude CLI inserts the skill's `SKILL.md` into the model's context (checked in a real session file); our traces keep only the call and "Launching skill: x".
+Other facts: Claude's results are unwrapped already (`normalizeClaudeResult`). It records the platform's tools under their plain names, so nothing is stripped. `Notice: Background task completed: …` lines (913) are Claude's background-task notices and stay. The rows from `TodoWrite` down were last used between June and September 2026 and our session configuration does not remove them (no `tools` or `disallowedTools` is passed), so they can return; they are converted so the journal stays neutral if they do. After a `Skill` call the Claude CLI inserts the skill's `SKILL.md` into the model's context (checked in a real session file); our traces keep only the call and "Launching skill: x".
 
 ### 4.2 Codex (`codex_app_server`)
 
@@ -77,11 +80,13 @@ Other facts: Claude's results are unwrapped already (`normalizeClaudeResult`). I
 | `search_web` | searches the web | `Search web: "<query>"` | same | Same | |
 | shell read of `…/.codex/skills/x/SKILL.md` | loads a skill, done as a file read | `Command: sed -n '1,220p' …/SKILL.md` | `Load skill: x → ok` (rule §5, N-2) | **NEW** | 10,014 |
 | a tool of another server, named `<server>.<tool>` | e.g. `plugin_management.search_plugins` | `Tool: plugin_management.search_plugins …` | `Tool: search_plugins (via plugin_management) …` (§6) | **NEW** | few |
-| `js`, `js_reset`, `js_add_node_module_dir` | run JavaScript in a computer-use environment | `Tool: js code=… title=…` | same | Generic | 4,056 / 13 / 16 |
-| `speak` | speaks text aloud | `Tool: speak text=…` | same | Generic | 349 |
-| tools you installed (ssh, video, audio …) | anything | `Tool: <name> …` | same | Generic | many |
+| `js` | runs a script in a computer-use environment | `Tool: js code=… title=…` | `Run script: <title>`, the code below | **NEW** | 4,056 |
+| `js_reset` | resets that script environment | `Tool: js_reset` | `Reset script environment` | **NEW** | 13 |
+| `js_add_node_module_dir` | adds a module folder to that environment | `Tool: js_add_node_module_dir path=…` | `Add script module folder: <path>` | **NEW** | 16 |
+| `speak` | speaks text aloud | `Tool: speak text=… play=…` | `Speak: "<text>"` (`(not played)` when `play` is false) | **NEW** | 349 |
+| tools you installed yourself (ssh, video editing, audio …) | anything; the platform cannot know | `Tool: <name> …` | same | Generic | many |
 
-Other facts: Codex records the platform's tools under plain names. The code inside `js` uses objects only Codex has, so its content can never be neutral. `js` and `speak` are probably installed on the node and not Codex built-ins (`Unclear`).
+Other facts: Codex records the platform's tools under plain names. The label of `js` is neutral, but the code inside it uses objects only Codex has, so its content cannot be neutral; the line still tells a reader that a script was run. `js` and `speak` are probably installed on the node and not Codex built-ins (`Unclear`); they are converted by name in this table either way.
 
 ### 4.3 Antigravity (`antigravity_cli`)
 
@@ -97,7 +102,7 @@ Other facts: Codex records the platform's tools under plain names. The code insi
 | `call_mcp_tool` | a wrapper around another tool's call | shown as the wrapped tool's own line | same | Same | 23 |
 | a tool of another server, named `mcp__<server>__<tool>` | anything | `Tool: mcp__x__y …` | `Tool: y (via x) …` (§6) | **NEW** | few |
 | read of `…/.agents/skills/x/SKILL.md` | loads a skill, done as a file read | `Command: cat …/SKILL.md` | `Load skill: x → ok` (§5, N-2) | **NEW** | 139 |
-| `Bash` | a shell tool recorded under this name | `Tool: Bash …` | same | Generic | 2 |
+| `Bash` | a shell tool recorded under this name | `Tool: Bash command=… description=…` | `Command: <command>` | **NEW** | 2 |
 
 Other facts: `send_message_to` arrives with different argument keys here (`content` inline, in 3 calls); the platform converter (§3) reads them. Antigravity's `provider_state` wrapper is removed already.
 
@@ -129,10 +134,15 @@ Only one real Grok journal exists, so everything about Grok beyond its table is 
 | `edit_file` | changes part of a file | `Edit file: <path> (+<added> −<removed>)` | same | Same | |
 | `search_web` | searches the web | `Search web: "<query>"` | same | Same | |
 | `read_media_file` | opens an image, audio or video for viewing | a media marker, e.g. `[image image/png, 2.9 KB, not reproduced]` | same | Same | |
-| `get_process_output` | reads the output of a background process | `Tool: get_process_output pid=… lines=…` | `Read output of background process <pid>` | **NEW** | 38 |
-| `stop_background_process` | stops a background process | `Tool: stop_background_process pid=…` | `Stop background process <pid>` | **NEW** | 11 |
+| `get_process_output` | reads the output of a background process | `Tool: get_process_output pid=… lines=…` | `Read output of background task <pid>` | **NEW** | 38 |
+| `stop_background_process` | stops a background process | `Tool: stop_background_process pid=…` | `Stop background task <pid>` | **NEW** | 11 |
+| `replace_in_file` | replaces text in a file | `Tool: replace_in_file path=… old_text=… new_text=…` | `Edit file: <path> (+<added> −<removed>)` and the diff | **NEW** | 3 |
+| `download_media` | downloads a file from a URL | `Tool: download_media url=… filename=… folder=…` | `Download file: <url> → <folder>/<filename>` | **NEW** | 18 |
+| `download_video` | downloads a video from a URL | `Tool: download_video url=… format=…` | `Download video: <url> (<format>)` | **NEW** | 2 |
+| `convert_video_format` | converts a video to another format | `Tool: convert_video_format input_video_path=… target_format=…` | `Convert video: <input> to <format> → <output>` | **NEW** | 2 |
+| `submit_task_result` | reports the result of its task | `Tool: submit_task_result message=…` | `Submit task result`, the message below | **NEW** | 1 |
 | read of the skill's `SKILL.md` by absolute path | loads a skill, done as a file read | `Command: cat -n …/SKILL.md` | `Load skill: x → ok` (§5, N-2) | **NEW**; the exact path pattern is to be confirmed in the design (`Unclear`) | 205 |
-| `download_media`, `video_editing_get_media_duration`, `convert_video_format`, `download_video`, `replace_in_file`, `find`, `submit_task_result` | native-only helpers | `Tool: <name> …` | same | Generic | 18, 18, 2, 2, 3, 1, 1 |
+| `find` and `video_editing_get_media_duration` | a one-call tool whose arguments I have not seen; a video-editing tool installed on the node | `Tool: <name> …` | same | Generic | 1, 18 |
 
 Other facts: AutoByteus records the platform's tools under plain names. (`generate_video` is a platform media tool, §3.)
 
@@ -194,4 +204,5 @@ AGY      before:  [11:21:02] Tool: send_message_to → failed: {"accepted":false
 | N-2 | Skill detection (§5): S1 or S2? | S1 for plain reads only. |
 | N-3 | The raw tool name is not shown in converted lines (the raw-trace link has it). OK? | Yes (the user's own proposal); re-check memory-search quality in the shadow render. |
 | N-4 | Qualified names (§6) as `(via <server>)`? | Yes. |
-| N-5 | The wording of each line in §3 and §4(b). | The user edits. |
+| N-5 | The wording of each line in §3 and in the NEW rows of §4. | The user edits. |
+| N-6 | Claude's own task list is worded `Create task` / `Update task`, so the platform's board is worded `Create project task` / `Update project task` to keep the two apart. OK? | Yes; otherwise a reader cannot tell the agent's own list from the project's board. |
