@@ -1,0 +1,7 @@
+# API-06 (final, with the changed-manifest step) command: env -i PATH HOME=<temp> TMPDIR pnpm exec vitest run tests/e2e/memory-sync/raw-trace-manifest-runtime-names-sync.e2e.test.ts --no-watch --reporter=verbose
+# commit dd56f6de6c + new test; date 2026-10-30T19:00:36Z
+
+ ✓ tests/e2e/memory-sync/raw-trace-manifest-runtime-names-sync.e2e.test.ts > Memory Sync of a converted raw-trace manifest (two real server processes) > uploads the converted manifest once; the hub mirrors the converted file; an older import stays as it is 159ms
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Duration  5.72s (transform 39ms, setup 39ms, import 15ms, tests 5.12s, environment 0ms)

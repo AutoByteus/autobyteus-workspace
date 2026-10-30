@@ -1,0 +1,18 @@
+# API-01 sanity rerun. command: env -i ... pnpm exec vitest run tests/app-data-migrations tests/architecture tests/unit/agent-memory tests/unit/agent-execution/backends tests/unit/services/agent-streaming --no-watch
+# commit dd56f6de6c; date 2026-10-30T18:51:36Z
+
+test-owned exact retry receipt {"first":{"accepted":false,"code":"RUNTIME_COMMAND_FAILED","message":"Failed to terminate run for runtime 'codex_app_server': AggregateError: Codex exact thread cleanup failed."},"retry":{"accepted":true},"sameThread":"owned-thread-1","sameTurn":"owned-thread-1-turn","facts":[{"kind":"admitted"},{"kind":"forwarded","dispatchKind":"start_turn","turnId":"owned-thread-1-turn"},{"kind":"turn_associated","turnId":"owned-thread-1-turn"},{"kind":"interrupted","turnId":"owned-thread-1-turn"}]}
+stderr | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > the per-run input gate (F-PENDING-FAILED, contract §5.4) > migrates ready runs, waits for a predecessor that can still convert a run, and preserves a tree no predecessor can read
+stderr | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > the per-run input gate (F-PENDING-FAILED, contract §5.4) > migrates ready runs, waits for a predecessor that can still convert a run, and preserves a tree no predecessor can read
+stderr | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > the per-run input gate (F-PENDING-FAILED, contract §5.4) > migrates ready runs, waits for a predecessor that can still convert a run, and preserves a tree no predecessor can read
+stderr | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > the per-run input gate (F-PENDING-FAILED, contract §5.4) > migrates ready runs, waits for a predecessor that can still convert a run, and preserves a tree no predecessor can read
+stderr | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > the per-run input gate (F-PENDING-FAILED, contract §5.4) > migrates ready runs, waits for a predecessor that can still convert a run, and preserves a tree no predecessor can read
+stderr | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > the per-run input gate (F-PENDING-FAILED, contract §5.4) > migrates ready runs, waits for a predecessor that can still convert a run, and preserves a tree no predecessor can read
+stderr | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > the per-run input gate (F-PENDING-FAILED, contract §5.4) > migrates ready runs, waits for a predecessor that can still convert a run, and preserves a tree no predecessor can read
+stderr | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > the per-run input gate (F-PENDING-FAILED, contract §5.4) > migrates ready runs, waits for a predecessor that can still convert a run, and preserves a tree no predecessor can read
+stderr | tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts > the per-run input gate (F-PENDING-FAILED, contract §5.4) > migrates ready runs, waits for a predecessor that can still convert a run, and preserves a tree no predecessor can read
+ Test Files  203 passed | 4 skipped (207)
+      Tests  2076 passed | 6 skipped (2082)
+   Duration  162.31s (transform 7.33s, setup 2.35s, import 59.80s, tests 80.23s, environment 11ms)
+ Test Files  42 passed (42)
+      Tests  312 passed (312)
