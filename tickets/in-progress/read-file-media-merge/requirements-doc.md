@@ -3,7 +3,7 @@
 ## Document Status
 
 - Status: `Approved`
-- Current solution revision ID: `SR-004`
+- Current solution revision ID: `SR-005`
 - Package: `read-file-media-merge`; Task `autobyteus-328`; requested by `/project_task_manager`.
 - Requirements owner: Solution Designer; date 2026-10-29.
 - Approved by: `User` (SR-004 adds REQ-009: the user, 2026-10-29: "just make reading PDF and other binary not supported only support readable format right?" and "i think it could be done in this ticket no as follow up"); reference: the user, 2026-10-29: "The stored agent configuration can be, I mean, it belongs to a separate project, right? … if it belongs to the agent project, then it can be done after another tickets, you know, not in this tickets. Yeah, exactly." Baseline: this document at SR-002. Basis: the user's decision in autobyteus-327 (option (a), `autobyteus-327/requirements-doc-327.md`).
@@ -27,6 +27,7 @@
 | BEH-008 stored tool names | definitions may list `read_media_file` | not changed in this ticket (DEC-001): agent definitions are the agent project's content | an agent listing `read_media_file` keeps working (unknown names are skipped; `read_file` is always present) |
 | BEH-009 Work Journals | recorded `read_media_file` calls render as a media marker | they still do; a `read_file` call that attached media renders as the media marker | text `read_file` rendering |
 | BEH-011 binary documents | `read_file` returns a PDF, DOCX, XLSX, ZIP or other binary file as garbled text | refused with a clear message: binary files are not read; `read_file` reads text, images, audio and video | text reads unchanged (text files contain no NUL byte) |
+| BEH-012 OpenAI tool arguments | OpenAI Responses requests omit `strict`, which the API treats as `true`, so GPT-5 models fill every optional argument of every tool (measured SD-02 run 2: 8 of 8 calls; image reads with `start_line`/`end_line`/`base_dir`, refused by BEH-004) | function tools are sent with `strict: false`, so optional arguments stay optional (measured: image reads send only `path`, 4 of 4) | Chat Completions and other providers unchanged |
 | BEH-010 built-in and public packages | Daily Assistant template and 16 package files name `read_media_file` | Daily Assistant template names `read_file` only; public packages in a separate ticket after a stable release (DEC-002) | — |
 
 ## Scope Guardrail
@@ -49,6 +50,7 @@
 | REQ-006 | No change to stored agent definitions in this ticket; a definition naming `read_media_file` still starts and reads media through `read_file`; the release note names the change | 008 | resolver skips unknown names (notes) |
 | REQ-007 | Work Journals render recorded `read_media_file` calls and media `read_file` calls as the media marker | 009 | — |
 | REQ-009 | A non-media binary file is refused with a clear message instead of being returned as text (DEC-004) | 011 | the NUL-byte heuristic git uses (a NUL byte in the first 8,000 bytes); text files contain none |
+| REQ-010 | OpenAI Responses requests send every function tool with `strict: false` (CR-001, found by API/E2E; root cause proven by the Solution Designer's experiment SD-02) | 012 | SD-02 run 2: strict omitted 8/8 calls fill every optional argument; `strict: false` image reads send only `path` 4/4, text reads only what the request needs |
 | REQ-008 | Daily Assistant template updated; this ticket hands over the 16 package files and wording for the separate package ticket (DEC-002) | 010 | template synced at start (notes) |
 
 ## Acceptance Criteria
@@ -63,6 +65,7 @@
 | AC-006 | 006 | a definition naming `read_media_file` (and not `read_file`) still starts and reads media through `read_file`; no app-data migration added |
 | AC-007 | 007 | Work Journal tests for both cases |
 | AC-008 | 008 | Daily Assistant reads media with `read_file` |
+| AC-010 | 010 | unit: the Responses request body carries `strict: false` on each function tool; live (test vault, small input): a GPT-5 model reads a synthesized image through `read_file` and answers its color, with only `path` in its arguments; one other tool with optional arguments (for example `write_file` or `run_bash`) called by a GPT-5 model without invented optional values |
 | AC-009 | 009 | synthesized binary files (a minimal PDF-like file with a NUL byte, a ZIP, random bytes) are refused with the message; UTF-8 text with non-ASCII characters and an empty text file read as before |
 
 ## Decisions
@@ -72,4 +75,6 @@
 | DEC-001 | Migrate stored `toolNames` (`read_media_file` → `read_file`) in agent definitions? | The Task lists a migration (it came from my autobyteus-327 plan). The new evidence weighs against it: (1) nothing breaks without it, because unknown tool names are skipped and `read_file` is always present for native agents; (2) a migration could only rewrite the app's own default package; your local package folders are not AutoByteus's to change, and GitHub copies are replaced by their source; (3) you ruled the same way for the `list_available_nodes` rename (290), and removed tools were not migrated in 294. Recommendation: **no migration**; a release note says that `read_media_file` is gone and `read_file` reads media; a leftover entry is harmless and can be removed from the agent's tool list in the editor. Decided by the user: no; agent definitions belong to the agent project and change in another ticket. | User | Decided |
 | DEC-002 | When do the 16 public package files change? | A package without `read_media_file` loses media reading on any app build without this change, and package updates reach stable nodes too. Recommendation: the Agent Package Creator updates them (through the PM) once a **stable** release with this change is out; this ticket hands over the exact list and wording. Decided by the user: a separate ticket, not this one. | User | Decided |
 | DEC-003 | Capability `unknown` | load, as today for images (refusing would break models whose capability is not recorded) | Solution Designer | Decided |
+| DEC-005 | Fix the OpenAI `strict` default in this ticket? | Decided by the user (the user, 2026-10-30: "No, not a separate task … We want to do some testing to do some experiments like strict equal to false and to test again. If it's due to this problem, then we fix it immediately in this task."): experiment first, then fix here. Proven (SD-02 run 2). BEH-004's refusal of line ranges for media stays: with `strict: false` GPT-5 no longer sends them. | User | Decided |
+| DEC-006 | Binary detection window (CR-002) | The first 8,000 bytes missed 79 of 400 macOS PDFs (API-05); `read_file` already reads the whole file, so the NUL scan covers the whole buffer: one pass, no format list, the user's DEC-004 unchanged in intent; residual: PDFs with no NUL byte (2 of 400 in that sample) | Solution Designer | Decided |
 | DEC-004 | Non-media binary documents | Decided by the user ("just make reading PDF and other binary not supported only support readable format … it could be done in this ticket"): refused in this ticket. Detection: a NUL byte in the first 8,000 bytes (git's heuristic), checked after the media kind; no format list. | User | Decided |

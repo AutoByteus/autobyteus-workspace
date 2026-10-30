@@ -29,3 +29,9 @@ AC-001 (text reads byte-identical); old skills with workspace-relative media pat
 ## Route record
 
 - `get_handoff_rules` (2026-10-29): Medium / Low → `/software_engineering_team/implementation_engineer`.
+
+## Revision SR-005 (2026-10-30), answering CRR-001/CRR-002
+
+- CR-001 root cause proven: OpenAI Responses treats an omitted `strict` as `true`, so GPT-5 fills every optional tool argument (`evidence/SD-02-openai-strict-probe-run2.json`: strict omitted 8/8 calls fill all; `strict: false` image reads send only `path` 4/4). Fix in this ticket (the user's DEC-005): `openai-responses-llm.ts` `normalizeTools` sends `strict: false` (REQ-010, AC-010). BEH-004's line-range refusal for media stays, its message saying the file was not loaded.
+- CR-002: whole-buffer NUL scan (DEC-006). CR-003: article fix. `start_line`/`end_line` descriptions improved (design-spec § Final File Responsibility Mapping).
+- Classification unchanged: Medium / Low. Route record: same rule → `/software_engineering_team/implementation_engineer`.

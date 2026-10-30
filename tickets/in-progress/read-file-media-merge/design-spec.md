@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-004`
+- Current solution revision ID: `SR-005`
 - Approved requirements: `requirements-doc.md` at SR-004 (SR-002 baseline; SR-004 adds REQ-009, the user's decision), approved by the user on 2026-10-29 (reference in its Document Status); basis: the user's option (a) in autobyteus-327.
 - Behavior-defining supplements: none.
 - Design status: `Ready`
@@ -200,6 +200,8 @@ N/A: `ContextFile` unchanged.
 | --- | --- | --- |
 | `autobyteus-ts/src/tools/file/read-file.ts` | Modify | after `resolveFileToolPath`, a media kind goes to `readMediaFileAsContextFile` (line arguments refused for media before reading); the description gains one sentence (below); `start_line`/`end_line` descriptions say "text files only" |
 | `autobyteus-ts/src/tools/file/read-file.ts` (binary check, REQ-009) | Modify | after the media dispatch, read the file's bytes once; if the first 8,000 bytes contain a NUL byte, throw `The file '<path>' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files.`; otherwise decode the same bytes as UTF-8 and continue exactly as today (one read, no second pass) |
+| `autobyteus-ts/src/llm/api/openai-responses-llm.ts` `normalizeTools` (L148-160) | Modify (REQ-010) | each function tool sent with `strict: false`; a unit test asserts the request body; the comment in `tools/usage/formatters/openai-tool-schema-normalizer.ts` (strict off by default) now holds for the Responses API too |
+| `autobyteus-ts/src/tools/file/read-file.ts` (CR-002, CR-003, line-argument texts) | Modify | the NUL check scans the whole buffer (no 8,000-byte window); the media-kind refusal says "an image/an audio/a video file" (article fix); line-range refusals for media say the file was not loaded and not to claim to have inspected it; `start_line`/`end_line` descriptions: "First line to return (1-based, inclusive). Text files only; omit to start at line 1." / "Last line to return (1-based, inclusive). Text files only; omit to read to the end." |
 | `autobyteus-ts/src/tools/file/read-file-media.ts` | Add | `readMediaFileAsContextFile`: regular file, non-empty (`The media file '<path>' is empty and was not loaded.`), capability refusal per kind (`The selected model does not support <image/audio/video> input. The <kind> file was not loaded. Continue without <visual/audio/video> analysis and do not claim to have inspected it.`; capability `unknown` loads), returns `new ContextFile(resolvedPath)` |
 | `autobyteus-ts/src/tools/multimedia/media-reader-tool.ts` | Remove | — |
 | `autobyteus-ts/src/tools/multimedia/index.ts`, `src/tools/index.ts`, `src/tools/register-tools.ts` | Modify | drop `ReadMediaFile` |
