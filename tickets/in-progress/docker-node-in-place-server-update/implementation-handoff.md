@@ -8,6 +8,7 @@
 - Solution revision record: `solution-revision-record.md` (up to SR-009)
 - Design spec: `design-spec.md` (SR-009), "Change / Refactor Sequence" step 3
 - Supplemental task artifacts: `handoff-step-3.md`, `delivery-receipt-verification-step2.md`, `options-report.md`, `follow-ups.md`
+- Code review of IR-003: `Pass`, CRR-005 (`code-review-report.md`, `code-review-revision-record.md`). All seven assumptions are confirmed, and CR2-N1 is resolved. The non-blocking CR3-N1 is taken with step 4 or before delivery, not now, so the code under API/E2E stays unchanged: SelfCheck should report "exited with code N before answering" and keep the candidate's last output lines in the starter log.
 - Earlier rounds:
   - step 1: IR-001, passed CRR-001, finalized (DR-001);
   - step 2: IR-002, passed CRR-003 and API/E2E (API-REV-002), finalized (DR-002, merge `a0f4b491f7`).
