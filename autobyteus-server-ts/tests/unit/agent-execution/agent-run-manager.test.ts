@@ -4,12 +4,14 @@ import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-u
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
 import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-context.js";
 import type { AgentOperationResult } from "../../../src/agent-execution/domain/agent-operation-result.js";
+import { AgentRunEventType, type AgentRunEvent } from "../../../src/agent-execution/domain/agent-run-event.js";
 import { AgentRunManager } from "../../../src/agent-execution/services/agent-run-manager.js";
 import { AgentRunResourceManager } from "../../../src/agent-execution/services/agent-run-resource-manager.js";
 import { AgentRunActivationRegistry } from "../../../src/agent-execution/runtime/agent-run-activation-registry.js";
 import { RunPassRegistry } from "../../../src/credential-proxy/run-pass-registry.js";
 import type { IntegrationRunAccess } from "../../../src/credential-proxy/integration-run-access.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
+import { AgentRunHistoryCatalogService } from "../../../src/run-history/services/agent-run-history-catalog-service.js";
 import {
   PreviousRuntimeReleasePendingError,
   isAgentRunActivationQuarantineError,
@@ -826,6 +828,115 @@ describe("AgentRunManager published-run termination", () => {
       expect(backend.terminate).toHaveBeenCalledOnce();
       expect(activationRegistry.getRetiredRun(run.runId)).toBeNull();
     });
+  });
+
+  it("fences (interrupts) the run before preparing termination", async () => {
+    const { manager, run, backend } = await publish({ runId: "run-fence-first" });
+    const fence = vi.spyOn(run, "fenceInputAndInterruptForRootShutdown");
+    const prepare = vi.spyOn(manager, "prepareAgentRunTermination");
+
+    await expect(manager.terminateAgentRun(run.runId)).resolves.toBe(true);
+
+    expect(fence).toHaveBeenCalledOnce();
+    expect(fence.mock.invocationCallOrder[0]).toBeLessThan(prepare.mock.invocationCallOrder[0]!);
+    expect(backend.terminate).toHaveBeenCalledOnce();
+  });
+
+  it("interrupts a busy turn and finishes once the turn ends, instead of waiting for it", async () => {
+    const backend = createBackend({ runId: "run-busy" });
+    let currentTurn: { kind: "NONE" } | { kind: "IDENTIFIED"; turnId: string } = { kind: "IDENTIFIED", turnId: "turn-busy" };
+    let publishSource: ((events: AgentRunEvent[]) => Promise<void> | void) | null = null;
+    const busyBackend = Object.assign(backend, {
+      getLifecycleSnapshot: () => ({ availability: "active" as const, phase: "running" as const, currentTurn }),
+      subscribeToSourceEventBatches: (listener: typeof publishSource) => { publishSource = listener; return () => undefined; },
+    });
+    const { manager, run } = await publish({ runId: "run-busy", backend: busyBackend });
+
+    let settled = false;
+    const terminating = manager.terminateAgentRun(run.runId).then((result) => { settled = true; return result; });
+    await vi.waitFor(() => expect(backend.interrupt).toHaveBeenCalledWith("turn-busy"));
+    expect(settled).toBe(false);
+    expect(backend.terminate).not.toHaveBeenCalled();
+
+    currentTurn = { kind: "NONE" };
+    await publishSource!([{ eventType: AgentRunEventType.TURN_INTERRUPTED, runId: run.runId,
+      payload: { turn_id: "turn-busy" }, statusHint: null }]);
+    await expect(terminating).resolves.toBe(true);
+    expect(backend.terminate).toHaveBeenCalledOnce();
+  });
+
+  it("returns false without preparing when the fence is not accepted, leaving the run active", async () => {
+    const { manager, run, backend } = await publish({ runId: "run-fence-rejected" });
+    vi.spyOn(run, "fenceInputAndInterruptForRootShutdown")
+      .mockResolvedValue({ accepted: false, code: "INTERRUPT_REJECTED", message: "busy" });
+    const prepare = vi.spyOn(manager, "prepareAgentRunTermination");
+
+    await expect(manager.terminateAgentRun(run.runId)).resolves.toBe(false);
+
+    expect(prepare).not.toHaveBeenCalled();
+    expect(backend.terminate).not.toHaveBeenCalled();
+    expect(manager.getActiveRun(run.runId)).toBe(run);
+  });
+
+  it("fences every run concurrently before finishing any, then finishes them in order", async () => {
+    const backends = [createBackend({ runId: "run-all-a" }), createBackend({ runId: "run-all-b" })];
+    const createBackendFn = vi.fn().mockResolvedValueOnce(backends[0]).mockResolvedValueOnce(backends[1]);
+    const { manager } = createManagerFixture({ codexBackendFactory: { createBackend: createBackendFn, restoreBackend: vi.fn() } });
+    const runs = [];
+    for (const runId of ["run-all-a", "run-all-b"]) {
+      runs.push((await manager.beginActivation({ kind: "new", runId, config: createConfig() }).prepare()).commitPublication());
+    }
+    const releases: Array<() => void> = [];
+    const fences = runs.map((run) => vi.spyOn(run, "fenceInputAndInterruptForRootShutdown").mockImplementation(
+      () => new Promise((resolve) => { releases.push(() => resolve({ accepted: true })); })));
+    const prepare = vi.spyOn(manager, "prepareAgentRunTermination");
+
+    const stopping = manager.stopAllAgentRuns();
+    await vi.waitFor(() => expect(releases).toHaveLength(2));
+    expect(fences[0]).toHaveBeenCalledOnce();
+    expect(fences[1]).toHaveBeenCalledOnce();
+    expect(prepare).not.toHaveBeenCalled();
+    for (const release of releases) release();
+    await expect(stopping).resolves.toBeUndefined();
+
+    expect(prepare.mock.calls.map(([run]) => run)).toEqual(runs);
+    expect(backends[0]!.terminate).toHaveBeenCalledOnce();
+    expect(backends[1]!.terminate).toHaveBeenCalledOnce();
+    expect(manager.listActiveRuns()).toEqual([]);
+  });
+
+  it("stops the other runs and reports a run whose stop fence fails or is not accepted", async () => {
+    const backends = ["run-x", "run-y", "run-z"].map((runId) => createBackend({ runId }));
+    const createBackendFn = vi.fn();
+    for (const backend of backends) createBackendFn.mockResolvedValueOnce(backend);
+    const { manager } = createManagerFixture({ codexBackendFactory: { createBackend: createBackendFn, restoreBackend: vi.fn() } });
+    const runs = [];
+    for (const backend of backends) {
+      runs.push((await manager.beginActivation({ kind: "new", runId: backend.runId, config: createConfig() }).prepare()).commitPublication());
+    }
+    vi.spyOn(runs[0]!, "fenceInputAndInterruptForRootShutdown").mockRejectedValue(new Error("fence broke"));
+    vi.spyOn(runs[1]!, "fenceInputAndInterruptForRootShutdown").mockResolvedValue({ accepted: false, message: "busy" });
+
+    const failure = await manager.stopAllAgentRuns().catch((error: unknown) => error);
+
+    expect(failure).toBeInstanceOf(AggregateError);
+    expect((failure as AggregateError).errors.map(String)).toEqual([
+      "Error: fence broke",
+      "Error: Agent run 'run-y' did not accept the stop fence: busy",
+    ]);
+    expect(backends[0]!.terminate).not.toHaveBeenCalled();
+    expect(backends[1]!.terminate).not.toHaveBeenCalled();
+    expect(backends[2]!.terminate).toHaveBeenCalledOnce();
+  });
+
+  it("records no terminated history when stopping all runs (shutdown is not Terminate)", async () => {
+    const recordTerminated = vi.spyOn(AgentRunHistoryCatalogService.prototype, "recordRunTerminated");
+    const { manager, run } = await publish({ runId: "run-stop-all-history" });
+
+    await expect(manager.stopAllAgentRuns()).resolves.toBeUndefined();
+
+    expect(manager.getActiveRun(run.runId)).toBeNull();
+    expect(recordTerminated).not.toHaveBeenCalled();
   });
 
   it("routes stop-all active runs through the managed prepared boundary", async () => {

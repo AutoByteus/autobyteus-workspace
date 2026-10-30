@@ -1,0 +1,11 @@
+# IMP-10 fail-before (process-tree.ts restored from bf2857ca29, tests from 83a73f24d7)
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/unit/utils/process-tree.test.ts tests/unit/shutdown/server-process-tree-sweep.test.ts --no-watch
+# Commit: 83a73f24d7
+# Environment: macOS 26.5.2, node v22.23.1
+# Date: 2026-10-30
+
+     × never counts or signals its own ps reader (default reader, idle server) 4ms
+     × reads through one bounded ps call 2ms
+     × drops the ps reader's own row, so the caller never selects its reader 0ms
+     × throws when the table cannot be read 3ms
+      Tests  4 failed | 17 passed (21)

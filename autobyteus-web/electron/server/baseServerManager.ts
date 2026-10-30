@@ -4,6 +4,7 @@ import { EventEmitter } from 'events'
 import { waitForBackendPort, assertBackendPortAvailable, isAddressInUse, PortConflictError } from './backendPortAvailability'
 import { inspectPortOwner } from './portOwnerInspector'
 import { stopManagedBackend, waitForChildExit, childExited, ShutdownIncompleteError } from './managedBackendStop'
+import { PROCESS_TREE_GRACE_MS, readProcessTable, selectServerTreeTargets, signalTargets, waitForTargetsGone, type KillTarget } from './serverProcessTree'
 import { logger as rootLogger } from '../logger'
 import {
   formatEmbeddedServerClientBaseUrl,
@@ -190,8 +191,26 @@ export abstract class BaseServerManager extends EventEmitter {
     if (!childExited(proc)) proc.kill('SIGTERM')
     await waitForChildExit(proc, this.gracefulShutdownTimeoutMs)
   }
+  /**
+   * POSIX force step: stop the server's whole tree, not the server alone. Record its descendants
+   * first, SIGTERM them (runtime CLIs end their own tool commands on SIGTERM, not on SIGKILL or EOF),
+   * SIGKILL the server, then SIGKILL the recorded survivors after a short grace.
+   */
   protected async forceStop(proc: ChildProcess): Promise<void> {
+    if (childExited(proc) || !proc.pid) return
+    const kill: KillTarget = (target, signal) => { process.kill(target, signal) }
+    let targets: number[] = []
+    try { targets = selectServerTreeTargets(await readProcessTable(), proc.pid) }
+    catch (error) { logger.warn(`Server process tree unreadable; force-stopping the server only: ${String(error)}`) }
+    if (targets.length) logger.warn(`Force-stopping the server and ${targets.length} recorded descendant target(s)`)
+    const logFailures = (errors: unknown[], signal: NodeJS.Signals) => {
+      for (const error of errors) logger.warn(`Server process-tree ${signal} failed: ${String(error)}`)
+    }
+    logFailures(signalTargets(targets, 'SIGTERM', kill), 'SIGTERM')
     if (!childExited(proc)) proc.kill('SIGKILL')
+    if (!targets.length) return
+    const survivors = await waitForTargetsGone(targets, PROCESS_TREE_GRACE_MS, kill)
+    logFailures(signalTargets(survivors, 'SIGKILL', kill), 'SIGKILL')
   }
 
   /**

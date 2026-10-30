@@ -1,0 +1,86 @@
+{
+  "case": "busy-run-stop-now",
+  "serverDir": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-api.Gy1t06/base/autobyteus-server-ts",
+  "date": "2026-10-30T12:52:56.639Z",
+  "own": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/busy-run-stop-now-CIrsvQ",
+  "tag": "BQ284_96212_1793364776639",
+  "steps": [
+    {
+      "step": "server started",
+      "value": {
+        "label": "first",
+        "pid": 96213,
+        "port": 60407
+      },
+      "at": "2026-10-30T12:52:59.916Z"
+    },
+    {
+      "step": "model",
+      "value": {
+        "calls": 1,
+        "label": "A",
+        "invoke": true
+      },
+      "at": "2026-10-30T12:53:00.128Z"
+    },
+    {
+      "step": "busy",
+      "value": {
+        "label": "A",
+        "runId": "busy_stop_bq284_96212_1793364776639_07417e2d18bd462a9ed791e5a9f84b60",
+        "pids": {
+          "terminate-fg": 96249
+        }
+      },
+      "at": "2026-10-30T12:53:00.582Z"
+    },
+    {
+      "step": "terminate",
+      "value": {
+        "runId": "busy_stop_bq284_96212_1793364776639_07417e2d18bd462a9ed791e5a9f84b60",
+        "result": {
+          "success": false,
+          "message": "pending or failed: TimeoutError: The operation was aborted due to timeout"
+        },
+        "elapsedMs": 20006,
+        "foregroundGone": false
+      },
+      "at": "2026-10-30T12:53:25.597Z"
+    },
+    {
+      "step": "cleanup forced server",
+      "value": 96213,
+      "at": "2026-10-30T12:53:25.650Z"
+    },
+    {
+      "step": "fixture fallback cleanup",
+      "value": {
+        "pid": 96249,
+        "ppid": 1,
+        "pgid": 96220,
+        "command": "/Users/normy/.hermes/node/bin/node -e /*BQ284_96212_1793364776639_terminate-fg*/require('fs').writeFileSync(\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/busy-run-stop-now-CIrsvQ/workspace/terminate-fg.json\",JSON.stringify({pid:process.pid}));setInterval(()=>{},1000) BQ284_96212_1793364776639_terminate-fg"
+      },
+      "at": "2026-10-30T12:53:25.716Z"
+    }
+  ],
+  "terminate": {
+    "runId": "busy_stop_bq284_96212_1793364776639_07417e2d18bd462a9ed791e5a9f84b60",
+    "result": {
+      "success": false,
+      "message": "pending or failed: TimeoutError: The operation was aborted due to timeout"
+    },
+    "elapsedMs": 20006,
+    "foregroundGone": false
+  },
+  "result": "Fail",
+  "error": "AssertionError [ERR_ASSERTION]: terminate: pending or failed: TimeoutError: The operation was aborted due to timeout\n\nfalse !== true\n\n    at file:///private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-api.Gy1t06/clean/autobyteus-server-ts/tests/e2e/shutdown/busy-run-stop-now-fixture.mjs:118:10",
+  "calls": 1,
+  "serverLogs": [
+    {
+      "label": "first",
+      "pid": 96213,
+      "tail": "Pre-loaded 32 LLM models into cache.\nPre-loaded 7 image models into cache.\nPre-loaded 3 audio models into cache.\nBackground application cache pre-loading completed.\nBackground task 'Cache Pre-loading' completed successfully.\nDiscovering LM Studio models from host: http://127.0.0.1:60406\nAgent Definition created successfully with ID: busy-stop-bq284-96212-1793364776639\nCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/busy-run-stop-now-CIrsvQ/workspace\nCreated metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/busy-run-stop-now-CIrsvQ/workspace.\nCreated and registered workspace ID: agent_ws_96802f0ae871d13d1849079705a39caa6a4404525417761ace1ae47cdbf9a5b6\nCreating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/busy-run-stop-now-CIrsvQ/workspace\nCreated metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/busy-run-stop-now-CIrsvQ/workspace.\nReusing registered workspace ID: agent_ws_96802f0ae871d13d1849079705a39caa6a4404525417761ace1ae47cdbf9a5b6\nMediaStorageService initialized. Media root: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/busy-run-stop-now-CIrsvQ/data/media\nAgentRuntimeState initialized for agent_id 'busy_stop_bq284_96212_1793364776639_07417e2d18bd462a9ed791e5a9f84b60'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.\nAgent 'busy_stop_bq284_96212_1793364776639_07417e2d18bd462a9ed791e5a9f84b60': LLM instance 'LMStudioLLM' and 7 tools prepared and stored in state.\nAgentContext composed for agent_id 'busy_stop_bq284_96212_1793364776639_07417e2d18bd462a9ed791e5a9f84b60'. Config and State linked.\nInstantiating AgentRuntime for agent_id: 'busy_stop_bq284_96212_1793364776639_07417e2d18bd462a9ed791e5a9f84b60' with config: 'Busy stop BQ284_96212_1793364776639'.\nAgentWorker initialized for agent_id 'busy_stop_bq284_96212_1793364776639_07417e2d18bd462a9ed791e5a9f84b60'.\nRegistered AgentContext for agent_id 'busy_stop_bq284_96212_1793364776639_07417e2d18bd462a9ed791e5a9f84b60'. Total registered contexts: 1\nAgentRuntime initialized for agent_id 'busy_stop_bq284_96212_1793364776639_07417e2d18bd462a9ed791e5a9f84b60'. Context registered.\nAgent facade initialized for agent_id 'busy_stop_bq284_96212_1793364776639_07417e2d18bd462a9ed791e5a9f84b60'.\nAgent 'busy_stop_bq284_96212_1793364776639_07417e2d18bd462a9ed791e5a9f84b60' created and stored successfully.\nAgent 'busy_stop_bq284_96212_1793364776639_07417e2d18bd462a9ed791e5a9f84b60' requesting runtime to start.\nAgentRuntime for 'busy_stop_bq284_96212_1793364776639_07417e2d18bd462a9ed791e5a9f84b60': Starting worker.\nAgentWorker 'busy_stop_bq284_96212_1793364776639_07417e2d18bd462a9ed791e5a9f84b60': Starting...\nAgentWorker 'busy_stop_bq284_96212_1793364776639_07417e2d18bd462a9ed791e5a9f84b60' asyncRun(): Starting.\nAgent 'busy_stop_bq284_96212_1793364776639_07417e2d18bd462a9ed791e5a9f84b60': Runtime init completed (event store initialized).\nAgent 'busy_stop_bq284_96212_1793364776639_07417e2d18bd462a9ed791e5a9f84b60': Runtime init completed (status deriver initialized).\nAgent 'busy_stop_bq284_96212_1793364776639_07417e2d18bd462a9ed791e5a9f84b60': Runtime init completed (AgentEventInbox initialized).\nAgent 'busy_stop_bq284_96212_1793364776639_07417e2d18bd462a9ed791e5a9f84b60': Runtime init completed (AgentEventScheduler initialized).\nWaiting for agent 'busy_stop_bq284_96212_1793364776639_07417e2d18bd462a9ed791e5a9f84b60' to become idle (timeout: 30s)...\nAgentEventStream (ID: 1f00cf08-1236-48c9-9672-aed55d11a188) initialized for agent_id 'busy_stop_bq284_96212_1793364776639_07417e2d18bd462a9ed791e5a9f84b60'. Subscribed to notifier.\nAgent 'busy_stop_bq284_96212_1793364776639_07417e2d18bd462a9ed791e5a9f84b60': Starting direct runtime bootstrap lifecycle.\nAgentExternalEventNotifier (NotifierID: 1dfe7b18-e1bf-4a75-94d7-79494d7ff6c2, AgentID: busy_stop_bq284_96212_1793364776639_07417e2d18bd462a9ed791e5a9f84b60) emitted agent_status. Kwarg keys for emit: agent_id,payload\nAgent 'busy_stop_bq284_96212_1793364776639_07417e2d18bd462a9ed791e5a9f84b60': Bootstrapper starting direct lifecycle execution.\nAgent 'busy_stop_bq284_96212_1793364776639_07417e2d18bd462a9ed791e5a9f84b60': Running bootstrap step 0 (McpServerPrewarmingStep).\nAgent 'busy_stop_bq284_96212_1793364776639_07417e2d18bd462a9ed791e5a9f84b60': Executing McpServerPrewarmingStep.\nAgent 'busy_stop_bq284_96212_1793364776639_07417e2d18bd462a9ed791e5a9f84b60': Running bootstrap step 1 (SystemPromptProcessingStep).\nAgent 'busy_stop_bq284_96212_1793364776639_07417e2d18bd462a9ed791e5a9f84b60': Executing SystemPromptProcessingStep.\nAgent 'busy_stop_bq284_96212_1793364776639_07417e2d18bd462a9ed791e5a9f84b60': No configured skills. Skipping skill catalog.\nAgent 'busy_stop_bq284_96212_1793364776639_07417e2d18bd462a9ed791e5a9f84b60': Final processed system prompt configured and captured. Trace ID: rt_1793364779996_3471da91-d225-4b29-a966-2225162af7fe. Final length: 4340.\nAgent 'busy_stop_bq284_96212_1793364776639_07417e2d18bd462a9ed791e5a9f84b60': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).\nAgentExternalEventNotifier (NotifierID: 1dfe7b18-e1bf-4a75-94d7-79494d7ff6c2, AgentID: busy_stop_bq284_96212_1793364776639_07417e2d18bd462a9ed791e5a9f84b60) emitted agent_status. Kwarg keys for emit: agent_id,payload\nAgentWorker 'busy_stop_bq284_96212_1793364776639_07417e2d18bd462a9ed791e5a9f84b60' initialized successfully. Entering main event scheduler loop.\nAgent 'busy_stop_bq284_96212_1793364776639_07417e2d18bd462a9ed791e5a9f84b60' has become idle.\nAgentEventStream (ID: 1f00cf08-1236-48c9-9672-aed55d11a188) for 'busy_stop_bq284_96212_1793364776639_07417e2d18bd462a9ed791e5a9f84b60': close() called. Unsubscribing all listeners and signaling.\nAgentEventStream (ID: 4aaf9a8c-7bc9-49ba-964e-f43d9e30f2f9) initialized for agent_id 'busy_stop_bq284_96212_1793364776639_07417e2d18bd462a9ed791e5a9f84b60'. Subscribed to notifier.\nAgent websocket attached for run busy_stop_bq284_96212_1793364776639_07417e2d18bd462a9ed791e5a9f84b60\nCreated agent session ca83c1b1-8399-4643-92de-0ea51ac6fc18 for run busy_stop_bq284_96212_1793364776639_07417e2d18bd462a9ed791e5a9f84b60\nAgent WebSocket connected: session=ca83c1b1-8399-4643-92de-0ea51ac6fc18, run=busy_stop_bq284_96212_1793364776639_07417e2d18bd462a9ed791e5a9f84b60\nAgentExternalEventNotifier (NotifierID: 1dfe7b18-e1bf-4a75-94d7-79494d7ff6c2, AgentID: busy_stop_bq284_96212_1793364776639_07417e2d18bd462a9ed791e5a9f84b60) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload\nAgentExternalEventNotifier (NotifierID: 1dfe7b18-e1bf-4a75-94d7-79494d7ff6c2, AgentID: busy_stop_bq284_96212_1793364776639_07417e2d18bd462a9ed791e5a9f84b60) emitted agent_status. Kwarg keys for emit: agent_id,payload\nAgent run 'busy_stop_bq284_96212_1793364776639_07417e2d18bd462a9ed791e5a9f84b60': UserInputContextBuildingProcessor completed. Final content length: 30\nAgentExternalEventNotifier (NotifierID: 1dfe7b18-e1bf-4a75-94d7-79494d7ff6c2, AgentID: busy_stop_bq284_96212_1793364776639_07417e2d18bd462a9ed791e5a9f84b60) emitted agent_status. Kwarg keys for emit: agent_id,payload\nLlmStreamingResponseHandler finalized 1 tool invocations.\nAgentExternalEventNotifier (NotifierID: 1dfe7b18-e1bf-4a75-94d7-79494d7ff6c2, AgentID: busy_stop_bq284_96212_1793364776639_07417e2d18bd462a9ed791e5a9f84b60) emitted agent_status. Kwarg keys for emit: agent_id,payload\nAgentExternalEventNotifier (NotifierID: 1dfe7b18-e1bf-4a75-94d7-79494d7ff6c2, AgentID: busy_stop_bq284_96212_1793364776639_07417e2d18bd462a9ed791e5a9f84b60) emitted agent_tool_execution_started. Kwarg keys for emit: agent_id,payload\nAgentExternalEventNotifier (NotifierID: 1dfe7b18-e1bf-4a75-94d7-79494d7ff6c2, AgentID: busy_stop_bq284_96212_1793364776639_07417e2d18bd462a9ed791e5a9f84b60) emitted agent_data_tool_log. Kwarg keys for emit: agent_id,payload\n"
+    }
+  ],
+  "rootRemoved": true
+}
