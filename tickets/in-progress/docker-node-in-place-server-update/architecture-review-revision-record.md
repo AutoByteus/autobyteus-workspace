@@ -9,6 +9,7 @@ The latest `design-review-report.md` (same folder) is authoritative. This record
 | ARCH-REV-001 | Round 1 / Solution Designer `Architecture Design Complete` (Large / High) | SR-003, SR-004 | N/A | Fail (Design Impact) | AR-001..AR-012 |
 | ARCH-REV-002 | Round 2 / Solution Designer revision for ARCH-REV-001 (SR-005, Large / High) | SR-003, SR-005 | Fail | Pass | AR-001..AR-012 resolved; N-1 non-blocking note |
 | ARCH-REV-003 | Round 3 / basis confirmation for build step 2 (`handoff-step-2.md`) | SR-005, SR-006, SR-007 | Pass | Pass | N-1 closed (SR-006); no new findings |
+| ARCH-REV-004 | Round 4 / build step 3 with the SR-009 delta (`handoff-step-3.md`) | SR-005, SR-009 | Pass | Pass | No findings; non-blocking notes N-2, N-3 |
 
 ## Revision Entries
 
@@ -113,3 +114,29 @@ None.
 - Remaining risks or uncertainty:
   - the DEC-016 figure is awaiting the user's confirmation;
   - step 5 still waits for autobyteus-285 and -287.
+
+### ARCH-REV-004 — Build step 3 and the SR-009 delta
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-in-place-server-update/tickets/in-progress/docker-node-in-place-server-update/design-review-report.md` (section "Step 3 Review: SR-009 Delta")
+- Review round and trigger: round 4; Solution Designer run `solution_designer_f2a096fe80af461e9d7c04ea18dfd6fc`, `Architecture Design Complete` for build step 3 (`handoff-step-3.md`); step 2 finalized (merge `a0f4b491f7`, `origin/personal` @ `6b34f900b6`)
+- Relevant solution revision IDs: `SR-005` (design), `SR-009` (RU-23, CR2-N1)
+- Prior authoritative decision: `Pass` (ARCH-REV-003)
+- Current authoritative decision: `Pass` for build step 3
+- What changed:
+  - The design-spec diff holds only the delta: the `NO_PACKAGES_VOLUME` gate in `UpdateService`, the optional `updateBlocker` in C2/C1, launcher `status` showing the starter state, and the release-notes instruction.
+  - Each part checked: gate scenario (API-12 evidence; the MP-001 consequence), mount detection (no Dockerfile `VOLUME`, `Dockerfile.monorepo:120`), additive frozen-contract change, single gate owner.
+  - Step 2 as built supports step 3: `ServerSupervisor` and its `exited` promise, `stopwaitsecs=30`, and D-1..D-3 confirmed by CRR-003.
+
+#### Prior Finding Resolution
+
+None open.
+
+- New or remaining finding IDs: none. Non-blocking notes:
+  - N-2: `updateBlocker` comes from `UpdateService`'s one gate rule;
+  - N-3: launcher `status` tolerates a node without a starter or a stopped container.
+- Material classification changes: none (Large / High)
+- Recommended recipient: Implementation Engineer (build step 3); informational notification to the Solution Designer
+- Remaining risks or uncertainty:
+  - the DEC-016 figure is awaiting the user's confirmation;
+  - step 5 waits for autobyteus-285 and -287;
+  - the release notes of the release that ships step 3 must tell launcher users to reinstall the launcher.

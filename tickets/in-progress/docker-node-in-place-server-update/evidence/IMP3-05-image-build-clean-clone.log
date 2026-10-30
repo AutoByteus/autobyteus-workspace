@@ -1,0 +1,13 @@
+# IMP3-05 image build from a clean clone of c72107a0fd (linux/arm64), and the test image
+# Commands: git clone --no-hardlinks <worktree> /tmp/ab305/clean && git checkout c72107a0fd;
+#   docker buildx build --builder desktop-linux --load --platform linux/arm64 -f autobyteus-server-ts/docker/Dockerfile.monorepo -t autobyteus-server-305-test:step3 .
+#   docker build -f IMP3-proof-Dockerfile.testkey -t autobyteus-server-305-test:step3-testkey .   (a throwaway test public key over the image's key, and AUTOBYTEUS_SERVER_PACKAGE_SOURCE=http://host.docker.internal:<port>/releases)
+# Date: 2026-10-30. Environment: macOS arm64 host, Docker 29.0.1
+
+#41 24.09 Wrote server-package.json: 1.5.11-beta.5 linux-arm64, Node modules 127, system level 1, 61 migrations
+#50 [runtime  9/16] COPY autobyteus-server-ts/docker/starter/*.mjs /opt/autobyteus/starter/
+#51 [runtime 10/16] COPY autobyteus-server-ts/docker/server-package-signing-key.pem /opt/autobyteus/starter/server-package-signing-key.pem
+exit 0
+testkey exit 0
+image autobyteus-server-305-test:step3 sha256:c6fa9b86431487e5a25a231297287d2b3022bb5db0ca60abc93b956ccae61c1c
+image autobyteus-server-305-test:step3-testkey sha256:3f6701699cacc110cb787f88141a69fbd8e2b19135c51b76c42db2c42dac4f69

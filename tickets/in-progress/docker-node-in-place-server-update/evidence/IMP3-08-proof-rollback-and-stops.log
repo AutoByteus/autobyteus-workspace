@@ -1,0 +1,26 @@
+# IMP3-08 — see IMP3-proof-run-proof.sh (case_rollback) or IMP3-proof-run-stops.sh; commit c72107a0fd (image above); test-owned containers and volumes only (label autobyteus.validation=ab305-s3), removed afterwards
+# S3-03 a version that migrates the data then fails, and container stops during the copy, the trial and the restore
+# image: autobyteus-server-305-test:step3-testkey sha256:3f6701699cacc110cb787f88141a69fbd8e2b19135c51b76c42db2c42dac4f69; release source: AUTOBYTEUS_SERVER_PACKAGE_SOURCE in the image
+# date: 2026-10-30T19:14Z
+
+## AC-004: 1.5.14 migrates (table Test305_1_5_14), then exits 30 s after its start
+table during the trial: 1
+result: {"state":"failed","targetVersion":"1.5.14","step":"rollingBack","code":"FAILED_AFTER_SWITCH","message":"1.5.14 did not come up (it exited with code 3 within 60 s of answering); 1.5.11-beta.5 runs again on the data as it was before the update.","startedAt":"2026-10-30T19:14:50.921Z","finishedAt":"2026-10-30T19:15:32.334Z","requestedFrom":"host command"}
+after: version=1.5.11-beta.5 pid=1047 source=builtIn state.json={"current":{"source":"builtIn","version":"1.5.11-beta.5"}}; table after rollback: 0; files: downloads packages state.json update.json 
+
+## a container stop during the trial (1.5.14 running, its migration applied)
+before stop: table 1; state.json {"current":{"source":"builtIn","version":"1.5.11-beta.5"},"trial":{"source":"installed","version":"1.5.14","previous":{"source":"builtIn","version":"1.5.11-beta.5"},"dataCopy":true}}
+after restart: version=1.5.11-beta.5 pid=300 source=builtIn state.json={"current":{"source":"builtIn","version":"1.5.11-beta.5"}}; update: {"state":"failed","targetVersion":"1.5.14","step":"confirming","code":"INTERRUPTED","message":"The update to 1.5.14 was interrupted; this node runs 1.5.11-beta.5 again.","startedAt":"2026-10-30T19:15:35.135Z","finishedAt":"2026-10-30T19:16:03.547Z","requestedFrom":"host command"}
+table: 0; files: downloads packages state.json update.json 
+
+## a container stop during the data copy (a 1.5 GB file in the data folder makes the copy take seconds)
+before stop: /home/autobyteus/server-packages/data-copy.partial
+276M	/home/autobyteus/server-packages/data-copy.partial state.json {"current":{"source":"builtIn","version":"1.5.11-beta.5"}}
+after restart: version=1.5.11-beta.5 pid=366 source=builtIn state.json={"current":{"source":"builtIn","version":"1.5.11-beta.5"}}; update: {"state":"failed","targetVersion":"1.5.14","step":"confirming","code":"INTERRUPTED","message":"The update to 1.5.14 was interrupted; this node runs 1.5.11-beta.5 again.","startedAt":"2026-10-30T19:16:07.823Z","finishedAt":"2026-10-30T19:16:22.315Z","requestedFrom":"host command"}
+files: downloads packages state.json update.json 
+
+## the container is killed (power loss) when the rollback of 1.5.14 starts its restore (the 1.5 GB file makes it take a while)
+state.json at the kill: {"current":{"source":"builtIn","version":"1.5.11-beta.5"}}
+data folder at the kill: agent-orgs agents agent-teams application-packages db download large-test-file llm logs memory memory-search skills temp_workspace 
+after restart: version=1.5.11-beta.5 pid=100 source=builtIn state.json={"current":{"source":"builtIn","version":"1.5.11-beta.5"}}; update: {"state":"failed","targetVersion":"1.5.14","step":"rollingBack","code":"FAILED_AFTER_SWITCH","message":"1.5.14 did not come up (it exited with code 3 within 60 s of answering); 1.5.11-beta.5 runs again on the data as it was before the update.","startedAt":"2026-10-30T19:16:26.111Z","finishedAt":"2026-10-30T19:17:08.068Z","requestedFrom":"host command"}
+table: 0; large file intact: 1500000000; files: downloads packages state.json update.json 

@@ -1,0 +1,57 @@
+# IMP3-01 starter unit tests (update-flow: real child processes, a local release source, real tar archives, descriptions signed with the fixture key)
+# Command: pnpm -C autobyteus-server-ts test:starter   (while finding two test races, the suite also ran 10 times in a row: 10/10 pass)
+# Commit: 71604951d4
+# Environment: macOS arm64, v22.23.1, Python 3.9.6
+# Date: 2026-10-30T19:22Z
+
+ok 1 - boots the built-in package, serves its status to cli.mjs, and stops it on request
+ok 2 - the server exit ends the starter with the server exit code
+ok 3 - NEEDS_NEW_IMAGE: no server runs, the starter stays up and its status says which image is needed
+ok 4 - boot rolls back an interrupted trial, restores its data copy and records INTERRUPTED
+ok 5 - without a trial, boot deletes a partial data copy and marks a running update INTERRUPTED
+ok 6 - cli.mjs: an unknown command and an unreachable starter are errors with one JSON line
+ok 7 - the socket answers 400 INVALID_VERSION for a target that is not a release version
+ok 8 - a first boot runs the built-in package and records it as current
+ok 9 - an installed package newer than the built-in one keeps running (AC-006, older image)
+ok 10 - a newer image runs its built-in package instead of an older installed one (AC-006, newer image)
+ok 11 - an installed package that does not fit and an older built-in one give NEEDS_NEW_IMAGE (AC-006 alternate)
+ok 12 - a built-in version that already ran on a newer image cannot be run by an older image
+ok 13 - a missing installed package, or one holding another version, is not run
+ok 14 - rollBackTrial makes the version before the trial current again
+ok 15 - removeLeftovers removes downloads, partial unpacks and self-check folders only
+ok 16 - recognizes exactly the release grammar of release_versions.py
+ok 17 - orders versions by semver precedence, as release_versions.py does
+ok 18 - refuses to order a version it does not recognize
+ok 19 - starts the package with the C4 arguments, its folder as working directory and the starter socket
+ok 20 - reports the server exit with its code, and kills what it left in its process group
+ok 21 - a server that ignores SIGTERM is killed with its group after the stop limit
+ok 22 - a start waits for the server port to be free, then starts anyway after the limit
+ok 23 - exitCodeOf reports a signal as 128 + its number
+ok 24 - AC-001/AC-002: a newer package is downloaded, verified, self-checked and switched to
+ok 25 - an update that brings a data migration copies the data first and deletes the copy once confirmed
+ok 26 - AC-004: a new version that fails after the switch is rolled back, with the data as before
+    ok 1 - 1.5.19: NO_PACKAGE_FOR_VERSION
+    ok 2 - 1.5.20: SIGNATURE_INVALID
+    ok 3 - 1.5.21: SIGNATURE_INVALID
+    ok 4 - 1.5.22: DESCRIPTION_MISMATCH
+    ok 5 - 1.5.23: NEEDS_NEW_IMAGE
+    ok 6 - 1.5.24: ARCHIVE_MISMATCH
+    ok 7 - 1.5.25: ARCHIVE_MISMATCH
+    ok 8 - 1.5.26: SELF_CHECK_FAILED
+    ok 9 - 1.5.27: DESCRIPTION_MISMATCH
+    ok 10 - 1.5.28: DOWNLOAD_FAILED
+ok 27 - refusals before anything changes: the old server keeps serving with the same pid (AC-003, AC-005, AC-013)
+ok 28 - NOT_ENOUGH_SPACE is refused before the stop, with what is needed and free
+ok 29 - request gates: INVALID_VERSION, NOT_NEWER, UPDATE_RUNNING, and the CLI exit code 2
+ok 30 - tracks: stable is the latest redirect, beta the newest recognized release in the feed
+ok 31 - NO_PACKAGES_VOLUME: without its own volume the node refuses and says so in its status
+ok 32 - NEEDS_NEW_IMAGE at boot: the status blocker and a request give the same refusal
+ok 33 - the old server exiting by itself during an update aborts it: SERVER_EXITED_DURING_UPDATE, files removed
+ok 34 - a stop during the trial leaves the trial recorded; the next boot rolls it back (INTERRUPTED)
+ok 35 - a stop before the point of no return aborts the update: INTERRUPTED, nothing changed
+ok 36 - a running node reports its version, server and the relation of a target version
+ok 37 - a node that needs a new image has no server and carries the message
+ok 38 - update.json is read tolerantly and an interrupted update keeps its target
+# tests 48
+# pass 48
+# fail 0

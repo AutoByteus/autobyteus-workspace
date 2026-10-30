@@ -12,6 +12,8 @@
 | SR-006 | Evidence (editorial) | ARCH-REV-002 Pass with note N-1 | N-1 | Design Ready (SR-005) | Design Ready | DEC-016 wording; design file rows | Wording aligned; no behavior or design change |
 | SR-007 | Evidence | Delivery Completed, step 1 (DR-001) | N/A | Step 1 in delivery | Step 1 finalized | PRQ-001 delivered | Receipt verified; steps 2–5 continue |
 | SR-008 | Evidence | ARCH-REV-003 Pass (step 2) | N/A | Step 2 at review | Step 2 at implementation | — | Pass recorded; no forwarding |
+| SR-009 | Mixed (Evidence + Design) | Delivery Completed, step 2 (DR-002); RU-23, CR2-N1 | RU-23, CR2-N1 | Step 2 in delivery | Step 2 finalized; design delta for step 3 | REQ-011, REQ-012 (protected) | Receipt verified; step-3 delta to review |
+| SR-010 | Evidence | ARCH-REV-004 Pass (step 3) | N/A | Step 3 at review | Step 3 at implementation | — | Pass recorded; no forwarding |
 
 ## Revision Entries
 
@@ -131,3 +133,21 @@
 - The reviewer routed step 2 to `/software_engineering_team/implementation_engineer` itself, with one non-blocking note: supervisord's `stopwaitsecs` must be above the server's 10 s shutdown bound. The Solution Designer does not forward it again.
 - Intended behavior and design: unchanged.
 - Next action: implementation of build step 2.
+
+### SR-009 — Step 2 receipt verified; design delta for step 3
+
+- Trigger: `Delivery Completed` for build step 2, DR-002 (delivery engineer, 2026-10-30)
+- Verification: `delivery-receipt-verification-step2.md`. The merge is `a0f4b491f7`; `origin/personal` is at `6b34f900b6`; there was no release, by the RELEASE.md default.
+- Design delta for step 3, within the approved requirements (no behavior beyond REQ-011/REQ-012):
+  - RU-23: `UpdateService` refuses with `NO_PACKAGES_VOLUME` when `/home/autobyteus/server-packages` is not its own mount. C2/C1 status carries the new optional `updateBlocker`, so the row shows the reason. The step-3 release notes tell launcher users to reinstall the launcher.
+  - CR2-N1: launcher `status` shows the starter's state, so `needsNewImage` is visible there.
+- Classification unchanged: Large / High. The delta changes C1/C2 by an optional field (frozen-contract rule), so it goes to architecture review.
+- Follow-ups: FU-006 (PowerShell fresh-port pick) is recorded and will be sent when the ticket leaves the team.
+- Next action: architecture review of the step-3 scope with this delta.
+
+### SR-010 — ARCH-REV-004 Pass for step 3 recorded
+
+- Trigger: the architecture review `ARCH-REV-004`, **Pass** for SR-005 plus the SR-009 delta (RU-23 gate and `updateBlocker`, CR2-N1), Large / High.
+- The reviewer routed step 3 to `/software_engineering_team/implementation_engineer` itself, with non-blocking notes: N-2 (`updateBlocker` is computed by UpdateService's one gate rule) and N-3 (the launcher `status` tolerates a node without a starter). The Solution Designer does not forward it again.
+- Intended behavior and design: unchanged.
+- Next action: implementation of build step 3.
