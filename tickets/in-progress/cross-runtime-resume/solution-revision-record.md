@@ -61,3 +61,13 @@
 ### SR-003 note 7 (2026-10-30)
 
 - The user delegated the neutral-vocabulary wording decisions ("you know the best"): N-1…N-6 decided as recommended and N-7 added: no migration, renderer revision bump, fingerprint includes the revision (`work-journal-neutral-vocabulary-contract.md` §10). The neutral-vocabulary work is a separate piece from the runtime switch and can be built first; the user still approves the design before any build.
+
+### SR-004 (2026-10-30) — requirements approved within the direction; design started
+
+- Trigger: the Project Task Manager relayed the user's decision on DEC-4 (first delivery = a single standalone Agent; "we should work on it now"), with the instruction to run the folder test on a copy, write the design for the user's approval before any build, record the team case as a follow-up, and keep "the user has verified" out of Done-when.
+- Prior status: requirements `Ready for Approval` (SR-003), DEC-4 open. Current: requirements `Approved` (Solution Designer within the direction; the user is informed in my message presenting the design). Design: `design-spec.md` written, `Draft` until the user approves it.
+- Changed in `requirements-doc.md`: status and approval; first delivery scope (single standalone Agent; members, Org members, delegated copies, application-/system-owned runs out, REQ-013); REQ-001 (fresh-selection validation, pending switch, undo), REQ-002 ("previous agent"), REQ-007 (settings no longer show sizes, DEC-10), REQ-010 rewritten (switch made at the first input; marker + rotation, retry-safe), REQ-012 added (journal file translated with its own raw file's runtime), REQ-013 added; BEH-007, SCN-006, AC-009 added; DEC-4 decided by the user, DEC-8…DEC-10 decided by me.
+- Evidence: investigation notes F-23…F-32 (folder test reproduced; journal per-file runtime needed and measured safe on 823 of 825 real journals; settings, activation, notice and web seams read).
+- Contract: `run-runtime-switch-contract.md` v2 (marker as a platform notice record, boundary type `runtime_switch`, per-file journal runtime, pending switch holds the whole previous binding).
+- Follow-ups recorded: FU-003 (teams, Org members, delegated copies), FU-004 (agent-/Router-started switch), FU-005 (order with the restart notice).
+- Approval impact: the requirements basis is approved; the DESIGN needs the user's approval before any build (Task constraint). Remaining gaps: U-2 (file tool access per runtime) and U-4 (quality of a real continuation) are checked in the real run.
