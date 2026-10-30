@@ -1,19 +1,19 @@
 # Design Spec — busy-quit-shutdown-orphan
 
 ## Solution And Approval Basis
-- Current solution revision ID: `SR-006` (2026-10-30, autobyteus-284). It revises SR-004/SR-005 after
+- Current solution revision ID: `SR-007` (2026-10-30, autobyteus-284): DEC-005 and DEC-007 approved; the design is
+  SR-006's with those two answers applied. SR-006 (2026-10-30) It revises SR-004/SR-005 after
   `backend-port-conflict-20261024` (merged to `personal` 2026-10-26) built part of the earlier D2 and D3. The SR-004
   and SR-005 versions of this file are in git history (`git log -- tickets/in-progress/busy-quit-shutdown-orphan/design-spec.md`);
   their decisions that still apply are carried here, and the SR-006 delta is listed below.
 - Approved requirements: `requirements-doc.md`, Approved in SR-002 (DEC-001 cancel queued input; DEC-002 10 s / 15 s;
   DEC-003 and DEC-004 not in this ticket). Added within the direction: DEC-006 (BEH-007, AC-009, AC-010) in SR-005;
   AC-011 in SR-006.
-- **Pending user decisions:**
-  - **DEC-005**: application-initiated terminate also interrupts (proposed AC-008). The D1 shape does not change
-    either way; only the application callers' disposition depends on it.
-  - **DEC-007**: the desktop's wait before force-stopping the server: 15 s (approved) or 20 s (already shipped).
-    Only one constant depends on it.
-- Design status: `Ready` (pending DEC-005 and DEC-007).
+- **User decisions applied (SR-007):**
+  - **DEC-005 = yes**: application-initiated terminate also interrupts (AC-008). DS-001b is in scope; no extra code,
+    since the application callers already enter `AgentRunManager.terminateAgentRun`.
+  - **DEC-007 = keep 20 s**: the desktop's existing `gracefulShutdownTimeoutMs = 20000` stays; no constant changes.
+- Design status: `Ready`.
 - Authorities read (SR-006): the solution-designer skill as updated 2026-10-27 (`SKILL.md`,
   `requirements-engineering.md`, `requirements-doc-template.md`) and its gates (`architecture-design.md`,
   `design-principles.md`, `ticket-scope.md`, `finding-the-cause.md`, `handoff.md`); project `DESIGN.md`, `GLOSSARY.md`
@@ -29,7 +29,7 @@
 | D1 stop-now interrupts | Fence first in `terminateAgentRun` and `stopAllAgentRuns` | Unchanged; RC-1 holds (E-A13, E-A14) | **Unchanged** |
 | D2 bounded server shutdown | New `src/server-process-shutdown.ts` with a 10 s race and a sweep | `ServerProcessShutdown` now exists (`src/shutdown/server-process-shutdown.ts`), owning signals, Windows IPC, the startup barrier and exit, but with **no bound** (E-A25) | Bound and sweep go **into the existing owner**; no new shutdown file |
 | D2 native commands | Covered by the sweep | Owned and drained at `preClose` by `NativeCommandProcessScope` (E-A26) | Left to their owner; the sweep is the net for runtime CLIs, their tool commands and AGY daemons |
-| D3 desktop quit waits | Memoized stop, deferred `will-quit`, 15 s, desktop sweep | Memoized `ApplicationShutdown`, deferred `will-quit`, updater preparation, 20 s window, POSIX force = SIGKILL of the server PID only, Windows IPC + `taskkill /f /t` (E-A27, E-A28) | **Only the POSIX force changes**: it sweeps the server's tree. The window is DEC-007 |
+| D3 desktop quit waits | Memoized stop, deferred `will-quit`, 15 s, desktop sweep | Memoized `ApplicationShutdown`, deferred `will-quit`, updater preparation, 20 s window, POSIX force = SIGKILL of the server PID only, Windows IPC + `taskkill /f /t` (E-A27, E-A28) | **Only the POSIX force changes**: it sweeps the server's tree. The 20 s window stays (DEC-007) |
 
 ## Current-State Read
 - **Stopping a run now (RC-1).** User Terminate, application terminate and server shutdown reach
@@ -86,8 +86,8 @@ it spawned, and make the desktop's last-resort force stop the server's whole tre
   - `AgentRunManager` stop-now methods (D1);
   - `ServerProcessShutdown` and a new process-tree sweep next to it; the AGY process-table helper moved to
     `src/utils/process-tree.ts` and AGY re-pointed (D2);
-  - `BaseServerManager.forceStop` on macOS/Linux and a desktop copy of the selection; the window constant per DEC-007
-    (D3);
+  - `BaseServerManager.forceStop` on macOS/Linux and a desktop copy of the selection (D3; the 20 s window is
+    unchanged, DEC-007);
   - tests and docs.
 - Derived consumers: the moved AGY helper feeds `agy-stream-process.ts` (re-pointed, same behavior) and its tests
   (moved or re-mocked). No stored structure changes.
@@ -106,10 +106,10 @@ it spawned, and make the desktop's last-resort force stop the server's whole tre
 | BEH | Kind | REQ / AC | Trigger | Existing behavior (evidence) | Change or preserved outcome | Target path / spine |
 | --- | --- | --- | --- | --- | --- | --- |
 | BEH-001 | User | REQ-001; AC-001 | Terminate in the UI; history delete/archive | Waits for the turn (E8) | Interrupt, then finish | DS-001 |
-| BEH-001 (app) | Contract | REQ-001 via DEC-005; AC-008 | SDK `terminateAgentRun`; orchestration `terminateRunBinding` | Waits for the turn (E-A8) | Interrupt, then finish (if DEC-005 = yes) | DS-001b |
+| BEH-001 (app) | Contract | REQ-001 via DEC-005; AC-008 | SDK `terminateAgentRun`; orchestration `terminateRunBinding` | Waits for the turn (E-A8) | Interrupt, then finish (DEC-005 = yes) | DS-001b |
 | BEH-002 | Operational | REQ-001, REQ-002; AC-002, AC-003 | SIGTERM/SIGINT, Windows IPC request (app quit, restart server, updater) | Unbounded (E-A25) | Fence all; ≤ 10 s; then sweep; exit | DS-002 |
 | BEH-003 | Operational | REQ-003; AC-002, AC-003, AC-011 | Server shutdown, graceful or forced | Native drained (E-A26); CLIs survive a kill (E-A28) | Sweep at every server exit; tree sweep on desktop force | DS-002, DS-003 |
-| BEH-004 | User | REQ-004; AC-004, AC-005, AC-009, AC-011 | Cmd+Q, menu Quit, SIGTERM to the app, updater install | Waits ≤ 20 s, then kills the server PID (E-A27, E-A28) | Same wait (DEC-007); force kills the tree | DS-003 |
+| BEH-004 | User | REQ-004; AC-004, AC-005, AC-009, AC-011 | Cmd+Q, menu Quit, SIGTERM to the app, updater install | Waits ≤ 20 s, then kills the server PID (E-A27, E-A28) | Same 20 s wait (DEC-007); force kills the tree | DS-003 |
 | BEH-005, BEH-007 | User / Operational | REQ-005; AC-006, AC-009, AC-010 | Relaunch | Continue; shutdown writes no `terminatedAt` | **Preserved** | — |
 
 ## Relevant Supplemental Task Artifacts
@@ -163,7 +163,7 @@ it spawned, and make the desktop's last-resort force stop the server's whole tre
 - DS-001: `Web Terminate → GraphQL agent-run → AgentRunService / StandaloneAgentRunLifecycleService → AgentRunManager.terminateAgentRun → AgentRun fence (interrupt; cancel queued input) → prepare → commit().finish() → backend.terminate → caller records terminatedAt`
 - DS-001b: `Application engine capability / SDK scope → AgentRunService.terminateAgentRun → AgentRunManager.terminateAgentRun → (as DS-001)`
 - DS-002: `SIGTERM | IPC request → ServerProcessShutdown.request → startup barrier → race(cleanupOnce = app.close, 10 s) → [preClose: native scope drain ≤ 3 s] → [onClose: application lifecycle stop (application-scope stopAllAgentRuns: fence all → finish) → closeProcessResources → supervisor close (roots fence children; stopAllAgentRuns: fence all → finish)] → process-tree sweep (snapshot → targets → SIGTERM → ≤ 1.5 s → SIGKILL survivors) → IPC complete/failed → exit 0/1`
-- DS-003: `Cmd+Q → will-quit (prevented) → ApplicationShutdown.stop [memoized, ≤ 30 s] → BaseServerManager.stopServer → SIGTERM | IPC request → [server runs DS-002] → wait window (DEC-007) → (expired, POSIX) forceStop: snapshot server tree → SIGTERM descendant targets → SIGKILL server → ≤ 1.5 s → SIGKILL survivors | (Windows) taskkill /f /t → confirm exit → app.quit`
+- DS-003: `Cmd+Q → will-quit (prevented) → ApplicationShutdown.stop [memoized, ≤ 30 s] → BaseServerManager.stopServer → SIGTERM | IPC request → [server runs DS-002] → wait ≤ 20 s (DEC-007) → (expired, POSIX) forceStop: snapshot server tree → SIGTERM descendant targets → SIGKILL server → ≤ 1.5 s → SIGKILL survivors | (Windows) taskkill /f /t → confirm exit → app.quit`
 
 ## Spine Narratives (Mandatory)
 | Spine | Narrative | Owner |
@@ -280,7 +280,7 @@ All boundaries are singular, with explicit identity. Low risk.
 | `autobyteus-server-ts/tests/unit/agent-execution/backends/antigravity/agy-background-process-groups.test.ts` | Move | To `tests/unit/utils/process-tree.test.ts`, generalized |
 | `autobyteus-server-ts/tests/unit/agent-execution/backends/antigravity/agy-stream-process.test.ts` | Modify | Mock the moved utility |
 | `autobyteus-server-ts/tests/unit/shutdown/server-process-shutdown.test.ts` | Modify | Bound, sweep order, exit codes, IPC `failed` on expiry |
-| `autobyteus-web/electron/server/baseServerManager.ts` | Modify | POSIX `forceStop` sweep; window constant per DEC-007 |
+| `autobyteus-web/electron/server/baseServerManager.ts` | Modify | POSIX `forceStop` sweep (the 20 s window is unchanged, DEC-007) |
 | `autobyteus-web/electron/server/serverProcessTree.ts` | Add | Desktop copy of the selection |
 | `autobyteus-server-ts/docs/modules/agent_execution.md` | Modify | Replace the "Known limit (server shutdown with a busy run)" paragraph (`:307-314`) with the stop-now and bounded-shutdown behavior |
 | `autobyteus-server-ts/docs/modules/antigravity_cli_runtime.md` | Modify | Name the moved helper (`:317`) |
@@ -320,7 +320,7 @@ No new folders. `utils/process-tree.ts` is concern-agnostic (shared by AGY and t
    exit 0; sweep with an unconfirmed survivor → exit 1; target selection including re-parenting and never the root
    group; ESRCH/EPERM handling.
 4. D3 plus tests: POSIX force removes the server and its recorded descendants (AC-011, deterministic double); the
-   window constant per DEC-007; Windows path unchanged (existing tests stay green).
+   20 s window and the Windows path unchanged (existing tests stay green).
 5. Docs.
 6. Validation (API/E2E): live AC-001/002 on Codex and Claude plus a native run with a background process; AC-003
    deterministic; isolated desktop AC-004/005/006/009/011 with process-tree snapshots; the updater install path; U-A1 to
@@ -338,17 +338,21 @@ No new folders. `utils/process-tree.ts` is concern-agnostic (shared by AGY and t
 - `ps` missing in minimal Linux images: the sweep logs and reports unconfirmed; the container stop still kills the tree
   (E-A7).
 - PID reuse within 1.5 s is negligible; only recorded targets are signalled.
-- A 15 s desktop window (if chosen in DEC-007) leaves about 1 s over the server's worst case (E-A29).
 - Native background processes still outlive a run **Terminate** (FU-003, unchanged).
 
 ## Guidance For Implementation
 - D1: do not edit `AgentRunTermination`.
 - D2: keep `ServerProcessShutdown`'s memoized request, startup barrier and IPC contract; inject timers, table, kill and
   exit; keep the sweep's `ps` timeout at 2 s.
-- D3: change only POSIX `forceStop` and the window constant; keep `stopManagedBackend` and the Windows manager.
+- D3: change only POSIX `forceStop`; keep the 20 s window, `stopManagedBackend` and the Windows manager.
 - Validation must include process-tree snapshots (PID/PPID/PGID) for Codex, Claude and native, showing zero survivors,
   and record the CLI versions (U-A2). Prove from a clean clone of the final branch with isolated app data (the desktop
   `e2e` profile or a temporary data root); never the user's installed app or data.
+- **Live Codex model: `gpt-6.1-terra`** (the user, 2026-10-30: "Please use the 6.1 terra … in the future we will use
+  the 6.1T as the model for testing. This model is much cheaper."). Select it as the run's model (the server passes it
+  to Codex), with reasoning effort `medium`; the tests only need the agent to start a long command and be interrupted.
+  Use a throwaway `CODEX_HOME` as `TESTING.md` describes; never read or edit `~/.codex/config.toml`. Repository tests
+  that default to `gpt-6.1-sol` are not changed here (follow-up FU-006).
 - Record any surviving process class as a Design Impact.
 - Next step of restart-and-resume (autobyteus-285, not this ticket): it will record which runs are busy at the start of
   shutdown, before anything is interrupted, and resume them after the restart with a system notice. This design keeps

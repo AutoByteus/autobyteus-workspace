@@ -1,8 +1,8 @@
 # Requirements Document — busy-quit-shutdown-orphan
 
 ## Document Status
-- Status: **Ready for Approval** for two deltas, both `Needs user`: DEC-005 (SR-004; asked again in SR-005 and SR-006) and DEC-007 (SR-006: the desktop's wait before force-stopping the server, 15 s approved versus 20 s already shipped). The SR-002 approval still covers REQ-001 to REQ-005 otherwise. SR-005 added BEH-007 (preserved), AC-009 and AC-010 within the direction (DEC-006, decided by the Solution Designer).
-- Current solution revision ID: `SR-006` (second re-check after `backend-port-conflict-20261024` landed; the last approval is SR-002).
+- Status: **Approved** (SR-007, 2026-10-30). REQ-001 to REQ-005 approved in SR-002; DEC-005 and DEC-007 approved in SR-007; DEC-006 and AC-011 decided by the Solution Designer within the direction (SR-005, SR-006).
+- Current solution revision ID: `SR-007` (approval of DEC-005 and DEC-007).
 - Package: `busy-quit-shutdown-orphan`.
 - Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), Task
   `autobyteus-284` in Project `project_a1377344-25db-482a-97cc-ecfdb0fb495a`, 2026-10-26: "finish and ship the existing
@@ -12,7 +12,8 @@
   find out exactly why it happens and how it should be fixed, before designing." Experiments E1–E9 are in
   `investigation-notes.md`.
 - Requirements owner: Solution Designer.
-- Approval state: **Approved**, 2026-10-05.
+- Approval state: **Approved**, 2026-10-05 (SR-002) and 2026-10-30 (SR-007).
+  - SR-007: asked for DEC-005 and DEC-007 with recommendations (DEC-005 yes; DEC-007 keep 20 s), after explaining DEC-005 with a custom-application example, the user answered: "What is your suggestion? Yeah, I think you understand our code base much more than I do now. I guess you can make reasonable suggestions." He gave both decisions to the Solution Designer's recommendations, so DEC-005 = yes and DEC-007 = keep 20 s are recorded as approved by the user on that basis.
   - After clarifying DEC-004 ("defer" means it is not done here and is recorded as a follow-up), the user said: "Okay, I'll agree with your suggestions. Basically, we do for number one and number two, right? … number one and number two are what we will be done in this ticket."
   - So DEC-001 to DEC-004 are resolved as recommended: DEC-001 and DEC-002 are applied in this ticket; DEC-003 and DEC-004 are not done here and are recorded as follow-up candidates.
   - REQ-001 to REQ-005 are the approved scope.
@@ -99,10 +100,10 @@
 ## Requirements
 | ID | Requirement | BEH | Priority | Feasibility evidence | Source |
 | --- | --- | --- | --- | --- | --- |
-| REQ-001 | **Terminate interrupts.** Terminating a run that is in the middle of a turn interrupts that turn instead of waiting for it to finish, for user Terminate and for server shutdown, on every runtime. Queued input that has not started is handled per DEC-001. | BEH-001, BEH-002 | Must | Measured: an interrupt ends a busy turn on Codex in 12 ms (E2) and on Claude in < 5 s (E5); the fence that sends it already works for Team/Org members (predecessor LE-O1, 11/11). Other runtimes: interrupt exists, not measured (ASM-001) | RC-1; E1, E5, E8 |
+| REQ-001 | **Terminate interrupts.** Terminating a run that is in the middle of a turn interrupts that turn instead of waiting for it to finish, for user Terminate, for an application's terminate (DEC-005) and for server shutdown, on every runtime. Queued input that has not started is handled per DEC-001. | BEH-001, BEH-002 | Must | Measured: an interrupt ends a busy turn on Codex in 12 ms (E2) and on Claude in < 5 s (E5); the fence that sends it already works for Team/Org members (predecessor LE-O1, 11/11). Other runtimes: interrupt exists, not measured (ASM-001) | RC-1; E1, E5, E8 |
 | REQ-002 | **Bounded server shutdown.** Server shutdown completes within **10 s** (DEC-002), whatever the runtimes do: runs are interrupted and stopped; whatever has not stopped by the bound is force-terminated, and the server exits. | BEH-002 | Must | N/A for the bound itself (our own timer and exit); the forced path relies on REQ-003's evidence | RC-2; E1, E5, E7 |
 | REQ-003 | **No leftover runtime processes.** When the server shuts down (graceful or forced), every runtime CLI it started and those CLIs' tool commands are gone, on Codex and Claude at least, and on every runtime that spawns processes. | BEH-003 | Must | Measured: Codex app-server and the Claude CLI end their tool commands on SIGTERM (E3; E9 follow-up); native commands are stopped by their own scope (backend-port-conflict P-003..P-008, AC-004). AGY daemons: stopped by AGY's owner (E-A10), not re-measured. CLI versions may have changed (U-A2) | RC-4; E3, E9 |
-| REQ-004 | **Desktop quit never leaves a server.** Quitting the app (user quit or SIGTERM to the app) waits for the embedded server to exit, up to **15 s** (DEC-002), then force-stops it. The app does not finish quitting while its server is still alive. The wait is pending DEC-007 (15 s approved; 20 s already shipped). | BEH-004 | Must | Reproduced: Electron 42 quits early unless `will-quit` is prevented (E6); the shipped `ApplicationShutdown` now prevents it (E-A27) | RC-3; E6 |
+| REQ-004 | **Desktop quit never leaves a server.** Quitting the app (user quit or SIGTERM to the app) waits for the embedded server to exit, up to **20 s** (DEC-007, replacing DEC-002's 15 s), then force-stops it and everything the server started. The app does not finish quitting while its server is still alive. | BEH-004 | Must | Reproduced: Electron 42 quits early unless `will-quit` is prevented (E6); the shipped `ApplicationShutdown` now prevents it (E-A27) | RC-3; E6 |
 | REQ-005 | **Continuity preserved.** After a busy quit or Terminate, relaunch shows the conversations, and each run can continue (BEH-005). | BEH-005, BEH-007 | Must | Reproduced in the predecessor (T-08c) | T-08c |
 
 ## Acceptance Criteria
@@ -111,21 +112,21 @@
 | AC-001 | REQ-001 | Terminate a standalone run busy in a long foreground command (Codex; Claude) | Terminate returns success within 10 s; the run is stopped; its tool command is gone | Pending or > 10 s; command left | Live E2E (probe-style) |
 | AC-002 | REQ-001, REQ-002, REQ-003 | Server shutdown with busy runs: standalone (Codex, Claude), a Team member, an Org agent | Close completes ≤ 10 s; no runtime CLI or tool command remains | > 10 s or leftovers | Live E2E with a process-tree check |
 | AC-003 | REQ-002, REQ-003 | Shutdown where a runtime does not end its turn on interrupt (deterministic test double) | Shutdown still exits ≤ 10 s via force-termination; the runtime process is killed | Hang | Unit/integration |
-| AC-004 | REQ-004 | Desktop app: busy agents, then (a) user quit, (b) SIGTERM to main | App exits; no server, runtime CLI or tool command remains after at most the desktop window (DEC-007) plus its 2 s force confirmation; expected in a few seconds when turns are interrupted | Orphan (PPID 1) | Isolated desktop app journey |
+| AC-004 | REQ-004 | Desktop app: busy agents, then (a) user quit, (b) SIGTERM to main | App exits; no server, runtime CLI or tool command remains after at most 20 s plus the force confirmation (DEC-007); expected in a few seconds when turns are interrupted | Orphan (PPID 1) | Isolated desktop app journey |
 | AC-011 | REQ-003, REQ-004 | Desktop quit while the server does not exit (deterministic wedged-server test double with a runtime-CLI-like child and a tool-command-like child in its own group) | The desktop force path removes the server and both children; the app still exits | A child survives the force (PPID 1) | Main-process integration test (SR-006) |
 | AC-005 | REQ-004 | Desktop app idle quit | Quits as quickly as today | Slower | Isolated app |
 | AC-006 | REQ-005 | Relaunch after AC-004 | Every conversation is present and continues (agent, Team, Org) | Missing or broken | Isolated app |
 | AC-007 | all | Existing suites | No new failures against the base (by test name and message) | — | Unit/integration |
 | AC-009 | REQ-004, REQ-005 | Relaunch right after AC-004 (a) and (b), and after an app-update restart where it can be exercised | Exactly one server process serves the data folder; no process of the earlier session remains | Two servers on one data folder, or a start error because the old server is still alive | Isolated desktop app journey with a process check (DEC-006) |
 | AC-010 | BEH-007 | Server shutdown with busy runs (AC-002), then relaunch | Runs that were stopped by the shutdown are not recorded as terminated (`terminatedAt` stays empty); a run the user terminated keeps its `terminatedAt` | Shutdown records `terminatedAt` | Unit/integration (DEC-006) |
-| AC-008 (proposed, DEC-005) | REQ-001 | An application terminates a run busy in a long command | Returns within 10 s; turn interrupted; queued input cancelled | Waits for the turn | Unit (fence-first at the shared entry point) plus a live probe if feasible |
+| AC-008 (DEC-005) | REQ-001 | An application terminates a run busy in a long command | Returns within 10 s; turn interrupted; queued input cancelled | Waits for the turn | Unit (fence-first at the shared entry point) plus a live probe if feasible |
 
 ## Relevant Scenarios And Journeys
 | ID | Kind | Actor | Goal | Trigger | Steps | Outcome | Validity | Evidence |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | SCN-001 | User | User | Stop a working chat for good | Terminate (history or close) on a busy run | Terminate → interrupt → finish | Stopped promptly | Supported Normal | E8 |
 | SCN-002 | Operational | App/OS | Stop the server | App quit (SIGTERM to the server) or `kill`/Docker stop | Interrupt all → stop → force at the bound → exit | Exits ≤ 10 s, no leftovers | Supported Normal | E1–E9 |
-| SCN-003 | User | User | Quit the app while an agent works | Cmd+Q, menu Quit, or OS SIGTERM | Quit → server shutdown → wait ≤ 15 s → force | Nothing left running | Supported Normal | E6; T-08d |
+| SCN-003 | User | User | Quit the app while an agent works | Cmd+Q, menu Quit, or OS SIGTERM | Quit → server shutdown → wait ≤ 20 s → force | Nothing left running | Supported Normal | E6; T-08d |
 | SCN-004 | User | User | Resume after quitting | Relaunch | Open history → continue | Conversations continue | Supported Normal (preserved) | T-08c |
 | SCN-005 | User | User | Stop generating | Composer Stop | Interrupt | Out of scope (DEC-003) | Supported Normal | E2, E5 |
 
@@ -136,7 +137,7 @@
 | ID | REQ/AC | Area | Requirement |
 | --- | --- | --- | --- |
 | QR-001 | REQ-002; AC-002, AC-003 | Reliability | Server shutdown ≤ 10 s with busy runs |
-| QR-002 | REQ-004; AC-004 | Reliability | App quit leaves no process after ≤ 15 s |
+| QR-002 | REQ-004; AC-004 | Reliability | App quit leaves no process after ≤ 20 s plus the force confirmation (DEC-007) |
 | QR-003 | AC-005 | Performance | Idle shutdown and quit no slower than today (0.3–0.4 s server close) |
 
 ## Data Continuity And Acceptable Loss
@@ -166,12 +167,12 @@
 | ID | Question | Recommendation | Status |
 | --- | --- | --- | --- |
 | DEC-001 | On Terminate or shutdown, what happens to **queued messages that have not started yet**? | Cancel them, as root-hosted children already do on shutdown. Do not run them first. | **Resolved: cancel** (SR-002) |
-| DEC-002 | Bounds | Server shutdown ≤ 10 s; desktop waits ≤ 15 s before force-stopping the server. | **Resolved as recommended** (SR-002) |
+| DEC-002 | Bounds | Server shutdown ≤ 10 s; desktop waits ≤ 15 s before force-stopping the server. | **Resolved as recommended** (SR-002); the desktop value is replaced by DEC-007 (20 s) |
 | DEC-003 | Codex composer Stop leaves the tool command running until the run ends (E2) | Out of scope; follow-up candidate | **Resolved: not in this ticket** (SR-002) |
 | DEC-004 | Guard against a second server on the same data root (for example after a force-killed app) | Defer; follow-up candidate | **Resolved: not in this ticket** (SR-002) |
 | DEC-006 | (SR-005) The Task's "Done when" says "relaunch never gives two servers on one data folder", and autobyteus-283 relies on shutdown not marking runs as terminated. Should this ticket prove both? | **Decided (Solution Designer, within the direction):** add AC-009 (relaunch after quit gives one server) and preserve BEH-007 with AC-010. Both are outcomes of REQ-004/REQ-005 and of today's behavior; neither adds product behavior. A force-killed or crashed app stays DEC-004 (follow-up), as the user decided on 2026-10-05: with this ticket an old server still listening blocks a second one (E-A22), and a closing server exits by itself within about 12 s. | **Resolved** (SR-005) |
-| DEC-007 | (SR-006) REQ-004 says the desktop waits **15 s** (DEC-002). `backend-port-conflict-20261024` shipped a **20 s** wait plus 2 s force confirmation on 2026-10-26 (E-A28), sized so its own server cleanup fits. With this ticket the server ends itself within about 11.6 s, worst case about 13.75 s (E-A29). Keep 20 s or go to 15 s? | **Recommended: keep 20 s.** A busy quit normally ends in a few seconds once turns are interrupted, so the window only matters when the server is wedged. 15 s would leave about 1 s of margin over the server's own worst case, so a slow but working shutdown could be cut and its sweep skipped. 20 s is already shipped and tested. If you prefer 15 s, it is a one-constant change. | **Needs user** |
-| DEC-005 | (SR-004, from ARCH-REV-001 AR-001) When an **application** (SDK `terminateAgentRun`, or orchestration ending a run binding) terminates a busy run, should it also interrupt the turn and cancel unstarted queued input, like user Terminate? Today it waits for the turn to finish (the same code path, E-A8) | **Recommended: yes.** "Terminate" means stop now everywhere. Otherwise the application path keeps the unbounded wait this ticket removes. | **Open: awaiting user approval** |
+| DEC-007 | (SR-006) REQ-004 says the desktop waits **15 s** (DEC-002). `backend-port-conflict-20261024` shipped a **20 s** wait plus 2 s force confirmation on 2026-10-26 (E-A28), sized so its own server cleanup fits. With this ticket the server ends itself within about 11.6 s, worst case about 13.75 s (E-A29). Keep 20 s or go to 15 s? | **Recommended: keep 20 s.** A busy quit normally ends in a few seconds once turns are interrupted, so the window only matters when the server is wedged. 15 s would leave about 1 s of margin over the server's own worst case, so a slow but working shutdown could be cut and its sweep skipped. 20 s is already shipped and tested. If you prefer 15 s, it is a one-constant change. | **Approved: keep 20 s** (SR-007, the user left it to the recommendation) |
+| DEC-005 | (SR-004, from ARCH-REV-001 AR-001) When an **application** (SDK `terminateAgentRun`, or orchestration ending a run binding) terminates a busy run, should it also interrupt the turn and cancel unstarted queued input, like user Terminate? Today it waits for the turn to finish (the same code path, E-A8) | **Recommended: yes.** "Terminate" means stop now everywhere. Otherwise the application path keeps the unbounded wait this ticket removes. | **Approved: yes** (SR-007, the user left it to the recommendation). AC-008 is in scope |
 
 ## Traceability
 | REQ | UC | BEH | AC | SCN |
@@ -200,7 +201,7 @@
 ### Content Ready For Approval
 - All items Yes. Open decisions DEC-001 to DEC-004 have recommendations. Content ready for user approval: **Yes**.
 ### Approved Basis Ready For Design
-- User approval received: **Yes** for SR-002; **pending** for DEC-005 (SR-004; asked again on 2026-10-26 and 2026-10-30) and DEC-007 (SR-006, asked 2026-10-30).
+- User approval received: **Yes** for SR-002 and SR-007 (DEC-005, DEC-007). Approved basis ready for design: **Yes**.
 - Feasibility: every requirement has measured or reproduced evidence, or `N/A` (REQ-002's own timer). Open measurements for validation: U-A1, U-A2, U-A3.
 
 ## User Decision For The Next Steps (Not This Ticket)

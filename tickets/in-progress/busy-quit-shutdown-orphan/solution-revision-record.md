@@ -115,3 +115,19 @@
 - Classification: **Medium / High** (was Large / High; D3 shrank). Routing after DEC-005 and DEC-007:
   `/architecture_reviewer` (ARCH-REV-002 of SR-006). ARCH-REV-001's AR-002 is satisfied by shipped code; AR-001 and
   AR-003 dispositions carry over.
+
+## SR-007 — 2026-10-30 — DEC-005 and DEC-007 approved; live Codex test model (autobyteus-284)
+- Trigger: after the DEC-005 explanation (a custom application ending a busy agent), the user answered: "What is your
+  suggestion? Yeah, I think you understand our code base much more than I do now. I guess you can make reasonable
+  suggestions." He gave both decisions to the recommendations.
+- Approval: **DEC-005 = yes** (application-initiated terminate interrupts; AC-008 in scope; REQ-001 text names it);
+  **DEC-007 = keep 20 s** (REQ-004, AC-004, SCN-003 and QR-002 say 20 s; DEC-002's desktop value replaced).
+  Requirements status: Approved (SR-002 + SR-007).
+- Also from the user (2026-10-30): restart-and-resume after an update is automatic, no human (recorded in the
+  requirements doc for autobyteus-285; sent to `/project_task_manager`, who recorded it on 285 and 305); live Codex
+  tests use `gpt-6.1-terra` (design-spec Guidance; FU-006 for the project-wide `TESTING.md` rule, sent to
+  `/project_task_manager`).
+- Design: SR-006 with the answers applied: DS-001b in scope; the 20 s window unchanged, so D3 is only the POSIX
+  `forceStop` sweep. A note keeps the resume step's recording point (nothing interrupted before
+  `ServerProcessShutdown` cleanup starts).
+- Classification: Medium / High (unchanged). Routing: `/architecture_reviewer`, review round ARCH-REV-002 on SR-007.
