@@ -12,7 +12,7 @@
 //
 // Each step is written to update.json before it runs. Before the point of no return the run can be
 // aborted (the old server exited by itself, or the starter is stopping); it then removes its files.
-import { sleep, waitForHealth } from './server-process.mjs'
+import { exitCodeOf, sleep, waitForHealth } from './server-process.mjs'
 import { fail, refuse, UpdateError } from './update-error.mjs'
 
 const GB = 1024 ** 3
@@ -24,6 +24,7 @@ export class UpdateRun {
   #requestedFrom
   #controller = new AbortController()
   #pastPointOfNoReturn = false
+  #halted = false
   /** Settles when the run has ended and recorded its outcome; never rejects. */
   done = null
 
@@ -53,6 +54,14 @@ export class UpdateRun {
     return true
   }
 
+  /**
+   * The starter is stopping past the point of no return: the run takes no further step. A recorded
+   * trial stays in state.json, and the next boot rolls it back (DS-007).
+   */
+  halt() {
+    this.#halted = true
+  }
+
   #checkAborted() {
     const { signal } = this.#controller
     if (signal.aborted) throw signal.reason
@@ -70,8 +79,8 @@ export class UpdateRun {
       return this.#finish(error)
     }
     this.#pastPointOfNoReturn = true
-    // An error here comes from the rollback itself (for example the starter is stopping): the trial
-    // stays recorded in state.json, and the next boot rolls it back.
+    // An error here comes from the rollback itself: a recorded trial stays in state.json, and the
+    // next boot rolls it back.
     return this.#switch(prepared).catch((error) => this.#finish(error))
   }
 
@@ -132,11 +141,15 @@ export class UpdateRun {
       const trial = await supervisor.start(serverPackage)
       updateStatus.setRunning({ version, source: serverPackage.source, pid: trial.pid })
       updateStatus.setStep('confirming')
+      let ended = null
+      trial.exited.then((exit) => { ended = exit })
       const healthy = await waitForHealth(supervisor.port, limits.confirmHealthMs, trial.exited)
       const stayed = healthy && await Promise.race([trial.exited.then(() => false), sleep(limits.confirmAliveMs).then(() => true)])
       if (!stayed) {
-        throw fail('FAILED_AFTER_SWITCH', `${version} did not come up ` +
-          `(${healthy ? `it stopped within ${limits.confirmAliveMs / 1000} s` : `no health answer within ${limits.confirmHealthMs / 1000} s`}); ` +
+        const how = ended
+          ? `it exited with code ${exitCodeOf(ended)} ${healthy ? `within ${limits.confirmAliveMs / 1000} s of answering` : 'before answering its health check'}`
+          : `no health answer within ${limits.confirmHealthMs / 1000} s`
+        throw fail('FAILED_AFTER_SWITCH', `${version} did not come up (${how}); ` +
           `${old.version} runs again${needsCopy ? ' on the data as it was before the update' : ''}.`)
       }
       store.commitTrial()
@@ -145,16 +158,21 @@ export class UpdateRun {
       supervisor.endUpdate()
       return this.#finish(null, `Updated to ${version}.${forced ? ` (${old.version} did not stop in time and was stopped by force.)` : ''}`)
     } catch (error) {
+      if (this.#halted) return undefined
       updateStatus.setStep('rollingBack')
       await supervisor.stop()
+      if (this.#halted) return undefined
       if (trialStarted) {
         if (needsCopy) dataCopy.restore()
         store.rollBackTrial()
       }
       dataCopy.delete()
       store.discard(version)
-      const restarted = await supervisor.start(old)
-      updateStatus.setRunning({ version: old.version, source: old.source, pid: restarted.pid })
+      // Stopping now leaves nothing to undo: the next boot starts the old version.
+      if (!this.#halted) {
+        const restarted = await supervisor.start(old)
+        updateStatus.setRunning({ version: old.version, source: old.source, pid: restarted.pid })
+      }
       supervisor.endUpdate()
       return this.#finish(error instanceof UpdateError ? error
         : fail('FAILED_AFTER_SWITCH', `${version} could not be switched to (${error.message}); ${old.version} runs again.`))

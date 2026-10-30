@@ -79,6 +79,15 @@ export class UpdateService {
     }
   }
 
+  /**
+   * The starter is stopping: a running update is aborted before its point of no return (it removes its
+   * files and records `code`), and halted after it (the next boot finishes the job).
+   */
+  async stopRun(code, message) {
+    const run = this.#run
+    if (run && !(await run.abort(code, message))) run.halt()
+  }
+
   /** Ends a running update before its point of no return (see UpdateRun.abort); false otherwise. */
   async abort(code, message) {
     return this.#run ? this.#run.abort(code, message) : false

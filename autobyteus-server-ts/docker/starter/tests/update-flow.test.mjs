@@ -92,7 +92,8 @@ test('AC-004: a new version that fails after the switch is rolled back, with the
   await update(node, '--version', '1.5.12')
   const after = await finished(node)
   assert.deepEqual([after.update.state, after.update.code], ['failed', 'FAILED_AFTER_SWITCH'])
-  assert.match(after.update.message, /1\.5\.11 runs again on the data as it was before the update/)
+  assert.equal(after.update.message, '1.5.12 did not come up (it exited with code 3 before answering its health check); ' +
+    '1.5.11 runs again on the data as it was before the update.')
   assert.deepEqual([after.version, after.server.source], ['1.5.11', 'builtIn'])
   assert.equal(existsSync(path.join(node.dataDir, 'migrated')), false, 'data restored')
   assert.equal(readFileSync(path.join(node.dataDir, 'app.db'), 'utf8'), 'before')
@@ -244,6 +245,8 @@ test('a stop during the trial leaves the trial recorded; the next boot rolls it 
   await boot(node, source)
   const after = await status(node)
   assert.deepEqual([after.version, after.update.state, after.update.code], ['1.5.11', 'failed', 'INTERRUPTED'])
+  assert.equal(after.update.message, 'The update to 1.5.12 was interrupted; this node runs 1.5.11 again.')
+  assert.deepEqual(packageFolders(node), [], 'the interrupted version is removed')
   assert.equal(existsSync(path.join(node.dataDir, 'migrated')), false, 'data restored at boot')
   assert.equal(readFileSync(path.join(node.dataDir, 'app.db'), 'utf8'), 'before')
   assert.equal(state(node).trial, undefined)

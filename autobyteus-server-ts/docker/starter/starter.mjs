@@ -96,7 +96,7 @@ export class NodeStarter {
     if (this.#stopping) return
     this.#stopping = true
     this.#log('stopping', { signal })
-    await this.#updateService?.abort('INTERRUPTED', 'The starter was stopped during the update; nothing was changed.')
+    await this.#updateService?.stopRun('INTERRUPTED', 'The starter was stopped during the update; nothing was changed.')
     await this.#supervisor.shutdown()
     await this.#socket?.close()
     this.#exit(0)
@@ -107,6 +107,7 @@ export class NodeStarter {
     if (trial) {
       if (trial.dataCopy) this.#dataCopy.restore()
       this.#store.rollBackTrial()
+      this.#store.discard(trial.version)
       this.#updateStatus.markInterrupted(
         `The update to ${trial.version} was interrupted; this node runs ${trial.previous.version} again.`)
       this.#log('trial-rolled-back', { version: trial.version, previous: trial.previous.version, dataRestored: Boolean(trial.dataCopy) })
