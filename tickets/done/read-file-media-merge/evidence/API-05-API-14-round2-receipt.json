@@ -1,0 +1,721 @@
+{
+  "documents": [
+    {
+      "file": "pdfs/001-MessageListAttachmentTemplate.pdf",
+      "size": 23248,
+      "firstNul": 22274,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/001-MessageListAttachmentTemplate.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/002-flagged.pdf",
+      "size": 12722,
+      "firstNul": 11919,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/002-flagged.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/003-vip-filled.pdf",
+      "size": 15714,
+      "firstNul": 14918,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/003-vip-filled.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/004-MessageListForwardTemplate.pdf",
+      "size": 12617,
+      "firstNul": 11725,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/004-MessageListForwardTemplate.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/005-MessageListReplyTemplate.pdf",
+      "size": 15039,
+      "firstNul": 13413,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/005-MessageListReplyTemplate.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/006-RemoteSleepGeneric.pdf",
+      "size": 19129,
+      "firstNul": 17464,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/006-RemoteSleepGeneric.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/007-NotAllowed.pdf",
+      "size": 12212,
+      "firstNul": 11414,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/007-NotAllowed.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/008-Lock.pdf",
+      "size": 12515,
+      "firstNul": 11130,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/008-Lock.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/009-Volume.pdf",
+      "size": 16284,
+      "firstNul": 14733,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/009-Volume.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/010-Eject.pdf",
+      "size": 14100,
+      "firstNul": 13144,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/010-Eject.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/011-kBright.pdf",
+      "size": 17149,
+      "firstNul": 13190,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/011-kBright.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/012-RemoteBattery2.pdf",
+      "size": 14257,
+      "firstNul": 12701,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/012-RemoteBattery2.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/013-RemoteLinkedGeneric.pdf",
+      "size": 18402,
+      "firstNul": 17476,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/013-RemoteLinkedGeneric.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/014-RemoteBattery1.pdf",
+      "size": 14058,
+      "firstNul": 13192,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/014-RemoteBattery1.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/015-AirportRange.pdf",
+      "size": 20160,
+      "firstNul": 19001,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/015-AirportRange.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/016-Brightness.pdf",
+      "size": 17954,
+      "firstNul": 17153,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/016-Brightness.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/017-kBrightOff.pdf",
+      "size": 11879,
+      "firstNul": 11078,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/017-kBrightOff.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/018-RemoteBase.pdf",
+      "size": 13802,
+      "firstNul": 12936,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/018-RemoteBase.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/019-Mute.pdf",
+      "size": 18660,
+      "firstNul": 17012,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/019-Mute.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/020-RemoteBattery2_1.pdf",
+      "size": 31046,
+      "firstNul": 15529,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/020-RemoteBattery2_1.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/021-RemoteBattery2_0.pdf",
+      "size": 29204,
+      "firstNul": 12949,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/021-RemoteBattery2_0.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/022-RemoteBattery2_2.pdf",
+      "size": 31446,
+      "firstNul": 15031,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/022-RemoteBattery2_2.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/023-Ajar.pdf",
+      "size": 29717,
+      "firstNul": 24895,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/023-Ajar.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/024-ScriptSucceeded.pdf",
+      "size": 21791,
+      "firstNul": -1,
+      "outcome": "text",
+      "chars": 20488
+    },
+    {
+      "file": "pdfs/025-ScriptFailed.pdf",
+      "size": 22893,
+      "firstNul": -1,
+      "outcome": "text",
+      "chars": 21631
+    },
+    {
+      "file": "pdfs/026-menuitemNormal.pdf",
+      "size": 12490,
+      "firstNul": 11611,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/026-menuitemNormal.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/027-PPPOE.pdf",
+      "size": 18164,
+      "firstNul": 17373,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/027-PPPOE.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/028-PPPOEDisconnected.pdf",
+      "size": 19023,
+      "firstNul": 16605,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/028-PPPOEDisconnected.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/029-VPN4.pdf",
+      "size": 17750,
+      "firstNul": 16646,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/029-VPN4.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/030-VPN3.pdf",
+      "size": 18340,
+      "firstNul": 16454,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/030-VPN3.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/031-VPN2.pdf",
+      "size": 18602,
+      "firstNul": 16600,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/031-VPN2.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/032-VPN0.pdf",
+      "size": 17415,
+      "firstNul": 14727,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/032-VPN0.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/033-VPN1.pdf",
+      "size": 18829,
+      "firstNul": 16359,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/033-VPN1.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/034-Eject.pdf",
+      "size": 9525,
+      "firstNul": 8496,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/034-Eject.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/035-PPP2.pdf",
+      "size": 18095,
+      "firstNul": 16955,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/035-PPP2.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/036-PPP3.pdf",
+      "size": 18719,
+      "firstNul": 17572,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/036-PPP3.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/037-PPP1.pdf",
+      "size": 17416,
+      "firstNul": 16385,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/037-PPP1.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/038-PPP0.pdf",
+      "size": 18652,
+      "firstNul": 15607,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/038-PPP0.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/039-PPP4.pdf",
+      "size": 18679,
+      "firstNul": 17501,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/039-PPP4.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/040-mobility_64.pdf",
+      "size": 19354,
+      "firstNul": 18048,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/040-mobility_64.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/041-Success.pdf",
+      "size": 18873,
+      "firstNul": 18080,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/041-Success.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/042-contact-head.pdf",
+      "size": 15707,
+      "firstNul": 14397,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/042-contact-head.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/043-Keyboard.pdf",
+      "size": 69940,
+      "firstNul": 32001,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/043-Keyboard.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/044-DrumMachine.pdf",
+      "size": 70831,
+      "firstNul": 25274,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/044-DrumMachine.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/045-USBInterface.pdf",
+      "size": 43608,
+      "firstNul": 19744,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/045-USBInterface.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/046-FullSizeSynth.pdf",
+      "size": 64417,
+      "firstNul": 26101,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/046-FullSizeSynth.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/047-BtMouse.pdf",
+      "size": 15864,
+      "firstNul": 14009,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/047-BtMouse.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/048-BtKeyboard.pdf",
+      "size": 22338,
+      "firstNul": 13168,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/048-BtKeyboard.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/049-BtMouse.pdf",
+      "size": 15864,
+      "firstNul": 14009,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/049-BtMouse.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/050-BtMouseRev.pdf",
+      "size": 14546,
+      "firstNul": 12761,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/050-BtMouseRev.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/051-BtTrackpad.pdf",
+      "size": 16562,
+      "firstNul": 12216,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/051-BtTrackpad.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/052-BtMouse.pdf",
+      "size": 15864,
+      "firstNul": 14009,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/052-BtMouse.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/053-BtKeyboard.pdf",
+      "size": 22338,
+      "firstNul": 13168,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/053-BtKeyboard.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/054-BtKeyboard.pdf",
+      "size": 12299,
+      "firstNul": 10901,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/054-BtKeyboard.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/055-BtMouseRev.pdf",
+      "size": 14546,
+      "firstNul": 12761,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/055-BtMouseRev.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/056-BtTrackpad.pdf",
+      "size": 11892,
+      "firstNul": 10785,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/056-BtTrackpad.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/057-BtKeyboard.pdf",
+      "size": 22338,
+      "firstNul": 13168,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/057-BtKeyboard.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/058-BtKeyboard.pdf",
+      "size": 22338,
+      "firstNul": 13168,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/058-BtKeyboard.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/059-month-allday-invitation-outline-flat-both.pdf",
+      "size": 15449,
+      "firstNul": 14619,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/059-month-allday-invitation-outline-flat-both.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/060-month-allday-invitation-outline-flat-right.pdf",
+      "size": 16097,
+      "firstNul": 15268,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/060-month-allday-invitation-outline-flat-right.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/061-month-allday-invitation-outline-flat-left.pdf",
+      "size": 16064,
+      "firstNul": 15236,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/061-month-allday-invitation-outline-flat-left.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/062-month-allday-invitation-outline.pdf",
+      "size": 16614,
+      "firstNul": 15796,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/062-month-allday-invitation-outline.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/063-Tentative_Outline.pdf",
+      "size": 15487,
+      "firstNul": 14846,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/063-Tentative_Outline.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/064-Toggle_Deselected.pdf",
+      "size": 48832,
+      "firstNul": 21014,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/064-Toggle_Deselected.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/065-Toggle_Selected.pdf",
+      "size": 46336,
+      "firstNul": 18748,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/065-Toggle_Selected.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/066-audio.pdf",
+      "size": 15931,
+      "firstNul": 14819,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/066-audio.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/067-video.pdf",
+      "size": 39886,
+      "firstNul": 39257,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/067-video.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/068-continue.pdf",
+      "size": 17474,
+      "firstNul": 16668,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/068-continue.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/069-shiftRight.pdf",
+      "size": 68962,
+      "firstNul": 22760,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/069-shiftRight.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/070-backPDF.pdf",
+      "size": 44467,
+      "firstNul": 13208,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/070-backPDF.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/071-shiftLeft.pdf",
+      "size": 68275,
+      "firstNul": 22280,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/071-shiftLeft.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/072-loginPDF.pdf",
+      "size": 45701,
+      "firstNul": 14203,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/072-loginPDF.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/073-overlay-control.pdf",
+      "size": 179143,
+      "firstNul": 47551,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/073-overlay-control.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/074-RecentIcon.pdf",
+      "size": 18433,
+      "firstNul": 17396,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/074-RecentIcon.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/075-RecentIcon.pdf",
+      "size": 18433,
+      "firstNul": 17396,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/075-RecentIcon.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/076-Icon_Template.pdf",
+      "size": 25334,
+      "firstNul": 22790,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/076-Icon_Template.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/077-Icon_Template.pdf",
+      "size": 25334,
+      "firstNul": 22790,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/077-Icon_Template.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/078-PremiumCardShell.pdf",
+      "size": 56113,
+      "firstNul": 29085,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/078-PremiumCardShell.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "pdfs/079-PremiumCard-logo.pdf",
+      "size": 224814,
+      "firstNul": 42388,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/pdfs/079-PremiumCard-logo.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "docs/chrome.pdf",
+      "size": 9861,
+      "firstNul": 1699,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/docs/chrome.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "docs/cups.pdf",
+      "size": 12647,
+      "firstNul": 313,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/docs/cups.pdf' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "docs/note.docx",
+      "size": 3515,
+      "firstNul": 5,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/docs/note.docx' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    },
+    {
+      "file": "docs/note.zip",
+      "size": 208,
+      "firstNul": 5,
+      "outcome": "refused",
+      "message": "The file '/tmp/ab328/docs/note.zip' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+    }
+  ],
+  "mediaLineRanges": [
+    {
+      "name": "picture.png",
+      "start_line": 1,
+      "end_line": 1,
+      "outcome": "refused",
+      "message": "start_line and end_line apply to text files only; '/tmp/ab328/fixtures/picture.png' is an image file, so it was not loaded. Call read_file again without start_line and end_line, and do not claim to have inspected the file before it is loaded."
+    },
+    {
+      "name": "picture.png",
+      "start_line": 0,
+      "end_line": 0,
+      "outcome": "refused",
+      "message": "start_line and end_line apply to text files only; '/tmp/ab328/fixtures/picture.png' is an image file, so it was not loaded. Call read_file again without start_line and end_line, and do not claim to have inspected the file before it is loaded."
+    },
+    {
+      "name": "picture.png",
+      "start_line": -1,
+      "end_line": -1,
+      "outcome": "refused",
+      "message": "start_line and end_line apply to text files only; '/tmp/ab328/fixtures/picture.png' is an image file, so it was not loaded. Call read_file again without start_line and end_line, and do not claim to have inspected the file before it is loaded."
+    },
+    {
+      "name": "picture.png",
+      "start_line": 2,
+      "end_line": null,
+      "outcome": "refused",
+      "message": "start_line and end_line apply to text files only; '/tmp/ab328/fixtures/picture.png' is an image file, so it was not loaded. Call read_file again without start_line and end_line, and do not claim to have inspected the file before it is loaded."
+    },
+    {
+      "name": "picture.png",
+      "start_line": null,
+      "end_line": 3,
+      "outcome": "refused",
+      "message": "start_line and end_line apply to text files only; '/tmp/ab328/fixtures/picture.png' is an image file, so it was not loaded. Call read_file again without start_line and end_line, and do not claim to have inspected the file before it is loaded."
+    },
+    {
+      "name": "picture.png",
+      "start_line": null,
+      "end_line": null,
+      "outcome": "context file",
+      "value": "{\"uri\":\"/tmp/ab328/fixtures/picture.png\",\"fileType\":\"image\",\"fileName\":\"picture.png\",\"metadata\":{}}"
+    },
+    {
+      "name": "recording.m4a",
+      "start_line": 1,
+      "end_line": 1,
+      "outcome": "refused",
+      "message": "start_line and end_line apply to text files only; '/tmp/ab328/fixtures/recording.m4a' is an audio file, so it was not loaded. Call read_file again without start_line and end_line, and do not claim to have inspected the file before it is loaded."
+    },
+    {
+      "name": "recording.m4a",
+      "start_line": 0,
+      "end_line": 0,
+      "outcome": "refused",
+      "message": "start_line and end_line apply to text files only; '/tmp/ab328/fixtures/recording.m4a' is an audio file, so it was not loaded. Call read_file again without start_line and end_line, and do not claim to have inspected the file before it is loaded."
+    },
+    {
+      "name": "recording.m4a",
+      "start_line": -1,
+      "end_line": -1,
+      "outcome": "refused",
+      "message": "start_line and end_line apply to text files only; '/tmp/ab328/fixtures/recording.m4a' is an audio file, so it was not loaded. Call read_file again without start_line and end_line, and do not claim to have inspected the file before it is loaded."
+    },
+    {
+      "name": "recording.m4a",
+      "start_line": 2,
+      "end_line": null,
+      "outcome": "refused",
+      "message": "start_line and end_line apply to text files only; '/tmp/ab328/fixtures/recording.m4a' is an audio file, so it was not loaded. Call read_file again without start_line and end_line, and do not claim to have inspected the file before it is loaded."
+    },
+    {
+      "name": "recording.m4a",
+      "start_line": null,
+      "end_line": 3,
+      "outcome": "refused",
+      "message": "start_line and end_line apply to text files only; '/tmp/ab328/fixtures/recording.m4a' is an audio file, so it was not loaded. Call read_file again without start_line and end_line, and do not claim to have inspected the file before it is loaded."
+    },
+    {
+      "name": "recording.m4a",
+      "start_line": null,
+      "end_line": null,
+      "outcome": "context file",
+      "value": "{\"uri\":\"/tmp/ab328/fixtures/recording.m4a\",\"fileType\":\"audio\",\"fileName\":\"recording.m4a\",\"metadata\":{}}"
+    },
+    {
+      "name": "clip.mp4",
+      "start_line": 1,
+      "end_line": 1,
+      "outcome": "refused",
+      "message": "start_line and end_line apply to text files only; '/tmp/ab328/fixtures/clip.mp4' is a video file, so it was not loaded. Call read_file again without start_line and end_line, and do not claim to have inspected the file before it is loaded."
+    },
+    {
+      "name": "clip.mp4",
+      "start_line": 0,
+      "end_line": 0,
+      "outcome": "refused",
+      "message": "start_line and end_line apply to text files only; '/tmp/ab328/fixtures/clip.mp4' is a video file, so it was not loaded. Call read_file again without start_line and end_line, and do not claim to have inspected the file before it is loaded."
+    },
+    {
+      "name": "clip.mp4",
+      "start_line": -1,
+      "end_line": -1,
+      "outcome": "refused",
+      "message": "start_line and end_line apply to text files only; '/tmp/ab328/fixtures/clip.mp4' is a video file, so it was not loaded. Call read_file again without start_line and end_line, and do not claim to have inspected the file before it is loaded."
+    },
+    {
+      "name": "clip.mp4",
+      "start_line": 2,
+      "end_line": null,
+      "outcome": "refused",
+      "message": "start_line and end_line apply to text files only; '/tmp/ab328/fixtures/clip.mp4' is a video file, so it was not loaded. Call read_file again without start_line and end_line, and do not claim to have inspected the file before it is loaded."
+    },
+    {
+      "name": "clip.mp4",
+      "start_line": null,
+      "end_line": 3,
+      "outcome": "refused",
+      "message": "start_line and end_line apply to text files only; '/tmp/ab328/fixtures/clip.mp4' is a video file, so it was not loaded. Call read_file again without start_line and end_line, and do not claim to have inspected the file before it is loaded."
+    },
+    {
+      "name": "clip.mp4",
+      "start_line": null,
+      "end_line": null,
+      "outcome": "context file",
+      "value": "{\"uri\":\"/tmp/ab328/fixtures/clip.mp4\",\"fileType\":\"video\",\"fileName\":\"clip.mp4\",\"metadata\":{}}"
+    }
+  ],
+  "textLineRange": {
+    "outcome": "text",
+    "chars": 42
+  },
+  "buildLog": {
+    "outcome": "refused",
+    "message": "The file '/tmp/ab328/fixtures/build.log' is a binary file and cannot be read as text. read_file reads text files and image, audio and video files."
+  }
+}

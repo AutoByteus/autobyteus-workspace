@@ -21,9 +21,9 @@ import { LLMConfig } from '../../../src/llm/utils/llm-config.js';
 import { CompleteResponse } from '../../../src/llm/utils/response-types.js';
 import { MemoryManager } from '../../../src/memory/memory-manager.js';
 import { FileMemoryStore } from '../../../src/memory/store/file-store.js';
-import { ReadMediaFile } from '../../../src/tools/multimedia/media-reader-tool.js';
+import { BaseTool } from '../../../src/tools/base-tool.js';
+import { registerReadFileTool } from '../../../src/tools/file/read-file.js';
 import { defaultToolRegistry } from '../../../src/tools/registry/tool-registry.js';
-import { registerToolClass } from '../../../src/tools/tool-meta.js';
 import type { GeminiRuntimeResolver } from '../../../src/utils/gemini-runtime.js';
 import { liveProviderTest } from '../../../../test-support/test-vault/test-vault.js';
 
@@ -54,7 +54,7 @@ const buildGeminiModel = () => {
   });
 };
 
-runLiveM4aIntegration('Gemini read_media_file .m4a live integration (env gated)', () => {
+runLiveM4aIntegration('Gemini read_file .m4a live integration (env gated)', () => {
   let tempDir: string;
   let workspaceRoot: string;
   let registrySnapshot: ReturnType<typeof defaultToolRegistry.snapshot>;
@@ -62,9 +62,9 @@ runLiveM4aIntegration('Gemini read_media_file .m4a live integration (env gated)'
   beforeEach(async () => {
     registrySnapshot = defaultToolRegistry.snapshot();
     defaultToolRegistry.clear();
-    registerToolClass(ReadMediaFile);
+    registerReadFileTool();
 
-    tempDir = await fsp.mkdtemp(path.join(os.tmpdir(), 'gemini-read-media-m4a-live-'));
+    tempDir = await fsp.mkdtemp(path.join(os.tmpdir(), 'gemini-read-file-m4a-live-'));
     workspaceRoot = path.join(tempDir, 'workspace');
     await fsp.mkdir(workspaceRoot, { recursive: true });
   });
@@ -74,12 +74,12 @@ runLiveM4aIntegration('Gemini read_media_file .m4a live integration (env gated)'
     await fsp.rm(tempDir, { recursive: true, force: true });
   });
 
-  live.it('sends a read_media_file .m4a tool result continuation to direct Gemini', async () => {
+  live.it('sends a read_file .m4a tool result continuation to direct Gemini', async () => {
     expect(fs.existsSync(sourceAudioPath)).toBe(true);
     const workspaceAudioPath = path.join(workspaceRoot, 'test_audio.m4a');
     await fsp.copyFile(sourceAudioPath, workspaceAudioPath);
 
-    expect(defaultToolRegistry.getToolDefinition('read_media_file')).toBeDefined();
+    expect(defaultToolRegistry.getToolDefinition('read_file')).toBeDefined();
 
     const memoryManager = new MemoryManager({
       store: new FileMemoryStore(tempDir, 'gemini_read_media_m4a_live')
@@ -93,29 +93,30 @@ runLiveM4aIntegration('Gemini read_media_file .m4a live integration (env gated)'
     } as any;
 
     const originalUserMessage = new LLMUserMessage({
-      content: 'Use read_media_file on test_audio.m4a, then transcribe exactly what is spoken. Answer with only the spoken word.'
+      content: 'Use read_file on test_audio.m4a, then transcribe exactly what is spoken. Answer with only the spoken word.'
     });
     memoryManager.ingestUserMessage(originalUserMessage, turn.turnId, 'UserMessageReceivedEvent', []);
     memoryManager.appendWorkingContextUserMessage(originalUserMessage, { turnId: turn.turnId });
 
-    const mediaResult = await new ReadMediaFile().execute(context, { file_path: 'test_audio.m4a' });
+    const mediaResult = await (defaultToolRegistry.createTool('read_file') as BaseTool)
+      .execute(context, { path: 'test_audio.m4a', base_dir: workspaceRoot });
     expect(mediaResult).toBeInstanceOf(ContextFile);
     const contextFile = mediaResult as ContextFile;
     expect(contextFile.fileType).toBe(ContextFileType.AUDIO);
 
     memoryManager.ingestToolIntents([
-      new ToolInvocation('read_media_file', { file_path: 'test_audio.m4a' }, 'inv-m4a-audio', turn.turnId)
+      new ToolInvocation('read_file', { path: 'test_audio.m4a', base_dir: workspaceRoot }, 'inv-m4a-audio', turn.turnId)
     ], turn.turnId, {
       assistantContent: 'I will read the requested audio file.'
     });
 
     const results = [
       new ToolResultEvent(
-        'read_media_file',
+        'read_file',
         contextFile,
         'inv-m4a-audio',
         undefined,
-        { file_path: 'test_audio.m4a' },
+        { path: 'test_audio.m4a', base_dir: workspaceRoot },
         turn.turnId
       )
     ];

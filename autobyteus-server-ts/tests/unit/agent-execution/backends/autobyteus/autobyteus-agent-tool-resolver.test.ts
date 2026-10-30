@@ -131,4 +131,28 @@ describe('resolveAutoByteusAgentTools', () => {
     expect(logger.warn).toHaveBeenCalledWith(expect.stringContaining('not found in registry'));
     expect(logger.error).not.toHaveBeenCalledWith(expect.stringMatching(/project/));
   });
+
+  it('launches an agent whose definition names only the removed read_media_file with read_file and a warning (read-file-media-merge AC-006)', () => {
+    const requestedToolNames = ['read_media_file'];
+    const agentDefinition = new AgentDefinition({
+      name: 'Stored media reader',
+      description: 'A definition saved before read_media_file was removed.',
+      toolNames: requestedToolNames,
+    });
+    const logger = { warn: vi.fn(), error: vi.fn() };
+
+    const resolution = resolveAutoByteusAgentTools({
+      agentDefinition,
+      runtimeToolExposure: resolveAutoByteusRuntimeAgentToolExposure(agentDefinition),
+      logger,
+    });
+
+    expect(resolution.actualToolNames).toEqual(['run_bash', 'read_file', 'edit_file', 'write_file']);
+    expect(resolution.tools.map((tool) => tool.definition?.name)).toContain('read_file');
+    expect(logger.warn).toHaveBeenCalledWith(expect.stringContaining("'read_media_file'"));
+    expect(logger.warn).toHaveBeenCalledWith(expect.stringContaining('not found in registry'));
+    expect(logger.error).not.toHaveBeenCalled();
+    expect(agentDefinition.toolNames).toBe(requestedToolNames);
+    expect(agentDefinition.toolNames).toEqual(['read_media_file']);
+  });
 });

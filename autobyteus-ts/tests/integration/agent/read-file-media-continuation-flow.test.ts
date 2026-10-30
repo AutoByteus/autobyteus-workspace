@@ -2,7 +2,9 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import os from 'node:os';
-import { ReadMediaFile } from '../../../src/tools/multimedia/media-reader-tool.js';
+import { BaseTool } from '../../../src/tools/base-tool.js';
+import { registerReadFileTool } from '../../../src/tools/file/read-file.js';
+import { defaultToolRegistry } from '../../../src/tools/registry/tool-registry.js';
 import { ToolContinuationInputBuilder } from '../../../src/agent/loop/tool-continuation-input-builder.js';
 import { AgentInputPipeline } from '../../../src/agent/pipelines/agent-input-pipeline.js';
 import { AgentTurn } from '../../../src/agent/agent-turn.js';
@@ -21,17 +23,22 @@ import { FileMemoryStore } from '../../../src/memory/store/file-store.js';
 const SMALL_AUDIO_BYTES = Buffer.from('small-audio-fixture');
 const SMALL_VIDEO_BYTES = Buffer.from('small-video-fixture');
 
-describe('read_media_file continuation flow (integration)', () => {
+describe('read_file media continuation flow (integration)', () => {
   let tempDir: string;
   let workspaceRoot: string;
+  let registrySnapshot: ReturnType<typeof defaultToolRegistry.snapshot>;
 
   beforeEach(async () => {
+    registrySnapshot = defaultToolRegistry.snapshot();
+    defaultToolRegistry.clear();
+    registerReadFileTool();
     tempDir = await fs.mkdtemp(path.join(os.tmpdir(), 'read-media-continuation-'));
     workspaceRoot = path.join(tempDir, 'workspace');
     await fs.mkdir(workspaceRoot, { recursive: true });
   });
 
   afterEach(async () => {
+    defaultToolRegistry.restore(registrySnapshot);
     await fs.rm(tempDir, { recursive: true, force: true });
   });
 
@@ -51,10 +58,10 @@ describe('read_media_file continuation flow (integration)', () => {
       config: { inputProcessors: [] },
       state: { activeTurn: turn, memoryManager }
     } as any;
-    const tool = new ReadMediaFile();
+    const tool = defaultToolRegistry.createTool('read_file') as BaseTool;
 
-    const audioResult = await tool.execute(context, { file_path: 'sample.m4a' });
-    const videoResult = await tool.execute(context, { file_path: 'clip.mp4' });
+    const audioResult = await tool.execute(context, { path: 'sample.m4a', base_dir: workspaceRoot });
+    const videoResult = await tool.execute(context, { path: 'clip.mp4', base_dir: workspaceRoot });
     expect(audioResult).toBeInstanceOf(ContextFile);
     expect(videoResult).toBeInstanceOf(ContextFile);
     const audioContextFile = audioResult as ContextFile;
@@ -63,15 +70,15 @@ describe('read_media_file continuation flow (integration)', () => {
     expect(videoContextFile.fileType).toBe(ContextFileType.VIDEO);
 
     memoryManager.ingestToolIntents([
-      new ToolInvocation('read_media_file', { file_path: 'sample.m4a' }, 'inv-audio', turn.turnId),
-      new ToolInvocation('read_media_file', { file_path: 'clip.mp4' }, 'inv-video', turn.turnId)
+      new ToolInvocation('read_file', { path: 'sample.m4a', base_dir: workspaceRoot }, 'inv-audio', turn.turnId),
+      new ToolInvocation('read_file', { path: 'clip.mp4', base_dir: workspaceRoot }, 'inv-video', turn.turnId)
     ], turn.turnId, {
       assistantContent: 'Reading requested media files.'
     });
 
     const results = [
-      new ToolResultEvent('read_media_file', audioContextFile, 'inv-audio', undefined, { file_path: 'sample.m4a' }, turn.turnId),
-      new ToolResultEvent('read_media_file', videoContextFile, 'inv-video', undefined, { file_path: 'clip.mp4' }, turn.turnId)
+      new ToolResultEvent('read_file', audioContextFile, 'inv-audio', undefined, { path: 'sample.m4a', base_dir: workspaceRoot }, turn.turnId),
+      new ToolResultEvent('read_file', videoContextFile, 'inv-video', undefined, { path: 'clip.mp4', base_dir: workspaceRoot }, turn.turnId)
     ];
     memoryManager.ingestToolResults(results, turn.turnId, {
       source: 'native_api_ordered_batch',

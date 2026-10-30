@@ -1,0 +1,53 @@
+// TEMPORARY API/E2E probe (autobyteus-328 round 2: API-05 rerun, API-14); deleted after the run.
+// API-05: read_file on copies of real PDFs ($API_PDFS_DIR) and generated documents ($API_DOCS_DIR).
+// API-14: the media line-range refusal for each kind and line values. Receipt: $API_RECEIPT.
+import { describe, expect, it } from 'vitest';
+import fs from 'node:fs/promises';
+import path from 'node:path';
+import { BaseTool } from '../../../../src/tools/base-tool.js';
+import { defaultToolRegistry } from '../../../../src/tools/registry/tool-registry.js';
+import { registerReadFileTool } from '../../../../src/tools/file/read-file.js';
+
+const read = (args: Record<string, unknown>) =>
+  (defaultToolRegistry.createTool('read_file') as BaseTool).execute({ agentId: 'api-round2', workspaceRootPath: null }, args);
+const outcome = async (args: Record<string, unknown>) => {
+  try {
+    const result = await read(args);
+    return typeof result === 'string' ? { outcome: 'text', chars: result.length } : { outcome: 'context file', value: JSON.stringify(result).slice(0, 120) };
+  } catch (error) {
+    return { outcome: 'refused', message: (error as Error).message };
+  }
+};
+
+describe('API round 2 read_file probe', () => {
+  it('records outcomes', async () => {
+    defaultToolRegistry.clear();
+    registerReadFileTool();
+    const receipt: Record<string, unknown> = {};
+    const pdfs: Array<Record<string, unknown>> = [];
+    for (const dir of [process.env.API_PDFS_DIR!, process.env.API_DOCS_DIR!]) {
+      for (const name of (await fs.readdir(dir)).sort()) {
+        const filePath = path.join(dir, name);
+        const bytes = await fs.readFile(filePath);
+        pdfs.push({ file: path.relative(path.dirname(dir), filePath), size: bytes.length, firstNul: bytes.indexOf(0), ...(await outcome({ path: filePath })) });
+      }
+    }
+    receipt.documents = pdfs;
+    const fx = process.env.API_FIXTURES_DIR!;
+    const media: Array<Record<string, unknown>> = [];
+    for (const name of ['picture.png', 'recording.m4a', 'clip.mp4']) {
+      for (const [start, end] of [[1, 1], [0, 0], [-1, -1], [2, null], [null, 3]] as Array<[number | null, number | null]>) {
+        const args: Record<string, unknown> = { path: path.join(fx, name) };
+        if (start !== null) args.start_line = start;
+        if (end !== null) args.end_line = end;
+        media.push({ name, start_line: start, end_line: end, ...(await outcome(args)) });
+      }
+      media.push({ name, start_line: null, end_line: null, ...(await outcome({ path: path.join(fx, name) })) });
+    }
+    receipt.mediaLineRanges = media;
+    receipt.textLineRange = await outcome({ path: path.join(fx, 'notes.txt'), start_line: 2, end_line: 3 });
+    receipt.buildLog = await outcome({ path: path.join(fx, 'build.log') });
+    await fs.writeFile(process.env.API_RECEIPT!, `${JSON.stringify(receipt, null, 2)}\n`);
+    expect(pdfs.length).toBeGreaterThan(0);
+  });
+});

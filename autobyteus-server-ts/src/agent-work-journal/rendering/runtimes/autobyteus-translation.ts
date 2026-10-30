@@ -70,10 +70,30 @@ const startBackgroundProcess: BuiltInConverter = (call, result) => {
   return commandLine(asText(call.args.command), [...(cwd ? [`in ${cwd}`] : []), "background"], recorded);
 };
 
-/** Recorded as `1: …`; shown as `cat -n` in the common number layout. */
+/**
+ * A recorded context-file value (the file was loaded for the model to see): the media marker, as for a Claude image
+ * read; null for any other result.
+ */
+const mediaReadRecorded = (result: RecordedResult | null) => {
+  const value = asRecord(result?.value);
+  if (!result || !value || result.error) return null;
+  return {
+    outcome: { kind: "ok" as const, note: null },
+    output: mediaMarker(
+      asText(value.fileType) ?? asText(value.file_type) ?? "media",
+      asText(value.mimeType) ?? asText(value.mime_type),
+      asInteger(value.size) ?? asInteger(value.sizeBytes),
+    ),
+  };
+};
+
+/** Text: recorded as `1: …`, shown as `cat -n` in the common number layout. An image, audio or video file: the media marker. */
 const readFile: BuiltInConverter = (call, result) => {
+  const filePath = asText(call.args.path) ?? "(path not recorded)";
+  const media = mediaReadRecorded(result);
+  if (media) return convertedCommandLine(`cat ${shellWord(filePath)}`, media);
   const numbered = call.args.include_line_numbers !== false;
-  const command = catCommand(asText(call.args.path) ?? "(path not recorded)", numbered,
+  const command = catCommand(filePath, numbered,
     startEndRange(call.args.start_line, call.args.end_line));
   const read = normalized(result);
   const output = read?.output ?? null;
@@ -82,21 +102,14 @@ const readFile: BuiltInConverter = (call, result) => {
     : read);
 };
 
-/** The file was loaded for viewing: the media marker, as for a Claude image read. */
-const readMediaFile: BuiltInConverter = (call, result) => {
-  const value = asRecord(result?.value);
-  const recorded = result && value && !result.error
-    ? {
-      outcome: { kind: "ok" as const, note: null },
-      output: mediaMarker(
-        asText(value.fileType) ?? asText(value.file_type) ?? "media",
-        asText(value.mimeType) ?? asText(value.mime_type),
-        asInteger(value.size) ?? asInteger(value.sizeBytes),
-      ),
-    }
-    : normalized(result);
-  return convertedCommandLine(`cat ${shellWord(asText(call.args.file_path) ?? "(path not recorded)")}`, recorded);
-};
+/**
+ * Recorded history: `read_media_file` was removed (autobyteus-328; read_file reads media now), but runs recorded before
+ * keep their calls, rendered as the media marker.
+ */
+const readMediaFile: BuiltInConverter = (call, result) => convertedCommandLine(
+  `cat ${shellWord(asText(call.args.file_path) ?? "(path not recorded)")}`,
+  mediaReadRecorded(result) ?? normalized(result),
+);
 
 const readUrl: BuiltInConverter = (call, result) =>
   convertedCommandLine(curlCommand(asText(call.args.url)), normalized(result));

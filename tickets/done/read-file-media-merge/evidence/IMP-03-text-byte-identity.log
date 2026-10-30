@@ -1,0 +1,47 @@
+# Check: IMP-03 text reads byte-identical to the base read_file (AC-001), and binary files refused (AC-009)
+# Command: a temporary vitest file (below) importing the base read_file (git show origin/personal:autobyteus-ts/src/tools/file/read-file.ts, saved as src/tools/file/zz-read-file-base.ts) and the new one; both temporary files removed after the run
+# Commit: 020b9ef311 source (REQ-009 included; run on the identical uncommitted change before that commit, file unchanged since)
+# Environment: macOS 26.5.2 arm64, node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-29T21:08:54 local
+# Corpus: every git-tracked non-media file of the worktree. Each text file is compared under 3 argument sets (numbered, unnumbered, lines 2-5); each NUL-in-first-8000-bytes file must be refused.
+# Result: files 67292: text 67091 (comparisons 201273, all identical), binary 201 (all refused). Count line written by the test to a file because this vitest config hides console output.
+
+--- temporary test ---
+// One-off (autobyteus-328 AC-001): the base read_file and the new one give byte-identical results for every tracked text file.
+import { execSync } from 'node:child_process';
+import path from 'node:path';
+import { expect, it } from 'vitest';
+import { readFile as baseRead } from '../../Users/normy/autobyteus_org/autobyteus-worktrees/read-file-media-merge/autobyteus-ts/src/tools/file/zz-read-file-base.js';
+import { readFile as newRead } from '../../Users/normy/autobyteus_org/autobyteus-worktrees/read-file-media-merge/autobyteus-ts/src/tools/file/read-file.js';
+import { getMediaFileKindFromPath } from '../../Users/normy/autobyteus_org/autobyteus-worktrees/read-file-media-merge/autobyteus-ts/src/utils/media-file-kind.js';
+import fs from 'node:fs';
+
+it('text reads are byte-identical', async () => {
+  const root = '/Users/normy/autobyteus_org/autobyteus-worktrees/read-file-media-merge';
+  const files = execSync('git ls-files', { cwd: root, maxBuffer: 1 << 28 }).toString().split('\n').filter(Boolean)
+    .map((f) => path.join(root, f)).filter((f) => fs.existsSync(f) && fs.statSync(f).isFile() && !getMediaFileKindFromPath(f));
+  const ctx = { agentId: 'cmp', workspaceRootPath: null };
+  let text = 0, binary = 0, compared = 0;
+  for (const f of files) {
+    const bytes = fs.readFileSync(f);
+    if (bytes.subarray(0, 8000).includes(0)) { binary += 1; await expect(newRead(ctx, f)).rejects.toThrow('is a binary file'); continue; }
+    text += 1;
+    for (const args of [[undefined, undefined, true], [undefined, undefined, false], [2, 5, true]] as const) {
+      expect(await newRead(ctx, f, null, args[0], args[1], args[2])).toBe(await baseRead(ctx, f, null, args[0], args[1], args[2]));
+      compared += 1;
+    }
+  }
+  console.log(`files ${files.length}: text ${text} (comparisons ${compared}), binary ${binary}`);
+}, 600000);
+
+--- counts ---
+files 67292: text 67091 (comparisons 201273), binary 201
+--- vitest output ---
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/read-file-media-merge/autobyteus-ts
+
+
+ Test Files  1 passed (1)
+      Tests  1 passed (1)
+   Start at  21:05:37
+   Duration  197.01s (transform 207ms, setup 77ms, import 187ms, tests 196.57s, environment 0ms)
