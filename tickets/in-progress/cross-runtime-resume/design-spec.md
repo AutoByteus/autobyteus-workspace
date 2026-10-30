@@ -140,7 +140,7 @@ Settings draft and store (web); `StandaloneStoppedRunModelConfigUpdater`; `commi
 ## Ownership Map
 
 - Updater: decides model-only edit vs switch vs undo for a stopped run; owns eligibility and validation call. Commit function: owns the metadata shape written (as `commitAgentRunModelConfig` does for the model).
-- Lifecycle service: owns the order of the activation (candidate → marker → metadata → publish → register notice) and crash behavior; the only writer of `run_metadata.json` at activation.
+- Lifecycle service: owns the order of the activation (candidate → marker → metadata → publish → register notice) and failure behavior; the only writer of `run_metadata.json` at activation.
 - `RuntimeSwitchRecorder` (agent-memory): owns writing the marker record and rotating the raw traces for a switch, idempotent by key. It does not know about activation.
 - `RuntimeHandoverNoticeService`: owns the pending hand-over per run and the notice text; reads facts from the journal service; knows nothing about activation internals.
 - `WorkJournalService`: sole owner of journal files and their per-file runtime.

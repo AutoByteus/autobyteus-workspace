@@ -130,7 +130,7 @@ Findings must cite REQ/AC/BEH IDs. New behavior is a `Requirement Gap`.
 
 ## Assumptions / Unknowns
 
-U-1…U-5 in the investigation notes. AC-007 and U-4 test quality on a real run; they do not promise it.
+U-1…U-5 in the investigation notes. U-1 (stop reason) and U-2 (file access) are closed; U-3 and U-5 do not affect the first delivery. The real run checks delivery of the notice, not the quality of a continuation.
 
 ## Readiness Check
 
