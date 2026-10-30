@@ -1,0 +1,18 @@
+# API-14 (round 2, step 2) PowerShell launcher parse: test_powershell_launcher_parses_when_pwsh_is_available, run with pwsh present (its 5 sources incl. ContainerConfig.ps1)
+# Command: docker run --rm -v <worktree>:<worktree>:ro mcr.microsoft.com/dotnet/sdk:8.0 pwsh -NoLogo -NoProfile -Command "$paths=@('/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-in-place-server-update/scripts/public/docker/autobyteus-docker.ps1','/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-in-place-server-update/scripts/public/docker/autobyteus-docker.d/powershell/Core.ps1','/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-in-place-server-update/scripts/public/docker/autobyteus-docker.d/powershell/ContainerConfig.ps1','/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-in-place-server-update/scripts/public/docker/autobyteus-docker.d/powershell/DockerRuntime.ps1','/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-in-place-server-update/scripts/public/docker/autobyteus-docker.d/powershell/Commands.ps1'); foreach ($path in $paths) { $null=[scriptblock]::Create((Get-Content -Raw $path)) }"
+# Commit: 6637b54d46; Date: 2026-10-30T17:31:03Z; Environment: sha256:6ba9644da07bb5b560a402acec9ca38711a0762969f1b61da261df5c9f6f85da linux/arm64
+
+7.4.22
+parsed: /Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-in-place-server-update/scripts/public/docker/autobyteus-docker.ps1
+parsed: /Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-in-place-server-update/scripts/public/docker/autobyteus-docker.d/powershell/Core.ps1
+parsed: /Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-in-place-server-update/scripts/public/docker/autobyteus-docker.d/powershell/ContainerConfig.ps1
+parsed: /Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-in-place-server-update/scripts/public/docker/autobyteus-docker.d/powershell/DockerRuntime.ps1
+parsed: /Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-in-place-server-update/scripts/public/docker/autobyteus-docker.d/powershell/Commands.ps1
+exit 0
+
+## control: a copy of ContainerConfig.ps1 with a syntax error must fail to parse
+MethodInvocationException: Exception calling "Create" with "1" argument(s): "At line:33 char:31
++ function Get-ContainerRunArgs( {{$State, [string]$NodeWorkspaceHost,  …
++                               ~
+Missing ')' in function parameter list.
+control exit 1

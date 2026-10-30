@@ -1,0 +1,373 @@
+# API-12/21/22 step-2 launcher journeys on a test-owned Docker daemon
+# Command: /private/tmp/ab305-api-e2e/scripts/api12-step2-launcher.sh /Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-in-place-server-update /Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-in-place-server-update/tickets/in-progress/docker-node-in-place-server-update/evidence/API-12-step2-launcher.log
+# Commit: 6637b54d46; Date: 2026-10-30T17:31:16Z
+# Environment: macOS 26.5.2 arm64, host Docker 29.0.1; launcher with macOS /bin/bash 3.2.57(1)-release
+
+## Setup: test root, installed launcher from origin/personal (77fb8bf2d1), dind
+installed launcher: CONFIG_HASH_VERSION="v6"; new launcher: CONFIG_HASH_VERSION="v7"
+Unable to find image 'docker:dind' locally
+dind: Pulling from library/docker
+c4c05dc2e87f: Pulling fs layer
+d0a9e20a1b0f: Pulling fs layer
+250627d8c012: Pulling fs layer
+0b845bf8973f: Pulling fs layer
+4f4fb700ef54: Pulling fs layer
+9c6139c9221e: Pulling fs layer
+24e03c50592f: Pulling fs layer
+dab0eedb503a: Pulling fs layer
+189e736d95c8: Pulling fs layer
+bb02c9e184dc: Pulling fs layer
+8e17af739909: Pulling fs layer
+45ff200f185d: Pulling fs layer
+a96bffce6c38: Pulling fs layer
+b382108e49e6: Pulling fs layer
+fc345138e05c: Pulling fs layer
+4f4fb700ef54: Already exists
+9c6139c9221e: Download complete
+fc345138e05c: Download complete
+c4c05dc2e87f: Download complete
+24e03c50592f: Download complete
+d0a9e20a1b0f: Download complete
+0b845bf8973f: Download complete
+dab0eedb503a: Download complete
+b382108e49e6: Download complete
+a96bffce6c38: Download complete
+250627d8c012: Download complete
+4f4fb700ef54: Pull complete
+24e03c50592f: Pull complete
+250627d8c012: Pull complete
+8e17af739909: Download complete
+45ff200f185d: Download complete
+189e736d95c8: Download complete
+189e736d95c8: Pull complete
+8e17af739909: Pull complete
+45ff200f185d: Pull complete
+9c6139c9221e: Pull complete
+d0a9e20a1b0f: Pull complete
+0b845bf8973f: Pull complete
+a96bffce6c38: Pull complete
+fc345138e05c: Pull complete
+b382108e49e6: Pull complete
+bb02c9e184dc: Download complete
+dab0eedb503a: Pull complete
+bb02c9e184dc: Pull complete
+c4c05dc2e87f: Pull complete
+Digest: sha256:9e79b879b177fbd72c34376a3dd3d91747da5db49e1f560f76aea59561471977
+Status: Downloaded newer image for docker:dind
+CHECK PASS: the test daemon is not the host daemon
+CHECK PASS: the test daemon has no launcher-managed containers
+
+## Setup: images (registry inside the test daemon; published :beta from Docker Hub)
+Unable to find image 'registry:2' locally
+2: Pulling from library/registry
+ddcb6d98388d: Pulling fs layer
+95459497489f: Pulling fs layer
+8bbaad1488a8: Pulling fs layer
+9a6b3f59ebc2: Pulling fs layer
+bd39ca3613a6: Pulling fs layer
+bd39ca3613a6: Download complete
+ddcb6d98388d: Download complete
+95459497489f: Download complete
+8bbaad1488a8: Download complete
+95459497489f: Pull complete
+8bbaad1488a8: Pull complete
+94a5ce400b19: Download complete
+c4472e68032e: Download complete
+9a6b3f59ebc2: Download complete
+bd39ca3613a6: Pull complete
+ddcb6d98388d: Pull complete
+9a6b3f59ebc2: Pull complete
+Digest: sha256:a3d8aaa63ed8681a604f1dea0aa03f100d5895b6a58ace528858a7b332415373
+Status: Downloaded newer image for registry:2
+Loaded image: autobyteus-server-305-test:step1
+Loaded image: autobyteus-server-305-test:step2
+FROM localhost:5000/ab305/server:step2
+RUN node -e "const f='/opt/autobyteus/server-package/server-package.json';const j=require(f);j.version='1.5.12-beta.1';require('fs').writeFileSync(f,JSON.stringify(j,null,2)+'\n')"
+autobyteus/autobyteus-server:beta                          sha256:9657209ba49975b53ead3a20de8739b7ad21ee42ac1bde13a8e83c765b68edb2 (no server package: /app layout)
+localhost:5000/ab305/server:step1                          sha256:ae18d6c1a66ef2e7a497f3ba239ae457b3a69b73658bf14fba918dcb523082ce   "version": "1.5.11-beta.5",
+localhost:5000/ab305/server:step2                          sha256:50b3211b4b38e5ec1acd4ed39b9ecd000445bf365ea5cdab19face738b55eac9   "version": "1.5.11-beta.5",
+localhost:5000/ab305/server:step2-labelled-1.5.12-beta.1   sha256:61b624412a509762f1decee6a8aa3f85e39de5c2bb4097df3ba4f27e00dfc410   "version": "1.5.12-beta.1",
+
+## Phase A: installed launcher new-container --tag beta
+Status: Image is up to date for autobyteus/autobyteus-server:beta
+[AutoByteus Docker] Started autobyteus-server-0.
+Image: autobyteus/autobyteus-server:beta
+Backend: http://localhost:58767
+Next step: paste Backend into Add Remote Node in AutoByteus. Then open that node over your trusted private network.
+health 58767: {"status":"ok","message":"Server is running"}
+CHECK PASS: phase A: node healthy before the move
+before: hash a27d421e881b89a80633e2c449c9bc347e4f7c52318c0a33990b52e1524556cb, 4 volumes
+
+autobyteus-server-0-chromium-profile->/home/vncuser/.config/chromium
+autobyteus-server-0-data->/home/autobyteus/data
+autobyteus-server-0-root-home->/root
+autobyteus-server-0-workspace->/app/autobyteus-server-ts/workspace
+seeded: {"data":{"createAgentDefinition":{"id":"ab305-api12-a","name":"ab305-api12-A","description":"written before upgrade"}}}
+
+## Phase A: new launcher upgrade --all --image localhost:5000/ab305/server:step2
+[AutoByteus Docker] Image changed for autobyteus-server-0; recreating the managed container while keeping named volumes.
+[AutoByteus Docker] Started autobyteus-server-0.
+[AutoByteus Docker] Keeping image sha256:9657209ba49975b53ead3a20de8739b7ad21ee42ac1bde13a8e83c765b68edb2; it is still used by a Docker container.
+CHECK PASS: phase A: recreated (new container ID)
+CHECK PASS: phase A: config hash label changed (v7)
+CHECK PASS: phase A: server-packages volume mounted at /home/autobyteus/server-packages
+CHECK PASS: phase A: the four earlier volumes kept at the same places
+
+autobyteus-server-0-chromium-profile->/home/vncuser/.config/chromium
+autobyteus-server-0-data->/home/autobyteus/data
+autobyteus-server-0-root-home->/root
+autobyteus-server-0-server-packages->/home/autobyteus/server-packages
+autobyteus-server-0-workspace->/app/autobyteus-server-ts/workspace
+health 58767: {"status":"ok","message":"Server is running"}
+CHECK PASS: phase A: step-2 node healthy
+cli.mjs status: {"version":"1.5.11-beta.5","state":"running","server":{"pid":146,"packageVersion":"1.5.11-beta.5","source":"builtIn"},"update":{"state":"idle","targetVersion":null,"step":null,"code":null,"message":null,"startedAt":null,"finishedAt":null,"requestedFrom":null}}
+CHECK PASS: phase A: starter state running, version 1.5.11-beta.5, built-in package
+starter : node /opt/autobyteus/starter/starter.mjs 
+server : /usr/bin/node /opt/autobyteus/server-package/dist/app.js --host 0.0.0.0 --port 8000 --data-dir /home/autobyteus/data 
+server ppid/pgid: 58/146
+server cwd: /opt/autobyteus/server-package
+server env has AUTOBYTEUS_STARTER_SOCKET: 1
+CHECK PASS: phase A: supervisord runs the starter; the server is its child, cwd the built-in package, socket in env
+state.json: {
+  "current": {
+    "source": "builtIn",
+    "version": "1.5.11-beta.5"
+  }
+}
+CHECK PASS: phase A: state.json records the built-in package as current
+read back: {"data":{"agentDefinition":{"id":"ab305-api12-a","name":"ab305-api12-A","description":"written before upgrade"}}}
+CHECK PASS: phase A: data and root-home kept
+AutoByteus Docker storage: autobyteus-server-0
+  autobyteus-server-0-server-packages -> /home/autobyteus/server-packages (server packages the node installed in place, and the starter's update state)
+CHECK PASS: phase A: launcher storage lists the server-packages volume
+
+## API-21: C1 GET /rest/node-update on a real node (through the published port)
+GET /rest/node-update -> 200 {"inPlaceUpdate":"available","version":"1.5.11-beta.5","update":{"state":"idle","targetVersion":null,"step":null,"code":null,"message":null,"startedAt":null,"finishedAt":null,"requestedFrom":null}}
+GET /rest/node-update?target=1.5.12 -> 200 {"inPlaceUpdate":"available","version":"1.5.11-beta.5","target":{"version":"1.5.12","relation":"newer"},"update":{"state":"idle","targetVersion":null,"step":null,"code":null,"message":null,"startedAt":null,"finishedAt":null,"requestedFrom":null}}
+GET /rest/node-update?target=1.5.11-beta.5 -> 200 {"inPlaceUpdate":"available","version":"1.5.11-beta.5","target":{"version":"1.5.11-beta.5","relation":"same"},"update":{"state":"idle","targetVersion":null,"step":null,"code":null,"message":null,"startedAt":null,"finishedAt":null,"requestedFrom":null}}
+GET /rest/node-update?target=1.5.10 -> 200 {"inPlaceUpdate":"available","version":"1.5.11-beta.5","target":{"version":"1.5.10","relation":"older"},"update":{"state":"idle","targetVersion":null,"step":null,"code":null,"message":null,"startedAt":null,"finishedAt":null,"requestedFrom":null}}
+GET /rest/node-update?target=latest -> 400 {"code":"INVALID_VERSION","message":"'latest' is not a release version (X.Y.Z or X.Y.Z-beta.N)"}
+CHECK PASS: C1 no target: 200, inPlaceUpdate available, version 1.5.11-beta.5, update.state idle
+CHECK PASS: C1 target 1.5.12: relation newer
+CHECK PASS: C1 target 1.5.11-beta.5: relation same
+CHECK PASS: C1 target 1.5.10: relation older
+CHECK PASS: C1 target latest: 400 INVALID_VERSION passed on
+
+## API-21: a real paired phone credential
+enable phone access -> 200
+pairing session -> 400
+pairing exchange -> 400, credential unde… (redacted), device undefined
+CHECK FAIL: phone paired through the public flow (credential mra_…)
+control: phone credential on GraphQL -> 200 {"data":{"__typename":"Query"}}
+CHECK PASS: control: the phone credential is accepted on a phone route (GraphQL 200)
+phone credential on C1 -> 200 {"inPlaceUpdate":"available","version":"1.5.11-beta.5","update":{"state":"idle","targetVersion":null,"step":null,"code":null,"message":null,"startedAt":null,"finishedAt":null,"requestedFrom":null}}
+CHECK FAIL: phone credential on C1: 403 REMOTE_ACCESS_AUTH_INVALID
+revoke device -> 404
+CHECK FAIL: test phone revoked
+
+## Phase A: docker stop / docker start
+health 58767: {"status":"ok","message":"Server is running"}
+CHECK PASS: after docker start: healthy
+cli.mjs status: {"version":"1.5.11-beta.5","state":"running","server":{"pid":103,"packageVersion":"1.5.11-beta.5","source":"builtIn"},"update":{"state":"idle","targetVersion":null,"step":null,"code":null,"message":null,"startedAt":null,"finishedAt":null,"requestedFrom":null}}
+CHECK PASS: after docker start: running the same package (built-in 1.5.11-beta.5)
+CHECK PASS: after docker start: state.json unchanged
+read back: {"data":{"agentDefinition":{"id":"ab305-api12-a","name":"ab305-api12-A","description":"written before upgrade"}}}
+CHECK PASS: after docker start: data kept
+
+## Phase A: launcher stop, then plain upgrade --all (the launcher's docker start path)
+[AutoByteus Docker] Stop requested for autobyteus-server-0. Named volumes and restart policy were kept.
+CHECK PASS: launcher stop: container stopped
+[AutoByteus Docker] Started autobyteus-server-0.
+CHECK PASS: plain upgrade --all started the same container
+health 58767: {"status":"ok","message":"Server is running"}
+CHECK PASS: after launcher start: healthy
+CHECK PASS: after launcher start: running built-in 1.5.11-beta.5, state.json unchanged
+[AutoByteus Docker] autobyteus-server-0 is already running with the current image and launcher config.
+CHECK PASS: second plain upgrade --all: same container
+
+## Phase A: destroy --all keeps all five named volumes
+CHECK PASS: five named volumes kept
+
+## Phase B: installed launcher new-container --image localhost:5000/ab305/server:step1
+Status: Image is up to date for localhost:5000/ab305/server:step1
+[AutoByteus Docker] Started autobyteus-server-0.
+Image: localhost:5000/ab305/server:step1
+Backend: http://localhost:58986
+Next step: paste Backend into Add Remote Node in AutoByteus. Then open that node over your trusted private network.
+health 58986: {"status":"ok","message":"Server is running"}
+CHECK PASS: phase B: node healthy before the move
+before: hash ea9be0cb30a01868eca41e85974f5c723f116a08af2394e3d40acaad7c538fc6, 4 volumes
+
+autobyteus-server-0-chromium-profile->/home/vncuser/.config/chromium
+autobyteus-server-0-data->/home/autobyteus/data
+autobyteus-server-0-root-home->/root
+autobyteus-server-0-workspace->/app/autobyteus-server-ts/workspace
+seeded: {"data":{"createAgentDefinition":{"id":"ab305-api12-b","name":"ab305-api12-B","description":"written before upgrade"}}}
+
+## Phase B: new launcher upgrade --all --image localhost:5000/ab305/server:step2
+[AutoByteus Docker] Image changed for autobyteus-server-0; recreating the managed container while keeping named volumes.
+[AutoByteus Docker] Started autobyteus-server-0.
+[AutoByteus Docker] Keeping image sha256:ae18d6c1a66ef2e7a497f3ba239ae457b3a69b73658bf14fba918dcb523082ce; it is still used by a Docker container.
+CHECK PASS: phase B: recreated (new container ID)
+CHECK PASS: phase B: config hash label changed (v7)
+CHECK PASS: phase B: server-packages volume mounted at /home/autobyteus/server-packages
+CHECK PASS: phase B: the four earlier volumes kept at the same places
+
+autobyteus-server-0-chromium-profile->/home/vncuser/.config/chromium
+autobyteus-server-0-data->/home/autobyteus/data
+autobyteus-server-0-root-home->/root
+autobyteus-server-0-server-packages->/home/autobyteus/server-packages
+autobyteus-server-0-workspace->/app/autobyteus-server-ts/workspace
+health 58986: {"status":"ok","message":"Server is running"}
+CHECK PASS: phase B: step-2 node healthy
+cli.mjs status: {"version":"1.5.11-beta.5","state":"running","server":{"pid":95,"packageVersion":"1.5.11-beta.5","source":"builtIn"},"update":{"state":"idle","targetVersion":null,"step":null,"code":null,"message":null,"startedAt":null,"finishedAt":null,"requestedFrom":null}}
+CHECK PASS: phase B: starter state running, version 1.5.11-beta.5, built-in package
+starter : node /opt/autobyteus/starter/starter.mjs 
+server : /usr/bin/node /opt/autobyteus/server-package/dist/app.js --host 0.0.0.0 --port 8000 --data-dir /home/autobyteus/data 
+server ppid/pgid: 50/95
+server cwd: /opt/autobyteus/server-package
+server env has AUTOBYTEUS_STARTER_SOCKET: 1
+CHECK PASS: phase B: supervisord runs the starter; the server is its child, cwd the built-in package, socket in env
+state.json: {
+  "current": {
+    "source": "builtIn",
+    "version": "1.5.11-beta.5"
+  }
+}
+CHECK PASS: phase B: state.json records the built-in package as current
+read back: {"data":{"agentDefinition":{"id":"ab305-api12-b","name":"ab305-api12-B","description":"written before upgrade"}}}
+CHECK PASS: phase B: data and root-home kept
+AutoByteus Docker storage: autobyteus-server-0
+  autobyteus-server-0-server-packages -> /home/autobyteus/server-packages (server packages the node installed in place, and the starter's update state)
+CHECK PASS: phase B: launcher storage lists the server-packages volume
+
+## Phase C: installed launcher (v6) new-container --image localhost:5000/ab305/server:step2
+[AutoByteus Docker] Started autobyteus-server-0.
+Backend: http://localhost:59115
+Next step: paste Backend into Add Remote Node in AutoByteus. Then open that node over your trusted private network.
+health 59115: {"status":"ok","message":"Server is running"}
+CHECK PASS: phase C: healthy
+cli.mjs status: {"version":"1.5.11-beta.5","state":"running","server":{"pid":126,"packageVersion":"1.5.11-beta.5","source":"builtIn"},"update":{"state":"idle","targetVersion":null,"step":null,"code":null,"message":null,"startedAt":null,"finishedAt":null,"requestedFrom":null}}
+CHECK PASS: phase C: starter running the built-in package
+CHECK PASS: phase C: no server-packages volume (the installed launcher has none); state.json in the container layer
+seeded: {"data":{"createAgentDefinition":{"id":"ab305-api12-c","name":"ab305-api12-C","description":"written before upgrade"}}}
+
+## Phase C: new launcher plain upgrade --all (same image, v7 config)
+[AutoByteus Docker] Launcher config changed for autobyteus-server-0; recreating the managed container while keeping named volumes.
+[AutoByteus Docker] Started autobyteus-server-0.
+CHECK PASS: phase C: recreated once for the launcher config
+CHECK PASS: phase C: server-packages volume now mounted
+health 59115: {"status":"ok","message":"Server is running"}
+CHECK PASS: phase C: healthy after the recreate
+read back: {"data":{"agentDefinition":{"id":"ab305-api12-c","name":"ab305-api12-C","description":"written before upgrade"}}}
+CHECK PASS: phase C: data and root-home kept
+CHECK PASS: phase C: starter running built-in, state.json in the volume
+[AutoByteus Docker] autobyteus-server-0 is already running with the current image and launcher config.
+CHECK PASS: phase C: next plain upgrade keeps the container
+
+## Phase D: new launcher new-container --image localhost:5000/ab305/server:step2-labelled-1.5.12-beta.1 (an image of 'a newer release', labelled 1.5.12-beta.1)
+[AutoByteus Docker] Started autobyteus-server-0.
+Backend: http://localhost:59239
+Next step: paste Backend into Add Remote Node in AutoByteus. Then open that node over your trusted private network.
+health 59239: {"status":"ok","message":"Server is running"}
+CHECK PASS: phase D: the newer node is healthy
+cli.mjs status: {"version":"1.5.12-beta.1","state":"running","server":{"pid":108,"packageVersion":"1.5.12-beta.1","source":"builtIn"},"update":{"state":"idle","targetVersion":null,"step":null,"code":null,"message":null,"startedAt":null,"finishedAt":null,"requestedFrom":null}}
+state.json: {
+  "current": {
+    "source": "builtIn",
+    "version": "1.5.12-beta.1"
+  }
+}
+CHECK PASS: phase D: running 1.5.12-beta.1 (built-in of that image), recorded current
+
+## Phase D: upgrade --all --image localhost:5000/ab305/server:step2 (built-in 1.5.11-beta.5, older than what ran)
+[AutoByteus Docker] Image changed for autobyteus-server-0; recreating the managed container while keeping named volumes.
+[AutoByteus Docker] Started autobyteus-server-0.
+CHECK PASS: phase D: the launcher started the container (it reports it running)
+cli.mjs status: {"version":"1.5.12-beta.1","state":"needsNewImage","update":{"state":"idle","targetVersion":null,"step":null,"code":null,"message":null,"startedAt":null,"finishedAt":null,"requestedFrom":null},"message":"This node already ran 1.5.12-beta.1; this image can run only 1.5.11-beta.5. Use an image of version 1.5.12-beta.1 or newer: autobyteus-docker upgrade --all --tag 1.5.12-beta.1"}
+CHECK PASS: phase D: C2 state needsNewImage, version 1.5.12-beta.1, no server
+CHECK PASS: phase D: message names the image needed and the launcher command
+autobyteus_server                RUNNING   pid 55, uptime 0:01:15
+CHECK PASS: phase D: starter up with the same pid after 60 s (no restart loop)
+CHECK PASS: phase D: no node server process
+CHECK PASS: phase D: nothing listens on 8000 (health refused)
+CHECK PASS: phase D: state.json not overwritten by the older image (current still 1.5.12-beta.1)
+starter log (needs-new-image lines):
+{"time":"2026-10-30T17:39:05.931Z","starter":"needs-new-image","code":"NEEDS_NEW_IMAGE","message":"This node already ran 1.5.12-beta.1; this image can run only 1.5.11-beta.5. Use an image of version 1.5.12-beta.1 or newer: autobyteus-docker upgrade --all --tag 1.5.12-beta.1"}
+CHECK PASS: phase D: the node log names the refusal
+launcher status (CR2-N1: no starter state until step 3):
+NODE                     CONTAINER                STATUS         BACKEND                         
+autobyteus-server-0      autobyteus-server-0      running        http://localhost:59239 (localhost:5000/ab305/server:step2)
+
+## Phase D: back to the newer image
+[AutoByteus Docker] Image changed for autobyteus-server-0; recreating the managed container while keeping named volumes.
+[AutoByteus Docker] Started autobyteus-server-0.
+health 59239: {"status":"ok","message":"Server is running"}
+CHECK PASS: phase D: the newer image runs again
+CHECK PASS: phase D: running 1.5.12-beta.1
+
+## Phase E (API-22): PowerShell launcher, Linux pwsh in the test daemon's network namespace
+7.4.22
+Docker version 29.9.2, build a82e528
+Status: Image is up to date for autobyteus/autobyteus-server:beta
+error: no such object: autobyteus-server-0
+health  never ok: 
+CHECK FAIL: phase E: PowerShell new-container node on :beta healthy
+error: no such object: autobyteus-server-0
+error: no such object: autobyteus-server-0
+error: no such object: autobyteus-server-0
+CHECK FAIL: phase E: the PowerShell node has the server-packages volume from the start
+AutoByteus Docker storage: autobyteus-server-0
+  autobyteus-server-0-server-packages -> /home/autobyteus/server-packages (server packages the node installed in place, and the starter's update state)
+CHECK FAIL: phase E: PowerShell storage lists the server-packages volume
+error: no such object: autobyteus-server-0
+error: no such object: autobyteus-server-0
+CHECK FAIL: phase E: PowerShell upgrade recreated the node
+health  never ok: 
+CHECK FAIL: phase E: step-2 node healthy
+Error response from daemon: No such container: autobyteus-server-0
+cli.mjs status: 
+<anonymous_script>:1
+
+
+SyntaxError: Unexpected end of JSON input
+    at JSON.parse (<anonymous>)
+    at Socket.<anonymous> ([eval]:1:126)
+    at Socket.emit (node:events:531:35)
+    at endReadableNT (node:internal/streams/readable:1698:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:89:21)
+
+Node.js v22.23.1
+<anonymous_script>:1
+
+
+SyntaxError: Unexpected end of JSON input
+    at JSON.parse (<anonymous>)
+    at Socket.<anonymous> ([eval]:1:126)
+    at Socket.emit (node:events:531:35)
+    at endReadableNT (node:internal/streams/readable:1698:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:89:21)
+
+Node.js v22.23.1
+Error response from daemon: No such container: autobyteus-server-0
+<anonymous_script>:1
+
+
+SyntaxError: Unexpected end of JSON input
+    at JSON.parse (<anonymous>)
+    at Socket.<anonymous> ([eval]:1:126)
+    at Socket.emit (node:events:531:35)
+    at endReadableNT (node:internal/streams/readable:1698:12)
+    at process.processTicksAndRejections (node:internal/process/task_queues:89:21)
+
+Node.js v22.23.1
+CHECK FAIL: phase E: starter running the built-in package; state.json in the volume
+error: no such object: autobyteus-server-0
+CHECK PASS: phase E: no removed env (AUTOBYTEUS_WORKSPACE_ROOT, AUTOBYTEUS_SKIP_SYNC) from the PowerShell launcher
+error: no such object: autobyteus-server-0
+error: no such object: autobyteus-server-0
+CHECK PASS: phase E: PowerShell plain upgrade keeps the container
+CHECK FAIL: phase E: PowerShell destroy kept the five volumes
+
+## Result
+CHECK FAILURES: 10

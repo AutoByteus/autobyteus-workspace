@@ -1,0 +1,31 @@
+{
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "-i",
+    "--pull",
+    "never",
+    "--name",
+    "api-prisma-e1a244ad-8cf-native",
+    "--label",
+    "autobyteus.prisma-e2e=api-prisma-e1a244ad-8cf",
+    "--network",
+    "none",
+    "--mount",
+    "type=bind,src=/private/tmp/ab305-api-e2e/tmp-4fHM/api-prisma-docker-rfTkzo/home,dst=/root",
+    "--mount",
+    "type=bind,src=/private/tmp/ab305-api-e2e/tmp-4fHM/api-prisma-docker-rfTkzo/data,dst=/home/autobyteus/data",
+    "--mount",
+    "type=bind,src=/private/tmp/ab305-api-e2e/tmp-4fHM/api-prisma-docker-rfTkzo/dist,dst=/opt/autobyteus/server-package/dist,readonly",
+    "--mount",
+    "type=bind,src=/private/tmp/ab305-api-e2e/tmp-4fHM/api-prisma-docker-rfTkzo/fixture,dst=/fixture,readonly",
+    "--entrypoint",
+    "node",
+    "sha256:ae18d6c1a66ef2e7a497f3ba239ae457b3a69b73658bf14fba918dcb523082ce",
+    "/fixture/native.mjs"
+  ],
+  "exit": 1,
+  "stdout": "",
+  "stderr": "node:internal/modules/run_main:123\n    triggerUncaughtException(\n    ^\n\nAssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n'bundled' !== 'cache'\n\n    at file:///fixture/native.mjs:15:8\n    at ModuleJob.run (node:internal/modules/esm/module_job:343:25)\n    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:681:26)\n    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5) {\n  generatedMessage: true,\n  code: 'ERR_ASSERTION',\n  actual: 'bundled',\n  expected: 'cache',\n  operator: 'strictEqual',\n  diff: 'simple'\n}\n\nNode.js v22.23.3\n"
+}

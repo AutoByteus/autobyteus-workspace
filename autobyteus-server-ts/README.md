@@ -371,7 +371,9 @@ The launcher keeps private Docker named volumes outside the container writable
 layer:
 `/home/autobyteus/data` is private app/server data, `/root` stores in-container
 root home/auth settings, `/home/vncuser/.config/chromium` stores private
-Chromium browser profile state in `<node>-chromium-profile`, and
+Chromium browser profile state in `<node>-chromium-profile`,
+`/home/autobyteus/server-packages` keeps server packages and their state in
+`<node>-server-packages`, and
 `/app/autobyteus-server-ts/workspace` keeps the existing workspace volume. It
 also creates host-visible user folders under a shared workspace root
 (`$HOME/.autobyteus/docker-server/shared-workspace` on macOS/Linux,

@@ -1,0 +1,10 @@
+{
+  "command": [
+    "docker",
+    "inspect",
+    "api-prisma-a73a37eb-fc6-recreated"
+  ],
+  "exit": 1,
+  "stdout": "[]\n",
+  "stderr": "error: no such object: api-prisma-a73a37eb-fc6-recreated\n"
+}

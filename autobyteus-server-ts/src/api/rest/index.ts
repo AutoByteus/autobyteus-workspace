@@ -16,6 +16,7 @@ import { registerApplicationExecutionResourceRoutes } from "./application-execut
 import { registerRemoteAccessRoutes } from "./remote-access.js";
 import { registerMemorySyncRoutes } from "./memory-sync.js";
 import { registerRemoteCollaborationRoutes } from "./remote.js";
+import { registerNodeUpdateRoutes } from "../../node-update/node-update-routes.js";
 import type { ApplicationPlatformLifecycleReadiness, ApplicationPlatformRestContracts } from "../../application-platform/runtime/application-platform-runtime-contracts.js";
 
 import { registerProjectTaskContextRoutes } from "./project-task-context-files.js";
@@ -29,6 +30,7 @@ export async function registerRestRoutes(
 ): Promise<void> {
   await registerHealthRoutes(app);
   await registerRemoteAccessRoutes(app);
+  await registerNodeUpdateRoutes(app);
   await registerMemorySyncRoutes(app);
   await registerRemoteCollaborationRoutes(app);
   await registerFileRoutes(app);

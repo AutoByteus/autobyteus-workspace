@@ -1,0 +1,29 @@
+# API-13 compose build excerpt (full log 1065 lines, not committed: lines below are its key lines)
+# Command: autobyteus-server-ts/docker/docker-start.sh up --build-local -p ab305-api-compose (runs build.sh --variant latest)
+# Commit: 4c356d69b7; Date: 2026-10-30T16:31Z-16:36Z; Environment: macOS arm64, Docker 29.0.1, buildx builder multi-platform-builder (docker-container)
+
+#10 [runtime  1/13] FROM docker.io/autobyteus/chrome-vnc@sha256:b2fde77f3bd7c73d412ea59d42e3b65290bae9f39d1ce85b5aaaac5d869596f4
+#11 [builder  1/30] FROM docker.io/library/node:22-bookworm@sha256:18a6d90fd60542269850c80ca03b29b1d9b14d6b221ac7ee8e35b0d33ef904bd
+#10 [runtime  1/13] FROM docker.io/autobyteus/chrome-vnc@sha256:b2fde77f3bd7c73d412ea59d42e3b65290bae9f39d1ce85b5aaaac5d869596f4
+#11 [builder  1/30] FROM docker.io/library/node:22-bookworm@sha256:18a6d90fd60542269850c80ca03b29b1d9b14d6b221ac7ee8e35b0d33ef904bd
+#11 [builder  1/30] FROM docker.io/library/node:22-bookworm@sha256:18a6d90fd60542269850c80ca03b29b1d9b14d6b221ac7ee8e35b0d33ef904bd
+#11 [builder  1/30] FROM docker.io/library/node:22-bookworm@sha256:18a6d90fd60542269850c80ca03b29b1d9b14d6b221ac7ee8e35b0d33ef904bd
+#11 [builder  1/30] FROM docker.io/library/node:22-bookworm@sha256:18a6d90fd60542269850c80ca03b29b1d9b14d6b221ac7ee8e35b0d33ef904bd
+#11 [builder  1/30] FROM docker.io/library/node:22-bookworm@sha256:18a6d90fd60542269850c80ca03b29b1d9b14d6b221ac7ee8e35b0d33ef904bd
+#11 [builder  1/30] FROM docker.io/library/node:22-bookworm@sha256:18a6d90fd60542269850c80ca03b29b1d9b14d6b221ac7ee8e35b0d33ef904bd
+#11 [builder  1/30] FROM docker.io/library/node:22-bookworm@sha256:18a6d90fd60542269850c80ca03b29b1d9b14d6b221ac7ee8e35b0d33ef904bd
+#11 [builder  1/30] FROM docker.io/library/node:22-bookworm@sha256:18a6d90fd60542269850c80ca03b29b1d9b14d6b221ac7ee8e35b0d33ef904bd
+#14 85.32 ERROR: logging before google.Init: I1030 16:32:56.668028       1 installer.go:27] Running Antigravity CLI setup...
+#45 [builder 29/30] COPY scripts/server-package ./scripts/server-package
+#46 [builder 30/30] RUN pnpm --filter autobyteus-server-ts deploy /out/server-package --legacy   && cd /out/server-package   && rm node_modules/.pnpm/node_modules/autobyteus-server-ts   && node_modules/.bin/prisma generate --schema prisma/schema.prisma   && node /app/autobyteus-web/scripts/onnxrunti
+#46 3.395   Virtual store is at:             ../out/server-package/node_modules/.pnpm
+#46 22.36 .../node_modules/@prisma/client postinstall: Prisma schema loaded from ../out/server-package/prisma/schema.prisma
+#46 22.89 .../node_modules/@prisma/client postinstall: ✔ Generated Prisma Client (v5.22.0) to ./../out/server-package/node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/@prisma/client in 179ms
+#46 24.90 Wrote server-package.json: 1.5.11-beta.5 linux-arm64, Node modules 127, system level 1, 61 migrations
+#47 [server-package 1/1] COPY --from=builder /out/server-package /
+#48 [runtime  7/13] COPY --from=server-package / /opt/autobyteus/server-package
+#55 exporting to oci image format
+#55 exporting to oci image format
+Built locally: autobyteus-server:latest (linux/arm64)
+ Volume ab305-api-compose_autobyteus-server-server-packages  Creating
+ Volume ab305-api-compose_autobyteus-server-server-packages  Created

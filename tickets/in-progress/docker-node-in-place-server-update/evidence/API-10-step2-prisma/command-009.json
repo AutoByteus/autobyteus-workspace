@@ -1,0 +1,10 @@
+{
+  "command": [
+    "git",
+    "diff",
+    "--stat"
+  ],
+  "exit": 0,
+  "stdout": " .../api-e2e-coverage-investigation.md              | 263 ++++++++++-----------\n .../api-e2e-test-progress.md                       |   8 +\n .../code-review-report.md                          | 248 +++++++++----------\n .../code-review-revision-record.md                 |  30 +++\n 4 files changed, 286 insertions(+), 263 deletions(-)\n",
+  "stderr": ""
+}

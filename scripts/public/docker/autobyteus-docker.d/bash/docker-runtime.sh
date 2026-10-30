@@ -277,25 +277,6 @@ Default temp workspace env: AUTOBYTEUS_TEMP_WORKSPACE_DIR=${TEMP_WORKSPACE_ENV_V
 PATHS
 }
 
-print_storage_for_node() {
-  local node_name="$1" volume_prefix
-  volume_prefix="$(volume_prefix_for "$node_name")"
-  cat <<STORAGE
-AutoByteus Docker storage: ${node_name}
-Private Docker named volumes (kept during recreate/destroy/reset):
-  ${volume_prefix}-data -> /home/autobyteus/data (private server app state: DB, logs, memory, media, agents, skills)
-  ${volume_prefix}-root-home -> /root (Codex/Claude auth and root home settings)
-  ${volume_prefix}-chromium-profile -> ${CHROMIUM_PROFILE_CONTAINER_PATH} (private Chromium browser profile state: cookies, local storage, preferences)
-  ${volume_prefix}-workspace -> /app/autobyteus-server-ts/workspace (existing build/runtime workspace volume)
-Host bind mounts (host-visible user files):
-  $(node_workspace_host_path "$node_name") -> ${WORKSPACE_CONTAINER_PATH} (this node's user workspace and default temp workspace)
-  $(shared_workspace_host_path) -> ${SHARED_CONTAINER_PATH} (shared across launcher-managed Docker nodes)
-Launcher state directory: $(state_root)
-Note: adding these bind mounts to an existing container requires recreation; workspace apply keeps the named volumes above.
-Note: existing /home/autobyteus/data/temp_workspace files remain in the data volume, but the default temp workspace becomes ${WORKSPACE_CONTAINER_PATH} after apply.
-STORAGE
-}
-
 start_node() {
   local node_name="$1" image_ref="$2" state_file container_name created_at attempt output start_check_output
   local desired_image_id current_image_id current_config_hash config_hash start_output

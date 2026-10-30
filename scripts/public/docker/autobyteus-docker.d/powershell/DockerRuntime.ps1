@@ -205,55 +205,9 @@ Default temp workspace env: AUTOBYTEUS_TEMP_WORKSPACE_DIR=$Script:TempWorkspaceE
 "@ | Write-Host
 }
 
-function Write-StorageForNode([string]$NodeName) {
-  $volumePrefix = Normalize-NodeName $NodeName
-@"
-AutoByteus Docker storage: $NodeName
-Private Docker named volumes (kept during recreate/destroy/reset):
-  $volumePrefix-data -> /home/autobyteus/data (private server app state: DB, logs, memory, media, agents, skills)
-  $volumePrefix-root-home -> /root (Codex/Claude auth and root home settings)
-  $volumePrefix-chromium-profile -> $Script:ChromiumProfileContainerPath (private Chromium browser profile state: cookies, local storage, preferences)
-  $volumePrefix-workspace -> /app/autobyteus-server-ts/workspace (existing build/runtime workspace volume)
-Host bind mounts (host-visible user files):
-  $(Get-NodeWorkspaceHostPath $NodeName) -> $Script:WorkspaceContainerPath (this node's user workspace and default temp workspace)
-  $(Get-SharedWorkspaceHostPath) -> $Script:SharedContainerPath (shared across launcher-managed Docker nodes)
-Launcher state directory: $(Get-StateRoot)
-Note: adding these bind mounts to an existing container requires recreation; workspace apply keeps the named volumes above.
-Note: existing /home/autobyteus/data/temp_workspace files remain in the data volume, but the default temp workspace becomes $Script:WorkspaceContainerPath after apply.
-"@ | Write-Host
-}
-
 function Set-StateProperty($State, [string]$Name, $Value) {
   if ($State.PSObject.Properties[$Name]) { $State.$Name = $Value; return }
   $State | Add-Member -NotePropertyName $Name -NotePropertyValue $Value
-}
-
-function Get-StateConfigHash($State) {
-  $nodeName = [string]$State.nodeName
-  $volumePrefix = Normalize-NodeName $nodeName
-  $text = @(
-    "version=$Script:ConfigHashVersion",
-    "node=$nodeName",
-    "image=$($State.imageRef)",
-    "backend=$($State.backendPort)",
-    "vnc=$($State.vncPort)",
-    "novnc=$($State.noVncPort)",
-    "debug=$($State.debugPort)",
-    "workspace_volume=$volumePrefix-workspace",
-    "data_volume=$volumePrefix-data",
-    "root_volume=$volumePrefix-root-home",
-    "chromium_profile_volume=$volumePrefix-chromium-profile",
-    "chromium_profile_target=$Script:ChromiumProfileContainerPath",
-    "shared_workspace_root=$(Get-SharedWorkspaceRoot)",
-    "node_workspace_host=$(Get-NodeWorkspaceHostPath $nodeName)",
-    "node_workspace_target=$Script:WorkspaceContainerPath",
-    "shared_workspace_host=$(Get-SharedWorkspaceHostPath)",
-    "shared_workspace_target=$Script:SharedContainerPath",
-    "temp_workspace_env=AUTOBYTEUS_TEMP_WORKSPACE_DIR=$Script:TempWorkspaceEnvValue",
-    "server_host=http://localhost:$($State.backendPort)",
-    "vnc_hosts=localhost:$($State.noVncPort)"
-  ) -join "`n"
-  Get-StringSha256 $text
 }
 
 function Test-StateHasPorts($State) { $State -and $State.backendPort -and $State.vncPort -and $State.noVncPort -and $State.debugPort }
@@ -377,37 +331,7 @@ function Start-Node([string]$NodeName, [string]$ImageRef, [bool]$PreferDefaults)
     $sharedWorkspaceHost = Get-SharedWorkspaceHostPath
     $outputFile = [System.IO.Path]::GetTempFileName()
     try {
-      $runArgs = @(
-        'run', '-d',
-        '--name', $state.containerName,
-        '--restart', 'unless-stopped',
-        '--label', "$Script:LauncherLabelKey=$Script:LauncherLabelValue",
-        '--label', "$Script:NodeLabelKey=$($state.nodeName)",
-        '--label', "$Script:ConfigLabelKey=$($state.configHash)",
-        '-e', 'AUTOBYTEUS_WORKSPACE_ROOT=/app',
-        '-e', 'AUTOBYTEUS_DATA_DIR=/home/autobyteus/data',
-        '-e', 'AUTOBYTEUS_BIND_HOST=0.0.0.0',
-        '-e', 'AUTOBYTEUS_SERVER_PORT=8000',
-        '-e', "AUTOBYTEUS_SERVER_HOST=http://localhost:$($state.backendPort)",
-        '-e', "AUTOBYTEUS_VNC_SERVER_HOSTS=localhost:$($state.noVncPort)",
-        '-e', 'APP_ENV=production',
-        '-e', 'DB_TYPE=sqlite',
-        '-e', 'LOG_LEVEL=INFO',
-        '-e', 'AUTOBYTEUS_SKIP_SYNC=1',
-        '-e', "AUTOBYTEUS_TEMP_WORKSPACE_DIR=$Script:TempWorkspaceEnvValue",
-        '-v', "$(Normalize-NodeName $stateNodeName)-workspace:/app/autobyteus-server-ts/workspace",
-        '-v', "$(Normalize-NodeName $stateNodeName)-data:/home/autobyteus/data",
-        '-v', "$(Normalize-NodeName $stateNodeName)-root-home:/root",
-        '-v', "$(Normalize-NodeName $stateNodeName)-chromium-profile:$Script:ChromiumProfileContainerPath",
-        '--cap-add', 'SYS_ADMIN',
-        '--security-opt', 'seccomp=unconfined',
-        '-p', "$($state.backendPort):8000",
-        '-p', "$($state.vncPort):5900",
-        '-p', "$($state.noVncPort):6080",
-        '-p', "$($state.debugPort):9223",
-        '--mount', "type=bind,source=$nodeWorkspaceHost,target=$Script:WorkspaceContainerPath",
-        '--mount', "type=bind,source=$sharedWorkspaceHost,target=$Script:SharedContainerPath"
-      )
+      $runArgs = Get-ContainerRunArgs $state $nodeWorkspaceHost $sharedWorkspaceHost
       $runArgs += $state.imageRef
       & docker @runArgs *> $outputFile
       $exitCode = $LASTEXITCODE

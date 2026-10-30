@@ -1,0 +1,30 @@
+{
+  "id": "75c77ca92c709c54966f6ca3e40138f544362c847be8310ce1838ea5c5842d6a",
+  "image": "sha256:ae18d6c1a66ef2e7a497f3ba239ae457b3a69b73658bf14fba918dcb523082ce",
+  "mounts": [
+    {
+      "Type": "bind",
+      "Source": "/private/tmp/ab305-api-e2e/tmp-aopl/api-prisma-docker-lCcc2W/home",
+      "Destination": "/root",
+      "Mode": "",
+      "RW": true,
+      "Propagation": "rprivate"
+    },
+    {
+      "Type": "bind",
+      "Source": "/private/tmp/ab305-api-e2e/tmp-aopl/api-prisma-docker-lCcc2W/data",
+      "Destination": "/home/autobyteus/data",
+      "Mode": "",
+      "RW": true,
+      "Propagation": "rprivate"
+    },
+    {
+      "Type": "bind",
+      "Source": "/private/tmp/ab305-api-e2e/tmp-aopl/api-prisma-docker-lCcc2W/dist",
+      "Destination": "/opt/autobyteus/server-package/dist",
+      "Mode": "",
+      "RW": false,
+      "Propagation": "rprivate"
+    }
+  ]
+}

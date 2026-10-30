@@ -1,0 +1,90 @@
+# API-21 (phone) and API-22 (PowerShell launcher), run 2 on the test-owned dind daemon
+# Command: /private/tmp/ab305-api-e2e/scripts/api21-22-rerun.sh /Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-in-place-server-update /Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-in-place-server-update/tickets/in-progress/docker-node-in-place-server-update/evidence/API-21-22-rerun.log
+# Commit: 6637b54d46; Date: 2026-10-30T17:52:47Z
+CHECK PASS: the test daemon is not the host daemon
+CHECK PASS: no launcher-managed container on the test daemon before this run
+
+## API-21: new launcher new-container --image localhost:5000/ab305/server:step2
+[AutoByteus Docker] Started autobyteus-server-0.
+Backend: http://localhost:59799
+Next step: paste Backend into Add Remote Node in AutoByteus. Then open that node over your trusted private network.
+health 59799: {"status":"ok","message":"Server is running"}
+CHECK PASS: step-2 node healthy
+node private address (the test daemon host on the Docker bridge): http://172.17.0.6:59799
+no credential, via the private address: 200 {"inPlaceUpdate":"available","version":"1.5.11-beta.5","update":{"state":"idle","targetVersion":null,"step":null,"code":
+CHECK PASS: C1 without a credential via the private address: 200 available
+enable phone access -> 200
+pairing session -> 201 {"payload":{"version":1,"serverBaseUrl":"http://172.17.0.6:59799","pairingCode":"<redacted>","expiresAt":"2026-10-30T17:57:57.755Z","serverName":"API-21 node"},"qrText":"http://172.17.0.6:59799/mobile
+CHECK PASS: pairing session created (201)
+pairing exchange -> 201, credential mra_… (redacted), device device_86dfb083c939f0f4cbd385b15fe4858c
+CHECK PASS: phone paired through the public flow (201, credential mra_…)
+control: phone credential on GraphQL -> 200 {"data":{"__typename":"Query"}}
+CHECK PASS: control: the phone credential is accepted on a phone route (GraphQL 200)
+control: an unknown mra_ credential on GraphQL -> 401 {"error":"REMOTE_ACCESS_AUTH_INVALID","code":"REMOTE_ACCESS_AUTH_INVALID","message":"Remote Access credential is invalid."}
+CHECK PASS: control: an unknown mra_ credential is refused on GraphQL (so the 200 above is the real credential)
+phone credential on C1 -> 403 {"error":"REMOTE_ACCESS_AUTH_INVALID","code":"REMOTE_ACCESS_AUTH_INVALID","message":"Mobile credentials do not authorize owner-management routes."}
+CHECK PASS: phone credential on C1: 403 REMOTE_ACCESS_AUTH_INVALID
+revoke device -> 200
+CHECK PASS: test phone revoked
+CHECK PASS: revoked credential no longer accepted
+CHECK PASS: the credential value appears in no container log
+
+## API-22: PowerShell launcher (Linux pwsh 7.4 in the test daemon's network namespace)
+fixture patch (temporary copy only, for new-container):
+127c127
+<   $ports
+---
+>   ,$ports
+
+## API-22: new-container --tag beta with the PATCHED copy (fixture)
+[AutoByteus Docker] Started autobyteus-server-0.
+Backend: http://localhost:39675
+Next step: paste Backend into Add Remote Node in AutoByteus. Then open that node over your trusted private network.
+health 39675: {"status":"ok","message":"Server is running"}
+CHECK PASS: PowerShell node on :beta healthy
+CHECK PASS: the PowerShell node has the server-packages volume from creation
+{
+  "nodeName": "autobyteus-server-0",
+  "containerName": "autobyteus-server-0",
+  "backendPort": 39675,
+  "vncPort": 32875,
+  "noVncPort": 35317,
+  "debugPort": 44953,
+  "imageRef": "autobyteus/autobyteus-server:beta",
+  "configHash": "12ee48353c30d0383115ec56a0a42665ec95804a8f91b4efd7a5082d5bbbee77",
+  "createdAt": "2026-10-30T17:53:00Z",
+  "updatedAt": "2026-10-30T17:53:02Z"
+}
+
+## API-22: storage with the UNPATCHED launcher
+AutoByteus Docker storage: autobyteus-server-0
+  autobyteus-server-0-server-packages -> /home/autobyteus/server-packages (server packages the node installed in place, and the starter's update state)
+CHECK PASS: PowerShell storage lists the server-packages volume
+
+## API-22: upgrade --all --image localhost:5000/ab305/server:step2 with the UNPATCHED launcher
+[AutoByteus Docker] Image changed for autobyteus-server-0; recreating the managed container while keeping named volumes.
+[AutoByteus Docker] Started autobyteus-server-0.
+[AutoByteus Docker] Keeping image sha256:9657209ba49975b53ead3a20de8739b7ad21ee42ac1bde13a8e83c765b68edb2; it is still used by a Docker container.
+CHECK PASS: PowerShell upgrade recreated the node
+health 39675: {"status":"ok","message":"Server is running"}
+CHECK PASS: same config-hash-relevant ports kept (no fresh port pick)
+cli.mjs status: {"version":"1.5.11-beta.5","state":"running","server":{"pid":99,"packageVersion":"1.5.11-beta.5","source":"builtIn"},"update":{"state":"idle","targetVersion":null,"step":null,"code":null,"message":null,"startedAt":null,"finishedAt":null,"requestedFrom":null}}
+state.json: {"current":{"source":"builtIn","version":"1.5.11-beta.5"}}
+CHECK PASS: starter running the built-in package; state.json in the volume
+CHECK PASS: no removed env from the PowerShell launcher
+
+## API-22: plain upgrade --all with the UNPATCHED launcher
+[AutoByteus Docker] autobyteus-server-0 is already running with the current image and launcher config.
+CHECK PASS: PowerShell plain upgrade keeps the container
+
+## API-22: destroy --all with the UNPATCHED launcher
+[AutoByteus Docker] Removed managed container autobyteus-server-0. Named volumes were kept.
+CHECK PASS: container removed
+CHECK PASS: PowerShell destroy kept the five volumes
+
+## API-22: the bug itself, with the UNPATCHED launcher (expected to fail until fixed)
+     | You cannot call a method on a null-valued expression.
+BUG REPRODUCED: the unpatched new-container created no container (pre-existing Get-UsedPorts bug, FU in follow-ups.md)
+
+## Result
+CHECK FAILURES: 0

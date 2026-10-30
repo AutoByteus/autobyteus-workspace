@@ -1,4 +1,5 @@
 import importlib.util
+import json
 import re
 import subprocess
 import sys
@@ -264,6 +265,24 @@ class CommandLineTest(unittest.TestCase):
             )
             self.assertEqual((result.returncode, result.stdout), (0, "1.4.90-beta.2\n"))
 
+
+
+class SharedVersionVectorsTest(unittest.TestCase):
+    """The vectors the Docker starter's release-version.mjs is tested against too
+    (autobyteus-server-ts/docker/starter/tests/release-version.test.mjs), so both orderings agree."""
+
+    VECTORS = json.loads((Path(__file__).resolve().parent / "release_version_vectors.json").read_text(encoding="utf-8"))
+
+    def test_recognized_versions_match_the_vectors(self):
+        for version in self.VECTORS["recognized"]:
+            self.assertIsNotNone(parse_release_tag(f"v{version}"), version)
+        for version in self.VECTORS["unrecognized"]:
+            self.assertIsNone(parse_release_tag(f"v{version}"), repr(version))
+
+    def test_ordering_matches_the_vectors(self):
+        parsed = [parse_release_tag(f"v{version}") for version in self.VECTORS["ascending"]]
+        self.assertEqual(parsed, sorted(parsed))
+        self.assertEqual(len(set(parsed)), len(parsed))
 
 if __name__ == "__main__":
     unittest.main()

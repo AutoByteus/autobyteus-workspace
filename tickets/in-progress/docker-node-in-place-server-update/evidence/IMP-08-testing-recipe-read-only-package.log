@@ -1,0 +1,13 @@
+# IMP-08 TESTING.md recipe: this worktree's server package mounted read-only into a test container
+# Commands: docker buildx build --builder desktop-linux --platform linux/arm64 -f autobyteus-server-ts/docker/Dockerfile.monorepo --target server-package --output type=local,dest=/tmp/ab305/pkg-out .
+#           docker run -d --name ab305-step1-mount --label autobyteus.validation=ab305 -p 127.0.0.1:<free port>:8000 --mount type=bind,src=/tmp/ab305/pkg-out,dst=/opt/autobyteus/server-package,readonly autobyteus-server-305-test:step1
+# Commit: 01c56f1b95. Environment: macOS arm64, Docker 29.0.1. Date: 2026-10-30. Observed first health 10 s after docker run.
+
+build: exit 0 (observed); last build line: #40 DONE 10.7s
+output folder entries: AGENTS.md LICENSE README.md application-packages canuse-ok.txt dist docker docs mobile-web node_modules package.json prisma scripts server-package.json src tests tickets tsconfig.build.json tsconfig.claude-interrupt-resume-e2e.json tsconfig.json vitest.config.ts 
+$ curl http://127.0.0.1:53945/rest/health
+{"status":"ok","message":"Server is running"}
+migrations: Database migrations completed successfully.
+$ touch /opt/autobyteus/server-package/x
+touch: cannot touch '/opt/autobyteus/server-package/x': Read-only file system
+/run/host_mark/private on /opt/autobyteus/server-package type fakeowner (ro,nosuid,nodev,relatime,fakeowner)

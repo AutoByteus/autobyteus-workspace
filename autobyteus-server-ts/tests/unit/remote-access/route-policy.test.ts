@@ -67,6 +67,20 @@ describe("RemoteAccessRoutePolicy", () => {
     expect(authService.authorizeMobileCredential).not.toHaveBeenCalled();
   });
 
+  it("classifies the node-update route as owner-only and refuses phone credentials there", async () => {
+    expect(classifyHttpRoute("GET", "/rest/node-update?target=1.5.12")).toBe("TRUSTED_NETWORK_OWNER");
+    expect(classifyHttpRoute("POST", "/rest/node-update")).toBe("TRUSTED_NETWORK_OWNER");
+    const authService = { authorizeMobileCredential: vi.fn() };
+    const policy = new RemoteAccessRoutePolicy(authService as never);
+    await expect(policy.authorizeHttpRequest(request({
+      method: "GET", url: "/rest/node-update", remoteAddress: "100.64.1.2",
+    }))).resolves.toMatchObject({ ok: true, context: { mode: "trusted_network" } });
+    await expect(policy.authorizeHttpRequest(request({
+      method: "GET", url: "/rest/node-update", remoteAddress: "100.64.1.2",
+      headers: { authorization: "Bearer mra_mobile_token" },
+    }))).resolves.toMatchObject({ ok: false, statusCode: 403, code: "REMOTE_ACCESS_AUTH_INVALID" });
+  });
+
   it("keeps mobile credential validation scoped to mobile-bearing protected requests", async () => {
     const authService = {
       authorizeMobileCredential: vi.fn(async () => ({

@@ -139,7 +139,7 @@ const stopChild = async child => {
 
 /** The `.js` files whose content differs between the image's own `dist` and the mounted one (TESTING.md § Docker server nodes). */
 const imageDistDiff = async () => {
-  const { stdout } = await run('docker', ['run', '--rm', '--entrypoint', 'sh', image, '-c', 'cd /app/autobyteus-server-ts/dist && find . -type f -name "*.js" -exec md5sum {} +'], { maxBuffer: 64 * 1024 * 1024 });
+  const { stdout } = await run('docker', ['run', '--rm', '--entrypoint', 'sh', image, '-c', 'cd /opt/autobyteus/server-package/dist && find . -type f -name "*.js" -exec md5sum {} +'], { maxBuffer: 64 * 1024 * 1024 });
   const imageSums = new Map(stdout.trim().split('\n').map(lineText => { const [sum, file] = lineText.trim().split(/\s+/); return [file.replace(/^\.\//, ''), sum]; }));
   const local = new Map();
   const walk = async dir => {
@@ -156,7 +156,7 @@ const imageDistDiff = async () => {
 
 const startContainer = async port => {
   await run('docker', ['run', '-d', '--name', containerName, '-p', `127.0.0.1:${port}:8000`,
-    '-v', `${distDir}:/app/autobyteus-server-ts/dist:ro`, '-e', `AUTOBYTEUS_SERVER_HOST=http://localhost:${port}`, image]);
+    '-v', `${distDir}:/opt/autobyteus/server-package/dist:ro`, '-e', `AUTOBYTEUS_SERVER_HOST=http://localhost:${port}`, image]);
   containerStarted = true;
   const baseUrl = `http://127.0.0.1:${port}`;
   await waitFor('the Docker node health', async () => fetch(`${baseUrl}/rest/health`).then(response => response.ok).catch(() => false), 240_000);

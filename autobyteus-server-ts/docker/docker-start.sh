@@ -246,12 +246,6 @@ AUTOBYTEUS_VNC_PORT=${vnc_port}
 AUTOBYTEUS_WEB_VNC_PORT=${novnc_port}
 AUTOBYTEUS_CHROME_DEBUG_PORT=${debug_port}
 AUTOBYTEUS_IMAGE_TAG=${image_tag}
-
-# Optional: GitHub credentials for runtime sync (set SKIP_SYNC=0 to use)
-# GITHUB_PAT=your_pat_here
-# GITHUB_USERNAME=your_username
-# GITHUB_EMAIL=your_email
-AUTOBYTEUS_SKIP_SYNC=1
 EOF
     fi
 

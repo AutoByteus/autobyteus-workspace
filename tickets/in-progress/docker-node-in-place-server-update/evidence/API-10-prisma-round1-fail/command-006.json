@@ -1,0 +1,10 @@
+{
+  "command": [
+    "docker",
+    "inspect",
+    "api-prisma-e1a244ad-8cf-audit"
+  ],
+  "exit": 1,
+  "stdout": "[]\n",
+  "stderr": "error: no such object: api-prisma-e1a244ad-8cf-audit\n"
+}

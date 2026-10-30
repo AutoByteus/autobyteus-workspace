@@ -1,0 +1,33 @@
+{
+  "command": [
+    "docker",
+    "run",
+    "--rm",
+    "-i",
+    "--pull",
+    "never",
+    "--name",
+    "api-prisma-a73a37eb-fc6-native",
+    "--label",
+    "autobyteus.prisma-e2e=api-prisma-a73a37eb-fc6",
+    "--network",
+    "none",
+    "--mount",
+    "type=bind,src=/private/tmp/ab305-api-e2e/tmp-WPAh/api-prisma-docker-BDfNrG/home,dst=/root",
+    "--mount",
+    "type=bind,src=/private/tmp/ab305-api-e2e/tmp-WPAh/api-prisma-docker-BDfNrG/data,dst=/home/autobyteus/data",
+    "--mount",
+    "type=bind,src=/private/tmp/ab305-api-e2e/tmp-WPAh/api-prisma-docker-BDfNrG/dist,dst=/opt/autobyteus/server-package/dist,readonly",
+    "--mount",
+    "type=bind,src=/private/tmp/ab305-api-e2e/tmp-WPAh/api-prisma-docker-BDfNrG/fixture,dst=/fixture,readonly",
+    "-e",
+    "WRONG_ENGINE_CACHE=/root/.cache/prisma/master/c2990dca591cba766e3b7ef5d9e8a84796e47ab7/linux-arm64-openssl-3.0.x",
+    "--entrypoint",
+    "node",
+    "sha256:50b3211b4b38e5ec1acd4ed39b9ecd000445bf365ea5cdab19face738b55eac9",
+    "/fixture/native.mjs"
+  ],
+  "exit": 0,
+  "stdout": "{\"cli\":\"/opt/autobyteus/server-package/node_modules/.pnpm/prisma@5.22.0/node_modules/prisma/build/index.js\",\"engines\":\"/opt/autobyteus/server-package/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines/package.json\",\"version\":\"605197351a3c8bdd595af2d2a9bc3025bca48ea2\",\"current\":{\"queryEngineLibrary\":\"/opt/autobyteus/server-package/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines/libquery_engine-linux-arm64-openssl-3.0.x.so.node\",\"schemaEngineBinary\":\"/opt/autobyteus/server-package/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines/schema-engine-linux-arm64-openssl-3.0.x\",\"source\":\"bundled\",\"sourcePath\":\"/opt/autobyteus/server-package/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines\"},\"queryVersion\":{\"commit\":\"605197351a3c8bdd595af2d2a9bc3025bca48ea2\",\"version\":\"0.1.0\"},\"schemaVersion\":\"schema-engine-cli 605197351a3c8bdd595af2d2a9bc3025bca48ea2\",\"wrongSchemaEngine\":\"/root/.cache/prisma/master/c2990dca591cba766e3b7ef5d9e8a84796e47ab7/linux-arm64-openssl-3.0.x/schema-engine\",\"wrongVersion\":\"schema-engine-cli c2990dca591cba766e3b7ef5d9e8a84796e47ab7\",\"wrongRpc\":{\"jsonrpc\":\"2.0\",\"error\":{\"code\":-32601,\"message\":\"Method not found\"},\"id\":1},\"matchingRpc\":{\"jsonrpc\":\"2.0\",\"result\":{\"migrations\":[\"20260203074245_init\",\"20260208094000_add_external_channel_tables\",\"20260209174500_add_channel_message_receipt_turn_id\",\"20260209213000_remove_agent_conversation_tables\",\"20260210101500_add_agent_avatar\",\"20260210192000_add_agent_team_avatar\",\"20260211214500_add_sync_columns_and_tombstones\",\"20260212070000_remove_workflow_definition\",\"20260309103000_add_channel_binding_launch_preset\",\"20260310153000_add_channel_binding_team_definition_id\",\"20260331102000_remove_channel_bindings_table\",\"20260331130000_receipt_lifecycle_and_remove_channel_idempotency\",\"20260517090000_add_app_data_migration_records\",\"20260624090000_add_token_usage_ledger_events\",\"20260625193000_token_usage_component_pricing_explainability\",\"20260629120000_add_token_usage_display_fields\",\"20260702093000_token_usage_execution_address\",\"20260726090000_add_secret_vault\",\"20260730090000_add_token_usage_provider_name\",\"20260801090000_token_usage_member_display_name\",\"20260814090000_team_run_execution_tree_v1\",\"20260819090000_add_token_usage_run_records\",\"20260820090000_redesign_app_data_migration_summary\",\"20260822090000_add_token_usage_analytics\",\"20260923130000_add_claude_sdk_usage_state\",\"20260924120000_remove_external_channel_tables\",\"20261009120000_token_meter_context_readings\"]},\"id\":1},\"canonicalEnv\":true}\n",
+  "stderr": ""
+}
