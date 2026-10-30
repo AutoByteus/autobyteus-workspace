@@ -1,0 +1,18 @@
+# IMP2-04 lint and gates
+# Command: actionlint; shellcheck on changed shell modules (findings compared with base); check-system-level; check_licensing; artifact hygiene; secret gate origin/personal..HEAD
+# Commit: 82e2e7f931 (code b1029fc1b0)
+# Environment: macOS arm64, v22.23.1
+# Date: 2026-10-30T17:13Z
+
+actionlint: no findings
+shellcheck distinct findings scripts/public/docker/autobyteus-docker.d/bash/container-config.sh: base 0, now 0
+shellcheck distinct findings scripts/public/docker/autobyteus-docker.d/bash/docker-runtime.sh: base 1, now 1
+shellcheck distinct findings scripts/public/docker/autobyteus-docker.d/bash/core.sh: base 19, now 20
+System level 1: the system part is unchanged (b3ac8ccc78945c0713eed6cb5ce06fa23cc60ff61b72d14126c23ad3c4103562)
+Licensing is consistent.
+Tracked files scanned: 7566
+artifact hygiene exit 0
+secret gate: scanning 2 commit(s) in origin/personal..HEAD
+secret gate: PASS (no secrets found)
+secret gate exit 0
+core.sh: the one new finding is SC2034 'SERVER_PACKAGES_CONTAINER_PATH appears unused', the same kind as the existing CHROMIUM_PROFILE_CONTAINER_PATH: the constant is used by container-config.sh, which the entry sources together with core.sh.

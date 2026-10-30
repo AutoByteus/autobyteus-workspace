@@ -4,7 +4,7 @@ $Script:LauncherLabelKey = 'com.autobyteus.launcher'
 $Script:LauncherLabelValue = 'server-docker'
 $Script:NodeLabelKey = 'com.autobyteus.nodeName'
 $Script:ConfigLabelKey = 'com.autobyteus.configHash'
-$Script:ConfigHashVersion = 'v6'
+$Script:ConfigHashVersion = 'v7'
 $Script:NodeNamePrefix = 'autobyteus-server'
 $Script:DefaultNodeName = "$($Script:NodeNamePrefix)-0"
 $Script:DefaultImage = 'autobyteus/autobyteus-server'
@@ -13,6 +13,7 @@ $Script:MaxRunAttempts = 5
 $Script:WorkspaceContainerPath = '/home/autobyteus/workspace'
 $Script:SharedContainerPath = '/home/autobyteus/shared'
 $Script:TempWorkspaceEnvValue = $Script:WorkspaceContainerPath
+$Script:ServerPackagesContainerPath = '/home/autobyteus/server-packages'
 $Script:ChromiumProfileContainerPath = '/home/vncuser/.config/chromium'
 
 function Show-AutoByteusDockerHelp {

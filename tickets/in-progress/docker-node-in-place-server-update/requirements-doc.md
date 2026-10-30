@@ -84,7 +84,7 @@
 
 | Prerequisite ID | Finding And Evidence | Blocks (REQ / AC IDs) | Sent To (agent) / Task Key | Status |
 | --- | --- | --- | --- | --- |
-| PRQ-001 | Bounded, awaited shutdown: today stopping a busy run waits without limit (autobyteus-284 RC-1), so the switch could hang | REQ-010, AC-007 | `/project_task_manager` / autobyteus-284 (in progress with another team) | sent; dependency recorded by the PTM 2026-10-26 |
+| PRQ-001 | Bounded, awaited shutdown: today stopping a busy run waits without limit (autobyteus-284 RC-1), so the switch could hang | REQ-010, AC-007 | `/project_task_manager` / autobyteus-284 | delivered: in `origin/personal` @ `e4bebdc858`, integrated into this ticket's branch 2026-10-30 |
 | PRQ-002 | Restart-and-resume step 1 (record mid-turn runs, resume them) and step 3 (an update click carries the resume choice) of the autobyteus-283 plan | REQ-010, AC-007 | `/project_task_manager` / autobyteus-285 (step 1) and autobyteus-287 (step 3); both created, not dispatched, depend on 284 | sent; dependency recorded by the PTM 2026-10-26 |
 
 Build steps 1–4 do not need them; only step 5 (and the "mid-turn runs come back" part of the final demo) waits.

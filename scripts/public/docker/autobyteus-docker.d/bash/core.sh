@@ -3,7 +3,7 @@ LAUNCHER_LABEL_KEY="com.autobyteus.launcher"
 LAUNCHER_LABEL_VALUE="server-docker"
 NODE_LABEL_KEY="com.autobyteus.nodeName"
 CONFIG_LABEL_KEY="com.autobyteus.configHash"
-CONFIG_HASH_VERSION="v6"
+CONFIG_HASH_VERSION="v7"
 NODE_NAME_PREFIX="autobyteus-server"
 DEFAULT_NODE_NAME="${NODE_NAME_PREFIX}-0"
 DEFAULT_IMAGE="autobyteus/autobyteus-server"
@@ -14,6 +14,7 @@ WORKSPACE_CONTAINER_PATH="/home/autobyteus/workspace"
 SHARED_CONTAINER_PATH="/home/autobyteus/shared"
 TEMP_WORKSPACE_ENV_VALUE="${WORKSPACE_CONTAINER_PATH}"
 CHROMIUM_PROFILE_CONTAINER_PATH="/home/vncuser/.config/chromium"
+SERVER_PACKAGES_CONTAINER_PATH="/home/autobyteus/server-packages"
 
 usage() {
   cat <<USAGE

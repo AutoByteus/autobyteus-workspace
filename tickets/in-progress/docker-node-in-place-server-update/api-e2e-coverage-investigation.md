@@ -1,207 +1,191 @@
-# API/E2E Coverage Investigation — autobyteus-305, build step 1 (signed server package)
+# API/E2E Coverage Investigation — autobyteus-305, build step 2 (starter and server-packages volume)
 
-The plan: what must be proven, how, the decisions about existing tests, and the planned cases. Results, confidence scores and the broader-validation decision are in `api-e2e-execution-coverage-report.md`.
+The plan: what must be proven, how, the decisions about existing tests, and the planned cases. Results are in `api-e2e-execution-coverage-report.md`.
+
+Round 1 validated build step 1 (API-REV-001, Pass; step 1 is merged into `personal` as `eec6522b27`). Its plan is in git at `48c2d82ea1` and summarized in `api-e2e-revision-record.md`. This file is now the round-2 plan, for build step 2.
 
 ## Investigation Meta
 
 All paths are in the ticket folder `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-in-place-server-update/tickets/in-progress/docker-node-in-place-server-update/`.
 
-- Requirements Doc: `requirements-doc.md` (Approved, SR-003; editorial SR-005)
+- Requirements Doc: `requirements-doc.md` (Approved, SR-003)
 - Investigation Notes: `investigation-notes.md`
-- Solution Revision Record: `solution-revision-record.md` (SR-001..SR-005)
-- Design Spec (required on every route): `design-spec.md` (SR-005, `Ready`), build step 1 of "Change / Refactor Sequence"
-- Supplemental Task Artifacts: `options-report.md` (SR-003), `follow-ups.md` (FU-001..FU-005)
-- Design Review Report: `design-review-report.md` (ARCH-REV-002, Pass)
+- Solution Revision Record: `solution-revision-record.md` (SR-005; SR-006 wording; SR-007 step-1 receipt)
+- Design Spec: `design-spec.md` (SR-005), "Change / Refactor Sequence" step 2; DS-003, DS-007, C1/C2/C4
+- Supplemental Task Artifacts: `handoff-step-2.md`, `delivery-receipt-verification-step1.md`, `options-report.md`, `follow-ups.md`
+- Design Review Report: `design-review-report.md` (ARCH-REV-003, Pass)
 - Architecture Review Revision Record: `architecture-review-revision-record.md`
-- Implementation Handoff: `implementation-handoff.md` (IR-001)
+- Implementation Handoff: `implementation-handoff.md` (IR-002)
 - Implementation Revision Record: `implementation-revision-record.md`
-- Code Review Report: `code-review-report.md` (CRR-001, Pass, 9.5/10)
+- Code Review Report: `code-review-report.md` (CRR-003, Pass, 9.5/10; CR2-N1)
 - Code Review Revision Record: `code-review-revision-record.md`
-- Delivery Revision Record (delivery re-entry only): `N/A`
-- Relevant Delivery Revision IDs: `N/A`
-- API/E2E Revision Record (created after the first completed result): `api-e2e-revision-record.md`
-- Current API/E2E Revision ID: `API-REV-001`
-- Current Investigation Round: `1`
-- Trigger: code review Pass for build step 1 (CRR-001), message from `/software_engineering_team/code_reviewer`
-- Prior Investigation Reviewed: `N/A` (first round)
-- Latest Authoritative Investigation: this file, round 1
+- Delivery Revision Record (delivery re-entry only): `N/A` for step 2 (step 1: DR-001)
+- API/E2E Revision Record: `api-e2e-revision-record.md`
+- Current API/E2E Revision ID: `API-REV-002` (this round)
+- Current Investigation Round: `2`
+- Trigger: code review Pass of build step 2 (CRR-003), message from `/software_engineering_team/code_reviewer`
+- Prior Investigation Reviewed: round 1 (step 1), `48c2d82ea1`
+- Latest Authoritative Investigation: this file, round 2
 
 ## Current Requirement And Design Basis
 
-Build step 1 only: the image runs its server from the built-in server package at `/opt/autobyteus/server-package` (supervisord still runs `node dist/app.js`; no starter yet). Every default-variant release publishes that package per architecture, as archive, description and signature, from the job `publish-server-package` in `release-server-docker.yml`.
+Build step 2:
 
-In scope for this round:
+- **Starter under supervisord.** At boot it recovers an interrupted trial and cleans up leftovers, then chooses (DS-003) one of three outcomes:
+  - the installed package, when it fits and is not older than the built-in one;
+  - the built-in package, when it fits and is not older than the newest version that already ran, which it records as current;
+  - `NEEDS_NEW_IMAGE`: no server; the starter stays up and serves its status.
+- **`ServerSupervisor` owns the server child (DS-007):** its own process group; the server's exit ends the starter with the same code; SIGTERM leads to a bounded stop.
+- **C2 status:** `GET /status[?target=]` on the starter socket, and `cli.mjs status`.
+- **C1 `GET /rest/node-update`:** route class `TRUSTED_NETWORK_OWNER`, so phones are refused. It answers `unavailable` without `AUTOBYTEUS_STARTER_SOCKET` and `error` when the starter does not answer, and passes a 400 from the starter on.
+- **Launcher (bash and PowerShell):** the `<node>-server-packages` volume, config hash v7, the storage text. The PowerShell module `ContainerConfig.ps1` is new.
 
-- **AC-011 / REQ-009:** per architecture, the archive, description and signature are published, and the image's built-in package is byte-identical to the published one. Its verification intent is "workflow dry run, comparison".
-- **BEH-001 preserved:** `autobyteus-docker upgrade --all` still recreates on an image change and keeps the named volumes. The server now runs from the package.
-- **Groundwork:** REQ-004 (signature over the description, public key committed) and REQ-008 (`system-level.json`, level check, `systemLevel` in `server-package.json`).
-- **Removal plan:** `bootstrap.sh`, `AUTOBYTEUS_WORKSPACE_ROOT`, `AUTOBYTEUS_SKIP_SYNC`, the `/app` server layout.
-- **Moved consumers:** the two Docker e2e probes, the CLI smoke test, compose (new `autobyteus-server-server-packages` volume), and the TESTING.md recipe.
+In scope this round:
 
-Out of scope this round: AC-001..AC-010, AC-012 and AC-013 (steps 2–5).
+- BEH-001 / REQ-012 / AC-006, the boot-selection part. The in-place install that makes "installed" reachable comes with step 3; IMP2-08 covered it by writing state.
+- BEH-007 / REQ-011, the status part.
+- AC-009, the phone part.
+- DS-003 and DS-007.
+- The DEC-014 first move to the starter image.
+
+Not in scope: AC-001..AC-005, AC-007, AC-008, AC-010, AC-012 and AC-013 (steps 3–5). CR2-N1 says the launcher's `status` does not show `NEEDS_NEW_IMAGE` until step 3. That is accepted and gets recorded, not failed.
 
 ## Supported Scenarios And Real Usage
 
-- Designer scenarios covered (`SCN-*`):
-  - SCN-006 / BEH-001: the node owner runs `upgrade --all` to a new image. Only its BEH-001 part is in step 1; AC-006 needs the starter.
-  - The release part of SCN-001/SCN-002 (UC-007, the source of packages).
-- Real-use scenarios added from investigating the implemented behavior, each with its real trigger:
-  - **RU-1, published node → step-1 image:** a node made by `new-container` from the published `:beta` gets `upgrade --all --image <step-1 image>`. The real trigger is the launcher command, against a Docker daemon whose only managed nodes are test-owned (code review CR-S5).
-  - **RU-2, compose users:** `docker-start.sh up --build-local` with the new server-packages volume.
-  - **RU-3, amd64 hosts:** a friend's amd64 machine runs the amd64 image. The package's native modules (Prisma engines, onnxruntime) are architecture-specific. Here it runs under QEMU on this arm64 host.
-  - **RU-4, the TESTING.md recipe used by test runs:** a worktree's `dist` mounted read-only over `/opt/autobyteus/server-package/dist`. This is how both Docker probes run.
-  - **RU-5, Windows owners:** the PowerShell launcher, which lost two `-e` items.
-  - **RU-6, release owner:** a tag push publishes the 6 package files (CR-S1). Re-publish and zh dispatch are the forms CR-S2 and CR-S3.
-- Designer scenarios recorded as `Technically Possible but Unsupported/Contrived` (not tested): CC-04 (a dispatch whose `release_ref` version is not the tag) and CC-05 (an absolute link inside the package), both from the code review.
+- Designer and reviewer scenarios covered:
+  - **SCN-006 / CR2-S1:** first move to the starter image with `upgrade --all`.
+  - **CR2-S2:** server crash. Reused from IMP2-07.
+  - **CR2-S3:** container stop and start.
+  - **CR2-S4:** retargeting to an older image gives `NEEDS_NEW_IMAGE`.
+  - **CR2-S5:** C1 from the trusted network, and from a phone.
+- Real-use scenarios added from investigating the implemented behavior:
+  - **RU-21, from the published `:beta`:** the next release carries steps 1 and 2 together. The published `:beta` has the `/app` layout and no starter, so most users go straight from it to the starter image. Trigger: the installed launcher's node, then the reinstalled launcher's `upgrade --all`.
+  - **RU-22, from a step-1 image:** nodes built from `personal` after step 1 (the handoff's hint).
+  - **RU-23, installed launcher not refreshed:** a user who has not reinstalled the launcher (v6, no server-packages volume) upgrades to the starter image. The starter then keeps `state.json` in the container layer. That is fine in step 2, but it matters for step 3 (observation only).
+  - **RU-24, PowerShell launcher actually run** (Windows owners): `new-container`, `storage`, `upgrade --all` against a real daemon. Before this round it was never executed, only parsed.
+  - **RU-25, compose users with the starter image:** the compose file mounts `autobyteus-server-server-packages`, and the starter records its state there.
+  - **RU-26, the launcher's own `stop`, then plain `upgrade --all`:** the launcher's `docker start` path. The starter boots again over the same `state.json`.
+- Technically possible but contrived (not tested): CC-06 (supervisord SIGKILL of the starter while a server ignores SIGTERM for more than 30 s). The reviewer rejected it as unreachable with the bounded shutdown.
 
 ## Changed Behavior Summary
 
 | Behavior ID / Boundary | Change Type | Upstream Evidence | Coverage Consequence |
 | --- | --- | --- | --- |
-| BEH-003 / AC-011: package built into the image and published per architecture | Added | Handoff BEH-003 row; IMP-03/04, IMP-06/07 | Reuse IMP-06/07 (the workflow's own step bodies, byte identity). The GitHub run is only provable by a release |
-| Server runs from `/opt/autobyteus/server-package` | Changed | `supervisor-autobyteus-server.conf`, Dockerfile runtime `COPY --from=server-package` | Real container starts: probes API-10/11, upgrade API-12, compose API-13, amd64 API-15 |
-| BEH-001: `upgrade --all` keeps volumes | Preserved | `docker-runtime.sh start_node`; launcher `-e` args reduced | Real launcher against a real daemon (API-12) |
-| Removed `bootstrap.sh`, `AUTOBYTEUS_WORKSPACE_ROOT`, `AUTOBYTEUS_SKIP_SYNC` | Removed | Removal plan | API-12/13: environment and file checks in the started container; IMP-01 retired-asset guard |
-| Compose `autobyteus-server-server-packages` volume | Added | `docker-compose.yml` | API-13 |
-| REQ-008 groundwork: `system-level.json`, check | Added | IMP-01, IMP-02 | Reuse |
-| PowerShell launcher run args | Changed | `DockerRuntime.ps1` diff | API-14 parse check in a real `pwsh` |
-| Docker e2e probe paths | Changed | probe diffs | API-10, API-11 |
+| Starter as the supervisord program; boot selection (DS-003) | Added | IR-002 trace; IMP2-01, IMP2-06, IMP2-08 | Reuse the unit and container checks. Through the launcher: first move (API-12 A/B/C), stop/start (API-12 A), `NEEDS_NEW_IMAGE` by retargeting (API-12 D) |
+| `ServerSupervisor` (DS-007) | Added | IMP2-01, IMP2-07 | Reuse (crash, stop timing). `docker stop`/`start` through API-12 |
+| C2 status and `cli.mjs status` | Added | IMP2-01, IMP2-06 | API-12 (each phase), API-10 (the probe reads the pid from it) |
+| C1 `GET /rest/node-update`, route class | Added | IMP2-03, IMP2-06 (made-up phone bearer) | API-21: a real node, a real paired phone credential (403) with a positive control, targets newer/same/older/invalid |
+| Launcher volume, hash v7, storage text (bash) | Changed | IMP2-02 (fake docker) | API-12 on a real daemon |
+| PowerShell launcher (`ContainerConfig.ps1`) | Changed | IMP2-02 text contract only; parse skipped | API-14 parse; API-22 real run against a real daemon |
+| Prisma probe pid source | Changed | diff | API-10 |
+| Persisted data | Preserved (`Not Affected`); new starter state | handoff | API-12: data from `:beta` and step 1 read back; `state.json` across restarts |
 
 ## Changed Surface And Boundary Classification
 
 | Surface / Boundary | Affected? | Actual Changed Boundary | Repository Evidence Available | Material Risk Not Exercised By That Evidence | Candidate Broader Validation Mode |
 | --- | --- | --- | --- | --- | --- |
-| Domain / backend logic | No | No server source changed | — | — | — |
-| API / transport / contract | Yes | C3 `server-package.json` and description format, frozen from the first release | IMP-01, IMP-06/07 | Only a real release proves the uploaded files | First release (user) |
+| Domain / backend logic | Yes | Starter selection, supervision, status | 26 starter tests with real child processes (IMP2-01) | The real image, real volumes, the launcher's lifecycle | Lifecycle (API-12) |
+| API / transport / contract | Yes | C1 (frozen), C2 (frozen), route class | Unit tests with fastify inject (IMP2-03); container curl (IMP2-06) | A real paired phone credential; the C1 relay over the real socket in a launcher node | Live API (API-21) |
 | Frontend component / state | No | — | — | — | — |
-| Browser integration / user journey | Indirect | Nodes page against a Docker node whose server runs from the package | `nodes-docker-address-probe` (needs a run) | Package layout under a real browser journey | Browser probe API-11 |
-| Authentication / session / permissions | No | — | — | — | — |
-| Desktop renderer / web-equivalent UI | No | — | — | — | — |
-| Desktop shell / Electron-specific integration | No | — | — | — | — |
-| Process / lifecycle | Yes | Image start (supervisord → package), launcher recreate, compose start | IMP-05, IMP-09; fake-docker launcher tests | Real launcher upgrade from a published image; compose | Lifecycle API-12, API-13 |
-| Persisted-data transition | Preserved | Volumes kept across recreate; `Not Affected` | — | Data written by `:beta` read by step 1 | API-12 |
-| Worker / queue / distributed coordination | No | — | — | — | — |
-| External integration | Yes | GitHub release upload, Docker Hub pull, signing secret | IMP-01 (fake gh/docker), IMP-06/07 (real docker, throwaway key), IMP-10 (secret set) | Real secret/key pair, 30-minute wait, upload | Only a release (needs the user) |
+| Browser integration / user journey | Indirect | Nodes page against a starter-run Docker node | Address probe | Starter in the way of the browser journey | Browser probe (API-11) |
+| Authentication / session / permissions | Yes | `TRUSTED_NETWORK_OWNER` on `/rest/node-update` | Route-policy unit test | Real phone credential | API-21 |
+| Desktop renderer / shell | No | — | — | — | — |
+| Process / lifecycle | Yes | supervisord → starter → server; container stop/start; recreate | IMP2-06/07/08 on bare containers | Launcher-managed recreate with the volume; restart over state | API-12, API-22, API-13 |
+| Persisted-data transition | Preserved + new state | `state.json`/`update.json` in the volume | Unit; IMP2-08 | Survival across stop/start and recreate | API-12 |
+| Worker / queue / distributed | No | — | — | — | — |
+| External integration | No new | — | — | — | — |
 
 ## Project Execution Discovery
 
-- Assigned task worktree / workspace: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-in-place-server-update`, branch `codex/docker-node-in-place-server-update`, HEAD `4a968218e9` (code `01c56f1b95`, `5c33c1b7b0`).
-- Project type and runtime stack: pnpm monorepo, Node 22, TypeScript server (`autobyteus-server-ts`), Nuxt/Electron web (`autobyteus-web`), Docker image `Dockerfile.monorepo`, bash and PowerShell launcher, GitHub Actions.
-- Project testing guideline path(s): `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-in-place-server-update/TESTING.md`. That is the worktree's copy, rewritten for the package layout in `5c33c1b7b0`. No closer `TESTING*.md` exists on the changed paths.
-- Conflicting, missing, or unclear project instructions:
-  - **O-1, `upgrade --all` reaches every labelled node:** `managed_node_names` (`docker-runtime.sh:67-85`) lists every container on the daemon with the label `com.autobyteus.launcher=server-docker`, whatever `AUTOBYTEUS_DOCKER_STATE_DIR` says. On this machine that includes the user's `autobyteus-server-0/1/2`, so `upgrade --all` on the host daemon would recreate them and could remove their image (`remove_unused_image_ids`). TESTING.md forbids touching them. The upgrade journey therefore runs against a separate test-owned Docker daemon (Docker-in-Docker), where the only managed nodes are test-owned.
-  - **O-2, the address probe's default image:** `nodes-docker-address-probe.mjs` defaults `--docker-image` to the published `autobyteus/autobyteus-server:beta`. That image still has the `/app` layout, while the probe now reads `/opt/autobyteus/server-package/dist`. Until the first release with this change, the probe needs `--docker-image=<step-1 image>`. API-11 passes it.
-  - **O-3, `upgrade` needs a registry:** `start_node` always runs `docker pull <image_ref>`, so a local-only tag cannot be the upgrade target. Inside the test daemon the step-1 image is served from a test-owned `registry:2` at `localhost:5000`.
-- Required environment variables or secrets available: `N/A` for the planned cases. The release secret `SERVER_PACKAGE_SIGNING_KEY` exists only in GitHub and is not needed locally.
+- Worktree: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-in-place-server-update`, branch `codex/docker-node-in-place-server-update`, HEAD `5939cc48be`. The code is in `b1029fc1b0`; `82e2e7f931` changes `TESTING.md` only.
+- Testing guideline: `TESTING.md` of the worktree. It now has a "Docker starter" layer (`pnpm -C autobyteus-server-ts test:starter`), and the Docker rule covers package choice in test nodes. No closer guideline exists.
+- Instructions learned or carried from round 1:
+  - **O-1:** `upgrade --all` reaches every launcher-labelled container on the daemon, so the launcher runs only on a test-owned `docker:dind` daemon.
+  - **O-3:** the launcher always pulls, so images come from a registry inside dind.
+- **O-5, emulating "a newer release image":** `NEEDS_NEW_IMAGE` through the launcher needs a node that ran a newer version than an image's built-in package, and the only step-2 image is `1.5.11-beta.5`. I derive an image from `step2` whose `server-package.json` says `1.5.12-beta.1`, which is the only field the selection reads (`package-store.mjs choose`). It is named and recorded as an emulation. A real rebuild with a bumped version would only add build time.
+- **O-6, running the PowerShell launcher:** `pwsh` is not on the host. A throwaway image, `mcr.microsoft.com/dotnet/sdk:8.0` (arm64, pwsh 7.4) plus the docker CLI from `docker:cli`, runs the real `autobyteus-docker.ps1` inside dind's network namespace. It uses `AUTOBYTEUS_DOCKER_STATE_DIR`/`AUTOBYTEUS_DOCKER_SHARED_WORKSPACE_DIR`, which `Core.ps1` honors, and a test root at the same path in both containers. This is Linux `pwsh`, not Windows: the Windows default paths (`%LOCALAPPDATA%`) are not exercised.
+- Phone credential (API-21): the real pairing flow on the node. The pairing URL must be one a phone can reach: `pairing-url-policy.ts` refuses loopback (learned in the first run). The rerun pairs with the node's private address. `PUT /rest/remote-access/settings {phoneAccessEnabled:true}`, then `POST /rest/remote-access/pairing-sessions`, then `POST /rest/remote-access/pairing-exchanges` gives an `mra_…` credential. That flow is taken from `tests/e2e/remote-access/phone-access-running-routes.e2e.test.ts`. The device is revoked afterwards.
+- Secrets: none needed.
 
 | Instruction / Configuration Path | Authority / Purpose | Commands, Setup, Or Constraints Learned |
 | --- | --- | --- |
-| `TESTING.md` § Docker server nodes | Test node rules | Never touch the user's nodes or volumes; test-owned container on `127.0.0.1`, free port, fresh volumes; the package recipe; `docker rm -f -v` |
-| `TESTING.md` § Environments | Setup order | `pnpm install`, `pnpm -C autobyteus-server-ts prebuild`, `pnpm -C autobyteus-web exec nuxt prepare`, `pnpm -C autobyteus-server-ts build`; one heavy run at a time; clean `env -i` for e2e |
-| `TESTING.md` § Browser probes | Probe ownership | Probe owns its stack; fresh `--output-dir`; check the cleanup receipt |
-| `TESTING.md` § Rerun by impact | Reuse | `git diff --name-only <validated> HEAD` decides Still valid / Rerun |
-| `autobyteus-server-ts/tests/e2e/startup/prisma-engine-discovery.docker.mjs` header | Probe contract | `env -i PATH HOME TMPDIR RUN_PRISMA_ENGINE_DOCKER_E2E=1 pnpm -C autobyteus-server-ts test:e2e:prisma-engine-discovery:docker --image sha256:<id> --output-dir <new>`; needs network to `binaries.prisma.sh` |
-| `autobyteus-web/tests/e2e/nodes-docker-address-probe.mjs` header | Probe contract | Needs a server build; `--docker-image=`, `--output-dir=`; 4–6 min |
-| `scripts/public/docker/autobyteus-docker.sh` + `autobyteus-docker.d/bash/*` | Launcher | `AUTOBYTEUS_DOCKER_STATE_DIR`, `AUTOBYTEUS_DOCKER_SHARED_WORKSPACE_DIR`; `new-container`, `upgrade --all [--image]`, `destroy --all`; bind mounts from the state dir |
-| `autobyteus-server-ts/docker/docker-start.sh`, `build.sh`, `docker-compose.yml` | Compose path | `docker-start.sh up --build-local -p <project>` builds `autobyteus-server:latest` (single native platform, `--load`), runtime state in `docker/.runtime/` (git-ignored); `down -p <project> --volumes --delete-state` |
-| `scripts/tests/test_public_docker_launcher_shared_workspace.py:758-773` | PowerShell parse test | `pwsh -NoLogo -NoProfile -Command "$paths=@(…); foreach … [scriptblock]::Create(…)"`; skipped without `pwsh` (IMP-01 skip) |
-| `.github/workflows/release-server-docker.yml` | Release path | No dry-run input; every dispatch pushes to Docker Hub and uploads to a GitHub release. `act` is not installed |
+| `TESTING.md` § Docker server nodes, § Environments, § Browser probes, Rerun by impact | As round 1 | Rebuild the worktree's `dist` after the base merge before the probes mount it |
+| `autobyteus-server-ts/docker/README.md` | Starter usage | `docker exec <container> node /opt/autobyteus/starter/cli.mjs status` |
+| `autobyteus-server-ts/docker/starter/*.mjs` | Selection, status shape | `choose()` reads only `server-package.json` and `state.json`; the C2 `version`/`state`/`server`/`update`/`target.relation` fields |
+| `src/node-update/*.ts`, `remote-access-route-policy.ts`, `src/api/rest/remote-access.ts` | C1 and pairing | As above |
+| Launcher bash/PowerShell | As round 1 | v7 hash; `server_packages_volume` |
 
-| Component / Dependency | Working Directory | Start / Setup Command | Runtime / Resource Notes | Readiness Check | Stop / Cleanup Method |
-| --- | --- | --- | --- | --- | --- |
-| Workspace install and server build | worktree root | `pnpm install`; `pnpm -C autobyteus-server-ts prebuild`; `pnpm -C autobyteus-web exec nuxt prepare`; `pnpm -C autobyteus-server-ts build` | Serialized, one at a time | exit 0 | Untracked outputs stay in the worktree |
-| Test Docker daemon (dind) | — | `docker run -d --privileged --name ab305-api-dind --label autobyteus.ab305-api=1 -v ab305-api-dind-lib:/var/lib/docker -v <test root>:<test root> docker:dind` | Isolated from the host daemon's containers; the test root is bind-mounted at the same path so the launcher's bind sources exist | `docker -H <dind> info` | `docker rm -f -v ab305-api-dind`; `docker volume rm ab305-api-dind-lib` |
-| Test registry inside dind | — | `docker run -d -p 5000:5000 registry:2` (inside dind) | Serves the step-1 image to `docker pull` | `docker pull localhost:5000/...` | Removed with dind |
-| Compose project | `autobyteus-server-ts/docker` | `./docker-start.sh up --build-local -p ab305-api-compose` | Builds `autobyteus-server:latest` (a new local tag; none exists now) | `/rest/health` 200 | `./docker-start.sh down -p ab305-api-compose --volumes --delete-state`; `docker image rm autobyteus-server:latest` |
-| `pwsh` | — | `docker run --rm mcr.microsoft.com/dotnet/sdk:8.0 pwsh` (arm64) with the launcher sources mounted read-only (first try `mcr.microsoft.com/powershell:latest` pulled a 32-bit arm image that crashed under QEMU) | — | exit 0 | `--rm`; image removed after |
-
-| Data / Fixture / Identity Need | Existing Project Mechanism Or Creation Method | Environment / Data-Safety Notes | Cleanup / Retention |
+| Component / Dependency | Start / Setup | Readiness | Stop / Cleanup |
 | --- | --- | --- | --- |
-| Data written by the published `:beta` server | GraphQL `createAgentDefinition` on the `:beta` node (the same mutation the Prisma probe uses) | Test-owned node volumes inside dind only | Removed with the dind volume |
-| Root-home content (stands in for CLI sign-ins) | A marker file written in `/root` of the `:beta` node | No real credentials | Same |
-| Probe data | Each probe's own mkdtemp root and containers | Probe-owned | Probe cleanup receipt |
+| Worktree install and build | `pnpm install`, `prebuild`, `nuxt prepare`, `pnpm -C autobyteus-server-ts build` | exit 0 | untracked outputs |
+| `ab305-api-dind` + registry | as round 1 | `docker info` | `docker rm -f -v`, volume rm |
+| Derived image `ab305-api-step2-labelled-1.5.12-beta.1` | `docker build` from `step2` (one `RUN` editing `server-package.json`) | inspect | `docker image rm` |
+| pwsh helper image `ab305-api-pwsh-docker` | `FROM mcr.microsoft.com/dotnet/sdk:8.0` + `COPY --from=docker:cli` | `pwsh -v`, `docker version` | `docker image rm` (with its bases) |
+| Compose project `ab305-api-compose` | `docker-start.sh up --no-build -p ab305-api-compose` with `step2` tagged `autobyteus-server:latest` (a tag owned by this run; none exists) | health | `down --volumes --delete-state`; untag |
 
-## Persisted Data Transition Coverage Basis (When Applicable)
+## Persisted Data Transition Coverage Basis
 
-- Approved decision: `Not Affected` for the data volume's formats. Step 1 changes no stored data, and the new compose volume is mounted empty.
-- Design-spec and implementation-handoff references: design-spec "Persisted Data / State Transition Decision"; handoff "Persisted Data Transition Check".
-- Representative existing-data setup and required behavior: data the published `:beta` wrote (an agent definition through GraphQL, plus a root-home marker) is read unchanged by the step-1 server after `upgrade --all`. The step-1 server applies its own migrations at start, as every release does.
-- Evidence planned: API-12 (read back through GraphQL, same named volumes, marker present). The Prisma probe API-10 covers recreation over the same data with this package.
-- Migration-specific scenarios: `N/A`.
-- Upstream ambiguity or reroute required: none.
+- Decision: `Not Affected` for the data folder. The new starter state (`state.json`, `update.json`) has one writer and a tolerant reader.
+- Representative existing data:
+  - an agent definition created through GraphQL on `:beta` (phase A) and on step 1 (phase B), plus a `/root` file;
+  - after the move, `state.json` records `{current:{source:"builtIn",version:"1.5.11-beta.5"}}`, and it survives `docker stop`/`start` and the launcher's `stop` + `upgrade --all`.
+- Evidence planned: API-12.
 
 ## Existing Durable Coverage Inventory
 
-| Path / Test | Current Assertion Or Intent | Related Requirement / AC / Design | Validity Decision | Evidence | Action |
+| Path / Test | Current Assertion Or Intent | Related | Validity Decision | Evidence | Action |
 | --- | --- | --- | --- | --- | --- |
-| `scripts/tests/test_server_package_release.py` (20 tests) | Describe, sign and key scripts; "Check system level"; package job step bodies with fake docker/gh; upload order; refusals | AC-011, REQ-004/008/009 | Still Valid | IMP-01 at `5c33c1b7b0`; read the test list in the code review | Reuse |
-| `scripts/tests/test_docker_build_context_sources.py` | Build-context sources; retired assets incl. `bootstrap.sh` | Removal plan | Still Valid | IMP-01 | Reuse |
-| `scripts/tests/test_public_docker_launcher_*.py` | Launcher args, state, recreate, volumes (fake docker) | BEH-001 | Still Valid | IMP-01 | Reuse; API-12 adds the real-daemon path |
-| `test_public_docker_launcher_shared_workspace.py::test_powershell_launcher_parses_when_pwsh_is_available` | The PowerShell launcher parses | RU-5 | Still Valid, skipped in IMP-01 (no `pwsh`) | IMP-01 log line 55 | Run its command in a real `pwsh` (API-14) |
-| `scripts/tests/server_docker_cli_smoke.py` | Image CLI layer and the package path probe | BEH-001 | Still Valid | IMP-09 | Reuse |
-| `autobyteus-server-ts/tests/e2e/startup/prisma-engine-discovery.docker.mjs` | Prisma engines from the package; dist audit; recreation over the same data. Stage API003 also asserts that the pre-fix baseline resolver (`e22245f0`) selects the incompatible HOME cache | RU-4, BEH-001 | **Needs Update** (decided after API-10 round 1; was `Still Valid`). The baseline-prefers-cache precondition holds only in the `/app` layout. There `.pnpm` was at `/app/node_modules/.pnpm`, outside `appRoot=/app/autobyteus-server-ts`, so the baseline's `.pnpm` scan found nothing and fell back to the cache. In the package, `node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines` is inside `appRoot`, so the baseline also returns `bundled` | API-10 round 1 `events.jsonl`: `'bundled' !== 'cache'` at `native.mjs:15`. Layout check: `evidence/API-10-cause.log` | Update (see Durable Coverage To Update); rerun API-10 |
-| `autobyteus-web/tests/e2e/nodes-docker-address-probe.mjs` | Nodes page and peer addresses with a Docker node | RU-4 | Still Valid (paths updated); default image transitional (O-2) | diff read | Run with `--docker-image` (API-11) |
+| `autobyteus-server-ts/docker/starter/tests/*.test.mjs` (26) | Selection, recovery, supervision, socket, CLI | DS-003, DS-007, C2 | Still Valid | IMP2-01 | Reuse |
+| `tests/unit/node-update/node-update-routes.test.ts`, `route-policy.test.ts` | C1 relay outcomes; phone 403 | REQ-011, AC-009 | Still Valid | IMP2-03 | Reuse; API-21 adds the real-credential path |
+| `scripts/tests/test_public_docker_launcher_*.py` | Launcher args, v7 hash, volume, storage (fake docker); PowerShell text contract | BEH-001 | Still Valid | IMP2-02 | Reuse; API-12/API-22 add the real daemon |
+| `…shared_workspace.py::test_powershell_launcher_parses_when_pwsh_is_available` | Parses `autobyteus-docker.ps1`, `Core.ps1`, `DockerRuntime.ps1`, `Commands.ps1` | RU-24 | Still Valid: the source list already includes `ContainerConfig.ps1` (test file line 37) | read | Run its command in a real `pwsh` (API-14) |
+| `prisma-engine-discovery.docker.mjs` | pid from `cli.mjs status` | RU-4 | Still Valid | diff | Run (API-10) |
+| `nodes-docker-address-probe.mjs` | unchanged | RU-4 | Still Valid | — | Run (API-11) |
 
 ## Planned Cases
 
-| Case ID | Criteria (AC / Requirement IDs) | Boundary / Surface | Kind | Planned Command Or Steps (for `Reused`: the implementation check ID) | Why |
+| Case ID | Criteria | Boundary / Surface | Kind | Planned Command Or Steps (`Reused`: check ID) | Why |
 | --- | --- | --- | --- | --- | --- |
-| API-01 | AC-011, REQ-004, REQ-008, REQ-009, REQ-013, BEH-001 | Scripts, workflow step bodies, launcher (fake docker/gh) | Reused | IMP-01 | Ran at `5c33c1b7b0`; `git diff --name-only 5c33c1b7b0 4a968218e9` touches only `tickets/`; header and `OK (skipped=2)` line present |
-| API-02 | REQ-008 | Workflow lint, level check | Reused | IMP-02 | Same commit, same reason |
-| API-03 | REQ-009 | Image build both architectures | Reused | IMP-03, IMP-04 | Images built from the `01c56f1b95` blobs; nothing outside `tickets/` changed since. These images are the subjects of API-10..API-15 |
-| API-04 | AC-011, QR-001, REQ-004 groundwork | Package job step bodies on real images, byte identity, signature | Reused | IMP-06, IMP-07 | Same blobs; the evidence gives the manifest scripts, counts and `BYTE-IDENTICAL` |
-| API-05 | BEH-001, REQ-009, REQ-013, read-only app root | Container start, TESTING recipe, CLI smoke, key creation, repository gates | Reused | IMP-05, IMP-08, IMP-09, IMP-10, IMP-11 | Same commit; each has its look-for line |
-| API-10 | RU-4, REQ-009, BEH-001 | Real image + worktree dist; Prisma native engines from the package; recreation over the same data | Existing Test | `env -i PATH="$PATH" HOME=<tmp> TMPDIR=<tmp> RUN_PRISMA_ENGINE_DOCKER_E2E=1 pnpm -C autobyteus-server-ts test:e2e:prisma-engine-discovery:docker --image sha256:<step1 id> --output-dir <evidence>/API-10-prisma` | Code review hint 1 |
-| API-11 | RU-4 | Browser (Nodes page) + host servers + Docker node from the package | Existing Test | `pnpm -C autobyteus-web test:e2e:nodes-docker-address --docker-image=autobyteus-server-305-test:step1 --output-dir=<evidence>/API-11-nodes-docker-address` | Code review hint 1 |
-| API-12 | BEH-001 (preserved), REQ-009, Removal plan, persisted data `Not Affected` | Real launcher `new-container` + `upgrade --all` on a real (test-owned) Docker daemon | Journey | In dind: `new-container` from `autobyteus/autobyteus-server:beta` → health, GraphQL create, root-home marker → `upgrade --all --image localhost:5000/autobyteus-server-305-test:step1` → same volume names, new container, server cwd `/opt/autobyteus/server-package`, no `bootstrap.sh`, no removed env, data read back through GraphQL, marker present, `/mobile/` 200 → plain `upgrade --all` keeps it ("already running") → `destroy --all` keeps volumes | Code review hint 2; the real launcher path is not durable-automatable without a second daemon (see Durable Coverage To Add) |
-| API-13 | Compose consumer, Removal plan | `docker-start.sh up --build-local` | Journey | `./docker-start.sh up --build-local -p ab305-api-compose` → 5 project volumes incl. `ab305-api-compose_autobyteus-server-server-packages` mounted at `/home/autobyteus/server-packages`, health 200, server cwd, no removed env → `down --volumes --delete-state` | Code review hint 3 |
-| API-14 | RU-5 | PowerShell launcher sources in a real `pwsh` | Temporary Probe | The durable test's exact command in a real `pwsh` (`mcr.microsoft.com/dotnet/sdk:8.0`, arm64), sources mounted read-only | The durable test exists and skips without `pwsh`; this runs its assertion once |
-| API-15 | RU-3, REQ-009 | amd64 image start (QEMU) | Temporary Probe | `docker run -d --platform linux/amd64 -p 127.0.0.1::8000 autobyteus-server-305-test:step1-amd64`, no volumes → health, server cwd, architecture `x64`, `server-package.json` arch | IMP-05 covered arm64 only; a one-off start check, not durable |
-| API-16 | AC-011 (GitHub part) | Real release workflow | Not run | — | Needs a release (the user's request); no non-publishing run exists (no dry-run input, no `act`) |
+| API-20 | AC-006 (selection), REQ-011, AC-009, DS-003, DS-007, BEH-001, REQ-013 | Starter units, launcher fakes, server units, lints, image build, container boot/C1/supervision/selection | Reused | IMP2-01..IMP2-08 | `git diff --name-only 82e2e7f931 5939cc48be` touches only `tickets/`; IMP2-05..08 used `b1029fc1b0` inputs, and only `TESTING.md` changed after it. Each has a header and a look-for line |
+| API-10 | RU-4 | Prisma Docker probe on `step2` (pid from `cli.mjs status`) | Existing Test | as round 1, `--image sha256:50b3211b4b38…`, `--output-dir evidence/API-10-step2-prisma` | Hint 5 |
+| API-11 | RU-4 | Nodes page browser probe with a `step2` Docker node | Existing Test | as round 1, `--docker-image=autobyteus-server-305-test:step2`, `--output-dir=evidence/API-11-step2-nodes-docker-address` | Hint 5 |
+| API-12 | CR2-S1, CR2-S3, CR2-S4, RU-21..23, RU-26, BEH-001, REQ-012/AC-006 selection, BEH-007 | Real bash launchers on a test-owned dind daemon | Journey | **A** (RU-21): `origin/personal` launcher `new-container --tag beta`, seed, new launcher `upgrade --all --image <step2>`; volume, v7 label, starter and `cli.mjs status`, `state.json`, data kept; `storage` lists the volume; `docker stop`/`start`; launcher `stop` + plain `upgrade --all`. **B** (RU-22): same from a step-1 image. **C** (RU-23): `origin/personal` launcher `upgrade --all --image <step2>` (no volume), starter state in the container layer; then the new launcher's plain `upgrade --all` recreates once (v7) and mounts the volume. **D** (CR2-S4): new launcher on the labelled `1.5.12-beta.1` image, then `upgrade --all --image <step2>` (older): `NEEDS_NEW_IMAGE`, no server, the starter up for 60 s with the same pid (no restart loop), the message in `cli.mjs status` and the log, and what the launcher's `status` shows (CR2-N1); then back to the newer image, which runs again | Hints 1–3; the real launcher lifecycle is not durable-automatable here (needs a second daemon) |
+| API-21 | AC-009 (phone), REQ-011, C1 | C1 on a real launcher node | Journey (in API-12 phase A) | `GET /rest/node-update` without and with `target` newer/same/older/`latest` (400); pair a phone through the public pairing flow, then C1 with its bearer (403 `REMOTE_ACCESS_AUTH_INVALID`); positive control: the same credential on `GET /rest/remote-access/status` or GraphQL works; revoke | Hint 4 |
+| API-14 | RU-24 | PowerShell sources in a real `pwsh` | Temporary Probe | the durable test's command with all 5 module files | Hint 6 |
+| API-22 | RU-24, BEH-001 | The real PowerShell launcher against the dind daemon | Journey | Helper image; `pwsh autobyteus-docker.ps1 new-container --tag beta` → `storage` → `upgrade --all --image <step2>` → checks as API-12 A (volume, v7, starter, health) → `destroy --all` keeps volumes | Hint 6; never executed before |
+| API-13 | RU-25 | Compose with the step-2 image | Journey | `docker-start.sh up --no-build -p ab305-api-compose` with `step2` tagged `autobyteus-server:latest`; starter running, `state.json` in the project's server-packages volume; down | The compose volume now has a reader |
+| API-15 | — | amd64 | Not run | — | No step-2 amd64 image. The starter is architecture-independent JavaScript, its architecture fit is unit-tested (IMP2-01), and the package build is unchanged since step 1's amd64 proof |
 
 - Test progress log needed: `Yes`
 
-## Durable Coverage To Add
+## Durable Coverage To Add / Update / Remove
 
-None. The launcher's real `upgrade --all` (API-12) needs a second Docker daemon, a registry and two 9 GB images. That is not a repository test the suites can run, so it stays a ticket journey. The fake-docker launcher tests (IMP-01) remain the durable layer.
+- To add: none. The launcher journeys need a second Docker daemon and multi-GB images, so they stay ticket journeys.
+- To update: none (the PowerShell parse test already lists `ContainerConfig.ps1`).
+- To remove: none.
 
-## Durable Coverage To Update
+## Live Environment And Fixture Plan
 
-| Case ID | Existing Path / Test | Required Update | Notes |
-| --- | --- | --- | --- |
-| API-10 | `autobyteus-server-ts/tests/e2e/startup/prisma-engine-discovery.docker.mjs`, stage API003 | Drop the pre-fix baseline resolver (`--baseline-ref`, `git show`, TypeScript transpile, `/fixture/base.mjs`). The incompatible cache's own schema engine, at its known path in the mounted HOME, now proves the fixture: its version names the wrong revision, and real native RPC fails with `-32601`. The current resolver must still select the package's bundled engines with that cache present, matched to the Prisma CLI's engines version, and the bundled RPC must succeed. The header text changes with it | The regression the probe guards (a retained `/root` with a stale engine cache must not decide the engines) stays fully asserted: current resolver, real RPC, startup log `Using Prisma engine overrides from bundled:`, recreation over the same HOME/data. Only the baseline comparison goes. In the package layout it can no longer show the old bug, so keeping it would assert a fact about old code, not about this product |
-
-## Durable Coverage To Remove
-
-None.
-
-## Live Environment And Fixture Plan (When Broader Validation Is Likely)
-
-- Startup order and commands: install and build (serialized) → API-10 → API-11 → API-15 → API-14 → API-12 (dind) → API-13 (compose build). One heavy run at a time.
-- Environment choices that materially affect the run: native arm64 for API-10..API-13; amd64 under QEMU for API-15; dind isolates the launcher from the user's nodes; the test root lives under `/private/tmp/ab305-api-e2e` (shared by Docker Desktop) and is bind-mounted into dind at the same path.
-- Health / readiness checks: `/rest/health` returns `{"status":"ok"}`; supervisor status.
-- Seed data / fixtures: GraphQL `createAgentDefinition` on the `:beta` node; a `/root` marker file.
-- Test identities, authentication, permissions, or session state: none; runtime CLIs signed out.
-- Requirement-linked journeys or scenarios: RU-1..RU-5.
-- Evidence to capture: probe output folders and receipts; journey transcripts (launcher output, `docker inspect` mounts/env, health, GraphQL bodies, process cwd).
-- Owned processes and temporary state to clean up: dind container and its volume (holding all API-12 nodes, volumes and the registry); compose project and its volumes; `autobyteus-server:latest`; pwsh image; probe roots. The containers `autobyteus-server-0/1/2` are never touched, and neither is the pre-existing `ab305-extract` container (implementation's).
+- Order (one heavy run at a time): install/build → API-10 → API-11 → API-14 → dind: API-12 (A–D, with API-21 inside A) → API-22 → teardown → API-13.
+- Evidence: probe folders; journey transcripts with `CHECK PASS/FAIL` lines; `cli.mjs status` JSON; `state.json`; launcher output.
+- Cleanup: as round 1, plus the derived and helper images and the `autobyteus-server:latest` tag. Not touched: `autobyteus-server-0/1/2` and their volumes, the implementation's `autobyteus-server-305-test:*` images, `ab305-extract`.
 
 ## Not Tested / Infeasible / Deferred
 
 | Behavior / Boundary | Reason | Risk | Only The User Can Check? | Required Follow-Up Or Escalation |
 | --- | --- | --- | --- | --- |
-| AC-011 on GitHub: the real secret/key pair, runner disk, 30-minute wait, the upload of 6 files | Needs a release; the workflow has no non-publishing form, `act` is absent, and a fork run would push a public image | First release could be partial (R-05) or fail at the sign step (fails closed) | Yes (a release needs the user's request) | Delivery: watch the first release per RELEASE.md (23 assets); compare the published archive with the image's package |
-| zh variant image build | Only its build argument changed (digest from `system-level.json`); covered by IMP-01; building zh is a full 9 GB build on another base | Low | No | None |
-| AC-001..AC-010, AC-012, AC-013 | Steps 2–5 | — | No | Later steps |
+| amd64 step-2 image | No image; the starter is JavaScript | Low | No | — |
+| PowerShell launcher on Windows (default `%LOCALAPPDATA%` paths, Docker Desktop for Windows) | No Windows host | Low: the change is in the run args, hash and text, all exercised on Linux `pwsh` | No | — |
+| PowerShell `new-container` / fresh port pick | Pre-existing `Get-UsedPorts` bug found in API-22 (round-2 execution); identical on `origin/personal` | Windows owners cannot create nodes with the PowerShell launcher | No | FU-006 (follow-up; the step-2 paths are proven with the unpatched launcher) |
+| The launcher `status` line for `NEEDS_NEW_IMAGE` | Step 3 (D-2, CR2-N1) | Accepted by review | No | Step 3 |
 
 ## Ambiguities Or Reroute Triggers
 
-None.
+None known at planning.
 
 ## Investigation Decision
 
 - Proceed To API/E2E Execution: `Yes`
-- Repository-Resident Durable Coverage Will Be Added / Updated / Removed: `Yes` (updated after API-10 round 1: `prisma-engine-discovery.docker.mjs`, see Durable Coverage To Update)
+- Repository-Resident Durable Coverage Will Be Added / Updated / Removed: `No`
 - Reroute Required Before Validation Execution: `No`
-- Recommended Owner If Reroute Required: `N/A`
-- Notes: O-1 (launcher scope) is existing behavior that the user relies on (`upgrade --all` means every node). It is a test-safety constraint, not a defect.
+- Notes: none

@@ -164,7 +164,9 @@ container itself.
 For managed containers, the public launcher keeps private Docker named volumes
 outside the container writable layer:
 `<node>-data` stays mounted at `/home/autobyteus/data`, `<node>-root-home`
-stays mounted at `/root`, `<node>-chromium-profile` stays mounted at
+stays mounted at `/root`, `<node>-server-packages` stays mounted at
+`/home/autobyteus/server-packages` (server packages and their state),
+`<node>-chromium-profile` stays mounted at
 `/home/vncuser/.config/chromium` for private Chromium browser profile state,
 and `<node>-workspace` stays mounted at `/app/autobyteus-server-ts/workspace`.
 It also creates a host-visible shared workspace root outside the source tree:

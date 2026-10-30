@@ -1,50 +1,41 @@
-# API/E2E Test Review Report — autobyteus-305, build step 1
+# API/E2E Test Review Report — autobyteus-305
+
+This report holds the latest result (build step 2, CRR-004). The step-1 result (CRR-002, Pass: `prisma-engine-discovery.docker.mjs`, `4c356d69b7`) is in `code-review-revision-record.md`.
 
 ## Review Meta
 
-- Review Round: `1`
-- Trigger: API/E2E Pass (API-REV-001) with one changed durable test (`4c356d69b7`)
-- Requirements Doc Reviewed As Context: `requirements-doc.md` (SR-003; editorial SR-005)
-- Investigation Notes Reviewed As Context: not reopened (no change since CRR-001)
-- Solution Revision Record Reviewed As Context: not reopened (SR-005 unchanged)
-- Design Spec Reviewed As Context: `design-spec.md` (SR-005), Change Scope "Old image layout" consumers
-- Supplemental Task Artifacts Reviewed As Context: `evidence/API-10-cause.log`, `evidence/API-10-prisma/{events.jsonl,native-proof.json}`
-- Architecture Review Revision Record Reviewed As Context: N/A (unchanged)
-- Implementation Revision Record Reviewed As Context: `IR-001` (unchanged)
-- Original Code Review Report: `code-review-report.md` (CRR-001, Pass)
+- Review Round: `2` (build step 2)
+- Trigger: API/E2E Pass, API-REV-002 (build step 2), with no durable test changed
+- Requirements Doc Reviewed As Context: `requirements-doc.md` (SR-003)
+- Investigation Notes / Solution Revision Record / Design Spec Reviewed As Context: not reopened (SR-005, unchanged since CRR-003)
+- Supplemental Task Artifacts Reviewed As Context: `follow-ups.md` (FU-006)
+- Architecture Review Revision Record Reviewed As Context: N/A (ARCH-REV-003, unchanged)
+- Implementation Revision Record Reviewed As Context: IR-002 (unchanged)
+- Original Code Review Report: `code-review-report.md` (CRR-003, Pass)
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-002`
+- Current Code Review Revision ID: `CRR-004`
 - Coverage Investigation: `api-e2e-coverage-investigation.md`
 - Execution Coverage Report: `api-e2e-execution-coverage-report.md`
-- API/E2E Revision Record Reviewed As Context: `api-e2e-revision-record.md` (API-REV-001)
+- API/E2E Revision Record Reviewed As Context: `api-e2e-revision-record.md` (API-REV-002)
 - Delivery Revision Record Reviewed As Context: N/A
 - API/E2E Result: `Pass`
-- Final Validation Confidence: 95% (as reported by API/E2E)
-- Prior unresolved test-review findings rechecked: none existed
-- Project testing guideline(s) applied: `TESTING.md` (worktree copy, rewritten in `5c33c1b7b0`), § Docker server nodes. No conflict.
-- Supported Product Scenario Basis Confirmed: `Yes`. The production path is node startup: the server package's resolver picks the Prisma engines while an incompatible engine cache sits in the retained `/root` (BEH-001 preserved, the `/opt/autobyteus/server-package` layout from DS-004).
+- Final Validation Confidence: 94.7% (as reported)
+- Prior unresolved test-review findings rechecked: none
+- Project testing guideline(s) applied: `TESTING.md` § Docker server nodes. No conflict.
+- Supported Product Scenario Basis Confirmed: `Yes` (CRR-003 scenarios CR2-S1..CR2-S5)
 
 ## Changed Durable Test Scope
 
 | Durable Test Path | Change | Related Scenario / Requirement | Coherent Test Responsibility | Notes |
 | --- | --- | --- | --- | --- |
-| `autobyteus-server-ts/tests/e2e/startup/prisma-engine-discovery.docker.mjs` | Updated (+19/−21) | BEH-001 preserved; design Change Scope, old-layout consumer | Linux Prisma engine choice, startup and recreation over the same HOME/data, in the shipped image | Stage API003 changes how it proves its fixture; API002, API004 and API005 are unchanged |
+| — | — | — | — | No durable test was added, updated or removed in API/E2E round 2 |
 
-- No durable test file changed: `No`
+- No durable test file changed: `Yes`. `git diff --stat 5939cc48be..c052bb1aff -- . ':!tickets'` is empty. The commits after the reviewed code are ticket documents and evidence only (`6637b54d46`, `c052bb1aff`).
+- Review result when no durable test file changed: `Not Applicable`
 
 ## Proportional Test-Code Checks
 
-| Check | Result | Evidence / Notes |
-| --- | --- | --- |
-| Scenario grouping and names make intent clear | Pass | The header's case list and the API003 event text now describe what the stage proves: an incompatible cache in HOME, yet the bundled engines are chosen |
-| Assertions prove approved requirements instead of incidental details | Pass | The removed assertion (`old.source === 'cache'`) was a precondition that is now stale. In the package layout the pnpm store sits inside the app root, so even pre-fix code finds the bundled engines (`API-10-cause.log`: `ls` of both images and the `e22245f0` candidate list). The fixture is now proven directly: the cache's schema engine reports the wrong revision and its real RPC returns `-32601`. The guarding assertion is unchanged: `current.source === 'bundled'`, a matching version and a successful RPC. A future resolver that preferred the HOME cache would still fail it |
-| Fixtures, setup, helpers reuse meaningful repetition | Pass | The same `rpc()`, the same official pinned, checksummed cache, and the same mounts. The cache path passed in `WRONG_ENGINE_CACHE` is the one the probe writes (`home/.cache/prisma/master/<rev>/<target>`, line 239); `native.mjs` asserts that it exists |
-| Isolation and determinism appropriate | Pass | `--network none`, test-owned bind mounts, cache bytes unchanged before and after (`manifest(cache)`), cleanup receipt |
-| Large file coherent and navigable | Pass | One surface; it got smaller |
-| No stale, duplicated, disabled, or compatibility-only tests | Pass | The baseline machinery is gone completely: `--baseline-ref`, `git show`, the TypeScript transpile and `/fixture/base.mjs`. `grep` finds no leftover reference, and `package.json` never passed `--baseline-ref` |
-| Coverage agrees with investigation and execution evidence | Pass | Round 2 at `4c356d69b7`: API002..API005 Pass (`events.jsonl`); `native-proof.json`: `source: bundled`, wrong RPC `-32601`, wrong version `c2990dca…`, 27 migrations listed by the matching engine |
-| Fixtures exercise an independently established scenario | Pass | A stale engine cache in a retained `/root` is the regression this probe has always guarded. The step-1 layout is the approved target |
-| Enters through the real trigger without unreal setup | Pass | The real image, the package's own `dist/startup/migrations.js`, and real native engine processes. API004/API005 start through the image's normal entrypoint |
+N/A: no durable test changed.
 
 ## Findings
 
@@ -53,11 +44,14 @@ None.
 ## Follow-ups
 
 - Follow-ups this review added: None.
+- Noted: FU-006 (added by API/E2E) is the PowerShell `Get-UsedPorts` pipeline unrolling that breaks fresh port picks. It has been present since `517a0bce53` and is identical on `origin/personal`. The step-2 launcher paths (`storage`, `upgrade --all`, `destroy`) were executed and pass (API-22). No in-scope acceptance criterion depends on fresh port picks. The follow-up classification is consistent with ticket-scope rules.
 
 ## Latest Authoritative Result
 
-- Result: `Pass`
-- Changed durable test paths reviewed: `autobyteus-server-ts/tests/e2e/startup/prisma-engine-discovery.docker.mjs` (`4c356d69b7`)
-- Unresolved finding IDs: none (the CRR-001 non-blocking notes CR-N1..CR-N3 remain open for implementation; they are not test findings)
+- Result: `Not Applicable`
+- Changed durable test paths reviewed: none
+- Unresolved finding IDs: none (the CRR-003 non-blocking note CR2-N1 was observed by API/E2E as described)
 - Recommended Recipient: `delivery_engineer`
-- Notes: AC-011's GitHub part (API-16) is user-only. Delivery should watch the first release (23 assets) and compare a published archive with the image's package.
+- Notes:
+  - **RU-23 (residual for step 3, from API/E2E):** a node recreated by an installed v6 launcher has no `<node>-server-packages` volume, so its starter state lives in the container layer. From step 3 on, a package installed in place on such a node would be lost at that launcher's next recreate on an image change. The Solution Designer and delivery should weigh this for the step-3 design and release notes.
+  - CR2-N1 still stands: whether a release may fall between step 2 and step 3.

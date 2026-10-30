@@ -160,7 +160,11 @@ jobs:
 
           LEVEL_FILE="autobyteus-server-ts/docker/system-level.json"
           if [[ ! -f "${LEVEL_FILE}" ]]; then
-            echo "::error::${RELEASE_REF} predates server packages (no ${LEVEL_FILE}). Re-publish it with the workflow of that ref: gh workflow run release-server-docker.yml --ref ${RELEASE_REF} -f release_tag=<tag>"
+            VARIANT_INPUT=""
+            if [[ "${VARIANT_LABEL}" == "zh" ]]; then
+              VARIANT_INPUT=" -f publish_zh=true"
+            fi
+            echo "::error::${RELEASE_REF} predates server packages (no ${LEVEL_FILE}). Re-publish it with the workflow of that ref: gh workflow run release-server-docker.yml --ref ${RELEASE_REF} -f release_tag=<tag>${VARIANT_INPUT}"
             exit 1
           fi
 

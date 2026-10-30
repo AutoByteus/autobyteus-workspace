@@ -1,0 +1,45 @@
+# API-13 compose with the step-2 image: docker-start.sh up --no-build -p ab305-api-compose
+# Commit: 6637b54d46; Date: 2026-10-30T17:54:09Z; Environment: macOS arm64, Docker 29.0.1, Docker Compose version v2.40.3-desktop.1
+CHECK PASS: no autobyteus-server:latest exists before the run
+CHECK PASS: no volumes of project ab305-api-compose exist before the run
+ Volume ab305-api-compose_autobyteus-server-server-packages  Creating
+ Volume ab305-api-compose_autobyteus-server-server-packages  Created
+ Volume ab305-api-compose_autobyteus-server-workspace  Creating
+ Volume ab305-api-compose_autobyteus-server-workspace  Created
+ Volume ab305-api-compose_autobyteus-server-data  Creating
+ Volume ab305-api-compose_autobyteus-server-data  Created
+ Volume ab305-api-compose_autobyteus-server-root-home  Creating
+ Volume ab305-api-compose_autobyteus-server-root-home  Created
+ Volume ab305-api-compose_autobyteus-server-chromium-profile  Creating
+ Volume ab305-api-compose_autobyteus-server-chromium-profile  Created
+ Container ab305-api-compose-autobyteus-server-1  Started
+[2026-10-30 18:54:11] Instance ab305-api-compose is up.
+  Backend: http://localhost:59932
+health: {"status":"ok","message":"Server is running"}
+CHECK PASS: compose node healthy
+ab305-api-compose_autobyteus-server-data -> /home/autobyteus/data
+ab305-api-compose_autobyteus-server-root-home -> /root
+ab305-api-compose_autobyteus-server-chromium-profile -> /home/vncuser/.config/chromium
+ab305-api-compose_autobyteus-server-server-packages -> /home/autobyteus/server-packages
+ab305-api-compose_autobyteus-server-workspace -> /app/autobyteus-server-ts/workspace
+
+CHECK PASS: server-packages volume mounted
+cli.mjs status: {"version":"1.5.11-beta.5","state":"running","server":{"pid":95,"packageVersion":"1.5.11-beta.5","source":"builtIn"},"update":{"state":"idle","targetVersion":null,"step":null,"code":null,"message":null,"startedAt":null,"finishedAt":null,"requestedFrom":null}}
+CHECK PASS: starter running the built-in package
+state.json in the volume: {
+  "current": {
+    "source": "builtIn",
+    "version": "1.5.11-beta.5"
+  }
+}
+CHECK PASS: state.json is in the project's server-packages volume
+ Container ab305-api-compose-autobyteus-server-1  Started
+health: {"status":"ok","message":"Server is running"}
+CHECK PASS: healthy after compose restart
+CHECK PASS: state.json unchanged after the restart
+ Network ab305-api-compose_default  Removed
+[2026-10-30 18:54:30] Deleted state: /Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-in-place-server-update/autobyteus-server-ts/docker/.runtime/ab305-api-compose.env
+CHECK PASS: project container and volumes removed
+untagged autobyteus-server:latest
+
+CHECK FAILURES: 0

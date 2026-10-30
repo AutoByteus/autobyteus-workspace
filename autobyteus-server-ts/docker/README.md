@@ -65,6 +65,8 @@ container writable layer and also gets host-visible user folders:
 - `/root` remains the private root home/auth volume in `<node>-root-home`.
 - `/home/vncuser/.config/chromium` remains private Chromium browser profile
   state in `<node>-chromium-profile`.
+- `/home/autobyteus/server-packages` holds the server packages the node
+  installs in place and the starter's state, in `<node>-server-packages`.
 - `/home/autobyteus/workspace` is the node's host-backed user workspace.
 - `/home/autobyteus/shared` is one host-backed folder shared by all managed
   Docker nodes.
@@ -479,15 +481,39 @@ docker buildx build \
   .
 ```
 
-## Server Package And System Level
+## Server Package, Starter And System Level
 
-The image runs its server from the **built-in server package** at
+The image carries its server as the **built-in server package** at
 `/opt/autobyteus/server-package`: the deployed server with its own
 `node_modules` (native modules built for the image's Node and architecture),
 its Prisma client, the mobile web and `server-package.json`. That file records
 the release version, the architecture, the Node module version, the system
 level the package needs and its data migration folders. Each release publishes
 the same folder per architecture (see GitHub Release Automation).
+
+supervisord runs the **starter** (`/opt/autobyteus/starter/starter.mjs`), which
+runs the node's server package. At each start it chooses the package:
+
+- a package the node installed in place (in `<node>-server-packages`) keeps
+  running when it fits this image and is not older than the built-in one;
+- otherwise the built-in package runs, if it is not older than the newest
+  version that already ran on this node;
+- otherwise no server runs (`NEEDS_NEW_IMAGE`): the node already ran a newer
+  version than this image can run, so starting an older one could meet data
+  it migrated. The starter stays up and says which image is needed.
+
+Ask the starter what it runs:
+
+```bash
+docker exec <container> node /opt/autobyteus/starter/cli.mjs status
+```
+
+It prints one JSON line, for example
+`{"version":"1.5.12","state":"running","server":{"pid":57,"packageVersion":"1.5.12","source":"builtIn"},"update":{"state":"idle",…}}`,
+or `"state":"needsNewImage"` with a `message` naming the
+`autobyteus-docker upgrade --all --tag <version>` command. The starter's own
+log lines (one JSON object each) are in
+`/var/log/supervisor/autobyteus_server.log` with the server's output.
 
 To get this worktree's server package for the host architecture without
 building the whole image:
@@ -519,6 +545,7 @@ From the repository root, run the network-free packaging checks:
 python3 -m unittest discover -s scripts/tests -p 'test_server_docker*.py' -v
 python3 -m unittest discover -s scripts/tests -p test_docker_build_context_sources.py -v
 python3 -m unittest scripts/tests/test_server_package_release.py -v
+pnpm -C autobyteus-server-ts test:starter
 ```
 
 For a locally built **full production image**, run the opt-in offline check:
@@ -622,6 +649,7 @@ Public launcher named volumes (per friendly node):
 - `<node-name>-data`: private server app data at `/home/autobyteus/data` (`.env`, SQLite DB, logs, media, memory, agents, skills, workspaces)
 - `<node-name>-root-home`: in-container root home, including file-backed CLI configuration/auth state (see CLI Auth Model)
 - `<node-name>-chromium-profile`: private Chromium browser profile state at `/home/vncuser/.config/chromium` (cookies, local storage, preferences)
+- `<node-name>-server-packages`: server packages the node installed in place and the starter's state (`state.json`, `update.json`) at `/home/autobyteus/server-packages`
 
 Public launcher host bind mounts (additional, per friendly node unless noted):
 - `$HOME/.autobyteus/docker-server/shared-workspace/nodes/<node-name>` on macOS/Linux, or `%LOCALAPPDATA%\AutoByteus\docker-server\shared-workspace\nodes\<node-name>` on Windows, to `/home/autobyteus/workspace`.

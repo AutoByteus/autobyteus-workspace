@@ -194,7 +194,8 @@ async function health(name, round) {
   fs.writeFileSync(path.join(output, `startup-${round}.log`), startup);
   assert(startup.includes('Using Prisma engine overrides from bundled:'));
   assert(startup.includes('Database migrations completed successfully.'));
-  const pid = docker(['exec', name, 'supervisorctl', 'pid', 'autobyteus_server']).stdout.trim(); assert.match(pid,/^[1-9]\d*$/);
+  const starterStatus = JSON.parse(docker(['exec', name, 'node', '/opt/autobyteus/starter/cli.mjs', 'status']).stdout);
+  assert.equal(starterStatus.state, 'running'); const pid = String(starterStatus.server.pid); assert.match(pid,/^[1-9]\d*$/);
   const noPins = docker(['exec', name, 'node', '-e', `const fs=require('fs');const e=fs.readFileSync('/proc/${pid}/environ','utf8').split('\\0');if(e.some(v=>/^PRISMA_(QUERY_ENGINE_LIBRARY|SCHEMA_ENGINE_BINARY)=/.test(v)))process.exit(1);console.log('no explicit engine pins')`]);
   save(`backend-${round}.json`, { pid, noPins: noPins.stdout.trim() });
   return url;

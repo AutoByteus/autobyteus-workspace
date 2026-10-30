@@ -9,11 +9,27 @@
 - Supplemental Task Artifacts Reviewed: `options-report.md` (approved at SR-003), `follow-ups.md` (FU-001..FU-004), `handoff-architecture-design-complete.md`
 - Relevant Solution Revision IDs: `SR-003` (approval basis), `SR-004` (first design), `SR-005` (revision for ARCH-REV-001)
 - Architecture Review Revision Record: `architecture-review-revision-record.md` (same folder)
-- Current Architecture Review Revision ID: `ARCH-REV-002`
-- Current Review Round: `2`
-- Trigger: Solution Designer `Architecture Design Complete`, SR-005, Large / High (revision for ARCH-REV-001 Fail)
-- Prior Review Round Reviewed: `1` (ARCH-REV-001, Fail, AR-001..AR-012)
-- Latest Authoritative Round: `2`
+- Current Architecture Review Revision ID: `ARCH-REV-003` (confirmation of the SR-005 basis for build step 2; the full review result below is from ARCH-REV-002)
+- Current Review Round: `3`
+- Trigger: round 2, Solution Designer `Architecture Design Complete`, SR-005, Large / High (revision for ARCH-REV-001 Fail). Round 3, Solution Designer `Architecture Design Complete` for build step 2 (`handoff-step-2.md`), design unchanged at SR-005, with SR-006 (editorial) and SR-007 (step 1 receipt).
+- Prior Review Round Reviewed: `1` (ARCH-REV-001, Fail, AR-001..AR-012); `2` (ARCH-REV-002, Pass)
+- Latest Authoritative Round: `3`
+
+## Step 2 Basis Confirmation (ARCH-REV-003)
+
+- **Design unchanged.**
+  - SR-006 made only the N-1 wording fixes. Checked: the DEC-016 row now names `<node>-server-packages`; the `starter-client.ts` and `system-level.json` rows and the `supervisor.stop()` example are fixed.
+  - SR-007 records evidence only (step 1 receipt; PRQ-001 delivered).
+- **Step 1 as built matches the design** that step 2 builds on:
+  - the built-in package is at `/opt/autobyteus/server-package`;
+  - `server-package.json` is written by `describe-server-package.mjs`;
+  - `system-level.json` has `baseImages`;
+  - supervisord still runs the package directly, as the step-1 seam intends.
+  Implementation assumptions A-1 (old-ref re-publish refused with a way out) and A-2 (self-reference link removed) stay within the design. The C3 details fixed in step 1 are inside the frozen C3. Code review CRR-001 passed.
+- **PRQ-001 delivered** (autobyteus-284, `bf2857ca29`): `ServerProcessShutdown` bounds cleanup at `SERVER_SHUTDOWN_TIMEOUT_MS = 10_000`, then sweeps its process tree (`src/shutdown/server-process-shutdown.ts:8, 25, 64`). That fits the starter's 120 s stop limit, so the escalation trigger "bounded stop cannot finish within the starter's stop limit" does not fire.
+- **Step 2 scope** (`handoff-step-2.md`): starter boot, recovery and cleanup; selection with `NEEDS_NEW_IMAGE`; `ServerSupervisor`; C2 status and `cli.mjs status`; C1 GET with `AUTOBYTEUS_STARTER_SOCKET`; supervisord runs the starter; launcher volume, config hash and IMAGE_REF → track table; the e2e PID from `cli.mjs status`; CR-N1. All of it is covered by the reviewed sections DS-003, DS-007, C1, C2, C4 and the Change Scope.
+- **Implementation note (non-blocking):** supervisord's default `stopwaitsecs` is 10 s. The server's cleanup bound is also 10 s, plus its sweep. When supervisord stops the program, the starter forwards SIGTERM and waits, and supervisord may SIGKILL the starter before the server, in its own process group, has exited. On `docker stop` the container ends anyway (Docker's own 10 s grace, unchanged from today). Setting `stopwaitsecs` in `supervisor-autobyteus-server.conf` above the server bound (for example 30 s) keeps DS-007's "stop child → exit 0" true for a supervisord-initiated stop. This is a configuration line in a file step 2 already changes. It is not a design change.
+- **Decision:** the ARCH-REV-002 `Pass` applies to build step 2.
 - Current-State Evidence Basis: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-in-place-server-update`, branch `codex/docker-node-in-place-server-update`, base `origin/personal` @ `9d59ab82ec`. The round-1 code reads still apply; no code changed. Round 2 re-checked the revised design sections against them, and the SR-005 edits to the requirements and investigation notes.
 
 ## Routing Classification Review

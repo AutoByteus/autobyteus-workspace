@@ -350,6 +350,10 @@ class CheckSystemLevelStepTest(unittest.TestCase):
         result = self.run_step("default")
         self.assertNotEqual(0, result.returncode)
         self.assertIn("v1.5.12 predates server packages", result.stdout)
+        self.assertIn("-f release_tag=<tag>\n", result.stdout)
+        zh = self.run_step("zh")
+        self.assertNotEqual(0, zh.returncode)
+        self.assertIn("-f release_tag=<tag> -f publish_zh=true", zh.stdout)
         self.assertEqual("", self.outputs.read_text(encoding="utf-8"))
 
 

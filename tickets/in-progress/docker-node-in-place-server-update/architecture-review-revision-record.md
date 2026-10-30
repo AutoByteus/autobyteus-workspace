@@ -8,6 +8,7 @@ The latest `design-review-report.md` (same folder) is authoritative. This record
 | --- | --- | --- | --- | --- | --- |
 | ARCH-REV-001 | Round 1 / Solution Designer `Architecture Design Complete` (Large / High) | SR-003, SR-004 | N/A | Fail (Design Impact) | AR-001..AR-012 |
 | ARCH-REV-002 | Round 2 / Solution Designer revision for ARCH-REV-001 (SR-005, Large / High) | SR-003, SR-005 | Fail | Pass | AR-001..AR-012 resolved; N-1 non-blocking note |
+| ARCH-REV-003 | Round 3 / basis confirmation for build step 2 (`handoff-step-2.md`) | SR-005, SR-006, SR-007 | Pass | Pass | N-1 closed (SR-006); no new findings |
 
 ## Revision Entries
 
@@ -87,3 +88,28 @@ None.
   - R-07 (step 5);
   - step 5 waits for autobyteus-284/285/287;
   - tell the user before `gh secret set`.
+
+### ARCH-REV-003 — The SR-005 basis confirmed for build step 2
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-in-place-server-update/tickets/in-progress/docker-node-in-place-server-update/design-review-report.md` (section "Step 2 Basis Confirmation")
+- Review round and trigger: round 3; Solution Designer run `solution_designer_f2a096fe80af461e9d7c04ea18dfd6fc`, `Architecture Design Complete` for build step 2 (`handoff-step-2.md`); step 1 finalized (merge `eec6522b27`, `origin/personal` @ `77fb8bf2d1`)
+- Relevant solution revision IDs: `SR-005` (design), `SR-006` (N-1 wording), `SR-007` (step 1 receipt, PRQ-001 delivered)
+- Prior authoritative decision: `Pass` (ARCH-REV-002)
+- Current authoritative decision: `Pass`, applying to build step 2
+- What changed:
+  - Checked that the design is unchanged apart from the SR-006 wording fixes.
+  - Checked that step 1 as built matches the design that step 2 relies on (package path, `server-package.json` writer, `system-level.json` with `baseImages`, supervisord seam). Implementation assumptions A-1 and A-2 stay within the design.
+  - Checked that autobyteus-284's server shutdown bound (10 s cleanup plus tree sweep, `server-process-shutdown.ts:8`) fits the starter's 120 s stop limit.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| N-1 (non-blocking) | Open | Resolved | SR-006 | DEC-016 names `<node>-server-packages`; the `starter-client.ts` row uses `AUTOBYTEUS_STARTER_SOCKET`; the `system-level.json` row has `baseImages`; the example says `supervisor.stop()` |
+
+- New or remaining finding IDs: none. Non-blocking implementation note: set supervisord `stopwaitsecs` above the server's shutdown bound in `supervisor-autobyteus-server.conf`.
+- Material classification changes: none (Large / High)
+- Recommended recipient: Implementation Engineer (build step 2); informational notification to the Solution Designer
+- Remaining risks or uncertainty:
+  - the DEC-016 figure is awaiting the user's confirmation;
+  - step 5 still waits for autobyteus-285 and -287.
