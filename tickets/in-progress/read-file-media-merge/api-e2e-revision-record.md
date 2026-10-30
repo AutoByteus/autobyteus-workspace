@@ -7,6 +7,7 @@
 | API-REV-001 | Implementation Engineer, `implementation-handoff.md`, IR-001 (direct route) | SR-004, IR-001 | N/A | Fail / 80% |
 | API-REV-002 | the user's request (2026-10-30): newer OpenAI models and LM Studio Qwen | — | Fail / 80% | Fail / 80% (unchanged; F-1 to F-3 stand) |
 | API-REV-003 | Implementation Engineer, IR-002 (SR-005) | SR-005, IR-002, CRR-001, CRR-002 | Fail / 80% | Fail / 87% (F-1..F-3 resolved; F-4 new) |
+| API-REV-004 | Implementation Engineer, IR-003 (SR-006) | SR-006, IR-003, CR-004, DEC-007, DEC-008 | Fail / 87% | Pass / 95.3% |
 
 ## Revision Entries
 
@@ -60,3 +61,19 @@ None.
 - New or remaining failure IDs: F-4.
 - Recommended owner: failure-origin review (Code Reviewer); preliminary F-4 `Requirement Gap` (Solution Designer, user decision).
 - Remaining: AC-005's durable live test in AI Studio mode (the user).
+
+### API-REV-004 — Round 3 for IR-003: F-4 resolved; Pass
+
+- Triggering role and round: Implementation Engineer, IR-003 (SR-006, DEC-007).
+- Cases: API-01c (reused IMP-15), API-12 round 3, API-15 (new: binaries and encodings), API-05 round 3 (400 PDFs), API-16 (server journey).
+
+#### Prior Failure Resolution
+
+| Prior Case / Failure Reference | Previous Classification | Current Resolution | Case IDs Now Proving It |
+| --- | --- | --- | --- |
+| F-4 text logs with a stray NUL refused (API-12, API-13) | Requirement Gap | Resolved by DEC-007: 172 of 173 logs read (the other holds raw database bytes); a plain `read_file` agent reads a build log on the real server | API-12 round 3, API-16 |
+
+- Prior result and confidence: Fail, 87%. Current: Pass, 95.3%.
+- New or remaining failure IDs: none.
+- Recommended owner: Delivery Engineer.
+- Remaining risks: an uncompressed ASCII tar and an all-zero file read as text; 2/400 PDFs without NUL; UTF-16 with BOM refused; Anthropic and Kimi untested; the user's open point on the schema wording.

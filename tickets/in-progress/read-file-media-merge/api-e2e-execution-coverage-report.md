@@ -3,9 +3,9 @@
 ## Round
 
 - Coverage investigation (the plan; it lists the upstream documents): `api-e2e-coverage-investigation.md`
-- API/E2E revision record and current revision ID: `api-e2e-revision-record.md`, `API-REV-003`
+- API/E2E revision record and current revision ID: `api-e2e-revision-record.md`, `API-REV-004`
 - Test progress log: `api-e2e-test-progress.md`
-- Round and trigger: round 1, implementation handoff IR-001 (direct low-risk route); **round 2 (current), IR-002 (SR-005)** (§ Round 2)
+- Round and trigger: round 1, implementation handoff IR-001 (direct low-risk route); round 2, IR-002 (SR-005) (§ Round 2); **round 3 (current), IR-003 (SR-006)** (§ Round 3)
 - Prior round reviewed: none
 - Deviations from the investigation's plan, and why:
   - API-06's run 1 assertions read the tool path from the result event, which does not carry the arguments; the probe was fixed to take them from `TOOL_EXECUTION_STARTED` and rerun (run 2). The run-1 receipt is kept.
@@ -187,15 +187,81 @@
 
 - **F-4 — text files with a stray NUL byte are refused as binary** (BEH-001, AC-001 in real use; REQ-009, DEC-004, DEC-006). The detection's premise "text files contain no NUL byte" does not hold for real logs: 173 of the repository's 21,147 tracked `.log` files contain NUL bytes (167 Electron build logs; typically one NUL inside readable text, e.g. `[nuxt] kit:compatibility\x00: 0.388ms`). Before this ticket `read_file` returned them as text; the 8,000-byte window (round 1) already refused 79 of them, and the whole-file scan (DEC-006) refuses all 173. On the real server, the Daily Assistant asked to read such a build log got `The file '…/build.log' is a binary file and cannot be read as text…`; it recovered through `run_bash strings`, which an agent with only `read_file` cannot do. Expected (BEH-001): text reads unchanged. Observed: refused. Round 1 missed it (I accepted the 201 refused files without looking at them).
 
-## Preliminary Classification (On `Fail`, round 2)
+## Preliminary Classification (round 2; superseded)
 
 - **F-4 — `Requirement Gap`** (owner: Solution Designer, user decision). The refusal rule is approved behaviour (REQ-009 with DEC-004/DEC-006); keeping text with stray NUL bytes readable while refusing PDFs and archives needs a different rule, for example refusing only when the bytes are not mostly text (a NUL count or ratio, or invalid UTF-8 beyond a threshold), or known binary signatures (`%PDF-`, `PK\x03\x04`, gzip) plus a NUL ratio, or accepting the limit. Each changes approved behaviour or its documented limit.
 - F-1, F-2, F-3: resolved.
 
-## Latest Authoritative Result
+## Round 2 Result (superseded by § Round 3)
 
 - Result: `Fail` (round 2)
 - Criteria not proven, or parts only the user can check: AC-001 in real use (F-4); AC-005's durable live test in AI Studio mode (the user: the Google project's quota or a working key).
 - Preliminary classification and recommended owner: F-4 `Requirement Gap` (Solution Designer, user decision).
 - Next recipient from `get_handoff_rules`: `/software_engineering_team/code_reviewer` (failure-origin review of an execution failure).
 - Notes: F-1, F-2 and F-3 are resolved; the OpenAI `strict: false` change works on all 8 models tried and keeps needed optional arguments (`cwd`, line ranges).
+
+## Round 3 — IR-003 (SR-006, DEC-007: binary = a NUL byte and not valid UTF-8; DEC-008)
+
+- Trigger: IR-003 (`063ddf845e`; HEAD `9438dfddd1`), answering CR-004 (F-4).
+- Plan: investigation § Round 3. Environments as before, at `9438dfddd1`. The `read_file` description and schema are unchanged in this round.
+
+### Round 3 Cases
+
+| Case ID | Criteria | Boundary / Surface | Command Or Steps | Env | Result | Evidence Files | Look For | Notes |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| API-01c | AC-001, AC-009 | repository checks | Reused: IMP-15 | (IMP) | Pass | (IMP) | (IMP) | code unchanged since |
+| API-12 (round 3) | BEH-001, BEH-011 | the repository's tracked files with a NUL | temporary probe (`API-round3-read-file-probe.test.ts.txt`): the real `read_file` on each of the 296 tracked non-media files that contain a NUL | ENV-1 | Pass | `API-round3-read-file-receipt.json` (`trackedNul`) | `trackedNul 296 {"refused (binary)":103,"text":193}`; text: `.log` 172, `.z` 20, `.paths` 1; refused: `.gz` 88, `.db` 4, `.db-journal` 3, `.bin` 3, `.jar`, `.sqlite`, `.pdf`, `.tgz`, and 1 `.log` | the 20 `.z` files are `git status -z` outputs (NUL-separated file names: text); the one refused log (`delivery-round9-electron-launch-smoke.log`) contains raw SQLite pages (invalid UTF-8 at byte 40,110) |
+| API-15 | BEH-011 | binaries and text encodings | same probe: generated files and 84 copies of OS binaries (`/usr/lib` dylibs, binary plists, fonts, `Assets.car`, `/bin` executables) | ENV-1 | Pass | `API-round3-read-file-receipt.json` (`generated`, `osBinaries`) | `osBinaries 84 {"refused (binary)":84}`; refused: `a.txt.gz`, `bin.plist`, `empty.db`, `filled.db`, `stored.zip`, `text.tar` (macOS tar), `utf16-bom.txt`, `utf16le-nobom.txt` (non-ASCII); text: `utf8.txt`, `utf8-bom.txt`, `latin1.txt` (`caf�`, as before the ticket), **`ustar-text.tar`** (`1: a.txt\0\0…`), **`zeros.bin`** | residuals: an uncompressed POSIX tar of ASCII files and an all-zero file are valid UTF-8 and read as text (their content is the archived text, or nothing); UTF-16 with BOM is refused (before the ticket: garbled text) |
+| API-05 (round 3) | AC-009 | 400 OS PDFs | same probe | ENV-1 | Pass | `API-round3-read-file-receipt.json` (`osPdfs`) | `osPdfs 400 {"refused (binary)":398,"text":2}`; not refused: `ScriptSucceeded.pdf`, `ScriptFailed.pdf`, both `nul 0` | the stated residual (no NUL) |
+| API-16 | AC-001, AC-002, BEH-011 (F-4) | server journey, `gpt-5.4-mini` | temporary probe (`API-16-round3-journey-probe.e2e.test.ts.txt`): a plain agent with only `read_file` and the Daily Assistant each read an Electron build log with a stray NUL; the plain agent reads a PDF and the green image | ENV-2 | Pass | `API-16-round3-journey.log`, `API-16-round3-receipt.json` | plain agent: `{"path":"/tmp/ab328/fixtures/build.log"}` → `SUCCEEDED` `1: # Electron macOS ARM64 personal build on v1.4.19 base …`, answer `The build was intentionally aborted by delivery because origin/personal advanced during the build, ending with exit status 130.`; journal `cat -n /tmp/ab328/fixtures/build.log → ok`; Daily Assistant: `SUCCEEDED` (it chose `start_line 1, end_line 400`), same answer; PDF `FAILED` `… is a binary file and cannot be read as text …`, the agent says it cannot read it; image `SUCCEEDED`, `green` | F-4 resolved in real use |
+
+### Round 3 Prior-Failure Resolution
+
+| Failure | Round 3 Result | Proven By |
+| --- | --- | --- |
+| F-4 text logs with a stray NUL refused | Resolved: 172 of 173 read (the 173rd holds raw database bytes); an agent with only `read_file` reads a build log | API-12 round 3, API-16 |
+| F-1, F-2, F-3 | still resolved (code unchanged for F-1; F-2's 398/400 rechecked; F-3 wording unchanged) | round 2, API-05 round 3 |
+
+### Round 3 Acceptance-Criteria Proof
+
+| Acceptance-Criteria ID | Critical | Proven By Case IDs | Result |
+| --- | --- | --- | --- |
+| AC-001 | Yes | API-01c (IMP-15: 201,744 identical comparisons), API-12 round 3, API-16 | Proven |
+| AC-002 | Yes | round 2 API-13 (8 OpenAI models, Gemini, Grok, neutral names), API-16 | Proven |
+| AC-003 | Yes | round 2 API-13, round 1 API-10 | Proven |
+| AC-004 | Yes | round 2 API-14 | Proven |
+| AC-005 | Yes | round 1 API-02, API-04 (accepted by DEC-008) | Proven |
+| AC-006 | Yes | round 1 API-06 R1 | Proven |
+| AC-007 | Yes | round 1 API-07, round 2 API-13, API-16 | Proven |
+| AC-008 | Yes | round 2 API-13, API-16 | Proven |
+| AC-009 | Yes | API-05 round 3, API-15, API-01c | Proven |
+| AC-010 | Yes | round 2 API-13, IMP-10, IMP-14 | Proven |
+
+### Round 3 Validation Confidence Scorecard
+
+| Confidence Category | Score | What Supports It | Residual Uncertainty | What Could Improve It |
+| --- | --- | --- | --- | --- |
+| Requirement and acceptance-criteria proof | 96% | all ACs proven across rounds 1-3 on real files and real models | — | — |
+| Changed-boundary execution directness | 96% | the real `read_file` on 793 real or generated files; the real server with real providers | — | — |
+| Cross-boundary integration realism and mock gap | 95% | OpenAI ×8, Gemini, Grok, LM Studio Qwen | Anthropic and Kimi accounts unavailable; the media mechanism to providers is unchanged by this ticket | — |
+| Environment, configuration, identity, and fixture fidelity | 95% | clean env, test vault, neutral names, real logs, PDFs and OS binaries | — | — |
+| Failure, edge-case, lifecycle, and recovery evidence | 95% | refusals with the right messages; agents report honestly; encodings and binaries probed | residuals: an uncompressed ASCII tar and an all-zero file read as text; 2 of 400 PDFs without NUL read as text; UTF-16 with BOM refused | — |
+| User-surface, browser, and desktop-shell confidence | N/A | no web or desktop change | — | — |
+| Durable regression coverage quality and relevance | 95% | IMP-10 (strict unit), IMP-11 (media message), IMP-14 (gated live), IMP-15 (build log, stray NUL, UTF-16) | no durable case pins the tar/all-zero residuals | — |
+
+- Overall final confidence: 95.3% (simple average of the six applicable categories)
+- Every critical acceptance criterion directly proven: `Yes`
+- Any final applicable category below `90%`: `No`
+- Default final confidence target of `95%` met: `Yes`
+- Broader validation decision: `Required`, executed (real server, real providers, real files).
+
+### Open Point From The User (not a validation failure)
+
+On 2026-10-30 the user said `read_file`'s schema "should be clearly said what kind of files are supported". The description today says: "Reads content from a specified file. … Image, audio and video files (by extension) are attached for the model to see in the next turn instead of being returned as text; line ranges do not apply to them, a kind the current model cannot take is refused, and other binary files are refused." It is not in SR-006; whether this ticket adds an explicit supported / not-supported list is the Solution Designer's and the user's decision.
+
+## Latest Authoritative Result
+
+- Result: `Pass` (round 3)
+- Criteria not proven, or parts only the user can check: `None`
+- Residual risks: an uncompressed POSIX tar of ASCII files and an all-zero file read as text; 2 of 400 macOS PDFs (no NUL byte) read as text; UTF-16 with BOM refused; Anthropic and Kimi untested (accounts); the user's open point on the schema wording (above).
+- Next recipient from `get_handoff_rules`: `/software_engineering_team/delivery_engineer` (Pass, direct route, Medium / Low; test-code review `Not Required — direct low-risk route`, no durable test code changed by API/E2E).

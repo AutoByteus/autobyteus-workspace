@@ -35,3 +35,10 @@
 | 2026-10-30 06:59 | API-13 | Started | | round 2 journey: 8 OpenAI models image; Daily Assistant gpt-5.4-mini (media, run_bash cwd, text range, build log); Gemini; Grok |
 | 2026-10-30 07:03 | API-13 | Completed | Fail | F-1 fixed: 8/8 OpenAI models path-only, green; Daily Assistant media/capability refusals/text range/run_bash OK; build.log refused as binary (F-4; agent worked around with strings); Gemini, Grok OK |
 | 2026-10-30 07:04 | — | Completed | Fail | round 2 recorded: F-1..F-3 resolved; F-4 new; committing |
+| 2026-10-30 07:19 | API-12 | Started | | round 3 census under DEC-007 |
+| 2026-10-30 07:21 | API-12 | Completed | Pass | round 3: 193/296 tracked NUL files read (172 logs, 20 git status -z outputs, 1 .paths), 103 refused (gz, db, jar, bin, pdf, tgz, sqlite, 1 log with embedded SQLite pages) |
+| 2026-10-30 07:21 | API-15 | Completed | Pass | 84/84 OS binaries refused; gzip, SQLite, ZIP, macOS tar, binary plist, UTF-16 refused; UTF-8 (BOM), Latin-1 read; residuals: ustar tar of ASCII and an all-zero file read as text |
+| 2026-10-30 07:21 | API-05 | Completed | Pass | round 3: 398/400 OS PDFs refused; 2 without NUL read (stated residual) |
+| 2026-10-30 07:21 | API-16 | Started | | server journey: build log (plain read_file agent and Daily Assistant), PDF, image on gpt-5.4-mini |
+| 2026-10-30 07:23 | API-16 | Completed | Pass | build log read by plain read_file agent and Daily Assistant; PDF refused; image green |
+| 2026-10-30 07:23 | — | Completed | Pass | round 3 recorded (95.3%); committing |

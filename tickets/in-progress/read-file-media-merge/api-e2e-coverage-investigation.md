@@ -17,10 +17,10 @@
 - Relevant Delivery Revision IDs: N/A
 - API/E2E Revision Record: `api-e2e-revision-record.md` (after the first result)
 - Current API/E2E Revision ID: `API-REV-001`
-- Current Investigation Round: 2
+- Current Investigation Round: 3
 - Trigger: implementation handoff IR-001 from `/software_engineering_team/implementation_engineer`, 2026-10-29 (direct low-risk route)
 - Prior Investigation Reviewed: none
-- Latest Authoritative Investigation: this file, round 2 (§ Round 2)
+- Latest Authoritative Investigation: this file, round 3 (§ Round 3)
 
 Ticket folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/read-file-media-merge/tickets/in-progress/read-file-media-merge/`. Code: branch `codex/read-file-media-merge`, HEAD `3a336f7a4a` (last code commit `16b3e2452d`; after it only ticket documents), base `origin/personal` `e82d03b0f9`.
 
@@ -190,3 +190,19 @@ None.
 | API-05 (rerun) | AC-009, BEH-011 | real PDFs | Temporary Probe | `read_file` on copies of the 79 OS-shipped PDFs that the 8,000-byte window missed, and the generated documents | DEC-006's claim: 77 refused, 2 (no NUL) read |
 | API-14 | AC-004, CR-001/CR-003 wording | media line-range refusal | Temporary Probe | `read_file` on PNG, M4A, MP4 with `start_line`/`end_line` (1/1, 0/0, -1/-1) | exact messages and order |
 | API-13 | AC-002, AC-003, AC-008, AC-010, BEH-012, F-4 | server journey on real providers | Temporary Probe | the journey probe (in-process studio server, test vault, neutral file names): image read on `gpt-5.4-mini`, `gpt-5.5`, `gpt-5.6-luna/sol/terra`, `gpt-6-astra/luna/sol` (plain agent); `gpt-5.4-mini` as the Daily Assistant: image, audio and video (audio/video: capability refusal), `run_bash` with a working directory, a line range on a text file when asked, and an Electron build log with a late NUL; Gemini image/audio/video; Grok image; arguments recorded from `TOOL_EXECUTION_STARTED`; Work Journal of one run | SCN-F1, the sanity check of other tools with optional arguments (`strict: false` applies to every function tool), and F-4 in real use |
+
+## Round 3 — IR-003 (SR-006, DEC-007: refuse only NUL + invalid UTF-8; DEC-008: AC-005 accepted on API-04)
+
+- Code delta since round 2 (`4857c7fe2c..9438dfddd1`): `read-file.ts` binary rule (`fileBytes.includes(0) && !isValidUtf8(fileBytes)`), its tests, docs. The `read_file` description and argument schema are unchanged.
+- Rerun by impact: the binary rule only (the media dispatch and the OpenAI path are unchanged since round 2, which stays valid for them).
+- The user's rule (2026-10-30): "If it's read a real text file, then it should return. If it's read a binary file, then it just report error"; and "in the schema for read file, it should be clearly said what kind of files are supported". The second point is not in SR-006: recorded as an open user point, not a validation failure.
+
+### Round 3 Planned Cases
+
+| Case ID | Criteria | Boundary / Surface | Kind | Planned Command Or Steps | Why |
+| --- | --- | --- | --- | --- | --- |
+| API-01c | AC-001, AC-009 | repository checks | Reused | IMP-15 | code unchanged since |
+| API-12 (round 3) | BEH-001, BEH-011 | tracked files with a NUL byte under DEC-007 | Temporary Probe | the census with the rule: which tracked NUL files are refused, which read; the one log SD-04 says is still refused | the real text side |
+| API-15 | BEH-011 | binaries that may be valid UTF-8 | Temporary Probe | the rule over generated binaries (uncompressed `tar` of text files, a fresh and a filled SQLite database, a stored-entry ZIP, a gzip, a binary plist, UTF-16 with and without BOM, Latin-1, UTF-8 with BOM) and over a read-only sample of OS binaries (`.dylib`, `.plist`, `.db`, fonts) | the binary side of the user's rule |
+| API-05 (round 3) | AC-009, BEH-011 | the 400 OS PDFs and generated documents | Temporary Probe | `read_file` on copies (the round-2 probe, extended to all 400) | SD-04's 398/400 |
+| API-16 | AC-001, AC-002, BEH-011 | server journey | Temporary Probe | Daily Assistant on `gpt-5.4-mini`: read an Electron build log with stray NULs and say how the build ended; read a PDF (refused); read the green image (regression) | SCN-F4 through the real server |
