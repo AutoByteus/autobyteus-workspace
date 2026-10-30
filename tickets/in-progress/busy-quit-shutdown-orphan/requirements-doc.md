@@ -203,5 +203,15 @@
 - User approval received: **Yes** for SR-002; **pending** for DEC-005 (SR-004; asked again on 2026-10-26 and 2026-10-30) and DEC-007 (SR-006, asked 2026-10-30).
 - Feasibility: every requirement has measured or reproduced evidence, or `N/A` (REQ-002's own timer). Open measurements for validation: U-A1, U-A2, U-A3.
 
+## User Decision For The Next Steps (Not This Ticket)
+- 2026-10-30, the user on restart-and-resume (autobyteus-285 and after): "Of course, automatic without me, without
+  asking me … the active previously … running agents … need to continue to work. So no human will be involved, that's
+  the whole purpose." After an app update restart, the agents that were busy continue **automatically**, with no
+  confirmation.
+- Effect on this ticket: none beyond what is designed. The update shutdown interrupts busy turns within the bound,
+  leaves no process behind, starts one server after the restart (AC-009) and never marks those runs as terminated
+  (BEH-007, AC-010), so they stay resumable without a human. Passed to `/project_task_manager` for the planning of
+  autobyteus-285 and after.
+
 ## Prerequisites
 - None found in the SR-005 and SR-006 re-checks. `backend-port-conflict-20261024` is already merged, so it is not a prerequisite.
