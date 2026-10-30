@@ -43,6 +43,7 @@ A package job failure leaves a partial release in the RELEASE.md sense. Nodes do
 
 ## Where Things Are
 
+- Merged into `personal` with `--no-ff` as `eec6522b27` (pushed; Secret Gate PASS before both pushes). No release.
 - Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-in-place-server-update`, branch `codex/docker-node-in-place-server-update`. Kept for steps 2–5.
 - Ticket folder stays at `tickets/in-progress/docker-node-in-place-server-update/`, because the ticket continues with step 2.
 - Local test images kept by implementation: `autobyteus-server-305-test:step1`, `:step1-amd64`; leftover created container `ab305-extract` (implementation's).

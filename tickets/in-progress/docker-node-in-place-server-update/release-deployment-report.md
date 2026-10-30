@@ -77,15 +77,17 @@ None (no release).
 
 - Bootstrap context source: requirements doc Workspace line (target `personal`) and RELEASE.md Finalization Target (`origin/personal`, `--no-ff`)
 - Ticket branch: `codex/docker-node-in-place-server-update`
-- Ticket branch commit result: see DR-001 finalization record
-- Ticket branch push result: see DR-001 finalization record
+- Ticket branch commit result: `Completed`: `a23ab2cbe2`
+- Ticket branch push result: `Completed`: `origin/codex/docker-node-in-place-server-update` (Secret Gate PASS before the push)
 - Finalization target remote: `origin`
 - Finalization target branch: `personal`
-- Target advanced after verification: recorded in DR-001
-- Delivery-owned edits protected before re-integration: committed before finalization
-- Re-integration before final merge result: recorded in DR-001
-- Target branch update result / Merge into target result / Push target branch result: recorded in DR-001
-- Repository finalization status: recorded in DR-001
+- Target advanced after verification: `No` (`e4bebdc858` at both fetches)
+- Delivery-owned edits protected before re-integration: `Not needed` (committed in `a23ab2cbe2`)
+- Re-integration before final merge result: `Not needed`
+- Target branch update result: `Completed`: `finalize/docker-node-in-place-server-update` from `origin/personal` @ `e4bebdc858`
+- Merge into target result: `Completed`: `--no-ff` merge `eec6522b27`; Secret Gate PASS on the merged state; tree equal to the verified ticket branch
+- Push target branch result: `Completed`: `e4bebdc858..eec6522b27`
+- Repository finalization status: `Completed`
 
 ## Release / Publication / Deployment
 
@@ -129,7 +131,9 @@ DEL-01 and DEL-02 above; IMP-01..IMP-11 and API-01..API-15 per the implementatio
 ## Final Status
 
 - Verification complete: `Yes` (from the evidence; AC-011's GitHub part carried to the first release as above)
-- Repository finalization complete: recorded in DR-001
+- Repository finalization complete: `Yes` (`personal` @ `eec6522b27`)
 - Applicable release/deployment/rollout complete or not required: `Yes` (`Not required`)
 - Applicable safe cleanup complete or not required: `Yes` (`Not required`; worktree and branch continue)
 - Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to the Solution Designer: `Yes`, after this record reached `personal`
