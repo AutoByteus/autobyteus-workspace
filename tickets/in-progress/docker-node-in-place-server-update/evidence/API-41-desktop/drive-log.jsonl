@@ -1,0 +1,126 @@
+{"time":"2026-10-30T22:49:48.665Z","event":"nodes page open","url":"file:///Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-in-place-server-update/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/nodes?nodeTab=manage"}
+{"time":"2026-10-30T22:49:49.002Z","event":"node started","id":"i","name":"ab305-api4-i","variant":"good","image":"ab305-api4-node:testkey","address":"http://127.0.0.1:61448"}
+{"time":"2026-10-30T22:49:53.112Z","event":"node added","id":"i","label":"idle-node","address":"http://127.0.0.1:61448"}
+{"time":"2026-10-30T22:49:53.367Z","event":"CHECK PASS","desc":"I: the row offers the update","line":"Server 1.5.11-beta.5 Update to 1.5.11-beta.6 Same version as this app"}
+{"time":"2026-10-30T22:49:53.436Z","event":"screenshot","file":"API-41-I-offered.png"}
+{"time":"2026-10-30T22:49:53.776Z","event":"node started","id":"p","name":"ab305-api4-p","variant":"good","image":"autobyteus-server-305-test:step1","address":"http://127.0.0.1:61475"}
+{"time":"2026-10-30T22:49:58.886Z","event":"node added","id":"p","label":"pre-starter","address":"http://127.0.0.1:61475"}
+{"time":"2026-10-30T22:49:59.142Z","event":"row line","label":"pre-starter","text":"Not reachable."}
+{"time":"2026-10-30T22:49:59.203Z","event":"screenshot","file":"API-41-P-pre-starter.png"}
+{"time":"2026-10-30T22:49:59.206Z","event":"CHECK PASS","desc":"P: a pre-starter node shows the generic \"Not reachable.\" (N-4) and no button","line":"Not reachable."}
+{"time":"2026-10-30T22:49:59.474Z","event":"node started","id":"l","name":"ab305-api4-l","variant":"lvl99","image":"ab305-api4-node:testkey","address":"http://127.0.0.1:61507"}
+{"time":"2026-10-30T22:50:03.576Z","event":"node added","id":"l","label":"needs-image","address":"http://127.0.0.1:61507"}
+{"time":"2026-10-30T22:50:03.866Z","event":"clicked","label":"needs-image"}
+{"time":"2026-10-30T22:50:03.869Z","event":"row line","label":"needs-image","text":"Server 1.5.11-beta.5 Starting the update…"}
+{"time":"2026-10-30T22:50:03.926Z","event":"screenshot","file":"API-41-L-01.png"}
+{"time":"2026-10-30T22:50:04.129Z","event":"row line","label":"needs-image","text":"Server 1.5.11-beta.5 Checking the update to 1.5.11-beta.6…"}
+{"time":"2026-10-30T22:50:04.190Z","event":"screenshot","file":"API-41-L-02.png"}
+{"time":"2026-10-30T22:50:06.046Z","event":"row line","label":"needs-image","text":"Server 1.5.11-beta.5 Update to 1.5.11-beta.6 Same version as this app The update to 1.5.11-beta.6 did not happen. This update needs a new Docker image: it needs system level 99, this image provides 1. Get it with: autobyteus-docker upgrade --all --tag 1.5.11-beta.6 Copy command"}
+{"time":"2026-10-30T22:50:06.126Z","event":"screenshot","file":"API-41-L-03.png"}
+{"time":"2026-10-30T22:50:06.129Z","event":"CHECK PASS","desc":"L: \"did not happen\" with the new-image reason","line":"Server 1.5.11-beta.5 Update to 1.5.11-beta.6 Same version as this app The update to 1.5.11-beta.6 did not happen. This update needs a new Docker image: it needs system level 99, this image provides 1. Get it with: autobyteus-docker upgrade --all --tag 1.5.11-beta.6 Copy command"}
+{"time":"2026-10-30T22:50:06.130Z","event":"CHECK PASS","desc":"L: copy button carries `autobyteus-docker upgrade --all --tag 1.5.11-beta.6`","copyTitle":"autobyteus-docker upgrade --all --tag 1.5.11-beta.6"}
+{"time":"2026-10-30T22:50:06.151Z","event":"CHECK FAIL","desc":"L: copy button confirms \"Copied\"","after":"Copy command"}
+{"time":"2026-10-30T22:50:06.153Z","event":"CHECK PASS","desc":"L: the button stays after the refusal"}
+{"time":"2026-10-30T22:50:06.211Z","event":"screenshot","file":"API-41-L-result.png"}
+{"time":"2026-10-30T22:50:06.459Z","event":"CHECK PASS","desc":"L: node still 1.5.11-beta.5, update refused NEEDS_NEW_IMAGE","status":{"state":"refused","targetVersion":"1.5.11-beta.6","step":"checking","code":"NEEDS_NEW_IMAGE","message":"This update needs a new Docker image: it needs system level 99, this image provides 1. Get it with: autobyteus-docker upgrade --all --tag 1.5.11-beta.6","startedAt":"2026-10-30T22:50:03.868Z","finishedAt":"2026-10-30T22:50:03.904Z","requestedFrom":"172.17.0.1"}}
+{"time":"2026-10-30T22:50:06.696Z","event":"node started","id":"f","name":"ab305-api4-f","variant":"fail","image":"ab305-api4-node:testkey","address":"http://127.0.0.1:61539"}
+{"time":"2026-10-30T22:50:11.802Z","event":"node added","id":"f","label":"fails-after","address":"http://127.0.0.1:61539"}
+{"time":"2026-10-30T22:50:12.082Z","event":"clicked","label":"fails-after"}
+{"time":"2026-10-30T22:50:12.085Z","event":"row line","label":"fails-after","text":"Server 1.5.11-beta.5 Starting the update…"}
+{"time":"2026-10-30T22:50:12.148Z","event":"screenshot","file":"API-41-F-01.png"}
+{"time":"2026-10-30T22:50:12.350Z","event":"row line","label":"fails-after","text":"Server 1.5.11-beta.5 Checking the update to 1.5.11-beta.6…"}
+{"time":"2026-10-30T22:50:12.411Z","event":"screenshot","file":"API-41-F-02.png"}
+{"time":"2026-10-30T22:50:14.257Z","event":"row line","label":"fails-after","text":"Server 1.5.11-beta.5 Preparing 1.5.11-beta.6…"}
+{"time":"2026-10-30T22:50:14.310Z","event":"screenshot","file":"API-41-F-03.png"}
+{"time":"2026-10-30T22:50:22.289Z","event":"row line","label":"fails-after","text":"Restarting…"}
+{"time":"2026-10-30T22:50:22.333Z","event":"screenshot","file":"API-41-F-04.png"}
+{"time":"2026-10-30T22:50:24.171Z","event":"row line","label":"fails-after","text":"Server 1.5.11-beta.6 Restarting…"}
+{"time":"2026-10-30T22:50:24.218Z","event":"screenshot","file":"API-41-F-05.png"}
+{"time":"2026-10-30T22:50:52.406Z","event":"row line","label":"fails-after","text":"Restarting…"}
+{"time":"2026-10-30T22:50:52.464Z","event":"screenshot","file":"API-41-F-06.png"}
+{"time":"2026-10-30T22:50:56.360Z","event":"row line","label":"fails-after","text":"Server 1.5.11-beta.5 Update to 1.5.11-beta.6 Same version as this app The update to 1.5.11-beta.6 did not happen. 1.5.11-beta.6 did not come up (it exited with code 3 within 60 s of answering); 1.5.11-beta.5 runs again on the data as it was before the update."}
+{"time":"2026-10-30T22:50:56.423Z","event":"screenshot","file":"API-41-F-07.png"}
+{"time":"2026-10-30T22:50:56.423Z","event":"CHECK PASS","desc":"F: \"did not happen\" with the reason (did not come up; old version runs again)","line":"Server 1.5.11-beta.5 Update to 1.5.11-beta.6 Same version as this app The update to 1.5.11-beta.6 did not happen. 1.5.11-beta.6 did not come up (it exited with code 3 within 60 s of answering); 1.5.11-beta.5 runs again on the data as it was before the update."}
+{"time":"2026-10-30T22:50:56.425Z","event":"CHECK PASS","desc":"F: the row shows the old version again and the button stays"}
+{"time":"2026-10-30T22:50:56.759Z","event":"CHECK PASS","desc":"F: node runs 1.5.11-beta.5 built-in, FAILED_AFTER_SWITCH, migration undone","update":{"state":"failed","targetVersion":"1.5.11-beta.6","step":"rollingBack","code":"FAILED_AFTER_SWITCH","message":"1.5.11-beta.6 did not come up (it exited with code 3 within 60 s of answering); 1.5.11-beta.5 runs again on the data as it was before the update.","startedAt":"2026-10-30T22:50:12.084Z","finishedAt":"2026-10-30T22:50:52.812Z","requestedFrom":"172.17.0.1"}}
+{"time":"2026-10-30T22:50:56.815Z","event":"screenshot","file":"API-41-F-result.png"}
+{"time":"2026-10-30T22:50:57.118Z","event":"node started","id":"g","name":"ab305-api4-g","variant":"good","image":"ab305-api4-node:testkey","address":"http://127.0.0.1:61606"}
+{"time":"2026-10-30T22:51:01.209Z","event":"node added","id":"g","label":"slow-download","address":"http://127.0.0.1:61606"}
+{"time":"2026-10-30T22:51:01.504Z","event":"clicked","label":"slow-download"}
+{"time":"2026-10-30T22:51:01.505Z","event":"row line","label":"slow-download","text":"Server 1.5.11-beta.5 Starting the update…"}
+{"time":"2026-10-30T22:51:01.565Z","event":"screenshot","file":"API-41-G-01.png"}
+{"time":"2026-10-30T22:51:01.767Z","event":"row line","label":"slow-download","text":"Server 1.5.11-beta.5 Checking the update to 1.5.11-beta.6…"}
+{"time":"2026-10-30T22:51:01.818Z","event":"screenshot","file":"API-41-G-02.png"}
+{"time":"2026-10-30T22:51:03.693Z","event":"row line","label":"slow-download","text":"Server 1.5.11-beta.5 Downloading 1.5.11-beta.6…"}
+{"time":"2026-10-30T22:51:03.775Z","event":"screenshot","file":"API-41-G-03.png"}
+{"time":"2026-10-30T22:52:26.119Z","event":"row line","label":"slow-download","text":"Server 1.5.11-beta.5 Preparing 1.5.11-beta.6…"}
+{"time":"2026-10-30T22:52:26.176Z","event":"screenshot","file":"API-41-G-04.png"}
+{"time":"2026-10-30T22:52:34.152Z","event":"row line","label":"slow-download","text":"Restarting…"}
+{"time":"2026-10-30T22:52:34.210Z","event":"screenshot","file":"API-41-G-05.png"}
+{"time":"2026-10-30T22:52:36.254Z","event":"row line","label":"slow-download","text":"Server 1.5.11-beta.6 Restarting…"}
+{"time":"2026-10-30T22:52:36.310Z","event":"screenshot","file":"API-41-G-06.png"}
+{"time":"2026-10-30T22:53:36.587Z","event":"row line","label":"slow-download","text":"Server 1.5.11-beta.6 Updated to 1.5.11-beta.6."}
+{"time":"2026-10-30T22:53:36.638Z","event":"screenshot","file":"API-41-G-07.png"}
+{"time":"2026-10-30T22:53:36.638Z","event":"CHECK PASS","desc":"G: \"Downloading 1.5.11-beta.6…\" was shown","lines":["Server 1.5.11-beta.5 Starting the update…","Server 1.5.11-beta.5 Checking the update to 1.5.11-beta.6…","Server 1.5.11-beta.5 Downloading 1.5.11-beta.6…","Server 1.5.11-beta.5 Preparing 1.5.11-beta.6…","Restarting…","Server 1.5.11-beta.6 Restarting…","Server 1.5.11-beta.6 Updated to 1.5.11-beta.6."]}
+{"time":"2026-10-30T22:53:36.639Z","event":"CHECK PASS","desc":"G: steps in order and \"Updated to 1.5.11-beta.6.\"","last":"Server 1.5.11-beta.6 Updated to 1.5.11-beta.6."}
+{"time":"2026-10-30T22:53:36.673Z","event":"CHECK PASS","desc":"G: same container and image (AC-001)"}
+{"time":"2026-10-30T22:53:36.760Z","event":"G starter request log","lines":"{\"time\":\"2026-10-30T22:51:01.505Z\",\"starter\":\"update-requested\",\"version\":\"1.5.11-beta.6\",\"requestedFrom\":\"172.17.0.1\"}"}
+{"time":"2026-10-30T22:53:36.760Z","event":"CHECK PASS","desc":"G: the request is logged with the client address (AC-009)","gReq":"{\"time\":\"2026-10-30T22:51:01.505Z\",\"starter\":\"update-requested\",\"version\":\"1.5.11-beta.6\",\"requestedFrom\":\"172.17.0.1\"}"}
+{"time":"2026-10-30T22:53:37.045Z","event":"node started","id":"h","name":"ab305-api4-h","variant":"good","image":"ab305-api4-node:testkey","address":"http://127.0.0.1:61727"}
+{"time":"2026-10-30T22:53:42.125Z","event":"node added","id":"h","label":"host-update","address":"http://127.0.0.1:61727"}
+{"time":"2026-10-30T22:53:42.444Z","event":"screenshot","file":"API-41-H-before.png"}
+{"time":"2026-10-30T22:53:43.114Z","event":"host launcher","out":"[AutoByteus Docker] ab305-api4-h: updating to 1.5.11-beta.6"}
+{"time":"2026-10-30T22:53:45.298Z","event":"host launcher","out":"[AutoByteus Docker] ab305-api4-h: downloading"}
+{"time":"2026-10-30T22:53:50.450Z","event":"row line","label":"host-update","text":"Server 1.5.11-beta.5 Update to 1.5.11-beta.6 Same version as this app","while":"host update running, page not reopened"}
+{"time":"2026-10-30T22:53:52.006Z","event":"page reopened"}
+{"time":"2026-10-30T22:53:52.217Z","event":"row line","label":"host-update","text":"Server 1.5.11-beta.5 Downloading 1.5.11-beta.6…"}
+{"time":"2026-10-30T22:53:52.284Z","event":"screenshot","file":"API-41-H-01.png"}
+{"time":"2026-10-30T22:55:06.719Z","event":"row line","label":"host-update","text":"Server 1.5.11-beta.5 Preparing 1.5.11-beta.6…"}
+{"time":"2026-10-30T22:55:06.763Z","event":"screenshot","file":"API-41-H-02.png"}
+{"time":"2026-10-30T22:55:07.661Z","event":"host launcher","out":"[AutoByteus Docker] ab305-api4-h: preparing"}
+{"time":"2026-10-30T22:55:14.737Z","event":"row line","label":"host-update","text":"Restarting…"}
+{"time":"2026-10-30T22:55:14.797Z","event":"screenshot","file":"API-41-H-03.png"}
+{"time":"2026-10-30T22:55:16.274Z","event":"host launcher","out":"[AutoByteus Docker] ab305-api4-h: confirming"}
+{"time":"2026-10-30T22:55:16.643Z","event":"row line","label":"host-update","text":"Server 1.5.11-beta.6 Restarting…"}
+{"time":"2026-10-30T22:55:16.691Z","event":"screenshot","file":"API-41-H-04.png"}
+{"time":"2026-10-30T22:56:17.082Z","event":"host launcher","out":"[AutoByteus Docker] ab305-api4-h: Updated to 1.5.11-beta.6."}
+{"time":"2026-10-30T22:56:17.134Z","event":"row line","label":"host-update","text":"Server 1.5.11-beta.6 Updated to 1.5.11-beta.6."}
+{"time":"2026-10-30T22:56:17.189Z","event":"screenshot","file":"API-41-H-05.png"}
+{"time":"2026-10-30T22:56:17.189Z","event":"CHECK PASS","desc":"H: after reopening, the row follows the host-started update (progress shown)","lines":["Server 1.5.11-beta.5 Downloading 1.5.11-beta.6…","Server 1.5.11-beta.5 Preparing 1.5.11-beta.6…","Restarting…","Server 1.5.11-beta.6 Restarting…","Server 1.5.11-beta.6 Updated to 1.5.11-beta.6."]}
+{"time":"2026-10-30T22:56:17.190Z","event":"CHECK PASS","desc":"H: the row ends \"Updated to 1.5.11-beta.6.\"","last":"Server 1.5.11-beta.6 Updated to 1.5.11-beta.6."}
+{"time":"2026-10-30T22:56:17.190Z","event":"CHECK PASS","desc":"H: the host launcher reported the same result"}
+{"time":"2026-10-30T22:56:17.259Z","event":"CHECK PASS","desc":"H: the node logged the request as the host command"}
+{"time":"2026-10-30T22:56:17.522Z","event":"node started","id":"r","name":"ab305-api4-r","variant":"good","image":"ab305-api4-node:testkey","address":"http://127.0.0.1:61852"}
+{"time":"2026-10-30T22:56:23.640Z","event":"node added","id":"r","label":"long-restart","address":"http://127.0.0.1:61852"}
+{"time":"2026-10-30T22:56:23.926Z","event":"clicked","label":"long-restart"}
+{"time":"2026-10-30T22:56:23.928Z","event":"row line","label":"long-restart","text":"Server 1.5.11-beta.5 Starting the update…"}
+{"time":"2026-10-30T22:56:23.988Z","event":"screenshot","file":"API-41-R-01.png"}
+{"time":"2026-10-30T22:56:24.192Z","event":"row line","label":"long-restart","text":"Server 1.5.11-beta.5 Checking the update to 1.5.11-beta.6…"}
+{"time":"2026-10-30T22:56:24.261Z","event":"screenshot","file":"API-41-R-02.png"}
+{"time":"2026-10-30T22:56:26.112Z","event":"row line","label":"long-restart","text":"Server 1.5.11-beta.5 Downloading 1.5.11-beta.6…"}
+{"time":"2026-10-30T22:56:26.190Z","event":"screenshot","file":"API-41-R-03.png"}
+{"time":"2026-10-30T22:57:46.728Z","event":"row line","label":"long-restart","text":"Server 1.5.11-beta.5 Preparing 1.5.11-beta.6…"}
+{"time":"2026-10-30T22:57:46.781Z","event":"screenshot","file":"API-41-R-04.png"}
+{"time":"2026-10-30T22:57:56.608Z","event":"row line","label":"long-restart","text":"Restarting…"}
+{"time":"2026-10-30T22:57:56.663Z","event":"screenshot","file":"API-41-R-05.png"}
+{"time":"2026-10-30T22:57:56.773Z","event":"docker stop (the node goes away mid-update)","status":{"state":"running","targetVersion":"1.5.11-beta.6","step":"confirming","code":null,"message":null,"startedAt":"2026-10-30T22:56:23.928Z","finishedAt":null,"requestedFrom":"172.17.0.1"}}
+{"time":"2026-10-30T23:02:57.475Z","event":"row line","label":"long-restart","text":"Not reachable. Last known: updating to 1.5.11-beta.6."}
+{"time":"2026-10-30T23:02:57.536Z","event":"screenshot","file":"API-41-R-06.png"}
+{"time":"2026-10-30T23:02:57.536Z","event":"CHECK PASS","desc":"R: Restarting… while the node is down, then \"Not reachable. Last known: updating to 1.5.11-beta.6.\" after about 5 min","lines":["Server 1.5.11-beta.5 Starting the update…","Server 1.5.11-beta.5 Checking the update to 1.5.11-beta.6…","Server 1.5.11-beta.5 Downloading 1.5.11-beta.6…","Server 1.5.11-beta.5 Preparing 1.5.11-beta.6…","Restarting…","Not reachable. Last known: updating to 1.5.11-beta.6."],"secondsDownBeforeUnreachable":298}
+{"time":"2026-10-30T23:03:27.839Z","event":"docker start (the node comes back)"}
+{"time":"2026-10-30T23:03:27.841Z","event":"row line","label":"long-restart","text":"Not reachable. Last known: updating to 1.5.11-beta.6."}
+{"time":"2026-10-30T23:03:27.895Z","event":"screenshot","file":"API-41-R-back-01.png"}
+{"time":"2026-10-30T23:13:27.967Z","event":"follow timeout","label":"long-restart","last":"Not reachable. Last known: updating to 1.5.11-beta.6."}
+{"time":"2026-10-30T23:13:28.107Z","event":"R node after the outage","status":{"version":"1.5.11-beta.5","state":"running","server":{"pid":368,"packageVersion":"1.5.11-beta.5","source":"builtIn"},"update":{"state":"failed","targetVersion":"1.5.11-beta.6","step":"confirming","code":"INTERRUPTED","message":"The update to 1.5.11-beta.6 was interrupted; this node runs 1.5.11-beta.5 again.","startedAt":"2026-10-30T22:56:23.928Z","finishedAt":"2026-10-30T23:03:29.469Z","requestedFrom":"172.17.0.1"}}}
+{"time":"2026-10-30T23:13:28.108Z","event":"CHECK FAIL","desc":"R: the row recovers by itself (no reload, no click) and shows the node again","last":"Not reachable. Last known: updating to 1.5.11-beta.6."}
+{"time":"2026-10-30T23:13:28.111Z","event":"CHECK FAIL","desc":"R: the outcome is shown: the old version with the reason, and the button, or the new version","last":"Not reachable. Last known: updating to 1.5.11-beta.6.","button":false}
+{"time":"2026-10-30T23:13:33.243Z","event":"zh-CN lines","idle-node":"服务器 1.5.11-beta.5 更新到 1.5.11-beta.6 与本应用版本相同","pre-starter":"无法访问。","needs-image":"服务器 1.5.11-beta.5 更新到 1.5.11-beta.6 与本应用版本相同 到 1.5.11-beta.6 的更新未完成。 This update needs a new Docker image: it needs system level 99, this image provides 1. Get it with: autobyteus-docker upgrade --all --tag 1.5.11-beta.6 复制命令","fails-after":"服务器 1.5.11-beta.5 更新到 1.5.11-beta.6 与本应用版本相同 到 1.5.11-beta.6 的更新未完成。 1.5.11-beta.6 did not come up (it exited with code 3 within 60 s of answering); 1.5.11-beta.5 runs again on the data as it was before the update.","slow-download":"服务器 1.5.11-beta.6","host-update":"服务器 1.5.11-beta.6","long-restart":null}
+{"time":"2026-10-30T23:13:33.307Z","event":"screenshot","file":"API-41-zhCN-manage.png"}
+{"time":"2026-10-30T23:13:33.352Z","event":"CHECK PASS","desc":"zh-CN: the offer reads 更新到 1.5.11-beta.6 with 与本应用版本相同","line":"服务器 1.5.11-beta.5 更新到 1.5.11-beta.6 与本应用版本相同"}
+{"time":"2026-10-30T23:13:33.352Z","event":"CHECK PASS","desc":"zh-CN: the pre-starter row reads 无法访问。","line":"无法访问。"}
+{"time":"2026-10-30T23:13:33.352Z","event":"CHECK PASS","desc":"zh-CN: version lines read 服务器 <version>","line":"服务器 1.5.11-beta.5 更新到 1.5.11-beta.6 与本应用版本相同 到 1.5.11-beta.6 的更新未完成。 This update needs a new Docker image: it needs system level 99, this image provides 1. Get it with: autobyteus-docker upgrade --all --tag 1.5.11-beta.6 复制命令"}
+{"time":"2026-10-30T23:13:33.952Z","event":"AC-010 record","minutes":24,"iGets":4,"iPosts":0,"allPosts":["http://127.0.0.1:61507/rest/node-update","http://127.0.0.1:61539/rest/node-update","http://127.0.0.1:61606/rest/node-update","http://127.0.0.1:61852/rest/node-update"]}
+{"time":"2026-10-30T23:13:33.953Z","event":"CHECK PASS","desc":"AC-010: 24 min with an older node never clicked: no POST to it, and it was asked (GET > 0)"}
+{"time":"2026-10-30T23:13:34.116Z","event":"CHECK PASS","desc":"AC-010: its starter never logged an update request; it still runs 1.5.11-beta.5"}
+{"time":"2026-10-30T23:13:34.116Z","event":"CHECK PASS","desc":"AC-010: POSTs only to the four nodes clicked in this window (L, F, G, R), one each","posts":["http://127.0.0.1:61507","http://127.0.0.1:61539","http://127.0.0.1:61606","http://127.0.0.1:61852"]}
+{"time":"2026-10-30T23:13:34.116Z","event":"result","checkFailures":3}

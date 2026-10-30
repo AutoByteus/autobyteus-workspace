@@ -1,0 +1,4 @@
+FROM autobyteus-server-305-test:step4
+COPY test.pub /opt/autobyteus/starter/server-package-signing-key.pem
+# The built-in package says it is the previous beta, so this app's version (1.5.11-beta.6) is newer (as IMP4-proof-Dockerfile.testkey).
+RUN node -e "const f='/opt/autobyteus/server-package/server-package.json',fs=require('fs');const j=JSON.parse(fs.readFileSync(f));j.version='1.5.11-beta.5';fs.writeFileSync(f,JSON.stringify(j,null,2)+'\n')"

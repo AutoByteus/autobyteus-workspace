@@ -1,135 +1,140 @@
-# API/E2E Execution Coverage Report — autobyteus-305, build step 3 (in-place update by command)
+# API/E2E Execution Coverage Report — autobyteus-305, build step 4 (desktop: node version and "Update to <version>")
 
 The run record and the result. The plan is `api-e2e-coverage-investigation.md`; the history is `api-e2e-revision-record.md`.
 
 Earlier rounds:
 
-- round 1: step 1, API-REV-001, Pass 95%; report at `48c2d82ea1`;
-- round 2: step 2, API-REV-002, Pass 94.7%; report at `c052bb1aff`.
+| Round | Step | Revision | Result | Report |
+| --- | --- | --- | --- | --- |
+| 1 | 1 | API-REV-001 | Pass, 95% | git `48c2d82ea1` |
+| 2 | 2 | API-REV-002 | Pass, 94.7% | git `c052bb1aff` |
+| 3 | 3 | API-REV-003 | Pass, 94.7% | git `e7e76ac2c0` |
 
-Both steps are merged into `personal`. This file now holds the round-3 result.
+Steps 1–3 are merged and released (v1.5.11-beta.6). This file now holds the round-4 result.
 
 ## Round
 
 - Coverage investigation: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-in-place-server-update/tickets/in-progress/docker-node-in-place-server-update/api-e2e-coverage-investigation.md`
-- API/E2E revision record and current revision ID: `api-e2e-revision-record.md`, `API-REV-003`
-- Test progress log: `api-e2e-test-progress.md` (section "Round 3")
-- Round and trigger: round 3, after code review Pass of build step 3 (CRR-005)
-- Prior round reviewed: round 2 (Pass). No failure was open from it.
-- Deviations from the investigation's plan: none in the cases. Two step-print checks were stricter than the launcher's design; see API-31 and API-36 Notes.
-- Evidence folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-in-place-server-update/tickets/in-progress/docker-node-in-place-server-update/evidence/` (round-3 files `API-3x-*`)
+- Revision: `API-REV-004`; progress log `api-e2e-test-progress.md` (section "Round 4")
+- Round and trigger: round 4, after code review Pass of build step 4 (CRR-007)
+- Prior round reviewed: round 3 (Pass). Nothing was open from it.
+- Deviations from the plan:
+  - API-41 needed a second driver run in the same window (run 2). Two run-1 failures were fixture faults, found and redone (API-41 Notes):
+    - a read taken too early;
+    - a random host port that Docker reassigns on `docker start`.
+  - Driver run 1 completed every scenario.
+- Evidence folder: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-in-place-server-update/tickets/in-progress/docker-node-in-place-server-update/evidence/` (files `API-41-*`; folders `API-41-desktop/`, `API-41-desktop-run2/`)
 
 ## Routing Classification
 
-- Task size `Large`, architectural risk `High`, input route `Reviewed`, successful-output route `Code Review`.
-- Proportional test-code review decision: `Not Applicable`. No durable test code changed.
+- `Large` / `High`, input `Reviewed`, success route `Code Review`.
+- Test-code review: `Not Applicable` (no durable test code changed).
 
 ## Tested Builds And Environments
 
 | Env ID | Commit Tested | Platform / OS | Runtime, Browser, Or App Build | Other Settings That Matter |
 | --- | --- | --- | --- | --- |
-| ENV-3 | `213d86955a` (docs on top of `a17033dc30`; starter code `c72107a0fd`, launcher code at HEAD) | Test-owned `docker:dind` on Docker Desktop 29.0.1 (macOS 26.5.2 arm64), `dockerd --registry-mirror=http://127.0.0.1:5000` | Test image `sha256:63c8a7958efe…` = `autobyteus-server-305-test:step3` (clean clone of `c72107a0fd`) plus the throwaway test public key and `AUTOBYTEUS_SERVER_PACKAGE_SOURCE=http://172.18.0.1:18080/releases`, served as `autobyteus/autobyteus-server:{beta,latest,1.5.11-beta.5}` through the mirror (O-7), and as the custom ref `127.0.0.1:5000/ab305/custom:s3`. Also `step1` and `step2` images. Bash launchers: this branch, `origin/personal` @ `6b34f900b6` (step 2) and `77fb8bf2d1` (step 1, v6), run by macOS `/bin/bash` 3.2.57 | Release source: `IMP3-proof-release-source.mjs` in the test daemon (stable 1.5.12, feed 1.5.13,1.5.12). Packages 1.5.12–1.5.20 built by `IMP3-proof-make-packages.sh` from the step-3 image's own built-in package, signed with a fresh throwaway key (deleted after the run) |
-| ENV-5 | same | Linux `pwsh` 7.4 (`mcr.microsoft.com/dotnet/sdk:8.0` + the docker CLI) in the test daemon's network namespace | This branch's `autobyteus-docker.ps1` | Nodes created by a patched copy (FU-006); `status`/`update` by the unpatched launcher |
+| ENV-6 | `5618071c7f` (docs on top of `6412b7e4fd`; code `deead7bf05`) | macOS 26.5.2 arm64 | Isolated desktop instance `iso-61359-e30d` from `pnpm --silent isolated-app start --build` of this worktree (Electron 42.11.16, app 1.5.11-beta.6, own data root and ports), driven over its control port with `playwright-core` `connectOverCDP` | The app's own update checks off (isolated profile); English, then zh-CN through Settings → Language, then back to English |
+| ENV-7 | same | Docker Desktop 29.0.1, host daemon | Test nodes `ab305-api4-{i,p,l,f,g,h,r,r2}`: label `autobyteus.ab305-api=round4`, fresh volumes `…-data` and `…-packages`, `127.0.0.1` ports, no launcher label. Image `ab305-api4-node:testkey` = `autobyteus-server-305-test:step4` (clean clone of `deead7bf05`) + the throwaway public key, built-in labelled 1.5.11-beta.5 (as IMP4's); P from `autobyteus-server-305-test:step1` | `AUTOBYTEUS_SERVER_PACKAGE_SOURCE=http://host.docker.internal:<port>/<variant>/releases` per container. The release source on host loopback serves variants of 1.5.11-beta.6: `good` (4 MB/s), `fail` (migrates, exits 30 s after start), `lvl99` (system level 99). All are built with the IMP3 harness's `make()` from the step-4 image's own package and signed with a fresh throwaway key (deleted) |
 
 ## Cases
 
 | Case ID | Criteria | Boundary / Surface | Command Or Steps | Env | Result | Evidence Files | Look For | Notes |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| API-30 | AC-002..AC-006, AC-008, AC-012, AC-013, RU-23, DS-006, DS-007 | Starter (48 tests with real processes and archives), launcher fakes, C1, lints, clean-clone image, container proofs incl. stops during trial, copy and restore | Reused IMP3-01..IMP3-10 | — | Pass | — | — | Only `tickets/` changed after `71604951d4`, which itself touches only tests and RELEASE.md; IMP3-05..10 used the `c72107a0fd` image my test image is built on. IMP3-08/10 (container stop during the trial and the copy, kill during the restore) are the DS-007 stop evidence; the launcher has no part in those paths |
-| API-31 | AC-002, AC-006, AC-008, DEC-005, RU-31, RU-32, RU-33, RU-37, CR2-N1, N-3 | Real bash launchers on a test-owned daemon (phase 1) | `evidence/API-3x-launcher-update.sh <worktree> evidence/API-3x-launcher-update.log <test root>`, phase 1 | ENV-3 | Pass | `API-3x-launcher-update.log` (sections "API-31"), `API-3x-launcher-update.sh`, `API-3x-Dockerfile.{T,B,C}` | `CHECK PASS: docker pull of autobyteus/autobyteus-server:beta resolves to the test image through the mirror`; step-2 node → `upgrade --all --tag beta`: `node 0 data kept after the upgrade`, `status line … shows the starter's version`. `update --name autobyteus-server-0`: `updating to 1.5.13` … `Updated to 1.5.13.`, `same container and same image after the update`, `node 0 runs 1.5.13, installed`, `the 1.5.13 migration ran (table present)`, `data written by 1.5.11-beta.5 kept`, `no data copy left after the commit`, C1 `"version":"1.5.13"`. `update --all`: `refused (NOT_NEWER)` (0), `updating to 1.5.12` (1, stable), `This node is pinned to 1.5.11-beta.5; pass --version.` (2), `This node uses a custom image (…); pass --version.` (3); `--version 1.5.12`: 2 and 3 updated. `status`: `server: 1.5.13`, `server: not available (container exited)`, `server: not available (no starter answer; images before the starter have none)`; `the container is not running; start it first.`; `… run: autobyteus-docker upgrade --all`. AC-006: `node 0 keeps the installed 1.5.13 (built-in 1.5.11-beta.5 is older)`, `node 0 runs the image's 1.5.21 (built-in)` | One `CHECK FAIL: launcher printed the steps and the result`. The check wanted `checking`/`downloading` and `restarting` lines, but the launcher prints the step it sees at each 2 s poll: here `preparing` and `confirming`. With the local source, checking and downloading take under 2 s, and `restarting` (stop, copy of a small data folder, trial spawn) is also short. The target and the result were printed every time. This is the launcher's design (poll and print changes), so the failure is the check's expectation, not a defect; see the residual note. **Observation:** after the move to the 1.5.21 image, `state.json` still lists `previous: builtIn 1.5.11-beta.5`, a package that image no longer has. Nothing reads `previous` outside an update (downgrades are a non-goal; DEC-013 keeps it for rollback), so no criterion is affected |
-| API-32 | AC-003, AC-004, AC-005, AC-008, AC-012, AC-013, RU-34 | Real bash launcher, a fresh `beta` node (phase 2) | Same script, phase 2 | ENV-3 | Pass | `API-3x-launcher-update.log` (sections "API-32") | `failed (FAILED_AFTER_SWITCH): 1.5.14 did not come up (it exited with code 3 within 60 s of answering); 1.5.11-beta.5 runs again on the data as it was before the update.`; `the 1.5.14 migration is gone (data restored)`, `no data copy or 1.5.14 package left`; `90 s later: same update record`, `after a restart: still 1.5.11-beta.5, the update record unchanged`, `exactly one update request for 1.5.14`; `second update succeeded`. `RESULT … (NOT_NEWER)`, `(INVALID_VERSION)`, `(NEEDS_NEW_IMAGE): This update needs a new Docker image: it needs system level 99, this image provides 1. Get it with: autobyteus-docker upgrade --all --tag 1.5.15`, `(ARCHIVE_MISMATCH)`, `(DESCRIPTION_MISMATCH)`, `(SIGNATURE_INVALID): The package description for 1.5.18 is not signed by AutoByteus.`, `(NO_PACKAGE_FOR_VERSION): No server package was published for 1.5.19 …`, each with `the same starter pid, state.json unchanged`; AC-012: `scanned 211338 bytes …`, `no 'PRIVATE KEY' and no line of the test private key in the node's logs` | The exit-at-start case (1.5.20) is reused from IMP3-07; the migrate-then-fail case is run here through the launcher |
-| API-33 | RU-23, RU-35 | Node of the step-1 (v6) launcher, new launcher (phase 3) | Same script, phase 3 | ENV-3 | Pass | `API-3x-launcher-update.log` (section "API-33") | `server: 1.5.11-beta.5, in-place update unavailable: /home/autobyteus/server-packages is not this node's own volume, so an update would be lost when the container is recreated. Reinstall the launcher, then run: autobyteus-docker upgrade --all`; `refused (NO_PACKAGES_VOLUME)`; after `upgrade --all`: `Launcher config changed …; recreating`, `no blocker in status, server-packages volume mounted` | The RU-23 path a user with an old launcher takes |
-| API-36 | RU-36 | PowerShell launcher in Linux `pwsh` (phase 4) | Same script, phase 4 | ENV-5 | Pass | `API-3x-launcher-update.log` (section "API-36") | `pwsh autobyteus-docker.ps1 status` → `server: 1.5.11-beta.5`; `update --name autobyteus-server-0` → `updating to 1.5.13` … `Updated to 1.5.13.`, `the node runs 1.5.13 installed, same container`; `status` → `server: 1.5.13`; `--version 1.5.12` → `refused (NOT_NEWER)`; stopped: `server: not available (container exited)`, `the container is not running; start it first.` | One `CHECK FAIL: PowerShell update printed the target and steps`, with the same cause as in API-31: polling. The target and the result were printed |
+| API-40 | AC-001, AC-009, AC-010, REQ-011, CR3-N1 | Web suite (4889 tests) and guards, server and starter tests, image, real-app main path, phone 403 | Reused IMP4-01..IMP4-06 | — | Pass | — | — | Only `tickets/` changed since `deead7bf05` |
+| API-41 | AC-001, AC-009 (desktop request and client-address log), AC-010, REQ-011, RU-41..RU-48 | The real desktop app (renderer, store, C1 POST, CORS) with real starters | `node evidence/API-41-desktop-drive.mjs 61359 evidence/API-41-desktop ab305-api4-node:testkey autobyteus-server-305-test:step1 <source port> <worktree>`; then `evidence/API-41-desktop-drive-run2.mjs` in the same window (copy and R2) | ENV-6, ENV-7 | Pass | `API-41-desktop/drive-log.jsonl`, `requests.json`, `API-41-*.png`, `README.txt`; `API-41-desktop-run2/drive-log.jsonl`, `*.png`; the scripts and Dockerfile `API-41-*` | See the per-item rows below | Run 1 had 3 `CHECK FAIL`s, all fixture faults, redone in run 2 with 0 failures. (a) **Copy:** run 1 read the button text synchronously after the click, but the copy is asynchronous (`await navigator.clipboard.writeText`, then "Copied"). Run 2 read it 500 ms later: `"after":"Copied"`, `writeText ok`, and the macOS clipboard held `autobyteus-docker upgrade --all --tag 1.5.11-beta.6`. (b), (c) **R:** node R was published with `-p 127.0.0.1::8000`, and `docker start` gave it a new random host port (61852 → 62239). The row correctly kept polling the registered address every 10 s (`requests.json`: GETs at 10 s intervals until the end), but that address was dead. The launcher always gives a node fixed ports, so R2 reran with a fixed host port and passed |
+| API-41 / item 1 (RU-41) | AC-004 on the desktop | Failed update clicked from the row | Node F (`fail`), click | ENV-6/7 | Pass | `API-41-F-*.png`, drive-log | `Starting the update…` → `Checking the update to 1.5.11-beta.6…` → `Preparing 1.5.11-beta.6…` → `Restarting…` → `Server 1.5.11-beta.6 Restarting…` → `Server 1.5.11-beta.5 Update to 1.5.11-beta.6 Same version as this app The update to 1.5.11-beta.6 did not happen. 1.5.11-beta.6 did not come up (it exited with code 3 within 60 s of answering); 1.5.11-beta.5 runs again on the data as it was before the update.`; node: `FAILED_AFTER_SWITCH`, built-in, migration table absent | The button stays (`CHECK PASS: F: the row shows the old version again and the button stays`) |
+| API-41 / item 2 (RU-42) | AC-005 on the desktop | NEEDS_NEW_IMAGE from the row | Node L (`lvl99`), click; copy | ENV-6/7 | Pass | `API-41-L-*.png`, `API-41-desktop-run2/API-41-L-copied.png` | `The update to 1.5.11-beta.6 did not happen. This update needs a new Docker image: it needs system level 99, this image provides 1. Get it with: autobyteus-docker upgrade --all --tag 1.5.11-beta.6`; copy title `autobyteus-docker upgrade --all --tag 1.5.11-beta.6`; run 2 `"after":"Copied"` | — |
+| API-41 / item 3 (RU-43) | REQ-011 progress | A slow source | Node G (`good`, 4 MB/s), click | ENV-6/7 | Pass | `API-41-G-*.png` | `Downloading 1.5.11-beta.6…` for 82 s (22:51:03 → 22:52:26), then `Preparing…`, `Restarting…`, `Server 1.5.11-beta.6 Updated to 1.5.11-beta.6.`; same container and image; node log `"requestedFrom":"172.17.0.1"` | AC-001 and the AC-009 log part |
+| API-41 / item 4 (RU-44) | DS-005 timings | A long outage during an update | R2: click, `docker stop` at the first `Restarting…` (node step `confirming`), 30 s after "Not reachable" `docker start` | ENV-6/7 | Pass | `API-41-desktop-run2/API-41-R2-*.png`, drive-log | `Restarting…` (23:15:55) → `Not reachable. Last known: updating to 1.5.11-beta.6.` (23:20:56, `secondsDownBeforeUnreachable` ≈ 300) → after `docker start` (23:21:26), within one 10 s poll (23:21:36): `Server 1.5.11-beta.5 Update to 1.5.11-beta.6 … The update to 1.5.11-beta.6 did not happen. The update to 1.5.11-beta.6 was interrupted; this node runs 1.5.11-beta.5 again.` | The node's boot recovery rolled the halted trial back (`INTERRUPTED`), and the row recovered with no click or reload |
+| API-41 / item 5 (RU-45) | REQ-011, DS-002 | An update started from the host while the row is visible | Node H; `autobyteus-docker update --name ab305-api4-h --version 1.5.11-beta.6` (real bash launcher, private state dir with one state file); the page is reopened 10 s later | ENV-6/7 | Pass | `API-41-H-*.png`, drive-log (`host launcher` lines) | Before the reopen: `Server 1.5.11-beta.5 Update to 1.5.11-beta.6 Same version as this app` (idle rows are not polled, by design). After it: `Downloading…` → `Preparing…` → `Restarting…` → `Server 1.5.11-beta.6 Updated to 1.5.11-beta.6.`, in step with the launcher's own lines; node log `"requestedFrom":"host command"` | Until the page asks again, the row still offers the button. A click then would get the node's `UPDATE_RUNNING` refusal (a gate, unit-tested), not a second update |
+| API-41 / item 6 (RU-46) | Localization | zh-CN render | Settings → Language → 简体中文, then Nodes → Manage | ENV-6/7 | Pass | `API-41-zhCN-manage.png`, `API-41-zhCN-manage-full.png`, drive-log `zh-CN lines` | `服务器 1.5.11-beta.5 更新到 1.5.11-beta.6 与本应用版本相同`; `无法访问。`; `… 到 1.5.11-beta.6 的更新未完成。 This update needs a new Docker image: … 复制命令` | **Observation:** the reasons come from the node's starter in English (`update.message`), so a zh-CN row mixes Chinese chrome with an English reason. This follows the design (the row shows the node's `message`) and the frozen C2 contract. Whether to translate known codes on the desktop is a product choice for the Solution Designer |
+| API-41 / item 7 (RU-47) | N-4 | A node on a pre-starter image | Node P (`step1` image) | ENV-6/7 | Pass | `API-41-P-pre-starter.png` | `Not reachable.` and no button, under a row whose node dot is green (reachable) | As decided (N-4, CC-07, rule 9). **Observation for the Solution Designer:** right after a desktop with step 4 ships, every node still on an image before step 2 shows "Not reachable." under a reachable row until the owner runs `upgrade --all`. That includes the user's current nodes. The wording may read as a fault |
+| API-41 / item 8 (RU-48) | AC-010 | 24 min with an older node in the list, never clicked | Node I added first and kept the whole session (page opened 5 times) | ENV-6/7 | Pass | `API-41-desktop/requests.json`, drive-log `AC-010 record` | `"minutes":24,"iGets":4,"iPosts":0`; I's starter: no `update-requested`, still 1.5.11-beta.5; all POSTs in the window are exactly the four clicked nodes, one each | GETs come only when the page opens or the app's version becomes known (idle rows are not polled) |
 
 ## Acceptance-Criteria Proof
 
-| Acceptance-Criteria ID | Critical | Proven By Case IDs | Result | For A User-Only Part |
+| Acceptance-Criteria ID | Critical | Proven By | Result | User-Only Part |
 | --- | --- | --- | --- | --- |
-| AC-002: host command `update` with a version or without (newest on the node's track) → the node runs it in the same container and image; unknown version refused | Yes | API-31 (track beta and stable, named versions, `--all`, the same container and image), API-36 (PowerShell), API-32 (`latest` INVALID_VERSION, 1.5.19), API-30 | Proven | — |
-| AC-003: altered or wrongly signed build, or altered description → refused before anything changes, the old version keeps serving without a restart, reason shown | Yes | API-32 (ARCHIVE_MISMATCH, DESCRIPTION_MISMATCH, SIGNATURE_INVALID with the same pid and state), API-30 (IMP3-07) | Proven. The production key is exercised only by a real release | The production-key signature is checked by the first release (the user's request); the logic is the same with the test key |
-| AC-004: a verified build that fails → the old version on its pre-update data, "failed after switch, old version restored", not retried by itself | Yes | API-32 (1.5.14 migrate-then-exit: data restored, no retry over 90 s and a restart, the next update works), API-30 (IMP3-07 exit at start; IMP3-08) | Proven | — |
-| AC-005: needs a newer system layer → refused, "needs a new Docker image" with the launcher command | Yes | API-32 (1.5.15), API-30 | Proven | — |
-| AC-006: `upgrade --all` to an image whose built-in is older than the installed version keeps it; newer → the image's version | Yes | API-31 (both directions, through the launcher), API-30 (IMP3-06), round 2 API-12 D (`NEEDS_NEW_IMAGE` alternate) | Proven | — |
-| AC-008: target equal to or older than the running one → refused, nothing changes | Yes | API-31, API-32, API-36 (NOT_NEWER) | Proven | — |
-| AC-012: no tokens, keys or credentials in logs | Yes | API-32 (log scan of a node after a full update, a rollback and seven refusals), API-30 (IMP3-06) | Proven | — |
-| AC-013: no server build published → "no server build was published for X", nothing changes | Yes | API-32 (1.5.19), API-30 | Proven | — |
-| RU-23: `NO_PACKAGES_VOLUME` and `updateBlocker`; the fix by `upgrade --all` | Yes | API-33, API-30 (IMP3-09) | Proven | — |
-| AC-001, AC-009 (request part), AC-010; AC-007 | — | — | Not in step 3 | Steps 4 and 5 |
+| AC-001: click "Update to <version>" → the node runs B in the same container and image; the desktop shows B and "updated" | Yes | API-41 items 3 and 5; API-40 (IMP4-06) | Proven | — |
+| AC-009: phone refused; no agent tool; a desktop's network request is accepted and logged with its client address | Yes | API-41 item 3 (`requestedFrom` `172.17.0.1`), API-40 (IMP4-06 phone 403 on POST and GET; the no-tool grep), round 2 API-21 (a really paired phone on C1) | Proven | — |
+| AC-010: nothing changes on any node until the user acts | Yes | API-41 item 8 (24 min, recorded network), API-40 (unit: 30 min) | Proven | — |
+| REQ-011 / BEH-007 on the desktop: version, progress, result, why not | Yes | API-41 items 1–7 | Proven | — |
+| AC-004, AC-005 as shown on the desktop | Yes | API-41 items 1 and 2 (the node behavior is round 3) | Proven | — |
+| AC-007 | — | — | Not in step 4 | Step 5 |
 
 ## Validation Confidence Scorecard (Mandatory)
 
 | Confidence Category | Post-Repository Score | Final Score | What Supports It | Residual Uncertainty | What Could Improve It |
 | --- | --- | --- | --- | --- | --- |
-| Requirement and acceptance-criteria proof | 88% | 95% | API-31..API-36, API-30 | Production key and GitHub source (release only) | The first release |
-| Changed-boundary execution directness | 80% | 95% | Real launchers in both shells against real starters | — | — |
-| Cross-boundary integration realism and mock gap | 85% | 95% | Docker's own mirror pull path for the default repository; packages from the release scripts; data written by the earlier version | Local release source instead of GitHub (the design's test source) | The first release |
-| Environment, configuration, identity, and fixture fidelity | 85% | 95% | Three launcher generations as users have them; macOS `/bin/bash` 3.2 | Windows host for PowerShell | — |
-| Failure, edge-case, lifecycle, and recovery evidence | 90% | 95% | Rollback with restore, no retry across a restart, seven refusals, stopped and pre-starter nodes; stops during the update (IMP3-08/10) | — | — |
-| User-surface (CLI) confidence | 85% | 95% | Readable target, refusal reasons and results in both shells; `status` lines for every node state | Short steps are not always shown (polling) | — |
-| Durable regression coverage quality and relevance | 90% | 93% | 48 starter tests, 8 launcher `update` tests (fake docker, real in-container script) | PowerShell `update`/`status` only text-checked in the repository (FU-006's executed test would cover it) | FU-006 |
+| Requirement and acceptance-criteria proof | 88% | 95% | API-41, API-40 | — | — |
+| Changed-boundary execution directness | 85% | 95% | The packaged app's renderer against real starters, real CORS, real timers | — | — |
+| Cross-boundary integration realism and mock gap | 85% | 95% | Real node-side outcomes behind every row state; a real host command | Local release source and test key (the release path is round 3 and the first release) | — |
+| Environment, configuration, identity, and fixture fidelity | 85% | 95% | Isolated app of this worktree; the node image from a clean clone. R2 uses fixed ports like the launcher | macOS only | — |
+| Failure, edge-case, lifecycle, and recovery evidence | 85% | 95% | Failure, refusal, a 5-minute outage with recovery, a pre-starter node, a host-started update | — | — |
+| User-surface, browser, and desktop-shell confidence | 80% | 95% | Every reviewer item rendered in the real app, in English and zh-CN, with screenshots | English reasons in zh-CN; the "Not reachable" wording for pre-starter nodes (both by design) | Product decisions |
+| Durable regression coverage quality and relevance | 93% | 93% | 4889 web tests incl. 21 for the store and row with fake timers; server and starter tests | The real-app journeys are not durable (a packaged app plus Docker) | — |
 
-- Overall post-repository confidence: 86% (below 90% in five categories, so broader validation was required)
+- Overall post-repository confidence: 86% (below 90% in six categories, so broader validation was required)
 - Overall final confidence: 94.7% (simple average)
-- Every critical acceptance criterion directly proven, apart from parts only the user can check: `Yes`
-- Any final applicable category below `90%`: `No`
-- Default 95% target met: `No`, 94.7%. The gap is durable execution coverage of the PowerShell launcher (FU-006, pre-existing). Every step-3 PowerShell path was executed in API-36.
+- Every critical acceptance criterion directly proven: `Yes`
+- Any final category below 90%: `No`
+- 95% target met: `No`, 94.7%. The gap is that the desktop journeys are not durable automation, which would need the packaged app plus Docker nodes in CI. The behavior they cover is unit-tested with fake timers.
 - Residual risks:
-  - the production key and GitHub source are proven only at the first release (user-only);
-  - the release that ships step 3 must tell launcher users to reinstall the launcher, then `upgrade --all` (RU-23; the handoff's Known Risks, for delivery);
-  - polling shows short steps irregularly.
+  - the two product observations (items 6 and 7) and CR4-N1 (no confirmation), all for the Solution Designer;
+  - FU-006.
 
 ## Broader Validation Decision (Mandatory)
 
 - Decision: `Required` (executed)
-- Execution mode: `Lifecycle` + `CLI` (both launchers on a test-owned daemon)
-- Gap addressed: the repository and implementation evidence never ran the launcher against a real starter (fake docker, or `cli.mjs` directly), never ran PowerShell, and never tested `update --all`, the track table against real images, or the restart after a rollback.
-- Browser validation: not needed. Step 3 changes no rendered UI and no browser-reached API besides the additive `updateBlocker`, which API-33 shows through the status the launcher reads.
+- Mode: `Project Desktop Validation` (isolated instance, driven like a user), with lifecycle actions on the test nodes
+- Gap addressed: the reviewer's eight items were unit-tested only, or not seen in the real app.
+
+## Desktop Application Validation
+
+- Approach: the project's isolated instance of a worktree build (TESTING.md Rule 1), driven over its control port; nothing else on the machine changed.
+- Web-equivalent behavior (row, store) and shell-specific behavior: the renderer in the packaged Electron app, using the app's version from the shell, sends cross-origin requests to the nodes.
+- Effect on the user's running AutoByteus: `None`. Own data root, ports and process group; `isolated-app list` shows no instance after `stop`.
+- Side effect: the copy-button test put `autobyteus-docker upgrade --all --tag 1.5.11-beta.6` on the macOS clipboard.
 
 ## Persisted-Data Transition Checks
 
-- Decision: `Not Affected` (formats); DEC-005 copy and restore.
-- Representative data: agent definitions written through GraphQL by 1.5.11-beta.5 (the built-in package of the step-2 image or the step-3 test image).
-- Proven:
-  - migration update 1.5.13: table created, data kept, copy removed (API-31);
-  - migrate-then-fail 1.5.14: table gone, data kept, copy and package removed (API-32);
-  - image changes after the in-place update keep the data (API-31).
-- Version-specific branches or fallbacks: `No`
+- Not changed by step 4. Node-side outcomes as in round 3: F rolls its migration back; R2 recovers an interrupted trial.
 
 ## Compatibility / Legacy Scope Check
 
-- Compatibility mechanisms introduced or tolerated: `No`. Nodes of older launchers are refused with a way out (NO_PACKAGES_VOLUME), not served by a second path.
+- `No` compatibility mechanisms. Old nodes get the generic state (N-4).
 
 ## Durable Coverage Changed In The Codebase
 
-- None this round.
+- None.
 
 ## Dependencies Mocked Or Emulated
 
-| Dependency | Method | Why | Limitation |
-| --- | --- | --- | --- |
-| GitHub releases | The design's test source variable, pointed at `IMP3-proof-release-source.mjs` (same URL layout, `/latest` redirect, `.atom` feed) | No release | GitHub-specific redirects and CDN: first release |
-| Production signing key | A throwaway key in a test image | The private key is only in GitHub | First release |
-| Docker Hub for `autobyteus/autobyteus-server` | The test daemon's registry mirror | The track table needs the real repository name | None for the launcher logic |
-| The user's host daemon | `docker:dind` (O-1) | `upgrade --all` and `update --all` reach every labelled container | — |
-| "Newer release" image for AC-006 | Version label 1.5.21 (O-5) | Only one real step-3 version | Selection reads only that field |
-| Windows | Linux `pwsh` | No Windows host | Platform-neutral logic |
+| Dependency | Method | Limitation |
+| --- | --- | --- |
+| GitHub releases, production key | Throwaway key; local source with variants of 1.5.11-beta.6 | Release path proven in round 3 and by the beta.6 release (DR-003) |
+| A node older than the app | Built-in labelled 1.5.11-beta.5 (as IMP4) | The selection reads only that field |
+| A node machine going down mid-update | `docker stop`/`start` of the node's container, with a fixed host port in R2 | — |
 
 ## Temporary Methods And Cleanup
 
 | Item | Owned | Cleanup | Result |
 | --- | --- | --- | --- |
-| `ab305-api-dind` and its volume (all nodes, volumes, registry, release source, test images) | Yes | `docker rm -f -v`, `docker volume rm` | Removed |
-| `docker:dind`, the pwsh helper and its bases | Yes | `docker image rm` (the script removed the helper) | Removed |
-| `/private/tmp/ab305-api-e2e` incl. the throwaway private key and the 2.4 GB packages | Yes | `rm -rf` | Removed; the Dockerfiles and the script are kept in `evidence/` |
-| `autobyteus-server-305-test:*` images, container `ab305-extract`, `/tmp/ab305/proof` (the implementation's) | No | Not touched | Kept |
-| `autobyteus-server-0/1/2` and their volumes | No (the user's) | Never touched | Untouched |
+| Isolated instance `iso-61359-e30d` | Yes | `pnpm --silent isolated-app stop` | Stopped; `list` shows none |
+| Test nodes `ab305-api4-*` and their volumes (label `round4`); `ab305-api4-node:testkey` | Yes | `docker rm -f -v`, `docker volume rm`, `docker image rm` | Removed (0 left) |
+| Release source process; `/private/tmp/ab305-api-e2e` incl. the throwaway private key and packages | Yes | `kill`; `rm -rf` | Removed |
+| `autobyteus-web/electron-dist` build output | Yes (worktree build) | Untracked; left for reuse | Kept, not committed |
+| The implementation's images, `ab305-extract`; the user's `autobyteus-server-0/1/2` and volumes | No | Not touched | Untouched |
 
 ## Latest Authoritative Result
 
 - Result: `Pass`
-- Criteria not proven: none for step 3. User-only: the production-key path at the first release.
-- Next recipient from `get_handoff_rules`: code reviewer (Large/High pass; no test code changed)
+- Criteria not proven: none for step 4
+- Next recipient: code reviewer (Large/High pass; no test code changed)
 - Notes:
-  - Two step-print checks in API-31 and API-36 were stricter than the launcher's polling design; the target and the result always print.
-  - The stale `state.json` `previous` after an image change is an observation only.
-  - FU-006 still applies to PowerShell `new-container`.
+  - For the Solution Designer:
+    - English node reasons in a zh-CN row;
+    - "Not reachable." under reachable pre-starter nodes, which is the user's current nodes;
+    - CR4-N1.
+  - A host-started update shows on an open row only after the page asks again (by design).
