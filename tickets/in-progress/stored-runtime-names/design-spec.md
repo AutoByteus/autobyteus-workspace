@@ -94,7 +94,7 @@ Per `GLOSSARY.md`: agent runtime, `RuntimeKind` values. **Old label:** one of th
 - Normal path that remains current-schema-only: the writers and the library; they know no old label.
 - Historical-shape types confined to migration-owned code: the frozen old-label table and the frozen set of current values (string literals; the migration imports neither `RuntimeKind` nor the library).
 - Completion marker: the runner's migration record (`SUCCEEDED` / `SUCCEEDED_WITH_WARNINGS` is terminal; no startup re-audit).
-- Restart-safety/idempotency: each file is written to a temporary file in its folder, validated, then renamed over the manifest; a manifest whose entries are all current values or null is skipped; an interrupted attempt leaves converted and unconverted manifests, and the next attempt converts the rest.
+- Restart-safety/idempotency: each file is written to the fixed-name temporary file `raw_traces_manifest.json.tmp` in its folder, validated, then renamed over the manifest; a manifest whose entries are all current values or null is skipped; an interrupted attempt leaves converted and unconverted manifests, and the next attempt converts the rest.
 - Validation before the current runtime proceeds: none beyond the per-file validation (the runtime does not wait for this migration).
 - Backup/rollback: none (DEC-3, the user's decision): the rename keeps the old file valid until it replaces it, the change is one value per entry and invertible by the frozen table, and an older build does not read the field, so a rollback to the previous release works. The release notes say so.
 - Concurrent old/new access: none (startup only).
@@ -103,9 +103,9 @@ Per `GLOSSARY.md`: agent runtime, `RuntimeKind` values. **Old label:** one of th
 | Step | Source shape | Target shape | Owner | Validation | Failure behavior |
 | --- | --- | --- | --- | --- | --- |
 | Discover | `agents/*`, `agent_teams/*/*`, `agent_orgs/*/*/*` folders holding `raw_traces_manifest.json` | list | migration files helper | file exists | absent → not a candidate |
-| Decide | parsed JSON | `current` / `convert` / `unusable(reason)` | helper | each segment is an object; `runtime_kind` is null/absent, an old label, or a current value; anything else makes the file unusable | unusable → item FAILED, file untouched |
-| Convert | entries with an old label | same entries with the `RuntimeKind` value | helper | temporary file re-read and every value current/null before the rename | validation failure → item FAILED, temporary file removed, manifest untouched |
-| Report | items | status and summary | definition | failed > 0 with any migrated/skipped → `SUCCEEDED_WITH_WARNINGS`; failed with nothing else → `FAILED`; else `SUCCEEDED` | runner records it |
+| Decide | parsed JSON | `current` / `convert` / `unusable(reason)` | helper | each segment is an object; `runtime_kind` is null/absent, an old label, or a current value; anything else (including a non-string value) makes the file unusable | unusable → item `SKIPPED` as a preserved exclusion with the reason, file untouched |
+| Convert | entries with an old label | same entries with the `RuntimeKind` value; every other key (unknown ones included), the entry order and the values untouched | helper | the temporary file `raw_traces_manifest.json.tmp` (fixed name per folder; the Memory Sync scanner excludes the `.tmp` suffix, `memory-sync-path-policy.ts:7`) is re-read and every value checked before the rename | validation failure → the temporary file is removed, item `FAILED`, manifest untouched; a leftover temporary file from an interrupted attempt is overwritten by the next one |
+| Report | items | status and summary | definition | any item `FAILED` (a thrown walk error, or a write failure after validation) → `FAILED` (restart retries); else any preserved exclusion → `SUCCEEDED_WITH_WARNINGS` (also when nothing converted: never a minimum number of valid runs, Guideline §6); else `SUCCEEDED` | runner records it |
 
 **Shape inventory (Guideline §2.3) and fixtures.** Each shape maps to a fixture in the migration's test folder:
 
@@ -117,8 +117,10 @@ Per `GLOSSARY.md`: agent runtime, `RuntimeKind` values. **Old label:** one of th
 | already current values (including mixed old + current in one file: a partial earlier attempt) | no | two manifests |
 | `status: pending` entry | no | one manifest |
 | empty `segments` | no | one manifest |
-| unknown string value | no | one manifest (untouched, FAILED) |
-| entry not an object; `segments` not an array; root not an object; invalid JSON; unreadable file | no | one fixture each (untouched, FAILED) |
+| unknown string value; non-string `runtime_kind` (number, object) | no | one manifest each (untouched, preserved exclusion) |
+| an entry with an extra unknown key | no | one manifest (key and position preserved) |
+| a leftover `raw_traces_manifest.json.tmp` | no | one folder (replaced or removed) |
+| entry not an object; `segments` not an array; root not an object; invalid JSON; unreadable file | no | one fixture each (untouched, preserved exclusion) |
 | families and depths | yes | one run per family; a folder at a wrong depth is not visited |
 | imports | yes, excluded (DEC-2) | an `imports/` manifest stays byte-identical |
 
@@ -223,8 +225,8 @@ The only repeated structure is the five-name table; it exists twice by design: t
 | `agent-memory/domain/memory-recording-models.ts` (94) | Change | `runtime_kind: RuntimeKind` |
 | `agent-memory/services/provider-compaction-boundary-recorder.ts` (118) | Change | `runtimeKindFromString`; invalid → not a boundary |
 | `autobyteus-ts/src/memory/store/run-memory-file-store.ts` (272, 315) | Change | One constant, `'autobyteus'` |
-| `docs/modules/grok_build_runtime.md` (285); `docs/modules/agent_memory.md` and `agent_work_journal.md` where they describe the manifest | Change | New spelling; mention the migration |
-| Tests: `tests/app-data-migrations/raw-trace-manifest-runtime-names/*` (new); the unit/e2e/library tests listed in notes F-11; one web fixture | New / change | New spelling; fixtures per shape |
+| `docs/modules/grok_build_runtime.md` (285), `docs/modules/antigravity_cli_runtime.md` (395); `docs/modules/agent_memory.md` and `agent_work_journal.md` where they describe the manifest | Change | New spelling; mention the migration |
+| Tests: `tests/app-data-migrations/raw-trace-manifest-runtime-names/*` (new); the unit/e2e/library tests listed in notes F-11; web fixture `agentStatusHandler.spec.ts` (four old values: lines 370, 421, 468, 514) | New / change | New spelling; fixtures per shape |
 
 Folder boundary check: the new folder follows the sealed-area layout (one folder per migration, two files); no mixed layers.
 
@@ -260,12 +262,13 @@ No temporary seams; nothing obsolete remains after step 1 and 2.
 
 - A manifest shape in other users' data that the fixtures do not cover → left untouched and reported (warning success), never blocking.
 - Memory Sync uploads each migrated manifest once; memory search runs one journal pass per migrated run: small and one-time.
-- The release notes must say a rollback to the previous release works (older builds do not read the field) and that imports keep the old spelling until their node refreshes them.
+- The release notes must say a rollback to the previous release works (older builds do not read the field); that after a rollback and a later re-upgrade the entries the older build wrote keep the old spelling, because the terminal migration does not run again (autobyteus-316 reads them as "runtime unknown"); and that imports keep the old spelling until their node refreshes them.
 
 ## Guidance For Implementation
 
 - Tests (TESTING.md layers): library unit (native writes `autobyteus`); server unit — the four payload builders, the recorder (valid kind recorded, invalid not), the migration with a fixture per shape (including idempotence, interrupted attempt = some converted, byte-identical kept files, status policy, prerequisites registered, target set equals the enum values), the sealed-area boundary test; e2e tests that asserted the labels updated.
-- Source check (AC-005): after the change the old labels occur in current sources only inside the migration folder and frozen-shape tests.
+- Source check (AC-005): outside `src/app-data-migrations/` (the new migration, `team-run-execution-tree-v1/v2` and `frozen/` hold labels of released shapes) and test fixtures of frozen shapes, the old labels do not occur. `autobyteus-web/stores/__tests__/runHistoryStore.spec.ts:68` is a team launch-configuration fixture (another field): exempt.
+- Notes for the record (review ARCH-F-003): the earlier layout migrations never walked `agent_orgs/`; this node has no legacy-layout folder; seven `raw_traces_archive_manifest.json.backup-*` files (written by the rotation-layout migration in June) keep old labels and are never read, so they stay.
 - Isolated validation (never the user's data): build a temporary memory root by copying the real manifests only (read-only copy, no traces, no journals) into `/tmp`, run the migration through the real runner against it, then compare the census before and after (counts per label become counts per value; every other key identical), run it twice, and check the imports copy is byte-identical. Clean up.
 - Docs to update in the same change: see mapping.
 - Done means (Task): the user has approved this design; then writers and manifests use the `RuntimeKind` values, shown by the tests and the migration run on the isolated copy; merged to `personal`. No release unless asked.
