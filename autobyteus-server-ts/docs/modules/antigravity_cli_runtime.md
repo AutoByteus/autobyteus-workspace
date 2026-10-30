@@ -321,7 +321,8 @@ following. This covers user Stop, run/Team/Org Terminate, app/server shutdown,
 and a stream/protocol failure while AGY is still running.
 
 1. It lists the process table once (`ps -A -o pid=,ppid=,pgid=`, 2 s timeout)
-   through the private `agy-background-process-groups` helper.
+   through the shared `src/utils/process-tree.ts` helper (also used by the
+   server's shutdown sweep).
 2. It selects the process groups led by a live descendant of AGY. AGY's own
    group, the server's group and pgid ≤ 1 are excluded, so nothing outside the
    run's background groups is signalled.

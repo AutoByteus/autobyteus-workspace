@@ -2,14 +2,13 @@ import { execFileSync } from "node:child_process";
 import process from "node:process";
 
 /**
- * AGY runs each background command (e.g. a daemon started with `IsDaemon`) in its own session/process
- * group under the AGY process. Those groups survive a SIGTERM of AGY, so the AGY process owner stops
- * them explicitly while AGY is still alive. Private to the AGY stream folder.
+ * Process-table primitives for stopping what a process started (macOS/Linux only; callers decide
+ * what to do on Windows). Pure selection plus exact signalling; no stop policy lives here.
  */
 
 const PS_TIMEOUT_MS = 2_000;
 
-type ProcessRow = Readonly<{ pid: number; ppid: number; pgid: number }>;
+export type ProcessRow = Readonly<{ pid: number; ppid: number; pgid: number }>;
 
 export const parseProcessTable = (output: string): ProcessRow[] => output.split("\n").flatMap((line) => {
   const fields = line.trim().split(/\s+/).map(Number);
@@ -18,18 +17,12 @@ export const parseProcessTable = (output: string): ProcessRow[] => output.split(
   return [{ pid, ppid, pgid }];
 });
 
-/**
- * Selects the process groups led by a live descendant of AGY, excluding AGY's own group, this server's
- * group, and pgid <= 1. Requiring the group leader to descend from AGY prevents signalling any group
- * that AGY did not create.
- */
-export const selectAgyBackgroundProcessGroups = (
-  rows: readonly ProcessRow[],
-  agyPid: number,
-  serverPid: number,
-): number[] => {
-  const agyPgid = rows.find((row) => row.pid === agyPid)?.pgid;
-  const serverPgid = rows.find((row) => row.pid === serverPid)?.pgid;
+/** Reads the whole process table through one bounded `ps` call. Throws when it cannot be read. */
+export const readProcessTable = (): ProcessRow[] => parseProcessTable(execFileSync("ps", ["-A", "-o", "pid=,ppid=,pgid="], {
+  encoding: "utf8", timeout: PS_TIMEOUT_MS, stdio: ["ignore", "pipe", "ignore"],
+}));
+
+const selectDescendants = (rows: readonly ProcessRow[], rootPid: number): ProcessRow[] => {
   const children = new Map<number, ProcessRow[]>();
   for (const row of rows) {
     if (row.pid === row.ppid) continue;
@@ -38,8 +31,8 @@ export const selectAgyBackgroundProcessGroups = (
     else children.set(row.ppid, [row]);
   }
   const descendants: ProcessRow[] = [];
-  const seen = new Set<number>([agyPid]);
-  const queue = [agyPid];
+  const seen = new Set<number>([rootPid]);
+  const queue = [rootPid];
   while (queue.length) {
     for (const child of children.get(queue.shift()!) ?? []) {
       if (seen.has(child.pid)) continue;
@@ -48,19 +41,32 @@ export const selectAgyBackgroundProcessGroups = (
       queue.push(child.pid);
     }
   }
-  const descendantPids = new Set(descendants.map((row) => row.pid));
-  return [...new Set(descendants.map((row) => row.pgid))].filter((pgid) =>
-    pgid > 1 && pgid !== agyPgid && pgid !== serverPgid && descendantPids.has(pgid));
+  return descendants;
 };
 
-/** Lists AGY's background process groups on macOS/Linux; Windows is not covered. */
-export const listAgyBackgroundProcessGroups = (agyPid: number, serverPid = process.pid): number[] => {
-  if (process.platform === "win32") return [];
-  const output = execFileSync("ps", ["-A", "-o", "pid=,ppid=,pgid="], {
-    encoding: "utf8", timeout: PS_TIMEOUT_MS, stdio: ["ignore", "pipe", "ignore"],
-  });
-  return selectAgyBackgroundProcessGroups(parseProcessTable(output), agyPid, serverPid);
+/**
+ * Selects the process groups led by a live descendant of `rootPid`, excluding `excludedPgids` and
+ * pgid <= 1. Requiring the group leader to descend from the root prevents signalling any group the
+ * root's tree did not create.
+ */
+export const selectDescendantProcessGroups = (
+  rows: readonly ProcessRow[],
+  rootPid: number,
+  excludedPgids: readonly number[],
+): number[] => {
+  const descendants = selectDescendants(rows, rootPid);
+  const descendantPids = new Set(descendants.map((row) => row.pid));
+  const excluded = new Set(excludedPgids);
+  return [...new Set(descendants.map((row) => row.pgid))].filter((pgid) =>
+    pgid > 1 && !excluded.has(pgid) && descendantPids.has(pgid));
 };
+
+/** Selects the descendants of `rootPid` that are members of group `pgid` (never `rootPid` itself). */
+export const selectDescendantPidsInGroup = (
+  rows: readonly ProcessRow[],
+  rootPid: number,
+  pgid: number,
+): number[] => selectDescendants(rows, rootPid).filter((row) => row.pgid === pgid).map((row) => row.pid);
 
 /** Signals each exact captured group independently; only ESRCH proves absence. */
 export const signalProcessGroups = (pgids: readonly number[], signal: NodeJS.Signals): void => {
@@ -70,7 +76,7 @@ export const signalProcessGroups = (pgids: readonly number[], signal: NodeJS.Sig
       if ((error as NodeJS.ErrnoException).code !== "ESRCH") errors.push(error);
     }
   }
-  if (errors.length) throw new AggregateError(errors, "Exact AGY process-group signal failed.");
+  if (errors.length) throw new AggregateError(errors, "Exact process-group signal failed.");
 };
 
 /** Exact captured groups only. ESRCH is proof of absence; permission failure is not. */

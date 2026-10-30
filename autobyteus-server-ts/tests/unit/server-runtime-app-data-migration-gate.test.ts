@@ -49,6 +49,7 @@ const mocks = vi.hoisted(() => {
     loggerError: vi.fn(),
     loggerWarn: vi.fn(),
     scheduleStudioBackgroundTasks: vi.fn(async () => undefined),
+    terminateServerProcessTree: vi.fn(async () => ({ outcome: "confirmed" as const, targets: 0 })),
   };
 });
 
@@ -72,6 +73,10 @@ vi.mock("../../src/token-usage/providers/token-usage-capability.js", () => ({
 }));
 vi.mock("../../src/startup/background-runner.js", () => ({
   scheduleStudioBackgroundTasks: mocks.scheduleStudioBackgroundTasks,
+}));
+// startConfiguredServer runs in this test worker: never read its process table or signal its children.
+vi.mock("../../src/shutdown/server-process-tree-sweep.js", () => ({
+  terminateServerProcessTree: mocks.terminateServerProcessTree,
 }));
 vi.mock("../../src/compositions/build-studio-server.js", () => ({
   buildStudioServer: mocks.buildStudioServer,
@@ -303,13 +308,14 @@ describe("Studio app-data migration startup", () => {
       await entered; handlers.get('SIGTERM')!();
       expect(mocks.app.close).not.toHaveBeenCalled(); expect(mocks.shutdownPrisma).not.toHaveBeenCalled();
       finish(phase === 'build' ? { fastify: mocks.app, applicationRuntime: { lifecycle: mocks.lifecycle }, agentToolsMcpHost: mocks.agentToolsMcpHost, credentialProxyHost: mocks.credentialProxyHost } : undefined);
-      await starting; await new Promise(resolve => setImmediate(resolve));
+      await starting; await vi.waitFor(() => expect(process.exit).toHaveBeenCalled());
       if (phase === 'prisma') {
         expect(mocks.buildStudioServer).not.toHaveBeenCalled(); expect(mocks.shutdownPrisma).toHaveBeenCalledOnce();
       } else {
         expect(mocks.app.close).toHaveBeenCalledOnce(); expect(mocks.shutdownPrisma).not.toHaveBeenCalled();
       }
       expect(process.exit).toHaveBeenCalledWith(0);
+      expect(mocks.terminateServerProcessTree).toHaveBeenCalledOnce();
       if (phase !== 'background') expect(mocks.scheduleStudioBackgroundTasks).not.toHaveBeenCalled();
     });
 
