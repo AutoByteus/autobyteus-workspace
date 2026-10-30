@@ -144,7 +144,9 @@ export class CredentialProxyForwarder {
       responseHeaders[name] = value.split(token).join(REDACTED);
     });
     const location = response.headers.get("location");
-    if (location) responseHeaders.location = this.rewriteLocation(route, upstream, location, input.proxyRouteBase);
+    if (location) {
+      responseHeaders.location = this.rewriteLocation(route, upstream, location, input.proxyRouteBase).split(token).join(REDACTED);
+    }
 
     if (!response.body || request.method === "HEAD") {
       return { status: response.status, headers: responseHeaders, body: null };

@@ -46,6 +46,10 @@ describe("credential proxy host", () => {
           response.writeHead(301, { location: `${upstreamOrigin}/repos/new-owner/new-name?page=2` });
           return response.end();
         }
+        if (url.startsWith("/token-redirect")) {
+          response.writeHead(302, { location: `${upstreamOrigin}/next?echo=${request.headers.authorization}` });
+          return response.end();
+        }
         if (url.startsWith("/download")) {
           response.writeHead(302, { location: "https://objects.example.invalid/signed?x=1" });
           return response.end();
@@ -156,6 +160,8 @@ describe("credential proxy host", () => {
     expect(renamed.headers.get("location")).toBe(`${api}/repos/new-owner/new-name?page=2`);
     const download = await fetch(`${api}/download`, { redirect: "manual" });
     expect(download.headers.get("location")).toBe("https://objects.example.invalid/signed?x=1");
+    const echoed = await fetch(`${api}/token-redirect`, { redirect: "manual" });
+    expect(echoed.headers.get("location")).toBe(`${api}/next?echo=Bearer%20[REDACTED]`);
   });
 
   it.each([
