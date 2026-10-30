@@ -27,7 +27,7 @@
 | BEH-003 | — | — | Withdrawn 2026-10-30 (user): no summary file; the next agent reads the journals. | — | — |
 | BEH-004 | — | — | Withdrawn 2026-10-30 (user): the stop reason is not needed to continue; it is not recorded, shown or sent. | — | — |
 | BEH-005 | User | SCN-001 | One conversation per run. | The conversation shows the earlier messages unchanged (history comes from the raw traces, not from a runtime: F-15) and a marker at the switch (DEC-3). | History projection. |
-| BEH-006 | System | SCN-004 | Unknown whether another runtime's file tool can read the run's folder (U-2). | If it cannot, the notice carries a bounded excerpt. | — |
+| BEH-006 | — | — | Withdrawn 2026-10-30 (user): every runtime can read a file by shell command; the notice only says where the journals are. | — | — |
 | BEH-007 | System | SCN-001, SCN-003 | Journals are translated with the run's one runtime (F-24). | Each journal file is translated with the runtime of its own raw file, so earlier work reads correctly after a switch. | Journals of runs without a switch are unchanged. |
 
 ## Stakeholders, Actors, And Outcomes
@@ -80,14 +80,14 @@ Findings must cite REQ/AC/BEH IDs. New behavior is a `Requirement Gap`.
 | ID | Requirement | Behaviors | Priority | Source |
 | --- | --- | --- | --- | --- |
 | REQ-001 | A stopped, unarchived standalone Agent run's settings offer the available runtimes and, for the chosen runtime, its models; saving validates the pair as a fresh selection of that runtime, keeps the run ID, workspace and history, drops the previous runtime's session binding, and records that a switch is pending (time and the previous binding). Selecting the original runtime again before the next message undoes the pending switch. | BEH-001 | Must | User, 2026-10-29 |
-| REQ-002 | The first input after a switch is preceded by a system hand-over notice with facts and pointers: the runtime change, where the journals are and how they are laid out (format, order, how to find the latest and the earliest work) and what the journals do not contain. It does not repeat the user's last request. It does not prescribe how the agent proceeds. It says "previous agent". It is sent once per switch. | BEH-002 | Must | User model |
+| REQ-002 | The first input after a switch is preceded by a system hand-over notice with facts and pointers: the runtime change, where the journals are and how they are laid out (format, order, how to find the latest and the earliest work) and what the journals do not contain. Agent runtimes are named as in GLOSSARY.md. It does not repeat the user's last request. It does not prescribe how the agent proceeds. It says "previous agent". It is sent once per switch. | BEH-002 | Must | User model |
 | REQ-003 | The run's journal is made current from its raw traces before the notice is built. | BEH-002 | Must | F-05 |
 | REQ-005 | Withdrawn 2026-10-30 (user: no round summary, no added complexity). | — | — | User |
 | REQ-006 | The notice says what does not carry over (the previous agent's private reasoning, and results of tool calls that were still running). | BEH-002 | Must | F-02, F-08 |
 | REQ-007 | For a large journal the notice tells the agent to read the end of the latest file and earlier files by search or line range. | BEH-002 | Must | F-03 |
-| REQ-008 | If the new runtime cannot read the run's folder, a bounded excerpt is included instead (after U-2). | BEH-006 | Should | U-2 |
+| REQ-008 | Withdrawn 2026-10-30 (user): no excerpt fallback. | — | — | User |
 | REQ-010 | A switch is made at the first input after it: a marker is written as the first record of a new raw-trace file (the earlier records are archived by the existing rotate-before-boundary primitive, idempotent for a retry), so one raw-trace file never holds two runtimes. A failure before the new session exists changes nothing visible; a retry never writes two markers. | BEH-002 | Must | F-23; DEC-7 |
-| REQ-011 | The chat shows a marker where the runtime changed (DEC-3), built from the marker record. | BEH-005 | Should | User question, DEC-3 |
+| REQ-011 | The chat shows a marker where the agent runtime changed (DEC-3), built from the marker record; it names both agent runtimes and models. | BEH-005 | Should | User question, DEC-3 |
 | REQ-012 | Each journal file is translated with the runtime of its own raw-trace file (an archived segment: the runtime recorded for it; the open file: the run's current runtime). Journals of runs that never switched are unchanged. | BEH-007 | Must | F-24 |
 | REQ-013 | A run that is a team member, an Org member, a delegated copy, application-owned or system-owned does not offer the runtime choice and the server rejects a switch for it. | BEH-001 | Must | DEC-4 |
 
@@ -98,9 +98,9 @@ Findings must cite REQ/AC/BEH IDs. New behavior is a `Requirement Gap`.
 | AC-001 | REQ-001, 013 | Stop a run, switch to another available runtime and model, save | Same run ID and chat; metadata shows the new runtime and no old session ID and a pending switch; selecting the original runtime again clears it; a member or delegated run is rejected | Test + real run |
 | AC-002 | REQ-002, 003, 010 | Send a message after the switch | The previous records are archived, the marker is the first record of the active file, the runtime receives the notice then the user's text; the journal named in the notice is current; a second message has no notice; the chat shows the marker | Test |
 | AC-004 | REQ-006, 007 | Large journal | The notice says what is not in the journals and instructs partial reading | Test |
-| AC-006 | REQ-012 | A run with Claude then Codex files | Each journal file uses its runtime's translation; a run that never switched renders as before | Test |
+| AC-006 | REQ-012 | A run with Claude Agent SDK then Codex App Server files | Each journal file uses its runtime's translation; a run that never switched renders as before | Test |
 | AC-007 | Preserved | Same-runtime restore; model-only edit | Unchanged | Existing suites |
-| AC-008 | REQ-001…003, 010 | Real run: two available runtimes on a copied, isolated data root | The new agent reads the journals, says what was done and continues the work (no general quality promise) | Real run |
+| AC-008 | REQ-001…003, 010 | Real run: two available runtimes on a copied, isolated data root | The new agent receives the notice and opens the journals it names (what it does with them is its model's work; no quality promise) | Real run |
 | AC-009 | REQ-010 | Crash injected between the marker and the metadata commit; and a retry | One marker, one archived segment, the run usable | Test |
 
 ## Relevant Scenarios And Journeys
@@ -110,7 +110,6 @@ Findings must cite REQ/AC/BEH IDs. New behavior is a `Requirement Gap`.
 | SCN-001 | User | Run stopped by a usage limit, sign-out or unavailable model; he switches its runtime and chats | The same agent continues on the new runtime | Supported Normal Scenario | Task; user 2026-10-27/29 |
 | SCN-002 | User | Run he stopped himself | Same | Supported Explicit Edge Scenario | User 2026-10-29 |
 | SCN-003 | System | A second and third switch | Every earlier journal file is listed with its runtime; the latest is read first | Supported Explicit Edge Scenario | User's relay |
-| SCN-004 | System | New runtime cannot read the folder | Excerpt fallback | Unclear until U-2 | Notes |
 | SCN-005 | Agent/Router | Agent or Router switches the runtime | — | Technically possible, not supported yet | autobyteus-314; FU-004 |
 | SCN-006 | User | Run is a team member, Org member or delegated copy | Runtime stays locked | Unsupported in this delivery | DEC-4; FU-003 |
 
@@ -120,7 +119,7 @@ Findings must cite REQ/AC/BEH IDs. New behavior is a `Requirement Gap`.
 | --- | --- | --- | --- |
 | DEC-1 | **Same run, runtime changed** (supersedes SR-002's "new linked run"). | **The user** (2026-10-29) | One agent for the user; a separate run would split the chat (his point). Feasible: history comes from raw traces (F-15) and the runtime lock is one attribute in the settings UI (F-16). Costs: journal needs file-level runtime (REQ-010); the old session is dropped. |
 | DEC-2 | **The next agent reads the journals and decides.** No summary tool, no summary file, no limits (decided 2026-10-30). | **The user** | Works at the failure; no extra model; the agent is capable of deciding. |
-| DEC-3 | The chat shows a small marker at the switch ("Switched from Claude to Codex"). | **The user** (2026-10-29: "a marker in the chat where the runtime changed was a good marker") | The new agent's tone and tools change; the user sees why. |
+| DEC-3 | The chat shows a small marker at the switch ("Agent runtime changed from Claude Agent SDK to Codex App Server", with the agent runtime names of GLOSSARY.md). | **The user** (2026-10-29: "a marker in the chat where the runtime changed was a good marker") | The new agent's tone and tools change; the user sees why. |
 | DEC-4 | First delivery: one standalone Agent; Teams, Orgs and delegated copies later (`follow-ups.md` FU-003). | **The user** (2026-10-30, via the Project Task Manager: "if the team thinks that the first delivery covers a single agent, that would be fine ... But we should work on it now") | A member needs its address, links and Task rules; the single agent is the smallest coherent delivery. |
 | DEC-5 | No stop reason is recorded, shown or sent. | **The user** (2026-10-30) | The agent continues the work whatever stopped the previous one. |
 | DEC-7 | Rotate the raw-trace file at a switch (not one continuous stream). | Solution Designer (the user left it to the simpler/cleaner option) | One raw file = one runtime keeps the journal file a pure function of one raw file; `rotateActiveRawTracesBeforeBoundary` exists (compaction, retry-safe). |
@@ -135,4 +134,4 @@ U-1…U-5 in the investigation notes. AC-007 and U-4 test quality on a real run;
 
 ## Readiness Check
 
-Requirements are stable, linked and testable; open evidence items (U-2, U-4) are checked in the real run, not product decisions. Approved within the direction (SR-004). The Task's Done-when is: the user has seen and approved the design; then, for the first delivery, a run stopped by a usage limit on one runtime continues on another with the work carried over, shown by a test and a real run on isolated data; merged to `personal`.
+Requirements are stable, linked and testable; the quality of a continuation depends on the new agent's model and is not promised; the real run checks that the notice is delivered and the journals it names can be opened. Approved within the direction (SR-004). The Task's Done-when is: the user has seen and approved the design; then, for the first delivery, a run stopped by a usage limit on one runtime continues on another with the work carried over, shown by a test and a real run on isolated data; merged to `personal`.

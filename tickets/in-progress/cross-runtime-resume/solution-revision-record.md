@@ -75,3 +75,10 @@
 ### SR-004 note 1 (2026-10-30)
 
 - The user: no round summary for now ("I don't want to have complexity"). Removed: the optional `run_summary.md` (contract 3.5, I-9, layout line), the notice line pointing at it, REQ-005 (withdrawn), BEH-003 (withdrawn), UC-003, AC-003, DEC-6 (withdrawn), follow-up FU-002 (a system-made summary is not asked for). DEC-2 now says: no summary tool, no summary file, no limits. Contract sections renumbered (3.5 = files of one backend, 3.6 = hand-over notice, I-9 = journal runtime per file). Intended behavior narrowed, not widened; design status stays `Draft` (awaiting the user's approval).
+
+### SR-004 note 2 (2026-10-30) — design audited against the design principles
+
+- Trigger: the user asked for a strict check of the design against the design principles (future use: the Model Router moving the same agent to another runtime when a limit is reached).
+- The user also closed U-2/U-4: every runtime can read files with a shell command; the notice only says where the journals are; continuation quality is the model's work. Withdrawn: REQ-008 (excerpt fallback), BEH-006, SCN-004; no quality claim remains.
+- Audit result (design-spec.md, section "Design Principles Check"): 7 corrections — agent runtime names per GLOSSARY.md (no short forms) in marker, notice and requirements; DS-001 owner "A + B" fixed; dependency direction fixed with two ports owned by agent-execution; one owner for the switch's key/names/marker sentence (`runtime-switch.ts`); previous binding is a `Pick` of the metadata type; activation branches on the explicit pending field, not on a missing session ID; "crash" tests replaced by failure-and-resend tests (process crash is not a supported scenario). Also a premise fixed: the `persistAndPublish` retry check is prepared-run-only (design now passes it in). Two documented vocabulary discrepancies for the user (stored runtime spelling: FU-006; `ModelConfig` in the edit's names: FU-007). New words added to GLOSSARY.md in the same change.
+- Approval impact: intended behavior narrowed only; requirements stay `Approved`; design stays `Draft`, awaiting the user.

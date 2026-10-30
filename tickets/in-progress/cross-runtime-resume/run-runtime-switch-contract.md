@@ -34,8 +34,7 @@ Writers: raw traces and their manifest = the memory recorders / `RunMemoryFileSt
 ```ts
 pendingRuntimeSwitch?: {
   requestedAt: string;                                   // ISO time of the settings save; part of the switch key
-  from: { runtimeKind: RuntimeKind; llmModelIdentifier: string;
-          llmConfig: Record<string, unknown> | null; platformAgentRunId: string | null };   // the whole previous binding
+  from: RunProviderBinding;   // the previous binding: Pick<AgentRunMetadata, "runtimeKind" | "llmModelIdentifier" | "llmConfig" | "platformAgentRunId">, one type shared with the metadata, not a copy
 }
 ```
 
@@ -53,22 +52,22 @@ New value: `boundary_type: "runtime_switch"` (one added member of the library's 
 
 ### 3.3 The switch marker (a platform notice record; no new raw-trace record type)
 
-*Why not a new trace type:* the history projection turns raw `system_task_notification` records into chat notices and ignores unknown types (`raw-trace-to-historical-replay-events.ts:201-216`), and the journal already renders them as `Notice:`; so a notice gives the chat marker and the journal line with no change to either reader. Record: `trace_type: "system_task_notification"`, `sender_id: "system.runtime_handover"` (a new sender id beside the existing ones in `system-task-notification-senders.ts`; it is deliberately NOT added to `RECORDED_SYSTEM_NOTICE_SENDER_IDS`: the marker is recorded once at activation, the live notice of 3.6 only shows it), content one short line: `Runtime switched from <Codex> (<model>) to <Claude> (<model>).` It carries the boundary key as its `correlation_id` (the memory writer's notice branch is extended to keep a correlation id, as the compaction boundary branch does), so a retry finds it with the store's existing lookup by correlation id (`findActiveRawTraceByCorrelationId`), the way the provider compaction boundary recorder does.
+*Why not a new trace type:* the history projection turns raw `system_task_notification` records into chat notices and ignores unknown types (`raw-trace-to-historical-replay-events.ts:201-216`), and the journal already renders them as `Notice:`; so a notice gives the chat marker and the journal line with no change to either reader. Record: `trace_type: "system_task_notification"`, `sender_id: "system.runtime_handover"` (a new sender id beside the existing ones in `system-task-notification-senders.ts`; it is deliberately NOT added to `RECORDED_SYSTEM_NOTICE_SENDER_IDS`: the marker is recorded once at activation, the live notice of 3.6 only shows it), content one short line: `Agent runtime changed from <Codex App Server> (<model>) to <Claude Agent SDK> (<model>).` (names as in GLOSSARY.md, `agentRuntimeName`; no short forms) It carries the boundary key as its `correlation_id` (the memory writer's notice branch is extended to keep a correlation id, as the compaction boundary branch does), so a retry finds it with the store's existing lookup by correlation id (`findActiveRawTraceByCorrelationId`), the way the provider compaction boundary recorder does.
 
 **Write order at the first message after a switch** (inside the run's existing transition lane, `StandaloneAgentRunLifecycleService.withTransition`):
-1. Read metadata: `pendingRuntimeSwitch` present and `platformAgentRunId` null → the switch activation (else the normal restore).
+1. Read metadata: `pendingRuntimeSwitch` present → the switch activation (else the normal restore or prepared start). The switch decides on the explicit field only; `platformAgentRunId` is null until step 4 (I-6) but is not the condition.
 2. Prepare the new backend as a fresh session (`beginActivation({kind:"new", runId, config}).prepare()`, the same call a prepared run uses); validate; nothing is published.
 3. Switch recorder (`agent-memory`): if the active file does not yet contain a record with the key as correlation id, append the marker; rotate the active file before it (`RunMemoryFileStore.rotateActiveRawTracesBeforeBoundary`, idempotent by `boundary_key`; with nothing before the marker it moves nothing and the marker simply starts the file).
 4. Commit metadata through the lifecycle's existing `persistAndPublish`: new `platformAgentRunId`, `pendingRuntimeSwitch` removed.
 5. Publish the run; register the hand-over facts in memory for the first input (3.6).
 
-**Crash behavior:** before step 3 nothing changed but a discarded candidate; between 3 and 4 the metadata is still pending and the retry finds the marker and the manifest key and skips step 3; after 4 it is a normal run. The marker is never written twice for one key. A crash after 4 and before the first input loses the in-memory hand-over notice only (an interrupted-execution edge, outside the supported scenarios; the user can restate the task).
+**Failure behavior (supported scenario: an activation that fails and is sent again, the existing retry of `activateOnce`):** a failure before step 3 changed nothing but a discarded candidate; a failure of step 4 after step 3 leaves the metadata pending, and the retry finds the marker (by the key) and skips step 3; after 4 it is a normal run. The marker is never written twice for one key. A process crash is not a supported scenario of this design; one consequence is stated for honesty: a crash after 4 and before the first input loses the in-memory hand-over notice only (the marker and journals remain; the user can restate the task).
 
 *Reproduced* (`probes/runtime-switch-folder.probe.test.ts`, real `RunMemoryFileStore`, synthetic data): after the marker and the rotation the folder holds `raw_traces_000001.jsonl` (the 8 old records) and `raw_traces_active.jsonl` (marker first, then the new records appended); the manifest has one `complete` entry `runtime_switch` / `CLAUDE` / 8 records; a second rotation with the same key returns `null` and moves nothing; the marker exists once.
 
 ### 3.4 `work_journal/` (derived)
 
-One journal file per raw-trace file stays. Each file is rendered with **its segment's runtime** (3.2 lookup rule) so a previous agent's tool calls get that runtime's rules. *Reproduced* (today's code on the probe folder): both files are rendered with the single runtime passed for the run; Claude's `Bash` call in the archived file prints as `Tool: Bash command="git status"` instead of `Command: git status` when the run's current runtime is Codex, which is why the per-file runtime is required. The journal manifest's entries gain `runtime_kind` (the file's runtime); the reuse check compares per file; an entry without it means "render again" (the manifest is derived data: no migration, no renderer revision change, because no existing run has a switch). The marker renders as `Notice: Runtime switched from … to ….` as the first entry of the new file.
+One journal file per raw-trace file stays. Each file is rendered with **its segment's runtime** (3.2 lookup rule) so a previous agent's tool calls get that runtime's rules. *Reproduced* (today's code on the probe folder): both files are rendered with the single runtime passed for the run; Claude's `Bash` call in the archived file prints as `Tool: Bash command="git status"` instead of `Command: git status` when the run's current runtime is Codex, which is why the per-file runtime is required. The journal manifest's entries gain `runtime_kind` (the file's runtime); the reuse check compares per file; an entry without it means "render again" (the manifest is derived data: no migration, no renderer revision change, because no existing run has a switch). The marker renders as `Notice: Agent runtime changed from … to ….` as the first entry of the new file.
 
 ### 3.5 Files that belong to one backend
 
@@ -82,12 +81,12 @@ A platform notice delivered through the existing next-input route (`AgentRunPlat
 
 ```
 [System: runtime hand-over]
-This run was worked on by a previous agent on a different runtime: <from runtime/model>, now
-<to runtime/model>.
+This run was worked on by a previous agent on a different agent runtime: <from agent runtime/model>, now
+<to agent runtime/model>.
 
 Its work is recorded in work journals: <run folder>/work_journal/
 - Readable Markdown, one file per earlier stretch of work, oldest first:
-  <file> | <runtime/model> | <period> | <size, lines>   (one line per file; work_journal_active.md is the latest)
+  <file> | <agent runtime/model> | <period> | <size, lines>   (one line per file; work_journal_active.md is the latest)
 - Entries look like "[HH:MM:SS] User: …", "Agent: …", "Command: … → ok", "Edit file: …", "Message to … → delivered".
   Each entry ends with a link to the raw trace record with the full content; long output is shortened.
 - To see what was done most recently, read the end of work_journal_active.md. For earlier work or the
@@ -118,7 +117,7 @@ Facts and where each comes from: runtimes and models from the pending switch (3.
 2. **Done, isolated and synthetic (the folder test, U-7):** `probes/runtime-switch-folder.probe.test.ts`: the rotation and marker sequence of 3.3, its idempotence, and today's journal rendering one runtime for every file (3.4). Output: `evidence/folder-test-output.txt`.
 2b. **Done, isolated and synthetic (data-model validation, 2026-10-30):** `probes/runtime-switch-data-model.probe.test.ts`, output `evidence/data-model-validation-output.txt`: Claude work → switch → Codex work → switch back → Claude work, with the real store, raw-trace readers, journal renderer and chat projection: I-2, I-3, I-4, I-5, I-7, I-8 pass; each journal file reads correctly with its own runtime and shows the marker as its first entry; the chat projection yields both markers in order; today's service prints the Codex file wrongly with the run's current runtime.
 3. **Read:** the native memory manager on an existing folder (3.5).
-4. **Build:** tests with scripted runtimes including a crash injected at each point of 3.3, the same probe extended with I-1, I-3, I-4, I-7, I-8, I-9 on folders the tests produce, and a real switch on isolated data between two available runtimes.
+4. **Build:** tests with scripted runtimes including a failure injected at each point of 3.3, the same probe extended with I-1, I-3, I-4, I-7, I-8, I-9 on folders the tests produce, and a real switch on isolated data between two available runtimes.
 
 ## 6. Decision log
 

@@ -7,8 +7,10 @@
 - Behavior-defining supplements and their approval references: `run-runtime-switch-contract.md` v2 (layout and data model; approved together with this design, not before).
 - Design status: `Draft` (awaiting the user's approval)
 - Canonical investigation-notes path: `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-runtime-resume/tickets/in-progress/cross-runtime-resume/investigation-notes.md` (F-01…F-32)
-- Authorities read (design reading gate; 2026-10-30): `.claude/skills/solution-designer/references/architecture-design.md`, `design-principles.md`; project `DESIGN.md` (repository root) and `autobyteus-server-ts/docs/design/data_migration_guideline.md` §2; `GLOSSARY.md`; `TESTING.md` (layers, rules 1–9); `design-examples.md` not used.
-- Project design-principle conflicts with the general principles, or discrepancies (for the user): **one.** The raw-trace manifest spells a segment's runtime as `CODEX/CLAUDE/ANTIGRAVITY/GROK_BUILD/AUTOBYTEUS` (3,786 stored entries, written by five backends) while code names runtimes `RuntimeKind` (`codex_app_server`, …). Principle 15 treats a permanent mapping between a stored name and a different code name as a signal. Recommendation: keep the stored spelling and put the mapping in one file (`raw-trace-runtime-label.ts`); renaming 3,786 entries in 820 runs would be a data rewrite for no user benefit. Follow-up `FU-006` (converge later). I decide this; it changes no user-visible behavior.
+- Authorities read (design reading gate; 2026-10-30): `.claude/skills/solution-designer/references/architecture-design.md`, `design-principles.md`; project `DESIGN.md` (repository root) and `autobyteus-server-ts/docs/design/data_migration_guideline.md` §2; `GLOSSARY.md` (Agent Runtimes: agent runtime names, no short forms); `TESTING.md` (layers, rules 1–9); `design-examples.md` not used. Principles 1–15, the structural-trigger table and the health assessment were re-read in full on 2026-10-30 and applied in the section "Design Principles Check" below.
+- Project design-principle conflicts with the general principles, or discrepancies (for the user, with my reasoning and recommendation). Both are vocabulary discrepancies (Principle 15) that already exist; this change does not create them, and fixing them is outside it:
+  1. **Stored runtime spelling.** The raw-trace manifest stores a segment's runtime as `CODEX/CLAUDE/ANTIGRAVITY/GROK_BUILD/AUTOBYTEUS` (3,786 stored entries, written by five backends) while the code names runtimes `RuntimeKind` (`codex_app_server`, …). The journal needs the runtime of every archived file (REQ-012), so it must read this stored name, and a mapping to `RuntimeKind` is unavoidable. Principle 15 says a rename of stored names is a data migration, never a permanent mapping. Recommendation: keep the stored spelling and put the mapping in one file; a migration would rewrite the raw-trace manifests (the authoritative data) of 820 runs, for no user benefit and with a data-loss risk. Follow-up FU-006. Needs your OK if you want the migration instead.
+  2. **`ModelConfig` in the names of the stopped-run edit** (`updateStoppedAgentRunModelConfig`, `updateStoppedModelConfig`, `StoppedRunModelConfigInput`, `StudioRunModelConfigService`, `StandaloneStoppedRunModelConfigUpdater`; the team family `updateStoppedTeamRunModelConfig` shares the words): the edit now also carries the agent runtime, which the name does not say. Renaming only the agent chain would split one family in two; renaming the family touches teams, Orgs and delegated copies, which are out of scope. Recommendation: keep the names now and rename the whole family in the follow-up that extends the switch to teams (FU-007).
 
 ## Current-State Read
 
@@ -19,8 +21,8 @@ A stopped standalone Agent run keeps one provider binding (`runtimeKind`, model,
 - Task size: **Large**
 - Size rationale and supporting evidence: crosses four packages/subsystems — `autobyteus-ts` (one type value), server run lifecycle and run-history, agent memory (marker + label), Work Journal (per-file runtime), notice route and composition, GraphQL contract, web settings/model menu/store/chat notice label — about 26 files (Target Subsystem / Folder / File Mapping) plus tests.
 - Architectural risk: **High**
-- Risk rationale and supporting evidence: new persisted fields and a new manifest boundary type (contract/persistence); an activation case with an ordered, crash-sensitive sequence (provider session, memory rotation, metadata commit) in the run's transition lane (concurrency/ownership); changes a derived-data ownership rule (journal runtime per file); GraphQL contract change (clean cut); touches the first-message path of every restored run only through one added branch (blast radius bounded by a test that the existing restore cases are unchanged).
-- Escalation trigger if implementation or validation discovers new impact: a native or external memory writer is found that holds the active raw-trace file open across the rotation (the library store appends by path: `run-memory-file-store.ts:404`, so none is known); `recordRunStarted` cannot express removal of the pending field; a runtime whose file tool cannot read the run folder (U-2) forces the excerpt fallback in this slice.
+- Risk rationale and supporting evidence: new persisted fields and a new manifest boundary type (contract/persistence); an activation case with an ordered sequence that must be retry-safe (provider session, memory rotation, metadata commit) in the run's transition lane (concurrency/ownership); changes a derived-data ownership rule (journal runtime per file); GraphQL contract change (clean cut); touches the first-message path of every restored run only through one added branch (blast radius bounded by a test that the existing restore cases are unchanged).
+- Escalation trigger if implementation or validation discovers new impact: a native or external memory writer is found that holds the active raw-trace file open across the rotation (the library store appends by path: `run-memory-file-store.ts:404`, so none is known); `recordRunStarted` cannot express removal of the pending field.
 
 ## Architecture Investigation Evidence
 
@@ -42,7 +44,7 @@ A stopped standalone Agent run's settings let the user pick another runtime and 
 
 ## Change Scope (Mandatory)
 
-- In scope: UC-001, UC-002 (requirements) — the settings choice and save, the switch activation, marker and rotation, the hand-over notice, the per-file journal runtime, the chat marker label, validation as a fresh selection; REQ-001…003, 006…008, 010…013.
+- In scope: UC-001, UC-002 (requirements) — the settings choice and save, the switch activation, marker and rotation, the hand-over notice, the per-file journal runtime, the chat marker label, validation as a fresh selection; REQ-001…003, 006, 007, 010…013.
 - Derived consumers, when a stored or shared structure changes:
   - Raw-trace manifest (new boundary type): readers of `boundary_type` — the raw-trace file source (lists segments; no branch on type), the compaction recorders (own types only). Decision: no reader branches on the type except the new journal-runtime lookup; verify by grep at implementation.
   - `run_metadata.json` (new optional field): readers — history catalog, resume-config service (tolerates null `platformAgentRunId`), run listings. Decision: no reader needs the field except the lifecycle service and the updater; a test opens, lists and views a pending-switch run.
@@ -56,9 +58,8 @@ A stopped standalone Agent run's settings let the user pick another runtime and 
 | Behavior ID | Kind | Approved Requirement / Intent And Acceptance-Criteria IDs | Approved Trigger Or Governing Contract | Relevant Existing Behavior And Evidence Reference | Approved Change Or Preserved Outcome | Target Production Path / Lifecycle And Spine ID(s) |
 | --- | --- | --- | --- | --- | --- | --- |
 | BEH-001 | User | REQ-001, 013; AC-001 | User saves the settings of a stopped standalone Agent run with another runtime/model | Model-only edit; runtime locked (F-25, F-30) | Same run; pending switch recorded; ineligible runs rejected | DS-001 |
-| BEH-002 | System | REQ-002, 003, 006…008, 010; AC-002, 004, 009 | First input to a run with a pending switch | Restore or prepared start only (F-26) | Switch activation: new session, marker + rotation, notice before the user's text, once | DS-002 |
+| BEH-002 | System | REQ-002, 003, 006, 007, 010; AC-002, 004, 009 | First input to a run with a pending switch | Restore or prepared start only (F-26) | Switch activation: new session, marker + rotation, notice before the user's text, once | DS-002 |
 | BEH-005 | User | REQ-011; AC-002 | Chat shows the run | History from raw traces (F-15, F-28) | Marker where the runtime changed, live and on reload | DS-002 (marker record, live presentation) |
-| BEH-006 | System | REQ-008 | New runtime cannot read the run folder | Unknown (U-2) | Excerpt fallback only if the real run shows it is needed | DS-002 (builder), decided after the real run |
 | BEH-007 | System | REQ-012; AC-006 | Journal is made current | One runtime for all files (F-24) | Per-file runtime; runs that never switched unchanged | DS-003 |
 
 ## Relevant Supplemental Task Artifacts
@@ -78,15 +79,17 @@ A stopped standalone Agent run's settings let the user pick another runtime and 
 - Evidence: F-24 (reproduced and measured).
 - Design response: the manifest entry of each file carries the runtime used to render it; the run-level `runtime_kind` is removed; reuse compares per file.
 - Refactor rationale: keeping both would be a dual path; the run-level field has no other reader (grep of `src/agent-work-journal`, `src/memory-search`).
-- Intentional deferrals and residual risk: the label mapping stays a mapping (see discrepancy above, FU-006); a crash between activation and the first input loses the in-memory notice (contract 3.3).
+- Intentional deferrals and residual risk: the label mapping stays a mapping (see discrepancy above, FU-006); a process crash between activation and the first input would lose the in-memory notice (not a supported scenario; contract 3.3).
 
 ## Terminology
 
-Per `GLOSSARY.md`: Agent, Agent Run, Agent Runtime, Work Journal, Raw Trace. Task-specific: **switch** (replacing the provider binding of a stopped run), **pending switch** (the settings choice not yet made real), **previous agent** (the backend of an earlier segment), **hand-over notice**, **marker** (contract §1, §3.3).
+Per `GLOSSARY.md`: **agent runtime** (what runs an agent; never "LLM runtime"), the agent runtime names (Claude Agent SDK, Codex App Server, Antigravity CLI, Grok Build, AutoByteus: used in the marker, the notice and the UI, no short forms), Work Journal, Memory. Words this change introduces (added to `GLOSSARY.md`, section Agent Runtimes, in the same change — Principle 15):
 
-## Section Fill Order
-
-(Template guidance; sections below follow the template order.)
+- **Agent runtime switch:** replacing the agent runtime, model and model settings of a stopped standalone Agent run, keeping the run. It is made real at the run's next input.
+- **Pending agent runtime switch:** the user's choice, saved in the run's metadata, before that input.
+- **Hand-over notice:** the system notice the new agent receives with that input (where the journals are, how they are laid out, what is not in them).
+- **Switch marker:** the notice record that starts the new raw-trace file; shown in the chat and the journal.
+- **Previous agent:** the agent that worked on the run on the earlier agent runtime (wording toward the agent; in code, the earlier segment).
 
 ## Legacy Removal Policy (Mandatory)
 
@@ -110,13 +113,13 @@ Data Migration Guideline §2 checklist: new persisted fields are optional and re
 
 | Spine ID | Scope | Related Behavior ID(s) | Start | End | Governing Owner | Why It Matters |
 | --- | --- | --- | --- | --- | --- | --- |
-| DS-001 | Primary End-to-End | BEH-001 | User changes runtime/model in the settings of a stopped run and saves | `run_metadata.json` holds the new binding and the pending switch | Stopped-run model-config updater (server) with `existingRunConfigStore` (web) | The user's only action; must be undoable and safe |
-| DS-002 | Primary End-to-End | BEH-002, 005, 006 | The user's first message to the run | The new agent receives notice + message; chat shows the marker | `StandaloneAgentRunLifecycleService` (transition lane) | The ordered, crash-sensitive heart of the feature |
+| DS-001 | Primary End-to-End | BEH-001 | User changes runtime/model in the settings of a stopped run and saves | `run_metadata.json` holds the new binding and the pending switch | `StandaloneStoppedRunModelConfigUpdater` (server); the web settings and store are the initiating surface | The user's only action; must be undoable and safe |
+| DS-002 | Primary End-to-End | BEH-002, 005 | The user's first message to the run | The new agent receives notice + message; chat shows the marker | `StandaloneAgentRunLifecycleService` (transition lane) | The ordered, crash-sensitive heart of the feature |
 | DS-003 | Bounded Local | BEH-007 | `ensureCurrent` for a run with several raw files | Each journal file rendered with its own runtime | `WorkJournalService` | Without it, earlier work reads wrongly |
 
 ## Primary Execution Spine(s)
 
-DS-001: `ExistingRunSettings.vue -> existingRunConfigStore.saveAgent -> mutation client -> updateStoppedAgentRunModelConfig (GraphQL) -> StudioRunModelConfigService -> AgentRunService.updateStoppedModelConfig -> StandaloneAgentRunLifecycleService.updateStoppedModelConfig (transition lane) -> StandaloneStoppedRunModelConfigUpdater -> RunModelSelectionService.validate (fresh selection) -> commitAgentRunRuntimeSwitch -> AgentRunMetadataStore`
+DS-001 (initiating surface: the web settings; governing owner: the updater): `ExistingRunSettings.vue -> existingRunConfigStore.saveAgent -> mutation client -> updateStoppedAgentRunModelConfig (GraphQL) -> StudioRunModelConfigService -> AgentRunService.updateStoppedModelConfig -> StandaloneAgentRunLifecycleService.updateStoppedModelConfig (transition lane) -> StandaloneStoppedRunModelConfigUpdater -> RunModelSelectionService.validate (fresh selection) -> commitAgentRunRuntimeSwitch -> AgentRunMetadataStore`
 
 DS-002: `first input -> StandaloneAgentRunLifecycleService.resolve (transition lane) -> activateOnce -> activateSwitched -> AgentRunManager.beginActivation(new).prepare -> validateCandidate -> RuntimeSwitchRecorder (marker, rotate) -> persistAndPublish (new binding, pending cleared) -> RuntimeHandoverNoticeService.register -> run returned -> AgentRun dispatch -> AgentRunPlatformNotices.takePreface -> RuntimeHandoverNoticeService (WorkJournalService.ensureCurrent / listJournalFiles -> notice builder) -> provider (notice + user text) -> prefaceDelivered -> live SYSTEM_TASK_NOTIFICATION`
 
@@ -127,7 +130,7 @@ DS-003: `WorkJournalService.ensureCurrent -> RawTraceFileSourceService.listFiles
 | Spine ID | Short Narrative | Main Domain Subject Nodes | Governing Owner | Key Off-Spine Concerns |
 | --- | --- | --- | --- | --- |
 | DS-001 | The settings form lets an eligible stopped run choose any available runtime; the save sends runtime, model and settings. Inside the run's transition lane the updater checks eligibility, validates the pair as a fresh selection of that runtime and commits through a run-history commit function: new binding, `platformAgentRunId` null, `pendingRuntimeSwitch` holding the whole previous binding. Choosing the original runtime again writes the original binding back and clears the pending switch. No memory file is touched. | Settings draft, updater, commit function, metadata | Stopped-run model-config updater | Eligibility predicate; fresh-selection validation |
-| DS-002 | The first message finds `pendingRuntimeSwitch` with no session ID and takes the third activation case: start a fresh session of the new runtime (existing `new` request), validate it, then — before anything is published — append the marker and rotate the old records away (idempotent by key), commit the metadata (session set, pending cleared) and publish. The notice service remembers the hand-over for this run. When the message is dispatched the preface port hands the notice over; the server builds it from facts (journal made current first) and the provider receives it before the user's text. The live notice shows the marker; on reload the recorded marker does. | Metadata, candidate session, marker record, notice | Lifecycle service | Switch recorder (memory); notice source; journal service; web notice label |
+| DS-002 | The first message finds `pendingRuntimeSwitch` (the explicit field decides, not a missing session ID) and takes the third activation case: start a fresh session of the new runtime (existing `new` request), validate it, then — before anything is published — append the marker and rotate the old records away (idempotent by key), commit the metadata (session set, pending cleared) and publish. The notice service remembers the hand-over for this run. When the message is dispatched the preface port hands the notice over; the server builds it from facts (journal made current first) and the provider receives it before the user's text. The live notice shows the marker; on reload the recorded marker does. | Metadata, candidate session, marker record, notice | Lifecycle service | Switch recorder (memory); notice source; journal service; web notice label |
 | DS-003 | For each raw file the journal looks up the runtime that wrote it (an archived segment: its recorded label mapped to a runtime kind; the open file: the run's current runtime) and renders with that runtime's rules; the manifest records the runtime per file and reuses a closed file only when it matches. | Raw file source, renderer, manifest | `WorkJournalService` | Label mapping |
 
 ## Spine Actors / Main-Line Nodes
@@ -154,7 +157,9 @@ Settings draft and store (web); `StandaloneStoppedRunModelConfigUpdater`; `commi
 | Item To Remove / Decommission | Why It Becomes Unnecessary | Replaced By Which Owner / File / Structure | Notes |
 | --- | --- | --- | --- |
 | Run-level `runtime_kind` of `WorkJournalManifest` and its check in `reconcile`; its store parse/write | A run's files can have different runtimes | Per-file `runtime_kind` in `WorkJournalManifestFile` | Derived data; old manifests are read tolerantly (entries without the field are rendered again) |
-| `runtime-locked` on `ExistingRunSettings.vue` for eligible runs; model-only mutation input | The runtime is now part of the selection | Draft carries `runtimeKind`; mutation input has `runtimeKind` | Members and delegated copies keep the lock |
+| `runtime-locked` on the root card of `ExistingRunSettings.vue` (line 47) when `kind === 'agent'`; model-only mutation input | The runtime is now part of the selection | Draft carries `runtimeKind`; mutation input has `runtimeKind` | Members and delegated copies keep the lock |
+
+Dead code in the touched files (Principle 7): none known. To confirm at implementation: after the change, `lockedModels`/`runtimeLocked` of `ChatModelMenu.vue` are still used by team members and delegated rows (so not dead), and the store's model-only edit path has no remaining caller (remove it if so).
 
 ## Return Or Event Spine(s) (If Applicable)
 
@@ -162,7 +167,7 @@ Live marker: `prefaceDelivered -> run publishes SYSTEM_TASK_NOTIFICATION (sender
 
 ## Bounded Local / Internal Spines (If Applicable)
 
-Activation order inside `activateSwitched` (parent owner: lifecycle service): `prepare -> validate -> record marker/rotate -> persistAndPublish -> register notice`. Why it matters: a failure at any step must leave a state a retry completes (contract §3.3 crash behavior): before the marker nothing changed but a discarded candidate (`abortForRetry`); after the marker and before the commit the retry finds the marker/key and skips; `persistAndPublish`'s exactness check decides committed or not. Premise checked (2026-10-30, `standalone-agent-run-lifecycle-service.ts:365-375`): `isExactTarget` compares `JSON.stringify` of the stored and the target metadata, which handles the removed pending field, but the retry branch `isExactOriginalPrepared` is true only for a prepared, never-started run, so for a switch an uncommitted metadata write would be treated as indeterminate and the run quarantined. The design therefore turns that private check into one the caller supplies: a prepared start passes today's rule, the switch passes "stored metadata still equals the pending original". Both stay in the lifecycle service.
+Activation order inside `activateSwitched` (parent owner: lifecycle service): `prepare -> validate -> record marker/rotate -> persistAndPublish -> register notice`. Why it matters: a failure at any step must leave a state that sending again completes (contract §3.3 failure behavior; process crashes are not a supported scenario, Principle 6): before the marker nothing changed but a discarded candidate (`abortForRetry`); after the marker and before the commit the retry finds the marker/key and skips; `persistAndPublish`'s exactness check decides committed or not. Premise checked (2026-10-30, `standalone-agent-run-lifecycle-service.ts:365-375`): `isExactTarget` compares `JSON.stringify` of the stored and the target metadata, which handles the removed pending field, but the retry branch `isExactOriginalPrepared` is true only for a prepared, never-started run, so for a switch an uncommitted metadata write would be treated as indeterminate and the run quarantined. The design therefore turns that private check into one the caller supplies: a prepared start passes today's rule, the switch passes "stored metadata still equals the pending original". Both stay in the lifecycle service.
 
 ## Off-Spine Concerns Around The Spine
 
@@ -189,7 +194,14 @@ Authority changes hands at: web → GraphQL (transport only); updater → commit
 
 ## Dependency Rules
 
-Lifecycle depends on the recorder and the notice service through narrow ports (as it already does for `historyCatalogService`); the notice service depends on `WorkJournalService` and the preface contract, not on the lifecycle; the journal depends on the raw file source and the label mapping, not on the recorder; web depends only on the GraphQL contract. The recorder and the notice service must not depend on each other.
+Dependency direction follows ownership (Principle 9). `agent-execution` owns the activation and must not import `agent-memory` or `runtime-handover-notices` (those already depend on `agent-execution` types such as events and the preface port). So the lifecycle service depends on two small ports defined in `agent-execution/domain/runtime-switch-ports.ts` and implemented by the other subsystems; the composition (`build-studio-server.ts`) wires them:
+
+- `RuntimeSwitchMemory.record(switch)` — implemented by `RuntimeSwitchRecorder` (agent-memory): marker + rotation.
+- `RuntimeHandoverNotices.register(runId, handover)` — implemented by `RuntimeHandoverNoticeService`.
+
+The notice service depends on `WorkJournalService` and the preface contract, not on the lifecycle; the journal depends on the raw file source and the label mapping, not on the recorder; the recorder and the notice service never depend on each other; the web depends on the GraphQL contract only. Forbidden: the lifecycle appending raw traces or building notice text; the notice builder reading `work_journal/` files directly; any module other than `WorkJournalService` writing journal files.
+
+The value both sides need — the switch itself (`RuntimeSwitch`: key, previous and new binding summary, marker sentence) — is built once, by one pure function in `agent-execution/domain/runtime-switch.ts`, and handed to both ports as data. So the marker sentence, the boundary key and the previous/new names are each computed in one place (Principle 11).
 
 ## Interface Boundary Mapping
 
@@ -197,8 +209,8 @@ Lifecycle depends on the recorder and the notice service through narrow ports (a
 | --- | --- | --- | --- | --- |
 | `updateStoppedAgentRunModelConfig(input: { agentRunId, runtimeKind, llmModelIdentifier, llmConfig })` | A stopped standalone run's provider selection | Model-only edit, switch, or undo | `agentRunId` (run ID) | `runtimeKind` required (clean cut); all callers updated |
 | `commitAgentRunRuntimeSwitch({ metadata, selection, requestedAt })` | The metadata written by a switch/undo | Build the new metadata | Run metadata | In `run-history/services/`, beside `agent-run-model-config-commit.ts` |
-| `RuntimeSwitchRecorder.record({ memoryDir, runId, key, from, to })` | The raw traces at a switch | Marker + rotation, idempotent | `memoryDir` + run ID + key | `from`/`to` carry runtime kind and model |
-| `RuntimeHandoverNoticeService.register(runId, handover)` / `takePreface` / `prefaceDelivered` / `prefaceReturned` | The pending hand-over per run | Notice delivery once per switch | Run ID | Implements `AgentRunInputPreface` |
+| `RuntimeSwitchMemory.record(runtimeSwitch)` (port; implemented by `RuntimeSwitchRecorder`) | The raw traces at a switch | Marker + rotation, idempotent by `runtimeSwitch.key` | `memoryDir` + run ID + key | `runtimeSwitch` = key, from/to agent runtime kind and model, marker sentence (built once) |
+| `RuntimeHandoverNotices.register(runId, runtimeSwitch)` (port) and `RuntimeHandoverNoticeService.takePreface` / `prefaceDelivered` / `prefaceReturned` | The pending hand-over per run | Notice delivery once per switch | Run ID | The service implements the port and `AgentRunInputPreface` |
 | `WorkJournalService.listJournalFiles(memoryDir)` | Journal file summaries | Adds `runtimeKind` per file | `memoryDir` | Existing method extended |
 | `rawTraceRuntimeLabel(kind)` / `runtimeKindFromRawTraceLabel(label)` | Stored label spelling | Mapping | `RuntimeKind` / stored label | Unknown label → null (rendered with the no-runtime rules, as today) |
 
@@ -217,7 +229,9 @@ Lifecycle depends on the recorder and the notice service through narrow ports (a
 | Changing the provider binding of a stopped run | switch / `pendingRuntimeSwitch` | Yes | Yes (runtime = Agent Runtime) | Low | None |
 | Notice to the new agent | hand-over notice / `runtime-handover-notices` | Yes | Yes | Low | None |
 | Previous backend | previous agent (user-facing), earlier segment (code) | Yes | Yes | Low | The notice says "previous agent" |
-| Stored runtime spelling | raw trace runtime label | Yes | Documented discrepancy | Medium | FU-006 |
+| Stored runtime spelling | raw trace runtime label | Yes | No: documented discrepancy 1 (stored `CODEX` vs `codex_app_server`) | Medium | FU-006 |
+| The stopped-run edit | `…ModelConfig` family | No: it now carries the agent runtime | No: documented discrepancy 2 | Medium | FU-007 (rename with the team family) |
+| Runtime names in text | Claude Agent SDK, Codex App Server (`agentRuntimeName`) | Yes | Yes (GLOSSARY: no short forms) | Low | Marker, notice and UI use the glossary names |
 
 ## Existing Capability / Subsystem Reuse Check
 
@@ -246,9 +260,30 @@ Lifecycle depends on the recorder and the notice service through narrow ports (a
 | `api/graphql` | Mutation input | DS-001 | — | Extend | |
 | `autobyteus-web` | Runtime choice, hint, notice label | DS-001, DS-002 | Settings, chat | Extend | |
 
-## Draft File Responsibility Mapping / Reusable Owned Structures Check / Shared Structure Tightness / Final File Responsibility Mapping
+## Draft File Responsibility Mapping
 
-Combined (the structures are few): the only shared structure is the **pending switch**: `{requestedAt, from: {runtimeKind, llmModelIdentifier, llmConfig, platformAgentRunId}}` — one meaning per field, no field duplicates another (the new binding lives in the ordinary metadata fields), no parallel representation (the raw manifest records the history). The second is the **label mapping** (one file). File responsibilities are the rows of the next table; each file has one concern. Redundant attributes removed: yes; overlapping representations removed: yes (run-level journal runtime removed).
+The draft equals the final mapping in "Target Subsystem / Folder / File Mapping" below: the structures that repeat are few and are extracted in the next two tables before that mapping is final.
+
+## Reusable Owned Structures Check
+
+| Repeated Structure / Logic | Candidate Shared File | Owning Subsystem | Why Shared | Redundant Attributes Removed? | Overlapping Representations Removed? | Must Not Become |
+| --- | --- | --- | --- | --- | --- | --- |
+| The provider binding (runtime kind, model, model settings, session ID) appears in the metadata and in the pending switch's `from` | `RunProviderBinding = Pick<AgentRunMetadata, "runtimeKind" \| "llmModelIdentifier" \| "llmConfig" \| "platformAgentRunId">` in `run-history/store/agent-run-metadata-types.ts` | run-history | One definition for both uses; no copy of the fields | Yes | Yes | A second metadata-like type with its own fields |
+| Stored runtime label ⇄ `RuntimeKind` | `agent-memory/domain/raw-trace-runtime-label.ts` | agent-memory | Needed by the recorder and the journal | Yes | Yes (one table for both directions) | A place for display names (those come from `agentRuntimeName`) |
+| The switch's key, from/to names and marker sentence | `agent-execution/domain/runtime-switch.ts` | agent-execution | Needed by the memory port and the notice port; computed once | Yes | Yes | A holder of lifecycle logic |
+
+## Shared Structure / Data Model Tightness Check
+
+| Shared Structure / Type / Schema | One Clear Meaning Per Field? | Redundant Attributes Removed? | Parallel / Overlapping Representation Risk | Corrective Action |
+| --- | --- | --- | --- | --- |
+| `pendingRuntimeSwitch {requestedAt, from: RunProviderBinding}` | Yes: `requestedAt` = time of the first pending save; `from` = the previous binding. The new binding lives in the ordinary metadata fields, not repeated here | Yes (no stop reason, no copy of the new binding, no history list) | Low: the switch history is the raw-trace manifest and the markers | None |
+| Journal manifest file entry `runtime_kind` | Yes: the agent runtime the file was rendered with (`null` = rendered with the no-runtime rules) | Yes (the run-level field is removed) | Low | None |
+| Raw manifest entry (`boundary_type: runtime_switch`) | Yes | Yes | Low | None |
+| `RuntimeSwitch` (in memory) | Yes: key, from, to, marker sentence | Yes | Low | None |
+
+## Final File Responsibility Mapping
+
+See "Target Subsystem / Folder / File Mapping".
 
 ## Applied Patterns (If Any)
 
@@ -264,21 +299,23 @@ Server paths under `autobyteus-server-ts/src/`, library under `autobyteus-ts/src
 | `agent-memory/domain/raw-trace-runtime-label.ts` | File (new) | Label owner | Mapping `RuntimeKind` ⇄ stored label | One owner of stored spelling | Rendering or recording |
 | `agent-memory/services/raw-trace-file-source-service.ts` | File (change) | Raw file source | Expose the segment's runtime label on `RawTraceFileSource` | The source already reads the entries | Mapping |
 | `agent-memory/store/external-runtime-memory-writer.ts` | File (change) | Writer | Keep `correlationId` for `system_task_notification` records | Marker lookup | Switch logic |
-| `agent-memory/services/runtime-switch-recorder.ts` | File (new) | Recorder | Marker + rotation, idempotent by key | Memory owns its files; mirrors `provider-compaction-boundary-recorder.ts` | Activation logic |
+| `agent-memory/services/runtime-switch-recorder.ts` | File (new) | Recorder; implements the `RuntimeSwitchMemory` port | Marker + rotation, idempotent by key | Memory owns its files; mirrors `provider-compaction-boundary-recorder.ts` | Activation logic |
+| `agent-execution/domain/runtime-switch.ts`, `agent-execution/domain/runtime-switch-ports.ts` | Files (new) | Switch value and the two ports | `RuntimeSwitch` built once (key, names, marker sentence with `agentRuntimeName`); `RuntimeSwitchMemory` and `RuntimeHandoverNotices` ports | The lifecycle depends on ports, not on other subsystems (Dependency Rules) | Lifecycle logic |
 | `agent-execution/domain/system-task-notification-senders.ts` | File (change) | Senders | Add `RUNTIME_HANDOVER_NOTICE_SENDER_ID = "system.runtime_handover"` | Existing place | — |
 | `agent-execution/services/standalone-agent-run-eligibility.ts` | File (change) | Eligibility | Add `canSwitchRuntime(metadata)` | Beside the existing predicate | I/O |
 | `agent-execution/services/standalone-stopped-run-model-config-updater.ts` | File (change) | Updater | Model-only / switch / undo decision, fresh-selection validation | The seam (F-25) | Metadata shape |
-| `agent-execution/services/standalone-agent-run-lifecycle-service.ts` | File (change; 376 → ≤ ~460 lines, else extract `activateSwitched` into `standalone-agent-run-switch-activation.ts`) | Lifecycle | `activateSwitched` branch in `activateOnce`; `persistAndPublish` takes the "stored metadata still equals the original" check from its caller (prepared start: today's rule; switch: pending original); calls recorder and notice service | Owner of order | Notice text, file writes |
+| `agent-execution/services/standalone-agent-run-lifecycle-service.ts` | File (change; 376 lines now, about 60 added: stays under 500, so no extraction — the new branch needs the file's private helpers) | Lifecycle | `activateSwitched` branch in `activateOnce`; `persistAndPublish` takes the "stored metadata still equals the original" check from its caller (prepared start: today's rule; switch: pending original); calls recorder and notice service | Owner of order | Notice text, file writes |
 | `run-history/services/agent-run-runtime-switch-commit.ts` | File (new) | Run-history | `commitAgentRunRuntimeSwitch` (switch and undo) | Beside `agent-run-model-config-commit.ts` | Eligibility |
 | `run-history/store/agent-run-metadata-types.ts`, `agent-run-metadata-store.ts`, new `agent-run-pending-runtime-switch.ts` | Files (change/new) | Metadata store | Type, parse and normalizer entry of the optional field | Precedent `delegatedFrom` | Switch logic |
 | `llm-management/services/run-model-selection-service.ts` | File (change) | Selection | Fresh-selection mode of `validate` | Existing validator | — |
 | `api/graphql/types/agent-run.ts` | File (change) | GraphQL | `runtimeKind` in the input; rejection messages | Existing mutation | Decisions |
-| `runtime-handover-notices/runtime-handover-notices.ts` | File (new) | Composition entry | Creates the service | Mirrors `tool-list-updates.ts` | Logic |
+| `runtime-handover-notices/runtime-handover-notices.ts` | File (new) | Composition entry | Creates the service and exposes it as both the preface source and the `RuntimeHandoverNotices` port | The two sibling subsystems expose their service the same way (`tool-list-updates/tool-list-updates.ts`: builds the store and the service, returns `{service, close}`); here it only constructs the service, so it stays as small as the sibling's entry or is dropped at implementation if it holds nothing | Logic |
 | `runtime-handover-notices/services/runtime-handover-notice-service.ts` | File (new) | Notice | Pending state; implements `AgentRunInputPreface` | The port | Journal rendering |
 | `runtime-handover-notices/services/runtime-handover-notice-builder.ts` | File (new) | Notice text | Pure text from facts (contract §3.6) | Pure and testable | I/O |
 | `compositions/build-studio-server.ts` | File (change) | Composition | Add the third source and pass the service to the lifecycle | Where the two others are wired | Logic |
 | `agent-work-journal/domain/work-journal-models.ts`, `store/work-journal-store.ts`, `services/work-journal-service.ts` | Files (change) | Journal | Per-file `runtime_kind`; remove run-level; `listJournalFiles` returns `runtimeKind`; lookup rule | DS-003 | Label spelling |
-| `autobyteus-web/components/run-settings/ExistingRunSettings.vue`, `RunSettingsCard.vue` | Files (change) | Settings | Unlock the runtime for eligible runs; draft carries `runtimeKind`; hint line | Existing | Server rules |
+| `autobyteus-web/components/run-settings/ExistingRunSettings.vue`, `RunSettingsCard.vue` | Files (change) | Settings | Unlock the root card's runtime (`runtime-locked`, line 47) only when `kind === 'agent'`; team/Org roots, members (line 60) and delegated rows (line 75) keep it; draft carries `runtimeKind`; hint line | Existing. The web uses only the coarse kind; the server alone decides eligibility (application-/system-owned runs, a not-yet-started run) and rejects with a message the existing `saveError` shows — one rule, not two | Server eligibility rules |
+| `GLOSSARY.md` | File (change) | Docs | Add the five words of Terminology to Agent Runtimes | Principle 15 | — |
 | `autobyteus-web/components/chat/ChatModelMenu.vue` | File (change if needed) | Menu | Show all runtimes when not locked (existing mode) | Existing | — |
 | `autobyteus-web/stores/existingRunConfigStore.ts`, `services/runConfigEditing/existingRunModelConfigMutationClient.ts`, `graphql/mutations/runHistoryMutations.ts`, `generated/graphql.ts` | Files (change) | Web state/client | Pass the runtime | Existing | — |
 | `autobyteus-web/components/.../SystemTaskNotificationSegment.vue` + locale files | Files (change) | Chat | Label for the hand-over sender | Pattern of the two existing labels | — |
@@ -311,14 +348,41 @@ Server paths under `autobyteus-server-ts/src/`, library under `autobyteus-ts/src
 
 N/A.
 
+## Design Principles Check
+
+The design was audited against DESIGN.md rules 1–9 and Core Principles 1–15 of the design principles, and the structural-trigger table (2026-10-30). The right-hand column says what the audit found and what changed in this document because of it.
+
+| Principle | Verdict | Evidence / change made |
+| --- | --- | --- |
+| DESIGN 1, 4, 5 (smallest solution; no avoidable work) | Pass, after cuts | Removed: the optional run summary file, the excerpt fallback, journal sizes in the settings, a new raw-trace record type, a second notice path. Reused: the rotation primitive, `beginActivation(new)`, `persistAndPublish`, the notice route, the notice record, the chat projection. New code is one lifecycle branch, one recorder, one notice service, one port pair, the per-file journal runtime, the settings choice. |
+| DESIGN 7 (bad data stays in its run) | Pass | A pending-switch run whose data cannot be read affects only that run; the journal drops invalid manifest entries and renders them again (`work-journal-store.ts` `readManifest`). |
+| DESIGN 8 (no version numbers in current names) | Pass | The contract file name has no version; "v2" is only the document's revision. No `V2` identifier. |
+| DESIGN 9 (no cross-version compatibility) | Pass | The mutation input changes as a clean cut; no old/new shape side by side. |
+| P1 Behavior and production reality | Pass, after fix | Kinds and entry forms traced: the five agent runtimes all start a fresh session on an existing run ID through one request (`{kind:"new", runId, config}`, notes F-18); external runtimes record through the memory recorder, the native one through its memory manager (notes F-29) and the marker is written before either records anything. Standalone run kinds (ordinary, application-owned, system-owned, delegated copy) are separated by the eligibility rule. Added citations: lifecycle (`activateOnce`, `persistAndPublish`, `isExactTarget` at `standalone-agent-run-lifecycle-service.ts:365-375`), notice route (`agent-run-input-preface-dispatch.ts`), web locks (`ExistingRunSettings.vue:47,60,75`). One premise was wrong and is fixed: the retry check of `persistAndPublish` is prepared-run-only. |
+| P2 Spines | Pass, after fix | Three spines with real spans (surface → owner → effect), a return/event spine for the live marker, a bounded local spine for the activation order. Fixed: DS-001's owner was written "updater with the store" (an "A + B" owner); now the updater owns it and the web is the initiating surface. |
+| P3 Ownership and authoritative boundaries | Pass | Each node owns one thing (Ownership Map). The notice service reads journals only through `WorkJournalService`; nothing else writes journal files; the lifecycle does not touch memory files. No caller uses a boundary and its internals together. |
+| P4 Off-spine concerns | Pass | Eligibility, validation, marker writing, notice text and label mapping are off-spine and named by concern. Existing areas reused first (reuse check table). |
+| P5 Persisted data | Pass | Per-store decisions with evidence (measured 823 of 825 journals consistent; no existing entry has the new type). No migration; derived journal data rebuilt, not migrated. The stored-name discrepancy is stated, not hidden. |
+| P6 Supported scenarios | Pass, after fix | Supported: switch, undo, repeated switch before sending, activation that fails and is sent again. Unsupported and not designed for: process crash (the earlier "crash injection" wording is replaced by failure injection), a runtime unable to read files (withdrawn by the user's reasoning), teams, agent-started switches (follow-ups). |
+| P7 No dead code | Pass | Removal plan names what becomes unnecessary and the check to run in the touched files. |
+| P8 Clean cut | Pass | Rejection log: no run-level journal runtime beside the per-file one; no second mutation input. |
+| P9 Dependency direction | Pass, after fix | The lifecycle (agent-execution) would have imported agent-memory and the notice subsystem, against their dependency on agent-execution. Fixed with two ports owned by agent-execution, wired in the composition. |
+| P10 Interfaces follow ownership | Pass with one recorded discrepancy | One boundary per subject; explicit run ID. The mutation keeps its `ModelConfig` name although it now carries the agent runtime (discrepancy 2, FU-007). |
+| P11 Tight structures; one owner per fact | Pass, after fix | Fixed three: the previous binding is `Pick<AgentRunMetadata, …>`, not a copy of fields; the marker sentence/key/names are built once (`runtime-switch.ts`) instead of in the recorder and in the notice service; eligibility is decided only by the server (the web uses the coarse run kind). Derived consumers of every changed structure are listed in Change Scope. |
+| P12 File responsibility | Pass, after fix | One concern per file. The earlier hedge ("extract if over 460 lines") is replaced by a decision: about 60 lines added to a 376-line file, no extraction. The notice subsystem's entry file is flagged to be dropped if it holds nothing. |
+| P13 One owner per sequence; no behavior by absence | Pass, after fix | The lifecycle calls each mechanism itself, in order; no function is passed to reach another collaborator. The switch branch was chosen by "pending present and session ID null" (a branch by absence); now the explicit pending field alone decides. |
+| P14 Spine-first document with examples | Pass | Spines before files; good/bad shape table; sequence from current state. |
+| P15 Vocabulary | Pass, after fix | Found: the marker and notice used "Claude"/"Codex" and "runtime" where GLOSSARY.md requires the agent runtime names (Claude Agent SDK, Codex App Server) and "agent runtime", with no short forms. Fixed in the contract, requirements and this design. The new words are added to GLOSSARY.md in the same change. Two stored/API-name discrepancies are documented with a recommendation. |
+| Structural triggers | None fire unresolved | Repeated coordination: no. Responsibility overload: no (lifecycle file stays under 500 lines). Ambiguous boundary: no. Empty indirection: the notice subsystem entry file is conditional (above). Shared folder: no. Several kinds or forms: traced above. Split sequence: no. Derived data: handled (Change Scope). Behavior by absence: fixed above. Vocabulary drift: fixed/recorded above. |
+
 ## Change / Refactor Sequence
 
 1. Library: add the boundary type value; build `autobyteus-ts`.
-2. Memory: label mapping; file source exposes the label; writer keeps the notice correlation id; switch recorder (+ tests: rotation, marker, retry, crash injection).
+2. Memory: label mapping; file source exposes the label; writer keeps the notice correlation id; switch recorder (+ tests: rotation, marker, retry, failure injection).
 3. Journal: per-file runtime (models, store, service, `listJournalFiles`); remove the run-level field; tests (mixed-runtime fixture, unchanged output for a single-runtime run).
 4. Metadata: optional field, parse, normalizer; commit function.
 5. Settings save: eligibility, updater (switch/undo), fresh-selection validation, GraphQL input; tests.
-6. Activation: `activateSwitched` in the lifecycle; sender id; notice service and builder; composition; tests with scripted runtimes including a crash at each step.
+6. Activation: `activateSwitched` in the lifecycle; sender id; notice service and builder; composition; tests with scripted runtimes including a failure at each step.
 7. Web: unlock, draft, store/client/generated types, hint, notice label; unit tests and a browser probe.
 8. Real run on an isolated instance of the worktree build; update docs (`docs/modules` for memory, journal, run history; the GraphQL docs) in the same change.
 9. Removal: delete the run-level journal runtime and the locked attribute for eligible runs (done in steps 3 and 7).
@@ -327,20 +391,20 @@ N/A.
 
 - Switch at the first input (not at the save): the form stays a simple, undoable edit; the cost is one more activation case. A save-time switch would archive and mark a switch the user may take back.
 - Marker as a notice record: the live and recorded views can differ in order by a few milliseconds (live: after the user's message; reload: before it). Accepted; the user sees the marker before the agent's answer in both.
-- The notice is held in memory: a server crash between activation and the first input loses it (the journals and the marker remain; the user can restate the task). Persisting it would add a second stored fact for an edge outside the supported scenarios.
+- The notice is held in memory: a server crash (not a supported scenario) between activation and the first input would lose it (the journals and the marker remain; the user can restate the task). Persisting it would add a second stored fact for an edge outside the supported scenarios.
 - Journal rebuild instead of migration: one-time local render per run, no model cost.
 
 ## Risks
 
-- Quality of the continuation depends on the new agent's model and on its file tool reaching the run folder (U-2, U-4): checked in the real run; the excerpt fallback (REQ-008) is added only if the real run shows it is needed.
+- What the new agent does with the journals is the work of its model; the design only tells it where they are and how they are laid out. The real run checks that the notice arrives and the named journals can be opened; there is no quality promise and no fallback.
 - Native writer after rotation (escalation trigger above).
-- A crash between the marker and the commit followed by the user undoing the switch leaves a marker for a switch that did not happen (a few-millisecond window; the journal and chat show the marker, nothing breaks).
+- An activation that fails after the marker, followed by the user undoing the switch instead of sending again, leaves a marker for a switch that did not happen (the chat and journal show it; nothing breaks).
 - The restart-and-resume notice (283–289) may later share the next input (FU-005).
 - Pending-switch runs with `platformAgentRunId: null` flow through listings, views and resume-config: tested (Change Scope).
 
 ## Guidance For Implementation
 
 - Reproduction to start from, from the investigation notes: `probes/runtime-switch-folder.probe.test.ts` (copy into `autobyteus-server-ts/tests/`, run `./node_modules/.bin/vitest run <file>` from `autobyteus-server-ts`; it turns into the permanent test of the recorder and the journal's per-file runtime).
-- Tests (TESTING.md layers): library type; server unit — label mapping, recorder (rotation, marker, idempotence), journal per-file runtime and reuse, commit function (switch, undo, repeated switch keeps the first `from`), updater (eligible/ineligible, fresh-selection validation), notice builder (text, partial-reading instruction, says "previous agent", does not repeat the user's message), notice service (once per switch, `prefaceReturned` keeps it pending); server integration — lifecycle `activateSwitched` with scripted runtimes: success order, failure of the new session (nothing changed), crash after marker (retry completes with one marker and one archived segment), existing restore and prepared cases unchanged, pending-switch run opens/lists; GraphQL contract; web — store/menu/settings unit tests, browser probe of the settings journey.
-- Real run (TESTING.md rule 1–2: worktree build, isolated instance, never the user's data): `pnpm --silent isolated-app start --build` with imported credentials; a throwaway workspace; a Claude run does a small multi-step task, is stopped by hand (a usage limit cannot be produced on demand; the switch path is identical because no stop reason is recorded), its settings switched to Codex, one message sent; check: same run ID and chat, marker, notice received, the new agent reads the journals and continues, `raw_traces_000001.jsonl` holds the Claude records, journals translated per file. A scripted Antigravity run covers U-2 for that runtime. Record the evidence in the validation report. Clean up the instance.
+- Tests (TESTING.md layers): library type; server unit — label mapping, recorder (rotation, marker, idempotence), journal per-file runtime and reuse, commit function (switch, undo, repeated switch keeps the first `from`), updater (eligible/ineligible, fresh-selection validation), notice builder (text, partial-reading instruction, says "previous agent", does not repeat the user's message), notice service (once per switch, `prefaceReturned` keeps it pending); server integration — lifecycle `activateSwitched` with scripted runtimes: success order, failure of the new session (nothing changed), failure after the marker (sending again completes with one marker and one archived segment), existing restore and prepared cases unchanged, pending-switch run opens/lists; GraphQL contract; web — store/menu/settings unit tests, browser probe of the settings journey.
+- Real run (TESTING.md rule 1–2: worktree build, isolated instance, never the user's data): `pnpm --silent isolated-app start --build` with imported credentials; a throwaway workspace; a Claude run does a small multi-step task, is stopped by hand (a usage limit cannot be produced on demand; the switch path is identical because no stop reason is recorded), its settings switched to Codex, one message sent; check: same run ID and chat, marker, notice received, the new agent receives the notice before the message and can open the journal files it names, `raw_traces_000001.jsonl` holds the Claude records, journals translated per file. What the agent does next is its model's work and is not graded. Record the evidence in the validation report. Clean up the instance.
 - Done means (Task): the user has approved this design; then in this slice a run stopped on one runtime continues on another with the work carried over, shown by the tests and the real run on isolated data; merged to `personal`. No release unless asked. Prove from a clean clone.
