@@ -70,3 +70,6 @@
   start it destroys new connections on arrival; tests (a) for an earlier slow hook and (b) for the studio order.
   The stale text is replaced.
 - Requirements: unchanged (SR-004). Classification: Medium / High. Routing: `/architecture_reviewer` (ARCH-REV-003).
+- 2026-10-31, review result recorded: **ARCH-REV-003 Pass** on SR-005. Cosmetic N-8 folded in (the DS-001 spine line
+  now names "new connections destroyed from the hook's start"). The reviewer routed to
+  `/software_engineering_team/implementation_engineer`.

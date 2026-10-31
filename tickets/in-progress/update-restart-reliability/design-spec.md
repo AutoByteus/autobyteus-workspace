@@ -135,7 +135,7 @@
 | DS-002 | Primary | BEH-002 | "Install update and restart" (user or unattended) | `quitAndInstall` or the error | `ElectronApplication` install preparation |
 
 ## Primary Execution Spine(s)
-- DS-001: `SIGTERM | IPC → ServerProcessShutdown.request → app.close() → Fastify closing: new requests answered 503 → preClose: native drain; WebSocket clients closed; ★ client-connection close (never-used connections destroyed; wait for requests in progress ≤ 2 s; then every remaining HTTP connection closed) → server closed → onClose: run cleanup (application stop → closeProcessResources → supervisor) → sweep → exit 0`
+- DS-001: `SIGTERM | IPC → ServerProcessShutdown.request → app.close() → Fastify closing: new requests answered 503 → preClose: native drain; WebSocket clients closed; ★ client-connection close, the last preClose hook (from its start new connections destroyed on arrival; never-used connections destroyed; wait for requests in progress ≤ 2 s; then every remaining HTTP connection closed) → server closed → onClose: run cleanup (application stop → closeProcessResources → supervisor) → sweep → exit 0`
 - DS-002: `Install click → AppUpdater.installUpdateAndRestart → ElectronApplication.prepareForInstall → ApplicationShutdown.stop() → [rejects] → ★ serverManager.isServerProcessGone()? → yes: ApplicationShutdown.acceptIncompleteStopForInstall() → quitAndInstall → will-quit passes → install | no: rethrow → existing error`
 
 ## Spine Narratives (Mandatory)
