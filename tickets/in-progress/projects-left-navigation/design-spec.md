@@ -5,8 +5,8 @@
 - Current solution revision ID: SR-006
 - Approved requirements baseline: `requirements-doc.md` R4 at SR-005, approved by the user (journey, folder rules, New chat Project choice, the Product package) and by the Solution Designer within the direction for the remaining decisions; references in the requirements doc's Document Status and User Decisions.
 - Behavior-defining supplements: Product UI/UX specification `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/projects-left-navigation/ui-ux-spec.md` with VIS-001…VIS-025 (design revision `0675adca`, integration `1988a503`), confirmed by the user 2026-10-31.
-- User approval of the design (the Task requires it before the build): `Pending`. It is asked once, in the Solution Designer's conversation, before any handoff.
-- Design status: `Ready` (awaiting the user's approval)
+- User approval of the design (the Task requires it before the build): `Obtained` — the user, 2026-10-31, in the Solution Designer's conversation, after asking how runs are linked to Projects: "i think your design is good. lets go. basically."
+- Design status: `Ready`
 - Canonical investigation-notes path: `/Users/normy/autobyteus_org/autobyteus-worktrees/projects-left-navigation/tickets/in-progress/projects-left-navigation/investigation-notes.md`
 - Authorities read (2026-10-31): `references/architecture-design.md`, `references/design-principles.md`, root `DESIGN.md`, `autobyteus-server-ts/docs/design/data_migration_guideline.md` §1–4, `autobyteus-server-ts/docs/design/collaboration_model.md`, `GLOSSARY.md` (domain words, below). `references/design-examples.md`: not used.
 - Project design-principle conflicts or discrepancies: none found.

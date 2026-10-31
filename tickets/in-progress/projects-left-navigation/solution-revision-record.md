@@ -10,6 +10,7 @@
 | SR-004 | Requirements | Product review: user wants a Project choice in New chat | Product interim Requirement Impact | Approved R2 | Approved R3 | REQ-004, 005; BEH-002, 005; SCN-011; AC-015; DEC-014 | Accepted
 | SR-005 | Requirements | Product UI/UX package (user-confirmed) | N/A | Approved R3 | Approved R4 | REQ-002, 004, 015, 016; AC-016, 017; DEC-015…017 | Integrated
 | SR-006 | Design | Approved R4 | N/A | N/A | Design Ready (user approval pending) | all REQ | Large / High
+| SR-007 | Design | User approves the design | N/A | Design Ready (approval pending) | Design Ready (user-approved) | — | Sent to architecture review
 
 ## Revision Entries
 
@@ -91,3 +92,12 @@
 - Classification: task_size Large, architectural_risk High → architecture review after the user's design approval.
 - Follow-ups: FU-005, FU-006 added.
 - Next action: ask the user to approve the design; then hand off per the rules.
+
+### SR-007 — User approves the design; handoff to architecture review
+
+- Phase and classification: Design (approval recorded; no content change).
+- Trigger: the user, 2026-10-31: "i think your design is good. lets go. basically." (after two clarifying questions about how a run is linked to a Project, answered in the conversation: Task records today, `projectId` on the run added by this design).
+- Prior status: Design Ready, user approval Pending. Current: Design Ready, user approval Obtained.
+- Classification: task_size Large, architectural_risk High → `Architecture Design Complete`.
+- Handoff: `get_handoff_rules` → `/software_engineering_team/architecture_reviewer` (Large or High). Handoff file: handoff-architecture-review.md.
+- Next action: architecture review; the reviewer routes a pass to implementation.
