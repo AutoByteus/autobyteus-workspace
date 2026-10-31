@@ -7,6 +7,7 @@
 | SR-001 | Requirements | Initial coherent baseline from Task autobyteus-347 | N/A | N/A | Ready for Approval | BEH-001…008, REQ-001…015, AC-001…013, DEC-001…011 | Presented to the user with DEC-001…003 |
 | SR-002 | Requirements | User answers 2026-10-31 | N/A | Ready for Approval | Approved | REQ-002…008, 014; DEC-001…003, 012, 013 | Any agent under a Project; folder rule; approved |
 | SR-003 | Requirements | User asks for Product Design first | N/A | Approved | Approved (Product Design Requested) | DEC-008 | Request sent to /product_team |
+| SR-004 | Requirements | Product review: user wants a Project choice in New chat | Product interim Requirement Impact | Approved R2 | Approved R3 | REQ-004, 005; BEH-002, 005; SCN-011; AC-015; DEC-014 | Accepted
 
 ## Revision Entries
 
@@ -54,3 +55,13 @@
 - Handoff: `delegate_task` to `/product_team` (user-named collaborator); classification `Product Design Requested`, purpose New Request.
 - Delegated: team run `product_team_2b0e32f1890d47c893b2b9d63b652374`, coordinator `product_ui_ux_designer_6f9b3db8fadd44c0ba67e6623a9e6091` (2026-10-31). No task_id returned (this work is part of autobyteus-347).
 - Next action: wait for the Product Team's result; resume architecture with it.
+
+### SR-004 — Project choice on the New chat start surface
+
+- Phase and classification: Requirements, Requirement Gap (user change to intended behavior), raised by the Product UI/UX Designer (run `product_ui_ux_designer_6f9b3db8fadd44c0ba67e6623a9e6091`) as an interim Requirement Impact during the design review.
+- Trigger: the user's words in the review, 2026-10-31: "does this mean in the chat area, i could also select project view? as well?" and "I guess it's better to add it right?"
+- Prior status: Approved R2 (SR-002/003). Current: Approved R3.
+- IDs affected: REQ-004 (second start path), REQ-005 (folder follows the chosen Project unless already picked), BEH-002, BEH-005, SCN-011 (new), AC-015 (new), DEC-014 (new), UI section.
+- Intended behavior changed: Yes (by the user). Approval: the user's own words above; details (chip only when Projects exist, "No project", fixed after creation) decided by the Solution Designer within that direction.
+- Design impact: technical design not yet written; the Project record and start path cover both entry points.
+- Next action: reply to the Product UI/UX Designer that the addition is accepted; wait for the final Product package.
