@@ -131,3 +131,7 @@
 - CR-002 (doc comment placement) stays an implementation Local Fix, to go with this revision.
 - Requirements: unchanged (R4).
 - Review impact: the architecture review passed SR-008's persisted-data decision, which this revision replaces; the changed part (persistence, ports, creation sequence) returns to the architecture reviewer before implementation applies it.
+
+### Review receipt (informational, no new round)
+
+- ARCH-REV-003 **Pass** on SR-009 (2026-10-31), architecture reviewer run `architecture_reviewer_b0cc3811df7e474eb5031669010fe5f1`; no new findings; classification Large / High; it records that ARCH-REV-001/002 missed the strict index readers. The reviewer routed SR-009 + CR-002 to `/software_engineering_team/implementation_engineer`; code review repeats before API/E2E. No duplicate forwarding.
