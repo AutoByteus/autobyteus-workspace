@@ -128,6 +128,8 @@ export class AgentTeamRunManager {
     teamDefinitionName: string;
     /** A Team run a peer node starts (autobyteus-247): its back-link, kept on the tree. */
     delegatedFrom?: DelegatedFrom;
+    /** The Project the Team run is started under (validated by the caller), kept on the tree. */
+    projectId?: string;
   }): Promise<RootTeamRun> {
     this.assertRootAdmissionOpen();
     const rootTeamRunId = required(input.config.rootTeam.teamRunId, "rootTeamRunId");
@@ -137,7 +139,11 @@ export class AgentTeamRunManager {
         config: input.config,
         teamDefinitionName: required(input.teamDefinitionName, "teamDefinitionName"),
       });
-      const tree = input.delegatedFrom ? Object.freeze({ ...initial, delegatedFrom: input.delegatedFrom }) : initial;
+      const tree = input.delegatedFrom || input.projectId ? Object.freeze({
+        ...initial,
+        ...(input.delegatedFrom ? { delegatedFrom: input.delegatedFrom } : {}),
+        ...(input.projectId ? { projectId: input.projectId } : {}),
+      }) : initial;
       const messages: TeamCommunicationMessagesSnapshot = Object.freeze({
         schemaVersion: 1,
         rootTeamRunId,

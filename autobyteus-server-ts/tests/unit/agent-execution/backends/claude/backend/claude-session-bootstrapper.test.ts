@@ -25,6 +25,7 @@ const createMemberExecutionContext = () =>
 const createRunContext = (input: {
   autoExecuteTools: boolean;
   memberExecutionContext?: MemberExecutionContext | null;
+  project?: { projectId: string; name: string } | null;
 }) =>
   new AgentRunContext({
     runId: input.memberExecutionContext?.agentRunId ?? "run-claude-standalone",
@@ -35,6 +36,7 @@ const createRunContext = (input: {
       autoExecuteTools: input.autoExecuteTools,
       workspaceId: "workspace-claude",
       memberExecutionContext: input.memberExecutionContext ?? null,
+      project: input.project ?? null,
     }),
     runtimeContext: null,
   });
@@ -86,6 +88,13 @@ describe("ClaudeSessionBootstrapper", () => {
     expect(runContext.runtimeContext.carpenterSystemPrompt).not.toContain("## Working Environment");
     expect(runContext.runtimeContext.carpenterSystemPrompt).not.toContain("## Bash Operating Practice");
     expect(runContext.runtimeContext.carpenterSystemPrompt).not.toContain("## File And Directory Practice");
+  });
+
+  it("tells a run started under a Project its Project (REQ-006, DS-005)", async () => {
+    const { bootstrapper } = createBootstrapper();
+    const runContext = await bootstrapper.bootstrapForCreate(createRunContext({ autoExecuteTools: false, project: { projectId: "project_a1", name: "AutoByteus" } }),
+      { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined });
+    expect(runContext.runtimeContext.carpenterSystemPrompt).toContain("## Project\n\nYou work in the Project AutoByteus (Project ID project_a1). Use this Project ID with the Project tools; ask the user before working on another Project.");
   });
 
   it("maps resolved and unresolved bindings to shared reconciliation requests in order", async () => {

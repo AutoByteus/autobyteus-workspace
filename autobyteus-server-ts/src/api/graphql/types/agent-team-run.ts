@@ -113,6 +113,9 @@ export class CreateAgentTeamRunInput {
 
   @Field(() => [TeamMemberConfigInput])
   memberConfigs!: TeamMemberConfigInput[];
+
+  @Field(() => String, { nullable: true, description: "The Project the Team run is started under; omitted for a plain run." })
+  projectId?: string | null;
 }
 
 @InputType()
@@ -178,6 +181,7 @@ export class AgentTeamRunResolver {
         teamDefinitionId: input.teamDefinitionId,
         teamConfigs: input.teamConfigs,
         memberConfigs: input.memberConfigs,
+        projectId: input.projectId ?? null,
       });
       return {
         success: true,

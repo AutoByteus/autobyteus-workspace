@@ -23,7 +23,10 @@ export const createTeamFlatExecutionCallbacks = (input: {
   /** The root's `list_available_agents`; absent in application-owned runs. */
   listAvailableAgents?: MemberExecutionContextBuildInput["listAvailableAgents"];
   commitPlatformBindingChange(change: CollaborationAgentPlatformBindingChange): Promise<void>;
+  /** The Project the root Team run was started under (its tree's `projectId`). */
+  projectId?: string | null;
 }): FlatTeamExecutionCallbacks => Object.freeze({
+  runProjectId: () => input.projectId ?? null,
   assertExecutionInputAllowed: input.assertExecutionInputAllowed,
   buildMemberExecutionContext: ({ identity, sourceNode, hostTeam }) => input.memberExecutionContextBuilder.build({
     teamContext: input.teamContext,

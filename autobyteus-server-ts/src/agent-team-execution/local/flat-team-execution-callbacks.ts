@@ -23,4 +23,6 @@ export type FlatTeamExecutionCallbacks = Readonly<{
   publishAgentEvent(identity: CollaborationMemberExecutionIdentity, event: CollaborationAgentExecutionEvent): void;
   commitPlatformBindingChange(change: CollaborationAgentPlatformBindingChange): Promise<void>;
   applicationExecutionContext?(identity: CollaborationMemberExecutionIdentity): ApplicationExecutionContext | null;
+  /** The Project the root Team run was started under; its members are told it (REQ-006). Absent or null: none. */
+  runProjectId?(): string | null;
 }>;

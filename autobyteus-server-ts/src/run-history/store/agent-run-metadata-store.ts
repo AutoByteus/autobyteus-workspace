@@ -62,7 +62,21 @@ const normalizeMetadata = (
   ),
   ...(metadata.delegatedFrom === undefined ? {} : { delegatedFrom: parseDelegatedFrom(metadata.delegatedFrom) }),
   ...optionalMarker("systemRunOwner", metadata.systemRunOwner, ["model_router"] as const),
+  ...optionalProjectId(metadata),
 });
+
+/**
+ * "Started under a Project" (`projectId`): absent stays absent. Unlike a marker, a non-string or blank value does not
+ * make the run unreadable (DESIGN rule 7): it is dropped with a warning naming the run, so the run reads as not started
+ * under a Project; the file is not changed by reading it.
+ */
+const optionalProjectId = (metadata: AgentRunMetadata): { projectId?: string } => {
+  const value: unknown = metadata.projectId;
+  if (value === undefined || value === null) return {};
+  if (typeof value === "string" && value.trim()) return { projectId: value.trim() };
+  logger.warn(`RUN_PROJECT_ID_IGNORED: run '${String(metadata.runId).trim()}' has an invalid projectId; it reads as not started under a Project.`);
+  return {};
+};
 
 /** An optional run marker (autobyteus-32): absent stays absent; a present value must be a known one. */
 const optionalMarker = <K extends string, V extends string>(key: K, value: unknown, allowed: readonly V[]): Partial<Record<K, V>> => {

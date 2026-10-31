@@ -97,7 +97,7 @@ const mcpStatus = (status: string): FixtureRow => ({ dir: "in", msg: { jsonrpc: 
 describe("AcpAgentRunBackendFactory", () => {
   it("creates a run bound to the agent session id with the composed prompt in the session rules (DS-001)", async () => {
     const { factory, recorded, workingDirectory } = createFactory(fixturePath("prompt"));
-    const runConfig = config();
+    const runConfig = config({ project: { projectId: "project_a1", name: "AutoByteus" } });
     const backend = await factory.beginPreparation({ kind: "new", config: runConfig, runId: "run-1" }).prepare();
     backends.push(backend);
     expect(backend.getPlatformAgentRunId()).toBe(fixtureSessionId("prompt"));
@@ -106,6 +106,8 @@ describe("AcpAgentRunBackendFactory", () => {
     const newSession = recorded().find((message) => message.method === "session/new");
     expect(newSession.params).toMatchObject({ cwd: workingDirectory, mcpServers: [AGENT_TOOLS_MCP_SERVER], _meta: { yoloMode: false } });
     expect(newSession.params._meta.rules).toContain("Reviewer");
+    // REQ-006: grok_build (ACP) gets the Project section of the shared composition.
+    expect(newSession.params._meta.rules).toContain("## Project\n\nYou work in the Project AutoByteus (Project ID project_a1). Use this Project ID with the Project tools; ask the user before working on another Project.");
     expect(Object.keys(newSession.params._meta).sort()).toEqual(["rules", "yoloMode"]);
 
     const batches: AgentRunEvent[][] = [];

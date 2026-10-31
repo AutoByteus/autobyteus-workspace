@@ -8,11 +8,14 @@ import type { AgentRunHistoryIndexRowRecord } from "../store/agent-run-history-i
 import { AgentRunHistoryIndexStore } from "../store/agent-run-history-index-store.js";
 import { AgentRunMetadataStore } from "../store/agent-run-metadata-store.js";
 import type { AgentRunMetadata } from "../store/agent-run-metadata-types.js";
-import { canonicalizeWorkspaceRootPath } from "../utils/workspace-path-normalizer.js";
 import { AgentRunHistoryIdentityResolver } from "./agent-run-history-identity.js";
 import { createRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import { getProjectTaskService, type ProjectTaskService } from "../../projects/services/project-task-service.js";
 import { compactSummary } from "./run-history-service-helpers.js";
+import {
+  normalizeAgentRunHistoryIndexRow as normalizeRow,
+  projectAgentRunHistoryIndexRow,
+} from "./agent-run-history-row-projector.js";
 import {
   createStandaloneRunLiveness,
   type AgentRunActivityLookup,
@@ -73,20 +76,6 @@ export const resetAgentRunHistoryCatalogState = (memoryDir: string): void => {
   state.initPromise = null;
   state.rows = new Map();
 };
-
-const normalizeRow = (
-  row: AgentRunHistoryIndexRowRecord,
-): AgentRunHistoryIndexRowRecord => ({
-  runId: row.runId.trim(),
-  agentDefinitionId: row.agentDefinitionId.trim(),
-  agentName: row.agentName.trim() || row.agentDefinitionId.trim(),
-  workspaceRootPath: canonicalizeWorkspaceRootPath(row.workspaceRootPath),
-  summary: compactSummary(row.summary),
-  createdAt: row.createdAt,
-  archivedAt: row.archivedAt ?? null,
-  terminatedAt: row.terminatedAt ?? null,
-  ...(row.hasCollaboration === true ? { hasCollaboration: true as const } : {}),
-});
 
 const cloneRows = (
   rows: Map<string, AgentRunHistoryIndexRowRecord>,
@@ -165,15 +154,12 @@ export class AgentRunHistoryCatalogService {
   }): Promise<void> {
     const createdAt = input.createdAt ?? input.metadata.preparedAt ?? new Date().toISOString();
     await this.enqueue(async () => {
-      const row = normalizeRow({
+      const row = projectAgentRunHistoryIndexRow({
         runId: input.runId,
-        agentDefinitionId: input.metadata.agentDefinitionId,
+        metadata: input.metadata,
         agentName: await this.resolveAgentName(input.metadata.agentDefinitionId),
-        workspaceRootPath: input.metadata.workspaceRootPath,
         summary: input.summary ?? "",
         createdAt,
-        archivedAt: null,
-        terminatedAt: null,
       });
       if (this.state.rows.has(row.runId) || await this.metadataStore.readMetadata(row.runId)) {
         throw new Error(`Run '${row.runId}' already exists in standalone history.`);

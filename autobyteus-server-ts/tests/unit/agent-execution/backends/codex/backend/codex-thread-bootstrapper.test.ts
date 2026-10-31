@@ -39,6 +39,7 @@ const createRunContext = (input: {
   memberExecutionContext?: MemberExecutionContext | null;
   llmModelIdentifier?: string;
   applicationExecutionContext?: ApplicationExecutionContext | null;
+  project?: { projectId: string; name: string } | null;
 } = {}) =>
   new AgentRunContext({
     runId: "run-1",
@@ -50,6 +51,7 @@ const createRunContext = (input: {
       workspaceId: "workspace-id",
       llmConfig: input.llmConfig ?? null,
       memberExecutionContext: input.memberExecutionContext ?? null,
+      project: input.project ?? null,
       applicationExecutionContext: input.applicationExecutionContext ?? null,
     }),
     runtimeContext: null,
@@ -59,6 +61,7 @@ const createRestoreRunContext = (input: {
   llmConfig?: Record<string, unknown> | null;
   autoExecuteTools?: boolean;
   memberExecutionContext?: MemberExecutionContext | null;
+  project?: { projectId: string; name: string } | null;
 } = {}) =>
   new AgentRunContext({
     runId: "run-restore",
@@ -70,6 +73,7 @@ const createRestoreRunContext = (input: {
       workspaceId: "workspace-id",
       llmConfig: input.llmConfig ?? null,
       memberExecutionContext: input.memberExecutionContext ?? null,
+      project: input.project ?? null,
     }),
     runtimeContext: new CodexAgentRunContext({
       codexThreadConfig: {
@@ -282,6 +286,16 @@ describe("CodexThreadBootstrapper", () => {
       expect(restored.runtimeContext.threadId).toBe("thread-existing");
     },
   );
+
+  it("tells a run started under a Project its Project on create and restore (REQ-006, DS-005)", async () => {
+    const { bootstrapper } = createBootstrapper({ skills: [], requestImplementation: async () => ({ data: [] }) });
+    const project = { projectId: "project_a1", name: "AutoByteus" };
+    const created = await bootstrapper.bootstrapForCreate(createRunContext({ project }), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined });
+    const restored = await bootstrapper.bootstrapForRestore(createRestoreRunContext({ project }), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined });
+    for (const context of [created, restored]) expect(context.runtimeContext.codexThreadConfig.baseInstructions).toContain("## Project\n\nYou work in the Project AutoByteus (Project ID project_a1). Use this Project ID with the Project tools; ask the user before working on another Project.");
+    const plain = await bootstrapper.bootstrapForCreate(createRunContext(), { assertAccepting: () => undefined, ownSkill: () => undefined, ownCodexClient: () => undefined });
+    expect(plain.runtimeContext.codexThreadConfig.baseInstructions).not.toContain("## Project");
+  });
 
   it("resolves Codex sandbox mode from the shared setting normalizer", () => {
     process.env.CODEX_APP_SERVER_SANDBOX = " read-only ";

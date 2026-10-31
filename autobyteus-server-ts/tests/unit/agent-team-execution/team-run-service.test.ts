@@ -1,3 +1,4 @@
+import { configureRunProjectContextReader } from "../../../src/agent-execution/domain/run-project-context.js";
 import { createTeamRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { describe, expect, it, vi } from "vitest";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
@@ -225,6 +226,21 @@ describe("TeamRunService current root lifecycle", () => {
       expect.objectContaining({ phase: "FAILED", runId: "team-1", errorMessage: "terminal failure" }),
     ]);
     unsubscribe?.();
+  });
+
+  it("passes the chosen Project to the Team tree once, and refuses an unknown Project before creating (DS-002)", async () => {
+    const reader = configureRunProjectContextReader({ contextOf: async (id) => (id === "project_a1" ? { projectId: id, name: "AutoByteus" } : null) });
+    try {
+      const { service, mocks } = createSubject();
+      const input = { teamDefinitionId: "team-def-1", teamConfigs: [teamLaunchConfig(RuntimeKind.CODEX_APP_SERVER)],
+        memberConfigs: [launchConfig("/Coordinator", RuntimeKind.CODEX_APP_SERVER), launchConfig("/Reviewer", RuntimeKind.CLAUDE_AGENT_SDK)] };
+      await service.createTeamRun({ ...input, projectId: "project_a1" });
+      expect(mocks.agentTeamRunManager.createTeamRun.mock.calls[0][0].projectId).toBe("project_a1");
+      await service.createTeamRun(input);
+      expect(mocks.agentTeamRunManager.createTeamRun.mock.calls[1][0]).not.toHaveProperty("projectId");
+      await expect(service.createTeamRun({ ...input, projectId: "project_missing" })).rejects.toThrow("PROJECT_NOT_FOUND");
+      expect(mocks.agentTeamRunManager.createTeamRun).toHaveBeenCalledTimes(2);
+    } finally { reader.close(); }
   });
 
   it("builds one canonical mixed root config and records its execution tree", async () => {

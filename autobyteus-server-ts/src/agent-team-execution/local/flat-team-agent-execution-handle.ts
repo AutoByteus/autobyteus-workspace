@@ -164,6 +164,7 @@ export class FlatTeamAgentExecutionHandle implements RetainedAgentExecutionContr
       memberExecutionContext,
       assertInputAllowed: () => this.options.callbacks.assertExecutionInputAllowed(identity),
       applicationExecutionContext: this.options.callbacks.applicationExecutionContext?.(identity) ?? null,
+      projectId: this.options.callbacks.runProjectId?.() ?? null,
       callbacks: {
         publishAgentEvent: (member, event) => this.options.callbacks.publishAgentEvent(member, event),
         commitPlatformBindingChange: async (change) => {

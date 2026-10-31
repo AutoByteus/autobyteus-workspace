@@ -254,6 +254,7 @@ export class CodexThreadBootstrapper {
     const carpenterSystemPrompt = composeSharedCarpenterPrompt({
       agentDefinition,
       memberExecutionContext: runContext.config.memberExecutionContext,
+      project: runContext.config.project,
     });
     const dynamicToolRegistrations: CodexDynamicToolRegistration[] | null = null;
     guard.assertAccepting();

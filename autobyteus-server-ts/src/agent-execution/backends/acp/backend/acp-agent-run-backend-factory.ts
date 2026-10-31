@@ -103,7 +103,7 @@ export class AcpAgentRunBackendFactory implements AgentRunBackendFactory {
   private async createBackend(config: AgentRunConfig, runId: string, owner: AcpPreparationOwner, assertAccepting: () => void, release: () => Promise<void>): Promise<AcpAgentRunBackend> {
     const prepared = await this.prepare(config, runId, owner, assertAccepting);
     const composedPrompt = composeSharedCarpenterPrompt({
-      agentDefinition: prepared.definition, memberExecutionContext: config.memberExecutionContext,
+      agentDefinition: prepared.definition, memberExecutionContext: config.memberExecutionContext, project: config.project,
     });
     const sink = new AcpSessionEventSink();
     const suppliedAt = Date.now() / 1000;

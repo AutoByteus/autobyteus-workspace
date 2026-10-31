@@ -27,6 +27,7 @@ import { MemorySearchResolver } from './types/memory-search.js';
 import { MemorySyncResolver } from './types/memory-sync.js';
 import { RemoteCollaborationSettingsResolver } from './types/remote-collaboration-settings.js';
 import { RunHistoryResolver } from './types/run-history.js';
+import { ProjectRunHistoryResolver } from './types/project-run-history.js';
 import { RunFileChangesResolver } from './types/run-file-changes.js';
 import { TeamCommunicationResolver } from './types/team-communication.js';
 import { TeamRunHistoryResolver } from './types/team-run-history.js';
@@ -80,6 +81,7 @@ export async function buildGraphqlSchema() {
       MemorySyncResolver,
       RemoteCollaborationSettingsResolver,
       RunHistoryResolver,
+      ProjectRunHistoryResolver,
       RunFileChangesResolver,
       TeamCommunicationResolver,
       TeamRunHistoryResolver,

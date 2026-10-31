@@ -20,6 +20,10 @@ import {
   releaseProjectTaskSearchService,
 } from "../projects/search/project-task-search-service.js";
 import { getEmbeddingIndex, shutdownEmbeddingIndex } from "../embeddings/embedding-index.js";
+import { composeProjectRunLinks } from "./project-run-links-composition.js";
+
+/** The run links binding of the composed Task resources, released with them. */
+let projectRunLinks: Readonly<{ close(): void }> | null = null;
 
 /**
  * The Task service's post-commit marks: the `/ws/projects` publisher, and Project Task search for Task writes and
@@ -48,6 +52,8 @@ export const composeProjectTaskExecutionResources = async (deps: Readonly<{
   const taskExecutionResources = new TaskExecutionResourceService(new TaskExecutionResourceStore(
     new ProjectsLayout(path.join(deps.appDataDir, "projects")), adHocTasksLayout));
   await taskExecutionResources.load();
+  projectRunLinks?.close();
+  projectRunLinks = composeProjectRunLinks(taskExecutionResources);
   const service = initializeProjectTaskServiceProcessInstance({
     taskExecutionResources,
     adHocTasks: new AdHocTaskStore(adHocTasksLayout),
@@ -78,6 +84,8 @@ export const composeProjectTaskExecutionResources = async (deps: Readonly<{
 
 /** Host close and startup rollback release the process binding composed above. */
 export const releaseProjectTaskExecutionResources = (port: TaskExecutionResourcePort): void => {
+  projectRunLinks?.close();
+  projectRunLinks = null;
   getProjectChangePublisher().unbind();
   releaseProjectTaskSearchService();
   void shutdownEmbeddingIndex().catch((error: unknown) => console.warn("EMBEDDING_INDEX_SHUTDOWN_FAILED", error));

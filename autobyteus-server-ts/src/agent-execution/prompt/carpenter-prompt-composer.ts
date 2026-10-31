@@ -2,10 +2,12 @@ import path from "node:path";
 import type { AgentDefinition } from "../../agent-definition/domain/models.js";
 import type { MemberExecutionContext } from "../../agent-collaboration/execution/domain/member-execution-context.js";
 import { renderCollaborationSections } from "./collaboration-prompt-sections.js";
+import type { RunProjectContext } from "../domain/run-project-context.js";
 import {
   BASH_OPERATING_PRACTICE_SECTION,
   FILE_AND_DIRECTORY_PRACTICE_SECTION,
   renderAgentIdentitySection,
+  renderProjectSection,
   renderTeamInstructionSection,
   renderWorkingEnvironmentSection,
 } from "./carpenter-prompt-sections.js";
@@ -13,6 +15,8 @@ import {
 export type SharedCarpenterPromptComposerInput = {
   agentDefinition: AgentDefinition;
   memberExecutionContext?: MemberExecutionContext | null;
+  /** The Project the run was started under; its section is omitted when there is none. */
+  project?: RunProjectContext | null;
 };
 
 export type NativeCarpenterPromptComposerInput = SharedCarpenterPromptComposerInput & {
@@ -40,6 +44,7 @@ const buildSharedCarpenterPromptSections = (
     if (teamInstruction) sections.push(teamInstruction);
     sections.push(renderCollaborationSections(member));
   }
+  if (input.project) sections.push(renderProjectSection(input.project));
   return sections;
 };
 

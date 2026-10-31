@@ -21,6 +21,7 @@ import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.
 import { AgentRunIdentityAllocator } from "./agent-run-identity-allocator.js";
 import type { ApplicationExecutionContext } from "../../application-orchestration/domain/models.js";
 import { getAgentRunCommandRegistry } from "./agent-run-command-registry.js";
+import { requireRunProjectId } from "../domain/run-project-context.js";
 import type {
   CancelPreparedAgentRunResult,
   CreateAgentRunInput,
@@ -99,6 +100,7 @@ export class AgentRunProvisioningService {
       applicationExecutionContext: preparedRun.config.applicationExecutionContext,
       ...(input.delegatedFrom ? { delegatedFrom: input.delegatedFrom } : {}),
       ...(input.systemRunOwner ? { systemRunOwner: input.systemRunOwner } : {}),
+      ...(preparedInput.projectId ? { projectId: preparedInput.projectId } : {}),
     };
 
     await this.historyCatalogService.recordPreparedRun({
@@ -174,6 +176,7 @@ export class AgentRunProvisioningService {
     autoExecuteTools: boolean;
     llmConfig: Record<string, unknown> | null;
     applicationBinding: CreateAgentRunInput["applicationBinding"];
+    projectId: string | undefined;
   }> {
     if (!hasNonEmptyString(input.agentDefinitionId)) {
       throw new Error(`agentDefinitionId is required when ${action} a run.`);
@@ -188,6 +191,8 @@ export class AgentRunProvisioningService {
       throw new Error(`runtimeKind is required when ${action} a run.`);
     }
 
+    // The chosen Project must exist before anything is recorded (DS-001).
+    const projectId = await requireRunProjectId(input.projectId);
     const workspaceRootPath = canonicalizeWorkspaceRootPath(input.workspaceRootPath.trim());
     const workspace = await this.workspaceManager.ensureWorkspaceByRootPath(workspaceRootPath);
     const runtimeKind = runtimeKindFromString(input.runtimeKind);
@@ -207,6 +212,7 @@ export class AgentRunProvisioningService {
       autoExecuteTools: input.autoExecuteTools,
       llmConfig: input.llmConfig ?? null,
       applicationBinding: input.applicationBinding ?? null,
+      projectId,
     };
   }
 

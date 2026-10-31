@@ -51,7 +51,7 @@ class RunHistoryItemObject {
 }
 
 @ObjectType()
-class RunHistoryAgentGroupObject {
+export class RunHistoryAgentGroupObject {
   @Field(() => String)
   agentDefinitionId!: string;
 
@@ -123,7 +123,7 @@ class WorkspaceHistoryTeamRunItemObject {
 }
 
 @ObjectType("WorkspaceHistoryTeamDefinitionObject")
-class WorkspaceHistoryTeamDefinitionObject {
+export class WorkspaceHistoryTeamDefinitionObject {
   @Field(() => String)
   teamDefinitionId!: string;
 

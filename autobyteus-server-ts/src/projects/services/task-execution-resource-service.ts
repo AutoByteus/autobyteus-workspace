@@ -17,6 +17,14 @@ type Loaded = { location: TaskLocation; file: TaskExecutionResourceFile };
 type Current = Readonly<{ taskId: string; entry: TaskExecutionResource }>;
 export type TaskExecutionGroup = Readonly<{ hostRoot: RootExecutionIdentity; executions: readonly TaskExecutionReference[] }>;
 export type TaskAssignmentViews = Readonly<{ open: TaskAssignmentView[]; closed: TaskAssignmentView[] }>;
+/**
+ * A Project's run links (or, for `null`, those of Tasks with no Project): the host roots of any assignment of its Tasks
+ * (with whether they host open work of it), and per host root (by `rootExecutionIdentityKey`) the copies that belong to it.
+ */
+export type TaskRunLinks = Readonly<{
+  hostRoots: readonly Readonly<{ hostRoot: RootExecutionIdentity; hasOpenWork: boolean }>[];
+  executionsByHostRoot: ReadonlyMap<string, readonly TaskExecutionReference[]>;
+}>;
 
 /**
  * The sole authority over every Task's `agent_run_resources.json` and the process in-memory view of
@@ -35,6 +43,8 @@ export class TaskExecutionResourceService {
   /** Copies whose current entry is closed, per host root key (then by copy key). */
   private readonly closedByHostRootKey = new Map<string, Map<string, TaskExecutionReference>>();
   private readonly damaged = new Map<string, string>();
+  /** The Project of each damaged Task (`null`: no Project), so a Project's run links can name what they leave out. */
+  private readonly damagedProjectIds = new Map<string, string | null>();
   private readonly chains = new Map<string, Promise<unknown>>();
   private loading: Promise<void> | null = null;
   private loaded = false;
@@ -54,6 +64,7 @@ export class TaskExecutionResourceService {
         catch (error) {
           const message = `Agent run resource data could not be read (${this.store.filePath(location)}: ${error instanceof Error ? error.message : String(error)}). Fix or restore the file and restart the app; other features keep working.`;
           this.damaged.set(location.taskId, message);
+          this.damagedProjectIds.set(location.taskId, location.projectId);
           console.error("TASK_AGENT_RESOURCES_UNAVAILABLE", { taskId: location.taskId, file: this.store.filePath(location), message });
         }
       }
@@ -211,6 +222,45 @@ export class TaskExecutionResourceService {
       .filter(({ location, file }) => location.projectId === null
         && file.executionResources.some(entry => rootExecutionIdentityKey(entry.hostRoot) === rootKey))
       .map(({ location }) => location.taskId);
+  }
+  /**
+   * Which runs work for a Project (`null`: for Tasks with no Project), from the view (REQ-003, REQ-008, DEC-013): every
+   * host root of an entry in one of its Tasks, and the copies that belong to it. A copy belongs to the Project while it
+   * holds an open entry in one of its Tasks (so a copy holding open Tasks of two Projects belongs to both); a copy with
+   * no open entry belongs to the Project of its current (latest) Task. Damaged Tasks are left out, each with a warning.
+   */
+  async runLinksOf(projectId: string | null): Promise<TaskRunLinks> {
+    await this.load();
+    const inProject = (taskId: string): boolean => this.files.get(taskId)?.location.projectId === projectId;
+    const hosts = new Map<string, { hostRoot: RootExecutionIdentity; hasOpenWork: boolean }>();
+    const candidates = new Set<string>();
+    for (const { location, file } of this.files.values()) {
+      if (location.projectId !== projectId) continue;
+      for (const entry of file.executionResources) {
+        const rootKey = rootExecutionIdentityKey(entry.hostRoot);
+        const host = hosts.get(rootKey) ?? { hostRoot: entry.hostRoot, hasOpenWork: false };
+        if (entry.closedAt === null) host.hasOpenWork = true;
+        hosts.set(rootKey, host);
+        candidates.add(taskExecutionReferenceKey(entry.execution));
+      }
+    }
+    const executionsByHostRoot = new Map<string, TaskExecutionReference[]>();
+    for (const key of candidates) {
+      const entries = [...this.entriesByExecution.get(key)?.entries() ?? []];
+      const openHere = entries.filter(([taskId, entry]) => entry.closedAt === null && inProject(taskId))
+        .sort(([, a], [, b]) => b.linkedAt.localeCompare(a.linkedAt))[0]?.[1];
+      const current = this.currentByExecution.get(key);
+      const belongs = openHere ?? (current && current.entry.closedAt !== null && inProject(current.taskId) ? current.entry : undefined);
+      if (!belongs) continue;
+      const rootKey = rootExecutionIdentityKey(belongs.hostRoot);
+      executionsByHostRoot.set(rootKey, [...executionsByHostRoot.get(rootKey) ?? [], belongs.execution]);
+    }
+    for (const [taskId, damagedProjectId] of this.damagedProjectIds) {
+      if (damagedProjectId === projectId && this.damaged.has(taskId)) {
+        console.warn("TASK_AGENT_RESOURCES_UNAVAILABLE", { taskId, projectId, message: this.damaged.get(taskId) });
+      }
+    }
+    return { hostRoots: [...hosts.values()], executionsByHostRoot };
   }
   /** The Task's root: its latest `assigned` entry, from the view; null when never assigned or unreadable. */
   latestAssignment(taskId: string): TaskExecutionResource | null {

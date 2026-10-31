@@ -16,6 +16,7 @@ const allowedRowKeys = new Set([
   "createdAt",
   "archivedAt",
   "terminatedAt",
+  "projectId",
 ]);
 
 export type TeamRunHistoryIndexSnapshot = Readonly<{
@@ -68,6 +69,7 @@ const normalizeRow = (row: TeamRunIndexRowRecord): TeamRunIndexRowRecord => ({
   createdAt: normalizeRequiredString(row.createdAt, "createdAt"),
   archivedAt: normalizeOptionalTimestamp(row.archivedAt),
   terminatedAt: normalizeOptionalTimestamp(row.terminatedAt),
+  ...(row.projectId ? { projectId: row.projectId.trim() } : {}),
 });
 
 const parseIndexFile = (value: unknown): TeamRunIndexFileRecord | null => {
@@ -99,7 +101,8 @@ const parseIndexFile = (value: unknown): TeamRunIndexFileRecord | null => {
         candidate.terminatedAt === undefined ||
         candidate.terminatedAt === null ||
         typeof candidate.terminatedAt === "string"
-      )
+      ) ||
+      !(candidate.projectId === undefined || (typeof candidate.projectId === "string" && candidate.projectId.trim()))
     ) {
       return null;
     }
@@ -113,6 +116,7 @@ const parseIndexFile = (value: unknown): TeamRunIndexFileRecord | null => {
         createdAt: candidate.createdAt,
         archivedAt: candidate.archivedAt ?? null,
         terminatedAt: candidate.terminatedAt ?? null,
+        ...(typeof candidate.projectId === "string" ? { projectId: candidate.projectId } : {}),
       }));
     } catch {
       return null;

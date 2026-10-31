@@ -339,6 +339,7 @@ describe("AutoByteusAgentRunBackendFactory", () => {
         autoExecuteTools: false,
         runtimeKind: RuntimeKind.AUTOBYTEUS,
         memberExecutionContext: createMemberExecutionContext(TeamBackendKind.MIXED),
+        project: { projectId: "project_a1", name: "AutoByteus" },
       }),
       "run-professor", () => undefined
     );
@@ -359,6 +360,9 @@ describe("AutoByteusAgentRunBackendFactory", () => {
     expect(built.agentConfig.systemPrompt).toContain("## Working With Other Agents");
     expect(built.agentConfig.systemPrompt).not.toContain("## Team Runtime");
     expect(built.agentConfig.systemPrompt).toContain("## Working Environment");
+    // REQ-006: a Team member of a Team run started under a Project is told the Project, before the working environment.
+    expect(built.agentConfig.systemPrompt).toContain("## Project\n\nYou work in the Project AutoByteus (Project ID project_a1). Use this Project ID with the Project tools; ask the user before working on another Project.");
+    expect(built.agentConfig.systemPrompt.indexOf("## Project")).toBeLessThan(built.agentConfig.systemPrompt.indexOf("## Working Environment"));
     expect(built.agentConfig.initialCustomData?.teamContext).toEqual({
       root: createTeamRootExecutionIdentity("team-1"),
       memberAddress: "/professor",

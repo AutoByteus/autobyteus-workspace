@@ -58,6 +58,9 @@ export class CreateAgentRunInput {
 
   @Field(() => String, { nullable: true })
   initialSummary?: string | null;
+
+  @Field(() => String, { nullable: true, description: "The Project the run is started under; omitted for a plain run." })
+  projectId?: string | null;
 }
 
 @ObjectType()
@@ -204,6 +207,7 @@ export class AgentRunResolver {
         autoExecuteTools: input.autoExecuteTools,
         llmConfig: input.llmConfig ?? null,
         runtimeKind: input.runtimeKind.trim(),
+        projectId: input.projectId ?? null,
       });
 
       return {
@@ -235,6 +239,7 @@ export class AgentRunResolver {
         llmConfig: input.llmConfig ?? null,
         runtimeKind: input.runtimeKind.trim(),
         initialSummary: input.initialSummary ?? null,
+        projectId: input.projectId ?? null,
       });
 
       return {

@@ -88,6 +88,18 @@ const validateInvariants = (tree: TeamRunExecutionTreeFile): void => {
 };
 
 /**
+ * "Started under a Project": absent stays absent; a non-string or blank value is dropped with a warning naming the
+ * Team run (DESIGN rule 7), so the run reads as not started under a Project and stays readable.
+ */
+const optionalProjectId = (value: unknown, rootTeam: unknown): { projectId?: string } => {
+  if (value === undefined || value === null) return {};
+  if (typeof value === "string" && value.trim()) return { projectId: value.trim() };
+  const teamRunId = (rootTeam as { teamRunId?: unknown } | null)?.teamRunId;
+  console.warn(`RUN_PROJECT_ID_IGNORED: Team run '${String(teamRunId)}' has an invalid projectId; it reads as not started under a Project.`);
+  return {};
+};
+
+/**
  * Reads a TeamRun execution tree tolerantly (REQ-018): known fields are required and
  * validated; `schemaVersion`, `settledAt` and any other unknown field are ignored. The
  * result holds only current fields, so writing it produces the exact current shape.
@@ -107,6 +119,7 @@ export const validateTeamRunExecutionTreePayload = (
     // A Team run a peer node started (autobyteus-247); absent otherwise. A malformed section makes the tree
     // unreadable, as for a standalone run's `run_metadata.json`.
     ...(payload.delegatedFrom === undefined ? {} : { delegatedFrom: parseDelegatedFrom(payload.delegatedFrom) }),
+    ...optionalProjectId(payload.projectId, payload.rootTeam),
   };
   if (expectedRootTeamRunId && tree.rootTeam.teamRunId !== expectedRootTeamRunId) {
     throw new Error(`Execution tree root '${tree.rootTeam.teamRunId}' does not match '${expectedRootTeamRunId}'.`);

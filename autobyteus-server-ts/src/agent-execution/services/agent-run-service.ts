@@ -42,6 +42,8 @@ export interface CreateAgentRunInput {
   delegatedFrom?: DelegatedFrom;
   /** autobyteus-32: the server service that owns the run (never a collaboration member). */
   systemRunOwner?: SystemRunOwner;
+  /** The Project the run is started under (REQ-004); refused with `PROJECT_NOT_FOUND` when it does not exist. */
+  projectId?: string | null;
 }
 
 export interface CreateAgentRunResult {

@@ -57,7 +57,7 @@ export class AgyAgentRunBackendFactory implements AgentRunBackendFactory {
     const definition = await this.definitions.getAgentDefinitionById(config.agentDefinitionId);
     if (!definition) throw new Error(`AGY_AGENT_DEFINITION_MISSING: ${config.agentDefinitionId}`);
     const bindings = this.skills.resolveConfiguredSkillBindingsForAgent(definition);
-    const identity = composeSharedCarpenterPrompt({ agentDefinition: definition, memberExecutionContext: config.memberExecutionContext });
+    const identity = composeSharedCarpenterPrompt({ agentDefinition: definition, memberExecutionContext: config.memberExecutionContext, project: config.project });
     assertAccepting();
     const exposure = resolveRuntimeAgentToolExposure(definition, config.memberExecutionContext);
     const descriptor = this.activateMcp(runId, config, workspacePath, exposure);

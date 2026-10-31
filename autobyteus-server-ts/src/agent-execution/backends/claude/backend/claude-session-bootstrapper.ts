@@ -93,6 +93,7 @@ export class ClaudeSessionBootstrapper {
     const carpenterSystemPrompt = composeSharedCarpenterPrompt({
       agentDefinition,
       memberExecutionContext: runContext.config.memberExecutionContext,
+      project: runContext.config.project,
     });
     const sessionConfig = buildClaudeSessionConfig({
       model: runContext.config.llmModelIdentifier,
