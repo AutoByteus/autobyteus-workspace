@@ -25,7 +25,7 @@ All paths are under `/Users/normy/autobyteus_org/autobyteus-worktrees/update-res
 - Related API/E2E revision IDs: N/A
 - Related delivery revision IDs: N/A
 - Triggering finding IDs: N/A
-- Branch `codex/update-restart-reliability`; base `origin/personal` @ `a977b2c1bc`; code commit `ddb03d0d0b` (on `b1e58c3449`); docs and evidence in the following commit.
+- Branch `codex/update-restart-reliability`; base `origin/personal` @ `a977b2c1bc`; code commit `ddb03d0d0b` (on `2d7f59ef86`); docs and evidence in the following commit.
 
 **D1 (REQ-001).** `autobyteus-server-ts/src/shutdown/server-close-options.ts` exports `SERVER_CLOSE_OPTIONS = { forceCloseConnections: true } as const`, with a comment citing the cause (FU-008, P-002/P-003). It is spread first into all four `fastify({...})` constructions: `build-studio-server.ts`, `build-standalone-application-server.ts`, `agent-tools-mcp-local-server.ts`, `credential-proxy-local-server.ts`. No other server construction exists in `src` (grep `fastify(`). Fastify 5.12.7 cuts the remaining connections after `preClose` and before `server.close()`, so the native drain and the WebSocket close still run first; the test asserts that a client connection is still open during `preClose`.
 
