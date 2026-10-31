@@ -1,5 +1,5 @@
 import fastify, { LogController, type FastifyInstance } from "fastify";
-import { SERVER_CLOSE_OPTIONS } from "../shutdown/server-close-options.js";
+import { installClientConnectionClose } from "../shutdown/client-connection-close.js";
 import websocket from "@fastify/websocket";
 import type { LoggingConfig } from "../config/logging-config.js";
 import { getFastifyLoggerOptions } from "../logging/runtime-logger-bootstrap.js";
@@ -17,7 +17,6 @@ export const buildStandaloneApplicationServer = async (input: {
   loggingConfig: LoggingConfig;
 }): Promise<FastifyInstance> => {
   const app = fastify({
-    ...SERVER_CLOSE_OPTIONS,
     logger: getFastifyLoggerOptions(input.loggingConfig),
     logController: new LogController({ disableRequestLogging: true }),
     routerOptions: { maxParamLength: SERVER_ROUTE_PARAM_MAX_LENGTH },
@@ -43,6 +42,8 @@ export const buildStandaloneApplicationServer = async (input: {
         input.applicationRuntime.realtime.agentCommunication,
     });
     await registerStandaloneApplicationStaticRoutes(app, input.selection);
+    // Last preClose hook: after the WebSocket plugin's client close.
+    installClientConnectionClose(app);
     return app;
   } catch (error) {
     await app.close();
