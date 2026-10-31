@@ -115,3 +115,7 @@
 - AR-005: dependency rule reworded (new code through ports; existing imports stay); Team owner named (E-040); `RunProjectContextReader` beside `RunProjectContext`.
 - Classification unchanged: Large / High.
 - Next action: re-review by the architecture reviewer.
+
+### Review receipt (informational, no new round)
+
+- ARCH-REV-002 **Pass** on SR-008 (2026-10-31), architecture reviewer run `architecture_reviewer_b0cc3811df7e474eb5031669010fe5f1`; AR-001…AR-005 resolved; classification Large / High. Report: `design-review-report.md`; record: `architecture-review-revision-record.md`. The reviewer routed the package to `/software_engineering_team/implementation_engineer`; no duplicate forwarding.
