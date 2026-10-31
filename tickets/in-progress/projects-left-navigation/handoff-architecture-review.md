@@ -52,3 +52,16 @@ ARCH-REV-001 failed with AR-001…AR-005. This revision answers each finding:
 Current documents: `requirements-doc.md` (R4 with REQ-008 refined, SR-008), `investigation-notes.md` (E-001…E-040), `design-spec.md` (SR-008), `solution-revision-record.md` (SR-001…SR-008) and `follow-ups.md` (FU-001…FU-005; FU-006 withdrawn).
 
 The classification is unchanged: Large / High.
+
+## Re-review request — SR-009 (2026-10-31), after code review CRR-001
+
+- Trigger: code review CRR-001 (`code-review-report.md`, code reviewer run `code_reviewer_57a254760a3346d4b0d1cdb6588e331e`) on IR-001 at `73d598c008` raised CR-001 (Design Impact). The optional `projectId` on Agent/Team history index rows breaks the approved Data Continuity constraint, because released index readers reject unknown row keys: they return an empty index and the catalog writes it back on the next run creation (E-041, verified).
+- Decision: the constraint stays as approved; the requirements are unchanged. The "started under a Project" record moves to a new Projects-owned file, `projects/<projectId>/project_runs.json` (E-042). Older builds never open it.
+  - It is written through a new `RunProjectStarts.recordStart(projectId, root)` port, after the run id is allocated and before the run's records (the same link-before-resources order Task links use). An unknown Project is refused with `PROJECT_NOT_FOUND`.
+  - It is read through `ProjectRunLinks.startedRunsOf(projectId)`, joined with the catalog rows, and through `RunProjectContextReader.contextOfRun(root)`.
+  - `ProjectRunService` (projects) owns the file and its in-memory view.
+  - Run metadata, index rows and the Team tree are unchanged. IR-001's `projectId` keys get reverted.
+- Changed design sections: Basis, Evidence (E-041, E-042), Change Scope, Persisted Data, DS-001/002/005 rows and narratives, Ownership Map and Boundaries, Interface Mapping, Naming, Allocation, File Mapping, Removal Plan, Compatibility log, Sequence step 2, Risk rationale. The classification is unchanged: Large / High.
+- `docs/design-cases.md` gains Case 14.
+- CR-002 (a misplaced doc comment) stays an implementation Local Fix and goes along with this revision.
+- After a pass: implementation applies SR-009 and CR-002, then the package returns to the code reviewer before API/E2E.
