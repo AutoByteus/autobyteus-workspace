@@ -17,12 +17,12 @@ afterEach(async () => { vi.restoreAllMocks(); await cleanupDirectories(); });
 
 const THREAD_ID = "33333333-3333-4333-8333-333333333333";
 const PENDING = {
-  requestedAt: "2026-10-30T10:00:00.000Z",
+  switchId: "switch-uuid-1",
   from: { runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "sonnet", llmConfig: null, platformAgentRunId: "session-1" },
 };
 
 describe("the first message after a saved agent runtime switch, through the real root and host handle", () => {
-  it("builds the host member context, then the lifecycle makes the switch with it: fresh session, marker, commit without the pending field, notice", async () => {
+  it("builds the host member context, then the lifecycle makes the switch with it: fresh session, marker, commit without the pending field", async () => {
     const f = await buildManager();
     f.host.crash();
     const pending: AgentRunMetadata = metadata(f.memoryDir, { runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "gpt-5", platformAgentRunId: null, pendingRuntimeSwitch: PENDING });
@@ -45,8 +45,11 @@ describe("the first message after a saved agent runtime switch, through the real
       restorePreparation: vi.fn(), platformPreparation: vi.fn(),
     });
     let stored: AgentRunMetadata = pending;
-    const memory = { record: vi.fn(() => { order.push("record"); }) };
-    const notices = { register: vi.fn(() => { order.push("register"); }) };
+    const memory = {
+      begin: vi.fn((_dir: string, runtimeSwitch: unknown) => { order.push("begin"); return { runtimeSwitch, watermarkTraceId: null }; }),
+      record: vi.fn(() => { order.push("record"); }),
+      discard: vi.fn(() => { order.push("discard"); }),
+    };
     const lifecycle = new StandaloneAgentRunLifecycleService("/unused", {
       agentRunManager: manager as never,
       metadataService: { readMetadataState: vi.fn(async () => ({ kind: "present" as const, metadata: stored })) } as never,
@@ -59,7 +62,7 @@ describe("the first message after a saved agent runtime switch, through the real
       workspaceManager: { ensureWorkspaceByRootPath: vi.fn(async () => ({ workspaceId: "workspace-1" })) } as never,
       tokenUsageReadiness: { assertCurrentSchemaReady: () => undefined, assertExistingRunRestoreReady: () => undefined },
       modelSelectionValidator: { validate: vi.fn() } as never,
-      switching: { memory, notices },
+      switching: { memory },
     });
     f.restores.mockImplementation(async (hostRunId, input) => {
       f.contexts.push(input.memberExecutionContext!);
@@ -71,10 +74,10 @@ describe("the first message after a saved agent runtime switch, through the real
 
     expect(root).toBeTruthy();
     expect(f.contexts[0]?.identity).toMatchObject({ agentRunId: HOST, memberAddress: "/research_assistant" });
-    expect(order).toEqual(["prepare:codex_app_server", "record", "commit", "publish", "register"]);
+    expect(order).toEqual(["begin", "prepare:codex_app_server", "record", "commit", "publish"]);
     expect(stored.platformAgentRunId).toBe(THREAD_ID);
     expect(Object.hasOwn(stored, "pendingRuntimeSwitch")).toBe(false);
-    expect(memory.record).toHaveBeenCalledWith(pending.memoryDir, expect.objectContaining({
-      from: { runtimeKind: "claude_agent_sdk", llmModelIdentifier: "sonnet" }, to: { runtimeKind: "codex_app_server", llmModelIdentifier: "gpt-5" } }));
+    expect(memory.record).toHaveBeenCalledWith(pending.memoryDir, expect.objectContaining({ runtimeSwitch: expect.objectContaining({
+      from: { runtimeKind: "claude_agent_sdk", llmModelIdentifier: "sonnet" }, to: { runtimeKind: "codex_app_server", llmModelIdentifier: "gpt-5" } }) }));
   });
 });

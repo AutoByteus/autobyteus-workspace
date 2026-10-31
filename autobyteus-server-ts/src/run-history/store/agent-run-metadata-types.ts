@@ -35,9 +35,12 @@ export type AgentRunMetadata = {
 /** What a run's agent runtime binds it to: the agent runtime, model, model settings and the provider's own session. */
 export type RunProviderBinding = Pick<AgentRunMetadata, "runtimeKind" | "llmModelIdentifier" | "llmConfig" | "platformAgentRunId">;
 
-/** `requestedAt` is the time of the first pending save (part of the switch key); `from` is the binding before it. */
+/**
+ * `switchId` is the identity of this switch (made at the first pending save, kept by later saves, new after an undo; part of
+ * the switch key); `from` is the binding before it.
+ */
 export type PendingRuntimeSwitch = Readonly<{
-  requestedAt: string;
+  switchId: string;
   from: RunProviderBinding;
 }>;
 

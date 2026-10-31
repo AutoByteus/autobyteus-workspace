@@ -9,6 +9,7 @@ import { AgentRunHistoryCatalogService } from "../../run-history/services/agent-
 import { getWorkspaceManager } from "../../workspaces/workspace-manager.js";
 import { AgentRunManager } from "./agent-run-manager.js";
 import type { AgentRunActivationCandidate } from "./agent-run-activation-candidate.js";
+import type { AgentRunActivationOperation } from "./agent-run-activation-operation.js";
 import {
   AgentRunActivationError,
   PreviousRuntimeReleasePendingError,
@@ -20,7 +21,7 @@ import type { RunModelConfigUpdateResult } from "../../run-history/domain/run-mo
 import type { MemberExecutionContext } from "../../agent-collaboration/execution/domain/member-execution-context.js";
 import { isCollaborationEligibleStandaloneRun } from "./standalone-agent-run-eligibility.js";
 import { buildRuntimeSwitch } from "../domain/runtime-switch.js";
-import type { RuntimeSwitching } from "../domain/runtime-switch-ports.js";
+import type { RuntimeSwitchTicket, RuntimeSwitching } from "../domain/runtime-switch-memory-port.js";
 import type { StandaloneHostTerminationResult } from "./standalone-run-ports.js";
 import {
   StandaloneStoppedRunSelectionUpdater,
@@ -228,41 +229,73 @@ export class StandaloneAgentRunLifecycleService {
   }
 
   /**
-   * The first input after a saved agent runtime switch (autobyteus-316): a fresh session of the new agent runtime on the same
-   * run, then the marker and the archive of the previous agent's records, then the metadata commit that clears the pending
-   * switch, then the hand-over notice for the first input. A failure before the commit leaves the metadata pending, so
-   * sending again completes the switch; the memory port is idempotent by the switch key, so nothing is written twice.
+   * The first input after a saved agent runtime switch (autobyteus-316). In order: a ticket (the switch and the watermark: the
+   * last record the previous agent wrote; nothing is written), a fresh session of the new agent runtime (its candidate may
+   * write records of its own while it prepares), the archive step behind the marker, the metadata commit that clears the
+   * pending switch, and the publication. The hand-over notice is not registered here: it is derived from the raw traces when
+   * the first input is dispatched.
+   *
+   * A failure before the archive step succeeded leaves nothing behind: the candidate is aborted, and only when its release is
+   * confirmed are the records it wrote after the watermark removed, so the previous agent's file is what it was. A failure
+   * after the marker leaves the metadata pending; sending again finds the marker and the segment and completes the switch.
    */
   private async activateSwitched(metadata: AgentRunMetadata, input: StandaloneHostActivationInput): Promise<StandaloneAgentRunActivationResult> {
     const runtimeSwitch = buildRuntimeSwitch(metadata);
     if (!this.switching || !runtimeSwitch) {
-      // Fails closed before anything changes; the save of a switch is rejected for runs built without the ports.
+      // Fails closed before anything changes; the save of a switch is rejected for runs built without the port.
       throw new Error(`Run '${metadata.runId}' has a pending agent runtime switch that this activation cannot make.`);
     }
+    const memory = this.switching.memory;
     this.tokenUsageReadiness.assertExistingRunRestoreReady();
     const config = await this.buildConfig(metadata, input);
-    const candidate = await this.agentRunManager.beginActivation({ kind: "new", runId: metadata.runId, config }).prepare();
-    await this.validateCandidateOrAbort(candidate, metadata.runtimeKind, metadata.runId);
+    const ticket = memory.begin(metadata.memoryDir, runtimeSwitch);
+    const operation = this.agentRunManager.beginActivation({ kind: "new", runId: metadata.runId, config });
+    let prepared: AgentRunActivationCandidate | null = null;
     try {
-      this.switching.memory.record(metadata.memoryDir, runtimeSwitch);
+      prepared = await operation.prepare();
+      const mismatch = this.candidateIdentityError(prepared, metadata.runtimeKind, metadata.runId);
+      if (mismatch) throw mismatch;
+      memory.record(metadata.memoryDir, ticket);
     } catch (error) {
-      await this.abortForRetry(candidate);
+      await this.discardFailedSwitchAttempt(operation, prepared, ticket, metadata.memoryDir);
       throw error;
     }
+    // From here the marker is in the file: a failure leaves the switch pending and nothing is discarded.
     const { pendingRuntimeSwitch: _pending, ...withoutPending } = metadata;
-    const result = await this.persistAndPublish({
-      candidate,
+    return this.persistAndPublish({
+      candidate: prepared,
       original: metadata,
       target: {
         ...withoutPending,
-        runtimeKind: candidate.runtimeKind,
-        platformAgentRunId: candidate.platformAgentRunId,
+        runtimeKind: prepared.runtimeKind,
+        platformAgentRunId: prepared.platformAgentRunId,
         startedAt: metadata.startedAt!,
       },
       unchangedIsRetryable: true,
     });
-    this.switching.notices.register(runtimeSwitch);
-    return result;
+  }
+
+  /**
+   * Removes what a failed switch attempt's candidate wrote after the watermark, but only when the candidate's release is
+   * confirmed: a candidate that is quarantined or still closing may still write, so nothing is discarded and the run stays
+   * quarantined until restart or until its release is joined (as the activation code does for every failure). A prepared
+   * candidate is aborted first, and an abort that cannot be confirmed ends the attempt with the cleanup error; when prepare
+   * itself threw there is no candidate, and the activation operation says whether its own cleanup was confirmed. A discard that
+   * itself fails is logged and does not hide the attempt's own error.
+   */
+  private async discardFailedSwitchAttempt(
+    operation: AgentRunActivationOperation,
+    candidate: AgentRunActivationCandidate | null,
+    ticket: RuntimeSwitchTicket,
+    memoryDir: string,
+  ): Promise<void> {
+    if (candidate) await this.abortForRetry(candidate);
+    else if (operation.inspect() !== "released") return;
+    try {
+      this.switching!.memory.discard(memoryDir, ticket);
+    } catch (error) {
+      console.warn(`RUNTIME_SWITCH_DISCARD_FAILED:${ticket.runtimeSwitch.runId}: ${String(error)}`);
+    }
   }
 
   private async restoreStarted(metadata: AgentRunMetadata, input: StandaloneHostActivationInput): Promise<StandaloneAgentRunActivationResult> {
@@ -379,12 +412,12 @@ export class StandaloneAgentRunLifecycleService {
     );
   }
 
-  private async validateCandidateOrAbort(
+  private candidateIdentityError(
     candidate: AgentRunActivationCandidate,
     runtimeKind: RuntimeKind,
     runId: string,
-  ): Promise<void> {
-    const error = candidate.runId !== runId || candidate.runtimeKind !== runtimeKind
+  ): Error | null {
+    return candidate.runId !== runId || candidate.runtimeKind !== runtimeKind
       ? new Error("AgentRun activation candidate identity does not match its metadata.")
       : isExternalProviderRuntimeKind(runtimeKind) &&
           (!candidate.platformAgentRunId || candidate.platformAgentRunId === runId)
@@ -393,6 +426,14 @@ export class StandaloneAgentRunLifecycleService {
             "The external runtime did not provide a valid provider conversation identity.",
           )
         : null;
+  }
+
+  private async validateCandidateOrAbort(
+    candidate: AgentRunActivationCandidate,
+    runtimeKind: RuntimeKind,
+    runId: string,
+  ): Promise<void> {
+    const error = this.candidateIdentityError(candidate, runtimeKind, runId);
     if (!error) return;
     await this.abortForRetry(candidate);
     throw error;

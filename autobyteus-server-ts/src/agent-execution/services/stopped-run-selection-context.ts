@@ -4,15 +4,18 @@ import type { AgentRunMetadata } from "../../run-history/store/agent-run-metadat
 
 /**
  * The context a stopped run's selection is validated in: the selection's own agent runtime, and the stored model as the
- * "current" one only when that is the run's runtime. Another agent runtime has no current model, so the selection is a fresh
- * one (the native capacity rule compares against a current model and is skipped). The one owner of this rule: the updater and
+ * "current" one only when that is the run's runtime and no switch is pending. Another agent runtime has no current model, and
+ * while a switch is pending the stored model is the pending one, which has never run: the selection is a fresh one (the native
+ * capacity rule compares against a current model and is skipped). The one owner of this rule: the updater and
  * the root manager's host validation use it.
  */
 export const selectionContextFor = (
-  metadata: Pick<AgentRunMetadata, "runtimeKind" | "llmModelIdentifier" | "workspaceRootPath">,
+  metadata: Pick<AgentRunMetadata, "runtimeKind" | "llmModelIdentifier" | "workspaceRootPath" | "pendingRuntimeSwitch">,
   selection: Readonly<{ runtimeKind: RuntimeKind }>,
 ): RunModelValidationContext => ({
   runtimeKind: selection.runtimeKind,
-  currentModelIdentifier: selection.runtimeKind === metadata.runtimeKind ? metadata.llmModelIdentifier : null,
+  currentModelIdentifier: selection.runtimeKind === metadata.runtimeKind && !metadata.pendingRuntimeSwitch
+    ? metadata.llmModelIdentifier
+    : null,
   workspaceRootPath: metadata.workspaceRootPath,
 });

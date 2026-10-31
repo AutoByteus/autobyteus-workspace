@@ -182,7 +182,7 @@ describe("AgentRunHistoryCatalogService", () => {
 
   describe("an agent runtime switch (autobyteus-316)", () => {
     const pending = {
-      requestedAt: "2026-10-30T10:00:00.000Z",
+      switchId: "switch-uuid-1",
       from: { runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "sonnet", llmConfig: { effort: "low" }, platformAgentRunId: "session-1" },
     };
     const switchedRun = async () => {
@@ -197,20 +197,20 @@ describe("AgentRunHistoryCatalogService", () => {
     it("a settings save of another agent runtime records the new binding and the pending switch; the same run stays", async () => {
       const { service, file } = await switchedRun();
       const committed = await service.commitRunRuntimeSwitch({
-        runId: "run-1", requestedAt: pending.requestedAt,
+        runId: "run-1", switchId: pending.switchId,
         selection: { runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "gpt-5", llmConfig: null },
       });
       expect(committed.kind).toBe("committed");
       expect(await readFile(file)).toMatchObject({
         runId: "run-1", runtimeKind: "codex_app_server", llmModelIdentifier: "gpt-5", llmConfig: null, platformAgentRunId: null,
         startedAt: "2026-03-26T10:01:00.000Z",
-        pendingRuntimeSwitch: { requestedAt: pending.requestedAt, from: { runtimeKind: "claude_agent_sdk", llmModelIdentifier: "model-1", platformAgentRunId: "session-1" } },
+        pendingRuntimeSwitch: { switchId: pending.switchId, from: { runtimeKind: "claude_agent_sdk", llmModelIdentifier: "model-1", platformAgentRunId: "session-1" } },
       });
     });
 
     it("the activation commit clears the pending switch in the same write that sets the session, and the run is reactivated in the history", async () => {
       const { service, file } = await switchedRun();
-      await service.commitRunRuntimeSwitch({ runId: "run-1", requestedAt: pending.requestedAt,
+      await service.commitRunRuntimeSwitch({ runId: "run-1", switchId: pending.switchId,
         selection: { runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "gpt-5", llmConfig: null } });
       await service.recordRunTerminated({ runId: "run-1", terminatedAt: "2026-03-26T11:00:00.000Z" });
 
@@ -229,10 +229,10 @@ describe("AgentRunHistoryCatalogService", () => {
 
     it("without the flag the pending switch stays (an ordinary start never removes it)", async () => {
       const { service, file } = await switchedRun();
-      await service.commitRunRuntimeSwitch({ runId: "run-1", requestedAt: pending.requestedAt,
+      await service.commitRunRuntimeSwitch({ runId: "run-1", switchId: pending.switchId,
         selection: { runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "gpt-5", llmConfig: null } });
       await service.recordRunStarted({ runId: "run-1", platformAgentRunId: "thread-9" });
-      expect((await readFile(file)).pendingRuntimeSwitch).toMatchObject({ requestedAt: pending.requestedAt });
+      expect((await readFile(file)).pendingRuntimeSwitch).toMatchObject({ switchId: pending.switchId });
     });
   });
 

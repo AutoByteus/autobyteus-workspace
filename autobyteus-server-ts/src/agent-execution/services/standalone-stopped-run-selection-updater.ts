@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import type { AgentRunMetadata } from "../../run-history/store/agent-run-metadata-types.js";
 import type { AgentRunMetadataService } from "../../run-history/services/agent-run-metadata-service.js";
 import type { AgentRunHistoryCatalogService } from "../../run-history/services/agent-run-history-catalog-service.js";
@@ -101,6 +102,7 @@ export class StandaloneStoppedRunSelectionUpdater {
     const committed = await this.deps.historyCatalogService.commitRunRuntimeSwitch({
       runId,
       selection: { runtimeKind: input.runtimeKind, ...validation.selection },
+      switchId: randomUUID(),
     });
     if (committed.kind === "committed" || committed.kind === "unchanged") {
       return this.result({

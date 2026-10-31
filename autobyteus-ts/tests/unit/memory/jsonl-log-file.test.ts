@@ -11,7 +11,9 @@ import {
   JsonlLogDamagedError,
   jsonlLogEndsCleanly,
   readJsonlRecords,
+  readLastJsonlRecord,
   repairJsonlDamagedEnd,
+  scanJsonlRecordsFromStart,
   serializeJsonlRecords,
 } from '../../../src/memory/store/jsonl-log-file.js';
 
@@ -207,5 +209,43 @@ describe('serializeJsonlRecords', () => {
   it('writes one newline-terminated line per record and nothing for no records', () => {
     expect(serializeJsonlRecords([A, B])).toBe(`${JSON.stringify(A)}\n${JSON.stringify(B)}\n`);
     expect(serializeJsonlRecords([])).toBe('');
+  });
+});
+
+describe('scanJsonlRecordsFromStart and readLastJsonlRecord (bounded, read-only)', () => {
+  const big = (id: string) => ({ id, content: 'ü日本語✓'.repeat(9000) });
+
+  it('visit records across chunk boundaries in order and stop when told to', () => {
+    const records = [big('a'), { id: 'b' }, big('c'), big('d')];
+    const filePath = fileWith(...records.map(line));
+    const seen: string[] = [];
+    scanJsonlRecordsFromStart(filePath, (record) => { seen.push(String(record.id)); return record.id !== 'c'; });
+    expect(seen).toEqual(['a', 'b', 'c']);
+    const all: unknown[] = [];
+    scanJsonlRecordsFromStart(filePath, (record) => { all.push(record); return true; });
+    expect(all).toEqual(records);
+  });
+
+  it('count a last record whose newline never landed, stop at a damaged line and leave the file untouched', () => {
+    const noNewline = fileWith(line(A), JSON.stringify(B));
+    const seen: unknown[] = [];
+    scanJsonlRecordsFromStart(noNewline, (record) => { seen.push(record); return true; });
+    expect(seen).toEqual([A, B]);
+    const damaged = fileWith(line(A), '{"id":"cu');
+    const before = fs.readFileSync(damaged);
+    const visited: unknown[] = [];
+    scanJsonlRecordsFromStart(damaged, (record) => { visited.push(record); return true; });
+    expect(visited).toEqual([A]);
+    expect(fs.readFileSync(damaged).equals(before)).toBe(true);
+    expect(() => scanJsonlRecordsFromStart(path.join(os.tmpdir(), 'no-such-jsonl-file'), () => true)).not.toThrow();
+  });
+
+  it('read the last complete record, skipping zero bytes and a damaged end, growing the window for a long record', () => {
+    expect(readLastJsonlRecord(fileWith(line(A), line(B)))).toEqual(B);
+    expect(readLastJsonlRecord(fileWith(line(A), line(B), zeros(40)))).toEqual(B);
+    expect(readLastJsonlRecord(fileWith(line(A), line(B), '{"id":"cu'))).toEqual(B);
+    expect(readLastJsonlRecord(fileWith(line(A), line(big('long'))))).toEqual(big('long'));
+    expect(readLastJsonlRecord(fileWith(''))).toBeNull();
+    expect(readLastJsonlRecord(path.join(os.tmpdir(), 'no-such-jsonl-file'))).toBeNull();
   });
 });

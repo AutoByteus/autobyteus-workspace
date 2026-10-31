@@ -198,7 +198,7 @@ describe.runIf(ENABLED)("agent runtime switch, native runtime and stopped-run se
     expect(pendingToAgy).toMatchObject({ runtimeKind: AGY, platformAgentRunId: null, pendingRuntimeSwitch: { from: expect.objectContaining({ runtimeKind: NATIVE }) } });
     expect(activeRecords(runId).map((record) => record.id), "the save changed no raw trace").toEqual(nativeIds);
     expect(existsSync(path.join(runDir(runId), "raw_traces_000001.jsonl")), "nothing archived by the save").toBe(false);
-    const keyOne = `runtime_switch:${runId}:${pendingToAgy.pendingRuntimeSwitch.requestedAt}`;
+    const keyOne = `runtime_switch:${runId}:${pendingToAgy.pendingRuntimeSwitch.switchId}`;
 
     const agyTurn = await talk(runId, "ECHO_INPUT", "antigravity first turn");
     // I-7 on native -> AGY: the archived segment holds exactly the native agent's records.
@@ -227,7 +227,7 @@ describe.runIf(ENABLED)("agent runtime switch, native runtime and stopped-run se
     expect(await save(runId, NATIVE, nativeModel)).toMatchObject({ success: true, outcome: "UPDATED" });
     const pendingToNative = await metadata(runId);
     expect(pendingToNative).toMatchObject({ runtimeKind: NATIVE, platformAgentRunId: null, pendingRuntimeSwitch: { from: expect.objectContaining({ runtimeKind: AGY }) } });
-    const keyTwo = `runtime_switch:${runId}:${pendingToNative.pendingRuntimeSwitch.requestedAt}`;
+    const keyTwo = `runtime_switch:${runId}:${pendingToNative.pendingRuntimeSwitch.switchId}`;
     const requestsBefore = lm.requests.length;
     await talk(runId, "NATIVE-TURN-TWO: carry on.", "native second turn");
     // I-7 on AGY -> native: segment 2 = the first marker and exactly the Antigravity agent's records, none of the native candidate's.
@@ -315,7 +315,7 @@ describe.runIf(ENABLED)("agent runtime switch, native runtime and stopped-run se
     expect(existsSync(path.join(runDir(runId), "raw_traces_000001.jsonl"))).toBe(false);
 
     // The first message makes the switch: marker, archive, notice before the user's text, once.
-    const key = `runtime_switch:${runId}:${pending.pendingRuntimeSwitch.requestedAt}`;
+    const key = `runtime_switch:${runId}:${pending.pendingRuntimeSwitch.switchId}`;
     await talk(runId, "ECHO_INPUT", "antigravity first turn after the switch");
     expect(readRaw(path.join(runDir(runId), "raw_traces_000001.jsonl")).map((record) => record.id), "segment 1 = the native agent's records").toEqual(nativeIds);
     const active = activeRecords(runId);
@@ -377,7 +377,7 @@ describe.runIf(ENABLED)("agent runtime switch, native runtime and stopped-run se
     expect(tree).toContain(copyId);
 
     // The host's first message makes its switch while the copy stays registered under it.
-    const key = `runtime_switch:${hostId}:${hostAfter.pendingRuntimeSwitch.requestedAt}`;
+    const key = `runtime_switch:${hostId}:${hostAfter.pendingRuntimeSwitch.switchId}`;
     await talk(hostId, "NATIVE-HOST-TURN: continue.", "host first turn after the combined Save");
     expect(activeRecords(hostId)[0]).toMatchObject({ trace_type: "system_task_notification", correlation_id: key });
     expect(await metadata(hostId)).toMatchObject({ runtimeKind: NATIVE });

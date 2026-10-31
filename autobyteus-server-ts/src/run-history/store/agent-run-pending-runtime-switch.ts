@@ -1,6 +1,6 @@
 import { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type { AgentRunMetadata, PendingRuntimeSwitch } from "./agent-run-metadata-types.js";
-import { isoTimestamp, nullableString, objectRecord, requiredString, requireKeys } from "./run-execution-tree-shared-record-schemas.js";
+import { nullableString, objectRecord, requiredString, requireKeys } from "./run-execution-tree-shared-record-schemas.js";
 
 /**
  * The `pendingRuntimeSwitch` section of a standalone run's metadata, read with the exact keys and written back exactly.
@@ -9,7 +9,7 @@ import { isoTimestamp, nullableString, objectRecord, requiredString, requireKeys
  */
 export const parsePendingRuntimeSwitch = (value: unknown, label = "pendingRuntimeSwitch"): PendingRuntimeSwitch => {
   const section = objectRecord(value, label);
-  requireKeys(section, ["requestedAt", "from"], label);
+  requireKeys(section, ["switchId", "from"], label);
   const from = objectRecord(section.from, `${label}.from`);
   requireKeys(from, ["runtimeKind", "llmModelIdentifier", "llmConfig", "platformAgentRunId"], `${label}.from`);
   const runtimeKind = requiredString(from.runtimeKind, `${label}.from.runtimeKind`);
@@ -18,7 +18,7 @@ export const parsePendingRuntimeSwitch = (value: unknown, label = "pendingRuntim
   }
   const llmConfig = from.llmConfig === null ? null : objectRecord(from.llmConfig, `${label}.from.llmConfig`);
   return {
-    requestedAt: isoTimestamp(section.requestedAt, `${label}.requestedAt`),
+    switchId: requiredString(section.switchId, `${label}.switchId`),
     from: {
       runtimeKind: runtimeKind as RuntimeKind,
       llmModelIdentifier: requiredString(from.llmModelIdentifier, `${label}.from.llmModelIdentifier`),

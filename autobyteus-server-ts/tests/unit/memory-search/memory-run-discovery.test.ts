@@ -104,7 +104,7 @@ describe("MemoryRunDiscovery", () => {
       agentMetadata: {
         readMetadata: async (runId: string) => ({
           agentDefinitionId: "a", workspaceRootPath: "/w", runtimeKind: RuntimeKind.CODEX_APP_SERVER,
-          ...(runId === "switched_1" ? { pendingRuntimeSwitch: { requestedAt: "2026-10-30T10:00:00.000Z",
+          ...(runId === "switched_1" ? { pendingRuntimeSwitch: { switchId: "2026-10-30T10:00:00.000Z",
             from: { runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "m", llmConfig: null, platformAgentRunId: "s" } } } : {}),
         }) as never,
         readTaskAgentMetadata: async () => null,

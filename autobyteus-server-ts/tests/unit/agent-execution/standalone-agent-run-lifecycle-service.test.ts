@@ -15,7 +15,7 @@ import { AgentRunCommandStatusOverlayStore } from "../../../src/agent-execution/
 import { configureTokenUsageCapability } from "../../../src/token-usage/providers/token-usage-capability.js";
 import type { StandaloneRunCommandPort } from "../../../src/agent-execution/services/standalone-run-ports.js";
 import { PreviousRuntimeReleasePendingError } from "../../../src/agent-execution/errors.js";
-import type { RuntimeSwitching } from "../../../src/agent-execution/domain/runtime-switch-ports.js";
+import type { RuntimeSwitching } from "../../../src/agent-execution/domain/runtime-switch-memory-port.js";
 
 vi.mock("../../../src/run-history/services/root-run-package-readiness-index.js", () => ({
   RootRunPackageReadinessIndex: class { assertAdmitted = async () => undefined; },
@@ -447,6 +447,7 @@ describe("StandaloneAgentRunLifecycleService", () => {
     expect(commitRunRuntimeSwitch).toHaveBeenCalledWith({
       runId: RUN_ID,
       selection: { runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "sonnet", llmConfig: { effort: "high" } },
+      switchId: expect.stringMatching(/^[0-9a-f-]{36}$/),
     });
   });
 
@@ -929,44 +930,53 @@ describe("StandaloneAgentRunLifecycleService previous runtime release", () => {
 });
 
 describe("StandaloneAgentRunLifecycleService agent runtime switch (autobyteus-316)", () => {
-  const PENDING_AT = "2026-10-30T10:00:00.000Z";
+  const SWITCH_ID = "switch-uuid-1";
   const switchedMetadata = (overrides: Partial<AgentRunMetadata> = {}): AgentRunMetadata => metadata({
     preparedAt: null, startedAt: "2026-10-29T09:00:00.000Z", runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "gpt-5", platformAgentRunId: null,
-    pendingRuntimeSwitch: { requestedAt: PENDING_AT,
+    pendingRuntimeSwitch: { switchId: SWITCH_ID,
       from: { runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "haiku", llmConfig: null, platformAgentRunId: CLAUDE_SESSION_ID } },
     ...overrides,
   });
   const THREAD_ID = "33333333-3333-4333-8333-333333333333";
+  const WATERMARK = "rt_last_record_of_the_previous_agent";
 
+  /** The memory port: every call is noted in `order` so a test can read the activation sequence. */
   const ports = (order: string[] = []) => {
-    const memory = { record: vi.fn((_dir: string, runtimeSwitch: { key: string }) => { order.push(`record:${runtimeSwitch.key}`); }) };
-    const notices = { register: vi.fn(() => { order.push("register"); }) };
-    return { memory, notices, switching: { memory, notices } as RuntimeSwitching };
+    const memory = {
+      begin: vi.fn((_dir: string, runtimeSwitch: { key: string }) => { order.push("begin"); return { runtimeSwitch, watermarkTraceId: WATERMARK }; }),
+      record: vi.fn((_dir: string, ticket: { runtimeSwitch: { key: string } }) => { order.push(`record:${ticket.runtimeSwitch.key}`); }),
+      discard: vi.fn((_dir: string, _ticket: unknown) => { order.push("discard"); }),
+    };
+    return { memory, switching: { memory } as RuntimeSwitching };
   };
-  const codexCandidate = (order: string[] = []) => candidate({ runtimeKind: RuntimeKind.CODEX_APP_SERVER, platformAgentRunId: THREAD_ID, order });
+  const codexCandidate = (order: string[] = [], extra: Parameters<typeof candidate>[0] = {}) =>
+    candidate({ runtimeKind: RuntimeKind.CODEX_APP_SERVER, platformAgentRunId: THREAD_ID, order, ...extra });
   const withoutPending = (value: AgentRunMetadata): AgentRunMetadata => { const { pendingRuntimeSwitch: _p, ...rest } = value; return rest; };
 
-  it("starts a fresh session of the new agent runtime, records the marker, commits without the pending switch, publishes, then registers the notice (AC-002)", async () => {
+  it("takes a ticket, starts a fresh session of the new agent runtime, records the marker, commits without the pending switch and publishes (AC-002)", async () => {
     const order: string[] = [];
-    const { memory, notices, switching } = ports(order);
+    const { memory, switching } = ports(order);
     const fresh = codexCandidate(order);
     const recordRunStarted = vi.fn(async (input: StartedInput) => { order.push("commit"); return startedMetadata(input); });
-    const current = harness({ metadataStates: [{ kind: "present", metadata: switchedMetadata() }], preparedCandidate: fresh, recordRunStarted, switching });
+    const current = harness({ metadataStates: [{ kind: "present", metadata: switchedMetadata() }], recordRunStarted, switching });
+    current.agentRunManager.newPreparation.mockImplementation(async () => { order.push("prepare"); return fresh; });
 
     const result = await current.service.activateHost(RUN_ID, HOST);
 
-    expect(order).toEqual([`record:runtime_switch:${RUN_ID}:${PENDING_AT}`, "commit", "publish", "register"]);
+    // The ticket comes first, before the candidate can write anything; the notice is not registered (it is derived later).
+    expect(order).toEqual(["begin", "prepare", `record:runtime_switch:${RUN_ID}:${SWITCH_ID}`, "commit", "publish"]);
     expect(current.agentRunManager.newPreparation).toHaveBeenCalledOnce();
     expect(current.agentRunManager.restorePreparation).not.toHaveBeenCalled();
     expect(current.agentRunManager.platformPreparation).not.toHaveBeenCalled();
-    expect(memory.record).toHaveBeenCalledWith("/tmp/standalone-memory", expect.objectContaining({
+    expect(memory.begin).toHaveBeenCalledWith("/tmp/standalone-memory", expect.objectContaining({
       markerText: "Agent runtime changed from Claude Agent SDK (haiku) to Codex App Server (gpt-5).",
       from: { runtimeKind: "claude_agent_sdk", llmModelIdentifier: "haiku" }, to: { runtimeKind: "codex_app_server", llmModelIdentifier: "gpt-5" } }));
+    expect(memory.record).toHaveBeenCalledWith("/tmp/standalone-memory", expect.objectContaining({ watermarkTraceId: WATERMARK }));
+    expect(memory.discard).not.toHaveBeenCalled();
     expect(recordRunStarted).toHaveBeenCalledWith(expect.objectContaining({
       runtimeKind: RuntimeKind.CODEX_APP_SERVER, platformAgentRunId: THREAD_ID, startedAt: "2026-10-29T09:00:00.000Z", clearPendingRuntimeSwitch: true }));
     expect(Object.hasOwn(result.metadata, "pendingRuntimeSwitch")).toBe(false);
     expect(result.metadata).toMatchObject({ runtimeKind: RuntimeKind.CODEX_APP_SERVER, platformAgentRunId: THREAD_ID, startedAt: "2026-10-29T09:00:00.000Z" });
-    expect(notices.register).toHaveBeenCalledWith(expect.objectContaining({ runId: RUN_ID }));
   });
 
   it("the explicit pending field decides, not the missing session ID: a started run with no pending switch and no session is not a switch", async () => {
@@ -976,40 +986,81 @@ describe("StandaloneAgentRunLifecycleService agent runtime switch (autobyteus-31
       restoredCandidate: candidate(), switching,
     });
     await expect(current.service.activateHost(RUN_ID, HOST)).rejects.toThrow("provider conversation identity");
+    expect(memory.begin).not.toHaveBeenCalled();
     expect(memory.record).not.toHaveBeenCalled();
     expect(current.agentRunManager.newPreparation).not.toHaveBeenCalled();
   });
 
-  it("a failure to start the new session changes nothing: no marker, no commit, no notice", async () => {
-    const { memory, notices, switching } = ports();
+  it("a failure to start the new session leaves nothing: the records it wrote are discarded, no marker, no commit", async () => {
+    const order: string[] = [];
+    const { memory, switching } = ports(order);
     const current = harness({ metadataStates: [{ kind: "present", metadata: switchedMetadata() }], switching });
-    current.agentRunManager.newPreparation.mockRejectedValueOnce(new Error("codex is not signed in"));
-    await expect(current.service.activateHost(RUN_ID, HOST)).rejects.toThrow("not signed in");
+    current.agentRunManager.newPreparation.mockRejectedValueOnce(new Error("grok failed after its instruction was written"));
+    await expect(current.service.activateHost(RUN_ID, HOST)).rejects.toThrow("instruction was written");
+    expect(order).toEqual(["begin", "discard"]);
+    expect(memory.discard).toHaveBeenCalledWith("/tmp/standalone-memory", expect.objectContaining({ watermarkTraceId: WATERMARK }));
     expect(memory.record).not.toHaveBeenCalled();
     expect(current.historyCatalogService.recordRunStarted).not.toHaveBeenCalled();
-    expect(notices.register).not.toHaveBeenCalled();
   });
 
-  it("a failure of the marker or archive aborts the candidate before the error propagates; sending again completes the switch with one marker", async () => {
-    const { memory, notices, switching } = ports();
-    const first = codexCandidate();
-    const second = codexCandidate();
-    memory.record.mockImplementationOnce(() => { throw new Error("disk full"); });
+  it("a candidate for another agent runtime is aborted and discarded before the archive step", async () => {
+    const order: string[] = [];
+    const { memory, switching } = ports(order);
+    const wrong = candidate({ runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, order });
+    const current = harness({ metadataStates: [{ kind: "present", metadata: switchedMetadata() }], preparedCandidate: wrong, switching });
+    await expect(current.service.activateHost(RUN_ID, HOST)).rejects.toThrow("identity does not match");
+    expect(wrong.abort).toHaveBeenCalledOnce();
+    expect(memory.record).not.toHaveBeenCalled();
+    expect(memory.discard).toHaveBeenCalledOnce();
+    expect(order).toEqual(["begin", "discard"]);
+  });
+
+  it("a failure of the archive step aborts the candidate first and only then discards; sending again completes the switch with a new ticket", async () => {
+    const order: string[] = [];
+    const { memory, switching } = ports(order);
+    const first = codexCandidate(order);
+    const second = codexCandidate(order);
+    first.abort.mockImplementation(async () => { order.push("abort"); return { kind: "aborted" as const }; });
+    memory.record.mockImplementationOnce(() => { order.push("record"); throw new Error("disk full"); });
     const current = harness({ metadataStates: [{ kind: "present", metadata: switchedMetadata() }], preparedCandidate: first, switching });
     current.agentRunManager.newPreparation.mockResolvedValueOnce(first).mockResolvedValueOnce(second);
 
     await expect(current.service.activateHost(RUN_ID, HOST)).rejects.toThrow("disk full");
-    expect(first.abort).toHaveBeenCalledOnce();
+    expect(order).toEqual(["begin", "record", "abort", "discard"]);
     expect(current.historyCatalogService.recordRunStarted).not.toHaveBeenCalled();
-    expect(notices.register).not.toHaveBeenCalled();
 
     await expect(current.service.activateHost(RUN_ID, HOST)).resolves.toMatchObject({ metadata: { platformAgentRunId: THREAD_ID } });
+    expect(memory.begin).toHaveBeenCalledTimes(2);
     expect(memory.record).toHaveBeenCalledTimes(2);
     expect(memory.record.mock.calls[0]![1]).toEqual(memory.record.mock.calls[1]![1]);
-    expect(notices.register).toHaveBeenCalledOnce();
+    expect(memory.discard).toHaveBeenCalledOnce();
   });
 
-  it("a commit that did not land leaves the stored metadata equal to the pending original: the candidate is aborted and sending again retries (generalized retry rule)", async () => {
+  it("nothing is discarded when the candidate's release cannot be confirmed: it may still write", async () => {
+    const { memory, switching } = ports();
+    const stuck = codexCandidate([], { abortResult: { kind: "quarantined", error: new Error("provider stop unconfirmed") } });
+    memory.record.mockImplementationOnce(() => { throw new Error("disk full"); });
+    const current = harness({ metadataStates: [{ kind: "present", metadata: switchedMetadata() }], preparedCandidate: stuck, switching });
+    await expect(current.service.activateHost(RUN_ID, HOST)).rejects.toMatchObject({ code: "AGENT_RUN_ACTIVATION_CLEANUP_FAILED" });
+    expect(memory.discard).not.toHaveBeenCalled();
+  });
+
+  it("when the preparation threw and its own cleanup is not confirmed, nothing is discarded", async () => {
+    const { memory, switching } = ports();
+    const current = harness({ metadataStates: [{ kind: "present", metadata: switchedMetadata() }], switching });
+    current.agentRunManager.beginActivation.mockReturnValueOnce({
+      prepare: () => Promise.reject(new AggregateError([new Error("start failed"), new Error("cleanup failed")], "AgentRun preparation and cleanup failed.")),
+      inspect: () => "quarantined",
+      cancel: () => undefined,
+      releasePrivate: async () => ({ kind: "quarantined", error: new Error("cleanup failed") }),
+    });
+    await expect(current.service.activateHost(RUN_ID, HOST)).rejects.toThrow("cleanup failed");
+    expect(memory.begin).toHaveBeenCalledOnce();
+    expect(memory.discard).not.toHaveBeenCalled();
+    expect(memory.record).not.toHaveBeenCalled();
+  });
+
+  it("a commit that did not land leaves the marker and the pending original: the candidate is aborted, nothing is discarded, sending again retries (generalized retry rule)", async () => {
     const { memory, switching } = ports();
     const pending = switchedMetadata();
     const first = codexCandidate();
@@ -1023,8 +1074,10 @@ describe("StandaloneAgentRunLifecycleService agent runtime switch (autobyteus-31
 
     await expect(current.service.activateHost(RUN_ID, HOST)).rejects.toThrow("activation metadata did not commit");
     expect(first.abort).toHaveBeenCalledOnce();
+    expect(memory.discard).not.toHaveBeenCalled();
     await expect(current.service.activateHost(RUN_ID, HOST)).resolves.toMatchObject({ run: expect.anything() });
     expect(memory.record).toHaveBeenCalledTimes(2);
+    expect(memory.discard).not.toHaveBeenCalled();
   });
 
   it("an existing restore whose commit did not land is still indeterminate, never retried as unchanged (the retry flag is false for a plain restore)", async () => {
@@ -1038,7 +1091,7 @@ describe("StandaloneAgentRunLifecycleService agent runtime switch (autobyteus-31
     expect(restored.abort).toHaveBeenCalledOnce();
   });
 
-  it("a lifecycle built without the ports fails closed on a pending switch before anything changes", async () => {
+  it("a lifecycle built without the port fails closed on a pending switch before anything changes", async () => {
     const current = harness({ metadataStates: [{ kind: "present", metadata: switchedMetadata() }] });
     await expect(current.service.activateHost(RUN_ID, HOST)).rejects.toThrow("cannot make");
     expect(current.agentRunManager.newPreparation).not.toHaveBeenCalled();

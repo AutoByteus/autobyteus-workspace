@@ -198,7 +198,7 @@ describe.runIf(ENABLED)("agent runtime switch on real agent runtimes", () => {
     // --- 2. Switch to Codex App Server, one message.
     const pendingToCodex = await stopAndSwitch("codex_app_server", codexModel);
     expect(activeIds(), "the save changed no raw trace").toEqual(claudeRecordIds);
-    const firstKey = `runtime_switch:${runId}:${pendingToCodex.pendingRuntimeSwitch.requestedAt}`;
+    const firstKey = `runtime_switch:${runId}:${pendingToCodex.pendingRuntimeSwitch.switchId}`;
     const noticesBefore = messages.filter((m) => m.type === "SYSTEM_TASK_NOTIFICATION").length;
     await send(FOLLOW_UP, "codex follow-up");
 
@@ -240,7 +240,7 @@ describe.runIf(ENABLED)("agent runtime switch on real agent runtimes", () => {
       const codexRecordIds = activeIds();
       const pendingToAgy = await stopAndSwitch("antigravity_cli", agyModel);
       expect(activeIds()).toEqual(codexRecordIds);
-      const secondKey = `runtime_switch:${runId}:${pendingToAgy.pendingRuntimeSwitch.requestedAt}`;
+      const secondKey = `runtime_switch:${runId}:${pendingToAgy.pendingRuntimeSwitch.switchId}`;
       await send("Reply with exactly: AGY-AFTER", "antigravity follow-up");
       const afterAgy = await metadata();
       expect(afterAgy).toMatchObject({ runId, runtimeKind: "antigravity_cli", startedAt: initial.startedAt });

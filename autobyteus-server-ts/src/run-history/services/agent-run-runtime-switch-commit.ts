@@ -27,12 +27,13 @@ const bindingOf = (metadata: AgentRunMetadata) => ({
  *   switch is cleared, and the model and settings chosen in this save are kept;
  * - the run's current agent runtime: a model-only edit (a pending switch stays);
  * - another agent runtime: a switch. The new binding replaces the old with no session ID, and the first previous binding
- *   and time are kept when a switch is already pending.
+ *   and switch ID are kept when a switch is already pending.
  */
 export const buildRuntimeSwitchMetadata = (input: {
   metadata: AgentRunMetadata;
   selection: RunSelectionToCommit;
-  requestedAt: string;
+  /** The identity of a new switch; ignored when a switch is already pending (it keeps its own). */
+  switchId: string;
 }): AgentRunMetadata => {
   const { metadata, selection } = input;
   const llmConfig = selection.llmConfig ? structuredClone(selection.llmConfig) : null;
@@ -50,7 +51,7 @@ export const buildRuntimeSwitchMetadata = (input: {
     llmModelIdentifier: selection.llmModelIdentifier,
     llmConfig,
     platformAgentRunId: null,
-    pendingRuntimeSwitch: pending ?? { requestedAt: input.requestedAt, from: bindingOf(metadata) },
+    pendingRuntimeSwitch: pending ?? { switchId: input.switchId, from: bindingOf(metadata) },
   };
 };
 
@@ -60,12 +61,12 @@ export const commitAgentRunRuntimeSwitch = async (input: {
   cataloged: boolean;
   archived: boolean;
   selection: RunSelectionToCommit;
-  requestedAt: string;
+  switchId: string;
 }): Promise<AgentRunModelConfigCommitResult> => {
   const metadata = await input.metadataStore.readMetadata(input.runId);
   if (!metadata || !input.cataloged) return { kind: "not_found", metadata };
   if (input.archived) return { kind: "archived", metadata };
-  const next = buildRuntimeSwitchMetadata({ metadata, selection: input.selection, requestedAt: input.requestedAt });
+  const next = buildRuntimeSwitchMetadata({ metadata, selection: input.selection, switchId: input.switchId });
   if (isDeepStrictEqual(next, metadata)) return { kind: "unchanged", metadata };
   const matches = (stored: AgentRunMetadata | null): boolean => stored !== null && isDeepStrictEqual(stored, next);
   try {

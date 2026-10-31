@@ -239,7 +239,7 @@ export class AgentRunHistoryCatalogService {
   async commitRunRuntimeSwitch(input: {
     runId: string;
     selection: RunSelectionToCommit;
-    requestedAt?: string;
+    switchId: string;
   }): Promise<AgentRunModelConfigCommitResult> {
     return this.enqueueValue(async () => {
       const runId = input.runId.trim();
@@ -250,7 +250,7 @@ export class AgentRunHistoryCatalogService {
         cataloged: Boolean(row),
         archived: Boolean(row?.archivedAt),
         selection: input.selection,
-        requestedAt: input.requestedAt ?? new Date().toISOString(),
+        switchId: input.switchId,
       });
     });
   }

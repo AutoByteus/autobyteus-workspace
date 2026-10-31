@@ -83,7 +83,7 @@ import {
 } from "../../agent-collaboration/collaborators/collaborator-definition-catalog.js";
 import { getInternalAgentVisibility } from "../../agent-definition/services/internal-agent-visibility.js";
 import { PROCESS_MODEL_ROUTING } from "../../model-routing/services/model-routing-binding.js";
-import type { RuntimeSwitching } from "../domain/runtime-switch-ports.js";
+import type { RuntimeSwitching } from "../domain/runtime-switch-memory-port.js";
 import type { AgentRunInputPreface } from "../domain/agent-run-input-preface.js";
 import type { AgentRunLifecycleObserver } from "../domain/agent-run-lifecycle-observer.js";
 

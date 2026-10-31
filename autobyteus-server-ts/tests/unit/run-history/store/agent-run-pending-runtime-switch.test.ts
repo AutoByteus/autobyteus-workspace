@@ -8,7 +8,7 @@ import { openRawTraceRuntimeKind, parsePendingRuntimeSwitch } from "../../../../
 import type { AgentRunMetadata } from "../../../../src/run-history/store/agent-run-metadata-types.js";
 
 const PENDING = {
-  requestedAt: "2026-10-30T10:00:00.000Z",
+  switchId: "7c1e5a52-3c1e-4c8a-9d0b-1f2a3b4c5d6e",
   from: { runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "sonnet", llmConfig: { effort: "low" }, platformAgentRunId: "session-1" },
 };
 
@@ -37,8 +37,10 @@ describe("pendingRuntimeSwitch in run_metadata.json (a field that is absent for 
     await store.writeMetadata("run-1", metadata());
     const file = store.getMetadataPath("run-1");
     const stored = JSON.parse(await fs.readFile(file, "utf-8")) as Record<string, unknown>;
-    await fs.writeFile(file, JSON.stringify({ ...stored, pendingRuntimeSwitch: { requestedAt: "yesterday", from: {} } }));
+    await fs.writeFile(file, JSON.stringify({ ...stored, pendingRuntimeSwitch: { requestedAt: "2026-10-30T10:00:00.000Z", from: PENDING.from } }));
     expect((await store.readMetadataState("run-1")).kind).toBe("unreadable");
+    // the field of the earlier build (a time instead of the switch ID) is not accepted: that run only is unreadable
+    expect(() => parsePendingRuntimeSwitch({ ...PENDING, switchId: "" })).toThrow("switchId");
     expect(() => parsePendingRuntimeSwitch({ ...PENDING, from: { ...PENDING.from, runtimeKind: "CLAUDE" } })).toThrow("agent runtime kind");
   });
 

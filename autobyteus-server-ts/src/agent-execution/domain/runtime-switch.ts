@@ -1,3 +1,4 @@
+import { createHash } from "node:crypto";
 import { agentRuntimeName } from "@autobyteus/agent-presentation-contracts";
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type { AgentRunMetadata } from "../../run-history/store/agent-run-metadata-types.js";
@@ -11,6 +12,8 @@ export type RuntimeSwitchSide = Readonly<{ runtimeKind: RuntimeKind; llmModelIde
  */
 export type RuntimeSwitch = Readonly<{
   key: string;
+  /** The ID of the marker record: derived from the key, so every attempt writes and finds the same one. */
+  markerTraceId: string;
   runId: string;
   from: RuntimeSwitchSide;
   to: RuntimeSwitchSide;
@@ -19,17 +22,23 @@ export type RuntimeSwitch = Readonly<{
 
 const label = (side: RuntimeSwitchSide): string => `${agentRuntimeName(side.runtimeKind)} (${side.llmModelIdentifier})`;
 
+/** The one function that derives the marker's ID from the switch key. */
+export const runtimeSwitchMarkerTraceId = (key: string): string =>
+  `rt_runtime_switch_${createHash("sha256").update(key).digest("hex").slice(0, 24)}`;
+
 /**
- * The switch a run's pending switch stands for, or null when none is pending. The key is the stored time of the first
- * pending save, so a retry of the same activation finds the marker it wrote.
+ * The switch a run's pending switch stands for, or null when none is pending. The key holds the switch's own identity, so a
+ * retry of the same activation finds the marker it wrote.
  */
 export const buildRuntimeSwitch = (metadata: AgentRunMetadata): RuntimeSwitch | null => {
   const pending = metadata.pendingRuntimeSwitch;
   if (!pending) return null;
   const from: RuntimeSwitchSide = { runtimeKind: pending.from.runtimeKind, llmModelIdentifier: pending.from.llmModelIdentifier };
   const to: RuntimeSwitchSide = { runtimeKind: metadata.runtimeKind, llmModelIdentifier: metadata.llmModelIdentifier };
+  const key = `runtime_switch:${metadata.runId}:${pending.switchId}`;
   return Object.freeze({
-    key: `runtime_switch:${metadata.runId}:${pending.requestedAt}`,
+    key,
+    markerTraceId: runtimeSwitchMarkerTraceId(key),
     runId: metadata.runId,
     from,
     to,
