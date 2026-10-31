@@ -252,26 +252,25 @@ for runtime-specific catalog/schema validation and the AutoByteus capacity limit
 
 ## Project Run History
 
-`ProjectRunHistoryService` (GraphQL `projectRunHistory(projectId, limitPerAgent = 6)`) lists the top-level Agent,
-Team and Org runs of one Project for the web's Projects mode. It reads Projects only through the `ProjectRunLinks`
-port (`src/run-history/domain/project-run-links.ts`), bound in `compositions/project-run-links-composition.ts`; run
-history never imports Projects. It reads run history rows, never conversations.
+`ProjectRunHistoryService` (GraphQL `projectRunHistory(projectId, limitPerAgent = 6)`) lists the top-level Agent and
+Team runs of one Project for the web's Projects mode. It reads Projects only through the `ProjectRunLinks` port
+(`src/run-history/domain/project-run-links.ts`, one method: `startedRunsOf`), bound in
+`compositions/project-run-links-composition.ts`; run history never imports Projects. It reads run history rows, never
+conversations.
 
-- **Which runs.** A run is listed when it was started under the Project (the Project's
-  [`project_runs.json`](./projects.md#runs-started-under-a-project), joined with the catalog rows, so an entry
-  whose run was never created or was deleted lists nothing) or when it hosts any assignment of the Project's Tasks
-  ([Project run links](./projects.md#project-run-links)). Org runs are listed only as hosts. A run can be listed
-  under several Projects.
+- **Which runs.** Exactly the runs started under the Project: the Project's
+  [`project_runs.json`](./projects.md#runs-started-under-a-project), joined with the catalog rows, so an entry whose
+  run was never created or was deleted lists nothing. A run is listed under at most one Project. A run that only
+  hands out Tasks of a Project (for example a Project Task Manager started in a workspace) is not listed under any
+  Project; it stays in Workspaces with its delegated runs. No Org run is listed (Orgs are not started under a
+  Project).
 - **Grouping and the cap.** Agent runs are grouped by definition like a workspace's
-  (`AgentRunHistoryService.listAgentGroupsOf`): each group keeps its `limitPerAgent` newest runs **plus** every run
-  hosting open work of the Project, so a run beyond the Workspaces cap is listed and opens. Team and Org runs are
-  uncapped, as in Workspaces. Archived runs and runs of hidden definitions are left out, as in Workspaces.
-- **Scopes.** Per listed root, `scopes` names the delegated copies listed under the Project:
-  `executions(root) = links(P)[root] ∪ (root started under P ? links(no Project)[root] : ∅)`. A root started
-  under the Project therefore also shows its Temp-task work. The web shows only those copies (and everything under
-  them) beneath the root.
-- **Shape.** `{projectId, agentDefinitions, teamDefinitions, agentOrgRuns, scopes[{rootKind, rootRunId,
-  executions[{agentRunId | teamRunId}]}]}`; the groups reuse the workspace history objects.
+  (`AgentRunHistoryService.listAgentGroupsOf`): each group keeps its `limitPerAgent` newest runs, as in Workspaces,
+  with no exceptions. Team runs are uncapped, as in Workspaces. Archived runs and runs of hidden definitions are left
+  out, as in Workspaces.
+- **Delegated work.** The read returns no delegated rows. The web shows a listed run's delegated runs exactly as in
+  Workspaces, whatever Project their Tasks belong to.
+- **Shape.** `{projectId, agentDefinitions, teamDefinitions}`; the groups reuse the workspace history objects.
 - **Errors.** An unknown or blank Project is `PROJECT_NOT_FOUND`; a server without the composed links answers
   `PROJECT_RUN_LINKS_UNAVAILABLE` (`extensions.code`).
 - **Run records unchanged.** Starting a run under a Project changes no file this module owns: metadata, index rows

@@ -8,13 +8,10 @@ import { useAgentContextsStore } from '~/stores/agentContextsStore'
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore'
 import { useAgentRunStore } from '~/stores/agentRunStore'
 import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore'
-import { useAgentOrgRunStore } from '~/stores/agentOrgRunStore'
 import { useWorkspaceStore } from '~/stores/workspace'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 import { useRunHistoryRetiredRunsStore } from '~/stores/runHistoryRetiredRuns'
-import { parseAgentOrgHistoryItems } from '~/stores/runHistoryStoreSupport'
-import { buildProjectRunsProjection, projectRootKey, type ProjectRunRootKind, type ProjectRunsSnapshot } from '~/stores/projectRunsProjection'
-import { taskExecutionKey, type TaskExecutionReference } from '~/utils/collaboration/taskExecutionScope'
+import { buildProjectRunsProjection, type ProjectRunsSnapshot } from '~/stores/projectRunsProjection'
 import type { ProjectChangeMessage } from '~/types/project'
 
 type ProjectRunHistoryData = {
@@ -22,21 +19,17 @@ type ProjectRunHistoryData = {
     projectId: string
     agentDefinitions: ProjectRunsSnapshot['agentDefinitions']
     teamDefinitions: ProjectRunsSnapshot['teamDefinitions']
-    agentOrgRuns: unknown[]
-    scopes: Array<{ rootKind: ProjectRunRootKind; rootRunId: string; executions: TaskExecutionReference[] }>
   }
 }
 
 /**
- * The web's changes to a listed root (DS-004 trigger 4), by the store that owns each: archive and delete (run history),
- * and Stop (Agent, Team and Org runs). After each, the Projects listing the run are read again, so a stopped run with no
- * live context in this window shows stopped, as Workspaces' own refresh shows it (CR-003).
+ * The web's changes to a listed run, by the store that owns each: archive and delete (run history) and Stop (Agent and
+ * Team runs). After each, the Projects listing the run are read again, so a stopped run with no live context in this
+ * window shows stopped, as Workspaces' own refresh shows it. No Org is listed in Projects mode.
  */
-const RUN_HISTORY_REMOVALS = new Set(['archiveRun', 'deleteRun', 'archiveTeamRun', 'deleteTeamRun', 'archiveAgentOrgRun',
-  'deleteAgentOrgRun', 'archiveAgentRunGroup', 'archiveTeamRuns', 'archiveAgentOrgRuns'])
+const RUN_HISTORY_REMOVALS = new Set(['archiveRun', 'deleteRun', 'archiveTeamRun', 'deleteTeamRun', 'archiveAgentRunGroup', 'archiveTeamRuns'])
 const AGENT_RUN_STOPS = new Set(['terminateRun'])
 const TEAM_RUN_STOPS = new Set(['terminateTeamRun'])
-const ORG_RUN_STOPS = new Set(['terminate'])
 
 const readProjectRunHistory = async (projectId: string): Promise<ProjectRunsSnapshot> => {
   const { data, errors } = await getApolloClient().query<ProjectRunHistoryData>({
@@ -53,16 +46,15 @@ const readProjectRunHistory = async (projectId: string): Promise<ProjectRunsSnap
     projectId: read.projectId,
     agentDefinitions: read.agentDefinitions,
     teamDefinitions: read.teamDefinitions,
-    agentOrgRuns: parseAgentOrgHistoryItems(read.agentOrgRuns),
-    scopes: Object.fromEntries(read.scopes.map((scope) => [projectRootKey(scope.rootKind, scope.rootRunId),
-      new Set(scope.executions.map(taskExecutionKey).filter((key): key is string => key !== null))])),
   }
 }
 
 /**
- * Projects mode's read state (DS-003, DS-004): every Project's snapshot, read when the mode is shown and re-read on
- * the explicit triggers; one read per Project in flight and one queued, so an older answer never replaces a newer one;
- * a failed read keeps the last good snapshot. The tree itself is `projection`, built by `projectRunsProjection`.
+ * Projects mode's read state: every Project's snapshot (the runs started under it), read when the mode is shown and
+ * re-read only when the listing can change (autobyteus-353 REQ-003): on `connected`, when a Project is added, renamed or
+ * removed, and after this window starts, archives, deletes or stops a run. One read per Project in flight and one
+ * queued, so an older answer never replaces a newer one; a failed read keeps the last good snapshot. The tree itself
+ * is `projection`, built by `projectRunsProjection`.
  */
 export const useProjectRunsStore = defineStore('projectRuns', () => {
   const projectStore = useProjectStore()
@@ -74,7 +66,6 @@ export const useProjectRunsStore = defineStore('projectRuns', () => {
   const shown = ref(0)
   const inFlight = new Map<string, Promise<void>>()
   const queued = new Set<string>()
-  const notedCopyKeys = new Map<string, Set<string>>()
   let generation = 0
 
   const read = (projectId: string): Promise<void> => {
@@ -126,14 +117,17 @@ export const useProjectRunsStore = defineStore('projectRuns', () => {
     return () => { shown.value = Math.max(0, shown.value - 1) }
   }
 
-  /** The Projects whose snapshot lists a root (an Agent, Team or Org run). */
+  /** The Project whose snapshot lists a run (an Agent or Team run); a run is listed under at most one Project. */
   const projectsListing = (rootRunId: string): string[] => Object.values(snapshots.value)
     .filter((snapshot) => snapshot.agentDefinitions.some((group) => group.runs.some((run) => run.runId === rootRunId))
-      || snapshot.teamDefinitions.some((group) => group.runs.some((run) => run.teamRunId === rootRunId))
-      || snapshot.agentOrgRuns.some((run) => run.rootRunId === rootRunId))
+      || snapshot.teamDefinitions.some((group) => group.runs.some((run) => run.teamRunId === rootRunId)))
     .map((snapshot) => snapshot.projectId)
 
-  /** The `/ws/projects` feed (DS-004 triggers 1–3); nothing is read while Projects mode is hidden. */
+  /**
+   * The `/ws/projects` feed: `connected` re-reads every Project; a Project added or renamed is read, a removed one
+   * leaves. Task changes do not change which runs are started under a Project, so they read nothing. Nothing is read
+   * while Projects mode is hidden.
+   */
   const applyChange = (message: ProjectChangeMessage): void => {
     if (shown.value === 0) return
     if (message.type === 'connected') { void loadAll(); return }
@@ -141,32 +135,13 @@ export const useProjectRunsStore = defineStore('projectRuns', () => {
     if (message.type === 'project_removed') {
       const { [message.projectId]: _, ...rest } = snapshots.value
       snapshots.value = rest
-      return
     }
-    if (message.type !== 'task_upserted' && message.type !== 'task_removed') return
-    if (message.scope.kind === 'project') {
-      if (snapshots.value[message.scope.projectId]) void read(message.scope.projectId)
-      return
-    }
-    // A Temp task carries no Project: re-read the Projects listing its hosting root (SCN-009).
-    const hostRunId = message.type === 'task_upserted' ? message.task.root?.hostRoot.runId : null
-    if (hostRunId) projectsListing(hostRunId).forEach((projectId) => void read(projectId))
   }
 
-  /** A run was started under the Project from this window (DS-004 trigger 4). */
+  /** A run was started under the Project from this window. */
   const noteRunStarted = (projectId: string): void => { if (shown.value > 0) void read(projectId) }
 
-  /** Top-level copies a listed root shows that are in no scope yet: one re-read per copy (DS-004 trigger 5). */
-  const noteUnscoped = (projectId: string, copyKeys: readonly string[]): void => {
-    const noted = notedCopyKeys.get(projectId) ?? new Set<string>()
-    notedCopyKeys.set(projectId, noted)
-    const fresh = copyKeys.filter((key) => !noted.has(key))
-    if (!fresh.length) return
-    fresh.forEach((key) => noted.add(key))
-    void read(projectId)
-  }
-
-  // Web changes to a listed root (DS-004 trigger 4): the Projects listing the run read again once the change settled.
+  // Web changes to a listed run: the Project listing the run read again once the change settled.
   // A run named by no listing (a group archive names a folder and a definition) re-reads every loaded Project.
   type ActionObserved = Readonly<{ name: string; args: unknown[]; after(callback: () => void): void }>
   const rereadAfter = (store: Readonly<{ $onAction(listener: (action: ActionObserved) => void): unknown }>, actionNames: ReadonlySet<string>) =>
@@ -181,7 +156,6 @@ export const useProjectRunsStore = defineStore('projectRuns', () => {
   rereadAfter(useRunHistoryStore(), RUN_HISTORY_REMOVALS)
   rereadAfter(useAgentRunStore(), AGENT_RUN_STOPS)
   rereadAfter(useAgentTeamRunStore(), TEAM_RUN_STOPS)
-  rereadAfter(useAgentOrgRunStore(), ORG_RUN_STOPS)
 
   // Another node: nothing read for the previous one is kept.
   watch(() => node.bindingRevision, () => {
@@ -189,7 +163,6 @@ export const useProjectRunsStore = defineStore('projectRuns', () => {
     snapshots.value = {}
     failed.value = {}
     firstRead.value = 'idle'
-    notedCopyKeys.clear()
     queued.clear()
     if (shown.value > 0) void loadAll()
   })
@@ -202,7 +175,6 @@ export const useProjectRunsStore = defineStore('projectRuns', () => {
     agentAvatarByDefinitionId: useRunHistoryStore().agentAvatarByDefinitionId,
     workspacesById: useWorkspaceStore().workspaces,
     retiredRunIds: useRunHistoryRetiredRunsStore().retiredRunIds,
-    noteUnscoped,
   }))
 
   return {
@@ -215,6 +187,5 @@ export const useProjectRunsStore = defineStore('projectRuns', () => {
     retry: () => { failed.value = {}; return loadAll() },
     applyChange,
     noteRunStarted,
-    noteUnscoped,
   }
 })

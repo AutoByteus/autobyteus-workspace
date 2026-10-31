@@ -2,7 +2,6 @@ import type { AgentContext } from '~/types/agent/AgentContext'
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext'
 import type { Project } from '~/types/project'
 import type {
-  AgentOrgRunHistoryItem,
   RunHistoryWorkspaceGroup,
   TeamRunHistoryDefinitionGroup,
   TeamTreeNode,
@@ -13,20 +12,13 @@ import { buildTeamNodes, resolveTeamLastActivityAt, summarizeTeamDraft } from '~
 import { buildRunHistoryTeamExecutionRows } from '~/stores/runHistoryTeamExecutionRows'
 import { flattenWorkspaceTeamRuns } from '~/stores/runHistoryStoreSupport'
 import { withoutRetiredRuns } from '~/stores/runHistoryRetiredRuns'
-import { buildAgentOrgDefinitionGroups } from '~/utils/runTreeProjection'
 import { DEFAULT_DRAFT_SUMMARY_PREFIX } from '~/utils/runTreeProjectionConstants'
-import type { RootExecutionScope, TaskExecutionScope } from '~/utils/collaboration/taskExecutionScope'
 
-export type ProjectRunRootKind = 'AGENT' | 'AGENT_TEAM' | 'AGENT_ORG'
-
-/** One Project's read (`projectRunHistory`): its runs grouped like a workspace's, and each listed root's copies. */
+/** One Project's read (`projectRunHistory`): the runs started under it, grouped like a workspace's. */
 export interface ProjectRunsSnapshot {
   projectId: string
   agentDefinitions: RunHistoryWorkspaceGroup['agentDefinitions']
   teamDefinitions: RunHistoryWorkspaceGroup['teamDefinitions']
-  agentOrgRuns: AgentOrgRunHistoryItem[]
-  /** By `projectRootKey(rootKind, rootRunId)`: the copy keys listed under the Project. */
-  scopes: Record<string, TaskExecutionScope>
 }
 
 /** One Project in the tree: the same node types the workspace section renders. */
@@ -35,17 +27,15 @@ export interface ProjectRunsEntry {
   node: WorkspaceHistoryWorkspaceNode
   teams: TeamTreeNode[]
   teamHistoryGroups: TeamRunHistoryDefinitionGroup[]
-  executionScopeOf: (rootKind: ProjectRunRootKind, rootRunId: string) => RootExecutionScope
 }
 
-/** Where a run is listed: a Project and the group under it (a run can be listed under several Projects). */
+/** Where a run is listed: its Project and the group under it (a run is started under at most one Project). */
 export interface ProjectRunAncestry { projectId: string; groupKey: string }
 
 export interface ProjectRunsProjection {
   entries: ProjectRunsEntry[]
-  runAncestryById: Record<string, ProjectRunAncestry[]>
-  teamAncestryById: Record<string, ProjectRunAncestry[]>
-  agentOrgAncestryById: Record<string, ProjectRunAncestry[]>
+  runAncestryById: Record<string, ProjectRunAncestry>
+  teamAncestryById: Record<string, ProjectRunAncestry>
 }
 
 export interface ProjectRunsProjectionInput {
@@ -58,29 +48,20 @@ export interface ProjectRunsProjectionInput {
   workspacesById: Parameters<typeof buildRunHistoryTreeNodes>[0]['workspacesById']
   /** Runs this session saw leave the history (archived or deleted): not listed, as in Workspaces. */
   retiredRunIds: ReadonlySet<string>
-  /** A listed root's top-level copies that are in no scope yet (DS-004 trigger 5). */
-  noteUnscoped: (projectId: string, copyKeys: readonly string[]) => void
 }
-
-export const projectRootKey = (rootKind: ProjectRunRootKind, rootRunId: string): string => `${rootKind}:${rootRunId}`
 
 /** The grouping key of a Project's section: it takes the place a folder root has in Workspaces. */
 export const projectSectionKey = (projectId: string): string => `project:${projectId}`
-
-const NO_COPIES: TaskExecutionScope = new Set()
 
 /**
  * The Projects tree (DS-003): every Project's snapshot turned into the node types the workspace section renders, by
  * the same builders (`buildRunHistoryTreeNodes`, which applies `buildRunTreeProjection` and the live context overlay
  * `mergeRunTreeWithLiveContexts`, and `buildTeamNodes`), with one grouping key per Project given through their
  * workspace descriptor and root resolvers. Local runs come from the contexts listed in the snapshot or launched under
- * the Project; the ancestry indexes say where each run is listed, for the open-run reveal. Pure.
+ * the Project; the ancestry indexes say where each run is listed (its one Project), for the open-run reveal. Pure.
  */
 export const buildProjectRunsProjection = (input: ProjectRunsProjectionInput): ProjectRunsProjection => {
-  const projection: ProjectRunsProjection = { entries: [], runAncestryById: {}, teamAncestryById: {}, agentOrgAncestryById: {} }
-  const add = (index: Record<string, ProjectRunAncestry[]>, runId: string, ancestry: ProjectRunAncestry) => {
-    index[runId] = [...index[runId] ?? [], ancestry]
-  }
+  const projection: ProjectRunsProjection = { entries: [], runAncestryById: {}, teamAncestryById: {} }
   for (const project of input.projects) {
     const snapshot = input.snapshots[project.projectId]
     if (!snapshot) continue
@@ -88,13 +69,10 @@ export const buildProjectRunsProjection = (input: ProjectRunsProjectionInput): P
     projection.entries.push(entry)
     const projectId = project.projectId
     entry.node.agents.forEach((agent) => agent.runs.forEach((run) =>
-      add(projection.runAncestryById, run.runId, { projectId, groupKey: agent.agentDefinitionId })))
+      { projection.runAncestryById[run.runId] = { projectId, groupKey: agent.agentDefinitionId } }))
     for (const group of entry.teamHistoryGroups) {
       const groupKey = group.teamDefinitionId.trim() || group.teamDefinitionName.trim()
-      group.runs.forEach((run) => add(projection.teamAncestryById, run.teamRunId, { projectId, groupKey: groupKey || run.teamRunId }))
-    }
-    for (const group of entry.node.agentOrgDefinitions) {
-      group.runs.forEach((run) => add(projection.agentOrgAncestryById, run.rootRunId, { projectId, groupKey: group.definitionId }))
+      group.runs.forEach((run) => { projection.teamAncestryById[run.teamRunId] = { projectId, groupKey: groupKey || run.teamRunId } })
     }
   }
   return projection
@@ -141,7 +119,8 @@ const buildProjectEntry = (project: Project, snapshot: ProjectRunsSnapshot, inpu
     workspaceRootPath: root,
     workspaceName: project.name,
     canRemoveFromWorkspaces: false,
-    agentOrgDefinitions: buildAgentOrgDefinitionGroups(snapshot.agentOrgRuns.filter((run) => !input.retiredRunIds.has(run.rootRunId))),
+    // No Org is started under a Project (autobyteus-353 DEC-004).
+    agentOrgDefinitions: [],
   }
 
   const teamContextById = new Map(sources.teamContexts.map((context) => [context.view.getRootTeamRunId(), context]))
@@ -161,18 +140,5 @@ const buildProjectEntry = (project: Project, snapshot: ProjectRunsSnapshot, inpu
     return { ...focused, executionRows: buildRunHistoryTeamExecutionRows(focused, context) }
   })
 
-  const scopes = new Map<string, RootExecutionScope>()
-  const executionScopeOf = (rootKind: ProjectRunRootKind, rootRunId: string): RootExecutionScope => {
-    const key = projectRootKey(rootKind, rootRunId)
-    let scope = scopes.get(key)
-    if (!scope) {
-      scope = Object.freeze({
-        copies: snapshot.scopes[key] ?? NO_COPIES,
-        noteUnscoped: (copyKeys: readonly string[]) => input.noteUnscoped(project.projectId, copyKeys),
-      })
-      scopes.set(key, scope)
-    }
-    return scope
-  }
-  return { project, node, teams, teamHistoryGroups: group.teamDefinitions, executionScopeOf }
+  return { project, node, teams, teamHistoryGroups: group.teamDefinitions }
 }

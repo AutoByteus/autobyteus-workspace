@@ -49,7 +49,7 @@
 
     <div v-if="expanded" class="ml-2 mt-0.5 space-y-1">
       <div
-        v-if="entry.node.agents.length === 0 && entry.teams.length === 0 && entry.node.agentOrgDefinitions.length === 0"
+        v-if="entry.node.agents.length === 0 && entry.teams.length === 0"
         class="px-3 py-1 text-xs text-gray-400"
         data-test="project-no-runs"
       >{{ t('projectsTree.noRuns') }}</div>
@@ -93,8 +93,5 @@ const { t } = useLocalization()
 const expanded = computed(() => props.state.isWorkspaceExpanded(props.entry.node.stableKey))
 const disclosureLabel = computed(() => t(expanded.value ? 'projectsTree.collapseProject' : 'projectsTree.expandProject',
   { name: props.entry.project.name }))
-const projectScope = computed<ProjectSectionScope>(() => ({
-  projectId: props.entry.project.projectId,
-  executionScopeOf: props.entry.executionScopeOf,
-}))
+const projectScope = computed<ProjectSectionScope>(() => ({ projectId: props.entry.project.projectId }))
 </script>

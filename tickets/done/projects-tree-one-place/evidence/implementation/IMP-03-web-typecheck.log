@@ -1,0 +1,32 @@
+# IMP-03 web typecheck (IR-001): production 0 errors; test-file errors at the baseline
+# Command: pnpm -C autobyteus-web typecheck
+# Commit: working tree on 724bc349ff (IR-001 changes, committed right after); macOS, Node v22.23.1
+# Date: 2026-10-31 (run before the in-app proof)
+
+
+> autobyteus@1.5.11-beta.8 typecheck /Users/normy/autobyteus_org/autobyteus-worktrees/projects-tree-one-place/autobyteus-web
+> pnpm prepare:shared-types && nuxt prepare && node ./scripts/typecheck.mjs
+
+
+> autobyteus@1.5.11-beta.8 prepare:shared-types /Users/normy/autobyteus_org/autobyteus-worktrees/projects-tree-one-place/autobyteus-web
+> pnpm -C .. --filter @autobyteus/application-sdk-contracts build
+
+
+> @autobyteus/application-sdk-contracts@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/projects-tree-one-place/autobyteus-application-sdk-contracts
+> tsc -p tsconfig.build.json
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ WARN  Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/projects-tree-one-place/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/projects-tree-one-place/autobyteus-web/stores/serverStore.ts" is used
+
+
+ WARN  Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/projects-tree-one-place/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/projects-tree-one-place/autobyteus-web/stores/serverStore.ts" is used
+
+│
+◆  Types generated in .nuxt.
+[typecheck] Nuxt app (tsconfig.json): 271 errors, exit 2, 38.8s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 2.6s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.8s
+[typecheck] production errors: 0; test-file errors: 298 in 139 files (baseline 298 in 139 files)
+[typecheck] PASS

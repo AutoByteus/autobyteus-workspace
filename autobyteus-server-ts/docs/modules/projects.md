@@ -76,7 +76,7 @@ Neither `create_project` nor `update_project` is added automatically either
   place where Projects and the collaboration runtime are bound. Its composition
   step also calls `src/compositions/project-run-links-composition.ts`, the one
   place where run history and run execution are bound to Projects (the
-  `ProjectRunLinks`, `RunProjectStarts` and `RunProjectContextReader` ports; see
+  `ProjectRunLinks` (`startedRunsOf`), `RunProjectStarts` and `RunProjectContextReader` ports; see
   [Runs started under a Project](#runs-started-under-a-project))
 - `src/agent-collaboration/execution/task/`: the root-neutral dispatch, fence
   and release boundary, reached only through `TaskExecutionResourcePort`
@@ -360,20 +360,6 @@ Team tree carry no Project.
 - **Older builds.** They never open the file: a Project folder is listed by its
   `project.json`, and other files in it are not read. After a rollback the runs
   are listed in Workspaces as before.
-
-### Project run links
-
-`TaskExecutionResourceService.runLinksOf(projectId | null)` answers, from the
-in-memory view, which runs work for a Project (`null`: Tasks with no Project):
-- **Host roots:** the top-level run of every assignment of the Project's Tasks,
-  each with whether it hosts open work of the Project.
-- **Copies per host root:** a copy belongs to the Project while it holds an open
-  entry in one of the Project's Tasks, so a copy holding open Tasks of two
-  Projects belongs to both. A copy with no open entry belongs to the Project of
-  its current (latest) Task. Damaged Task files are left out, each with one
-  `TASK_AGENT_RESOURCES_UNAVAILABLE` warning per read.
-
-Run history reads it through the `ProjectRunLinks` port for `projectRunHistory`.
 
 ## One-Time Migration And The Projects Gate
 
@@ -1302,8 +1288,7 @@ Read [workspace TESTING.md](../../../TESTING.md) first.
 
 Coverage:
 - `tests/unit/projects`: per-folder store, services, Task agent run resources,
-  the runs started under a Project (`project_runs.json` store and service,
-  `runLinksOf`),
+  the runs started under a Project (`project_runs.json` store and service),
   change publication (`project-change-{publisher,publication,hub}.test.ts`),
   Task roots (`task-root-view.test.ts`) and the current Task of Task workers
   (`task-worker-current-tasks.test.ts`).
@@ -1318,12 +1303,13 @@ Coverage:
 - `tests/unit/context-files` (preserved)
 - `tests/architecture/projects-boundaries.test.ts`
 - `tests/e2e/projects/{projects-graphql,project-task-boundaries,project-mutation-node-locality,projects-startup-migration}.e2e.test.ts`.
-- `tests/e2e/projects/project-run-history.e2e.test.ts` (gated `RUN_AGY_FAILURE_E2E`,
-  scripted Antigravity CLI): runs started under a Project, `projectRunHistory`
-  with real delegation, scopes, the cap, archive and Project Delete, and the
-  `## Project` section.
   The startup-migration e2e covers both startup entrypoints, the gate before
   and after, and retry.
+- `tests/e2e/projects/project-run-history.e2e.test.ts` (gated `RUN_AGY_FAILURE_E2E`,
+  scripted Antigravity CLI): runs started under a Project, `projectRunHistory`
+  (only those runs; a run that only hands out a Project's Tasks is listed
+  nowhere), real delegation, the cap, archive and Project Delete, and the
+  `## Project` section.
 - MCP route, runtime exposure and startup tests.
 
 Real temporary byte fixtures and HTTP, default MCP and native tests are

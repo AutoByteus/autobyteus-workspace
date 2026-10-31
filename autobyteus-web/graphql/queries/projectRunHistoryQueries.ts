@@ -1,6 +1,6 @@
 import { gql } from 'graphql-tag';
 
-/** projects-left-navigation (DS-003): one Project's runs, grouped like a workspace's, with each listed root's scope. */
+/** One Project's runs: the runs started under it, grouped like a workspace's (autobyteus-353). */
 export const GetProjectRunHistory = gql`
   query GetProjectRunHistory($projectId: String!, $limitPerAgent: Int = 6) {
     projectRunHistory(projectId: $projectId, limitPerAgent: $limitPerAgent) {
@@ -44,24 +44,6 @@ export const GetProjectRunHistory = gql`
             runtimeKind
             workspaceRootPath
           }
-        }
-      }
-      agentOrgRuns {
-        root_subject_kind
-        root_run_id
-        created_at
-        archived_at
-        is_active
-        summary
-        org
-        closed_task_executions
-      }
-      scopes {
-        rootKind
-        rootRunId
-        executions {
-          agentRunId
-          teamRunId
         }
       }
     }

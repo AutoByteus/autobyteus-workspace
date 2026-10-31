@@ -1,0 +1,13 @@
+# API-01: autobyteus-server-ts/tests/e2e/projects/project-run-history.e2e.test.ts (updated for 353)
+# Command: env -i PATH HOME=<tmp> TMPDIR RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<worktree>/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs PROJECT_RUN_HISTORY_E2E_EVIDENCE_DIR=<ev>/API-01 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/project-run-history.e2e.test.ts --no-watch
+# Code: 60fc6161d2 (HEAD 5c9ed8d4cf, docs only after it) + this test update (uncommitted at run time); macOS arm64, Node v22.23.1; scripted AGY; Date: 2026-10-31T21:10:15Z
+
+ ✓ tests/e2e/projects/project-run-history.e2e.test.ts (9 tests) 8333ms
+     ✓ PRH-01: an Agent prepared under P is recorded in P's file, told its Project at first activation, listed under P and its folder; run records keep the released keys  345ms
+     ✓ PRH-03: a Team created under P lists in P's team group; its coordinator and member are told the Project  1284ms
+     ✓ PRH-04: a root started under P delegates Tasks of P and Q and Temp-task work: listed once, under P only  1432ms
+     ✓ PRH-05: the user's case: a Workspaces-started root that handed out Tasks of P, Q and R is listed under none and recorded nowhere  1546ms
+     ✓ PRH-07: P lists the 6 newest runs of an agent; an older run hosting P's open work is not pinned; it opens by run id  399ms
+     ✓ PRH-10: an Org root hosting Tasks of P and Q is listed under neither  1464ms
+ Test Files  1 passed (1)
+      Tests  9 passed (9)
