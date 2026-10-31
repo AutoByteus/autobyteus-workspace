@@ -9,6 +9,7 @@
 | SR-003 | Requirements | User asks for Product Design first | N/A | Approved | Approved (Product Design Requested) | DEC-008 | Request sent to /product_team |
 | SR-004 | Requirements | Product review: user wants a Project choice in New chat | Product interim Requirement Impact | Approved R2 | Approved R3 | REQ-004, 005; BEH-002, 005; SCN-011; AC-015; DEC-014 | Accepted
 | SR-005 | Requirements | Product UI/UX package (user-confirmed) | N/A | Approved R3 | Approved R4 | REQ-002, 004, 015, 016; AC-016, 017; DEC-015…017 | Integrated
+| SR-006 | Design | Approved R4 | N/A | N/A | Design Ready (user approval pending) | all REQ | Large / High
 
 ## Revision Entries
 
@@ -79,3 +80,14 @@
 - Follow-ups: FU-004 (Project icon and colour).
 - Product Task: this delegation was part of autobyteus-347 and returned no task_id; nothing to close.
 - Next action: architecture design.
+
+### SR-006 — Architecture design
+
+- Phase and classification: Design (initial).
+- Trigger: approved requirements R4 (SR-005).
+- Prior status: no design. Current: design-spec.md Ready; user approval of the design Pending (the Task requires it before the build).
+- Evidence added: investigation-notes.md E-024…E-036 and the migration-convention check.
+- Decisions: `projectId` on Agent metadata, Agent/Team index rows and Team tree (no migration); `ProjectRunHistoryService` + `projectRunHistory` query with per-root execution scopes from `TaskExecutionResourceService.runLinksOf`; `Project` instruction section in the shared Carpenter composition; web: switch, Projects tree, shared `RunDefinitionGroups`, scope filter, `projectRunsStore`, chip tabs, briefcase.
+- Classification: task_size Large, architectural_risk High → architecture review after the user's design approval.
+- Follow-ups: FU-005, FU-006 added.
+- Next action: ask the user to approve the design; then hand off per the rules.

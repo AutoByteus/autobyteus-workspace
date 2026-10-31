@@ -11,7 +11,7 @@
 - Finalization target: `origin/personal` (Delivery-owned; release only on the user's word)
 - Bootstrap result: new worktree created with `git worktree add … -b codex/projects-left-navigation origin/personal`. The old autobyteus-72 worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/project-centric-execution` (branch `codex/project-centric-execution`, base `f13bdd0eb7`, 2,174 commits behind) still exists; it was read only and is not reused, because the code it investigated has changed substantially (see E-020).
 - Bootstrap blocker: none
-- Current solution revision ID: SR-003
+- Current solution revision ID: SR-005
 - Authorities read (requirements reading gate, 2026-10-31): `solution-designer/SKILL.md`; `references/requirements-engineering.md`; `references/ticket-scope.md`; `references/finding-the-cause.md`; `references/handoff.md`; templates for requirements, investigation notes and solution revision record; root `AGENTS.md`.
 - Investigation status: requirements investigation complete for SR-001. Architecture investigation not started (it starts after approval).
 
@@ -183,6 +183,8 @@
 | `evidence/intake/user-screenshot-sidebar-pm-under-workspace-2026-10-31.png` | User (copied) | Problem evidence | BEH-001…003 | Evidence | Not behavior-defining |
 | `/Users/normy/autobyteus_org/autobyteus-delivery-records/project-centric-execution-72-20261031/` | earlier Solution Designer | Earlier ticket's documents | E-019 | Historical input | Never approved; superseded by this package |
 | `follow-ups.md` | Solution Designer | Follow-ups found | FU-001…FU-003 | Draft | N/A |
+| `design-spec.md` | Solution Designer | Architecture design | REQ-001…016 | Ready; user approval pending | Requirements approved R4 |
+| Product `ui-ux-spec.md` + VIS-001…025 (`/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/projects-left-navigation/`) | Product Team | Normative UI | REQ-001…016 | Approved by the user 2026-10-31 | Behavior-defining |
 | `product-design-request.md` | Solution Designer | Product Design request (New Request) | REQ-001…015 | Sent to `/product_team` | Context only; the returned Product package needs the user's confirmation |
 
 ## Assumptions, Unknowns, And Risks
@@ -198,7 +200,26 @@
 
 ## Architecture Investigation Findings
 
-Not started; begins after requirements approval.
+Architecture reading gate passed on 2026-10-31: `references/architecture-design.md`, `references/design-principles.md`, root `DESIGN.md`, `autobyteus-server-ts/docs/design/data_migration_guideline.md` §1–4. All rows below were established by reading (no run).
+
+| ID | Exact source | Observation | Design implication |
+| --- | --- | --- | --- |
+| E-024 | `autobyteus-server-ts/src/agent-collaboration/execution/task/root-task-dispatch.ts` 32–61; `docs/modules/remote_collaboration.md` 176–184, 236–238 | Every new copy, local or remote, is linked to its Task (`resources.linkNewTaskExecution`) before activation; a remote run "belongs to the Task the link was recorded under". | Remote rows are scoped to a Project by the same Task records (DEC-015). |
+| E-025 | `autobyteus-server-ts/src/projects/services/task-execution-resource-service.ts` 21–47, 279–300 | The service holds every Task's run entries in memory: `entriesByExecution`, `currentByExecution` (`{taskId, entry}`), per-location files `{location: {projectId, taskId}, file}`; each entry has `hostRoot` and `execution`. Every committed write calls `onCommitted(location)`. | A Project's host roots and its executions per host can be answered from memory with no file reads (QR-001). |
+| E-026 | `autobyteus-server-ts/src/projects/services/project-task-service.ts` 81 | The commit listener is `changes.taskChanged(location)`: every committed run-resource write (assigned, delegated sub-work, start settle, close, reopen) publishes `task_upserted` for that Task on `/ws/projects`. | The web can re-read a Project's runs on that Project's `task_upserted`, no new feed message. |
+| E-027 | `autobyteus-server-ts/src/run-history/store/agent-run-metadata-types.ts` 7–28; `store/agent-run-metadata-store.ts` 41–72 | Run metadata already carries optional facts whose absence has a truthful meaning (`delegatedFrom`, `systemRunOwner`), read through `normalizeMetadata` with an `optionalMarker` rule. | `projectId?` follows the same pattern: absent = not started under a Project; no migration (E-023). |
+| E-028 | `autobyteus-server-ts/src/agent-execution/services/agent-run-provisioning-service.ts` 84–110 | Fresh runs are prepared here: metadata written, then `historyCatalogService.recordPreparedRun({runId, metadata, …})` writes the index row. | The single place to stamp `projectId` on an Agent run and its index row. |
+| E-029 | `autobyteus-server-ts/src/run-history/store/agent-run-history-index-record-types.ts`; `team-run-history-index-record-types.ts`; `services/team-run-history-index-row-projector.ts` 24–41 | Index rows carry `workspaceRootPath` but no Project; the Team row is projected from the Team tree. | Add `projectId?` to both rows (Agent: from metadata; Team: from the tree). |
+| E-030 | `autobyteus-server-ts/src/agent-team-execution/services/team-run-execution-tree-builder.ts` 33–48; `run-history/store/team-run-execution-tree-schema.ts` 109 | The Team tree's top level holds run-level facts (`createdAt`, `archivedAt`, `applicationBinding`); optional `delegatedFrom` is parsed the same tolerant way. | `projectId?` at the tree's top level; schema parses it optionally. |
+| E-031 | `autobyteus-server-ts/src/run-history/services/agent-run-history-service.ts` 77–130; `workspace-run-history-service.ts` 51–98 | Listing reads catalog rows, drops archived and hidden-definition rows, groups by workspace then definition, caps each group at `limitPerAgent` newest by `createdAt`; Team runs are uncapped. | A Project listing is a sibling grouping over the same rows, keyed by a run-id set instead of a folder. |
+| E-032 | `autobyteus-server-ts/docs/modules/prompt_engineering.md` 35–60; `src/agent-execution/prompt/carpenter-prompt-composer.ts` 13–65; composer callers: `backends/autobyteus/autobyteus-agent-run-backend-factory.ts` 349, `backends/codex/backend/codex-thread-bootstrapper.ts` 254, `backends/claude/backend/claude-session-bootstrapper.ts`, `backends/antigravity/backend/agy-agent-run-backend-factory.ts`, `backends/acp/backend/acp-agent-run-backend-factory.ts` | One shared Carpenter composition feeds every runtime's system instructions; sections have single owners; blank optional sections are omitted. Composer input is the agent definition plus the member context; `AgentRunConfig` (`agent-execution/domain/agent-run-config.ts`) carries run-level facts such as `applicationExecutionContext`. | REQ-006: a `Project` section in the shared composition, fed by a run-level fact on `AgentRunConfig`, reaches every runtime (resolves U-003). |
+| E-033 | `autobyteus-web/components/workspace/history/WorkspaceAgentRunsTreePanel.vue` (525 lines); `WorkspaceHistoryWorkspaceSection.vue` (462 lines) | The panel owns the header, the add-workspace form, deletion/archive dialogs and the workspace list; the section renders one workspace's agent/team/org groups and runs. | The panel is already over 500 lines: the switch and Projects mode cannot be added to it; the groups body must be shared, not copied. |
+| E-034 | `autobyteus-web/services/agentCollaboration/agentRunCollaborationContext.ts` 287–330 | A run's delegated rows list its top-level task executions (sub-work is linked at the root's top level, beside its worker) and hide closed subtrees. | Per-Project scoping must apply to every top-level task execution, not only Task workers; a key set per host root from the server fits. |
+| E-035 | `autobyteus-web/stores/projectsPanelStore.ts` 8–69; `composables/useShellPrimaryNavigation.ts` 37; `components/chat/ChatWorkspaceMenu.vue` (325 lines); `stores/chatDraftStore.ts` 203–240 | The board choice has one owner (`choose`); the Projects nav icon is `heroicons:folder`; the chip menu and draft own folder choice. | Board coupling calls `choose`; icon swap in the nav owner; the chip menu gains the Projects tab; the draft gains `projectId`. |
+| E-036 | `autobyteus-server-ts/src/api/graphql/types/agent-run.ts` 37–60, 190–260; `agent-team-run.ts` 107–116 | `createAgentRun` / `prepareAgentRun` take `CreateAgentRunInput`; Team creation takes `CreateAgentTeamRunInput`. Neither has a Project. | Add an optional `projectId` to both inputs. |
+
+Persisted-data convention check (Data Migration Guideline §2): the change adds one optional field to Agent run metadata, the Agent and Team index rows and the Team tree; its absence truthfully means "not started under a Project" (§3, compatible change). Shape inventory: every existing file lacks the field (all runs to date). No migration; readers keep tolerant projection; writers emit it only when present.
+
 
 ## Requirement Implications
 
