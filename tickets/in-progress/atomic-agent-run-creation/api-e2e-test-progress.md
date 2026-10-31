@@ -21,3 +21,7 @@ Read this first when picking the run back up. Only add rows. **Temporary data ro
 | 2026-10-31 21:37 | API-04 | Completed | Pass | prepare -> first message -> started; restart keeps and lists it, no removal |
 | 2026-10-31 21:37 | API-05 | Completed | Pass | 284 gated E2E 2 passed |
 | 2026-10-31 21:39 | — | Completed | Fail | round result Fail (F-API-001 Requirement Gap: AC-004 crash leftovers kept); cleanup done |
+| 2026-10-31 22:23 | round 2 | Started |  | SR-005 reporting fix + graceful AC-004 case; run root /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-api2.aYymLz |
+| 2026-10-31 22:26 | API-03G | Started |  | graceful AC-004: 3 samples |
+| 2026-10-31 22:27 | API-03G | Completed | Pass | 3 samples: creates before SIGTERM all ok (finished +74..+215 ms), later refused; exit 0 in 323-586 ms; 0 never-started, 0 unknown runs after relaunch |
+| 2026-10-31 22:27 | round 2 | Completed | Pass | API-REV-002 Pass 93.0%; F-API-001 -> FU-005; cleanup done |

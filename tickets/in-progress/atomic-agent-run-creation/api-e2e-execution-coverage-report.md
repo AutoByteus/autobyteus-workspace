@@ -10,9 +10,9 @@ Paths are relative to `/Users/normy/autobyteus_org/autobyteus-worktrees/atomic-a
 ## Round
 
 - Coverage investigation: `api-e2e-coverage-investigation.md`
-- API/E2E revision record and current revision ID: `api-e2e-revision-record.md`, `API-REV-001`
+- API/E2E revision record and current revision ID: `api-e2e-revision-record.md`, `API-REV-002`
 - Test progress log: `api-e2e-test-progress.md`
-- Round and trigger: round 1; CRR-001 Pass (code `c533fc0b5b`, guard `93fa105819`, handoff `ded1b718e5`, review `1dca0e2ad6`).
+- Round and trigger: **round 2** (reporting Local Fix); CRR-003 (review `5a47a33f02`) resolved F-API-001 by SR-005 (decision `7e9e55f220`, DEC-003 = C): AC-004 narrowed to a normal stop; a hard kill during activation is the accepted residual FU-005. Code unchanged (`c533fc0b5b` + `93fa105819`). Round 1 (CRR-001) reported `Fail` on the old AC-004 text.
 - Deviations from the plan:
   - API-02B: a small AC-003 rerun adding a history-index check and a base-build listing of the same data.
   - API-03B to API-03E: repeats of the crash case to capture what the leftovers hold.
@@ -21,13 +21,14 @@ Paths are relative to `/Users/normy/autobyteus_org/autobyteus-worktrees/atomic-a
 ## Routing Classification
 
 - Task size: `Small`; Architectural risk: `High`; Input route: `Reviewed`; Successful-output route: `Code Review`.
-- Proportional test-code review decision: `Not Applicable` this round (result `Fail`; failure-origin review requested). No durable test code changed by API/E2E.
+- Proportional test-code review decision: `Not Applicable`: no durable test code was changed by API/E2E in either round, and the implementation's tests were reviewed in CRR-001.
 
 ## Tested Builds And Environments
 
 | Env ID | Commit Tested | Platform | Build | Settings |
 | --- | --- | --- | --- | --- |
 | ENV-1 | `1dca0e2ad6` (code `c533fc0b5b` + `93fa105819`), clean detached checkout | macOS 26 arm64, Node 22.23.1 | server `prebuild` + `build` | `node dist/app.js --port --data-dir <temp>`; data `.env` `APP_ENV=test`, `LMSTUDIO_HOSTS=<scripted model>`; throwaway `CODEX_HOME`. API-02 only: temporary `[349-DIAG]` timestamps around the startup stage (restored before API-02B; `grep -rl 349-DIAG dist` empty at the end) |
+| ENV-3 | `c249a3c8c2` (code `c533fc0b5b` + `93fa105819`; docs-only since), clean detached checkout | macOS 26 arm64, Node 22.23.1 | server build | Round 2 (API-03G); same settings as ENV-1, no diagnostics |
 | ENV-2 | base `e87e6bb2b1` (includes autobyteus-339), clean detached checkout | same | server build | Contrast only |
 | Runtimes | — | — | Codex CLI 0.166.0 (`gpt-6.1-terra`, effort medium) for codex activations; scripted LM Studio inference for native runs (no paid inference) | — |
 
@@ -41,8 +42,9 @@ Paths are relative to `/Users/normy/autobyteus_org/autobyteus-worktrees/atomic-a
 | API-01-base | AC-001 contrast | same on the base build | same, base | ENV-2 | Observed | `API-01-base-*` | same two errors; **2 history rows, 2 folders** with `preparedAt`, `startedAt: null` | What the change removes |
 | API-02 | AC-003, N-4 | Real startup on a temp root seeded through real code (`prepareAgentRun`, `createAgentRun`, a native first message) plus minimal structure edits learned read-only. Shapes: E1 empty never-started; E2 empty with empty `context_files/` and `work_journal/`; CTX `context_files/note.txt` only; UNREADABLE record (`{ not json`); COLLAB never-started root with `collaboration/collaboration_tree.json`; MAY a real conversation with `startedAt` removed and `activationState: "ACTIVATED"`; STARTED; TASK a task-agent record (`taskAgent` section, `preparedAt`, no `startedAt`, record only). Plus 300 empty and 300 started bulk runs | `… ac003 <clean> 300 evidence API-02` | ENV-1 (diag) | Pass | `API-02-result.json`, `-run.log`, `API-02-server-seed.log`, `-restart-1.log`, `-restart-2.log` | `Removed empty never-started run '…' ('Seed E1-empty')`, `('Seed E2-empty-subfolders')`; `Kept run '…': its record could not be read: …`; `Empty never-started run removal skipped 1 folder(s) without a standalone run record`; E1/E2 `listed false onDisk false`; CTX/COLLAB/MAY/STARTED `listed true onDisk true`; TASK and UNREADABLE on disk; `bulkEmptyLeft 0`, `bulkStartedKept 300`, `removedLines 302`; N-4: `stage start` → `stage end` **4563 ms** (302 removals, 608 run folders), **124 ms** on the next start (306 folders, nothing to remove) | ≈ 15 ms per removal; the scan alone ≈ 0.4 ms per folder |
 | API-02B | AC-003 (index, listing) | Same seed without bulk; history index read after restart; the same data started on the base build | `BASE_DIR=<base> … ac003 <clean> 0 evidence API-02B` | ENV-1, ENV-2 | Pass | `API-02B-result.json`, `-server-*.log` | index rows: E1/E2 `false`; CTX, UNREADABLE, COLLAB, MAY, STARTED `true`. The base build also hides UNREADABLE from the listing (`baseListedSameData false`) | The unreadable run's hidden listing is existing behavior; its row and folder are untouched |
-| API-03 | AC-004 | (a) Crash: six staggered codex `createAgentRun` requests, SIGKILL of the server mid-way (up to 5 attempts); (b) stuck activation: `codex app-server` SIGSTOPped, a create in flight, SIGTERM (grace → bound → sweep). Relaunch copies of both data roots on the new and the base build | `… ac004 <clean> <base> evidence API-03` | ENV-1, ENV-2 | **Fail (crash case)** | `API-03-result.json`, `-run.log`, `API-03-server-*.log` | crash attempt 2: `preparedOnly 2`; `relaunch crash-new … listedAfter 2, onDiskAfter 2, log []` (new build keeps both, logs nothing); stuck: `exit {"code":1}`, `stopMs 11626`, the cut create left no run (`historyRows 1`) | F-API-001 |
-| API-03B..E | AC-004 (what the leftovers hold) | Crash case repeated with leftover contents captured | `ONLY_CRASH=1 … ac004 … API-03B/C/D/E` | ENV-1 | Fail (same) | `API-03B..E-result.json`, `-run.log` | leftovers per crash: **record only** (removed at relaunch); **record + `raw_traces_active.jsonl` (2047–2048 B)**; **record + trace + `run_metadata.json.<pid>.<ts>.<hash>.tmp`** (800 B, a record **with** `startedAt`). Trace line: `"trace_type":"system_instruction"`, content `## Agent Identity …`. Relaunch on the new build: `listedAfter 1, onDiskAfter 1, log []` | The trace is the agent's system prompt written during activation; no user message was ever sent |
+| API-03 | AC-004 (SR-005: stuck-activation variant; hard-kill variant = FU-005) | (a) Crash: six staggered codex `createAgentRun` requests, SIGKILL of the server mid-way (up to 5 attempts); (b) stuck activation: `codex app-server` SIGSTOPped, a create in flight, SIGTERM (grace → bound → sweep). Relaunch copies of both data roots on the new and the base build | `… ac004 <clean> <base> evidence API-03` | ENV-1, ENV-2 | **Pass** for the normal-stop variant (stuck activation + SIGTERM); the hard-kill variant is the accepted residual **FU-005** (round 1 recorded it as F-API-001) | `API-03-result.json`, `-run.log`, `API-03-server-*.log` | stuck: `exit {"code":1}`, `stopMs 11626` (grace → bound → sweep), the cut create left no run (`historyRows 1`); hard kill, crash attempt 2: `preparedOnly 2`, `relaunch crash-new … listedAfter 2, onDiskAfter 2, log []` | Hard-kill leftovers kept by the strict content rule, as SR-005 accepts |
+| API-03B..E | FU-005 (what hard-kill leftovers hold) | Crash case repeated with leftover contents captured | `ONLY_CRASH=1 … ac004 … API-03B/C/D/E` | ENV-1 | Observed (FU-005 evidence) | `API-03B..E-result.json`, `-run.log` | leftovers per crash: **record only** (removed at relaunch); **record + `raw_traces_active.jsonl` (2047–2048 B)**; **record + trace + `run_metadata.json.<pid>.<ts>.<hash>.tmp`** (800 B, a record **with** `startedAt`). Trace line: `"trace_type":"system_instruction"`, content `## Agent Identity …`. Relaunch on the new build: `listedAfter 1, onDiskAfter 1, log []` | The trace is the agent's system prompt written during activation; no user message was ever sent |
+| API-03G | AC-004 (SR-005, plain graceful stop) | Real server: three codex `createAgentRun` (latency), then six staggered creates around a **SIGTERM** (339's grace), relaunch on the same data; three samples | `env -i PATH HOME USER LOGNAME TMPDIR SAMPLES=3 node evidence/API-349-probe.mjs ac004g <clean>/autobyteus-server-ts evidence API-03G` | ENV-3 | Pass | `API-03G-result.json`, `API-03G-run.log`, `API-03G-server-graceful-*.log` | per sample: creates sent −74…−4 ms before SIGTERM all `ok` (answered +74…+215 ms), later ones refused (`ERR`); `exit 0`, `stopMs` 586 / 323 / 445; `neverStartedBefore 0`, `unknownOnDisk 0`; after relaunch `neverStartedListedAfter 0`, `unknownListedAfter 0`, history rows = known runs (6 / 12 / 18) | — |
 | API-04 | AC-005 | Two-step creation on the real server: `prepareAgentRun` (record only) → WS first message → turn → restart | `… ac005 <clean> evidence API-04` | ENV-1 | Pass | `API-04-result.json`, `-server-*.log` | before: `["/","/run_metadata.json"]`, `startedAt: false`; after the message: `startedAt: true` with traces, journal, snapshot; after restart `listed … "summary":"Two-step first message"`, `onDisk: true`, no removal line | — |
 | API-05 | AC-005 (regression) | 284's gated stop-now E2E (creates, terminates, relaunches through the new stage) | `RUN_BUSY_STOP_NOW_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/shutdown/busy-run-stop-now.e2e.test.ts --no-watch` | ENV-1 | Pass | `API-05-gated-e2e.log` | `Tests  2 passed (2)` | — |
 
@@ -53,10 +55,15 @@ Paths are relative to `/Users/normy/autobyteus_org/autobyteus-worktrees/atomic-a
 | AC-001 | Yes | API-01-clean (two real activation failures), API-01-base (contrast), IMP-02 | Proven | — |
 | AC-002 | Yes | IMP-02 (the real catalog refuses a started run, logged) | Proven (unit, temp root) | — |
 | AC-003 | Yes | API-02, API-02B, IMP-01 | Proven | — |
-| AC-004 | Yes | API-03, API-03B..E | **Not proven: fails** for a crash during activation (F-API-001). A record-only leftover is removed; a leftover with the activation's `system_instruction` trace, or a stale record `.tmp`, stays listed | — |
+| AC-004 | Yes | API-03G (graceful SIGTERM ×3), API-03 stuck-activation variant (SIGTERM through grace, bound and sweep) | **Proven** under SR-005's text. The hard-kill leftovers (API-03, API-03B..E) are the accepted residual FU-005 | — |
 | AC-005 | Yes | API-04, API-05, IMP-05 | Proven (remote delegation by unit suite only) | — |
 
 ## Findings
+
+Round 2: **F-API-001 is resolved as the accepted residual FU-005** (SR-005, DEC-003 = C; CRR-003). AC-004 now covers a normal stop and passes (API-03G, API-03 stuck variant). No open finding.
+
+Round 1, as recorded:
+
 
 **F-API-001: a create interrupted by a crash during activation leaves an empty run that the startup removal keeps.**
 Preliminary classification: `Requirement Gap`. Failure-origin review requested.
@@ -82,19 +89,22 @@ Preliminary classification: `Requirement Gap`. Failure-origin review requested.
 
 ## Validation Confidence Scorecard (Mandatory)
 
+Round 2. Round 1's scorecard (88.5%, `Fail` on the old AC-004 text) is in API-REV-001.
+
 | Category | Post-Repository | Final | Supports | Residual | Improve |
 | --- | --- | --- | --- | --- | --- |
-| Requirement and AC proof | 70% | 80% | AC-001, AC-002, AC-003, AC-005 proven | AC-004 fails (F-API-001) | Resolve F-API-001 |
-| Changed-boundary directness | 75% | 95% | Real server, real startup, real activation failures, real crash | — | — |
-| Integration realism | 70% | 93% | Real codex spawn failures, scripted native inference, real catalog and disk | Native inference scripted | — |
+| Requirement and AC proof | 70% | 95% | AC-001..AC-005 proven under SR-005 (API-01, API-02/02B, API-03G, API-03 stuck, API-04/05, IMP-02) | Remote delegation two-step only by unit suite | — |
+| Changed-boundary directness | 75% | 95% | Real server, real startup, real activation failures, real normal stops and a real crash | — | — |
+| Integration realism | 70% | 93% | Real codex spawn/activation, scripted native inference, real catalog and disk | Native inference scripted | — |
 | Environment / fixture fidelity | 80% | 93% | Shapes seeded through real code; May and task-agent shapes from read-only key names | Synthetic edits for May/unreadable/task | — |
-| Failure / edge / lifecycle | 70% | 80% | Crash and stuck-activation interruptions, bulk, unreadable, symlink (unit) | F-API-001 | — |
+| Failure / edge / lifecycle | 70% | 92% | Normal stop ×3, stuck activation, crash (residual characterized), bulk, unreadable | FU-005 accepted | — |
 | User surface / desktop | N/A | N/A | Server-only change | — | — |
-| Durable regression quality | 90% | 90% | IMP-01..03 with mutations | AC-004's crash shape has no durable case | Add with the fix |
+| Durable regression quality | 90% | 90% | IMP-01..03 with mutations; 284's gated E2E | AC-004 stays a probe (live codex activation) | — |
 
-- Overall post-repository: 76%; final: 88.5% (simple average over the six applicable categories).
-- Every critical AC directly proven: `No` (AC-004).
-- Categories below 90%: requirement proof 80%, failure/edge 80%.
+- Overall post-repository: 76%; final: 93.0% (simple average over the six applicable categories).
+- Every critical AC directly proven: `Yes`.
+- Categories below 90%: `No`.
+- Default target of 95%: `No` (93.0%). The gap is bounded: remote delegation across two nodes is not run (unchanged code, unit suite), native inference is scripted, and AC-004 has no durable case (it needs a live codex activation). No in-scope surface would add material proof.
 
 ## Broader Validation Decision (Mandatory)
 
@@ -140,22 +150,25 @@ Preliminary classification: `Requirement Gap`. Failure-origin review requested.
 
 ## Residual Risks
 
-- F-API-001 (open).
+- FU-005 (accepted residual, lowest priority by the user): a hard kill during an activation can leave an empty listed run (evidence API-03, API-03B..E).
 - FU-001..FU-004 (handoff).
 - N-4 measured: a startup with many removals costs about 15 ms per removed run. A normal start scans quickly (124 ms for about 300 folders).
 - Remote delegation's two-step flow was not exercised across nodes (unchanged code; unit suite).
 
 ## Preliminary Classification (On `Fail`)
 
+Round 1 only; resolved by SR-005 in round 2.
+
+
 - F-API-001: `Requirement Gap`. REQ-002's approved emptiness rule does not cover the activation artifacts a crash leaves, so AC-004 cannot pass under it. The owner may judge it a `Design Impact`, if the design should instead prevent those artifacts or define them as non-content within the approved intent.
 
 ## Latest Authoritative Result
 
-- Result: `Fail`
-- Criteria not proven: AC-004 (F-API-001).
-- Preliminary classification and recommended owner: F-API-001 `Requirement Gap` → failure-origin review.
-- Next recipient from `get_handoff_rules`: code reviewer.
-- Notes: D1 and D2 behave exactly as specified:
-  - a failed activation leaves nothing and returns its error;
-  - startup removes only record-only never-started runs and keeps every other shape, including unreadable records and task agents;
-  - the two-step flow is unchanged.
+- Result: `Pass` (round 2, API-REV-002)
+- Criteria not proven, or parts only the user can check: none. The first start on the user's real data, which removes the 6 record-only runs (approved and logged), is not run here by rule.
+- Preliminary classification and recommended owner: N/A. F-API-001 is the accepted residual FU-005.
+- Next recipient: the code reviewer, who sent this reporting fix. No handoff rule matches exactly: a Pass on the High route without durable test changes needs no test-code review. The reviewer forwards to delivery.
+- Proportional test-code review: `Not Applicable` (no durable test changed by API/E2E).
+- Notes:
+  - D1 and D2 behave as specified on real servers and temporary data roots.
+  - A normal stop during creates leaves no empty or unacknowledged run.

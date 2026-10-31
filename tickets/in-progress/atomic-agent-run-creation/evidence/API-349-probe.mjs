@@ -8,6 +8,7 @@
  *                                     check removal, kept shapes, logs; `bulk` adds N empty + N started runs.
  *   ac004 <server dir> <base dir>     AC-004: (a) SIGKILL during staggered codex creates; (b) stuck codex activation
  *                                     (`codex app-server` SIGSTOPped) + SIGTERM; then relaunch copies on the new and base builds.
+ *   ac004g <server dir>               AC-004 (SR-005): codex creates in flight around a SIGTERM (normal stop), relaunch.
  *   ac005 <server dir>                AC-005: two-step creation (prepareAgentRun → first message) and a restart.
  * Usage: env -i PATH="$PATH" HOME="$HOME" USER="$USER" LOGNAME="$LOGNAME" TMPDIR="$TMPDIR" node API-349-probe.mjs <mode> ... <evidence dir> <case id>
  */
@@ -244,6 +245,33 @@ try {
         log(`relaunch ${name} on ${build}`, record.relaunch[`${name}-${build}`]);
         await stopServer(s); await saveLog(s);
       }
+    }
+  } else if (mode === 'ac004g') {
+    // AC-004 (SR-005): creates in flight around a NORMAL stop (SIGTERM; 339's grace lets them finish), then relaunch.
+    const data = await newDataRoot('graceful');
+    record.samples = []; const known = new Set();
+    for (let sample = 1; sample <= Number(process.env.SAMPLES ?? 2); sample++) {
+      const s = await startServer(serverDir, data, `graceful-${sample}`);
+      const input = await runInput(s, 'codex');
+      const lat = []; const pre = [];
+      for (let i = 0; i < 3; i++) { const t = Date.now(); const r = await createRun(s, input); lat.push(Date.now() - t); pre.push(r.runId); }
+      const median = [...lat].sort((a, b) => a - b)[1];
+      let sigtermAt = 0;
+      const inflight = Array.from({ length: 6 }, (_, k) => delay(k * Math.max(5, Math.round(median / 5))).then(() => { const sentAt = Date.now(); return createRun(s, input).then(r => ({ k, sentAt, endedAt: Date.now(), r }), e => ({ k, sentAt, endedAt: Date.now(), error: String(e).slice(0, 100) })); }));
+      await delay(Math.round(median / 2)); sigtermAt = Date.now(); s.child.kill('SIGTERM');
+      await wait(() => s.exit, 'graceful exit', 30_000).catch(() => {});
+      const settled = (await Promise.all(inflight)).map(e => ({ ...e, sentRelSigtermMs: e.sentAt - sigtermAt, endedRelSigtermMs: e.endedAt - sigtermAt }));
+      for (const id of [...pre, ...settled.filter(e => e.r?.runId).map(e => e.r.runId)]) known.add(id);
+      const diskBefore = await diskRuns(data);
+      const s2 = await startServer(serverDir, data, `graceful-${sample}-relaunch`);
+      const h = await history(s2); const disk = await diskRuns(data);
+      const out = { sample, latencyMs: lat, exit: s.exit, stopMs: s.exit ? s.exit.at - sigtermAt : null, inflight: settled,
+        neverStartedBeforeRelaunch: Object.entries(diskBefore).filter(([, v]) => v.meta?.preparedAt && !v.meta?.startedAt).map(([id]) => id),
+        unknownOnDiskBeforeRelaunch: Object.keys(diskBefore).filter(id => !known.has(id)),
+        neverStartedListedAfter: h.filter(r => disk[r.runId]?.meta?.preparedAt && !disk[r.runId]?.meta?.startedAt).map(r => r.runId),
+        unknownListedAfter: h.filter(r => !known.has(r.runId)).map(r => r.runId), historyRows: h.length, knownRuns: known.size, logLines: relevantLog(s2) };
+      record.samples.push(out); log(`graceful sample ${sample}`, out);
+      await stopServer(s2); await saveLog(s); await saveLog(s2);
     }
   } else if (mode === 'ac005') {
     const data = await newDataRoot('data');

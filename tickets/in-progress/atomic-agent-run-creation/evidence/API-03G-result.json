@@ -1,0 +1,633 @@
+{
+  "case": "API-03G",
+  "mode": "ac004g",
+  "serverDir": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-api2.aYymLz/clean/autobyteus-server-ts",
+  "baseDir": null,
+  "date": "2026-10-31T21:26:15.021Z",
+  "own": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac004g-xOeAFr",
+  "steps": [
+    {
+      "at": "3.72",
+      "step": "server started",
+      "value": {
+        "label": "graceful-1",
+        "pid": 45600,
+        "port": 57591,
+        "readyMs": 3711,
+        "data": "<own>/graceful"
+      }
+    },
+    {
+      "at": "7.49",
+      "step": "server started",
+      "value": {
+        "label": "graceful-1-relaunch",
+        "pid": 48198,
+        "port": 57668,
+        "readyMs": 1748,
+        "data": "<own>/graceful"
+      }
+    },
+    {
+      "at": "7.53",
+      "step": "graceful sample 1",
+      "value": {
+        "sample": 1,
+        "latencyMs": [
+          1024,
+          149,
+          116
+        ],
+        "exit": {
+          "code": 0,
+          "signal": null,
+          "at": 1793481980714
+        },
+        "stopMs": 586,
+        "inflight": [
+          {
+            "k": 0,
+            "sentAt": 1793481980054,
+            "endedAt": 1793481980216,
+            "r": {
+              "success": true,
+              "message": "Agent run created successfully.",
+              "runId": "probe_agent_mvwwv3hw_7a91ec266bc0461087d34de796deaa5f"
+            },
+            "sentRelSigtermMs": -74,
+            "endedRelSigtermMs": 88
+          },
+          {
+            "k": 1,
+            "sentAt": 1793481980084,
+            "endedAt": 1793481980256,
+            "r": {
+              "success": true,
+              "message": "Agent run created successfully.",
+              "runId": "probe_agent_mvwwv3hw_4678ce3ff4f440a685bddee85319bd8b"
+            },
+            "sentRelSigtermMs": -44,
+            "endedRelSigtermMs": 128
+          },
+          {
+            "k": 2,
+            "sentAt": 1793481980115,
+            "endedAt": 1793481980343,
+            "r": {
+              "success": true,
+              "message": "Agent run created successfully.",
+              "runId": "probe_agent_mvwwv3hw_d207110f62254d889158a1a60476ac59"
+            },
+            "sentRelSigtermMs": -13,
+            "endedRelSigtermMs": 215
+          },
+          {
+            "k": 3,
+            "sentAt": 1793481980145,
+            "endedAt": 1793481980147,
+            "error": "TypeError: fetch failed",
+            "sentRelSigtermMs": 17,
+            "endedRelSigtermMs": 19
+          },
+          {
+            "k": 4,
+            "sentAt": 1793481980174,
+            "endedAt": 1793481980176,
+            "error": "TypeError: fetch failed",
+            "sentRelSigtermMs": 46,
+            "endedRelSigtermMs": 48
+          },
+          {
+            "k": 5,
+            "sentAt": 1793481980204,
+            "endedAt": 1793481980205,
+            "error": "TypeError: fetch failed",
+            "sentRelSigtermMs": 76,
+            "endedRelSigtermMs": 77
+          }
+        ],
+        "neverStartedBeforeRelaunch": [],
+        "unknownOnDiskBeforeRelaunch": [],
+        "neverStartedListedAfter": [],
+        "unknownListedAfter": [],
+        "historyRows": 6,
+        "knownRuns": 6,
+        "logLines": []
+      }
+    },
+    {
+      "at": "7.63",
+      "step": "server stopped",
+      "value": {
+        "label": "graceful-1-relaunch",
+        "signal": "SIGTERM",
+        "exit": {
+          "code": 0,
+          "signal": null,
+          "at": 1793481982599
+        },
+        "ms": 53
+      }
+    },
+    {
+      "at": "9.48",
+      "step": "server started",
+      "value": {
+        "label": "graceful-2",
+        "pid": 48410,
+        "port": 57691,
+        "readyMs": 1856,
+        "data": "<own>/graceful"
+      }
+    },
+    {
+      "at": "11.93",
+      "step": "server started",
+      "value": {
+        "label": "graceful-2-relaunch",
+        "pid": 50181,
+        "port": 57742,
+        "readyMs": 1741,
+        "data": "<own>/graceful"
+      }
+    },
+    {
+      "at": "11.99",
+      "step": "graceful sample 2",
+      "value": {
+        "sample": 2,
+        "latencyMs": [
+          115,
+          54,
+          52
+        ],
+        "exit": {
+          "code": 0,
+          "signal": null,
+          "at": 1793481985076
+        },
+        "stopMs": 323,
+        "inflight": [
+          {
+            "k": 0,
+            "sentAt": 1793481984726,
+            "endedAt": 1793481984827,
+            "r": {
+              "success": true,
+              "message": "Agent run created successfully.",
+              "runId": "probe_agent_mvwwv3hw_88bf7cc434644290ad1398e61ff11552"
+            },
+            "sentRelSigtermMs": -27,
+            "endedRelSigtermMs": 74
+          },
+          {
+            "k": 1,
+            "sentAt": 1793481984738,
+            "endedAt": 1793481984843,
+            "r": {
+              "success": true,
+              "message": "Agent run created successfully.",
+              "runId": "probe_agent_mvwwv3hw_88786e5978e3432d9f21c2e4044225c5"
+            },
+            "sentRelSigtermMs": -15,
+            "endedRelSigtermMs": 90
+          },
+          {
+            "k": 2,
+            "sentAt": 1793481984749,
+            "endedAt": 1793481984858,
+            "r": {
+              "success": true,
+              "message": "Agent run created successfully.",
+              "runId": "probe_agent_mvwwv3hw_f9785249bfe249b09f26d59e63b1f1f5"
+            },
+            "sentRelSigtermMs": -4,
+            "endedRelSigtermMs": 105
+          },
+          {
+            "k": 3,
+            "sentAt": 1793481984758,
+            "endedAt": 1793481984760,
+            "error": "TypeError: fetch failed",
+            "sentRelSigtermMs": 5,
+            "endedRelSigtermMs": 7
+          },
+          {
+            "k": 4,
+            "sentAt": 1793481984770,
+            "endedAt": 1793481984773,
+            "error": "TypeError: fetch failed",
+            "sentRelSigtermMs": 17,
+            "endedRelSigtermMs": 20
+          },
+          {
+            "k": 5,
+            "sentAt": 1793481984780,
+            "endedAt": 1793481984781,
+            "error": "TypeError: fetch failed",
+            "sentRelSigtermMs": 27,
+            "endedRelSigtermMs": 28
+          }
+        ],
+        "neverStartedBeforeRelaunch": [],
+        "unknownOnDiskBeforeRelaunch": [],
+        "neverStartedListedAfter": [],
+        "unknownListedAfter": [],
+        "historyRows": 12,
+        "knownRuns": 12,
+        "logLines": []
+      }
+    },
+    {
+      "at": "12.09",
+      "step": "server stopped",
+      "value": {
+        "label": "graceful-2-relaunch",
+        "signal": "SIGTERM",
+        "exit": {
+          "code": 0,
+          "signal": null,
+          "at": 1793481987065
+        },
+        "ms": 57
+      }
+    },
+    {
+      "at": "13.93",
+      "step": "server started",
+      "value": {
+        "label": "graceful-3",
+        "pid": 50584,
+        "port": 57766,
+        "readyMs": 1845,
+        "data": "<own>/graceful"
+      }
+    },
+    {
+      "at": "16.76",
+      "step": "server started",
+      "value": {
+        "label": "graceful-3-relaunch",
+        "pid": 52886,
+        "port": 57820,
+        "readyMs": 1953,
+        "data": "<own>/graceful"
+      }
+    },
+    {
+      "at": "16.84",
+      "step": "graceful sample 3",
+      "value": {
+        "sample": 3,
+        "latencyMs": [
+          151,
+          58,
+          54
+        ],
+        "exit": {
+          "code": 0,
+          "signal": null,
+          "at": 1793481989694
+        },
+        "stopMs": 445,
+        "inflight": [
+          {
+            "k": 0,
+            "sentAt": 1793481989219,
+            "endedAt": 1793481989342,
+            "r": {
+              "success": true,
+              "message": "Agent run created successfully.",
+              "runId": "probe_agent_mvwwv3hw_c63c9801c45443f0863da1234b5c37c7"
+            },
+            "sentRelSigtermMs": -30,
+            "endedRelSigtermMs": 93
+          },
+          {
+            "k": 1,
+            "sentAt": 1793481989232,
+            "endedAt": 1793481989360,
+            "r": {
+              "success": true,
+              "message": "Agent run created successfully.",
+              "runId": "probe_agent_mvwwv3hw_92469d47a5d7486e9f2ee327377835be"
+            },
+            "sentRelSigtermMs": -17,
+            "endedRelSigtermMs": 111
+          },
+          {
+            "k": 2,
+            "sentAt": 1793481989244,
+            "endedAt": 1793481989397,
+            "r": {
+              "success": true,
+              "message": "Agent run created successfully.",
+              "runId": "probe_agent_mvwwv3hw_67788e92ff984596a891424f3440a060"
+            },
+            "sentRelSigtermMs": -5,
+            "endedRelSigtermMs": 148
+          },
+          {
+            "k": 3,
+            "sentAt": 1793481989256,
+            "endedAt": 1793481989259,
+            "error": "TypeError: fetch failed",
+            "sentRelSigtermMs": 7,
+            "endedRelSigtermMs": 10
+          },
+          {
+            "k": 4,
+            "sentAt": 1793481989268,
+            "endedAt": 1793481989269,
+            "error": "TypeError: fetch failed",
+            "sentRelSigtermMs": 19,
+            "endedRelSigtermMs": 20
+          },
+          {
+            "k": 5,
+            "sentAt": 1793481989282,
+            "endedAt": 1793481989284,
+            "error": "TypeError: fetch failed",
+            "sentRelSigtermMs": 33,
+            "endedRelSigtermMs": 35
+          }
+        ],
+        "neverStartedBeforeRelaunch": [],
+        "unknownOnDiskBeforeRelaunch": [],
+        "neverStartedListedAfter": [],
+        "unknownListedAfter": [],
+        "historyRows": 18,
+        "knownRuns": 18,
+        "logLines": []
+      }
+    },
+    {
+      "at": "16.95",
+      "step": "server stopped",
+      "value": {
+        "label": "graceful-3-relaunch",
+        "signal": "SIGTERM",
+        "exit": {
+          "code": 0,
+          "signal": null,
+          "at": 1793481991918
+        },
+        "ms": 55
+      }
+    }
+  ],
+  "samples": [
+    {
+      "sample": 1,
+      "latencyMs": [
+        1024,
+        149,
+        116
+      ],
+      "exit": {
+        "code": 0,
+        "signal": null,
+        "at": 1793481980714
+      },
+      "stopMs": 586,
+      "inflight": [
+        {
+          "k": 0,
+          "sentAt": 1793481980054,
+          "endedAt": 1793481980216,
+          "r": {
+            "success": true,
+            "message": "Agent run created successfully.",
+            "runId": "probe_agent_mvwwv3hw_7a91ec266bc0461087d34de796deaa5f"
+          },
+          "sentRelSigtermMs": -74,
+          "endedRelSigtermMs": 88
+        },
+        {
+          "k": 1,
+          "sentAt": 1793481980084,
+          "endedAt": 1793481980256,
+          "r": {
+            "success": true,
+            "message": "Agent run created successfully.",
+            "runId": "probe_agent_mvwwv3hw_4678ce3ff4f440a685bddee85319bd8b"
+          },
+          "sentRelSigtermMs": -44,
+          "endedRelSigtermMs": 128
+        },
+        {
+          "k": 2,
+          "sentAt": 1793481980115,
+          "endedAt": 1793481980343,
+          "r": {
+            "success": true,
+            "message": "Agent run created successfully.",
+            "runId": "probe_agent_mvwwv3hw_d207110f62254d889158a1a60476ac59"
+          },
+          "sentRelSigtermMs": -13,
+          "endedRelSigtermMs": 215
+        },
+        {
+          "k": 3,
+          "sentAt": 1793481980145,
+          "endedAt": 1793481980147,
+          "error": "TypeError: fetch failed",
+          "sentRelSigtermMs": 17,
+          "endedRelSigtermMs": 19
+        },
+        {
+          "k": 4,
+          "sentAt": 1793481980174,
+          "endedAt": 1793481980176,
+          "error": "TypeError: fetch failed",
+          "sentRelSigtermMs": 46,
+          "endedRelSigtermMs": 48
+        },
+        {
+          "k": 5,
+          "sentAt": 1793481980204,
+          "endedAt": 1793481980205,
+          "error": "TypeError: fetch failed",
+          "sentRelSigtermMs": 76,
+          "endedRelSigtermMs": 77
+        }
+      ],
+      "neverStartedBeforeRelaunch": [],
+      "unknownOnDiskBeforeRelaunch": [],
+      "neverStartedListedAfter": [],
+      "unknownListedAfter": [],
+      "historyRows": 6,
+      "knownRuns": 6,
+      "logLines": []
+    },
+    {
+      "sample": 2,
+      "latencyMs": [
+        115,
+        54,
+        52
+      ],
+      "exit": {
+        "code": 0,
+        "signal": null,
+        "at": 1793481985076
+      },
+      "stopMs": 323,
+      "inflight": [
+        {
+          "k": 0,
+          "sentAt": 1793481984726,
+          "endedAt": 1793481984827,
+          "r": {
+            "success": true,
+            "message": "Agent run created successfully.",
+            "runId": "probe_agent_mvwwv3hw_88bf7cc434644290ad1398e61ff11552"
+          },
+          "sentRelSigtermMs": -27,
+          "endedRelSigtermMs": 74
+        },
+        {
+          "k": 1,
+          "sentAt": 1793481984738,
+          "endedAt": 1793481984843,
+          "r": {
+            "success": true,
+            "message": "Agent run created successfully.",
+            "runId": "probe_agent_mvwwv3hw_88786e5978e3432d9f21c2e4044225c5"
+          },
+          "sentRelSigtermMs": -15,
+          "endedRelSigtermMs": 90
+        },
+        {
+          "k": 2,
+          "sentAt": 1793481984749,
+          "endedAt": 1793481984858,
+          "r": {
+            "success": true,
+            "message": "Agent run created successfully.",
+            "runId": "probe_agent_mvwwv3hw_f9785249bfe249b09f26d59e63b1f1f5"
+          },
+          "sentRelSigtermMs": -4,
+          "endedRelSigtermMs": 105
+        },
+        {
+          "k": 3,
+          "sentAt": 1793481984758,
+          "endedAt": 1793481984760,
+          "error": "TypeError: fetch failed",
+          "sentRelSigtermMs": 5,
+          "endedRelSigtermMs": 7
+        },
+        {
+          "k": 4,
+          "sentAt": 1793481984770,
+          "endedAt": 1793481984773,
+          "error": "TypeError: fetch failed",
+          "sentRelSigtermMs": 17,
+          "endedRelSigtermMs": 20
+        },
+        {
+          "k": 5,
+          "sentAt": 1793481984780,
+          "endedAt": 1793481984781,
+          "error": "TypeError: fetch failed",
+          "sentRelSigtermMs": 27,
+          "endedRelSigtermMs": 28
+        }
+      ],
+      "neverStartedBeforeRelaunch": [],
+      "unknownOnDiskBeforeRelaunch": [],
+      "neverStartedListedAfter": [],
+      "unknownListedAfter": [],
+      "historyRows": 12,
+      "knownRuns": 12,
+      "logLines": []
+    },
+    {
+      "sample": 3,
+      "latencyMs": [
+        151,
+        58,
+        54
+      ],
+      "exit": {
+        "code": 0,
+        "signal": null,
+        "at": 1793481989694
+      },
+      "stopMs": 445,
+      "inflight": [
+        {
+          "k": 0,
+          "sentAt": 1793481989219,
+          "endedAt": 1793481989342,
+          "r": {
+            "success": true,
+            "message": "Agent run created successfully.",
+            "runId": "probe_agent_mvwwv3hw_c63c9801c45443f0863da1234b5c37c7"
+          },
+          "sentRelSigtermMs": -30,
+          "endedRelSigtermMs": 93
+        },
+        {
+          "k": 1,
+          "sentAt": 1793481989232,
+          "endedAt": 1793481989360,
+          "r": {
+            "success": true,
+            "message": "Agent run created successfully.",
+            "runId": "probe_agent_mvwwv3hw_92469d47a5d7486e9f2ee327377835be"
+          },
+          "sentRelSigtermMs": -17,
+          "endedRelSigtermMs": 111
+        },
+        {
+          "k": 2,
+          "sentAt": 1793481989244,
+          "endedAt": 1793481989397,
+          "r": {
+            "success": true,
+            "message": "Agent run created successfully.",
+            "runId": "probe_agent_mvwwv3hw_67788e92ff984596a891424f3440a060"
+          },
+          "sentRelSigtermMs": -5,
+          "endedRelSigtermMs": 148
+        },
+        {
+          "k": 3,
+          "sentAt": 1793481989256,
+          "endedAt": 1793481989259,
+          "error": "TypeError: fetch failed",
+          "sentRelSigtermMs": 7,
+          "endedRelSigtermMs": 10
+        },
+        {
+          "k": 4,
+          "sentAt": 1793481989268,
+          "endedAt": 1793481989269,
+          "error": "TypeError: fetch failed",
+          "sentRelSigtermMs": 19,
+          "endedRelSigtermMs": 20
+        },
+        {
+          "k": 5,
+          "sentAt": 1793481989282,
+          "endedAt": 1793481989284,
+          "error": "TypeError: fetch failed",
+          "sentRelSigtermMs": 33,
+          "endedRelSigtermMs": 35
+        }
+      ],
+      "neverStartedBeforeRelaunch": [],
+      "unknownOnDiskBeforeRelaunch": [],
+      "neverStartedListedAfter": [],
+      "unknownListedAfter": [],
+      "historyRows": 18,
+      "knownRuns": 18,
+      "logLines": []
+    }
+  ],
+  "result": "Completed",
+  "modelCalls": 0,
+  "rootRemoved": true
+}
