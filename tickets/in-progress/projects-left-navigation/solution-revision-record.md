@@ -5,6 +5,8 @@
 | Revision ID | Phase | Trigger / Report / Round | Finding IDs | Prior Status | Current Status | Affected Behavior / Requirement IDs | Result |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | SR-001 | Requirements | Initial coherent baseline from Task autobyteus-347 | N/A | N/A | Ready for Approval | BEH-001…008, REQ-001…015, AC-001…013, DEC-001…011 | Presented to the user with DEC-001…003 |
+| SR-002 | Requirements | User answers 2026-10-31 | N/A | Ready for Approval | Approved | REQ-002…008, 014; DEC-001…003, 012, 013 | Any agent under a Project; folder rule; approved |
+| SR-003 | Requirements | User asks for Product Design first | N/A | Approved | Approved (Product Design Requested) | DEC-008 | Request sent to /product_team |
 
 ## Revision Entries
 
@@ -29,3 +31,25 @@
 - Handoff: none (approval hold in the requirements conversation).
 - Remaining gaps: user answers; U-003, U-004 for architecture.
 - Next action: user approval, then architecture design.
+
+### SR-002 — User journey and folder decisions; requirements approved
+
+- Phase and classification: Requirements, Refinement (user change to intended behavior).
+- Trigger: the user's answers of 2026-10-31 (quoted in requirements-doc.md § User Decisions).
+- Prior status: Ready for Approval (SR-001). Current: Approved (R2).
+- IDs affected: REQ-002…REQ-008, REQ-014 rewritten (any agent or team under a Project; Project tree like a workspace; no left Task list); DEC-001/002 decided by the user (first linked folder, else temp workspace; never mandatory); DEC-003 superseded; DEC-012, DEC-013 added; ACs renumbered AC-001…AC-014; SCN-002, SCN-006 updated.
+- Intended behavior changed: Yes (by the user).
+- Approval: User for the journey and folder rules; Solution Designer within the direction for DEC-004…DEC-011, DEC-013 (user informed in the conversation).
+- Design/review basis: none yet; architecture investigation started (reading gate passed: architecture-design.md, design-principles.md, root DESIGN.md, Data Migration Guideline §1–4).
+- Next action at the time: architecture design.
+
+### SR-003 — Product Design requested by the user
+
+- Phase and classification: Requirements, Refinement (process; no change to intended behavior).
+- Trigger: the user, 2026-10-31: "i think we could first work on the UI? you can task @Product Team to work on the UI".
+- Prior status: Approved R2, architecture in progress. Current: Approved R2; architecture paused until the Product result returns; DEC-008 overridden by the user.
+- IDs affected: DEC-008 (now: Product Design requested by the user); UI section to be filled from the returned package.
+- Supplements added: product-design-request.md.
+- Approval impact: the returned UI/UX package needs the user's confirmation and integration into the requirements before the technical design is finalized.
+- Handoff: `delegate_task` to `/product_team` (user-named collaborator); classification `Product Design Requested`, purpose New Request.
+- Next action: wait for the Product Team's result; resume architecture with it.

@@ -11,7 +11,7 @@
 - Finalization target: `origin/personal` (Delivery-owned; release only on the user's word)
 - Bootstrap result: new worktree created with `git worktree add … -b codex/projects-left-navigation origin/personal`. The old autobyteus-72 worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/project-centric-execution` (branch `codex/project-centric-execution`, base `f13bdd0eb7`, 2,174 commits behind) still exists; it was read only and is not reused, because the code it investigated has changed substantially (see E-020).
 - Bootstrap blocker: none
-- Current solution revision ID: SR-001
+- Current solution revision ID: SR-003
 - Authorities read (requirements reading gate, 2026-10-31): `solution-designer/SKILL.md`; `references/requirements-engineering.md`; `references/ticket-scope.md`; `references/finding-the-cause.md`; `references/handoff.md`; templates for requirements, investigation notes and solution revision record; root `AGENTS.md`.
 - Investigation status: requirements investigation complete for SR-001. Architecture investigation not started (it starts after approval).
 
@@ -157,7 +157,20 @@
 
 ## Product Design Request Context
 
-- Product Design request: the Task says "Product Design help through the team's own workflow where needed". No Product route exists in this team's handoff rules (checked 2026-10-31). Solution Designer judgement (DEC-008): not needed for this baseline; the Projects mode reuses the existing tree rows, and the requirements include a sketch for the user's review. The user can ask for Product Design before the build.
+- Product Design request in the current input: `Present` (since SR-003). The user, 2026-10-31: "i think we could first work on the UI? you can task @Product Team to work on the UI" (named collaborator `/product_team`). Before that, DEC-008 had judged a separate round unnecessary; the user's request overrides it.
+- User's requested outcome: a Projects alternative beside Workspaces in the left panel; any agent or team run under a Project; a Project's tree like today's workspace tree; folder = the Project's first linked folder, else the temp workspace. Work on the UI first.
+- Requirement IDs: REQ-001…REQ-015 (SR-002).
+- Product decision to understand: the switch, the Project tree, the start surface with Project and folder, right-board coupling, states (see the request file).
+- Request artifact: `product-design-request.md` (this folder); sent with `delegate_task` to `/product_team`.
+- Product repository/ticket: established by the Product Team.
+
+## Additional Evidence (SR-002)
+
+| ID | Finding | How established |
+| --- | --- | --- |
+| E-021 | Run on an Agent from the Agents page starts a New chat on the temp workspace (`autobyteus-web/docs/chat.md` line 57, `startForDefinition`); New chat has a folder menu (`components/chat/ChatWorkspaceMenu.vue`); `chatDraftStore.startNewChat({agentDefinitionId, workspaceRootPath})` falls back to the temp workspace (`stores/chatDraftStore.ts` 203–217). | Read |
+| E-022 | The Workspaces tree is projected from `runHistoryStore` groups by folder (`utils/runTreeProjection.ts` `buildRunTreeProjection`); a run row's delegated rows come from `agentRunCollaborationStore.taskRows(runId)` loaded by `inspect(runId)` for runs with `hasCollaboration` (`components/workspace/history/AgentRunTaskRows.vue`). History rows carry `workspaceRootPath`, no Project (`run-history/store/agent-run-history-index-record-types.ts`, `team-run-history-index-record-types.ts`). | Read |
+| E-023 | Data Migration Guideline §3: adding an optional field whose absence has a truthful meaning needs no migration. | Read |
 
 ## Product Design Findings
 
@@ -170,6 +183,7 @@
 | `evidence/intake/user-screenshot-sidebar-pm-under-workspace-2026-10-31.png` | User (copied) | Problem evidence | BEH-001…003 | Evidence | Not behavior-defining |
 | `/Users/normy/autobyteus_org/autobyteus-delivery-records/project-centric-execution-72-20261031/` | earlier Solution Designer | Earlier ticket's documents | E-019 | Historical input | Never approved; superseded by this package |
 | `follow-ups.md` | Solution Designer | Follow-ups found | FU-001…FU-003 | Draft | N/A |
+| `product-design-request.md` | Solution Designer | Product Design request (New Request) | REQ-001…015 | Sent to `/product_team` | Context only; the returned Product package needs the user's confirmation |
 
 ## Assumptions, Unknowns, And Risks
 

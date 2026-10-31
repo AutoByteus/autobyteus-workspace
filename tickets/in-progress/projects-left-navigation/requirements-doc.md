@@ -2,67 +2,70 @@
 
 ## Document Status
 
-- Status: `Ready for Approval`
-- Current solution revision ID: SR-001
+- Status: `Approved`
+- Current solution revision ID: SR-003
 - Package identifier: `projects-left-navigation`
 - Request / ticket: Project Task `autobyteus-347` (Project `project_a1377344-25db-482a-97cc-ecfdb0fb495a`); replaces autobyteus-72
 - Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), on the user's request of 2026-10-31
 - Requirements owner: Solution Designer
 - Date: 2026-10-31
-- Approved by and reference: not yet. DEC-001, DEC-002 and DEC-003 need the user.
-- Exact approved requirements baseline: N/A
-- Behavior-defining supplements: none (the sketch below is part of this document)
+- Approved by and reference: **User** for the journey and the folder rules (conversation 2026-10-31, quoted in [User Decisions](#user-decisions-2026-10-31)); **Solution Designer within the direction (user informed)** for the remaining decisions (DEC-004…DEC-011, my message of 2026-10-31 that confirmed the folder rule and announced this revision).
+- Exact approved requirements baseline: this document at SR-002 (R2).
+- Behavior-defining supplements: none. The sketch below is part of this document.
+
+## User Decisions (2026-10-31)
+
+- On the SR-001 draft: "Does it have to be like a project manager? I guess it can be any agent, right? … the project task manager is also just another agent … it happens to take the responsibility of managing the tasks belonging to a project … how do I run one agent under a certain project?" and "the task management tree was already super nice to appear on each project." → Any agent or team can run under a Project; a Project's tree looks like today's workspace tree (DEC-012).
+- On the folder: "if the project doesn't have workspace, then we use the temp workspace … If the project has a workspace, then we will use the project first workspace." Also: "we also don't want to make it mandatory." → DEC-001, DEC-002.
+- SR-001's DEC-003 (which Tasks the left list shows) is superseded: the left tree shows runs, and the Project's Tasks are on the right board (REQ-007).
 
 ## Problem And Desired Outcome
 
-- **Problem.** A user who works Project by Project runs a Project Task Manager, which dispatches Tasks to agents and teams. Today the left panel organizes all runs only by workspace folder. The manager shows up under whichever folder it was started in, its dispatched work is nested under it, and both are mixed with standalone runs across many workspaces. The right-side Projects board lists Tasks but is not where runs are opened and followed.
-- **Affected actors.** The user; the manager agent; delegated workers.
-- **Desired outcome.** The left panel offers two ways to organize runs: **Workspaces** (unchanged: pick a folder, use an agent or team on its own) and **Projects** (pick a Project: its manager conversations, its Tasks that have work, and the agents and teams working on each Task). Starting a manager from a Project gives it the Project's folder and tells it its Project. Work tied to Tasks leaves the list when its Task is closed, so it needs no manual archiving.
-- **Observable definition of success.** In Projects mode the user can start or reopen a Project's manager, see each dispatched Task's workers appear under that Task while they work, open any of them, see them leave when the Task is closed, and switch back to Workspaces with everything there as before.
+- **Problem.** The left panel organizes runs only by workspace folder. Someone who works Project by Project starts agents (often the Project Task Manager, which dispatches Tasks) in some folder. Those agents and the work they dispatch are mixed with standalone runs across many workspaces. The right-side Projects board lists Tasks but is not where runs are started, opened and followed.
+- **Affected actors.** The user; any agent or team the user runs for a Project; delegated workers.
+- **Desired outcome.** The left panel offers two ways to organize runs. **Workspaces** stays as it is: pick a folder and run agents and teams. **Projects** is new: pick a Project and run any agent or team under it, in a tree that looks like a workspace's (agent and team groups, runs, delegated runs nested below with their Task line). A run started under a Project works in the Project's first linked folder, or the temp workspace when the Project has none, and is told its Project. Runs that already dispatched a Project's Tasks also appear under that Project. Delegated work leaves the tree when its Task is closed, as today.
+- **Observable definition of success.** In Projects mode the user starts an agent under a Project, sees it there, sees the work it dispatches nested below it while it works, opens any of it, sees the work leave when the Task is closed, and switches back to Workspaces with everything there as before.
 
-### Sketch (illustrative; names and counts are fixture content)
+### Sketch (illustrative; names, counts and summaries are fixture content)
 
 ```text
- Chat ✎                                  ┌───────────────────────────────┐
- Agents                                  │                               │
- Agent Teams                             │   conversation (unchanged)    │
- …                                       │                               │
- ─────────────────────────────           │                               │
- [ Workspaces | Projects ]  +            │                               │
- ▾ AutoByteus                 9 open     │                               │
-     Managers                      +     │                               │
-       ● Project Task Manager  "Plan…"   │                               │
-       ○ Project Task Manager  "Now I…"  │                               │
-     Tasks with work          All Tasks ↗│                               │
-     ▾ Projects view in the left panel   │                               │
-         ● software engineering team     │                               │
-             ● solution designer         │                               │
-             ○ architecture reviewer     │                               │
-     ▸ Fix model routing launch …        │                               │
- ▸ AutoByteus Agents          7 open     │                               │
- ▸ AutoByteus Website         1 open     │                               │
+[ Workspaces | Projects ]
+▾ AutoByteus                                   +     ← run an agent or team under this Project
+    ▾ Project Task Manager (2)                 +     ← another run of this agent
+        ● "hello"                          now
+            ● marketing team  · Add a Pre-Draft review…     ← Task line, as today
+                ● marketing content creator
+                ● deep researcher
+            ● agent package creator · Add a mandatory…
+        ○ "Now I need you to creat…"       22h
+    ▸ Daily Assistant (1)                      +
+    ▸ software engineering team (1)            +
+▸ AutoByteus Agents                            +
+▸ AutoByteus Website                           +
 ```
+
+Selecting a Project row in the left panel also makes it the Project shown on the right panel's Projects board.
 
 ## Relevant Current And Desired Behavior
 
 | Behavior ID | Kind | Scenarios | Current behavior (evidence) | Desired behavior | Preserved behavior | Evidence |
 | --- | --- | --- | --- | --- | --- | --- |
-| BEH-001 | User | SCN-001, SCN-002 | The run section is always the Workspaces tree | A Workspaces / Projects switch; Projects mode organizes runs by Project and Task | Workspaces mode as it is | E-001, E-014 |
-| BEH-002 | User/System | SCN-002, SCN-005 | A manager is an ordinary run in some folder; no run records a Project | A Project lists its manager conversations: those started from it and those that dispatched its Tasks; starting one from the Project records it there and tells it its Project | Managers stay ordinary runs; existing runs are not rewritten | E-002, E-005, E-017 |
-| BEH-003 | System | SCN-003, SCN-009, SCN-010 | Dispatched work is nested under the manager in Workspaces; Task link only in the Task's run file | Each Task with work lists its workers, their team members and sub-work in Projects mode | Same runs, ids, nesting, actions | E-004, E-010 |
-| BEH-004 | System | SCN-004 | Closing a Task stops its runs (unless they hold another open Task) and hides them; conversations kept | Projects mode follows the same rule; the closed Task leaves "Tasks with work" | Closure, stop, reopen and reactivation rules unchanged; no extra archive | E-006, E-009 |
-| BEH-005 | System | SCN-002, SCN-006 | Delegated runs take the manager's folder; Project links play no part | Projects-mode managers run in the Project's folder (DEC-001/002), so its work runs there too | Workspaces-started managers keep their own folder | E-007, E-008, E-016 |
-| BEH-006 | User | SCN-003, SCN-005 | A worker opens only when its host is among the 6 latest runs per agent per workspace | Every run listed in Projects mode opens | Workspaces listing cap unchanged | E-012 |
-| BEH-007 | User | SCN-001, SCN-008 | Archive/delete roots; Projects pages and right board | Same actions available on manager conversations in Projects mode | All existing behavior | E-011, E-013 |
+| BEH-001 | User | SCN-001, SCN-002 | The run section is always the Workspaces tree | A Workspaces / Projects switch; Projects mode groups runs by Project in the same tree shape | Workspaces mode as it is | E-001, E-014 |
+| BEH-002 | User/System | SCN-002, SCN-005 | A run gets a folder; no run records a Project | A run can be started under a Project: it is recorded there and told its Project; runs that dispatched a Project's Tasks also appear under it | Runs stay ordinary runs; existing runs are not rewritten | E-002, E-005, E-017 |
+| BEH-003 | System | SCN-003, SCN-009, SCN-010 | Delegated work is nested under the run that started it, with a Task line | The same nesting under the Project, scoped to the Project's work | Same runs, ids, nesting, Task lines, actions | E-004, E-010, E-014 |
+| BEH-004 | System | SCN-004 | Closing a Task stops its runs (unless they hold another open Task) and hides them; conversations kept | Projects mode follows the same rule | Closure, stop, reopen and reactivation unchanged; no extra archive | E-006, E-009 |
+| BEH-005 | System | SCN-002, SCN-006 | A run's folder is chosen at start; delegated runs take it | A run started under a Project defaults to the Project's first linked folder, else the temp workspace; changeable before sending | Delegated runs take their delegator's folder; links are never required, created or changed by a start | E-007, E-008, E-016, E-021 |
+| BEH-006 | User | SCN-003, SCN-005 | A delegated run opens from the board only when its host is among the 6 latest runs per agent per workspace | Every run listed in Projects mode opens | Workspaces listing cap unchanged | E-012 |
+| BEH-007 | User | SCN-001, SCN-008 | Archive/delete; Projects pages and right board | Archive and Delete on runs in Projects mode, as in Workspaces | All existing behavior | E-011, E-013 |
 | BEH-008 | System | SCN-007 | Live feed, reconnect, node-local, desktop only | Projects mode stays live and correct after reconnect | Node-local; no mobile | web projects.md |
 
 ## Stakeholders, Actors, And Outcomes
 
 | Actor | Goal | Required outcome | Constraint |
 | --- | --- | --- | --- |
-| User | Work on a Project and follow its dispatched work in one place | Projects mode with managers and Task work | Workspaces work and history unchanged |
-| Manager agent | Plan and dispatch a Project's Tasks | Runs in the Project's folder and knows its Project | Still an ordinary run; not restricted to the Project |
-| Worker agents/teams | Do a Task | Unchanged lifecycle; visible under the Task | No change to delegation, closure or ownership |
+| User | Work on a Project and follow its runs in one place | Projects mode; run any agent or team under a Project | Workspaces work and history unchanged; no mandatory folder |
+| Any agent or team run under a Project | Work for the Project | Runs in the Project's folder (or temp) and knows its Project | Still an ordinary run; not restricted to the Project |
+| Delegated workers | Do a Task | Unchanged lifecycle; visible under the Project | No change to delegation, closure or ownership |
 
 ## Scope Guardrail (Mandatory)
 
@@ -71,31 +74,31 @@
 | Use case | Use case | Scenarios |
 | --- | --- | --- |
 | UC-001 | Choose Workspaces or Projects in the left panel | SCN-001, SCN-002, SCN-007 |
-| UC-002 | Start or reopen a Project's manager conversation | SCN-002, SCN-005, SCN-006 |
-| UC-003 | Find, follow and open the agents and teams working on a Project's Tasks | SCN-003, SCN-005, SCN-009, SCN-010 |
-| UC-004 | Task closure removes its work from the Projects list | SCN-004 |
-| UC-005 | Deleted Projects/Tasks and errors handled without losing runs | SCN-008, SCN-007 |
+| UC-002 | Run an agent or team under a Project, and reopen it | SCN-002, SCN-006 |
+| UC-003 | Find, follow and open the runs working for a Project, including work they dispatched | SCN-003, SCN-005, SCN-009, SCN-010 |
+| UC-004 | Task closure removes its work from the Projects tree | SCN-004 |
+| UC-005 | Deleted Projects/Tasks and errors handled without losing runs | SCN-007, SCN-008 |
 
 ### Out Of Scope
 
-- Changing delegation, Task ownership, closure, reactivation, idle shutdown or the collaboration model (CM-1…CM-12).
+- Changing delegation, Task ownership, closure, reactivation, idle shutdown or the collaboration model (CM-1…CM-12), including the rule that delegated runs take their delegator's folder.
 - The related Tasks: delegated-run working/idle/waiting/stopped visibility; linking an existing run to a Project Task without a new copy; Task key work. This ticket consumes today's statuses and keys.
-- Starting a Team or Org as a Project's manager from the Projects mode (they still appear when they dispatched the Project's Tasks).
-- Starting a worker on a Task directly from the left panel (dispatch stays with the manager).
+- Starting an Agent Org under a Project (Org runs still appear when they host a Project's Task work).
+- Moving an existing run to another Project, or attaching a run started in Workspaces to a Project.
 - Viewing a closed Task's worker conversations (not openable today either; FU-002).
-- A Task-level folder override (FU-003), and a Project-owned coordination folder unless the user chooses DEC-001 option B.
+- A Task-level folder (FU-003); marking a primary folder explicitly (the first link is the primary one).
 - Changes to the Project Task Manager agent or skill (agents repository; FU-001).
 - Changing the Workspaces listing cap, the right Projects board, the Projects pages, mobile, cross-node Projects.
 
 ### Non-Goals
 
-- The left list is not a second Task board: it shows Tasks with work, and links to the board for all Tasks.
-- No restriction of what a Project-bound manager may do (not a security boundary).
-- No new performance promise beyond: Projects mode does not read conversations to build its list.
+- No Task list in the left panel: Tasks stay on the right board.
+- No restriction of what a run under a Project may do (not a security boundary).
+- No new performance promise beyond: Projects mode does not read conversations to build its tree.
 
 ### Preserved Behavior Boundary
 
-BEH-001…BEH-008 "Preserved" column. Cross-cutting: a run shown in Projects mode is the same run as in Workspaces mode (same id, conversation, status, actions); Projects mode never starts, stops, archives or reassigns a run by being opened, switched or browsed.
+BEH-001…BEH-008 "Preserved" column. Cross-cutting: a run shown in Projects mode is the same run as in Workspaces mode (same id, conversation, status, actions); switching modes or expanding Projects never starts, stops, archives or reassigns a run.
 
 ### Prerequisites
 
@@ -112,84 +115,84 @@ None.
 
 | ID | Requirement | Behavior | Priority | Rationale | Feasibility | Source / decision |
 | --- | --- | --- | --- | --- | --- | --- |
-| REQ-001 | The left panel's run section has a **Workspaces / Projects** switch. Workspaces mode is today's tree. The choice is remembered per node. Switching modes changes only the list: it never opens, starts, stops or changes the open conversation. | BEH-001 | Must | The user's request | N/A | Task; DEC-009 |
-| REQ-002 | Projects mode lists the node's Projects by name with their open Task count, and an empty state that leads to creating a Project. A Project expands to its **Managers** and its **Tasks with work**. | BEH-001 | Must | Request | N/A | DEC-003 |
-| REQ-003 | A Project's **Managers** are the manager conversations (top-level runs) that (a) were started from this Project in Projects mode, or (b) host any assignment of one of this Project's Tasks. Each is listed once per Project, with its status and summary, most recently active first; archived ones are not listed, as in Workspaces. A conversation that serves several Projects is listed under each of them, as the same run. Opening one opens its conversation. Archive and Delete work as in Workspaces. | BEH-002, BEH-007 | Must | E-017: existing managers serve several Projects; no migration | N/A | DEC-005, DEC-006 |
-| REQ-004 | **Start a manager for a Project**: "+" on Managers lets the user choose an installed agent (the one last used for this Project is preselected; none is hard-coded) and opens a New chat for it in the Project's folder (REQ-012). When the run is created, it is recorded as started for this Project; it appears under the Project at once and stays there after restart. | BEH-002, BEH-005 | Must | "run the project task manager under a certain project" | N/A | DEC-001, DEC-002, DEC-006 |
-| REQ-005 | A manager started for a Project is told its Project (name and Project ID) as context it can rely on, so it does not have to guess it from its folder or ask. It remains an ordinary run and can still work with other Projects. | BEH-002 | Must | A Project-scoped manager | To be shown per runtime in design (U-003) | DEC-011 |
-| REQ-006 | **Tasks with work**: under a Project, every Task that is open (TODO or IN_PROGRESS) and has a current assignment (starting, started or failed to start). Each Task row shows its title and status; expanding it lists the Task's runs: each assigned Agent or Team (with its members), the sub-work they delegated for this Task, and remote delegated runs, with the same rows, status dots, Stop and open behavior as in Workspaces. A failed start shows "Couldn't start" with its error. | BEH-003 | Must | Request | N/A | DEC-003 |
-| REQ-007 | Each Project has an **All Tasks** entry that shows the Project's board in the right Projects tab; activating a Task row's title shows that Task there (the existing Task locator). | BEH-003 | Must | One board, no duplicate | N/A | DEC-003 |
-| REQ-008 | Placement rules: a run that holds several open Tasks is listed under each of them; sub-work is listed under the Task it belongs to; no run is listed twice under one Task; delegated runs that belong to no Project Task (Temp tasks, older unowned runs) are listed under their manager conversation. Nothing that the Workspaces tree shows for a manager's dispatched work disappears from Projects mode. | BEH-003 | Must | No hidden or duplicated work | N/A | E-009, E-010 |
-| REQ-009 | When a Task is closed (DONE or CANCELLED), its runs leave Projects mode as they leave Workspaces today (stopped unless they hold another open Task, conversations kept), and the Task leaves Tasks with work. If the Task is reopened and its work reactivated, it returns. No manual archive is needed for Task work. Manager conversations are not archived automatically. | BEH-004 | Must | User's "manually archive" pain; E-006 | N/A | DEC-004 |
-| REQ-010 | Every run listed in Projects mode opens, also when its manager conversation is beyond the Workspaces listing cap. | BEH-006 | Must | E-012 | Design | — |
-| REQ-011 | Projects mode stays current without a manual refresh: new dispatches, status changes, closures, reactivations, new or renamed Projects and Tasks, deletions and new manager conversations appear; after a reconnect or restart it shows the current state. It shows loading, empty and error states with Retry; a failed read keeps the last good list. | BEH-008 | Must | Follow dynamically dispatched work | Design (U-004) | — |
-| REQ-012 | **Folder for a Project's manager** (conditional on DEC-001/DEC-002, recommended options shown): the manager runs in the Project's linked folder: used automatically when the Project has one; chosen by the user at Start when it has several (the last choice preselected); a Project with none asks the user to link a folder before Start. The folder is shown before the first send. Its workers keep taking the manager's folder (today's rule), so the Project's work runs in the Project's folder. An existing run keeps its folder when Project links change later. | BEH-005 | Must | E-007, E-008, E-016 | N/A | DEC-001, DEC-002 |
-| REQ-013 | The open run is marked in whichever mode lists it; switching modes reveals it there when listed. Opening a run from Projects mode is the same open as from Workspaces. | BEH-001, BEH-006 | Must | Coherent navigation | N/A | — |
-| REQ-014 | Preserve: Workspaces mode and its starts, history, archive/delete, Task summary lines; the right Projects tab and Projects pages; Temp tasks; delegation, closure and reactivation; existing data (no rewrite of runs, Tasks or run files). Deleting a Project or Task removes it from Projects mode; its runs stay in Workspaces. | BEH-007, BEH-004 | Must | Explicit preservation | N/A | DEC-010 |
-| REQ-015 | Keyboard and pointer can switch modes, expand Projects and Tasks, start a manager and open runs; labels in English and Chinese; works in the narrow desktop layouts and the collapsed strip (its icon reveals the run section in the current mode). | BEH-001 | Must | Existing shell conventions | N/A | DEC-009 |
+| REQ-001 | The left panel's run section has a **Workspaces / Projects** switch. Workspaces mode is today's tree. The choice is remembered per node. Switching modes changes only the tree: it never opens, starts, stops or changes the open conversation. | BEH-001 | Must | The user's request | N/A | Task; DEC-009 |
+| REQ-002 | Projects mode lists the node's Projects by name (as the Projects pages order them), each with a "+" to run an agent or team under it, and an empty state that leads to creating a Project. A Project expands to its runs, grouped by agent and by team as in a workspace (group name, run count, "+" for another run of that agent or team). Selecting a Project row makes it the right panel's Projects board choice. | BEH-001 | Must | User: "the task management tree … appear on each project" | N/A | DEC-012 |
+| REQ-003 | **Runs under a Project** are the top-level runs (Agent, Team or Org runs) that (a) were started under this Project, or (b) host any assignment of one of this Project's Tasks. Each is listed once per Project. Runs are ordered and summarized as in Workspaces; archived ones are not listed, as in Workspaces. A run that hosts work for several Projects is listed under each, as the same run. | BEH-002, BEH-007 | Must | E-017: existing runs serve several Projects; no data change | N/A | DEC-005 |
+| REQ-004 | **Run an agent or team under a Project**: "+" on the Project lets the user choose any agent or team (the same choice as a workspace offers); "+" on a group starts another run of that agent or team. Starting opens the same start surface as a workspace's "+" does for that kind, with the Project shown and the folder preselected (REQ-005). The run, once created, is recorded as started under this Project; it appears under the Project at once and stays there after restart. It also appears in Workspaces mode under its folder. | BEH-002 | Must | User: "how do I run one agent under a certain project" | N/A | DEC-006, DEC-012 |
+| REQ-005 | **Folder of a run started under a Project**: the Project's first linked folder; when the Project has no linked folder, the temp workspace. The user can choose another folder before the run is created, as on any start. Starting never requires, creates, registers or links a folder. Delegated runs keep taking their delegator's folder. A run keeps its folder when the Project's links change later. | BEH-005 | Must | User decision | N/A | DEC-001, DEC-002 |
+| REQ-006 | A run started under a Project is told its Project (name and Project ID) as context it can rely on, so an agent with the Project tools works on that Project without guessing or asking. It remains an ordinary run and can still work with other Projects. | BEH-002 | Must | A Project-scoped run | To be shown per runtime in design (U-003) | DEC-011 |
+| REQ-007 | The Project's Tasks are on the right Projects board: selecting a Project in the left panel shows its board there (REQ-002), and a delegated run's Task line shows its Task there (existing Task locator). | BEH-003 | Must | One board, no duplicate | N/A | DEC-012 |
+| REQ-008 | **Delegated work under a run**, in Projects mode under Project P: the run's delegated runs that belong to P's Tasks (assigned workers with their members, their sub-work, remote delegated runs), nested and shown exactly as in Workspaces (rows, Task line, status, Stop, open). Delegated runs that belong to another Project's Tasks are listed under that Project instead. Delegated runs that belong to no Project Task (Temp tasks, older unowned runs) are listed under the run only when the run was started under P. A delegated run holding several open Tasks of P is listed once. | BEH-003 | Must | No hidden or duplicated work | N/A | DEC-013 |
+| REQ-009 | When a Task is closed (DONE or CANCELLED), its runs leave Projects mode as they leave Workspaces today (stopped unless they hold another open Task, conversations kept). Reopen plus reactivation brings them back. No manual archive is needed for delegated work. Top-level runs are not archived automatically. | BEH-004 | Must | User's "manually archive" pain; E-006 | N/A | DEC-004 |
+| REQ-010 | Every run listed in Projects mode opens, also when it is beyond the Workspaces listing cap. | BEH-006 | Must | E-012 | Design | — |
+| REQ-011 | Projects mode stays current without a manual refresh: new runs under a Project, new dispatches, status changes, closures, reactivations, new, renamed and deleted Projects appear; after a reconnect or restart it shows the current state. Loading, empty and error states with Retry; a failed read keeps the last good tree. | BEH-008 | Must | Follow dynamically dispatched work | Design (U-004) | — |
+| REQ-012 | The open run is marked in whichever mode lists it; switching modes reveals it there when listed. Opening a run from Projects mode is the same open as from Workspaces. | BEH-001, BEH-006 | Must | Coherent navigation | N/A | — |
+| REQ-013 | Preserve: Workspaces mode and its starts, history, archive/delete, Task lines; the right Projects tab and Projects pages; Temp tasks; delegation, closure and reactivation; existing data (no rewrite of runs, Tasks or run-resource files). Deleting a Project removes it from Projects mode; its runs stay in Workspaces. | BEH-007, BEH-004 | Must | Explicit preservation | N/A | DEC-010 |
+| REQ-014 | Archive and Delete work on runs in Projects mode as in Workspaces (running runs: Stop, not Archive). A group's "Archive all runs" in Projects mode archives only that group's runs listed under that Project. | BEH-007 | Must | Parity; manual archive stays available | N/A | DEC-004 |
+| REQ-015 | Keyboard and pointer can switch modes, expand Projects and groups, start runs and open runs; labels in English and Chinese; works in the narrow desktop layouts; the collapsed strip's icon reveals the run section in the current mode. | BEH-001 | Must | Existing shell conventions | N/A | DEC-009 |
 
 ## Acceptance Criteria
 
 | ID | REQs | Behavior / scenario | Precondition / trigger | Observable outcome | Alternate / failure | Verification |
 | --- | --- | --- | --- | --- | --- | --- |
-| AC-001 | 001, 013, 014 | BEH-001; SCN-001, SCN-002 | A run is open; switch to Projects and back | The open conversation and run id stay; no run starts or stops; the run is marked in the mode that lists it; the mode is remembered after reload | — | Web tests + browser |
-| AC-002 | 002, 003 | BEH-002; SCN-002, SCN-005 | Projects with existing manager conversations that dispatched their Tasks | Each Project lists those conversations once, newest first; a conversation that dispatched for 3 Projects appears under all 3 with the same run id; archived ones absent | Project with none: empty Managers with "+" | Server read tests + browser on fixture data |
-| AC-003 | 004, 005, 012 | BEH-002, BEH-005; SCN-002 | Project with one linked folder; "+" on Managers, choose agent, send first message | New chat opens with the agent and the Project's folder shown; the created run is listed under the Project at once and after restart; its context names the Project (name, ID); its working folder is the Project's folder | Agent missing/unusable: the start shows the existing error, no run is listed | Server + runtime check of the run's folder and context; desktop journey |
-| AC-004 | 012 | BEH-005; SCN-006 | Project with no link / several links | No link: Start asks to link a folder and starts nothing until one is linked. Several: the user chooses one; the last choice is preselected next time | Cancel starts nothing | Web tests + browser |
-| AC-005 | 006, 008, 011 | BEH-003; SCN-003 | Manager dispatches a saved Task to a Team | Without refresh, the Task appears under Tasks with work with the Team, its members and later sub-work, with live status; clicking a member opens that exact conversation | Start fails: "Couldn't start" with error | Real delegation (scripted runtime allowed, labeled) + browser |
-| AC-006 | 008 | BEH-003; SCN-003, SCN-009 | A worker holds two open Tasks; a manager made a description-only delegation | The worker appears under both Tasks, once each; the Temp-task run appears under its manager conversation | — | Server read tests |
-| AC-007 | 009 | BEH-004; SCN-004 | Agent sets the Task DONE (or CANCELLED) | The Task and its runs leave Projects mode live; runs are stopped unless they hold another open Task; conversations remain (Memory); nothing is archived | Reopen + assigner's message: Task and run return | Real closure + browser |
-| AC-008 | 010 | BEH-006; SCN-005 | A Task hosted by a manager conversation older than the 6 latest of its agent and folder | Its worker opens from Projects mode | — | Web/server tests with > 6 runs |
-| AC-009 | 007 | SCN-003 | Click All Tasks; click a Task title | The right Projects tab shows the Project's board / that Task | — | Web tests |
-| AC-010 | 011 | BEH-008; SCN-007 | Reconnect or restart; a read fails | Current state shown after reconnect; on failure the last good list stays with an error and Retry | — | Store tests + browser |
-| AC-011 | 014 | BEH-007; SCN-001, SCN-008 | Existing standalone and team work; delete a Project or Task with open work | Workspaces mode unchanged (starts, history, archive, delete, Task lines); deleted Project/Task leaves Projects mode; its runs remain in Workspaces | — | Existing regressions + new tests |
-| AC-012 | 015 | SCN-002 | Keyboard only; zh-CN; narrow window; collapsed strip | All actions reachable; labels translated; strip icon opens the current mode | — | Browser + localization audit |
-| AC-013 | 001–015 | SCN-001…SCN-010 | Integrated desktop journey in the worktree build | Start a manager for a Project → dispatch a saved Task with real `delegate_task` → follow and open the worker → close the Task → see it leave → back to Workspaces | Scripted runtime is not paid-provider proof | API/E2E + Delivery |
+| AC-001 | 001, 012, 013 | BEH-001; SCN-001, SCN-002 | A run is open; switch to Projects and back | The open conversation and run id stay; nothing starts or stops; the run is marked in the mode that lists it; the mode is remembered after reload | — | Web tests + browser |
+| AC-002 | 002, 003 | BEH-002; SCN-005 | Existing runs that dispatched Tasks of 3 Projects | Each of the 3 Projects lists the run once, in its agent group, with the same run id; archived runs absent | Project with no runs: only "+" | Server read tests + browser on fixture data |
+| AC-003 | 004, 005, 006 | BEH-002, BEH-005; SCN-002 | Project with one linked folder; "+" on the Project, choose an agent, send | The start surface shows the Project and the Project's folder; the created run is listed under the Project at once and after restart, and under its folder in Workspaces; the run's context names the Project (name, ID); its working folder is the Project's folder | Agent unusable: the existing start error, nothing listed | Server + runtime check of folder and context; desktop journey |
+| AC-004 | 005 | BEH-005; SCN-006 | Project with no linked folder; Project with two | No link: the start uses the temp workspace and nothing is required. Two: the first is preselected. In both, choosing another folder before sending is used | No folder is created, registered or linked | Web tests + server check |
+| AC-005 | 004 | SCN-002 | Start a Team under a Project; "+" on an existing agent group | The Team run and the second agent run appear under the Project in their groups, with the Project's folder | — | Web tests + browser |
+| AC-006 | 008, 011 | BEH-003; SCN-003 | A run under P dispatches a saved Task of P to a Team | Without refresh the Team appears nested under the run with its Task line, members and later sub-work, with live status; clicking a member opens that exact conversation | Start fails: "Couldn't start" as today | Real delegation (scripted runtime allowed, labeled) + browser |
+| AC-007 | 008 | BEH-003; SCN-005, SCN-009 | One run dispatched Tasks of P and Q and made a description-only delegation; it was started under P | Under P: its P work and its Temp-task work; under Q: its Q work only; each delegated run once | Same run started from Workspaces: Temp-task work not under P or Q | Server read tests |
+| AC-008 | 009 | BEH-004; SCN-004 | Agent sets the Task DONE (or CANCELLED) | Its runs leave Projects mode live; stopped unless they hold another open Task; conversations remain; nothing archived | Reopen + assigner's message: they return | Real closure + browser |
+| AC-009 | 010 | BEH-006; SCN-005 | A run beyond the 6 latest of its agent and folder hosts P's Task work | It and its delegated runs open from Projects mode | — | Web/server tests with > 6 runs |
+| AC-010 | 002, 007 | SCN-002 | Select a Project row; click a Task line | The right Projects board shows that Project / that Task | — | Web tests |
+| AC-011 | 011 | BEH-008; SCN-007 | Reconnect or restart; a read fails | Current state after reconnect; on failure the last good tree stays with an error and Retry | — | Store tests + browser |
+| AC-012 | 013, 014 | BEH-007; SCN-001, SCN-008 | Existing standalone and team work; archive a run and a group in Projects mode; delete a Project with runs | Workspaces mode unchanged; archive hides the run in both modes; group archive touches only that Project's listed runs; deleted Project leaves Projects mode; its runs stay in Workspaces | Running runs: no archive, as today | Existing regressions + new tests |
+| AC-013 | 015 | SCN-002 | Keyboard only; zh-CN; narrow window; collapsed strip | All actions reachable; labels translated; strip icon opens the current mode | — | Browser + localization audit |
+| AC-014 | 001–015 | SCN-001…SCN-010 | Integrated desktop journey in the worktree build | Start an agent under a Project → it dispatches a saved Task with real `delegate_task` → follow and open the worker → close the Task → see it leave → back to Workspaces | Scripted runtime is not paid-provider proof | API/E2E + Delivery |
 
 ## Relevant Scenarios And Journeys
 
 | Scenario | Kind | Actor | Goal | Trigger | Start | Steps | Outcome | Alternate / error | Validity | Evidence | REQ / AC |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| SCN-001 | User | User | Standalone work | Workspaces mode | Any | Pick folder, start/open agent or team, converse | As today | — | Supported Normal | E-001, E-015 | 001, 014 / 001, 011 |
-| SCN-002 | User | User | Run a Project's manager | Projects mode | Project exists | Expand Project → "+" Managers → choose agent → first message | Manager runs in the Project's folder, knows its Project, listed under it | No folder / several folders (SCN-006); agent unusable | Supported Normal (new) | Request; E-008, E-015 | 002–005, 012 / 002–004 |
-| SCN-003 | System | Manager | Follow dispatched work | `delegate_task(task_id)` | Manager under the Project | Copy starts → Task with work appears → members, sub-work → user opens one | Exact conversation opens | Start failed | Supported Normal | E-004, E-010 | 006–008, 011 / 005, 006, 009 |
-| SCN-004 | System | Agent | Close a Task | `update_task` DONE/CANCELLED | Task with work | Closure stops and hides runs | Task leaves the list; conversations kept | Reopen + reactivation returns it | Supported Normal | E-006 | 009 / 007 |
-| SCN-005 | User | User | Existing work, no migration | Projects mode after upgrade | Managers started from Workspaces dispatched Tasks of several Projects | Expand each Project | Each lists those managers and their open Task work | Host beyond the listing cap still opens | Supported Normal | E-012, E-017 | 003, 010 / 002, 008 |
-| SCN-006 | User | User | Folder choice | Start for a Project with 0 or several links | — | Link a folder first / choose one | Concrete folder before first send | Cancel | Supported Normal (new) | E-016 | 012 / 004 |
-| SCN-007 | System | App | Stay current | Reconnect, restart, read failure | Projects mode shown | Re-read | Current state; last good list on failure | Retry | Supported Normal | web projects.md | 011 / 010 |
-| SCN-008 | User | User | Delete metadata | Delete Project or Task with open work | — | Delete | Leaves Projects mode; runs remain in Workspaces | — | Supported Explicit Edge (deletion contract E-013) | E-013 | 014 / 011 |
-| SCN-009 | System | Manager | Temp-task work | Description-only `delegate_task` from the manager | — | Copy starts | Listed under the manager conversation | — | Supported Normal | E-010 | 008 / 006 |
-| SCN-010 | System | Worker | Remote delegated run | Worker delegates to a peer node | Remote collaboration on | Remote run starts | Listed under the Task like a local run | Peer unreachable: existing remote states | Supported Normal | CM-10, CM-11 | 006, 008 / 005 |
+| SCN-001 | User | User | Standalone work | Workspaces mode | Any | Pick folder, start/open agent or team, converse | As today | — | Supported Normal | E-001, E-015 | 001, 013 / 001, 012 |
+| SCN-002 | User | User | Run an agent or team for a Project | Projects mode, "+" | Project exists | "+" → choose agent/team → start surface with Project and folder → first message | Run in the Project's folder, told its Project, listed under it | Agent unusable | Supported Normal (new; user-approved) | User 2026-10-31; E-015 | 002, 004–006 / 003, 005 |
+| SCN-003 | System | Run under P | Follow dispatched work | `delegate_task(task_id)` of a P Task | Run under P | Copy starts → nested under the run with Task line → user opens one | Exact conversation opens | Start failed | Supported Normal | E-004, E-010 | 008, 011 / 006 |
+| SCN-004 | System | Agent | Close a Task | `update_task` DONE/CANCELLED | Task with runs | Closure stops and hides runs | Runs leave; conversations kept | Reopen + reactivation returns them | Supported Normal | E-006 | 009 / 008 |
+| SCN-005 | User | User | Existing work, no data change | Projects mode after upgrade | Runs started in Workspaces dispatched Tasks of several Projects | Expand each Project | Each lists those runs with that Project's work | Run beyond the listing cap still opens | Supported Normal | E-012, E-017 | 003, 008, 010 / 002, 007, 009 |
+| SCN-006 | User | User | Folder for a run | Start under a Project with 0 or several links | — | Temp workspace / first link preselected; optionally choose another | Concrete folder; nothing required | — | Supported Normal (user-approved) | E-016, E-021 | 005 / 004 |
+| SCN-007 | System | App | Stay current | Reconnect, restart, read failure | Projects mode shown | Re-read | Current state; last good tree on failure | Retry | Supported Normal | web projects.md | 011 / 011 |
+| SCN-008 | User | User | Delete metadata | Delete a Project with runs | — | Delete | Leaves Projects mode; runs remain in Workspaces | — | Supported Explicit Edge (deletion contract E-013) | E-013 | 013 / 012 |
+| SCN-009 | System | Run under P | Temp-task work | Description-only `delegate_task` | — | Copy starts | Nested under the run in P | — | Supported Normal | E-010 | 008 / 007 |
+| SCN-010 | System | Worker | Remote delegated run | Worker delegates to a peer node | Remote collaboration on | Remote run starts | Nested as in Workspaces | Existing remote states | Supported Normal | CM-10, CM-11 | 008 / 006 |
 
 ## UI, Interaction, And Experience Requirements
 
 - Applicable: Yes.
-- Product Design package: none (DEC-008). The sketch above shows structure; names, counts and summaries are illustrative.
-- Normative: the switch in the run-section header; Projects → Managers (with "+") and Tasks with work (with All Tasks); Task rows expand to the same run rows as Workspaces; states: loading, empty, no Projects, no linked folder, starting, couldn't start, error with Retry.
-- Permitted variation: exact icons, spacing, ordering of Projects (by name, as the Projects pages order them), wording of empty states.
-- Product decisions that need the user: DEC-003 (which Tasks), the sketch as a whole.
+- Product Design package: requested from `/product_team` (SR-003, `product-design-request.md`); pending. Until it returns, the sketch shows structure only; names, counts and summaries are illustrative.
+- Normative: the switch in the run-section header; Projects with "+"; agent and team groups with count and "+"; runs and delegated runs as in the Workspaces tree; selecting a Project sets the right board's Project; the start surface shows the Project and the folder; states: loading, empty, no Projects, error with Retry.
+- Permitted variation: icons, spacing, wording of empty states and of the Project shown on the start surface.
 
 ## Quality And Non-Functional Requirements
 
 | ID | REQ / AC | Area | Requirement | Scope | Verification |
 | --- | --- | --- | --- | --- | --- |
-| QR-001 | 003, 006 / 002, 005 | Performance | Building Projects mode reads Projects, Tasks and run records, not conversations; it does not slow Workspaces mode | Up to 350 Tasks in a Project (E-016) | Server read tests on a fixture of that size |
-| QR-002 | 001, 013 / 001 | Reliability | One run identity regardless of where it is listed; switching or browsing starts/stops nothing | All modes | Store and server tests |
-| QR-003 | 015 / 012 | Accessibility | Keyboard operable, names and focus, en/zh-CN | Desktop, narrow layouts | Browser + audit |
+| QR-001 | 003, 008 / 002, 007 | Performance | Building Projects mode reads Projects, Task run records and run history, not conversations; it does not slow Workspaces mode | Up to 350 Tasks in a Project (E-016) | Server read tests on a fixture of that size |
+| QR-002 | 001, 012 / 001 | Reliability | One run identity regardless of where it is listed; switching or expanding starts/stops nothing | All modes | Store and server tests |
+| QR-003 | 015 / 013 | Accessibility | Keyboard operable, names and focus, en/zh-CN | Desktop, narrow layouts | Browser + audit |
 
 ## Data Continuity And Acceptable Loss
 
-- Persisted data affected: Yes — a new record that a run was started for a Project (REQ-004).
+- Persisted data affected: Yes — a new record that a run was started under a Project (REQ-004).
 - Must be preserved: every Project, Task, run-resource file, run, conversation, folder and setting. Existing runs are not rewritten; their Project association is read from the Task records (DEC-005).
-- Acceptable loss: none of user data. The mode choice, expansion and preselected agent/folder are client view state and may be rebuilt.
-- Constraints: older builds must keep reading data written by this build without failing (the new association may be ignored by them).
-- Unknown for architecture: where the association is stored; the migration convention check.
+- Acceptable loss: none of user data. The mode choice and expansion are client view state and may be rebuilt.
+- Constraints: older builds keep reading data written by this build (they may ignore the new record).
+- Unknown for architecture: where the record is stored; the migration-convention check.
 
 ## External Contracts And Dependencies
 
 | Dependency | Required behavior | Evidence | Risk |
 | --- | --- | --- | --- |
-| Installed manager agent (agents repo) | Has the Project tools; uses the given Project | E-008 | Its skill reads the Project from its board (FU-001) |
+| Agents with Project tools (agents repo) | Use the given Project | E-008 | The manager skill reads the Project from its board (FU-001) |
 | Task run records / collaboration model | Source of Task ↔ run links; unchanged | E-004, E-010 | — |
 | Run history and archive | Same identities and archive rule | E-011 | — |
 
@@ -198,58 +201,57 @@ None.
 | Path | Purpose | IDs | Status | Approval |
 | --- | --- | --- | --- | --- |
 | `evidence/intake/user-screenshot-sidebar-pm-under-workspace-2026-10-31.png` | Problem evidence | BEH-001…003 | Evidence | Not behavior-defining |
-| `follow-ups.md` | Follow-ups FU-001…FU-003 | — | Recorded | N/A |
+| `follow-ups.md` | FU-001…FU-003 | — | Recorded | N/A |
 
 ## Assumptions
 
 | ID | Assumption | Why | Validation / owner | Status |
 | --- | --- | --- | --- | --- |
-| ASM-001 | A suitable manager agent is installed on the node | No server-shipped manager | Start offers installed agents | Accepted |
-| ASM-002 | Telling a run its Project is possible on every runtime | REQ-005 | Architecture (U-003) | To verify |
+| ASM-001 | Telling a run its Project is possible on every runtime | REQ-006 | Architecture (U-003) | To verify |
 
 ## Decisions
 
-| ID | Question | Why it matters | Options / evidence | Reasoning and recommendation | Owner | Status |
-| --- | --- | --- | --- | --- | --- | --- |
-| DEC-001 | Where does a manager started for a Project run? | Every run needs a real folder; workers take the manager's folder (E-007) | **A. The Project's linked folder.** B. A Project-owned coordination folder in app data, with workers sent to the Project's linked folder by a new dispatch rule. | The earlier ticket recommended B. The evidence now favors **A**: all 11 of your Projects have exactly one linked folder (E-016); workers already run in the manager's folder, so with A the whole Project's work runs in the Project's folder with no change to delegation; the manager keeps finding its board in `<folder>/task-plans/` (E-008), which already supports several Projects per folder. B needs a new folder lifecycle, a change to how every saved-Task dispatch chooses its folder, and moves the manager's board away from where it is today. Recommend **A**. | User | Needs user |
-| DEC-002 | How is the folder chosen with 0, 1 or several links? | Visible behavior; no silent guess | 0: link one first; 1: automatic; several: choose at Start (last choice preselected) / a Project default with a Task-level override | One link is automatic. No link: ask to link one (the Project's edit page) before Start; starting in an unrelated folder would hide the problem. Several: let the user choose at Start, preselecting the last choice. A Task-level override would need a new dispatch rule (as in DEC-001 B) and no Project of yours has several links; recommend leaving it for later (FU-003). | User | Needs user |
-| DEC-003 | Which Tasks does the left list show? | 161 TODO Tasks in one Project, ~9 with work (E-016, E-018) | **Tasks with work** + All Tasks link to the board / every open Task | The left side is for following work; the board already lists every Task. Listing 170 open Tasks would recreate the crowding you want to leave. Recommend Tasks with work (open Tasks with a current assignment) plus All Tasks. | User | Needs user |
-| DEC-004 | Archive a Task's runs automatically when it is closed? | Your manual-archive pain | E-006: closing a Task already stops its runs and hides them; they are not separate archivable rows | Already the behavior for delegated work; Projects mode follows it (REQ-009). No new archive action. Manager conversations are your own long-lived runs and are not archived automatically; Archive stays available on them. | Solution Designer | Decided |
-| DEC-005 | Which existing managers belong to a Project? | Continuity, no migration | Derived from the Tasks' run records (host of each assignment) / only new starts | Derive: every conversation that hosts an assignment of the Project's Tasks, plus those started from the Project. Existing managers appear with no data change; one serving several Projects appears under each as the same run (E-017). | Solution Designer | Decided |
-| DEC-006 | What can be started as a Project's manager? | Scope | Agent / Agent, Team, Org | Agents (your managers are all Agent runs, E-017). Team/Org hosts still appear when they dispatch. | Solution Designer | Decided |
-| DEC-007 | Show closed Tasks' runs in the left list? | History | Not openable anywhere today (E-012) | Keep parity: closed Tasks leave the list; their conversations stay in Memory. Read-only viewing is FU-002. | Solution Designer | Decided |
-| DEC-008 | Product Design round first? | Process | Team has no Product route; earlier ticket stalled waiting on Product | Not needed: Projects mode reuses the existing tree rows; the sketch is for your review. Ask if you want mockups before the build. | Solution Designer | Decided |
-| DEC-009 | Where is the switch? | Discoverability | Header of the run section / separate section | A "Workspaces / Projects" switch in the run-section header; the collapsed strip's icon reveals the current mode. The primary "Projects" page stays for authoring. | Solution Designer | Decided (in the sketch) |
-| DEC-010 | Deleted Project or Task with open work? | Deletion contract keeps runs | — | Only current Projects and Tasks are listed; their runs stay reachable in Workspaces. | Solution Designer | Decided |
-| DEC-011 | Is a Project-bound manager restricted to its Project? | Not a security boundary | — | No; it is told its Project and stays an ordinary run. | Solution Designer | Decided |
+| ID | Question | Reasoning and recommendation | Owner | Status |
+| --- | --- | --- | --- | --- |
+| DEC-001 | Folder of a run started under a Project | The Project's first linked folder; it keeps the agent's files (e.g. the manager's board) in the Project's folder and delegated work follows the agent's folder. A coordination folder was rejected (new folder lifecycle, new dispatch folder rule, board moves). | User | Decided by the user, 2026-10-31 |
+| DEC-002 | No link / several links | No link: the temp workspace, nothing required (folders stay optional). Several: the first is the primary one. The user may pick another folder before sending. Task-level folder: FU-003. | User | Decided by the user, 2026-10-31 |
+| DEC-003 | (SR-001) Which Tasks the left list shows | Superseded by DEC-012: the left tree shows runs; Tasks stay on the right board. | User | Superseded |
+| DEC-004 | Archive delegated runs automatically when their Task closes? | Closing a Task already stops and hides its delegated runs (E-006); they are not separate archivable rows. Projects mode follows it. Top-level runs are the user's own and keep the existing Archive actions. | Solution Designer | Decided |
+| DEC-005 | Which existing runs belong to a Project? | Runs started under it, plus every top-level run that hosts an assignment of its Tasks, read from the Task records; existing runs appear with no data change; a run serving several Projects appears under each as the same run (E-017). | Solution Designer | Decided |
+| DEC-006 | What can be started under a Project? | Agents and Agent Teams, as a workspace offers them. Orgs start from their own launch page and are left out; Org runs hosting a Project's Task work still appear. | Solution Designer | Decided |
+| DEC-007 | Closed Tasks' runs | Parity: they leave the tree; read-only viewing is FU-002. | Solution Designer | Decided |
+| DEC-008 | Product Design round first? | The user asked for it (2026-10-31: "first work on the UI … task @Product Team"); request in `product-design-request.md`. The returned package, once confirmed by the user, is linked in the UI section. | User | Decided by the user (SR-003) |
+| DEC-009 | Where is the switch? | "Workspaces / Projects" in the run-section header; the collapsed strip's icon reveals the current mode; the primary "Projects" page stays for authoring. | Solution Designer | Decided |
+| DEC-010 | Deleted Project | Only current Projects are listed; their runs stay in Workspaces. A run started under a deleted Project shows nowhere in Projects mode. | Solution Designer | Decided |
+| DEC-011 | Is a run under a Project restricted to it? | No; it is told its Project and stays an ordinary run. | Solution Designer | Decided |
+| DEC-012 | Shape of a Project in the tree | Like a workspace: agent and team groups, runs, delegated runs nested with Task lines; any agent or team; Tasks on the right board, which follows the selected Project. | User | Decided by the user, 2026-10-31 |
+| DEC-013 | Which delegated runs are nested under a run in Project P? | P's Task work; other Projects' work goes under those Projects; work of no Project Task only under runs started under P, so a run started elsewhere does not bring unrelated work into P. | Solution Designer | Decided |
 
 ## Traceability
 
 | REQ | UC | BEH | AC | SCN |
 | --- | --- | --- | --- | --- |
 | 001 | 001 | 001 | 001 | 001, 002 |
-| 002 | 001 | 001 | 002 | 002 |
-| 003 | 002 | 002, 007 | 002 | 002, 005 |
-| 004 | 002 | 002, 005 | 003 | 002 |
-| 005 | 002 | 002 | 003 | 002 |
-| 006 | 003 | 003 | 005 | 003, 010 |
-| 007 | 003 | 003 | 009 | 003 |
-| 008 | 003 | 003 | 005, 006 | 003, 009, 010 |
-| 009 | 004 | 004 | 007 | 004 |
-| 010 | 003 | 006 | 008 | 005 |
-| 011 | 003, 005 | 008 | 005, 010 | 003, 007 |
-| 012 | 002 | 005 | 003, 004 | 002, 006 |
-| 013 | 001 | 001, 006 | 001 | 001, 002 |
-| 014 | 005 | 007, 004 | 011 | 001, 008 |
-| 015 | 001 | 001 | 012 | 002 |
+| 002 | 001, 002 | 001 | 002, 010 | 002 |
+| 003 | 003 | 002, 007 | 002 | 005 |
+| 004 | 002 | 002 | 003, 005 | 002 |
+| 005 | 002 | 005 | 003, 004 | 002, 006 |
+| 006 | 002 | 002 | 003 | 002 |
+| 007 | 003 | 003 | 010 | 003 |
+| 008 | 003 | 003 | 006, 007 | 003, 005, 009, 010 |
+| 009 | 004 | 004 | 008 | 004 |
+| 010 | 003 | 006 | 009 | 005 |
+| 011 | 003, 005 | 008 | 006, 011 | 003, 007 |
+| 012 | 001 | 001, 006 | 001 | 001, 002 |
+| 013 | 005 | 007, 004 | 012 | 001, 008 |
+| 014 | 005 | 007 | 012 | 008 |
+| 015 | 001 | 001 | 013 | 002 |
 
 ## Architecture Phase Input
 
 - Scenarios to map: SCN-001…SCN-010.
-- Constraints: Task side owns Task ↔ run links; trees carry no Task data; delegation, closure and reactivation unchanged; same run identities in both modes.
-- Deferred to design: the Project-execution read and its live updates; where "started for Project" is stored (with the migration-convention check); how the Project reaches the manager on each runtime; opening hosts beyond the listing cap; reuse of tree rows.
-- Facts to verify: Project context on every runtime; status sources for listed runs; remote runs under Tasks.
-- Risks: live update cost; duplicate row implementations.
+- Constraints: the Task side owns Task ↔ run links; trees carry no Task data; delegation, closure and reactivation unchanged; same run identities in both modes.
+- Deferred to design: the Project-runs read and its live updates; where "started under a Project" is stored (migration-convention check); how the Project reaches the run on each runtime; opening runs beyond the listing cap; reuse of the workspace tree rows and start surfaces.
 
 ## Readiness Check
 
@@ -260,15 +262,15 @@ None.
 - Scope and non-goals are clear: Yes
 - Requirements and acceptance criteria are testable and traceable: Yes
 - Applicable scenarios are covered with validity and evidence: Yes
-- Product design and supplemental evidence is integrated consistently: N/A (no Product package; DEC-008)
+- Product design and supplemental evidence is integrated consistently: N/A (DEC-008)
 - Applicable UI/UX approval and final visual-reference basis are recorded: N/A
 - Material assumptions and decisions are visible, each with reasoning and recommendation: Yes
 - Content ready for approval: Yes
-- Remaining content blocker: none; DEC-001, DEC-002, DEC-003 need the user's answer.
+- Remaining content blocker: none
 
 ### Approved Basis Ready For Design
 
-- Approval recorded: No
-- Exact requirements and supplement approval basis recorded: No
-- Ready for architecture design: No
-- Remaining blocker: the user's approval and answers to DEC-001…DEC-003.
+- Approval recorded: Yes (User Decisions; DEC table owners)
+- Exact requirements and supplement approval basis recorded: Yes (SR-002)
+- Ready for architecture design: Yes
+- Remaining blocker: none. The user approves the design before the build (Task process).
