@@ -26,7 +26,6 @@ import type { TeamRunExecutionTreeSnapshot } from "../domain/team-run-execution-
 import { DefinitionAdmissionService } from "../../collaboration-definition-admission/services/definition-admission-service.js";
 import type { PairedAgentAccess } from "../../agent-collaboration/execution/remote/paired-agent-access.js";
 import { TeamPairedAgentAccess } from "./team-paired-agent-access.js";
-import { requireRunProjectId } from "../../agent-execution/domain/run-project-context.js";
 
 export interface TeamRunPresetInput {
   workspaceRootPath: string;
@@ -116,7 +115,7 @@ export class TeamRunService {
     this.tokenUsageReadiness.assertCurrentSchemaReady();
     const admission = await this.admission.requireAvailable("agent_team", required(input.teamDefinitionId, "teamDefinitionId"));
     if (!("nodes" in admission.definition)) throw new Error(`Admitted definition '${input.teamDefinitionId}' is not an AgentTeam.`);
-    const projectId = await requireRunProjectId(input.projectId);
+    const projectId = input.projectId?.trim() || undefined;
     const workspaces = new Map<string, Promise<string>>();
     const activateWorkspace = async (requestedPath: string | null | undefined): Promise<string | null> => {
       const requested = requestedPath?.trim() || null;

@@ -43,5 +43,4 @@ export const projectTeamRunHistoryIndexRow = (
   createdAt: required(input.tree.createdAt, "createdAt"),
   archivedAt: optional(input.tree.archivedAt),
   terminatedAt: optional(input.existingRow?.terminatedAt),
-  ...(input.tree.projectId ? { projectId: input.tree.projectId } : {}),
 });

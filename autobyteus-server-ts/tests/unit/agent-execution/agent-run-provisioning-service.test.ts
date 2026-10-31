@@ -2,6 +2,7 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { configureRunProjects } from "../../../src/agent-execution/domain/run-project-context.js";
 import { AgentRunProvisioningService } from "../../../src/agent-execution/services/agent-run-provisioning-service.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import type { AgentRunMetadata } from "../../../src/run-history/store/agent-run-metadata-types.js";
@@ -149,6 +150,26 @@ describe("AgentRunProvisioningService", () => {
     const recorded = historyCatalogService.recordPreparedRun.mock.calls[0][0].metadata;
     expect(recorded).not.toHaveProperty("lastKnownStatus");
     expect(recorded).not.toHaveProperty("activationState");
+  });
+
+  it("records a start under the chosen Project with the allocated id before any run record; the run record gains no key (SR-009)", async () => {
+    const order: string[] = [];
+    historyCatalogService.recordPreparedRun.mockImplementation(async () => { order.push("records"); });
+    const recordStart = vi.fn(async () => { order.push("start"); });
+    const binding = configureRunProjects({ recordStart, contextOfRun: async () => null });
+    try {
+      const input = { agentDefinitionId: "agent-def-1", workspaceRootPath: "/tmp/workspace-one", llmModelIdentifier: "model-1",
+        autoExecuteTools: false, runtimeKind: RuntimeKind.CODEX_APP_SERVER };
+      const result = await buildService().prepareAgentRun({ ...input, projectId: " project_a1 " });
+      expect(recordStart).toHaveBeenCalledWith("project_a1", { kind: "agent", runId: result.runId });
+      expect(order).toEqual(["start", "records"]);
+      expect(historyCatalogService.recordPreparedRun.mock.calls[0][0].metadata).not.toHaveProperty("projectId");
+
+      recordStart.mockImplementationOnce(async () => { throw Object.assign(new Error("not found"), { code: "PROJECT_NOT_FOUND" }); });
+      historyCatalogService.recordPreparedRun.mockClear();
+      await expect(buildService().prepareAgentRun({ ...input, projectId: "missing" })).rejects.toMatchObject({ code: "PROJECT_NOT_FOUND" });
+      expect(historyCatalogService.recordPreparedRun).not.toHaveBeenCalled();
+    } finally { binding.close(); }
   });
 
   // Activating a prepared run (and retrying after a failed activation) moved to the standalone run

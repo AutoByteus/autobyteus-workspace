@@ -360,10 +360,6 @@ const compareOrgRuns = (left: AgentOrgRunHistoryItem, right: AgentOrgRunHistoryI
   return byCreated || left.rootRunId.localeCompare(right.rootRunId);
 };
 
-/**
- * Adds strictly decoded AgentOrg roots to the established Agent/Team workspace
- * nodes without interpreting the collaboration-history Team branch.
- */
 /** One section's Org runs grouped by Org definition (by name), each group's runs newest first. */
 export const buildAgentOrgDefinitionGroups = (items: readonly AgentOrgRunHistoryItem[]): AgentOrgHistoryDefinitionGroup[] => {
   const groups: AgentOrgHistoryDefinitionGroup[] = [];
@@ -386,6 +382,10 @@ export const buildAgentOrgDefinitionGroups = (items: readonly AgentOrgRunHistory
   return groups;
 };
 
+/**
+ * Adds strictly decoded AgentOrg roots to the established Agent/Team workspace
+ * nodes without interpreting the collaboration-history Team branch.
+ */
 export const projectWorkspaceHistoryByWorkspace = (
   establishedNodes: readonly RunTreeWorkspaceNode[],
   agentOrgHistory: readonly AgentOrgRunHistoryItem[],

@@ -23,7 +23,6 @@ const allowedRowKeys = new Set([
   "archivedAt",
   "terminatedAt",
   "hasCollaboration",
-  "projectId",
 ]);
 
 const normalizeSafeRunId = (value: string): string => {
@@ -62,7 +61,6 @@ const normalizeRow = (
   archivedAt: row.archivedAt ?? null,
   terminatedAt: row.terminatedAt ?? null,
   ...(row.hasCollaboration === true ? { hasCollaboration: true as const } : {}),
-  ...(row.projectId ? { projectId: row.projectId.trim() } : {}),
 });
 
 const parseIndexFile = (value: unknown): AgentRunHistoryIndexFileRecord | null => {
@@ -99,8 +97,7 @@ const parseIndexFile = (value: unknown): AgentRunHistoryIndexFileRecord | null =
         candidate.terminatedAt === null ||
         typeof candidate.terminatedAt === "string"
       ) ||
-      !(candidate.hasCollaboration === undefined || candidate.hasCollaboration === true) ||
-      !(candidate.projectId === undefined || (typeof candidate.projectId === "string" && candidate.projectId.trim()))
+      !(candidate.hasCollaboration === undefined || candidate.hasCollaboration === true)
     ) {
       return null;
     }
@@ -116,7 +113,6 @@ const parseIndexFile = (value: unknown): AgentRunHistoryIndexFileRecord | null =
           archivedAt: candidate.archivedAt ?? null,
           terminatedAt: candidate.terminatedAt ?? null,
           ...(candidate.hasCollaboration === true ? { hasCollaboration: true as const } : {}),
-          ...(typeof candidate.projectId === "string" ? { projectId: candidate.projectId } : {}),
         }),
       );
     } catch {

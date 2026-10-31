@@ -1,5 +1,6 @@
 import type { RootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
+import type { RunProjectRoot } from "../../agent-execution/domain/run-project-context.js";
 
 /**
  * Which runs work for one Project, read from the Task records (the only Task ↔ run truth; REQ-003, REQ-008).
@@ -15,4 +16,9 @@ export type ProjectRunLinkSet = Readonly<{
 /** The port run history reads Project run links through (bound to Projects by `compositions/project-run-links-composition.ts`). */
 export interface ProjectRunLinks {
   runLinksOf(projectId: string | null): Promise<ProjectRunLinkSet>;
+  /**
+   * The top-level runs started under the Project (its `project_runs.json`); refuses an unknown Project with an error
+   * whose `code` is `PROJECT_NOT_FOUND`.
+   */
+  startedRunsOf(projectId: string): Promise<readonly RunProjectRoot[]>;
 }

@@ -50,11 +50,6 @@ export type TeamRunExecutionTreeFile = Readonly<{
    * delegating run there. Absent means the Team run was not started by a peer.
    */
   delegatedFrom?: DelegatedFrom;
-  /**
-   * The Project the Team run was started under (its Project ID), written once at creation; absent means the Team run
-   * was not started under a Project. Its members are told the Project (`AgentRunConfig.project`).
-   */
-  projectId?: string;
 }>;
 
 export type TeamRunExecutionTreeSnapshot = TeamRunExecutionTreeFile;

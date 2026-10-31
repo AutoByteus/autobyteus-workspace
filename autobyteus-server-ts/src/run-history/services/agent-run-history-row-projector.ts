@@ -16,10 +16,9 @@ export const normalizeAgentRunHistoryIndexRow = (
   archivedAt: row.archivedAt ?? null,
   terminatedAt: row.terminatedAt ?? null,
   ...(row.hasCollaboration === true ? { hasCollaboration: true as const } : {}),
-  ...(row.projectId ? { projectId: row.projectId } : {}),
 });
 
-/** A fresh run's index row, from its prepared metadata; the Project it was started under comes from the metadata. */
+/** A fresh run's index row, from its prepared metadata. */
 export const projectAgentRunHistoryIndexRow = (input: Readonly<{
   runId: string;
   metadata: AgentRunMetadata;
@@ -35,5 +34,4 @@ export const projectAgentRunHistoryIndexRow = (input: Readonly<{
   createdAt: input.createdAt,
   archivedAt: null,
   terminatedAt: null,
-  ...(input.metadata.projectId ? { projectId: input.metadata.projectId } : {}),
 });

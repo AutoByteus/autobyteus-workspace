@@ -5,7 +5,6 @@ import {
 } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 import { taskExecutionReferenceKey } from "../../agent-collaboration/execution/task/task-execution-reference.js";
-import { readRunProjectContext } from "../../agent-execution/domain/run-project-context.js";
 import type { RunHistoryAgentGroup } from "../domain/agent-run-history-index-types.js";
 import type { ProjectRunLinks, ProjectRunLinkSet } from "../domain/project-run-links.js";
 import { getAgentRunHistoryService, type AgentRunHistoryService } from "./agent-run-history-service.js";
@@ -76,29 +75,32 @@ export class ProjectRunHistoryService {
 
   async projectRunHistory(rawProjectId: string, limitPerAgent = 6): Promise<ProjectRunHistory> {
     const projectId = rawProjectId.trim();
-    if (!projectId || !(await readRunProjectContext(projectId))) {
-      throw new ProjectRunHistoryError("PROJECT_NOT_FOUND", `Project '${projectId}' was not found.`);
-    }
+    if (!projectId) throw new ProjectRunHistoryError("PROJECT_NOT_FOUND", "A Project ID is required.");
     const links = this.runLinks();
     if (!links) throw new ProjectRunHistoryError("PROJECT_RUN_LINKS_UNAVAILABLE", "Project run links are not composed on this server.");
-    const [project, noProject] = await Promise.all([links.runLinksOf(projectId), links.runLinksOf(null)]);
+    const [started, project, noProject] = await Promise.all([
+      links.startedRunsOf(projectId).catch((error: unknown) => {
+        if ((error as { code?: unknown }).code === "PROJECT_NOT_FOUND") {
+          throw new ProjectRunHistoryError("PROJECT_NOT_FOUND", `Project '${projectId}' was not found.`);
+        }
+        throw error;
+      }),
+      links.runLinksOf(projectId),
+      links.runLinksOf(null),
+    ]);
     const hosts = new Map(project.hostRoots.map((host) => [rootExecutionIdentityKey(host.hostRoot), host]));
     const listed = (kind: RootSubjectKind, runId: string): boolean => hosts.has(rootKey(kind, runId));
-    // Roots whose record says they were started under the Project: their Temp-task work is the Project's too.
-    const startedUnderProject = new Set<string>();
-    const startedUnder = (kind: RootSubjectKind, runId: string, rowProjectId: string | undefined): boolean => {
-      if (rowProjectId !== projectId) return false;
-      startedUnderProject.add(rootKey(kind, runId));
-      return true;
-    };
+    // Roots the Project recorded as started under it: their Temp-task work is the Project's too. Joined with the
+    // catalog rows, so an entry whose run was never created or was deleted lists nothing.
+    const startedUnderProject = new Set(started.map((root) => rootKey(root.kind, root.runId)));
+    const startedUnder = (kind: RootSubjectKind, runId: string): boolean => startedUnderProject.has(rootKey(kind, runId));
 
     const [agentDefinitions, teamRuns] = await Promise.all([
       this.agentRuns.listAgentGroupsOf({
-        includes: (row) => startedUnder("agent", row.runId, row.projectId) || listed("agent", row.runId),
+        includes: (row) => startedUnder("agent", row.runId) || listed("agent", row.runId),
         pinned: (row) => hosts.get(rootKey("agent", row.runId))?.hasOpenWork === true,
       }, limitPerAgent),
-      this.teamRuns.listTeamRunHistory((row) =>
-        startedUnder("agent_team", row.teamRunId, row.projectId) || listed("agent_team", row.teamRunId)),
+      this.teamRuns.listTeamRunHistory((row) => startedUnder("agent_team", row.teamRunId) || listed("agent_team", row.teamRunId)),
     ]);
     const orgRunIds = project.hostRoots.filter((host) => host.hostRoot.rootSubjectKind === "agent_org")
       .map((host) => host.hostRoot.rootRunId);

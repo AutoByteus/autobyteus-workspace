@@ -49,11 +49,11 @@ export const composeProjectTaskExecutionResources = async (deps: Readonly<{
   appDataDir: string;
 }>): Promise<TaskExecutionResourcePort> => {
   const adHocTasksLayout = new AdHocTasksLayout(path.join(deps.appDataDir, "ad-hoc-tasks"));
-  const taskExecutionResources = new TaskExecutionResourceService(new TaskExecutionResourceStore(
-    new ProjectsLayout(path.join(deps.appDataDir, "projects")), adHocTasksLayout));
+  const projectsLayout = new ProjectsLayout(path.join(deps.appDataDir, "projects"));
+  const taskExecutionResources = new TaskExecutionResourceService(new TaskExecutionResourceStore(projectsLayout, adHocTasksLayout));
   await taskExecutionResources.load();
   projectRunLinks?.close();
-  projectRunLinks = composeProjectRunLinks(taskExecutionResources);
+  projectRunLinks = await composeProjectRunLinks({ taskExecutionResources, projectsLayout });
   const service = initializeProjectTaskServiceProcessInstance({
     taskExecutionResources,
     adHocTasks: new AdHocTaskStore(adHocTasksLayout),

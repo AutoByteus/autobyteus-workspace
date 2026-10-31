@@ -361,7 +361,7 @@ export class StandaloneAgentRunLifecycleService {
       applicationExecutionContext: metadata.applicationExecutionContext ?? null,
       memberExecutionContext: input.memberExecutionContext,
       // A run started under a Project is told it again on every start (DS-005); a deleted Project yields none.
-      project: await readRunProjectContext(metadata.projectId),
+      project: await readRunProjectContext({ kind: "agent", runId: metadata.runId }),
     });
   }
 

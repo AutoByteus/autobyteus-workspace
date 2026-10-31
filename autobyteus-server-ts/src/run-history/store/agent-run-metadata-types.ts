@@ -25,11 +25,6 @@ export type AgentRunMetadata = {
    * A system-owned run is never a collaboration member.
    */
   systemRunOwner?: SystemRunOwner;
-  /**
-   * The Project the run was started under (its Project ID), written once at creation and never rewritten;
-   * absent means the run was not started under a Project (every run created before this field existed).
-   */
-  projectId?: string;
 };
 
 /** The services that own system runs: the Model Router agent's. */
