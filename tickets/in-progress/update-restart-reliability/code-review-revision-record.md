@@ -9,6 +9,7 @@ The latest `code-review-report.md` (or `api-e2e-test-review-report.md`) is autho
 | CRR-001 | `code-review-report.md` | Implementation Review, round 1 (IR-001) | N/A | Pass | None |
 | CRR-002 | `code-review-report.md` | API/E2E Failure-Origin Review, round 2 (API-REV-001 F-API-001) | Pass | Fail: `Design Impact` (with a Requirement Gap part) → Solution Designer | F-API-001 (P-001 reclassified) |
 | CRR-003 | `code-review-report.md` | Implementation Review, round 3 (IR-002; D1 Full Re-Audit) | Fail | Pass | F-API-001 (resolved by design) |
+| CRR-004 | `api-e2e-test-review-report.md` | Proportional API/E2E Test-Code Review (API-REV-002 Pass) | Pass (CRR-003) | Not Applicable (no durable test changed) | None |
 
 ## Revision Entries
 
@@ -99,3 +100,30 @@ None (CRR-001 had no findings). CR-C1 (the round 1 rejected candidate) is supers
 - Material score or classification changes: category 8 goes from 8.8 back to 9.3; overall 9.5; Medium / High
 - Recommended recipient: API/E2E engineer
 - Remaining risks or uncertainty: handlers longer than 2 s are cut (FU-004); N-5 to N-7; there is no general guard that future servers install the hook last (CR-C7, a note).
+
+### CRR-004 — Proportional test-code review after API-REV-002 Pass
+
+- Canonical review report updated: `api-e2e-test-review-report.md` (new)
+- Review entry point and round: Successful API/E2E Test-Code Review, round 1
+- Review scope: `N/A` (test review)
+- Triggering role, report path, and finding or scenario IDs: API/E2E engineer, `api-e2e-execution-coverage-report.md` (API-REV-002 `Pass`, 94.1%)
+- Relevant solution revision IDs: SR-004, SR-005
+- Relevant architecture-review revision IDs: ARCH-REV-003
+- Relevant implementation revision IDs: IR-001, IR-002
+- Relevant API/E2E revision IDs: API-REV-001, API-REV-002
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: `Pass` (CRR-003, source review)
+- Current authoritative result: `Not Applicable`, passing to delivery
+- What changed in the review result and why: API/E2E changed no durable test code in either round; its probes are evidence. The branch's tests were reviewed in CRR-001 and CRR-003.
+- Supported product scenario / material-premise basis changes: None. The runtime proof of F-API-001's resolution is in API-02 R2 and API-02B R2: 0 prepared-only and 0 unacknowledged runs, and every create before SIGTERM answered.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| F-API-001 | Resolved by design (CRR-003); runtime proof pending | Resolved; proven at runtime | API-REV-002 | `evidence/API-02-R2-result.json`, `evidence/API-02B-R2-result.json`, `evidence/API-02T-timing.log` |
+
+- New or remaining finding IDs: None
+- Material score or classification changes: None; Medium / High
+- Recommended recipient: delivery engineer
+- Remaining risks or uncertainty: the real Squirrel install is user-only; FU-001 to FU-004; N-5 to N-7; the architecture reviewer's docs are still untracked.
