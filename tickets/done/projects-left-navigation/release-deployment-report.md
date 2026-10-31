@@ -88,7 +88,7 @@ Repository finalization of `codex/projects-left-navigation` into `origin/persona
 
 ## Ticket State Transition
 
-- Ticket moved to `tickets/done/projects-left-navigation`: PENDING
+- Ticket moved to `tickets/done/projects-left-navigation`: `Yes` (in `72fe02dcaf`)
 - Archived ticket path: `tickets/done/projects-left-navigation/`
 
 ## Version / Tag / Release Commit
@@ -97,7 +97,20 @@ None: no release.
 
 ## Repository Finalization
 
-PENDING
+- Bootstrap context source: `investigation-notes.md` (finalization target `origin/personal`) and `RELEASE.md` § Finalization Target.
+- Ticket branch: `codex/projects-left-navigation`
+- Ticket branch commit result: `Completed` — `72fe02dcaf` (docs sync, delivery artifacts, release notes, archive), on top of the merge `0c8a6f4d22` and checkpoint `754d9f6373`.
+- Ticket branch push result: `Completed` — first push after the Secret Gate (`origin/personal..codex/projects-left-navigation`, 31 commits, PASS).
+- Finalization target remote: `origin`
+- Finalization target branch: `personal`
+- Target advanced after verification / acceptance: `No` (`bfb6d5b154` at verification, before the merge and before the push).
+- Delivery-owned edits protected before re-integration: `Not needed`
+- Re-integration before final merge result: `Not needed`
+- Target branch update result: `Completed` — `git checkout -b finalize/projects-left-navigation origin/personal` at `bfb6d5b154`.
+- Merge into target result: `Completed` — `git merge --no-ff` → `d9a51f16dc`; its tree is identical to the verified ticket branch (`git diff --stat codex/projects-left-navigation HEAD` empty). Secret Gate on the merged state: PASS (32 commits).
+- Push target branch result: `Completed` — `origin/personal` re-fetched and still `bfb6d5b154`, then `bfb6d5b154..d9a51f16dc HEAD -> personal`.
+- Repository finalization status: `Completed`
+- Blocker: none.
 
 ## Release / Publication / Deployment
 
@@ -107,7 +120,13 @@ PENDING
 
 ## Post-Finalization Cleanup
 
-PENDING
+- Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/projects-left-navigation`
+- Worktree cleanup result: run from the main checkout right after this record is pushed (`git worktree remove --force`; the worktree then holds only untracked build output and installed packages). The terminal message reports the outcome.
+- Worktree prune result: same step (`git worktree prune`).
+- Local ticket branch cleanup result: same step (`codex/projects-left-navigation`, `finalize/projects-left-navigation`).
+- Remote branch cleanup result: `Completed` — `origin/codex/projects-left-navigation` deleted after `72fe02dcaf` was confirmed an ancestor of `origin/personal`.
+- Isolated desktop instances and probe stacks: stopped and removed (`isolated-app list` → `[]`; `/tmp/pln-del-iso` removed; probe `dataRootRemoved: true`).
+- Blocker: none.
 
 ## Release Notes Summary
 
@@ -137,4 +156,11 @@ Revert the merge on `personal` (`RELEASE.md` § Rollback). Rolling back is possi
 
 ## Final Status
 
-PENDING
+- Verification complete (from the evidence): `Yes`
+- Repository finalization complete: `Yes` (`origin/personal` `d9a51f16dc`)
+- Applicable release/deployment/rollout complete or not required: `Yes` (`Not required`: no release)
+- Applicable safe cleanup complete or not required: `Yes` (remote branch deleted; worktree and local branches removed right after this record, reported in the terminal message)
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to the Solution Designer: `Yes`, after this record is pushed
+- Terminal message/reference: `send_message_to` the Solution Designer (`Delivery Completed`)
