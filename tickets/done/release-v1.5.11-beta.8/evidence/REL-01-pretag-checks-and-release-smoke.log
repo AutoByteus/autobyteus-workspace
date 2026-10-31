@@ -1,0 +1,79 @@
+# REL-01 checks before tagging and release smoke for v1.5.11-beta.8 on personal eaafd77ac5, 2026-10-31T18:34:52Z
+Licensing is consistent.
+Repository artifact hygiene check passed.
+secret gate: scanning 139 commit(s) in v1.5.11-beta.7..HEAD
+secret gate: PASS (no secrets found)
+pnpm install exit 0
+prebuild exit 0
+## python3 scripts/release_smoke.py
+Release smoke check
+runtime     scenario                                 result  reason
+claude      new run + restore, linked workspace      FAIL    skipped: Error: grok model grok-4.7 is not offered; available: grok-4.5, grok-4.6
+claude      brand-new team member                    FAIL    skipped: Error: grok model grok-4.7 is not offered; available: grok-4.5, grok-4.6
+claude      different same-named skill               FAIL    skipped: Error: grok model grok-4.7 is not offered; available: grok-4.5, grok-4.6
+codex       new run + restore, linked workspace      FAIL    skipped: Error: grok model grok-4.7 is not offered; available: grok-4.5, grok-4.6
+codex       brand-new team member                    FAIL    skipped: Error: grok model grok-4.7 is not offered; available: grok-4.5, grok-4.6
+codex       different same-named skill               FAIL    skipped: Error: grok model grok-4.7 is not offered; available: grok-4.5, grok-4.6
+grok        new run + restore, linked workspace      FAIL    skipped: Error: grok model grok-4.7 is not offered; available: grok-4.5, grok-4.6
+grok        brand-new team member                    FAIL    skipped: Error: grok model grok-4.7 is not offered; available: grok-4.5, grok-4.6
+grok        different same-named skill               FAIL    skipped: Error: grok model grok-4.7 is not offered; available: grok-4.5, grok-4.6
+antigravity brand-new run, linked workspace          PASS
+antigravity brand-new team member, linked workspace  PASS
+autobyteus  brand-new run, linked workspace          PASS
+autobyteus  brand-new team member, linked workspace  PASS
+other       workspace-skill-links-live.e2e.test.ts   FAIL    Error: grok model grok-4.7 is not offered; available: grok-4.5, grok-4.6
+
+commit    eaafd77ac5851356840c94ab1a428dd4da31b6c9
+models    not reported
+duration  live 15s, antigravity 17s, autobyteus 7s
+result    FAIL
+logs      /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/release-smoke-8u56sw4a
+smoke exit 1
+
+## run 2: GROK_E2E_MODEL=grok-4.6 python3 scripts/release_smoke.py (the suite's documented model override; run 1 aborted because the Grok CLI did not offer the pinned grok-4.7: the known flaky pin, FU-005 of tickets/done/work-journal-neutral-vocabulary), 2026-10-31T18:36:05Z
+Release smoke check
+runtime     scenario                                 result  reason
+claude      new run + restore, linked workspace      FAIL    skipped: Error: grok model grok-4.6 is not offered; available: grok-4.7
+claude      brand-new team member                    FAIL    skipped: Error: grok model grok-4.6 is not offered; available: grok-4.7
+claude      different same-named skill               FAIL    skipped: Error: grok model grok-4.6 is not offered; available: grok-4.7
+codex       new run + restore, linked workspace      FAIL    skipped: Error: grok model grok-4.6 is not offered; available: grok-4.7
+codex       brand-new team member                    FAIL    skipped: Error: grok model grok-4.6 is not offered; available: grok-4.7
+codex       different same-named skill               FAIL    skipped: Error: grok model grok-4.6 is not offered; available: grok-4.7
+grok        new run + restore, linked workspace      FAIL    skipped: Error: grok model grok-4.6 is not offered; available: grok-4.7
+grok        brand-new team member                    FAIL    skipped: Error: grok model grok-4.6 is not offered; available: grok-4.7
+grok        different same-named skill               FAIL    skipped: Error: grok model grok-4.6 is not offered; available: grok-4.7
+antigravity brand-new run, linked workspace          PASS
+antigravity brand-new team member, linked workspace  PASS
+autobyteus  brand-new run, linked workspace          PASS
+autobyteus  brand-new team member, linked workspace  PASS
+other       workspace-skill-links-live.e2e.test.ts   FAIL    Error: grok model grok-4.6 is not offered; available: grok-4.7
+
+commit    eaafd77ac5851356840c94ab1a428dd4da31b6c9
+models    not reported
+duration  live 12s, antigravity 17s, autobyteus 7s
+result    FAIL
+logs      /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/release-smoke-yp_gdpqs
+smoke exit 1
+
+## run 3: python3 scripts/release_smoke.py (default pin grok-4.7; run 2's catalog offered only grok-4.7). Cause of runs 1-2: the suite checks the Grok runtime's providerModelCatalogSnapshots, whose list varies between calls (run 1: grok-4.5, grok-4.6; run 2: grok-4.7), 2026-10-31T18:37:06Z
+Release smoke check
+runtime     scenario                                 result  reason
+claude      new run + restore, linked workspace      PASS
+claude      brand-new team member                    PASS
+claude      different same-named skill               PASS
+codex       new run + restore, linked workspace      PASS
+codex       brand-new team member                    PASS
+codex       different same-named skill               PASS
+grok        new run + restore, linked workspace      PASS
+grok        brand-new team member                    PASS
+grok        different same-named skill               PASS
+antigravity brand-new run, linked workspace          PASS
+antigravity brand-new team member, linked workspace  PASS
+autobyteus  brand-new run, linked workspace          PASS
+autobyteus  brand-new team member, linked workspace  PASS
+
+commit    eaafd77ac5851356840c94ab1a428dd4da31b6c9
+models    {"claude": "haiku", "codex": "gpt-5.6-luna", "grok": "grok-4.7"}
+duration  live 132s, antigravity 18s, autobyteus 7s
+result    PASS
+smoke exit 0
