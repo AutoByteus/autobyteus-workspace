@@ -1,0 +1,9 @@
+# IMP-02 server typecheck (IR-002)
+# Command: pnpm -C autobyteus-server-ts typecheck
+# Commit: working tree on a595cc74b7 (IR-002 changes, committed right after); macOS, Node v22.23.1
+# Date: 2026-10-31T11:27Z
+
+> autobyteus-server-ts@0.1.1 typecheck /Users/normy/autobyteus_org/autobyteus-worktrees/projects-left-navigation/autobyteus-server-ts
+> tsc -p tsconfig.build.json --noEmit
+
+exit=0

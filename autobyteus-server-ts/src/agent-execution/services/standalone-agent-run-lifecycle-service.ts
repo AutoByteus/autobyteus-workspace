@@ -1,3 +1,4 @@
+import { readRunProjectContext } from "../domain/run-project-context.js";
 import { RootRunPackageReadinessIndex } from "../../run-history/services/root-run-package-readiness-index.js";
 import type { AgentRun } from "../domain/agent-run.js";
 import { AgentRunConfig } from "../domain/agent-run-config.js";
@@ -451,6 +452,8 @@ export class StandaloneAgentRunLifecycleService {
       llmConfig: metadata.llmConfig,
       applicationExecutionContext: metadata.applicationExecutionContext ?? null,
       memberExecutionContext: input.memberExecutionContext,
+      // A run started under a Project is told it again on every start (DS-005); a deleted Project yields none.
+      project: await readRunProjectContext({ kind: "agent", runId: metadata.runId }),
     });
   }
 

@@ -35,6 +35,7 @@ const buildHarness = () => {
     archiveAgentRunGroup: vi.fn(async (): Promise<AgentRunGroupArchiveOutcome> =>
       ({ archivedRunIds: ['run-1', 'run-2'], activeRunIds: [], failedRunIds: [] })),
     archiveTeamRuns: vi.fn(async (ids: string[]) => ({ archivedRunIds: ids, failedRunIds: [] as string[] })),
+    archiveRun: vi.fn(async (_runId: string) => true),
     archiveAgentOrgRuns: vi.fn(async (ids: string[]) => ({ archivedRunIds: ids, failedRunIds: [] as string[] })),
     onAgentOrgArchived: vi.fn(async () => undefined),
     addToast: vi.fn(),

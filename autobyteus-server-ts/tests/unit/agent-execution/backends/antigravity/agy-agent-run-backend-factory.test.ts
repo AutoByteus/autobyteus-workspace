@@ -110,6 +110,15 @@ describe("AGY backend capability admission and preserved bindings", () => {
       await backend.terminate();
     });
 
+  it("writes the Project section of a run started under a Project into the agent file (REQ-006, DS-005)", async () => {
+    const underProject = new AgentRunConfig({ ...config, project: { projectId: "project_a1", name: "AutoByteus" } } as never);
+    const backend = await prepareAndReleaseOnFailure(factory.beginPreparation({ kind: "new", config: underProject, runId: "run" }));
+    const manifest = JSON.parse(await fs.readFile(path.join(config.memoryDir!, "agy-project", "manifest.json"), "utf8"));
+    const markdown = await fs.readFile(path.join(config.memoryDir!, "agy-project", ".agents", "agents", manifest.agentName, "agent.md"), "utf8");
+    expect(markdown).toContain("## Project\n\nYou work in the Project AutoByteus (Project ID project_a1). Use this Project ID with the Project tools; ask the user before working on another Project.");
+    await backend.terminate();
+  });
+
   it("uses the catalog for new and restore while retaining capsule bytes and exact conversation", async () => {
     const initial = await prepareAndReleaseOnFailure(factory.beginPreparation({ kind: "new", config: config, runId: "run" }));
     const context = initial.getContext();

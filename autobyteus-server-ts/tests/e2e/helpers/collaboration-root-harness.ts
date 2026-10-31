@@ -164,13 +164,16 @@ export const startCollaborationHarness = async (label: string) => {
     return text.trim().split("\n").slice(-lines).map((line) => line.slice(0, 600)).join("\n");
   };
 
-  /** A root of one kind: its members by address, a way to send a scripted tool call to any agent of it, and its live tree. */
-  const startRoot = async (kind: RootKind, ids: Rec) => {
+  /**
+   * A root of one kind: its members by address, a way to send a scripted tool call to any agent of it, and its live tree.
+   * `extra` adds fields to the creation input of an Agent or Team root (for example `projectId`).
+   */
+  const startRoot = async (kind: RootKind, ids: Rec, extra: Rec = {}) => {
     let rootId: string, managerRunId: string;
     const members: Record<string, string> = {};
     if (kind === "agent") {
       const created = (await graphql(`mutation($input:CreateAgentRunInput!){createAgentRun(input:$input){success message runId}}`,
-        { input: { agentDefinitionId: ids.manager, ...config() } })).createAgentRun;
+        { input: { agentDefinitionId: ids.manager, ...config(), ...extra } })).createAgentRun;
       expect(created.success, created.message).toBe(true);
       rootId = managerRunId = created.runId;
       members["/"] = managerRunId;
@@ -178,7 +181,7 @@ export const startCollaborationHarness = async (label: string) => {
       const created = (await graphql(`mutation($input:CreateAgentTeamRunInput!){createAgentTeamRun(input:$input){success message teamRunId}}`,
         { input: { teamDefinitionId: ids.team, teamConfigs: [{ teamAddress: "/", ...config() }], memberConfigs: [
           { memberAddress: "/manager", agentDefinitionId: ids.manager, ...config() },
-          { memberAddress: "/mate", agentDefinitionId: ids.mate, ...config() }] } })).createAgentTeamRun;
+          { memberAddress: "/mate", agentDefinitionId: ids.mate, ...config() }], ...extra } })).createAgentTeamRun;
       expect(created.success, created.message).toBe(true);
       rootId = created.teamRunId;
       const tree = (await graphql(`query($id:String!){getTeamRunResumeConfig(teamRunId:$id){executionTree}}`, { id: rootId })).getTeamRunResumeConfig.executionTree;

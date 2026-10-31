@@ -1,0 +1,23 @@
+# Case API-05 (AC-014); code 467cff24c0 (HEAD 172068d4ed); packaged worktree build electron-dist/mac-arm64/AutoByteus.app 1.5.11-beta.7 built 2026-10-31 14:13 local; instance iso-61565-aa80 (control 61565, backend 61566), data root /tmp/pln-iso-root, scripted AGY via server-data/.env; macOS arm64
+# API-05 desktop journey (isolated instance of the worktree build)
+# node API-05-desktop-journey.mjs 61565 http://127.0.0.1:61566 /private/tmp/pln-iso-root <out>
+2026-10-31T13:19:47.023Z seed: {"ids":{"manager":"project-task-manager-dd58","writer":"release-notes-writer-dd58","checker":"fact-checker-dd58","squad":"docs-review-team-dd58"},"project":{"projectId":"project_b6553feb-d627-4c2b-bc10-86ee38cafce2","name":"Prototype Launch dd58"},"taskId":"project_task_8f34521f-9662-44df-9315-5c47c9366b38"}
+2026-10-31T13:19:47.030Z runtimes (AGY must be the scripted CLI): {"error":"Error: [{\"message\":\"Field \\\"availableAgentRuntimes\\\" must not have a selection since type \\\"JSON!\\\" has no subfields.\",\"locations\":[{\"line\":1,\"column\":29}]}]"}
+2026-10-31T13:19:47.098Z window: {"url":"file:///Users/normy/autobyteus_org/autobyteus-worktrees/projects-left-navigation/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat?id=project_task_manager_da57_2fe4b7c8828e4ec8aa6ac28f0d583e5d","title":""}
+2026-10-31T13:19:47.745Z shot: "01-workspaces-mode"
+2026-10-31T13:19:48.177Z shot: "02-projects-mode"
+2026-10-31T13:19:49.376Z start surface chip: "Prototype Launch dd58"
+2026-10-31T13:19:49.759Z shot: "03-start-under-project"
+2026-10-31T13:19:49.968Z started under the Project: {"kind":"agent","runId":"project_task_manager_dd58_9cd3d4801e9547aeb0682e58db552c9a"}
+2026-10-31T13:19:49.979Z run folder and runtime: {"workspaceRootPath":"/private/tmp/pln-iso-root/launch-repo","runtimeKind":"antigravity_cli"}
+2026-10-31T13:19:50.132Z ## Project section: "## Project\n\nYou work in the Project Prototype Launch dd58 (Project ID project_b6553feb-d627-4c2b-bc10-86ee38cafce2). Use this Project ID with the Project tools; ask the user before working on another Project.\n\n## Working Environme"
+2026-10-31T13:19:50.520Z shot: "04-run-listed-under-project"
+2026-10-31T13:19:51.329Z Team row with Task line: "Review the launch checklist"
+2026-10-31T13:19:51.769Z shot: "05-team-dispatched"
+2026-10-31T13:19:51.796Z opened worker: "release_notes_writer_dd58_0df352acaecb4ba28dcbadfb4ecca742"
+2026-10-31T13:19:52.188Z shot: "06-worker-open"
+2026-10-31T13:19:53.784Z shot: "07-after-done"
+2026-10-31T13:19:54.615Z Workspaces mode: run marked open: "true"
+2026-10-31T13:19:55.023Z shot: "08-back-to-workspaces"
+2026-10-31T13:19:55.023Z page errors: []
+2026-10-31T13:19:55.023Z result: "Pass"

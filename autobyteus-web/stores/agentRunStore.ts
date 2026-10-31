@@ -199,6 +199,7 @@ export const useAgentRunStore = defineStore('agentRun', {
                 llmConfig: config.llmConfig ?? null,
                 runtimeKind: config.runtimeKind,
                 initialSummary,
+                projectId: config.projectId ?? undefined,
               }
             }
           });

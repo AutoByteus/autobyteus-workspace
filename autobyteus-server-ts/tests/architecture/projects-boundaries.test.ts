@@ -64,8 +64,12 @@ describe("projects subsystem boundaries", () => {
       expect(importSpecifiers(join(SRC, owner)).filter((specifier) => /(^|\/)projects\//.test(specifier)))
         .toEqual(["../../projects/services/project-task-service.js"]);
     }
-    // Only the one composition binding knows both sides.
-    expect(filesImporting(join(SRC, "compositions"), /(^|\/)projects\//)).toEqual(["compositions/project-task-execution-resource-composition.ts"]);
+    // Only the composition bindings know both sides: the Task resources binding, and the Project run links /
+    // run Project context ports it composes (projects-left-navigation, DS-003, DS-005).
+    expect(filesImporting(join(SRC, "compositions"), /(^|\/)projects\//).sort()).toEqual([
+      "compositions/project-run-links-composition.ts",
+      "compositions/project-task-execution-resource-composition.ts",
+    ]);
     expect(filesImporting(join(SRC, "api", "graphql", "types"), /projects\/services\/project-task-service/))
       .toEqual(["api/graphql/types/project-tasks.ts"]);
   });

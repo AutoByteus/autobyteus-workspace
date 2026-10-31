@@ -189,17 +189,7 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
     }
     await fs.mkdir(memoryDir, { recursive: true });
     built.agentConfig.memoryDir = memoryDir;
-    const resolvedRunConfig = new AgentRunConfig({
-      agentDefinitionId: built.resolvedRunConfig.agentDefinitionId,
-      llmModelIdentifier: built.resolvedRunConfig.llmModelIdentifier,
-      autoExecuteTools: built.resolvedRunConfig.autoExecuteTools,
-      workspaceId: built.resolvedRunConfig.workspaceId,
-      memoryDir,
-      llmConfig: built.resolvedRunConfig.llmConfig,
-      runtimeKind: built.resolvedRunConfig.runtimeKind,
-      memberExecutionContext: built.resolvedRunConfig.memberExecutionContext,
-      applicationExecutionContext: built.resolvedRunConfig.applicationExecutionContext,
-    });
+    const resolvedRunConfig = built.resolvedRunConfig.withMemoryDir(memoryDir);
     const createAgentWithId = (
     this.agentFactory as AutoByteusAgentFactoryLike & {
         createAgentWithId?: (agentId: string, config: AgentConfig) => AgentLike;
@@ -261,17 +251,7 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
     return this.createBackendFromAgent(
       new AgentRunContext({
         runId: agent.agentId,
-        config: new AgentRunConfig({
-          agentDefinitionId: context.config.agentDefinitionId,
-          llmModelIdentifier: context.config.llmModelIdentifier,
-          autoExecuteTools: context.config.autoExecuteTools,
-          workspaceId: context.config.workspaceId,
-          memoryDir,
-          llmConfig: context.config.llmConfig,
-          runtimeKind: context.config.runtimeKind,
-          memberExecutionContext: context.config.memberExecutionContext,
-          applicationExecutionContext: context.config.applicationExecutionContext,
-        }),
+        config: context.config.withMemoryDir(memoryDir),
         runtimeContext: (agent as AutoByteusRuntimeAgentLike).context ?? context.runtimeContext,
       }),
       agent as AutoByteusRuntimeAgentLike,
@@ -350,6 +330,7 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
       agentDefinition: agentDef,
       workspaceRootPath,
       memberExecutionContext: options.memberExecutionContext ?? null,
+      project: options.project,
     });
 
     const inputProcessors: BaseAgentUserInputMessageProcessor[] = [];
@@ -474,6 +455,7 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
         runtimeKind: effectiveRuntimeKind,
         memberExecutionContext: options.memberExecutionContext ?? null,
         applicationExecutionContext: options.applicationExecutionContext ?? null,
+        project: options.project,
       }),
       agentConfig: new AgentConfig(
         agentDef.name,

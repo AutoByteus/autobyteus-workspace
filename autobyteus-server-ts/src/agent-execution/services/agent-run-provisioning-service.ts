@@ -21,6 +21,7 @@ import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.
 import { AgentRunIdentityAllocator } from "./agent-run-identity-allocator.js";
 import type { ApplicationExecutionContext } from "../../application-orchestration/domain/models.js";
 import { getAgentRunCommandRegistry } from "./agent-run-command-registry.js";
+import { recordRunProjectStart } from "../domain/run-project-context.js";
 import type {
   CancelPreparedAgentRunResult,
   CreateAgentRunInput,
@@ -81,6 +82,8 @@ export class AgentRunProvisioningService {
       throw new Error("Fresh run preparation must provide a memoryDir.");
     }
 
+    // The Project records the start with the allocated id before any run record (DS-001); an unknown Project is refused.
+    if (preparedInput.projectId) await recordRunProjectStart(preparedInput.projectId, { kind: "agent", runId });
     const preparedAt = new Date();
     const preparedExpiresAt = new Date(preparedAt.getTime() + PREPARED_RUN_TTL_MS);
     const metadata: AgentRunMetadata = {
@@ -174,6 +177,7 @@ export class AgentRunProvisioningService {
     autoExecuteTools: boolean;
     llmConfig: Record<string, unknown> | null;
     applicationBinding: CreateAgentRunInput["applicationBinding"];
+    projectId: string | undefined;
   }> {
     if (!hasNonEmptyString(input.agentDefinitionId)) {
       throw new Error(`agentDefinitionId is required when ${action} a run.`);
@@ -188,6 +192,7 @@ export class AgentRunProvisioningService {
       throw new Error(`runtimeKind is required when ${action} a run.`);
     }
 
+    const projectId = input.projectId?.trim() || undefined;
     const workspaceRootPath = canonicalizeWorkspaceRootPath(input.workspaceRootPath.trim());
     const workspace = await this.workspaceManager.ensureWorkspaceByRootPath(workspaceRootPath);
     const runtimeKind = runtimeKindFromString(input.runtimeKind);
@@ -207,6 +212,7 @@ export class AgentRunProvisioningService {
       autoExecuteTools: input.autoExecuteTools,
       llmConfig: input.llmConfig ?? null,
       applicationBinding: input.applicationBinding ?? null,
+      projectId,
     };
   }
 

@@ -1,0 +1,320 @@
+{
+  "projects": {
+    "P": {
+      "projectId": "project_145ea43d-f274-461c-828e-55c7cb4753e5",
+      "name": "Prototype Launch c5f898"
+    },
+    "Q": {
+      "projectId": "project_434dc899-088e-48bc-ab33-b549d7375095",
+      "name": "Docs Site c5f898"
+    },
+    "R": {
+      "projectId": "project_43dfd4d6-e17e-44e4-8baa-2c3af3cc7352",
+      "name": "Website c5f898"
+    }
+  },
+  "tasks": {
+    "P1": "project_task_2d0adff9-888f-46fd-9409-86b7efee81d9",
+    "P2": "project_task_807d3d3a-e75a-44d6-974c-ab2d009f02d9",
+    "P3": "project_task_3d139b9e-b9a9-45d1-9bff-de27e74462ed",
+    "P4": "project_task_e455419e-1e2b-425f-9641-595ec79eeeaa",
+    "Q1": "project_task_069a8e46-be5e-4d63-b980-ec569e88c7ae",
+    "Q2": "project_task_14d7f09d-7c39-43f1-83f5-03ed15a02d70",
+    "Q3": "project_task_fb26482e-eb8f-418a-9c69-5ed9d0c45a16",
+    "Q4": "project_task_c4abe41e-eedc-4d34-af11-d07affe705c4",
+    "R1": "project_task_853a2e66-4e91-4654-b41f-da7d1d00d128"
+  },
+  "ids": {
+    "manager": "prh-manager-c5f898",
+    "mate": "prh-mate-c5f898",
+    "writer": "prh-writer-c5f898",
+    "checker": "prh-checker-c5f898",
+    "squad": "prh-squad-c5f898",
+    "team": "prh-delivery-team-c5f898",
+    "org": "prh-org-c5f898",
+    "preparedUnderP": "prh_manager_c5f898_2418551dcb4d4c17bf48a1d141fe5ae3"
+  },
+  "prh01": {
+    "runId": "prh_manager_c5f898_2418551dcb4d4c17bf48a1d141fe5ae3",
+    "stored": {
+      "projectId": "project_145ea43d-f274-461c-828e-55c7cb4753e5",
+      "runs": [
+        {
+          "root": {
+            "kind": "agent",
+            "runId": "prh_manager_c5f898_2418551dcb4d4c17bf48a1d141fe5ae3"
+          },
+          "linkedAt": "2026-10-31T14:41:12.805Z"
+        }
+      ]
+    },
+    "prompt": "## Project\n\nYou work in the Project Prototype Launch c5f898 (Project ID project_145ea43d-f274-461c-828e-55c7cb4753e5). Use this Project ID with the Project tools; ask the user before working on another Project.\n\n## Working Environment\n- Agent workspace: `/priv",
+    "runRecordKeys": [
+      "agentDefinitionId",
+      "agentName",
+      "applicationExecutionContext",
+      "archivedAt",
+      "autoExecuteTools",
+      "createdAt",
+      "llmConfig",
+      "llmModelIdentifier",
+      "memoryDir",
+      "platformAgentRunId",
+      "preparedAt",
+      "preparedExpiresAt",
+      "runId",
+      "runtimeKind",
+      "startedAt",
+      "summary",
+      "terminatedAt",
+      "workspaceRootPath"
+    ]
+  },
+  "prh02": {
+    "missing": "project_6185807f-bad3-4cd6-b2cf-6b3f5ea1d59f",
+    "prepared": "{\"success\":false,\"message\":\"ProjectError: Project 'project_6185807f-bad3-4cd6-b2cf-6b3f5ea1d59f' was not found.\",\"runId\":null}",
+    "created": "{\"createAgentRun\":{\"success\":false,\"message\":\"ProjectError: Project 'project_6185807f-bad3-4cd6-b2cf-6b3f5ea1d59f' was not found.\",\"runId\":null}}",
+    "team": "{\"createAgentTeamRun\":{\"success\":false,\"message\":\"ProjectError: Project 'project_6185807f-bad3-4cd6-b2cf-6b3f5ea1d59f' was not found.\",\"teamRunId\":null}}"
+  },
+  "prh03": {
+    "teamRunId": "prh_delivery_team_c5f898_38b99a448d214a4cb0144e3920d46cf6",
+    "members": {
+      "/manager": "prh_manager_c5f898_875f99b4caf54688907e7392d6f66249",
+      "/mate": "prh_mate_c5f898_37e66f0eb2064729b81850a1e8c9f132"
+    },
+    "plainTeamRunId": "prh_delivery_team_c5f898_1348eb4fcc204274b20cea8999ac8a3c"
+  },
+  "prh04": {
+    "rootA": "prh_manager_c5f898_7669e8da784c4cb7a8e8cbda41f988f6",
+    "copies": {
+      "aTeam": "team:prh_squad_c5f898_c0c93755fa694fb38d89878e2122dba9",
+      "aWriter": "agent:prh_writer_c5f898_2dc733995d29494fa8fe3c4c20351167",
+      "aChecker": "agent:prh_checker_c5f898_f5f96e00900c48a1b8d81ab37fce33b2",
+      "aTemp": "agent:prh_writer_c5f898_a14ced4072504e8aa3a81aab906571c0",
+      "aWriterId": "prh_writer_c5f898_2dc733995d29494fa8fe3c4c20351167"
+    },
+    "P": [
+      {
+        "rootKind": "AGENT",
+        "rootRunId": "prh_manager_c5f898_7669e8da784c4cb7a8e8cbda41f988f6",
+        "executions": [
+          {
+            "agentRunId": null,
+            "teamRunId": "prh_squad_c5f898_c0c93755fa694fb38d89878e2122dba9"
+          },
+          {
+            "agentRunId": "prh_writer_c5f898_2dc733995d29494fa8fe3c4c20351167",
+            "teamRunId": null
+          },
+          {
+            "agentRunId": "prh_writer_c5f898_a14ced4072504e8aa3a81aab906571c0",
+            "teamRunId": null
+          }
+        ]
+      },
+      {
+        "rootKind": "AGENT",
+        "rootRunId": "prh_manager_c5f898_2418551dcb4d4c17bf48a1d141fe5ae3",
+        "executions": []
+      },
+      {
+        "rootKind": "AGENT_TEAM",
+        "rootRunId": "prh_delivery_team_c5f898_38b99a448d214a4cb0144e3920d46cf6",
+        "executions": []
+      }
+    ],
+    "Q": [
+      {
+        "rootKind": "AGENT",
+        "rootRunId": "prh_manager_c5f898_7669e8da784c4cb7a8e8cbda41f988f6",
+        "executions": [
+          {
+            "agentRunId": "prh_checker_c5f898_f5f96e00900c48a1b8d81ab37fce33b2",
+            "teamRunId": null
+          }
+        ]
+      }
+    ]
+  },
+  "prh05": {
+    "rootB": "prh_manager_c5f898_8897c7fcfb9f4be1924ff83625fe73ce",
+    "P": [
+      {
+        "rootKind": "AGENT",
+        "rootRunId": "prh_manager_c5f898_8897c7fcfb9f4be1924ff83625fe73ce",
+        "executions": [
+          {
+            "agentRunId": "prh_writer_c5f898_109eba1c51b44d58ae82e46a3111faab",
+            "teamRunId": null
+          }
+        ]
+      },
+      {
+        "rootKind": "AGENT",
+        "rootRunId": "prh_manager_c5f898_7669e8da784c4cb7a8e8cbda41f988f6",
+        "executions": [
+          {
+            "agentRunId": null,
+            "teamRunId": "prh_squad_c5f898_c0c93755fa694fb38d89878e2122dba9"
+          },
+          {
+            "agentRunId": "prh_writer_c5f898_2dc733995d29494fa8fe3c4c20351167",
+            "teamRunId": null
+          },
+          {
+            "agentRunId": "prh_writer_c5f898_a14ced4072504e8aa3a81aab906571c0",
+            "teamRunId": null
+          }
+        ]
+      },
+      {
+        "rootKind": "AGENT",
+        "rootRunId": "prh_manager_c5f898_2418551dcb4d4c17bf48a1d141fe5ae3",
+        "executions": []
+      },
+      {
+        "rootKind": "AGENT_TEAM",
+        "rootRunId": "prh_delivery_team_c5f898_38b99a448d214a4cb0144e3920d46cf6",
+        "executions": []
+      }
+    ]
+  },
+  "prh06": {
+    "followUp": {
+      "delegated": true,
+      "target_kind": "agent",
+      "target_agent_run_id": "prh_writer_c5f898_2dc733995d29494fa8fe3c4c20351167",
+      "isError": false
+    },
+    "bothAt": {
+      "P": [
+        {
+          "rootKind": "AGENT",
+          "rootRunId": "prh_manager_c5f898_8897c7fcfb9f4be1924ff83625fe73ce",
+          "executions": [
+            {
+              "agentRunId": "prh_writer_c5f898_109eba1c51b44d58ae82e46a3111faab",
+              "teamRunId": null
+            }
+          ]
+        },
+        {
+          "rootKind": "AGENT",
+          "rootRunId": "prh_manager_c5f898_7669e8da784c4cb7a8e8cbda41f988f6",
+          "executions": [
+            {
+              "agentRunId": null,
+              "teamRunId": "prh_squad_c5f898_c0c93755fa694fb38d89878e2122dba9"
+            },
+            {
+              "agentRunId": "prh_writer_c5f898_2dc733995d29494fa8fe3c4c20351167",
+              "teamRunId": null
+            },
+            {
+              "agentRunId": "prh_writer_c5f898_a14ced4072504e8aa3a81aab906571c0",
+              "teamRunId": null
+            }
+          ]
+        },
+        {
+          "rootKind": "AGENT",
+          "rootRunId": "prh_manager_c5f898_2418551dcb4d4c17bf48a1d141fe5ae3",
+          "executions": []
+        },
+        {
+          "rootKind": "AGENT_TEAM",
+          "rootRunId": "prh_delivery_team_c5f898_38b99a448d214a4cb0144e3920d46cf6",
+          "executions": []
+        }
+      ],
+      "Q": [
+        {
+          "rootKind": "AGENT",
+          "rootRunId": "prh_manager_c5f898_7669e8da784c4cb7a8e8cbda41f988f6",
+          "executions": [
+            {
+              "agentRunId": "prh_checker_c5f898_f5f96e00900c48a1b8d81ab37fce33b2",
+              "teamRunId": null
+            },
+            {
+              "agentRunId": "prh_writer_c5f898_2dc733995d29494fa8fe3c4c20351167",
+              "teamRunId": null
+            }
+          ]
+        }
+      ]
+    },
+    "afterReopen": [
+      {
+        "rootKind": "AGENT",
+        "rootRunId": "prh_manager_c5f898_7669e8da784c4cb7a8e8cbda41f988f6",
+        "executions": [
+          {
+            "agentRunId": "prh_checker_c5f898_f5f96e00900c48a1b8d81ab37fce33b2",
+            "teamRunId": null
+          },
+          {
+            "agentRunId": "prh_writer_c5f898_2dc733995d29494fa8fe3c4c20351167",
+            "teamRunId": null
+          }
+        ]
+      }
+    ]
+  },
+  "prh07": {
+    "workspace": [
+      "prh_manager_c5f898_83670abf410849babb33962b78bad2bd",
+      "prh_manager_c5f898_5febcd38f8734a43ad435bd13bf56f42",
+      "prh_manager_c5f898_248d902dbaaf4a23b314c8777afde082",
+      "prh_manager_c5f898_e12472c26b08448a8b17658b3f52fe39",
+      "prh_manager_c5f898_fe769fcec3ec4c7c924fc99f5afd3483",
+      "prh_manager_c5f898_96b92c78ba204a4fa7dfc49159b1b278"
+    ],
+    "listed": [
+      "prh_manager_c5f898_248d902dbaaf4a23b314c8777afde082",
+      "prh_manager_c5f898_5febcd38f8734a43ad435bd13bf56f42",
+      "prh_manager_c5f898_7669e8da784c4cb7a8e8cbda41f988f6",
+      "prh_manager_c5f898_83670abf410849babb33962b78bad2bd",
+      "prh_manager_c5f898_8897c7fcfb9f4be1924ff83625fe73ce",
+      "prh_manager_c5f898_96b92c78ba204a4fa7dfc49159b1b278",
+      "prh_manager_c5f898_e12472c26b08448a8b17658b3f52fe39",
+      "prh_manager_c5f898_fe769fcec3ec4c7c924fc99f5afd3483"
+    ],
+    "newer": [
+      "prh_manager_c5f898_96b92c78ba204a4fa7dfc49159b1b278",
+      "prh_manager_c5f898_fe769fcec3ec4c7c924fc99f5afd3483",
+      "prh_manager_c5f898_e12472c26b08448a8b17658b3f52fe39",
+      "prh_manager_c5f898_248d902dbaaf4a23b314c8777afde082",
+      "prh_manager_c5f898_5febcd38f8734a43ad435bd13bf56f42",
+      "prh_manager_c5f898_83670abf410849babb33962b78bad2bd"
+    ]
+  },
+  "prh08": {
+    "rootB": "prh_manager_c5f898_8897c7fcfb9f4be1924ff83625fe73ce",
+    "scopes": {
+      "P": [
+        "agent:prh_writer_c5f898_109eba1c51b44d58ae82e46a3111faab"
+      ],
+      "Q": [
+        "agent:prh_writer_c5f898_481749a1500a4f3e9dcb2568bda7badd"
+      ],
+      "R": [
+        "agent:prh_writer_c5f898_a66dbb601a284abeb4d44d0825b8dec9"
+      ]
+    }
+  },
+  "prh09": {
+    "projectId": "project_85c8dbe4-18f1-4c49-897c-69763f84e2c1",
+    "runId": "prh_manager_c5f898_73e779aa72e64c38acdcf70d2ea44281",
+    "again": "{\"success\":false,\"message\":\"ProjectError: Project 'project_85c8dbe4-18f1-4c49-897c-69763f84e2c1' was not found.\",\"runId\":null}"
+  },
+  "prh10": {
+    "orgRunId": "prh_org_c5f898_fca3c8f614c1469e8b347c67b6fcc7b9",
+    "P": [
+      "agent:prh_writer_c5f898_f2e33ff6ec7446ca990e2414abfe6244"
+    ],
+    "Q": [
+      "agent:prh_writer_c5f898_d3465ceafa8444af801dd7ee2e3d05b6"
+    ]
+  }
+}

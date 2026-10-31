@@ -58,6 +58,8 @@ export interface CreateTeamRunInput {
   applicationBinding?: { applicationId: string; bindingId: string } | null;
   /** A Team run a peer node starts (autobyteus-247): the back-link to its delegator there, kept on the tree. */
   delegatedFrom?: DelegatedFrom;
+  /** The Project the Team run is started under (REQ-004); refused with `PROJECT_NOT_FOUND` when it does not exist. */
+  projectId?: string | null;
 }
 
 export interface CreateTeamRunFromRootConfigInput {
@@ -113,6 +115,7 @@ export class TeamRunService {
     this.tokenUsageReadiness.assertCurrentSchemaReady();
     const admission = await this.admission.requireAvailable("agent_team", required(input.teamDefinitionId, "teamDefinitionId"));
     if (!("nodes" in admission.definition)) throw new Error(`Admitted definition '${input.teamDefinitionId}' is not an AgentTeam.`);
+    const projectId = input.projectId?.trim() || undefined;
     const workspaces = new Map<string, Promise<string>>();
     const activateWorkspace = async (requestedPath: string | null | undefined): Promise<string | null> => {
       const requested = requestedPath?.trim() || null;
@@ -152,7 +155,7 @@ export class TeamRunService {
       applicationBinding: input.applicationBinding ?? null,
     });
     const root = await this.manager.createTeamRun({ config: plan.config, teamDefinitionName: plan.teamDefinitionName,
-      ...(input.delegatedFrom ? { delegatedFrom: input.delegatedFrom } : {}) });
+      ...(input.delegatedFrom ? { delegatedFrom: input.delegatedFrom } : {}), ...(projectId ? { projectId } : {}) });
     try {
       await this.catalog.recordTeamRunCreated({ tree: root.getExecutionTreeSnapshot(), summary: "" });
       return root;

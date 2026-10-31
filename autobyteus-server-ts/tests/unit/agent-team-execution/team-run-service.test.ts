@@ -227,6 +227,16 @@ describe("TeamRunService current root lifecycle", () => {
     unsubscribe?.();
   });
 
+  it("passes the chosen Project to the manager, which records the start (DS-002)", async () => {
+    const { service, mocks } = createSubject();
+    const input = { teamDefinitionId: "team-def-1", teamConfigs: [teamLaunchConfig(RuntimeKind.CODEX_APP_SERVER)],
+      memberConfigs: [launchConfig("/Coordinator", RuntimeKind.CODEX_APP_SERVER), launchConfig("/Reviewer", RuntimeKind.CLAUDE_AGENT_SDK)] };
+    await service.createTeamRun({ ...input, projectId: " project_a1 " });
+    expect(mocks.agentTeamRunManager.createTeamRun.mock.calls[0][0].projectId).toBe("project_a1");
+    await service.createTeamRun(input);
+    expect(mocks.agentTeamRunManager.createTeamRun.mock.calls[1][0]).not.toHaveProperty("projectId");
+  });
+
   it("builds one canonical mixed root config and records its execution tree", async () => {
     const { service, mocks } = createSubject();
 

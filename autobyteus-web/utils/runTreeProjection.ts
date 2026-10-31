@@ -360,6 +360,28 @@ const compareOrgRuns = (left: AgentOrgRunHistoryItem, right: AgentOrgRunHistoryI
   return byCreated || left.rootRunId.localeCompare(right.rootRunId);
 };
 
+/** One section's Org runs grouped by Org definition (by name), each group's runs newest first. */
+export const buildAgentOrgDefinitionGroups = (items: readonly AgentOrgRunHistoryItem[]): AgentOrgHistoryDefinitionGroup[] => {
+  const groups: AgentOrgHistoryDefinitionGroup[] = [];
+  for (const item of items) {
+    const rootOrg = item.executionTree.rootOrg;
+    let group = groups.find((entry) => entry.definitionId === rootOrg.orgDefinitionId);
+    if (!group) {
+      group = {
+        stableKey: `agent_org_definition:${rootOrg.orgDefinitionId}`,
+        definitionId: rootOrg.orgDefinitionId,
+        name: rootOrg.orgDefinitionName,
+        runs: [],
+      };
+      groups.push(group);
+    }
+    group.runs.push(item);
+  }
+  groups.sort((left, right) => left.name.localeCompare(right.name) || left.definitionId.localeCompare(right.definitionId));
+  for (const group of groups) group.runs.sort(compareOrgRuns);
+  return groups;
+};
+
 /**
  * Adds strictly decoded AgentOrg roots to the established Agent/Team workspace
  * nodes without interpreting the collaboration-history Team branch.
@@ -374,6 +396,7 @@ export const projectWorkspaceHistoryByWorkspace = (
     agentOrgDefinitions: [],
   }));
   const nodeByRoot = new Map(nodes.map((node) => [normalizeRootPath(node.workspaceRootPath), node]));
+  const itemsByRoot = new Map<string, AgentOrgRunHistoryItem[]>();
 
   for (const item of agentOrgHistory) {
     const root = historyRoot(item);
@@ -393,24 +416,11 @@ export const projectWorkspaceHistoryByWorkspace = (
       nodeByRoot.set(root, node);
     }
 
-    const rootOrg = item.executionTree.rootOrg;
-    let group = node.agentOrgDefinitions.find((entry) => entry.definitionId === rootOrg.orgDefinitionId);
-    if (!group) {
-      group = {
-        stableKey: `agent_org_definition:${rootOrg.orgDefinitionId}`,
-        definitionId: rootOrg.orgDefinitionId,
-        name: rootOrg.orgDefinitionName,
-        runs: [],
-      };
-    node.agentOrgDefinitions!.push(group);
-    }
-    group.runs.push(item);
+    itemsByRoot.set(root, [...itemsByRoot.get(root) ?? [], item]);
   }
 
   for (const node of nodes) {
-    node.agentOrgDefinitions!.sort((left, right) =>
-      left.name.localeCompare(right.name) || left.definitionId.localeCompare(right.definitionId));
-    for (const group of node.agentOrgDefinitions!) group.runs.sort(compareOrgRuns);
+    node.agentOrgDefinitions = buildAgentOrgDefinitionGroups(itemsByRoot.get(normalizeRootPath(node.workspaceRootPath)) ?? []);
   }
 
   const establishedCount = establishedNodes.length;

@@ -50,9 +50,11 @@ export class TeamRunHistoryService {
     this.layout = new AgentMemoryLayout(memoryDir);
   }
 
-  async listTeamRunHistory(): Promise<TeamRunHistoryItem[]> {
+  /** The Team runs the user browses, newest first; `include` selects rows before their trees are read (a Project's runs). */
+  async listTeamRunHistory(include: (row: TeamRunIndexRow) => boolean = () => true): Promise<TeamRunHistoryItem[]> {
     const items: TeamRunHistoryItem[] = [];
     for (const row of await this.catalog.listCatalogRows()) {
+      if (!include(row)) continue;
       const projection = this.live.getCatalogListLiveProjection(row.teamRunId);
       if (row.archivedAt && !projection.isActive) continue;
       const tree = await this.readTree(row.teamRunId);

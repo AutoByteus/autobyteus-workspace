@@ -1,3 +1,4 @@
+import { recordRunProjectStart } from "../../agent-execution/domain/run-project-context.js";
 import { isDeepStrictEqual } from "node:util";
 import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
 import { TeamRunExecutionTreeStore } from "../../run-history/store/team-run-execution-tree-store.js";
@@ -128,11 +129,14 @@ export class AgentTeamRunManager {
     teamDefinitionName: string;
     /** A Team run a peer node starts (autobyteus-247): its back-link, kept on the tree. */
     delegatedFrom?: DelegatedFrom;
+    /** The Project the Team run is started under: recorded by the Project before the tree is written (DS-002). */
+    projectId?: string;
   }): Promise<RootTeamRun> {
     this.assertRootAdmissionOpen();
     const rootTeamRunId = required(input.config.rootTeam.teamRunId, "rootTeamRunId");
     return this.withRootTransition(rootTeamRunId, async () => {
       if (this.hasManagedTeamRun(rootTeamRunId)) throw new Error(`RootTeamRun '${rootTeamRunId}' is already managed.`);
+      if (input.projectId) await recordRunProjectStart(input.projectId, { kind: "agent_team", runId: rootTeamRunId });
       const initial = buildInitialTeamRunExecutionTree({
         config: input.config,
         teamDefinitionName: required(input.teamDefinitionName, "teamDefinitionName"),

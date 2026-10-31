@@ -1,6 +1,28 @@
 import type { TranslationCatalog } from '../../runtime/types';
 
 const projectMessages = {
+  // projects-left-navigation: the left panel's Projects mode, the New chat Project choice.
+  'projectsTree.switchLabel': '运行列表分组方式',
+  'projectsTree.newProject': '新建项目',
+  'projectsTree.expandProject': '展开 {{name}}',
+  'projectsTree.collapseProject': '收起 {{name}}',
+  'projectsTree.selectProject': '在项目看板中显示 {{name}}',
+  'projectsTree.runUnderProject': '在 {{name}} 下运行智能体或团队',
+  'projectsTree.newTeamRun': '用此团队新建运行',
+  'projectsTree.noRuns': '还没有运行。点击 + 为此项目运行智能体或团队。',
+  'projectsTree.loading': '正在加载项目…',
+  'projectsTree.error': '无法加载项目。',
+  'projectsTree.staleError': '无法刷新项目。',
+  'projectsTree.retry': '重试',
+  'projectsTree.emptyTitle': '还没有项目',
+  'projectsTree.emptyHelp': '创建项目后，可在此为它运行智能体和团队，并跟进它们的工作。',
+  'projectsTree.noProject': '无项目',
+  'projectsTree.menuAria': '项目',
+  'projectsTree.chipTitle': '此运行将在项目 {{name}} 下启动。',
+  'projectsTree.chipAria': '项目：{{name}}',
+  'projectsTree.folderProject': '项目文件夹',
+  'projectsTree.targetSearch': '搜索智能体和团队',
+
   'projects.ui.fileCountOne': '1 个文件',
   'projects.ui.fileCount': '{{count}} 个文件',
   'projects.ui.newProject': '新建项目',

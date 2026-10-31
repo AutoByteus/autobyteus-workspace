@@ -1,0 +1,15 @@
+# API-04 browser probe: pnpm -C autobyteus-web test:e2e:projects-left-navigation --output-dir <evidence>/API-04-browser-probe
+# Run as: env -i PATH HOME TMPDIR USER LOGNAME (no provider keys reach the backend; the probe also strips *_API_KEY)
+# Code: 467cff24c0 + the new probe (uncommitted at run time); server dist built from this tree (pnpm -C autobyteus-server-ts build, 13:20 local time); Chrome headless 156.0.8078.74; Date: 2026-10-31T13:06:17.140Z
+
+PLN-01: Pass
+PLN-02: Pass
+PLN-03: Pass
+PLN-04: Pass
+PLN-05: Pass
+PLN-06: Pass
+PLN-07: Pass
+PLN-08: Pass
+PLN-09: Fail — Projects mode still shows Stop on a run the user stopped there, while Workspaces mode shows it stopped (until the next re-read)
+PLN-10: Pass
+Projects left navigation probe: Fail. Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/projects-left-navigation/tickets/in-progress/projects-left-navigation/evidence/api-e2e/API-04-browser-probe/evidence.json

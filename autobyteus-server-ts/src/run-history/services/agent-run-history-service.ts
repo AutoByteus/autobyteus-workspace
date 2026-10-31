@@ -132,6 +132,39 @@ export class AgentRunHistoryService {
     return workspaceGroups;
   }
 
+  /**
+   * The runs one selection lists (a Project's runs, REQ-003), grouped by agent definition like a workspace's: archived
+   * and hidden-definition runs are left out; each group keeps its `limitPerAgent` newest runs plus every pinned run
+   * (a run hosting open work, REQ-010), newest first.
+   */
+  async listAgentGroupsOf(
+    select: Readonly<{ includes(row: RunHistoryIndexRow): boolean; pinned(row: RunHistoryIndexRow): boolean }>,
+    limitPerAgent = 6,
+  ): Promise<RunHistoryAgentGroup[]> {
+    const [rows, hidden] = await Promise.all([this.catalogService.listCatalogRows(), this.visibility.hiddenDefinitionIds()]);
+    const groups = new Map<string, { agentDefinitionId: string; agentName: string; rows: RunHistoryIndexRow[] }>();
+    for (const row of rows) {
+      if (row.archivedAt || hidden.has(row.agentDefinitionId) || !select.includes(row)) continue;
+      const group = groups.get(row.agentDefinitionId)
+        ?? { agentDefinitionId: row.agentDefinitionId, agentName: row.agentName, rows: [] };
+      group.rows.push(row);
+      groups.set(row.agentDefinitionId, group);
+    }
+    const limit = Math.max(limitPerAgent, 1);
+    const agents: RunHistoryAgentGroup[] = [];
+    for (const group of groups.values()) {
+      const listed = group.rows
+        .sort((a, b) => b.createdAt.localeCompare(a.createdAt))
+        .filter((row, index) => index < limit || select.pinned(row));
+      agents.push({
+        agentDefinitionId: group.agentDefinitionId,
+        agentName: group.agentName,
+        runs: await Promise.all(listed.map((row) => this.toHistoryItem(row))),
+      });
+    }
+    return agents.sort((a, b) => a.agentName.localeCompare(b.agentName));
+  }
+
   private async toHistoryItem(row: RunHistoryIndexRow): Promise<RunHistoryItem> {
     const projection = await Promise.resolve(
       this.statusProjectionService.getCatalogListStatusProjection(row.runId),

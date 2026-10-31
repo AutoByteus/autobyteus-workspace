@@ -14,7 +14,7 @@
     @leave-cancelled="onRowLeaveSettled"
   >
     <WorkspaceTransientExecutionRow
-      v-for="display in rows"
+      v-for="display in visibleRows"
       :key="display.row.rowKey"
       :row="display.row"
       :team-status="display.teamStatus ?? undefined"
@@ -41,6 +41,7 @@ import { useTaskWorkerTasks } from '~/composables/projects/useTaskWorkerTasks'
 import type { RunHistoryTransientExecutionRow } from '~/stores/runHistoryTypes'
 import { useAgentRunCollaborationStore } from '~/stores/agentRunCollaborationStore'
 import type { TaskWorkerTask } from '~/types/project'
+import { branchConnectors, scopeTaskRows, transientRowCopyKey, type RootExecutionScope } from '~/utils/collaboration/taskExecutionScope'
 
 const props = defineProps<{
   runId: string
@@ -49,6 +50,8 @@ const props = defineProps<{
   runSelected: boolean
   /** The run has a stored collaboration package. */
   hasCollaboration: boolean
+  /** Projects mode: only the run's copies working for the Project are listed (REQ-008); absent in Workspaces. */
+  executionScope?: RootExecutionScope | null
 }>()
 /**
  * `select-run` opens the run with its last selected child; `open-run` opens the run's own conversation, as
@@ -66,18 +69,29 @@ onMounted(loadStored)
 watch(() => props.hasCollaboration, loadStored)
 
 const rows = computed(() => collaboration.taskRows(props.runId))
+const scoped = computed(() => scopeTaskRows(rows.value, props.executionScope?.copies ?? null,
+  { depth: (display) => display.row.depth, copyKey: (display) => transientRowCopyKey(display.row) }))
+// In a Project, the connectors are those of the rows that remain.
+const visibleRows = computed(() => {
+  if (!props.executionScope) return rows.value
+  const connectors = branchConnectors(scoped.value.kept, (display) => display.row.depth)
+  return scoped.value.kept.map((display, index) => ({ ...display, ...connectors[index]! }))
+})
+watch(() => scoped.value.droppedKeys.join('\n'), () => {
+  if (scoped.value.droppedKeys.length) props.executionScope?.noteUnscoped(scoped.value.droppedKeys)
+}, { immediate: true })
 // Task workers show their current Task's summary; it locates the Task in Projects.
-const { taskOf, locate } = useTaskWorkerTasks(() => rows.value.map((display) => display.row))
+const { taskOf, locate } = useTaskWorkerTasks(() => visibleRows.value.map((display) => display.row))
 // The run row directly precedes this tree.
 const { leaving, onBeforeLeave, onLeaveSettled } = useLeavingTreeRows(
   (tree) => tree.previousElementSibling instanceof HTMLElement ? tree.previousElementSibling : null)
 // The tree stays mounted while its last rows leave (their leave hooks need the group); once they
 // have settled, the empty list is not rendered.
 const rendered = ref(false)
-watch(() => rows.value.length > 0, (hasRows) => { if (hasRows) rendered.value = true }, { immediate: true })
+watch(() => visibleRows.value.length > 0, (hasRows) => { if (hasRows) rendered.value = true }, { immediate: true })
 const onRowLeaveSettled = (): void => {
   onLeaveSettled()
-  if (leaving.value === 0 && rows.value.length === 0) rendered.value = false
+  if (leaving.value === 0 && visibleRows.value.length === 0) rendered.value = false
 }
 const isExpanded = (row: RunHistoryTransientExecutionRow): boolean =>
   Boolean(row.teamRunIdForNode && collaboration.isTaskTeamExpanded(props.runId, row.teamRunIdForNode))

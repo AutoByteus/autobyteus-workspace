@@ -81,6 +81,7 @@ export const materializeTeamRoot = async (
       runtimeContext: null,
     }),
     memberExecutionContextBuilder: input.memberExecutionContextBuilder,
+    projectRunRoot: { kind: "agent_team", runId: input.tree.rootTeam.teamRunId },
     taskCapability,
     publish: (event) => publisher.publish(event),
     deliverInterAgentMessage: (intent) => root

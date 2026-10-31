@@ -123,6 +123,7 @@ const buildDraft = (overrides: Partial<ChatDraft> = {}): ChatDraft => {
     context,
     target: { kind: 'agent', agentDefinitionId: 'autobyteus-daily-assistant' },
     workspace: { kind: 'folder', rootPath: '/Users/me/project' },
+    projectChoice: { projectId: null, folderPicked: false },
     autoExecuteTools: false,
     teamAgentOverrides: {},
     starting: false,

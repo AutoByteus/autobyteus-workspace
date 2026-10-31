@@ -1,3 +1,4 @@
+import type { RunProjectRoot } from "../../agent-execution/domain/run-project-context.js";
 import type { CollaborationAgentPlatformBindingChange } from "../../agent-collaboration/execution/domain/collaboration-agent-platform-binding.js";
 import { CollaborationAgentActivationError } from "../../agent-collaboration/execution/domain/configured-agent-execution.js";
 import type { FlatTeamExecutionCallbacks } from "../local/flat-team-execution-callbacks.js";
@@ -23,7 +24,10 @@ export const createTeamFlatExecutionCallbacks = (input: {
   /** The root's `list_available_agents`; absent in application-owned runs. */
   listAvailableAgents?: MemberExecutionContextBuildInput["listAvailableAgents"];
   commitPlatformBindingChange(change: CollaborationAgentPlatformBindingChange): Promise<void>;
+  /** The root Team run: its members are told the Project it was started under, if any. */
+  projectRunRoot?: RunProjectRoot | null;
 }): FlatTeamExecutionCallbacks => Object.freeze({
+  projectRunRoot: () => input.projectRunRoot ?? null,
   assertExecutionInputAllowed: input.assertExecutionInputAllowed,
   buildMemberExecutionContext: ({ identity, sourceNode, hostTeam }) => input.memberExecutionContextBuilder.build({
     teamContext: input.teamContext,

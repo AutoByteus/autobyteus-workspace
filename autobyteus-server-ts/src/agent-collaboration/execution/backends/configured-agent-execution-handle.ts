@@ -1,3 +1,4 @@
+import { readRunProjectContext, type RunProjectRoot } from "../../../agent-execution/domain/run-project-context.js";
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import type { ApplicationExecutionContext } from "../../../application-orchestration/domain/models.js";
 import type { AgentOperationResult } from "../../../agent-execution/domain/agent-operation-result.js";
@@ -82,6 +83,8 @@ export class ConfiguredAgentExecutionHandle implements RetainedAgentExecutionCon
     activationMode: ConfiguredAgentActivationMode;
     memberExecutionContext: MemberExecutionContext;
     applicationExecutionContext?: ApplicationExecutionContext | null;
+    /** The root Team run whose Project its members are told (DS-005); absent for task agents and Org members. */
+    projectRunRoot?: RunProjectRoot | null;
     callbacks: RootAgentExecutionCallbacks;
     agentRunManager?: AgentRunManager;
     memoryLocator?: AgentRunMemoryLocator;
@@ -443,6 +446,7 @@ export class ConfiguredAgentExecutionHandle implements RetainedAgentExecutionCon
       runtimeKind: execution.runtimeKind,
       memberExecutionContext: this.options.memberExecutionContext,
       applicationExecutionContext: this.options.applicationExecutionContext ?? null,
+      project: this.options.projectRunRoot ? await readRunProjectContext(this.options.projectRunRoot) : null,
     });
   }
 

@@ -1,3 +1,4 @@
+import type { RootExecutionScope } from '~/utils/collaboration/taskExecutionScope';
 import type {
   AgentOrgHistoryDefinitionGroup,
   AgentOrgRunHistoryItem,
@@ -110,6 +111,19 @@ export interface WorkspaceHistorySectionActions {
   onArchiveAgentOrg?: (run: AgentOrgRunHistoryItem) => Promise<void> | void;
   onDeleteAgentOrg?: (run: AgentOrgRunHistoryItem) => void;
   onArchiveAgentGroup?: (workspaceNode: WorkspaceHistoryWorkspaceNode, agentNode: WorkspaceHistoryWorkspaceNode['agents'][number]) => void;
+  /** Projects mode: "Archive all runs" of an agent group archives only the runs listed under the Project (REQ-014). */
+  onArchiveListedAgentGroup?: (workspaceNode: WorkspaceHistoryWorkspaceNode, agentNode: WorkspaceHistoryWorkspaceNode['agents'][number]) => void;
   onArchiveTeamGroup?: (workspacePresentationId: string, group: WorkspaceHistoryTeamDefinitionDisplayGroup) => void;
   onArchiveAgentOrgGroup?: (workspacePresentationId: string, group: AgentOrgHistoryDefinitionGroup) => void;
+  /** Projects mode: "+" on a Project (`target` null: chosen on the start surface) or on one of its groups (REQ-004). */
+  onCreateProjectRun?: (projectId: string, target: ProjectRunTarget | null) => Promise<void> | void;
+}
+
+/** What "+" under a Project starts: an Agent or an Agent Team definition (DEC-006). */
+export type ProjectRunTarget = Readonly<{ kind: 'agent' | 'team'; definitionId: string }>;
+
+/** A Project's section scope (Projects mode): the Project, and each listed root's delegated copies shown under it. */
+export interface ProjectSectionScope {
+  projectId: string;
+  executionScopeOf: (rootKind: 'AGENT' | 'AGENT_TEAM' | 'AGENT_ORG', rootRunId: string) => RootExecutionScope;
 }
