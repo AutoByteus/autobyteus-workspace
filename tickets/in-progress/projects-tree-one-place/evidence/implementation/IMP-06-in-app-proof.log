@@ -1,0 +1,9 @@
+# IMP-06 in-app proof of AC-001 (the user's case) and AC-002 on an owned stack (built server, Nuxt dev, headless Chrome, scripted AGY runtime with real delegate_task)
+# Command: env -i PATH HOME TMPDIR USER LOGNAME node tickets/in-progress/projects-tree-one-place/evidence/implementation/one-place-proof.mjs --output-dir tickets/in-progress/projects-tree-one-place/evidence/implementation/IMP-06-proof
+# Commit: working tree on 724bc349ff (IR-001 changes, committed right after); server dist built from this working tree; macOS, Node v22.23.1
+# Date: 2026-10-31T21:01Z
+
+AC-001: Pass
+AC-002: Pass
+projects-tree-one-place proof: Pass. Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/projects-tree-one-place/tickets/in-progress/projects-tree-one-place/evidence/implementation/IMP-06-proof/evidence.json
+exit=0
