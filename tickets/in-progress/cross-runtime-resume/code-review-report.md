@@ -2,7 +2,7 @@
 
 ## Review Round Meta
 
-- Review Entry Point: `Implementation Review` (round 1, CRR-001) and `API/E2E Failure-Origin Review` (round 2, CRR-002; the latest authoritative result)
+- Review Entry Point: `Implementation Review` (round 1, CRR-001), `API/E2E Failure-Origin Review` (round 2, CRR-002) and `Implementation Review` of the rework IR-002 (round 3, CRR-003; the latest authoritative result)
 - Requirements Doc Reviewed As Context: `requirements-doc.md` (SR-004, approved)
 - Investigation Notes Reviewed As Context: `investigation-notes.md`
 - Solution Revision Record Reviewed As Context: `solution-revision-record.md`
@@ -11,17 +11,18 @@
 - Relevant Solution Revision IDs: SR-004
 - Design Review Report Reviewed As Context: `design-review-report.md` (ARCH-REV-001 Fail → ARCH-REV-002 Pass; ARCH-F-001…006)
 - Architecture Review Revision Record Reviewed As Context: `architecture-review-revision-record.md`
-- Relevant Architecture Review Revision IDs: ARCH-REV-001, ARCH-REV-002
+- Relevant Architecture Review Revision IDs: ARCH-REV-001, ARCH-REV-002, ARCH-REV-003, ARCH-REV-004 (Pass, incl. ARCH-F-007, ARCH-F-008 and the switchId addendum)
 - Implementation Handoff Reviewed As Context: `implementation-handoff.md`
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
-- Relevant Implementation Revision IDs: IR-001
+- Relevant Implementation Revision IDs: IR-001, IR-002
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-002` (round 1 baseline: `CRR-001`)
-- Current Review Round: 2
-- Review Scope: round 1 `Full Review`; round 2 `N/A` (failure-origin round)
+- Current Code Review Revision ID: `CRR-003` (history: `CRR-001` round 1, `CRR-002` round 2)
+- Current Review Round: 3
+- Review Scope: round 1 `Full Review`; round 2 `N/A` (failure-origin round); round 3 `Full Re-Audit`
 - Trigger: implementation handoff IR-001 (Large / High)
-- Prior Review Round Reviewed: round 1 (CRR-001, Pass)
-- Latest Authoritative Round: 2
+- Prior Review Round Reviewed: round 2 (CRR-002, Fail: F-1, F-2 Design Impact; F-3 Local Fix)
+- Review Scope Evidence (round 3): the rework changes the activation order (the data-flow spine of DS-002), the memory port, the shape of `pendingRuntimeSwitch`, the library store and two readers (chat, hand-over), and spreads beyond the three findings' files
+- Latest Authoritative Round: 3
 - Coverage Investigation Reviewed (failure-origin): `api-e2e-coverage-investigation.md`
 - Execution Coverage Report Reviewed (failure-origin): `api-e2e-execution-coverage-report.md`
 - API/E2E Revision Record Reviewed (failure-origin): `api-e2e-revision-record.md`
@@ -38,7 +39,7 @@
 - Independent source review required by the classification: `Yes`
 - Classification evidence or correction required: Confirmed. 86 files, 2,164 insertions: persisted-state field, activation sequence, raw-trace rotation, notice slot, journal runtime per file, GraphQL clean cut, web.
 
-## API/E2E Failure-Origin Review (round 2, CRR-002)
+## API/E2E Failure-Origin Review (round 2, CRR-002; resolved in round 3, see below)
 
 Scope: classify the origin of the API-02 / RS-01 failure and one API/E2E observation; no repeat of the round-1 audit. Method: `Read` the cited source; the failures themselves were `Measured` by API/E2E on the built server at `60c3ac4ec8` (production code unchanged since `3521ae05f1`). I did not rerun the E2E; the evidence files hold the observed records. Passing API/E2E results (RS-02 settings, RS-03 host with a copy, never-switched journal identity 15/15, codegen, API-08 live run) are taken as reported.
 
@@ -60,6 +61,38 @@ The candidates rejected in round 1 (C-1…C-6) are unchanged.
 
 Round-1 `Pass` (CRR-001) is superseded by this result.
 
+## Implementation Re-Review of the rework IR-002 (round 3, CRR-003)
+
+Basis: `design-spec.md` "Activation Sequence" and the contract §3.3, §3.6, §3.7 (ARCH-REV-004 Pass). Diff `24b836fd3b..1bc6f85506` read in full for source (lifecycle, port, recorder, writer, library store and JSONL readers, notice service and reader, chat reader and projection provider, selection context, switchId in the metadata, commit, catalog and updater, composition); docs diff; tests by case list; evidence IMP-01…IMP-06 read. I did not rerun the checks recorded in IMP-01…IMP-06 (code unchanged since `1bc6f85506`; later commits are evidence and documents).
+
+### Prior findings
+
+| Finding | Round-2 status | Round-3 status | How verified |
+| --- | --- | --- | --- |
+| F-1 (a native candidate's record lands in the previous agent's segment) | Open, Design Impact | **Resolved** | `activateSwitched` takes a ticket (`begin`: watermark = last record id, writes nothing) before `prepare`, then `record` archives *through the watermark* only, so a record the candidate wrote while preparing stays after the marker (library rule 3: marker, then the records after the watermark). Built-server RS-01 (native → Antigravity → native) is green with the "candidate writes nothing before the marker" assertion (IMP-04); the live Claude → Codex → scripted Antigravity run keeps exact segments (12 and 7 records, IMP-05). A failed attempt: `discardFailedSwitchAttempt` aborts the candidate and only then removes what it wrote after the watermark; `candidate.abort()` can only return `aborted` or `quarantined` (pending is mapped to quarantined and throws, so no discard); for a failed `prepare` the operation's own `inspect() === "released"` decides (the operation releases itself in its catch). Tests with real files: `runtime-switch-failed-attempts.test.ts` (native start that throws after its instruction was written, retry, abandon, a failed attempt on a run that already switched once) |
+| F-2 (reopened chat lacks the earlier conversation) | Open, Design Impact | **Resolved** | `MemoryFileStore.readChatRawTraces` returns the `runtime_switch` segments in index order, then the active file; `buildProjection` and `buildActiveTracePage` both use `getChatRawTraceSnapshot`; compaction segments stay unread (BEH-A4 kept); a never-switched run reads the active file only. Built-server RS-01 reload chat assertion green; unit `runtime-switch-chat-history.test.ts` (native → other → native) and the projection provider test |
+| F-3 (pending model validated as a replacement) | Open, Local Fix | **Resolved** | `selectionContextFor` gives no current model while `pendingRuntimeSwitch` is present; updater test; built-server RS-02 |
+
+### Handoff questions
+
+1. `readPendingRuntimeHandover(memoryDir)` in `agent-memory/services/runtime-handover-reader.ts` instead of `hasPendingRuntimeHandover(runId)` on `MemoryFileStore`/`AgentMemoryService`: **confirmed**. Same owner (agent-memory), same behavior (read-only, stops at the first `user` record or at the first record of a run that never switched, returns the marker). The notice service takes it as an injected function and imports only its type; the composition wires it; no dependency in the wrong direction. The `memoryDir` addressing is the notice service's real input (`run.config.memoryDir`).
+2. `discardFailedSwitchAttempt` and the abort/discard order: **confirmed** as described under F-1. `candidateIdentityError` replacing the aborting validation for this path only is right (the identity failure now goes through the same abort-then-discard route); `validateCandidateOrAbort` is kept for the restore path that still uses it. The fixture change (a failed preparation reads as `released`) matches the real operation (`agent-run-activation-operation.ts` catch → `releasePrivate`).
+3. `rotateActiveRawTracesForRuntimeSwitch` rules: **confirmed**. Segment exists → the watermark is ignored, archived ids are removed from the active file, the marker is ensured first (interrupted rewrite and failed commit retries); marker present without a segment (previous era was empty) → ensure first; else archive through the watermark (none when the watermark is null) and write marker + the records after it; an unknown watermark throws (it cannot occur after a rule-1 case, because a segment is published before the active file is rewritten). `removeActiveRawTracesAfter` is guarded by this switch's own key and removes nothing when a non-null watermark is not in the file.
+
+### Candidate Finding And Mechanism Gate (round 3)
+
+| Candidate | Observation | Scenario / Contract | Evidence | Disposition | Reason |
+| --- | --- | --- | --- | --- | --- |
+| C-8 | Discard failing or skipped (quarantined cleanup) leaves the failed candidate's record after the watermark; the next attempt's watermark then includes it, so it would be archived with the previous agent | Failed activation whose cleanup is quarantined, then restart | Design "Guards and bounds"; `discardFailedSwitchAttempt` | Reject | Requires a cleanup failure plus restart; the design states the quarantine rule and a process crash is not a supported scenario |
+| C-9 | `removeActiveRawTracesAfter(null, …)` removes the whole active file; a null watermark also results if the last complete record had no id | Failed attempt on a run whose last record has no string id | `traceId(record)` is null only for a record without an id; every raw-trace record the writers produce has one | Reject | No supported data has such a record; optional hardening: let `begin` throw when the file is non-empty and the last record has no id |
+| C-10 | Hand-over derivation depends on the order: the `user` record is written after the notice is taken | Every first input after a switch | Built-server RS-01/RS-02 and the live run assert the notice before the user's text and once; a restart carries the notice again only when a forwarded input had no `user` record yet (documented) | Reject | Evidenced by the E2E; the documented restart case is the design's choice |
+| C-11 | The chat now reads every `runtime_switch` segment on each projection and page request | Reload of a switched run | Segments are the previous eras (bounded by the run's size), read only for switched runs | Reject | No consequence shown; design-chosen |
+| C-12 | RS-01's title and comment (API/E2E's file) still carry the first design's premise | | Handoff | Reject (not source) | For API/E2E to correct |
+
+### Structural re-audit (round 3)
+
+All structural checks of round 1 re-run on the delta: Pass. Notes: the port moved to `runtime-switch-memory-port.ts` (one interface of three methods, owned by agent-execution; the notice port and `register` are gone, so the lifecycle no longer knows the notice); `RuntimeSwitch.markerTraceId` is derived in one function; library methods sit on the store that owns the file and share `archiveAndRewriteActive`'s write path; the JSONL readers are bounded and read-only and never cut a damaged end; the notice service holds only a per-publication cache. Dead code: the old `getRuntimeSwitchState`, `register`, the notice port and `requestedAt` are removed (grep finds no use). Effective non-empty lines (comments and blanks excluded), base → head: lifecycle service 333 → 396, `run-memory-file-store.ts` 356 → 420, `jsonl-log-file.ts` 116 → 179, `memory-file-store.ts` 169 → 177, `external-runtime-memory-writer.ts` 118 → 145; all under 500, deltas under 220. Legacy: `requestedAt` was never released (the first implementation was never merged), so the clean cut to `switchId` needs no migration.
+
 ## Review Scope
 
 - Changed implementation and behavior reviewed: pending-switch metadata and its parse; `buildRuntimeSwitchMetadata` / `commitAgentRunRuntimeSwitch`; catalog `commitRunRuntimeSwitch` and `recordRunStarted({clearPendingRuntimeSwitch})`; `StandaloneStoppedRunSelectionUpdater`, selection context, eligibility; `StandaloneAgentRunLifecycleService.activateSwitched` and the generalized retry rule in `persistAndPublish`; ports and `RuntimeSwitch` in `agent-execution/domain`; `RuntimeSwitchRecorder` and writer additions; library `runtime_switch` boundary type; `RuntimeHandoverNoticeService`/builder and their composition; Work Journal per-file runtime (service, store, models) and `memory-run-discovery`; GraphQL rename and `runtimeKind`; delegated-save host selection; web store, drafts, client, settings component, editor, marker label, localization; docs; the test files by name and coverage; the live runtime-switch E2E's design and gates.
@@ -71,7 +104,7 @@ Round-1 `Pass` (CRR-001) is superseded by this result.
 - Approved requirements basis understood: a stopped standalone Agent run can be saved with another agent runtime and model (undoable); the first input makes the switch (fresh session, marker + archive of the previous agent's records, hand-over notice before the user's text, once); the journal renders each file with its own runtime; chat shows the marker; teams, Org members, delegated copies and agent-started switches are out of scope.
 - Design-spec behavior map verified against the implementation: yes; DS-001, DS-002 and DS-003 are realized with the node names the design gives (the updater, `commitAgentRunRuntimeSwitch`, `activateSwitched`, `RuntimeSwitchRecorder`, `RuntimeHandoverNoticeService`, `fileRuntimeKind`).
 - Design review report and round confirmed: ARCH-REV-002 Pass; ARCH-F-002 (root/host unchanged), ARCH-F-003 (`openRawTraceRuntimeKind` as the one owner, used by `memory-run-discovery`), ARCH-F-004 (343 merged; no mapping in this code), ARCH-F-005 (rename completed: the only remaining old name is a doc-comment line in the generated file, see C-3), ARCH-F-006 present.
-- Behavior-basis status: round 1 `Confirmed`; round 2 `Contradicted` for BEH-002 (native target) and BEH-005 (reload), see the failure-origin section
+- Behavior-basis status: `Confirmed` in round 3 (round 2 had contradicted BEH-002 for a native target and BEH-005 on reload; both now hold, see round 3)
 - Changed or newly discovered behavior, if any: None.
 - Remaining material ambiguity, if any: None.
 
@@ -173,46 +206,43 @@ None new or reclassified. MP-1 from the design (registered root while a switch i
 
 ## Review Scorecard
 
-- Overall score: 8.7 / 10 (summary only; round 2 lowered categories 7 and 8; the others are as in round 1)
+- Overall score: 9.4 / 10 (summary only; round 3 full re-audit)
 
 | Priority | Category | Score | Why | Weak | Improve |
 | --- | --- | --- | --- | --- | --- |
-| 1 | Data-Flow Spine Inventory and Clarity | 9.5 | Three spines match the design; order owned in one place | — | — |
-| 2 | Ownership Clarity and Boundary Encapsulation | 9.5 | Ports owned by agent-execution; one owner for the open-file runtime | — | — |
-| 3 | API / Interface Clarity | 9.4 | Explicit `runtimeKind` in the mutation; narrow ports | — | — |
-| 4 | Separation of Concerns and File Placement | 9.3 | Clean, but two files sit exactly at 500 effective lines | catalog service, web store at the limit | Extract on the next change |
-| 5 | Shared-Structure Tightness | 9.4 | Exact-key parse; one `RuntimeSwitch` | — | — |
-| 6 | Naming and Local Readability | 9.4 | Glossary names; rename complete | stale generated comment (C-3) | Regenerate |
-| 7 | API/E2E Readiness | 7.5 | API/E2E could not pass: the native target breaks I-7 (F-1) and the reload does not show the earlier chat (F-2) | F-1, F-2 | Revised design, then API-02 green |
-| 8 | Runtime Correctness And Behavioral Fidelity | 7.0 | Measured failures of I-7 for a native target (F-1), of the reopened chat (F-2) and a wrong replacement rule in a pending edit (F-3); the Claude → Codex → Antigravity path and the settings path hold | F-1, F-2, F-3 | Design for the native first records and the reload; fix the context |
-| 9 | No Backward-Compatibility / No Legacy Retention | 9.5 | Clean cut | — | — |
-| 10 | Cleanup Completeness | 9.3 | Old commit and module removed; hand-edited generated file has one stale comment | C-3 | Regenerate |
+| 1 | Data-Flow Spine Inventory and Clarity | 9.5 | The activation sequence is the designed one (ticket, prepare, identity check, record, commit, publish) with one failure route | — | — |
+| 2 | Ownership Clarity and Boundary Encapsulation | 9.5 | One memory port; the lifecycle no longer knows the notice; the library owns the archive and discard rules | — | — |
+| 3 | API / Interface Clarity | 9.4 | `begin`/`record`/`discard` on a plain ticket; `switchId` explicit | — | — |
+| 4 | Separation of Concerns and File Placement | 9.4 | Library methods on the owning store; readers separate; sizes under 500 | — | — |
+| 5 | Shared-Structure Tightness | 9.4 | Ticket and `RuntimeSwitch` are small values; marker id derived once | — | — |
+| 6 | Naming and Local Readability | 9.4 | Names follow the design and glossary; the stale generated comment was fixed by codegen | — | — |
+| 7 | API/E2E Readiness | 9.3 | The red RS-01 is green on the built server; live three-runtime run green | Grok target, restart and browser cases not exercised | API/E2E to cover what it can |
+| 8 | Runtime Correctness And Behavioral Fidelity | 9.4 | F-1, F-2, F-3 resolved with built-server and real-file evidence; failure routes traced against the activation operation | optional C-9 hardening | — |
+| 9 | No Backward-Compatibility / No Legacy Retention | 9.5 | Clean cut to `switchId`; old port and `register` removed | — | — |
+| 10 | Cleanup Completeness | 9.4 | No dead code found; docs updated | — | — |
 
 ## Findings
 
-| Finding ID | Test Path / Scenario | Evidence | Required Action | Classification / Owner |
-| --- | --- | --- | --- | --- |
-| F-1 | API-02 / RS-01, Antigravity → native: I-7 and "the native agent's own system instruction is recorded in its file" | See the failure-origin table; segment 2 holds a native `system_instruction`; the native active file lacks its own | Decide and design how a candidate's own first records (the native system instruction is the known one) reach the new active file after the marker and never the previous agent's segment, without giving up the retry guarantees of AC-009 (a failed start changes nothing; a retry writes one marker). The design must also check every other target runtime's prepare for writes into the run folder (the Claude, Codex and Antigravity targets are clean in the live runs; Grok as a target was not exercised) | `Design Impact` — Solution Designer |
-| F-2 | API-02 / RS-01: the reopened chat keeps the earlier conversation | See the failure-origin table; `getRunProjection` of a switched run has only the latest agent's records | Decide and design how the chat of a switched run shows the earlier conversation unchanged with the marker where the runtime changed, as the Task's observable success says. The projection's compaction behavior (latest segment only, BEH-A4 of the earlier ticket) is deliberate and must stay for compaction; the design says whether the switch segments are shown on reload and how. If the user accepts a chat that starts at the latest marker, that is a requirement decision for the user through the Solution Designer | `Design Impact` — Solution Designer (a `Requirement Gap` only if the user changes the stated success) |
-| F-3 | OBS-1: second save with a switch to native pending | See the failure-origin table | `selectionContextFor` must treat the stored model as a never-started pending model: no current model for validation while `pendingRuntimeSwitch` is present (the undo and other-runtime cases already pass null). Add a test: native A → B with a switch pending is accepted without the replacement capacity rule | `Local Fix` — Implementation, to ride with the revised package |
+No open finding. Round-2 findings F-1 (Design Impact), F-2 (Design Impact) and F-3 (Local Fix) are **Resolved** in round 3 (table above).
 
 ## Follow-ups
 
-- Follow-ups this review added: FU-009 (round 1, in `follow-ups.md`). Round 2: None.
+- Follow-ups this review added: FU-009 (round 1, in `follow-ups.md`). Rounds 2 and 3: None.
 
 ## Classification
 
-- F-1: `Design Impact`. F-2: `Design Impact`. F-3: `Local Fix` (implementation-owned).
-- Task size and architectural risk (`Large` / `High`) unchanged.
+Not applicable (Pass). Task size and architectural risk (`Large` / `High`) unchanged.
 
 ## Recommended Recipient
 
-Solution Designer (`Design Impact` outranks the Local Fix; F-3 goes into the same implementation handoff after the revised design). API/E2E keeps the red RS-01 test (`runtime-switch-native-built-server.e2e.test.ts`) as the reproduction; implementation starts from it failing.
+API/E2E engineer (primary pass rule); implementation engineer informed.
 
 ## Residual Risks
 
-- Grok as a switch target and a stored pending switch across a server restart are not exercised (API/E2E).
-- The rendered Settings page and chat marker were not seen in a browser.
+- Grok as a switch target (its captured instructions are written at backend creation; the sequence covers it by design and by the real-file test, but no real Grok start was run), a stored pending switch across a server restart, and the rendered Settings page and chat marker in a browser are not exercised.
+- The built-server evidence IMP-04/05 was produced from the worktree build, not a clean clone; API/E2E rebuilds anyway.
+- Optional hardening C-9 (a non-empty active file whose last record has no id makes the watermark null).
+- RS-01's title/comment still carry the first design's premise (API/E2E's file).
 
 - The native agent runtime as source or target of a switch is not in the real run (Claude → Codex → scripted Antigravity); the design expects a prepared native candidate to write no raw-trace record before the marker (system-instruction capture is pending until the first request). API/E2E should cover a switch to and from the native runtime with a scripted model.
 - `generated/graphql.ts` was edited by hand; regenerate against the built server and commit any difference.
@@ -221,11 +251,11 @@ Solution Designer (`Design Impact` outranks the Local Fix; F-3 goes into the sam
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail`
-- Review Entry Point: `API/E2E Failure-Origin Review`
+- Review Decision: `Pass`
+- Review Entry Point: `Implementation Review` (round 3, `Full Re-Audit`, rework IR-002)
 - Supported Product Scenario Gate: `Pass`
-- Material-Premise Gate: `Fail` (the premise "preparing a candidate writes nothing to the run's raw-trace file" is contradicted for the native runtime; the premise "the local projection shows the earlier files" is contradicted)
-- Score Summary: 8.7 / 10; categories 7 and 8 lowered
-- Failure Origin: F-1 and F-2 design (a reviewed-design premise that proved wrong, which source and architecture review did not catch); F-3 implementation
-- Recommended Recipient: Solution Designer
-- Notes: Round-1 Pass (CRR-001) is superseded. API-02 stays red on purpose until F-1 and F-2 are fixed. F-3 and the three round-1 observations (undo hint, `'autobyteus'` fallback, FU-009) are not blockers beyond F-3 itself.
+- Material-Premise Gate: `Pass` (the corrected premises are now in the design: a candidate may write records while it prepares; the chat reads the switch segments)
+- Score Summary: 9.4 / 10, every category ≥ 9.3
+- Failure Origin: N/A
+- Recommended Recipient: API/E2E engineer
+- Notes: F-1, F-2, F-3 resolved. The three handoff questions are confirmed. Remaining risks are listed above; none blocks API/E2E.

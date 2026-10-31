@@ -6,6 +6,7 @@
 | --- | --- | --- | --- | --- | --- |
 | CRR-001 | `code-review-report.md` | Implementation Review, round 1, from IR-001 | N/A | Pass (superseded by CRR-002) | None (FU-009 follow-up) |
 | CRR-002 | `code-review-report.md` | API/E2E Failure-Origin Review, from API-REV-001 (API-02 / RS-01 failed) | Pass (CRR-001) | Fail | F-1, F-2 (Design Impact), F-3 (Local Fix) |
+| CRR-003 | `code-review-report.md` | Implementation Review, round 3, `Full Re-Audit`, from IR-002 | Fail (CRR-002) | Pass | F-1, F-2, F-3 resolved |
 
 ## Revision Entries
 
@@ -60,3 +61,32 @@ None.
 - Material score or classification changes: overall 9.4 → 8.7; Large / High unchanged
 - Recommended recipient: Solution Designer
 - Remaining risks or uncertainty: Grok as a switch target; a stored pending switch across a restart; rendered settings page and chat marker not seen
+
+### CRR-003 — Source re-review of the rework IR-002
+
+- Canonical review report updated: `code-review-report.md`
+- Review entry point and round: Implementation Review, round 3
+- Review scope: `Full Re-Audit` (the rework changes the activation spine, the memory port, the metadata shape, the library store and two readers)
+- Triggering role, report path, and finding or scenario IDs: implementation engineer, `implementation-handoff.md` (IR-002); CRR-002 F-1, F-2, F-3
+- Relevant solution revision IDs: SR-004 (notes 14–16)
+- Relevant architecture-review revision IDs: ARCH-REV-003, ARCH-REV-004
+- Relevant implementation revision IDs: IR-002
+- Relevant API/E2E revision IDs: API-REV-001
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: Fail (CRR-002)
+- Current authoritative result: Pass (9.4 / 10)
+- What changed in the review result and why: the activation takes a watermark ticket before the candidate prepares, archives only through it, and discards a failed attempt's records after a confirmed release; the chat reads the `runtime_switch` segments; the hand-over is derived from the raw traces; the pending model is no current model. Built-server RS-01/02/03 and the live three-runtime run pass. No new finding.
+- Supported product scenario / material-premise basis changes: the two contradicted premises are now stated in the design and covered by tests.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| F-1 | Open (Design Impact) | Resolved | IR-002, ARCH-REV-004 | Code read (`activateSwitched`, `discardFailedSwitchAttempt`, library rule 3), `runtime-switch-failed-attempts.test.ts`, IMP-04 RS-01, IMP-05 |
+| F-2 | Open (Design Impact) | Resolved | IR-002, ARCH-REV-004 | Code read (`readChatRawTraces`, provider), `runtime-switch-chat-history.test.ts`, IMP-04 RS-01 reload |
+| F-3 | Open (Local Fix) | Resolved | IR-002 | `selectionContextFor`, updater test, IMP-04 RS-02 |
+
+- New or remaining finding IDs: none
+- Material score or classification changes: overall 8.7 → 9.4; Large / High unchanged
+- Recommended recipient: API/E2E engineer; implementation engineer informed
+- Remaining risks or uncertainty: Grok target not started for real; restart with a stored pending switch; browser view; optional C-9 hardening
