@@ -144,3 +144,48 @@ None found yet. Cosmetic: the settings hint shows "changes with your next messag
 ## Investigation Decision
 
 - Proceed To API/E2E Execution: `Yes`; durable coverage added: `Yes`; reroute before execution: `No`.
+
+---
+
+# Round 2 — rework IR-002 (autobyteus-316)
+
+## Round Meta
+
+- Current API/E2E revision ID: `API-REV-002`; Round 2; Trigger: source re-review CRR-003 (`Full Re-Audit` of IR-002, Pass, no findings, 9.4/10) at `25c1acb705` (code at `1bc6f85506`)
+- Prior investigation reviewed: round 1 above (API-REV-001: F-1, F-2 `Design Impact`; OBS-1 = CRR-002 F-3 `Local Fix`)
+- Upstream read this round: `implementation-handoff.md` (IR-002), `implementation-revision-record.md`, `code-review-report.md` (CRR-002, CRR-003), `design-spec.md`, `run-runtime-switch-contract.md` (data only: §3.1–3.7, I-1…I-11), `follow-ups.md`
+- What changed since API-REV-001 (`git diff --stat 2e2af246be..HEAD`, src): the activation order is now `memory.begin` (ticket: the switch plus the watermark, the id of the last record the previous agent wrote) → prepare → validate → `memory.record(ticket)` (archive through the watermark, marker first, the candidate's own records after it) → commit → publish; a failed attempt before `record` is discarded (`discardFailedSwitchAttempt`, `removeActiveRawTracesAfter`); the chat reads the `runtime_switch` segments then the active file (`readChatRawTraces`); the pending hand-over is derived from the raw traces (`readPendingRuntimeHandover`: first record is the marker and no `user` record follows); the pending switch's identity is `switchId` (was `requestedAt`); `selectionContextFor` gives no current model while a switch is pending.
+
+## Resolution of the round-1 findings (what to prove)
+
+| Finding | Fix (per handoff) | Executable proof planned |
+| --- | --- | --- |
+| F-1 candidate record in the previous archive (I-7) | watermark + archive-through-watermark | RS-01 (strict, same assertions that failed), RS-05/RS-06/RS-07 (failed attempts) |
+| F-2 reopened chat starts at the latest marker (I-10) | chat reader over the `runtime_switch` segments | RS-01 chat projection after two switches; RS-06 after a Grok switch |
+| F-3/OBS-1 pending native model validated as a replacement | `selectionContextFor` | covered at unit level by the implementer; built-server model edit with a pending switch (RS-02 stays on an Antigravity target; a native-target edit is limited by the stand-in's unverified capacities, as in round 1) |
+
+## New scenarios added from the rework (real trigger in brackets)
+
+- SCN-B1: the server is stopped (quit) and started again between the settings Save and the first message [quit and restart the app].
+- SCN-B2: a first message is rejected after the activation completed (the notice must stay pending) [crash window between the marker and the user record]. Opening a stopped run does not activate the switch (observed): the activation is the first input.
+- SCN-B3: a switch whose archive step fails after a native candidate wrote its instruction, then the same message sent again [first message; retry by the user]. Produced by putting a folder where the segment file would go (a real file-system error in the real archive step), then removing it.
+- SCN-B4: Grok as the switch target [first message]; a Grok start whose process ends after the session opened [first message].
+
+## Planned cases (round 2)
+
+| Case ID | Criteria | Boundary / Surface | Kind | Command Or Steps | Why |
+| --- | --- | --- | --- | --- | --- |
+| R2-API-01 | AC-001…AC-010 | unit suites of the changed parts + library store | Existing Test (rerun) / Reused | focused server suites; library `tests/unit/memory`; implementer's IMP-01…IMP-03, IMP-06 (clean clone at `1bc6f85506`) | rerun-by-impact: library and server code changed |
+| R2-API-02…04 | AC-001, AC-002, AC-010, REQ-014; I-3, I-5, I-7, I-8, I-10 | built server RS-01 (red in round 1), RS-02, RS-03 on a fresh build | Durable | `runtime-switch-native-built-server.e2e.test.ts` | the reviewer's first request |
+| R2-API-04b | I-11, REQ-014 | RS-04 restart: pending switch across a restart; derived hand-over after a restart | Durable | same file | the reviewer's third request |
+| R2-API-05 | I-7, AC-009 | RS-05 failed attempt (native candidate), retry | Durable | same file | the reviewer's second request |
+| R2-API-06 | I-7 | RS-06 Grok as target + failed attempt; RS-07 Grok failure after the durable activation | Durable | same file | the reviewer's third request |
+| R2-API-07 | clean clone | the same file on a clean clone of the branch (install, prisma generate, build) | Journey | `git clone`, `pnpm install --frozen-lockfile`, `pnpm -C autobyteus-server-ts build`, vitest | the implementer's IMP-04 was from the worktree build |
+| R2-API-08 | AC-006, REQ-012 | journal identity (durable) + earlier probe result (base vs branch) | Reused + rerun | `work-journal-unswitched-identity.test.ts`; round-1 base comparison (journal code unchanged by IR-002) | rerun-by-impact |
+| R2-API-09 | contract | codegen against the new build | Journey | `pnpm -C autobyteus-web codegen` against the built server; diff to the committed file | the GraphQL types may have changed (`switchId`) |
+| R2-API-10 | preserved | existing server E2E folders and the live Claude → Codex → scripted AGY suite | Existing Test | as round 1 | code of the activation changed for every runtime |
+
+## Not tested this round (planned)
+
+- The optional hardening (`begin` throws if the active file is non-empty and its last complete record has no id): not a finding; no supported data has such a record; not exercised.
+- The rendered Settings page and chat in a browser; the native runtime on a real provider; a real process crash (SIGKILL) between the marker and the user record (emulated by cutting the file back to the marker in RS-04).
