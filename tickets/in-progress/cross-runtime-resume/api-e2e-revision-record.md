@@ -26,7 +26,7 @@ None. (One stale assertion of mine in the 331 journal E2E failed in API-07 and w
 
 - Canonical artifacts and sections updated: `api-e2e-coverage-investigation.md`, `api-e2e-execution-coverage-report.md`, `api-e2e-test-progress.md`
 - Prior result and confidence: N/A
-- Current result and confidence: Fail / 83.9% (post-repository 86.9%)
+- Current result and confidence: Fail / 83.9% (post-repository 84.0%)
 - New or remaining failure IDs: F-1 (switch to the native runtime leaks the candidate's `system_instruction` into the previous agent's archive, I-7), F-2 (the reopened chat starts at the latest marker)
 - Recommended owner: Solution Designer (both are `Design Impact`), after the code reviewer's failure-origin review
 - Remaining risks, blocked evidence, or untested scope: OBS-1, C-6 corner, native runtime on a real provider, rendered Settings page and chat in a browser, a stored pending switch across a server restart.

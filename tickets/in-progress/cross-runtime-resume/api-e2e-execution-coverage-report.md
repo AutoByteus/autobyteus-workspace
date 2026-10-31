@@ -66,7 +66,7 @@
 | User-surface, browser, and desktop-shell confidence | 70% | 70% | reopened chat read through the same projection the app hydrates from (fails F-2); no rendered UI | | a browser run of the Settings page and chat after the fixes |
 | Durable regression coverage quality and relevance | 90% | 92% | two new durable files, strict assertions that fail on the defects, mutation-checked identity test | RS-01 stays red until fixed | — |
 
-- Overall post-repository confidence: 86.9%
+- Overall post-repository confidence: 84.0%
 - Overall final confidence: 83.9%
 - Calculation method: simple average of the seven applicable categories, post (80+90+85+88+85+70+90)/7, final (70+92+90+88+85+70+92)/7
 - Every critical acceptance criterion directly proven, apart from parts only the user can check: `No` (AC-002)
