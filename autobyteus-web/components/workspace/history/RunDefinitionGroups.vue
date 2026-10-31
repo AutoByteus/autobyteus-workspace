@@ -141,7 +141,6 @@
         :label="formatRunLabel(run.summary)"
         :run-selected="state.selectedRunId === run.runId"
         :has-collaboration="run.hasCollaboration === true"
-        :execution-scope="projectScope?.executionScopeOf('AGENT', run.runId) ?? null"
         @select-run="actions.onSelectRun(run)"
         @open-run="selectAgentRun(run)"
       />
@@ -294,7 +293,6 @@
             :is-team-selected="state.isTeamRunSelected(team.teamRunId)"
             :is-row-expanded="(rowKey: string) => isTeamDisplayRowExpanded(team, rowKey)"
             :format-relative-time="formatRelativeTime"
-            :execution-scope="projectScope?.executionScopeOf('AGENT_TEAM', team.teamRunId) ?? null"
             @select="(row: import('~/stores/runHistoryTypes').RunHistoryTeamExecutionRow) => selectTeamDisplayRow(team, row)"
             @toggle="(row: import('~/stores/runHistoryTypes').RunHistoryTeamExecutionRow) => toggleTeamDisplayRow(team, row)"
             @open-run="actions.onOpenTeamRun(team, node.workspaceId)"
@@ -310,7 +308,6 @@
     :groups="node.agentOrgDefinitions ?? []"
     :state="state"
     :actions="actions"
-    :execution-scope-of="projectScope ? (rootRunId: string) => projectScope!.executionScopeOf('AGENT_ORG', rootRunId) : null"
   />
 </template>
 
@@ -358,7 +355,7 @@ const props = defineProps<{
   state: WorkspaceHistorySectionState;
   avatars: WorkspaceHistoryAvatarBindings;
   actions: WorkspaceHistorySectionActions;
-  /** Projects mode: the node is a Project; "+" starts under it and delegated rows show only its work. */
+  /** Projects mode: the node is a Project; "+" starts under it. Delegated rows show as in Workspaces. */
   projectScope?: ProjectSectionScope | null;
 }>();
 const collaboration = useAgentRunCollaborationStore();

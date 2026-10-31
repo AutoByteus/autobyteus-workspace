@@ -32,7 +32,7 @@ const snapshot = (projectId: string, runIds: string[]): ProjectRunsSnapshot => (
     runId, summary: runId, createdAt: '2026-10-31T00:00:00.000Z', archivedAt: null, terminatedAt: null, status: AgentStatus.Offline,
     isActive: false, shouldConnectStream: false, statusSource: 'TEST', hasCollaboration: false,
   })) }] : [],
-  teamDefinitions: [], agentOrgRuns: [], scopes: {},
+  teamDefinitions: [],
 })
 
 const t = (key: string, params?: Record<string, unknown>) => (params?.name ? `${key}:${params.name}` : key)

@@ -65,7 +65,6 @@
 
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
-import { useRoute } from 'vue-router'
 import { Icon } from '@iconify/vue'
 import ProjectHistorySection from '~/components/workspace/history/ProjectHistorySection.vue'
 import type {
@@ -92,7 +91,6 @@ const props = withDefaults(defineProps<{
 }>(), { runShown: false })
 
 const { t } = useLocalization()
-const route = useRoute() as ReturnType<typeof useRoute> | undefined
 const runs = useProjectRunsStore()
 const panel = useProjectsPanelStore()
 const selection = useAgentSelectionStore()
@@ -106,7 +104,6 @@ const tree = useProjectsTreeState({
   openRun: () => ({
     agentRunId: props.state.selectedRunId,
     teamRunId: selection.selectedType === 'team' ? selection.selectedRunId : null,
-    orgRunId: route?.query.rootSubjectKind === 'agent_org' ? String(route.query.orgRunId || '').trim() || null : null,
   }),
 })
 

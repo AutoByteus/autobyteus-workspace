@@ -4,33 +4,16 @@ import {
   ProjectRunHistoryError,
   ProjectRunHistoryService,
 } from "../../../run-history/services/project-run-history-service.js";
-import { getStudioCollaborationRootHistoryService } from "../studio-application-api-services.js";
-import { AgentOrgRootHistoryObject } from "./collaboration-root-history.js";
 import { RunHistoryAgentGroupObject, WorkspaceHistoryTeamDefinitionObject } from "./run-history.js";
 
-@ObjectType()
-class ProjectRunExecutionObject {
-  @Field(() => String, { nullable: true }) agentRunId?: string | null;
-  @Field(() => String, { nullable: true }) teamRunId?: string | null;
-}
-
-@ObjectType({ description: "Which delegated copies of one listed root are listed under the Project." })
-class ProjectRunScopeObject {
-  @Field(() => String, { description: "AGENT, AGENT_TEAM or AGENT_ORG." }) rootKind!: string;
-  @Field(() => String) rootRunId!: string;
-  @Field(() => [ProjectRunExecutionObject]) executions!: ProjectRunExecutionObject[];
-}
-
-@ObjectType({ description: "The runs listed under one Project: started under it or hosting its Tasks' work." })
+@ObjectType({ description: "The runs started under one Project, grouped as a workspace's are." })
 class ProjectRunHistoryObject {
   @Field(() => String) projectId!: string;
   @Field(() => [RunHistoryAgentGroupObject]) agentDefinitions!: RunHistoryAgentGroupObject[];
   @Field(() => [WorkspaceHistoryTeamDefinitionObject]) teamDefinitions!: WorkspaceHistoryTeamDefinitionObject[];
-  @Field(() => [AgentOrgRootHistoryObject]) agentOrgRuns!: AgentOrgRootHistoryObject[];
-  @Field(() => [ProjectRunScopeObject]) scopes!: ProjectRunScopeObject[];
 }
 
-/** Transport only: `ProjectRunHistoryService` owns the listing, the cap rule and the scopes. */
+/** Transport only: `ProjectRunHistoryService` owns the listing and the cap rule. */
 @Resolver()
 export class ProjectRunHistoryResolver {
   private service: ProjectRunHistoryService | null = null;
@@ -40,9 +23,9 @@ export class ProjectRunHistoryResolver {
     @Arg("projectId", () => String) projectId: string,
     @Arg("limitPerAgent", () => Int, { defaultValue: 6 }) limitPerAgent = 6,
   ): Promise<ProjectRunHistoryObject> {
-    this.service ??= new ProjectRunHistoryService({ orgs: getStudioCollaborationRootHistoryService() });
+    this.service ??= new ProjectRunHistoryService();
     try {
-      return await this.service.projectRunHistory(projectId, limitPerAgent) as unknown as ProjectRunHistoryObject;
+      return await this.service.projectRunHistory(projectId, limitPerAgent) as ProjectRunHistoryObject;
     } catch (error) {
       if (error instanceof ProjectRunHistoryError) throw new GraphQLError(error.message, { extensions: { code: error.code } });
       throw error;

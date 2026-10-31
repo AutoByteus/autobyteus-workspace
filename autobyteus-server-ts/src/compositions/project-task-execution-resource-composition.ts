@@ -53,7 +53,7 @@ export const composeProjectTaskExecutionResources = async (deps: Readonly<{
   const taskExecutionResources = new TaskExecutionResourceService(new TaskExecutionResourceStore(projectsLayout, adHocTasksLayout));
   await taskExecutionResources.load();
   projectRunLinks?.close();
-  projectRunLinks = await composeProjectRunLinks({ taskExecutionResources, projectsLayout });
+  projectRunLinks = await composeProjectRunLinks({ projectsLayout });
   const service = initializeProjectTaskServiceProcessInstance({
     taskExecutionResources,
     adHocTasks: new AdHocTaskStore(adHocTasksLayout),

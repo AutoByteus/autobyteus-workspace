@@ -1,10 +1,10 @@
 /**
- * projectRunsProjection (projects-left-navigation, DS-003; REQ-003, REQ-008, REQ-012, AC-002, AC-007, AR-001): the
- * Projects tree is built by the Workspaces builders keyed by Project: the same run listed under two Projects, live
- * status from the run's context, a run launched under a Project shown before the next read, ancestry for the reveal,
- * one stable scope object per root, archived (retired) runs left out.
+ * projectRunsProjection (projects-tree-one-place, autobyteus-353; REQ-001, REQ-002, AC-002): each Project's snapshot
+ * (the runs started under it) is built into the workspace node types, keyed by Project, with live status from the run's
+ * context and a run launched under the Project shown before the next read; each run has one ancestry (its Project);
+ * no Org groups; archived (retired) runs left out.
  */
-import { describe, expect, it, vi } from 'vitest'
+import { describe, expect, it } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
 import { AgentContext } from '~/types/agent/AgentContext'
 import { AgentRunState } from '~/types/agent/AgentRunState'
@@ -15,15 +15,13 @@ import { buildProjectRunsProjection, projectSectionKey, type ProjectRunsSnapshot
 const project = (projectId: string, name = projectId): Project => ({ projectId, name, description: '', createdAt: '', updatedAt: '',
   workspaces: [], openTaskCount: 0, taskCount: 0 })
 
-const snapshot = (projectId: string, runIds: string[], scopes: Record<string, string[]> = {}): ProjectRunsSnapshot => ({
+const snapshot = (projectId: string, runIds: string[]): ProjectRunsSnapshot => ({
   projectId,
-  agentDefinitions: [{ agentDefinitionId: 'pm', agentName: 'Project Task Manager', runs: runIds.map((runId) => ({
+  agentDefinitions: runIds.length ? [{ agentDefinitionId: 'pm', agentName: 'Project Task Manager', runs: runIds.map((runId) => ({
     runId, summary: `run ${runId}`, createdAt: '2026-10-31T00:00:00.000Z', archivedAt: null, terminatedAt: null, status: AgentStatus.Offline,
     isActive: false, shouldConnectStream: false, statusSource: 'TEST', hasCollaboration: true,
-  })) }],
+  })) }] : [],
   teamDefinitions: [],
-  agentOrgRuns: [],
-  scopes: Object.fromEntries(Object.entries(scopes).map(([key, copies]) => [key, new Set(copies)])),
 })
 
 const context = (runId: string, status: AgentStatus, projectId?: string) => {
@@ -40,53 +38,53 @@ const build = (overrides: Partial<Parameters<typeof buildProjectRunsProjection>[
   setActivePinia(createPinia())
   return buildProjectRunsProjection({
     projects: [project('P', 'AutoByteus'), project('Q', 'Prototype Launch')],
-    snapshots: { P: snapshot('P', ['pm-1'], { 'AGENT:pm-1': ['team:set-1'] }), Q: snapshot('Q', ['pm-1'], { 'AGENT:pm-1': ['agent:apc-1'] }) },
+    snapshots: { P: snapshot('P', ['pm-p']), Q: snapshot('Q', []) },
     agentContexts: new Map(),
     teamContexts: [],
     agentAvatarByDefinitionId: {},
     workspacesById: {},
     retiredRunIds: new Set(),
-    noteUnscoped: vi.fn(),
     ...overrides,
   })
 }
 
 describe('buildProjectRunsProjection', () => {
-  it('lists the same run under each Project that lists it, grouped by agent, keyed by Project (AC-002)', () => {
+  it('lists each Project with the runs started under it, keyed by Project, one ancestry per run, no Org groups (REQ-001)', () => {
     const projection = build()
     expect(projection.entries.map((entry) => [entry.node.stableKey, entry.node.workspaceName])).toEqual([
       [projectSectionKey('P'), 'AutoByteus'], [projectSectionKey('Q'), 'Prototype Launch'],
     ])
+    const [p, q] = projection.entries
+    expect(p!.node.agents.map((agent) => [agent.agentDefinitionId, agent.runs.map((run) => run.runId)])).toEqual([['pm', ['pm-p']]])
+    expect(q!.node.agents).toEqual([])
     for (const entry of projection.entries) {
       expect(entry.node.canRemoveFromWorkspaces).toBe(false)
-      expect(entry.node.agents.map((agent) => [agent.agentDefinitionId, agent.runs.map((run) => run.runId)])).toEqual([['pm', ['pm-1']]])
+      expect(entry.node.agentOrgDefinitions).toEqual([])
     }
-    expect(projection.runAncestryById['pm-1']).toEqual([{ projectId: 'P', groupKey: 'pm' }, { projectId: 'Q', groupKey: 'pm' }])
+    expect(projection.runAncestryById).toEqual({ 'pm-p': { projectId: 'P', groupKey: 'pm' } })
+    expect(projection).not.toHaveProperty('agentOrgAncestryById')
   })
 
-  it('gives each root its own Project scope, one stable object per root (AC-007)', () => {
-    const projection = build()
-    const [p, q] = projection.entries
-    expect([...p!.executionScopeOf('AGENT', 'pm-1').copies]).toEqual(['team:set-1'])
-    expect([...q!.executionScopeOf('AGENT', 'pm-1').copies]).toEqual(['agent:apc-1'])
-    expect(p!.executionScopeOf('AGENT', 'pm-1')).toBe(p!.executionScopeOf('AGENT', 'pm-1'))
-    expect([...p!.executionScopeOf('AGENT', 'unknown').copies]).toEqual([])
+  it("does not list a run in a Project because of its context's folder or delegations (AC-001)", () => {
+    // "hello" was started in a workspace (no projectId): it is in no Project.
+    const projection = build({ snapshots: { P: snapshot('P', []), Q: snapshot('Q', []) }, agentContexts: new Map([['hello', context('hello', AgentStatus.Running)]]) })
+    expect(projection.entries.map((entry) => entry.node.agents)).toEqual([[], []])
+    expect(projection.runAncestryById).toEqual({})
   })
 
-  it('overlays live status from the run context and places a run launched under a Project before the next read (AR-001)', () => {
+  it('overlays live status from the run context and places a run launched under a Project before the next read', () => {
     const projection = build({
       agentContexts: new Map([
-        ['pm-1', context('pm-1', AgentStatus.Idle)],
+        ['pm-p', context('pm-p', AgentStatus.Idle)],
         ['pm-new', context('pm-new', AgentStatus.Running, 'P')],
-        ['elsewhere', context('elsewhere', AgentStatus.Running)],
       ]),
     })
     const [p, q] = projection.entries
     expect(p!.node.agents[0]!.runs.map((run) => [run.runId, run.currentStatus])).toEqual(expect.arrayContaining([
-      ['pm-1', AgentStatus.Idle], ['pm-new', AgentStatus.Running],
+      ['pm-p', AgentStatus.Idle], ['pm-new', AgentStatus.Running],
     ]))
-    expect(q!.node.agents[0]!.runs.map((run) => run.runId)).toEqual(['pm-1'])
-    expect(projection.runAncestryById.elsewhere).toBeUndefined()
+    expect(q!.node.agents).toEqual([])
+    expect(projection.runAncestryById['pm-new']).toEqual({ projectId: 'P', groupKey: 'pm' })
   })
 
   it('leaves out runs this session saw archived or deleted, and Projects without a read', () => {

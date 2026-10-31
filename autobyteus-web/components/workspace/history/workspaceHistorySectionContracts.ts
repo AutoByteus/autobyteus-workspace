@@ -1,4 +1,3 @@
-import type { RootExecutionScope } from '~/utils/collaboration/taskExecutionScope';
 import type {
   AgentOrgHistoryDefinitionGroup,
   AgentOrgRunHistoryItem,
@@ -122,8 +121,7 @@ export interface WorkspaceHistorySectionActions {
 /** What "+" under a Project starts: an Agent or an Agent Team definition (DEC-006). */
 export type ProjectRunTarget = Readonly<{ kind: 'agent' | 'team'; definitionId: string }>;
 
-/** A Project's section scope (Projects mode): the Project, and each listed root's delegated copies shown under it. */
+/** A Project's section (Projects mode): the Project its "+" starts runs under. */
 export interface ProjectSectionScope {
   projectId: string;
-  executionScopeOf: (rootKind: 'AGENT' | 'AGENT_TEAM' | 'AGENT_ORG', rootRunId: string) => RootExecutionScope;
 }
