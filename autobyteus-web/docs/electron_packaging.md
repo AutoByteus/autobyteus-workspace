@@ -152,8 +152,8 @@ The desktop waits up to 20 s for the server to exit; the server bounds its own
 cleanup at 10 s and then sweeps the processes it started, so a busy quit
 normally ends within seconds. Client connections do not hold the server's
 close: one that never sent a request is closed at once, and a request in
-progress gets up to 2 s to finish (see the server's `agent_execution.md`). Only when the server does not exit in that window
-does the force step run. On macOS/Linux it stops the server's whole tree, not
+progress gets up to 2 s to finish (see the server's `agent_execution.md`).
+Only when the server does not exit in that window does the force step run. On macOS/Linux it stops the server's whole tree, not
 the server alone (`BaseServerManager.forceStop`, `serverProcessTree.ts`): it
 reads the process table asynchronously (2 s timeout) and records the server's
 descendants in its process group and the groups they lead, sends them SIGTERM
