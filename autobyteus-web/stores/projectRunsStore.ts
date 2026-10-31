@@ -166,12 +166,12 @@ export const useProjectRunsStore = defineStore('projectRuns', () => {
     void read(projectId)
   }
 
-  // Web actions on a listed root (DS-004 trigger 4): the Projects listing the run read again once the action settled.
+  // Web changes to a listed root (DS-004 trigger 4): the Projects listing the run read again once the change settled.
   // A run named by no listing (a group archive names a folder and a definition) re-reads every loaded Project.
   type ActionObserved = Readonly<{ name: string; args: unknown[]; after(callback: () => void): void }>
-  const rereadAfter = (store: Readonly<{ $onAction(listener: (action: ActionObserved) => void): unknown }>, actions: ReadonlySet<string>) =>
+  const rereadAfter = (store: Readonly<{ $onAction(listener: (action: ActionObserved) => void): unknown }>, actionNames: ReadonlySet<string>) =>
     store.$onAction(({ name, args, after }) => {
-      if (!actions.has(name) || shown.value === 0) return
+      if (!actionNames.has(name) || shown.value === 0) return
       after(() => {
         const ids = args.flatMap((arg) => (Array.isArray(arg) ? arg : [arg])).filter((arg): arg is string => typeof arg === 'string')
         const listing = new Set(ids.flatMap(projectsListing))
