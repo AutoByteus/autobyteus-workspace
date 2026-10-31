@@ -20,3 +20,10 @@
 - User approval of the design: Obtained.
 - Classification: Small / High (persisted user data deleted at startup). Routing: architecture review.
 - Follow-ups: FU-001 to FU-003.
+
+## SR-004 — 2026-10-31 — Design revision for ARCH-REV-001 (Fail, Design Impact)
+- AR-001 (Low): Task Design Health Assessment and the behavior-to-spine map added.
+- AR-002 (Medium): the content walk is no-follow (`withFileTypes`/`lstat`); any entry other than directories and the
+  top-level regular `run_metadata.json` counts as content; any walk error keeps the run and logs it. Tests added
+  (unreadable subfolder or injected `readdir` failure; symlink).
+- N-2 recorded as FU-004. Requirements unchanged (SR-002). Classification Small / High. Routing: ARCH-REV-002.

@@ -1,7 +1,7 @@
 # Design Spec — atomic-agent-run-creation (autobyteus-349)
 
 ## Solution And Approval Basis
-- Current solution revision ID: `SR-003`.
+- Current solution revision ID: `SR-004` (ARCH-REV-001: AR-001 health assessment and behavior map; AR-002 a failing content walk keeps the run). SR-003 is in git history.
 - Approved requirements: `requirements-doc.md` SR-002, approved by **the user** on 2026-10-31 (DEC-001 = A with the
   content check).
 - User approval of the design: **Obtained**. The user approved the presented solution (undo a failed start at once;
@@ -41,8 +41,12 @@
   standalone root:
   1. read the record (`metadataService.readMetadata`). If it is unreadable or missing, log it and skip;
   2. require `preparedAt` set and `startedAt` absent;
-  3. require **that the folder holds no file besides `run_metadata.json`**, walking it recursively; empty subfolders
-     do not count as content;
+  3. require **that the folder holds no content**, walking it recursively with `readdir(..., { withFileTypes: true })`
+     (or `lstat`) and **without following symbolic links**:
+     - only directories and a regular `run_metadata.json` at the top are allowed; empty subfolders do not count;
+     - **any other entry counts as content**: a file, a symlink, a socket, or anything else;
+     - **any error during the walk keeps the run and logs it** (AR-002: `cancelPreparedRun` removes the folder with
+       `fs.rm(..., { recursive: true, force: true })`, so a walk failure must never read as "empty");
   4. skip active runs and runs with outstanding commands (defensive; there are none at startup);
   5. `cancelPreparedAgentRun(runId)` and log `Removed empty never-started run '<id>' ('<title>')`.
   - It never throws to its caller: a failure is logged, and startup continues.
@@ -50,6 +54,29 @@
   the history catalog are bound) and before `listen`: `await shutdown.stage(() =>
   getAgentRunService().removeEmptyNeverStartedRuns())`. It sits before `prepareBeforeListen`, so no request can create
   a run during it.
+
+## Relevant Behavior And Production-Path Map (Mandatory)
+| BEH | Kind | REQ / AC | Trigger | Existing behavior | Change | Spine |
+| --- | --- | --- | --- | --- | --- | --- |
+| BEH-001 | Contract | REQ-001; AC-001, AC-002, AC-004 | `createAgentRun` from GraphQL (mobile), applications, Model Routing | A failed activation leaves a never-started run (F-01) | Cancel it, then rethrow; a started run is refused by cancel and logged | DS-001 |
+| BEH-002 | Operational | REQ-002; AC-003, AC-004 | Server startup | Never-started runs are never removed (F-05) | Content-free never-started runs removed before `listen`; any content, unreadable record or walk error keeps the run | DS-002 |
+| BEH-003 | User / contract | REQ-003; AC-005 | The web app's first message; remote delegation | Two-step prepare, then activate | **Preserved** (no change) | — |
+
+## Task Design Health Assessment (Mandatory)
+- Change posture: `Bug Fix`.
+- Root cause classification: `Missing Invariant`.
+  - The run-creation owner does not enforce "a one-call creation is all or nothing" (F-01).
+  - The only removal rule, `cleanupStalePreparedRuns`, was dead (F-05). It was also **unsafe**: it judged by
+    `preparedAt && !startedAt` alone, and the read-only count shows 11 real conversations with that mark.
+- Refactor needed now: `No`. Both changes sit in their existing owners (`AgentRunService`,
+  `AgentRunProvisioningService`); the dead, unsafe rule is replaced, not kept beside the new one.
+- Residuals:
+  - FU-001 (Project start record not undone);
+  - FU-002 (`preparedExpiresAt` on the wire);
+  - FU-003 (periodic removal);
+  - FU-004 (`cancelPreparedRun` still accepts a never-started run with content, ARCH-REV-001 N-2);
+  - an index-row title removed with an empty run (approved, N-1);
+  - a peer delegation cut by a restart (approved, N-3).
 
 ## Change Scope (Mandatory)
 - In scope: `agent-run-service.ts` (D1; the wrapper renamed), `agent-run-provisioning-service.ts` (D2),
@@ -62,7 +89,7 @@
   - `preparedExpiresAt` on the wire (FU-002);
   - Project start records on cancel (FU-001);
   - any periodic removal (DEC-002).
-- Follow-ups: FU-001, FU-002, FU-003 (periodic removal on long-running nodes, if ever needed).
+- Follow-ups: FU-001, FU-002, FU-003 (periodic removal on long-running nodes, if ever needed), FU-004 (`cancelPreparedRun` accepts a never-started run with content).
 
 ## Persisted Data / State Transition Decision
 - **`Discard` of content-free never-started runs**, at each startup:
@@ -93,7 +120,7 @@
 | `autobyteus-server-ts/src/agent-execution/services/agent-run-service.ts` | Modify | D1; `removeEmptyNeverStartedRuns` wrapper in place of `cleanupStalePreparedRuns` |
 | `autobyteus-server-ts/src/agent-execution/services/agent-run-provisioning-service.ts` | Modify | D2 |
 | `autobyteus-server-ts/src/server-runtime.ts` | Modify | One startup stage |
-| `autobyteus-server-ts/tests/unit/agent-execution/agent-run-provisioning-service.test.ts` | Modify | AC-003 cases on a temporary data root: empty never-started run removed; the May shape (`activationState`, no `startedAt`, a raw trace) kept; only a context file kept; started kept; unreadable record skipped and logged |
+| `autobyteus-server-ts/tests/unit/agent-execution/agent-run-provisioning-service.test.ts` | Modify | AC-003 cases on a temporary data root: empty never-started run removed (empty subfolders allowed); the May shape (`activationState`, no `startedAt`, a raw trace) kept; only a context file kept; started kept; unreadable record skipped and logged; **(AR-002)** an unreadable subfolder or an injected `readdir` failure keeps the run and logs it; a symlink in the folder keeps the run |
 | `autobyteus-server-ts/tests/unit/agent-execution/agent-run-service*.test.ts` (existing or new) | Modify/Add | AC-001/AC-002: activation throws → cancel called, original error rethrown; cancel refused → warning logged, original error rethrown |
 | A server-runtime test (the existing startup-gate test) | Modify | The stage runs before listen; a failure is logged and startup continues |
 | `autobyteus-server-ts/docs/modules/agent_execution.md` (run creation) | Modify | D1 and D2 rules |
@@ -102,7 +129,7 @@
 | Topic | Good | Avoided |
 | --- | --- | --- |
 | Create | `try { return { runId: (await this.activate(id)).run.runId } } catch (e) { const r = await this.provisioningService.cancelPreparedAgentRun(id).catch(x => ({ success: false, message: String(x) })); if (!r.success) logger.warn(...); throw e }` | Swallowing the activation error; cancelling a started run |
-| Empty test | the folder's files, recursively, minus `run_metadata.json`, is empty | `preparedAt && !startedAt` alone (it deletes the May conversations); an age limit |
+| Empty test | a no-follow walk (`withFileTypes`/`lstat`) finds only directories and the top-level regular `run_metadata.json`; any other entry or any walk error → keep and log | `preparedAt && !startedAt` alone (it deletes the May conversations); an age limit |
 
 ## Backward-Compatibility Rejection Log
 | Candidate | Decision |
