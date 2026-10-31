@@ -628,4 +628,22 @@ describe.runIf(ENABLED)("agent runtime switch, native runtime and stopped-run se
     expect(active.filter((r) => r.trace_type === "system_instruction"), "the restore does not capture instructions again").toHaveLength(1);
     expect(await completeSegments(runId)).toHaveLength(1);
   }, 300_000);
+
+  it("RS-08: a model edit while a switch to the native runtime is pending is a fresh selection (the never-started candidate is not a current model), and the first message runs on it", async () => {
+    const runId = await createRun(await definition("rs-pending-native"), AGY, AGY_MODEL);
+    await talk(runId, "ECHO_INPUT", "antigravity first turn");
+    await terminate(runId);
+    expect(await save(runId, NATIVE, nativeModel)).toMatchObject({ success: true, outcome: "UPDATED" });
+    const pending = await metadata(runId);
+    // Round 1 (OBS-1): this edit was rejected as a replacement ("Both models need verified context capacities before replacement").
+    const edit = await save(runId, NATIVE, nativeModelB);
+    expect(edit, JSON.stringify(edit)).toMatchObject({ success: true, outcome: "UPDATED", canonicalSelection: { runtimeKind: NATIVE, llmModelIdentifier: nativeModelB } });
+    const edited = await metadata(runId);
+    expect(edited).toMatchObject({ runtimeKind: NATIVE, llmModelIdentifier: nativeModelB, platformAgentRunId: null });
+    expect(edited.pendingRuntimeSwitch, "the switch stays as it was").toEqual(pending.pendingRuntimeSwitch);
+    const before = lm.requests.length;
+    await talk(runId, "NATIVE-PENDING-MODEL: carry on.", "native first turn");
+    expect(lm.requests[before]?.model, "the native agent runs on the model chosen last").toBe(nativeModelB.split(":")[0]);
+    expect(await metadata(runId)).toMatchObject({ runtimeKind: NATIVE, llmModelIdentifier: nativeModelB });
+  }, 300_000);
 });
