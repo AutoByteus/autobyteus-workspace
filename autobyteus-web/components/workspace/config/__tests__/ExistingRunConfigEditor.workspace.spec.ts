@@ -32,7 +32,7 @@ vi.mock('~/stores/existingRunConfigStore', async () => {
     draft: {
       kind: 'agent', runId: 'run-1', isActive: false, editability: { editable: true, reason: null },
       metadata: { agentDefinitionId: 'autobyteus-daily-assistant', runtimeKind: 'codex_app_server', autoExecuteTools: true, llmModelIdentifier: 'gpt-5.5', workspaceRootPath: '/data/temp_workspace' },
-      draftSelection: { llmModelIdentifier: 'gpt-5.5', llmConfig: null },
+      draftSelection: { runtimeKind: 'codex_app_server', llmModelIdentifier: 'gpt-5.5', llmConfig: null },
     },
     loadingCanonical: false, saving: false, reconciling: false, reconciliationRequired: false,
     feedback: null, fieldErrors: [], modelOptionsByAddress: {}, dirty: false, canSave: false,

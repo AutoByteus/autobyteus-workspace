@@ -1,0 +1,4 @@
+[
+  "Agent runtime changed from Antigravity CLI (gemini-3.8-flash-low) to AutoByteus (rs-native-a:lmstudio@127.0.0.1:61795).",
+  "[System: runtime hand-over]\nAnother agent worked on this run before you and kept a work journal as it went. You are taking over.\n\nThe journals are in /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-switch-native-3fCLhE/memory/agents/rs_native_099582_5dfccc64bd434bc3b749690709955c20/work_journal/. The latest one, work_journal_active.md, shows what was done most recently, so it is a good place to start. The earlier ones are there too, oldest first, if you want to look further back:\n  work_journal_000001.md | 2026-10-31 | 535 B, 6 lines\n  work_journal_000002.md | 2026-10-31 | 1.8 KB, 9 lines\n  work_journal_active.md | 2026-10-31 | 532 B, 5 lines\n\nEach entry is one line, such as \"[HH:MM:SS] User: …\", \"Agent: …\" or \"Command: … → ok\", and ends with a\nlink to the full record. Long output is shortened."
+]

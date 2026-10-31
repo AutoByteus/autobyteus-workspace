@@ -66,6 +66,7 @@ Common files/directories:
   including strict run-scoped `system_instruction` rows when the exact runtime
   handoff was captured.
 - `raw_traces_manifest.json` — completed raw-trace archive descriptors owned by `RawTraceArchiveManager`. Each segment's `runtime_kind` is the `RuntimeKind` value of the runtime that compacted (for example `codex_app_server`, `autobyteus`), or `null` when none was recorded.
+  A segment archived by an agent runtime switch has `boundary_type: runtime_switch` and the previous agent runtime's `runtime_kind`; it holds only that agent runtime's records (the switch marker, a `system_task_notification` record from sender `system.runtime_handover`, carries the switch key as `correlation_id`). `RuntimeSwitchRecorder` writes it; see [run history](run_history.md).
 - `raw_traces_<zero-padded-index>.jsonl` — immutable raw-trace archives. Native compaction prepares selected new activity before snapshot commit; a failed preparation/publication can leave copied archive evidence without a successful new summary.
 - `episodic.jsonl` and `semantic.jsonl` — historical compacted output rows; current direct compaction does not append them, and the server no longer reads them (the memory view and the Memory page dropped them). Existing files stay on disk; the library code is FU-003 of `work-journal-search`.
 - `compaction_lineage.jsonl` — historical append-only lineage, not current continuation authority and not a normal compaction/restore dependency.

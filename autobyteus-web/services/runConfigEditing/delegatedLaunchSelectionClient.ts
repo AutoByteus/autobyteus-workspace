@@ -26,6 +26,8 @@ export const delegatedReferenceOf = (key: DelegatedTargetKey): DelegatedReferenc
 export type DelegatedConfiguredPatch = Readonly<{
   scopeKind: string
   scopeAddress: string
+  /** An Agent run's own agent runtime (its host can switch it in the same Save); Team and Org scopes leave it out. */
+  runtimeKind?: string
   llmModelIdentifier: string
   llmConfig: Record<string, unknown> | null
 }>

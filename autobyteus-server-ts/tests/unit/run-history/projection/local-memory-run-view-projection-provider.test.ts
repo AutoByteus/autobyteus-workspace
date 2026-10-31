@@ -37,7 +37,7 @@ afterEach(async () => {
 
 describe("LocalMemoryRunViewProjectionProvider", () => {
   it("uses the server run id for default local memory reads", async () => {
-    const getRunMemoryView = vi.fn().mockReturnValue({
+    const getChatRawTraceSnapshot = vi.fn().mockReturnValue({
       rawTraces: [
         { traceType: "user", content: "hello", turnId: "t1", seq: 1, ts: 1 },
         {
@@ -60,7 +60,7 @@ describe("LocalMemoryRunViewProjectionProvider", () => {
       ],
     });
     const provider = new LocalMemoryRunViewProjectionProvider("/tmp/memory", {
-      getRunMemoryView,
+      getChatRawTraceSnapshot,
     } as never);
 
     const projection = await provider.buildProjection({
@@ -74,10 +74,7 @@ describe("LocalMemoryRunViewProjectionProvider", () => {
       },
     });
 
-    expect(getRunMemoryView).toHaveBeenCalledWith("server-run-1", {
-      includeRawTraces: true,
-      includeArchive: false,
-    });
+    expect(getChatRawTraceSnapshot).toHaveBeenCalledWith("server-run-1");
     expect(projection.runId).toBe("server-run-1");
     expect(projection.conversation).toHaveLength(2);
     expect(projection.activities).toEqual([
@@ -182,7 +179,7 @@ describe("LocalMemoryRunViewProjectionProvider", () => {
   });
 
   it("restores exact system instructions from active-only memory into Activity without conversation leakage", async () => {
-    const getRunMemoryView = vi.fn().mockReturnValue({
+    const getChatRawTraceSnapshot = vi.fn().mockReturnValue({
       rawTraces: [{
         scope: "run", id: "raw-system-id", traceType: "system_instruction",
         sourceEvent: "SYSTEM_INSTRUCTIONS_SUPPLIED", content: "  exact\nactive prompt  ",
@@ -190,7 +187,7 @@ describe("LocalMemoryRunViewProjectionProvider", () => {
       }],
     });
     const provider = new LocalMemoryRunViewProjectionProvider("/tmp/memory", {
-      getRunMemoryView,
+      getChatRawTraceSnapshot,
     } as never);
 
     const projection = await provider.buildProjection({
@@ -201,9 +198,7 @@ describe("LocalMemoryRunViewProjectionProvider", () => {
       },
     });
 
-    expect(getRunMemoryView).toHaveBeenCalledWith("server-run-1", expect.objectContaining({
-      includeArchive: false,
-    }));
+    expect(getChatRawTraceSnapshot).toHaveBeenCalledWith("server-run-1");
     expect(projection.conversation).toEqual([]);
     expect(projection.activities).toEqual([{
       kind: "system_instruction",
@@ -242,9 +237,9 @@ describe("LocalMemoryRunViewProjectionProvider", () => {
       },
       { traceType: "user", content: "newest", turnId: "t101", seq: 102, ts: 102 },
     ];
-    const getRunMemoryView = vi.fn().mockReturnValue({ rawTraces });
+    const getChatRawTraceSnapshot = vi.fn().mockReturnValue({ rawTraces });
     const provider = new LocalMemoryRunViewProjectionProvider("/tmp/memory", {
-      getRunMemoryView,
+      getChatRawTraceSnapshot,
     } as never);
 
     const projection = await provider.buildProjection({
@@ -277,8 +272,7 @@ describe("LocalMemoryRunViewProjectionProvider", () => {
       seq: index,
       ts: index,
     }));
-    const getRunMemoryView = vi.fn();
-    const getActiveRawTraceSnapshot = vi.fn().mockReturnValue({
+    const getChatRawTraceSnapshot = vi.fn().mockReturnValue({
       rawTraces,
       records: [],
       device: "1",
@@ -286,8 +280,7 @@ describe("LocalMemoryRunViewProjectionProvider", () => {
       manifestGeneration: "3:boundary",
     });
     const provider = new LocalMemoryRunViewProjectionProvider("/tmp/memory", {
-      getRunMemoryView,
-      getActiveRawTraceSnapshot,
+      getChatRawTraceSnapshot,
     } as never);
     const page = await provider.buildActiveTracePage({
       source: {
@@ -301,8 +294,7 @@ describe("LocalMemoryRunViewProjectionProvider", () => {
       subjectFingerprint: "subject",
       beforeCursor: null,
     });
-    expect(getRunMemoryView).not.toHaveBeenCalled();
-    expect(getActiveRawTraceSnapshot).toHaveBeenCalledWith("server-run-1");
+    expect(getChatRawTraceSnapshot).toHaveBeenCalledWith("server-run-1");
     expect(page.events).toHaveLength(150);
     expect(page.events[0].eventId).toBe("raw:v1:6:raw-10");
     expect(page.loadedEarlierCount).toBe(50);
@@ -310,7 +302,7 @@ describe("LocalMemoryRunViewProjectionProvider", () => {
   });
 
   it("preserves production-shaped user, assistant, and tool images with stable page identities", async () => {
-    const getActiveRawTraceSnapshot = vi.fn().mockReturnValue({
+    const getChatRawTraceSnapshot = vi.fn().mockReturnValue({
       rawTraces: [
         {
           id: "user-1", traceType: "user", content: "look", media: { images: ["images/user.png"] },
@@ -328,7 +320,7 @@ describe("LocalMemoryRunViewProjectionProvider", () => {
       records: [], device: "1", inode: "2", manifestGeneration: null,
     });
     const provider = new LocalMemoryRunViewProjectionProvider("/tmp/memory", {
-      getActiveRawTraceSnapshot,
+      getChatRawTraceSnapshot,
     } as never);
     const page = await provider.buildActiveTracePage({
       source: {
@@ -398,7 +390,7 @@ describe("LocalMemoryRunViewProjectionProvider", () => {
   });
 
   it("excludes run-scoped system instructions before Event Monitor generation and selection", async () => {
-    const getActiveRawTraceSnapshot = vi.fn().mockReturnValue({
+    const getChatRawTraceSnapshot = vi.fn().mockReturnValue({
       rawTraces: [
         {
           scope: "run", id: "raw-system-id", traceType: "system_instruction",
@@ -413,7 +405,7 @@ describe("LocalMemoryRunViewProjectionProvider", () => {
       records: [], device: "1", inode: "2", manifestGeneration: "3:boundary",
     });
     const provider = new LocalMemoryRunViewProjectionProvider("/tmp/memory", {
-      getActiveRawTraceSnapshot,
+      getChatRawTraceSnapshot,
     } as never);
 
     const page = await provider.buildActiveTracePage({

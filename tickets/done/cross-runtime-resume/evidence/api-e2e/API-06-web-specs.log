@@ -1,0 +1,5 @@
+# API-06 web specs after the regenerated client. command: env -i PATH HOME=<temp> pnpm exec vitest run stores/__tests__/existingRunConfigStore.spec.ts services/runConfigEditing components/run-settings --no-watch (autobyteus-web)
+# date 2026-10-31T08:32:18Z
+
+ Test Files  12 passed (12)
+      Tests  87 passed (87)

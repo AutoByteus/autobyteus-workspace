@@ -15,6 +15,7 @@ import { parseAgentOrgExecutionTree } from '~/types/collaboration/agentOrgExecut
 import type { RunResumeConfigPayload, TeamRunResumeConfigPayload } from '~/stores/runHistoryTypes'
 import type {
   ExistingAgentDelegatedSnapshot,
+  ExistingAgentRunSelection,
   ExistingRunModelSelection,
   ExistingRunModelOptionsState,
   ExistingRunModelConfigFieldError,
@@ -23,8 +24,9 @@ import type {
 import {
   cloneExistingRunModelConfig,
   cloneExistingRunJsonValue,
+  cloneExistingAgentRunSelection,
   cloneExistingRunSelection,
-  existingRunSelectionsEqual,
+  existingAgentRunSelectionsEqual,
   selectionAllowed,
 } from '~/services/runConfigEditing/existingAgentModelConfigDraft'
 import {
@@ -38,7 +40,7 @@ import {
   updateExistingAgentOrgScopeModelConfig,
 } from '~/services/runConfigEditing/existingAgentOrgModelConfigDraft'
 import {
-  updateStoppedAgentModelConfig,
+  updateStoppedAgentSelection,
   updateStoppedTeamModelConfigs,
 } from '~/services/runConfigEditing/existingRunModelConfigMutationClient'
 import type { AgentOrgRunConfigRead } from '~/services/runConfigEditing/agentOrgRunConfigClient'
@@ -47,7 +49,8 @@ import { existingRunConfigEditActions } from '~/stores/existingRunConfigEditActi
 
 const loadingSchemaState = (): ExistingRunModelConfigSchemaState => ({ status: 'loading', message: null })
 
-const metadataSelection = (metadata: RunResumeConfigPayload['metadataConfig']): ExistingRunModelSelection => ({
+const metadataSelection = (metadata: RunResumeConfigPayload['metadataConfig']): ExistingAgentRunSelection => ({
+  runtimeKind: metadata.runtimeKind ?? 'autobyteus',
   llmModelIdentifier: metadata.llmModelIdentifier,
   llmConfig: cloneExistingRunModelConfig(metadata.llmConfig),
 })
@@ -97,7 +100,7 @@ export const useExistingRunConfigStore = defineStore('existingRunConfig', {
       const draft = state.draft
       if (!draft) return false
       return draft.kind === 'agent'
-        ? !existingRunSelectionsEqual(metadataSelection(draft.metadata), draft.draftSelection)
+        ? !existingAgentRunSelectionsEqual(metadataSelection(draft.metadata), draft.draftSelection)
         : draft.kind === 'team'
           ? planExistingTeamModelConfigPatches(draft.planner).length > 0
           : planExistingAgentOrgModelConfigPatches(draft.planner).length > 0 || existingAgentOrgWorkspacesDirty(draft.executionTree, draft.workspaceDraft)
@@ -107,9 +110,12 @@ export const useExistingRunConfigStore = defineStore('existingRunConfig', {
       if (!draft || state.saving || state.loadingCanonical || state.reconciling
           || state.reconciliationRequired || draft.isActive || !draft.editability.editable) return false
       if (draft.kind === 'agent') {
-        return !existingRunSelectionsEqual(metadataSelection(draft.metadata), draft.draftSelection)
+        const original = metadataSelection(draft.metadata)
+        // Another agent runtime is a fresh selection of it: the server validates it; the replacement list is the old runtime's.
+        const runtimeChanged = draft.draftSelection.runtimeKind !== original.runtimeKind
+        return !existingAgentRunSelectionsEqual(original, draft.draftSelection)
           && state.schemaStateByAddress['/']?.status === 'ready'
-          && selectionAllowed(metadataSelection(draft.metadata), draft.draftSelection, state.modelOptionsByAddress['/'])
+          && (runtimeChanged || selectionAllowed(original, draft.draftSelection, state.modelOptionsByAddress['/']))
       }
       const patches = draft.kind === 'team'
         ? planExistingTeamModelConfigPatches(draft.planner)
@@ -352,10 +358,12 @@ export const useExistingRunConfigStore = defineStore('existingRunConfig', {
         this.draft = { ...this.draft, isActive: lock.isActive, editability: { ...lock.editability } }
       }
     },
-    updateAgentModelConfig(selection: ExistingRunModelSelection): void {
+    /** The agent's selection; `runtimeKind` omitted keeps the draft's agent runtime (a model or settings edit). */
+    updateAgentModelConfig(selection: ExistingRunModelSelection, runtimeKind?: string): void {
       if (this.draft?.kind !== 'agent' || !this.draft.editability.editable || this.draft.isActive
           || this.saving || this.reconciling || this.reconciliationRequired) return
-      this.draft = { ...this.draft, draftSelection: cloneExistingRunSelection(selection) }
+      this.draft = { ...this.draft, draftSelection: {
+        runtimeKind: runtimeKind ?? this.draft.draftSelection.runtimeKind, ...cloneExistingRunSelection(selection) } }
       this.feedback = null
       this.fieldErrors = []
       this.deriveSchemaStates()
@@ -419,9 +427,9 @@ export const useExistingRunConfigStore = defineStore('existingRunConfig', {
     },
     async saveAgent(draft: Extract<ExistingRunConfigDraft, { kind: 'agent' }>): Promise<boolean> {
       const request = this.canonicalLoadRequestId, binding = useWindowNodeContextStore().bindingRevision
-      const result = await updateStoppedAgentModelConfig({
+      const result = await updateStoppedAgentSelection({
         agentRunId: draft.runId,
-        ...cloneExistingRunSelection(draft.draftSelection),
+        ...cloneExistingAgentRunSelection(draft.draftSelection),
       })
       if (request !== this.canonicalLoadRequestId || binding !== useWindowNodeContextStore().bindingRevision) return false
       if (this.draft?.kind !== 'agent' || this.draft.runId !== draft.runId) return false
@@ -432,12 +440,12 @@ export const useExistingRunConfigStore = defineStore('existingRunConfig', {
         const payload: RunResumeConfigPayload = {
           runId: draft.runId,
           isActive: result.isActive,
-          metadataConfig: { ...draft.metadata, ...cloneExistingRunSelection(result.canonicalSelection) },
+          metadataConfig: { ...draft.metadata, ...cloneExistingAgentRunSelection(result.canonicalSelection) },
           modelConfigEditability: result.editability,
         }
         history.resumeConfigByRunId[draft.runId] = payload
         this.syncAgentCanonical(payload)
-        useAgentContextsStore().patchConfigOnly(draft.runId, cloneExistingRunSelection(result.canonicalSelection))
+        useAgentContextsStore().patchConfigOnly(draft.runId, cloneExistingAgentRunSelection(result.canonicalSelection))
         this.feedback = { kind: 'success', message: result.message }
         return true
       }

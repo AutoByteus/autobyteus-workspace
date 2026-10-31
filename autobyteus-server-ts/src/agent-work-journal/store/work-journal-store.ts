@@ -26,13 +26,15 @@ const SHA256_HEX = /^[0-9a-f]{64}$/;
 const readManifestFile = (value: unknown): WorkJournalManifestFile | null => {
   const entry = asRecord(value);
   if (!entry) return null;
-  const { journal_file: journalFile, source_file: sourceFile, source_record_count: count, state, content_sha256: sha } = entry;
+  const { journal_file: journalFile, source_file: sourceFile, source_record_count: count, state, content_sha256: sha, runtime_kind: runtimeKind } = entry;
   if (typeof journalFile !== "string" || !JOURNAL_FILE_NAME.test(journalFile)) return null;
   if (typeof sourceFile !== "string" || !sourceFile || sourceFile !== path.basename(sourceFile)) return null;
   if (typeof count !== "number" || !Number.isInteger(count) || count < 0) return null;
   if (state !== "closed" && state !== "open") return null;
   if (typeof sha !== "string" || !SHA256_HEX.test(sha)) return null;
-  return { journal_file: journalFile, source_file: sourceFile, source_record_count: count, state: state as WorkJournalFileState, content_sha256: sha };
+  // An entry written before a file recorded its own agent runtime is dropped, so the file is rendered again.
+  if (typeof runtimeKind !== "string" && runtimeKind !== null) return null;
+  return { journal_file: journalFile, source_file: sourceFile, source_record_count: count, state: state as WorkJournalFileState, content_sha256: sha, runtime_kind: runtimeKind };
 };
 
 /**
@@ -65,11 +67,10 @@ export class WorkJournalStore {
     }
     const manifest = asRecord(parsed);
     if (!manifest) return null;
-    const { run_id: runId, runtime_kind: runtimeKind, renderer_revision: revision, files } = manifest;
-    if (typeof runId !== "string" || (typeof runtimeKind !== "string" && runtimeKind !== null) || typeof revision !== "number") return null;
+    const { run_id: runId, renderer_revision: revision, files } = manifest;
+    if (typeof runId !== "string" || typeof revision !== "number") return null;
     return {
       run_id: runId,
-      runtime_kind: runtimeKind,
       renderer_revision: revision,
       files: Array.isArray(files) ? files.map(readManifestFile).filter((file): file is WorkJournalManifestFile => file !== null) : [],
     };
@@ -79,7 +80,6 @@ export class WorkJournalStore {
   async writeManifest(memoryDir: string, manifest: WorkJournalManifest): Promise<void> {
     const exact: WorkJournalManifest = {
       run_id: manifest.run_id,
-      runtime_kind: manifest.runtime_kind,
       renderer_revision: manifest.renderer_revision,
       files: manifest.files.map((file) => ({
         journal_file: file.journal_file,
@@ -87,6 +87,7 @@ export class WorkJournalStore {
         source_record_count: file.source_record_count,
         state: file.state,
         content_sha256: file.content_sha256,
+        runtime_kind: file.runtime_kind,
       })),
     };
     await this.writeAtomically(this.manifestPath(memoryDir), `${JSON.stringify(exact, null, 2)}\n`);

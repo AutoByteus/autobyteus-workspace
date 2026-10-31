@@ -1,8 +1,8 @@
 import { getApolloClient } from '~/utils/apolloClient'
-import { UpdateStoppedAgentRunModelConfig } from '~/graphql/mutations/runHistoryMutations'
+import { UpdateStoppedAgentRunSelection } from '~/graphql/mutations/runHistoryMutations'
 import { UpdateStoppedTeamRunModelConfigs } from '~/graphql/mutations/agentTeamRunMutations'
 import type { RunModelConfigEditability } from '~/stores/runHistoryTypes'
-import type { ExistingRunModelConfigFieldError, ExistingRunModelSelection } from '~/types/agent/ExistingRunModelConfigDraft'
+import type { ExistingAgentRunSelection, ExistingRunModelConfigFieldError } from '~/types/agent/ExistingRunModelConfigDraft'
 import type { ExistingTeamModelConfigPatch } from './existingTeamModelConfigDraft'
 
 export type ExistingRunModelConfigMutationResult = Readonly<{
@@ -14,8 +14,8 @@ export type ExistingRunModelConfigMutationResult = Readonly<{
   fieldErrors: readonly ExistingRunModelConfigFieldError[]
 }>
 
-export type AgentModelConfigMutationResult = ExistingRunModelConfigMutationResult & Readonly<{
-  canonicalSelection: ExistingRunModelSelection | null
+export type AgentSelectionMutationResult = ExistingRunModelConfigMutationResult & Readonly<{
+  canonicalSelection: ExistingAgentRunSelection | null
 }>
 
 export type TeamModelConfigMutationResult = ExistingRunModelConfigMutationResult & Readonly<{
@@ -31,16 +31,17 @@ const requiredResult = <T>(
   return result
 }
 
-export const updateStoppedAgentModelConfig = async (input: {
+export const updateStoppedAgentSelection = async (input: {
   agentRunId: string
+  runtimeKind: string
   llmModelIdentifier: string
   llmConfig: Record<string, unknown> | null
-}): Promise<AgentModelConfigMutationResult> => {
-  const response = await getApolloClient().mutate<Record<string, AgentModelConfigMutationResult>>({
-    mutation: UpdateStoppedAgentRunModelConfig,
+}): Promise<AgentSelectionMutationResult> => {
+  const response = await getApolloClient().mutate<Record<string, AgentSelectionMutationResult>>({
+    mutation: UpdateStoppedAgentRunSelection,
     variables: { input },
   })
-  return requiredResult(response, 'updateStoppedAgentRunModelConfig')
+  return requiredResult(response, 'updateStoppedAgentRunSelection')
 }
 
 export const updateStoppedTeamModelConfigs = async (input: {

@@ -1,0 +1,24 @@
+# R2-API-07 CLEAN CLONE, final: /tmp/api-e2e-316-clean at the commit below (dist built there from the same sources; the commits since the build changed tests only)
+# command: env -i PATH HOME=<temp> TMPDIR RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<clone>/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs pnpm exec vitest run tests/e2e/runtime/runtime-switch-native-built-server.e2e.test.ts tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts --no-watch --reporter=verbose
+# commit c5043ff766; date 2026-10-31T10:37:08Z
+
+ ✓ tests/e2e/runtime/runtime-switch-native-built-server.e2e.test.ts > RS-01: native -> Antigravity -> native on one run: each archived segment holds the previous agent'
+ ✓ tests/e2e/runtime/runtime-switch-native-built-server.e2e.test.ts > RS-02: settings of a stopped run: running refused, save a switch, undo it, switch again, model-onl
+ ✓ tests/e2e/runtime/runtime-switch-native-built-server.e2e.test.ts > RS-03: a host with a delegated copy saves its own runtime and the copy's model in one Save; the co
+ ✓ tests/e2e/runtime/runtime-switch-native-built-server.e2e.test.ts > RS-04: a pending switch survives a server restart; an activated switch whose notice was not yet de
+ ✓ tests/e2e/runtime/runtime-switch-native-built-server.e2e.test.ts > RS-05: a failed switch attempt (the archive step fails after the native candidate wrote its instru
+ ✓ tests/e2e/runtime/runtime-switch-native-built-server.e2e.test.ts > RS-06: Grok as the switch target: its captured instructions belong to the new file; a failed attem
+ ✓ tests/e2e/runtime/runtime-switch-native-built-server.e2e.test.ts > RS-07: a Grok start that fails after the switch became durable (the Grok process ends before the r
+ ✓ tests/e2e/runtime/runtime-switch-native-built-server.e2e.test.ts > RS-08: a model edit while a switch to the native runtime is pending is a fresh selection (the neve
+ ✓ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > hydrates native reasoning through standalone and team GraphQL projections 123ms
+ ✓ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > hydrates active system instructions with raw-ID parity for standalone and team runs without changin
+ ✓ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > omits a rotated system instruction from active hydration without reading its archive 83ms
+ ✓ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > projects the newest 100 events from a >=5 MB active file without reading or changing its standalone
+ ✓ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > projects a team member from active traces only and preserves its archive bytes 81ms
+ ✓ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > traverses exactly 275 standalone active events in fixed pages without opening archives 114ms
+ ✓ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > traverses exactly 275 team-member active events and rejects its cursor for another subject 133ms
+ ✓ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > keeps a cursor valid across append and expires it after an atomic active rewrite 92ms
+ ✓ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > serializes production media and shallow tool state without multi-megabyte result or log payload 67m
+ Test Files  2 passed (2)
+      Tests  17 passed (17)
+   Duration  44.24s (transform 6.61s, setup 84ms, import 9.02s, tests 34.27s, environment 0ms)

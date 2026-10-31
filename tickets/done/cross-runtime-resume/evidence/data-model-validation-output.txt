@@ -1,0 +1,32 @@
+files: raw_traces_000001.jsonl, raw_traces_000002.jsonl, raw_traces_active.jsonl, raw_traces_manifest.json
+raw manifest: [["raw_traces_000001.jsonl","runtime_switch","runtime_switch:run_dm_1:2026-10-30T10:00:00.000Z","CLAUDE",8,"complete"],["raw_traces_000002.jsonl","runtime_switch","runtime_switch:run_dm_1:2026-10-30T11:00:00.000Z","CODEX",5,"complete"]]
+switch1 -> raw_traces_000001.jsonl; retry -> null; switch2 -> raw_traces_000002.jsonl
+PASS I-2 every manifest segment has runtime_kind and its file; no orphan file
+PASS I-3 first record of each file after a segment is the marker (id = boundary_trace_id, correlation = key)
+PASS I-4 segment label = runtime that wrote it (CLAUDE, CODEX)
+PASS I-5 unique boundary keys; one marker per key
+PASS I-7 no segment mixes runtimes: seg1 only Bash, seg2 only run_bash
+PASS I-8 earlier segment byte-unchanged by the later switch
+PASS retry of switch 1 moved nothing
+--- raw_traces_000001.jsonl: lookup rule -> claude_agent_sdk; entries:
+  [06:00:01] User: Check the repo
+  [06:00:02] Command: git status → ok
+  [06:00:04] Agent: Repo is clean.
+  [06:00:05] User: Run the tests
+  [06:00:06] Command: pytest -q → ok
+  [06:00:08] Agent: Tests pass.
+--- raw_traces_000002.jsonl: lookup rule -> codex_app_server; entries:
+  [06:00:09] Notice: Runtime switched from Claude to Codex.
+  [06:00:10] User: Now list the sources
+  [06:00:11] Command: ls src → ok
+  [06:00:13] Agent: Two files.
+    (today's single-runtime output differs: true)
+--- raw_traces_active.jsonl: lookup rule -> claude_agent_sdk; entries:
+  [06:00:14] Notice: Runtime switched from Codex to Claude.
+  [06:00:15] User: What was the last commit?
+  [06:00:16] Command: git log -1 → ok
+  [06:00:18] Agent: abc123.
+marker as first journal entry of seg2: true
+marker as first journal entry of active: true
+today's service, Codex file rendered with the run's current runtime (Claude): WRONG: [06:00:10] User: Now list the sources
+chat replay kinds in order: message | tool | message | message | tool | message | system_task_notification:system.runtime_handover | message | tool | message | system_task_notification:system.runtime_handover | message | tool | message

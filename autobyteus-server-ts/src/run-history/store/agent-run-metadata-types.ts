@@ -25,7 +25,24 @@ export type AgentRunMetadata = {
    * A system-owned run is never a collaboration member.
    */
   systemRunOwner?: SystemRunOwner;
+  /**
+   * autobyteus-316: present from the settings save that changed the agent runtime until the run's next input makes the
+   * switch real. The metadata's own binding fields hold the NEW binding; `from` holds the previous one. Absent means none.
+   */
+  pendingRuntimeSwitch?: PendingRuntimeSwitch;
 };
+
+/** What a run's agent runtime binds it to: the agent runtime, model, model settings and the provider's own session. */
+export type RunProviderBinding = Pick<AgentRunMetadata, "runtimeKind" | "llmModelIdentifier" | "llmConfig" | "platformAgentRunId">;
+
+/**
+ * `switchId` is the identity of this switch (made at the first pending save, kept by later saves, new after an undo; part of
+ * the switch key); `from` is the binding before it.
+ */
+export type PendingRuntimeSwitch = Readonly<{
+  switchId: string;
+  from: RunProviderBinding;
+}>;
 
 /** The services that own system runs: the Model Router agent's. */
 export type SystemRunOwner = "model_router";

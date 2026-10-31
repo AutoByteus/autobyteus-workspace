@@ -7,6 +7,7 @@ import type { TeamRunExecutionTreeSnapshot } from "../../agent-team-execution/do
 import type { TeamRunModelConfigPatch } from "../../agent-team-execution/services/team-run-model-config-mutator.js";
 import type { TeamRunService } from "../../agent-team-execution/services/team-run-service.js";
 import type { RunModelConfigUpdateResult } from "../domain/run-model-config.js";
+import type { StoppedRunSelectionInput } from "../../agent-execution/services/standalone-stopped-run-selection-updater.js";
 import type { AgentRunMetadata } from "../store/agent-run-metadata-types.js";
 import type {
   AgentRunResumeConfig,
@@ -31,7 +32,7 @@ export class StudioRunModelConfigService {
     applicationRunOwnership: ApplicationRunOwnershipReader;
     agentResumeConfigService: Pick<AgentRunResumeConfigService, "getAgentRunResumeConfig">;
     teamResumeConfigService: Pick<TeamRunHistoryService, "getTeamRunResumeConfig">;
-    agentRunService: Pick<AgentRunService, "updateStoppedModelConfig">;
+    agentRunService: Pick<AgentRunService, "updateStoppedSelection">;
     teamRunService: Pick<TeamRunService, "updateStoppedModelConfigs">;
   }>) {}
 
@@ -84,11 +85,7 @@ export class StudioRunModelConfigService {
     return scopes.map(({ scopeKind, scopeAddress }, index) => ({ scopeKind, scopeAddress, ...options[index]! }));
   }
 
-  async updateStoppedAgentRunModelConfig(input: {
-    agentRunId: string;
-    llmModelIdentifier: string;
-    llmConfig: Readonly<Record<string, unknown>> | null;
-  }): Promise<RunModelConfigUpdateResult<AgentRunMetadata | null>> {
+  async updateStoppedAgentRunSelection(input: StoppedRunSelectionInput): Promise<RunModelConfigUpdateResult<AgentRunMetadata | null>> {
     let canonical: AgentRunResumeConfig | null = null;
     try {
       canonical = await this.dependencies.agentResumeConfigService
@@ -120,7 +117,7 @@ export class StudioRunModelConfigService {
         fieldErrors: Object.freeze([]),
       });
     }
-    return this.dependencies.agentRunService.updateStoppedModelConfig(input);
+    return this.dependencies.agentRunService.updateStoppedSelection(input);
   }
 
   async updateStoppedTeamRunModelConfigs(input: {

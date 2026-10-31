@@ -8,7 +8,8 @@ export const buildRawTraceSegmentFileName = (index: number): string =>
 
 export type RawTraceArchiveBoundaryType =
   | 'native_compaction'
-  | 'provider_compaction_boundary';
+  | 'provider_compaction_boundary'
+  | 'runtime_switch';
 
 export type RawTraceArchiveSegmentStatus = 'pending' | 'complete';
 

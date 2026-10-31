@@ -5,6 +5,7 @@ import type { ExistingRunConfigDraft } from '~/types/agent/ExistingRunConfigDraf
 import type {
   ExistingRunModelConfigSchemaState,
   ExistingRunModelOptionsState,
+  ExistingAgentRunSelection,
   ExistingRunModelSelection,
 } from '~/types/agent/ExistingRunModelConfigDraft'
 import { selectionAllowed, cloneExistingRunModelConfig } from '~/services/runConfigEditing/existingAgentModelConfigDraft'
@@ -18,7 +19,8 @@ import { createExistingAgentOrgWorkspaceDraft, existingAgentOrgWorkspacesDirty }
  */
 const loadingSchemaState = (): ExistingRunModelConfigSchemaState => ({ status: 'loading', message: null })
 type ExistingAgentDraft = Extract<ExistingRunConfigDraft, { kind: 'agent' }>
-const metadataSelection = (metadata: ExistingAgentDraft['metadata']): ExistingRunModelSelection => ({
+const metadataSelection = (metadata: ExistingAgentDraft['metadata']): ExistingAgentRunSelection => ({
+  runtimeKind: metadata.runtimeKind ?? 'autobyteus',
   llmModelIdentifier: metadata.llmModelIdentifier,
   llmConfig: cloneExistingRunModelConfig(metadata.llmConfig),
 })
@@ -54,6 +56,11 @@ export const existingRunConfigEditActions = {
     const draft = this.draft
     if (!draft) return
     type ScopeSelections = { originalSelection: ExistingRunModelSelection; draftSelection: ExistingRunModelSelection }
+    if (draft.kind === 'agent' && draft.draftSelection.runtimeKind !== metadataSelection(draft.metadata).runtimeKind) {
+      // Another agent runtime is a fresh selection: the server validates the pair when it is saved.
+      this.schemaStateByAddress = { '/': { status: 'ready', message: null } }
+      return
+    }
     const scopes: Record<string, ScopeSelections> = draft.kind === 'agent'
       ? { '/': { originalSelection: metadataSelection(draft.metadata), draftSelection: draft.draftSelection } }
       : draft.planner.scopesByAddress

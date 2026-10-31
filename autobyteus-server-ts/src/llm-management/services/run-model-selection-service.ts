@@ -1,6 +1,6 @@
 import type { ModelInfo } from "autobyteus-ts/llm/models.js";
 import type { RunModelConfigFieldError } from "../../run-history/domain/run-model-config.js";
-import type { RunModelChoice, RunModelOptions, RunModelSelection, RunModelSelectionContext } from "../domain/run-model-selection.js";
+import type { RunModelChoice, RunModelOptions, RunModelSelection, RunModelSelectionContext, RunModelValidationContext } from "../domain/run-model-selection.js";
 import type { ModelCatalogService, RuntimeModelSelectionCatalog } from "./model-catalog-service.js";
 import type { ModelInfoWithSelectionPresentation } from "../domain/model-selection-presentation.js";
 import { validateModelConfigSchema } from "./model-config-schema-validation.js";
@@ -14,7 +14,7 @@ export type RunModelSelectionValidationResult =
   | Readonly<{ kind: "model_unavailable"; catalogDiagnostic?: AgyDiscoveryDiagnostic | GrokBuildDiagnostic }>
   | Readonly<{ kind: "schema_unavailable" }>
   | Readonly<{ kind: "invalid"; errors: readonly RunModelConfigFieldError[] }>;
-type SelectionInput = { context: RunModelSelectionContext; selection: { llmModelIdentifier: string; llmConfig: unknown } };
+type SelectionInput = { context: RunModelValidationContext; selection: { llmModelIdentifier: string; llmConfig: unknown } };
 type SelectionEvidence = {
   catalog: Pick<ModelCatalogService, "runtimeModelSelectionCatalog">;
   nativeCapacity: Pick<NativeModelCapacityService, "resolveMany">;
@@ -57,11 +57,11 @@ export class RunModelSelectionService {
       : context.runtimeKind === RuntimeKind.GROK_BUILD
         ? { kind: "model_unavailable", catalogDiagnostic: toGrokBuildDiagnostic(error) }
         : { kind: "model_unavailable" }; }
-    const unchanged = selection.llmModelIdentifier === context.currentModelIdentifier;
+    const unchanged = context.currentModelIdentifier !== null && selection.llmModelIdentifier === context.currentModelIdentifier;
     const model = unchanged ? catalog.findExactCurrent(selection.llmModelIdentifier)
       : catalog.offeredModels.find((row) => row.model_identifier === selection.llmModelIdentifier);
     if (!model) return { kind: "model_unavailable" };
-    if (context.runtimeKind === RuntimeKind.AUTOBYTEUS && !unchanged) {
+    if (context.runtimeKind === RuntimeKind.AUTOBYTEUS && !unchanged && context.currentModelIdentifier !== null) {
       const capacities = evidence.nativeCapacity.resolveMany(catalog.offeredModels);
       const current = capacities[context.currentModelIdentifier];
       const target = capacities[selection.llmModelIdentifier];

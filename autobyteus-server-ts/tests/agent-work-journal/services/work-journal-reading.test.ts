@@ -62,21 +62,23 @@ describe("WorkJournalService reads, notification and unrecorded runtime", () => 
   });
   afterEach(() => fs.rmSync(root, { recursive: true, force: true }));
 
-  it("renders a run whose runtime is not recorded with the generic rule, stores null, and reuses its closed files", async () => {
+  it("renders a file whose runtime is not recorded with the generic rule, stores null for it, and reuses its closed files", async () => {
     const service = new WorkJournalService();
     writeActive(runDir, turnRecords("turn_1", "ls", "a.ts"));
-    rotateActive(runDir);
+    rotateActive(runDir, null);
     appendActive(runDir, turnRecords("turn_2", "pwd", "/w"));
     await service.ensureCurrent(target(null));
-    expect(JSON.parse(fs.readFileSync(manifestPath(runDir), "utf-8")).runtime_kind).toBeNull();
+    const runtimes = () => JSON.parse(fs.readFileSync(manifestPath(runDir), "utf-8")).files.map((file: { runtime_kind: string | null }) => file.runtime_kind);
+    expect(runtimes()).toEqual([null, null]);
     const closed = path.join(runDir, "work_journal", "work_journal_000001.md");
     const writtenAt = fs.statSync(closed).mtimeMs;
     await new Promise((resolve) => setTimeout(resolve, 15));
     await service.ensureCurrent(target(null));
     expect(fs.statSync(closed).mtimeMs).toBe(writtenAt);
-    // A recorded runtime later is a different rule: the closed file is rendered again.
+    // The open file takes the runtime the caller names; the closed file keeps the one recorded for its segment.
     await service.ensureCurrent(target(RuntimeKind.CODEX_APP_SERVER));
-    expect(JSON.parse(fs.readFileSync(manifestPath(runDir), "utf-8")).runtime_kind).toBe("codex_app_server");
+    expect(runtimes()).toEqual([null, "codex_app_server"]);
+    expect(fs.statSync(closed).mtimeMs).toBe(writtenAt);
   });
 
   it("tells listeners only when a journal file was written or removed; a failing listener never fails the call", async () => {

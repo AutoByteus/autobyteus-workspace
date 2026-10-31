@@ -53,7 +53,7 @@ const harness = () => {
   const hasLiveRunOwnership = vi.fn(async () => false);
   const getAgentRunResumeConfig = vi.fn(async () => agentResume);
   const getTeamRunResumeConfig = vi.fn(async () => teamResume);
-  const updateStoppedModelConfig = vi.fn(async () => ({ subject: "agent-general" }));
+  const updateStoppedSelection = vi.fn(async () => ({ subject: "agent-general" }));
   const updateStoppedModelConfigs = vi.fn(async () => ({ subject: "team-general" }));
   const listOptionsMany = vi.fn(async (contexts) => contexts.map(context => ({ currentModelIdentifier: context.currentModelIdentifier, replacements: [], unavailableReason: null })));
   return {
@@ -61,14 +61,14 @@ const harness = () => {
     hasLiveRunOwnership,
     getAgentRunResumeConfig,
     getTeamRunResumeConfig,
-    updateStoppedModelConfig,
+    updateStoppedSelection,
     updateStoppedModelConfigs,
     service: new StudioRunModelConfigService({
       modelSelectionService: { listOptions: vi.fn(), listOptionsMany },
       applicationRunOwnership: { hasLiveRunOwnership },
       agentResumeConfigService: { getAgentRunResumeConfig },
       teamResumeConfigService: { getTeamRunResumeConfig },
-      agentRunService: { updateStoppedModelConfig } as never,
+      agentRunService: { updateStoppedSelection } as never,
       teamRunService: { updateStoppedModelConfigs } as never,
     }),
   };
@@ -126,14 +126,14 @@ describe("StudioRunModelConfigService", () => {
     const agent = harness();
     agent.hasLiveRunOwnership.mockResolvedValue(true);
     const agentInput = { agentRunId: "agent-run-1", llmModelIdentifier: "model-1", llmConfig: { reasoning_effort: "high" } };
-    await expect(agent.service.updateStoppedAgentRunModelConfig(agentInput)).resolves.toMatchObject({
+    await expect(agent.service.updateStoppedAgentRunSelection(agentInput)).resolves.toMatchObject({
       success: false,
       outcome: "RUN_ACTIVE",
       isActive: true,
       editability: { editable: false, reason: "RUN_ACTIVE" },
       canonical: { runId: "agent-run-1", llmConfig: { reasoning_effort: "medium" } },
     });
-    expect(agent.updateStoppedModelConfig).not.toHaveBeenCalled();
+    expect(agent.updateStoppedSelection).not.toHaveBeenCalled();
 
     const team = harness();
     team.hasLiveRunOwnership.mockResolvedValue(true);
@@ -153,9 +153,9 @@ describe("StudioRunModelConfigService", () => {
   it("delegates exact updates to unchanged General facades only after release", async () => {
     const agent = harness();
     const agentInput = { agentRunId: "agent-run-1", llmModelIdentifier: "model-1", llmConfig: null };
-    await expect(agent.service.updateStoppedAgentRunModelConfig(agentInput))
+    await expect(agent.service.updateStoppedAgentRunSelection(agentInput))
       .resolves.toEqual({ subject: "agent-general" });
-    expect(agent.updateStoppedModelConfig).toHaveBeenCalledWith(agentInput);
+    expect(agent.updateStoppedSelection).toHaveBeenCalledWith(agentInput);
 
     const team = harness();
     const teamInput = {
@@ -175,7 +175,7 @@ describe("StudioRunModelConfigService", () => {
 
     const agent = harness();
     agent.hasLiveRunOwnership.mockRejectedValue(new Error("binding database unavailable"));
-    await expect(agent.service.updateStoppedAgentRunModelConfig({
+    await expect(agent.service.updateStoppedAgentRunSelection({
       agentRunId: "agent-run-1", llmModelIdentifier: "model-1",
       llmConfig: null,
     })).resolves.toMatchObject({
@@ -184,7 +184,7 @@ describe("StudioRunModelConfigService", () => {
       editability: { editable: false, reason: "INTERNAL_ERROR" },
       canonical: { runId: "agent-run-1" },
     });
-    expect(agent.updateStoppedModelConfig).not.toHaveBeenCalled();
+    expect(agent.updateStoppedSelection).not.toHaveBeenCalled();
 
     const team = harness();
     team.hasLiveRunOwnership.mockRejectedValue(new Error("binding database unavailable"));

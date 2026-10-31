@@ -1,0 +1,37 @@
+{
+  "runId": "runtime_switch_5aedb121_13d4_46c2_86ed_4bf408013_5f2cf16865574766a05780aa2211707b",
+  "models": {
+    "claudeModel": "claude-haiku-4-5-20251001",
+    "codexModel": "gpt-5.6-luna"
+  },
+  "scriptedAntigravity": true,
+  "segments": [
+    [
+      "raw_traces_000001.jsonl",
+      "runtime_switch",
+      "claude_agent_sdk",
+      15
+    ],
+    [
+      "raw_traces_000002.jsonl",
+      "runtime_switch",
+      "codex_app_server",
+      10
+    ]
+  ],
+  "finalMetadata": {
+    "runId": "runtime_switch_5aedb121_13d4_46c2_86ed_4bf408013_5f2cf16865574766a05780aa2211707b",
+    "agentDefinitionId": "runtime-switch-5aedb121-13d4-46c2-86ed-4bf40801308a",
+    "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-switch-live-VNDptV/workspace",
+    "memoryDir": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-switch-live-VNDptV/memory/agents/runtime_switch_5aedb121_13d4_46c2_86ed_4bf408013_5f2cf16865574766a05780aa2211707b",
+    "llmModelIdentifier": "gemini-3.8-flash-low",
+    "llmConfig": null,
+    "autoExecuteTools": true,
+    "runtimeKind": "antigravity_cli",
+    "platformAgentRunId": "fa8d6676-140c-4343-b412-ed6b75b78ffd",
+    "preparedAt": "2026-10-31T08:35:56.443Z",
+    "preparedExpiresAt": "2026-11-01T08:35:56.443Z",
+    "startedAt": "2026-10-31T08:35:56.485Z",
+    "applicationExecutionContext": null
+  }
+}

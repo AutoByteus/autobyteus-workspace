@@ -69,7 +69,7 @@ describe("Work Journal neutral vocabulary through the real memory pipeline (auto
   let memory: MemorySearch;
   const runDir = (runtime: string) => path.join(memoryDir, "agents", `${runtime}_run`);
   const journalDir = (runtime: string) => path.join(runDir(runtime), "work_journal");
-  const manifestOf = (runtime: string) => JSON.parse(fs.readFileSync(path.join(journalDir(runtime), "work_journal_manifest.json"), "utf-8")) as { renderer_revision: number; runtime_kind: string | null; files: Array<{ journal_file: string; state: string }> };
+  const manifestOf = (runtime: string) => JSON.parse(fs.readFileSync(path.join(journalDir(runtime), "work_journal_manifest.json"), "utf-8")) as { renderer_revision: number; files: Array<{ journal_file: string; state: string; runtime_kind: string | null }> };
   const journalText = (runtime: string, file = "work_journal_active.md") => fs.readFileSync(path.join(journalDir(runtime), file), "utf-8");
 
   const exec = async <T>(source: string, variableValues?: Record<string, unknown>): Promise<T> => {
@@ -142,7 +142,11 @@ describe("Work Journal neutral vocabulary through the real memory pipeline (auto
       const expected = SYNTHETIC_TRACES[runtime]!.flatMap((item) => item.kind === "tool" && item.expected ? [item.expected.head] : []);
       expect(expected.length, runtime).toBeGreaterThan(25);
       for (const head of expected) expect(heads, `${runtime}: ${head}`).toContain(head);
-      expect(manifestOf(runtime)).toMatchObject({ renderer_revision: WORK_JOURNAL_RENDERER_REVISION, runtime_kind: RUNTIME_OF[runtime] });
+      // The journal manifest names the runtime per file (autobyteus-316, clean cut: no run-level `runtime_kind`).
+      const journalManifest = manifestOf(runtime);
+      expect(journalManifest).toMatchObject({ renderer_revision: WORK_JOURNAL_RENDERER_REVISION });
+      expect(Object.hasOwn(journalManifest, "runtime_kind")).toBe(false);
+      expect(journalManifest.files.map((file) => file.runtime_kind)).toEqual([RUNTIME_OF[runtime]]);
       // A converted line never names the recorded tool (the generic `Tool:` line stays for an unknown or server-qualified tool).
       for (const item of SYNTHETIC_TRACES[runtime]!) {
         if (item.kind !== "tool" || !item.expected) continue;

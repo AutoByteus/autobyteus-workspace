@@ -1,0 +1,12 @@
+# OBS-1 probe (not kept in the repository): model-only edit while a switch to the native runtime is pending
+# command: env -i … RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<abs>/agy-failure-cli.mjs pnpm exec vitest run tests/e2e/runtime/zz-observe-pending-native.probe.test.ts --no-watch; commit 60c3ac4ec8; date 2026-10-31T08:38:15Z
+# fake LM Studio models: two, both max/active context 32768 tokens
+
+stdout | tests/e2e/runtime/zz-observe-pending-native.probe.test.ts > agent runtime switch, native runtime and stopped-run settings on the built server > OBS-1: a model-only edit while a switch TO the native runtime is pending
+OBS-1 switch to native: {"success":true,"outcome":"UPDATED","message":"Agent runtime and model saved. The agent runtime changes when you send your next message.","fieldErrors":[],"canonicalSelection":{"runtimeKind":"autobyteus","llmModelIdentifier":"rs-native-a:lmstudio@127.0.0.1:62452"}}
+stdout | tests/e2e/runtime/zz-observe-pending-native.probe.test.ts > agent runtime switch, native runtime and stopped-run settings on the built server > OBS-1: a model-only edit while a switch TO the native runtime is pending
+OBS-1 model-only edit (native A -> native B) with the switch pending: {"success":false,"outcome":"VALIDATION_FAILED","message":"Model settings are invalid.","fieldErrors":[{"path":"llmModelIdentifier","message":"Both models need verified context capacities before replacement."}],"canonicalSelection":{"runtimeKind":"autobyteus","llmModelIdentifier":"rs-native-a:lmstudio@127.0.0.1:62452"}}
+stdout | tests/e2e/runtime/zz-observe-pending-native.probe.test.ts > agent runtime switch, native runtime and stopped-run settings on the built server > OBS-1: a model-only edit while a switch TO the native runtime is pending
+OBS-1 stored metadata: {"runtimeKind":"autobyteus","llmModelIdentifier":"rs-native-a:lmstudio@127.0.0.1:62452","pending":true}
+     ✓ OBS-1: a model-only edit while a switch TO the native runtime is pending  896ms
+      Tests  1 passed (1)

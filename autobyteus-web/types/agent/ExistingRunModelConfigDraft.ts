@@ -21,7 +21,7 @@ export type ExistingAgentModelConfigDraft = Readonly<{
   isActive: boolean
   editability: RunModelConfigEditability
   metadata: RunMetadataConfigPayload
-  draftSelection: ExistingRunModelSelection
+  draftSelection: ExistingAgentRunSelection
   delegatedSnapshot: ExistingAgentDelegatedSnapshot | null
 }>
 
@@ -38,6 +38,8 @@ export type ExistingRunModelSelection = Readonly<{
   llmModelIdentifier: string
   llmConfig: Record<string, unknown> | null
 }>
+/** A stopped Agent run's selection: its agent runtime too (the settings can switch it); teams edit the model only. */
+export type ExistingAgentRunSelection = ExistingRunModelSelection & Readonly<{ runtimeKind: string }>
 export type ExistingRunModelOptions = Readonly<{
   currentModelIdentifier: string
   currentModel: ExistingRunModelChoice | null

@@ -220,15 +220,25 @@ const normalizeReadPath = (input: unknown): string | null => {
 
 const trackRawTraceReads = () => {
   const paths: string[] = [];
+  // A file can be read by path or through a descriptor it was opened with (the chat's active-file snapshot does the latter,
+  // autobyteus-316): the descriptor is followed back to the path it was opened from.
+  const descriptors = new Map<number, string>();
+  const originalOpenSync = fsSync.openSync.bind(fsSync);
+  const openSpy = vi.spyOn(fsSync, "openSync").mockImplementation(((...args: Parameters<typeof fsSync.openSync>) => {
+    const fd = originalOpenSync(...args as [any, any]);
+    const openedPath = normalizeReadPath(args[0]);
+    if (openedPath) descriptors.set(fd, openedPath);
+    return fd;
+  }) as typeof fsSync.openSync);
   const originalReadFileSync = fsSync.readFileSync.bind(fsSync);
   const spy = vi.spyOn(fsSync, "readFileSync").mockImplementation(((...args: Parameters<typeof fsSync.readFileSync>) => {
-    const readPath = normalizeReadPath(args[0]);
+    const readPath = typeof args[0] === "number" ? descriptors.get(args[0]) ?? null : normalizeReadPath(args[0]);
     if (readPath && /raw_traces_(?:active|\d{6})\.jsonl$|raw_traces_(?:archive_)?manifest\.json$/.test(readPath)) {
       paths.push(readPath);
     }
     return originalReadFileSync(...args as [any, any]);
   }) as typeof fsSync.readFileSync);
-  return { paths, restore: () => spy.mockRestore() };
+  return { paths, restore: () => { spy.mockRestore(); openSpy.mockRestore(); } };
 };
 
 // History queries use production managers/registry; activating providers is outside
@@ -622,7 +632,10 @@ describe("recent run projection GraphQL e2e", () => {
     expect(elapsedMs).toBeLessThan(2_000);
     expect(reads.paths).toContain(path.resolve(files.activePath));
     expect(reads.paths).not.toContain(path.resolve(files.archivePath));
-    expect(reads.paths).not.toContain(path.resolve(files.manifestPath));
+    // The chat reader looks in the manifest for the run's `runtime_switch` segments (autobyteus-316, I-10): the manifest may be read,
+    // a compaction segment never, and nothing else.
+    expect(reads.paths.filter((readPath) => readPath !== path.resolve(files.activePath) && readPath !== path.resolve(files.manifestPath)),
+      "only the active file and the manifest are read").toEqual([]);
     expect(await Promise.all([
       sha256(files.activePath), sha256(files.archivePath), sha256(files.manifestPath),
     ])).toEqual(hashesBefore);
@@ -656,7 +669,10 @@ describe("recent run projection GraphQL e2e", () => {
     expect(JSON.stringify(projection)).not.toContain("ARCHIVE-ONLY-MARKER");
     expect(reads.paths).toContain(path.resolve(files.activePath));
     expect(reads.paths).not.toContain(path.resolve(files.archivePath));
-    expect(reads.paths).not.toContain(path.resolve(files.manifestPath));
+    // The chat reader looks in the manifest for the run's `runtime_switch` segments (autobyteus-316, I-10): the manifest may be read,
+    // a compaction segment never, and nothing else.
+    expect(reads.paths.filter((readPath) => readPath !== path.resolve(files.activePath) && readPath !== path.resolve(files.manifestPath)),
+      "only the active file and the manifest are read").toEqual([]);
     expect(await sha256(files.archivePath)).toBe(archiveHashBefore);
   });
 

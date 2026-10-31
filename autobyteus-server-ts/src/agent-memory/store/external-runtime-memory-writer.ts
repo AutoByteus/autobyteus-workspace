@@ -28,8 +28,15 @@ export class ExternalRuntimeMemoryWriter {
   }
 
   appendRawTrace(input: RuntimeMemoryTraceInput): RawTraceItem {
+    const trace = this.buildRawTrace(input);
+    this.store.appendRawTrace(trace);
+    return trace;
+  }
+
+  /** The record `appendRawTrace` would write, with its sequence number taken but nothing written. `id` is the caller's own. */
+  buildRawTrace(input: RuntimeMemoryTraceInput & { id?: string }): RawTraceItem {
     const options: RawTraceItemOptions = {
-      id: `rt_${Date.now()}_${randomUUID()}`,
+      id: input.id ?? `rt_${Date.now()}_${randomUUID()}`,
       ts: toTimestampSeconds(input.ts),
       turnId: input.turnId,
       seq: this.nextSeq(input.turnId),
@@ -52,6 +59,7 @@ export class ExternalRuntimeMemoryWriter {
       });
     } else if (input.traceType === "system_task_notification") {
       options.senderId = input.senderId;
+      options.correlationId = input.correlationId;
     } else if (input.traceType === "provider_compaction_boundary") {
       if (input.toolResult !== undefined) options.toolResult = input.toolResult;
       options.correlationId = input.correlationId;
@@ -63,9 +71,7 @@ export class ExternalRuntimeMemoryWriter {
       }
       options.correlationId = input.correlationId;
     }
-    const trace = new RawTraceItem(options);
-    this.store.appendRawTrace(trace);
-    return trace;
+    return new RawTraceItem(options);
   }
 
   readToolTraceLifecycleGroups(): ReadonlyMap<string, ToolTraceLifecycleGroup> {
@@ -103,6 +109,35 @@ export class ExternalRuntimeMemoryWriter {
       runtimeKind: input.runtimeKind ?? null,
       sourceEvent: input.sourceEvent ?? null,
     });
+  }
+
+  /** The ID of the last complete record of the active raw-trace file (read-only), or null when there is none. */
+  readLastActiveRawTraceId(): string | null {
+    return this.store.readLastActiveRawTraceId();
+  }
+
+  /** The archive step of an agent runtime switch (see `RunMemoryFileStore.rotateActiveRawTracesForRuntimeSwitch`). */
+  rotateActiveRawTracesForRuntimeSwitch(input: {
+    key: string;
+    marker: RawTraceItem;
+    throughTraceId: string | null;
+    previousRuntimeKind: string;
+  }): void {
+    this.store.rotateActiveRawTracesForRuntimeSwitch({
+      boundary: {
+        boundaryType: "runtime_switch",
+        boundaryKey: input.key,
+        runtimeKind: input.previousRuntimeKind,
+        sourceEvent: "runtime_switch",
+      },
+      marker: input.marker.toDict(),
+      throughTraceId: input.throughTraceId,
+    });
+  }
+
+  /** Removes what a failed switch attempt wrote after its watermark; nothing once the switch's marker is in the file. */
+  removeActiveRawTracesAfter(watermarkTraceId: string | null, key: string): number {
+    return this.store.removeActiveRawTracesAfter(watermarkTraceId, { unlessCorrelationId: key });
   }
 
   private nextSeq(turnId: string): number {
