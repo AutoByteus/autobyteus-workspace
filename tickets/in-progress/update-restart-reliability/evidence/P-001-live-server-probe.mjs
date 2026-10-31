@@ -7,6 +7,9 @@
  *          a Claude standalone, a Codex Team member and a Claude Org agent; SIGTERM the server; relaunch on the same data
  *          and read `terminatedAt` (AC-010).
  *   many   (API-07, U-A1): 3 busy + 2 idle Claude runs; SIGTERM the server.
+ *   held-connection (autobyteus-339 API-02/API-03, AC-002, AR-002): four busy roots as in `mixed`, plus an accepted
+ *          silent TCP connection, an idle keep-alive connection and staggered in-flight Codex `createAgentRun` requests
+ *          around the SIGTERM; then a relaunch on the same data to inspect what the cut requests left (history, run_metadata.json).
  * Usage (from the ticket worktree root):
  *   env -i PATH="$PATH" HOME="$HOME" USER="$USER" LOGNAME="$LOGNAME" TMPDIR="$TMPDIR" \
  *     node tickets/in-progress/busy-quit-shutdown-orphan/evidence/API-live-server-probe.mjs <mode> <server dir> <evidence dir>
@@ -23,7 +26,7 @@ import assert from 'node:assert/strict';
 const [mode, serverDirArg, evidenceArg] = process.argv.slice(2);
 const serverDir = resolve(serverDirArg), evidence = resolve(evidenceArg);
 const WebSocket = createRequire(join(serverDir, 'package.json'))('ws');
-const caseId = mode === 'mixed' ? 'API-04-05-06' : mode === 'history' ? 'API-06H' : mode === 'repeat' ? 'API-06R' : mode === 'baseline' ? 'API-09' : mode === 'wedged-runtime' ? 'API-17' : 'API-07';
+const caseId = mode === 'mixed' ? 'API-04-05-06' : mode === 'history' ? 'API-06H' : mode === 'repeat' ? 'API-06R' : mode === 'baseline' ? 'API-09' : mode === 'wedged-runtime' ? 'API-17' : mode === 'held-connection' ? (process.env.CASE_ID ?? 'API-02') : 'API-07';
 const own = await fs.realpath(await fs.mkdtemp(join(tmpdir(), `bq284-live-${mode}-`)));
 const data = join(own, 'data'), workspace = join(own, 'workspace'), codexHome = join(own, 'codex-home');
 for (const d of [data, workspace, codexHome]) await fs.mkdir(d);
@@ -150,12 +153,13 @@ const terminateCase = async (s, runtime, id) => {
   log('terminate', out); record[id] = out;
   return out;
 };
-const shutdownCase = async (s, id, runs) => {
+const shutdownCase = async (s, id, runs, hooks = {}) => {
   const busy = [];
   for (const r of runs) busy.push({ ...r, proc: await waitBusy(s, r.marker, r.label) });
   await delay(1500);
   const before = descendants(s.pid);
-  const started = Date.now(); s.child.kill('SIGTERM');
+  if (hooks.beforeKill) await hooks.beforeKill();
+  const started = Date.now(); record.sigtermAt = started; s.child.kill('SIGTERM');
   await wait(() => s.exit, 'server exit after SIGTERM', 30_000).catch(() => {});
   const exitMs = s.exit ? s.exit.at - started : null;
   await delay(1000);
@@ -194,6 +198,77 @@ try {
     const started = Date.now(); s2.child.kill('SIGTERM'); await wait(() => s2.exit, 'idle exit', 20_000);
     record.idleShutdown = { exit: s2.exit, elapsedMs: s2.exit.at - started, shutdownLog: s2.log.split('\n').filter(l => /process-tree sweep|exceeded 10s/.test(l)) };
     log('idle shutdown', record.idleShutdown);
+  } else if (mode === 'held-connection') {
+    const net = await import('node:net'); const http = await import('node:http');
+    const runs = [];
+    const add = async (fn, runtime, label) => { const marker = `${runTag}_${label}`; runs.push({ ...(await fn(s1, runtime, label, busyText(marker))), marker }); };
+    await add(standalone, 'codex', 'sa-codex'); await add(standalone, 'claude', 'sa-claude');
+    await add(teamMember, 'codex', 'team-codex'); await add(orgAgent, 'claude', 'org-claude');
+    const definitionId = await agentDef(s1, 'Probe Agent');
+    const createBody = JSON.stringify({ query: 'mutation($input:CreateAgentRunInput!){createAgentRun(input:$input){success message runId}}', variables: { input: { agentDefinitionId: definitionId, ...launch('codex') } } });
+    const latencies = [], preCreated = [];
+    for (let i = 0; i < 3; i++) { const t = Date.now(); const r = (await s1.gql('mutation($input:CreateAgentRunInput!){createAgentRun(input:$input){success message runId}}', { input: { agentDefinitionId: definitionId, ...launch('codex') } })).createAgentRun; latencies.push(Date.now() - t); preCreated.push(r.runId); }
+    const median = [...latencies].sort((a, b) => a - b)[1];
+    record.createLatencyMs = latencies; record.preCreated = preCreated;
+    log('createAgentRun latency (ms)', latencies);
+    const conn = { silent: {}, keepAlive: {} };
+    // Idle keep-alive connection: one request on a keep-alive agent, socket kept.
+    const agent = new http.Agent({ keepAlive: true, maxSockets: 1 });
+    await new Promise((resolve, reject) => { const req = http.request({ host: '127.0.0.1', port: s1.port, path: '/rest/health', agent }, res => { res.resume(); res.on('end', resolve); }); req.on('socket', sock => { conn.keepAlive.localPort = null; sock.on('connect', () => { conn.keepAlive.localPort = sock.localPort; }); sock.on('close', () => { conn.keepAlive.closedAt = Date.now(); }); }); req.on('error', reject); req.end(); });
+    // Silent connection: TCP connect, never send a byte; accepted before SIGTERM.
+    const silent = net.connect(s1.port, '127.0.0.1');
+    await new Promise((resolve, reject) => { silent.once('connect', resolve); silent.once('error', reject); });
+    conn.silent.localPort = silent.localPort; silent.on('close', () => { conn.silent.closedAt = Date.now(); }); silent.on('error', e => { conn.silent.error = e.code; });
+    await delay(800);
+    log('client connections held', { keepAliveLocalPort: conn.keepAlive.localPort, silentLocalPort: conn.silent.localPort });
+    const inflight = [];
+    const fire = k => new Promise(resolve => {
+      const entry = { k, sentAt: Date.now() };
+      const req = http.request({ host: '127.0.0.1', port: s1.port, path: '/graphql', method: 'POST', agent: false, headers: { 'content-type': 'application/json', 'content-length': Buffer.byteLength(createBody) } }, res => {
+        let body = ''; res.on('data', c => { body += c; }); res.on('end', () => { entry.status = res.statusCode; entry.endedAt = Date.now(); try { entry.result = JSON.parse(body).data?.createAgentRun ?? JSON.parse(body); } catch { entry.body = body.slice(0, 300); } resolve(entry); });
+        res.on('error', e => { entry.error = e.code ?? String(e); entry.endedAt = Date.now(); resolve(entry); });
+      });
+      req.on('error', e => { entry.error = e.code ?? String(e); entry.endedAt = Date.now(); resolve(entry); });
+      req.setTimeout(30_000, () => { entry.error = 'CLIENT_TIMEOUT_30S'; req.destroy(); });
+      req.end(createBody);
+    });
+    const hooks = { beforeKill: async () => {
+      const step = Math.max(10, Math.round(median / 5));
+      for (let k = 0; k < 6; k++) setTimeout(() => inflight.push(fire(k)), k * step);
+      await delay(Math.round(median / 2));
+      record.inflightPlan = { median, stepMs: step, sigtermAfterFirstMs: Math.round(median / 2) };
+    } };
+    const shut = await shutdownCase(s1, caseId, runs, hooks);
+    await delay(200);
+    const settled = await Promise.all(inflight);
+    record.inflight = settled.map(e => ({ ...e, sentRelSigtermMs: e.sentAt - record.sigtermAt, endedRelSigtermMs: e.endedAt ? e.endedAt - record.sigtermAt : null }));
+    record.connections = { silentClosedRelSigtermMs: conn.silent.closedAt ? conn.silent.closedAt - record.sigtermAt : null, silentError: conn.silent.error ?? null, keepAliveClosedRelSigtermMs: conn.keepAlive.closedAt ? conn.keepAlive.closedAt - record.sigtermAt : null };
+    log('in-flight requests', record.inflight); log('held connections', record.connections);
+    silent.destroy(); agent.destroy();
+    for (const ws of sockets.splice(0)) ws.terminate();
+    // What did the cut requests leave? Relaunch on the same data.
+    const s2 = await startServer('second');
+    const history = (await s2.gql('query{listWorkspaceRunHistory(limitPerAgent:200){agentDefinitions{agentName runs{runId status isActive terminatedAt summary}}}}')).listWorkspaceRunHistory;
+    const listed = history.flatMap(g => g.agentDefinitions.flatMap(d => d.runs.map(r => ({ ...r, agentName: d.agentName }))));
+    const onDisk = [];
+    for (const file of execFileSync('find', [data, '-name', 'run_metadata.json'], { encoding: 'utf8' }).split('\n').filter(Boolean)) {
+      try { const m = JSON.parse(await fs.readFile(file, 'utf8')); onDisk.push({ runId: m.runId, preparedAt: m.preparedAt ?? null, startedAt: m.startedAt ?? null, runtimeKind: m.runtimeKind }); } catch (e) { onDisk.push({ file: file.replace(own, '<own>'), unreadable: String(e) }); }
+    }
+    const known = new Set([...preCreated, ...runs.map(r => r.runId), ...record.inflight.filter(e => e.result?.runId).map(e => e.result.runId)]);
+    const unknown = onDisk.filter(r => r.runId && !known.has(r.runId) && !runs.some(x => x.rootId === r.runId));
+    const preparedOnly = onDisk.filter(r => r.preparedAt && !r.startedAt);
+    const resume = [];
+    for (const r of [...unknown, ...preparedOnly].slice(0, 12)) {
+      resume.push({ runId: r.runId, listed: listed.find(x => x.runId === r.runId) ?? null, resumeConfig: await s2.gql('query($id:String!){getAgentRunResumeConfig(runId:$id){isActive}}', { id: r.runId }).then(d => d.getAgentRunResumeConfig, e => `error: ${String(e).slice(0, 200)}`) });
+    }
+    const restoreAttempts = [];
+    for (const r of preparedOnly) restoreAttempts.push({ runId: r.runId, restore: await s2.gql('mutation($id:String!){restoreAgentRun(agentRunId:$id){success message runId}}', { id: r.runId }).then(d => d.restoreAgentRun, e => `error: ${String(e).slice(0, 300)}`) });
+    record.preparedOnlyRestore = restoreAttempts; log('restore of prepared-only runs', restoreAttempts);
+    record.afterRelaunch = { listedCount: listed.length, onDiskCount: onDisk.length, onDisk, unknownRunsFromCutRequests: unknown, preparedOnly, inspected: resume, listed };
+    record.cutHandlerLog = s1.log.split('\n').filter(l => /Error in createAgentRun|activation admission|ADMISSION|admission is closed/i.test(l)).slice(0, 20);
+    log('after relaunch', { listed: listed.length, onDisk: onDisk.length, unknown: unknown.length, preparedOnly: preparedOnly.length, inspected: resume, cutHandlerLog: record.cutHandlerLog });
+    const t2 = Date.now(); s2.child.kill('SIGTERM'); await wait(() => s2.exit, 'idle exit', 20_000);
+    record.idleShutdown = { exit: s2.exit, elapsedMs: s2.exit.at - t2, shutdownLog: s2.log.split('\n').filter(l => /process-tree sweep|exceeded 10s/.test(l)) };
   } else if (mode === 'wedged-runtime') {
     // API-17: a runtime that cannot end its turn (its `codex app-server` is SIGSTOPped while the run is busy), so the
     // graceful cleanup reaches the 10 s bound and the sweep must log and remove the real targets.

@@ -1,0 +1,16 @@
+[+4.0s] isolated-app {"args":["start","--from-worktree","--data-root","/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-wedged-quit-TMCr51/data-root"],"exit":0,"ok":true,"error":null}
+[+4.2s] instance started {"label":"first","instanceId":"iso-64848-32bc","electronPid":71393,"serverPid":72310,"serverPort":64849,"servers":1}
+[+5.4s] models {"codex":"gpt-6.1-terra","claude":"claude-haiku-4-5-20251001"}
+[+5.7s] standalone sent {"label":"sa-codex","runtime":"codex","kind":"agent","runId":"desk_agent_bq284dmvw7xejh_152a5ceab7c544b48e2bd730126c1cee","rootId":"desk_agent_bq284dmvw7xejh_152a5ceab7c544b48e2bd730126c1cee"}
+[+5.9s] standalone sent {"label":"sa-claude","runtime":"claude","kind":"agent","runId":"desk_agent_bq284dmvw7xejh_c1a6ea8fd15545e5b9cdcbc840f864b5","rootId":"desk_agent_bq284dmvw7xejh_c1a6ea8fd15545e5b9cdcbc840f864b5"}
+[+9.5s] busy {"label":"sa-codex","pid":74426,"ppid":72779,"pgid":74426}
+[+9.5s] busy {"label":"sa-claude","pid":74394,"ppid":73095,"pgid":74394}
+[+11.1s] server stopped (SIGSTOP) {"serverPid":72310}
+[+34.0s] wedged-server user quit observed {"label":"wedged-server user quit","electronPid":71393,"serverPid":72310,"serverGoneMs":20171,"electronGoneMs":21754,"before":12,"survivors":[],"markedLeft":[],"serversForDataAfter":[],"tools":[{"label":"sa-codex","kind":"agent","runtime":"codex","pid":74426,"ppid":72779,"pgid":74426,"aliveAfter":false},{"label":"sa-claude","kind":"agent","runtime":"claude","pid":74394,"ppid":73095,"pgid":74394,"aliveAfter":false}]}
+[+34.0s] isolated-app {"args":["stop","iso-64848-32bc"],"exit":0,"ok":true,"error":null}
+[+37.2s] isolated-app {"args":["start","--from-worktree","--data-root","/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-wedged-quit-TMCr51/data-root"],"exit":0,"ok":true,"error":null}
+[+37.3s] instance started {"label":"second","instanceId":"iso-64994-5911","electronPid":75509,"serverPid":76420,"serverPort":64995,"servers":1}
+[+37.4s] relaunch check {"label":"second","serversForData":[{"pid":76420,"ppid":75509,"pgid":75509,"command":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ur339-api.vSYEoq/clean/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus  …  --data-dir /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-wedged-quit-TMCr51/data-root/server-data"}],"exactlyOne":true,"previousSessionLeft":[]}
+[+40.1s] final quit observed {"label":"final quit","electronPid":75509,"serverPid":76420,"serverGoneMs":1377,"electronGoneMs":1377,"before":6,"survivors":[],"markedLeft":[],"serversForDataAfter":[],"tools":[]}
+[+40.2s] isolated-app {"args":["stop","iso-64994-5911"],"exit":0,"ok":true,"error":null}
+{"result":"Completed","error":null,"fallbackCleanup":0}
