@@ -37,3 +37,25 @@
   a design change: AR-001 (`fu-007-options.md` says "server process confirmed gone", as REQ-002 does) and AR-002 (the
   in-flight-handler line under the design's Risks). The reviewer routed to
   `/software_engineering_team/implementation_engineer`. Report: `design-review-report.md`.
+
+## SR-004 — 2026-10-31 — D1 revised for CRR-002 / F-API-001 (Design Impact)
+- Trigger: CRR-002 (`/software_engineering_team/code_reviewer`), failure-origin review of API-REV-001 F-API-001: Fail,
+  Design Impact, with a requirements part.
+  - SR-003's `forceCloseConnections` cut `createAgentRun` requests in progress.
+  - API-02/02B left 1 and 3 prepared-only runs, plus completed runs whose client never got the ID.
+  - The base build (API-03) completed the same requests.
+- Evidence added: P-004 (`evidence/P-004-grace-drain-close.probe.mjs` + `.log`). With Fastify defaults plus one
+  `preClose` step (destroy never-used connections; drain requests in progress within a grace; then close the rest), the
+  close takes 281 ms and the in-flight response is delivered; a request outlasting a 500 ms grace is cut at 502 ms.
+- Requirements, revised within the direction by the Solution Designer (the user is informed in the routing message):
+  - REQ-001 now reads "never waits on a client beyond a short grace (2 s)";
+  - DEC-002 revised to option (c) from CRR-002, with the reasoning recorded;
+  - AC-002 now requires every in-flight create to be answered, and no prepared-only or unacknowledged run;
+  - AC-008 added (deterministic, from P-004).
+- Design: D1 replaced by `installClientConnectionClose(app)` in `src/shutdown/client-connection-close.ts` for the four
+  servers; `SERVER_CLOSE_OPTIONS` and its test removed. D2 unchanged.
+- Follow-ups:
+  - FU-004 added (`createAgentRun` is not atomic on a failed activation; pre-existing);
+  - FU-003 (from the code reviewer) stays.
+- Design case: added to `docs/design-cases.md` Case 5.
+- Classification: Medium / High (unchanged). Routing: `/architecture_reviewer` (ARCH-REV-002), then implementation.

@@ -1,7 +1,24 @@
 # Design Spec — update-restart-reliability (autobyteus-339)
 
+## SR-004 Revision (CRR-002 / F-API-001)
+- **Finding.** SR-003's D1 (`forceCloseConnections`) cut requests in progress. A `createAgentRun` cut that way keeps
+  running and either leaves a prepared-only run (activation refused once admission closes) or completes a run whose
+  client never got the ID, so a retry duplicates it. The base build completed the same requests. Evidence: API-02/02B
+  (1 and 3 prepared-only runs), API-03 (base contrast); `agent-run-service.ts:241-246`.
+- **Design impact.** SR-003's premise that closed admission makes a cut mutation clean was false: the prepare
+  persists before the admission check. The review gap is recorded in CRR-002.
+- **Revised D1.** Close only what causes the stall, and keep the base guarantee for requests in progress:
+  - destroy connections that never sent a request;
+  - let requests in progress finish within 2 s;
+  - then close everything left (`installClientConnectionClose`, P-004).
+- **Unchanged:** D2; REQ-002/REQ-003; 284's bound and sweep.
+- **Requirements:** REQ-001 and DEC-002 revised within the direction (Solution Designer; the user is informed in the
+  routing message). The user's approval of the solution (close what holds the shutdown; install after an incomplete
+  stop when the server is gone) still applies: the revision narrows the cut so that it changes nothing a request in
+  progress relies on.
+
 ## Solution And Approval Basis
-- Current solution revision ID: `SR-003`.
+- Current solution revision ID: `SR-004` (2026-10-31): D1 revised for CRR-002 / F-API-001 (Design Impact); D2 unchanged. SR-003 is in git history.
 - Approved requirements: `requirements-doc.md` SR-002, approved by **the user** on 2026-10-31 ("Yeah, if you think
   your solution is reasonable, then let's do it."): DEC-001 = A, REQ-001 to REQ-003. DEC-002 to DEC-005 were decided by
   the Solution Designer within the direction.
@@ -50,7 +67,7 @@
   - Tests; docs.
   - Two packages, existing owners only.
 - **Architectural risk: `High`.**
-  - Shutdown connection semantics change for every client of every node: in-flight requests are cut (DEC-002).
+  - Shutdown connection semantics change for every client of every node: never-used and idle connections are closed at once, and a request in progress gets at most 2 s (DEC-002, revised).
   - The update install now proceeds after an incomplete stop: deployment and lifecycle behavior.
 - **Escalation triggers:**
   - a flow that relies on an HTTP response completing during shutdown;
@@ -95,14 +112,14 @@
   - The install preparation treated "incomplete cleanup" and "old server possibly alive" as one condition.
 - Refactor needed now: `No`. Both changes are additive in their existing owners.
 - Residual risk:
-  - an in-flight client request at shutdown gets no response (DEC-002, accepted);
+  - a request still running 2 s after the close began is cut and gets no response (DEC-002, revised); a `createAgentRun` cut that way can still leave a prepared-only run, because creation is not atomic on a failed activation (pre-existing, FU-004);
   - the macOS install-on-quit behavior after `app.exit(1)` is unknown (FU-001).
 
 ## Terminology
 - No new domain word. "Server process confirmed gone": the managed server child has an exit code or signal (`childExited`).
 
 ## Legacy Removal Policy (Mandatory)
-- Nothing removed. No compatibility path is added.
+- Removed in SR-004: `SERVER_CLOSE_OPTIONS` (`src/shutdown/server-close-options.ts`) and its test, replaced by `client-connection-close.ts`; no re-export, no option left behind.
 
 ## Persisted Data / State Transition Decision
 - `Not Affected`.
@@ -114,7 +131,7 @@
 | DS-002 | Primary | BEH-002 | "Install update and restart" (user or unattended) | `quitAndInstall` or the error | `ElectronApplication` install preparation |
 
 ## Primary Execution Spine(s)
-- DS-001: `SIGTERM | IPC → ServerProcessShutdown.request → app.close() → preClose (native drain; WebSocket clients closed) → ★ all remaining HTTP connections closed (forceCloseConnections) → server closed → onClose: run cleanup (application stop → closeProcessResources → supervisor) → sweep → exit 0`
+- DS-001: `SIGTERM | IPC → ServerProcessShutdown.request → app.close() → Fastify closing: new requests answered 503 → preClose: native drain; WebSocket clients closed; ★ client-connection close (never-used connections destroyed; wait for requests in progress ≤ 2 s; then every remaining HTTP connection closed) → server closed → onClose: run cleanup (application stop → closeProcessResources → supervisor) → sweep → exit 0`
 - DS-002: `Install click → AppUpdater.installUpdateAndRestart → ElectronApplication.prepareForInstall → ApplicationShutdown.stop() → [rejects] → ★ serverManager.isServerProcessGone()? → yes: ApplicationShutdown.acceptIncompleteStopForInstall() → quitAndInstall → will-quit passes → install | no: rethrow → existing error`
 
 ## Spine Narratives (Mandatory)
@@ -124,13 +141,15 @@
 | DS-002 | An install after an incomplete stop goes ahead when the old server is confirmed gone; the incomplete stop is still reported in the log, as today. Only an unconfirmed server exit keeps today's error | `ElectronApplication` |
 
 ## Ownership Map
-- Each server's composition owns its Fastify options; the close rule has one definition (`SERVER_CLOSE_OPTIONS`).
+- `src/shutdown/client-connection-close.ts` owns the close rule for client connections: it tracks a server's sockets (never-used, in-progress requests) and closes them in the right order at close. Each server's composition installs it once.
 - `BaseServerManager` owns the fact "server process confirmed gone" (it owns the child).
 - `ApplicationShutdown` owns the prepared state that lets `will-quit` pass.
 - `ElectronApplication` owns the install-preparation sequence (it already composes the shutdown and the server manager).
 
 ## Removal / Decommission Plan (Mandatory)
-- None.
+| Item | Replaced by | Scope |
+| --- | --- | --- |
+| `SERVER_CLOSE_OPTIONS` and its spreads in four servers (IR-001) | `installClientConnectionClose(app)` | In this change |
 
 ## Bounded Local / Internal Spines
 - Install preparation: `stop → ok: install | rejected → server gone? → accept and install | rethrow`.
@@ -142,7 +161,7 @@
 ## Boundary Encapsulation Map
 | Boundary | Encapsulates | Forbidden bypass |
 | --- | --- | --- |
-| `SERVER_CLOSE_OPTIONS` | The close rule | A server choosing its own close behavior silently |
+| `installClientConnectionClose(app)` | Socket tracking and the close order | A server closing sockets itself, or using `forceCloseConnections` |
 | `BaseServerManager.isServerProcessGone()` | The child's exit state | Parsing `ShutdownIncompleteError` messages to infer it |
 | `ApplicationShutdown.acceptIncompleteStopForInstall()` | The prepared state after a settled failure | Setting `prepared` from outside; calling it while a stop is pending |
 
@@ -153,7 +172,7 @@
 ## Interface Boundary Mapping
 | Interface | Responsibility |
 | --- | --- |
-| `export const SERVER_CLOSE_OPTIONS = { forceCloseConnections: true } as const` | One rule for every node server: closing never waits on a client |
+| `installClientConnectionClose(app: FastifyInstance, options?: { graceMs?: number; timers? }): void` (`IN_FLIGHT_REQUEST_GRACE_MS = 2_000`) | One rule for every node server: listens to `app.server` `connection` / `request` / `upgrade` (upgraded sockets are left to the WebSocket plugin), and adds one `preClose` hook: destroy sockets that never delivered a request; if requests are in progress, wait until none are or `graceMs` passes; then `app.server.closeAllConnections()` |
 | `BaseServerManager.isServerProcessGone(): boolean` | `!this.serverProcess \|\| childExited(this.serverProcess)` |
 | `ApplicationShutdown.acceptIncompleteStopForInstall(): void` | Only after the stop settled as rejected: `prepared = true` (will-quit then passes); throws if no stop settled |
 | `ElectronApplication.prepareForInstall(): Promise<void>` | Replaces `prepareForInstall: () => this.stop()` |
@@ -161,7 +180,7 @@
 ## Existing Capability / Subsystem Reuse Check
 | Need | Existing | Decision |
 | --- | --- | --- |
-| Close connections at close | Fastify `forceCloseConnections` | Reuse (P-003 proves it) |
+| Close connections at close | Fastify `forceCloseConnections` (SR-003) | Replaced (it cut requests in progress, F-API-001); Node's `closeAllConnections()` after a grace is used instead (P-004) |
 | "Server gone" | `childExited`, `serverProcess` | Reuse via one query |
 | Install sequencing | `AppUpdater.prepareForInstall` | Reuse the hook |
 | Incomplete-stop log | `ApplicationShutdown` report ("Application shutdown incomplete") | Reuse; no new log |
@@ -169,12 +188,10 @@
 ## Final File Responsibility Mapping
 | File | Change | Responsibility |
 | --- | --- | --- |
-| `autobyteus-server-ts/src/shutdown/server-close-options.ts` | Add | `SERVER_CLOSE_OPTIONS`, with a comment citing the cause |
-| `autobyteus-server-ts/src/compositions/build-studio-server.ts` | Modify | Spread `SERVER_CLOSE_OPTIONS` into `fastify({...})` (`:403`) |
-| `autobyteus-server-ts/src/compositions/build-standalone-application-server.ts` | Modify | Same (`:18`) |
-| `autobyteus-server-ts/src/agent-tools/mcp/agent-tools-mcp-local-server.ts` | Modify | Same (`:30`) |
-| `autobyteus-server-ts/src/credential-proxy/credential-proxy-local-server.ts` | Modify | Same (`:20`) |
-| `autobyteus-server-ts/tests/unit/shutdown/server-close-options.test.ts` (or integration) | Add | From P-003: one used and one silent connection; close completes and `onClose` runs within 1 s; one case per server construction where cheap (fails without the option) |
+| `autobyteus-server-ts/src/shutdown/server-close-options.ts` and `tests/unit/shutdown/server-close-options.test.ts` (IR-001) | Remove | Replaced by `client-connection-close.ts` (no re-export) |
+| `autobyteus-server-ts/src/shutdown/client-connection-close.ts` | Add | `installClientConnectionClose`, `IN_FLIGHT_REQUEST_GRACE_MS`, with a comment citing FU-008 and F-API-001 |
+| `autobyteus-server-ts/tests/unit/shutdown/client-connection-close.test.ts` | Add | From P-003 and P-004 (AC-001, AC-008): a never-used connection does not hold the close; an idle keep-alive is closed; a 300 ms request in progress gets its response and `onClose` runs right after; a request outlasting the grace is cut at the grace; a new request during the grace gets 503; an upgraded socket is not closed by it |
+| `autobyteus-server-ts/src/compositions/build-studio-server.ts`, `build-standalone-application-server.ts`, `agent-tools/mcp/agent-tools-mcp-local-server.ts`, `credential-proxy/credential-proxy-local-server.ts` | Modify | Drop `SERVER_CLOSE_OPTIONS` (IR-001); call `installClientConnectionClose(app)` once right after `fastify({...})` |
 | `autobyteus-web/electron/server/baseServerManager.ts` | Modify | `isServerProcessGone()` |
 | `autobyteus-web/electron/application/applicationShutdown.ts` | Modify | `acceptIncompleteStopForInstall()` |
 | `autobyteus-web/electron/application/electronApplication.ts` | Modify | `prepareForInstall()` and its wiring at `:73-75` |
@@ -184,7 +201,7 @@
 ## Concrete Examples / Shape Guidance
 | Topic | Good | Avoided |
 | --- | --- | --- |
-| Close rule | `fastify({ ...SERVER_CLOSE_OPTIONS, logger: …, routerOptions: … })` | A `preClose` hook that hunts sockets itself; four separate inline `forceCloseConnections` literals |
+| Close rule | `const app = fastify({...}); installClientConnectionClose(app);` | `forceCloseConnections: true` (cuts a request in progress, F-API-001); waiting without a grace (a never-used connection holds the close, FU-008); per-route abort logic |
 | Install | `async prepareForInstall() { try { await this.shutdown.stop() } catch (error) { if (!this.serverManager.isServerProcessGone()) throw error; this.shutdown.acceptIncompleteStopForInstall() } }` | Parsing the error message; passing a callback into `ApplicationShutdown` that reaches the server manager |
 
 ## Backward-Compatibility Rejection Log (Mandatory)
@@ -193,12 +210,13 @@
 | A setting to keep waiting for clients | Rejected |
 
 ## Change / Refactor Sequence
-1. D1: the constant, the four servers, and the test from P-003 (failing first).
+1. D1 (SR-004): remove `SERVER_CLOSE_OPTIONS` and its test; add `client-connection-close.ts` and its test from P-003/P-004 (failing first on defaults); install it in the four servers.
 2. D2: the query, the transition, the install preparation, and the tests.
 3. Docs.
 4. Validation (API/E2E):
-   - AC-002: a real server with busy runs, one silent client connection (as P-003) and one slow request, SIGTERM;
-     exit 0 in ≤ 3 s.
+   - AC-002: the API-02 shape again (busy runs, a silent and an idle connection, `createAgentRun` requests staggered
+     around SIGTERM): exit 0 in ≤ 3 s, every in-flight create answered, and after relaunch no prepared-only and no
+     unacknowledged run. At least 2 samples, plus the base contrast.
    - AC-003: the P-002 loop, ≥ 40 valid desktop busy quits on a build from the final branch, from a clean checkout,
      with counts reported.
    - AC-004/005: main-process tests. If the isolated app's `--test-update-feed` can drive a real install, one install
@@ -209,10 +227,12 @@
    - Live models per `TESTING.md`: Codex `gpt-6.1-terra`.
 
 ## Key Tradeoffs
-- **`forceCloseConnections: true` instead of closing only unused connections:** it is one documented Fastify option,
-  proven by P-003. In-flight requests at shutdown are cut (DEC-002). The Docker update request answers 202 before the
-  starter stops the server (`node-update-routes.ts:48-66`; `docker/starter/update-service.mjs`), so nothing relies on a
-  response during close.
+- **Grace drain instead of `forceCloseConnections` (SR-004):** SR-003 cut every request in progress. CRR-002 / API-02
+  showed that this leaves prepared-only and unacknowledged runs, while the base build completed the same requests. The
+  stall's cause is only connections that never sent a request, so those are closed at once, and a request in progress
+  keeps the base guarantee within a 2 s grace. This is the smallest rule that fixes FU-008 without changing what any
+  handler can rely on. Measured handler times (`createAgentRun` 54–175 ms) are far inside the grace. The Docker update
+  request answers 202 before the starter stops the server (`node-update-routes.ts:48-66`), so it is unaffected either way.
 - **All four servers:** one rule, no later stall from the same cause (DEC-004).
 - **Keep today's error when the server exit is unconfirmed:** no retry machinery for a near-impossible state (DEC-005).
 
