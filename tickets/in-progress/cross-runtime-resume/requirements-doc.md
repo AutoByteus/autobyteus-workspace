@@ -26,7 +26,7 @@
 | BEH-002 | System | SCN-001, SCN-003 | The first message after a restore is just the user's text. | When the run's runtime was changed since its last session, the first message after the change carries a system hand-over notice before the user's text (facts and pointers; the agent decides how to proceed). | The journal stays derived and read-only. |
 | BEH-003 | — | — | Withdrawn 2026-10-30 (user): no summary file; the next agent reads the journals. | — | — |
 | BEH-004 | — | — | Withdrawn 2026-10-30 (user): the stop reason is not needed to continue; it is not recorded, shown or sent. | — | — |
-| BEH-005 | User | SCN-001 | One conversation per run. | The conversation shows the earlier messages unchanged (history comes from the raw traces, not from a runtime: F-15) and a marker at the switch (DEC-3). | History projection. |
+| BEH-005 | User | SCN-001 | One conversation per run; the chat of a run shows the records of its active raw-trace file. | The conversation shows the earlier messages unchanged and a marker at the switch (DEC-3), live and after a reload: the chat is built from the run's switch segments and its active file. Compaction keeps showing only the records after the latest compaction. | History projection for runs that never switched. |
 | BEH-006 | — | — | Withdrawn 2026-10-30 (user): every runtime can read a file by shell command; the notice only says where the journals are. | — | — |
 | BEH-007 | System | SCN-001, SCN-003 | Journals are translated with the run's one runtime (F-24). | Each journal file is translated with the runtime of its own raw file, so earlier work reads correctly after a switch. | Journals of runs without a switch are unchanged. |
 
@@ -87,22 +87,24 @@ Findings must cite REQ/AC/BEH IDs. New behavior is a `Requirement Gap`.
 | REQ-006 | Withdrawn 2026-10-30 (user): the notice does not list what the journals lack. | — | — | User |
 | REQ-007 | The notice tells the agent where to start (the latest journal) and that the earlier journals are there if it wants them; the agent decides what to read. | BEH-002 | Must | F-03; user, 2026-10-30 |
 | REQ-008 | Withdrawn 2026-10-30 (user): no excerpt fallback. | — | — | User |
-| REQ-010 | A switch is made at the first input after it: a marker is written as the first record of a new raw-trace file (the earlier records are archived by the existing rotate-before-boundary primitive, idempotent for a retry), so one raw-trace file never holds two runtimes. A failure before the new session exists changes nothing visible; a retry never writes two markers. | BEH-002 | Must | F-23; DEC-7 |
+| REQ-010 | A switch is made at the first input after it: a marker is the first record of a new raw-trace file and the previous agent's records are archived by an idempotent rotation, so one raw-trace file never holds records of two runtimes — including the records the new agent's own session writes while it starts (for example a native agent's system instruction), which follow the marker. A failure before the new session exists writes no marker and archives nothing; a retry never writes two markers; a user who gives up a failed attempt leaves no marker behind. | BEH-002 | Must | F-23; DEC-7; CRR-002 F-1 |
 | REQ-011 | The chat shows a marker where the agent runtime changed (DEC-3), built from the marker record; it names both agent runtimes and models. | BEH-005 | Should | User question, DEC-3 |
 | REQ-012 | Each journal file is translated with the runtime of its own raw-trace file (an archived segment: the runtime recorded for it; the open file: the run's current runtime). Journals of runs that never switched are unchanged. | BEH-007 | Must | F-24 |
 | REQ-013 | A run that is a team member, an Org member, a delegated copy, application-owned or system-owned does not offer the runtime choice and the server rejects a switch for it. | BEH-001 | Must | DEC-4 |
+| REQ-014 | After a reload or reopen, the chat of a switched run shows the earlier conversation (the previous agents' records archived at the switches), the marker, and the new agent's records, in order; the paging of earlier events follows the same sequence. A run that never switched, and compaction's latest-segment view, are unchanged. | BEH-005 | Must | The Task's observable success ("the chat shows the earlier conversation unchanged and a marker"); CRR-002 F-2 |
 
 ## Acceptance Criteria
 
 | ID | Req | Trigger | Expected | Verification |
 | --- | --- | --- | --- | --- |
 | AC-001 | REQ-001, 013 | Stop a run, switch to another available runtime and model, save | Same run ID and chat; metadata shows the new runtime and no old session ID and a pending switch; selecting the original runtime again clears it; a member or delegated run is rejected | Test + real run |
-| AC-002 | REQ-002, 003, 010 | Send a message after the switch | The previous records are archived, the marker is the first record of the active file, the runtime receives the notice then the user's text; the journal named in the notice is current; a second message has no notice; the chat shows the marker | Test |
+| AC-002 | REQ-002, 003, 010 | Send a message after the switch, to a native, Claude, Codex, Antigravity and Grok target | The previous records are archived, the marker is the first record of the active file (the new agent's own first records follow it, never the previous agent's segment), the runtime receives the notice then the user's text; the journal named in the notice is current; a second message has no notice; the chat shows the marker | Test |
 | AC-004 | REQ-007 | Several journal files | The notice names the latest journal as the place to start and lists the earlier ones | Test |
 | AC-006 | REQ-012 | A run with Claude Agent SDK then Codex App Server files | Each journal file uses its runtime's translation; a run that never switched renders as before | Test |
 | AC-007 | Preserved | Same-runtime restore; model-only edit | Unchanged | Existing suites |
 | AC-008 | REQ-001…003, 010 | Real run: two available runtimes on a copied, isolated data root | The new agent receives the notice and opens the journals it names (what it does with them is its model's work; no quality promise) | Real run |
 | AC-009 | REQ-010 | Crash injected between the marker and the metadata commit; and a retry | One marker, one archived segment, the run usable | Test |
+| AC-010 | REQ-014 | Switch a run twice; reload its chat; page earlier events; a run that compacted before and after | The earlier conversations, both markers and the latest records in order; paging follows the same sequence; a never-switched run and a compacted run read as before | Built-server test (RS-01 and a chat reload case) |
 
 ## Relevant Scenarios And Journeys
 
