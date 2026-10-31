@@ -1,0 +1,17 @@
+# DEL-04 browser probe on merged personal + allowlist commit 3699c58e09 (server dist rebuilt in DEL-01), 2026-10-31T22:00:55Z
+
+> autobyteus@1.5.11-beta.8 test:e2e:projects-left-navigation /Users/normy/autobyteus_org/autobyteus-worktrees/projects-tree-one-place/autobyteus-web
+> node tests/e2e/projects-left-navigation-probe.mjs --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/projects-tree-one-place/tickets/done/projects-tree-one-place/evidence/delivery/DEL-04-browser-probe
+
+PLN-01: Pass
+PLN-02: Pass
+PLN-03: Pass
+PLN-04: Pass
+PLN-05: Pass
+PLN-06: Pass
+PLN-07: Pass
+PLN-08: Pass
+PLN-09: Pass
+PLN-10: Pass
+Projects left navigation probe: Pass. Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/projects-tree-one-place/tickets/done/projects-tree-one-place/evidence/delivery/DEL-04-browser-probe/evidence.json
+exit=0

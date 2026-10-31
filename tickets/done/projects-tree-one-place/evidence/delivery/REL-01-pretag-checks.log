@@ -1,0 +1,11 @@
+# REL-01 checks before tagging on personal 6b58f3f5af, 2026-10-31T21:44:39Z
+Licensing is consistent.
+Repository artifact hygiene check passed.
+secret gate: BLOCKED. Remove the secret from these commits before pushing (amend or rebase the unpushed commits).
+secret gate: a real key that was ever pushed must also be revoked at its provider. Add a false positive to .gitleaks.toml only after checking it.
+next-beta: 1.5.11-beta.9
+
+## Secret Gate rerun after the false-positive entry (3699c58e09), 2026-10-31T21:45:35Z
+Finding before: generic-api-key in tickets/(in-progress→done)/atomic-agent-run-creation/evidence/API-349-probe.mjs:42, commit 2b87d1ab16 (autobyteus-349, already on personal). Value checked by shape and context: the scripted inference server's model ID (also its replies' `model`), not a credential. Value not recorded here beyond the allowlist.
+secret gate: scanning 35 commit(s) in v1.5.11-beta.8..HEAD
+secret gate: PASS (no secrets found)

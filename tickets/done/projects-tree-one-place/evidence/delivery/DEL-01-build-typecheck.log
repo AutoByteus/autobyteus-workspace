@@ -1,0 +1,14 @@
+# DEL-01 build + server typecheck on merged personal 6b58f3f5af, 2026-10-31T21:43:43Z
+╰──────────────────────────────────────────────────────────────────────────────╯
+Done in 2.4s using pnpm v10.28.2
+install-exit=0
+Tip: Need your database queries to be 1000x faster? Accelerate offers you that and more: https://pris.ly/tip-2-accelerate
+
+prebuild-exit=0
+(Use `node --trace-warnings ...` to show where the warning was created)
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+build-exit=0
+> tsc -p tsconfig.build.json --noEmit
+
+server-typecheck-exit=0
