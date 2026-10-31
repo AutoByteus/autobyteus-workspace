@@ -90,3 +90,28 @@ None.
 - Material score or classification changes: overall 8.7 → 9.4; Large / High unchanged
 - Recommended recipient: API/E2E engineer; implementation engineer informed
 - Remaining risks or uncertainty: Grok target not started for real; restart with a stored pending switch; browser view; optional C-9 hardening
+
+### CRR-004 — Proportional test-code review after API/E2E Pass (API-REV-002)
+
+- Canonical review report updated: `api-e2e-test-review-report.md`
+- Review entry point and round: successful API/E2E test-code review, round 1
+- Review scope: `N/A` (test review)
+- Triggering role, report path, and finding or scenario IDs: API/E2E engineer, `api-e2e-execution-coverage-report.md` (API-REV-002); none
+- Relevant solution revision IDs: SR-004
+- Relevant architecture-review revision IDs: ARCH-REV-001…004
+- Relevant implementation revision IDs: IR-001, IR-002
+- Relevant API/E2E revision IDs: API-REV-001, API-REV-002
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: CRR-003 source review Pass (separate report)
+- Current authoritative result: Pass (test review)
+- What changed in the review result and why: eight built-server cases, a real-browser probe and a spy fix in an earlier ticket's e2e test; assertions prove the requirements, mutation checks catch the relevant breakages, the earlier ticket's bounded-read rule is kept (O-1 accepted); no finding.
+- Supported product scenario / material-premise basis changes: None
+
+#### Prior Finding Resolution
+
+None.
+
+- New or remaining finding IDs: none; optional tidy (header list lacks RS-07, RS-08)
+- Material score or classification changes: none
+- Recommended recipient: delivery engineer
+- Remaining risks or uncertainty: Electron shell, real providers for native and Grok, a real process kill, optional `begin` hardening; confidence 94.9% vs the 95% default
