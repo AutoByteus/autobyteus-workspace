@@ -16,6 +16,7 @@
 ## Integration
 
 - The ticket branch was already current with `origin/personal` `f7f331d96b` (0 commits behind at delivery start), so nothing was integrated. The validated code (`60fc6161d2`, plus the removals carried in `724bc349ff`) is the code delivered; API/E2E ran on it with its own test updates (`36c258a77a`), so no rerun was needed.
+- At finalization `origin/personal` had advanced to `325e0f9593` (23 commits of autobyteus-349, server run creation and startup). I merged and pushed (`6b58f3f5af`) before checking that state: a slip, recorded in the release/deployment report. Before any release step the merged state was rebuilt and rerun by impact, all Pass: server build and typecheck; server unit 7660 passed; server E2E 179 passed / 4 skipped (PRH-01…PRH-10); browser probe PLN-01…PLN-10 (`evidence/delivery/DEL-01…DEL-04`).
 
 ## Verification
 
@@ -23,7 +24,8 @@
 
 ## Release
 
-- `Beta`, on the user's word ("i would like to release a beta for this when its finished thanks", requirements § Release Decision). Outcome: `release-deployment-report.md` § Release / Publication / Deployment.
+- `Beta`, on the user's word ("i would like to release a beta for this when its finished thanks", requirements § Release Decision).
+- **`v1.5.11-beta.9` released:** checks before tagging pass (licensing, hygiene, Secret Gate after one false positive from autobyteus-349's probe was allowlisted narrowly, release smoke 13/13 on five runtimes, no waiver); build-only release run success; all four workflows success; GitHub pre-release with 23/23 assets; Docker `:beta` moved, `:latest` and GitHub "Latest" (`v1.5.10`) unchanged. Desktop installs with beta updates on are offered it.
 
 ## For The Solution Designer
 

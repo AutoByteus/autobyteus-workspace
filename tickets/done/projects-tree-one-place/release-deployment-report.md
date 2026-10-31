@@ -96,15 +96,32 @@ On `personal` `6b58f3f5af` plus the allowlist commit `3699c58e09` (`evidence/del
 
 ## Version / Tag / Release Commit
 
-PENDING
+- Build-only release run `41246798805` (`pnpm release:test --ref personal`) on `c3eccdd925`: **success**, all five desktop targets built, Publish skipped as designed (`evidence/delivery/REL-03-build-only-run.log`).
+- `python3 scripts/release_versions.py next-beta` → `1.5.11-beta.9` (highest tag `v1.5.11-beta.8`).
+- The untracked `*/dist/` of the shared SDKs (prebuild output) was deleted so the tree was clean; the draft delivery revision record was kept outside the worktree until after tagging.
+- `bash scripts/desktop-release.sh beta --branch finalize/projects-tree-one-place --no-push`: commit `c4cbf82ddc` `chore(release): bump workspace release version to 1.5.11-beta.9` (only `autobyteus-web/package.json` `1.5.11-beta.8` → `1.5.11-beta.9`), annotated tag `v1.5.11-beta.9`.
+- `origin/personal` re-fetched (still `c3eccdd925`, the state the build-only run built), then `git push origin HEAD:personal` (`c3eccdd925..c4cbf82ddc`) and `git push origin v1.5.11-beta.9` (22:33:44 UTC).
 
 ## Release / Publication / Deployment
 
-PENDING
+- Applicable: `Yes`. Method: `Project Release Guide` (`RELEASE.md` § Cutting The Release, § Watching The Rollout).
+- Pipelines triggered and their results, watched together with a first-failure watcher (`evidence/delivery/REL-04-rollout.log`), all **success**:
+  - Desktop Release `41248739598`;
+  - Android APK Release `41248739603`;
+  - iOS App Store Connect Release `41248739663`;
+  - Server Docker Release `41248739669`.
+- Published artifacts checked against what the release should produce:
+  - GitHub release `v1.5.11-beta.9`: pre-release, not draft, **23/23 assets** (macOS ARM64/x64 `.dmg`/`.zip` with blockmaps, Linux x64/ARM64 AppImages, Windows `.exe`, four `latest*.yml`, Android APK and `.sha256`, six `autobyteus-server-1.5.11-beta.9-linux-{arm64,x64}.{tar.gz,json,json.sig}`). GitHub "Latest" remains `v1.5.10`.
+  - Docker Hub `autobyteus/autobyteus-server`: `:1.5.11-beta.9` and `:beta` = `sha256:2890c8fc165b…`; `:latest` unchanged (`sha256:a1c22e2e4186…`).
+- Release/publication/deployment result: `Completed`
+- Release notes handoff result: `Not required` for this beta (pre-release tags publish GitHub generated notes); the curated `release-notes.md` stays in the archived ticket for the next stable release.
 
 ## Post-Finalization Cleanup
 
-PENDING
+- Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/projects-tree-one-place`
+- Worktree cleanup and prune, local branches (`codex/projects-tree-one-place`, `finalize/projects-tree-one-place`): run from the main checkout right after this record is pushed; the terminal message reports the outcome.
+- Remote branch cleanup: `origin/codex/projects-tree-one-place` deleted after its tip `7938ff883c` was confirmed an ancestor of `origin/personal` (with this record's push).
+- Probe stacks: removed (`dataRootRemoved: true`); no isolated instance was started by delivery.
 
 ## Release Notes Summary
 
@@ -128,4 +145,11 @@ Rolling back is possible: no stored data changes. Revert the merge on `personal`
 
 ## Final Status
 
-PENDING
+- Verification complete (from the evidence; merged state re-verified): `Yes`
+- Repository finalization complete: `Yes` (`personal` `6b58f3f5af` merge; `c3eccdd925` checks; `c4cbf82ddc` release commit; this record on top)
+- Applicable release/deployment/rollout complete: `Yes` — beta `v1.5.11-beta.9`: 4/4 workflows, 23/23 assets, `:beta` moved, `:latest` and GitHub "Latest" unchanged
+- Applicable safe cleanup complete: `Yes` (remote branch with this record; worktree and local branches right after, reported in the terminal message)
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to the Solution Designer: `Yes`, after this record is pushed
+- Terminal message/reference: `send_message_to` the Solution Designer (`Delivery Completed`)
