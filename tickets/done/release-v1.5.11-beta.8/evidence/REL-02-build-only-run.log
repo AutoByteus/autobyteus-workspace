@@ -1,0 +1,9 @@
+# REL-02 build-only desktop release run 41230080206 on personal eaafd77ac5, 2026-10-31T19:00:34Z
+conclusion: success
+Resolve Release Metadata | success | 2026-10-31T18:34:36Z -> 2026-10-31T18:35:40Z
+Build Linux ARM64 | success | 2026-10-31T18:35:45Z -> 2026-10-31T18:41:48Z
+Build Windows x64 | success | 2026-10-31T18:35:43Z -> 2026-10-31T18:52:23Z
+Build macOS ARM64 | success | 2026-10-31T18:35:43Z -> 2026-10-31T18:57:57Z
+Build macOS Intel x64 | success | 2026-10-31T18:35:43Z -> 2026-10-31T19:00:08Z
+Build Linux x64 | success | 2026-10-31T18:35:43Z -> 2026-10-31T18:42:13Z
+Publish GitHub Release | skipped | 2026-10-31T19:00:09Z -> 2026-10-31T19:00:09Z

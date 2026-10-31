@@ -1,0 +1,26 @@
+# REL-04 in-place update of a test node: published 1.5.11-beta.7 image -> 1.5.11-beta.8 from the GitHub release (production key), test-owned container and volumes, 2026-10-31T19:41:49Z
+before: container d7a3d9e5acf7 image 8bcf8eabfafe
+C1 before (what the Nodes page reads): {"inPlaceUpdate":"available","version":"1.5.11-beta.7","target":{"version":"1.5.11-beta.8","relation":"newer"},"update":{"state":"idle","targetVersion":null,"st
+## POST /rest/node-update {version: 1.5.11-beta.8} (the request the Nodes page button sends)
+{"accepted":true,"version":"1.5.11-beta.8"}
++0s 1.5.11-beta.7 running checking None
++2s 1.5.11-beta.7 running downloading None
++31s 1.5.11-beta.7 running preparing None
++42s no answer (restarting)
++44s 1.5.11-beta.8 running confirming None
++104s 1.5.11-beta.8 succeeded confirming None
+after status: {"version":"1.5.11-beta.8","state":"running","server":{"pid":614,"packageVersion":"1.5.11-beta.8","source":"installed"},"update":{"state":"succeeded","targetVersion":"1.5.11-beta.8","step":"confirming","code":null,"message":"Updated to 1.5.11-beta.8.","startedAt":"2026-10-31T19:42:00.557Z","finishedAt":"2026-10-31T19:43:42.920Z","requestedFrom":"172.17.0.1"}}
+same container: yes; same image: yes
+server cwd: /home/autobyteus/server-packages/packages/1.5.11-beta.8
+health: {"status":"ok","message":"Server is running"}
+data marker kept: rel8-marker
+## starter log
+{"time":"2026-10-31T19:41:51.760Z","starter":"server-started","pid":95,"version":"1.5.11-beta.7","source":"builtIn"}
+{"time":"2026-10-31T19:42:00.557Z","starter":"update-requested","version":"1.5.11-beta.8","requestedFrom":"172.17.0.1"}
+{"time":"2026-10-31T19:42:00.557Z","starter":"update-started","version":"1.5.11-beta.8","requestedFrom":"172.17.0.1"}
+{"time":"2026-10-31T19:42:40.320Z","starter":"self-check-passed","version":"1.5.11-beta.8"}
+{"time":"2026-10-31T19:42:40.396Z","starter":"server-exited","pid":95,"version":"1.5.11-beta.7","code":0,"signal":null}
+{"time":"2026-10-31T19:42:40.399Z","starter":"server-started","pid":614,"version":"1.5.11-beta.8","source":"installed"}
+{"time":"2026-10-31T19:43:42.920Z","starter":"update-succeeded","version":"1.5.11-beta.8"}
+key material in node log: 0
+cleanup: container and volumes removed
