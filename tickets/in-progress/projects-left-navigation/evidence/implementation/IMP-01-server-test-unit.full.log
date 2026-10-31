@@ -1,7 +1,7 @@
-# IMP-01 server unit suite
+# IMP-01 server unit suite (IR-002)
 # Command: pnpm -C autobyteus-server-ts test:unit
-# Commit: dacdceed36; macOS, Node v22.23.1
-# Date: 2026-10-31T10:52Z
+# Commit: 467cff24c0; macOS, Node v22.23.1
+# Date: 2026-10-31T11:28Z
 
 > autobyteus-server-ts@0.1.1 test:unit /Users/normy/autobyteus_org/autobyteus-worktrees/projects-left-navigation/autobyteus-server-ts
 > vitest run tests/unit tests/app-data-migrations tests/architecture tests/agent-work-journal --exclude "**/*.integration.test.ts"
@@ -107,36 +107,9 @@ runtime-bootstrap-info-should-appear
 runtime-bootstrap-debug-should-appear
 {"event":"managed_compaction_all_exit","stage":"backend-construction","completedTurns":0,"error":{"category":"Error","code":null,"status":null,"condition":null},"parentRequests":[],"parentResponses":[],"summaryRequests":[],"summaryResponses":[],"events":[]}
 {"event":"managed_compaction_all_exit","stage":"backend-construction","completedTurns":0,"error":{"category":"Error","code":null,"status":null,"condition":null},"parentRequests":[],"parentResponses":[],"summaryRequests":[],"summaryResponses":[],"events":[]}
- ❯ tests/architecture/projects-boundaries.test.ts (4 tests | 1 failed) 137ms
-     × keeps Project Tasks and execution-internal delegated tasks apart (REQ-012, SR-021/SR-023) 99ms
 
-⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+ Test Files  889 passed | 5 skipped (894)
+      Tests  7558 passed | 9 skipped (7567)
+   Start at  12:28:26
+   Duration  765.14s (transform 19.81s, setup 12.32s, import 361.77s, tests 290.62s, environment 972ms)
 
- FAIL  tests/architecture/projects-boundaries.test.ts > projects subsystem boundaries > keeps Project Tasks and execution-internal delegated tasks apart (REQ-012, SR-021/SR-023)
-AssertionError: expected [ …(2) ] to deeply equal [ Array(1) ]
-
-- Expected
-+ Received
-
-  [
-+   "compositions/project-run-links-composition.ts",
-    "compositions/project-task-execution-resource-composition.ts",
-  ]
-
- ❯ tests/architecture/projects-boundaries.test.ts:68:75
-     66|     }
-     67|     // Only the one composition binding knows both sides.
-     68|     expect(filesImporting(join(SRC, "compositions"), /(^|\/)projects\/…
-       |                                                                           ^
-     69|     expect(filesImporting(join(SRC, "api", "graphql", "types"), /proje…
-     70|       .toEqual(["api/graphql/types/project-tasks.ts"]);
-
-⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/1]⎯
-
-
- Test Files  1 failed | 886 passed | 5 skipped (892)
-      Tests  1 failed | 7552 passed | 9 skipped (7562)
-   Start at  11:52:45
-   Duration  767.56s (transform 21.56s, setup 12.33s, import 360.33s, tests 296.88s, environment 930ms)
-
- ELIFECYCLE  Command failed with exit code 1.
