@@ -9,6 +9,7 @@ The latest `code-review-report.md` (or `api-e2e-test-review-report.md`) is autho
 | CRR-001 | `code-review-report.md` | Implementation Review, round 1 (IR-001) | N/A | Pass | None |
 | CRR-002 | `code-review-report.md` | API/E2E Failure-Origin Review, round 2 (API-REV-001 F-API-001) | Pass | Fail: `Requirement Gap` → Solution Designer | F-API-001 |
 | CRR-003 | `code-review-report.md` | Failure-origin resolution (SR-005, DEC-003 = C) | Fail (Requirement Gap) | F-API-001 closed as an accepted residual; source `Pass` stands; API/E2E to record AC-004 under SR-005 | F-API-001 (closed) |
+| CRR-004 | `api-e2e-test-review-report.md` | Proportional API/E2E Test-Code Review (API-REV-002 Pass) | Pass (CRR-003 resolution) | Not Applicable (no durable test changed) | None |
 
 ## Revision Entries
 
@@ -99,3 +100,28 @@ None (CRR-001 had no findings).
 - Material score or classification changes: None; Small / High
 - Recommended recipient: API/E2E engineer (`Local Fix`, reporting)
 - Remaining risks or uncertainty: FU-005 (the hard-kill leftover); FU-001 to FU-004; the plain graceful in-flight-create variant may need its own case if API/E2E judges the stuck-activation case insufficient.
+
+### CRR-004 — Proportional test-code review after API-REV-002 Pass
+
+- Canonical review report updated: `api-e2e-test-review-report.md` (new)
+- Review entry point and round: Successful API/E2E Test-Code Review, round 1
+- Review scope: `N/A` (test review)
+- Triggering role, report path, and finding or scenario IDs: API/E2E engineer, `api-e2e-execution-coverage-report.md` (API-REV-002 `Pass`, 93.0%); AC-004 proven under SR-005 (API-03G graceful stop, three samples; API-03 stuck-activation SIGTERM)
+- Relevant solution revision IDs: SR-005
+- Relevant architecture-review revision IDs: ARCH-REV-002
+- Relevant implementation revision IDs: IR-001
+- Relevant API/E2E revision IDs: API-REV-001, API-REV-002
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: F-API-001 closed as an accepted residual; source `Pass` (CRR-003)
+- Current authoritative result: `Not Applicable`, passing to delivery
+- What changed in the review result and why: API/E2E changed no durable test code in either round; its probe is evidence. The branch's tests were reviewed in CRR-001.
+- Supported product scenario / material-premise basis changes: None
+
+#### Prior Finding Resolution
+
+None open (F-API-001 was closed in CRR-003).
+
+- New or remaining finding IDs: None
+- Material score or classification changes: None; Small / High
+- Recommended recipient: delivery engineer
+- Remaining risks or uncertainty: FU-001 to FU-005; remote delegation across nodes is covered by unit tests only; the first start on real data is not run by rule; the architecture reviewer's docs are still untracked.
