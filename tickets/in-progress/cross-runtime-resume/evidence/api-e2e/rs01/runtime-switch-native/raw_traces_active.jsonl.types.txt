@@ -1,0 +1,4 @@
+1793435342.945 system_task_notification system.runtime_handover Agent runtime changed from Antigravity CLI (gemini-3.8-flash
+1793435343.022 system_task_notification system.runtime_handover [System: runtime hand-over] Another agent worked on this run
+1793435343.022 user  NATIVE-TURN-TWO: carry on.
+1793435343.056 assistant  NATIVE-REPLY-2
