@@ -51,6 +51,7 @@ const runSettingsMessages = {
   'runSettings.status.stopped': '已停止',
   'runSettings.existing.readOnlyNote': '此运行的设置无法更改。',
   'runSettings.existing.refreshNote': '需要刷新已保存的设置后才能更改。',
+  'runSettings.existing.runtimeChangeHint': '智能体保留此运行及其对话。发送下一条消息时，新的智能体运行时将接手。',
   'runSettings.existing.savedRefreshFailed': '设置已保存，但未能刷新。请先刷新再继续修改。',
   'runSettings.existing.refresh': '刷新',
   'runSettings.save.unsavedResumes': '有未保存的更改 · 将在此运行恢复时生效',

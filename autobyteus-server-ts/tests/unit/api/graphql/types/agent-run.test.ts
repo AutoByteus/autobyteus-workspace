@@ -7,7 +7,7 @@ const mockTerminationService = vi.hoisted(() => ({
   getAgentRun: vi.fn(),
 }));
 const mockRunModelConfigService = vi.hoisted(() => ({
-  updateStoppedAgentRunModelConfig: vi.fn(),
+  updateStoppedAgentRunSelection: vi.fn(),
 }));
 
 vi.mock(
@@ -29,34 +29,44 @@ describe("AgentRunResolver", () => {
     mockTerminationService.terminateAgentRun.mockReset();
     mockTerminationService.restoreAgentRun.mockReset();
     mockTerminationService.getAgentRun.mockReset();
-    mockRunModelConfigService.updateStoppedAgentRunModelConfig.mockReset();
+    mockRunModelConfigService.updateStoppedAgentRunSelection.mockReset();
   });
 
   it("routes only stopped model-config updates through the owner-aware Studio service", async () => {
-    mockRunModelConfigService.updateStoppedAgentRunModelConfig.mockResolvedValue({
+    mockRunModelConfigService.updateStoppedAgentRunSelection.mockResolvedValue({
       success: false,
       outcome: "RUN_ACTIVE",
       message: "locked",
       isActive: true,
       editability: { editable: false, reason: "RUN_ACTIVE" },
-      canonical: { llmModelIdentifier: "model-1", llmConfig: { reasoning_effort: "medium" } },
+      canonical: { runtimeKind: "claude_agent_sdk", llmModelIdentifier: "model-1", llmConfig: { reasoning_effort: "medium" } },
       fieldErrors: [],
     });
     const resolver = new AgentRunResolver();
 
-    await expect(resolver.updateStoppedAgentRunModelConfig({
+    await expect(resolver.updateStoppedAgentRunSelection({
       agentRunId: "run-1",
+      runtimeKind: "claude_agent_sdk",
       llmModelIdentifier: "model-1",
       llmConfig: { reasoning_effort: "high" },
     })).resolves.toMatchObject({
       outcome: "RUN_ACTIVE",
-      canonicalSelection: { llmModelIdentifier: "model-1", llmConfig: { reasoning_effort: "medium" } },
+      canonicalSelection: { runtimeKind: "claude_agent_sdk", llmModelIdentifier: "model-1", llmConfig: { reasoning_effort: "medium" } },
     });
-    expect(mockRunModelConfigService.updateStoppedAgentRunModelConfig).toHaveBeenCalledWith({
+    expect(mockRunModelConfigService.updateStoppedAgentRunSelection).toHaveBeenCalledWith({
       agentRunId: "run-1",
+      runtimeKind: "claude_agent_sdk",
       llmModelIdentifier: "model-1",
       llmConfig: { reasoning_effort: "high" },
     });
+  });
+
+  it("refuses a runtime kind that is not an agent runtime without calling the service", async () => {
+    const resolver = new AgentRunResolver();
+    await expect(resolver.updateStoppedAgentRunSelection({
+      agentRunId: "run-1", runtimeKind: "CODEX", llmModelIdentifier: "model-1", llmConfig: null,
+    })).resolves.toMatchObject({ success: false, outcome: "INTERNAL_ERROR" });
+    expect(mockRunModelConfigService.updateStoppedAgentRunSelection).not.toHaveBeenCalled();
   });
 
   it("routes restore through AgentRunService", async () => {

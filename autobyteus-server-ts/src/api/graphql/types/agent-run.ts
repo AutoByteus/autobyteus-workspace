@@ -9,6 +9,7 @@ import {
   Resolver,
 } from "type-graphql";
 import { GraphQLJSON } from "graphql-scalars";
+import { runtimeKindFromString } from "../../../runtime-management/runtime-kind-enum.js";
 import {
   getStudioAgentRunService,
   getStudioRunModelConfigService,
@@ -115,9 +116,12 @@ export class CancelPreparedAgentRunResult {
 }
 
 @InputType()
-export class UpdateStoppedAgentRunModelConfigInput {
+export class UpdateStoppedAgentRunSelectionInput {
   @Field(() => String)
   agentRunId!: string;
+
+  @Field(() => String)
+  runtimeKind!: string;
 
   @Field(() => String)
   llmModelIdentifier!: string;
@@ -127,7 +131,7 @@ export class UpdateStoppedAgentRunModelConfigInput {
 }
 
 @ObjectType()
-export class UpdateStoppedAgentRunModelConfigResult {
+export class UpdateStoppedAgentRunSelectionResult {
   @Field(() => Boolean)
   success!: boolean;
 
@@ -302,17 +306,20 @@ export class AgentRunResolver {
     return this.runModelConfigService.agentRunModelOptions(agentRunId);
   }
 
-  @Mutation(() => UpdateStoppedAgentRunModelConfigResult)
-  async updateStoppedAgentRunModelConfig(
-    @Arg("input", () => UpdateStoppedAgentRunModelConfigInput)
-    input: UpdateStoppedAgentRunModelConfigInput,
-  ): Promise<UpdateStoppedAgentRunModelConfigResult> {
+  @Mutation(() => UpdateStoppedAgentRunSelectionResult)
+  async updateStoppedAgentRunSelection(
+    @Arg("input", () => UpdateStoppedAgentRunSelectionInput)
+    input: UpdateStoppedAgentRunSelectionInput,
+  ): Promise<UpdateStoppedAgentRunSelectionResult> {
     try {
       if (!Object.hasOwn(input, "llmConfig")) {
         throw new Error("llmConfig must be present and may be null.");
       }
-      const result = await this.runModelConfigService.updateStoppedAgentRunModelConfig({
+      const runtimeKind = runtimeKindFromString(input.runtimeKind);
+      if (!runtimeKind) throw new Error("runtimeKind must be an agent runtime kind.");
+      const result = await this.runModelConfigService.updateStoppedAgentRunSelection({
         agentRunId: input.agentRunId,
+        runtimeKind: runtimeKind,
         llmModelIdentifier: input.llmModelIdentifier,
         llmConfig: input.llmConfig,
       });
@@ -322,7 +329,9 @@ export class AgentRunResolver {
         message: result.message,
         isActive: result.isActive,
         editability: result.editability,
-        canonicalSelection: result.canonical ? { llmModelIdentifier: result.canonical.llmModelIdentifier, llmConfig: result.canonical.llmConfig } : null,
+        canonicalSelection: result.canonical
+          ? { runtimeKind: result.canonical.runtimeKind, llmModelIdentifier: result.canonical.llmModelIdentifier, llmConfig: result.canonical.llmConfig }
+          : null,
         fieldErrors: [...result.fieldErrors],
       };
     } catch (error) {

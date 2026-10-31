@@ -1,0 +1,18 @@
+[+4.9s] server started {"label":"first","pid":66702,"port":63578}
+[+6.3s] models {"codex":"gpt-6.1-terra","claude":"claude-haiku-4-5-20251001"}
+[+6.9s] standalone sent {"label":"sa-codex","runtime":"codex","runId":"probe_agent_bq284lmvw6at8w_f24a2672fc394715b1683afcd29c7b06"}
+[+7.3s] standalone sent {"label":"sa-claude","runtime":"claude","runId":"probe_agent_bq284lmvw6at8w_0fd076f0dccc48859b84d5690105db61"}
+[+8.4s] team sent {"label":"team-codex","runtime":"codex","teamRunId":"probe_team_bq284lmvw6at8w_team_codex_afe420563a274a809686fec388803348","memberRunId":"probe_team_coordinator_team_codex_bq284lmvw6at8w_73dce79fa1ff463183c92e8db5de6c8e"}
+[+10.0s] org sent {"label":"org-claude","runtime":"claude","orgRunId":"probe_org_bq284lmvw6at8w_org_claude_ac5c9027266744ce8f3be7737c793e92","memberRunId":"probe_org_manager_org_claude_bq284lmvw6at8w_e914f8315392484fbdc678593db0bdf8"}
+[+10.4s] createAgentRun latency (ms) [175,79,122]
+[+11.2s] client connections held {"keepAliveLocalPort":63716,"silentLocalPort":63717}
+[+11.3s] busy {"label":"sa-codex","marker":"BQ284Lmvw6at8w_sa-codex","pid":70664,"ppid":67189,"pgid":70664,"afterMs":95}
+[+11.7s] busy {"label":"sa-claude","marker":"BQ284Lmvw6at8w_sa-claude","pid":72072,"ppid":67726,"pgid":72072,"afterMs":401}
+[+12.0s] busy {"label":"team-codex","marker":"BQ284Lmvw6at8w_team-codex","pid":72589,"ppid":67189,"pgid":72589,"afterMs":376}
+[+14.4s] busy {"label":"org-claude","marker":"BQ284Lmvw6at8w_org-claude","pid":73270,"ppid":69384,"pgid":73270,"afterMs":2337}
+[+18.6s] shutdown {"case":"API-02","serverPid":66702,"exit":{"code":0,"signal":null,"at":1793437379700},"elapsedMs":1362,"runs":[{"label":"sa-codex","kind":"agent","runtime":"codex","runId":"probe_agent_bq284lmvw6at8w_f24a2672fc394715b1683afcd29c7b06","toolCommand":{"pid":70664,"ppid":67189,"pgid":70664,"aliveAfter":false}},{"label":"sa-claude","kind":"agent","runtime":"claude","runId":"probe_agent_bq284lmvw6at8w_0
+[+18.8s] in-flight requests [{"k":0,"sentAt":1793437378277,"error":"ECONNRESET","endedAt":1793437378340,"sentRelSigtermMs":-61,"endedRelSigtermMs":2},{"k":1,"sentAt":1793437378302,"error":"ECONNRESET","endedAt":1793437378340,"sentRelSigtermMs":-36,"endedRelSigtermMs":2},{"k":2,"sentAt":1793437378326,"error":"ECONNRESET","endedAt":1793437378340,"sentRelSigtermMs":-12,"endedRelSigtermMs":2},{"k":3,"sentAt":1793437378349,"error
+[+18.8s] held connections {"silentClosedRelSigtermMs":3,"silentError":null,"keepAliveClosedRelSigtermMs":3}
+[+21.8s] server started {"label":"second","pid":75409,"port":63765}
+[+21.9s] after relaunch {"listed":8,"onDisk":8,"unknown":3,"preparedOnly":1,"inspected":[{"runId":"probe_agent_bq284lmvw6at8w_ce21b42f3a1645c489e2cf0b93b32476","listed":{"runId":"probe_agent_bq284lmvw6at8w_ce21b42f3a1645c489e2cf0b93b32476","status":"offline","isActive":false,"terminatedAt":null,"summary":"","agentName":"Probe Agent BQ284Lmvw6at8w"},"resumeConfig":{"isActive":false}},{"runId":"probe_agent_bq284lmvw6at8w_f
+{"result":"Completed","error":null,"fallbackCleanup":0}

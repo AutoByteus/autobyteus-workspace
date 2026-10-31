@@ -1,0 +1,15 @@
+# API-02/03/04 full file, FINDINGS RUN (final). command: env -i PATH HOME=<temp> TMPDIR RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=/Users/normy/autobyteus_org/autobyteus-worktrees/cross-runtime-resume/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs RUNTIME_SWITCH_NATIVE_EVIDENCE_DIR=<evidence>/rs01 pnpm exec vitest run tests/e2e/runtime/runtime-switch-native-built-server.e2e.test.ts --no-watch --reporter=verbose
+# commit 60c3ac4ec8 (dist built from it) + new test file; macOS Darwin 25.5.0; date 2026-10-31T08:28:56Z
+# Expected result today: RS-02, RS-03 pass; RS-01 FAILS with the five soft assertions below (findings F-1, F-2)
+
+ × tests/e2e/runtime/runtime-switch-native-built-server.e2e.test.ts > agent runtime switch, native runtime and stopped-run settings on the built server > RS-01: native -> Antigravity -> native on one run: segments hold the previous agent's records only, the native candidate writes nothing before th
+ ✓ tests/e2e/runtime/runtime-switch-native-built-server.e2e.test.ts > agent runtime switch, native runtime and stopped-run settings on the built server > RS-02: settings of a stopped run: running refused, save a switch, undo it, switch again, model-only edit keeps the switch, first message makes i
+ ✓ tests/e2e/runtime/runtime-switch-native-built-server.e2e.test.ts > agent runtime switch, native runtime and stopped-run settings on the built server > RS-03: a host with a delegated copy saves its own runtime and the copy's model in one Save; the copy keeps its runtime and cannot switch 1992ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 1 ⎯⎯⎯⎯⎯⎯⎯
+AssertionError: I-7: segment 2 = Antigravity records: expected [ …(6) ] to deeply equal [ …(5) ]
+AssertionError: I-7: the prepared native candidate wrote no record before the marker: expected [ { …(5) } ] to deeply equal []
+AssertionError: the native agent's own system instruction is recorded in its file: expected 0 to be greater than 0
+AssertionError: the reopened chat keeps the earlier conversation: expected '[{"kind":"system_task_notification","…' to contain 'NATIVE-TURN-ONE'
+AssertionError: ...and shows the first marker: expected '[{"kind":"system_task_notification","…' to contain 'Agent runtime changed from AutoByteus'
+ Test Files  1 failed (1)
+      Tests  1 failed | 2 passed (3)

@@ -6,6 +6,7 @@
  */
 import { it, expect, vi, afterEach } from 'vitest'
 import { spawn, type ChildProcess } from 'child_process'
+import { EventEmitter } from 'events'
 import { BaseServerManager } from '../baseServerManager'
 import { createEmbeddedServerClientEndpoint } from '../../../shared/embeddedServerClientEndpoint'
 
@@ -35,6 +36,11 @@ class WedgedServerManager extends BaseServerManager {
   adopt(proc: ChildProcess): void { this.serverProcess = proc; this.gracefulShutdownTimeoutMs = 300 }
 }
 
+const newManager = () => new WedgedServerManager({
+  clientEndpoint: createEmbeddedServerClientEndpoint(54329), listenerPolicy: 'preserve-backend-default',
+  baseDataRoot: '/test-owned-data', environmentPolicy: 'isolated-baseline',
+})
+
 const spawned: number[] = []
 const exists = (pid: number) => { try { process.kill(pid, 0); return true } catch (error) { return (error as NodeJS.ErrnoException).code !== 'ESRCH' } }
 const waitUntil = async (predicate: () => boolean, timeoutMs: number) => {
@@ -58,10 +64,24 @@ it.skipIf(process.platform === 'win32')('force-stops a wedged server and its who
     baseDataRoot: '/test-owned-data', environmentPolicy: 'isolated-baseline',
   })
   manager.adopt(server)
+  expect(manager.isServerProcessGone()).toBe(false)
 
   await expect(manager.stopServer()).rejects.toThrow('incomplete')
+  // autobyteus-339 AC-004 precondition: the stop is incomplete, yet the server process is confirmed gone.
+  expect(manager.isServerProcessGone()).toBe(true)
 
   await waitUntil(() => ![server.pid!, pids.cli, pids.tool].some(exists), 3000)
   expect({ server: exists(server.pid!), cli: exists(pids.cli), tool: exists(pids.tool) })
     .toEqual({ server: false, cli: false, tool: false })
 }, 15_000)
+
+it('reports the server process gone only when none was started or it has an exit code or signal (autobyteus-339)', () => {
+  const manager = newManager()
+  expect(manager.isServerProcessGone()).toBe(true)
+  const child = Object.assign(new EventEmitter(), { exitCode: null, signalCode: null }) as unknown as ChildProcess
+  manager.adopt(child)
+  expect(manager.isServerProcessGone()).toBe(false)
+  Object.assign(child, { signalCode: 'SIGKILL' })
+  expect(manager.isServerProcessGone()).toBe(true)
+})
+

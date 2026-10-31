@@ -1,0 +1,15 @@
+{
+  "runId": "rs_native_3a57b3_94894aa20ea4422fb713fc5571e3ae78",
+  "agentDefinitionId": "rs-native-3a57b3",
+  "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-switch-native-8W6dAC/workspace",
+  "memoryDir": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-switch-native-8W6dAC/memory/agents/rs_native_3a57b3_94894aa20ea4422fb713fc5571e3ae78",
+  "llmModelIdentifier": "rs-native-a:lmstudio@127.0.0.1:49965",
+  "llmConfig": null,
+  "autoExecuteTools": true,
+  "runtimeKind": "autobyteus",
+  "platformAgentRunId": "rs_native_3a57b3_94894aa20ea4422fb713fc5571e3ae78",
+  "preparedAt": "2026-10-31T10:22:15.481Z",
+  "preparedExpiresAt": "2026-11-01T10:22:15.481Z",
+  "startedAt": "2026-10-31T10:22:15.523Z",
+  "applicationExecutionContext": null
+}

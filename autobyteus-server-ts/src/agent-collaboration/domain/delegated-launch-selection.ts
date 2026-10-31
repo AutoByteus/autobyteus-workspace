@@ -1,4 +1,5 @@
 import { isDeepStrictEqual } from "node:util";
+import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type { AgentLaunchConfiguration } from "../../agent-team-execution/domain/team-run-config.js";
 import {
   effectiveCopyAgentLaunch,
@@ -21,6 +22,9 @@ export type DelegatedLaunchSelectionValue = Readonly<{
   llmModelIdentifier: string;
   llmConfig: Readonly<Record<string, unknown>> | null;
 }>;
+
+/** The stopped Agent root's own selection saved together with its copies' choices: it carries the agent runtime too (a host can switch). */
+export type DelegatedHostSelectionValue = DelegatedLaunchSelectionValue & Readonly<{ runtimeKind: RuntimeKind }>;
 
 /** One requested change: an agent's own selection (`agentRunId`) or a Team-level one (`teamRunId`). */
 export type DelegatedLaunchChange = Readonly<{

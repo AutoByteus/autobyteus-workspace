@@ -12,6 +12,7 @@ import {
   makeTempMemoryRoot,
   rotateActive,
   setSegmentRecordCount,
+  setSegmentRuntimeKind,
   turnRecords,
   writeActive,
 } from "../raw-trace-folder-fixtures.js";
@@ -44,7 +45,6 @@ describe("WorkJournalService.ensureCurrent (DS-004)", () => {
     });
     expect(manifest(runDir)).toEqual({
       run_id: "run_journal_1",
-      runtime_kind: "claude_agent_sdk",
       renderer_revision: WORK_JOURNAL_RENDERER_REVISION,
       files: [{
         journal_file: "work_journal_active.md",
@@ -52,6 +52,7 @@ describe("WorkJournalService.ensureCurrent (DS-004)", () => {
         source_record_count: 4,
         state: "open",
         content_sha256: expect.stringMatching(/^[0-9a-f]{64}$/),
+        runtime_kind: "claude_agent_sdk",
       }],
     });
     expect(read(pkg.files[0]!.path)).toContain("Command: ls → ok");
@@ -109,7 +110,7 @@ describe("WorkJournalService.ensureCurrent (DS-004)", () => {
     expect(rebuilt.evidenceHash).toBe(hash);
   });
 
-  it("a closed file is rendered again when the renderer revision, runtime or raw record count changes, or it is missing (N4)", async () => {
+  it("a closed file is rendered again when the renderer revision, its own recorded runtime or raw record count changes, or it is missing; the run's runtime is not its rule (N4)", async () => {
     writeActive(runDir, turnRecords("turn_1", "ls", "a.ts"));
     rotateActive(runDir);
     const service = new WorkJournalService();
@@ -122,6 +123,11 @@ describe("WorkJournalService.ensureCurrent (DS-004)", () => {
     await service.ensureCurrent(target());
     expect(closedRenders()).toBe(1);
 
+    // The run's own runtime changing does not touch a closed file: it keeps the rules of the runtime that wrote it.
+    await service.ensureCurrent({ ...target(), runtimeKind: RuntimeKind.CODEX_APP_SERVER });
+    expect(closedRenders()).toBe(1);
+    // The runtime recorded for its segment is its rule.
+    setSegmentRuntimeKind(runDir, "raw_traces_000001.jsonl", "codex_app_server");
     const codex = await service.ensureCurrent({ ...target(), runtimeKind: RuntimeKind.CODEX_APP_SERVER });
     expect(closedRenders()).toBe(2);
     expect(read(codex.files[0]!.path)).toContain("Runtime Codex App Server ·");
@@ -137,6 +143,57 @@ describe("WorkJournalService.ensureCurrent (DS-004)", () => {
     await service.ensureCurrent({ ...target(), runtimeKind: RuntimeKind.CODEX_APP_SERVER });
     expect(closedRenders()).toBe(4);
     renders.mockRestore();
+  });
+
+  describe("each journal file is rendered with the agent runtime that wrote its raw file (AC-006, I-9)", () => {
+    const claudeCall = { id: "rt_1", seq: 1, ts: 1790056801, turn_id: "t1", trace_type: "tool_call", tool_name: "Bash", tool_call_id: "c1", tool_args: { command: "git status" } };
+    const claudeResult = { id: "rt_2", seq: 2, ts: 1790056802, turn_id: "t1", trace_type: "tool_result", tool_name: "Bash", tool_call_id: "c1", tool_result: "clean" };
+    const codexCall = { id: "rt_4", seq: 1, ts: 1790056900, turn_id: "t2", trace_type: "tool_call", tool_name: "run_bash", tool_call_id: "c2", tool_args: { command: "ls" } };
+    const codexResult = { id: "rt_5", seq: 2, ts: 1790056901, turn_id: "t2", trace_type: "tool_result", tool_name: "run_bash", tool_call_id: "c2", tool_result: "a" };
+
+    it("a Claude Agent SDK file and a Codex App Server open file both read as commands, each with its own translation", async () => {
+      writeActive(runDir, [claudeCall, claudeResult]);
+      rotateActive(runDir, "claude_agent_sdk");
+      appendActive(runDir, [codexCall, codexResult]);
+      // The run is on Codex now; its closed file keeps the rules of the agent runtime that wrote it.
+      const pkg = await new WorkJournalService().ensureCurrent({ ...target(), runtimeKind: RuntimeKind.CODEX_APP_SERVER });
+      const closed = read(pkg.files[0]!.path);
+      const open = read(pkg.files[1]!.path);
+      expect(closed).toContain("Runtime Claude Agent SDK ·");
+      expect(closed).toContain("Command: git status → ok");
+      expect(open).toContain("Runtime Codex App Server ·");
+      expect(open).toContain("Command: ls → ok");
+      expect(manifest(runDir).files.map((file: { runtime_kind: string }) => file.runtime_kind)).toEqual(["claude_agent_sdk", "codex_app_server"]);
+    });
+
+    it("a run that never switched renders the same text as before: the run's runtime and its segments' runtime agree", async () => {
+      writeActive(runDir, [claudeCall, claudeResult]);
+      rotateActive(runDir, "claude_agent_sdk");
+      appendActive(runDir, [claudeCall, claudeResult]);
+      const first = await new WorkJournalService().ensureCurrent(target());
+      const texts = first.files.map((file) => read(file.path));
+      expect(texts.every((text) => text.includes("Command: git status → ok"))).toBe(true);
+      fs.rmSync(journalDir(runDir), { recursive: true });
+      const again = await new WorkJournalService().ensureCurrent(target());
+      expect(again.files.map((file) => read(file.path))).toEqual(texts);
+      expect(again.evidenceHash).toBe(first.evidenceHash);
+    });
+
+    it("an old manifest entry without its own runtime is rendered again, not trusted", async () => {
+      writeActive(runDir, [claudeCall, claudeResult]);
+      rotateActive(runDir, "claude_agent_sdk");
+      const service = new WorkJournalService();
+      await service.ensureCurrent(target());
+      const manifestPath = path.join(journalDir(runDir), "work_journal_manifest.json");
+      const old = manifest(runDir);
+      fs.writeFileSync(manifestPath, JSON.stringify({ ...old, runtime_kind: "claude_agent_sdk",
+        files: old.files.map(({ runtime_kind: _runtime, ...file }: Record<string, unknown>) => file) }));
+      const renders = vi.spyOn(WorkJournalFileRenderer.prototype, "render");
+      await service.ensureCurrent(target());
+      expect(renders.mock.calls.filter((call) => call[0].source.fileName === "raw_traces_000001.jsonl")).toHaveLength(1);
+      renders.mockRestore();
+      expect(manifest(runDir).files[0].runtime_kind).toBe("claude_agent_sdk");
+    });
   });
 
   describe("neutral vocabulary: no migration, the journal is rendered again (AC-008, AC-009)", () => {

@@ -1,0 +1,34 @@
+# DEL-01 post-integration checks (integrated state 6160f551aa + delivery docs edits)
+
+## typecheck
+exit 0
+
+## server-focused
+ Test Files  7 passed (7)
+      Tests  91 passed (91)
+   Duration  18.05s (transform 6.56s, setup 286ms, import 11.03s, tests 4.83s, environment 0ms)
+exit 0
+
+## electron
+ Test Files  51 passed | 1 skipped (52)
+      Tests  291 passed | 1 skipped (292)
+   Duration  4.81s (transform 1.77s, setup 0ms, collect 5.04s, tests 12.82s, environment 13ms, prepare 4.58s)
+exit 0
+
+## build
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+build exit 0
+
+## standalone-int
+ Test Files  1 passed (1)
+      Tests  2 passed (2)
+   Duration  2.68s (transform 1.37s, setup 37ms, import 2.06s, tests 134ms, environment 0ms)
+exit 0
+
+## server-unit-full
+{"event":"managed_compaction_all_exit","stage":"backend-construction","completedTurns":0,"error":{"category":"Error","code":null,"status":null,"condition":null},"parentRequests":[],"parentResponses":[],"summaryRequests":[],"summaryResponses":[],"events":[]}
+{"event":"managed_compaction_all_exit","stage":"backend-construction","completedTurns":0,"error":{"category":"Error","code":null,"status":null,"condition":null},"parentRequests":[],"parentResponses":[],"summaryRequests":[],"summaryResponses":[],"events":[]}
+ Test Files  896 passed | 5 skipped (901)
+      Tests  7629 passed | 9 skipped (7638)
+   Duration  765.45s (transform 20.26s, setup 11.93s, import 354.26s, tests 301.85s, environment 669ms)
+exit 0

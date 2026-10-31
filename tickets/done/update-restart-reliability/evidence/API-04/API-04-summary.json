@@ -1,0 +1,18 @@
+{
+ "runs": 42,
+ "valid": 42,
+ "stalls": 0,
+ "serverGoneMs": {
+  "min": 968,
+  "median": 1378,
+  "max": 1602
+ },
+ "survivorsTotal": 0,
+ "nonZeroExit": 0,
+ "exceeded10s": 0,
+ "sweepLines": 0,
+ "appShutdownIncomplete": 0,
+ "relaunchOne": 42,
+ "continued4of4": 42,
+ "restartToolGone": 42
+}

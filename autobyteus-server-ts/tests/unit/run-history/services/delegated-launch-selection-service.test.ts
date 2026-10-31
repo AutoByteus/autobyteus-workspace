@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import { DelegatedLaunchSelectionService } from "../../../../src/run-history/services/delegated-launch-selection-service.js";
 
 /** DS-001 / DS-002 / AR-004: the service only finds the root and routes; it never edits trees itself. */
-const choice = { llmModelIdentifier: "bigger", llmConfig: null };
+const choice = { runtimeKind: "codex_app_server" as const, llmModelIdentifier: "bigger", llmConfig: null };
 const changes = [{ agentRunId: "copy", selection: choice }];
 const saved = { outcome: "UPDATED" as const, message: "Saved.", fieldErrors: [] };
 
@@ -23,7 +23,7 @@ const build = (live: { team?: unknown; org?: unknown; agent?: unknown } = {}) =>
     updateStoppedDelegatedLaunchSelections: vi.fn(async () => ({ result: saved, tree: null })),
     delegatedLaunchModelOptions: vi.fn(async () => []),
   };
-  const agentRuns = { updateStoppedModelConfig: vi.fn(async () => ({ success: true, outcome: "UPDATED", message: "ok", fieldErrors: [] })) };
+  const agentRuns = { updateStoppedSelection: vi.fn(async () => ({ success: true, outcome: "UPDATED", message: "ok", fieldErrors: [] })) };
   const validator = { validate: vi.fn(), validateMany: vi.fn(), listOptionsMany: vi.fn() };
   const service = new DelegatedLaunchSelectionService({ teams, orgs, agents, agentRuns, validator } as never);
   return { service, teams, orgs, agents, agentRuns, validator };
@@ -62,14 +62,14 @@ describe("DelegatedLaunchSelectionService", () => {
     const host = { kind: "agent" as const, selection: choice };
     await expect(f.service.update({ rootKind: "AGENT", rootRunId: "host", changes, configured: host })).resolves.toMatchObject({ outcome: "UPDATED" });
     expect(f.agents.updateStoppedDelegatedLaunchSelections).toHaveBeenCalledWith(expect.objectContaining({ hostRunId: "host", hostSelection: choice }));
-    expect(f.agentRuns.updateStoppedModelConfig).toHaveBeenCalledWith({ agentRunId: "host", ...choice });
+    expect(f.agentRuns.updateStoppedSelection).toHaveBeenCalledWith({ agentRunId: "host", ...choice });
 
     f.agents.updateStoppedDelegatedLaunchSelections.mockResolvedValueOnce({ result: { outcome: "VALIDATION_FAILED", message: "bad", fieldErrors: [] }, tree: null } as never);
-    f.agentRuns.updateStoppedModelConfig.mockClear();
+    f.agentRuns.updateStoppedSelection.mockClear();
     await expect(f.service.update({ rootKind: "AGENT", rootRunId: "host", changes, configured: host })).resolves.toMatchObject({ outcome: "VALIDATION_FAILED" });
-    expect(f.agentRuns.updateStoppedModelConfig).not.toHaveBeenCalled();
+    expect(f.agentRuns.updateStoppedSelection).not.toHaveBeenCalled();
 
-    f.agentRuns.updateStoppedModelConfig.mockResolvedValueOnce({ success: false, outcome: "PERSISTENCE_FAILED", message: "disk", fieldErrors: [] });
+    f.agentRuns.updateStoppedSelection.mockResolvedValueOnce({ success: false, outcome: "PERSISTENCE_FAILED", message: "disk", fieldErrors: [] });
     await expect(f.service.update({ rootKind: "AGENT", rootRunId: "host", changes, configured: host }))
       .resolves.toMatchObject({ success: false, outcome: "PERSISTENCE_FAILED", message: expect.stringContaining("copies' models were saved") });
   });

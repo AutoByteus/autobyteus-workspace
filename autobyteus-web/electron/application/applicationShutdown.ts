@@ -4,6 +4,7 @@ export class ApplicationShutdown {
   private notified = false
   private resumed = false
   private prepared = false
+  private failed = false
   constructor(private readonly cleanup: () => Promise<void>, private readonly flush: () => void,
     private readonly timeoutMs = 30000, private readonly report: (error: unknown) => void = () => {}) {}
   stop(): Promise<void> {
@@ -14,9 +15,17 @@ export class ApplicationShutdown {
           timer = setTimeout(() => reject(new Error('Application shutdown deadline exceeded')), this.timeoutMs)
         })])
         this.prepared = true
-      } catch (error) { this.report(error); throw error }
+      } catch (error) { this.failed = true; this.report(error); throw error }
       finally { clearTimeout(timer!); this.flush() }
     })()
+  }
+  /**
+   * The updater's install accepts an incomplete stop once its caller confirmed the server process is
+   * gone; `will-quit` then passes so the install can quit. Only after the stop settled as rejected.
+   */
+  acceptIncompleteStopForInstall(): void {
+    if (!this.failed) throw new Error('No settled incomplete application stop to accept')
+    this.prepared = true
   }
   quit(event: { preventDefault(): void }, notify: () => void, resume: () => void, fail: (error: unknown) => void): void {
     if (this.prepared) return

@@ -1,0 +1,12 @@
+# IMP-02/IMP-03 fail-before (three desktop sources restored from base b1e58c3449; tests from ddb03d0d0b)
+# Command: pnpm -C autobyteus-web exec vitest --config ./electron/vitest.config.ts run application/__tests__ server/__tests__/ServerForceStopTree.spec.ts
+# Commit: ddb03d0d0b
+# Environment: macOS 26.5.2, node v22.23.1
+# Date: 2026-10-31
+
+   × accepts an incomplete stop for install only after it settled as rejected; will-quit then passes 5ms
+   × a clean stop has nothing to accept 1ms
+   × AC-004: an incomplete stop installs when the server process is confirmed gone; the incomplete stop is logged 6ms
+   × force-stops a wedged server and its whole tree, leaving no process behind 69ms
+   × reports the server process gone only when none was started or it has an exit code or signal (autobyteus-339) 0ms
+      Tests  5 failed | 5 passed (10)

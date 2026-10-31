@@ -22,6 +22,9 @@ export class RunModelConfigFieldErrorObject {
 
 @ObjectType()
 export class RunModelSelectionObject {
+  /** The agent runtime of the selection (a stopped Agent run can switch it). */
+  @Field(() => String)
+  runtimeKind!: string;
   @Field(() => String)
   llmModelIdentifier!: string;
   @Field(() => GraphQLJSON, { nullable: true })

@@ -53,7 +53,7 @@ Workspace + agent operations:
 - `getRunProjection`
 - `getAgentRunResumeConfig`
 - `agentRunModelOptions(agentRunId)`
-- `updateStoppedAgentRunModelConfig(input)`
+- `updateStoppedAgentRunSelection(input)`
 - `archiveStoredRun`
 - `archiveStoredAgentRunGroup(workspaceRootPath, agentDefinitionId)`, which
   archives one standalone agent group in one workspace (see
@@ -152,12 +152,46 @@ for startup recovery and cross-checks global lookup state, persisted
 Agent/Team identity. Missing or inconsistent ownership evidence fails closed;
 it never produces a false editable state or a General write.
 
+`updateStoppedAgentRunSelection` edits the run's **selection**: agent runtime, model and model settings. Its input
+carries `runtimeKind`. The run's own agent runtime is a model-only edit; another agent runtime is an **agent runtime
+switch** (below); the previous agent runtime again, while a switch is pending, is its undo. The team family
+(`updateStoppedTeamRunModelConfigs`) edits model configuration only and keeps its names.
+
 When no Application lease exists, stopped updates delegate to the existing
 General lifecycle owners:
 
-- `StandaloneAgentRunLifecycleService.updateStoppedModelConfig(...)` shares one
+- `StandaloneAgentRunLifecycleService.updateStoppedSelection(...)` shares one
   per-run transition lane with restore/activation and commits the validated
   pair to `run_metadata.json` through `AgentRunHistoryCatalogService`.
+- `StandaloneStoppedRunSelectionUpdater` (inside that lane) decides model-only edit, switch or undo. A switch is
+  allowed only for a started standalone Agent run that is not application-owned, system-owned or a delegated copy
+  (`canSwitchRuntime`), and validates the pair as a fresh selection of the new agent runtime
+  (`selectionContextFor`: the stored model counts as the current one only on the run's own agent runtime and while no
+  switch is pending). It commits through `AgentRunHistoryCatalogService.commitRunRuntimeSwitch`: the new binding,
+  `platformAgentRunId: null` and `pendingRuntimeSwitch { switchId, from }` in `run_metadata.json` (`switchId` is a UUID
+  made at the first pending save, kept by later saves of the same switch, new after an undo; it is part of the switch key
+  `runtime_switch:<runId>:<switchId>`). A second save before the first message keeps the first `from`. No memory file is
+  touched by the save.
+- The first message makes the switch real in `StandaloneAgentRunLifecycleService.activateSwitched` (the pending field
+  decides, inside the same transition lane), through the one `RuntimeSwitchMemory` port (`begin`, `record`, `discard`) in
+  this order: `begin` takes a ticket (the switch and the watermark: the ID of the last record the previous agent wrote;
+  nothing is written); a fresh session of the new agent runtime is prepared and validated (its candidate may write records
+  of its own while it prepares: a native agent's system instruction, Grok's captured instructions); `record` archives the
+  records through the watermark as one `runtime_switch` segment (`runtime_kind` of the archived records) and starts the active
+  file with the marker (a platform notice record, sender `system.runtime_handover`, correlation id = the switch key, ID derived
+  from the key), followed by the candidate's own records, idempotent by key; the activation commit (`recordRunStarted` with
+  `clearPendingRuntimeSwitch`) sets the session and removes the pending field in one write. A failure before `record` succeeded
+  aborts the candidate, and only when its release is confirmed `discard` removes the records written after the watermark, so a
+  failed attempt leaves the previous agent's file as it was. A failure after the marker leaves the metadata pending; sending
+  again finds the marker and the segment (the watermark is then ignored) and completes with one marker and one segment.
+  A lifecycle built without the port (application runs) fails closed on a pending switch.
+- The hand-over notice is derived, not registered: `RuntimeHandoverNoticeService` (a platform notice source, first in the
+  notice slot) finds from the run's raw traces once per publication that a hand-over is pending (the active file's first record
+  is the hand-over marker and no `user` record follows; a bounded, read-only scan) and hands the notice over with the next input
+  before the user's text (journals made current first). It survives a restart; if the first input was forwarded without a turn
+  id and the process restarted, the notice is carried once more.
+- The chat of a switched run is read by `AgentMemoryService.getChatRawTraceSnapshot` (both projection methods): the run's
+  `runtime_switch` segments in index order, then the active file; compaction segments stay unread.
 - `AgentTeamRunManager.updateStoppedModelConfigs(...)` shares the root
   transition lane with Team restore. Each patch names the root Team `/` or one exact direct Agent address, can
   change only that scope's `llmModelIdentifier`/`llmConfig` pair, and commits the

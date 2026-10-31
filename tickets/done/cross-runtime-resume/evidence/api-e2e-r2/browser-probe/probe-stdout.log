@@ -1,0 +1,7 @@
+  · the native agent answered in the chat
+  · the runtime menu of the stopped run offers the other agent runtimes
+  · saved: the server holds the pending switch
+  · the chat shows the marker after the first message
+  · after the reload the chat shows everything and the settings show the new runtime
+RSW-01 Pass
+PROBE EXIT 0

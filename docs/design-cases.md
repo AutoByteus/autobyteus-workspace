@@ -63,7 +63,7 @@ Principle 13.
 - **Why it mattered:** a behavior reached through a failed lookup works by accident and breaks silently when the lookup changes.
 - **Notice it by:** "finds no X, so …", "counts as".
 
-### Case 5: Claims About The Code Taken On Trust (autobyteus-245, AR-202; autobyteus-247, AR-301; autobyteus-280, DI-001; autobyteus-278, AR-404; autobyteus-282, D-1; autobyteus-303, AR-001, SR-007; autobyteus-311, M-3)
+### Case 5: Claims About The Code Taken On Trust (autobyteus-245, AR-202; autobyteus-247, AR-301; autobyteus-280, DI-001; autobyteus-278, AR-404; autobyteus-282, D-1; autobyteus-303, AR-001, SR-007; autobyteus-311, M-3; autobyteus-339, CRR-002 F-API-001)
 
 Principle 1.
 
@@ -83,6 +83,10 @@ Principle 1.
 - **Again in autobyteus-303 (SR-007, code reviewer):** the design dropped the `models(modelIds)` limit scope because "no parser can fill it", while the Codex parser fills it from `normalModelSlug` (`codex-usage-limits.ts:49`), covered by a test. Without it, a Codex id would have been matched as a display-name family. Fix: keep the variant; check every producer of a type before removing a variant.
 - **Again in backend-port-conflict-20261024 (D4 reviewer lookup question, SR-008):** the design called AgentRunManager.getActiveRun a read-only lookup without following its registry delegate. Inactive discovery actually retires the entry, releases MCP/resources and notifies lifecycle owners. A visibility poll could therefore trigger cleanup. D4.1 specifies a map-only peekPublishedRun boundary plus exact-instance/activity observations before and after the read, leaving existing lifecycle pruning callers unchanged. Notice getter names taken as proof of observational semantics; trace the complete inactive path. The map-only lookup and exact-instance fences are implemented and independently reviewed, with deterministic noninterference and actual query/panel validation.
 - **Again in autobyteus-311 (credential proxy, M-3):** autobyteus-244's V1b probe "validated git through the proxy" against a local stand-in git service that accepted `Bearer`. Real GitHub rejects `Bearer` on git (401) and needs `Basic x-access-token:<token>`. Fix: the git route sends GitHub's Basic format, and the test's local `git http-backend` accepts only that format; a gated live check clones from real GitHub. Lesson: a probe's stand-in for an outside service proves our side only; measure the real service's contract once before designing on it.
+- **Again in autobyteus-339 (CRR-002, F-API-001):**
+  - What happened: to stop a client connection from holding the server's shutdown, the design cut every connection at close (`forceCloseConnections`). It called a cut request harmless because "run admission is already closed". Nobody traced a state-changing handler. `createAgentRun` persists the prepared run before activation checks admission, so cut creates left prepared-only runs, and completed runs whose client never got the ID (a retry duplicates them). The base build had completed those requests.
+  - Fix (SR-004): close only what caused the stall (connections that never sent a request), let requests in progress finish within 2 s, then close the rest.
+  - Lesson: when a mechanism change drops a guarantee the old path gave ("a request in progress gets its answer"), trace one state-changing caller through it before calling the loss acceptable.
 - **Notice it by:** "mirrors", "as today", "the compiler enforces", a count with no source; a probe's stand-in for an outside service taken as the service; a module called "production" without listing its importers; "unchanged" for a merge of copies that were never compared line by line. "unrecoverable" or "the layout matches" without opening the existing files or asking how they were made. A product behavior stated from a function, without a caller.
 
 ### Case 6: One Rule Applied By Several Callers (autobyteus-280, AR-004; autobyteus-260)

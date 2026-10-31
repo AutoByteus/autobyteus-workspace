@@ -127,7 +127,7 @@ describe("WorkJournalRunUpdater (DS-001)", () => {
     recorder.attachToRun(run);
     updater.attachToRun(run);
     writeActive(memoryDir, turnRecords("turn_1", "ls", "a.ts"));
-    rotateActive(memoryDir);
+    rotateActive(memoryDir, "autobyteus");
     await run.publishEvent(event(AgentRunEventType.COMPACTION_STATUS, { status: "compacted", turn_id: "turn-1" }));
     await updater.waitForIdle("run-1");
     const closed = fs.readFileSync(path.join(memoryDir, "work_journal", "work_journal_000001.md"), "utf-8");

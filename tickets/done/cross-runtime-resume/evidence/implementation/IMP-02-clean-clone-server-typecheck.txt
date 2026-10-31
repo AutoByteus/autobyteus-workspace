@@ -1,0 +1,13 @@
+# IMP-02
+# Command: pnpm exec prisma generate; pnpm typecheck (autobyteus-server-ts)
+# Commit: 1bc6f85506 (clean clone of codex/cross-runtime-resume in /tmp)
+# Environment: macOS 26.5.2 darwin arm64, node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-31
+# Full log: not committed (see excerpt)
+
+autobyteus-application-backend-sdk build: Done
+
+> autobyteus-server-ts@0.1.1 typecheck /private/tmp/crr-clean2/autobyteus-server-ts
+> tsc -p tsconfig.build.json --noEmit
+
+TYPECHECK_EXIT=0

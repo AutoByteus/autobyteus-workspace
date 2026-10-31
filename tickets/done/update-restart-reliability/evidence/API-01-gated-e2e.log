@@ -1,0 +1,118 @@
+# API-01: RUN_BUSY_STOP_NOW_E2E=1 … busy-run-stop-now.e2e.test.ts; RUN_NATIVE_STANDALONE_SHUTDOWN_E2E=1 … native-standalone-host-shutdown.e2e.test.ts
+# clean checkout 2c3575b0f0 (code ddb03d0d0b); macOS 26 arm64, Node v22.23.1; 2026-10-31T09:47:04Z
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+[1m[30m[46m RUN [49m[39m[22m [36mv4.1.12 [39m[90m/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ur339-api.vSYEoq/clean/autobyteus-server-ts[39m
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ur339-api.vSYEoq/clean/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+[90mstdout[2m | tests/e2e/shutdown/busy-run-stop-now.e2e.test.ts[2m > [22m[2mstop now with a busy run[2m > [22m[2mserver: Terminate and SIGTERM interrupt the busy turn, exit within the bound and leave nothing behind
+[22m[39m{"result":"Pass","error":null,"terminate":{"runId":"busy_stop_bq284_60292_1793440027717_3bb9ac4a5fd947099946f8da54b78733","result":{"success":true,"message":"Agent run terminated successfully."},"elapsedMs":90,"foregroundGone":true},"shutdown":{"exit":{"code":0,"signal":null,"at":1793440034801},"elapsedMs":860,"survivors":[],"markedLeft":[]},"history":{"terminatedRun":{"runId":"busy_stop_bq284_60292_1793440027717_3bb9ac4a5fd947099946f8da54b78733","terminatedAt":"2026-10-31T09:47:12.788Z","isActive":false},"shutdownRun":{"runId":"busy_stop_bq284_60292_1793440027717_3e80a4c8def74e0ca031455571e0d5bd","terminatedAt":null,"isActive":false}},"rootRemoved":true}
+
+[90mstdout[2m | tests/e2e/shutdown/busy-run-stop-now.e2e.test.ts[2m > [22m[2mstop now with a busy run[2m > [22m[2mapplication: an application terminating its busy run interrupts the turn
+[22m[39m{"result":"Pass","error":null,"applicationTerminate":{"bindingId":"a5727932-b5bf-4d04-8527-215b463cbac4","result":{"binding":{"bindingId":"a5727932-b5bf-4d04-8527-215b463cbac4","applicationId":"bundle-app__7374616e64616c6f6e65__66697874757265","launchRequestId":"busy-1","status":"TERMINATED","executionResourceRef":{"source":"bundle","kind":"AGENT","localId":"worker"},"createdAt":"2026-10-31T09:47:19.752Z","updatedAt":"2026-10-31T09:47:20.397Z","terminatedAt":"2026-10-31T09:47:20.397Z","lastErrorMessage":null,"runtime":{"subject":"AGENT_RUN","agentRunId":"worker_d40c79683cc947b7a7d9093646ddbc65","definitionId":"bundle-agent__7374616e64616c6f6e65__66697874757265__776f726b6572","members":[]}},"elapsedMs":98},"roundTripMs":113,"foregroundGone":true},"close":{"exitCode":0,"closed":true,"elapsedMs":610},"rootRemoved":true}
+
+ [32m✓[39m tests/e2e/shutdown/busy-run-stop-now.e2e.test.ts [2m([22m[2m2 tests[22m[2m)[22m[33m 13655[2mms[22m[39m
+     [33m[2m✓[22m[39m server: Terminate and SIGTERM interrupt the busy turn, exit within the bound and leave nothing behind [33m 9725[2mms[22m[39m
+     [33m[2m✓[22m[39m application: an application terminating its busy run interrupts the turn [33m 3929[2mms[22m[39m
+[90mstdout[2m | tests/e2e/shutdown/native-standalone-host-shutdown.e2e.test.ts[2m > [22m[2mfull standalone native command ownership[2m > [22m[2mdrains active and ended-run resistant/adopted survivors without touching unrelated resources
+[22m[39m{"case":"native-standalone-host-shutdown","date":"2026-10-31T09:47:21.396Z","own":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-standalone-shutdown-40fWdK","steps":[{"step":"host IPC","value":{"kind":"ready","url":"http://127.0.0.1:64519","model":"shutdown-fixture:lmstudio@127.0.0.1:64513"},"at":"2026-10-31T09:47:23.406Z"},{"step":"application start","value":{"result":{"bindingId":"fd520346-06f6-424c-b818-a1eb6889ea20","applicationId":"bundle-app__7374616e64616c6f6e65__66697874757265","launchRequestId":"owned-1","status":"ATTACHED","executionResourceRef":{"source":"bundle","kind":"AGENT","localId":"worker"},"createdAt":"2026-10-31T09:47:23.590Z","updatedAt":"2026-10-31T09:47:23.590Z","terminatedAt":null,"lastErrorMessage":null,"runtime":{"subject":"AGENT_RUN","agentRunId":"worker_ef250bec63174dc9ad5c69c64f9a5aba","definitionId":"bundle-agent__7374616e64616c6f6e65__66697874757265__776f726b6572","members":[]}}},"at":"2026-10-31T09:47:23.636Z"},{"step":"model","value":{"calls":1,"turn":1,"invoke":true,"tools":["run_bash","read_file","edit_file","write_file","start_background_process"]},"at":"2026-10-31T09:47:23.645Z"},{"step":"application events","value":{"result":[{"sequence":1,"observedAt":"2026-10-31T09:47:23.634Z","applicationId":"bundle-app__7374616e64616c6f6e65__66697874757265","address":{"bindingId":"fd520346-06f6-424c-b818-a1eb6889ea20","memberAddress":null},"runtimeSubject":"AGENT_RUN","producer":{"agentRunId":"worker_ef250bec63174dc9ad5c69c64f9a5aba","displayName":null},"event":{"type":"TURN_STARTED"}}]},"at":"2026-10-31T09:47:23.946Z"},{"step":"model","value":{"calls":2,"turn":1,"invoke":false,"tools":["run_bash","read_file","edit_file","write_file","start_background_process"]},"at":"2026-10-31T09:47:24.013Z"},{"step":"application events","value":{"result":[{"sequence":1,"observedAt":"2026-10-31T09:47:23.634Z","applicationId":"bundle-app__7374616e64616c6f6e65__66697874757265","address":{"bindingId":"fd520346-06f6-424c-b818-a1eb6889ea20","memberAddress":null},"runtimeSubject":"AGENT_RUN","producer":{"agentRunId":"worker_ef250bec63174dc9ad5c69c64f9a5aba","displayName":null},"event":{"type":"TURN_STARTED"}},{"sequence":2,"observedAt":"2026-10-31T09:47:24.025Z","applicationId":"bundle-app__7374616e64616c6f6e65__66697874757265","address":{"bindingId":"fd520346-06f6-424c-b818-a1eb6889ea20","memberAddress":null},"runtimeSubject":"AGENT_RUN","producer":{"agentRunId":"worker_ef250bec63174dc9ad5c69c64f9a5aba","displayName":null},"event":{"type":"TEXT_DELTA","delta":"Owned work submitted."}},{"sequence":3,"observedAt":"2026-10-31T09:47:24.026Z","applicationId":"bundle-app__7374616e64616c6f6e65__66697874757265","address":{"bindingId":"fd520346-06f6-424c-b818-a1eb6889ea20","memberAddress":null},"runtimeSubject":"AGENT_RUN","producer":{"agentRunId":"worker_ef250bec63174dc9ad5c69c64f9a5aba","displayName":null},"event":{"type":"TURN_COMPLETED"}}]},"at":"2026-10-31T09:47:24.032Z"},{"step":"application end","value":{"result":{"bindingId":"fd520346-06f6-424c-b818-a1eb6889ea20","applicationId":"bundle-app__7374616e64616c6f6e65__66697874757265","launchRequestId":"owned-1","status":"TERMINATED","executionResourceRef":{"source":"bundle","kind":"AGENT","localId":"worker"},"createdAt":"2026-10-31T09:47:23.590Z","updatedAt":"2026-10-31T09:47:24.070Z","terminatedAt":"2026-10-31T09:47:24.070Z","lastErrorMessage":null,"runtime":{"subject":"AGENT_RUN","agentRunId":"worker_ef250bec63174dc9ad5c69c64f9a5aba","definitionId":"bundle-agent__7374616e64616c6f6e65__66697874757265__776f726b6572","members":[]}}},"at":"2026-10-31T09:47:24.084Z"},{"step":"live work","value":{"turn":1,"binding":{"bindingId":"fd520346-06f6-424c-b818-a1eb6889ea20","applicationId":"bundle-app__7374616e64616c6f6e65__66697874757265","launchRequestId":"owned-1","status":"ATTACHED","executionResourceRef":{"source":"bundle","kind":"AGENT","localId":"worker"},"createdAt":"2026-10-31T09:47:23.590Z","updatedAt":"2026-10-31T09:47:23.590Z","terminatedAt":null,"lastErrorMessage":null,"runtime":{"subject":"AGENT_RUN","agentRunId":"worker_ef250bec63174dc9ad5c69c64f9a5aba","definitionId":"bundle-agent__7374616e64616c6f6e65__66697874757265__776f726b6572","members":[]}},"current":[{"pid":62288,"port":64524,"receipt":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-standalone-shutdown-40fWdK/workspace/listener-1-0.json","anchor":62259},{"pid":62319,"port":64525,"receipt":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-standalone-shutdown-40fWdK/workspace/listener-1-1.json","anchor":62289}]},"at":"2026-10-31T09:47:24.091Z"},{"step":"application start","value":{"result":{"bindingId":"dcc57c51-1a52-4b4e-924e-312533a1f0cf","applicationId":"bundle-app__7374616e64616c6f6e65__66697874757265","launchRequestId":"owned-2","status":"ATTACHED","executionResourceRef":{"source":"bundle","kind":"AGENT","localId":"worker"},"createdAt":"2026-10-31T09:47:24.152Z","updatedAt":"2026-10-31T09:47:24.152Z","terminatedAt":null,"lastErrorMessage":null,"runtime":{"subject":"AGENT_RUN","agentRunId":"worker_bcc9956ed3d04882aba1500299e1e842","definitionId":"bundle-agent__7374616e64616c6f6e65__66697874757265__776f726b6572","members":[]}}},"at":"2026-10-31T09:47:24.204Z"},{"step":"model","value":{"calls":3,"turn":2,"invoke":true,"tools":["run_bash","read_file","edit_file","write_file","start_background_process"]},"at":"2026-10-31T09:47:24.207Z"},{"step":"application events","value":{"result":[{"sequence":1,"observedAt":"2026-10-31T09:47:23.634Z","applicationId":"bundle-app__7374616e64616c6f6e65__66697874757265","address":{"bindingId":"fd520346-06f6-424c-b818-a1eb6889ea20","memberAddress":null},"runtimeSubject":"AGENT_RUN","producer":{"agentRunId":"worker_ef250bec63174dc9ad5c69c64f9a5aba","displayName":null},"event":{"type":"TURN_STARTED"}},{"sequence":2,"observedAt":"2026-10-31T09:47:24.025Z","applicationId":"bundle-app__7374616e64616c6f6e65__66697874757265","address":{"bindingId":"fd520346-06f6-424c-b818-a1eb6889ea20","memberAddress":null},"runtimeSubject":"AGENT_RUN","producer":{"agentRunId":"worker_ef250bec63174dc9ad5c69c64f9a5aba","displayName":null},"event":{"type":"TEXT_DELTA","delta":"Owned work submitted."}},{"sequence":3,"observedAt":"2026-10-31T09:47:24.026Z","applicationId":"bundle-app__7374616e64616c6f6e65__66697874757265","address":{"bindingId":"fd520346-06f6-424c-b818-a1eb6889ea20","memberAddress":null},"runtimeSubject":"AGENT_RUN","producer":{"agentRunId":"worker_ef250bec63174dc9ad5c69c64f9a5aba","displayName":null},"event":{"type":"TURN_COMPLETED"}},{"sequence":1,"observedAt":"2026-10-31T09:47:24.203Z","applicationId":"bundle-app__7374616e64616c6f6e65__66697874757265","address":{"bindingId":"dcc57c51-1a52-4b4e-924e-312533a1f0cf","memberAddress":null},"runtimeSubject":"AGENT_RUN","producer":{"agentRunId":"worker_bcc9956ed3d04882aba1500299e1e842","displayName":null},"event":{"type":"TURN_STARTED"}}]},"at":"2026-10-31T09:47:24.673Z"},{"step":"model","value":{"calls":4,"turn":2,"invoke":false,"tools":["run_bash","read_file","edit_file","write_file","start_background_process"]},"at":"2026-10-31T09:47:24.734Z"},{"step":"application events","value":{"result":[{"sequence":1,"observedAt":"2026-10-31T09:47:23.634Z","applicationId":"bundle-app__7374616e64616c6f6e65__66697874757265","address":{"bindingId":"fd520346-06f6-424c-b818-a1eb6889ea20","memberAddress":null},"runtimeSubject":"AGENT_RUN","producer":{"agentRunId":"worker_ef250bec63174dc9ad5c69c64f9a5aba","displayName":null},"event":{"type":"TURN_STARTED"}},{"sequence":2,"observedAt":"2026-10-31T09:47:24.025Z","applicationId":"bundle-app__7374616e64616c6f6e65__66697874757265","address":{"bindingId":"fd520346-06f6-424c-b818-a1eb6889ea20","memberAddress":null},"runtimeSubject":"AGENT_RUN","producer":{"agentRunId":"worker_ef250bec63174dc9ad5c69c64f9a5aba","displayName":null},"event":{"type":"TEXT_DELTA","delta":"Owned work submitted."}},{"sequence":3,"observedAt":"2026-10-31T09:47:24.026Z","applicationId":"bundle-app__7374616e64616c6f6e65__66697874757265","address":{"bindingId":"fd520346-06f6-424c-b818-a1eb6889ea20","memberAddress":null},"runtimeSubject":"AGENT_RUN","producer":{"agentRunId":"worker_ef250bec63174dc9ad5c69c64f9a5aba","displayName":null},"event":{"type":"TURN_COMPLETED"}},{"sequence":1,"observedAt":"2026-10-31T09:47:24.203Z","applicationId":"bundle-app__7374616e64616c6f6e65__66697874757265","address":{"bindingId":"dcc57c51-1a52-4b4e-924e-312533a1f0cf","memberAddress":null},"runtimeSubject":"AGENT_RUN","producer":{"agentRunId":"worker_bcc9956ed3d04882aba1500299e1e842","displayName":null},"event":{"type":"TURN_STARTED"}},{"sequence":2,"observedAt":"2026-10-31T09:47:24.749Z","applicationId":"bundle-app__7374616e64616c6f6e65__66697874757265","address":{"bindingId":"dcc57c51-1a52-4b4e-924e-312533a1f0cf","memberAddress":null},"runtimeSubject":"AGENT_RUN","producer":{"agentRunId":"worker_bcc9956ed3d04882aba1500299e1e842","displayName":null},"event":{"type":"TEXT_DELTA","delta":"Owned work submitted."}},{"sequence":3,"observedAt":"2026-10-31T09:47:24.750Z","applicationId":"bundle-app__7374616e64616c6f6e65__66697874757265","address":{"bindingId":"dcc57c51-1a52-4b4e-924e-312533a1f0cf","memberAddress":null},"runtimeSubject":"AGENT_RUN","producer":{"agentRunId":"worker_bcc9956ed3d04882aba1500299e1e842","displayName":null},"event":{"type":"TURN_COMPLETED"}}]},"at":"2026-10-31T09:47:24.757Z"},{"step":"live work","value":{"turn":2,"binding":{"bindingId":"dcc57c51-1a52-4b4e-924e-312533a1f0cf","applicationId":"bundle-app__7374616e64616c6f6e65__66697874757265","launchRequestId":"owned-2","status":"ATTACHED","executionResourceRef":{"source":"bundle","kind":"AGENT","localId":"worker"},"createdAt":"2026-10-31T09:47:24.152Z","updatedAt":"2026-10-31T09:47:24.152Z","terminatedAt":null,"lastErrorMessage":null,"runtime":{"subject":"AGENT_RUN","agentRunId":"worker_bcc9956ed3d04882aba1500299e1e842","definitionId":"bundle-agent__7374616e64616c6f6e65__66697874757265__776f726b6572","members":[]}},"current":[{"pid":62467,"port":64528,"receipt":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-standalone-shutdown-40fWdK/workspace/listener-2-0.json","anchor":62438},{"pid":62498,"port":64529,"receipt":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-standalone-shutdown-40fWdK/workspace/listener-2-1.json","anchor":62468}]},"at":"2026-10-31T09:47:24.790Z"},{"step":"host IPC","value":{"kind":"closed"},"at":"2026-10-31T09:47:25.769Z"},{"step":"post close","value":[{"pid":62288,"port":64524,"receipt":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-standalone-shutdown-40fWdK/workspace/listener-1-0.json","anchor":62259,"absent":true,"anchorAbsent":true,"listenerStatus":null,"termObserved":true},{"pid":62319,"port":64525,"receipt":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-standalone-shutdown-40fWdK/workspace/listener-1-1.json","anchor":62289,"absent":true,"anchorAbsent":true,"listenerStatus":null,"termObserved":false},{"pid":62467,"port":64528,"receipt":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-standalone-shutdown-40fWdK/workspace/listener-2-0.json","anchor":62438,"absent":true,"anchorAbsent":true,"listenerStatus":null,"termObserved":true},{"pid":62498,"port":64529,"receipt":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-standalone-shutdown-40fWdK/workspace/listener-2-1.json","anchor":62468,"absent":true,"anchorAbsent":true,"listenerStatus":null,"termObserved":false}],"at":"2026-10-31T09:47:25.855Z"}],"hostPid":62244,"elapsedMs":1064,"observations":[{"pid":62288,"port":64524,"receipt":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-standalone-shutdown-40fWdK/workspace/listener-1-0.json","anchor":62259,"absent":true,"anchorAbsent":true,"listenerStatus":null,"termObserved":true},{"pid":62319,"port":64525,"receipt":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-standalone-shutdown-40fWdK/workspace/listener-1-1.json","anchor":62289,"absent":true,"anchorAbsent":true,"listenerStatus":null,"termObserved":false},{"pid":62467,"port":64528,"receipt":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-standalone-shutdown-40fWdK/workspace/listener-2-0.json","anchor":62438,"absent":true,"anchorAbsent":true,"listenerStatus":null,"termObserved":true},{"pid":62498,"port":64529,"receipt":"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/native-standalone-shutdown-40fWdK/workspace/listener-2-1.json","anchor":62468,"absent":true,"anchorAbsent":true,"listenerStatus":null,"termObserved":false}],"sentinel":200,"data":"preserve owned data","result":"Pass","childrenAbsent":true,"rootRemoved":true}
+
+ [32m✓[39m tests/e2e/shutdown/native-standalone-host-shutdown.e2e.test.ts [2m([22m[2m1 test[22m[2m)[22m[33m 4526[2mms[22m[39m
+     [33m[2m✓[22m[39m drains active and ended-run resistant/adopted survivors without touching unrelated resources [33m 4525[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m2 passed[39m[22m[90m (2)[39m
+[2m      Tests [22m [1m[32m3 passed[39m[22m[90m (3)[39m
+[2m   Start at [22m 10:47:06
+[2m   Duration [22m 19.45s[2m (transform 89ms, setup 112ms, import 20ms, tests 18.18s, environment 0ms)[22m
+
+exit=0

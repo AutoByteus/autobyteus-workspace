@@ -187,6 +187,10 @@ export abstract class BaseServerManager extends EventEmitter {
       })
     return this.stopPromise
   }
+  /** The managed server process is confirmed gone: none was started, or it has an exit code or signal. */
+  public isServerProcessGone(): boolean {
+    return !this.serverProcess || childExited(this.serverProcess)
+  }
   protected async requestGracefulStop(proc: ChildProcess): Promise<void> {
     if (!childExited(proc)) proc.kill('SIGTERM')
     await waitForChildExit(proc, this.gracefulShutdownTimeoutMs)

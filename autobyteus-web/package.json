@@ -99,6 +99,7 @@
     "test:e2e:composer-mention-discoverability": "node tests/e2e/composer-mention-discoverability-probe.mjs",
     "test:e2e:fresh-run-auto-approval": "node tests/e2e/fresh-run-auto-approval-probe.mjs",
     "test:e2e:run-settings-live": "node tests/e2e/run-settings-live-probe.mjs",
+    "test:e2e:runtime-switch": "node tests/e2e/runtime-switch-probe.mjs",
     "test:e2e:delegated-launch-defaults": "node tests/e2e/delegated-launch-defaults-probe.mjs",
     "test:e2e:delegated-copies-large-hub": "node tests/e2e/delegated-copies-large-hub-probe.mjs",
     "test:e2e:settings-saved-model-refresh": "node tests/e2e/delegated-launch-defaults-probe.mjs --desktop --cases SSR-001,SSR-002,SSR-003,SSR-004,DCP-001,DCP-002,DCP-003,DCP-004,DCP-005",

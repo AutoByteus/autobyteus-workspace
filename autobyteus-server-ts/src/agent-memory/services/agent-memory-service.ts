@@ -69,8 +69,9 @@ export class AgentMemoryService {
     };
   }
 
-  getActiveRawTraceSnapshot(runId: string): ActiveRawTraceSnapshot & { rawTraces: MemoryTraceEvent[] } {
-    const snapshot = this.store.readRawTracesActiveSnapshot(runId);
+  /** The chat's records: the run's switch segments, then the active file (see `MemoryFileStore.readChatRawTraces`). */
+  getChatRawTraceSnapshot(runId: string): ActiveRawTraceSnapshot & { rawTraces: MemoryTraceEvent[] } {
+    const snapshot = this.store.readChatRawTraces(runId);
     return {
       ...snapshot,
       rawTraces: normalizeRawTraceRecords(snapshot.records, null),

@@ -180,6 +180,62 @@ describe("AgentRunHistoryCatalogService", () => {
     await expect(fs.readFile(path.join(memoryDir, "run_history_index.json"), "utf-8")).resolves.toBe(before);
   });
 
+  describe("an agent runtime switch (autobyteus-316)", () => {
+    const pending = {
+      switchId: "switch-uuid-1",
+      from: { runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "sonnet", llmConfig: { effort: "low" }, platformAgentRunId: "session-1" },
+    };
+    const switchedRun = async () => {
+      const service = await buildService();
+      const dir = path.join(memoryDir, "agents", "run-1");
+      await service.recordPreparedRun({ runId: "run-1", createdAt: "2026-03-26T10:00:00.000Z", metadata: buildMetadata("run-1", { memoryDir: dir }) });
+      await service.recordRunStarted({ runId: "run-1", platformAgentRunId: "session-1", runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, startedAt: "2026-03-26T10:01:00.000Z" });
+      return { service, file: path.join(dir, "run_metadata.json") };
+    };
+    const readFile = async (file: string) => JSON.parse(await fs.readFile(file, "utf-8")) as Record<string, unknown>;
+
+    it("a settings save of another agent runtime records the new binding and the pending switch; the same run stays", async () => {
+      const { service, file } = await switchedRun();
+      const committed = await service.commitRunRuntimeSwitch({
+        runId: "run-1", switchId: pending.switchId,
+        selection: { runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "gpt-5", llmConfig: null },
+      });
+      expect(committed.kind).toBe("committed");
+      expect(await readFile(file)).toMatchObject({
+        runId: "run-1", runtimeKind: "codex_app_server", llmModelIdentifier: "gpt-5", llmConfig: null, platformAgentRunId: null,
+        startedAt: "2026-03-26T10:01:00.000Z",
+        pendingRuntimeSwitch: { switchId: pending.switchId, from: { runtimeKind: "claude_agent_sdk", llmModelIdentifier: "model-1", platformAgentRunId: "session-1" } },
+      });
+    });
+
+    it("the activation commit clears the pending switch in the same write that sets the session, and the run is reactivated in the history", async () => {
+      const { service, file } = await switchedRun();
+      await service.commitRunRuntimeSwitch({ runId: "run-1", switchId: pending.switchId,
+        selection: { runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "gpt-5", llmConfig: null } });
+      await service.recordRunTerminated({ runId: "run-1", terminatedAt: "2026-03-26T11:00:00.000Z" });
+
+      const started = await service.recordRunStarted({
+        runId: "run-1", platformAgentRunId: "thread-9", runtimeKind: RuntimeKind.CODEX_APP_SERVER, clearPendingRuntimeSwitch: true,
+      });
+
+      const stored = await readFile(file);
+      expect(stored).toMatchObject({ runtimeKind: "codex_app_server", platformAgentRunId: "thread-9", startedAt: "2026-03-26T10:01:00.000Z" });
+      expect(Object.hasOwn(stored, "pendingRuntimeSwitch")).toBe(false);
+      expect(started).toEqual(expect.objectContaining({ platformAgentRunId: "thread-9" }));
+      expect(Object.hasOwn(started!, "pendingRuntimeSwitch")).toBe(false);
+      const index = JSON.parse(await fs.readFile(path.join(memoryDir, "run_history_index.json"), "utf-8")) as Array<{ runId: string; terminatedAt: string | null }>;
+      expect(index.find((row) => row.runId === "run-1")?.terminatedAt).toBeNull();
+    });
+
+    it("without the flag the pending switch stays (an ordinary start never removes it)", async () => {
+      const { service, file } = await switchedRun();
+      await service.commitRunRuntimeSwitch({ runId: "run-1", switchId: pending.switchId,
+        selection: { runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "gpt-5", llmConfig: null } });
+      await service.recordRunStarted({ runId: "run-1", platformAgentRunId: "thread-9" });
+      expect((await readFile(file)).pendingRuntimeSwitch).toMatchObject({ switchId: pending.switchId });
+    });
+  });
+
   it("keeps a remote run's delegatedFrom back-link when activation adds startedAt (N-10, DEC-112)", async () => {
     const service = await buildService();
     const delegatedFrom = { nodeId: "srv_peer_a", coordinatingRun: { kind: "agent" as const, runId: "agent_a1" }, delegatorAgentRunId: "agent_a1" };
@@ -191,36 +247,6 @@ describe("AgentRunHistoryCatalogService", () => {
     const raw = JSON.parse(await fs.readFile(path.join(memoryDir, "agents", "run-1", "run_metadata.json"), "utf-8")) as Record<string, unknown>;
     expect(raw).toMatchObject({ startedAt: "2026-03-26T10:01:00.000Z", preparedAt: "2026-03-26T10:00:00.000Z", delegatedFrom });
     expect(started?.delegatedFrom).toEqual(delegatedFrom);
-  });
-
-  it("commits only llmConfig through the serialized catalog", async () => {
-    const service = await buildService();
-    const metadata = buildMetadata("run-1", {
-      memoryDir: path.join(memoryDir, "agents", "run-1"),
-      llmConfig: { effort: "low" },
-    });
-    await service.recordPreparedRun({
-      runId: "run-1",
-      metadata,
-      createdAt: "2026-03-26T10:00:00.000Z",
-    });
-    const metadataPath = path.join(memoryDir, "agents", "run-1", "run_metadata.json");
-    const storedBefore = JSON.parse(await fs.readFile(metadataPath, "utf-8"));
-
-    await expect(service.commitRunModelConfig({
-      runId: "run-1",
-      llmModelIdentifier: "model-1",
-      llmConfig: { effort: "high" },
-    })).resolves.toMatchObject({
-      kind: "committed",
-      metadata: {
-        ...storedBefore,
-        llmConfig: { effort: "high" },
-      },
-    });
-
-    const stored = JSON.parse(await fs.readFile(metadataPath, "utf-8"));
-    expect(stored).toEqual({ ...storedBefore, llmConfig: { effort: "high" } });
   });
 
   it("updates first summary only and does not rewrite on ordinary later activity", async () => {

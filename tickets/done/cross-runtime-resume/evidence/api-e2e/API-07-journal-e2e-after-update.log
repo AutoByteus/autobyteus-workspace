@@ -1,0 +1,11 @@
+# API-07 follow-up: the 331 journal E2E (stale top-level journal-manifest runtime_kind assertion, removed by design in 316) after the test update. command: env -i … pnpm exec vitest run tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts --no-watch --reporter=verbose
+# date 2026-10-31T08:34:54Z
+# cause of the first failure (see API-07-updated-e2e-suites.log): the assertion expected {runtime_kind: <runtime>} at the top of work_journal_manifest.json; design-spec "Design response": the run-level runtime_kind is removed and each manifest file entry carries it
+
+ ✓ tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts > Work Journal neutral vocabulary through the real memory pipeline (autobyteus-331) > build: every runtime's converted cases read in t
+ ✓ tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts > Work Journal neutral vocabulary through the real memory pipeline (autobyteus-331) > build: the same job reads the same on every runt
+ ✓ tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts > Work Journal neutral vocabulary through the real memory pipeline (autobyteus-331) > build: the neutral words are what search_memory'
+ ✓ tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts > Work Journal neutral vocabulary through the real memory pipeline (autobyteus-331) > an update: journals written by an earlier revisi
+ ✓ tests/e2e/memory/work-journal-neutral-vocabulary.e2e.test.ts > Work Journal neutral vocabulary through the real memory pipeline (autobyteus-331) > an update: journals written by an earlier revisi
+ Test Files  1 passed (1)
+      Tests  5 passed (5)

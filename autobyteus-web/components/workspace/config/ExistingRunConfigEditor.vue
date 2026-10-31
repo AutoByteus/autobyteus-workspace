@@ -36,6 +36,7 @@
       :saving="draftStore.saving || draftStore.reconciling || delegatedDraft.saving"
       :saved="draftStore.feedback?.kind === 'success' || delegatedDraft.feedback?.kind === 'success'"
       :save-error="saveError"
+      :runtime-change-pending="runtimeChangePending"
       @stop="stopAction.stop"
       @refresh="draftStore.retryCanonicalRefresh"
       @change-root="(change) => changeScope('/', change)"
@@ -181,6 +182,9 @@ const state = computed<'editable' | 'read_only' | 'refresh_required'>(() => {
 })
 const canEdit = computed(() => Boolean(draft.value && draft.value.editability.editable && !draft.value.isActive
   && !refreshRequired.value && !delegatedDraft.saving && !draftStore.saving && !draftStore.reconciling && !draftStore.loadingCanonical))
+/** The draft chooses another agent runtime than the saved one (a stopped Agent run switches it at its next message). */
+const runtimeChangePending = computed(() => draft.value?.kind === 'agent'
+  && draft.value.draftSelection.runtimeKind !== (draft.value.metadata.runtimeKind ?? 'autobyteus'))
 const saveError = computed(() => (draftStore.feedback?.kind === 'error' ? draftStore.feedback.message
   : delegatedDraft.feedback?.kind === 'error' ? delegatedDraft.feedback.message : null))
 
@@ -200,7 +204,7 @@ const view = computed<{ key: string; kind: 'agent' | 'team' | 'org'; name: strin
       root: {
         workspace: runWorkspaceChoiceFromRootPath(current.metadata.workspaceRootPath)
           ?? (hydrated?.workspaceId ? { kind: 'existing', workspaceId: hydrated.workspaceId } : null),
-        runtimeKind: current.metadata.runtimeKind ?? 'autobyteus',
+        runtimeKind: current.draftSelection.runtimeKind,
         llmModelIdentifier: current.draftSelection.llmModelIdentifier,
         llmConfig: current.draftSelection.llmConfig,
         autoExecuteTools: current.metadata.autoExecuteTools,
@@ -349,7 +353,7 @@ const cancel = (): void => {
 const runtimeOf = (address: string): string => {
   const current = draft.value
   if (!current) return ''
-  if (current.kind === 'agent') return current.metadata.runtimeKind ?? 'autobyteus'
+  if (current.kind === 'agent') return current.draftSelection.runtimeKind
   return current.planner.scopesByAddress[address]?.runtimeKind ?? ''
 }
 
@@ -383,6 +387,8 @@ const modelUnavailable = (address: string): boolean => {
   const current = draft.value
   const options = draftStore.modelOptionsByAddress[address]
   if (!current || options?.status !== 'ready' || !options.options) return false
+  // The options are the saved agent runtime's; another agent runtime chosen in the draft has its own catalog.
+  if (current.kind === 'agent' && current.draftSelection.runtimeKind !== (current.metadata.runtimeKind ?? 'autobyteus')) return false
   const selected = current.kind === 'agent'
     ? current.draftSelection.llmModelIdentifier
     : current.planner.scopesByAddress[address]?.draftSelection.llmModelIdentifier
@@ -395,11 +401,11 @@ const selectionOf = (address: string) => {
   return current.kind === 'agent' ? current.draftSelection : current.planner.scopesByAddress[address]?.draftSelection ?? null
 }
 
-const updateScope = (address: string, llmModelIdentifier: string, llmConfig: Record<string, unknown> | null) => {
+const updateScope = (address: string, llmModelIdentifier: string, llmConfig: Record<string, unknown> | null, runtimeKind?: string) => {
   const current = draft.value
   if (!current) return
   const next = { llmModelIdentifier, llmConfig }
-  if (current.kind === 'agent') draftStore.updateAgentModelConfig(next)
+  if (current.kind === 'agent') draftStore.updateAgentModelConfig(next, runtimeKind)
   else if (current.kind === 'team') draftStore.updateTeamScopeModelConfig(address, next)
   else draftStore.updateAgentOrgScopeModelConfig(address, next)
 }
@@ -408,8 +414,9 @@ const changeScope = (address: string, change: RunMemberSettingChange) => {
   const current = selectionOf(address)
   if (!current || !canEdit.value) return
   if (change.field === 'model') {
-    // A saved-run replacement commits the target with its own defaults (`null`), as before.
-    updateScope(address, change.choice.llmModelIdentifier, null)
+    // A saved-run replacement commits the target with its own defaults (`null`), as before. A stopped Agent run's
+    // choice also names the agent runtime (it can switch it); a team member keeps its own.
+    updateScope(address, change.choice.llmModelIdentifier, null, draft.value?.kind === 'agent' ? change.choice.runtimeKind : undefined)
   } else if (change.field === 'thinking') {
     updateScope(address, current.llmModelIdentifier, change.llmConfig)
   } else if (change.field === 'workspace' && draft.value?.kind === 'agent_org') {

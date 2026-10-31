@@ -1,5 +1,6 @@
 import { createHash } from "node:crypto";
 import path from "node:path";
+import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import { MemoryFileStore } from "../../agent-memory/store/memory-file-store.js";
 import {
   RawTraceFileSourceService,
@@ -19,6 +20,14 @@ import {
 import { journalLines, readJournalEntries } from "../reading/journal-entry-reader.js";
 import { WorkJournalFileRenderer } from "../rendering/work-journal-file-renderer.js";
 import { WORK_JOURNAL_ACTIVE_FILE_NAME, WorkJournalStore, workJournalFileName } from "../store/work-journal-store.js";
+
+/**
+ * The agent runtime that wrote a raw file: an archived segment, the one recorded for it; the open file, the one the caller
+ * names in the target (the live run's own, or for a run with a pending switch the previous one: `openRawTraceRuntimeKind`).
+ * A segment that records none (or an unknown one) is rendered with the no-runtime rules.
+ */
+const fileRuntimeKind = (rawFile: RawTraceFileSource, target: WorkJournalTarget): RuntimeKind | null =>
+  rawFile.kind === "segment" ? rawFile.runtimeKind : target.runtimeKind ?? null;
 
 const sha256 = (text: string): string => createHash("sha256").update(text, "utf-8").digest("hex");
 
@@ -159,11 +168,10 @@ export class WorkJournalService {
     const source = this.createRawTraceSource(memoryDir);
     const rawFiles = source.listFiles(rawRunId, "chronological");
     const previous = await this.store.readManifest(memoryDir);
-    // Closed files are reusable only when today's rules for this runtime produced them.
+    // Closed files are reusable only when today's rules for their own agent runtime produced them.
     const reusable = previous
       && !regenerate
       && previous.renderer_revision === WORK_JOURNAL_RENDERER_REVISION
-      && previous.runtime_kind === target.runtimeKind
       ? new Map(previous.files.map((file) => [file.journal_file, file]))
       : new Map<string, WorkJournalManifestFile>();
 
@@ -173,7 +181,7 @@ export class WorkJournalService {
       const closed = rawFile.kind === "segment";
       const journalFile = workJournalFileName(closed ? rawFile.segmentIndex ?? 0 : null);
       const known = reusable.get(journalFile);
-      if (closed && known && await this.isReusableClosedFile(memoryDir, known, rawFile)) {
+      if (closed && known && await this.isReusableClosedFile(memoryDir, known, rawFile, fileRuntimeKind(rawFile, target))) {
         files.push(known);
         continue;
       }
@@ -185,7 +193,6 @@ export class WorkJournalService {
     changed = await this.removeStaleFiles(memoryDir, previous, files) || changed;
     const manifest: WorkJournalManifest = {
       run_id: target.runId,
-      runtime_kind: target.runtimeKind,
       renderer_revision: WORK_JOURNAL_RENDERER_REVISION,
       files,
     };
@@ -200,8 +207,10 @@ export class WorkJournalService {
     memoryDir: string,
     known: WorkJournalManifestFile,
     rawFile: RawTraceFileSource,
+    runtimeKind: RuntimeKind | null,
   ): Promise<boolean> {
     return known.state === "closed"
+      && known.runtime_kind === runtimeKind
       && known.source_file === rawFile.fileName
       && known.source_record_count === rawFile.recordCount
       && await this.store.journalFileExists(memoryDir, known.journal_file);
@@ -217,9 +226,10 @@ export class WorkJournalService {
   ): Promise<{ file: WorkJournalManifestFile; written: boolean }> {
     const closed = rawFile.kind === "segment";
     const { records } = source.readSource(rawRunId, rawFile);
+    const runtimeKind = fileRuntimeKind(rawFile, target);
     const { markdown } = this.renderer.render({
       runId: target.runId,
-      runtimeKind: target.runtimeKind,
+      runtimeKind,
       source: { fileName: rawFile.fileName, state: closed ? "closed" : "open", index: closed ? rawFile.segmentIndex ?? 0 : null },
       records,
     });
@@ -234,6 +244,7 @@ export class WorkJournalService {
         source_record_count: closed ? rawFile.recordCount : records.length,
         state: closed ? "closed" : "open",
         content_sha256: contentSha256,
+        runtime_kind: runtimeKind,
       },
       written: !unchanged,
     };

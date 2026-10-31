@@ -4,8 +4,8 @@ import type {
   DelegatedStopOutcome,
 } from "../../agent-collaboration/collaborators/delegated-launch-selection-command.js";
 import type {
+  DelegatedHostSelectionValue,
   DelegatedLaunchChange,
-  DelegatedLaunchSelectionValue,
   DelegatedRunReference,
 } from "../../agent-collaboration/domain/delegated-launch-selection.js";
 import type { AgentRunService } from "../../agent-execution/services/agent-run-service.js";
@@ -40,7 +40,7 @@ export type DelegatedLaunchServiceResult = Readonly<{
 export type StoppedRootConfiguredPatches =
   | Readonly<{ kind: "team"; patches: readonly TeamRunModelConfigPatch[] }>
   | Readonly<{ kind: "org"; patches: readonly AgentOrgRunModelConfigPatch[] }>
-  | Readonly<{ kind: "agent"; selection: DelegatedLaunchSelectionValue }>;
+  | Readonly<{ kind: "agent"; selection: DelegatedHostSelectionValue }>;
 
 const stopResult = (outcome: DelegatedStopServiceResult["outcome"], message: string, notStoppedUnattributed = 0): DelegatedStopServiceResult =>
   Object.freeze({ success: outcome === "STOPPED" || outcome === "ALREADY_STOPPED", outcome, message, notStoppedUnattributed });
@@ -61,7 +61,7 @@ export class DelegatedLaunchSelectionService {
     teams: Pick<AgentTeamRunManager, "getManagedTeamRun" | "updateStoppedRunLaunchChanges" | "delegatedLaunchModelOptions">;
     orgs: Pick<AgentOrgRunManager, "getActive" | "updateStoppedRunConfig" | "delegatedLaunchModelOptions">;
     agents: Pick<StandaloneAgentRunRootManager, "getActive" | "hasRoot" | "updateStoppedDelegatedLaunchSelections" | "delegatedLaunchModelOptions">;
-    agentRuns: Pick<AgentRunService, "updateStoppedModelConfig">;
+    agentRuns: Pick<AgentRunService, "updateStoppedSelection">;
     validator: RunModelSelectionValidator & Pick<RunModelSelectionService, "listOptionsMany">;
   }>) {}
 
@@ -146,9 +146,10 @@ export class DelegatedLaunchSelectionService {
         if (!hostSelection || (result.outcome !== "UPDATED" && result.outcome !== "UNCHANGED")) {
           return updateResult(result.outcome, result.message, result.fieldErrors);
         }
-        // The host's model is in its own run metadata (a separate file), saved after the validated tree.
-        const host = await this.dependencies.agentRuns.updateStoppedModelConfig({
+        // The host's selection (agent runtime, model) is in its own run metadata (a separate file), saved after the validated tree.
+        const host = await this.dependencies.agentRuns.updateStoppedSelection({
           agentRunId: input.rootRunId,
+          runtimeKind: hostSelection.runtimeKind,
           llmModelIdentifier: hostSelection.llmModelIdentifier,
           llmConfig: hostSelection.llmConfig,
         });

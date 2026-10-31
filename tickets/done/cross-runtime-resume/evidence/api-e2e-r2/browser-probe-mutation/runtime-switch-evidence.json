@@ -1,0 +1,66 @@
+{
+  "startedAt": "2026-10-31T10:48:22.100Z",
+  "steps": [
+    {
+      "text": "the native agent answered in the chat",
+      "details": null
+    },
+    {
+      "text": "the runtime menu of the stopped run offers the other agent runtimes",
+      "details": [
+        "autobyteus",
+        "codex_app_server",
+        "claude_agent_sdk",
+        "grok_build",
+        "antigravity_cli"
+      ]
+    },
+    {
+      "text": "saved: the server holds the pending switch",
+      "details": {
+        "runtimeKind": "antigravity_cli",
+        "model": "gemini-3.8-flash-low",
+        "platformAgentRunId": null,
+        "pendingFrom": "autobyteus"
+      }
+    },
+    {
+      "text": "the chat shows the marker after the first message",
+      "details": null
+    }
+  ],
+  "processes": [
+    {
+      "label": "backend",
+      "pid": 99851
+    },
+    {
+      "label": "frontend",
+      "pid": 938
+    }
+  ],
+  "cleanup": [
+    {
+      "pid": 938,
+      "stop": "SIGTERM"
+    },
+    {
+      "pid": 99851,
+      "stop": "SIGTERM"
+    },
+    {
+      "removed": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-switch-probe-vORmvb"
+    }
+  ],
+  "browserErrors": [],
+  "ownedRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-switch-probe-vORmvb",
+  "backendUrl": "http://127.0.0.1:53723",
+  "frontUrl": "http://127.0.0.1:53724",
+  "RSW01": {
+    "result": "Fail",
+    "error": "Timed out waiting for the reloaded chat",
+    "details": null,
+    "ms": 135692
+  },
+  "completedAt": "2026-10-31T10:51:05.981Z"
+}

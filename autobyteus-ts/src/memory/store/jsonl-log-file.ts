@@ -156,3 +156,80 @@ export const jsonlLogEndsCleanly = (filePath: string): boolean => {
     return false;
   }
 };
+
+const SCAN_CHUNK_BYTES = 64 * 1024;
+
+/**
+ * Read-only and bounded by what `visit` asks for: visits the complete records from the start of the file in order, in
+ * chunks, until `visit` returns `false` or the file ends. A line that is not a complete record (the damaged end, or damage
+ * the line rule never repairs) ends the scan. Nothing is cut or rewritten; a missing file visits nothing.
+ */
+export const scanJsonlRecordsFromStart = (
+  filePath: string,
+  visit: (record: Record<string, unknown>) => boolean,
+): void => {
+  if (!fs.existsSync(filePath)) return;
+  const fd = fs.openSync(filePath, 'r');
+  try {
+    const chunk = Buffer.alloc(SCAN_CHUNK_BYTES);
+    let carry: Buffer = Buffer.alloc(0);
+    let position = 0;
+    for (;;) {
+      const read = fs.readSync(fd, chunk, 0, SCAN_CHUNK_BYTES, position);
+      const atEnd = read === 0;
+      position += read;
+      let bytes: Buffer = atEnd ? carry : Buffer.concat([carry, chunk.subarray(0, read)]);
+      carry = Buffer.alloc(0);
+      let start = 0;
+      for (;;) {
+        const newline = bytes.indexOf(NEWLINE, start);
+        if (newline === -1) break;
+        const [line] = splitLines(bytes.subarray(start, newline + 1));
+        start = newline + 1;
+        if (!line || line.trimmed.length === 0) continue;
+        const record = parseCompleteRecord(line.trimmed);
+        if (!record || !visit(record)) return;
+      }
+      bytes = bytes.subarray(start);
+      if (atEnd) {
+        // A last record whose `\n` never landed still counts when it is complete.
+        const [line] = splitLines(bytes);
+        const record = line && line.trimmed.length > 0 ? parseCompleteRecord(line.trimmed) : null;
+        if (record) visit(record);
+        return;
+      }
+      carry = Buffer.from(bytes);
+    }
+  } finally {
+    fs.closeSync(fd);
+  }
+};
+
+/**
+ * Read-only: the last complete record of the file (null when there is none). It reads the end of the file in growing
+ * windows, so a long log is not read whole; a damaged end is skipped, as the next append would cut it.
+ */
+export const readLastJsonlRecord = (filePath: string): Record<string, unknown> | null => {
+  if (!fs.existsSync(filePath)) return null;
+  const size = fs.statSync(filePath).size;
+  if (size === 0) return null;
+  const fd = fs.openSync(filePath, 'r');
+  try {
+    for (let window = Math.min(size, TAIL_CHECK_BYTES); ; window = Math.min(size, window * 2)) {
+      const tail = Buffer.alloc(window);
+      fs.readSync(fd, tail, 0, window, size - window);
+      // Unless the window is the whole file, its first line may be partial.
+      const firstLineStart = window === size ? 0 : tail.indexOf(NEWLINE) + 1;
+      const lines = firstLineStart > 0 || window === size ? splitLines(tail.subarray(firstLineStart)) : [];
+      for (let index = lines.length - 1; index >= 0; index -= 1) {
+        const line = lines[index]!;
+        if (line.trimmed.length === 0) continue;
+        const record = parseCompleteRecord(line.trimmed);
+        if (record) return record;
+      }
+      if (window === size) return null;
+    }
+  } finally {
+    fs.closeSync(fd);
+  }
+};
