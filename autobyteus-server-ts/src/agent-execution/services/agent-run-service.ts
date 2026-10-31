@@ -16,7 +16,7 @@ import {
 import type { ObservedRunLifecycleEvent } from "../../runtime-management/domain/observed-run-lifecycle-event.js";
 import { isAgentRunEvent } from "../domain/agent-run-event.js";
 import { AgentRunCanonicalFailureObserver } from "../events/agent-run-canonical-failure-observer.js";
-import { AgentRunProvisioningService } from "./agent-run-provisioning-service.js";
+import { AgentRunProvisioningService, type RemovedEmptyNeverStartedRun } from "./agent-run-provisioning-service.js";
 import type { AgentRunIdentityAllocator } from "./agent-run-identity-allocator.js";
 import {
   StandaloneAgentRunLifecycleService,
@@ -245,8 +245,18 @@ export class AgentRunService {
     input: CreateAgentRunInput,
   ): Promise<CreateAgentRunResult> {
     const prepared = await this.provisioningService.prepareAgentRun(input);
-    const activeRun = (await this.activate(prepared.runId)).run;
-    return { runId: activeRun.runId };
+    try {
+      const activeRun = (await this.activate(prepared.runId)).run;
+      return { runId: activeRun.runId };
+    } catch (error) {
+      // One call, all or nothing: a run whose activation failed is undone (a started run is refused and kept).
+      const cancelled = await this.provisioningService.cancelPreparedAgentRun(prepared.runId)
+        .catch((cancelError: unknown): CancelPreparedAgentRunResult => ({ success: false, message: String(cancelError) }));
+      if (!cancelled.success) {
+        logger.warn(`Run '${prepared.runId}' failed to activate and was kept: ${cancelled.message}`);
+      }
+      throw error;
+    }
   }
 
   async prepareAgentRun(
@@ -268,8 +278,8 @@ export class AgentRunService {
     return this.provisioningService.cancelPreparedAgentRun(runId);
   }
 
-  async cleanupStalePreparedRuns(now: Date = new Date()): Promise<number> {
-    return this.provisioningService.cleanupStalePreparedRuns(now);
+  removeEmptyNeverStartedRuns(): Promise<RemovedEmptyNeverStartedRun[]> {
+    return this.provisioningService.removeEmptyNeverStartedRuns();
   }
 
   async hasRunIdentity(runId: string): Promise<boolean> {
@@ -326,6 +336,8 @@ export class AgentRunService {
   }
 
 }
+
+const logger = console;
 
 const normalizeRequiredRunId = (runId: string): string => {
   const normalized = runId.trim();

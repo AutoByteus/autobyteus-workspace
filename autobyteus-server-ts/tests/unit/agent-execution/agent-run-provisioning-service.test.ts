@@ -185,29 +185,4 @@ describe("AgentRunProvisioningService", () => {
     expect(result).toEqual({ success: true, message: "Run 'run-cancel-prepared' cancelled." });
     expect(historyCatalogService.cancelPreparedRun).toHaveBeenCalledWith(runId);
   });
-
-  it("cleans up only expired prepared identities", async () => {
-    const now = new Date("2026-05-18T12:00:00.000Z");
-    const stale = buildMetadata(memoryDir, "run-stale", {
-      preparedExpiresAt: "2026-05-18T11:59:00.000Z",
-    });
-    const fresh = buildMetadata(memoryDir, "run-fresh", {
-      preparedExpiresAt: "2026-05-18T12:01:00.000Z",
-    });
-    const started = buildMetadata(memoryDir, "run-started", {
-      preparedExpiresAt: "2026-05-18T11:00:00.000Z",
-      startedAt: "2026-05-17T00:05:00.000Z",
-    });
-    for (const metadata of [stale, fresh, started]) {
-      metadataByRunId.set(metadata.runId, metadata);
-      await fs.mkdir(metadata.memoryDir, { recursive: true });
-    }
-    const service = buildService();
-
-    const removed = await service.cleanupStalePreparedRuns(now);
-
-    expect(removed).toBe(1);
-    expect(historyCatalogService.cancelPreparedRun).toHaveBeenCalledTimes(1);
-    expect(historyCatalogService.cancelPreparedRun).toHaveBeenCalledWith("run-stale");
-  });
 });

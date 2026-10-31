@@ -27,6 +27,7 @@ import { TokenUsageAnalyticsProjectionWriter } from "./token-usage/services/toke
 import { configureTokenUsageCapability } from "./token-usage/providers/token-usage-capability.js";
 import { applyCapabilityReadiness, markCapabilitiesPending } from "./startup/app-data-capability-readiness.js";
 import { buildStudioServer } from "./compositions/build-studio-server.js";
+import { getAgentRunService } from "./agent-execution/services/agent-run-service.js";
 
 const logger = createServerLogger("server.runtime");
 
@@ -205,6 +206,8 @@ async function initializeConfiguredServer(options: ServerOptions, shutdown: Serv
     prismaInitializationStarted = false;
     vaultInitializationStarted = false;
     shutdown.checkpoint();
+    // Before any request can create a run: debris from failed or cut starts (autobyteus-349). Never throws.
+    await shutdown.stage(() => getAgentRunService().removeEmptyNeverStartedRuns());
     await shutdown.stage(() => applicationRuntime.lifecycle.prepareBeforeListen());
     await shutdown.stage(() => studioServer.agentToolsMcpHost.listen());
     await shutdown.stage(() => studioServer.credentialProxyHost.listen());
