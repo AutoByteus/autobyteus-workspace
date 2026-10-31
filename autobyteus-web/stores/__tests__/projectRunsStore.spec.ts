@@ -7,10 +7,14 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
 
 const query = vi.fn()
-vi.mock('~/utils/apolloClient', () => ({ getApolloClient: vi.fn(() => ({ query, mutate: vi.fn() })) }))
+const mutate = vi.fn()
+vi.mock('~/utils/apolloClient', () => ({ getApolloClient: vi.fn(() => ({ query, mutate })) }))
 
 import { useProjectRunsStore } from '../projectRunsStore'
 import { useProjectStore } from '../projectStore'
+import { useAgentRunStore } from '../agentRunStore'
+import { useAgentTeamRunStore } from '../agentTeamRunStore'
+import { useAgentOrgRunStore } from '../agentOrgRunStore'
 import type { Project, ProjectChangeMessage } from '~/types/project'
 
 const project = (projectId: string): Project => ({ projectId, name: projectId, description: '', createdAt: '', updatedAt: '',
@@ -97,6 +101,40 @@ describe('projectRunsStore', () => {
     store.noteRunStarted('P')
     await flush()
     expect(query).not.toHaveBeenCalled()
+  })
+
+  it('re-reads the Projects listing a run after the web stops it, so the tree shows it stopped (CR-003, AC-012)', async () => {
+    query.mockImplementation(async ({ variables }) => read(variables.projectId, variables.projectId === 'P' ? ['running-1'] : []))
+    store.show()
+    await flush()
+    query.mockClear()
+    mutate.mockResolvedValue({ data: { terminateAgentRun: { success: true, message: 'stopped' } } })
+    await useAgentRunStore().terminateRun('running-1')
+    await flush()
+    // Only Project reads count (the stop also refreshes the Workspaces tree).
+    expect(query.mock.calls.map(([options]) => options.variables?.projectId).filter(Boolean)).toEqual(['P'])
+  })
+
+  it('re-reads after a Team stop and an Org stop of a listed root too (CR-003)', async () => {
+    query.mockImplementation(async ({ variables }) => (variables?.projectId ? read(variables.projectId, [], []) : { data: {} }))
+    store.show()
+    await flush()
+    // The listing is read from the snapshots; give P a Team and an Org root (again after each re-read replaced it).
+    const listRoots = () => { store.snapshots = { ...store.snapshots, P: { ...store.snapshots.P!,
+      teamDefinitions: [{ teamDefinitionId: 'set', teamDefinitionName: 'set', runs: [{ teamRunId: 'team-1' }] }] as never,
+      agentOrgRuns: [{ rootRunId: 'org-1' }] as never } } }
+    listRoots()
+    const projectReads = () => query.mock.calls.map(([options]) => options.variables?.projectId).filter(Boolean)
+    query.mockClear()
+    mutate.mockResolvedValue({ data: { terminateAgentTeamRun: { success: true }, terminateAgentOrgRun: { success: true } } })
+    await useAgentTeamRunStore().terminateTeamRun('team-1')
+    await flush()
+    expect(projectReads()).toEqual(['P'])
+    listRoots()
+    query.mockClear()
+    await useAgentOrgRunStore().terminate('org-1')
+    await flush()
+    expect(projectReads()).toEqual(['P'])
   })
 
   it('keeps one read per Project in flight and one queued; an older answer never replaces a newer one', async () => {

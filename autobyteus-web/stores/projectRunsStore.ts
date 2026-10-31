@@ -6,6 +6,9 @@ import { useProjectStore } from '~/stores/projectStore'
 import { useRunHistoryStore } from '~/stores/runHistoryStore'
 import { useAgentContextsStore } from '~/stores/agentContextsStore'
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore'
+import { useAgentRunStore } from '~/stores/agentRunStore'
+import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore'
+import { useAgentOrgRunStore } from '~/stores/agentOrgRunStore'
 import { useWorkspaceStore } from '~/stores/workspace'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 import { useRunHistoryRetiredRunsStore } from '~/stores/runHistoryRetiredRuns'
@@ -24,9 +27,16 @@ type ProjectRunHistoryData = {
   }
 }
 
-/** The web's run removals: after each, the Projects listing the run are read again (DS-004 trigger 4). */
-const RUN_REMOVALS = new Set(['archiveRun', 'deleteRun', 'archiveTeamRun', 'deleteTeamRun', 'archiveAgentOrgRun',
+/**
+ * The web's changes to a listed root (DS-004 trigger 4), by the store that owns each: archive and delete (run history),
+ * and Stop (Agent, Team and Org runs). After each, the Projects listing the run are read again, so a stopped run with no
+ * live context in this window shows stopped, as Workspaces' own refresh shows it (CR-003).
+ */
+const RUN_HISTORY_REMOVALS = new Set(['archiveRun', 'deleteRun', 'archiveTeamRun', 'deleteTeamRun', 'archiveAgentOrgRun',
   'deleteAgentOrgRun', 'archiveAgentRunGroup', 'archiveTeamRuns', 'archiveAgentOrgRuns'])
+const AGENT_RUN_STOPS = new Set(['terminateRun'])
+const TEAM_RUN_STOPS = new Set(['terminateTeamRun'])
+const ORG_RUN_STOPS = new Set(['terminate'])
 
 const readProjectRunHistory = async (projectId: string): Promise<ProjectRunsSnapshot> => {
   const { data, errors } = await getApolloClient().query<ProjectRunHistoryData>({
@@ -156,15 +166,22 @@ export const useProjectRunsStore = defineStore('projectRuns', () => {
     void read(projectId)
   }
 
-  // Archive and delete from the web: the Projects listing a removed run read again (DS-004 trigger 4).
-  useRunHistoryStore().$onAction(({ name, args, after }) => {
-    if (!RUN_REMOVALS.has(name) || shown.value === 0) return
-    after(() => {
-      const ids = (args as unknown[]).flatMap((arg) => (Array.isArray(arg) ? arg : [arg])).filter((arg): arg is string => typeof arg === 'string')
-      const listing = new Set(ids.flatMap(projectsListing))
-      ;(listing.size ? [...listing] : Object.keys(snapshots.value)).forEach((projectId) => void read(projectId))
+  // Web actions on a listed root (DS-004 trigger 4): the Projects listing the run read again once the action settled.
+  // A run named by no listing (a group archive names a folder and a definition) re-reads every loaded Project.
+  type ActionObserved = Readonly<{ name: string; args: unknown[]; after(callback: () => void): void }>
+  const rereadAfter = (store: Readonly<{ $onAction(listener: (action: ActionObserved) => void): unknown }>, actions: ReadonlySet<string>) =>
+    store.$onAction(({ name, args, after }) => {
+      if (!actions.has(name) || shown.value === 0) return
+      after(() => {
+        const ids = args.flatMap((arg) => (Array.isArray(arg) ? arg : [arg])).filter((arg): arg is string => typeof arg === 'string')
+        const listing = new Set(ids.flatMap(projectsListing))
+        ;(listing.size ? [...listing] : Object.keys(snapshots.value)).forEach((projectId) => void read(projectId))
+      })
     })
-  })
+  rereadAfter(useRunHistoryStore(), RUN_HISTORY_REMOVALS)
+  rereadAfter(useAgentRunStore(), AGENT_RUN_STOPS)
+  rereadAfter(useAgentTeamRunStore(), TEAM_RUN_STOPS)
+  rereadAfter(useAgentOrgRunStore(), ORG_RUN_STOPS)
 
   // Another node: nothing read for the previous one is kept.
   watch(() => node.bindingRevision, () => {
