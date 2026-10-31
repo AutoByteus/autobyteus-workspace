@@ -9,6 +9,7 @@ The latest `design-review-report.md` remains authoritative. This record holds th
 | ARCH-REV-001 | Round 1 / Solution Designer handoff "Architecture Design Complete" (Large / High) | SR-004 (notes 1–7) | N/A | Fail | ARCH-F-001, ARCH-F-002, ARCH-F-003, ARCH-F-004, ARCH-F-005 |
 | ARCH-REV-002 | Round 2 / revision after ARCH-REV-001; autobyteus-343 delivered; rename decided (option A) | SR-004 (notes 8–11) | Fail | Pass | ARCH-F-001…005 resolved; ARCH-F-006 new (Low) |
 | ARCH-REV-003 | Round 3 / failure-origin review CRR-002 of the built system (F-1 candidate records, F-2 chat after reload, F-3 pending context) | SR-004 (note 14) | Pass | Fail | ARCH-F-006 resolved; ARCH-F-007 new (Medium, blocking) |
+| ARCH-REV-004 | Round 4 / revision after ARCH-REV-003 and the Solution Designer's data-model review (SR-004 note 15) | SR-004 (note 15) | Fail | Pass | ARCH-F-007 resolved; ARCH-F-008 new (Low) |
 
 ## Revision Entries
 
@@ -77,3 +78,25 @@ None.
 - Material classification changes: none; `task_size=Large`, `architectural_risk=High` confirmed
 - Recommended recipient: `/software_engineering_team/solution_designer`
 - Remaining risks or uncertainty: whether the system-instruction dedupe can suppress a new era's own record across eras (`Unclear`, no mechanism required); the marker disappears from a reloaded chat after a compaction in the new era (stated in §3.7; tell the user).
+
+### ARCH-REV-004 — Round 4: ARCH-F-007 resolved; derived hand-over accepted; Pass with one Low clarification set
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-runtime-resume/tickets/in-progress/cross-runtime-resume/design-review-report.md`
+- Review round and trigger: round 4; Solution Designer revision (`solution-designer-handoff.md` "Round 4", SR-004 note 15), documents `ca4c82b050`
+- Triggering role, report path, and finding IDs: Solution Designer; round-3 report; ARCH-F-007
+- Relevant solution revision IDs: SR-004 (notes 14, 15)
+- Prior authoritative decision: Fail
+- Current authoritative decision: Pass
+- What changed in the review result or what baseline was established: ARCH-F-007's fix verified case by case against the code; the Solution Designer's additional changes reviewed (the contract holds data only; the hand-over derived from the raw traces; the second port and the lifecycle → notice call removed). Affected spines redrawn: DS-002 (with `discard` on every branch that ends before `record` succeeds) and DS-005 (publication → derive once → notice → `prefaceDelivered` → the user record ends it).
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| ARCH-F-007 | Open (Medium, blocking) | Resolved | SR-004 note 15; design-spec "Activation Sequence", Dependency Rules, mapping rows; contract §3.3 identity, archive rules and case table, I-7 | Walked each case against `archiveRecords` (idempotent by key, pending-segment cleanup) and `recordSystemInstructionSupply` (dedupe against the latest instruction in the active file): failed start then retry (discard removes the candidate's record after the abort; the next `begin` reads the original tail), failed commit then retry (marker present, `discard` a no-op, watermark ignored, instruction not written twice), `record` failing between segment completion and the rewrite (discard removes the candidate's record; the retry removes the archived ids and puts the same-id marker first), abandoned attempt (previous file untouched). The marker id is derived from the key, which makes I-3 hold on every attempt. The dedupe consequence is stated as `Unclear` with no mechanism |
+| ARCH-F-001…006 | Resolved | Still resolved | | Untouched, apart from the removal of the second port, which only simplifies the dependency rules |
+
+- New or remaining finding IDs: ARCH-F-008 (Low, non-blocking): the exact guard of `discard` (keyed to this switch, so later switches work; watermark not found removes nothing; discard only after a confirmed release), bounded read-only reads for the derivation and `begin`, notice-service semantics (`MP-4`), stale design-spec text
+- Material classification changes: none; `task_size=Large`, `architectural_risk=High` confirmed
+- Recommended recipient: `/software_engineering_team/implementation_engineer` (primary pass), then `/software_engineering_team/solution_designer` (informational)
+- Remaining risks or uncertainty: the instruction dedupe across eras (`Unclear`, no consequence for chat or journal); the marker is not shown on reload after a compaction in the new era (tell the user); a duplicated notice after a restart in the no-turn-id case.

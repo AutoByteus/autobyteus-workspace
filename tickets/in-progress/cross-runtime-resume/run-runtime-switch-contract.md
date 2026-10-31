@@ -33,7 +33,7 @@ Writers: raw traces and their manifest = the memory recorders / `RunMemoryFileSt
 
 ```ts
 pendingRuntimeSwitch?: {
-  requestedAt: string;                                   // ISO time of the settings save; part of the switch key
+  switchId: string;                                      // the identity of this switch (a UUID made at the first pending save, kept by later saves, new after an undo); part of the switch key
   from: RunProviderBinding;   // the previous binding: Pick<AgentRunMetadata, "runtimeKind" | "llmModelIdentifier" | "llmConfig" | "platformAgentRunId">, one type shared with the metadata, not a copy
 }
 ```
@@ -43,7 +43,7 @@ pendingRuntimeSwitch?: {
 - **Stored before and after the activation commit** (the commit writes the new session ID and removes the pending field in the same write; `startedAt` is unchanged):
   ```
   before: { runId, runtimeKind: "codex_app_server", llmModelIdentifier: "…", llmConfig: {…}, platformAgentRunId: null,
-            startedAt: "2026-10-29T…", pendingRuntimeSwitch: { requestedAt: "2026-10-30T10:00:00Z",
+            startedAt: "2026-10-29T…", pendingRuntimeSwitch: { switchId: "7c1e…",
               from: { runtimeKind: "claude_agent_sdk", llmModelIdentifier: "…", llmConfig: {…}, platformAgentRunId: "sess-1" } }, … }
   after:  { runId, runtimeKind: "codex_app_server", llmModelIdentifier: "…", llmConfig: {…}, platformAgentRunId: "thread-9",
             startedAt: "2026-10-29T…", … }          // no pendingRuntimeSwitch key
@@ -54,7 +54,7 @@ pendingRuntimeSwitch?: {
 
 *Read:* `RawTraceArchiveSegmentEntry {index, file_name, boundary_type, boundary_key, boundary_trace_id, runtime_kind, source_event, archived_at, first/last_trace_id, first/last_ts, record_count, status}`; `boundary_type` is the union `native_compaction | provider_compaction_boundary` (`autobyteus-ts/src/memory/store/raw-trace-archive-manifest.ts:8-11`). *Measured (2026-10-30: 825 manifests, 3,794 segments):* every segment has a `runtime_kind` and its file; no orphan. Today's stored spelling is the short label: `CODEX` 3,648, `CLAUDE` 83, `AUTOBYTEUS` 61, `ANTIGRAVITY` 2 (and `GROK_BUILD` in the Grok payload, *Read* `grok-build-compaction-status-payload.ts:51`); PRE-1 changes it.
 
-New value: `boundary_type: "runtime_switch"` (one added member of the library's union), `source_event: "runtime_switch"`, `boundary_key: "runtime_switch:<runId>:<requestedAt>"` (the idempotency key), `boundary_trace_id` = the marker's id, `runtime_kind` = the `RuntimeKind` value of the **archived** records' runtime (the previous agent, `from.runtimeKind`). **Prerequisite PRE-1 (autobyteus-343) is delivered and merged (2026-10-30):** before it the stored values were the short labels `CODEX/CLAUDE/ANTIGRAVITY/GROK_BUILD/AUTOBYTEUS`; PRE-1 makes the backends write, and a sealed migration rewrite in the manifests, the `RuntimeKind` values (`codex_app_server`, `claude_agent_sdk`, `antigravity_cli`, `grok_build`, `autobyteus`). This contract assumes that state: a segment's runtime is `runtimeKindFromString(entry.runtime_kind)` (null when absent or unknown, then rendered with the no-runtime rules as today), and no mapping file exists.
+New value: `boundary_type: "runtime_switch"` (one added member of the library's union), `source_event: "runtime_switch"`, `boundary_key: "runtime_switch:<runId>:<switchId>"` (the idempotency key), `boundary_trace_id` = the marker's id, `runtime_kind` = the `RuntimeKind` value of the **archived** records' runtime (the previous agent, `from.runtimeKind`). **Prerequisite PRE-1 (autobyteus-343) is delivered and merged (2026-10-30):** before it the stored values were the short labels `CODEX/CLAUDE/ANTIGRAVITY/GROK_BUILD/AUTOBYTEUS`; PRE-1 makes the backends write, and a sealed migration rewrite in the manifests, the `RuntimeKind` values (`codex_app_server`, `claude_agent_sdk`, `antigravity_cli`, `grok_build`, `autobyteus`). This contract assumes that state: a segment's runtime is `runtimeKindFromString(entry.runtime_kind)` (null when absent or unknown, then rendered with the no-runtime rules as today), and no mapping file exists.
 
 **Runtime of a segment (lookup rule):** an archived segment → its entry's `runtime_kind`. The open (active) file → the runtime that wrote it: `pendingRuntimeSwitch.from.runtimeKind` while a switch is pending (the metadata already holds the new runtime, the open file still holds the previous runtime's records), otherwise `run_metadata.runtimeKind`. One function derives this fact (`openRawTraceRuntimeKind(metadata)`, `run-history/store/agent-run-pending-runtime-switch.ts`, beside the pending-switch parse) and the journal's callers use it (`memory-run-discovery.ts:146` supplies the journal target's runtime for standalone runs); a live run has no pending switch, so its own runtime is the same fact.
 
@@ -62,7 +62,7 @@ New value: `boundary_type: "runtime_switch"` (one added member of the library's 
 
 *Why not a new trace type:* the history projection turns raw `system_task_notification` records into chat notices and ignores unknown types (`raw-trace-to-historical-replay-events.ts:201-216`), and the journal already renders them as `Notice:`; so a notice gives the chat marker and the journal line with no change to either reader. Record: `trace_type: "system_task_notification"`, `sender_id: "system.runtime_handover"` (a new sender id beside the existing ones in `system-task-notification-senders.ts`; it is deliberately NOT added to `RECORDED_SYSTEM_NOTICE_SENDER_IDS`: the marker is recorded once at activation, the live notice of 3.6 only shows it), content one short line: `Agent runtime changed from <Codex App Server> (<model>) to <Claude Agent SDK> (<model>).` (names as in GLOSSARY.md, `agentRuntimeName`; no short forms) It carries the boundary key as its `correlation_id` (the memory writer's notice branch is extended to keep a correlation id, as the compaction boundary branch does), so a retry finds it with the store's existing lookup by correlation id (`findActiveRawTraceByCorrelationId`), the way the provider compaction boundary recorder does.
 
-**Identity.** The switch key is `runtime_switch:<runId>:<requestedAt>`. The marker's trace id is derived from it (`rt_runtime_switch_` + the first 24 hex characters of the SHA-256 of the key), so it is the same on every attempt and equals the segment's `boundary_trace_id` (I-3).
+**Identity.** The switch key is `runtime_switch:<runId>:<switchId>`. The marker's trace id is derived from it (`rt_runtime_switch_` + the first 24 hex characters of the SHA-256 of the key), so it is the same on every attempt and equals the segment's `boundary_trace_id` (I-3).
 
 **The archive step (one library call, `RunMemoryFileStore.rotateActiveRawTracesForRuntimeSwitch({boundary, marker, throughTraceId})`, built on the same private `archiveAndRewriteActive` as the other rotations).** Rules:
 1. If a complete segment with the key exists, the watermark (`throughTraceId`) is ignored: the ids that segment holds are removed from the active file and the marker is ensured first.
