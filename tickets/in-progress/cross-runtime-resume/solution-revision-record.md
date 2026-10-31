@@ -121,3 +121,8 @@
 
 - Autobyteus-343 (PRE-1) is merged into `origin/personal` (`31eb1fb5d3`); the 316 worktree merged `origin/personal` (`d1517e010d`). ARCH-F-004 is resolved: no label mapping exists in current code; a segment's stored runtime is read with `runtimeKindFromString`; the switch recorder writes `from.runtimeKind` as is. Imports not yet refreshed keep the old spelling and are read as "runtime unknown" (generic rendering), as 343's release notes say.
 - Still open: ARCH-F-005 (the `…ModelConfig` names), asked of the user in the conversation with the recommendation (rename the single-agent chain). After his answer the design is revised and goes back to the architecture reviewer (round 2), then to the user for the final approval before any build.
+
+### SR-004 note 11 (2026-10-31) — ARCH-F-005 decided by the user: rename the single-agent chain (option A)
+
+- The user: "I trust your recommendation … clean is very important." Option A: the single-agent stopped-run edit is renamed as a clean cut (`…ModelConfig` → `…Selection`: GraphQL mutation, input and result, service methods, updater class and file, input type, web client and document). The team family, the shared `RunModelConfig*` result types, `StudioRunModelConfigService` and `commitAgentRunModelConfig` keep their names because they stay accurate. FU-007 is removed (the rename is in this ticket); FU-003 carries the team rename for when the switch reaches teams.
+- Design status `Ready` for architecture review round 2: ARCH-F-001…003 fixed (note 8), ARCH-F-004 resolved by autobyteus-343 (note 10), ARCH-F-005 decided (this note). No structural change.

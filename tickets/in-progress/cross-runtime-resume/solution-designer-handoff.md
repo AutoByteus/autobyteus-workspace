@@ -53,3 +53,10 @@ Architecture review of the requirements and design package (`design-review-repor
 ## Route
 
 Rule matched: Architecture Design Complete with task_size=Large and architectural_risk=High, requirements approved, package ready → `/software_engineering_team/architecture_reviewer` (the only matching rule). Sent 2026-10-30.
+
+
+## Round 2 (2026-10-31) — after architecture review ARCH-REV-001 round 1 (Fail)
+
+- Resolved: ARCH-F-001 (activation commit: `recordRunStarted` gets `clearPendingRuntimeSwitch`; retry flag generalized), ARCH-F-002 (root hop, second caller = combined Save of a host with its copies, two construction sites with the optional `switching` dependency, readers decided, MP-1 answered from the code), ARCH-F-003 (`openRawTraceRuntimeKind(metadata)` is the one owner of the open file's runtime; I-4, I-9), the non-blocking recommendations (hand-over source first; `AgentRunPlatformNoticeSource` semantics; undo keeps a different model; I-7 asserted in the real run; recorder failure aborts the candidate), ARCH-F-004 (the user decided to migrate first; autobyteus-343 is merged: no label mapping, `runtimeKindFromString`), ARCH-F-005 (the user decided option A: the single-agent chain is renamed `…ModelConfig` → `…Selection`; team family and shared result types keep their names). Details: `solution-revision-record.md` SR-004 notes 8–11; investigation notes F-33…F-37.
+- Base: `origin/personal` merged into the branch (includes autobyteus-343, `31eb1fb5d3`); latest commit of the documents: see `git log -1`.
+- Classification unchanged: Large, High. Requirements `Approved` (SR-004). The user's final approval of the design before any build is still required (Task) and is asked after your review.
