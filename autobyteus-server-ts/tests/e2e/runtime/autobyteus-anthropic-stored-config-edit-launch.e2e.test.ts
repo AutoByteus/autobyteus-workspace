@@ -211,10 +211,10 @@ describe("AutoByteus Anthropic saved settings with a key the model no longer dec
     const resume = async () => (await gql<{ getAgentRunResumeConfig: { metadataConfig: { llmConfig: Json | null } } }>(
       "query($id: String!) { getAgentRunResumeConfig(runId: $id) { metadataConfig { llmConfig } } }", { id: runId })).getAgentRunResumeConfig;
     expect((await resume()).metadataConfig.llmConfig).toEqual({ reasoning_effort: "max", [STALE_KEY]: "omitted" });
-    const saved = await gql<{ updateStoppedAgentRunModelConfig: Json }>(
-      `mutation($input: UpdateStoppedAgentRunModelConfigInput!) { updateStoppedAgentRunModelConfig(input: $input) { ${UPDATE_FIELDS} } }`,
-      { input: { agentRunId: runId, llmModelIdentifier: OPUS, llmConfig: { reasoning_effort: "high", [STALE_KEY]: "omitted" } } });
-    expect(saved.updateStoppedAgentRunModelConfig).toMatchObject({ success: true, outcome: "UPDATED", fieldErrors: [] });
+    const saved = await gql<{ updateStoppedAgentRunSelection: Json }>(
+      `mutation($input: UpdateStoppedAgentRunSelectionInput!) { updateStoppedAgentRunSelection(input: $input) { ${UPDATE_FIELDS} } }`,
+      { input: { agentRunId: runId, runtimeKind: "autobyteus", llmModelIdentifier: OPUS, llmConfig: { reasoning_effort: "high", [STALE_KEY]: "omitted" } } });
+    expect(saved.updateStoppedAgentRunSelection).toMatchObject({ success: true, outcome: "UPDATED", fieldErrors: [] });
     expect((await resume()).metadataConfig.llmConfig).toEqual({ reasoning_effort: "high" });
   }, 120_000);
 

@@ -1,3 +1,4 @@
+import { randomUUID } from "node:crypto";
 import type { AgentRunMetadata } from "../../run-history/store/agent-run-metadata-types.js";
 import type { AgentRunMetadataService } from "../../run-history/services/agent-run-metadata-service.js";
 import type { AgentRunHistoryCatalogService } from "../../run-history/services/agent-run-history-catalog-service.js";
@@ -6,10 +7,15 @@ import {
   runModelConfigEditability,
   type RunModelConfigUpdateResult,
 } from "../../run-history/domain/run-model-config.js";
+import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type { AgentRunManager } from "./agent-run-manager.js";
+import { canSwitchRuntime } from "./standalone-agent-run-eligibility.js";
+import { selectionContextFor } from "./stopped-run-selection-context.js";
 
-export type StoppedRunModelConfigInput = Readonly<{
+export type StoppedRunSelectionInput = Readonly<{
   agentRunId: string;
+  /** The agent runtime to save the run with: its own (a model-only edit), the previous one (undo) or another (a switch). */
+  runtimeKind: RuntimeKind;
   llmModelIdentifier: string;
   llmConfig: Readonly<Record<string, unknown>> | null;
 }>;
@@ -17,17 +23,18 @@ export type StoppedRunModelConfigInput = Readonly<{
 type UpdateResult = RunModelConfigUpdateResult<AgentRunMetadata | null>;
 
 /**
- * Saves a stopped standalone run's model settings: validates the selection against the run's
- * runtime and commits it through the history catalog. The caller (the standalone lifecycle)
- * runs it inside the run's transition lane, so it never races an activation.
+ * Saves a stopped standalone run's selection (agent runtime, model and model settings): decides model-only edit, switch or
+ * undo, validates the selection as a fresh one when the agent runtime differs from the stored one, and commits it through the
+ * history catalog. A switch only records a pending switch; the run's next input makes it real (the lifecycle's activation).
+ * The caller (the standalone lifecycle) runs it inside the run's transition lane, so it never races an activation.
  */
-export class StandaloneStoppedRunModelConfigUpdater {
+export class StandaloneStoppedRunSelectionUpdater {
   private readonly modelSelectionValidator: RunModelSelectionValidator;
 
   constructor(private readonly deps: Readonly<{
     agentRunManager: Pick<AgentRunManager, "getActiveRun">;
     metadataService: Pick<AgentRunMetadataService, "readMetadataState">;
-    historyCatalogService: Pick<AgentRunHistoryCatalogService, "getCatalogRow" | "commitRunModelConfig">;
+    historyCatalogService: Pick<AgentRunHistoryCatalogService, "getCatalogRow" | "commitRunRuntimeSwitch">;
     modelSelectionValidator: RunModelSelectionValidator;
   }>) {
     if (!deps.modelSelectionValidator ||
@@ -37,7 +44,7 @@ export class StandaloneStoppedRunModelConfigUpdater {
     this.modelSelectionValidator = deps.modelSelectionValidator;
   }
 
-  async update(runId: string, input: StoppedRunModelConfigInput): Promise<UpdateResult> {
+  async update(runId: string, input: StoppedRunSelectionInput): Promise<UpdateResult> {
     const state = await this.deps.metadataService.readMetadataState(runId);
     const metadata = state.kind === "present" ? state.metadata : null;
     if (!metadata) {
@@ -63,9 +70,17 @@ export class StandaloneStoppedRunModelConfigUpdater {
     if (row.archivedAt) {
       return this.result({ outcome: "RUN_ARCHIVED", message: "Archived runs cannot be edited.", metadata, active: false, archived: true });
     }
+    if (input.runtimeKind !== metadata.runtimeKind && !canSwitchRuntime(metadata)) {
+      return this.result({
+        outcome: "VALIDATION_FAILED",
+        message: "This run cannot change its agent runtime. Only a started, standalone Agent run that is not a delegated copy can.",
+        metadata,
+        active: false,
+        fieldErrors: [{ path: "runtimeKind", message: "The agent runtime of this run cannot be changed." }],
+      });
+    }
     const validation = await this.modelSelectionValidator.validate({
-      context: { runtimeKind: metadata.runtimeKind, currentModelIdentifier: metadata.llmModelIdentifier,
-        workspaceRootPath: metadata.workspaceRootPath },
+      context: selectionContextFor(metadata, input),
       selection: { llmModelIdentifier: input.llmModelIdentifier, llmConfig: input.llmConfig },
     });
     if (validation.kind !== "valid") {
@@ -84,16 +99,21 @@ export class StandaloneStoppedRunModelConfigUpdater {
         fieldErrors: validation.kind === "invalid" ? validation.errors : [],
       });
     }
-    const committed = await this.deps.historyCatalogService.commitRunModelConfig({
+    const committed = await this.deps.historyCatalogService.commitRunRuntimeSwitch({
       runId,
-      ...validation.selection,
+      selection: { runtimeKind: input.runtimeKind, ...validation.selection },
+      switchId: randomUUID(),
     });
     if (committed.kind === "committed" || committed.kind === "unchanged") {
       return this.result({
         outcome: committed.kind === "committed" ? "UPDATED" : "UNCHANGED",
-        message: committed.kind === "committed"
-          ? "Model settings updated. They will be used when this run resumes."
-          : "Model settings are already up to date.",
+        message: committed.kind !== "committed"
+          ? "Model settings are already up to date."
+          : committed.metadata.pendingRuntimeSwitch
+            ? "Agent runtime and model saved. The agent runtime changes when you send your next message."
+            : input.runtimeKind !== metadata.runtimeKind
+              ? "The agent runtime change was cancelled."
+              : "Model settings updated. They will be used when this run resumes.",
         metadata: committed.metadata,
         active: false,
       });

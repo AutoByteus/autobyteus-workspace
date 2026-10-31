@@ -77,12 +77,12 @@ export type WorkJournalManifestFile = Readonly<{
   state: WorkJournalFileState;
   /** sha256 of the journal file's content, so the evidence hash never re-reads closed files. */
   content_sha256: string;
+  /** The agent runtime whose rules rendered this file (a run can have files of several); `null`: rendered with the no-runtime rules. */
+  runtime_kind: string | null;
 }>;
 
 export type WorkJournalManifest = Readonly<{
   run_id: string;
-  /** `null`: no runtime recorded for the run. */
-  runtime_kind: string | null;
   renderer_revision: number;
   files: readonly WorkJournalManifestFile[];
 }>;

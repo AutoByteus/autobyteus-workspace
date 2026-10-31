@@ -8,7 +8,7 @@ import {
   type DelegatedLaunchModelOptions,
   type DelegatedLaunchUpdateResult,
 } from "../../agent-collaboration/collaborators/delegated-launch-selection-command.js";
-import { delegatedLaunchSelections, type DelegatedLaunchChange } from "../../agent-collaboration/domain/delegated-launch-selection.js";
+import { delegatedLaunchSelections, type DelegatedHostSelectionValue, type DelegatedLaunchChange } from "../../agent-collaboration/domain/delegated-launch-selection.js";
 import type { RunModelSelectionService, RunModelSelectionValidator } from "../../llm-management/services/run-model-selection-service.js";
 import { applyStandaloneDelegatedLaunchSelections, standaloneDelegatedLaunchForest } from "./standalone-root-tree-mutator.js";
 import {
@@ -16,6 +16,7 @@ import {
   getActiveCollaborationRootDirectory,
 } from "../../agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import { isCollaborationEligibleStandaloneRun } from "../../agent-execution/services/standalone-agent-run-eligibility.js";
+import { selectionContextFor } from "../../agent-execution/services/stopped-run-selection-context.js";
 import type { StandaloneAgentRunActivationResult } from "../../agent-execution/services/standalone-agent-run-lifecycle-service.js";
 import type {
   StandaloneRootStopResult,
@@ -294,7 +295,7 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
   async updateStoppedDelegatedLaunchSelections(input: Readonly<{
     hostRunId: string;
     changes: readonly DelegatedLaunchChange[];
-    hostSelection?: Readonly<{ llmModelIdentifier: string; llmConfig: Readonly<Record<string, unknown>> | null }> | null;
+    hostSelection?: DelegatedHostSelectionValue | null;
     validator: RunModelSelectionValidator;
   }>): Promise<Readonly<{ result: DelegatedLaunchUpdateResult; tree: StandaloneRootTreeSnapshot | null }>> {
     const hostRunId = input.hostRunId.trim();
@@ -321,8 +322,8 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
     const plan = planDelegatedLaunchValidation({ ...this.delegatedLaunchReader(hostRunId, tree), changes: input.changes });
     if (plan.kind === "refused") return outcome(plan.result.outcome, plan.result.message, tree, plan.result.fieldErrors);
     const host = input.hostSelection ? [{
-      context: { runtimeKind: metadata.runtimeKind, currentModelIdentifier: metadata.llmModelIdentifier,
-        workspaceRootPath: metadata.workspaceRootPath ?? process.cwd() },
+      // The host's own selection carries its agent runtime: another one is a fresh selection of that runtime.
+      context: selectionContextFor({ ...metadata, workspaceRootPath: metadata.workspaceRootPath ?? process.cwd() }, input.hostSelection),
       selection: input.hostSelection,
     }] : [];
     const results = await input.validator.validateMany([...plan.inputs, ...host]);

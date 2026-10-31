@@ -69,7 +69,10 @@ type RuntimeMemoryUserTraceInput = Omit<RuntimeMemoryNonToolTraceInput, "traceTy
   senderId?: string | null;
 };
 
-/** A system notice shown in the conversation (recorded only for Claude background-task notices). */
+/**
+ * A system notice shown in the conversation (recorded for Claude background-task notices, the skill and tool-list
+ * notices, and the agent runtime switch marker). The marker carries its switch key as `correlationId`, so a retry finds it.
+ */
 export type RuntimeMemorySystemTaskNotificationTraceInput = RuntimeMemoryTraceInputBase & {
   traceType: "system_task_notification";
   senderId: string;
@@ -79,7 +82,7 @@ export type RuntimeMemorySystemTaskNotificationTraceInput = RuntimeMemoryTraceIn
   toolArgs?: never;
   toolResult?: never;
   toolError?: never;
-  correlationId?: never;
+  correlationId?: string;
 };
 
 export type RuntimeMemoryTraceInput =

@@ -1,0 +1,5 @@
+# Live e2e result lines, run on the final commit (the run's manifests, markers and journals are in ../real-run)
+ ✓ tests/e2e/runtime/runtime-switch-live.e2e.test.ts (1 test) 21761ms
+     ✓ Claude Agent SDK, then Codex App Server, then a scripted Antigravity CLI: one run, one chat  20562ms
+ Test Files  1 passed (1)
+      Tests  1 passed (1)

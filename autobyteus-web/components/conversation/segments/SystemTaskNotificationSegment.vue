@@ -34,6 +34,8 @@ const SKILL_UPDATE_NOTICE_HEADER = '[Platform notice — skill updated]';
 const TOOL_LIST_UPDATE_NOTICE_SENDER_ID = 'system.tool_list_update_notifier';
 const TOOL_LIST_UPDATE_NOTICE_HEADER = '[Platform notice — tools updated]';
 const TOOL_LIST_UPDATE_NOTICE_LEAD = 'Your tools changed.';
+/** The agent runtime switch marker: its sender (live notice and recorded marker). */
+const RUNTIME_HANDOVER_NOTICE_SENDER_ID = 'system.runtime_handover';
 
 const props = withDefaults(defineProps<{
   segment: SystemTaskNotificationSegment;
@@ -54,7 +56,10 @@ const isToolsUpdate = computed(() =>
   props.segment.senderId === TOOL_LIST_UPDATE_NOTICE_SENDER_ID
   || props.segment.content.startsWith(TOOL_LIST_UPDATE_NOTICE_HEADER));
 
+const isRuntimeChange = computed(() => props.segment.senderId === RUNTIME_HANDOVER_NOTICE_SENDER_ID);
+
 const label = computed(() => {
+  if (isRuntimeChange.value) return t('workspace.components.conversation.segments.SystemTaskNotificationSegment.runtimeChanged');
   if (isSkillUpdate.value) return t('workspace.components.conversation.segments.SystemTaskNotificationSegment.skillUpdated');
   if (isToolsUpdate.value) return t('workspace.components.conversation.segments.SystemTaskNotificationSegment.toolsUpdated');
   return '';

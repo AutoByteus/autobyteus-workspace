@@ -157,6 +157,21 @@ export class MemoryFileStore {
     }
   }
 
+  /**
+   * The records the chat is built from (autobyteus-316): the run's `runtime_switch` segments in index order, then the active
+   * file. Segments of any other boundary (compaction) are not read: compaction deliberately shows only the records after it.
+   * The device, inode and manifest generation are the active file's, as before, so a page cursor sees one generation. A run
+   * that never switched reads the active file only.
+   */
+  readChatRawTraces(runId: string): ActiveRawTraceSnapshot {
+    const active = this.readRawTracesActiveSnapshot(runId);
+    const runFiles = new RunMemoryFileStore(this.getRunDir(runId));
+    const earlier = runFiles.listCompleteRawTraceArchiveSegments()
+      .filter((segment) => segment.boundary_type === "runtime_switch")
+      .flatMap((segment) => runFiles.readCompleteRawTraceArchiveSegmentDictsByFileName(segment.file_name) ?? []);
+    return earlier.length ? { ...active, records: [...earlier, ...active.records] } : active;
+  }
+
   private readRawTraceManifestGeneration(runId: string): string | null {
     const manifest = this.readJson(path.join(this.getRunDir(runId), RAW_TRACES_MANIFEST_FILE_NAME));
     if (!manifest || !Array.isArray(manifest.segments)) return null;

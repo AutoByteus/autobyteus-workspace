@@ -1,0 +1,6 @@
+# API-01 command: env -i PATH HOME=<temp> TMPDIR pnpm exec vitest run tests/agent-work-journal tests/unit/runtime-handover-notices tests/unit/agent-memory tests/unit/standalone-agent-run-root tests/unit/run-history tests/unit/agent-execution/services tests/unit/memory-search tests/unit/api/graphql/types/agent-run.test.ts tests/architecture --no-watch
+# commit 60c3ac4ec8; date 2026-10-31T08:36:22Z
+
+ Test Files  107 passed | 1 skipped (108)
+      Tests  785 passed | 2 skipped (787)
+   Duration  85.79s (transform 5.42s, setup 1.37s, import 33.12s, tests 39.74s, environment 7ms)

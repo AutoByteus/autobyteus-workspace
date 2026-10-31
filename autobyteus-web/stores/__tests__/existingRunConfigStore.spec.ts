@@ -44,7 +44,7 @@ vi.mock('~/services/agentCollaboration/agentRunCollaborationHydration', () => ({
 vi.mock('~/services/runConfigEditing/existingRunModelOptionsClient', () => ({ loadExistingRunModelOptions: vi.fn().mockResolvedValue({}) }))
 
 vi.mock('~/services/runConfigEditing/existingRunModelConfigMutationClient', () => ({
-  updateStoppedAgentModelConfig: mocks.updateAgent,
+  updateStoppedAgentSelection: mocks.updateAgent,
   updateStoppedTeamModelConfigs: mocks.updateTeam,
 }))
 vi.mock('~/stores/runHistoryStore', () => ({
@@ -517,13 +517,14 @@ describe('existingRunConfigStore', () => {
       message: 'Another supported workflow resumed this run.',
       isActive: true,
       editability: activeEditability(),
-      canonicalSelection: { llmModelIdentifier: 'model-1', llmConfig: { effort: 'medium' } },
+      canonicalSelection: { runtimeKind: 'codex_app_server', llmModelIdentifier: 'model-1', llmConfig: { effort: 'medium' } },
       fieldErrors: [],
     })
 
     await expect(store.save()).resolves.toBe(false)
     expect(mocks.updateAgent).toHaveBeenCalledWith({
       agentRunId: 'run-1',
+      runtimeKind: 'codex_app_server',
       llmModelIdentifier: 'model-1',
       llmConfig: { effort: 'high' },
     })
@@ -604,11 +605,11 @@ it('saves a model-only change and installs the canonical pair, not the submitted
   expect(store.dirty).toBe(true)
   expect(store.canSave).toBe(true)
   mocks.updateAgent.mockResolvedValue({ success: true, outcome: 'UPDATED', message: 'Saved', isActive: false,
-    editability: editability(), fieldErrors: [], canonicalSelection: { llmModelIdentifier: 'larger', llmConfig: null } })
+    editability: editability(), fieldErrors: [], canonicalSelection: { runtimeKind: 'codex_app_server', llmModelIdentifier: 'larger', llmConfig: null } })
   expect(await store.save()).toBe(true)
-  expect(mocks.updateAgent).toHaveBeenLastCalledWith({ agentRunId: 'run-1', llmModelIdentifier: 'larger', llmConfig: null })
+  expect(mocks.updateAgent).toHaveBeenLastCalledWith({ agentRunId: 'run-1', runtimeKind: 'codex_app_server', llmModelIdentifier: 'larger', llmConfig: null })
   expect(store.draft).toMatchObject({ metadata: { llmModelIdentifier: 'larger', llmConfig: null }, draftSelection: { llmModelIdentifier: 'larger', llmConfig: null } })
-  expect(mocks.patchConfigOnly).toHaveBeenLastCalledWith('run-1', { llmModelIdentifier: 'larger', llmConfig: null })
+  expect(mocks.patchConfigOnly).toHaveBeenLastCalledWith('run-1', { runtimeKind: 'codex_app_server', llmModelIdentifier: 'larger', llmConfig: null })
   expect(store.dirty).toBe(false)
 })
 it('does not let missing replacement metadata block current-model settings', () => {
@@ -851,4 +852,49 @@ it.each(['agent', 'team'] as const)('ignores an old %s root-only Save after a no
   expect(await saving).toBe(false)
   expect(store.draft).toBe(current)
   expect(store.feedback?.kind).not.toBe('success')
+})
+
+describe('Agent runtime switch in the saved run settings (autobyteus-316)', () => {
+  it('choosing another agent runtime is a change that can be saved without the replacement list, and the save names the agent runtime', async () => {
+    setActivePinia(createPinia())
+    const store = useExistingRunConfigStore()
+    store.syncAgentCanonical(agentPayload({ llmConfig: null }))
+    await Promise.resolve()
+    store.modelOptionsByAddress['/'] = { status: 'ready', options: { currentModelIdentifier: 'model-1', currentModel: choice('model-1'), replacements: [], unavailableReason: null } }
+    expect(store.dirty).toBe(false)
+    store.updateAgentModelConfig({ llmModelIdentifier: 'claude-sonnet', llmConfig: null }, 'claude_agent_sdk')
+    expect(store.draft).toMatchObject({ draftSelection: { runtimeKind: 'claude_agent_sdk', llmModelIdentifier: 'claude-sonnet' } })
+    expect(store.schemaStateByAddress['/']).toEqual({ status: 'ready', message: null })
+    expect(store.dirty).toBe(true)
+    expect(store.canSave).toBe(true)
+    mocks.updateAgent.mockResolvedValue({ success: true, outcome: 'UPDATED', message: 'The agent runtime changes when you send your next message.', isActive: false,
+      editability: editability(), fieldErrors: [], canonicalSelection: { runtimeKind: 'claude_agent_sdk', llmModelIdentifier: 'claude-sonnet', llmConfig: null } })
+    expect(await store.save()).toBe(true)
+    expect(mocks.updateAgent).toHaveBeenLastCalledWith({ agentRunId: 'run-1', runtimeKind: 'claude_agent_sdk', llmModelIdentifier: 'claude-sonnet', llmConfig: null })
+    expect(store.draft).toMatchObject({ metadata: { runtimeKind: 'claude_agent_sdk', llmModelIdentifier: 'claude-sonnet' },
+      draftSelection: { runtimeKind: 'claude_agent_sdk' } })
+    expect(mocks.patchConfigOnly).toHaveBeenLastCalledWith('run-1', { runtimeKind: 'claude_agent_sdk', llmModelIdentifier: 'claude-sonnet', llmConfig: null })
+    expect(store.dirty).toBe(false)
+  })
+
+  it('a model or thinking edit keeps the draft agent runtime, and Cancel restores the saved one', async () => {
+    setActivePinia(createPinia())
+    const store = useExistingRunConfigStore()
+    store.syncAgentCanonical(agentPayload({ llmConfig: null }))
+    store.updateAgentModelConfig({ llmModelIdentifier: 'claude-sonnet', llmConfig: null }, 'claude_agent_sdk')
+    store.updateAgentModelConfig({ llmModelIdentifier: 'claude-sonnet', llmConfig: { effort: 'high' } })
+    expect(store.draft).toMatchObject({ draftSelection: { runtimeKind: 'claude_agent_sdk', llmConfig: { effort: 'high' } } })
+    store.discardChanges()
+    expect(store.draft).toMatchObject({ draftSelection: { runtimeKind: 'codex_app_server', llmModelIdentifier: 'model-1' } })
+    expect(store.dirty).toBe(false)
+  })
+
+  it('selecting the original agent runtime again with its model is no change', () => {
+    setActivePinia(createPinia())
+    const store = useExistingRunConfigStore()
+    store.syncAgentCanonical(agentPayload({ llmConfig: null }))
+    store.updateAgentModelConfig({ llmModelIdentifier: 'claude-sonnet', llmConfig: null }, 'claude_agent_sdk')
+    store.updateAgentModelConfig({ llmModelIdentifier: 'model-1', llmConfig: null }, 'codex_app_server')
+    expect(store.dirty).toBe(false)
+  })
 })

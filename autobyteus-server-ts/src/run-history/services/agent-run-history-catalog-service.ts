@@ -20,9 +20,10 @@ import {
   type StandaloneRunLiveness,
 } from "./standalone-run-liveness.js";
 import {
-  commitAgentRunModelConfig,
+  commitAgentRunRuntimeSwitch,
   type AgentRunModelConfigCommitResult,
-} from "./agent-run-model-config-commit.js";
+  type RunSelectionToCommit,
+} from "./agent-run-runtime-switch-commit.js";
 
 const logger = {
   warn: (...args: unknown[]) => console.warn(...args),
@@ -204,6 +205,8 @@ export class AgentRunHistoryCatalogService {
     platformAgentRunId?: string | null;
     runtimeKind?: RuntimeKind;
     startedAt?: string;
+    /** The activation commit of an agent runtime switch removes the pending switch in the same write. */
+    clearPendingRuntimeSwitch?: boolean;
   }): Promise<AgentRunMetadata | null> {
     return this.mutate(async (rows) => {
       const metadata = await this.metadataStore.readMetadata(input.runId);
@@ -211,8 +214,9 @@ export class AgentRunHistoryCatalogService {
         return { value: null, shouldFlush: false };
       }
       const startedAt = input.startedAt ?? metadata.startedAt ?? new Date().toISOString();
+      const { pendingRuntimeSwitch, ...withoutPending } = metadata;
       const nextMetadata: AgentRunMetadata = {
-        ...metadata,
+        ...(input.clearPendingRuntimeSwitch ? withoutPending : metadata),
         runtimeKind: input.runtimeKind ?? metadata.runtimeKind,
         platformAgentRunId:
           input.platformAgentRunId === undefined
@@ -231,21 +235,22 @@ export class AgentRunHistoryCatalogService {
     });
   }
 
-  async commitRunModelConfig(input: {
+  /** A stopped run's settings save with an agent runtime and model: model-only edit, switch or undo (see the commit function). */
+  async commitRunRuntimeSwitch(input: {
     runId: string;
-    llmModelIdentifier: string;
-    llmConfig: Readonly<Record<string, unknown>> | null;
+    selection: RunSelectionToCommit;
+    switchId: string;
   }): Promise<AgentRunModelConfigCommitResult> {
     return this.enqueueValue(async () => {
       const runId = input.runId.trim();
       const row = this.state.rows.get(runId) ?? null;
-      return commitAgentRunModelConfig({
+      return commitAgentRunRuntimeSwitch({
         metadataStore: this.metadataStore,
         runId,
         cataloged: Boolean(row),
         archived: Boolean(row?.archivedAt),
-        llmModelIdentifier: input.llmModelIdentifier,
-        llmConfig: input.llmConfig,
+        selection: input.selection,
+        switchId: input.switchId,
       });
     });
   }

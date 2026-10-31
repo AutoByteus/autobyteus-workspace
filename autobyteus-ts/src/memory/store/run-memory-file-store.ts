@@ -23,7 +23,13 @@ import {
   WORKING_CONTEXT_SNAPSHOT_FILE_NAME,
 } from './memory-file-names.js';
 import { replaceFileDurably } from './durable-file-replace.js';
-import { jsonlLogEndsCleanly, repairJsonlDamagedEnd, serializeJsonlRecords } from './jsonl-log-file.js';
+import {
+  jsonlLogEndsCleanly,
+  readLastJsonlRecord,
+  repairJsonlDamagedEnd,
+  scanJsonlRecordsFromStart,
+  serializeJsonlRecords,
+} from './jsonl-log-file.js';
 import type { RawTraceArchiveManifest, RawTraceArchiveSegmentEntry } from './raw-trace-archive-manifest.js';
 import {
   RawTraceArchiveManager,
@@ -254,6 +260,90 @@ export class RunMemoryFileStore {
     const moveSet = active.slice(0, markerIndex);
     const keepSet = active.slice(markerIndex);
     return this.archiveAndRewriteActive(moveSet, keepSet, input);
+  }
+
+  /** Read-only and cheap: the ID of the last complete record of the active raw-trace file, or null when it has none. */
+  readLastActiveRawTraceId(): string | null {
+    const record = readLastJsonlRecord(this.getRawTracesPath());
+    return record ? traceId(record) : null;
+  }
+
+  /**
+   * Read-only and bounded by the visitor: the active raw-trace file's complete records in order until `visit` returns
+   * false. It never cuts a damaged end (unlike `listRawTraceDicts`, which is a write).
+   */
+  scanActiveRawTraces(visit: (record: Record<string, unknown>) => boolean): void {
+    scanJsonlRecordsFromStart(this.getRawTracesPath(), visit);
+  }
+
+  /**
+   * The archive step of an agent runtime switch. `throughTraceId` (the watermark) is the last record of the previous agent;
+   * everything after it was written by the new agent's session while it prepared. Rules, in order:
+   * 1. A complete segment of the boundary key exists: the watermark is ignored; the records that segment holds are removed
+   *    from the active file and the marker is ensured to be its first record.
+   * 2. The marker is already in the active file (no segment: nothing was archived, because the previous era was empty): it
+   *    is ensured to be first and nothing else changes.
+   * 3. Otherwise the records through the watermark are archived as one segment (none: no segment is made) and the active
+   *    file becomes the marker followed by the records after the watermark.
+   * The marker is the record whose correlation ID is the boundary key; it is written only if absent. Idempotent: a repeated
+   * call, a call after a failed commit and a call after an interrupted rewrite complete what is missing.
+   */
+  rotateActiveRawTracesForRuntimeSwitch(input: {
+    boundary: RawTraceArchiveBoundaryInput;
+    marker: Record<string, unknown>;
+    throughTraceId: string | null;
+  }): RawTraceArchiveResult {
+    const key = input.boundary.boundaryKey;
+    const markerId = traceId(input.marker);
+    if (!markerId || input.marker.correlation_id !== key) {
+      throw new Error('The switch marker needs an ID and the boundary key as its correlation ID.');
+    }
+    const isMarker = (item: Record<string, unknown>): boolean => item.correlation_id === key;
+    const active = this.listRawTraceDicts();
+    const present = active.find(isMarker) ?? null;
+    const segment = this.archiveManager.listCompleteSegments().find((entry) => entry.boundary_key === key) ?? null;
+    if (segment) {
+      const archivedIds = this.archiveManager.readCompleteSegmentTraceIds(key) ?? new Set<string>();
+      const rest = active.filter((item) => !isMarker(item) && !archivedIds.has(traceId(item) ?? ''));
+      this.writeActiveRawTraces([present ?? input.marker, ...rest]);
+      return segment;
+    }
+    if (present) {
+      if (!isMarker(active[0]!)) this.writeActiveRawTraces([present, ...active.filter((item) => !isMarker(item))]);
+      return null;
+    }
+    let moveSet: Record<string, unknown>[] = [];
+    let keepSet = active;
+    if (input.throughTraceId !== null) {
+      const index = active.findIndex((item) => traceId(item) === input.throughTraceId);
+      if (index < 0) {
+        throw new Error(`The switch watermark '${input.throughTraceId}' is not in the active raw traces.`);
+      }
+      moveSet = active.slice(0, index + 1);
+      keepSet = active.slice(index + 1);
+    }
+    const archived = this.archiveManager.archiveRecords(moveSet, { ...input.boundary, boundaryTraceId: markerId });
+    this.writeActiveRawTraces([input.marker, ...keepSet]);
+    return archived?.segment ?? null;
+  }
+
+  /**
+   * Removes the records after `afterTraceId` (all of them for null) from the active raw-trace file: what a failed switch attempt
+   * wrote after its watermark. It does nothing once a record correlated with `unlessCorrelationId` (the switch's marker) is
+   * in the file, and nothing when a non-null `afterTraceId` is not in the file. Returns the number of records removed.
+   */
+  removeActiveRawTracesAfter(afterTraceId: string | null, options: { unlessCorrelationId: string }): number {
+    const active = this.listRawTraceDicts();
+    if (active.some((item) => item.correlation_id === options.unlessCorrelationId)) return 0;
+    let keepCount = 0;
+    if (afterTraceId !== null) {
+      const index = active.findIndex((item) => traceId(item) === afterTraceId);
+      if (index < 0) return 0;
+      keepCount = index + 1;
+    }
+    const removed = active.length - keepCount;
+    if (removed > 0) this.writeActiveRawTraces(active.slice(0, keepCount));
+    return removed;
   }
 
   pruneRawTracesById(traceIdsToRemove: Iterable<string>, archive = true): void {

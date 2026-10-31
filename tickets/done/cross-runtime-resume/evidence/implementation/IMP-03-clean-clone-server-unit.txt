@@ -1,0 +1,12 @@
+# IMP-03
+# Command: pnpm test:unit (autobyteus-server-ts)
+# Commit: 1bc6f85506 (clean clone of codex/cross-runtime-resume in /tmp)
+# Environment: macOS 26.5.2 darwin arm64, node v22.23.1, pnpm 10.28.2
+# Date: 2026-10-31
+# Full log: not committed (see excerpt)
+
+ Test Files  894 passed | 5 skipped (899)
+      Tests  7617 passed | 9 skipped (7626)
+   Start at  10:49:30
+   Duration  743.77s (transform 19.70s, setup 11.72s, import 338.90s, tests 296.60s, environment 814ms)
+UNIT_EXIT=0

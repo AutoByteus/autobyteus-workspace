@@ -16,11 +16,8 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
-  /** DateTime scalar supporting ISO strings and date-only YYYY-MM-DD values */
   DateTime: { input: any; output: any; }
-  /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSON: { input: any; output: any; }
-  /** The `SafeInt` scalar type represents non-fractional signed whole numeric values that are considered safe as defined by the ECMAScript specification. */
   SafeInt: { input: number; output: number; }
 };
 
@@ -1099,6 +1096,7 @@ export type DefinitionProblem = {
 export type DelegatedConfiguredPatchInput = {
   llmConfig?: InputMaybe<Scalars['JSON']['input']>;
   llmModelIdentifier: Scalars['String']['input'];
+  runtimeKind?: InputMaybe<Scalars['String']['input']>;
   scopeAddress: Scalars['String']['input'];
   scopeKind: Scalars['String']['input'];
 };
@@ -1961,7 +1959,7 @@ export type Mutation = {
   updateServerSetting: Scalars['String']['output'];
   updateSkill: Skill;
   updateStoppedAgentOrgRunConfig: AgentOrgRunConfigUpdateResult;
-  updateStoppedAgentRunModelConfig: UpdateStoppedAgentRunModelConfigResult;
+  updateStoppedAgentRunSelection: UpdateStoppedAgentRunSelectionResult;
   updateStoppedTeamRunModelConfigs: UpdateStoppedTeamRunModelConfigsResult;
   uploadSkillFile: Scalars['Boolean']['output'];
   useEmbeddingModel: Scalars['Boolean']['output'];
@@ -2573,8 +2571,8 @@ export type MutationUpdateStoppedAgentOrgRunConfigArgs = {
 };
 
 
-export type MutationUpdateStoppedAgentRunModelConfigArgs = {
-  input: UpdateStoppedAgentRunModelConfigInput;
+export type MutationUpdateStoppedAgentRunSelectionArgs = {
+  input: UpdateStoppedAgentRunSelectionInput;
 };
 
 
@@ -3567,6 +3565,7 @@ export type RunModelSelectionObject = {
   __typename?: 'RunModelSelectionObject';
   llmConfig?: Maybe<Scalars['JSON']['output']>;
   llmModelIdentifier: Scalars['String']['output'];
+  runtimeKind: Scalars['String']['output'];
 };
 
 export type RunProjectionPayload = {
@@ -4361,14 +4360,15 @@ export type UpdateStoppedAgentOrgRunConfigInput = {
   teamWorkspacePatches: Array<AgentOrgTeamWorkspacePatchInput>;
 };
 
-export type UpdateStoppedAgentRunModelConfigInput = {
+export type UpdateStoppedAgentRunSelectionInput = {
   agentRunId: Scalars['String']['input'];
   llmConfig?: InputMaybe<Scalars['JSON']['input']>;
   llmModelIdentifier: Scalars['String']['input'];
+  runtimeKind: Scalars['String']['input'];
 };
 
-export type UpdateStoppedAgentRunModelConfigResult = {
-  __typename?: 'UpdateStoppedAgentRunModelConfigResult';
+export type UpdateStoppedAgentRunSelectionResult = {
+  __typename?: 'UpdateStoppedAgentRunSelectionResult';
   canonicalSelection?: Maybe<RunModelSelectionObject>;
   editability: RunModelConfigEditabilityObject;
   fieldErrors: Array<RunModelConfigFieldErrorObject>;
@@ -5283,12 +5283,12 @@ export type ArchiveStoredTeamRunMutationVariables = Exact<{
 
 export type ArchiveStoredTeamRunMutation = { __typename?: 'Mutation', archiveStoredTeamRun: { __typename?: 'ArchiveStoredTeamRunMutationResult', success: boolean, message: string } };
 
-export type UpdateStoppedAgentRunModelConfigMutationVariables = Exact<{
-  input: UpdateStoppedAgentRunModelConfigInput;
+export type UpdateStoppedAgentRunSelectionMutationVariables = Exact<{
+  input: UpdateStoppedAgentRunSelectionInput;
 }>;
 
 
-export type UpdateStoppedAgentRunModelConfigMutation = { __typename?: 'Mutation', updateStoppedAgentRunModelConfig: { __typename?: 'UpdateStoppedAgentRunModelConfigResult', success: boolean, outcome: string, message: string, isActive: boolean, editability: { __typename?: 'RunModelConfigEditabilityObject', editable: boolean, reason?: string | null }, canonicalSelection?: { __typename?: 'RunModelSelectionObject', llmModelIdentifier: string, llmConfig?: any | null } | null, fieldErrors: Array<{ __typename?: 'RunModelConfigFieldErrorObject', path: string, message: string }> } };
+export type UpdateStoppedAgentRunSelectionMutation = { __typename?: 'Mutation', updateStoppedAgentRunSelection: { __typename?: 'UpdateStoppedAgentRunSelectionResult', success: boolean, outcome: string, message: string, isActive: boolean, editability: { __typename?: 'RunModelConfigEditabilityObject', editable: boolean, reason?: string | null }, canonicalSelection?: { __typename?: 'RunModelSelectionObject', runtimeKind: string, llmModelIdentifier: string, llmConfig?: any | null } | null, fieldErrors: Array<{ __typename?: 'RunModelConfigFieldErrorObject', path: string, message: string }> } };
 
 export type UpdateServerSettingMutationVariables = Exact<{
   key: Scalars['String']['input'];
@@ -10413,9 +10413,9 @@ export function useArchiveStoredTeamRunMutation(options: VueApolloComposable.Use
   return VueApolloComposable.useMutation<ArchiveStoredTeamRunMutation, ArchiveStoredTeamRunMutationVariables>(ArchiveStoredTeamRunDocument, options);
 }
 export type ArchiveStoredTeamRunMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<ArchiveStoredTeamRunMutation, ArchiveStoredTeamRunMutationVariables>;
-export const UpdateStoppedAgentRunModelConfigDocument = gql`
-    mutation UpdateStoppedAgentRunModelConfig($input: UpdateStoppedAgentRunModelConfigInput!) {
-  updateStoppedAgentRunModelConfig(input: $input) {
+export const UpdateStoppedAgentRunSelectionDocument = gql`
+    mutation UpdateStoppedAgentRunSelection($input: UpdateStoppedAgentRunSelectionInput!) {
+  updateStoppedAgentRunSelection(input: $input) {
     success
     outcome
     message
@@ -10425,6 +10425,7 @@ export const UpdateStoppedAgentRunModelConfigDocument = gql`
       reason
     }
     canonicalSelection {
+      runtimeKind
       llmModelIdentifier
       llmConfig
     }
@@ -10437,26 +10438,26 @@ export const UpdateStoppedAgentRunModelConfigDocument = gql`
     `;
 
 /**
- * __useUpdateStoppedAgentRunModelConfigMutation__
+ * __useUpdateStoppedAgentRunSelectionMutation__
  *
- * To run a mutation, you first call `useUpdateStoppedAgentRunModelConfigMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useUpdateStoppedAgentRunModelConfigMutation` returns an object that includes:
+ * To run a mutation, you first call `useUpdateStoppedAgentRunSelectionMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateStoppedAgentRunSelectionMutation` returns an object that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
  *
  * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
  *
  * @example
- * const { mutate, loading, error, onDone } = useUpdateStoppedAgentRunModelConfigMutation({
+ * const { mutate, loading, error, onDone } = useUpdateStoppedAgentRunSelectionMutation({
  *   variables: {
  *     input: // value for 'input'
  *   },
  * });
  */
-export function useUpdateStoppedAgentRunModelConfigMutation(options: VueApolloComposable.UseMutationOptions<UpdateStoppedAgentRunModelConfigMutation, UpdateStoppedAgentRunModelConfigMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<UpdateStoppedAgentRunModelConfigMutation, UpdateStoppedAgentRunModelConfigMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<UpdateStoppedAgentRunModelConfigMutation, UpdateStoppedAgentRunModelConfigMutationVariables>(UpdateStoppedAgentRunModelConfigDocument, options);
+export function useUpdateStoppedAgentRunSelectionMutation(options: VueApolloComposable.UseMutationOptions<UpdateStoppedAgentRunSelectionMutation, UpdateStoppedAgentRunSelectionMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<UpdateStoppedAgentRunSelectionMutation, UpdateStoppedAgentRunSelectionMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<UpdateStoppedAgentRunSelectionMutation, UpdateStoppedAgentRunSelectionMutationVariables>(UpdateStoppedAgentRunSelectionDocument, options);
 }
-export type UpdateStoppedAgentRunModelConfigMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<UpdateStoppedAgentRunModelConfigMutation, UpdateStoppedAgentRunModelConfigMutationVariables>;
+export type UpdateStoppedAgentRunSelectionMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<UpdateStoppedAgentRunSelectionMutation, UpdateStoppedAgentRunSelectionMutationVariables>;
 export const UpdateServerSettingDocument = gql`
     mutation UpdateServerSetting($key: String!, $value: String!) {
   updateServerSetting(key: $key, value: $value)

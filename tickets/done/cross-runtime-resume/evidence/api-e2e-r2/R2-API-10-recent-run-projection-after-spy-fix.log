@@ -1,0 +1,14 @@
+# R2-API-10 follow-up 2: recent-run-projection-graphql.e2e.test.ts after the spy follows descriptors AND the two "no manifest read" assertions allow the manifest read the chat reader needs (only the active file and the manifest may be read; no compaction segment).
+# command: env -i PATH HOME=<temp> TMPDIR pnpm exec vitest run tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts --no-watch --reporter=verbose; commit 870b075fb4 + test fix; date 2026-10-31T10:35:00Z
+
+ ✓ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > hydrates native reasoning through standalone and team GraphQL projections 97ms
+ ✓ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > hydrates active system instructions with raw-ID parity for standalone and team runs without c
+ ✓ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > omits a rotated system instruction from active hydration without reading its archive 63ms
+ ✓ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > projects the newest 100 events from a >=5 MB active file without reading or changing its stan
+ ✓ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > projects a team member from active traces only and preserves its archive bytes 77ms
+ ✓ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > traverses exactly 275 standalone active events in fixed pages without opening archives 84ms
+ ✓ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > traverses exactly 275 team-member active events and rejects its cursor for another subject 11
+ ✓ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > keeps a cursor valid across append and expires it after an atomic active rewrite 65ms
+ ✓ tests/e2e/run-history/recent-run-projection-graphql.e2e.test.ts > recent run projection GraphQL e2e > serializes production media and shallow tool state without multi-megabyte result or log paylo
+ Test Files  1 passed (1)
+      Tests  9 passed (9)

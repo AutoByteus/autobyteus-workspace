@@ -1,0 +1,14 @@
+# R2-API-07 CLEAN CLONE. clone: git clone --branch codex/cross-runtime-resume (local) -> /tmp/api-e2e-316-clean at 870b075fb4; pnpm install --frozen-lockfile (exit 0); pnpm -C autobyteus-server-ts build (exit 0, log /tmp/api-e2e-316-build.log)
+# command (cwd autobyteus-server-ts of the clone): env -i PATH HOME=<temp> TMPDIR RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<clone>/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs pnpm exec vitest run tests/e2e/runtime/runtime-switch-native-built-server.e2e.test.ts --no-watch --reporter=verbose
+# macOS Darwin 25.5.0; date 2026-10-31T10:25:19Z
+
+ ✓ tests/e2e/runtime/runtime-switch-native-built-server.e2e.test.ts > RS-01: native -> Antigravity -> native on one run: each archived segment holds the previous agent's records only, the native can
+ ✓ tests/e2e/runtime/runtime-switch-native-built-server.e2e.test.ts > RS-02: settings of a stopped run: running refused, save a switch, undo it, switch again, model-only edit keeps the switch, first
+ ✓ tests/e2e/runtime/runtime-switch-native-built-server.e2e.test.ts > RS-03: a host with a delegated copy saves its own runtime and the copy's model in one Save; the copy keeps its runtime and canno
+ ✓ tests/e2e/runtime/runtime-switch-native-built-server.e2e.test.ts > RS-04: a pending switch survives a server restart; an activated switch whose notice was not yet delivered still delivers it, onc
+ ✓ tests/e2e/runtime/runtime-switch-native-built-server.e2e.test.ts > RS-05: a failed switch attempt (the archive step fails after the native candidate wrote its instruction) leaves the previous age
+ ✓ tests/e2e/runtime/runtime-switch-native-built-server.e2e.test.ts > RS-06: Grok as the switch target: its captured instructions belong to the new file; a failed attempt leaves nothing behind and t
+ ✓ tests/e2e/runtime/runtime-switch-native-built-server.e2e.test.ts > RS-07: a Grok start that fails after the switch became durable (the Grok process ends before the run is published) leaves a comp
+ Test Files  1 passed (1)
+      Tests  7 passed (7)
+   Duration  34.08s (transform 126ms, setup 80ms, import 453ms, tests 32.31s, environment 0ms)

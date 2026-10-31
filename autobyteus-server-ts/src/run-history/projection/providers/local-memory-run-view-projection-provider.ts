@@ -38,11 +38,7 @@ export class LocalMemoryRunViewProjectionProvider implements RunProjectionProvid
 
   async buildProjection(input: RunProjectionProviderInput): Promise<RunProjection> {
     const { memoryService, localRunId } = this.resolveMemorySource(input);
-    const view = memoryService.getRunMemoryView(localRunId, {
-      includeRawTraces: true,
-      includeArchive: false,
-    });
-    const replayEvents = buildHistoricalReplayEvents(view.rawTraces ?? []);
+    const replayEvents = buildHistoricalReplayEvents(memoryService.getChatRawTraceSnapshot(localRunId).rawTraces);
     const selected = selectRecentRunProjectionEvents(replayEvents);
     const projection = buildRunProjectionBundleFromEvents(
       input.source.runId,
@@ -58,7 +54,7 @@ export class LocalMemoryRunViewProjectionProvider implements RunProjectionProvid
     subjectFingerprint: string;
   }): Promise<EventMonitorActiveTracePage> {
     const { memoryService, localRunId } = this.resolveMemorySource(input);
-    const snapshot = memoryService.getActiveRawTraceSnapshot(localRunId);
+    const snapshot = memoryService.getChatRawTraceSnapshot(localRunId);
     const replayEvents = buildHistoricalReplayEvents(snapshot.rawTraces).filter(isEventMonitorReplayEvent);
     const activeGeneration = buildActiveTraceGeneration({
       device: snapshot.device,

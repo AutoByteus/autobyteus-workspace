@@ -25,10 +25,13 @@ caller.
   - `rootPath` and `manifestPath`;
   - `files`: `[{ path, sourceFile, state }]` in order (closed files first, the open file last);
   - `evidenceHash`: sha256 over the files' content hashes, in order.
-- `memoryDir` is the run's own memory folder; `runtimeKind` is the **live run's** runtime and
-  selects the built-in tool translation. A runtime without a translation uses the generic rule
-  for every tool. It is `null` for a run whose runtime is not recorded (an old folder no record
-  attributes): every tool then uses the generic rule, and the manifest's `runtime_kind` is `null`.
+- `memoryDir` is the run's own memory folder; `runtimeKind` is the agent runtime that wrote the run's **open**
+  raw-trace file (the live run's own, or while an agent runtime switch is pending the previous one:
+  `openRawTraceRuntimeKind(metadata)`). It selects the tool translation of the open file. Each **closed** file
+  uses the agent runtime recorded for its own segment (`runtime_kind` of the raw manifest, a `RuntimeKind`
+  value), so a run that switched agent runtimes reads each file with the rules of the agent runtime that
+  wrote it. A runtime without a translation, or a file whose runtime is not recorded (`null`), uses the
+  generic rule for every tool, and the journal manifest's entry for that file has `runtime_kind: null`.
 - `rendererRevision`: the revision this build writes (`WORK_JOURNAL_RENDERER_REVISION`). Memory search
   reads it from the service, never from the constant.
 - `onJournalChanged(listener)` is called after `ensureCurrent` wrote or removed a journal file
@@ -84,9 +87,10 @@ assistant segment it flushes on `TURN_COMPLETED`).
 One journal file per raw-trace file (`RawTraceFileSourceService.listFiles(…, "chronological")`:
 complete segments plus the active file).
 
-- A **closed** file is written once. It is reused while the manifest's `renderer_revision`,
-  `runtime_kind` and `source_record_count` (the raw manifest's `record_count` of that segment)
-  still match and the file exists; otherwise it is rendered again. Regenerating a closed file from
+- A **closed** file is written once. It is reused while the manifest's `renderer_revision`, its own entry's
+  `runtime_kind` (the agent runtime of its segment) and `source_record_count` (the raw manifest's
+  `record_count` of that segment) still match and the file exists; otherwise it is rendered again. A manifest
+  entry without its own `runtime_kind` (written before files recorded one) is dropped, so the file is rendered again. Regenerating a closed file from
   the same raw traces gives byte-identical content.
 - The **open** file is rendered again on every call and written only when its content changed.
 - A journal file whose raw file is gone (the open file right after a rotation) is removed.
@@ -97,13 +101,12 @@ Manifest (exact shape, no generation time, no paths):
 ```json
 {
   "run_id": "run_…",
-  "runtime_kind": "codex_app_server",
   "renderer_revision": 2,
   "files": [
     { "journal_file": "work_journal_000001.md", "source_file": "raw_traces_000001.jsonl",
-      "source_record_count": 141, "state": "closed", "content_sha256": "…" },
+      "source_record_count": 141, "state": "closed", "content_sha256": "…", "runtime_kind": "claude_agent_sdk" },
     { "journal_file": "work_journal_active.md", "source_file": "raw_traces_active.jsonl",
-      "source_record_count": 57, "state": "open", "content_sha256": "…" }
+      "source_record_count": 57, "state": "open", "content_sha256": "…", "runtime_kind": "codex_app_server" }
   ]
 }
 ```

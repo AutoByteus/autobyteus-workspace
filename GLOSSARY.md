@@ -187,6 +187,17 @@ delegated run, …) are defined in the
   | `claude_agent_sdk` | Claude Agent SDK |
   | `antigravity_cli` | Antigravity CLI |
   | `grok_build` | Grok Build |
+- **Agent runtime switch:** replacing the agent runtime, model and model settings
+  of a stopped standalone Agent run, keeping the run (same run ID, chat, history
+  row, workspace). It is made real at the run's next input.
+- **Pending agent runtime switch:** the user's saved choice of another agent
+  runtime, held in the run's metadata (`pendingRuntimeSwitch`) until that input.
+- **Hand-over notice:** the system notice the new agent receives with that input:
+  where the Work Journals are and how they are laid out. It names no agent runtime.
+- **Switch marker:** the notice record that starts the new raw-trace file; the chat
+  and the Work Journal show it ("Agent runtime changed from … to …").
+- **Previous agent:** the agent that worked on the run on the earlier agent runtime
+  (wording toward the agent; in code, the earlier raw-trace segment).
 - **Available agent runtime:** an agent runtime installed on the node and not
   known to be signed out; for AutoByteus, a provider with an API key, or a
   local provider (Ollama, LM Studio) that offers models.

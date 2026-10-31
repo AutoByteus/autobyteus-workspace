@@ -1,4 +1,4 @@
-import type { ExistingRunModelSelection } from '~/types/agent/ExistingRunModelConfigDraft'
+import type { ExistingAgentRunSelection, ExistingRunModelSelection } from '~/types/agent/ExistingRunModelConfigDraft'
 export const cloneExistingRunJsonValue = <T>(value: T): T => {
   if (Array.isArray(value)) return value.map(cloneExistingRunJsonValue) as T
   if (value && typeof value === 'object') {
@@ -37,3 +37,9 @@ export const selectionAllowed = (original: ExistingRunModelSelection, draft: Exi
   original.llmModelIdentifier === draft.llmModelIdentifier || Boolean(state?.status === 'ready' &&
     state.options?.currentModelIdentifier === original.llmModelIdentifier &&
     state.options.replacements.some((option) => option.llmModelIdentifier === draft.llmModelIdentifier))
+
+export const cloneExistingAgentRunSelection = (selection: ExistingAgentRunSelection): ExistingAgentRunSelection => ({
+  runtimeKind: selection.runtimeKind, ...cloneExistingRunSelection(selection),
+})
+export const existingAgentRunSelectionsEqual = (left: ExistingAgentRunSelection, right: ExistingAgentRunSelection): boolean =>
+  left.runtimeKind === right.runtimeKind && existingRunSelectionsEqual(left, right)
