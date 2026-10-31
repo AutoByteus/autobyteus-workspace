@@ -126,3 +126,8 @@
 
 - The user: "I trust your recommendation … clean is very important." Option A: the single-agent stopped-run edit is renamed as a clean cut (`…ModelConfig` → `…Selection`: GraphQL mutation, input and result, service methods, updater class and file, input type, web client and document). The team family, the shared `RunModelConfig*` result types, `StudioRunModelConfigService` and `commitAgentRunModelConfig` keep their names because they stay accurate. FU-007 is removed (the rename is in this ticket); FU-003 carries the team rename for when the switch reaches teams.
 - Design status `Ready` for architecture review round 2: ARCH-F-001…003 fixed (note 8), ARCH-F-004 resolved by autobyteus-343 (note 10), ARCH-F-005 decided (this note). No structural change.
+
+### SR-004 note 12 (2026-10-31) — architecture review round 2 (ARCH-REV-002): Pass; ARCH-F-006 folded in
+
+- Review: `design-review-report.md` (Pass; Large and High unchanged). Applied without re-review (ARCH-F-006, Low): stale design-spec text (revision notes, design status, investigation range F-01…F-37, "3,794 entries in 825 runs", the selection updater's name, the change-sequence numbering); the web result type `AgentModelConfigMutationResult` → `AgentSelectionMutationResult` (the shared `ExistingRunModelConfigMutationResult` stays); `ExistingRunConfigEditor.vue` added to the web file mapping (root-locked list and `change-root` for an eligible agent root); docs `run_history.md`, `settings.md` in the same change; `openRawTraceRuntimeKind` placed in the new `agent-run-pending-runtime-switch.ts`.
+- Next: the user's final approval of the design before the implementation engineer (held by the reviewer) starts.
