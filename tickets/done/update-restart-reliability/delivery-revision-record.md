@@ -23,7 +23,7 @@ The latest `docs-sync-report.md`, `handoff-summary.md` and `release-deployment-r
   - checkpoint `aaf0228a80`: the architecture reviewer's untracked review record;
   - merge of `origin/personal` @ `0ab3f4a6d7` → `6160f551aa`, no conflicts;
   - DEL-01a–g Pass.
-- Verification and finalization state: verified from the evidence (every critical AC directly proven; no user check needed); finalization recorded in the release report.
+- Verification and finalization state: verified from the evidence (every critical AC directly proven; no user check needed); merged `--no-ff` into `personal` as `5d0df2eeb3` and pushed; no release.
 - Terminal return to the Solution Designer: `Sent` after finalization and cleanup.
 - Why this baseline was recorded: first completed delivery round.
 - Next recipient/action: `/software_engineering_team/solution_designer` (terminal receipt; send the follow-ups).

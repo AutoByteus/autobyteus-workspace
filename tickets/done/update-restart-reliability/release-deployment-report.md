@@ -63,7 +63,7 @@ Repository finalization of the reviewed and validated change into `personal`. No
 
 - More evidence requested: `None`.
 - User check needed: `No`. The only part API/E2E could not reach is the real Squirrel install, which lies outside the AC's stated verification. The user did not ask to check.
-- Re-verification after later re-integration: `Not needed` so far: `origin/personal` was still `0ab3f4a6d7` after verification and at archive time.
+- Re-verification after later re-integration: `Not needed` so far: `origin/personal` was still `0ab3f4a6d7` after verification, at archive time and before the push to `personal`.
 
 ## Release Decision
 
@@ -87,7 +87,19 @@ None (no release).
 
 ## Repository Finalization
 
-FINALIZATION_SECTION
+- Bootstrap context source: `requirements-doc.md` § Document Status (branch `codex/update-restart-reliability`, target `personal`) and `RELEASE.md` § Finalization Target.
+- Ticket branch: `codex/update-restart-reliability` @ `65bf2e8903` (archive commit).
+- Ticket branch commit result: `Completed` (`aaf0228a80` review checkpoint, `6160f551aa` base merge, `65bf2e8903` delivery artifacts and archive).
+- Ticket branch push result: `Completed` (`origin/codex/update-restart-reliability` @ `65bf2e8903`; deleted after the merge, see cleanup).
+- Finalization target remote: `origin`.
+- Finalization target branch: `personal`.
+- Target advanced after verification / acceptance: `No` (`origin/personal` stayed `0ab3f4a6d7` from the integration to the push).
+- Delivery-owned edits protected before re-integration: `Not needed`.
+- Re-integration before final merge result: `Not needed`.
+- Target branch update result: `Completed` (`git checkout -b finalize/update-restart-reliability origin/personal` @ `0ab3f4a6d7`).
+- Merge into target result: `Completed` (`git merge --no-ff codex/update-restart-reliability` → `5d0df2eeb3`; its tree equals the verified `65bf2e8903`).
+- Push target branch result: `Completed` (`0ab3f4a6d7..5d0df2eeb3 HEAD -> personal`, after a fetch confirmed `origin/personal` had not moved), plus this record commit.
+- Repository finalization status: `Completed`.
 
 ## Release / Publication / Deployment
 
@@ -97,7 +109,9 @@ FINALIZATION_SECTION
 
 ## Post-Finalization Cleanup
 
-CLEANUP_SECTION
+- Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/update-restart-reliability` (created for this ticket).
+- Remote branch cleanup result: `Completed` (`origin/codex/update-restart-reliability` deleted after `65bf2e8903` was confirmed an ancestor of `origin/personal`).
+- Worktree cleanup, worktree prune, local branch cleanup (`codex/update-restart-reliability`, `finalize/update-restart-reliability`): run from the main checkout right after this record commit is pushed, since the worktree holds this commit until then. Besides tracked files the worktree has only untracked build output (`*/dist/`). Results are confirmed in the terminal message to the Solution Designer.
 
 ## Release Notes Summary
 
@@ -129,4 +143,11 @@ DEL-01a to DEL-01g above, on the integrated state.
 
 ## Final Status
 
-FINAL_STATUS_SECTION
+- Verification complete (from the evidence): `Yes`
+- Repository finalization complete: `Yes` (`personal` @ `5d0df2eeb3`, plus this record commit)
+- Applicable release/deployment/rollout complete or not required: `Yes` (not required; no release)
+- Applicable safe cleanup complete or not required: remote branch `Completed`; worktree and local branches after this commit (confirmed in the terminal message)
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to the Solution Designer: `Yes`, after this commit and the cleanup
+- Terminal message/reference: message to `/software_engineering_team/solution_designer`
