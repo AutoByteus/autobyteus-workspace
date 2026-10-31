@@ -1,0 +1,4 @@
+# DEL-05 integrated-state image build (step 3), 2026-10-30T20:06:23Z, HEAD f0b2b43dbc
+#46 28.80 Wrote server-package.json: 1.5.11-beta.5 linux-arm64, Node modules 127, system level 1, 62 migrations
+#50 [runtime  9/16] COPY autobyteus-server-ts/docker/starter/*.mjs /opt/autobyteus/starter/
+build exit 0

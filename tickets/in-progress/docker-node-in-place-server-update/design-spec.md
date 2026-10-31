@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-005` (design revised after ARCH-REV-001 Fail; previous design round SR-004)
+- Current solution revision ID: `SR-009` (step-3 delta after the step-2 delivery: RU-23, CR2-N1; earlier rounds SR-004, SR-005)
 - Approved requirements baseline: `requirements-doc.md` at `SR-003`, approved by the user on 2026-10-30 in the Solution Designer conversation ("Yeah, yeah, I feel like you're recommended. These are good … I accept that."). DEC-004, DEC-005 and DEC-011 were decided by the user the same day; their quotes are in the requirements' Decisions table.
 - Behavior-defining supplements: `options-report.md` at SR-003. This design refines §4 of the report. Where they differ, this spec governs and the difference is listed in "Changes against the options report" below.
 - Design status: `Ready` (revision for ARCH-REV-001 AR-001..AR-012; see "Resolution of ARCH-REV-001" at the end)
@@ -266,7 +266,7 @@ Main-line nodes: Nodes page row; `nodeServerUpdateStore`; server `NodeUpdateRout
   - health probe;
   - the mode `supervising | updating` and the exit handling of each mode (DS-007).
 - **`UpdateService`** (starter): the single entry for update requests from both forms. It owns:
-  - the gates: valid version grammar (or a valid track, resolved first); newer than running; no update running; a server is running (not in `NEEDS_NEW_IMAGE`);
+  - the gates: valid version grammar (or a valid track, resolved first); newer than running; no update running; a server is running (not in `NEEDS_NEW_IMAGE`); `/home/autobyteus/server-packages` is its own mount (read from `/proc/self/mountinfo`), else `NO_PACKAGES_VOLUME` (SR-009, RU-23: without the volume, an installed package and `state.json` live in the container layer and are lost at the next recreation, which would leave an older built-in server on migrated data, against REQ-012);
   - the request log line, with `requestedFrom`;
   - the creation of one `UpdateRun` at a time.
 - **`UpdateRun`** (starter): sequencing of one update and its rollback. It calls each mechanism itself, in order.
@@ -415,7 +415,7 @@ DS-005: `UpdateRun step change -> UpdateStatus.write(update.json) -> GET /status
 | --- | --- | --- | --- | --- |
 | C1 `GET /rest/node-update?target=<version>` | This node's server package and update | Status for the desktop | `target`: release version grammar; optional | Returns `{ inPlaceUpdate: "available"\|"unavailable"\|"error", version: string\|null, target?: { version, relation: "newer"\|"same"\|"older" }, update?: UpdateState, message?: string }`. `version` and `relation` come from C2 (the starter's one owner). `unavailable` when `AUTOBYTEUS_STARTER_SOCKET` is absent; `error` when it is set but the socket does not answer |
 | C1 `POST /rest/node-update` body `{ version }` | Same | Request an update | Exact version | `202 { accepted: true }`, or `409 { refused: code, message }`. Route class `TRUSTED_NETWORK_OWNER` (phones `403`). `requestedFrom` = the request's client address |
-| C2 `GET /status[?target=]`, `POST /updates { version \| track, requestedFrom }` over `/run/autobyteus/starter.sock` (0600, root) | Same | Status and request | `version` grammar, or `track: "stable"\|"beta"` (CLI only) | Status: `{ version, state: "running"\|"needsNewImage", server?: { pid, packageVersion, source: "builtIn"\|"installed" }, target?, update, message? }`. The same `UpdateService.request` for both forms |
+| C2 `GET /status[?target=]`, `POST /updates { version \| track, requestedFrom }` over `/run/autobyteus/starter.sock` (0600, root) | Same | Status and request | `version` grammar, or `track: "stable"\|"beta"` (CLI only) | Status: `{ version, state: "running"\|"needsNewImage", server?: { pid, packageVersion, source: "builtIn"\|"installed" }, target?, update, message?, updateBlocker?: { code, message } }`. `updateBlocker` (SR-009) is present when a request would be refused for a node-level reason (`NO_PACKAGES_VOLUME`, `NEEDS_NEW_IMAGE`); C1 passes it on and the desktop row shows its message instead of the button. The same `UpdateService.request` for both forms |
 | C2, host form: `node /opt/autobyteus/starter/cli.mjs status` and `cli.mjs update (--version <X> \| --track stable\|beta)` | Same | Host owner's entry | As above | Prints one JSON line (the C2 response). Exit 0 = accepted or ok, 2 = refused (code in the JSON), 1 = error. `requestedFrom` = `host command` |
 | C3 package description `autobyteus-server-<version>-linux-<arch>.json` + `.json.sig`, and the package's own `server-package.json` | One release, one architecture | Verification, fit, the running version | — | Description: `{ version, arch, nodeModuleVersion, systemLevel, dataMigrations: string[], archive: { name, sha256, size, unpackedSize } }`; signature = base64 Ed25519 over the exact file bytes. `server-package.json` = the description without `archive`; starters of any image version read it |
 | C4 server start | The server process | Run | — | `node <pkg>/dist/app.js --host --port --data-dir`; environment adds `AUTOBYTEUS_STARTER_SOCKET`; SIGTERM stops; `GET /rest/health` 200 when listening; `.env` in the data folder (written by `entrypoint.sh`) |
@@ -443,6 +443,7 @@ Refusal and failure codes, each an explicit outcome:
 - `ARCHIVE_MISMATCH`
 - `NEEDS_NEW_IMAGE`, with the launcher command in the message (at update and at boot)
 - `NOT_ENOUGH_SPACE`
+- `NO_PACKAGES_VOLUME` (the node was created by a launcher or compose file without the server-packages volume; the message says: reinstall the launcher, then `autobyteus-docker upgrade --all`)
 - `DOWNLOAD_FAILED`
 - `SELF_CHECK_FAILED`
 - `SERVER_EXITED_DURING_UPDATE`
@@ -637,6 +638,9 @@ Each step is reviewed and merged on its own. Build steps match the options repor
    - Launcher: `<node>-server-packages` volume, config hash; the IMAGE_REF → track table.
 3. **In-place update by command.**
    - `UpdateService`, `UpdateRun`, `ReleaseSource`, `PackageVerifier`, `SelfCheck`, `DataCopy`, `UpdateStatus`, socket, CLI, launcher `update` (bash and PowerShell).
+   - Launcher `status` (bash and PowerShell) prints the starter's state from `cli.mjs status` next to Docker's container status (`running`, `needsNewImage` with its message), so a node that refuses at boot is not shown only as "running" (SR-009, CR2-N1).
+   - The `NO_PACKAGES_VOLUME` gate and `updateBlocker` (SR-009, RU-23); test: a container without the volume refuses and changes nothing; with it, the update proceeds.
+   - Release notes for the release that ships step 3: tell launcher users to reinstall the launcher, then `upgrade --all` (RU-23).
    - Proof on a real Docker node built from a clean clone, with a test key and a local release source: AC-001..AC-006, AC-008, AC-012, AC-013. The tests include: an older signed pair renamed to a newer version (`DESCRIPTION_MISMATCH`); a trial that exits at start (`FAILED_AFTER_SWITCH`); a container stop during the copy, during the trial and during the restore (boot outcomes); not enough space for the copy before the stop (refused, nothing changed).
 4. **Desktop.** C1 POST, `nodeServerUpdateStore`, `NodeServerUpdate.vue`, texts. AC-001, AC-009, AC-010.
 5. **Mid-turn runs come back.** After autobyteus-284, -285 and -287: the stop step relies on the bounded stop, and the resume is automatic (DEC-015). AC-007.

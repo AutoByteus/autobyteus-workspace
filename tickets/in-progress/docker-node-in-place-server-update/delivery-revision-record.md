@@ -8,6 +8,9 @@ The latest docs sync report, handoff summary and release/deployment report are a
 | --- | --- | --- | --- | --- |
 | DR-001 | Build step 1 (signed server package): CRR-002 Pass | N/A | Delivery Completed for step 1: merged into `personal`, no release | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`, `evidence/DEL-01-*`, `evidence/DEL-02-*` |
 | DR-002 | Build step 2 (starter and server-packages volume): CRR-004 Not Applicable after API-REV-002 Pass | DR-001 Delivery Completed (step 1) | Delivery Completed for step 2: merged into `personal`, no release | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md` (rewritten for step 2; step-1 versions in git at `77fb8bf2d1`), `evidence/DEL-03-*` |
+| DR-003 | Build step 3 (in-place update by command): CRR-006 Not Applicable after API-REV-003 Pass; the user asked for a beta | DR-002 Delivery Completed (step 2) | See the DR-003 entry | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md` (rewritten for step 3; step-2 versions at `6b34f900b6`), `release-notes.md`, `evidence/DEL-04-*`, `evidence/DEL-05-*` |
+| DR-004 | Build step 4 (desktop: node version and "Update to <version>"): CRR-008 Not Applicable after API-REV-004 Pass | DR-003 Delivery Completed (step 3, beta v1.5.11-beta.6) | See the DR-004 entry | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md` (rewritten for step 4; step-3 versions at `1bed6deeaf`), `release-notes.md`, `evidence/DEL-11-*` |
+| DR-005 | The user asked for a beta after step 4's finalization | DR-004 Delivery Completed (step 4, no release) | Beta v1.5.11-beta.7 released; first real in-place update proven | `release-deployment-report.md`, `handoff-summary.md`, `evidence/DEL-12-*` … `DEL-15-*` |
 
 ## Revision Entries
 
@@ -61,4 +64,60 @@ The latest docs sync report, handoff summary and release/deployment report are a
 - Push: `origin personal` `77fb8bf2d1..a0f4b491f7`. A branch push starts no workflow.
 - Release: none (RELEASE.md default; the user did not ask).
 - Cleanup: worktree and branch kept for steps 3–5; ticket folder kept in `tickets/in-progress/`; the local `finalize/…` branch is deleted after this record is pushed.
+- Terminal return to the Solution Designer: sent after this record is on `personal`.
+
+### DR-003 — Build step 3 merged into `personal`; beta v1.5.11-beta.6
+
+- Delivery round and trigger: third delivery round, build step 3. Code reviewer CRR-006 `Not Applicable` (no durable test changed) after API-REV-003 Pass (94.7%) and CRR-005 Pass. During delivery the user asked: "if everything is fine after your auditing. lets release a new beta".
+- Prior authoritative result: DR-002, Delivery Completed for step 2 (`personal` @ `6b34f900b6`).
+- Integration and post-integration verification: checkpoint `fed31bb5fb`; merge of `origin/personal` @ `a8d7c87564` as `f0b2b43dbc` (autobyteus-343); DEL-04 checks and DEL-05 integrated image (incl. real GitHub source) passed.
+- Verification: from the evidence, sufficient (release-deployment-report.md).
+- Decisions recorded: CR3-N1 for implementation with step 4; the two API/E2E observations noted, not findings; RU-23 in `release-notes.md`; release notes added to the beta's generated notes (deviation recorded); FU-006 stays a follow-up.
+- Next recipient/action: finalize, release the beta per RELEASE.md, then terminal return to the Solution Designer.
+
+#### Finalization And Release Record
+
+- Ticket branch: delivery commit `d5a9024922`, pushed (Secret Gate PASS).
+- Merge: `--no-ff` into `personal` as `0a223aa397`, pushed `a8d7c87564..0a223aa397` (target unchanged at both fetches).
+- Release smoke: Grok refused by its free-tier quota (run 1: 1 of 3 scenarios; run 2: 3 of 3); **the user waived Grok** ("waive grok"). All other runtimes passed both runs.
+- Build-only run 1 (`41121610105`) failed: the `macos-14` brownout, plus a transient npm 404 (tslib 2.9.1 minutes after publish). FU-007 and FU-008 were recorded.
+- **On the user's instruction**, delivery moved the desktop macOS jobs to `macos-15` (merge `f6a5c85175`); FU-007 is resolved. Build-only run 2 (`41124044082`) succeeded.
+- Release: `scripts/desktop-release.sh beta` → `35d33852ef` + tag `v1.5.11-beta.6`; pushed `personal` and the tag.
+- All four workflows succeeded: Desktop `41127864410`, Android `41127864415`, iOS `41127864440`, Docker `41127864490` incl. both Publish Server Package jobs.
+- Published: 23/23 assets, pre-release, "Latest" stays v1.5.10; Docker `:1.5.11-beta.6` = `:beta`, `:latest` unchanged.
+- AC-011 GitHub part proven: production-key signatures, archive SHA-256, byte-identical to the image's package (45,360 entries); the published starter reads real GitHub.
+- Release body: the ticket's `release-notes.md` added above the generated notes (deviation recorded).
+- Cleanup: worktree and ticket branch kept for steps 4–5; local finalize branch deleted; delivery's test artifacts and pulled image removed.
+- Terminal return to the Solution Designer: sent after this record is on `personal`.
+
+### DR-004 — Build step 4 merged into `personal` without a release
+
+- Delivery round and trigger: fourth delivery round, build step 4. CRR-008 `Not Applicable` (no durable test changed) after API-REV-004 Pass (94.7%) and CRR-007 Pass.
+- Prior authoritative result: DR-003, Delivery Completed for step 3 and beta v1.5.11-beta.6 (`personal` @ `1bed6deeaf`).
+- Integration: base `1bed6deeaf` unchanged, already current; DEL-11 confirmation checks passed.
+- Verification: from the evidence, sufficient. Every row state is settled by the design or ARCH-REV-005 N-4.
+- Docs: `autobyteus-web/docs/settings.md` (server line, polling) and `remote_access.md` (`POST /rest/node-update`). `release-notes.md` rewritten for the release that ships step 4.
+- Decisions recorded:
+  - N-4 visibility, CR4-N1 and the zh-CN English reasons passed to the Solution Designer as product choices;
+  - the user's nodes run the pre-step-1 `:beta` (read-only check), so they will show "Not reachable." until the reinstall and `upgrade --all`;
+  - CR3-N1 is fixed in step 4's code.
+- Release: none (RELEASE.md default; not requested for step 4).
+- Next recipient/action: finalize, then terminal return to the Solution Designer; step 5 waits for autobyteus-285/287.
+
+#### Finalization Record
+
+- Delivery commit on the ticket branch: `5c545a7bc8`, pushed (Secret Gate PASS).
+- Target re-fetched: `origin/personal` still `1bed6deeaf`; no re-integration; the merged tree equals the ticket branch.
+- Merge: `--no-ff` into `personal` as `db0881a96e`; Secret Gate PASS on the merged state; pushed `1bed6deeaf..db0881a96e`.
+- Release: none. Cleanup: worktree and branch kept for step 5; the local `finalize/…` branch is deleted after this record is pushed.
+- Terminal return to the Solution Designer: sent after this record is on `personal`.
+
+### DR-005 — Beta v1.5.11-beta.7 (user request after step 4)
+
+- Trigger: the user asked "there is no beta release for this? i think we need a beta release", then waived Grok ("yes Waive grok").
+- Prior authoritative result: DR-004, step 4 finalized without a release (`personal` @ `8e463448be`).
+- Checks: pre-tag gates passed; release smoke Claude/Codex/Antigravity/AutoByteus PASS, Grok waived (quota; run 1 aborted on the known `grok-4.7` pin); build-only run `41169372699` success.
+- Release: `8faae96899` + tag `v1.5.11-beta.7`, pushed. 4/4 workflows succeeded; 23/23 assets; Docker `:beta` moved, `:latest` unchanged; step-4 notes added above the generated notes.
+- **First real in-place update:** published beta.6 → beta.7 on a test-owned container, through GitHub and the production key; succeeded in 103 s in the same container and image.
+- Cleanup: test container, volumes and the pulled beta.6 image removed; the local finalize branch deleted. The Solution Designer's own uncommitted files in the worktree (`delivery-receipt-verification-step4.md`, `result-waiting-for-prerequisite.md`, edits to `follow-ups.md` and `solution-revision-record.md`) were stashed with mine for the release script's clean-tree rule, restored unchanged, and not committed by delivery.
 - Terminal return to the Solution Designer: sent after this record is on `personal`.

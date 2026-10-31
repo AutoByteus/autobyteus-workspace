@@ -1,0 +1,38 @@
+# DEL-12 pre-tag checks and release smoke for v1.5.11-beta.7 on personal 8e463448be, 2026-10-31T04:38:29Z
+Licensing is consistent.
+Repository artifact hygiene check passed.
+secret gate: scanning 8 commit(s) in v1.5.11-beta.6..HEAD
+secret gate: PASS (no secrets found)
+pnpm install exit 0
+prebuild exit 0
+## python3 scripts/release_smoke.py
+Release smoke check
+runtime     scenario                                 result  reason
+claude      new run + restore, linked workspace      FAIL    skipped: Error: grok model grok-4.7 is not offered; available: grok-4.5, grok-4.6
+claude      brand-new team member                    FAIL    skipped: Error: grok model grok-4.7 is not offered; available: grok-4.5, grok-4.6
+claude      different same-named skill               FAIL    skipped: Error: grok model grok-4.7 is not offered; available: grok-4.5, grok-4.6
+codex       new run + restore, linked workspace      FAIL    skipped: Error: grok model grok-4.7 is not offered; available: grok-4.5, grok-4.6
+codex       brand-new team member                    FAIL    skipped: Error: grok model grok-4.7 is not offered; available: grok-4.5, grok-4.6
+codex       different same-named skill               FAIL    skipped: Error: grok model grok-4.7 is not offered; available: grok-4.5, grok-4.6
+grok        new run + restore, linked workspace      FAIL    skipped: Error: grok model grok-4.7 is not offered; available: grok-4.5, grok-4.6
+grok        brand-new team member                    FAIL    skipped: Error: grok model grok-4.7 is not offered; available: grok-4.5, grok-4.6
+grok        different same-named skill               FAIL    skipped: Error: grok model grok-4.7 is not offered; available: grok-4.5, grok-4.6
+antigravity brand-new run, linked workspace          PASS
+antigravity brand-new team member, linked workspace  PASS
+autobyteus  brand-new run, linked workspace          PASS
+autobyteus  brand-new team member, linked workspace  PASS
+other       workspace-skill-links-live.e2e.test.ts   FAIL    Error: grok model grok-4.7 is not offered; available: grok-4.5, grok-4.6
+
+commit    8e463448be3e1e8613500a45144e51a74adae446
+models    not reported
+duration  live 14s, antigravity 18s, autobyteus 10s
+result    FAIL
+logs      /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/release-smoke-rdvi8hwu
+smoke exit 1
+
+## run 2 (python3 scripts/release_smoke.py --help: the script has no argument parsing, so this ran the full check again) on 8e463448be, logs /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/release-smoke-ng13urpw
+claude 3/3 PASS; codex 3/3 PASS; antigravity 2/2 PASS; autobyteus 2/2 PASS; grok 0/3 FAIL: 429 subscription:free-usage-exhausted for grok-4.7 (rolling 24-hour window); models {"claude": "haiku", "codex": "gpt-5.6-luna", "grok": "grok-4.7"}; result FAIL (Grok only)
+grep of the step log:
+   6 free-usage-exhausted
+   6 tokens (actual/limit): 604934/600000
+## run 1's 'grok model grok-4.7 is not offered' abort is the known flaky pin of tickets/done/work-journal-neutral-vocabulary/follow-ups.md FU-005 (the Grok CLI's offered model list varies).

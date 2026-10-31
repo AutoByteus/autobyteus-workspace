@@ -1,0 +1,48 @@
+# IMP4-06 the desktop app drives an in-place update (AC-001, AC-009 log, AC-010)
+# Desktop: isolated instance of this worktree's build (pnpm --silent isolated-app start --build at deead7bf05; app version 1.5.11-beta.6), driven over its control port with playwright-core: IMP4-proof-drive.mjs
+# Nodes: test-owned containers ab305-s4-a (with its server-packages volume) and ab305-s4-b (without), image step4-testkey, removed afterwards; the user's nodes were not touched
+# Date: 2026-10-30
+
+## The window (driver log)
+{"time":"2026-10-30T22:22:59.409Z","event":"nodes page open","url":"file:///Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-in-place-server-update/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/nodes?nodeTab=manage"}
+{"time":"2026-10-30T22:22:59.636Z","event":"node added","address":"http://127.0.0.1:59932","name":"update-test"}
+{"time":"2026-10-30T22:22:59.894Z","event":"row line","name":"update-test","text":"Server 1.5.11-beta.5 Update to 1.5.11-beta.6 Same version as this app"}
+{"time":"2026-10-30T22:23:00.310Z","event":"screenshot","file":"S4-01-update-offered.png"}
+{"time":"2026-10-30T22:23:00.359Z","event":"node added","address":"http://127.0.0.1:59933","name":"no-volume"}
+{"time":"2026-10-30T22:23:00.613Z","event":"row line","name":"no-volume","text":"Server 1.5.11-beta.5 /home/autobyteus/server-packages is not this node's own volume, so an update would be lost when the container is recreated. Reinstall the launcher, then run: autobyteus-docker upgrade --all"}
+{"time":"2026-10-30T22:23:00.670Z","event":"screenshot","file":"S4-02-blocked-no-volume.png"}
+{"time":"2026-10-30T22:23:00.670Z","event":"AC-010: waiting 30 s without clicking"}
+{"time":"2026-10-30T22:23:30.693Z","event":"clicked","button":"Update to 1.5.11-beta.6"}
+{"time":"2026-10-30T22:23:30.694Z","event":"row line","name":"update-test","text":"Server 1.5.11-beta.5 Starting the update…"}
+{"time":"2026-10-30T22:23:30.763Z","event":"screenshot","file":"S4-03-step-1.png"}
+{"time":"2026-10-30T22:23:30.964Z","event":"row line","name":"update-test","text":"Server 1.5.11-beta.5 Checking the update to 1.5.11-beta.6…"}
+{"time":"2026-10-30T22:23:31.010Z","event":"screenshot","file":"S4-03-step-2.png"}
+{"time":"2026-10-30T22:23:32.862Z","event":"row line","name":"update-test","text":"Server 1.5.11-beta.5 Preparing 1.5.11-beta.6…"}
+{"time":"2026-10-30T22:23:32.911Z","event":"screenshot","file":"S4-03-step-3.png"}
+{"time":"2026-10-30T22:23:43.001Z","event":"row line","name":"update-test","text":"Server 1.5.11-beta.6 Restarting…"}
+{"time":"2026-10-30T22:23:43.076Z","event":"screenshot","file":"S4-03-step-4.png"}
+{"time":"2026-10-30T22:24:43.480Z","event":"row line","name":"update-test","text":"Server 1.5.11-beta.6 Updated to 1.5.11-beta.6."}
+{"time":"2026-10-30T22:24:43.547Z","event":"screenshot","file":"S4-03-step-5.png"}
+{"time":"2026-10-30T22:24:43.547Z","event":"result","text":"Server 1.5.11-beta.6 Updated to 1.5.11-beta.6."}
+{"time":"2026-10-30T22:24:43.593Z","event":"screenshot","file":"S4-04-result.png"}
+
+## node ab305-s4-a after the click
+container: 86a3a4b179defff2d2e03825092cd04fa02ea6cdd9dc428d3b5e54a7c5f4ff2b created 2026-10-30T22:17:07.701134718Z image sha256:86052e47832b78f1b0f57f142e77a6ea539361a70ade56ac69e8ee6afeaf87fa
+status: {"version":"1.5.11-beta.6","state":"running","server":{"pid":627,"packageVersion":"1.5.11-beta.6","source":"installed"},"update":{"state":"succeeded","targetVersion":"1.5.11-beta.6","step":"confirming","code":null,"message":"Updated to 1.5.11-beta.6.","startedAt":"2026-10-30T22:23:30.694Z","finishedAt":"2026-10-30T22:24:42.945Z","requestedFrom":"172.17.0.1"}}
+state.json: {"current":{"source":"installed","version":"1.5.11-beta.6"},"previous":{"source":"builtIn","version":"1.5.11-beta.5"}}
+starter log (update lines):
+{"time":"2026-10-30T22:23:30.694Z","starter":"update-requested","version":"1.5.11-beta.6","requestedFrom":"172.17.0.1"}
+{"time":"2026-10-30T22:23:30.694Z","starter":"update-started","version":"1.5.11-beta.6","requestedFrom":"172.17.0.1"}
+{"time":"2026-10-30T22:23:40.854Z","starter":"self-check-passed","version":"1.5.11-beta.6"}
+{"time":"2026-10-30T22:24:42.945Z","starter":"update-succeeded","version":"1.5.11-beta.6"}
+AC-010: 30 s wait ended at 2026-10-30T22:23:30.671Z; the click at 2026-10-30T22:23:30.693Z; update-requested lines: 1
+
+## node ab305-s4-b (no server-packages volume): no update request reached it
+update-requested lines: 0
+
+## AC-009 on the real node before the click: a phone credential
+phone POST: 403; phone GET: 403; starter update-requested lines then: 0
+agent tools naming the update route or the starter socket (git grep in autobyteus-server-ts/src and autobyteus-ts/src outside src/node-update, the REST index and the route policy): 0
+
+## Guide card
+{"visible":true,"title":true}  autobyteus-docker update --all and its title on Nodes → Docker Guide (IMP4-shot-S4-05-docker-guide-update.png)

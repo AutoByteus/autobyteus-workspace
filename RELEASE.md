@@ -307,9 +307,11 @@ release. Record it as one.
 ## Deployment
 
 This repository deploys no hosted service. A server rollout is the published
-Docker image. Users upgrade with the public launcher
-(`autobyteus-docker upgrade --all --tag latest|beta`, see
-`autobyteus-server-ts/docker/README.md`) or with the desktop auto-updater.
+Docker image and the signed server packages on the GitHub release. Users
+upgrade with the public launcher (`autobyteus-docker upgrade --all --tag
+latest|beta`, a new image), update a Docker node's server in place
+(`autobyteus-docker update`, the release's server package; see
+`autobyteus-server-ts/docker/README.md`), or use the desktop auto-updater.
 
 ## Workflow Reference
 

@@ -1,55 +1,50 @@
-# Docs Sync Report — autobyteus-305, build step 2 (starter and server-packages volume)
+# Docs Sync Report — autobyteus-305, build step 4 (desktop: node version and "Update to <version>")
 
-This report holds the latest delivery round (DR-002, step 2). The step-1 report (DR-001) is in git at `77fb8bf2d1`.
+This report holds the latest delivery round (DR-004, step 4). Earlier rounds are in git: DR-001 at `77fb8bf2d1`, DR-002 at `6b34f900b6`, DR-003 at `1bed6deeaf`.
 
 ## Scope
 
-- Ticket: autobyteus-305, Docker nodes update their server in place (`docker-node-in-place-server-update`). Delivers **build step 2 of 5**.
-- Trigger: code reviewer CRR-004 (`Not Applicable`, no durable test changed) after API-REV-002 Pass (94.7%), CRR-003 Pass (9.5/10), IR-002, ARCH-REV-003.
-- Bootstrap base reference for this step: `origin/personal` @ `77fb8bf2d1` (step 1 merged as `eec6522b27`)
-- Integrated base reference used for docs sync: `origin/personal` @ `77fb8bf2d1`. It had not moved, so the branch was already current.
-- Post-integration verification reference: `evidence/DEL-03-step2-delivery-checks.log`
+- Ticket: autobyteus-305 (`docker-node-in-place-server-update`), **build step 4 of 5**.
+- Trigger: code reviewer CRR-008 (`Not Applicable`, no durable test changed) after API-REV-004 Pass (94.7%), CRR-007 Pass (9.5/10), IR-004, ARCH-REV-005.
+- Bootstrap base reference for this step: `origin/personal` @ `1bed6deeaf`
+- Integrated base reference used for docs sync: `origin/personal` @ `1bed6deeaf`. It had not moved, so the branch was already current.
+- Post-integration verification reference: `evidence/DEL-11-step4-delivery-checks.log`
 
 ## Why Docs Were Updated
 
-- Summary: implementation documented the starter, its package choice, `cli.mjs status`, the `<node>-server-packages` volume (Docker README, root README, server README) and the starter test layer (TESTING.md, own commit `82e2e7f931`). Delivery found one long-lived doc that the new REST route made incomplete: the remote-access route list.
-- Why this should live in long-lived project docs: the route list in `remote_access.md` is the reference for which routes refuse phone credentials. A route missing there hides that `GET /rest/node-update` is owner-only.
+- Summary: step 4 adds a server line with "Update to <version>" under each remote row of Nodes → Manage Nodes. The web settings doc described that page and said "Nothing polls", which is no longer true while an update runs. Implementation changed no long-lived doc.
+- Why this should live in long-lived project docs: `autobyteus-web/docs/settings.md` is the page's reference (stores, components, when nodes are asked). The new line, its states, its polling and the generic "Not reachable." for old nodes are lasting behavior.
 
 ## Long-Lived Docs Reviewed
 
 | Doc Path | Why It Was Reviewed | Result | Notes |
 | --- | --- | --- | --- |
-| `autobyteus-server-ts/docker/README.md` | Starter, selection, `NEEDS_NEW_IMAGE`, `cli.mjs status`, new volume, `test:starter` | No change | Accurate against API-12 and IMP2-08 |
-| `README.md` (root), `autobyteus-server-ts/README.md` | Launcher volume lists (step 1 deferred the new volume to step 2) | No change | Both list `<node>-server-packages` |
-| `TESTING.md` | Docker starter test layer; test-node package choice | No change | Matches IMP2-01 and the probes |
-| `autobyteus-server-ts/docs/features/remote_access.md` | Lists the trusted-network owner routes | Updated | Added `GET /rest/node-update` |
-| `GLOSSARY.md` | "Starter" defined in step 1 | No change | Still accurate |
-| `DESIGN.md` | Rule 9 exception names C1 `/rest/node-update` | No change | — |
-| `RELEASE.md` | Release assets, level check | No change | Step 2 adds no release asset; the starter sits after the system-part marker (level unchanged, DEL-03) |
+| `autobyteus-web/docs/settings.md` (Nodes: Manage Nodes) | Page reference; "Nothing polls" | Updated | New bullet for the server line; the polling sentence corrected |
+| `autobyteus-server-ts/docs/features/remote_access.md` | Owner route list (method and path) | Updated | Added `POST /rest/node-update` next to the GET from DR-002 (same route class, `remote-access-route-policy.ts` classifies by path) |
+| `autobyteus-server-ts/docker/README.md` | Update command, refusals, `NO_PACKAGES_VOLUME` | No change | The settings doc links to it |
+| `DESIGN.md` (rule 9 exception) | C1 GET and POST | No change | C1 already names "status and update" |
+| `GLOSSARY.md` | Nodes terms | No change | — |
+| `RELEASE.md` | — | No change | Step 4 adds no release asset |
 
 ## Docs Updated
 
 | Doc Path | Type Of Update | What Changed | Why |
 | --- | --- | --- | --- |
-| `autobyteus-server-ts/docs/features/remote_access.md` | Route list | `GET /rest/node-update` under trusted-network owner routes, with what it returns on servers without a starter | New route in `remote-access-route-policy.ts` (route class `TRUSTED_NETWORK_OWNER`) |
+| `autobyteus-web/docs/settings.md` | Page reference | New bullet covering the line's states and texts: version, Update to `<version>`, newer than this app, steps, restart grace, results, Copy command, version unknown, `updateBlocker`, "Not reachable." for servers without C1, no line on the embedded node. Also how it asks (on open and when the app's version is known; 2 s while running; 10 s after 5 minutes without an answer), and that the click starts the update without a confirmation dialog. "Nothing polls" became "Nothing polls, except a row's server update line while an update runs" | Step 4's user-visible behavior; the review's docs note |
+| `autobyteus-server-ts/docs/features/remote_access.md` | Route list | `POST /rest/node-update` under trusted-network owner routes | New C1 method in step 4 |
 
 ## Durable Design / Runtime Knowledge Promoted
 
 | Topic | What Future Readers Need To Understand | Source Ticket Artifact(s) | Target Long-Lived Doc |
 | --- | --- | --- | --- |
-| Starter package choice | Installed package if it fits and is not older than built-in; else built-in unless older than the newest version that ran; else `NEEDS_NEW_IMAGE` with no server | design-spec DS-003 | Docker README (implementation) |
-| Starter status | `docker exec <c> node /opt/autobyteus/starter/cli.mjs status`; starter log lines in the supervisord log | design-spec DS-007 | Docker README (implementation) |
-| C1 route class | `/rest/node-update` refuses phones | AC-009 | `remote_access.md` (delivery) |
+| Nodes page server line | States, polling (DS-005), no confirmation (SCN-001), "Not reachable." for old servers (N-4) | design-spec DS-005, row states; ARCH-REV-005 N-4; CRR-007 CC-06/CC-07 | `autobyteus-web/docs/settings.md` |
 
 ## Removed / Replaced Components Recorded
 
-| Old Component / Path / Concept | What Replaced It | Where The New Truth Is Documented |
-| --- | --- | --- |
-| supervisord program `node dist/app.js` in the built-in package | supervisord runs the starter, which runs the chosen package | Docker README |
-| Launcher config hash `v6` | `v7` (adds the server-packages volume) | Launcher code; Docker README volume list |
+None.
 
 ## Delivery Continuation
 
 - Result: `Pass`
-- Next delivery action: verification from evidence, then repository finalization into `personal` (no release).
-- Notes: CR-N1's code side (step 1) was done in step 2 (`release-server-docker.yml` prints `-f publish_zh=true` for zh; IMP2-02).
+- Next delivery action: verification, finalization into `personal` (no release requested).
+- Ticket artifact also updated: `release-notes.md`, rewritten for the release that ships step 4 (the beta.6 version is in git at `1bed6deeaf`).

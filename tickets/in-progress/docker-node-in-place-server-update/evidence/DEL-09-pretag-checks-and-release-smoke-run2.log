@@ -1,0 +1,28 @@
+# pre-tag checks and release smoke on f6a5c85175, 2026-10-30T20:59:24Z
+Licensing is consistent.
+Repository artifact hygiene check passed.
+secret gate: scanning 95 commit(s) in v1.5.11-beta.5..HEAD
+secret gate: PASS (no secrets found)
+## python3 scripts/release_smoke.py
+Release smoke check
+runtime     scenario                                 result  reason
+claude      new run + restore, linked workspace      PASS
+claude      brand-new team member                    PASS
+claude      different same-named skill               PASS
+codex       new run + restore, linked workspace      PASS
+codex       brand-new team member                    PASS
+codex       different same-named skill               PASS
+grok        new run + restore, linked workspace      FAIL    failed: AssertionError: turn errors: {"code":"ACP_PROMPT_FAILED","message":"Rate limited: API error (status 429 Too Many Requests): subscription:free-usage-exhausted: You've used all the included free usage for model grok-4.7 for now. Usage resets over a rolling 24-hour window — tokens (actual/limit): 60493
+grok        brand-new team member                    FAIL    failed: AssertionError: turn errors: {"code":"ACP_PROMPT_FAILED","message":"Rate limited: API error (status 429 Too Many Requests): subscription:free-usage-exhausted: You've used all the included free usage for model grok-4.7 for now. Usage resets over a rolling 24-hour window — tokens (actual/limit): 60493
+grok        different same-named skill               FAIL    failed: AssertionError: turn errors: {"code":"ACP_PROMPT_FAILED","message":"Rate limited: API error (status 429 Too Many Requests): subscription:free-usage-exhausted: You've used all the included free usage for model grok-4.7 for now. Usage resets over a rolling 24-hour window — tokens (actual/limit): 60493
+antigravity brand-new run, linked workspace          PASS
+antigravity brand-new team member, linked workspace  PASS
+autobyteus  brand-new run, linked workspace          PASS
+autobyteus  brand-new team member, linked workspace  PASS
+
+commit    f6a5c85175e6b5240ac471ca63694533240465a0
+models    {"claude": "haiku", "codex": "gpt-5.6-luna", "grok": "grok-4.7"}
+duration  live 79s, antigravity 18s, autobyteus 8s
+result    FAIL
+logs      /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/release-smoke-iy55c8wn
+smoke exit 1

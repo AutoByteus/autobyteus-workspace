@@ -1,137 +1,110 @@
-# Delivery / Release / Deployment Report — autobyteus-305, build step 2 (starter and server-packages volume)
+# Delivery / Release / Deployment Report — autobyteus-305, build step 4 (desktop: node version and "Update to <version>")
 
-This report holds the latest delivery round (DR-002, step 2). Step 1's report (DR-001) is in git at `77fb8bf2d1`.
+This report holds the latest delivery round (DR-004, step 4). Earlier reports are in git: DR-001 at `77fb8bf2d1`, DR-002 at `6b34f900b6`, DR-003 (step 3 and beta v1.5.11-beta.6) at `1bed6deeaf`.
 
 ## Release / Publication / Deployment Scope
 
-Repository finalization of build step 2 of 5 into `personal`. No release, tag or deployment: none was requested, and RELEASE.md makes "no release" the default.
+Repository finalization of build step 4 of 5 into `personal`. No release: none was requested for this step, and RELEASE.md's default is no release.
 
 ## Project Release Guide
 
-- Release guide path and revision: `RELEASE.md` on `origin/personal` @ `77fb8bf2d1` (it includes step 1's changes), read in the ticket worktree. Step 2 does not change it.
-- Deviations from the guide and why: `None` for the guide. From the generic delivery steps, as in DR-001: the ticket folder is **not** moved to `tickets/done/`, and the worktree and branch are kept. Steps 3–5 continue on the same branch.
-- Proposed guide fixes: `None`.
+- Release guide path and revision: `RELEASE.md` on `origin/personal` @ `1bed6deeaf`, read in the ticket worktree.
+- Deviations: none for the guide. As in earlier rounds, the ticket folder stays in `tickets/in-progress/`, and the worktree and branch are kept (step 5 remains).
+- Proposed guide fixes: the DR-003 proposal still stands (a beta whose change needs a user action adds that action to the generated notes); no new one.
 
 ## Handoff Summary
 
-- Handoff summary artifact: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-in-place-server-update/tickets/in-progress/docker-node-in-place-server-update/handoff-summary.md`
-- Handoff summary status: `Updated`
-- Delivery revision record: `delivery-revision-record.md`
-- Current delivery revision ID: `DR-002`
-- Notes: `task_size` `Large`, `architectural_risk` `High`, route `Reviewed` (ARCH-REV-003, CRR-003, API-REV-002, CRR-004 Not Applicable). Classification unchanged by delivery.
+- `handoff-summary.md` (`Updated`); `delivery-revision-record.md`, current `DR-004`.
+- `Large` / `High`, route `Reviewed`. Classification unchanged by delivery.
 
 ## Initial Delivery Integration Refresh
 
-- Bootstrap base reference: `origin/personal` @ `77fb8bf2d1`
-- Latest tracked remote base reference checked: `origin/personal` @ `77fb8bf2d1` (fetched 2026-10-30)
-- Base advanced since bootstrap or previous refresh: `No`
-- New base commits integrated into the ticket branch: `No`
-- Local checkpoint commit result: `Not needed` (no integration). The code reviewer's uncommitted records go into the delivery commit.
-- Integration method: `Already current`
-- Integration result: `Completed`
-- Post-integration executable checks rerun: `Yes`, as a confirmation on the delivered state (DEL-03, `evidence/DEL-03-step2-delivery-checks.log`): `pnpm -C autobyteus-server-ts test:starter` `# pass 26 / # fail 0`; `python3 -m unittest discover -s scripts/tests -p 'test_*.py'` `Ran 176 tests … OK (skipped=2)`; `check-system-level.mjs` level 1 unchanged; `check_licensing.py`, `check_repository_artifact_hygiene.py` pass; `scripts/check_secrets.sh origin/personal..HEAD` PASS.
-- Post-integration verification result: `Passed`
-- No-rerun rationale: nothing integrated. The API/E2E-validated state (`6637b54d46`, code `b1029fc1b0`) differs from HEAD only in ticket documents, plus delivery's one doc edit.
-- Delivery edits started only after integrated state was current: `Yes`
-- Handoff state current with latest tracked remote base: `Yes`
+- Bootstrap base and latest tracked remote base: `origin/personal` @ `1bed6deeaf`; not advanced.
+- Integration method: `Already current`. Local checkpoint: `Not needed` (the code reviewer's records go into the delivery commit).
+- Post-integration executable checks: confirmation on the delivered state, DEL-11 (`evidence/DEL-11-step4-delivery-checks.log`):
+  - `vitest run components/settings/nodes … nodeServerUpdateStore.spec.ts dockerNodeLauncherCommands.spec.ts` `Test Files 6 passed / Tests 48 passed`;
+  - `guard:web-boundary` and `guard:localization-boundary` `Passed`;
+  - server `tests/unit/node-update tests/unit/remote-access` `Tests 71 passed`;
+  - `test:starter` `# pass 49 / # fail 0`;
+  - licensing, hygiene, Secret Gate PASS.
+- No-rerun rationale for the full suites: nothing integrated. IMP4-01 (web suite, 4889 tests) and IMP4-02 (guards and typecheck) ran on code `deead7bf05`, identical to HEAD outside `tickets/`.
+- Result: `Passed`. Delivery edits started on the current state: `Yes`.
 
 ## Verification
 
-- Evidence judged: `Sufficient` for finalization without a release.
-- Evidence relied on: the execution report's Acceptance-Criteria Proof and Cases (API-REV-002), the reused implementation checks IMP2-01..08, the evidence files opened below, and DEL-03.
+- Evidence judged: `Sufficient`.
+- Evidence relied on: the execution report (API-REV-004) and its Cases, IMP4-01..06, and DEL-11.
 
-| Acceptance-Criteria ID | Cases And Files Checked | What You Saw | Judgement |
+| Acceptance-Criteria ID | Cases And Evidence | What You Saw | Judgement |
 | --- | --- | --- | --- |
-| AC-006 / REQ-012, boot-selection part | API-12 D (`API-12-step2-launcher.log`), API-20 (IMP2-01 `# pass 26`, IMP2-08) | `C2 state needsNewImage, version 1.5.12-beta.1, no server`, `message names the image needed and the launcher command`, `starter up with the same pid after 60 s (no restart loop)`, `nothing listens on 8000`, `state.json not overwritten by the older image`; the node log line `"starter":"needs-new-image","code":"NEEDS_NEW_IMAGE"` naming `autobyteus-docker upgrade --all --tag …`; IMP2-08 `"source":"installed"` from `/home/autobyteus/server-packages/packages/1.5.12` | Proven for step 2 |
-| BEH-001 / DEC-014 (move to the starter image keeps everything; adds the volume) | API-12 A/B/C, API-22 (`API-21-22-rerun.log`), API-13 | 63 `CHECK PASS` lines in API-12 over phases A–D. Phase C: `no server-packages volume (the installed launcher has none); state.json in the container layer`, then `recreated once for the launcher config`, `server-packages volume now mounted`, `data and root-home kept`. PowerShell (unpatched): `storage lists the server-packages volume`, `upgrade recreated the node`, `plain upgrade keeps the container`, `destroy kept the five volumes`. Compose `CHECK FAILURES: 0` | Proven |
-| REQ-011 / BEH-007, status part | API-12 (`cli.mjs status` each phase), API-21, IMP2-06 | `GET /rest/node-update -> 200 {"inPlaceUpdate":"available","version":"1.5.11-beta.5",…}`; relation `newer`/`same`/`older`; `?target=latest -> 400 INVALID_VERSION` | Proven for step 2 (desktop display is step 4) |
-| AC-009, phone part | API-21 rerun (`API-21-22-rerun.log`) | `phone credential on C1 -> 403 … "Mobile credentials do not authorize owner-management routes."`; positive control (GraphQL 200) and negative control (unknown `mra_` 401); `revoked credential no longer accepted`; `the credential value appears in no container log`; `CHECK FAILURES: 0` | Proven |
-| DS-007, supervision | IMP2-07, API-12 A | crash `exit status 137` → new pid; `stop took .137` s; server child in its own group | Proven |
-| AC-001..AC-005, AC-007, AC-008, AC-010, AC-012, AC-013 | — | Steps 3–5 | Not in step 2 |
+| AC-001 (click → the node runs B in the same container and image; the desktop shows B and "updated") | API-41 items 3 and 5 (`API-41-desktop/drive-log.jsonl`, `API-41-G-*.png`, `API-41-H-*.png`) | `Downloading 1.5.11-beta.6…` for 82 s → `Preparing…` → `Restarting…` → `Server 1.5.11-beta.6 Updated to 1.5.11-beta.6.`; same container and image; a host-started update followed after reopening | Proven |
+| AC-009 (desktop request accepted and logged with its client address; phone refused; no agent tool) | API-41 item 3 (node log `"requestedFrom":"172.17.0.1"`), API-40 (IMP4-06 phone 403 on POST and GET; no-tool grep), round 2 API-21 | As stated | Proven |
+| AC-010 (nothing changes until the user acts) | API-41 item 8 (`requests.json`) | `"minutes":24,"iGets":4,"iPosts":0`; the only POSTs are the four clicked nodes, one each | Proven |
+| REQ-011 on the desktop (version, progress, result, why not) | API-41 items 1–7 | Failure with the old version back and the button kept (F); `NEEDS_NEW_IMAGE` with Copy command, `"after":"Copied"` (L, run 2); 5-minute outage → `Not reachable. Last known: …` → recovered within one 10 s poll after `docker start` (R2); zh-CN render; pre-starter node `Not reachable.` (P) | Proven |
+| AC-004, AC-005 on the desktop | API-41 items 1, 2 | Texts as above; node outcomes as round 3 | Proven |
+| AC-007 | — | Step 5 | Not in step 4 |
 
-- The first API-12 run's `CHECK FAILURES: 10` are explained, and the rerun redid them: 3 phone checks used a loopback pairing URL that the policy correctly refuses (an invalid fixture), and 7 PowerShell `new-container` checks hit the pre-existing FU-006 bug. `API-21-22-rerun.log`: `CHECK FAILURES: 0`.
-- Confidence: final 94.7%, no category below 90%, every critical criterion directly proven. The 0.3 shortfall against 95% is durable PowerShell execution coverage. That surface's fix is FU-006's pre-existing gap, outside this ticket, and every in-scope PowerShell path was executed (API-22). I do not send it back: a further round could not raise in-scope proof.
-- More evidence requested: `None`.
-- User check needed: `No` (API/E2E: no step-2 criterion needs the user).
-- CR2-N1 judgement: accepted as an interim (see `handoff-summary.md`). It does not contradict REQ-008/REQ-011/AC-006, and it is safer than the behavior before step 2.
+- Run 1's 3 `CHECK FAIL`s were fixture faults, redone in run 2 with 0 failures: the copy text was read synchronously although the copy is asynchronous, and a random host port changed on `docker start`.
+- Confidence 94.7%, no category below 90%. The gap is non-durable real-app journeys (a packaged app plus Docker in CI), with unit coverage using fake timers. Accepted: a further round could not turn these journeys into durable CI coverage inside this ticket.
+- Visible-behavior basis: every row state is settled by the design (row states, DEC-018, DS-005) or by ARCH-REV-005 N-4 (an `error` answer, and a failed GET → "Not reachable."). So no `Requirement Gap`. The product observations go to the Solution Designer (handoff summary).
+- More evidence requested: `None`. User check needed: `No`.
 
 ## Release Decision
 
-- Decision: `No release`
-- Decided by: the release guide's default; the user did not ask. A release is available on request. It would carry steps 1 and 2 and needs the step-1 first-release checks (23 assets, archive comparison).
+- Decision at finalization: `No release` (RELEASE.md default; not requested then). Afterwards, the user asked for a beta: **`Beta` v1.5.11-beta.7** (DR-005, below).
 
 ## Docs Sync Result
 
-- Docs sync artifact: `docs-sync-report.md`
-- Docs sync result: `Updated`
-- Docs updated: `autobyteus-server-ts/docs/features/remote_access.md` (owner route `GET /rest/node-update`). Implementation's Docker README, root and server README, and TESTING.md changes checked, no change needed.
+- `docs-sync-report.md`: `Updated` (`autobyteus-web/docs/settings.md`, `autobyteus-server-ts/docs/features/remote_access.md`).
 
 ## Ticket State Transition
 
-- Ticket moved to `tickets/done/<ticket-name>`: `No` (steps 3–5 remain)
-- Archived ticket path: `N/A`
-
-## Version / Tag / Release Commit
-
-None.
+- Not moved (step 5 remains).
 
 ## Repository Finalization
 
-- Bootstrap context source: requirements doc Workspace line and RELEASE.md Finalization Target
-- Ticket branch: `codex/docker-node-in-place-server-update`
-- Ticket branch commit result: `Completed`: `095240268b`
-- Ticket branch push result: `Completed` (Secret Gate PASS before the push)
-- Finalization target remote / branch: `origin` / `personal`
-- Target advanced after verification: `No` (`77fb8bf2d1` at every fetch)
-- Re-integration before final merge result: `Not needed`
-- Merge into target result: `Completed`: `--no-ff` merge `a0f4b491f7`; Secret Gate PASS on the merged state; tree equal to the verified ticket branch
-- Push target branch result: `Completed`: `77fb8bf2d1..a0f4b491f7`
+- Ticket branch commit / push: `Completed`: `5c545a7bc8` (Secret Gate PASS before the push)
+- Finalization target: `origin` / `personal`; target advanced after verification: `No`
+- Merge into target: `Completed`: `--no-ff` merge `db0881a96e`, Secret Gate PASS on the merged state, tree equal to the verified ticket branch
+- Push target branch: `Completed`: `1bed6deeaf..db0881a96e`
 - Repository finalization status: `Completed`
-
-## Release / Publication / Deployment
-
-- Applicable: `No`
-- Release/publication/deployment result: `Not required`
-- Release notes handoff result: `Not required`. For the release that ships these steps: the step-3 release notes must tell launcher users to reinstall the launcher (RU-23). Steps 1–2 alone need no user action beyond the usual `upgrade --all`.
-
-## Post-Finalization Cleanup
-
-- Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/docker-node-in-place-server-update`
-- Worktree cleanup result: `Not required` (kept for steps 3–5)
-- Local ticket branch cleanup result: `Not required`
-- Remote branch cleanup result: `Not required`
-- Delivery created no containers or images in this round.
-
-## Release Notes Summary
-
-- Release notes status: `Not required` (no release).
-
-## Deployment Steps
-
-None. The server rollout is the next published Docker image.
-
-## Environment Or Persisted-Data Transition Notes
-
-- Approved persisted-data decision: `Not Affected` for the data folder; new starter state with one writer.
-- Delivery action required: `None`
-- Result and evidence: API-12 A/B/C (data written by released servers read back), API-12 A and API-13 (`state.json` unchanged across stop/start and compose restart), API-12 D (an older image leaves `state.json` alone).
-- What changes for users at the next release: `upgrade --all` recreates each node once (new image and launcher hash `v7` with the new launcher); the server then runs under the starter. With an old installed launcher, starter state stays in the container layer until the new launcher recreates the node (RU-23; harmless before step 3).
-
-## Verification Checks
-
-DEL-03 above; IMP2-01..IMP2-08 and API-10..API-14, API-20..API-22 per the implementation handoff and execution report.
-
-## Rollback Criteria
-
-- Before a release: revert the merge on `personal`.
-- After a release: pin an earlier image tag. Note that step 2's starter then sees an older built-in package than the newest version that ran and refuses with `NEEDS_NEW_IMAGE`. This holds only when an older image is used *after* the starter image ran a newer version. An image from before step 2 has no starter and starts its own server as before. Step 2 changes no data formats.
 
 ## Final Status
 
-- Verification complete: `Yes` (from the evidence)
-- Repository finalization complete: `Yes` (`personal` @ `a0f4b491f7`)
-- Applicable release/deployment/rollout complete or not required: `Yes` (`Not required`)
-- Applicable safe cleanup complete or not required: `Yes` (`Not required`)
-- Unresolved blocker: `None`
-- Successful terminal package eligible for return: `Yes`
-- Terminal package sent to the Solution Designer: `Yes`, after this record reached `personal`
+- Verification complete: `Yes`; repository finalization complete: `Yes`; release: `Completed` (beta v1.5.11-beta.7, 4/4 workflows, 23/23 assets, first real in-place update proven); cleanup: `Not required` (step 5 continues)
+- Unresolved blocker: `None`; successful terminal package eligible for return: `Yes`
+
+## Release / Publication / Deployment
+
+- Applicable: `Yes`, after finalization: the user asked for a beta ("there is no beta release for this? i think we need a beta release", 2026-10-31). This is round DR-005 of this report.
+- Method: `Project Release Guide` (as in DR-003).
+- Checks before tagging, on `8e463448be` (`evidence/DEL-12-beta7-pretag-checks-and-release-smoke.log`): licensing consistent; hygiene passed; `scripts/check_secrets.sh v1.5.11-beta.6..HEAD` PASS (8 commits).
+- **Release smoke and the user's Grok waiver for beta.7** ("yes Waive grok"):
+  - Run 1 aborted the live suite because the Grok CLI did not offer the pinned `grok-4.7` (`grok model grok-4.7 is not offered; available: grok-4.5, grok-4.6`; the known flaky pin, FU-005 of `tickets/done/work-journal-neutral-vocabulary`). Antigravity and AutoByteus passed.
+  - Run 2 (started by `release_smoke.py --help`, which takes no arguments): Claude 3/3, Codex 3/3, Antigravity 2/2, AutoByteus 2/2 PASS; Grok 0/3 refused by its quota (`free-usage-exhausted`, 604934/600000 tokens), as for beta.6.
+- Build-only release run `41169372699` on `8e463448be`: success on all five desktop targets (`evidence/DEL-13-beta7-build-only-run.log`).
+- Version / tag / release commit: `chore(release): bump workspace release version to 1.5.11-beta.7` `8faae96899`, tag `v1.5.11-beta.7`; `personal` re-fetched (still `8e463448be`) and pushed `8e463448be..8faae96899`; tag pushed 05:05:50 UTC.
+- Pipelines, all **success** (`evidence/DEL-15-beta7-rollout.log`): Desktop `41171202589`, Android `41171202588`, iOS `41171202636`, Server Docker `41171202581` incl. Publish Server Package `linux/amd64` and `linux/arm64`.
+- Published artifacts: pre-release, not draft, **23/23 assets** incl. the six `autobyteus-server-1.5.11-beta.7-linux-{arm64,x64}.*`; GitHub "Latest" remains `v1.5.10`; Docker `:1.5.11-beta.7` = `:beta` (`sha256:8bcf8eabfafe…`), `:latest` unchanged.
+- **First real in-place update** (`evidence/DEL-14-first-real-in-place-update-beta6-to-beta7.log`): the test-owned container `ab305-b7-inplace` (fresh volumes, never the user's nodes) on the published `1.5.11-beta.6` image ran `cli.mjs update --track beta`.
+  - The starter resolved `1.5.11-beta.7` from GitHub, downloaded and verified it with the production key, passed the self-check, switched and confirmed: `checking` 0 s → `downloading` 2 s → `preparing` 33 s → `confirming` 42 s → `succeeded` 103 s, "Updated to 1.5.11-beta.7.".
+  - The old server exited at 05:48:54.067; the new one started at 05:48:54.073.
+  - Same container (`757b6b56b583`) and same image (`68965197f9b2`). The server runs from `/home/autobyteus/server-packages/packages/1.5.11-beta.7` (`source: installed`). Health ok, C1 `version 1.5.11-beta.7`, the data marker kept, no key material in the node log. Removed afterwards.
+- Release notes handoff result: `Used`. Generated notes, with the ticket's `release-notes.md` (step-4 version) added above them by `gh release edit` after all workflows finished (the DR-003 deviation, repeated).
+- Release/publication/deployment result: `Completed`
+
+## Post-Finalization Cleanup
+
+- Worktree and branch: `Not required` (kept for step 5). Delivery created no containers or images in this round.
+
+## Release Notes Summary
+
+- `release-notes.md` rewritten for the release that ships step 4. It covers the Nodes page update, the restart note, and why old nodes show "Not reachable." with the reinstall and `upgrade --all` commands. Status: `Updated` (not used yet; no release).
+
+## Environment Or Persisted-Data Transition Notes
+
+- Not changed by step 4.
+
+## Rollback Criteria
+
+- Before a release: revert the merge on `personal`. After a release: RELEASE.md rules; the desktop line only reads C1 and sends the update on a click.

@@ -1,0 +1,22 @@
+# IMP3-10 — see IMP3-proof-run-proof.sh (case_stops) or IMP3-proof-run-stops.sh; commit c72107a0fd (image above); test-owned containers and volumes only (label autobyteus.validation=ab305-s3), removed afterwards
+# S3-05 a container stop during the data copy, a kill during the restore (6 GB data file)
+# image: autobyteus-server-305-test:step3-testkey sha256:3f6701699cacc110cb787f88141a69fbd8e2b19135c51b76c42db2c42dac4f69; date: 2026-10-30T19:20Z
+
+## docker stop while data-copy.partial is being written (update to 1.5.13, which brings a migration)
+at the stop: /home/autobyteus/server-packages/data-copy.partial
+806M state.json {"current":{"source":"builtIn","version":"1.5.11-beta.5"}}
+after restart: version=1.5.11-beta.5 pid=329 source=builtIn state.json={"current":{"source":"builtIn","version":"1.5.11-beta.5"}}
+update: {"state":"failed","targetVersion":"1.5.13","step":"restarting","code":"INTERRUPTED","message":"The update was interrupted before the switch; nothing changed on this node.","startedAt":"2026-10-30T19:20:22.373Z","finishedAt":"2026-10-30T19:20:38.459Z","requestedFrom":"host command"}
+files: downloads packages state.json update.json ; data file intact: yes; table: 0
+
+## docker kill during the restore (1.5.14 migrates, exits 30 s later, the rollback restores 6 GB)
+at the kill: state.json {"current":{"source":"builtIn","version":"1.5.11-beta.5"},"trial":{"source":"installed","version":"1.5.14","previous":{"source":"builtIn","version":"1.5.11-beta.5"},"dataCopy":true}}
+at the kill: data folder application-packages db download large-test-file llm memory 595M	/d/large-test-file
+after restart: version=1.5.11-beta.5 pid=404 source=builtIn state.json={"current":{"source":"builtIn","version":"1.5.11-beta.5"}}
+update: {"state":"failed","targetVersion":"1.5.14","step":"rollingBack","code":"INTERRUPTED","message":"The update to 1.5.14 was interrupted; this node runs 1.5.11-beta.5 again.","startedAt":"2026-10-30T19:20:41.764Z","finishedAt":"2026-10-30T19:21:39.119Z","requestedFrom":"host command"}
+files: downloads packages state.json update.json ; data file intact: yes; table: 0
+starter log after the kill:
+{"time":"2026-10-30T19:20:59.606Z","starter":"server-started","pid":1326,"version":"1.5.14","source":"installed"}
+{"time":"2026-10-30T19:21:29.709Z","starter":"server-exited","pid":1326,"version":"1.5.14","code":3,"signal":null}
+{"time":"2026-10-30T19:21:39.119Z","starter":"trial-rolled-back","version":"1.5.14","previous":"1.5.11-beta.5","dataRestored":true}
+{"time":"2026-10-30T19:21:40.146Z","starter":"server-started","pid":404,"version":"1.5.11-beta.5","source":"builtIn"}

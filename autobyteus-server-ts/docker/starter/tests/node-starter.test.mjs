@@ -5,8 +5,9 @@ import path from 'node:path'
 import { afterEach, test } from 'node:test'
 import { fileURLToPath } from 'node:url'
 import { NodeStarter } from '../starter.mjs'
-import { freePort, makeStarterRoot, memoryLog, writeState } from './fixtures.mjs'
+import { freePort, installPackage, makeStarterRoot, memoryLog, writeState } from './fixtures.mjs'
 
+const TEST_LIMITS = { stopMs: 5_000, portFreeMs: 2_000, selfCheckMs: 10_000, confirmHealthMs: 10_000, confirmAliveMs: 1_000, spareBytes: 0 }
 const CLI = fileURLToPath(new URL('../cli.mjs', import.meta.url))
 afterEach(() => { delete process.env.FAKE_SERVER_EXIT_CODE })
 
@@ -25,7 +26,7 @@ async function boot(paths, dataDir) {
   const exitedOnce = new Promise((resolve) => { exited = resolve })
   const log = memoryLog()
   const starter = new NodeStarter({
-    paths, limits: { stopMs: 5_000, portFreeMs: 2_000 }, log,
+    paths, limits: TEST_LIMITS, releaseSourceBase: 'http://127.0.0.1:9/releases', log,
     server: { host: '127.0.0.1', port: await freePort(), dataDir },
     exit: (code) => { exits.push(code); exited(code) },
   })
@@ -121,6 +122,7 @@ test('boot rolls back an interrupted trial, restores its data copy and records I
 
 test('without a trial, boot deletes a partial data copy and marks a running update INTERRUPTED', async () => {
   const { paths, dataDir } = makeStarterRoot({ builtInVersion: '1.5.11' })
+  installPackage(paths, { version: '1.5.13' })
   mkdirSync(dataDir, { recursive: true })
   writeFileSync(path.join(dataDir, 'keep'), 'data')
   mkdirSync(path.join(paths.packagesRoot, 'data-copy'), { recursive: true })
@@ -131,14 +133,15 @@ test('without a trial, boot deletes a partial data copy and marks a running upda
   assert.equal(readFileSync(path.join(dataDir, 'keep'), 'utf8'), 'data')
   const update = JSON.parse(readFileSync(path.join(paths.packagesRoot, 'update.json'), 'utf8'))
   assert.deepEqual([update.state, update.code], ['failed', 'INTERRUPTED'])
+  assert.equal(existsSync(path.join(paths.packagesRoot, 'packages', '1.5.13')), false, 'a package nothing refers to is deleted')
   await starter.stop('SIGTERM')
   await running
 })
 
 test('cli.mjs: an unknown command and an unreachable starter are errors with one JSON line', async () => {
-  const unknown = await cli('/nonexistent/starter.sock', 'update')
+  const unknown = await cli('/nonexistent/starter.sock', 'restart')
   assert.equal(unknown.exitCode, 1)
-  assert.deepEqual(JSON.parse(unknown.lines[0]), { message: 'Usage: cli.mjs status' })
+  assert.match(JSON.parse(unknown.lines[0]).message, /^Usage: cli\.mjs status \| cli\.mjs update/)
   const unreachable = await cli('/nonexistent/starter.sock', 'status')
   assert.equal(unreachable.exitCode, 1)
   assert.match(JSON.parse(unreachable.lines[0]).message, /^Cannot reach the starter at \/nonexistent\/starter.sock: /)

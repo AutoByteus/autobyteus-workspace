@@ -324,12 +324,39 @@ server side is described in the server's `docs/modules/remote_collaboration.md`.
   address each side uses, Change address, the node ID and Check again.
 - **When nodes are asked.** Every row once when the tab opens, whatever this node's switch
   says; a row when it is added and on Check again; every row when the switch changes.
-  Nothing polls. "This node → it" is this node's server asking the peer
+  Nothing polls, except a row's server update line while an update runs (below). "This node → it" is this node's server asking the peer
   (`remoteCollaborationOffersStore`, `peerNodeOffer`, with the unreachable reason); the
   window reads the other node's switch and peers through its own settings API
   (`services/nodeCollaboration/nodeCollaborationApi.ts` over `directNodeApolloClient.ts`),
   and asks it `peerNodeAvailability(this node)` for "it → this node". Each ask takes a token
   per row; a stale answer is ignored.
+- **A remote node's server and its in-place update** (`components/settings/nodes/NodeServerUpdate.vue`,
+  `stores/nodeServerUpdateStore.ts`). Under each remote row the window reaches, a line shows
+  the node's server version from its `GET /rest/node-update` (DESIGN.md rule 9 exception,
+  C1). It is asked when the tab opens and when this app's version becomes known; idle rows are
+  not polled. When the node is older than this app, the line offers **Update to
+  `<version>`** ("Same version as this app"). When it is newer, it says "Newer than this app.
+  Update this app." The click sends `POST /rest/node-update` at once, as the approved
+  scenario has it (no confirmation dialog), and nothing else starts an update.
+  - While an update runs, the line shows its step (checking, downloading, preparing,
+    restarting), asking every 2 s. While the node does not answer during its restart, it
+    shows "Restarting…" for up to 5 minutes, then "Not reachable. Last known: updating to
+    `<version>`." and asks every 10 s, so it recovers by itself.
+  - It then shows "Updated to `<version>`." or "The update to `<version>` did not
+    happen." with the node's own reason, in English as the node sends it. A
+    `NEEDS_NEW_IMAGE` refusal adds a Copy command button for
+    `autobyteus-docker upgrade --all --tag <version>`.
+  - A node whose server has no starter shows "Server version unknown" without a button. When
+    its starter does not answer, the line shows that version text plus the server's message.
+  - A node that cannot update in place shows its version, no button, and the node's reason
+    (`updateBlocker`). For example, a node made by an older launcher has no server-packages
+    volume: "Reinstall the launcher, then run: autobyteus-docker upgrade --all".
+  - A node whose server has no `/rest/node-update` route shows "Not reachable." under its
+    reachable row, with no special case for old releases. That includes any Docker node on
+    an image from before in-place updates (before v1.5.11-beta.6), until the owner moves it
+    to a newer image (`autobyteus-server-ts/docker/README.md`, "Update a node's server in
+    place").
+  - The embedded node has no such line; the desktop updater updates it.
 - **Add** (`AddNodePanel.vue`): Address, Name, the collaboration switch (on by default), Add
   node. An address already in the list, whatever its node's state, or another address of a
   listed node (by node ID) is not added again: "This is X, already in your list." Adding

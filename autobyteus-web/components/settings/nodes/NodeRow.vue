@@ -88,6 +88,8 @@
       </div>
     </div>
 
+    <NodeServerUpdate v-if="!row.isEmbedded" :row="row" />
+
     <div v-if="view.checking || view.line" class="px-5 pl-[2.75rem]" :class="showDetails ? 'pb-1' : 'pb-4'" aria-live="polite">
       <p v-if="view.checking" class="flex items-center gap-2 text-sm text-slate-500" :data-testid="`node-line-${row.key}`">
         {{ t(k('row.checkingLine'), { name: row.name }) }}
@@ -114,6 +116,7 @@
 import { computed, nextTick, ref } from 'vue'
 import RemoteCollaborationIcon from '~/components/settings/nodes/RemoteCollaborationIcon.vue'
 import NodeConnectionDetails from '~/components/settings/nodes/NodeConnectionDetails.vue'
+import NodeServerUpdate from '~/components/settings/nodes/NodeServerUpdate.vue'
 import RemoteCollaborationOfferDisclosure from '~/components/settings/RemoteCollaborationOfferDisclosure.vue'
 import { useLocalization } from '~/composables/useLocalization'
 import { useNodeChangeDialogStore } from '~/stores/nodeChangeDialogStore'
@@ -121,7 +124,8 @@ import { useNodeListStore } from '~/stores/nodeListStore'
 import type { NodeRow } from '~/stores/nodeRowStatus'
 import { causeText, failureText, NODES_PAGE_KEY } from '~/utils/nodeConnectionErrorText'
 
-/** One node (UIS-002): dot, name (click to rename), address, collaboration switch, Open, Remove; one line; details. */
+/** One node (UIS-002): dot, name (click to rename), address, collaboration switch, Open, Remove; its server version and
+ * in-place update (remote nodes); one line; details. */
 const props = defineProps<{ row: NodeRow }>()
 const emit = defineEmits<{ guide: [] }>()
 
