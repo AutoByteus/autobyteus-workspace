@@ -10,6 +10,7 @@ The latest docs sync report, handoff summary and release/deployment report are a
 | DR-002 | Build step 2 (starter and server-packages volume): CRR-004 Not Applicable after API-REV-002 Pass | DR-001 Delivery Completed (step 1) | Delivery Completed for step 2: merged into `personal`, no release | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md` (rewritten for step 2; step-1 versions in git at `77fb8bf2d1`), `evidence/DEL-03-*` |
 | DR-003 | Build step 3 (in-place update by command): CRR-006 Not Applicable after API-REV-003 Pass; the user asked for a beta | DR-002 Delivery Completed (step 2) | See the DR-003 entry | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md` (rewritten for step 3; step-2 versions at `6b34f900b6`), `release-notes.md`, `evidence/DEL-04-*`, `evidence/DEL-05-*` |
 | DR-004 | Build step 4 (desktop: node version and "Update to <version>"): CRR-008 Not Applicable after API-REV-004 Pass | DR-003 Delivery Completed (step 3, beta v1.5.11-beta.6) | See the DR-004 entry | `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md` (rewritten for step 4; step-3 versions at `1bed6deeaf`), `release-notes.md`, `evidence/DEL-11-*` |
+| DR-005 | The user asked for a beta after step 4's finalization | DR-004 Delivery Completed (step 4, no release) | Beta v1.5.11-beta.7 released; first real in-place update proven | `release-deployment-report.md`, `handoff-summary.md`, `evidence/DEL-12-*` … `DEL-15-*` |
 
 ## Revision Entries
 
@@ -109,4 +110,14 @@ The latest docs sync report, handoff summary and release/deployment report are a
 - Target re-fetched: `origin/personal` still `1bed6deeaf`; no re-integration; the merged tree equals the ticket branch.
 - Merge: `--no-ff` into `personal` as `db0881a96e`; Secret Gate PASS on the merged state; pushed `1bed6deeaf..db0881a96e`.
 - Release: none. Cleanup: worktree and branch kept for step 5; the local `finalize/…` branch is deleted after this record is pushed.
+- Terminal return to the Solution Designer: sent after this record is on `personal`.
+
+### DR-005 — Beta v1.5.11-beta.7 (user request after step 4)
+
+- Trigger: the user asked "there is no beta release for this? i think we need a beta release", then waived Grok ("yes Waive grok").
+- Prior authoritative result: DR-004, step 4 finalized without a release (`personal` @ `8e463448be`).
+- Checks: pre-tag gates passed; release smoke Claude/Codex/Antigravity/AutoByteus PASS, Grok waived (quota; run 1 aborted on the known `grok-4.7` pin); build-only run `41169372699` success.
+- Release: `8faae96899` + tag `v1.5.11-beta.7`, pushed. 4/4 workflows succeeded; 23/23 assets; Docker `:beta` moved, `:latest` unchanged; step-4 notes added above the generated notes.
+- **First real in-place update:** published beta.6 → beta.7 on a test-owned container, through GitHub and the production key; succeeded in 103 s in the same container and image.
+- Cleanup: test container, volumes and the pulled beta.6 image removed; the local finalize branch deleted. The Solution Designer's own uncommitted files in the worktree (`delivery-receipt-verification-step4.md`, `result-waiting-for-prerequisite.md`, edits to `follow-ups.md` and `solution-revision-record.md`) were stashed with mine for the release script's clean-tree rule, restored unchanged, and not committed by delivery.
 - Terminal return to the Solution Designer: sent after this record is on `personal`.

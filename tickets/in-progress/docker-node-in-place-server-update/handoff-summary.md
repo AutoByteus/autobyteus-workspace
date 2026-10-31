@@ -45,7 +45,10 @@ Verified from the evidence (`release-deployment-report.md`). AC-001, AC-009 (des
 
 ## Release
 
-None requested for step 4. RELEASE.md's default is no release, and the user's earlier beta request was for step 3. A release would ship the desktop line; `release-notes.md` is ready for it (including the "Not reachable." explanation and the launcher reinstall).
+After finalization the user asked for a beta: **v1.5.11-beta.7 is released** (DR-005).
+- Grok waived again (quota). 4/4 workflows and 23/23 assets; pre-release, "Latest" stays v1.5.10. Docker `:1.5.11-beta.7` = `:beta`.
+- The release page carries the step-4 notes (Nodes page update, "Not reachable." for old nodes, reinstall and `upgrade --all`) above the generated notes.
+- **The first real in-place update is proven:** a test node on the published beta.6 image updated itself to beta.7 from GitHub with the production key in 103 s. Same container and image; the old server stopped and the new one started 6 ms apart.
 
 ## Where Things Are
 

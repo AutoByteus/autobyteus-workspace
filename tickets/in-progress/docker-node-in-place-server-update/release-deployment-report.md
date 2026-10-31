@@ -51,7 +51,7 @@ Repository finalization of build step 4 of 5 into `personal`. No release: none w
 
 ## Release Decision
 
-- Decision: `No release` (RELEASE.md default; not requested for step 4). Available on request; `release-notes.md` is prepared.
+- Decision at finalization: `No release` (RELEASE.md default; not requested then). Afterwards, the user asked for a beta: **`Beta` v1.5.11-beta.7** (DR-005, below).
 
 ## Docs Sync Result
 
@@ -71,12 +71,27 @@ Repository finalization of build step 4 of 5 into `personal`. No release: none w
 
 ## Final Status
 
-- Verification complete: `Yes`; repository finalization complete: `Yes`; release: `Not required`; cleanup: `Not required` (step 5 continues)
+- Verification complete: `Yes`; repository finalization complete: `Yes`; release: `Completed` (beta v1.5.11-beta.7, 4/4 workflows, 23/23 assets, first real in-place update proven); cleanup: `Not required` (step 5 continues)
 - Unresolved blocker: `None`; successful terminal package eligible for return: `Yes`
 
 ## Release / Publication / Deployment
 
-- Applicable: `No`. Result: `Not required`.
+- Applicable: `Yes`, after finalization: the user asked for a beta ("there is no beta release for this? i think we need a beta release", 2026-10-31). This is round DR-005 of this report.
+- Method: `Project Release Guide` (as in DR-003).
+- Checks before tagging, on `8e463448be` (`evidence/DEL-12-beta7-pretag-checks-and-release-smoke.log`): licensing consistent; hygiene passed; `scripts/check_secrets.sh v1.5.11-beta.6..HEAD` PASS (8 commits).
+- **Release smoke and the user's Grok waiver for beta.7** ("yes Waive grok"):
+  - Run 1 aborted the live suite because the Grok CLI did not offer the pinned `grok-4.7` (`grok model grok-4.7 is not offered; available: grok-4.5, grok-4.6`; the known flaky pin, FU-005 of `tickets/done/work-journal-neutral-vocabulary`). Antigravity and AutoByteus passed.
+  - Run 2 (started by `release_smoke.py --help`, which takes no arguments): Claude 3/3, Codex 3/3, Antigravity 2/2, AutoByteus 2/2 PASS; Grok 0/3 refused by its quota (`free-usage-exhausted`, 604934/600000 tokens), as for beta.6.
+- Build-only release run `41169372699` on `8e463448be`: success on all five desktop targets (`evidence/DEL-13-beta7-build-only-run.log`).
+- Version / tag / release commit: `chore(release): bump workspace release version to 1.5.11-beta.7` `8faae96899`, tag `v1.5.11-beta.7`; `personal` re-fetched (still `8e463448be`) and pushed `8e463448be..8faae96899`; tag pushed 05:05:50 UTC.
+- Pipelines, all **success** (`evidence/DEL-15-beta7-rollout.log`): Desktop `41171202589`, Android `41171202588`, iOS `41171202636`, Server Docker `41171202581` incl. Publish Server Package `linux/amd64` and `linux/arm64`.
+- Published artifacts: pre-release, not draft, **23/23 assets** incl. the six `autobyteus-server-1.5.11-beta.7-linux-{arm64,x64}.*`; GitHub "Latest" remains `v1.5.10`; Docker `:1.5.11-beta.7` = `:beta` (`sha256:8bcf8eabfafe…`), `:latest` unchanged.
+- **First real in-place update** (`evidence/DEL-14-first-real-in-place-update-beta6-to-beta7.log`): the test-owned container `ab305-b7-inplace` (fresh volumes, never the user's nodes) on the published `1.5.11-beta.6` image ran `cli.mjs update --track beta`.
+  - The starter resolved `1.5.11-beta.7` from GitHub, downloaded and verified it with the production key, passed the self-check, switched and confirmed: `checking` 0 s → `downloading` 2 s → `preparing` 33 s → `confirming` 42 s → `succeeded` 103 s, "Updated to 1.5.11-beta.7.".
+  - The old server exited at 05:48:54.067; the new one started at 05:48:54.073.
+  - Same container (`757b6b56b583`) and same image (`68965197f9b2`). The server runs from `/home/autobyteus/server-packages/packages/1.5.11-beta.7` (`source: installed`). Health ok, C1 `version 1.5.11-beta.7`, the data marker kept, no key material in the node log. Removed afterwards.
+- Release notes handoff result: `Used`. Generated notes, with the ticket's `release-notes.md` (step-4 version) added above them by `gh release edit` after all workflows finished (the DR-003 deviation, repeated).
+- Release/publication/deployment result: `Completed`
 
 ## Post-Finalization Cleanup
 

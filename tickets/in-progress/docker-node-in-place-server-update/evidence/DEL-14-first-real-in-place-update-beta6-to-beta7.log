@@ -1,0 +1,27 @@
+# DEL-14 first real in-place update: published 1.5.11-beta.6 image -> 1.5.11-beta.7 from the GitHub release (production key), test-owned container and volumes, 2026-10-31T05:48:08Z
+before: container 757b6b56b583 image 68965197f9b2
+before status: {"version":"1.5.11-beta.6","state":"running","server":{"pid":103,"packageVersion":"1.5.11-beta.6","source":"builtIn"},"update":{"state":"idle","targetVersion":n
+C1 before: {"inPlaceUpdate":"available","version":"1.5.11-beta.6","target":{"version":"1.5.11-beta.7","relation":"newer"},"update":{"state":"idle","targetVersion":null,"step":null,"code":null,"message":null,"sta
+## update --track beta (the newest beta on GitHub)
+{"accepted":true,"version":"1.5.11-beta.7"}
++0s running checking None
++2s running downloading None
++33s running preparing None
++42s running confirming None
++103s succeeded confirming None
+after status: {"version":"1.5.11-beta.7","state":"running","server":{"pid":884,"packageVersion":"1.5.11-beta.7","source":"installed"},"update":{"state":"succeeded","targetVersion":"1.5.11-beta.7","step":"confirming","code":null,"message":"Updated to 1.5.11-beta.7.","startedAt":"2026-10-31T05:48:13.479Z","finishedAt":"2026-10-31T05:49:56.102Z","requestedFrom":"host command"}}
+after: container 757b6b56b583 image 68965197f9b2; same container: yes; same image: yes
+server pid 884 cwd: /home/autobyteus/server-packages/packages/1.5.11-beta.7
+health: {"status":"ok","message":"Server is running"}
+C1 after: {"inPlaceUpdate":"available","version":"1.5.11-beta.7","target":{"version":"1.5.11-beta.7","relation":"same"},"update":{"state":"succeeded","targetVersion":"1.5.11-beta.7","step":"confirming","code":null,"message":"Updated to 1.5.11-beta.7.","startedAt":"2026-10-31T05:48:13.479Z","finishedAt":"2026-
+data marker kept: ab305-marker
+## starter log lines
+{"time":"2026-10-31T05:48:09.913Z","starter":"server-started","pid":103,"version":"1.5.11-beta.6","source":"builtIn"}
+{"time":"2026-10-31T05:48:13.068Z","starter":"update-requested","track":"beta","requestedFrom":"host command"}
+{"time":"2026-10-31T05:48:13.479Z","starter":"update-started","version":"1.5.11-beta.7","requestedFrom":"host command"}
+{"time":"2026-10-31T05:48:54.003Z","starter":"self-check-passed","version":"1.5.11-beta.7"}
+{"time":"2026-10-31T05:48:54.067Z","starter":"server-exited","pid":103,"version":"1.5.11-beta.6","code":0,"signal":null}
+{"time":"2026-10-31T05:48:54.073Z","starter":"server-started","pid":884,"version":"1.5.11-beta.7","source":"installed"}
+{"time":"2026-10-31T05:49:56.102Z","starter":"update-succeeded","version":"1.5.11-beta.7"}
+## secret scan of the node log: 0
+cleanup: container and volumes removed
