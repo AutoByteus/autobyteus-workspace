@@ -127,7 +127,7 @@ const updateAgent = (serverUrl: string, input: {
   llmModelIdentifier: string;
   llmConfig: JsonRecord | null;
 }) => executeGraphql<{
-  updateStoppedAgentRunModelConfig: {
+  updateStoppedAgentRunSelection: {
     success: boolean;
     outcome: string;
     isActive: boolean;
@@ -136,15 +136,15 @@ const updateAgent = (serverUrl: string, input: {
     fieldErrors: Array<{ path: string; message: string }>;
   };
 }>(serverUrl, `
-  mutation UpdateStoppedAgent($input: UpdateStoppedAgentRunModelConfigInput!) {
-    updateStoppedAgentRunModelConfig(input: $input) {
+  mutation UpdateStoppedAgent($input: UpdateStoppedAgentRunSelectionInput!) {
+    updateStoppedAgentRunSelection(input: $input) {
       success outcome isActive
       editability { editable reason }
       canonicalSelection { llmModelIdentifier llmConfig }
       fieldErrors { path message }
     }
   }
-`, { input }).then((result) => result.updateStoppedAgentRunModelConfig);
+`, { input }).then((result) => result.updateStoppedAgentRunSelection);
 
 const updateTeam = (serverUrl: string, input: {
   teamRunId: string;
@@ -340,8 +340,8 @@ describe("stopped run model-config GraphQL lifecycle", () => {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
-          query: `mutation RequiredAgentPair($input: UpdateStoppedAgentRunModelConfigInput!) {
-            updateStoppedAgentRunModelConfig(input: $input) { success outcome message }
+          query: `mutation RequiredAgentPair($input: UpdateStoppedAgentRunSelectionInput!) {
+            updateStoppedAgentRunSelection(input: $input) { success outcome message }
           }`,
           variables: { input },
         }),
@@ -350,8 +350,8 @@ describe("stopped run model-config GraphQL lifecycle", () => {
       // A missing nullable config is rejected as a failed result;
       // missing non-null model is rejected by GraphQL before reaching the owner.
       if (expectedError) expect(JSON.stringify(payload)).toContain(expectedError);
-      else expect(payload.data.updateStoppedAgentRunModelConfig.success).toBe(false);
-      expect(payload.data?.updateStoppedAgentRunModelConfig?.success ?? false).toBe(false);
+      else expect(payload.data.updateStoppedAgentRunSelection.success).toBe(false);
+      expect(payload.data?.updateStoppedAgentRunSelection?.success ?? false).toBe(false);
       expect(fs.readFileSync(metadataPath, "utf8")).toBe(stoppedFile);
     }
     await expect(updateAgent(first.serverUrl, {
@@ -412,10 +412,10 @@ describe("stopped run model-config GraphQL lifecycle", () => {
       exactCurrentResult: { fields: Array<{ name: string }> };
     }>(first.serverUrl, `
       query StoppedConfigSchema {
-        agentInput: __type(name: "UpdateStoppedAgentRunModelConfigInput") {
+        agentInput: __type(name: "UpdateStoppedAgentRunSelectionInput") {
           inputFields { name }
         }
-        agentResult: __type(name: "UpdateStoppedAgentRunModelConfigResult") {
+        agentResult: __type(name: "UpdateStoppedAgentRunSelectionResult") {
           fields { name }
         }
         teamInput: __type(name: "UpdateStoppedTeamRunModelConfigsInput") {

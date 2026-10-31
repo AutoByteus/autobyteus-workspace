@@ -140,7 +140,7 @@ describe("Application-owned Studio run-model configuration integration", () => {
       }),
       terminateAgentRun,
       resolveAgentRun: vi.fn(),
-      updateStoppedModelConfig: generalAgentUpdate,
+      updateStoppedSelection: generalAgentUpdate,
     };
 
     const teamRunService = {
@@ -339,7 +339,7 @@ describe("Application-owned Studio run-model configuration integration", () => {
         ? studio.getAgentRunResumeConfig(runId)
         : studio.getTeamRunResumeConfig(runId);
       const update = (studio: StudioRunModelConfigService) => subject === "AGENT"
-        ? studio.updateStoppedAgentRunModelConfig(updateInput as never)
+        ? studio.updateStoppedAgentRunSelection(updateInput as never)
         : studio.updateStoppedTeamRunModelConfigs(updateInput as never);
 
       expect(lookupStore.getLookupByRunId(runId)).toEqual({
@@ -447,7 +447,7 @@ describe("Application-owned Studio run-model configuration integration", () => {
 
     const failedGate = new ApplicationOrchestrationStartupGate();
     const studio = harness.studioFor(failedGate);
-    const pendingUpdate = studio.updateStoppedAgentRunModelConfig({
+    const pendingUpdate = studio.updateStoppedAgentRunSelection({
       agentRunId: binding.runtime.agentRunId, llmModelIdentifier: "model-1",
       llmConfig: null,
     });

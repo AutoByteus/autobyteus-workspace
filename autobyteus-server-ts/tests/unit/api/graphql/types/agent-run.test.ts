@@ -7,7 +7,7 @@ const mockTerminationService = vi.hoisted(() => ({
   getAgentRun: vi.fn(),
 }));
 const mockRunModelConfigService = vi.hoisted(() => ({
-  updateStoppedAgentRunModelConfig: vi.fn(),
+  updateStoppedAgentRunSelection: vi.fn(),
 }));
 
 vi.mock(
@@ -29,11 +29,11 @@ describe("AgentRunResolver", () => {
     mockTerminationService.terminateAgentRun.mockReset();
     mockTerminationService.restoreAgentRun.mockReset();
     mockTerminationService.getAgentRun.mockReset();
-    mockRunModelConfigService.updateStoppedAgentRunModelConfig.mockReset();
+    mockRunModelConfigService.updateStoppedAgentRunSelection.mockReset();
   });
 
   it("routes only stopped model-config updates through the owner-aware Studio service", async () => {
-    mockRunModelConfigService.updateStoppedAgentRunModelConfig.mockResolvedValue({
+    mockRunModelConfigService.updateStoppedAgentRunSelection.mockResolvedValue({
       success: false,
       outcome: "RUN_ACTIVE",
       message: "locked",
@@ -44,7 +44,7 @@ describe("AgentRunResolver", () => {
     });
     const resolver = new AgentRunResolver();
 
-    await expect(resolver.updateStoppedAgentRunModelConfig({
+    await expect(resolver.updateStoppedAgentRunSelection({
       agentRunId: "run-1",
       llmModelIdentifier: "model-1",
       llmConfig: { reasoning_effort: "high" },
@@ -52,7 +52,7 @@ describe("AgentRunResolver", () => {
       outcome: "RUN_ACTIVE",
       canonicalSelection: { llmModelIdentifier: "model-1", llmConfig: { reasoning_effort: "medium" } },
     });
-    expect(mockRunModelConfigService.updateStoppedAgentRunModelConfig).toHaveBeenCalledWith({
+    expect(mockRunModelConfigService.updateStoppedAgentRunSelection).toHaveBeenCalledWith({
       agentRunId: "run-1",
       llmModelIdentifier: "model-1",
       llmConfig: { reasoning_effort: "high" },

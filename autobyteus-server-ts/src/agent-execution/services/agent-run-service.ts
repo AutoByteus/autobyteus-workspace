@@ -24,6 +24,7 @@ import {
 } from "./standalone-agent-run-lifecycle-service.js";
 import type { StandaloneRunLifecyclePort } from "./standalone-run-ports.js";
 import type { RunModelConfigUpdateResult } from "../../run-history/domain/run-model-config.js";
+import type { StoppedRunSelectionInput } from "./standalone-stopped-run-selection-updater.js";
 
 export interface CreateAgentRunInput {
   agentDefinitionId: string;
@@ -309,12 +310,8 @@ export class AgentRunService {
     return owned ?? this.lifecycleService.activateHost(runId, { memberExecutionContext: null });
   }
 
-  updateStoppedModelConfig(input: {
-    agentRunId: string;
-    llmModelIdentifier: string;
-    llmConfig: Readonly<Record<string, unknown>> | null;
-  }): Promise<RunModelConfigUpdateResult<AgentRunMetadata | null>> {
-    return this.lifecycleService.updateStoppedModelConfig(input);
+  updateStoppedSelection(input: StoppedRunSelectionInput): Promise<RunModelConfigUpdateResult<AgentRunMetadata | null>> {
+    return this.lifecycleService.updateStoppedSelection(input);
   }
 
   private notFound(runtimeKind: RuntimeKind | null): AgentRunTerminationResult {

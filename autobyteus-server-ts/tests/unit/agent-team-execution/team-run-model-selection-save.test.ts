@@ -100,7 +100,7 @@ describe('configured Team model selection Save', () => {
           requireLiveApplicationToolProducer: vi.fn(async () => { throw new Error('No live application producer in this stopped-Team scenario.'); }),
         },
         agentResumeConfigService: { getAgentRunResumeConfig: vi.fn() },
-        agentRunService: { updateStoppedModelConfig: vi.fn() },
+        agentRunService: { updateStoppedSelection: vi.fn() },
         teamResumeConfigService: { getTeamRunResumeConfig: vi.fn(async () => ({
           teamRunId: 'root', executionTree: original, isActive: false,
           modelConfigEditability: { editable: true, reason: null },

@@ -83,6 +83,7 @@ import {
 } from "../../agent-collaboration/collaborators/collaborator-definition-catalog.js";
 import { getInternalAgentVisibility } from "../../agent-definition/services/internal-agent-visibility.js";
 import { PROCESS_MODEL_ROUTING } from "../../model-routing/services/model-routing-binding.js";
+import type { RuntimeSwitching } from "../domain/runtime-switch-ports.js";
 import type { AgentRunInputPreface } from "../domain/agent-run-input-preface.js";
 import type { AgentRunLifecycleObserver } from "../domain/agent-run-lifecycle-observer.js";
 
@@ -109,6 +110,11 @@ export type GeneralProcessRunSupervisorInput = Readonly<{
    * published and released (the host composition owns and closes it). None by default.
    */
   platformInputNotices?: (AgentRunInputPreface & AgentRunLifecycleObserver) | null;
+  /**
+   * The memory and hand-over notice ports of an agent runtime switch (autobyteus-316), forwarded to the standalone lifecycle.
+   * None (the application host): a lifecycle without them fails closed on a pending switch.
+   */
+  runtimeSwitching?: RuntimeSwitching | null;
 }>;
 
 const requireGeneralProcessRunSupervisorInput = (
@@ -315,6 +321,7 @@ export class GeneralProcessRunSupervisor {
         workspaceManager,
         tokenUsageReadiness,
         modelSelectionValidator: input.modelSelectionValidator,
+        switching: input.runtimeSwitching ?? null,
       });
       const activeAgentRuns = agentRunManager;
       // Each eligible standalone run is owned by its root; the lifecycle is its host's activation backend.

@@ -75,6 +75,9 @@ import { composeProjectTaskExecutionResources, releaseProjectTaskExecutionResour
 import { composeAgentPackageDefinitionFeed, type AgentPackageDefinitionFeed } from "./agent-package-definition-feed-composition.js";
 import { createSkillUpdateNotices, type SkillUpdateNotices } from "../skill-update-notices/skill-update-notices.js";
 import { createToolListUpdates, type ToolListUpdates } from "../tool-list-updates/tool-list-updates.js";
+import { getWorkJournalService } from "../agent-work-journal/services/work-journal-service.js";
+import { RuntimeSwitchRecorder } from "../agent-memory/services/runtime-switch-recorder.js";
+import { RuntimeHandoverNoticeService } from "../runtime-handover-notices/services/runtime-handover-notice-service.js";
 import { AgentRunPlatformNotices } from "../agent-execution/domain/agent-run-platform-notices.js";
 import { composeUpdateNotifications, type UpdateNotifications } from "./update-notifications-composition.js";
 import { composeAgentRuntimeStatus, type AgentRuntimeStatusHandle } from "./agent-runtime-status-composition.js";
@@ -328,6 +331,7 @@ export const buildStudioServer = async (input: {
       agentDefinitionService: hostDefinitionServices.agentDefinitionService,
       definitionChanges: hostDefinitionServices.agentDefinitionChanges,
     });
+    const runtimeHandoverNotices = new RuntimeHandoverNoticeService({ journals: getWorkJournalService() });
     generalProcessRunSupervisor = createGeneralProcessRunSupervisor({
       memoryDir: input.appConfig.getMemoryDir(),
       contextFilePathEnvironment,
@@ -341,8 +345,10 @@ export const buildStudioServer = async (input: {
       integrationRunAccess: credentialProxyHost.runAccess,
       modelSelectionValidator,
       taskExecutionResources,
-      // One notice slot: tool list updates first, then skill notices (one notice per input).
-      platformInputNotices: new AgentRunPlatformNotices([toolListUpdates.service, skillUpdateNotices.service]),
+      // One notice slot: the agent runtime hand-over first (a pending tool list notice must not delay it by one input),
+      // then tool list updates, then skill notices (one notice per input).
+      platformInputNotices: new AgentRunPlatformNotices([runtimeHandoverNotices, toolListUpdates.service, skillUpdateNotices.service]),
+      runtimeSwitching: { memory: new RuntimeSwitchRecorder(), notices: runtimeHandoverNotices },
     });
     generalProcessAuthority = null;
     releaseRemoteCollaboration = composeStudioRemoteCollaboration({

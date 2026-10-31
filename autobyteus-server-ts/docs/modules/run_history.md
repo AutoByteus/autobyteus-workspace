@@ -53,7 +53,7 @@ Workspace + agent operations:
 - `getRunProjection`
 - `getAgentRunResumeConfig`
 - `agentRunModelOptions(agentRunId)`
-- `updateStoppedAgentRunModelConfig(input)`
+- `updateStoppedAgentRunSelection(input)`
 - `archiveStoredRun`
 - `archiveStoredAgentRunGroup(workspaceRootPath, agentDefinitionId)`, which
   archives one standalone agent group in one workspace (see
@@ -155,7 +155,7 @@ it never produces a false editable state or a General write.
 When no Application lease exists, stopped updates delegate to the existing
 General lifecycle owners:
 
-- `StandaloneAgentRunLifecycleService.updateStoppedModelConfig(...)` shares one
+- `StandaloneAgentRunLifecycleService.updateStoppedSelection(...)` shares one
   per-run transition lane with restore/activation and commits the validated
   pair to `run_metadata.json` through `AgentRunHistoryCatalogService`.
 - `AgentTeamRunManager.updateStoppedModelConfigs(...)` shares the root

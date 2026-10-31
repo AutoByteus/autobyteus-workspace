@@ -9,9 +9,12 @@ export interface RuntimeSwitchMemory {
   record(memoryDir: string, runtimeSwitch: RuntimeSwitch): void;
 }
 
-/** What the activation needs from the hand-over notice: remember that this run's next input carries the notice. */
+/**
+ * What the activation needs from the hand-over notice: remember that this run's next input carries the notice. It gets the
+ * switch itself (built once) so the short line it shows the user is the marker sentence, computed in one place.
+ */
 export interface RuntimeHandoverNotices {
-  register(runId: string): void;
+  register(runtimeSwitch: RuntimeSwitch): void;
 }
 
 /** The two ports travel together; a lifecycle built without them cannot activate a switch. */

@@ -8,6 +8,10 @@ export type RunModelSelectionContext = Readonly<{
   currentModelIdentifier: string;
   workspaceRootPath: string;
 }>;
+/** Where a selection is validated; `currentModelIdentifier` is `null` for a fresh selection of an agent runtime the run is not on. */
+export type RunModelValidationContext = Readonly<Omit<RunModelSelectionContext, "currentModelIdentifier"> & {
+  currentModelIdentifier: string | null;
+}>;
 export type RunModelChoice = Readonly<{
   llmModelIdentifier: string;
   providerName: string;

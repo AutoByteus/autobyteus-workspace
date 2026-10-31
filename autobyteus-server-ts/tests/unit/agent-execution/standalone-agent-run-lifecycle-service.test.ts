@@ -419,7 +419,7 @@ describe("StandaloneAgentRunLifecycleService", () => {
       validateModelConfig,
     });
 
-    await expect(current.service.updateStoppedModelConfig({
+    await expect(current.service.updateStoppedSelection({
       agentRunId: RUN_ID,
       llmModelIdentifier: "sonnet",
       llmConfig: { effort: "high" },
@@ -451,7 +451,7 @@ describe("StandaloneAgentRunLifecycleService", () => {
     });
     current.agentRunManager.getActiveRun.mockReturnValue({ runId: RUN_ID });
 
-    await expect(current.service.updateStoppedModelConfig({
+    await expect(current.service.updateStoppedSelection({
       agentRunId: RUN_ID,
       llmModelIdentifier: "sonnet",
       llmConfig: { effort: "high" },
@@ -498,7 +498,7 @@ describe("StandaloneAgentRunLifecycleService", () => {
       validateModelConfig,
     });
 
-    const save = current.service.updateStoppedModelConfig({
+    const save = current.service.updateStoppedSelection({
       agentRunId: RUN_ID,
       llmModelIdentifier: "sonnet",
       llmConfig: { effort: "high" },
@@ -558,7 +558,7 @@ describe("StandaloneAgentRunLifecycleService", () => {
     });
     const coordinator = exactCommandCoordinator(current);
 
-    const save = current.service.updateStoppedModelConfig({
+    const save = current.service.updateStoppedSelection({
       agentRunId: RUN_ID,
       llmModelIdentifier: "sonnet",
       llmConfig: { effort: "high" },
@@ -619,7 +619,7 @@ describe("StandaloneAgentRunLifecycleService", () => {
       turnId: "external-turn-1",
     });
 
-    await expect(current.service.updateStoppedModelConfig({
+    await expect(current.service.updateStoppedSelection({
       agentRunId: RUN_ID,
       llmModelIdentifier: "sonnet",
       llmConfig: { effort: "high" },
