@@ -3,15 +3,15 @@
 ## Document Status
 
 - Status: `Approved`
-- Current solution revision ID: SR-004
+- Current solution revision ID: SR-005
 - Package identifier: `projects-left-navigation`
 - Request / ticket: Project Task `autobyteus-347` (Project `project_a1377344-25db-482a-97cc-ecfdb0fb495a`); replaces autobyteus-72
 - Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), on the user's request of 2026-10-31
 - Requirements owner: Solution Designer
 - Date: 2026-10-31
 - Approved by and reference: **User** for the journey and the folder rules (conversation 2026-10-31, quoted in [User Decisions](#user-decisions-2026-10-31)); **Solution Designer within the direction (user informed)** for the remaining decisions (DEC-004…DEC-011, my message of 2026-10-31 that confirmed the folder rule and announced this revision).
-- Exact approved requirements baseline: this document at SR-004 (R3): SR-002 plus the Project choice on the New chat start surface, which the user asked for in the Product design review (quoted below).
-- Behavior-defining supplements: none. The sketch below is part of this document.
+- Exact approved requirements baseline: this document at SR-005 (R4): R3 plus the user-confirmed Product UI/UX package integrated below. R3 was: SR-002 plus the Project choice on the New chat start surface, which the user asked for in the Product design review (quoted below).
+- Behavior-defining supplements: the Product UI/UX specification `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/projects-left-navigation/ui-ux-spec.md` and its final references VIS-001…VIS-025, design revision `0675adcaf73642b513dcdbc7d6e98474d260a057` (integration record `1988a5031b144c7f7ec9def7187d79dcd1562d42`, design repository default branch `personal`), confirmed by the user on 2026-10-31 ("cool. i am satisfied. lets go", then "approved").
 
 ## User Decisions (2026-10-31)
 
@@ -27,7 +27,7 @@
 - **Desired outcome.** The left panel offers two ways to organize runs. **Workspaces** stays as it is: pick a folder and run agents and teams. **Projects** is new: pick a Project and run any agent or team under it, in a tree that looks like a workspace's (agent and team groups, runs, delegated runs nested below with their Task line). A run started under a Project works in the Project's first linked folder, or the temp workspace when the Project has none, and is told its Project. Runs that already dispatched a Project's Tasks also appear under that Project. Delegated work leaves the tree when its Task is closed, as today.
 - **Observable definition of success.** In Projects mode the user starts an agent under a Project, sees it there, sees the work it dispatches nested below it while it works, opens any of it, sees the work leave when the Task is closed, and switches back to Workspaces with everything there as before.
 
-### Sketch (illustrative; names, counts and summaries are fixture content)
+### Sketch (superseded by the Product references VIS-001…VIS-025; kept as the original structure sketch)
 
 ```text
 [ Workspaces | Projects ]
@@ -89,7 +89,8 @@ Selecting a Project row in the left panel also makes it the Project shown on the
 - Viewing a closed Task's worker conversations (not openable today either; FU-002).
 - A Task-level folder (FU-003); marking a primary folder explicitly (the first link is the primary one).
 - Changes to the Project Task Manager agent or skill (agents repository; FU-001).
-- Changing the Workspaces listing cap, the right Projects board, the Projects pages, mobile, cross-node Projects.
+- Changing the Workspaces listing cap, the right Projects board and the Projects pages (except the Project icon, REQ-016), mobile, cross-node Projects.
+- A Project's own icon and colour chosen by the user (FU-004).
 
 ### Non-Goals
 
@@ -117,9 +118,9 @@ None.
 | ID | Requirement | Behavior | Priority | Rationale | Feasibility | Source / decision |
 | --- | --- | --- | --- | --- | --- | --- |
 | REQ-001 | The left panel's run section has a **Workspaces / Projects** switch. Workspaces mode is today's tree. The choice is remembered per node. Switching modes changes only the tree: it never opens, starts, stops or changes the open conversation. | BEH-001 | Must | The user's request | N/A | Task; DEC-009 |
-| REQ-002 | Projects mode lists the node's Projects by name (as the Projects pages order them), each with a "+" to run an agent or team under it, and an empty state that leads to creating a Project. A Project expands to its runs, grouped by agent and by team as in a workspace (group name, run count, "+" for another run of that agent or team). Selecting a Project row makes it the right panel's Projects board choice. | BEH-001 | Must | User: "the task management tree … appear on each project" | N/A | DEC-012 |
+| REQ-002 | Projects mode lists the node's Projects by name (as the Projects pages order them), each with a "+" to run an agent or team under it, and an empty state that leads to creating a Project. A Project expands to its runs, grouped by agent and by team as in a workspace (group name, run count, "+" for another run of that agent or team). Selecting a Project row makes it the right panel's Projects board choice. A Project row's chevron only opens or closes it; its name selects the Project and opens it when closed; a selected Project has no visual mark. The run-section header's "+" adds a workspace in Workspaces mode and opens New Project in Projects mode. Opening a run does not change the board's Project. | BEH-001 | Must | User: "the task management tree … appear on each project"; Product UXJ-001, UXJ-002 | N/A | DEC-012 |
 | REQ-003 | **Runs under a Project** are the top-level runs (Agent, Team or Org runs) that (a) were started under this Project, or (b) host any assignment of one of this Project's Tasks. Each is listed once per Project. Runs are ordered and summarized as in Workspaces; archived ones are not listed, as in Workspaces. A run that hosts work for several Projects is listed under each, as the same run. | BEH-002, BEH-007 | Must | E-017: existing runs serve several Projects; no data change | N/A | DEC-005 |
-| REQ-004 | **Run an agent or team under a Project**: "+" on the Project lets the user choose any agent or team (the same choice as a workspace offers); "+" on a group starts another run of that agent or team. Starting opens the same start surface as a workspace's "+" does for that kind, with the Project shown and the folder preselected (REQ-005). **The New chat start surface also has a Project choice** (shown when the node has at least one Project): the node's Projects and "No project"; it is preset to the Project when started from a Project's "+", and stays changeable until the first message is sent ("No project" makes it a plain start). The Project of a run cannot be changed once the run exists. The run, once created, is recorded as started under this Project; it appears under the Project at once and stays there after restart. It also appears in Workspaces mode under its folder. | BEH-002 | Must | User: "how do I run one agent under a certain project"; Project choice in New chat (user, design review) | N/A | DEC-006, DEC-012, DEC-014 |
+| REQ-004 | **Run an agent or team under a Project**: "+" on the Project lets the user choose any agent or team (the same choice as a workspace offers); "+" on a group starts another run of that agent or team. Starting opens the same start surface as a workspace's "+" does for that kind, with the Project shown and the folder preselected (REQ-005). **The New chat start surface also has a Project choice**, in the one footer chip that shows where the run works: by default the chip shows the folder, as today; its menu has "Workspaces | Projects" tabs, and the Projects tab (shown only when the node has at least one Project) lists "No project" and the Projects, each with the folder it brings. Choosing a Project makes the chip show the Project (and "Project · folder" when the folder differs from the Project's). The choice is preset to the Project when started from a Project's "+", and stays changeable until the first message is sent ("No project" makes it a plain start). The Project of a run cannot be changed once the run exists. The run, once created, is recorded as started under this Project; it appears under the Project at once and stays there after restart. It also appears in Workspaces mode under its folder. | BEH-002 | Must | User: "how do I run one agent under a certain project"; Project choice in New chat (user, design review) | N/A | DEC-006, DEC-012, DEC-014 |
 | REQ-005 | **Folder of a run started under a Project**: the Project's first linked folder; when the Project has no linked folder, the temp workspace. Choosing a Project in New chat preselects that folder, except when the user already picked a folder on this start, which is kept. The user can choose another folder before the run is created, as on any start. Starting never requires, creates, registers or links a folder. Delegated runs keep taking their delegator's folder. A run keeps its folder when the Project's links change later. | BEH-005 | Must | User decision | N/A | DEC-001, DEC-002, DEC-014 |
 | REQ-006 | A run started under a Project is told its Project (name and Project ID) as context it can rely on, so an agent with the Project tools works on that Project without guessing or asking. It remains an ordinary run and can still work with other Projects. | BEH-002 | Must | A Project-scoped run | To be shown per runtime in design (U-003) | DEC-011 |
 | REQ-007 | The Project's Tasks are on the right Projects board: selecting a Project in the left panel shows its board there (REQ-002), and a delegated run's Task line shows its Task there (existing Task locator). | BEH-003 | Must | One board, no duplicate | N/A | DEC-012 |
@@ -130,7 +131,8 @@ None.
 | REQ-012 | The open run is marked in whichever mode lists it; switching modes reveals it there when listed. Opening a run from Projects mode is the same open as from Workspaces. | BEH-001, BEH-006 | Must | Coherent navigation | N/A | — |
 | REQ-013 | Preserve: Workspaces mode and its starts, history, archive/delete, Task lines; the right Projects tab and Projects pages; Temp tasks; delegation, closure and reactivation; existing data (no rewrite of runs, Tasks or run-resource files). Deleting a Project removes it from Projects mode; its runs stay in Workspaces. | BEH-007, BEH-004 | Must | Explicit preservation | N/A | DEC-010 |
 | REQ-014 | Archive and Delete work on runs in Projects mode as in Workspaces (running runs: Stop, not Archive). A group's "Archive all runs" in Projects mode archives only that group's runs listed under that Project. | BEH-007 | Must | Parity; manual archive stays available | N/A | DEC-004 |
-| REQ-015 | Keyboard and pointer can switch modes, expand Projects and groups, start runs and open runs; labels in English and Chinese; works in the narrow desktop layouts; the collapsed strip's icon reveals the run section in the current mode. | BEH-001 | Must | Existing shell conventions | N/A | DEC-009 |
+| REQ-015 | Keyboard and pointer can switch modes, expand Projects and groups, start runs and open runs; labels in English and Chinese; works in the narrow desktop layouts; the collapsed strip's run-tree entry keeps its tree icon in both modes, its name and tooltip say the mode, and it reveals the run section in the current mode. | BEH-001 | Must | Existing shell conventions; Product UXJ-009 | N/A | DEC-009 |
+| REQ-016 | **One icon for a Project**: the briefcase marks a Project everywhere one is shown: Project rows, the chip and its menu, the Projects entry in the left list and the strips, the right strip's Projects tab, the Project cards and the Projects empty states. The folder icon stays for workspaces. | BEH-001 | Must | The user's decision in the design review (Product DC-004) | N/A | DEC-016 |
 
 ## Acceptance Criteria
 
@@ -140,6 +142,8 @@ None.
 | AC-002 | 002, 003 | BEH-002; SCN-005 | Existing runs that dispatched Tasks of 3 Projects | Each of the 3 Projects lists the run once, in its agent group, with the same run id; archived runs absent | Project with no runs: only "+" | Server read tests + browser on fixture data |
 | AC-003 | 004, 005, 006 | BEH-002, BEH-005; SCN-002 | Project with one linked folder; "+" on the Project, choose an agent, send | The start surface shows the Project and the Project's folder; the created run is listed under the Project at once and after restart, and under its folder in Workspaces; the run's context names the Project (name, ID); its working folder is the Project's folder | Agent unusable: the existing start error, nothing listed | Server + runtime check of folder and context; desktop journey |
 | AC-004 | 005 | BEH-005; SCN-006 | Project with no linked folder; Project with two | No link: the start uses the temp workspace and nothing is required. Two: the first is preselected. In both, choosing another folder before sending is used | No folder is created, registered or linked | Web tests + server check |
+| AC-016 | 016 | BEH-001 | Open the left list, strips, Projects pages, the Projects tree and the chip menu | A Project is shown with the briefcase in each place; workspaces keep the folder | — | Web tests + browser against VIS-002, VIS-012, VIS-021 |
+| AC-017 | 001–016 | UI | The built app beside the Product references | The surfaces match VIS-001…VIS-025, except content the spec marks illustrative | — | Browser screenshots compared with the references |
 | AC-015 | 004, 005 | BEH-002, BEH-005; SCN-011 | Plain New chat (Chat ✎); the node has Projects; choose Project P, send | The run is listed under P at once (and after restart) and under its folder in Workspaces; P's first folder was preselected unless a folder had already been picked; choosing "No project" before sending makes a plain run; after sending, the Project choice is no longer offered for this run | No Projects on the node: no Project choice shown | Web tests + browser + server check of the record |
 | AC-005 | 004 | SCN-002 | Start a Team under a Project; "+" on an existing agent group | The Team run and the second agent run appear under the Project in their groups, with the Project's folder | — | Web tests + browser |
 | AC-006 | 008, 011 | BEH-003; SCN-003 | A run under P dispatches a saved Task of P to a Team | Without refresh the Team appears nested under the run with its Task line, members and later sub-work, with live status; clicking a member opens that exact conversation | Start fails: "Couldn't start" as today | Real delegation (scripted runtime allowed, labeled) + browser |
@@ -171,7 +175,15 @@ None.
 ## UI, Interaction, And Experience Requirements
 
 - Applicable: Yes.
-- Product Design package: requested from `/product_team` (SR-003, `product-design-request.md`); pending. Until it returns, the sketch shows structure only; names, counts and summaries are illustrative.
+- Linked UI/UX specification (normative): `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/projects-left-navigation/ui-ux-spec.md`.
+- Final references (normative): `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/projects-left-navigation/visual-references/VIS-001…VIS-025` (1440×900 desktop; VIS-022/023 zh-CN; VIS-024/025 600×800 narrow).
+- Runnable UI reference: the design repository root, `corepack pnpm install --ignore-workspace --frozen-lockfile && corepack pnpm dev --port 3210`, `http://127.0.0.1:3210/workspace` → Projects; runbook `ui-reference-runbook.md` § projects-left-navigation.
+- Product ticket record: `/Users/normy/autobyteus_org/autobyteus-web-design/tickets/done/projects-left-navigation/product-ticket.md`; change log `design-change-log.md` (DC-001…DC-011).
+- Design repository revision: design result `0675adcaf73642b513dcdbc7d6e98474d260a057`, integration record `1988a5031b144c7f7ec9def7187d79dcd1562d42` on `personal`; source pin `d74f75a51ab7dc47d42a13f33e0f943c3a230ad7` (checked against this ticket's base `8faae96899` by Product: no in-scope UI change).
+- UI/UX user-confirmation reference: the user, 2026-10-31, in the Product UI/UX Designer's review: "cool. i am satisfied. lets go", then "approved".
+- Normative: every visible detail in VIS-001…VIS-025 and the spec's labels, states, keyboard, motion and Implementation Fidelity Boundary.
+- Explicitly illustrative: Project, agent, team, run and Task names; counts; relative times; which runs exist; the reference's example run links, in-memory "started under" record, local-storage state seeds and read delays (spec § Data, Contract, And Mock Boundaries).
+- Not demonstrable in the reference: Task closure removing delegated rows live (existing mechanism; AC-008 in the build).
 - Normative: the switch in the run-section header; Projects with "+"; agent and team groups with count and "+"; runs and delegated runs as in the Workspaces tree; selecting a Project sets the right board's Project; the start surface shows a changeable Project choice (preset from a Project's "+") and the folder; states: loading, empty, no Projects, error with Retry.
 - Permitted variation: icons, spacing, wording of empty states and of the Project shown on the start surface.
 
@@ -229,7 +241,10 @@ None.
 | DEC-011 | Is a run under a Project restricted to it? | No; it is told its Project and stays an ordinary run. | Solution Designer | Decided |
 | DEC-012 | Shape of a Project in the tree | Like a workspace: agent and team groups, runs, delegated runs nested with Task lines; any agent or team; Tasks on the right board, which follows the selected Project. | User | Decided by the user, 2026-10-31 |
 | DEC-013 | Which delegated runs are nested under a run in Project P? | P's Task work; other Projects' work goes under those Projects; work of no Project Task only under runs started under P, so a run started elsewhere does not bring unrelated work into P. | Solution Designer | Decided |
-| DEC-014 | Can a Project be chosen on the New chat start surface? | Yes, the user asked for it in the design review. Same record as the "+" path; folder follows the Project unless already picked; fixed once the run exists (moving runs stays out of scope); Agents and Teams only (DEC-006). | User (details: Solution Designer) | Decided (SR-004) |
+| DEC-015 | Which Project does a remote delegated run belong to? | Remote delegated runs are linked to their Task through the same Task link step as local copies (`root-task-dispatch.ts` 59–61, E-024), so the same rule as REQ-008 applies: the Project of its Task, or none for Temp-task work. | Solution Designer | Decided (SR-005) |
+| DEC-016 | Briefcase icon for Projects everywhere | The user's decision in the design review (Product DC-004); changes the preserved icon of the Projects entry, cards and empty states. | User | Decided by the user (SR-005) |
+| DEC-017 | Defaults accepted by the user in the design review | Opening a run does not change the board's Project; the team group's "+" exists in Projects mode only; Task closure is verified in the build, not the reference. | User | Decided by the user (SR-005) |
+| DEC-014 | Can a Project be chosen on the New chat start surface? | Yes, the user asked for it in the design review; one chip with Workspaces | Projects tabs (Product UXJ-004). Same record as the "+" path; folder follows the Project unless already picked; fixed once the run exists (moving runs stays out of scope); Agents and Teams only (DEC-006). | User (details: Solution Designer) | Decided (SR-004) |
 
 ## Traceability
 
@@ -250,6 +265,7 @@ None.
 | 013 | 005 | 007, 004 | 012 | 001, 008 |
 | 014 | 005 | 007 | 012 | 008 |
 | 015 | 001 | 001 | 013 | 002 |
+| 016 | 001 | 001 | 016, 017 | 002 |
 
 ## Architecture Phase Input
 

@@ -8,6 +8,7 @@
 | SR-002 | Requirements | User answers 2026-10-31 | N/A | Ready for Approval | Approved | REQ-002…008, 014; DEC-001…003, 012, 013 | Any agent under a Project; folder rule; approved |
 | SR-003 | Requirements | User asks for Product Design first | N/A | Approved | Approved (Product Design Requested) | DEC-008 | Request sent to /product_team |
 | SR-004 | Requirements | Product review: user wants a Project choice in New chat | Product interim Requirement Impact | Approved R2 | Approved R3 | REQ-004, 005; BEH-002, 005; SCN-011; AC-015; DEC-014 | Accepted
+| SR-005 | Requirements | Product UI/UX package (user-confirmed) | N/A | Approved R3 | Approved R4 | REQ-002, 004, 015, 016; AC-016, 017; DEC-015…017 | Integrated
 
 ## Revision Entries
 
@@ -65,3 +66,16 @@
 - Intended behavior changed: Yes (by the user). Approval: the user's own words above; details (chip only when Projects exist, "No project", fixed after creation) decided by the Solution Designer within that direction.
 - Design impact: technical design not yet written; the Project record and start path cover both entry points.
 - Next action: reply to the Product UI/UX Designer that the addition is accepted; wait for the final Product package.
+
+### SR-005 — Product UI/UX package integrated
+
+- Phase and classification: Requirements, Refinement (Product result integrated; user-confirmed).
+- Trigger: Product UI/UX Designer's Design Completed message, 2026-10-31 (run `product_ui_ux_designer_6f9b3db8fadd44c0ba67e6623a9e6091`); ui-ux-spec.md Approved; user confirmation "cool. i am satisfied. lets go", then "approved".
+- Verification of the package: spec links the runnable reference and VIS-001…VIS-025; repository, ticket, revision (0675adca, integration 1988a503) and paths agree; screenshots VIS-002 and VIS-012 read; spec status Approved with the user's words.
+- Prior status: Approved R3. Current: Approved R4.
+- IDs affected: REQ-002 (chevron/name, header "+" New Project, no selected mark, board not moved by opening a run), REQ-004 (one chip with tabs), REQ-015 (strip entry), REQ-016 new (briefcase), AC-016/AC-017 new, DEC-015/016/017 new, UI section filled, Out Of Scope (icon/colour follow-up).
+- Supplements: Product spec and references (externally owned, linked, not copied).
+- Intended behavior changed: Yes, by the user in the design review (icon, one chip); approval = the user's confirmation of the package.
+- Follow-ups: FU-004 (Project icon and colour).
+- Product Task: this delegation was part of autobyteus-347 and returned no task_id; nothing to close.
+- Next action: architecture design.
