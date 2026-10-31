@@ -43,3 +43,6 @@ Recommendation: **A**.
 - It matches the Docker path.
 - An incomplete stop is reported honestly (log and notice), not hidden as success.
 - The rare "exit not confirmed" case falls back to B, so the app is never left without a server.
+
+## Decision (2026-10-31)
+The user chose **A**. The authoritative behavior is `requirements-doc.md` REQ-002 / AC-004 / AC-005 with DEC-005, which refine the table above. There is no "next start notice": the incomplete stop is logged by the existing report. In the unconfirmed case there is no server restart, because a new server cannot start while the old process is unconfirmed; today's error stays.
