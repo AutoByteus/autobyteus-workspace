@@ -194,3 +194,13 @@ Principle: one owner per concern (Duplicated Policy).
 - **The fix (autobyteus-313):** Configuration uses the app's launch controls (`ChatModelMenu`, `ChatThinkingControl`, `ChatModelOptionControl`) through a small adapter; the router's stored launch adds the model settings (one added setting, checked like any agent launch) and its run starts with them; the page's name map is removed and every tab uses the app's two name functions.
 - **Why it mattered:** a parallel control drops what the shared one has (thinking, options, search, the same labels), and a parallel name map makes one runtime look like two things.
 - **Notice it by:** a new select, list or label map for runtimes or models on a new surface; a stored launch that is a subset of the launch configuration every agent has.
+
+### Case 14: A New Key In A File Older Builds Read Strictly (autobyteus-347, CRR-001 CR-001)
+
+Principle 5 and the Data Migration Guideline (§3 "Compatible changes", § Rolling back).
+
+- **The design said:** record "this run was started under a Project" as an optional `projectId` on run metadata, the Agent and Team history index rows and the Team tree, with "no migration: absence truthfully means none". It checked the current readers only. The requirements also promised that older builds keep reading data written by this build.
+- **What happened:** the released index readers (`agent-run-history-index-store.ts` and `team-run-history-index-store.ts`, `parseIndexFile`) reject any row key outside an allow-list. They treat the whole file as invalid and return an empty index, and the catalog writes that index back on the next run creation. A rollback (`RELEASE.md` § Rollback: a revert release or an earlier Docker tag) would show empty Agent and Team history and then drop every earlier row from the index. The code reviewer found it; the implementation engineer had flagged it as a known risk.
+- **The fix (SR-009):** the record moved to a new Projects-owned file, `projects/<projectId>/project_runs.json`, beside the Tasks' `agent_run_resources.json` (Projects already owns every Project ↔ run link). Older builds never open it, and no file they read strictly gains a key.
+- **Why it mattered:** "a tolerant reader absorbs an optional field" is a claim about every reader of the file, including the released ones a rollback runs. An optional key is compatible only where every reader that meets it ignores it.
+- **Notice it by:** a "no migration, optional field" decision that cites only the current reader; a file whose released reader validates against an allow-list of keys; a requirement or release note that promises rollback.

@@ -11,7 +11,7 @@
 - Finalization target: `origin/personal` (Delivery-owned; release only on the user's word)
 - Bootstrap result: new worktree created with `git worktree add … -b codex/projects-left-navigation origin/personal`. The old autobyteus-72 worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/project-centric-execution` (branch `codex/project-centric-execution`, base `f13bdd0eb7`, 2,174 commits behind) still exists; it was read only and is not reused, because the code it investigated has changed substantially (see E-020).
 - Bootstrap blocker: none
-- Current solution revision ID: SR-008
+- Current solution revision ID: SR-009
 - Authorities read (requirements reading gate, 2026-10-31): `solution-designer/SKILL.md`; `references/requirements-engineering.md`; `references/ticket-scope.md`; `references/finding-the-cause.md`; `references/handoff.md`; templates for requirements, investigation notes and solution revision record; root `AGENTS.md`.
 - Investigation status: requirements investigation complete for SR-001. Architecture investigation not started (it starts after approval).
 
@@ -224,7 +224,10 @@ Architecture reading gate passed on 2026-10-31: `references/architecture-design.
 | E-039 | `autobyteus-server-ts/src/projects/changes/project-change-publisher.ts` 27–31, 64–73; server `docs/modules/projects.md` 1054–1060 | A Temp-task change publishes `task_upserted` with scope `no_project` and no Project mark; every Task view's `root` carries `hostRoot {kind, runId}`. | Temp-task work under a run started under P is re-read through the `root.hostRoot` of the no-Project event (DS-004 trigger 2). |
 | E-040 | `autobyteus-server-ts/src/agent-team-execution/services/team-run-service.ts` 112; `agent-team-run-manager.ts` 126–140; `docs/modules/projects.md` § Follow-up Task to an existing copy | Team creation: `TeamRunService.createTeamRun` → `AgentTeamRunManager.createTeamRun` builds the tree (adds `delegatedFrom` the same way). A copy may hold open Tasks of different Projects (no same-Project condition). (AR-002, AR-005.) | Stamp `projectId` there; REQ-008 rule for multi-Project copies. |
 
-Persisted-data convention check (Data Migration Guideline §2): the change adds one optional field to Agent run metadata, the Agent and Team index rows and the Team tree; its absence truthfully means "not started under a Project" (§3, compatible change). Shape inventory: every existing file lacks the field (all runs to date). No migration; readers keep tolerant projection; writers emit it only when present.
+| E-041 | base `8faae96899`: `autobyteus-server-ts/src/run-history/store/agent-run-history-index-store.ts` 16–26 (allow-list), 66–76 (`parseIndexFile` rejects other keys), 160–172 (invalid → empty index); Team index store likewise; `RELEASE.md` § Rollback; Data Migration Guideline § Rolling back | (CRR-001 CR-001, verified by reading.) Released index readers reject unknown row keys and return an empty index, which the catalog writes back on the next run creation. Run metadata and Team tree readers ignore unknown fields. | A `projectId` row key breaks the approved rollback constraint; the record moves to a Projects file. |
+| E-042 | server `docs/modules/projects.md` § Persistence Layout, § Delete; `src/projects/stores/projects-layout.ts` | Released Projects code reads only `project.json`, `drafts/` and `tasks/*`; other files in a Project folder are never opened; Project Delete keeps them. | `project_runs.json` is invisible to older builds. |
+
+Persisted-data convention check (Data Migration Guideline §2), revised in SR-009: the SR-006 decision (optional `projectId` on run records) checked only current readers and was wrong for the released index readers (E-041). The record is a new Projects file `projects/<projectId>/project_runs.json` (E-042); no existing file changes; no migration.
 
 
 ## Requirement Implications

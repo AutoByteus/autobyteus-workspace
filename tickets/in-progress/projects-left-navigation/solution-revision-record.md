@@ -12,6 +12,7 @@
 | SR-006 | Design | Approved R4 | N/A | N/A | Design Ready (user approval pending) | all REQ | Large / High
 | SR-007 | Design | User approves the design | N/A | Design Ready (approval pending) | Design Ready (user-approved) | — | Sent to architecture review
 | SR-008 | Mixed | ARCH-REV-001 Fail | AR-001…AR-005 | Design Ready | Design Ready (revised) | REQ-008, DEC-013, AC-007 | Sent for re-review
+| SR-009 | Design | CRR-001 Fail (CR-001) | CR-001 | Design Ready (reviewed SR-008) | Design Ready (revised) | Data Continuity; DS-001/002/005 | Record moved to project_runs.json; to architecture re-review
 
 ## Revision Entries
 
@@ -119,3 +120,14 @@
 ### Review receipt (informational, no new round)
 
 - ARCH-REV-002 **Pass** on SR-008 (2026-10-31), architecture reviewer run `architecture_reviewer_b0cc3811df7e474eb5031669010fe5f1`; AR-001…AR-005 resolved; classification Large / High. Report: `design-review-report.md`; record: `architecture-review-revision-record.md`. The reviewer routed the package to `/software_engineering_team/implementation_engineer`; no duplicate forwarding.
+
+### SR-009 — Revision for code review CRR-001 (CR-001)
+
+- Phase and classification: Design Impact (persisted-data decision).
+- Trigger: `code-review-report.md` CRR-001, code reviewer run `code_reviewer_57a254760a3346d4b0d1cdb6588e331e`, on implementation IR-001 at `73d598c008`.
+- Finding: optional `projectId` on Agent/Team index rows breaks the approved Data Continuity constraint ("older builds keep reading data written by this build"): released index readers reject unknown row keys, return an empty index, and the catalog writes it back (E-041). Verified by reading the base code.
+- Decision: keep the approved constraint (no user re-approval needed; intended behavior unchanged). The "started under a Project" record moves to a new Projects-owned file `projects/<projectId>/project_runs.json` (E-042), written through a `RunProjectStarts` port after the run id is allocated and before the run's records (link-before-resources order); read through `ProjectRunLinks.startedRunsOf` and `RunProjectContextReader.contextOfRun`. No run metadata, index row or Team tree change; IR-001's keys are reverted. Considered and rejected: correcting the constraint (would need the user and would make this release non-rollbackable for a fact that has a natural Projects home); a second run-history index for older readers (dual write for older builds, against RELEASE.md).
+- Canonical sections changed: design-spec Basis, Evidence (E-027…E-030 notes, E-041, E-042), Change Scope, Behavior map, Terminology, Health, Persisted Data, DS-001/002/005, Ownership Map and Boundaries, Interfaces, Naming, Allocation, File Mapping, Removal Plan, Compatibility log, Sequence step 2, Size/Risk rationale (classification unchanged: Large / High). Investigation notes E-041, E-042. `docs/design-cases.md` Case 14 added.
+- CR-002 (doc comment placement) stays an implementation Local Fix, to go with this revision.
+- Requirements: unchanged (R4).
+- Review impact: the architecture review passed SR-008's persisted-data decision, which this revision replaces; the changed part (persistence, ports, creation sequence) returns to the architecture reviewer before implementation applies it.
