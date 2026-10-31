@@ -489,30 +489,28 @@ the Projects list's order) → the shared `RunDefinitionGroups` that a workspace
 section also renders. A Project row looks like a workspace row with the
 briefcase: its chevron expands it; its name selects the Project on the right
 panel's Projects board and expands it; its "+" opens New chat under the Project.
-Under it are agent and team groups (with count and "+", which opens New chat for
-that agent or team under the Project), a TEAMS group, and Org runs, each run with
-its delegated rows and their [Task lines](#task-summaries-in-the-workspaces-tree).
-A Project lists the runs started under it plus every run that hosts work of its
-Tasks (server [`projectRunHistory`](../../autobyteus-server-ts/docs/modules/run_history.md#project-run-history)),
-so one run can be listed under several Projects and also under its folder in
-Workspaces. Agent groups keep the 6 newest runs plus every run hosting open work
-of the Project, so a run beyond the Workspaces cap is listed and opens.
+Under it are agent groups and a TEAMS group (with count and "+", which opens New
+chat for that agent or team under the Project), each run with its delegated rows and
+their [Task lines](#task-summaries-in-the-workspaces-tree). There is no Org group.
+A Project lists **exactly the runs started under it** (server
+[`projectRunHistory`](../../autobyteus-server-ts/docs/modules/run_history.md#project-run-history)),
+so a run appears in at most one Project, and also under its folder in
+Workspaces. A run that only hands out a Project's Tasks (for example a Project
+Task Manager started in a workspace) is in no Project; it stays in Workspaces.
+Agent groups keep the 6 newest runs, as in Workspaces.
 States: "Loading Projects…", "Couldn't load Projects." with Retry, "No Projects
 yet" with New Project, a Project with "No runs yet", and, when a later read
 fails, the last good tree with "Couldn't refresh Projects." and Retry.
 
-**Delegated rows are scoped.** Under a listed run only the copies in that root's
-server `scope` for this Project are shown (and everything under them), for Agent,
-Team and Org runs alike (`utils/collaboration/taskExecutionScope.ts`). Work of
-another Project stays under that Project; a root started under the Project also
-shows its Temp-task work. A copy holding open Tasks of two Projects is listed
-under both, and its Task line shows its current Task, which can be the other
-Project's. Closing a Task removes its copies as in Workspaces.
+**Delegated rows are the Workspaces rows.** Under a listed run all its delegated
+runs are shown, as in Workspaces, whatever Project their Tasks belong to (a
+Task line can name another Project's Task). Closing a Task removes its copies as
+in Workspaces.
 
 **Open run.** Every listed run opens by run id, as in Workspaces. The open run is
-marked wherever it is listed; switching to Projects mode, or opening a run while
-it is shown, expands its ancestry in every Project that lists it
-(`composables/useProjectsTreeState.ts`) and the shared reveal scrolls to it.
+marked; switching to Projects mode, or opening a run while it is shown, expands
+its ancestry in its Project (`composables/useProjectsTreeState.ts`) and the
+shared reveal scrolls to it.
 Opening a run does not change the board's Project.
 
 **Actions.** A run's Stop, Archive and Delete are the Workspaces actions. A
@@ -524,19 +522,20 @@ when the mode is shown (one `GetProjectRunHistory` per Project, in parallel) and
 keeps the [change feed](#live-pages--change-feed) open while it is shown.
 `stores/projectRunsProjection.ts` builds the nodes with the Workspaces builders
 keyed by Project, adds local and draft runs from the agent and team contexts,
-overlays their live status, and builds the ancestry indexes. Reads are
+overlays their live status, and builds one ancestry per run. Reads are
 coalesced per Project (one in flight, one queued), an older answer never
 replaces a newer one, and a failed read keeps the last good snapshot. A Project
-is read again when:
-1. `task_upserted` / `task_removed` arrives for one of its Tasks;
-2. a Temp task's `task_upserted` names a root listed under it;
-3. the feed reports `connected` (every loaded Project);
-4. the web creates, archives, deletes or **stops** a run it lists. The store
-   observes the run history store's archive and delete actions and
-   `agentRunStore.terminateRun`, `agentTeamRunStore.terminateTeamRun` and
-   `agentOrgRunStore.terminate`;
-5. a delegated row appears whose copy is in no scope of its root yet (once per
-   copy).
+is read again only when its listing can change:
+1. the feed reports `connected` (every Project);
+2. a Project is added or renamed (`project_upserted`); a removed one
+   (`project_removed`) is dropped;
+3. a run is started under it from this window (`noteRunStarted`);
+4. the web archives, deletes or **stops** an Agent or Team run it lists. The
+   store observes the run history store's archive and delete actions and
+   `agentRunStore.terminateRun`, `agentTeamRunStore.terminateTeamRun`.
+
+Task events read nothing: delegated rows come from the run streams, as in
+Workspaces.
 
 Live status needs no re-read only for runs with a live context in this window:
 the projection overlays it as Workspaces does. A run without one (for example a
@@ -735,9 +734,9 @@ running development servers; the probe owns isolated flags/profiles.
 
 Projects mode in the left panel has unit and component coverage beside
 `stores/{projectRunsStore,projectRunsProjection,runSectionModeStore,chatDraftProjectChoice}.ts`,
-`utils/collaboration/taskExecutionScope.ts` and the history components
-(`ProjectsRunsTree.spec.ts`, `WorkspaceAgentOrgScopedRows.spec.ts`), the chip
-menu (`ChatWorkspaceMenu.projects.spec.ts`) and the scoped group archive. Its browser probe,
+the history components (`ProjectsRunsTree.spec.ts`), the chip menu
+(`ChatWorkspaceMenu.projects.spec.ts`) and the group archive of a Project's
+listed runs. Its browser probe,
 `pnpm -C autobyteus-web test:e2e:projects-left-navigation --output-dir <dir>`,
 runs PLN-01…PLN-10 on a probe-owned stack (built server, Nuxt dev, headless
 Chrome) with the scripted Antigravity CLI, so delegation, Task closure, the cap,
