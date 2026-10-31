@@ -27,3 +27,4 @@
   top-level regular `run_metadata.json` counts as content; any walk error keeps the run and logs it. Tests added
   (unreadable subfolder or injected `readdir` failure; symlink).
 - N-2 recorded as FU-004. Design case: `docs/design-cases.md` Case 4. Requirements unchanged (SR-002). Classification Small / High. Routing: ARCH-REV-002.
+- 2026-10-31, review result recorded: **ARCH-REV-002 Pass** on SR-004 (approval SR-002). AR-001 and AR-002 resolved. The reviewer routed to `/software_engineering_team/implementation_engineer`. Report: `design-review-report.md`.
