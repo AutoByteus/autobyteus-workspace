@@ -6,17 +6,17 @@ Latest complete result: round 4 (`ARCH-REV-004`). Rounds 1 (Fail), 2 (Pass) and 
 
 - Upstream Requirements Doc: `requirements-doc.md` (SR-004, `Approved`; REQ-010 amended and REQ-014, AC-010 added in round 3; no change in round 4)
 - Upstream Investigation Notes: `investigation-notes.md` (F-01…F-41)
-- Upstream Solution Revision Record: `solution-revision-record.md` (SR-004 notes 1–15)
+- Upstream Solution Revision Record: `solution-revision-record.md` (SR-004 notes 1–16)
 - Reviewed Design Spec: `design-spec.md` (status `Needs Review`; the user's go for the build of 2026-10-31 stands, the design approval is not pending), mainly "Activation Sequence" (Bounded Local / Internal Spines), Dependency Rules, Interface Boundary Mapping and the file mapping
 - Supplemental Task Artifacts Reviewed: `run-runtime-switch-contract.md` (data only now: §3.1–3.7, I-1…I-11), `code-review-report.md` (CRR-002), `follow-ups.md`, `solution-designer-handoff.md` (Round 4)
-- Relevant Solution Revision IDs: SR-004 (notes 14, 15)
+- Relevant Solution Revision IDs: SR-004 (notes 14, 15, 16)
 - Architecture Review Revision Record: `architecture-review-revision-record.md`
 - Current Architecture Review Revision ID: `ARCH-REV-004`
 - Current Review Round: 4
 - Trigger: revision after `ARCH-REV-003` (Fail, ARCH-F-007), plus the Solution Designer's own data-model review (the contract holds data only; the hand-over is derived from the raw traces instead of registered)
 - Prior Review Round Reviewed: round 3 (`ARCH-REV-003`, Fail)
 - Latest Authoritative Round: 4
-- Current-State Evidence Basis: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-runtime-resume`, branch `codex/cross-runtime-resume`, documents `ca4c82b050` (production code `3521ae05f1`; the new library methods do not exist yet, so they were judged from the design and from the code they wrap). Opened in code this round, besides the round-3 set: `autobyteus-ts` `run-memory-file-store.ts` (`archiveAndRewriteActive`, `removeActiveRawTracesArchivedByBoundary`, `findActiveRawTraceByCorrelationId`, `recordSystemInstructionSupply`), `raw-trace-archive-manager.ts` (`archiveRecords`, pending segments), `agent-run-activation-operation.ts` (prepare's own cleanup, `releasePrivate`, `inspect`), `standalone-agent-run-lifecycle-service.ts` (`activateSwitched`, `abortForRetry`, `resolveInsideTransition`), `agent-run-platform-notices.ts`, `skill-update-notice-service.ts` (a source's publication semantics), `agent-run-input-preface-dispatch.ts` (settle rules), `runtime-memory-event-accumulator.ts` (`recordForwardedUserMessage`: when a `user` record is written), `agent-memory/store/memory-file-store.ts` (`readJsonl`, `readRawTracesActive*`).
+- Current-State Evidence Basis: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-runtime-resume`, branch `codex/cross-runtime-resume`, documents `9a6e4dee30` (`ca4c82b050` plus the `switchId` addendum, SR-004 note 16; production code `3521ae05f1`; the new library methods do not exist yet, so they were judged from the design and from the code they wrap). Opened in code this round, besides the round-3 set: `autobyteus-ts` `run-memory-file-store.ts` (`archiveAndRewriteActive`, `removeActiveRawTracesArchivedByBoundary`, `findActiveRawTraceByCorrelationId`, `recordSystemInstructionSupply`), `raw-trace-archive-manager.ts` (`archiveRecords`, pending segments), `agent-run-activation-operation.ts` (prepare's own cleanup, `releasePrivate`, `inspect`), `standalone-agent-run-lifecycle-service.ts` (`activateSwitched`, `abortForRetry`, `resolveInsideTransition`), `agent-run-platform-notices.ts`, `skill-update-notice-service.ts` (a source's publication semantics), `agent-run-input-preface-dispatch.ts` (settle rules), `runtime-memory-event-accumulator.ts` (`recordForwardedUserMessage`: when a `user` record is written), `agent-memory/store/memory-file-store.ts` (`readJsonl`, `readRawTracesActive*`).
 
 ## Routing Classification Review
 
@@ -234,6 +234,10 @@ Primary pass: `/software_engineering_team/implementation_engineer`. Informationa
 - If the previous era's latest `system_instruction` equals the candidate's, the new era has no instruction record of its own (stated as `Unclear`; no consequence for the chat or the journal).
 - Native writer holding the active file across rotation (escalation trigger; none known). The first derivation of the hand-over for every published run costs one bounded read of the start of its active file, cached per publication.
 - The marker is not shown on reload after a compaction in the new era (above).
+
+## Addendum reviewed in round 4 — `switchId` replaces `requestedAt` (SR-004 note 16)
+
+`pendingRuntimeSwitch {switchId, from}`: the id is a UUID made at the first pending save, kept by later saves of the same switch, and new after an undo; the key is `runtime_switch:<runId>:<switchId>`; the time of the request had no reader and is dropped. Checked: contract §3.1, §3.3 identity and the stored before/after example, the design-spec commit function `commitAgentRunRuntimeSwitch({ metadata, selection, switchId })` and the tightness table, and REQ-001 ("its identity and the previous binding") are consistent, and no `requestedAt` remains in the design documents. The change is sound: a timestamp doubling as an identity was one field with two meanings; the retry of a failed activation reads the stored `switchId`, so the key, the segment and the derived marker id stay stable across attempts; an undo followed by a new switch gets a new id, so keys never repeat; the commit function stays pure (the updater makes the id). Notes for implementation: the built code and tests still use `requestedAt` (`agent-run-pending-runtime-switch.ts`, `agent-run-runtime-switch-commit.ts`, `agent-run-metadata-types.ts`, `runtime-switch.ts`, `agent-run-history-catalog-service.ts`): rename as a clean cut with no alias; a pending field written by the earlier build (isolated test data only, nothing released) would fail its parse and affect that run only (DESIGN rule 7). No finding.
 
 ## Latest Authoritative Result
 

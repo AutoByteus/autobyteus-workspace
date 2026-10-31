@@ -9,7 +9,7 @@ The latest `design-review-report.md` remains authoritative. This record holds th
 | ARCH-REV-001 | Round 1 / Solution Designer handoff "Architecture Design Complete" (Large / High) | SR-004 (notes 1–7) | N/A | Fail | ARCH-F-001, ARCH-F-002, ARCH-F-003, ARCH-F-004, ARCH-F-005 |
 | ARCH-REV-002 | Round 2 / revision after ARCH-REV-001; autobyteus-343 delivered; rename decided (option A) | SR-004 (notes 8–11) | Fail | Pass | ARCH-F-001…005 resolved; ARCH-F-006 new (Low) |
 | ARCH-REV-003 | Round 3 / failure-origin review CRR-002 of the built system (F-1 candidate records, F-2 chat after reload, F-3 pending context) | SR-004 (note 14) | Pass | Fail | ARCH-F-006 resolved; ARCH-F-007 new (Medium, blocking) |
-| ARCH-REV-004 | Round 4 / revision after ARCH-REV-003 and the Solution Designer's data-model review (SR-004 note 15) | SR-004 (note 15) | Fail | Pass | ARCH-F-007 resolved; ARCH-F-008 new (Low) |
+| ARCH-REV-004 | Round 4 / revision after ARCH-REV-003 and the Solution Designer's data-model review (SR-004 notes 15, 16) | SR-004 (notes 15, 16) | Fail | Pass | ARCH-F-007 resolved; ARCH-F-008 new (Low) |
 
 ## Revision Entries
 
@@ -100,3 +100,4 @@ None.
 - Material classification changes: none; `task_size=Large`, `architectural_risk=High` confirmed
 - Recommended recipient: `/software_engineering_team/implementation_engineer` (primary pass), then `/software_engineering_team/solution_designer` (informational)
 - Remaining risks or uncertainty: the instruction dedupe across eras (`Unclear`, no consequence for chat or journal); the marker is not shown on reload after a compaction in the new era (tell the user); a duplicated notice after a restart in the no-turn-id case.
+- Addendum included in this round: SR-004 note 16 (documents `9a6e4dee30`), `requestedAt` → `switchId` (UUID at the first pending save, kept by later saves of the same switch, new after an undo; key `runtime_switch:<runId>:<switchId>`). Verified consistent across contract §3.1/§3.3, the design spec and REQ-001; sound; no finding. Implementation renames the built `requestedAt` as a clean cut.
