@@ -7,6 +7,7 @@ The latest `code-review-report.md` (or `api-e2e-test-review-report.md`) is autho
 | Revision ID | Canonical Review Report | Entry Point / Trigger | Prior Result | Current Result | Affected Finding IDs |
 | --- | --- | --- | --- | --- | --- |
 | CRR-001 | `code-review-report.md` | Implementation Review, round 1 (IR-001) | N/A | Pass | None |
+| CRR-002 | `code-review-report.md` | API/E2E Failure-Origin Review, round 2 (API-REV-001 F-API-001) | Pass | Fail: `Requirement Gap` → Solution Designer | F-API-001 |
 
 ## Revision Entries
 
@@ -38,3 +39,32 @@ None.
 - Material score or classification changes: N/A (baseline); Small / High confirmed
 - Recommended recipient: API/E2E engineer
 - Remaining risks or uncertainty: AC-004 and N-4 timing are validation-owned; FU-001 to FU-004.
+
+### CRR-002 — Failure-origin review of F-API-001 (a hard-killed activation leaves non-empty never-started runs)
+
+- Canonical review report updated: `code-review-report.md` (§ Round 2; Latest Authoritative Result)
+- Review entry point and round: API/E2E Failure-Origin Review, round 2
+- Review scope: `N/A` (failure-origin)
+- Triggering role, report path, and finding or scenario IDs: API/E2E engineer, `api-e2e-execution-coverage-report.md` (API-REV-001), F-API-001, AC-004 crash variant; evidence API-03, API-03B to API-03E
+- Relevant solution revision IDs: SR-002, SR-004
+- Relevant architecture-review revision IDs: ARCH-REV-002
+- Relevant implementation revision IDs: IR-001
+- Relevant API/E2E revision IDs: API-REV-001
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: `Pass` (CRR-001)
+- Current authoritative result: `Fail`, `Requirement Gap`, owned by the Solution Designer
+- What changed in the review result and why:
+  - A SIGKILL during activation leaves runs holding the activation's `system_instruction` trace, and sometimes a stale temp record with `startedAt`.
+  - The startup rule keeps them, exactly as REQ-002 ("no file besides the record") prescribes, so AC-004 fails for hard kills.
+  - The code matches the approved rule. Widening "empty" is the user's DEC-001 call.
+  - My round 1 review did not trace activation's writes inside the run folder; that is partly a gap.
+- Supported product scenario / material-premise basis changes: AC-004's crash variant is classified as a `Supported Explicit Edge Scenario` (the desktop force step, Docker's SIGKILL, an OS kill). It is rare, with a cosmetic consequence.
+
+#### Prior Finding Resolution
+
+None (CRR-001 had no findings).
+
+- New or remaining finding IDs: F-API-001 (Requirement Gap)
+- Material score or classification changes: None; Small / High
+- Recommended recipient: Solution Designer
+- Remaining risks or uncertainty: depends on the chosen direction: (a) a narrow artifact allowlist, (b) changing the activation order, or (c) accepting a residual and narrowing AC-004 to a graceful stop.

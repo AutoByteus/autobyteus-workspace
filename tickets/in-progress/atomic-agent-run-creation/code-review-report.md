@@ -2,9 +2,67 @@
 
 All ticket paths are under `/Users/normy/autobyteus_org/autobyteus-worktrees/atomic-agent-run-creation/tickets/in-progress/atomic-agent-run-creation/`.
 
+> **Latest round: 2, API/E2E Failure-Origin Review (CRR-002), `Fail` → `Requirement Gap` for the Solution Designer.** Round 1 (CRR-001, `Pass`) is kept below; § Round 2 and the Latest Authoritative Result supersede it.
+
+## Round 2 — Failure-Origin Review of F-API-001 (CRR-002)
+
+### Meta
+
+- Trigger: API/E2E engineer, API-REV-001 `Fail` (88.5%).
+  - Code `c533fc0b5b` + `93fa105819`, validated from a clean checkout of `1dca0e2ad6`, with a base checkout `e87e6bb2b1` for contrast.
+  - Evidence `2b87d1ab16`.
+- Coverage investigation / execution report / API/E2E revision record: `api-e2e-coverage-investigation.md`, `api-e2e-execution-coverage-report.md`, `api-e2e-revision-record.md` (API-REV-001).
+- Project testing guideline: `TESTING.md`. Every server ran on a temporary data root. The user's data was read once, read-only, for key names.
+- Failing scenario: AC-004, crash variant: a `createAgentRun` whose server process is SIGKILLed during activation, then a relaunch.
+- Command: `env -i PATH="$PATH" HOME="$HOME" USER="$USER" LOGNAME="$LOGNAME" TMPDIR="$TMPDIR" ONLY_CRASH=1 node evidence/API-349-probe.mjs ac004 <built server> <base server> <out dir> <id>`.
+- Evidence (`evidence/`): `API-03-result.json`, `API-03C-result.json`, `API-03E-result.json` (`crash[].leftoverDisk`, `relaunch.crash-new`).
+
+### What the evidence shows
+
+The probe crashed the server 5 times. Each crash left 1–3 runs with `preparedAt` set and no `startedAt`, in three shapes:
+
+| Shape | Folder contents | New build at relaunch |
+| --- | --- | --- |
+| 1 | `run_metadata.json` only | Removed and logged (as designed) |
+| 2 | record + `raw_traces_active.jsonl` (2047–2048 B; one line, `trace_type: "system_instruction"`, content `## Agent Identity …`, the agent's system prompt written during activation) | Kept, with no log line; listed as an empty offline run |
+| 3 | shape 2 + `run_metadata.json.<pid>.<ts>.<hash>.tmp` (800 B; a record **with** `startedAt`: the crash fell between the temp write and the rename of the start commit) | Kept, with no log line; listed |
+
+Both variants that do not crash pass:
+- AC-004 with a stuck activation, then SIGTERM, through 339's grace, the bound and the sweep, left no run.
+- AC-001 to AC-003 and AC-005 pass.
+
+### Origin
+
+- **Not an implementation defect.** `holdsOnlyItsRecord` treats any file except the top-level `run_metadata.json` as content, exactly as REQ-002 says ("its folder holds no file besides the record"), as the user approved after the read-only count, and as the design specifies. Shapes 2 and 3 hold a second file, so keeping them is the specified behavior. Keeping a run without logging is also as designed: only removals and unreadable data are logged. A kept run with content is not an anomaly under the current rule.
+- **Not a test problem.** SIGKILL during activation is a real interruption at the process boundary, repeated until leftovers appeared.
+- **Scenario validity:** `Supported Explicit Edge Scenario`. Arbitrary crashes and power loss are out of scope by default (Principle 6). But the product has its own hard-kill paths:
+  - the desktop's force step after its 20 s window (284);
+  - Docker's SIGKILL after its stop grace (284 FU-004);
+  - an OS kill.
+
+  The problem statement names the case ("if the server stops during the start, it stays too"), and AC-004 names "a create still running when the server process ends". The window is short (the activation's few hundred ms), so it is rare, and the consequence is cosmetic: an empty offline run in history, the same as on the base build.
+- **Requirement Gap:** REQ-002's definition of "empty", whose deletion criterion is user-owned under DEC-001, does not cover the artifacts an activation writes before `startedAt` is committed. For a hard-killed activation, REQ-002 and AC-004 disagree. Resolving that changes which stored runs are deleted, or what activation writes, or what AC-004 promises, and that decision belongs to the requirements owner and the user.
+- **Review gap:** in round 1 I checked that content outside the run folder isn't counted (design § Risks), but I did not trace what activation writes **inside** the folder before `startedAt`. That would have needed a read of the runtime activation path beyond this change. It is partly a gap: the question "what does an interrupted start leave?" was the ticket's own premise.
+
+### Directions (for the Solution Designer and the user; not prescribed)
+
+- **a. Narrow allowlist of activation artifacts.** Treat as non-content only:
+  - a `raw_traces_active.jsonl` whose every entry is `trace_type: "system_instruction"`;
+  - a stale `run_metadata.json.*.tmp`.
+
+  It closes AC-004 for crashes. The cost is that the deletion rule now parses trace content. That adds a little risk to a rule that deletes user data, and it must stay as strict as the walk: an unreadable or unparsable trace keeps the run.
+- **b. Change the activation order.** Write the system-instruction trace only after `startedAt` is committed. The deletion rule stays simple, but the change reaches into runtime activation (outside this ticket's Change Scope). Shape 3's stale `.tmp` would still need (a) or a cleanup of stale temp records.
+- **c. Accept it as a recorded residual.** Narrow AC-004 to a graceful stop (SIGTERM, which passes) and record hard-kill leftovers as a follow-up. It is rare and cosmetic, and it keeps the deletion rule at the approved, simplest definition.
+- **My view, for the record:** the consequence is cosmetic and rare, and the rule deletes user data. So (c), or (a) at its narrowest, seems proportionate. (b) is the cleanest root fix, but it is broader than this ticket. Any widening of "empty" needs the user's approval under DEC-001.
+
+### Other notes
+
+- N-4: 4.56 s for 302 removals among 608 folders (about 15 ms per removal), and 124 ms on the next start. On the user's data (6 removals) that is about 0.1 s once. That's acceptable, with no finding.
+- A stale `run_metadata.json.*.tmp` left by a crash during any record write, including on started runs, is never cleaned. It is harmless, so it isn't recorded as a follow-up unless the designer's direction touches it.
+
 ## Review Round Meta
 
-- Review Entry Point: `Implementation Review`
+- Review Entry Point (round 1): `Implementation Review`
 - Requirements Doc Reviewed As Context: `requirements-doc.md` (Approved by the user, SR-002: REQ-001 to REQ-003, DEC-001 = A with the content check, DEC-002)
 - Investigation Notes Reviewed As Context: `investigation-notes.md` (F-01 to F-09; the read-only count: 6 empty never-started runs, 11 May runs with conversations)
 - Solution Revision Record Reviewed As Context: SR-001 to SR-004
@@ -174,6 +232,19 @@ N/A: the review passes.
 - Content stored outside the run folder is not counted (design § Risks; none known).
 
 ## Latest Authoritative Result
+
+**Round 2 (CRR-002), authoritative:**
+
+- Review Decision: `Fail` (failure-origin)
+- Review Entry Point: `API/E2E Failure-Origin Review`
+- Supported Product Scenario Gate: `Pass`. The crash during activation is a `Supported Explicit Edge Scenario` through the product's own hard-kill paths.
+- Material-Premise Gate: `Pass`
+- Score note: the round 1 scores stand. The code matches the approved rule, so the gap is in the requirement, not in implementation quality.
+- Failure Origin: `Requirement Gap`. REQ-002's "no file besides the record" does not cover activation artifacts (the system-instruction trace, a stale temp record), so REQ-002 and AC-004 disagree for a hard-killed activation.
+- Recommended Recipient: Solution Designer, who takes it to the user (DEC-001 is user-owned).
+- Notes: AC-001 to AC-003 and AC-005 pass, and AC-004's graceful (SIGTERM) variant passes.
+
+**Round 1 (CRR-001), superseded:**
 
 - Review Decision: `Pass`
 - Review Entry Point: `Implementation Review`
