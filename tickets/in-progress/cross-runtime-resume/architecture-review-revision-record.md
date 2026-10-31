@@ -8,6 +8,7 @@ The latest `design-review-report.md` remains authoritative. This record holds th
 | --- | --- | --- | --- | --- | --- |
 | ARCH-REV-001 | Round 1 / Solution Designer handoff "Architecture Design Complete" (Large / High) | SR-004 (notes 1–7) | N/A | Fail | ARCH-F-001, ARCH-F-002, ARCH-F-003, ARCH-F-004, ARCH-F-005 |
 | ARCH-REV-002 | Round 2 / revision after ARCH-REV-001; autobyteus-343 delivered; rename decided (option A) | SR-004 (notes 8–11) | Fail | Pass | ARCH-F-001…005 resolved; ARCH-F-006 new (Low) |
+| ARCH-REV-003 | Round 3 / failure-origin review CRR-002 of the built system (F-1 candidate records, F-2 chat after reload, F-3 pending context) | SR-004 (note 14) | Pass | Fail | ARCH-F-006 resolved; ARCH-F-007 new (Medium, blocking) |
 
 ## Revision Entries
 
@@ -54,3 +55,25 @@ None.
 - Material classification changes: none; `task_size=Large`, `architectural_risk=High` confirmed
 - Recommended recipient: `/software_engineering_team/implementation_engineer` (primary pass, with a hold until the user's final approval of the design), then `/software_engineering_team/solution_designer` (informational)
 - Remaining risks or uncertainty: unproven offline-host-with-registered-root path (FU-008); in-memory notice lost on a restart (accepted); real-backend check of I-7 happens in the real run.
+
+### ARCH-REV-003 — Round 3: watermark order and one chat reader accepted; the retry path of the watermark fails
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-runtime-resume/tickets/in-progress/cross-runtime-resume/design-review-report.md`
+- Review round and trigger: round 3; Solution Designer revision after the failure-origin review CRR-002 (`code-review-report.md`, `solution-designer-handoff.md` "Round 3"), documents `69426cd284`
+- Triggering role, report path, and finding IDs: Code Reviewer (CRR-002: F-1, F-2 Design Impact, F-3 Local Fix), relayed by the Solution Designer
+- Relevant solution revision IDs: SR-004 (note 14)
+- Prior authoritative decision: Pass (ARCH-REV-002)
+- Current authoritative decision: Fail (Design Impact)
+- What changed in the review result or what baseline was established: CRR-002's two premises confirmed in code (a native candidate writes its `system_instruction` while it prepares; Grok writes at backend creation; the chat reads the active file only). Accepted: the order `begin (watermark) -> prepare -> validate -> record -> persistAndPublish -> register`, the single library call, the chat reader serving `buildProjection` and `buildActiveTracePage` with an unchanged cursor-generation rule, the pending-context rule for F-3, the requirement changes (REQ-010, REQ-014, AC-010). Found: on a retry after a failed start the watermark is re-read after the failed candidate's own record, the instruction dedupe writes nothing, and `record` archives the new agent's record with the previous agent's (ARCH-F-007).
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| ARCH-F-006 | Open (Low, non-blocking) | Resolved | SR-004 note 14 and the earlier text pass | Design-spec status, notes range and persisted-data counts updated; `ExistingRunConfigEditor.vue`, `AgentModelConfigMutationResult` and the two docs are in the mapping; F-38…F-41 added to the notes |
+| ARCH-F-001…005 | Resolved (round 2) | Still resolved | | The activation commit, root hop, open-file runtime, stored spelling and rename are untouched by this revision |
+
+- New or remaining finding IDs: ARCH-F-007 (Medium, blocking)
+- Material classification changes: none; `task_size=Large`, `architectural_risk=High` confirmed
+- Recommended recipient: `/software_engineering_team/solution_designer`
+- Remaining risks or uncertainty: whether the system-instruction dedupe can suppress a new era's own record across eras (`Unclear`, no mechanism required); the marker disappears from a reloaded chat after a compaction in the new era (stated in §3.7; tell the user).

@@ -1,6 +1,6 @@
 # Run Runtime Switch Contract — files on disk and the data model (autobyteus-316), v2
 
-Status: **v2, aligned with the design** (SR-004). It replaces v1 of 2026-10-29: the switch marker is now a platform notice record (not a new raw-trace record type), the journal manifest records each file's runtime, the settings save records only a pending switch, and the folder test (§5) has been run. Every statement marked *Read* is from code on `origin/personal` @ `9d59ab82ec`; *Reproduced* was run on synthetic data in an isolated temp folder (`probes/runtime-switch-folder.probe.test.ts`); *Measured* is a read-only count on the user's real memory.
+Status: **v3: data model and shapes only; the sequences are in `design-spec.md`** (SR-004). It replaces v1 of 2026-10-29: the switch marker is now a platform notice record (not a new raw-trace record type), the journal manifest records each file's runtime, the settings save records only a pending switch, and the folder test (§5) has been run. Every statement marked *Read* is from code on `origin/personal` @ `9d59ab82ec`; *Reproduced* was run on synthetic data in an isolated temp folder (`probes/runtime-switch-folder.probe.test.ts`); *Measured* is a read-only count on the user's real memory.
 
 Words: **run** = one agent run identified by `runId` (never changes); **provider binding** = `runtimeKind` + model + model settings + `platformAgentRunId` (the provider's own session ID); **switch** = replacing the provider binding of a stopped standalone agent run; **segment** = one raw-trace file (`raw_traces_NNNNNN.jsonl` or the active file); **previous agent** = the backend that ran an earlier segment.
 
@@ -39,7 +39,15 @@ pendingRuntimeSwitch?: {
 ```
 
 - Written by the settings save of a **stopped, unarchived, standalone agent run** that is not application-owned and not system-owned (`isCollaborationEligibleStandaloneRun`). A second save before the first message keeps the first `from`. A save that selects the original runtime again (`from.runtimeKind`) is the undo: the original session ID (`from.platformAgentRunId`) is restored and the field is cleared, and the model and settings the user chose in that save are written (a different model of the original runtime is kept, not lost).
-- Cleared by the activation commit (3.3 step 5). The history of switches is not duplicated here (it is in the raw-trace manifest and the marker records).
+- Cleared by the activation commit (design-spec, Activation Sequence). The history of switches is not duplicated here (it is in the raw-trace manifest and the marker records).
+- **Stored before and after the activation commit** (the commit writes the new session ID and removes the pending field in the same write; `startedAt` is unchanged):
+  ```
+  before: { runId, runtimeKind: "codex_app_server", llmModelIdentifier: "…", llmConfig: {…}, platformAgentRunId: null,
+            startedAt: "2026-10-29T…", pendingRuntimeSwitch: { requestedAt: "2026-10-30T10:00:00Z",
+              from: { runtimeKind: "claude_agent_sdk", llmModelIdentifier: "…", llmConfig: {…}, platformAgentRunId: "sess-1" } }, … }
+  after:  { runId, runtimeKind: "codex_app_server", llmModelIdentifier: "…", llmConfig: {…}, platformAgentRunId: "thread-9",
+            startedAt: "2026-10-29T…", … }          // no pendingRuntimeSwitch key
+  ```
 - Optional field whose absence means "no pending switch": **Directly Usable — No Migration** (data-migration guideline § 2: a compatible change).
 
 ### 3.2 `raw_traces_manifest.json` (existing; one new `boundary_type` value)
@@ -54,25 +62,27 @@ New value: `boundary_type: "runtime_switch"` (one added member of the library's 
 
 *Why not a new trace type:* the history projection turns raw `system_task_notification` records into chat notices and ignores unknown types (`raw-trace-to-historical-replay-events.ts:201-216`), and the journal already renders them as `Notice:`; so a notice gives the chat marker and the journal line with no change to either reader. Record: `trace_type: "system_task_notification"`, `sender_id: "system.runtime_handover"` (a new sender id beside the existing ones in `system-task-notification-senders.ts`; it is deliberately NOT added to `RECORDED_SYSTEM_NOTICE_SENDER_IDS`: the marker is recorded once at activation, the live notice of 3.6 only shows it), content one short line: `Agent runtime changed from <Codex App Server> (<model>) to <Claude Agent SDK> (<model>).` (names as in GLOSSARY.md, `agentRuntimeName`; no short forms) It carries the boundary key as its `correlation_id` (the memory writer's notice branch is extended to keep a correlation id, as the compaction boundary branch does), so a retry finds it with the store's existing lookup by correlation id (`findActiveRawTraceByCorrelationId`), the way the provider compaction boundary recorder does.
 
-**Write order at the first message after a switch** (inside the run's existing transition lane, `StandaloneAgentRunLifecycleService.withTransition`):
-1. Read metadata: `pendingRuntimeSwitch` present → the switch activation (else the normal restore or prepared start). The switch decides on the explicit field only; `platformAgentRunId` is null until step 5 (I-6) but is not the condition.
-2. Watermark (`RuntimeSwitchMemory.begin`): read the id of the last record of the active raw-trace file (none when the file is empty). Nothing is written.
-3. Prepare the new backend as a fresh session (`beginActivation({kind:"new", runId, config}).prepare()`, the same call a prepared run uses); validate; nothing is published. **A candidate can write its own raw-trace records while it prepares.** Read per target runtime: native — the bootstrap `SystemPromptProcessingStep` appends its `system_instruction` record (`system-prompt-processing-step.ts:39` → `RunMemoryFileStore.recordSystemInstructionSupply`, `run-memory-file-store.ts:128-152`; measured by API/E2E); Grok (ACP factory) — `captureInstructions` when the backend is created (`acp-agent-run-backend-factory.ts:176-185`, read; not yet exercised); Claude (when its process opens, `claude-session.ts:366`), Codex (when its thread starts, `codex-thread-manager.ts:201`) and Antigravity (no capture call) — after the marker, measured clean in the live runs. The design does not depend on the list: whatever a candidate writes during step 3 comes after the watermark.
-4. Switch recorder (`agent-memory`, `RuntimeSwitchMemory.record`), one library call (`RunMemoryFileStore.rotateActiveRawTracesForRuntimeSwitch`): the records through the watermark are archived as the `runtime_switch` segment, and the active file becomes the marker followed by the records written after the watermark (the candidate's own). Idempotent by the boundary key (the segment) and by the marker's correlation id (the marker): a retry after a partial attempt completes what is missing and writes nothing twice. With no records through the watermark nothing is archived and the marker starts the file.
-5. Commit metadata through the lifecycle's existing `persistAndPublish`, which writes through `AgentRunHistoryCatalogService.recordRunStarted`; that writer gains one explicit input, `clearPendingRuntimeSwitch`, because today it overrides only `runtimeKind`, `platformAgentRunId` and `startedAt` and would leave the pending field in the file (`agent-run-history-catalog-service.ts:202-232`). Stored before → stored after (and the target `persistAndPublish` compares against):
-   ```
-   before: { runId, runtimeKind: "codex_app_server", llmModelIdentifier: "…", llmConfig: {…}, platformAgentRunId: null,
-             startedAt: "2026-10-29T…", pendingRuntimeSwitch: { requestedAt: "2026-10-30T10:00:00Z",
-               from: { runtimeKind: "claude_agent_sdk", llmModelIdentifier: "…", llmConfig: {…}, platformAgentRunId: "sess-1" } }, … }
-   after:  { runId, runtimeKind: "codex_app_server", llmModelIdentifier: "…", llmConfig: {…}, platformAgentRunId: "thread-9",
-             startedAt: "2026-10-29T…" (unchanged), … }          // no pendingRuntimeSwitch key
-   ```
-   The run history row's `terminatedAt` is reset by the same call, as for any reactivation. **Retry rule:** a commit that did not land leaves the stored metadata equal to the pending original; `persistAndPublish` then aborts its candidate and the next send retries (one boolean, `unchangedIsRetryable`, true for a prepared start and for a switch, with `original` carrying the pending metadata).
-6. Publish the run; register the hand-over facts in memory for the first input (3.6).
+**Identity.** The switch key is `runtime_switch:<runId>:<requestedAt>`. The marker's trace id is derived from it (`rt_runtime_switch_` + the first 24 hex characters of the SHA-256 of the key), so it is the same on every attempt and equals the segment's `boundary_trace_id` (I-3).
 
-**Failure behavior (supported scenario: an activation that fails and is sent again, the existing retry of `activateOnce`):** a failure before step 4 writes no marker and archives nothing — the only residue is whatever the failed candidate itself wrote (for a native target a `system_instruction` record at the tail of the previous era's file, as for any failed native start; the next prepare's identical instruction is not written twice by `recordSystemInstructionSupply`); a throw from step 4 aborts the candidate (`abortForRetry`) before the error propagates, as `validateCandidateOrAbort` does; a failure of step 5 after step 4 leaves the metadata pending, and the retry completes step 4 idempotently (finds the segment and the marker) and commits; after 5 it is a normal run. A user who abandons a failed attempt (undoes, or picks a third runtime) leaves no marker and no archive behind. The marker is never written twice for one key. A process crash is not a supported scenario of this design; one consequence is stated for honesty: a crash after 4 and before the first input loses the in-memory hand-over notice only (the marker and journals remain; the user can restate the task).
+**The archive step (one library call, `RunMemoryFileStore.rotateActiveRawTracesForRuntimeSwitch({boundary, marker, throughTraceId})`, built on the same private `archiveAndRewriteActive` as the other rotations).** Rules:
+1. If a complete segment with the key exists, the watermark (`throughTraceId`) is ignored: the ids that segment holds are removed from the active file and the marker is ensured first.
+2. Otherwise the records through the watermark are archived as the `runtime_switch` segment (none when the watermark is absent: no segment is made) and the active file becomes the marker followed by the records after the watermark.
+3. The marker is written only if no record with the key as correlation id is in the active file; it is always first.
 
-*Reproduced* with the first design's order — marker appended, then rotation before it (`probes/runtime-switch-folder.probe.test.ts`, real `RunMemoryFileStore`, synthetic data; the order is superseded by the watermark order above because it archived a native candidate's own record, CRR-002 F-1): after the marker and the rotation the folder holds `raw_traces_000001.jsonl` (the 8 old records) and `raw_traces_active.jsonl` (marker first, then the new records appended); the manifest has one `complete` entry `runtime_switch` / `CLAUDE` / 8 records; a second rotation with the same key returns `null` and moves nothing; the marker exists once.
+Idempotent: a repeated call, a retry after a failed commit, and a call after an interrupted rewrite complete what is missing and write nothing twice.
+
+**What a switch leaves in the folder** (`L` = the last record of the previous era, `S` = a record the new agent's candidate writes while it prepares: a native agent's system instruction, Grok's captured instructions; `M` = the marker):
+
+| Case | Active file | Manifest |
+| --- | --- | --- |
+| Before any attempt | `[r1 … L]` | `[… earlier entries]` |
+| First attempt, success (after `record`) | `[M, S, …]` | `+ {boundary_type: runtime_switch, boundary_key: K, boundary_trace_id: M, runtime_kind: from.runtimeKind, status: complete}`; the segment file holds `[r1 … L]` |
+| First attempt, the start fails after `S` was written (after the lifecycle's discard) | `[r1 … L]` (the failed candidate's records are gone) | unchanged |
+| Retry after that | as "first attempt, success" | as "first attempt, success" |
+| Retry after a failed metadata commit (the first `record` succeeded) | `[M, S, …]` unchanged: the watermark is ignored (rule 1), the marker is present, an identical instruction is not written again | unchanged |
+| Retry after an interrupted rewrite (segment exists, active not yet rewritten) | `[r1 … L, S]` → the archived ids are removed, `M` is put first → `[M, S]` | the segment entry is complete |
+
+**Sequence, failure rules and the per-target table live in the design (`design-spec.md`, "Activation Sequence").** The contract holds what ends up on disk.
 
 ### 3.4 `work_journal/` (derived)
 
@@ -86,7 +96,7 @@ A switch never edits or deletes them.
 
 ### 3.6 Hand-over notice (the message the new agent receives)
 
-A platform notice delivered through the existing next-input route (`AgentRunPlatformNotices`, a third source beside the tool-list and skill-update notices), with its own system sender, so the agent does not take it for the user's words. It has two texts (the preface type already separates them): the **model text** (below), and the **presentation** (the one short marker line of 3.3, published live as the run's system notice). It is sent once per switch with the first external input and built by the server from facts only; no model writes it. Written as one person handing over to another: it says there was earlier work, where the journal is, where to start, and that the rest is there if wanted. Facts and pointers only; the agent decides what to read and how to proceed; the user's last request is not repeated (the user's message follows the notice and the journal has the history):
+A platform notice delivered through the existing next-input route (`AgentRunPlatformNotices`, a third source beside the tool-list and skill-update notices), with its own system sender, so the agent does not take it for the user's words. It has two texts (the preface type already separates them): the **model text** (below), and the **presentation** (the one short marker line of 3.3, published live as the run's system notice). It is sent once per switch with the first external input and built by the server from facts only; no model writes it. **Whether a hand-over is pending is derived from the raw traces, not stored or remembered:** it is pending while the first record of the active file is the hand-over marker and no `user` record follows it (read from the start of the file; the scan stops at the first `user` record, so a run that never switched is decided by its first record). After the input is recorded as a `user` record the hand-over is done. So it survives a restart and cannot be lost with a process. Written as one person handing over to another: it says there was earlier work, where the journal is, where to start, and that the rest is there if wanted. Facts and pointers only; the agent decides what to read and how to proceed; the user's last request is not repeated (the user's message follows the notice and the journal has the history):
 
 ```
 [System: runtime hand-over]
@@ -101,7 +111,7 @@ Each entry is one line, such as "[HH:MM:SS] User: …", "Agent: …" or "Command
 link to the full record. Long output is shortened.
 ```
 
-Facts and where each comes from: the journal files, their periods, sizes and lines from the journal service (`ensureCurrent`, `listJournalFiles`). The notice names no agent runtime or model: the agent acts on where the work is recorded, not on which product recorded it (the user, 2026-10-30). The runtimes appear only in the chat marker (3.3), which is for the user, and inside the journal service, which uses each file's runtime to render it (3.4). If the notice cannot be delivered with the first input (the dispatch is rejected or requeued) it stays pending in memory for the next input (the existing preface settle rules).
+Facts and where each comes from: the journal files, their periods, sizes and lines from the journal service (`ensureCurrent`, `listJournalFiles`). The notice names no agent runtime or model: the agent acts on where the work is recorded, not on which product recorded it (the user, 2026-10-30). The runtimes appear only in the chat marker (3.3), which is for the user, and inside the journal service, which uses each file's runtime to render it (3.4). If the notice cannot be delivered with the first input (the dispatch is rejected or requeued) no `user` record follows the marker, so it is pending again for the next input (the existing preface settle rules). If a dispatch forwards the notice and the process ends before the `user` record is written, the next input carries it again.
 
 ### 3.7 What the chat reads (BEH-005, REQ-011, REQ-014)
 
@@ -117,10 +127,11 @@ The history projection of a run (`LocalMemoryRunViewProjectionProvider.buildProj
 | I-4 | The `runtime_kind` of the archived segment before a switch equals `from.runtimeKind` of the switch that made it; the open file's runtime is `openRawTraceRuntimeKind(metadata)`: `from.runtimeKind` while a switch is pending, otherwise `run_metadata.runtimeKind`. |
 | I-5 | No two manifest entries share a `boundary_key`; one marker record per key. |
 | I-6 | `pendingRuntimeSwitch` present ⇒ the activation has not committed: `platformAgentRunId` is null until the commit, and the commit removes the field in the same write that sets the session ID. A marker with the key may already exist (a failed activation sent again finds it). |
-| I-7 | No segment holds records of two runtimes: every record the new runtime's candidate writes while it prepares is after the marker (the watermark), and every record of the previous runtime is before it. |
+| I-7 | No file holds records of two runtimes, on the first attempt and on every retry: no record a candidate wrote is in the previous agent's segment, and no record the previous agent wrote is in the new era's file. A failed attempt that did not reach `record` leaves nothing of the candidate in the previous era's file. |
 | I-8 | Old segments and old journal files are byte-unchanged by a switch. |
 | I-9 | The journal manifest entry of a file has `runtime_kind` equal to the file's runtime by the 3.2 rule (an archived segment: its entry; the open file: `openRawTraceRuntimeKind(metadata)`). |
 | I-10 | The chat of a switched run is built from its `runtime_switch` segments in index order followed by the active file (3.7). |
+| I-11 | A pending hand-over is derived: the first record of the active file is the hand-over marker and no `user` record follows it. No flag is stored. |
 
 ## 5. Validation (what has been done, what is planned)
 
