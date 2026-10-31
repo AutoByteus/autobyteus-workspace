@@ -17,6 +17,10 @@ After the explanation that "hello" is one run listed under every Project whose T
 
 > "this is incorrect because earlier the project task manager is created under the super repo workspace … even though currently … I haven't started any agent run … by selecting a certain project. So I would expect that to be empty at least … if I don't have any agent run which are directly created under any project, then we don't show it. But instead of showing the same run under every project … I would expect that the UI shows the data. You know, UI is reflecting the data."
 
+## Release Decision (user, 2026-10-31)
+
+- The user: "i would like to release a beta for this when its finished thanks". Once delivery has finalized this ticket on `origin/personal`, release a **beta** following `RELEASE.md`. This is the user's release word for autobyteus-353 only.
+
 ## Problem And Desired Outcome
 
 - Problem: 347 lists a run under every Project whose Tasks it handed out (347 REQ-003, DEC-005). The user's Project Task Manager "hello", started in the superrepo workspace, is shown under 6 Projects and reads as duplicates (investigation E-001…E-003).

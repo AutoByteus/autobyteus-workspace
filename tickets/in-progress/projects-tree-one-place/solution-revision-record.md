@@ -18,3 +18,7 @@
 - Design: remove 347's derived listing, scopes, Org rows, `pinned`, Task-event triggers; rows unscoped as in Workspaces. No persisted-data change.
 - Classification: task_size Medium, architectural_risk Low → direct implementation (handoff rule).
 - Next action: implementation.
+
+### Note — release decision (no solution change)
+
+- The user, 2026-10-31: "i would like to release a beta for this when its finished thanks". Recorded in requirements-doc.md § Release Decision and handoff-implementation.md; delivery releases a beta after finalization.

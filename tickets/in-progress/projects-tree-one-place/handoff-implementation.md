@@ -9,6 +9,10 @@
 
 The user (bug report on beta v1.5.11-beta.8): his Project Task Manager run "hello" appears under almost every Project in the Projects tree. It is one run, started in the superrepo workspace, listed under every Project whose Tasks it handed out (347's derived listing). His decision (2026-10-31): a Project shows only runs started under it; "UI is reflecting the data". A run not started under a Project is not in the Projects tree. Under a listed run, its delegated work shows as in Workspaces.
 
+## Release decision
+
+The user asked for a **beta release** once this ticket is finished (2026-10-31: "i would like to release a beta for this when its finished thanks"). Delivery releases a beta per `RELEASE.md` after finalization; recorded in `requirements-doc.md` § Release Decision.
+
 ## Documents
 
 `requirements-doc.md` (approved, SR-002), `investigation-notes.md` (E-001…E-007), `design-spec.md` (removal plan and file mapping), `solution-revision-record.md`, screenshots in `evidence/intake/`.
