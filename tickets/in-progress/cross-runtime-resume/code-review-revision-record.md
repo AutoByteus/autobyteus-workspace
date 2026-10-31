@@ -4,7 +4,8 @@
 
 | Revision ID | Canonical Review Report | Entry Point / Trigger | Prior Result | Current Result | Affected Finding IDs |
 | --- | --- | --- | --- | --- | --- |
-| CRR-001 | `code-review-report.md` | Implementation Review, round 1, from IR-001 | N/A | Pass | None (FU-009 follow-up) |
+| CRR-001 | `code-review-report.md` | Implementation Review, round 1, from IR-001 | N/A | Pass (superseded by CRR-002) | None (FU-009 follow-up) |
+| CRR-002 | `code-review-report.md` | API/E2E Failure-Origin Review, from API-REV-001 (API-02 / RS-01 failed) | Pass (CRR-001) | Fail | F-1, F-2 (Design Impact), F-3 (Local Fix) |
 
 ## Revision Entries
 
@@ -32,3 +33,30 @@ None.
 - Material score or classification changes: Large / High confirmed
 - Recommended recipient: API/E2E engineer; implementation engineer informed
 - Remaining risks or uncertainty: native runtime not in the real switch run; hand-edited generated GraphQL file; two files at exactly 500 effective lines
+
+### CRR-002 — Failure-origin review of API-02 / RS-01 (switch to and from the native runtime)
+
+- Canonical review report updated: `code-review-report.md`
+- Review entry point and round: API/E2E Failure-Origin Review, round 2
+- Review scope: `N/A` (failure-origin round)
+- Triggering role, report path, and finding or scenario IDs: API/E2E engineer, `api-e2e-execution-coverage-report.md` (API-REV-001); API-02 / RS-01, OBS-1
+- Relevant solution revision IDs: SR-004
+- Relevant architecture-review revision IDs: ARCH-REV-001, ARCH-REV-002
+- Relevant implementation revision IDs: IR-001
+- Relevant API/E2E revision IDs: API-REV-001
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: Pass (CRR-001)
+- Current authoritative result: Fail
+- What changed in the review result and why: API/E2E measured two failures. F-1: preparing a native candidate appends its `system_instruction` to the run's active raw-trace file before the marker and rotation, so it lands in the previous agent's archived segment (I-7 broken for a native target). F-2: the local-memory projection reads `includeArchive: false`, so the reopened chat of a switched run starts at the latest marker. Both trace to premises in the reviewed design that the source review also accepted; they are classified `Design Impact`. F-3 (from OBS-1): `selectionContextFor` passes the pending, never-started model as the current one, so a model-only edit while a switch to native is pending hits the replacement capacity rule; `Local Fix`. Scorecard categories 7 and 8 lowered.
+- Supported product scenario / material-premise basis changes: two material premises contradicted (a prepare writes nothing to the run's raw-trace file; the local projection shows earlier files).
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| (round 1) none | n/a | n/a | CRR-001 | CRR-001 had no findings; it is superseded |
+
+- New or remaining finding IDs: F-1, F-2, F-3
+- Material score or classification changes: overall 9.4 → 8.7; Large / High unchanged
+- Recommended recipient: Solution Designer
+- Remaining risks or uncertainty: Grok as a switch target; a stored pending switch across a restart; rendered settings page and chat marker not seen
