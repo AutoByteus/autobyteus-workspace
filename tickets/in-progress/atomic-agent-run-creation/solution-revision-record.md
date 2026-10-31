@@ -28,3 +28,18 @@
   (unreadable subfolder or injected `readdir` failure; symlink).
 - N-2 recorded as FU-004. Design case: `docs/design-cases.md` Case 4. Requirements unchanged (SR-002). Classification Small / High. Routing: ARCH-REV-002.
 - 2026-10-31, review result recorded: **ARCH-REV-002 Pass** on SR-004 (approval SR-002). AR-001 and AR-002 resolved. The reviewer routed to `/software_engineering_team/implementation_engineer`. Report: `design-review-report.md`.
+
+## SR-005 — 2026-10-31 — Requirement Gap from CRR-002 (F-API-001) decided by the user
+- Trigger: CRR-002 (`/software_engineering_team/code_reviewer`), failure-origin review of API-REV-001: Fail,
+  Requirement Gap. After a SIGKILL during activation, the leftover run holds the system-instruction trace (and
+  sometimes a stale record `.tmp`), so REQ-002's strict content check keeps it and AC-004 failed for a hard kill.
+- The user asked for the recommendation and left it to it ("what is your suggestion … I think you have good reasoning
+  skill"). Recorded as DEC-003 = C: accept the hard-kill residual; AC-004 now covers a normal stop. Follow-up FU-005
+  carries option (b), the root fix.
+- Requirements: AC-004 narrowed; REQ-001 to REQ-003 unchanged. Design: unchanged (D1, D2 and the strict rule stay).
+  Code: unchanged.
+- Everything else passed in API-REV-001: AC-001, AC-003 on a real startup, AC-005, 284's E2E, AC-004 with a graceful
+  stop.
+- Classification Small / High (unchanged).
+- Routing: back to the code reviewer, who returned the gap, for its round with the decided requirement. No handoff rule
+  covers "requirements narrowed, design unchanged".

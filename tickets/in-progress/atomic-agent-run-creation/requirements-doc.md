@@ -1,7 +1,7 @@
 # Requirements Document — atomic-agent-run-creation (autobyteus-349)
 
 ## Document Status
-- Status: **Approved** (SR-002, 2026-10-31). Current solution revision ID: `SR-002`.
+- Status: **Approved** (SR-002, 2026-10-31; AC-004 narrowed in SR-005 by the user's DEC-003). Current solution revision ID: `SR-005`.
 - Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), Task
   `autobyteus-349`, 2026-10-31, at the user's word; brief: 339 FU-004, FU-003. Requirements owner: Solution Designer.
 - Approved by: **the user**, 2026-10-31.
@@ -55,7 +55,7 @@
 | AC-001 | REQ-001 | `createAgentRun` whose activation fails (for example, activation admission closed, a runtime that cannot start) | No history row and no run directory remain; the caller gets the activation error | Unit/integration |
 | AC-002 | REQ-001 | Activation fails after `startedAt` was committed | The run is not removed; the refusal is logged | Unit |
 | AC-003 | REQ-002 | Startup on a temporary data root with: an empty never-started run; a never-started run with a conversation log (the May shape: `activationState`, no `startedAt`); one with only a context file; a started run; an unreadable record | Only the empty never-started run is removed (row and folder) and logged; all others untouched | Integration on a temporary data root |
-| AC-004 | REQ-001, REQ-002 | 339's API-02 shape: a create still running when the server process ends, then relaunch | No empty run in history after the relaunch | Server-level probe |
+| AC-004 | REQ-001, REQ-002 | 339's API-02 shape: a create still running when the server **stops normally** (SIGTERM: quit, Restart server, update restart, `docker stop` within its grace), then relaunch | No empty run in history after the relaunch. A **hard kill** (SIGKILL) during activation may leave an empty entry: accepted residual (DEC-003, FU-005) | Server-level probe |
 | AC-005 | REQ-003 | The web first message; remote delegation | Unchanged | Existing tests |
 
 ## Data Continuity And Acceptable Loss
@@ -67,4 +67,5 @@
 | ID | Question | Options / evidence | Reasoning and recommendation | Owner | Status |
 | --- | --- | --- | --- | --- | --- |
 | DEC-001 | At startup, which never-started runs are removed? (revised after the read-only count) | **A** every never-started run (a restart ends every preparation still in progress); **B** only those past their 24 h expiry (the existing rule); **C** none removed: hide never-started runs from the history list instead | **A.** After a restart nothing can still start such a run, except a peer whose work packet was in flight in the seconds around the restart, or a web send cut by the restart; both then report a failure the user sees. A meets "an interrupted start leaves no empty run". B leaves interrupted runs visible for up to a day, or longer on a node that rarely restarts. C keeps hidden debris and changes what history means | User (it deletes stored runs) | **Decided: A with the content check** (the user, 2026-10-31). The count showed 11 May runs marked never-started that hold real conversations, so "never started" alone is unsafe; only runs with no content are removed |
+| DEC-003 | (SR-005, CRR-002 F-API-001) After a hard kill in the few hundred ms of an activation, the leftover holds the system-instruction trace (`raw_traces_active.jsonl`, ~2 KB) and sometimes a stale `run_metadata.json.*.tmp`, so the strict content check keeps it | (a) treat those files as non-content (the delete rule then parses trace contents); (b) write the system-instruction trace only after `startedAt` is committed (root fix in runtime activation, outside this ticket); (c) accept it as a residual and record a follow-up | **(c).** Rare (a hard kill in a sub-second window), cosmetic (one empty entry, as on the base build), while (a) makes a data-deleting rule depend on parsing file contents and (b) changes every runtime's activation for it. A normal stop, including update restarts, already leaves nothing (API/E2E). (b) is the follow-up's fix | The user (2026-10-31: asked for the recommendation and left it to it, "I think you have good reasoning skill"; told the choice is C) | **Decided: C** |
 | DEC-002 | Also remove never-started runs periodically while the server runs? | A long-running node (Docker) rarely restarts; a web client that crashes between prepare and send leaves one | **No, not now:** the one-call path is atomic (REQ-001), and the web client cancels its own; a timer is machinery without a measured need (DESIGN rule 1). Follow-up | Solution Designer | Decided |
