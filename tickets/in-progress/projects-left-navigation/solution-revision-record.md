@@ -11,6 +11,7 @@
 | SR-005 | Requirements | Product UI/UX package (user-confirmed) | N/A | Approved R3 | Approved R4 | REQ-002, 004, 015, 016; AC-016, 017; DEC-015…017 | Integrated
 | SR-006 | Design | Approved R4 | N/A | N/A | Design Ready (user approval pending) | all REQ | Large / High
 | SR-007 | Design | User approves the design | N/A | Design Ready (approval pending) | Design Ready (user-approved) | — | Sent to architecture review
+| SR-008 | Mixed | ARCH-REV-001 Fail | AR-001…AR-005 | Design Ready | Design Ready (revised) | REQ-008, DEC-013, AC-007 | Sent for re-review
 
 ## Revision Entries
 
@@ -101,3 +102,16 @@
 - Classification: task_size Large, architectural_risk High → `Architecture Design Complete`.
 - Handoff: `get_handoff_rules` → `/software_engineering_team/architecture_reviewer` (Large or High). Handoff file: handoff-architecture-review.md.
 - Next action: architecture review; the reviewer routes a pass to implementation.
+
+### SR-008 — Revision for architecture review ARCH-REV-001
+
+- Phase and classification: Mixed (Design Impact AR-001, AR-003, AR-004, AR-005; Requirement Gap AR-002 decided within the direction).
+- Trigger: `design-review-report.md` ARCH-REV-001 (Fail), architecture reviewer run `architecture_reviewer_b0cc3811df7e474eb5031669010fe5f1`.
+- Prior status: Design Ready (SR-006/007). Current: Design Ready (revised); requirements R4 with REQ-008/DEC-013/AC-007 refined.
+- AR-001: `projectRunsProjection` (pure builder reusing `buildRunTreeProjection`, `mergeRunTreeWithLiveContexts`, `buildTeamNodes`, keyed by Project; ancestry indexes as lists) + `useProjectsTreeState` (reveal); store loads every Project when the mode is shown; live status from context overlay (E-037).
+- AR-002: rule decided: a copy belongs to P while it holds an open Task of P; with none open, to the Project of its latest Task; a copy working for P and Q is listed under both. Recorded in REQ-008, DEC-013, AC-007 and `runLinksOf`. Intended behavior: clarified within REQ-008's stated rationale ("no hidden work"); approved by the Solution Designer within the direction; user informed.
+- AR-003: effective-line counts (E-038); `chatDraftProjectChoice.ts`, `agent-run-history-row-projector.ts` extractions; factory line cap; FU-006 withdrawn.
+- AR-004: `scopes[].startedUnderProject` removed; `executions` defined; DS-004 explicit triggers including the no-Project `root.hostRoot` trigger (E-039) and the per-copy-key re-read.
+- AR-005: dependency rule reworded (new code through ports; existing imports stay); Team owner named (E-040); `RunProjectContextReader` beside `RunProjectContext`.
+- Classification unchanged: Large / High.
+- Next action: re-review by the architecture reviewer.
