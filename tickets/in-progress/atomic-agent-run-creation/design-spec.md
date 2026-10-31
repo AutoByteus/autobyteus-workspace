@@ -124,6 +124,7 @@
 | `autobyteus-server-ts/tests/unit/agent-execution/agent-run-service*.test.ts` (existing or new) | Modify/Add | AC-001/AC-002: activation throws → cancel called, original error rethrown; cancel refused → warning logged, original error rethrown |
 | A server-runtime test (the existing startup-gate test) | Modify | The stage runs before listen; a failure is logged and startup continues |
 | `autobyteus-server-ts/docs/modules/agent_execution.md` (run creation) | Modify | D1 and D2 rules |
+| `docs/design-cases.md` | Modified (Solution Designer) | Case 4 entry for AR-002 |
 
 ## Concrete Examples
 | Topic | Good | Avoided |

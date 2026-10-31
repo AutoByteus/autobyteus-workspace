@@ -26,4 +26,4 @@
 - AR-002 (Medium): the content walk is no-follow (`withFileTypes`/`lstat`); any entry other than directories and the
   top-level regular `run_metadata.json` counts as content; any walk error keeps the run and logs it. Tests added
   (unreadable subfolder or injected `readdir` failure; symlink).
-- N-2 recorded as FU-004. Requirements unchanged (SR-002). Classification Small / High. Routing: ARCH-REV-002.
+- N-2 recorded as FU-004. Design case: `docs/design-cases.md` Case 4. Requirements unchanged (SR-002). Classification Small / High. Routing: ARCH-REV-002.
