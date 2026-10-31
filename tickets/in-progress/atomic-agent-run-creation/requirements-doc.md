@@ -1,10 +1,16 @@
 # Requirements Document — atomic-agent-run-creation (autobyteus-349)
 
 ## Document Status
-- Status: **Ready for Approval** (DEC-001 needs the user). Current solution revision ID: `SR-001`.
+- Status: **Approved** (SR-002, 2026-10-31). Current solution revision ID: `SR-002`.
 - Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), Task
   `autobyteus-349`, 2026-10-31, at the user's word; brief: 339 FU-004, FU-003. Requirements owner: Solution Designer.
-- Approved by: pending. Supplements: none.
+- Approved by: **the user**, 2026-10-31.
+  - He was shown the read-only count: 6 truly empty never-started runs and 11 May runs with real conversations but no
+    start date.
+  - He was shown the revised proposal: undo a failed start at once; at startup remove only never-started runs with no
+    content at all; do not use the 24 h rule.
+  - He answered: "Yeah, go ahead, thanks for your recommendation."
+- Supplements: none.
 - Workspace: `/Users/normy/autobyteus_org/autobyteus-worktrees/atomic-agent-run-creation`, branch
   `codex/atomic-agent-run-creation`, base `origin/personal` @ `e87e6bb2b1`, target `personal`.
 
@@ -40,7 +46,7 @@
 | ID | Requirement | BEH | Priority | Feasibility | Source |
 | --- | --- | --- | --- | --- | --- |
 | REQ-001 | **One-call creation is all or nothing.** When starting the run fails, `createAgentRun` removes the run it prepared and returns the start's error. If the removal itself is refused (the run started, or is in use), the run stays and the refusal is logged | BEH-001 | Must | N/A (our own code; `cancelPreparedAgentRun` exists, F-03) | FU-004 |
-| REQ-002 | **Never-started runs are cleaned at startup** per DEC-001, before the server accepts requests; each removal is logged with the run ID and title; unreadable run data is skipped and logged, never deleted (DESIGN rule 7) | BEH-002 | Must | N/A (`cleanupStalePreparedRuns` exists, F-05) | FU-003; DEC-001 |
+| REQ-002 | **Empty never-started runs are cleaned at startup** (DEC-001 = A, revised): before the server accepts requests, a run is removed only when its record is readable, has `preparedAt` and no `startedAt`, **and its folder holds no file besides the record** (no conversation, no journal, no attachments). Each removal is logged with the run ID and title. A run with any content is kept, whatever its record says; unreadable run data is skipped and logged, never deleted (DESIGN rule 7). The 24 h expiry rule is not used | BEH-002 | Must | N/A (`cleanupStalePreparedRuns` exists, F-05) | FU-003; DEC-001 |
 | REQ-003 | Two-step creation and started runs unchanged | BEH-003 | Must | — | — |
 
 ## Acceptance Criteria
@@ -48,18 +54,17 @@
 | --- | --- | --- | --- | --- |
 | AC-001 | REQ-001 | `createAgentRun` whose activation fails (for example, activation admission closed, a runtime that cannot start) | No history row and no run directory remain; the caller gets the activation error | Unit/integration |
 | AC-002 | REQ-001 | Activation fails after `startedAt` was committed | The run is not removed; the refusal is logged | Unit |
-| AC-003 | REQ-002 | Startup with never-started runs per DEC-001, plus started runs and an unreadable run | The DEC-001 set is removed and logged; started and unreadable runs untouched | Integration on a temporary data root |
+| AC-003 | REQ-002 | Startup on a temporary data root with: an empty never-started run; a never-started run with a conversation log (the May shape: `activationState`, no `startedAt`); one with only a context file; a started run; an unreadable record | Only the empty never-started run is removed (row and folder) and logged; all others untouched | Integration on a temporary data root |
 | AC-004 | REQ-001, REQ-002 | 339's API-02 shape: a create still running when the server process ends, then relaunch | No empty run in history after the relaunch | Server-level probe |
 | AC-005 | REQ-003 | The web first message; remote delegation | Unchanged | Existing tests |
 
 ## Data Continuity And Acceptable Loss
 - Persisted data affected: **Yes**. Startup removes never-started runs, including, at first start after the update,
   those already in history.
-- Acceptable loss (DEC-001): a never-started run is empty: no messages and no memory. It may carry a title (the user's
-  first-message text in the web flow) and copies of attachments. It is restorable today (F-08).
+- Acceptable loss (DEC-001): only never-started runs with no file besides the record (on the user's data today: 6). A run with a title but no files is removed together with its title; a run with attachments or any log is kept.
 
 ## Decisions
 | ID | Question | Options / evidence | Reasoning and recommendation | Owner | Status |
 | --- | --- | --- | --- | --- | --- |
-| DEC-001 | At startup, which never-started runs are removed? | **A** every never-started run (a restart ends every preparation still in progress); **B** only those past their 24 h expiry (the existing rule); **C** none removed: hide never-started runs from the history list instead | **A.** After a restart nothing can still start such a run, except a peer whose work packet was in flight in the seconds around the restart, or a web send cut by the restart; both then report a failure the user sees. A meets "an interrupted start leaves no empty run". B leaves interrupted runs visible for up to a day, or longer on a node that rarely restarts. C keeps hidden debris and changes what history means | User (it deletes stored runs) | **Needs user** |
+| DEC-001 | At startup, which never-started runs are removed? (revised after the read-only count) | **A** every never-started run (a restart ends every preparation still in progress); **B** only those past their 24 h expiry (the existing rule); **C** none removed: hide never-started runs from the history list instead | **A.** After a restart nothing can still start such a run, except a peer whose work packet was in flight in the seconds around the restart, or a web send cut by the restart; both then report a failure the user sees. A meets "an interrupted start leaves no empty run". B leaves interrupted runs visible for up to a day, or longer on a node that rarely restarts. C keeps hidden debris and changes what history means | User (it deletes stored runs) | **Decided: A with the content check** (the user, 2026-10-31). The count showed 11 May runs marked never-started that hold real conversations, so "never started" alone is unsafe; only runs with no content are removed |
 | DEC-002 | Also remove never-started runs periodically while the server runs? | A long-running node (Docker) rarely restarts; a web client that crashes between prepare and send leaves one | **No, not now:** the one-call path is atomic (REQ-001), and the web client cancels its own; a timer is machinery without a measured need (DESIGN rule 1). Follow-up | Solution Designer | Decided |

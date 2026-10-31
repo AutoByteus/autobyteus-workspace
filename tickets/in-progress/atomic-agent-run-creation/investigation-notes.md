@@ -33,3 +33,24 @@
 - A startup cleanup **deletes stored runs**: empty ones, but restorable (F-08), possibly with a first-message title and
   attachment copies (F-07). That is hard to undo, so it is the user's decision (DEC-001). At first start after the
   update it also applies to the never-started runs already in the user's history.
+
+## The user's real data, read-only count (2026-10-31)
+- What and how: read-only, `~/.autobyteus/server-data/memory/agents/*/run_metadata.json` with a small `python3 -I`
+  script; no file was changed. Run at the user's question ("do we have a lot of empty runs?").
+- **528 standalone runs; 17 have `preparedAt` without `startedAt`.**
+  - **6 are truly empty** (June–October 2026): the run folder holds only `run_metadata.json`.
+  - **11 hold real conversations** (18–21 May 2026): raw traces up to 1.7 MB, work journals, and context images. Their
+    records have the older field `activationState` and no `startedAt` key at all. They were written before the start
+    date was recorded (`recordRunStarted` appears in a 2026-05-21 checkpoint, `1df4163297`). One begins with the user's
+    message "hello, how are you doing".
+- **Consequence (challenges the brief):** "prepared and never started" (`preparedAt && !startedAt`, the test of both
+  `cleanupStalePreparedRuns` and `cancelPreparedRun`'s `isPreparedIdentity`) is **not** a safe sign of an empty run.
+  Wiring the existing 24 h rule as it stands would have deleted 11 real conversations. The removal test must be "no
+  content": no file besides the record.
+- Further facts:
+  - F-11: `recordRunProjectStart` (`run-project-context.ts:35`) records a Project start before the run record. A cancel
+    does not undo it (pre-existing, the same for the web app's own cancel today). How a Project reads a missing run was
+    not traced: follow-up FU-001.
+  - F-12: `preparedExpiresAt` is still written and returned on the wire (`api/graphql/types/agent-run.ts:106, 254`;
+    `autobyteus-web/graphql/mutations/agentMutations.ts:30`). Once the 24 h rule is gone, nothing enforces it: follow-up
+    FU-002.
