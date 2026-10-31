@@ -8,7 +8,7 @@ The current code and `implementation-handoff.md` are authoritative; this record 
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture reviewer, `design-review-report.md`, ARCH-REV-002 (Pass) | N/A | `Initial Baseline` | SR-008, ARCH-REV-002; CRR / API-REV / DR: N/A | Implemented; local checks pass; to code review |
 | IR-002 | Code reviewer CRR-001 (`code-review-report.md`) → SR-009, passed by ARCH-REV-003 | CR-001 (Design Impact, via SR-009), CR-002 (Local Fix) | `Design Impact` (applied as designed) + `Local Fix` | SR-009, ARCH-REV-003, CRR-001 | Record moved to `project_runs.json`; run records reverted; code review CRR-002 `Pass` (`code-review-report.md`), to API/E2E |
-| IR-003 | Code reviewer failure-origin review CRR-003 of API-REV-001 (API-04 PLN-09) | CR-003 | `Local Fix` | CRR-003, API-REV-001; SR-009, ARCH-REV-003 unchanged | Stop now re-reads the Projects listing the run; back to code review |
+| IR-003 | Code reviewer failure-origin review CRR-003 of API-REV-001 (API-04 PLN-09) | CR-003 | `Local Fix` | CRR-003, API-REV-001; SR-009, ARCH-REV-003 unchanged | Stop now re-reads the Projects listing the run; code review CRR-004 `Pass` (`code-review-report.md`), to the API/E2E rerun |
 
 ## Revision Entries
 
