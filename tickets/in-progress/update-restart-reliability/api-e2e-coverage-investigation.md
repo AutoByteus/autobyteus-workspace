@@ -151,3 +151,21 @@ None.
 - Proceed To API/E2E Execution: `Yes`
 - Durable Coverage Will Be Added / Updated / Removed: `No` (unless AR-002 shows a defect)
 - Reroute Required Before Validation Execution: `No`
+
+## Round 2 (API-REV-002) — rerun plan after IR-002 / CRR-003
+
+- Trigger: code reviewer, CRR-003 Pass of IR-002 (code `591bf52551`, docs `e0dc8fdf76`, review `3be28563ea`). D1 replaced (last-`preClose` grace drain `installClientConnectionClose`; `forceCloseConnections` removed); D2 unchanged (desktop diff empty).
+- Prior unresolved failure: F-API-001 (rechecked first, by API-02 in the same shape).
+- AC-002 now requires every in-flight create that reached the server to complete with its response and no prepared-only run (requirements SR update); AC-008 new (deterministic, IMP-08).
+
+| Case | Decision | Reason |
+| --- | --- | --- |
+| API-R2 | Reused: IMP-02/03/04 (desktop unchanged), IMP-08..IMP-12 | Ran on `591bf52551` (or desktop code unchanged since `ddb03d0d0b`) |
+| API-02 (R2, two samples) | **Rerun** | F-API-001 recheck and AC-002 as revised, on an unmodified clean build of `3be28563ea` |
+| API-02T (R2) | **Add** | One more sample with temporary `[339-DIAG]` timestamps (hook start/end, studio `onClose` start) to measure SIGTERM → run-cleanup start; diagnostics restored afterwards |
+| API-03 | Still valid | Base build `a977b2c1bc` and the probe's request/connection shape are unchanged; its outcome (silent connection holds the close to the bound; creates complete) is the contrast |
+| API-04 | **Rerun** (42 iterations) | Server close path changed; desktop build bundles it |
+| API-01, API-05 | **Rerun** | 284 regressions on the new server code |
+| API-06 | Not tested (unchanged reason) | Unsafe real install |
+
+- Round 2 decision: proceed; no durable coverage changes; no reroute. Iteration 21 of API-04 R2 excluded by the same rule as the designer's series (the Org agent never started its command).

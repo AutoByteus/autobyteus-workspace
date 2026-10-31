@@ -5,10 +5,10 @@ Paths are relative to `/Users/normy/autobyteus_org/autobyteus-worktrees/update-r
 ## Round
 
 - Coverage investigation: `api-e2e-coverage-investigation.md`
-- API/E2E revision record and current revision ID: `api-e2e-revision-record.md`, `API-REV-001`
+- API/E2E revision record and current revision ID: `api-e2e-revision-record.md`, `API-REV-002`
 - Test progress log: `api-e2e-test-progress.md`
-- Round and trigger: round 1; CRR-001 Pass (code `ddb03d0d0b`; docs `22bf2338a9`, `0a8888fcb2`; review `2c3575b0f0`).
-- Prior round reviewed: N/A
+- Round and trigger: **round 2**; CRR-003 Pass of IR-002 (code `591bf52551`; docs `e0dc8fdf76`; review `3be28563ea`). D1 replaced by the last-`preClose` grace drain (`installClientConnectionClose`, 2 s); D2 unchanged. Round 1 (CRR-001, code `ddb03d0d0b`) failed on F-API-001.
+- Prior round reviewed: round 1 (API-REV-001, `Fail`). Rerun plan: investigation § Round 2. Round-2 rows are marked `R2`; round-1 rows are kept as history.
 - Deviations from the investigation's plan, and why:
   - API-02 ran twice (API-02, API-02B). The second sample adds a restore attempt on the prepared-only runs found in the first.
   - API-06 (real install) not executed, as planned (unsafe).
@@ -20,7 +20,7 @@ Paths are relative to `/Users/normy/autobyteus_org/autobyteus-worktrees/update-r
 - Architectural risk: `High`
 - Input route: `Reviewed` (ARCH-REV-001 Pass, CRR-001 Pass)
 - Successful-output route: `Code Review`
-- Proportional test-code review decision: `Not Applicable` this round. The result is `Fail`, so failure-origin review is requested. No durable test code was added this round.
+- Proportional test-code review decision: `Required` (round 2 `Pass`, High route). API/E2E changed no durable test code; the review covers IR-002's tests (`client-connection-close.test.ts`, `studio-preclose-order.test.ts`) at the reviewer's discretion. Round 1 requested failure-origin review.
 
 ## Tested Builds And Environments
 
@@ -29,6 +29,7 @@ Paths are relative to `/Users/normy/autobyteus_org/autobyteus-worktrees/update-r
 | ENV-1 | `2c3575b0f0` (code `ddb03d0d0b`), clean detached checkout | macOS 26 (Darwin 25.5.0) arm64, Node 22.23.1 | `pnpm install --frozen-lockfile --offline`; server `prebuild`+`build` (`dist/shutdown/server-close-options.js` present) | Server probes: `node dist/app.js --port --data-dir <owned>`, data `.env` `APP_ENV=test`; real `HOME`/`USER`/`LOGNAME`; throwaway `CODEX_HOME` |
 | ENV-2 | same | same | `build:electron:mac` (6 m 54 s) → `electron-dist/mac-arm64/AutoByteus.app` (packaged server carries `SERVER_CLOSE_OPTIONS`; `app.asar` carries `acceptIncompleteStopForInstall`) | `isolated-app start --from-worktree --data-root <owned>`; CDP + GraphQL |
 | ENV-3 | base `origin/personal` @ `a977b2c1bc`, clean detached checkout | same | base server build (284's bound and sweep, default close options) | Contrast only (API-03) |
+| ENV-4 | `3be28563ea` (code `591bf52551`), clean detached checkout | macOS 26 arm64, Node 22.23.1 | server build; `build:electron:mac` (7 m 50 s), packaged server carries `installClientConnectionClose` | Same settings as ENV-1/2. API-02T only: temporary `[339-DIAG]` timestamps in `dist` (restored before every other case) |
 | Live models | — | — | Codex CLI 0.166.0, `gpt-6.1-terra`, `reasoning_effort: medium`; Claude Code (host login), `claude-haiku-4-5-20251001` | Busy = foreground `python3 -c "import time; time.sleep(900)" <marker>` |
 
 ## Cases
@@ -43,21 +44,32 @@ Paths are relative to `/Users/normy/autobyteus_org/autobyteus-worktrees/update-r
 | API-03 | AC-002 base contrast | Same probe on the **base** build | same, base server, `CASE_ID=API-03` | ENV-3 | Observed (contrast) | `API-03-result.json`, `API-03-run.log`, `API-03-server-*.log` | `Server shutdown exceeded 10s; forcing exit`; `"code":1`, `"elapsedMs":10583`; `"silentClosedRelSigtermMs":10583` (the silent connection held the close); k0–k2 got `"success":true` responses; `preparedOnly 0`, `unknown 0` | The FU-008 mechanism, reproduced deterministically at server level; in-flight creates completed on the base |
 | API-04 | AC-003 | Isolated desktop: P-002 loop. Per iteration: "Restart server" while Codex is busy; busy Codex/Claude standalone, Codex Team member, Claude Org agent; user quit; relaunch; continue all four roots | `cd <clean> && bash evidence/P-002-desktop-busy-quit-loop.sh 42 <run dir>` | ENV-2 | Pass | `API-04/API-04-summary.json`, `API-04/API-04-iterations.json`, `API-04/API-04-loop-summary.txt`, sample `API-04/API-04-iter1-*` | `"runs": 42, "valid": 42, "stalls": 0`; `serverGoneMs` min 968 / median 1378 / max 1602; `"nonZeroExit": 0` (every iteration `0/0/0`: restart, busy quit, final quit); `"exceeded10s": 0`, `"sweepLines": 0`, `"appShutdownIncomplete": 0`, `"survivorsTotal": 0`; `"relaunchOne": 42`, `"continued4of4": 42` | Before the fix the same loop gave 2 stalls in 78 (investigation P-002) |
 | API-05 | AC-007 (desktop), idle quit speed | Isolated desktop: idle quit + relaunch; busy SIGTERM to Electron main; wedged (SIGSTOP) server quit | `P-002-desktop-probe.mjs idle / busy-sigterm / wedged-quit` | ENV-2 | Pass | `API-05/API-05-<mode>-*` | idle `"serverGoneMs":258,"electronGoneMs":308`; busy SIGTERM `"serverGoneMs":872`, `Server process exited with code 0`; wedged `Force-stopping the server and 5 recorded descendant target(s)`, `"serverGoneMs":20171,"electronGoneMs":21754,"survivors":[]`; relaunch `"exactlyOne":true` in all three | Relaunched idle quit 1488 ms: the startup runtime probes (as in 284 round 2) |
+| API-02 R2 | AC-002 (revised), F-API-001 recheck | as API-02 | `CASE_ID=API-02-R2` and `API-02B-R2`, `P-001-live-server-probe.mjs held-connection` on ENV-4 (unmodified) | ENV-4 | Pass | `API-02-R2-result.json`, `API-02B-R2-result.json`, their `-run.log`, `-server-*.log`, `-ws-frames.json` | `"code":0`, `"elapsedMs":1606` / `1509`; `"survivors": []`, `"shutdownLog": []`; creates sent before SIGTERM (−37…−5 ms): all `200 {"success":true,…,"runId":…}`, answered at +74…+115 ms; creates sent after SIGTERM: `ECONNRESET` (connection destroyed on arrival, no request read); after relaunch `preparedOnly 0`, `unknown 0`, 8 on disk / 8 listed; `cutHandlerLog []`; silent connection closed at +8 / +1 ms, used keep-alive at +116 / +111 ms | F-API-001 resolved |
+| API-02T | AC-002 timing (grace effect) | as API-02, with temporary timestamps | `CASE_ID=API-02T` on ENV-4 with `[339-DIAG]` in `dist`; plus the native busy fixture on the same build as a no-in-flight reference | ENV-4 (diag) | Pass | `API-02T-timing.log`, `API-02T-result.json`, `API-02T-server-first.log` | `+16 ms after SIGTERM: client-connection-close start inProgress=3`, `+85 ms … end`, `+86 ms after SIGTERM: studio onClose run cleanup start`; reference: native busy `+848 ms` (after the native drain), idle `+2 ms`; exit 0 in 1484 ms, `preparedOnly 0` | The grace cost 69 ms with three creates in progress; diagnostics removed (`grep -rl 339-DIAG dist` empty) |
+| API-01 R2 | AC-007 | as API-01 | same command on ENV-4 | ENV-4 | Pass | `API-01-R2-gated-e2e.log`, `API-01-R2-busy-run-stop-now.json`, `API-01-R2-native-standalone-host-result.json` | `Tests  3 passed (3)` | Another agent's small server E2E run overlapped |
+| API-04 R2 | AC-003 | as API-04 | `P-002-desktop-busy-quit-loop.sh 42` on ENV-4 | ENV-4 | Pass | `API-04-R2/API-04-R2-summary.json`, `-iterations.json`, `-loop-summary.txt`, sample `iter1`, excluded `iter21` | `"runs": 42, "valid": 41, "stalls": 0`; `serverGoneMs` 986 / 1403 / 1704 (min/median/max); all valid `0/0/0` exits; `"exceeded10s": 0`, `"sweepLines": 0`, `"appShutdownIncomplete": 0`, `"survivorsTotal": 0`; `"relaunchOne": 41`, `"continued4of4": 41` | iter 21 excluded: `Timed out: org-claude busy` (the Org agent never started its command, so no quit happened; the designer's series used the same rule) |
+| API-05 R2 | AC-007 (desktop) | as API-05 | idle / busy-sigterm / wedged-quit on ENV-4 | ENV-4 | Pass | `API-05-R2/API-05-R2-<mode>-*` | idle `"serverGoneMs":206,"electronGoneMs":256`; busy SIGTERM `516`, `Server process exited with code 0`; wedged `Force-stopping the server and 5 recorded descendant target(s)`, `20193`/`21790`, `"survivors":[]`; relaunch one server in all three | — |
 | API-06 | AC-004 (real install) | `--test-update-feed` install after a forced stop | — | — | Not Tested | — | — | Unsafe: ShipIt relaunches the installed app outside the isolated `e2e` profile against the user's real data (TESTING Rule 2; precedents settings-update-notifications AC-007, 284 API-14). D2's decision is proven by IMP-02/03 (real wedged server: stop incomplete and `isServerProcessGone()` true) |
 
 ## Acceptance-Criteria Proof
 
 | Acceptance-Criteria ID | Critical | Proven By Case IDs | Result | For A User-Only Part |
 | --- | --- | --- | --- | --- |
-| AC-001 | Yes | API-R1 (IMP-01, fails on defaults); API-02/02B (real server: silent and keep-alive connections closed at +3/+6 ms) | Proven | — |
-| AC-002 | Yes | API-02, API-02B (exit 0 in 1.36/1.61 s, 0 survivors, in-flight requests cut); API-03 (base: bound, exit 1) | Proven as written. The reviewer's AR-002 condition ("the cut mutation is refused or cancelled cleanly, with no partial run") is **not met**: F-API-001 | — |
-| AC-003 | Yes | API-04 (42/42 valid, 0 stalls) | Proven | — |
+| AC-001 | Yes | IMP-08 (R2); API-02 R2/02B R2 (real server: silent connection closed at +1…+8 ms, used keep-alive at the end of the grace) | Proven | — |
+| AC-008 | Yes | IMP-08 (deterministic, mutations fail); API-02T (real server: requests in progress answered, cleanup right after) | Proven | — |
+| AC-002 | Yes | **R2:** API-02 R2, API-02B R2 (exit 0 in 1.61/1.51 s, 0 survivors, every create that reached the server answered with its run ID, 0 prepared-only and 0 unacknowledged runs, later requests refused), API-02T (cleanup at +86 ms); API-03 (base contrast, still valid) | Proven | — |
+| AC-003 | Yes | API-04 R2 (41 valid of 42, 0 stalls); round 1 API-04 (42/42) | Proven | — |
 | AC-004 | Yes | API-R1 (IMP-02/03) | Proven at the main-process boundary | The real Squirrel install after a forced stop: not runnable safely here (API-06); the user's next real update after a busy quit is the check |
 | AC-005 | Yes | API-R1 (IMP-02) | Proven | — |
 | AC-006 | Yes | API-R1 (IMP-02, `appUpdater.spec.ts`) | Proven | — |
-| AC-007 | Yes | API-01, API-04 (continuity, one server, relaunch), API-05, API-R1 (IMP-03..07) | Proven | — |
+| AC-007 | Yes | API-01 R2, API-04 R2, API-05 R2, IMP-09..12; round 1 API-01/04/05 | Proven | — |
 
 ## Findings
+
+Round 2: **F-API-001 resolved** by IR-002 (API-02 R2, API-02B R2: every create that reached the server answered with its run ID; 0 prepared-only and 0 unacknowledged runs; API-02T: the grace costs only the in-flight handler time). No new finding.
+
+Round 1, as recorded:
+
 
 **F-API-001: a `createAgentRun` cut at shutdown still changes state, and can leave a prepared-only run in history.**
 Preliminary classification: `Design Impact`. Failure-origin review requested.
@@ -88,21 +100,23 @@ Preliminary classification: `Design Impact`. Failure-origin review requested.
 
 ## Validation Confidence Scorecard (Mandatory)
 
+Round 2. Round 1's scorecard (91.4%, `Fail`) is in API-REV-001.
+
 | Confidence Category | Post-Repository Score | Final Score | What Supports It (Case IDs) | Residual Uncertainty | What Could Improve It |
 | --- | --- | --- | --- | --- | --- |
-| Requirement and acceptance-criteria proof | 70% | 88% | Every AC proven (table) | F-API-001 against the AC-002 review condition; real install not runnable | Resolve F-API-001 |
-| Changed-boundary execution directness | 75% | 96% | Real server with real clients and in-flight handlers (API-02/02B/03); packaged desktop loop (API-04) | — | — |
-| Cross-boundary integration realism and mock gap | 70% | 95% | Live Codex/Claude, Team/Org, real Chromium connections in 42 desktop runs | — | — |
-| Environment, configuration, identity, and fixture fidelity | 80% | 94% | Clean checkouts of the final branch and the base, isolated data | Server probes use `APP_ENV=test` | — |
-| Failure, edge-case, lifecycle, and recovery evidence | 70% | 84% | Base contrast, wedged server, relaunch continuity ×45 | F-API-001 (stored state after a cut create) | Fix and recheck AR-002 |
-| User-surface, browser, and desktop-shell confidence | 65% | 93% | API-04 (42), API-05 | Real install not run | — |
-| Durable regression coverage quality and relevance | 90% | 90% | IMP-01..07, 284's gated E2E (API-01) | AR-002 has no durable case | A deterministic case with the fix |
+| Requirement and acceptance-criteria proof | 74% | 95% | Every AC proven (table); AC-002's stored-state condition directly checked | Real install user-only (AC-004's Squirrel step) | The user's next real update |
+| Changed-boundary execution directness | 78% | 96% | Real studio server with real clients, in-flight handlers, timestamps (API-02 R2, 02T); packaged desktop ×41 | — | — |
+| Cross-boundary integration realism and mock gap | 72% | 95% | Live Codex/Claude, Team/Org, real Chromium connections | — | — |
+| Environment, configuration, identity, and fixture fidelity | 80% | 94% | Clean checkouts, isolated data | Server probes `APP_ENV=test` | — |
+| Failure, edge-case, lifecycle, and recovery evidence | 72% | 93% | Base contrast, wedged server, relaunch ×44, in-flight creates and late requests | A handler longer than the 2 s grace is still cut (FU-004, by design; IMP-08 covers it deterministically) | — |
+| User-surface, browser, and desktop-shell confidence | 65% | 93% | API-04 R2 (41), API-05 R2 | Real install not run | — |
+| Durable regression coverage quality and relevance | 90% | 93% | IMP-08/09 (mutation-checked), 284's gated E2E | AC-002/003 stay probes (live runtimes, packaged desktop) | — |
 
-- Overall post-repository confidence: 74%
-- Overall final confidence: 91.4% (simple average)
-- Every critical acceptance criterion directly proven, apart from parts only the user can check: `Yes`, with F-API-001 open against AC-002's review condition.
-- Any final applicable category below `90%`: `Yes`: requirement proof 88%, failure/edge 84% (F-API-001).
-- Default target of `95%` met: `No`.
+- Overall post-repository confidence: 76%
+- Overall final confidence: 94.1% (simple average)
+- Every critical acceptance criterion directly proven, apart from parts only the user can check: `Yes`.
+- Any final applicable category below `90%`: `No`.
+- Default target of `95%` met: `No` (94.1%). The gap is bounded and no in-scope surface closes it safely: the real Squirrel install relaunches outside the isolated profile (TESTING Rule 2), and the Docker update is optional and unchanged.
 
 ## Broader Validation Decision (Mandatory)
 
@@ -142,7 +156,9 @@ Preliminary classification: `Design Impact`. Failure-origin review requested.
 
 ## Residual Risks
 
-- F-API-001 (open).
+- F-API-001: resolved in round 2.
+- FU-004: a request handler longer than the 2 s grace is still cut (by design; IMP-08).
+- Requests that arrive after the close began get `ECONNRESET` (their connection is destroyed on arrival, before any request is read), or 503 on an already-open used connection. AC-002 accepts "503 or a refused connection".
 - N-1 to N-4 (implementation handoff), as reviewed: N-3's Node/Fastify drift is guarded by IMP-01.
 - FU-001 (install-on-quit after an incomplete stop; U-2), FU-002 (U-3).
 - The real Squirrel install after a forced stop is not exercised (API-06).
@@ -154,12 +170,12 @@ Preliminary classification: `Design Impact`. Failure-origin review requested.
 
 ## Latest Authoritative Result
 
-- Result: `Fail`
-- Criteria not proven, or parts only the user can check: none unproven by the AC text. AR-002's condition on AC-002 is not met (F-API-001). AC-004's real install is user-only (API-06).
-- Preliminary classification and recommended owner: F-API-001 `Design Impact` → failure-origin review.
-- Next recipient from `get_handoff_rules`: code reviewer.
-- Notes: D1 removes the stall:
-  - 42/42 busy desktop quits are clean, against 2/78 stalls before;
-  - on the real server, the silent connection no longer holds the close (base: 10.58 s, exit 1; fixed: 1.36–1.61 s, exit 0).
-
-  D2 holds at the main-process boundary, and 284's behavior is preserved.
+- Result: `Pass` (round 2, API-REV-002)
+- Criteria not proven, or parts only the user can check: none unproven. AC-004's real Squirrel install is user-only (API-06): the user's next real update after a busy quit.
+- Preliminary classification and recommended owner: N/A (Pass). F-API-001 resolved.
+- Next recipient from `get_handoff_rules`: code reviewer (proportional test-code review; API/E2E changed no durable tests).
+- Notes:
+  - D1 (revised) removes the stall: 41/41 valid busy desktop quits are clean (round 1: 42/42; before the fix: 2 stalls in 78).
+  - On the real server, the silent connection no longer holds the close, and in-flight creates complete with their responses.
+  - The run cleanup starts 86 ms after SIGTERM with three creates in progress, and at once otherwise.
+  - D2 holds at the main-process boundary; 284 preserved.
