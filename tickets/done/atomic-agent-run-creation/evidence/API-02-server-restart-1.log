@@ -1,0 +1,426 @@
+# API-02 server restart-1 (new build) pid 65571; data root <temp>/data; 2026-10-31T20:31:15.968Z
+[31.45] Platform detection: Windows=false
+[31.45] App root directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-api.0owf0P/clean/autobyteus-server-ts
+[31.45] App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac003-mD7FoY/data
+[31.45] Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac003-mD7FoY/data/.env
+[31.45] Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac003-mD7FoY/data/.env
+[31.45] ◇ injected env (0) from ../../../ar349-ac003-mD7FoY/data/.env // tip: ⌘ suppress logs { quiet: true }
+[31.45] Environment variables loaded successfully
+[31.45] Server public base URL configured to: http://127.0.0.1:52192
+[31.45] === Starting logging configuration ===
+[31.45] Logging config file is ignored in Node.js: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-api.0owf0P/clean/autobyteus-server-ts/logging_config.ini
+[31.45] ============================================================
+[31.45] SERVER PUBLIC URL: http://127.0.0.1:52192
+[31.45] APP ROOT DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-api.0owf0P/clean/autobyteus-server-ts
+[31.45] APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac003-mD7FoY/data
+[31.45] DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac003-mD7FoY/data/db
+[31.45] LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac003-mD7FoY/data/logs
+[31.45] DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac003-mD7FoY/data/download
+[31.45] MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac003-mD7FoY/data/memory
+[31.45] ============================================================
+[32.39] AgentFactory (Singleton) initialized.
+[32.55] Running Prisma migrations...
+[32.55] Using Prisma engine overrides from bundled: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-api.0owf0P/clean/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+[32.75] Prisma schema loaded from prisma/schema.prisma
+[32.75] Datasource "db": SQLite database "test.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac003-mD7FoY/data/db/test.db"
+[32.77] 27 migrations found in prisma/migrations
+
+
+[32.77] No pending migrations to apply.
+[32.80] Database migrations completed successfully.
+[32.80] (node:65571) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+[32.80] (Use `node --trace-warnings ...` to show where the warning was created)
+[32.80] prisma:info Starting a sqlite pool with 21 connections.
+[32.81] [2026-10-31T20:31:48.782Z] [INFO] [secret-management.vault] Secret vault: application database
+[32.90] Initialized server settings service with 33 predefined settings
+[32.94] AgentRunManager initialized.
+[32.94] AgentRunManager initialized.
+[33.02] [349-DIAG] 1793478708983 stage start
+[33.04] Removed empty never-started run 'probe_agent_mvwuwdcm_00df711321b14521ac1d70b2806fbdee' ('Bulk empty 246')
+[33.06] Removed empty never-started run 'probe_agent_mvwuwdcm_01c045f1e07c4a13b227fccebf5842d4' ('Bulk empty 174')
+[33.08] Removed empty never-started run 'probe_agent_mvwuwdcm_039754ea85fe4ae19b8ec6f2cf984d70' ('Bulk empty 130')
+[33.09] Removed empty never-started run 'probe_agent_mvwuwdcm_03acab32552943ad9a0f340dfe538d5a' ('Bulk empty 162')
+[33.10] Removed empty never-started run 'probe_agent_mvwuwdcm_0444a2abdf044a9c92791588d89fa71b' ('Bulk empty 158')
+[33.12] Removed empty never-started run 'probe_agent_mvwuwdcm_06778645cf7d4d1fb1e993021ed71e9e' ('Bulk empty 39')
+[33.14] Removed empty never-started run 'probe_agent_mvwuwdcm_07394d13976c4e0586aabe85151e4519' ('Bulk empty 223')
+[33.15] Removed empty never-started run 'probe_agent_mvwuwdcm_07f2be6803ed4d118cddb9ee0bdcea12' ('Bulk empty 33')
+[33.17] Removed empty never-started run 'probe_agent_mvwuwdcm_08e243d0f20145e19b5796c2c4f0369c' ('Bulk empty 54')
+[33.18] Removed empty never-started run 'probe_agent_mvwuwdcm_094b20f8ec8d400793e831ed037d69b5' ('Bulk empty 189')
+[33.20] Removed empty never-started run 'probe_agent_mvwuwdcm_09c170ebeb2b4918b37fa56700a00879' ('Bulk empty 136')
+[33.21] Removed empty never-started run 'probe_agent_mvwuwdcm_09ca158a8afc4a418316a107d321aae0' ('Bulk empty 202')
+[33.22] Removed empty never-started run 'probe_agent_mvwuwdcm_0a029be27d4b490eaa1826698922a0fb' ('Bulk empty 141')
+[33.28] Removed empty never-started run 'probe_agent_mvwuwdcm_0b850427c93e496c8e0727a6d4099167' ('Bulk empty 42')
+[33.30] Removed empty never-started run 'probe_agent_mvwuwdcm_0c57b83c5c564e9c8f832a0184b4adfb' ('Bulk empty 145')
+[33.31] Removed empty never-started run 'probe_agent_mvwuwdcm_0d33867229bb424cb7a5bb192ccfd3cd' ('Bulk empty 194')
+[33.33] Removed empty never-started run 'probe_agent_mvwuwdcm_0ec679bfc6144a8fb5b5a85d4c39e5bb' ('Bulk empty 156')
+[33.34] Removed empty never-started run 'probe_agent_mvwuwdcm_0f29b1e743f84ac3b7bf7ea8596fbe2f' ('Bulk empty 1')
+[33.36] Removed empty never-started run 'probe_agent_mvwuwdcm_10c24bd38c8247a689bf11c670844d77' ('Bulk empty 63')
+[33.37] Removed empty never-started run 'probe_agent_mvwuwdcm_12263adc49204ad49fa4d7ab785ba12a' ('Bulk empty 243')
+[33.39] Removed empty never-started run 'probe_agent_mvwuwdcm_128d07a89d524e6aaa06c1723567a0c2' ('Bulk empty 45')
+[33.40] Removed empty never-started run 'probe_agent_mvwuwdcm_1322adb1a99d41af9a2846442eec12b0' ('Bulk empty 268')
+[33.42] Removed empty never-started run 'probe_agent_mvwuwdcm_1496e3e7bd4a4d59815cdd7b9598f8cc' ('Bulk empty 298')
+[33.43] Removed empty never-started run 'probe_agent_mvwuwdcm_150500a7bf8f4b0da4aa71158b10b672' ('Bulk empty 128')
+[33.45] Removed empty never-started run 'probe_agent_mvwuwdcm_171557739a174191891bfb0b601065d7' ('Bulk empty 257')
+[33.46] Removed empty never-started run 'probe_agent_mvwuwdcm_178903353d3e480f9e8372db6dc8672f' ('Bulk empty 281')
+[33.48] Removed empty never-started run 'probe_agent_mvwuwdcm_17e53330678840ca96d80dcb2c602fb2' ('Bulk empty 108')
+[33.49] Removed empty never-started run 'probe_agent_mvwuwdcm_181457efe4f04c658b1c95bc6c78ec7f' ('Bulk empty 58')
+[33.51] Removed empty never-started run 'probe_agent_mvwuwdcm_1930f8238c6e41b5b85ecc924405caec' ('Bulk empty 192')
+[33.52] Removed empty never-started run 'probe_agent_mvwuwdcm_19a9f3ffe0b34b6ba71ad40de451480c' ('Bulk empty 96')
+[33.54] Removed empty never-started run 'probe_agent_mvwuwdcm_1a1e1e1e21cc48b5acd55cf6ca06b7f3' ('Bulk empty 236')
+[33.55] Removed empty never-started run 'probe_agent_mvwuwdcm_1a6f7f774b9a4706a2bebd4bc024f67a' ('Bulk empty 14')
+[33.57] Removed empty never-started run 'probe_agent_mvwuwdcm_1aa88874370e4978b0c872055ceac57d' ('Bulk empty 207')
+[33.58] Removed empty never-started run 'probe_agent_mvwuwdcm_1add68ebdde54e4ba0286e460b7c7541' ('Bulk empty 295')
+[33.59] Removed empty never-started run 'probe_agent_mvwuwdcm_1c40fe72c0674716af2c54d3480f5c4b' ('Bulk empty 250')
+[33.61] Removed empty never-started run 'probe_agent_mvwuwdcm_1c5055a304704d9dbdbeb3818c7b7108' ('Bulk empty 150')
+[33.62] Removed empty never-started run 'probe_agent_mvwuwdcm_1c976aad9e2a4e4fa7249494f8906e2d' ('Bulk empty 140')
+[33.63] Removed empty never-started run 'probe_agent_mvwuwdcm_1d13aa69e0164cf6960c7ef1e9103cf1' ('Bulk empty 170')
+[33.65] Removed empty never-started run 'probe_agent_mvwuwdcm_1e2acca3628241e89c62e7afcfdab571' ('Bulk empty 280')
+[33.66] Removed empty never-started run 'probe_agent_mvwuwdcm_1e3bdf68274d48d2af0f34d851c09793' ('Seed E1-empty')
+[33.68] Removed empty never-started run 'probe_agent_mvwuwdcm_1e55e3caf03e44a281edd4ba1f5e27fa' ('Bulk empty 28')
+[33.69] Removed empty never-started run 'probe_agent_mvwuwdcm_1f596b0d38d842cca4e20f4a74b9a72a' ('Bulk empty 277')
+[33.71] Removed empty never-started run 'probe_agent_mvwuwdcm_1fa48c794ae646b3b8fd17f05cc08859' ('Bulk empty 216')
+[33.73] Removed empty never-started run 'probe_agent_mvwuwdcm_204fce8800cb42a7bd18e1519a7061da' ('Bulk empty 197')
+[33.74] Removed empty never-started run 'probe_agent_mvwuwdcm_207bce5913514e748c969ffa3e1cb7f9' ('Bulk empty 275')
+[33.75] Removed empty never-started run 'probe_agent_mvwuwdcm_21b2b958e2ce4acdb975fc86e230a8de' ('Bulk empty 73')
+[33.77] Removed empty never-started run 'probe_agent_mvwuwdcm_21cbd2badda847579004899aa755f936' ('Bulk empty 85')
+[33.78] Removed empty never-started run 'probe_agent_mvwuwdcm_21fc797ce67247f09ddad2a4241586b0' ('Bulk empty 6')
+[33.80] Removed empty never-started run 'probe_agent_mvwuwdcm_23038ab6d3e24061936a988e62f86065' ('Bulk empty 47')
+[33.81] Removed empty never-started run 'probe_agent_mvwuwdcm_23414b9e47e6410da5426e2fe9082e36' ('Bulk empty 111')
+[33.82] Removed empty never-started run 'probe_agent_mvwuwdcm_25131f9ad87443bbb3dbcbe87ffab4f2' ('Bulk empty 279')
+[33.84] Removed empty never-started run 'probe_agent_mvwuwdcm_27d4373c5d254bef8645e9329f5e6da7' ('Bulk empty 38')
+[33.85] Removed empty never-started run 'probe_agent_mvwuwdcm_2922890b37b54a8d8bac57c210a070a5' ('Bulk empty 127')
+[33.87] Removed empty never-started run 'probe_agent_mvwuwdcm_2c67f34fd4fb480686068b95bcc28278' ('Bulk empty 172')
+[33.88] Removed empty never-started run 'probe_agent_mvwuwdcm_2cb1987f8eb74ea8b30444c7e22bc3f1' ('Bulk empty 109')
+[33.89] Removed empty never-started run 'probe_agent_mvwuwdcm_2e8e4693ac47498dafe4629dfd8154e3' ('Bulk empty 190')
+[33.91] Removed empty never-started run 'probe_agent_mvwuwdcm_2ec66f29505b45459c3ca2fb3ce36269' ('Bulk empty 211')
+[33.92] Removed empty never-started run 'probe_agent_mvwuwdcm_2ff29a4abd344c5aa199ef67950a6278' ('Bulk empty 252')
+[33.94] Removed empty never-started run 'probe_agent_mvwuwdcm_3086be3f38eb49f48e8dbc5979ef36b2' ('Bulk empty 24')
+[33.95] Removed empty never-started run 'probe_agent_mvwuwdcm_30a065ffeb2f4c3fbe47fa545ea3d006' ('Bulk empty 8')
+[33.97] Removed empty never-started run 'probe_agent_mvwuwdcm_30d8e8fa9ca6456dab622029b993f589' ('Bulk empty 53')
+[33.98] Removed empty never-started run 'probe_agent_mvwuwdcm_30e80a8cf18444fea29350dc3c88248f' ('Bulk empty 208')
+[34.00] Removed empty never-started run 'probe_agent_mvwuwdcm_321125adac364a188533214aaac48b18' ('Bulk empty 147')
+[34.02] Removed empty never-started run 'probe_agent_mvwuwdcm_3302689e0ba44a5284faaf5ed6acdfb9' ('Bulk empty 221')
+[34.03] Removed empty never-started run 'probe_agent_mvwuwdcm_336c504dd7d643c6abc8a88d62729b03' ('Bulk empty 284')
+[34.05] Removed empty never-started run 'probe_agent_mvwuwdcm_33862206cc4b449ab103ad78ee365717' ('Bulk empty 112')
+[34.06] Removed empty never-started run 'probe_agent_mvwuwdcm_33a0f1d56b864aa48fb8378f1f1467a8' ('Bulk empty 203')
+[34.08] Removed empty never-started run 'probe_agent_mvwuwdcm_34422f7b92934614a0f18c4d4e4d5503' ('Bulk empty 287')
+[34.09] Removed empty never-started run 'probe_agent_mvwuwdcm_348657fbd82548048f4f3323e87e4f9e' ('Bulk empty 166')
+[34.11] Removed empty never-started run 'probe_agent_mvwuwdcm_3503d5c9b49c47bca49b0c900e037c95' ('Bulk empty 60')
+[34.12] Removed empty never-started run 'probe_agent_mvwuwdcm_350f7c4be3674f168c6d444b74e392d6' ('Bulk empty 22')
+[34.14] Removed empty never-started run 'probe_agent_mvwuwdcm_3655f35f3916430388177545552c3831' ('Bulk empty 212')
+[34.15] Removed empty never-started run 'probe_agent_mvwuwdcm_366bddc8a91f4c48950418cc2a9b5363' ('Bulk empty 62')
+[34.17] Removed empty never-started run 'probe_agent_mvwuwdcm_367adbc3041c4d21868652dfba64f007' ('Bulk empty 49')
+[34.19] Removed empty never-started run 'probe_agent_mvwuwdcm_37e8a82657874e2d93cac0a645fa5b88' ('Bulk empty 289')
+[34.20] Removed empty never-started run 'probe_agent_mvwuwdcm_39002b1513734c30bb911d2eb9f1ce6b' ('Bulk empty 175')
+[34.22] Removed empty never-started run 'probe_agent_mvwuwdcm_39b5742888cd4e7693d24d19e9108c2d' ('Bulk empty 125')
+[34.23] Removed empty never-started run 'probe_agent_mvwuwdcm_3c10e62a64d1451bb81b4e63448c3ca4' ('Bulk empty 13')
+[34.25] Removed empty never-started run 'probe_agent_mvwuwdcm_3c7f6e72e28f4b64af7752e7f804e852' ('Bulk empty 271')
+[34.27] Removed empty never-started run 'probe_agent_mvwuwdcm_3dd9d6daab0441739b72ece072bcfe3d' ('Bulk empty 163')
+[34.28] Removed empty never-started run 'probe_agent_mvwuwdcm_3e46b31c4484479e8a37ae25cf6a662b' ('Bulk empty 67')
+[34.30] Removed empty never-started run 'probe_agent_mvwuwdcm_3f08b578c6ac4540a3648759a2cf6d86' ('Bulk empty 126')
+[34.31] Removed empty never-started run 'probe_agent_mvwuwdcm_41e6e9f72d764410b0c92c45edf00b81' ('Bulk empty 245')
+[34.33] Removed empty never-started run 'probe_agent_mvwuwdcm_433c5aed7df54571a85c13e7604c8985' ('Bulk empty 259')
+[34.34] Removed empty never-started run 'probe_agent_mvwuwdcm_435e2d2505f54743b7e7c4e70c90e85c' ('Bulk empty 196')
+[34.36] Removed empty never-started run 'probe_agent_mvwuwdcm_446637e7dc694fe2bd55e686fe7ab8db' ('Bulk empty 180')
+[34.37] Removed empty never-started run 'probe_agent_mvwuwdcm_44c8d5711e214af0854956472e21e9fc' ('Bulk empty 56')
+[34.39] Removed empty never-started run 'probe_agent_mvwuwdcm_44e839f13e444d41972121f67d2f59f5' ('Bulk empty 84')
+[34.40] Removed empty never-started run 'probe_agent_mvwuwdcm_45bc1d00207f4a9b832c6ec104a3f172' ('Bulk empty 227')
+[34.41] Removed empty never-started run 'probe_agent_mvwuwdcm_464e25393cfa44e89ffb21acc089bdba' ('Bulk empty 26')
+[34.43] Removed empty never-started run 'probe_agent_mvwuwdcm_46ff1d2f773a4da3aca46d8179a6a2ef' ('Bulk empty 225')
+[34.45] Removed empty never-started run 'probe_agent_mvwuwdcm_477a73f1befe4b9a9d03154a1ae88db1' ('Bulk empty 214')
+[34.46] Removed empty never-started run 'probe_agent_mvwuwdcm_4782a1519a994d46bb959566db136c54' ('Bulk empty 142')
+[34.48] Removed empty never-started run 'probe_agent_mvwuwdcm_47960585d9f5449eada10b31a74afbdc' ('Bulk empty 149')
+[34.49] Removed empty never-started run 'probe_agent_mvwuwdcm_4799f686f85d47e4a7e13d5ebd75f261' ('Bulk empty 299')
+[34.51] Removed empty never-started run 'probe_agent_mvwuwdcm_47d9a8342edc461a84aff0e86d2b755f' ('Bulk empty 94')
+[34.52] Removed empty never-started run 'probe_agent_mvwuwdcm_49216b242dca485d810a091a9027365e' ('Bulk empty 171')
+[34.53] Removed empty never-started run 'probe_agent_mvwuwdcm_4ac2e597e07c4f138975b83e0c045aaa' ('Seed E2-empty-subfolders')
+[34.55] Removed empty never-started run 'probe_agent_mvwuwdcm_4b80565b6a8746eeb0ac54bd69dd6d9e' ('Bulk empty 241')
+[34.56] Removed empty never-started run 'probe_agent_mvwuwdcm_4e61f5fc7d8c40fd90df929a3c729066' ('Bulk empty 103')
+[34.58] Removed empty never-started run 'probe_agent_mvwuwdcm_4f023b24a20b4e409851cde734215ea6' ('Bulk empty 30')
+[34.59] Removed empty never-started run 'probe_agent_mvwuwdcm_514cac3b4271471ea2e1f6748717c313' ('Bulk empty 219')
+[34.61] Removed empty never-started run 'probe_agent_mvwuwdcm_53aa0ad8151f47f1ba60a3266d76da0f' ('Bulk empty 79')
+[34.62] Removed empty never-started run 'probe_agent_mvwuwdcm_54a247c9ede841af9855b201133092d8' ('Bulk empty 137')
+[34.64] Removed empty never-started run 'probe_agent_mvwuwdcm_54bfa8fdc089460fb12e3389182d1e0b' ('Bulk empty 93')
+[34.65] Removed empty never-started run 'probe_agent_mvwuwdcm_54de57edea3f405591e325368956b773' ('Bulk empty 169')
+[34.67] Removed empty never-started run 'probe_agent_mvwuwdcm_54ff2c24442344f48a73d33d25a7116f' ('Bulk empty 193')
+[34.68] Removed empty never-started run 'probe_agent_mvwuwdcm_5500a3d934ca40c695b7b9b9003dec96' ('Bulk empty 115')
+[34.70] Removed empty never-started run 'probe_agent_mvwuwdcm_55910ce1c1d1431d8e4589aa37913c50' ('Bulk empty 65')
+[34.71] Removed empty never-started run 'probe_agent_mvwuwdcm_55d26dee1b7f41d1bdabc71ac5827a8d' ('Bulk empty 97')
+[34.73] Removed empty never-started run 'probe_agent_mvwuwdcm_560b26e1bbbd405aa78a0c6b66eb2e85' ('Bulk empty 35')
+[34.74] Removed empty never-started run 'probe_agent_mvwuwdcm_582f0a4bce724efdb458e880101797db' ('Bulk empty 57')
+[34.76] Removed empty never-started run 'probe_agent_mvwuwdcm_586fb04e98334655bc1213da70111cb0' ('Bulk empty 87')
+[34.77] Removed empty never-started run 'probe_agent_mvwuwdcm_590b1b2a66994ce884c19f62b26d74aa' ('Bulk empty 48')
+[34.79] Removed empty never-started run 'probe_agent_mvwuwdcm_5a562149370f408c87552ef91036a815' ('Bulk empty 161')
+[34.81] Removed empty never-started run 'probe_agent_mvwuwdcm_5cd6192cc14149e2a20af89edd8c2974' ('Bulk empty 44')
+[34.82] Removed empty never-started run 'probe_agent_mvwuwdcm_600957afbb274e30915366d6fc1c0bcb' ('Bulk empty 40')
+[34.84] Removed empty never-started run 'probe_agent_mvwuwdcm_6013808050de47c28ce0e7c72da7fd65' ('Bulk empty 23')
+[34.85] Removed empty never-started run 'probe_agent_mvwuwdcm_618c3baa0fba448b8cc24c6a9888ab44' ('Bulk empty 4')
+[34.87] Removed empty never-started run 'probe_agent_mvwuwdcm_61cc5588df0546b69bd07aa9c8b3b068' ('Bulk empty 185')
+[34.90] Removed empty never-started run 'probe_agent_mvwuwdcm_62f2c325a65949f88e9f5ea89e9c9f72' ('Bulk empty 122')
+[34.92] Removed empty never-started run 'probe_agent_mvwuwdcm_6358ddad1b4a47d3a4e63017ec03c525' ('Bulk empty 191')
+[34.93] Removed empty never-started run 'probe_agent_mvwuwdcm_65be78f8fe5b4149b8643525547d2ad9' ('Bulk empty 273')
+[34.95] Removed empty never-started run 'probe_agent_mvwuwdcm_67eb828ea7f049eaa6a391159caa2918' ('Bulk empty 266')
+[34.96] Removed empty never-started run 'probe_agent_mvwuwdcm_685266374c97420884b9f62435801ec8' ('Bulk empty 92')
+[34.98] Removed empty never-started run 'probe_agent_mvwuwdcm_688079567ee84edebdeeba6257850121' ('Bulk empty 0')
+[34.99] Removed empty never-started run 'probe_agent_mvwuwdcm_69847f7092204a178301d59010c7cbda' ('Bulk empty 205')
+[35.01] Removed empty never-started run 'probe_agent_mvwuwdcm_6a54a6b49072441690e037fefeda7f83' ('Bulk empty 134')
+[35.02] Removed empty never-started run 'probe_agent_mvwuwdcm_6a7f6968fa3142c4b59ba3b3c2bb2345' ('Bulk empty 25')
+[35.03] Removed empty never-started run 'probe_agent_mvwuwdcm_6b7dae538fcc4d5192804c205c39c36a' ('Bulk empty 292')
+[35.05] Removed empty never-started run 'probe_agent_mvwuwdcm_6c8f3512845940d086bb7965b3788dd4' ('Bulk empty 146')
+[35.06] Removed empty never-started run 'probe_agent_mvwuwdcm_6cc873fa156547e7803bf6ab6a6b0150' ('Bulk empty 213')
+[35.08] Removed empty never-started run 'probe_agent_mvwuwdcm_6e82b5c4538c486fa76d1ef51b1e4461' ('Bulk empty 222')
+[35.09] Removed empty never-started run 'probe_agent_mvwuwdcm_7089af71314a4a248dd35a55b6dc3167' ('Bulk empty 31')
+[35.11] Removed empty never-started run 'probe_agent_mvwuwdcm_7368bb5eea12490ebc16a16c1b6888ed' ('Bulk empty 183')
+[35.12] Removed empty never-started run 'probe_agent_mvwuwdcm_73723dd4bd96466d861ae922435a3e0f' ('Bulk empty 110')
+[35.14] Removed empty never-started run 'probe_agent_mvwuwdcm_75bb797183de40bb82b701be72747d3c' ('Bulk empty 151')
+[35.16] Removed empty never-started run 'probe_agent_mvwuwdcm_76359d1d39554adca590ca28cd94b560' ('Bulk empty 71')
+[35.17] Removed empty never-started run 'probe_agent_mvwuwdcm_777deef552254054b608e7a8643ad157' ('Bulk empty 55')
+[35.18] Removed empty never-started run 'probe_agent_mvwuwdcm_78ad8a3b7ff441ff92bfd433f000f837' ('Bulk empty 294')
+[35.20] Removed empty never-started run 'probe_agent_mvwuwdcm_78b84bce11b74c59a96ad4d9939fe9c6' ('Bulk empty 121')
+[35.21] Removed empty never-started run 'probe_agent_mvwuwdcm_7a9bc99aaaea47a7b66a21deb4cc84de' ('Bulk empty 233')
+[35.23] Removed empty never-started run 'probe_agent_mvwuwdcm_7b8e3c2d25c44e3da0697565d56a6cc4' ('Bulk empty 188')
+[35.24] Removed empty never-started run 'probe_agent_mvwuwdcm_7c217934f3334b9ab276deceeef54a12' ('Bulk empty 232')
+[35.26] Removed empty never-started run 'probe_agent_mvwuwdcm_7c2a544d7906450da6863c621d74f04c' ('Bulk empty 80')
+[35.27] Removed empty never-started run 'probe_agent_mvwuwdcm_7c71176e60cc4a449115342c4afc833a' ('Bulk empty 144')
+[35.28] Removed empty never-started run 'probe_agent_mvwuwdcm_7ca00e4f6ea34958be0d7e740fa29409' ('Bulk empty 120')
+[35.30] Removed empty never-started run 'probe_agent_mvwuwdcm_7f753eebcdf4443fa4dbbc54b2a96405' ('Bulk empty 262')
+[35.31] Removed empty never-started run 'probe_agent_mvwuwdcm_80e6cf46da2f4541a675dfbbe23430c4' ('Bulk empty 256')
+[35.33] Removed empty never-started run 'probe_agent_mvwuwdcm_81516a6aeae64784aeb33f9335ee3399' ('Bulk empty 107')
+[35.34] Removed empty never-started run 'probe_agent_mvwuwdcm_82d32e834bb54bd8b283114c2e0d8ec2' ('Bulk empty 167')
+[35.36] Removed empty never-started run 'probe_agent_mvwuwdcm_83e1841b58e746948f0ce748b1e20eb7' ('Bulk empty 27')
+[35.37] Removed empty never-started run 'probe_agent_mvwuwdcm_84ab9555346e4b56b248e3aa440a2676' ('Bulk empty 278')
+[35.39] Removed empty never-started run 'probe_agent_mvwuwdcm_861e586a6888495b89540d47077faaa6' ('Bulk empty 70')
+[35.40] Removed empty never-started run 'probe_agent_mvwuwdcm_87105e34d618431eb827cda197cd3992' ('Bulk empty 282')
+[35.41] Removed empty never-started run 'probe_agent_mvwuwdcm_8731a7db25be494d931d0947758e9e3d' ('Bulk empty 29')
+[35.43] Removed empty never-started run 'probe_agent_mvwuwdcm_8846dfc48b0a42199b2e9984ebfd6ce1' ('Bulk empty 95')
+[35.45] Removed empty never-started run 'probe_agent_mvwuwdcm_8a71d8d8eb424c6a89caba58a15ac0ed' ('Bulk empty 129')
+[35.46] Removed empty never-started run 'probe_agent_mvwuwdcm_8b6259a15bff41368f8cb0e5cf7b80ac' ('Bulk empty 155')
+[35.48] Removed empty never-started run 'probe_agent_mvwuwdcm_8c306908dd504d9484b5721cba8a36fd' ('Bulk empty 124')
+[35.50] Removed empty never-started run 'probe_agent_mvwuwdcm_8dc9b6cf6b194c4f92050bc17aaf362a' ('Bulk empty 104')
+[35.52] Removed empty never-started run 'probe_agent_mvwuwdcm_8f0a08a88f35425c91f26acfc207fd6e' ('Bulk empty 242')
+[35.54] Removed empty never-started run 'probe_agent_mvwuwdcm_8f89c90009f441fe8cc643d6898b16d1' ('Bulk empty 37')
+[35.55] Removed empty never-started run 'probe_agent_mvwuwdcm_8fdc080a2b0a44569ee46277fdadc0f0' ('Bulk empty 77')
+[35.56] Removed empty never-started run 'probe_agent_mvwuwdcm_9268cd624bd541abbffb4a6c2d6152ab' ('Bulk empty 238')
+[35.58] Removed empty never-started run 'probe_agent_mvwuwdcm_92dd9e1bfa0f481ba04dfa5751c97e77' ('Bulk empty 101')
+[35.59] Removed empty never-started run 'probe_agent_mvwuwdcm_938944e8c22348dd9ce6e4e446fb7556' ('Bulk empty 186')
+[35.61] Removed empty never-started run 'probe_agent_mvwuwdcm_93e545007b86446c8e8b22965cede2f1' ('Bulk empty 116')
+[35.62] Removed empty never-started run 'probe_agent_mvwuwdcm_95fbebfa8e8d4bc580371a90b5085c25' ('Bulk empty 11')
+[35.63] Removed empty never-started run 'probe_agent_mvwuwdcm_97740c8d1cbb40939afe7d8781640615' ('Bulk empty 21')
+[35.65] Removed empty never-started run 'probe_agent_mvwuwdcm_98e62bd91ce345f38a7221b38cb8c429' ('Bulk empty 43')
+[35.66] Removed empty never-started run 'probe_agent_mvwuwdcm_99f2a71aecc94ca7ba7b598c56201a4c' ('Bulk empty 210')
+[35.68] Removed empty never-started run 'probe_agent_mvwuwdcm_9a1e34c606bf4034bf7be9d21f546135' ('Bulk empty 235')
+[35.69] Removed empty never-started run 'probe_agent_mvwuwdcm_9a70c7ac79204bdabe58f784cda32bff' ('Bulk empty 165')
+[35.70] Removed empty never-started run 'probe_agent_mvwuwdcm_9d10cd2ed3a447489cc835e4898b1975' ('Bulk empty 290')
+[35.72] Removed empty never-started run 'probe_agent_mvwuwdcm_9dc5a0e4e37346318785f15e67bdb4c0' ('Bulk empty 68')
+[35.73] Removed empty never-started run 'probe_agent_mvwuwdcm_9e20711e047c467ebcbb630c03f67967' ('Bulk empty 168')
+[35.75] Removed empty never-started run 'probe_agent_mvwuwdcm_9e852d29a59b4fefac0bf5f53556529f' ('Bulk empty 293')
+[35.76] Removed empty never-started run 'probe_agent_mvwuwdcm_9f78b6490e6e4e89a1cc6bb582dbac20' ('Bulk empty 258')
+[35.78] Removed empty never-started run 'probe_agent_mvwuwdcm_9fd7fb06c325475bbcd5e6d3069e8bda' ('Bulk empty 288')
+[35.79] Removed empty never-started run 'probe_agent_mvwuwdcm_a0b1e62274b94de5b86a1b438f009c6d' ('Bulk empty 231')
+[35.80] Removed empty never-started run 'probe_agent_mvwuwdcm_a11bf9d0e958423e8547d1307046d328' ('Bulk empty 131')
+[35.82] Removed empty never-started run 'probe_agent_mvwuwdcm_a195595ef2344a68bb544471a8e7a10d' ('Bulk empty 291')
+[35.83] Removed empty never-started run 'probe_agent_mvwuwdcm_a225b279faa64d5e9a48a08c71cf68c7' ('Bulk empty 75')
+[35.85] Removed empty never-started run 'probe_agent_mvwuwdcm_a234293a5c0c4ccc9348950f19dc94e8' ('Bulk empty 41')
+[35.86] Removed empty never-started run 'probe_agent_mvwuwdcm_a407b3d97bc24e71b9ffb5d2e04b37dc' ('Bulk empty 265')
+[35.88] Removed empty never-started run 'probe_agent_mvwuwdcm_a4246167d1d648798df9989c3de8688f' ('Bulk empty 88')
+[35.89] Removed empty never-started run 'probe_agent_mvwuwdcm_a4aeb4368f834d9ca4ef9a03f79c4a84' ('Bulk empty 133')
+[35.91] Removed empty never-started run 'probe_agent_mvwuwdcm_a5307628c61a4287942fc0fa38b73f6c' ('Bulk empty 181')
+[35.92] Removed empty never-started run 'probe_agent_mvwuwdcm_a5352cb8aaad4964bcbcb9340d74a35a' ('Bulk empty 123')
+[35.94] Removed empty never-started run 'probe_agent_mvwuwdcm_a666dfa686a44b6ba520cc3e704b9336' ('Bulk empty 132')
+[35.95] Removed empty never-started run 'probe_agent_mvwuwdcm_a6c84d1a712448be895d24500d0ffe8e' ('Bulk empty 86')
+[35.97] Removed empty never-started run 'probe_agent_mvwuwdcm_a73a9f83f8d2458ea238b68bb07ce80c' ('Bulk empty 173')
+[35.98] Removed empty never-started run 'probe_agent_mvwuwdcm_a770a0ec417c4cdf9d86442a51e6d9d3' ('Bulk empty 204')
+[36.00] Removed empty never-started run 'probe_agent_mvwuwdcm_a7edb72ea55143c0bbf3b3a0ef99d607' ('Bulk empty 260')
+[36.01] Removed empty never-started run 'probe_agent_mvwuwdcm_a91038dcbea242d293e9673fd8c96b8d' ('Bulk empty 61')
+[36.03] Removed empty never-started run 'probe_agent_mvwuwdcm_a992e88a6f404b2b911dcb2413ff22cd' ('Bulk empty 20')
+[36.04] Removed empty never-started run 'probe_agent_mvwuwdcm_a9d64fc3028147e5882e77e9ce0f44ea' ('Bulk empty 135')
+[36.06] Removed empty never-started run 'probe_agent_mvwuwdcm_aa6fa185eeff493d8a5151c5834b6a9c' ('Bulk empty 218')
+[36.07] Removed empty never-started run 'probe_agent_mvwuwdcm_acba4fabf7fe47eaadb2cddee1cd506b' ('Bulk empty 18')
+[36.09] Removed empty never-started run 'probe_agent_mvwuwdcm_acd28c5e77684b3881e5c1c32d9c6f3d' ('Bulk empty 285')
+[36.10] Removed empty never-started run 'probe_agent_mvwuwdcm_ad14832ee3ca4a1e9e71629f5c7515fd' ('Bulk empty 36')
+[36.12] Removed empty never-started run 'probe_agent_mvwuwdcm_ae72225de67c49938450099191c074a2' ('Bulk empty 83')
+[36.13] Removed empty never-started run 'probe_agent_mvwuwdcm_ae97f26277264ab98ec4477cce89a59e' ('Bulk empty 15')
+[36.15] Removed empty never-started run 'probe_agent_mvwuwdcm_aeb0d025deaa408596adb909dca0ba99' ('Bulk empty 230')
+[36.16] Removed empty never-started run 'probe_agent_mvwuwdcm_b0bd4eaee3f5457cb1e4e22b608cced0' ('Bulk empty 99')
+[36.18] Removed empty never-started run 'probe_agent_mvwuwdcm_b15daef557e1466a83c74fca8ef5f42f' ('Bulk empty 46')
+[36.19] Removed empty never-started run 'probe_agent_mvwuwdcm_b1b200f263d240fd95a6867f872b19ab' ('Bulk empty 251')
+[36.20] Removed empty never-started run 'probe_agent_mvwuwdcm_b22ff985e6de40ad8290da27ae94373e' ('Bulk empty 263')
+[36.22] Removed empty never-started run 'probe_agent_mvwuwdcm_b2d60b3a2d594a01b3a265a4f92b2145' ('Bulk empty 10')
+[36.23] Removed empty never-started run 'probe_agent_mvwuwdcm_b34610ce17224a249266a4a3dd77c467' ('Bulk empty 52')
+[36.25] Removed empty never-started run 'probe_agent_mvwuwdcm_b3a51b8556ba4440b97dc9f0c5983a47' ('Bulk empty 105')
+[36.26] Removed empty never-started run 'probe_agent_mvwuwdcm_b4d7a247a2c44a3e84a3f083763669fe' ('Bulk empty 272')
+[36.28] Removed empty never-started run 'probe_agent_mvwuwdcm_b5f4b72196f84405948ba3a7d29df211' ('Bulk empty 224')
+[36.29] Removed empty never-started run 'probe_agent_mvwuwdcm_b606d99e8c524f1396f9b34039e58a4f' ('Bulk empty 102')
+[36.31] Removed empty never-started run 'probe_agent_mvwuwdcm_b6ba0798513c4f76bd6325ef1aae2157' ('Bulk empty 154')
+[36.32] Removed empty never-started run 'probe_agent_mvwuwdcm_b6f300a641754ca08b7e34d41610c8ce' ('Bulk empty 9')
+[36.34] Removed empty never-started run 'probe_agent_mvwuwdcm_b746b0a3a0c94528a9c8e6a94fe74abd' ('Bulk empty 148')
+[36.35] Removed empty never-started run 'probe_agent_mvwuwdcm_b8019154cf3548fc91e4924bd263eaec' ('Bulk empty 267')
+[36.37] Removed empty never-started run 'probe_agent_mvwuwdcm_b94bbae876b248979245433c7cd3ca6f' ('Bulk empty 59')
+[36.38] Removed empty never-started run 'probe_agent_mvwuwdcm_ba7abf70d4d34cd6a06725b47f54a5c6' ('Bulk empty 198')
+[36.40] Removed empty never-started run 'probe_agent_mvwuwdcm_bac159ef505d440bbfac3a1bf4bae855' ('Bulk empty 74')
+[36.42] Removed empty never-started run 'probe_agent_mvwuwdcm_bf0b4f95caf74fb1993200ed3bee4855' ('Bulk empty 91')
+[36.44] Removed empty never-started run 'probe_agent_mvwuwdcm_bf4562597dc341e083fb7fa4ad1a9b09' ('Bulk empty 3')
+[36.45] Removed empty never-started run 'probe_agent_mvwuwdcm_bf78736102af4880901f78bb42909bd5' ('Bulk empty 78')
+[36.47] Removed empty never-started run 'probe_agent_mvwuwdcm_bfa73556c8154c678990838bb3ee8f7f' ('Bulk empty 179')
+[36.48] Removed empty never-started run 'probe_agent_mvwuwdcm_c0985619495442209393b95f87087f0d' ('Bulk empty 117')
+[36.49] Removed empty never-started run 'probe_agent_mvwuwdcm_c19b248999a0407b96083d88c3c46e27' ('Bulk empty 244')
+[36.51] Removed empty never-started run 'probe_agent_mvwuwdcm_c3487cbd69a9485a9dd7fc1631846f21' ('Bulk empty 240')
+[36.52] Removed empty never-started run 'probe_agent_mvwuwdcm_c493f810fc7544b8a9418a4e2f690c94' ('Bulk empty 226')
+[36.54] Removed empty never-started run 'probe_agent_mvwuwdcm_c7259a67a298488a804bbf9c2aa1fbdc' ('Bulk empty 89')
+[36.56] Removed empty never-started run 'probe_agent_mvwuwdcm_c72a4027953e440b929b14884762ca25' ('Bulk empty 143')
+[36.57] Removed empty never-started run 'probe_agent_mvwuwdcm_c7d22ea9143943bd8866a88473915bcf' ('Bulk empty 7')
+[36.57] Kept run 'probe_agent_mvwuwdcm_c7eb88541e894b69b7410028546e1a1a': its record could not be read: Expected property name or '}' in JSON at position 2 (line 1 column 3)
+[36.59] Removed empty never-started run 'probe_agent_mvwuwdcm_c904ea4c6ea54a499a54a687f91a0795' ('Bulk empty 217')
+[36.60] Removed empty never-started run 'probe_agent_mvwuwdcm_c94f35f187c7487c817bedf77e48aca5' ('Bulk empty 187')
+[36.62] Removed empty never-started run 'probe_agent_mvwuwdcm_cb06893089624244af06fe5a1bad0896' ('Bulk empty 274')
+[36.63] Removed empty never-started run 'probe_agent_mvwuwdcm_cb09ded875fb43e4b29c8819fcc02116' ('Bulk empty 255')
+[36.64] Removed empty never-started run 'probe_agent_mvwuwdcm_cd4cfa6f82a8472dba6dc6f4afee27c6' ('Bulk empty 90')
+[36.66] Removed empty never-started run 'probe_agent_mvwuwdcm_d05d89f646a54e999ebe6365cbf25353' ('Bulk empty 106')
+[36.67] Removed empty never-started run 'probe_agent_mvwuwdcm_d0cec179ac1f462bbd2c7be848b631a8' ('Bulk empty 100')
+[36.68] Removed empty never-started run 'probe_agent_mvwuwdcm_d104003ef7c9496d9fb756742846b837' ('Bulk empty 138')
+[36.70] Removed empty never-started run 'probe_agent_mvwuwdcm_d30f04ae724e424c99db5cd76da80725' ('Bulk empty 69')
+[36.71] Removed empty never-started run 'probe_agent_mvwuwdcm_d447ff4fae024c17a578da6acd26c3ef' ('Bulk empty 66')
+[36.73] Removed empty never-started run 'probe_agent_mvwuwdcm_d5889989e0fa423e811da5733b4d3ff0' ('Bulk empty 12')
+[36.74] Removed empty never-started run 'probe_agent_mvwuwdcm_d58e68d9b16a45afbe99d949f2f3613e' ('Bulk empty 76')
+[36.76] Removed empty never-started run 'probe_agent_mvwuwdcm_d5d83b80d2cd46cfb55565d4a1af44b5' ('Bulk empty 220')
+[36.77] Removed empty never-started run 'probe_agent_mvwuwdcm_d6bd84eab5f74596ae1d581f34b9630f' ('Bulk empty 253')
+[36.78] Removed empty never-started run 'probe_agent_mvwuwdcm_d6d6fbc86c014502b0a92f5f41241565' ('Bulk empty 178')
+[36.80] Removed empty never-started run 'probe_agent_mvwuwdcm_d7994c642e924e1e868bb773f84fa61e' ('Bulk empty 82')
+[36.81] Removed empty never-started run 'probe_agent_mvwuwdcm_d83eb1b929f64b00b30e9f0b67aee60e' ('Bulk empty 248')
+[36.82] Removed empty never-started run 'probe_agent_mvwuwdcm_d92a458b49bb4f0194bd84d0b54ce55b' ('Bulk empty 247')
+[36.84] Removed empty never-started run 'probe_agent_mvwuwdcm_d9392c763a4845388d97be4642068711' ('Bulk empty 270')
+[36.85] Removed empty never-started run 'probe_agent_mvwuwdcm_d97c74d36f574aa8b5e9c8ad328e60b0' ('Bulk empty 114')
+[36.87] Removed empty never-started run 'probe_agent_mvwuwdcm_d9b6ae5b8ffa4b2b9c6e1460f87a0b01' ('Bulk empty 159')
+[36.88] Removed empty never-started run 'probe_agent_mvwuwdcm_da081ceaf6fa439294a6ef47754c6f8a' ('Bulk empty 199')
+[36.89] Removed empty never-started run 'probe_agent_mvwuwdcm_da94a298da154020b4bb1aa155c75f74' ('Bulk empty 228')
+[36.91] Removed empty never-started run 'probe_agent_mvwuwdcm_dbed914540184dc49f2ec48b9297e979' ('Bulk empty 249')
+[36.92] Removed empty never-started run 'probe_agent_mvwuwdcm_df1a3a6301a64e319f04a397579a4ba8' ('Bulk empty 50')
+[36.93] Removed empty never-started run 'probe_agent_mvwuwdcm_df3f005b31d346cda1dfbbca4471097d' ('Bulk empty 182')
+[36.95] Removed empty never-started run 'probe_agent_mvwuwdcm_e0229df0f7ab4f69bdb4f71d9f5c678f' ('Bulk empty 119')
+[36.96] Removed empty never-started run 'probe_agent_mvwuwdcm_e0f71fa4e21d47028e99772b14d6751d' ('Bulk empty 254')
+[36.97] Removed empty never-started run 'probe_agent_mvwuwdcm_e10e2fe6c11f439c8e42b659550dce17' ('Bulk empty 51')
+[36.99] Removed empty never-started run 'probe_agent_mvwuwdcm_e2eaede52dec4382bc19ddd7a8f121b3' ('Bulk empty 157')
+[37.00] Removed empty never-started run 'probe_agent_mvwuwdcm_e4eb94eeb43d4a2e84dad5b9e9816cfc' ('Bulk empty 297')
+[37.02] Removed empty never-started run 'probe_agent_mvwuwdcm_e58cdb0f17464226adbc5b25b17488d4' ('Bulk empty 229')
+[37.04] Removed empty never-started run 'probe_agent_mvwuwdcm_e5db3d2d4215493fa17da9a6a5c8d764' ('Bulk empty 239')
+[37.05] Removed empty never-started run 'probe_agent_mvwuwdcm_e5dbae12af704c59933c0792222fdd37' ('Bulk empty 200')
+[37.07] Removed empty never-started run 'probe_agent_mvwuwdcm_e61c75f7d6de4318976b7d2b5a94e073' ('Bulk empty 64')
+[37.08] Removed empty never-started run 'probe_agent_mvwuwdcm_e69b3743115e4ce795dee5c21b1d40e0' ('Bulk empty 152')
+[37.09] Removed empty never-started run 'probe_agent_mvwuwdcm_e6ffa806f88043728951bf10e91f4bfb' ('Bulk empty 5')
+[37.11] Removed empty never-started run 'probe_agent_mvwuwdcm_e7e6caca62304a8d8b7aefb752bb2a3f' ('Bulk empty 118')
+[37.12] Removed empty never-started run 'probe_agent_mvwuwdcm_eb86fc24223647fb8e90bcdccf3bf163' ('Bulk empty 286')
+[37.14] Removed empty never-started run 'probe_agent_mvwuwdcm_ecc5fc17811d4ee6bde022825e198917' ('Bulk empty 176')
+[37.15] Removed empty never-started run 'probe_agent_mvwuwdcm_ecf104f9f57e44349cf657308bf748e4' ('Bulk empty 184')
+[37.17] Removed empty never-started run 'probe_agent_mvwuwdcm_ed9ea9de89c94399b6b81999f4ad2852' ('Bulk empty 264')
+[37.18] Removed empty never-started run 'probe_agent_mvwuwdcm_edea62fab8e1488481b6311a96f1941b' ('Bulk empty 139')
+[37.19] Removed empty never-started run 'probe_agent_mvwuwdcm_ededdbc8207444e18ff3ced64948918b' ('Bulk empty 16')
+[37.21] Removed empty never-started run 'probe_agent_mvwuwdcm_ee0cbb5e93ca4570bb9c221795960639' ('Bulk empty 269')
+[37.23] Removed empty never-started run 'probe_agent_mvwuwdcm_efa71132578246479b48c563a09d3e5d' ('Bulk empty 201')
+[37.24] Removed empty never-started run 'probe_agent_mvwuwdcm_f0086e6ae35b41418b35b59d03ad99c1' ('Bulk empty 113')
+[37.26] Removed empty never-started run 'probe_agent_mvwuwdcm_f0db3b7e2b6c4fa2a91e8ee8164430b2' ('Bulk empty 160')
+[37.27] Removed empty never-started run 'probe_agent_mvwuwdcm_f111678b4dcb4d9aaeeea5ebbb46c586' ('Bulk empty 234')
+[37.29] Removed empty never-started run 'probe_agent_mvwuwdcm_f12183700c0449699e46f2f025062cc9' ('Bulk empty 34')
+[37.30] Removed empty never-started run 'probe_agent_mvwuwdcm_f1dfabf43bc04ee5b6247fbcd5755c34' ('Bulk empty 81')
+[37.31] Removed empty never-started run 'probe_agent_mvwuwdcm_f28860552d0041ec9e10c0498a4b22bd' ('Bulk empty 195')
+[37.33] Removed empty never-started run 'probe_agent_mvwuwdcm_f30ac08f5e4548098656677a113ee28a' ('Bulk empty 296')
+[37.34] Removed empty never-started run 'probe_agent_mvwuwdcm_f3c0c959e4f747d3879c98162e9b3f73' ('Bulk empty 261')
+[37.36] Removed empty never-started run 'probe_agent_mvwuwdcm_f4601243d1694b0987a2444a207bdac6' ('Bulk empty 209')
+[37.37] Removed empty never-started run 'probe_agent_mvwuwdcm_f5223808b22b4982988a6d3ee358acd2' ('Bulk empty 2')
+[37.38] Removed empty never-started run 'probe_agent_mvwuwdcm_f713622ef3cd4eab8e01a154d4bfcc0e' ('Bulk empty 32')
+[37.40] Removed empty never-started run 'probe_agent_mvwuwdcm_f82d2e07c66840be9fdc3fda4e4bfd32' ('Bulk empty 237')
+[37.41] Removed empty never-started run 'probe_agent_mvwuwdcm_f83dc279dd9c437dbfd8720cdb64670b' ('Bulk empty 153')
+[37.43] Removed empty never-started run 'probe_agent_mvwuwdcm_f85ad1925ba04c23882c6a05d9e76e81' ('Bulk empty 276')
+[37.44] Removed empty never-started run 'probe_agent_mvwuwdcm_fa46391e883c4458b95e36e73d47825b' ('Bulk empty 19')
+[37.48] Removed empty never-started run 'probe_agent_mvwuwdcm_fbb900b10c6145b09088cf8606eac6a4' ('Bulk empty 206')
+[37.49] Removed empty never-started run 'probe_agent_mvwuwdcm_fbcdc31ba1d04a20bb61f6897fe77bdb' ('Bulk empty 72')
+[37.51] Removed empty never-started run 'probe_agent_mvwuwdcm_fc7de9377f5944f89d95f145443eca58' ('Bulk empty 283')
+[37.52] Removed empty never-started run 'probe_agent_mvwuwdcm_fcc5c61f4a534ee69345f77bcf31aa0c' ('Bulk empty 177')
+[37.54] Removed empty never-started run 'probe_agent_mvwuwdcm_fd3939007b0d414288da3e26dd2b075e' ('Bulk empty 98')
+[37.55] Removed empty never-started run 'probe_agent_mvwuwdcm_fd422b0e848a4517a72207b7c79d27e2' ('Bulk empty 164')
+[37.56] Removed empty never-started run 'probe_agent_mvwuwdcm_fe64316b3a914f0ba3a92e1d9a970a1d' ('Bulk empty 17')
+[37.58] Removed empty never-started run 'probe_agent_mvwuwdcm_ff68d04fc3b549fdb6bb77399c55d017' ('Bulk empty 215')
+[37.58] Empty never-started run removal skipped 1 folder(s) without a standalone run record
+[37.58] [349-DIAG] 1793478713546 stage end
+[37.58] Loading workspace packages to trigger registration...
+[37.58] Successfully loaded workspace packages.
+[37.58] Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac003-mD7FoY/data/temp_workspace
+[37.58] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac003-mD7FoY/data/temp_workspace.
+[37.58] Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac003-mD7FoY/data/temp_workspace with fixed ID 'temp_ws_default'
+[37.58] Temp workspace created and cached with ID: temp_ws_default
+[37.58] Registering agent customization processors...
+[37.58] Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+[37.58] Registered input processor 'WorkspacePathSanitizationProcessor'.
+[37.58] Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+[37.58] Registered input processor 'UserInputContextBuildingProcessor'.
+[37.58] LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+[37.58] Registered LLM response processor 'MediaUrlTransformerProcessor'.
+[37.58] Agent customization processor registration complete.
+[37.58] Successfully registered tool definition: 'read_file'
+[37.58] Successfully registered tool definition: 'write_file'
+[37.58] Successfully registered tool definition: 'edit_file'
+[37.58] Successfully registered tool definition: 'run_bash'
+[37.58] Successfully registered tool definition: 'start_background_process'
+[37.58] Successfully registered tool definition: 'get_background_processes'
+[37.58] Successfully registered tool definition: 'get_process_output'
+[37.58] Successfully registered tool definition: 'stop_background_process'
+[37.58] Successfully registered tool definition: 'search_web'
+[37.58] Successfully registered tool definition: 'download_media'
+[37.58] Successfully registered tool definition: 'read_url'
+[37.58] Registered required tool unit: Core Tools
+[37.59] Successfully registered tool definition: 'get_project_task'
+[37.59] Successfully registered tool definition: 'list_projects'
+[37.59] Successfully registered tool definition: 'list_project_tasks'
+[37.59] Successfully registered tool definition: 'search_project_tasks'
+[37.59] Successfully registered tool definition: 'create_project'
+[37.59] Successfully registered tool definition: 'update_project'
+[37.59] Successfully registered tool definition: 'create_task'
+[37.59] Successfully registered tool definition: 'update_task'
+[37.59] Successfully registered tool definition: 'delegate_task'
+[37.59] Successfully registered tool definition: 'generate_image'
+[37.59] Successfully registered tool definition: 'edit_image'
+[37.59] Successfully registered tool definition: 'generate_speech'
+[37.59] Successfully registered tool definition: 'generate_video'
+[37.59] Registered required tool unit: Project Task Tools
+[37.59] Registered required tool unit: Task Delegation Tools
+[37.59] Registered required tool unit: Media Tools
+[37.60] Successfully registered tool definition: 'list_available_agents'
+[37.60] Successfully registered tool definition: 'list_peer_nodes'
+[37.60] Registered required tool unit: Agent Discovery Tools
+[37.60] Successfully registered tool definition: 'list_available_agent_runtimes'
+[37.60] Successfully registered tool definition: 'submit_launch_choices'
+[37.60] Registered required tool unit: Agent Runtime Tools
+[37.60] Registered required tool unit: Browser Tools
+[37.60] Successfully registered tool definition: 'publish_artifacts'
+[37.60] Registered required tool unit: Published Artifact Tools
+[37.60] Successfully registered tool definition: 'search_memory'
+[37.60] Registered required tool unit: Memory Tools
+[37.60] Successfully registered tool definition: 'send_message_to'
+[37.60] Successfully registered tool definition: 'get_handoff_rules'
+[37.60] Registered required tool unit: Agent Communication Tools
+[37.60] Overwriting existing tool definition for name: 'search_web'
+[37.60] Successfully registered tool definition: 'search_web'
+[37.60] Registered required tool unit: Search Tools
+[37.61] {"level":30,"time":1793478713577,"pid":65571,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:52256"}
+[37.64] {"level":30,"time":1793478713604,"pid":65571,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:52192"}
+[37.64] {"level":30,"time":1793478713604,"pid":65571,"hostname":"MacBookPro","msg":"Server listening at http://192.168.2.158:52192"}
+[37.64] {"level":30,"time":1793478713604,"pid":65571,"hostname":"MacBookPro","msg":"Server listening at http://100.127.30.107:52192"}
+[37.64] [2026-10-31T20:31:53.604Z] [INFO] [server.runtime] Server listening on 0.0.0.0:52192
+[37.64] Scheduling Studio-only non-critical startup tasks...
+[37.64] Background cache pre-loading process has started.
+[37.64] CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+[37.64] Populating MCP server config cache for the first time...
+[37.64] Running MCP tool registration background task...
+[37.64] Loading and registering all MCP server configurations from file...
+[37.64] Background task 'Memory Sync Worker' completed successfully.
+[37.64] Background task 'Memory Search' completed successfully.
+[37.65] MCP server config cache populated with 0 items.
+[37.65] Found 0 total MCP server configs.
+[37.65] Synchronized cached configurations with the core MCP config service.
+[37.65] Pre-loaded 0 MCP server configs into cache.
+[37.65] Finished loading and registering all MCP server configurations.
+[37.65] Background task 'MCP Tool Registration' completed successfully.
+[37.65] Pre-loaded 33 LLM models into cache.
+[37.65] Pre-loaded 7 image models into cache.
+[37.65] Pre-loaded 3 audio models into cache.
+[37.65] Background application cache pre-loading completed.
+[37.65] Background task 'Cache Pre-loading' completed successfully.

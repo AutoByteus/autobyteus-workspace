@@ -1,0 +1,14 @@
+# IMP-01 mutation (content check removed: preparedAt && !startedAt alone; tests from 93fa105819)
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/agent-run-empty-never-started-removal.test.ts --no-watch --reporter=verbose
+# Commit: 93fa105819
+# Environment: macOS 26.5.2, node v22.23.1
+# Date: 2026-10-31
+
+ × tests/unit/agent-execution/agent-run-empty-never-started-removal.test.ts > removeEmptyNeverStartedRuns > keeps the May shape: an older record (activationState, no startedAt) with a conversation 56ms
+ × tests/unit/agent-execution/agent-run-empty-never-started-removal.test.ts > removeEmptyNeverStartedRuns > AC-003: removes only the empty never-started run (row and folder) and logs it 101ms
+ × tests/unit/agent-execution/agent-run-empty-never-started-removal.test.ts > removeEmptyNeverStartedRuns > keeps a never-started run whose folder holds a symbolic link (not followed) 71ms
+ × tests/unit/agent-execution/agent-run-empty-never-started-removal.test.ts > removeEmptyNeverStartedRuns > AR-002: keeps a run whose subfolder cannot be read, and logs it 33ms
+ × tests/unit/agent-execution/agent-run-empty-never-started-removal.test.ts > removeEmptyNeverStartedRuns > AR-002: keeps an otherwise empty run when reading its folder fails 34ms
+ ✓ tests/unit/agent-execution/agent-run-empty-never-started-removal.test.ts > removeEmptyNeverStartedRuns > keeps active runs, folders without a standalone record, and runs whose removal is refused; never throws 103ms
+ ✓ tests/unit/agent-execution/agent-run-empty-never-started-removal.test.ts > removeEmptyNeverStartedRuns > does nothing when there is no standalone run folder yet 1ms
+      Tests  5 failed | 2 passed (7)

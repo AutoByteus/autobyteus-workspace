@@ -1,0 +1,120 @@
+# API-03E server crash-relaunch-base (BASE build) pid 7562; data root <temp>/crash-base; 2026-10-31T20:35:59.609Z
+[10.94] Platform detection: Windows=false
+[10.94] App root directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-api.0owf0P/base/autobyteus-server-ts
+[10.94] App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac004-Syckg9/crash-base
+[10.94] Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac004-Syckg9/crash-base/.env
+[10.94] Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac004-Syckg9/crash-base/.env
+[10.94] ◇ injected env (0) from ../../../ar349-ac004-Syckg9/crash-base/.env // tip: ⌘ override existing { override: true }
+[10.94] Environment variables loaded successfully
+[10.94] Server public base URL configured to: http://127.0.0.1:53487
+[10.94] === Starting logging configuration ===
+[10.94] Logging config file is ignored in Node.js: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-api.0owf0P/base/autobyteus-server-ts/logging_config.ini
+[10.95] ============================================================
+[10.95] SERVER PUBLIC URL: http://127.0.0.1:53487
+[10.95] APP ROOT DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-api.0owf0P/base/autobyteus-server-ts
+[10.95] APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac004-Syckg9/crash-base
+[10.95] DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac004-Syckg9/crash-base/db
+[10.95] LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac004-Syckg9/crash-base/logs
+[10.95] DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac004-Syckg9/crash-base/download
+[10.95] MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac004-Syckg9/crash-base/memory
+[10.95] ============================================================
+[12.54] AgentFactory (Singleton) initialized.
+[12.76] Running Prisma migrations...
+[12.76] Using Prisma engine overrides from bundled: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-api.0owf0P/base/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+[13.01] Prisma schema loaded from prisma/schema.prisma
+[13.02] Datasource "db": SQLite database "test.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac004-Syckg9/crash-base/db/test.db"
+[13.08] 27 migrations found in prisma/migrations
+
+
+[13.09] No pending migrations to apply.
+[13.12] Database migrations completed successfully.
+[13.14] (node:7562) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+[13.14] (Use `node --trace-warnings ...` to show where the warning was created)
+[13.14] prisma:info Starting a sqlite pool with 21 connections.
+[13.17] [2026-10-31T20:36:12.774Z] [INFO] [secret-management.vault] Secret vault: application database
+[13.18] Initialized server settings service with 33 predefined settings
+[13.23] AgentRunManager initialized.
+[13.23] AgentRunManager initialized.
+[13.31] Loading workspace packages to trigger registration...
+[13.31] Successfully loaded workspace packages.
+[13.31] Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac004-Syckg9/crash-base/temp_workspace
+[13.31] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac004-Syckg9/crash-base/temp_workspace.
+[13.31] Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac004-Syckg9/crash-base/temp_workspace with fixed ID 'temp_ws_default'
+[13.31] Temp workspace created and cached with ID: temp_ws_default
+[13.31] Registering agent customization processors...
+[13.31] Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+[13.31] Registered input processor 'WorkspacePathSanitizationProcessor'.
+[13.31] Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+[13.31] Registered input processor 'UserInputContextBuildingProcessor'.
+[13.31] LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+[13.31] Registered LLM response processor 'MediaUrlTransformerProcessor'.
+[13.31] Agent customization processor registration complete.
+[13.32] Successfully registered tool definition: 'read_file'
+[13.32] Successfully registered tool definition: 'write_file'
+[13.32] Successfully registered tool definition: 'edit_file'
+[13.32] Successfully registered tool definition: 'run_bash'
+[13.32] Successfully registered tool definition: 'start_background_process'
+[13.32] Successfully registered tool definition: 'get_background_processes'
+[13.32] Successfully registered tool definition: 'get_process_output'
+[13.32] Successfully registered tool definition: 'stop_background_process'
+[13.32] Successfully registered tool definition: 'search_web'
+[13.32] Successfully registered tool definition: 'download_media'
+[13.32] Successfully registered tool definition: 'read_url'
+[13.32] Registered required tool unit: Core Tools
+[13.33] Successfully registered tool definition: 'get_project_task'
+[13.33] Successfully registered tool definition: 'list_projects'
+[13.33] Successfully registered tool definition: 'list_project_tasks'
+[13.33] Successfully registered tool definition: 'search_project_tasks'
+[13.33] Successfully registered tool definition: 'create_project'
+[13.33] Successfully registered tool definition: 'update_project'
+[13.33] Successfully registered tool definition: 'create_task'
+[13.33] Successfully registered tool definition: 'update_task'
+[13.33] Successfully registered tool definition: 'delegate_task'
+[13.33] Successfully registered tool definition: 'generate_image'
+[13.33] Successfully registered tool definition: 'edit_image'
+[13.33] Successfully registered tool definition: 'generate_speech'
+[13.33] Successfully registered tool definition: 'generate_video'
+[13.33] Registered required tool unit: Project Task Tools
+[13.33] Registered required tool unit: Task Delegation Tools
+[13.33] Registered required tool unit: Media Tools
+[13.34] Successfully registered tool definition: 'list_available_agents'
+[13.34] Successfully registered tool definition: 'list_peer_nodes'
+[13.34] Registered required tool unit: Agent Discovery Tools
+[13.34] Successfully registered tool definition: 'list_available_agent_runtimes'
+[13.34] Successfully registered tool definition: 'submit_launch_choices'
+[13.34] Registered required tool unit: Agent Runtime Tools
+[13.34] Registered required tool unit: Browser Tools
+[13.34] Successfully registered tool definition: 'publish_artifacts'
+[13.34] Registered required tool unit: Published Artifact Tools
+[13.34] Successfully registered tool definition: 'search_memory'
+[13.34] Registered required tool unit: Memory Tools
+[13.34] Successfully registered tool definition: 'send_message_to'
+[13.34] Successfully registered tool definition: 'get_handoff_rules'
+[13.34] Registered required tool unit: Agent Communication Tools
+[13.34] Overwriting existing tool definition for name: 'search_web'
+[13.34] Successfully registered tool definition: 'search_web'
+[13.34] Registered required tool unit: Search Tools
+[13.35] {"level":30,"time":1793478972962,"pid":7562,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:53514"}
+[13.38] {"level":30,"time":1793478972988,"pid":7562,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:53487"}
+[13.38] {"level":30,"time":1793478972988,"pid":7562,"hostname":"MacBookPro","msg":"Server listening at http://192.168.2.158:53487"}
+[13.38] {"level":30,"time":1793478972988,"pid":7562,"hostname":"MacBookPro","msg":"Server listening at http://100.127.30.107:53487"}
+[13.38] [2026-10-31T20:36:12.988Z] [INFO] [server.runtime] Server listening on 0.0.0.0:53487
+[13.38] Scheduling Studio-only non-critical startup tasks...
+[13.39] Background cache pre-loading process has started.
+[13.39] CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+[13.39] Populating MCP server config cache for the first time...
+[13.39] Running MCP tool registration background task...
+[13.39] Loading and registering all MCP server configurations from file...
+[13.39] Background task 'Memory Sync Worker' completed successfully.
+[13.39] Background task 'Memory Search' completed successfully.
+[13.39] MCP server config cache populated with 0 items.
+[13.39] Found 0 total MCP server configs.
+[13.39] Synchronized cached configurations with the core MCP config service.
+[13.39] Pre-loaded 0 MCP server configs into cache.
+[13.39] Finished loading and registering all MCP server configurations.
+[13.39] Background task 'MCP Tool Registration' completed successfully.
+[13.39] Pre-loaded 33 LLM models into cache.
+[13.39] Pre-loaded 7 image models into cache.
+[13.39] Pre-loaded 3 audio models into cache.
+[13.39] Background application cache pre-loading completed.
+[13.39] Background task 'Cache Pre-loading' completed successfully.

@@ -1,0 +1,550 @@
+{
+  "case": "API-03B",
+  "mode": "ac004",
+  "serverDir": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-api.0owf0P/clean/autobyteus-server-ts",
+  "baseDir": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-api.0owf0P/base/autobyteus-server-ts",
+  "date": "2026-10-31T20:34:08.243Z",
+  "own": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ar349-ac004-csu0sj",
+  "steps": [
+    {
+      "at": "1.85",
+      "step": "server started",
+      "value": {
+        "label": "crash-1",
+        "pid": 84441,
+        "port": 52703,
+        "readyMs": 1847,
+        "data": "<own>/crash"
+      }
+    },
+    {
+      "at": "4.70",
+      "step": "crash attempt",
+      "value": {
+        "attempt": 1,
+        "latencyMs": [
+          679,
+          55
+        ],
+        "inflight": [
+          {
+            "k": 0,
+            "r": {
+              "success": true,
+              "message": "Agent run created successfully.",
+              "runId": "probe_agent_mvwv01f7_c0d4c453bd534127b9a2352309b96c95"
+            }
+          },
+          {
+            "k": 1,
+            "r": {
+              "success": true,
+              "message": "Agent run created successfully.",
+              "runId": "probe_agent_mvwv01f7_c69d626cab7f4d2db20119ea0f4068f7"
+            }
+          },
+          {
+            "k": 2,
+            "r": {
+              "success": true,
+              "message": "Agent run created successfully.",
+              "runId": "probe_agent_mvwv01f7_6129ce0d6ea4456ab8a84c8208815c5e"
+            }
+          },
+          {
+            "k": 3,
+            "error": "TypeError: fetch failed"
+          },
+          {
+            "k": 4,
+            "error": "TypeError: fetch failed"
+          },
+          {
+            "k": 5,
+            "error": "TypeError: fetch failed"
+          }
+        ],
+        "preparedOnly": [],
+        "leftoverDisk": {}
+      }
+    },
+    {
+      "at": "6.33",
+      "step": "server started",
+      "value": {
+        "label": "crash-2",
+        "pid": 86660,
+        "port": 52757,
+        "readyMs": 1629,
+        "data": "<own>/crash"
+      }
+    },
+    {
+      "at": "8.29",
+      "step": "crash attempt",
+      "value": {
+        "attempt": 2,
+        "latencyMs": [
+          106,
+          53
+        ],
+        "inflight": [
+          {
+            "k": 0,
+            "r": {
+              "success": true,
+              "message": "Agent run created successfully.",
+              "runId": "probe_agent_mvwv01f7_541b53a20e884f96a00985601f9ce9f1"
+            }
+          },
+          {
+            "k": 1,
+            "r": {
+              "success": true,
+              "message": "Agent run created successfully.",
+              "runId": "probe_agent_mvwv01f7_bc8c6bf557c843ca9db24bc36e130213"
+            }
+          },
+          {
+            "k": 2,
+            "error": "TypeError: fetch failed"
+          },
+          {
+            "k": 3,
+            "error": "TypeError: fetch failed"
+          },
+          {
+            "k": 4,
+            "error": "TypeError: fetch failed"
+          },
+          {
+            "k": 5,
+            "error": "TypeError: fetch failed"
+          }
+        ],
+        "preparedOnly": [
+          "probe_agent_mvwv01f7_87b8e55b04404293af9fc6950f9bc7b7"
+        ],
+        "leftoverDisk": {
+          "probe_agent_mvwv01f7_87b8e55b04404293af9fc6950f9bc7b7": {
+            "meta": {
+              "preparedAt": true,
+              "startedAtKey": true,
+              "startedAt": false,
+              "activationState": null,
+              "taskAgent": false
+            },
+            "entries": [
+              "/",
+              "/raw_traces_active.jsonl",
+              "/run_metadata.json",
+              "/run_metadata.json.86660.1793478854853.2a10c2b6ccb53.tmp"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "at": "10.06",
+      "step": "server started",
+      "value": {
+        "label": "crash-relaunch-new",
+        "pid": 87899,
+        "port": 52802,
+        "readyMs": 1732,
+        "data": "<own>/crash-new"
+      }
+    },
+    {
+      "at": "10.11",
+      "step": "relaunch crash on new",
+      "value": {
+        "leftoverDiskAfter": {
+          "probe_agent_mvwv01f7_87b8e55b04404293af9fc6950f9bc7b7": {
+            "meta": {
+              "preparedAt": true,
+              "startedAtKey": true,
+              "startedAt": false,
+              "activationState": null,
+              "taskAgent": false
+            },
+            "entries": [
+              "/",
+              "/raw_traces_active.jsonl",
+              "/run_metadata.json",
+              "/run_metadata.json.86660.1793478854853.2a10c2b6ccb53.tmp"
+            ]
+          }
+        },
+        "leftovers": [
+          "probe_agent_mvwv01f7_87b8e55b04404293af9fc6950f9bc7b7"
+        ],
+        "listedAfter": [
+          "probe_agent_mvwv01f7_87b8e55b04404293af9fc6950f9bc7b7"
+        ],
+        "onDiskAfter": [
+          "probe_agent_mvwv01f7_87b8e55b04404293af9fc6950f9bc7b7"
+        ],
+        "emptyNeverStartedListed": [
+          "probe_agent_mvwv01f7_87b8e55b04404293af9fc6950f9bc7b7"
+        ],
+        "historyRows": 10,
+        "logLines": []
+      }
+    },
+    {
+      "at": "10.21",
+      "step": "server stopped",
+      "value": {
+        "label": "crash-relaunch-new",
+        "signal": "SIGTERM",
+        "exit": {
+          "code": 0,
+          "signal": null,
+          "at": 1793478858424
+        },
+        "ms": 74
+      }
+    },
+    {
+      "at": "12.39",
+      "step": "server started",
+      "value": {
+        "label": "crash-relaunch-base",
+        "pid": 88524,
+        "port": 52827,
+        "readyMs": 2140,
+        "data": "<own>/crash-base"
+      }
+    },
+    {
+      "at": "12.43",
+      "step": "relaunch crash on base",
+      "value": {
+        "leftoverDiskAfter": {
+          "probe_agent_mvwv01f7_87b8e55b04404293af9fc6950f9bc7b7": {
+            "meta": {
+              "preparedAt": true,
+              "startedAtKey": true,
+              "startedAt": false,
+              "activationState": null,
+              "taskAgent": false
+            },
+            "entries": [
+              "/",
+              "/raw_traces_active.jsonl",
+              "/run_metadata.json",
+              "/run_metadata.json.86660.1793478854853.2a10c2b6ccb53.tmp"
+            ]
+          }
+        },
+        "leftovers": [
+          "probe_agent_mvwv01f7_87b8e55b04404293af9fc6950f9bc7b7"
+        ],
+        "listedAfter": [
+          "probe_agent_mvwv01f7_87b8e55b04404293af9fc6950f9bc7b7"
+        ],
+        "onDiskAfter": [
+          "probe_agent_mvwv01f7_87b8e55b04404293af9fc6950f9bc7b7"
+        ],
+        "emptyNeverStartedListed": [
+          "probe_agent_mvwv01f7_87b8e55b04404293af9fc6950f9bc7b7"
+        ],
+        "historyRows": 10,
+        "logLines": []
+      }
+    },
+    {
+      "at": "12.53",
+      "step": "server stopped",
+      "value": {
+        "label": "crash-relaunch-base",
+        "signal": "SIGTERM",
+        "exit": {
+          "code": 0,
+          "signal": null,
+          "at": 1793478860728
+        },
+        "ms": 52
+      }
+    },
+    {
+      "at": "14.37",
+      "step": "server started",
+      "value": {
+        "label": "stuck-relaunch-new",
+        "pid": 88831,
+        "port": 52855,
+        "readyMs": 1829,
+        "data": "<own>/stuck-new"
+      }
+    },
+    {
+      "at": "14.37",
+      "step": "relaunch stuck on new",
+      "value": {
+        "leftoverDiskAfter": {},
+        "leftovers": [],
+        "listedAfter": [],
+        "onDiskAfter": [],
+        "emptyNeverStartedListed": [],
+        "historyRows": 0,
+        "logLines": []
+      }
+    },
+    {
+      "at": "14.48",
+      "step": "server stopped",
+      "value": {
+        "label": "stuck-relaunch-new",
+        "signal": "SIGTERM",
+        "exit": {
+          "code": 0,
+          "signal": null,
+          "at": 1793478862671
+        },
+        "ms": 54
+      }
+    },
+    {
+      "at": "16.41",
+      "step": "server started",
+      "value": {
+        "label": "stuck-relaunch-base",
+        "pid": 88915,
+        "port": 52880,
+        "readyMs": 1930,
+        "data": "<own>/stuck-base"
+      }
+    },
+    {
+      "at": "16.42",
+      "step": "relaunch stuck on base",
+      "value": {
+        "leftoverDiskAfter": {},
+        "leftovers": [],
+        "listedAfter": [],
+        "onDiskAfter": [],
+        "emptyNeverStartedListed": [],
+        "historyRows": 0,
+        "logLines": []
+      }
+    },
+    {
+      "at": "16.52",
+      "step": "server stopped",
+      "value": {
+        "label": "stuck-relaunch-base",
+        "signal": "SIGTERM",
+        "exit": {
+          "code": 0,
+          "signal": null,
+          "at": 1793478864714
+        },
+        "ms": 53
+      }
+    }
+  ],
+  "crash": [
+    {
+      "attempt": 1,
+      "latencyMs": [
+        679,
+        55
+      ],
+      "inflight": [
+        {
+          "k": 0,
+          "r": {
+            "success": true,
+            "message": "Agent run created successfully.",
+            "runId": "probe_agent_mvwv01f7_c0d4c453bd534127b9a2352309b96c95"
+          }
+        },
+        {
+          "k": 1,
+          "r": {
+            "success": true,
+            "message": "Agent run created successfully.",
+            "runId": "probe_agent_mvwv01f7_c69d626cab7f4d2db20119ea0f4068f7"
+          }
+        },
+        {
+          "k": 2,
+          "r": {
+            "success": true,
+            "message": "Agent run created successfully.",
+            "runId": "probe_agent_mvwv01f7_6129ce0d6ea4456ab8a84c8208815c5e"
+          }
+        },
+        {
+          "k": 3,
+          "error": "TypeError: fetch failed"
+        },
+        {
+          "k": 4,
+          "error": "TypeError: fetch failed"
+        },
+        {
+          "k": 5,
+          "error": "TypeError: fetch failed"
+        }
+      ],
+      "preparedOnly": [],
+      "leftoverDisk": {}
+    },
+    {
+      "attempt": 2,
+      "latencyMs": [
+        106,
+        53
+      ],
+      "inflight": [
+        {
+          "k": 0,
+          "r": {
+            "success": true,
+            "message": "Agent run created successfully.",
+            "runId": "probe_agent_mvwv01f7_541b53a20e884f96a00985601f9ce9f1"
+          }
+        },
+        {
+          "k": 1,
+          "r": {
+            "success": true,
+            "message": "Agent run created successfully.",
+            "runId": "probe_agent_mvwv01f7_bc8c6bf557c843ca9db24bc36e130213"
+          }
+        },
+        {
+          "k": 2,
+          "error": "TypeError: fetch failed"
+        },
+        {
+          "k": 3,
+          "error": "TypeError: fetch failed"
+        },
+        {
+          "k": 4,
+          "error": "TypeError: fetch failed"
+        },
+        {
+          "k": 5,
+          "error": "TypeError: fetch failed"
+        }
+      ],
+      "preparedOnly": [
+        "probe_agent_mvwv01f7_87b8e55b04404293af9fc6950f9bc7b7"
+      ],
+      "leftoverDisk": {
+        "probe_agent_mvwv01f7_87b8e55b04404293af9fc6950f9bc7b7": {
+          "meta": {
+            "preparedAt": true,
+            "startedAtKey": true,
+            "startedAt": false,
+            "activationState": null,
+            "taskAgent": false
+          },
+          "entries": [
+            "/",
+            "/raw_traces_active.jsonl",
+            "/run_metadata.json",
+            "/run_metadata.json.86660.1793478854853.2a10c2b6ccb53.tmp"
+          ]
+        }
+      }
+    }
+  ],
+  "stuck": {
+    "preparedOnly": []
+  },
+  "relaunch": {
+    "crash-new": {
+      "leftoverDiskAfter": {
+        "probe_agent_mvwv01f7_87b8e55b04404293af9fc6950f9bc7b7": {
+          "meta": {
+            "preparedAt": true,
+            "startedAtKey": true,
+            "startedAt": false,
+            "activationState": null,
+            "taskAgent": false
+          },
+          "entries": [
+            "/",
+            "/raw_traces_active.jsonl",
+            "/run_metadata.json",
+            "/run_metadata.json.86660.1793478854853.2a10c2b6ccb53.tmp"
+          ]
+        }
+      },
+      "leftovers": [
+        "probe_agent_mvwv01f7_87b8e55b04404293af9fc6950f9bc7b7"
+      ],
+      "listedAfter": [
+        "probe_agent_mvwv01f7_87b8e55b04404293af9fc6950f9bc7b7"
+      ],
+      "onDiskAfter": [
+        "probe_agent_mvwv01f7_87b8e55b04404293af9fc6950f9bc7b7"
+      ],
+      "emptyNeverStartedListed": [
+        "probe_agent_mvwv01f7_87b8e55b04404293af9fc6950f9bc7b7"
+      ],
+      "historyRows": 10,
+      "logLines": []
+    },
+    "crash-base": {
+      "leftoverDiskAfter": {
+        "probe_agent_mvwv01f7_87b8e55b04404293af9fc6950f9bc7b7": {
+          "meta": {
+            "preparedAt": true,
+            "startedAtKey": true,
+            "startedAt": false,
+            "activationState": null,
+            "taskAgent": false
+          },
+          "entries": [
+            "/",
+            "/raw_traces_active.jsonl",
+            "/run_metadata.json",
+            "/run_metadata.json.86660.1793478854853.2a10c2b6ccb53.tmp"
+          ]
+        }
+      },
+      "leftovers": [
+        "probe_agent_mvwv01f7_87b8e55b04404293af9fc6950f9bc7b7"
+      ],
+      "listedAfter": [
+        "probe_agent_mvwv01f7_87b8e55b04404293af9fc6950f9bc7b7"
+      ],
+      "onDiskAfter": [
+        "probe_agent_mvwv01f7_87b8e55b04404293af9fc6950f9bc7b7"
+      ],
+      "emptyNeverStartedListed": [
+        "probe_agent_mvwv01f7_87b8e55b04404293af9fc6950f9bc7b7"
+      ],
+      "historyRows": 10,
+      "logLines": []
+    },
+    "stuck-new": {
+      "leftoverDiskAfter": {},
+      "leftovers": [],
+      "listedAfter": [],
+      "onDiskAfter": [],
+      "emptyNeverStartedListed": [],
+      "historyRows": 0,
+      "logLines": []
+    },
+    "stuck-base": {
+      "leftoverDiskAfter": {},
+      "leftovers": [],
+      "listedAfter": [],
+      "onDiskAfter": [],
+      "emptyNeverStartedListed": [],
+      "historyRows": 0,
+      "logLines": []
+    }
+  },
+  "result": "Completed",
+  "modelCalls": 0,
+  "rootRemoved": true
+}

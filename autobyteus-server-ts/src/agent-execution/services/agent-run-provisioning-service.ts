@@ -1,4 +1,6 @@
+import type { Dirent } from "node:fs";
 import fs from "node:fs/promises";
+import path from "node:path";
 import { AgentRunConfig } from "../domain/agent-run-config.js";
 import { AgentRunManager } from "./agent-run-manager.js";
 import { appConfigProvider } from "../../config/app-config-provider.js";
@@ -41,6 +43,28 @@ const normalizeRequiredRunId = (runId: string): string => {
 };
 
 const PREPARED_RUN_TTL_MS = 24 * 60 * 60 * 1000;
+const RUN_METADATA_FILE_NAME = "run_metadata.json";
+
+const logger = console;
+
+export type RemovedEmptyNeverStartedRun = Readonly<{ runId: string; title: string }>;
+
+/**
+ * Whether a run folder holds nothing but its record: only directories and the top-level regular
+ * `run_metadata.json`. Walks without following symbolic links (a symlink, socket or any other entry is
+ * content). Throws when any part of the folder cannot be read, so the caller keeps the run.
+ */
+const holdsOnlyItsRecord = async (dir: string, top = true): Promise<boolean> => {
+  for (const entry of await fs.readdir(dir, { withFileTypes: true })) {
+    if (entry.isDirectory()) {
+      if (!(await holdsOnlyItsRecord(path.join(dir, entry.name), false))) return false;
+      continue;
+    }
+    if (top && entry.isFile() && entry.name === RUN_METADATA_FILE_NAME) continue;
+    return false;
+  }
+  return true;
+};
 
 export class AgentRunProvisioningService {
   private readonly memoryLayout: AgentMemoryLayout;
@@ -128,29 +152,57 @@ export class AgentRunProvisioningService {
     return this.historyCatalogService.cancelPreparedRun(normalizedRunId);
   }
 
-  async cleanupStalePreparedRuns(now: Date = new Date()): Promise<number> {
-    let removed = 0;
-    let entries: string[] = [];
+  /**
+   * Startup removal of debris from failed or cut starts (autobyteus-349, REQ-002): a standalone run that
+   * was prepared, never started, and whose folder holds nothing but its record. Any content, an
+   * unreadable or missing record, or a folder that cannot be fully read keeps the run. Never throws.
+   */
+  async removeEmptyNeverStartedRuns(): Promise<RemovedEmptyNeverStartedRun[]> {
+    const removed: RemovedEmptyNeverStartedRun[] = [];
+    const rootDir = this.memoryLayout.getStandaloneRootDirPath();
+    let entries: Dirent[];
     try {
-      entries = await fs.readdir(this.memoryLayout.getStandaloneRootDirPath());
-    } catch {
-      return 0;
+      entries = await fs.readdir(rootDir, { withFileTypes: true });
+    } catch (error) {
+      if ((error as NodeJS.ErrnoException)?.code !== "ENOENT") {
+        logger.warn(`Empty never-started run removal skipped: '${rootDir}' could not be read: ${String(error)}`);
+      }
+      return removed;
     }
-
-    for (const runId of entries) {
-      const metadata = await this.metadataService.readMetadata(runId);
-      if (!metadata || !metadata.preparedAt || metadata.startedAt) {
-        continue;
+    const withoutRecord: string[] = [];
+    for (const entry of entries) {
+      if (!entry.isDirectory()) continue;
+      const runId = entry.name;
+      try {
+        const record = await this.metadataService.readMetadataState(runId);
+        if (record.kind === "missing") { withoutRecord.push(runId); continue; }
+        if (record.kind === "unreadable") {
+          logger.warn(`Kept run '${runId}': its record could not be read: ${record.error.message}`);
+          continue;
+        }
+        const { metadata } = record;
+        if (!metadata.preparedAt || metadata.startedAt) continue;
+        try {
+          if (!(await holdsOnlyItsRecord(this.memoryLayout.getStandaloneRunDirPath(runId)))) continue;
+        } catch (error) {
+          logger.warn(`Kept never-started run '${runId}': its folder could not be fully read: ${String(error)}`);
+          continue;
+        }
+        if (this.agentRunManager.hasActiveRun(runId) || getAgentRunCommandRegistry().hasOutstandingCommands(runId)) continue;
+        const title = (await this.historyCatalogService.getCatalogRow(runId))?.summary ?? "";
+        const result = await this.cancelPreparedAgentRun(runId);
+        if (!result.success) {
+          logger.warn(`Kept empty never-started run '${runId}': ${result.message}`);
+          continue;
+        }
+        logger.info(`Removed empty never-started run '${runId}' ('${title}')`);
+        removed.push({ runId, title });
+      } catch (error) {
+        logger.warn(`Kept run '${runId}': empty never-started check failed: ${String(error)}`);
       }
-      if (this.agentRunManager.hasActiveRun(runId) || getAgentRunCommandRegistry().hasOutstandingCommands(runId)) {
-        continue;
-      }
-      const expiresAt = metadata.preparedExpiresAt ? Date.parse(metadata.preparedExpiresAt) : NaN;
-      if (!Number.isFinite(expiresAt) || expiresAt > now.getTime()) {
-        continue;
-      }
-      await this.cancelPreparedAgentRun(runId);
-      removed += 1;
+    }
+    if (withoutRecord.length) {
+      logger.info(`Empty never-started run removal skipped ${withoutRecord.length} folder(s) without a standalone run record`);
     }
     return removed;
   }

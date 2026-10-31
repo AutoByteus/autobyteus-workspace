@@ -488,8 +488,10 @@ until the first backend-owned `SEND_MESSAGE` activates it. Activation records
 the catalog row. Native AutoByteus activation keeps `platformAgentRunId: null`.
 GraphQL `prepareAgentRun` may return `activationState: "PREPARED"`
 as a launch API response field, but that value is not a stored standalone
-history or metadata field. Explicit cancellation and stale-prepared cleanup
-remove only unactivated prepared identities.
+history or metadata field. Explicit cancellation, the undo of a failed one-call
+creation and the startup removal of empty never-started runs remove only
+unactivated prepared identities (see `agent_execution.md`). There is no
+age-based cleanup: `preparedExpiresAt` is written but not enforced.
 
 ## Recorded Antigravity Native Tool Inputs
 

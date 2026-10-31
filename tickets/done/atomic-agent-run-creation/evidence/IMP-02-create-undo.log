@@ -1,0 +1,20 @@
+# IMP-02
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/agent-run-create-undo.test.ts tests/unit/agent-execution/agent-run-create-service.test.ts tests/unit/agent-execution/agent-run-provisioning-service.test.ts --no-watch --reporter=verbose
+# Commit: 93fa105819
+# Environment: macOS 26.5.2, node v22.23.1
+# Date: 2026-10-31
+
+ ✓ tests/unit/agent-execution/agent-run-create-undo.test.ts > createAgentRun on a temporary data root > AC-001: a failed activation leaves no history row and no run folder; the caller gets the activation error 61ms
+ ✓ tests/unit/agent-execution/agent-run-create-undo.test.ts > createAgentRun on a temporary data root > AC-002: a run whose start was committed before activation failed is kept, and the refusal is logged 36ms
+ ✓ tests/unit/agent-execution/agent-run-provisioning-service.test.ts > AgentRunProvisioningService > prepares a standalone run identity through the catalog without persisted live status 7ms
+ ✓ tests/unit/agent-execution/agent-run-provisioning-service.test.ts > AgentRunProvisioningService > records a start under the chosen Project with the allocated id before any run record; the run record gains no key (SR-009) 2ms
+ ✓ tests/unit/agent-execution/agent-run-provisioning-service.test.ts > AgentRunProvisioningService > delegates prepared cancellation to the catalog boundary 1ms
+ ✓ tests/unit/agent-execution/agent-run-create-service.test.ts > AgentRunService create > prepares through the provisioning owner before activating through the lifecycle owner 3ms
+ ✓ tests/unit/agent-execution/agent-run-create-service.test.ts > AgentRunService create > AC-001: undoes the prepared run when activation fails, then rethrows the activation error 1ms
+ ✓ tests/unit/agent-execution/agent-run-create-service.test.ts > AgentRunService create > AC-002: a refused undo (the run started) is logged with the run ID and reason; the activation error stands 1ms
+ ✓ tests/unit/agent-execution/agent-run-create-service.test.ts > AgentRunService create > an undo that throws is logged; the activation error, not the undo's, reaches the caller 1ms
+ ✓ tests/unit/agent-execution/agent-run-create-service.test.ts > AgentRunService create > does not undo a run that activated 0ms
+ ✓ tests/unit/agent-execution/agent-run-create-service.test.ts > AgentRunService create > records activity through the history catalog without rewriting resume metadata 0ms
+ ✓ tests/unit/agent-execution/agent-run-create-service.test.ts > AgentRunService create > records a run's title by its ID (autobyteus-269: a peer's work packet), through the same catalog rule 0ms
+ Test Files  3 passed (3)
+      Tests  12 passed (12)

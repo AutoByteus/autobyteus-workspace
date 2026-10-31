@@ -3044,6 +3044,8 @@ describe("application framework architecture boundaries", () => {
       "autobyteus-server-ts/src/agent-execution/services/agent-run-command-coordinator.ts:getAgentRunService",
       // Composition root of Model Routing (autobyteus-32): binds the Model Router agent's injected run port to the process's run service.
       "autobyteus-server-ts/src/compositions/model-routing-composition.ts:getAgentRunService",
+      // Process startup root (autobyteus-349): one stage removes empty never-started runs through the run service bound in buildStudioServer.
+      "autobyteus-server-ts/src/server-runtime.ts:getAgentRunService",
       "autobyteus-server-ts/src/services/agent-streaming/agent-stream-handler.ts:getAgentRunService",
       "autobyteus-server-ts/src/services/agent-streaming/agent-team-stream-handler.ts:getTeamRunService",
     ].sort());

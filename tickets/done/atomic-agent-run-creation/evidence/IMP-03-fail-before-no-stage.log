@@ -1,0 +1,10 @@
+# IMP-03 fail-before (startup stage removed; tests from 93fa105819)
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/unit/server-runtime-app-data-migration-gate.test.ts --no-watch
+# Commit: 93fa105819
+# Environment: macOS 26.5.2, node v22.23.1
+# Date: 2026-10-31
+
+     × builds and listens only after readable identity status SUCCEEDED 16ms
+     × builds and listens only after readable identity status SUCCEEDED_WITH_WARNINGS 2ms
+     × cancels during removeEmpty without concurrent cleanup or subsequent startup stages 5005ms
+      Tests  3 failed | 18 passed (21)

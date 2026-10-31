@@ -1,0 +1,12 @@
+# IMP-02 fail-before (createAgentRun body as on base: no undo; tests from 93fa105819)
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-execution/agent-run-create-undo.test.ts tests/unit/agent-execution/agent-run-create-service.test.ts --no-watch
+# Commit: 93fa105819
+# Environment: macOS 26.5.2, node v22.23.1
+# Date: 2026-10-31
+
+     × AC-001: a failed activation leaves no history row and no run folder; the caller gets the activation error 63ms
+     × AC-002: a run whose start was committed before activation failed is kept, and the refusal is logged 35ms
+     × AC-001: undoes the prepared run when activation fails, then rethrows the activation error 2ms
+     × AC-002: a refused undo (the run started) is logged with the run ID and reason; the activation error stands 1ms
+     × an undo that throws is logged; the activation error, not the undo's, reaches the caller 1ms
+      Tests  5 failed | 4 passed (9)

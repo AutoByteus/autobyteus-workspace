@@ -54,14 +54,15 @@ Principle 11.
 - **Again in autobyteus-280 (AR-003):** the design renamed a token-usage error code that the web matches to show its friendly message (`TokenUsageAnalyticsView.vue`, `TokenUsageRunDetailsView.vue`). The fix: keep the codes, and list both views as derived consumers.
 - **Notice it by:** an inventory that lists only the direct readers of a changed structure, or only the server side of a changed rule: user-visible text that states the rule is a consumer too; a new field or mark with no named reader.
 
-### Case 4: Behavior By Absence (autobyteus-191, AR-007)
+### Case 4: Behavior By Absence (autobyteus-191, AR-007; autobyteus-349, AR-002)
 
 Principle 13.
 
 - **The design said:** closing a Task fences off its run on another node because the release lookup finds no authority for it (`NO_AUTHORITY`), which then counts as "stopped".
 - **The fix:** an explicit `fenced_remote` result where Task executions are released: no release is invoked, the message says what happened, and it is the hook for a later "stop on the peer".
 - **Why it mattered:** a behavior reached through a failed lookup works by accident and breaks silently when the lookup changes.
-- **Notice it by:** "finds no X, so …", "counts as".
+- **Again in autobyteus-349 (AR-002):** the startup cleanup removed a never-started run when a walk of its folder "found no file besides the record". The removal is a recursive `fs.rm`, so a walk that failed, or did not look at a symlink, would have read as "empty" and deleted the very content the rule protects. Fix: the walk does not follow links, every entry other than directories and the record counts as content, and any walk error keeps the run and logs it.
+- **Notice it by:** "finds no X, so …", "counts as"; a destructive step gated on not finding something.
 
 ### Case 5: Claims About The Code Taken On Trust (autobyteus-245, AR-202; autobyteus-247, AR-301; autobyteus-280, DI-001; autobyteus-278, AR-404; autobyteus-282, D-1; autobyteus-303, AR-001, SR-007; autobyteus-311, M-3; autobyteus-339, CRR-002 F-API-001)
 

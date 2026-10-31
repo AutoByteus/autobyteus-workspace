@@ -50,6 +50,7 @@ const mocks = vi.hoisted(() => {
     loggerWarn: vi.fn(),
     scheduleStudioBackgroundTasks: vi.fn(async () => undefined),
     terminateServerProcessTree: vi.fn(async () => ({ outcome: "confirmed" as const, targets: 0 })),
+    removeEmptyNeverStartedRuns: vi.fn(async () => []),
   };
 });
 
@@ -77,6 +78,10 @@ vi.mock("../../src/startup/background-runner.js", () => ({
 // startConfiguredServer runs in this test worker: never read its process table or signal its children.
 vi.mock("../../src/shutdown/server-process-tree-sweep.js", () => ({
   terminateServerProcessTree: mocks.terminateServerProcessTree,
+}));
+// autobyteus-349: the startup removal of empty never-started runs, through the process AgentRunService.
+vi.mock("../../src/agent-execution/services/agent-run-service.js", () => ({
+  getAgentRunService: () => ({ removeEmptyNeverStartedRuns: mocks.removeEmptyNeverStartedRuns }),
 }));
 vi.mock("../../src/compositions/build-studio-server.js", () => ({
   buildStudioServer: mocks.buildStudioServer,
@@ -196,6 +201,12 @@ describe("Studio app-data migration startup", () => {
       expect(mocks.rebuildTeamRunCatalog.mock.invocationCallOrder[0])
         .toBeLessThan(mocks.buildStudioServer.mock.invocationCallOrder[0]!);
       expect(mocks.buildStudioServer).toHaveBeenCalledTimes(1);
+      // autobyteus-349: empty never-started runs are removed after the services are bound, before any request.
+      expect(mocks.removeEmptyNeverStartedRuns).toHaveBeenCalledTimes(1);
+      expect(mocks.buildStudioServer.mock.invocationCallOrder[0])
+        .toBeLessThan(mocks.removeEmptyNeverStartedRuns.mock.invocationCallOrder[0]!);
+      expect(mocks.removeEmptyNeverStartedRuns.mock.invocationCallOrder[0])
+        .toBeLessThan(mocks.lifecycle.prepareBeforeListen.mock.invocationCallOrder[0]!);
       expect(mocks.lifecycle.prepareBeforeListen.mock.invocationCallOrder[0])
         .toBeLessThan(mocks.agentToolsMcpHost.listen.mock.invocationCallOrder[0]!);
       expect(mocks.agentToolsMcpHost.listen.mock.invocationCallOrder[0])
@@ -291,14 +302,14 @@ describe("Studio app-data migration startup", () => {
     expect(mocks.rebuildTeamRunCatalog.mock.invocationCallOrder[0]).toBeLessThan(mocks.buildStudioServer.mock.invocationCallOrder[0]!);
     expect(mocks.app.listen).toHaveBeenCalledTimes(1);
   });
-  it.each(['prisma', 'build', 'prepare', 'listen', 'recover', 'background'] as const)(
+  it.each(['prisma', 'build', 'removeEmpty', 'prepare', 'listen', 'recover', 'background'] as const)(
     'cancels during %s without concurrent cleanup or subsequent startup stages', async phase => {
       const handlers = new Map<string, (...args: any[]) => void>();
       vi.mocked(process.on).mockImplementation(((event: string, handler: (...args: any[]) => void) => {
         handlers.set(event, handler); return process;
       }) as never);
       vi.mocked(process.exit).mockImplementation((() => undefined) as never);
-      const stage = { prisma: mocks.initializePrisma, build: mocks.buildStudioServer,
+      const stage = { prisma: mocks.initializePrisma, build: mocks.buildStudioServer, removeEmpty: mocks.removeEmptyNeverStartedRuns,
         prepare: mocks.lifecycle.prepareBeforeListen, listen: mocks.app.listen,
         recover: mocks.lifecycle.recoverAfterListen, background: mocks.scheduleStudioBackgroundTasks }[phase];
       let enter!: () => void, finish!: (value: any) => void;
@@ -317,6 +328,7 @@ describe("Studio app-data migration startup", () => {
       expect(process.exit).toHaveBeenCalledWith(0);
       expect(mocks.terminateServerProcessTree).toHaveBeenCalledOnce();
       if (phase !== 'background') expect(mocks.scheduleStudioBackgroundTasks).not.toHaveBeenCalled();
+      if (phase === 'removeEmpty') expect(mocks.lifecycle.prepareBeforeListen).not.toHaveBeenCalled();
     });
 
 });

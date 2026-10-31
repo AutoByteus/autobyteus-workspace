@@ -431,11 +431,27 @@ durable run identity, V2 history catalog row, run metadata, and memory directory
 with `preparedAt`, `preparedExpiresAt`, `platformAgentRunId: null`, and no active
 runtime. The first accepted `SEND_MESSAGE` activates that prepared identity
 through `activatePreparedRun(...)` and records `startedAt` plus the platform run
-id when one exists. Prepared runs can be explicitly cancelled before activation,
-and stale prepared identities are eligible for TTL cleanup without affecting
-activated or historical runs. Standalone `activationState` is not persisted; the
-`prepareAgentRun` response may still return `activationState: "PREPARED"` as a
-launch API response field.
+id when one exists. Prepared runs can be explicitly cancelled before activation.
+Standalone `activationState` is not persisted; the `prepareAgentRun` response may
+still return `activationState: "PREPARED"` as a launch API response field.
+
+**One-call creation is all or nothing.** `createAgentRun(...)` (GraphQL, an
+application, Model Routing) prepares and then activates. When activation fails,
+it cancels the prepared run (`cancelPreparedAgentRun`) and rethrows the
+activation error. A run whose start was already recorded is refused by the
+cancel and kept; the refusal is logged with the run ID and reason.
+
+**Empty never-started runs are removed at startup.** Before the server accepts
+requests (after `buildStudioServer`, before `prepareBeforeListen`), it removes
+each standalone run that was prepared, never started, and whose folder holds
+nothing but its record (`removeEmptyNeverStartedRuns`): only directories and the
+top-level `run_metadata.json`, walked without following symbolic links. Any other
+entry is content, and the run is kept: an older record without `startedAt` next
+to a conversation stays. An unreadable record, a folder without a standalone
+record, a folder that cannot be fully read, an active run, or a refused cancel
+also keeps the run; each removal and each kept run with an unreadable record or
+folder is logged. The removal never fails startup. There is no age-based removal:
+`preparedExpiresAt` is still written and returned but nothing enforces it.
 
 Once an `AgentRun` exists it is the runtime-level input-admission, status, and
 turn authority. Its runtime events are the source that replaces command overlays

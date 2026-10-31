@@ -120,7 +120,8 @@ build) answers 404, which the caller reads as unreachable (DESIGN.md rule 9).
   can't run here (runtime unavailable, model unavailable, settings invalid) → `AGENT_CANNOT_RUN` with the
   reason. Every refusal comes before a run is created.
   - An Agent: a **prepared** standalone run with the resolved launch and `delegatedFrom`; its ID is
-    returned. A prepared run that never receives its work packet expires (prepared-run TTL).
+    returned. A prepared run that never receives its work packet is not expired by age; the next server
+    start removes it if its folder holds nothing but its record (see `agent_execution.md`).
   - An Agent Team: **`RemoteTeamRunStarter`** (`inbound/remote-team-run-starter.ts`), the one owner of
     mapping a resolved Team source to `TeamRunService.createTeamRun`: the Team default as the Team's launch,
     each member's resolved launch, and `delegatedFrom` onto the Team tree. The Team run is created, not
