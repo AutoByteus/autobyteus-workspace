@@ -1,0 +1,16 @@
+# IMP-12 PLN-09 (Stop in Projects mode) on the CR-003 fix: the API/E2E probe with its prerequisite cases
+# Command: env -i PATH HOME TMPDIR USER LOGNAME pnpm -C autobyteus-web test:e2e:projects-left-navigation --output-dir <ev>/IMP-12-probe-PLN-09 --cases PLN-02,PLN-07,PLN-09
+# Commit: 60499aa479 (server dist built from 467cff24c0, unchanged since); macOS
+# Date: 2026-10-31T13:31Z
+
+> autobyteus@1.5.11-beta.7 test:e2e:projects-left-navigation /Users/normy/autobyteus_org/autobyteus-worktrees/projects-left-navigation/autobyteus-web
+> node tests/e2e/projects-left-navigation-probe.mjs --output-dir /Users/normy/autobyteus_org/autobyteus-worktrees/projects-left-navigation/tickets/in-progress/projects-left-navigation/evidence/implementation/IMP-12-probe-PLN-09 --cases PLN-02,PLN-07,PLN-09
+
+PLN-02: Fail — locator.waitFor: Timeout 120000ms exceeded.
+Call log:
+  - waiting for locator('[data-test="run-section-switch"]') to be visible
+
+PLN-07: Fail — PLN-07 needs PLN-02
+PLN-09: Fail — PLN-09 needs PLN-07
+Projects left navigation probe: Fail. Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/projects-left-navigation/tickets/in-progress/projects-left-navigation/evidence/implementation/IMP-12-probe-PLN-09/evidence.json
+ ELIFECYCLE  Command failed with exit code 1.

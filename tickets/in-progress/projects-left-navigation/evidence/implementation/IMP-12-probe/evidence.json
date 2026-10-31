@@ -1,0 +1,313 @@
+{
+  "startedAt": "2026-10-31T13:50:56.906Z",
+  "executablePath": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "cases": {
+    "PLN-01": {
+      "result": "Pass",
+      "description": "AC-002/AC-001: existing runs of 3 Projects listed once each; open from Q shows only Q work; modes keep the run; mode remembered",
+      "startedAt": "2026-10-31T13:51:18.839Z",
+      "finishedAt": "2026-10-31T13:51:25.270Z",
+      "details": {
+        "W": "project_task_manager_9bb9_7b7f3bc9152b4339990e912393dced25",
+        "archived": "project_task_manager_9bb9_658fddfa452742eea74240a6682cd3cd",
+        "projectNames": [
+          "Docs Site 9bb9",
+          "Prototype Launch 9bb9",
+          "Website 9bb9"
+        ],
+        "perProject": {
+          "P": [
+            "project_task_manager_9bb9_7b7f3bc9152b4339990e912393dced25"
+          ],
+          "Q": [
+            "project_task_manager_9bb9_7b7f3bc9152b4339990e912393dced25"
+          ],
+          "R": [
+            "project_task_manager_9bb9_7b7f3bc9152b4339990e912393dced25"
+          ]
+        },
+        "qCopies": [
+          "release_notes_writer_9bb9_e50c3cc1171f494bb9bb3c374093b3d8"
+        ],
+        "workspacesMark": [
+          "project_task_manager_9bb9_7b7f3bc9152b4339990e912393dced25"
+        ],
+        "remembered": "true",
+        "wNodes": [
+          {
+            "agentRunId": "release_notes_writer_9bb9_1aec17423f654fa689d32034efed22b2",
+            "address": "/release_notes_writer_9bb9",
+            "members": []
+          },
+          {
+            "agentRunId": "release_notes_writer_9bb9_e50c3cc1171f494bb9bb3c374093b3d8",
+            "address": "/release_notes_writer_9bb9",
+            "members": []
+          },
+          {
+            "agentRunId": "fact_checker_9bb9_e863c05ed2764ba7ab2ca061f52cc1fa",
+            "address": "/fact_checker_9bb9",
+            "members": []
+          }
+        ]
+      }
+    },
+    "PLN-02": {
+      "result": "Pass",
+      "description": "AC-003: \"+\" on P → agent → send → listed under P at once; P folder; ## Project prompt; in Workspaces under its folder",
+      "startedAt": "2026-10-31T13:51:25.272Z",
+      "finishedAt": "2026-10-31T13:51:28.159Z",
+      "details": {
+        "runId": "project_task_manager_9bb9_33f285573c8845e2a8ae6424834766be",
+        "chip": "Prototype Launch 9bb9",
+        "chipAria": "Project: Prototype Launch 9bb9",
+        "listedMs": 206,
+        "startedUnder": [
+          {
+            "kind": "agent",
+            "runId": "project_task_manager_9bb9_33f285573c8845e2a8ae6424834766be"
+          }
+        ],
+        "workspaceRootPath": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-rVdZey/p-folder",
+        "promptSection": "## Project\n\nYou work in the Project Prototype Launch 9bb9 (Project ID project_e6d014c5-a4ea-460b-b364-07dd86db51ad). Use this Project ID with the Project tools; ask the user before working on another Project.\n\n## Working Environment\n- Agent"
+      }
+    },
+    "PLN-03": {
+      "result": "Pass",
+      "description": "AC-015/AC-004: chip — first of two folders, temp for none, picked folder kept, \"No project\" plain",
+      "startedAt": "2026-10-31T13:51:28.161Z",
+      "finishedAt": "2026-10-31T13:51:40.386Z",
+      "details": {
+        "chipBefore": "Temp workspace",
+        "chipR": "Website 9bb9",
+        "rFolder": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-rVdZey/r-first",
+        "chipQ": "Docs Site 9bb9",
+        "qFolder": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-rVdZey/temp_workspace",
+        "chipPicked": "Website 9bb9 · picked-folder",
+        "pickedFolder": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-rVdZey/picked-folder",
+        "chipNone": "p-folder",
+        "runtimeOfRuns": [
+          "antigravity_cli",
+          "antigravity_cli",
+          "antigravity_cli",
+          "antigravity_cli"
+        ],
+        "rListed": [
+          "project_task_manager_9bb9_f141612b71c5452aa85d7ccf3a5baa80",
+          "project_task_manager_9bb9_ceaf9a9e2aeb46858effa253a618d6e0",
+          "project_task_manager_9bb9_7b7f3bc9152b4339990e912393dced25"
+        ],
+        "rRun": "project_task_manager_9bb9_ceaf9a9e2aeb46858effa253a618d6e0",
+        "qRun": "project_task_manager_9bb9_86387be438e84c6682d43a47efc9cf1f",
+        "pickedRun": "project_task_manager_9bb9_f141612b71c5452aa85d7ccf3a5baa80",
+        "plainRun": "project_task_manager_9bb9_dee7b887dc0c47498e7f75631a44e2d5"
+      }
+    },
+    "PLN-04": {
+      "result": "Pass",
+      "description": "AC-005: Team under P (after its re-read); \"+\" on P's agent group",
+      "startedAt": "2026-10-31T13:51:40.386Z",
+      "finishedAt": "2026-10-31T13:51:45.519Z",
+      "details": {
+        "chip": "Prototype Launch 9bb9",
+        "teamRunId": "docs_review_team_9bb9_517b77e6f3494e5e9c4c998a42cae1c1",
+        "recordedMs": 170,
+        "listedMs": 496,
+        "teamWorkspace": true,
+        "chipGroup": "Prototype Launch 9bb9",
+        "second": "project_task_manager_9bb9_938111b075c445339d09a4a843b661e3",
+        "secondFolder": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-rVdZey/p-folder"
+      }
+    },
+    "PLN-05": {
+      "result": "Pass",
+      "description": "AC-006/007/010: live P Team with Task line and members, Q only under Q, Temp under P, P+Q copy, board",
+      "startedAt": "2026-10-31T13:51:45.520Z",
+      "finishedAt": "2026-10-31T13:52:22.076Z",
+      "details": {
+        "teamRowMs": 805,
+        "taskLine": "Review the launch checklist",
+        "memberOpened": "R\nreviewer\nIdle\nR\nreviewer\n\nYou have a new task from the agent with sender address “/project_task_manager_9bb9” and sender run id “project_task_manager_9bb9_33f285573c8845e2a8ae6424834766be”.\nWhen you finish, or need something you can’t get yourself, tell that agent using send_message_to with recipi",
+        "multiTaskLineUnderP": [
+          "Follow-up docs work"
+        ],
+        "multiTaskLineUnderQ": [
+          "Follow-up docs work"
+        ],
+        "multiRowTextUnderP": "RN release notes writer 9bb9 Follow-up docs work",
+        "boardProject": "project:project_e6d014c5-a4ea-460b-b364-07dd86db51ad",
+        "locatedTaskId": "project_task_442ec974-61c2-4e29-ab18-f5c62e604cf4",
+        "nodes": 4,
+        "qCopy": "fact_checker_9bb9_f5fb5c98532d4d06810c0adb595be563",
+        "tempCopy": "release_notes_writer_9bb9_d6455f0421f24d0f83f81d2d0926da2f",
+        "wCopy": "release_notes_writer_9bb9_955382a705414227baa7e8f3653cffc6",
+        "squad": "docs_review_team_9bb9_9048afbae1094f2bba547534e3b6f92d"
+      }
+    },
+    "PLN-06": {
+      "result": "Pass",
+      "description": "AC-008: DONE removes rows live; reopen + message brings them back",
+      "startedAt": "2026-10-31T13:52:22.077Z",
+      "finishedAt": "2026-10-31T13:52:25.209Z",
+      "details": {
+        "closed": "docs_review_team_9bb9_9048afbae1094f2bba547534e3b6f92d",
+        "memberConversationEntries": 2
+      }
+    },
+    "PLN-07": {
+      "result": "Pass",
+      "description": "AC-009: run beyond the Workspaces cap listed under P and opens with its delegated run",
+      "startedAt": "2026-10-31T13:52:25.210Z",
+      "finishedAt": "2026-10-31T13:52:29.529Z",
+      "details": {
+        "wsListedCount": 6,
+        "pListedCount": 8,
+        "A": "project_task_manager_9bb9_33f285573c8845e2a8ae6424834766be"
+      }
+    },
+    "PLN-08": {
+      "result": "Pass",
+      "description": "AC-011: real backend restart keeps the tree; new dispatch live after it",
+      "startedAt": "2026-10-31T13:52:29.530Z",
+      "finishedAt": "2026-10-31T13:52:52.114Z",
+      "details": {
+        "restart": {
+          "before": 56858,
+          "after": 58042,
+          "starts": 2
+        },
+        "treeKept": true,
+        "lateProjectLive": true,
+        "copy": "fact_checker_9bb9_6af7164567484e17b60b719e727b7565",
+        "serverScopeHasCopy": true,
+        "liveInSamePage": false,
+        "toleratedNetworkErrors": 6
+      }
+    },
+    "PLN-09-stop-observation": {
+      "running": [
+        "project_task_manager_9bb9_33f285573c8845e2a8ae6424834766be"
+      ],
+      "serverActiveAfterStop": [
+        false
+      ],
+      "projectsStopButtonsAfter5s": 0,
+      "workspacesStopButtons": [],
+      "projectsStopButtonsAfterModeSwitch": 0
+    },
+    "PLN-09": {
+      "result": "Pass",
+      "description": "AC-012: archive in Projects mode, Stop on running, group Archive all scoped, deleted Project leaves live",
+      "startedAt": "2026-10-31T13:52:52.114Z",
+      "finishedAt": "2026-10-31T13:52:55.592Z",
+      "details": {
+        "stopDiag": {
+          "running": [
+            "project_task_manager_9bb9_33f285573c8845e2a8ae6424834766be"
+          ],
+          "serverActiveAfterStop": [
+            false
+          ],
+          "projectsStopButtonsAfter5s": 0,
+          "workspacesStopButtons": [],
+          "projectsStopButtonsAfterModeSwitch": 0
+        },
+        "aButtons": [
+          "terminate-agent-run"
+        ],
+        "archived": "project_task_manager_9bb9_d1848acaee3b4f939b4641e420a9fb4b",
+        "blockedToast": true,
+        "dialogText": "Archive all runs? Project Task Manager 9bb9 · 8 runs will be hidden from history. Cancel Archive all",
+        "remainingInP": [],
+        "outsider": "project_task_manager_9bb9_b2660b1503994935886ab299e942b824",
+        "rRuns": [
+          "project_task_manager_9bb9_ceaf9a9e2aeb46858effa253a618d6e0",
+          "project_task_manager_9bb9_f141612b71c5452aa85d7ccf3a5baa80"
+        ]
+      }
+    },
+    "PLN-10": {
+      "result": "Pass",
+      "description": "AC-013/016/017: keyboard, zh-CN, narrow, briefcase, reference screenshots",
+      "startedAt": "2026-10-31T13:52:55.592Z",
+      "finishedAt": "2026-10-31T13:55:06.570Z",
+      "details": {
+        "keyboardSwitch": true,
+        "keyboardExpanded": "true",
+        "briefcaseInTree": 7,
+        "stripLabel": "Workspaces",
+        "narrowSwitchVisible": true,
+        "zhTabs": [
+          "工作区",
+          "项目"
+        ]
+      }
+    }
+  },
+  "cleanup": {
+    "browser": "closed",
+    "frontend": {
+      "pid": 56890,
+      "status": "terminated",
+      "exit": "SIGTERM"
+    },
+    "backend": {
+      "pid": 58042,
+      "status": "terminated",
+      "exit": 0
+    },
+    "dataRootRemoved": true
+  },
+  "failures": [],
+  "stack": {
+    "backendUrl": "http://127.0.0.1:62619",
+    "frontendUrl": "http://127.0.0.1:62620",
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/projects-left-navigation-rVdZey"
+  },
+  "seed": {
+    "ids": {
+      "manager": "project-task-manager-9bb9",
+      "writer": "release-notes-writer-9bb9",
+      "checker": "fact-checker-9bb9",
+      "squad": "docs-review-team-9bb9"
+    },
+    "names": {
+      "manager": "Project Task Manager 9bb9",
+      "writer": "Release Notes Writer 9bb9",
+      "checker": "Fact Checker 9bb9",
+      "squad": "Docs Review Team 9bb9"
+    },
+    "projects": {
+      "P": {
+        "projectId": "project_e6d014c5-a4ea-460b-b364-07dd86db51ad",
+        "name": "Prototype Launch 9bb9"
+      },
+      "Q": {
+        "projectId": "project_ad52cda9-9dc1-4718-9213-f38097eeec49",
+        "name": "Docs Site 9bb9"
+      },
+      "R": {
+        "projectId": "project_44d61f72-3f88-4f53-8669-3c3cfd0f4175",
+        "name": "Website 9bb9"
+      },
+      "L": {
+        "projectId": "project_cdc9126c-e9c1-43ff-ba0d-e1dc3eabf6b1",
+        "name": "After Restart b86c"
+      }
+    },
+    "tasks": {
+      "P1": "project_task_442ec974-61c2-4e29-ab18-f5c62e604cf4",
+      "P2": "project_task_70b257e5-32c0-4784-9f79-0ebcf2f5e9f0",
+      "P3": "project_task_d311705e-45dc-436c-bf1d-86b29162a69a",
+      "P4": "project_task_dae12713-8d2c-41df-9383-6bdb498d6c72",
+      "P5": "project_task_c3a5efe9-73e8-4fdc-b512-affd4c3531dc",
+      "Q1": "project_task_55c84475-5e1e-4e4b-9b73-1a6f5b2dbfd0",
+      "Q2": "project_task_54c80be5-9af0-4f34-ae2e-ec838243ed44",
+      "Q3": "project_task_5345486d-0eaf-43ce-8706-80abcbec4583",
+      "R1": "project_task_7d96fae6-8b0d-4575-aee6-e0bf479dc85c"
+    }
+  },
+  "browserVersion": "156.0.8078.74",
+  "result": "Pass",
+  "finishedAt": "2026-10-31T13:55:08.150Z"
+}

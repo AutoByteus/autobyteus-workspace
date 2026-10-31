@@ -1,0 +1,11 @@
+# IMP-13 web typecheck and affected web tests (IR-003)
+# Commands: pnpm -C autobyteus-web typecheck; pnpm -C autobyteus-web exec vitest run stores components/workspace/history --run
+# Commit: c9972a1581; macOS, Node v22.23.1
+# Date: 2026-10-31T13:55Z
+[typecheck] Nuxt app (tsconfig.json): 271 errors, exit 2, 43.7s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 1.9s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.8s
+[typecheck] production errors: 0; test-file errors: 298 in 139 files (baseline 298 in 139 files)
+[typecheck] PASS
+ Test Files  134 passed (134)
+      Tests  1350 passed (1350)
