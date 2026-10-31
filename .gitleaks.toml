@@ -170,3 +170,19 @@ regexTarget = "secret"
 regexes = [
   '''^AKIAABCDEFGHIJKLMNOP$''',
 ]
+
+# atomic-agent-run-creation (autobyteus-349): `evidence/API-349-probe.mjs` runs a scripted native inference server
+# whose model list is `{ models: [{ key: 'ar349-fixture', … }] }`; the same name is the `model` of its replies. It is a
+# fixture model ID, not a credential; checked by shape and context (release v1.5.11-beta.9, autobyteus-353). Only that
+# exact value, only for the generic rule, and only in that probe (in-progress and archived paths).
+[[allowlists]]
+description = "Fixture model ID ar349-fixture in the autobyteus-349 probe (generic rule only)"
+targetRules = ["generic-api-key"]
+condition = "AND"
+regexTarget = "secret"
+regexes = [
+  '''^ar349-fixture$''',
+]
+paths = [
+  '''^tickets/(in-progress|done)/atomic-agent-run-creation/evidence/API-349-probe\.mjs$''',
+]
