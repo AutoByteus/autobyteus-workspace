@@ -1,0 +1,16 @@
+# DEL-01 post-integration checks (integrated state 7d1bc66ba3 + delivery docs edits)
+
+## typecheck
+exit 0
+
+## focused
+ Test Files  7 passed (7)
+      Tests  62 passed (62)
+   Duration  15.99s (transform 3.39s, setup 130ms, import 7.75s, tests 6.83s, environment 0ms)
+exit 0
+
+## server-unit-full
+ Test Files  903 passed | 5 skipped (908)
+      Tests  7665 passed | 9 skipped (7674)
+   Duration  731.50s (transform 18.90s, setup 11.65s, import 334.19s, tests 290.99s, environment 912ms)
+exit 0
