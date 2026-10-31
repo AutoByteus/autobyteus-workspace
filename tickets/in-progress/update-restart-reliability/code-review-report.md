@@ -2,9 +2,73 @@
 
 All ticket paths are under `/Users/normy/autobyteus_org/autobyteus-worktrees/update-restart-reliability/tickets/in-progress/update-restart-reliability/`.
 
+> **Latest round: 2, API/E2E Failure-Origin Review (CRR-002), `Fail` → `Design Impact` for the Solution Designer.** Round 1 (CRR-001, implementation review, `Pass`) is kept below; § Round 2 and the Latest Authoritative Result supersede it.
+
+## Round 2 — Failure-Origin Review of F-API-001 (CRR-002)
+
+### Meta
+
+- Trigger: API/E2E engineer, API-REV-001 `Fail` (91.4%).
+  - Code `ddb03d0d0b`, validated from a clean checkout of `2c3575b0f0`.
+  - Reports and evidence `a0d9ca38f2`.
+- Coverage investigation / execution report / API/E2E revision record: `api-e2e-coverage-investigation.md`, `api-e2e-execution-coverage-report.md`, `api-e2e-revision-record.md` (API-REV-001).
+- Project testing guideline: `TESTING.md` (Rule 9). The cause is established below; no conflicts.
+- Failing scenario: SCN-002b, a client creates a run while the node stops (for example during an update restart), on top of AC-002's setup.
+- Command: `env -i PATH="$PATH" HOME="$HOME" USER="$USER" LOGNAME="$LOGNAME" TMPDIR="$TMPDIR" CASE_ID=<id> node evidence/P-001-live-server-probe.mjs held-connection <built autobyteus-server-ts> <out dir>`.
+- Failure evidence: `evidence/API-02-result.json`, `evidence/API-02B-result.json`, `evidence/API-02B-server-first.log`, and `evidence/API-03-result.json` for the base contrast.
+
+### Scenario basis
+
+SCN-002b is a `Supported Normal Scenario`. A user (or the phone app, or a peer node through `prepareAgentRun` in `remote-delegation-receiver.ts:98`) creates a run while the node restarts for an update. That restart is unattended under autobyteus-285, so a user can't time around it.
+
+The trigger is independent of the mechanism: `createAgentRun` is the UI's GraphQL mutation (`api/graphql/types/agent-run.ts`). The probe's six staggered requests reproduce that path; they don't establish it.
+
+### Failure path (Read, then Reproduced by API/E2E)
+
+1. `AgentRunService.createAgentRun` (`agent-run-service.ts:241-246`) runs `provisioningService.prepareAgentRun(input)` and then `activate(runId)`.
+2. `prepareAgentRun` (`agent-run-provisioning-service.ts:73-114`) persists right away. `historyCatalogService.recordPreparedRun` writes metadata with `preparedAt` and `startedAt: null`, and the run is listed in history.
+3. With D1, Fastify destroys the socket after `preClose` (`fastify.js:395-396`) and runs `onClose`, but it does not cancel the handler. The handler continues while the run cleanup closes activation admission.
+4. If the cut lands between steps 1 and 2:
+   - `activate` throws `AgentCreationError: AgentRun activation admission is closed for process shutdown.` (`cutHandlerLog`, once in API-02 and three times in API-02B);
+   - `createAgentRun` has no rollback, so the prepared run stays (`afterRelaunch.onDisk[...].startedAt: null`);
+   - after relaunch it is listed as `offline` with an empty summary.
+5. If the cut lands after step 2: the run is created and activated, the shutdown then stops it, and the client never gets its run ID. A client retry creates a duplicate.
+6. Nothing removes a prepared-only run later. `cleanupStalePreparedRuns` (`agent-run-provisioning-service.ts:128`) is called only from its own unit test, so the 24 h TTL is never enforced.
+
+**Base contrast (API-03, `a977b2c1bc`):** `server.close()` waited, so all three in-flight creates completed with `success: true` and run IDs before `onClose`, and nothing was left over. That shutdown instead stalled to the 10 s bound and exited 1 (the FU-008 cause). So D1 together with DEC-002 makes this consequence reachable at shutdown. It is a regression of preserved behavior. Before, no partial runs were left and every create the server accepted completed.
+
+### Origin
+
+| Part | Origin | Evidence |
+| --- | --- | --- |
+| Partial runs and lost-response runs appear at shutdown | **This ticket's change** (D1 plus DEC-002): the cut handler now overlaps the cleanup | API-02 and API-02B versus API-03 |
+| Why "admission is closed" did not guard it | **Design premise contradicted.** Design § Risks and ARCH-REV-001 P-001 / AR-002 say the run layer's admission closure is the guard, and that a late handler "fails or is cancelled the same way as one admitted during 284's bound window". AR-002 asked AC-002 to show the request "is refused or cancelled cleanly and leaves no partial run". The closure refuses activation, but `prepareAgentRun` has already persisted the run, and nothing rolls it back. | `createAgentRun` code; API-02 and API-02B |
+| `createAgentRun` is not atomic on an activation failure | **Existing weakness** in run provisioning, which this ticket did not change. The same leftover follows any activation failure (Read only; non-shutdown failures were not reproduced). | `agent-run-service.ts:241-246` |
+| `cleanupStalePreparedRuns` has no production caller | **Existing dead code** in an untouched file → follow-up FU-003 | Code search: the only caller is `tests/unit/agent-execution/agent-run-provisioning-service.test.ts:186` |
+| The client never learns the ID of a run that completed | **Inherent to DEC-002's cut.** DEC-002 approved "no response"; it did not decide the side effects of a state-changing request whose response is lost (duplicates on retry). | API-02 (two completed runs) |
+
+- **Not an implementation defect:** the code matches the design exactly (CRR-001).
+- **Not a test problem:** the probe reproduces a supported scenario, through real GraphQL.
+- **Review gap (mine):** in CRR-001 (CR-C1) I rejected the handler overlap as an accepted residual and relied on the admission premise. I did not trace a representative state-changing handler, such as `createAgentRun`, to see what persists before admission is checked. A source trace would have caught it.
+
+### Classification and routing
+
+- **`Design Impact`**, owned by the Solution Designer. The reviewed design's safety premise for DEC-002 is false. The design needs a mechanism, or an approved acceptance, for state-changing requests that are in flight at shutdown.
+- The lost-response part (point 5) also needs a requirements decision: is a completed-but-unacknowledged run, and its duplicate on retry, acceptable under DEC-002? That is a `Requirement Gap` inside the same item, for the Solution Designer to put to the requirements owner or the user.
+- **Directions observed (not prescribed; the designer decides):**
+  - **a.** Make `createAgentRun` atomic: on a failed activation, `cancelPreparedAgentRun` the run it prepared. That removes the prepared-only leftovers on every path, but not the lost-response runs.
+  - **b.** Refuse new state-changing work before the cut, for example by closing run admission in an early `preClose` hook. A handler already past `prepareAgentRun` would still need (a).
+  - **c.** Let in-flight requests finish within a short grace and cut only connections that never sent a request. This keeps responses and avoids the lost-response runs, at the cost of tracking connections; it would replace part of D1's blunt cut.
+  - **d.** Accept the residual explicitly: prepared-only runs are harmless and restorable, and duplicates come only on retry. That needs an approved DEC-002 extension.
+- **Ticket scope:** the regression is this ticket's (it is introduced by D1). How far the fix reaches into `createAgentRun` (other functionality) is part of the design decision. A prerequisite is not needed: (a) is small and inside the run-provisioning owner.
+
+### Follow-ups added
+
+- FU-003: `cleanupStalePreparedRuns` is dead code in production; the prepared-run TTL is never enforced. If the Solution Designer's fix wires it in, FU-003 is absorbed.
+
 ## Review Round Meta
 
-- Review Entry Point: `Implementation Review`
+- Review Entry Point (round 1): `Implementation Review`
 - Requirements Doc Reviewed As Context: `requirements-doc.md` (Approved, SR-002: REQ-001 to REQ-003, DEC-001 = A, DEC-002 to DEC-005)
 - Investigation Notes Reviewed As Context: `investigation-notes.md` (FU-008 reproduction; P-001 to P-003)
 - Solution Revision Record Reviewed As Context: `solution-revision-record.md` (SR-001 to SR-003)
@@ -207,6 +271,19 @@ N/A: the review passes.
 - FU-001: install-on-quit after an incomplete stop; macOS behavior is U-2.
 
 ## Latest Authoritative Result
+
+**Round 2 (CRR-002), authoritative:**
+
+- Review Decision: `Fail` (failure-origin)
+- Review Entry Point: `API/E2E Failure-Origin Review`
+- Supported Product Scenario Gate: `Pass` (SCN-002b, a supported normal scenario through real GraphQL)
+- Material-Premise Gate: `Fail`. The design and architecture-review premise P-001 ("admission closure guards the overlap; no partial run") is reclassified as contradicted.
+- Score note: category 8, Runtime Correctness, goes from 9.3 to 8.8, because a preserved behavior regressed (no partial runs at shutdown). The other categories stand.
+- Failure Origin: Design Impact (with a Requirement Gap part, DEC-002's side effects). The code matches the design. My round 1 review missed it.
+- Recommended Recipient: Solution Designer
+- Notes: everything else in API-REV-001 holds. AC-002 as written passed, AC-003 was 42/42 with 0 stalls, and AC-007 passed.
+
+**Round 1 (CRR-001), superseded:**
 
 - Review Decision: `Pass`
 - Review Entry Point: `Implementation Review`
