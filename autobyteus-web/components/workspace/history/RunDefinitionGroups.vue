@@ -57,7 +57,7 @@
         type="button"
         class="inline-flex h-5 w-5 items-center justify-center rounded text-gray-400 transition-colors hover:bg-indigo-50 hover:text-indigo-600"
         :title="$t('workspace.components.workspace.history.WorkspaceHistoryWorkspaceSection.new_run_with_this_agent')"
-        @click="actions.onCreateRun(node.workspaceRootPath, agentNode.agentDefinitionId)"
+        @click="createAgentRun(agentNode.agentDefinitionId)"
       >
         <Icon icon="heroicons:plus-20-solid" class="h-4 w-4" />
       </button>
@@ -141,6 +141,7 @@
         :label="formatRunLabel(run.summary)"
         :run-selected="state.selectedRunId === run.runId"
         :has-collaboration="run.hasCollaboration === true"
+        :execution-scope="projectScope?.executionScopeOf('AGENT', run.runId) ?? null"
         @select-run="actions.onSelectRun(run)"
         @open-run="selectAgentRun(run)"
       />
@@ -204,6 +205,18 @@
         @click.stop="actions.onArchiveTeamGroup(workspacePresentationId, group)"
       >
         <Icon icon="heroicons:archive-box-20-solid" class="h-3.5 w-3.5" />
+      </button>
+      <!-- Projects mode only (DEC-017): another run of this Team under the Project. -->
+      <button
+        v-if="projectScope && actions.onCreateProjectRun"
+        type="button"
+        :data-test="`project-team-group-add-${group.key}`"
+        class="ml-1 inline-flex h-5 w-5 flex-shrink-0 items-center justify-center rounded text-gray-400 transition-colors hover:bg-indigo-50 hover:text-indigo-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+        :title="$t('projectsTree.newTeamRun')"
+        :aria-label="$t('projectsTree.newTeamRun')"
+        @click.stop="actions.onCreateProjectRun(projectScope.projectId, { kind: 'team', definitionId: group.teamDefinitionId })"
+      >
+        <Icon icon="heroicons:plus-20-solid" class="h-4 w-4" aria-hidden="true" />
       </button>
       </div>
 
@@ -281,6 +294,7 @@
             :is-team-selected="state.isTeamRunSelected(team.teamRunId)"
             :is-row-expanded="(rowKey: string) => isTeamDisplayRowExpanded(team, rowKey)"
             :format-relative-time="formatRelativeTime"
+            :execution-scope="projectScope?.executionScopeOf('AGENT_TEAM', team.teamRunId) ?? null"
             @select="(row: import('~/stores/runHistoryTypes').RunHistoryTeamExecutionRow) => selectTeamDisplayRow(team, row)"
             @toggle="(row: import('~/stores/runHistoryTypes').RunHistoryTeamExecutionRow) => toggleTeamDisplayRow(team, row)"
             @open-run="actions.onOpenTeamRun(team, node.workspaceId)"
@@ -296,6 +310,7 @@
     :groups="node.agentOrgDefinitions ?? []"
     :state="state"
     :actions="actions"
+    :execution-scope-of="projectScope ? (rootRunId: string) => projectScope!.executionScopeOf('AGENT_ORG', rootRunId) : null"
   />
 </template>
 
@@ -310,6 +325,7 @@ import WorkspaceAgentOrgHistoryCollection from '~/components/workspace/history/W
 import AgentRunTaskRows from '~/components/workspace/history/AgentRunTaskRows.vue';
 import { useAgentRunCollaborationStore } from '~/stores/agentRunCollaborationStore';
 import type {
+  ProjectSectionScope,
   WorkspaceHistoryAvatarBindings,
   WorkspaceHistorySectionActions,
   WorkspaceHistorySectionState,
@@ -342,6 +358,8 @@ const props = defineProps<{
   state: WorkspaceHistorySectionState;
   avatars: WorkspaceHistoryAvatarBindings;
   actions: WorkspaceHistorySectionActions;
+  /** Projects mode: the node is a Project; "+" starts under it and delegated rows show only its work. */
+  projectScope?: ProjectSectionScope | null;
 }>();
 const collaboration = useAgentRunCollaborationStore();
 /** The run row shows the run's own agent again (not a task child under it). */
@@ -350,6 +368,10 @@ const selectAgentRun = (run: Parameters<typeof props.actions.onSelectRun>[0]) =>
   return props.actions.onSelectRun(run);
 };
 const workspacePresentationId = computed(() => props.node.stableKey);
+/** "+" on an agent group: another run of that agent, in the folder (Workspaces) or under the Project (Projects). */
+const createAgentRun = (agentDefinitionId: string) => props.projectScope
+  ? props.actions.onCreateProjectRun?.(props.projectScope.projectId, { kind: 'agent', definitionId: agentDefinitionId })
+  : props.actions.onCreateRun(props.node.workspaceRootPath, agentDefinitionId);
 const isGroupArchiving = (groupKey: string): boolean => props.state.isGroupArchiving?.(groupKey) ?? false;
 
 const groupedTeamDefinitions = computed<WorkspaceHistoryTeamDefinitionDisplayGroup[]>(() =>

@@ -45,7 +45,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, watch } from 'vue';
 import WorkspaceStableExecutionRow from '~/components/workspace/history/WorkspaceStableExecutionRow.vue';
 import WorkspaceTransientExecutionRow from '~/components/workspace/history/WorkspaceTransientExecutionRow.vue';
 import { useLeavingTreeRows } from '~/components/workspace/history/useLeavingTreeRows';
@@ -60,6 +60,7 @@ import type {
   RunHistoryTeamExecutionRow,
   TeamTreeNode,
 } from '~/stores/runHistoryTypes';
+import { scopeTaskRows, transientRowCopyKey, type RootExecutionScope } from '~/utils/collaboration/taskExecutionScope';
 
 interface VisibleTeamExecutionRow {
   row: RunHistoryTeamExecutionRow;
@@ -75,6 +76,8 @@ const props = defineProps<{
   isTeamSelected: boolean;
   isRowExpanded: (rowKey: string) => boolean;
   formatRelativeTime: (isoTime: string) => string;
+  /** Projects mode: only the Team run's copies working for the Project are listed (REQ-008); absent in Workspaces. */
+  executionScope?: RootExecutionScope | null;
 }>();
 
 const emit = defineEmits<{
@@ -89,18 +92,29 @@ const { t } = useLocalization();
 const { onBeforeLeave, onLeaveSettled } = useLeavingTreeRows(
   (tree) => tree.previousElementSibling?.querySelector<HTMLElement>('button') ?? null);
 
+const scoped = computed(() => scopeTaskRows(props.team.executionRows, props.executionScope?.copies ?? null, {
+  depth: (row) => row.depth,
+  copyKey: (row) => (row.kind === 'transient_execution' ? transientRowCopyKey(row) : null),
+}));
+watch(() => scoped.value.droppedKeys.join('\n'), () => {
+  if (scoped.value.droppedKeys.length) props.executionScope?.noteUnscoped(scoped.value.droppedKeys);
+}, { immediate: true });
+
 const visibleRows = computed<VisibleTeamExecutionRow[]>(() => {
   const uncollapsedRows: Array<Pick<VisibleTeamExecutionRow, 'row' | 'hasChildren'>> = [];
   let collapsedDepth: number | null = null;
+  const rows = scoped.value.kept;
 
-  for (const row of props.team.executionRows) {
+  for (const [index, row] of rows.entries()) {
     if (collapsedDepth !== null) {
       if (row.depth > collapsedDepth) continue;
       collapsedDepth = null;
     }
 
-    uncollapsedRows.push({ row, hasChildren: row.hasChildren });
-    if (row.hasChildren && !props.isRowExpanded(row.rowKey)) collapsedDepth = row.depth;
+    // A member whose only delegated rows are another Project's has none here.
+    const hasChildren = props.executionScope ? row.hasChildren && (rows[index + 1]?.depth ?? -1) > row.depth : row.hasChildren;
+    uncollapsedRows.push({ row, hasChildren });
+    if (hasChildren && !props.isRowExpanded(row.rowKey)) collapsedDepth = row.depth;
   }
 
   const hasFollowingSiblingAtDepth = (index: number, depth: number): boolean => {

@@ -59,15 +59,15 @@
         data-nav-key="workspaces"
         class="group relative rounded-md p-2 transition-colors hover:bg-gray-100"
         :class="isWorkspacesActive ? 'bg-gray-100 text-gray-900' : ''"
-        :title="t('shell.navigation.workspaces')"
-        :aria-label="t('shell.navigation.workspaces')"
+        :title="runSectionLabel"
+        :aria-label="runSectionLabel"
         :aria-current="isWorkspacesActive ? 'location' : undefined"
         @click="handleWorkspacesClick($event)"
       >
         <Icon icon="ph:tree-view" class="h-5 w-5" />
 
         <div class="absolute left-full ml-2 whitespace-nowrap rounded bg-gray-900 px-2 py-1 text-xs text-white opacity-0 invisible transition-all group-hover:opacity-100 group-hover:visible z-50">
-          {{ t('shell.navigation.workspaces') }}
+          {{ runSectionLabel }}
         </div>
       </button>
     </div>
@@ -99,6 +99,7 @@ import { Icon } from '@iconify/vue';
 import { computed, nextTick, onMounted } from 'vue';
 import { useRoute, useRouter, type RouteLocationRaw } from 'vue-router';
 import { useAppLayoutStore } from '~/stores/appLayoutStore';
+import { useRunSectionModeStore } from '~/stores/runSectionModeStore';
 import SidebarNotificationsEntry from '~/components/layout/SidebarNotificationsEntry.vue';
 import { rememberDrawerTrigger } from '~/composables/useAccessibleDrawer';
 import { useShellPrimaryNavigation, type ShellPrimaryNavKey } from '~/composables/useShellPrimaryNavigation';
@@ -106,6 +107,9 @@ import { isFeatureAvailableInRuntime } from '~/utils/mobileFeatureGates';
 import type { StripBehavior, StripActivation } from '~/utils/layout/responsiveLayoutPolicy';
 
 const { t } = useLocalization();
+// The run-tree entry keeps its tree icon in both modes (the Projects page entry has the briefcase); its name says the mode.
+const runSectionMode = useRunSectionModeStore();
+const runSectionLabel = computed(() => t(runSectionMode.mode === 'projects' ? 'shell.navigation.projects' : 'shell.navigation.workspaces'));
 const {
   primaryNavItems,
   resolvePrimaryRoute,

@@ -1,19 +1,22 @@
 <template>
   <div class="workspace-history-panel flex h-full flex-col bg-white">
     <div class="flex items-center justify-between border-t border-gray-200 px-3 py-2">
-      <h3 class="text-sm font-semibold text-gray-700">Workspaces</h3>
+      <RunSectionSwitch />
+      <!-- "+" adds what the shown mode lists: a workspace, or a Project (on the Projects page). -->
       <button
         type="button"
-        class="inline-flex h-6 w-6 items-center justify-center rounded-md text-gray-500 transition-colors hover:bg-indigo-50 hover:text-indigo-600"
-        :title="$t('workspace.components.workspace.history.WorkspaceAgentRunsTreePanel.add_workspace')"
-        @click="onCreateWorkspace"
+        class="inline-flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-md text-gray-500 transition-colors hover:bg-indigo-50 hover:text-indigo-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500"
+        :data-test="projectsMode ? 'run-section-new-project' : 'run-section-add-workspace'"
+        :title="headerAddLabel"
+        :aria-label="headerAddLabel"
+        @click="projectsMode ? router.push('/projects/new') : onCreateWorkspace()"
       >
         <Icon icon="heroicons:plus-20-solid" class="h-4 w-4" />
       </button>
     </div>
 
     <form
-      v-if="showCreateWorkspaceInline"
+      v-if="showCreateWorkspaceInline && !projectsMode"
       class="border-t border-gray-100 px-3 py-2"
       data-test="create-workspace-form"
       @submit.prevent="confirmCreateWorkspace"
@@ -57,7 +60,9 @@
       </div>
     </form>
 
-    <div ref="treeScrollRef" class="min-h-0 flex-1 overflow-y-auto px-1 pb-2" data-test="workspace-history-tree-scroll">
+    <div id="run-section-panel" ref="treeScrollRef" role="tabpanel" :aria-labelledby="`run-section-tab-${projectsMode ? 'projects' : 'workspaces'}`" class="min-h-0 flex-1 overflow-y-auto px-1 pb-2" data-test="workspace-history-tree-scroll">
+      <ProjectsRunsTree v-if="projectsMode" :state="sectionState" :avatars="sectionAvatarBindings" :actions="sectionActions" :run-shown="runShown" />
+      <template v-else>
       <div v-if="runHistoryStore.loading" class="px-3 py-4 text-xs text-gray-500">{{ $t('workspace.components.workspace.history.WorkspaceAgentRunsTreePanel.loading_task_history') }}</div>
 
       <div v-if="runHistoryStore.historyFamilyErrors?.workspace" class="px-3 py-2 text-xs text-red-600">
@@ -84,6 +89,7 @@
           :actions="sectionActions"
         />
       </div>
+      </template>
     </div>
 
     <ConfirmationModal
@@ -111,7 +117,7 @@
     <ConfirmationModal
       :show="showRemoveWorkspaceConfirmation"
       :title="$t('workspace.components.workspace.history.WorkspaceAgentRunsTreePanel.remove_workspace_title')"
-      :message="removeWorkspaceConfirmationMessage"
+      :message="removeConfirmationMessage"
       :confirm-button-text="$t('workspace.components.workspace.history.WorkspaceAgentRunsTreePanel.remove_workspace_confirm')"
       variant="danger"
       typography-size="large"
@@ -128,6 +134,9 @@ import { useRoute, useRouter } from 'vue-router';
 import { Icon } from '@iconify/vue';
 import ConfirmationModal from '~/components/common/ConfirmationModal.vue';
 import WorkspaceHistoryWorkspaceSection from '~/components/workspace/history/WorkspaceHistoryWorkspaceSection.vue';
+import RunSectionSwitch from '~/components/workspace/history/RunSectionSwitch.vue';
+import ProjectsRunsTree from '~/components/workspace/history/ProjectsRunsTree.vue';
+import { useRunSectionModeStore } from '~/stores/runSectionModeStore';
 import type {
   WorkspaceHistoryAvatarBindings,
   WorkspaceHistorySectionActions,
@@ -159,7 +168,6 @@ import { useWorkspaceHistorySubjectActions } from '~/composables/useWorkspaceHis
 import { useLocalization } from '~/composables/useLocalization';
 import { useRunStart } from '~/composables/runSettings/useRunStart';
 import type { RunTreeWorkspaceNode } from '~/utils/runTreeProjection';
-import { escapeHtml } from '~/utils/escapeHtml';
 
 const props = withDefaults(defineProps<{
   /** Whether the center shows a run (`useShellPrimaryNavigation().isWorkspacesActive`); gates the reveal. */
@@ -191,6 +199,9 @@ const windowNodeContextStore = useWindowNodeContextStore();
 const { isEmbeddedWindow } = storeToRefs(windowNodeContextStore);
 const { addToast } = useToasts();
 const { t } = useLocalization();
+const projectsMode = computed(() => useRunSectionModeStore().mode === 'projects');
+const headerAddLabel = computed(() => t(projectsMode.value ? 'projectsTree.newProject'
+  : 'workspace.components.workspace.history.WorkspaceAgentRunsTreePanel.add_workspace'));
 const addWorkspaceToast = (message: string, type: 'success' | 'error' | 'warning' | 'info'): void => {
   addToast(message, type === 'warning' ? 'info' : type);
 };
@@ -308,6 +319,7 @@ const {
   showGroupArchiveConfirmation,
   groupArchiveConfirmationMessage,
   onArchiveAgentGroup,
+  onArchiveListedAgentGroup,
   onArchiveTeamGroup,
   onArchiveAgentOrgGroup,
   closeGroupArchiveConfirmation,
@@ -316,13 +328,14 @@ const {
   archiveAgentRunGroup: (workspaceRootPath, agentDefinitionId) =>
     runHistoryStore.archiveAgentRunGroup(workspaceRootPath, agentDefinitionId),
   archiveTeamRuns: (teamRunIds) => runHistoryStore.archiveTeamRuns(teamRunIds),
+  archiveRun: (runId) => runHistoryStore.archiveRun(runId),
   archiveAgentOrgRuns: (orgRunIds) => runHistoryStore.archiveAgentOrgRuns(orgRunIds),
   onAgentOrgArchived: leaveRemovedAgentOrgRoute,
   addToast: addWorkspaceToast,
 });
 
 const {
-  pendingWorkspace,
+  removeConfirmationMessage,
   removingWorkspaceIds,
   showRemoveConfirmation: showRemoveWorkspaceConfirmation,
   onRemoveWorkspace,
@@ -380,25 +393,6 @@ const onToggleWorkspace = async (workspaceNode: RunTreeWorkspaceNode): Promise<v
     }
   }
 };
-
-const removeWorkspaceConfirmationMessage = computed(() => {
-  const workspace = pendingWorkspace.value;
-  if (!workspace) return '';
-  const name = escapeHtml(workspace.workspaceName || t(
-    'workspace.components.workspace.history.WorkspaceAgentRunsTreePanel.this_workspace',
-  ));
-  const root = escapeHtml(workspace.workspaceRootPath);
-  const questionPrefix = escapeHtml(t(
-    'workspace.components.workspace.history.WorkspaceAgentRunsTreePanel.remove_workspace_question_prefix',
-  ));
-  const questionSuffix = escapeHtml(t(
-    'workspace.components.workspace.history.WorkspaceAgentRunsTreePanel.remove_workspace_question_suffix',
-  ));
-  const body = escapeHtml(t(
-    'workspace.components.workspace.history.WorkspaceAgentRunsTreePanel.remove_workspace_non_destructive_body',
-  ));
-  return `${questionPrefix} <strong>${name}</strong> ${questionSuffix}<br><br>${body}<br><br><span class="break-all text-xs text-gray-500">${root}</span>`;
-});
 
 const sectionState: WorkspaceHistorySectionState = {
   get selectedRunId() {
@@ -488,6 +482,7 @@ const sectionActions: WorkspaceHistorySectionActions = {
   onArchiveAgentOrg,
   onDeleteAgentOrg,
   onArchiveAgentGroup,
+  onArchiveListedAgentGroup,
   onArchiveTeamGroup,
   onArchiveAgentOrgGroup,
   onTerminateAgentOrg: (run) => executeSubjectAction({

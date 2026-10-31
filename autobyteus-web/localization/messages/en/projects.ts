@@ -1,6 +1,28 @@
 import type { TranslationCatalog } from '../../runtime/types';
 
 const projectMessages = {
+  // projects-left-navigation: the left panel's Projects mode, the New chat Project choice.
+  'projectsTree.switchLabel': 'Show runs by',
+  'projectsTree.newProject': 'New Project',
+  'projectsTree.expandProject': 'Expand {{name}}',
+  'projectsTree.collapseProject': 'Collapse {{name}}',
+  'projectsTree.selectProject': 'Show {{name}} on the Projects board',
+  'projectsTree.runUnderProject': 'Run an agent or team under {{name}}',
+  'projectsTree.newTeamRun': 'New run with this team',
+  'projectsTree.noRuns': 'No runs yet. Use + to run an agent or team for this Project.',
+  'projectsTree.loading': 'Loading Projects…',
+  'projectsTree.error': 'Couldn’t load Projects.',
+  'projectsTree.staleError': 'Couldn’t refresh Projects.',
+  'projectsTree.retry': 'Retry',
+  'projectsTree.emptyTitle': 'No Projects yet',
+  'projectsTree.emptyHelp': 'Create a Project to run agents and teams for it and follow their work here.',
+  'projectsTree.noProject': 'No project',
+  'projectsTree.menuAria': 'Projects',
+  'projectsTree.chipTitle': 'This run is started under the Project {{name}}.',
+  'projectsTree.chipAria': 'Project: {{name}}',
+  'projectsTree.folderProject': 'Project folder',
+  'projectsTree.targetSearch': 'Search agents and teams',
+
   'projects.ui.fileCountOne': '1 file',
   'projects.ui.fileCount': '{{count}} files',
   'projects.ui.newProject': 'New project',

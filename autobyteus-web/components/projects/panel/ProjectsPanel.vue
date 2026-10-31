@@ -8,7 +8,7 @@
     </div>
     <div class="min-h-0 flex-1 overflow-y-auto p-3">
       <div v-if="panel.isEmpty" class="rounded-xl border border-slate-200 bg-white px-4 py-8 text-center" role="status" data-testid="projects-panel-empty">
-        <Icon icon="heroicons:folder" class="mx-auto h-6 w-6 text-slate-300" aria-hidden="true" />
+        <Icon icon="heroicons:briefcase" class="mx-auto h-6 w-6 text-slate-300" aria-hidden="true" />
         <p class="mt-3 text-sm font-medium text-slate-700">{{ t('projects.panel.emptyTitle') }}</p>
         <p class="mt-1 text-xs leading-5 text-slate-500">{{ t('projects.panel.emptyHelp') }}</p>
         <NuxtLink to="/projects" class="mt-4 inline-flex min-h-10 items-center rounded-md px-3 text-sm font-medium text-blue-700 hover:bg-slate-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500" data-testid="projects-panel-open-projects">{{ t('projects.panel.openProjectsPage') }}</NuxtLink>

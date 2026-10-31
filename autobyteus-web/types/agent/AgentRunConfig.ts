@@ -36,6 +36,9 @@ export interface AgentRunConfig {
   /** Whether to auto-execute tool calls without user confirmation */
   autoExecuteTools: boolean;
 
+  /** projects-left-navigation: the Project a run started from New chat is started under (REQ-004); its local placement. */
+  projectId?: string | null;
+
   /** 
    * Whether this config is locked (read-only).
    * Set to true after the first message is sent to the backend.

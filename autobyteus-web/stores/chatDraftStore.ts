@@ -24,6 +24,7 @@ import { seedMemberLaunchDefaults, type MemberLaunchNote } from '~/utils/runSett
 import { resolveLeafTeamMembers } from '~/utils/teamDefinitionMembers'
 import { draftMentionCandidates } from '~/utils/collaborators/draftMentionEligibility'
 import { normalizeModelConfig } from '~/utils/teamRunConfigUtils'
+import { chooseDraftFolder, chooseDraftProject, noProjectChoice, type ChatDraftProjectChoice } from '~/stores/chatDraftProjectChoice'
 
 /** Who a New chat is addressed to. Agent Orgs are never chat targets (they start on the Org launch page). */
 export type ChatTarget =
@@ -39,6 +40,8 @@ export interface ChatDraft {
   context: AgentContext
   target: ChatTarget
   workspace: RunWorkspaceChoice
+  /** The Project the run is started under and the folder rule's state (`chatDraftProjectChoice.ts`). */
+  projectChoice: ChatDraftProjectChoice
   autoExecuteTools: boolean
   /** Team target only: each customized member's own settings, by member address (REQ-009). */
   teamAgentOverrides: Record<AgentTeamAddress, AgentConfigOverride>
@@ -174,6 +177,7 @@ export const useChatDraftStore = defineStore('chatDraft', () => {
       context: buildDraftContext(agentIdentity(contextAgentFor(target))),
       target,
       workspace,
+      projectChoice: noProjectChoice(),
       autoExecuteTools,
       teamAgentOverrides: {},
       pinnedMemberAddresses: [],
@@ -493,10 +497,8 @@ export const useChatDraftStore = defineStore('chatDraft', () => {
     draft.value.pinnedMemberAddresses = []
   }
 
-  const setWorkspace = (workspace: RunWorkspaceChoice) => {
-    if (!draft.value) return
-    draft.value.workspace = workspace
-  }
+  const setWorkspace = (workspace: RunWorkspaceChoice) => { if (draft.value) chooseDraftFolder(draft.value, workspace) }
+  const setProject = (projectId: string | null, folderRootPath: string | null) => { if (draft.value) chooseDraftProject(draft.value, projectId, folderRootPath) }
 
   const setAutoExecuteTools = (autoExecuteTools: boolean) => {
     if (!draft.value) return
@@ -532,6 +534,7 @@ export const useChatDraftStore = defineStore('chatDraft', () => {
     resetTeamMember,
     resetTeamMembers,
     setWorkspace,
+    setProject,
     setAutoExecuteTools,
     setModel,
     setModelConfig,
@@ -540,11 +543,3 @@ export const useChatDraftStore = defineStore('chatDraft', () => {
   }
 })
 
-/** The draft's settings as a start carries them (the heading switcher, "+"). */
-export const chatStartSettingsOf = (draft: ChatDraft): RunStartSettings => ({
-  workspace: draft.workspace,
-  runtimeKind: draft.context.config.runtimeKind,
-  llmModelIdentifier: draft.context.config.llmModelIdentifier,
-  llmConfig: draft.context.config.llmConfig ?? null,
-  autoExecuteTools: draft.autoExecuteTools,
-})

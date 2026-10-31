@@ -463,7 +463,7 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
         const { teamConfigs, memberConfigs } = projectTeamRunLaunchRecords(currentDraft.config, memberTree);
         const { data, errors } = await getApolloClient().mutate<CreatePayload>({
           mutation: CreateAgentTeamRun,
-          variables: { input: { teamDefinitionId: currentDraft.config.teamDefinitionId, teamConfigs, memberConfigs } },
+          variables: { input: { teamDefinitionId: currentDraft.config.teamDefinitionId, teamConfigs, memberConfigs, projectId: currentDraft.config.projectId ?? undefined } },
         });
         if (errors?.length) throw new Error(errors.map((entry: { message: string }) => entry.message).join(', '));
         const result = data?.createAgentTeamRun;

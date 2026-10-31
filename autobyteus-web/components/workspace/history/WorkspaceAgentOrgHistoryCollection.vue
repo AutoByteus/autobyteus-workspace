@@ -210,7 +210,8 @@ import type { AgentOrgHistoryDefinitionGroup, AgentOrgRunHistoryItem } from '~/s
 import type { AgentStatus } from '~/types/agent/AgentStatus'
 import type { TeamStatus } from '~/utils/workspaceTeamAggregateStatus'
 import { useLeavingTreeRows } from './useLeavingTreeRows'
-import { projectAgentOrgHistoryRows, type AgentOrgHistoryAgentRow, type AgentOrgHistoryDelegator, type AgentOrgHistoryTaskAgentRow, type AgentOrgHistoryTaskTeamRow, type AgentOrgHistoryTeamRow } from '~/utils/agentOrgHistoryRows'
+import { branchConnectors, scopeTaskRows, transientRowCopyKey, type RootExecutionScope } from '~/utils/collaboration/taskExecutionScope'
+import { projectAgentOrgHistoryRows, type AgentOrgHistoryDisplayRow, type AgentOrgHistoryAgentRow, type AgentOrgHistoryDelegator, type AgentOrgHistoryTaskAgentRow, type AgentOrgHistoryTaskTeamRow, type AgentOrgHistoryTeamRow } from '~/utils/agentOrgHistoryRows'
 
 const props = defineProps<{
   workspaceId: string
@@ -218,6 +219,8 @@ const props = defineProps<{
   state: WorkspaceHistorySectionState
   avatars: Pick<WorkspaceHistoryAvatarBindings, 'getOrgAvatarUrl' | 'showOrgAvatar' | 'onOrgAvatarError'>
   actions: WorkspaceHistorySectionActions
+  /** Projects mode: an Org run's copies working for the Project (REQ-008); absent in Workspaces. */
+  executionScopeOf?: ((rootRunId: string) => RootExecutionScope | null) | null
 }>()
 const { t } = useLocalization()
 // The Org run's open button sits in the row above this tree.
@@ -256,12 +259,26 @@ const relative = (createdAt: string) => {
   if (seconds < 86400) return t('workspace.agentOrg.history.relativeHours', { count: Math.floor(seconds / 3600) })
   return t('workspace.agentOrg.history.relativeDays', { count: Math.floor(seconds / 86400) })
 }
-const rowsFor = (run: AgentOrgRunHistoryItem) => projectAgentOrgHistoryRows({
-  run,
-  context: props.state.agentOrgContextFor?.(run.rootRunId) ?? null,
-  isTeamExpanded: (address) => isTeamExpanded(run.rootRunId, address),
-  isTaskTeamExpanded: (teamRunId) => props.state.isAgentOrgTaskTeamExpanded?.(run.rootRunId, teamRunId) ?? true,
-})
+const orgRowCopyKey = (row: AgentOrgHistoryDisplayRow['row']): string | null => {
+  if (row.kind === 'task_team') return `team:${row.teamRunId}`
+  if (row.kind === 'task_agent') return row.taskKind === 'direct' ? `agent:${row.agentRunId}` : `member:${row.agentRunId}`
+  return row.kind === 'remote' ? transientRowCopyKey(row.transient) : null
+}
+const rowsFor = (run: AgentOrgRunHistoryItem) => {
+  const rows = projectAgentOrgHistoryRows({
+    run,
+    context: props.state.agentOrgContextFor?.(run.rootRunId) ?? null,
+    isTeamExpanded: (address) => isTeamExpanded(run.rootRunId, address),
+    isTaskTeamExpanded: (teamRunId) => props.state.isAgentOrgTaskTeamExpanded?.(run.rootRunId, teamRunId) ?? true,
+  })
+  const scope = props.executionScopeOf?.(run.rootRunId) ?? null
+  if (!scope) return rows
+  const { kept, droppedKeys } = scopeTaskRows(rows, scope.copies, { depth: (display) => display.row.depth, copyKey: (display) => orgRowCopyKey(display.row) })
+  // Reported after render: a copy the stream showed before its Task link was read (DS-004 trigger 5).
+  if (droppedKeys.length) queueMicrotask(() => scope.noteUnscoped(droppedKeys))
+  const connectors = branchConnectors(kept, (display) => display.row.depth)
+  return kept.map((display, index) => ({ ...display, ...connectors[index]! }))
+}
 const openRun = (run: AgentOrgRunHistoryItem) => {
   props.state.toggleAgentOrgRun?.(run.rootRunId)
   return props.actions.onOpenAgentOrgRun?.(run)

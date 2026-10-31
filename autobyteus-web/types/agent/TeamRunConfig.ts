@@ -49,6 +49,8 @@ export interface TeamRunConfig {
   teamOverrides: Record<AgentTeamAddress, TeamScopeConfigOverride>
   agentOverrides: Record<AgentTeamAddress, AgentConfigOverride>
   isLocked: boolean
+  /** projects-left-navigation: the Project a Team run started from New chat is started under (REQ-004). */
+  projectId?: string | null
 }
 
 export interface ResolvedTeamScopeView {

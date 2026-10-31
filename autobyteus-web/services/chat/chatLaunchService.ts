@@ -8,6 +8,7 @@ import { useAgentTeamRunStore } from '~/stores/agentTeamRunStore'
 import { useTeamRunConfigStore } from '~/stores/teamRunConfigStore'
 import { useLLMProviderConfigStore } from '~/stores/llmProviderConfig'
 import { useChatDraftStore, type ChatDraft } from '~/stores/chatDraftStore'
+import { useProjectRunsStore } from '~/stores/projectRunsStore'
 import { useRuntimeAvailabilityStore } from '~/stores/runtimeAvailabilityStore'
 import { effectiveAutoExecuteTools } from '~/utils/agentRunRuntimeDraftPolicy'
 import { useWorkspaceCenterViewStore } from '~/stores/workspaceCenterViewStore'
@@ -112,6 +113,8 @@ export const launchAgentChat = async (
     context.config.workspaceMetadata = workspaceMetadata
     context.config.autoExecuteTools = effectiveAutoExecuteTools(context.config.runtimeKind, draft.autoExecuteTools)
     context.config.isLocked = false
+    // projects-left-navigation (REQ-004): the run is started under the chosen Project.
+    context.config.projectId = draft.projectChoice.projectId
     selectionStore.beginSelectionIntent()
     agentContextsStore.registerDraftRun(context)
   } catch (error) {
@@ -131,6 +134,7 @@ export const launchAgentChat = async (
       llmModelIdentifier: context.config.llmModelIdentifier,
     })
   }
+  if (draft.projectChoice.projectId) useProjectRunsStore().noteRunStarted(draft.projectChoice.projectId)
   await deps.navigate(buildAgentRunChatRoute(runId))
   // The context now belongs to agentContextsStore.
   chatDraftStore.finishSentDraft(draft)
@@ -173,7 +177,8 @@ export const launchTeamChat = async (
       llmConfig: context.config.llmConfig ?? null,
       autoExecuteTools: effectiveAutoExecuteTools(context.config.runtimeKind, draft.autoExecuteTools),
     }
-    const config = buildChatTeamLaunchConfig(definition, { ...root, workspaceId, workspaceMetadata }, draft.teamAgentOverrides)
+    const config = { ...buildChatTeamLaunchConfig(definition, { ...root, workspaceId, workspaceMetadata }, draft.teamAgentOverrides),
+      projectId: draft.projectChoice.projectId }
     // Team launch readiness checks every effective runtime's catalog on the team config owner.
     const catalogs = useLLMProviderConfigStore()
     const runtimeKinds = new Set([root.runtimeKind, ...Object.values(draft.teamAgentOverrides)
@@ -221,6 +226,7 @@ export const launchTeamChat = async (
       llmModelIdentifier: context.config.llmModelIdentifier,
     })
   }
+  if (draft.projectChoice.projectId && teamRunId) useProjectRunsStore().noteRunStarted(draft.projectChoice.projectId)
   await deps.navigate('/workspace')
   chatDraftStore.finishSentDraft(draft)
   return { teamRunId }

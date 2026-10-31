@@ -1,6 +1,7 @@
 import { computed, ref } from 'vue';
 import { useLocalization } from '~/composables/useLocalization';
 import type { RunTreeWorkspaceNode } from '~/utils/runTreeProjection';
+import { escapeHtml } from '~/utils/escapeHtml';
 
 export const useWorkspaceHistoryWorkspaceRemoval = (params: {
   removeWorkspace: (workspaceId: string) => Promise<{ workspaceRootPath: string | null; message: string }>;
@@ -49,8 +50,29 @@ export const useWorkspaceHistoryWorkspaceRemoval = (params: {
     }
   };
 
+  /** The confirmation's HTML message (ConfirmationModal renders HTML): every interpolated part is escaped. */
+  const removeConfirmationMessage = computed(() => {
+    const workspace = pendingWorkspace.value;
+    if (!workspace) return '';
+    const name = escapeHtml(workspace.workspaceName || t(
+      'workspace.components.workspace.history.WorkspaceAgentRunsTreePanel.this_workspace',
+    ));
+    const root = escapeHtml(workspace.workspaceRootPath);
+    const questionPrefix = escapeHtml(t(
+      'workspace.components.workspace.history.WorkspaceAgentRunsTreePanel.remove_workspace_question_prefix',
+    ));
+    const questionSuffix = escapeHtml(t(
+      'workspace.components.workspace.history.WorkspaceAgentRunsTreePanel.remove_workspace_question_suffix',
+    ));
+    const body = escapeHtml(t(
+      'workspace.components.workspace.history.WorkspaceAgentRunsTreePanel.remove_workspace_non_destructive_body',
+    ));
+    return `${questionPrefix} <strong>${name}</strong> ${questionSuffix}<br><br>${body}<br><br><span class="break-all text-xs text-gray-500">${root}</span>`;
+  });
+
   return {
     pendingWorkspace,
+    removeConfirmationMessage,
     removingWorkspaceIds,
     showRemoveConfirmation,
     onRemoveWorkspace,

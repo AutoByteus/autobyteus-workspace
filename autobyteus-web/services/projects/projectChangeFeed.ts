@@ -3,6 +3,7 @@ import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 import { useProjectStore } from '~/stores/projectStore'
 import { useProjectTaskStore } from '~/stores/projectTaskStore'
 import { useTaskWorkerTaskStore } from '~/stores/taskWorkerTaskStore'
+import { useProjectRunsStore } from '~/stores/projectRunsStore'
 import { buildAuthenticatedWebSocketUrl } from '~/utils/remoteAccess/websocketAuth'
 import { getActiveRemoteAccessCredential } from '~/utils/remoteAccess/authorizedTransport'
 import type { ProjectChangeMessage } from '~/types/project'
@@ -18,7 +19,7 @@ export const parseProjectChangeMessage = (raw: string): ProjectChangeMessage | n
 
 /**
  * The window node's `/ws/projects` change feed. Projects pages retain it while they are mounted, and
- * the Task-worker store while the Workspaces tree shows Task workers; the socket lifecycle is the
+ * the Task-worker store while the Workspaces tree shows Task workers, and Projects mode while it is shown; the socket lifecycle is the
  * shared node change feed. Every `connected` frame makes the stores re-read what they have loaded.
  */
 export class ProjectChangeFeed extends NodeChangeFeed<ProjectChangeMessage> {
@@ -46,6 +47,7 @@ export const getProjectChangeFeed = (): ProjectChangeFeed => {
       useProjectStore().applyChange(message)
       useProjectTaskStore().applyChange(message)
       useTaskWorkerTaskStore().applyChange(message)
+      useProjectRunsStore().applyChange(message)
     },
   })
   watch(() => node.bindingRevision, () => created.rebind())

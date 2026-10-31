@@ -51,6 +51,7 @@ export const cloneTeamConfig = (config: Readonly<TeamRunConfig>): TeamRunConfig 
   teamOverrides: Object.fromEntries(Object.entries(config.teamOverrides || {}).map(([address, value]) => [address, cloneOverride(value)])),
   agentOverrides: Object.fromEntries(Object.entries(config.agentOverrides || {}).map(([address, value]) => [address, cloneOverride(value)])),
   isLocked: config.isLocked,
+  ...(config.projectId ? { projectId: config.projectId } : {}),
 })
 const workspaceFromResolved = (
   config: TeamRunConfigurationView['root']['effectiveConfig'],

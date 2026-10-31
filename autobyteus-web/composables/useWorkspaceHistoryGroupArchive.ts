@@ -14,6 +14,7 @@ type AgentGroupNode = WorkspaceHistoryWorkspaceNode['agents'][number];
 
 type PendingGroupArchive =
   | Readonly<{ kind: 'agent'; key: string; name: string; workspaceRootPath: string; agentDefinitionId: string }>
+  | Readonly<{ kind: 'agent_runs'; key: string; name: string; runIds: string[] }>
   | Readonly<{ kind: 'team'; key: string; name: string; teamRunIds: string[] }>
   | Readonly<{ kind: 'agent_org'; key: string; name: string; orgRunIds: string[] }>;
 
@@ -38,6 +39,8 @@ const isBlockingAgentRun = (run: RunTreeRow): boolean => run.source === 'history
 export const useWorkspaceHistoryGroupArchive = (params: {
   archiveAgentRunGroup: (workspaceRootPath: string, agentDefinitionId: string) => Promise<AgentRunGroupArchiveOutcome>;
   archiveTeamRuns: (teamRunIds: string[]) => Promise<RunGroupArchiveOutcome>;
+  /** One saved Agent run; a Project's agent group archives only the runs listed under that Project (REQ-014). */
+  archiveRun: (runId: string) => Promise<boolean>;
   archiveAgentOrgRuns: (orgRunIds: string[]) => Promise<RunGroupArchiveOutcome>;
   onAgentOrgArchived?: (orgRunId: string) => Promise<void> | void;
   addToast: (message: string, type: 'success' | 'error' | 'warning' | 'info') => void;
@@ -58,7 +61,8 @@ export const useWorkspaceHistoryGroupArchive = (params: {
     if (!target) return '';
     const { name } = target;
     if (target.kind === 'agent') return escapeHtml(t('workspace.history.groupArchive.confirmAllRuns', { name }));
-    const count = target.kind === 'team' ? target.teamRunIds.length : target.orgRunIds.length;
+    const count = target.kind === 'team' ? target.teamRunIds.length
+      : target.kind === 'agent_runs' ? target.runIds.length : target.orgRunIds.length;
     return escapeHtml(t('workspace.history.groupArchive.confirmCountedRuns', { name, runs: runCount(count) }));
   });
 
@@ -86,6 +90,17 @@ export const useWorkspaceHistoryGroupArchive = (params: {
       name: agentNode.agentName,
       workspaceRootPath: workspaceNode.workspaceRootPath,
       agentDefinitionId: agentNode.agentDefinitionId,
+    }, agentNode.runs.some(isBlockingAgentRun));
+  };
+
+  /** Projects mode (REQ-014): "Archive all runs" of an agent group archives only the saved runs listed in it. */
+  const onArchiveListedAgentGroup = (workspaceNode: WorkspaceHistoryWorkspaceNode, agentNode: AgentGroupNode): void => {
+    if (!canArchiveAgentGroup(agentNode)) return;
+    requestGroupArchive({
+      kind: 'agent_runs',
+      key: agentGroupArchiveKey(workspaceNode.workspaceRootPath, agentNode.agentDefinitionId),
+      name: agentNode.agentName,
+      runIds: agentNode.runs.filter((run) => run.source === 'history').map((run) => run.runId),
     }, agentNode.runs.some(isBlockingAgentRun));
   };
 
@@ -144,6 +159,15 @@ export const useWorkspaceHistoryGroupArchive = (params: {
         reportOutcome(outcome);
         return;
       }
+      if (target.kind === 'agent_runs') {
+        const outcome: RunGroupArchiveOutcome = { archivedRunIds: [], failedRunIds: [] };
+        for (const runId of target.runIds) {
+          const archived = await params.archiveRun(runId).catch(() => false);
+          (archived ? outcome.archivedRunIds : outcome.failedRunIds).push(runId);
+        }
+        reportOutcome(outcome);
+        return;
+      }
       if (target.kind === 'team') {
         reportOutcome(await params.archiveTeamRuns(target.teamRunIds));
         return;
@@ -164,6 +188,7 @@ export const useWorkspaceHistoryGroupArchive = (params: {
     showGroupArchiveConfirmation,
     groupArchiveConfirmationMessage,
     onArchiveAgentGroup,
+    onArchiveListedAgentGroup,
     onArchiveTeamGroup,
     onArchiveAgentOrgGroup,
     closeGroupArchiveConfirmation,
