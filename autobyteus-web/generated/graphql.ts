@@ -16,11 +16,8 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
-  /** DateTime scalar supporting ISO strings and date-only YYYY-MM-DD values */
   DateTime: { input: any; output: any; }
-  /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSON: { input: any; output: any; }
-  /** The `SafeInt` scalar type represents non-fractional signed whole numeric values that are considered safe as defined by the ECMAScript specification. */
   SafeInt: { input: number; output: number; }
 };
 
@@ -10428,6 +10425,7 @@ export const UpdateStoppedAgentRunSelectionDocument = gql`
       reason
     }
     canonicalSelection {
+      runtimeKind
       llmModelIdentifier
       llmConfig
     }
@@ -10440,7 +10438,7 @@ export const UpdateStoppedAgentRunSelectionDocument = gql`
     `;
 
 /**
- * __useUpdateStoppedAgentRunModelConfigMutation__
+ * __useUpdateStoppedAgentRunSelectionMutation__
  *
  * To run a mutation, you first call `useUpdateStoppedAgentRunSelectionMutation` within a Vue component and pass it any options that fit your needs.
  * When your component renders, `useUpdateStoppedAgentRunSelectionMutation` returns an object that includes:
