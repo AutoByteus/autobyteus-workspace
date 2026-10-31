@@ -361,7 +361,7 @@ As in Final File Responsibility Mapping; new web components live beside the work
 
 | Topic | Good | Avoided | Why |
 | --- | --- | --- | --- |
-| Scope | Server: `scopes: [{rootKind: "AGENT", rootRunId: "pm_1", startedUnderProject: false, executions: [{teamRunId: "set_9"}, {agentRunId: "apc_3"}]}]`; web shows only those top-level copies (and everything under them) | Web asking `taskWorkerTasks` per row and guessing sub-work's Project | One owner; sub-work is not a Task root (E-034) |
+| Scope | Server: `scopes: [{rootKind: "AGENT", rootRunId: "pm_1", executions: [{teamRunId: "set_9"}, {agentRunId: "apc_3"}]}]`; web shows only those top-level copies (and everything under them) | Web asking `taskWorkerTasks` per row and guessing sub-work's Project | One owner; sub-work is not a Task root (E-034) |
 | Cap | P's Project Task Manager group lists its 6 newest runs plus an older run still hosting P's open Task | Hiding the older run because of the cap | REQ-010 |
 | Prompt | `## Project\nYou work in the Project AutoByteus (Project ID project_a13…). Use this Project ID with the Project tools; ask the user before working on another Project.` | Putting the Project in the user's first message | Survives restore; every runtime |
 | Multi-Project copy | Copy C holds open A (P) and gets open B (Q): listed under P and Q; A closes: listed under Q only; B closes too: listed nowhere live (closed) | Listing C only under its current Task Q while A is still open | REQ-008 "no hidden work" (AR-002) |

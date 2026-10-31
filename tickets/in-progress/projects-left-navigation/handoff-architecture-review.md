@@ -36,3 +36,19 @@ Give the app a Projects alternative beside Workspaces in the left panel: pick a 
 ## Expected next step
 
 Independent architecture review; on pass, the reviewer routes to implementation per its rules.
+
+## Re-review request — SR-008 (2026-10-31)
+
+ARCH-REV-001 failed with AR-001…AR-005. This revision answers each finding:
+
+| Finding | Resolution | Where |
+| --- | --- | --- |
+| AR-001 | `stores/projectRunsProjection.ts` owns the Projects nodes. It reuses `buildRunTreeProjection`, `mergeRunTreeWithLiveContexts` and `buildTeamNodes`, keyed by Project, with the same agent and team contexts, so live status needs no re-read. Ancestry indexes are lists `{projectId, groupKey}`. `useProjectsTreeState` expands the open run in every Project that lists it, and the existing reveal scrolls to it. The store loads all Projects when the mode is shown. | design § Current-State Read, DS-003/DS-004 narratives, Ownership Map, File Mapping, step 5, Examples; E-037 |
+| AR-002 | Rule: a copy belongs to P while it holds an open Task of P; with none open, it belongs to the Project of its latest Task. A copy working for P and Q is listed under both. Decided within the direction and recorded. | requirements REQ-008, DEC-013, AC-007; design `runLinksOf` contract, Ownership Map, Examples; E-040 |
+| AR-003 | Effective-line counts are recorded. New owned files `stores/chatDraftProjectChoice.ts` and `run-history/services/agent-run-history-row-projector.ts`. The factory has a cap rule. `runHistoryStore.ts` is untouched. FU-006 is withdrawn. | design § Task Design Health, File Mapping, step 1; E-038; follow-ups.md |
+| AR-004 | `startedUnderProject` is removed. `executions = runLinksOf(P)[root] ∪ (started under P ? runLinksOf(null)[root] : ∅)`. DS-004 has five explicit triggers, including Temp-task events through `task.root.hostRoot` (E-039) and one re-read per unknown copy key. | design § Interface Boundary Mapping, DS-004 narrative, Tests; E-039 |
+| AR-005 | The dependency rule is reworded: new code goes through the ports, and the existing imports stay. The Team owner is named (`TeamRunService.createTeamRun` 112 → `AgentTeamRunManager.createTeamRun` 126–140). `RunProjectContextReader` is placed in `agent-execution/domain/run-project-context.ts`. An invalid `projectId` is dropped and logged. | design § Dependency Rules, Ownership Map, File Mapping, Persisted Data; E-040 |
+
+Current documents: `requirements-doc.md` (R4 with REQ-008 refined, SR-008), `investigation-notes.md` (E-001…E-040), `design-spec.md` (SR-008), `solution-revision-record.md` (SR-001…SR-008) and `follow-ups.md` (FU-001…FU-005; FU-006 withdrawn).
+
+The classification is unchanged: Large / High.
