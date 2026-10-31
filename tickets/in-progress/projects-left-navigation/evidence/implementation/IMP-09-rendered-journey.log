@@ -1,0 +1,45 @@
+# IMP-09 rendered journey (headless Chrome via playwright-core, 1440x900 and 600x800)
+# Command: node /tmp/pln-shots/shoot.mjs <evidence>/rendered  (driver copied to evidence/implementation/IMP-09-shoot.mjs)
+# Commit: dacdceed36 (web dacdceed36); stack: pnpm dev (backend 127.0.0.1:8000, Nuxt 127.0.0.1:3000), worktree .autobyteus/development data
+# Seed: Projects 'AutoByteus' (folder /tmp/pln-ws/autobyteus-folder) and 'Prototype Launch' (no folder); two prepared project-task-manager runs with projectId=AutoByteus via prepareAgentRun
+# Date: 2026-10-31T10:51Z
+switch tabs: [["Workspaces","true"],["Projects","false"]]
+shot IMP-09-01-workspaces-mode
+project rows: ["AutoByteus","Prototype Launch"]
+header + label: "New Project"
+shot IMP-09-02-projects-mode-collapsed
+first project expanded: "true"
+first project aria-current: "true"
+no-runs hint: "No runs yet. Use + to run an agent or team for this Project."
+runs under first project: ["second manager run4m","hello from AutoByteus4m"]
+shot IMP-09-03-projects-mode-expanded
+shot IMP-09-04-project-row-hover
+shot IMP-09-05-project-row-keyboard-focus
+archive dialog: "Archive all runs?Project Task Manager · 2 runs will be hidden from history.CancelArchive all"
+shot IMP-09-06-group-archive-all-in-project
+chip after +: "AutoByteus"
+chip aria: "Project: AutoByteus"
+shot IMP-09-07-start-under-project
+project options: [["No project","false"],["AutoByteusautobyteus-folder","true"],["Prototype LaunchTemp workspace","false"]]
+shot IMP-09-08-chip-menu-projects-tab
+project folder badge: ["autobyteus-folderProject folder/tmp/pln-ws/autobyteus-folder"]
+shot IMP-09-09-chip-menu-workspaces-tab
+chip after choosing second project: "Prototype Launch"
+shot IMP-09-10-start-project-without-folder
+chip after folder picked then project: "AutoByteus · Temp workspace"
+shot IMP-09-11-start-project-with-folder-overridden
+target search placeholder: "Search agents and teams"
+shot IMP-09-12-project-agent-picker
+mode after reload: "true"
+strip run-tree label: null
+shot IMP-09-13-narrow-strip
+narrow drawer switch visible: true
+shot IMP-09-14-narrow-drawer-projects
+page errors: []
+
+# extra.mjs
+strip label (workspaces): Workspaces
+strip label (projects): Projects
+zh tabs: [ '工作区', '项目' ]
+zh header +: 新建项目
+zh no-runs: 还没有运行。点击 + 为此项目运行智能体或团队。

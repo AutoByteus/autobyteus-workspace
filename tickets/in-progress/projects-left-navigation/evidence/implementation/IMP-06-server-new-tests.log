@@ -1,0 +1,6 @@
+# IMP-06 new and extended server tests
+# Command: pnpm -C autobyteus-server-ts exec vitest run <files below> --no-watch
+# Commit: dacdceed36 + working tree (architecture guard update, committed with the ticket documents); macOS, Node v22.23.1
+# Date: 2026-10-31T11:06Z
+ Test Files  9 passed (9)
+      Tests  120 passed (120)

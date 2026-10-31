@@ -1,0 +1,11 @@
+# IMP-02 server typecheck
+# Command: pnpm -C autobyteus-server-ts typecheck
+# Commit: dacdceed36 + working tree (architecture guard update, committed with the ticket documents); macOS, Node v22.23.1
+# Date: 2026-10-31T11:06Z
+autobyteus-application-backend-sdk build$ tsc -p tsconfig.build.json
+autobyteus-application-backend-sdk build: Done
+
+> autobyteus-server-ts@0.1.1 typecheck /Users/normy/autobyteus_org/autobyteus-worktrees/projects-left-navigation/autobyteus-server-ts
+> tsc -p tsconfig.build.json --noEmit
+
+exit=0
