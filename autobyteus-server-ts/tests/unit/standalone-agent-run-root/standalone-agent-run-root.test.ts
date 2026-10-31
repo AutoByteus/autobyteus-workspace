@@ -229,6 +229,31 @@ describe("Agent root of a standalone run", () => {
     expect(await reopened.executeAgentCommand(HOST, { kind: "interrupt" })).toMatchObject({ code: "AGENT_ROOT_HOST_COMMAND_REJECTED" });
   });
 
+  it("the combined Save of a stopped host with its copies validates the host with the agent runtime it names: another one is a fresh selection (ARCH-F-002)", async () => {
+    const f = await buildManager();
+    const root = (await f.manager.resolveRoot(HOST))!;
+    await delegateReviewer(root, f);
+    await flushMicrotasks();
+    await f.manager.stopRoot(HOST);
+    f.host.crash();
+    const validator = { validate: vi.fn(), validateMany: vi.fn(async (inputs: readonly { selection: unknown }[]) => inputs.map((input) => ({ kind: "valid" as const, selection: input.selection }))) };
+    const save = (runtimeKind: RuntimeKind) => f.manager.updateStoppedDelegatedLaunchSelections({
+      hostRunId: HOST, validator: validator as never,
+      changes: [{ agentRunId: "code-reviewer-run-1", selection: { llmModelIdentifier: "copy-model", llmConfig: null } }],
+      hostSelection: { runtimeKind, llmModelIdentifier: "any-model", llmConfig: null },
+    });
+
+    await save(RuntimeKind.CLAUDE_AGENT_SDK);
+    await save(RuntimeKind.CODEX_APP_SERVER);
+
+    const contexts = validator.validateMany.mock.calls.map(([inputs]) => (inputs.at(-1) as { context: unknown }).context);
+    // The harness host runs on Codex App Server with model gpt-host: its own runtime keeps the stored model as the current one.
+    expect(contexts).toEqual([
+      { runtimeKind: "claude_agent_sdk", currentModelIdentifier: null, workspaceRootPath: "/work" },
+      { runtimeKind: "codex_app_server", currentModelIdentifier: "gpt-host", workspaceRootPath: "/work" },
+    ]);
+  });
+
   it("history delete after a host crash ends the lingering root and its children first, then deletes (CR-001/CR-002)", async () => {
     const f = await buildManager();
     const root = (await f.manager.resolveRoot(HOST))!;

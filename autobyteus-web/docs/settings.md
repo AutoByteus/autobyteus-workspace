@@ -1688,6 +1688,12 @@ declares cannot be edited and is left out by the server when the run's settings
 are saved (it is not an error); read-only and historical views still show it as
 a residual until then.
 
+A stopped Agent run's root card also lets the user choose another **agent runtime** (and a model of it): saving
+keeps the same run and chat and records a pending agent runtime switch; the new agent runtime takes over with the next
+message (a hint says so while another one is chosen, and the chat shows a marker "Agent runtime changed from … to …").
+Team and Org roots, their members and delegated copies keep their agent runtime fixed. A switch for a run that cannot
+switch is refused by the server with a message.
+
 Save is enabled only for a stopped, editable, schema-ready, changed draft. The
 revision-free mutations are `updateStoppedAgentRunSelection`,
 `updateStoppedTeamRunModelConfigs`, and `updateStoppedAgentOrgRunConfig`. The

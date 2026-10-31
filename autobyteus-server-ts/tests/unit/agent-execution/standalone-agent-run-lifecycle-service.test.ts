@@ -15,6 +15,7 @@ import { AgentRunCommandStatusOverlayStore } from "../../../src/agent-execution/
 import { configureTokenUsageCapability } from "../../../src/token-usage/providers/token-usage-capability.js";
 import type { StandaloneRunCommandPort } from "../../../src/agent-execution/services/standalone-run-ports.js";
 import { PreviousRuntimeReleasePendingError } from "../../../src/agent-execution/errors.js";
+import type { RuntimeSwitching } from "../../../src/agent-execution/domain/runtime-switch-ports.js";
 
 vi.mock("../../../src/run-history/services/root-run-package-readiness-index.js", () => ({
   RootRunPackageReadinessIndex: class { assertAdmitted = async () => undefined; },
@@ -84,6 +85,7 @@ const harness = (input: {
   getCatalogRow?: ReturnType<typeof vi.fn>;
   commitRunRuntimeSwitch?: ReturnType<typeof vi.fn>;
   validateModelConfig?: ReturnType<typeof vi.fn>;
+  switching?: RuntimeSwitching | null;
 }) => {
   const states = [...input.metadataStates];
   const metadataService = {
@@ -109,6 +111,7 @@ const harness = (input: {
     agentRunManager: agentRunManager as never,
     historyCatalogService: historyCatalogService as never,
     workspaceManager: workspaceManager as never,
+    switching: input.switching ?? null,
     modelSelectionValidator: {
       validate: input.validateModelConfig ?? vi.fn(async ({ selection }) => ({
         kind: "valid" as const,
@@ -922,5 +925,122 @@ describe("StandaloneAgentRunLifecycleService previous runtime release", () => {
     const { run } = await current.service.activateHost(RUN_ID, HELPER);
     expect(current.manager.getActiveRun(RUN_ID)).toBe(run);
     expect(current.backends[0]!.terminate).toHaveBeenCalledTimes(2);
+  });
+});
+
+describe("StandaloneAgentRunLifecycleService agent runtime switch (autobyteus-316)", () => {
+  const PENDING_AT = "2026-10-30T10:00:00.000Z";
+  const switchedMetadata = (overrides: Partial<AgentRunMetadata> = {}): AgentRunMetadata => metadata({
+    preparedAt: null, startedAt: "2026-10-29T09:00:00.000Z", runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "gpt-5", platformAgentRunId: null,
+    pendingRuntimeSwitch: { requestedAt: PENDING_AT,
+      from: { runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "haiku", llmConfig: null, platformAgentRunId: CLAUDE_SESSION_ID } },
+    ...overrides,
+  });
+  const THREAD_ID = "33333333-3333-4333-8333-333333333333";
+
+  const ports = (order: string[] = []) => {
+    const memory = { record: vi.fn((_dir: string, runtimeSwitch: { key: string }) => { order.push(`record:${runtimeSwitch.key}`); }) };
+    const notices = { register: vi.fn(() => { order.push("register"); }) };
+    return { memory, notices, switching: { memory, notices } as RuntimeSwitching };
+  };
+  const codexCandidate = (order: string[] = []) => candidate({ runtimeKind: RuntimeKind.CODEX_APP_SERVER, platformAgentRunId: THREAD_ID, order });
+  const withoutPending = (value: AgentRunMetadata): AgentRunMetadata => { const { pendingRuntimeSwitch: _p, ...rest } = value; return rest; };
+
+  it("starts a fresh session of the new agent runtime, records the marker, commits without the pending switch, publishes, then registers the notice (AC-002)", async () => {
+    const order: string[] = [];
+    const { memory, notices, switching } = ports(order);
+    const fresh = codexCandidate(order);
+    const recordRunStarted = vi.fn(async (input: StartedInput) => { order.push("commit"); return startedMetadata(input); });
+    const current = harness({ metadataStates: [{ kind: "present", metadata: switchedMetadata() }], preparedCandidate: fresh, recordRunStarted, switching });
+
+    const result = await current.service.activateHost(RUN_ID, HOST);
+
+    expect(order).toEqual([`record:runtime_switch:${RUN_ID}:${PENDING_AT}`, "commit", "publish", "register"]);
+    expect(current.agentRunManager.newPreparation).toHaveBeenCalledOnce();
+    expect(current.agentRunManager.restorePreparation).not.toHaveBeenCalled();
+    expect(current.agentRunManager.platformPreparation).not.toHaveBeenCalled();
+    expect(memory.record).toHaveBeenCalledWith("/tmp/standalone-memory", expect.objectContaining({
+      markerText: "Agent runtime changed from Claude Agent SDK (haiku) to Codex App Server (gpt-5).",
+      from: { runtimeKind: "claude_agent_sdk", llmModelIdentifier: "haiku" }, to: { runtimeKind: "codex_app_server", llmModelIdentifier: "gpt-5" } }));
+    expect(recordRunStarted).toHaveBeenCalledWith(expect.objectContaining({
+      runtimeKind: RuntimeKind.CODEX_APP_SERVER, platformAgentRunId: THREAD_ID, startedAt: "2026-10-29T09:00:00.000Z", clearPendingRuntimeSwitch: true }));
+    expect(Object.hasOwn(result.metadata, "pendingRuntimeSwitch")).toBe(false);
+    expect(result.metadata).toMatchObject({ runtimeKind: RuntimeKind.CODEX_APP_SERVER, platformAgentRunId: THREAD_ID, startedAt: "2026-10-29T09:00:00.000Z" });
+    expect(notices.register).toHaveBeenCalledWith(expect.objectContaining({ runId: RUN_ID }));
+  });
+
+  it("the explicit pending field decides, not the missing session ID: a started run with no pending switch and no session is not a switch", async () => {
+    const { memory, switching } = ports();
+    const current = harness({
+      metadataStates: [{ kind: "present", metadata: withoutPending(switchedMetadata({ runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK })) }],
+      restoredCandidate: candidate(), switching,
+    });
+    await expect(current.service.activateHost(RUN_ID, HOST)).rejects.toThrow("provider conversation identity");
+    expect(memory.record).not.toHaveBeenCalled();
+    expect(current.agentRunManager.newPreparation).not.toHaveBeenCalled();
+  });
+
+  it("a failure to start the new session changes nothing: no marker, no commit, no notice", async () => {
+    const { memory, notices, switching } = ports();
+    const current = harness({ metadataStates: [{ kind: "present", metadata: switchedMetadata() }], switching });
+    current.agentRunManager.newPreparation.mockRejectedValueOnce(new Error("codex is not signed in"));
+    await expect(current.service.activateHost(RUN_ID, HOST)).rejects.toThrow("not signed in");
+    expect(memory.record).not.toHaveBeenCalled();
+    expect(current.historyCatalogService.recordRunStarted).not.toHaveBeenCalled();
+    expect(notices.register).not.toHaveBeenCalled();
+  });
+
+  it("a failure of the marker or archive aborts the candidate before the error propagates; sending again completes the switch with one marker", async () => {
+    const { memory, notices, switching } = ports();
+    const first = codexCandidate();
+    const second = codexCandidate();
+    memory.record.mockImplementationOnce(() => { throw new Error("disk full"); });
+    const current = harness({ metadataStates: [{ kind: "present", metadata: switchedMetadata() }], preparedCandidate: first, switching });
+    current.agentRunManager.newPreparation.mockResolvedValueOnce(first).mockResolvedValueOnce(second);
+
+    await expect(current.service.activateHost(RUN_ID, HOST)).rejects.toThrow("disk full");
+    expect(first.abort).toHaveBeenCalledOnce();
+    expect(current.historyCatalogService.recordRunStarted).not.toHaveBeenCalled();
+    expect(notices.register).not.toHaveBeenCalled();
+
+    await expect(current.service.activateHost(RUN_ID, HOST)).resolves.toMatchObject({ metadata: { platformAgentRunId: THREAD_ID } });
+    expect(memory.record).toHaveBeenCalledTimes(2);
+    expect(memory.record.mock.calls[0]![1]).toEqual(memory.record.mock.calls[1]![1]);
+    expect(notices.register).toHaveBeenCalledOnce();
+  });
+
+  it("a commit that did not land leaves the stored metadata equal to the pending original: the candidate is aborted and sending again retries (generalized retry rule)", async () => {
+    const { memory, switching } = ports();
+    const pending = switchedMetadata();
+    const first = codexCandidate();
+    const second = codexCandidate();
+    const recordRunStarted = vi.fn().mockResolvedValueOnce(null).mockImplementationOnce(async (input: StartedInput) => startedMetadata(input));
+    const current = harness({
+      metadataStates: [{ kind: "present", metadata: pending }, { kind: "present", metadata: pending }],
+      preparedCandidate: first, recordRunStarted, switching,
+    });
+    current.agentRunManager.newPreparation.mockResolvedValueOnce(first).mockResolvedValueOnce(second);
+
+    await expect(current.service.activateHost(RUN_ID, HOST)).rejects.toThrow("activation metadata did not commit");
+    expect(first.abort).toHaveBeenCalledOnce();
+    await expect(current.service.activateHost(RUN_ID, HOST)).resolves.toMatchObject({ run: expect.anything() });
+    expect(memory.record).toHaveBeenCalledTimes(2);
+  });
+
+  it("an existing restore whose commit did not land is still indeterminate, never retried as unchanged (the retry flag is false for a plain restore)", async () => {
+    const started = metadata({ preparedAt: null, startedAt: "2026-10-29T09:00:00.000Z", platformAgentRunId: CLAUDE_SESSION_ID });
+    // The restored session has another ID than the stored one, so the stored metadata is the unchanged original, not the target.
+    const restored = candidate({ platformAgentRunId: "44444444-4444-4444-8444-444444444444" });
+    const current = harness({
+      metadataStates: [{ kind: "present", metadata: started }], restoredCandidate: restored, recordRunStarted: vi.fn(async () => null),
+    });
+    await expect(current.service.activateHost(RUN_ID, HOST)).rejects.toMatchObject({ code: "STANDALONE_AGENT_RUN_ACTIVATION_COMMIT_INDETERMINATE" });
+    expect(restored.abort).toHaveBeenCalledOnce();
+  });
+
+  it("a lifecycle built without the ports fails closed on a pending switch before anything changes", async () => {
+    const current = harness({ metadataStates: [{ kind: "present", metadata: switchedMetadata() }] });
+    await expect(current.service.activateHost(RUN_ID, HOST)).rejects.toThrow("cannot make");
+    expect(current.agentRunManager.newPreparation).not.toHaveBeenCalled();
   });
 });

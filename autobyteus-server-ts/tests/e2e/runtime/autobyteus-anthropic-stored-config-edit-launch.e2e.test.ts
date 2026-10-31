@@ -213,7 +213,7 @@ describe("AutoByteus Anthropic saved settings with a key the model no longer dec
     expect((await resume()).metadataConfig.llmConfig).toEqual({ reasoning_effort: "max", [STALE_KEY]: "omitted" });
     const saved = await gql<{ updateStoppedAgentRunSelection: Json }>(
       `mutation($input: UpdateStoppedAgentRunSelectionInput!) { updateStoppedAgentRunSelection(input: $input) { ${UPDATE_FIELDS} } }`,
-      { input: { agentRunId: runId, llmModelIdentifier: OPUS, llmConfig: { reasoning_effort: "high", [STALE_KEY]: "omitted" } } });
+      { input: { agentRunId: runId, runtimeKind: "autobyteus", llmModelIdentifier: OPUS, llmConfig: { reasoning_effort: "high", [STALE_KEY]: "omitted" } } });
     expect(saved.updateStoppedAgentRunSelection).toMatchObject({ success: true, outcome: "UPDATED", fieldErrors: [] });
     expect((await resume()).metadataConfig.llmConfig).toEqual({ reasoning_effort: "high" });
   }, 120_000);

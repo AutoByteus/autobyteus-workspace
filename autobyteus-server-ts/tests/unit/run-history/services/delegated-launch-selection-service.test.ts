@@ -2,7 +2,7 @@ import { describe, expect, it, vi } from "vitest";
 import { DelegatedLaunchSelectionService } from "../../../../src/run-history/services/delegated-launch-selection-service.js";
 
 /** DS-001 / DS-002 / AR-004: the service only finds the root and routes; it never edits trees itself. */
-const choice = { llmModelIdentifier: "bigger", llmConfig: null };
+const choice = { runtimeKind: "codex_app_server" as const, llmModelIdentifier: "bigger", llmConfig: null };
 const changes = [{ agentRunId: "copy", selection: choice }];
 const saved = { outcome: "UPDATED" as const, message: "Saved.", fieldErrors: [] };
 

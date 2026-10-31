@@ -96,6 +96,26 @@ describe("MemoryRunDiscovery", () => {
       subject: { kind: "RUN_FOLDER", runKey: "agents/host_1/collaboration/helper_crew/writer_1" } });
   });
 
+  it("targets a pending agent runtime switch's journal with the agent runtime that wrote the open file: the previous one (ARCH-F-003, I-4)", async () => {
+    writeRun(memoryDir, "agents/switched_1", turn);
+    writeRun(memoryDir, "agents/plain_1", turn);
+    const discovery = new MemoryRunDiscovery(memoryDir, {
+      agentCatalog: { listCatalogRows: async () => [] },
+      agentMetadata: {
+        readMetadata: async (runId: string) => ({
+          agentDefinitionId: "a", workspaceRootPath: "/w", runtimeKind: RuntimeKind.CODEX_APP_SERVER,
+          ...(runId === "switched_1" ? { pendingRuntimeSwitch: { requestedAt: "2026-10-30T10:00:00.000Z",
+            from: { runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "m", llmConfig: null, platformAgentRunId: "s" } } } : {}),
+        }) as never,
+        readTaskAgentMetadata: async () => null,
+      },
+      teamLocations: { listAgents: async () => [] }, orgLocations: { listAgents: async () => [] }, taskTeams: { listTaskTeams: async () => [] },
+    });
+    const runs = new Map((await discovery.findRuns()).map((run) => [run.runId, run]));
+    expect(runs.get("switched_1")?.runtimeKind).toBe(RuntimeKind.CLAUDE_AGENT_SDK);
+    expect(runs.get("plain_1")?.runtimeKind).toBe(RuntimeKind.CODEX_APP_SERVER);
+  });
+
   it("leaves a source that cannot be read to the folder rule, with one warning", async () => {
     writeRun(memoryDir, "agent_teams/team_1/member_1", turn);
     const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);

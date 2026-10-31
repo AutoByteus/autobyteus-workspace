@@ -152,12 +152,34 @@ for startup recovery and cross-checks global lookup state, persisted
 Agent/Team identity. Missing or inconsistent ownership evidence fails closed;
 it never produces a false editable state or a General write.
 
+`updateStoppedAgentRunSelection` edits the run's **selection**: agent runtime, model and model settings. Its input
+carries `runtimeKind`. The run's own agent runtime is a model-only edit; another agent runtime is an **agent runtime
+switch** (below); the previous agent runtime again, while a switch is pending, is its undo. The team family
+(`updateStoppedTeamRunModelConfigs`) edits model configuration only and keeps its names.
+
 When no Application lease exists, stopped updates delegate to the existing
 General lifecycle owners:
 
 - `StandaloneAgentRunLifecycleService.updateStoppedSelection(...)` shares one
   per-run transition lane with restore/activation and commits the validated
   pair to `run_metadata.json` through `AgentRunHistoryCatalogService`.
+- `StandaloneStoppedRunSelectionUpdater` (inside that lane) decides model-only edit, switch or undo. A switch is
+  allowed only for a started standalone Agent run that is not application-owned, system-owned or a delegated copy
+  (`canSwitchRuntime`), and validates the pair as a fresh selection of the new agent runtime
+  (`selectionContextFor`: the stored model counts as the current one only on the run's own agent runtime). It commits
+  through `AgentRunHistoryCatalogService.commitRunRuntimeSwitch`: the new binding, `platformAgentRunId: null` and
+  `pendingRuntimeSwitch { requestedAt, from }` in `run_metadata.json`. A second save before the first message keeps
+  the first `from`. No memory file is touched by the save.
+- The first message makes the switch real in `StandaloneAgentRunLifecycleService.activateSwitched` (the pending field
+  decides, inside the same transition lane): a fresh session of the new agent runtime is prepared and validated; the
+  `RuntimeSwitchMemory` port writes the marker (a platform notice record, sender `system.runtime_handover`, correlation
+  id = the switch key) as the first record of the new raw-trace file and archives the previous agent's records
+  (`boundary_type: runtime_switch`, `runtime_kind` of the archived records), idempotent by key; the activation commit
+  (`recordRunStarted` with `clearPendingRuntimeSwitch`) sets the session and removes the pending field in one write; the
+  `RuntimeHandoverNotices` port registers the hand-over notice, which `RuntimeHandoverNoticeService` hands over with the
+  next input before the user's text (journals made current first). A failure before the commit leaves the metadata pending;
+  sending again completes it with one marker and one archived segment. A lifecycle built without the ports (application
+  runs) fails closed on a pending switch.
 - `AgentTeamRunManager.updateStoppedModelConfigs(...)` shares the root
   transition lane with Team restore. Each patch names the root Team `/` or one exact direct Agent address, can
   change only that scope's `llmModelIdentifier`/`llmConfig` pair, and commits the

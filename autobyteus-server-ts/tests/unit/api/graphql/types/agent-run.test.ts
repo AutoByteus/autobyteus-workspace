@@ -61,6 +61,14 @@ describe("AgentRunResolver", () => {
     });
   });
 
+  it("refuses a runtime kind that is not an agent runtime without calling the service", async () => {
+    const resolver = new AgentRunResolver();
+    await expect(resolver.updateStoppedAgentRunSelection({
+      agentRunId: "run-1", runtimeKind: "CODEX", llmModelIdentifier: "model-1", llmConfig: null,
+    })).resolves.toMatchObject({ success: false, outcome: "INTERNAL_ERROR" });
+    expect(mockRunModelConfigService.updateStoppedAgentRunSelection).not.toHaveBeenCalled();
+  });
+
   it("routes restore through AgentRunService", async () => {
     mockTerminationService.restoreAgentRun.mockResolvedValue({
       run: {

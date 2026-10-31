@@ -124,6 +124,7 @@ const autoByteusReasoningModel = async (serverUrl: string): Promise<string> => {
 
 const updateAgent = (serverUrl: string, input: {
   agentRunId: string;
+  runtimeKind?: string;
   llmModelIdentifier: string;
   llmConfig: JsonRecord | null;
 }) => executeGraphql<{
@@ -144,7 +145,7 @@ const updateAgent = (serverUrl: string, input: {
       fieldErrors { path message }
     }
   }
-`, { input }).then((result) => result.updateStoppedAgentRunSelection);
+`, { input: { runtimeKind: "autobyteus", ...input } }).then((result) => result.updateStoppedAgentRunSelection);
 
 const updateTeam = (serverUrl: string, input: {
   teamRunId: string;
@@ -333,8 +334,8 @@ describe("stopped run model-config GraphQL lifecycle", () => {
     // AC-004/007: the current contract requires both fields, even for settings-only Save.
     // Use raw HTTP so omission is exercised through GraphQL coercion and the resolver.
     for (const [input, expectedError] of [
-      [{ agentRunId: runId, llmConfig: null }, "llmModelIdentifier"],
-      [{ agentRunId: runId, llmModelIdentifier: model }, null],
+      [{ agentRunId: runId, runtimeKind: "autobyteus", llmConfig: null }, "llmModelIdentifier"],
+      [{ agentRunId: runId, runtimeKind: "autobyteus", llmModelIdentifier: model }, null],
     ] as const) {
       const response = await fetch(`${first.serverUrl}/graphql`, {
         method: "POST",
@@ -436,6 +437,7 @@ describe("stopped run model-config GraphQL lifecycle", () => {
       "agentRunId",
       "llmConfig",
       "llmModelIdentifier",
+      "runtimeKind",
     ]);
     expect(schema.teamInput.inputFields.map(({ name }) => name).sort()).toEqual([
       "patches",

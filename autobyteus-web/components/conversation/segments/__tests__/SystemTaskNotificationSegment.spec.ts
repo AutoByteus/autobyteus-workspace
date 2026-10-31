@@ -168,4 +168,12 @@ describe('SystemTaskNotificationSegment', () => {
     expect(enCatalog[key]).toBe('Tools updated');
     expect(zhCatalog[key]).toBeTruthy();
   });
+
+  it('labels the agent runtime switch marker by its sender and shows the sentence as written, in both languages', () => {
+    const wrapper = mountSegment('Agent runtime changed from Claude Agent SDK (sonnet) to Codex App Server (gpt-5).', 'system.runtime_handover');
+    expect(wrapper.get('[data-testid="system-task-notification-label"]').text()).toBe(enCatalog['workspace.components.conversation.segments.SystemTaskNotificationSegment.runtimeChanged']);
+    expect(enCatalog['workspace.components.conversation.segments.SystemTaskNotificationSegment.runtimeChanged']).toBe('Agent runtime changed');
+    expect(zhCatalog['workspace.components.conversation.segments.SystemTaskNotificationSegment.runtimeChanged']).toBeTruthy();
+    expect(wrapper.text()).toContain('Agent runtime changed from Claude Agent SDK (sonnet) to Codex App Server (gpt-5).');
+  });
 });
