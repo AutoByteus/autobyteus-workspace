@@ -167,6 +167,16 @@ owned native command scope, including work retained after an agent ends;
 provider shutdown remains provider-owned. Ordinary agent stop does not acquire
 a new preview-killing policy. Failures are reported instead of declared clean.
 
+"Install update and restart" prepares with the same stop
+(`ElectronApplication.prepareForInstall`). When that stop is incomplete but the
+server process is confirmed gone (`BaseServerManager.isServerProcessGone()`: no
+server process, or it has an exit code or signal), the incomplete stop is still
+logged as "Application shutdown incomplete", and
+`ApplicationShutdown.acceptIncompleteStopForInstall()` lets `will-quit` pass, so
+the update installs and the app restarts. Only when the server's exit is not
+confirmed does the install stop with the existing error. A normal quit after an
+incomplete stop still ends with `app.exit(1)`.
+
 ### Delayed startup is informational
 
 Startup calls share one pending attempt, including port preflight. After 100 seconds

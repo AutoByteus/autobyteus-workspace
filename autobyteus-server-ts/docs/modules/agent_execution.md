@@ -334,6 +334,18 @@ the worst case is about 14.25 s (the 10 s bound, one `ps` read of up to 2 s,
 the 1.5 s grace, the 0.5 s kill confirmation and the IPC flush), inside the
 desktop's 20 s wait.
 
+**Closing never waits on a client.** Every Fastify server the node runs (the
+studio server, the standalone application server and the local Agent Tools MCP
+and credential proxy servers) is built with `SERVER_CLOSE_OPTIONS`
+(`src/shutdown/server-close-options.ts`, `forceCloseConnections: true`). Fastify
+runs `onClose`, where the studio's run cleanup lives, only after the HTTP server
+has closed, and with default options a client connection that never sent a
+request held that close until the 10 s bound (autobyteus-339). Now, after the
+`preClose` hooks (the native command drain and the WebSocket close), every
+remaining client connection is closed and the run cleanup starts at once. A
+request still in flight at that point gets no response; its handler may keep
+running beside the cleanup, where closed run admission refuses new work.
+
 ## Stopped Model Configuration And Restore Serialization
 
 `StandaloneAgentRunLifecycleService` also owns the narrow stopped-run

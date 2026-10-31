@@ -1,5 +1,6 @@
 import type { AddressInfo } from "node:net";
 import fastify, { LogController, type FastifyInstance } from "fastify";
+import { SERVER_CLOSE_OPTIONS } from "../../shutdown/server-close-options.js";
 import type { LoggingConfig } from "../../config/logging-config.js";
 import { SERVER_ROUTE_PARAM_MAX_LENGTH } from "../../api/fastify-runtime-config.js";
 import { getFastifyLoggerOptions } from "../../logging/runtime-logger-bootstrap.js";
@@ -28,6 +29,7 @@ export class AgentToolsMcpLocalServer {
     routeDependencies: AgentToolsMcpRouteDependencies;
   }>) {
     this.app = fastify({
+      ...SERVER_CLOSE_OPTIONS,
       logger: getFastifyLoggerOptions(input.loggingConfig),
       logController: new LogController({ disableRequestLogging: true }),
       routerOptions: { maxParamLength: SERVER_ROUTE_PARAM_MAX_LENGTH },

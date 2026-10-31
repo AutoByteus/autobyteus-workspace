@@ -2,6 +2,7 @@ import { createCredentialProxyHost, type CredentialProxyHost } from "../credenti
 import { NativeCommandShutdown } from "./native-command-shutdown.js";
 import { CONTEXT_FILE_MAX_BYTES } from "../context-files/domain/context-file-upload-policy.js";
 import fastify, { LogController, type FastifyInstance } from "fastify";
+import { SERVER_CLOSE_OPTIONS } from "../shutdown/server-close-options.js";
 import cors from "@fastify/cors";
 import multipart from "@fastify/multipart";
 import websocket from "@fastify/websocket";
@@ -401,6 +402,7 @@ export const buildStudioServer = async (input: {
     updateNotifications = composeUpdateNotifications({ runtimes: agentRuntimeStatus.service });
 
     const app = fastify({
+      ...SERVER_CLOSE_OPTIONS,
       logger: getFastifyLoggerOptions(input.loggingConfig),
       logController: new LogController({ disableRequestLogging: true }),
       routerOptions: { maxParamLength: SERVER_ROUTE_PARAM_MAX_LENGTH },
