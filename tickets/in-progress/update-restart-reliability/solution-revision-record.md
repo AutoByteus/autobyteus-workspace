@@ -59,3 +59,14 @@
   - FU-003 (from the code reviewer) stays.
 - Design case: added to `docs/design-cases.md` Case 5.
 - Classification: Medium / High (unchanged). Routing: `/architecture_reviewer` (ARCH-REV-002), then implementation.
+
+## SR-005 — 2026-10-31 — Design revision for ARCH-REV-002 (Fail, Design Impact)
+- Trigger: ARCH-REV-002 on SR-004.
+  - AR-003 (Medium, blocking): Fastify runs `preClose` hooks in registration order. Installed right after
+    `fastify({...})`, the connection close would run first, so a never-used connection opened during the native drain
+    or the WebSocket close would hold the close again.
+  - AR-004 (Low): stale SR-003 text.
+- Design: the hook is installed **after every other `preClose` hook** (exact install points per server); from its
+  start it destroys new connections on arrival; tests (a) for an earlier slow hook and (b) for the studio order.
+  The stale text is replaced.
+- Requirements: unchanged (SR-004). Classification: Medium / High. Routing: `/architecture_reviewer` (ARCH-REV-003).
