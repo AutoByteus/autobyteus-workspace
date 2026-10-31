@@ -20,7 +20,8 @@
 //   PLN-06 AC-008: DONE removes the rows live; reopen + the assigner's message brings them back.
 //   PLN-07 AC-009: the run beyond the Workspaces cap is listed under P and opens, with its delegated run.
 //   PLN-08 AC-011: real backend restart with Projects mode shown: current tree; a new dispatch appears live after it.
-//   PLN-09 AC-012/REQ-014: archive in Projects mode (gone in both modes), Stop on running runs, group "Archive all" only
+//   PLN-09 AC-012/REQ-014: archive in Projects mode (gone in both modes), Stop on running runs reads stopped at once (an
+//          Agent run and a Team run restored outside this window, so with no live context here), group "Archive all" only
 //          touches the Project's runs, a deleted Project leaves the tree live and its runs stay in Workspaces.
 //   PLN-10 AC-013/AC-016/AC-017: keyboard, zh-CN, narrow layout and strip, briefcase icons; reference screenshots.
 // The probe owns a private data root, free ports, the backend and Nuxt process groups and Chrome, and removes them in
@@ -215,6 +216,13 @@ const isActive = async (runId) => (await gql('query($id:String!){getAgentRunResu
 const restoreAgent = async (runId) => {
   if (await isActive(runId)) return;
   const r = (await gql('mutation($id:String!){restoreAgentRun(agentRunId:$id){success message}}', { id: runId })).restoreAgentRun;
+  assert(r.success, r.message);
+};
+const teamIsActive = async (teamRunId) => (await gql('query{listWorkspaceRunHistory{teamDefinitions{runs{teamRunId isActive}}}}'))
+  .listWorkspaceRunHistory.flatMap((g) => g.teamDefinitions.flatMap((d) => d.runs)).find((r) => r.teamRunId === teamRunId)?.isActive ?? false;
+const restoreTeam = async (teamRunId) => {
+  if (await teamIsActive(teamRunId)) return;
+  const r = (await gql('mutation($id:String!){restoreAgentTeamRun(teamRunId:$id){success message}}', { id: teamRunId })).restoreAgentTeamRun;
   assert(r.success, r.message);
 };
 const terminateAgent = (runId) => gql('mutation($id:String!){terminateAgentRun(agentRunId:$id){success message}}', { id: runId });
@@ -766,7 +774,9 @@ const restartLive = async () => {
     await runRowIn(reloaded, A).click();
     await until('current state after reload', async () => (await copyRowIn(reloaded, copy).count()) === 1, 30000);
     await shot(page, 'PLN-08-current-after-reload');
-    const realErrors = errors.filter((e) => !/Failed to fetch|NetworkError|ECONNREFUSED|socket|WebSocket|ERR_CONNECTION/i.test(e));
+    // Requests that hit the backend while it is down or still starting (refused, or answered before CORS is set up) are
+    // the deliberate outage, not the app.
+    const realErrors = errors.filter((e) => !/Failed to fetch|NetworkError|ECONNREFUSED|socket|WebSocket|ERR_CONNECTION|blocked by CORS policy/i.test(e));
     assert(realErrors.length === 0, 'browser errors', realErrors);
     out.toleratedNetworkErrors = errors.length - realErrors.length;
     return out;
@@ -779,6 +789,7 @@ const archiveAndDelete = async () => {
   // A stopped manager run in P's folder that is not under P: Archive all in P must not touch it.
   const outsider = await createAgentRun(); await terminateAgent(outsider);
   await restoreAgent(s.runs.A); // A is running while the group archive is tried (it blocks it).
+  if (s.runs.team) await restoreTeam(s.runs.team); // A Team run under P, running, with no live context in the new window.
   const { page, errors, context } = await newPage();
   try {
     await gotoWorkspace(page);
@@ -814,6 +825,21 @@ const archiveAndDelete = async () => {
     stopDiag.serverActiveAfterStop = await Promise.all(stopDiag.running.map(isActive));
     stopDiag.projectsStopButtonsAfter5s = await until('Projects rows show stopped', async () => (await pSection.locator(T('terminate-agent-run')).count()) === 0, 5000)
       .then(() => 0, async () => pSection.locator(T('terminate-agent-run')).count());
+    if (s.runs.team) {
+      // The Team run's own Stop in Projects mode: the row reads stopped at once (CR-003 covers Team Stop too).
+      const teamGroup = pSection.locator('[data-test^="workspace-team-definition-row-"]').first();
+      const teamRow = pSection.locator(T(`workspace-team-row-${s.runs.team}`));
+      if (!(await teamRow.count())) await teamGroup.click();
+      await teamRow.waitFor({ timeout: 30000 });
+      // The Stop button sits beside the row's main button, in their shared row container.
+      const teamStop = teamRow.locator('xpath=..').locator('button[title="Terminate team"]');
+      stopDiag.teamStopShownBefore = await teamStop.count();
+      if (stopDiag.teamStopShownBefore) {
+        await teamStop.click();
+        await until('server stopped the Team', async () => !(await teamIsActive(s.runs.team)), 30000);
+        stopDiag.teamStopShownAfter5s = await until('Team row reads stopped', async () => (await teamStop.count()) === 0, 5000).then(() => 0, async () => teamStop.count());
+      }
+    }
     await shot(page, 'PLN-09-after-stop-projects');
     await showMode(page, 'workspaces');
     const wsGroup = page.locator(`${T('workspace-agent-row')}[data-workspace-root="${folder('p-folder')}"][data-agent-definition-id="${s.ids.manager}"]`).first();
@@ -858,6 +884,7 @@ const archiveAndDelete = async () => {
     const result = { stopDiag, aButtons, archived: target, blockedToast, dialogText, remainingInP, outsider, rRuns };
     // Checked last so the remaining REQ-014 checks still run: the stopped run must read stopped in Projects mode at once.
     assert(stopDiag.projectsStopButtonsAfter5s === 0, 'Projects mode still shows Stop on a run the user stopped there, while Workspaces mode shows it stopped (until the next re-read)', result);
+    if (s.runs.team) assert(stopDiag.teamStopShownBefore === 1 && stopDiag.teamStopShownAfter5s === 0, 'the Team run did not read stopped in Projects mode after its Stop', result);
     return result;
   } finally { await context.close(); }
 };
