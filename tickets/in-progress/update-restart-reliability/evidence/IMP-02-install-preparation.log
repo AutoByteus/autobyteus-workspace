@@ -1,0 +1,54 @@
+# IMP-02/IMP-03
+# Command: pnpm -C autobyteus-web exec vitest --config ./electron/vitest.config.ts run application/__tests__ server/__tests__/ServerForceStopTree.spec.ts updater/__tests__/appUpdater.spec.ts --reporter=verbose
+# Commit: ddb03d0d0b
+# Environment: macOS 26.5.2, node v22.23.1
+# Date: 2026-10-31
+
+ ✓ application/__tests__/ApplicationShutdown.spec.ts > prevents repeated quit until one cached preparation completes, then resumes once 2ms
+ ✓ application/__tests__/ApplicationShutdown.spec.ts > bounded failure never resumes clean quit 2ms
+ ✓ application/__tests__/ApplicationShutdown.spec.ts > records failed cleanup before the final logger flush and blocks updater preparation 1ms
+ ✓ application/__tests__/ApplicationShutdown.spec.ts > accepts an incomplete stop for install only after it settled as rejected; will-quit then passes 1ms
+ ✓ application/__tests__/ApplicationShutdown.spec.ts > a clean stop has nothing to accept 0ms
+ ✓ application/__tests__/ElectronInstallPreparation.spec.ts > AC-004: an incomplete stop installs when the server process is confirmed gone; the incomplete stop is logged 2ms
+ ✓ application/__tests__/ElectronInstallPreparation.spec.ts > AC-005: an unconfirmed server exit keeps the error and installs nothing 1ms
+ ✓ application/__tests__/ElectronInstallPreparation.spec.ts > AC-006: a clean stop prepares as before, without asking about the server process 0ms
+ ✓ updater/__tests__/appUpdater.spec.ts > AppUpdater > registers IPC handlers and broadcasts initial state on initialize 4ms
+ ✓ updater/__tests__/appUpdater.spec.ts > AppUpdater > runs startup auto-check only for packaged app 3ms
+ ✓ updater/__tests__/appUpdater.spec.ts > AppUpdater > maps update events to state and broadcasts progress 2ms
+ ✓ updater/__tests__/appUpdater.spec.ts > AppUpdater > classifies manual network check failures and keeps raw diagnostics out of state 4ms
+ ✓ updater/__tests__/appUpdater.spec.ts > AppUpdater > ignores duplicate provider error events without overwriting the original operation 1ms
+ ✓ updater/__tests__/appUpdater.spec.ts > AppUpdater > classifies missing latest metadata as a release-preparing safe error 1ms
+ ✓ updater/__tests__/appUpdater.spec.ts > AppUpdater > accepts install only after update-downloaded and triggers quitAndInstall 1ms
+ ✓ updater/__tests__/appUpdater.spec.ts > AppUpdater > awaits preparation before installation and does not install when preparation fails 1ms
+ ✓ updater/__tests__/appUpdater.spec.ts > AppUpdater > turns failed preparation into install error without invoking installation 3ms
+ ✓ updater/__tests__/appUpdater.spec.ts > AppUpdater > maps synchronous install invocation failure to updater error state 1ms
+ ✓ updater/__tests__/appUpdater.spec.ts > AppUpdater > update channel > defaults to stable without a saved preference and applies the stable policy 1ms
+ ✓ updater/__tests__/appUpdater.spec.ts > AppUpdater > update channel > loads a saved beta preference on initialize 1ms
+ ✓ updater/__tests__/appUpdater.spec.ts > AppUpdater > update channel > flags a running pre-release build 0ms
+ ✓ updater/__tests__/appUpdater.spec.ts > AppUpdater > update channel > re-applies the channel policy before every check 1ms
+ ✓ updater/__tests__/appUpdater.spec.ts > AppUpdater > update channel > persists, applies and re-checks when switching to beta while idle 1ms
+ ✓ updater/__tests__/appUpdater.spec.ts > AppUpdater > update channel > replaces a beta offer with the stable result when switching back to stable 1ms
+ ✓ updater/__tests__/appUpdater.spec.ts > AppUpdater > update channel > re-checks after an error state 1ms
+ ✓ updater/__tests__/appUpdater.spec.ts > AppUpdater > update channel > refuses a change while checking, downloading, downloaded or installing 1ms
+ ✓ updater/__tests__/appUpdater.spec.ts > AppUpdater > update channel > starts with no staged update and marks one staged on update-downloaded 1ms
+ ✓ updater/__tests__/appUpdater.spec.ts > AppUpdater > update channel > keeps the channel locked after a staged download and a manual check ending in available 1ms
+ ✓ updater/__tests__/appUpdater.spec.ts > AppUpdater > update channel > keeps the channel locked after a staged download and a manual check ending in no-update 1ms
+ ✓ updater/__tests__/appUpdater.spec.ts > AppUpdater > update channel > keeps the channel locked after a staged download and a manual check ending in error 1ms
+ ✓ updater/__tests__/appUpdater.spec.ts > AppUpdater > update channel > refuses an invalid channel value 0ms
+ ✓ updater/__tests__/appUpdater.spec.ts > AppUpdater > update channel > still applies the channel for the session when saving fails 1ms
+ ✓ updater/__tests__/appUpdater.spec.ts > AppUpdater > update channel > does not re-check in an unpackaged runtime 1ms
+ ✓ updater/__tests__/appUpdater.spec.ts > AppUpdater > update channel > never assigns autoUpdater.channel 1ms
+ ✓ updater/__tests__/appUpdater.spec.ts > AppUpdater > update notification (DS-004) > records a found version as a waiting, unread notification with the GitHub release page 2ms
+ ✓ updater/__tests__/appUpdater.spec.ts > AppUpdater > update notification (DS-004) > marks it read and keeps it after a restart, then handles it when the app runs the new version 2ms
+ ✓ updater/__tests__/appUpdater.spec.ts > AppUpdater > update notification (DS-004) > a newer version replaces the waiting notification and makes it unread again (REQ-005) 1ms
+ ✓ updater/__tests__/appUpdater.spec.ts > AppUpdater > update notification (DS-004) > removes a waiting notification when the version is no longer offered and nothing was updated (DEC-015) 2ms
+ ✓ updater/__tests__/appUpdater.spec.ts > AppUpdater > update notification (DS-004) > refuses to clear a waiting notification 1ms
+ ✓ updater/__tests__/appUpdater.spec.ts > AppUpdater > update notification (DS-004) > Download after a restart re-checks first, then downloads only when the update is available 1ms
+ ✓ updater/__tests__/appUpdater.spec.ts > AppUpdater > update notification (DS-004) > Download after a restart shows the check result and downloads nothing when no update is offered 1ms
+ ✓ updater/__tests__/appUpdater.spec.ts > AppUpdater > update notification (DS-004) > checks the generic test feed and gives no release page under it (REQ-019, DEC-017) 1ms
+ ✓ updater/__tests__/appUpdater.spec.ts > AppUpdater > update notification (DS-004) > never sets a feed URL without the test feed 0ms
+ ✓ updater/__tests__/appUpdater.spec.ts > AppUpdater > update notification (DS-004) > a found update never downloads by itself (REQ-015) 1ms
+ ✓ server/__tests__/ServerForceStopTree.spec.ts > force-stops a wedged server and its whole tree, leaving no process behind 1961ms
+ ✓ server/__tests__/ServerForceStopTree.spec.ts > reports the server process gone only when none was started or it has an exit code or signal (autobyteus-339) 1ms
+ Test Files  4 passed (4)
+      Tests  46 passed (46)
