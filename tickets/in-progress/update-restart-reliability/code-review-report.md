@@ -2,7 +2,82 @@
 
 All ticket paths are under `/Users/normy/autobyteus_org/autobyteus-worktrees/update-restart-reliability/tickets/in-progress/update-restart-reliability/`.
 
-> **Latest round: 2, API/E2E Failure-Origin Review (CRR-002), `Fail` → `Design Impact` for the Solution Designer.** Round 1 (CRR-001, implementation review, `Pass`) is kept below; § Round 2 and the Latest Authoritative Result supersede it.
+> **Latest round: 3, Implementation Review of IR-002 (CRR-003), `Pass`.** It covers the revised D1 (SR-004, SR-005; ARCH-REV-003 `Pass`). Rounds 1 and 2 are kept below. § Round 3 and the Latest Authoritative Result supersede them.
+
+## Round 3 — Implementation Review of IR-002 (CRR-003)
+
+### Meta and scope
+
+- Trigger: implementation engineer, IR-002 (code `591bf52551`; handoff and evidence `e0dc8fdf76`).
+- Basis:
+  - requirements SR-004: REQ-001 and DEC-002 revised to a 2 s grace, plus the new AC-008;
+  - design SR-004 and SR-005, with AR-003 (last `preClose` hook) and AR-004 applied;
+  - ARCH-REV-003 `Pass`.
+- Review Scope: **`Full Re-Audit` of D1**. Evidence: D1's mechanism and interface are replaced. `SERVER_CLOSE_OPTIONS` is removed, and `installClientConnectionClose(app, options?)` adds `connection`, `request` and `upgrade` listeners plus a `preClose` hook in all four servers.
+- D2 is **carried forward unchanged**: `git diff ddb03d0d0b 591bf52551 -- autobyteus-web/electron` is empty. IMP-02 to IMP-04 still apply.
+- Files reviewed:
+  - `src/shutdown/client-connection-close.ts` (new);
+  - the four server files;
+  - the removal of `server-close-options.ts` and its test;
+  - `tests/unit/shutdown/client-connection-close.test.ts`, `tests/unit/compositions/studio-preclose-order.test.ts`;
+  - `agent_execution.md`, `electron_packaging.md`, `docs/design-cases.md`.
+- I reran no checks: IMP-08 to IMP-12 ran on `591bf52551`.
+
+### Behavior and path (BEH-001, revised REQ-001, AC-001, AC-008)
+
+**The hook's sequence** (`client-connection-close.ts`):
+1. Connections are tracked on `connection`, removed on `close`, and dropped on `upgrade`.
+2. A socket is marked "used" on `request`, and the requests in progress are counted until each `response` `close`.
+3. At the hook start, `closing` is set, so new connections are destroyed on arrival.
+4. Unused sockets are destroyed.
+5. If any requests are in progress, it waits for the count to reach 0 or for `graceMs`.
+6. Then `closeAllConnections()`.
+
+**Fastify's order around it:** `closing = true` → `router.closeRoutes()`, so a new request gets 503 → `preClose` hooks in registration order → `server.close()` → `onClose` run cleanup. Because the hook is the last `preClose` hook (studio: after `registerGraphql`; standalone: after its static routes; the local servers: their only hook), `closeAllConnections()` directly precedes `server.close()`. A connection opened during an earlier slow hook is unused at the hook's start, so it is destroyed (AR-003 a).
+
+**Edge cases checked, all correct:**
+- A client that disconnects mid-request: `response` `close` fires and the count drops.
+- A request on an idle keep-alive during the grace: it gets Fastify's 503, is counted and finishes quickly.
+- Upgraded sockets: Node's `closeAllConnections` does not include them, and the WebSocket plugin's `preClose` has already closed its clients.
+- No requests in progress: no wait at all.
+- Installation always happens before `listen`, so no connection goes untracked.
+
+**Long-lived HTTP streams** (the residual in the comment) were checked in source:
+- Agent Tools MCP session streams are closed by `AgentToolsMcpHost.closeInternal` (`streams.closeAll()`) before its local server closes.
+- The studio's MCP gateway GET (`mcp-gateway-routes.ts:119-124`, `sendGatewaySseCompatibilityResponse`) sends one comment and ends the response, so it is not long-lived.
+- No studio route holds a response open. A busy shutdown therefore does not normally spend the grace.
+
+**F-API-001 is resolved by design.** A `createAgentRun` in progress (54–175 ms) completes within the 2 s grace, with its response. This is the base build's guarantee, now without the stall. Validation re-proves it with AC-002 in API-02's shape. A handler longer than 2 s is cut: that residual is accepted in SR-004 and tracked as FU-004 (non-atomic `createAgentRun`, added by the Solution Designer).
+
+### Candidate gate (round 3)
+
+| Candidate ID | Observation | Disposition | Reason |
+| --- | --- | --- | --- |
+| CR-C7 | The hook must stay each app's last `preClose`, and nothing enforces that for future servers or hooks | Reject (as a finding) | The studio order is tested (IMP-09; it fails when the hook is installed early). The local servers have only this hook, and the standalone server installs it after its last registration. A general guard, such as an architecture test that every `fastify(` installs it, would be worth adding but is not required by the design. I noted it to the user in round 1, and it is not a finding. |
+| CR-C8 | The order test wraps the `fastify` factory's `addHook` and labels hooks from the stack (implementer point) | Reject | It is test-only and keeps each hook's style and arity, which matters because Fastify dispatches callback and async hooks differently. The unbound wrapper keeps encapsulated contexts correct, and the test asserts that there are no child-context `preClose` hooks. The stack labels are coarse but adequate for three known owners. It is proportionate. |
+| CR-C9 | A long-lived HTTP stream whose owner does not close it would spend the whole 2 s grace on every shutdown | Reject | No such route exists today (see the streams above). It is documented as an owner rule in the hook's comment and in `agent_execution.md`. |
+| CR-C10 | A handler running longer than 2 s is still cut and can leave a prepared-only run | Reject | It is an accepted residual (SR-004 Risks), FU-004 tracks it, and the measured handlers are far shorter. |
+
+### Structural re-audit for D1
+
+- **Ownership:** each server's composition installs one shared owner of the close rule (Principle 13). There is no per-route abort logic.
+- **Placement:** `src/shutdown` is correct.
+- **Interface:** `installClientConnectionClose(app, { graceMs?, timers? })` has a single subject and injectable timers, and no generic selector.
+- **Size:** 75 lines; the server files change by 1 to 3 lines each.
+- **Clean-cut removal:** `SERVER_CLOSE_OPTIONS`, its file and its test are removed with no re-export. A search for `SERVER_CLOSE_OPTIONS|server-close-options|forceCloseConnections` across server src, tests, docs and the desktop finds nothing.
+- **Tests:** 7 real-socket cases are tied to AC-001 and AC-008. Two mutation checks were run: the hook's body removed (5 fail) and an immediate cut (4 fail). The studio order test fails when the hook is installed early.
+- **Docs:** they match the code, including the 503, the cut after the grace, and the stream-owner rule.
+- **Scorecard:** round 1's scores stand (9.5 / 10). Category 8, Runtime Correctness, goes back from round 2's 8.8 to 9.3, since F-API-001 is resolved by design pending validation. No category is below 9.2.
+
+### Findings (round 3)
+
+None. F-API-001 (CRR-002) is resolved in the design and code, and AC-002 validates it at runtime.
+
+### Follow-ups
+
+None added. FU-004, added by the Solution Designer in SR-004 (non-atomic `createAgentRun` on any activation failure), and FU-003 stand.
+
+> Round 2 (CRR-002, failure-origin, `Fail` → `Design Impact`) is kept below for history.
 
 ## Round 2 — Failure-Origin Review of F-API-001 (CRR-002)
 
@@ -272,7 +347,20 @@ N/A: the review passes.
 
 ## Latest Authoritative Result
 
-**Round 2 (CRR-002), authoritative:**
+**Round 3 (CRR-003), authoritative:**
+
+- Review Decision: `Pass`
+- Review Entry Point: `Implementation Review` (D1: `Full Re-Audit`; D2: carried forward unchanged)
+- Supported Product Scenario Gate: `Pass` (SCN-001, SCN-002, SCN-002b, SCN-003)
+- Material-Premise Gate: `Pass`. Round 2's contradicted premise P-001 is replaced: the grace keeps the base guarantee for requests in progress.
+- Score Summary: 9.5 / 10; every category ≥ 9.2 (category 8 back to 9.3)
+- Recommended Recipient: API/E2E engineer
+- Notes:
+  - Validated code: `591bf52551`.
+  - Validation owes AC-002 in API-02's shape with the base contrast. It should show every in-flight `createAgentRun` answered with `success: true` and no prepared-only runs after relaunch, with exit 0 in ≤ 3 s.
+  - It also owes AC-003 (≥ 40 busy quits) and AC-007.
+
+**Round 2 (CRR-002), superseded:**
 
 - Review Decision: `Fail` (failure-origin)
 - Review Entry Point: `API/E2E Failure-Origin Review`
