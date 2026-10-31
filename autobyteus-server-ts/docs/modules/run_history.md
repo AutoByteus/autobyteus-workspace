@@ -40,6 +40,8 @@ and AgentOrg roots.
   - team member: `team-member-run-view-projection-service.ts`
 - Group agent and team history by workspace:
   - `workspace-run-history-service.ts`
+- List the runs of one Project, grouped like a workspace's
+  (`project-run-history-service.ts`; see [Project Run History](#project-run-history)).
 
 ## GraphQL Surface
 
@@ -59,6 +61,8 @@ Workspace + agent operations:
   archives one standalone agent group in one workspace (see
   [group archive](#group-archive-from-a-history-header))
 - `deleteStoredRun`
+- `projectRunHistory(projectId, limitPerAgent = 6)` (`src/api/graphql/types/project-run-history.ts`), the runs listed
+  under one Project (see [Project Run History](#project-run-history))
 
 Team operations:
 
@@ -245,6 +249,34 @@ updated in place, so no persisted-data migration is required. Frontend/backend
 must use the complete-pair API together; there is no old-client fallback.
 See [LLM Management](./llm_management.md#persisted-run-model-selection-validation)
 for runtime-specific catalog/schema validation and the AutoByteus capacity limit.
+
+## Project Run History
+
+`ProjectRunHistoryService` (GraphQL `projectRunHistory(projectId, limitPerAgent = 6)`) lists the top-level Agent,
+Team and Org runs of one Project for the web's Projects mode. It reads Projects only through the `ProjectRunLinks`
+port (`src/run-history/domain/project-run-links.ts`), bound in `compositions/project-run-links-composition.ts`; run
+history never imports Projects. It reads run history rows, never conversations.
+
+- **Which runs.** A run is listed when it was started under the Project (the Project's
+  [`project_runs.json`](./projects.md#runs-started-under-a-project), joined with the catalog rows, so an entry
+  whose run was never created or was deleted lists nothing) or when it hosts any assignment of the Project's Tasks
+  ([Project run links](./projects.md#project-run-links)). Org runs are listed only as hosts. A run can be listed
+  under several Projects.
+- **Grouping and the cap.** Agent runs are grouped by definition like a workspace's
+  (`AgentRunHistoryService.listAgentGroupsOf`): each group keeps its `limitPerAgent` newest runs **plus** every run
+  hosting open work of the Project, so a run beyond the Workspaces cap is listed and opens. Team and Org runs are
+  uncapped, as in Workspaces. Archived runs and runs of hidden definitions are left out, as in Workspaces.
+- **Scopes.** Per listed root, `scopes` names the delegated copies listed under the Project:
+  `executions(root) = links(P)[root] ∪ (root started under P ? links(no Project)[root] : ∅)`. A root started
+  under the Project therefore also shows its Temp-task work. The web shows only those copies (and everything under
+  them) beneath the root.
+- **Shape.** `{projectId, agentDefinitions, teamDefinitions, agentOrgRuns, scopes[{rootKind, rootRunId,
+  executions[{agentRunId | teamRunId}]}]}`; the groups reuse the workspace history objects.
+- **Errors.** An unknown or blank Project is `PROJECT_NOT_FOUND`; a server without the composed links answers
+  `PROJECT_RUN_LINKS_UNAVAILABLE` (`extensions.code`).
+- **Run records unchanged.** Starting a run under a Project changes no file this module owns: metadata, index rows
+  and Team trees keep their keys, so older builds read them unchanged
+  (`tests/unit/run-history/store/run-records-rollback-shape.test.ts`; the listing: `tests/unit/run-history/services/project-run-history-service.test.ts`).
 
 ## Default History Visibility, Archive, And Delete Semantics
 

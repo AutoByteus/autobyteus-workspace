@@ -54,16 +54,45 @@ goes through `useRunStart`, and every start opens a fresh draft (see
 | --- | --- | --- | --- |
 | Chat nav, left-panel pencil | `newChat` | `startNewChat()` | Daily Assistant; last chat model (`autobyteus.chat.lastModel`) → Daily Assistant default launch config → the AutoByteus runtime's first model |
 | Workspace tree `+` | `newChatInWorkspace` | `startNewChat({ agentDefinitionId, workspaceRootPath })` | as above, in that workspace |
+| Projects tree `+` on a Project or one of its groups | `newChatInProject({ projectId, target? })` | `startDraftUnderProject` (`stores/chatDraftProjectChoice.ts`): New chat or `startForDefinition(target)`, then the [Project choice](#project-choice) | as the workspace `+` for that kind; the Project's folder |
 | Agent / Team **Run** (list, detail) | `runAgent`, `runTeam` | `startForDefinition(target)` | the definition's default launch config → last chat model → default runtime's first model; temp workspace; Auto-approve |
 | **+** on an Agent run view | `copyAgentFromConfig(config)` | `startForDefinition(target, { copied })` | the displayed agent's workspace, runtime, model, model config and approval |
 | **+** on a Team run | `copyTeamRun` | `startForDefinition(target, { copied })` | the run's root settings and member overrides; team defaults if the run cannot be read |
 | Heading switcher | `switchTarget` | `retarget(target)` (or a new draft from the Org page) | workspace, approval and model config carried; member overrides reset |
 | Draft row | `openChatDraft(id)` | `openDraft(id)` | the kept draft exactly as it was left |
 
+A carried start (the heading switcher, `+` on a run) carries no Project.
+
 Copied and carried settings stay as they are; their runtimes' availability and
 catalogs load before Send is offered. The Agent **+** copies the agent on screen:
 the view passes its displayed `AgentRunConfig`, so the run's own agent and a
 delegated child copy alike, with no lookup by run id.
+
+### Project choice
+
+A draft can start its run **under a Project** (see
+[Projects mode](./projects.md#projects-mode-in-the-left-panel)). The draft holds
+`projectChoice: { projectId, folderPicked }` (`stores/chatDraftProjectChoice.ts`;
+`chatDraftStore` only stores the field and calls it):
+
+- **The chip.** New chat's workspace control is one chip. When the node has at
+  least one Project its menu has the left panel's **Workspaces | Projects** tabs
+  and opens on the tab of what the chip shows. The Projects tab lists the
+  Projects (briefcase) and **No project**. Under a Project the chip shows the
+  briefcase and the Project's name, or "Project · folder" when the folder is not
+  the Project's own (aria "Project: …"); otherwise the folder icon and folder.
+  In the Workspaces tab, the Project's folder is marked **Project folder**.
+- **Folder rule.** Choosing a Project sets the folder to the Project's first
+  linked folder, else the temp workspace, unless the user already picked a folder
+  on this start (`chooseDraftFolder` sets `folderPicked`), which is kept.
+  **No project** makes it a plain start and keeps the folder. Nothing changes
+  while the first send is in flight.
+- **Launch.** `chatLaunchService` passes the draft's `projectId` with the start
+  (`prepareAgentRun` / `createAgentTeamRun`). The server records the start in the
+  Project's `project_runs.json`, refuses a deleted Project, and gives the run a
+  `## Project` section in its instructions. The run is listed under the Project
+  at once and under its folder in Workspaces. After the first send the run view
+  shows no Project chip; the choice is fixed once the run exists.
 
 ### Draft rows
 

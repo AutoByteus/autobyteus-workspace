@@ -62,9 +62,10 @@ Neither `create_project` nor `update_project` is added automatically either
 
 ## Main Owners
 
-- `src/projects/domain/{models,ad-hoc-task,project-errors,project-task-context,task-execution-resources}.ts`
-- `src/projects/stores/{projects-layout,project-store,ad-hoc-tasks-layout,ad-hoc-task-store,task-execution-resource-store,task-execution-resource-schema}.ts`
-- `src/projects/services/{project-service,project-task-service,task-execution-resource-service,task-root-view-builder}.ts`
+- `src/projects/domain/{models,ad-hoc-task,project-errors,project-task-context,task-execution-resources,project-runs}.ts`
+- `src/projects/stores/{projects-layout,project-store,ad-hoc-tasks-layout,ad-hoc-task-store,task-execution-resource-store,task-execution-resource-schema,project-run-store}.ts`
+- `src/projects/services/{project-service,project-task-service,task-execution-resource-service,task-root-view-builder,project-run-service}.ts`
+  (`project-run-service.ts`: the [runs started under a Project](#runs-started-under-a-project))
 - `src/projects/changes/{project-change-messages,project-change-publisher,project-change-hub}.ts`
   (the live change feed; see [Live Change Feed](#live-change-feed-and-task-roots))
 - `src/projects/runtime/task-execution-resource-release.ts` (DONE's stop request)
@@ -72,7 +73,11 @@ Neither `create_project` nor `update_project` is added automatically either
 - `src/projects/search/project-task-search-service.ts`: Project Task search (see
   [Project Task Search](#project-task-search)) over the [embedding layer](./embeddings.md)
 - `src/compositions/project-task-execution-resource-composition.ts`: the **single**
-  place where Projects and the collaboration runtime are bound
+  place where Projects and the collaboration runtime are bound. Its composition
+  step also calls `src/compositions/project-run-links-composition.ts`, the one
+  place where run history and run execution are bound to Projects (the
+  `ProjectRunLinks`, `RunProjectStarts` and `RunProjectContextReader` ports; see
+  [Runs started under a Project](#runs-started-under-a-project))
 - `src/agent-collaboration/execution/task/`: the root-neutral dispatch, fence
   and release boundary, reached only through `TaskExecutionResourcePort`
 - `src/app-data-migrations/migrations/projects-per-folder-v1/`
@@ -90,6 +95,7 @@ Neither `create_project` nor `update_project` is added automatically either
 <appDataDir>/projects/
 └── <projectId>/
     ├── project.json
+    ├── project_runs.json                  runs started under this Project (optional)
     ├── drafts/<draftId>/                 temporary uploads before a Task is saved
     └── tasks/<taskId>/
         ├── task.json
@@ -106,6 +112,7 @@ Neither `create_project` nor `update_project` is added automatically either
   Delete, is not listed.
 - **Optional files.** A missing `agent_run_resources.json` means no agent runs
   were started for the Task. A missing `context/` means the Task has no files.
+  A missing `project_runs.json` means no run was started under the Project.
 
 `project.json` holds the released Project fields minus `tasks`, plus the Task
 key allocation state:
@@ -299,13 +306,74 @@ locking owner is introduced.
 - **Task Delete** removes the Task's `task.json` and `context/`, and keeps its
   `agent_run_resources.json`.
 - **Project Delete** removes `project.json` first, then `drafts/` and every
-  Task's `task.json` and `context/`, and keeps every `agent_run_resources.json`.
+  Task's `task.json` and `context/`, and keeps every `agent_run_resources.json`
+  and the Project's `project_runs.json`. With the Project gone, its started runs
+  are listed only in Workspaces, and a restored run gets no `## Project` section.
 
 Keeping these files preserves closure and history (a deleted Task's work cannot be reactivated). Delete adds no stop
 and no guard: still-open work continues under the normal runtime lifecycle. After the commit, both deletes tell
 Project Task search to forget the Task's (or the whole Project's) search-index entries. That call never fails the
 delete and never waits for indexing. New
 Tasks get fresh UUIDs, so they never reuse a deleted Task's ID.
+
+### Runs started under a Project
+
+A top-level Agent or Team run can be **started under a Project** (from the left
+panel's Projects mode or the New chat chip; see the
+[frontend](../../../autobyteus-web/docs/projects.md#projects-mode-in-the-left-panel)).
+`projects/<projectId>/project_runs.json` records those runs. It is the only
+record of that fact: run metadata, the Agent and Team history index rows and the
+Team tree carry no Project.
+
+```jsonc
+{ "projectId": "project_…",
+  "runs": [ { "root": { "kind": "agent" | "agent_team", "runId": "…" }, "linkedAt": "…" } ] }
+```
+
+- **Owner.** `ProjectRunService` is the only writer (`ProjectRunStore` reads and
+  appends; `ProjectsLayout` owns the path). Its in-memory view is loaded once in
+  the Task resources' composition step, before any run is admitted or restored.
+- **When it is written.** Once, at creation, before the run's own records:
+  `prepareAgentRun` / `createAgentRun` (input `projectId`) allocate the run id,
+  call `RunProjectStarts.recordStart`, then write metadata and the index row;
+  `createAgentTeamRun` (input `projectId`) records in
+  `AgentTeamRunManager.createTeamRun` before the Team tree. An unknown Project is
+  refused with `PROJECT_NOT_FOUND` before any run record exists; the start
+  result is the existing `{success: false, message}`. Entries are only
+  appended, never rewritten; a run is in at most one Project's file.
+- **Entries without a run.** A creation that fails after the record, a prepared
+  run that expires, or a deleted run leaves its entry. Readers join entries with
+  the runs that exist, so such an entry lists nothing; there is no cleanup.
+- **Reading.** Tolerant: an invalid entry is skipped with
+  `PROJECT_RUN_ENTRY_IGNORED`; an unreadable file lists no started runs for that
+  Project and is logged once (`PROJECT_RUNS_UNAVAILABLE`). Writes use the
+  per-file lock and atomic temp-file-plus-rename, as Task files do.
+- **Who reads it.**
+  - `ProjectRunLinks.startedRunsOf(projectId)`: the
+    [`projectRunHistory`](./run_history.md#project-run-history) query.
+  - `RunProjectContextReader.contextOfRun(root)`: the run's config builders, on
+    every start and restore, give the run its Project with the Project's
+    current name, which the prompt renders as the
+    [`## Project` section](./prompt_engineering.md#runtime-instruction-ownership).
+    Team members read it by their Team's run id. Org members and Task copies get
+    none.
+- **Older builds.** They never open the file: a Project folder is listed by its
+  `project.json`, and other files in it are not read. After a rollback the runs
+  are listed in Workspaces as before.
+
+### Project run links
+
+`TaskExecutionResourceService.runLinksOf(projectId | null)` answers, from the
+in-memory view, which runs work for a Project (`null`: Tasks with no Project):
+- **Host roots:** the top-level run of every assignment of the Project's Tasks,
+  each with whether it hosts open work of the Project.
+- **Copies per host root:** a copy belongs to the Project while it holds an open
+  entry in one of the Project's Tasks, so a copy holding open Tasks of two
+  Projects belongs to both. A copy with no open entry belongs to the Project of
+  its current (latest) Task. Damaged Task files are left out, each with one
+  `TASK_AGENT_RESOURCES_UNAVAILABLE` warning per read.
+
+Run history reads it through the `ProjectRunLinks` port for `projectRunHistory`.
 
 ## One-Time Migration And The Projects Gate
 
@@ -1200,6 +1268,12 @@ Project queries and mutations keep their names; there is no Projects capability 
   `localPath`.
 - `ProjectError` maps to `GraphQLError extensions.code` (see
   `domain/project-errors.ts`).
+- `prepareAgentRun` / `createAgentRun` (`CreateAgentRunInput`) and
+  `createAgentTeamRun` (`CreateAgentTeamRunInput`) accept an optional
+  `projectId` that starts the run under the Project (see
+  [Runs started under a Project](#runs-started-under-a-project)). The Project's
+  runs are read with `projectRunHistory(projectId, limitPerAgent = 6)`, owned by
+  [run history](./run_history.md#project-run-history).
 
 Known gap: the gated `projects` and `project` queries surface
 `PROJECTS_MIGRATION_PENDING` as a clear message without `extensions.code`. No
@@ -1228,6 +1302,8 @@ Read [workspace TESTING.md](../../../TESTING.md) first.
 
 Coverage:
 - `tests/unit/projects`: per-folder store, services, Task agent run resources,
+  the runs started under a Project (`project_runs.json` store and service,
+  `runLinksOf`),
   change publication (`project-change-{publisher,publication,hub}.test.ts`),
   Task roots (`task-root-view.test.ts`) and the current Task of Task workers
   (`task-worker-current-tasks.test.ts`).
@@ -1242,6 +1318,10 @@ Coverage:
 - `tests/unit/context-files` (preserved)
 - `tests/architecture/projects-boundaries.test.ts`
 - `tests/e2e/projects/{projects-graphql,project-task-boundaries,project-mutation-node-locality,projects-startup-migration}.e2e.test.ts`.
+- `tests/e2e/projects/project-run-history.e2e.test.ts` (gated `RUN_AGY_FAILURE_E2E`,
+  scripted Antigravity CLI): runs started under a Project, `projectRunHistory`
+  with real delegation, scopes, the cap, archive and Project Delete, and the
+  `## Project` section.
   The startup-migration e2e covers both startup entrypoints, the gate before
   and after, and retry.
 - MCP route, runtime exposure and startup tests.

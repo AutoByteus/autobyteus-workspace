@@ -1,0 +1,6 @@
+# DEL-01 server unit, commit 0c8a6f4d22, 2026-10-31T14:25:22Z
+ Test Files  901 passed | 5 skipped (906)
+      Tests  7652 passed | 9 skipped (7661)
+   Duration  809.10s (transform 21.13s, setup 12.55s, import 382.46s, tests 312.18s, environment 870ms)
+exit=0
+# full log: DEL-01-server-test-unit.full.log.gz

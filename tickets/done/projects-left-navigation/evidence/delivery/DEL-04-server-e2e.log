@@ -1,0 +1,15 @@
+# DEL-04 server E2E (API-01 + API-02 scope): tests/e2e/projects tests/e2e/run-history tests/e2e/agent-team-runs, commit 0c8a6f4d22, 2026-10-31T14:26:24Z
+ ✓ tests/e2e/projects/project-run-history.e2e.test.ts (10 tests) 9532ms
+     ✓ PRH-01: an Agent prepared under P is recorded in P's file, told its Project at first activation, listed under P and its folder; run records keep the released keys  541ms
+     ✓ PRH-03: a Team created under P lists in P's team group; its coordinator and member are told the Project  1290ms
+     ✓ PRH-04: a root started under P: P lists its P Team, P Agent and Temp-task copies; Q lists the root with only its Q copy; R does not list it  2206ms
+     ✓ PRH-05: a Workspaces-started root: only its P copy under P; its Temp-task copy under no Project; it is not recorded  1050ms
+     ✓ PRH-06: a copy holding open Tasks of P and Q is listed under both; after P's Task closes only under Q; Q's DONE closes it; reopen + message brings it back  515ms
+     ✓ PRH-07: an older run hosting P's open work is listed under P beyond the 6 newest and opens by run id  395ms
+     ✓ PRH-08: a Workspaces run that dispatched Tasks of three Projects is listed once under each with the same id; archived, it is listed nowhere  1080ms
+     ✓ PRH-10: an Org root hosting P's Task is listed under P with only P's copy, and under Q with only Q's copy  1169ms
+ Test Files  39 passed (39)
+      Tests  180 passed | 4 skipped (184)
+   Duration  986.32s (transform 15.94s, setup 634ms, import 92.48s, tests 887.62s, environment 4ms)
+exit=0
+# full log: DEL-04-server-e2e.full.log.gz

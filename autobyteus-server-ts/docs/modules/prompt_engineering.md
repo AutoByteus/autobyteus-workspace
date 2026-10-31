@@ -42,13 +42,18 @@ Each section has one owner:
 | `Team Instruction` | Exact non-blank selected `team.md` body | Whenever the run has one (any role), after Agent Identity |
 | `Working With Other Agents` (and, for team and organization members, `AgentTeam Addressing` before it) | The member's `collaborationRole` (`standalone_agent`, `task_agent`, `team_member`, `org_agent`) and `renderCollaborationSections(...)`, the one owner of the collaboration text | Every run that has a member context, shared across runtimes |
 | `Handoffs` (a subsection) | The same renderer | Only when the agent has handoff rules |
+| `Project` | `renderProjectSection` from `AgentRunConfig.project`, which the run's config builder reads with `RunProjectContextReader.contextOfRun(root)` from the Project's [`project_runs.json`](./projects.md#runs-started-under-a-project) and the Project's current name | Only for a run started under a Project (an Agent run, or every member of a Team run, by the Team's run id), on start and on every restore (Antigravity restores its start-time instructions, which already hold it); omitted when the Project was deleted. Org members and Task copies get none |
 | `Working Environment` | Exact absolute effective workspace selected for the run | Native AutoByteus only |
 | `Bash Operating Practice` | Platform-owned fixed Carpenter text | Native AutoByteus only |
 | `File And Directory Practice` | Platform-owned fixed Carpenter text | Native AutoByteus only |
 | `Skills` | Ordinary configured skill resolver and provider-specific skill projection | Only when configured skills apply |
 
-The shared logical order is Agent Identity, optional Team Instruction, and the
-collaboration sections for the agent's role. Native AutoByteus appends
+The shared logical order is Agent Identity, optional Team Instruction, the
+collaboration sections for the agent's role, and the optional Project section.
+It reads: "You work in the Project <name> (Project ID <id>). Use this Project ID
+with the Project tools; ask the user before working on another Project." All
+five runtime paths (native AutoByteus, Codex, Claude, Antigravity, ACP/Grok)
+compose it the same way. Native AutoByteus appends
 Working Environment, Bash Operating Practice, and File And Directory Practice
 in that order, then the native core appends its terminal configured-skills
 catalog. Blank optional values omit their line, subsection, or section; they do
