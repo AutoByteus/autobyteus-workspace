@@ -1,5 +1,5 @@
 {
-  "runId": "runtime_switch_7442847f_c97b_49bf_847a_a2e43713a_0c14c00dc1054097a4840647e33b3fb6",
+  "runId": "runtime_switch_dfd55016_7869_4618_bafe_5da8dad6e_d9e4b852fb894e568e78511b026c7898",
   "models": {
     "claudeModel": "claude-haiku-4-5-20251001",
     "codexModel": "gpt-5.6-luna"
@@ -16,22 +16,22 @@
       "raw_traces_000002.jsonl",
       "runtime_switch",
       "codex_app_server",
-      10
+      7
     ]
   ],
   "finalMetadata": {
-    "runId": "runtime_switch_7442847f_c97b_49bf_847a_a2e43713a_0c14c00dc1054097a4840647e33b3fb6",
-    "agentDefinitionId": "runtime-switch-7442847f-c97b-49bf-847a-a2e43713a585",
-    "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-switch-live-rAa0fL/workspace",
-    "memoryDir": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/runtime-switch-live-rAa0fL/memory/agents/runtime_switch_7442847f_c97b_49bf_847a_a2e43713a_0c14c00dc1054097a4840647e33b3fb6",
+    "runId": "runtime_switch_dfd55016_7869_4618_bafe_5da8dad6e_d9e4b852fb894e568e78511b026c7898",
+    "agentDefinitionId": "runtime-switch-dfd55016-7869-4618-bafe-5da8dad6ed4a",
+    "workspaceRootPath": "/tmp/runtime-switch-live-iTgoBF/workspace",
+    "memoryDir": "/tmp/runtime-switch-live-iTgoBF/memory/agents/runtime_switch_dfd55016_7869_4618_bafe_5da8dad6e_d9e4b852fb894e568e78511b026c7898",
     "llmModelIdentifier": "gemini-3.8-flash-low",
     "llmConfig": null,
     "autoExecuteTools": true,
     "runtimeKind": "antigravity_cli",
-    "platformAgentRunId": "3be19ae1-c764-4099-b6b7-2e85b1d7dd09",
-    "preparedAt": "2026-10-31T07:27:31.929Z",
-    "preparedExpiresAt": "2026-11-01T07:27:31.929Z",
-    "startedAt": "2026-10-31T07:27:31.971Z",
+    "platformAgentRunId": "6febd6b7-cd33-4087-94c9-5e580587dc63",
+    "preparedAt": "2026-10-31T08:13:06.272Z",
+    "preparedExpiresAt": "2026-11-01T08:13:06.272Z",
+    "startedAt": "2026-10-31T08:13:06.318Z",
     "applicationExecutionContext": null
   }
 }
