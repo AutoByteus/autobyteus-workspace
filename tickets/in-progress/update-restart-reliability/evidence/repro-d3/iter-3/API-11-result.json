@@ -1,0 +1,672 @@
+{
+  "case": "API-11",
+  "mode": "busy-quit",
+  "root": "/Users/normy/autobyteus_org/autobyteus-worktrees/update-restart-reliability",
+  "commit": "a977b2c1bcc73c3ddc42fd9ec93f63f6c6e2d774",
+  "date": "2026-10-31T07:24:38.504Z",
+  "own": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-quit-ajrFtJ",
+  "runTag": "BQ284Dmvw2sp90",
+  "steps": [
+    {
+      "at": "3.3",
+      "step": "isolated-app",
+      "value": {
+        "args": [
+          "start",
+          "--from-worktree",
+          "--data-root",
+          "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-quit-ajrFtJ/data-root"
+        ],
+        "exit": 0,
+        "ok": true,
+        "error": null
+      }
+    },
+    {
+      "at": "3.4",
+      "step": "instance started",
+      "value": {
+        "label": "first",
+        "instanceId": "iso-62924-388a",
+        "electronPid": 26484,
+        "serverPid": 27400,
+        "serverPort": 62925,
+        "servers": 1
+      }
+    },
+    {
+      "at": "4.8",
+      "step": "models",
+      "value": {
+        "codex": "gpt-6.1-terra",
+        "claude": "claude-haiku-4-5-20251001"
+      }
+    },
+    {
+      "at": "5.2",
+      "step": "standalone sent",
+      "value": {
+        "label": "restart-codex",
+        "runtime": "codex",
+        "kind": "agent",
+        "runId": "desk_agent_bq284dmvw2sp90_2426fe361cc74ba397955034f8fba165",
+        "rootId": "desk_agent_bq284dmvw2sp90_2426fe361cc74ba397955034f8fba165",
+        "marker": "BQ284Dmvw2sp90_restart-codex",
+        "proc": {
+          "pid": 28820,
+          "ppid": 27556,
+          "pgid": 28820
+        }
+      }
+    },
+    {
+      "at": "9.2",
+      "step": "busy",
+      "value": {
+        "label": "restart-codex",
+        "pid": 28820,
+        "ppid": 27556,
+        "pgid": 28820
+      }
+    },
+    {
+      "at": "14.0",
+      "step": "restart observed",
+      "value": {
+        "oldServerPid": 27400,
+        "newServerPid": 28902,
+        "readyMs": 2999,
+        "oldServerAlive": false,
+        "toolAliveAfter": false,
+        "survivors": [],
+        "serversForData": [
+          {
+            "pid": 28902,
+            "ppid": 26484,
+            "pgid": 26484,
+            "command": "/Users/normy/autobyteus_org/autobyteus-worktrees/update-restart-reliability/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus /Use … 25 --data-dir /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-quit-ajrFtJ/data-root/server-data"
+          }
+        ]
+      }
+    },
+    {
+      "at": "14.2",
+      "step": "standalone sent",
+      "value": {
+        "label": "sa-codex",
+        "runtime": "codex",
+        "kind": "agent",
+        "runId": "desk_agent_bq284dmvw2sp90_b543557a59eb428cbdff9f988efb8271",
+        "rootId": "desk_agent_bq284dmvw2sp90_b543557a59eb428cbdff9f988efb8271",
+        "marker": "BQ284Dmvw2sp90_sa-codex",
+        "proc": {
+          "pid": 31560,
+          "ppid": 29124,
+          "pgid": 31560
+        }
+      }
+    },
+    {
+      "at": "14.4",
+      "step": "standalone sent",
+      "value": {
+        "label": "sa-claude",
+        "runtime": "claude",
+        "kind": "agent",
+        "runId": "desk_agent_bq284dmvw2sp90_4866e5f887dc4a79ab1dc0ed1dcf3d6a",
+        "rootId": "desk_agent_bq284dmvw2sp90_4866e5f887dc4a79ab1dc0ed1dcf3d6a",
+        "marker": "BQ284Dmvw2sp90_sa-claude",
+        "proc": {
+          "pid": 31505,
+          "ppid": 29549,
+          "pgid": 31505
+        }
+      }
+    },
+    {
+      "at": "15.6",
+      "step": "team sent",
+      "value": {
+        "label": "team-codex",
+        "runtime": "codex",
+        "kind": "team",
+        "runId": "desk_team_coordinator_bq284dmvw2sp90_3b82cdcfbe394cbabe657b12c3caccf1",
+        "rootId": "desk_team_bq284dmvw2sp90_c647a62d17924e0094275ed3623238c6",
+        "marker": "BQ284Dmvw2sp90_team-codex",
+        "proc": {
+          "pid": 31669,
+          "ppid": 29124,
+          "pgid": 31669
+        }
+      }
+    },
+    {
+      "at": "17.1",
+      "step": "org sent",
+      "value": {
+        "label": "org-claude",
+        "runtime": "claude",
+        "kind": "org",
+        "runId": "desk_org_manager_bq284dmvw2sp90_d74abce319594af39048c8f285c3255f",
+        "rootId": "desk_org_bq284dmvw2sp90_c543e0c6aa92456db9edd95957d001d2",
+        "marker": "BQ284Dmvw2sp90_org-claude",
+        "proc": {
+          "pid": 32179,
+          "ppid": 31064,
+          "pgid": 32179
+        }
+      }
+    },
+    {
+      "at": "18.7",
+      "step": "busy",
+      "value": {
+        "label": "sa-codex",
+        "pid": 31560,
+        "ppid": 29124,
+        "pgid": 31560
+      }
+    },
+    {
+      "at": "18.8",
+      "step": "busy",
+      "value": {
+        "label": "sa-claude",
+        "pid": 31505,
+        "ppid": 29549,
+        "pgid": 31505
+      }
+    },
+    {
+      "at": "19.5",
+      "step": "busy",
+      "value": {
+        "label": "team-codex",
+        "pid": 31669,
+        "ppid": 29124,
+        "pgid": 31669
+      }
+    },
+    {
+      "at": "20.8",
+      "step": "busy",
+      "value": {
+        "label": "org-claude",
+        "pid": 32179,
+        "ppid": 31064,
+        "pgid": 32179
+      }
+    },
+    {
+      "at": "25.0",
+      "step": "busy user quit observed",
+      "value": {
+        "label": "busy user quit",
+        "electronPid": 26484,
+        "serverPid": 28902,
+        "serverGoneMs": 1503,
+        "electronGoneMs": 1503,
+        "before": 16,
+        "survivors": [],
+        "markedLeft": [],
+        "serversForDataAfter": [],
+        "tools": [
+          {
+            "label": "sa-codex",
+            "kind": "agent",
+            "runtime": "codex",
+            "pid": 31560,
+            "ppid": 29124,
+            "pgid": 31560,
+            "aliveAfter": false
+          },
+          {
+            "label": "sa-claude",
+            "kind": "agent",
+            "runtime": "claude",
+            "pid": 31505,
+            "ppid": 29549,
+            "pgid": 31505,
+            "aliveAfter": false
+          },
+          {
+            "label": "team-codex",
+            "kind": "team",
+            "runtime": "codex",
+            "pid": 31669,
+            "ppid": 29124,
+            "pgid": 31669,
+            "aliveAfter": false
+          },
+          {
+            "label": "org-claude",
+            "kind": "org",
+            "runtime": "claude",
+            "pid": 32179,
+            "ppid": 31064,
+            "pgid": 32179,
+            "aliveAfter": false
+          }
+        ]
+      }
+    },
+    {
+      "at": "25.1",
+      "step": "isolated-app",
+      "value": {
+        "args": [
+          "stop",
+          "iso-62924-388a"
+        ],
+        "exit": 0,
+        "ok": true,
+        "error": null
+      }
+    },
+    {
+      "at": "28.8",
+      "step": "isolated-app",
+      "value": {
+        "args": [
+          "start",
+          "--from-worktree",
+          "--data-root",
+          "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-quit-ajrFtJ/data-root"
+        ],
+        "exit": 0,
+        "ok": true,
+        "error": null
+      }
+    },
+    {
+      "at": "29.0",
+      "step": "instance started",
+      "value": {
+        "label": "second",
+        "instanceId": "iso-63145-9081",
+        "electronPid": 32326,
+        "serverPid": 33239,
+        "serverPort": 63146,
+        "servers": 1
+      }
+    },
+    {
+      "at": "29.1",
+      "step": "relaunch check",
+      "value": {
+        "label": "second",
+        "serversForData": [
+          {
+            "pid": 33239,
+            "ppid": 32326,
+            "pgid": 32326,
+            "command": "/Users/normy/autobyteus_org/autobyteus-worktrees/update-restart-reliability/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus /Use … 46 --data-dir /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-quit-ajrFtJ/data-root/server-data"
+          }
+        ],
+        "exactlyOne": true,
+        "previousSessionLeft": []
+      }
+    },
+    {
+      "at": "31.9",
+      "step": "continued",
+      "value": {
+        "label": "sa-codex",
+        "kind": "agent",
+        "runtime": "codex",
+        "rootId": "desk_agent_bq284dmvw2sp90_b543557a59eb428cbdff9f988efb8271",
+        "replied": "CONTINUED_sacodex",
+        "afterMs": 2516
+      }
+    },
+    {
+      "at": "34.3",
+      "step": "continued",
+      "value": {
+        "label": "sa-claude",
+        "kind": "agent",
+        "runtime": "claude",
+        "rootId": "desk_agent_bq284dmvw2sp90_4866e5f887dc4a79ab1dc0ed1dcf3d6a",
+        "replied": "CONTINUED_saclaude",
+        "afterMs": 2270
+      }
+    },
+    {
+      "at": "37.6",
+      "step": "continued",
+      "value": {
+        "label": "team-codex",
+        "kind": "team",
+        "runtime": "codex",
+        "rootId": "desk_team_bq284dmvw2sp90_c647a62d17924e0094275ed3623238c6",
+        "replied": "CONTINUED_teamcodex",
+        "afterMs": 2265
+      }
+    },
+    {
+      "at": "40.2",
+      "step": "continued",
+      "value": {
+        "label": "org-claude",
+        "kind": "org",
+        "runtime": "claude",
+        "rootId": "desk_org_bq284dmvw2sp90_c543e0c6aa92456db9edd95957d001d2",
+        "replied": "CONTINUED_orgclaude",
+        "afterMs": 1512
+      }
+    },
+    {
+      "at": "43.1",
+      "step": "final quit observed",
+      "value": {
+        "label": "final quit",
+        "electronPid": 32326,
+        "serverPid": 33239,
+        "serverGoneMs": 1602,
+        "electronGoneMs": 1602,
+        "before": 9,
+        "survivors": [],
+        "markedLeft": [],
+        "serversForDataAfter": [],
+        "tools": []
+      }
+    },
+    {
+      "at": "43.2",
+      "step": "isolated-app",
+      "value": {
+        "args": [
+          "stop",
+          "iso-63145-9081"
+        ],
+        "exit": 0,
+        "ok": true,
+        "error": null
+      }
+    }
+  ],
+  "restart": {
+    "oldServerPid": 27400,
+    "newServerPid": 28902,
+    "readyMs": 2999,
+    "oldServerAlive": false,
+    "toolAliveAfter": false,
+    "survivors": [],
+    "serversForData": [
+      {
+        "pid": 28902,
+        "ppid": 26484,
+        "pgid": 26484,
+        "command": "/Users/normy/autobyteus_org/autobyteus-worktrees/update-restart-reliability/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus /Use … 25 --data-dir /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-quit-ajrFtJ/data-root/server-data"
+      }
+    ]
+  },
+  "quit": {
+    "label": "busy user quit",
+    "electronPid": 26484,
+    "serverPid": 28902,
+    "serverGoneMs": 1503,
+    "electronGoneMs": 1503,
+    "before": [
+      {
+        "pid": 26485,
+        "ppid": 26484,
+        "pgid": 26484,
+        "command": "/Users/normy/autobyteus_org/autobyteus-worktrees/update-restart-reliability/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus … 764596,r,17393584232109611756,13039119697779600828,4 --trace-process-track-uuid=3190708988185955192 --seatbelt-client=30"
+      },
+      {
+        "pid": 26486,
+        "ppid": 26484,
+        "pgid": 26484,
+        "command": "/Users/normy/autobyteus_org/autobyteus-worktrees/update-restart-reliability/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus … 764596,r,17393584232109611756,13039119697779600828,4 --trace-process-track-uuid=3190708989122997041 --seatbelt-client=32"
+      },
+      {
+        "pid": 27407,
+        "ppid": 26484,
+        "pgid": 26484,
+        "command": "/Users/normy/autobyteus_org/autobyteus-worktrees/update-restart-reliability/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus … 764596,r,17393584232109611756,13039119697779600828,4 --trace-process-track-uuid=3190708990060038890 --seatbelt-client=59"
+      },
+      {
+        "pid": 27469,
+        "ppid": 26484,
+        "pgid": 26484,
+        "command": "/Users/normy/autobyteus_org/autobyteus-worktrees/update-restart-reliability/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus … 764596,r,17393584232109611756,13039119697779600828,4 --trace-process-track-uuid=3190708990997080739 --seatbelt-client=59"
+      },
+      {
+        "pid": 27470,
+        "ppid": 26484,
+        "pgid": 26484,
+        "command": "/Users/normy/autobyteus_org/autobyteus-worktrees/update-restart-reliability/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus … tion-salt-handle=1935764596,r,17393584232109611756,13039119697779600828,4 --trace-process-track-uuid=3190708991934122588"
+      },
+      {
+        "pid": 28902,
+        "ppid": 26484,
+        "pgid": 26484,
+        "command": "/Users/normy/autobyteus_org/autobyteus-worktrees/update-restart-reliability/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus /Use … 25 --data-dir /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-quit-ajrFtJ/data-root/server-data"
+      },
+      {
+        "pid": 29124,
+        "ppid": 28902,
+        "pgid": 26484,
+        "command": "codex app-server -c agents.enabled=false"
+      },
+      {
+        "pid": 29549,
+        "ppid": 28902,
+        "pgid": 26484,
+        "command": "/Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --model claude-haiku-4-5-20251001 --permission-prompt-tool stdio … ser,project,local --permission-mode default --include-partial-messages --session-id=f5b4456f-94a6-4f6c-bcb6-35e079a33d8d"
+      },
+      {
+        "pid": 31064,
+        "ppid": 28902,
+        "pgid": 26484,
+        "command": "/Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --model claude-haiku-4-5-20251001 --permission-prompt-tool stdio … ser,project,local --permission-mode default --include-partial-messages --session-id=bcd7fbcf-53af-4eb7-94d2-0e6f8b297f5c"
+      },
+      {
+        "pid": 31505,
+        "ppid": 29549,
+        "pgid": 31505,
+        "command": "/bin/zsh -c source /Users/normy/.claude/shell-snapshots/snapshot-zsh-1793431495767-qmgyas.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2> …  eval 'python3 -c \"import time; time.sleep(900)\" BQ284Dmvw2sp90_sa-claude' < /dev/null && pwd -P >| /tmp/claude-387a-cwd"
+      },
+      {
+        "pid": 31559,
+        "ppid": 29124,
+        "pgid": 31559,
+        "command": "/Users/normy/.codex/packages/standalone/releases/0.166.0-aarch64-apple-darwin/bin/codex-code-mode-host"
+      },
+      {
+        "pid": 31560,
+        "ppid": 29124,
+        "pgid": 31560,
+        "command": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python -c import time; time.sleep(900) BQ284Dmvw2sp90_sa-codex"
+      },
+      {
+        "pid": 31669,
+        "ppid": 29124,
+        "pgid": 31669,
+        "command": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python -c import time; time.sleep(900) BQ284Dmvw2sp90_team-codex"
+      },
+      {
+        "pid": 32179,
+        "ppid": 31064,
+        "pgid": 32179,
+        "command": "/bin/zsh -c source /Users/normy/.claude/shell-snapshots/snapshot-zsh-1793431498589-iy1gbm.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2> … eval 'python3 -c \"import time; time.sleep(900)\" BQ284Dmvw2sp90_org-claude' < /dev/null && pwd -P >| /tmp/claude-f828-cwd"
+      },
+      {
+        "pid": 31506,
+        "ppid": 31505,
+        "pgid": 31505,
+        "command": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python -c import time; time.sleep(900) BQ284Dmvw2sp90_sa-claude"
+      },
+      {
+        "pid": 32180,
+        "ppid": 32179,
+        "pgid": 32179,
+        "command": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python -c import time; time.sleep(900) BQ284Dmvw2sp90_org-claude"
+      }
+    ],
+    "survivors": [],
+    "markedLeft": [],
+    "serversForDataAfter": [],
+    "tools": [
+      {
+        "label": "sa-codex",
+        "kind": "agent",
+        "runtime": "codex",
+        "pid": 31560,
+        "ppid": 29124,
+        "pgid": 31560,
+        "aliveAfter": false
+      },
+      {
+        "label": "sa-claude",
+        "kind": "agent",
+        "runtime": "claude",
+        "pid": 31505,
+        "ppid": 29549,
+        "pgid": 31505,
+        "aliveAfter": false
+      },
+      {
+        "label": "team-codex",
+        "kind": "team",
+        "runtime": "codex",
+        "pid": 31669,
+        "ppid": 29124,
+        "pgid": 31669,
+        "aliveAfter": false
+      },
+      {
+        "label": "org-claude",
+        "kind": "org",
+        "runtime": "claude",
+        "pid": 32179,
+        "ppid": 31064,
+        "pgid": 32179,
+        "aliveAfter": false
+      }
+    ]
+  },
+  "relaunch": {
+    "label": "second",
+    "serversForData": [
+      {
+        "pid": 33239,
+        "ppid": 32326,
+        "pgid": 32326,
+        "command": "/Users/normy/autobyteus_org/autobyteus-worktrees/update-restart-reliability/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus /Use … 46 --data-dir /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-quit-ajrFtJ/data-root/server-data"
+      }
+    ],
+    "exactlyOne": true,
+    "previousSessionLeft": []
+  },
+  "continued": [
+    {
+      "label": "sa-codex",
+      "kind": "agent",
+      "runtime": "codex",
+      "rootId": "desk_agent_bq284dmvw2sp90_b543557a59eb428cbdff9f988efb8271",
+      "replied": "CONTINUED_sacodex",
+      "afterMs": 2516
+    },
+    {
+      "label": "sa-claude",
+      "kind": "agent",
+      "runtime": "claude",
+      "rootId": "desk_agent_bq284dmvw2sp90_4866e5f887dc4a79ab1dc0ed1dcf3d6a",
+      "replied": "CONTINUED_saclaude",
+      "afterMs": 2270
+    },
+    {
+      "label": "team-codex",
+      "kind": "team",
+      "runtime": "codex",
+      "rootId": "desk_team_bq284dmvw2sp90_c647a62d17924e0094275ed3623238c6",
+      "replied": "CONTINUED_teamcodex",
+      "afterMs": 2265
+    },
+    {
+      "label": "org-claude",
+      "kind": "org",
+      "runtime": "claude",
+      "rootId": "desk_org_bq284dmvw2sp90_c543e0c6aa92456db9edd95957d001d2",
+      "replied": "CONTINUED_orgclaude",
+      "afterMs": 1512
+    }
+  ],
+  "finalQuit": {
+    "label": "final quit",
+    "electronPid": 32326,
+    "serverPid": 33239,
+    "serverGoneMs": 1602,
+    "electronGoneMs": 1602,
+    "before": [
+      {
+        "pid": 32327,
+        "ppid": 32326,
+        "pgid": 32326,
+        "command": "/Users/normy/autobyteus_org/autobyteus-worktrees/update-restart-reliability/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus … 35764596,r,5147030776734184960,4914926682567098435,4 --trace-process-track-uuid=3190708988185955192 --seatbelt-client=30"
+      },
+      {
+        "pid": 32328,
+        "ppid": 32326,
+        "pgid": 32326,
+        "command": "/Users/normy/autobyteus_org/autobyteus-worktrees/update-restart-reliability/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus … 35764596,r,5147030776734184960,4914926682567098435,4 --trace-process-track-uuid=3190708989122997041 --seatbelt-client=33"
+      },
+      {
+        "pid": 33239,
+        "ppid": 32326,
+        "pgid": 32326,
+        "command": "/Users/normy/autobyteus_org/autobyteus-worktrees/update-restart-reliability/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus /Use … 46 --data-dir /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-busy-quit-ajrFtJ/data-root/server-data"
+      },
+      {
+        "pid": 33251,
+        "ppid": 32326,
+        "pgid": 32326,
+        "command": "/Users/normy/autobyteus_org/autobyteus-worktrees/update-restart-reliability/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus … 35764596,r,5147030776734184960,4914926682567098435,4 --trace-process-track-uuid=3190708990060038890 --seatbelt-client=59"
+      },
+      {
+        "pid": 33364,
+        "ppid": 32326,
+        "pgid": 32326,
+        "command": "/Users/normy/autobyteus_org/autobyteus-worktrees/update-restart-reliability/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus … 35764596,r,5147030776734184960,4914926682567098435,4 --trace-process-track-uuid=3190708990997080739 --seatbelt-client=59"
+      },
+      {
+        "pid": 33365,
+        "ppid": 32326,
+        "pgid": 32326,
+        "command": "/Users/normy/autobyteus_org/autobyteus-worktrees/update-restart-reliability/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoByteus … zation-salt-handle=1935764596,r,5147030776734184960,4914926682567098435,4 --trace-process-track-uuid=3190708991934122588"
+      },
+      {
+        "pid": 33363,
+        "ppid": 33239,
+        "pgid": 32326,
+        "command": "codex app-server -c agents.enabled=false"
+      },
+      {
+        "pid": 34368,
+        "ppid": 33239,
+        "pgid": 32326,
+        "command": "/Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --model claude-haiku-4-5-20251001 --permission-prompt-tool stdio … 7Iy7dgYk\",\"alwaysLoad\":true}}} --setting-sources=user,project,local --permission-mode default --include-partial-messages"
+      },
+      {
+        "pid": 35323,
+        "ppid": 33239,
+        "pgid": 32326,
+        "command": "/Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --model claude-haiku-4-5-20251001 --permission-prompt-tool stdio … Hcd7htxk\",\"alwaysLoad\":true}}} --setting-sources=user,project,local --permission-mode default --include-partial-messages"
+      }
+    ],
+    "survivors": [],
+    "markedLeft": [],
+    "serversForDataAfter": [],
+    "tools": []
+  },
+  "result": "Completed",
+  "fallbackCleanup": [],
+  "serversForDataAtEnd": [],
+  "copiedLogs": [
+    "<own>/data-root/server-data/logs/server.log",
+    "<own>/data-root/logs/app.log"
+  ],
+  "rootRemoved": true
+}
