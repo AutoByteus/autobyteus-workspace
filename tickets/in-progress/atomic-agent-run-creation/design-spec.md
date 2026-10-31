@@ -107,7 +107,7 @@
 ## Backward-Compatibility Rejection Log
 | Candidate | Decision |
 | --- | --- |
-| Keep the 24 h rule beside the new one | Rejected (unsafe, F-10) |
+| Keep the 24 h rule beside the new one | Rejected (unsafe: the read-only count in the investigation notes) |
 
 ## Change / Refactor Sequence
 1. D1 plus tests.
