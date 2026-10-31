@@ -1,4 +1,24 @@
-# Architecture Design Complete — update-restart-reliability (autobyteus-339), SR-003
+# Architecture Design Complete — update-restart-reliability (autobyteus-339), SR-004
+
+## SR-004 (2026-10-31): D1 revised for CRR-002 / F-API-001 — read this first
+- **What failed.** SR-003's `forceCloseConnections` cut requests in progress. Cut `createAgentRun`s left prepared-only
+  runs, and completed runs whose client never got the ID (API-02/02B). The base build completed them (API-03).
+- **New D1.** `installClientConnectionClose(app)` (`src/shutdown/client-connection-close.ts`), used by the four
+  servers: one `preClose` step that destroys connections that never sent a request, lets requests in progress finish
+  within 2 s, then closes the rest. P-004 proves both paths. `SERVER_CLOSE_OPTIONS` is removed.
+- **Requirements.** REQ-001 and DEC-002 revised within the direction (the Solution Designer, the user informed);
+  AC-002 is tightened (no prepared-only or unacknowledged run) and AC-008 added. D2 is unchanged.
+- **Review focus for ARCH-REV-002:**
+  - the close order inside Fastify `preClose` (503 for new requests while closing; the native drain; the WebSocket
+    close);
+  - socket tracking (`connection` / `request` / `upgrade`);
+  - the 2 s grace against 284's 10 s bound;
+  - the residual cut after 2 s (FU-004).
+- **Design case.** Added to `docs/design-cases.md` Case 5.
+
+The SR-003 handoff follows unchanged.
+
+# (SR-003) Architecture Design Complete — update-restart-reliability (autobyteus-339)
 
 From `/solution_designer`, 2026-10-31. Task `autobyteus-339` (Project `project_a1377344-25db-482a-97cc-ecfdb0fb495a`),
 requested by `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`).
