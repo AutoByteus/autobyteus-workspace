@@ -217,6 +217,7 @@
 - **Keep today's error when the server exit is unconfirmed:** no retry machinery for a near-impossible state (DEC-005).
 
 ## Risks
+- In-flight request handlers keep running after their connection is cut, alongside the `onClose` run cleanup, until the process exits (AR-002, ARCH-REV-001). The same was true before for handlers cut at the 10 s bound; run admission is already closed at that point.
 - A client flow that relies on a response completing during shutdown. None found (`Read`); validation watches for it.
 - macOS Squirrel's install timing under `quitAndInstall` after an incomplete stop: covered because `prepared` lets
   `will-quit` pass, so the app quits normally.

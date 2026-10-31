@@ -33,3 +33,7 @@
 - User approval of the design: Obtained (the same 2026-10-31 answer; this spec realizes the presented solution).
 - Classification: Medium / High. Routing: architecture review.
 - Follow-ups: FU-001 (install-on-quit), FU-002 (the origin of the unused connection).
+- 2026-10-31, review result recorded: **ARCH-REV-001 Pass** on SR-003. The two Low wording items were folded in without
+  a design change: AR-001 (`fu-007-options.md` says "server process confirmed gone", as REQ-002 does) and AR-002 (the
+  in-flight-handler line under the design's Risks). The reviewer routed to
+  `/software_engineering_team/implementation_engineer`. Report: `design-review-report.md`.
