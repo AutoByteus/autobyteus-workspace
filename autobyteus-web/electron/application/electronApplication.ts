@@ -70,9 +70,9 @@ export class ElectronApplication {
     })
     this.serverStatusManager = new ServerStatusManager(this.serverManager)
     this.appUpdateController = profile.updaterEnabled
-      ? new AppUpdater({ prepareForInstall: () => this.stop() })
+      ? new AppUpdater({ prepareForInstall: () => this.prepareForInstall() })
       : profile.testUpdateFeedUrl
-        ? new AppUpdater({ testFeedUrl: profile.testUpdateFeedUrl, prepareForInstall: () => this.stop() })
+        ? new AppUpdater({ testFeedUrl: profile.testUpdateFeedUrl, prepareForInstall: () => this.prepareForInstall() })
         : new DisabledAppUpdater()
   }
 
@@ -403,6 +403,17 @@ export class ElectronApplication {
   }
 
   stop(): Promise<void> { return this.shutdown.stop() }
+  /**
+   * "Install update and restart": an incomplete stop (already reported by the shutdown) still installs
+   * when the server process is confirmed gone; otherwise the error stands and nothing is installed.
+   */
+  private async prepareForInstall(): Promise<void> {
+    try { await this.shutdown.stop() }
+    catch (error) {
+      if (!this.serverManager.isServerProcessGone()) throw error
+      this.shutdown.acceptIncompleteStopForInstall()
+    }
+  }
   private async stopResources(): Promise<void> {
     const errors: unknown[] = []
     try { await this.serverManager.stopServer() } catch (error) { errors.push(error); logger.error('Backend shutdown incomplete', error) }

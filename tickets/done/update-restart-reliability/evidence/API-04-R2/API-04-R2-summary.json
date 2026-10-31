@@ -1,0 +1,24 @@
+{
+ "runs": 42,
+ "valid": 41,
+ "excluded": [
+  {
+   "iter": 21,
+   "error": "Error: Timed out: org-claude busy"
+  }
+ ],
+ "stalls": 0,
+ "serverGoneMs": {
+  "min": 986,
+  "median": 1403,
+  "max": 1704
+ },
+ "survivorsTotal": 0,
+ "nonZeroExit": 0,
+ "exceeded10s": 0,
+ "sweepLines": 0,
+ "appShutdownIncomplete": 0,
+ "relaunchOne": 41,
+ "continued4of4": 41,
+ "restartToolGone": 41
+}

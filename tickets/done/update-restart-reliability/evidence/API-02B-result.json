@@ -1,0 +1,892 @@
+{
+  "case": "API-02B",
+  "mode": "held-connection",
+  "serverDir": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ur339-api.vSYEoq/clean/autobyteus-server-ts",
+  "date": "2026-10-31T09:04:35.107Z",
+  "own": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-live-held-connection-39l4iM",
+  "runTag": "BQ284Lmvw6d89v",
+  "versions": {
+    "codex": "codex-cli 0.166.0",
+    "claude": "2.1.314 (Claude Code)",
+    "node": "v22.23.1",
+    "python3": "Python 3.9.6"
+  },
+  "steps": [
+    {
+      "at": "3.4",
+      "step": "server started",
+      "value": {
+        "label": "first",
+        "pid": 88686,
+        "port": 64002
+      }
+    },
+    {
+      "at": "4.6",
+      "step": "models",
+      "value": {
+        "codex": "gpt-6.1-terra",
+        "claude": "claude-haiku-4-5-20251001"
+      }
+    },
+    {
+      "at": "5.2",
+      "step": "standalone sent",
+      "value": {
+        "label": "sa-codex",
+        "runtime": "codex",
+        "runId": "probe_agent_bq284lmvw6d89v_582ae45b3ea64067a58d686877c3c9e8"
+      }
+    },
+    {
+      "at": "5.5",
+      "step": "standalone sent",
+      "value": {
+        "label": "sa-claude",
+        "runtime": "claude",
+        "runId": "probe_agent_bq284lmvw6d89v_39c0e24c914642e28bb0e926a2ea2bd2"
+      }
+    },
+    {
+      "at": "6.6",
+      "step": "team sent",
+      "value": {
+        "label": "team-codex",
+        "runtime": "codex",
+        "teamRunId": "probe_team_bq284lmvw6d89v_team_codex_20021b9b93874caa87b803cb4cf084d1",
+        "memberRunId": "probe_team_coordinator_team_codex_bq284lmvw6d89v_f407847238794b55b3770fad69b7a94e"
+      }
+    },
+    {
+      "at": "8.4",
+      "step": "org sent",
+      "value": {
+        "label": "org-claude",
+        "runtime": "claude",
+        "orgRunId": "probe_org_bq284lmvw6d89v_org_claude_de16b4d4575040188997d9ac96608564",
+        "memberRunId": "probe_org_manager_org_claude_bq284lmvw6d89v_0d00d46722944657a2afde70a85c7f96"
+      }
+    },
+    {
+      "at": "8.6",
+      "step": "createAgentRun latency (ms)",
+      "value": [
+        78,
+        54,
+        60
+      ]
+    },
+    {
+      "at": "9.4",
+      "step": "client connections held",
+      "value": {
+        "keepAliveLocalPort": 64109,
+        "silentLocalPort": 64110
+      }
+    },
+    {
+      "at": "9.5",
+      "step": "busy",
+      "value": {
+        "label": "sa-codex",
+        "marker": "BQ284Lmvw6d89v_sa-codex",
+        "pid": 91004,
+        "ppid": 88756,
+        "pgid": 91004,
+        "afterMs": 71
+      }
+    },
+    {
+      "at": "9.6",
+      "step": "busy",
+      "value": {
+        "label": "sa-claude",
+        "marker": "BQ284Lmvw6d89v_sa-claude",
+        "pid": 93580,
+        "ppid": 89303,
+        "pgid": 93580,
+        "afterMs": 67
+      }
+    },
+    {
+      "at": "11.2",
+      "step": "busy",
+      "value": {
+        "label": "team-codex",
+        "marker": "BQ284Lmvw6d89v_team-codex",
+        "pid": 94388,
+        "ppid": 88756,
+        "pgid": 94388,
+        "afterMs": 1621
+      }
+    },
+    {
+      "at": "11.9",
+      "step": "busy",
+      "value": {
+        "label": "org-claude",
+        "marker": "BQ284Lmvw6d89v_org-claude",
+        "pid": 94846,
+        "ppid": 91007,
+        "pgid": 94846,
+        "afterMs": 669
+      }
+    },
+    {
+      "at": "16.3",
+      "step": "shutdown",
+      "value": {
+        "case": "API-02B",
+        "serverPid": 88686,
+        "exit": {
+          "code": 0,
+          "signal": null,
+          "at": 1793437490204
+        },
+        "elapsedMs": 1610,
+        "runs": [
+          {
+            "label": "sa-codex",
+            "kind": "agent",
+            "runtime": "codex",
+            "runId": "probe_agent_bq284lmvw6d89v_582ae45b3ea64067a58d686877c3c9e8",
+            "toolCommand": {
+              "pid": 91004,
+              "ppid": 88756,
+              "pgid": 91004,
+              "aliveAfter": false
+            }
+          },
+          {
+            "label": "sa-claude",
+            "kind": "agent",
+            "runtime": "claude",
+            "runId": "probe_agent_bq284lmvw6d89v_39c0e24c914642e28bb0e926a2ea2bd2",
+            "toolCommand": {
+              "pid": 93580,
+              "ppid": 89303,
+              "pgid": 93580,
+              "aliveAfter": false
+            }
+          },
+          {
+            "label": "team-codex",
+            "kind": "team",
+            "runtime": "codex",
+            "runId": "probe_team_coordinator_team_codex_bq284lmvw6d89v_f407847238794b55b3770fad69b7a94e",
+            "toolCommand": {
+              "pid": 94388,
+              "ppid": 88756,
+              "pgid": 94388,
+              "aliveAfter": false
+            }
+          },
+          {
+            "label": "org-claude",
+            "kind": "org",
+            "runtime": "claude",
+            "runId": "probe_org_manager_org_claude_bq284lmvw6d89v_0d00d46722944657a2afde70a85c7f96",
+            "toolCommand": {
+              "pid": 94846,
+              "ppid": 91007,
+              "pgid": 94846,
+              "aliveAfter": false
+            }
+          }
+        ],
+        "before": 10,
+        "survivors": [],
+        "markedLeft": [],
+        "shutdownLog": []
+      }
+    },
+    {
+      "at": "16.5",
+      "step": "in-flight requests",
+      "value": [
+        {
+          "k": 0,
+          "sentAt": 1793437488565,
+          "error": "ECONNRESET",
+          "endedAt": 1793437488599,
+          "sentRelSigtermMs": -29,
+          "endedRelSigtermMs": 5
+        },
+        {
+          "k": 1,
+          "sentAt": 1793437488576,
+          "error": "ECONNRESET",
+          "endedAt": 1793437488599,
+          "sentRelSigtermMs": -18,
+          "endedRelSigtermMs": 5
+        },
+        {
+          "k": 2,
+          "sentAt": 1793437488588,
+          "error": "ECONNRESET",
+          "endedAt": 1793437488599,
+          "sentRelSigtermMs": -6,
+          "endedRelSigtermMs": 5
+        },
+        {
+          "k": 3,
+          "sentAt": 1793437488600,
+          "error": "ECONNREFUSED",
+          "endedAt": 1793437488602,
+          "sentRelSigtermMs": 6,
+          "endedRelSigtermMs": 8
+        },
+        {
+          "k": 4,
+          "sentAt": 1793437488612,
+          "error": "ECONNREFUSED",
+          "endedAt": 1793437488613,
+          "sentRelSigtermMs": 18,
+          "endedRelSigtermMs": 19
+        },
+        {
+          "k": 5,
+          "sentAt": 1793437488625,
+          "error": "ECONNREFUSED",
+          "endedAt": 1793437488626,
+          "sentRelSigtermMs": 31,
+          "endedRelSigtermMs": 32
+        }
+      ]
+    },
+    {
+      "at": "16.5",
+      "step": "held connections",
+      "value": {
+        "silentClosedRelSigtermMs": 6,
+        "silentError": null,
+        "keepAliveClosedRelSigtermMs": 6
+      }
+    },
+    {
+      "at": "19.6",
+      "step": "server started",
+      "value": {
+        "label": "second",
+        "pid": 95271,
+        "port": 64150
+      }
+    },
+    {
+      "at": "19.8",
+      "step": "restore of prepared-only runs",
+      "value": [
+        {
+          "runId": "probe_agent_bq284lmvw6d89v_8f848b1c11414f05882ae63593b50465",
+          "restore": {
+            "success": true,
+            "message": "Agent run restored successfully.",
+            "runId": "probe_agent_bq284lmvw6d89v_8f848b1c11414f05882ae63593b50465"
+          }
+        },
+        {
+          "runId": "probe_agent_bq284lmvw6d89v_6a18f2910bd347688a225aebe2e6b977",
+          "restore": {
+            "success": true,
+            "message": "Agent run restored successfully.",
+            "runId": "probe_agent_bq284lmvw6d89v_6a18f2910bd347688a225aebe2e6b977"
+          }
+        },
+        {
+          "runId": "probe_agent_bq284lmvw6d89v_6a53cb5effb8449780349de7bb5436b2",
+          "restore": {
+            "success": true,
+            "message": "Agent run restored successfully.",
+            "runId": "probe_agent_bq284lmvw6d89v_6a53cb5effb8449780349de7bb5436b2"
+          }
+        }
+      ]
+    },
+    {
+      "at": "19.8",
+      "step": "after relaunch",
+      "value": {
+        "listed": 8,
+        "onDisk": 8,
+        "unknown": 3,
+        "preparedOnly": 3,
+        "inspected": [
+          {
+            "runId": "probe_agent_bq284lmvw6d89v_8f848b1c11414f05882ae63593b50465",
+            "listed": {
+              "runId": "probe_agent_bq284lmvw6d89v_8f848b1c11414f05882ae63593b50465",
+              "status": "offline",
+              "isActive": false,
+              "terminatedAt": null,
+              "summary": "",
+              "agentName": "Probe Agent BQ284Lmvw6d89v"
+            },
+            "resumeConfig": {
+              "isActive": false
+            }
+          },
+          {
+            "runId": "probe_agent_bq284lmvw6d89v_6a18f2910bd347688a225aebe2e6b977",
+            "listed": {
+              "runId": "probe_agent_bq284lmvw6d89v_6a18f2910bd347688a225aebe2e6b977",
+              "status": "offline",
+              "isActive": false,
+              "terminatedAt": null,
+              "summary": "",
+              "agentName": "Probe Agent BQ284Lmvw6d89v"
+            },
+            "resumeConfig": {
+              "isActive": false
+            }
+          },
+          {
+            "runId": "probe_agent_bq284lmvw6d89v_6a53cb5effb8449780349de7bb5436b2",
+            "listed": {
+              "runId": "probe_agent_bq284lmvw6d89v_6a53cb5effb8449780349de7bb5436b2",
+              "status": "offline",
+              "isActive": false,
+              "terminatedAt": null,
+              "summary": "",
+              "agentName": "Probe Agent BQ284Lmvw6d89v"
+            },
+            "resumeConfig": {
+              "isActive": false
+            }
+          },
+          {
+            "runId": "probe_agent_bq284lmvw6d89v_8f848b1c11414f05882ae63593b50465",
+            "listed": {
+              "runId": "probe_agent_bq284lmvw6d89v_8f848b1c11414f05882ae63593b50465",
+              "status": "offline",
+              "isActive": false,
+              "terminatedAt": null,
+              "summary": "",
+              "agentName": "Probe Agent BQ284Lmvw6d89v"
+            },
+            "resumeConfig": {
+              "isActive": false
+            }
+          },
+          {
+            "runId": "probe_agent_bq284lmvw6d89v_6a18f2910bd347688a225aebe2e6b977",
+            "listed": {
+              "runId": "probe_agent_bq284lmvw6d89v_6a18f2910bd347688a225aebe2e6b977",
+              "status": "offline",
+              "isActive": false,
+              "terminatedAt": null,
+              "summary": "",
+              "agentName": "Probe Agent BQ284Lmvw6d89v"
+            },
+            "resumeConfig": {
+              "isActive": false
+            }
+          },
+          {
+            "runId": "probe_agent_bq284lmvw6d89v_6a53cb5effb8449780349de7bb5436b2",
+            "listed": {
+              "runId": "probe_agent_bq284lmvw6d89v_6a53cb5effb8449780349de7bb5436b2",
+              "status": "offline",
+              "isActive": false,
+              "terminatedAt": null,
+              "summary": "",
+              "agentName": "Probe Agent BQ284Lmvw6d89v"
+            },
+            "resumeConfig": {
+              "isActive": false
+            }
+          }
+        ],
+        "cutHandlerLog": [
+          "[13.53] Error in createAgentRun: AgentCreationError: AgentRun activation admission is closed for process shutdown.",
+          "[13.56] Error in createAgentRun: AgentCreationError: AgentRun activation admission is closed for process shutdown.",
+          "[13.59] Error in createAgentRun: AgentCreationError: AgentRun activation admission is closed for process shutdown."
+        ]
+      }
+    }
+  ],
+  "createLatencyMs": [
+    78,
+    54,
+    60
+  ],
+  "preCreated": [
+    "probe_agent_bq284lmvw6d89v_66162a02aa81444ea5913fd986fa9ad0",
+    "probe_agent_bq284lmvw6d89v_9281b5344cb740e9aa53bccb8193a669",
+    "probe_agent_bq284lmvw6d89v_abc08e802f7d42669b6655078b0f03bd"
+  ],
+  "inflightPlan": {
+    "median": 60,
+    "stepMs": 12,
+    "sigtermAfterFirstMs": 30
+  },
+  "sigtermAt": 1793437488594,
+  "API-02B": {
+    "case": "API-02B",
+    "serverPid": 88686,
+    "exit": {
+      "code": 0,
+      "signal": null,
+      "at": 1793437490204
+    },
+    "elapsedMs": 1610,
+    "runs": [
+      {
+        "label": "sa-codex",
+        "kind": "agent",
+        "runtime": "codex",
+        "runId": "probe_agent_bq284lmvw6d89v_582ae45b3ea64067a58d686877c3c9e8",
+        "toolCommand": {
+          "pid": 91004,
+          "ppid": 88756,
+          "pgid": 91004,
+          "aliveAfter": false
+        }
+      },
+      {
+        "label": "sa-claude",
+        "kind": "agent",
+        "runtime": "claude",
+        "runId": "probe_agent_bq284lmvw6d89v_39c0e24c914642e28bb0e926a2ea2bd2",
+        "toolCommand": {
+          "pid": 93580,
+          "ppid": 89303,
+          "pgid": 93580,
+          "aliveAfter": false
+        }
+      },
+      {
+        "label": "team-codex",
+        "kind": "team",
+        "runtime": "codex",
+        "runId": "probe_team_coordinator_team_codex_bq284lmvw6d89v_f407847238794b55b3770fad69b7a94e",
+        "toolCommand": {
+          "pid": 94388,
+          "ppid": 88756,
+          "pgid": 94388,
+          "aliveAfter": false
+        }
+      },
+      {
+        "label": "org-claude",
+        "kind": "org",
+        "runtime": "claude",
+        "runId": "probe_org_manager_org_claude_bq284lmvw6d89v_0d00d46722944657a2afde70a85c7f96",
+        "toolCommand": {
+          "pid": 94846,
+          "ppid": 91007,
+          "pgid": 94846,
+          "aliveAfter": false
+        }
+      }
+    ],
+    "before": [
+      {
+        "pid": 88756,
+        "ppid": 88686,
+        "pgid": 88653,
+        "command": "codex app-server -c agents.enabled=false"
+      },
+      {
+        "pid": 89303,
+        "ppid": 88686,
+        "pgid": 88653,
+        "command": "/Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --model claude-haiku-4-5-20251001 --permission-prompt-tool stdio --disallowedTools AskUserQuestion,Agent … XBPWaf7YfJvIYO5yL8\",\"alwaysLoad\":true}}} --setting-sources=user,project,local --permission-mode default --include-partial-messages --session-id=28eadf67-4b26-4d2b-8437-0fcd31bd5efa"
+      },
+      {
+        "pid": 91007,
+        "ppid": 88686,
+        "pgid": 88653,
+        "command": "/Users/normy/.local/bin/claude --output-format stream-json --verbose --input-format stream-json --model claude-haiku-4-5-20251001 --permission-prompt-tool stdio --disallowedTools AskUserQuestion,Agent … sy2bY6MX2vD7vnA6u0\",\"alwaysLoad\":true}}} --setting-sources=user,project,local --permission-mode default --include-partial-messages --session-id=c0706e39-c507-403e-b239-fe733249f24c"
+      },
+      {
+        "pid": 91000,
+        "ppid": 88756,
+        "pgid": 91000,
+        "command": "/Users/normy/.codex/packages/standalone/releases/0.166.0-aarch64-apple-darwin/bin/codex-code-mode-host"
+      },
+      {
+        "pid": 91004,
+        "ppid": 88756,
+        "pgid": 91004,
+        "command": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python -c import time; time.sleep(900) BQ284Lmvw6d89v_sa-codex"
+      },
+      {
+        "pid": 93580,
+        "ppid": 89303,
+        "pgid": 93580,
+        "command": "/bin/zsh -c source /Users/normy/.claude/shell-snapshots/snapshot-zsh-1793437483770-q5q88w.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin unalias  … builtin unset -f -- 'unsetenv'; } >/dev/null 2>&1 || true && eval 'python3 -c \"import time; time.sleep(900)\" BQ284Lmvw6d89v_sa-claude' < /dev/null && pwd -P >| /tmp/claude-b40c-cwd"
+      },
+      {
+        "pid": 94388,
+        "ppid": 88756,
+        "pgid": 94388,
+        "command": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python -c import time; time.sleep(900) BQ284Lmvw6d89v_team-codex"
+      },
+      {
+        "pid": 94846,
+        "ppid": 91007,
+        "pgid": 94846,
+        "command": "/bin/zsh -c source /Users/normy/.claude/shell-snapshots/snapshot-zsh-1793437486190-63l9pq.sh 2>/dev/null || true && setopt NO_EXTENDED_GLOB NO_BARE_GLOB_QUAL 2>/dev/null || true && { \\builtin unalias  … uiltin unset -f -- 'unsetenv'; } >/dev/null 2>&1 || true && eval 'python3 -c \"import time; time.sleep(900)\" BQ284Lmvw6d89v_org-claude' < /dev/null && pwd -P >| /tmp/claude-7b23-cwd"
+      },
+      {
+        "pid": 93649,
+        "ppid": 93580,
+        "pgid": 93580,
+        "command": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python -c import time; time.sleep(900) BQ284Lmvw6d89v_sa-claude"
+      },
+      {
+        "pid": 94847,
+        "ppid": 94846,
+        "pgid": 94846,
+        "command": "/Applications/Xcode.app/Contents/Developer/Library/Frameworks/Python3.framework/Versions/3.9/Resources/Python.app/Contents/MacOS/Python -c import time; time.sleep(900) BQ284Lmvw6d89v_org-claude"
+      }
+    ],
+    "survivors": [],
+    "markedLeft": [],
+    "shutdownLog": []
+  },
+  "inflight": [
+    {
+      "k": 0,
+      "sentAt": 1793437488565,
+      "error": "ECONNRESET",
+      "endedAt": 1793437488599,
+      "sentRelSigtermMs": -29,
+      "endedRelSigtermMs": 5
+    },
+    {
+      "k": 1,
+      "sentAt": 1793437488576,
+      "error": "ECONNRESET",
+      "endedAt": 1793437488599,
+      "sentRelSigtermMs": -18,
+      "endedRelSigtermMs": 5
+    },
+    {
+      "k": 2,
+      "sentAt": 1793437488588,
+      "error": "ECONNRESET",
+      "endedAt": 1793437488599,
+      "sentRelSigtermMs": -6,
+      "endedRelSigtermMs": 5
+    },
+    {
+      "k": 3,
+      "sentAt": 1793437488600,
+      "error": "ECONNREFUSED",
+      "endedAt": 1793437488602,
+      "sentRelSigtermMs": 6,
+      "endedRelSigtermMs": 8
+    },
+    {
+      "k": 4,
+      "sentAt": 1793437488612,
+      "error": "ECONNREFUSED",
+      "endedAt": 1793437488613,
+      "sentRelSigtermMs": 18,
+      "endedRelSigtermMs": 19
+    },
+    {
+      "k": 5,
+      "sentAt": 1793437488625,
+      "error": "ECONNREFUSED",
+      "endedAt": 1793437488626,
+      "sentRelSigtermMs": 31,
+      "endedRelSigtermMs": 32
+    }
+  ],
+  "connections": {
+    "silentClosedRelSigtermMs": 6,
+    "silentError": null,
+    "keepAliveClosedRelSigtermMs": 6
+  },
+  "preparedOnlyRestore": [
+    {
+      "runId": "probe_agent_bq284lmvw6d89v_8f848b1c11414f05882ae63593b50465",
+      "restore": {
+        "success": true,
+        "message": "Agent run restored successfully.",
+        "runId": "probe_agent_bq284lmvw6d89v_8f848b1c11414f05882ae63593b50465"
+      }
+    },
+    {
+      "runId": "probe_agent_bq284lmvw6d89v_6a18f2910bd347688a225aebe2e6b977",
+      "restore": {
+        "success": true,
+        "message": "Agent run restored successfully.",
+        "runId": "probe_agent_bq284lmvw6d89v_6a18f2910bd347688a225aebe2e6b977"
+      }
+    },
+    {
+      "runId": "probe_agent_bq284lmvw6d89v_6a53cb5effb8449780349de7bb5436b2",
+      "restore": {
+        "success": true,
+        "message": "Agent run restored successfully.",
+        "runId": "probe_agent_bq284lmvw6d89v_6a53cb5effb8449780349de7bb5436b2"
+      }
+    }
+  ],
+  "afterRelaunch": {
+    "listedCount": 8,
+    "onDiskCount": 8,
+    "onDisk": [
+      {
+        "runId": "probe_agent_bq284lmvw6d89v_582ae45b3ea64067a58d686877c3c9e8",
+        "preparedAt": "2026-10-31T09:04:39.828Z",
+        "startedAt": "2026-10-31T09:04:40.051Z",
+        "runtimeKind": "codex_app_server"
+      },
+      {
+        "runId": "probe_agent_bq284lmvw6d89v_9281b5344cb740e9aa53bccb8193a669",
+        "preparedAt": "2026-10-31T09:04:43.621Z",
+        "startedAt": "2026-10-31T09:04:43.658Z",
+        "runtimeKind": "codex_app_server"
+      },
+      {
+        "runId": "probe_agent_bq284lmvw6d89v_8f848b1c11414f05882ae63593b50465",
+        "preparedAt": "2026-10-31T09:04:48.584Z",
+        "startedAt": null,
+        "runtimeKind": "codex_app_server"
+      },
+      {
+        "runId": "probe_agent_bq284lmvw6d89v_39c0e24c914642e28bb0e926a2ea2bd2",
+        "preparedAt": "2026-10-31T09:04:40.335Z",
+        "startedAt": "2026-10-31T09:04:40.373Z",
+        "runtimeKind": "claude_agent_sdk"
+      },
+      {
+        "runId": "probe_agent_bq284lmvw6d89v_66162a02aa81444ea5913fd986fa9ad0",
+        "preparedAt": "2026-10-31T09:04:43.547Z",
+        "startedAt": "2026-10-31T09:04:43.606Z",
+        "runtimeKind": "codex_app_server"
+      },
+      {
+        "runId": "probe_agent_bq284lmvw6d89v_abc08e802f7d42669b6655078b0f03bd",
+        "preparedAt": "2026-10-31T09:04:43.677Z",
+        "startedAt": "2026-10-31T09:04:43.718Z",
+        "runtimeKind": "codex_app_server"
+      },
+      {
+        "runId": "probe_agent_bq284lmvw6d89v_6a18f2910bd347688a225aebe2e6b977",
+        "preparedAt": "2026-10-31T09:04:48.569Z",
+        "startedAt": null,
+        "runtimeKind": "codex_app_server"
+      },
+      {
+        "runId": "probe_agent_bq284lmvw6d89v_6a53cb5effb8449780349de7bb5436b2",
+        "preparedAt": "2026-10-31T09:04:48.591Z",
+        "startedAt": null,
+        "runtimeKind": "codex_app_server"
+      }
+    ],
+    "unknownRunsFromCutRequests": [
+      {
+        "runId": "probe_agent_bq284lmvw6d89v_8f848b1c11414f05882ae63593b50465",
+        "preparedAt": "2026-10-31T09:04:48.584Z",
+        "startedAt": null,
+        "runtimeKind": "codex_app_server"
+      },
+      {
+        "runId": "probe_agent_bq284lmvw6d89v_6a18f2910bd347688a225aebe2e6b977",
+        "preparedAt": "2026-10-31T09:04:48.569Z",
+        "startedAt": null,
+        "runtimeKind": "codex_app_server"
+      },
+      {
+        "runId": "probe_agent_bq284lmvw6d89v_6a53cb5effb8449780349de7bb5436b2",
+        "preparedAt": "2026-10-31T09:04:48.591Z",
+        "startedAt": null,
+        "runtimeKind": "codex_app_server"
+      }
+    ],
+    "preparedOnly": [
+      {
+        "runId": "probe_agent_bq284lmvw6d89v_8f848b1c11414f05882ae63593b50465",
+        "preparedAt": "2026-10-31T09:04:48.584Z",
+        "startedAt": null,
+        "runtimeKind": "codex_app_server"
+      },
+      {
+        "runId": "probe_agent_bq284lmvw6d89v_6a18f2910bd347688a225aebe2e6b977",
+        "preparedAt": "2026-10-31T09:04:48.569Z",
+        "startedAt": null,
+        "runtimeKind": "codex_app_server"
+      },
+      {
+        "runId": "probe_agent_bq284lmvw6d89v_6a53cb5effb8449780349de7bb5436b2",
+        "preparedAt": "2026-10-31T09:04:48.591Z",
+        "startedAt": null,
+        "runtimeKind": "codex_app_server"
+      }
+    ],
+    "inspected": [
+      {
+        "runId": "probe_agent_bq284lmvw6d89v_8f848b1c11414f05882ae63593b50465",
+        "listed": {
+          "runId": "probe_agent_bq284lmvw6d89v_8f848b1c11414f05882ae63593b50465",
+          "status": "offline",
+          "isActive": false,
+          "terminatedAt": null,
+          "summary": "",
+          "agentName": "Probe Agent BQ284Lmvw6d89v"
+        },
+        "resumeConfig": {
+          "isActive": false
+        }
+      },
+      {
+        "runId": "probe_agent_bq284lmvw6d89v_6a18f2910bd347688a225aebe2e6b977",
+        "listed": {
+          "runId": "probe_agent_bq284lmvw6d89v_6a18f2910bd347688a225aebe2e6b977",
+          "status": "offline",
+          "isActive": false,
+          "terminatedAt": null,
+          "summary": "",
+          "agentName": "Probe Agent BQ284Lmvw6d89v"
+        },
+        "resumeConfig": {
+          "isActive": false
+        }
+      },
+      {
+        "runId": "probe_agent_bq284lmvw6d89v_6a53cb5effb8449780349de7bb5436b2",
+        "listed": {
+          "runId": "probe_agent_bq284lmvw6d89v_6a53cb5effb8449780349de7bb5436b2",
+          "status": "offline",
+          "isActive": false,
+          "terminatedAt": null,
+          "summary": "",
+          "agentName": "Probe Agent BQ284Lmvw6d89v"
+        },
+        "resumeConfig": {
+          "isActive": false
+        }
+      },
+      {
+        "runId": "probe_agent_bq284lmvw6d89v_8f848b1c11414f05882ae63593b50465",
+        "listed": {
+          "runId": "probe_agent_bq284lmvw6d89v_8f848b1c11414f05882ae63593b50465",
+          "status": "offline",
+          "isActive": false,
+          "terminatedAt": null,
+          "summary": "",
+          "agentName": "Probe Agent BQ284Lmvw6d89v"
+        },
+        "resumeConfig": {
+          "isActive": false
+        }
+      },
+      {
+        "runId": "probe_agent_bq284lmvw6d89v_6a18f2910bd347688a225aebe2e6b977",
+        "listed": {
+          "runId": "probe_agent_bq284lmvw6d89v_6a18f2910bd347688a225aebe2e6b977",
+          "status": "offline",
+          "isActive": false,
+          "terminatedAt": null,
+          "summary": "",
+          "agentName": "Probe Agent BQ284Lmvw6d89v"
+        },
+        "resumeConfig": {
+          "isActive": false
+        }
+      },
+      {
+        "runId": "probe_agent_bq284lmvw6d89v_6a53cb5effb8449780349de7bb5436b2",
+        "listed": {
+          "runId": "probe_agent_bq284lmvw6d89v_6a53cb5effb8449780349de7bb5436b2",
+          "status": "offline",
+          "isActive": false,
+          "terminatedAt": null,
+          "summary": "",
+          "agentName": "Probe Agent BQ284Lmvw6d89v"
+        },
+        "resumeConfig": {
+          "isActive": false
+        }
+      }
+    ],
+    "listed": [
+      {
+        "runId": "probe_agent_bq284lmvw6d89v_6a53cb5effb8449780349de7bb5436b2",
+        "status": "offline",
+        "isActive": false,
+        "terminatedAt": null,
+        "summary": "",
+        "agentName": "Probe Agent BQ284Lmvw6d89v"
+      },
+      {
+        "runId": "probe_agent_bq284lmvw6d89v_8f848b1c11414f05882ae63593b50465",
+        "status": "offline",
+        "isActive": false,
+        "terminatedAt": null,
+        "summary": "",
+        "agentName": "Probe Agent BQ284Lmvw6d89v"
+      },
+      {
+        "runId": "probe_agent_bq284lmvw6d89v_6a18f2910bd347688a225aebe2e6b977",
+        "status": "offline",
+        "isActive": false,
+        "terminatedAt": null,
+        "summary": "",
+        "agentName": "Probe Agent BQ284Lmvw6d89v"
+      },
+      {
+        "runId": "probe_agent_bq284lmvw6d89v_abc08e802f7d42669b6655078b0f03bd",
+        "status": "offline",
+        "isActive": false,
+        "terminatedAt": null,
+        "summary": "",
+        "agentName": "Probe Agent BQ284Lmvw6d89v"
+      },
+      {
+        "runId": "probe_agent_bq284lmvw6d89v_9281b5344cb740e9aa53bccb8193a669",
+        "status": "offline",
+        "isActive": false,
+        "terminatedAt": null,
+        "summary": "",
+        "agentName": "Probe Agent BQ284Lmvw6d89v"
+      },
+      {
+        "runId": "probe_agent_bq284lmvw6d89v_66162a02aa81444ea5913fd986fa9ad0",
+        "status": "offline",
+        "isActive": false,
+        "terminatedAt": null,
+        "summary": "",
+        "agentName": "Probe Agent BQ284Lmvw6d89v"
+      },
+      {
+        "runId": "probe_agent_bq284lmvw6d89v_39c0e24c914642e28bb0e926a2ea2bd2",
+        "status": "offline",
+        "isActive": false,
+        "terminatedAt": null,
+        "summary": "Run exactly this shell command in the foreground and wait for it to finish. Do not run it in the ...",
+        "agentName": "Probe Agent BQ284Lmvw6d89v"
+      },
+      {
+        "runId": "probe_agent_bq284lmvw6d89v_582ae45b3ea64067a58d686877c3c9e8",
+        "status": "offline",
+        "isActive": false,
+        "terminatedAt": null,
+        "summary": "Run exactly this shell command in the foreground and wait for it to finish. Do not run it in the ...",
+        "agentName": "Probe Agent BQ284Lmvw6d89v"
+      }
+    ]
+  },
+  "cutHandlerLog": [
+    "[13.53] Error in createAgentRun: AgentCreationError: AgentRun activation admission is closed for process shutdown.",
+    "[13.56] Error in createAgentRun: AgentCreationError: AgentRun activation admission is closed for process shutdown.",
+    "[13.59] Error in createAgentRun: AgentCreationError: AgentRun activation admission is closed for process shutdown."
+  ],
+  "idleShutdown": {
+    "exit": {
+      "code": 0,
+      "signal": null,
+      "at": 1793437495077
+    },
+    "elapsedMs": 137,
+    "shutdownLog": []
+  },
+  "result": "Completed",
+  "fallbackCleanup": [],
+  "rootRemoved": true
+}

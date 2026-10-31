@@ -334,6 +334,24 @@ the worst case is about 14.25 s (the 10 s bound, one `ps` read of up to 2 s,
 the 1.5 s grace, the 0.5 s kill confirmation and the IPC flush), inside the
 desktop's 20 s wait.
 
+**Closing never waits on a client beyond a short grace.** Fastify runs
+`onClose`, where the studio's run cleanup lives, only after the HTTP server has
+closed, and with default options a client connection that never sent a request
+held that close until the 10 s bound (autobyteus-339). Every Fastify server the
+node runs (the studio server, the standalone application server and the local
+Agent Tools MCP and credential proxy servers) therefore installs
+`installClientConnectionClose` (`src/shutdown/client-connection-close.ts`) as
+its last `preClose` hook, after the native command drain and the WebSocket
+plugin's client close. At close it destroys connections that never sent a
+request, and any connection that arrives from then on; lets requests already in
+progress finish within 2 s (`IN_FLIGHT_REQUEST_GRACE_MS`), so a `createAgentRun`
+in progress still completes and its client gets the run ID; and then closes
+every remaining connection, so the run cleanup starts at once. A new request on
+an open connection during the grace gets Fastify's 503. A request still running
+after the grace is cut; its handler may keep running beside the cleanup. A
+long-lived HTTP stream must be closed by its owner before the server closes (as
+`AgentToolsMcpHost` does), or it spends the whole grace.
+
 ## Stopped Model Configuration And Restore Serialization
 
 `StandaloneAgentRunLifecycleService` also owns the narrow stopped-run

@@ -1,0 +1,15 @@
+# IMP-08
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/unit/shutdown/client-connection-close.test.ts --no-watch --reporter=verbose
+# Commit: 591bf52551
+# Environment: macOS 26.5.2, node v22.23.1
+# Date: 2026-10-31
+
+ ✓ tests/unit/shutdown/client-connection-close.test.ts > client connection close > uses a 2 s grace by default 1ms
+ ✓ tests/unit/shutdown/client-connection-close.test.ts > client connection close > AC-001/AC-008: closes never-used and idle connections, lets a 300 ms request finish, then onClose runs 512ms
+ ✓ tests/unit/shutdown/client-connection-close.test.ts > client connection close > AC-008: a request outlasting the grace is cut at the grace 179ms
+ ✓ tests/unit/shutdown/client-connection-close.test.ts > client connection close > a new request on an open keep-alive connection during the grace gets 503 461ms
+ ✓ tests/unit/shutdown/client-connection-close.test.ts > client connection close > a connection opened during the grace is destroyed on arrival 661ms
+ ✓ tests/unit/shutdown/client-connection-close.test.ts > client connection close > AR-003: a never-used connection opened while an earlier, slow preClose hook runs does not hold the close 312ms
+ ✓ tests/unit/shutdown/client-connection-close.test.ts > client connection close > leaves an upgraded socket to its owner 57ms
+ Test Files  1 passed (1)
+      Tests  7 passed (7)

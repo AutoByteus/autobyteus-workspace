@@ -1,5 +1,6 @@
 import type { AddressInfo } from "node:net";
 import fastify, { type FastifyInstance } from "fastify";
+import { installClientConnectionClose } from "../shutdown/client-connection-close.js";
 import { SERVER_ROUTE_PARAM_MAX_LENGTH } from "../api/fastify-runtime-config.js";
 import { registerCredentialProxyRoutes, type CredentialProxyRouteDependencies } from "./credential-proxy-routes.js";
 
@@ -18,6 +19,7 @@ export class CredentialProxyLocalServer {
 
   constructor(private readonly routeDependencies: (server: CredentialProxyLocalServer) => CredentialProxyRouteDependencies) {
     this.app = fastify({ logger: false, routerOptions: { maxParamLength: SERVER_ROUTE_PARAM_MAX_LENGTH } });
+    installClientConnectionClose(this.app); // its only preClose hook
   }
 
   async listen(): Promise<void> {

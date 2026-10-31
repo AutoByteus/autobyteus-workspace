@@ -1,4 +1,5 @@
 import fastify, { LogController, type FastifyInstance } from "fastify";
+import { installClientConnectionClose } from "../shutdown/client-connection-close.js";
 import websocket from "@fastify/websocket";
 import type { LoggingConfig } from "../config/logging-config.js";
 import { getFastifyLoggerOptions } from "../logging/runtime-logger-bootstrap.js";
@@ -41,6 +42,8 @@ export const buildStandaloneApplicationServer = async (input: {
         input.applicationRuntime.realtime.agentCommunication,
     });
     await registerStandaloneApplicationStaticRoutes(app, input.selection);
+    // Last preClose hook: after the WebSocket plugin's client close.
+    installClientConnectionClose(app);
     return app;
   } catch (error) {
     await app.close();

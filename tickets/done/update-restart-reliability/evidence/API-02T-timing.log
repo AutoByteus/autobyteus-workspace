@@ -1,0 +1,30 @@
+# API-02T: SIGTERM → run-cleanup start, measured with TEMPORARY [339-DIAG] lines in the clean build dist (client-connection-close.js preClose start/end, build-studio-server.js onClose start, server-process-shutdown.js request). Restored after the run; never committed.
+# commit 3be28563ea (code 591bf52551); 2026-10-31T10:36:49.963Z
+## API-02T held-connection sample (3 createAgentRun in progress at SIGTERM)
++1 ms after SIGTERM: shutdown request
++16 ms after SIGTERM: client-connection-close start inProgress=3
++85 ms after SIGTERM: client-connection-close end
++86 ms after SIGTERM: studio onClose run cleanup start
++1422 ms after SIGTERM: client-connection-close start inProgress=0
++1423 ms after SIGTERM: client-connection-close end
++1423 ms after SIGTERM: client-connection-close start inProgress=0
++1423 ms after SIGTERM: client-connection-close end
+## native busy-run fixture (no request in progress; native foreground command drained in preClose first)
+-- server first
++0 ms after shutdown request: shutdown request
++846 ms after shutdown request: client-connection-close start inProgress=0
++846 ms after shutdown request: client-connection-close end
++848 ms after shutdown request: studio onClose run cleanup start
++863 ms after shutdown request: client-connection-close start inProgress=0
++863 ms after shutdown request: client-connection-close end
++863 ms after shutdown request: client-connection-close start inProgress=0
++863 ms after shutdown request: client-connection-close end
+-- server second
++0 ms after shutdown request: shutdown request
++1 ms after shutdown request: client-connection-close start inProgress=0
++1 ms after shutdown request: client-connection-close end
++2 ms after shutdown request: studio onClose run cleanup start
++5 ms after shutdown request: client-connection-close start inProgress=0
++5 ms after shutdown request: client-connection-close end
++5 ms after shutdown request: client-connection-close start inProgress=0
++5 ms after shutdown request: client-connection-close end

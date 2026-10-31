@@ -1,0 +1,8 @@
+# IMP-12
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/integration/application-backend/standalone-application-server.integration.test.ts --no-watch
+# Commit: 591bf52551
+# Environment: macOS 26.5.2, node v22.23.1
+# Date: 2026-10-31
+
+ Test Files  1 passed (1)
+      Tests  2 passed (2)

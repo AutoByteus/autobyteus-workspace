@@ -24,3 +24,22 @@ it('records failed cleanup before the final logger flush and blocks updater prep
   await expect(owner.stop()).rejects.toThrow('cleanup failed')
   expect(events).toEqual(['report', 'flush'])
 })
+
+it('accepts an incomplete stop for install only after it settled as rejected; will-quit then passes', async () => {
+  let fail!: (error: Error) => void
+  const owner = new ApplicationShutdown(() => new Promise<void>((_, reject) => { fail = reject }), vi.fn())
+  expect(() => owner.acceptIncompleteStopForInstall()).toThrow('No settled incomplete application stop')
+  const stopping = owner.stop()
+  expect(() => owner.acceptIncompleteStopForInstall()).toThrow('No settled incomplete application stop')
+  fail(new Error('Backend shutdown incomplete')); await expect(stopping).rejects.toThrow('incomplete')
+  owner.acceptIncompleteStopForInstall()
+  const event = { preventDefault: vi.fn() }, resume = vi.fn(), failQuit = vi.fn()
+  owner.quit(event, vi.fn(), resume, failQuit)
+  expect(event.preventDefault).not.toHaveBeenCalled(); expect(resume).not.toHaveBeenCalled(); expect(failQuit).not.toHaveBeenCalled()
+})
+
+it('a clean stop has nothing to accept', async () => {
+  const owner = new ApplicationShutdown(async () => {}, vi.fn())
+  await owner.stop()
+  expect(() => owner.acceptIncompleteStopForInstall()).toThrow('No settled incomplete application stop')
+})

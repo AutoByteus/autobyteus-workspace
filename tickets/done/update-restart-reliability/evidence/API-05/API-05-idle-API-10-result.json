@@ -1,0 +1,265 @@
+{
+  "case": "API-10",
+  "mode": "idle",
+  "root": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ur339-api.vSYEoq/clean",
+  "commit": "2c3575b0f0fd927da8f2c04a907dbd06e016eb06",
+  "date": "2026-10-31T09:47:37.429Z",
+  "own": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-idle-fLBjGd",
+  "runTag": "BQ284Dmvw7wksj",
+  "steps": [
+    {
+      "at": "4.2",
+      "step": "isolated-app",
+      "value": {
+        "args": [
+          "start",
+          "--from-worktree",
+          "--data-root",
+          "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-idle-fLBjGd/data-root"
+        ],
+        "exit": 0,
+        "ok": true,
+        "error": null
+      }
+    },
+    {
+      "at": "4.3",
+      "step": "instance started",
+      "value": {
+        "label": "first",
+        "instanceId": "iso-64542-390c",
+        "electronPid": 63124,
+        "serverPid": 64052,
+        "serverPort": 64543,
+        "servers": 1
+      }
+    },
+    {
+      "at": "8.8",
+      "step": "idle quit observed",
+      "value": {
+        "label": "idle quit",
+        "electronPid": 63124,
+        "serverPid": 64052,
+        "serverGoneMs": 258,
+        "electronGoneMs": 308,
+        "before": 6,
+        "survivors": [],
+        "markedLeft": [],
+        "serversForDataAfter": [],
+        "tools": []
+      }
+    },
+    {
+      "at": "8.9",
+      "step": "isolated-app",
+      "value": {
+        "args": [
+          "stop",
+          "iso-64542-390c"
+        ],
+        "exit": 0,
+        "ok": true,
+        "error": null
+      }
+    },
+    {
+      "at": "13.0",
+      "step": "isolated-app",
+      "value": {
+        "args": [
+          "start",
+          "--from-worktree",
+          "--data-root",
+          "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-idle-fLBjGd/data-root"
+        ],
+        "exit": 0,
+        "ok": true,
+        "error": null
+      }
+    },
+    {
+      "at": "13.3",
+      "step": "instance started",
+      "value": {
+        "label": "second",
+        "instanceId": "iso-64603-4f5f",
+        "electronPid": 64618,
+        "serverPid": 65528,
+        "serverPort": 64604,
+        "servers": 1
+      }
+    },
+    {
+      "at": "13.4",
+      "step": "relaunch check",
+      "value": {
+        "label": "second",
+        "serversForData": [
+          {
+            "pid": 65528,
+            "ppid": 64618,
+            "pgid": 64618,
+            "command": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ur339-api.vSYEoq/clean/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus  … t 64604 --data-dir /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-idle-fLBjGd/data-root/server-data"
+          }
+        ],
+        "exactlyOne": true,
+        "previousSessionLeft": []
+      }
+    },
+    {
+      "at": "16.2",
+      "step": "second idle quit observed",
+      "value": {
+        "label": "second idle quit",
+        "electronPid": 64618,
+        "serverPid": 65528,
+        "serverGoneMs": 1488,
+        "electronGoneMs": 1488,
+        "before": 7,
+        "survivors": [],
+        "markedLeft": [],
+        "serversForDataAfter": [],
+        "tools": []
+      }
+    },
+    {
+      "at": "16.2",
+      "step": "isolated-app",
+      "value": {
+        "args": [
+          "stop",
+          "iso-64603-4f5f"
+        ],
+        "exit": 0,
+        "ok": true,
+        "error": null
+      }
+    }
+  ],
+  "quit": {
+    "label": "idle quit",
+    "electronPid": 63124,
+    "serverPid": 64052,
+    "serverGoneMs": 258,
+    "electronGoneMs": 308,
+    "before": [
+      {
+        "pid": 63128,
+        "ppid": 63124,
+        "pgid": 63124,
+        "command": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ur339-api.vSYEoq/clean/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoBy … 35764596,r,2405291384342976896,3764096678149569260,4 --trace-process-track-uuid=3190708988185955192 --seatbelt-client=30"
+      },
+      {
+        "pid": 63129,
+        "ppid": 63124,
+        "pgid": 63124,
+        "command": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ur339-api.vSYEoq/clean/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoBy … 35764596,r,2405291384342976896,3764096678149569260,4 --trace-process-track-uuid=3190708989122997041 --seatbelt-client=32"
+      },
+      {
+        "pid": 64052,
+        "ppid": 63124,
+        "pgid": 63124,
+        "command": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ur339-api.vSYEoq/clean/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus  … t 64543 --data-dir /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-idle-fLBjGd/data-root/server-data"
+      },
+      {
+        "pid": 64066,
+        "ppid": 63124,
+        "pgid": 63124,
+        "command": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ur339-api.vSYEoq/clean/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoBy … 35764596,r,2405291384342976896,3764096678149569260,4 --trace-process-track-uuid=3190708990060038890 --seatbelt-client=59"
+      },
+      {
+        "pid": 64122,
+        "ppid": 63124,
+        "pgid": 63124,
+        "command": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ur339-api.vSYEoq/clean/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoBy … 35764596,r,2405291384342976896,3764096678149569260,4 --trace-process-track-uuid=3190708990997080739 --seatbelt-client=59"
+      },
+      {
+        "pid": 64123,
+        "ppid": 63124,
+        "pgid": 63124,
+        "command": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ur339-api.vSYEoq/clean/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoBy … zation-salt-handle=1935764596,r,2405291384342976896,3764096678149569260,4 --trace-process-track-uuid=3190708991934122588"
+      }
+    ],
+    "survivors": [],
+    "markedLeft": [],
+    "serversForDataAfter": [],
+    "tools": []
+  },
+  "relaunch": {
+    "label": "second",
+    "serversForData": [
+      {
+        "pid": 65528,
+        "ppid": 64618,
+        "pgid": 64618,
+        "command": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ur339-api.vSYEoq/clean/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus  … t 64604 --data-dir /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-idle-fLBjGd/data-root/server-data"
+      }
+    ],
+    "exactlyOne": true,
+    "previousSessionLeft": []
+  },
+  "secondQuit": {
+    "label": "second idle quit",
+    "electronPid": 64618,
+    "serverPid": 65528,
+    "serverGoneMs": 1488,
+    "electronGoneMs": 1488,
+    "before": [
+      {
+        "pid": 64619,
+        "ppid": 64618,
+        "pgid": 64618,
+        "command": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ur339-api.vSYEoq/clean/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoBy … 35764596,r,7017727599081216214,2455931760712218092,4 --trace-process-track-uuid=3190708988185955192 --seatbelt-client=24"
+      },
+      {
+        "pid": 64620,
+        "ppid": 64618,
+        "pgid": 64618,
+        "command": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ur339-api.vSYEoq/clean/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoBy … 35764596,r,7017727599081216214,2455931760712218092,4 --trace-process-track-uuid=3190708989122997041 --seatbelt-client=24"
+      },
+      {
+        "pid": 65528,
+        "ppid": 64618,
+        "pgid": 64618,
+        "command": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ur339-api.vSYEoq/clean/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/MacOS/AutoByteus  … t 64604 --data-dir /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/bq284-desk-idle-fLBjGd/data-root/server-data"
+      },
+      {
+        "pid": 65842,
+        "ppid": 64618,
+        "pgid": 64618,
+        "command": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ur339-api.vSYEoq/clean/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoBy … 35764596,r,7017727599081216214,2455931760712218092,4 --trace-process-track-uuid=3190708990060038890 --seatbelt-client=58"
+      },
+      {
+        "pid": 65923,
+        "ppid": 64618,
+        "pgid": 64618,
+        "command": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ur339-api.vSYEoq/clean/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoBy … 35764596,r,7017727599081216214,2455931760712218092,4 --trace-process-track-uuid=3190708990997080739 --seatbelt-client=59"
+      },
+      {
+        "pid": 65924,
+        "ppid": 64618,
+        "pgid": 64618,
+        "command": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ur339-api.vSYEoq/clean/autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Frameworks/AutoBy … zation-salt-handle=1935764596,r,7017727599081216214,2455931760712218092,4 --trace-process-track-uuid=3190708991934122588"
+      },
+      {
+        "pid": 66041,
+        "ppid": 65528,
+        "pgid": 64618,
+        "command": "agy models"
+      }
+    ],
+    "survivors": [],
+    "markedLeft": [],
+    "serversForDataAfter": [],
+    "tools": []
+  },
+  "result": "Completed",
+  "fallbackCleanup": [],
+  "serversForDataAtEnd": [],
+  "copiedLogs": [
+    "<own>/data-root/server-data/logs/server.log",
+    "<own>/data-root/logs/app.log"
+  ],
+  "rootRemoved": true
+}

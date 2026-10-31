@@ -150,8 +150,10 @@ fallback, so taskkill alone is not treated as graceful host cleanup.
 
 The desktop waits up to 20 s for the server to exit; the server bounds its own
 cleanup at 10 s and then sweeps the processes it started, so a busy quit
-normally ends within seconds. Only when the server does not exit in that window
-does the force step run. On macOS/Linux it stops the server's whole tree, not
+normally ends within seconds. Client connections do not hold the server's
+close: one that never sent a request is closed at once, and a request in
+progress gets up to 2 s to finish (see the server's `agent_execution.md`).
+Only when the server does not exit in that window does the force step run. On macOS/Linux it stops the server's whole tree, not
 the server alone (`BaseServerManager.forceStop`, `serverProcessTree.ts`): it
 reads the process table asynchronously (2 s timeout) and records the server's
 descendants in its process group and the groups they lead, sends them SIGTERM
@@ -166,6 +168,16 @@ uses the same preparation. Backend restart and application quit drain the host's
 owned native command scope, including work retained after an agent ends;
 provider shutdown remains provider-owned. Ordinary agent stop does not acquire
 a new preview-killing policy. Failures are reported instead of declared clean.
+
+"Install update and restart" prepares with the same stop
+(`ElectronApplication.prepareForInstall`). When that stop is incomplete but the
+server process is confirmed gone (`BaseServerManager.isServerProcessGone()`: no
+server process, or it has an exit code or signal), the incomplete stop is still
+logged as "Application shutdown incomplete", and
+`ApplicationShutdown.acceptIncompleteStopForInstall()` lets `will-quit` pass, so
+the update installs and the app restarts. Only when the server's exit is not
+confirmed does the install stop with the existing error. A normal quit after an
+incomplete stop still ends with `app.exit(1)`.
 
 ### Delayed startup is informational
 
