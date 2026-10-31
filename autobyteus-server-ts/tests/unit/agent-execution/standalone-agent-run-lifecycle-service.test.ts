@@ -69,13 +69,20 @@ const candidate = (input: {
   };
 };
 
+/** What `recordRunStarted` is called with: the target metadata and the explicit flag; it returns the metadata it wrote. */
+type StartedInput = AgentRunMetadata & { clearPendingRuntimeSwitch?: boolean };
+const startedMetadata = (input: StartedInput): AgentRunMetadata => {
+  const { clearPendingRuntimeSwitch: _flag, ...written } = input;
+  return written;
+};
+
 const harness = (input: {
   metadataStates: unknown[];
   preparedCandidate?: ReturnType<typeof candidate>;
   restoredCandidate?: ReturnType<typeof candidate>;
   recordRunStarted?: ReturnType<typeof vi.fn>;
   getCatalogRow?: ReturnType<typeof vi.fn>;
-  commitRunModelConfig?: ReturnType<typeof vi.fn>;
+  commitRunRuntimeSwitch?: ReturnType<typeof vi.fn>;
   validateModelConfig?: ReturnType<typeof vi.fn>;
 }) => {
   const states = [...input.metadataStates];
@@ -89,10 +96,10 @@ const harness = (input: {
     restorePreparation: vi.fn(async () => input.restoredCandidate),
   });
   const historyCatalogService = {
-    recordRunStarted: input.recordRunStarted ?? vi.fn(async (target: AgentRunMetadata) => target),
+    recordRunStarted: input.recordRunStarted ?? vi.fn(async (input: StartedInput) => startedMetadata(input)),
     recordRunSummary: vi.fn(async () => undefined),
     getCatalogRow: input.getCatalogRow ?? vi.fn(async () => ({ archivedAt: null })),
-    commitRunModelConfig: input.commitRunModelConfig ?? vi.fn(),
+    commitRunRuntimeSwitch: input.commitRunRuntimeSwitch ?? vi.fn(),
   };
   const workspaceManager = {
     ensureWorkspaceByRootPath: vi.fn(async () => ({ workspaceId: "workspace-1" })),
@@ -206,11 +213,11 @@ describe("StandaloneAgentRunLifecycleService", () => {
     const preparedCandidate = candidate({ run, order });
     let release!: () => void;
     const gate = new Promise<void>((resolve) => { release = resolve; });
-    const recordRunStarted = vi.fn(async (target: AgentRunMetadata) => {
+    const recordRunStarted = vi.fn(async (target: StartedInput) => {
       order.push("persist-start");
       await gate;
       order.push("persist-finish");
-      return target;
+      return startedMetadata(target);
     });
     const current = harness({
       metadataStates: [{ kind: "present", metadata: prepared }],
@@ -351,7 +358,7 @@ describe("StandaloneAgentRunLifecycleService", () => {
     const secondCandidate = candidate();
     const recordRunStarted = vi.fn()
       .mockResolvedValueOnce(null)
-      .mockImplementationOnce(async (target: AgentRunMetadata) => target);
+      .mockImplementationOnce(async (target: StartedInput) => startedMetadata(target));
     const current = harness({
       metadataStates: [
         { kind: "present", metadata: prepared },
@@ -405,7 +412,7 @@ describe("StandaloneAgentRunLifecycleService", () => {
       startedAt: "2026-08-17T20:05:00.000Z",
       llmConfig: { effort: "high" },
     });
-    const commitRunModelConfig = vi.fn(async () => ({
+    const commitRunRuntimeSwitch = vi.fn(async () => ({
       kind: "committed" as const,
       metadata: updated,
     }));
@@ -415,12 +422,13 @@ describe("StandaloneAgentRunLifecycleService", () => {
     }));
     const current = harness({
       metadataStates: [{ kind: "present", metadata: stopped }],
-      commitRunModelConfig,
+      commitRunRuntimeSwitch,
       validateModelConfig,
     });
 
     await expect(current.service.updateStoppedSelection({
       agentRunId: RUN_ID,
+      runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
       llmModelIdentifier: "sonnet",
       llmConfig: { effort: "high" },
     })).resolves.toMatchObject({
@@ -433,26 +441,26 @@ describe("StandaloneAgentRunLifecycleService", () => {
       context: { runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, currentModelIdentifier: "haiku", workspaceRootPath: stopped.workspaceRootPath },
       selection: { llmModelIdentifier: "sonnet", llmConfig: { effort: "high" } },
     });
-    expect(commitRunModelConfig).toHaveBeenCalledWith({
+    expect(commitRunRuntimeSwitch).toHaveBeenCalledWith({
       runId: RUN_ID,
-      llmModelIdentifier: "sonnet",
-      llmConfig: { effort: "high" },
+      selection: { runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "sonnet", llmConfig: { effort: "high" } },
     });
   });
 
   it("refuses a model-configuration update when the run became active", async () => {
     const stopped = metadata({ startedAt: "2026-08-17T20:05:00.000Z" });
     const validateModelConfig = vi.fn();
-    const commitRunModelConfig = vi.fn();
+    const commitRunRuntimeSwitch = vi.fn();
     const current = harness({
       metadataStates: [{ kind: "present", metadata: stopped }],
-      commitRunModelConfig,
+      commitRunRuntimeSwitch,
       validateModelConfig,
     });
     current.agentRunManager.getActiveRun.mockReturnValue({ runId: RUN_ID });
 
     await expect(current.service.updateStoppedSelection({
       agentRunId: RUN_ID,
+      runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
       llmModelIdentifier: "sonnet",
       llmConfig: { effort: "high" },
     })).resolves.toMatchObject({
@@ -462,7 +470,7 @@ describe("StandaloneAgentRunLifecycleService", () => {
       editability: { editable: false, reason: "RUN_ACTIVE" },
     });
     expect(validateModelConfig).not.toHaveBeenCalled();
-    expect(commitRunModelConfig).not.toHaveBeenCalled();
+    expect(commitRunRuntimeSwitch).not.toHaveBeenCalled();
   });
 
   it("holds restore behind a stopped-model-config commit in the same per-run lane", async () => {
@@ -483,7 +491,7 @@ describe("StandaloneAgentRunLifecycleService", () => {
       await validationBarrier;
       return { kind: "valid" as const, selection: { llmModelIdentifier: "sonnet", llmConfig: { effort: "high" } } };
     });
-    const commitRunModelConfig = vi.fn(async () => ({
+    const commitRunRuntimeSwitch = vi.fn(async () => ({
       kind: "committed" as const,
       metadata: updated,
     }));
@@ -494,12 +502,13 @@ describe("StandaloneAgentRunLifecycleService", () => {
         { kind: "present", metadata: updated },
       ],
       restoredCandidate,
-      commitRunModelConfig,
+      commitRunRuntimeSwitch,
       validateModelConfig,
     });
 
     const save = current.service.updateStoppedSelection({
       agentRunId: RUN_ID,
+      runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
       llmModelIdentifier: "sonnet",
       llmConfig: { effort: "high" },
     });
@@ -511,7 +520,7 @@ describe("StandaloneAgentRunLifecycleService", () => {
     releaseValidation();
     await expect(save).resolves.toMatchObject({ outcome: "UPDATED", canonical: updated });
     await expect(restore).resolves.toMatchObject({ metadata: updated });
-    expect(commitRunModelConfig).toHaveBeenCalledOnce();
+    expect(commitRunRuntimeSwitch).toHaveBeenCalledOnce();
     expect(current.agentRunManager.platformPreparation).toHaveBeenCalledWith({
       runId: RUN_ID,
       config: expect.objectContaining({ llmModelIdentifier: "sonnet", llmConfig: { effort: "high" } }),
@@ -537,7 +546,7 @@ describe("StandaloneAgentRunLifecycleService", () => {
       await validationBarrier;
       return { kind: "valid" as const, selection: { llmModelIdentifier: "sonnet", llmConfig: { effort: "high" } } };
     });
-    const commitRunModelConfig = vi.fn(async () => ({
+    const commitRunRuntimeSwitch = vi.fn(async () => ({
       kind: "committed" as const,
       metadata: updated,
     }));
@@ -549,7 +558,7 @@ describe("StandaloneAgentRunLifecycleService", () => {
         { kind: "present", metadata: updated },
       ],
       restoredCandidate,
-      commitRunModelConfig,
+      commitRunRuntimeSwitch,
       validateModelConfig,
     });
     restoredCandidate.commitPublication.mockImplementation(() => {
@@ -560,6 +569,7 @@ describe("StandaloneAgentRunLifecycleService", () => {
 
     const save = current.service.updateStoppedSelection({
       agentRunId: RUN_ID,
+      runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
       llmModelIdentifier: "sonnet",
       llmConfig: { effort: "high" },
     });
@@ -596,12 +606,12 @@ describe("StandaloneAgentRunLifecycleService", () => {
     const activeRun = commandReadyRun();
     const restoredCandidate = candidate({ run: activeRun });
     const validateModelConfig = vi.fn();
-    const commitRunModelConfig = vi.fn();
+    const commitRunRuntimeSwitch = vi.fn();
     const current = harness({
       metadataStates: [{ kind: "present", metadata: stopped }],
       restoredCandidate,
       validateModelConfig,
-      commitRunModelConfig,
+      commitRunRuntimeSwitch,
     });
     restoredCandidate.commitPublication.mockImplementation(() => {
       current.agentRunManager.getActiveRun.mockReturnValue(activeRun);
@@ -621,6 +631,7 @@ describe("StandaloneAgentRunLifecycleService", () => {
 
     await expect(current.service.updateStoppedSelection({
       agentRunId: RUN_ID,
+      runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK,
       llmModelIdentifier: "sonnet",
       llmConfig: { effort: "high" },
     })).resolves.toMatchObject({
@@ -630,7 +641,7 @@ describe("StandaloneAgentRunLifecycleService", () => {
       isActive: true,
     });
     expect(validateModelConfig).not.toHaveBeenCalled();
-    expect(commitRunModelConfig).not.toHaveBeenCalled();
+    expect(commitRunRuntimeSwitch).not.toHaveBeenCalled();
   });
 
   it("hands mentions to the run's root and maps its admission outcome to the command ack", async () => {

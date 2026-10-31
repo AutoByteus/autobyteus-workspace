@@ -145,7 +145,7 @@ export class MemoryRunDiscovery {
       const row = rows.get(entry) ?? null;
       const definitionId = optional(metadata?.agentDefinitionId) ?? optional(taskAgent?.agentDefinitionId) ?? optional(row?.agentDefinitionId);
       // The journal target: the agent runtime that wrote the open raw-trace file (the previous one while a switch is pending).
-      const runtimeKind: RuntimeKind | null = metadata ? openRawTraceRuntimeKind(metadata) : taskAgent?.runtimeKind ?? null;
+      const runtimeKind: RuntimeKind | null = metadata ? openRawTraceRuntimeKind(metadata) ?? null : taskAgent?.runtimeKind ?? null;
       runs.push({
         ...this.place(memoryDir), runId: entry,
         agentName: optional(row?.agentName) ?? definitionId ?? nameFromFolder(entry),

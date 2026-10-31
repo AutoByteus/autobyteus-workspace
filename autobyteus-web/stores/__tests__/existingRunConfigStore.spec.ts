@@ -44,7 +44,7 @@ vi.mock('~/services/agentCollaboration/agentRunCollaborationHydration', () => ({
 vi.mock('~/services/runConfigEditing/existingRunModelOptionsClient', () => ({ loadExistingRunModelOptions: vi.fn().mockResolvedValue({}) }))
 
 vi.mock('~/services/runConfigEditing/existingRunModelConfigMutationClient', () => ({
-  updateStoppedAgentModelConfig: mocks.updateAgent,
+  updateStoppedAgentSelection: mocks.updateAgent,
   updateStoppedTeamModelConfigs: mocks.updateTeam,
 }))
 vi.mock('~/stores/runHistoryStore', () => ({
@@ -517,13 +517,14 @@ describe('existingRunConfigStore', () => {
       message: 'Another supported workflow resumed this run.',
       isActive: true,
       editability: activeEditability(),
-      canonicalSelection: { llmModelIdentifier: 'model-1', llmConfig: { effort: 'medium' } },
+      canonicalSelection: { runtimeKind: 'codex_app_server', llmModelIdentifier: 'model-1', llmConfig: { effort: 'medium' } },
       fieldErrors: [],
     })
 
     await expect(store.save()).resolves.toBe(false)
     expect(mocks.updateAgent).toHaveBeenCalledWith({
       agentRunId: 'run-1',
+      runtimeKind: 'codex_app_server',
       llmModelIdentifier: 'model-1',
       llmConfig: { effort: 'high' },
     })
@@ -604,11 +605,11 @@ it('saves a model-only change and installs the canonical pair, not the submitted
   expect(store.dirty).toBe(true)
   expect(store.canSave).toBe(true)
   mocks.updateAgent.mockResolvedValue({ success: true, outcome: 'UPDATED', message: 'Saved', isActive: false,
-    editability: editability(), fieldErrors: [], canonicalSelection: { llmModelIdentifier: 'larger', llmConfig: null } })
+    editability: editability(), fieldErrors: [], canonicalSelection: { runtimeKind: 'codex_app_server', llmModelIdentifier: 'larger', llmConfig: null } })
   expect(await store.save()).toBe(true)
-  expect(mocks.updateAgent).toHaveBeenLastCalledWith({ agentRunId: 'run-1', llmModelIdentifier: 'larger', llmConfig: null })
+  expect(mocks.updateAgent).toHaveBeenLastCalledWith({ agentRunId: 'run-1', runtimeKind: 'codex_app_server', llmModelIdentifier: 'larger', llmConfig: null })
   expect(store.draft).toMatchObject({ metadata: { llmModelIdentifier: 'larger', llmConfig: null }, draftSelection: { llmModelIdentifier: 'larger', llmConfig: null } })
-  expect(mocks.patchConfigOnly).toHaveBeenLastCalledWith('run-1', { llmModelIdentifier: 'larger', llmConfig: null })
+  expect(mocks.patchConfigOnly).toHaveBeenLastCalledWith('run-1', { runtimeKind: 'codex_app_server', llmModelIdentifier: 'larger', llmConfig: null })
   expect(store.dirty).toBe(false)
 })
 it('does not let missing replacement metadata block current-model settings', () => {

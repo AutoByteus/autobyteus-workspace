@@ -27,7 +27,7 @@ import { WORK_JOURNAL_ACTIVE_FILE_NAME, WorkJournalStore, workJournalFileName } 
  * A segment that records none (or an unknown one) is rendered with the no-runtime rules.
  */
 const fileRuntimeKind = (rawFile: RawTraceFileSource, target: WorkJournalTarget): RuntimeKind | null =>
-  rawFile.kind === "segment" ? rawFile.runtimeKind : target.runtimeKind;
+  rawFile.kind === "segment" ? rawFile.runtimeKind : target.runtimeKind ?? null;
 
 const sha256 = (text: string): string => createHash("sha256").update(text, "utf-8").digest("hex");
 

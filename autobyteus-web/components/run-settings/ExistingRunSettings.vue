@@ -44,13 +44,23 @@
           <RunSettingsCard
             :values="root"
             :locked="rootLocked"
-            runtime-locked
+            :runtime-locked="kind !== 'agent'"
             :locked-models="rootLockedModels"
             :model-unavailable="rootModelUnavailable"
             test-suffix="root"
             @change="emit('change-root', $event)"
           />
         </div>
+        <!-- A stopped Agent run can switch its agent runtime; the switch is made by its next message. -->
+        <p
+          v-if="runtimeChangePending"
+          class="mt-2 flex items-center gap-1.5 text-xs text-gray-500"
+          role="status"
+          data-test="existing-run-runtime-change-hint"
+        >
+          <Icon icon="heroicons:arrows-right-left" class="h-3.5 w-3.5 flex-shrink-0" aria-hidden="true" />
+          <span>{{ $t('runSettings.existing.runtimeChangeHint') }}</span>
+        </p>
 
         <RunMembersSection
           v-if="members.length"
@@ -150,7 +160,9 @@ const props = withDefaults(defineProps<{
   saved: boolean
   /** A failed save, surfaced as is. */
   saveError?: string | null
-}>(), { rootLockedModels: null, rootModelUnavailable: false, members: () => [], lockedModelsFor: null, delegated: () => [],
+  /** The draft chooses another agent runtime than the saved one (a stopped Agent run). */
+  runtimeChangePending?: boolean
+}>(), { runtimeChangePending: false, rootLockedModels: null, rootModelUnavailable: false, members: () => [], lockedModelsFor: null, delegated: () => [],
   delegatedLockedModelsFor: null, delegatedNotice: null, saveError: null })
 
 const emit = defineEmits<{

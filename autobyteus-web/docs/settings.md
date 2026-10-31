@@ -1689,7 +1689,7 @@ are saved (it is not an error); read-only and historical views still show it as
 a residual until then.
 
 Save is enabled only for a stopped, editable, schema-ready, changed draft. The
-revision-free mutations are `updateStoppedAgentRunModelConfig`,
+revision-free mutations are `updateStoppedAgentRunSelection`,
 `updateStoppedTeamRunModelConfigs`, and `updateStoppedAgentOrgRunConfig`. The
 AgentOrg command carries independent model and mounted-Team workspace patch
 lists so one validated tree write publishes their aggregate result. Each model

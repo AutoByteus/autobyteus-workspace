@@ -12,6 +12,7 @@ import {
   makeTempMemoryRoot,
   rotateActive,
   setSegmentRecordCount,
+  setSegmentRuntimeKind,
   turnRecords,
   writeActive,
 } from "../raw-trace-folder-fixtures.js";
@@ -44,7 +45,6 @@ describe("WorkJournalService.ensureCurrent (DS-004)", () => {
     });
     expect(manifest(runDir)).toEqual({
       run_id: "run_journal_1",
-      runtime_kind: "claude_agent_sdk",
       renderer_revision: WORK_JOURNAL_RENDERER_REVISION,
       files: [{
         journal_file: "work_journal_active.md",
@@ -52,6 +52,7 @@ describe("WorkJournalService.ensureCurrent (DS-004)", () => {
         source_record_count: 4,
         state: "open",
         content_sha256: expect.stringMatching(/^[0-9a-f]{64}$/),
+        runtime_kind: "claude_agent_sdk",
       }],
     });
     expect(read(pkg.files[0]!.path)).toContain("Command: ls → ok");
@@ -109,7 +110,7 @@ describe("WorkJournalService.ensureCurrent (DS-004)", () => {
     expect(rebuilt.evidenceHash).toBe(hash);
   });
 
-  it("a closed file is rendered again when the renderer revision, runtime or raw record count changes, or it is missing (N4)", async () => {
+  it("a closed file is rendered again when the renderer revision, its own recorded runtime or raw record count changes, or it is missing; the run's runtime is not its rule (N4)", async () => {
     writeActive(runDir, turnRecords("turn_1", "ls", "a.ts"));
     rotateActive(runDir);
     const service = new WorkJournalService();
@@ -122,6 +123,11 @@ describe("WorkJournalService.ensureCurrent (DS-004)", () => {
     await service.ensureCurrent(target());
     expect(closedRenders()).toBe(1);
 
+    // The run's own runtime changing does not touch a closed file: it keeps the rules of the runtime that wrote it.
+    await service.ensureCurrent({ ...target(), runtimeKind: RuntimeKind.CODEX_APP_SERVER });
+    expect(closedRenders()).toBe(1);
+    // The runtime recorded for its segment is its rule.
+    setSegmentRuntimeKind(runDir, "raw_traces_000001.jsonl", "codex_app_server");
     const codex = await service.ensureCurrent({ ...target(), runtimeKind: RuntimeKind.CODEX_APP_SERVER });
     expect(closedRenders()).toBe(2);
     expect(read(codex.files[0]!.path)).toContain("Runtime Codex App Server ·");

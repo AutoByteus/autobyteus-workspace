@@ -1,10 +1,10 @@
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 import { teamRunExecutionTreeDtoSchema } from '@autobyteus/team-stream-contracts'
 import { parseAgentOrgExecutionTree } from '~/types/collaboration/agentOrgExecution'
-import { cloneExistingRunSelection, cloneExistingRunJsonValue } from '~/services/runConfigEditing/existingAgentModelConfigDraft'
+import { cloneExistingAgentRunSelection, cloneExistingRunJsonValue } from '~/services/runConfigEditing/existingAgentModelConfigDraft'
 import type { ExistingRunConfigDraft } from '~/types/agent/ExistingRunConfigDraft'
 import type { RunResumeConfigPayload, TeamRunResumeConfigPayload } from '~/stores/runHistoryTypes'
-import type { AgentModelConfigMutationResult, TeamModelConfigMutationResult } from '~/services/runConfigEditing/existingRunModelConfigMutationClient'
+import type { AgentSelectionMutationResult, TeamModelConfigMutationResult } from '~/services/runConfigEditing/existingRunModelConfigMutationClient'
 import type { AgentOrgRunConfigMutationResult } from '~/services/runConfigEditing/agentOrgRunConfigClient'
 import { useAgentOrgContextsStore } from '~/stores/agentOrgContextsStore'
 import { useRunHistoryStore } from '~/stores/runHistoryStore'
@@ -18,13 +18,13 @@ export const existingRunConfigResultActions = {
     applyAgentFailureCanonical(
       this: any,
       draft: Extract<ExistingRunConfigDraft, { kind: 'agent' }>,
-      result: AgentModelConfigMutationResult,
+      result: AgentSelectionMutationResult,
     ): void {
       if (!result.canonicalSelection?.llmModelIdentifier || !Object.hasOwn(result.canonicalSelection, 'llmConfig')) {
         this.draft = { ...draft, isActive: result.isActive, editability: { ...result.editability } }
         return
       }
-      const canonical = cloneExistingRunSelection(result.canonicalSelection)
+      const canonical = cloneExistingAgentRunSelection(result.canonicalSelection)
       const payload: RunResumeConfigPayload = {
         runId: draft.runId,
         isActive: result.isActive,
