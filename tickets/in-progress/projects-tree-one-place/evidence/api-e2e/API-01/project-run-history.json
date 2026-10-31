@@ -1,0 +1,261 @@
+{
+  "projects": {
+    "P": {
+      "projectId": "project_5228e7e1-15b2-4584-bbe9-f4111e18e88c",
+      "name": "Prototype Launch 43622e"
+    },
+    "Q": {
+      "projectId": "project_29cb2134-626c-4d69-8a5e-8c04527b7176",
+      "name": "Docs Site 43622e"
+    },
+    "R": {
+      "projectId": "project_7bc7ead0-1387-4d7b-88ae-fbafcffbc5ba",
+      "name": "Website 43622e"
+    }
+  },
+  "tasks": {
+    "P1": "project_task_71e27fa0-c9cc-4aa6-84f2-961e41681d32",
+    "P2": "project_task_af8228f4-15da-4b49-bd02-120853c55956",
+    "P3": "project_task_307e12b3-f7bc-4061-a7d0-912b60a4116b",
+    "P4": "project_task_47bc677f-b86c-4fa4-8bd9-56541c59eb7d",
+    "Q1": "project_task_634f0a2d-0ffa-4b5f-917d-ec4b516c9b55",
+    "Q2": "project_task_af27e8bf-632f-4890-bc0e-23912c7612cd",
+    "Q3": "project_task_5474b5f2-8411-409a-948c-624c399a342b",
+    "Q4": "project_task_8d2828cf-c539-41ac-84e4-8da155e4637d",
+    "R1": "project_task_36ae7ebd-e1f2-4bf4-8ef1-392e3cb954c5"
+  },
+  "ids": {
+    "manager": "prh-manager-43622e",
+    "mate": "prh-mate-43622e",
+    "writer": "prh-writer-43622e",
+    "checker": "prh-checker-43622e",
+    "squad": "prh-squad-43622e",
+    "team": "prh-delivery-team-43622e",
+    "org": "prh-org-43622e",
+    "preparedUnderP": "prh_manager_43622e_28dbbdac7fe542d48ff23320d1314312",
+    "newer": [
+      "prh_manager_43622e_bfc4ae68f8df4775b62640c2f84d3c75",
+      "prh_manager_43622e_f3abbe31dd9344ccbaf1128381eff33d",
+      "prh_manager_43622e_7dd6837d63d34c5fafb50cc3cd9f1585",
+      "prh_manager_43622e_07825271395c4e02a2f56f07844ef10c",
+      "prh_manager_43622e_a1ceb10b91634491b6026e6af0b3a474",
+      "prh_manager_43622e_3046cc264eaf4898bd9c47aeb07cedf3"
+    ]
+  },
+  "prh01": {
+    "runId": "prh_manager_43622e_28dbbdac7fe542d48ff23320d1314312",
+    "stored": {
+      "projectId": "project_5228e7e1-15b2-4584-bbe9-f4111e18e88c",
+      "runs": [
+        {
+          "root": {
+            "kind": "agent",
+            "runId": "prh_manager_43622e_28dbbdac7fe542d48ff23320d1314312"
+          },
+          "linkedAt": "2026-10-31T21:09:56.316Z"
+        }
+      ]
+    },
+    "prompt": "## Project\n\nYou work in the Project Prototype Launch 43622e (Project ID project_5228e7e1-15b2-4584-bbe9-f4111e18e88c). Use this Project ID with the Project tools; ask the user before working on another Project.\n\n## Working Environment\n- Agent workspace: `/priv",
+    "runRecordKeys": [
+      "agentDefinitionId",
+      "agentName",
+      "applicationExecutionContext",
+      "archivedAt",
+      "autoExecuteTools",
+      "createdAt",
+      "llmConfig",
+      "llmModelIdentifier",
+      "memoryDir",
+      "platformAgentRunId",
+      "preparedAt",
+      "preparedExpiresAt",
+      "runId",
+      "runtimeKind",
+      "startedAt",
+      "summary",
+      "terminatedAt",
+      "workspaceRootPath"
+    ]
+  },
+  "prh02": {
+    "missing": "project_769a7a2a-c513-4545-b867-46eb8c1e238d",
+    "prepared": "{\"success\":false,\"message\":\"ProjectError: Project 'project_769a7a2a-c513-4545-b867-46eb8c1e238d' was not found.\",\"runId\":null}",
+    "created": "{\"createAgentRun\":{\"success\":false,\"message\":\"ProjectError: Project 'project_769a7a2a-c513-4545-b867-46eb8c1e238d' was not found.\",\"runId\":null}}",
+    "team": "{\"createAgentTeamRun\":{\"success\":false,\"message\":\"ProjectError: Project 'project_769a7a2a-c513-4545-b867-46eb8c1e238d' was not found.\",\"teamRunId\":null}}"
+  },
+  "prh03": {
+    "teamRunId": "prh_delivery_team_43622e_5d21b64f46d3413d93e45ab28c7abd4c",
+    "members": {
+      "/manager": "prh_manager_43622e_1392ed0ce56a494d84b9b288e226cfc5",
+      "/mate": "prh_mate_43622e_17d182bd757743c3a853e8eadfc2ec89"
+    },
+    "plainTeamRunId": "prh_delivery_team_43622e_1b290c5247b5482e8b6e75a847ee5d6c"
+  },
+  "prh04": {
+    "rootA": "prh_manager_43622e_3a20a9b959fd4b6eb9baeb4c3971f992",
+    "copies": {
+      "aTeam": "prh_squad_43622e_d8c97a8b65c0418584d7742920aa0ff1",
+      "aWriter": "prh_writer_43622e_51d42272b77e4574b4de1e3d3063cb96",
+      "aChecker": "prh_checker_43622e_37e6fcea395d40049a72241c752083cb",
+      "aTemp": "prh_writer_43622e_76fa9ffc77ae49748e0f9ee443f00768"
+    },
+    "P": {
+      "projectId": "project_5228e7e1-15b2-4584-bbe9-f4111e18e88c",
+      "agentDefinitions": [
+        {
+          "agentDefinitionId": "prh-manager-43622e",
+          "runs": [
+            {
+              "runId": "prh_manager_43622e_3a20a9b959fd4b6eb9baeb4c3971f992"
+            },
+            {
+              "runId": "prh_manager_43622e_28dbbdac7fe542d48ff23320d1314312"
+            }
+          ]
+        }
+      ],
+      "teamDefinitions": [
+        {
+          "teamDefinitionId": "prh-delivery-team-43622e",
+          "runs": [
+            {
+              "teamRunId": "prh_delivery_team_43622e_5d21b64f46d3413d93e45ab28c7abd4c"
+            }
+          ]
+        }
+      ]
+    },
+    "Q": {
+      "projectId": "project_29cb2134-626c-4d69-8a5e-8c04527b7176",
+      "agentDefinitions": [],
+      "teamDefinitions": []
+    },
+    "R": {
+      "projectId": "project_7bc7ead0-1387-4d7b-88ae-fbafcffbc5ba",
+      "agentDefinitions": [],
+      "teamDefinitions": []
+    }
+  },
+  "prh05": {
+    "rootB": "prh_manager_43622e_7df7c95d907d4ba58f45afbf39a6744f",
+    "reads": {
+      "P": {
+        "projectId": "project_5228e7e1-15b2-4584-bbe9-f4111e18e88c",
+        "agentDefinitions": [
+          {
+            "agentDefinitionId": "prh-manager-43622e",
+            "runs": [
+              {
+                "runId": "prh_manager_43622e_3a20a9b959fd4b6eb9baeb4c3971f992"
+              },
+              {
+                "runId": "prh_manager_43622e_28dbbdac7fe542d48ff23320d1314312"
+              }
+            ]
+          }
+        ],
+        "teamDefinitions": [
+          {
+            "teamDefinitionId": "prh-delivery-team-43622e",
+            "runs": [
+              {
+                "teamRunId": "prh_delivery_team_43622e_5d21b64f46d3413d93e45ab28c7abd4c"
+              }
+            ]
+          }
+        ]
+      },
+      "Q": {
+        "projectId": "project_29cb2134-626c-4d69-8a5e-8c04527b7176",
+        "agentDefinitions": [],
+        "teamDefinitions": []
+      },
+      "R": {
+        "projectId": "project_7bc7ead0-1387-4d7b-88ae-fbafcffbc5ba",
+        "agentDefinitions": [],
+        "teamDefinitions": []
+      }
+    }
+  },
+  "prh07": {
+    "listed": [
+      "prh_manager_43622e_07825271395c4e02a2f56f07844ef10c",
+      "prh_manager_43622e_3046cc264eaf4898bd9c47aeb07cedf3",
+      "prh_manager_43622e_7dd6837d63d34c5fafb50cc3cd9f1585",
+      "prh_manager_43622e_a1ceb10b91634491b6026e6af0b3a474",
+      "prh_manager_43622e_bfc4ae68f8df4775b62640c2f84d3c75",
+      "prh_manager_43622e_f3abbe31dd9344ccbaf1128381eff33d"
+    ],
+    "newer": [
+      "prh_manager_43622e_bfc4ae68f8df4775b62640c2f84d3c75",
+      "prh_manager_43622e_f3abbe31dd9344ccbaf1128381eff33d",
+      "prh_manager_43622e_7dd6837d63d34c5fafb50cc3cd9f1585",
+      "prh_manager_43622e_07825271395c4e02a2f56f07844ef10c",
+      "prh_manager_43622e_a1ceb10b91634491b6026e6af0b3a474",
+      "prh_manager_43622e_3046cc264eaf4898bd9c47aeb07cedf3"
+    ]
+  },
+  "prh08": {
+    "archived": "prh_manager_43622e_3046cc264eaf4898bd9c47aeb07cedf3",
+    "listed": [
+      "prh_manager_43622e_a1ceb10b91634491b6026e6af0b3a474",
+      "prh_manager_43622e_07825271395c4e02a2f56f07844ef10c",
+      "prh_manager_43622e_7dd6837d63d34c5fafb50cc3cd9f1585",
+      "prh_manager_43622e_f3abbe31dd9344ccbaf1128381eff33d",
+      "prh_manager_43622e_bfc4ae68f8df4775b62640c2f84d3c75",
+      "prh_manager_43622e_3a20a9b959fd4b6eb9baeb4c3971f992"
+    ]
+  },
+  "prh09": {
+    "projectId": "project_7edf5cfb-98de-4843-a811-3dddbf00a562",
+    "runId": "prh_manager_43622e_dc4c0f77a9c04367b4354025f2fda91e",
+    "again": "{\"success\":false,\"message\":\"ProjectError: Project 'project_7edf5cfb-98de-4843-a811-3dddbf00a562' was not found.\",\"runId\":null}"
+  },
+  "prh10": {
+    "orgRunId": "prh_org_43622e_dadfdeb9891d44a885fdd46b2c3fdb7a",
+    "P": {
+      "projectId": "project_5228e7e1-15b2-4584-bbe9-f4111e18e88c",
+      "agentDefinitions": [
+        {
+          "agentDefinitionId": "prh-manager-43622e",
+          "runs": [
+            {
+              "runId": "prh_manager_43622e_a1ceb10b91634491b6026e6af0b3a474"
+            },
+            {
+              "runId": "prh_manager_43622e_07825271395c4e02a2f56f07844ef10c"
+            },
+            {
+              "runId": "prh_manager_43622e_7dd6837d63d34c5fafb50cc3cd9f1585"
+            },
+            {
+              "runId": "prh_manager_43622e_f3abbe31dd9344ccbaf1128381eff33d"
+            },
+            {
+              "runId": "prh_manager_43622e_bfc4ae68f8df4775b62640c2f84d3c75"
+            },
+            {
+              "runId": "prh_manager_43622e_3a20a9b959fd4b6eb9baeb4c3971f992"
+            }
+          ]
+        }
+      ],
+      "teamDefinitions": [
+        {
+          "teamDefinitionId": "prh-delivery-team-43622e",
+          "runs": [
+            {
+              "teamRunId": "prh_delivery_team_43622e_5d21b64f46d3413d93e45ab28c7abd4c"
+            }
+          ]
+        }
+      ]
+    },
+    "Q": {
+      "projectId": "project_29cb2134-626c-4d69-8a5e-8c04527b7176",
+      "agentDefinitions": [],
+      "teamDefinitions": []
+    }
+  }
+}
