@@ -52,6 +52,7 @@ export class ExternalRuntimeMemoryWriter {
       });
     } else if (input.traceType === "system_task_notification") {
       options.senderId = input.senderId;
+      options.correlationId = input.correlationId;
     } else if (input.traceType === "provider_compaction_boundary") {
       if (input.toolResult !== undefined) options.toolResult = input.toolResult;
       options.correlationId = input.correlationId;
@@ -85,6 +86,17 @@ export class ExternalRuntimeMemoryWriter {
     };
   }
 
+  /** The agent runtime switch marker of a key in the active file, and whether its records are already archived. */
+  getRuntimeSwitchState(boundaryKey: string): {
+    activeMarkerTraceId: string | null;
+    hasCompleteSegment: boolean;
+  } {
+    return {
+      activeMarkerTraceId: this.store.findActiveRawTraceByCorrelationId(boundaryKey, "system_task_notification")?.id ?? null,
+      hasCompleteSegment: this.store.hasCompleteRawTraceArchiveSegment(boundaryKey),
+    };
+  }
+
   removeActiveRecordsArchivedByBoundary(boundaryKey: string): void {
     this.store.removeActiveRawTracesArchivedByBoundary(boundaryKey);
   }
@@ -92,7 +104,7 @@ export class ExternalRuntimeMemoryWriter {
   rotateActiveRawTracesBeforeBoundary(input: {
     boundaryTraceId: string;
     boundaryKey: string;
-    boundaryType: "provider_compaction_boundary";
+    boundaryType: "provider_compaction_boundary" | "runtime_switch";
     runtimeKind?: string | null;
     sourceEvent?: string | null;
   }): void {

@@ -11,6 +11,7 @@ import {
   createStoredTeamRunExecutionTreeLocationService,
   type TeamRunExecutionTreeLocationService,
 } from "../../run-history/services/team-run-execution-tree-location-service.js";
+import { openRawTraceRuntimeKind } from "../../run-history/store/agent-run-pending-runtime-switch.js";
 import { AgentRunMetadataStore } from "../../run-history/store/agent-run-metadata-store.js";
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type { MemoryRun } from "../domain/memory-search-models.js";
@@ -143,7 +144,8 @@ export class MemoryRunDiscovery {
       const taskAgent = metadata ? null : await this.deps.agentMetadata.readTaskAgentMetadata(entry).catch(() => null);
       const row = rows.get(entry) ?? null;
       const definitionId = optional(metadata?.agentDefinitionId) ?? optional(taskAgent?.agentDefinitionId) ?? optional(row?.agentDefinitionId);
-      const runtimeKind: RuntimeKind | null = metadata?.runtimeKind ?? taskAgent?.runtimeKind ?? null;
+      // The journal target: the agent runtime that wrote the open raw-trace file (the previous one while a switch is pending).
+      const runtimeKind: RuntimeKind | null = metadata ? openRawTraceRuntimeKind(metadata) : taskAgent?.runtimeKind ?? null;
       runs.push({
         ...this.place(memoryDir), runId: entry,
         agentName: optional(row?.agentName) ?? definitionId ?? nameFromFolder(entry),

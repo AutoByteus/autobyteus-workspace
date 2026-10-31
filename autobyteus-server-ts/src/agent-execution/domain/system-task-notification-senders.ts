@@ -22,3 +22,10 @@ export const TOOL_LIST_UPDATE_NOTICE_SENDER_ID = "system.tool_list_update_notifi
  * Routing, which produces it, and agent memory, which records it so the agent's conversation keeps its requests.
  */
 export const MODEL_ROUTER_REQUEST_SENDER_ID = "system.model_router";
+
+/**
+ * `sender_id` of the agent runtime switch marker and of the hand-over notice the new agent receives with its first input.
+ * The marker is recorded once at the activation; the live notice only shows it, so this id is deliberately not recorded
+ * by the live-event path.
+ */
+export const RUNTIME_HANDOVER_NOTICE_SENDER_ID = "system.runtime_handover";

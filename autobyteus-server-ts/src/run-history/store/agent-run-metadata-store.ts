@@ -4,6 +4,7 @@ import fs from "node:fs/promises";
 import type { AgentRunMetadata, TaskAgentRunMetadata } from "./agent-run-metadata-types.js";
 import { hasTaskAgentSection, parseTaskAgentRunMetadata } from "./task-agent-own-file-schema.js";
 import { parseDelegatedFrom } from "./delegated-from-schema.js";
+import { parsePendingRuntimeSwitch } from "./agent-run-pending-runtime-switch.js";
 import {
   getAtomicRunPackageFileCommitWriter,
   type AtomicRunPackageFileCommitWriter,
@@ -61,6 +62,7 @@ const normalizeMetadata = (
     metadata.applicationExecutionContext,
   ),
   ...(metadata.delegatedFrom === undefined ? {} : { delegatedFrom: parseDelegatedFrom(metadata.delegatedFrom) }),
+  ...(metadata.pendingRuntimeSwitch === undefined ? {} : { pendingRuntimeSwitch: parsePendingRuntimeSwitch(metadata.pendingRuntimeSwitch) }),
   ...optionalMarker("systemRunOwner", metadata.systemRunOwner, ["model_router"] as const),
 });
 

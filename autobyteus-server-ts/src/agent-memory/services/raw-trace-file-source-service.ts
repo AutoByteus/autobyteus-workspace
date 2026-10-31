@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import { RAW_TRACES_ACTIVE_MEMORY_FILE_NAME } from "autobyteus-ts/memory/store/memory-file-names.js";
 import { RunMemoryFileStore } from "autobyteus-ts/memory/store/run-memory-file-store.js";
+import { runtimeKindFromString, type RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type { MemoryTraceEvent, RawTraceFileSummary } from "../domain/models.js";
 import { MemoryFileStore } from "../store/memory-file-store.js";
 import { normalizeRawTraceRecords } from "./raw-trace-record-normalizer.js";
@@ -10,6 +11,11 @@ export type RawTraceFileOrder = "inspector" | "chronological";
 
 export type RawTraceFileSource = RawTraceFileSummary & {
   filePath: string;
+  /**
+   * The agent runtime that wrote the records of an archived segment (its manifest entry's `runtime_kind`, a `RuntimeKind`
+   * value); null for the open file (its runtime is the run's, see `openRawTraceRuntimeKind`) and for an entry that records none.
+   */
+  runtimeKind: RuntimeKind | null;
 };
 
 export type RawTraceSelectedFileRead = {
@@ -105,6 +111,7 @@ export class RawTraceFileSourceService {
       firstTimestamp: null,
       lastTimestamp: null,
       filePath,
+      runtimeKind: null,
     };
   }
 
@@ -122,6 +129,7 @@ export class RawTraceFileSourceService {
         firstTimestamp: segment.first_ts ?? null,
         lastTimestamp: segment.last_ts ?? null,
         filePath,
+        runtimeKind: runtimeKindFromString(segment.runtime_kind),
       }];
     });
   }
