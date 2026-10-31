@@ -65,7 +65,14 @@ Not applicable: no release.
 
 ## Repository Finalization
 
-TBD
+- Bootstrap context source: ticket bootstrap and `RELEASE.md` Finalization Target
+- Ticket branch: `codex/cross-runtime-resume`; commit `Completed`; push `Completed` after Secret Gate PASS (79 unpushed commits)
+- Finalization target: `origin/personal`; advanced after verification: `No` (stayed at `a977b2c1bc`)
+- Re-integration before final merge: `Not needed`
+- Target branch update: `Completed` (`finalize/cross-runtime-resume` from `origin/personal`)
+- Merge into target: `Completed` (`--no-ff`, merge commit `2df46e7f91`; Secret Gate, artifact hygiene and licensing pass on the merged state)
+- Push target branch: `Completed` (`a977b2c1bc..2df46e7f91`); a record-only commit follows
+- Repository finalization status: `Completed`; blocker: none
 
 ## Release / Publication / Deployment
 
@@ -73,7 +80,10 @@ TBD
 
 ## Post-Finalization Cleanup
 
-TBD
+- Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/cross-runtime-resume`
+- Worktree cleanup and prune: `Completed` (after the record commit; untracked build output and installed packages only)
+- Local branches `codex/cross-runtime-resume` and `finalize/cross-runtime-resume`: `Completed` (deleted after the merge into `origin/personal` was confirmed)
+- Remote branch `origin/codex/cross-runtime-resume`: `Completed` (deleted)
 
 ## Release Notes Summary
 
@@ -92,4 +102,9 @@ Revert the merge on `personal` if a switch corrupts a run's raw traces or chat i
 
 ## Final Status
 
-TBD
+- Verification complete (from the evidence): `Yes`
+- Repository finalization complete: `Yes` (`personal` @ `2df46e7f91`, plus this record commit)
+- Applicable release/deployment/rollout complete or not required: `Yes` (not required)
+- Applicable safe cleanup complete or not required: `Yes`
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`; sent to the Solution Designer: `Yes`
