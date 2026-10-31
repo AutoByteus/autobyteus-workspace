@@ -1,0 +1,15 @@
+# API-01 server E2E: tests/e2e/projects/project-run-history.e2e.test.ts
+# Command: env -i PATH HOME=<tmp> TMPDIR RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<worktree>/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs PROJECT_RUN_HISTORY_E2E_EVIDENCE_DIR=<evidence>/API-01 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/projects/project-run-history.e2e.test.ts --no-watch
+# Code commit: 467cff24c0 (HEAD 172068d4ed) + this test (uncommitted at run time)
+# Env: macOS 26.5.2, Node v22.23.1, scripted AGY (linked_skills), in-process Studio server, temp data dir
+# Date: 2026-10-31T11:57:38Z
+ ✓ tests/e2e/projects/project-run-history.e2e.test.ts (10 tests) 9349ms
+     ✓ PRH-01: an Agent prepared under P is recorded in P's file, told its Project at first activation, listed under P and its folder; run records keep the released keys  505ms
+     ✓ PRH-03: a Team created under P lists in P's team group; its coordinator and member are told the Project  1512ms
+     ✓ PRH-04: a root started under P: P lists its P Team, P Agent and Temp-task copies; Q lists the root with only its Q copy; R does not list it  1796ms
+     ✓ PRH-05: a Workspaces-started root: only its P copy under P; its Temp-task copy under no Project; it is not recorded  1068ms
+     ✓ PRH-06: a copy holding open Tasks of P and Q is listed under both; after P's Task closes only under Q; Q's DONE closes it; reopen + message brings it back  760ms
+     ✓ PRH-07: an older run hosting P's open work is listed under P beyond the 6 newest and opens by run id  416ms
+     ✓ PRH-08: a Workspaces run that dispatched Tasks of three Projects is listed once under each with the same id; archived, it is listed nowhere  932ms
+     ✓ PRH-10: an Org root hosting P's Task is listed under P with only P's copy, and under Q with only Q's copy  1080ms
+ Test Files  1 passed (1)

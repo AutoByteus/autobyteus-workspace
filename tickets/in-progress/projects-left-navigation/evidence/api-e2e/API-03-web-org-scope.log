@@ -1,0 +1,7 @@
+# API-03 web component: Org rows scoped to a Project
+# Command: pnpm -C autobyteus-web exec vitest run components/workspace/history/__tests__/WorkspaceAgentOrgScopedRows.spec.ts
+# Code: 467cff24c0 web (dacdceed36 + comment move) + this new spec; Date: 2026-10-31T12:20:31Z; macOS, Node v22.23.1
+
+ ✓ components/workspace/history/__tests__/WorkspaceAgentOrgScopedRows.spec.ts (3 tests) 37ms
+ Test Files  1 passed (1)
+      Tests  3 passed (3)

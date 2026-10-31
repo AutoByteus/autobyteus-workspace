@@ -1,0 +1,2 @@
+706:  ⨯ unable to execute hdiutil  args=["resize","-size","2558444509.5","/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/t-Xu3qmk/0.dmg"] code=undefined error=Exit code: 35. Command failed: hdiutil resize -size 2558444509.5 /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/t-Xu3qmk/0.dmg
+707:hdiutil: resize: failed. Die Ressource ist zeitweilig nicht verfügbar (35)
