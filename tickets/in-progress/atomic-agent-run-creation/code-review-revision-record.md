@@ -8,6 +8,7 @@ The latest `code-review-report.md` (or `api-e2e-test-review-report.md`) is autho
 | --- | --- | --- | --- | --- | --- |
 | CRR-001 | `code-review-report.md` | Implementation Review, round 1 (IR-001) | N/A | Pass | None |
 | CRR-002 | `code-review-report.md` | API/E2E Failure-Origin Review, round 2 (API-REV-001 F-API-001) | Pass | Fail: `Requirement Gap` → Solution Designer | F-API-001 |
+| CRR-003 | `code-review-report.md` | Failure-origin resolution (SR-005, DEC-003 = C) | Fail (Requirement Gap) | F-API-001 closed as an accepted residual; source `Pass` stands; API/E2E to record AC-004 under SR-005 | F-API-001 (closed) |
 
 ## Revision Entries
 
@@ -68,3 +69,33 @@ None (CRR-001 had no findings).
 - Material score or classification changes: None; Small / High
 - Recommended recipient: Solution Designer
 - Remaining risks or uncertainty: depends on the chosen direction: (a) a narrow artifact allowlist, (b) changing the activation order, or (c) accepting a residual and narrowing AC-004 to a graceful stop.
+
+### CRR-003 — Resolution of the Requirement Gap (SR-005, DEC-003 = C)
+
+- Canonical review report updated: `code-review-report.md` (§ Round 3; Latest Authoritative Result)
+- Review entry point and round: API/E2E Failure-Origin Review, round 3 (resolution)
+- Review scope: `N/A`
+- Triggering role, report path, and finding or scenario IDs: Solution Designer, `requirements-doc.md` (SR-005: DEC-003, AC-004 narrowed), `follow-ups.md` (FU-005), commit `7e9e55f220`; F-API-001
+- Relevant solution revision IDs: SR-005
+- Relevant architecture-review revision IDs: ARCH-REV-002
+- Relevant implementation revision IDs: IR-001
+- Relevant API/E2E revision IDs: API-REV-001
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: `Fail` (CRR-002, Requirement Gap)
+- Current authoritative result: F-API-001 closed as an accepted residual. The source result `Pass` (CRR-001) stands, because the code and design are unchanged.
+- What changed in the review result and why:
+  - The user chose to accept the hard-kill leftover (FU-005) and narrow AC-004 to a normal stop.
+  - API-REV-001 already shows the narrowed case passing (stuck activation, then SIGTERM, left no run).
+  - API/E2E must record AC-004 under SR-005 and reissue its decision.
+- Supported product scenario / material-premise basis changes: the hard-kill crash during activation moves from an AC-004 criterion to an accepted residual (FU-005).
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| F-API-001 | Open (Requirement Gap) | Closed: accepted residual | SR-005, DEC-003, FU-005 | `requirements-doc.md` AC-004 and DEC-003; `follow-ups.md` FU-005; API-REV-001 stuck-activation SIGTERM case (`historyRows 1`) |
+
+- New or remaining finding IDs: None
+- Material score or classification changes: None; Small / High
+- Recommended recipient: API/E2E engineer (`Local Fix`, reporting)
+- Remaining risks or uncertainty: FU-005 (the hard-kill leftover); FU-001 to FU-004; the plain graceful in-flight-create variant may need its own case if API/E2E judges the stuck-activation case insufficient.

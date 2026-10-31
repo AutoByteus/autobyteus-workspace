@@ -2,7 +2,22 @@
 
 All ticket paths are under `/Users/normy/autobyteus_org/autobyteus-worktrees/atomic-agent-run-creation/tickets/in-progress/atomic-agent-run-creation/`.
 
-> **Latest round: 2, API/E2E Failure-Origin Review (CRR-002), `Fail` → `Requirement Gap` for the Solution Designer.** Round 1 (CRR-001, `Pass`) is kept below; § Round 2 and the Latest Authoritative Result supersede it.
+> **Latest round: 3, failure-origin resolution (CRR-003).** The Requirement Gap is decided (SR-005, DEC-003 = C), so F-API-001 is closed as an accepted residual. Code and design are unchanged. The package goes back to API/E2E to record AC-004 under its narrowed text. Rounds 1 and 2 are kept below.
+
+## Round 3 — Resolution of CRR-002's Requirement Gap (CRR-003)
+
+- Trigger: Solution Designer, SR-005 (commit `7e9e55f220`). The user decided DEC-003 = C (he asked for the recommendation and left the choice to it).
+- Changes, all in documents (`git diff --stat 2b87d1ab16 7e9e55f220` outside `tickets/` is empty):
+  - AC-004 is narrowed to a create cut by a **normal stop** (SIGTERM: quit, Restart server, update restart, or `docker stop` within its grace).
+  - A hard kill during activation may leave an empty entry. That is the accepted residual, **FU-005**, whose root fix is option (b).
+  - REQ-001 to REQ-003, the design (D1, D2, the strict content rule) and the code (`c533fc0b5b` + `93fa105819`) are unchanged. Small / High.
+- **F-API-001: closed as an accepted residual** (DEC-003, FU-005).
+  - There is no finding against the code. Round 1's source result (CRR-001 `Pass`, 9.5 / 10) stands for the unchanged code.
+  - API-REV-001 already shows AC-004's narrowed case passing: a stuck activation, then SIGTERM, through the grace, the bound and the sweep, left no run (`historyRows 1`).
+- **Remaining step, owned by API/E2E:** API-REV-001's report still records AC-004 as `Fail` against the old text. API/E2E should record the AC-004 result under SR-005 and reissue its decision. That is a reporting correction, with no rerun unless it judges one necessary.
+  - The plain graceful variant (creates in flight, then SIGTERM, then relaunch, with 339's grace) has not been shown as its own case. If the stuck-activation case doesn't settle it in API/E2E's judgment, that one case should be added.
+  - On an API/E2E pass, no durable test changed, so the test-code review will be `Not Applicable`, and the package goes on to delivery.
+- Classification: `Local Fix` owned by API/E2E (reporting).
 
 ## Round 2 — Failure-Origin Review of F-API-001 (CRR-002)
 
@@ -233,7 +248,16 @@ N/A: the review passes.
 
 ## Latest Authoritative Result
 
-**Round 2 (CRR-002), authoritative:**
+**Round 3 (CRR-003), authoritative:**
+
+- Review Decision: the failure origin is resolved. F-API-001 is closed as an accepted residual (DEC-003 = C, FU-005), and the source result stays `Pass` (CRR-001) for the unchanged code.
+- Review Entry Point: `API/E2E Failure-Origin Review` (resolution)
+- Supported Product Scenario Gate: `Pass`
+- Material-Premise Gate: `Pass`
+- Failure Origin: Requirement Gap, decided by the user. No implementation work.
+- Recommended Recipient: API/E2E engineer, to record AC-004 under SR-005 and reissue the API/E2E decision (`Local Fix`, reporting).
+
+**Round 2 (CRR-002), superseded:**
 
 - Review Decision: `Fail` (failure-origin)
 - Review Entry Point: `API/E2E Failure-Origin Review`
