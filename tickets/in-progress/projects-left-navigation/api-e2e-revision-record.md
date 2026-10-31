@@ -5,6 +5,7 @@
 | Revision ID | Triggering Role / Report / Round | Related Upstream Revision IDs | Prior Result / Confidence | Current Result / Confidence |
 | --- | --- | --- | --- | --- |
 | API-REV-001 | Code reviewer, `code-review-report.md`, CRR-002 pass | SR-008, SR-009; ARCH-REV-003; IR-002; CRR-002 | N/A | `Fail` / 90% (AC-012) |
+| API-REV-002 | Code reviewer, `code-review-report.md`, CRR-004 pass of the CR-003 fix | IR-003; CRR-003, CRR-004 | `Fail` / 90% | `Pass` / 95% |
 
 ## Revision Entries
 
@@ -47,3 +48,36 @@ None.
   - a recomposing runtime's `## Project` on restore is unit-tested only;
   - SCN-010 remote runs are covered by the shared scope key only;
   - under P, a copy holding Tasks of P and Q shows its current (Q) Task line.
+
+### API-REV-002 — Rerun after the CR-003 fix: Stop reflected in Projects mode
+
+- Triggering role, report path, and round: code reviewer, `code-review-report.md`, CRR-004 (targeted-delta pass of IR-003); API/E2E round 2.
+- Triggering finding or case IDs: PLN-09 (round 1), CR-003.
+- Related revision IDs: IR-003 (`60499aa479`, `c9972a1581`), CRR-003, CRR-004.
+- Why recorded: round-2 rerun after the fix.
+- Coverage decisions or durable test paths changed: `autobyteus-web/tests/e2e/projects-left-navigation-probe.mjs`.
+  - PLN-09 also stops a Team run in Projects mode, restored outside the window so it has no live context there.
+  - PLN-08 tolerates CORS-blocked fetches during the deliberate backend restart.
+- Cases added, changed, removed, or rechecked:
+  - Rerun by impact (`git diff --name-only 467cff24c0 fce0d2dee6`: only `stores/projectRunsStore.ts` and its spec, besides tests): API-04 Pass (10/10); API-05 Pass on the rebuilt app.
+  - New API-07: the full web suite, 4921 tests.
+  - Still valid: API-R01/R02/R04, API-01, API-02, API-03.
+  - Reused: IMP-13's typecheck.
+- Commands, environment, fixture, or broader-validation delta: ENV-3b, ENV-4b. The DMG step succeeded this time.
+
+#### Prior Failure Resolution
+
+| Prior Case / Failure Reference | Previous Classification | Current Resolution | Case IDs Now Proving It |
+| --- | --- | --- | --- |
+| API-04 PLN-09: Stop not reflected in Projects mode | Local Fix (confirmed as CR-003) | Fixed in IR-003: `projectRunsStore` re-reads after Agent, Team and Org Stop. Agent and Team Stop read stopped within 5 s | API-04 PLN-09 (round 2), API-07 |
+
+- Canonical artifacts and sections updated: execution report (Round, Builds, Cases, AC proof, scorecard, result), test progress log, coverage investigation (round-2 note).
+- Prior result and confidence: `Fail`, 90%.
+- Current result and confidence: `Pass`, 95%.
+- New or remaining failure IDs: none.
+- Recommended owner: code reviewer (test-code review).
+- Remaining risks, blocked evidence, or untested scope:
+  - FU-007, FU-008 (existing, out of scope);
+  - a recomposing runtime's `## Project` on restore is unit-tested only;
+  - SCN-010 remote runs are covered by the shared scope key only;
+  - Org Stop is covered by IR-003's store spec, not the browser.

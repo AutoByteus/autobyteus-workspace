@@ -215,3 +215,11 @@ None found before execution.
 - **API-05 build.** The DMG step of `isolated-app start --build` failed on `hdiutil` (environment), so the unpacked app of the same build was started with `--from-worktree`.
 - **New in-scope finding.** PLN-09: Stop is not reflected in Projects mode (AC-012, REQ-011/014). Classification: `Local Fix`; see the execution report.
 - **Out-of-scope findings.** FU-007 (existing-copy race, API-02) and FU-008, added to `follow-ups.md`.
+
+## Updates During Execution (round 2)
+
+- Trigger: CRR-004 pass of IR-003 (CR-003 fix; web `stores/projectRunsStore.ts` only).
+- Rerun by impact:
+  - API-04 and API-05 are rerun; API-07 (the full web suite) is added for the store's importers.
+  - API-01, API-02 and API-03 stay valid: no server change, and the Org rows component does not read `projectRunsStore`.
+- PLN-09 is extended to stop a Team run as well (CR-003 covers Agent, Team and Org Stop). Org Stop is covered by IR-003's store spec.

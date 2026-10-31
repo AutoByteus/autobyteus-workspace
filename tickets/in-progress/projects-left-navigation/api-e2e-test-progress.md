@@ -19,3 +19,11 @@ Your own progress log while tests run. Read it first whenever you pick the run b
 | 2026-10-31T13:11Z | API-05 | Started |  | isolated-app start --build with own data root /tmp/pln-iso-root (background) |
 | 2026-10-31T13:20Z | API-05 | Completed | Pass | iso-61565-aa80 (worktree build, unpacked app; DMG step failed on hdiutil, env), scripted AGY via data-root .env; journey pass; instance stopped, list empty, data root removed |
 | 2026-10-31T13:22Z | API-06 | Completed | Pass | VIS comparisons (report) |
+| 2026-10-31T13:59Z | round 2 | Checkpoint |  | CRR-004 pass; HEAD 344ccade3d, code c9972a1581 (web projectRunsStore only). Still valid: API-R01/R02/R04, API-01/02/03 (no server change; Org rows component untouched). Rerun: API-04 (PLN-09 extended to Team Stop), API-05 (rebuild), new API-07 full web suite (importers chatLaunchService, projectChangeFeed). Reuse IMP-13 (typecheck) |
+| 2026-10-31T13:59Z | API-07 | Started |  | pnpm -C autobyteus-web test:nuxt --run |
+| 2026-10-31T14:03Z | API-07 | Completed | Pass | 679 files, 4921 tests |
+| 2026-10-31T14:03Z | API-04 | Started |  | round 2 probe run (PLN-09 with Team Stop) into evidence/api-e2e/API-04-browser-probe-r2 |
+| 2026-10-31T14:12Z | API-04 | Checkpoint | Fail | round 2 attempt 1: PLN-09 Agent Stop fixed (0 after 5s); Team Stop not clicked (probe locator), PLN-08 CORS error during restart window (probe tolerance) — probe fixed |
+| 2026-10-31T14:12Z | API-04 | Completed | Pass | round 2: PLN-01..10 Pass; Agent and Team Stop read stopped within 5 s |
+| 2026-10-31T14:12Z | API-05 | Started |  | round 2: isolated-app start --build (data root /tmp/pln-iso-root2) |
+| 2026-10-31T14:19Z | API-05 | Completed | Pass | round 2: iso-65477-bc57 on the rebuilt app; journey Pass; stopped; list empty; data root removed |
