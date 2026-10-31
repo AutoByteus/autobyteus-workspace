@@ -20,10 +20,10 @@ import {
   type StandaloneRunLiveness,
 } from "./standalone-run-liveness.js";
 import {
-  commitAgentRunModelConfig,
+  commitAgentRunRuntimeSwitch,
   type AgentRunModelConfigCommitResult,
-} from "./agent-run-model-config-commit.js";
-import { commitAgentRunRuntimeSwitch, type RunSelectionToCommit } from "./agent-run-runtime-switch-commit.js";
+  type RunSelectionToCommit,
+} from "./agent-run-runtime-switch-commit.js";
 
 const logger = {
   warn: (...args: unknown[]) => console.warn(...args),
@@ -232,25 +232,6 @@ export class AgentRunHistoryCatalogService {
         rows.set(input.runId, normalizeRow({ ...row, terminatedAt: null }));
       }
       return { value: nextMetadata, shouldFlush };
-    });
-  }
-
-  async commitRunModelConfig(input: {
-    runId: string;
-    llmModelIdentifier: string;
-    llmConfig: Readonly<Record<string, unknown>> | null;
-  }): Promise<AgentRunModelConfigCommitResult> {
-    return this.enqueueValue(async () => {
-      const runId = input.runId.trim();
-      const row = this.state.rows.get(runId) ?? null;
-      return commitAgentRunModelConfig({
-        metadataStore: this.metadataStore,
-        runId,
-        cataloged: Boolean(row),
-        archived: Boolean(row?.archivedAt),
-        llmModelIdentifier: input.llmModelIdentifier,
-        llmConfig: input.llmConfig,
-      });
     });
   }
 

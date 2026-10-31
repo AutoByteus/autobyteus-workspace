@@ -2,7 +2,10 @@ import { isDeepStrictEqual } from "node:util";
 import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
 import type { AgentRunMetadataStore } from "../store/agent-run-metadata-store.js";
 import type { AgentRunMetadata } from "../store/agent-run-metadata-types.js";
-import type { AgentRunModelConfigCommitResult } from "./agent-run-model-config-commit.js";
+
+export type AgentRunModelConfigCommitResult =
+  | Readonly<{ kind: "committed" | "unchanged"; metadata: AgentRunMetadata }>
+  | Readonly<{ kind: "not_found" | "archived" | "failed" | "indeterminate"; metadata: AgentRunMetadata | null }>;
 
 /** The agent runtime, model and model settings a stopped run is saved with (already validated for that runtime). */
 export type RunSelectionToCommit = Readonly<{

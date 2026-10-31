@@ -79,4 +79,29 @@ describe("commitAgentRunRuntimeSwitch", () => {
     const unreadable = { readMetadata: vi.fn().mockResolvedValueOnce(stopped()).mockResolvedValue(null), writeMetadata: vi.fn(async () => undefined) };
     expect((await commitAgentRunRuntimeSwitch({ ...base, metadataStore: unreadable, cataloged: true, archived: false })).kind).toBe("indeterminate");
   });
+
+  it("recovers the committed state after a reported write failure that did land", async () => {
+    let saved = stopped();
+    const flaky = { readMetadata: vi.fn(async () => saved), writeMetadata: vi.fn(async (_id: string, next: AgentRunMetadata) => { saved = next; throw new Error("uncertain response"); }) };
+    const result = await commitAgentRunRuntimeSwitch({ metadataStore: flaky, runId: "run-1", cataloged: true, archived: false, selection: codex, requestedAt: AT });
+    expect(result).toMatchObject({ kind: "committed", metadata: { runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "gpt-5" } });
+  });
+
+  it("does not confirm a write that did not land", async () => {
+    const original = stopped();
+    const lost = { readMetadata: vi.fn(async () => original), writeMetadata: vi.fn(async () => undefined) };
+    const result = await commitAgentRunRuntimeSwitch({ metadataStore: lost, runId: "run-1", cataloged: true, archived: false, selection: codex, requestedAt: AT });
+    expect(result.kind).toBe("failed");
+  });
+
+  it.each(["missing", "throws"])("keeps a %s read-back after a write indeterminate rather than confirming", async (mode) => {
+    const original = stopped();
+    const store2 = {
+      readMetadata: vi.fn().mockResolvedValueOnce(original).mockImplementation(async () => { if (mode === "throws") throw new Error("read unavailable"); return null; }),
+      writeMetadata: vi.fn(async () => undefined),
+    };
+    const result = await commitAgentRunRuntimeSwitch({ metadataStore: store2, runId: "run-1", cataloged: true, archived: false, selection: codex, requestedAt: AT });
+    expect(result).toEqual({ kind: "indeterminate", metadata: original });
+    expect(store2.writeMetadata).toHaveBeenCalledTimes(1);
+  });
 });
