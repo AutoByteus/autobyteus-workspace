@@ -2,9 +2,64 @@
 
 All ticket paths are under `/Users/normy/autobyteus_org/autobyteus-worktrees/automatic-app-node-updates/tickets/in-progress/automatic-app-node-updates/`.
 
+> **Latest round: 2, API/E2E Failure-Origin Review (CRR-002), `Fail` → two `Local Fix`es owned by implementation.** Round 1 (CRR-001, `Pass`) is kept below; § Round 2 and the Latest Authoritative Result supersede it.
+
+## Round 2 — Failure-Origin Review of F-API-001 and F-API-002 (CRR-002)
+
+### Meta
+
+- Trigger: API/E2E engineer, API-REV-001 `Fail` (86.1%).
+  - Code `31d38080fc`, from a clean checkout of `e8b51df9ad`.
+  - Evidence `f6a511e25f`.
+- Coverage investigation / execution report / API/E2E revision record: `api-e2e-coverage-investigation.md` (including § Can The Real Install Run Safely?), `api-e2e-execution-coverage-report.md`, `api-e2e-revision-record.md` (API-REV-001).
+- Project testing guideline: `TESTING.md`. The isolated copies had their own bundle id, cache name, `LSEnvironment` and requirement. The user's caches were identical before and after, and the user's nodes were untouched. No conflicts.
+- Failing scenarios:
+  - F-API-001: AC-002 / REQ-005 (the sidebar entry after an automatic app update);
+  - F-API-002: AC-005 / REQ-004 / design DS-002 recovery (a native install refusal).
+- Evidence (`evidence/`):
+  - F-API-001: `API-02-03-summary.log`, `API-02-sidebar-entry-0-updated.png`;
+  - F-API-002: `API-05-instance-1.log:255-290`, `API-05-watch.log`, `API-05-app-open-without-server.png`.
+
+### F-API-001: the sidebar entry says "0 updates applied automatically" after an automatic app update
+
+- **Read:**
+  - This branch removed `row.kind !== 'app'` from `unreadOutcomeRows` (`stores/updateNotificationsStore.ts:186`), so an unread app `AUTO_UPDATED` row now keeps the entry visible (`hasEntry`). That part is correct.
+  - `components/layout/SidebarNotificationsEntry.vue:61` computes its own `outcomes` with the **old** filter (`row.kind !== 'app'`), so it counts 0 for the same state. The result is a visible entry saying "0 updated".
+- **Origin:** an implementation defect in this change. The same derived fact, "unread automatic outcomes", is computed in two places with different rules (Principle 11: one owner derives a fact).
+  - The design's derived-consumer list did not name the sidebar component, but the design doesn't need to: the store already owns the fact.
+  - **Review gap (mine):** in round 1 I checked the listed consumers and did not search for other readers of `outcome === 'AUTO_UPDATED'`.
+- **Required (`Local Fix`):** the sidebar entry reads the store's one derived set, not a second filter. For example, the store exposes the outcome rows that count, including its "seen this visit while the panel is open" rule (`center.isNew`), and the component counts those. Add a test: an unread app `AUTO_UPDATED` row gives "1 update applied automatically".
+
+### F-API-002: after a native install refusal, the old version stays open without its server
+
+- **Timeline (Read from `API-05-instance-1.log`):**
+  - 28.778: `update-downloaded`, so `installAutomatically`: `installUpdateAndRestart()` is accepted, `activeOperation = 'install'`, and 100 ms later `prepareForInstall()` starts the shutdown.
+  - MacUpdater's native Squirrel step runs after its own zip download: 29.685 "/ requested" from its proxy.
+  - 29.687: Squirrel refuses ("Cannot update while running on a read-only volume", `SQRLUpdaterErrorDomain` 8). It arrives as an `error` with `activeOperation === 'install'`, signal (b).
+  - 29.689: `installFailed` → `recoverAfterFailedInstall()` checks `isServerProcessGone()` **once, at that moment**. The shutdown is still stopping the server, so the check is false: "not confirmed; the app stays open".
+  - 29.868: the server process exits, as the in-flight shutdown completes it.
+  - The failure is already handled, so `awaitQuit` arms no bound, and nothing relaunches. The window stays on "Loading task history…" with no server (two minutes later, still the same).
+- **Origin:** an implementation defect. Design DS-002 recovery says to relaunch "if the shutdown stopped the server, or the server process is gone". That decision only makes sense once the install attempt's preparation (the shutdown) has settled, but the implementation takes it at the instant of the failure signal.
+  - The same mistake has a second timing: if the refusal arrives **before** the 100 ms timer starts `prepareForInstall`, the check sees a live server (correct, stay open). But the scheduled preparation then still stops the server, and `quitAndInstall` follows to no effect. The same app-without-server end state results.
+  - **Review gap (mine):** CR-C2 considered an error after `before-quit`. I did not consider a refusal arriving during, or before, the install's preparation. On macOS that is the realistic path: MacUpdater's native step runs after `update-downloaded`.
+- **Required (`Local Fix`, within DS-002; no design change needed):**
+  1. A failed automatic install must not leave the install sequence half-done. A failure before `prepareForInstall` has started cancels the pending install, so the server keeps running and no recovery is needed. A failure during or after it lets the preparation settle first, by awaiting the in-flight install attempt, for example `ApplicationShutdown`'s memoized stop. Only then does recovery decide: relaunch when the server is gone (the normal outcome), otherwise stay open (284 / 339 DEC-005).
+  2. Add tests for both timings: a refusal during `prepareForInstall`, and one before it starts.
+- **Secondary (same fix round):** the same native refusal also rejects MacUpdater's pending download promise. `downloadUpdate()`'s error state then overwrites the state message with "The update download was interrupted…" (`errorOperation: download`).
+  - The record is not overwritten: `downloadingVersion` was already cleared at `update-downloaded`.
+  - But the state and toast show a misleading download error after an install failure.
+  - Required: once an automatic install of V is accepted or has failed, a later download rejection for V must not replace the install-failure state. Add a test.
+
+### Classification and routing
+
+- F-API-001: `Local Fix`, owned by implementation.
+- F-API-002, including its secondary: `Local Fix`, owned by implementation.
+- Neither needs a requirements or design change: both fixes realize DS-002 and REQ-005 as written.
+- After the fix: source review, then API/E2E (repeat API-02's sidebar check and API-05 on macOS).
+
 ## Review Round Meta
 
-- Review Entry Point: `Implementation Review`
+- Review Entry Point (round 1): `Implementation Review`
 - Requirements Doc Reviewed As Context: `requirements-doc.md` (SR-002: REQ-001 to REQ-006; DEC-001 = A approved by the user, DEC-002 and DEC-003)
 - Investigation Notes Reviewed As Context: `investigation-notes.md` (F-01 to F-12)
 - Solution Revision Record Reviewed As Context: SR-001 to SR-003
@@ -177,6 +232,28 @@ N/A: the review passes.
 - The cost of DEC-001 = A (a restart while the user works; busy runs get one resume turn each), accepted by the user.
 
 ## Latest Authoritative Result
+
+**Round 2 (CRR-002), authoritative:**
+
+- Review Decision: `Fail` (failure-origin)
+- Review Entry Point: `API/E2E Failure-Origin Review`
+- Supported Product Scenario Gate: `Pass`. An automatic app update, and a native install refusal the design names (a read-only location), are supported scenarios.
+- Material-Premise Gate: `Pass`
+- Score note:
+  - category 8, Runtime Correctness, goes from 9.3 to 8.6 (DS-002 recovery is evaluated too early, so the app is left without its server);
+  - category 5 goes from 9.5 to 9.0 (one derived fact computed in two places, F-API-001).
+- Failure Origin: implementation defects in this change (both), plus round 1 review gaps (a consumer search; the timing of a refusal during the preparation).
+- Recommended Recipient: implementation engineer
+- Notes: everything else in API-REV-001 holds:
+  - AC-001;
+  - AC-002 (including the real Squirrel install on the isolated copy);
+  - AC-003;
+  - AC-004 and CR-C3 (the main-process POST was accepted);
+  - AC-005's other parts;
+  - AC-006;
+  - CR-C2 (no error after the quit).
+
+**Round 1 (CRR-001), superseded:**
 
 - Review Decision: `Pass`
 - Review Entry Point: `Implementation Review`
