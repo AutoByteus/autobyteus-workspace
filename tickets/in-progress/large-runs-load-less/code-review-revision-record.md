@@ -10,6 +10,7 @@
 | CRR-004 | `code-review-report.md` | Implementation Review / IR-004 (Full Re-Audit) | Fail (CRR-003) | Fail (9.3/10): Design Impact → Solution Designer | CR-002 resolved (hub, Org); CR-003 new |
 | CRR-005 | `code-review-report.md` | Implementation Review / IR-005 (Targeted Delta Review) | Fail (CRR-004) | Pass (9.5/10) | CR-003 resolved |
 | CRR-006 | `code-review-report.md` | API/E2E Failure-Origin Review / API-REV-002 Fail (API-08 L-002) | Pass (CRR-005) | Fail: Design Impact → Solution Designer | CR-004 new |
+| CRR-007 | `code-review-report.md` | Implementation Review / IR-006 (Full Re-Audit of changed areas) | Fail (CRR-006) | Pass (9.5/10) | CR-004 resolved |
 
 ## Revision Entries
 
@@ -173,3 +174,30 @@ None
 - Material score or classification changes: round-5 Pass superseded by the round-6 failure-origin result
 - Recommended recipient: Solution Designer
 - Remaining risks or uncertainty: Org and settings Save follow the same rule (C-18); FU-006 (intermittent Terminal-panel errors, unchanged code) recorded by API/E2E
+
+### CRR-007 — CR-004 resolved: lists are kept unless a message was published past them
+
+- Canonical review report updated: `code-review-report.md` (the round-7 section; CR-004; Classification; Latest Result)
+- Review entry point and round: Implementation Review, round 7
+- Review scope: `Full Re-Audit` of the changed areas (contract field; keep rule)
+- Triggering role, report path, and finding or scenario IDs: Implementation Engineer, `implementation-handoff.md` (IR-006), CR-004
+- Relevant solution revision IDs: SR-007, SR-008
+- Relevant architecture-review revision IDs: ARCH-REV-007, ARCH-REV-008
+- Relevant implementation revision IDs: IR-006
+- Relevant API/E2E revision IDs: N/A (API-08 L-002 recheck next)
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: CRR-006 `Fail`
+- Current authoritative result: `Pass`
+- What changed in the review result and why: the publisher's latest-message sequence M (one sequence per event, read with the base) lets the keep rule ask the right question: no message past C keeps the lists, and C becomes the base. M is exact, the predicates match what the client lists, the earlier SR-005/SR-006 cases still hold, and tests and mutation checks prove it
+- Supported product scenario / material-premise basis changes: the CRR-006 premise is resolved by measuring messages, not root changes
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR-004 | Open (Design Impact) | Resolved | SR-007, SR-008, ARCH-REV-008, IR-006 (`65a5b34c9b`) | Diff; publisher, contract, owner, hub store/stream and Team tests; mutation (3 fail); `evidence/IMP-IR006-checks.log` |
+
+- New or remaining finding IDs: None
+- Material score or classification changes: Fail → Pass (9.5/10)
+- Recommended recipient: API/E2E Engineer; informational to Implementation Engineer
+- Remaining risks or uncertainty: the API-08 L-002 browser recheck; FU-001, FU-004 … FU-006 recorded

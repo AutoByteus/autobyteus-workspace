@@ -2,7 +2,7 @@
 
 ## Review Round Meta
 
-- Review Entry Point: `API/E2E Failure-Origin Review` (round 6, API-REV-002 API-08 L-002). Round 5: `Implementation Review` ( IR-005 for CR-003; SR-006, ARCH-REV-006). Round 4: `Implementation Review` ( IR-004 for CR-002; SR-004/SR-005, ARCH-REV-005). Round 3 was an `API/E2E Failure-Origin Review`. Rounds 1–2 were `Implementation Review`; their results stand except where round 3 updates them
+- Review Entry Point: `Implementation Review` (round 7, IR-006 for CR-004; SR-007/SR-008, ARCH-REV-008). Round 6: `API/E2E Failure-Origin Review` ( API-REV-002 API-08 L-002). Round 5: `Implementation Review` ( IR-005 for CR-003; SR-006, ARCH-REV-006). Round 4: `Implementation Review` ( IR-004 for CR-002; SR-004/SR-005, ARCH-REV-005). Round 3 was an `API/E2E Failure-Origin Review`. Rounds 1–2 were `Implementation Review`; their results stand except where round 3 updates them
 - Requirements Doc Reviewed As Context: `requirements-doc.md` (approved SR-001; SR-003 adds DEC-004 with no visible change)
 - Investigation Notes Reviewed As Context: `investigation-notes.md` (E-01…E-09, M-151/152/156/162/163, M-163b as cited)
 - Solution Revision Record Reviewed As Context: `solution-revision-record.md` (SR-001…SR-003)
@@ -16,8 +16,9 @@
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
 - Relevant Implementation Revision IDs: IR-001, IR-002, IR-003
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-006`
-- Current Review Round: 6 (failure-origin)
+- Current Code Review Revision ID: `CRR-007`
+- Current Review Round: 7
+- Round 7 Review Scope: `Full Re-Audit` of the changed areas, because the delta (`git diff 6ab1cfa81c 65a5b34c9b`, 109 files, mostly publisher constructions in tests) adds `last_message_change_sequence` to the three view contracts and changes the keep rule. Unchanged areas are carried forward from rounds 1–5
 - Round 6 failure context:
   - API-REV-002 at head `6d717bed4a`; test changes in `59f4604da5`; server dist at `99cd853f79`.
   - Failing case: API-08 L-002 (one new delegation on a running hub), run with `pnpm -C autobyteus-web test:e2e:delegated-copies-large-hub --from-seed <--teams 12 --unrelated 50> --output-dir <fresh> --live [--cases L-001,L-002] --samples 1`, 4 of 4 runs.
@@ -50,6 +51,29 @@
 - Exact Failing Commands / Execution Mode: `pnpm -C autobyteus-web test:e2e:delegated-copies-large-hub --from-seed <--teams 12 --unrelated 50> --output-dir <fresh> --live --large-shape unbroken --samples 1` (clean env, scripted AGY, test-owned data)
 - Failure Evidence Paths: `evidence/api-e2e/API-08-hub-participant-reloads.log`, `evidence/api-e2e/API-07-08-hub-probe-live.json`
 - Delivery Revision Record: N/A
+
+## Round 7: CR-004 Rework (IR-006; SR-007, SR-008)
+
+- **Changed.**
+  - **Server publisher.** `RootEventPublisher` takes a required `isMessageEvent` predicate and keeps `lastMessageChangeSequence` (M). It is read in the same `RootLivePosition` as the live sequence and change sequence, and with the base in every snapshot connection. The predicates are exported beside each event union (hub and Org: `kind === "communication"`; Team: `eventSourceType === COMMUNICATION`) and passed at the three builders.
+  - **Carriage.** Inspections, the projectors, the Team snapshot and `getTeamRunResumeConfig` carry M (`null` when stored).
+  - **Contracts.** The Agent-root and Org views reject a live sequence without M (or the reverse) and an M past the base.
+  - **Web keep rule.** `reloadRoot` keeps the lists and their in-flight loads for the same non-null live sequence with M ≤ C, then sets C := B. Anything else reloads. `rebuildOfView` maps a view to the rebuild at the hub, Org and Team call sites.
+- **Verified.**
+  - **The keep rule.** C means "the lists hold every message through C". M ≤ C means no message lies between C and B, so the lists hold every message through B and C := B is correct. When B < C (a recovery read), C only drops, which is conservative.
+  - **M is exact.** The publisher gives each event its own sequence and sets M from that event (`root-event-publisher.ts:59-65`). Stream batches are contiguous downstream ranges, so a message is never folded under a lower sequence. The snapshot connection (`:85` onward) and `getLivePosition` read B and M together.
+  - **The predicates match what the client lists.** `communication` / `COMMUNICATION` are the events the contexts append. A non-public hub message also bumps M, which reloads conservatively.
+  - **Everything earlier still holds:** stored → reload; another live sequence → reload; Team open, recovery and stop/resume (SR-005, SR-006).
+  - **Sizes:** `teamExecutionViewState.ts` 499; the owner 130; the publisher 108.
+- **Tests.**
+  - **Server:** a message advances M and a presentation event doesn't, per root kind; the position and the snapshot carry M.
+  - **Contracts:** the pair and base checks.
+  - **Owner spec (11):** base moved without a message keeps, and C becomes the base; a message past C reloads.
+  - **Hub store and stream:** selection 1; new child 0; new child whose copy's output moved the base to 22 with no message: 0 (L-002); a message in the window: 1, shown once; a restart reloads.
+  - **Team:** keep and reload by M; another live sequence reloads.
+  - **Mutation:** comparing the base instead of M fails 3.
+- **Checks.** `evidence/IMP-IR006-checks.log`: contracts 39/21; server typecheck 0, unit 7,674, integration 480 (FU-001 only); web typecheck PASS, 4,944; guards pass.
+- **Result:** CR-004 resolved; `Pass`.
 
 ## Round 6: API/E2E Failure-Origin Review (API-08 L-002, round 2)
 
@@ -353,7 +377,7 @@ No new premises beyond the candidate gate.
 
 | ID | Severity | Location | Problem | Required Action | Classification / Owner |
 | --- | --- | --- | --- | --- | --- |
-| CR-004 | Blocking (round 6) | The SR-004 keep rule (`collaborationParticipantMessages.ts` `reloadRoot`: B vs C over every root change), at the hub (and Org) checkpoint reconnect | After a new delegation (or a settings Save) on a running root, the reconnect snapshot's base counts the new copy's non-message events from the reconnect window. So B > C and every loaded list is fetched again, although no message was written. SR-004 expects 0 | The Solution Designer revises the measure. Options: (a) views and snapshots carry the change sequence of the root's latest communication message (for example `last_message_change_sequence`, per live sequence), and the lists are kept when it is at or below the sequence they are consistent through; (b) refresh the view on `checkpoint_required` without dropping the subscription (a query while the stream stays open), so there is no window; (c) accept the per-delegation reload as the protocol's cost and record a follow-up. Apply it to hub and Org (and Team where it reconnects) | `Design Impact` → Solution Designer |
+| CR-004 | — **Resolved (round 7)**: IR-006 `65a5b34c9b` (SR-007/SR-008, option (a)). Round 6 text: | The SR-004 keep rule (`collaborationParticipantMessages.ts` `reloadRoot`: B vs C over every root change), at the hub (and Org) checkpoint reconnect | After a new delegation (or a settings Save) on a running root, the reconnect snapshot's base counts the new copy's non-message events from the reconnect window. So B > C and every loaded list is fetched again, although no message was written. SR-004 expects 0 | The Solution Designer revises the measure. Options: (a) views and snapshots carry the change sequence of the root's latest communication message (for example `last_message_change_sequence`, per live sequence), and the lists are kept when it is at or below the sequence they are consistent through; (b) refresh the view on `checkpoint_required` without dropping the subscription (a query while the stream stays open), so there is no window; (c) accept the per-delegation reload as the protocol's cost and record a follow-up. Apply it to hub and Org (and Team where it reconnects) | `Design Impact` → Solution Designer |
 | CR-003 | — **Resolved (round 5)**: IR-005 `99cd853f79` (SR-006, option (a)). Round 4 text: | `autobyteus-web/services/runHydration/teamRunHydrationCommit.ts` (`'stored_rebuild'` with `liveSequenceId: null`) with `teamRunOpenCoordinator.ts`; the Team snapshot effect's `reloadRoot` | Opening a running Team: the GraphQL-hydrated commit forgets the root's position, the live snapshot then reloads every list loaded in between, so a Team-tab list is fetched twice per running-Team open, which is the CR-002 pattern for Team. It contradicts SR-004's "one rule for hub, Team and Org" and its expected one fetch per selection; ARCH-REV-005 did not cover this path | The Solution Designer decides: (a) the Team open or resume read returns the active Team's `live_sequence_id` and base, so the commit is a live rebuild; (b) on a running Team, start the Team-tab load only after the stream snapshot is applied; or (c) accept and record the limitation as a follow-up | `Design Impact` → Solution Designer |
 | CR-002 | **Resolved for hub and Org (round 4)**: IR-004 (`935c5c9fa9`, `da91ae689a`); Team open remains as CR-003. Round 3 text: | `autobyteus-web/stores/agentRunCollaborationStore.ts:77` (`publish` → `reloadRoot`); the DS-002 reload policy (and the same rule for Team and Org, C-14) | On a running hub, the participant lists (the hub's is close to its whole log) are fetched again on every context publication: twice per selection (inspect, then attach) and again on every new delegation or settings Save (a reconnect for a fresh snapshot). This is avoidable repeated full-history transfer (DESIGN.md rule 3) against the ticket's outcome. It is correct and complete (API-05), and no worse than base | The Solution Designer revises the reload policy. Options: (a) on a running root, start the Team-tab load only once the live stream is ready, and do not reload on the attach that follows an inspection; (b) reload on a reconnect only when a gap is possible (for example a continuity check of the stream's change sequence), or fetch only the messages since the last applied sequence; (c) accept the per-reconnect reload as the protocol's cost, fix only the selection double, and record the rest. Apply one policy across hub, Team and Org | `Design Impact` → Solution Designer |
 | CR-001 | — **Resolved (round 2)**: IR-003 `438ea7fb65` | `autobyteus-web/components/mobile/MobileTeamMessages.vue:6-8`; `autobyteus-web/components/mobile/MobileActivityDigest.vue:105-108` | The mobile message screens read only `listMessages()`. While the focused member's list is loading they say "No team messages yet for the focused member.", and after a failed load (a damaged log, AC-006) they keep saying it, which is a silently empty log. AC-006 requires the messages to show as unavailable with the reason and never silently empty, and the design mapping gives these screens "loading and error states". The desktop Team tab does this correctly (`CollaborationMessagesPanel.vue`) | Read the view's `messagesStatus()` on both screens. Show a loading state while `loading`, and an unavailable state with `error` when `error`, reusing the Team tab's `loading_messages` / `messages_unavailable` strings (en, zh-CN). Keep "No team messages yet" for a loaded empty list only; the digest summary likewise. Add specs for loading, error-with-reason, and loaded-empty | `Local Fix` → Implementation |
@@ -364,11 +388,11 @@ No new premises beyond the candidate gate.
 
 ## Classification
 
-- Round 6: `Design Impact` (CR-004), owned by the Solution Designer: SR-004's measure (any root change) cannot meet its own expected count for a delegation with no message. Round 5: none (Pass). Round 4: `Design Impact` (CR-003), owned by the Solution Designer, resolved by SR-006/IR-005: the Team open path is not covered by SR-004/SR-005 as designed. Round 3: `Design Impact` (CR-002), owned by the Solution Designer. The implementation follows DS-002's reload call sites as written. The policy itself causes the avoidable repeated transfer, and choosing a narrower trigger (or accepting part of it) is a design decision. Round 2: none (Pass). Round 1: `Local Fix`, owned by the Implementation Engineer: a bounded UI omission against the approved AC-006 and the design's own mapping. No design or requirement change is needed.
+- Round 7: none (Pass). Round 6: `Design Impact` (CR-004), owned by the Solution Designer, resolved by SR-007/SR-008: SR-004's measure (any root change) cannot meet its own expected count for a delegation with no message. Round 5: none (Pass). Round 4: `Design Impact` (CR-003), owned by the Solution Designer, resolved by SR-006/IR-005: the Team open path is not covered by SR-004/SR-005 as designed. Round 3: `Design Impact` (CR-002), owned by the Solution Designer. The implementation follows DS-002's reload call sites as written. The policy itself causes the avoidable repeated transfer, and choosing a narrower trigger (or accepting part of it) is a design decision. Round 2: none (Pass). Round 1: `Local Fix`, owned by the Implementation Engineer: a bounded UI omission against the approved AC-006 and the design's own mapping. No design or requirement change is needed.
 
 ## Recommended Recipient
 
-- Round 6: the Solution Designer (CR-004). Round 5: the API/E2E Engineer (primary pass recipient), to recheck the API-08 counts for hub and Team; informational notice to the Implementation Engineer. Round 4: the Solution Designer (CR-003). Round 3: the Solution Designer. Then implementation, then a targeted source review, then API/E2E (API-08 request counts). Round 2: API/E2E Engineer. Round 1: Implementation Engineer.
+- Round 7: the API/E2E Engineer (primary pass recipient), to recheck API-08 L-002; informational notice to the Implementation Engineer. Round 6: the Solution Designer (CR-004). Round 5: the API/E2E Engineer (primary pass recipient), to recheck the API-08 counts for hub and Team; informational notice to the Implementation Engineer. Round 4: the Solution Designer (CR-003). Round 3: the Solution Designer. Then implementation, then a targeted source review, then API/E2E (API-08 request counts). Round 2: API/E2E Engineer. Round 1: Implementation Engineer.
 
 ## Residual Risks
 
@@ -378,6 +402,7 @@ No new premises beyond the candidate gate.
 
 ## Latest Authoritative Result
 
+- Review Decision (round 7): `Pass`. CR-001…CR-004 resolved; scorecard 9.5/10, every category ≥ 9.4
 - Review Decision (round 6, failure-origin): `Fail`. Origin: the SR-004 keep rule compares the snapshot base (all root changes) with C; a delegation's reconnect window always holds the new copy's non-message events, so every delegation reloads. Design gap, plus a review gap acknowledged. `Design Impact` → Solution Designer (CR-004)
 - Review Decision (round 5): `Pass`. CR-001…CR-003 resolved; scorecard 9.5/10, every category ≥ 9.4 (Runtime Correctness and API/E2E Readiness back to 9.4)
 - Review Decision (round 4): `Fail`. CR-002 resolved for hub and Org. CR-003 (running Team open fetches a loaded list twice) is `Design Impact` → Solution Designer. Scorecard 9.3/10 (Runtime Correctness 9.1, API/E2E Readiness 9.1). Everything else re-audited and holds
