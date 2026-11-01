@@ -155,7 +155,7 @@ const snapshotMessage = (): Extract<TeamStreamServerMessage, { type: 'TEAM_EXECU
     root_team_run_id: ROOT_TEAM_RUN_ID,
     base_change_sequence: 40,
     closed_task_executions: [], execution_tree: team.view.getExecutionTree(),
-    messages: team.view.listCommunicationMessages(),
+    messages: [...team.view.listCommunicationMessages()],
     agent_statuses: team.view.listAgentContextEntries().map((entry) => ({
       agent_run_id: entry.agentRunId,
       member_address: entry.memberAddress,
@@ -164,7 +164,10 @@ const snapshotMessage = (): Extract<TeamStreamServerMessage, { type: 'TEAM_EXECU
       tool_name: null,
       error_message: null,
       error_details: null,
+      recoverableBlock: null,
     })),
+    agent_input_states: [],
+    remote_task_executions: [],
   },
 });
 
@@ -218,6 +221,7 @@ onMounted(() => {
           tool_name: null,
           error_message: null,
           error_details: null,
+          recoverableBlock: null,
         },
       });
     },

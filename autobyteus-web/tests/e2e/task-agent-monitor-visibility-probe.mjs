@@ -166,6 +166,8 @@ const graphQlData = (operationName, query) => {
   }
   if (operationName === 'GetAllWorkspaces' || query.includes('workspaces')) return { workspaces: [] };
   if (operationName === 'GetServerSettings' || query.includes('serverSettings')) return { serverSettings: [] };
+  // A focused member's artifact list (read since the team member file-changes query exists); the fixture has none.
+  if (operationName === 'GetTeamMemberFileChanges' || query.includes('getTeamMemberFileChanges')) return { getTeamMemberFileChanges: [] };
   return {};
 };
 
