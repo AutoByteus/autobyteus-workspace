@@ -500,11 +500,23 @@ not find Chrome/Chromium, pass `--browser-executable <path>` or set
 
 ## GraphQL Codegen
 
-Generate TypeScript types from GraphQL schema:
+`generated/graphql.ts` is generated from the server's GraphQL schema; do not edit it by hand.
 
 ```bash
-pnpm codegen
+pnpm codegen:local   # builds the server, prints its schema in-process (no running app, no user data), regenerates the file
+pnpm codegen:check   # the same into a temporary file; fails when generated/graphql.ts is out of date
+pnpm codegen         # generates from a running server: BACKEND_GRAPHQL_BASE_URL=<url>
 ```
+
+Both `:local` commands build the server first (the schema is printed from its build), so a stale build cannot give a false pass.
+The server's architecture test `tests/architecture/web-generated-graphql-current.test.ts` runs the same check against the schema
+built from source, so `pnpm -C autobyteus-server-ts test:unit` fails when the file is behind.
+
+## Declared Imports
+
+`node scripts/check-declared-imports.mjs autobyteus-server-ts autobyteus-web` (from the repository root) fails when a package
+imports something its `package.json` does not declare, or when the server's runtime code (`src/`) imports a development
+dependency (the release package is made with `pnpm deploy --prod`). Run by `scripts/tests/test_declared_imports.py`.
 
 ## Available Scripts
 
@@ -526,7 +538,8 @@ pnpm codegen
 - `pnpm build:electron:linux:arm64`: Build desktop application for Linux ARM64 on a native ARM64 Linux host
 - `pnpm build:electron:windows`: Build desktop application for Windows
 - `pnpm build:electron:mac`: Build desktop application for macOS
-- `pnpm codegen`: Generate GraphQL types
+- `pnpm codegen:local` / `pnpm codegen:check`: Regenerate / check the GraphQL types against the current server schema
+- `pnpm codegen`: Generate GraphQL types from a running server
 
 ## Project Structure
 

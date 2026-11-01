@@ -1,4 +1,3 @@
-// @ts-expect-error @apollo/client is supplied by the existing @nuxtjs/apollo integration.
 import { ApolloClient, ApolloLink, InMemoryCache, Observable } from '@apollo/client/core'
 import { mount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'

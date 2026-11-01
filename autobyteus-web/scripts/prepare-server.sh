@@ -157,11 +157,8 @@ mkdir -p "$TARGET_DIR"
 echo -e "${GREEN}✓${NC} Created target directory: $TARGET_DIR"
 
 echo -e "\n${YELLOW}Building server and dependencies...${NC}"
-if [ -f "${SERVER_REPO_DIR}/pnpm-lock.yaml" ]; then
-  pnpm -C "$SERVER_REPO_DIR" install --frozen-lockfile
-else
-  pnpm -C "$SERVER_REPO_DIR" install --no-frozen-lockfile
-fi
+# The workspace lockfile (pnpm-lock.yaml at the repository root) decides every version of a release build.
+pnpm -C "$SERVER_REPO_DIR" install --frozen-lockfile
 pnpm -C "$SERVER_REPO_DIR" exec prisma generate --schema prisma/schema.prisma
 pnpm -C "$SERVER_REPO_DIR" build
 
@@ -172,10 +169,13 @@ echo -e "\n${YELLOW}Deploying server package into Electron resources...${NC}"
 rm -rf "$TARGET_DIR"
 mkdir -p "$TARGET_DIR"
 if [ -f "${WORKSPACE_ROOT}/pnpm-workspace.yaml" ]; then
-  pnpm -C "$WORKSPACE_ROOT" --filter autobyteus-server-ts deploy "$TARGET_DIR" --legacy
+  pnpm -C "$WORKSPACE_ROOT" --filter autobyteus-server-ts deploy "$TARGET_DIR" --legacy --prod
 else
-  pnpm -C "$SERVER_REPO_DIR" deploy "$TARGET_DIR" --legacy
+  pnpm -C "$SERVER_REPO_DIR" deploy "$TARGET_DIR" --legacy --prod
 fi
+# pnpm deploy links the bins of the deployed package a second time at a path mirrored under the project folder
+# (autobyteus-server-ts/autobyteus-web/resources/server/node_modules/.bin); nothing reads it.
+rm -rf "${SERVER_REPO_DIR}/autobyteus-web"
 
 echo -e "\n${YELLOW}Cleaning workspace symlinks in deployment...${NC}"
 if [ -d "${TARGET_DIR}/node_modules/.pnpm/node_modules" ]; then
@@ -227,7 +227,8 @@ if [ -x "$PRISMA_BIN" ]; then
     "$PRISMA_BIN" generate --schema "${TARGET_DIR}/prisma/schema.prisma"
   fi
 else
-  echo -e "${YELLOW}Warning: Prisma CLI not found at ${PRISMA_BIN}; skipping generate.${NC}"
+  echo -e "${RED}Error: Prisma CLI not found at ${PRISMA_BIN}; the deployed server package needs it to run migrations and to generate its client.${NC}"
+  exit 1
 fi
 
 if [ "$(uname -s)" = "Linux" ]; then

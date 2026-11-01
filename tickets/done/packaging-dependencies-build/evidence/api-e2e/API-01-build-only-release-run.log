@@ -1,0 +1,95 @@
+# API-01 build-only desktop release run (RELEASE.md "Build-only release run"): GitHub Actions run 41282003912, workflow release-desktop.yml, workflow_dispatch on ref codex/packaging-dependencies-build, publish_release=false prerelease=true
+# URL: https://github.com/AutoByteus/autobyteus-workspace/actions/runs/41282003912 ; head 92ff204d33d1c3a6c4f0a4f638a56171cb7312bd ; dispatched 2026-11-01T06:44Z via `gh workflow run release-desktop.yml --ref codex/packaging-dependencies-build -f publish_release=false -f prerelease=true` (what `pnpm release:test --ref <branch>` runs)
+# the log excerpts of each job follow: ##[group]Run steps, the frozen installs, the packaging lines, the Prisma engine validation, the packaged startup validation, errors
+
+RUN conclusion: success
+JOB Resolve Release Metadata : success  (2026-11-01T06:44:09Z -> 2026-11-01T06:47:18Z)
+JOB Build Linux x64 : success  (2026-11-01T06:47:20Z -> 2026-11-01T06:53:54Z)
+JOB Build macOS ARM64 : success  (2026-11-01T06:47:21Z -> 2026-11-01T07:09:16Z)
+JOB Build macOS Intel x64 : success  (2026-11-01T06:47:21Z -> 2026-11-01T07:10:55Z)
+JOB Build Linux ARM64 : success  (2026-11-01T06:47:22Z -> 2026-11-01T06:53:06Z)
+JOB Build Windows x64 : success  (2026-11-01T06:47:20Z -> 2026-11-01T07:03:23Z)
+JOB Publish GitHub Release : skipped  (2026-11-01T07:10:56Z -> 2026-11-01T07:10:55Z)
+
+=================== linux-x64
+##[group]Run pnpm install --frozen-lockfile
+pnpm install --frozen-lockfile
+Scope: all 13 workspace projects
+Lockfile is up to date, resolution step is skipped
+Scope: all 13 workspace projects
+Validating bundled Prisma Linux engine targets...
+✓ Prisma Linux x64 engine targets verified in /home/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web/resources/server/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines
+✓ Prisma client Linux x64 runtime engines verified in /home/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web/resources/server/node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/.prisma/client
+Removed 127 MB of onnxruntime-web browser builds
+Embedding runtime validation passed
+✔ Rebuild Complete
+   Server files prepared successfully!   
+echo "Prisma engines dir: $ENGINES_DIR"
+echo "Prisma client dir: $CLIENT_DIR"
+Prisma engines dir: autobyteus-web/resources/server/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines
+Prisma client dir: autobyteus-web/resources/server/node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/.prisma/client
+Packaged server startup validation passed for /home/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web/electron-dist/linux-unpacked/resources/server
+
+=================== linux-arm64
+##[group]Run pnpm install --frozen-lockfile
+pnpm install --frozen-lockfile
+Scope: all 13 workspace projects
+Lockfile is up to date, resolution step is skipped
+Scope: all 13 workspace projects
+Validating bundled Prisma Linux engine targets...
+✓ Prisma Linux arm64 engine targets verified in /home/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web/resources/server/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines
+✓ Prisma client Linux arm64 runtime engines verified in /home/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web/resources/server/node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/.prisma/client
+Removed 127 MB of onnxruntime-web browser builds
+Embedding runtime validation passed
+✔ Rebuild Complete
+   Server files prepared successfully!   
+echo "Prisma engines dir: $ENGINES_DIR"
+echo "Prisma client dir: $CLIENT_DIR"
+Prisma engines dir: autobyteus-web/resources/server/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines
+Prisma client dir: autobyteus-web/resources/server/node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/.prisma/client
+Packaged server startup validation passed for /home/runner/work/autobyteus-workspace/autobyteus-workspace/autobyteus-web/electron-dist/linux-arm64-unpacked/resources/server
+
+=================== windows
+##[group]Run pnpm install --frozen-lockfile
+pnpm install --frozen-lockfile
+Scope: all 13 workspace projects
+Lockfile is up to date, resolution step is skipped
+Scope: all 13 workspace projects
+npm install is bounded to packages published before 2026-11-01T07:42:53+01:00
+added 321 packages in 39s
+Removed 127 MB of browser builds
+Runtime dependency import validation passed
+Embedding runtime validation passed
+Publishing staged server bundle...
+✔ Rebuild Complete
+   Server files prepared successfully! 
+
+=================== macos-arm64
+##[group]Run pnpm install --frozen-lockfile
+pnpm install --frozen-lockfile
+Scope: all 13 workspace projects
+Lockfile is up to date, resolution step is skipped
+Scope: all 13 workspace projects
+Removed 127 MB of onnxruntime-web browser builds
+Embedding runtime validation passed
+✔ Rebuild Complete
+   Server files prepared successfully!   
+echo "Prisma engines dir: $ENGINES_DIR"
+echo "Prisma client dir: $CLIENT_DIR"
+Prisma engines dir: autobyteus-web/resources/server/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines
+Prisma client dir: autobyteus-web/resources/server/node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/.prisma/client
+
+=================== macos-x64
+##[group]Run pnpm install --frozen-lockfile
+pnpm install --frozen-lockfile
+Scope: all 13 workspace projects
+Lockfile is up to date, resolution step is skipped
+Scope: all 13 workspace projects
+Removed 127 MB of onnxruntime-web browser builds
+Embedding runtime validation passed
+✔ Rebuild Complete
+   Server files prepared successfully!   
+echo "Prisma engines dir: $ENGINES_DIR"
+echo "Prisma client dir: $CLIENT_DIR"
+Prisma engines dir: autobyteus-web/resources/server/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines
+Prisma client dir: autobyteus-web/resources/server/node_modules/.pnpm/@prisma+client@5.22.0_prisma@5.22.0/node_modules/.prisma/client

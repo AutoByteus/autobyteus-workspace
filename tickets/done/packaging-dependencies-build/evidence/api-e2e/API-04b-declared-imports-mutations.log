@@ -1,0 +1,26 @@
+# API-04b mutation checks of scripts/check-declared-imports.mjs on a COPY (/tmp/api-e2e-345-imp: package.json + src/ of autobyteus-server-ts, the script itself); commit 92ff204d33; date 2026-11-01T06:45:58Z
+# command: node check-declared-imports.mjs --root <copy> autobyteus-server-ts
+
+== control (unmodified copy)
+Imports are declared: autobyteus-server-ts
+EXIT=0
+
+== M-E: a runtime file in src/ imports a development-only package (vitest)
+autobyteus-server-ts/src/zz-dev-only-import.ts: vitest is a development dependency but runtime code imports it (the --prod release package would not contain it)
+
+1 undeclared or misclassified import(s). Declare the package in the importing package's package.json.
+EXIT=1
+
+== M-F: the same file imports a package that is declared nowhere
+autobyteus-server-ts/src/zz-undeclared-import.ts: left-pad-not-declared is imported but not declared in package.json
+
+1 undeclared or misclassified import(s). Declare the package in the importing package's package.json.
+EXIT=1
+
+== M-G: a TYPE-ONLY import of a dev package in src/ (exempt by rule)
+Imports are declared: autobyteus-server-ts
+EXIT=0
+
+== control again
+Imports are declared: autobyteus-server-ts
+EXIT=0

@@ -6,6 +6,7 @@ import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { resolveWorkspacePackageRoot } from '../../scripts/workspace-package-roots.mjs'
 import { pruneOnnxruntimeWebDist, validateEmbeddingRuntime } from './onnxruntime-web-packaging.mjs'
+import { resolveNpmBefore } from './lib/npm-before.mjs'
 
 const COLORS = {
   green: '\x1b[32m',
@@ -71,6 +72,8 @@ function getLinuxPrismaBinaryTargets(targetArch) {
 
 const linuxPackageTargetArch = resolveLinuxPackageTargetArch()
 const linuxPrismaBinaryTargets = getLinuxPrismaBinaryTargets(linuxPackageTargetArch)
+// Decided when the script starts, so a build with no usable time stops before it builds anything.
+let npmBefore = null
 const npmNetworkRetryEnv = {
   npm_config_fetch_retries: process.env.npm_config_fetch_retries ?? '5',
   npm_config_fetch_retry_factor: process.env.npm_config_fetch_retry_factor ?? '2',
@@ -167,12 +170,8 @@ async function copyIfExists(sourcePath, targetPath) {
 async function buildWorkspaceArtifacts() {
   warn('\nBuilding server source artifacts...')
 
-  const serverLockfile = path.join(serverSourceRoot, 'pnpm-lock.yaml')
-  if (await exists(serverLockfile)) {
-    await runCommand('pnpm', ['-C', serverSourceRoot, 'install', '--frozen-lockfile'])
-  } else {
-    await runCommand('pnpm', ['-C', serverSourceRoot, 'install', '--no-frozen-lockfile'])
-  }
+  // The workspace lockfile (pnpm-lock.yaml at the repository root) decides every version of a release build.
+  await runCommand('pnpm', ['-C', serverSourceRoot, 'install', '--frozen-lockfile'])
 
   await runCommand('pnpm', ['-C', serverSourceRoot, 'exec', 'prisma', 'generate', '--schema', 'prisma/schema.prisma'])
   await runCommand('pnpm', ['-C', serverSourceRoot, 'build'])
@@ -188,10 +187,13 @@ async function deployServerPackageToStage() {
 
   const workspaceManifest = path.join(workspaceRoot, 'pnpm-workspace.yaml')
   if (await exists(workspaceManifest)) {
-    await runCommand('pnpm', ['-C', workspaceRoot, '--filter', 'autobyteus-server-ts', 'deploy', stageDir, '--legacy'])
+    await runCommand('pnpm', ['-C', workspaceRoot, '--filter', 'autobyteus-server-ts', 'deploy', stageDir, '--legacy', '--prod'])
   } else {
-    await runCommand('pnpm', ['-C', serverSourceRoot, 'deploy', stageDir, '--legacy'])
+    await runCommand('pnpm', ['-C', serverSourceRoot, 'deploy', stageDir, '--legacy', '--prod'])
   }
+
+  // pnpm deploy mirrors the bins of the deployed package under the project folder (autobyteus-server-ts/autobyteus-web/…); nothing reads it.
+  await rm(path.join(serverSourceRoot, 'autobyteus-web'), { recursive: true, force: true })
 
   // Deploy output contains pnpm link graphs; runtime dependencies are rebuilt in staging.
   await rm(path.join(stageDir, 'node_modules'), { recursive: true, force: true })
@@ -235,7 +237,6 @@ async function packWorkspaceDependencies(serverManifest) {
 async function rewriteStagePackageManifest(localDependencySpecs) {
   const manifestPath = path.join(stageDir, 'package.json')
   const manifest = await readJson(manifestPath)
-  const sourceManifest = await readJson(path.join(serverSourceRoot, 'package.json'))
 
   manifest.dependencies = {
     ...(manifest.dependencies ?? {}),
@@ -244,18 +245,17 @@ async function rewriteStagePackageManifest(localDependencySpecs) {
     manifest.dependencies[name] = spec
   }
 
-  // Keep only Prisma CLI in devDependencies for bundled client generation.
+  // The production deploy leaves no development package a runtime needs: the Prisma CLI is a production dependency.
   manifest.devDependencies = {}
-  if (sourceManifest.devDependencies?.prisma) {
-    manifest.devDependencies.prisma = sourceManifest.devDependencies.prisma
-  }
 
   await writeFile(manifestPath, `${JSON.stringify(manifest, null, 2)}\n`, 'utf8')
 }
 
 async function installPortableRuntimeDependencies() {
   warn('\nInstalling portable runtime dependencies...')
-  await runCommand('npm', ['install', '--no-audit', '--no-fund'], { cwd: stageDir, env: npmNetworkRetryEnv })
+  // npm cannot install from the pnpm lockfile (it needs a flat tree), so the install is bounded: nothing published after the commit enters.
+  info(`npm install is bounded to packages published before ${npmBefore}`)
+  await runCommand('npm', ['install', '--no-audit', '--no-fund', `--before=${npmBefore}`], { cwd: stageDir, env: npmNetworkRetryEnv })
 
   warn('\nGenerating Prisma client in staging...')
   const prismaEnv = {}
@@ -266,9 +266,6 @@ async function installPortableRuntimeDependencies() {
     cwd: stageDir,
     env: prismaEnv,
   })
-
-  warn('\nPruning development dependencies from staging...')
-  await runCommand('npm', ['prune', '--omit=dev', '--no-audit', '--no-fund'], { cwd: stageDir, env: npmNetworkRetryEnv })
 
   await rm(path.join(stageDir, 'package-lock.json'), { force: true })
 }
@@ -564,6 +561,8 @@ async function run() {
   if (!(await exists(serverSourceRoot))) {
     throw new Error(`Server repository not found at ${serverSourceRoot}`)
   }
+
+  npmBefore = resolveNpmBefore({ env: process.env, workspaceRoot })
 
   await buildWorkspaceArtifacts()
   await buildMobileWebAssets()

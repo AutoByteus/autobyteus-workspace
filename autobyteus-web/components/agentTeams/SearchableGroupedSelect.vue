@@ -93,6 +93,7 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onUnmounted, nextTick, reactive, useId } from 'vue'
+import type { CSSProperties } from 'vue'
 import { useLocalization } from '~/composables/useLocalization'
 
 export interface SelectItem {
@@ -133,7 +134,7 @@ const wrapperRef = ref<HTMLDivElement | null>(null)
 const searchInputRef = ref<HTMLInputElement | null>(null)
 const popoverRef = ref<HTMLDivElement | null>(null)
 
-const popoverStyle = reactive({
+const popoverStyle = reactive<CSSProperties>({
   position: 'fixed',
   top: 'auto',
   bottom: 'auto',

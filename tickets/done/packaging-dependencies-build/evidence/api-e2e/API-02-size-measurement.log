@@ -1,0 +1,25 @@
+# API-02 independent size measurement (AC-002). Fresh clone /private/tmp/api-e2e-345-size of the worktree repo; macOS arm64; node/pnpm as installed; date 2026-11-01T06:53:09Z
+# script: API-02-size-measure.sh (alongside). For each revision: pnpm install --frozen-lockfile, prisma generate + pnpm build (server), pnpm --filter autobyteus-server-ts deploy <dir> --legacy [--prod], du before/after `prisma generate` in the package, packaged-server startup check on the real path.
+# new = 92ff204d33 (--prod, files list); base = efd28d5c4a (the merge base: whole folder, dev packages)
+
+### new at 92ff204d33: deploy flags '--prod'
+92ff204d33
+folder: LICENSE README.md application-packages dist node_modules package.json prisma 
+new BEFORE prisma generate du=690272 KB apparent=614620 KB
+new AFTER  prisma generate du=853336 KB apparent=777638 KB
+virtual store packages:      348  top-level @types/vitest/typescript: 0  src/tests present:        0
+Packaged server startup validation passed for /private/tmp/api-e2e-345-new
+
+### base at efd28d5c4a: deploy flags ''
+efd28d5c4a
+folder: .env.development .env.example .env.test AGENTS.md LICENSE README.md application-packages canuse-ok.txt dist docker docs node_modules package.json prisma scripts src tests tickets tsconfig.build.json tsconfig.claude-interrupt-resume-e2e.json tsconfig.json vitest.config.ts 
+base BEFORE prisma generate du=847172 KB apparent=743239 KB
+base AFTER  prisma generate du=1010236 KB apparent=906257 KB
+virtual store packages:      450  top-level @types/vitest/typescript: 1  src/tests present:        2
+Packaged server startup validation passed for /private/tmp/api-e2e-345-base
+DONE
+
+SUMMARY (du, MB = KB/1024)
+before prisma generate: base 827.3  new 674.1  saving 153.2 MB = 18.5%   (M-1 827, M-3 674: both reproduce)
+after  prisma generate: base 986.6  new 833.3  saving 153.2 MB = 15.5%
+prisma generate adds: base 159.2 MB, new 159.2 MB
