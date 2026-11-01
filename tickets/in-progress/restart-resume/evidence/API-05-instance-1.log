@@ -1,0 +1,287 @@
+[2026-11-01T07:00:46.849Z] [INFO] [electron] Application started
+[2026-11-01T07:00:46.924Z] [INFO] [electron] Creating server manager for platform: darwin
+
+DevTools listening on ws://127.0.0.1:63622/devtools/browser/f808f553-63a9-46e3-b05a-a521ed6a7f02
+[2026-11-01T07:00:46.965Z] [INFO] [electron] Browser bridge started on http://127.0.0.1:63626
+[2026-11-01T07:00:46.973Z] [INFO] [electron] ServerStatusManager: Starting internal server
+[2026-11-01T07:00:46.973Z] [INFO] [electron] ServerStatusManager: Emitting status change: starting
+[2026-11-01T07:00:46.973Z] [INFO] [electron.server.base-server-manager] Server installation directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-api.r8VrPh/desk-app/AutoByteus.app/Contents/Resources/server
+[2026-11-01T07:00:46.973Z] [INFO] [electron.server.base-server-manager] App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-desk-uHd72X/data-root/server-data
+[2026-11-01T07:00:46.974Z] [INFO] [electron] Server entrypoint: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-api.r8VrPh/desk-app/AutoByteus.app/Contents/Resources/server/dist/app.js
+[2026-11-01T07:00:47.919Z] [INFO] [electron] Loaded PATH from bash login shell
+[2026-11-01T07:00:47.919Z] [INFO] [electron] Login shell PATH: /Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.nvm/versions/node/v22.21.1/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.nvm/versions/node/v22.21.1/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.nvm/versions/node/v22.21.1/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.antigravity/antigravity/bin:/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home/bin:/usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/pkg/env/global/bin:/Library/Apple/usr/bin:/opt/homebrew/bin:/Users/normy/.grok/bin:/Users/normy/.kimi-code/bin:/Users/normy/.local/bin:/Users/normy/.antigravity/antigravity/bin:/Users/normy/.nvm/versions/node/v22.21.1/bin:/opt/homebrew/opt/openjdk@21/libexec/openjdk.jdk/Contents/Home/bin:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin:/Users/normy/.lmstudio/bin
+[2026-11-01T07:00:47.919Z] [INFO] [electron] Using PATH from login shell
+[2026-11-01T07:00:47.919Z] [INFO] [electron] Starting server with port: 63623
+[2026-11-01T07:00:47.919Z] [INFO] [electron] Setting AUTOBYTEUS_SERVER_HOST to: http://127.0.0.1:63623
+[2026-11-01T07:00:47.919Z] [INFO] [electron] Working directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-api.r8VrPh/desk-app/AutoByteus.app/Contents/Resources/server
+[2026-11-01T07:00:47.919Z] [INFO] [electron] App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-desk-uHd72X/data-root/server-data
+[2026-11-01T07:00:47.919Z] [INFO] [electron] Executing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-api.r8VrPh/desk-app/AutoByteus.app/Contents/MacOS/AutoByteus /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-api.r8VrPh/desk-app/AutoByteus.app/Contents/Resources/server/dist/app.js --port 63623 --data-dir /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-desk-uHd72X/data-root/server-data
+[2026-11-01T07:00:47.921Z] [INFO] [electron] Server process spawned with PID: 1550
+[2026-11-01T07:00:47.987Z] [INFO] [electron.embedded-server.stdout] Platform detection: Windows=false
+[2026-11-01T07:00:47.987Z] [INFO] [electron.embedded-server.stdout] App root directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-api.r8VrPh/desk-app/AutoByteus.app/Contents/Resources/server
+[2026-11-01T07:00:47.987Z] [INFO] [electron.embedded-server.stdout] App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-desk-uHd72X/data-root/server-data
+[2026-11-01T07:00:47.987Z] [INFO] [electron.embedded-server.stdout] Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-desk-uHd72X/data-root/server-data/.env
+[2026-11-01T07:00:47.987Z] [INFO] [electron.embedded-server.stdout] Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-desk-uHd72X/data-root/server-data/.env
+[2026-11-01T07:00:47.988Z] [INFO] [electron.embedded-server.stdout] Environment variables loaded successfully
+[2026-11-01T07:00:47.988Z] [INFO] [electron.embedded-server.stdout] Server public base URL configured to: http://127.0.0.1:63623
+[2026-11-01T07:00:47.988Z] [INFO] [electron.embedded-server.stdout] === Starting logging configuration ===
+[2026-11-01T07:00:47.988Z] [INFO] [electron.embedded-server.stdout] Logging config file is ignored in Node.js: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-api.r8VrPh/desk-app/AutoByteus.app/Contents/Resources/server/logging_config.ini
+[2026-11-01T07:00:47.988Z] [INFO] [electron.embedded-server.stdout] ============================================================
+[2026-11-01T07:00:47.988Z] [INFO] [electron.embedded-server.stdout] SERVER PUBLIC URL: http://127.0.0.1:63623
+[2026-11-01T07:00:47.988Z] [INFO] [electron.embedded-server.stdout] APP ROOT DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-api.r8VrPh/desk-app/AutoByteus.app/Contents/Resources/server
+[2026-11-01T07:00:47.988Z] [INFO] [electron.embedded-server.stdout] APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-desk-uHd72X/data-root/server-data
+[2026-11-01T07:00:47.988Z] [INFO] [electron.embedded-server.stdout] DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-desk-uHd72X/data-root/server-data/db
+[2026-11-01T07:00:47.988Z] [INFO] [electron.embedded-server.stdout] LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-desk-uHd72X/data-root/server-data/logs
+[2026-11-01T07:00:47.988Z] [INFO] [electron.embedded-server.stdout] DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-desk-uHd72X/data-root/server-data/download
+[2026-11-01T07:00:47.988Z] [INFO] [electron.embedded-server.stdout] MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-desk-uHd72X/data-root/server-data/memory
+[2026-11-01T07:00:47.988Z] [INFO] [electron.embedded-server.stdout] ============================================================
+[2026-11-01T07:00:48.791Z] [INFO] [electron.embedded-server.stdout] AgentFactory (Singleton) initialized.
+[2026-11-01T07:00:48.940Z] [INFO] [electron.embedded-server.stdout] Running Prisma migrations...
+[2026-11-01T07:00:48.941Z] [INFO] [electron.embedded-server.stdout] Using Prisma engine overrides from bundled: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-api.r8VrPh/desk-app/AutoByteus.app/Contents/Resources/server/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+[2026-11-01T07:00:49.146Z] [INFO] [electron.embedded-server.stdout] Prisma schema loaded from prisma/schema.prisma
+[2026-11-01T07:00:49.149Z] [INFO] [electron.embedded-server.stdout] Datasource "db": SQLite database "production.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-desk-uHd72X/data-root/server-data/db/production.db"
+[2026-11-01T07:00:49.169Z] [INFO] [electron.embedded-server.stdout] 27 migrations found in prisma/migrations
+[2026-11-01T07:00:49.171Z] [INFO] [electron.embedded-server.stdout] No pending migrations to apply.
+[2026-11-01T07:00:49.188Z] [INFO] [electron.embedded-server.stdout] Database migrations completed successfully.
+[2026-11-01T07:00:49.194Z] [INFO] [electron.embedded-server.stdout] prisma:info Starting a sqlite pool with 21 connections.
+[2026-11-01T07:00:49.201Z] [INFO] [electron.embedded-server.stdout] [2026-11-01T07:00:49.201Z] [INFO] [secret-management.vault] Secret vault: application database
+[2026-11-01T07:00:49.214Z] [INFO] [electron.embedded-server.stdout] Initialized server settings service with 33 predefined settings
+[2026-11-01T07:00:49.249Z] [INFO] [electron.embedded-server.stdout] AgentRunManager initialized.
+[2026-11-01T07:00:49.251Z] [INFO] [electron.embedded-server.stdout] AgentRunManager initialized.
+[2026-11-01T07:00:49.318Z] [INFO] [electron.embedded-server.stdout] Empty never-started run removal skipped 1 folder(s) without a standalone run record
+[2026-11-01T07:00:49.318Z] [INFO] [electron.embedded-server.stdout] Loading workspace packages to trigger registration...
+[2026-11-01T07:00:49.318Z] [INFO] [electron.embedded-server.stdout] Successfully loaded workspace packages.
+[2026-11-01T07:00:49.319Z] [INFO] [electron.embedded-server.stdout] Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-desk-uHd72X/data-root/server-data/temp_workspace
+[2026-11-01T07:00:49.319Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-desk-uHd72X/data-root/server-data/temp_workspace.
+[2026-11-01T07:00:49.319Z] [INFO] [electron.embedded-server.stdout] Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-desk-uHd72X/data-root/server-data/temp_workspace with fixed ID 'temp_ws_default'
+[2026-11-01T07:00:49.319Z] [INFO] [electron.embedded-server.stdout] Temp workspace created and cached with ID: temp_ws_default
+[2026-11-01T07:00:49.319Z] [INFO] [electron.embedded-server.stdout] Registering agent customization processors...
+[2026-11-01T07:00:49.319Z] [INFO] [electron.embedded-server.stdout] Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+[2026-11-01T07:00:49.319Z] [INFO] [electron.embedded-server.stdout] Registered input processor 'WorkspacePathSanitizationProcessor'.
+[2026-11-01T07:00:49.319Z] [INFO] [electron.embedded-server.stdout] Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+[2026-11-01T07:00:49.319Z] [INFO] [electron.embedded-server.stdout] Registered input processor 'UserInputContextBuildingProcessor'.
+[2026-11-01T07:00:49.319Z] [INFO] [electron.embedded-server.stdout] LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+[2026-11-01T07:00:49.319Z] [INFO] [electron.embedded-server.stdout] Registered LLM response processor 'MediaUrlTransformerProcessor'.
+[2026-11-01T07:00:49.319Z] [INFO] [electron.embedded-server.stdout] Agent customization processor registration complete.
+[2026-11-01T07:00:49.319Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_file'
+[2026-11-01T07:00:49.320Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'write_file'
+[2026-11-01T07:00:49.320Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'edit_file'
+[2026-11-01T07:00:49.320Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'run_bash'
+[2026-11-01T07:00:49.320Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'start_background_process'
+[2026-11-01T07:00:49.320Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_background_processes'
+[2026-11-01T07:00:49.320Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_process_output'
+[2026-11-01T07:00:49.320Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'stop_background_process'
+[2026-11-01T07:00:49.320Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'search_web'
+[2026-11-01T07:00:49.320Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'download_media'
+[2026-11-01T07:00:49.320Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_url'
+[2026-11-01T07:00:49.320Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Core Tools
+[2026-11-01T07:00:49.328Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_project_task'
+[2026-11-01T07:00:49.328Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_projects'
+[2026-11-01T07:00:49.328Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_project_tasks'
+[2026-11-01T07:00:49.328Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'search_project_tasks'
+[2026-11-01T07:00:49.328Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'create_project'
+[2026-11-01T07:00:49.328Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'update_project'
+[2026-11-01T07:00:49.328Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'create_task'
+[2026-11-01T07:00:49.328Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'update_task'
+[2026-11-01T07:00:49.328Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'delegate_task'
+[2026-11-01T07:00:49.329Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'generate_image'
+[2026-11-01T07:00:49.329Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'edit_image'
+[2026-11-01T07:00:49.329Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'generate_speech'
+[2026-11-01T07:00:49.329Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'generate_video'
+[2026-11-01T07:00:49.329Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Project Task Tools
+[2026-11-01T07:00:49.329Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Task Delegation Tools
+[2026-11-01T07:00:49.329Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Media Tools
+[2026-11-01T07:00:49.329Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_available_agents'
+[2026-11-01T07:00:49.329Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_peer_nodes'
+[2026-11-01T07:00:49.329Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Agent Discovery Tools
+[2026-11-01T07:00:49.329Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_available_agent_runtimes'
+[2026-11-01T07:00:49.329Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'submit_launch_choices'
+[2026-11-01T07:00:49.329Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Agent Runtime Tools
+[2026-11-01T07:00:49.329Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'open_tab'
+[2026-11-01T07:00:49.330Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'navigate_to'
+[2026-11-01T07:00:49.330Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'close_tab'
+[2026-11-01T07:00:49.330Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'list_tabs'
+[2026-11-01T07:00:49.330Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'read_page'
+[2026-11-01T07:00:49.330Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'screenshot'
+[2026-11-01T07:00:49.330Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'dom_snapshot'
+[2026-11-01T07:00:49.330Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'run_script'
+[2026-11-01T07:00:49.330Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'set_device_emulation'
+[2026-11-01T07:00:49.330Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Browser Tools
+[2026-11-01T07:00:49.330Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'publish_artifacts'
+[2026-11-01T07:00:49.330Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Published Artifact Tools
+[2026-11-01T07:00:49.330Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'search_memory'
+[2026-11-01T07:00:49.330Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Memory Tools
+[2026-11-01T07:00:49.330Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'send_message_to'
+[2026-11-01T07:00:49.330Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'get_handoff_rules'
+[2026-11-01T07:00:49.330Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Agent Communication Tools
+[2026-11-01T07:00:49.331Z] [ERROR] [electron.embedded-server.stderr] Overwriting existing tool definition for name: 'search_web'
+[2026-11-01T07:00:49.331Z] [INFO] [electron.embedded-server.stdout] Successfully registered tool definition: 'search_web'
+[2026-11-01T07:00:49.332Z] [INFO] [electron.embedded-server.stdout] Registered required tool unit: Search Tools
+[2026-11-01T07:00:49.342Z] [INFO] [electron.embedded-server.stdout] {"level":30,"time":1793516449342,"pid":1550,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:63643"}
+[2026-11-01T07:00:49.362Z] [INFO] [electron.embedded-server.stdout] {"level":30,"time":1793516449362,"pid":1550,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:63623"}
+[2026-11-01T07:00:49.362Z] [INFO] [electron.embedded-server.stdout] {"level":30,"time":1793516449362,"pid":1550,"hostname":"MacBookPro","msg":"Server listening at http://192.168.2.158:63623"}
+[2026-11-01T07:00:49.362Z] [INFO] [electron.embedded-server.stdout] {"level":30,"time":1793516449362,"pid":1550,"hostname":"MacBookPro","msg":"Server listening at http://100.127.30.107:63623"}
+[2026-11-01T07:00:49.362Z] [INFO] [electron.embedded-server.stdout] [2026-11-01T07:00:49.362Z] [INFO] [server.runtime] Server listening on 0.0.0.0:63623
+[2026-11-01T07:00:49.363Z] [INFO] [electron.embedded-server.stdout] Scheduling Studio-only non-critical startup tasks...
+[2026-11-01T07:00:49.365Z] [INFO] [electron.embedded-server.stdout] Background cache pre-loading process has started.
+[2026-11-01T07:00:49.365Z] [INFO] [electron.embedded-server.stdout] CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+[2026-11-01T07:00:49.365Z] [INFO] [electron.embedded-server.stdout] Populating MCP server config cache for the first time...
+[2026-11-01T07:00:49.366Z] [INFO] [electron.embedded-server.stdout] Running MCP tool registration background task...
+[2026-11-01T07:00:49.366Z] [INFO] [electron.embedded-server.stdout] Loading and registering all MCP server configurations from file...
+[2026-11-01T07:00:49.367Z] [INFO] [electron.embedded-server.stdout] Background task 'Memory Sync Worker' completed successfully.
+[2026-11-01T07:00:49.367Z] [INFO] [electron.embedded-server.stdout] Background task 'Memory Search' completed successfully.
+[2026-11-01T07:00:49.370Z] [INFO] [electron.embedded-server.stdout] MCP server config cache populated with 0 items.
+[2026-11-01T07:00:49.370Z] [INFO] [electron.embedded-server.stdout] Found 0 total MCP server configs.
+[2026-11-01T07:00:49.370Z] [INFO] [electron.embedded-server.stdout] Synchronized cached configurations with the core MCP config service.
+[2026-11-01T07:00:49.370Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 0 MCP server configs into cache.
+[2026-11-01T07:00:49.370Z] [INFO] [electron.embedded-server.stdout] Finished loading and registering all MCP server configurations.
+[2026-11-01T07:00:49.370Z] [INFO] [electron.embedded-server.stdout] Background task 'MCP Tool Registration' completed successfully.
+[2026-11-01T07:00:49.371Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 33 LLM models into cache.
+[2026-11-01T07:00:49.371Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 7 image models into cache.
+[2026-11-01T07:00:49.371Z] [INFO] [electron.embedded-server.stdout] Pre-loaded 3 audio models into cache.
+[2026-11-01T07:00:49.371Z] [INFO] [electron.embedded-server.stdout] Background application cache pre-loading completed.
+[2026-11-01T07:00:49.371Z] [INFO] [electron.embedded-server.stdout] Background task 'Cache Pre-loading' completed successfully.
+[2026-11-01T07:00:49.376Z] [INFO] [electron.embedded-server.stdout] Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-desk-uHd72X/workspace
+[2026-11-01T07:00:49.376Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-desk-uHd72X/workspace.
+[2026-11-01T07:00:49.376Z] [INFO] [electron.embedded-server.stdout] Created and registered workspace ID: agent_ws_963953a65245b30b303cfc58027bcf2956125b7b15c98d0f8dba641830408c1f
+[2026-11-01T07:00:49.380Z] [INFO] [electron.embedded-server.stdout] Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-desk-uHd72X/workspace
+[2026-11-01T07:00:49.380Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-desk-uHd72X/workspace.
+[2026-11-01T07:00:49.381Z] [INFO] [electron.embedded-server.stdout] Reusing registered workspace ID: agent_ws_963953a65245b30b303cfc58027bcf2956125b7b15c98d0f8dba641830408c1f
+[2026-11-01T07:00:49.386Z] [INFO] [electron.embedded-server.stdout] Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-desk-uHd72X/workspace
+[2026-11-01T07:00:49.386Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-desk-uHd72X/workspace.
+[2026-11-01T07:00:49.386Z] [INFO] [electron.embedded-server.stdout] Reusing registered workspace ID: agent_ws_963953a65245b30b303cfc58027bcf2956125b7b15c98d0f8dba641830408c1f
+[2026-11-01T07:00:49.441Z] [INFO] [electron.embedded-server.stdout] Restart resume resumed host run 'desk_agent_rr285dmvxhdbm2_2ae7c3f072e94938909e97f4f01c0bc3' of agent 'desk_agent_rr285dmvxhdbm2_2ae7c3f072e94938909e97f4f01c0bc3'
+[2026-11-01T07:00:49.503Z] [INFO] [electron.server.base-server-manager] Server health check successful, server is ready
+[2026-11-01T07:00:49.503Z] [INFO] [electron] ServerStatusManager: Server is ready
+[2026-11-01T07:00:49.504Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-01T07:00:49.607Z] [INFO] [electron] Creating node-bound window for entryId=embedded-local; url=file:///private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-api.r8VrPh/desk-app/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html
+[2026-11-01T07:00:49.651Z] [ERROR] [electron.embedded-server.stderr] [CodexClientThreadRouter] app-server message was not routed {
+[2026-11-01T07:00:49.651Z] [ERROR] [electron.embedded-server.stderr]   kind: 'notification',
+[2026-11-01T07:00:49.651Z] [ERROR] [electron.embedded-server.stderr]   method: 'deprecationNotice',
+[2026-11-01T07:00:49.651Z] [ERROR] [electron.embedded-server.stderr]   requestId: undefined,
+[2026-11-01T07:00:49.651Z] [ERROR] [electron.embedded-server.stderr]   threadCount: 2,
+[2026-11-01T07:00:49.651Z] [ERROR] [electron.embedded-server.stderr]   paramKeys: [ 'summary', 'details' ]
+[2026-11-01T07:00:49.651Z] [ERROR] [electron.embedded-server.stderr] }
+[2026-11-01T07:00:49.651Z] [ERROR] [electron.embedded-server.stderr] [CodexClientThreadRouter] app-server message was not routed {
+[2026-11-01T07:00:49.651Z] [ERROR] [electron.embedded-server.stderr]   kind: 'notification',
+[2026-11-01T07:00:49.651Z] [ERROR] [electron.embedded-server.stderr]   method: 'deprecationNotice',
+[2026-11-01T07:00:49.651Z] [ERROR] [electron.embedded-server.stderr]   requestId: undefined,
+[2026-11-01T07:00:49.651Z] [ERROR] [electron.embedded-server.stderr]   threadCount: 2,
+[2026-11-01T07:00:49.651Z] [ERROR] [electron.embedded-server.stderr]   paramKeys: [ 'summary', 'details' ]
+[2026-11-01T07:00:49.651Z] [ERROR] [electron.embedded-server.stderr] }
+[2026-11-01T07:00:49.651Z] [ERROR] [electron.embedded-server.stderr] [CodexClientThreadRouter] app-server message was not routed {
+[2026-11-01T07:00:49.651Z] [ERROR] [electron.embedded-server.stderr]   kind: 'notification',
+[2026-11-01T07:00:49.651Z] [ERROR] [electron.embedded-server.stderr]   method: 'deprecationNotice',
+[2026-11-01T07:00:49.651Z] [ERROR] [electron.embedded-server.stderr]   requestId: undefined,
+[2026-11-01T07:00:49.651Z] [ERROR] [electron.embedded-server.stderr]   threadCount: 3,
+[2026-11-01T07:00:49.651Z] [ERROR] [electron.embedded-server.stderr]   paramKeys: [ 'summary', 'details' ]
+[2026-11-01T07:00:49.651Z] [ERROR] [electron.embedded-server.stderr] }
+[2026-11-01T07:00:49.651Z] [INFO] [electron.embedded-server.stdout] Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-desk-uHd72X/workspace
+[2026-11-01T07:00:49.651Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-desk-uHd72X/workspace.
+[2026-11-01T07:00:49.651Z] [INFO] [electron.embedded-server.stdout] Reusing registered workspace ID: agent_ws_963953a65245b30b303cfc58027bcf2956125b7b15c98d0f8dba641830408c1f
+[2026-11-01T07:00:49.651Z] [INFO] [electron.embedded-server.stdout] Restart resume resumed delegated run 'desk_worker_rr285dmvxhdbm2_20aa85bd354c4817ab18ec958f4666bd' of agent 'desk_host_rr285dmvxhdbm2_70f3c061da744f3a989ef519748474fa'
+[2026-11-01T07:00:49.651Z] [INFO] [electron.embedded-server.stdout] Restart resume resumed host run 'desk_agent_rr285dmvxhdbm2_2f20be2ffce646829c35b35df9f7dad0' of agent 'desk_agent_rr285dmvxhdbm2_2f20be2ffce646829c35b35df9f7dad0'
+[2026-11-01T07:00:49.651Z] [INFO] [electron.embedded-server.stdout] Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-desk-uHd72X/workspace
+[2026-11-01T07:00:49.651Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-desk-uHd72X/workspace.
+[2026-11-01T07:00:49.651Z] [INFO] [electron.embedded-server.stdout] Reusing registered workspace ID: agent_ws_963953a65245b30b303cfc58027bcf2956125b7b15c98d0f8dba641830408c1f
+[2026-11-01T07:00:49.651Z] [INFO] [electron.embedded-server.stdout] Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-desk-uHd72X/workspace
+[2026-11-01T07:00:49.651Z] [INFO] [electron.embedded-server.stdout] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-desk-uHd72X/workspace.
+[2026-11-01T07:00:49.651Z] [INFO] [electron.embedded-server.stdout] Reusing registered workspace ID: agent_ws_963953a65245b30b303cfc58027bcf2956125b7b15c98d0f8dba641830408c1f
+[2026-11-01T07:00:49.651Z] [INFO] [electron.embedded-server.stdout] Restart resume resumed member run 'desk_org_manager_rr285dmvxhdbm2_cc148ea559e04e45b8cb4f300bb9bbe9' of agent_org 'desk_org_rr285dmvxhdbm2_1a68a21ab8154904a5c310303f32669b'
+[2026-11-01T07:00:49.651Z] [INFO] [electron.embedded-server.stdout] Restart resume resumed host run 'desk_host_rr285dmvxhdbm2_70f3c061da744f3a989ef519748474fa' of agent 'desk_host_rr285dmvxhdbm2_70f3c061da744f3a989ef519748474fa'
+[2026-11-01T07:00:49.760Z] [INFO] [electron.embedded-server.stdout] Restart resume resumed member run 'desk_team_coordinator_rr285dmvxhdbm2_a98936a026e84b32aa2739e293b289da' of agent_team 'desk_team_rr285dmvxhdbm2_e992d8c5d57847da85b7894fb8a3103d'
+[2026-11-01T07:00:49.760Z] [INFO] [electron.embedded-server.stdout] Restart resume after the update to 1.5.11-beta.9-rr285next: 6 resumed, 0 skipped, 0 failed
+[2026-11-01T07:00:49.809Z] [ERROR] [electron.embedded-server.stderr] [CodexClientThreadRouter] app-server message was not routed {
+[2026-11-01T07:00:49.809Z] [ERROR] [electron.embedded-server.stderr]   kind: 'notification',
+[2026-11-01T07:00:49.809Z] [ERROR] [electron.embedded-server.stderr]   method: 'account/updated',
+[2026-11-01T07:00:49.809Z] [ERROR] [electron.embedded-server.stderr]   requestId: undefined,
+[2026-11-01T07:00:49.809Z] [ERROR] [electron.embedded-server.stderr]   threadCount: 3,
+[2026-11-01T07:00:49.809Z] [ERROR] [electron.embedded-server.stderr]   paramKeys: [ 'authMode', 'planType' ]
+[2026-11-01T07:00:49.809Z] [ERROR] [electron.embedded-server.stderr] }
+(electron) 'console-message' arguments are deprecated and will be removed. Please use Event<WebContentsConsoleMessageEventParams> object instead.
+[2026-11-01T07:00:49.931Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1793516449930,"pid":1550,"hostname":"MacBookPro","reqId":"req-a","method":"POST","url":"/mcp/agent-tools/agtrun_G8B2nTl7nlmXaBJ1LIio89BJFfT1dn48I7OPRE16L-E","statusCode":400,"elapsedMs":0.35924999999997453,"msg":"http request completed"}
+[2026-11-01T07:00:49.973Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-01T07:00:49.977Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-01T07:00:49.989Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-01T07:00:49.993Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-01T07:00:50.222Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-desk-uHd72X/data-root/server-data/memory/agents/desk_agent_rr285dmvxhdbm2_2ae7c3f072e94938909e97f4f01c0bc3/raw_traces_manifest.json
+[2026-11-01T07:00:50.286Z] [INFO] [electron.embedded-server.stdout] Agent websocket attached for run desk_agent_rr285dmvxhdbm2_2ae7c3f072e94938909e97f4f01c0bc3
+[2026-11-01T07:00:50.286Z] [INFO] [electron.embedded-server.stdout] Created agent session 9116cf7d-7648-400f-a6bd-610ff4f76afb for run desk_agent_rr285dmvxhdbm2_2ae7c3f072e94938909e97f4f01c0bc3
+[2026-11-01T07:00:50.287Z] [INFO] [electron.embedded-server.stdout] Agent WebSocket connected: session=9116cf7d-7648-400f-a6bd-610ff4f76afb, run=desk_agent_rr285dmvxhdbm2_2ae7c3f072e94938909e97f4f01c0bc3
+[2026-11-01T07:00:50.295Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-desk-uHd72X/data-root/server-data/memory/agents/desk_agent_rr285dmvxhdbm2_2f20be2ffce646829c35b35df9f7dad0/raw_traces_manifest.json
+[2026-11-01T07:00:50.305Z] [INFO] [electron.embedded-server.stdout] Agent websocket attached for run desk_agent_rr285dmvxhdbm2_2f20be2ffce646829c35b35df9f7dad0
+[2026-11-01T07:00:50.305Z] [INFO] [electron.embedded-server.stdout] Created agent session b6e471a0-d541-4efa-8ae8-1b15ddb775b0 for run desk_agent_rr285dmvxhdbm2_2f20be2ffce646829c35b35df9f7dad0
+[2026-11-01T07:00:50.305Z] [INFO] [electron.embedded-server.stdout] Agent WebSocket connected: session=b6e471a0-d541-4efa-8ae8-1b15ddb775b0, run=desk_agent_rr285dmvxhdbm2_2f20be2ffce646829c35b35df9f7dad0
+[2026-11-01T07:00:50.309Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-desk-uHd72X/data-root/server-data/memory/agents/desk_host_rr285dmvxhdbm2_70f3c061da744f3a989ef519748474fa/raw_traces_manifest.json
+[2026-11-01T07:00:50.319Z] [INFO] [electron.embedded-server.stdout] Agent websocket attached for run desk_host_rr285dmvxhdbm2_70f3c061da744f3a989ef519748474fa
+[2026-11-01T07:00:50.319Z] [INFO] [electron.embedded-server.stdout] Created agent session b960ee90-75b3-435a-99bf-6c71a793fdb4 for run desk_host_rr285dmvxhdbm2_70f3c061da744f3a989ef519748474fa
+[2026-11-01T07:00:50.319Z] [INFO] [electron.embedded-server.stdout] Agent WebSocket connected: session=b960ee90-75b3-435a-99bf-6c71a793fdb4, run=desk_host_rr285dmvxhdbm2_70f3c061da744f3a989ef519748474fa
+[2026-11-01T07:00:50.391Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-desk-uHd72X/data-root/server-data/memory/agent_teams/desk_team_rr285dmvxhdbm2_e992d8c5d57847da85b7894fb8a3103d/desk_team_coordinator_rr285dmvxhdbm2_a98936a026e84b32aa2739e293b289da/raw_traces_manifest.json
+[2026-11-01T07:00:50.531Z] [INFO] [electron.embedded-server.stdout] Agent team websocket attached for team run desk_team_rr285dmvxhdbm2_e992d8c5d57847da85b7894fb8a3103d
+[2026-11-01T07:00:50.531Z] [INFO] [electron.embedded-server.stdout] Created agent session f6ca653e-e4e9-457c-9127-9f57fb589f5e for run desk_team_rr285dmvxhdbm2_e992d8c5d57847da85b7894fb8a3103d
+[2026-11-01T07:00:50.534Z] [INFO] [electron.embedded-server.stdout] Agent Team WebSocket connected: session=f6ca653e-e4e9-457c-9127-9f57fb589f5e, run=desk_team_rr285dmvxhdbm2_e992d8c5d57847da85b7894fb8a3103d
+[2026-11-01T07:00:50.534Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1793516450534,"pid":1550,"hostname":"MacBookPro","reqId":"req-g","method":"POST","url":"/mcp/agent-tools/agtrun_0tFtBQryPJkGo9PFoNgFIXaIJ2gQXCwwDO6720fqlMI","statusCode":400,"elapsedMs":0.15820899999971516,"msg":"http request completed"}
+[2026-11-01T07:00:50.538Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-desk-uHd72X/data-root/server-data/memory/agent_teams/desk_team_rr285dmvxhdbm2_e992d8c5d57847da85b7894fb8a3103d/desk_team_coordinator_rr285dmvxhdbm2_a98936a026e84b32aa2739e293b289da/raw_traces_manifest.json
+[2026-11-01T07:00:50.543Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-desk-uHd72X/data-root/server-data/memory/agent_teams/desk_team_rr285dmvxhdbm2_e992d8c5d57847da85b7894fb8a3103d/desk_team_coordinator_rr285dmvxhdbm2_a98936a026e84b32aa2739e293b289da/raw_traces_manifest.json
+[2026-11-01T07:00:50.594Z] [WARN] [electron.embedded-server.stdout] {"level":40,"time":1793516450594,"pid":1550,"hostname":"MacBookPro","reqId":"req-h","method":"POST","url":"/mcp/agent-tools/agtrun_CLSCUGs4lGfgC0MJ14cK5fPfMzgeI1lgkRd9SWJiZNg","statusCode":400,"elapsedMs":0.23470899999983885,"msg":"http request completed"}
+[2026-11-01T07:00:51.944Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-01T07:00:51.946Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-01T07:00:55.456Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-01T07:00:55.460Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-01T07:01:00.454Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-01T07:01:00.456Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-01T07:01:05.453Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-01T07:01:05.454Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-01T07:01:10.008Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-desk-uHd72X/data-root/server-data/memory/agents/desk_agent_rr285dmvxhdbm2_2f20be2ffce646829c35b35df9f7dad0/raw_traces_manifest.json
+[2026-11-01T07:01:10.053Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-desk-uHd72X/data-root/server-data/memory/agents/desk_agent_rr285dmvxhdbm2_2ae7c3f072e94938909e97f4f01c0bc3/raw_traces_manifest.json
+[2026-11-01T07:01:10.097Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-desk-uHd72X/data-root/server-data/memory/agent_teams/desk_team_rr285dmvxhdbm2_e992d8c5d57847da85b7894fb8a3103d/desk_team_coordinator_rr285dmvxhdbm2_a98936a026e84b32aa2739e293b289da/raw_traces_manifest.json
+[2026-11-01T07:01:10.139Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-desk-uHd72X/data-root/server-data/memory/agent_orgs/desk_org_rr285dmvxhdbm2_1a68a21ab8154904a5c310303f32669b/desk_org_manager_rr285dmvxhdbm2_cc148ea559e04e45b8cb4f300bb9bbe9/raw_traces_manifest.json
+[2026-11-01T07:01:10.183Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-desk-uHd72X/data-root/server-data/memory/agents/desk_host_rr285dmvxhdbm2_70f3c061da744f3a989ef519748474fa/raw_traces_manifest.json
+[2026-11-01T07:01:10.230Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-desk-uHd72X/data-root/server-data/memory/agents/desk_worker_rr285dmvxhdbm2_20aa85bd354c4817ab18ec958f4666bd/raw_traces_manifest.json
+[2026-11-01T07:01:10.453Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-01T07:01:10.454Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-01T07:01:15.452Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-01T07:01:15.453Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-01T07:01:18.445Z] [INFO] [electron.embedded-server.stdout] Closed agent session 9116cf7d-7648-400f-a6bd-610ff4f76afb
+[2026-11-01T07:01:18.445Z] [INFO] [electron.embedded-server.stdout] Agent WebSocket disconnected: 9116cf7d-7648-400f-a6bd-610ff4f76afb
+[2026-11-01T07:01:18.445Z] [INFO] [electron.embedded-server.stdout] Closed agent session f6ca653e-e4e9-457c-9127-9f57fb589f5e
+[2026-11-01T07:01:18.445Z] [INFO] [electron.embedded-server.stdout] Closed agent session b960ee90-75b3-435a-99bf-6c71a793fdb4
+[2026-11-01T07:01:18.445Z] [INFO] [electron.embedded-server.stdout] Agent WebSocket disconnected: b960ee90-75b3-435a-99bf-6c71a793fdb4
+[2026-11-01T07:01:18.445Z] [INFO] [electron.embedded-server.stdout] Closed agent session b6e471a0-d541-4efa-8ae8-1b15ddb775b0
+[2026-11-01T07:01:18.445Z] [INFO] [electron.embedded-server.stdout] Agent WebSocket disconnected: b6e471a0-d541-4efa-8ae8-1b15ddb775b0
+[2026-11-01T07:01:18.584Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-01T07:01:18.585Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-01T07:01:18.603Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-01T07:01:18.604Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-01T07:01:18.614Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-desk-uHd72X/data-root/server-data/memory/agents/desk_agent_rr285dmvxhdbm2_2ae7c3f072e94938909e97f4f01c0bc3/raw_traces_manifest.json
+[2026-11-01T07:01:18.647Z] [INFO] [electron.embedded-server.stdout] Agent websocket attached for run desk_agent_rr285dmvxhdbm2_2ae7c3f072e94938909e97f4f01c0bc3
+[2026-11-01T07:01:18.647Z] [INFO] [electron.embedded-server.stdout] Created agent session 192120a8-8bf9-4e7b-bb7a-4f1250b1c185 for run desk_agent_rr285dmvxhdbm2_2ae7c3f072e94938909e97f4f01c0bc3
+[2026-11-01T07:01:18.647Z] [INFO] [electron.embedded-server.stdout] Agent WebSocket connected: session=192120a8-8bf9-4e7b-bb7a-4f1250b1c185, run=desk_agent_rr285dmvxhdbm2_2ae7c3f072e94938909e97f4f01c0bc3
+[2026-11-01T07:01:18.649Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-desk-uHd72X/data-root/server-data/memory/agents/desk_agent_rr285dmvxhdbm2_2f20be2ffce646829c35b35df9f7dad0/raw_traces_manifest.json
+[2026-11-01T07:01:18.653Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-desk-uHd72X/data-root/server-data/memory/agents/desk_host_rr285dmvxhdbm2_70f3c061da744f3a989ef519748474fa/raw_traces_manifest.json
+[2026-11-01T07:01:18.659Z] [INFO] [electron.embedded-server.stdout] Agent websocket attached for run desk_agent_rr285dmvxhdbm2_2f20be2ffce646829c35b35df9f7dad0
+[2026-11-01T07:01:18.659Z] [INFO] [electron.embedded-server.stdout] Created agent session 175ef665-3854-4a39-9760-ce6b5a8b3839 for run desk_agent_rr285dmvxhdbm2_2f20be2ffce646829c35b35df9f7dad0
+[2026-11-01T07:01:18.659Z] [INFO] [electron.embedded-server.stdout] Agent WebSocket connected: session=175ef665-3854-4a39-9760-ce6b5a8b3839, run=desk_agent_rr285dmvxhdbm2_2f20be2ffce646829c35b35df9f7dad0
+[2026-11-01T07:01:18.667Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-desk-uHd72X/data-root/server-data/memory/agent_teams/desk_team_rr285dmvxhdbm2_e992d8c5d57847da85b7894fb8a3103d/desk_team_coordinator_rr285dmvxhdbm2_a98936a026e84b32aa2739e293b289da/raw_traces_manifest.json
+[2026-11-01T07:01:18.671Z] [INFO] [electron.embedded-server.stdout] Agent websocket attached for run desk_host_rr285dmvxhdbm2_70f3c061da744f3a989ef519748474fa
+[2026-11-01T07:01:18.671Z] [INFO] [electron.embedded-server.stdout] Created agent session d6711d21-7abe-4722-9656-2599c436d01d for run desk_host_rr285dmvxhdbm2_70f3c061da744f3a989ef519748474fa
+[2026-11-01T07:01:18.673Z] [INFO] [electron.embedded-server.stdout] Agent WebSocket connected: session=d6711d21-7abe-4722-9656-2599c436d01d, run=desk_host_rr285dmvxhdbm2_70f3c061da744f3a989ef519748474fa
+[2026-11-01T07:01:18.683Z] [INFO] [electron.embedded-server.stdout] Agent team websocket attached for team run desk_team_rr285dmvxhdbm2_e992d8c5d57847da85b7894fb8a3103d
+[2026-11-01T07:01:18.684Z] [INFO] [electron.embedded-server.stdout] Created agent session 0d32e2d1-5265-4265-bfab-63b71c25c66d for run desk_team_rr285dmvxhdbm2_e992d8c5d57847da85b7894fb8a3103d
+[2026-11-01T07:01:18.684Z] [INFO] [electron.embedded-server.stdout] Agent Team WebSocket connected: session=0d32e2d1-5265-4265-bfab-63b71c25c66d, run=desk_team_rr285dmvxhdbm2_e992d8c5d57847da85b7894fb8a3103d
+[2026-11-01T07:01:18.687Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-desk-uHd72X/data-root/server-data/memory/agent_teams/desk_team_rr285dmvxhdbm2_e992d8c5d57847da85b7894fb8a3103d/desk_team_coordinator_rr285dmvxhdbm2_a98936a026e84b32aa2739e293b289da/raw_traces_manifest.json
+[2026-11-01T07:01:18.690Z] [ERROR] [electron.embedded-server.stderr] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-desk-uHd72X/data-root/server-data/memory/agent_teams/desk_team_rr285dmvxhdbm2_e992d8c5d57847da85b7894fb8a3103d/desk_team_coordinator_rr285dmvxhdbm2_a98936a026e84b32aa2739e293b289da/raw_traces_manifest.json
+[2026-11-01T07:01:20.596Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-01T07:01:20.597Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-01T07:01:23.674Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-01T07:01:23.675Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-01T07:01:28.674Z] [INFO] [electron] ServerStatusManager: Checking server health
+[2026-11-01T07:01:28.675Z] [INFO] [electron] ServerStatusManager: Emitting status change: running
+[2026-11-01T07:01:32.783Z] [INFO] [electron.embedded-server.stdout] Closed agent session 192120a8-8bf9-4e7b-bb7a-4f1250b1c185
+[2026-11-01T07:01:32.783Z] [INFO] [electron.embedded-server.stdout] Agent WebSocket disconnected: 192120a8-8bf9-4e7b-bb7a-4f1250b1c185
+[2026-11-01T07:01:32.783Z] [INFO] [electron.embedded-server.stdout] Closed agent session 0d32e2d1-5265-4265-bfab-63b71c25c66d
+[2026-11-01T07:01:32.783Z] [INFO] [electron.embedded-server.stdout] Closed agent session d6711d21-7abe-4722-9656-2599c436d01d
+[2026-11-01T07:01:32.783Z] [INFO] [electron.embedded-server.stdout] Agent WebSocket disconnected: d6711d21-7abe-4722-9656-2599c436d01d
+[2026-11-01T07:01:32.783Z] [INFO] [electron.embedded-server.stdout] Closed agent session 175ef665-3854-4a39-9760-ce6b5a8b3839
+[2026-11-01T07:01:32.783Z] [INFO] [electron.embedded-server.stdout] Agent WebSocket disconnected: 175ef665-3854-4a39-9760-ce6b5a8b3839
+[2026-11-01T07:01:33.896Z] [INFO] [electron.server.base-server-manager] Server process exited with code 0
