@@ -1,0 +1,13 @@
+# IMP-08
+# Command: pnpm -C autobyteus-web typecheck (worktree, after typecheck:update-baseline wrote 297)
+# Commit: 4db26446cb
+# Environment: macOS, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-01
+
+[typecheck] Nuxt app (tsconfig.json): 270 errors, exit 2, 45.4s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 1.9s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.6s
+[typecheck] production errors: 0; test-file errors: 297 in 139 files (baseline 297 in 139 files)
+[typecheck] PASS
+
+Before the two template fixes (vue declared directly in the web package): production errors 2 (SearchableGroupedSelect.vue style typing, ServerLogViewer.vue onClick). Scratch worktree of the base: declaring only vue causes them; vue-router and graphql-tag do not. Fixed: reactive<CSSProperties>, @click="refreshLogs()". The stale ts-expect-error naming @nuxtjs/apollo (unused, it counted as 1 baseline error) was removed: baseline 298 -> 297.

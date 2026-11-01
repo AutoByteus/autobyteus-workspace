@@ -1,0 +1,22 @@
+# IMP-02
+# Command: clean clone: prisma generate; pnpm build (server); pnpm --filter autobyteus-server-ts deploy <dir> --legacy --prod; <dir>/node_modules/.bin/prisma generate; node autobyteus-web/scripts/verify-packaged-server-startup.mjs --server-root <realpath dir>; base = same sequence at efd28d5c4a without --prod and without files
+# Commit: 4db26446cb
+# Environment: macOS 26.5.2 darwin arm64, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-01
+
+## Result
+Packaged server startup validation passed for /private/tmp/pdb-clean/_deploy-proof
+
+## Package folder (ls -A)
+LICENSE README.md application-packages dist node_modules package.json prisma   (no src/ tests/ tickets/ docs/ docker/ scripts/ canuse-ok.txt tsconfig*.json vitest.config.ts AGENTS.md)
+
+## Size like for like (both after prisma generate; apparent bytes / du)
+base  (efd28d5c4a, --legacy, whole folder): total 928 MB apparent, 987 MB du; node_modules 885 MB apparent
+new   (--legacy --prod, files list):        total 796 MB apparent, 833 MB du; node_modules 783 MB apparent
+difference: -132 MB apparent (-14.2%), -154 MB du (-15.6%). Before prisma generate the base is 827 MB du (M-1); the new package cannot be measured without the generate step because prisma is now a production package kept as is.
+Note: the 18% of M-3 (674 MB) does not reproduce; see implementation-handoff.md
+
+## node_modules top level (production packages only)
+@agentclientprotocol @anthropic-ai @autobyteus @fastify @huggingface @prisma ajv autobyteus-ts chokidar dotenv fastify fuzzysort graphql graphql-scalars ignore mercurius mime-types onnxruntime-web prisma reflect-metadata repository_prisma tar type-graphql uuid zod
+no vitest, typescript or top-level @types; the 3 @types entries in .pnpm (node, retry, semver) are dependencies of p-retry, protobufjs and type-graphql
+virtual store: 348 packages (base: 450)
