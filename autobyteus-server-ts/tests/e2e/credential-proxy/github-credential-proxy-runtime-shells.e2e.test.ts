@@ -20,7 +20,10 @@
  *   3. with the run's own address: the skill removed from the agent → `403 INTEGRATION_NOT_ALLOWED`; added again → 200;
  *      stop the run → `403 RUN_PASS_INVALID`. Each call has its activity record.
  * Also (AGY scripted): a run of an agent without the skill gets none of the variables; in a team, only the member
- * whose agent has the skill gets them, and stopping the team ends its pass.
+ * whose agent has the skill gets them, and stopping the team ends its pass. An agent set to all installed skills gets
+ * them, and disabling the skill refuses its next call (DEC-002); a team-local member with the skill gets them; and, last,
+ * removing the source with the Skills page's `removeSkillSource` removes the card and the connection and refuses a
+ * running agent's next call (DEC-015).
  * Gates (a skip is not a pass), always with RUN_GITHUB_PROXY_E2E=1 and AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault:
  *   - AGY scripted (no model): RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<abs>/tests/fixtures/agy-shell-env-probe-cli.mjs
  *   - native AutoByteus with LM Studio: RUN_LMSTUDIO_E2E=1 (LMSTUDIO_TARGET_TEXT_MODEL, default qwen3.6-35b-a3b)
@@ -53,6 +56,7 @@ import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-serv
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadata-helpers.js";
 import { createFakeGrokCommand, grokAcpFixturePath, overrideEnv } from "../helpers/grok-fake-cli.js";
+import { buildTeamLocalAgentDefinitionId } from "../../../src/agent-team-definition/utils/team-local-definition-id.js";
 
 type Wire = { type: string; payload: Record<string, unknown> };
 type Live = "native" | "claude" | "codex-workspace-write" | "codex-full-access" | "grok" | "agy-live";
@@ -60,6 +64,8 @@ type ProbeResult = { apiHttp: string; gitStatus: number; psStatus: number; psEnv
 
 const REPOSITORY = "ryan-zheng-teki/autobyteus-mcp-test";
 const SKILL = "github-integration";
+const LOCAL_TEAM_ID = "gh-proxy-local-team";
+const LOCAL_AGENT_ID = "local-scout";
 const PROBE = fileURLToPath(new URL("../../fixtures/github-proxy-shell-probe.sh", import.meta.url));
 const AGY_PROBE_CLI = fileURLToPath(new URL("../../fixtures/agy-shell-env-probe-cli.mjs", import.meta.url));
 const AGY_COMMAND = process.env["ANTIGRAVITY_CLI_COMMAND"]?.trim() ?? "";
@@ -277,6 +283,15 @@ suite("Runtime shells use GitHub through the credential proxy (live GitHub)", ()
       name: "GitHub", description: "GitHub through the credential proxy.", token: { help: "A test token." }, prerequisites: ["curl", "git"] }));
     await fs.writeFile(path.join(integrationSource, "github", "SKILL.md"),
       `---\nname: ${SKILL}\ndescription: Reach GitHub through the AutoByteus proxy.\n---\n\nUse $AUTOBYTEUS_GITHUB_API_URL.\n`);
+    // A file-authored Team whose only member is a team-local agent with the integration's skill (read at startup).
+    const localTeam = path.join(dataDir, "agent-teams", LOCAL_TEAM_ID);
+    await fs.mkdir(path.join(localTeam, "agents", LOCAL_AGENT_ID), { recursive: true });
+    await fs.writeFile(path.join(localTeam, "team.md"), "---\nname: GitHub proxy local team\ndescription: Team-local member test\n---\n\nTest team.\n");
+    await fs.writeFile(path.join(localTeam, "team-config.json"), JSON.stringify({ coordinatorMemberName: "local",
+      members: [{ memberName: "local", ref: LOCAL_AGENT_ID, refScope: "team_local" }], handoffs: [], avatarUrl: null }));
+    await fs.writeFile(path.join(localTeam, "agents", LOCAL_AGENT_ID, "agent.md"),
+      "---\nname: GitHub local scout\ndescription: A team-local agent with the GitHub integration's skill\nrole: assistant\n---\n\nScout.\n");
+    await fs.writeFile(path.join(localTeam, "agents", LOCAL_AGENT_ID, "agent-config.json"), JSON.stringify({ toolNames: [], skillNames: [SKILL] }));
     await fs.writeFile(path.join(dataDir, ".env"), "AUTOBYTEUS_SERVER_HOST=http://localhost:8000\nAPP_ENV=test\n");
     process.env["LMSTUDIO_HOSTS"] ??= "http://127.0.0.1:1234";
     process.env["AGY_SHELL_PROBE_SCRIPT"] = PROBE;
@@ -376,6 +391,57 @@ suite("Runtime shells use GitHub through the credential proxy (live GitHub)", ()
     expect(scan).toMatchObject({ onWire: false, filesInDataDir: [] });
   }, 300_000);
 
+  it.skipIf(!ENABLED.agyScripted)("agy (scripted CLI): an agent set to all installed skills gets GitHub; disabling the skill refuses its next call (DEC-002)", async (context) => {
+    await connect(context);
+    const agent = (await gql<{ createAgentDefinition: { id: string } }>(
+      "mutation($input: CreateAgentDefinitionInput!) { createAgentDefinition(input: $input) { id } }",
+      { input: { name: `gh-proxy-all-installed-${randomUUID().slice(0, 6)}`, role: "assistant", category: "runtime-e2e",
+        description: "GitHub credential proxy shell test agent (all installed skills).", toolNames: [], skillNames: [],
+        skillScope: "ALL_INSTALLED", instructions: "Test agent." } })).createAgentDefinition.id;
+    const runId = await startRun(agent, RuntimeKind.ANTIGRAVITY_CLI, await pickModel(RuntimeKind.ANTIGRAVITY_CLI, []),
+      path.join(dataDir, "workspace-agy-all-installed"), true);
+    const probe = await readProbe(path.join(probeRoot, runId));
+    expectVariables(probe);
+    const skillEnabled = (enabled: boolean) => gql(`mutation($name: String!) { ${enabled ? "enableSkill" : "disableSkill"}(name: $name) { name } }`, { name: SKILL });
+    await skillEnabled(false);
+    const skillDisabled = await call(probe.address!);
+    await skillEnabled(true);
+    const skillEnabledAgain = await call(probe.address!);
+    await terminate(runId)();
+    const stopped = await call(probe.address!);
+    await writeSummary("agy-all-installed", { runtime: "antigravity_cli (scripted CLI), skillScope ALL_INSTALLED", probe,
+      statuses: { skillDisabled, skillEnabledAgain, stopped }, scan: tokenScan() });
+    expect({ skillDisabled, skillEnabledAgain, stopped }).toEqual({ skillDisabled: { status: 403, error: "INTEGRATION_NOT_ALLOWED" },
+      skillEnabledAgain: { status: 200, error: null }, stopped: { status: 403, error: "RUN_PASS_INVALID" } });
+  }, 300_000);
+
+  it.skipIf(!ENABLED.agyScripted)("agy (scripted CLI) team: a team-local member with the skill gets the variables", async (context) => {
+    await connect(context);
+    const model = await pickModel(RuntimeKind.ANTIGRAVITY_CLI, []);
+    const workspace = path.join(dataDir, "workspace-local-team");
+    await fs.mkdir(workspace, { recursive: true });
+    const launch = { llmModelIdentifier: model, llmConfig: {}, autoExecuteTools: true, runtimeKind: RuntimeKind.ANTIGRAVITY_CLI, workspaceRootPath: workspace };
+    const team = (await gql<{ createAgentTeamRun: { success: boolean; message: string; teamRunId: string | null } }>(
+      "mutation($input: CreateAgentTeamRunInput!) { createAgentTeamRun(input: $input) { success message teamRunId } }",
+      { input: { teamDefinitionId: LOCAL_TEAM_ID, teamConfigs: [{ teamAddress: "/", ...launch }],
+        memberConfigs: [{ memberAddress: "/local", agentDefinitionId: buildTeamLocalAgentDefinitionId(LOCAL_TEAM_ID, LOCAL_AGENT_ID), ...launch }] } })).createAgentTeamRun;
+    expect(team.success, team.message).toBe(true);
+    teamRunIds.push(team.teamRunId!);
+    const tree = (await gql<{ getTeamRunResumeConfig: { executionTree: Record<string, unknown> } }>(
+      "query($id: String!) { getTeamRunResumeConfig(teamRunId: $id) { executionTree } }", { id: team.teamRunId })).getTeamRunResumeConfig.executionTree;
+    const localRunId = flattenE2eConfiguredAgentExecutions(tree).find((m) => m.memberName === "local")!.agentRunId;
+    const socket = new WebSocket(`ws://${url.hostname}:${url.port}/ws/agent-team/${team.teamRunId}`);
+    await new Promise<void>((resolve, reject) => { socket.once("open", resolve); socket.once("error", reject); });
+    sendE2eSendMessageCommand(socket, { agent_run_id: localRunId, content: "Hello." });
+    const probe = await readProbe(path.join(probeRoot, localRunId));
+    socket.close();
+    expectVariables(probe);
+    await gql("mutation($id: String!) { terminateAgentTeamRun(teamRunId: $id) { success } }", { id: team.teamRunId });
+    const afterStop = await call(probe.address!);
+    await writeSummary("agy-team-local", { runtime: "antigravity_cli (scripted CLI), team-local member", probe, afterStop, scan: tokenScan() });
+    expect(afterStop).toEqual({ status: 403, error: "RUN_PASS_INVALID" });
+  }, 300_000);
+
   it.skipIf(!ENABLED.grokScripted)("grok (recorded fake CLI): the Grok process's shell reaches GitHub; skill removed, added again, stop", async (context) => {
     await connect(context);
     const agent = await createAgent("grok-scripted", [], true);
@@ -432,4 +498,32 @@ suite("Runtime shells use GitHub through the credential proxy (live GitHub)", ()
       if (Array.isArray(scan.filesInCodexHome)) expect(scan.filesInCodexHome).toEqual([]);
     }, 480_000);
   }
+
+  // Last: it removes the integration source, which ends the connection for every later cell.
+  it.skipIf(!ENABLED.agyScripted)("agy (scripted CLI): removing the source on the Skills page disconnects GitHub and refuses a running agent's next call (DEC-015)", async (context) => {
+    await connect(context);
+    const agent = await createAgent("agy-source-removed", [], true);
+    const runId = await startRun(agent, RuntimeKind.ANTIGRAVITY_CLI, await pickModel(RuntimeKind.ANTIGRAVITY_CLI, []),
+      path.join(dataDir, "workspace-agy-source-removed"), true);
+    const probe = await readProbe(path.join(probeRoot, runId));
+    expectVariables(probe);
+    const before = await call(probe.address!);
+    // The Skills page's own mutation (Skills → Manage Skill Sources → Remove).
+    const remaining = (await gql<{ removeSkillSource: Array<{ path: string }> }>(
+      "mutation($path: String!) { removeSkillSource(path: $path) { path } }", { path: integrationSource })).removeSkillSource;
+    const cards = (await gql<{ integrations: Array<{ id: string }> }>("query { integrations { id } }")).integrations;
+    const connections = existsSync(path.join(dataDir, "integrations", "connections.json"))
+      ? JSON.parse(await fs.readFile(path.join(dataDir, "integrations", "connections.json"), "utf8")) as { integrations?: Record<string, { login?: string | null }> } : {};
+    const afterRemoval = await call(probe.address!);
+    await writeSummary("agy-source-removed-on-skills-page", { runtime: "antigravity_cli (scripted CLI)", probe, before, afterRemoval,
+      sourceStillListed: remaining.some((s) => s.path === integrationSource), cards, connections, scan: tokenScan() });
+    expect(before).toEqual({ status: 200, error: null });
+    expect({ sourceStillListed: remaining.some((s) => s.path === integrationSource), cards, githubLogin: connections.integrations?.["github"]?.login ?? null })
+      .toEqual({ sourceStillListed: false, cards: [], githubLogin: null });
+    expect(afterRemoval).toEqual({ status: 403, error: "INTEGRATION_NOT_ALLOWED" });
+    // Re-importing shows the card as needing a token: the vault entry went with the source (DEC-015).
+    const reimported = (await gql<{ importIntegrations: Array<{ id: string; state: string }> }>(
+      "mutation($location: String!) { importIntegrations(location: $location) { id state } }", { location: integrationSource })).importIntegrations;
+    expect(reimported).toEqual([{ id: "github", state: "NEEDS_TOKEN" }]);
+  }, 300_000);
 });
