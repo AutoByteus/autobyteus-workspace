@@ -205,6 +205,8 @@ const copyInputFor = async (hostId) => {
   return sendToCopy;
 };
 const viewFor = async (id) => (await gql('query($id:String!){agentRunCollaboration(runId:$id)}', { id })).agentRunCollaboration.root_agent;
+// autobyteus-358: the hub's view carries no messages; its Team tab loads the host's messages with this query.
+const hostMessagesFor = async (id) => (await gql('query($k:String!,$r:String!,$a:String!){collaborationParticipantMessages(rootKind:$k,rootRunId:$r,agentRunId:$a)}', { k: 'agent', r: id, a: id })).collaborationParticipantMessages.messages;
 const childProjection = async (host, address, run) => (await gql('query($host:String!,$address:String!,$run:String!){agentRunCollaborationMemberProjection(hostRunId:$host,memberAddress:$address,agentRunId:$run){conversation}}', { host, address, run })).agentRunCollaborationMemberProjection.conversation;
 const tasksFor = async (id) => (await gql('query($id:String!){projectTasks(projectId:$id){taskId status root {kind teamRunId ingressAgentRunId start status closed}}}', { id })).projectTasks;
 const terminateAgent = async (id) => {
@@ -298,7 +300,7 @@ const seed = async () => {
   await until('hub message log complete (stored)', async () => (await storedReports()) >= TEAMS * MESSAGES_PER_TEAM, 10 * 60_000 + TEAMS * 20_000);
   await sleep(10000);
   // Recorded for the report: the running hub's live view against its stored log at the same moment.
-  const liveViewMessages = (await viewFor(hostId)).communication_messages?.messages ?? [];
+  const liveViewMessages = await hostMessagesFor(hostId);
   const messageLogObservation = { at: new Date().toISOString(), liveViewMessages: liveViewMessages.length, liveViewReports: reportsIn(liveViewMessages),
     storedMessages: (await hubLog()).messages.length, storedReports: await storedReports(), storedFiles: (await hubLog()).files };
   console.log(`  message log: ${JSON.stringify(messageLogObservation)}`);
@@ -319,7 +321,7 @@ const seed = async () => {
   const memoryDir = path.join(stack.dataDir, 'memory');
   const counts = {};
   for (const sub of await fsp.readdir(memoryDir).catch(() => [])) counts[sub] = (await fsp.readdir(path.join(memoryDir, sub)).catch(() => [])).length;
-  const storedViewReports = reportsIn((await viewFor(hostId)).communication_messages?.messages);
+  const storedViewReports = reportsIn(await hostMessagesFor(hostId));
   return { hostId, otherHostId, projectId, managerName: MANAGER, workspace, archive, taskIds, otherTaskIds, teams: teamRows, otherTeams, markers,
     messageLogObservation: { ...messageLogObservation, storedViewReportsAfterStop: storedViewReports },
     shape: { teams: TEAMS, childAgents: TEAMS * 6, unrelatedTeamRuns: unrelated, hubMessageLogBytes: (await hubLog()).bytes,
