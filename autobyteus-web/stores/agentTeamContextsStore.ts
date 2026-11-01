@@ -7,6 +7,8 @@ import {
   resetRecentEventMonitorBaseline,
 } from '~/services/eventMonitor/recentEventMonitorMutationCoordinator';
 import { useRunHistoryStore } from '~/stores/runHistoryStore';
+import { memberLoader } from '~/services/runHydration/memberLoader';
+import { useCollaborationParticipantMessagesStore } from '~/services/collaborationMessages/collaborationParticipantMessages';
 
 interface AgentTeamContextsState { teams: Map<string, AgentTeamContext> }
 
@@ -64,6 +66,9 @@ export const useAgentTeamContextsStore = defineStore('agentTeamContexts', {
       const next = new Map(this.teams);
       next.delete(rootTeamRunId);
       this.teams = next;
+      // Its loaded members and Team-tab lists go with it (autobyteus-358).
+      memberLoader().releaseRoot(`agent_team:${rootTeamRunId}`);
+      useCollaborationParticipantMessagesStore().releaseRoot('agent_team', rootTeamRunId);
       useRunHistoryStore().refreshRunNavigationTopology('team-context-remove');
       const selection = useAgentSelectionStore();
       // A removed team is never replaced by another loaded team; its view falls to the empty state.

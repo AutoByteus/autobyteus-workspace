@@ -118,9 +118,16 @@ not established it. A first AgentOrg history read must not force a second full
 Team-and-AgentOrg package scan after startup readiness has already completed.
 
 The shared generation is structural: it enforces exact Team/AgentOrg family
-placement, required and retired package manifests, execution trees, task
-sidecars, and communication sidecars. It does not enumerate or read member
+placement, required and retired package manifests, execution trees and task
+sidecars, and that a message log exists. It reads no message log (autobyteus-358):
+a run's log is validated with its tree where it is read — the participant
+messages query, reference content and resume — and a damaged log fails those
+reads with the reason while the run is still listed and its view still opens
+(DESIGN.md rule 7). It does not enumerate or read member
 `raw_traces_active.jsonl`, rotated `raw_traces_*.jsonl`, or context-file bytes.
+A new Team or AgentOrg run is admitted by checking its own package
+(`RootRunPackageReadinessIndex.admitCurrent` → `RootRunPackageCurrentValidator.scanOne`);
+the history is not rescanned.
 Whole-history attachment-locator conversion and validation belongs to the
 one-time migration; exact file availability is checked when that file is
 requested.
@@ -1007,8 +1014,9 @@ id that is not in that team gives the same not-found error as before.
 Team Communication messages are also outside the member replay bundle. Accepted
 team communication events are processor input; derived
 `TEAM_COMMUNICATION_MESSAGE` events are projected once per team run into
-the team run's message log (`agent_teams/<teamRunId>/team_communication_messages_*.jsonl`). Historical Team tab
-hydration reads that projection through `getTeamCommunicationMessages(teamRunId)`,
+the team run's message log (`agent_teams/<teamRunId>/team_communication_messages_*.jsonl`). The Team tab
+reads one participant's messages when it is shown, through
+`collaborationParticipantMessages(rootKind: "agent_team", rootRunId, agentRunId)` (autobyteus-358),
 and referenced content opens by persisted message-owned identity at
 `/team-runs/:teamRunId/team-communication/messages/:messageId/references/:referenceId/content`.
 The projection stores `teamRunId` once at the projection level and each message
@@ -1082,9 +1090,9 @@ Frontend restore uses that bundle in two sibling hydration paths:
 
 - middle pane: conversation hydration
 - right pane: activity hydration
-- team pane: Team Communication hydration from
-  `getTeamCommunicationMessages(teamRunId)` for message-owned sent/received
-  communication records and child reference files
+- team pane: the focused member's messages from
+  `collaborationParticipantMessages(rootKind, rootRunId, agentRunId)`, loaded when the Team tab is shown,
+  with their reference files
 
 Those sibling paths must stay synchronized. Reopen/hydration code should apply
 the projected `conversation` and `activities` from the same replay bundle, or

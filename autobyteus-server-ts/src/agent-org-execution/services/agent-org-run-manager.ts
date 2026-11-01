@@ -23,12 +23,12 @@ import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.
 import { ActiveCollaborationRootDirectory, getActiveCollaborationRootDirectory } from "../../agent-collaboration/execution/services/active-collaboration-root-directory.js";
 import { createAgentOrgRootExecutionIdentity } from "../../agent-collaboration/execution/domain/root-execution-identity.js";
 import { AgentOrgRunExecutionTreeStore } from "../../run-history/store/agent-org-run-execution-tree-store.js";
-import type { AgentOrgRunExecutionTreeFile } from "../domain/agent-org-run-execution-tree.js";
+import type { AgentOrgRunExecutionTreeFile, AgentOrgRunExecutionTreeSnapshot } from "../domain/agent-org-run-execution-tree.js";
 import { AgentOrgRun, type AgentOrgRunPackageSnapshot } from "../domain/agent-org-run.js";
 import { AgentOrgCommunicationMessagesStore } from "../persistence/agent-org-communication-messages-store.js";
 import type { AgentOrgCommunicationMessagesFile } from "../persistence/agent-org-communication-messages.js";
 import { AgentOrgStatePackageLoader } from "./agent-org-state-package-loader.js";
-import { validateAgentOrgStatePackage } from "./agent-org-state-package-validator.js";
+import { validateAgentOrgExecutionTree, validateAgentOrgStatePackage } from "./agent-org-state-package-validator.js";
 import { AgentOrgRunPersistenceCoordinator } from "./agent-org-run-persistence-coordinator.js";
 import type { AgentOrgExecutionScopeBuilder } from "./agent-org-execution-scope-builder.js";
 import { AgentOrgRunPackageCatalog } from "../../run-history/services/agent-org-run-package-catalog.js";
@@ -51,7 +51,9 @@ export type AgentOrgRunManagerOptions = Readonly<{
   activeRootDirectory?: ActiveCollaborationRootDirectory;
 }>;
 
+/** The run's whole message log with the tree it was validated against (autobyteus-358: the one log reader). */
 export type AgentOrgCollaborationRecordsSnapshot = Readonly<{
+  executionTree: AgentOrgRunExecutionTreeSnapshot;
   messages: AgentOrgCommunicationMessagesFile;
 }>;
 
@@ -145,18 +147,22 @@ export class AgentOrgRunManager {
     const tree = await this.executionTreeStore.read(this.layout.getOrgDirPath(orgRunId), orgRunId);
     return storedRemoteLinkCheck(tree ? { remoteRuns: () => tree.rootOrg.remoteTaskExecutions ?? [] } : null, query);
   }
+  /**
+   * The run's messages: the live run's, else the stored log composed with its task agents' logs (D-4) and
+   * validated with its tree. A damaged log fails this read with the reason; the run's view does not read it
+   * (autobyteus-358, DESIGN.md rule 7).
+   */
   async getCollaborationRecordsSnapshot(orgRunIdInput: string): Promise<AgentOrgCollaborationRecordsSnapshot> {
     const orgRunId = required(orgRunIdInput, "orgRunId");
     const active = this.getActive(orgRunId);
-    if (active) return Object.freeze({ messages: active.getCommunicationSnapshot() });
+    if (active) return Object.freeze({ executionTree: active.getExecutionTreeSnapshot(), messages: active.getCommunicationSnapshot() });
     const dir = this.layout.getOrgDirPath(orgRunId);
     const tree = await this.executionTreeStore.read(dir, orgRunId);
-    // The stored view composes the run's task agents' logs (D-4); without a tree it is the run's own log.
-    const messages = tree ? await this.communicationStore.read(dir, tree) : await this.communicationStore.readLog(dir, orgRunId);
-    if (!messages) {
-      throw new Error(`AgentOrg collaboration records for '${orgRunId}' were not found.`);
-    }
-    return Object.freeze({ messages });
+    if (!tree) throw new Error(`AgentOrg collaboration records for '${orgRunId}' were not found.`);
+    const messages = await this.communicationStore.read(dir, tree);
+    if (!messages) throw new Error(`AgentOrg '${orgRunId}' has no communication messages.`);
+    const state = validateAgentOrgStatePackage({ executionTree: tree, communicationMessages: messages });
+    return Object.freeze({ executionTree: state.executionTree, messages: state.communicationMessages });
   }
   listActiveOrgRunIds(): readonly string[] { return Object.freeze([...this.active.keys()].filter((id) => this.getActive(id))); }
 
@@ -176,6 +182,8 @@ export class AgentOrgRunManager {
     isActive: boolean;
     snapshot: AgentOrgRunPackageSnapshot;
     baseChangeSequence: number;
+    liveSequenceId: string | null;
+    lastMessageChangeSequence: number | null;
   }>> {
     const orgRunId = required(orgRunIdInput, "orgRunId");
     return this.withTransition(orgRunId, async () => {
@@ -184,20 +192,20 @@ export class AgentOrgRunManager {
         const connection = await active.openPackageSnapshotConnection();
         try {
           return Object.freeze({ orgRunId, isActive: true,
-            snapshot: connection.snapshot, baseChangeSequence: connection.baseChangeSequence });
+            snapshot: connection.snapshot, baseChangeSequence: connection.baseChangeSequence, liveSequenceId: connection.liveSequenceId,
+            lastMessageChangeSequence: connection.lastMessageChangeSequence });
         } finally { connection.close(); }
       }
-      const dir = this.layout.getOrgDirPath(orgRunId);
-      const tree = await this.executionTreeStore.read(dir, orgRunId);
-      const messages = tree ? await this.communicationStore.read(dir, tree) : null;
-      if (!tree || !messages) throw new Error(`AgentOrg '${orgRunId}' inspection package is unavailable.`);
-      const state = validateAgentOrgStatePackage({ executionTree: tree, communicationMessages: messages });
+      // The view reads the tree only; the message log is read where it is shown (getCollaborationRecordsSnapshot).
+      const tree = await this.executionTreeStore.read(this.layout.getOrgDirPath(orgRunId), orgRunId);
+      if (!tree) throw new Error(`AgentOrg '${orgRunId}' inspection package is unavailable.`);
+      validateAgentOrgExecutionTree(tree);
       // The current DTO carries statuses for live executions only. Inactive
       // inspection has none; retained contexts initialize as offline.
       const statuses = Object.freeze([]);
-      return Object.freeze({ orgRunId, isActive: false, baseChangeSequence: 0,
-        snapshot: Object.freeze({ tree: state.executionTree, closedTaskExecutions: this.closedTaskExecutionsFor(orgRunId, state.executionTree),
-          messages: state.communicationMessages, statuses, inputStates: [] }) });
+      return Object.freeze({ orgRunId, isActive: false, baseChangeSequence: 0, liveSequenceId: null, lastMessageChangeSequence: null,
+        snapshot: Object.freeze({ tree, closedTaskExecutions: this.closedTaskExecutionsFor(orgRunId, tree),
+          statuses, inputStates: [] }) });
     });
   }
 

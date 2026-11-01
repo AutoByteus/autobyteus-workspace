@@ -77,7 +77,6 @@ export type StandaloneRootPackageSnapshot = Readonly<{
   tree: StandaloneRootTreeSnapshot;
   /** Task executions of `tree` whose Task is DONE or CANCELLED (read at the same point as the tree). */
   closedTaskExecutions: readonly TaskExecutionReference[];
-  messages: StandaloneRootMessagesFile;
   statuses: readonly CollaborationAgentStatusSnapshot[];
   inputStates: readonly import("../../agent-collaboration/execution/domain/live-agent-input-snapshot.js").LiveAgentInputSnapshot[];
 }>;
@@ -419,7 +418,6 @@ export class StandaloneAgentRunRoot implements ActiveRootMessageBoundary {
     return this.options.publisher.openSnapshotConnection(() => Object.freeze({
       tree: this.tree,
       closedTaskExecutions: this.taskExecutions.closedTaskExecutions(),
-      messages: this.getCommunicationSnapshot(),
       statuses: this.getAgentStatusSnapshots(),
       inputStates: collectStandaloneRootInputSnapshots(this.index, [
         ...this.options.rootAgents.getInputStateSnapshots(),

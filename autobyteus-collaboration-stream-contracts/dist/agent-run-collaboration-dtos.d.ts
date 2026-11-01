@@ -73,23 +73,11 @@ export declare const agentRunCollaborationTreeDtoSchema: z.ZodObject<{
         userTeamLaunchSelection?: import("./agent-org-execution-dtos.js").UserLaunchSelectionDto;
     }>, unknown>>>;
 }, z.core.$strict>;
-export declare const agentRunCollaborationCommunicationMessagesDtoSchema: z.ZodObject<{
-    schemaVersion: z.ZodLiteral<1>;
-    subjectKind: z.ZodLiteral<"agent">;
-    hostRunId: z.ZodString;
-    messages: z.ZodArray<z.ZodObject<{
-        messageId: z.ZodString;
-        senderAgentRunId: z.ZodString;
-        receiverAgentRunId: z.ZodString;
-        content: z.ZodString;
-        messageType: z.ZodString;
-        referenceFiles: z.ZodArray<z.ZodString>;
-        createdAt: z.ZodString;
-    }, z.core.$strict>>;
-}, z.core.$strict>;
 /** Statuses cover the Agent root's children; the host reports on its own Agent stream. */
 export declare const agentRunCollaborationViewDtoSchema: z.ZodObject<{
     base_change_sequence: z.ZodNumber;
+    live_sequence_id: z.ZodNullable<z.ZodString>;
+    last_message_change_sequence: z.ZodNullable<z.ZodNumber>;
     is_active: z.ZodBoolean;
     execution_tree: z.ZodObject<{
         subjectKind: z.ZodLiteral<"agent">;
@@ -166,20 +154,6 @@ export declare const agentRunCollaborationViewDtoSchema: z.ZodObject<{
     }, z.core.$strict>, z.ZodObject<{
         teamRunId: z.ZodString;
     }, z.core.$strict>]>>;
-    communication_messages: z.ZodObject<{
-        schemaVersion: z.ZodLiteral<1>;
-        subjectKind: z.ZodLiteral<"agent">;
-        hostRunId: z.ZodString;
-        messages: z.ZodArray<z.ZodObject<{
-            messageId: z.ZodString;
-            senderAgentRunId: z.ZodString;
-            receiverAgentRunId: z.ZodString;
-            content: z.ZodString;
-            messageType: z.ZodString;
-            referenceFiles: z.ZodArray<z.ZodString>;
-            createdAt: z.ZodString;
-        }, z.core.$strict>>;
-    }, z.core.$strict>;
     agent_statuses: z.ZodArray<z.ZodObject<{
         member_address: z.ZodString;
         agent_run_id: z.ZodString;

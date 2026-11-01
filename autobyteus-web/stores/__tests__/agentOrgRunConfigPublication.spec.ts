@@ -22,7 +22,7 @@ const setup = async () => {
   const view = JSON.parse(JSON.stringify(taskBearingView())); view.is_active = false
   const team = view.execution_tree.rootOrg.members[2]
   team.defaultLaunchConfiguration.workspaceRootPath = '/C'; team.members.forEach((agent: any) => { agent.launchConfiguration.workspaceRootPath = '/C' })
-  const staged = await stageAgentOrgExecutionContext({ source: 'inspection', orgRunId: 'org-run', view })
+  const staged = await stageAgentOrgExecutionContext({ focus: null, source: 'inspection', orgRunId: 'org-run', view })
   const store = useAgentOrgContextsStore(); store.contexts['org-run'] = shallowReactive(staged.context)
   const org = store.contextFor('org-run')!
   const tree = JSON.parse(JSON.stringify(org.executionTree))

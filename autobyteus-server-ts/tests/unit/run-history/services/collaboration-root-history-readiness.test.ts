@@ -116,6 +116,7 @@ describe("first mixed collaboration history after restart", () => {
 
     const teamManager = {
       hasManagedTeamRun: vi.fn(() => false),
+      getManagedTeamRun: vi.fn(() => null),
       closedTaskExecutionsFor: vi.fn(() => []),
       withInactiveHistoryMutation: vi.fn(),
     };

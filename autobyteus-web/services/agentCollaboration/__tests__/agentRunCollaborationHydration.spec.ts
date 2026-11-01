@@ -33,7 +33,6 @@ describe('buildAgentRunCollaborationContext', () => {
     ])
     for (const entry of context.listAgentContextEntries()) {
       expect(entry.context.state.conversation.messages).toEqual([])
-      expect(context.isChildHydrated(entry.agentRunId)).toBe(false)
       expect(useAgentActivityStore().getActivities(entry.agentRunId)).toEqual([])
       expect(useRunFileChangesStore().getArtifactsForRun(entry.agentRunId)).toEqual([])
     }

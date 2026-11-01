@@ -18,13 +18,14 @@
     <CollaborationMessagesPanel
       :messages="messages"
       :rows="rows"
+      :status="status"
       class="min-h-0 flex-1"
     />
   </section>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, watch } from 'vue'
 import type { CollaborationMessagesContextView } from '~/types/workspace/collaborationMessagesContextView'
 import CollaborationMessagesPanel from './CollaborationMessagesPanel.vue'
 
@@ -32,7 +33,12 @@ const props = defineProps<{
   messages: CollaborationMessagesContextView
 }>()
 
+// The messages are loaded when this section shows them, for each root and member it shows (autobyteus-358).
+watch([() => props.messages.rootKind, () => props.messages.rootRunId, () => props.messages.focusedAgentRunId],
+  () => props.messages.loadMessages(), { immediate: true })
+
 // The single perspective computation for this view; the Panel renders these rows.
 const rows = computed(() => props.messages.listMessages())
+const status = computed(() => props.messages.messagesStatus())
 const messageCount = computed(() => rows.value.length)
 </script>

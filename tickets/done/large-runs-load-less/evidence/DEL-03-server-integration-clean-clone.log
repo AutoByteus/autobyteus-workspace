@@ -1,0 +1,30 @@
+# Clean-clone run of codex/large-runs-load-less @ 245d43b8b4 (/tmp/ab358-clone); full log 869455 bytes, trimmed to summaries, skips and failures.
+SEND_MESSAGE command not accepted for agent run agent-e2e: [ACTIVATION_FAILED] Failed to prepare agent run 'agent-e2e'.
+Failed to finalize context files: Error: Unable to resolve context-file owner member 'missing' for collaboration root 'child-C'.
+Failed to finalize context files: Error: Unable to resolve context-file owner member 'agent-E-D' for collaboration root 'child-C'.
+Failed to finalize context files: Error: Unable to resolve context-file owner member 'agent-C-D' for collaboration root 'root-team-exact'.
+Failed to finalize context files: Error: agentRunId must be a safe non-empty identity.
+Failed to finalize context files: Error: Team context-file owner has unsupported fields.
+Failed to upload context file: Error: draftRunId must be a safe non-empty identity.
+Failed to upload context file: Error: Standalone draft context-file owner has unsupported fields.
+Failed to upload context file: Error: teamDraftId must be a safe non-empty identity.
+Failed to upload context file: Error: Team draft context-file owner has unsupported fields.
+Failed to finalize context files: Error: draftRunId must be a safe non-empty identity.
+Failed to finalize context files: Error: Standalone draft context-file owner has unsupported fields.
+Failed to finalize context files: Error: teamDraftId must be a safe non-empty identity.
+Failed to terminate agent run 'run-terminate-error': Error: boom
+Failed to upload context file: Error: Org context-file owner has unsupported fields.
+Failed to upload context file: Error: agentRunId must be a safe non-empty identity.
+Failed to upload context file: Error: orgRunId must be a safe non-empty identity.
+Failed to upload context file: Error: Unable to resolve Org context-file owner 'org/unknown'.
+Failed to upload context file: Error: Unable to resolve Org context-file owner 'wrong-root/configured-direct'.
+Failed to finalize context files: Error: Org draft and final context-file owners must identify the same execution.
+Failed to finalize context files: Error: controlled move failure
+Failed to create terminal session partial-session using backend FakePtySession: setup failed after creating partial-session
+stdout | tests/integration/standalone-agent-run-root/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > root resolution rejection releases both directories and preserves error (cleanupReportsFailure=false)
+stdout | tests/integration/standalone-agent-run-root/native-root-fixture-cleanup.integration.test.ts > native root fixture owns acquired resources even before returning close > root resolution rejection releases both directories and preserves error (cleanupReportsFailure=true)
+ Test Files  87 passed | 20 skipped (107)
+      Tests  500 passed | 69 skipped (569)
+   Start at  17:36:56
+   Duration  208.83s (transform 7.06s, setup 929ms, import 67.40s, tests 131.53s, environment 5ms)
+exit=0

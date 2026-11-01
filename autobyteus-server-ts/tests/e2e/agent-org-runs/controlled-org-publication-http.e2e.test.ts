@@ -5,6 +5,7 @@ import { createHash, randomUUID } from 'node:crypto';
 import { spawnSync } from 'node:child_process';
 import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { AgyRuntimeErrorFixture, until } from '../helpers/agy-runtime-error-fixture.js';
+import { readParticipantMessages } from '../../helpers/collaboration-participant-messages.js';
 
 // TESTING.md's real HTTP/WS server with a scripted CLI; no paid/provider inference.
 // The CLI calls actual scoped MCP tools, not fabricated successful tool events.
@@ -124,7 +125,10 @@ suite('controlled agent drives Org publication through real public boundaries', 
     expect(snapshot.execution_tree.rootOrg).not.toHaveProperty('collaborators');
     expect(snapshot.execution_tree.rootOrg.taskExecutions.map((c: any) => c.agentRunId)).toContain(helperCopy.agentRunId);
     expect(snapshot.execution_tree.rootOrg.taskExecutions).toEqual(tasks);
-    expect(snapshot.communication_messages.messages).toContainEqual(communication);
+    // autobyteus-358: the snapshot carries no messages; the sender's Team tab loads the message.
+    expect(snapshot).not.toHaveProperty('communication_messages');
+    expect(await readParticipantMessages((query, variables) => fixture.graphql(query, variables), { rootKind: 'agent_org', rootRunId: run.rootId, agentRunId: communication.senderAgentRunId }))
+      .toContainEqual(communication);
     const beforeStop = await fixture.projection({ ...run, runId: helperCopy.agentRunId, address: helperCopy.address });
     expect(JSON.stringify(beforeStop.conversation)).toContain('Please read this owned reference.');
     await fixture.terminate(run);

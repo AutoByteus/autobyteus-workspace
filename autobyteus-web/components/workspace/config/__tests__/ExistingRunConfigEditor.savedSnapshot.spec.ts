@@ -14,7 +14,6 @@ const snapshot = () => ({ execution_tree: { taskExecutions: [{ address: '/writer
   startedAt: '2026-10-13T00:00:00.000Z', source: { kind: 'agent', agentDefinitionId: 'writer', launchConfiguration: launch() } }] }, closed_task_executions: [] })
 const choice = (id: string) => ({ llmModelIdentifier: id, displayName: id, canonicalName: id, providerName: 'test', configSchema: null })
 const options = () => ({ status: 'ready', options: { currentModelIdentifier: 'old', currentModel: choice('old'), replacements: [choice('new')], unavailableReason: null } })
-vi.mock('~/services/agentCollaboration/agentRunCollaborationHydration', () => ({ readAgentRunCollaboration: mocks.read }))
 vi.mock('~/services/runConfigEditing/delegatedLaunchSelectionClient', async original => ({ ...await original<object>(),
   loadDelegatedLaunchModelOptions: async () => ({ 'agent:copy': options(), 'team:team-copy': options(), 'agent:follower': options(), 'agent:own': options() }), updateDelegatedLaunchSelections: mocks.mutate,
 }))
@@ -26,7 +25,9 @@ vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => ({ resume
 }) }))
 vi.mock('~/stores/agentContextsStore', () => ({ useAgentContextsStore: () => ({ getConfigForRun: () => null }) }))
 vi.mock('~/stores/agentDefinitionStore', () => ({ useAgentDefinitionStore: () => ({ getAgentDefinitionById: () => ({ name: 'Host' }) }) }))
-vi.mock('~/stores/agentRunCollaborationStore', () => ({ useAgentRunCollaborationStore: () => ({ contextFor: () => ({ view: mocks.live, getAgentContext: () => null }) }) }))
+// autobyteus-358 (DS-004): Settings takes the hub's stored view from the collaboration store (`viewFor`).
+vi.mock('~/stores/agentRunCollaborationStore', () => ({ useAgentRunCollaborationStore: () => ({ viewFor: mocks.read,
+  contextFor: () => ({ view: mocks.live, getAgentContext: () => null }) }) }))
 vi.mock('~/composables/chat/useChatModelCatalog', () => ({ useChatModelCatalog: () => ({ ensureCatalog: vi.fn(), schemaFor: () => mocks.schema, modelLabel: (_runtime: string, id: string) => id }) }))
 vi.mock('~/stores/llmProviderConfig', () => ({ useLLMProviderConfigStore: () => ({ modelConfigSchemaByIdentifier: () => mocks.schema }) }))
 vi.mock('~/composables/runSettings/useRunStopAction', async () => {

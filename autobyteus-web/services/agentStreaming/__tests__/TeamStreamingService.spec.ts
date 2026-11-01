@@ -4,6 +4,7 @@ import type { AIMessage } from '~/types/conversation';
 import { TeamStreamingService } from '../TeamStreamingService';
 import { useAgentBackgroundTaskStore } from '~/stores/agentBackgroundTaskStore';
 import { isTeamMemberProjectionAuthoritative } from '~/services/runHydration/teamMemberProjectionHydrationService';
+import { useCollaborationParticipantMessagesStore } from '~/services/collaborationMessages/collaborationParticipantMessages';
 import {
   buildTestTeamContext,
   testAgentNode,
@@ -25,6 +26,7 @@ vi.mock('../browser/browserToolExecutionSucceededHandler', () => ({
 }));
 vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => runHistoryStoreMock }));
 vi.mock('~/stores/agentTeamContextsStore', () => ({ useAgentTeamContextsStore: () => teamContextsStoreMock }));
+vi.mock('~/services/collaborationMessages/participantMessagesQuery', async () => (await import('~/test-support/participantMessagesStub')).participantMessagesQueryStub);
 
 const rootTeamRunId = 'classroom-run';
 const teacherRunId = 'teacher-run';
@@ -71,9 +73,8 @@ const emit = (
 
 const snapshotPayload = (team: ReturnType<typeof buildTestTeamContext>, baseChangeSequence = team.view.getChangeSequence()) => ({
   root_team_run_id: rootTeamRunId,
-  base_change_sequence: baseChangeSequence,
+  base_change_sequence: baseChangeSequence, live_sequence_id: 'live-1', last_message_change_sequence: 0,
   closed_task_executions: [], execution_tree: team.view.getExecutionTree(),
-  messages: team.view.listCommunicationMessages(),
   agent_input_states: [], remote_task_executions: [],
   agent_statuses: team.view.listAgentContextEntries().map((entry) => ({
     agent_run_id: entry.agentRunId,
@@ -363,9 +364,13 @@ describe('TeamStreamingService current AgentRun event dispatch', () => {
     error.mockRestore();
   });
 
-  it('adds the exact public Team communication record to the authoritative view once', () => {
+  it('adds the exact public Team communication record to the loaded Team-tab lists once (autobyteus-358)', async () => {
     const { callbacks, team } = createHarness();
     admitReady(callbacks, team);
+    const owner = useCollaborationParticipantMessagesStore();
+    const key = { rootKind: 'agent_team', rootRunId: rootTeamRunId, agentRunId: teacherRunId } as const;
+    owner.load(key);
+    await new Promise((resolve) => setTimeout(resolve, 0));
     emit(callbacks, 'TEAM_COMMUNICATION_MESSAGE', {
       change_sequence: 1,
       message: {
@@ -379,15 +384,53 @@ describe('TeamStreamingService current AgentRun event dispatch', () => {
       },
     });
 
-    expect(team.view.listCommunicationMessages()).toEqual([{
-      message_id: 'team-message-1',
-      sender_agent_run_id: teacherRunId,
-      receiver_agent_run_id: taskStudentRunId,
+    expect(owner.messagesOf(key)).toEqual([{
+      messageId: 'team-message-1',
+      senderAgentRunId: teacherRunId,
+      receiverAgentRunId: taskStudentRunId,
       content: 'Coordinate the delegated task.',
-      message_type: 'peer_message',
-      created_at: '2026-08-11T00:04:00.000Z',
-      reference_files: [],
+      messageType: 'peer_message',
+      createdAt: '2026-08-11T00:04:00.000Z',
+      referenceFiles: [],
     }]);
+    expect(team.view.getChangeSequence()).toBe(1);
+  });
+
+  it('keeps the Team-tab lists across a snapshot in the same live sequence they saw; another live sequence reloads them (SR-004, SR-005)', async () => {
+    const { callbacks, team } = createHarness();
+    admitReady(callbacks, team);
+    const owner = useCollaborationParticipantMessagesStore();
+    const key = { rootKind: 'agent_team', rootRunId: rootTeamRunId, agentRunId: teacherRunId } as const;
+    owner.load(key);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    emit(callbacks, 'AGENT_STATUS', statusPayload(1, teacherRunId, 'running'));
+    expect(owner.statusOf(key).state).toBe('loaded');
+    const candidate = (snapshot: Record<string, unknown>) => {
+      const candidateCallbacks = new Map<string, (payload?: any) => void>();
+      const wsClient = { state: 'connected', connect: vi.fn(), disconnect: vi.fn(), send: vi.fn(), off: vi.fn(),
+        on: vi.fn((event: string, callback: (payload?: any) => void) => candidateCallbacks.set(event, callback)) } as any;
+      const candidateTeam = buildTestTeamContext({ teamRunId: rootTeamRunId, coordinatorAddress: '/Teacher',
+        rootChildren: [testAgentNode('/Teacher', { agentRunId: teacherRunId, displayName: 'Teacher' })] });
+      const service = new TeamStreamingService('ws://localhost:8000/ws/agent-team', { wsClient });
+      void service.connectCandidate(rootTeamRunId, candidateTeam, snapshot.base_change_sequence as number);
+      emit(candidateCallbacks, 'CONNECTED', { session_id: 'candidate-session', root_team_run_id: rootTeamRunId });
+      emit(candidateCallbacks, 'TEAM_EXECUTION_VIEW_SNAPSHOT', { ...snapshotPayload(candidateTeam), ...snapshot });
+    };
+
+    // A recovery whose snapshot is based on an event the lists saw keeps them (no fetch).
+    candidate({ base_change_sequence: 1 });
+    expect(owner.statusOf(key).state).toBe('loaded');
+    // Members' output moved the base, but no message is past what the lists hold (SR-007): kept.
+    candidate({ base_change_sequence: 9, last_message_change_sequence: 1 });
+    expect(owner.statusOf(key).state).toBe('loaded');
+    // A message the lists did not see (sequence 11): they load again.
+    candidate({ base_change_sequence: 12, last_message_change_sequence: 11 });
+    expect(owner.statusOf(key).state).toBe('loading');
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(owner.statusOf(key).state).toBe('loaded');
+    // Another publisher (a stop and resume, or a restart) at a base the lists saw: they load again.
+    candidate({ base_change_sequence: 1, live_sequence_id: 'live-2', last_message_change_sequence: 0 });
+    expect(owner.statusOf(key).state).toBe('loading');
   });
 
   it('acts on the first rejected gap effect once and cannot revive the failed instance', () => {

@@ -15,11 +15,10 @@ const remoteTeam = {
 const agentView = (remote) => ({
   root_subject_kind: "agent", root_run_id: "host-run",
   root_agent: {
-    base_change_sequence: 0, is_active: true,
+    base_change_sequence: 0, live_sequence_id: "live-1", last_message_change_sequence: 0, is_active: true,
     execution_tree: { subjectKind: "agent", createdAt: "2026-10-23T08:00:00.000Z",
       host: { address: "/project_task_manager", agentRunId: "host-run", agentDefinitionId: "ptm-def" }, taskExecutions: [] },
     closed_task_executions: [],
-    communication_messages: { schemaVersion: 1, subjectKind: "agent", hostRunId: "host-run", messages: [] },
     agent_statuses: [], agent_input_states: [],
     ...(remote === undefined ? {} : { remote_task_executions: remote }),
   },

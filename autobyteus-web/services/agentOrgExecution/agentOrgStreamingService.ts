@@ -14,6 +14,7 @@ import { buildAuthenticatedWebSocketUrl } from '~/utils/remoteAccess/websocketAu
 import { GetAgentOrgExecutionCheckpoint } from '~/graphql/queries/runHistoryQueries'
 import { getApolloClient } from '~/utils/apolloClient'
 import { stageAgentOrgExecutionContext } from './agentOrgContextHydration'
+import { useCollaborationParticipantMessagesStore } from '~/services/collaborationMessages/collaborationParticipantMessages'
 import {
   AgentOrgExecutionContext,
 } from './agentOrgExecutionContext'
@@ -65,7 +66,7 @@ export class AgentOrgStreamingService {
 
   constructor(private readonly options: Readonly<{
     orgRunId: string
-    publish(context: AgentOrgExecutionContext, commit: () => void): void
+    publish(context: AgentOrgExecutionContext, commit: () => string | null): void
     onInactive?(): void
     reportError(message: string): void
     onAcceptedExternalUserMessage?(event: Readonly<{
@@ -140,7 +141,7 @@ export class AgentOrgStreamingService {
         this.recoveryCheckpoint = null
         this.recoveryFocus = null
         const staged = await stageAgentOrgExecutionContext({
-          source: 'inspection', orgRunId: this.options.orgRunId, view,
+          source: 'inspection', orgRunId: this.options.orgRunId, view, focus: this.context?.selection ?? null,
           isCurrent: () => this.ownsOperation(null),
         })
         if (!this.ownsOperation(null)) return
@@ -303,6 +304,7 @@ export class AgentOrgStreamingService {
         source: 'stream',
         orgRunId: this.options.orgRunId,
         view: message.payload.root_org,
+        focus: previousFocus,
         isCurrent: () => this.isCurrent(generation),
       })
       if (!this.isCurrent(generation)) return
@@ -334,8 +336,12 @@ export class AgentOrgStreamingService {
       if (message.payload.root_subject_kind !== 'agent_org') {
         throw new Error('AgentOrg stream supplied a non-Org event.')
       }
-      const application = this.context.applyEvent(
-        message.payload.change_sequence, message.payload.event, message.payload.change_sequence_through)
+      const { change_sequence: first, change_sequence_through: through } = message.payload
+      const application = this.context.applyEvent(first, message.payload.event, through)
+      // Applied, or a single checkpoint event seen: the Team tab's lists are consistent through it (SR-004).
+      if (application === 'applied' || through === undefined) {
+        useCollaborationParticipantMessagesStore().advance('agent_org', this.options.orgRunId, this.context.view.live_sequence_id, through ?? first)
+      }
       if (application === 'checkpoint_required') await this.reopenOwned(generation)
       return
     }

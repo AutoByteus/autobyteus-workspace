@@ -26,10 +26,11 @@ import { AgentOrgExecutionViewIndex, type OrgRemoteAgent, type OrgWorkspaceSelec
 import { applyRemoteSummaryStatuses, isRemoteExecutionKnown } from '~/services/remoteRuns/remoteChildren'
 import {
   assertAgentOrgCommunicationMessagesCorrelated,
-  projectAgentOrgCommunicationPerspective,
   projectAgentOrgMessageIdentity,
 } from './agentOrgCommunicationPerspective'
 import { useRunHistoryStore } from '~/stores/runHistoryStore'
+import { useCollaborationParticipantMessagesStore } from '~/services/collaborationMessages/collaborationParticipantMessages'
+import { participantMessagesView } from '~/services/collaborationMessages/participantMessageRows'
 import { createAgentContext } from './agentOrgMemberContextFactory'
 import {
   agentRunKey,
@@ -83,7 +84,6 @@ export class AgentOrgExecutionContext {
       if (this.index.addressOf(entry.agentRunId) !== entry.memberAddress) throw new Error('AgentOrg context address mismatch.')
     }
     if (this.contexts.size !== this.index.agents.size + this.index.remoteAgents.size) throw new Error('AgentOrg context scope is incomplete.')
-    assertAgentOrgCommunicationMessagesCorrelated(this.index, this.view.communication_messages.messages)
     for (const status of input.view.agent_statuses) {
       const address = this.index.agents.get(status.agent_run_id)?.address
       if (address !== status.member_address) {
@@ -168,11 +168,6 @@ export class AgentOrgExecutionContext {
 
   /** autobyteus-278: the runs this Org delegated to other nodes. */
   get remoteExecutions() { return this.view.remote_task_executions }
-
-  /** autobyteus-278: remote agents whose stored conversation was read from their node into this context (Retry). */
-  private readonly loadedRemoteAgents = new Set<string>()
-  isRemoteAgentLoaded(agentRunId: string): boolean { return this.loadedRemoteAgents.has(agentRunId) }
-  markRemoteAgentLoaded(agentRunId: string): void { this.loadedRemoteAgents.add(agentRunId) }
 
   adoptLocalContexts(previous: AgentOrgExecutionContext): void {
     if (previous.orgRunId !== this.orgRunId) throw new Error('AgentOrg candidate root mismatch.')
@@ -277,13 +272,8 @@ export class AgentOrgExecutionContext {
       } catch {
         this.correlationFailure(`AgentOrg communication message '${event.message.messageId}' identity mismatch.`)
       }
-      this.view = {
-        ...this.view,
-        communication_messages: {
-          ...this.view.communication_messages,
-          messages: [...this.view.communication_messages.messages, event.message],
-        },
-      }
+      // The Team tab's lists own the messages (autobyteus-358); the view holds none.
+      useCollaborationParticipantMessagesStore().append('agent_org', this.orgRunId, event.message)
     }
     this.nextChangeSequence = following
     return 'applied'
@@ -419,8 +409,11 @@ export class AgentOrgExecutionContext {
         projectAgentOrgMessageIdentity(this.index, id),
       ]))),
       // A remote child's messages are in its own run's log on its node (autobyteus-278).
-      listMessages: () => this.index.remoteAgents.has(focusedAgentRunId) ? Object.freeze([]) : projectAgentOrgCommunicationPerspective({ index: this.index,
-        messages: this.view.communication_messages.messages, focusedAgentRunId }),
+      ...participantMessagesView({
+        key: { rootKind: 'agent_org', rootRunId: this.orgRunId, agentRunId: focusedAgentRunId },
+        isRemote: this.index.remoteAgents.has(focusedAgentRunId),
+        identityOf: (agentRunId) => this.index.agents.has(agentRunId) ? projectAgentOrgMessageIdentity(this.index, agentRunId) : null,
+      }),
       referenceContentPath: (messageId: string, referenceId: string) =>
         `agent-org-runs/${encodeURIComponent(this.orgRunId)}/communication/messages/${encodeURIComponent(messageId)}/references/${encodeURIComponent(referenceId)}/content`,
     })

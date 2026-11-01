@@ -97,7 +97,7 @@ describe('copy sources', () => {
     }
     const researcher = createTeamAgentContext({ tree, agentRunId: 'researcher-run', address: parseAgentTeamAddress('/researcher'), workspaceMetadata: null })!
     const state = createTeamExecutionViewState({
-      rootTeamRunId: 'team-run', rootActive: true, executionTree: tree, closedTaskExecutions: [], messages: [],
+      rootTeamRunId: 'team-run', rootActive: true, executionTree: tree, closedTaskExecutions: [], 
       configuration: createTeamConfigurationView({ tree, workspaceMetadataByAddress: new Map() }),
       initialFocusedAgentRunId: 'researcher-run',
       agentContexts: [{ agentRunId: 'researcher-run', memberAddress: parseAgentTeamAddress('/researcher'), agentContext: researcher }],
@@ -269,7 +269,7 @@ describe('what each copy agent runs with: its choice, else its Team\'s when it f
     rootOf(tree).task_executions = [reviewerCopy, productTeamCopy]
     const researcher = createTeamAgentContext({ tree, agentRunId: 'researcher-run', address: parseAgentTeamAddress('/researcher'), workspaceMetadata: null })!
     const state = createTeamExecutionViewState({
-      rootTeamRunId: 'team-run', rootActive: true, executionTree: tree, closedTaskExecutions: [], messages: [],
+      rootTeamRunId: 'team-run', rootActive: true, executionTree: tree, closedTaskExecutions: [], 
       configuration: createTeamConfigurationView({ tree, workspaceMetadataByAddress: new Map() }),
       initialFocusedAgentRunId: 'researcher-run',
       agentContexts: [{ agentRunId: 'researcher-run', memberAddress: parseAgentTeamAddress('/researcher'), agentContext: researcher }],

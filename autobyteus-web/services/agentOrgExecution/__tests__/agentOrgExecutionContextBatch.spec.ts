@@ -20,7 +20,7 @@ import { stageAgentOrgExecutionContext } from '../agentOrgContextHydration'
 import { taskBearingView } from './taskBearingOrgFixture'
 
 const hydrate = async () => {
-  const staged = await stageAgentOrgExecutionContext({ orgRunId: 'org-run', view: taskBearingView(), source: 'stream' })
+  const staged = await stageAgentOrgExecutionContext({ focus: null, orgRunId: 'org-run', view: taskBearingView(), source: 'stream' })
   staged.commit()
   return staged.context
 }

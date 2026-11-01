@@ -26,7 +26,6 @@ export const multiTeamView = (count = 7, hostRunId = 'host-run') => {
         defaultLaunchConfiguration: teamLaunch },
     })),
   }
-  view.communication_messages = { schemaVersion: 1, subjectKind: 'agent', hostRunId, messages: [] }
   view.agent_statuses = []
   return view
 }

@@ -9,6 +9,7 @@ import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-co
 import { AgentRunContext } from "../../../src/agent-execution/domain/agent-run-context.js";
 import { AgentRunEventType, type AgentRunEvent } from "../../../src/agent-execution/domain/agent-run-event.js";
 import type { AgentRuntimeLifecycleSnapshot } from "../../../src/agent-execution/domain/agent-runtime-lifecycle-snapshot.js";
+import { isAgentOrgMessageEvent } from "../../../src/agent-org-execution/domain/agent-org-run-event.js";
 
 describe("AgentOrgRun termination stabilization", () => {
   it("freezes and fences every direct/mounted Agent scope before task and persistence drain", async () => {
@@ -51,7 +52,7 @@ describe("AgentOrgRun termination stabilization", () => {
     const persistence = {
       drain: vi.fn(async () => { order.push("persistence-drain"); }),
     };
-    const publisher = new RootEventPublisher<AgentOrgRunEvent>();
+    const publisher = new RootEventPublisher<AgentOrgRunEvent>({ isMessageEvent: isAgentOrgMessageEvent });
     const run = new AgentOrgRun({
       root: createAgentOrgRootExecutionIdentity(orgRunId),
       tree: testAgentOrgExecutionTree({
@@ -115,7 +116,7 @@ describe("AgentOrgRun termination retry after a failed attempt", () => {
       teams: { list: vi.fn(() => []), freezeForRootTermination: vi.fn(() => []) } as never,
       callbacks: {} as never,
       persistence: persistence as never,
-      publisher: new RootEventPublisher<AgentOrgRunEvent>(),
+      publisher: new RootEventPublisher<AgentOrgRunEvent>({ isMessageEvent: isAgentOrgMessageEvent }),
       taskExecutionIdentity: {} as never,
       onTerminated,
     });

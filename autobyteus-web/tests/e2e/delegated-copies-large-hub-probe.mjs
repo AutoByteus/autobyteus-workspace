@@ -24,6 +24,13 @@
 //        of a stopped hub, L-008 a woken copy's status in the row/header equals the server's, L-009 opening a copy during a
 //        burst of turns ends loaded with its whole conversation (needs >= 9 Teams), L-010 opening a copy whose stored
 //        conversation is several MB, L-011 a copy load that fails on the network is logged, stays unloaded and retries.
+//        With --large-shape unbroken, L-010 also checks the long-token display (large-runs-load-less AC-007): every long
+//        block has the long-unbroken-text class and wraps (no horizontal overflow), a block selects whole (copy), find-in-page
+//        finds text in it, and the conversation ends scrolled to its latest message.
+//        L-001 and L-002 also check that a Team-tab participant list is fetched once per running-hub selection, at most once
+//        after a delegation, and not at all for the hub when the delegation added no hub message (large-runs-load-less SR-004).
+//        L-012: a delegation whose new copy reports to the hub at once: at most one more hub list fetch, the report shown
+//        once, the list equal to the stored log (large-runs-load-less SR-007).
 // Regression check: a current build shows the copy rows with one view request per hub and no member request (S-00n
 // opsUntilRows), and a copy open issues exactly one projection and one artifact request; the base build of this ticket
 // (5ceb43039a) issued two requests per child agent before drawing any row.
@@ -205,6 +212,8 @@ const copyInputFor = async (hostId) => {
   return sendToCopy;
 };
 const viewFor = async (id) => (await gql('query($id:String!){agentRunCollaboration(runId:$id)}', { id })).agentRunCollaboration.root_agent;
+// autobyteus-358: the hub's view carries no messages; its Team tab loads the host's messages with this query.
+const hostMessagesFor = async (id) => (await gql('query($k:String!,$r:String!,$a:String!){collaborationParticipantMessages(rootKind:$k,rootRunId:$r,agentRunId:$a)}', { k: 'agent', r: id, a: id })).collaborationParticipantMessages.messages;
 const childProjection = async (host, address, run) => (await gql('query($host:String!,$address:String!,$run:String!){agentRunCollaborationMemberProjection(hostRunId:$host,memberAddress:$address,agentRunId:$run){conversation}}', { host, address, run })).agentRunCollaborationMemberProjection.conversation;
 const tasksFor = async (id) => (await gql('query($id:String!){projectTasks(projectId:$id){taskId status root {kind teamRunId ingressAgentRunId start status closed}}}', { id })).projectTasks;
 const terminateAgent = async (id) => {
@@ -298,7 +307,7 @@ const seed = async () => {
   await until('hub message log complete (stored)', async () => (await storedReports()) >= TEAMS * MESSAGES_PER_TEAM, 10 * 60_000 + TEAMS * 20_000);
   await sleep(10000);
   // Recorded for the report: the running hub's live view against its stored log at the same moment.
-  const liveViewMessages = (await viewFor(hostId)).communication_messages?.messages ?? [];
+  const liveViewMessages = await hostMessagesFor(hostId);
   const messageLogObservation = { at: new Date().toISOString(), liveViewMessages: liveViewMessages.length, liveViewReports: reportsIn(liveViewMessages),
     storedMessages: (await hubLog()).messages.length, storedReports: await storedReports(), storedFiles: (await hubLog()).files };
   console.log(`  message log: ${JSON.stringify(messageLogObservation)}`);
@@ -319,7 +328,7 @@ const seed = async () => {
   const memoryDir = path.join(stack.dataDir, 'memory');
   const counts = {};
   for (const sub of await fsp.readdir(memoryDir).catch(() => [])) counts[sub] = (await fsp.readdir(path.join(memoryDir, sub)).catch(() => [])).length;
-  const storedViewReports = reportsIn((await viewFor(hostId)).communication_messages?.messages);
+  const storedViewReports = reportsIn(await hostMessagesFor(hostId));
   return { hostId, otherHostId, projectId, managerName: MANAGER, workspace, archive, taskIds, otherTaskIds, teams: teamRows, otherTeams, markers,
     messageLogObservation: { ...messageLogObservation, storedViewReportsAfterStop: storedViewReports },
     shape: { teams: TEAMS, childAgents: TEAMS * 6, unrelatedTeamRuns: unrelated, hubMessageLogBytes: (await hubLog()).bytes,
@@ -328,7 +337,7 @@ const seed = async () => {
 
 // ---------------------------------------------------------------- browser journeys
 let setup, browser, context, page, ownedBrowser = false;
-const errors = [], requests = [], frames = [], warnings = [];
+const errors = [], errorDetails = [], requests = [], frames = [], warnings = [];
 const opsSince = (start, filter = () => true) => requests.slice(start).filter(filter).reduce((m, r) => ({ ...m, [r.operationName]: (m[r.operationName] || 0) + 1 }), {});
 const rowBase = '[data-test="workspace-team-transient-execution-row"]:not([aria-hidden="true"])';
 const treeOf = (id = setup.hostId) => page.locator(`[data-test="workspace-agent-run-task-tree"][data-run-id="${id}"]`);
@@ -358,8 +367,8 @@ const observe = async () => {
   page.__inflight = new Set();
   page.on('request', (r) => { if (r.url().endsWith('/graphql')) { page.__inflight.add(r); try { const body = r.postDataJSON(); requests.push({ at: Date.now(), operationName: body.operationName, variables: body.variables }); } catch { /* not JSON */ } } });
   for (const event of ['requestfinished', 'requestfailed']) page.on(event, (r) => page.__inflight.delete(r));
-  page.on('pageerror', (e) => errors.push(e.message));
-  page.on('console', (m) => { if (m.type() === 'error') errors.push(m.text()); if (m.type() === 'warning' && m.text().includes('agentRunCollaboration')) warnings.push({ at: Date.now(), text: m.text() }); });
+  page.on('pageerror', (e) => { errors.push(e.message); errorDetails.push({ at: Date.now(), message: e.message, stack: e.stack ?? null }); });
+  page.on('console', (m) => { if (m.type() === 'error') { errors.push(m.text()); errorDetails.push({ at: Date.now(), message: m.text(), location: m.location() }); } if (m.type() === 'warning' && m.text().includes('agentRunCollaboration')) warnings.push({ at: Date.now(), text: m.text() }); });
   page.on('websocket', (ws) => ws.on('framereceived', (f) => { try { const v = JSON.parse(String(f.payload)); frames.push({ at: Date.now(), url: ws.url(), type: v.type, kind: v.payload?.event?.kind }); } catch { /* protocol */ } }));
   const recordSockets = () => { if (window.__probeSockets) return; const Original = window.WebSocket; window.__probeSockets = [];
     window.WebSocket = class extends Original { constructor(...args) { super(...args); window.__probeSockets.push(this); } }; };
@@ -415,6 +424,19 @@ const timedClick = async (locator, predicateSource, arg, timeout = STEP_TIMEOUT)
 };
 const HOST_READY = `const t = p._s.get('activeContext')?.activeWorkspaceTarget; return p._s.get('agentSelection')?.selectedRunId === arg && t?.context.state.runId === arg && t.context.state.conversation.messages.length > 0;`;
 const CHILD_READY = `const t = p._s.get('activeContext')?.activeWorkspaceTarget; return t?.agentRunId === arg.id && t.context.state.conversation.id === arg.id && t.context.state.conversation.messages.length > 0 && (!arg.marker || document.querySelector('[data-test="workspace-center-pane"]')?.textContent.includes(arg.marker));`;
+/** Whether the app has loaded a copy (its member loader marks it loaded for the hub's root; autobyteus-358 moved this
+ * state from the hub context to the shared MemberLoader). Read through the Nuxt dev server's module, the instance the app
+ * uses; a --desktop-instance build has no such module. */
+const copyLoadedInPage = async ({ host, id }) => {
+  const { memberLoader } = await import('/_nuxt/services/runHydration/memberLoader.ts');
+  return memberLoader().isHydrated(`agent:${host}`, id);
+};
+/** The hub's stored participant messages (the Team tab's list for the hub), counted on the server. */
+const hubMessageCount = async () => (await gql('query($k:String!,$r:String!,$a:String!){collaborationParticipantMessages(rootKind:$k,rootRunId:$r,agentRunId:$a)}',
+  { k: 'agent', r: setup.hostId, a: setup.hostId })).collaborationParticipantMessages.messages.length;
+/** Team-tab participant-list requests since `start`, by participant (large-runs-load-less). */
+const participantOps = (start) => requests.slice(start).filter((r) => r.operationName === 'CollaborationParticipantMessages')
+  .reduce((m, r) => ({ ...m, [r.variables?.agentRunId ?? '-']: (m[r.variables?.agentRunId ?? '-'] || 0) + 1 }), {});
 const memberOps = (start, id) => opsSince(start, (r) => ['GetAgentRunCollaborationMemberProjection', 'GetAgentRunCollaborationMemberFileChanges', 'GetRunFileChanges'].includes(r.operationName) && (r.variables?.agentRunId === id || r.variables?.runId === id));
 const allMemberOps = (start) => opsSince(start, (r) => ['GetAgentRunCollaborationMemberProjection', 'GetAgentRunCollaborationMemberFileChanges'].includes(r.operationName) || (r.operationName === 'GetRunFileChanges' && r.variables?.runId !== setup.hostId));
 const expandTeam = async (teamRunId, id = setup.hostId) => {
@@ -510,7 +532,10 @@ const liveJourneys = async () => {
     const hubClickMs = await timedClick(runRow(), HOST_READY, setup.hostId);
     await until('live collaboration snapshot', async () => (await storeState()).phase === 'live', 120000);
     await quiet(1500);
-    return { t1, hubClickToConversationMs: hubClickMs, ops: opsSince(t2Start), memberOps: allMemberOps(t1.requestStart), state: await storeState() };
+    // large-runs-load-less SR-004: the attach snapshot after the selection's view keeps the Team tab's list (one fetch).
+    const participants = participantOps(t2Start);
+    assert(Object.values(participants).every((n) => n === 1), 'A participant list was fetched more than once on one hub selection', { participants });
+    return { t1, hubClickToConversationMs: hubClickMs, ops: opsSince(t2Start), participants, memberOps: allMemberOps(t1.requestStart), state: await storeState() };
   });
   const marker = setup.markers[0];
   await runCase('L-002', 'New delegation while one copy is open: new row, opened copy keeps its conversation, exactly one projection and one artifact request (AC-007, AC-006)', async () => {
@@ -520,6 +545,7 @@ const liveJourneys = async () => {
     const before = await storeState(); const teamsBefore = await teamRowsOf().count();
     await page.evaluate((id) => { window.__minMessages = Infinity; const tick = () => { const t = document.querySelector('#__nuxt').__vue_app__.config.globalProperties.$pinia._s.get('activeContext')?.activeWorkspaceTarget;
       if (t?.agentRunId === id) window.__minMessages = Math.min(window.__minMessages, t.context.state.conversation.messages.length); else window.__lostTarget = true; if (!window.__stopMin) requestAnimationFrame(tick); }; requestAnimationFrame(tick); }, marker.agentRunId);
+    const hubMessagesBefore = await hubMessageCount();
     const start = requests.length, framesStart = frames.length;
     const taskId = (await gql('mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId}}', { input: { projectId: setup.projectId, title: 'New live Engineering Task', description: 'New live Engineering Task' } })).createProjectTask.taskId;
     send(callTool('delegate_task', { recipient_address: `/${segment(TEAM)}`, task_id: taskId }));
@@ -533,8 +559,16 @@ const liveJourneys = async () => {
     assert(after.target === marker.agentRunId && after.messageCount >= before.messageCount && minMessages > 0 && !lostTarget, 'Opened copy lost its conversation', { before, after, minMessages, lostTarget });
     assert(member.GetAgentRunCollaborationMemberProjection === 1 && member.GetAgentRunCollaborationMemberFileChanges === 1, 'Expected exactly one projection and one artifact request for the opened copy', { member, all });
     assert(JSON.stringify(all) === JSON.stringify(member), 'Requests for other copies', { member, all });
+    // large-runs-load-less SR-004: the delegation's checkpoint reconnect refetches a loaded list at most once (only when a
+    // message fell in the reconnect window), never every loaded list on every publication.
+    const participants = participantOps(start);
+    const hubMessagesAfter = await hubMessageCount();
+    assert(Object.values(participants).every((n) => n <= 1), 'A participant list was fetched more than once after one delegation', { participants });
+    // A delegation adds no hub message here: the hub's loaded list must not be fetched again (SR-004's expected count).
+    assert(hubMessagesAfter !== hubMessagesBefore || !participants[setup.hostId], 'The hub\'s list was fetched again after a delegation that added no hub message',
+      { participants, hubMessagesBefore, hubMessagesAfter });
     await shot('live-new-delegation');
-    return { teamsBefore, teamsAfter: await teamRowsOf().count(), minMessagesDuringRepublication: minMessages, ops, memberOps: member, allMemberOps: all,
+    return { teamsBefore, teamsAfter: await teamRowsOf().count(), minMessagesDuringRepublication: minMessages, ops, participants, hubMessagesBefore, hubMessagesAfter, memberOps: member, allMemberOps: all,
       snapshotsReceived: frames.slice(framesStart).filter((f) => f.type === 'ROOT_EXECUTION_VIEW_SNAPSHOT').length,
       events: frames.slice(framesStart).filter((f) => f.kind).map((f) => f.kind), before, after };
   });
@@ -567,7 +601,7 @@ const liveJourneys = async () => {
     await quiet(1500);
     const after = await storeState();
     const centerText = await page.locator('[data-test="workspace-center-pane"]').innerText();
-    const hydrated = await page.evaluate(({ host, id }) => document.querySelector('#__nuxt').__vue_app__.config.globalProperties.$pinia._s.get('agentRunCollaboration').contextFor(host)?.isChildHydrated(id), { host: setup.hostId, id: queuedTarget.agentRunId });
+    const hydrated = await page.evaluate(copyLoadedInPage, { host: setup.hostId, id: queuedTarget.agentRunId });
     assert(hydrated && after.pending.some((p) => p.text.includes(queuedText) && p.state === 'queued') && centerText.includes(queuedText), 'Queued input not shown after opening', { after, hydrated, centerHasText: centerText.includes(queuedText) });
     await shot('live-queued-after-reload');
     return { serverInputStates, after: after.pending, hydrated, messageCount: after.messageCount, ops: memberOps(start, queuedTarget.agentRunId), status: await statusOf(queuedTarget.agentRunId) };
@@ -605,7 +639,7 @@ const liveJourneys = async () => {
     await until('burst processed (server)', async () => { const c = JSON.stringify(await childProjection(setup.hostId, target.address, target.agentRunId)); return texts.every((t) => c.includes(`ECHO:\\\"${t}`) || c.split(t).length > 2); }, 120000).catch(() => {});
     await quiet(2000);
     const host = setup.hostId, id = target.agentRunId;
-    const hydratedNow = () => page.evaluate(({ host, id }) => document.querySelector('#__nuxt').__vue_app__.config.globalProperties.$pinia._s.get('agentRunCollaboration').contextFor(host)?.isChildHydrated(id), { host, id });
+    const hydratedNow = () => page.evaluate(copyLoadedInPage, { host, id });
     let hydrated = await hydratedNow(), reselected = false;
     const firstOps = memberOps(start, id), loadWarnings = warnings.slice(warningsBefore);
     if (!hydrated) { // The policy: a failed load is logged and the next selection retries.
@@ -653,6 +687,33 @@ const liveJourneys = async () => {
       projectionBytes: projection.bytes, projectionServerMs: Number(projection.ms.toFixed(1)), ops, state: await storeState() };
     await shot(`${label}-large-copy-open`);
     if (!label.startsWith('base')) assert(ops.GetAgentRunCollaborationMemberProjection === 1 && ops.GetAgentRunCollaborationMemberFileChanges === 1, 'Unexpected requests', result);
+    if (getArg('large-shape', 'words') === 'unbroken') {
+      // large-runs-load-less AC-007: the long-token messages still wrap, select (copy) whole and are found by find-in-page,
+      // and the conversation ends scrolled to its latest message.
+      result.display = await page.evaluate((id) => {
+        const scroller = document.querySelector(`[id^="agent-conversation-scroll-${id}-"]`);
+        const pane = document.querySelector('[data-test="workspace-center-pane"]');
+        const blocks = [...pane.querySelectorAll('.long-unbroken-text')];
+        const longLeaves = [...pane.querySelectorAll('*')].filter((e) => e.children.length === 0 && (e.textContent ?? '').includes('y'.repeat(1000)));
+        const last = blocks.at(-1);
+        const range = document.createRange(); range.selectNodeContents(last);
+        const selection = window.getSelection(); selection.removeAllRanges(); selection.addRange(range);
+        const selected = selection.toString();
+        const copied = document.execCommand('copy');
+        selection.removeAllRanges();
+        const found = window.find('Large 7 ECHO_INPUT', false, false, true) && window.find('ECHO_INPUT yyyyyyyyyyyyyyyyyyyy', false, false, true);
+        return { longClassBlocks: blocks.length, longTextLeaves: longLeaves.length,
+          leavesWithoutClass: longLeaves.filter((e) => !e.closest('.long-unbroken-text')).length,
+          overflowing: blocks.filter((b) => b.scrollWidth > b.clientWidth + 1).length,
+          paneOverflow: pane.scrollWidth > pane.clientWidth + 1,
+          widestBlockPx: Math.max(...blocks.map((b) => b.getBoundingClientRect().width)), paneWidthPx: pane.clientWidth,
+          selectedChars: selected.length, selectedHasWholeToken: selected.includes('y'.repeat(60 * 1024)), copyCommand: copied, found,
+          distanceFromBottom: scroller ? scroller.scrollHeight - scroller.scrollTop - scroller.clientHeight : null };
+      }, target.agentRunId);
+      const d = result.display;
+      assert(d.longClassBlocks >= 40 && d.leavesWithoutClass === 0 && d.overflowing === 0 && !d.paneOverflow && d.selectedHasWholeToken && d.found
+        && d.distanceFromBottom !== null && d.distanceFromBottom <= 40, 'Long-token display: wrapping, copy, search or scroll position changed', result);
+    }
     return result;
   });
   await runCase('L-011', 'A copy whose load fails (network error on its projection) is logged with its identity, stays not loaded, other copies open, reopening loads it (AC-004 alternate)', async () => {
@@ -668,7 +729,7 @@ const liveJourneys = async () => {
     };
     await page.route('**/graphql', handler);
     const errorsBefore = errors.length, warningsBefore = warnings.length, start = requests.length;
-    const hydratedNow = (id) => page.evaluate(({ host, id }) => document.querySelector('#__nuxt').__vue_app__.config.globalProperties.$pinia._s.get('agentRunCollaboration').contextFor(host)?.isChildHydrated(id), { host: setup.hostId, id });
+    const hydratedNow = (id) => page.evaluate(copyLoadedInPage, { host: setup.hostId, id });
     await expandTeam(team.teamRunId);
     step('team expanded'); await memberRow(target.agentRunId).click(); step('copy clicked');
     await until('load failure logged', () => warnings.slice(warningsBefore).some((w) => w.text.includes(target.agentRunId) && w.text.includes(setup.hostId)), 30000);
@@ -702,7 +763,7 @@ const liveJourneys = async () => {
     await quiet(2000);
     const ops = memberOps(start, target.agentRunId);
     assert((ops.GetAgentRunCollaborationMemberProjection ?? 0) >= 1 && (ops.GetAgentRunCollaborationMemberProjection ?? 0) <= 2, 'Unexpected load count', ops);
-    const hydrated = await page.evaluate(({ host, id }) => document.querySelector('#__nuxt').__vue_app__.config.globalProperties.$pinia._s.get('agentRunCollaboration').contextFor(host)?.isChildHydrated(id), { host: setup.otherHostId, id: target.agentRunId });
+    const hydrated = await page.evaluate(copyLoadedInPage, { host: setup.otherHostId, id: target.agentRunId });
     assert(hydrated === true, 'Copy did not end loaded', { hydrated, ops });
     return { clickToTargetMs: ms, ops, hydrated, selected: (await storeState(setup.otherHostId)).selected };
   });
@@ -719,6 +780,33 @@ const liveJourneys = async () => {
     assert(ms < 5000, 'Task locate took longer than its 5 s wait', { ms });
     await shot('live-task-locate');
     return { clickToWorkerSelectedMs: ms, state: await storeState() };
+  });
+  await runCase('L-012', 'A delegation whose new copy reports to the hub at once: the hub\'s Team-tab list is fetched at most once more and shows the report once (large-runs-load-less SR-007)', async () => {
+    await ensureHubRunning();
+    await coldOpenWorkspace();
+    await timedClick(runRow(), HOST_READY, setup.hostId);
+    await until('live collaboration snapshot', async () => (await storeState()).phase === 'live', 120000);
+    await quiet(2000);
+    const teamTab = page.getByRole('tab', { name: 'Team', exact: true }).first();
+    if (await teamTab.getAttribute('aria-selected') !== 'true') { await teamTab.click(); await quiet(1500); }
+    const rows = () => page.locator('[data-test="collaboration-messages-section"] [data-test="team-communication-message-row"]');
+    await until('hub list shown', async () => (await rows().count()) === (await hubMessageCount()), 30000);
+    const before = await hubMessageCount();
+    const marker = `Early report ${randomUUID().slice(0, 8)}`;
+    const start = requests.length;
+    const taskId = (await gql('mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId}}', { input: { projectId: setup.projectId, title: 'Report at once',
+      description: `Report to the manager first. ${callTool('send_message_to', { target_agent_run_id: setup.hostId, content: marker })}` } })).createProjectTask.taskId;
+    send(callTool('delegate_task', { recipient_address: `/${segment(TEAM)}`, task_id: taskId }));
+    await until('the new copy\'s report is stored', async () => (await hubMessageCount()) > before, 180000);
+    await quiet(3000);
+    const after = await hubMessageCount();
+    const participants = participantOps(start);
+    const texts = (await rows().allInnerTexts()).map((t) => t.replace(/\s+/g, ' '));
+    const shown = texts.filter((t) => t.includes(marker)).length;
+    assert((participants[setup.hostId] ?? 0) <= 1, 'The hub\'s list was fetched more than once for one delegation', { participants });
+    assert(shown === 1 && texts.length === after, 'The report is not shown exactly once, or the list differs from the stored log', { shown, rows: texts.length, before, after, participants });
+    await shot('live-delegation-with-report');
+    return { before, after, participants, hubListReloaded: (participants[setup.hostId] ?? 0) === 1, rowsShown: texts.length, markerShown: shown };
   });
   await runCase('L-007', 'Composer send to an opened copy of a stopped hub wakes the copy, which answers; stored (AC-006, REQ-006)', async () => {
     for (const socket of sockets.splice(0)) socket.close();
@@ -805,7 +893,7 @@ try {
   evidence.result = 'Fail'; evidence.failures.push({ message: e.message, details: e.details, stack: e.stack }); process.exitCode = 1;
   if (page) { evidence.failureState = await storeState().catch((x) => ({ error: x.message })); await shot('failure'); }
 } finally {
-  evidence.errors = errors; evidence.warnings = warnings; evidence.requests = requests.map((r) => ({ at: r.at, op: r.operationName, v: r.variables }));
+  evidence.errors = errors; evidence.errorDetails = errorDetails; evidence.warnings = warnings; evidence.requests = requests.map((r) => ({ at: r.at, op: r.operationName, v: r.variables }));
   evidence.loadAtEnd = loadAverage();
   for (const socket of sockets) socket.close();
   if (ownedBrowser) { await browser?.close(); evidence.cleanup.browserClosed = true; } else if (browser) { await browser.close().catch(() => {}); evidence.cleanup.cdpDetached = true; }

@@ -30,15 +30,8 @@ import type { CollaborationCommunicationMessage } from "../../agent-collaboratio
 import { projectTeamAgentEventMessage } from "./team-agent-event-websocket-projector.js";
 import { projectTeamAgentStatusSnapshotDto } from "./team-agent-status-websocket-projector.js";
 import { projectTeamReferenceFile } from "../../agent-team-execution/services/team-reference-file-projection.js";
-import { TeamExecutionIndex } from "../../agent-team-execution/services/team-execution-index.js";
-import { isPublicMessage } from "./public-message-scope.js";
 import { projectTeamRemoteEvent } from "./team-remote-event-projector.js";
 import type { RemoteTaskExecutionDto } from "@autobyteus/agent-presentation-contracts";
-
-const agentsOf = (tree: TeamRunExecutionTreeSnapshot) => {
-  const index = new TeamExecutionIndex(tree);
-  return (agentRunId: string) => index.getAgent(agentRunId) !== null;
-};
 
 const projectReference = (ownerId: string, filePath: string, timestamp: string): TeamReferenceFileDto => {
   const reference = projectTeamReferenceFile(ownerId, filePath, timestamp);
@@ -53,8 +46,9 @@ const projectReference = (ownerId: string, filePath: string, timestamp: string):
 
 export const projectTeamExecutionViewSnapshot = (
   rootTeamRunId: string,
-  snapshot: RootTeamRunPackageSnapshot,
-  baseChangeSequence: number,
+  { snapshot, baseChangeSequence, liveSequenceId, lastMessageChangeSequence }: Readonly<{
+    snapshot: RootTeamRunPackageSnapshot; baseChangeSequence: number; liveSequenceId: string; lastMessageChangeSequence: number;
+  }>,
   /** autobyteus-278: the runs this Team delegated to other nodes, with their nodes' names. */
   remoteTaskExecutions: readonly RemoteTaskExecutionDto[],
 ): TeamStreamServerMessage => parseTeamStreamServerMessage({
@@ -62,9 +56,10 @@ export const projectTeamExecutionViewSnapshot = (
   payload: {
     root_team_run_id: rootTeamRunId,
     base_change_sequence: baseChangeSequence,
+    live_sequence_id: liveSequenceId,
+    last_message_change_sequence: lastMessageChangeSequence,
     execution_tree: projectExecutionTree(snapshot.tree),
     closed_task_executions: snapshot.closedTaskExecutions.map(projectTaskExecutionReference),
-    messages: snapshot.messages.messages.filter((message) => isPublicMessage(message, agentsOf(snapshot.tree))).map(projectCommunicationMessage),
     agent_statuses: snapshot.statuses.map(projectTeamAgentStatusSnapshotDto),
     agent_input_states: snapshot.inputStates,
     remote_task_executions: remoteTaskExecutions,
@@ -125,7 +120,7 @@ export const projectSequencedTeamRunEvent = (
 const projectTaskExecutionReference = (reference: TaskExecutionReference): TeamTaskExecutionReferenceDto =>
   "agentRunId" in reference ? { agent_run_id: reference.agentRunId } : { team_run_id: reference.teamRunId };
 
-export const projectCommunicationMessage = (
+const projectCommunicationMessage = (
   message: CollaborationCommunicationMessage,
 ): TeamCommunicationMessageDto => ({
   message_id: message.messageId,

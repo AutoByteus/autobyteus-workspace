@@ -5,7 +5,7 @@ export const launch = { runtimeKind: 'codex_app_server' as const, llmModelIdenti
 
 type MutableView = { -readonly [K in keyof AgentRunCollaborationViewDto]: AgentRunCollaborationViewDto[K] }
 export const agentRootView = (): MutableView => ({
-  base_change_sequence: 4,
+  base_change_sequence: 4, live_sequence_id: 'live-1', last_message_change_sequence: 0,
   is_active: true,
   closed_task_executions: [], execution_tree: {
     subjectKind: 'agent', createdAt: created,
@@ -27,10 +27,6 @@ export const agentRootView = (): MutableView => ({
           ], defaultLaunchConfiguration: launch } },
     ],
   },
-  communication_messages: { schemaVersion: 1, subjectKind: 'agent', hostRunId: 'host-run', messages: [{
-    messageId: 'm1', senderAgentRunId: 'cua-run', receiverAgentRunId: 'host-run', content: 'Done, research assistant.',
-    messageType: 'direct_message', referenceFiles: [], createdAt: created,
-  }] },
   agent_input_states: [], remote_task_executions: [],
   agent_statuses: [
     { agent_run_id: 'cua-run', member_address: '/computer_use_agent', status: 'idle', trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null },
@@ -38,3 +34,9 @@ export const agentRootView = (): MutableView => ({
     { agent_run_id: 'pb-run', member_address: '/product_team/bootstrapper', status: 'offline', trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null },
   ],
 } as MutableView)
+
+/** The hub's stored messages (autobyteus-358: the Team tab loads them per participant; the view carries none). */
+export const agentRootMessages = Object.freeze([{
+  messageId: 'm1', senderAgentRunId: 'cua-run', receiverAgentRunId: 'host-run', content: 'Done, research assistant.',
+  messageType: 'direct_message', referenceFiles: [], createdAt: created,
+}])

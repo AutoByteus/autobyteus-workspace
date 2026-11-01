@@ -22,7 +22,6 @@ const io = vi.hoisted(() => ({ query: vi.fn(), mutate: vi.fn() }))
 const router = vi.hoisted(() => ({ push: vi.fn(async () => undefined), replace: vi.fn(async () => undefined) }))
 vi.mock('vue-router', () => ({ useRouter: () => router, useRoute: () => ({ path: '/workspace', query: {} }) }))
 vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => io }))
-vi.mock('~/services/runHydration/teamCommunicationHydrationService', () => ({ fetchTeamCommunicationForTeam: vi.fn().mockResolvedValue([]) }))
 vi.mock('~/stores/runtimeAvailabilityStore', () => ({ useRuntimeAvailabilityStore: () => ({
   availabilities: [{ runtimeKind: 'autobyteus', enabled: true }], fetchRuntimeAvailability: vi.fn().mockResolvedValue(null), isRuntimePending: () => false, fetchRuntimeAvailabilities: vi.fn().mockResolvedValue([]), availabilityByKind: () => ({ enabled: true }), isRuntimeEnabled: () => true, runtimeReason: () => null,
 }) }))
@@ -41,7 +40,7 @@ const choice = (id: string) => ({ llmModelIdentifier: id, providerName: 'OpenAI'
   canonicalName: id, description: null, configSchema: { type: 'object',
     properties: { budget: { type: 'integer', minimum: 0 }, enabled: { type: 'boolean' } } }, recommended: false })
 const deferred = () => { let resolve!: (x: any) => void; const promise = new Promise<any>(r => resolve = r); return { promise, resolve } }
-const resume = (tree = canonical) => ({ data: { getTeamRunResumeConfig: { remoteTaskExecutions: [], closedTaskExecutions: [], teamRunId: tree.root_team.team_run_id, isActive: false, modelConfigEditability: { editable: true, reason: null }, executionTree: JSON.parse(JSON.stringify(tree)) } } })
+const resume = (tree = canonical) => ({ data: { getTeamRunResumeConfig: { remoteTaskExecutions: [], closedTaskExecutions: [], teamRunId: tree.root_team.team_run_id, isActive: false, liveSequenceId: null, baseChangeSequence: 0, lastMessageChangeSequence: null, modelConfigEditability: { editable: true, reason: null }, executionTree: JSON.parse(JSON.stringify(tree)) } } })
 beforeEach(async () => {
   vi.clearAllMocks(); setActivePinia(createPinia()); createdTree = null
   canonical = JSON.parse(JSON.stringify(buildTestTeamContext({ teamRunId: 'source', teamDefinitionId: 'definition', teamDefinitionName: 'Source Team',

@@ -196,66 +196,38 @@ describe("Team communication API integration", () => {
       directoryReferencePath,
     });
 
-    const data = await execGraphql<{
-      getTeamCommunicationMessages: Array<{
-        messageId: string;
-        senderAgentRunId: string;
-        receiverAgentRunId: string;
-        content: string;
-        messageType: string;
-        referenceFiles: Array<{ referenceId: string; path: string; type: string }>;
-      }>;
-    }>(
-      `query GetTeamCommunicationMessages($teamRunId: String!) {
-        getTeamCommunicationMessages(teamRunId: $teamRunId) {
-          messageId
-          senderAgentRunId
-          receiverAgentRunId
-          content
-          messageType
-          referenceFiles {
-            referenceId
-            path
-            type
-          }
-        }
-      }`,
-      { teamRunId },
-    );
+    const participantMessages = `query Participant($rootRunId: String!, $agentRunId: String!) {
+      collaborationParticipantMessages(rootKind: "agent_team", rootRunId: $rootRunId, agentRunId: $agentRunId)
+    }`;
+    const data = await execGraphql<{ collaborationParticipantMessages: { messages: Array<Record<string, unknown>> } }>(
+      participantMessages, { rootRunId: teamRunId, agentRunId: "receiver-run-1" });
+    expect(data.collaborationParticipantMessages).toEqual({ messages: [{
+      messageId,
+      senderAgentRunId: "sender-run-1",
+      receiverAgentRunId: "receiver-run-1",
+      messageType: "handoff",
+      content: expect.stringContaining(readableReferencePath),
+      referenceFiles: [readableReferencePath, missingReferencePath, directoryReferencePath],
+      createdAt: timestamp,
+    }] });
+    // The sender sees the same message; a run that is not a participant is refused (autobyteus-358).
+    expect((await execGraphql<{ collaborationParticipantMessages: { messages: unknown[] } }>(
+      participantMessages, { rootRunId: teamRunId, agentRunId: "sender-run-1" })).collaborationParticipantMessages.messages).toHaveLength(1);
+    const stranger = await app.inject({ method: "POST", url: "/graphql",
+      payload: { query: participantMessages, variables: { rootRunId: teamRunId, agentRunId: "stranger-run" } } });
+    expect((stranger.json() as GraphqlResponse<unknown>).errors?.[0]?.message).toContain("is not a participant");
 
-    expect(data.getTeamCommunicationMessages).toEqual([
-      expect.objectContaining({
-        messageId,
-        senderAgentRunId: "sender-run-1",
-        receiverAgentRunId: "receiver-run-1",
-        messageType: "handoff",
-        content: expect.stringContaining(readableReferencePath),
-        referenceFiles: expect.arrayContaining([
-          expect.objectContaining({ referenceId: referenceIdFor(messageId, readableReferencePath), path: readableReferencePath, type: "file" }),
-          expect.objectContaining({ referenceId: referenceIdFor(messageId, missingReferencePath), path: missingReferencePath, type: "file" }),
-        ]),
-      }),
-    ]);
-    expect(data.getTeamCommunicationMessages[0]).not.toHaveProperty("teamRunId");
-    expect(data.getTeamCommunicationMessages[0]).not.toHaveProperty("senderRunId");
-    expect(data.getTeamCommunicationMessages[0]).not.toHaveProperty("receiverRunId");
-
-    const legacyFieldResponse = await app.inject({
+    // The whole-log query is gone.
+    const removedQuery = await app.inject({
       method: "POST",
       url: "/graphql",
       payload: {
-        query: `query LegacyTeamCommunicationFields($teamRunId: String!) {
-          getTeamCommunicationMessages(teamRunId: $teamRunId) {
-            senderRunId
-          }
-        }`,
+        query: `query Removed($teamRunId: String!) { getTeamCommunicationMessages(teamRunId: $teamRunId) { messageId } }`,
         variables: { teamRunId },
       },
     });
-    expect([200, 400]).toContain(legacyFieldResponse.statusCode);
-    expect(
-      (legacyFieldResponse.json() as GraphqlResponse<unknown>).errors?.[0]?.message,
-    ).toContain("senderRunId");
+    expect([200, 400]).toContain(removedQuery.statusCode);
+    expect((removedQuery.json() as GraphqlResponse<unknown>).errors?.[0]?.message).toContain("getTeamCommunicationMessages");
 
     const contentResponse = await app.inject({
       method: "GET",
@@ -300,21 +272,40 @@ describe("Team communication API integration", () => {
       method: "POST",
       url: "/graphql",
       payload: {
-        query: `query GetTeamCommunicationMessages($teamRunId: String!) {
-          getTeamCommunicationMessages(teamRunId: $teamRunId) {
-            messageId
-            senderAgentRunId
-            receiverAgentRunId
-          }
+        query: `query Participant($rootRunId: String!) {
+          collaborationParticipantMessages(rootKind: "agent_team", rootRunId: $rootRunId, agentRunId: "receiver-run-1")
         }`,
-        variables: { teamRunId },
+        variables: { rootRunId: teamRunId },
       },
     });
-    const body = response.json() as GraphqlResponse<{ getTeamCommunicationMessages: unknown[] | null }>;
-    // The current runtime reads only append-only message logs; a JSON file left in the folder is never read,
-    // so nothing is hydrated through a fallback (the run has no log: no messages).
-    expect(body.errors).toBeUndefined();
-    expect(body.data?.getTeamCommunicationMessages).toEqual([]);
+    const body = response.json() as GraphqlResponse<{ collaborationParticipantMessages: unknown }>;
+    // The current runtime reads only current packages; a JSON file left in the folder is never read, and a folder
+    // without a current tree has no records to read.
+    expect(body.errors?.[0]?.message).toContain("were not found");
+    expect(body.data?.collaborationParticipantMessages ?? null).toBeNull();
+  });
+
+  it("reports a damaged stored log with its reason when the messages are read (AC-006)", async () => {
+    const teamRunId = `team-damaged-${Date.now()}`;
+    const readableReferencePath = path.join(workspaceRootPath, "damaged.md");
+    await seedTeamCommunicationRun({ teamRunId, messageId: "message-1", readableReferencePath,
+      missingReferencePath: path.join(workspaceRootPath, "gone.md"), directoryReferencePath: path.join(workspaceRootPath, "dir") });
+    const log = (await fs.readdir(getTeamDir(teamRunId))).find((name) => name.startsWith("team_communication_messages"))!;
+    // A complete malformed line (an unfinished last line would be ignored by design).
+    await fs.appendFile(path.join(getTeamDir(teamRunId), log), "{broken\n");
+    const response = await app.inject({
+      method: "POST",
+      url: "/graphql",
+      payload: {
+        query: `query Participant($rootRunId: String!) {
+          collaborationParticipantMessages(rootKind: "agent_team", rootRunId: $rootRunId, agentRunId: "receiver-run-1")
+        }`,
+        variables: { rootRunId: teamRunId },
+      },
+    });
+    const body = response.json() as GraphqlResponse<{ collaborationParticipantMessages: unknown }>;
+    expect(body.errors?.[0]?.message).toBeTruthy();
+    expect(body.data?.collaborationParticipantMessages ?? null).toBeNull();
   });
 
   it("maps unreadable reference content failures to a graceful 403 REST response", async () => {

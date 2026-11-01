@@ -5,7 +5,7 @@ import { createExistingAgentOrgWorkspaceDraft, updateExistingAgentOrgWorkspaceDr
   planExistingAgentOrgWorkspacePatches, existingAgentOrgWorkspacesDirty, existingAgentOrgWorkspacesValid } from '~/services/runConfigEditing/existingAgentOrgWorkspaceDraft'
 import type { ExistingRunConfigDraft } from '~/types/agent/ExistingRunConfigDraft'
 import { loadExistingRunModelOptions } from '~/services/runConfigEditing/existingRunModelOptionsClient'
-import { readAgentRunCollaboration } from '~/services/agentCollaboration/agentRunCollaborationHydration'
+import { useAgentRunCollaborationStore } from '~/stores/agentRunCollaborationStore'
 import { defineStore } from 'pinia'
 import { teamRunExecutionTreeDtoSchema } from '@autobyteus/team-stream-contracts'
 import { useRunHistoryStore } from '~/stores/runHistoryStore'
@@ -199,7 +199,7 @@ export const useExistingRunConfigStore = defineStore('existingRunConfig', {
       const request = this.canonicalLoadRequestId, binding = useWindowNodeContextStore().bindingRevision
       const payload = await useRunHistoryStore().refreshAgentResumeConfig(runId)
       if (request !== this.canonicalLoadRequestId || binding !== useWindowNodeContextStore().bindingRevision) throw new Error('Settings target changed.')
-      const view = payload.isActive ? null : await readAgentRunCollaboration(runId)
+      const view = payload.isActive ? null : await useAgentRunCollaborationStore().viewFor(runId) // one read per selection (autobyteus-358)
       const delegatedSnapshot = view ? {
         execution_tree: view.execution_tree, closed_task_executions: view.closed_task_executions,
         remote_task_executions: view.remote_task_executions,

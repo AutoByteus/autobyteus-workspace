@@ -29,6 +29,7 @@ const agentView = (overrides = {}) => ({
   root_run_id: "host-run",
   root_agent: {
     base_change_sequence: 3,
+    live_sequence_id: "live-1", last_message_change_sequence: 0,
     is_active: true,
     execution_tree: {
       subjectKind: "agent", createdAt: "2026-09-30T00:00:00.000Z",
@@ -39,13 +40,6 @@ const agentView = (overrides = {}) => ({
       ],
     },
     closed_task_executions: [],
-    communication_messages: {
-      schemaVersion: 1, subjectKind: "agent", hostRunId: "host-run",
-      messages: [{
-        messageId: "m1", senderAgentRunId: "reviewer-run", receiverAgentRunId: "host-run", content: "done",
-        messageType: "agent_message", referenceFiles: [], createdAt: "2026-09-30T00:00:02.000Z",
-      }],
-    },
     agent_input_states: [],
     remote_task_executions: [],
     agent_statuses: [
@@ -65,13 +59,28 @@ test("an Agent root tree has no collaborators; delegated runs carry their run id
   assert.throws(() => RootExecutionViewDtoSchema.parse(agentView({ execution_tree: { ...view.root_agent.execution_tree, taskExecutions: [withoutRun] } })));
 });
 
-test("an Agent root view correlates host, children, messages and statuses", () => {
+test("an Agent root view correlates host, children and statuses, and carries no message log (autobyteus-358)", () => {
+  assert.throws(() => RootExecutionViewDtoSchema.parse(agentView({ communication_messages: { schemaVersion: 1, subjectKind: "agent", hostRunId: "host-run", messages: [] } })));
   assert.equal(RootExecutionViewDtoSchema.parse(agentView()).root_subject_kind, "agent");
   assert.throws(() => RootExecutionViewDtoSchema.parse({ ...agentView(), root_run_id: "other" }));
   const unknownStatus = agentView();
   unknownStatus.root_agent.agent_statuses[0].agent_run_id = "host-run";
   unknownStatus.root_agent.agent_statuses[0].member_address = "/research_assistant";
   assert.throws(() => RootExecutionViewDtoSchema.parse(unknownStatus), /status identity/);
+});
+
+test("an Agent root view names its live sequence, or null for a stored view; the field is required (autobyteus-358)", () => {
+  assert.equal(RootExecutionViewDtoSchema.parse(agentView()).root_agent.live_sequence_id, "live-1");
+  assert.equal(RootExecutionViewDtoSchema.parse(agentView({ live_sequence_id: null, last_message_change_sequence: null, is_active: false })).root_agent.live_sequence_id, null);
+  const missing = agentView();
+  delete missing.root_agent.live_sequence_id;
+  assert.throws(() => RootExecutionViewDtoSchema.parse(missing));
+  assert.throws(() => RootExecutionViewDtoSchema.parse(agentView({ live_sequence_id: "", last_message_change_sequence: 0 })));
+  // The latest message sequence (SR-007) comes with the live sequence, and is never past the base.
+  assert.equal(RootExecutionViewDtoSchema.parse(agentView({ last_message_change_sequence: 3 })).root_agent.last_message_change_sequence, 3);
+  assert.throws(() => RootExecutionViewDtoSchema.parse(agentView({ last_message_change_sequence: 4 })), /past its base/);
+  assert.throws(() => RootExecutionViewDtoSchema.parse(agentView({ last_message_change_sequence: null })), /together/);
+  assert.throws(() => RootExecutionViewDtoSchema.parse(agentView({ live_sequence_id: null, is_active: false })), /together/);
 });
 
 test("Agent root events, lifecycle and commands use root kind 'agent'; SEND_MESSAGE takes mentions", () => {

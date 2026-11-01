@@ -6,14 +6,16 @@ import { teamConnectedPayloadSchema, teamRunLifecyclePayloadSchema } from "./tea
 import { teamDelegatedLaunchSelectionsChangedPayloadSchema, teamTaskExecutionReferenceDtoSchema, teamTaskExecutionStartedPayloadSchema, teamTaskExecutionsClosedPayloadSchema, teamTaskExecutionsReopenedPayloadSchema, } from "./team-task-execution-message-dtos.js";
 import { readonlyParsed } from "./schema-helpers.js";
 import { teamAgentStatusDtoSchema, teamRunExecutionTreeDtoSchema, } from "./team-execution-view-dtos.js";
-import { teamCommunicationMessageDtoSchema } from "./team-collaboration-message-dtos.js";
 const message = (type, payload) => z.object({ type: z.literal(type), payload }).strict();
 export const teamExecutionViewSnapshotPayloadSchema = z.object({
     root_team_run_id: z.string().trim().min(1),
     base_change_sequence: z.number().int().nonnegative(),
+    /** The live sequence `base_change_sequence` counts in (one per root event publisher); a snapshot is always live. */
+    live_sequence_id: z.string().min(1),
+    /** The sequence of the Team's latest message through `base_change_sequence` (0 when none). */
+    last_message_change_sequence: z.number().int().nonnegative(),
     execution_tree: teamRunExecutionTreeDtoSchema,
     closed_task_executions: z.array(teamTaskExecutionReferenceDtoSchema),
-    messages: z.array(teamCommunicationMessageDtoSchema),
     agent_statuses: z.array(teamAgentStatusDtoSchema),
     agent_input_states: z.array(z.object({ agent_run_id: z.string().min(1), state: agentInputStateSchema }).strict()),
     /** The runs this Team delegated to other nodes (autobyteus-278); their summaries arrive as messages. */

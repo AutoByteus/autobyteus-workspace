@@ -24,7 +24,7 @@ class Socket {
   close() { this.readyState = 3; this.onclose?.() }
   emit(message: unknown) { this.onmessage?.({ data: JSON.stringify(message) }) }
 }
-const envelope = (active: boolean) => ({ root_subject_kind: 'agent_org', root_run_id: 'org-run', root_org: { ...JSON.parse(JSON.stringify(taskBearingView()).replaceAll('codex_app_server', 'autobyteus')), is_active: active, ...(!active ? { agent_statuses: [], base_change_sequence: 0 } : {}) } })
+const envelope = (active: boolean) => ({ root_subject_kind: 'agent_org', root_run_id: 'org-run', root_org: { ...JSON.parse(JSON.stringify(taskBearingView()).replaceAll('codex_app_server', 'autobyteus')), is_active: active, ...(!active ? { agent_statuses: [], base_change_sequence: 0, live_sequence_id: null, last_message_change_sequence: null } : {}) } })
 const projection = (variables: any) => ({ data: { getAgentOrgMemberRunProjection: { ...variables,
   conversation: [{ kind: 'message', role: 'assistant', content: 'Retained conversation', ts: 1 }],
   activities: [{ kind: 'system_instruction', activityId: `${variables.agentRunId}-system`, content: `System ${variables.agentRunId}`, ts: 1 },
@@ -78,7 +78,8 @@ it('Org success reconciles every configured/task Agent/Team member before real e
     const current=store.contextFor('org-run')!.getAgentContext(e.agentRunId)!
     expect(current).toBe(e.context);expect(current.state).not.toBe(beforeStates[i]);expect(current.state.currentStatus).toBe('offline')
     expect(activities.getCompactionActivities(e.agentRunId)).toEqual([expect.objectContaining({phase:'stopped',message:'Stopped',rawTraceCount:9,compactionModelIdentifier:'native-model'})])
-    expect(activities.getActivities(e.agentRunId)).toHaveLength(3)
+    // Only the shown member's stored activities are staged (autobyteus-358); the others load when opened.
+    expect(activities.getActivities(e.agentRunId)).toHaveLength(e.agentRunId === 'agent-director' ? 3 : 1)
   }
   expect(socket.sent).toHaveLength(0);expect(io.mutate).toHaveBeenCalledTimes(1)
   expect(store.contextFor('org-run')!.phase).toBe('historical')

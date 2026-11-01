@@ -40,7 +40,8 @@ const mocks = vi.hoisted(() => ({
   teamResumeConfigByTeamRunId: {} as Record<string, unknown>,
 }))
 
-vi.mock('~/services/agentCollaboration/agentRunCollaborationHydration', () => ({ readAgentRunCollaboration: mocks.readCollaboration }))
+// autobyteus-358 (DS-004): Settings takes the hub's view from the collaboration store, which reads it once per selection.
+vi.mock('~/stores/agentRunCollaborationStore', () => ({ useAgentRunCollaborationStore: () => ({ viewFor: mocks.readCollaboration }) }))
 
 vi.mock('~/services/runConfigEditing/existingRunModelOptionsClient', () => ({ loadExistingRunModelOptions: vi.fn().mockResolvedValue({}) }))
 

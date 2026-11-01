@@ -21,6 +21,21 @@ frame carries has the root's `change_sequence`, and clients require every
 sequence after their snapshot's `base_change_sequence` exactly once and in order
 (a gap or reorder makes them reopen). The standalone stream is not sequenced.
 
+A root's change sequence belongs to its event publisher and starts at 0 for each
+one: a stop and resume, or a server restart, starts another. Every snapshot (and
+the active view a GraphQL inspection returns) therefore names its sequence with
+`live_sequence_id`; a stored view carries `null`. With it comes
+`last_message_change_sequence`: the sequence of the root's latest message event
+through the base (0 when none; `null` in a stored view). Each root's publisher
+is given its message predicate (`isStandaloneRootMessageEvent`,
+`isAgentOrgMessageEvent`, `isTeamRunMessageEvent`): the events a client adds to
+its participant message lists. The Team open read (`getTeamRunResumeConfig`)
+gives a running Team's `liveSequenceId`, `baseChangeSequence` and
+`lastMessageChangeSequence`, read together from its publisher (`null`, `0` and
+`null` when the Team is not running). Clients compare sequence numbers
+only within one `live_sequence_id` (autobyteus-358: the Team tab keeps its loaded
+message lists across a reconnect only within one).
+
 A WebSocket session is a transport subscriber. It does not own provider parsing,
 turn/segment lifecycle, persistence, Team topology, task delegation, or runtime
 identity.
@@ -95,8 +110,9 @@ include:
   `sender_agent_run_id`), and `REMOTE_TASK_EXECUTION_STARTED` /
   `REMOTE_TASK_EXECUTION_SUMMARY` (runs delegated to other nodes);
 - the view: `TEAM_EXECUTION_VIEW_SNAPSHOT` (`root_team_run_id`,
-  `base_change_sequence`, `execution_tree`, the required `closed_task_executions`,
-  `messages`, `agent_statuses`, `agent_input_states`, `remote_task_executions`);
+  `base_change_sequence`, `live_sequence_id`, `last_message_change_sequence`,
+  `execution_tree`, the required `closed_task_executions`, `agent_statuses`,
+  `agent_input_states`, `remote_task_executions`; no message log, autobyteus-358);
 - control: `CONNECTED {session_id, root_team_run_id}`, `TEAM_RUN_LIFECYCLE
   {is_active}`, `AGENT_COMMAND_ACK`; and
 - `ERROR`, with nullable `change_sequence` and `agent_run_id`: correlated to one

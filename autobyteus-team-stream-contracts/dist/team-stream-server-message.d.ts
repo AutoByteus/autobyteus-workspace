@@ -6,6 +6,8 @@ import { teamDelegatedLaunchSelectionsChangedPayloadSchema, teamTaskExecutionSta
 export declare const teamExecutionViewSnapshotPayloadSchema: z.ZodObject<{
     root_team_run_id: z.ZodString;
     base_change_sequence: z.ZodNumber;
+    live_sequence_id: z.ZodString;
+    last_message_change_sequence: z.ZodNumber;
     execution_tree: z.ZodType<Readonly<{
         created_at: string;
         archived_at: string | null;
@@ -56,30 +58,6 @@ export declare const teamExecutionViewSnapshotPayloadSchema: z.ZodObject<{
     }, z.core.$strict>, z.ZodObject<{
         team_run_id: z.ZodString;
     }, z.core.$strict>]>>;
-    messages: z.ZodArray<z.ZodObject<{
-        message_id: z.ZodString;
-        sender_agent_run_id: z.ZodString;
-        receiver_agent_run_id: z.ZodString;
-        content: z.ZodString;
-        message_type: z.ZodString;
-        reference_files: z.ZodArray<z.ZodObject<{
-            reference_id: z.ZodString;
-            path: z.ZodString;
-            type: z.ZodEnum<{
-                file: "file";
-                image: "image";
-                audio: "audio";
-                video: "video";
-                pdf: "pdf";
-                csv: "csv";
-                excel: "excel";
-                other: "other";
-            }>;
-            created_at: z.ZodString;
-            updated_at: z.ZodString;
-        }, z.core.$strict>>;
-        created_at: z.ZodString;
-    }, z.core.$strict>>;
     agent_statuses: z.ZodArray<z.ZodObject<{
         agent_run_id: z.ZodString;
         member_address: z.ZodString;
@@ -1132,6 +1110,8 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
     payload: z.ZodObject<{
         root_team_run_id: z.ZodString;
         base_change_sequence: z.ZodNumber;
+        live_sequence_id: z.ZodString;
+        last_message_change_sequence: z.ZodNumber;
         execution_tree: z.ZodType<Readonly<{
             created_at: string;
             archived_at: string | null;
@@ -1182,30 +1162,6 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
         }, z.core.$strict>, z.ZodObject<{
             team_run_id: z.ZodString;
         }, z.core.$strict>]>>;
-        messages: z.ZodArray<z.ZodObject<{
-            message_id: z.ZodString;
-            sender_agent_run_id: z.ZodString;
-            receiver_agent_run_id: z.ZodString;
-            content: z.ZodString;
-            message_type: z.ZodString;
-            reference_files: z.ZodArray<z.ZodObject<{
-                reference_id: z.ZodString;
-                path: z.ZodString;
-                type: z.ZodEnum<{
-                    file: "file";
-                    image: "image";
-                    audio: "audio";
-                    video: "video";
-                    pdf: "pdf";
-                    csv: "csv";
-                    excel: "excel";
-                    other: "other";
-                }>;
-                created_at: z.ZodString;
-                updated_at: z.ZodString;
-            }, z.core.$strict>>;
-            created_at: z.ZodString;
-        }, z.core.$strict>>;
         agent_statuses: z.ZodArray<z.ZodObject<{
             agent_run_id: z.ZodString;
             member_address: z.ZodString;

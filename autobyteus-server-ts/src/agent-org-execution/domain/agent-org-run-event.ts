@@ -21,3 +21,6 @@ export type AgentOrgRunEvent =
   | Readonly<{ kind: "lifecycle"; isActive: boolean }>
   /** autobyteus-278: the facts of the runs this Org delegated to other nodes (read only by its DTO projector). */
   | RemoteRunRootEvent;
+
+/** The Org's message events: the ones the client adds to the Team tab's lists (autobyteus-358, SR-008). */
+export const isAgentOrgMessageEvent = (event: AgentOrgRunEvent): boolean => event.kind === "communication";

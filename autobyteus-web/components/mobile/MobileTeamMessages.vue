@@ -3,6 +3,21 @@
     <article v-if="!activeTeamContext" class="rounded-2xl border border-dashed border-slate-300 p-4 text-sm text-slate-600">
       Select a team run to see team messages.
     </article>
+    <article
+      v-else-if="messagesStatus?.state === 'error'"
+      class="rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-900"
+      data-testid="mobile-team-messages-unavailable"
+    >
+      <p class="font-semibold">{{ statusText.unavailable() }}</p>
+      <p class="mt-1 break-words">{{ messagesStatus.error }}</p>
+    </article>
+    <article
+      v-else-if="!messages.length && messagesStatus?.state !== 'loaded'"
+      class="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600"
+      data-testid="mobile-team-messages-loading"
+    >
+      {{ statusText.loading() }}
+    </article>
     <article v-else-if="!messages.length" class="rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm text-slate-600">
       No team messages yet for the focused member.
     </article>
@@ -55,7 +70,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { Icon } from '@iconify/vue';
 import MobileTeamReferenceViewer from '~/components/mobile/MobileTeamReferenceViewer.vue';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
@@ -67,7 +82,8 @@ import {
   referenceFileIcon,
   referenceFileName,
 } from '~/utils/teamCommunication/referenceFilePresentation';
-import { projectTeamCommunicationPerspective } from '~/utils/teamCommunication/teamCommunicationPerspective';
+import { teamCollaborationMessagesView } from '~/services/teamExecution/teamCollaborationMessagesView';
+import { participantMessagesStatusText } from '~/services/collaborationMessages/participantMessagesStatusText';
 
 const props = defineProps<{
   context: MobileWorkContext | null;
@@ -86,15 +102,13 @@ const activeTeamContext = computed(() => {
   if (selectionStore.selectedType !== 'team' || selectionStore.selectedRunId !== props.context.teamRunId) return null;
   return teamContextsStore.getTeamContextById(props.context.teamRunId) ?? null;
 });
-const messages = computed(() => {
-  const team = activeTeamContext.value;
-  if (!team) return [];
-  return projectTeamCommunicationPerspective({
-    view: team.view,
-    messages: team.view.listCommunicationMessages(),
-    focusedAgentRunId: team.view.getFocusedAgentRunId(),
-  }).messages;
-});
+// The focused member's messages, loaded when this screen shows them (autobyteus-358).
+const messagesView = computed(() => activeTeamContext.value ? teamCollaborationMessagesView(activeTeamContext.value) : null);
+watch(messagesView, (view) => view?.loadMessages(), { immediate: true });
+const messages = computed(() => messagesView.value?.listMessages() ?? []);
+// Loading, loaded or unavailable with the reason: an unread list is never shown as empty (AC-006).
+const messagesStatus = computed(() => messagesView.value?.messagesStatus() ?? null);
+const statusText = participantMessagesStatusText();
 
 function openReference(
   message: CollaborationMessagePerspectiveRow,

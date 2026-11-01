@@ -23,10 +23,9 @@ import type {
   ActiveAgentWorkspaceTarget,
   TeamWorkspaceContextView,
 } from '~/types/workspace/activeAgentWorkspaceTarget';
-import type { CollaborationMessagesContextView } from '~/types/workspace/collaborationMessagesContextView';
 import type { AgentTeamContext } from '~/types/agent/AgentTeamContext';
 import { parseAgentTeamAddress } from '~/types/agent/AgentTeamAddress';
-import { projectTeamCommunicationPerspective, projectTeamCommunicationMemberIdentity } from '~/utils/teamCommunication/teamCommunicationPerspective';
+import { teamCollaborationMessagesView } from '~/services/teamExecution/teamCollaborationMessagesView';
 import { isTeamMemberProjectionAuthoritative } from '~/services/runHydration/teamMemberProjectionHydrationService';
 
 /**
@@ -70,28 +69,6 @@ export const useActiveContextStore = defineStore('activeContext', () => {
     });
   };
 
-  const standaloneTeamMessagesView = (team: AgentTeamContext): CollaborationMessagesContextView => {
-    const view = team.view;
-    const entries = view.listAgentContextEntries();
-    return Object.freeze({
-      rootKind: 'agent_team',
-      rootRunId: view.getRootTeamRunId(),
-      focusedAgentRunId: view.getFocusedAgentRunId(),
-      focusedMemberAddress: view.getFocusedMemberAddress(),
-      memberIdentityByAgentRunId: () => Object.freeze(Object.fromEntries(entries.map((entry) => [
-        entry.agentRunId,
-        projectTeamCommunicationMemberIdentity(view, entry.agentRunId),
-      ]))),
-      listMessages: () => Object.freeze(projectTeamCommunicationPerspective({
-        view,
-        messages: view.listCommunicationMessages(),
-        focusedAgentRunId: view.getFocusedAgentRunId(),
-      }).messages),
-      referenceContentPath: (messageId: string, referenceId: string) =>
-        `team-runs/${encodeURIComponent(view.getRootTeamRunId())}/team-communication/messages/${encodeURIComponent(messageId)}/references/${encodeURIComponent(referenceId)}/content`,
-    });
-  };
-
   const activeWorkspaceTarget = computed<ActiveAgentWorkspaceTarget | null>(() => {
     if (route?.query.rootSubjectKind === 'agent_org' && (route.query.mode === 'active' || route.query.mode === 'history')) {
       const orgRunId = String(route.query.orgRunId || '');
@@ -130,7 +107,7 @@ export const useActiveContextStore = defineStore('activeContext', () => {
       const target = {
         kind: 'standalone_team_member' as const, context, team: teamView,
         workspaceRootPath: team.view.getAgentWorkspaceRootPath(context.state.runId),
-        collaborationMessages: standaloneTeamMessagesView(team),
+        collaborationMessages: teamCollaborationMessagesView(team),
         browse: Object.freeze({
           kind: 'teamMember' as const, teamRunId: team.view.getRootTeamRunId(),
           memberAddress: team.view.getFocusedMemberAddress(), agentRunId: context.state.runId,

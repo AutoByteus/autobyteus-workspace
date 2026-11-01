@@ -26,7 +26,6 @@ import type {
 import { createWorkspaceMetadata } from '~/utils/workspaceMetadata';
 import { buildConversationFromProjection } from './runProjectionConversation';
 import { buildActivitiesFromProjection } from './runProjectionActivityHydration';
-import { fetchTeamCommunicationForTeam } from './teamCommunicationHydrationService';
 import {
   fetchMemberRunState,
   type MemberRunState,
@@ -34,6 +33,7 @@ import {
 } from './memberRunStateHydration';
 import { fetchRunFileChanges } from './runFileChangeHydrationService';
 import { createTeamExecutionViewState } from '~/services/teamExecution/teamExecutionViewState';
+import type { RootContextRebuild } from '~/services/collaborationMessages/collaborationParticipantMessages';
 import {
   createTeamAgentContext,
   createTeamConfigurationView,
@@ -62,6 +62,8 @@ export interface TeamRunHydrationCandidate {
   memberRunStates: readonly MemberRunStateCommit[];
   /** autobyteus-278: the runs this Team delegated to other nodes, registered when the candidate commits. */
   remoteTaskExecutions: readonly RemoteTaskExecutionDto[];
+  /** The running Team's live sequence and the base this read is consistent with; null for a stopped Team (SR-006). */
+  rebuild: RootContextRebuild;
 }
 
 export interface TeamRunRecoveryHydrationCandidate extends Omit<TeamRunHydrationCandidate, 'projectionByAgentRunId'> {
@@ -77,14 +79,15 @@ interface ResumeGraphqlData {
     closedTaskExecutions: unknown;
     remoteTaskExecutions: unknown;
     modelConfigEditability: RunModelConfigEditability;
+    liveSequenceId: string | null;
+    baseChangeSequence: number;
+    lastMessageChangeSequence: number | null;
   } | null;
 }
 
 interface ProjectionGraphqlData {
   getTeamMemberRunProjection: TeamMemberRunProjectionPayload | null;
 }
-
-type ProjectionFetchPolicy = 'best_effort' | 'exact';
 
 const graphqlErrors = (errors: readonly { message: string }[] | undefined): string | null =>
   errors?.length ? errors.map((error) => error.message).join(', ') : null;
@@ -121,19 +124,6 @@ const fetchExactTeamMemberRunState = (
     kind: 'teamMember', teamRunId, memberAddress: member.memberAddress, agentRunId: member.agentRunId,
   }),
 });
-
-/** A member whose projection or artifacts cannot be loaded is left unhydrated (null) as a whole. */
-const fetchBestEffortTeamMemberRunState = async (
-  teamRunId: string,
-  member: TeamMember,
-): Promise<TeamMemberRunState | null> => {
-  try {
-    return await fetchExactTeamMemberRunState(teamRunId, member);
-  } catch (error) {
-    console.warn(`[teamRunContextHydration] Failed to fetch AgentRun state '${member.agentRunId}'.`, error);
-    return null;
-  }
-};
 
 const fetchCheckpoint = async (teamRunId: string): Promise<TeamRunExecutionCheckpointPayload> => {
   const response = await getApolloClient().query<GetTeamRunExecutionCheckpointQueryData>({
@@ -240,9 +230,30 @@ const selectInitialAgentRunId = (input: {
   return coordinator.agent_run_id;
 };
 
+const isSequence = (value: unknown): value is number => typeof value === 'number' && Number.isInteger(value) && value >= 0;
+
+/** The running Team's live sequence, base and latest message as the read names them; a stopped Team names none (SR-006, SR-007). */
+const liveRebuildOf = (teamRunId: string, raw: Readonly<{ liveSequenceId: unknown; baseChangeSequence: unknown;
+  lastMessageChangeSequence: unknown }>): RootContextRebuild => {
+  const { liveSequenceId, baseChangeSequence, lastMessageChangeSequence } = raw;
+  if (isSequence(baseChangeSequence)) {
+    if (liveSequenceId === null && lastMessageChangeSequence === null) {
+      return Object.freeze({ liveSequenceId, baseChangeSequence, lastMessageChangeSequence });
+    }
+    if (typeof liveSequenceId === 'string' && liveSequenceId !== '' && isSequence(lastMessageChangeSequence)
+      && lastMessageChangeSequence <= baseChangeSequence) {
+      return Object.freeze({ liveSequenceId, baseChangeSequence, lastMessageChangeSequence });
+    }
+  }
+  throw new Error(`Team resume config for '${teamRunId}' has no valid live sequence.`);
+};
+
+/**
+ * Builds a Team run's context from its view and stages the focused member only (autobyteus-358, DS-003): every other
+ * member is loaded by the member loader when it is opened, and the Team tab loads its messages when it is shown.
+ */
 const hydrateCurrentTeamRunContext = async (
   input: LoadTeamRunContextHydrationInput,
-  projectionPolicy: ProjectionFetchPolicy,
 ): Promise<TeamRunHydrationCandidate> => {
   const client = getApolloClient();
   const response = await client.query<ResumeGraphqlData>({
@@ -257,21 +268,19 @@ const hydrateCurrentTeamRunContext = async (
   const tree = teamRunExecutionTreeDtoSchema.parse(raw.executionTree);
   const closedTaskExecutions = closedTaskExecutionsDtoSchema.parse(raw.closedTaskExecutions);
   const remoteTaskExecutions = remoteTaskExecutionDtoSchema.array().parse(raw.remoteTaskExecutions);
+  const rebuild = liveRebuildOf(input.teamRunId, raw);
   if (raw.teamRunId !== input.teamRunId || tree.root_team.team_run_id !== input.teamRunId) {
     throw new Error(`Team execution tree root identity mismatch for '${input.teamRunId}'.`);
   }
   if (raw.isActive && !input.ensureWorkspaceByRootPath) {
     throw new Error(`Active Team '${input.teamRunId}' requires workspace activation.`);
   }
-  const [messages, workspaces] = await Promise.all([
-    fetchTeamCommunicationForTeam({ client, teamRunId: input.teamRunId }),
-    resolveWorkspaces({
-      tree,
-      isActive: raw.isActive,
-      resolveWorkspaceMetadataByRootPath: input.resolveWorkspaceMetadataByRootPath,
-      ensureWorkspaceByRootPath: input.ensureWorkspaceByRootPath,
-    }),
-  ]);
+  const workspaces = await resolveWorkspaces({
+    tree,
+    isActive: raw.isActive,
+    resolveWorkspaceMetadataByRootPath: input.resolveWorkspaceMetadataByRootPath,
+    ensureWorkspaceByRootPath: input.ensureWorkspaceByRootPath,
+  });
   const locations = collectAgentExecutionLocations(tree);
   const initialFocusedAgentRunId = selectInitialAgentRunId({
     tree,
@@ -279,22 +288,13 @@ const hydrateCurrentTeamRunContext = async (
     requestedAgentRunId: input.agentRunId,
     requestedMemberAddress: input.memberAddress,
   });
-  const activityStore = useAgentActivityStore();
-  const expectedActivityRevisionByRunId = new Map(locations.map((agent) => [
-    agent.agentRunId,
-    activityStore.getActivityContentRevision(agent.agentRunId),
-  ]));
-  const stateByAgentRunId = new Map<string, TeamMemberRunState | null>();
-  await Promise.all(locations.map(async (agent) => {
-    const state = projectionPolicy === 'exact' || agent.agentRunId === initialFocusedAgentRunId
-      ? await fetchExactTeamMemberRunState(input.teamRunId, agent)
-      : await fetchBestEffortTeamMemberRunState(input.teamRunId, agent);
-    stateByAgentRunId.set(agent.agentRunId, state);
-  }));
-  // A member whose state could not be loaded keeps a null projection: it is not marked authoritative,
-  // so selecting it later hydrates it on demand.
+  // The focused member is staged exactly; a remote focused member is read from its node after the commit.
+  const focusedLocation = locations.find((agent) => agent.agentRunId === initialFocusedAgentRunId) ?? null;
+  const expectedFocusedActivityRevision = useAgentActivityStore().getActivityContentRevision(initialFocusedAgentRunId);
+  const focusedState = focusedLocation ? await fetchExactTeamMemberRunState(input.teamRunId, focusedLocation) : null;
+  const stateByAgentRunId = new Map<string, TeamMemberRunState>(focusedState ? [[initialFocusedAgentRunId, focusedState]] : []);
   const projectionByAgentRunId = new Map<string, TeamMemberRunProjectionPayload | null>(
-    [...stateByAgentRunId].map(([agentRunId, state]) => [agentRunId, state?.projection ?? null]),
+    [...stateByAgentRunId].map(([agentRunId, state]) => [agentRunId, state.projection]),
   );
   const memberRunStates: MemberRunStateCommit[] = [];
   const contexts = locations.map((agent) => {
@@ -311,7 +311,7 @@ const hydrateCurrentTeamRunContext = async (
       address: agent.memberAddress,
       context,
       state: stateByAgentRunId.get(agent.agentRunId) ?? null,
-      expectedActivityRevision: expectedActivityRevisionByRunId.get(agent.agentRunId)!,
+      expectedActivityRevision: expectedFocusedActivityRevision,
     });
     if (memberRunState) memberRunStates.push(memberRunState);
     return Object.freeze({ agentRunId: agent.agentRunId, memberAddress: agent.memberAddress, agentContext: context });
@@ -321,7 +321,6 @@ const hydrateCurrentTeamRunContext = async (
     rootActive: raw.isActive,
     executionTree: tree,
     closedTaskExecutions,
-    messages,
     configuration: createTeamConfigurationView({ tree, workspaceMetadataByAddress: workspaces }),
     initialFocusedAgentRunId,
     agentContexts: contexts,
@@ -348,12 +347,13 @@ const hydrateCurrentTeamRunContext = async (
     memberRunStates: Object.freeze(memberRunStates),
     hydratedContext: Object.freeze({ view }),
     remoteTaskExecutions,
+    rebuild,
   };
 };
 
 export const hydrateLiveTeamRunContext = async (
   input: LoadTeamRunContextHydrationInput,
-): Promise<TeamRunHydrationCandidate> => hydrateCurrentTeamRunContext(input, 'best_effort');
+): Promise<TeamRunHydrationCandidate> => hydrateCurrentTeamRunContext(input);
 
 export const hydrateTeamRunContextForStreamRecovery = async (
   input: LoadTeamRunContextHydrationInput,
@@ -362,7 +362,8 @@ export const hydrateTeamRunContextForStreamRecovery = async (
   if (before.hasOpenExecutionWork) {
     throw new Error('TEAM_STREAM_RECOVERY_WAIT: This Team is still working. Wait for it to finish, then select this Team member again.');
   }
-  const candidate = await hydrateCurrentTeamRunContext(input, 'exact');
+  // Exact between the two checkpoints, for the focused member: the others load when they are opened (DS-003).
+  const candidate = await hydrateCurrentTeamRunContext(input);
   const after = await fetchCheckpoint(input.teamRunId);
   if (after.hasOpenExecutionWork || after.changeSequence !== before.changeSequence) {
     throw new Error('TEAM_STREAM_RECOVERY_CHECKPOINT_CHANGED: Team activity changed while the conversation was being reloaded. Select this Team member again.');

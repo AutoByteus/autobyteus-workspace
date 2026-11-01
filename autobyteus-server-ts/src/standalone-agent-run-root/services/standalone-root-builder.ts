@@ -28,7 +28,7 @@ import type { StandaloneRootPackageStore } from "../persistence/standalone-root-
 import type { WorkspaceManager } from "../../workspaces/workspace-manager.js";
 import { StandaloneAgentRunRoot } from "../domain/standalone-agent-run-root.js";
 import type { StandaloneHostAgentHandle } from "../domain/standalone-host-agent-handle.js";
-import type { StandaloneRootEvent } from "../domain/standalone-root-event.js";
+import { isStandaloneRootMessageEvent, type StandaloneRootEvent } from "../domain/standalone-root-event.js";
 import type {
   StandaloneRootMessagesFile,
   StandaloneRootTreeSnapshot,
@@ -129,7 +129,7 @@ export class StandaloneRootBuilder {
       teams,
       callbacks,
       persistence,
-      publisher: new RootEventPublisher<StandaloneRootEvent>(),
+      publisher: new RootEventPublisher<StandaloneRootEvent>({ isMessageEvent: isStandaloneRootMessageEvent }),
       taskExecutionIdentity: this.dependencies.taskExecutionIdentity,
       taskExecutionResources: this.dependencies.taskExecutionResources,
       memoryLocator: this.dependencies.memoryLocator,

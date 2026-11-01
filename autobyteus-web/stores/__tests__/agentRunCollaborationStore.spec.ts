@@ -32,9 +32,10 @@ vi.mock('~/services/agentCollaboration/agentRunCollaborationHydration', () => ({
   readAgentRunCollaboration: vi.fn(async () => ({})),
   buildAgentRunCollaborationContext: vi.fn(async () => build()),
 }))
-const childHydration = vi.hoisted(() => ({ hydrate: vi.fn(async (_input: { agentRunId: string }) => 'hydrated') }))
+// The member loader asks for each selected child's load target (autobyteus-358); the test records the requests only.
+const childHydration = vi.hoisted(() => ({ hydrate: vi.fn((_input: { agentRunId: string }) => null) }))
 vi.mock('~/services/agentCollaboration/agentRunCollaborationChildHydration', () => ({
-  hydrateAgentRunCollaborationChild: childHydration.hydrate,
+  hubChildLoadTarget: childHydration.hydrate,
 }))
 vi.mock('~/services/collaborators/collaboratorCandidatesService', () => ({ collaboratorCandidatesService: { invalidate: vi.fn() } }))
 vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => ({ applyRunNavigationEffect: vi.fn() }) }))
@@ -105,4 +106,33 @@ describe('agentRunCollaborationStore', () => {
     expect(context.state.conversation.messages.at(-1)).toMatchObject({ type: 'user', text: 'ask @Code Reviewer', mentionNames: ['Code Reviewer'] })
     expect(context.requestedMentions).toEqual([])
   })
+
+  it('reads a hub selection\'s view once: Settings shares the inspection in flight and the published view (AC-004)', async () => {
+    const reads = vi.mocked((await import('~/services/agentCollaboration/agentRunCollaborationHydration')).readAgentRunCollaboration)
+    reads.mockClear()
+    const store = useAgentRunCollaborationStore()
+    const inspection = store.inspect('host-run')
+    const settings = store.viewFor('host-run')
+    await inspection
+    expect(await settings).toBe(store.contextFor('host-run')!.view)
+    expect(await store.viewFor('host-run')).toBe(store.contextFor('host-run')!.view)
+    expect(reads).toHaveBeenCalledOnce()
+  })
+
+  it('selecting a stopped hub whose stored view is already published reads it no more (QR-002); a hub that stops is read again', async () => {
+    const reads = vi.mocked((await import('~/services/agentCollaboration/agentRunCollaborationHydration')).readAgentRunCollaboration)
+    const store = useAgentRunCollaborationStore()
+    await store.inspect('host-run')
+    store.contextFor('host-run')!.setActive(false) // the stored view of a stopped hub
+    reads.mockClear()
+    store.syncHost('host-run', false)
+    store.syncHost('host-run', false)
+    await Promise.resolve()
+    expect(reads).not.toHaveBeenCalled()
+    store.syncHost('host-run', true)
+    store.syncHost('host-run', false)
+    await Promise.resolve()
+    expect(reads).toHaveBeenCalledOnce()
+  })
 })
+

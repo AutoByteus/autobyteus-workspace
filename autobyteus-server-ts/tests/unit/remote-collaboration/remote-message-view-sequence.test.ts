@@ -23,6 +23,7 @@ import { createTeamCommunicationPort } from "../../../src/services/team-communic
 import type { StandaloneRootEvent } from "../../../src/standalone-agent-run-root/domain/standalone-root-event.js";
 import { createStandaloneRootCommunicationPort } from "../../../src/standalone-agent-run-root/services/standalone-root-communication-port.js";
 import { runAppendDurably } from "../agent-collaboration/helpers/communication-port-double.js";
+import { isTeamRunMessageEvent } from "../../../src/agent-team-execution/domain/team-run-event.js";
 
 /**
  * CR-001: a message with a remote endpoint stays in the root's message state, but is not published to the
@@ -75,7 +76,7 @@ const expectConsecutive = (sequences: readonly number[]) => {
 describe("messages with a remote endpoint keep the root view stream consecutive (CR-001)", () => {
   it("Team root: no COMMUNICATION event for them; the member-input of the reply follows without a gap", async () => {
     const root = createTeamRootExecutionIdentity("team-root");
-    const publisher = new RootEventPublisher<TeamRunEvent>();
+    const publisher = new RootEventPublisher<TeamRunEvent>({ isMessageEvent: isTeamRunMessageEvent });
     const events = collect(publisher);
     const adapter = createTeamCommunicationPort({
       rootTeamRunId: "team-root",
@@ -130,7 +131,7 @@ describe("messages with a remote endpoint keep the root view stream consecutive 
       project: (event: SequencedRootEvent<AgentOrgRunEvent>) => projectAgentOrgExecutionEvent({ orgRunId: "org-root" } as never, event),
     },
   ] as const)("$kind: only the local messages are published, with consecutive sequences", async ({ root, build, project }) => {
-    const publisher = new RootEventPublisher<never>();
+    const publisher = new RootEventPublisher<never>({ isMessageEvent: () => false });
     const events = collect(publisher);
     await runConversation(new RootCommunicationEngine(build(root, publisher as never) as never), root);
 

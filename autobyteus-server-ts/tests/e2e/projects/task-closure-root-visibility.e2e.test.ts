@@ -12,6 +12,7 @@ import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-serv
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 import { until } from "../helpers/agy-runtime-error-fixture.js";
 import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadata-helpers.js";
+import { readParticipantMessages } from "../../helpers/collaboration-participant-messages.js";
 
 // Task closure (DONE) as a root view fact, through the real Studio HTTP/WebSocket server, scoped MCP,
 // Project/Task services, roots, publishers and projectors. Only the external AGY CLI is scripted:
@@ -213,8 +214,7 @@ suite("Task DONE hides the Task's agent run resources in every root view (real H
     const snapshotOf = (frames: Frame[]) => {
       const payload = frames.find(isSnapshot)!.payload;
       const body = kind === "agent" ? payload.root_agent : kind === "org" ? payload.root_org : payload;
-      return { tree: body.execution_tree, closed: body.closed_task_executions as Record<string, any>[],
-        messages: (body.communication_messages?.messages ?? body.messages ?? []) as Record<string, any>[] };
+      return { tree: body.execution_tree, closed: body.closed_task_executions as Record<string, any>[] };
     };
     const liveTree = async () => {
       if (kind === "agent") {
@@ -270,18 +270,23 @@ suite("Task DONE hides the Task's agent run resources in every root view (real H
     const subCopy = aNodes.find((node) => node !== aAssigned && node.agentRunId)!;
     send(callTool("send_message_to", { target_agent_run_id: subCopy.agentRunId, content: "Status of the sub-work?" }));
     const touchesTaskA = (message: Record<string, any>) => taskARefs.some((ref) => JSON.stringify(message).includes((ref as any).agentRunId));
+    // autobyteus-358: the views carry no messages; the Manager's Team tab loads its own (every message here is its).
+    const managerMessages = () => readParticipantMessages(graphql, {
+      rootKind: kind === "agent" ? "agent" : kind === "org" ? "agent_org" : "agent_team", rootRunId: rootId, agentRunId: managerRunId });
     let before = snapshotOf(view.frames);
+    let messagesBefore: Record<string, any>[] = [];
     await until(async () => {
       view.socket.close();
       view = await openView();
       before = snapshotOf(view.frames);
+      messagesBefore = await managerMessages();
       // Both messages above are separate Manager turns, so one can reach the root view before the other: wait for
       // what the assertions below need, not only for the first message.
-      return before.messages.some((message) => touchesTaskA(message) && JSON.stringify(message).includes(managerRunId))
-        && before.messages.filter(touchesTaskA).length >= 2;
+      return messagesBefore.some((message) => touchesTaskA(message) && JSON.stringify(message).includes(managerRunId))
+        && messagesBefore.filter(touchesTaskA).length >= 2;
     }, "Manager messages with Task A's worker and its sub-copy", 60_000);
     expect(before.closed).toEqual([]);
-    const aMessageIdsBefore = before.messages.filter(touchesTaskA).map((m) => m.messageId);
+    const aMessageIdsBefore = messagesBefore.filter(touchesTaskA).map((m) => m.messageId);
     expect(aMessageIdsBefore.length).toBeGreaterThanOrEqual(2);
 
     // 2. DONE through the Manager's real tool call: the root publishes the closed refs (Task A only) before stopping.
@@ -308,7 +313,7 @@ suite("Task DONE hides the Task's agent run resources in every root view (real H
     const after = snapshotOf(view.frames);
     expect(keys(after.closed)).toEqual(keys(taskARefs));
     expect(keys(taskNodes(after.tree).map(refOf))).toEqual(keys(allBefore.map(refOf)));
-    const aMessageIdsAfter = after.messages.filter(touchesTaskA).map((m) => m.messageId);
+    const aMessageIdsAfter = (await managerMessages()).filter(touchesTaskA).map((m) => m.messageId);
     expect(aMessageIdsAfter).toEqual(aMessageIdsBefore);
     const memoryHits = spawnSync("grep", ["-rl", aAssigned.agentRunId, path.join(dataDir, "memory")], { encoding: "utf8" }).stdout.trim().split("\n").filter(Boolean);
     expect(memoryHits.length, "closed run's conversation/run history files are kept on disk").toBeGreaterThan(0);

@@ -1,0 +1,1 @@
+  message log: {"at":"2026-11-01T05:18:16.683Z","liveViewMessages":252,"liveViewReports":250,"storedMessages":252,"storedReports":250,"storedFiles":["communication_messages_active.jsonl"]}

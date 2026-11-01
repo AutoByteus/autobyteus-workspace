@@ -24,6 +24,7 @@ import { TokenUsageCapability } from "../../../../src/token-usage/providers/toke
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../../fixtures/current-agent-org-run-fixtures.js";
 import { observeConfiguredHandles } from "./task-publication-handles.js";
 import { InMemoryTaskExecutionResources } from "../../../fixtures/task-execution-resource-fixtures.js";
+import { isAgentOrgMessageEvent } from "../../../../src/agent-org-execution/domain/agent-org-run-event.js";
 
 /**
  * An AgentOrg (`/director`, mounted Team `/target` with `/target/lead` and `/target/writer`) over a
@@ -95,7 +96,7 @@ export const buildOrg = async (options: { runnable?: boolean } = {}) => {
         physicalScope: { root, ancestorTeamRunIds: [member.teamRunId] }, callbacks, activationMode: "fresh" })).commitAfterDurability();
     }
   }
-  const publisher = new RootEventPublisher<AgentOrgRunEvent>();
+  const publisher = new RootEventPublisher<AgentOrgRunEvent>({ isMessageEvent: isAgentOrgMessageEvent });
   let allocation = 0;
   run = new AgentOrgRun({ root, tree, messages, rootAgents, teams, callbacks, persistence, publisher,
     taskExecutionIdentity: {

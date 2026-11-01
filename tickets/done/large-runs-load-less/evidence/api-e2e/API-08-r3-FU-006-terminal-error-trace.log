@@ -1,0 +1,34 @@
+# FU-006 (round 3, hub probe run t3, same command, head 2b00c20f0a): the Terminal-panel errors with time and stack; they fall in L-006 (Project Task locate: navigation that selects a worker). The ERR_FAILED is L-011's injected network failure.
+[
+  {
+    "at": 1793547125627,
+    "message": "Failed to load resource: net::ERR_FAILED",
+    "location": {
+      "url": "http://127.0.0.1:51349/graphql",
+      "lineNumber": 0,
+      "columnNumber": 0
+    }
+  },
+  {
+    "at": 1793547131930,
+    "message": "Cannot read properties of undefined (reading 'dimensions')",
+    "stack": "TypeError: Cannot read properties of undefined (reading 'dimensions')\n    at get dimensions (http://127.0.0.1:51355/_nuxt/node_modules/.cache/vite/client/deps/@xterm_xterm.js?v=dcb5aef5:1843:41)\n    at t2.Viewport.syncScrollArea (http://127.0.0.1:51355/_nuxt/node_modules/.cache/vite/client/deps/@xterm_xterm.js?v=dcb5aef5:795:70)\n    at http://127.0.0.1:51355/_nuxt/node_modules/.cache/vite/client/deps/@xterm_xterm.js?v=dcb5aef5:772:1507"
+  },
+  {
+    "at": 1793547131931,
+    "message": "[useTerminalSession] WebSocket error: Event",
+    "location": {
+      "url": "http://127.0.0.1:51355/_nuxt/plugins/uiErrorCapture.client.ts",
+      "lineNumber": 41,
+      "columnNumber": 6
+    }
+  }
+]
+
+# case timeline
+[2026-11-01T15:32:07.984Z] L-005 start: Copy row of a hub that is not the selected run: at most two loads, ends loaded (MP-001, R-004)
+[2026-11-01T15:32:11.501Z] L-005 Pass
+[2026-11-01T15:32:11.501Z] L-006 start: Project Task locate on the large hub selects the worker within the 5 s navigation wait (FU-4)
+[2026-11-01T15:32:12.296Z] L-006 Pass
+[2026-11-01T15:32:12.296Z] L-012 start: A delegation whose new copy reports to the hub at once: the hub's Team-tab list is fetched at most once more and shows the report once (large-runs-load-less SR-007)
+[2026-11-01T15:32:19.821Z] L-012 Pass

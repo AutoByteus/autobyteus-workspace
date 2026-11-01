@@ -58,7 +58,6 @@ export type AgentOrgRunPackageSnapshot = Readonly<{
   tree: AgentOrgRunExecutionTreeSnapshot;
   /** Task executions of `tree` whose Task is DONE or CANCELLED (read at the same point as the tree). */
   closedTaskExecutions: readonly TaskExecutionReference[];
-  messages: AgentOrgCommunicationMessagesFile;
   statuses: readonly CollaborationAgentStatusSnapshot[];
   inputStates: readonly import("../../agent-collaboration/execution/domain/live-agent-input-snapshot.js").LiveAgentInputSnapshot[];
 }>;
@@ -341,7 +340,6 @@ export class AgentOrgRun implements ActiveRootMessageBoundary {
     return this.options.publisher.openSnapshotConnection(() => Object.freeze({
       tree: this.tree,
       closedTaskExecutions: this.taskExecutions.closedTaskExecutions(),
-      messages: this.getCommunicationSnapshot(),
       statuses: this.getAgentStatusSnapshots(),
       inputStates: [...new Map([...this.options.rootAgents.getInputStateSnapshots(),
         ...this.options.teams.list().flatMap(team => team.getInputStateSnapshots())]

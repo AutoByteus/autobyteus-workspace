@@ -66,14 +66,14 @@ graph TD
 
     Handler-->|Segment Created/Updated| Context[Agent Context State]
     Handler-->|File changes / outputs| RunFileChangeStore[Run File Change Store]
-    Handler-->|Team communication messages| TeamCommunicationStore[Team Communication Store]
+    Handler-->|Team communication messages| ParticipantMessages[Collaboration Participant Messages]
     Handler-->|Activity Log| ActivityStore[Activity Store]
     Handler-->|Background task snapshot| BackgroundTaskStore[Background Task Store]
     Handler-->|Token usage| UsageMeterStore[Token Usage Meter Store]
 
     Context-->|Reactivity| UI[Vue Component UI]
     RunFileChangeStore-->|Reactivity| UI
-    TeamCommunicationStore-->|Reactivity| UI
+    ParticipantMessages-->|Reactivity| UI
     ActivityStore-->|Reactivity| UI
     UsageMeterStore-->|Reactivity| UI
 ```
@@ -1868,7 +1868,7 @@ A key architectural pattern is the **Sidecar Store Pattern** for runtime data. I
     - Tracks latest-visible discoverability so desktop and mobile Artifacts surfaces can select/refresh the newest row after the user opens them, without stealing focus from other tabs.
     - Keeps transient `write_file` buffers only until committed previews are fetched from the server-backed run preview route.
 2.  **Root Collaboration Communication**:
-    - Listens to derived `TEAM_COMMUNICATION_MESSAGE` live payloads plus team reopen hydration from `getTeamCommunicationMessages(teamRunId)`.
+    - The owner is `CollaborationParticipantMessages` (`services/collaborationMessages/`, autobyteus-358): one list per root kind, root run and participant, loaded through `collaborationParticipantMessages(rootKind, rootRunId, agentRunId)` when the Team tab or a mobile message screen shows it. Live `communication` / `TEAM_COMMUNICATION_MESSAGE` events are buffered from before the request and merged by message ID; every rebuild of a root's context (reconnect, gap or checkpoint reopen, recovery, stop/inspect) reloads its lists only when a message could have been missed. The lists hold every message through a sequence C, which advances on every applied stream event and on a seen single `checkpoint_required` event. A rebuild in the same live sequence (`live_sequence_id`) whose latest message (`last_message_change_sequence`) is at or before C keeps the lists and their loads in flight, and C becomes its base; a stored view, another live sequence (a stop and resume, or a restart) or a message past C reloads them. So a new delegation, whose copy's output moves the base but writes no message, refetches nothing. The hub and Org inspections and the Team open read (`getTeamRunResumeConfig`) name a running root's live sequence, base and latest message too, so the stream snapshot that follows an open keeps a list loaded in between. No root view carries a message log.
     - Owns the canonical team-level address-first message projection and child `referenceFiles` declared by explicit `send_message_to.reference_files` on `recipient_address` deliveries.
     - Exposes focused-member sent/received message perspectives by comparing the focused `TeamExecutionAddress` with each message's `senderAddress` and `receiverAddress`, grouped by counterpart address label.
     - Keeps reference files under their parent message in the Team tab instead of inserting them into `RunFileChangesStore` or the Artifacts tab.

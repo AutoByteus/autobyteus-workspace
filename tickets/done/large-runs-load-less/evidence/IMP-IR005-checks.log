@@ -1,0 +1,41 @@
+# IMP-IR005: implementation-scoped checks for IR-005 (SR-006; CR-003).
+# Commit 99cd853f79 (branch codex/large-runs-load-less). Date 2026-11-01. macOS, node v22.23.1.
+# Every suite ran under env -i PATH HOME=<fresh mktemp dir> TMPDIR (TESTING.md), one heavy run at a time.
+# Look for: server tsc exit=0; server unit '7671 passed'; integration '480 passed' with only FU-001's 6; web typecheck PASS; web '4943 passed'; guards exit 0.
+
+## IMP-23 server typecheck
+tsc exit=0
+
+## IMP-24 server test:unit (full)
+ Test Files  904 passed | 5 skipped (909)
+      Tests  7671 passed | 9 skipped (7680)
+exit=0
+
+## IMP-25 server test:integration (full)
+      Tests  6 failed | 480 passed | 69 skipped (555)
+ FAIL  tests/integration/agent-execution/agent-run-service.integration.test.ts > AgentRunService integration > prepares, durably starts, and only then publishes a autobyteus run
+ FAIL  tests/integration/agent-execution/agent-run-service.integration.test.ts > AgentRunService integration > prepares, durably starts, and only then publishes a claude_agent_sdk run
+ FAIL  tests/integration/agent-execution/agent-run-service.integration.test.ts > AgentRunService integration > prepares, durably starts, and only then publishes a codex_app_server run
+ FAIL  tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict current V2 package integration > supplies only root-neutral local Team callbacks during materialization
+ FAIL  tests/integration/collaboration-definition-admission/org-owned-team-local-agent.test.ts > Org-owned Team -> Team-local Agent production reads > plans exact configured identities through real providers and normal cached Team service without activation
+ FAIL  tests/integration/collaboration-definition-admission/org-owned-team-local-agent.test.ts > Org-owned Team -> Team-local Agent production reads > supplies fresh mounted enclosing instructions through the actual scope callback and normal Team service
+ Test Files  3 failed | 83 passed | 20 skipped (106)
+exit=1
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 6 ⎯⎯⎯⎯⎯⎯⎯
+# The 6 failures are FU-001's (base efd28d5c4a); 480 passed as before.
+
+## IMP-26 web typecheck: production errors 0; test-file errors 297 = baseline; [typecheck] PASS
+
+## IMP-27 web Nuxt suite (full)
+ Test Files  681 passed (681)
+      Tests  4943 passed | 2 skipped (4945)
+exit=0
+
+## IMP-28 web guards, each alone: guard:web-boundary exit=0, guard:localization-boundary exit=0, audit:localization-literals exit=0
+
+## IMP-29 targeted
+teamRunContextHydrationService.spec: a running Team commits at its live sequence (live-team-1/3) and the following snapshot keeps the list (1 fetch); a stopped Team names none and reloads.
+server: team-run-history-service (managed root's position; null/0 when stopped), resolver passes both through, publisher getLivePosition reads both together.
+
+## IMP-30 codegen: server built (pnpm build exit 0), started on a temporary data folder (127.0.0.1:18358), graphql-codegen run, server stopped, folder removed.
+generated/graphql.ts diff: +baseChangeSequence, +liveSequenceId on TeamRunResumeConfigPayload and the GetTeamRunResumeConfig document only.

@@ -19,7 +19,7 @@ import type { TeamRun } from "./team-run.js";
 import { TeamExecutionIndex } from "../services/team-execution-index.js";
 import type { TeamRunPersistenceCoordinator } from "../services/team-run-persistence-coordinator.js";
 import { TeamRunResolver } from "../services/team-run-resolver.js";
-import type { RootEventListener, RootSnapshotConnection } from "../services/team-run-event-publisher.js";
+import type { RootEventListener, RootLivePosition, RootSnapshotConnection } from "../services/team-run-event-publisher.js";
 import { TeamRunEventPublisher } from "../services/team-run-event-publisher.js";
 import { TeamRunMessageDelivery, type ExactTeamAgentMessageInput } from "../services/team-run-message-delivery.js";
 import { TeamRunCollaborators } from "../services/team-run-collaborators.js";
@@ -65,7 +65,6 @@ export type RootTeamRunPackageSnapshot = Readonly<{
   tree: TeamRunExecutionTreeSnapshot;
   /** Task executions of `tree` whose Task is DONE or CANCELLED (read at the same point as the tree). */
   closedTaskExecutions: readonly TaskExecutionReference[];
-  messages: TeamCommunicationMessagesSnapshot;
   statuses: readonly TeamAgentStatusSnapshot[];
   inputStates: readonly import("../../agent-collaboration/execution/domain/live-agent-input-snapshot.js").LiveAgentInputSnapshot[];
 }>;
@@ -238,6 +237,8 @@ export class RootTeamRun {
   hasOpenExecutionWork(): boolean {
     return this.options.rootRun.hasOpenExecutionWork();
   }
+  /** The Team's live sequence and change sequence, as its next stream snapshot would report them (autobyteus-358). */
+  getLivePosition(): RootLivePosition { return this.options.publisher.getLivePosition(); }
   getExecutionCheckpoint(): TeamRunExecutionCheckpoint {
     return Object.freeze({
       rootTeamRunId: this.teamRunId,
@@ -403,7 +404,6 @@ export class RootTeamRun {
       this.options.persistence.readConsistent(() => ({
         tree: this.tree,
         closedTaskExecutions: this.taskExecutions.closedTaskExecutions(),
-        messages: this.getCommunicationSnapshot(),
         statuses: this.getLeafAgentStatusSnapshots(),
         inputStates: this.options.rootRun.getInputStateSnapshots(),
       })),

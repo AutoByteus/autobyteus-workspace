@@ -257,6 +257,8 @@ const waitHostIdle = (page, timeout = 300000) => waitFor('focused agent idle', (
 /** Not working on a turn: Idle, or Offline for a stopped agent that a send will wake. */
 const waitNotBusy = (page, timeout = 300000) => waitFor('focused agent not busy', () => headerStatusIs(page, ['Idle', 'Offline']), timeout, 1000)
 const agentRootView = async (runId) => (await gql('query($id:String!){agentRunCollaboration(runId:$id)}', { id: runId })).agentRunCollaboration?.root_agent ?? null
+// autobyteus-358: the run's view carries no messages; the host's Team tab loads its messages with this query.
+const hostMessages = async (runId) => (await gql('query($k:String!,$r:String!,$a:String!){collaborationParticipantMessages(rootKind:$k,rootRunId:$r,agentRunId:$a)}', { k: 'agent', r: runId, a: runId }).catch(() => null))?.collaborationParticipantMessages?.messages ?? []
 const agentRunActive = async (runId) => {
   const r = await gql('{ listWorkspaceRunHistory(limitPerAgent: 50) { agentDefinitions { runs { runId isActive status hasCollaboration } } } }')
   return r.listWorkspaceRunHistory.flatMap((w) => w.agentDefinitions).flatMap((a) => a.runs).find((run) => run.runId === runId)?.isActive ?? null
@@ -309,8 +311,7 @@ const sendInComposer = async (page, text) => {
   await page.keyboard.press('Enter')
 }
 const waitMessageFrom = (runId, childRunId, label) => waitFor(label, async () => {
-  const view = await agentRootView(runId)
-  return view?.communication_messages.messages.find((m) => m.senderAgentRunId === childRunId) ?? null
+  return (await hostMessages(runId)).find((m) => m.senderAgentRunId === childRunId) ?? null
 }, 300000, 1500)
 
 // SR-010 helpers ------------------------------------------------------------------------------
@@ -738,10 +739,10 @@ defineCase('S01', 'AC-005 / SCN-004 (collaboration-model-contract): a send_messa
   r.tasksForCopy = (await adHocTasks()).filter((t) => t.resources.includes(copyNode.runId)).map((t) => t.id)
   assert(r.tasksForCopy.length === 1, 'the delegated copy has no ad-hoc Task', r)
   // The copy is reached by its run ID; the address still resolves to nothing for messaging.
-  const before = (await agentRootView(runId))?.communication_messages.messages.length ?? 0
+  const before = (await hostMessages(runId)).length
   await sendInComposer(page, `Use send_message_to with target_agent_run_id ${copyNode.runId} to ask the copy to reply with the single word READY.`)
   await waitFor('host message to the copy by run ID', async () => {
-    const msgs = (await agentRootView(runId))?.communication_messages.messages ?? []
+    const msgs = await hostMessages(runId)
     return msgs.length > before && msgs.slice(before).some((m) => m.senderAgentRunId === runId && m.receiverAgentRunId === copyNode.runId)
   }, 300000, 1500)
   await waitHostIdle(page)
