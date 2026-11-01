@@ -1,22 +1,20 @@
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { parseGitHubSkillRepository } from "../integrations/github/github-repository-source.js";
-import { IntegrationFolderRequirementError } from "../skills/domain/integration-folder-requirement.js";
-import { SkillNameConflictError } from "../skills/domain/skill-name-conflict-error.js";
 import type { GitHubSkillSourceInfo, SkillSourceChangeObserver } from "../skills/domain/skill-source.js";
 import { SkillService } from "../skills/services/skill-service.js";
 import { SkillSourceService } from "../skills/services/skill-source-service.js";
 import { DeliveryDefinitions } from "./delivery-definitions.js";
+import { getIntegrationConnectionService, type IntegrationConnectionService } from "./integration-connection-service.js";
 import {
-  getIntegrationConnectionService,
-  IntegrationConnectionError,
-  type IntegrationConnectionService,
-} from "./integration-connection-service.js";
+  classifyImportLocation,
+  importOutcomeError,
+  IntegrationCatalogError,
+  sourceChangeError,
+  type IntegrationSourceKind,
+} from "./integration-import-outcomes.js";
 import { parseIntegrationSource, warnOnce, type IntegrationManifestEntry } from "./integration-manifest.js";
 import { checkTools, type ToolCheck } from "./tool-presence.js";
-
-export type IntegrationSourceKind = "LOCAL_PATH" | "GITHUB_REPOSITORY";
 
 /** An imported skill source an integration can come from: a local folder or an ACTIVE GitHub repository. */
 export type IntegrationSource = Readonly<{
@@ -48,31 +46,6 @@ export type IntegrationListing = IntegrationEntry & Readonly<{
 export type IntegrationSourceListing = IntegrationSource & Readonly<{
   integrations: readonly Readonly<{ id: string; name: string }>[];
 }>;
-
-export type IntegrationCatalogErrorCode =
-  | "NOT_A_LINK_OR_PATH"
-  | "ALREADY_IMPORTED"
-  | "DIRECTORY_NOT_FOUND"
-  | "SKILL_NAME_CONFLICT"
-  | "NO_INTEGRATIONS_FOUND"
-  | "INTEGRATION_ALREADY_IMPORTED"
-  | "GITHUB_UNREACHABLE"
-  | "IMPORT_FAILED"
-  | "SOURCE_NOT_FOUND"
-  | "UPDATE_FAILED"
-  | "REMOVE_FAILED";
-
-/** A refused or failed catalog operation; `details` carries what the page shows (kind, path, skill, reason…). */
-export class IntegrationCatalogError extends Error {
-  constructor(
-    readonly code: IntegrationCatalogErrorCode,
-    message: string,
-    readonly details: Readonly<Record<string, string>> = {},
-  ) {
-    super(message);
-    this.name = "IntegrationCatalogError";
-  }
-}
 
 type SkillSources = Pick<SkillSourceService,
   "getSkillSources" | "isSourceRegistered" | "addSkillSource" | "removeSkillSource"
@@ -196,7 +169,7 @@ export class IntegrationCatalog implements SkillSourceChangeObserver {
    * returns only the newly imported integrations. Every outcome is classified here (the design's mapping table).
    */
   async import(location: string): Promise<IntegrationListing[]> {
-    const target = this.classify(location);
+    const target = classifyImportLocation(location, this.deps.homeDir ?? os.homedir);
     const before = this.entries();
     const requireIntegrationFolder = { reservedIds: before.map((entry) => entry.id) };
     try {
@@ -209,7 +182,7 @@ export class IntegrationCatalog implements SkillSourceChangeObserver {
         await this.deps.skillSources.addSkillSource(target.path, { requireIntegrationFolder });
       }
     } catch (error) {
-      throw this.importError(error, target.kind, before);
+      throw importOutcomeError(error, target.kind, (id) => before.find((entry) => entry.id === id)?.source.label ?? null);
     }
     const known = new Set(before.map((entry) => entry.id));
     return Promise.all(this.entries().filter((entry) => !known.has(entry.id)).map((entry) => this.toListing(entry)));
@@ -224,7 +197,7 @@ export class IntegrationCatalog implements SkillSourceChangeObserver {
     try {
       await this.deps.skillSources.updateGitHubSkillSource(sourceId);
     } catch (error) {
-      throw this.changeError(error, "UPDATE_FAILED", true);
+      throw sourceChangeError(error, "UPDATE_FAILED", true);
     }
     return this.sourceListings();
   }
@@ -243,7 +216,7 @@ export class IntegrationCatalog implements SkillSourceChangeObserver {
       if (source.kind === "LOCAL_PATH") await this.deps.skillSources.removeSkillSource(source.location);
       else await this.deps.skillSources.removeGitHubSkillSource(sourceId);
     } catch (error) {
-      throw this.changeError(error, "REMOVE_FAILED", false);
+      throw sourceChangeError(error, "REMOVE_FAILED", false);
     }
     return removedConnections;
   }
@@ -288,68 +261,6 @@ export class IntegrationCatalog implements SkillSourceChangeObserver {
     const source = this.sources().find((candidate) => candidate.sourceId === sourceId);
     if (!source) throw new IntegrationCatalogError("SOURCE_NOT_FOUND", "This source is not imported.");
     return source;
-  }
-
-  /** A GitHub repository link, an absolute (or `~`) folder path, or neither (DS-002's first rows). */
-  private classify(location: string):
-    | Readonly<{ kind: "GITHUB_REPOSITORY"; url: string }>
-    | Readonly<{ kind: "LOCAL_PATH"; path: string }> {
-    const text = location.trim();
-    const notALinkOrPath = () => new IntegrationCatalogError("NOT_A_LINK_OR_PATH",
-      "Enter a GitHub repository link or the full path of a folder.");
-    if (/^https?:\/\//i.test(text)) {
-      try {
-        parseGitHubSkillRepository(text);
-      } catch {
-        throw notALinkOrPath();
-      }
-      return { kind: "GITHUB_REPOSITORY", url: text };
-    }
-    if (text === "~" || text.startsWith("~/") || text.startsWith("~\\")) {
-      return { kind: "LOCAL_PATH", path: path.join((this.deps.homeDir ?? os.homedir)(), text.slice(1)) };
-    }
-    if (path.isAbsolute(text)) return { kind: "LOCAL_PATH", path: text };
-    throw notALinkOrPath();
-  }
-
-  private importError(error: unknown, kind: IntegrationSourceKind, before: readonly IntegrationEntry[]): Error {
-    if (error instanceof IntegrationCatalogError) return error;
-    if (error instanceof IntegrationFolderRequirementError) {
-      if (error.code === "NO_INTEGRATION_FOLDER") {
-        return new IntegrationCatalogError("NO_INTEGRATIONS_FOUND", "No integrations in this source.", { kind });
-      }
-      const existing = before.find((entry) => entry.id === error.folderName);
-      return new IntegrationCatalogError("INTEGRATION_ALREADY_IMPORTED", error.message, {
-        id: error.folderName ?? "", existingSource: existing?.source.label ?? "",
-      });
-    }
-    if (error instanceof SkillNameConflictError) {
-      return new IntegrationCatalogError("SKILL_NAME_CONFLICT", error.message, { skill: error.conflicts[0]?.name ?? "" });
-    }
-    const message = error instanceof Error ? error.message : String(error);
-    if (kind === "LOCAL_PATH") {
-      const missing = /^(?:Directory not found|Path is not a directory): (.*)$/.exec(message);
-      if (missing) return new IntegrationCatalogError("DIRECTORY_NOT_FOUND", message, { path: missing[1]! });
-      if (message === "Skill source already exists" || message === "Path is already the default skill directory") {
-        return new IntegrationCatalogError("ALREADY_IMPORTED", "This folder is already imported.", { kind });
-      }
-      return new IntegrationCatalogError("IMPORT_FAILED", message);
-    }
-    if (message.startsWith("No valid skills found") || message.startsWith("Removal incomplete")) {
-      return new IntegrationCatalogError("IMPORT_FAILED", message);
-    }
-    // Everything else on a GitHub import is the repository's metadata or download: GitHub couldn't be reached.
-    return new IntegrationCatalogError("GITHUB_UNREACHABLE", message, { reason: message.replace(/\.$/, "") });
-  }
-
-  private changeError(error: unknown, code: "UPDATE_FAILED" | "REMOVE_FAILED", reachesGitHub: boolean): Error {
-    if (error instanceof IntegrationCatalogError) return error;
-    const message = error instanceof Error ? error.message : String(error);
-    if (error instanceof IntegrationConnectionError || error instanceof SkillNameConflictError || !reachesGitHub
-      || message.startsWith("Update contains no valid skills") || message.startsWith("Removal incomplete")) {
-      return new IntegrationCatalogError(code, message, { reason: message.replace(/\.$/, "") });
-    }
-    return new IntegrationCatalogError("GITHUB_UNREACHABLE", message, { reason: message.replace(/\.$/, "") });
   }
 }
 

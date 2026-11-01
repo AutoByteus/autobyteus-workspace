@@ -11,7 +11,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { AgentDefinition } from "../../../src/agent-definition/domain/models.js";
 import { DeliveryDefinitions } from "../../../src/credential-proxy/delivery-definitions.js";
 import { IntegrationAccessRule } from "../../../src/credential-proxy/integration-access-rule.js";
-import { IntegrationCatalog, type IntegrationCatalogError } from "../../../src/credential-proxy/integration-catalog.js";
+import { IntegrationCatalog } from "../../../src/credential-proxy/integration-catalog.js";
+import type { IntegrationCatalogError } from "../../../src/credential-proxy/integration-import-outcomes.js";
 import { fixture, writeSkill } from "../../unit/skills/github/fixtures.js";
 
 const writeIntegration = (root: string, id: string, skillName = `${id}-integration`, name = id.toUpperCase()) => {

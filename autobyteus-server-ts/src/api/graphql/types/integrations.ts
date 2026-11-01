@@ -3,10 +3,10 @@ import { Arg, Field, Int, Mutation, ObjectType, Query, registerEnumType, Resolve
 import { SecretValue } from "autobyteus-ts/secrets/secret-value.js";
 import {
   getIntegrationCatalog,
-  IntegrationCatalogError,
   type IntegrationListing,
   type IntegrationSourceListing,
 } from "../../../credential-proxy/integration-catalog.js";
+import { IntegrationCatalogError } from "../../../credential-proxy/integration-import-outcomes.js";
 import {
   getIntegrationConnectionService,
   IntegrationConnectionError,
