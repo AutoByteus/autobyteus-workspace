@@ -8,5 +8,6 @@ export type {
   NodeType,
   RemoveNodeRegistryChange,
   RenameNodeRegistryChange,
+  SetAutoUpdateNodeRegistryChange,
   WindowNodeContext,
 } from '../types/node';

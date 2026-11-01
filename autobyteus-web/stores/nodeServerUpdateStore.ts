@@ -2,25 +2,9 @@ import { defineStore } from 'pinia'
 import { computed, reactive } from 'vue'
 import { useAppUpdateStore } from '~/stores/appUpdateStore'
 import { normalizeNodeBaseUrl } from '~/utils/nodeEndpoints'
+import { isNodeServerStatus, NODE_UPDATE_REST_PATH, type NodeServerStatus } from '~/shared/nodeUpdateContract'
 
-/** The last in-place update of a node (C1 `update`, frozen; fields this window does not know are ignored). */
-export interface NodeUpdateState {
-  state: 'idle' | 'running' | 'succeeded' | 'failed' | 'refused'
-  targetVersion: string | null
-  step: string | null
-  code: string | null
-  message: string | null
-}
-
-/** A node's answer to `GET /rest/node-update` (C1, frozen across versions). */
-export interface NodeServerStatus {
-  inPlaceUpdate: 'available' | 'unavailable' | 'error'
-  version: string | null
-  target?: { version: string; relation: 'newer' | 'same' | 'older' }
-  update?: NodeUpdateState
-  message?: string
-  updateBlocker?: { code: string; message: string }
-}
+export type { NodeServerStatus, NodeUpdateState } from '~/shared/nodeUpdateContract'
 
 /**
  * What this window knows about one remote node's server package and update. `connection`: `ok` after an answer;
@@ -42,11 +26,6 @@ export const NODE_UPDATE_POLL_MS = 2_000
 export const NODE_UPDATE_SLOW_POLL_MS = 10_000
 export const NODE_UPDATE_RESTART_GRACE_MS = 5 * 60_000
 const NODE_UPDATE_REQUEST_TIMEOUT_MS = 10_000
-
-const isStatus = (value: unknown): value is NodeServerStatus => {
-  const inPlaceUpdate = (value as { inPlaceUpdate?: unknown } | null)?.inPlaceUpdate
-  return inPlaceUpdate === 'available' || inPlaceUpdate === 'unavailable' || inPlaceUpdate === 'error'
-}
 
 /**
  * The server version and in-place update of the remote nodes on the Nodes page (design DS-001, DS-005). It asks a
@@ -74,7 +53,7 @@ export const useNodeServerUpdateStore = defineStore('nodeServerUpdate', () => {
     timers[key] = setTimeout(() => { void refresh(key) }, delayMs)
   }
 
-  const urlOf = (entry: NodeServerUpdateEntry): string => `${normalizeNodeBaseUrl(entry.address)}/rest/node-update`
+  const urlOf = (entry: NodeServerUpdateEntry): string => `${normalizeNodeBaseUrl(entry.address)}${NODE_UPDATE_REST_PATH}`
 
   /** An update of this node is under way as far as this window knows. */
   const inUpdate = (key: string, entry: NodeServerUpdateEntry): boolean =>
@@ -96,7 +75,7 @@ export const useNodeServerUpdateStore = defineStore('nodeServerUpdate', () => {
     }
     const current = entries[key]
     if (!current || current.address !== address) return
-    if (isStatus(answer)) {
+    if (isNodeServerStatus(answer)) {
       const wasInUpdate = inUpdate(key, current)
       delete failingSince[key]
       accepted.delete(key)

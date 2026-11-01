@@ -90,6 +90,11 @@ contextBridge.exposeInMainWorld('electronAPI', {
   onAppUpdateState: (callback: (updateState: any) => void) => {
     return registerIpcListener('app-update-state', callback)
   },
+  getNodeAutoUpdateState: () => ipcRenderer.invoke('node-auto-update:get-state'),
+  markNodeAutoUpdateRead: (entryId: string) => ipcRenderer.invoke('node-auto-update:mark-read', entryId),
+  onNodeAutoUpdateChanged: (callback: (entries: any) => void) => {
+    return registerIpcListener('node-auto-update:changed', callback)
+  },
 
   // Method for directly checking server health
   checkServerHealth: () => ipcRenderer.invoke('check-server-health'),

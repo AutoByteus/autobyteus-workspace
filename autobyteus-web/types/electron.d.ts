@@ -5,6 +5,7 @@ import type {
   AppUpdateChannelChangeResult,
   AppUpdateState,
 } from '../shared/appUpdateTypes';
+import type { NodeAutoUpdateEntries } from '../shared/nodeAutoUpdateTypes';
 import type { ServerHealthResult, ServerStatusSnapshot } from './serverStatus';
 import type {
   NodeRegistryChange,
@@ -73,6 +74,9 @@ declare global {
       clearAppUpdateNotification: () => Promise<AppUpdateState>;
       setAppUpdateAutoCheck: (settings: AppUpdateAutoCheck) => Promise<AppUpdateState>;
       onAppUpdateState: (callback: (updateState: AppUpdateState) => void) => Cleanup;
+      getNodeAutoUpdateState: () => Promise<NodeAutoUpdateEntries>;
+      markNodeAutoUpdateRead: (entryId: string) => Promise<NodeAutoUpdateEntries>;
+      onNodeAutoUpdateChanged: (callback: (entries: NodeAutoUpdateEntries) => void) => Cleanup;
 
       getLogFilePath: () => Promise<string>;
       openLogFile: (filePath: string) => Promise<{ success: boolean; error?: string }>;

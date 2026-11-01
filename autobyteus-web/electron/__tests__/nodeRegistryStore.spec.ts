@@ -2,7 +2,7 @@ import * as fsSync from 'fs'
 import * as os from 'os'
 import * as path from 'path'
 import { describe, expect, it, vi } from 'vitest'
-import { ensureEmbeddedNode, identifyNodeEntry, loadNodeRegistrySnapshot, saveNodeRegistrySnapshot } from '../nodeRegistryStore'
+import { ensureEmbeddedNode, identifyNodeEntry, loadNodeRegistrySnapshot, saveNodeRegistrySnapshot, setNodeAutoUpdate } from '../nodeRegistryStore'
 import { EMBEDDED_ENTRY_ID, type NodeRegistrySnapshot } from '../nodeRegistryTypes'
 import { PRODUCTION_EMBEDDED_SERVER_BASE_URL } from '../../shared/embeddedServerClientEndpoint'
 
@@ -146,6 +146,37 @@ describe('nodeRegistryStore', () => {
     expect(identifyNodeEntry(replaced, { type: 'identify', entryId: 'remote-1', nodeId: SRV_B }, 'later')).toBe(replaced)
     expect(() => identifyNodeEntry(nodes, { type: 'identify', entryId: 'missing', nodeId: SRV_A }, 'now')).toThrow('Node does not exist')
     expect(() => identifyNodeEntry(nodes, { type: 'identify', entryId: 'remote-1', nodeId: 'srv_x' }, 'now')).toThrow('Invalid node ID')
+  })
+
+  it('keeps autoUpdate: true on remote entries only; anything else reads as off (autobyteus-356)', () => {
+    const userDataPath = fsSync.mkdtempSync(path.join(os.tmpdir(), 'autobyteus-node-registry-'))
+    const remote = (id: string, autoUpdate: unknown) => ({ id, name: id, baseUrl: `http://${id}:8000`, nodeType: 'remote', autoUpdate, createdAt: '2026-11-01T09:00:00.000Z', updatedAt: '2026-11-01T09:00:00.000Z' })
+    fsSync.writeFileSync(path.join(userDataPath, 'node-registry.json'), JSON.stringify({ version: 1, nodes: [
+      { ...remote(EMBEDDED_ENTRY_ID, true), nodeType: 'embedded', baseUrl: PRODUCTION_EMBEDDED_SERVER_BASE_URL },
+      remote('a', true), remote('b', 'yes'), remote('c', false), remote('d', undefined),
+    ] }), 'utf8')
+
+    const loaded = loadNodeRegistrySnapshot(userDataPath, PRODUCTION_EMBEDDED_SERVER_BASE_URL)
+
+    expect(loaded.nodes.map((node) => [node.id, node.autoUpdate])).toEqual([
+      [EMBEDDED_ENTRY_ID, undefined], ['a', true], ['b', undefined], ['c', undefined], ['d', undefined]])
+    expect(loaded.nodes[0]).not.toHaveProperty('autoUpdate')
+    expect(loaded.nodes[3]).not.toHaveProperty('autoUpdate')
+    fsSync.rmSync(userDataPath, { recursive: true, force: true })
+  })
+
+  it('set-auto-update turns a remote entry on or off, is the same array when unchanged, and refuses the embedded entry', () => {
+    const nodes = loadSnapshotWithLegacyBrowserPairing().nodes.map(({ browserPairing: _ignored, ...node }: any) => node)
+    const on = setNodeAutoUpdate(nodes, { type: 'set-auto-update', entryId: 'remote-1', enabled: true }, '2026-11-01T08:00:00.000Z')
+    expect(on[1]).toMatchObject({ id: 'remote-1', autoUpdate: true, updatedAt: '2026-11-01T08:00:00.000Z' })
+    expect(on[0]).toBe(nodes[0])
+    expect(setNodeAutoUpdate(on, { type: 'set-auto-update', entryId: 'remote-1', enabled: true }, 'later')).toBe(on)
+    const off = setNodeAutoUpdate(on, { type: 'set-auto-update', entryId: 'remote-1', enabled: false }, 'later')
+    expect(off[1]).not.toHaveProperty('autoUpdate')
+    expect(() => setNodeAutoUpdate(nodes, { type: 'set-auto-update', entryId: EMBEDDED_ENTRY_ID, enabled: true }, 'now'))
+      .toThrow('Only remote nodes can update automatically')
+    expect(() => setNodeAutoUpdate(nodes, { type: 'set-auto-update', entryId: 'remote-1', enabled: 'yes' as never }, 'now'))
+      .toThrow('enabled must be a boolean')
   })
 })
 

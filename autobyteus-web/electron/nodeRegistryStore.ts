@@ -4,6 +4,7 @@ import type {
   IdentifyNodeRegistryChange,
   NodeEntry,
   NodeRegistrySnapshot,
+  SetAutoUpdateNodeRegistryChange,
 } from './nodeRegistryTypes'
 import { EMBEDDED_ENTRY_ID, isNodeId } from './nodeRegistryTypes'
 import { logger } from './logger'
@@ -106,6 +107,8 @@ function normalizeLoadedNode(rawNode: unknown): NodeEntry | null {
     nodeType,
     // Absent or not a valid ID: not learned yet (one-nodes-tab, design § Persisted Data).
     ...(isNodeId(node.nodeId) ? { nodeId: node.nodeId } : {}),
+    // "Update automatically" (autobyteus-356): only `true` on a remote entry; anything else reads as off.
+    ...(nodeType === 'remote' && node.autoUpdate === true ? { autoUpdate: true as const } : {}),
     createdAt,
     updatedAt,
   }
@@ -186,4 +189,25 @@ export function identifyNodeEntry(
   if (!isNodeId(change.nodeId)) throw new Error(`Invalid node ID: ${change.nodeId}`)
   if (nodes[index]!.nodeId === change.nodeId) return nodes
   return nodes.map((node, at) => at === index ? { ...node, nodeId: change.nodeId, updatedAt: now } : node)
+}
+
+/**
+ * The `set-auto-update` change (autobyteus-356): a remote entry's "Update automatically" on (`autoUpdate: true`) or
+ * off (the field removed); the same array when it is already so. Refused for the embedded entry.
+ */
+export function setNodeAutoUpdate(
+  nodes: NodeEntry[],
+  change: SetAutoUpdateNodeRegistryChange,
+  now: string,
+): NodeEntry[] {
+  const index = nodes.findIndex((node) => node.id === change.entryId)
+  if (index === -1) throw new Error(`Node does not exist: ${change.entryId}`)
+  if (nodes[index]!.nodeType !== 'remote') throw new Error('Only remote nodes can update automatically')
+  if (typeof change.enabled !== 'boolean') throw new Error('enabled must be a boolean')
+  if ((nodes[index]!.autoUpdate === true) === change.enabled) return nodes
+  return nodes.map((node, at) => {
+    if (at !== index) return node
+    const { autoUpdate: _previous, ...rest } = node
+    return change.enabled ? { ...rest, autoUpdate: true as const, updatedAt: now } : { ...rest, updatedAt: now }
+  })
 }

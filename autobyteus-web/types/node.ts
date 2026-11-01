@@ -23,6 +23,11 @@ export interface NodeEntry {
   baseUrl: string;
   nodeType: NodeType;
   nodeId?: string;
+  /**
+   * "Update automatically" for a remote node (autobyteus-356): the desktop updates it to the desktop's version. Absent
+   * means off; never set on the embedded entry.
+   */
+  autoUpdate?: true;
   createdAt: string;
   updatedAt: string;
 }
@@ -83,8 +88,19 @@ export interface IdentifyNodeRegistryChange {
   nodeId: string;
 }
 
+/**
+ * Turns a remote entry's "Update automatically" on or off (autobyteus-356); `false` removes the field. Refused for the
+ * embedded entry.
+ */
+export interface SetAutoUpdateNodeRegistryChange {
+  type: 'set-auto-update';
+  entryId: string;
+  enabled: boolean;
+}
+
 export type NodeRegistryChange =
   | AddNodeRegistryChange
   | RemoveNodeRegistryChange
   | RenameNodeRegistryChange
-  | IdentifyNodeRegistryChange;
+  | IdentifyNodeRegistryChange
+  | SetAutoUpdateNodeRegistryChange;
