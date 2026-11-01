@@ -58,4 +58,3 @@ export class ProjectTaskContextDrafts {
 let singleton: ProjectTaskContextDrafts | null = null;
 /** The process instance (over the process Projects and Task-context stores). */
 export const getProjectTaskContextDrafts = (): ProjectTaskContextDrafts => singleton ??= new ProjectTaskContextDrafts();
-export const resetProjectTaskContextDraftsForTests = (): void => { singleton = null; };
