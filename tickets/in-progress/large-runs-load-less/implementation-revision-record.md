@@ -8,7 +8,8 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture Reviewer / `design-review-report.md` / ARCH-REV-002 (Pass) | N/A | `Initial Baseline` | `SR-002`, `ARCH-REV-002` | Steps 1–6, 8 done; step 7 misses QR-004 → `Design Impact` to the Solution Designer |
 | IR-002 | Architecture Reviewer / `design-review-report.md` / ARCH-REV-003 (Pass), after IR-001's Design Impact | IR-001 QR-004 | `Design Impact Rework` | `SR-003`, `ARCH-REV-003` | DS-007 done; QR-004 met; ready for code review |
-| IR-003 | Code Reviewer / `code-review-report.md` / CRR-001 (Fail 9.3/10) | CR-001 | `Local Fix` | `CRR-001` | Mobile loading / unavailable states; ready for targeted code review |
+| IR-003 | Code Reviewer / `code-review-report.md` / CRR-001 (Fail 9.3/10) | CR-001 | `Local Fix` | `CRR-001` | Mobile loading / unavailable states; CRR-002 Pass |
+| IR-004 | Architecture Reviewer / `design-review-report.md` / ARCH-REV-005 (Pass), after CRR-003's Design Impact | CR-002 (CRR-003, API-08); AR-005 | `Design Impact Rework` | `SR-004`, `SR-005`, `ARCH-REV-005`, `CRR-003` | Lists reload only when a message could have been missed; `live_sequence_id`; ready for targeted code review |
 
 ## Revision Entries
 
@@ -78,3 +79,34 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Next recipient or routing: `get_handoff_rules` → code review (targeted).
 - Remaining limitations or risks: unchanged from IR-002; FU-003 (the code reviewer's) recorded.
 
+### IR-004 — SR-004/SR-005: reload the Team tab's lists only when a message could have been missed
+
+- Triggering role, report path, and round: `/software_engineering_team/architecture_reviewer`, `design-review-report.md`, ARCH-REV-005 (Pass) on SR-005, after CRR-003 (`code-review-report.md`, failure-origin review of API-08) returned CR-002 as a Design Impact.
+- Triggering finding IDs: CR-002; AR-005 (ARCH-REV-004, resolved by SR-005).
+- Classification: `Design Impact Rework`.
+- Prior authoritative result: IR-003 at `438ea7fb65` (CRR-002 Pass); API-08 measured two participant fetches per running-hub selection and one per new child or Save.
+- Current authoritative result: `935c5c9fa9` (server, contracts) and `da91ae689a` (web), plus the IR-004 records commit.
+- Related revision IDs: `SR-004`, `SR-005`; `ARCH-REV-004`, `ARCH-REV-005`; `CRR-003`; API/E2E round 1 (API-08); delivery `N/A`.
+- Approved behaviour or requirement IDs affected: REQ-002, AC-002 (no message lost or doubled across rebuilds); DESIGN.md rule 3 (no avoidable repeated full-history transfer); DS-002.
+- Implementation delta:
+  - Server: `RootEventPublisher.liveSequenceId` (a random ID per instance) is given with every snapshot connection. The Agent-root, Org and Team views and snapshots carry it as `live_sequence_id`; stored inspections carry `null`. The Team snapshot field is a required string (D-IMP-7). Contracts and `dist/` rebuilt; protocol doc updated.
+  - Web `CollaborationParticipantMessages`:
+    - keeps, per root, the live sequence its lists follow and the change sequence C they are consistent through;
+    - `advance(kind, id, liveSequenceId, sequence)` moves C within the same live sequence only;
+    - `reloadRoot(kind, id, { liveSequenceId, baseChangeSequence })` keeps the lists, with their loads in flight, for the same non-null live sequence and B ≤ C. Otherwise it reloads and takes the new position (`null` forgets it).
+    - `releaseRoot` forgets the position.
+  - C advances in the hub and Org streaming services on applied events and on seen single `checkpoint_required` events, and in the Team stream after each applied message (D-IMP-9).
+  - The rebuild is passed from the hub `publish`, the Org context commit, the Team snapshot effect (`reload_collaboration_messages` carries it) and the Team hydration commit. Builds read without a stream reload; a stream recovery does not reload a second time (D-IMP-8).
+  - Docs: the reload rule in `agent_execution_architecture.md`, `settings.md` and `agent_artifacts.md`.
+- Tests:
+  - Owner spec (10): inspect→attach at an equal sequence keeps the list and its load in flight; a checkpoint reconnect with B = the checkpoint keeps it, and a message in the window reloads it; a gap (B > C) reloads during and after a load; a stored rebuild reloads; stop → resume with a message before the attach reloads and shows it; a new publisher with B ≤ the old C reloads, and the old stream's events do not move C; release forgets the position.
+  - Hub store and stream (new `agentRunCollaborationParticipantReloads.spec.ts`, 3): the API-08 counts. Running-hub selection gives 1 fetch; a new child with no message gives 0 more, and with a message 1, which is shown; a dropped connection to a new publisher reloads and shows the message.
+  - Team stream: a snapshot in the same live sequence the lists saw keeps them; another live sequence reloads them.
+  - Org stream: C advances to a batch's last sequence and to a single checkpoint event's sequence.
+  - Team commit: a stored build reloads; a recovery commit keeps.
+  - Server: publisher identity per instance (`root-event-publisher-live-sequence.test.ts`); the live inspection names a sequence, the stored one `null`; contract tests (required field, `null` allowed for Agent/Org views).
+  - Mutation checks: making `reloadRoot` always reload fails 5 tests; disabling `advance` fails 2; ignoring the live sequence fails 2.
+- Fixtures: `live_sequence_id` added to every view and snapshot fixture (server, contracts, web specs, two web e2e page fixtures and one probe). FU-005 records that probe's other base staleness.
+- Local validation and result: `evidence/IMP-IR004-checks.log`.
+- Next recipient or routing: `get_handoff_rules` → code review (targeted, Large/High), then the API-08 recheck.
+- Remaining limitations or risks: a running Team's open reads no live sequence (the GraphQL open), so a list loaded before its stream snapshot is fetched once more (as before; outside SR-005). FU-001 to FU-005.
