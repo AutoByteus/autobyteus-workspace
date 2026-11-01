@@ -161,8 +161,9 @@ describe('exact Org task inspection independent of history drawer initialization
   })
 })
 
-async function hydrateAgentOrgExecutionContext(input: Omit<Parameters<typeof stageAgentOrgExecutionContext>[0], 'source'>) {
-  const staged = await stageAgentOrgExecutionContext({ ...input, source: 'stream' })
+async function hydrateAgentOrgExecutionContext(input: Omit<Parameters<typeof stageAgentOrgExecutionContext>[0], 'source' | 'focus'>) {
+  // The route selects '/director' after this context is published; nothing is staged (autobyteus-358).
+  const staged = await stageAgentOrgExecutionContext({ ...input, focus: null, source: 'stream' })
   staged.commit()
   return staged.context
 }

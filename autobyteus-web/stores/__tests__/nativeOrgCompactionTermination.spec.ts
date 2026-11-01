@@ -78,7 +78,8 @@ it('Org success reconciles every configured/task Agent/Team member before real e
     const current=store.contextFor('org-run')!.getAgentContext(e.agentRunId)!
     expect(current).toBe(e.context);expect(current.state).not.toBe(beforeStates[i]);expect(current.state.currentStatus).toBe('offline')
     expect(activities.getCompactionActivities(e.agentRunId)).toEqual([expect.objectContaining({phase:'stopped',message:'Stopped',rawTraceCount:9,compactionModelIdentifier:'native-model'})])
-    expect(activities.getActivities(e.agentRunId)).toHaveLength(3)
+    // Only the shown member's stored activities are staged (autobyteus-358); the others load when opened.
+    expect(activities.getActivities(e.agentRunId)).toHaveLength(e.agentRunId === 'agent-director' ? 3 : 1)
   }
   expect(socket.sent).toHaveLength(0);expect(io.mutate).toHaveBeenCalledTimes(1)
   expect(store.contextFor('org-run')!.phase).toBe('historical')

@@ -32,9 +32,10 @@ vi.mock('~/services/agentCollaboration/agentRunCollaborationHydration', () => ({
   readAgentRunCollaboration: vi.fn(async () => ({})),
   buildAgentRunCollaborationContext: vi.fn(async () => build()),
 }))
-const childHydration = vi.hoisted(() => ({ hydrate: vi.fn(async (_input: { agentRunId: string }) => 'hydrated') }))
+// The member loader asks for each selected child's load target (autobyteus-358); the test records the requests only.
+const childHydration = vi.hoisted(() => ({ hydrate: vi.fn((_input: { agentRunId: string }) => null) }))
 vi.mock('~/services/agentCollaboration/agentRunCollaborationChildHydration', () => ({
-  hydrateAgentRunCollaborationChild: childHydration.hydrate,
+  hubChildLoadTarget: childHydration.hydrate,
 }))
 vi.mock('~/services/collaborators/collaboratorCandidatesService', () => ({ collaboratorCandidatesService: { invalidate: vi.fn() } }))
 vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => ({ applyRunNavigationEffect: vi.fn() }) }))

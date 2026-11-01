@@ -3,6 +3,7 @@ import { overlayPendingUserMessages } from '~/services/agentStreaming/handlers/u
 import { reactive, shallowReactive } from 'vue'
 import { memberDisplayName, memberTitleName } from '~/utils/collaboration/memberDisplayName'
 import type {
+  AgentOrgCommunicationMessageDto,
   AgentRunCollaborationEventDto,
   AgentRunCollaborationViewDto,
 } from '@autobyteus/collaboration-stream-contracts'
@@ -11,7 +12,6 @@ import { AgentStatus } from '~/types/agent/AgentStatus'
 import type { AgentTeamAddress } from '~/types/agent/AgentTeamAddress'
 import type {
   CollaborationMessageMemberIdentity,
-  CollaborationMessagePerspectiveRow,
   CollaborationMessagesContextView,
 } from '~/types/workspace/collaborationMessagesContextView'
 import type { RunHistoryTransientExecutionRow } from '~/stores/runHistoryTypes'
@@ -20,7 +20,8 @@ import { dispatchAgentStreamMessage } from '~/services/agentStreaming/agentStrea
 import { advanceSequencedStream } from '~/services/agentStreaming/sequencedStreamRange'
 import type { AgentPresentationMessage } from '@autobyteus/agent-presentation-contracts'
 import { applyOfflineOrTerminalCleanup } from '~/services/runStatus/agentRuntimeStatusState'
-import { projectAgentOrgReference } from '~/services/agentOrgExecution/agentOrgReferenceProjection'
+import { useCollaborationParticipantMessagesStore } from '~/services/collaborationMessages/collaborationParticipantMessages'
+import { participantMessagesView } from '~/services/collaborationMessages/participantMessageRows'
 import { AgentRunCollaborationIndex, type AgentRootChildAgent, type AgentRootRemoteAgent } from './agentRunCollaborationIndex'
 import {
   agentRunKey,
@@ -37,7 +38,7 @@ export type AgentRunCollaborationPhase = 'live' | 'historical' | 'reopen_require
 export type AgentRunCollaborationEventApplication = 'applied' | 'checkpoint_required'
 export type AgentRunCollaborationContextEntry = Readonly<{ agentRunId: string; memberAddress: AgentTeamAddress; context: AgentContext }>
 
-type Message = AgentRunCollaborationViewDto['communication_messages']['messages'][number]
+type Message = AgentOrgCommunicationMessageDto
 
 export type AgentRunTaskTreeRow = Readonly<{
   row: RunHistoryTransientExecutionRow
@@ -60,8 +61,6 @@ export class AgentRunCollaborationContext {
   phase: AgentRunCollaborationPhase
   error: string | null = null
   private readonly contexts = shallowReactive(new Map<string, AgentContext>())
-  /** Children whose stored conversation, activities and artifacts were loaded into this context. */
-  private readonly hydratedChildren = new Set<string>()
   private nextChangeSequence: number
 
   constructor(input: Readonly<{
@@ -70,8 +69,7 @@ export class AgentRunCollaborationContext {
     entries: readonly AgentRunCollaborationContextEntry[]
   }>) {
     this.hostRunId = input.hostRunId
-    if (input.view.execution_tree.host.agentRunId !== input.hostRunId
-      || input.view.communication_messages.hostRunId !== input.hostRunId) {
+    if (input.view.execution_tree.host.agentRunId !== input.hostRunId) {
       throw new Error(`Agent collaboration view correlation mismatch for '${input.hostRunId}'.`)
     }
     this.view = structuredClone(input.view)
@@ -86,7 +84,6 @@ export class AgentRunCollaborationContext {
       this.contexts.set(entry.agentRunId, reactive(entry.context))
     }
     if (this.contexts.size !== this.index.agents.size + this.index.remoteAgents.size) throw new Error('Agent collaboration context scope is incomplete.')
-    this.assertMessagesCorrelated(this.view.communication_messages.messages)
     const statuses = new Set<string>()
     const inputs = new Set<string>()
     for (const status of input.view.agent_statuses) {
@@ -129,15 +126,6 @@ export class AgentRunCollaborationContext {
   /** autobyteus-278: an agent of a run this root delegated to another node. */
   getRemoteChild(agentRunId: string): AgentRootRemoteAgent | null {
     return this.index.remoteAgents.get(agentRunId) ?? null
-  }
-
-  isChildHydrated(agentRunId: string): boolean {
-    return this.hydratedChildren.has(agentRunId)
-  }
-
-  markChildHydrated(agentRunId: string): void {
-    if (!this.contexts.has(agentRunId)) throw new Error(`AgentRun '${agentRunId}' is not a child of this run.`)
-    this.hydratedChildren.add(agentRunId)
   }
 
   /** Applies one root event, or a content batch covering `[changeSequence, changeSequenceThrough]`. */
@@ -188,11 +176,9 @@ export class AgentRunCollaborationContext {
       }
       return 'checkpoint_required'
     } else {
+      // The Team tab's lists own the messages (autobyteus-358); the view holds none.
       this.assertMessagesCorrelated([event.message])
-      this.view = { ...this.view, communication_messages: {
-        ...this.view.communication_messages,
-        messages: [...this.view.communication_messages.messages, event.message],
-      } }
+      useCollaborationParticipantMessagesStore().append('agent', this.hostRunId, event.message)
     }
     this.nextChangeSequence = following
     return 'applied'
@@ -239,10 +225,10 @@ export class AgentRunCollaborationContext {
 
   /**
    * Preflights every retained identity; the returned step hands each retained child's AgentContext
-   * object to this context. A child hydrated in `previous` keeps its displayed conversation, so it
-   * does not flash empty, but is not hydrated here: events may have been missed in between.
+   * object to this context. A child loaded in `previous` (`wasLoaded`) keeps its displayed conversation,
+   * so it does not flash empty, but is not loaded here: events may have been missed in between.
    */
-  prepareLocalContextAdoption(previous: AgentRunCollaborationContext): () => void {
+  prepareLocalContextAdoption(previous: AgentRunCollaborationContext, wasLoaded: (agentRunId: string) => boolean): () => void {
     if (previous.hostRunId !== this.hostRunId) throw new Error('Agent collaboration retained host mismatch.')
     const pairs: { agentRunId: string; old: AgentContext; next: AgentContext; carried: boolean }[] = []
     for (const [agentRunId, next] of this.contexts) {
@@ -257,7 +243,7 @@ export class AgentRunCollaborationContext {
       if (before && after && before.runInstanceId === after.runInstanceId && after.revision < before.revision) {
         throw new Error('Agent collaboration input snapshot revision is stale.')
       }
-      pairs.push({ agentRunId, old, next, carried: previous.isChildHydrated(agentRunId) })
+      pairs.push({ agentRunId, old, next, carried: wasLoaded(agentRunId) })
     }
     // Synchronous assignment only: all validation precedes it.
     return () => {
@@ -362,7 +348,11 @@ export class AgentRunCollaborationContext {
       memberIdentityByAgentRunId: () => Object.freeze(Object.fromEntries(
         [this.hostRunId, ...this.index.agents.keys()].map((id) => [id, this.identityOf(id)]),
       )),
-      listMessages: () => this.perspective(focusedAgentRunId),
+      ...participantMessagesView({
+        key: { rootKind: 'agent', rootRunId: this.hostRunId, agentRunId: focusedAgentRunId },
+        isRemote: this.index.remoteAgents.has(focusedAgentRunId),
+        identityOf: (agentRunId) => this.index.addressOf(agentRunId) ? this.identityOf(agentRunId) : null,
+      }),
       referenceContentPath: (messageId: string, referenceId: string) =>
         `agent-collaborations/${encodeURIComponent(this.hostRunId)}/communication/messages/${encodeURIComponent(messageId)}/references/${encodeURIComponent(referenceId)}/content`,
     })
@@ -377,20 +367,6 @@ export class AgentRunCollaborationContext {
     if (!child) return Object.freeze({ ...common, kind: 'configured' })
     return Object.freeze({ ...common, kind: 'delegated', hostRunId: child.teamRunId ?? this.hostRunId,
       executionRunId: child.teamRunId ?? child.agentRunId })
-  }
-
-  private perspective(focusedAgentRunId: string): readonly CollaborationMessagePerspectiveRow[] {
-    return this.view.communication_messages.messages.flatMap((message): CollaborationMessagePerspectiveRow[] => {
-      const sent = message.senderAgentRunId === focusedAgentRunId
-      if (!sent && message.receiverAgentRunId !== focusedAgentRunId) return []
-      const counterpartAgentRunId = sent ? message.receiverAgentRunId : message.senderAgentRunId
-      return [Object.freeze({
-        messageId: message.messageId, senderAgentRunId: message.senderAgentRunId, receiverAgentRunId: message.receiverAgentRunId,
-        content: message.content, messageType: message.messageType, createdAt: message.createdAt,
-        referenceFiles: Object.freeze(message.referenceFiles.map((filePath) => projectAgentOrgReference(message.messageId, filePath, message.createdAt))),
-        direction: sent ? 'sent' : 'received', counterpartAgentRunId, counterpart: this.identityOf(counterpartAgentRunId),
-      })]
-    }).sort((left, right) => right.createdAt.localeCompare(left.createdAt) || left.messageId.localeCompare(right.messageId))
   }
 
   private assertMessagesCorrelated(messages: readonly Message[]): void {

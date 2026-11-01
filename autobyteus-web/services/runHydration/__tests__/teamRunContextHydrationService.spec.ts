@@ -13,18 +13,9 @@ import { isTeamMemberProjectionAuthoritative } from '../teamMemberProjectionHydr
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useRemoteRunsStore } from '~/stores/remoteRunsStore';
 
-const {
-  queryMock,
-  fetchTeamCommunicationMock,
-} = vi.hoisted(() => ({
-  queryMock: vi.fn(),
-  fetchTeamCommunicationMock: vi.fn(),
-}));
+const { queryMock } = vi.hoisted(() => ({ queryMock: vi.fn() }));
 
 vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => ({ query: queryMock }) }));
-vi.mock('../teamCommunicationHydrationService', () => ({
-  fetchTeamCommunicationForTeam: fetchTeamCommunicationMock,
-}));
 const tree = buildTestTeamContext({
   teamRunId: 'team-live-recovery',
   teamDefinitionId: 'team-def-1',
@@ -45,7 +36,6 @@ describe('hydrateLiveTeamRunContext current V2 aggregate', () => {
   beforeEach(() => {
     setActivePinia(createPinia());
     vi.clearAllMocks();
-    fetchTeamCommunicationMock.mockResolvedValue([]);
   });
 
   it('stages one exact AgentRun projection without mutating the Activity store', async () => {
@@ -145,7 +135,7 @@ describe('hydrateLiveTeamRunContext current V2 aggregate', () => {
     })).rejects.toThrow("Team member projection payload missing for 'run-a'.");
   });
 
-  it('keeps the requested projection exact while treating nonfocused members as best effort', async () => {
+  it('stages the requested member exactly and requests no other member (autobyteus-358, QR-005)', async () => {
     const twoMemberTree = buildTestTeamContext({
       teamRunId: 'team-live-recovery',
       teamDefinitionId: 'team-def-1',
@@ -183,8 +173,9 @@ describe('hydrateLiveTeamRunContext current V2 aggregate', () => {
 
     expect(result.focusedAgentRunId).toBe('run-a');
     expect(result.projectionByAgentRunId.get('run-a')).toEqual(expect.objectContaining({ agentRunId: 'run-a' }));
-    expect(result.projectionByAgentRunId.get('run-b')).toBeNull();
+    expect(result.projectionByAgentRunId.has('run-b')).toBe(false);
     expect(result.memberRunStates.map((replacement) => replacement.runId)).toEqual(['run-a']);
+    expect(queryMock.mock.calls.map(([options]) => options.variables.agentRunId).filter(Boolean)).toEqual(['run-a', 'run-a']);
   });
 
   it('rejects a requested root that disagrees with the execution tree', async () => {
@@ -304,7 +295,7 @@ describe('hydrateLiveTeamRunContext current V2 aggregate', () => {
   });
 });
 
-describe('Team open loads each member artifact list with its run state', () => {
+describe('Team open loads the focused member artifact list with its run state (autobyteus-358)', () => {
   const twoMemberTree = () => buildTestTeamContext({
     teamRunId: 'team-artifacts',
     teamDefinitionId: 'team-def-1',
@@ -349,10 +340,9 @@ describe('Team open loads each member artifact list with its run state', () => {
   beforeEach(() => {
     setActivePinia(createPinia());
     vi.clearAllMocks();
-    fetchTeamCommunicationMock.mockResolvedValue([]);
   });
 
-  it.each([true, false])('commits every member artifact list when the Team opens (active=%s; AC-001, AC-002)', async (isActive) => {
+  it.each([true, false])('commits the focused member artifact list when the Team opens; the others load on selection (active=%s; AC-003)', async (isActive) => {
     serve({ isActive });
     const candidate = await open();
     expect(paths('run-a')).toEqual([]);
@@ -361,26 +351,11 @@ describe('Team open loads each member artifact list with its run state', () => {
     markCommittedTeamRunHydrationAuthority(candidate);
 
     expect(paths('run-a')).toEqual(['/outputs/1.png', '/outputs/2.png']);
-    expect(paths('run-b')).toEqual(['/outputs/1.png', '/outputs/2.png']);
-    expect(isTeamMemberProjectionAuthoritative(candidate.hydratedContext, 'run-b')).toBe(true);
-    expect(queryMock.mock.calls.filter(([options]) => options.query === GetTeamMemberFileChanges).map(([options]) => options.variables))
-      .toEqual(expect.arrayContaining([
-        { teamRunId: 'team-artifacts', agentRunId: 'run-a' },
-        { teamRunId: 'team-artifacts', agentRunId: 'run-b' },
-      ]));
-  });
-
-  it('leaves a nonfocused member whose artifacts fail unhydrated, so it is loaded again on selection (AC-007)', async () => {
-    serve({ isActive: true, failingArtifactsFor: 'run-b' });
-    const candidate = await open();
-
-    expect(candidate.projectionByAgentRunId.get('run-b')).toBeNull();
-    expect(candidate.memberRunStates.map((state) => state.runId)).toEqual(['run-a']);
-    commitTeamRunHydration(candidate);
-    markCommittedTeamRunHydrationAuthority(candidate);
-    expect(paths('run-a')).toEqual(['/outputs/1.png', '/outputs/2.png']);
     expect(paths('run-b')).toEqual([]);
+    expect(isTeamMemberProjectionAuthoritative(candidate.hydratedContext, 'run-a')).toBe(true);
     expect(isTeamMemberProjectionAuthoritative(candidate.hydratedContext, 'run-b')).toBe(false);
+    expect(queryMock.mock.calls.filter(([options]) => options.query === GetTeamMemberFileChanges).map(([options]) => options.variables))
+      .toEqual([{ teamRunId: 'team-artifacts', agentRunId: 'run-a' }]);
   });
 
   it('fails the open when the focused member artifacts fail, as for its projection (AC-007)', async () => {
@@ -405,7 +380,6 @@ describe('a stopped Team root with remote runs (autobyteus-278)', () => {
   beforeEach(() => {
     setActivePinia(createPinia());
     vi.clearAllMocks();
-    fetchTeamCommunicationMock.mockResolvedValue([]);
   });
 
   const remoteTeam = {

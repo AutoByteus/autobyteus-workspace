@@ -2,7 +2,9 @@ import type { AgentTeamContext } from '~/types/agent/AgentTeamContext'
 import { parseAgentTeamAddress } from '~/types/agent/AgentTeamAddress'
 import type { TeamWorkspaceContextView } from '~/types/workspace/activeAgentWorkspaceTarget'
 import type { CollaborationMessagesContextView } from '~/types/workspace/collaborationMessagesContextView'
-import { projectTeamCommunicationPerspective, projectTeamCommunicationMemberIdentity } from '~/utils/teamCommunication/teamCommunicationPerspective'
+import { projectTeamCommunicationMemberIdentity } from '~/utils/teamCommunication/teamCommunicationPerspective'
+import { projectParticipantMessageRows } from '~/services/collaborationMessages/participantMessageRows'
+import { testTeamMessagesOf } from '~/test-support/currentTeamTestFixtures'
 import { isTeamMemberProjectionAuthoritative } from '~/services/runHydration/teamMemberProjectionHydrationService'
 
 export const testTeamWorkspaceContextView = (
@@ -54,11 +56,13 @@ export const testCollaborationMessagesContextView = (
       entry.agentRunId,
       projectTeamCommunicationMemberIdentity(view, entry.agentRunId),
     ])),
-    listMessages: () => projectTeamCommunicationPerspective({
-      view,
-      messages: view.listCommunicationMessages(),
-      focusedAgentRunId,
-    }).messages,
+    // The Team tab's rows from the messages the test Team was built with, loaded (the production row builder).
+    listMessages: () => projectParticipantMessageRows({
+      messages: testTeamMessagesOf(team), focusedAgentRunId,
+      identityOf: (agentRunId) => view.getMemberAddress(agentRunId) ? projectTeamCommunicationMemberIdentity(view, agentRunId) : null,
+    }),
+    messagesStatus: () => ({ state: 'loaded', error: null }),
+    loadMessages: () => undefined,
     referenceContentPath: (messageId, referenceId) =>
       `team-runs/${view.getRootTeamRunId()}/team-communication/messages/${messageId}/references/${referenceId}/content`,
   }

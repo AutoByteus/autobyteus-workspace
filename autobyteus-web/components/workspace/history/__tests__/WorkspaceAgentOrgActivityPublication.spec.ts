@@ -103,6 +103,8 @@ async function open(address: string) {
   await vi.waitFor(() => expect(orgs.contextFor('org-run')?.phase).toBe('live'))
   await flushPromises()
   orgs.select('org-run', address)
+  // The selected member's stored conversation loads when it is selected (autobyteus-358).
+  await flushPromises()
   const org = orgs.contextFor('org-run')!, context = org.selectedTarget()!.context
   const messages = JSON.stringify(context.conversation.messages)
   const selection = org.selection

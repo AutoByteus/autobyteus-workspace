@@ -26,7 +26,6 @@ import type {
 import { createWorkspaceMetadata } from '~/utils/workspaceMetadata';
 import { buildConversationFromProjection } from './runProjectionConversation';
 import { buildActivitiesFromProjection } from './runProjectionActivityHydration';
-import { fetchTeamCommunicationForTeam } from './teamCommunicationHydrationService';
 import {
   fetchMemberRunState,
   type MemberRunState,
@@ -84,8 +83,6 @@ interface ProjectionGraphqlData {
   getTeamMemberRunProjection: TeamMemberRunProjectionPayload | null;
 }
 
-type ProjectionFetchPolicy = 'best_effort' | 'exact';
-
 const graphqlErrors = (errors: readonly { message: string }[] | undefined): string | null =>
   errors?.length ? errors.map((error) => error.message).join(', ') : null;
 
@@ -121,19 +118,6 @@ const fetchExactTeamMemberRunState = (
     kind: 'teamMember', teamRunId, memberAddress: member.memberAddress, agentRunId: member.agentRunId,
   }),
 });
-
-/** A member whose projection or artifacts cannot be loaded is left unhydrated (null) as a whole. */
-const fetchBestEffortTeamMemberRunState = async (
-  teamRunId: string,
-  member: TeamMember,
-): Promise<TeamMemberRunState | null> => {
-  try {
-    return await fetchExactTeamMemberRunState(teamRunId, member);
-  } catch (error) {
-    console.warn(`[teamRunContextHydration] Failed to fetch AgentRun state '${member.agentRunId}'.`, error);
-    return null;
-  }
-};
 
 const fetchCheckpoint = async (teamRunId: string): Promise<TeamRunExecutionCheckpointPayload> => {
   const response = await getApolloClient().query<GetTeamRunExecutionCheckpointQueryData>({
@@ -240,9 +224,12 @@ const selectInitialAgentRunId = (input: {
   return coordinator.agent_run_id;
 };
 
+/**
+ * Builds a Team run's context from its view and stages the focused member only (autobyteus-358, DS-003): every other
+ * member is loaded by the member loader when it is opened, and the Team tab loads its messages when it is shown.
+ */
 const hydrateCurrentTeamRunContext = async (
   input: LoadTeamRunContextHydrationInput,
-  projectionPolicy: ProjectionFetchPolicy,
 ): Promise<TeamRunHydrationCandidate> => {
   const client = getApolloClient();
   const response = await client.query<ResumeGraphqlData>({
@@ -263,15 +250,12 @@ const hydrateCurrentTeamRunContext = async (
   if (raw.isActive && !input.ensureWorkspaceByRootPath) {
     throw new Error(`Active Team '${input.teamRunId}' requires workspace activation.`);
   }
-  const [messages, workspaces] = await Promise.all([
-    fetchTeamCommunicationForTeam({ client, teamRunId: input.teamRunId }),
-    resolveWorkspaces({
-      tree,
-      isActive: raw.isActive,
-      resolveWorkspaceMetadataByRootPath: input.resolveWorkspaceMetadataByRootPath,
-      ensureWorkspaceByRootPath: input.ensureWorkspaceByRootPath,
-    }),
-  ]);
+  const workspaces = await resolveWorkspaces({
+    tree,
+    isActive: raw.isActive,
+    resolveWorkspaceMetadataByRootPath: input.resolveWorkspaceMetadataByRootPath,
+    ensureWorkspaceByRootPath: input.ensureWorkspaceByRootPath,
+  });
   const locations = collectAgentExecutionLocations(tree);
   const initialFocusedAgentRunId = selectInitialAgentRunId({
     tree,
@@ -279,22 +263,13 @@ const hydrateCurrentTeamRunContext = async (
     requestedAgentRunId: input.agentRunId,
     requestedMemberAddress: input.memberAddress,
   });
-  const activityStore = useAgentActivityStore();
-  const expectedActivityRevisionByRunId = new Map(locations.map((agent) => [
-    agent.agentRunId,
-    activityStore.getActivityContentRevision(agent.agentRunId),
-  ]));
-  const stateByAgentRunId = new Map<string, TeamMemberRunState | null>();
-  await Promise.all(locations.map(async (agent) => {
-    const state = projectionPolicy === 'exact' || agent.agentRunId === initialFocusedAgentRunId
-      ? await fetchExactTeamMemberRunState(input.teamRunId, agent)
-      : await fetchBestEffortTeamMemberRunState(input.teamRunId, agent);
-    stateByAgentRunId.set(agent.agentRunId, state);
-  }));
-  // A member whose state could not be loaded keeps a null projection: it is not marked authoritative,
-  // so selecting it later hydrates it on demand.
+  // The focused member is staged exactly; a remote focused member is read from its node after the commit.
+  const focusedLocation = locations.find((agent) => agent.agentRunId === initialFocusedAgentRunId) ?? null;
+  const expectedFocusedActivityRevision = useAgentActivityStore().getActivityContentRevision(initialFocusedAgentRunId);
+  const focusedState = focusedLocation ? await fetchExactTeamMemberRunState(input.teamRunId, focusedLocation) : null;
+  const stateByAgentRunId = new Map<string, TeamMemberRunState>(focusedState ? [[initialFocusedAgentRunId, focusedState]] : []);
   const projectionByAgentRunId = new Map<string, TeamMemberRunProjectionPayload | null>(
-    [...stateByAgentRunId].map(([agentRunId, state]) => [agentRunId, state?.projection ?? null]),
+    [...stateByAgentRunId].map(([agentRunId, state]) => [agentRunId, state.projection]),
   );
   const memberRunStates: MemberRunStateCommit[] = [];
   const contexts = locations.map((agent) => {
@@ -311,7 +286,7 @@ const hydrateCurrentTeamRunContext = async (
       address: agent.memberAddress,
       context,
       state: stateByAgentRunId.get(agent.agentRunId) ?? null,
-      expectedActivityRevision: expectedActivityRevisionByRunId.get(agent.agentRunId)!,
+      expectedActivityRevision: expectedFocusedActivityRevision,
     });
     if (memberRunState) memberRunStates.push(memberRunState);
     return Object.freeze({ agentRunId: agent.agentRunId, memberAddress: agent.memberAddress, agentContext: context });
@@ -321,7 +296,6 @@ const hydrateCurrentTeamRunContext = async (
     rootActive: raw.isActive,
     executionTree: tree,
     closedTaskExecutions,
-    messages,
     configuration: createTeamConfigurationView({ tree, workspaceMetadataByAddress: workspaces }),
     initialFocusedAgentRunId,
     agentContexts: contexts,
@@ -353,7 +327,7 @@ const hydrateCurrentTeamRunContext = async (
 
 export const hydrateLiveTeamRunContext = async (
   input: LoadTeamRunContextHydrationInput,
-): Promise<TeamRunHydrationCandidate> => hydrateCurrentTeamRunContext(input, 'best_effort');
+): Promise<TeamRunHydrationCandidate> => hydrateCurrentTeamRunContext(input);
 
 export const hydrateTeamRunContextForStreamRecovery = async (
   input: LoadTeamRunContextHydrationInput,
@@ -362,7 +336,8 @@ export const hydrateTeamRunContextForStreamRecovery = async (
   if (before.hasOpenExecutionWork) {
     throw new Error('TEAM_STREAM_RECOVERY_WAIT: This Team is still working. Wait for it to finish, then select this Team member again.');
   }
-  const candidate = await hydrateCurrentTeamRunContext(input, 'exact');
+  // Exact between the two checkpoints, for the focused member: the others load when they are opened (DS-003).
+  const candidate = await hydrateCurrentTeamRunContext(input);
   const after = await fetchCheckpoint(input.teamRunId);
   if (after.hasOpenExecutionWork || after.changeSequence !== before.changeSequence) {
     throw new Error('TEAM_STREAM_RECOVERY_CHECKPOINT_CHANGED: Team activity changed while the conversation was being reloaded. Select this Team member again.');

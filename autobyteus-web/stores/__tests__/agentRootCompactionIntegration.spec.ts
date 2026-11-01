@@ -14,6 +14,7 @@ import { useAgentContextsStore } from '../agentContextsStore'
 import { useAgentActivityStore } from '../agentActivityStore'
 import { useWindowNodeContextStore } from '../windowNodeContextStore'
 import { handleCompactionStatus } from '~/services/agentStreaming/handlers/agentStatusHandler'
+import { memberLoader } from '~/services/runHydration/memberLoader'
 
 const io = vi.hoisted(() => ({ query: vi.fn(), mutate: vi.fn(), inactive: vi.fn(), streams: [] as any[] }))
 vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => ({ query: io.query, mutate: io.mutate }) }))
@@ -165,7 +166,7 @@ it.each(['view', 'member'])('a live activity change during the %s fetch never fa
   const { store, root, activities } = await setup()
   store.selectChild('host-run', 'pp-run'); store.toggleTaskTeam('host-run', 'team-run')
   await flush()
-  expect(root.isChildHydrated('pp-run')).toBe(true)
+  expect(memberLoader().isHydrated('agent:host-run', 'pp-run')).toBe(true)
   const projectionsBefore = memberRequests(GetAgentRunCollaborationMemberProjection, 'pp-run')
   const delay = deferred(); io.query.mockImplementation(async input => {
     if ((point === 'view' && input.variables.runId)
@@ -181,7 +182,7 @@ it.each(['view', 'member'])('a live activity change during the %s fetch never fa
   expect(next).not.toBe(root)
   // The retained AgentContext object moved to the new context, which loaded the child itself.
   expect(next.getAgentContext('pp-run')).toBe(root.getAgentContext('pp-run'))
-  expect(next.isChildHydrated('pp-run')).toBe(true)
+  expect(memberLoader().isHydrated('agent:host-run', 'pp-run')).toBe(true)
   expect(activities.getActivityContentRevision('pp-run')).toBeGreaterThan(revision)
   // A change during the member fetch costs one retry; during the view fetch, nothing.
   expect(memberRequests(GetAgentRunCollaborationMemberProjection, 'pp-run') - projectionsBefore).toBe(point === 'member' ? 2 : 1)

@@ -28,7 +28,7 @@ describe('AgentOrg whole model-only canonical adoption', () => {
   })
 
   it('stages the entire tree before one in-place publication and preserves retained conversation/state objects', async () => {
-    const staged = await stageAgentOrgExecutionContext({ source: 'inspection', orgRunId: 'org-run', view: inactiveView() })
+    const staged = await stageAgentOrgExecutionContext({ focus: null, source: 'inspection', orgRunId: 'org-run', view: inactiveView() })
     const org = staged.context
     const retained = org.listAgentContextEntries().map(entry => ({ entry,
       state: entry.context.state, conversation: entry.context.conversation, messages: entry.context.conversation.messages,
@@ -59,7 +59,7 @@ describe('AgentOrg whole model-only canonical adoption', () => {
   })
 
   it('rejects topology, task, handoff, binding, archive and locked-field drift without partial publication', async () => {
-    const staged = await stageAgentOrgExecutionContext({ source: 'inspection', orgRunId: 'org-run', view: inactiveView() })
+    const staged = await stageAgentOrgExecutionContext({ focus: null, source: 'inspection', orgRunId: 'org-run', view: inactiveView() })
     const org = staged.context
     for (const mutate of [
       (tree: any) => { tree.archivedAt = '2026-09-17T00:00:00Z' },

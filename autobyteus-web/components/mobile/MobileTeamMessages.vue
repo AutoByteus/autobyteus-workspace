@@ -55,7 +55,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { Icon } from '@iconify/vue';
 import MobileTeamReferenceViewer from '~/components/mobile/MobileTeamReferenceViewer.vue';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
@@ -67,7 +67,7 @@ import {
   referenceFileIcon,
   referenceFileName,
 } from '~/utils/teamCommunication/referenceFilePresentation';
-import { projectTeamCommunicationPerspective } from '~/utils/teamCommunication/teamCommunicationPerspective';
+import { teamCollaborationMessagesView } from '~/services/teamExecution/teamCollaborationMessagesView';
 
 const props = defineProps<{
   context: MobileWorkContext | null;
@@ -86,15 +86,10 @@ const activeTeamContext = computed(() => {
   if (selectionStore.selectedType !== 'team' || selectionStore.selectedRunId !== props.context.teamRunId) return null;
   return teamContextsStore.getTeamContextById(props.context.teamRunId) ?? null;
 });
-const messages = computed(() => {
-  const team = activeTeamContext.value;
-  if (!team) return [];
-  return projectTeamCommunicationPerspective({
-    view: team.view,
-    messages: team.view.listCommunicationMessages(),
-    focusedAgentRunId: team.view.getFocusedAgentRunId(),
-  }).messages;
-});
+// The focused member's messages, loaded when this screen shows them (autobyteus-358).
+const messagesView = computed(() => activeTeamContext.value ? teamCollaborationMessagesView(activeTeamContext.value) : null);
+watch(messagesView, (view) => view?.loadMessages(), { immediate: true });
+const messages = computed(() => messagesView.value?.listMessages() ?? []);
 
 function openReference(
   message: CollaborationMessagePerspectiveRow,

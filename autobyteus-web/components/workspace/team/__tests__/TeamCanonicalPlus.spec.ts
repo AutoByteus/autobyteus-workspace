@@ -22,7 +22,6 @@ const io = vi.hoisted(() => ({ query: vi.fn(), mutate: vi.fn() }))
 const router = vi.hoisted(() => ({ push: vi.fn(async () => undefined), replace: vi.fn(async () => undefined) }))
 vi.mock('vue-router', () => ({ useRouter: () => router, useRoute: () => ({ path: '/workspace', query: {} }) }))
 vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => io }))
-vi.mock('~/services/runHydration/teamCommunicationHydrationService', () => ({ fetchTeamCommunicationForTeam: vi.fn().mockResolvedValue([]) }))
 vi.mock('~/stores/runtimeAvailabilityStore', () => ({ useRuntimeAvailabilityStore: () => ({
   availabilities: [{ runtimeKind: 'autobyteus', enabled: true }], fetchRuntimeAvailability: vi.fn().mockResolvedValue(null), isRuntimePending: () => false, fetchRuntimeAvailabilities: vi.fn().mockResolvedValue([]), availabilityByKind: () => ({ enabled: true }), isRuntimeEnabled: () => true, runtimeReason: () => null,
 }) }))

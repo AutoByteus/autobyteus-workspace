@@ -29,9 +29,10 @@ import { toAgentProjectionMessage } from './teamStreamDtoAdapters';
 import type { CollaboratorMentionDto } from '~/utils/collaborators/collaboratorMentionText';
 import { COLLABORATOR_ADD_FAILED, collaboratorAddRejectionOf } from '~/services/collaborators/collaboratorAddFailures';
 import type { TeamExecutionEffect } from '~/services/teamExecution/teamExecutionViewModels';
+import { useCollaborationParticipantMessagesStore } from '~/services/collaborationMessages/collaborationParticipantMessages';
 import {
+  beginTeamMemberGeneration,
   invalidateTeamMemberProjection,
-  invalidateTeamMemberProjections,
 } from '~/services/runHydration/teamMemberProjectionHydrationService';
 
 export type TeamStreamSyncPhase =
@@ -381,7 +382,12 @@ export class TeamStreamingService {
       if (effect.kind === 'team_stream_recovery_required') {
         this.enterReopenRequired(true);
       } else if (effect.kind === 'invalidate_team_member_projections') {
-        invalidateTeamMemberProjections(context);
+        // A fresh snapshot rebuilt the view: a new member-loader generation (autobyteus-358).
+        beginTeamMemberGeneration(context);
+      } else if (effect.kind === 'append_collaboration_message') {
+        useCollaborationParticipantMessagesStore().append('agent_team', context.view.getRootTeamRunId(), effect.message);
+      } else if (effect.kind === 'reload_collaboration_messages') {
+        useCollaborationParticipantMessagesStore().reloadRoot('agent_team', context.view.getRootTeamRunId());
       } else if (effect.kind === 'invalidate_team_member_projection') {
         effect.agentRunIds.forEach((agentRunId) => {
           invalidateTeamMemberProjection(context, agentRunId);

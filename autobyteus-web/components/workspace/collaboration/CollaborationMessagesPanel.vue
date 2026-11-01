@@ -4,6 +4,24 @@
       {{ $t('workspace.components.workspace.team.TeamCommunicationPanel.no_focused_member') }}
     </div>
 
+    <div
+      v-else-if="status.state === 'error'"
+      class="flex flex-1 flex-col items-center justify-center p-6 text-center text-gray-400"
+      data-test="collaboration-messages-unavailable"
+    >
+      <Icon icon="heroicons:exclamation-triangle" class="mb-2 h-9 w-9 text-gray-300" />
+      <p class="text-sm font-medium text-gray-500">{{ $t('workspace.components.workspace.team.TeamCommunicationPanel.messages_unavailable') }}</p>
+      <p class="mt-1 break-words text-sm">{{ status.error }}</p>
+    </div>
+
+    <div
+      v-else-if="rows.length === 0 && status.state !== 'loaded'"
+      class="flex flex-1 items-center justify-center p-6 text-center text-sm text-gray-400"
+      data-test="collaboration-messages-loading"
+    >
+      {{ $t('workspace.components.workspace.team.TeamCommunicationPanel.loading_messages') }}
+    </div>
+
     <div v-else-if="rows.length === 0" class="flex flex-1 flex-col items-center justify-center p-6 text-center text-gray-400">
       <Icon icon="heroicons:chat-bubble-left-right" class="mb-2 h-9 w-9 text-gray-300" />
       <p class="text-sm font-medium text-gray-500">{{ $t('workspace.components.workspace.team.TeamCommunicationPanel.empty_title') }}</p>
@@ -186,6 +204,8 @@ const props = defineProps<{
   messages: CollaborationMessagesContextView;
   /** The focused member's perspective rows, computed once by the owning Section. */
   rows: readonly CollaborationMessagePerspectiveRow[];
+  /** Whether those rows are loaded, loading, or could not be read (autobyteus-358). */
+  status: ReturnType<CollaborationMessagesContextView['messagesStatus']>;
 }>();
 
 /** Reference rows shown under the selected message until the user asks for all of them. */

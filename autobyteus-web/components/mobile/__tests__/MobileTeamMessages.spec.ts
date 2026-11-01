@@ -1,11 +1,16 @@
-import { beforeEach, describe, expect, it } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { flushPromises, mount } from '@vue/test-utils';
 import { createPinia, setActivePinia, type Pinia } from 'pinia';
 import MobileTeamMessages from '../MobileTeamMessages.vue';
 import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import type { MobileWorkContext } from '~/types/mobileWork';
-import { buildTestTeamContext, testAgentNode } from '~/test-support/currentTeamTestFixtures';
+import { buildTestTeamContext, testAgentNode, testTeamMessagesOf } from '~/test-support/currentTeamTestFixtures';
+import { storeParticipantMessages } from '~/test-support/participantMessagesStub';
+import { projectAgentOrgReference } from '~/services/agentOrgExecution/agentOrgReferenceProjection';
+
+// autobyteus-358: the screen loads the focused member's messages through the participant query.
+vi.mock('~/services/collaborationMessages/participantMessagesQuery', async () => (await import('~/test-support/participantMessagesStub')).participantMessagesQueryStub);
 
 let pinia: Pinia;
 const teamRunContext: MobileWorkContext = {
@@ -16,7 +21,7 @@ const teamRunContext: MobileWorkContext = {
 };
 
 const seedTeam = (): void => {
-  useAgentTeamContextsStore().teams.set('team-1', buildTestTeamContext({
+  const team = buildTestTeamContext({
     teamRunId: 'team-1', teamDefinitionId: 'team-def-1', coordinatorAddress: '/lead',
     focusedAgentRunId: 'lead-run',
     rootChildren: [
@@ -32,7 +37,9 @@ const seedTeam = (): void => {
         { reference_id: 'ref-2', path: '/tmp/diagram.png', type: 'image', created_at: '2026-04-12T10:00:00.000Z', updated_at: '2026-04-12T10:00:00.000Z' },
       ],
     }],
-  }));
+  });
+  storeParticipantMessages('agent_team', 'team-1', testTeamMessagesOf(team));
+  useAgentTeamContextsStore().teams.set('team-1', team);
   useAgentSelectionStore().selectRunWithoutShellNavigation('team-1', 'team');
 };
 
@@ -74,9 +81,12 @@ describe('MobileTeamMessages current TeamExecutionView', () => {
 
   it('opens and closes the exact TeamRun/message/reference identity', async () => {
     const wrapper = mountSubject();
-    await wrapper.findAll('[data-testid="mobile-team-reference-row"]')[0].trigger('click');
+    await flushPromises();
+    await wrapper.findAll('[data-testid="mobile-team-reference-row"]')[0]!.trigger('click');
+    // A reference's ID is derived from its message and path, as the server derives it (autobyteus-358).
+    const id = projectAgentOrgReference('message-1', '/tmp/design-spec.md', '').referenceId;
     expect(wrapper.get('[data-testid="mobile-team-reference-viewer-stub"]').text())
-      .toContain('team-1:message-1:ref-1:0');
+      .toContain(`team-1:message-1:${id}:0`);
     await wrapper.get('[data-testid="close-reference"]').trigger('click');
     expect(wrapper.find('[data-testid="mobile-team-reference-viewer-stub"]').exists()).toBe(false);
     expect(wrapper.findAll('[data-testid="mobile-team-reference-row"]')).toHaveLength(2);

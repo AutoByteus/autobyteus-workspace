@@ -15,6 +15,7 @@ vi.mock('~/utils/remoteAccess/websocketAuth', () => ({ buildAuthenticatedWebSock
 
 import { useAgentRunCollaborationStore } from '../agentRunCollaborationStore'
 import { useRemoteRunsStore } from '../remoteRunsStore'
+import { memberLoader } from '~/services/runHydration/memberLoader'
 
 /**
  * autobyteus-278 UIS-005: Retry on a remote run whose conversation its node did not give asks the node again for
@@ -64,7 +65,7 @@ describe('Retry on an opened remote run', () => {
 
     store.selectChild('host-run', 'publisher-run'); await flush()
     expect(remoteRuns.run('publisher-run')?.reachable).toBe(false)
-    expect(store.contextFor('host-run')!.isChildHydrated('publisher-run')).toBe(false)
+    expect(memberLoader().isHydrated('agent:host-run', 'publisher-run')).toBe(false)
 
     io.unreachable = false
     remoteRuns.retry('publisher-run'); await flush()
@@ -88,7 +89,7 @@ describe('Retry on an opened remote run', () => {
     remoteRuns.retry('publisher-run'); await flush()
     const refresh = socket.send.mock.calls.map(([raw]) => JSON.parse(raw)).filter((message) => message.type === 'REFRESH_REMOTE_TASK_EXECUTIONS')
     expect(refresh).toHaveLength(1)
-    expect(store.contextFor('host-run')!.isChildHydrated('publisher-run')).toBe(true)
+    expect(memberLoader().isHydrated('agent:host-run', 'publisher-run')).toBe(true)
     expect(remoteRuns.run('publisher-run')).toMatchObject({ reachable: true, checking: false })
   })
 
@@ -104,7 +105,7 @@ describe('Retry on an opened remote run', () => {
     io.unreachable = false
     remoteRuns.retry('publisher-run'); await flush()
     expect(remoteRuns.run('publisher-run')).toMatchObject({ reachable: true, checking: false })
-    expect(store.contextFor('host-run')!.isChildHydrated('publisher-run')).toBe(true)
+    expect(memberLoader().isHydrated('agent:host-run', 'publisher-run')).toBe(true)
     // Loaded and without a stream, there is nothing to ask: 'Checking' ends at once.
     remoteRuns.retry('publisher-run')
     expect(remoteRuns.run('publisher-run')?.checking).toBe(false)

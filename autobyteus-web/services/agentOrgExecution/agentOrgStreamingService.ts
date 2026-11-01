@@ -65,7 +65,7 @@ export class AgentOrgStreamingService {
 
   constructor(private readonly options: Readonly<{
     orgRunId: string
-    publish(context: AgentOrgExecutionContext, commit: () => void): void
+    publish(context: AgentOrgExecutionContext, commit: () => string | null): void
     onInactive?(): void
     reportError(message: string): void
     onAcceptedExternalUserMessage?(event: Readonly<{
@@ -140,7 +140,7 @@ export class AgentOrgStreamingService {
         this.recoveryCheckpoint = null
         this.recoveryFocus = null
         const staged = await stageAgentOrgExecutionContext({
-          source: 'inspection', orgRunId: this.options.orgRunId, view,
+          source: 'inspection', orgRunId: this.options.orgRunId, view, focus: this.context?.selection ?? null,
           isCurrent: () => this.ownsOperation(null),
         })
         if (!this.ownsOperation(null)) return
@@ -303,6 +303,7 @@ export class AgentOrgStreamingService {
         source: 'stream',
         orgRunId: this.options.orgRunId,
         view: message.payload.root_org,
+        focus: previousFocus,
         isCurrent: () => this.isCurrent(generation),
       })
       if (!this.isCurrent(generation)) return

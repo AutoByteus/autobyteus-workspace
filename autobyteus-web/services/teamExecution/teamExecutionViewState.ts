@@ -4,7 +4,6 @@ import { advanceSequencedStream } from '~/services/agentStreaming/sequencedStrea
 import { computed, reactive, ref, shallowRef } from 'vue';
 import {
   teamExecutionViewSnapshotPayloadSchema,
-  type TeamCommunicationMessageDto,
   type TeamRunExecutionTreeDto,
   type TeamStreamServerMessage,
 } from '@autobyteus/team-stream-contracts';
@@ -74,7 +73,8 @@ export interface TeamExecutionViewState {
   listNavigationRows(): readonly TeamExecutionNavigationRow[];
   /** False for a closed task execution (Task DONE) and every row under one; the Workspaces tree leaves them out. */
   isTaskExecutionRowListed(row: TeamExecutionNavigationRow): boolean;
-  listCommunicationMessages(): readonly TeamCommunicationMessageDto[];
+  /** An agent of a run this Team delegated to another node (autobyteus-278): its messages stay on its node. */
+  isRemoteAgent(agentRunId: string): boolean;
   applySnapshot(message: Extract<TeamStreamServerMessage, { type: 'TEAM_EXECUTION_VIEW_SNAPSHOT' }>): TeamExecutionApplyResult;
   applyMessage(message: Exclude<TeamStreamServerMessage,
     { type: 'CONNECTED' | 'TEAM_RUN_LIFECYCLE' | 'TEAM_EXECUTION_VIEW_SNAPSHOT' | 'AGENT_COMMAND_ACK' }>): TeamExecutionApplyResult;
@@ -87,7 +87,6 @@ export interface CreateTeamExecutionViewStateInput {
   executionTree: TeamRunExecutionTreeDto;
   /** Task executions of `executionTree` whose Task is DONE. */
   closedTaskExecutions: readonly TaskExecutionReference[];
-  messages?: readonly TeamCommunicationMessageDto[];
   configuration: Readonly<TeamRunConfigurationView>;
   initialFocusedAgentRunId: string;
   agentContexts: readonly TeamAgentContextEntry[];
@@ -132,7 +131,6 @@ export const createTeamExecutionViewState = (
   const publication = shallowRef({
     tree: structuredClone(input.executionTree),
     closed: [...input.closedTaskExecutions] as readonly TaskExecutionReference[],
-    messages: structuredClone(input.messages ?? []),
     changeSequence: input.baseChangeSequence ?? 0,
     contexts: new Map<string, AgentContext>() as ReadonlyMap<string, AgentContext>,
     locations: new Map<string, TeamAgentExecutionLocation>() as ReadonlyMap<string, TeamAgentExecutionLocation>,
@@ -330,7 +328,6 @@ export const createTeamExecutionViewState = (
       publication.value = {
         tree: structuredClone(payload.execution_tree), locations: nextLocations, remote: structuredClone(payload.remote_task_executions),
         closed: payload.closed_task_executions.map(fromTeamTaskExecutionReference),
-        messages: structuredClone(payload.messages),
         contexts: prepareContextAssociations(planned), changeSequence: payload.base_change_sequence,
       };
       validatedStatuses.forEach(({ context, status, recoverableBlock }) => {
@@ -348,6 +345,8 @@ export const createTeamExecutionViewState = (
         disposition: 'applied',
         effects: Object.freeze([
           { kind: 'invalidate_team_member_projections' as const },
+          // A snapshot is a rebuilt view: the Team tab's lists load again (autobyteus-358).
+          { kind: 'reload_collaboration_messages' as const },
           { kind: 'reconcile_team_navigation' as const },
           { kind: 'reconcile_focused_team_member_projection' as const },
         ]),
@@ -434,12 +433,14 @@ export const createTeamExecutionViewState = (
         publication.value = { ...publication.value, tree: nextTree, changeSequence: sequence ?? publication.value.changeSequence };
         refreshTeamAgentLaunches(nextTree, publication.value.locations, publication.value.contexts);
       } else if (message.type === 'TEAM_COMMUNICATION_MESSAGE') {
-        if (publication.value.messages.some((entry) => entry.message_id === message.payload.message.message_id)) {
-          return Object.freeze({ disposition: 'rejected', code: 'TEAM_COMMUNICATION_DUPLICATE_MESSAGE', message: `Duplicate Team message '${message.payload.message.message_id}'.`, effects: Object.freeze([]) });
-        }
-        publication.value = { ...publication.value,
-          messages: [...publication.value.messages, structuredClone(message.payload.message)],
-          changeSequence: sequence ?? publication.value.changeSequence };
+        // The Team tab's lists own the messages (autobyteus-358); the view holds none.
+        const live = message.payload.message;
+        effects.push({ kind: 'append_collaboration_message', message: Object.freeze({
+          messageId: live.message_id, senderAgentRunId: live.sender_agent_run_id, receiverAgentRunId: live.receiver_agent_run_id,
+          content: live.content, messageType: live.message_type, referenceFiles: live.reference_files.map((file) => file.path),
+          createdAt: live.created_at,
+        }) });
+        publication.value = { ...publication.value, changeSequence: sequence ?? publication.value.changeSequence };
       } else {
         const agentRunId = targetAgentRunId(message);
         if (agentRunId === null) {
@@ -507,7 +508,7 @@ export const createTeamExecutionViewState = (
       }))),
     listNavigationRows: navigationRows,
     isTaskExecutionRowListed,
-    listCommunicationMessages: () => Object.freeze([...publication.value.messages]),
+    isRemoteAgent: (agentRunId: string) => isRemoteAgentRun(publication.value.remote, agentRunId),
     applySnapshot,
     applyMessage,
   };

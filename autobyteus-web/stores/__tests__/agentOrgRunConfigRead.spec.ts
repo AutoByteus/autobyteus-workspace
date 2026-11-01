@@ -21,7 +21,7 @@ const meta = (root: string) => ({ workspaceId: root, workspaceRootPath: root, di
 const stage = async (isActive: boolean) => {
   const view = JSON.parse(JSON.stringify(taskBearingView())); view.is_active = isActive
   const source = isActive ? 'stream' : 'inspection'
-  return shallowReactive((await stageAgentOrgExecutionContext({ source, orgRunId: 'org-run', view })).context)
+  return shallowReactive((await stageAgentOrgExecutionContext({ focus: null, source, orgRunId: 'org-run', view })).context)
 }
 const canonical = (tree: unknown, isActive: boolean) => ({ orgRunId: 'org-run', executionTree: tree, isActive,
   editability: { editable: !isActive, reason: null } })

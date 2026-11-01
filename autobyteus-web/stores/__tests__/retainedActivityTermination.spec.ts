@@ -45,7 +45,6 @@ const setup = () => {
       root_team_run_id: ROOT,
       base_change_sequence: 0,
       closed_task_executions: [], execution_tree: team.view.getExecutionTree(),
-      messages: [],
       agent_input_states: [], remote_task_executions: [],
       agent_statuses: team.view.listAgentContextEntries().map(e => ({
         agent_run_id: e.agentRunId, member_address: e.memberAddress, status: 'idle',

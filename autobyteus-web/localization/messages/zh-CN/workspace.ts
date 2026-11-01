@@ -194,6 +194,10 @@ const messages = {
     "未知队友",
   "workspace.components.workspace.team.TeamCommunicationPanel.no_focused_member":
     "请选择团队成员以查看沟通记录。",
+  "workspace.components.workspace.team.TeamCommunicationPanel.loading_messages":
+    "正在加载消息…",
+  "workspace.components.workspace.team.TeamCommunicationPanel.messages_unavailable":
+    "无法显示这些消息",
   "workspace.components.workspace.team.TeamCommunicationPanel.empty_title":
     "暂无团队消息",
   "workspace.components.workspace.team.TeamCommunicationPanel.empty_detail":

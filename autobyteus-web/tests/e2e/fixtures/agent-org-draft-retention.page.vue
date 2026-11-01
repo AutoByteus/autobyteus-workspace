@@ -118,7 +118,6 @@ const createOrgView = (
       taskExecutions: [],
     },
   },
-  communication_messages: { schemaVersion: 1, subjectKind: 'agent_org', orgRunId, messages: [] },
   agent_statuses: members.map((member) => ({
     member_address: member.address,
     agent_run_id: member.agentRunId,

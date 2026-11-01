@@ -134,6 +134,8 @@ for (const previouslyMounted of [false, true]) {
     history.agentOrgHistory = [{ rootRunId: 'org-run', executionTree: view.execution_tree, closedTaskExecutions: [] }] as any
     await useWorkspaceHistorySubjectActions().execute({ rootSubjectKind: 'agent_org', rootRunId: 'org-run',
       action: 'select', memberAddress: '/team/lead' })
+    // The selected member's stored conversation loads when it is selected (autobyteus-358).
+    await flush()
     const orgStore = useAgentOrgContextsStore(), org = orgStore.contextFor('org-run')!
     const member = org.getAgentContext('agent-lead-configured')!
     member.requirement = 'retained composer'; member.contextFilePaths = [{ id: 'attachment', path: '/old/reference' }] as any

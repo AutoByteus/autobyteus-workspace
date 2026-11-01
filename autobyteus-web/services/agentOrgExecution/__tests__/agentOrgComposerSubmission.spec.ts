@@ -523,8 +523,9 @@ describe('observational Org history, exact deliberate continuation and retained 
 })
 
 describe('Org strict candidate and terminal boundaries', () => {
-  it('does not partially mutate retained AgentContexts when any inspected projection is invalid', async () => {
-    const { org, context } = await open()
+  it('does not partially mutate retained AgentContexts when the staged projection is invalid', async () => {
+    // Only the selected member is staged (autobyteus-358): select the one whose projection is invalid.
+    const { org, context } = await open('agent-task-worker')
     context.requirement = 'do not lose'; context.contextFilePaths = [attachment('unsent')]
     const state = context.state; const config = context.config
     socket.close()

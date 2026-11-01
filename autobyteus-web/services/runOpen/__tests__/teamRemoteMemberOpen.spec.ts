@@ -5,7 +5,6 @@ import { GetTeamMemberRunProjection } from '~/graphql/queries/runHistoryQueries'
 
 const io = vi.hoisted(() => ({ query: vi.fn(), unreachable: true, reads: [] as string[] }))
 vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => ({ query: io.query }) }))
-vi.mock('~/services/runHydration/teamCommunicationHydrationService', () => ({ fetchTeamCommunicationForTeam: vi.fn(async () => []) }))
 vi.mock('~/stores/runHistoryNavigationStoreActions', () => ({ refreshRunNavigationTopologyForStore: vi.fn() }))
 
 import { openTeamRun } from '../teamRunOpenCoordinator'

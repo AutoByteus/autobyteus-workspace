@@ -19,6 +19,7 @@ vi.mock('~/utils/remoteAccess/authorizedTransport', () => ({ getActiveRemoteAcce
 vi.mock('~/utils/remoteAccess/websocketAuth', () => ({ buildAuthenticatedWebSocketUrl: (url: string) => url }))
 
 import { useAgentRunCollaborationStore } from '../agentRunCollaborationStore'
+import { memberLoader } from '~/services/runHydration/memberLoader'
 
 /**
  * delegated-copies-slow-open (AC-001, AC-002, AC-004, AC-006, AC-007; D-1, D-2, D-4, D-5): the real
@@ -137,12 +138,12 @@ describe('Agent-root children load on demand', () => {
 
     store.selectChild('host-run', child); await flush()
     expect(warn).toHaveBeenCalledWith(`[agentRunCollaboration] Could not load '${child}' of 'host-run'.`, expect.any(Error))
-    expect(store.contextFor('host-run')!.isChildHydrated(child)).toBe(false)
+    expect(memberLoader().isHydrated('agent:host-run', child)).toBe(false)
     expect(store.childTargetFor('host-run')).toMatchObject({ agentRunId: child })
 
     store.selectChild('host-run', null)
     store.selectChild('host-run', child); await flush()
-    expect(store.contextFor('host-run')!.isChildHydrated(child)).toBe(true)
+    expect(memberLoader().isHydrated('agent:host-run', child)).toBe(true)
     expect(count(GetAgentRunCollaborationMemberProjection, child)).toBe(2)
     warn.mockRestore()
   })
@@ -166,12 +167,11 @@ describe('Agent-root children load on demand', () => {
     store.selectChild('host-run', child); await flush()
 
     releaseFirst(); await flush()
-    expect(first.isChildHydrated(child)).toBe(false)
-    expect(second.isChildHydrated(child)).toBe(false)
+    expect(memberLoader().isHydrated('agent:host-run', child)).toBe(false)
     expect(shown(store, child)).toBe(0)
     releaseSecond(); await flush()
 
-    expect(second.isChildHydrated(child)).toBe(true)
+    expect(memberLoader().isHydrated('agent:host-run', child)).toBe(true)
     expect(shown(store, child)).toBe(1)
     expect(count(GetAgentRunCollaborationMemberProjection, child)).toBe(2)
     expect(count(GetAgentRunCollaborationMemberFileChanges, child)).toBe(2)
@@ -183,7 +183,7 @@ describe('Agent-root children load on demand', () => {
     await snapshot(Socket.instances[0]!)
     const opened = memberId(2, 0)
     store.selectChild('host-run', opened); await flush()
-    expect(store.contextFor('host-run')!.isChildHydrated(opened)).toBe(true)
+    expect(memberLoader().isHydrated('agent:host-run', opened)).toBe(true)
     const before = { projection: count(GetAgentRunCollaborationMemberProjection), files: count(GetAgentRunCollaborationMemberFileChanges) }
     const first = store.contextFor('host-run')!
 
@@ -198,7 +198,7 @@ describe('Agent-root children load on demand', () => {
     expect(shown(store, opened)).toBe(1)
     release(); await flush()
 
-    expect(store.contextFor('host-run')!.isChildHydrated(opened)).toBe(true)
+    expect(memberLoader().isHydrated('agent:host-run', opened)).toBe(true)
     expect(count(GetAgentRunCollaborationMemberProjection) - before.projection).toBe(1)
     expect(count(GetAgentRunCollaborationMemberFileChanges) - before.files).toBe(1)
     expect(count(GetAgentRunCollaborationMemberProjection, opened)).toBe(2)
@@ -216,7 +216,7 @@ describe('Agent-root children load on demand', () => {
     expect(store.contextFor('host-run')!.phase).toBe('live')
     release(); await flush()
 
-    expect(store.contextFor('host-run')!.isChildHydrated(child)).toBe(true)
+    expect(memberLoader().isHydrated('agent:host-run', child)).toBe(true)
     expect(count(GetAgentRunCollaborationMemberProjection, child)).toBe(2)
     expect(count(GetAgentRunCollaborationMemberFileChanges, child)).toBe(2)
     expect(store.contextFor('host-run')!.changeSequence).toBe(7)
@@ -232,7 +232,7 @@ describe('Agent-root children load on demand', () => {
     expect(shown(store, child)).toBe(1)
     store.selectChild('host-run', child); await flush()
 
-    expect(store.contextFor('host-run')!.isChildHydrated(child)).toBe(true)
+    expect(memberLoader().isHydrated('agent:host-run', child)).toBe(true)
     expect(store.contextFor('host-run')!.getAgentContext(child)!.state.conversation.messages)
       .toMatchObject([{ type: 'ai', segments: [expect.objectContaining({ content: `stored ${child}` })] }])
     expect(memberRequests()).toBe(2)
@@ -252,11 +252,10 @@ describe('Agent-root children load on demand', () => {
     const second = store.contextFor('host-run')!
     expect(second).not.toBe(first)
     await flush()
-    expect(second.isChildHydrated(child)).toBe(true)
+    expect(memberLoader().isHydrated('agent:host-run', child)).toBe(true)
 
     const shownBefore = store.contextFor('host-run')!.getAgentContext(child)!.state.conversation
     releaseFirst(); await flush()
-    expect(first.isChildHydrated(child)).toBe(false)
     expect(store.contextFor('host-run')!.getAgentContext(child)!.state.conversation).toBe(shownBefore)
     expect(count(GetAgentRunCollaborationMemberProjection, child)).toBe(2)
     expect(count(GetAgentRunCollaborationMemberFileChanges, child)).toBe(2)

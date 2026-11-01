@@ -3,7 +3,7 @@ import { AgentRunState } from '~/types/agent/AgentRunState'
 import { AgentStatus } from '~/types/agent/AgentStatus'
 import { AgentRunCollaborationContext } from '../agentRunCollaborationContext'
 import { AgentRunCollaborationIndex } from '../agentRunCollaborationIndex'
-import { agentRootView, created, launch } from './agentRootFixture'
+import { agentRootMessages, agentRootView, created, launch } from './agentRootFixture'
 
 /**
  * task-run-resources-workspace-cleanup REQ-001/004/008: a closed task execution (Task DONE) and
@@ -35,11 +35,6 @@ export const closureView = (closed: Array<{ agentRunId: string } | { teamRunId: 
     ],
   }
   view.closed_task_executions = closed
-  view.communication_messages = { ...view.communication_messages, messages: [
-    ...view.communication_messages.messages,
-    { messageId: 'm-writer', senderAgentRunId: 'writer-run', receiverAgentRunId: 'host-run', content: 'Release notes drafted.',
-      messageType: 'direct_message', referenceFiles: [], createdAt: created },
-  ] }
   return view
 }
 
@@ -52,3 +47,8 @@ export const buildClosureContext = (view = closureView()) => new AgentRunCollabo
       context: new AgentContext({ agentDefinitionId: 'x', agentDefinitionName: agent.address } as never, state) }
   }),
 })
+
+/** The closure root's stored messages beside the base fixture's (autobyteus-358: loaded per participant). */
+export const closureMessages = Object.freeze([...agentRootMessages,
+  { messageId: 'm-writer', senderAgentRunId: 'writer-run', receiverAgentRunId: 'host-run', content: 'Release notes drafted.',
+    messageType: 'direct_message', referenceFiles: [], createdAt: created }])

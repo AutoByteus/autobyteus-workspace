@@ -88,6 +88,7 @@
 
 <script setup lang="ts">
 import { computed, getCurrentInstance, nextTick, onBeforeUnmount, onMounted, onUpdated, ref, watch } from 'vue';
+import { useOncePerFrame } from '~/composables/useOncePerFrame';
 import { Icon } from '@iconify/vue';
 import type { Conversation } from '~/types/conversation';
 import type { CompactionActivity } from '~/types/activity/RunActivity';
@@ -452,6 +453,7 @@ const syncAutoScrollIfPinned = (): void => {
   if (!el || props.browseState !== 'latest' || !shouldStickToBottom.value || isNearBottom(el)) return;
   scrollToBottom();
 };
+const scheduleAutoScrollCheck = useOncePerFrame(syncAutoScrollIfPinned); // a layout read: once per frame (autobyteus-358)
 const resetForSubject = (): void => {
   beginScrollWork();
   pendingBrowseAnchor.value = null;
@@ -479,7 +481,7 @@ onMounted(() => {
   document.addEventListener('visibilitychange', handleVisibilityChange);
   scrollToBottom();
 });
-onUpdated(syncAutoScrollIfPinned);
+onUpdated(scheduleAutoScrollCheck);
 onBeforeUnmount(() => {
   window.removeEventListener('blur', invalidateForLostInteraction);
   window.removeEventListener('pointerup', handlePointerUp as EventListener);
