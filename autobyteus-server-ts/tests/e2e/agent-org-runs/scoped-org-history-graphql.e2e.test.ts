@@ -106,8 +106,9 @@ describe("scoped Org history real HTTP lifecycle", () => {
     const invalidPayload = await invalid.json();
     expect(invalidPayload.errors?.[0].message).toContain("orgRunId is required");
     expect(await readRoot(first, aId)).toEqual(storedA);
+    // An invalid value of a declared setting is refused (undeclared keys are left out since 47f44c3df6, so they cannot fail a start).
     const badConfig = await create({ ...input, rootConfiguration: { ...input.rootConfiguration,
-      llmConfig: { unsupported_setting: true } } });
+      llmConfig: { reasoning_effort: "not-a-level" } } });
     expect(badConfig).toMatchObject({ success: false, agentOrgRunId: null });
     expect(await fs.readFile(treeFile)).toEqual(bytes);
     const restored = await gql(`mutation($id: String!) {
