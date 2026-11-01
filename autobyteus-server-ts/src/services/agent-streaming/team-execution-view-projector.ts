@@ -46,8 +46,8 @@ const projectReference = (ownerId: string, filePath: string, timestamp: string):
 
 export const projectTeamExecutionViewSnapshot = (
   rootTeamRunId: string,
-  { snapshot, baseChangeSequence, liveSequenceId }: Readonly<{
-    snapshot: RootTeamRunPackageSnapshot; baseChangeSequence: number; liveSequenceId: string;
+  { snapshot, baseChangeSequence, liveSequenceId, lastMessageChangeSequence }: Readonly<{
+    snapshot: RootTeamRunPackageSnapshot; baseChangeSequence: number; liveSequenceId: string; lastMessageChangeSequence: number;
   }>,
   /** autobyteus-278: the runs this Team delegated to other nodes, with their nodes' names. */
   remoteTaskExecutions: readonly RemoteTaskExecutionDto[],
@@ -57,6 +57,7 @@ export const projectTeamExecutionViewSnapshot = (
     root_team_run_id: rootTeamRunId,
     base_change_sequence: baseChangeSequence,
     live_sequence_id: liveSequenceId,
+    last_message_change_sequence: lastMessageChangeSequence,
     execution_tree: projectExecutionTree(snapshot.tree),
     closed_task_executions: snapshot.closedTaskExecutions.map(projectTaskExecutionReference),
     agent_statuses: snapshot.statuses.map(projectTeamAgentStatusSnapshotDto),

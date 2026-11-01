@@ -16,7 +16,7 @@ const taskTeam = (address, teamRunId, memberRunId, taskExecutions = []) => ({
 const agentView = (closed) => ({
   root_subject_kind: "agent", root_run_id: "host-run",
   root_agent: {
-    base_change_sequence: 0, live_sequence_id: null, is_active: false,
+    base_change_sequence: 0, live_sequence_id: null, last_message_change_sequence: null, is_active: false,
     execution_tree: {
       subjectKind: "agent", createdAt: at,
       host: { address: "/manager", agentRunId: "host-run", agentDefinitionId: "manager" },
@@ -30,7 +30,7 @@ const agentView = (closed) => ({
 const orgView = (closed) => ({
   root_subject_kind: "agent_org", root_run_id: "org-run",
   root_org: {
-    base_change_sequence: 0, live_sequence_id: null, is_active: false,
+    base_change_sequence: 0, live_sequence_id: null, last_message_change_sequence: null, is_active: false,
     execution_tree: { subjectKind: "agent_org", createdAt: at, archivedAt: null, applicationBinding: null, handoffs: [], rootOrg: {
       address: "/", orgDefinitionId: "org", orgDefinitionName: "Org", orgRunId: "org-run", defaultLaunchConfiguration: launch,
       members: [

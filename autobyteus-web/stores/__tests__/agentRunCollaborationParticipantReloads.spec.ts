@@ -25,7 +25,7 @@ import { useAgentRunCollaborationStore } from '../agentRunCollaborationStore'
 import { useCollaborationParticipantMessagesStore } from '~/services/collaborationMessages/collaborationParticipantMessages'
 
 /**
- * autobyteus-358 (SR-004, SR-005; API-08): a running hub's Team-tab list is fetched again only when a message could
+ * autobyteus-358 (SR-004 … SR-007; API-08): a running hub's Team-tab list is fetched again only when a message could
  * have been missed. The real store, context and stream; only GraphQL, the socket and the message query are fixtures.
  */
 class Socket {
@@ -44,11 +44,13 @@ const message = (messageId: string): CollaborationParticipantMessageDto => ({
   messageId, senderAgentRunId: 'pp-run', receiverAgentRunId: HOST, content: messageId, messageType: 'direct_message',
   referenceFiles: [], createdAt: created,
 })
-const viewAt = (base: number, liveSequenceId: string | null = 'live-1') => ({ ...agentRootView(), base_change_sequence: base, live_sequence_id: liveSequenceId })
+/** The hub's view at `base` in `liveSequenceId`, whose latest message is at `lastMessage` (SR-007). */
+const viewAt = (base: number, liveSequenceId: string | null = 'live-1', lastMessage: number | null = 0) =>
+  ({ ...agentRootView(), base_change_sequence: base, live_sequence_id: liveSequenceId, last_message_change_sequence: lastMessage })
 let inspected = viewAt(4)
-const snapshot = async (socket: Socket, base: number, liveSequenceId = 'live-1') => {
+const snapshot = async (socket: Socket, base: number, liveSequenceId = 'live-1', lastMessage = 0) => {
   socket.frame({ type: 'CONNECTED', payload: { root_subject_kind: 'agent', root_run_id: HOST, session_id: 'session' } })
-  socket.frame({ type: 'ROOT_EXECUTION_VIEW_SNAPSHOT', payload: { root_subject_kind: 'agent', root_run_id: HOST, root_agent: viewAt(base, liveSequenceId) } })
+  socket.frame({ type: 'ROOT_EXECUTION_VIEW_SNAPSHOT', payload: { root_subject_kind: 'agent', root_run_id: HOST, root_agent: viewAt(base, liveSequenceId, lastMessage) } })
   await settle()
 }
 const event = (socket: Socket, change_sequence: number, body: unknown) =>
@@ -103,10 +105,15 @@ describe('A running hub fetches its Team-tab list again only when a message coul
     await snapshot(Socket.instances[1]!, 5)
     expect(requests()).toBe(1)
 
+    // The next copy publishes its output (sequences 7 to 22) before the reconnect's snapshot, but no message.
     newChild(Socket.instances[1]!, 6); await settle()
-    // The server stored m2 (sequence 7) before the reconnect's snapshot.
+    await snapshot(Socket.instances[2]!, 22)
+    expect(requests()).toBe(1)
+
+    newChild(Socket.instances[2]!, 23); await settle()
+    // The server stored m2 (sequence 25) before the reconnect's snapshot.
     storeParticipantMessages('agent', HOST, [message('m1'), message('m2')])
-    await snapshot(Socket.instances[2]!, 7)
+    await snapshot(Socket.instances[3]!, 26, 'live-1', 25)
     expect(requests()).toBe(2)
     expect(listed()).toEqual(['m1', 'm2'])
   })
@@ -121,7 +128,7 @@ describe('A running hub fetches its Team-tab list again only when a message coul
     // The connection drops; the resumed root's publisher produced m3 (its sequence 1) before the client attached.
     Socket.instances[0]!.onclose?.({ code: 1006 }); await settle()
     storeParticipantMessages('agent', HOST, [message('m1'), message('m2'), message('m3')])
-    await snapshot(Socket.instances[1]!, 1, 'live-2')
+    await snapshot(Socket.instances[1]!, 1, 'live-2', 1)
 
     expect(requests()).toBe(2)
     expect(listed()).toEqual(['m1', 'm2', 'm3'])

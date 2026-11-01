@@ -5,7 +5,7 @@ export const launch = { runtimeKind: 'codex_app_server' as const, llmModelIdenti
 
 type MutableView = { -readonly [K in keyof AgentRunCollaborationViewDto]: AgentRunCollaborationViewDto[K] }
 export const agentRootView = (): MutableView => ({
-  base_change_sequence: 4, live_sequence_id: 'live-1',
+  base_change_sequence: 4, live_sequence_id: 'live-1', last_message_change_sequence: 0,
   is_active: true,
   closed_task_executions: [], execution_tree: {
     subjectKind: 'agent', createdAt: created,

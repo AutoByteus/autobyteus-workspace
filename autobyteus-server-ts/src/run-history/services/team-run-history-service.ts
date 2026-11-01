@@ -30,6 +30,8 @@ export interface TeamRunResumeConfig {
    */
   liveSequenceId: string | null;
   baseChangeSequence: number;
+  /** The sequence of the running Team's latest message through `baseChangeSequence`; null when not running (SR-007). */
+  lastMessageChangeSequence: number | null;
 }
 
 export class TeamRunHistoryService {
@@ -82,6 +84,7 @@ export class TeamRunHistoryService {
       isActive,
       liveSequenceId: live?.liveSequenceId ?? null,
       baseChangeSequence: live?.changeSequence ?? 0,
+      lastMessageChangeSequence: live?.lastMessageChangeSequence ?? null,
       executionTree: tree,
       closedTaskExecutions: this.manager.closedTaskExecutionsFor(teamRunId, tree),
       modelConfigEditability: runModelConfigEditability({

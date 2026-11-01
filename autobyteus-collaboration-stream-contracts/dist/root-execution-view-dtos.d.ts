@@ -11,6 +11,7 @@ export declare const AgentOrgRootExecutionViewDtoSchema: z.ZodObject<{
         base_change_sequence: z.ZodNumber;
         is_active: z.ZodBoolean;
         live_sequence_id: z.ZodNullable<z.ZodString>;
+        last_message_change_sequence: z.ZodNullable<z.ZodNumber>;
         execution_tree: z.ZodObject<{
             subjectKind: z.ZodLiteral<"agent_org">;
             createdAt: z.ZodString;
@@ -457,6 +458,7 @@ export declare const AgentRootExecutionViewDtoSchema: z.ZodObject<{
     root_agent: z.ZodObject<{
         base_change_sequence: z.ZodNumber;
         live_sequence_id: z.ZodNullable<z.ZodString>;
+        last_message_change_sequence: z.ZodNullable<z.ZodNumber>;
         is_active: z.ZodBoolean;
         execution_tree: z.ZodObject<{
             subjectKind: z.ZodLiteral<"agent">;
@@ -762,6 +764,7 @@ export declare const RootExecutionViewDtoSchema: z.ZodDiscriminatedUnion<[z.ZodO
         base_change_sequence: z.ZodNumber;
         is_active: z.ZodBoolean;
         live_sequence_id: z.ZodNullable<z.ZodString>;
+        last_message_change_sequence: z.ZodNullable<z.ZodNumber>;
         execution_tree: z.ZodObject<{
             subjectKind: z.ZodLiteral<"agent_org">;
             createdAt: z.ZodString;
@@ -1207,6 +1210,7 @@ export declare const RootExecutionViewDtoSchema: z.ZodDiscriminatedUnion<[z.ZodO
     root_agent: z.ZodObject<{
         base_change_sequence: z.ZodNumber;
         live_sequence_id: z.ZodNullable<z.ZodString>;
+        last_message_change_sequence: z.ZodNullable<z.ZodNumber>;
         is_active: z.ZodBoolean;
         execution_tree: z.ZodObject<{
             subjectKind: z.ZodLiteral<"agent">;
@@ -2132,6 +2136,7 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
             base_change_sequence: z.ZodNumber;
             is_active: z.ZodBoolean;
             live_sequence_id: z.ZodNullable<z.ZodString>;
+            last_message_change_sequence: z.ZodNullable<z.ZodNumber>;
             execution_tree: z.ZodObject<{
                 subjectKind: z.ZodLiteral<"agent_org">;
                 createdAt: z.ZodString;
@@ -2577,6 +2582,7 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
         root_agent: z.ZodObject<{
             base_change_sequence: z.ZodNumber;
             live_sequence_id: z.ZodNullable<z.ZodString>;
+            last_message_change_sequence: z.ZodNullable<z.ZodNumber>;
             is_active: z.ZodBoolean;
             execution_tree: z.ZodObject<{
                 subjectKind: z.ZodLiteral<"agent">;

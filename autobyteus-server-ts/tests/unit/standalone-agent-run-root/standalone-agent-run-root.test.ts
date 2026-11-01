@@ -154,7 +154,7 @@ describe("Agent root of a standalone run", () => {
     const snapshotConnection = await root.openPackageSnapshotConnection();
     const projected = projectAgentCollaborationView({ hostRunId: HOST, isActive: true,
       snapshot: snapshotConnection.snapshot, baseChangeSequence: snapshotConnection.baseChangeSequence,
-      liveSequenceId: snapshotConnection.liveSequenceId, remoteTaskExecutions: [] });
+      liveSequenceId: snapshotConnection.liveSequenceId, lastMessageChangeSequence: snapshotConnection.lastMessageChangeSequence, remoteTaskExecutions: [] });
     expect(projected.root_subject_kind === 'agent' && projected.root_agent.agent_statuses).toHaveLength(3);
     if (projected.root_subject_kind === 'agent') {
       expect(projected.root_agent.agent_statuses.every(s => s.recoverableBlock === null)).toBe(true);
@@ -212,7 +212,7 @@ describe("Agent root of a standalone run", () => {
 
     f.host.crash();
     const stored = await f.manager.getInspection(HOST);
-    expect(stored).toMatchObject({ isActive: false, liveSequenceId: null, snapshot: { tree: { taskExecutions: [{ address: "/code_reviewer", agentRunId: "code-reviewer-run-1" }] }, statuses: [] } });
+    expect(stored).toMatchObject({ isActive: false, liveSequenceId: null, lastMessageChangeSequence: null, snapshot: { tree: { taskExecutions: [{ address: "/code_reviewer", agentRunId: "code-reviewer-run-1" }] }, statuses: [] } });
     expect(f.restores).not.toHaveBeenCalled();
 
     // Stop -> reopen -> send: the command entry restores the host and re-creates the root; the copy
@@ -613,7 +613,7 @@ describe("StandaloneAgentRunRoot owns its host (REQ-001, REQ-004)", () => {
     const live = await root.openPackageSnapshotConnection();
     expect(live.snapshot.closedTaskExecutions).toEqual([closedA]);
     const view = projectAgentCollaborationView({ hostRunId: HOST, isActive: true, snapshot: live.snapshot, baseChangeSequence: live.baseChangeSequence,
-      liveSequenceId: live.liveSequenceId, remoteTaskExecutions: [] });
+      liveSequenceId: live.liveSequenceId, lastMessageChangeSequence: live.lastMessageChangeSequence, remoteTaskExecutions: [] });
     live.close();
     expect(view.root_subject_kind === "agent" && view.root_agent.closed_task_executions).toEqual([closedA]);
     // The tree is never filtered: both copies stay recorded.

@@ -25,7 +25,7 @@ import {
 } from '~/utils/contextFiles/contextFileOwner'
 import { mentionsPresentInText, toCollaboratorMentionDtos } from '~/utils/collaborators/collaboratorMentionText'
 import { useRemoteRunsStore, type RemoteRunRetryAdapter } from '~/stores/remoteRunsStore'
-import { useCollaborationParticipantMessagesStore } from '~/services/collaborationMessages/collaborationParticipantMessages'
+import { rebuildOfView, useCollaborationParticipantMessagesStore } from '~/services/collaborationMessages/collaborationParticipantMessages'
 
 /**
  * The client side of standalone runs' collaboration roots: the task children brought in with
@@ -75,8 +75,7 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
     errors[hostRunId] = null
     // Every publication is a rebuilt view (inspect, attach, reopen): the Team tab's lists load again when a message
     // could have been missed meanwhile (SR-004, SR-005).
-    participantMessages.reloadRoot('agent', hostRunId,
-      { liveSequenceId: context.view.live_sequence_id, baseChangeSequence: context.view.base_change_sequence })
+    participantMessages.reloadRoot('agent', hostRunId, rebuildOfView(context.view))
     // autobyteus-278: the runs this root delegated to other nodes; Retry (the store's rule) acts through this root.
     context.remoteExecutions.forEach((execution) => remoteRuns.register(execution, remoteRetryAdapter(hostRunId)))
     returnToHostWhenUnlisted(hostRunId, context)

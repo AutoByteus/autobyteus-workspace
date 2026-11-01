@@ -69,9 +69,22 @@ const validateAgentRootCorrelation = (value, context) => {
     }
     validateClosedTaskExecutions(view.closed_task_executions, [view.execution_tree], "Agent root", context);
 };
+/** A live view names its live sequence and its latest message sequence (at most its base); a stored view neither. */
+const validateLivePosition = (view, context) => {
+    if ((view.live_sequence_id === null) !== (view.last_message_change_sequence === null)) {
+        addCorrelationIssue(context, "A view names its live sequence and its latest message sequence together.");
+    }
+    else if (view.last_message_change_sequence !== null && view.last_message_change_sequence > view.base_change_sequence) {
+        addCorrelationIssue(context, "A view's latest message sequence is past its base change sequence.");
+    }
+};
 export const RootExecutionViewDtoSchema = z.discriminatedUnion("root_subject_kind", [
     AgentTeamRootExecutionViewDtoSchema, AgentOrgRootExecutionViewDtoSchema, AgentRootExecutionViewDtoSchema,
 ]).superRefine((value, context) => {
+    if (value.root_subject_kind === "agent")
+        validateLivePosition(value.root_agent, context);
+    if (value.root_subject_kind === "agent_org")
+        validateLivePosition(value.root_org, context);
     if (value.root_subject_kind === "agent") {
         validateAgentRootCorrelation(value, context);
         return;

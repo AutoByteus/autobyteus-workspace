@@ -81,6 +81,7 @@ interface ResumeGraphqlData {
     modelConfigEditability: RunModelConfigEditability;
     liveSequenceId: string | null;
     baseChangeSequence: number;
+    lastMessageChangeSequence: number | null;
   } | null;
 }
 
@@ -229,14 +230,22 @@ const selectInitialAgentRunId = (input: {
   return coordinator.agent_run_id;
 };
 
-/** The running Team's live sequence and base as the read names them; a stopped Team names none (SR-006). */
-const liveRebuildOf = (teamRunId: string, raw: Readonly<{ liveSequenceId: unknown; baseChangeSequence: unknown }>): RootContextRebuild => {
-  const { liveSequenceId, baseChangeSequence } = raw;
-  if ((liveSequenceId !== null && (typeof liveSequenceId !== 'string' || !liveSequenceId))
-    || typeof baseChangeSequence !== 'number' || !Number.isInteger(baseChangeSequence) || baseChangeSequence < 0) {
-    throw new Error(`Team resume config for '${teamRunId}' has no valid live sequence.`);
+const isSequence = (value: unknown): value is number => typeof value === 'number' && Number.isInteger(value) && value >= 0;
+
+/** The running Team's live sequence, base and latest message as the read names them; a stopped Team names none (SR-006, SR-007). */
+const liveRebuildOf = (teamRunId: string, raw: Readonly<{ liveSequenceId: unknown; baseChangeSequence: unknown;
+  lastMessageChangeSequence: unknown }>): RootContextRebuild => {
+  const { liveSequenceId, baseChangeSequence, lastMessageChangeSequence } = raw;
+  if (isSequence(baseChangeSequence)) {
+    if (liveSequenceId === null && lastMessageChangeSequence === null) {
+      return Object.freeze({ liveSequenceId, baseChangeSequence, lastMessageChangeSequence });
+    }
+    if (typeof liveSequenceId === 'string' && liveSequenceId !== '' && isSequence(lastMessageChangeSequence)
+      && lastMessageChangeSequence <= baseChangeSequence) {
+      return Object.freeze({ liveSequenceId, baseChangeSequence, lastMessageChangeSequence });
+    }
   }
-  return Object.freeze({ liveSequenceId, baseChangeSequence });
+  throw new Error(`Team resume config for '${teamRunId}' has no valid live sequence.`);
 };
 
 /**

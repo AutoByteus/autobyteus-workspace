@@ -44,7 +44,7 @@ const createHarness = (input: {
     openPackageSnapshotConnection: vi.fn(async () => ({
       snapshot: { tree, closedTaskExecutions: [], messages, inputStates: [], statuses: [] },
       baseChangeSequence: 31,
-      liveSequenceId: "live-team-1",
+      liveSequenceId: "live-team-1", lastMessageChangeSequence: 0,
       subscribe: vi.fn((listener: (event: unknown) => void) => { eventListener = listener; return vi.fn(); }),
       close: closeSnapshot,
     })),

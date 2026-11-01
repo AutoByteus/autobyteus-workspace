@@ -178,7 +178,7 @@ const teamHydrationCandidate = (hydratedContext: AgentTeamContext): any => {
     projectionByAgentRunId: new Map([[focusedAgentRunId, { agentRunId: focusedAgentRunId }]]),
     memberRunStates: [],
     remoteTaskExecutions: [],
-    rebuild: { liveSequenceId: hydratedContext.view.isRootTeamActive() ? 'live-1' : null, baseChangeSequence: 0 },
+    rebuild: { liveSequenceId: hydratedContext.view.isRootTeamActive() ? 'live-1' : null, baseChangeSequence: 0, lastMessageChangeSequence: hydratedContext.view.isRootTeamActive() ? 0 : null },
   }
 }
 

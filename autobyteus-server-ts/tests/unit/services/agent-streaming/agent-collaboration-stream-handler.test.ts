@@ -17,7 +17,7 @@ const fakeRoot = (hostLive = true) => ({
   openPackageSnapshotConnection: vi.fn(async () => ({
     snapshot: { tree, closedTaskExecutions: [], messages: emptyStandaloneRootMessages(HOST), statuses: [], inputStates: [] },
     baseChangeSequence: 0,
-    liveSequenceId: "live-hub-1",
+    liveSequenceId: "live-hub-1", lastMessageChangeSequence: 0,
     subscribe: vi.fn(() => () => undefined),
     close: vi.fn(),
   })),
@@ -124,7 +124,7 @@ describe("AgentCollaborationStreamHandler", () => {
     const root = { ...fakeRoot(), openPackageSnapshotConnection: vi.fn(async () => ({
       snapshot: { tree, closedTaskExecutions: [], messages: emptyStandaloneRootMessages(HOST), statuses: [], inputStates: [] },
       baseChangeSequence: 0,
-      liveSequenceId: "live-hub-1",
+      liveSequenceId: "live-hub-1", lastMessageChangeSequence: 0,
       subscribe: vi.fn((next: (event: unknown) => void) => { listener = next; return () => undefined; }),
       close: vi.fn(),
     })) };

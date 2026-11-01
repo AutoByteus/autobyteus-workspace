@@ -7,6 +7,7 @@ export declare const teamExecutionViewSnapshotPayloadSchema: z.ZodObject<{
     root_team_run_id: z.ZodString;
     base_change_sequence: z.ZodNumber;
     live_sequence_id: z.ZodString;
+    last_message_change_sequence: z.ZodNumber;
     execution_tree: z.ZodType<Readonly<{
         created_at: string;
         archived_at: string | null;
@@ -1110,6 +1111,7 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
         root_team_run_id: z.ZodString;
         base_change_sequence: z.ZodNumber;
         live_sequence_id: z.ZodString;
+        last_message_change_sequence: z.ZodNumber;
         execution_tree: z.ZodType<Readonly<{
             created_at: string;
             archived_at: string | null;

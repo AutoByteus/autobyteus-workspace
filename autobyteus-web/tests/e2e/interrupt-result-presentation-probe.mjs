@@ -197,7 +197,7 @@ const startWsServer = async () => {
         payload: {
           root_team_run_id: TEAM_RUN_ID,
           base_change_sequence: 0,
-          live_sequence_id: 'live-1',
+          live_sequence_id: 'live-1', last_message_change_sequence: 0,
           execution_tree: teamExecutionTree,
           closed_task_executions: [],
           agent_statuses: [{

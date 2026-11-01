@@ -3857,6 +3857,7 @@ export type TeamRunResumeConfigPayload = {
   closedTaskExecutions: Scalars['JSON']['output'];
   executionTree: Scalars['JSON']['output'];
   isActive: Scalars['Boolean']['output'];
+  lastMessageChangeSequence?: Maybe<Scalars['Int']['output']>;
   liveSequenceId?: Maybe<Scalars['String']['output']>;
   modelConfigEditability: RunModelConfigEditabilityObject;
   remoteTaskExecutions: Scalars['JSON']['output'];
@@ -5896,7 +5897,7 @@ export type GetTeamRunResumeConfigQueryVariables = Exact<{
 }>;
 
 
-export type GetTeamRunResumeConfigQuery = { __typename?: 'Query', getTeamRunResumeConfig: { __typename?: 'TeamRunResumeConfigPayload', teamRunId: string, isActive: boolean, executionTree: any, closedTaskExecutions: any, remoteTaskExecutions: any, liveSequenceId?: string | null, baseChangeSequence: number, modelConfigEditability: { __typename?: 'RunModelConfigEditabilityObject', editable: boolean, reason?: string | null } } };
+export type GetTeamRunResumeConfigQuery = { __typename?: 'Query', getTeamRunResumeConfig: { __typename?: 'TeamRunResumeConfigPayload', teamRunId: string, isActive: boolean, executionTree: any, closedTaskExecutions: any, remoteTaskExecutions: any, liveSequenceId?: string | null, baseChangeSequence: number, lastMessageChangeSequence?: number | null, modelConfigEditability: { __typename?: 'RunModelConfigEditabilityObject', editable: boolean, reason?: string | null } } };
 
 export type GetTeamRunExecutionCheckpointQueryVariables = Exact<{
   teamRunId: Scalars['String']['input'];
@@ -13806,6 +13807,7 @@ export const GetTeamRunResumeConfigDocument = gql`
     }
     liveSequenceId
     baseChangeSequence
+    lastMessageChangeSequence
   }
 }
     `;

@@ -12,7 +12,7 @@ const orgSnapshot = (orgRunId = "org-run-1") => ({
   root_run_id: "org-run-1",
   root_org: {
     base_change_sequence: 0,
-    live_sequence_id: "live-1",
+    live_sequence_id: "live-1", last_message_change_sequence: 0,
     is_active: true,
     execution_tree: {
       subjectKind: "agent_org",

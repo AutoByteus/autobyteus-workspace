@@ -77,6 +77,7 @@ export declare const agentRunCollaborationTreeDtoSchema: z.ZodObject<{
 export declare const agentRunCollaborationViewDtoSchema: z.ZodObject<{
     base_change_sequence: z.ZodNumber;
     live_sequence_id: z.ZodNullable<z.ZodString>;
+    last_message_change_sequence: z.ZodNullable<z.ZodNumber>;
     is_active: z.ZodBoolean;
     execution_tree: z.ZodObject<{
         subjectKind: z.ZodLiteral<"agent">;

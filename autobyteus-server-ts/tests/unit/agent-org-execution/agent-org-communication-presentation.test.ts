@@ -11,6 +11,7 @@ import { AgentOrgRun } from "../../../src/agent-org-execution/domain/agent-org-r
 import type { AgentOrgRunEvent } from "../../../src/agent-org-execution/domain/agent-org-run-event.js";
 import { AgentOrgRunPersistenceCoordinator } from "../../../src/agent-org-execution/services/agent-org-run-persistence-coordinator.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgTeamNode } from "../../fixtures/current-agent-org-run-fixtures.js";
+import { isAgentOrgMessageEvent } from "../../../src/agent-org-execution/domain/agent-org-run-event.js";
 
 type ReservedAgentInput = Extract<AgentRunInputReservationResult, { reserved: true }>;
 
@@ -79,7 +80,7 @@ const createSubject = (options: Readonly<{
   const reservations: ReservedAgentInput[] = [];
   const events: AgentOrgRunEvent[] = [];
   const sequences: number[] = [];
-  const publisher = new RootEventPublisher<AgentOrgRunEvent>();
+  const publisher = new RootEventPublisher<AgentOrgRunEvent>({ isMessageEvent: isAgentOrgMessageEvent });
   publisher.subscribe(({ event, changeSequence }) => {
     events.push(event);
     sequences.push(changeSequence);

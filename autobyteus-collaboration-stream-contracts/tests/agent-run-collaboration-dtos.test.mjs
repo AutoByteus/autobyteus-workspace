@@ -29,7 +29,7 @@ const agentView = (overrides = {}) => ({
   root_run_id: "host-run",
   root_agent: {
     base_change_sequence: 3,
-    live_sequence_id: "live-1",
+    live_sequence_id: "live-1", last_message_change_sequence: 0,
     is_active: true,
     execution_tree: {
       subjectKind: "agent", createdAt: "2026-09-30T00:00:00.000Z",
@@ -71,11 +71,16 @@ test("an Agent root view correlates host, children and statuses, and carries no 
 
 test("an Agent root view names its live sequence, or null for a stored view; the field is required (autobyteus-358)", () => {
   assert.equal(RootExecutionViewDtoSchema.parse(agentView()).root_agent.live_sequence_id, "live-1");
-  assert.equal(RootExecutionViewDtoSchema.parse(agentView({ live_sequence_id: null, is_active: false })).root_agent.live_sequence_id, null);
+  assert.equal(RootExecutionViewDtoSchema.parse(agentView({ live_sequence_id: null, last_message_change_sequence: null, is_active: false })).root_agent.live_sequence_id, null);
   const missing = agentView();
   delete missing.root_agent.live_sequence_id;
   assert.throws(() => RootExecutionViewDtoSchema.parse(missing));
-  assert.throws(() => RootExecutionViewDtoSchema.parse(agentView({ live_sequence_id: "" })));
+  assert.throws(() => RootExecutionViewDtoSchema.parse(agentView({ live_sequence_id: "", last_message_change_sequence: 0 })));
+  // The latest message sequence (SR-007) comes with the live sequence, and is never past the base.
+  assert.equal(RootExecutionViewDtoSchema.parse(agentView({ last_message_change_sequence: 3 })).root_agent.last_message_change_sequence, 3);
+  assert.throws(() => RootExecutionViewDtoSchema.parse(agentView({ last_message_change_sequence: 4 })), /past its base/);
+  assert.throws(() => RootExecutionViewDtoSchema.parse(agentView({ last_message_change_sequence: null })), /together/);
+  assert.throws(() => RootExecutionViewDtoSchema.parse(agentView({ live_sequence_id: null, is_active: false })), /together/);
 });
 
 test("Agent root events, lifecycle and commands use root kind 'agent'; SEND_MESSAGE takes mentions", () => {

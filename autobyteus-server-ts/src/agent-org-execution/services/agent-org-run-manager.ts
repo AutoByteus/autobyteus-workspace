@@ -183,6 +183,7 @@ export class AgentOrgRunManager {
     snapshot: AgentOrgRunPackageSnapshot;
     baseChangeSequence: number;
     liveSequenceId: string | null;
+    lastMessageChangeSequence: number | null;
   }>> {
     const orgRunId = required(orgRunIdInput, "orgRunId");
     return this.withTransition(orgRunId, async () => {
@@ -191,7 +192,8 @@ export class AgentOrgRunManager {
         const connection = await active.openPackageSnapshotConnection();
         try {
           return Object.freeze({ orgRunId, isActive: true,
-            snapshot: connection.snapshot, baseChangeSequence: connection.baseChangeSequence, liveSequenceId: connection.liveSequenceId });
+            snapshot: connection.snapshot, baseChangeSequence: connection.baseChangeSequence, liveSequenceId: connection.liveSequenceId,
+            lastMessageChangeSequence: connection.lastMessageChangeSequence });
         } finally { connection.close(); }
       }
       // The view reads the tree only; the message log is read where it is shown (getCollaborationRecordsSnapshot).
@@ -201,7 +203,7 @@ export class AgentOrgRunManager {
       // The current DTO carries statuses for live executions only. Inactive
       // inspection has none; retained contexts initialize as offline.
       const statuses = Object.freeze([]);
-      return Object.freeze({ orgRunId, isActive: false, baseChangeSequence: 0, liveSequenceId: null,
+      return Object.freeze({ orgRunId, isActive: false, baseChangeSequence: 0, liveSequenceId: null, lastMessageChangeSequence: null,
         snapshot: Object.freeze({ tree, closedTaskExecutions: this.closedTaskExecutionsFor(orgRunId, tree),
           statuses, inputStates: [] }) });
     });

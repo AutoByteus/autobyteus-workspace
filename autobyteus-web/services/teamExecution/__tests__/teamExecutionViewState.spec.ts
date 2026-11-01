@@ -289,11 +289,11 @@ describe('TeamExecutionViewState', () => {
       status('student-run', '/StudentStudyGroup/Student', AgentStatus.Idle),
     ];
     expect(state.applySnapshot({ type: 'TEAM_EXECUTION_VIEW_SNAPSHOT', payload: {
-      root_team_run_id: 'root-team-1', base_change_sequence: 3, live_sequence_id: 'live-1', closed_task_executions: [], execution_tree: executionTree,
+      root_team_run_id: 'root-team-1', base_change_sequence: 3, live_sequence_id: 'live-1', last_message_change_sequence: 0, closed_task_executions: [], execution_tree: executionTree,
       agent_input_states: [], remote_task_executions: [], agent_statuses: configuredStatuses,
     } })).toMatchObject({ disposition: 'rejected', code: 'TEAM_EXECUTION_SNAPSHOT_INVALID' });
     expect(state.applySnapshot({ type: 'TEAM_EXECUTION_VIEW_SNAPSHOT', payload: {
-      root_team_run_id: 'root-team-1', base_change_sequence: 3, live_sequence_id: 'live-1', closed_task_executions: [], execution_tree: executionTree,
+      root_team_run_id: 'root-team-1', base_change_sequence: 3, live_sequence_id: 'live-1', last_message_change_sequence: 0, closed_task_executions: [], execution_tree: executionTree,
       agent_input_states: [], remote_task_executions: [], agent_statuses: [...configuredStatuses, status('dormant-student-run', '/Student', AgentStatus.Offline)],
     } })).toMatchObject({ disposition: 'applied' });
     expect(state.getAgentContext('dormant-student-run')?.state.currentStatus).toBe(AgentStatus.Offline);
@@ -321,7 +321,7 @@ describe('TeamExecutionViewState', () => {
     const invalidSnapshot = {
       type: 'TEAM_EXECUTION_VIEW_SNAPSHOT' as const,
       payload: {
-        root_team_run_id: 'foreign-root', base_change_sequence: 9, live_sequence_id: 'live-1', closed_task_executions: [], execution_tree: beforeTree,
+        root_team_run_id: 'foreign-root', base_change_sequence: 9, live_sequence_id: 'live-1', last_message_change_sequence: 0, closed_task_executions: [], execution_tree: beforeTree,
         agent_input_states: [], remote_task_executions: [], agent_statuses: [],
       },
     };
@@ -338,7 +338,7 @@ describe('TeamExecutionViewState', () => {
     const snapshot = state.applySnapshot({
       type: 'TEAM_EXECUTION_VIEW_SNAPSHOT',
       payload: {
-        root_team_run_id: 'root-team-1', base_change_sequence: 4, live_sequence_id: 'live-1', closed_task_executions: [], execution_tree: tree(),
+        root_team_run_id: 'root-team-1', base_change_sequence: 4, live_sequence_id: 'live-1', last_message_change_sequence: 0, closed_task_executions: [], execution_tree: tree(),
         agent_input_states: [], remote_task_executions: [], agent_statuses: [
           { agent_run_id: 'teacher-run', member_address: '/Teacher', status: AgentStatus.Idle, trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null },
           { agent_run_id: 'root-student-run', member_address: '/Student', status: AgentStatus.Idle, trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null },
@@ -383,7 +383,7 @@ describe('TeamExecutionViewState', () => {
       type: 'TEAM_EXECUTION_VIEW_SNAPSHOT',
       payload: {
         root_team_run_id: 'root-team-1',
-        base_change_sequence: 7, live_sequence_id: 'live-1',
+        base_change_sequence: 7, live_sequence_id: 'live-1', last_message_change_sequence: 0,
         closed_task_executions: [], execution_tree: relocatedTree,
         agent_input_states: [], remote_task_executions: [], agent_statuses: [
           {

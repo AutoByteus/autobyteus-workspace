@@ -17,7 +17,7 @@ import type { OrgWorkspaceSelection } from '~/services/agentOrgExecution/agentOr
 import type { AgentOrgExecutionContext } from '~/services/agentOrgExecution/agentOrgExecutionContext'
 import { orgMemberLoadTarget, stageAgentOrgExecutionContext } from '~/services/agentOrgExecution/agentOrgContextHydration'
 import { memberLoader } from '~/services/runHydration/memberLoader'
-import { useCollaborationParticipantMessagesStore } from '~/services/collaborationMessages/collaborationParticipantMessages'
+import { rebuildOfView, useCollaborationParticipantMessagesStore } from '~/services/collaborationMessages/collaborationParticipantMessages'
 import { useRemoteRunsStore, type RemoteRunRetryAdapter } from '~/stores/remoteRunsStore'
 import { AgentOrgStreamingService } from '~/services/agentOrgExecution/agentOrgStreamingService'
 import { acceptLocalSubmission, beginLocalUserSubmission, failLocalSubmission, finalizeLocalSubmissionAttachments, type LocalUserSubmissionHandle } from '~/services/runSubmission/localUserSubmission'
@@ -78,8 +78,7 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
     if (requested !== undefined) candidate.select(requested)
     contexts.value = { ...contexts.value, [id]: candidate }
     errors.value = { ...errors.value, [id]: null }
-    useCollaborationParticipantMessagesStore().reloadRoot('agent_org', id,
-      { liveSequenceId: candidate.view.live_sequence_id, baseChangeSequence: candidate.view.base_change_sequence })
+    useCollaborationParticipantMessagesStore().reloadRoot('agent_org', id, rebuildOfView(candidate.view))
     ensureMemberLoaded(id, selectedAgentRunIdOf(candidate))
     // autobyteus-278: the runs this Org delegated to other nodes; Retry (the store's rule) acts through this Org.
     candidate.remoteExecutions.forEach((execution) => remoteRuns.register(execution, remoteRetryAdapter(id)))

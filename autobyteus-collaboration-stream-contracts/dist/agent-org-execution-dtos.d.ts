@@ -391,6 +391,7 @@ export declare const agentOrgExecutionViewDtoSchema: z.ZodObject<{
     base_change_sequence: z.ZodNumber;
     is_active: z.ZodBoolean;
     live_sequence_id: z.ZodNullable<z.ZodString>;
+    last_message_change_sequence: z.ZodNullable<z.ZodNumber>;
     execution_tree: z.ZodObject<{
         subjectKind: z.ZodLiteral<"agent_org">;
         createdAt: z.ZodString;

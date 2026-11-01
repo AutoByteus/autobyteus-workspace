@@ -23,11 +23,13 @@ const requireStartedExecution = (run: AgentOrgRun, reference: TaskExecutionRefer
 
 export const projectAgentOrgExecutionView = (
   run: AgentOrgRun,
-  connection: Readonly<{ snapshot: AgentOrgRunPackageSnapshot; baseChangeSequence: number; liveSequenceId: string }>,
+  connection: Readonly<{ snapshot: AgentOrgRunPackageSnapshot; baseChangeSequence: number; liveSequenceId: string;
+    lastMessageChangeSequence: number }>,
   remoteTaskExecutions: readonly RemoteTaskExecutionDto[],
 ): RootExecutionViewDto => projectAgentOrgExecutionSnapshot({
   orgRunId: run.orgRunId, isActive: run.isActive(), snapshot: connection.snapshot,
-  baseChangeSequence: connection.baseChangeSequence, liveSequenceId: connection.liveSequenceId, remoteTaskExecutions,
+  baseChangeSequence: connection.baseChangeSequence, liveSequenceId: connection.liveSequenceId,
+  lastMessageChangeSequence: connection.lastMessageChangeSequence, remoteTaskExecutions,
 });
 
 export const projectAgentOrgExecutionSnapshot = (input: Readonly<{
@@ -36,16 +38,18 @@ export const projectAgentOrgExecutionSnapshot = (input: Readonly<{
   snapshot: AgentOrgRunPackageSnapshot;
   baseChangeSequence: number;
   liveSequenceId: string | null;
+  lastMessageChangeSequence: number | null;
   /** autobyteus-278: the runs this Org delegated to other nodes, with their nodes' names. */
   remoteTaskExecutions: readonly RemoteTaskExecutionDto[];
 }>): RootExecutionViewDto => {
-  const { orgRunId, isActive, snapshot, baseChangeSequence, liveSequenceId } = input;
+  const { orgRunId, isActive, snapshot, baseChangeSequence, liveSequenceId, lastMessageChangeSequence } = input;
   return RootExecutionViewDtoSchema.parse({
   root_subject_kind: "agent_org",
   root_run_id: orgRunId,
   root_org: {
     base_change_sequence: baseChangeSequence,
     live_sequence_id: liveSequenceId,
+    last_message_change_sequence: lastMessageChangeSequence,
     is_active: isActive,
     execution_tree: projectAgentOrgExecutionTree(snapshot.tree),
     closed_task_executions: snapshot.closedTaskExecutions,

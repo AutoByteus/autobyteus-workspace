@@ -39,6 +39,10 @@ class TeamRunResumeConfigPayload {
   /** The change sequence this read is consistent with, in `liveSequenceId`; 0 when the Team is not running. */
   @Field(() => Int)
   baseChangeSequence!: number;
+
+  /** The sequence of the running Team's latest message through `baseChangeSequence`; null when not running (SR-007). */
+  @Field(() => Int, { nullable: true })
+  lastMessageChangeSequence!: number | null;
 }
 
 @ObjectType()
@@ -112,6 +116,7 @@ export class TeamRunHistoryResolver {
       modelConfigEditability: config.modelConfigEditability,
       liveSequenceId: config.liveSequenceId,
       baseChangeSequence: config.baseChangeSequence,
+      lastMessageChangeSequence: config.lastMessageChangeSequence,
     };
   }
 

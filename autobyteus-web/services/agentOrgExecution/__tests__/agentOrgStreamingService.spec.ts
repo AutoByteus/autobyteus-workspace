@@ -86,7 +86,7 @@ const snapshot = {
   payload: {
     root_subject_kind: 'agent_org', root_run_id: 'org-run',
     root_org: {
-      base_change_sequence: 4, live_sequence_id: 'live-1', is_active: true,
+      base_change_sequence: 4, live_sequence_id: 'live-1', last_message_change_sequence: 0, is_active: true,
       closed_task_executions: [], execution_tree: {
         subjectKind: 'agent_org', createdAt: '2026-09-01T00:00:00.000Z',
         archivedAt: null, applicationBinding: null, handoffs: [],
@@ -108,7 +108,7 @@ const snapshot = {
 }
 
 const candidate = (selectedAddress: string | null = null, changeSequence = 4) => ({
-  isActive: true, phase: 'live', changeSequence, selectedAddress, view: { live_sequence_id: 'live-1', base_change_sequence: changeSequence }, selection: selectedAddress ? { kind: 'agent_execution', agentRunId: 'agent-run' } : null,
+  isActive: true, phase: 'live', changeSequence, selectedAddress, view: { live_sequence_id: 'live-1', last_message_change_sequence: 0, base_change_sequence: changeSequence }, selection: selectedAddress ? { kind: 'agent_execution', agentRunId: 'agent-run' } : null,
   select: vi.fn(), setActive: vi.fn(), applyEvent: vi.fn(), requireReopen: vi.fn(),
   listAgentContextEntries: () => [], getAgentContext: () => null,
 }) as unknown as AgentOrgExecutionContext

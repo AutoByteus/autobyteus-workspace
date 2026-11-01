@@ -43,7 +43,7 @@ const harness = (subject = TASK, autoExecuteTools = false) => {
   let sequence = 0
   const emit = (type: string, payload: any) => { const wire = JSON.stringify({ type, payload }); parseTeamStreamServerMessage(wire); callbacks.get('onMessage')!(wire) }
   emit('CONNECTED', { session_id: 'session', root_team_run_id: ROOT })
-  emit('TEAM_EXECUTION_VIEW_SNAPSHOT', { root_team_run_id: ROOT, base_change_sequence: 0, live_sequence_id: 'live-1',
+  emit('TEAM_EXECUTION_VIEW_SNAPSHOT', { root_team_run_id: ROOT, base_change_sequence: 0, live_sequence_id: 'live-1', last_message_change_sequence: 0,
     closed_task_executions: [], execution_tree: team.view.getExecutionTree(),
     agent_statuses: team.view.listAgentContextEntries().map(e => ({ agent_run_id: e.agentRunId, member_address: e.memberAddress, status: 'idle', trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null })),
     agent_input_states: [], remote_task_executions: [] }) // recoverableBlock/agent_input_states are required since 6908ccff4

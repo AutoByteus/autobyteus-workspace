@@ -38,7 +38,7 @@ class Socket {
 const envelope = (active: boolean) => {
   const original = taskBearingView()
   const view = { ...original, is_active: active,
-    ...(!active ? { agent_statuses: [], base_change_sequence: 0, live_sequence_id: null } : {}) }
+    ...(!active ? { agent_statuses: [], base_change_sequence: 0, live_sequence_id: null, last_message_change_sequence: null } : {}) }
   return { root_subject_kind: 'agent_org', root_run_id: 'org-run', root_org: view }
 }
 const inspection = (active: boolean) => ({ data: { getAgentOrgRunInspection: envelope(active) } })

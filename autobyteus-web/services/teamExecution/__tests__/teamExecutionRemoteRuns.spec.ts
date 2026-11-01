@@ -20,7 +20,7 @@ const withRemoteSnapshot = () => {
     coordinatorAddress: coordinator.address, rootChildren: [coordinator] })
   const view = team.view
   const result = view.applySnapshot({ type: 'TEAM_EXECUTION_VIEW_SNAPSHOT', payload: {
-    root_team_run_id: 'team-root', base_change_sequence: 3, live_sequence_id: 'live-1', execution_tree: view.getExecutionTree(), closed_task_executions: [],
+    root_team_run_id: 'team-root', base_change_sequence: 3, live_sequence_id: 'live-1', last_message_change_sequence: 0, execution_tree: view.getExecutionTree(), closed_task_executions: [],
     agent_statuses: view.listLiveAgentContextEntries().map((entry) => ({ agent_run_id: entry.agentRunId, member_address: entry.memberAddress,
       status: 'idle', trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null })),
     agent_input_states: [], remote_task_executions: [remoteTeam],
@@ -58,7 +58,7 @@ describe('Team execution view with remote runs', () => {
       taskExecutions: [localCopy('first-copy', '/researcher', '2026-10-23T07:00:00.000Z'), localCopy('last-copy', '/editor', '2026-10-23T09:00:00.000Z')] })
     const view = team.view
     expect(view.applySnapshot({ type: 'TEAM_EXECUTION_VIEW_SNAPSHOT', payload: {
-      root_team_run_id: 'team-root', base_change_sequence: 3, live_sequence_id: 'live-1', execution_tree: view.getExecutionTree(), closed_task_executions: [],
+      root_team_run_id: 'team-root', base_change_sequence: 3, live_sequence_id: 'live-1', last_message_change_sequence: 0, execution_tree: view.getExecutionTree(), closed_task_executions: [],
       agent_statuses: view.listLiveAgentContextEntries().map((entry) => ({ agent_run_id: entry.agentRunId, member_address: entry.memberAddress,
         status: 'idle', trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null })),
       agent_input_states: [], remote_task_executions: [remoteTeam],

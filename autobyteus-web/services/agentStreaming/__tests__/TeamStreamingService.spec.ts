@@ -73,7 +73,7 @@ const emit = (
 
 const snapshotPayload = (team: ReturnType<typeof buildTestTeamContext>, baseChangeSequence = team.view.getChangeSequence()) => ({
   root_team_run_id: rootTeamRunId,
-  base_change_sequence: baseChangeSequence, live_sequence_id: 'live-1',
+  base_change_sequence: baseChangeSequence, live_sequence_id: 'live-1', last_message_change_sequence: 0,
   closed_task_executions: [], execution_tree: team.view.getExecutionTree(),
   agent_input_states: [], remote_task_executions: [],
   agent_statuses: team.view.listAgentContextEntries().map((entry) => ({
@@ -420,8 +420,16 @@ describe('TeamStreamingService current AgentRun event dispatch', () => {
     // A recovery whose snapshot is based on an event the lists saw keeps them (no fetch).
     candidate({ base_change_sequence: 1 });
     expect(owner.statusOf(key).state).toBe('loaded');
+    // Members' output moved the base, but no message is past what the lists hold (SR-007): kept.
+    candidate({ base_change_sequence: 9, last_message_change_sequence: 1 });
+    expect(owner.statusOf(key).state).toBe('loaded');
+    // A message the lists did not see (sequence 11): they load again.
+    candidate({ base_change_sequence: 12, last_message_change_sequence: 11 });
+    expect(owner.statusOf(key).state).toBe('loading');
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    expect(owner.statusOf(key).state).toBe('loaded');
     // Another publisher (a stop and resume, or a restart) at a base the lists saw: they load again.
-    candidate({ base_change_sequence: 1, live_sequence_id: 'live-2' });
+    candidate({ base_change_sequence: 1, live_sequence_id: 'live-2', last_message_change_sequence: 0 });
     expect(owner.statusOf(key).state).toBe('loading');
   });
 

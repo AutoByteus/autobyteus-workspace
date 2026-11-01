@@ -48,6 +48,8 @@ import { testAgentNode, testAgentTeamNode, testCatalogTeamCopy, testTeamRunConfi
 import { buildInitialTeamRunExecutionTree } from "../../../src/agent-team-execution/services/team-run-execution-tree-builder.js";
 import { testAgentOrgExecutionTree, testOrgAgentNode, testOrgLaunchConfiguration } from "../../fixtures/current-agent-org-run-fixtures.js";
 import type { CollaborationCommunicationMessage } from "../../../src/agent-collaboration/execution/communication/collaboration-communication-message.js";
+import { isTeamRunMessageEvent } from "../../../src/agent-team-execution/domain/team-run-event.js";
+import { isAgentOrgMessageEvent } from "../../../src/agent-org-execution/domain/agent-org-run-event.js";
 
 /**
  * The AR-001 guard (design § Remote Links In Memory): per root kind, a tree with one local and one remote link.
@@ -139,7 +141,7 @@ const team = (): Walkers => {
     rootRun: { teamRunId: "team-root", isActive: () => true, isTerminated: () => false, hasOpenExecutionWork: () => false, getLeafAgentStatusSnapshots: () => [] } as never,
     config, tree, messages: { schemaVersion: 1, rootTeamRunId: "team-root", messages: [] },
     persistence: { drain: vi.fn(), enterRootFailStop: vi.fn() } as never,
-    publisher: new TeamRunEventPublisher(),
+    publisher: new TeamRunEventPublisher({ isMessageEvent: isTeamRunMessageEvent }),
     taskExecutionIdentity: createTaskExecutionIdentityCapabilities({ allocateForAgentDefinition: async () => "x" }),
   });
   const links = () => new RemoteRunLinks({ remoteRuns: () => tree.rootTeam.remoteTaskExecutions ?? [] });
@@ -171,7 +173,7 @@ const org = (): Walkers => {
     messages: { schemaVersion: 1, subjectKind: "agent_org", orgRunId: "org-root", messages: [] },
     rootAgents: { get: vi.fn(), isTaskLive: vi.fn(() => false), getStatusSnapshots: vi.fn(() => []), listHandles: vi.fn(() => []) } as never,
     teams: { get: vi.fn(), list: vi.fn(() => []) } as never,
-    callbacks: {} as never, persistence: {} as never, publisher: new RootEventPublisher<AgentOrgRunEvent>(), taskExecutionIdentity: {} as never,
+    callbacks: {} as never, persistence: {} as never, publisher: new RootEventPublisher<AgentOrgRunEvent>({ isMessageEvent: isAgentOrgMessageEvent }), taskExecutionIdentity: {} as never,
   });
   const links = () => new RemoteRunLinks({ remoteRuns: () => tree.rootOrg.remoteTaskExecutions ?? [] });
   return {

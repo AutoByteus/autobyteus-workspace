@@ -66,6 +66,7 @@ import {
   testAgentNode,
   testTeamRunConfig,
 } from "../../fixtures/current-team-run-fixtures.js";
+import { isTeamRunMessageEvent } from "../../../src/agent-team-execution/domain/team-run-event.js";
 
 const rootTeamRunId = "task-delegation-integration-run";
 const tempDirs: string[] = [];
@@ -303,7 +304,7 @@ const createHarness = async () => {
     currentConfig.rootTeam,
     currentConfig,
   );
-  const publisher = new TeamRunEventPublisher<TeamRunEvent>();
+  const publisher = new TeamRunEventPublisher<TeamRunEvent>({ isMessageEvent: isTeamRunMessageEvent });
   const clock = manualTimers();
   const inspect = vi.fn(() => ({ kind: "present" as const }));
   let allocatedTaskAgentOrdinal = 0;

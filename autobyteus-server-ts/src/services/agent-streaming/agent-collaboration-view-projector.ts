@@ -21,6 +21,7 @@ export const projectAgentCollaborationView = (input: Readonly<{
   snapshot: StandaloneRootPackageSnapshot;
   baseChangeSequence: number;
   liveSequenceId: string | null;
+  lastMessageChangeSequence: number | null;
   /** autobyteus-278: the runs this root delegated to other nodes, with their nodes' names. */
   remoteTaskExecutions: readonly RemoteTaskExecutionDto[];
 }>): RootExecutionViewDto => RootExecutionViewDtoSchema.parse({
@@ -29,6 +30,7 @@ export const projectAgentCollaborationView = (input: Readonly<{
   root_agent: {
     base_change_sequence: input.baseChangeSequence,
     live_sequence_id: input.liveSequenceId,
+    last_message_change_sequence: input.lastMessageChangeSequence,
     is_active: input.isActive,
     execution_tree: projectAgentCollaborationTree(input.snapshot.tree),
     closed_task_executions: input.snapshot.closedTaskExecutions,
