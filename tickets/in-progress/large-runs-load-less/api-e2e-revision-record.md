@@ -9,6 +9,7 @@ The latest coverage investigation and execution coverage report remain authorita
 | API-REV-001 | Code reviewer, `code-review-report.md` CRR-002 Pass, round 1 | SR-003, ARCH-REV-003, IR-003, CRR-002 | N/A | Fail / 88% |
 | API-REV-002 | Code reviewer, `code-review-report.md` CRR-005 Pass, round 2 | SR-004, SR-005, SR-006, IR-004, IR-005, CRR-003…CRR-005 | Fail / 88% | Fail / 90% |
 | API-REV-003 | Code reviewer, `code-review-report.md` CRR-007 Pass, round 3 | SR-007, SR-008, IR-006, CRR-006, CRR-007 | Fail / 90% | Pass / 94% |
+| API-REV-004 | Code reviewer, `api-e2e-test-review-report.md` CRR-008 Fail (CR-T-001 Local Fix), round 4 | CRR-008 | Pass / 94% | Pass / 94% |
 
 ## Revision Entries
 
@@ -86,3 +87,29 @@ None.
 - New or remaining failure IDs: none
 - Recommended owner: code reviewer (proportional test-code review)
 - Remaining risks, blocked evidence, or untested scope: FU-004, FU-006; remote participants, the sequence-gap reopen and the reasoning renderer (residuals)
+
+### API-REV-004 — CR-T-001: LRL-004 asserts the reason on desktop and phone
+
+- Triggering role, report path, and round: code reviewer, `api-e2e-test-review-report.md` (CRR-008 Fail, CR-T-001 Local Fix), round 4
+- Triggering finding or case IDs: CR-T-001 (LRL-004 recorded but did not assert "with the reason"); non-blocking notes on LRL-002, LRL-004 and LRL-005
+- Related revision IDs: CRR-008
+- Why this revision was recorded: a test-code correction and its rerun
+- Coverage decisions or durable test paths changed: `autobyteus-web/tests/e2e/large-runs-load-less-cases.mjs`:
+  - LRL-004 asserts `expectedReason` (`<file>:line <n> is not valid JSON`) in the server error, the desktop Team tab, the phone and the restore response; `reasonShown` is removed; it waits for the restore response instead of a fixed delay.
+  - LRL-002 waits until the Org run is inactive, and its header and title say "at most" one member at open.
+  - LRL-005 asserts exactly one reload after the resume.
+- Cases added, changed, removed, or rechecked: API-04, API-06 and API-09 rerun (`--cases LRL-002,LRL-004,LRL-005`): Pass
+- Commands, environment, fixture, or broader-validation delta: none (server `dist` from round 3)
+
+#### Prior Failure Resolution
+
+| Prior Case / Failure Reference | Previous Classification | Current Resolution | Case IDs Now Proving It |
+| --- | --- | --- | --- |
+| CR-T-001: LRL-004 did not assert the reason | Local Fix (API/E2E) | Asserted on the server error, Team tab, phone and restore response | API-06 (`API-04-06-09-r4-lrl-browser-probe.json`) |
+
+- Canonical artifacts and sections updated: report (Round, API-04, API-06, API-09), progress log, `evidence/api-e2e/` (round 4 files)
+- Prior result and confidence: Pass, 94%
+- Current result and confidence: Pass, 94%
+- New or remaining failure IDs: none
+- Recommended owner: code reviewer (recheck CR-T-001 and the notes acted on)
+- Remaining risks, blocked evidence, or untested scope: unchanged (FU-004, FU-006; investigation residuals)

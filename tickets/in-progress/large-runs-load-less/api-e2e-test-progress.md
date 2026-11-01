@@ -26,3 +26,5 @@ Read it first whenever you pick the run back up. Only add rows.
 | 2026-11-01T15:32:47Z | API-03..06, API-09 | Started | | LRL-001..005 r3 |
 | 2026-11-01T15:38:05Z | API-03..06, API-09 | Completed | Pass | r3 LRL-001..005 Pass |
 | 2026-11-01T15:38:05Z | round 3 | Completed | Pass | 94%; seed removed |
+| 2026-11-01T15:44:54Z | API-04, API-06, API-09 | Started | | CR-T-001 Local Fix: LRL-002/004/005 rerun (--cases LRL-002,LRL-004,LRL-005) |
+| 2026-11-01T15:47:44Z | API-04, API-06, API-09 | Completed | Pass | r4: LRL-004 asserts the reason on server, Team tab and phone; resume waits for the restore response; LRL-002 waits for inactive; LRL-005 exactly 1 reload |
