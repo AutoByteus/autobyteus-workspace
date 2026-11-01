@@ -15,8 +15,7 @@ import type { AddressInfo } from "node:net";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
 import { SecretValue } from "autobyteus-ts/secrets/secret-value.js";
 import { createCredentialProxyHost, type CredentialProxyHost } from "../../../src/credential-proxy/credential-proxy-host.js";
-import { createGitHubDefinition, IntegrationDefinitions } from "../../../src/credential-proxy/integration-definitions.js";
-import { IntegrationConnectionStore } from "../../../src/credential-proxy/integration-connection-store.js";
+import { createGitHubDeliveryDefinition, DeliveryDefinitions } from "../../../src/credential-proxy/delivery-definitions.js";
 
 const TOKEN = "test-dummy-git-token-8812";
 const EXPECTED_AUTH = `Basic ${Buffer.from(`x-access-token:${TOKEN}`).toString("base64")}`;
@@ -98,12 +97,20 @@ describe("git smart HTTP through the credential proxy", () => {
     await new Promise<void>((resolve) => upstream.listen(0, "127.0.0.1", resolve));
     const origin = `http://127.0.0.1:${(upstream.address() as AddressInfo).port}`;
     gitOrigin = origin;
-    await new IntegrationConnectionStore(integrationsDir).update("github", (record) => ({
-      ...record, login: "octo", connectedAt: "2026-10-30T00:00:00.000Z", agentDefinitionIds: ["agent-git"],
-    }));
+    // The access rule is a stub granting agent-git (its own tests use the real skill services).
+    const grant = { integrationId: "github", skillName: "github-integration", sourceId: "local:/tmp/integrations" };
     host = createCredentialProxyHost({
       integrationsDir,
-      definitions: new IntegrationDefinitions([createGitHubDefinition({ apiOrigin: origin, gitOrigin: origin })]),
+      definitions: new DeliveryDefinitions([createGitHubDeliveryDefinition({ apiOrigin: origin, gitOrigin: origin })]),
+      access: {
+        grantsForAgent: async (agentDefinitionId: string) => (agentDefinitionId === "agent-git" ? [grant] : []),
+        allowsCall: async (agentDefinitionId: string) => agentDefinitionId === "agent-git",
+      },
+      catalog: {
+        entries: () => [], isSourceRegistered: () => true, describe: () => ({ name: "GitHub", skillName: "github-integration" }),
+        sourceRemoving: async () => undefined, sourceChanging: async () => undefined,
+      },
+      skillSources: null,
       management: () => ({ resolveForUse: async () => SecretValue.fromString(token) }) as never,
     });
     await host.listen();
@@ -116,7 +123,7 @@ describe("git smart HTTP through the credential proxy", () => {
   });
 
   it("clones and pushes through the proxy, with GitHub's Basic format on every upstream call", async () => {
-    const variables = host.runAccess.environmentForRun({ runId: "run-git", agentDefinitionId: "agent-git" }, {});
+    const variables = await host.runAccess.environmentForRun({ runId: "run-git", agentDefinitionId: "agent-git" }, {});
     const clone = path.join(root, "clone");
 
     // Git's redirection sends the git origin to this run's proxy route. Without it, git would reach the upstream
@@ -143,7 +150,7 @@ describe("git smart HTTP through the credential proxy", () => {
   });
 
   it("fails at once with 403 when GitHub rejects the stored token, without prompting", async () => {
-    const variables = host.runAccess.environmentForRun({ runId: "run-git", agentDefinitionId: "agent-git" }, {});
+    const variables = await host.runAccess.environmentForRun({ runId: "run-git", agentDefinitionId: "agent-git" }, {});
     token = "test-dummy-revoked-token";
     try {
       const clone = path.join(root, "clone-rejected");

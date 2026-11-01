@@ -27,7 +27,23 @@ export type SkillSourceInfo = {
   isDefault: boolean;
   github: GitHubSkillSourceInfo | null;
 };
-export type SkillSourceOperationResult = { sources: SkillSourceInfo[]; warnings: string[] };
+export type SkillSourceOperationResult = {
+  sources: SkillSourceInfo[];
+  warnings: string[];
+  /** Set when a GitHub import found the repository already imported (nothing was imported). */
+  alreadyImported?: true;
+};
+
+/**
+ * Told before a source changes, so what depends on its files can let go first (the Integrations page removes the
+ * connections of a source's integrations). A rejection refuses the removal or update.
+ */
+export interface SkillSourceChangeObserver {
+  /** Before a source (local folder or GitHub repository) is removed; `rootPath` is its current root. */
+  sourceRemoving(rootPath: string): Promise<void>;
+  /** Before a GitHub source's update is published: its current root and the prepared new root. */
+  sourceChanging(oldRoot: string, newRoot: string): Promise<void>;
+}
 export const repositoryKey = (repository: { owner: string; repo: string }): string =>
   `${repository.owner}/${repository.repo}`.toLowerCase();
 export const repositoryUrl = (repository: { owner: string; repo: string }): string =>

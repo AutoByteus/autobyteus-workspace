@@ -1,9 +1,10 @@
 /**
  * The credential proxy end to end inside one process: the real loopback listener and routes, a run pass from the
  * real run access, and a fake upstream on `127.0.0.1` standing in for `api.github.com` and `github.com` (the
- * definition's origins point at it). Covers DS-003/DS-005: every refusal before an upstream call, the caller's
- * credentials dropped, each route's auth format, redaction, redirects, the git-only `401` → `403`, the activity
- * records, revocation, and no log line holding the pass. Dummy values only.
+ * delivery definition's origins point at it). The access rule and catalog are stubs here (their own tests use the real
+ * skill services). Covers every refusal before an upstream call with its text, the caller's credentials dropped, each
+ * route's auth format, redaction, redirects, the git-only `401` → `403`, the activity records, revocation, and no log
+ * line holding the pass. Dummy values only.
  */
 import fs from "node:fs";
 import http from "node:http";
@@ -14,8 +15,7 @@ import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } 
 import { SecretValue } from "autobyteus-ts/secrets/secret-value.js";
 import { SecretVaultError } from "autobyteus-ts/secrets/vault/secret-vault-types.js";
 import { createCredentialProxyHost, type CredentialProxyHost } from "../../../src/credential-proxy/credential-proxy-host.js";
-import { createGitHubDefinition, IntegrationDefinitions } from "../../../src/credential-proxy/integration-definitions.js";
-import { IntegrationConnectionStore } from "../../../src/credential-proxy/integration-connection-store.js";
+import { createGitHubDeliveryDefinition, DeliveryDefinitions } from "../../../src/credential-proxy/delivery-definitions.js";
 
 const TOKEN = "test-dummy-proxy-token-4471";
 type Seen = { method: string; url: string; authorization: string | null; cookie: string | null; body: string };
@@ -26,7 +26,8 @@ describe("credential proxy host", () => {
   const seen: Seen[] = [];
   let dir = "";
   let host: CredentialProxyHost;
-  let store: IntegrationConnectionStore;
+  let allowed: Set<string>;
+  const grant = { integrationId: "github", skillName: "github-integration", sourceId: "local:/tmp/integrations" };
   let tokenStored = true;
   let consoleLines: string[] = [];
 
@@ -74,11 +75,20 @@ describe("credential proxy host", () => {
     seen.length = 0;
     tokenStored = true;
     dir = fs.mkdtempSync(path.join(os.tmpdir(), "credential-proxy-host-"));
-    store = new IntegrationConnectionStore(dir);
-    await store.update("github", (record) => ({ ...record, login: "octo", connectedAt: "2026-10-30T00:00:00.000Z", agentDefinitionIds: ["agent-a"] }));
+    allowed = new Set(["agent-a"]);
     host = createCredentialProxyHost({
       integrationsDir: dir,
-      definitions: new IntegrationDefinitions([createGitHubDefinition({ apiOrigin: upstreamOrigin, gitOrigin: upstreamOrigin })]),
+      definitions: new DeliveryDefinitions([createGitHubDeliveryDefinition({ apiOrigin: upstreamOrigin, gitOrigin: upstreamOrigin })]),
+      access: {
+        grantsForAgent: async (agentDefinitionId: string) => (allowed.has(agentDefinitionId) ? [grant] : []),
+        allowsCall: async (agentDefinitionId: string) => allowed.has(agentDefinitionId),
+      },
+      catalog: {
+        entries: () => [], isSourceRegistered: () => true,
+        describe: (id: string) => (id === "github" ? { name: "GitHub", skillName: "github-integration" } : null),
+        sourceRemoving: async () => undefined, sourceChanging: async () => undefined,
+      },
+      skillSources: null,
       management: () => ({
         resolveForUse: async () => {
           if (!tokenStored) throw new SecretVaultError("NOT_FOUND", false, "SECRET_NOT_FOUND");
@@ -99,9 +109,9 @@ describe("credential proxy host", () => {
     fs.rmSync(dir, { recursive: true, force: true });
   });
 
-  const apiUrlFor = (runId: string, agentDefinitionId = "agent-a"): string =>
-    host.runAccess.environmentForRun({ runId, agentDefinitionId }, {}).AUTOBYTEUS_GITHUB_API_URL!;
-  const gitBaseFor = (runId: string): string => apiUrlFor(runId).replace(/\/api$/, "/git");
+  const apiUrlFor = async (runId: string, agentDefinitionId = "agent-a"): Promise<string> =>
+    (await host.runAccess.environmentForRun({ runId, agentDefinitionId }, {})).AUTOBYTEUS_GITHUB_API_URL!;
+  const gitBaseFor = async (runId: string): Promise<string> => (await apiUrlFor(runId)).replace(/\/api$/, "/git");
   const passOf = (url: string): string => /\/r\/(rp_[^/]+)\//.exec(url)![1]!;
   const activity = (): Array<Record<string, unknown>> => {
     const file = path.join(dir, "activity.jsonl");
@@ -113,7 +123,7 @@ describe("credential proxy host", () => {
   };
 
   it("forwards an API call with the stored token as Bearer, dropping the caller's own credentials", async () => {
-    const api = apiUrlFor("run-1");
+    const api = (await apiUrlFor("run-1"));
     const response = await fetch(`${api}/repos/o/r/issues?state=open`, {
       headers: { authorization: "Bearer forged-by-the-caller", cookie: "session=forged" },
     });
@@ -128,24 +138,26 @@ describe("credential proxy host", () => {
   });
 
   it("uses Basic x-access-token on the git route, and maps git's 401 to 403 so git never prompts", async () => {
-    const gitBase = gitBaseFor("run-1");
+    const gitBase = (await gitBaseFor("run-1"));
     const refs = await fetch(`${gitBase}/o/r.git/info/refs?service=git-upload-pack`);
     expect(refs.status).toBe(200);
     expect(seen[0]?.authorization).toBe(`Basic ${Buffer.from(`x-access-token:${TOKEN}`).toString("base64")}`);
 
     const push = await fetch(`${gitBase}/o/r.git/git-receive-pack`, { method: "POST", body: "pack-bytes" });
-    await refused(push, "UPSTREAM_REJECTED_TOKEN");
+    expect(push.status).toBe(403);
+    expect(await push.json()).toEqual({ error: "UPSTREAM_REJECTED_TOKEN",
+      message: "GitHub rejected the stored token. Check it on the Integrations page." });
     expect(seen[1]).toMatchObject({ method: "POST", body: "pack-bytes" });
   });
 
   it("passes the API's own 401 through unchanged", async () => {
-    const response = await fetch(`${apiUrlFor("run-1")}/unauthorized`);
+    const response = await fetch(`${(await apiUrlFor("run-1"))}/unauthorized`);
     expect(response.status).toBe(401);
     expect(await response.json()).toEqual({ message: "Bad credentials" });
   });
 
   it("redacts an echo of the token in the body and the headers", async () => {
-    const response = await fetch(`${apiUrlFor("run-1")}/echo`, { method: "POST", body: JSON.stringify({ x: 1 }),
+    const response = await fetch(`${(await apiUrlFor("run-1"))}/echo`, { method: "POST", body: JSON.stringify({ x: 1 }),
       headers: { "content-type": "application/json" } });
     const text = await response.text();
     expect(text).not.toContain(TOKEN);
@@ -154,7 +166,7 @@ describe("credential proxy host", () => {
   });
 
   it("rewrites a same-origin redirect through the proxy, and passes another host's redirect unchanged", async () => {
-    const api = apiUrlFor("run-1");
+    const api = (await apiUrlFor("run-1"));
     const renamed = await fetch(`${api}/renamed`, { redirect: "manual" });
     expect(renamed.status).toBe(301);
     expect(renamed.headers.get("location")).toBe(`${api}/repos/new-owner/new-name?page=2`);
@@ -170,12 +182,12 @@ describe("credential proxy host", () => {
     ["a path off the git route", (api: string) => `${api.replace(/\/api$/, "/git")}/o/r/settings`, "PATH_NOT_ALLOWED"],
     ["an unknown route", (api: string) => `${api.replace(/\/api$/, "/uploads")}/x`, "PATH_NOT_ALLOWED"],
   ])("refuses %s before any upstream call", async (_label, urlOf, code) => {
-    await refused(await fetch(urlOf(apiUrlFor("run-1"))), code);
+    await refused(await fetch(urlOf((await apiUrlFor("run-1")))), code);
     expect(seen).toEqual([]);
   });
 
   it.each([["/repos/%2e%2e/x"], ["/repos/../x"], ["/a\\b"]])("refuses the raw path %s (sent unnormalized)", async (rawPath) => {
-    const api = new URL(apiUrlFor("run-1"));
+    const api = new URL((await apiUrlFor("run-1")));
     const reply = await new Promise<{ status: number; body: string }>((resolve, reject) => {
       http.get({ host: "127.0.0.1", port: api.port, path: `${api.pathname}${rawPath}` }, (response) => {
         let body = "";
@@ -189,21 +201,27 @@ describe("credential proxy host", () => {
   });
 
   it("refuses a run whose agent is not allowed, or was unticked after the run started", async () => {
-    const api = apiUrlFor("run-1");
-    await store.update("github", (record) => ({ ...record, agentDefinitionIds: [] }));
-    await refused(await fetch(`${api}/user`), "INTEGRATION_NOT_ALLOWED");
-    expect(host.runAccess.environmentForRun({ runId: "run-2", agentDefinitionId: "agent-a" }, {})).toEqual({});
+    const api = (await apiUrlFor("run-1"));
+    allowed.delete("agent-a");
+    const response = await fetch(`${api}/user`);
+    expect(response.status).toBe(403);
+    expect(await response.json()).toEqual({ error: "INTEGRATION_NOT_ALLOWED",
+      message: "This agent has no access to GitHub. Add the github-integration skill to the agent." });
+    expect(await host.runAccess.environmentForRun({ runId: "run-2", agentDefinitionId: "agent-a" }, {})).toEqual({});
     expect(seen).toEqual([]);
   });
 
   it("refuses when GitHub is not connected", async () => {
     tokenStored = false;
-    await refused(await fetch(`${apiUrlFor("run-1")}/user`), "INTEGRATION_NOT_CONNECTED");
+    const response = await fetch(`${(await apiUrlFor("run-1"))}/user`);
+    expect(response.status).toBe(403);
+    expect(await response.json()).toEqual({ error: "INTEGRATION_NOT_CONNECTED",
+      message: "GitHub is not connected on this node. Connect it on the Integrations page." });
     expect(seen).toEqual([]);
   });
 
   it("refuses a non-loopback Host header", async () => {
-    const api = new URL(apiUrlFor("run-1"));
+    const api = new URL((await apiUrlFor("run-1")));
     const status = await new Promise<number>((resolve, reject) => {
       http.get({ host: "127.0.0.1", port: api.port, path: `${api.pathname}/user`, headers: { host: "example.com" } },
         (response) => { response.resume(); resolve(response.statusCode ?? 0); }).on("error", reject);
@@ -213,13 +231,13 @@ describe("credential proxy host", () => {
   });
 
   it("refuses a revoked pass", async () => {
-    const api = apiUrlFor("run-1");
+    const api = (await apiUrlFor("run-1"));
     host.runAccess.revokeForRun("run-1");
     await refused(await fetch(`${api}/user`), "RUN_PASS_INVALID");
   });
 
   it("records every call without the token, the pass or the query, and logs no line with the pass", async () => {
-    const api = apiUrlFor("run-1");
+    const api = (await apiUrlFor("run-1"));
     await fetch(`${api}/repos/o/r?secret=query`);
     await fetch(`${api}//evil.example`);
     await fetch(api.replace(/rp_[^/]+/, "rp_unknown") + "/user");

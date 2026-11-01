@@ -1,11 +1,13 @@
 /**
- * Runtime shells × GitHub credential proxy (autobyteus-311, AC-002, AC-006, AC-007; DEC-011): a real run in each
- * runtime, whose agent is ticked for GitHub, uses GitHub from its own shell through the proxy, with the GitHub test token.
+ * Runtime shells × GitHub credential proxy (autobyteus-311 AC-002, AC-006, AC-007; DEC-011; autobyteus-337 REQ-005): a
+ * real run in each runtime, whose agent has the GitHub integration's skill, uses GitHub from its own shell through the
+ * proxy, with the GitHub test token.
  *
- * Setup: an in-process studio server with its own application vault. GitHub is connected once through
- * `connectGitHubIntegration` with `test.github.token` from the test vault (the token is revealed only in that request).
- * Each cell:
- *   1. ticks a new agent and starts its run. The run's shell runs `tests/fixtures/github-proxy-shell-probe.sh`, which
+ * Setup: an in-process studio server with its own application vault. A local folder with a `github` integration
+ * (`integration.json` and a `SKILL.md` named `github-integration`) is imported through `importIntegrations`, and GitHub
+ * is connected once through `connectIntegration` with `test.github.token` from the test vault (the token is revealed
+ * only in that request). Each cell:
+ *   1. gives a new agent the `github-integration` skill and starts its run. The run's shell runs `tests/fixtures/github-proxy-shell-probe.sh`, which
  *      records `env` and `ps`, curls issue #1 of `ryan-zheng-teki/autobyteus-mcp-test` at `$AUTOBYTEUS_GITHUB_API_URL`
  *      and runs `git ls-remote https://github.com/<repo>.git` (git's redirection, unchanged URL).
  *      - live runtimes: the agent is asked in chat to run the probe with its own shell tool (native `run_bash`, the Claude
@@ -15,10 +17,10 @@
  *      answered issue #1 and the ls-remote; the token is in none of the shell's env, process listing, outputs, the run's
  *      wire messages, the data dir (database, memory, workspaces, integrations files) or a temp `CODEX_HOME`. No tool
  *      approval was requested (Codex with auto-execute off runs in `workspace-write`; DEC-011 adds its network).
- *   3. with the run's own address: untick → `403 INTEGRATION_NOT_ALLOWED`; tick again → 200; stop the run →
- *      `403 RUN_PASS_INVALID`. Each call has its activity record.
- * Also (AGY scripted): a run of an agent that is not ticked gets none of the variables; in a team, only the member
- * whose agent is ticked gets them, and stopping the team ends its pass.
+ *   3. with the run's own address: the skill removed from the agent → `403 INTEGRATION_NOT_ALLOWED`; added again → 200;
+ *      stop the run → `403 RUN_PASS_INVALID`. Each call has its activity record.
+ * Also (AGY scripted): a run of an agent without the skill gets none of the variables; in a team, only the member
+ * whose agent has the skill gets them, and stopping the team ends its pass.
  * Gates (a skip is not a pass), always with RUN_GITHUB_PROXY_E2E=1 and AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault:
  *   - AGY scripted (no model): RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<abs>/tests/fixtures/agy-shell-env-probe-cli.mjs
  *   - native AutoByteus with LM Studio: RUN_LMSTUDIO_E2E=1 (LMSTUDIO_TARGET_TEXT_MODEL, default qwen3.6-35b-a3b)
@@ -57,6 +59,7 @@ type Live = "native" | "claude" | "codex-workspace-write" | "codex-full-access" 
 type ProbeResult = { apiHttp: string; gitStatus: number; psStatus: number; psEnvStatus: number };
 
 const REPOSITORY = "ryan-zheng-teki/autobyteus-mcp-test";
+const SKILL = "github-integration";
 const PROBE = fileURLToPath(new URL("../../fixtures/github-proxy-shell-probe.sh", import.meta.url));
 const AGY_PROBE_CLI = fileURLToPath(new URL("../../fixtures/agy-shell-env-probe-cli.mjs", import.meta.url));
 const AGY_COMMAND = process.env["ANTIGRAVITY_CLI_COMMAND"]?.trim() ?? "";
@@ -109,10 +112,10 @@ const mask = (text: string) => text.replace(/rp_[A-Za-z0-9_-]+/g, "rp_<pass>");
 suite("Runtime shells use GitHub through the credential proxy (live GitHub)", () => {
   let dataDir = "";
   let probeRoot = "";
+  let integrationSource = "";
   let app: FastifyInstance | null = null;
   let url: URL;
   let secret: string | null = null;
-  const ticked = new Set<string>();
   const runIds: string[] = [];
   const teamRunIds: string[] = [];
   const previous = { lmStudioHosts: process.env["LMSTUDIO_HOSTS"], probeScript: process.env["AGY_SHELL_PROBE_SCRIPT"],
@@ -125,25 +128,29 @@ suite("Runtime shells use GitHub through the credential proxy (live GitHub)", ()
     if (!body.data || body.errors?.length) throw new Error(JSON.stringify(body.errors ?? body));
     return body.data;
   };
-  const setTicks = () => gql("mutation($ids: [String!]!) { setGitHubIntegrationAgentAccess(agentDefinitionIds: $ids) { agentDefinitionIds } }",
-    { ids: [...ticked] });
-  /** Connects GitHub once, with the test token (skips the cell with its reason when the token is unavailable). */
+  /** Gives an agent the GitHub integration's skill, or takes it away (the access rule follows the skill). */
+  const setSkill = (agentDefinitionId: string, hasSkill: boolean) => gql(
+    "mutation($input: UpdateAgentDefinitionInput!) { updateAgentDefinition(input: $input) { id } }",
+    { input: { id: agentDefinitionId, skillNames: hasSkill ? [SKILL] : [] } });
+  /** Imports the integration folder and connects GitHub once, with the test token (skips the cell when it is unavailable). */
   const connect = async (context: TestContext) => {
     if (secret) return;
     const token = await readLiveTestSecret(context, "test.github.token");
-    const status = (await gql<{ connectGitHubIntegration: { connected: boolean; login: string | null } }>(
-      "mutation($token: String!) { connectGitHubIntegration(token: $token) { connected login } }",
-      { token: token.revealToTrustedConsumer() })).connectGitHubIntegration;
-    expect(status).toMatchObject({ connected: true, login: expect.any(String) });
+    const imported = (await gql<{ importIntegrations: Array<{ id: string; state: string }> }>(
+      "mutation($location: String!) { importIntegrations(location: $location) { id state } }", { location: integrationSource })).importIntegrations;
+    expect(imported).toEqual([{ id: "github", state: "NEEDS_TOKEN" }]);
+    const card = (await gql<{ connectIntegration: { state: string; login: string | null } }>(
+      "mutation($token: String!) { connectIntegration(id: \"github\", token: $token) { state login } }",
+      { token: token.revealToTrustedConsumer() })).connectIntegration;
+    expect(card).toMatchObject({ state: "CONNECTED", login: expect.any(String) });
     secret = token.revealToTrustedConsumer();
   };
-  const createAgent = async (label: string, toolNames: string[], tick: boolean) => {
+  const createAgent = async (label: string, toolNames: string[], hasSkill: boolean) => {
     const id = (await gql<{ createAgentDefinition: { id: string } }>(
       "mutation($input: CreateAgentDefinitionInput!) { createAgentDefinition(input: $input) { id } }",
       { input: { name: `gh-proxy-${label}-${randomUUID().slice(0, 6)}`, role: "assistant", category: "runtime-e2e",
-        description: "GitHub credential proxy shell test agent.", toolNames,
+        description: "GitHub credential proxy shell test agent.", toolNames, skillNames: hasSkill ? [SKILL] : [],
         instructions: "You are a shell test agent. Run exactly the one shell command the user gives you, once, with your shell tool. Do not run any other command, do not read or explore files, and do not change the command. Then reply FINISHED." } })).createAgentDefinition.id;
-    if (tick) { ticked.add(id); await setTicks(); }
     return id;
   };
   const pickModel = async (kind: RuntimeKind, preferred: Array<string | undefined>) => {
@@ -228,17 +235,17 @@ suite("Runtime shells use GitHub through the credential proxy (live GitHub)", ()
     expect({ issueNumber: probe.issueNumber, lsRemoteHead: probe.lsRemoteHead, tokenInShellOutputs: probe.tokenInShellOutputs })
       .toEqual({ issueNumber: 1, lsRemoteHead: true, tokenInShellOutputs: [] });
   };
-  /** Untick → refused; tick again → allowed; stop → the pass is invalid. Returns the observed statuses. */
+  /** Skill removed → refused; skill added again → allowed; stop → the pass is invalid. Returns the observed statuses. */
   const lifecycle = async (agentDefinitionId: string, address: string, stop: () => Promise<void>) => {
-    ticked.delete(agentDefinitionId); await setTicks();
-    const unticked = await call(address);
-    ticked.add(agentDefinitionId); await setTicks();
-    const reticked = await call(address);
+    await setSkill(agentDefinitionId, false);
+    const skillRemoved = await call(address);
+    await setSkill(agentDefinitionId, true);
+    const skillAdded = await call(address);
     await stop();
     const stopped = await call(address);
-    expect({ unticked, reticked, stopped }).toEqual({ unticked: { status: 403, error: "INTEGRATION_NOT_ALLOWED" },
-      reticked: { status: 200, error: null }, stopped: { status: 403, error: "RUN_PASS_INVALID" } });
-    return { unticked, reticked, stopped };
+    expect({ skillRemoved, skillAdded, stopped }).toEqual({ skillRemoved: { status: 403, error: "INTEGRATION_NOT_ALLOWED" },
+      skillAdded: { status: 200, error: null }, stopped: { status: 403, error: "RUN_PASS_INVALID" } });
+    return { skillRemoved, skillAdded, stopped };
   };
   const terminate = (runId: string) => async () => {
     const result = (await gql<{ terminateAgentRun: { success: boolean; message: string } }>(
@@ -263,6 +270,13 @@ suite("Runtime shells use GitHub through the credential proxy (live GitHub)", ()
   beforeAll(async () => {
     dataDir = await fs.realpath(await fs.mkdtemp(path.join(os.tmpdir(), "github-proxy-shells-e2e-")));
     probeRoot = path.join(dataDir, "agy-probes");
+    // The integration source: a folder holding the `github` integration (its skill needs no scripts for this probe).
+    integrationSource = path.join(dataDir, "integration-source");
+    await fs.mkdir(path.join(integrationSource, "github"), { recursive: true });
+    await fs.writeFile(path.join(integrationSource, "github", "integration.json"), JSON.stringify({
+      name: "GitHub", description: "GitHub through the credential proxy.", token: { help: "A test token." }, prerequisites: ["curl", "git"] }));
+    await fs.writeFile(path.join(integrationSource, "github", "SKILL.md"),
+      `---\nname: ${SKILL}\ndescription: Reach GitHub through the AutoByteus proxy.\n---\n\nUse $AUTOBYTEUS_GITHUB_API_URL.\n`);
     await fs.writeFile(path.join(dataDir, ".env"), "AUTOBYTEUS_SERVER_HOST=http://localhost:8000\nAPP_ENV=test\n");
     process.env["LMSTUDIO_HOSTS"] ??= "http://127.0.0.1:1234";
     process.env["AGY_SHELL_PROBE_SCRIPT"] = PROBE;
@@ -281,7 +295,7 @@ suite("Runtime shells use GitHub through the credential proxy (live GitHub)", ()
     if (app) {
       for (const id of teamRunIds) await gql("mutation($id: String!) { terminateAgentTeamRun(teamRunId: $id) { success } }", { id }).catch(() => undefined);
       for (const id of runIds) await gql("mutation($id: String!) { terminateAgentRun(agentRunId: $id) { success } }", { id }).catch(() => undefined);
-      if (secret) await gql("mutation { disconnectGitHubIntegration { connected } }").catch(() => undefined);
+      if (secret) await gql("mutation { disconnectIntegration(id: \"github\") { state } }").catch(() => undefined);
       await app.close();
     }
     await resetSecretVaultRuntimeForTests();
@@ -292,7 +306,7 @@ suite("Runtime shells use GitHub through the credential proxy (live GitHub)", ()
     if (dataDir) await fs.rm(dataDir, { recursive: true, force: true });
   }, 120_000);
 
-  it.skipIf(!ENABLED.agyScripted)("agy (scripted CLI): the AGY process's shell reaches GitHub; untick, re-tick, stop", async (context) => {
+  it.skipIf(!ENABLED.agyScripted)("agy (scripted CLI): the AGY process's shell reaches GitHub; skill removed, added again, stop", async (context) => {
     await connect(context);
     const agent = await createAgent("agy-scripted", [], true);
     const mark = (await activitySince(0)).count;
@@ -310,20 +324,20 @@ suite("Runtime shells use GitHub through the credential proxy (live GitHub)", ()
     expect(scan).toMatchObject({ onWire: false, filesInDataDir: [] });
   }, 300_000);
 
-  it.skipIf(!ENABLED.agyScripted)("agy (scripted CLI): a run of an agent that is not ticked gets no variables", async (context) => {
+  it.skipIf(!ENABLED.agyScripted)("agy (scripted CLI): a run of an agent without the skill gets no variables", async (context) => {
     await connect(context);
-    const agent = await createAgent("agy-not-ticked", [], false);
+    const agent = await createAgent("agy-without-skill", [], false);
     const runId = await startRun(agent, RuntimeKind.ANTIGRAVITY_CLI, await pickModel(RuntimeKind.ANTIGRAVITY_CLI, []),
-      path.join(dataDir, "workspace-agy-not-ticked"), true);
+      path.join(dataDir, "workspace-agy-without-skill"), true);
     const probe = await readProbe(path.join(probeRoot, runId));
-    await writeSummary("agy-not-ticked", { runtime: "antigravity_cli (scripted CLI)", probe });
+    await writeSummary("agy-without-skill", { runtime: "antigravity_cli (scripted CLI)", probe });
     expect(probe).toMatchObject({ address: null, gitConfig: [], terminalPrompt: null, result: { apiHttp: "skipped" } });
   }, 300_000);
 
-  it.skipIf(!ENABLED.agyScripted)("agy (scripted CLI) team: only the member whose agent is ticked gets the variables", async (context) => {
+  it.skipIf(!ENABLED.agyScripted)("agy (scripted CLI) team: only the member whose agent has the skill gets the variables", async (context) => {
     await connect(context);
-    const lead = await createAgent("team-lead-ticked", [], true);
-    const helper = await createAgent("team-helper-not-ticked", [], false);
+    const lead = await createAgent("team-lead-with-skill", [], true);
+    const helper = await createAgent("team-helper-without-skill", [], false);
     const model = await pickModel(RuntimeKind.ANTIGRAVITY_CLI, []);
     const workspace = path.join(dataDir, "workspace-team");
     await fs.mkdir(workspace, { recursive: true });
@@ -362,7 +376,7 @@ suite("Runtime shells use GitHub through the credential proxy (live GitHub)", ()
     expect(scan).toMatchObject({ onWire: false, filesInDataDir: [] });
   }, 300_000);
 
-  it.skipIf(!ENABLED.grokScripted)("grok (recorded fake CLI): the Grok process's shell reaches GitHub; untick, re-tick, stop", async (context) => {
+  it.skipIf(!ENABLED.grokScripted)("grok (recorded fake CLI): the Grok process's shell reaches GitHub; skill removed, added again, stop", async (context) => {
     await connect(context);
     const agent = await createAgent("grok-scripted", [], true);
     const out = path.join(dataDir, "grok-scripted-probe");
@@ -396,7 +410,7 @@ suite("Runtime shells use GitHub through the credential proxy (live GitHub)", ()
 
   for (const label of Object.keys(LIVE) as Live[]) {
     const cell = LIVE[label];
-    it.skipIf(!cell.enabled)(`${label}: the agent's own shell reaches GitHub through the proxy; untick, re-tick, stop`, async (context) => {
+    it.skipIf(!cell.enabled)(`${label}: the agent's own shell reaches GitHub through the proxy; skill removed, added again, stop`, async (context) => {
       await connect(context);
       const agent = await createAgent(label, cell.toolNames, true);
       const model = await pickModel(cell.kind, cell.preferred);

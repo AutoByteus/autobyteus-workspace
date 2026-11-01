@@ -1,18 +1,19 @@
+import type { SecretValue } from "autobyteus-ts/secrets/secret-value.js";
 import type { IntegrationId } from "../secret-management/domain/secret-id.js";
 
 /** How a route adds the integration's credential to an upstream request. */
-export type IntegrationAuthFormat = "bearer" | "basic-x-access-token";
+export type DeliveryAuthFormat = "bearer" | "basic-x-access-token";
 
 /**
  * One forwarding target of an integration (a route), with its own auth format and allowed paths. The upstream
- * origin is a field, so where the proxy forwards to can become configurable later (DEC-010).
+ * origin is a field, so where the proxy forwards to can become configurable later.
  */
-export type IntegrationRoute = Readonly<{
+export type DeliveryRoute = Readonly<{
   id: string;
   origin: string;
   /** Prefix added before the caller's path (empty for both GitHub routes). */
   basePath: string;
-  auth: IntegrationAuthFormat;
+  auth: DeliveryAuthFormat;
   /** Whether the request body is buffered (sent with its length) or streamed (git packs can be large). */
   buffersRequestBody: boolean;
   /** Whether a text or JSON response body is buffered so an echo of the token can be redacted. */
@@ -22,20 +23,27 @@ export type IntegrationRoute = Readonly<{
   allows(method: string, pathname: string): boolean;
 }>;
 
+/** What a token check with the service answered. */
+export type TokenCheck =
+  | Readonly<{ status: "accepted"; login: string }>
+  | Readonly<{ status: "rejected" }>
+  | Readonly<{ status: "unchecked" }>;
+
 /**
- * The app-owned description of one integration: its routes, upstream addresses, auth formats and shell variables.
- * Never read from an installed skill, so where a token may go is decided by the app (REQ-005, DEC-005).
+ * The app-owned part of one integration (DEC-001): where its token may go (routes, upstream addresses, auth formats),
+ * the shell variables a run gets, and how a token is checked. Never read from an imported source, so an integration
+ * repository can't send a token anywhere new. Name, description and help text come from the integration's manifest.
  */
-export type IntegrationDefinition = Readonly<{
+export type DeliveryDefinition = Readonly<{
   id: IntegrationId;
-  displayName: string;
-  description: string;
-  routes: Readonly<Record<string, IntegrationRoute>>;
+  routes: Readonly<Record<string, DeliveryRoute>>;
   /**
    * The variables a run's shell gets for this integration. `env` is the environment so far (the run's base
    * environment plus earlier integrations' variables): git config is appended after its `GIT_CONFIG_COUNT` entries.
    */
   shellVariables(proxyBaseUrl: string, pass: string, env: Readonly<Record<string, string | undefined>>): Record<string, string>;
+  /** Checks a token with the service before it is stored; never logs or returns it. */
+  verifyToken(token: SecretValue, fetchImpl: typeof fetch): Promise<TokenCheck>;
 }>;
 
 const API_METHODS = new Set(["GET", "POST", "PATCH", "PUT", "DELETE"]);
@@ -50,15 +58,13 @@ const existingGitConfigCount = (env: Readonly<Record<string, string | undefined>
   return Number.isInteger(count) && count > 0 ? count : 0;
 };
 
-export type GitHubDefinitionOrigins = Readonly<{ apiOrigin: string; gitOrigin: string }>;
+export type GitHubDeliveryOrigins = Readonly<{ apiOrigin: string; gitOrigin: string }>;
 
-/** GitHub: the REST/GraphQL API (`Bearer`) and git smart-HTTP (`Basic x-access-token:<token>`, M-3). */
-export const createGitHubDefinition = (
-  origins: GitHubDefinitionOrigins = { apiOrigin: "https://api.github.com", gitOrigin: "https://github.com" },
-): IntegrationDefinition => Object.freeze({
+/** GitHub: the REST/GraphQL API (`Bearer`) and git smart-HTTP (`Basic x-access-token:<token>`). */
+export const createGitHubDeliveryDefinition = (
+  origins: GitHubDeliveryOrigins = { apiOrigin: "https://api.github.com", gitOrigin: "https://github.com" },
+): DeliveryDefinition => Object.freeze({
   id: "github",
-  displayName: "GitHub",
-  description: "Lets the agents you choose call the GitHub API and use git with your token, without seeing it.",
   routes: Object.freeze({
     api: Object.freeze({
       id: "api",
@@ -96,21 +102,41 @@ export const createGitHubDefinition = (
       GIT_TERMINAL_PROMPT: "0",
     };
   },
+  // `GET /user` with `Bearer`: the login on success, 401 when GitHub rejects the token.
+  verifyToken: async (token, fetchImpl) => {
+    let response: Response;
+    try {
+      response = await fetchImpl(new URL("/user", origins.apiOrigin), {
+        headers: {
+          accept: "application/vnd.github+json",
+          authorization: `Bearer ${token.revealToTrustedConsumer()}`,
+          "user-agent": "AutoByteus",
+        },
+        redirect: "manual",
+      });
+    } catch {
+      return { status: "unchecked" };
+    }
+    if (response.status === 401) return { status: "rejected" };
+    if (!response.ok) return { status: "unchecked" };
+    const login = ((await response.json().catch(() => null)) as { login?: unknown } | null)?.login;
+    return typeof login === "string" && login ? { status: "accepted", login } : { status: "unchecked" };
+  },
 });
 
-/** The integrations the app defines. Jira is added later as one more definition on the same proxy (REQ-011). */
-export class IntegrationDefinitions {
-  private readonly byId: ReadonlyMap<string, IntegrationDefinition>;
+/** The integrations this app can deliver a credential for. Jira is added later as one more definition. */
+export class DeliveryDefinitions {
+  private readonly byId: ReadonlyMap<string, DeliveryDefinition>;
 
-  constructor(definitions: readonly IntegrationDefinition[] = [createGitHubDefinition()]) {
+  constructor(definitions: readonly DeliveryDefinition[] = [createGitHubDeliveryDefinition()]) {
     this.byId = new Map(definitions.map((definition) => [definition.id, definition]));
   }
 
-  get(integrationId: string): IntegrationDefinition | null {
+  get(integrationId: string): DeliveryDefinition | null {
     return this.byId.get(integrationId) ?? null;
   }
 
-  route(integrationId: string, routeId: string): IntegrationRoute | null {
+  route(integrationId: string, routeId: string): DeliveryRoute | null {
     const routes = this.get(integrationId)?.routes;
     return routes && Object.prototype.hasOwnProperty.call(routes, routeId) ? routes[routeId]! : null;
   }

@@ -308,7 +308,7 @@ export const buildStudioServer = async (input: {
     agentToolsMcpHost = createAgentToolsMcpHost({
       loggingConfig: input.loggingConfig,
     });
-    credentialProxyHost = createCredentialProxyHost();
+    credentialProxyHost = createCredentialProxyHost({ agentDefinitions: hostDefinitionServices.agentDefinitionService });
     const agentProviderFactoryBuilder = createProcessAgentProviderFactoryBuilder({
       workspaceManager, nativeCommandProcessScope: nativeShutdown.scope,
     });

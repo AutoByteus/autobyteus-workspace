@@ -1,22 +1,24 @@
 /**
- * The credential proxy's pure parts: the GitHub definition (routes, path rules, shell variables), the caller-path
- * checks and upstream URL (AR-003), the run passes, and the run access decision. Dummy values only.
+ * The credential proxy's pure parts: the GitHub delivery definition (routes, path rules, shell variables, token check),
+ * the caller-path checks and upstream URL, the run passes with their grants, the run access (grants from the access
+ * rule), and the connections store. Dummy values only.
  */
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { SecretValue } from "autobyteus-ts/secrets/secret-value.js";
 import { buildUpstreamUrl, parseCallerPath } from "../../../src/credential-proxy/credential-proxy-forwarder.js";
-import { createGitHubDefinition, IntegrationDefinitions } from "../../../src/credential-proxy/integration-definitions.js";
+import { createGitHubDeliveryDefinition, DeliveryDefinitions } from "../../../src/credential-proxy/delivery-definitions.js";
 import { IntegrationConnectionStore } from "../../../src/credential-proxy/integration-connection-store.js";
 import { DefaultIntegrationRunAccess } from "../../../src/credential-proxy/integration-run-access.js";
 import { RunPassRegistry } from "../../../src/credential-proxy/run-pass-registry.js";
 
-const github = createGitHubDefinition();
+const github = createGitHubDeliveryDefinition();
 const api = github.routes.api!;
 const git = github.routes.git!;
 
-describe("GitHub definition", () => {
+describe("GitHub delivery definition", () => {
   it("allows the API's methods on any path, and only git's smart-HTTP endpoints on the git route", () => {
     expect(api.allows("GET", "/repos/o/r/issues")).toBe(true);
     expect(api.allows("DELETE", "/repos/o/r/labels/x")).toBe(true);
@@ -74,47 +76,79 @@ describe("caller path checks (AR-003)", () => {
   });
 });
 
+describe("GitHub token check", () => {
+  const TOKEN = SecretValue.fromString("test-dummy-check-token");
+  it("answers the login, a rejection on 401, and unchecked when GitHub can't answer", async () => {
+    const fetchWith = (response: Response | Error) => vi.fn(async () => {
+      if (response instanceof Error) throw response;
+      return response;
+    }) as unknown as typeof fetch;
+    const accepted = fetchWith(Response.json({ login: "octo" }));
+    expect(await github.verifyToken(TOKEN, accepted)).toEqual({ status: "accepted", login: "octo" });
+    expect(vi.mocked(accepted).mock.calls[0]![1]).toMatchObject({ redirect: "manual" });
+    expect(await github.verifyToken(TOKEN, fetchWith(new Response("{}", { status: 401 })))).toEqual({ status: "rejected" });
+    expect(await github.verifyToken(TOKEN, fetchWith(new Response("{}", { status: 502 })))).toEqual({ status: "unchecked" });
+    expect(await github.verifyToken(TOKEN, fetchWith(new TypeError("fetch failed")))).toEqual({ status: "unchecked" });
+  });
+});
+
 describe("run passes and run access", () => {
   let dir = "";
   beforeEach(() => { dir = fs.mkdtempSync(path.join(os.tmpdir(), "credential-proxy-core-")); });
   afterEach(() => { fs.rmSync(dir, { recursive: true, force: true }); });
+  const grant = { integrationId: "github", skillName: "github-integration", sourceId: "local:/tmp/integrations" };
 
-  it("issues one unguessable pass per run, reuses it while active, and revokes it idempotently", () => {
+  it("issues one unguessable pass per run, reuses it with the latest grants, and revokes it idempotently", () => {
     const passes = new RunPassRegistry();
-    const first = passes.issue({ runId: "run-1", agentDefinitionId: "agent-a" });
+    const first = passes.issue({ runId: "run-1", agentDefinitionId: "agent-a" }, [grant]);
     expect(first).toMatch(/^rp_[A-Za-z0-9_-]{43}$/);
-    expect(passes.issue({ runId: "run-1", agentDefinitionId: "agent-a" })).toBe(first);
-    expect(passes.issue({ runId: "run-2", agentDefinitionId: "agent-a" })).not.toBe(first);
-    expect(passes.lookup(first)).toEqual({ runId: "run-1", agentDefinitionId: "agent-a" });
+    expect(passes.lookup(first)?.grants.get("github")).toEqual(grant);
+    expect(passes.issue({ runId: "run-1", agentDefinitionId: "agent-a" }, [])).toBe(first);
+    expect(passes.lookup(first)?.grants.size).toBe(0);
+    expect(passes.issue({ runId: "run-2", agentDefinitionId: "agent-a" }, [grant])).not.toBe(first);
     passes.revoke("run-1");
     passes.revoke("run-1");
     expect(passes.lookup(first)).toBeNull();
-    expect(passes.issue({ runId: "run-1", agentDefinitionId: "agent-a" })).not.toBe(first);
+    expect(passes.issue({ runId: "run-1", agentDefinitionId: "agent-a" }, [grant])).not.toBe(first);
   });
 
-  it("gives variables and a pass only to runs of allowed agents", async () => {
-    const store = new IntegrationConnectionStore(dir);
-    await store.update("github", (record) => ({ ...record, agentDefinitionIds: ["agent-a"] }));
+  it("gives variables and a pass only to runs the access rule grants, and clears an active pass's grants otherwise", async () => {
     const passes = new RunPassRegistry();
+    const grantsForAgent = vi.fn(async (agentDefinitionId: string) => (agentDefinitionId === "agent-a" ? [grant] : []));
     const access = new DefaultIntegrationRunAccess({
-      store, definitions: new IntegrationDefinitions(), passes, proxyBaseUrl: () => "http://127.0.0.1:5000",
+      access: { grantsForAgent }, definitions: new DeliveryDefinitions(), passes, proxyBaseUrl: () => "http://127.0.0.1:5000",
     });
 
-    expect(access.environmentForRun({ runId: "run-b", agentDefinitionId: "agent-b" }, {})).toEqual({});
-    const env = access.environmentForRun({ runId: "run-a", agentDefinitionId: "agent-a" }, {});
+    expect(await access.environmentForRun({ runId: "run-b", agentDefinitionId: "agent-b" }, {})).toEqual({});
+    const env = await access.environmentForRun({ runId: "run-a", agentDefinitionId: "agent-a" }, {});
     const pass = /\/r\/(rp_[^/]+)\//.exec(env.AUTOBYTEUS_GITHUB_API_URL ?? "")?.[1];
-    expect(pass && passes.lookup(pass)).toEqual({ runId: "run-a", agentDefinitionId: "agent-a" });
+    expect(pass && passes.lookup(pass)?.grants.get("github")).toEqual(grant);
+
+    // The same run prepared again after the skill was removed: its pass stays but grants nothing.
+    grantsForAgent.mockResolvedValueOnce([]);
+    expect(await access.environmentForRun({ runId: "run-a", agentDefinitionId: "agent-a" }, {})).toEqual({});
+    expect(passes.lookup(pass!)?.grants.size).toBe(0);
     access.revokeForRun("run-a");
     expect(passes.lookup(pass!)).toBeNull();
   });
 
   it("reads a missing or malformed connections file as not connected, and keeps it until a save", async () => {
     const store = new IntegrationConnectionStore(dir);
-    expect(store.read("github")).toEqual({ login: null, connectedAt: null, agentDefinitionIds: [] });
+    expect(store.read("github")).toEqual({ login: null, connectedAt: null });
     fs.writeFileSync(path.join(dir, "connections.json"), "{not json");
-    expect(store.allowedIntegrations("agent-a")).toEqual([]);
+    expect(store.read("github")).toEqual({ login: null, connectedAt: null });
     expect(fs.readFileSync(path.join(dir, "connections.json"), "utf8")).toBe("{not json");
-    await store.update("github", (record) => ({ ...record, agentDefinitionIds: ["agent-a"] }));
-    expect(store.isAllowed("agent-a", "github")).toBe(true);
+    await store.update("github", () => ({ login: "octo", connectedAt: "2026-11-01T00:00:00.000Z" }));
+    expect(store.read("github")).toEqual({ login: "octo", connectedAt: "2026-11-01T00:00:00.000Z" });
+  });
+
+  it("reads a beta.4 entry (with agent ticks) as its login, and drops the ticks at the next write", async () => {
+    fs.writeFileSync(path.join(dir, "connections.json"), JSON.stringify({ integrations: { github: {
+      login: "octo", connectedAt: "2026-10-30T00:00:00.000Z", agentDefinitionIds: ["agent-a"] } } }));
+    const store = new IntegrationConnectionStore(dir);
+    expect(store.read("github")).toEqual({ login: "octo", connectedAt: "2026-10-30T00:00:00.000Z" });
+    await store.update("github", (record) => ({ ...record, login: "octo-renamed" }));
+    expect(JSON.parse(fs.readFileSync(path.join(dir, "connections.json"), "utf8"))).toEqual({ integrations: { github: {
+      login: "octo-renamed", connectedAt: "2026-10-30T00:00:00.000Z" } } });
   });
 });

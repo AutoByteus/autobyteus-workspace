@@ -287,7 +287,7 @@ describe("AgentRunManager candidate lifecycle", () => {
   it("ends the credential-proxy pass a backend got during an activation that fails before attachment (AR-002)", async () => {
     const passes = new RunPassRegistry();
     const integrationRunAccess: IntegrationRunAccess = {
-      environmentForRun: (run) => ({ AUTOBYTEUS_GITHUB_API_URL: `http://127.0.0.1:1/r/${passes.issue(run)}/github/api` }),
+      environmentForRun: async (run) => ({ AUTOBYTEUS_GITHUB_API_URL: `http://127.0.0.1:1/r/${passes.issue(run, [])}/github/api` }),
       revokeForRun: (runId) => passes.revoke(runId),
     };
     let pass = "";
@@ -295,8 +295,8 @@ describe("AgentRunManager candidate lifecycle", () => {
       codexBackendFactory: {
         // The backend prepares the run (issuing its pass), then the activation fails on the identity check.
         createBackend: vi.fn(async (config: AgentRunConfig, runId: string) => {
-          pass = /\/r\/(rp_[^/]+)\//.exec(integrationRunAccess.environmentForRun(
-            { runId, agentDefinitionId: config.agentDefinitionId }, {}).AUTOBYTEUS_GITHUB_API_URL!)![1]!;
+          pass = /\/r\/(rp_[^/]+)\//.exec((await integrationRunAccess.environmentForRun(
+            { runId, agentDefinitionId: config.agentDefinitionId }, {})).AUTOBYTEUS_GITHUB_API_URL!)![1]!;
           return createBackend({ runId: "different-run" });
         }),
         restoreBackend: vi.fn(),
@@ -313,10 +313,10 @@ describe("AgentRunManager candidate lifecycle", () => {
 
   it("ends an attached run's credential-proxy pass when the run is released", async () => {
     const passes = new RunPassRegistry();
-    const pass = passes.issue({ runId: "run-released", agentDefinitionId: "agent-a" });
+    const pass = passes.issue({ runId: "run-released", agentDefinitionId: "agent-a" }, []);
     const manager = createManager({
       codexBackendFactory: { createBackend: vi.fn(async () => createBackend({ runId: "run-released" })), restoreBackend: vi.fn() },
-      integrationRunAccess: { environmentForRun: () => ({}), revokeForRun: (runId) => passes.revoke(runId) },
+      integrationRunAccess: { environmentForRun: async () => ({}), revokeForRun: (runId) => passes.revoke(runId) },
     });
     const candidate = await manager.beginActivation({ kind: "new", runId: "run-released", config: createConfig() }).prepare();
     candidate.commitPublication();

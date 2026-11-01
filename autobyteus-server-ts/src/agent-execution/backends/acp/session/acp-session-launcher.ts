@@ -82,15 +82,14 @@ export class AcpSessionLauncher {
     const { launchProfile, sessionProfile } = this.deps;
     const { owner, config, assertAccepting } = request;
     assertAccepting();
+    // The run's integration variables (a reopen keeps the run's pass).
+    const integrationVariables = (await this.deps.integrationRunAccess?.environmentForRun(
+      { runId: request.runId, agentDefinitionId: config.agentDefinitionId }, globalThis.process.env)) ?? {};
+    assertAccepting();
     const process = AcpAgentProcess.spawn({
       command: launchProfile.command(),
       args: launchProfile.args({ model: config.llmModelIdentifier, reasoningEffort: reasoningEffortOf(config) }),
-      // The run's integration variables (a reopen keeps the run's pass).
-      env: {
-        ...launchProfile.env(globalThis.process.env),
-        ...this.deps.integrationRunAccess?.environmentForRun(
-          { runId: request.runId, agentDefinitionId: config.agentDefinitionId }, globalThis.process.env),
-      },
+      env: { ...launchProfile.env(globalThis.process.env), ...integrationVariables },
       cwd: request.workingDirectory,
     });
     owner.process = process;

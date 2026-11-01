@@ -5,11 +5,11 @@ import type { IntegrationRunAccess } from "../../../credential-proxy/integration
  * `terminalChildEnvironment` seam, which replaces `process.env` for the run's child processes. A run without
  * integration access, or a host without a credential proxy, gets nothing.
  */
-export const integrationShellCustomData = (
+export const integrationShellCustomData = async (
   access: IntegrationRunAccess | null | undefined,
   run: Readonly<{ runId: string; agentDefinitionId: string }>,
-): Record<string, unknown> => {
-  const variables = access?.environmentForRun(run, process.env) ?? {};
+): Promise<Record<string, unknown>> => {
+  const variables = (await access?.environmentForRun(run, process.env)) ?? {};
   return Object.keys(variables).length === 0
     ? {}
     : { terminalChildEnvironment: (): NodeJS.ProcessEnv => ({ ...process.env, ...variables }) };
