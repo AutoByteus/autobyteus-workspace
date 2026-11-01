@@ -1646,6 +1646,13 @@ export declare const RootExecutionEventDtoSchema: z.ZodDiscriminatedUnion<[z.Zod
         selections: z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
             agentRunId: z.ZodString;
             selection: z.ZodObject<{
+                runtimeKind: z.ZodOptional<z.ZodEnum<{
+                    autobyteus: "autobyteus";
+                    claude_agent_sdk: "claude_agent_sdk";
+                    codex_app_server: "codex_app_server";
+                    antigravity_cli: "antigravity_cli";
+                    grok_build: "grok_build";
+                }>>;
                 llmModelIdentifier: z.ZodString;
                 llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
                 selectedAt: z.ZodString;
@@ -1653,6 +1660,13 @@ export declare const RootExecutionEventDtoSchema: z.ZodDiscriminatedUnion<[z.Zod
         }, z.core.$strict>, z.ZodObject<{
             teamRunId: z.ZodString;
             selection: z.ZodObject<{
+                runtimeKind: z.ZodOptional<z.ZodEnum<{
+                    autobyteus: "autobyteus";
+                    claude_agent_sdk: "claude_agent_sdk";
+                    codex_app_server: "codex_app_server";
+                    antigravity_cli: "antigravity_cli";
+                    grok_build: "grok_build";
+                }>>;
                 llmModelIdentifier: z.ZodString;
                 llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
                 selectedAt: z.ZodString;
@@ -1944,6 +1958,13 @@ export declare const RootExecutionEventDtoSchema: z.ZodDiscriminatedUnion<[z.Zod
         selections: z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
             agentRunId: z.ZodString;
             selection: z.ZodObject<{
+                runtimeKind: z.ZodOptional<z.ZodEnum<{
+                    autobyteus: "autobyteus";
+                    claude_agent_sdk: "claude_agent_sdk";
+                    codex_app_server: "codex_app_server";
+                    antigravity_cli: "antigravity_cli";
+                    grok_build: "grok_build";
+                }>>;
                 llmModelIdentifier: z.ZodString;
                 llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
                 selectedAt: z.ZodString;
@@ -1951,6 +1972,13 @@ export declare const RootExecutionEventDtoSchema: z.ZodDiscriminatedUnion<[z.Zod
         }, z.core.$strict>, z.ZodObject<{
             teamRunId: z.ZodString;
             selection: z.ZodObject<{
+                runtimeKind: z.ZodOptional<z.ZodEnum<{
+                    autobyteus: "autobyteus";
+                    claude_agent_sdk: "claude_agent_sdk";
+                    codex_app_server: "codex_app_server";
+                    antigravity_cli: "antigravity_cli";
+                    grok_build: "grok_build";
+                }>>;
                 llmModelIdentifier: z.ZodString;
                 llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
                 selectedAt: z.ZodString;
@@ -3015,6 +3043,13 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
             selections: z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
                 agentRunId: z.ZodString;
                 selection: z.ZodObject<{
+                    runtimeKind: z.ZodOptional<z.ZodEnum<{
+                        autobyteus: "autobyteus";
+                        claude_agent_sdk: "claude_agent_sdk";
+                        codex_app_server: "codex_app_server";
+                        antigravity_cli: "antigravity_cli";
+                        grok_build: "grok_build";
+                    }>>;
                     llmModelIdentifier: z.ZodString;
                     llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
                     selectedAt: z.ZodString;
@@ -3022,6 +3057,13 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
             }, z.core.$strict>, z.ZodObject<{
                 teamRunId: z.ZodString;
                 selection: z.ZodObject<{
+                    runtimeKind: z.ZodOptional<z.ZodEnum<{
+                        autobyteus: "autobyteus";
+                        claude_agent_sdk: "claude_agent_sdk";
+                        codex_app_server: "codex_app_server";
+                        antigravity_cli: "antigravity_cli";
+                        grok_build: "grok_build";
+                    }>>;
                     llmModelIdentifier: z.ZodString;
                     llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
                     selectedAt: z.ZodString;
@@ -3313,6 +3355,13 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
             selections: z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
                 agentRunId: z.ZodString;
                 selection: z.ZodObject<{
+                    runtimeKind: z.ZodOptional<z.ZodEnum<{
+                        autobyteus: "autobyteus";
+                        claude_agent_sdk: "claude_agent_sdk";
+                        codex_app_server: "codex_app_server";
+                        antigravity_cli: "antigravity_cli";
+                        grok_build: "grok_build";
+                    }>>;
                     llmModelIdentifier: z.ZodString;
                     llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
                     selectedAt: z.ZodString;
@@ -3320,6 +3369,13 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
             }, z.core.$strict>, z.ZodObject<{
                 teamRunId: z.ZodString;
                 selection: z.ZodObject<{
+                    runtimeKind: z.ZodOptional<z.ZodEnum<{
+                        autobyteus: "autobyteus";
+                        claude_agent_sdk: "claude_agent_sdk";
+                        codex_app_server: "codex_app_server";
+                        antigravity_cli: "antigravity_cli";
+                        grok_build: "grok_build";
+                    }>>;
                     llmModelIdentifier: z.ZodString;
                     llmConfig: z.ZodNullable<z.ZodRecord<z.ZodString, z.ZodType<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown, z.core.$ZodTypeInternals<import("@autobyteus/agent-presentation-contracts").JsonValue, unknown>>>>;
                     selectedAt: z.ZodString;

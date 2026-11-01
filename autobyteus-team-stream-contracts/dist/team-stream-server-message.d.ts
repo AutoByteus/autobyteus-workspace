@@ -1469,10 +1469,12 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
         selections: z.ZodArray<z.ZodUnion<readonly [z.ZodObject<{
             agent_run_id: z.ZodString;
             selection: z.ZodType<Readonly<{
+                runtime_kind?: import("./team-execution-view-dtos.js").AgentLaunchConfigurationDto["runtime_kind"];
                 llm_model_identifier: string;
                 llm_config: Readonly<Record<string, import("./schema-helpers.js").JsonValue>> | null;
                 selected_at: string;
             }>, unknown, z.core.$ZodTypeInternals<Readonly<{
+                runtime_kind?: import("./team-execution-view-dtos.js").AgentLaunchConfigurationDto["runtime_kind"];
                 llm_model_identifier: string;
                 llm_config: Readonly<Record<string, import("./schema-helpers.js").JsonValue>> | null;
                 selected_at: string;
@@ -1480,10 +1482,12 @@ export declare const teamStreamServerMessageSchema: z.ZodDiscriminatedUnion<[z.Z
         }, z.core.$strict>, z.ZodObject<{
             team_run_id: z.ZodString;
             selection: z.ZodType<Readonly<{
+                runtime_kind?: import("./team-execution-view-dtos.js").AgentLaunchConfigurationDto["runtime_kind"];
                 llm_model_identifier: string;
                 llm_config: Readonly<Record<string, import("./schema-helpers.js").JsonValue>> | null;
                 selected_at: string;
             }>, unknown, z.core.$ZodTypeInternals<Readonly<{
+                runtime_kind?: import("./team-execution-view-dtos.js").AgentLaunchConfigurationDto["runtime_kind"];
                 llm_model_identifier: string;
                 llm_config: Readonly<Record<string, import("./schema-helpers.js").JsonValue>> | null;
                 selected_at: string;

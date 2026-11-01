@@ -45,3 +45,18 @@ test("a live Save's DELEGATED_LAUNCH_SELECTIONS_CHANGED carries each saved choic
   assert.throws(() => parseTeamStreamServerMessage({ ...message, payload: { ...message.payload,
     selections: [{ agent_run_id: "ie", team_run_id: "se", selection: haiku }] } }));
 });
+
+const codexHaiku = { runtime_kind: "codex_app_server", llm_model_identifier: "gpt-5", llm_config: null, selected_at: "2026-11-01T00:00:00.000Z" };
+
+test("a user choice may carry the agent runtime; the launch rule yields it, and absent keeps the started runtime", () => {
+  const agent = { kind: "task_agent", address: "/ie", agent_run_id: "ie", platform_agent_run_id: null, delegator_agent_run_id: "pm",
+    started_at: "t", source: agentSource, user_launch_selection: codexHaiku };
+  assert.deepEqual(taskAgentExecutionDtoSchema.parse(agent), agent);
+  assert.throws(() => taskAgentExecutionDtoSchema.parse({ ...agent, user_launch_selection: { ...codexHaiku, runtime_kind: "claude" } }));
+  assert.deepEqual(teamCopyAgentLaunch({ started: claude, agentSelection: codexHaiku }),
+    { launch: { ...claude, runtime_kind: "codex_app_server", llm_model_identifier: "gpt-5", llm_config: null }, selected: "agent" });
+  assert.equal(teamCopyAgentLaunch({ started: claude, followsTeam: true, teamSelection: codexHaiku }).launch.runtime_kind, "codex_app_server");
+  assert.equal(teamCopyAgentLaunch({ started: claude, agentSelection: haiku }).launch.runtime_kind, "claude_agent_sdk");
+  const message = { type: "DELEGATED_LAUNCH_SELECTIONS_CHANGED", payload: { change_sequence: 5, selections: [{ agent_run_id: "ie", selection: codexHaiku }] } };
+  assert.deepEqual(parseTeamStreamServerMessage(message), message);
+});
