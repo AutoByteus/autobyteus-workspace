@@ -7,6 +7,7 @@ The latest `code-review-report.md` (or `api-e2e-test-review-report.md`) is autho
 | Revision ID | Canonical Review Report | Entry Point / Trigger | Prior Result | Current Result | Affected Finding IDs |
 | --- | --- | --- | --- | --- | --- |
 | CRR-001 | `code-review-report.md` | Implementation Review, round 1 (IR-001) | N/A | Pass | None |
+| CRR-002 | `code-review-report.md` | API/E2E Failure-Origin Review, round 2 (API-REV-001 F-API-001; O-1) | Pass | Fail: `Design Impact` → Solution Designer | F-API-001; CR-C2 and CR-C6 reclassified |
 
 ## Revision Entries
 
@@ -43,3 +44,32 @@ None.
 - Material score or classification changes: N/A (baseline); Large / High confirmed
 - Recommended recipient: API/E2E engineer
 - Remaining risks or uncertainty: design step 7 is validation-owned (AC-002 across two stamped builds on the real app and Docker; N-2; AC-003 to AC-005 live; the member reload view). D3.4's wave text should be aligned by the Solution Designer.
+
+### CRR-002 — Failure-origin review of F-API-001 (the eligibility race) and O-1 (member notice unseen)
+
+- Canonical review report updated: `code-review-report.md` (§ Round 2; Latest Authoritative Result)
+- Review entry point and round: API/E2E Failure-Origin Review, round 2
+- Review scope: `N/A` (failure-origin)
+- Triggering role, report path, and finding or scenario IDs: API/E2E engineer, `api-e2e-execution-coverage-report.md` (API-REV-001), F-API-001 (AC-003 / AR-002 / BEH-003), O-1 (API-05T); evidence API-04, API-04B, API-04C, API-05T
+- Relevant solution revision IDs: SR-002, SR-004
+- Relevant architecture-review revision IDs: ARCH-REV-002
+- Relevant implementation revision IDs: IR-001
+- Relevant API/E2E revision IDs: API-REV-001
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: `Pass` (CRR-001)
+- Current authoritative result: `Fail`, `Design Impact`, owned by the Solution Designer
+- What changed in the review result and why:
+  - The eligibility check runs before a 0.3–0.5 s restore and post, and no owner refuses the post afterwards. So an archive done in that window is resumed (a paid turn on an archived run), and a user message whose activation is still in progress is preceded by the notice turn (REQ-003).
+  - Two design premises are false: "live means received input" and "the check sits immediately before the post".
+  - O-1 shows that a resumed member's notice is never seen in the realistic flow, so BEH-004 is unmet for members. CR-C2 is reclassified, and FU-004 should be absorbed.
+  - Round 1 review gaps: CR-C6 (I rejected this exact race) and CR-C2 (I relied on live display).
+- Supported product scenario / material-premise basis changes: the archive and message races are Supported Explicit Edge Scenarios (AR-002). A user Stop of an offline run is not a product action, so it is not a finding.
+
+#### Prior Finding Resolution
+
+None (CRR-001 had no findings). Candidates CR-C2 and CR-C6 from round 1 are reclassified; see the report.
+
+- New or remaining finding IDs: F-API-001 (Design Impact); CR-C2 / O-1 (Design Impact)
+- Material score or classification changes: category 8 goes from 9.3 to 8.6; Large / High unchanged
+- Recommended recipient: Solution Designer
+- Remaining risks or uncertainty: whether a post to an archived run's root is refused anywhere today (Read only); the choice among (i) a conditional post at the owner, (ii) narrowing the window, and (iii) accepting the residual with the user's approval.

@@ -2,9 +2,83 @@
 
 All ticket paths are under `/Users/normy/autobyteus_org/autobyteus-worktrees/restart-resume/tickets/in-progress/restart-resume/`.
 
+> **Latest round: 2, API/E2E Failure-Origin Review (CRR-002), `Fail` → `Design Impact` for the Solution Designer.** Round 1 (CRR-001, `Pass`) is kept below; § Round 2 and the Latest Authoritative Result supersede it.
+
+## Round 2 — Failure-Origin Review of F-API-001 (CRR-002)
+
+### Meta
+
+- Trigger: API/E2E engineer, API-REV-001 `Fail` (89.9%).
+  - Code `b50e2354ab`, from a clean checkout of `400e4d5b9c`.
+  - Docs and evidence `7d6bc4dc54`.
+- Coverage investigation / execution report / API/E2E revision record: `api-e2e-coverage-investigation.md`, `api-e2e-execution-coverage-report.md`, `api-e2e-revision-record.md` (API-REV-001).
+- Project testing guideline: `TESTING.md`. Temporary data roots only; the user's app and data were untouched.
+- Failing scenarios: AC-003 / AR-002 / BEH-003. A run archived, or messaged by the user, while the resumer is handling it.
+- Command: `evidence/API-285-server-probe.mjs … queue-race …`. The cases are API-04, API-04B and API-04C.
+- Evidence (`evidence/`): `API-04-result.json` (`acted`, `after`), `API-04-server-X1.log:284-286`, `API-04B-result.json` (`conversationTail`), `API-04C-*`. O-1: `API-05T-result.json`, `API-05T-X1-team-live.png`.
+
+### What the evidence shows
+
+- **(a) An archived run is resumed (API-04).**
+  - t-archive was archived with `success: true` at about 24.41 s, after its eligibility check had passed.
+  - "Restart resume resumed host run '…067447d2…'" was logged at 24.69 s, and the run has 1 notice.
+  - So an archived run took a paid turn, against BEH-003 ("Never resumed").
+- **(b) A messaged run gets the notice turn first** (API-04, API-04B, API-04C).
+  - The user's message was sent 0.02–0.3 s before the target's post.
+  - The run's conversation is: notice → assistant → user → assistant. That is two turns where REQ-003 says skip ("already received new input").
+- **Correct outside the race:** an archive that finishes before the check is skipped ("its root is archived", API-04B and API-04C). Live runs are skipped (unit tests).
+
+### Origin (Read: `restart-resumer.ts:107-164`, `standalone-agent-run-root-manager.ts:146-197`)
+
+The guard and the post are not one step. `resumeOne` runs `ineligibility(entry)` first. Only after it passes does it call `postToHost`, which goes through `standaloneRootManager.postUserMessage`: that resolves or restores the root, readies the host and posts. Or it calls `postToMember`: `resolveOrRestore`, then `executeAgentCommand`. Restore and activation take about 0.3–0.5 s, and two premises the guard relies on fail inside that window:
+
+1. **"Live means received new input" (design D3.5) is false during an activation.** A user's message starts its own restore and activation, and `AgentRunManager.getActiveRun` reports nothing until that activation completes. So a run whose user input is already admitted reads as "not live". A user Stop of an offline run is not a product action: Stop is not offered for an offline run, and `terminateAgentRun` returns "Agent run not found" (API-04). The Stop part of AR-002 is not reachable, and it is not a finding.
+2. **"Immediately before posting" (AR-002) is not where the check sits.** The design places the check in step 5 and the restore in step 6, so the implementation follows the design's order. Then nothing at the owner refuses the post:
+   - the root does not refuse a post to an archived run;
+   - the run's input admission does not know that the notice is conditional.
+
+   A check made outside the owner, before a slow restore, can't guard the post.
+
+- **Not an implementation defect:** the code follows SR-004's order exactly (check, then dispatch). The host path has no hook between restore and post where a re-check could go; `postUserMessage` does both.
+- **Not a test problem:** both triggers are real user actions through the product's surfaces (GraphQL archive, a user message), timed around a real resume.
+- **Scenario validity:** `Supported Explicit Edge Scenario`.
+  - The design itself contracts this concurrency: AR-002 says a run "the user messages … or archives while it waits in the queue" is not resumed.
+  - It is most likely when a user is present at relaunch: a desktop "Install update and restart", after which the user types to an agent right away.
+  - In the unattended midnight update, the user's stated purpose, nobody is present, so it is rare.
+- **Consequences:**
+  - (a) a paid turn on an archived run, against BEH-003;
+  - (b) an extra paid turn before the user's message, possibly duplicating the work the user asked for.
+- **Review gap (mine):** CR-C6 in round 1 rejected exactly this race as "a window of milliseconds; not a second concurrent turn". That was wrong. The window is the restore plus the user's own activation, and the result is a second turn ahead of the user's input. I did not consider the archive race at all.
+
+### A second point from the evidence: O-1 changes CR-C2 (member notice)
+
+- In round 1 I accepted the member-memory gap (CR-C2, FU-004) as a residual because the notice is "met live". API-05T shows that in the realistic flow, a member's notice is posted about 1 s after the start. No window is viewing the member at that moment, and member history doesn't keep it. **So the user never sees a resumed member's notice.**
+- That contradicts BEH-004 ("The user sees in each resumed run a notice") for Team and Org members and delegated runs. I am reclassifying CR-C2: it is not a cosmetic residual but this ticket's behavior. FU-004 should be absorbed into this ticket's design revision.
+- The host path is fine: rendered live and after a reload (API-05H).
+
+### Classification and directions (the Solution Designer decides)
+
+- **`Design Impact`**, owned by the Solution Designer, for both:
+  - **F-API-001:** the eligibility guard must be atomic with the post, at the owner;
+  - **CR-C2 / O-1:** a member's notice must be persisted, so the user can see it after the fact.
+- **Directions observed for F-API-001** (not prescribed):
+  - **i.** Make the post itself conditional at the owner. For example, the root or run admits the notice only if, at admission time, the run has no other input admitted since the restart and its root is neither archived nor terminated. That needs a small boundary addition (a conditional post, or an "only if idle and eligible" option), used by both the host and the member paths.
+  - **ii.** Narrow the window without owner support:
+    - count an in-progress activation as live (`AgentRunManager` knows its pending activations);
+    - re-check the root's history row after the restore, immediately before the post.
+
+    This shrinks the race to milliseconds but doesn't close it, and the host path needs an API hook between restore and post.
+  - **iii.** Accept the residual: (b) an extra notice turn, (a) an archived run resumed within its restore window. This is a requirements decision under BEH-003 and REQ-003, so the user's call.
+  - **Related, possibly pre-existing (Read only, not traced further):** whether a post to an archived run's root is refused anywhere, for example a peer's remote message to an archived run. If not, (i) covers it as well.
+- **Directions for O-1** (from FU-004): persist the member notice, either as the member run's `SYSTEM_TASK_NOTIFICATION` with the duplicate `member_input` presentation filtered, or as a history-projected system entry. Then the member's history shows it after a reload, as a host's does.
+
+### Follow-ups
+
+- FU-004 should move into this ticket (reclassified above). The Solution Designer updates `follow-ups.md` when revising.
+
 ## Review Round Meta
 
-- Review Entry Point: `Implementation Review`
+- Review Entry Point (round 1): `Implementation Review`
 - Requirements Doc Reviewed As Context: `requirements-doc.md` (Approved by the user, SR-002: REQ-001 to REQ-006; DEC-001 = A, DEC-002 to DEC-005)
 - Investigation Notes Reviewed As Context: `investigation-notes.md`
 - Solution Revision Record Reviewed As Context: SR-001 to SR-004
@@ -187,6 +261,21 @@ N/A: the review passes.
 - FU-001 to FU-004.
 
 ## Latest Authoritative Result
+
+**Round 2 (CRR-002), authoritative:**
+
+- Review Decision: `Fail` (failure-origin)
+- Review Entry Point: `API/E2E Failure-Origin Review`
+- Supported Product Scenario Gate: `Pass`. The archive and message races are `Supported Explicit Edge Scenario`s that the design contracts (AR-002).
+- Material-Premise Gate: `Fail`. Two premises are contradicted:
+  - "a live run means it received new input" (false during an activation);
+  - "the check sits immediately before the post" (a slow restore comes between them).
+- Score note: category 8, Runtime Correctness, goes from 9.3 to 8.6 (BEH-003 and REQ-003 are violated in a race; BEH-004 is unmet for members in the realistic flow). The other categories stand.
+- Failure Origin: `Design Impact`, for F-API-001 and the reclassified CR-C2 (O-1). The code follows the design. Round 1 gaps: CR-C6, and CR-C2's live-display premise.
+- Recommended Recipient: Solution Designer.
+- Notes: everything else in API-REV-001 holds: AC-002 on server and desktop, N-2, AC-004, AR-001, AR-005, AC-005 and AC-006.
+
+**Round 1 (CRR-001), superseded:**
 
 - Review Decision: `Pass`
 - Review Entry Point: `Implementation Review`
