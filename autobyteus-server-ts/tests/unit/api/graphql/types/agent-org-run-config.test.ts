@@ -1,3 +1,4 @@
+import { RuntimeKind } from "../../../../../src/runtime-management/runtime-kind-enum.js";
 import 'reflect-metadata';
 import { buildSchema } from 'type-graphql';
 import { createRequire } from 'node:module';
@@ -66,12 +67,12 @@ describe('whole AgentOrg model configuration GraphQL transport', () => {
     const mutation = readFileSync(new URL('graphql/mutations/agentOrgRunMutations.ts', web), 'utf8')
       .match(/export const UpdateStoppedAgentOrgRunConfig = gql`([\s\S]*?)`/)![1]!;
     io.getRunConfig.mockResolvedValue({ orgRunId: 'org', executionTree: tree, isActive: false, editability: { editable: true, reason: null } });
-    io.runModelOptions.mockResolvedValue([{ scopeKind: 'CONFIGURED_ORG', scopeAddress: '/', currentModelIdentifier: 'model', replacements: [], unavailableReason: null }]);
+    io.runModelOptions.mockResolvedValue([{ scopeKind: 'CONFIGURED_ORG', scopeAddress: '/', runtimeKind: RuntimeKind.AUTOBYTEUS, currentModelIdentifier: 'model', replacements: [], unavailableReason: null }]);
     io.updateStoppedRunConfig.mockResolvedValue({ success: true, outcome: 'UPDATED', message: 'Saved', canonical: tree,
       isActive: false, editability: { editable: true, reason: null }, fieldErrors: [] });
     expect((await graphql({ schema, source: read, variableValues: { orgRunId: 'org' } })).errors).toBeUndefined();
     expect((await graphql({ schema, source: options, variableValues: { orgRunId: 'org', teamWorkspacePatches: [] } })).errors).toBeUndefined();
-    const input = { orgRunId: 'org', teamWorkspacePatches: [], modelPatches: [{ scopeKind: 'CONFIGURED_ORG', scopeAddress: '/', llmModelIdentifier: 'model', llmConfig: null }] };
+    const input = { orgRunId: 'org', teamWorkspacePatches: [], selectionPatches: [{ scopeKind: 'CONFIGURED_ORG', scopeAddress: '/', runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: 'model', llmConfig: null }] };
     const saved = await graphql({ schema, source: mutation, variableValues: { input } });
     expect(saved.errors).toBeUndefined(); expect(io.updateStoppedRunConfig).toHaveBeenCalledWith(input);
     expect(saved.data?.updateStoppedAgentOrgRunConfig).toMatchObject({ success: true, canonical: tree });

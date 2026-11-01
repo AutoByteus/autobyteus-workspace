@@ -1,3 +1,4 @@
+import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import "reflect-metadata";
 import fs from 'node:fs/promises';
 import os from 'node:os';
@@ -64,28 +65,28 @@ const harness = async (physicalOutcome = 'committed', readback = 'ok', runtimeKi
 describe('configured Team model selection Save', () => {
   it('rejects a non-admitted root before model selection or writing', async () => {
     const h = await harness();
-    const result = await h.manager.updateStoppedModelConfigs({ teamRunId: 'not-admitted', patches: [] });
+    const result = await h.manager.updateStoppedSelections({ teamRunId: 'not-admitted', selectionPatches: [] });
     expect(result).toMatchObject({ outcome: 'NOT_FOUND', success: false });
     expect(h.write).not.toHaveBeenCalled();
     expect(h.capacity.resolveMany).not.toHaveBeenCalled();
   });
   it('validates every native original baseline before writing and does not omit incompatible children', async () => {
     const h = await harness('committed', 'ok', 'autobyteus'); const original = structuredClone(h.saved());
-    const result = await h.manager.updateStoppedModelConfigs({ teamRunId: 'root', patches: [
-      { scopeKind: 'CONFIGURED_TEAM', scopeAddress: '/', llmModelIdentifier: 'equal', llmConfig: null },
-      { scopeKind: 'CONFIGURED_AGENT', scopeAddress: '/member', llmModelIdentifier: 'equal', llmConfig: null },
+    const result = await h.manager.updateStoppedSelections({ teamRunId: 'root', selectionPatches: [
+      { scopeKind: 'CONFIGURED_TEAM', scopeAddress: '/', runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: 'equal', llmConfig: null },
+      { scopeKind: 'CONFIGURED_AGENT', scopeAddress: '/member', runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: 'equal', llmConfig: null },
     ] });
-    expect(result).toMatchObject({ outcome: 'VALIDATION_FAILED', fieldErrors: [{ path: 'patches[/member].llmModelIdentifier' }] });
+    expect(result).toMatchObject({ outcome: 'VALIDATION_FAILED', fieldErrors: [{ path: 'selectionPatches[/member].llmModelIdentifier' }] });
     expect(h.write).not.toHaveBeenCalled(); expect(h.saved()).toEqual(original);
     expect(h.capacity.resolveMany).toHaveBeenCalledTimes(2);
   });
   it('commits one native tree preserving configured identities and task records; later Save uses new baseline', async () => {
     const h = await harness('committed', 'ok', 'autobyteus'); const original = structuredClone(h.saved());
-    const patch = { scopeKind: 'CONFIGURED_TEAM' as const, scopeAddress: '/', llmModelIdentifier: 'large', llmConfig: null };
-    expect((await h.manager.updateStoppedModelConfigs({ teamRunId: 'root', patches: [patch] })).outcome).toBe('UPDATED');
+    const patch = { scopeKind: 'CONFIGURED_TEAM' as const, scopeAddress: '/', runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: 'large', llmConfig: null };
+    expect((await h.manager.updateStoppedSelections({ teamRunId: 'root', selectionPatches: [patch] })).outcome).toBe('UPDATED');
     expect(h.write).toHaveBeenCalledTimes(1);
     expect(h.saved()).toEqual({ ...original, rootTeam: { ...original.rootTeam, defaultLaunchConfiguration: { ...original.rootTeam.defaultLaunchConfiguration, llmModelIdentifier: 'large' } } });
-    expect((await h.manager.updateStoppedModelConfigs({ teamRunId: 'root', patches: [{ ...patch, llmModelIdentifier: 'small' }] })).outcome).toBe('VALIDATION_FAILED');
+    expect((await h.manager.updateStoppedSelections({ teamRunId: 'root', selectionPatches: [{ ...patch, llmModelIdentifier: 'small' }] })).outcome).toBe('VALIDATION_FAILED');
     expect(h.write).toHaveBeenCalledTimes(1);
   });
   it.each(['committed', 'finalization_indeterminate', 'not_committed'].flatMap(physicalOutcome =>
@@ -105,11 +106,11 @@ describe('configured Team model selection Save', () => {
           teamRunId: 'root', executionTree: original, isActive: false,
           modelConfigEditability: { editable: true, reason: null },
         })) },
-        teamRunService: { updateStoppedModelConfigs: input => h.manager.updateStoppedModelConfigs(input) },
+        teamRunService: { updateStoppedSelections: input => h.manager.updateStoppedSelections(input) },
       });
-      const response = await AgentTeamRunResolver.prototype.updateStoppedTeamRunModelConfigs.call(
+      const response = await AgentTeamRunResolver.prototype.updateStoppedTeamRunSelections.call(
         { runModelConfigService: service } as never,
-        { teamRunId: 'root', patches: [{ scopeKind: 'CONFIGURED_TEAM', scopeAddress: '/',
+        { teamRunId: 'root', selectionPatches: [{ scopeKind: 'CONFIGURED_TEAM', scopeAddress: '/', runtimeKind: RuntimeKind.CODEX_APP_SERVER,
           llmModelIdentifier: 'large', llmConfig: null }] },
       );
       const expected = physicalOutcome === 'not_committed' ? 'PERSISTENCE_FAILED'
@@ -143,7 +144,7 @@ describe('stopped Team Save with delegated copies (AR-004)', () => {
   it('validates configured and delegated changes together and writes them in one tree write', async () => {
     const h = await harness(); const copy = withCatalogCopy(h); const started = structuredClone(copy.source);
     const result = await h.manager.updateStoppedRunLaunchChanges({ teamRunId: 'root',
-      configuredPatches: [{ scopeKind: 'CONFIGURED_AGENT', scopeAddress: '/member', llmModelIdentifier: 'equal', llmConfig: null }],
+      configuredPatches: [{ scopeKind: 'CONFIGURED_AGENT', scopeAddress: '/member', runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: 'equal', llmConfig: null }],
       delegatedChanges: [{ agentRunId: 'retained-task', selection: { llmModelIdentifier: 'large', llmConfig: null } }] });
     expect(result).toMatchObject({ outcome: 'UPDATED', success: true });
     expect(h.write).toHaveBeenCalledTimes(1);
@@ -154,7 +155,7 @@ describe('stopped Team Save with delegated copies (AR-004)', () => {
   it('refuses the whole Save when one delegated model is unavailable, writing nothing', async () => {
     const h = await harness(); withCatalogCopy(h); const original = structuredClone(h.saved());
     const result = await h.manager.updateStoppedRunLaunchChanges({ teamRunId: 'root',
-      configuredPatches: [{ scopeKind: 'CONFIGURED_AGENT', scopeAddress: '/member', llmModelIdentifier: 'equal', llmConfig: null }],
+      configuredPatches: [{ scopeKind: 'CONFIGURED_AGENT', scopeAddress: '/member', runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: 'equal', llmConfig: null }],
       delegatedChanges: [{ agentRunId: 'retained-task', selection: { llmModelIdentifier: 'not-offered', llmConfig: null } }] });
     expect(result).toMatchObject({ outcome: 'MODEL_UNAVAILABLE', success: false });
     expect(h.write).not.toHaveBeenCalled(); expect(h.saved()).toEqual(original);

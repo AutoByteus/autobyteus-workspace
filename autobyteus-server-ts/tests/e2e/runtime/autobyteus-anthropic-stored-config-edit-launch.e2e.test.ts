@@ -232,11 +232,11 @@ describe("AutoByteus Anthropic saved settings with a key the model no longer dec
     await gql("mutation($id: String!) { terminateAgentTeamRun(teamRunId: $id) { success } }", { id: teamRunId });
     expect(await addStaleKeyToStoredConfig(teamRunId)).toBeGreaterThanOrEqual(3);
 
-    const saved = await gql<{ updateStoppedTeamRunModelConfigs: Json }>(
-      `mutation($input: UpdateStoppedTeamRunModelConfigsInput!) { updateStoppedTeamRunModelConfigs(input: $input) { ${UPDATE_FIELDS} } }`,
-      { input: { teamRunId, patches: [{ scopeKind: "CONFIGURED_AGENT", scopeAddress: "/lead", llmModelIdentifier: OPUS,
+    const saved = await gql<{ updateStoppedTeamRunSelections: Json }>(
+      `mutation($input: UpdateStoppedTeamRunSelectionsInput!) { updateStoppedTeamRunSelections(input: $input) { ${UPDATE_FIELDS} } }`,
+      { input: { teamRunId, selectionPatches: [{ scopeKind: "CONFIGURED_AGENT", scopeAddress: "/lead", runtimeKind: "autobyteus", llmModelIdentifier: OPUS,
         llmConfig: { reasoning_effort: "low", [STALE_KEY]: "omitted" } }] } });
-    expect(saved.updateStoppedTeamRunModelConfigs).toMatchObject({ success: true, outcome: "UPDATED", fieldErrors: [] });
+    expect(saved.updateStoppedTeamRunSelections).toMatchObject({ success: true, outcome: "UPDATED", fieldErrors: [] });
     const tree = (await gql<{ getTeamRunResumeConfig: { executionTree: Json } }>(
       "query($teamRunId: String!) { getTeamRunResumeConfig(teamRunId: $teamRunId) { executionTree } }", { teamRunId })).getTeamRunResumeConfig.executionTree;
     expect(flattenE2eConfiguredAgentExecutions(tree).map((member) => member.memberAddress).sort()).toEqual(["/helper", "/lead"]);
@@ -254,7 +254,7 @@ describe("AutoByteus Anthropic saved settings with a key the model no longer dec
 
     const workspaceEdit = await gql<{ updateStoppedAgentOrgRunConfig: Json }>(
       `mutation($input: UpdateStoppedAgentOrgRunConfigInput!) { updateStoppedAgentOrgRunConfig(input: $input) { ${UPDATE_FIELDS} } }`,
-      { input: { orgRunId, modelPatches: [], teamWorkspacePatches: [{ teamAddress: "/team", workspaceRootPath: otherWorkspacePath }] } });
+      { input: { orgRunId, selectionPatches: [], teamWorkspacePatches: [{ teamAddress: "/team", workspaceRootPath: otherWorkspacePath }] } });
     expect(workspaceEdit.updateStoppedAgentOrgRunConfig).toMatchObject({ success: true, outcome: "UPDATED", fieldErrors: [] });
     let tree = await orgTree(orgRunId);
     // The worker's stored settings are untouched (stale key kept on disk, inert); only its workspace moved.
@@ -263,7 +263,7 @@ describe("AutoByteus Anthropic saved settings with a key the model no longer dec
 
     const modelEdit = await gql<{ updateStoppedAgentOrgRunConfig: Json }>(
       `mutation($input: UpdateStoppedAgentOrgRunConfigInput!) { updateStoppedAgentOrgRunConfig(input: $input) { ${UPDATE_FIELDS} } }`,
-      { input: { orgRunId, teamWorkspacePatches: [], modelPatches: [{ scopeKind: "CONFIGURED_AGENT", scopeAddress: "/director",
+      { input: { orgRunId, teamWorkspacePatches: [], selectionPatches: [{ scopeKind: "CONFIGURED_AGENT", scopeAddress: "/director", runtimeKind: "autobyteus",
         llmModelIdentifier: OPUS, llmConfig: { reasoning_effort: "medium", [STALE_KEY]: "omitted" } }] } });
     expect(modelEdit.updateStoppedAgentOrgRunConfig).toMatchObject({ success: true, outcome: "UPDATED", fieldErrors: [] });
     tree = await orgTree(orgRunId);

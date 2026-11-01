@@ -2,7 +2,7 @@ import { GraphQLJSON } from "graphql-scalars";
 import { Arg, Field, InputType, Int, Mutation, ObjectType, Query, Resolver } from "type-graphql";
 import { runtimeKindFromString } from "../../../runtime-management/runtime-kind-enum.js";
 import { getStudioDelegatedLaunchSelectionService } from "../studio-application-api-services.js";
-import { RunModelConfigFieldErrorObject, RunModelOptionsObject } from "./run-model-config.js";
+import { requiredRuntimeKind, RunModelConfigFieldErrorObject, RunModelOptionsObject } from "./run-model-config.js";
 import type {
   DelegatedLaunchRootKind,
   StoppedRootConfiguredPatches,
@@ -37,7 +37,7 @@ export class DelegatedLaunchChangeInput {
 export class DelegatedConfiguredPatchInput {
   @Field(() => String) scopeKind!: string;
   @Field(() => String) scopeAddress!: string;
-  /** An Agent root's own agent runtime (required for an Agent root, where the host can switch it); ignored for Team and Org scopes. */
+  /** The scope's agent runtime: required for every configured setting (its own, the previous one for an undo, or another for a switch). */
   @Field(() => String, { nullable: true }) runtimeKind?: string | null;
   @Field(() => String) llmModelIdentifier!: string;
   @Field(() => GraphQLJSON, { nullable: true }) llmConfig!: Record<string, unknown> | null;
@@ -95,9 +95,10 @@ const configuredOf = (rootKind: DelegatedLaunchRootKind, patches: readonly Deleg
     if (!runtimeKind) throw new Error("An Agent run's own setting must name its runtimeKind.");
     return { kind: "agent", selection: { runtimeKind, llmModelIdentifier: patches[0]!.llmModelIdentifier, llmConfig: patches[0]!.llmConfig } };
   }
+  const named = (patch: DelegatedConfiguredPatchInput) => ({ ...patch, runtimeKind: requiredRuntimeKind(patch.runtimeKind, patch.scopeAddress) });
   return rootKind === "AGENT_TEAM"
-    ? { kind: "team", patches: patches.map((patch) => ({ ...patch, scopeKind: patch.scopeKind as "CONFIGURED_TEAM" | "CONFIGURED_AGENT" })) }
-    : { kind: "org", patches: patches.map((patch) => ({ ...patch, scopeKind: patch.scopeKind as "CONFIGURED_ORG" | "CONFIGURED_TEAM" | "CONFIGURED_AGENT" })) } as StoppedRootConfiguredPatches;
+    ? { kind: "team", patches: patches.map((patch) => ({ ...named(patch), scopeKind: patch.scopeKind as "CONFIGURED_TEAM" | "CONFIGURED_AGENT" })) }
+    : { kind: "org", patches: patches.map((patch) => ({ ...named(patch), scopeKind: patch.scopeKind as "CONFIGURED_ORG" | "CONFIGURED_TEAM" | "CONFIGURED_AGENT" })) } as StoppedRootConfiguredPatches;
 };
 
 const message = (error: unknown): string => error instanceof Error ? error.message : String(error);

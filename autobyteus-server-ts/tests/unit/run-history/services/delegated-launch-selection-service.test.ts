@@ -1,3 +1,4 @@
+import { RuntimeKind } from "../../../../src/runtime-management/runtime-kind-enum.js";
 import { describe, expect, it, vi } from "vitest";
 import { DelegatedLaunchSelectionService } from "../../../../src/run-history/services/delegated-launch-selection-service.js";
 
@@ -41,7 +42,7 @@ describe("DelegatedLaunchSelectionService", () => {
     await expect(f.service.update({ rootKind: "AGENT_TEAM", rootRunId: "root", changes })).resolves.toMatchObject({ success: true, outcome: "UPDATED" });
     expect(root.updateDelegatedLaunchSelections).toHaveBeenCalledWith(changes, f.validator);
     await expect(f.service.update({ rootKind: "AGENT_TEAM", rootRunId: "root", changes,
-      configured: { kind: "team", patches: [{ scopeKind: "CONFIGURED_AGENT", scopeAddress: "/a", llmModelIdentifier: "x", llmConfig: null }] } }))
+      configured: { kind: "team", patches: [{ scopeKind: "CONFIGURED_AGENT", scopeAddress: "/a", runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: "x", llmConfig: null }] } }))
       .resolves.toMatchObject({ success: false, outcome: "RUN_ACTIVE" });
     expect(f.teams.updateStoppedRunLaunchChanges).not.toHaveBeenCalled();
   });
@@ -50,9 +51,9 @@ describe("DelegatedLaunchSelectionService", () => {
     const f = build();
     await expect(f.service.stop({ rootKind: "AGENT_ORG", rootRunId: "org", target: { agentRunId: "copy" } }))
       .resolves.toMatchObject({ success: false, outcome: "ROOT_NOT_ACTIVE" });
-    const patches = [{ scopeKind: "CONFIGURED_AGENT" as const, scopeAddress: "/w", llmModelIdentifier: "x", llmConfig: null }];
+    const patches = [{ scopeKind: "CONFIGURED_AGENT" as const, scopeAddress: "/w", runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: "x", llmConfig: null }];
     await f.service.update({ rootKind: "AGENT_ORG", rootRunId: "org", changes, configured: { kind: "org", patches } });
-    expect(f.orgs.updateStoppedRunConfig).toHaveBeenCalledWith({ orgRunId: "org", modelPatches: patches, teamWorkspacePatches: [], delegatedChanges: changes });
+    expect(f.orgs.updateStoppedRunConfig).toHaveBeenCalledWith({ orgRunId: "org", selectionPatches: patches, teamWorkspacePatches: [], delegatedChanges: changes });
     await f.service.update({ rootKind: "AGENT_TEAM", rootRunId: "root", changes });
     expect(f.teams.updateStoppedRunLaunchChanges).toHaveBeenCalledWith({ teamRunId: "root", configuredPatches: [], delegatedChanges: changes });
   });

@@ -1,6 +1,6 @@
 import type { UpdateStoppedAgentOrgRunConfig, TeamWorkspacePatch } from "../domain/agent-org-run-config.js";
 import type { RemoteInboundQuery, StoredRemoteLinkCheck } from "../../agent-collaboration/execution/remote/remote-run-links.js";
-import { listAgentOrgRunModelConfigScopes, applyAgentOrgTeamWorkspacePatches, resolveAgentOrgTeamWorkspacePatches } from "./agent-org-run-config-mutator.js";
+import { listAgentOrgRunSelectionScopes, applyAgentOrgTeamWorkspacePatches, resolveAgentOrgTeamWorkspacePatches } from "./agent-org-run-config-mutator.js";
 import type { RunModelSelectionService } from "../../llm-management/services/run-model-selection-service.js";
 import { projectAgentOrgExecutionSnapshot } from "../../services/agent-streaming/agent-org-execution-view-projector.js";
 import { remoteTaskExecutionDtos } from "../../services/agent-streaming/remote-task-execution-dto-projection.js";
@@ -67,7 +67,7 @@ export class AgentOrgRunService {
     const canonical = await this.dependencies.manager.getRunConfig(orgRunId);
     const patches = resolveAgentOrgTeamWorkspacePatches(canonical.executionTree, teamWorkspacePatches)
       .map(patch => ({ ...patch, workspaceRootPath: canonicalizeWorkspaceRootPath(patch.workspaceRootPath) }));
-    const scopes = listAgentOrgRunModelConfigScopes(applyAgentOrgTeamWorkspacePatches(canonical.executionTree, patches));
+    const scopes = listAgentOrgRunSelectionScopes(applyAgentOrgTeamWorkspacePatches(canonical.executionTree, patches));
     const options = await this.dependencies.modelSelectionOptions.listOptionsMany(scopes.map(({ launchConfiguration }) => ({
       runtimeKind: launchConfiguration.runtimeKind,
       currentModelIdentifier: launchConfiguration.llmModelIdentifier,
