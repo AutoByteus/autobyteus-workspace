@@ -1,0 +1,44 @@
+# API-03 gate negative checks in the fresh clone (/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ab318-clone.94OVpE6TRY/repo), commit 7c04283722, 2026-11-01T13:29:31Z; every injection reverted (git checkout / rm), git status shown at the end
+
+## (a) server: a call to the removed ClaudeSdkClient.openStreamingSession (removed by 028cca2312), appended to a baselined test file and in a new test file
+$ git diff --stat; new file autobyteus-server-ts/tests/unit/zz-api03-removed-method.test.ts
+ .../unit/runtime-management/claude/client/claude-sdk-client.test.ts     | 2 ++
+ 1 file changed, 2 insertions(+)
+$ pnpm -C autobyteus-server-ts typecheck
+[typecheck] server src (tsconfig.build.json): 0 errors, exit 0, 8.9s
+[typecheck] server tests (tsconfig.tests.json): 1202 errors, exit 2, 23.7s
+[typecheck] new test file with errors: tests/unit/zz-api03-removed-method.test.ts (1)
+[typecheck] more errors than the baseline: tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts (19, baseline 18)
+[typecheck] production errors: 0; test-file errors: 1202 in 371 files (baseline 1200 in 370 files)
+[typecheck] FAIL: fix the new type errors in the test files above
+exit: 1
+## (c) server update mode with the injection present (must refuse growth and leave the baseline unchanged)
+$ pnpm -C autobyteus-server-ts typecheck:update-baseline
+[typecheck] new test file with errors: tests/unit/zz-api03-removed-method.test.ts (1)
+[typecheck] more errors than the baseline: tests/unit/runtime-management/claude/client/claude-sdk-client.test.ts (19, baseline 18)
+[typecheck] production errors: 0; test-file errors: 1202 in 371 files (baseline 1200 in 370 files)
+[typecheck] FAIL: the baseline only shrinks; fix the new or higher test-file errors above
+exit: 1; baseline unchanged: yes
+reverted; git status --short: ''
+
+## (b) web: a type error in a cross-package test (autobyteus-web/services/runHydration/__tests__/acceptedInputIdentity.spec.ts)
+$ pnpm -C autobyteus-web typecheck
+[typecheck] Nuxt app (tsconfig.json): 72 errors, exit 2, 31.7s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 1.6s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.6s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 1 errors, exit 2, 20.7s
+[typecheck] new test file with errors: services/runHydration/__tests__/acceptedInputIdentity.spec.ts (1)
+[typecheck] production errors: 0; test-file errors: 100 in 44 files (baseline 99 in 43 files)
+[typecheck] FAIL: fix the new type errors in the test files above
+exit: 1
+
+## (d) server production file: a type error in autobyteus-server-ts/src/agent-collaboration/collaborators/available-collaborator-entry.ts (production files must stay at 0)
+$ pnpm -C autobyteus-server-ts typecheck
+[typecheck] server src (tsconfig.build.json): 1 errors, exit 2, 8.0s
+[typecheck] server tests (tsconfig.tests.json): 1201 errors, exit 2, 23.8s
+[typecheck] production errors: 2; test-file errors: 1200 in 370 files (baseline 1200 in 370 files)
+[typecheck] FAIL
+src/agent-collaboration/collaborators/available-collaborator-entry.ts(26,14): error TS2322: Type 'string' is not assignable to type 'number'.
+src/agent-collaboration/collaborators/available-collaborator-entry.ts(26,14): error TS2322: Type 'string' is not assignable to type 'number'.
+exit: 1
+reverted; git status --short: ''
