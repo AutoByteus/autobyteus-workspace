@@ -1,0 +1,63 @@
+# API-02 / API-03 summary 2026-11-01T20:54:02Z. V1 copy 1.5.11-beta.10 -> real automatic update -> V2 1.5.11-beta.11 (copy id com.autobyteus.app.an356, data root <R>/data-app, port 47921)
+## feed requests
+{"at":"2026-11-01T20:45:33.698Z","event":"listening","port":47911,"zipName":"AutoByteus-1.5.11-beta.11-arm64-mac.zip","size":492196979,"sha512":"GdfSZid5Y44oi0AWHQPyaG/NG8YM/om7GzERabp/ioqjaj/lNDJP0flEAH6fM912qY6e5Xz6AWMMjhsruYRGEg=="}
+{"at":"2026-11-01T20:45:35.187Z","method":"GET","url":"/latest-mac.yml","status":200,"mode":"good","bytes":384}
+{"at":"2026-11-01T20:46:02.222Z","method":"GET","url":"/latest-mac.yml?noCache=1k6cdpbv7","status":200,"mode":"good","bytes":384}
+{"at":"2026-11-01T20:47:42.993Z","method":"GET","url":"/latest-mac.yml?noCache=1k6cdsecf","status":200,"mode":"none","bytes":384}
+{"at":"2026-11-01T20:48:20.896Z","method":"GET","url":"/latest-mac.yml?noCache=1k6cdtjct","status":200,"mode":"good","bytes":384}
+{"at":"2026-11-01T20:48:20.908Z","method":"GET","url":"/AutoByteus-1.5.11-beta.11-arm64-mac.zip","status":200,"mode":"good","bytes":492196979}
+{"at":"2026-11-01T20:49:31.949Z","method":"GET","url":"/latest-mac.yml?noCache=1k6cdvop8","status":200,"mode":"good","bytes":384}
+{"at":"2026-11-01T20:51:16.738Z","method":"GET","url":"/latest-mac.yml?noCache=1k6ce2v3u","status":200,"mode":"good","bytes":384}
+{"at":"2026-11-01T20:53:08.418Z","method":"GET","url":"/latest-mac.yml?noCache=1k6ce6c5u","status":200,"mode":"good","bytes":384}
+## switch on (no update pending), drive result
+see API-02-switch-on-no-update.png; app-update-automatic.json = {"enabled": true}
+## busy run (AC-003)
+{"runId":"an356_busy_an356_busy_1793566073_d38154e2fcd94364a27ab152c86ae03d","model":"claude-haiku-4-5-20251001","busy":"49723 /bin/bash -c source /Users/normy/.claude/shell-snapshots/snapshot-bash-1793566077082-8ukp45.sh 2>/dev/null || true && shopt -u extglob 2>/dev/null || true"}
+## after V2 started: the busy run
+{
+ "runId": "an356_busy_an356_busy_1793566073_d38154e2fcd94364a27ab152c86ae03d",
+ "notices": 1,
+ "noticeText": "The application restarted at 2026-11-01T20:49:23.744Z after an update to 1.5.11-beta.11.\\nYour previous turn was interrupted.\\nTool calls that were running have unknown results; check before repeating any of them.",
+ "isActive": true,
+ "error": null,
+ "last": [
+  "{\"kind\":\"tool_call\",\"invocationId\":\"toolu_01SjQPbLtfbviy3ia5FSgwSa\",\"role\":null,\"content\":\"\",\"toolName\":\"Bash\",\"toolArgs\":{\"command\":\"python3 -c \\\"import time; time.sleep(900)\\\" AN356_busy_1793566073\"},\"toolResult\":null,\"toolError\":\"The user doesn't want to proceed with this tool use. The tool use w",
+  "{\"kind\":\"system_task_notification\",\"role\":null,\"senderId\":\"system.restart_resume\",\"content\":\"The application restarted at 2026-11-01T20:49:23.744Z after an update to 1.5.11-beta.11.\\nYour previous turn was interrupted.\\nTool calls that were running have unknown results; check before repeating any of",
+  "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"I understand. My previous command was interrupted due to the application restart. The status of that `python3 -c \\\"import time; time.sleep(900)\\\"` command is unknown.\\n\\nWhat would you like me to do now?\",\"media\":null,\"ts\":1793566166.604}"
+ ]
+}
+## recorder (V1) and resumer (V2) lines
+[2026-11-01T20:48:22.468Z] [INFO] [electron.embedded-server.stdout] Recorded 1 busy run(s) for restart resume
+[2026-11-01T20:49:23.802Z] [INFO] [electron.embedded-server.stdout] Restart resume resumed host run 'an356_busy_an356_busy_1793566073_d38154e2fcd94364a27ab152c86ae03d' of agent 'an356_busy_an356_busy_1793566073_d38154e2fcd94364a27ab152c86ae
+[2026-11-01T20:49:23.803Z] [INFO] [electron.embedded-server.stdout] Restart resume after the update to 1.5.11-beta.11: 1 resumed, 0 skipped, 0 failed
+## V2 window (started again with isolated-app on the same data root): Notification Center
+{
+  "entryText": "0 updated",
+  "entryLabel": "0 updates applied automatically: ",
+  "centerText": "Notifications | Software update | Update automatically | New versions on your channel install as soon as they are downloaded, and the app restarts by itself. Switch off to update by hand. | New: | AutoByteus | Updated automatically to 1.5.11-beta.11 | Clear | From 1.5.11-beta.10",
+  "rows": [
+    {
+      "name": "New:\nAutoByteus",
+      "new": true,
+      "text": "New: | AutoByteus | Updated automatically to 1.5.11-beta.11 | Clear | From 1.5.11-beta.10"
+    }
+  ],
+  "appState": {
+    "status": "no-update",
+    "currentVersion": "1.5.11-beta.11",
+    "automaticUpdate": true,
+    "notification": {
+      "version": "1.5.11-beta.11",
+      "fromVersion": "1.5.11-beta.10",
+      "foundAt": "2026-11-01T20:48:20.896Z",
+      "read": true,
+      "state": "handled",
+      "handledVersion": "1.5.11-beta.11",
+      "releasePageUrl": null,
+      "outcome": "AUTO_UPDATED",
+      "outcomeReason": null
+    }
+  }
+}
+## sidebar entry in the unread state (F-API-001; replayed by restoring read:false in this test record)
+{"text":"0 updated","label":"0 updates applied automatically: "}
