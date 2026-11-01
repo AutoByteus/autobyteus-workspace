@@ -1,0 +1,15 @@
+# DEL-04 AC-001/AC-006 searches on merged a20c9f56d3, 2026-11-01T07:35:54Z
+# git grep -n <name> -- . excluding every tickets/ folder (top-level and nested archived ones such as autobyteus-ts/tickets/done), DESIGN.md (rule 11 example), the frozen copies, sealed migrations and their tests (IMP-02 exclusions)
+releaseConversation: 0 hits
+logicalConversationId: 0 hits
+DISCOVERY_SETTING_MODEL_KINDS: 0 hits
+buildPreparedAgentLaunch: 0 hits
+buildPreparedTeamLaunch: 0 hits
+getTeamAgentRunLocation: 0 hits
+CODEX_SEGMENT_TURN_OMISSION_UNLISTED: 0 hits
+drainRuntimeReleases: 0 hits
+not_renamed: 0 hits
+renamed_finalization_indeterminate: 0 hits
+## source modelKind (all hits except the media tool schema and the credential catalog): 0 hits
+## AC-006 logicalConversationId in autobyteus-ts, autobyteus-server-ts, test-support outside archived tickets: 0 hits
+## The same names were 14 hits only inside autobyteus-ts/tickets/done/ (archived), identical on the pre-merge commit 2ab36d97c4.

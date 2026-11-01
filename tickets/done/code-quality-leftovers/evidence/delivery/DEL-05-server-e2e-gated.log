@@ -1,0 +1,7 @@
+# DEL-05 gated server E2E (API-01 set) on a20c9f56d3, server built in DEL-00, 2026-11-01T07:49:01Z
+ ✓ tests/e2e/agent-org-runs/scoped-org-history-graphql.e2e.test.ts (1 test) 3896ms
+ Test Files  65 passed | 2 skipped (67)
+      Tests  269 passed | 4 skipped (273)
+   Duration  1001.23s (transform 9.88s, setup 700ms, import 89.43s, tests 904.64s, environment 3ms)
+exit=0
+# full log: DEL-05-server-e2e-gated.full.log.gz

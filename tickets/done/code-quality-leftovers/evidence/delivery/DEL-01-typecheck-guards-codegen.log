@@ -1,0 +1,32 @@
+# DEL-01 typechecks, web guards, codegen check on a20c9f56d3, 2026-11-01T07:33:40Z
+## server typecheck
+> tsc -p tsconfig.build.json --noEmit
+
+server-typecheck-exit=0
+## autobyteus-ts typecheck
+../test-support/test-vault/live-provider-test.ts(77,45): error TS7006: Parameter 'context' implicitly has an 'any' type.
+../test-support/test-vault/test-vault.ts(17,8): error TS6059: File '/Users/normy/autobyteus_org/autobyteus-worktrees/code-quality-leftovers/test-support/test-vault/test-vault-selection.ts' is not under 'rootDir' '/Users/normy/autobyteus_org/autobyteus-worktrees/code-quality-leftovers/autobyteus-ts'. 'rootDir' is expected to contain all source files.
+  File is CommonJS module because '/Users/normy/autobyteus_org/autobyteus-worktrees/code-quality-leftovers/package.json' does not have field "type"
+ts-typecheck-exit=2
+## web typecheck
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.6s
+[typecheck] production errors: 0; test-file errors: 297 in 139 files (baseline 297 in 139 files)
+[typecheck] PASS
+web-typecheck-exit=0
+## guard:web-boundary
+[guard:web-boundary] Passed.
+guard:web-boundary-exit=0
+## guard:localization-boundary
+[guard:localization-boundary] Passed.
+guard:localization-boundary-exit=0
+## audit:localization-literals
+[audit:localization-literals] Passed with zero unresolved findings.
+audit:localization-literals-exit=0
+## codegen:check
+[SUCCESS] Generate to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codegen-local-3WM5W6/graphql.ts
+[SUCCESS] Generate outputs
+autobyteus-web/generated/graphql.ts is current.
+codegen-check-exit=0
+## autobyteus-ts typecheck (IMP-03 method), a20c9f56d3
+ts-build-config-exit=0
+sources+tests errors: 183
