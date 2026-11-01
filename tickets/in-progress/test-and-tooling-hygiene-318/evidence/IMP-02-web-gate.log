@@ -1,0 +1,140 @@
+# IMP-02 — Web gate: passes at its baseline; fails on an injected test-file error; shrinks after T-04
+# Command: pnpm -C autobyteus-web typecheck (step 2 and step 3); the same with one deliberate error injected into services/runHydration/__tests__/acceptedInputIdentity.spec.ts L111, then reverted (negative); pnpm -C autobyteus-web typecheck:update-baseline after T-04
+# Commit: dd47f30810 (steps 2-3 and negative ran on the working tree committed there); 0bdcea5325 (shrink after T-04)
+# Environment: macOS 26.5.2 arm64, Node v22.23.1, pnpm workspace; clean env (env -i PATH HOME=<fresh temp dir> TMPDIR); test-owned data only
+# Date: 2026-11-01
+# Look for: "[typecheck] PASS" in the step logs; "[typecheck] new test file with errors: services/runHydration/__tests__/acceptedInputIdentity.spec.ts (1)" and FAIL in the negative; "baseline written: 297 errors in 139 files (was 298 in 139)"
+
+===== web-gate-step2.log =====
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+> autobyteus@1.5.11-beta.9 typecheck /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-web
+> pnpm prepare:shared-types && nuxt prepare && node ./scripts/typecheck.mjs
+
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.1.tgz
+
+> autobyteus@1.5.11-beta.9 prepare:shared-types /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-web
+> pnpm -C .. --filter @autobyteus/application-sdk-contracts build
+
+
+> @autobyteus/application-sdk-contracts@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-application-sdk-contracts
+> tsc -p tsconfig.build.json
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ WARN  Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-web/stores/serverStore.ts" is used
+
+
+ WARN  Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-web/stores/serverStore.ts" is used
+
+│
+◆  Types generated in .nuxt.
+[typecheck] Nuxt app (tsconfig.json): 271 errors, exit 2, 31.0s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 1.6s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.6s
+[typecheck] production errors: 0; test-file errors: 298 in 139 files (baseline 298 in 139 files)
+[typecheck] PASS
+
+===== web-gate-step3.log =====
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+> autobyteus@1.5.11-beta.9 typecheck /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-web
+> pnpm prepare:shared-types && nuxt prepare && node ./scripts/typecheck.mjs
+
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.1.tgz
+
+> autobyteus@1.5.11-beta.9 prepare:shared-types /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-web
+> pnpm -C .. --filter @autobyteus/application-sdk-contracts build
+
+
+> @autobyteus/application-sdk-contracts@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-application-sdk-contracts
+> tsc -p tsconfig.build.json
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ WARN  Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-web/stores/serverStore.ts" is used
+
+
+ WARN  Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-web/stores/serverStore.ts" is used
+
+│
+◆  Types generated in .nuxt.
+[typecheck] Nuxt app (tsconfig.json): 271 errors, exit 2, 29.8s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 1.7s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.6s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 26.8s
+[typecheck] production errors: 0; test-file errors: 298 in 139 files (baseline 298 in 139 files)
+[typecheck] PASS
+
+===== web-gate-negative.log =====
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+> autobyteus@1.5.11-beta.9 typecheck /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-web
+> pnpm prepare:shared-types && nuxt prepare && node ./scripts/typecheck.mjs
+
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.1.tgz
+
+> autobyteus@1.5.11-beta.9 prepare:shared-types /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-web
+> pnpm -C .. --filter @autobyteus/application-sdk-contracts build
+
+
+> @autobyteus/application-sdk-contracts@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-application-sdk-contracts
+> tsc -p tsconfig.build.json
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ WARN  Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-web/stores/serverStore.ts" is used
+
+
+ WARN  Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-web/stores/serverStore.ts" is used
+
+│
+◆  Types generated in .nuxt.
+[typecheck] Nuxt app (tsconfig.json): 271 errors, exit 2, 44.6s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 2.4s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.9s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 1 errors, exit 2, 27.7s
+
+Test files above their baseline count:
+services/runHydration/__tests__/acceptedInputIdentity.spec.ts(111,7): error TS2322: Type 'string' is not assignable to type 'number'.
+[typecheck] new test file with errors: services/runHydration/__tests__/acceptedInputIdentity.spec.ts (1)
+[typecheck] production errors: 0; test-file errors: 299 in 140 files (baseline 298 in 139 files)
+[typecheck] FAIL: fix the new type errors in the test files above
+ ELIFECYCLE  Command failed with exit code 1.
+
+===== web-shrink-t04.log =====
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+> autobyteus@1.5.11-beta.9 typecheck:update-baseline /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-web
+> pnpm prepare:shared-types && nuxt prepare && node ./scripts/typecheck.mjs --update-baseline
+
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.1.tgz
+
+> autobyteus@1.5.11-beta.9 prepare:shared-types /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-web
+> pnpm -C .. --filter @autobyteus/application-sdk-contracts build
+
+
+> @autobyteus/application-sdk-contracts@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-application-sdk-contracts
+> tsc -p tsconfig.build.json
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ WARN  Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-web/stores/serverStore.ts" is used
+
+
+ WARN  Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-web/stores/serverStore.ts" is used
+
+│
+◆  Types generated in .nuxt.
+[typecheck] Nuxt app (tsconfig.json): 270 errors, exit 2, 30.6s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 1.6s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.6s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 19.3s
+[typecheck] fewer errors than the baseline: components/settings/providerApiKey/__tests__/providerSettingsApolloContract.spec.ts (1, baseline 2)
+[typecheck] production errors: 0; test-file errors: 297 in 139 files (baseline 298 in 139 files)
+[typecheck] baseline written: 297 errors in 139 files (was 298 in 139)
+
