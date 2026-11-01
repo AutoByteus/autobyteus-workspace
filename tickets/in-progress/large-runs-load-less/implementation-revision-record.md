@@ -9,7 +9,8 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | IR-001 | Architecture Reviewer / `design-review-report.md` / ARCH-REV-002 (Pass) | N/A | `Initial Baseline` | `SR-002`, `ARCH-REV-002` | Steps 1–6, 8 done; step 7 misses QR-004 → `Design Impact` to the Solution Designer |
 | IR-002 | Architecture Reviewer / `design-review-report.md` / ARCH-REV-003 (Pass), after IR-001's Design Impact | IR-001 QR-004 | `Design Impact Rework` | `SR-003`, `ARCH-REV-003` | DS-007 done; QR-004 met; ready for code review |
 | IR-003 | Code Reviewer / `code-review-report.md` / CRR-001 (Fail 9.3/10) | CR-001 | `Local Fix` | `CRR-001` | Mobile loading / unavailable states; CRR-002 Pass |
-| IR-004 | Architecture Reviewer / `design-review-report.md` / ARCH-REV-005 (Pass), after CRR-003's Design Impact | CR-002 (CRR-003, API-08); AR-005 | `Design Impact Rework` | `SR-004`, `SR-005`, `ARCH-REV-005`, `CRR-003` | Lists reload only when a message could have been missed; `live_sequence_id`; ready for targeted code review |
+| IR-004 | Architecture Reviewer / `design-review-report.md` / ARCH-REV-005 (Pass), after CRR-003's Design Impact | CR-002 (CRR-003, API-08); AR-005 | `Design Impact Rework` | `SR-004`, `SR-005`, `ARCH-REV-005`, `CRR-003` | Lists reload only when a message could have been missed; `live_sequence_id`; CRR-004 Fail (CR-003) |
+| IR-005 | Architecture Reviewer / `design-review-report.md` / ARCH-REV-006 (Pass), after CRR-004's Design Impact | CR-003 (CRR-004) | `Design Impact Rework` | `SR-006`, `ARCH-REV-006`, `CRR-004` | The Team open read names the running Team's live sequence; ready for targeted code review |
 
 ## Revision Entries
 
@@ -110,3 +111,31 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Local validation and result: `evidence/IMP-IR004-checks.log`.
 - Next recipient or routing: `get_handoff_rules` → code review (targeted, Large/High), then the API-08 recheck.
 - Remaining limitations or risks: a running Team's open reads no live sequence (the GraphQL open), so a list loaded before its stream snapshot is fetched once more (as before; outside SR-005). FU-001 to FU-005.
+
+### IR-005 — SR-006: the Team open read names the running Team's live sequence
+
+- Triggering role, report path, and round: `/software_engineering_team/architecture_reviewer`, `design-review-report.md`, ARCH-REV-006 (Pass) on SR-006. Before it, CRR-004 (`code-review-report.md`) returned CR-003 as a Design Impact.
+- Triggering finding IDs: CR-003.
+- Classification: `Design Impact Rework`.
+- Prior authoritative result: IR-004 at `da91ae689a`. Opening a running Team committed a stored rebuild, so the stream snapshot that followed reloaded a list loaded in between (2 fetches).
+- Current authoritative result: `99cd853f79`, plus the IR-005 records commit.
+- Related revision IDs: `SR-006`; `ARCH-REV-006`; `CRR-004`; API/E2E and delivery `N/A`.
+- Approved behaviour or requirement IDs affected: REQ-002, AC-002; DESIGN.md rule 3; DS-002 (one rule for hub, Team and Org).
+- Implementation delta:
+  - Server:
+    - `RootEventPublisher.getLivePosition()` returns `{ liveSequenceId, changeSequence }` in one read; `RootTeamRun.getLivePosition()` delegates to it.
+    - `TeamRunHistoryService.getTeamRunResumeConfig` adds `liveSequenceId` and `baseChangeSequence` from the managed root (`null` and `0` without one), and the GraphQL payload carries both (D-IMP-10).
+  - Web:
+    - `GetTeamRunResumeConfig` requests the two fields.
+    - `teamRunContextHydrationService` checks them and gives the candidate a `rebuild`.
+    - `markCommittedTeamRunHydrationAuthority(candidate)` calls `reloadRoot` with it. IR-004's `'stored_rebuild' | 'rebuilt_by_stream_snapshot'` flag is removed (D-IMP-8 revised); a recovery's read is at its snapshot's base, so it keeps.
+  - `generated/graphql.ts` regenerated with codegen against this branch's built server (temporary data folder, stopped and removed). It adds the two fields only.
+  - Docs: the web docs and the protocol doc name the Team open read.
+- Tests:
+  - Running-Team open: the candidate names `live-team-1`/3. After the commit, the Team-tab load and the following stream snapshot at the same sequence, the list is kept (1 fetch).
+  - Stopped-Team open: no live sequence, and the commit reloads.
+  - Server: the resume config carries the managed root's position, and `null`/`0` when stopped; the resolver passes both through; the publisher reads both together.
+  - Mocks and candidate fixtures carry the fields.
+- Local validation and result: `evidence/IMP-IR005-checks.log`.
+- Next recipient or routing: `get_handoff_rules` → code review (targeted, Large/High), then API/E2E rechecks the Team counts.
+- Remaining limitations or risks: FU-001 to FU-005.
