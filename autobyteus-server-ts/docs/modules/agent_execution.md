@@ -475,6 +475,11 @@ enters through one of two entry points:
   slot is committed only after the message is saved to the root's log. A held
   slot never authorizes compaction recovery, and root shutdown drops held slots.
 
+Either entry point accepts the `onlyAsFirstInput` option: the input is admitted
+only as the run instance's first input, else refused with
+`AGENT_RUN_INPUT_NOT_FIRST`. Restart resume's notice uses it
+([Restart Resume](./restart_resume.md)).
+
 ## Active Input And Interrupt Command Results
 
 Each live `AgentRun` owns one non-persisted `AgentRunInputAdmissionState` behind

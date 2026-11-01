@@ -1,20 +1,17 @@
 /**
- * autobyteus-285 D4 (REQ-004): the restart notice is a SYSTEM input from `system.restart_resume`; a member shows it
- * as a system notice, and a run's memory records it once as a system notice, never as a user message.
+ * autobyteus-285 D4 (REQ-004, SR-005): the restart notice is a SYSTEM input from `system.restart_resume`; every place
+ * shows it as the run's own system notice, and the run's memory records it once as a system notice, never as user input.
  */
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { afterEach, describe, expect, it } from "vitest";
-import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { readPlatformInputPreface } from "autobyteus-ts/agent/message/platform-input-preface-metadata.js";
 import { shouldSuppressSystemTaskNotification } from "autobyteus-ts/agent/message/system-task-notification-metadata.js";
 import { SenderType } from "autobyteus-ts/agent/sender-type.js";
-import { buildRestartNotice, buildRestartNoticeText } from "../../../src/restart-resume/restart-notice.js";
+import { buildRestartNotice, buildRestartNoticeText, restartNoticeLifecycleObserver } from "../../../src/restart-resume/restart-notice.js";
 import type { BusyRunEntry } from "../../../src/restart-resume/busy-run-record.js";
 import { RESTART_RESUME_NOTICE_SENDER_ID } from "../../../src/agent-execution/domain/system-task-notification-senders.js";
-import { CollaborationAgentPresentationEventAdapter } from "../../../src/agent-collaboration/execution/events/collaboration-agent-presentation-event-adapter.js";
-import { createCollaborationMemberExecutionIdentity, createTeamRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { RuntimeMemoryEventAccumulator } from "../../../src/agent-memory/services/runtime-memory-event-accumulator.js";
 import { ExternalRuntimeMemoryWriter } from "../../../src/agent-memory/store/external-runtime-memory-writer.js";
 import { AgentMemoryService } from "../../../src/agent-memory/services/agent-memory-service.js";
@@ -57,22 +54,23 @@ describe("buildRestartNotice", () => {
   });
 });
 
-describe("restart notice presentation for a member (N-10)", () => {
-  const identity = createCollaborationMemberExecutionIdentity({ root: createTeamRootExecutionIdentity("team-1"), memberAddress: "/Worker", agentRunId: "worker-1" });
-  const adapter = new CollaborationAgentPresentationEventAdapter(() => identity);
-
-  it("shows the restart notice posted as member input as a system notice", () => {
-    const notice = buildRestartNotice({ entry: entry("member"), version: "2", restartedAt, resumedDelegated: [] });
-    expect(adapter.adapt(identity, { kind: "member_input", message: notice })).toMatchObject({
-      kind: "publish", message: { type: "SYSTEM_TASK_NOTIFICATION", payload: { sender: { kind: "system" }, content: notice.content } },
-    });
+describe("restartNoticeLifecycleObserver (SR-005: one display for every place)", () => {
+  it("publishes the run's own system notice once the input is forwarded, with its turn", async () => {
+    const publishEvent = vi.fn(async () => undefined);
+    const observer = restartNoticeLifecycleObserver(() => ({ runId: "worker-1", publishEvent }), "notice text");
+    observer({ kind: "admitted" });
+    expect(publishEvent).not.toHaveBeenCalled();
+    observer({ kind: "forwarded", dispatchKind: "start_turn", turnId: "turn-7" });
+    expect(publishEvent).toHaveBeenCalledExactlyOnceWith({ eventType: AgentRunEventType.SYSTEM_TASK_NOTIFICATION, runId: "worker-1",
+      statusHint: null, payload: { sender_id: RESTART_RESUME_NOTICE_SENDER_ID, content: "notice text", turn_id: "turn-7" } });
   });
 
-  it("leaves other member input unchanged (a user message, a SYSTEM input from another sender)", () => {
-    const user = new AgentInputUserMessage("Please continue.", SenderType.USER, null, { sender_id: RESTART_RESUME_NOTICE_SENDER_ID });
-    const other = new AgentInputUserMessage("Routing request", SenderType.SYSTEM, null, { sender_id: "system.other" });
-    expect(adapter.adapt(identity, { kind: "member_input", message: user })).toMatchObject({ kind: "publish", message: { type: "MEMBER_INPUT_MESSAGE" } });
-    expect(adapter.adapt(identity, { kind: "member_input", message: other })).toMatchObject({ kind: "publish", message: { type: "MEMBER_INPUT_MESSAGE" } });
+  it("publishes nothing when the run is not there, and never throws for a failed publication", async () => {
+    expect(() => restartNoticeLifecycleObserver(() => null, "x")({ kind: "forwarded", dispatchKind: "start_turn", turnId: null })).not.toThrow();
+    const failing = { runId: "r", publishEvent: vi.fn(async () => { throw new Error("closed"); }) };
+    expect(() => restartNoticeLifecycleObserver(() => failing, "x")({ kind: "forwarded", dispatchKind: "start_turn", turnId: null })).not.toThrow();
+    await Promise.resolve();
+    expect(failing.publishEvent).toHaveBeenCalledWith(expect.objectContaining({ payload: { sender_id: RESTART_RESUME_NOTICE_SENDER_ID, content: "x" } }));
   });
 });
 

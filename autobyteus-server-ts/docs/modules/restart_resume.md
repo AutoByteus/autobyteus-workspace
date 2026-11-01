@@ -58,16 +58,32 @@ After `recoverAfterListen`, `resumeAfterUpdate()` runs in the background; it nev
    of its root that were accepted. The coordinating member of a Team or Org copy is not recorded, so every resumed
    member is told.
 5. At most 3 posts run at once. A host waiting for its delegated runs holds no slot.
-6. Right before each post: skip a run that is already live (it has new input), and a run whose root was stopped on
-   purpose (`terminatedAt`), archived or deleted.
-7. Dispatch through the root, so its fences apply:
-   - a standalone host: `StandaloneAgentRunRootManager.postUserMessage` (a host takes no `executeAgentCommand`);
-   - members and delegated runs: `resolveOrRestore(root)`, then `executeAgentCommand(id, post_message)`. A closed
-     Task's copy is refused by its root's fence.
-8. A refusal or a failure is logged and the run stays stopped.
+6. A cheap pre-filter, before restoring: skip a run that is already live, and a run whose root was stopped on purpose
+   (`terminatedAt`), archived or deleted.
+7. **Restore without posting**, through the root: `resolveOrRestore(root)`; a standalone host is then made ready
+   (`ensureHostReady`); a member or delegated run starts on the notice itself. Restoring posts no input.
+8. **Re-check after the restore**: the root's history must still show no `terminatedAt` and no archive. This check is
+   final: archiving refuses an active run or root. (Archiving a standalone host whose host is not live ends the root
+   instead; the later post is then refused, and an admitted turn is fenced.) If it fails, nothing is posted, and the
+   idle restored run stops as usual.
+9. **Post a notice the run admits only as its first input** (`onlyAsFirstInput`, below), through the root so its fences
+   apply:
+   - a standalone host: `root.postHostUserMessage({ message, postOptions })` (a host takes no `executeAgentCommand`);
+   - members and delegated runs: `root.executeAgentCommand(id, { kind: "post_message", message, postOptions })`. A
+     closed Task's copy is refused by its root's fence.
+10. A refusal or a failure is logged and the run is not counted as resumed. `AGENT_RUN_INPUT_NOT_FIRST` is logged as
+    "the run already had input": a user's message, a coordinating run's `send_message_to` or a peer's message reached
+    the restored run first, and it continues with that.
 
-A delegated run's resumed turn can message its host before the host's post. The host is then live and is skipped: it
-continues with that input and does not get the notice or the list.
+**First input only.** `AgentRunInputOptions.onlyAsFirstInput` is decided in `AgentRunInputAdmissionState.reserve`,
+inside the run's dispatch queue: the input is refused with `AGENT_RUN_INPUT_NOT_FIRST` when this run instance has
+already reserved or admitted any input. A restored run is a new instance, so the notice is admitted unless something
+reached the run first; a message that arrives after the notice is queued after it as usual. There is no window between
+a check and the post. A remote child's node admits its own input, so a first-input-only post to a remote child is
+refused (`REMOTE_RUN_FIRST_INPUT_UNSUPPORTED`); remote children are never recorded here (each node resumes its own runs).
+
+A delegated run's resumed turn can message its host before the host's notice. The host then had input first, so its
+notice is refused: it continues with that input and does not get the notice or the list.
 
 ## The notice
 
@@ -82,7 +98,8 @@ These runs you delegated were resumed too and are working: <names>.   (host or m
 
 - `message_id` = `restart-resume:<recordedAt>:<agentRunId>`, `dedupe_key` = `agent_run_input:<agentRunId>:<message_id>`:
   display and projection keys, not a send guard.
-- A host shows it as a system notice once the input is forwarded (the resumer publishes `SYSTEM_TASK_NOTIFICATION`),
-  and the run's memory records it as one system notice.
-- A member or delegated run shows the posted `member_input` as a system notice. Nothing publishes a run event for it,
-  and a notice-only input is never recorded as a user message, so the member's own memory does not record it.
+- Every place shows it the same way: `restartNoticeLifecycleObserver` publishes the run's own
+  `SYSTEM_TASK_NOTIFICATION` when the input is forwarded (as the Model Router does). The sender is in memory's recorded
+  set, so the notice shows live and after a reload, for a host, a member and a delegated run.
+- The member handle composes that observer with its own and publishes no `member_input` for a platform notice (a
+  message carrying a platform preface, read before the post), so a member's window shows it once, as a system notice.

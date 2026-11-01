@@ -71,7 +71,9 @@ export class FlatTeamAgentExecutionHandle implements RetainedAgentExecutionContr
   async reserveInput(message: AgentInputUserMessage, options: AgentRunInputOptions = {}): Promise<AgentRunInputReservationResult> {
     return (await this.getHandle()).reserveInput(message, options);
   }
-  async postMessage(message: AgentInputUserMessage): Promise<AgentOperationResult> { return (await this.getHandle()).postMessage(message); }
+  async postMessage(message: AgentInputUserMessage, options: AgentRunInputOptions = {}): Promise<AgentOperationResult> {
+    return (await this.getHandle()).postMessage(message, options);
+  }
   async approveToolInvocation(invocationId: string, approved: boolean, reason: string | null = null) {
     return (await this.getHandle()).approveToolInvocation(invocationId, approved, reason);
   }

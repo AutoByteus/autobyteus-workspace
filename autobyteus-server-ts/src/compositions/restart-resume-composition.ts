@@ -8,7 +8,6 @@ import { RestartResumer, type RootHistoryState } from "../restart-resume/restart
 import type { AgentOrgRunHistoryCatalogService } from "../run-history/services/agent-org-run-history-catalog-service.js";
 import { getAgentRunHistoryCatalogService } from "../run-history/services/agent-run-history-catalog-service.js";
 import { getTeamRunHistoryCatalogService } from "../run-history/services/team-run-history-catalog-service.js";
-import { getStandaloneAgentRunRootManager } from "../standalone-agent-run-root/services/standalone-agent-run-root-manager.js";
 import type { CollaborationRootResolver } from "./collaboration-root-resolver.js";
 
 export type RestartResume = Readonly<{ recorder: BusyRunRecorder; resumer: RestartResumer }>;
@@ -38,8 +37,7 @@ export const composeRestartResume = (input: Readonly<{
   return Object.freeze({
     recorder: new BusyRunRecorder({ liveRuns, roots: getActiveCollaborationRootDirectory(), recordPath, version: readReleaseIdentity }),
     resumer: new RestartResumer({
-      recordPath, version: readReleaseIdentity, liveRuns, rootHistory,
-      hosts: getStandaloneAgentRunRootManager(), rootResolver: input.rootResolver,
+      recordPath, version: readReleaseIdentity, liveRuns, rootHistory, rootResolver: input.rootResolver,
     }),
   });
 };

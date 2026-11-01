@@ -105,6 +105,45 @@ const createHarness = (options: {
 };
 
 describe("AgentRun input admission", () => {
+  // autobyteus-285 SR-005: the restart notice is admitted only as the run instance's first input.
+  it("admits an onlyAsFirstInput input as the first input; refuses it once the instance reserved or admitted any input", async () => {
+    const fresh = createHarness();
+    await expect(fresh.run.postUserMessage(new AgentInputUserMessage("notice"), { onlyAsFirstInput: true })).resolves.toMatchObject({ accepted: true });
+    await expect(fresh.run.postUserMessage(new AgentInputUserMessage("notice again"), { onlyAsFirstInput: true }))
+      .resolves.toMatchObject({ accepted: false, code: "AGENT_RUN_INPUT_NOT_FIRST" });
+    // A user message after the first-input notice is admitted as usual (queued after it).
+    await expect(fresh.run.postUserMessage(new AgentInputUserMessage("user message"))).resolves.toMatchObject({ accepted: true });
+
+    const userFirst = createHarness();
+    await expect(userFirst.run.postUserMessage(new AgentInputUserMessage("user message"))).resolves.toMatchObject({ accepted: true });
+    await expect(userFirst.run.postUserMessage(new AgentInputUserMessage("notice"), { onlyAsFirstInput: true }))
+      .resolves.toMatchObject({ accepted: false, code: "AGENT_RUN_INPUT_NOT_FIRST" });
+    expect(userFirst.backend.dispatchUserInput).toHaveBeenCalledOnce();
+  });
+
+  it("counts a reserved input (a teammate's delivery) as earlier input; an invalid input does not", async () => {
+    const reserved = createHarness();
+    await expect(reserved.run.reserveUserMessage(new AgentInputUserMessage("teammate message"))).resolves.toMatchObject({ reserved: true });
+    await expect(reserved.run.postUserMessage(new AgentInputUserMessage("notice"), { onlyAsFirstInput: true }))
+      .resolves.toMatchObject({ accepted: false, code: "AGENT_RUN_INPUT_NOT_FIRST" });
+    await expect(reserved.run.reserveUserMessage(new AgentInputUserMessage("notice"), { onlyAsFirstInput: true }))
+      .resolves.toMatchObject({ reserved: false, code: "AGENT_RUN_INPUT_NOT_FIRST" });
+
+    const invalidFirst = createHarness();
+    await expect(invalidFirst.run.postUserMessage(new AgentInputUserMessage(" "))).resolves.toMatchObject({ accepted: false, code: "AGENT_RUN_INPUT_INVALID" });
+    await expect(invalidFirst.run.postUserMessage(new AgentInputUserMessage("notice"), { onlyAsFirstInput: true })).resolves.toMatchObject({ accepted: true });
+  });
+
+  it("decides concurrent inputs in the run's dispatch queue: whichever is admitted first wins", async () => {
+    const h = createHarness();
+    const [user, notice] = await Promise.all([
+      h.run.postUserMessage(new AgentInputUserMessage("user message")),
+      h.run.postUserMessage(new AgentInputUserMessage("notice"), { onlyAsFirstInput: true }),
+    ]);
+    expect(user).toMatchObject({ accepted: true });
+    expect(notice).toMatchObject({ accepted: false, code: "AGENT_RUN_INPUT_NOT_FIRST" });
+  });
+
   it("normalizes only the private provider dispatch while observers retain the admitted message", async () => {
     const admittedMessage = new AgentInputUserMessage("logical input");
     const normalizedMessage = new AgentInputUserMessage("provider input");

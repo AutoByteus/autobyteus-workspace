@@ -137,7 +137,7 @@ export class FlatTeamExecutionManager {
     const handle = this.getDirectAgent(agentRunId);
     if (!handle) return { accepted: false, code: "RUN_NOT_FOUND", message: `AgentRun '${agentRunId}' is not direct to TeamRun '${this.context.teamRunId}'.` };
     switch (command.kind) {
-      case "post_message": return handle.postMessage(command.message);
+      case "post_message": return handle.postMessage(command.message, command.postOptions);
       case "approve_tool": return handle.approveToolInvocation(command.invocationId, command.approved, command.reason);
       case "interrupt": return handle.interrupt();
     }
