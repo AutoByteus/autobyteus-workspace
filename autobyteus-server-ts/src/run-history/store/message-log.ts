@@ -131,17 +131,17 @@ export class MessageLog {
   async writeInitial(messages: readonly CollaborationCommunicationMessage[]): Promise<Result> {
     let sealed: string[];
     try { sealed = await this.sealedFileNames(); }
-    catch (cause) { return { outcome: "not_renamed", file: FILE, stage: "prepare_directory", cause: asError(cause) }; }
+    catch (cause) { return { outcome: "not_committed", file: FILE, stage: "prepare_directory", cause: asError(cause) }; }
     if (sealed.length > 0) {
-      return { outcome: "not_renamed", file: FILE, stage: "prepare_directory",
+      return { outcome: "not_committed", file: FILE, stage: "prepare_directory",
         cause: new Error(`Message log '${this.activePath}' already has sealed files; it is not an initial log.`) };
     }
     return this.writer.writeSerializedText({ file: FILE, filePath: this.activePath, text: messages.map(encodeLine).join("") });
   }
 
   /**
-   * Appends one message as one line and syncs it. `not_renamed`: nothing new is durable (the message is
-   * not committed). `renamed_finalization_indeterminate`: the line may be durable (the caller fail-stops).
+   * Appends one message as one line and syncs it. `not_committed`: nothing new is durable.
+   * `finalization_indeterminate`: the line may be durable (the caller fail-stops).
    */
   async append(message: CollaborationCommunicationMessage): Promise<Result> {
     const line = Buffer.from(encodeLine(message), "utf8");
@@ -164,7 +164,7 @@ export class MessageLog {
       }
     } catch (cause) {
       await handle?.close().catch(() => undefined);
-      return { outcome: "not_renamed", file: FILE, stage: "prepare_append", cause: asError(cause) };
+      return { outcome: "not_committed", file: FILE, stage: "prepare_append", cause: asError(cause) };
     }
     const open = handle;
     try {
@@ -172,15 +172,15 @@ export class MessageLog {
       catch (cause) {
         try { await open.truncate(size); }
         catch (restoreCause) {
-          return { outcome: "renamed_finalization_indeterminate", file: FILE, stage: "restore_size", cause: asError(restoreCause) };
+          return { outcome: "finalization_indeterminate", file: FILE, stage: "restore_size", cause: asError(restoreCause) };
         }
-        return { outcome: "not_renamed", file: FILE, stage: "append_line", cause: asError(cause) };
+        return { outcome: "not_committed", file: FILE, stage: "append_line", cause: asError(cause) };
       }
       try { await open.sync(); }
-      catch (cause) { return { outcome: "renamed_finalization_indeterminate", file: FILE, stage: "sync_file", cause: asError(cause) }; }
+      catch (cause) { return { outcome: "finalization_indeterminate", file: FILE, stage: "sync_file", cause: asError(cause) }; }
       if (created) {
         try { await this.syncDirectory(); }
-        catch (cause) { return { outcome: "renamed_finalization_indeterminate", file: FILE, stage: "sync_directory", cause: asError(cause) }; }
+        catch (cause) { return { outcome: "finalization_indeterminate", file: FILE, stage: "sync_directory", cause: asError(cause) }; }
       }
       return { outcome: "committed", file: FILE };
     } finally {

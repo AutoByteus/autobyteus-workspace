@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import type { FastifyInstance, FastifyReply } from "fastify";
-import { getProjectTaskService } from "../../projects/services/project-task-service.js";
+import { getProjectTaskContextDrafts } from "../../projects/services/project-task-context-drafts.js";
 import { ProjectError } from "../../projects/domain/project-errors.js";
 import type { ProjectTaskContextFile } from "../../projects/domain/project-task-context.js";
 const sendFile = (reply: FastifyReply, {filePath, file}: {filePath: string; file: ProjectTaskContextFile}) => {
@@ -21,7 +21,7 @@ const guarded = async (reply: FastifyReply, operation: () => Promise<unknown>) =
 };
 type DraftParams = {projectId: string; draftId: string; storedFilename: string};
 export async function registerProjectTaskContextRoutes(app: FastifyInstance): Promise<void> {
-  const service = getProjectTaskService();
+  const service = getProjectTaskContextDrafts();
   const drafts = "/projects/:projectId/task-context-drafts";
   const files = `${drafts}/:draftId/context-files`;
   app.post<{Params: {projectId: string}; Body: {taskId?: string}}>(drafts, async (r, reply) => guarded(reply, async () => {

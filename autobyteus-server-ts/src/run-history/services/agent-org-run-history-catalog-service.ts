@@ -194,7 +194,7 @@ export class AgentOrgRunHistoryCatalogService {
   private async writeTree(
     identity: AgentOrgRunIdentity,
     tree: AgentOrgRunExecutionTreeSnapshot,
-  ): Promise<"committed" | "not_renamed" | "renamed_finalization_indeterminate" | "threw"> {
+  ): Promise<"committed" | "not_committed" | "finalization_indeterminate" | "threw"> {
     try { return (await this.trees.write(identity.orgDirPath, tree)).outcome; }
     catch { return "threw"; }
   }

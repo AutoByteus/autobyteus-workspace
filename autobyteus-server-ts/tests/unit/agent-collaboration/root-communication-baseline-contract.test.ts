@@ -295,10 +295,10 @@ const captureDeliver = async (kind: RootKind) => {
   const recipientNotAccepting = await step(subject, () => subject.sendByRunId("Recipient is not accepting"));
   at(3);
   const write = vi.spyOn(subject.appendStore.prototype as Record<string, (...args: unknown[]) => unknown>, subject.appendStore.method);
-  write.mockResolvedValueOnce({ outcome: "not_renamed", file: "communication_messages", cause: new Error("Controlled history write failure") });
+  write.mockResolvedValueOnce({ outcome: "not_committed", file: "communication_messages", cause: new Error("Controlled history write failure") });
   const historyWriteFailed = await step(subject, () => subject.sendByRunId("History write fails"));
   at(4);
-  write.mockResolvedValueOnce({ outcome: "renamed_finalization_indeterminate", file: "communication_messages", stage: "directory_sync", cause: new Error("Controlled indeterminate finalization") });
+  write.mockResolvedValueOnce({ outcome: "finalization_indeterminate", file: "communication_messages", stage: "directory_sync", cause: new Error("Controlled indeterminate finalization") });
   const indeterminateWrite = await step(subject, () => subject.sendByRunId("History write is indeterminate"));
   write.mockRestore();
   return { copyRunId: subject.copyRunId, byRunId, byRunIdRecipientInput, duplicate, byAddress, byAddressRecipientInput,

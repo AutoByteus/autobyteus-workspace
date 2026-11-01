@@ -1,0 +1,8 @@
+# IMP-08 mutation remote (a remote child drops the first-input rule; tests from 7d9a305627)
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/unit/remote-collaboration/remote-child-commands.test.ts --no-watch --testTimeout=8000
+# Commit: 7d9a305627
+# Environment: macOS 26.5.2, node v22.23.1
+# Date: 2026-11-01
+
+     × N-13: refuses a first-input-only post (restart resume) instead of dropping the rule; nothing reaches the node 5ms
+      Tests  1 failed | 5 passed (6)

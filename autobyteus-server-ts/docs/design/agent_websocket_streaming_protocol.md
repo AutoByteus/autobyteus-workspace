@@ -33,8 +33,12 @@ identity.
 - `src/services/agent-streaming/agent-collaboration-stream-handler.ts`
 - `src/services/agent-streaming/agent-run-event-message-mapper.ts`
 - `src/services/agent-streaming/team-agent-event-websocket-projector.ts`
-- `src/services/agent-streaming/team-run-event-websocket-mapper.ts`
-- `src/services/agent-streaming/team-execution-address-command-parser.ts`
+- `src/services/agent-streaming/team-agent-status-websocket-projector.ts`
+- `src/services/agent-streaming/team-execution-view-projector.ts`
+- `src/services/agent-streaming/team-remote-event-projector.ts`
+- `src/services/agent-streaming/team-agent-run-command-parser.ts`
+- `src/services/agent-streaming/team-interrupt-generation-command-handler.ts`
+- `src/services/agent-streaming/team-tool-approval-command-handler.ts`
 - `src/services/agent-streaming/websocket-egress`
 - `@autobyteus/team-stream-contracts`
 - `@autobyteus/collaboration-stream-contracts`
@@ -54,54 +58,49 @@ projector is then the only server owner of snake-case wire serialization.
 
 ## Team Execution Identity
 
-Every concrete Team Agent event and every Team Agent command uses this exact
-address:
+A Team member is identified on the wire by its **AgentRun ID** (`agent_run_id`),
+which is unique within the WebSocket-bound root TeamRun: a configured member, a
+delegated task Agent and an Agent inside a delegated task Team all have their
+own. Every Agent-originated Team message carries the member's `agent_run_id`
+beside the root's `change_sequence`; every Team command names its target by
+`agent_run_id`. Where the member sits (its address, its task-Team chain) is read
+from `execution_tree` in the view, not repeated on each message.
 
-```json
-{
-  "root_team_run_id": "root-run-id",
-  "task_team_run_ids": [],
-  "member_address": "/review_team/reviewer",
-  "task_agent_run_id": null
-}
-```
-
-The root ID identifies the WebSocket-bound collaboration root. The ordered
-task-Team array identifies a concrete nested task-Team chain. The rooted member
-address identifies the Agent placement. The optional task-Agent run ID selects
-one delegated Agent execution.
-
-Agent-originated Team messages wrap that address in one `agent_execution` union:
-
-- `{kind:"persistent_agent",execution_address}`;
-- `{kind:"task_agent",execution_address}` where the task-Agent ID is present and
-  equals the real AgentRun ID; or
-- `{kind:"task_team_agent",execution_address,agent_run_id}` where the address
-  has a non-empty task-Team chain and no task-Agent ID.
-
-No Team wire message or command uses legacy member/source paths, route keys,
-task-instance IDs, represented-subteam fields, execution-kind aliases, generated
-identity, or scalar name/id targets.
+The server resolves a command's `agent_run_id` only inside the connected root
+TeamRun. A missing, malformed or foreign run ID is refused with
+`INVALID_TARGET`; it is never retargeted to a coordinator, name or path. No Team
+wire message or command uses member/source paths, route keys, task-instance IDs,
+execution-kind aliases, generated identity, or name targets.
 
 ## Team Server Messages
 
 `@autobyteus/team-stream-contracts` is the strict DTO authority. Server messages
 include:
 
-- Agent events: turn, segment, Agent status, compaction, token usage, assistant
-  completion, tool lifecycle/log, background task, task notification, artifact, and file
-  change, each with exact `agent_execution`;
-- Team-only events: `TASK_EXECUTION_STARTED` (a delegated child committed under
-  its host TeamRun, with nullable `delegator_agent_run_id`),
+- Agent events: system instructions, turn, segment, Agent status, compaction,
+  input state, token usage, assistant completion, tool lifecycle/log, background
+  task, task notification, artifact, and file change, each the root-neutral Agent
+  payload plus `change_sequence` and the member's `agent_run_id`; reply text
+  leaves as `SEGMENT_CONTENT_BATCH` (see Segment Contract);
+- Team-only events: `TASK_EXECUTION_STARTED {change_sequence, parent_team_run_id,
+  execution}` (a delegated task Agent or task Team committed under its host
+  TeamRun; the execution carries nullable `delegator_agent_run_id`),
   `TASK_EXECUTIONS_CLOSED` (task executions whose Task became DONE or CANCELLED; see below),
   `TASK_EXECUTIONS_REOPENED` (closed task executions their assigner
-  reactivated; see below), `TEAM_COMMUNICATION_MESSAGE`, and `MEMBER_INPUT_MESSAGE` with their explicit
-  exact execution/participant addresses;
+  reactivated; see below), `DELEGATED_LAUNCH_SELECTIONS_CHANGED` (saved model
+  choices of delegated copies, by `agent_run_id` or `team_run_id`),
+  `TEAM_COMMUNICATION_MESSAGE` (a message between members, by
+  `sender_agent_run_id` and `receiver_agent_run_id`), `MEMBER_INPUT_MESSAGE` (an
+  input a member received, by `recipient_agent_run_id` and nullable
+  `sender_agent_run_id`), and `REMOTE_TASK_EXECUTION_STARTED` /
+  `REMOTE_TASK_EXECUTION_SUMMARY` (runs delegated to other nodes);
 - the view: `TEAM_EXECUTION_VIEW_SNAPSHOT` (`root_team_run_id`,
   `base_change_sequence`, `execution_tree`, the required `closed_task_executions`,
-  `messages`, `agent_statuses`, `agent_input_states`);
-- control: `CONNECTED`, `TEAM_RUN_LIFECYCLE`, `AGENT_COMMAND_ACK`; and
-- `ERROR`, either correlated to an `agent_execution` or explicitly uncorrelated.
+  `messages`, `agent_statuses`, `agent_input_states`, `remote_task_executions`);
+- control: `CONNECTED {session_id, root_team_run_id}`, `TEAM_RUN_LIFECYCLE
+  {is_active}`, `AGENT_COMMAND_ACK`; and
+- `ERROR`, with nullable `change_sequence` and `agent_run_id`: correlated to one
+  member run, or uncorrelated when both are null.
 
 Unknown fields and invalid union combinations are rejected. The browser parses
 the same shared schema before mutating application state.
@@ -243,28 +242,33 @@ commands can be admitted; the transport does not impose a run-busy policy.
     content,
     context_file_paths,
     image_urls,
-    execution_address,
+    agent_run_id,
     message_id,
-    dedupe_key
+    dedupe_key,
+    mentions?        // shared definitions the user @-mentioned; admitted before delivery
   }
 }
 ```
 
-The address root must equal the URL TeamRun ID. The server traverses the exact
-execution chain and never retargets a stale/malformed address. The exact member
-AgentRun owns admission and may append or retain the entry according to its
-canonical turn and backend capability.
+`agent_run_id` must name a member run of the URL's root TeamRun; otherwise the
+server answers `ERROR` with `INVALID_TARGET` and posts nothing. It never
+retargets a stale or malformed ID. The exact member AgentRun owns admission and
+may append or retain the entry according to its canonical turn and backend
+capability.
 
 ### Team interrupt and tool decisions
 
-`INTERRUPT_GENERATION` carries `{command_id,execution_address}`.
-`APPROVE_TOOL` / `DENY_TOOL` carry `{invocation_id,execution_address,reason}`.
+`INTERRUPT_GENERATION` carries `{command_id,agent_run_id}`.
+`APPROVE_TOOL` / `DENY_TOOL` carry `{invocation_id,agent_run_id,reason}`.
 These controls are active-only and never restore stopped work.
+`REFRESH_REMOTE_TASK_EXECUTIONS {}` asks the nodes of the Team's remote runs for
+their summaries again.
 
-`AGENT_COMMAND_ACK` for Team interrupt repeats the exact command ID and execution
-address with `accepted`, `rejected`, or `failed`. A client accepts the response
-only when both match its pending command. Acceptance confirms request admission;
-later runtime events own terminal status.
+`AGENT_COMMAND_ACK` for Team interrupt repeats the exact `command_id` and
+`agent_run_id` with `accepted`, or `rejected` / `failed` with a `code` and
+`message`. A client accepts the response only when both match its pending
+command. Acceptance confirms request admission; later runtime events own
+terminal status.
 
 ## Connection And Restore
 

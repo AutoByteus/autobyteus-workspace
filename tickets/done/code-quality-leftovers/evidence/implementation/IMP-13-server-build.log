@@ -1,0 +1,13 @@
+# IMP-13 server build used by the E2E suites and the browser check
+# Command: pnpm -C autobyteus-server-ts prebuild && pnpm -C autobyteus-server-ts build
+# Commit: d7b11c57b6 (HEAD)
+# Date: 2026-11-01T06:30Z
+
+
+Tip: Curious about the SQL queries Prisma ORM generates? Optimize helps you enhance your visibility: https://pris.ly/tip-2-optimize
+
+(node:8219) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+exit=0

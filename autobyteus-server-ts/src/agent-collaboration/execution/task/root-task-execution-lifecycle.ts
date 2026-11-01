@@ -228,6 +228,8 @@ export class RootTaskExecutionLifecycle<TPlacement extends TaskCopyPlacementLaun
    */
   /** The Task the agent works on (its copy's current Task), or null; throws when damaged run data can't tell. */
   ownedTaskOf(agentRunId: string): TaskExecutionOwner | null { return this.resourceScope.ownerOf(agentRunId); }
+  /** The agent runs inside a delegated copy of this root: a task Agent itself, or a member of a task Team (any depth). */
+  isDelegatedRun(agentRunId: string): boolean { return this.adapter.taskExecutionChainFor(agentRunId.trim()).length > 0; }
   teamCoordinatorOf(teamRunId: string): string | null {
     const remote = this.remoteRunLinks?.teamLinkFor(teamRunId);
     return remote ? remoteTeamCoordinatorRunId(remote) : this.adapter.taskExecutionTargetOf({ teamRunId })?.ingressAgentRunId ?? null;

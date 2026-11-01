@@ -122,9 +122,8 @@ Two OpenAI-style paths coexist:
   preserves explicit lower-level `tool_choice` pass-through. The default
   agent/server path leaves `tool_choice` unset.
 - `src/llm/api/provider-request-kwargs.ts` owns shared external-provider
-  filtering for internal invocation fields such as `logicalConversationId`,
-  `logical_conversation_id`, `conversationId`, `agentId`, `turnId`,
-  and `requestId`. Provider adapters name their own
+  filtering for internal invocation fields such as `conversationId`, `agentId`,
+  `turnId` and `requestId`. Provider adapters name their own
   controlled fields; the sanitizer must not own provider-specific model policy.
 - Provider adapters keep provider-specific request legality local before
   delegating to that builder. `KimiLLM`, for example, normalizes `kimi-k2.6`

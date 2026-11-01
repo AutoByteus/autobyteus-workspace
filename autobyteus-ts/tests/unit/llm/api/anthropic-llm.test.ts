@@ -41,8 +41,6 @@ const currentAdaptiveModels = [
 
 const userMessages = [new Message(MessageRole.USER, { content: 'Hello, Claude.' })];
 const internalRuntimeKwargs = {
-  logicalConversationId: 'agent-1',
-  logical_conversation_id: 'agent-1',
   conversationId: 'conversation-1',
   agentId: 'agent-1',
   turnId: 'turn-1',

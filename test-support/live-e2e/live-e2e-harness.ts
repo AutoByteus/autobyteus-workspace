@@ -14,6 +14,7 @@ import {
 } from '../../autobyteus-ts/src/index.js';
 import { COMPACTION_SUMMARY_INSTRUCTION, COMPACTION_SUMMARY_PROMPT } from '../../autobyteus-ts/src/memory/compaction/compaction-summary-prompt.js';
 import { parseCompactionSummary } from '../../autobyteus-ts/src/memory/compaction/compaction-summary-parser.js';
+import { isCompactionSummaryRequest } from '../../autobyteus-ts/tests/helpers/compaction-summary-request.js';
 import { WorkingContextSnapshotStore } from '../../autobyteus-ts/src/memory/store/working-context-snapshot-store.js';
 import { WorkingContextSnapshotSerializer } from '../../autobyteus-ts/src/memory/working-context-snapshot-serializer.js';
 import type { BaseLLM } from '../../autobyteus-ts/src/index.js';
@@ -300,28 +301,32 @@ type InvocationMessageSnapshot = {
 };
 
 type InvocationSnapshot = {
-  /** `compaction_<operationId>_<attempt>` for compaction summary requests, otherwise the agent's id. */
-  conversationId: string | null;
+  /** A compaction summary request (recognised by the summary prompt it carries), not an agent request. */
+  summary: boolean;
   messages: InvocationMessageSnapshot[];
 };
-
-const isCompactionConversation = (conversationId: string | null): boolean =>
-  conversationId?.startsWith('compaction_') ?? false;
 
 /** Captures every call of the agent's LLM; compaction summary calls run on the same LLM. */
 class InvocationCaptureExtension extends LLMExtension {
   readonly invocations: InvocationSnapshot[] = [];
   readonly responses: CompleteResponse[] = [];
-  private readonly responseConversationIds: Array<string | null> = [];
+  private readonly responseIsSummary: boolean[] = [];
 
-  agentInvocations(): InvocationSnapshot[] { return this.invocations.filter(({ conversationId }) => !isCompactionConversation(conversationId)); }
-  summaryInvocations(): InvocationSnapshot[] { return this.invocations.filter(({ conversationId }) => isCompactionConversation(conversationId)); }
-  agentResponses(): CompleteResponse[] { return this.responses.filter((_, index) => !isCompactionConversation(this.responseConversationIds[index] ?? null)); }
-  summaryResponses(): CompleteResponse[] { return this.responses.filter((_, index) => isCompactionConversation(this.responseConversationIds[index] ?? null)); }
+  agentInvocations(): InvocationSnapshot[] { return this.invocations.filter(({ summary }) => !summary); }
+  summaryInvocations(): InvocationSnapshot[] { return this.invocations.filter(({ summary }) => summary); }
+  agentResponses(): CompleteResponse[] { return this.responses.filter((_, index) => !this.responseIsSummary[index]); }
+  summaryResponses(): CompleteResponse[] { return this.responses.filter((_, index) => this.responseIsSummary[index]); }
+  /** The attempts of the last compaction operation: the summary requests directly before and including the last one. */
+  lastSummaryAttemptCount(): number {
+    const last = this.invocations.findLastIndex(({ summary }) => summary);
+    let first = last;
+    while (first > 0 && this.invocations[first - 1]!.summary) first -= 1;
+    return last < 0 ? 0 : last - first + 1;
+  }
 
-  async beforeInvoke(messages: Message[], kwargs?: Record<string, unknown>): Promise<void> {
+  async beforeInvoke(messages: Message[]): Promise<void> {
     this.invocations.push({
-      conversationId: asString(kwargs?.['logicalConversationId']),
+      summary: isCompactionSummaryRequest(messages),
       messages: messages.map((message) => ({
         role: message.role,
         content: message.content,
@@ -331,14 +336,10 @@ class InvocationCaptureExtension extends LLMExtension {
     });
   }
 
-  async afterInvoke(
-    _messages: Message[],
-    response: CompleteResponse | null,
-    kwargs?: Record<string, unknown>,
-  ): Promise<void> {
+  async afterInvoke(messages: Message[], response: CompleteResponse | null): Promise<void> {
     if (!response) return;
     this.responses.push(response);
-    this.responseConversationIds.push(asString(kwargs?.['logicalConversationId']));
+    this.responseIsSummary.push(isCompactionSummaryRequest(messages));
   }
 }
 
@@ -925,7 +926,8 @@ export class LiveE2eScenarioExecution {
           || summaryResponses.length !== summaryRequests.length
           || summaryInvocationIds.some((id) => !id)
           || new Set(summaryInvocationIds).size !== completedCompactions.length
-          || summaryRequests.at(-1)?.conversationId !== summaryInvocationIds.at(-1)
+          // The accepted summary is the last summary request: its operation sent as many requests as its attempt number.
+          || summaryCapture?.lastSummaryAttemptCount() !== Number(/_(\d+)$/.exec(summaryInvocationIds.at(-1) ?? '')?.[1])
           || summaryModelIdentifiers.some((id) => id !== observedPrimaryLlm.model.modelIdentifier)
           || completionStatuses.some((status) => status !== 'complete' && status !== 'unknown')) {
         throw new Error('LIVE_E2E_SUMMARY_EXECUTION_METADATA_INVALID');

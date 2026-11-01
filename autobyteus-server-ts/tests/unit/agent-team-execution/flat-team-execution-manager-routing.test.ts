@@ -136,6 +136,11 @@ describe("FlatTeamExecutionManager exact direct AgentRun routing", () => {
     expect(runs.get(codeReviewerRunId)?.postUserMessage).toHaveBeenCalledWith(message,
       // A failed dispatch reaches the member's Team stream as a run ERROR (autobyteus-324 SR-009).
       { lifecycleObserver: expect.any(Function) });
+    // autobyteus-285: a post_message's postOptions (restart resume's notice) reach the member's run.
+    const notice = new AgentInputUserMessage("restart notice");
+    await manager.executeDirectAgentCommand(codeReviewerRunId, { kind: "post_message", message: notice, postOptions: { onlyAsFirstInput: true } });
+    expect(runs.get(codeReviewerRunId)?.postUserMessage).toHaveBeenLastCalledWith(notice,
+      { onlyAsFirstInput: true, lifecycleObserver: expect.any(Function) });
     expect(runs.get(codeReviewerRunId)?.approveToolInvocation).toHaveBeenCalledWith("inv-1", true, "approved");
     expect(runs.get(codeReviewerRunId)?.interrupt).toHaveBeenCalledOnce();
     expect(runs.has(solutionDesignerRunId)).toBe(false);

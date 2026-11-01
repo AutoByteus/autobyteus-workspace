@@ -1,0 +1,9 @@
+# DEL-09 real LM Studio native turn (API-04 rerun) on a20c9f56d3, 2026-11-01T08:12:14Z; LM Studio loaded before: No models are currently loaded.
+ ✓ tests/e2e/runtime/token-usage-runtime-graphql.e2e.test.ts (4 tests | 3 skipped) 30946ms
+     ✓ persists token usage from a real autobyteus-lmstudio-qwen35 runtime turn and exposes it through GraphQL  30710ms
+ Test Files  1 passed (1)
+      Tests  1 passed | 3 skipped (4)
+exit=0
+## after: 1 qwen loaded
+Model "qwen/qwen3.6-35b-a3b" unloaded.
+## after unload: No models are currently loaded.

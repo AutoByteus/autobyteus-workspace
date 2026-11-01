@@ -1,6 +1,8 @@
 import { testActivationManager } from "../../fixtures/agent-run-preparation-fixtures.js";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { SenderType } from "autobyteus-ts/agent/sender-type.js";
+import { platformInputPrefaceMetadata } from "autobyteus-ts/agent/message/platform-input-preface-metadata.js";
+import { buildRestartNotice } from "../../../src/restart-resume/restart-notice.js";
 import { markTaskDelegationSystemTaskNotificationMetadata } from "../../../src/agent-collaboration/execution/events/task-system-input-presentation.js";
 import { CollaborationAgentPresentationEventAdapter } from "../../../src/agent-collaboration/execution/events/collaboration-agent-presentation-event-adapter.js";
 import { describe, expect, it, vi } from "vitest";
@@ -199,6 +201,49 @@ describe("accepted task-system input presentation", () => {
   });
 });
 
+
+describe("restart resume input through the handle (autobyteus-285 SR-005)", () => {
+  const notice = () => buildRestartNotice({
+    entry: { root: { rootSubjectKind: "agent_team", rootRunId: "root-run" }, agentRunId: "agent-run", place: "member",
+      status: "running", recordedAt: "2026-11-01T09:59:58.000Z", version: "1.0.0" },
+    version: "1.1.0", restartedAt: new Date("2026-11-01T10:00:30.000Z"), resumedDelegated: [],
+  });
+
+  it("N-12: a restored member starts on the notice and reserves nothing before it; the options pass through", async () => {
+    const f = build("agent_team", RuntimeKind.CODEX_APP_SERVER, "restore");
+    f.fakeRun.postUserMessage.mockResolvedValueOnce({ accepted: true });
+    const caller = vi.fn();
+    const message = notice();
+    expect(await f.handle.postMessage(message, { lifecycleObserver: caller, onlyAsFirstInput: true })).toMatchObject({ accepted: true });
+
+    expect(f.fakeRun.reserveUserMessage).not.toHaveBeenCalled();
+    expect(f.fakeRun.postUserMessage).toHaveBeenCalledOnce();
+    const [posted, options] = f.fakeRun.postUserMessage.mock.calls[0]!;
+    expect(posted).toBe(message);
+    expect(options).toMatchObject({ onlyAsFirstInput: true });
+    options.lifecycleObserver({ kind: "forwarded", dispatchKind: "start_turn", turnId: "turn-1" });
+    expect(caller).toHaveBeenCalledWith({ kind: "forwarded", dispatchKind: "start_turn", turnId: "turn-1" });
+  });
+
+  it("publishes no member_input for a platform notice: the run's own system notice shows it", async () => {
+    const f = build("agent_team");
+    f.fakeRun.postUserMessage.mockResolvedValueOnce({ accepted: true });
+    await f.handle.postMessage(notice(), { onlyAsFirstInput: true });
+    expect(f.publishAgentEvent.mock.calls.filter(([, event]) => event.kind === "member_input")).toHaveLength(0);
+  });
+
+  it("N-14: a normal member input that gains a platform preface inside the run still shows as member_input", async () => {
+    const f = build("agent_team");
+    const input = new AgentInputUserMessage("Please continue the page.");
+    f.fakeRun.postUserMessage.mockImplementationOnce(async (message: AgentInputUserMessage) => {
+      // A skill-update or tool-list notice is combined into the input inside AgentRun.
+      Object.assign(message.metadata, platformInputPrefaceMetadata({ content: "[notice]", senderId: "system.skill_update_notifier", originalContent: message.content }));
+      return { accepted: true };
+    });
+    await f.handle.postMessage(input);
+    expect(f.publishAgentEvent.mock.calls.filter(([, event]) => event.kind === "member_input")).toHaveLength(1);
+  });
+});
 
 describe("member start failure: one step for both input entry points", () => {
   type Fixture = ReturnType<typeof build>;

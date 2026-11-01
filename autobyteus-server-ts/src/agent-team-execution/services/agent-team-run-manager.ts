@@ -302,7 +302,7 @@ export class AgentTeamRunManager {
       const write = await this.executionTreeStore.write(this.teamMemoryDir(teamRunId), nextTree);
       // Once renamed, unreadable canonical state requires verification, not an ordinary failure.
       const canonical = await this.executionTreeStore.read(this.teamMemoryDir(teamRunId), teamRunId).catch(() => null);
-      if (write.outcome === "renamed_finalization_indeterminate" ||
+      if (write.outcome === "finalization_indeterminate" ||
           (write.outcome === "committed" && !canonical)) {
         return this.modelConfigUpdateResult(
           "PERSISTENCE_INDETERMINATE",

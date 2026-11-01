@@ -33,7 +33,7 @@
   "components/settings/__tests__/RemoteCollaborationOfferDisclosure.spec.ts": 6,
   "components/settings/model-routing/__tests__/modelRoutingPresentation.spec.ts": 1,
   "components/settings/providerApiKey/__tests__/ProviderModelBrowser.spec.ts": 3,
-  "components/settings/providerApiKey/__tests__/providerSettingsApolloContract.spec.ts": 2,
+  "components/settings/providerApiKey/__tests__/providerSettingsApolloContract.spec.ts": 1,
   "components/settings/token-usage/__tests__/TokenUsageTaskStatisticsTable.spec.ts": 3,
   "components/workspace/agent/__tests__/AgentEventMonitor.spec.ts": 1,
   "components/workspace/agent/__tests__/ArtifactContentViewer.spec.ts": 3,

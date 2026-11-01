@@ -221,7 +221,7 @@ export class RootAgentExecutionRegistry {
       return { accepted: false, code: "RUN_NOT_ACTIVE", message: `The task agent '${agentRunId}' has stopped, so the message was not sent.` };
     }
     switch (command.kind) {
-      case "post_message": return handle.postMessage(command.message);
+      case "post_message": return handle.postMessage(command.message, command.postOptions);
       case "approve_tool": return handle.approveToolInvocation(command.invocationId, command.approved, command.reason);
       case "interrupt": return handle.interrupt();
     }

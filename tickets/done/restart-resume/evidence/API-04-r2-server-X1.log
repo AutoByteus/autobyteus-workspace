@@ -1,0 +1,277 @@
+# API-04-r2 server X1 pid 79998; temp data root; 2026-11-01T08:04:00.342Z
+[19.38] Platform detection: Windows=false
+[19.38] App root directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-api2.fcgHSg/clean/autobyteus-server-ts
+[19.38] App data directory: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-queue-race-ank4ja/data
+[19.38] Config file path: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-queue-race-ank4ja/data/.env
+[19.38] Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-queue-race-ank4ja/data/.env
+[19.39] ◇ injected env (0) from ../../../rr285-queue-race-ank4ja/data/.env // tip: ⌘ suppress logs { quiet: true }
+[19.39] Environment variables loaded successfully
+[19.39] Server public base URL configured to: http://127.0.0.1:57044
+[19.39] === Starting logging configuration ===
+[19.39] Logging config file is ignored in Node.js: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-api2.fcgHSg/clean/autobyteus-server-ts/logging_config.ini
+[19.39] ============================================================
+[19.39] SERVER PUBLIC URL: http://127.0.0.1:57044
+[19.39] APP ROOT DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-api2.fcgHSg/clean/autobyteus-server-ts
+[19.39] APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-queue-race-ank4ja/data
+[19.39] DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-queue-race-ank4ja/data/db
+[19.39] LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-queue-race-ank4ja/data/logs
+[19.39] DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-queue-race-ank4ja/data/download
+[19.39] MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-queue-race-ank4ja/data/memory
+[19.39] ============================================================
+[21.17] AgentFactory (Singleton) initialized.
+[21.44] Running Prisma migrations...
+[21.45] Using Prisma engine overrides from bundled: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-api2.fcgHSg/clean/node_modules/.pnpm/@prisma+engines@5.22.0/node_modules/@prisma/engines (query=libquery_engine-darwin-arm64.dylib.node, schema=schema-engine-darwin-arm64)
+[21.66] Prisma schema loaded from prisma/schema.prisma
+[21.66] Datasource "db": SQLite database "test.db" at "file:/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-queue-race-ank4ja/data/db/test.db"
+[21.71] 27 migrations found in prisma/migrations
+
+
+[21.72] No pending migrations to apply.
+[21.73] Database migrations completed successfully.
+[21.74] (node:79998) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+[21.74] (Use `node --trace-warnings ...` to show where the warning was created)
+[21.74] prisma:info Starting a sqlite pool with 21 connections.
+[21.75] [2026-11-01T08:04:22.093Z] [INFO] [secret-management.vault] Secret vault: application database
+[21.76] Initialized server settings service with 33 predefined settings
+[21.81] AgentRunManager initialized.
+[21.81] AgentRunManager initialized.
+[21.89] Loading workspace packages to trigger registration...
+[21.89] Successfully loaded workspace packages.
+[21.89] Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-queue-race-ank4ja/data/temp_workspace
+[21.89] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-queue-race-ank4ja/data/temp_workspace.
+[21.89] Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-queue-race-ank4ja/data/temp_workspace with fixed ID 'temp_ws_default'
+[21.89] Temp workspace created and cached with ID: temp_ws_default
+[21.89] Registering agent customization processors...
+[21.89] Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+[21.89] Registered input processor 'WorkspacePathSanitizationProcessor'.
+[21.89] Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+[21.89] Registered input processor 'UserInputContextBuildingProcessor'.
+[21.89] LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+[21.89] Registered LLM response processor 'MediaUrlTransformerProcessor'.
+[21.89] Agent customization processor registration complete.
+[21.89] Successfully registered tool definition: 'read_file'
+[21.89] Successfully registered tool definition: 'write_file'
+[21.89] Successfully registered tool definition: 'edit_file'
+[21.89] Successfully registered tool definition: 'run_bash'
+[21.89] Successfully registered tool definition: 'start_background_process'
+[21.89] Successfully registered tool definition: 'get_background_processes'
+[21.89] Successfully registered tool definition: 'get_process_output'
+[21.89] Successfully registered tool definition: 'stop_background_process'
+[21.89] Successfully registered tool definition: 'search_web'
+[21.89] Successfully registered tool definition: 'download_media'
+[21.89] Successfully registered tool definition: 'read_url'
+[21.89] Registered required tool unit: Core Tools
+[21.90] Successfully registered tool definition: 'get_project_task'
+[21.90] Successfully registered tool definition: 'list_projects'
+[21.90] Successfully registered tool definition: 'list_project_tasks'
+[21.90] Successfully registered tool definition: 'search_project_tasks'
+[21.90] Successfully registered tool definition: 'create_project'
+[21.90] Successfully registered tool definition: 'update_project'
+[21.90] Successfully registered tool definition: 'create_task'
+[21.90] Successfully registered tool definition: 'update_task'
+[21.90] Successfully registered tool definition: 'delegate_task'
+[21.90] Successfully registered tool definition: 'generate_image'
+[21.90] Successfully registered tool definition: 'edit_image'
+[21.90] Successfully registered tool definition: 'generate_speech'
+[21.90] Successfully registered tool definition: 'generate_video'
+[21.90] Registered required tool unit: Project Task Tools
+[21.90] Registered required tool unit: Task Delegation Tools
+[21.90] Registered required tool unit: Media Tools
+[21.91] Successfully registered tool definition: 'list_available_agents'
+[21.91] Successfully registered tool definition: 'list_peer_nodes'
+[21.91] Registered required tool unit: Agent Discovery Tools
+[21.91] Successfully registered tool definition: 'list_available_agent_runtimes'
+[21.91] Successfully registered tool definition: 'submit_launch_choices'
+[21.91] Registered required tool unit: Agent Runtime Tools
+[21.91] Registered required tool unit: Browser Tools
+[21.91] Successfully registered tool definition: 'publish_artifacts'
+[21.91] Registered required tool unit: Published Artifact Tools
+[21.91] Successfully registered tool definition: 'search_memory'
+[21.91] Registered required tool unit: Memory Tools
+[21.91] Successfully registered tool definition: 'send_message_to'
+[21.91] Successfully registered tool definition: 'get_handoff_rules'
+[21.91] Registered required tool unit: Agent Communication Tools
+[21.92] Overwriting existing tool definition for name: 'search_web'
+[21.92] Successfully registered tool definition: 'search_web'
+[21.92] Registered required tool unit: Search Tools
+[21.93] {"level":30,"time":1793520262268,"pid":79998,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:57067"}
+[21.95] {"level":30,"time":1793520262292,"pid":79998,"hostname":"MacBookPro","msg":"Server listening at http://127.0.0.1:57044"}
+[21.95] {"level":30,"time":1793520262292,"pid":79998,"hostname":"MacBookPro","msg":"Server listening at http://192.168.2.158:57044"}
+[21.95] {"level":30,"time":1793520262292,"pid":79998,"hostname":"MacBookPro","msg":"Server listening at http://100.127.30.107:57044"}
+[21.95] [2026-11-01T08:04:22.292Z] [INFO] [server.runtime] Server listening on 0.0.0.0:57044
+[21.95] Scheduling Studio-only non-critical startup tasks...
+[21.96] Background cache pre-loading process has started.
+[21.96] CachedMcpServerConfigProvider initialized with a full in-memory cache strategy.
+[21.96] Populating MCP server config cache for the first time...
+[21.96] Running MCP tool registration background task...
+[21.96] Loading and registering all MCP server configurations from file...
+[21.96] Background task 'Memory Sync Worker' completed successfully.
+[21.96] Background task 'Memory Search' completed successfully.
+[21.96] MCP server config cache populated with 0 items.
+[21.96] Found 0 total MCP server configs.
+[21.96] Synchronized cached configurations with the core MCP config service.
+[21.96] Pre-loaded 0 MCP server configs into cache.
+[21.96] Finished loading and registering all MCP server configurations.
+[21.96] Background task 'MCP Tool Registration' completed successfully.
+[21.96] Pre-loaded 33 LLM models into cache.
+[21.96] Pre-loaded 7 image models into cache.
+[21.96] Pre-loaded 3 audio models into cache.
+[21.96] Background application cache pre-loading completed.
+[21.96] Background task 'Cache Pre-loading' completed successfully.
+[21.97] Agent websocket attached for run native_agent_rr285mvxjn6c6_6d3bc161d33c4c69966f50e4c06b28ac
+[21.97] Created agent session 2ff9d8a3-2958-4f02-834a-242c560da1dc for run native_agent_rr285mvxjn6c6_6d3bc161d33c4c69966f50e4c06b28ac
+[21.97] Agent WebSocket connected: session=2ff9d8a3-2958-4f02-834a-242c560da1dc, run=native_agent_rr285mvxjn6c6_6d3bc161d33c4c69966f50e4c06b28ac
+[21.98] Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-queue-race-ank4ja/workspace
+[21.98] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-queue-race-ank4ja/workspace.
+[21.98] Created and registered workspace ID: agent_ws_583e4bfe16dddb29bf093e4758ac9a346737697877275367c20b19aa315d18fa
+[21.98] MediaStorageService initialized. Media root: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-queue-race-ank4ja/data/media
+[21.98] Discovering LM Studio models from host: http://127.0.0.1:56838
+[21.99] Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-queue-race-ank4ja/workspace
+[21.99] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-queue-race-ank4ja/workspace.
+[21.99] Reusing registered workspace ID: agent_ws_583e4bfe16dddb29bf093e4758ac9a346737697877275367c20b19aa315d18fa
+[22.00] Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-queue-race-ank4ja/workspace
+[22.00] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-queue-race-ank4ja/workspace.
+[22.00] Reusing registered workspace ID: agent_ws_583e4bfe16dddb29bf093e4758ac9a346737697877275367c20b19aa315d18fa
+[22.00] Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-queue-race-ank4ja/workspace
+[22.00] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-queue-race-ank4ja/workspace.
+[22.00] Reusing registered workspace ID: agent_ws_583e4bfe16dddb29bf093e4758ac9a346737697877275367c20b19aa315d18fa
+[22.00] AgentRuntimeState initialized for agent_id 'native_agent_rr285mvxjn6c6_6d3bc161d33c4c69966f50e4c06b28ac'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+[22.00] Agent 'native_agent_rr285mvxjn6c6_6d3bc161d33c4c69966f50e4c06b28ac': LLM instance 'LMStudioLLM' and 6 tools prepared and stored in state.
+[22.00] AgentContext composed for agent_id 'native_agent_rr285mvxjn6c6_6d3bc161d33c4c69966f50e4c06b28ac'. Config and State linked.
+[22.00] Instantiating AgentRuntime for agent_id: 'native_agent_rr285mvxjn6c6_6d3bc161d33c4c69966f50e4c06b28ac' with config: 'Native Agent RR285mvxjn6c6'.
+[22.00] AgentWorker initialized for agent_id 'native_agent_rr285mvxjn6c6_6d3bc161d33c4c69966f50e4c06b28ac'.
+[22.00] Registered AgentContext for agent_id 'native_agent_rr285mvxjn6c6_6d3bc161d33c4c69966f50e4c06b28ac'. Total registered contexts: 1
+[22.00] AgentRuntime initialized for agent_id 'native_agent_rr285mvxjn6c6_6d3bc161d33c4c69966f50e4c06b28ac'. Context registered.
+[22.00] Agent facade initialized for agent_id 'native_agent_rr285mvxjn6c6_6d3bc161d33c4c69966f50e4c06b28ac'.
+[22.00] Agent 'native_agent_rr285mvxjn6c6_6d3bc161d33c4c69966f50e4c06b28ac' restored and stored successfully.
+[22.00] Agent 'native_agent_rr285mvxjn6c6_6d3bc161d33c4c69966f50e4c06b28ac' requesting runtime to start.
+[22.00] AgentRuntime for 'native_agent_rr285mvxjn6c6_6d3bc161d33c4c69966f50e4c06b28ac': Starting worker.
+[22.00] AgentWorker 'native_agent_rr285mvxjn6c6_6d3bc161d33c4c69966f50e4c06b28ac': Starting...
+[22.00] AgentWorker 'native_agent_rr285mvxjn6c6_6d3bc161d33c4c69966f50e4c06b28ac' asyncRun(): Starting.
+[22.00] Agent 'native_agent_rr285mvxjn6c6_6d3bc161d33c4c69966f50e4c06b28ac': Runtime init completed (event store initialized).
+[22.00] Agent 'native_agent_rr285mvxjn6c6_6d3bc161d33c4c69966f50e4c06b28ac': Runtime init completed (status deriver initialized).
+[22.00] Agent 'native_agent_rr285mvxjn6c6_6d3bc161d33c4c69966f50e4c06b28ac': Runtime init completed (AgentEventInbox initialized).
+[22.00] Agent 'native_agent_rr285mvxjn6c6_6d3bc161d33c4c69966f50e4c06b28ac': Runtime init completed (AgentEventScheduler initialized).
+[22.00] Waiting for agent 'native_agent_rr285mvxjn6c6_6d3bc161d33c4c69966f50e4c06b28ac' to become idle (timeout: 30s)...
+[22.00] AgentEventStream (ID: d99fefd3-1136-4b26-a1da-71c1dc5448ce) initialized for agent_id 'native_agent_rr285mvxjn6c6_6d3bc161d33c4c69966f50e4c06b28ac'. Subscribed to notifier.
+[22.00] Agent 'native_agent_rr285mvxjn6c6_6d3bc161d33c4c69966f50e4c06b28ac': Starting direct runtime bootstrap lifecycle.
+[22.01] AgentExternalEventNotifier (NotifierID: 26a8041b-2181-445a-8d22-51839bd602c0, AgentID: native_agent_rr285mvxjn6c6_6d3bc161d33c4c69966f50e4c06b28ac) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[22.01] Agent 'native_agent_rr285mvxjn6c6_6d3bc161d33c4c69966f50e4c06b28ac': Bootstrapper starting direct lifecycle execution.
+[22.01] Agent 'native_agent_rr285mvxjn6c6_6d3bc161d33c4c69966f50e4c06b28ac': Running bootstrap step 0 (McpServerPrewarmingStep).
+[22.01] Agent 'native_agent_rr285mvxjn6c6_6d3bc161d33c4c69966f50e4c06b28ac': Executing McpServerPrewarmingStep.
+[22.01] Agent 'native_agent_rr285mvxjn6c6_6d3bc161d33c4c69966f50e4c06b28ac': Running bootstrap step 1 (SystemPromptProcessingStep).
+[22.01] Agent 'native_agent_rr285mvxjn6c6_6d3bc161d33c4c69966f50e4c06b28ac': Executing SystemPromptProcessingStep.
+[22.01] Agent 'native_agent_rr285mvxjn6c6_6d3bc161d33c4c69966f50e4c06b28ac': No configured skills. Skipping skill catalog.
+[22.01] Agent 'native_agent_rr285mvxjn6c6_6d3bc161d33c4c69966f50e4c06b28ac': Final processed system prompt configured and captured. Trace ID: rt_1793520244471_7ca19936-1322-4312-9471-5566f03362da. Final length: 4366.
+[22.01] Agent 'native_agent_rr285mvxjn6c6_6d3bc161d33c4c69966f50e4c06b28ac': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+[22.02] AgentExternalEventNotifier (NotifierID: 26a8041b-2181-445a-8d22-51839bd602c0, AgentID: native_agent_rr285mvxjn6c6_6d3bc161d33c4c69966f50e4c06b28ac) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[22.02] AgentWorker 'native_agent_rr285mvxjn6c6_6d3bc161d33c4c69966f50e4c06b28ac' initialized successfully. Entering main event scheduler loop.
+[22.02] Agent 'native_agent_rr285mvxjn6c6_6d3bc161d33c4c69966f50e4c06b28ac' has become idle.
+[22.02] AgentEventStream (ID: d99fefd3-1136-4b26-a1da-71c1dc5448ce) for 'native_agent_rr285mvxjn6c6_6d3bc161d33c4c69966f50e4c06b28ac': close() called. Unsubscribing all listeners and signaling.
+[22.02] AgentEventStream (ID: c3b3e159-8628-447f-a0a1-c3a40e502d8c) initialized for agent_id 'native_agent_rr285mvxjn6c6_6d3bc161d33c4c69966f50e4c06b28ac'. Subscribed to notifier.
+[22.08] Restart resume resumed host run 'probe_agent_rr285mvxjn6c6_69f289dbfc9446b6b2f60c7b48af3275' of agent 'probe_agent_rr285mvxjn6c6_69f289dbfc9446b6b2f60c7b48af3275'
+[22.15] Restart resume resumed host run 'probe_agent_rr285mvxjn6c6_f9c0a50711fe4a28a79151c4ca053adc' of agent 'probe_agent_rr285mvxjn6c6_f9c0a50711fe4a28a79151c4ca053adc'
+[22.16] Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-queue-race-ank4ja/workspace
+[22.16] Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-queue-race-ank4ja/workspace.
+[22.16] Reusing registered workspace ID: agent_ws_583e4bfe16dddb29bf093e4758ac9a346737697877275367c20b19aa315d18fa
+[22.16] MediaStorageService initialized. Media root: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-queue-race-ank4ja/data/media
+[22.16] AgentRuntimeState initialized for agent_id 'native_agent_rr285mvxjn6c6_d673d6e4f3f14f77a4235c6abd7718d4'. Initial status: uninitialized. Workspace linked. AgentEventInbox pending initialization. Output data via notifier.
+[22.16] Agent 'native_agent_rr285mvxjn6c6_d673d6e4f3f14f77a4235c6abd7718d4': LLM instance 'LMStudioLLM' and 6 tools prepared and stored in state.
+[22.16] AgentContext composed for agent_id 'native_agent_rr285mvxjn6c6_d673d6e4f3f14f77a4235c6abd7718d4'. Config and State linked.
+[22.16] Instantiating AgentRuntime for agent_id: 'native_agent_rr285mvxjn6c6_d673d6e4f3f14f77a4235c6abd7718d4' with config: 'Native Agent RR285mvxjn6c6'.
+[22.16] AgentWorker initialized for agent_id 'native_agent_rr285mvxjn6c6_d673d6e4f3f14f77a4235c6abd7718d4'.
+[22.16] Registered AgentContext for agent_id 'native_agent_rr285mvxjn6c6_d673d6e4f3f14f77a4235c6abd7718d4'. Total registered contexts: 2
+[22.16] AgentRuntime initialized for agent_id 'native_agent_rr285mvxjn6c6_d673d6e4f3f14f77a4235c6abd7718d4'. Context registered.
+[22.16] Agent facade initialized for agent_id 'native_agent_rr285mvxjn6c6_d673d6e4f3f14f77a4235c6abd7718d4'.
+[22.16] Agent 'native_agent_rr285mvxjn6c6_d673d6e4f3f14f77a4235c6abd7718d4' restored and stored successfully.
+[22.16] Agent 'native_agent_rr285mvxjn6c6_d673d6e4f3f14f77a4235c6abd7718d4' requesting runtime to start.
+[22.16] AgentRuntime for 'native_agent_rr285mvxjn6c6_d673d6e4f3f14f77a4235c6abd7718d4': Starting worker.
+[22.16] AgentWorker 'native_agent_rr285mvxjn6c6_d673d6e4f3f14f77a4235c6abd7718d4': Starting...
+[22.16] AgentWorker 'native_agent_rr285mvxjn6c6_d673d6e4f3f14f77a4235c6abd7718d4' asyncRun(): Starting.
+[22.16] Agent 'native_agent_rr285mvxjn6c6_d673d6e4f3f14f77a4235c6abd7718d4': Runtime init completed (event store initialized).
+[22.16] Agent 'native_agent_rr285mvxjn6c6_d673d6e4f3f14f77a4235c6abd7718d4': Runtime init completed (status deriver initialized).
+[22.16] Agent 'native_agent_rr285mvxjn6c6_d673d6e4f3f14f77a4235c6abd7718d4': Runtime init completed (AgentEventInbox initialized).
+[22.16] Agent 'native_agent_rr285mvxjn6c6_d673d6e4f3f14f77a4235c6abd7718d4': Runtime init completed (AgentEventScheduler initialized).
+[22.16] Waiting for agent 'native_agent_rr285mvxjn6c6_d673d6e4f3f14f77a4235c6abd7718d4' to become idle (timeout: 30s)...
+[22.16] AgentEventStream (ID: 2c22a5af-b41d-4904-930b-19a49b9bfd2e) initialized for agent_id 'native_agent_rr285mvxjn6c6_d673d6e4f3f14f77a4235c6abd7718d4'. Subscribed to notifier.
+[22.16] Agent 'native_agent_rr285mvxjn6c6_d673d6e4f3f14f77a4235c6abd7718d4': Starting direct runtime bootstrap lifecycle.
+[22.16] AgentExternalEventNotifier (NotifierID: 23d6d6c6-96f8-4ed6-9916-cdf1a3f9cf64, AgentID: native_agent_rr285mvxjn6c6_d673d6e4f3f14f77a4235c6abd7718d4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[22.16] Agent 'native_agent_rr285mvxjn6c6_d673d6e4f3f14f77a4235c6abd7718d4': Bootstrapper starting direct lifecycle execution.
+[22.16] Agent 'native_agent_rr285mvxjn6c6_d673d6e4f3f14f77a4235c6abd7718d4': Running bootstrap step 0 (McpServerPrewarmingStep).
+[22.16] Agent 'native_agent_rr285mvxjn6c6_d673d6e4f3f14f77a4235c6abd7718d4': Executing McpServerPrewarmingStep.
+[22.16] Agent 'native_agent_rr285mvxjn6c6_d673d6e4f3f14f77a4235c6abd7718d4': Running bootstrap step 1 (SystemPromptProcessingStep).
+[22.16] Agent 'native_agent_rr285mvxjn6c6_d673d6e4f3f14f77a4235c6abd7718d4': Executing SystemPromptProcessingStep.
+[22.16] Agent 'native_agent_rr285mvxjn6c6_d673d6e4f3f14f77a4235c6abd7718d4': No configured skills. Skipping skill catalog.
+[22.16] Agent 'native_agent_rr285mvxjn6c6_d673d6e4f3f14f77a4235c6abd7718d4': Final processed system prompt configured and captured. Trace ID: rt_1793520244838_5e411c3b-e1b2-49a3-842a-fc80f2119111. Final length: 4366.
+[22.16] Agent 'native_agent_rr285mvxjn6c6_d673d6e4f3f14f77a4235c6abd7718d4': Running bootstrap step 2 (WorkingContextSnapshotRestoreStep).
+[22.18] AgentExternalEventNotifier (NotifierID: 23d6d6c6-96f8-4ed6-9916-cdf1a3f9cf64, AgentID: native_agent_rr285mvxjn6c6_d673d6e4f3f14f77a4235c6abd7718d4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[22.18] AgentWorker 'native_agent_rr285mvxjn6c6_d673d6e4f3f14f77a4235c6abd7718d4' initialized successfully. Entering main event scheduler loop.
+[22.18] Agent 'native_agent_rr285mvxjn6c6_d673d6e4f3f14f77a4235c6abd7718d4' has become idle.
+[22.18] AgentEventStream (ID: 2c22a5af-b41d-4904-930b-19a49b9bfd2e) for 'native_agent_rr285mvxjn6c6_d673d6e4f3f14f77a4235c6abd7718d4': close() called. Unsubscribing all listeners and signaling.
+[22.18] AgentEventStream (ID: 2f997294-4bd5-465b-801b-d7fbb53570a1) initialized for agent_id 'native_agent_rr285mvxjn6c6_d673d6e4f3f14f77a4235c6abd7718d4'. Subscribed to notifier.
+[22.18] Restart resume resumed host run 'probe_agent_rr285mvxjn6c6_18e75ca90bad4d6b9a781b3a2c82ad6f' of agent 'probe_agent_rr285mvxjn6c6_18e75ca90bad4d6b9a781b3a2c82ad6f'
+[22.18] Restart resume skipped host run 'native_agent_rr285mvxjn6c6_29d029567bb947cba25527efc8fc56fe' of agent 'native_agent_rr285mvxjn6c6_29d029567bb947cba25527efc8fc56fe': its root is archived
+[22.20] Restart resume skipped host run 'native_agent_rr285mvxjn6c6_6d3bc161d33c4c69966f50e4c06b28ac' of agent 'native_agent_rr285mvxjn6c6_6d3bc161d33c4c69966f50e4c06b28ac': the run already had input
+[22.20] AgentExternalEventNotifier (NotifierID: 26a8041b-2181-445a-8d22-51839bd602c0, AgentID: native_agent_rr285mvxjn6c6_6d3bc161d33c4c69966f50e4c06b28ac) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+[22.20] AgentExternalEventNotifier (NotifierID: 26a8041b-2181-445a-8d22-51839bd602c0, AgentID: native_agent_rr285mvxjn6c6_6d3bc161d33c4c69966f50e4c06b28ac) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[22.20] Agent run 'native_agent_rr285mvxjn6c6_6d3bc161d33c4c69966f50e4c06b28ac': UserInputContextBuildingProcessor completed. Final content length: 43
+[22.21] AgentExternalEventNotifier (NotifierID: 26a8041b-2181-445a-8d22-51839bd602c0, AgentID: native_agent_rr285mvxjn6c6_6d3bc161d33c4c69966f50e4c06b28ac) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[22.26] AgentExternalEventNotifier (NotifierID: 26a8041b-2181-445a-8d22-51839bd602c0, AgentID: native_agent_rr285mvxjn6c6_6d3bc161d33c4c69966f50e4c06b28ac) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[22.26] Agent run 'native_agent_rr285mvxjn6c6_6d3bc161d33c4c69966f50e4c06b28ac': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+[22.26] AgentExternalEventNotifier (NotifierID: 26a8041b-2181-445a-8d22-51839bd602c0, AgentID: native_agent_rr285mvxjn6c6_6d3bc161d33c4c69966f50e4c06b28ac) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+[22.26] AgentExternalEventNotifier (NotifierID: 26a8041b-2181-445a-8d22-51839bd602c0, AgentID: native_agent_rr285mvxjn6c6_6d3bc161d33c4c69966f50e4c06b28ac) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+[22.26] AgentExternalEventNotifier (NotifierID: 26a8041b-2181-445a-8d22-51839bd602c0, AgentID: native_agent_rr285mvxjn6c6_6d3bc161d33c4c69966f50e4c06b28ac) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[22.26] AgentExternalEventNotifier (NotifierID: 26a8041b-2181-445a-8d22-51839bd602c0, AgentID: native_agent_rr285mvxjn6c6_6d3bc161d33c4c69966f50e4c06b28ac) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[22.27] AgentExternalEventNotifier (NotifierID: 23d6d6c6-96f8-4ed6-9916-cdf1a3f9cf64, AgentID: native_agent_rr285mvxjn6c6_d673d6e4f3f14f77a4235c6abd7718d4) emitted agent_turn_started. Kwarg keys for emit: agent_id,payload
+[22.27] Restart resume resumed host run 'native_agent_rr285mvxjn6c6_d673d6e4f3f14f77a4235c6abd7718d4' of agent 'native_agent_rr285mvxjn6c6_d673d6e4f3f14f77a4235c6abd7718d4'
+[22.27] AgentExternalEventNotifier (NotifierID: 23d6d6c6-96f8-4ed6-9916-cdf1a3f9cf64, AgentID: native_agent_rr285mvxjn6c6_d673d6e4f3f14f77a4235c6abd7718d4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[22.27] Agent run 'native_agent_rr285mvxjn6c6_d673d6e4f3f14f77a4235c6abd7718d4': UserInputContextBuildingProcessor completed. Final content length: 220
+[22.27] Restart resume after the update to 1.5.11-beta.9-rr285next: 4 resumed, 2 skipped, 0 failed
+[22.27] AgentExternalEventNotifier (NotifierID: 23d6d6c6-96f8-4ed6-9916-cdf1a3f9cf64, AgentID: native_agent_rr285mvxjn6c6_d673d6e4f3f14f77a4235c6abd7718d4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[22.30] AgentExternalEventNotifier (NotifierID: 23d6d6c6-96f8-4ed6-9916-cdf1a3f9cf64, AgentID: native_agent_rr285mvxjn6c6_d673d6e4f3f14f77a4235c6abd7718d4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[22.30] Agent run 'native_agent_rr285mvxjn6c6_d673d6e4f3f14f77a4235c6abd7718d4': MediaUrlTransformerProcessor successfully processed media URLs for the CompleteResponse.
+[22.30] AgentExternalEventNotifier (NotifierID: 23d6d6c6-96f8-4ed6-9916-cdf1a3f9cf64, AgentID: native_agent_rr285mvxjn6c6_d673d6e4f3f14f77a4235c6abd7718d4) emitted agent_data_assistant_complete_response. Kwarg keys for emit: agent_id,payload
+[22.30] AgentExternalEventNotifier (NotifierID: 23d6d6c6-96f8-4ed6-9916-cdf1a3f9cf64, AgentID: native_agent_rr285mvxjn6c6_d673d6e4f3f14f77a4235c6abd7718d4) emitted agent_turn_completed. Kwarg keys for emit: agent_id,payload
+[22.30] AgentExternalEventNotifier (NotifierID: 23d6d6c6-96f8-4ed6-9916-cdf1a3f9cf64, AgentID: native_agent_rr285mvxjn6c6_d673d6e4f3f14f77a4235c6abd7718d4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[22.30] AgentExternalEventNotifier (NotifierID: 23d6d6c6-96f8-4ed6-9916-cdf1a3f9cf64, AgentID: native_agent_rr285mvxjn6c6_d673d6e4f3f14f77a4235c6abd7718d4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[22.41] {"level":40,"time":1793520262749,"pid":79998,"hostname":"MacBookPro","reqId":"req-1","method":"POST","url":"/mcp/agent-tools/agtrun_cWsIz_ABG0-XpAPxg8JJsEiq4Arhn_yn9vTZugbIht0","statusCode":400,"elapsedMs":0.8907920000001468,"msg":"http request completed"}
+[22.42] {"level":40,"time":1793520262758,"pid":79998,"hostname":"MacBookPro","reqId":"req-3","method":"POST","url":"/mcp/agent-tools/agtrun_crb47JZQHIwuk-_XiJOjH20TnmnPrttgRYk554l-2NQ","statusCode":400,"elapsedMs":0.27816600000005565,"msg":"http request completed"}
+[22.44] {"level":40,"time":1793520262781,"pid":79998,"hostname":"MacBookPro","reqId":"req-d","method":"POST","url":"/mcp/agent-tools/agtrun_XmVoNYAEz-lDCMMreNpODuayzWX8dy-I7upPIzW6JW4","statusCode":400,"elapsedMs":0.25254199999972116,"msg":"http request completed"}
+[32.44] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-queue-race-ank4ja/data/memory/agents/probe_agent_rr285mvxjn6c6_69f289dbfc9446b6b2f60c7b48af3275/raw_traces_manifest.json
+[32.45] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-queue-race-ank4ja/data/memory/agents/probe_agent_rr285mvxjn6c6_f9c0a50711fe4a28a79151c4ca053adc/raw_traces_manifest.json
+[32.45] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-queue-race-ank4ja/data/memory/agents/probe_agent_rr285mvxjn6c6_18e75ca90bad4d6b9a781b3a2c82ad6f/raw_traces_manifest.json
+[32.45] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-queue-race-ank4ja/data/memory/agents/native_agent_rr285mvxjn6c6_6d3bc161d33c4c69966f50e4c06b28ac/raw_traces_manifest.json
+[32.46] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-queue-race-ank4ja/data/memory/agents/native_agent_rr285mvxjn6c6_d673d6e4f3f14f77a4235c6abd7718d4/raw_traces_manifest.json
+[32.46] Memory file missing: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-queue-race-ank4ja/data/memory/agents/native_agent_rr285mvxjn6c6_29d029567bb947cba25527efc8fc56fe/raw_traces_manifest.json
+[32.46] Closed agent session 2ff9d8a3-2958-4f02-834a-242c560da1dc
+[32.46] Agent WebSocket disconnected: 2ff9d8a3-2958-4f02-834a-242c560da1dc
+[34.08] Removing agent 'native_agent_rr285mvxjn6c6_6d3bc161d33c4c69966f50e4c06b28ac'. Attempting graceful shutdown.
+[34.08] Agent 'native_agent_rr285mvxjn6c6_6d3bc161d33c4c69966f50e4c06b28ac' requesting runtime to stop (timeout: 10s).
+[34.08] AgentExternalEventNotifier (NotifierID: 26a8041b-2181-445a-8d22-51839bd602c0, AgentID: native_agent_rr285mvxjn6c6_6d3bc161d33c4c69966f50e4c06b28ac) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[34.08] AgentWorker 'native_agent_rr285mvxjn6c6_6d3bc161d33c4c69966f50e4c06b28ac': Stop requested.
+[34.08] AgentExternalEventNotifier (NotifierID: 26a8041b-2181-445a-8d22-51839bd602c0, AgentID: native_agent_rr285mvxjn6c6_6d3bc161d33c4c69966f50e4c06b28ac) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[34.08] AgentExternalEventNotifier (NotifierID: 26a8041b-2181-445a-8d22-51839bd602c0, AgentID: native_agent_rr285mvxjn6c6_6d3bc161d33c4c69966f50e4c06b28ac) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[34.08] AgentWorker 'native_agent_rr285mvxjn6c6_6d3bc161d33c4c69966f50e4c06b28ac' asyncRun() loop has finished.
+[34.08] AgentWorker 'native_agent_rr285mvxjn6c6_6d3bc161d33c4c69966f50e4c06b28ac': Running shutdown sequence on worker loop.
+[34.08] AgentWorker 'native_agent_rr285mvxjn6c6_6d3bc161d33c4c69966f50e4c06b28ac': Shutdown resource cleanup completed successfully.
+[34.08] AgentWorker 'native_agent_rr285mvxjn6c6_6d3bc161d33c4c69966f50e4c06b28ac': Shutdown sequence completed.
+[34.08] Unregistered AgentContext for agent_id 'native_agent_rr285mvxjn6c6_6d3bc161d33c4c69966f50e4c06b28ac'.
+[34.08] AgentRuntime for 'native_agent_rr285mvxjn6c6_6d3bc161d33c4c69966f50e4c06b28ac': Context unregistered.
+[34.08] AgentRuntime for 'native_agent_rr285mvxjn6c6_6d3bc161d33c4c69966f50e4c06b28ac' stop() method completed.
+[34.08] AgentEventStream (ID: c3b3e159-8628-447f-a0a1-c3a40e502d8c) for 'native_agent_rr285mvxjn6c6_6d3bc161d33c4c69966f50e4c06b28ac': close() called. Unsubscribing all listeners and signaling.
+[34.09] AgentEventStream (ID: c3b3e159-8628-447f-a0a1-c3a40e502d8c) for 'native_agent_rr285mvxjn6c6_6d3bc161d33c4c69966f50e4c06b28ac': close() called. Unsubscribing all listeners and signaling.
+[34.09] Removing agent 'native_agent_rr285mvxjn6c6_d673d6e4f3f14f77a4235c6abd7718d4'. Attempting graceful shutdown.
+[34.09] Agent 'native_agent_rr285mvxjn6c6_d673d6e4f3f14f77a4235c6abd7718d4' requesting runtime to stop (timeout: 10s).
+[34.09] AgentExternalEventNotifier (NotifierID: 23d6d6c6-96f8-4ed6-9916-cdf1a3f9cf64, AgentID: native_agent_rr285mvxjn6c6_d673d6e4f3f14f77a4235c6abd7718d4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[34.09] AgentWorker 'native_agent_rr285mvxjn6c6_d673d6e4f3f14f77a4235c6abd7718d4': Stop requested.
+[34.09] AgentExternalEventNotifier (NotifierID: 23d6d6c6-96f8-4ed6-9916-cdf1a3f9cf64, AgentID: native_agent_rr285mvxjn6c6_d673d6e4f3f14f77a4235c6abd7718d4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[34.09] AgentExternalEventNotifier (NotifierID: 23d6d6c6-96f8-4ed6-9916-cdf1a3f9cf64, AgentID: native_agent_rr285mvxjn6c6_d673d6e4f3f14f77a4235c6abd7718d4) emitted agent_status. Kwarg keys for emit: agent_id,payload
+[34.09] AgentWorker 'native_agent_rr285mvxjn6c6_d673d6e4f3f14f77a4235c6abd7718d4' asyncRun() loop has finished.
+[34.09] AgentWorker 'native_agent_rr285mvxjn6c6_d673d6e4f3f14f77a4235c6abd7718d4': Running shutdown sequence on worker loop.
+[34.09] AgentWorker 'native_agent_rr285mvxjn6c6_d673d6e4f3f14f77a4235c6abd7718d4': Shutdown resource cleanup completed successfully.
+[34.09] AgentWorker 'native_agent_rr285mvxjn6c6_d673d6e4f3f14f77a4235c6abd7718d4': Shutdown sequence completed.
+[34.09] Unregistered AgentContext for agent_id 'native_agent_rr285mvxjn6c6_d673d6e4f3f14f77a4235c6abd7718d4'.
+[34.09] AgentRuntime for 'native_agent_rr285mvxjn6c6_d673d6e4f3f14f77a4235c6abd7718d4': Context unregistered.
+[34.09] AgentRuntime for 'native_agent_rr285mvxjn6c6_d673d6e4f3f14f77a4235c6abd7718d4' stop() method completed.
+[34.09] AgentEventStream (ID: 2f997294-4bd5-465b-801b-d7fbb53570a1) for 'native_agent_rr285mvxjn6c6_d673d6e4f3f14f77a4235c6abd7718d4': close() called. Unsubscribing all listeners and signaling.
+[34.10] AgentEventStream (ID: 2f997294-4bd5-465b-801b-d7fbb53570a1) for 'native_agent_rr285mvxjn6c6_d673d6e4f3f14f77a4235c6abd7718d4': close() called. Unsubscribing all listeners and signaling.

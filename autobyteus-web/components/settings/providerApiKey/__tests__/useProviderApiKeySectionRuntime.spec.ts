@@ -39,7 +39,7 @@ const snapshot = (
   runtimeKind: 'autobyteus',
   ownerProvider: descriptor(id, mode),
   sources: mode === 'STATIC' ? [] : [{
-    modelKind: 'LLM', state, modelCount: state === 'READY' ? 1 : 0,
+    state, modelCount: state === 'READY' ? 1 : 0,
     successfulUnitCount: state === 'READY' ? 1 : 0, failedUnitCount: 0, safeMessage: null,
   }],
   llmModels: state === 'READY' ? [{
@@ -49,32 +49,21 @@ const snapshot = (
   }] : [],
   audioModels: [], imageModels: [], videoModels: [],
 })
+/** A discovered provider's one model source, with LLM rows when it reports any. */
 const freshnessSnapshot = (
-  sources: Array<{ modelKind: 'LLM' | 'AUDIO' | 'IMAGE'; state: 'READY' | 'PARTIAL' | 'STALE_ERROR' | 'ERROR'; modelCount: number }>,
+  source: { state: 'READY' | 'PARTIAL' | 'STALE_ERROR' | 'ERROR'; modelCount: number },
 ) => ({
   runtimeKind: 'autobyteus',
   ownerProvider: descriptor('LMSTUDIO', 'DISCOVERED'),
-  sources: sources.map(source => ({
+  sources: [{
     ...source,
     successfulUnitCount: source.state === 'READY' || source.state === 'PARTIAL' ? 1 : 0,
-    failedUnitCount: source.state === 'PARTIAL'
-      || source.state === 'ERROR'
-      || source.state === 'STALE_ERROR' ? 1 : 0,
-    safeMessage: source.state === 'PARTIAL'
-      || source.state === 'ERROR'
-      || source.state === 'STALE_ERROR'
-      ? 'MODEL_DISCOVERY_UNAVAILABLE'
-      : null,
-  })),
-  llmModels: sources.some(source => source.modelKind === 'LLM' && source.modelCount > 0)
-    ? snapshot('LMSTUDIO', 'DISCOVERED', 'READY').llmModels
-    : [],
-  audioModels: sources.some(source => source.modelKind === 'AUDIO' && source.modelCount > 0)
-    ? [{ ...snapshot('LMSTUDIO', 'DISCOVERED', 'READY').llmModels[0], modelIdentifier: 'audio-model' }]
-    : [],
-  imageModels: sources.some(source => source.modelKind === 'IMAGE' && source.modelCount > 0)
-    ? [{ ...snapshot('LMSTUDIO', 'DISCOVERED', 'READY').llmModels[0], modelIdentifier: 'image-model' }]
-    : [],
+    failedUnitCount: source.state === 'READY' ? 0 : 1,
+    safeMessage: source.state === 'READY' ? null : 'MODEL_DISCOVERY_UNAVAILABLE',
+  }],
+  llmModels: source.modelCount > 0 ? snapshot('LMSTUDIO', 'DISCOVERED', 'READY').llmModels : [],
+  audioModels: [],
+  imageModels: [],
   videoModels: [],
 })
 
@@ -260,14 +249,10 @@ describe('useProviderApiKeySectionRuntime provider-scoped behavior', () => {
     }
   })
 
-  it('classifies current LLM rows plus cold media failures as partial, not stale', async () => {
+  it('classifies a partial discovery with current rows as partial, not stale', async () => {
     const { wrapper } = mountRuntime({
       settings: [setting('LMSTUDIO', false, 'DISCOVERED')],
-      snapshots: [freshnessSnapshot([
-        { modelKind: 'LLM', state: 'READY', modelCount: 1 },
-        { modelKind: 'AUDIO', state: 'ERROR', modelCount: 0 },
-        { modelKind: 'IMAGE', state: 'ERROR', modelCount: 0 },
-      ]) as never],
+      snapshots: [freshnessSnapshot({ state: 'PARTIAL', modelCount: 1 }) as never],
     })
     const runtime = wrapper.vm as never as {
       initialize: () => Promise<void>
@@ -285,9 +270,7 @@ describe('useProviderApiKeySectionRuntime provider-scoped behavior', () => {
   it('classifies a successful-empty plus peer-failure aggregate as a zero-row partial result', async () => {
     const { wrapper } = mountRuntime({
       settings: [setting('LMSTUDIO', false, 'DISCOVERED')],
-      snapshots: [freshnessSnapshot([
-        { modelKind: 'LLM', state: 'PARTIAL', modelCount: 0 },
-      ]) as never],
+      snapshots: [freshnessSnapshot({ state: 'PARTIAL', modelCount: 0 }) as never],
     })
     const runtime = wrapper.vm as never as {
       initialize: () => Promise<void>
@@ -304,37 +287,24 @@ describe('useProviderApiKeySectionRuntime provider-scoped behavior', () => {
     expect(runtime.hasUnavailableModelSource).toBe(false)
   })
 
-  it('classifies mixed current and stale rows as partial, while all-stale rows remain stale', async () => {
-    const mixed = mountRuntime({
-      settings: [setting('LMSTUDIO', false, 'DISCOVERED')],
-      snapshots: [freshnessSnapshot([
-        { modelKind: 'LLM', state: 'READY', modelCount: 1 },
-        { modelKind: 'AUDIO', state: 'STALE_ERROR', modelCount: 1 },
-      ]) as never],
-    }).wrapper.vm as never as {
-      initialize: () => Promise<void>
-      hasPartialModelResult: boolean
-      hasStaleModelResult: boolean
+  it('classifies kept rows of a failed refresh as stale, and a failed source without rows as unavailable', async () => {
+    const classify = async (source: Parameters<typeof freshnessSnapshot>[0]) => {
+      const runtime = mountRuntime({
+        settings: [setting('LMSTUDIO', false, 'DISCOVERED')],
+        snapshots: [freshnessSnapshot(source) as never],
+      }).wrapper.vm as never as {
+        initialize: () => Promise<void>
+        hasPartialModelResult: boolean
+        hasStaleModelResult: boolean
+        hasUnavailableModelSource: boolean
+      }
+      await runtime.initialize()
+      return [runtime.hasPartialModelResult, runtime.hasStaleModelResult, runtime.hasUnavailableModelSource]
     }
-    await mixed.initialize()
-    expect(mixed.hasPartialModelResult).toBe(true)
-    expect(mixed.hasStaleModelResult).toBe(false)
 
-    const allStale = mountRuntime({
-      settings: [setting('LMSTUDIO', false, 'DISCOVERED')],
-      snapshots: [freshnessSnapshot([
-        { modelKind: 'LLM', state: 'STALE_ERROR', modelCount: 1 },
-        { modelKind: 'AUDIO', state: 'STALE_ERROR', modelCount: 1 },
-      ]) as never],
-    }).wrapper.vm as never as {
-      initialize: () => Promise<void>
-      hasPartialModelResult: boolean
-      hasStaleModelResult: boolean
-      hasUnavailableModelSource: boolean
-    }
-    await allStale.initialize()
-    expect(allStale.hasPartialModelResult).toBe(false)
-    expect(allStale.hasStaleModelResult).toBe(true)
-    expect(allStale.hasUnavailableModelSource).toBe(false)
+    expect(await classify({ state: 'STALE_ERROR', modelCount: 1 })).toEqual([false, true, false])
+    expect(await classify({ state: 'STALE_ERROR', modelCount: 0 })).toEqual([false, false, true])
+    expect(await classify({ state: 'ERROR', modelCount: 0 })).toEqual([false, false, true])
+    expect(await classify({ state: 'READY', modelCount: 1 })).toEqual([false, false, false])
   })
 })

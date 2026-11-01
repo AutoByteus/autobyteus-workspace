@@ -1,0 +1,460 @@
+{
+  "case": "API-02",
+  "mode": "live-update",
+  "serverDir": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-api.r8VrPh/clean/autobyteus-server-ts",
+  "X": "1.5.11-beta.9",
+  "X1": "1.5.11-beta.9-rr285next",
+  "date": "2026-11-01T06:43:26.758Z",
+  "own": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-live-update-WAl7dF",
+  "tag": "RR285mvxgrkpy",
+  "steps": [
+    {
+      "at": "0.01",
+      "step": "stamp",
+      "value": "1.5.11-beta.9"
+    },
+    {
+      "at": "3.06",
+      "step": "server started",
+      "value": {
+        "label": "X",
+        "pid": 58420,
+        "port": 59667
+      }
+    },
+    {
+      "at": "4.27",
+      "step": "models",
+      "value": {
+        "native": "rr285-fixture:lmstudio@127.0.0.1:59666",
+        "codex": "gpt-6.1-terra",
+        "claude": "claude-haiku-4-5-20251001"
+      }
+    },
+    {
+      "at": "8.76",
+      "step": "busy",
+      "value": {
+        "label": "sa-codex",
+        "pid": 62307
+      }
+    },
+    {
+      "at": "9.40",
+      "step": "busy",
+      "value": {
+        "label": "sa-claude",
+        "pid": 63058
+      }
+    },
+    {
+      "at": "10.62",
+      "step": "busy",
+      "value": {
+        "label": "team-codex",
+        "pid": 63359
+      }
+    },
+    {
+      "at": "11.26",
+      "step": "busy",
+      "value": {
+        "label": "org-claude",
+        "pid": 63748
+      }
+    },
+    {
+      "at": "15.82",
+      "step": "busy",
+      "value": {
+        "label": "host",
+        "pid": 65866
+      }
+    },
+    {
+      "at": "15.87",
+      "step": "busy",
+      "value": {
+        "label": "copy",
+        "pid": 65758
+      }
+    },
+    {
+      "at": "19.89",
+      "step": "server stopped",
+      "value": {
+        "label": "X",
+        "signal": "SIGTERM",
+        "exit": {
+          "code": 0,
+          "signal": null,
+          "at": 1793515426478
+        },
+        "ms": 1853
+      }
+    },
+    {
+      "at": "19.89",
+      "step": "record after quit",
+      "value": {
+        "entries": [
+          {
+            "kind": "agent",
+            "place": "host",
+            "status": "running",
+            "version": "1.5.11-beta.9",
+            "run": "4e8ced1ab1"
+          },
+          {
+            "kind": "agent",
+            "place": "host",
+            "status": "running",
+            "version": "1.5.11-beta.9",
+            "run": "6a621b5d26"
+          },
+          {
+            "kind": "agent_team",
+            "place": "member",
+            "status": "running",
+            "version": "1.5.11-beta.9",
+            "run": "5e22c31777"
+          },
+          {
+            "kind": "agent_org",
+            "place": "member",
+            "status": "running",
+            "version": "1.5.11-beta.9",
+            "run": "f33d9e3f5f"
+          },
+          {
+            "kind": "agent",
+            "place": "host",
+            "status": "running",
+            "version": "1.5.11-beta.9",
+            "run": "b0f0ad12b8"
+          },
+          {
+            "kind": "agent",
+            "place": "delegated",
+            "status": "running",
+            "version": "1.5.11-beta.9",
+            "run": "0fa794dfa7"
+          }
+        ],
+        "lines": [
+          "[17.88] Recorded 6 busy run(s) for restart resume"
+        ]
+      }
+    },
+    {
+      "at": "19.89",
+      "step": "stamp",
+      "value": "1.5.11-beta.9-rr285next"
+    },
+    {
+      "at": "22.53",
+      "step": "server started",
+      "value": {
+        "label": "X1",
+        "pid": 66502,
+        "port": 59911
+      }
+    },
+    {
+      "at": "48.37",
+      "step": "after X1 start",
+      "value": {
+        "lines": [
+          "[22.57] Restart resume resumed host run 'probe_agent_rr285mvxgrkpy_273751c7a45043879a186b6a621b5d26' of agent 'probe_agent_rr285mvxgrkpy_273751c7a45043879a186b6a621b5d26'",
+          "[22.76] Restart resume resumed delegated run 'probe_worker_rr285mvxgrkpy_61b57cbfecf04a0c9190c30fa794dfa7' of agent 'probe_host_rr285mvxgrkpy_2a98a7c7470b4c868075c8b0f0ad12b8'",
+          "[22.83] Restart resume resumed member run 'org_manager_org_claude_rr285mvxgrkpy_5d04cb07b46c4b5683a940f33d9e3f5f' of agent_org 'probe_org_org_claude_rr285mvxgrkpy_0352871cce5a470b9a520a629ede97c8'",
+          "[22.84] Restart resume resumed host run 'probe_agent_rr285mvxgrkpy_2560f18b05f042968924934e8ced1ab1' of agent 'probe_agent_rr285mvxgrkpy_2560f18b05f042968924934e8ced1ab1'",
+          "[22.90] Restart resume resumed host run 'probe_host_rr285mvxgrkpy_2a98a7c7470b4c868075c8b0f0ad12b8' of agent 'probe_host_rr285mvxgrkpy_2a98a7c7470b4c868075c8b0f0ad12b8'",
+          "[23.01] Restart resume resumed member run 'team_coordinator_team_codex_rr285mvxgrkpy_acc11daeed884c0e94b5285e22c31777' of agent_team 'probe_team_team_codex_rr285mvxgrkpy_63b838c1cf3b4e528155290d538ca40a'",
+          "[23.01] Restart resume after the update to 1.5.11-beta.9-rr285next: 6 resumed, 0 skipped, 0 failed"
+        ],
+        "recordAfterStart": null,
+        "after": {
+          "sa-codex": {
+            "runId": "probe_agent_rr285mvxgrkpy_2560f18b05f042968924934e8ced1ab1",
+            "notices": 1,
+            "listsDelegated": false,
+            "noticeText": "The application restarted at 2026-11-01T06:43:49.240Z after an update to 1.5.11-beta.9-rr285next.\\nYour previous turn was interrupted.\\nTool calls that were running have unknown results; check before repeating any of them.",
+            "systemNoticeFrames": 0,
+            "turnFrames": 0,
+            "busyAgain": false,
+            "projectionError": null
+          },
+          "sa-claude": {
+            "runId": "probe_agent_rr285mvxgrkpy_273751c7a45043879a186b6a621b5d26",
+            "notices": 1,
+            "listsDelegated": false,
+            "noticeText": "The application restarted at 2026-11-01T06:43:49.240Z after an update to 1.5.11-beta.9-rr285next.\\nYour previous turn was interrupted.\\nTool calls that were running have unknown results; check before repeating any of them.",
+            "systemNoticeFrames": 0,
+            "turnFrames": 0,
+            "busyAgain": false,
+            "projectionError": null
+          },
+          "team-codex": {
+            "runId": "team_coordinator_team_codex_rr285mvxgrkpy_acc11daeed884c0e94b5285e22c31777",
+            "notices": 0,
+            "listsDelegated": false,
+            "noticeText": null,
+            "systemNoticeFrames": 0,
+            "turnFrames": 0,
+            "busyAgain": false,
+            "projectionError": "Error: [{\"message\":\"Run package 'agent:team_coordinator_team_codex_rr285mvxgrkpy_acc11daeed884c0e94b5285e22c31777' is unavailable.\",\"locations\":[{\"line\":1,\"column\":20}],\"path\":[\"getRunProjection\"]}]"
+          },
+          "org-claude": {
+            "runId": "org_manager_org_claude_rr285mvxgrkpy_5d04cb07b46c4b5683a940f33d9e3f5f",
+            "notices": 0,
+            "listsDelegated": false,
+            "noticeText": null,
+            "systemNoticeFrames": 0,
+            "turnFrames": 0,
+            "busyAgain": false,
+            "projectionError": "Error: [{\"message\":\"Run package 'agent:org_manager_org_claude_rr285mvxgrkpy_5d04cb07b46c4b5683a940f33d9e3f5f' is unavailable.\",\"locations\":[{\"line\":1,\"column\":20}],\"path\":[\"getRunProjection\"]}]"
+          },
+          "host": {
+            "runId": "probe_host_rr285mvxgrkpy_2a98a7c7470b4c868075c8b0f0ad12b8",
+            "notices": 1,
+            "listsDelegated": true,
+            "noticeText": "The application restarted at 2026-11-01T06:43:49.240Z after an update to 1.5.11-beta.9-rr285next.\\nYour previous turn was interrupted.\\nTool calls that were running have unknown results; check before repeating any of them.\\nThese runs you delegated were resumed too and are working: probe_worker_rr285mvxgrkpy (probe_worker_rr285mvxgrkpy_61b57cbfecf04a0c9190c30fa794dfa7).",
+            "systemNoticeFrames": 0,
+            "turnFrames": 0,
+            "busyAgain": false,
+            "projectionError": null
+          },
+          "copy": {
+            "runId": "probe_worker_rr285mvxgrkpy_61b57cbfecf04a0c9190c30fa794dfa7",
+            "notices": 0,
+            "listsDelegated": false,
+            "noticeText": null,
+            "systemNoticeFrames": 0,
+            "turnFrames": 0,
+            "busyAgain": false,
+            "projectionError": "Error: [{\"message\":\"Run package 'agent:probe_worker_rr285mvxgrkpy_61b57cbfecf04a0c9190c30fa794dfa7' is unavailable.\",\"locations\":[{\"line\":1,\"column\":20}],\"path\":[\"getRunProjection\"]}]"
+          }
+        }
+      }
+    },
+    {
+      "at": "49.78",
+      "step": "server stopped",
+      "value": {
+        "label": "X1",
+        "signal": "SIGTERM",
+        "exit": {
+          "code": 0,
+          "signal": null,
+          "at": 1793515456418
+        },
+        "ms": 1290
+      }
+    }
+  ],
+  "roots": [
+    {
+      "label": "sa-codex",
+      "kind": "agent",
+      "place": "host",
+      "runtime": "codex",
+      "runId": "probe_agent_rr285mvxgrkpy_2560f18b05f042968924934e8ced1ab1",
+      "rootId": "probe_agent_rr285mvxgrkpy_2560f18b05f042968924934e8ced1ab1",
+      "marker": "RR285mvxgrkpy_sa-codex"
+    },
+    {
+      "label": "sa-claude",
+      "kind": "agent",
+      "place": "host",
+      "runtime": "claude",
+      "runId": "probe_agent_rr285mvxgrkpy_273751c7a45043879a186b6a621b5d26",
+      "rootId": "probe_agent_rr285mvxgrkpy_273751c7a45043879a186b6a621b5d26",
+      "marker": "RR285mvxgrkpy_sa-claude"
+    },
+    {
+      "label": "team-codex",
+      "place": "member",
+      "runtime": "codex",
+      "marker": "RR285mvxgrkpy_team-codex",
+      "kind": "team",
+      "runId": "team_coordinator_team_codex_rr285mvxgrkpy_acc11daeed884c0e94b5285e22c31777",
+      "rootId": "probe_team_team_codex_rr285mvxgrkpy_63b838c1cf3b4e528155290d538ca40a"
+    },
+    {
+      "label": "org-claude",
+      "place": "member",
+      "runtime": "claude",
+      "marker": "RR285mvxgrkpy_org-claude",
+      "kind": "org",
+      "runId": "org_manager_org_claude_rr285mvxgrkpy_5d04cb07b46c4b5683a940f33d9e3f5f",
+      "rootId": "probe_org_org_claude_rr285mvxgrkpy_0352871cce5a470b9a520a629ede97c8"
+    },
+    {
+      "label": "host",
+      "kind": "agent",
+      "place": "host",
+      "runtime": "claude",
+      "runId": "probe_host_rr285mvxgrkpy_2a98a7c7470b4c868075c8b0f0ad12b8",
+      "rootId": "probe_host_rr285mvxgrkpy_2a98a7c7470b4c868075c8b0f0ad12b8",
+      "marker": "RR285mvxgrkpy_host"
+    }
+  ],
+  "recordAfterQuit": {
+    "entries": [
+      {
+        "root": {
+          "rootSubjectKind": "agent",
+          "rootRunId": "probe_agent_rr285mvxgrkpy_2560f18b05f042968924934e8ced1ab1"
+        },
+        "agentRunId": "probe_agent_rr285mvxgrkpy_2560f18b05f042968924934e8ced1ab1",
+        "place": "host",
+        "status": "running",
+        "recordedAt": "2026-11-01T06:43:44.627Z",
+        "version": "1.5.11-beta.9"
+      },
+      {
+        "root": {
+          "rootSubjectKind": "agent",
+          "rootRunId": "probe_agent_rr285mvxgrkpy_273751c7a45043879a186b6a621b5d26"
+        },
+        "agentRunId": "probe_agent_rr285mvxgrkpy_273751c7a45043879a186b6a621b5d26",
+        "place": "host",
+        "status": "running",
+        "recordedAt": "2026-11-01T06:43:44.627Z",
+        "version": "1.5.11-beta.9"
+      },
+      {
+        "root": {
+          "rootSubjectKind": "agent_team",
+          "rootRunId": "probe_team_team_codex_rr285mvxgrkpy_63b838c1cf3b4e528155290d538ca40a"
+        },
+        "agentRunId": "team_coordinator_team_codex_rr285mvxgrkpy_acc11daeed884c0e94b5285e22c31777",
+        "place": "member",
+        "status": "running",
+        "recordedAt": "2026-11-01T06:43:44.627Z",
+        "version": "1.5.11-beta.9"
+      },
+      {
+        "root": {
+          "rootSubjectKind": "agent_org",
+          "rootRunId": "probe_org_org_claude_rr285mvxgrkpy_0352871cce5a470b9a520a629ede97c8"
+        },
+        "agentRunId": "org_manager_org_claude_rr285mvxgrkpy_5d04cb07b46c4b5683a940f33d9e3f5f",
+        "place": "member",
+        "status": "running",
+        "recordedAt": "2026-11-01T06:43:44.627Z",
+        "version": "1.5.11-beta.9"
+      },
+      {
+        "root": {
+          "rootSubjectKind": "agent",
+          "rootRunId": "probe_host_rr285mvxgrkpy_2a98a7c7470b4c868075c8b0f0ad12b8"
+        },
+        "agentRunId": "probe_host_rr285mvxgrkpy_2a98a7c7470b4c868075c8b0f0ad12b8",
+        "place": "host",
+        "status": "running",
+        "recordedAt": "2026-11-01T06:43:44.627Z",
+        "version": "1.5.11-beta.9"
+      },
+      {
+        "root": {
+          "rootSubjectKind": "agent",
+          "rootRunId": "probe_host_rr285mvxgrkpy_2a98a7c7470b4c868075c8b0f0ad12b8"
+        },
+        "agentRunId": "probe_worker_rr285mvxgrkpy_61b57cbfecf04a0c9190c30fa794dfa7",
+        "place": "delegated",
+        "status": "running",
+        "recordedAt": "2026-11-01T06:43:44.627Z",
+        "version": "1.5.11-beta.9"
+      }
+    ]
+  },
+  "quitLines": [
+    "[17.88] Recorded 6 busy run(s) for restart resume"
+  ],
+  "exitX": {
+    "code": 0,
+    "signal": null,
+    "at": 1793515426478
+  },
+  "recordAfterStart": null,
+  "startLines": [
+    "[22.57] Restart resume resumed host run 'probe_agent_rr285mvxgrkpy_273751c7a45043879a186b6a621b5d26' of agent 'probe_agent_rr285mvxgrkpy_273751c7a45043879a186b6a621b5d26'",
+    "[22.76] Restart resume resumed delegated run 'probe_worker_rr285mvxgrkpy_61b57cbfecf04a0c9190c30fa794dfa7' of agent 'probe_host_rr285mvxgrkpy_2a98a7c7470b4c868075c8b0f0ad12b8'",
+    "[22.83] Restart resume resumed member run 'org_manager_org_claude_rr285mvxgrkpy_5d04cb07b46c4b5683a940f33d9e3f5f' of agent_org 'probe_org_org_claude_rr285mvxgrkpy_0352871cce5a470b9a520a629ede97c8'",
+    "[22.84] Restart resume resumed host run 'probe_agent_rr285mvxgrkpy_2560f18b05f042968924934e8ced1ab1' of agent 'probe_agent_rr285mvxgrkpy_2560f18b05f042968924934e8ced1ab1'",
+    "[22.90] Restart resume resumed host run 'probe_host_rr285mvxgrkpy_2a98a7c7470b4c868075c8b0f0ad12b8' of agent 'probe_host_rr285mvxgrkpy_2a98a7c7470b4c868075c8b0f0ad12b8'",
+    "[23.01] Restart resume resumed member run 'team_coordinator_team_codex_rr285mvxgrkpy_acc11daeed884c0e94b5285e22c31777' of agent_team 'probe_team_team_codex_rr285mvxgrkpy_63b838c1cf3b4e528155290d538ca40a'",
+    "[23.01] Restart resume after the update to 1.5.11-beta.9-rr285next: 6 resumed, 0 skipped, 0 failed"
+  ],
+  "copyRunId": "probe_worker_rr285mvxgrkpy_61b57cbfecf04a0c9190c30fa794dfa7",
+  "after": {
+    "sa-codex": {
+      "runId": "probe_agent_rr285mvxgrkpy_2560f18b05f042968924934e8ced1ab1",
+      "notices": 1,
+      "listsDelegated": false,
+      "noticeText": "The application restarted at 2026-11-01T06:43:49.240Z after an update to 1.5.11-beta.9-rr285next.\\nYour previous turn was interrupted.\\nTool calls that were running have unknown results; check before repeating any of them.",
+      "systemNoticeFrames": 0,
+      "turnFrames": 0,
+      "busyAgain": false,
+      "projectionError": null
+    },
+    "sa-claude": {
+      "runId": "probe_agent_rr285mvxgrkpy_273751c7a45043879a186b6a621b5d26",
+      "notices": 1,
+      "listsDelegated": false,
+      "noticeText": "The application restarted at 2026-11-01T06:43:49.240Z after an update to 1.5.11-beta.9-rr285next.\\nYour previous turn was interrupted.\\nTool calls that were running have unknown results; check before repeating any of them.",
+      "systemNoticeFrames": 0,
+      "turnFrames": 0,
+      "busyAgain": false,
+      "projectionError": null
+    },
+    "team-codex": {
+      "runId": "team_coordinator_team_codex_rr285mvxgrkpy_acc11daeed884c0e94b5285e22c31777",
+      "notices": 0,
+      "listsDelegated": false,
+      "noticeText": null,
+      "systemNoticeFrames": 0,
+      "turnFrames": 0,
+      "busyAgain": false,
+      "projectionError": "Error: [{\"message\":\"Run package 'agent:team_coordinator_team_codex_rr285mvxgrkpy_acc11daeed884c0e94b5285e22c31777' is unavailable.\",\"locations\":[{\"line\":1,\"column\":20}],\"path\":[\"getRunProjection\"]}]"
+    },
+    "org-claude": {
+      "runId": "org_manager_org_claude_rr285mvxgrkpy_5d04cb07b46c4b5683a940f33d9e3f5f",
+      "notices": 0,
+      "listsDelegated": false,
+      "noticeText": null,
+      "systemNoticeFrames": 0,
+      "turnFrames": 0,
+      "busyAgain": false,
+      "projectionError": "Error: [{\"message\":\"Run package 'agent:org_manager_org_claude_rr285mvxgrkpy_5d04cb07b46c4b5683a940f33d9e3f5f' is unavailable.\",\"locations\":[{\"line\":1,\"column\":20}],\"path\":[\"getRunProjection\"]}]"
+    },
+    "host": {
+      "runId": "probe_host_rr285mvxgrkpy_2a98a7c7470b4c868075c8b0f0ad12b8",
+      "notices": 1,
+      "listsDelegated": true,
+      "noticeText": "The application restarted at 2026-11-01T06:43:49.240Z after an update to 1.5.11-beta.9-rr285next.\\nYour previous turn was interrupted.\\nTool calls that were running have unknown results; check before repeating any of them.\\nThese runs you delegated were resumed too and are working: probe_worker_rr285mvxgrkpy (probe_worker_rr285mvxgrkpy_61b57cbfecf04a0c9190c30fa794dfa7).",
+      "systemNoticeFrames": 0,
+      "turnFrames": 0,
+      "busyAgain": false,
+      "projectionError": null
+    },
+    "copy": {
+      "runId": "probe_worker_rr285mvxgrkpy_61b57cbfecf04a0c9190c30fa794dfa7",
+      "notices": 0,
+      "listsDelegated": false,
+      "noticeText": null,
+      "systemNoticeFrames": 0,
+      "turnFrames": 0,
+      "busyAgain": false,
+      "projectionError": "Error: [{\"message\":\"Run package 'agent:probe_worker_rr285mvxgrkpy_61b57cbfecf04a0c9190c30fa794dfa7' is unavailable.\",\"locations\":[{\"line\":1,\"column\":20}],\"path\":[\"getRunProjection\"]}]"
+    }
+  },
+  "result": "Completed",
+  "fallbackCleanup": 0,
+  "stampRestored": true,
+  "modelCalls": 0,
+  "scriptedNotices": [],
+  "rootRemoved": true
+}
