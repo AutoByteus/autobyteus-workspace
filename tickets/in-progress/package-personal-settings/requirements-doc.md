@@ -3,7 +3,7 @@
 ## Document Status
 
 - Status: `Ready for Approval` (the user approves the model; DEC-001 and DEC-005 need him)
-- Current solution revision ID: `SR-001`
+- Current solution revision ID: `SR-002` (draft: the user's "simple merge" idea, 2026-11-01)
 - Package identifier: `package-personal-settings`
 - Request: Project Task autobyteus-95
 - Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), on the user's requests of 2026-10-14 and 2026-10-24
@@ -95,10 +95,10 @@ Acceptance criteria follow after the model is approved.
 
 | ID | Question | Reasoning And Recommendation | Owner | Status |
 | --- | --- | --- | --- | --- |
-| DEC-001 | (A) personal overlay vs (B) 3-way merge of config files at update time | **(A)** never conflicts, also works for automatic updates that nobody watches, and keeps package files clean (fits items 2 and 3). It is the one place the avatar and the runtime/model choice also need. **(B)** keeps edits in the files, but needs the previous revision at every update and has real conflicts, for example when both sides change the same list or the same default. Nobody is there to resolve those during an automatic update. **Recommendation: (A)**, for tool changes, avatar and runtime/model choice. | User | **Needs user** |
+| DEC-001 | How tool changes survive updates: (A) a personal overlay in the app; (B) the user's "simple merge" (2026-11-01): at update time, the user's added and removed tools and skills, found by comparing his files with the previously installed version, are applied to the new version's lists | **(B, the list merge)** changes only the update step. It needs no new store and no editor change. Lists have no conflicts. It also keeps tools added before this change, so DEC-005 needs no separate step. It needs the previously installed version at each update: a copy kept at install time, or one download from GitHub (no API quota). It cannot make the avatar or a runtime/model choice personal, but those are stage 2 and not urgent. **(A)** does all of that, but it is a larger change (store, overlay at load, editor notes) for the same urgent result. **Recommendation, revised 2026-11-01: (B) for stage 1.** Decide the avatar and runtime/model choice in stage 2 (a small personal store for those two only). | User | **Needs user** |
 | DEC-002 | Personal tool changes: additions only, or additions and removals | Removing a tool you don't want should survive an update too, and it costs nothing extra. Both. | Solution Designer | Decided |
 | DEC-003 | Other edits to a GitHub package (instructions, skills) | The user: "everything else may simply be overwritten". They stay editable; the update replaces them; a backup keeps them; the editor says so (REQ-008). | Solution Designer (the user's direction) | Decided |
 | DEC-004 | The user's own local packages | He is the author: edits keep going into the files, written cleanly (REQ-007). Only the avatar is personal there too. | Solution Designer | Decided |
-| DEC-005 | Carry over tools the user already added before this change | Without it, the first update after this change still loses them. It reads the installed revision from GitHub once (no API quota), compares `toolNames`, and stores the differences as personal, with the files backed up. It changes stored data, so it needs the user's approval. **Recommendation: yes.** | User | **Needs user** |
+| DEC-005 | Tools already added before this change | With (B), they are kept at the first update without a separate step: the merge compares with the installed version downloaded once from GitHub. The merge writes the user's tools into the new config files, and a backup keeps the replaced files (REQ-003). It changes stored data, so it needs his approval. **Recommendation: yes.** | User | **Needs user** |
 | DEC-006 | Staging | Stage 1: UC-001..003 (the user's urgent case), merged and released as a beta first. Stage 2: UC-004..006. Both within autobyteus-95. | Solution Designer (the Project Task Manager's direction) | Decided |
 | DEC-007 | Existing avatars in package files | Stop writing them; keep showing them until a personal one is set. No change to existing files. | Solution Designer | Decided |

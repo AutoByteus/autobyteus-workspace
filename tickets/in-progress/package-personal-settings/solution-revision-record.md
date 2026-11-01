@@ -7,6 +7,7 @@ Package: `package-personal-settings` (Project Task autobyteus-95). Folder: `/Use
 | Revision ID | Phase | Trigger | Prior Status | Current Status | Result |
 | --- | --- | --- | --- | --- | --- |
 | SR-001 | Requirements | Task autobyteus-95 (2026-10-24) with the user's 2026-10-24 direction | N/A | Ready for Approval | The user is asked to approve the model, DEC-001 and DEC-005 |
+| SR-002 (draft) | Requirements | The user's comment, 2026-11-01: "a simple merge" of the tools at update | Ready for Approval | Ready for Approval | DEC-001 recommendation revised to the list merge for stage 1; DEC-005 simplified; asked again |
 
 ## Revision Entries
 
