@@ -144,7 +144,7 @@ Principles 1, 2 and 13.
 - **Notice it by:** a resource that outlives its registry owner, an asynchronous teardown invoked without an exit barrier, or a completion predicate that checks a parent rather than the resource set. Port-owner inspection is diagnostic evidence, never authority to kill unrelated processes.
 
 
-### Case 10: Lifetime Continuity Assumed Between Snapshots (backend-port-conflict-20261024, IMP-DI-001)
+### Case 10: Lifetime Continuity Assumed Between Snapshots (backend-port-conflict-20261024, IMP-DI-001; autobyteus-285, CRR-002 F-API-001)
 
 Principles 1, 2 and 13.
 
@@ -152,6 +152,7 @@ Principles 1, 2 and 13.
 - **What happened:** implementation's real resolver/executor probe captured shell-before-child, then child-after-shell-exit in10/10 cases. The ordinary supported `sleep &` command had no overlapping observed live identity. The safety rule and cleanup requirement could not both be met by the unspecified handoff.
 - **The designed correction:** D3 creates a gated internal group/session leader before user code and retains it beyond command-result/agent lifetime until the group is verified empty. It separates command RESULT from anchor exit; WSL explicitly creates a new session. The retained anchor is implemented and independently reviewed; real native scope and composed host tests verify quick shell exit and TERM-resistant cleanup on macOS. WSL session mechanics have deterministic coverage, not live-platform certification.
 - **Why it mattered:** faster polling is not an ownership mechanism, and fail-closed is not a successful implementation of a normal supported path.
+- **Again in autobyteus-285 (CRR-002, F-API-001):** restart resume checked a run's eligibility ("not live, not archived") and then restored and posted to it, which took 0.3–0.5 s. An archive or a user's message in that window still got a paid notice turn, and "live" was the wrong test, because a user's message is admitted before its run is visible as live. Fix: restore first; re-check after it (final, because archiving refuses an active run); post with a first-input-only rule decided inside the run's own dispatch queue.
 - **Notice it by:** a promised live identity handoff with no overlap guarantee, or resource completion tied to the exit of a short-lived launcher rather than an explicitly retained owner.
 
 
