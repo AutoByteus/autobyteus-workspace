@@ -18,7 +18,9 @@ const require = createRequire(join(root, 'autobyteus-web/package.json'));
 const { chromium } = require('playwright-core'), WebSocket = require('ws');
 const hostOnly = process.env.HOST_ONLY === '1';
 const teamOnly = process.env.TEAM_ONLY === '1' || hostOnly;
-const caseId = hostOnly ? 'API-05H' : process.env.TEAM_ONLY === '1' ? 'API-05T' : 'API-05';
+// Round 2: WITH_COPY=1 adds the Claude host with its busy Codex copy to the Team-only journey; CASE_ID names the evidence.
+const withCopy = process.env.WITH_COPY === '1';
+const caseId = process.env.CASE_ID ?? (hostOnly ? 'API-05H' : process.env.TEAM_ONLY === '1' ? 'API-05T' : 'API-05');
 const stampPath = join(app, 'Contents/Resources/server/dist/release-identity.json');
 const X = JSON.parse(await fs.readFile(stampPath, 'utf8')).version, X1 = `${X}-rr285next`;
 const own = await fs.realpath(await fs.mkdtemp(join(tmpdir(), 'rr285-desk-')));
@@ -103,6 +105,22 @@ const openTeamInWindow = async teamName => {
   const row = page.getByText('Run exactly this shell', { exact: false }).first();
   await row.waitFor({ timeout: 20_000 }); await row.click(); await delay(5000);
 };
+const expandWorkspace = async () => {
+  const ws = page.locator('[data-test="workspace-row"]', { hasText: /^\s*workspace\s*$/ }).first(); await ws.waitFor({ timeout: 30_000 });
+  if (await ws.getAttribute('aria-expanded') !== 'true') { await ws.locator('button').first().click(); await delay(1000); }
+};
+const openRunInWindow = async (defName, runId) => {
+  await expandWorkspace();
+  const agent = page.locator('[data-test="workspace-agent-row"]', { hasText: `${defName} ${tag}` }).first(); await agent.waitFor({ timeout: 30_000 });
+  if (await agent.getAttribute('aria-expanded') !== 'true') { await agent.click(); await delay(1000); }
+  const row = page.locator(`[data-test="workspace-agent-run-row"][data-run-id="${runId}"]`); await row.waitFor({ timeout: 30_000 }); await row.click(); await delay(5000);
+  return noticeDom();
+};
+const openCopyInWindow = async (hostRunId, copyRunId) => {
+  const row = page.locator(`[data-test="workspace-agent-run-task-tree"][data-run-id="${hostRunId}"] [data-test="workspace-team-transient-execution-row"][data-agent-run-id="${copyRunId}"]`).first();
+  await row.waitFor({ timeout: 30_000 }); await row.click(); await delay(5000);
+  return noticeDom();
+};
 try {
   await fs.mkdir(evidence, { recursive: true });
   await start('X'); await loadModels();
@@ -128,7 +146,7 @@ try {
     send(c.ws, { root_subject_kind: 'agent_org', root_run_id: created.agentOrgRunId, target_agent_run_id: memberRunId, content: busyText(m('org-claude')) });
     roots.push({ label: 'org-claude', kind: 'org', runId: memberRunId, rootId: created.agentOrgRunId, marker: m('org-claude') });
   }
-  if (!teamOnly) { // Claude host delegating to a Codex worker copy, then running its own long command
+  if (!teamOnly || withCopy) { // Claude host delegating to a Codex worker copy, then running its own long command
     await agentDef('Desk Worker', { instructions: 'You are a worker. Do exactly what the task description says, with your shell tool.', defaultLaunchConfig: { runtimeKind: 'codex_app_server', llmModelIdentifier: models.codex, llmConfig: { reasoning_effort: 'medium' } } });
     const delegation = { recipient_address: `/${segment('Desk Worker')}`, description: busyText(m('copy')) };
     const hostId = await standalone('claude', 'Desk Host', `Call delegate_task exactly once now with these exact JSON arguments: ${JSON.stringify(delegation)}\nDo not call any other tool. After it returns, reply DELEGATED.`, { toolNames: ['delegate_task'] });
@@ -136,7 +154,7 @@ try {
     const hc = await connect('agent', hostId); await wait(() => hc.frames.some(f => f.type === 'CONNECTED'), 'host connected'); await delay(3000); send(hc.ws, { content: busyText(m('host')) });
     roots.push({ label: 'host', kind: 'agent', runId: hostId, marker: m('host') });
   }
-  for (const r of [...roots, ...(teamOnly ? [] : [{ label: 'copy', marker: m('copy') }])]) { const p = await wait(() => descendants(inst.pid).find(x => x.command.includes(r.marker) && /python/i.test(x.command)), `${r.label} busy`, 240_000); log('busy', { label: r.label, pid: p.pid }); }
+  for (const r of [...roots, ...(teamOnly && !withCopy ? [] : [{ label: 'copy', marker: m('copy') }])]) { const p = await wait(() => descendants(inst.pid).find(x => x.command.includes(r.marker) && /python/i.test(x.command)), `${r.label} busy`, 240_000); log('busy', { label: r.label, pid: p.pid }); }
   await delay(2000);
   record.roots = roots;
   await page.screenshot({ path: join(evidence, `${caseId}-X-busy.png`) }).catch(() => {});
@@ -153,7 +171,7 @@ try {
   const copyRunId = (record.recordAfterQuit?.entries ?? []).find(e => e.place === 'delegated')?.agentRunId ?? null;
   record.after = {};
   const hostRun = roots.find(r => r.label === 'host') ?? { runId: 'none' };
-  const collab = teamOnly ? '' : await gql('query($id:String!){agentRunCollaboration(runId:$id)}', { id: hostRun.runId }).then(d => JSON.stringify(d.agentRunCollaboration), e => String(e));
+  const collab = teamOnly && !withCopy ? '' : await gql('query($id:String!){agentRunCollaboration(runId:$id)}', { id: hostRun.runId }).then(d => JSON.stringify(d.agentRunCollaboration), e => String(e));
   const copyAddress = copyRunId ? (collab.match(new RegExp(`"address":"([^"]+)"[^{}]*"agent_?[rR]un_?[iI]d":"${copyRunId}"`))?.[1] ?? collab.match(new RegExp(`"agent_?[rR]un_?[iI]d":"${copyRunId}"[^{}]*"address":"([^"]+)"`))?.[1] ?? `/${segment('Desk Worker')}`) : null;
   const memberProjection = async r => r.kind === 'team' ? gql('query($t:String!,$a:String!){getTeamMemberRunProjection(teamRunId:$t,agentRunId:$a){conversation}}', { t: r.rootId, a: r.runId }).then(d => d.getTeamMemberRunProjection, e => ({ error: String(e).slice(0, 200) }))
     : r.kind === 'org' ? gql('query($o:String!,$m:String!,$a:String!){getAgentOrgMemberRunProjection(orgRunId:$o,memberAddress:$m,agentRunId:$a){conversation}}', { o: r.rootId, m: '/manager', a: r.runId }).then(d => d.getAgentOrgMemberRunProjection, e => ({ error: String(e).slice(0, 200) }))
@@ -173,6 +191,16 @@ try {
     await page.reload(); await delay(6000); await openTeamInWindow(team.teamName);
     record.memberDomReload = await noticeDom(); await page.screenshot({ path: join(evidence, `${caseId}-X1-team-after-reload.png`) });
     log('member notice in window (after reload)', record.memberDomReload);
+    if (withCopy) {
+      // The delegated copy and its host, opened later from the host's task rows, then after a reload.
+      for (const pass of ['live', 'after-reload']) {
+        if (pass === 'after-reload') { await page.reload(); await delay(6000); }
+        record[`hostDom-${pass}`] = await openRunInWindow('Desk Host', hostRun.runId); await page.screenshot({ path: join(evidence, `${caseId}-X1-host-${pass}.png`) });
+        log(`host notice in window (${pass})`, record[`hostDom-${pass}`]);
+        record[`copyDom-${pass}`] = await openCopyInWindow(hostRun.runId, copyRunId); await page.screenshot({ path: join(evidence, `${caseId}-X1-copy-${pass}.png`) });
+        log(`copy notice in window (${pass})`, record[`copyDom-${pass}`]);
+      }
+    }
   } catch (e) { record.uiError = String(e).slice(0, 300); log('ui step failed', record.uiError); await page.screenshot({ path: join(evidence, `${caseId}-X1-ui-failure.png`) }).catch(() => {}); }
   record.quitX1 = await quitAndObserve('quit X1');
   record.result = 'Completed';

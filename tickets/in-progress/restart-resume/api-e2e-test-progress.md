@@ -35,3 +35,28 @@ Read this first when picking the run back up. Only add rows. **Temporary data ro
 | 2026-11-01 08:05 | API-06 | Started |  | 284 gated E2E |
 | 2026-11-01 08:05 | API-06 | Completed | Pass | 2 passed; SIGTERM 766 ms exit 0; recorder line present |
 | 2026-11-01 08:20 | Round 1 | Completed | Fail | F-API-001 (AC-003 queue races, API-04/04C); report and API-REV-001 written; failure-origin review requested |
+| 2026-11-01 09:10 | Round 2 | Started |  | CRR-003 Pass on IR-002 (code 82932a8b48 + 7d9a305627; review 8fd49bd25a). New run temp root /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-api2.fcgHSg |
+| 2026-11-01 09:10 | API-00 | Started |  | round 2: clean checkout 8fd49bd25a; install, server + desktop builds |
+| 2026-11-01 09:22 | API-R2 | Completed | Pass | reused IMP-07..IMP-10 on 7d9a305627 (167 passed; mutations fail; typecheck; full suite after test fix) |
+| 2026-11-01 09:28 | API-00 | Completed | Pass | round 2: install, server build, desktop build (6 m 2 s) from 8fd49bd25a; stamp 1.5.11-beta.9 in both |
+| 2026-11-01 09:28 | API-01 | Completed | Pass (reused + bundle reread) | API-01-r2-desktop-stamp.log |
+| 2026-11-01 09:28 | API-03 | Started |  | API-03-r2 scripted |
+| 2026-11-01 09:34 | API-03 | Completed | Pass | r2: P1 not-an-update 0 notices; copy first; AR-001 1 notice no list; host lists copy; copy 1 system_task_notification in memory; idle 0; AR-005 record kept (3); P3 removed, healthy |
+| 2026-11-01 09:34 | API-04E | Started |  | sample 1: 14 native targets, message/archive alternating, 0-2.6 s |
+| 2026-11-01 09:37 | API-04E | Checkpoint |  | s1: 0 violations; queue done in 0.8 s; e1 notice refused (already had input), e2 archived during restore -> not resumed (failed: root not accepting), rest after post. s2/s3 denser (50 ms steps) |
+| 2026-11-01 09:42 | API-04E | Completed | Pass | 3 samples, 42 targets, 0 violations: msg not-first 7, msg notice-then-user 14, archive ok -> not resumed 10, archive refused (active) -> resumed 11 |
+| 2026-11-01 09:42 | API-04 | Started |  | r2: 3 slow Claude + t-message/t-stop/t-archive at start |
+| 2026-11-01 09:46 | API-04 | Completed | Pass | r2: t-message notice refused (already had input), first model call = user; t-archive skipped (archived), no turn; t-stop not found -> resumed |
+| 2026-11-01 09:04 | API-04B | Started |  | r2: SLOW=6 ACT_DELAY_MS=100 |
+| 2026-11-01 09:05 | API-04C | Started |  | r2: SLOW=12 ACT_DELAY_MS=0 |
+| 2026-11-01 09:55 | API-04B | Completed | Pass | r2: t-message notice refused, first model call = user; t-archive skipped "archived (after the restore)"; t-stop terminated an active run -> not resumed (root not accepting) |
+| 2026-11-01 09:55 | API-04C | Checkpoint |  | r2a (kept): t-archive skipped; t-message flagged "user message lost": probe sent 0 ms after WS open, before the server session existed (attached 31.24, session 31.25, no handling logged); probe artifact. Probe now waits for CONNECTED; rerun |
+| 2026-11-01 10:00 | API-04C | Completed | Pass | r2: t-message notice refused, first model call = user; t-archive skipped "archived (after the restore)"; 13 resumed 2 skipped 0 failed |
+| 2026-11-01 10:00 | API-02 | Started |  | r2 live-update |
+| 2026-11-01 10:10 | API-02 | Completed | Pass | r2 live: recorded 6 (agent host x3, team member, org member, delegated); 6 resumed 0/0; every run 1 notice in its own projection (members and copy too); host lists copy; all continued |
+| 2026-11-01 10:10 | API-05T | Started |  | r2 desktop: Team member + Claude host with Codex copy (WITH_COPY=1) |
+| 2026-11-01 10:16 | API-05T | Completed | Pass | r2 desktop: recorded 3 (team member, host, delegated); 3 resumed 0/0 (copy first); member, host and copy each show 1 notice inside system-task-notification-segment when opened later and after reload; host lists copy; screenshots confirm the member/copy/host views |
+| 2026-11-01 10:16 | API-06 | Started |  | r2 284 gated E2E |
+| 2026-11-01 10:20 | API-06 | Completed | Pass | r2: Tests 2 passed (2) |
+| 2026-11-01 10:20 | Cleanup | Completed |  | no isolated instances, no RR285 processes; clean worktree and run root rr285-api2.fcgHSg removed |
+| 2026-11-01 10:30 | Round 2 | Completed | Pass | 95.1%; F-API-001 and O-1 resolved; report, investigation and API-REV-002 written |

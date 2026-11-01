@@ -39,7 +39,7 @@ const setStamp = async v => { await fs.writeFile(stampPath, JSON.stringify({ ver
 
 // Scripted native inference. A user message carrying `TURN:<label>` gets the planned tool calls once; anything else
 // (including the restart notice) gets a short text reply.
-const plans = new Map(); let calls = 0; const notices = [];
+const plans = new Map(); let calls = 0; const notices = []; const modelLog = [];
 const model = createServer(async (req, res) => {
   if (req.method === 'GET') { res.setHeader('content-type', 'application/json'); res.end(JSON.stringify({ models: [{ key: 'rr285-fixture', max_context_length: 65536, loaded_instances: [{ config: { context_length: 65536 } }] }] })); return; }
   let raw = ''; for await (const c of req) raw += c; calls++;
@@ -49,6 +49,10 @@ const model = createServer(async (req, res) => {
   if (/application restarted/i.test(text)) notices.push({ at: Date.now(), head: text.slice(0, 400) });
   const label = text.match(/TURN:([\w-]+)/)?.[1];
   const lastIsTool = msgs.at(-1)?.role === 'tool';
+  // Round 2: which run (its first TURN label in history) asked, and for what (the order the model saw inputs in).
+  const runLabel = JSON.stringify(msgs.filter(m => m.role === 'user').map(m => m.content)).match(/TURN:([\w-]+)/)?.[1] ?? null;
+  modelLog.push({ at: Date.now(), runLabel, kind: lastIsTool ? 'tool-result' : /application restarted/i.test(text) ? 'notice' : /User message after the restart/.test(text) ? 'user' : label ? 'turn' : 'other',
+    noticesInHistory: (JSON.stringify(msgs).match(/application restarted at/gi) ?? []).length, userInHistory: /User message after the restart/.test(JSON.stringify(msgs)) });
   const plan = label && !lastIsTool ? plans.get(label) : undefined;
   const toolCalls = plan ? (typeof plan === 'function' ? plan() : plan).map((c, i) => ({ index: i, id: `call-${label}-${calls}-${i}`, type: 'function', function: { name: c.tool, arguments: JSON.stringify(c.args) } })) : null;
   const delta = toolCalls ? { role: 'assistant', tool_calls: toolCalls } : { role: 'assistant', content: /application restarted/i.test(text) ? 'Noted the restart; continuing.' : 'Done.' };
@@ -269,7 +273,13 @@ try {
       record.p2 = { record: rec, lines: resumeLines(s2), recordAfterStart: await readRecord(data),
         n1: { notices: noticeCount(await projection(s2, n1)), listsDelegated: /These runs you delegated/i.test(JSON.stringify((await projection(s2, n1)).conversation ?? [])) },
         host: { notices: noticeCount(pHost), notice: (JSON.stringify(pHost.conversation ?? []).match(/The application restarted[^"]{0,700}/i) ?? [null])[0] },
-        copies: await Promise.all(copyIds.map(async id => ({ id, notices: noticeCount(await projection(s2, id)) }))),
+        // Round 2: a copy is read through its host's collaboration member projection (getRunProjection cannot read it).
+        copies: await Promise.all(copyIds.map(async id => {
+          const collab = await s2.gql('query($id:String!){agentRunCollaboration(runId:$id)}', { id: host }).then(d => JSON.stringify(d.agentRunCollaboration), e => String(e));
+          const address = collab.match(new RegExp(`"address":"([^"]+)"[^{}]*"agent_?[rR]un_?[iI]d":"${id}"`))?.[1] ?? collab.match(new RegExp(`"agent_?[rR]un_?[iI]d":"${id}"[^{}]*"address":"([^"]+)"`))?.[1] ?? null;
+          const p = await s2.gql('query($h:String!,$m:String!,$a:String!){agentRunCollaborationMemberProjection(hostRunId:$h,memberAddress:$m,agentRunId:$a){conversation}}', { h: host, m: address ?? '', a: id }).then(d => d.agentRunCollaborationMemberProjection, e => ({ error: String(e).slice(0, 200) }));
+          return { id, address, notices: noticeCount(p), projectionError: p?.error ?? null, tail: (p?.conversation ?? []).slice(-3).map(e => JSON.stringify(e).slice(0, 300)) };
+        })),
         idle: { notices: noticeCount(await projection(s2, idle)) }, scriptedNoticesSeen: notices.length };
       log('P2 after X1 start', record.p2); await stopServer(s2); await saveLog(s2);
     }
@@ -286,28 +296,64 @@ try {
     await setStamp(X); const s = await startServer(data, 'X'); await loadModels(s, true);
     const slow = [], targets = [];
     for (const l of Array.from({ length: Number(process.env.SLOW ?? 3) }, (_, i) => `slow-${i + 1}`)) { const id = await createStandalone(s, 'claude', 'Probe Agent'); await sendStandalone(s, id, busyText(`${tag}_${l}`)); slow.push({ label: l, runId: id }); }
-    for (const l of (mode === 'queue-race' ? ['t-message', 't-stop', 't-archive'] : ['t-1', 't-2'])) { const id = await createStandalone(s, 'native', 'Native Agent', { toolNames: ['run_bash'] }); plans.set(l, runBashPlan(`${tag}_${l}`)); await sendStandalone(s, id, `TURN:${l} run it`); targets.push({ label: l, runId: id }); }
+    // Round 2: RACE_SPEC = JSON [{label, action: message|archive|stop, delayMs}] (delay after the X+1 server is healthy).
+    const actDelay = Number(process.env.ACT_DELAY_MS ?? 0);
+    const spec = mode === 'queue-race' ? (process.env.RACE_SPEC ? JSON.parse(process.env.RACE_SPEC)
+      : [{ label: 't-message', action: 'message', delayMs: actDelay }, { label: 't-stop', action: 'stop', delayMs: actDelay }, { label: 't-archive', action: 'archive', delayMs: actDelay }]) : [];
+    record.spec = spec;
+    for (const l of (mode === 'queue-race' ? spec.map(x => x.label) : ['t-1', 't-2'])) { const id = await createStandalone(s, 'native', 'Native Agent', { toolNames: ['run_bash'] }); plans.set(l, runBashPlan(`${tag}_${l}`)); await sendStandalone(s, id, `TURN:${l} run it`); targets.push({ label: l, runId: id }); }
     for (const r of [...slow, ...targets]) await waitBusy(s, `${tag}_${r.label}`, r.label);
     await delay(1500); await stopServer(s); await saveLog(s);
     const rec = await readRecord(data); record.recordAfterQuit = rec;
     log('record', rec?.entries?.map(e => ({ place: e.place, run: e.agentRunId.slice(-10) })));
     await setStamp(X1);
     if (mode === 'queue-race') {
+      const s2StartAt = Date.now(); record.x1StartAtLogSec = ((s2StartAt - T0) / 1000).toFixed(2);
       const s2 = await startServer(data, 'X1');
       const acted = {};
-      const tm = targets.find(t => t.label === 't-message'), ts = targets.find(t => t.label === 't-stop'), ta = targets.find(t => t.label === 't-archive');
-      const t0 = Date.now(); const rel = () => ((Date.now() - T0) / 1000).toFixed(2); await delay(Number(process.env.ACT_DELAY_MS ?? 0));
-      await Promise.all([
-        (async () => { const c = await connect(s2, 'agent', tm.runId); await wait(() => c.frames.some(f => f.type === 'CONNECTED'), 'tm connected', 10_000); send(c.ws, { content: 'User message after the restart.' }); acted.message = Date.now() - t0; acted.messageAtLogSec = rel(); })(),
-        (async () => { acted.stop = await s2.gql('mutation($id:String!){terminateAgentRun(agentRunId:$id){success message}}', { id: ts.runId }).then(d => d.terminateAgentRun, e => String(e)); acted.stopMs = Date.now() - t0; })(),
-        (async () => { acted.archive = await s2.gql('mutation($id:String!){archiveStoredRun(runId:$id){success message}}', { id: ta.runId }).then(d => d.archiveStoredRun, e => String(e)); acted.archiveMs = Date.now() - t0; acted.archiveDoneAtLogSec = rel(); })(),
-      ]);
+      const t0 = Date.now(); const rel = () => ((Date.now() - T0) / 1000).toFixed(2); record.x1HealthyAtLogSec = rel();
+      // A user opens the run's view first (as the window does), then types; the send is what is timed.
+      const views = {};
+      await Promise.all(spec.filter(x => x.action === 'message').map(async x => { const t = targets.find(y => y.label === x.label); const c = await connect(s2, 'agent', t.runId); views[x.label] = c;
+        // The server's CONNECTED frame (its session exists); a send before it is not handled (API-04C-r2a artifact).
+        await wait(() => c.frames.some(f => f.type === 'CONNECTED'), `${x.label} connected`, 10_000); }));
+      await Promise.all(spec.map(async x => {
+        const t = targets.find(y => y.label === x.label); await delay(Math.max(0, x.delayMs - (Date.now() - t0)));
+        const a = acted[x.label] = { action: x.action, plannedMs: x.delayMs, startMs: Date.now() - t0, startAtLogSec: rel() };
+        if (x.action === 'message') { send(views[x.label].ws, { content: `User message after the restart (${x.label}).` }); a.sentAtLogSec = rel(); }
+        if (x.action === 'stop') a.result = await s2.gql('mutation($id:String!){terminateAgentRun(agentRunId:$id){success message}}', { id: t.runId }).then(d => d.terminateAgentRun, e => String(e).slice(0, 300));
+        if (x.action === 'archive') a.result = await s2.gql('mutation($id:String!){archiveStoredRun(runId:$id){success message}}', { id: t.runId }).then(d => d.archiveStoredRun, e => String(e).slice(0, 300));
+        a.doneAtLogSec = rel();
+      }));
       await wait(() => resumeLines(s2).some(l => /Restart resume after the update/.test(l)), 'resume report', 120_000).catch(() => {});
       await delay(10_000);
       record.acted = acted; record.lines = resumeLines(s2);
       record.after = {};
-      for (const r of [...slow, ...targets]) { const p = await projection(s2, r.runId); record.after[r.label] = { runId: r.runId, notices: noticeCount(p), userMessageAfterRestart: /User message after the restart/.test(JSON.stringify(p?.conversation ?? [])), conversationTail: r.label.startsWith('t-') ? (p?.conversation ?? []).slice(-6).map(e => JSON.stringify(e).slice(0, 260)) : undefined }; }
-      log('queue race', { acted, lines: record.lines, after: record.after });
+      const outcomeOf = id => { const l = record.lines.find(x => x.includes(id) && /Restart resume (resumed|skipped|could not)/.test(x)); return l ? { at: l.match(/^\[([\d.]+)\]/)?.[1], kind: /resumed /.test(l) ? 'resumed' : /skipped/.test(l) ? 'skipped' : 'failed', reason: l.split(': ').slice(1).join(': ').slice(0, 160) || null } : { kind: 'none' }; };
+      for (const r of [...slow, ...targets]) {
+        const p = await projection(s2, r.runId); const conv = JSON.stringify(p?.conversation ?? []);
+        const seq = modelLog.filter(e => e.runLabel === r.label && e.at >= s2StartAt).map(e => ({ at: ((e.at - T0) / 1000).toFixed(2), kind: e.kind, noticesInHistory: e.noticesInHistory, userInHistory: e.userInHistory }));
+        const a = acted[r.label]; const outcome = outcomeOf(r.runId);
+        const noticeIdx = conv.search(/application restarted at/i), userIdx = conv.search(/User message after the restart/);
+        const out = { runId: r.runId, outcome, notices: noticeCount(p), userMessageAfterRestart: userIdx >= 0, noticeBeforeUser: noticeIdx >= 0 && userIdx >= 0 ? noticeIdx < userIdx : null, modelSeq: r.label.startsWith('slow') ? undefined : seq,
+          conversationTail: r.label.startsWith('slow') ? undefined : (p?.conversation ?? []).slice(-6).map(e => JSON.stringify(e).slice(0, 260)), projectionError: p?.error ?? null };
+        // Verdicts (SR-005): an archived run gets no notice and no turn; a user's input admitted first refuses the notice;
+        // a notice admitted first is followed by the user's message; never more than one notice.
+        const v = [];
+        if (out.notices > 1) v.push('more than one notice');
+        if (a?.action === 'archive' && a.result?.success === true) { if (outcome.kind === 'resumed') v.push('archived run resumed'); if (out.notices) v.push('archived run has a notice'); if (seq.length) v.push('archived run had a model turn'); }
+        if (a?.action === 'message') {
+          if (!out.userMessageAfterRestart) v.push('user message lost');
+          if (outcome.kind === 'resumed') { if (out.notices !== 1) v.push('resumed without exactly one notice'); if (out.noticeBeforeUser === false) v.push('notice after the user message'); if (seq[0] && seq[0].kind !== 'notice') v.push(`first model call after restart was ${seq[0].kind}, not the notice`); }
+          else if (out.notices) v.push(`not resumed (${outcome.kind}) but has a notice`);
+          if (seq.some(e => e.kind === 'notice' && e.userInHistory)) v.push('notice turn ran after the user message');
+        }
+        out.verdict = v.length ? { ok: false, violations: v } : { ok: true };
+        record.after[r.label] = out;
+      }
+      const tgt = targets.map(t => ({ label: t.label, action: acted[t.label]?.action, plannedMs: acted[t.label]?.plannedMs, startAtLogSec: acted[t.label]?.startAtLogSec, archive: acted[t.label]?.result?.message ?? acted[t.label]?.result?.success ?? acted[t.label]?.result, outcome: `${record.after[t.label].outcome.kind}@${record.after[t.label].outcome.at ?? '-'} ${record.after[t.label].outcome.reason ?? ''}`.trim(), notices: record.after[t.label].notices, ok: record.after[t.label].verdict.ok }));
+      record.summary = { targets: tgt, violations: targets.filter(t => !record.after[t.label].verdict.ok).map(t => ({ label: t.label, ...record.after[t.label].verdict })) };
+      log('queue race', { lines: record.lines, summary: record.summary });
       await stopServer(s2); await saveLog(s2);
     } else {
       let killed = false;

@@ -104,6 +104,55 @@ None planned (live runtimes, two stamped builds and the desktop make these probe
 | Real "Install update and restart" (Squirrel) | Relaunches outside the isolated profile onto the user's data (Rule 2) | Covered by the quit + X+1 start; the install step is unchanged | Yes (the user's next real update with busy agents) | — |
 | Docker in-place update (autobyteus-305 starter) | Needs a signed release feed and a release package; mounting this branch's `dist` into a released image is allowed only when the image differs in just the changed files (TESTING), which it does not (the base has moved since the last image) | The server-side detection is the same code; N-2 checks the deployed package carries the stamp | No | Recorded for delivery |
 
+## Round 2 (API-REV-002): SR-005 / IR-002
+
+- **Trigger:** code reviewer, CRR-003 Pass on IR-002.
+  - Code: `82932a8b48` plus the test fix `7d9a305627`.
+  - Handoff: `c42b28d05e`.
+  - Review: `8fd49bd25a`, built from a clean checkout of it.
+- **What changed (D3.6, D4):** `resumeOne` now runs:
+  1. pre-filter;
+  2. `resolveOrRestore`, plus `ensureHostReady` for a host;
+  3. re-check of the root row ("… (after the restore)");
+  4. post with `onlyAsFirstInput: true`.
+
+  More changes:
+  - `AgentRunInputAdmissionState.reserve` refuses the post with `AGENT_RUN_INPUT_NOT_FIRST` when `nextSequence > 1`, inside the run's dispatch queue. The resumer logs that as "skipped … the run already had input".
+  - Every place publishes the run's own `SYSTEM_TASK_NOTIFICATION`, and memory records it. A member publishes no `member_input` for a platform notice.
+  - Remote children refuse a first-input-only post.
+- **Files changed since round 1:** `git diff --name-only 7d6bc4dc54 8fd49bd25a`. They are under `restart-resume/` (resumer, notice, composition), agent-run input admission, `post_message` pass-through (handles, registries, Team manager), remote child commands and the collaboration presentation adapter. Not changed: the record, recorder, update test, release stamp scripts and the startup/shutdown wiring.
+
+### Reuse decisions
+
+| Case | Decision | Why |
+| --- | --- | --- |
+| API-R1 → API-R2 | Reused IMP-07..IMP-10 (`7d9a305627`) | Cover the first-input rule on a real `AgentRun`, the pass-through, the member handle, the resumer order and the mutations; this is the reviewed commit |
+| API-01 (N-2) | Reused, plus the desktop stamp read again from the new bundle | Stamp script, `build:full` and the Dockerfile's deploy are unchanged |
+| API-04D (AC-005 crash) | Reused | Delete-before-first-post in `resumeAfterUpdate` is unchanged; only `resumeOne` changed |
+| API-03 (AC-004, AR-001, AR-005, corrupt record, delegated-first) | **Rerun** as `API-03-r2` | Free (scripted); AR-001 and the host list now go through the new restore → re-check → post path, and copy notices are now in memory |
+| API-02 (AC-002 server, live) | **Rerun** as `API-02-r2` | The post path changed for every place; each run should now show exactly one notice in its own projection |
+| API-04 / 04B / 04C | **Rerun** as `API-04-r2`, `API-04B-r2`, `API-04C-r2` | F-API-001 recheck |
+| API-05T | **Rerun** as `API-05T-r2` with the host and its delegated copy (`WITH_COPY=1`) | O-1: member and copy notices visible when opened later and after a reload; also covers the host (API-05H) |
+| API-06 | **Rerun** as `API-06-r2` | Cheap regression of the shutdown path after the admission change |
+
+### New case
+
+**API-04E (race sweep, free).** 14 scripted native targets (no slow live entries). On the X+1 start, each target gets a user message or an archive at staggered times (0–2.6 s after the server is healthy), so actions land before the pre-filter, during the restore, between the restore and the post, and after the post. Two samples with different offsets.
+
+- **Real use:** a user opens agents and types, or archives, in the first seconds after an automatic update restart.
+- **Verdicts per target:**
+  - an archived run (archive succeeded) has no resume, no notice and no model call;
+  - a messaged run either was refused the notice ("already had input"; its first model call is the user's message, with no notice), or got the notice first (first model call is the notice, then the user's message follows);
+  - never more than one notice;
+  - the user's message is never lost.
+- **Ordering evidence:** the scripted model's call log (`modelSeq`, run label, kind, whether a notice or the user message was already in history) and the conversation order in the projection.
+
+### Unchanged Not Tested
+
+- Docker in-place update: same reason as round 1.
+- Real Squirrel install: user-only.
+- AR-003 live refused copy: unreachable.
+
 ## Investigation Decision
 
 - Proceed: `Yes`. Durable coverage changes: `No`. Reroute: `No`.
@@ -112,3 +161,6 @@ None planned (live runtimes, two stamped builds and the desktop make these probe
   - Failure-origin review requested from the code reviewer.
   - Added samples: API-04B/04C/04D (timing variants, crash during resume) and API-05T/05H (member and host display journeys).
   - AR-003's refused copy is not reachable live: closing a Task stops the copy before the quit.
+- After round 2 (API-REV-002):
+  - Result `Pass`, 95.1%; F-API-001 and O-1 resolved.
+  - API-03-r2 reran once (copy projection fix); API-04C-r2 reran once (`CONNECTED` wait; first run kept as `-r2a`).
