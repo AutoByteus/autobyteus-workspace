@@ -445,7 +445,7 @@ const settingsMessages = {
   'settings.components.settings.AboutSettingsManager.status.checkFailed': 'Check failed',
   'settings.components.settings.AboutSettingsManager.status.checksOff': 'Automatic checks are off',
   'settings.components.settings.AboutSettingsManager.autoCheck.label': 'Check for app updates automatically',
-  'settings.components.settings.AboutSettingsManager.autoCheck.description': 'Asks github.com for a newer version at launch and at the interval below. No account or token is used; nothing is sent to AutoByteus. A newer version is only announced; you decide to download and install it.',
+  'settings.components.settings.AboutSettingsManager.autoCheck.description': 'Asks github.com for a newer version at launch and at the interval below. No account or token is used; nothing is sent to AutoByteus. A newer version is only announced, unless Update automatically below is on.',
   'settings.components.settings.AboutSettingsManager.autoCheck.interval': 'Check interval',
   'settings.components.settings.AboutSettingsManager.autoCheck.range': 'From 15 minutes to 24 hours.',
   'settings.components.settings.AboutSettingsManager.autoCheck.noEffect': 'Automatic checks are off. Check for Updates below still works.',

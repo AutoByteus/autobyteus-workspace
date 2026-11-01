@@ -40,10 +40,12 @@ const api = {
 }
 
 let registryVersion = 0
+let nodeAnswer: unknown = null
 const mountLine = async (answer: unknown, remote: NodeEntry = entry()) => {
   registryVersion += 2
+  nodeAnswer = answer
   useNodeStore().applyRegistrySnapshot(snapshot(registryVersion, remote))
-  vi.stubGlobal('fetch', vi.fn(async () => new Response(JSON.stringify(answer), { status: 200 })))
+  vi.stubGlobal('fetch', vi.fn(async () => new Response(JSON.stringify(nodeAnswer), { status: 200 })))
   const wrapper = mount(NodeServerUpdate, { props: { row } })
   await flushPromises()
   return wrapper
@@ -133,5 +135,33 @@ describe('NodeAutoUpdate', () => {
     const wrapper = await mountLine(older, entry({ autoUpdate: true }))
     expect(wrapper.find('[data-testid="node-auto-update-updated-remote-1"]').exists()).toBe(false)
     expect(wrapper.find('[data-testid="node-auto-update-failed-remote-1"]').exists()).toBe(false)
+  })
+
+  it('the server line asks the node again when the desktop requests and ends an automatic update, without a second notice', async () => {
+    const wrapper = await mountLine(older, entry({ autoUpdate: true }))
+    const asks = () => vi.mocked(fetch).mock.calls.length
+    const before = asks()
+    nodeAnswer = { ...older, update: { state: 'running', targetVersion: '1.5.12', step: 'downloading', code: null, message: null } }
+    outcomes = { 'remote-1': { version: '1.5.12', requestedAt: '2026-11-01T10:00:00.000Z', outcome: 'PENDING', reason: null, read: false } }
+    changed!(outcomes)
+    await flushPromises()
+    expect(asks()).toBeGreaterThan(before)
+    expect(wrapper.get(`[data-testid="node-server-progress-${B}"]`).text()).toContain('1.5.12')
+
+    nodeAnswer = { inPlaceUpdate: 'available', version: '1.5.12', target: { version: '1.5.12', relation: 'same' },
+      update: { state: 'succeeded', targetVersion: '1.5.12', step: null, code: null, message: null } }
+    outcomes = { 'remote-1': { ...outcomes['remote-1']!, outcome: 'AUTO_UPDATED' } }
+    changed!(outcomes)
+    await flushPromises()
+    expect(wrapper.get(`[data-testid="node-server-version-${B}"]`).text()).toContain('1.5.12')
+    expect(wrapper.find(`[data-testid="node-server-update-${B}"]`).exists()).toBe(false)
+    expect(wrapper.find(`[data-testid="node-server-notice-${B}"]`).exists()).toBe(false)
+    expect(wrapper.get('[data-testid="node-auto-update-updated-remote-1"]').text()).toContain('Updated automatically to 1.5.12')
+  })
+
+  it('an ended outcome read when the page opens does not ask the node twice', async () => {
+    outcomes = { 'remote-1': { version: '1.5.12', requestedAt: '2026-11-01T10:00:00.000Z', outcome: 'AUTO_UPDATED', reason: null, read: true } }
+    await mountLine(older, entry({ autoUpdate: true }))
+    expect(vi.mocked(fetch).mock.calls).toHaveLength(1)
   })
 })

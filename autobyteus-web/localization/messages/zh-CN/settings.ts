@@ -445,7 +445,7 @@ const settingsMessages = {
   'settings.components.settings.AboutSettingsManager.status.checkFailed': '检查失败',
   'settings.components.settings.AboutSettingsManager.status.checksOff': '自动检查已关闭',
   'settings.components.settings.AboutSettingsManager.autoCheck.label': '自动检查应用更新',
-  'settings.components.settings.AboutSettingsManager.autoCheck.description': '启动时以及之后按下方间隔向 github.com 查询是否有新版本。不使用任何账号或令牌；不会向 AutoByteus 发送任何内容。新版本只会被提示，是否下载和安装由你决定。',
+  'settings.components.settings.AboutSettingsManager.autoCheck.description': '启动时以及之后按下方间隔向 github.com 查询是否有新版本。不使用任何账号或令牌；不会向 AutoByteus 发送任何内容。新版本只会被提示，除非下方已开启“自动更新”。',
   'settings.components.settings.AboutSettingsManager.autoCheck.interval': '检查间隔',
   'settings.components.settings.AboutSettingsManager.autoCheck.range': '范围为 15 分钟到 24 小时。',
   'settings.components.settings.AboutSettingsManager.autoCheck.noEffect': '自动检查已关闭。下方的“检查更新”仍然可用。',
