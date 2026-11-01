@@ -1,10 +1,15 @@
 # Requirements Document — restart-resume (autobyteus-285)
 
 ## Document Status
-- Status: **Ready for Approval**: DEC-001 needs the user. Current solution revision ID: `SR-001`.
+- Status: **Approved** (SR-002, 2026-11-01). Current solution revision ID: `SR-002`.
 - Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), Task
   `autobyteus-285`, 2026-11-01, at the user's word. Requirements owner: Solution Designer.
-- Approved by: pending. Basis carried: autobyteus-283 requirements (REQ-001..004, REQ-006 as candidates); the user's
+- Approved by: **the user**, 2026-11-01. After seeing REQ-001..006 and DEC-001's options with recommendation A, he
+  described the purpose: "if I toggle this enable automatic upgrade to the latest beta … there might be some agents …
+  in the middle term. Some others, which are in idle, we don't care … only the agent runs, which are busy, will
+  receive a notification … in the midnight … some new beta was released … the system will automatically upgrade …
+  and then the agent can continue on working". That is option A (update restarts only, busy runs only); he was told it
+  is recorded as A and that he can ask for plain quits too. Basis carried: autobyteus-283 requirements (REQ-001..004, REQ-006 as candidates); the user's
   decision of 2026-10-30 (automatic after an update, no human).
 - Workspace: `/Users/normy/autobyteus_org/autobyteus-worktrees/restart-resume`, branch `codex/restart-resume`, base
   `origin/personal` @ `efd28d5c4a`, target `personal`.
@@ -60,14 +65,14 @@
 | AC-001 | REQ-001 | Graceful shutdown with busy and idle runs of every kind | The record lists exactly the busy ones, written before any interrupt | Unit/integration |
 | AC-002 | REQ-002, REQ-004 | An update restart (a different version starts on the same data) with busy standalone, Team, Org and delegated runs | All of them continue by themselves within a bounded time; each received exactly one notice | Real app on isolated data (design picks the version-change method), and a Docker in-place update on a test container |
 | AC-003 | REQ-003 | The same, with a run stopped on purpose while busy, an archived run, a Task-closed copy, an idle run, and a run that got a user message first | None of them is resumed or notified | Integration |
-| AC-004 | REQ-002 | A restart that is not an update | Per DEC-001 | Integration |
+| AC-004 | REQ-002 | A restart that is not an update (plain quit and relaunch, Restart server, `docker stop`/start) | Nothing is resumed or notified; the record is discarded (DEC-001 = A) | Integration |
 | AC-005 | REQ-005, REQ-006 | A record that is unreadable; a resume that throws; a crash during resume, then a start | Startup continues; nothing is resumed twice | Unit/integration |
 | AC-006 | all | Existing suites; 284's and 339's checks | No regression | Unit/integration |
 
 ## Decisions
 | ID | Question | Options / reasoning | Recommendation | Owner | Status |
 | --- | --- | --- | --- | --- | --- |
-| DEC-001 | Besides an update restart, which restarts resume automatically? | (A) **only update restarts**; (B) every graceful stop and later start: a plain quit and relaunch, Restart server, `docker stop`/start; (C) updates plus "Restart server" | **A.** It is the user's stated purpose and needs no human. A plain quit is a choice to stop, and an unasked resume the next morning spends money (283's DEC-1 reasoning). "Restart server" is a troubleshooting action. A hard kill or power loss leaves no record in this step anyway. A later per-node setting (286) can widen it | User | **Needs user** |
+| DEC-001 | Besides an update restart, which restarts resume automatically? | (A) **only update restarts**; (B) every graceful stop and later start: a plain quit and relaunch, Restart server, `docker stop`/start; (C) updates plus "Restart server" | **A.** It is the user's stated purpose and needs no human. A plain quit is a choice to stop, and an unasked resume the next morning spends money (283's DEC-1 reasoning). "Restart server" is a troubleshooting action. A hard kill or power loss leaves no record in this step anyway. A later per-node setting (286) can widen it | User | **Decided: A** (the user, 2026-11-01) |
 | DEC-002 | Bound when many runs resume | 283 had "ask above 5", which contradicts "no human" | **No asking; at most 3 resumes at a time**, the rest queued | Solution Designer | Decided |
 | DEC-003 | Idle runs at the stop | Nothing to continue; a message costs a turn | Not recorded, not resumed (283 DEC-2) | Solution Designer | Decided |
 | DEC-004 | Notice wording | Facts from a system sender, not the user's words (283 DEC-7) | As REQ-004 | Solution Designer | Decided |
