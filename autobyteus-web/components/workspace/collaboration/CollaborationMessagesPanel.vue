@@ -77,7 +77,7 @@
                       <span class="sr-only">{{ referenceCountLabel(message) }}</span>
                     </span>
                   </div>
-                  <p class="mt-1 line-clamp-2 whitespace-pre-line text-sm leading-5 text-gray-600">
+                  <p class="mt-1 line-clamp-2 whitespace-pre-line text-sm leading-5 text-gray-600" :class="{ 'long-unbroken-text': hasLongUnbrokenRun(message.content) }">
                     {{ message.content }}
                   </p>
                 </div>
@@ -184,6 +184,7 @@
 </template>
 
 <script setup lang="ts">
+import { hasLongUnbrokenRun } from '~/utils/text/longUnbrokenRun';
 import { computed, ref, watch, useId } from 'vue';
 import { Icon } from '@iconify/vue';
 import { useLocalization } from '~/composables/useLocalization';

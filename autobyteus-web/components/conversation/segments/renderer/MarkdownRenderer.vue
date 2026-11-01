@@ -6,7 +6,7 @@
     @keydown="handleKeydown"
   >
     <template v-for="segment in segments" :key="segment.key">
-      <div v-if="segment.type === 'html'" v-html="segment.content" class="markdown-body prose dark:prose-invert prose-gray max-w-none"></div>
+      <div v-if="segment.type === 'html'" v-html="segment.content" class="markdown-body prose dark:prose-invert prose-gray max-w-none" :class="{ 'long-unbroken-text': hasLongUnbrokenRun(segment.content) }"></div>
       <MermaidDiagram
         v-else-if="segment.type === 'mermaid'"
         :content="segment.content"
@@ -18,6 +18,7 @@
 </template>
 
 <script setup lang="ts">
+import { hasLongUnbrokenRun } from '~/utils/text/longUnbrokenRun';
 import { computed, ref, watch, onMounted, nextTick } from 'vue';
 import { useMarkdownSegments } from '~/composables/useMarkdownSegments';
 import { useAuthorizedObjectUrlMap } from '~/composables/useAuthorizedObjectUrl';

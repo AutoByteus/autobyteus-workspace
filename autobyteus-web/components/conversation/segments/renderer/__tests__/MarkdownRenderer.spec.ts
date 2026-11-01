@@ -479,4 +479,11 @@ describe('MarkdownRenderer', () => {
     expect(image.attributes('src')).toBe('blob:managed-image#node-a');
     wrapper.unmount();
   });
+
+  it('shapes an html segment with a very long unbroken run cheaply, and leaves prose as it is (autobyteus-358 DS-007)', () => {
+    const long = mount(MarkdownRenderer, { props: { content: `Result: ${'y'.repeat(1200)}` }, global: { plugins: [pinia] } });
+    const prose = mount(MarkdownRenderer, { props: { content: 'A long paragraph of words. '.repeat(400) }, global: { plugins: [pinia] } });
+    expect(long.get('.markdown-body').classes()).toContain('long-unbroken-text');
+    expect(prose.get('.markdown-body').classes()).not.toContain('long-unbroken-text');
+  });
 });
