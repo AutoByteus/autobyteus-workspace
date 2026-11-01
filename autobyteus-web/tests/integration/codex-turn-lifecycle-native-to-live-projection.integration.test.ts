@@ -63,7 +63,6 @@ const createNativeToProjectionHarness = (memoryDir?: string) => {
       workspaceId: '/tmp/codex-turn-lifecycle',
       ...(memoryDir ? { memoryDir } : {}),
       llmConfig: null,
-      memberTeamContext: null,
     }),
     runtimeContext: new CodexAgentRunContext({
       threadId: 'thread-1',

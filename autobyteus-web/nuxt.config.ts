@@ -229,7 +229,8 @@ const baseConfig: NuxtConfig = {
   },
 
   // The app's type project (.nuxt/tsconfig.json, checked by `pnpm typecheck`). Electron main and the build
-  // scripts have their own projects; the three tests that import server code are left out (FU-003 of autobyteus-294).
+  // scripts have their own projects. The three tests that import server code are checked in their own project,
+  // `tsconfig.cross-package-tests.json`, which uses the server build's options where the packages differ.
   // Paths are relative to .nuxt/; Nuxt appends them to its generated excludes.
   typescript: {
     tsConfig: {

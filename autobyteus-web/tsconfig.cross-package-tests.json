@@ -1,0 +1,21 @@
+{
+  // The web tests that import server code to compare the two sides (autobyteus-318 REQ-001). They compile together
+  // with the server's src and test fixtures, so where the two packages' compiler options differ this project uses the
+  // server build's (tsconfig.build.json): override checks off, no verbatim module syntax, decorators on. Checked by
+  // `pnpm typecheck` as its own project; the Nuxt app project leaves these files out (nuxt.config.ts).
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noImplicitOverride": false,
+    "verbatimModuleSyntax": false,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
+  },
+  "include": [
+    ".nuxt/nuxt.d.ts",
+    "types/**/*.d.ts",
+    "components/conversation/__tests__/UserMessageStoredUploadNames.spec.ts",
+    "services/runHydration/__tests__/acceptedInputIdentity.spec.ts",
+    "tests/integration/codex-turn-lifecycle-native-to-live-projection.integration.test.ts"
+  ],
+  "exclude": []
+}
