@@ -122,7 +122,7 @@
      2. **re-check after the restore:** the history says `terminatedAt` is not set and the run (host or delegated
         Agent) or its Team/Org root is not archived. **This check is final**, because archiving refuses an active run
         or root ("Run is active. Terminate it before archiving history",
-        `agent-run-history-catalog-service.ts:364-377`, through `liveness.releaseForHistory`). If it fails, nothing is
+        `agent-run-history-catalog-service.ts:364-377`, through `liveness.releaseForHistory`). That holds for a host and for a Team/Org root. For a delegated run in a standalone root whose host is not live, archiving the host ends the root instead of refusing (ARCH-REV-003 N-11); then the later post is refused, and an already admitted turn is fenced, so it stays safe. If it fails, nothing is
         posted. The restored run stays idle, and its idle shutdown stops it as usual, so no paid turn starts;
      3. **post with `onlyAsFirstInput: true`:**
         - `host`: `root.postHostUserMessage({ message, postOptions: { lifecycleObserver, onlyAsFirstInput: true } })`;

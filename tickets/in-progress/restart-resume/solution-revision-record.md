@@ -53,3 +53,4 @@
   notice). No change in intended behavior; BEH-003 and BEH-004 are now met without a residual.
 - FU-004 (code reviewer) absorbed. Design case: `docs/design-cases.md` Case 10.
 - Classification Large / High (unchanged). Routing: `/architecture_reviewer` (a revised High package).
+- 2026-11-01, review result recorded: **ARCH-REV-003 Pass** on SR-005. N-11 folded into D3.6.2 (the archive-ends-root case for delegated runs). The reviewer routed to `/software_engineering_team/implementation_engineer`.
