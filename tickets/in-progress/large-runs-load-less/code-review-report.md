@@ -2,7 +2,7 @@
 
 ## Review Round Meta
 
-- Review Entry Point: `Implementation Review` (round 5, IR-005 for CR-003; SR-006, ARCH-REV-006). Round 4: `Implementation Review` ( IR-004 for CR-002; SR-004/SR-005, ARCH-REV-005). Round 3 was an `API/E2E Failure-Origin Review`. Rounds 1–2 were `Implementation Review`; their results stand except where round 3 updates them
+- Review Entry Point: `API/E2E Failure-Origin Review` (round 6, API-REV-002 API-08 L-002). Round 5: `Implementation Review` ( IR-005 for CR-003; SR-006, ARCH-REV-006). Round 4: `Implementation Review` ( IR-004 for CR-002; SR-004/SR-005, ARCH-REV-005). Round 3 was an `API/E2E Failure-Origin Review`. Rounds 1–2 were `Implementation Review`; their results stand except where round 3 updates them
 - Requirements Doc Reviewed As Context: `requirements-doc.md` (approved SR-001; SR-003 adds DEC-004 with no visible change)
 - Investigation Notes Reviewed As Context: `investigation-notes.md` (E-01…E-09, M-151/152/156/162/163, M-163b as cited)
 - Solution Revision Record Reviewed As Context: `solution-revision-record.md` (SR-001…SR-003)
@@ -16,8 +16,12 @@
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
 - Relevant Implementation Revision IDs: IR-001, IR-002, IR-003
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-005`
-- Current Review Round: 5
+- Current Code Review Revision ID: `CRR-006`
+- Current Review Round: 6 (failure-origin)
+- Round 6 failure context:
+  - API-REV-002 at head `6d717bed4a`; test changes in `59f4604da5`; server dist at `99cd853f79`.
+  - Failing case: API-08 L-002 (one new delegation on a running hub), run with `pnpm -C autobyteus-web test:e2e:delegated-copies-large-hub --from-seed <--teams 12 --unrelated 50> --output-dir <fresh> --live [--cases L-001,L-002] --samples 1`, 4 of 4 runs.
+  - Evidence: `evidence/api-e2e/API-08-r2-delegation-refetch.log`, `API-08-r2-hub-participant-requests.log` (lines 93/94), `API-07-08-r2-hub-probe-live.json`.
 - Round 5 Review Scope: `Targeted Delta Review`. `git diff f11a8edeaa 99cd853f79` stays within CR-003's open path:
   - `RootEventPublisher.getLivePosition` / `RootTeamRun.getLivePosition`;
   - the Team resume config, its two additive GraphQL fields (`liveSequenceId`, `baseChangeSequence`) and the resolver;
@@ -46,6 +50,35 @@
 - Exact Failing Commands / Execution Mode: `pnpm -C autobyteus-web test:e2e:delegated-copies-large-hub --from-seed <--teams 12 --unrelated 50> --output-dir <fresh> --live --large-shape unbroken --samples 1` (clean env, scripted AGY, test-owned data)
 - Failure Evidence Paths: `evidence/api-e2e/API-08-hub-participant-reloads.log`, `evidence/api-e2e/API-07-08-hub-probe-live.json`
 - Delivery Revision Record: N/A
+
+## Round 6: API/E2E Failure-Origin Review (API-08 L-002, round 2)
+
+### What failed
+
+- **Fixed, as SR-004/SR-005/SR-006 expected:**
+  - selecting a running hub: 1 hub list fetch (round 1: 2);
+  - stopped hub: 1; reopening a running hub: 1;
+  - opening a running Team with the Team tab shown: 1;
+  - a live message: 0; a stop and resume: 1 reload, and the list equals the stored log;
+  - API-05 (dropped stream with a message sent while down): M3 reloads and shows once.
+- **Still failing (L-002, 4/4 runs):** one new delegation on a running hub, with the hub's and one copy's lists loaded, adds no hub message (the stored hub list is 62 before and 62 after). Yet both loaded lists are fetched again in the same millisecond. SR-004 expects "a new child or settings Save with no message in the reconnect window: 0".
+
+### Origin
+
+1. **The sequence of events.** The delegation's single `task_execution_started` event returns `checkpoint_required`. The hub stream sets C to that event's sequence (`advance`, the SR-004 rule), closes the socket and reconnects for a fresh snapshot (`agentRunCollaborationStreamingService.ts`, the `checkpoint_required` branch; the protocol predates this ticket).
+2. **The window.** The new copy starts at once and its events are published to the root's change sequence while the client is not subscribed: API/E2E observed `agent_presentation` × 16 plus a batch. They advance the root's sequence, so the reconnect snapshot's base B is greater than C.
+3. **The reload.** `publish` → `reloadRoot` sees B > C and reloads every loaded list.
+4. **Why the rule can't meet the expectation.** B counts **every** root change, while the expectation is about **messages**. Every new delegation produces non-message events in the reconnect window, so B > C holds for essentially every delegation. Advancing C on events applied after the reconnect cannot help: the keep-or-reload decision is made at the snapshot, before those events apply. No implementation of SR-004's rule as written gives "no message → 0".
+5. **Classification.** `Design Impact` (the rule's measure, root changes, differs from its stated goal, messages), not a `Local Fix`. It is correct (complete lists) and much better than round 1, but each new delegation on a running hub still re-transfers the loaded lists, the hub's being nearly its whole log. That is against DESIGN.md rule 3 and the ticket's goal.
+6. **Review gap (mine).** In CRR-004 and CRR-005 I verified the keep rule's **safety** (it never keeps a list that missed a message), and called the B > C reload "conservative". I did not check that the design's expected count of 0 for a delegation was reachable, although a new copy always produces events immediately.
+
+### Candidate gate (round 6)
+
+| Candidate ID | Observation | Scenario / Contract ID | Independent Trigger | Forward Path / Consequence | Evidence | Disposition | Scope | Reason |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| C-16 | A new delegation on a running hub reloads every loaded list, although no message was written | SCN-001 running hub; SR-004 expected counts; DESIGN.md rule 3 | Delegate a new copy while the Team tab is loaded | `checkpoint_required` → C = its sequence → reconnect → the new copy's presentation events in the window → B > C → `reloadRoot` reloads | API-08-r2 log lines 93/94; 4/4 runs; hub messages 62 → 62 | Promote → **CR-004** | This ticket (Design Impact) | The measure (any root change) cannot express "a message could have been missed" |
+| C-17 | Could advancing C on post-reconnect events fix it (API/E2E's Local Fix option)? | — | — | The decision happens at the snapshot, before those events are applied | Code (`publish` → `reloadRoot` on the snapshot) | Reject | — | Not a fix within the rule |
+| C-18 | The same for the Org (checkpoint reconnect) and for a settings Save | — | — | The same rule and window; a Save may produce fewer window events | Code | Hold for Evidence | — | Cover in the same design decision |
 
 ## Round 5: CR-003 Rework (IR-005; SR-006)
 
@@ -320,6 +353,7 @@ No new premises beyond the candidate gate.
 
 | ID | Severity | Location | Problem | Required Action | Classification / Owner |
 | --- | --- | --- | --- | --- | --- |
+| CR-004 | Blocking (round 6) | The SR-004 keep rule (`collaborationParticipantMessages.ts` `reloadRoot`: B vs C over every root change), at the hub (and Org) checkpoint reconnect | After a new delegation (or a settings Save) on a running root, the reconnect snapshot's base counts the new copy's non-message events from the reconnect window. So B > C and every loaded list is fetched again, although no message was written. SR-004 expects 0 | The Solution Designer revises the measure. Options: (a) views and snapshots carry the change sequence of the root's latest communication message (for example `last_message_change_sequence`, per live sequence), and the lists are kept when it is at or below the sequence they are consistent through; (b) refresh the view on `checkpoint_required` without dropping the subscription (a query while the stream stays open), so there is no window; (c) accept the per-delegation reload as the protocol's cost and record a follow-up. Apply it to hub and Org (and Team where it reconnects) | `Design Impact` → Solution Designer |
 | CR-003 | — **Resolved (round 5)**: IR-005 `99cd853f79` (SR-006, option (a)). Round 4 text: | `autobyteus-web/services/runHydration/teamRunHydrationCommit.ts` (`'stored_rebuild'` with `liveSequenceId: null`) with `teamRunOpenCoordinator.ts`; the Team snapshot effect's `reloadRoot` | Opening a running Team: the GraphQL-hydrated commit forgets the root's position, the live snapshot then reloads every list loaded in between, so a Team-tab list is fetched twice per running-Team open, which is the CR-002 pattern for Team. It contradicts SR-004's "one rule for hub, Team and Org" and its expected one fetch per selection; ARCH-REV-005 did not cover this path | The Solution Designer decides: (a) the Team open or resume read returns the active Team's `live_sequence_id` and base, so the commit is a live rebuild; (b) on a running Team, start the Team-tab load only after the stream snapshot is applied; or (c) accept and record the limitation as a follow-up | `Design Impact` → Solution Designer |
 | CR-002 | **Resolved for hub and Org (round 4)**: IR-004 (`935c5c9fa9`, `da91ae689a`); Team open remains as CR-003. Round 3 text: | `autobyteus-web/stores/agentRunCollaborationStore.ts:77` (`publish` → `reloadRoot`); the DS-002 reload policy (and the same rule for Team and Org, C-14) | On a running hub, the participant lists (the hub's is close to its whole log) are fetched again on every context publication: twice per selection (inspect, then attach) and again on every new delegation or settings Save (a reconnect for a fresh snapshot). This is avoidable repeated full-history transfer (DESIGN.md rule 3) against the ticket's outcome. It is correct and complete (API-05), and no worse than base | The Solution Designer revises the reload policy. Options: (a) on a running root, start the Team-tab load only once the live stream is ready, and do not reload on the attach that follows an inspection; (b) reload on a reconnect only when a gap is possible (for example a continuity check of the stream's change sequence), or fetch only the messages since the last applied sequence; (c) accept the per-reconnect reload as the protocol's cost, fix only the selection double, and record the rest. Apply one policy across hub, Team and Org | `Design Impact` → Solution Designer |
 | CR-001 | — **Resolved (round 2)**: IR-003 `438ea7fb65` | `autobyteus-web/components/mobile/MobileTeamMessages.vue:6-8`; `autobyteus-web/components/mobile/MobileActivityDigest.vue:105-108` | The mobile message screens read only `listMessages()`. While the focused member's list is loading they say "No team messages yet for the focused member.", and after a failed load (a damaged log, AC-006) they keep saying it, which is a silently empty log. AC-006 requires the messages to show as unavailable with the reason and never silently empty, and the design mapping gives these screens "loading and error states". The desktop Team tab does this correctly (`CollaborationMessagesPanel.vue`) | Read the view's `messagesStatus()` on both screens. Show a loading state while `loading`, and an unavailable state with `error` when `error`, reusing the Team tab's `loading_messages` / `messages_unavailable` strings (en, zh-CN). Keep "No team messages yet" for a loaded empty list only; the digest summary likewise. Add specs for loading, error-with-reason, and loaded-empty | `Local Fix` → Implementation |
@@ -330,11 +364,11 @@ No new premises beyond the candidate gate.
 
 ## Classification
 
-- Round 5: none (Pass). Round 4: `Design Impact` (CR-003), owned by the Solution Designer, resolved by SR-006/IR-005: the Team open path is not covered by SR-004/SR-005 as designed. Round 3: `Design Impact` (CR-002), owned by the Solution Designer. The implementation follows DS-002's reload call sites as written. The policy itself causes the avoidable repeated transfer, and choosing a narrower trigger (or accepting part of it) is a design decision. Round 2: none (Pass). Round 1: `Local Fix`, owned by the Implementation Engineer: a bounded UI omission against the approved AC-006 and the design's own mapping. No design or requirement change is needed.
+- Round 6: `Design Impact` (CR-004), owned by the Solution Designer: SR-004's measure (any root change) cannot meet its own expected count for a delegation with no message. Round 5: none (Pass). Round 4: `Design Impact` (CR-003), owned by the Solution Designer, resolved by SR-006/IR-005: the Team open path is not covered by SR-004/SR-005 as designed. Round 3: `Design Impact` (CR-002), owned by the Solution Designer. The implementation follows DS-002's reload call sites as written. The policy itself causes the avoidable repeated transfer, and choosing a narrower trigger (or accepting part of it) is a design decision. Round 2: none (Pass). Round 1: `Local Fix`, owned by the Implementation Engineer: a bounded UI omission against the approved AC-006 and the design's own mapping. No design or requirement change is needed.
 
 ## Recommended Recipient
 
-- Round 5: the API/E2E Engineer (primary pass recipient), to recheck the API-08 counts for hub and Team; informational notice to the Implementation Engineer. Round 4: the Solution Designer (CR-003). Round 3: the Solution Designer. Then implementation, then a targeted source review, then API/E2E (API-08 request counts). Round 2: API/E2E Engineer. Round 1: Implementation Engineer.
+- Round 6: the Solution Designer (CR-004). Round 5: the API/E2E Engineer (primary pass recipient), to recheck the API-08 counts for hub and Team; informational notice to the Implementation Engineer. Round 4: the Solution Designer (CR-003). Round 3: the Solution Designer. Then implementation, then a targeted source review, then API/E2E (API-08 request counts). Round 2: API/E2E Engineer. Round 1: Implementation Engineer.
 
 ## Residual Risks
 
@@ -344,6 +378,7 @@ No new premises beyond the candidate gate.
 
 ## Latest Authoritative Result
 
+- Review Decision (round 6, failure-origin): `Fail`. Origin: the SR-004 keep rule compares the snapshot base (all root changes) with C; a delegation's reconnect window always holds the new copy's non-message events, so every delegation reloads. Design gap, plus a review gap acknowledged. `Design Impact` → Solution Designer (CR-004)
 - Review Decision (round 5): `Pass`. CR-001…CR-003 resolved; scorecard 9.5/10, every category ≥ 9.4 (Runtime Correctness and API/E2E Readiness back to 9.4)
 - Review Decision (round 4): `Fail`. CR-002 resolved for hub and Org. CR-003 (running Team open fetches a loaded list twice) is `Design Impact` → Solution Designer. Scorecard 9.3/10 (Runtime Correctness 9.1, API/E2E Readiness 9.1). Everything else re-audited and holds
 - Review Decision (round 3, failure-origin): `Fail`. Origin: the DS-002 reload policy (reload on every publication) causes avoidable repeated participant-list transfer on running hubs; design gap; review gap acknowledged. `Design Impact` → Solution Designer (CR-002)

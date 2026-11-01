@@ -9,6 +9,7 @@
 | CRR-003 | `code-review-report.md` | API/E2E Failure-Origin Review / API-REV-001 Fail (API-08) | Pass (CRR-002) | Fail: Design Impact → Solution Designer | CR-002 new |
 | CRR-004 | `code-review-report.md` | Implementation Review / IR-004 (Full Re-Audit) | Fail (CRR-003) | Fail (9.3/10): Design Impact → Solution Designer | CR-002 resolved (hub, Org); CR-003 new |
 | CRR-005 | `code-review-report.md` | Implementation Review / IR-005 (Targeted Delta Review) | Fail (CRR-004) | Pass (9.5/10) | CR-003 resolved |
+| CRR-006 | `code-review-report.md` | API/E2E Failure-Origin Review / API-REV-002 Fail (API-08 L-002) | Pass (CRR-005) | Fail: Design Impact → Solution Designer | CR-004 new |
 
 ## Revision Entries
 
@@ -144,3 +145,31 @@ None
 - Material score or classification changes: 9.3 → 9.5; Fail → Pass
 - Recommended recipient: API/E2E Engineer; informational to Implementation Engineer
 - Remaining risks or uncertainty: the API-08 counts (hub, and now Team) need the browser recheck; FU-001, FU-004, FU-005 recorded
+
+### CRR-006 — Failure origin of API-08 L-002: a delegation's reconnect window always passes C
+
+- Canonical review report updated: `code-review-report.md` (the round-6 section; CR-004; Classification; Latest Result)
+- Review entry point and round: API/E2E Failure-Origin Review, round 6
+- Review scope: `N/A` (failure-origin)
+- Triggering role, report path, and finding or scenario IDs: API/E2E Engineer, `api-e2e-execution-coverage-report.md` (API-REV-002), API-08 L-002
+- Relevant solution revision IDs: SR-004…SR-006
+- Relevant architecture-review revision IDs: ARCH-REV-004…ARCH-REV-006
+- Relevant implementation revision IDs: IR-004, IR-005
+- Relevant API/E2E revision IDs: API-REV-002
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: CRR-005 `Pass`
+- Current authoritative result: `Fail`, `Design Impact` → Solution Designer
+- What changed in the review result and why: the selection, open, live-message, stop/resume and dropped-stream counts are now right. A new delegation still reloads every loaded list: the reconnect snapshot's base counts the new copy's non-message events from the window, so B > C always. SR-004's measure (any root change) cannot give its expected 0 for "no message". Not a Local Fix: the decision happens at the snapshot, before later events. Review gap acknowledged: CRR-004/005 verified the rule's safety, not that its expected counts were reachable
+- Supported product scenario / material-premise basis changes: the SR-004 premise "no message in the window means B ≤ C" is reclassified as false for delegations
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR-002 | Resolved (hub, Org) | Partly resolved: the selection double is fixed; the per-delegation reload remains as CR-004 | API-REV-002 | API-08-r2 log lines 84 (1 fetch) and 93/94 (refetch) |
+| CR-003 | Resolved | Resolved (running Team open: 1, LRL-005) | API-REV-002 | `API-03-06-09-r2-lrl-browser-probe.json` |
+
+- New or remaining finding IDs: CR-004
+- Material score or classification changes: round-5 Pass superseded by the round-6 failure-origin result
+- Recommended recipient: Solution Designer
+- Remaining risks or uncertainty: Org and settings Save follow the same rule (C-18); FU-006 (intermittent Terminal-panel errors, unchanged code) recorded by API/E2E
