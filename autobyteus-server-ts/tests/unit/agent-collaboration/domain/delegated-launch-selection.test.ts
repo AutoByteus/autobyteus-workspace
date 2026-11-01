@@ -45,7 +45,9 @@ const unrelated: TaskExecution = { address: "/writer" as never, agentRunId: "unr
 const reviewerCopy: TaskExecution = { address: "/writer" as never, agentRunId: "reviewer-helper", platformAgentRunId: null, delegatorAgentRunId: "reviewer-run", startedAt: at, source: agentSource };
 const rootTasks = [seCopy, helper, nestedHelper, older, unrelated, reviewerCopy];
 const forest: DelegatedLaunchForest = { taskExecutionLists: [rootTasks] };
-const choice = { llmModelIdentifier: "sonnet", llmConfig: { thinking: "low" } };
+const choice = { runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "sonnet", llmConfig: { thinking: "low" } };
+// The Team started on Claude: a model-only choice for it keeps that runtime (no switch, so no member record changes).
+const teamChoice = { ...choice, runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK };
 
 describe("resolveDelegatedLaunchTargets", () => {
   it("resolves an agent copy, a Team copy, and a Team copy member with their stop units and current launches", () => {
@@ -81,12 +83,12 @@ describe("resolveDelegatedLaunchTargets", () => {
 describe("applyDelegatedLaunchSelections", () => {
   it("records only the selection fields and leaves started values and unrelated records untouched", () => {
     const targets = resolveDelegatedLaunchTargets({ forest, changes: [
-      { teamRunId: "se-copy", selection: choice }, { agentRunId: "hosted", selection: { llmModelIdentifier: "x", llmConfig: null } },
+      { teamRunId: "se-copy", selection: teamChoice }, { agentRunId: "hosted", selection: { runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "x", llmConfig: null } },
     ] });
     const selections = delegatedLaunchSelections(targets, at);
     const tasks = applyDelegatedLaunchSelectionsToTaskExecutions(rootTasks, selections);
     const team = tasks[0] as TaskTeamExecution;
-    expect(team.userTeamLaunchSelection).toEqual({ ...choice, selectedAt: at });
+    expect(team.userTeamLaunchSelection).toEqual({ llmModelIdentifier: teamChoice.llmModelIdentifier, llmConfig: teamChoice.llmConfig, selectedAt: at });
     expect(team.members).toEqual(seCopy.members);
     expect(team.taskExecutions[0]).toEqual({ ...hosted, userLaunchSelection: { llmModelIdentifier: "x", llmConfig: null, selectedAt: at } });
     expect(tasks.slice(1)).toEqual(rootTasks.slice(1));
@@ -94,7 +96,7 @@ describe("applyDelegatedLaunchSelections", () => {
   });
 
   it("keeps a record unchanged when the same model and settings are chosen again", () => {
-    const same = delegatedLaunchSelections([{ scope: "agent", runId: "copy-ie", selection: { llmModelIdentifier: "sol-6.1-mini", llmConfig: null } }], "2026-10-14T00:00:00.000Z");
+    const same = delegatedLaunchSelections([{ scope: "agent", runId: "copy-ie", selection: { runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "sol-6.1-mini", llmConfig: null } }], "2026-10-14T00:00:00.000Z");
     expect(applyDelegatedLaunchSelectionsToTaskExecutions(rootTasks, same)).toStrictEqual(rootTasks);
   });
 
@@ -102,7 +104,7 @@ describe("applyDelegatedLaunchSelections", () => {
     const later = "2026-10-14T00:00:00.000Z";
     const selections = delegatedLaunchSelections([
       { scope: "team", runId: "se-copy", selection: choice },
-      { scope: "agent", runId: "copy-ie", selection: { llmModelIdentifier: "sol-6.1-mini", llmConfig: null } },
+      { scope: "agent", runId: "copy-ie", selection: { runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "sol-6.1-mini", llmConfig: null } },
     ], later);
     const committed: DelegatedLaunchForest = {
       taskExecutionLists: [applyDelegatedLaunchSelectionsToTaskExecutions(rootTasks, selections)],

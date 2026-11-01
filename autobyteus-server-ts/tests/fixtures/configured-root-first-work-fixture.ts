@@ -79,12 +79,12 @@ export const configuredRootFixture = async (placement: Placement, options: {
       abort,
     });
   };
-  const manager = testActivationManager({
-    newPreparation: vi.fn(prepare),
-    platformPreparation: vi.fn(prepare),
+  const preparations = { newPreparation: vi.fn(prepare), platformPreparation: vi.fn(prepare) };
+  const manager = Object.assign(testActivationManager({
+    ...preparations,
     restorePreparation: vi.fn((context) => prepare({ runId: context.runId, config: context.config })),
     releaseExactRun: vi.fn(async () => ({ accepted: true })),
-  });
+  }), preparations);
   const dependencies = {
     agentRunManager: manager as never,
     memoryLocator: { getMemoryDir: (_placement: unknown, runId: string) => join(memoryDir, runId) } as never,

@@ -91,7 +91,7 @@ for (const placement of placements) describe(`${placement}: the next input to a 
     seedConversation(f.memberDir(1));
     const before = fs.readFileSync(path.join(f.memberDir(1), "raw_traces_active.jsonl"), "utf8");
     const original = f.manager.newPreparation.getMockImplementation()!;
-    f.manager.newPreparation.mockImplementationOnce(async (request: never) => {
+    f.manager.newPreparation.mockImplementationOnce(async () => {
       fs.appendFileSync(path.join(f.memberDir(1), "raw_traces_active.jsonl"), JSON.stringify(record("candidate-instruction", "system_instruction", "You are the new agent.", 5)) + "\n");
       throw new Error("provider failed to start");
     });

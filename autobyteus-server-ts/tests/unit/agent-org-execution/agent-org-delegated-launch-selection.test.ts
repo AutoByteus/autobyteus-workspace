@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
+import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import { AgentOrgExecutionIndex } from "../../../src/agent-org-execution/services/agent-org-execution-index.js";
 import type { RunModelSelectionValidator } from "../../../src/llm-management/services/run-model-selection-service.js";
 import type { TaskAgentExecution, TaskTeamExecution } from "../../../src/run-history/domain/run-execution-tree-shared-records.js";
@@ -11,13 +12,13 @@ import { buildOrg } from "./helpers/org-task-root-harness.js";
  */
 const acceptingValidator = (gate?: Promise<void>): RunModelSelectionValidator => ({
   validate: vi.fn(),
-  validateMany: vi.fn(async (inputs) => {
+  validateMany: vi.fn(async (inputs: readonly { selection: any }[]) => {
     await gate;
     return inputs.map((input) => ({ kind: "valid" as const, selection: { llmModelIdentifier: input.selection.llmModelIdentifier, llmConfig: input.selection.llmConfig as never } }));
   }),
 }) as unknown as RunModelSelectionValidator;
 
-const choice = { llmModelIdentifier: "bigger-model", llmConfig: { thinking: "high" } };
+const choice = { runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "bigger-model", llmConfig: { thinking: "high" } };
 
 const startCopy = async (kind: "agent" | "team") => {
   const f = await buildOrg(kind);

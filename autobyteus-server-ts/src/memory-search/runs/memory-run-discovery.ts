@@ -100,12 +100,13 @@ export class MemoryRunDiscovery {
     return (await this.deps.teamLocations.listAgents()).map((located): MemoryRun => {
       const taskTeam = located.groupPath.at(-1);
       const launch = located.configuredPlacement?.launchConfiguration ?? null;
+      const runtimeKind = launch ? openRawTraceRuntimeKind({ runtimeKind: launch.runtimeKind, pendingRuntimeSwitch: located.configuredPlacement?.pendingRuntimeSwitch }) : null;
       const teamRunId = located.executionKind === "task_team_member" && taskTeam ? taskTeam.teamRunId : located.rootTeamRunId;
       return {
         ...this.place(located.memoryDir), runId: located.agentRunId, agentName: addressName(located.memberAddress),
         teamName: located.executionKind === "task_team_member" && taskTeam ? addressName(taskTeam.address) : located.tree.rootTeam.teamDefinitionName,
         memberName: addressName(located.memberAddress), orgName: null,
-        workspace: launch?.workspaceRootPath ?? null, runtimeKind: launch?.runtimeKind ?? null,
+        workspace: launch?.workspaceRootPath ?? null, runtimeKind,
         subject: { kind: "TEAM_MEMBER", teamRunId, agentRunId: located.agentRunId },
       };
     });
@@ -114,11 +115,12 @@ export class MemoryRunDiscovery {
   private async orgMembers(): Promise<MemoryRun[]> {
     return (await this.deps.orgLocations.listAgents()).map((located): MemoryRun => {
       const launch = located.configuredPlacement?.launchConfiguration ?? null;
+      const runtimeKind = launch ? openRawTraceRuntimeKind({ runtimeKind: launch.runtimeKind, pendingRuntimeSwitch: located.configuredPlacement?.pendingRuntimeSwitch }) : null;
       const memberName = located.memberAddress.replace(/^\/+/, "") || located.memberAddress;
       return {
         ...this.place(located.memoryDir), runId: located.agentRunId, agentName: addressName(located.memberAddress),
         teamName: null, memberName, orgName: located.tree.rootOrg.orgDefinitionName,
-        workspace: launch?.workspaceRootPath ?? null, runtimeKind: launch?.runtimeKind ?? null,
+        workspace: launch?.workspaceRootPath ?? null, runtimeKind,
         subject: { kind: "ORG_MEMBER", orgRunId: located.rootRunId, agentRunId: located.agentRunId },
       };
     });
@@ -128,7 +130,7 @@ export class MemoryRunDiscovery {
     return (await this.deps.taskTeams.listTaskTeams()).flatMap((team) => team.members.map((member): MemoryRun => ({
       ...this.place(member.memoryDir), runId: member.agentRunId, agentName: member.displayName,
       teamName: team.displayName, memberName: member.displayName, orgName: null,
-      workspace: member.launchConfiguration.workspaceRootPath, runtimeKind: member.launchConfiguration.runtimeKind,
+      workspace: member.launchConfiguration.workspaceRootPath, runtimeKind: openRawTraceRuntimeKind({ runtimeKind: member.launchConfiguration.runtimeKind, pendingRuntimeSwitch: member.pendingRuntimeSwitch }),
       subject: { kind: "TEAM_MEMBER", teamRunId: team.teamRunId, agentRunId: member.agentRunId },
     })));
   }
@@ -145,7 +147,12 @@ export class MemoryRunDiscovery {
       const row = rows.get(entry) ?? null;
       const definitionId = optional(metadata?.agentDefinitionId) ?? optional(taskAgent?.agentDefinitionId) ?? optional(row?.agentDefinitionId);
       // The journal target: the agent runtime that wrote the open raw-trace file (the previous one while a switch is pending).
-      const runtimeKind: RuntimeKind | null = metadata ? openRawTraceRuntimeKind(metadata) ?? null : taskAgent?.runtimeKind ?? null;
+      // A task agent's effective runtime is its choice's, else the one it started with; its pending switch sits on the copy.
+      const runtimeKind: RuntimeKind | null = metadata
+        ? openRawTraceRuntimeKind(metadata) ?? null
+        : taskAgent
+          ? openRawTraceRuntimeKind({ runtimeKind: taskAgent.taskAgent.userLaunchSelection?.runtimeKind ?? taskAgent.runtimeKind, pendingRuntimeSwitch: taskAgent.taskAgent.pendingRuntimeSwitch })
+          : null;
       runs.push({
         ...this.place(memoryDir), runId: entry,
         agentName: optional(row?.agentName) ?? definitionId ?? nameFromFolder(entry),

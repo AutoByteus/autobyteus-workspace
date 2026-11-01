@@ -29,7 +29,7 @@ const build = (input: { target?: RuntimeKind; history?: "none" | "present" | "in
   const memberExecutionContext = new MemberExecutionContext({
     teamScoped: true, collaborationRole: "team_member", identity, authoredEnclosingScopeInstruction: "Stay in scope.",
     collaboration: new MemberCollaborationContext({ deliverLogicalMessage: async () => ({ accepted: true }) }),
-    tasks: { root, delegateToNewCopy: vi.fn(), ownedTaskOf: () => null, assignToExistingCopy: vi.fn(), submitTaskResult: vi.fn(), reviewTaskResult: vi.fn() },
+    tasks: { root, delegateToNewCopy: vi.fn(), ownedTaskOf: () => null, assignToExistingCopy: vi.fn(), submitTaskResult: vi.fn(), reviewTaskResult: vi.fn() } as never,
   });
   const order: string[] = [];
   const activity = { kind: input.history ?? "present" } as { kind: string; error?: Error };
@@ -53,7 +53,7 @@ const build = (input: { target?: RuntimeKind; history?: "none" | "present" | "in
     record: vi.fn(() => { order.push("record"); }),
     discard: vi.fn(() => { order.push("discard"); }),
   };
-  const commitPlatformBindingChange = vi.fn(async () => { order.push("commit"); });
+  const commitPlatformBindingChange = vi.fn(async (_change: unknown) => { order.push("commit"); });
   const releaseExactRun = vi.fn(async () => ({ accepted: true }));
   const pending = input.pending === null ? undefined : input.pending ?? PENDING;
   const handle = new ConfiguredAgentExecutionHandle({
@@ -70,7 +70,7 @@ const build = (input: { target?: RuntimeKind; history?: "none" | "present" | "in
     }) as never,
     memoryLocator: { getMemoryDir: () => "/memory/member" } as never,
     activityInspector: { inspect: () => activity } as never,
-    runtimeSwitchMemory: memory,
+    runtimeSwitchMemory: memory as never,
   });
   return { handle, order, memory, commitPlatformBindingChange, prepareNewAgentRun, prepareRestoreFromPlatform, prepareRestore, abort, fakeRun, activity, identity, releaseExactRun };
 };
