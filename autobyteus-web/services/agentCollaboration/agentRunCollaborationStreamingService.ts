@@ -12,6 +12,7 @@ import { buildAuthenticatedWebSocketUrl } from '~/utils/remoteAccess/websocketAu
 import type { CollaboratorMentionDto } from '~/utils/collaborators/collaboratorMentionText'
 import { buildAgentRunCollaborationContext } from './agentRunCollaborationHydration'
 import type { AgentRunCollaborationContext } from './agentRunCollaborationContext'
+import { useCollaborationParticipantMessagesStore } from '~/services/collaborationMessages/collaborationParticipantMessages'
 
 type CommandAck = Extract<CollaborationStreamServerMessage, { type: 'AGENT_COMMAND_ACK' }>
 type PendingCommand = Readonly<{
@@ -208,9 +209,13 @@ export class AgentRunCollaborationStreamingService {
     }
     if (message.type === 'ROOT_EXECUTION_EVENT') {
       if (message.payload.root_subject_kind !== 'agent') throw new Error('Agent collaboration stream supplied a foreign event.')
-      if (this.context.applyEvent(
-        message.payload.change_sequence, message.payload.event, message.payload.change_sequence_through,
-      ) === 'checkpoint_required') {
+      const { change_sequence: first, change_sequence_through: through } = message.payload
+      const application = this.context.applyEvent(first, message.payload.event, through)
+      // Applied, or a single checkpoint event seen: the Team tab's lists are consistent through it (SR-004).
+      if (application === 'applied' || through === undefined) {
+        useCollaborationParticipantMessagesStore().advance('agent', this.options.hostRunId, this.context.view.live_sequence_id, through ?? first)
+      }
+      if (application === 'checkpoint_required') {
         // A new child or a settings Save: reconnect for a fresh snapshot (the view only).
         this.closeSocket('Agent collaboration reload')
         this.connect()

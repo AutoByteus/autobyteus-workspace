@@ -23,7 +23,7 @@ const orgInspectionResponse = (id = 'org-history') => {
   return { data: { getAgentOrgRunInspection: {
     root_subject_kind: 'agent_org', root_run_id: id,
     root_org: {
-      base_change_sequence: 0, is_active: false, closed_task_executions: [], execution_tree: row.org,
+      base_change_sequence: 0, live_sequence_id: null, is_active: false, closed_task_executions: [], execution_tree: row.org,
       agent_statuses: [], agent_input_states: [], remote_task_executions: [],
     },
   } } };

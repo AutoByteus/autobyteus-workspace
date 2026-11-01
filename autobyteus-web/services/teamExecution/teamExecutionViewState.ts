@@ -345,8 +345,9 @@ export const createTeamExecutionViewState = (
         disposition: 'applied',
         effects: Object.freeze([
           { kind: 'invalidate_team_member_projections' as const },
-          // A snapshot is a rebuilt view: the Team tab's lists load again (autobyteus-358).
-          { kind: 'reload_collaboration_messages' as const },
+          // A rebuilt view: the Team tab's lists load again when a message could have been missed (autobyteus-358).
+          { kind: 'reload_collaboration_messages' as const,
+            rebuild: { liveSequenceId: payload.live_sequence_id, baseChangeSequence: payload.base_change_sequence } },
           { kind: 'reconcile_team_navigation' as const },
           { kind: 'reconcile_focused_team_member_projection' as const },
         ]),

@@ -68,7 +68,7 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
       }
     }
     // Every publication is a rebuilt view: a new member-loader generation in which only the staged member is
-    // loaded, and the Team tab's lists load again (autobyteus-358).
+    // loaded, and the Team tab's lists load again when a message could have been missed (autobyteus-358).
     memberLoader().beginRoot(loaderRoot(id))
     const staged = commit()
     if (staged) memberLoader().markHydrated(loaderRoot(id), staged)
@@ -78,7 +78,8 @@ export const useAgentOrgContextsStore = defineStore('agentOrgContexts', () => {
     if (requested !== undefined) candidate.select(requested)
     contexts.value = { ...contexts.value, [id]: candidate }
     errors.value = { ...errors.value, [id]: null }
-    useCollaborationParticipantMessagesStore().reloadRoot('agent_org', id)
+    useCollaborationParticipantMessagesStore().reloadRoot('agent_org', id,
+      { liveSequenceId: candidate.view.live_sequence_id, baseChangeSequence: candidate.view.base_change_sequence })
     ensureMemberLoaded(id, selectedAgentRunIdOf(candidate))
     // autobyteus-278: the runs this Org delegated to other nodes; Retry (the store's rule) acts through this Org.
     candidate.remoteExecutions.forEach((execution) => remoteRuns.register(execution, remoteRetryAdapter(id)))

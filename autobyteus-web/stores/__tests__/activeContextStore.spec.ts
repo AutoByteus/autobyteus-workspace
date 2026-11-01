@@ -373,7 +373,7 @@ describe('activeContextStore selected workspace recovery', () => {
         const tree = JSON.parse(JSON.stringify(team.view.getExecutionTree()));
         tree.root_team.members[0].launch_configuration.workspace_root_path = '/owned/C';
         expect(team.view.applySnapshot({ type: 'TEAM_EXECUTION_VIEW_SNAPSHOT', payload: {
-          root_team_run_id: 'team-1', base_change_sequence: 1, execution_tree: tree,
+          root_team_run_id: 'team-1', base_change_sequence: 1, live_sequence_id: 'live-1', execution_tree: tree,
           closed_task_executions: [], agent_input_states: [], remote_task_executions: [],
           agent_statuses: team.view.listAgentContextEntries().map(entry => ({
             agent_run_id: entry.agentRunId, member_address: entry.memberAddress,

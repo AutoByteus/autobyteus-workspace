@@ -34,7 +34,7 @@ const teamCopySource = {
   handoffs: [], defaultLaunchConfiguration: launch, defaultLaunchSource: configured,
 }
 const view = (): AgentOrgExecutionViewDto => ({
-  base_change_sequence: 4,
+  base_change_sequence: 4, live_sequence_id: 'live-1',
   is_active: true,
   closed_task_executions: [], execution_tree: {
     subjectKind: 'agent_org',

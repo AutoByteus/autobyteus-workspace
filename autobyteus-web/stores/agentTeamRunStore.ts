@@ -311,7 +311,7 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
           }
           commitTeamRunHydration(hydrated);
           contexts.replaceTeamContext(rootTeamRunId, expectedContext, hydrated.hydratedContext);
-          markCommittedTeamRunHydrationAuthority(hydrated);
+          markCommittedTeamRunHydrationAuthority(hydrated, 'stored_rebuild');
           team = hydrated.hydratedContext;
           // Hydration focus is presentation state, never a replacement send target.
         }
@@ -479,7 +479,7 @@ export const useAgentTeamRunStore = defineStore('agentTeamRun', {
         if (contexts.getTeamContextById(result.teamRunId)) throw new Error(`TeamRun '${result.teamRunId}' is already registered.`);
         commitTeamRunHydration(candidate);
         contexts.addTeamContext(context);
-        markCommittedTeamRunHydrationAuthority(candidate);
+        markCommittedTeamRunHydrationAuthority(candidate, 'stored_rebuild');
         useAgentSelectionStore().promoteTeamDraftLaunch(currentDraft.draftId, result.teamRunId);
         drafts.completeDraftLaunch(currentDraft);
         return { rootTeamRunId: result.teamRunId, agentRunId: execution.agent_run_id, context };

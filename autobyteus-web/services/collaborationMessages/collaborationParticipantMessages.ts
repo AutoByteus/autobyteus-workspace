@@ -7,6 +7,10 @@ export type ParticipantMessage = CollaborationParticipantMessageDto
 export type ParticipantMessagesKey = Readonly<{ rootKind: CollaborationRootKind; rootRunId: string; agentRunId: string }>
 export type ParticipantMessagesStatus = Readonly<{ state: 'idle' | 'loading' | 'loaded' | 'error'; error: string | null }>
 type ParticipantMessagesList = ParticipantMessagesStatus & Readonly<{ key: ParticipantMessagesKey; messages: readonly ParticipantMessage[] }>
+/** Where a rebuilt root context starts: the live sequence its view counts in (null for a stored view) and its base. */
+export type RootContextRebuild = Readonly<{ liveSequenceId: string | null; baseChangeSequence: number }>
+/** The live sequence a root's lists follow, and the change sequence they are consistent through (C). */
+type RootPosition = { readonly liveSequenceId: string; through: number }
 
 const IDLE: ParticipantMessagesStatus = Object.freeze({ state: 'idle', error: null })
 const NO_MESSAGES: readonly ParticipantMessage[] = Object.freeze([])
@@ -25,14 +29,18 @@ const mergeById = (stored: readonly ParticipantMessage[], live: readonly Partici
  * The one client owner of the messages the Team tab shows (autobyteus-358, DS-002): one list per root kind, root run
  * and participant. A root's view carries no message log; a list is loaded when its Team tab (or a mobile message
  * screen) is shown. Live `communication` events of the root are buffered from before the request is sent and merged
- * by message ID, so none is lost or doubled. Every rebuild of the root's context calls `reloadRoot`: it abandons
- * the root's loads in flight and loads its lists again, because events missed in a gap never reach the client.
- * A failed load keeps its reason; showing the tab again retries.
+ * by message ID, so none is lost or doubled. Every rebuild of the root's context calls `reloadRoot`, which reloads
+ * only when a message could have been missed (SR-004, SR-005): the lists are kept, with their loads in flight, when
+ * the rebuilt view counts in the same live sequence and its base has not passed the sequence the lists are consistent
+ * through. That sequence advances on every stream event applied and on a seen single `checkpoint_required` event.
+ * A stored view, another live sequence (a stop and resume, or a restart) or a base past it reloads, abandoning the
+ * root's loads in flight. A failed load keeps its reason; showing the tab again retries.
  */
 export const useCollaborationParticipantMessagesStore = defineStore('collaborationParticipantMessages', () => {
   const lists = shallowReactive(new Map<string, ParticipantMessagesList>())
   const generations = new Map<string, number>()
   const buffers = new Map<string, ParticipantMessage[]>()
+  const positions = new Map<string, RootPosition>()
   const generationOf = (rootKey: string) => generations.get(rootKey) ?? 0
 
   const start = (key: ParticipantMessagesKey, previous: readonly ParticipantMessage[]) => {
@@ -73,9 +81,28 @@ export const useCollaborationParticipantMessagesStore = defineStore('collaborati
     }
   }
 
-  /** The root's context was rebuilt: loads in flight are abandoned and every loaded or loading list loads again. */
-  const reloadRoot = (rootKind: CollaborationRootKind, rootRunId: string): void => {
+  /**
+   * The root's stream applied its events through `changeSequence` in `liveSequenceId` (or saw a single
+   * `checkpoint_required` event there, which carries no message): the lists are consistent through it.
+   */
+  const advance = (rootKind: CollaborationRootKind, rootRunId: string, liveSequenceId: string | null, changeSequence: number): void => {
+    const position = positions.get(rootKeyOf(rootKind, rootRunId))
+    if (position?.liveSequenceId === liveSequenceId && changeSequence > position.through) position.through = changeSequence
+  }
+
+  /**
+   * The root's context was rebuilt. Its lists stay, with their loads in flight, when no message could have been
+   * missed: the same live sequence, and a base the lists are consistent through. Otherwise loads in flight are
+   * abandoned and every loaded or loading list loads again.
+   */
+  const reloadRoot = (rootKind: CollaborationRootKind, rootRunId: string, rebuild: RootContextRebuild): void => {
     const rootKey = rootKeyOf(rootKind, rootRunId)
+    const kept = positions.get(rootKey)
+    const consistent = rebuild.liveSequenceId !== null && kept?.liveSequenceId === rebuild.liveSequenceId
+      && rebuild.baseChangeSequence <= kept.through
+    if (consistent) return
+    if (rebuild.liveSequenceId === null) positions.delete(rootKey)
+    else positions.set(rootKey, { liveSequenceId: rebuild.liveSequenceId, through: rebuild.baseChangeSequence })
     generations.set(rootKey, generationOf(rootKey) + 1)
     for (const list of [...lists.values()]) {
       if (list.key.rootKind !== rootKind || list.key.rootRunId !== rootRunId) continue
@@ -87,6 +114,7 @@ export const useCollaborationParticipantMessagesStore = defineStore('collaborati
   const releaseRoot = (rootKind: CollaborationRootKind, rootRunId: string): void => {
     const rootKey = rootKeyOf(rootKind, rootRunId)
     generations.set(rootKey, generationOf(rootKey) + 1)
+    positions.delete(rootKey)
     for (const [listKey, list] of [...lists]) {
       if (list.key.rootKind !== rootKind || list.key.rootRunId !== rootRunId) continue
       lists.delete(listKey)
@@ -100,5 +128,5 @@ export const useCollaborationParticipantMessagesStore = defineStore('collaborati
     return list ? Object.freeze({ state: list.state, error: list.error }) : IDLE
   }
 
-  return { load, append, reloadRoot, releaseRoot, messagesOf, statusOf }
+  return { load, append, advance, reloadRoot, releaseRoot, messagesOf, statusOf }
 })

@@ -73,8 +73,10 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
     // A rebuilt view begins a new generation: no child is loaded in it (events may have been missed in between).
     memberLoader().beginRoot(loaderRoot(hostRunId))
     errors[hostRunId] = null
-    // Every publication is a rebuilt view (inspect, attach, reopen after a gap): the Team tab's lists load again.
-    participantMessages.reloadRoot('agent', hostRunId)
+    // Every publication is a rebuilt view (inspect, attach, reopen): the Team tab's lists load again when a message
+    // could have been missed meanwhile (SR-004, SR-005).
+    participantMessages.reloadRoot('agent', hostRunId,
+      { liveSequenceId: context.view.live_sequence_id, baseChangeSequence: context.view.base_change_sequence })
     // autobyteus-278: the runs this root delegated to other nodes; Retry (the store's rule) acts through this root.
     context.remoteExecutions.forEach((execution) => remoteRuns.register(execution, remoteRetryAdapter(hostRunId)))
     returnToHostWhenUnlisted(hostRunId, context)

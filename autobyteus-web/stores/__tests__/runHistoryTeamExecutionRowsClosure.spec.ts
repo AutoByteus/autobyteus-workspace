@@ -116,7 +116,7 @@ describe('Team root closed task executions', () => {
     const snapshot = {
       type: 'TEAM_EXECUTION_VIEW_SNAPSHOT' as const,
       payload: {
-        root_team_run_id: ROOT, base_change_sequence: 9, closed_task_executions: [{ agent_run_id: 'task-agent-run-1' }],
+        root_team_run_id: ROOT, base_change_sequence: 9, live_sequence_id: 'live-1', closed_task_executions: [{ agent_run_id: 'task-agent-run-1' }],
         execution_tree: context.view.getExecutionTree(), agent_input_states: [], remote_task_executions: [],
         agent_statuses: context.view.listAgentContextEntries().map((entry) => ({ agent_run_id: entry.agentRunId, member_address: entry.memberAddress,
           status: 'idle' as const, trigger: null, tool_name: null, error_message: null, error_details: null, recoverableBlock: null })),

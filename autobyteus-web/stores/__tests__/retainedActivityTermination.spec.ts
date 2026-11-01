@@ -43,7 +43,7 @@ const setup = () => {
     emit('CONNECTED', { session_id: 's', root_team_run_id: ROOT })
     const snapshot: Extract<TeamStreamServerMessage, { type: 'TEAM_EXECUTION_VIEW_SNAPSHOT' }>['payload'] = {
       root_team_run_id: ROOT,
-      base_change_sequence: 0,
+      base_change_sequence: 0, live_sequence_id: 'live-1',
       closed_task_executions: [], execution_tree: team.view.getExecutionTree(),
       agent_input_states: [], remote_task_executions: [],
       agent_statuses: team.view.listAgentContextEntries().map(e => ({

@@ -12,10 +12,12 @@ import { commitTeamRunHydration, markCommittedTeamRunHydrationAuthority } from '
 import { isTeamMemberProjectionAuthoritative } from '../teamMemberProjectionHydrationService';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import { useRemoteRunsStore } from '~/stores/remoteRunsStore';
+import { useCollaborationParticipantMessagesStore } from '~/services/collaborationMessages/collaborationParticipantMessages';
 
 const { queryMock } = vi.hoisted(() => ({ queryMock: vi.fn() }));
 
 vi.mock('~/utils/apolloClient', () => ({ getApolloClient: () => ({ query: queryMock }) }));
+vi.mock('~/services/collaborationMessages/participantMessagesQuery', async () => (await import('~/test-support/participantMessagesStub')).participantMessagesQueryStub);
 const tree = buildTestTeamContext({
   teamRunId: 'team-live-recovery',
   teamDefinitionId: 'team-def-1',
@@ -348,7 +350,7 @@ describe('Team open loads the focused member artifact list with its run state (a
     expect(paths('run-a')).toEqual([]);
 
     commitTeamRunHydration(candidate);
-    markCommittedTeamRunHydrationAuthority(candidate);
+    markCommittedTeamRunHydrationAuthority(candidate, 'stored_rebuild');
 
     expect(paths('run-a')).toEqual(['/outputs/1.png', '/outputs/2.png']);
     expect(paths('run-b')).toEqual([]);
@@ -356,6 +358,21 @@ describe('Team open loads the focused member artifact list with its run state (a
     expect(isTeamMemberProjectionAuthoritative(candidate.hydratedContext, 'run-b')).toBe(false);
     expect(queryMock.mock.calls.filter(([options]) => options.query === GetTeamMemberFileChanges).map(([options]) => options.variables))
       .toEqual([{ teamRunId: 'team-artifacts', agentRunId: 'run-a' }]);
+  });
+
+  it('a build read without a stream reloads the Team-tab lists; a recovery commit keeps what its stream snapshot rebuilt (SR-005)', async () => {
+    serve({ isActive: true });
+    const candidate = await open();
+    const owner = useCollaborationParticipantMessagesStore();
+    const key = { rootKind: 'agent_team', rootRunId: 'team-artifacts', agentRunId: 'run-a' } as const;
+    owner.reloadRoot('agent_team', 'team-artifacts', { liveSequenceId: 'live-1', baseChangeSequence: 3 });
+    owner.load(key);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
+    markCommittedTeamRunHydrationAuthority(candidate, 'rebuilt_by_stream_snapshot');
+    expect(owner.statusOf(key).state).toBe('loaded');
+    markCommittedTeamRunHydrationAuthority(candidate, 'stored_rebuild');
+    expect(owner.statusOf(key).state).toBe('loading');
   });
 
   it('fails the open when the focused member artifacts fail, as for its projection (AC-007)', async () => {

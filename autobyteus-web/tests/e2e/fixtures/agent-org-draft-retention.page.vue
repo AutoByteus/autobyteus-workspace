@@ -93,6 +93,7 @@ const createOrgView = (
   members: readonly { address: string; agentRunId: string }[],
 ): AgentOrgExecutionViewDto => ({
   base_change_sequence: 0,
+  live_sequence_id: null,
   is_active: false,
   closed_task_executions: [], execution_tree: {
     subjectKind: 'agent_org',

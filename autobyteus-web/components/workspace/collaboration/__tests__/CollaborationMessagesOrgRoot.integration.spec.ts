@@ -47,7 +47,7 @@ const message = (index: number, senderAgentRunId: string, receiverAgentRunId: st
 })
 
 const largeOrgView = (): AgentOrgExecutionViewDto => ({
-  base_change_sequence: 4,
+  base_change_sequence: 4, live_sequence_id: 'live-1',
   is_active: true,
   closed_task_executions: [], execution_tree: {
     subjectKind: 'agent_org', createdAt: timestamp(0), archivedAt: null, applicationBinding: null, handoffs: [],

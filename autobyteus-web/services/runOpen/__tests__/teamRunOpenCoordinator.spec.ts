@@ -143,7 +143,7 @@ describe('openTeamRun current exact execution identity', () => {
     expect(hydrated.view.hasAgentRun('run-a')).toBe(true)
     expect(commitTeamRunHydrationMock).toHaveBeenCalledWith(expect.objectContaining({ hydratedContext: hydrated }))
     expect(addTeamContextMock).toHaveBeenCalledWith(hydrated)
-    expect(markAuthorityMock).toHaveBeenCalledWith(expect.objectContaining({ hydratedContext: hydrated }))
+    expect(markAuthorityMock).toHaveBeenCalledWith(expect.objectContaining({ hydratedContext: hydrated }), 'stored_rebuild')
     expect(selectRunMock).toHaveBeenCalledWith(ROOT, 'team')
     expect(selectDraftMock).toHaveBeenCalledWith(null)
     expect(clearAgentRunConfigMock).toHaveBeenCalledTimes(1)
@@ -278,7 +278,7 @@ describe('openTeamRun current exact execution identity', () => {
     const commit = replaceFailedTeamStreamMock.mock.calls[0]?.[0].beforeContextCommit
     commit()
     expect(commitTeamRunHydrationMock).toHaveBeenCalledWith(expect.objectContaining({ hydratedContext: candidate }))
-    expect(markAuthorityMock).toHaveBeenCalledWith(expect.objectContaining({ hydratedContext: candidate }))
+    expect(markAuthorityMock).toHaveBeenCalledWith(expect.objectContaining({ hydratedContext: candidate }), 'rebuilt_by_stream_snapshot')
     expect(selectRunMock).toHaveBeenCalledWith(ROOT, 'team')
     expect(result).toMatchObject({ focusedAgentRunId: 'run-b', focusedMemberAddress: '/member-b' })
   })

@@ -2,6 +2,7 @@ import type {
   TeamStreamServerMessage,
 } from '@autobyteus/team-stream-contracts';
 import type { CollaborationParticipantMessageDto } from '@autobyteus/collaboration-stream-contracts';
+import type { RootContextRebuild } from '~/services/collaborationMessages/collaborationParticipantMessages';
 import type { AgentContext } from '~/types/agent/AgentContext';
 import type { AgentStatus } from '~/types/agent/AgentStatus';
 import type { AgentTeamAddress } from '~/types/agent/AgentTeamAddress';
@@ -60,8 +61,8 @@ export type TeamExecutionEffect =
   | Readonly<{ kind: 'team_stream_recovery_required' }>
   /** A live message for the Team tab's lists (autobyteus-358). */
   | Readonly<{ kind: 'append_collaboration_message'; message: CollaborationParticipantMessageDto }>
-  /** The view was rebuilt: the Team tab's lists load again. */
-  | Readonly<{ kind: 'reload_collaboration_messages' }>;
+  /** The view was rebuilt from a snapshot: the Team tab's lists load again when a message could have been missed. */
+  | Readonly<{ kind: 'reload_collaboration_messages'; rebuild: RootContextRebuild }>;
 
 export type TeamExecutionApplyResult =
   | Readonly<{ disposition: 'applied' | 'unchanged'; effects: readonly TeamExecutionEffect[] }>

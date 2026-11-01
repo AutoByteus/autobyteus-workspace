@@ -73,7 +73,7 @@ const emit = (
 
 const snapshotPayload = (team: ReturnType<typeof buildTestTeamContext>, baseChangeSequence = team.view.getChangeSequence()) => ({
   root_team_run_id: rootTeamRunId,
-  base_change_sequence: baseChangeSequence,
+  base_change_sequence: baseChangeSequence, live_sequence_id: 'live-1',
   closed_task_executions: [], execution_tree: team.view.getExecutionTree(),
   agent_input_states: [], remote_task_executions: [],
   agent_statuses: team.view.listAgentContextEntries().map((entry) => ({
@@ -394,6 +394,35 @@ describe('TeamStreamingService current AgentRun event dispatch', () => {
       referenceFiles: [],
     }]);
     expect(team.view.getChangeSequence()).toBe(1);
+  });
+
+  it('keeps the Team-tab lists across a snapshot in the same live sequence they saw; another live sequence reloads them (SR-004, SR-005)', async () => {
+    const { callbacks, team } = createHarness();
+    admitReady(callbacks, team);
+    const owner = useCollaborationParticipantMessagesStore();
+    const key = { rootKind: 'agent_team', rootRunId: rootTeamRunId, agentRunId: teacherRunId } as const;
+    owner.load(key);
+    await new Promise((resolve) => setTimeout(resolve, 0));
+    emit(callbacks, 'AGENT_STATUS', statusPayload(1, teacherRunId, 'running'));
+    expect(owner.statusOf(key).state).toBe('loaded');
+    const candidate = (snapshot: Record<string, unknown>) => {
+      const candidateCallbacks = new Map<string, (payload?: any) => void>();
+      const wsClient = { state: 'connected', connect: vi.fn(), disconnect: vi.fn(), send: vi.fn(), off: vi.fn(),
+        on: vi.fn((event: string, callback: (payload?: any) => void) => candidateCallbacks.set(event, callback)) } as any;
+      const candidateTeam = buildTestTeamContext({ teamRunId: rootTeamRunId, coordinatorAddress: '/Teacher',
+        rootChildren: [testAgentNode('/Teacher', { agentRunId: teacherRunId, displayName: 'Teacher' })] });
+      const service = new TeamStreamingService('ws://localhost:8000/ws/agent-team', { wsClient });
+      void service.connectCandidate(rootTeamRunId, candidateTeam, snapshot.base_change_sequence as number);
+      emit(candidateCallbacks, 'CONNECTED', { session_id: 'candidate-session', root_team_run_id: rootTeamRunId });
+      emit(candidateCallbacks, 'TEAM_EXECUTION_VIEW_SNAPSHOT', { ...snapshotPayload(candidateTeam), ...snapshot });
+    };
+
+    // A recovery whose snapshot is based on an event the lists saw keeps them (no fetch).
+    candidate({ base_change_sequence: 1 });
+    expect(owner.statusOf(key).state).toBe('loaded');
+    // Another publisher (a stop and resume, or a restart) at a base the lists saw: they load again.
+    candidate({ base_change_sequence: 1, live_sequence_id: 'live-2' });
+    expect(owner.statusOf(key).state).toBe('loading');
   });
 
   it('acts on the first rejected gap effect once and cannot revive the failed instance', () => {

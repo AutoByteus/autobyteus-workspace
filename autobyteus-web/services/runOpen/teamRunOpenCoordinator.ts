@@ -68,7 +68,7 @@ export async function openTeamRun(input: OpenTeamRunWithCoordinatorInput): Promi
   }
   commitTeamRunHydration(hydrated);
   contexts.addTeamContext(context);
-  markCommittedTeamRunHydrationAuthority(hydrated);
+  markCommittedTeamRunHydrationAuthority(hydrated, 'stored_rebuild');
   if (remoteFocus) readRemoteTeamMember(context, hydrated.focusedAgentRunId);
   const focusedAgentRunId = context.view.getFocusedAgentRunId();
   const focusedMemberAddress = context.view.getFocusedMemberAddress();
@@ -138,7 +138,7 @@ export async function reopenTeamRunAfterStreamLoss(input: OpenTeamRunWithCoordin
     throw error;
   }
   if (intent && !intent.isCurrent()) return { disposition: 'superseded' };
-  markCommittedTeamRunHydrationAuthority(hydrated);
+  markCommittedTeamRunHydrationAuthority(hydrated, 'rebuilt_by_stream_snapshot');
   if (isRemoteAgentRun(hydrated.remoteTaskExecutions, preferredAgentRunId)) readRemoteTeamMember(context, preferredAgentRunId);
   const focusedAgentRunId = context.view.getFocusedAgentRunId();
   const focusedMemberAddress = context.view.getFocusedMemberAddress();

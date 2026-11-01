@@ -18,15 +18,25 @@ export const commitTeamRunHydration = (
 };
 
 /**
+ * How a committed Team build leaves the Team tab's lists (autobyteus-358, SR-005): a build read without a stream
+ * (open, restore, launch) names no live sequence, so its lists load again; a stream recovery's candidate stream
+ * already applied its snapshot, which rebuilt them with its live sequence.
+ */
+export type TeamBuildMessages = 'stored_rebuild' | 'rebuilt_by_stream_snapshot';
+
+/**
  * The committed Team context is a new build (open or stream recovery, autobyteus-358): it begins a member-loader
- * generation in which only the staged (focused) member is loaded, and the Team tab's message lists load again.
+ * generation in which only the staged (focused) member is loaded.
  */
 export const markCommittedTeamRunHydrationAuthority = (
   candidate: TeamRunHydrationCandidate,
+  messages: TeamBuildMessages,
 ): void => {
   beginTeamMemberGeneration(candidate.hydratedContext);
   candidate.projectionByAgentRunId.forEach((projection, agentRunId) => {
     if (projection) markTeamMemberProjectionAuthoritative(candidate.hydratedContext, agentRunId);
   });
-  useCollaborationParticipantMessagesStore().reloadRoot('agent_team', candidate.teamRunId);
+  if (messages === 'stored_rebuild') {
+    useCollaborationParticipantMessagesStore().reloadRoot('agent_team', candidate.teamRunId, { liveSequenceId: null, baseChangeSequence: 0 });
+  }
 };

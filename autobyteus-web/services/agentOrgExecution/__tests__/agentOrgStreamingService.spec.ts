@@ -29,6 +29,7 @@ vi.mock('../agentOrgContextHydration', () => ({
 }))
 
 import { AgentOrgStreamingService } from '../agentOrgStreamingService'
+import { useCollaborationParticipantMessagesStore } from '~/services/collaborationMessages/collaborationParticipantMessages'
 
 class TestWebSocket {
   static readonly CONNECTING = 0
@@ -85,7 +86,7 @@ const snapshot = {
   payload: {
     root_subject_kind: 'agent_org', root_run_id: 'org-run',
     root_org: {
-      base_change_sequence: 4, is_active: true,
+      base_change_sequence: 4, live_sequence_id: 'live-1', is_active: true,
       closed_task_executions: [], execution_tree: {
         subjectKind: 'agent_org', createdAt: '2026-09-01T00:00:00.000Z',
         archivedAt: null, applicationBinding: null, handoffs: [],
@@ -107,12 +108,13 @@ const snapshot = {
 }
 
 const candidate = (selectedAddress: string | null = null, changeSequence = 4) => ({
-  isActive: true, phase: 'live', changeSequence, selectedAddress, selection: selectedAddress ? { kind: 'agent_execution', agentRunId: 'agent-run' } : null,
+  isActive: true, phase: 'live', changeSequence, selectedAddress, view: { live_sequence_id: 'live-1', base_change_sequence: changeSequence }, selection: selectedAddress ? { kind: 'agent_execution', agentRunId: 'agent-run' } : null,
   select: vi.fn(), setActive: vi.fn(), applyEvent: vi.fn(), requireReopen: vi.fn(),
   listAgentContextEntries: () => [], getAgentContext: () => null,
 }) as unknown as AgentOrgExecutionContext
 
 describe('AgentOrgStreamingService', () => {
+  let advance: ReturnType<typeof vi.spyOn>
   beforeEach(() => {
     vi.clearAllMocks()
     mocks.query.mockReset()
@@ -120,6 +122,7 @@ describe('AgentOrgStreamingService', () => {
     TestWebSocket.instances = []
     vi.stubGlobal('WebSocket', TestWebSocket)
     setActivePinia(createPinia())
+    advance = vi.spyOn(useCollaborationParticipantMessagesStore(), 'advance')
   })
 
   it('rejects and records browser-reserved client close codes in the WebSocket double', () => {
@@ -336,6 +339,8 @@ describe('AgentOrgStreamingService', () => {
     } })
     await vi.waitFor(() => expect(first.applyEvent).toHaveBeenCalledWith(5, event, 9))
     expect(TestWebSocket.instances).toHaveLength(1)
+    // The Team tab's lists are consistent through the batch's last sequence (autobyteus-358, SR-004).
+    expect(advance).toHaveBeenCalledWith('agent_org', 'org-run', 'live-1', 9)
   })
 
   it('checkpoint-hydrates a fresh task activation instead of publishing a partial context', async () => {
@@ -378,6 +383,8 @@ describe('AgentOrgStreamingService', () => {
     await vi.waitFor(() => expect(publish).toHaveBeenLastCalledWith(second, expect.any(Function)))
     // A single event carries no change_sequence_through (only content batches cover a range).
     expect(first.applyEvent).toHaveBeenCalledWith(5, expect.objectContaining({ kind: 'task_execution_started' }), undefined)
+    // The single checkpoint event was seen and carries no message: the lists are consistent through it (SR-004).
+    expect(advance).toHaveBeenCalledWith('agent_org', 'org-run', 'live-1', 5)
     expect(first.requireReopen).not.toHaveBeenCalled()
     expect(reportError).not.toHaveBeenCalled()
     expect(mocks.query).toHaveBeenCalledTimes(2)
