@@ -90,7 +90,18 @@ None: no release.
 
 ## Repository Finalization
 
-PENDING
+- Bootstrap context source: `investigation-notes.md` / `RELEASE.md` § Finalization Target (`origin`, `personal`).
+- Ticket branch: `codex/code-quality-leftovers`
+- Ticket branch commit result: `Completed` — `0050c7d95a` (docs sync, delivery artifacts, release notes, archive), on the merge `a20c9f56d3` and checkpoint `8b58d9577b`.
+- Ticket branch push result: `Completed` — first push after the hygiene check and the Secret Gate (`origin/personal..HEAD`: PASS).
+- Finalization target remote / branch: `origin` / `personal`
+- Target advanced after verification / acceptance: `No` — `origin/personal` was compared with the verified base `a96a871950` (not only with the last fetch) before the merge and again before the push.
+- Delivery-owned edits protected before re-integration: `Not needed`
+- Re-integration before final merge result: `Not needed`
+- Target branch update result: `Completed` — `finalize/code-quality-leftovers` from `origin/personal` `a96a871950`.
+- Merge into target result: `Completed` — `git merge --no-ff` → `8a7d91afd6`; its tree is identical to the verified ticket branch (`git diff --stat` empty). Secret Gate on the merged state: PASS.
+- Push target branch result: `Completed` — `a96a871950..8a7d91afd6 HEAD -> personal`.
+- Repository finalization status: `Completed`
 
 ## Release / Publication / Deployment
 
@@ -99,7 +110,10 @@ PENDING
 
 ## Post-Finalization Cleanup
 
-PENDING
+- Dedicated ticket worktree path: `/Users/normy/autobyteus_org/autobyteus-worktrees/code-quality-leftovers`
+- Remote branch cleanup: `origin/codex/code-quality-leftovers` deleted after `0050c7d95a` was confirmed an ancestor of `origin/personal` (with this record's push).
+- Worktree removal and prune, local branches (`codex/code-quality-leftovers`, `finalize/code-quality-leftovers`): run from the main checkout right after this record is pushed; the terminal message reports the outcome.
+- Probe and Settings stacks: removed (`tempRootRemoved: true`, `dataRootRemoved: true`); LM Studio: nothing loaded, as before.
 
 ## Environment Or Persisted-Data Transition Notes
 
@@ -116,4 +130,11 @@ Revert the merge on `personal` (`RELEASE.md` § Rollback). No stored data change
 
 ## Final Status
 
-PENDING
+- Verification complete (from the evidence): `Yes`
+- Repository finalization complete: `Yes` (`origin/personal` `8a7d91afd6`, plus this record)
+- Applicable release/deployment/rollout complete or not required: `Yes` (`Not required`: no release)
+- Applicable safe cleanup complete or not required: `Yes` (remote branch with this record; worktree and local branches right after, reported in the terminal message)
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to the Solution Designer: `Yes`, after this record is pushed
+- Terminal message/reference: `send_message_to` the Solution Designer (`Delivery Completed`)

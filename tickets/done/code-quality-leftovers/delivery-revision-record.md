@@ -15,7 +15,7 @@ The latest docs sync report, handoff summary and release/deployment report remai
 - Delivery round and trigger: first delivery round; the code reviewer's handoff after CRR-003.
 - Triggering upstream report, verification, or evidence: `code-review-report.md`, `api-e2e-execution-coverage-report.md`, `api-e2e-test-review-report.md`.
 - Prior authoritative result: N/A.
-- Current authoritative result: Delivered. Checkpoint `8b58d9577b`; merge of `origin/personal` `a96a871950` as `a20c9f56d3`; every recorded case rerun (lockfile changed) and Pass (DEL-00…DEL-09), two load-induced timing groups traced and rerun; finalization in the release/deployment report.
+- Current authoritative result: Delivered. Checkpoint `8b58d9577b`; merge of `origin/personal` `a96a871950` as `a20c9f56d3`; every recorded case rerun (lockfile changed) and Pass (DEL-00…DEL-09), two load-induced timing groups traced and rerun; finalized into `origin/personal` as `8a7d91afd6` (tree identical to the verified branch); no release.
 - Docs sync report: `docs-sync-report.md`.
 - Handoff summary: `handoff-summary.md` (all ten items, REQ-004).
 - Release/publication/deployment report: `release-deployment-report.md`.
