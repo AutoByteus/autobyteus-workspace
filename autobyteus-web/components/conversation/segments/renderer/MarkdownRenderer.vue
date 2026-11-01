@@ -19,6 +19,7 @@
 
 <script setup lang="ts">
 import { hasLongUnbrokenRun } from '~/utils/text/longUnbrokenRun';
+import { openExternalLink } from '~/utils/externalLink';
 import { computed, ref, watch, onMounted, nextTick } from 'vue';
 import { useMarkdownSegments } from '~/composables/useMarkdownSegments';
 import { useAuthorizedObjectUrlMap } from '~/composables/useAuthorizedObjectUrl';
@@ -139,19 +140,6 @@ const handleKeydown = (event: KeyboardEvent) => {
   const target = event.target;
   if (!(target instanceof Element)) return;
   handleFileAction(event, target);
-};
-
-const openExternalLink = (url: string) => {
-  if (window.electronAPI?.openExternalLink) {
-    try {
-      window.electronAPI.openExternalLink(url);
-      return;
-    } catch (e) {
-      console.error('Failed to open link using electronAPI.openExternalLink. Falling back to window.open.', e);
-    }
-  }
-  
-  window.open(url, '_blank', 'noopener,noreferrer');
 };
 
 onMounted(applyPostRenderEffects);

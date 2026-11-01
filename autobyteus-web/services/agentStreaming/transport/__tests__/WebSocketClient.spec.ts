@@ -3,17 +3,17 @@ import { WebSocketClient } from '../WebSocketClient';
 import { ConnectionState } from '../types';
 
 class MockWebSocket {
+  static CONNECTING = 0;
+  static OPEN = 1;
+  static CLOSING = 2;
+  static CLOSED = 3;
+
   url: string;
   readyState = MockWebSocket.CONNECTING;
   onopen: (() => void) | null = null;
   onclose: ((event: { code: number; reason: string }) => void) | null = null;
   onerror: (() => void) | null = null;
   onmessage: ((event: { data: string }) => void) | null = null;
-
-  static CONNECTING = 0;
-  static OPEN = 1;
-  static CLOSING = 2;
-  static CLOSED = 3;
 
   constructor(url: string) {
     this.url = url;

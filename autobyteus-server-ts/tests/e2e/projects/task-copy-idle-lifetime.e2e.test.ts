@@ -51,14 +51,21 @@ const GRACE_KEY = "AUTOBYTEUS_TASK_EXECUTION_IDLE_SHUTDOWN_GRACE_MS";
 const GRACE_MS = 60_000;
 const STEP_SECONDS = 100;
 const LONG_STEP_SECONDS = 900;
-/** A shutdown one grace period after its trigger, allowing for the monitor's 2 s poll, the serialized queue and our 2 s sampling. */
-const SHUTDOWN_WINDOW = { min: GRACE_MS - 1_000, max: GRACE_MS + 15_000 };
+/**
+ * A shutdown one grace period after its trigger, measured on the scripted CLI's own clock (SR-003, SR-004): from the
+ * logged turn end or background exit to the logged SIGTERM. The server arms the grace only after it sees the logged
+ * event, so the window is at least GRACE_MS; 250 ms covers a timer firing up to one loop tick early and two processes'
+ * whole-millisecond clocks. The upper bound allows for the monitor's 2 s poll and the serialized queue.
+ */
+const SHUTDOWN_WINDOW = { min: GRACE_MS - 250, max: GRACE_MS + 15_000 };
 const PROMPT_STOP_MS = 15_000;
 
 type Frame = { type: string; payload: Record<string, any>; at: number };
 type Kind = "agent" | "team" | "org";
 type TaskNode = Record<string, any>;
 type Signal = { agentRunId: string; kind: "status" | "background"; status: string; at: number };
+/** One line of the scripted CLI's lifecycle log (AGY_FAKE_PROCESS_LOG), timed on that process's clock. */
+type ProcessEvent = { event: "launch" | "turn_end" | "background_exit" | "sigterm" | "exit"; pid: number; conversation_id: string; at: number; cwd?: string };
 const segment = (name: string) => name.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_+|_+$/g, "");
 const callTool = (name: string, args: object) => `CALL_TOOL:${JSON.stringify({ name, arguments: args })}`;
 const step = (seconds: number, exitCode = 0) => `BACKGROUND_STEP:${JSON.stringify({ seconds, exitCode })}`;
@@ -122,7 +129,7 @@ const signalsIn = (frames: readonly Frame[]): Signal[] => frames.flatMap((frame)
 });
 
 suite("Idle shutdown keeps delegated copies with running background tasks in every root (real HTTP/WS/scoped MCP and AGY monitor, scripted AGY actor)", () => {
-  let dataDir = "", workspace = "", app: FastifyInstance | undefined, url!: URL, argvLog = "";
+  let dataDir = "", workspace = "", app: FastifyInstance | undefined, url!: URL, argvLog = "", processLog = "";
   const sockets: WebSocket[] = [];
   const active: Array<{ kind: Kind; rootId: string }> = [];
   const ids = { manager: "", worker: "", squad: "", team: "", org: "" };
@@ -172,6 +179,21 @@ suite("Idle shutdown keeps delegated copies with running background tasks in eve
     await until(() => ready(frames), `${route} stream ready`);
     return { socket, frames };
   };
+  /**
+   * An idle-shutdown window on the scripted CLI's own clock: from the run's last logged `start` event (its turn end, or
+   * its background step's exit) to the SIGTERM that followed, in the same conversation. WebSocket frame times, which
+   * arrive late under load, are not part of it.
+   */
+  const fixtureWindow = async (agentRunId: string, start: "turn_end" | "background_exit") => {
+    const events = (await fs.readFile(processLog, "utf8").catch(() => "")).split("\n").filter(Boolean)
+      .map((line) => JSON.parse(line) as ProcessEvent);
+    const conversations = new Set(events.filter((e) => e.event === "launch" && e.cwd?.includes(agentRunId)).map((e) => e.conversation_id));
+    const own = events.filter((e) => conversations.has(e.conversation_id));
+    const sigterm = own.find((e) => e.event === "sigterm");
+    const begin = own.filter((e) => e.event === start && sigterm && e.at <= sigterm.at).at(-1);
+    if (!sigterm || !begin) throw new Error(`${agentRunId}: no ${start} before a SIGTERM in the CLI log: ${JSON.stringify(own)}`);
+    return { startAt: begin.at, sigtermAt: sigterm.at, ms: sigterm.at - begin.at };
+  };
   const launches = async () => (await fs.readFile(argvLog, "utf8").catch(() => "")).trim().split("\n").filter(Boolean)
     .map((line) => JSON.parse(line) as { argv: string[]; cwd: string });
   const terminate = async (kind: Kind, rootId: string) => {
@@ -190,11 +212,13 @@ suite("Idle shutdown keeps delegated copies with running background tasks in eve
     workspace = path.join(dataDir, "workspace");
     await fs.mkdir(workspace);
     argvLog = path.join(dataDir, "agy-argv.jsonl");
+    processLog = path.join(dataDir, "agy-processes.jsonl");
     // The operator setting at its minimum, so a background step can outlive it within the test.
     await fs.writeFile(path.join(dataDir, ".env"), `AUTOBYTEUS_SERVER_HOST=http://localhost:8000\nAPP_ENV=test\n${GRACE_KEY}=${GRACE_MS}\n`);
-    for (const key of ["AGY_FAKE_CASE", "AGY_FAKE_ARGV_LOG"]) savedEnv.set(key, process.env[key]);
+    for (const key of ["AGY_FAKE_CASE", "AGY_FAKE_ARGV_LOG", "AGY_FAKE_PROCESS_LOG"]) savedEnv.set(key, process.env[key]);
     process.env["AGY_FAKE_CASE"] = "linked_skills";
     process.env["AGY_FAKE_ARGV_LOG"] = argvLog;
+    process.env["AGY_FAKE_PROCESS_LOG"] = processLog;
     appConfigProvider.config.setCustomAppDataDir(dataDir);
     const started = await startStudioE2eRuntimeServer();
     app = started.fastify; url = started.mainUrl;
@@ -362,13 +386,13 @@ suite("Idle shutdown keeps delegated copies with running background tasks in eve
     const dn = await timeline(doneCopy.ingress);
     const st = await timeline(stopCopy.ingress);
     await root.answered(quiet.ingress, quiet.address, "QUIET-FIRST");
-    const quietIdle = await root.signal("quiet idle", (e) => e.agentRunId === quiet.ingress && e.kind === "status" && e.status === "idle");
+    await root.signal("quiet idle", (e) => e.agentRunId === quiet.ingress && e.kind === "status" && e.status === "idle");
     for (const run of [background.ingress, team.ingress, quiet.ingress, doneCopy.ingress, stopCopy.ingress]) expect(await processLive(run), run).toBe(true);
 
     // AC-006 control: the quiet copy is shut down one grace period after it went idle (the grace setting is in effect).
-    const quietOffline = await root.signal("quiet offline", (e) => e.agentRunId === quiet.ingress && e.kind === "status" && e.status === "offline", GRACE_MS + 30_000);
+    await root.signal("quiet offline", (e) => e.agentRunId === quiet.ingress && e.kind === "status" && e.status === "offline", GRACE_MS + 30_000);
     await until(async () => !(await processLive(quiet.ingress)), `${kind}: quiet copy process gone`, 15_000);
-    const quietShutdownMs = quietOffline.at - quietIdle.at;
+    const quietShutdownMs = (await fixtureWindow(quiet.ingress, "turn_end")).ms;
 
     // While their steps run, the background copies are not shut down although their grace period has elapsed.
     const lastIdle = Math.max(bg.idle.at, tm.idle.at, dn.idle.at, st.idle.at);
@@ -400,9 +424,10 @@ suite("Idle shutdown keeps delegated copies with running background tasks in eve
       const completed = await root.signal(`${copy.ingress} ${endStatus}`, (e) => e.agentRunId === copy.ingress && e.kind === "background" && e.status === endStatus, STEP_SECONDS * 1_000);
       const before = root.signals().filter((e) => e.agentRunId === copy.ingress && e.kind === "status" && e.status === "offline" && e.at < completed.at);
       expect(before, `${kind} ${copy.ingress} offline before its step ended`).toEqual([]);
-      const offline = await root.signal(`${copy.ingress} offline after its step`, (e) => e.agentRunId === copy.ingress && e.kind === "status" && e.status === "offline", GRACE_MS + 30_000);
+      await root.signal(`${copy.ingress} offline after its step`, (e) => e.agentRunId === copy.ingress && e.kind === "status" && e.status === "offline", GRACE_MS + 30_000);
       await until(() => allGone(copy.members), `${kind}: ${copy.ingress} processes gone`, 15_000);
-      return { completed, offline, runningMs: completed.at - (copy === background ? bg : tm).idle.at, shutdownAfterEndMs: offline.at - completed.at };
+      return { completed, runningMs: completed.at - (copy === background ? bg : tm).idle.at,
+        shutdownAfterEndMs: (await fixtureWindow(copy.ingress, "background_exit")).ms };
     };
     const [bgEnd, tmEnd] = await Promise.all([ended(background, "failed"), ended(team, "completed")]);
 

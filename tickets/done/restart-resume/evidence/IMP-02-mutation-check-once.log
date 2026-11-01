@@ -1,0 +1,9 @@
+# IMP-02 mutation check-once (AR-002: eligibility checked once before the queue; tests from b50e2354ab)
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/unit/restart-resume/restart-resumer.test.ts --no-watch --testTimeout=8000
+# Commit: b50e2354ab
+# Environment: macOS 26.5.2, node v22.23.1
+# Date: 2026-11-01
+
+     × AC-003: skips live runs and runs whose root was stopped on purpose, archived or deleted 18ms
+     × AR-002: checks eligibility right before each post (a run the user messages or Stops while queued is not resumed) 15ms
+      Tests  2 failed | 11 passed (13)

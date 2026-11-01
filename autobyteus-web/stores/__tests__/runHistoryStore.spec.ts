@@ -2482,7 +2482,11 @@ describe('runHistoryStore', () => {
       'team-1': {
         teamRunId: 'team-1',
         isActive: false,
-        metadata: buildTeamResumeMetadata({ teamRunId: 'team-1' }),
+        executionTree: buildTestTeamContext({
+          teamRunId: 'team-1', coordinatorAddress: '/super_agent',
+          rootChildren: [testAgentNode('/super_agent', { agentRunId: 'super-agent-run' })],
+        }).view.getExecutionTree(),
+        modelConfigEditability: { editable: true, reason: null },
       },
     };
     store.selectedTeamRunId = 'team-1';

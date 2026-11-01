@@ -17,8 +17,8 @@ const projection = (variables: any) => ({ data: { getAgentOrgMemberRunProjection
   conversation: [], activities: [], hasEarlierActiveTraceEvents: false,
 } } })
 const inspection = (active = false) => {
-  const view = taskBearingView(); view.is_active = active
-  if (!active) view.agent_statuses = []
+  const base = taskBearingView()
+  const view = { ...base, is_active: active, agent_statuses: active ? base.agent_statuses : [] }
   return { data: { getAgentOrgRunInspection: { root_subject_kind: 'agent_org', root_run_id: 'org-run', root_org: view } } }
 }
 beforeEach(() => { setActivePinia(createPinia()); mocks.instances.length = 0; mocks.query.mockReset() })

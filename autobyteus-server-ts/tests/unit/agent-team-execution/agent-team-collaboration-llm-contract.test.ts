@@ -61,7 +61,7 @@ describe("approved collaboration tool descriptions", () => {
     expect(DELEGATE_TASK_LLM_DESCRIPTION).toContain("With node in mode (1), the task agent starts on that peer node, from the agent or agent team at recipient_address there; the result also gives node, and you message it by its run id as usual. A saved Task or reference_files can't go to another node.");
   });
 
-  it("states how each tool works, each fact once: messaging never creates an agent, delegation always does", () => {
+  it("states how each tool works, each fact once: messaging never creates an agent, a delegation with an address always creates one", () => {
     expect(SEND_MESSAGE_TO_LLM_DESCRIPTION).toContain("send_message_to never creates an agent; to have work done by a new agent, use delegate_task.");
     expect(SEND_MESSAGE_TO_LLM_DESCRIPTION).toContain("Use exactly one selector, never both:");
     expect(SEND_MESSAGE_TO_LLM_DESCRIPTION).toContain("For a task agent team, use its coordinator's run id; a team's own run id is refused.");

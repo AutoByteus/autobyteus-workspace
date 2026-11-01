@@ -16,7 +16,7 @@ import { SecretVaultRepository } from "../../../src/secret-management/persistenc
 import { SecretManagementService } from "../../../src/secret-management/services/secret-management-service.js";
 import { IntegrationConnectionService } from "../../../src/credential-proxy/integration-connection-service.js";
 import { IntegrationConnectionStore } from "../../../src/credential-proxy/integration-connection-store.js";
-import { IntegrationDefinitions } from "../../../src/credential-proxy/integration-definitions.js";
+import { DeliveryDefinitions } from "../../../src/credential-proxy/delivery-definitions.js";
 
 const TABLES = `
   CREATE TABLE secret_entries (
@@ -56,7 +56,7 @@ describe("IntegrationConnectionService over a real vault", () => {
 
   const service = () => new IntegrationConnectionService({
     store: new IntegrationConnectionStore(integrationsDir),
-    definitions: new IntegrationDefinitions(),
+    definitions: new DeliveryDefinitions(),
     management: () => management,
     fetchImpl: fetchImpl as typeof fetch,
   });
@@ -89,9 +89,9 @@ describe("IntegrationConnectionService over a real vault", () => {
   });
 
   it("checks the token with GitHub, then stores it under the integration's vault id and the login in the file", async () => {
-    expect(await service().status()).toEqual({ connected: false, login: null, connectedAt: null, agentDefinitionIds: [] });
+    expect(await service().status("github")).toEqual({ connected: false, login: null, connectedAt: null });
 
-    const status = await service().connect(SecretValue.fromString(GOOD));
+    const status = await service().connect("github", SecretValue.fromString(GOOD));
 
     expect(status).toMatchObject({ connected: true, login: "octo", connectedAt: expect.any(String) });
     expect(fetchImpl).toHaveBeenCalledOnce();
@@ -101,43 +101,47 @@ describe("IntegrationConnectionService over a real vault", () => {
     const rows = new DatabaseSync(databasePath).prepare("SELECT secret_id FROM secret_entries").all();
     expect(rows.map((row) => row["secret_id"])).toContain("integration.github.token");
     expect(await connectionsFile()).not.toContain(GOOD);
-    expect(await service().status()).toEqual(status);
+    expect(await service().status("github")).toEqual(status);
   });
 
   it("stores nothing for a token GitHub rejects, or when GitHub can't be reached", async () => {
-    await expect(service().connect(SecretValue.fromString(BAD))).rejects.toMatchObject({ code: "TOKEN_REJECTED" });
+    await expect(service().connect("github", SecretValue.fromString(BAD))).rejects.toMatchObject({ code: "TOKEN_REJECTED" });
     githubDown = true;
-    await expect(service().connect(SecretValue.fromString(GOOD))).rejects.toMatchObject({ code: "TOKEN_CHECK_FAILED" });
+    await expect(service().connect("github", SecretValue.fromString(GOOD))).rejects.toMatchObject({ code: "TOKEN_CHECK_FAILED" });
     expect(await storedToken()).toBe("MISSING");
     expect(await connectionsFile()).toBe("");
   });
 
   it("tests the stored token again and refreshes the login", async () => {
-    await expect(service().test()).rejects.toMatchObject({ code: "INTEGRATION_NOT_CONNECTED" });
-    await service().connect(SecretValue.fromString(GOOD));
+    await expect(service().test("github")).rejects.toMatchObject({ code: "INTEGRATION_NOT_CONNECTED" });
+    await service().connect("github", SecretValue.fromString(GOOD));
     githubLogin = "octo-renamed";
-    expect(await service().test()).toMatchObject({ connected: true, login: "octo-renamed" });
+    expect(await service().test("github")).toMatchObject({ connected: true, login: "octo-renamed" });
     githubDown = true;
-    await expect(service().test()).rejects.toMatchObject({ code: "TOKEN_CHECK_FAILED" });
+    await expect(service().test("github")).rejects.toMatchObject({ code: "TOKEN_CHECK_FAILED" });
   });
 
-  it("keeps the agent ticks across disconnect and reconnect, trimmed and without duplicates", async () => {
-    expect(await service().setAgentAccess([" agent-a ", "agent-b", "agent-a", ""])).toEqual({
-      connected: false, login: null, connectedAt: null, agentDefinitionIds: ["agent-a", "agent-b"],
-    });
-    await service().connect(SecretValue.fromString(GOOD));
+  it("disconnects idempotently: the token and the login go", async () => {
+    await service().connect("github", SecretValue.fromString(GOOD));
 
-    const disconnected = await service().disconnect();
+    const disconnected = await service().disconnect("github");
 
-    expect(disconnected).toEqual({ connected: false, login: null, connectedAt: null, agentDefinitionIds: ["agent-a", "agent-b"] });
+    expect(disconnected).toEqual({ connected: false, login: null, connectedAt: null });
     expect(await storedToken()).toBe("MISSING");
-    expect(await service().disconnect()).toEqual(disconnected);
-    expect((await service().connect(SecretValue.fromString(GOOD))).agentDefinitionIds).toEqual(["agent-a", "agent-b"]);
+    expect(await service().disconnect("github")).toEqual(disconnected);
+    expect(JSON.parse(await connectionsFile())).toEqual({ integrations: { github: { login: null, connectedAt: null } } });
+  });
+
+  it("refuses to connect an integration this app has no delivery definition for, and reports it not connected", async () => {
+    await expect(service().connect("jira", SecretValue.fromString(GOOD))).rejects.toMatchObject({ code: "INTEGRATION_NOT_DELIVERABLE" });
+    await expect(service().disconnect("jira")).rejects.toMatchObject({ code: "INTEGRATION_NOT_DELIVERABLE" });
+    expect(await service().status("jira")).toEqual({ connected: false, login: null, connectedAt: null });
+    expect(fetchImpl).not.toHaveBeenCalled();
   });
 
   it("reports not connected when the file has a login but the vault entry is gone", async () => {
-    await service().connect(SecretValue.fromString(GOOD));
+    await service().connect("github", SecretValue.fromString(GOOD));
     await management.removeForConsumer(CONSUMER);
-    expect(await service().status()).toMatchObject({ connected: false, login: null });
+    expect(await service().status("github")).toMatchObject({ connected: false, login: null });
   });
 });

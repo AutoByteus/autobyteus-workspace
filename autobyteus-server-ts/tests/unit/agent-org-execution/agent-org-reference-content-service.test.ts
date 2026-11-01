@@ -3,11 +3,14 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it } from "vitest";
-import type { AgentOrgCollaborationRecordsSnapshot } from "../../../src/agent-org-execution/services/agent-org-run-manager.js";
 import {
   AgentOrgReferenceContentError,
   AgentOrgReferenceContentService,
+  type CollaborationMessageRecords,
 } from "../../../src/agent-org-execution/services/agent-org-reference-content-service.js";
+
+/** What the service reads from the root's records owner: its messages (the port it declares). */
+type MessageRecordsSnapshot = Awaited<ReturnType<CollaborationMessageRecords["getCollaborationRecordsSnapshot"]>>;
 
 const id = (ownerId: string, filePath: string): string =>
   createHash("sha256").update(`${ownerId}\0${filePath}`).digest("hex");
@@ -24,13 +27,13 @@ describe("AgentOrgReferenceContentService", () => {
   const dirs: string[] = [];
   afterEach(async () => Promise.all(dirs.splice(0).map((dir) => fs.rm(dir, { recursive: true, force: true }))));
 
-  const service = (snapshot: AgentOrgCollaborationRecordsSnapshot) => new AgentOrgReferenceContentService({
+  const service = (snapshot: MessageRecordsSnapshot) => new AgentOrgReferenceContentService({
     getCollaborationRecordsSnapshot: async (orgRunId) => {
       expect(orgRunId).toBe("org-1");
       return snapshot;
     },
   });
-  const snapshot = (filePath: string): AgentOrgCollaborationRecordsSnapshot => Object.freeze({
+  const snapshot = (filePath: string): MessageRecordsSnapshot => Object.freeze({
     messages: {
       schemaVersion: 1, subjectKind: "agent_org", orgRunId: "org-1",
       messages: [{

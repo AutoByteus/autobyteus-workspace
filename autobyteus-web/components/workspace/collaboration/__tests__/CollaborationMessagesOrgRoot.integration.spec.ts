@@ -17,7 +17,7 @@ import { clearStoredParticipantMessages, storeParticipantMessages } from '~/test
 const counters = vi.hoisted(() => ({ hashes: 0, projections: 0 }))
 
 vi.mock('crypto-js/sha256', async (importOriginal) => {
-  const real = (await importOriginal<typeof import('crypto-js/sha256')>()).default
+  const real = (await importOriginal<{ default: typeof import('crypto-js/sha256') }>()).default
   return { default: (...args: Parameters<typeof real>) => { counters.hashes += 1; return real(...args) } }
 })
 // autobyteus-358: the Team tab loads its participant's stored messages through the participant query.
@@ -92,7 +92,9 @@ const mountOrgMessages = async () => {
   org().select('/reviewer')
   // Each Team-tab row projection is counted where the Section reads it.
   const messages = computed(() => {
-    const view = org().selectedTarget()!.collaborationMessages
+    const target = org().selectedTarget()
+    if (!target || !('collaborationMessages' in target)) throw new Error('expected the selected Org agent with Messages')
+    const view = target.collaborationMessages
     return { ...view, listMessages: () => { counters.projections += 1; return view.listMessages() } }
   })
   const Host = defineComponent({ setup: () => () => h(CollaborationMessagesSection, { messages: messages.value }) })

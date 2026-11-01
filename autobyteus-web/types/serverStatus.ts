@@ -10,7 +10,6 @@ export type EmbeddedServerUrls = Readonly<{
   graphql: string
   rest: string
   graphqlWs: string
-  transcription: string
   terminalWs: string
   health: string
 }>

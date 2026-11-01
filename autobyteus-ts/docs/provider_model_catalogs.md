@@ -203,16 +203,12 @@ request boundary rather than asking upstream callers to know each provider's
 wire contract.
 
 `src/llm/api/provider-request-kwargs.ts` owns the shared internal kwarg deny-list
-for external provider requests: `logicalConversationId`,
-`logical_conversation_id`, `conversationId`, `agentId`, `turnId`, and
-`requestId`. It drops null/undefined values and lets each adapter name
+for external provider requests: `conversationId`, `agentId`, `turnId`,
+`requestId` and the retry settings. It drops null/undefined values and lets each adapter name
 its own controlled request fields such as `stream`, `tools`, or `tool_choice`.
 
-`LlmPhase` passes the agent's conversation id as `logicalConversationId`. The
-filtering rule applies when requests leave AutoByteus for
+The filtering rule applies when requests leave AutoByteus for
 external providers such as Anthropic, Mistral, or OpenAI-compatible endpoints.
-Do not remove the internal kwarg from `LlmPhase` to fix an external provider
-request error.
 
 ## Provider-Specific Runtime Notes
 

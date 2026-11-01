@@ -19,6 +19,7 @@ import {
   getStreamSegmentIdentity,
   setStreamSegmentIdentity,
 } from '../segmentIdentity';
+import type { CompactionActivity } from '~/types/activity/RunActivity';
 
 const mockActivityStore = {
   updateToolActivityToolName: vi.fn(),
@@ -27,7 +28,7 @@ const mockActivityStore = {
   addToolActivityLog: vi.fn(),
   getToolActivities: vi.fn(() => []),
   getCompactionActivities: vi.fn(() => []),
-  upsertCompactionActivity: vi.fn(() => true),
+  upsertCompactionActivity: vi.fn((_runId: string, _activity: CompactionActivity) => true),
 };
 
 vi.mock('~/stores/agentActivityStore', () => ({
@@ -132,7 +133,7 @@ describe('agentStatusHandler', () => {
       'makes identified live text rich-presentation eligible on terminal status %s',
       (status) => {
         const textSegment = { type: 'text', content: 'final text' } as any;
-        setStreamSegmentIdentity(textSegment, 'text-1', 'text');
+        setStreamSegmentIdentity(textSegment, 'turn-1', 'text-1', 'text');
         const aiMsg = { type: 'ai', isComplete: false, segments: [textSegment] };
         mockContext.conversation.messages.push(aiMsg);
 
@@ -539,7 +540,7 @@ describe('agentStatusHandler', () => {
         boundary_key: 'grok:session-1:completed:84', provider_event_id: '84', turn_id: 'turn-4',
         rotation_eligible: true, trigger: 'manual', pre_tokens: 32537, post_tokens: 21637 }), mockContext);
 
-      const calls = mockActivityStore.upsertCompactionActivity.mock.calls.map((call) => call[1] as Record<string, unknown>);
+      const calls = mockActivityStore.upsertCompactionActivity.mock.calls.map((call) => call[1]);
       expect(calls.map((activity) => [activity.activityId, activity.phase])).toEqual([
         ['compaction:provider:grok:session-1:47:turn-2', 'started'],
         ['compaction:provider:grok:session-1:47:turn-2', 'completed'],
@@ -679,7 +680,7 @@ describe('agentStatusHandler', () => {
 
   describe('handleError', () => {
     it('adds error segment without owning send state', () => {
-      const payload: ErrorPayload = { code: 'TEST_ERR', message: 'Something went wrong' };
+      const payload: ErrorPayload = { code: 'TEST_ERR', message: 'Something went wrong', error_scope: null, error_effect: null, turn_id: null };
       handleError(payload, mockContext);
 
       const lastMsg = mockContext.conversation.messages[0];
@@ -694,14 +695,14 @@ describe('agentStatusHandler', () => {
 
     it('terminalizes an identified active segment before adding a direct error', () => {
       const textSegment = { type: 'text', content: 'partial' } as any;
-      setStreamSegmentIdentity(textSegment, 'text-1', 'text');
+      setStreamSegmentIdentity(textSegment, 'turn-1', 'text-1', 'text');
       mockContext.conversation.messages.push({
         type: 'ai',
         isComplete: false,
         segments: [textSegment],
       });
 
-      handleError({ code: 'STREAM_ERROR', message: 'stream failed' }, mockContext);
+      handleError({ code: 'STREAM_ERROR', message: 'stream failed', error_scope: null, error_effect: null, turn_id: null }, mockContext);
 
       expect(getStreamSegmentIdentity(textSegment)?.presentationComplete).toBe(true);
       expect(mockContext.conversation.messages[0].isComplete).toBe(true);
@@ -726,6 +727,9 @@ describe('agentStatusHandler', () => {
       const payload: ErrorPayload = {
         code: 'TOOL_ERROR',
         message: "Error executing tool 'read_file' (ID: inv-123): failed to read file",
+        error_scope: null,
+        error_effect: null,
+        turn_id: null,
       };
 
       handleError(payload, mockContext);
@@ -759,6 +763,9 @@ describe('agentStatusHandler', () => {
       const payload: ErrorPayload = {
         code: 'LLM_STREAM_ERROR',
         message: 'stream exploded',
+        error_scope: null,
+        error_effect: null,
+        turn_id: null,
       };
 
       handleError(payload, mockContext);

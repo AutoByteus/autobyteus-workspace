@@ -1,0 +1,47 @@
+# IMP-15 — T-27 (REQ-009): what each file leaves in a run-owned TMPDIR, before and after
+# Command: bash t27-measure.sh: each file run alone with env -i ... TMPDIR=<fresh empty dir> npx vitest run <file>, then ls -A of that TMPDIR
+# Commit: before: a0c3c9e705; after: 351265ce41
+# Environment: macOS 26.5.2 arm64, Node v22.23.1, pnpm workspace; clean env (env -i PATH HOME=<fresh temp dir> TMPDIR); test-owned data only
+# Date: 2026-11-01
+# Look for: before: e.g. "left in TMPDIR:    7 acp-fixture-XXXXXX;  15 acp-memory-XXXXXX;  14 acp-record-XXXXXX;  14 acp-ws-XXXXXX;"; after: every line "left in TMPDIR: nothing"
+
+===== t27-before.txt =====
+before | autobyteus-ts/tests/unit/prompt/prompt-builder.test.ts | exit 0 |  Tests 3 passed (3) | left in TMPDIR:    2 prompt-builder-XXXXXX;
+before | autobyteus-server-ts/tests/unit/runtime-management/grok/grok-usage-limits-acp.test.ts | exit 0 |  Tests 2 passed (2) | left in TMPDIR:    2 acp-fixture-XXXXXX;   1 acp-record-XXXXXX;   2 fake-grok-XXXXXX;
+before | autobyteus-server-ts/tests/unit/runtime-management/grok/grok-build-launch-profile.test.ts | exit 0 |  Tests 4 passed (4) | left in TMPDIR: nothing
+before | autobyteus-server-ts/tests/unit/runtime-management/grok/grok-build-capability.test.ts | exit 0 |  Tests 6 passed (6) | left in TMPDIR:    2 acp-fixture-XXXXXX;   6 fake-grok-XXXXXX;   1 hanging-grok-XXXXXX;
+before | autobyteus-server-ts/tests/unit/runtime-management/acp/acp-client-connection.test.ts | exit 0 |  Tests 3 passed (3) | left in TMPDIR:    1 acp-fixture-XXXXXX;
+before | autobyteus-server-ts/tests/unit/runtime-management/acp/acp-agent-capabilities.test.ts | exit 0 |  Tests 3 passed (3) | left in TMPDIR: nothing
+before | autobyteus-server-ts/tests/unit/agent-execution/backends/grok/grok-build-session-profile.test.ts | exit 0 |  Tests 5 passed (5) | left in TMPDIR: nothing
+before | autobyteus-server-ts/tests/unit/agent-execution/backends/grok/grok-build-compaction.test.ts | exit 0 |  Tests 11 passed (11) | left in TMPDIR:    1 acp-fixture-XXXXXX;
+before | autobyteus-server-ts/tests/unit/agent-execution/backends/workspace-skill-link-regression.test.ts | exit 0 |  Tests 15 passed (15) | left in TMPDIR: nothing
+before | autobyteus-server-ts/tests/unit/agent-execution/backends/acp/acp-tool-list-reopen.test.ts | exit 0 |  Tests 5 passed (5) | left in TMPDIR:    2 acp-fixture-XXXXXX;   5 acp-reopen-memory-XXXXXX;   5 acp-reopen-ws-XXXXXX;
+before | autobyteus-server-ts/tests/unit/agent-execution/backends/acp/acp-agent-run-backend-factory.test.ts | exit 0 |  Tests 12 passed (12) | left in TMPDIR:    7 acp-fixture-XXXXXX;  15 acp-memory-XXXXXX;  14 acp-record-XXXXXX;  14 acp-ws-XXXXXX;
+
+===== t27-after.txt =====
+after | autobyteus-ts/tests/unit/prompt/prompt-builder.test.ts | exit 0 |  Tests 3 passed (3) | left in TMPDIR: nothing
+after | autobyteus-server-ts/tests/unit/runtime-management/grok/grok-usage-limits-acp.test.ts | exit 0 |  Tests 2 passed (2) | left in TMPDIR: nothing
+after | autobyteus-server-ts/tests/unit/runtime-management/grok/grok-build-launch-profile.test.ts | exit 0 |  Tests 4 passed (4) | left in TMPDIR: nothing
+after | autobyteus-server-ts/tests/unit/runtime-management/grok/grok-build-capability.test.ts | exit 0 |  Tests 6 passed (6) | left in TMPDIR: nothing
+after | autobyteus-server-ts/tests/unit/runtime-management/acp/acp-client-connection.test.ts | exit 0 |  Tests 3 passed (3) | left in TMPDIR: nothing
+after | autobyteus-server-ts/tests/unit/runtime-management/acp/acp-agent-capabilities.test.ts | exit 0 |  Tests 3 passed (3) | left in TMPDIR: nothing
+after | autobyteus-server-ts/tests/unit/agent-execution/backends/grok/grok-build-session-profile.test.ts | exit 0 |  Tests 5 passed (5) | left in TMPDIR: nothing
+after | autobyteus-server-ts/tests/unit/agent-execution/backends/grok/grok-build-compaction.test.ts | exit 0 |  Tests 11 passed (11) | left in TMPDIR: nothing
+after | autobyteus-server-ts/tests/unit/agent-execution/backends/workspace-skill-link-regression.test.ts | exit 0 |  Tests 15 passed (15) | left in TMPDIR: nothing
+after | autobyteus-server-ts/tests/unit/agent-execution/backends/acp/acp-tool-list-reopen.test.ts | exit 0 |  Tests 5 passed (5) | left in TMPDIR: nothing
+after | autobyteus-server-ts/tests/unit/agent-execution/backends/acp/acp-agent-run-backend-factory.test.ts | exit 0 |  Tests 12 passed (12) | left in TMPDIR: nothing
+
+===== t27-measure.sh =====
+# autobyteus-318 T-27: run each test file with a run-owned empty TMPDIR and list what it leaves behind.
+W=/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318
+label=$1
+run() { # pkg file
+  local T; T="$(cd "$(mktemp -d)" && pwd -P)"; local H; H="$(cd "$(mktemp -d)" && pwd -P)"
+  (cd "$W/$1" && env -i PATH="$PATH" HOME="$H" TMPDIR="$T/" npx vitest run "$2" > "/tmp/h318/t27-$label-$(basename "$2").log" 2>&1); local rc=$?
+  local left; left=$(ls -A "$T" | grep -v -E '^(vitest|node-compile-cache|tsx-|jiti)' | sort | sed 's/-[A-Za-z0-9]\{6\}$/-XXXXXX/' | uniq -c | tr '\n' ';')
+  echo "$label | $1/$2 | exit $rc | $(grep -E 'Tests ' "/tmp/h318/t27-$label-$(basename "$2").log" | tail -1 | sed 's/\x1b\[[0-9;]*m//g' | tr -s ' ') | left in TMPDIR: ${left:-nothing}"
+  rm -rf "$T" "$H"
+}
+run autobyteus-ts tests/unit/prompt/prompt-builder.test.ts
+for f in tests/unit/runtime-management/grok/grok-usage-limits-acp.test.ts tests/unit/runtime-management/grok/grok-build-launch-profile.test.ts tests/unit/runtime-management/grok/grok-build-capability.test.ts tests/unit/runtime-management/acp/acp-client-connection.test.ts tests/unit/runtime-management/acp/acp-agent-capabilities.test.ts tests/unit/agent-execution/backends/grok/grok-build-session-profile.test.ts tests/unit/agent-execution/backends/grok/grok-build-compaction.test.ts tests/unit/agent-execution/backends/workspace-skill-link-regression.test.ts tests/unit/agent-execution/backends/acp/acp-tool-list-reopen.test.ts tests/unit/agent-execution/backends/acp/acp-agent-run-backend-factory.test.ts; do run autobyteus-server-ts "$f"; done
+

@@ -219,7 +219,7 @@ Bridges server events to the renderer process:
 // Events emitted to renderer via IPC
 interface ServerStatusEvent {
   status: "starting" | "running" | "error" | "restarting" | "shutting-down";
-  urls: { graphql; rest; ws; transcription; health };
+  urls: { graphql; rest; ws; health };
   message?: string;
   healthCheckStatus?: string;
 }
@@ -582,6 +582,7 @@ configuration, and release/update channel in both runtime profiles. E2E values
 are launch inputs; there is no separate E2E artifact or artifact naming scheme.
 
 `scripts/prepare-server.sh` / `scripts/prepare-server.mjs` build the Node server, deploy it into `resources/server`, and rebuild native modules (e.g., `node-pty`) for the Electron runtime. Native rebuilds use the direct `@electron/rebuild` dev dependency, exposed through the `electron-rebuild` CLI, and the scripts fail if that workspace-provided CLI is unavailable. Do not add a `pnpm dlx electron-rebuild` fallback: ad-hoc fallback installs can resolve a rebuild stack that is not reviewed with the pinned Electron ABI.
+The server package holds runtime content only: `autobyteus-server-ts/package.json` `files` lists `dist`, `prisma` and `application-packages` (plus the files npm and pnpm always include), and the scripts deploy it with `pnpm deploy --legacy --prod`, so development packages stay out. The Prisma CLI, which the running server starts to migrate its database, is therefore a production dependency of the server. Every install of a release build follows `pnpm-lock.yaml` (`--frozen-lockfile`): both prepare scripts, the Docker builder and the release workflow. The one exception in kind is the Windows staging install: it needs a flat `node_modules`, which pnpm does not produce from the lockfile, so `prepare-server.mjs` runs `npm install` bounded by `--before=<time>`: nothing published after the commit being built enters the package. The time is the commit time of the checkout, or `AUTOBYTEUS_NPM_BEFORE` (ISO 8601) when an older commit is rebuilt; with neither the build stops. It is a bound, not an identity. `pnpm deploy` also leaves a mirrored `node_modules/.bin` folder under `autobyteus-server-ts/autobyteus-web/`; both scripts remove it. Source checks for these rules: `scripts/tests/test_install_from_lockfile.py` and `autobyteus-server-ts/tests/architecture/server-package-contents.test.ts`.
 The web project only calls the server packaging boundary; any shared server-side prerequisites remain owned by `autobyteus-server-ts` rather than being prepared directly from `autobyteus-web`.
 
 Renderer contract packages that Nuxt consumes only while generating the renderer

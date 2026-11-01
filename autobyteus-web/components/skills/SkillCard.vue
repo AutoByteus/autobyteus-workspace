@@ -3,7 +3,21 @@
     <div class="card-body">
       <div class="header">
         <h3 class="skill-name" :title="skill.name">{{ skill.name }}</h3>
-        <span v-if="skill.isDisabled" class="badge-disabled">{{ $t('skills.components.skills.SkillCard.disabled') }}</span>
+        <div v-if="skill.integrationId || skill.isDisabled" class="header-badges">
+          <!-- The skill of an imported integration links to its card on the Integrations page. -->
+          <NuxtLink
+            v-if="skill.integrationId"
+            :to="{ path: '/integrations', hash: `#integration-${skill.integrationId}` }"
+            class="integration-badge"
+            :title="$t('integrations.skillLabel.title', { name: integrationName })"
+            :aria-label="$t('integrations.skillLabel.title', { name: integrationName })"
+            data-testid="skill-integration-label"
+          >
+            <Icon icon="heroicons:puzzle-piece" class="badge-icon" aria-hidden="true" />
+            {{ $t('integrations.skillLabel.text') }}
+          </NuxtLink>
+          <span v-if="skill.isDisabled" class="badge-disabled">{{ $t('skills.components.skills.SkillCard.disabled') }}</span>
+        </div>
       </div>
       
       <p class="skill-description" :title="skill.description">
@@ -47,12 +61,21 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from 'vue'
 import { Icon } from '@iconify/vue'
+import { useIntegrationsStore } from '~/stores/integrationsStore'
 import type { Skill } from '~/types/skill'
 
-defineProps<{
+const props = defineProps<{
   skill: Skill
 }>()
+
+const integrations = useIntegrationsStore()
+// The integration's name when the cards are read, else its ID.
+const integrationName = computed(() => {
+  const id = props.skill.integrationId
+  return id ? integrations.items.find(item => item.id === id)?.name ?? id : ''
+})
 
 defineEmits<{
   view: [skill: Skill]
@@ -98,6 +121,28 @@ defineEmits<{
   line-height: 1.4;
   word-break: break-word;
 }
+
+.header-badges { display: flex; align-items: center; gap: 0.375rem; flex-shrink: 0; margin-top: 0.125rem; }
+
+.integration-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex-shrink: 0;
+  background: #f1f5f9;
+  color: #475569;
+  font-size: 0.75rem;
+  line-height: 1rem;
+  padding: 0.125rem 0.5rem;
+  border-radius: 9999px;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: background-color 0.15s;
+}
+
+.integration-badge:hover { background: #e2e8f0; color: #1e293b; }
+.integration-badge:focus-visible { outline: none; box-shadow: 0 0 0 2px #fff, 0 0 0 4px #3b82f6; }
+.badge-icon { width: 0.875rem; height: 0.875rem; }
 
 .badge-disabled {
   background: #f3f4f6;

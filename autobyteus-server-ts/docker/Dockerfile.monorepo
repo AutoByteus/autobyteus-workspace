@@ -26,7 +26,9 @@ COPY autobyteus-team-stream-contracts/package.json autobyteus-team-stream-contra
 COPY autobyteus-server-ts/package.json autobyteus-server-ts/tsconfig.json ./autobyteus-server-ts/
 COPY autobyteus-web/package.json ./autobyteus-web/
 
-RUN pnpm install --no-frozen-lockfile
+# The install follows pnpm-lock.yaml. The manifests copied here are the server's and every workspace package they link
+# to (checked by scripts/tests/test_install_from_lockfile.py); the other importers (applications, devkit) are not needed.
+RUN pnpm install --frozen-lockfile
 
 COPY autobyteus-ts ./autobyteus-ts
 COPY autobyteus-application-sdk-contracts ./autobyteus-application-sdk-contracts
@@ -50,7 +52,7 @@ RUN pnpm -C autobyteus-web build:mobile-web
 # The deploy links the server itself into node_modules/.pnpm/node_modules, pointing back at its
 # workspace folder outside the package; that link is removed (nothing resolves the server by name).
 COPY scripts/server-package ./scripts/server-package
-RUN pnpm --filter autobyteus-server-ts deploy /out/server-package --legacy \
+RUN pnpm --filter autobyteus-server-ts deploy /out/server-package --legacy --prod \
   && cd /out/server-package \
   && rm node_modules/.pnpm/node_modules/autobyteus-server-ts \
   && node_modules/.bin/prisma generate --schema prisma/schema.prisma \

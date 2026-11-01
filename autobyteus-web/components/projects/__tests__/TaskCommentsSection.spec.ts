@@ -8,7 +8,7 @@ import TaskCommentsSection from '../TaskCommentsSection.vue'
 
 /** task-comments: the thread card on the Task page and in the tab (REQ-006, REQ-007, REQ-014; AC-003, AC-004, AC-012). */
 const task = (comments: ProjectTaskComment[] = []): ProjectTask => ({
-  taskId: 't1', projectId: 'p1', taskKey: 'autobyteus-1', description: 'Ship it', status: 'TODO', dependsOnTaskIds: [], partOfTaskId: null,
+  taskId: 't1', projectId: 'p1', taskKey: 'autobyteus-1', title: 'Ship it', description: 'Ship it', status: 'TODO', dependsOnTaskIds: [], partOfTaskId: null,
   comments, contextFiles: [], createdAt: '', updatedAt: '', root: null,
 })
 const thread: ProjectTaskComment[] = [

@@ -1,0 +1,33 @@
+# IMP-07 web typecheck
+# Command: pnpm -C autobyteus-web typecheck
+# Commit: d7b11c57b6 (HEAD)
+# Date: 2026-11-01T06:28Z
+
+
+> autobyteus@1.5.11-beta.9 typecheck /Users/normy/autobyteus_org/autobyteus-worktrees/code-quality-leftovers/autobyteus-web
+> pnpm prepare:shared-types && nuxt prepare && node ./scripts/typecheck.mjs
+
+
+> autobyteus@1.5.11-beta.9 prepare:shared-types /Users/normy/autobyteus_org/autobyteus-worktrees/code-quality-leftovers/autobyteus-web
+> pnpm -C .. --filter @autobyteus/application-sdk-contracts build
+
+
+> @autobyteus/application-sdk-contracts@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/code-quality-leftovers/autobyteus-application-sdk-contracts
+> tsc -p tsconfig.build.json
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ WARN  Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/code-quality-leftovers/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/code-quality-leftovers/autobyteus-web/stores/serverStore.ts" is used
+
+
+ WARN  Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/code-quality-leftovers/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/code-quality-leftovers/autobyteus-web/stores/serverStore.ts" is used
+
+│
+◆  Types generated in .nuxt.
+[typecheck] Nuxt app (tsconfig.json): 271 errors, exit 2, 35.8s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 2.0s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.6s
+[typecheck] production errors: 0; test-file errors: 298 in 139 files (baseline 298 in 139 files)
+[typecheck] PASS
+exit=0

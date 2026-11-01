@@ -13,6 +13,7 @@ export const GET_SKILLS = gql`
       fileCount
       isReadonly
       isDisabled
+      integrationId
     }
   }
 `
@@ -27,6 +28,7 @@ export const GET_SKILL = gql`
       fileCount
       isReadonly
       isDisabled
+      integrationId
     }
   }
 `

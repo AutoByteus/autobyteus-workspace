@@ -20,8 +20,8 @@ import { AgentSessionManager } from "../../../src/services/agent-streaming/agent
 import { registerAgentWebsocket } from "../../../src/api/websocket/agent.js";
 import { ClaudeSdkClient } from "../../../src/runtime-management/claude/client/claude-sdk-client.js";
 import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
-import {
 import { startAgentToolsMcpTestHost } from "../../helpers/agent-tools-mcp-test-host.js";
+import {
   buildStandaloneClaudeProcessEnv,
   type ClaudeCliExecutableCandidate,
 } from "../../helpers/claude-cli-executable-candidates.js";

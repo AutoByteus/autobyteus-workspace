@@ -1,7 +1,7 @@
 import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterAll, afterEach, describe, expect, it } from "vitest";
 import { RunMemoryFileStore } from "autobyteus-ts/memory/store/run-memory-file-store.js";
 import { AgentRunEventType, type AgentRunEvent } from "../../../../../src/agent-execution/domain/agent-run-event.js";
 import { grokBuildSessionProfile } from "../../../../../src/agent-execution/backends/grok/grok-build-session-profile.js";
@@ -16,6 +16,7 @@ import {
   fixturePath,
   fixtureSessionId,
   readFixture,
+  removeTestTempDirs,
   waitFor,
   writeCustomFixture,
   type SessionHarness,
@@ -88,6 +89,8 @@ const recordIntoMemory = async (events: AgentRunEvent[]) => {
     .map((trace) => trace.toolResult as Record<string, unknown>);
   return { segments: store.readRawTraceArchiveManifest().segments, markers };
 };
+
+afterAll(removeTestTempDirs);
 
 describe("Grok Build compaction notifications", () => {
   it("maps the recorded auto_compact_* updates to compaction effects and keeps usage mapping", () => {

@@ -5,14 +5,19 @@
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "prisma",
+    "application-packages"
+  ],
   "scripts": {
     "prepare:shared": "pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build",
     "prebuild": "pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma",
     "build": "pnpm run build:full",
-    "build:full": "node ./scripts/clean-build-output.mjs && tsc -p tsconfig.build.json && node ./scripts/copy-build-assets.mjs && node ./scripts/run-sanitized-built-in-agents-bootstrap-smoke.mjs",
+    "build:full": "node ./scripts/clean-build-output.mjs && tsc -p tsconfig.build.json && node ./scripts/copy-build-assets.mjs && node ./scripts/write-release-identity.mjs && node ./scripts/run-sanitized-built-in-agents-bootstrap-smoke.mjs",
     "pretypecheck": "pnpm prepare:shared",
-    "typecheck": "tsc -p tsconfig.build.json --noEmit",
-    "typecheck:claude-interrupt-resume-e2e": "pnpm prepare:shared && tsc -p tsconfig.claude-interrupt-resume-e2e.json --noEmit",
+    "typecheck": "node ./scripts/typecheck.mjs",
+    "typecheck:update-baseline": "pnpm prepare:shared && node ./scripts/typecheck.mjs --update-baseline",
     "pretest": "pnpm prepare:shared",
     "test": "vitest",
     "test:unit": "vitest run tests/unit tests/app-data-migrations tests/architecture tests/agent-work-journal --exclude \"**/*.integration.test.ts\"",
@@ -47,6 +52,7 @@
     "mercurius": "^16.12.1",
     "mime-types": "^3.0.2",
     "onnxruntime-web": "1.30.0",
+    "prisma": "^5.22.0",
     "reflect-metadata": "^0.2.2",
     "repository_prisma": "^1.0.10",
     "tar": "7.5.22",
@@ -55,6 +61,7 @@
     "zod": "^4.3.6"
   },
   "devDependencies": {
+    "@autobyteus/application-backend-sdk": "workspace:*",
     "@modelcontextprotocol/client": "2.3.1",
     "@modelcontextprotocol/core": "2.3.1",
     "@modelcontextprotocol/node": "2.1.1",
@@ -63,7 +70,6 @@
     "@types/node": "^25.0.10",
     "@types/ws": "8.18.1",
     "@vue/compiler-sfc": "^3.5.28",
-    "prisma": "^5.22.0",
     "typescript": "^5.9.3",
     "vite-tsconfig-paths": "^4.3.2",
     "vitest": "^4.1.12",

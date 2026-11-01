@@ -217,22 +217,12 @@ describe("AgentMemoryLocationService current V1 tree", () => {
     await expect(service.resolveAgentOrgMemberLocation({ orgRunId: "missing-org", agentRunId: "org-ceo-run" })).resolves.toBeNull();
   });
 
-  it("keeps standalone and Team memory identity separate", () => {
+  it("places a standalone run's memory in its own run folder", () => {
     const service = new AgentMemoryLocationService({ memoryDir });
     expect(service.getStandaloneLocation({ agentRunId: "standalone-run" })).toEqual({
       kind: "standalone",
       agentRunId: "standalone-run",
       memoryDir: path.join(memoryDir, "agents", "standalone-run"),
-    });
-    expect(service.getTeamAgentRunLocation({
-      rootTeamRunId: "root-team-run",
-      ancestorTeamRunIds: ["review-team-run"],
-      agentRunId: "reviewer-run",
-    })).toMatchObject({
-      kind: "team_agent_run",
-      rootTeamRunId: "root-team-run",
-      ancestorTeamRunIds: ["review-team-run"],
-      agentRunId: "reviewer-run",
     });
   });
 });

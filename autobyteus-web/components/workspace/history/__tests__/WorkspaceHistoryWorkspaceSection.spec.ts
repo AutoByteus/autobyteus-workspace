@@ -1,7 +1,7 @@
 import { localizationRuntime } from '~/localization/runtime/localizationRuntime';
 import { mount } from '@vue/test-utils';
 import { describe, expect, it, vi } from 'vitest';
-import { computed, effectScope, nextTick, reactive, ref } from 'vue';
+import { computed, effectScope, nextTick, reactive, ref, type Component } from 'vue';
 import { useRunHistoryAvatarState } from '~/composables/useRunHistoryAvatarState';
 import WorkspaceHistoryWorkspaceSection from '../WorkspaceHistoryWorkspaceSection.vue';
 import { AgentStatus } from '~/types/agent/AgentStatus';
@@ -114,7 +114,7 @@ const mountSubject = (options: {
   selectedTeamRunId?: string | null;
   selectedType?: 'agent' | 'team' | null;
   agents?: unknown[];
-  stubs?: Record<string, unknown>;
+  stubs?: Record<string, Component | boolean>;
 } = {}) => {
   const worker = stableAgent('/worker', { agentRunId: 'worker-run' });
   const stableChildren = options.stableChildren ?? [worker];
@@ -255,7 +255,7 @@ describe('WorkspaceHistoryWorkspaceSection current execution rows', () => {
     expect(state.toggleAgentOrgRun).not.toHaveBeenCalled();
     // The alive Team run row shows the universal Team status (its worker is running), not a binary activity dot.
     expect(wrapper.get('[data-test="workspace-team-row-team-run-1"] [data-test="team-aggregate-status-dot"]').attributes('data-status')).toBe(AgentStatus.Running);
-    expect(wrapper.get('[data-test="agent-org-run-open-org-run"] .bg-emerald-500').exists()).toBe(true);
+    expect(wrapper.find('[data-test="agent-org-run-open-org-run"] .bg-emerald-500').exists()).toBe(true);
     await wrapper.setProps({ state: { ...state, isRunTerminating: () => true, isTeamTerminating: () => true, isAgentOrgTerminating: () => true } });
     expect(button.attributes('disabled')).toBeDefined();
     await button.trigger('click');
@@ -627,7 +627,7 @@ describe('WorkspaceHistoryWorkspaceSection Task summary run opening', () => {
     const workerTasks = useTaskWorkerTaskStore();
     vi.spyOn(workerTasks, 'retain').mockReturnValue(() => undefined);
     vi.spyOn(workerTasks, 'taskOf').mockImplementation((worker) => worker.kind === 'agent' && worker.agentRunId === 'task-agent-run-1'
-      ? { taskId: 't1', projectId: null, description: 'Write the notes', status: 'TODO' } : null);
+      ? { taskId: 't1', projectId: null, title: null, description: 'Write the notes', status: 'TODO' } : null);
     const { wrapper, actions, team } = mountSubject();
     const summary = wrapper.get('[data-agent-run-id="task-agent-run-1"] [data-test="workspace-task-worker-task-summary"]');
     expect(summary.text()).toBe('Write the notes');

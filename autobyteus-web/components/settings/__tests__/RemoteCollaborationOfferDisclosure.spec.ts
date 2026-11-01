@@ -15,9 +15,10 @@ vi.mock('~/composables/useLocalization', async () => {
 
 const agent = (name: string, description?: string) => ({ name, kind: 'agent' as const, ...(description ? { description } : {}) })
 const team = (name: string, description?: string) => ({ name, kind: 'agent_team' as const, ...(description ? { description } : {}) })
-const mountOffer = (entries: ReturnType<typeof agent>[]) =>
+type OfferEntry = ReturnType<typeof agent> | ReturnType<typeof team>
+const mountOffer = (entries: OfferEntry[]) =>
   mount(RemoteCollaborationOfferDisclosure, { props: { entries, testId: 'offer' } })
-const many = (count: number, kind: typeof agent) => Array.from({ length: count }, (_value, index) => kind(`${kind === agent ? 'Agent' : 'Team'} ${String(index + 1).padStart(2, '0')}`))
+const many = (count: number, kind: typeof agent | typeof team) => Array.from({ length: count }, (_value, index) => kind(`${kind === agent ? 'Agent' : 'Team'} ${String(index + 1).padStart(2, '0')}`))
 
 /** autobyteus-267 REQ-507, AC-504, ST-01, ST-08, ST-09, ST-11: one line by default; open groups; search over 6. */
 describe('RemoteCollaborationOfferDisclosure', () => {

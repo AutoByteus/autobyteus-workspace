@@ -352,6 +352,11 @@ after the grace is cut; its handler may keep running beside the cleanup. A
 long-lived HTTP stream must be closed by its owner before the server closes (as
 `AgentToolsMcpHost` does), or it spends the whole grace.
 
+**Busy runs are recorded first, and resumed after an update.** The shutdown
+cleanup records the busy runs held by a collaboration root before `app.close()`
+interrupts anything; after an update restart the next start resumes them through
+their roots, each with one system notice. See [Restart Resume](./restart_resume.md).
+
 ## Stopped Model Configuration And Restore Serialization
 
 `StandaloneAgentRunLifecycleService` also owns the narrow stopped-run
@@ -469,6 +474,11 @@ enters through one of two entry points:
   [Agent Communication](./agent_communication.md#teammate-delivery-path)): the
   slot is committed only after the message is saved to the root's log. A held
   slot never authorizes compaction recovery, and root shutdown drops held slots.
+
+Either entry point accepts the `onlyAsFirstInput` option: the input is admitted
+only as the run instance's first input, else refused with
+`AGENT_RUN_INPUT_NOT_FIRST`. Restart resume's notice uses it
+([Restart Resume](./restart_resume.md)).
 
 ## Active Input And Interrupt Command Results
 
@@ -798,7 +808,7 @@ Claude Agent SDK `0.3.280` is used with the exact direct peer
 `@anthropic-ai/sdk@0.132.1` in SDK streaming input mode. Its
 `@modelcontextprotocol/sdk` peer (v1) is installed by the package manager and
 used for types only; AutoByteus does not depend on it directly. Each Claude AgentRun keeps one Claude CLI process for its
-whole life: `ClaudeSdkClient.openStreamingSession` opens one
+whole life: `ClaudeSdkClient.beginStreamingSession({ resolveOptions }).open()` opens one
 `query({ prompt: AsyncIterable, options })` lazily on the first input (new or
 restored run), and `ClaudeSessionProcess` owns that process, its single frame
 pump, and exit detection. There is no idle timer in the session itself. Run

@@ -3,6 +3,7 @@ import { createPinia, setActivePinia } from 'pinia'
 import { loadExistingRunModelOptions } from '~/services/runConfigEditing/existingRunModelOptionsClient'
 import { useWindowNodeContextStore } from '~/stores/windowNodeContextStore'
 import { useExistingRunConfigStore } from '../existingRunConfigStore'
+import type { RunResumeConfigPayload } from '~/stores/runHistoryTypes'
 import { taskBearingView } from '~/services/agentOrgExecution/__tests__/taskBearingOrgFixture'
 
 const choice = (id: string) => ({ llmModelIdentifier: id, providerName: 'Provider', displayName: id, canonicalName: id, description: null, configSchema: null, recommended: false })
@@ -63,8 +64,15 @@ vi.mock('~/stores/agentOrgContextsStore', () => ({
   useAgentOrgContextsStore: () => ({ readRunConfig: mocks.readOrg, saveRunConfig: mocks.saveOrg }),
 }))
 
-const editability = () => ({ editable: true, reason: null })
-const activeEditability = () => ({ editable: false, reason: 'RUN_ACTIVE' })
+type ModelConfigEditability = RunResumeConfigPayload['modelConfigEditability']
+const editability = (): ModelConfigEditability => ({ editable: true, reason: null })
+const activeEditability = (): ModelConfigEditability => ({ editable: false, reason: 'RUN_ACTIVE' })
+/** The loaded AgentOrg draft (the cases assert the kind first). */
+const agentOrgDraft = (store: ReturnType<typeof useExistingRunConfigStore>) => {
+  const draft = store.draft
+  if (draft?.kind !== 'agent_org') throw new Error('expected an AgentOrg draft')
+  return draft
+}
 
 const agentPayload = ({
   runId = 'run-1',
@@ -177,18 +185,16 @@ describe('existingRunConfigStore', () => {
     mocks.readOrg.mockResolvedValue({ orgRunId: 'org-run', executionTree, isActive: false, editability: editability() })
     await store.loadAgentOrgCanonical('org-run')
     expect(store.draft).toMatchObject({ kind: 'agent_org', orgRunId: 'org-run' })
-    const addresses = Object.keys(store.draft!.kind === 'agent_org' ? store.draft.planner.scopesByAddress : {})
+    const addresses = Object.keys(agentOrgDraft(store).planner.scopesByAddress)
     for (const address of addresses) {
       store.modelOptionsByAddress[address] = { status: 'ready', options: {
-        currentModelIdentifier: store.draft!.kind === 'agent_org'
-          ? store.draft.planner.scopesByAddress[address]!.originalSelection.llmModelIdentifier : '',
-        currentModel: choice(store.draft!.kind === 'agent_org' ? store.draft.planner.scopesByAddress[address]!.originalSelection.llmModelIdentifier : ''), replacements: [], unavailableReason: null,
+        currentModelIdentifier: agentOrgDraft(store).planner.scopesByAddress[address]!.originalSelection.llmModelIdentifier,
+        currentModel: choice(agentOrgDraft(store).planner.scopesByAddress[address]!.originalSelection.llmModelIdentifier), replacements: [], unavailableReason: null,
       } }
       setSchemaState(store, address, { status: 'ready', message: null })
     }
     store.updateAgentOrgScopeModelConfig('/', {
-      llmModelIdentifier: store.draft!.kind === 'agent_org'
-        ? store.draft.planner.scopesByAddress['/']!.originalSelection.llmModelIdentifier : '',
+      llmModelIdentifier: agentOrgDraft(store).planner.scopesByAddress['/']!.originalSelection.llmModelIdentifier,
       llmConfig: { budget: 0, enabled: false, optional: null },
     })
     expect(store.patches.length).toBeGreaterThan(1)
@@ -667,12 +673,12 @@ it('saves workspace-only and mixed Org intentions independently; invalid destina
         currentModel: choice(scope.originalSelection.llmModelIdentifier), replacements: [], unavailableReason: null } }
     }
   }
-  const modelBaseline = JSON.stringify(store.draft!.kind === 'agent_org' && store.draft.planner)
+  const modelBaseline = JSON.stringify(agentOrgDraft(store).planner)
   store.updateAgentOrgWorkspaceSelection('/team', { mode: 'new', existingWorkspaceId: null, newWorkspacePath: ' ' })
   ready(); expect(store.dirty).toBe(true); expect(store.canSave).toBe(false)
   store.updateAgentOrgWorkspaceSelection('/team', { mode: 'new', existingWorkspaceId: null, newWorkspacePath: '/B' })
   ready(); expect(store.canSave).toBe(true); expect(store.patches).toEqual([])
-  expect(JSON.stringify(store.draft!.kind === 'agent_org' && store.draft.planner)).toBe(modelBaseline)
+  expect(JSON.stringify(agentOrgDraft(store).planner)).toBe(modelBaseline)
   const canonical = JSON.parse(JSON.stringify(tree))
   canonical.rootOrg.members[2].defaultLaunchConfiguration.workspaceRootPath = '/B'
   canonical.rootOrg.members[2].members.forEach((agent: any) => { agent.launchConfiguration.workspaceRootPath = '/B' })

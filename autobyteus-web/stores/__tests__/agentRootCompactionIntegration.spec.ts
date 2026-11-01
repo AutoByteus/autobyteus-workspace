@@ -4,7 +4,7 @@ import { nextTick } from 'vue'
 import { AgentStatus } from '~/types/agent/AgentStatus'
 import { AgentContext } from '~/types/agent/AgentContext'
 import { AgentRunState } from '~/types/agent/AgentRunState'
-import { agentRootView } from '~/services/agentCollaboration/__tests__/agentRootFixture'
+import { agentRootView, launch } from '~/services/agentCollaboration/__tests__/agentRootFixture'
 import { AgentRunCollaborationContext } from '~/services/agentCollaboration/agentRunCollaborationContext'
 import { buildAgentRunCollaborationContext } from '~/services/agentCollaboration/agentRunCollaborationHydration'
 import { GetAgentRunCollaborationMemberFileChanges, GetAgentRunCollaborationMemberProjection } from '~/graphql/queries/collaboratorQueries'
@@ -31,15 +31,15 @@ const deferred = <T = any>() => {
   const promise = new Promise<T>((yes, no) => { resolve = yes; reject = no })
   return { promise, resolve, reject }
 }
+// The fixture's delegated runs, all launched with the native runtime and no workspace.
+const nativeLaunch = { ...launch, runtimeKind: 'autobyteus' as const, workspaceRootPath: null }
 const nativeView = () => {
   const view = agentRootView()
-  for (const entry of view.execution_tree.taskExecutions) {
-    const launch = entry.source?.kind === 'agent' ? entry.source.launchConfiguration : entry.source?.defaultLaunchConfiguration
-    if (!launch) continue
-    launch.runtimeKind = 'autobyteus'
-    launch.workspaceRootPath = null
-  }
-  return view
+  const taskExecutions = view.execution_tree.taskExecutions.map((entry) => ('agentRunId' in entry
+    ? { ...entry, source: { ...entry.source, launchConfiguration: nativeLaunch } }
+    : { ...entry, source: { ...entry.source, defaultLaunchConfiguration: nativeLaunch,
+      members: entry.source.members.map((member) => ({ ...member, launchConfiguration: nativeLaunch })) } }))
+  return { ...view, execution_tree: { ...view.execution_tree, taskExecutions } }
 }
 const envelope = (view: ReturnType<typeof nativeView> | null) => ({ data: { agentRunCollaboration: view && {
   root_subject_kind: 'agent', root_run_id: 'host-run', root_agent: view,

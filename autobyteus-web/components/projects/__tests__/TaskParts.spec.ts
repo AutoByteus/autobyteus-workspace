@@ -16,7 +16,7 @@ vi.mock('@iconify/vue', () => ({ Icon: { props: ['icon'], template: '<span :data
 /** task-part-of UI/UX spec: Parts card, card pill and "Part of" line, Part of field (UXJ-001 to UXJ-004, UXJ-006). */
 const task = (n: number, status: ProjectTaskStatus = 'TODO', partOfTaskId: string | null = null, extra: Partial<ProjectTask> = {}): ProjectTask => ({
   taskId: `t${n}`, projectId: 'p1', taskKey: `autobyteus-${n}`, title: `Task ${n} summary`, description: `Task ${n} summary\nmore`, status, dependsOnTaskIds: [], partOfTaskId,
-  contextFiles: [], createdAt: '', updatedAt: '', root: null, ...extra,
+  comments: [], contextFiles: [], createdAt: '', updatedAt: '', root: null, ...extra,
 })
 const seed = (tasks: ProjectTask[]) => {
   const store = useProjectTaskStore()
@@ -67,7 +67,7 @@ describe('TaskPartsSection (UXJ-002, UXJ-003; VIS-003–VIS-010)', () => {
     const none = section(task(10), [task(10)])
     expect(none.get('[data-testid="task-parts-none"]').text()).toBe('No parts yet.')
     expect(none.find('[data-testid="task-parts-summary"]').exists()).toBe(false)
-    expect(none.get('[data-testid="task-parts-new"]').exists()).toBe(true)
+    expect(none.find('[data-testid="task-parts-new"]').exists()).toBe(true)
   })
 
   it('a Done or Cancelled parent shows its progress but no close hint (VIS-006)', () => {

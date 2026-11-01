@@ -94,7 +94,7 @@ async function saveAndBack(differentMemberModel = false) {
     useExistingRunConfigStore().updateTeamScopeModelConfig('/lead', { llmModelIdentifier: 'replacement-model', llmConfig: { budget: 0 } })
   }
   await flushPromises()
-  expect(panel.get('[data-test="existing-run-save-bar"]').exists()).toBe(true)
+  expect(panel.find('[data-test="existing-run-save-bar"]').exists()).toBe(true)
   expect(panel.get('[data-test="save-existing-model-config"]').attributes('disabled')).toBeUndefined()
   await panel.get('[data-test="save-existing-model-config"]').trigger('click'); await flushPromises()
   expect(canonical.root_team.default_launch_configuration.llm_config).toMatchObject({ budget: 0 })

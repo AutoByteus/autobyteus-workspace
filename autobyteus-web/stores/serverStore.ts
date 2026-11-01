@@ -16,7 +16,6 @@ interface ServerState {
     graphql: string
     rest: string
     graphqlWs: string
-    transcription: string
     terminalWs: string
     health: string
   }
@@ -34,7 +33,6 @@ const emptyElectronUrls = () => ({
   graphql: '',
   rest: '',
   graphqlWs: '',
-  transcription: '',
   terminalWs: '',
   health: '',
 })
@@ -303,7 +301,6 @@ export const useServerStore = defineStore('server', {
           graphql: serverStatus.urls.graphql,
           rest: serverStatus.urls.rest,
           graphqlWs: serverStatus.urls.graphqlWs,
-          transcription: serverStatus.urls.transcription,
           terminalWs: serverStatus.urls.terminalWs,
           health: serverStatus.urls.health,
         }

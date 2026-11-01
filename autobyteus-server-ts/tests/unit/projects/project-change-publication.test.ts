@@ -2,6 +2,7 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { trackReleases, type ReleaseTracker } from "../../helpers/project-task-release-tracker.js";
 import { ProjectStore } from "../../../src/projects/stores/project-store.js";
 import { ProjectsLayout } from "../../../src/projects/stores/projects-layout.js";
 import { AdHocTasksLayout } from "../../../src/projects/stores/ad-hoc-tasks-layout.js";
@@ -15,7 +16,6 @@ import { ProjectChangePublisher } from "../../../src/projects/changes/project-ch
 import type { ProjectChangeMessage } from "../../../src/projects/changes/project-change-messages.js";
 import type { TaskRootStatus } from "../../../src/projects/domain/models.js";
 import { createRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
-import type { TaskExecutionReleaseRequest } from "../../../src/agent-collaboration/execution/task/task-execution-resource-port.js";
 
 const hostRoot = createRootExecutionIdentity({ rootSubjectKind: "agent", rootRunId: "manager-root" });
 const worker = { agentRunId: "worker" };
@@ -24,11 +24,12 @@ const worker = { agentRunId: "worker" };
 describe("Projects change publication (Publication Contract, services)", () => {
   let appData: string, layout: ProjectsLayout, adHocLayout: AdHocTasksLayout, store: ProjectStore;
   let publisher: ProjectChangePublisher, projects: ProjectService, tasks: ProjectTaskService, emitted: ProjectChangeMessage[];
+  let releases: ReleaseTracker;
   /** What the hosting root answers for the worker (the live status source). */
   let liveStatus: TaskRootStatus;
   const boot = async () => {
     const service = new ProjectTaskService({ store, adHocTasks: new AdHocTaskStore(adHocLayout), contextStore: new ProjectTaskContextStore(layout),
-      requestRelease: vi.fn<TaskExecutionReleaseRequest>(async (_r, runs) => runs.map(execution => ({ execution, stopped: true }))),
+      requestRelease: (releases = trackReleases()).request,
       taskExecutionResources: new TaskExecutionResourceService(new TaskExecutionResourceStore(layout, adHocLayout)),
       changes: publisher, workerStatus: () => liveStatus });
     publisher.bind({
@@ -52,7 +53,7 @@ describe("Projects change publication (Publication Contract, services)", () => {
     projects = new ProjectService({ store, workspaceLookup: { listRegisteredWorkspaceRootPaths: async () => [] }, changes: publisher });
     tasks = await boot();
   });
-  afterEach(async () => { await publisher.idle(); await tasks.drainRuntimeReleases(); vi.restoreAllMocks(); await fs.rm(appData, { recursive: true, force: true }); });
+  afterEach(async () => { await publisher.idle(); await releases.settled(); vi.restoreAllMocks(); await fs.rm(appData, { recursive: true, force: true }); });
 
   it("publishes Project and Task writes after commit, with counts and the recorded root (AC-001/002/005)", async () => {
     const { projectId } = await projects.createProject({ name: "Launch" });

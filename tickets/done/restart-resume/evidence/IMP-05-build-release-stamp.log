@@ -1,0 +1,14 @@
+# IMP-05
+# Command: pnpm -C autobyteus-server-ts build; cat dist/release-identity.json; node -e import('./dist/restart-resume/release-identity.js').readReleaseIdentity()
+# Commit: b4d770d364 (the build); the reader unchanged since
+# Environment: macOS 26.5.2, node v22.23.1
+# Date: 2026-11-01
+
+Built-in agents bootstrap smoke check passed.
+Sanitized built-module/bootstrap smoke passed without DATABASE_URL.
+
+dist/release-identity.json:
+{
+  "version": "1.5.11-beta.9"
+}
+built reader returns: "1.5.11-beta.9"

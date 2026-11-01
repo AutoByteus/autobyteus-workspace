@@ -11,6 +11,7 @@ import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadata-helpers.js";
+import { chooseLiveModel } from "../helpers/live-model-choice.js";
 
 /**
  * Workspace skill links with the real Claude, Codex and Grok CLIs (workspace-skill-collision-fix, REQ-101/102/105).
@@ -24,7 +25,9 @@ import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadat
  * Gates (one per runtime; paid inference, one short turn per step): RUN_CLAUDE_E2E=1, RUN_CODEX_E2E=1,
  * RUN_GROK_E2E=1. Models: each runtime's cheapest, pinned below (Claude haiku, Codex gpt-5.6-luna, Grok grok-4.7,
  * at low reasoning effort where the runtime has one). CLAUDE_E2E_MODEL, CODEX_E2E_MODEL and GROK_E2E_MODEL override
- * the pin. A model the runtime does not offer fails the run with the available list; there is no fallback.
+ * the pin. Each runtime checks its model in its own group: an override or a Claude/Codex pin the runtime does not offer
+ * fails that runtime's cases with the available list; a Grok pin its CLI does not offer falls back to the first model
+ * it offers. Each runtime prints `SKILL_LINKS_LIVE_MODEL {"runtime":…,"model":…}`, with `"pinned"` after a fallback.
  * Codex runs under a throwaway CODEX_HOME holding only a link to the host `auth.json`.
  * The release smoke check (`python3 scripts/release_smoke.py`, RELEASE.md) runs this suite and names its test titles:
  * keep them stable, or update the runner's required-case list with them.
@@ -42,15 +45,15 @@ import { flattenE2eConfiguredAgentExecutions } from "../helpers/team-run-metadat
  */
 type RuntimeName = "claude" | "codex" | "grok";
 const commandReady = (command: string) => spawnSync(command, ["--version"], { stdio: "ignore" }).status === 0;
-const RUNTIMES: Record<RuntimeName, { kind: string; enabled: boolean; model: string;
+const RUNTIMES: Record<RuntimeName, { kind: string; enabled: boolean; pin: string; override: string | undefined;
   llmConfig: Record<string, unknown> | null }> = {
   claude: { kind: "claude_agent_sdk", enabled: process.env.RUN_CLAUDE_E2E === "1" && commandReady("claude"),
-    model: process.env.CLAUDE_E2E_MODEL?.trim() || "haiku", llmConfig: null },
+    pin: "haiku", override: process.env.CLAUDE_E2E_MODEL?.trim() || undefined, llmConfig: null },
   codex: { kind: "codex_app_server", enabled: process.env.RUN_CODEX_E2E === "1" && commandReady("codex"),
-    model: process.env.CODEX_E2E_MODEL?.trim() || "gpt-5.6-luna", llmConfig: { reasoning_effort: "low" } },
+    pin: "gpt-5.6-luna", override: process.env.CODEX_E2E_MODEL?.trim() || undefined, llmConfig: { reasoning_effort: "low" } },
   grok: { kind: "grok_build", enabled: process.env.RUN_GROK_E2E === "1"
       && commandReady(process.env.GROK_BUILD_COMMAND?.trim() || "grok"),
-    model: process.env.GROK_E2E_MODEL?.trim() || "grok-4.7", llmConfig: { reasoning_effort: "low" } },
+    pin: "grok-4.7", override: process.env.GROK_E2E_MODEL?.trim() || undefined, llmConfig: { reasoning_effort: "low" } },
 };
 const enabledRuntimes = (Object.keys(RUNTIMES) as RuntimeName[]).filter((name) => RUNTIMES[name].enabled);
 const describeLive = enabledRuntimes.length > 0 ? describe : describe.skip;
@@ -128,20 +131,6 @@ describeLive("workspace skill links with real runtimes (REQ-105)", () => {
       "{ agentDefinitions { id skillNames } }");
     expect(definitions.agentDefinitions.find((definition) => definition.id === configuredAgentId)?.skillNames)
       .toEqual([skillName]);
-
-    for (const name of enabledRuntimes) {
-      const availability = await graphql<{ runtimeAvailability: { enabled: boolean; reason: string | null } }>(
-        "query($r: String!) { runtimeAvailability(runtimeKind: $r) { enabled reason } }", { r: RUNTIMES[name].kind });
-      expect(availability.runtimeAvailability, name).toMatchObject({ enabled: true });
-      const catalog = await graphql<{ providerModelCatalogSnapshots: Array<{ llmModels: Array<{ modelIdentifier: string }> }> }>(
-        "query($r: String) { providerModelCatalogSnapshots(runtimeKind: $r) { llmModels { modelIdentifier } } }",
-        { r: RUNTIMES[name].kind });
-      const available = catalog.providerModelCatalogSnapshots.flatMap((snapshot) => snapshot.llmModels.map((m) => m.modelIdentifier));
-      const model = RUNTIMES[name].model;
-      if (!available.includes(model)) throw new Error(`${name} model ${model} is not offered; available: ${available.join(", ")}`);
-      models.set(name, model);
-    }
-    console.info("SKILL_LINKS_LIVE_MODELS", JSON.stringify(Object.fromEntries(models)));
   }, 300_000);
 
   afterAll(async () => {
@@ -222,6 +211,22 @@ describeLive("workspace skill links with real runtimes (REQ-105)", () => {
 
   // The runner reads each runtime's results under this per-runtime title (claude, codex, grok).
   describe.each(enabledRuntimes)("%s", (name) => {
+    // A runtime that cannot run, or lacks its model, skips only its own cases; vitest names the error per group.
+    beforeAll(async () => {
+      const runtime = RUNTIMES[name];
+      const availability = await graphql<{ runtimeAvailability: { enabled: boolean; reason: string | null } }>(
+        "query($r: String!) { runtimeAvailability(runtimeKind: $r) { enabled reason } }", { r: runtime.kind });
+      expect(availability.runtimeAvailability, name).toMatchObject({ enabled: true });
+      const catalog = await graphql<{ providerModelCatalogSnapshots: Array<{ llmModels: Array<{ modelIdentifier: string }> }> }>(
+        "query($r: String) { providerModelCatalogSnapshots(runtimeKind: $r) { llmModels { modelIdentifier } } }",
+        { r: runtime.kind });
+      const available = catalog.providerModelCatalogSnapshots.flatMap((snapshot) => snapshot.llmModels.map((m) => m.modelIdentifier));
+      const choice = chooseLiveModel(name, runtime.pin, available, runtime.override);
+      models.set(name, choice.model);
+      console.info("SKILL_LINKS_LIVE_MODEL", JSON.stringify({ runtime: name, model: choice.model,
+        ...(choice.fallbackFrom ? { pinned: choice.fallbackFrom } : {}) }));
+    }, 300_000);
+
     // Named by scripts/release_smoke.py
     it("starts a new run in the linked workspace and continues it after restore, using the skill both times (AC-101, AC-102)", async () => {
       const workspace = await linkedWorkspace(`${name}-run`);

@@ -1,10 +1,26 @@
 import { describe, expect, it } from 'vitest';
 import { AgentStatus } from '~/types/agent/AgentStatus';
 import type {
+  TeamMemberTreeRow,
   TeamRunHistoryDefinitionGroup,
   TeamTreeNode,
 } from '~/stores/runHistoryTypes';
 import { buildWorkspaceTeamDefinitionDisplayGroups } from '../workspaceHistoryTeamDefinitionGroups';
+
+const workerRow: TeamMemberTreeRow = {
+  teamRunId: 'team-run-1',
+  kind: 'agent',
+  memberAddress: '/worker',
+  displayName: 'Worker',
+  agentRunId: 'worker-run',
+  workspaceRootPath: '/workspace',
+  summary: 'Task',
+  lastActivityAt: '2026-08-03T00:00:00.000Z',
+  currentStatus: AgentStatus.Running,
+  isActive: true,
+  deleteLifecycle: 'READY',
+  children: [],
+};
 
 const teamNode = (overrides: Partial<TeamTreeNode>): TeamTreeNode => ({
   teamRunId: 'team-run-1',
@@ -15,24 +31,14 @@ const teamNode = (overrides: Partial<TeamTreeNode>): TeamTreeNode => ({
   lastActivityAt: '2026-08-03T00:00:00.000Z',
   isActive: false,
   deleteLifecycle: 'READY',
-  focusedMemberRouteKey: 'worker',
-  members: [{
-    teamRunId: 'team-run-1',
-    memberKind: 'agent',
-    memberRouteKey: 'worker',
-    memberPath: ['worker'],
-    memberName: 'worker',
-    displayName: 'Worker',
-    memberRunId: 'worker-run',
-    workspaceRootPath: '/workspace',
-    summary: 'Task',
-    lastActivityAt: '2026-08-03T00:00:00.000Z',
-    currentStatus: AgentStatus.Running,
-    isActive: true,
-    deleteLifecycle: 'READY',
-    children: [],
-  }],
-  memberTree: [],
+  focusedAgentRunId: 'worker-run',
+  rootTeam: {
+    teamRunId: 'team-run-1', kind: 'agent_team', memberAddress: '/', displayName: 'Team One', agentRunId: null,
+    teamDefinitionId: 'team-def-1', teamRunIdForNode: 'team-run-1', coordinatorAddress: '/worker', workspaceRootPath: null,
+    summary: 'Task', lastActivityAt: '2026-08-03T00:00:00.000Z', currentStatus: null, isActive: false, deleteLifecycle: 'READY',
+    children: [workerRow],
+  },
+  members: [workerRow],
   ...overrides,
   executionRows: overrides.executionRows ?? [],
 });

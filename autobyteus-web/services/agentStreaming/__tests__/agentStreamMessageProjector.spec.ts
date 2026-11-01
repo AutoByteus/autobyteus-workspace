@@ -32,17 +32,17 @@ describe('agent stream message projector', () => {
 
   it('commits visible changes once and ignores structural-only protocol traffic', () => {
     const context = buildContext();
-    dispatchAgentStreamMessage({ type: 'CONNECTED', payload: {} } as any, { kind: 'team_member', context, teamRunId: 'team-1', memberRouteKey: 'worker', memberRunId: 'member-run-1' });
+    dispatchAgentStreamMessage({ type: 'CONNECTED', payload: {} } as any, { kind: 'team_member', context, teamRunId: 'team-1', agentRunId: 'member-run-1', memberAddress: '/worker' });
     expect(context.state.eventMonitorPresentationRevision).toBe(0);
 
     const start = {
       type: 'SEGMENT_START',
       payload: { id: 'segment-1', turn_id: 'turn-1', segment_type: 'text' },
     } as any;
-    dispatchAgentStreamMessage(start, { kind: 'team_member', context, teamRunId: 'team-1', memberRouteKey: 'worker', memberRunId: 'member-run-1' });
+    dispatchAgentStreamMessage(start, { kind: 'team_member', context, teamRunId: 'team-1', agentRunId: 'member-run-1', memberAddress: '/worker' });
     expect(context.state.eventMonitorPresentationRevision).toBe(1);
 
-    dispatchAgentStreamMessage(start, { kind: 'team_member', context, teamRunId: 'team-1', memberRouteKey: 'worker', memberRunId: 'member-run-1' });
+    dispatchAgentStreamMessage(start, { kind: 'team_member', context, teamRunId: 'team-1', agentRunId: 'member-run-1', memberAddress: '/worker' });
     expect(context.state.eventMonitorPresentationRevision).toBe(1);
   });
 
@@ -69,8 +69,8 @@ describe('agent stream message projector', () => {
             kind,
             context,
             teamRunId: 'team-1',
-            memberRouteKey: 'worker',
-            memberRunId: 'member-run-1',
+            agentRunId: 'member-run-1',
+            memberAddress: '/worker',
           } as const;
 
       const effects = dispatchAgentStreamMessage({

@@ -16,8 +16,11 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
+  /** DateTime scalar supporting ISO strings and date-only YYYY-MM-DD values */
   DateTime: { input: any; output: any; }
+  /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSON: { input: any; output: any; }
+  /** The `SafeInt` scalar type represents non-fractional signed whole numeric values that are considered safe as defined by the ECMAScript specification. */
   SafeInt: { input: number; output: number; }
 };
 
@@ -1445,12 +1448,69 @@ export type ImportMcpServerConfigsResult = {
   success: Scalars['Boolean']['output'];
 };
 
-export type IntegrationConnectionStatus = {
-  __typename?: 'IntegrationConnectionStatus';
-  agentDefinitionIds: Array<Scalars['String']['output']>;
-  connected: Scalars['Boolean']['output'];
+export type IntegrationSourceGitHub = {
+  __typename?: 'IntegrationSourceGitHub';
+  defaultBranch: Scalars['String']['output'];
+  installedRevision: Scalars['String']['output'];
+  latestRevision?: Maybe<Scalars['String']['output']>;
+  repositoryUrl: Scalars['String']['output'];
+  status: Scalars['String']['output'];
+};
+
+export enum IntegrationSourceKind {
+  GithubRepository = 'GITHUB_REPOSITORY',
+  LocalPath = 'LOCAL_PATH'
+}
+
+export type IntegrationSourceRef = {
+  __typename?: 'IntegrationSourceRef';
+  kind: IntegrationSourceKind;
+  label: Scalars['String']['output'];
+  sourceId: Scalars['String']['output'];
+};
+
+export type IntegrationSourceRemoval = {
+  __typename?: 'IntegrationSourceRemoval';
+  removedConnectionNames: Array<Scalars['String']['output']>;
+};
+
+export type IntegrationSourceView = {
+  __typename?: 'IntegrationSourceView';
+  github?: Maybe<IntegrationSourceGitHub>;
+  integrationIds: Array<Scalars['String']['output']>;
+  integrationNames: Array<Scalars['String']['output']>;
+  kind: IntegrationSourceKind;
+  label: Scalars['String']['output'];
+  location: Scalars['String']['output'];
+  skillCount: Scalars['Int']['output'];
+  sourceId: Scalars['String']['output'];
+};
+
+export enum IntegrationState {
+  Connected = 'CONNECTED',
+  NeedsNewerApp = 'NEEDS_NEWER_APP',
+  NeedsToken = 'NEEDS_TOKEN'
+}
+
+export type IntegrationTool = {
+  __typename?: 'IntegrationTool';
+  found: Scalars['Boolean']['output'];
+  tool: Scalars['String']['output'];
+};
+
+export type IntegrationView = {
+  __typename?: 'IntegrationView';
   connectedAt?: Maybe<Scalars['String']['output']>;
+  description: Scalars['String']['output'];
+  iconDataUrl?: Maybe<Scalars['String']['output']>;
+  id: Scalars['String']['output'];
   login?: Maybe<Scalars['String']['output']>;
+  name: Scalars['String']['output'];
+  skillName: Scalars['String']['output'];
+  source: IntegrationSourceRef;
+  state: IntegrationState;
+  tokenHelp?: Maybe<Scalars['String']['output']>;
+  tools: Array<IntegrationTool>;
 };
 
 export type McpConfigEntry = {
@@ -1820,7 +1880,6 @@ export type ModelSourceStatusObject = {
   __typename?: 'ModelSourceStatusObject';
   failedUnitCount: Scalars['Int']['output'];
   modelCount: Scalars['Int']['output'];
-  modelKind: Scalars['String']['output'];
   safeMessage?: Maybe<Scalars['String']['output']>;
   state: Scalars['String']['output'];
   successfulUnitCount: Scalars['Int']['output'];
@@ -1854,7 +1913,7 @@ export type Mutation = {
   checkGitHubSkillSourceUpdates: SkillSourceOperationResult;
   clearUpdateNotification: Array<UpdateNotification>;
   configureMcpServer: ConfigureMcpServerResult;
-  connectGitHubIntegration: IntegrationConnectionStatus;
+  connectIntegration: IntegrationView;
   createAgentDefinition: AgentDefinition;
   createAgentOrgDefinition: AgentOrgDefinition;
   createAgentOrgRun: AgentOrgRunMutationResult;
@@ -1883,7 +1942,7 @@ export type Mutation = {
   deleteStoredRun: DeleteStoredRunMutationResult;
   deleteStoredTeamRun: DeleteStoredTeamRunMutationResult;
   disableSkill: Skill;
-  disconnectGitHubIntegration: IntegrationConnectionStatus;
+  disconnectIntegration: IntegrationView;
   discoverAndRegisterMcpServerTools: DiscoverAndRegisterMcpServerToolsResult;
   downloadEmbeddingModel: Scalars['Boolean']['output'];
   enableSkill: Skill;
@@ -1891,6 +1950,7 @@ export type Mutation = {
   importAgentPackage: Array<AgentPackage>;
   importApplicationPackage: Array<ApplicationPackage>;
   importGitHubSkillSource: SkillSourceOperationResult;
+  importIntegrations: Array<IntegrationView>;
   importMcpServerConfigs: ImportMcpServerConfigsResult;
   indexAllProjectTasks: Scalars['Int']['output'];
   indexProjectTasks: Scalars['Boolean']['output'];
@@ -1913,6 +1973,7 @@ export type Mutation = {
   removeApplicationPackage: Array<ApplicationPackage>;
   removeEmbeddingModel: Scalars['Boolean']['output'];
   removeGitHubSkillSource: SkillSourceOperationResult;
+  removeIntegrationSource: IntegrationSourceRemoval;
   removePeerNode: Scalars['Boolean']['output'];
   removeProjectWorkspace: Project;
   removeSkillSource: Array<SkillSource>;
@@ -1932,7 +1993,6 @@ export type Mutation = {
   saveQwenConfiguration: QwenConfigurationCommandResult;
   setApplicationsEnabled: ApplicationsCapability;
   setAutomaticUpdates: UpdateAutomationSettings;
-  setGitHubIntegrationAgentAccess: IntegrationConnectionStatus;
   setModelRouterLaunch: Scalars['JSON']['output'];
   setModelRoutingEnabled: Scalars['JSON']['output'];
   setRemoteCollaborationEnabled: RemoteCollaborationCapabilityGql;
@@ -1946,7 +2006,7 @@ export type Mutation = {
   terminateAgentOrgRun: AgentOrgRunMutationResult;
   terminateAgentRun: TerminateAgentRunResult;
   terminateAgentTeamRun: TerminateAgentTeamRunResult;
-  testGitHubIntegration: IntegrationConnectionStatus;
+  testIntegration: IntegrationView;
   testMemoryHubConnection: MemoryHubConnectionTestResultGql;
   updateAgentDefinition: AgentDefinition;
   updateAgentOrgDefinition: AgentOrgDefinition;
@@ -1955,6 +2015,7 @@ export type Mutation = {
   updateAgentTeamDefinition: AgentTeamDefinition;
   updateDelegatedLaunchSelections: UpdateDelegatedLaunchSelectionsResult;
   updateGitHubSkillSource: SkillSourceOperationResult;
+  updateIntegrationSource: Array<IntegrationSourceView>;
   updateMemoryHubConfig: MemorySyncStatusGql;
   updateMemorySyncSourceConfig: MemorySyncStatusGql;
   updateProject: Project;
@@ -2060,7 +2121,8 @@ export type MutationConfigureMcpServerArgs = {
 };
 
 
-export type MutationConnectGitHubIntegrationArgs = {
+export type MutationConnectIntegrationArgs = {
+  id: Scalars['String']['input'];
   token: Scalars['String']['input'];
 };
 
@@ -2209,6 +2271,11 @@ export type MutationDisableSkillArgs = {
 };
 
 
+export type MutationDisconnectIntegrationArgs = {
+  id: Scalars['String']['input'];
+};
+
+
 export type MutationDiscoverAndRegisterMcpServerToolsArgs = {
   serverId: Scalars['String']['input'];
 };
@@ -2242,6 +2309,11 @@ export type MutationImportApplicationPackageArgs = {
 
 export type MutationImportGitHubSkillSourceArgs = {
   repositoryUrl: Scalars['String']['input'];
+};
+
+
+export type MutationImportIntegrationsArgs = {
+  location: Scalars['String']['input'];
 };
 
 
@@ -2324,6 +2396,11 @@ export type MutationRemoveEmbeddingModelArgs = {
 
 
 export type MutationRemoveGitHubSkillSourceArgs = {
+  sourceId: Scalars['String']['input'];
+};
+
+
+export type MutationRemoveIntegrationSourceArgs = {
   sourceId: Scalars['String']['input'];
 };
 
@@ -2427,11 +2504,6 @@ export type MutationSetAutomaticUpdatesArgs = {
 };
 
 
-export type MutationSetGitHubIntegrationAgentAccessArgs = {
-  agentDefinitionIds: Array<Scalars['String']['input']>;
-};
-
-
 export type MutationSetModelRouterLaunchArgs = {
   llmConfig?: InputMaybe<Scalars['JSON']['input']>;
   llmModelIdentifier: Scalars['String']['input'];
@@ -2494,6 +2566,11 @@ export type MutationTerminateAgentTeamRunArgs = {
 };
 
 
+export type MutationTestIntegrationArgs = {
+  id: Scalars['String']['input'];
+};
+
+
 export type MutationTestMemoryHubConnectionArgs = {
   input: TestMemoryHubConnectionInput;
 };
@@ -2530,6 +2607,11 @@ export type MutationUpdateDelegatedLaunchSelectionsArgs = {
 
 
 export type MutationUpdateGitHubSkillSourceArgs = {
+  sourceId: Scalars['String']['input'];
+};
+
+
+export type MutationUpdateIntegrationSourceArgs = {
   sourceId: Scalars['String']['input'];
 };
 
@@ -2860,8 +2942,9 @@ export type Query = {
   getTeamRunExecutionCheckpoint: TeamRunExecutionCheckpointPayload;
   getTeamRunResumeConfig: TeamRunResumeConfigPayload;
   getTeamRunTokenUsageSummary: TokenUsageRunSummaryGraphql;
-  githubIntegration: IntegrationConnectionStatus;
   health: HealthStatus;
+  integrationSources: Array<IntegrationSourceView>;
+  integrations: Array<IntegrationView>;
   listAgentOrgRunsWithMemory: AgentOrgRunMemoryPage;
   listAgentOrgsWithMemory: AgentOrgWithMemoryPage;
   listAgentRunsWithMemory: AgentRunMemoryPage;
@@ -3670,6 +3753,7 @@ export type Skill = {
   createdAt?: Maybe<Scalars['String']['output']>;
   description: Scalars['String']['output'];
   fileCount: Scalars['Int']['output'];
+  integrationId?: Maybe<Scalars['String']['output']>;
   isDisabled: Scalars['Boolean']['output'];
   isReadonly: Scalars['Boolean']['output'];
   name: Scalars['String']['output'];
@@ -4917,29 +5001,48 @@ export type CreateFileOrFolderMutationVariables = Exact<{
 
 export type CreateFileOrFolderMutation = { __typename?: 'Mutation', createFileOrFolder: string };
 
-export type ConnectGitHubIntegrationMutationVariables = Exact<{
+export type ImportIntegrationsMutationVariables = Exact<{
+  location: Scalars['String']['input'];
+}>;
+
+
+export type ImportIntegrationsMutation = { __typename?: 'Mutation', importIntegrations: Array<{ __typename?: 'IntegrationView', id: string, name: string, description: string, iconDataUrl?: string | null, state: IntegrationState, login?: string | null, connectedAt?: string | null, tokenHelp?: string | null, skillName: string, source: { __typename?: 'IntegrationSourceRef', sourceId: string, kind: IntegrationSourceKind, label: string }, tools: Array<{ __typename?: 'IntegrationTool', tool: string, found: boolean }> }> };
+
+export type UpdateIntegrationSourceMutationVariables = Exact<{
+  sourceId: Scalars['String']['input'];
+}>;
+
+
+export type UpdateIntegrationSourceMutation = { __typename?: 'Mutation', updateIntegrationSource: Array<{ __typename?: 'IntegrationSourceView', sourceId: string, kind: IntegrationSourceKind, label: string, location: string, skillCount: number, integrationIds: Array<string>, integrationNames: Array<string>, github?: { __typename?: 'IntegrationSourceGitHub', status: string, repositoryUrl: string, defaultBranch: string, installedRevision: string, latestRevision?: string | null } | null }> };
+
+export type RemoveIntegrationSourceMutationVariables = Exact<{
+  sourceId: Scalars['String']['input'];
+}>;
+
+
+export type RemoveIntegrationSourceMutation = { __typename?: 'Mutation', removeIntegrationSource: { __typename?: 'IntegrationSourceRemoval', removedConnectionNames: Array<string> } };
+
+export type ConnectIntegrationMutationVariables = Exact<{
+  id: Scalars['String']['input'];
   token: Scalars['String']['input'];
 }>;
 
 
-export type ConnectGitHubIntegrationMutation = { __typename?: 'Mutation', connectGitHubIntegration: { __typename?: 'IntegrationConnectionStatus', connected: boolean, login?: string | null, connectedAt?: string | null, agentDefinitionIds: Array<string> } };
+export type ConnectIntegrationMutation = { __typename?: 'Mutation', connectIntegration: { __typename?: 'IntegrationView', id: string, name: string, description: string, iconDataUrl?: string | null, state: IntegrationState, login?: string | null, connectedAt?: string | null, tokenHelp?: string | null, skillName: string, source: { __typename?: 'IntegrationSourceRef', sourceId: string, kind: IntegrationSourceKind, label: string }, tools: Array<{ __typename?: 'IntegrationTool', tool: string, found: boolean }> } };
 
-export type TestGitHubIntegrationMutationVariables = Exact<{ [key: string]: never; }>;
-
-
-export type TestGitHubIntegrationMutation = { __typename?: 'Mutation', testGitHubIntegration: { __typename?: 'IntegrationConnectionStatus', connected: boolean, login?: string | null, connectedAt?: string | null, agentDefinitionIds: Array<string> } };
-
-export type DisconnectGitHubIntegrationMutationVariables = Exact<{ [key: string]: never; }>;
-
-
-export type DisconnectGitHubIntegrationMutation = { __typename?: 'Mutation', disconnectGitHubIntegration: { __typename?: 'IntegrationConnectionStatus', connected: boolean, login?: string | null, connectedAt?: string | null, agentDefinitionIds: Array<string> } };
-
-export type SetGitHubIntegrationAgentAccessMutationVariables = Exact<{
-  agentDefinitionIds: Array<Scalars['String']['input']> | Scalars['String']['input'];
+export type TestIntegrationMutationVariables = Exact<{
+  id: Scalars['String']['input'];
 }>;
 
 
-export type SetGitHubIntegrationAgentAccessMutation = { __typename?: 'Mutation', setGitHubIntegrationAgentAccess: { __typename?: 'IntegrationConnectionStatus', connected: boolean, login?: string | null, connectedAt?: string | null, agentDefinitionIds: Array<string> } };
+export type TestIntegrationMutation = { __typename?: 'Mutation', testIntegration: { __typename?: 'IntegrationView', id: string, name: string, description: string, iconDataUrl?: string | null, state: IntegrationState, login?: string | null, connectedAt?: string | null, tokenHelp?: string | null, skillName: string, source: { __typename?: 'IntegrationSourceRef', sourceId: string, kind: IntegrationSourceKind, label: string }, tools: Array<{ __typename?: 'IntegrationTool', tool: string, found: boolean }> } };
+
+export type DisconnectIntegrationMutationVariables = Exact<{
+  id: Scalars['String']['input'];
+}>;
+
+
+export type DisconnectIntegrationMutation = { __typename?: 'Mutation', disconnectIntegration: { __typename?: 'IntegrationView', id: string, name: string, description: string, iconDataUrl?: string | null, state: IntegrationState, login?: string | null, connectedAt?: string | null, tokenHelp?: string | null, skillName: string, source: { __typename?: 'IntegrationSourceRef', sourceId: string, kind: IntegrationSourceKind, label: string }, tools: Array<{ __typename?: 'IntegrationTool', tool: string, found: boolean }> } };
 
 export type CredentialSettingFieldsFragment = { __typename?: 'ProviderCredentialSettingObject', apiKeyConfigured: boolean, provider: { __typename?: 'CatalogProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, catalogMode: string } };
 
@@ -4966,7 +5069,7 @@ export type EnsureProviderModelCatalogMutationVariables = Exact<{
 }>;
 
 
-export type EnsureProviderModelCatalogMutation = { __typename?: 'Mutation', ensureProviderModelCatalog: { __typename?: 'ProviderModelCatalogSnapshotObject', runtimeKind: string, ownerProvider: { __typename?: 'CatalogProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, catalogMode: string }, sources: Array<{ __typename?: 'ModelSourceStatusObject', modelKind: string, state: string, modelCount: number, successfulUnitCount: number, failedUnitCount: number, safeMessage?: string | null }>, llmModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, description?: string | null, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null, configSchema?: any | null, maxContextTokens?: number | null, activeContextTokens?: number | null, maxInputTokens?: number | null, maxOutputTokens?: number | null, metadataProvenance?: ModelMetadataProvenance | null, selectionPresentation?: { __typename?: 'ModelSelectionPresentation', recommended: boolean } | null }>, audioModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }>, imageModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, description?: string | null, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }>, videoModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }> } };
+export type EnsureProviderModelCatalogMutation = { __typename?: 'Mutation', ensureProviderModelCatalog: { __typename?: 'ProviderModelCatalogSnapshotObject', runtimeKind: string, ownerProvider: { __typename?: 'CatalogProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, catalogMode: string }, sources: Array<{ __typename?: 'ModelSourceStatusObject', state: string, modelCount: number, successfulUnitCount: number, failedUnitCount: number, safeMessage?: string | null }>, llmModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, description?: string | null, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null, configSchema?: any | null, maxContextTokens?: number | null, activeContextTokens?: number | null, maxInputTokens?: number | null, maxOutputTokens?: number | null, metadataProvenance?: ModelMetadataProvenance | null, selectionPresentation?: { __typename?: 'ModelSelectionPresentation', recommended: boolean } | null }>, audioModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }>, imageModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, description?: string | null, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }>, videoModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }> } };
 
 export type ReloadProviderModelCatalogMutationVariables = Exact<{
   providerId: Scalars['String']['input'];
@@ -4974,7 +5077,7 @@ export type ReloadProviderModelCatalogMutationVariables = Exact<{
 }>;
 
 
-export type ReloadProviderModelCatalogMutation = { __typename?: 'Mutation', reloadProviderModelCatalog: { __typename?: 'ProviderModelCatalogSnapshotObject', runtimeKind: string, ownerProvider: { __typename?: 'CatalogProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, catalogMode: string }, sources: Array<{ __typename?: 'ModelSourceStatusObject', modelKind: string, state: string, modelCount: number, successfulUnitCount: number, failedUnitCount: number, safeMessage?: string | null }>, llmModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, description?: string | null, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null, configSchema?: any | null, maxContextTokens?: number | null, activeContextTokens?: number | null, maxInputTokens?: number | null, maxOutputTokens?: number | null, metadataProvenance?: ModelMetadataProvenance | null, selectionPresentation?: { __typename?: 'ModelSelectionPresentation', recommended: boolean } | null }>, audioModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }>, imageModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, description?: string | null, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }>, videoModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }> } };
+export type ReloadProviderModelCatalogMutation = { __typename?: 'Mutation', reloadProviderModelCatalog: { __typename?: 'ProviderModelCatalogSnapshotObject', runtimeKind: string, ownerProvider: { __typename?: 'CatalogProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, catalogMode: string }, sources: Array<{ __typename?: 'ModelSourceStatusObject', state: string, modelCount: number, successfulUnitCount: number, failedUnitCount: number, safeMessage?: string | null }>, llmModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, description?: string | null, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null, configSchema?: any | null, maxContextTokens?: number | null, activeContextTokens?: number | null, maxInputTokens?: number | null, maxOutputTokens?: number | null, metadataProvenance?: ModelMetadataProvenance | null, selectionPresentation?: { __typename?: 'ModelSelectionPresentation', recommended: boolean } | null }>, audioModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }>, imageModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, description?: string | null, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }>, videoModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }> } };
 
 export type ProbeCustomProviderMutationVariables = Exact<{
   input: CustomProviderInputObject;
@@ -5511,10 +5614,19 @@ export type GetFolderChildrenQueryVariables = Exact<{
 
 export type GetFolderChildrenQuery = { __typename?: 'Query', folderChildren: string };
 
-export type GetGitHubIntegrationQueryVariables = Exact<{ [key: string]: never; }>;
+export type IntegrationFieldsFragment = { __typename?: 'IntegrationView', id: string, name: string, description: string, iconDataUrl?: string | null, state: IntegrationState, login?: string | null, connectedAt?: string | null, tokenHelp?: string | null, skillName: string, source: { __typename?: 'IntegrationSourceRef', sourceId: string, kind: IntegrationSourceKind, label: string }, tools: Array<{ __typename?: 'IntegrationTool', tool: string, found: boolean }> };
+
+export type IntegrationSourceFieldsFragment = { __typename?: 'IntegrationSourceView', sourceId: string, kind: IntegrationSourceKind, label: string, location: string, skillCount: number, integrationIds: Array<string>, integrationNames: Array<string>, github?: { __typename?: 'IntegrationSourceGitHub', status: string, repositoryUrl: string, defaultBranch: string, installedRevision: string, latestRevision?: string | null } | null };
+
+export type GetIntegrationsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetGitHubIntegrationQuery = { __typename?: 'Query', githubIntegration: { __typename?: 'IntegrationConnectionStatus', connected: boolean, login?: string | null, connectedAt?: string | null, agentDefinitionIds: Array<string> } };
+export type GetIntegrationsQuery = { __typename?: 'Query', integrations: Array<{ __typename?: 'IntegrationView', id: string, name: string, description: string, iconDataUrl?: string | null, state: IntegrationState, login?: string | null, connectedAt?: string | null, tokenHelp?: string | null, skillName: string, source: { __typename?: 'IntegrationSourceRef', sourceId: string, kind: IntegrationSourceKind, label: string }, tools: Array<{ __typename?: 'IntegrationTool', tool: string, found: boolean }> }> };
+
+export type GetIntegrationSourcesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetIntegrationSourcesQuery = { __typename?: 'Query', integrationSources: Array<{ __typename?: 'IntegrationSourceView', sourceId: string, kind: IntegrationSourceKind, label: string, location: string, skillCount: number, integrationIds: Array<string>, integrationNames: Array<string>, github?: { __typename?: 'IntegrationSourceGitHub', status: string, repositoryUrl: string, defaultBranch: string, installedRevision: string, latestRevision?: string | null } | null }> };
 
 export type GetProviderCredentialSettingsQueryVariables = Exact<{
   runtimeKind?: InputMaybe<Scalars['String']['input']>;
@@ -5523,14 +5635,14 @@ export type GetProviderCredentialSettingsQueryVariables = Exact<{
 
 export type GetProviderCredentialSettingsQuery = { __typename?: 'Query', providerCredentialSettings: Array<{ __typename?: 'ProviderCredentialSettingObject', apiKeyConfigured: boolean, provider: { __typename?: 'CatalogProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, catalogMode: string } }> };
 
-export type ProviderModelCatalogSnapshotFieldsFragment = { __typename?: 'ProviderModelCatalogSnapshotObject', runtimeKind: string, ownerProvider: { __typename?: 'CatalogProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, catalogMode: string }, sources: Array<{ __typename?: 'ModelSourceStatusObject', modelKind: string, state: string, modelCount: number, successfulUnitCount: number, failedUnitCount: number, safeMessage?: string | null }>, llmModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, description?: string | null, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null, configSchema?: any | null, maxContextTokens?: number | null, activeContextTokens?: number | null, maxInputTokens?: number | null, maxOutputTokens?: number | null, metadataProvenance?: ModelMetadataProvenance | null, selectionPresentation?: { __typename?: 'ModelSelectionPresentation', recommended: boolean } | null }>, audioModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }>, imageModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, description?: string | null, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }>, videoModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }> };
+export type ProviderModelCatalogSnapshotFieldsFragment = { __typename?: 'ProviderModelCatalogSnapshotObject', runtimeKind: string, ownerProvider: { __typename?: 'CatalogProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, catalogMode: string }, sources: Array<{ __typename?: 'ModelSourceStatusObject', state: string, modelCount: number, successfulUnitCount: number, failedUnitCount: number, safeMessage?: string | null }>, llmModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, description?: string | null, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null, configSchema?: any | null, maxContextTokens?: number | null, activeContextTokens?: number | null, maxInputTokens?: number | null, maxOutputTokens?: number | null, metadataProvenance?: ModelMetadataProvenance | null, selectionPresentation?: { __typename?: 'ModelSelectionPresentation', recommended: boolean } | null }>, audioModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }>, imageModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, description?: string | null, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }>, videoModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }> };
 
 export type GetProviderModelCatalogSnapshotsQueryVariables = Exact<{
   runtimeKind?: InputMaybe<Scalars['String']['input']>;
 }>;
 
 
-export type GetProviderModelCatalogSnapshotsQuery = { __typename?: 'Query', providerModelCatalogSnapshots: Array<{ __typename?: 'ProviderModelCatalogSnapshotObject', runtimeKind: string, ownerProvider: { __typename?: 'CatalogProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, catalogMode: string }, sources: Array<{ __typename?: 'ModelSourceStatusObject', modelKind: string, state: string, modelCount: number, successfulUnitCount: number, failedUnitCount: number, safeMessage?: string | null }>, llmModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, description?: string | null, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null, configSchema?: any | null, maxContextTokens?: number | null, activeContextTokens?: number | null, maxInputTokens?: number | null, maxOutputTokens?: number | null, metadataProvenance?: ModelMetadataProvenance | null, selectionPresentation?: { __typename?: 'ModelSelectionPresentation', recommended: boolean } | null }>, audioModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }>, imageModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, description?: string | null, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }>, videoModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }> }> };
+export type GetProviderModelCatalogSnapshotsQuery = { __typename?: 'Query', providerModelCatalogSnapshots: Array<{ __typename?: 'ProviderModelCatalogSnapshotObject', runtimeKind: string, ownerProvider: { __typename?: 'CatalogProviderObject', id: string, name: string, providerType: string, isCustom: boolean, baseUrl?: string | null, catalogMode: string }, sources: Array<{ __typename?: 'ModelSourceStatusObject', state: string, modelCount: number, successfulUnitCount: number, failedUnitCount: number, safeMessage?: string | null }>, llmModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, description?: string | null, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null, configSchema?: any | null, maxContextTokens?: number | null, activeContextTokens?: number | null, maxInputTokens?: number | null, maxOutputTokens?: number | null, metadataProvenance?: ModelMetadataProvenance | null, selectionPresentation?: { __typename?: 'ModelSelectionPresentation', recommended: boolean } | null }>, audioModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }>, imageModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, description?: string | null, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }>, videoModels: Array<{ __typename?: 'ModelDetail', modelIdentifier: string, name: string, value: string, canonicalName: string, providerId: string, providerName: string, providerType: string, runtime: string, hostUrl?: string | null }> }> };
 
 export type GetGeminiSetupConfigQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -6164,14 +6276,14 @@ export type RemoveGitHubSkillSourceMutation = { __typename?: 'Mutation', removeG
 export type GetSkillsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetSkillsQuery = { __typename?: 'Query', skills: Array<{ __typename?: 'Skill', name: string, description: string, content: string, rootPath: string, fileCount: number, isReadonly: boolean, isDisabled: boolean }> };
+export type GetSkillsQuery = { __typename?: 'Query', skills: Array<{ __typename?: 'Skill', name: string, description: string, content: string, rootPath: string, fileCount: number, isReadonly: boolean, isDisabled: boolean, integrationId?: string | null }> };
 
 export type GetSkillQueryVariables = Exact<{
   name: Scalars['String']['input'];
 }>;
 
 
-export type GetSkillQuery = { __typename?: 'Query', skill?: { __typename?: 'Skill', name: string, description: string, content: string, rootPath: string, fileCount: number, isReadonly: boolean, isDisabled: boolean } | null };
+export type GetSkillQuery = { __typename?: 'Query', skill?: { __typename?: 'Skill', name: string, description: string, content: string, rootPath: string, fileCount: number, isReadonly: boolean, isDisabled: boolean, integrationId?: string | null } | null };
 
 export type GetSkillFileTreeQueryVariables = Exact<{
   name: Scalars['String']['input'];
@@ -6594,6 +6706,46 @@ export const ApplicationDetailFieldsFragmentDoc = gql`
 }
     ${ApplicationCatalogFieldsFragmentDoc}
 ${ApplicationTechnicalDetailsFieldsFragmentDoc}`;
+export const IntegrationFieldsFragmentDoc = gql`
+    fragment IntegrationFields on IntegrationView {
+  id
+  name
+  description
+  iconDataUrl
+  state
+  login
+  connectedAt
+  tokenHelp
+  skillName
+  source {
+    sourceId
+    kind
+    label
+  }
+  tools {
+    tool
+    found
+  }
+}
+    `;
+export const IntegrationSourceFieldsFragmentDoc = gql`
+    fragment IntegrationSourceFields on IntegrationSourceView {
+  sourceId
+  kind
+  label
+  location
+  skillCount
+  integrationIds
+  integrationNames
+  github {
+    status
+    repositoryUrl
+    defaultBranch
+    installedRevision
+    latestRevision
+  }
+}
+    `;
 export const ProviderModelCatalogSnapshotFieldsFragmentDoc = gql`
     fragment ProviderModelCatalogSnapshotFields on ProviderModelCatalogSnapshotObject {
   runtimeKind
@@ -6606,7 +6758,6 @@ export const ProviderModelCatalogSnapshotFieldsFragmentDoc = gql`
     catalogMode
   }
   sources {
-    modelKind
     state
     modelCount
     successfulUnitCount
@@ -8776,126 +8927,181 @@ export function useCreateFileOrFolderMutation(options: VueApolloComposable.UseMu
   return VueApolloComposable.useMutation<CreateFileOrFolderMutation, CreateFileOrFolderMutationVariables>(CreateFileOrFolderDocument, options);
 }
 export type CreateFileOrFolderMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<CreateFileOrFolderMutation, CreateFileOrFolderMutationVariables>;
-export const ConnectGitHubIntegrationDocument = gql`
-    mutation ConnectGitHubIntegration($token: String!) {
-  connectGitHubIntegration(token: $token) {
-    connected
-    login
-    connectedAt
-    agentDefinitionIds
+export const ImportIntegrationsDocument = gql`
+    mutation ImportIntegrations($location: String!) {
+  importIntegrations(location: $location) {
+    ...IntegrationFields
   }
 }
-    `;
+    ${IntegrationFieldsFragmentDoc}`;
 
 /**
- * __useConnectGitHubIntegrationMutation__
+ * __useImportIntegrationsMutation__
  *
- * To run a mutation, you first call `useConnectGitHubIntegrationMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useConnectGitHubIntegrationMutation` returns an object that includes:
+ * To run a mutation, you first call `useImportIntegrationsMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useImportIntegrationsMutation` returns an object that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
  *
  * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
  *
  * @example
- * const { mutate, loading, error, onDone } = useConnectGitHubIntegrationMutation({
+ * const { mutate, loading, error, onDone } = useImportIntegrationsMutation({
  *   variables: {
+ *     location: // value for 'location'
+ *   },
+ * });
+ */
+export function useImportIntegrationsMutation(options: VueApolloComposable.UseMutationOptions<ImportIntegrationsMutation, ImportIntegrationsMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<ImportIntegrationsMutation, ImportIntegrationsMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<ImportIntegrationsMutation, ImportIntegrationsMutationVariables>(ImportIntegrationsDocument, options);
+}
+export type ImportIntegrationsMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<ImportIntegrationsMutation, ImportIntegrationsMutationVariables>;
+export const UpdateIntegrationSourceDocument = gql`
+    mutation UpdateIntegrationSource($sourceId: String!) {
+  updateIntegrationSource(sourceId: $sourceId) {
+    ...IntegrationSourceFields
+  }
+}
+    ${IntegrationSourceFieldsFragmentDoc}`;
+
+/**
+ * __useUpdateIntegrationSourceMutation__
+ *
+ * To run a mutation, you first call `useUpdateIntegrationSourceMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateIntegrationSourceMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useUpdateIntegrationSourceMutation({
+ *   variables: {
+ *     sourceId: // value for 'sourceId'
+ *   },
+ * });
+ */
+export function useUpdateIntegrationSourceMutation(options: VueApolloComposable.UseMutationOptions<UpdateIntegrationSourceMutation, UpdateIntegrationSourceMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<UpdateIntegrationSourceMutation, UpdateIntegrationSourceMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<UpdateIntegrationSourceMutation, UpdateIntegrationSourceMutationVariables>(UpdateIntegrationSourceDocument, options);
+}
+export type UpdateIntegrationSourceMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<UpdateIntegrationSourceMutation, UpdateIntegrationSourceMutationVariables>;
+export const RemoveIntegrationSourceDocument = gql`
+    mutation RemoveIntegrationSource($sourceId: String!) {
+  removeIntegrationSource(sourceId: $sourceId) {
+    removedConnectionNames
+  }
+}
+    `;
+
+/**
+ * __useRemoveIntegrationSourceMutation__
+ *
+ * To run a mutation, you first call `useRemoveIntegrationSourceMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useRemoveIntegrationSourceMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useRemoveIntegrationSourceMutation({
+ *   variables: {
+ *     sourceId: // value for 'sourceId'
+ *   },
+ * });
+ */
+export function useRemoveIntegrationSourceMutation(options: VueApolloComposable.UseMutationOptions<RemoveIntegrationSourceMutation, RemoveIntegrationSourceMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<RemoveIntegrationSourceMutation, RemoveIntegrationSourceMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<RemoveIntegrationSourceMutation, RemoveIntegrationSourceMutationVariables>(RemoveIntegrationSourceDocument, options);
+}
+export type RemoveIntegrationSourceMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<RemoveIntegrationSourceMutation, RemoveIntegrationSourceMutationVariables>;
+export const ConnectIntegrationDocument = gql`
+    mutation ConnectIntegration($id: String!, $token: String!) {
+  connectIntegration(id: $id, token: $token) {
+    ...IntegrationFields
+  }
+}
+    ${IntegrationFieldsFragmentDoc}`;
+
+/**
+ * __useConnectIntegrationMutation__
+ *
+ * To run a mutation, you first call `useConnectIntegrationMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useConnectIntegrationMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useConnectIntegrationMutation({
+ *   variables: {
+ *     id: // value for 'id'
  *     token: // value for 'token'
  *   },
  * });
  */
-export function useConnectGitHubIntegrationMutation(options: VueApolloComposable.UseMutationOptions<ConnectGitHubIntegrationMutation, ConnectGitHubIntegrationMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<ConnectGitHubIntegrationMutation, ConnectGitHubIntegrationMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<ConnectGitHubIntegrationMutation, ConnectGitHubIntegrationMutationVariables>(ConnectGitHubIntegrationDocument, options);
+export function useConnectIntegrationMutation(options: VueApolloComposable.UseMutationOptions<ConnectIntegrationMutation, ConnectIntegrationMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<ConnectIntegrationMutation, ConnectIntegrationMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<ConnectIntegrationMutation, ConnectIntegrationMutationVariables>(ConnectIntegrationDocument, options);
 }
-export type ConnectGitHubIntegrationMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<ConnectGitHubIntegrationMutation, ConnectGitHubIntegrationMutationVariables>;
-export const TestGitHubIntegrationDocument = gql`
-    mutation TestGitHubIntegration {
-  testGitHubIntegration {
-    connected
-    login
-    connectedAt
-    agentDefinitionIds
+export type ConnectIntegrationMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<ConnectIntegrationMutation, ConnectIntegrationMutationVariables>;
+export const TestIntegrationDocument = gql`
+    mutation TestIntegration($id: String!) {
+  testIntegration(id: $id) {
+    ...IntegrationFields
   }
 }
-    `;
+    ${IntegrationFieldsFragmentDoc}`;
 
 /**
- * __useTestGitHubIntegrationMutation__
+ * __useTestIntegrationMutation__
  *
- * To run a mutation, you first call `useTestGitHubIntegrationMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useTestGitHubIntegrationMutation` returns an object that includes:
+ * To run a mutation, you first call `useTestIntegrationMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useTestIntegrationMutation` returns an object that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
  *
  * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
  *
  * @example
- * const { mutate, loading, error, onDone } = useTestGitHubIntegrationMutation();
- */
-export function useTestGitHubIntegrationMutation(options: VueApolloComposable.UseMutationOptions<TestGitHubIntegrationMutation, TestGitHubIntegrationMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<TestGitHubIntegrationMutation, TestGitHubIntegrationMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<TestGitHubIntegrationMutation, TestGitHubIntegrationMutationVariables>(TestGitHubIntegrationDocument, options);
-}
-export type TestGitHubIntegrationMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<TestGitHubIntegrationMutation, TestGitHubIntegrationMutationVariables>;
-export const DisconnectGitHubIntegrationDocument = gql`
-    mutation DisconnectGitHubIntegration {
-  disconnectGitHubIntegration {
-    connected
-    login
-    connectedAt
-    agentDefinitionIds
-  }
-}
-    `;
-
-/**
- * __useDisconnectGitHubIntegrationMutation__
- *
- * To run a mutation, you first call `useDisconnectGitHubIntegrationMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useDisconnectGitHubIntegrationMutation` returns an object that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
- *
- * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
- *
- * @example
- * const { mutate, loading, error, onDone } = useDisconnectGitHubIntegrationMutation();
- */
-export function useDisconnectGitHubIntegrationMutation(options: VueApolloComposable.UseMutationOptions<DisconnectGitHubIntegrationMutation, DisconnectGitHubIntegrationMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<DisconnectGitHubIntegrationMutation, DisconnectGitHubIntegrationMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<DisconnectGitHubIntegrationMutation, DisconnectGitHubIntegrationMutationVariables>(DisconnectGitHubIntegrationDocument, options);
-}
-export type DisconnectGitHubIntegrationMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<DisconnectGitHubIntegrationMutation, DisconnectGitHubIntegrationMutationVariables>;
-export const SetGitHubIntegrationAgentAccessDocument = gql`
-    mutation SetGitHubIntegrationAgentAccess($agentDefinitionIds: [String!]!) {
-  setGitHubIntegrationAgentAccess(agentDefinitionIds: $agentDefinitionIds) {
-    connected
-    login
-    connectedAt
-    agentDefinitionIds
-  }
-}
-    `;
-
-/**
- * __useSetGitHubIntegrationAgentAccessMutation__
- *
- * To run a mutation, you first call `useSetGitHubIntegrationAgentAccessMutation` within a Vue component and pass it any options that fit your needs.
- * When your component renders, `useSetGitHubIntegrationAgentAccessMutation` returns an object that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
- *
- * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
- *
- * @example
- * const { mutate, loading, error, onDone } = useSetGitHubIntegrationAgentAccessMutation({
+ * const { mutate, loading, error, onDone } = useTestIntegrationMutation({
  *   variables: {
- *     agentDefinitionIds: // value for 'agentDefinitionIds'
+ *     id: // value for 'id'
  *   },
  * });
  */
-export function useSetGitHubIntegrationAgentAccessMutation(options: VueApolloComposable.UseMutationOptions<SetGitHubIntegrationAgentAccessMutation, SetGitHubIntegrationAgentAccessMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<SetGitHubIntegrationAgentAccessMutation, SetGitHubIntegrationAgentAccessMutationVariables>> = {}) {
-  return VueApolloComposable.useMutation<SetGitHubIntegrationAgentAccessMutation, SetGitHubIntegrationAgentAccessMutationVariables>(SetGitHubIntegrationAgentAccessDocument, options);
+export function useTestIntegrationMutation(options: VueApolloComposable.UseMutationOptions<TestIntegrationMutation, TestIntegrationMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<TestIntegrationMutation, TestIntegrationMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<TestIntegrationMutation, TestIntegrationMutationVariables>(TestIntegrationDocument, options);
 }
-export type SetGitHubIntegrationAgentAccessMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<SetGitHubIntegrationAgentAccessMutation, SetGitHubIntegrationAgentAccessMutationVariables>;
+export type TestIntegrationMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<TestIntegrationMutation, TestIntegrationMutationVariables>;
+export const DisconnectIntegrationDocument = gql`
+    mutation DisconnectIntegration($id: String!) {
+  disconnectIntegration(id: $id) {
+    ...IntegrationFields
+  }
+}
+    ${IntegrationFieldsFragmentDoc}`;
+
+/**
+ * __useDisconnectIntegrationMutation__
+ *
+ * To run a mutation, you first call `useDisconnectIntegrationMutation` within a Vue component and pass it any options that fit your needs.
+ * When your component renders, `useDisconnectIntegrationMutation` returns an object that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - Several other properties: https://v4.apollo.vuejs.org/api/use-mutation.html#return
+ *
+ * @param options that will be passed into the mutation, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/mutation.html#options;
+ *
+ * @example
+ * const { mutate, loading, error, onDone } = useDisconnectIntegrationMutation({
+ *   variables: {
+ *     id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDisconnectIntegrationMutation(options: VueApolloComposable.UseMutationOptions<DisconnectIntegrationMutation, DisconnectIntegrationMutationVariables> | ReactiveFunction<VueApolloComposable.UseMutationOptions<DisconnectIntegrationMutation, DisconnectIntegrationMutationVariables>> = {}) {
+  return VueApolloComposable.useMutation<DisconnectIntegrationMutation, DisconnectIntegrationMutationVariables>(DisconnectIntegrationDocument, options);
+}
+export type DisconnectIntegrationMutationCompositionFunctionResult = VueApolloComposable.UseMutationReturn<DisconnectIntegrationMutation, DisconnectIntegrationMutationVariables>;
 export const SaveProviderApiKeyDocument = gql`
     mutation SaveProviderApiKey($providerId: String!, $apiKey: String!) {
   saveProviderApiKey(providerId: $providerId, apiKey: $apiKey) {
@@ -11708,36 +11914,60 @@ export function useGetFolderChildrenLazyQuery(variables?: GetFolderChildrenQuery
   return VueApolloComposable.useLazyQuery<GetFolderChildrenQuery, GetFolderChildrenQueryVariables>(GetFolderChildrenDocument, variables, options);
 }
 export type GetFolderChildrenQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetFolderChildrenQuery, GetFolderChildrenQueryVariables>;
-export const GetGitHubIntegrationDocument = gql`
-    query GetGitHubIntegration {
-  githubIntegration {
-    connected
-    login
-    connectedAt
-    agentDefinitionIds
+export const GetIntegrationsDocument = gql`
+    query GetIntegrations {
+  integrations {
+    ...IntegrationFields
   }
 }
-    `;
+    ${IntegrationFieldsFragmentDoc}`;
 
 /**
- * __useGetGitHubIntegrationQuery__
+ * __useGetIntegrationsQuery__
  *
- * To run a query within a Vue component, call `useGetGitHubIntegrationQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetGitHubIntegrationQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * To run a query within a Vue component, call `useGetIntegrationsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetIntegrationsQuery` returns an object from Apollo Client that contains result, loading and error properties
  * you can use to render your UI.
  *
  * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
  *
  * @example
- * const { result, loading, error } = useGetGitHubIntegrationQuery();
+ * const { result, loading, error } = useGetIntegrationsQuery();
  */
-export function useGetGitHubIntegrationQuery(options: VueApolloComposable.UseQueryOptions<GetGitHubIntegrationQuery, GetGitHubIntegrationQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetGitHubIntegrationQuery, GetGitHubIntegrationQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetGitHubIntegrationQuery, GetGitHubIntegrationQueryVariables>> = {}) {
-  return VueApolloComposable.useQuery<GetGitHubIntegrationQuery, GetGitHubIntegrationQueryVariables>(GetGitHubIntegrationDocument, {}, options);
+export function useGetIntegrationsQuery(options: VueApolloComposable.UseQueryOptions<GetIntegrationsQuery, GetIntegrationsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetIntegrationsQuery, GetIntegrationsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetIntegrationsQuery, GetIntegrationsQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetIntegrationsQuery, GetIntegrationsQueryVariables>(GetIntegrationsDocument, {}, options);
 }
-export function useGetGitHubIntegrationLazyQuery(options: VueApolloComposable.UseQueryOptions<GetGitHubIntegrationQuery, GetGitHubIntegrationQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetGitHubIntegrationQuery, GetGitHubIntegrationQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetGitHubIntegrationQuery, GetGitHubIntegrationQueryVariables>> = {}) {
-  return VueApolloComposable.useLazyQuery<GetGitHubIntegrationQuery, GetGitHubIntegrationQueryVariables>(GetGitHubIntegrationDocument, {}, options);
+export function useGetIntegrationsLazyQuery(options: VueApolloComposable.UseQueryOptions<GetIntegrationsQuery, GetIntegrationsQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetIntegrationsQuery, GetIntegrationsQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetIntegrationsQuery, GetIntegrationsQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetIntegrationsQuery, GetIntegrationsQueryVariables>(GetIntegrationsDocument, {}, options);
 }
-export type GetGitHubIntegrationQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetGitHubIntegrationQuery, GetGitHubIntegrationQueryVariables>;
+export type GetIntegrationsQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetIntegrationsQuery, GetIntegrationsQueryVariables>;
+export const GetIntegrationSourcesDocument = gql`
+    query GetIntegrationSources {
+  integrationSources {
+    ...IntegrationSourceFields
+  }
+}
+    ${IntegrationSourceFieldsFragmentDoc}`;
+
+/**
+ * __useGetIntegrationSourcesQuery__
+ *
+ * To run a query within a Vue component, call `useGetIntegrationSourcesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetIntegrationSourcesQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useGetIntegrationSourcesQuery();
+ */
+export function useGetIntegrationSourcesQuery(options: VueApolloComposable.UseQueryOptions<GetIntegrationSourcesQuery, GetIntegrationSourcesQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetIntegrationSourcesQuery, GetIntegrationSourcesQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetIntegrationSourcesQuery, GetIntegrationSourcesQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetIntegrationSourcesQuery, GetIntegrationSourcesQueryVariables>(GetIntegrationSourcesDocument, {}, options);
+}
+export function useGetIntegrationSourcesLazyQuery(options: VueApolloComposable.UseQueryOptions<GetIntegrationSourcesQuery, GetIntegrationSourcesQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetIntegrationSourcesQuery, GetIntegrationSourcesQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetIntegrationSourcesQuery, GetIntegrationSourcesQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetIntegrationSourcesQuery, GetIntegrationSourcesQueryVariables>(GetIntegrationSourcesDocument, {}, options);
+}
+export type GetIntegrationSourcesQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetIntegrationSourcesQuery, GetIntegrationSourcesQueryVariables>;
 export const GetProviderCredentialSettingsDocument = gql`
     query GetProviderCredentialSettings($runtimeKind: String) {
   providerCredentialSettings(runtimeKind: $runtimeKind) {
@@ -15256,6 +15486,7 @@ export const GetSkillsDocument = gql`
     fileCount
     isReadonly
     isDisabled
+    integrationId
   }
 }
     `;
@@ -15289,6 +15520,7 @@ export const GetSkillDocument = gql`
     fileCount
     isReadonly
     isDisabled
+    integrationId
   }
 }
     `;

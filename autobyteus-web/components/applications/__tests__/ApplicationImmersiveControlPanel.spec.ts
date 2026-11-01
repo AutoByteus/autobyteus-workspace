@@ -89,7 +89,7 @@ describe('ApplicationImmersiveControlPanel', () => {
 
     await wrapper.get('[data-testid="application-immersive-close"]').trigger('click')
     expect(wrapper.get('[data-testid="application-immersive-panel-frame"]').attributes('style')).toContain('display: none;')
-    expect(wrapper.get('[data-testid="application-immersive-trigger"]').exists()).toBe(true)
+    expect(wrapper.find('[data-testid="application-immersive-trigger"]').exists()).toBe(true)
   })
 
   it('emits reload and exit intents and clamps resize width within the allowed range', async () => {

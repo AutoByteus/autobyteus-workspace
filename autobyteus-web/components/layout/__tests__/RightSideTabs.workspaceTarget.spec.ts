@@ -167,7 +167,7 @@ for (const previouslyMounted of [false, true]) {
     expect(draftStore.config).toBe(retainedDraft); expect(draftStore.config?.workspaceId).toBe('A')
     if (previouslyMounted) {
       expect(released).toHaveBeenCalled()
-      expect(removeWindow.mock.calls.some(call => call[0] === 'keydown')).toBe(true)
+      expect(removeWindow.mock.calls.some(call => String(call[0]) === 'keydown')).toBe(true)
       expect(removeDocument.mock.calls.some(call => call[0] === 'dragover')).toBe(true)
     }
     acquire.mockClear(); readFile.mockClear(); search.mockClear(); write.mockClear()

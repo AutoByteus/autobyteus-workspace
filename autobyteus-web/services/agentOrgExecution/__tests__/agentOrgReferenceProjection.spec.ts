@@ -5,7 +5,7 @@ import { projectAgentOrgReference } from '../agentOrgReferenceProjection'
 const sha256Spy = vi.hoisted(() => ({ calls: 0 }))
 
 vi.mock('crypto-js/sha256', async (importOriginal) => {
-  const actual = await importOriginal<typeof import('crypto-js/sha256')>()
+  const actual = await importOriginal<{ default: typeof import('crypto-js/sha256') }>()
   const real = actual.default
   return {
     default: (...args: Parameters<typeof real>) => {

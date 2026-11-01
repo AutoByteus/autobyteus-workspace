@@ -51,7 +51,6 @@ const snapshots = (state: 'IDLE' | 'READY' | 'ERROR' | 'STALE_ERROR') => [{
   runtimeKind: 'autobyteus',
   ownerProvider: rows([])[0]!.provider,
   sources: [{
-    modelKind: 'LLM',
     state,
     modelCount: state === 'ERROR' ? 0 : 1,
     successfulUnitCount: state === 'ERROR' ? 0 : 1,

@@ -1,0 +1,10 @@
+import { beforeAll, describe, expect, it } from "vitest";
+const runtimes = ["claude", "codex", "grok"];
+describe("live suite", () => {
+  beforeAll(() => { /* shared setup ok */ });
+  describe.each(runtimes)("%s", (name) => {
+    beforeAll(() => { if (name === "grok") throw new Error("grok model grok-4.7 is not offered; available: grok-4.5"); });
+    it("case A", () => { expect(name).toBeTruthy(); });
+    it("case B", () => { expect(name).toBeTruthy(); });
+  });
+});

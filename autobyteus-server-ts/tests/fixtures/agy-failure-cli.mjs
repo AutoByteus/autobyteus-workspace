@@ -42,21 +42,39 @@ if (arg === "--version") {
     || usageReport
     ? argValue("--conversation") || randomUUID()
     : imageDone ? process.env.AGY_FAKE_CONVERSATION_ID || randomUUID() : "controlled-failure-conversation";
-  const emit = (value) => process.stdout.write(JSON.stringify(value) + "\n");
+  // AGY_FAKE_PROCESS_LOG: this process's lifecycle on its own clock, one JSON line per event in time order:
+  // `launch` (with the cwd, which names the run), `turn_end` (logged before the turn's final `result` line is
+  // written), `background_exit` (logged before a background step's exit message is written), `sigterm` and `exit`.
+  // A test can then prove that a replacement started only after the previous process exited, or measure a window
+  // that no server observation can shorten (the idle-shutdown grace starts only after the logged turn end).
+  const processLogFile = process.env.AGY_FAKE_PROCESS_LOG;
+  const processLog = (event, details = {}) => processLogFile && appendFileSync(processLogFile,
+    JSON.stringify({ event, pid: process.pid, conversation_id, at: Date.now(), ...details }) + "\n");
+  if (processLogFile) {
+    processLog("launch", { cwd: process.cwd() });
+    process.on("exit", () => processLog("exit"));
+  }
   if (interruptResend) {
-    // Records each AGY process's launch, SIGTERM and exit (one JSON line each, in time order) so a test can
-    // prove a replacement started only after the interrupted process exited. On SIGTERM the process keeps
-    // running for AGY_FAKE_SIGTERM_EXIT_DELAY_MS (below the server's SIGKILL escalation), as a real AGY
-    // finishing its shutdown does, which makes the "previous runtime still stopping" window deterministic.
-    const log = (event) => process.env.AGY_FAKE_PROCESS_LOG && appendFileSync(process.env.AGY_FAKE_PROCESS_LOG,
-      JSON.stringify({ event, pid: process.pid, conversation_id, at: Date.now() }) + "\n");
-    log("launch");
-    process.on("exit", () => log("exit"));
+    // On SIGTERM the process keeps running for AGY_FAKE_SIGTERM_EXIT_DELAY_MS (below the server's SIGKILL
+    // escalation), as a real AGY finishing its shutdown does, which makes the "previous runtime still stopping"
+    // window deterministic.
     process.on("SIGTERM", () => {
-      log("sigterm");
+      processLog("sigterm");
       setTimeout(() => process.exit(0), Number(process.env.AGY_FAKE_SIGTERM_EXIT_DELAY_MS ?? 0));
     });
+  } else if (processLogFile) {
+    // Logs the SIGTERM, then ends by the signal at once, as Node's default does without a handler.
+    const onSigterm = () => {
+      processLog("sigterm");
+      process.off("SIGTERM", onSigterm);
+      process.kill(process.pid, "SIGTERM");
+    };
+    process.on("SIGTERM", onSigterm);
   }
+  const emit = (value) => {
+    if (value.event === "result") processLog("turn_end", { status: value.result?.status ?? null });
+    process.stdout.write(JSON.stringify(value) + "\n");
+  };
   // As the real CLI does: headless AGY reports `always-proceed` only with skip-permissions, else `request-review`.
   const permission_mode = process.argv.includes("--dangerously-skip-permissions") ? "always-proceed" : "request-review";
   emit({ event: "init", conversation_id, init: { agent: argValue("--agent"),
@@ -144,6 +162,7 @@ if (arg === "--version") {
     emit({ event: "step_update", step_update: { conversation_id, step_index, step_type: "tool", state: "ACTIVE",
       tool_name: "run_command", tool_info: { parameters: { CommandLine, IsDaemon: true } } } });
     setTimeout(() => {
+      processLog("background_exit", { step_index });
       const dir = path.join(process.env.HOME ?? "", ".gemini", "antigravity-cli", "brain", conversation_id, ".system_generated", "messages");
       mkdirSync(dir, { recursive: true });
       writeFileSync(path.join(dir, `${randomUUID()}.json`), JSON.stringify({ sourceMetadata: { tool: { stepIndex: step_index } },

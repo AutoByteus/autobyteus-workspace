@@ -86,6 +86,7 @@ describe('AgentRunCollaborationContext', () => {
     expect(context.view).not.toHaveProperty('communication_messages')
     expect(context.applyEvent(6, { kind: 'task_execution_started', host_kind: 'root', host_run_id: 'host-run', execution: {
       address: '/code_reviewer', agentRunId: 'cr-copy-run', platformAgentRunId: null, delegatorAgentRunId: 'host-run', startedAt: created,
+      source: { kind: 'agent', agentDefinitionId: 'code-reviewer', launchConfiguration: launch },
     } })).toBe('checkpoint_required')
     expect(() => context.applyEvent(8, { kind: 'communication', message: {
       messageId: 'm3', senderAgentRunId: 'host-run', receiverAgentRunId: 'pp-run', content: 'gap', messageType: 'direct_message', referenceFiles: [], createdAt: created,

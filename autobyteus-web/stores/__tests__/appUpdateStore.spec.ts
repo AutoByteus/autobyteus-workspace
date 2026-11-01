@@ -43,7 +43,7 @@ describe('appUpdateStore', () => {
   });
 
   it('loads initial state and reacts to update-state events', async () => {
-    let listener: ((payload: any) => void) | null = null;
+    let listener: ((payload: any) => void) | undefined;
 
     setElectronApiMock({
       getAppUpdateState: vi.fn().mockResolvedValue({
@@ -188,7 +188,7 @@ describe('appUpdateStore', () => {
   });
 
   it('keeps startup transient update errors quiet and avoids raw diagnostic toasts', async () => {
-    let listener: ((payload: any) => void) | null = null;
+    let listener: ((payload: any) => void) | undefined;
 
     setElectronApiMock({
       getAppUpdateState: vi.fn().mockResolvedValue({
@@ -228,7 +228,7 @@ describe('appUpdateStore', () => {
   });
 
   it('raises the downloaded toast once per download, not on every later state broadcast', async () => {
-    let listener: ((payload: any) => void) | null = null;
+    let listener: ((payload: any) => void) | undefined;
     setElectronApiMock({
       getAppUpdateState: vi.fn().mockResolvedValue({ status: 'downloading', currentVersion: '1.1.9', message: '' }),
       onAppUpdateState: vi.fn().mockImplementation((callback: (payload: any) => void) => {
@@ -247,7 +247,7 @@ describe('appUpdateStore', () => {
   });
 
   it('keeps every startup-check error quiet, not only network ones (DEC-016)', async () => {
-    let listener: ((payload: any) => void) | null = null;
+    let listener: ((payload: any) => void) | undefined;
     setElectronApiMock({
       getAppUpdateState: vi.fn().mockResolvedValue({ status: 'idle', currentVersion: '1.1.12', message: '', checkedAt: null }),
       onAppUpdateState: vi.fn().mockImplementation((callback: (payload: any) => void) => {
@@ -268,7 +268,7 @@ describe('appUpdateStore', () => {
   });
 
   it('keeps the shell notification record and sends the read and clear intents to the shell', async () => {
-    let listener: ((payload: any) => void) | null = null;
+    let listener: ((payload: any) => void) | undefined;
     const waiting = { version: '1.2.0', fromVersion: '1.1.9', foundAt: '2026-10-20T10:00:00.000Z', read: false,
       state: 'waiting', handledVersion: null, releasePageUrl: null };
     const markAppUpdateNotificationRead = vi.fn().mockResolvedValue({ notification: { ...waiting, read: true } });
@@ -304,7 +304,7 @@ describe('appUpdateStore', () => {
   });
 
   it('shows manual update errors with safe toast copy and dedupes repeated error events', async () => {
-    let listener: ((payload: any) => void) | null = null;
+    let listener: ((payload: any) => void) | undefined;
 
     setElectronApiMock({
       getAppUpdateState: vi.fn().mockResolvedValue({

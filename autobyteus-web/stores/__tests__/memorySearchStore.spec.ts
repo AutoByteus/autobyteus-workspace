@@ -21,7 +21,7 @@ const serverResult = (overrides: Record<string, unknown> = {}) => ({
 });
 
 const client = (responses: { status?: () => unknown; search?: () => unknown; mutate?: () => unknown }) => {
-  const query = vi.fn(({ query: document }: { query: { definitions: Array<{ name?: { value: string } }> } }) => {
+  const query = vi.fn(({ query: document }: { query: { definitions: Array<{ name?: { value: string } }> }; variables?: unknown }) => {
     const name = document.definitions[0]?.name?.value;
     if (name === 'MemoryIndexStatus') return Promise.resolve({ data: { memoryIndexStatus: responses.status?.() ?? status() } });
     if (name === 'MemorySearch') return Promise.resolve({ data: { memorySearch: responses.search?.() ?? { results: [], coverage: null, note: null } } });
@@ -85,8 +85,8 @@ describe('memorySearchStore', () => {
     client({ search: () => ({ results: [serverResult({ matches: [{ journalFileName: 'a.md', lineStart: 1, lineEnd: 2, day: null, snippet: 'x', matchedBy: 'MEANING', matchedWords: [] }] })], wordsNotFound: [], note: null, coverage: 'Text index covers 1 of 4 journal files.' }) });
     await store.runSearch('purple elephant');
     expect(store.outcome?.wordsNotFound).toEqual([]);
-    const searchCall = query.mock.calls.find(([options]) => (options as { variables?: unknown }).variables);
-    expect((searchCall![0] as { variables: unknown }).variables).toEqual({ query: 'purple elephant' });
+    const searchCall = query.mock.calls.find(([options]) => options.variables);
+    expect(searchCall?.[0].variables).toEqual({ query: 'purple elephant' });
   });
 
   it('turns a failed search into the error state, and Clear search back to idle', async () => {

@@ -6,7 +6,8 @@ import type { ProjectTask, TaskWithoutProject } from '~/types/project'
 import { TASK_CARD_TEXT_MAX_CHARS, TASK_LABEL_MAX_CHARS } from '~/utils/projects/taskText'
 
 const words = (count: number, prefix = 'word') => Array.from({ length: count }, (_, i) => `${prefix}${i}`).join(' ')
-const projectTask = (description: string, title = description.split('\n')[0]!.trim()): ProjectTask => ({ taskId: 't1', projectId: 'p1', title, description, status: 'TODO', contextFiles: [],
+const projectTask = (description: string, title = description.split('\n')[0]!.trim()): ProjectTask => ({ taskId: 't1', projectId: 'p1', taskKey: 'p1-1', title, description, status: 'TODO',
+  dependsOnTaskIds: [], partOfTaskId: null, comments: [], contextFiles: [],
   createdAt: '2026-10-07T00:00:00.000Z', updatedAt: '2026-10-07T00:00:00.000Z', root: null })
 const tempTask = (description: string): TaskWithoutProject => ({ taskId: 'x1', description, status: 'TODO', referenceFiles: [],
   createdAt: '2026-10-07T00:00:00.000Z', updatedAt: '2026-10-07T00:00:00.000Z', root: null })

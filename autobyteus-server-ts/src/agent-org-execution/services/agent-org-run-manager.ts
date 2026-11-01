@@ -331,11 +331,11 @@ export class AgentOrgRunManager {
         : configured;
       if (isDeepStrictEqual(tree, expected)) return result("UNCHANGED", "AgentOrg settings are already up to date.");
       if (!this.rootAdmissionOpen) return result("VALIDATION_FAILED", "AgentOrg admission is closed.");
-      let outcome: "committed" | "not_renamed" | "renamed_finalization_indeterminate";
+      let outcome: "committed" | "not_committed" | "finalization_indeterminate";
       try { outcome = (await this.executionTreeStore.write(this.layout.getOrgDirPath(orgRunId), expected)).outcome; }
-      catch { outcome = "renamed_finalization_indeterminate"; }
+      catch { outcome = "finalization_indeterminate"; }
       const readback = await this.executionTreeStore.read(this.layout.getOrgDirPath(orgRunId), orgRunId).catch(() => null);
-      if (outcome === "not_renamed") return result("PERSISTENCE_FAILED", "AgentOrg settings were not saved.", readback ?? tree);
+      if (outcome === "not_committed") return result("PERSISTENCE_FAILED", "AgentOrg settings were not saved.", readback ?? tree);
       if (outcome !== "committed" || !readback || !isDeepStrictEqual(readback, expected)) {
         return result("PERSISTENCE_INDETERMINATE",
           "Save outcome is uncertain. Refresh canonical AgentOrg configuration before another Save.", readback);

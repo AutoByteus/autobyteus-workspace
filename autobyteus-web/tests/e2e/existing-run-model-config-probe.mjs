@@ -222,7 +222,7 @@ const catalogSnapshot = {
   __typename: 'ProviderModelCatalogSnapshotObject',
   runtimeKind: 'autobyteus',
   ownerProvider: { __typename: 'CatalogProviderObject', id: 'OPENAI', name: 'OpenAI', providerType: 'OPENAI', isCustom: false, baseUrl: null, catalogMode: 'STATIC' },
-  sources: [{ __typename: 'ModelSourceStatusObject', modelKind: 'LLM', state: 'READY', modelCount: 1, successfulUnitCount: 1, failedUnitCount: 0, safeMessage: null }],
+  sources: [{ __typename: 'ModelSourceStatusObject', state: 'READY', modelCount: 1, successfulUnitCount: 1, failedUnitCount: 0, safeMessage: null }],
   llmModels: [{
     __typename: 'ModelDetail',
     modelIdentifier: 'gpt-5.6-luna',

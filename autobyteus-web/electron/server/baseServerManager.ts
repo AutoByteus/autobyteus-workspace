@@ -274,7 +274,6 @@ export abstract class BaseServerManager extends EventEmitter {
       graphql: `${this.serverUrl}/graphql`,
       rest: `${this.serverUrl}/rest`,
       graphqlWs: `${this.serverWebSocketUrl}/graphql`,
-      transcription: `${this.serverWebSocketUrl}/ws/transcribe`,
       terminalWs: `${this.serverWebSocketUrl}/ws/terminal`,
       health: `${this.serverUrl}/rest/health`
     }

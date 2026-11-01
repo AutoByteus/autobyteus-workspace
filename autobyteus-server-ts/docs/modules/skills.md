@@ -88,6 +88,43 @@ nothing is downloaded or replaced without that confirmed Update.
   revision stays updatable in the dialog row and in the notification
   (`CHECK_FAILED` is shown as the last check's result).
 
+### Integration sources (autobyteus-337)
+
+The Integrations page imports and removes integrations as skill sources, through
+two named extensions; `skills/` imports nothing from `credential-proxy/`:
+
+- **The `requireIntegrationFolder` import option.**
+  `addSkillSource(path, {requireIntegrationFolder: {reservedIds}})` and
+  `importGitHubSkillSource(url, {requireIntegrationFolder: {reservedIds}})` refuse a
+  source with no top-level folder holding both `SKILL.md` and `integration.json`
+  (`IntegrationFolderRequirementError` `NO_INTEGRATION_FOLDER`), or with such a
+  folder named like a reserved (already imported) integration ID
+  (`RESERVED_INTEGRATION_FOLDER`). For GitHub the check runs on the prepared
+  download, before inspection and publication, so nothing is published. Without the
+  option (the Skills page) nothing changes. A repeated GitHub import returns its
+  result with `alreadyImported: true`.
+- **The source-change observer.** `setSourceChangeObserver(observer)` sets one
+  observer, at composition (the credential proxy host sets the integration
+  catalog). `removeSkillSource` and `removeGitHubSkillSource` await
+  `observer.sourceRemoving(rootPath)` before anything changes;
+  `updateGitHubSkillSource` (manual and automatic) awaits
+  `observer.sourceChanging(oldRoot, newRoot)` after the prepared revision is
+  inspected and before it is published. A rejection refuses the removal or update
+  (an update records it as `lastUpdateError`). This is a notification before the
+  change, not a function passed into it.
+- `addSkillSource` and `removeSkillSource` are async (they await the observer and
+  return `Promise<SkillSourceInfo[]>`); so are their GraphQL resolvers.
+- `isSourceRegistered(sourceId)` answers, without a scan, whether a source is
+  still registered (a local path in `AUTOBYTEUS_SKILLS_PATHS`, or an ACTIVE GitHub
+  record): the proxy's per-call access check uses it.
+- `SkillService.listCatalogSourcePaths()` gives the catalog's source order, which
+  the integration catalog follows to keep one entry per integration ID, and
+  `isSkillDisabled(name)` a cheap disabled check. The skills GraphQL `integrationId`
+  field (set by the integration catalog) marks an integration's skill for the
+  Skills page's "Integration" label.
+
+See [Credential Proxy](./credential_proxy.md#integrations-and-their-sources).
+
 Shared metadata/revision transport now lives in `src/integrations/github/`,
 replacing the agent-package-specific `utils/github-repository-source.ts` owner.
 The agent package importer consumes that shared transport but retains its own
@@ -197,7 +234,7 @@ copies, so reloading or updating a package in place only conflicts with other
 sources. Every caller validates before it commits, so a rejected operation
 changes nothing:
 
-- `SkillService.addSkillSource`, before `AUTOBYTEUS_SKILLS_PATHS` is persisted;
+- `SkillSourceService.addSkillSource`, before `AUTOBYTEUS_SKILLS_PATHS` is persisted;
 - `SkillService.createSkill`, against tiers 1–3;
 - `AgentPackageService.importAgentPackage`: a local path before it is
   registered; a GitHub download before it is recorded (a rejected download is

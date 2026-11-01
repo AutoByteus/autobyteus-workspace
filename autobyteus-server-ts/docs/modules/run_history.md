@@ -1020,12 +1020,10 @@ reads one participant's messages when it is shown, through
 and referenced content opens by persisted message-owned identity at
 `/team-runs/:teamRunId/team-communication/messages/:messageId/references/:referenceId/content`.
 The projection stores `teamRunId` once at the projection level and each message
-stores `senderAddress` and `receiverAddress` as canonical
-`TeamExecutionAddress` values. Messages to persistent/nested Agents,
-task-Team Agents, and delegated task Agents remain attributable to their exact
-root, task-Team chain, member address, and optional task-Agent run without
-duplicating flat sender/receiver run IDs, paths, route keys, represented-Team
-fields, or instance wrappers. Old flat Team Communication files are converted by
+stores `senderAgentRunId` and `receiverAgentRunId`. Messages to configured
+Agents, task-Team Agents, and delegated task Agents remain attributable to
+their exact AgentRun (its placement is read from the execution tree) without
+paths, route keys, represented-Team fields, or instance wrappers. Old flat Team Communication files are converted by
 the app-data migration path before current runtime/API/store hydration. The
 member Artifacts tab must not hydrate those reference files as Sent/Received
 artifact rows.

@@ -27,7 +27,7 @@ const conversationWith = (messages: Conversation['messages']): Conversation => (
 
 const mutableText = (index: number): AIResponseTextSegment => {
   const segment: AIResponseTextSegment = { type: 'text', content: `segment-${index}` };
-  setStreamSegmentIdentity(segment, `segment-${index}`, 'text');
+  setStreamSegmentIdentity(segment, 'turn-1', `segment-${index}`, 'text');
   return segment;
 };
 

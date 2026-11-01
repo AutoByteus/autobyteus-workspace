@@ -597,7 +597,7 @@ ${activitySource}`).not.toContain(
     await nextTick();
 
     const selectionStore = useAgentSelectionStore();
-    selectionStore.$patch({ selectedRunId: "run-1", selectedType: "agent" });
+    selectionStore.$patch({ subject: { kind: "agent_run", runId: "run-1" } });
 
     const switchWorkButton = wrapper
       .findAll("button")

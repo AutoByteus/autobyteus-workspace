@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
 import { useBrowserShellStore } from '../browserShellStore'
+import type { BrowserShellTabSummary } from '~/types/browserShell'
 
 describe('browserShellStore', () => {
   beforeEach(() => {
@@ -209,8 +210,8 @@ describe('browserShellStore', () => {
   it('ignores identical snapshot updates from Electron', async () => {
     let snapshotListener: ((snapshot: {
       activeTabId: string | null;
-      sessions: Array<{ tab_id: string; title: string | null; url: string }>;
-    }) => void) | null = null
+      sessions: BrowserShellTabSummary[];
+    }) => void) | undefined
 
     const initialSnapshot = {
       activeTabId: 'browser-session-1',

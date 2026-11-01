@@ -136,9 +136,9 @@ describe('AIMessage.vue', () => {
 
   it('dispatches identified active text and reasoning without presentation policy props', () => {
     const textSegment = { type: 'text' as const, content: '**still streaming**' };
-    setStreamSegmentIdentity(textSegment, 'text-1', 'text');
+    setStreamSegmentIdentity(textSegment, 'turn-1', 'text-1', 'text');
     const thinkSegment = { type: 'think' as const, content: '# active reasoning' };
-    setStreamSegmentIdentity(thinkSegment, 'think-1', 'reasoning');
+    setStreamSegmentIdentity(thinkSegment, 'turn-1', 'think-1', 'reasoning');
     const wrapper = mount(AIMessage, {
       props: {
         message: { ...baseMessage, isComplete: false, segments: [textSegment, thinkSegment] },
@@ -158,7 +158,7 @@ describe('AIMessage.vue', () => {
 
   it('keeps completed identified and historical text on the same segment presenter', () => {
     const identifiedText = { type: 'text' as const, content: 'complete' };
-    setStreamSegmentIdentity(identifiedText, 'text-1', 'text');
+    setStreamSegmentIdentity(identifiedText, 'turn-1', 'text-1', 'text');
     const historicalText = { type: 'text' as const, content: 'history' };
     const wrapper = mount(AIMessage, {
       props: {

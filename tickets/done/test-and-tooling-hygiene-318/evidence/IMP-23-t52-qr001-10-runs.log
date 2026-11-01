@@ -1,0 +1,159 @@
+# IMP-23 — T-52 (REQ-013): QR-001 ten consecutive runs with the scripted AGY CLI
+# Command: 10 x (cd autobyteus-server-ts && env -i PATH=$PATH HOME=<temp> TMPDIR=<temp>/ RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<abs>/tests/fixtures/agy-failure-cli.mjs npx vitest run tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts)
+# Commit: 975527ec0c
+# Environment: macOS 26.5.2 arm64, Node v22.23.1, pnpm workspace; clean env (env -i PATH HOME=<fresh temp dir> TMPDIR); test-owned data only
+# Date: 2026-11-01
+# Look for: 10 x "Tests  6 passed | 1 skipped (7)" (the skipped case needs live Claude), no hang; runs 9 and 10 at load averages 33-51; "tmp left: 0" each run
+
+===== t52-runs.txt =====
+== run 1
+ ✓ tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts (7 tests | 1 skipped) 26307ms
+     ✓ CLS-E2E-001 standalone Agent root: CANCELLED closes and stops the worker, retry, refusals naming CANCELLED, DONE<->CANCELLED, reopen and reactivation, Temp task CANCELLED  4711ms
+     ✓ CLS-E2E-002 Agent Team root: the same CANCELLED journey through the Team stream (TASK_EXECUTIONS_CLOSED / _REOPENED)  4399ms
+     ✓ standalone Agent root: target_kind, refused while DONE, status-only reopen, helper and non-assigner refusals, Agent and Team copy reactivation, DONE cycle, deleted Task, ad hoc TODO  5074ms
+     ✓ Agent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate  4389ms
+     ✓ Agent Org root: the same journey through the Org stream; an Org member cannot reactivate  4243ms
+     ✓ QR-001: a DONE from another root racing the assigner's reactivating message never leaves a DONE Task with an open entry  3022ms
+ Test Files  1 passed (1)
+      Tests  6 passed | 1 skipped (7)
+   Duration  36.49s (transform 7.11s, setup 45ms, import 9.65s, tests 26.31s, environment 0ms)
+== run 2
+ ✓ tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts (7 tests | 1 skipped) 25787ms
+     ✓ CLS-E2E-001 standalone Agent root: CANCELLED closes and stops the worker, retry, refusals naming CANCELLED, DONE<->CANCELLED, reopen and reactivation, Temp task CANCELLED  4685ms
+     ✓ CLS-E2E-002 Agent Team root: the same CANCELLED journey through the Team stream (TASK_EXECUTIONS_CLOSED / _REOPENED)  4597ms
+     ✓ standalone Agent root: target_kind, refused while DONE, status-only reopen, helper and non-assigner refusals, Agent and Team copy reactivation, DONE cycle, deleted Task, ad hoc TODO  4614ms
+     ✓ Agent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate  4653ms
+     ✓ Agent Org root: the same journey through the Org stream; an Org member cannot reactivate  4124ms
+     ✓ QR-001: a DONE from another root racing the assigner's reactivating message never leaves a DONE Task with an open entry  2677ms
+ Test Files  1 passed (1)
+      Tests  6 passed | 1 skipped (7)
+   Duration  35.39s (transform 6.85s, setup 43ms, import 9.14s, tests 25.79s, environment 0ms)
+== run 3
+ ✓ tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts (7 tests | 1 skipped) 25715ms
+     ✓ CLS-E2E-001 standalone Agent root: CANCELLED closes and stops the worker, retry, refusals naming CANCELLED, DONE<->CANCELLED, reopen and reactivation, Temp task CANCELLED  4700ms
+     ✓ CLS-E2E-002 Agent Team root: the same CANCELLED journey through the Team stream (TASK_EXECUTIONS_CLOSED / _REOPENED)  4654ms
+     ✓ standalone Agent root: target_kind, refused while DONE, status-only reopen, helper and non-assigner refusals, Agent and Team copy reactivation, DONE cycle, deleted Task, ad hoc TODO  4571ms
+     ✓ Agent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate  4436ms
+     ✓ Agent Org root: the same journey through the Org stream; an Org member cannot reactivate  4317ms
+     ✓ QR-001: a DONE from another root racing the assigner's reactivating message never leaves a DONE Task with an open entry  2563ms
+ Test Files  1 passed (1)
+      Tests  6 passed | 1 skipped (7)
+   Duration  36.42s (transform 7.40s, setup 46ms, import 10.16s, tests 25.71s, environment 0ms)
+== run 4
+ ✓ tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts (7 tests | 1 skipped) 27193ms
+     ✓ CLS-E2E-001 standalone Agent root: CANCELLED closes and stops the worker, retry, refusals naming CANCELLED, DONE<->CANCELLED, reopen and reactivation, Temp task CANCELLED  4751ms
+     ✓ CLS-E2E-002 Agent Team root: the same CANCELLED journey through the Team stream (TASK_EXECUTIONS_CLOSED / _REOPENED)  4711ms
+     ✓ standalone Agent root: target_kind, refused while DONE, status-only reopen, helper and non-assigner refusals, Agent and Team copy reactivation, DONE cycle, deleted Task, ad hoc TODO  5115ms
+     ✓ Agent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate  4899ms
+     ✓ Agent Org root: the same journey through the Org stream; an Org member cannot reactivate  4624ms
+     ✓ QR-001: a DONE from another root racing the assigner's reactivating message never leaves a DONE Task with an open entry  2600ms
+ Test Files  1 passed (1)
+      Tests  6 passed | 1 skipped (7)
+   Duration  37.59s (transform 7.14s, setup 49ms, import 9.81s, tests 27.19s, environment 0ms)
+== run 5
+ ✓ tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts (7 tests | 1 skipped) 33041ms
+     ✓ CLS-E2E-001 standalone Agent root: CANCELLED closes and stops the worker, retry, refusals naming CANCELLED, DONE<->CANCELLED, reopen and reactivation, Temp task CANCELLED  5307ms
+     ✓ CLS-E2E-002 Agent Team root: the same CANCELLED journey through the Team stream (TASK_EXECUTIONS_CLOSED / _REOPENED)  6505ms
+     ✓ standalone Agent root: target_kind, refused while DONE, status-only reopen, helper and non-assigner refusals, Agent and Team copy reactivation, DONE cycle, deleted Task, ad hoc TODO  7741ms
+     ✓ Agent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate  5715ms
+     ✓ Agent Org root: the same journey through the Org stream; an Org member cannot reactivate  4651ms
+     ✓ QR-001: a DONE from another root racing the assigner's reactivating message never leaves a DONE Task with an open entry  2581ms
+ Test Files  1 passed (1)
+      Tests  6 passed | 1 skipped (7)
+   Duration  43.81s (transform 7.48s, setup 43ms, import 10.19s, tests 33.04s, environment 0ms)
+== run 6
+ ✓ tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts (7 tests | 1 skipped) 25907ms
+     ✓ CLS-E2E-001 standalone Agent root: CANCELLED closes and stops the worker, retry, refusals naming CANCELLED, DONE<->CANCELLED, reopen and reactivation, Temp task CANCELLED  4785ms
+     ✓ CLS-E2E-002 Agent Team root: the same CANCELLED journey through the Team stream (TASK_EXECUTIONS_CLOSED / _REOPENED)  4567ms
+     ✓ standalone Agent root: target_kind, refused while DONE, status-only reopen, helper and non-assigner refusals, Agent and Team copy reactivation, DONE cycle, deleted Task, ad hoc TODO  4657ms
+     ✓ Agent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate  4648ms
+     ✓ Agent Org root: the same journey through the Org stream; an Org member cannot reactivate  4168ms
+     ✓ QR-001: a DONE from another root racing the assigner's reactivating message never leaves a DONE Task with an open entry  2537ms
+ Test Files  1 passed (1)
+      Tests  6 passed | 1 skipped (7)
+   Duration  36.19s (transform 7.18s, setup 43ms, import 9.72s, tests 25.91s, environment 0ms)
+== run 7
+ ✓ tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts (7 tests | 1 skipped) 26089ms
+     ✓ CLS-E2E-001 standalone Agent root: CANCELLED closes and stops the worker, retry, refusals naming CANCELLED, DONE<->CANCELLED, reopen and reactivation, Temp task CANCELLED  4792ms
+     ✓ CLS-E2E-002 Agent Team root: the same CANCELLED journey through the Team stream (TASK_EXECUTIONS_CLOSED / _REOPENED)  4703ms
+     ✓ standalone Agent root: target_kind, refused while DONE, status-only reopen, helper and non-assigner refusals, Agent and Team copy reactivation, DONE cycle, deleted Task, ad hoc TODO  4681ms
+     ✓ Agent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate  4573ms
+     ✓ Agent Org root: the same journey through the Org stream; an Org member cannot reactivate  4353ms
+     ✓ QR-001: a DONE from another root racing the assigner's reactivating message never leaves a DONE Task with an open entry  2491ms
+ Test Files  1 passed (1)
+      Tests  6 passed | 1 skipped (7)
+   Duration  35.92s (transform 7.03s, setup 42ms, import 9.35s, tests 26.09s, environment 0ms)
+== run 8
+ ✓ tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts (7 tests | 1 skipped) 24392ms
+     ✓ CLS-E2E-001 standalone Agent root: CANCELLED closes and stops the worker, retry, refusals naming CANCELLED, DONE<->CANCELLED, reopen and reactivation, Temp task CANCELLED  4564ms
+     ✓ CLS-E2E-002 Agent Team root: the same CANCELLED journey through the Team stream (TASK_EXECUTIONS_CLOSED / _REOPENED)  4434ms
+     ✓ standalone Agent root: target_kind, refused while DONE, status-only reopen, helper and non-assigner refusals, Agent and Team copy reactivation, DONE cycle, deleted Task, ad hoc TODO  4313ms
+     ✓ Agent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate  4183ms
+     ✓ Agent Org root: the same journey through the Org stream; an Org member cannot reactivate  4020ms
+     ✓ QR-001: a DONE from another root racing the assigner's reactivating message never leaves a DONE Task with an open entry  2446ms
+ Test Files  1 passed (1)
+      Tests  6 passed | 1 skipped (7)
+   Duration  32.71s (transform 5.85s, setup 40ms, import 7.87s, tests 24.39s, environment 0ms)
+== run 9
+ ✓ tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts (7 tests | 1 skipped) 25264ms
+     ✓ CLS-E2E-001 standalone Agent root: CANCELLED closes and stops the worker, retry, refusals naming CANCELLED, DONE<->CANCELLED, reopen and reactivation, Temp task CANCELLED  5016ms
+     ✓ CLS-E2E-002 Agent Team root: the same CANCELLED journey through the Team stream (TASK_EXECUTIONS_CLOSED / _REOPENED)  4656ms
+     ✓ standalone Agent root: target_kind, refused while DONE, status-only reopen, helper and non-assigner refusals, Agent and Team copy reactivation, DONE cycle, deleted Task, ad hoc TODO  4432ms
+     ✓ Agent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate  4164ms
+     ✓ Agent Org root: the same journey through the Org stream; an Org member cannot reactivate  4015ms
+     ✓ QR-001: a DONE from another root racing the assigner's reactivating message never leaves a DONE Task with an open entry  2490ms
+ Test Files  1 passed (1)
+      Tests  6 passed | 1 skipped (7)
+   Duration  34.81s (transform 6.65s, setup 39ms, import 9.05s, tests 25.26s, environment 0ms)
+== run 10
+ ✓ tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts (7 tests | 1 skipped) 24283ms
+     ✓ CLS-E2E-001 standalone Agent root: CANCELLED closes and stops the worker, retry, refusals naming CANCELLED, DONE<->CANCELLED, reopen and reactivation, Temp task CANCELLED  4598ms
+     ✓ CLS-E2E-002 Agent Team root: the same CANCELLED journey through the Team stream (TASK_EXECUTIONS_CLOSED / _REOPENED)  4338ms
+     ✓ standalone Agent root: target_kind, refused while DONE, status-only reopen, helper and non-assigner refusals, Agent and Team copy reactivation, DONE cycle, deleted Task, ad hoc TODO  4252ms
+     ✓ Agent Team root: the same journey through the Team stream (TASK_EXECUTIONS_REOPENED); a teammate cannot reactivate  4115ms
+     ✓ Agent Org root: the same journey through the Org stream; an Org member cannot reactivate  4063ms
+     ✓ QR-001: a DONE from another root racing the assigner's reactivating message never leaves a DONE Task with an open entry  2428ms
+ Test Files  1 passed (1)
+      Tests  6 passed | 1 skipped (7)
+   Duration  33.00s (transform 6.06s, setup 35ms, import 8.25s, tests 24.28s, environment 0ms)
+
+===== remaining-summary.txt =====
+project-manager-ux-021-025 exit 0 end 2026-11-01T10:45:25Z out /tmp/h318/probes/project-manager-ux-021-025-20261101T104400Z
+task-agent-monitor-visibility exit 1 end 2026-11-01T10:47:08Z out /tmp/h318/probes/task-agent-monitor-visibility-20261101T104526Z
+team-reload-member-freshness exit 1 end 2026-11-01T10:50:11Z out /tmp/h318/probes/team-reload-member-freshness-20261101T104908Z
+projects-feature-rerun exit 0 end 2026-11-01T10:53:37Z out /tmp/h318/probes/projects-feature-rerun-20261101T105211Z
+task-copy-idle-lifetime-1 exit 0 load { 37.30 36.35 26.68 } |  Tests 1 passed (1)
+task-copy-idle-lifetime-2 exit 0 load { 36.17 40.17 33.61 } |  Tests 1 passed (1)
+agy-interrupt-resend exit 0 load { 33.94 39.45 33.51 } |  Tests 3 passed (3)
+start 2026-11-01T11:42:26Z load { 5.38 8.77 17.39 }
+exit 1 end 2026-11-01T11:46:17Z load { 8.75 8.17 15.03 }
+ Test Files  2 failed | 84 passed | 20 skipped (106)
+      Tests  4 failed | 481 passed | 69 skipped (554)
+/tmp/h318/run-t09.sh: line 12: /tmp/h318/t09-latency.jsonl: No such file or directory
+watcher test restored: yes
+T-52 run 1 exit 0 load { 10.37 8.63 14.88 } |  Tests 6 passed | 1 skipped (7) | tmp left: 0
+T-52 run 2 exit 0 load { 9.73 8.75 13.99 } |  Tests 6 passed | 1 skipped (7) | tmp left: 0
+T-52 run 3 exit 0 load { 9.02 8.75 13.30 } |  Tests 6 passed | 1 skipped (7) | tmp left: 0
+T-52 run 4 exit 0 load { 7.05 8.23 12.81 } |  Tests 6 passed | 1 skipped (7) | tmp left: 0
+T-52 run 5 exit 0 load { 11.00 9.17 12.92 } |  Tests 6 passed | 1 skipped (7) | tmp left: 0
+T-52 run 6 exit 0 load { 9.19 8.92 12.66 } |  Tests 6 passed | 1 skipped (7) | tmp left: 0
+T-52 run 7 exit 0 load { 9.08 8.98 12.53 } |  Tests 6 passed | 1 skipped (7) | tmp left: 0
+T-52 run 8 exit 0 load { 5.21 6.42 9.01 } |  Tests 6 passed | 1 skipped (7) | tmp left: 0
+T-52 run 9 exit 0 load { 33.31 51.19 30.76 } |  Tests 6 passed | 1 skipped (7) | tmp left: 0
+T-52 run 10 exit 0 load { 20.04 45.89 29.65 } |  Tests 6 passed | 1 skipped (7) | tmp left: 0
+e2e start 2026-11-01T12:13:52Z load { 20.04 45.89 29.65 }
+e2e exit 0 end 2026-11-01T12:25:16Z load { 6.83 14.50 19.51 }
+ Test Files  113 passed | 110 skipped (223)
+      Tests  478 passed | 542 skipped (1020)
+10949:stdout | tests/e2e/token-usage/gemini-native-pricing-graphql.e2e.test.ts
+10954:stdout | tests/e2e/token-usage/gemini-native-pricing-graphql.e2e.test.ts > native Gemini catalog pricing through the server cost path
+10957:stdout | tests/e2e/token-usage/gemini-native-pricing-graphql.e2e.test.ts > native Gemini catalog pricing through the server cost path > 'AE-002' prices '3.1 Pro, 150K prompt (<=200K tier)' at the official rates
+10962: ✓ tests/e2e/token-usage/gemini-native-pricing-graphql.e2e.test.ts (5 tests) 114ms
+ALL DONE 2026-11-01T12:25:16Z
+task-agent-monitor-visibility rerun exit 1 end 2026-11-01T12:25:52Z
+team-reload-member-freshness rerun exit 1 end 2026-11-01T12:26:45Z
+task-copy-idle-lifetime-3 (with evidence) exit 0 load { 5.13 8.97 15.64 }
+T-09b start 2026-11-01T12:29:47Z load { 5.13 8.97 15.64 }
+T-09b exit 1 end 2026-11-01T12:33:12Z load { 3.76 6.45 13.12 } |  Tests 4 failed | 481 passed | 69 skipped (554) | latency records       13
+watcher test restored again: yes
+

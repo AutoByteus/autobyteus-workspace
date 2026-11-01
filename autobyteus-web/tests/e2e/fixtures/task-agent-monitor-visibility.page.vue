@@ -164,7 +164,10 @@ const snapshotMessage = (): Extract<TeamStreamServerMessage, { type: 'TEAM_EXECU
       tool_name: null,
       error_message: null,
       error_details: null,
+      recoverableBlock: null,
     })),
+    agent_input_states: [],
+    remote_task_executions: [],
   },
 });
 
@@ -218,6 +221,7 @@ onMounted(() => {
           tool_name: null,
           error_message: null,
           error_details: null,
+          recoverableBlock: null,
         },
       });
     },

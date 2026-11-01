@@ -10,7 +10,7 @@ vi.mock('~/services/projects/projectChangeFeed', () => ({ getProjectChangeFeed: 
 
 import { useTaskWorkerTaskStore } from '../taskWorkerTaskStore'
 import { useWindowNodeContextStore } from '../windowNodeContextStore'
-import type { ProjectTask, TaskWorkerRef, TaskWorkerTask } from '~/types/project'
+import type { ProjectTask, TaskWorkerRef, TaskWorkerTask, ProjectChangeMessage } from '~/types/project'
 
 const agent: TaskWorkerRef = { kind: 'agent', agentRunId: 'a1' }
 const team: TaskWorkerRef = { kind: 'team', teamRunId: 't1' }
@@ -20,9 +20,10 @@ const workerTask = (taskId: string, projectId: string | null = 'p1', status: Tas
 type Answer = { workerKind: 'agent' | 'team'; workerRunId: string; task: TaskWorkerTask | null }
 const answering = (...answers: Answer[]) => ({ data: { taskWorkerTasks: answers } })
 const settle = () => new Promise((resolve) => setTimeout(resolve, 0))
-const upserted = (taskId: string, root: Partial<NonNullable<ProjectTask['root']>> | null) => ({
-  type: 'task_upserted' as const, scope: { kind: 'project' as const, projectId: 'p1' },
-  task: { taskId, projectId: 'p1', taskKey: `p1-${taskId}`, description: 'd', status: 'TODO' as const, dependsOnTaskIds: [], contextFiles: [], createdAt: '', updatedAt: '',
+const upserted = (taskId: string, root: Partial<NonNullable<ProjectTask['root']>> | null): ProjectChangeMessage => ({
+  type: 'task_upserted', scope: { kind: 'project', projectId: 'p1' },
+  task: { taskId, projectId: 'p1', taskKey: `p1-${taskId}`, title: `Task ${taskId}`, description: 'd', status: 'TODO', dependsOnTaskIds: [],
+    partOfTaskId: null, comments: [], contextFiles: [], createdAt: '', updatedAt: '',
     root: root && { kind: 'agent', recipientAddress: null, ingressAgentRunId: 'x', teamRunId: null, hostRoot: { kind: 'agent', runId: 'h' },
       start: 'started', startError: null, closed: false, status: 'idle', ...root } as NonNullable<ProjectTask['root']> },
 })

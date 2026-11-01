@@ -392,12 +392,12 @@ when neither is known) under the adapter-owned `outputLimitParameter`:
 `max_tokens` for DeepSeek and GLM, whose chat APIs document only that name,
 and `max_completion_tokens` for every other OpenAI-compatible adapter. It merges `extraParams` for provider-specific extensions,
 uses the shared provider-request kwarg sanitizer for framework-internal kwargs
-such as `logicalConversationId` and `requestId`, attaches `tools`, and passes
+such as `conversationId` and `requestId`, attaches `tools`, and passes
 `tool_choice` only when a lower-level direct caller explicitly supplies
 `kwargs.tool_choice`. The same sanitizer is used by external provider adapters
 such as Anthropic and Mistral so agent bookkeeping identifiers do not leak to
-provider SDK request payloads. External adapters filter `logicalConversationId`
-at their request boundary instead of requiring upstream callers to remove it.
+provider SDK request payloads. External adapters filter these internal kwargs
+at their request boundary instead of requiring upstream callers to remove them.
 Provider adapters can still normalize provider-specific request legality before
 delegating to this builder. For example, `KimiLLM` keeps `kimi-k2.6` on
 Moonshot-safe temperature defaults unless a caller explicitly passes a

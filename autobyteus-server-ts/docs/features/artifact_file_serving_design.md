@@ -98,11 +98,10 @@ the next event writes. Reads never wait for the event queue.
 1. `send_message_to(recipient_address=...)` accepts natural `content` plus optional
    explicit `reference_files` absolute local paths.
 2. Accepted team-route delivery emits one `INTER_AGENT_MESSAGE` payload with
-   message id, address-first sender/receiver identity, content, message type,
-   team projection fields, and structured reference metadata. Structural,
-   task-Team, and task-Agent senders/receivers use the exact four-field
-   `TeamExecutionAddress` (`rootTeamRunId`, ordered `taskTeamRunIds`, rooted
-   `memberAddress`, and nullable `taskAgentRunId`).
+   message id, the sender and receiver AgentRun IDs, content, message type,
+   team projection fields, and structured reference metadata. Configured,
+   task-Team and task-Agent senders/receivers are all identified by their
+   AgentRun ID, unique within the root TeamRun.
 3. `TeamCommunicationMessageProcessor` converts accepted `INTER_AGENT_MESSAGE`
    events into one normalized `TEAM_COMMUNICATION_MESSAGE` per message.
 4. Team teammate delivery (`RootCommunicationEngine` with the `RootTeamRun`
@@ -131,7 +130,7 @@ intentionally omit the team projection fields consumed by this flow.
 | Team communication projection | `src/services/team-communication/*` | Message-first projection, identity, normalization, and content resolution. |
 | Team communication API | `src/api/graphql/types/team-communication.ts`, `src/api/rest/team-communication.ts` | Hydrate messages and stream child reference content. |
 | Mixed team member event bridge | `src/agent-team-execution/backends/mixed/**` plus runtime AgentRun event converters | Converts/enriches member runtime events once before team fan-out. |
-| Team Agent event projection | `src/services/agent-streaming/team-agent-event-websocket-projector.ts` | Projects canonical Agent events with one strict `agent_execution` binding before WebSocket fan-out. |
+| Team Agent event projection | `src/services/agent-streaming/team-agent-event-websocket-projector.ts` | Projects canonical Agent events with the member's `agent_run_id` before WebSocket fan-out. |
 
 ## Storage
 

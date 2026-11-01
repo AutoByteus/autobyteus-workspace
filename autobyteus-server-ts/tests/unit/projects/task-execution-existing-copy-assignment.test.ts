@@ -2,6 +2,7 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { trackReleases, type ReleaseTracker } from "../../helpers/project-task-release-tracker.js";
 import { ProjectStore } from "../../../src/projects/stores/project-store.js";
 import { ProjectsLayout } from "../../../src/projects/stores/projects-layout.js";
 import { AdHocTasksLayout } from "../../../src/projects/stores/ad-hoc-tasks-layout.js";
@@ -25,17 +26,18 @@ const subWork: TaskExecutionReference = { agentRunId: "sub-work" };
 describe("existing-copy assignment on the Task side", () => {
   let appData: string, layout: ProjectsLayout, adHocLayout: AdHocTasksLayout, store: ProjectStore, projectId: string;
   let tasks: ProjectTaskService, release: ReturnType<typeof vi.fn<TaskExecutionReleaseRequest>>;
+  let releases: ReleaseTracker;
   const boot = async () => {
     release = vi.fn<TaskExecutionReleaseRequest>(async (_root, executions) => executions.map(execution => ({ execution, stopped: true })));
     const service = new ProjectTaskService({ store, adHocTasks: new AdHocTaskStore(adHocLayout), contextStore: new ProjectTaskContextStore(layout),
-      requestRelease: release, taskExecutionResources: new TaskExecutionResourceService(new TaskExecutionResourceStore(layout, adHocLayout)) });
+      requestRelease: (releases = trackReleases(release)).request, taskExecutionResources: new TaskExecutionResourceService(new TaskExecutionResourceStore(layout, adHocLayout)) });
     await service.load();
     return service;
   };
   const rawFile = async (taskId: string) => JSON.parse(await fs.readFile(layout.taskExecutionResourcesFile(projectId, taskId), "utf8"));
   const setStatus = async (taskId: string, status: "TODO" | "IN_PROGRESS" | "DONE" | "CANCELLED") => {
     await tasks.updateTaskById({ taskId, status });
-    await tasks.drainRuntimeReleases();
+    await releases.settled();
   };
   const released = () => release.mock.calls.flatMap(([, executions]) => executions);
   /** Task A delegated by `manager` to the Team copy (started), then A DONE; Task B created. */
@@ -59,7 +61,7 @@ describe("existing-copy assignment on the Task side", () => {
     projectId = (await new ProjectService({ store, workspaceLookup: { listRegisteredWorkspaceRootPaths: async () => [] } }).createProject({ name: "P" })).projectId;
     tasks = await boot();
   });
-  afterEach(async () => { await tasks.drainRuntimeReleases(); vi.restoreAllMocks(); await fs.rm(appData, { recursive: true, force: true }); });
+  afterEach(async () => { await releases.settled(); vi.restoreAllMocks(); await fs.rm(appData, { recursive: true, force: true }); });
 
   it("appends B's starting entry (address copied), leaves A unchanged, makes B the copy's current Task and B's root, and survives a restart (REQ-003/008/013)", async () => {
     const { a, b } = await teamDidA();

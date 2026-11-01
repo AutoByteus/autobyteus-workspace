@@ -369,7 +369,7 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
     if (this.hasRoot(hostRunId)) return outcome("RUN_ACTIVE", "This run became active. Reopen Settings and try again.", tree);
     const written = await this.store.writeTree(dir, nextTree).catch(() => null);
     const readback = await this.store.readTree(dir, hostRunId).catch(() => null);
-    if (written?.outcome === "not_renamed") return outcome("PERSISTENCE_FAILED", "The model choices were not saved.", readback ?? tree);
+    if (written?.outcome === "not_committed") return outcome("PERSISTENCE_FAILED", "The model choices were not saved.", readback ?? tree);
     if (written?.outcome !== "committed" || !readback || !isDeepStrictEqual(readback, nextTree)) {
       return outcome("PERSISTENCE_INDETERMINATE", "The save outcome is being verified. Refresh Settings before saving again.", readback);
     }

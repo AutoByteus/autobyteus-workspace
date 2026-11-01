@@ -68,7 +68,8 @@ describe('native-produced saved history joins actual hosted pending input', () =
         } } });
       // A fresh view, then the copy opened: its stored conversation loads under the view's pending input.
       const hydrate = async () => {
-        const view = AgentRootExecutionViewDtoSchema.parse(projectAgentCollaborationView((await f.manager.getInspection(HOST))!)).root_agent;
+        // The run delegates nothing to other nodes (autobyteus-278 added the remote runs to the view's input).
+        const view = AgentRootExecutionViewDtoSchema.parse(projectAgentCollaborationView({ ...(await f.manager.getInspection(HOST))!, remoteTaskExecutions: [] })).root_agent;
         const context = await buildAgentRunCollaborationContext({ hostRunId: HOST, view });
         expect(await hydrateAgentRunCollaborationChild({ hostRunId: HOST, collaboration: context, agentRunId: f.run.runId,
           isPublished: () => true, liveToolAuthority: () => false })).toBe('hydrated');

@@ -1,0 +1,14 @@
+# API-01 N-2: release identity in packaged outputs; clean checkout 400e4d5b9c; 2026-11-01T06:38:20Z
+## desktop bundle: autobyteus-web/electron-dist/mac-arm64/AutoByteus.app/Contents/Resources/server/dist/release-identity.json
+{
+  "version": "1.5.11-beta.9"
+}
+## web package version: 1.5.11-beta.9
+## Docker server package: pnpm --filter autobyteus-server-ts deploy <tmp>/server-package --legacy (the Dockerfile.monorepo command)
+deploy exit=0
+-rw-r--r--@ 1 normy  staff  33 Nov  1 07:31 /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-api.r8VrPh/server-package/dist/release-identity.json
+{
+  "version": "1.5.11-beta.9"
+}
+## reader in the deployed package:
+readReleaseIdentity() -> "1.5.11-beta.9"

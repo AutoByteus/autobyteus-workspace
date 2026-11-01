@@ -38,8 +38,8 @@ describe('useShellPrimaryNavigation capability gating', () => {
 
   // projects-always-on (AC-001): Projects needs no capability; it is always shown on desktop.
   it.each<{ applicationsEnabled: boolean; expectedKeys: string[] }>([
-    { applicationsEnabled: false, expectedKeys: ['chat', 'agents', 'agentTeams', 'agentOrgs', 'projects', 'skills', 'memory', 'nodes'] },
-    { applicationsEnabled: true, expectedKeys: ['chat', 'agents', 'agentTeams', 'agentOrgs', 'projects', 'applications', 'skills', 'memory', 'nodes'] },
+    { applicationsEnabled: false, expectedKeys: ['chat', 'agents', 'agentTeams', 'agentOrgs', 'projects', 'skills', 'memory', 'nodes', 'integrations'] },
+    { applicationsEnabled: true, expectedKeys: ['chat', 'agents', 'agentTeams', 'agentOrgs', 'projects', 'applications', 'skills', 'memory', 'nodes', 'integrations'] },
   ])('always shows Projects immediately after Agent Orgs on desktop (Applications enabled: $applicationsEnabled)', ({ applicationsEnabled, expectedKeys }) => {
     applicationsCapabilityStoreMock.isEnabled = applicationsEnabled;
 

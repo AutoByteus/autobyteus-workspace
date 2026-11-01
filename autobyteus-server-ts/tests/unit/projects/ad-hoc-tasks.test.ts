@@ -2,6 +2,7 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { trackReleases, type ReleaseTracker } from "../../helpers/project-task-release-tracker.js";
 import { ProjectStore } from "../../../src/projects/stores/project-store.js";
 import { ProjectsLayout } from "../../../src/projects/stores/projects-layout.js";
 import { AdHocTasksLayout } from "../../../src/projects/stores/ad-hoc-tasks-layout.js";
@@ -22,9 +23,10 @@ describe("ad-hoc Tasks (no Project)", () => {
   let appData: string, layout: ProjectsLayout, adHocLayout: AdHocTasksLayout, store: ProjectStore, projectId: string;
   let release: ReturnType<typeof vi.fn<TaskExecutionReleaseRequest>>;
   let tasks: ProjectTaskService;
+  let releases: ReleaseTracker;
   const boot = async () => {
     const adHocTasks = new AdHocTaskStore(adHocLayout);
-    const service = new ProjectTaskService({ store, adHocTasks, contextStore: new ProjectTaskContextStore(layout), requestRelease: release,
+    const service = new ProjectTaskService({ store, adHocTasks, contextStore: new ProjectTaskContextStore(layout), requestRelease: (releases = trackReleases(release)).request,
       taskExecutionResources: new TaskExecutionResourceService(new TaskExecutionResourceStore(layout, adHocLayout)) });
     await service.load();
     return service;
@@ -45,7 +47,7 @@ describe("ad-hoc Tasks (no Project)", () => {
     tasks = await boot();
   });
   afterEach(async () => {
-    await tasks.drainRuntimeReleases();
+    await releases.settled();
     vi.restoreAllMocks();
     await fs.rm(appData, { recursive: true, force: true });
   });
@@ -83,7 +85,7 @@ describe("ad-hoc Tasks (no Project)", () => {
     await tasks.markStarted({ agentRunId: "copy-1" });
     await tasks.linkNewTaskExecution({ role: "delegated", creator: { agentRunId: "copy-1" }, hostRoot, execution: { agentRunId: "helper-1" } });
     await expect(tasks.updateTaskById({ taskId, status: "DONE" })).resolves.toEqual({ projectId: null, taskId, taskReference: taskId, status: "DONE" });
-    await tasks.drainRuntimeReleases();
+    await releases.settled();
     expect((await taskFile(taskId)).status).toBe("DONE");
     expect(tasks.isOpen({ agentRunId: "copy-1" })).toBe(false);
     expect(tasks.isOpen({ agentRunId: "helper-1" })).toBe(false);
@@ -94,7 +96,7 @@ describe("ad-hoc Tasks (no Project)", () => {
       .rejects.toMatchObject({ code: "TASK_AGENT_RESOURCE_CLOSED" });
     const before = await taskFile(taskId);
     await tasks.updateTaskById({ taskId, status: "DONE" });
-    await tasks.drainRuntimeReleases();
+    await releases.settled();
     expect(release).toHaveBeenCalledTimes(2);
     expect(await taskFile(taskId)).toEqual(before);
   });
@@ -102,7 +104,7 @@ describe("ad-hoc Tasks (no Project)", () => {
   it("closure survives a restart: the reloaded view keeps the copy closed and hidden (AC-008)", async () => {
     const { taskId } = await delegate("copy-1");
     await tasks.updateTaskById({ taskId, status: "DONE" });
-    await tasks.drainRuntimeReleases();
+    await releases.settled();
     const restarted = await boot();
     expect(restarted.isOpen({ agentRunId: "copy-1" })).toBe(false);
     expect(restarted.ownerOf([{ agentRunId: "copy-1" }])).toEqual({ taskId, execution: { agentRunId: "copy-1" }, open: false });
@@ -127,7 +129,7 @@ describe("ad-hoc Tasks (no Project)", () => {
     const projectTask = await tasks.createTask({ projectId, title: "Project work", description: "Project work" });
     await tasks.linkNewTaskExecution({ role: "assigned", taskId: projectTask.taskId, assignedBy: "manager", hostRoot: otherRoot, execution: { agentRunId: "worker" } });
     await tasks.updateTaskById({ taskId: projectTask.taskId, status: "DONE" });
-    await tasks.drainRuntimeReleases();
+    await releases.settled();
     expect((await store.readTask(projectId, projectTask.taskId))!.status).toBe("DONE");
     expect(release).toHaveBeenCalledWith(otherRoot, [{ agentRunId: "worker" }]);
   });

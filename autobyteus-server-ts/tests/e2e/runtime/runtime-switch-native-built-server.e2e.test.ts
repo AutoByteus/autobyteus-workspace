@@ -37,6 +37,10 @@ import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.
 //   RS-05 a failed attempt: the archive step fails after the native candidate wrote its instruction; the previous agent's file
 //         is exactly as before, the switch stays pending, and the retry completes with one marker and one segment (I-7).
 //   RS-06 Grok as the switch target, with the same failed attempt and retry.
+//   RS-07 a Grok start that fails after the switch became durable (the Grok process ends before the run is published)
+//         leaves a completed switch; the retry restores the Grok session and still carries the notice.
+//   RS-08 a model edit while a switch to the native runtime is pending is a fresh selection (the never-started candidate
+//         is not a current model), and the first message runs on it.
 // Prerequisite: pnpm -C autobyteus-server-ts build (current dist). Run:
 //   env -i PATH="$PATH" HOME="$(cd "$(mktemp -d)" && pwd -P)" TMPDIR="$TMPDIR" RUN_AGY_FAILURE_E2E=1 \
 //     ANTIGRAVITY_CLI_COMMAND=$PWD/autobyteus-server-ts/tests/fixtures/agy-failure-cli.mjs \

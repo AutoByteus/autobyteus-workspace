@@ -71,21 +71,12 @@ export function useProviderApiKeySectionRuntime() {
     selectedSources.value.some(source => source.state === 'REFRESHING'))
   const modelErrorMessage = computed(() => selectedSources.value
     .find(source => source.safeMessage)?.safeMessage ?? catalog.value.errorMessage)
-  const hasCurrentModelRows = computed(() => selectedSources.value.some(source =>
-    (source.state === 'READY' || source.state === 'PARTIAL') && source.modelCount > 0))
-  const hasStaleModelRows = computed(() => selectedSources.value.some(source =>
+  // A discovered provider has one model source (a static provider none): its state alone says partial, stale or unavailable.
+  const hasPartialModelResult = computed(() => selectedSources.value.some(source => source.state === 'PARTIAL'))
+  const hasStaleModelResult = computed(() => selectedSources.value.some(source =>
     source.state === 'STALE_ERROR' && source.modelCount > 0))
-  const hasModelSourceProblem = computed(() => selectedSources.value.some(source =>
-    source.state === 'PARTIAL' || source.state === 'ERROR' || source.state === 'STALE_ERROR'))
-  const hasPartialModelResult = computed(() => selectedSources.value.some(source =>
-    source.state === 'PARTIAL') || (hasCurrentModelRows.value && hasModelSourceProblem.value))
-  const hasStaleModelResult = computed(() => !hasPartialModelResult.value
-    && !hasCurrentModelRows.value
-    && hasStaleModelRows.value)
-  const hasUnavailableModelSource = computed(() => !hasCurrentModelRows.value
-    && !hasStaleModelRows.value
-    && selectedSources.value.some(source =>
-      source.state === 'ERROR' || source.state === 'STALE_ERROR'))
+  const hasUnavailableModelSource = computed(() => selectedSources.value.some(source =>
+    source.state === 'ERROR' || (source.state === 'STALE_ERROR' && source.modelCount === 0)))
   const selectedCatalogHasTerminalPayload = computed(() => Boolean(selectedCatalog.value)
     && (selectedSources.value.length === 0
       || selectedSources.value.every(source =>
