@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-002` (after ARCH-REV-001)
+- Current solution revision ID: `SR-003` (after IR-001: QR-004 missed; SR-002 after ARCH-REV-001)
 - Approved requirements baseline: `requirements-doc.md` SR-001, approved by the Solution Designer within the direction (the user informed in the conversation, 2026-11-01)
 - Behavior-defining supplements: none
 - User approval of the design, when the direction requires it: `Not required` (the Task asks for none)
@@ -10,6 +10,12 @@
 - Canonical investigation-notes path: `tickets/in-progress/large-runs-load-less/investigation-notes.md`
 - Authorities read: `references/architecture-design.md`, `references/design-principles.md` (this conversation), `DESIGN.md` (rules 3, 5, 7, re-read 2026-11-01), `autobyteus-server-ts/docs/design/data_migration_guideline.md` §6 ("Don't validate history at startup")
 - Project design-principle conflicts: none
+
+## SR-003 Revision Summary (IR-001, QR-004 missed)
+
+- **Finding** (implementation, IR-001). With at most one layout read per frame (DS-006 as designed), opening the long-token copy still takes 85,946 ms, as 23 forced layouts of 3.9–7.1 s each. The number of reads is not the problem; each layout is.
+- **Cause, measured** (investigation-notes M-163b): text shaping of 60 KB single-word runs in the system UI font with kerning and ligatures. A relayout of the loaded conversation takes 86 s as it is, 48–87 ms with kerning and ligatures off, and 45–83 ms in Arial. Line breaking is secondary (`break-all`: 43 s); `white-space`, `display` and `min-width` make no difference.
+- **Decision (DEC-004, no visible change):** text that contains a very long unbroken run is shaped without kerning and ligatures. Normal messages keep their typography. DS-006 stays: it bounds the number of layouts while a conversation streams in. DEC-001 (b), collapsing long messages, is not needed.
 
 ## SR-002 Revision Summary (ARCH-REV-001)
 
@@ -49,7 +55,7 @@ These are design causes, not slow code: one snapshot serves every screen, and va
 - Escalation trigger:
   - a consumer of the view's message log beyond the Team-tab seam;
   - a live ordering case the load-and-merge rule cannot keep;
-  - QR-004 missed after DEC-001 (a), which makes DEC-001 (b) a question for the user.
+  - QR-004 missed after DS-007, which makes DEC-001 (b) a question for the user.
 
 ## Architecture Investigation Evidence
 
@@ -100,7 +106,7 @@ Each screen asks for what it shows:
 | BEH-002 | REQ-001, REQ-002; AC-003 | Team or org open; member click | The focused member only; others on open; Team-tab messages on show | DS-002, DS-003 |
 | BEH-003 | REQ-003; AC-004 | Hub click | Settings reuses the view | DS-004 |
 | BEH-004 | REQ-004; AC-005, AC-006 | Start; new root; Team tab; resume | Structure-only scan; validated where read | DS-005 |
-| BEH-005 | REQ-005; AC-007 | Copy open | One layout read per frame | DS-006 |
+| BEH-005 | REQ-005; AC-007 | Copy open | Cheap shaping of very long unbroken runs; one layout read per frame | DS-006, DS-007 |
 
 ## Relevant Supplemental Task Artifacts
 
@@ -153,6 +159,7 @@ Each screen asks for what it shows:
 | DS-004 | Bounded | BEH-003 | A hub selected | One view read shared by the rows and Settings | `agentRunCollaborationStore` |
 | DS-005 | Primary | BEH-004 | First history access; a new root; messages read; resume | Structure-only admission; per-run message validation | `RootRunPackageReadinessIndex` / validator; each root's message reader |
 | DS-006 | Bounded | BEH-005 | Feed updates | At most one scroll-position read per frame | `AgentConversationFeed.vue` |
+| DS-007 | Bounded | BEH-005 | A text block is rendered | A block with a very long unbroken run is shaped without kerning and ligatures | `hasLongUnbrokenRun` + the `long-unbroken-text` class |
 
 ## Primary Execution Spine(s)
 
@@ -162,6 +169,7 @@ Each screen asks for what it shows:
 - DS-004: `hub selected -> agentRunCollaborationStore.inspect (one in-flight or settled view) -> rows; Settings -> agentRunCollaborationStore.viewFor(hostRunId) (awaits the same inspection) -> tree, closed and remote executions`.
 - DS-005: `first access / new root -> RootRunPackageCurrentValidator.scan (tree + manifest + log file presence; no log read)`; `admitCurrent(family, id) -> validates that one package's structure and adds it (no rescan)`; `inspection -> the tree only`; `records owner (participant query, reference content, resume/activation) -> strict validation of that run's tree and log -> error with the reason on failure (rule 7: contained to that run's read)`.
 - DS-006: `onUpdated -> scheduleAutoScrollCheck() (one requestAnimationFrame per frame) -> syncAutoScrollIfPinned (one scrollHeight read)`.
+- DS-007: `text block render (user message text, markdown html segment, inter-agent message text, Team-tab message row) -> hasLongUnbrokenRun(text) (a run of at least 1,000 non-whitespace characters) -> class long-unbroken-text { font-kerning: none; font-variant-ligatures: none; font-feature-settings: normal; text-rendering: optimizeSpeed }`.
 
 ## Spine Narratives (Mandatory)
 
@@ -173,6 +181,7 @@ Each screen asks for what it shows:
 | DS-004 | Settings takes the hub's view from the collaboration store, which reads it once per selection (its in-flight inspection or its published context). It no longer reads it itself | collaboration store |
 | DS-005 | The scan admits a team or org package from its tree, its manifest and the presence of its log file, and reads no log. `admitCurrent` validates the one new package and adds it, without rebuilding the snapshot. Inspections read and validate the tree only. A run's log is strictly validated, with its tree, only in the records owner: the participant query, reference content, and resume/activation. A damaged log fails those reads with the reason, and the run's view and rows still open (rule 7: contained to that run's read) | readiness index; message readers |
 | DS-006 | `onUpdated` no longer reads layout. It schedules one `requestAnimationFrame` check per frame, which reads `scrollHeight` once and scrolls if pinned. Behavior (stick to bottom, unseen activity) is unchanged | the feed |
+| DS-007 | One pure helper decides whether a text has a run of at least 1,000 non-whitespace characters, in one linear scan. The four text renderers add the `long-unbroken-text` class to that block only. The class turns off kerning and ligatures, the measured cost. The implementation may drop any of the four properties that the measurement shows is not needed, and records which. Wrapping (`break-words`), copy and search are untouched | `utils/text/longUnbrokenRun.ts` and the renderers |
 
 ## Spine Actors / Main-Line Nodes
 
@@ -297,6 +306,7 @@ The web root contexts depend on `CollaborationParticipantMessages` and `MemberLo
 | web `components/layout/RightSideTabs.vue` (Team tab), `components/mobile/MobileTeamMessages.vue`, `MobileActivityDigest.vue` | Ask the owner on show; loading and error states |
 | web `stores/existingRunConfigStore.ts`, `stores/agentRunCollaborationStore.ts` | Settings reuses the view |
 | web `components/workspace/agent/AgentConversationFeed.vue` | One check per frame |
+| web `utils/text/longUnbrokenRun.ts` (new) and a shared `long-unbroken-text` style; `components/conversation/UserMessage.vue`, `components/conversation/segments/renderer/MarkdownRenderer.vue` (html segment), `components/conversation/segments/InterAgentMessageSegment.vue`, the Team-tab message row | DS-007 |
 | `autobyteus-web/tests/e2e/delegated-copies-large-hub-probe.mjs` | Reads messages through the new query |
 
 ## Target Subsystem / Folder / File Mapping
@@ -337,7 +347,7 @@ The web root contexts depend on `CollaborationParticipantMessages` and `MemberLo
 4. Web: `MemberLoader` with per-root generations; every hydration form (initial, team recovery, org stream, reopen) stages only the focused member; the copies use it (AC-003). Test: a member hydrated before a stream failure reloads on its next open.
 5. Web: Settings reuses the view (AC-004).
 6. Server: structure-only scan; per-package `admitCurrent`; damaged-log reporting where read (AC-005, AC-006).
-7. Web: the feed's per-frame check (AC-007); measure L-010 unbroken; if QR-004 is missed, stop and return to the Solution Designer (DEC-001 b).
+7. Web: the feed's per-frame check (DS-006, done) and the long-run shaping class (DS-007), with a unit test of the helper and a component test that a long-token block gets the class and a prose block does not. Measure L-010 unbroken (QR-004 under 1 s) and L-010 words (no regression); if QR-004 is still missed, stop and return to the Solution Designer.
 8. Update the probe; rerun every `M-*` measurement after; docs; suites from a clean clone.
 
 ## Key Tradeoffs

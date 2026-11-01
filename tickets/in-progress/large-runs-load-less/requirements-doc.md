@@ -3,7 +3,7 @@
 ## Document Status
 
 - Status: `Approved`
-- Current solution revision ID: `SR-001`
+- Current solution revision ID: `SR-003` (requirements approved at SR-001; SR-003 adds DEC-004 within the direction, with no visible change)
 - Package identifier: `large-runs-load-less`
 - Request / ticket: Project Task `autobyteus-358`, "Large runs: load less and open faster (8 small Tasks merged into one)"
 - Requested by: the user, through `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`)
@@ -97,7 +97,7 @@ None.
 | REQ-002 | A run's view and its live snapshots no longer carry the run's message log, for hubs, team runs and org runs. The Team tab loads the messages of the participant it shows when it is shown. Messages arriving live are added in order, and the loaded list equals the stored log for that participant | BEH-001, BEH-002 | Must | The Team tab already filters by one participant (`agentRunCollaborationContext.ts:357-394`) | 152 (team and org runs: the same fix, per the Task's "one change") |
 | REQ-003 | One selection of a hub reads its view once; Settings uses that view or reads only what it needs | BEH-003 | Must | E-06 | 162 |
 | REQ-004 | Run packages are admitted by structure only: the readiness check reads no message log. A run's messages are validated when the run is opened, and a damaged or unreadable log is reported then. A new team or org run does not rescan the whole history | BEH-004 | Must | M-156: the scan is 139 ms without logs | 156 |
-| REQ-005 | Opening a conversation of very long unbroken tokens takes a time roughly proportional to its size, with the display unchanged | BEH-005 | Must | M-163: the forced layout in the feed's per-update scroll check is 88.8 of 89.9 s; prose of the same size opens in 262 ms | 163 |
+| REQ-005 | Opening a conversation of very long unbroken tokens takes a time roughly proportional to its size, with the display unchanged | BEH-005 | Must | M-163b: shaping those runs without kerning and ligatures lays out the whole conversation in 45–87 ms (86 s with them) | 163 |
 
 ## Acceptance Criteria
 
@@ -149,6 +149,7 @@ None.
 | Decision ID | Question | Options / Evidence | Reasoning And Recommendation | Owner | Status |
 | --- | --- | --- | --- | --- | --- |
 | DEC-001 | Item 163: fix the forced layout only, or also collapse very long messages? | (a) Remove the repeated forced layout (the measured cause, 88.8 of 89.9 s). (b) Also show very long messages collapsed with "Show all", which changes what the user sees | (a) removes the cause, and prose of the same size already opens in 262 ms. (b) is a visible change, and only needed if (a) misses QR-004. (a); (b) becomes a question for the user only if the measurement after (a) misses the target | Solution Designer | Decided |
+| DEC-004 | 163 after IR-001: DEC-001 (a) misses QR-004; how to meet it without changing what the user sees? | M-163b: the cause is font shaping, with kerning and ligatures, of very long unbroken runs (86 s → 45–87 ms without them) | Turn kerning and ligatures off only for text that contains a very long unbroken run (base64, minified text), where they have no visible meaning. Other messages keep their typography, and wrapping, copy and search are unchanged. This meets QR-004 without DEC-001 (b), so no user decision is needed | Solution Designer | Decided (SR-003) |
 | DEC-002 | Apply "messages only when shown" to team and org runs too? | The original item names the hub; team and org runs load their whole log at open as well (E-04) | It is the same cause and the same fix, and the Task asks for one change. Yes | Solution Designer | Decided |
 | DEC-003 | Drop 161, 200 and 118? | Measurements M-161, M-200, M-118 | The user allowed dropping fixed or not-worth-it items. Drop all three, reported with evidence | Solution Designer | Decided |
 

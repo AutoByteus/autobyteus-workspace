@@ -13,7 +13,7 @@
 - Bootstrap blocker: none
 - Current solution revision ID: `SR-001`
 - Authorities read: `SKILL.md` (updated 2026-11-01), `references/requirements-engineering.md` (2026-11-01, this conversation)
-- Investigation status: complete for the requirements. Item 163's cause is being profiled (the browser CPU profile, see M-163)
+- Investigation status: complete. Item 163's cause was established after IR-001 (M-163b)
 
 ## Initial Request And Clarifications
 
@@ -50,6 +50,7 @@ All on test-owned data: a seed made by the repository's own probe (`autobyteus-w
 | M-162 | 162 | Seed probe S-001..003, a hub click with request counts | `hubClickSettledOps: GetAgentRunCollaboration 2` (2 × 2.79 MB) and `GetSkills 2`. The cause is E-06: Settings data reads the view itself | same |
 | M-156 | 156 | `evidence/probes/startup-scan-probe.mjs` on a copy of the seed, logs grown with valid messages | 300 admitted team runs: **139 ms** at 2.5 MB of logs, **328 ms** at 100.4 MB (load 9–14). Reading the logs is about 0.19 s per 100 MB, per scan | `evidence/M-156-startup-scan-before.json` |
 | M-163 | 163 | Seed probe L-010 `--large-shape unbroken`: 20 × 60 KB single-token messages to a copy, a cold page opens it | Still **87,014 ms** from the click to loaded, with server time 26 ms (2.46 MB projection). In isolation, the conversation builder, markdown (with linkify, KaTeX, DOMPurify), the path finders, the mention splitter and Chrome's layout of 10 × 60 KB unbroken text are each linear and under 40 ms. The cause is being found with a CPU profile of the real click | `evidence/M-163-*` |
+| M-163b | 163 (after IR-001: QR-004 missed with one layout read per frame) | (1) The implementation's profile: 23 forced layouts of 3.9–7.1 s each (`evidence/IMP-L010-unbroken-after.cpuprofile`). (2) The copy opened with CSS injected before the click: `overflow-wrap:anywhere` 86.3 s, `word-break:break-all` 43.3 s, `min-width:0` 86.3 s (`evidence/M-163-css-variants.txt`). (3) In the loaded page, forced relayouts with one property changed at a time (`evidence/M-163-layout-experiments.json`): as is **86,076 / 85,406 ms**; `font-family: Arial` **83 / 45 ms**; `font-kerning:none; font-variant-ligatures:none; font-feature-settings:normal; text-rendering:optimizeSpeed` **48 / 87 ms**; `white-space:normal` 85.6 s; every element `display:block` 79 s; without the 20 user blocks 43.9 s; without the 20 markdown blocks 42.7 s. The 40 long elements use `ui-sans-serif, system-ui, sans-serif` with `overflow-wrap: break-word` | **Cause: text shaping of 60 KB single-word runs in the system UI font with kerning and ligatures**, seconds per message and per layout. Line breaking is secondary (break-all halves it). The repeated layouts during opening multiply it | `evidence/M-163-*` |
 | M-151 | 151 | Code (E-04) plus data sizes (E-09) | Opening the user's largest org run loads 8 members' conversations derived from 49–58 MB of traces before showing it. To be measured before and after on a seeded large org run in the build | — |
 
 - Temporary diagnostics: a CPU-profile copy of the probe (`tests/e2e/ab358-profile-probe.mjs`) and two benchmark specs (`tests/ab358tmp/`); not kept in the code, removed before handoff.
@@ -63,5 +64,5 @@ All on test-owned data: a seed made by the repository's own probe (`autobyteus-w
 
 | ID | Type | Description | Resolution |
 | --- | --- | --- | --- |
-| U-01 | Unknown | Item 163's exact cause | The CPU profile (M-163) |
+| U-01 | Unknown | Item 163's exact cause | Resolved: M-163b (font shaping with kerning and ligatures) |
 | R-01 | Risk | The measurements run beside other teams' work (load 6–150) | Record the load with each number; compare before and after under similar load |

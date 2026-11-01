@@ -8,6 +8,7 @@ The latest `design-review-report.md` remains authoritative.
 | --- | --- | --- | --- | --- | --- |
 | ARCH-REV-001 | Round 1 / initial architecture review | SR-001 | N/A | Fail (Design Impact) | AR-001…AR-004 |
 | ARCH-REV-002 | Round 2 / re-review of SR-002 | SR-002 | Fail | Pass | AR-001…AR-004 resolved |
+| ARCH-REV-003 | Round 3 / targeted re-review of SR-003 (after IR-001) | SR-003 | Pass | Pass | none |
 
 ## Revision Entries
 
@@ -59,3 +60,28 @@ None
 - Material classification changes: none (task_size=Large, architectural_risk=High)
 - Recommended recipient: Implementation Engineer; informational notice to the Solution Designer
 - Remaining risks or uncertainty: QR-004 / DEC-001 (b) escalation; the measurement load (R-01); the Ownership Map wording ("reload on reconnect") lags the narrative
+
+### ARCH-REV-003 — Targeted re-review of SR-003: DS-007 long-run shaping class; Pass
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/large-runs-load-less/tickets/in-progress/large-runs-load-less/design-review-report.md`
+- Review round and trigger: round 3 (targeted), Solution Designer re-review request (SR-003), after the implementation engineer's IR-001 Design Impact (QR-004 missed after DEC-001 a), 2026-11-01
+- Triggering role, report path, and finding IDs: Solution Designer, `solution-handoff.md` ("SR-003 Revision"); IR-001; `evidence/M-163-layout-experiments.json`, `M-163-css-variants.txt`
+- Relevant solution revision IDs: `SR-003`
+- Prior authoritative decision: `Pass` (ARCH-REV-002)
+- Current authoritative decision: `Pass`
+- What changed in the review result:
+  - DS-007 and DEC-004 are accepted. The measured cause is text shaping with kerning and ligatures: 86 s → 48–87 ms.
+  - There is one linear helper and one shared class at four renderers, including the two measured block kinds (user blocks about 43.9 s, markdown about 42.7 s).
+  - The display is unchanged for practical purposes, and no user question is needed.
+
+#### Prior Finding Resolution
+
+None (no open findings; AR-001…AR-004 stay resolved)
+
+- New or remaining finding IDs: none
+- Material classification changes: none (task_size=Large, architectural_risk=High)
+- Recommended recipient: Implementation Engineer; informational notice to the Solution Designer
+- Remaining risks or uncertainty:
+  - the QR-004 escalation if still missed;
+  - unmeasured long tokens in tool and reasoning renderers (recommendation only);
+  - whole-block typography change (negligible).

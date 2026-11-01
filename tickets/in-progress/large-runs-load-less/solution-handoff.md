@@ -80,3 +80,16 @@ Independent architecture review, then implementation per the Change / Refactor S
 - **Route:** the architecture-review rule → `/software_engineering_team/architecture_reviewer`.
 
 - 2026-11-01: ARCH-REV-002 **Pass** on SR-002 (AR-001…AR-004 resolved). The reviewer delivered the handoff to `/software_engineering_team/implementation_engineer`. The Ownership Map wording on reload is aligned with DS-002 (every rebuild), as the reviewer noted. No Solution Designer forwarding required.
+
+## SR-003 Revision (after IR-001, 2026-11-01)
+
+- **IR-001:** QR-004 missed after DEC-001 (a). Opening still took 85,946 ms, as 23 forced layouts of 3.9–7.1 s each. Everything else is implemented and measured: QR-001, QR-002 and QR-003 are met.
+- **Cause, measured in the loaded page (investigation-notes M-163b):** text shaping of 60 KB single-word runs in the system UI font with kerning and ligatures. Relayout takes 86 s; 48–87 ms with `font-kerning:none; font-variant-ligatures:none; text-rendering:optimizeSpeed`; 45–83 ms in Arial. `break-all`: 43 s; `white-space`, `display` and `min-width` change nothing.
+- **Design (DS-007, DEC-004; no visible change):**
+  - a `long-unbroken-text` class turns kerning and ligatures off only on text blocks with a run of at least 1,000 non-whitespace characters: user message text, markdown html segments, inter-agent messages and Team-tab rows;
+  - one linear helper, `utils/text/longUnbrokenRun.ts`;
+  - DS-006 is kept.
+  - DEC-001 (b), collapsing long messages, is not needed, so there is no question for the user.
+- **Route:** `get_handoff_rules` → the revised Large/High package matches the architecture-review rule → `/software_engineering_team/architecture_reviewer`, as a targeted review of SR-003. Implementation then adds DS-007 to IR-001's work, and the route continues to code review.
+
+- 2026-11-01: ARCH-REV-003 **Pass** on SR-003 (DS-007 / DEC-004). The reviewer delivered the handoff to `/software_engineering_team/implementation_engineer`. Residual (recommendation only): tool-call and reasoning renderers were not measured for long tokens. No Solution Designer forwarding required.

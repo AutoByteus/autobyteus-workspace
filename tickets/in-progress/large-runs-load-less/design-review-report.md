@@ -5,16 +5,31 @@
 - Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/large-runs-load-less/tickets/in-progress/large-runs-load-less/requirements-doc.md` (SR-001, approved by the Solution Designer within the direction; user informed)
 - Upstream Investigation Notes: `…/investigation-notes.md`
 - Upstream Solution Revision Record: `…/solution-revision-record.md`
-- Reviewed Design Spec: `…/design-spec.md` (SR-002, Ready; user approval of the design `Not required`)
+- Reviewed Design Spec: `…/design-spec.md` (SR-003, Ready; user approval of the design `Not required`)
 - Supplemental Task Artifacts Reviewed: `evidence/M-*` (before measurements, the CPU profile), `evidence/probes/*.mjs`
-- Relevant Solution Revision IDs: `SR-001`, `SR-002`
+- Relevant Solution Revision IDs: `SR-001`, `SR-002`, `SR-003`
 - Architecture Review Revision Record: `…/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-002`
-- Current Review Round: `2`
-- Trigger: Solution Designer re-review request (SR-002, for ARCH-REV-001), 2026-11-01
-- Prior Review Round Reviewed: `1` (ARCH-REV-001, Fail: AR-001…AR-004)
-- Latest Authoritative Round: `2`
+- Current Architecture Review Revision ID: `ARCH-REV-003`
+- Current Review Round: `3` (targeted: SR-003, DS-007 / DEC-004, after the implementation engineer's IR-001 Design Impact, QR-004 missed)
+- Trigger: Solution Designer re-review request (SR-003), 2026-11-01
+- Prior Review Round Reviewed: `2` (ARCH-REV-002, Pass)
+- Latest Authoritative Round: `3`
 - Current-State Evidence Basis: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/large-runs-load-less` @ `efd28d5c4a` (no source changes). Code opened at the lines cited below.
+
+## Round 3 Scope (SR-003, Targeted)
+
+- **Trigger.** DEC-001 (a), one layout read per frame (DS-006), was built but missed QR-004. This is the escalation the design defined.
+- **Cause, measured in the loaded page** (M-163b; `evidence/M-163-layout-experiments.json`, `M-163-css-variants.txt`): text shaping of 60 KB single-word runs in the system UI font, with kerning and ligatures.
+  - Forced relayout: 86,076 / 85,406 ms as built; 48 / 87 ms with kerning and ligatures off; 45 / 83 ms in Arial.
+  - `break-all` gives about 43 s, and `white-space`, `display` and `min-width` change nothing, so those alternatives are rightly rejected.
+  - The two block kinds in the seeded scenario each account for about half: without the user blocks 43.9 s, without the markdown blocks 42.7 s.
+- **DS-007 is sound.**
+  - One pure, linear helper (`utils/text/longUnbrokenRun.ts`, a run of at least 1,000 non-whitespace characters) decides when to add one shared class (`long-unbroken-text`).
+  - It applies at four text renderers: the two measured ones (user message text and the markdown html segment) plus inter-agent and Team-tab rows.
+  - Only those blocks lose kerning and ligatures. Wrapping, copy and search are untouched, and DS-006 stays.
+  - The owner and placement are clear, and there is no duplicated policy.
+- **DEC-004 is within the direction.** Kerning and ligatures have no meaningful glyph effect on base64 or minified runs, so REQ-005's "display unchanged" holds for practical purposes. DEC-001 (b) and the user question are not needed. The escalation stays if QR-004 is still missed (step 7).
+- **Tests:** a helper unit test; a component test (a long-token block gets the class, a prose block does not); L-010 unbroken under 1 s; no regression for L-010 words.
 
 ## Round 2 Scope (SR-002)
 
@@ -72,7 +87,7 @@ SR-002 answers each finding in the design's "SR-002 Revision Summary". Verified 
 | BEH-002 | User | Pass | Pass | Pass (SR-002: tree-only inspections; `MemberLoader` generation per rebuild) | Confirmed | — |
 | BEH-003 | User | Pass | Pass | Pass | Confirmed | — |
 | BEH-004 | System | Pass | Pass | Pass (a damaged log fails only the records-owner reads; the view opens) | Confirmed | — |
-| BEH-005 | User | Pass | Pass | Pass (the profile supports the cause; DEC-001 escalation) | Confirmed | — |
+| BEH-005 | User | Pass | Pass | Pass (DS-006 plus DS-007 for the measured shaping cause; SR-003) | Confirmed | — |
 
 ## Supplemental Artifact Coherence Verdict
 
@@ -248,7 +263,7 @@ None in the requirements.
 
 ## Findings
 
-None open. AR-001…AR-004 are resolved (see ARCH-REV-002 in the revision record).
+None open. AR-001…AR-004 are resolved (ARCH-REV-002). SR-003 (DS-007) passes the targeted review (ARCH-REV-003).
 
 ## Classification
 
@@ -260,7 +275,9 @@ Implementation Engineer (`/software_engineering_team/implementation_engineer`)
 
 ## Residual Risks
 
-- QR-004 depends on the DEC-001 (a) result. The escalation to the user is defined (step 7).
+- QR-004 now depends on DS-007. If it is still missed, step 7 stops, and DEC-001 (b) goes to the user.
+- DS-007 covers the four message-text renderers, which include the two measured block kinds. Tool-call arguments and results and reasoning segments render through other components and were not measured. A very long unbroken token there (for example a minified file read by a tool) could still be slow. This is outside AC-007's scenario. The helper and class are reusable if that case is measured later. Recommendation only.
+- The whole block gets the class when it contains one long run, so prose in the same message also loses kerning and ligatures. The visual difference is negligible, and this is accepted under DEC-004.
 - Measurements run beside other teams' work. The load is recorded per measurement (R-01).
 - A Team tab shows a short loading state per participant, which DEC-001 and the UI section accept.
 - Wording drift: the Ownership Map line for `CollaborationParticipantMessages` still says "reload on reconnect", while the narrative and DS-002 say every rebuild. Implementation follows DS-002.
@@ -268,5 +285,5 @@ Implementation Engineer (`/software_engineering_team/implementation_engineer`)
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
-- Material-Premise Gate: `Pass` (MP-001…MP-003 are Reachable; resolved by SR-002)
-- Notes: task_size=Large, architectural_risk=High. Messages leave views for a participant query whose server side reads only through one records owner per root. The web side uses one participant-list owner with `reloadRoot` on every rebuild, and one `MemberLoader` with a generation per rebuild. Admission is structure-only and per package; Settings reuses the view; layout is read once per frame. The escalation triggers in the design apply: a consumer beyond the seam, an ordering case the rule cannot keep, and QR-004 missed.
+- Material-Premise Gate: `Pass` (no new premise)
+- Notes: round 3 is targeted. DS-007 fixes the measured shaping cause with one helper and one class at four renderers, with no visible change (DEC-004). The rest of the design keeps the round-2 Pass. task_size=Large, architectural_risk=High.
