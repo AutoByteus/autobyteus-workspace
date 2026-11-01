@@ -118,4 +118,21 @@ describe('agentRunCollaborationStore', () => {
     expect(await store.viewFor('host-run')).toBe(store.contextFor('host-run')!.view)
     expect(reads).toHaveBeenCalledOnce()
   })
+
+  it('selecting a stopped hub whose stored view is already published reads it no more (QR-002); a hub that stops is read again', async () => {
+    const reads = vi.mocked((await import('~/services/agentCollaboration/agentRunCollaborationHydration')).readAgentRunCollaboration)
+    const store = useAgentRunCollaborationStore()
+    await store.inspect('host-run')
+    store.contextFor('host-run')!.setActive(false) // the stored view of a stopped hub
+    reads.mockClear()
+    store.syncHost('host-run', false)
+    store.syncHost('host-run', false)
+    await Promise.resolve()
+    expect(reads).not.toHaveBeenCalled()
+    store.syncHost('host-run', true)
+    store.syncHost('host-run', false)
+    await Promise.resolve()
+    expect(reads).toHaveBeenCalledOnce()
+  })
 })
+

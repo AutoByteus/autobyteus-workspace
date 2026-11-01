@@ -240,8 +240,10 @@ export const useAgentRunCollaborationStore = defineStore('agentRunCollaboration'
     if (contexts.value[hostRunId]?.phase === 'reopen_required' && !services.has(hostRunId)) return
     if (hostRunning) attach(hostRunId)
     else {
+      const wasLive = services.has(hostRunId)
       detach(hostRunId)
-      void inspect(hostRunId)
+      // A settled stored view is reused: one view read per hub selection (autobyteus-358, DS-004).
+      if (wasLive || contexts.value[hostRunId]?.phase !== 'historical') void inspect(hostRunId)
     }
   }
 
