@@ -227,7 +227,9 @@ describe('LeftSidebarStrip Component', () => {
       const divider = wrapper.get('[data-test="workspace-left-strip-workspaces-divider"]')
 
       expect(children.at(-2)).toBe(divider.element)
-      expect(children.at(-3)?.dataset.navKey).toBe('nodes')
+      // autobyteus-337: Integrations is the last page icon, after Nodes.
+      expect(children.at(-3)?.dataset.navKey).toBe('integrations')
+      expect(children.at(-4)?.dataset.navKey).toBe('nodes')
       expect(children.at(-1)).toBe(workspaces(wrapper).element)
       expect(divider.attributes('aria-hidden')).toBe('true')
       expect(divider.classes()).toEqual(expect.arrayContaining(['mx-auto', 'h-px', 'w-6', 'bg-gray-100', '[@media(max-height:540px)]:hidden']))

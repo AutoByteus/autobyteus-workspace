@@ -1,0 +1,28 @@
+# Check: IMP-10b-web-typecheck-at-base
+# Command (in /tmp/ip-base/autobyteus-web, clean env: env -i PATH HOME=<temp> TMPDIR): node ./scripts/typecheck.mjs
+# Commit: 0295553657 (the base, as a detached temporary worktree /tmp/ip-base sharing this worktree's node_modules, .nuxt and the autobyteus-ts and SDK dist folders; removed afterwards)
+# Environment: macOS 26.5.2 arm64, node v22.23.1, git 2.50.1
+# Date: 2026-11-01T07:31:40Z
+
+[typecheck] Nuxt app (tsconfig.json): 275 errors, exit 2, 34.9s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 2.2s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.7s
+
+Production files must have no type errors:
+../autobyteus-server-ts/tests/fixtures/recorded-upload-labels.ts(37,55): error TS2345: Argument of type 'HistoricalReplayEvent[]' is not assignable to parameter of type 'readonly EventMonitorReplayEvent[]'.
+  Type 'HistoricalReplayEvent' is not assignable to type 'EventMonitorReplayEvent'.
+    Type 'HistoricalReplaySystemInstructionEvent' is not assignable to type 'EventMonitorReplayEvent'.
+      Type 'HistoricalReplaySystemInstructionEvent' is missing the following properties from type 'HistoricalReplaySystemTaskNotificationEvent': turnGroupId, senderId
+../autobyteus-server-ts/tests/fixtures/recorded-upload-labels.ts(41,50): error TS2345: Argument of type 'HistoricalReplayEvent[]' is not assignable to parameter of type 'EventMonitorReplayEvent[]'.
+  Type 'HistoricalReplayEvent' is not assignable to type 'EventMonitorReplayEvent'.
+    Type 'HistoricalReplaySystemInstructionEvent' is not assignable to type 'EventMonitorReplayEvent'.
+      Type 'HistoricalReplaySystemInstructionEvent' is missing the following properties from type 'HistoricalReplaySystemTaskNotificationEvent': turnGroupId, senderId
+
+Test files above their baseline count:
+../../../../Users/normy/autobyteus_org/autobyteus-worktrees/integrations-page/autobyteus-web/layouts/__tests__/default-drawer.spec.ts(168,73): error TS2339: Property 'exists' does not exist on type 'Omit<DOMWrapper<Element>, "exists">'.
+../../../../Users/normy/autobyteus_org/autobyteus-worktrees/integrations-page/autobyteus-web/layouts/__tests__/default-drawer.spec.ts(241,25): error TS2339: Property 'focus' does not exist on type 'VueNode<Element>'.
+[typecheck] new test file with errors: ../../../../Users/normy/autobyteus_org/autobyteus-worktrees/integrations-page/autobyteus-web/layouts/__tests__/default-drawer.spec.ts (2)
+[typecheck] production errors: 2; test-file errors: 300 in 140 files (baseline 298 in 139 files)
+[typecheck] FAIL
+
+# Exit code: 1

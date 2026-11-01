@@ -437,7 +437,7 @@ export class AutoByteusAgentRunBackendFactory implements AgentRunBackendFactory 
       ...(options.applicationExecutionContext
         ? { [APPLICATION_EXECUTION_CONTEXT_KEY]: options.applicationExecutionContext }
         : {}),
-      ...integrationShellCustomData(this.options.integrationRunAccess, { runId, agentDefinitionId }),
+      ...(await integrationShellCustomData(this.options.integrationRunAccess, { runId, agentDefinitionId })),
     };
 
     // Compaction always summarizes on the agent's own model (core-owned summarizer).

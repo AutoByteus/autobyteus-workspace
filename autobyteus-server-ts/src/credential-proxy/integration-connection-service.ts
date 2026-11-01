@@ -6,25 +6,27 @@ import { getSecretVaultRuntime } from "../secret-management/secret-vault-runtime
 import type { SecretManagementService } from "../secret-management/services/secret-management-service.js";
 import type { IntegrationId } from "../secret-management/domain/secret-id.js";
 import { IntegrationConnectionStore, type IntegrationConnectionRecord } from "./integration-connection-store.js";
-import { IntegrationDefinitions } from "./integration-definitions.js";
+import { DeliveryDefinitions, type DeliveryDefinition } from "./delivery-definitions.js";
 
+/** One integration's connection on this node. Never carries the token. */
 export type IntegrationConnectionStatus = Readonly<{
   connected: boolean;
   login: string | null;
   connectedAt: string | null;
-  agentDefinitionIds: readonly string[];
 }>;
 
 export type IntegrationConnectionErrorCode =
   | "TOKEN_REJECTED"
   | "TOKEN_CHECK_FAILED"
   | "INTEGRATION_NOT_CONNECTED"
+  | "INTEGRATION_NOT_DELIVERABLE"
   | "VAULT_UNAVAILABLE";
 
 const MESSAGES: Readonly<Record<IntegrationConnectionErrorCode, string>> = Object.freeze({
-  TOKEN_REJECTED: "GitHub rejected the token.",
-  TOKEN_CHECK_FAILED: "The token could not be checked with GitHub. Try again.",
-  INTEGRATION_NOT_CONNECTED: "GitHub is not connected on this node.",
+  TOKEN_REJECTED: "The service rejected the token.",
+  TOKEN_CHECK_FAILED: "The token could not be checked with the service. Try again.",
+  INTEGRATION_NOT_CONNECTED: "This integration is not connected on this node.",
+  INTEGRATION_NOT_DELIVERABLE: "This version of AutoByteus can't connect this integration.",
   VAULT_UNAVAILABLE: "The secret vault is unavailable.",
 });
 
@@ -36,97 +38,85 @@ export class IntegrationConnectionError extends Error {
   }
 }
 
-const GITHUB: IntegrationId = "github";
+const NOT_CONNECTED: IntegrationConnectionStatus = Object.freeze({ connected: false, login: null, connectedAt: null });
 
 /**
- * Connect, test, disconnect and agent access for an integration (DS-001). The only writer of the integration's vault
- * entry and of `connections.json`. A token is checked with GitHub (`GET /user`, `Bearer`) before it is stored.
+ * Connect, test and disconnect, per integration (DS-003). The only writer of an integration's vault entry and of
+ * `connections.json`. A token is checked with the service (its delivery definition's `verifyToken`) before it is
+ * stored. Only an integration this app can deliver (one with a delivery definition) can be connected.
  */
 export class IntegrationConnectionService {
   constructor(private readonly deps: Readonly<{
     store: IntegrationConnectionStore;
-    definitions: IntegrationDefinitions;
+    definitions: DeliveryDefinitions;
     management: () => SecretManagementService;
     fetchImpl?: typeof fetch;
   }>) {}
 
-  async status(): Promise<IntegrationConnectionStatus> {
-    const record = this.deps.store.read(GITHUB);
-    return this.toStatus(record, record.login !== null && (await this.tokenStored()));
+  /** The connection state; an integration without a delivery definition, or without a stored token, is not connected. */
+  async status(integrationId: string): Promise<IntegrationConnectionStatus> {
+    const definition = this.deps.definitions.get(integrationId);
+    if (!definition) return NOT_CONNECTED;
+    const record = this.deps.store.read(integrationId);
+    return this.toStatus(record, record.login !== null && (await this.tokenStored(definition.id)));
   }
 
-  /** Checks the token with GitHub, then stores it and the login. A rejected token stores nothing. */
-  async connect(token: SecretValue): Promise<IntegrationConnectionStatus> {
-    const login = await this.checkToken(token);
+  /** Checks the token with the service, then stores it and the login. A rejected token stores nothing. */
+  async connect(integrationId: string, token: SecretValue): Promise<IntegrationConnectionStatus> {
+    const definition = this.requireDefinition(integrationId);
+    const login = await this.checkToken(definition, token);
     try {
-      await this.deps.management().saveForConsumer({ consumer: { kind: "integration", integrationId: GITHUB }, value: token });
+      await this.deps.management().saveForConsumer({ consumer: { kind: "integration", integrationId: definition.id }, value: token });
     } catch (error) {
       throw this.vaultError(error);
     }
-    const record = await this.deps.store.update(GITHUB, (current) => ({
-      ...current, login, connectedAt: new Date().toISOString(),
-    }));
+    const record = await this.deps.store.update(definition.id, () => ({ login, connectedAt: new Date().toISOString() }));
     return this.toStatus(record, true);
   }
 
   /** Checks the stored token again and refreshes the login. */
-  async test(): Promise<IntegrationConnectionStatus> {
+  async test(integrationId: string): Promise<IntegrationConnectionStatus> {
+    const definition = this.requireDefinition(integrationId);
     let token: SecretValue;
     try {
-      token = await this.deps.management().resolveForUse({ kind: "integration", integrationId: GITHUB });
+      token = await this.deps.management().resolveForUse({ kind: "integration", integrationId: definition.id });
     } catch (error) {
       if (error instanceof SecretVaultError && error.code === "NOT_FOUND") throw new IntegrationConnectionError("INTEGRATION_NOT_CONNECTED");
       throw this.vaultError(error);
     }
-    const login = await this.checkToken(token);
-    const record = await this.deps.store.update(GITHUB, (current) => ({ ...current, login }));
+    const login = await this.checkToken(definition, token);
+    const record = await this.deps.store.update(definition.id, (current) => ({ ...current, login }));
     return this.toStatus(record, true);
   }
 
-  /** Removes the token; the agent ticks stay, so reconnecting keeps them. */
-  async disconnect(): Promise<IntegrationConnectionStatus> {
+  /** Removes the token and the login (idempotent). */
+  async disconnect(integrationId: string): Promise<IntegrationConnectionStatus> {
+    const definition = this.requireDefinition(integrationId);
     try {
-      await this.deps.management().removeForConsumer({ kind: "integration", integrationId: GITHUB });
+      await this.deps.management().removeForConsumer({ kind: "integration", integrationId: definition.id });
     } catch (error) {
       throw this.vaultError(error);
     }
-    const record = await this.deps.store.update(GITHUB, (current) => ({ ...current, login: null, connectedAt: null }));
+    const record = await this.deps.store.update(definition.id, () => ({ login: null, connectedAt: null }));
     return this.toStatus(record, false);
   }
 
-  /** The agents allowed to use GitHub. Unticking applies to the next call; ticking to the agent's next run. */
-  async setAgentAccess(agentDefinitionIds: readonly string[]): Promise<IntegrationConnectionStatus> {
-    const ids = [...new Set(agentDefinitionIds.map((id) => id.trim()).filter(Boolean))];
-    const record = await this.deps.store.update(GITHUB, (current) => ({ ...current, agentDefinitionIds: ids }));
-    return this.toStatus(record, record.login !== null && (await this.tokenStored()));
+  private requireDefinition(integrationId: string): DeliveryDefinition {
+    const definition = this.deps.definitions.get(integrationId);
+    if (!definition) throw new IntegrationConnectionError("INTEGRATION_NOT_DELIVERABLE");
+    return definition;
   }
 
-  private async checkToken(token: SecretValue): Promise<string> {
-    const route = this.deps.definitions.route(GITHUB, "api");
-    if (!route) throw new Error("The GitHub definition has no 'api' route.");
-    let response: Response;
-    try {
-      response = await (this.deps.fetchImpl ?? fetch)(new URL("/user", route.origin), {
-        headers: {
-          accept: "application/vnd.github+json",
-          authorization: `Bearer ${token.revealToTrustedConsumer()}`,
-          "user-agent": "AutoByteus",
-        },
-        redirect: "manual",
-      });
-    } catch {
-      throw new IntegrationConnectionError("TOKEN_CHECK_FAILED");
-    }
-    if (response.status === 401) throw new IntegrationConnectionError("TOKEN_REJECTED");
-    if (!response.ok) throw new IntegrationConnectionError("TOKEN_CHECK_FAILED");
-    const login = ((await response.json().catch(() => null)) as { login?: unknown } | null)?.login;
-    if (typeof login !== "string" || !login) throw new IntegrationConnectionError("TOKEN_CHECK_FAILED");
-    return login;
+  private async checkToken(definition: DeliveryDefinition, token: SecretValue): Promise<string> {
+    const check = await definition.verifyToken(token, this.deps.fetchImpl ?? fetch);
+    if (check.status === "rejected") throw new IntegrationConnectionError("TOKEN_REJECTED");
+    if (check.status !== "accepted") throw new IntegrationConnectionError("TOKEN_CHECK_FAILED");
+    return check.login;
   }
 
-  private async tokenStored(): Promise<boolean> {
+  private async tokenStored(integrationId: IntegrationId): Promise<boolean> {
     try {
-      return (await this.deps.management().getStatusForConsumer({ kind: "integration", integrationId: GITHUB })) === "CONFIGURED";
+      return (await this.deps.management().getStatusForConsumer({ kind: "integration", integrationId })) === "CONFIGURED";
     } catch {
       return false;
     }
@@ -141,7 +131,6 @@ export class IntegrationConnectionService {
       connected,
       login: connected ? record.login : null,
       connectedAt: connected ? record.connectedAt : null,
-      agentDefinitionIds: record.agentDefinitionIds,
     });
   }
 }
@@ -156,7 +145,7 @@ let service: IntegrationConnectionService | null = null;
 export const getIntegrationConnectionService = (): IntegrationConnectionService => {
   service ??= new IntegrationConnectionService({
     store: new IntegrationConnectionStore(integrationsDirectory()),
-    definitions: new IntegrationDefinitions(),
+    definitions: new DeliveryDefinitions(),
     management: () => getSecretVaultRuntime().requireService(),
   });
   return service;

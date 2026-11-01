@@ -1,0 +1,53 @@
+# Case: API-01 — token scan of the CLI transcripts of this round's live cells (temporary probe, read-only; paths and counts only)
+# Command: SCAN_MARKER=GITHUB_PROXY_PROBE_DONE node /tmp/s337/scan/token-scan.mjs <Claude project dir> <Grok session dir> <AGY conversation> <temp CODEX_HOME>  (source below)
+# Commit: 22f17adf30 (code 9e8264614e); macOS 26.5.2 arm64; date 2026-11-01T08:12:09Z
+
+{
+  "~/.claude/projects/-private-var-folders-7w-9r4-s1-s42z3f7c136bpjf0r0000gn-T-github-proxy-shells-e2e-OeuJaR-workspace-claude": {
+    "files": 1,
+    "filesWithToken": [],
+    "filesWithMarker": 1
+  },
+  "~/.grok/sessions/%2Fprivate%2Fvar%2Ffolders%2F7w%2F9r4_s1_s42z3f7c136bpjf0r0000gn%2FT%2Fgithub-proxy-shells-e2e-OeuJaR%2Fworkspace-grok": {
+    "files": 20,
+    "filesWithToken": [],
+    "filesWithMarker": 3
+  },
+  "~/.gemini/antigravity-cli/brain/3517d943-f0cf-4180-b808-3d39bd43a0b1": {
+    "files": 5,
+    "filesWithToken": [],
+    "filesWithMarker": 5
+  },
+  "<temp CODEX_HOME>": {
+    "files": 479,
+    "filesWithToken": [],
+    "filesWithMarker": 3
+  }
+}
+
+## Scan script
+```js
+// Temporary token scan (autobyteus-337 API/E2E, AC-007): reads test.github.token from the test vault and reports,
+// for each given file or folder, the files whose bytes contain it, and the files containing an optional marker
+// (to show the scanned files really hold the runs' output). Prints paths and counts only, never the token.
+import fs from "node:fs";
+import path from "node:path";
+const WT = "/Users/normy/autobyteus_org/autobyteus-worktrees/integrations-page";
+const { openVerifiedTestVault } = await import(`${WT}/autobyteus-ts/dist/secrets/vault/open-test-vault.js`);
+const { readSecretEntry } = await import(`${WT}/autobyteus-ts/dist/secrets/vault/read-secret-entry.js`);
+const { secretId } = await import(`${WT}/autobyteus-ts/dist/secrets/vault/secret-id.js`);
+const vault = await openVerifiedTestVault(process.env.HOME + "/.autobyteus-test/vault");
+const token = (await readSecretEntry(vault.store, vault.rootKey, vault.metadata, secretId("test.github.token"))).revealToTrustedConsumer();
+vault.close();
+const marker = process.env.SCAN_MARKER || null;
+const files = (p) => { if (!fs.existsSync(p)) return []; const st = fs.lstatSync(p); if (st.isFile()) return [p];
+  if (!st.isDirectory()) return []; return fs.readdirSync(p).flatMap((n) => files(path.join(p, n))); };
+const report = {};
+for (const target of process.argv.slice(2)) {
+  const list = files(target);
+  const withToken = [], withMarker = [];
+  for (const f of list) { const b = fs.readFileSync(f); if (b.includes(token)) withToken.push(f); if (marker && b.includes(marker)) withMarker.push(f); }
+  report[target] = { files: list.length, filesWithToken: withToken, ...(marker ? { filesWithMarker: withMarker.length } : {}) };
+}
+console.log(JSON.stringify(report, null, 2));
+```
