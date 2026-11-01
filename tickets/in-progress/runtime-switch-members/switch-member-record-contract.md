@@ -20,7 +20,7 @@ While pending: `launchConfiguration.{runtimeKind, llmModelIdentifier, llmConfig}
 
 ### 1.2 Delegated copy
 
-The started values never change (DEC-005, AR-005). The user's choice gains one optional field: `UserLaunchSelection = { llmModelIdentifier, llmConfig, selectedAt, runtimeKind? }`; absent `runtimeKind` means the started runtime. The effective launch is still decided by the one rule `effectiveCopyAgentLaunch` (the agent's own choice, else the Team's for a follower, else the started launch); the rule now also yields the runtime. While pending: the record's `platformAgentRunId` is `null` and `pendingRuntimeSwitch.from` holds the previous EFFECTIVE binding. A Team-level choice (`userTeamLaunchSelection`) that changes the runtime of followers records a pending switch on each following member that has conversation history.
+The started values never change (DEC-005, AR-005). The user's choice gains one optional field: `UserLaunchSelection = { llmModelIdentifier, llmConfig, selectedAt, runtimeKind? }`; absent `runtimeKind` means the started runtime. The effective launch is still decided by the one rule `effectiveCopyAgentLaunch` (the agent's own choice, else the Team's for a follower, else the started launch); the rule now also yields the runtime. While pending: the record's `platformAgentRunId` is `null` and `pendingRuntimeSwitch.from` holds the previous EFFECTIVE binding. A Team-level choice (`userTeamLaunchSelection`) that changes the runtime of followers records a pending switch on each following member whose effective runtime changes; the planner, not the save, decides at activation whether there is a conversation (M-6).
 
 ### 1.3 Written the same way everywhere
 
@@ -52,11 +52,11 @@ The member's memory folder (`agent_teams/<team>/<agentRunId>/`, `agents/<taskAge
 | --- | --- |
 | M-1 | A record has a pending switch only while its `platformAgentRunId` is null and its binding fields hold the selection made after `from`. |
 | M-2 | The commit of a switch removes the pending switch and sets the binding in one write; a commit whose `switchId` does not match the stored pending switch throws a conflict and changes nothing. |
-| M-7 | After a commit, every in-memory holder of the member's state (the handle's spec and session ID; the Team wrapper's `config` and `FlatAgentExecutionContext`; the root's tree and index) has dropped the pending switch and holds the committed binding, so a later re-activation in the same root lifetime restores instead of switching again. |
+| M-7 | After a commit, every in-memory holder of the member's state (the handle's spec and session ID; the Team wrapper's `config` and `FlatAgentExecutionContext`; the root's tree and index; `teamContext.teamNode.children` is read only when a wrapper is created and the registry's `remove` has no callers, so it is not a live holder) has dropped the pending switch and holds the committed binding, so a later re-activation in the same root lifetime restores instead of switching again. |
 | M-3 | A copy's started values (`source`) are never changed by a switch. |
 | M-4 | A member's address, run ID, memory folder and workspace never change at a switch. |
 | M-5 | I-1…I-11 of the standalone contract hold for every member's folder. |
-| M-6 | A member with no conversation history has its pending switch cleared by its first activation without a marker, an archive or a hand-over (the commit is the same; the archive step is skipped). The pending switch is recorded on every affected started member at the save; only the activation decides whether there is a conversation (`AgentConversationActivityInspector`). |
+| M-6 | A member with no conversation history has its pending switch cleared by its first activation without a marker, an archive or a hand-over (the commit is the same; the archive step is skipped). The pending switch is recorded on every affected member whose effective runtime changes (a native member never has a session ID even after a conversation, and a Team-copy member has no `startedAt`, so neither can be the test); only the activation decides whether there is a conversation (`AgentConversationActivityInspector`). |
 
 ## 6. A delegated copy, before and after, with its wire shape
 
