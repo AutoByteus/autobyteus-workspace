@@ -1,0 +1,37 @@
+# Case: API-03 — full server e2e (regression)
+# Command: env -i PATH=<user PATH> HOME=/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/tmp.kYGDKGJCIj TMPDIR=/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/ pnpm test:e2e
+# Working directory: /Users/normy/autobyteus_org/autobyteus-worktrees/integrations-page
+# Commit: 22f17adf30 (code 9e8264614e) + this round's uncommitted test changes
+# Environment: macOS 26.5.2 arm64, node v22.23.1, git 2.50.1
+# Date: 2026-11-01T08:13:13Z
+# Excerpt of API-03-server-e2e-full.log (ANSI colours removed): result lines, each failure, the credential-proxy suites.
+
+      Tests  1 failed | 479 passed | 499 skipped (979)
+ FAIL  tests/e2e/agent-org-runs/scoped-org-history-graphql.e2e.test.ts > scoped Org history real HTTP lifecycle > reads one admitted root with collection parity, distinguishes null from errors, and preserves unrelated stored bytes and identities across Stop/restore/restart
+ FAIL  tests/e2e/runtime/agy-delegated-background-task.e2e.test.ts [ tests/e2e/runtime/agy-delegated-background-task.e2e.test.ts ]
+ FAIL  tests/e2e/runtime/claude-agent-auth-marker-reply.e2e.test.ts [ tests/e2e/runtime/claude-agent-auth-marker-reply.e2e.test.ts ]
+ FAIL  tests/e2e/runtime/claude-agent-background-task.e2e.test.ts [ tests/e2e/runtime/claude-agent-background-task.e2e.test.ts ]
+ FAIL  tests/e2e/runtime/claude-agent-compaction-rotation.e2e.test.ts [ tests/e2e/runtime/claude-agent-compaction-rotation.e2e.test.ts ]
+ FAIL  tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts [ tests/e2e/runtime/claude-agent-streaming-session-lifecycle.e2e.test.ts ]
+ FAIL  tests/e2e/runtime/claude-delegated-background-task.e2e.test.ts [ tests/e2e/runtime/claude-delegated-background-task.e2e.test.ts ]
+ FAIL  tests/e2e/runtime/claude-self-started-turn-lifecycle.e2e.test.ts [ tests/e2e/runtime/claude-self-started-turn-lifecycle.e2e.test.ts ]
+ FAIL  tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts [ tests/e2e/runtime/claude-team-member-background-task.e2e.test.ts ]
+ Test Files  9 failed | 112 passed | 102 skipped (223)
+
+## 8 files cannot load (311 FU-002; carried as FU-004 here)
+Error: Transform failed with 1 error:
+/Users/normy/autobyteus_org/autobyteus-worktrees/integrations-page/autobyteus-server-ts/tests/e2e/helpers/claude-live-agent-harness.ts:24:7: ERROR: Expected "as" but found "{"
+
+## Org history (311 FU-005; carried as FU-004 here)
+AssertionError: expected { success: true, …(2) } to match object { success: false, agentOrgRunId: null }
+(1 matching property omitted from actual)
+
+- Expected
++ Received
+
+  {
+
+## Credential proxy suites
+ ↓ tests/e2e/credential-proxy/github-credential-proxy-live.e2e.test.ts (2 tests | 2 skipped)
+ ↓ tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts (13 tests | 13 skipped)
+ ✓ tests/e2e/credential-proxy/integrations-graphql.e2e.test.ts (5 tests) 2046ms
