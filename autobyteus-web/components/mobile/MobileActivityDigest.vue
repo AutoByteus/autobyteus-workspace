@@ -64,6 +64,7 @@ import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import type { MobileWorkContext } from '~/types/mobileWork';
 import { teamCollaborationMessagesView } from '~/services/teamExecution/teamCollaborationMessagesView';
+import { participantMessagesStatusText } from '~/services/collaborationMessages/participantMessagesStatusText';
 
 const props = defineProps<{
   context: MobileWorkContext | null;
@@ -93,6 +94,9 @@ const hasTeamContext = computed(() => Boolean(activeTeamContext.value || props.c
 const teamMessagesView = computed(() => activeTeamContext.value ? teamCollaborationMessagesView(activeTeamContext.value) : null);
 watch(teamMessagesView, (view) => view?.loadMessages(), { immediate: true });
 const teamMessages = computed(() => teamMessagesView.value?.listMessages() ?? []);
+// Loading, loaded or unavailable with the reason: an unread list is never summarized as empty (AC-006).
+const teamMessagesStatus = computed(() => teamMessagesView.value?.messagesStatus() ?? null);
+const statusText = participantMessagesStatusText();
 const runActivities = computed(() => focusedRunId.value ? activityStore.getActivities(focusedRunId.value) : []);
 const filters = computed(() => [
   { id: 'messages' as const, label: 'Messages', count: teamMessages.value.length },
@@ -104,6 +108,13 @@ const showActivity = computed(() => activeFilter.value === 'activity');
 const visibleActivityCount = computed(() => runActivities.value.length);
 const messageSummary = computed(() => {
   if (!hasTeamContext.value) return 'Select a team run to see team messages.';
+  const status = teamMessagesStatus.value;
+  if (status?.state === 'error') {
+    return `${statusText.unavailable()}: ${status.error}`;
+  }
+  if (!teamMessages.value.length && status?.state !== 'loaded') {
+    return statusText.loading();
+  }
   if (!teamMessages.value.length) return 'No team messages yet for the focused member.';
   return `${teamMessages.value.length} message${teamMessages.value.length === 1 ? '' : 's'}; open details for full text.`;
 });

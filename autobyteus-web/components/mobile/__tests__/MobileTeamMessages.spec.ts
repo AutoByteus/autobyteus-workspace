@@ -6,7 +6,8 @@ import { useAgentSelectionStore } from '~/stores/agentSelectionStore';
 import { useAgentTeamContextsStore } from '~/stores/agentTeamContextsStore';
 import type { MobileWorkContext } from '~/types/mobileWork';
 import { buildTestTeamContext, testAgentNode, testTeamMessagesOf } from '~/test-support/currentTeamTestFixtures';
-import { storeParticipantMessages } from '~/test-support/participantMessagesStub';
+import { clearStoredParticipantMessages, failParticipantMessages, holdParticipantMessages, storeParticipantMessages } from '~/test-support/participantMessagesStub';
+import MobileActivityDigest from '../MobileActivityDigest.vue';
 import { projectAgentOrgReference } from '~/services/agentOrgExecution/agentOrgReferenceProjection';
 
 // autobyteus-358: the screen loads the focused member's messages through the participant query.
@@ -58,7 +59,7 @@ const mountSubject = () => mount(MobileTeamMessages, {
 });
 
 describe('MobileTeamMessages current TeamExecutionView', () => {
-  beforeEach(() => { pinia = createPinia(); setActivePinia(pinia); seedTeam(); });
+  beforeEach(() => { pinia = createPinia(); setActivePinia(pinia); clearStoredParticipantMessages(); seedTeam(); });
 
   it('renders exact structured references without linkifying prose paths', async () => {
     const wrapper = mountSubject();
@@ -90,5 +91,46 @@ describe('MobileTeamMessages current TeamExecutionView', () => {
     await wrapper.get('[data-testid="close-reference"]').trigger('click');
     expect(wrapper.find('[data-testid="mobile-team-reference-viewer-stub"]').exists()).toBe(false);
     expect(wrapper.findAll('[data-testid="mobile-team-reference-row"]')).toHaveLength(2);
+  });
+});
+
+// autobyteus-358 CR-001 (AC-006): an unread list is never shown as an empty one.
+describe('mobile team messages while loading, unavailable and loaded empty', () => {
+  beforeEach(() => { pinia = createPinia(); setActivePinia(pinia); clearStoredParticipantMessages(); seedTeam(); });
+  const mountDigest = () => mount(MobileActivityDigest, { props: { context: teamRunContext }, global: { plugins: [pinia],
+    stubs: { Icon: { props: ['icon'], template: '<span :data-icon="icon"></span>' }, MobileTeamMessages: true } } });
+  const summary = (wrapper: ReturnType<typeof mountDigest>) => wrapper.get('[data-testid="mobile-activity-team-messages"]').text();
+
+  it('shows the loading state while the focused member\'s messages load', async () => {
+    holdParticipantMessages('agent_team', 'team-1');
+    const wrapper = mountSubject();
+    const digest = mountDigest();
+    await flushPromises();
+    expect(wrapper.find('[data-testid="mobile-team-messages-loading"]').text()).toBe('Loading messages…');
+    expect(wrapper.text()).not.toContain('No team messages yet');
+    expect(summary(digest)).toContain('Loading messages…');
+    expect(summary(digest)).not.toContain('No team messages yet');
+  });
+
+  it('shows the messages as unavailable with the reason when they cannot be read', async () => {
+    failParticipantMessages('agent_team', 'team-1', "Message 'm9' must use distinct AgentRun endpoints.");
+    const wrapper = mountSubject();
+    const digest = mountDigest();
+    await flushPromises();
+    const unavailable = wrapper.get('[data-testid="mobile-team-messages-unavailable"]').text();
+    expect(unavailable).toContain("These messages can't be shown");
+    expect(unavailable).toContain("Message 'm9' must use distinct AgentRun endpoints.");
+    expect(wrapper.text()).not.toContain('No team messages yet');
+    expect(summary(digest)).toContain("These messages can't be shown: Message 'm9' must use distinct AgentRun endpoints.");
+  });
+
+  it('says there are no messages only for a loaded empty list', async () => {
+    storeParticipantMessages('agent_team', 'team-1', []);
+    const wrapper = mountSubject();
+    const digest = mountDigest();
+    await flushPromises();
+    expect(wrapper.text()).toContain('No team messages yet for the focused member.');
+    expect(wrapper.find('[data-testid="mobile-team-messages-loading"]').exists()).toBe(false);
+    expect(summary(digest)).toContain('No team messages yet for the focused member.');
   });
 });
