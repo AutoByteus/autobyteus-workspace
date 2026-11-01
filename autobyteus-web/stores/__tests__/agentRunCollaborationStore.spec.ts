@@ -106,4 +106,16 @@ describe('agentRunCollaborationStore', () => {
     expect(context.state.conversation.messages.at(-1)).toMatchObject({ type: 'user', text: 'ask @Code Reviewer', mentionNames: ['Code Reviewer'] })
     expect(context.requestedMentions).toEqual([])
   })
+
+  it('reads a hub selection\'s view once: Settings shares the inspection in flight and the published view (AC-004)', async () => {
+    const reads = vi.mocked((await import('~/services/agentCollaboration/agentRunCollaborationHydration')).readAgentRunCollaboration)
+    reads.mockClear()
+    const store = useAgentRunCollaborationStore()
+    const inspection = store.inspect('host-run')
+    const settings = store.viewFor('host-run')
+    await inspection
+    expect(await settings).toBe(store.contextFor('host-run')!.view)
+    expect(await store.viewFor('host-run')).toBe(store.contextFor('host-run')!.view)
+    expect(reads).toHaveBeenCalledOnce()
+  })
 })

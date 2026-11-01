@@ -199,8 +199,7 @@ export const useExistingRunConfigStore = defineStore('existingRunConfig', {
       const request = this.canonicalLoadRequestId, binding = useWindowNodeContextStore().bindingRevision
       const payload = await useRunHistoryStore().refreshAgentResumeConfig(runId)
       if (request !== this.canonicalLoadRequestId || binding !== useWindowNodeContextStore().bindingRevision) throw new Error('Settings target changed.')
-      // The hub's view comes from the collaboration store, which reads it once per selection (autobyteus-358).
-      const view = payload.isActive ? null : await useAgentRunCollaborationStore().viewFor(runId)
+      const view = payload.isActive ? null : await useAgentRunCollaborationStore().viewFor(runId) // one read per selection (autobyteus-358)
       const delegatedSnapshot = view ? {
         execution_tree: view.execution_tree, closed_task_executions: view.closed_task_executions,
         remote_task_executions: view.remote_task_executions,
