@@ -472,9 +472,6 @@ importers:
       '@nuxt/test-utils':
         specifier: ^3.21.0
         version: 3.23.0(@vue/test-utils@2.4.6)(crossws@0.3.5)(happy-dom@15.11.7)(jsdom@25.0.1)(magicast@0.5.5)(playwright-core@1.58.2)(typescript@5.9.3)(vitest@3.2.7(@types/debug@4.1.12)(@types/node@22.19.11)(happy-dom@15.11.7)(jiti@1.21.7)(jsdom@25.0.1)(terser@5.51.2)(yaml@2.8.2))
-      '@nuxtjs/apollo':
-        specifier: ^5.0.0-alpha.14
-        version: 5.0.0-alpha.16(@fastify/websocket@11.3.4)(@nuxt/schema@3.21.11)(@types/react@19.2.14)(confbox@0.3.1)(crossws@0.3.5)(dotenv@16.6.1)(giget@3.3.1)(magic-string@0.30.21)(mlly@1.8.2)(oxc-parser@0.143.0)(react@19.2.4)(rollup@4.64.12)(typescript@5.9.3)(unplugin@3.4.0(esbuild@0.28.2)(rollup@4.64.12)(vite@7.3.7(@types/node@22.19.11)(jiti@1.21.7)(terser@5.51.2)(yaml@2.8.2)))(vue@3.5.44(typescript@5.9.3))(ws@8.22.0)
       '@pinia/nuxt':
         specifier: ^0.5.1
         version: 0.5.5(magicast@0.5.5)(typescript@5.9.3)(vue@3.5.44(typescript@5.9.3))
@@ -2268,9 +2265,6 @@ packages:
       rollup-plugin-visualizer:
         optional: true
 
-  '@nuxtjs/apollo@5.0.0-alpha.16':
-    resolution: {integrity: sha512-bYDaHboCfYCMzQsSSh3WttLmNVYH/HvGjtawasRRbaHz7hf3qEMmMPfH/FiQI0qRRo4nRKqLpB1bu+kquSP2ng==}
-
   '@one-ini/wasm@0.1.1':
     resolution: {integrity: sha512-XuySG1E38YScSJoMlqovLru4KTUNSjgVTIjyh7qMX6aNN5HY5Ct5LhRJdxO79JtTzKfzV/bnWpz+zquYrISsvw==}
 
@@ -2839,16 +2833,6 @@ packages:
       rollup:
         optional: true
 
-  '@rollup/plugin-graphql@2.0.5':
-    resolution: {integrity: sha512-NMx9uVIheYMOQHV9Aann0sk/2+henT8T5JUbHneOvbD3iUrVUC7AaZ1B1ELJ/1vhqUe2OQIkRtGHzOQwBLoCvg==}
-    engines: {node: '>=14.0.0'}
-    peerDependencies:
-      graphql: '>=0.9.0'
-      rollup: ^1.20.0||^2.0.0||^3.0.0||^4.0.0
-    peerDependenciesMeta:
-      rollup:
-        optional: true
-
   '@rollup/plugin-inject@5.0.5':
     resolution: {integrity: sha512-2+DEJbNBoPROPkgTDNe8/1YXWcqxbN5DTjASVIOx8HS+pITXushyNiBV56RB08zuptzz8gT3YfkqriTBVycepg==}
     engines: {node: '>=14.0.0'}
@@ -3392,12 +3376,6 @@ packages:
     peerDependenciesMeta:
       '@vue/composition-api':
         optional: true
-
-  '@vue/apollo-option@4.2.2':
-    resolution: {integrity: sha512-70yKre9/cLV5Ye98x1gCcT3217mpYnWd3tp6gQCNHJSLtXvHs2J6kqNGJM7Xi1FYlHfhkElRklkixAdnh7OamQ==}
-    peerDependencies:
-      '@apollo/client': ^3.2.1
-      vue: ^3.1.0
 
   '@vue/babel-helper-vue-transform-on@2.0.1':
     resolution: {integrity: sha512-uZ66EaFbnnZSYqYEyplWvn46GhZ1KuYSThdT68p+am7MgBNbQ3hphTL9L+xSIsWkdktwhPYLwPgVWqo96jDdRA==}
@@ -10988,42 +10966,6 @@ snapshots:
       - vue-tsc
       - yaml
 
-  '@nuxtjs/apollo@5.0.0-alpha.16(@fastify/websocket@11.3.4)(@nuxt/schema@3.21.11)(@types/react@19.2.14)(confbox@0.3.1)(crossws@0.3.5)(dotenv@16.6.1)(giget@3.3.1)(magic-string@0.30.21)(mlly@1.8.2)(oxc-parser@0.143.0)(react@19.2.4)(rollup@4.64.12)(typescript@5.9.3)(unplugin@3.4.0(esbuild@0.28.2)(rollup@4.64.12)(vite@7.3.7(@types/node@22.19.11)(jiti@1.21.7)(terser@5.51.2)(yaml@2.8.2)))(vue@3.5.44(typescript@5.9.3))(ws@8.22.0)':
-    dependencies:
-      '@apollo/client': 3.14.0(@types/react@19.2.14)(graphql-ws@6.0.7(@fastify/websocket@11.3.4)(crossws@0.3.5)(graphql@16.12.0)(ws@8.22.0))(graphql@16.12.0)(react@19.2.4)
-      '@nuxt/kit': 4.6.2(@nuxt/schema@3.21.11)(confbox@0.3.1)(dotenv@16.6.1)(giget@3.3.1)(jiti@2.7.0)(magic-string@0.30.21)(mlly@1.8.2)(oxc-parser@0.143.0)(unplugin@3.4.0(esbuild@0.28.2)(rollup@4.64.12)(vite@7.3.7(@types/node@22.19.11)(jiti@1.21.7)(terser@5.51.2)(yaml@2.8.2)))
-      '@rollup/plugin-graphql': 2.0.5(graphql@16.12.0)(rollup@4.64.12)
-      '@vue/apollo-composable': 4.2.2(@apollo/client@3.14.0(@types/react@19.2.14)(graphql-ws@6.0.7(@fastify/websocket@11.3.4)(crossws@0.3.5)(graphql@16.12.0)(ws@8.22.0))(graphql@16.12.0)(react@19.2.4))(graphql@16.12.0)(typescript@5.9.3)(vue@3.5.44(typescript@5.9.3))
-      '@vue/apollo-option': 4.2.2(@apollo/client@3.14.0(@types/react@19.2.14)(graphql-ws@6.0.7(@fastify/websocket@11.3.4)(crossws@0.3.5)(graphql@16.12.0)(ws@8.22.0))(graphql@16.12.0)(react@19.2.4))(vue@3.5.44(typescript@5.9.3))
-      defu: 6.1.7
-      destr: 2.0.5
-      graphql: 16.12.0
-      graphql-tag: 2.12.6(graphql@16.12.0)
-      graphql-ws: 6.0.7(@fastify/websocket@11.3.4)(crossws@0.3.5)(graphql@16.12.0)(ws@8.22.0)
-      jiti: 2.7.0
-      ohash: 2.0.12
-    transitivePeerDependencies:
-      - '@fastify/websocket'
-      - '@nuxt/schema'
-      - '@types/react'
-      - '@vue/composition-api'
-      - confbox
-      - crossws
-      - dotenv
-      - giget
-      - magic-string
-      - mlly
-      - oxc-parser
-      - react
-      - react-dom
-      - rolldown
-      - rollup
-      - subscriptions-transport-ws
-      - typescript
-      - unplugin
-      - vue
-      - ws
-
   '@one-ini/wasm@0.1.1': {}
 
   '@oxc-minify/binding-android-arm-eabi@0.143.0':
@@ -11364,14 +11306,6 @@ snapshots:
       is-reference: 1.2.1
       magic-string: 0.30.21
       picomatch: 4.0.7
-    optionalDependencies:
-      rollup: 4.64.12
-
-  '@rollup/plugin-graphql@2.0.5(graphql@16.12.0)(rollup@4.64.12)':
-    dependencies:
-      '@rollup/pluginutils': 5.4.0(rollup@4.64.12)
-      graphql: 16.12.0
-      graphql-tag: 2.12.6(graphql@16.12.0)
     optionalDependencies:
       rollup: 4.64.12
 
@@ -11924,12 +11858,6 @@ snapshots:
       vue-demi: 0.14.10(vue@3.5.44(typescript@5.9.3))
     transitivePeerDependencies:
       - typescript
-
-  '@vue/apollo-option@4.2.2(@apollo/client@3.14.0(@types/react@19.2.14)(graphql-ws@6.0.7(@fastify/websocket@11.3.4)(crossws@0.3.5)(graphql@16.12.0)(ws@8.22.0))(graphql@16.12.0)(react@19.2.4))(vue@3.5.44(typescript@5.9.3))':
-    dependencies:
-      '@apollo/client': 3.14.0(@types/react@19.2.14)(graphql-ws@6.0.7(@fastify/websocket@11.3.4)(crossws@0.3.5)(graphql@16.12.0)(ws@8.22.0))(graphql@16.12.0)(react@19.2.4)
-      throttle-debounce: 5.0.2
-      vue: 3.5.44(typescript@5.9.3)
 
   '@vue/babel-helper-vue-transform-on@2.0.1': {}
 
