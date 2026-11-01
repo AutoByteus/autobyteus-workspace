@@ -2,7 +2,95 @@
 
 All ticket paths are under `/Users/normy/autobyteus_org/autobyteus-worktrees/restart-resume/tickets/in-progress/restart-resume/`.
 
-> **Latest round: 2, API/E2E Failure-Origin Review (CRR-002), `Fail` → `Design Impact` for the Solution Designer.** Round 1 (CRR-001, `Pass`) is kept below; § Round 2 and the Latest Authoritative Result supersede it.
+> **Latest round: 3, Implementation Review of IR-002 (CRR-003), `Pass`.** It covers SR-005 (ARCH-REV-003 `Pass`), the fix for CRR-002's F-API-001 and O-1. Rounds 1 and 2 are kept below. § Round 3 and the Latest Authoritative Result supersede them.
+
+## Round 3 — Implementation Review of IR-002 (CRR-003)
+
+### Meta and scope
+
+- Trigger: implementation engineer, IR-002 (code `82932a8b48`, a test fix `7d9a305627`; handoff and evidence `c42b28d05e`).
+- Basis: design SR-005 (D3.5 and D3.6 restore → re-check → first-input-only post; D4 one notice display for every place), ARCH-REV-003 N-11 to N-14. Requirements are unchanged (SR-002).
+- Review Scope: **`Full Re-Audit` of D3, D4 and the shared input path.**
+  - Evidence: the delta changes a shared core contract, `AgentRunInputOptions.onlyAsFirstInput`, checked in `AgentRunInputAdmissionState.reserve`.
+  - It changes the `post_message` command shape (optional `postOptions`) across three root delivery switch sites, `FlatTeamAgentExecutionHandle`, `ConfiguredAgentExecutionHandle` and `executeRemoteChildCommand`.
+  - It replaces the resumer's dispatch, and it removes IR-001's member presentation mapping.
+- D1, D2 and D5 are carried forward unchanged from round 1.
+- I reran no checks: IMP-07 to IMP-10 ran on `7d9a305627`.
+
+### Behavior and path, re-verified
+
+**F-API-001: the race now closes at the owner.** `resumeOne` does:
+1. a cheap pre-filter (live, or a root history row that is not `present`);
+2. `resolveOrRestore`, plus `ensureHostReady` for a host. A restore posts no input (N-12, tested per place);
+3. a **re-check** of the root's history row;
+4. a post with `{ lifecycleObserver, onlyAsFirstInput: true }`: the host through `root.postHostUserMessage` (`standalone-root-message-delivery.ts:110` passes `postOptions` to `run.postUserMessage`), members and delegated runs through `root.executeAgentCommand(post_message, postOptions)`.
+
+How the two races are closed:
+
+- **Archive.** After the restore the host, or the Team or Org root, is active, so archiving it is refused ("Run is active…", `liveness.releaseForHistory`). The re-check is therefore final. For a delegated run whose host is not live, archiving ends the root, the later post is refused, and an admitted turn is fenced (N-11, kept).
+- **Message.** The first-input rule (`nextSequence > 1` → `AGENT_RUN_INPUT_NOT_FIRST`) is decided in the run's dispatch queue, so there is no window left. The user's message and the notice reach **the same run instance**:
+  - a host: one root (`getActive` or the manager's `pending` map) and one memoized `ensureHostReady`;
+  - a member: one handle's `startForInput`.
+
+  So whichever input is reserved first wins:
+  - a user, coordinating-run or peer input that comes first makes the notice be refused and logged "the run already had input";
+  - a notice that comes first is followed by the later message, queued as usual. SR-005 accepts that order explicitly.
+- An invalid input doesn't advance the sequence (the content check comes first). Any other reservation does, even one cancelled later. That errs toward not resuming, which is safe.
+
+**O-1: one notice display for every place.** `restartNoticeLifecycleObserver(runOf, text)` publishes the run's own `SYSTEM_TASK_NOTIFICATION` on `forwarded`, and the memory accumulator records it because the sender is in the recorded set. So the notice now shows live and after a reload for hosts, members and delegated runs.
+- A member's run is looked up in the process `AgentRunManager` at `forwarded` time. It exists then, because `startForInput` activates the member before the post. Members are in the process manager: the recorder found Team and Org members there in API-02.
+- `ConfiguredAgentExecutionHandle.postMessage` no longer publishes `member_input` for a message carrying a platform preface (N-14), so there is no duplicate. IR-001's adapter mapping is removed; the file is back to base.
+
+**Collateral check on N-14's generic rule.** Producers of `platformInputPrefaceMetadata` are the restart notice, the skill-update and tool-list-update notices, the Model Router and `combinePreface`.
+- The skill and tool-list notices post straight to `AgentRun.postUserMessage` (`skill-update-notice-service.ts:197`).
+- The Model Router posts to its own run.
+- `combinePreface` runs at backend dispatch, after the handle.
+- So only the restart notice reaches the member handle with a preface. No other member view loses its input display.
+
+**Options pass-through is a clean optional extension.** With no `postOptions`, `handle.postMessage(message, undefined)` defaults to `{}`, so the behavior is unchanged. The caller's observer is composed with the unsent-input observer, and both run. `executeRemoteChildCommand` refuses a first-input-only post (`REMOTE_RUN_FIRST_INPUT_UNSUPPORTED`, N-13). That is defensive only: remote children are not in the local `AgentRunManager`, so they are never recorded.
+
+**Test-only change** (`7d9a305627`, `agent-org-task-publication.test.ts`): two assertions now expect the handle to be called with `(message, {})`. That follows from the pass-through and does not weaken the assertions.
+
+### Candidate gate (round 3)
+
+| Candidate ID | Observation | Disposition | Reason |
+| --- | --- | --- | --- |
+| CR-C9 | When a user's message and the notice race on the same fresh instance, the notice can still be admitted first, even if the user pressed send slightly earlier: both wait on the same activation | Reject (design-decided) | SR-005 D3.6.3 accepts "if the notice is first, a later message is queued after it as usual". REQ-003's "already received new input" is redefined as input reserved or admitted before the notice, which the rule enforces with no window. |
+| CR-C10 | The handle's "no `member_input` for a platform notice" is generic, not restart-specific | Reject (verified safe) | Only the restart notice reaches the member handle with a preface (collateral check above). The rule matches SR-005's wording. |
+| CR-C11 | A reservation that is cancelled or fails later still counts as "had input" | Reject | It is conservative: the run is not resumed and the skip is logged. It never resumes too much. |
+| CR-C12 | `configured-agent-execution-handle.ts` is at 496 and `root-team-run.ts` at 500 effective lines | Reject (Pass; note) | Both are within the limit, and the next change to either will need a split. |
+
+Reclassified round 2 items: **F-API-001** and **CR-C2 / O-1** are resolved by design and code. The runtime proof is pending in the SR-005 repeats of API-04, 04B and 04C, and of API-05T.
+
+### Structural re-audit (D3, D4, shared input path)
+
+- **Ownership:**
+  - the guard now sits at the owner that decides admission (`AgentRunInputAdmissionState`, in the run's dispatch queue), not outside it;
+  - the resumer only sequences restore → re-check → post;
+  - one helper owns the notice display.
+- **Authoritative boundary:**
+  - the host is posted through its root (`postHostUserMessage`, inside the root's operation gate), not the root manager's command port. The port's dependency is removed from the composition;
+  - members and delegated runs go through `executeAgentCommand`;
+  - nothing posts to an `AgentRun` from outside its root.
+- **Interface:** `onlyAsFirstInput` is an optional flag documented on the contract, with its own rejection code. `post_message.postOptions` is optional and passed through unchanged.
+- **Dead code:**
+  - IR-001's presentation mapping and its imports are removed;
+  - the `hosts` port dependency is removed from the resumer and the composition;
+  - `postToHost` and `postToMember` are replaced.
+- **Size:** all changed files are within 500 (CR-C12).
+- **Tests and mutations:** five mutations each fail their test: the rule ignored, no re-check, `member_input` for a notice, the handle dropping the options, and the remote child dropping the rule. The per-place restore-posts-no-input tests and the real `AgentRun` rule test are present. 167 targeted tests pass, and the full suite passes after the test fix.
+- **Docs:** `restart_resume.md` and `agent_execution.md` describe the restore, re-check and first-input rule, and the single display.
+- **Scorecard:** round 1's scores stand. Category 8, Runtime Correctness, goes from round 2's 8.6 to 9.3, and category 2, Ownership, rises to 9.6 because the guard now sits at the owner. Overall 9.4. No category is below 9.2.
+
+### Findings (round 3)
+
+None.
+
+### Follow-ups
+
+None added. FU-004 was absorbed into this ticket by SR-005 and is now resolved in code (O-1).
+
+> Rounds 2 (CRR-002) and 1 (CRR-001) are kept below for history.
 
 ## Round 2 — Failure-Origin Review of F-API-001 (CRR-002)
 
@@ -262,7 +350,20 @@ N/A: the review passes.
 
 ## Latest Authoritative Result
 
-**Round 2 (CRR-002), authoritative:**
+**Round 3 (CRR-003), authoritative:**
+
+- Review Decision: `Pass`
+- Review Entry Point: `Implementation Review` (`Full Re-Audit` of D3, D4 and the shared input path; D1, D2 and D5 carried forward)
+- Supported Product Scenario Gate: `Pass`
+- Material-Premise Gate: `Pass`. Round 2's contradicted premises are replaced by an owner-decided first-input rule and a final re-check after the restore.
+- Score Summary: 9.4 / 10; every category ≥ 9.2 (category 8 at 9.3, category 2 at 9.6)
+- Recommended Recipient: API/E2E engineer
+- Notes:
+  - Validated code: `82932a8b48` + `7d9a305627`.
+  - Validation owes the SR-005 repeats of API-04, 04B and 04C (an archive or message timed around the post: no notice on an archived run, and no extra turn ahead of an earlier-admitted user message), and API-05T (a member's and a delegated run's notice visible when a window opens later and after a reload).
+  - It also owes the rest of design step 7.
+
+**Round 2 (CRR-002), superseded:**
 
 - Review Decision: `Fail` (failure-origin)
 - Review Entry Point: `API/E2E Failure-Origin Review`

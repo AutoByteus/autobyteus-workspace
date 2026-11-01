@@ -8,6 +8,7 @@ The latest `code-review-report.md` (or `api-e2e-test-review-report.md`) is autho
 | --- | --- | --- | --- | --- | --- |
 | CRR-001 | `code-review-report.md` | Implementation Review, round 1 (IR-001) | N/A | Pass | None |
 | CRR-002 | `code-review-report.md` | API/E2E Failure-Origin Review, round 2 (API-REV-001 F-API-001; O-1) | Pass | Fail: `Design Impact` → Solution Designer | F-API-001; CR-C2 and CR-C6 reclassified |
+| CRR-003 | `code-review-report.md` | Implementation Review, round 3 (IR-002, SR-005; Full Re-Audit of D3, D4 and the input path) | Fail | Pass | F-API-001, CR-C2 / O-1 (resolved by design and code) |
 
 ## Revision Entries
 
@@ -73,3 +74,34 @@ None (CRR-001 had no findings). Candidates CR-C2 and CR-C6 from round 1 are recl
 - Material score or classification changes: category 8 goes from 9.3 to 8.6; Large / High unchanged
 - Recommended recipient: Solution Designer
 - Remaining risks or uncertainty: whether a post to an archived run's root is refused anywhere today (Read only); the choice among (i) a conditional post at the owner, (ii) narrowing the window, and (iii) accepting the residual with the user's approval.
+
+### CRR-003 — Implementation review of IR-002 (restore → re-check → first-input-only notice; one display for every place)
+
+- Canonical review report updated: `code-review-report.md` (§ Round 3; Latest Authoritative Result)
+- Review entry point and round: Implementation Review, round 3
+- Review scope: `Full Re-Audit` of D3, D4 and the shared input path (a new `onlyAsFirstInput` admission option; `post_message.postOptions` across the roots and handles); D1, D2 and D5 carried forward
+- Triggering role, report path, and finding or scenario IDs: implementation engineer, `implementation-handoff.md` (IR-002; code `82932a8b48`, test fix `7d9a305627`), F-API-001, O-1
+- Relevant solution revision IDs: SR-005
+- Relevant architecture-review revision IDs: ARCH-REV-003
+- Relevant implementation revision IDs: IR-002
+- Relevant API/E2E revision IDs: API-REV-001
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: `Fail` (CRR-002, Design Impact)
+- Current authoritative result: `Pass`, 9.4/10, no findings
+- What changed in the review result and why:
+  - The guard is now at the owner. The first-input rule is decided in the run's dispatch queue, and the user's message and the notice reach the same run instance, so the race has no window.
+  - The re-check after the restore is final, because archiving refuses an active run or root.
+  - The notice is shown by the run's own `SYSTEM_TASK_NOTIFICATION` for every place, and memory records it. The duplicate `member_input` is suppressed for platform notices; only the restart notice reaches the handle with a preface (collateral check).
+- Supported product scenario / material-premise basis changes: REQ-003's "already received new input" is redefined by SR-005 as input reserved or admitted before the notice (owner-enforced).
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| F-API-001 | Open (Design Impact) | Resolved by design and code; runtime proof pending (the SR-005 repeats of API-04, 04B, 04C) | SR-005, ARCH-REV-003, IR-002 | `restart-resumer.ts` `resumeOne`; `agent-run-input-admission-state.ts` `reserve`; IMP-07 (167 pass); IMP-08 mutations (the rule ignored; no re-check) |
+| CR-C2 / O-1 | Open (Design Impact) | Resolved by design and code; runtime proof pending (API-05T) | SR-005, IR-002 | `restart-notice.ts` `restartNoticeLifecycleObserver`; `configured-agent-execution-handle.ts` `postMessage`; IMP-08 mutation (`member_input` for a notice) |
+
+- New or remaining finding IDs: None
+- Material score or classification changes: category 8 goes from 8.6 to 9.3; category 2 goes from 9.5 to 9.6; overall 9.4; Large / High
+- Recommended recipient: API/E2E engineer
+- Remaining risks or uncertainty: the runtime proof of both fixes; the rest of design step 7; `configured-agent-execution-handle.ts` (496) and `root-team-run.ts` (500) are at the size limit.
