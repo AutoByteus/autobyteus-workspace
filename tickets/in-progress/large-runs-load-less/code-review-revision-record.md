@@ -13,6 +13,7 @@
 | CRR-007 | `code-review-report.md` | Implementation Review / IR-006 (Full Re-Audit of changed areas) | Fail (CRR-006) | Pass (9.5/10) | CR-004 resolved |
 | CRR-008 | `api-e2e-test-review-report.md` | API/E2E Test-Code Review / API-REV-003 Pass | Pass (CRR-007, source) | Fail: Local Fix → API/E2E | CR-T-001 new |
 | CRR-009 | `api-e2e-test-review-report.md` | API/E2E Test-Code Review / API-REV-004 Pass (round 2) | Fail (CRR-008) | Pass | CR-T-001 resolved |
+| CRR-010 | `code-review-report.md` | Implementation Review / IR-007 (DR-001 merge; Targeted Delta Review) | Pass (CRR-007, source) | Pass (9.5/10) | None |
 
 ## Revision Entries
 
@@ -263,3 +264,32 @@ None
   - The reload branch for a message inside the window is covered by unit and mutation tests only.
   - FU-006 can fail full hub-probe runs.
   - FU-001, FU-004 and FU-005 are recorded.
+
+### CRR-010 — Delivery integration merge: conflict resolutions correct; Pass
+
+- Canonical review report updated: `code-review-report.md` (Round 8; Review Round Meta; Residual Risks; Latest Authoritative Result)
+- Review entry point and round: Implementation Review, round 8
+- Review scope: `Targeted Delta Review` of merge `bd79cb1601` (`origin/personal` @ `92fffca77a` into `523c8c95bf`) and `328a9bca27` (records)
+- Triggering role, report path, and finding or scenario IDs: Implementation Engineer, `implementation-handoff.md` (IR-007), for DR-001 (`delivery-revision-record.md`)
+- Relevant solution revision IDs: SR-008 (unchanged)
+- Relevant architecture-review revision IDs: N/A
+- Relevant implementation revision IDs: IR-007
+- Relevant API/E2E revision IDs: API-REV-004 (prior validated state)
+- Relevant delivery revision IDs: DR-001
+- Prior authoritative result: CRR-007 `Pass` (source); CRR-009 `Pass` (tests)
+- Current authoritative result: `Pass`
+- What changed in the review result and why: the 7 conflicts are resolved by keeping both intents: the ticket's removed message log and live fields, and the base's typed, immutable rework, protocol details and baseline cut. The base's new server test gate required one minimal typing fix, which now uses the service's own exported port. Reruns: server and web type gates PASS (baselines 1,200 / 99), the touched specs (7 files, 55) and the service test (2) pass, and architecture tests pass (61).
+- Supported product scenario / material-premise basis changes: None
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| N/A | — | — | — | — |
+
+- New or remaining finding IDs: None
+- Material score or classification changes: None (9.5/10; Large/High)
+- Recommended recipient: API/E2E Engineer; informational to Implementation Engineer
+- Remaining risks or uncertainty:
+  - Full suites were not rerun by me; I reused `evidence/IMP-IR007-merge-checks.log`.
+  - FU-001 is resolved by the base; FU-005 and FU-006 stand.

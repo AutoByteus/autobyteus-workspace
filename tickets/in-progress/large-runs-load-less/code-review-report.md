@@ -2,7 +2,7 @@
 
 ## Review Round Meta
 
-- Review Entry Point: `Implementation Review` (round 7, IR-006 for CR-004; SR-007/SR-008, ARCH-REV-008). Round 6: `API/E2E Failure-Origin Review` ( API-REV-002 API-08 L-002). Round 5: `Implementation Review` ( IR-005 for CR-003; SR-006, ARCH-REV-006). Round 4: `Implementation Review` ( IR-004 for CR-002; SR-004/SR-005, ARCH-REV-005). Round 3 was an `API/E2E Failure-Origin Review`. Rounds 1–2 were `Implementation Review`; their results stand except where round 3 updates them
+- Review Entry Point: `Implementation Review` (round 8, IR-007: delivery Local Fix DR-001, merge of `origin/personal` @ `92fffca77a`). Round 7: `Implementation Review` (IR-006 for CR-004; SR-007/SR-008, ARCH-REV-008). Round 6: `API/E2E Failure-Origin Review` ( API-REV-002 API-08 L-002). Round 5: `Implementation Review` ( IR-005 for CR-003; SR-006, ARCH-REV-006). Round 4: `Implementation Review` ( IR-004 for CR-002; SR-004/SR-005, ARCH-REV-005). Round 3 was an `API/E2E Failure-Origin Review`. Rounds 1–2 were `Implementation Review`; their results stand except where round 3 updates them
 - Requirements Doc Reviewed As Context: `requirements-doc.md` (approved SR-001; SR-003 adds DEC-004 with no visible change)
 - Investigation Notes Reviewed As Context: `investigation-notes.md` (E-01…E-09, M-151/152/156/162/163, M-163b as cited)
 - Solution Revision Record Reviewed As Context: `solution-revision-record.md` (SR-001…SR-003)
@@ -16,8 +16,9 @@
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
 - Relevant Implementation Revision IDs: IR-001, IR-002, IR-003
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-007`
-- Current Review Round: 7
+- Current Code Review Revision ID: `CRR-010`
+- Current Review Round: 8
+- Round 8 Review Scope: `Targeted Delta Review` of the merge `bd79cb1601` (parents `523c8c95bf`, `92fffca77a`): the 7 conflict resolutions (`git show --remerge-diff`), the one non-conflict fix the base's server test gate required, and the merge's interaction with this ticket's removed view fields and probes. No ticket behaviour changed, so earlier rounds stand
 - Round 7 Review Scope: `Full Re-Audit` of the changed areas, because the delta (`git diff 6ab1cfa81c 65a5b34c9b`, 109 files, mostly publisher constructions in tests) adds `last_message_change_sequence` to the three view contracts and changes the keep rule. Unchanged areas are carried forward from rounds 1–5
 - Round 6 failure context:
   - API-REV-002 at head `6d717bed4a`; test changes in `59f4604da5`; server dist at `99cd853f79`.
@@ -51,6 +52,32 @@
 - Exact Failing Commands / Execution Mode: `pnpm -C autobyteus-web test:e2e:delegated-copies-large-hub --from-seed <--teams 12 --unrelated 50> --output-dir <fresh> --live --large-shape unbroken --samples 1` (clean env, scripted AGY, test-owned data)
 - Failure Evidence Paths: `evidence/api-e2e/API-08-hub-participant-reloads.log`, `evidence/api-e2e/API-07-08-hub-probe-live.json`
 - Delivery Revision Record: N/A
+
+## Round 8: Delivery Integration Merge (IR-007; DR-001)
+
+Scope: `bd79cb1601` merges `origin/personal` @ `92fffca77a` (autobyteus-318 and others) into the validated head. `328a9bca27` is records and evidence only.
+
+| Item | Resolution | Review |
+| --- | --- | --- |
+| `MarkdownRenderer.vue` imports | Both kept | Correct. `hasLongUnbrokenRun` (DS-007) and the base's `openExternalLink` are both used. |
+| `agent_websocket_streaming_protocol.md` | The ticket's snapshot fields (no message log; `live_sequence_id`, `last_message_change_sequence`) combined with the base's precise `CONNECTED`, `TEAM_RUN_LIFECYCLE` and `ERROR` details | Correct. It matches the shared schema, and the keep-rule text (lines 27–36) is intact. |
+| `TeamComposerPublication.spec.ts` | The base's immutable tree update, plus the ticket's live fields, without `messages` | Correct. The snapshot conforms to the ticket's strict schema. |
+| `CollaborationMessagesOrgRoot.integration.spec.ts` | The base's typed target guard, plus the ticket's per-read projection counter | Correct. Both intents are kept, and the counter still feeds the round-4 projection assertions. |
+| `agentOrgContextHydration.spec.ts` | The base's immutable view, plus the ticket's focused staging (`focus: agent-task-lead`) and expectations | Correct. The base's variant (no focus, `agent-director`) asserted the pre-ticket behaviour that the ticket replaced (AC-003). |
+| `task-agent-monitor-visibility.page.vue` | Without the `messages` the base re-added | Correct. The view no longer has the field. |
+| `typecheck-baseline.json` | The base's cut (the fixture's entry removed) | Correct. The shrink-only gate passes with 99 = baseline, so the fixture now type-checks clean. |
+| `agent-org-reference-content-service.test.ts` (not a conflict; surfaced by the base's server test gate) | The fake records owner is typed with the service's own exported port `CollaborationMessageRecords` instead of the full records snapshot | Correct and minimal. The test depends on the narrow port the service declares (`export type`, line 52). |
+| Probes | — | Relative to the base, `delegated-copies-large-hub-probe.mjs` and `delegated-launch-defaults-probe.mjs` differ only by this ticket's additions (+108/−12). |
+
+Independent reruns at `328a9bca27` (same worktree; the implementer's isolated-HOME install):
+- Server type gate PASS: production 0; tests 1,200 = baseline.
+- Web type gate PASS: production 0; tests 99 = baseline; cross-package 0.
+- The four conflicted web spec sets plus the renderer specs: 7 files, 55 passed.
+- `agent-org-reference-content-service.test.ts`: 2 passed.
+- `autobyteus-server-ts/tests/architecture`: 61 passed.
+- I did not rerun the full suites. I reused the implementer's `evidence/IMP-IR007-merge-checks.log`: web 4,993; server unit 7,743; integration 500, 0 failed; Electron 291; contracts 39/21.
+
+Findings: none. FU-001 is resolved by the base (autobyteus-318 repaired the 6 tests), so the clean-clone integration run should now be `exit=0`. FU-005 still holds. Scorecard unchanged (9.5/10): the merge changes no ticket behaviour, structure or ownership.
 
 ## Round 7: CR-004 Rework (IR-006; SR-007, SR-008)
 
@@ -398,10 +425,11 @@ No new premises beyond the candidate gate.
 
 - M-151 (opening a large Team/Org in the browser) is not measured; the request counts are proven by specs. Left to API/E2E.
 - DS-007 does not cover the tool-call and reasoning renderers (C-11; outside the design's mapping). API/E2E can check a long token in a tool result.
-- FU-001: 6 integration tests fail on base too, so the clean-clone integration run is `exit=1` by those only.
+- FU-001: resolved by the base at `92fffca77a` (round 8); integration 500 passed, 0 failed.
 
 ## Latest Authoritative Result
 
+- Review Decision (round 8, merge): `Pass`. All 7 conflict resolutions and the gate-driven test typing fix are correct; type gates, the touched specs and architecture tests rerun independently and pass; no findings. Recipient: API/E2E Engineer (primary pass rule; a proportionate recheck of the ticket's cases on the integrated head, then test review if durable tests change, then delivery); informational notice to the Implementation Engineer
 - Review Decision (round 7): `Pass`. CR-001…CR-004 resolved; scorecard 9.5/10, every category ≥ 9.4
 - Review Decision (round 6, failure-origin): `Fail`. Origin: the SR-004 keep rule compares the snapshot base (all root changes) with C; a delegation's reconnect window always holds the new copy's non-message events, so every delegation reloads. Design gap, plus a review gap acknowledged. `Design Impact` → Solution Designer (CR-004)
 - Review Decision (round 5): `Pass`. CR-001…CR-003 resolved; scorecard 9.5/10, every category ≥ 9.4 (Runtime Correctness and API/E2E Readiness back to 9.4)
