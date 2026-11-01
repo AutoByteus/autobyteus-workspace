@@ -13,7 +13,6 @@ import type { AgentExternalEventNotifier } from '../events/notifiers.js';
 import type { LlmRequestCapacity } from '../token-budget.js';
 import { conversationRequestKwargs, conversationRequestOptions } from './conversation-request.js';
 
-export const COMPACTION_CONVERSATION_RELEASE_TIMEOUT_MS = 10_000;
 /** A known agent output limit below this is raised for summary requests (REQ-009). */
 export const SUMMARY_OUTPUT_TOKEN_FLOOR = 16_384;
 
@@ -26,7 +25,8 @@ export type LlmPhaseSummaryPortInput = Readonly<{
   notifier: AgentExternalEventNotifier | null;
 }>;
 
-export const compactionConversationId = (identity: SummaryRequestIdentity): string =>
+/** The id of one summary attempt in its execution metadata. */
+export const compactionInvocationId = (identity: SummaryRequestIdentity): string =>
   `compaction_${identity.operationId}_${identity.attempt}`;
 
 /**
@@ -51,8 +51,7 @@ const estimateToolSchemaTokens = (tools: ReadonlyArray<Record<string, unknown>>)
 /**
  * `ConversationSummaryPort` on the agent's own LLM. The cached request is the agent's conversation
  * request (same sanitized messages, tools, settings and cache scope) plus the instruction. Every
- * attempt is one provider call (`single_attempt`) on its own conversation id, never the agent's,
- * which is released afterwards; its usage is reported as an `autobyteus_compaction` usage event.
+ * attempt is one provider call (`single_attempt`); its usage is reported as an `autobyteus_compaction` usage event.
  */
 export class LlmPhaseSummaryPort implements ConversationSummaryPort {
   /** The agent's own resolved output limit `R`. */
@@ -104,10 +103,9 @@ export class LlmPhaseSummaryPort implements ConversationSummaryPort {
 
   async requestCachedSummary(messages: readonly Message[], instruction: string,
     identity: SummaryRequestIdentity, signal: AbortSignal): Promise<SummaryAttemptResult> {
-    const conversationId = compactionConversationId(identity);
     const sanitized = await sanitizeMediaInputMessages([...messages], this.input.llm.model.multimodalCapabilities);
     return this.send('cached', [...sanitized.outboundMessages, new Message(MessageRole.USER, { content: instruction })],
-      conversationRequestKwargs(conversationId, this.input.tools),
+      conversationRequestKwargs(this.input.tools),
       this.withOutputLimit(conversationRequestOptions({ signal, turnId: identity.executionTurnId, retryMode: 'single_attempt' }),
         this.estimateCachedRequest(messages, instruction)),
       identity, signal);
@@ -125,17 +123,16 @@ export class LlmPhaseSummaryPort implements ConversationSummaryPort {
     if (estimate > capacity.inputBudget) {
       throw new CompactionInvocationError('input_budget_exceeded', 'Selected compaction history exceeds the compactor input budget.');
     }
-    return this.send('transcript', messages, { logicalConversationId: compactionConversationId(identity) },
+    return this.send('transcript', messages, {},
       this.withOutputLimit({ signal, turnId: identity.executionTurnId, retryMode: 'single_attempt' }, estimate), identity, signal);
   }
 
   private async send(mode: CompactionSummaryMode, messages: Message[], kwargs: Record<string, unknown>,
     options: LLMInvocationOptions, identity: SummaryRequestIdentity, signal: AbortSignal): Promise<SummaryAttemptResult> {
     const { llm } = this.input;
-    const conversationId = compactionConversationId(identity);
     let metadata: CompactionExecutionMetadata = {
       mode, modelIdentifier: llm.model.modelIdentifier, provider: String(llm.model.provider),
-      invocationId: conversationId, completionStatus: 'unknown', completionReason: null, usage: null,
+      invocationId: compactionInvocationId(identity), completionStatus: 'unknown', completionReason: null, usage: null,
     };
     try {
       let content = '';
@@ -156,8 +153,6 @@ export class LlmPhaseSummaryPort implements ConversationSummaryPort {
     } catch (error) {
       throw new CompactionInvocationError(signal.aborted ? 'cancelled' : (error as { code?: string })?.code ?? 'generation_failure',
         error instanceof Error ? error.message : String(error), metadata, error);
-    } finally {
-      await this.release(conversationId);
     }
   }
 
@@ -177,22 +172,5 @@ export class LlmPhaseSummaryPort implements ConversationSummaryPort {
         context_window_usage_percent: null,
       });
     } catch { /* Metering never alters the attempt outcome. */ }
-  }
-
-  /** Bounded, best-effort release on its own controller: the attempt's signal may already be aborted. */
-  private async release(conversationId: string): Promise<void> {
-    const controller = new AbortController();
-    let timeout: ReturnType<typeof setTimeout> | undefined;
-    try {
-      await Promise.race([
-        this.input.llm.releaseConversation(conversationId, { signal: controller.signal }),
-        new Promise<never>((_, reject) => { timeout = setTimeout(() => {
-          controller.abort(); reject(new Error('Compaction conversation release timed out.'));
-        }, COMPACTION_CONVERSATION_RELEASE_TIMEOUT_MS); }),
-      ]);
-    } catch {
-      try { console.warn('Compaction conversation release failed.', { conversationId }); }
-      catch { /* Cannot mask the attempt outcome. */ }
-    } finally { clearTimeout(timeout); }
   }
 }

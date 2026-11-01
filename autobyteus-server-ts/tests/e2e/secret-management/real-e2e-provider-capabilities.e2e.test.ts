@@ -164,7 +164,6 @@ run('value-safe one-database-vault managed-provider capabilities', () => {
         try {
           const response = await safeExternalOperation(scenarioId, () => llm.sendUserMessage(
             new LLMUserMessage({ content: 'Reply with the single word pong.' }),
-            { logicalConversationId: `secure-secret-real-${scenarioId.replace('.', '-')}` },
           ));
           assertEvidenceClean(response);
           expect(response.content.trim().length).toBeGreaterThan(0);

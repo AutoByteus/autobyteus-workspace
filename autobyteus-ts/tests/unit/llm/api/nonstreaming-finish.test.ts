@@ -37,7 +37,7 @@ describe('non-streaming finish and its completion projection',()=>{
  ['ollama','stop','complete','stop'],['ollama','length','incomplete','output_limit'],['ollama',undefined,'unknown',null],
  ])('%s %s becomes %s (finish %s)',async(family,reason,expected,finishReason)=>{
   const {llm,send}=fixture(family!,reason);const signal=new AbortController().signal;
-  const result=await llm.sendMessages(messages,{logicalConversationId:'fresh-summary'},{signal});
+  const result=await llm.sendMessages(messages,{},{signal});
   expect(result.finish?.reason ?? null).toBe(finishReason);
   expect(result.completionStatus).toBe(expected);expect(result.completionReason).toBe(reason??null);
   expect(result.content).toBe('ok');expect(send).toHaveBeenCalledOnce();

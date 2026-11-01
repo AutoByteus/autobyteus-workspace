@@ -94,12 +94,9 @@ LLM, the tools or the notifier, and there is no compaction-model setting.
   as the user message, without tools or caching (every adapter, Gemini included, takes
   the system prompt from the request's leading SYSTEM messages): up to **three** attempts with
   abortable 1s/2s backoffs. Provider capacity is checked before dispatch.
-- Every attempt is exactly one provider call (`single_attempt` transport) on its own
-  provider conversation `compaction_<operationId>_<attempt>`, never the agent's id.
-  The port releases it afterwards through `BaseLLM.releaseConversation` (default
-  no-op; a provider that keeps server-side sessions ends that session), on its own 10 s-bounded
-  controller, whatever the attempt outcome (including abort). The agent's LLM is
-  never cleaned up by compaction.
+- Every attempt is exactly one provider call (`single_attempt` transport); its
+  execution metadata names it `compaction_<operationId>_<attempt>` (`invocationId`).
+  The agent's LLM is never cleaned up by compaction.
 - Each attempt's usage is reported to the agent run as a token-usage event
   (`ingestion_kind: 'autobyteus_compaction'`, `llm_call_id:
   <executionTurnId>:compaction:<operationId>:<attempt>`, latest prompt null), so the
