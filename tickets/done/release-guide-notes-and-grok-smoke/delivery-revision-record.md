@@ -21,4 +21,9 @@ The docs sync report, handoff summary and release/deployment report are authorit
 
 #### Finalization Record
 
-To be completed after the push.
+- Delivery commit `1087f0fb4c` (RELEASE.md doc edits, delivery records, archive move) on `codex/release-guide-notes-and-grok-smoke`, pushed; Secret Gate PASS.
+- Target re-fetched: `origin/personal` still `efd28d5c4a`; the merged tree equals the ticket branch.
+- Merge: `--no-ff` into `personal` as `ceda667fa7`; Secret Gate PASS on the merged state; pushed `efd28d5c4a..ceda667fa7`.
+- Release: none.
+- Cleanup: the ticket worktree and the local `codex/…` and `finalize/…` branches are removed after this record is pushed; the remote ticket branch stays, as for other tickets.
+- Terminal return to the Solution Designer: sent after this record is on `personal`.
