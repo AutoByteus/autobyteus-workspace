@@ -62,7 +62,6 @@ type ProviderCatalogSnapshot = {
     name: string;
   };
   sources: Array<{
-    modelKind: string;
     state: string;
     modelCount: number;
   }>;
@@ -402,7 +401,7 @@ const waitForReadyProvider = async (
         runtimeKind: "autobyteus"
       ) {
         ownerProvider { id name }
-        sources { modelKind state modelCount }
+        sources { state modelCount }
         llmModels { modelIdentifier value }
       }
     }
@@ -413,7 +412,6 @@ const waitForReadyProvider = async (
   );
   if (!setting) throw new Error('READABLE_PROVIDER_CREDENTIAL_SETTING_MISSING');
   expect(catalog.ensureProviderModelCatalog.sources).toContainEqual(expect.objectContaining({
-    modelKind: 'LLM',
     state: 'READY',
   }));
   return {

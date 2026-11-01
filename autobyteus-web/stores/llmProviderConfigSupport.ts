@@ -4,7 +4,6 @@ import type { LLMProvider } from '~/types/llm'
 export type CatalogMode = 'STATIC' | 'DISCOVERED'
 export type CatalogRequestState = 'idle' | 'loading' | 'ready' | 'error'
 export type ModelGroupKind = 'audio' | 'image' | 'video'
-export type ModelKind = 'LLM' | 'AUDIO' | 'IMAGE' | 'VIDEO'
 export type ModelSourceState =
   | 'IDLE'
   | 'LOADING'
@@ -59,7 +58,6 @@ export interface ProviderWithModels {
 }
 
 export interface ModelSourceStatus {
-  modelKind: ModelKind
   state: ModelSourceState
   modelCount: number
   successfulUnitCount: number

@@ -88,7 +88,7 @@ model discovery. Secret values are never returned.
 The snapshot query initializes static SDK registries without network access and
 projects their current rows. It does not ensure or reload a dynamic source;
 cold discovered sources appear as `IDLE` with empty rows. Dynamic source status
-is capability-specific and exposes `modelKind`, `state`, model/success/failure
+is capability-specific and exposes `state`, model/success/failure
 counts, and a nullable safe message. Model rows remain owned by the SDK
 registries; `ModelCatalogService` maintains no duplicate aggregate row cache.
 

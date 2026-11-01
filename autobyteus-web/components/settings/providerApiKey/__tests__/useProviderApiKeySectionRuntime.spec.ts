@@ -39,7 +39,7 @@ const snapshot = (
   runtimeKind: 'autobyteus',
   ownerProvider: descriptor(id, mode),
   sources: mode === 'STATIC' ? [] : [{
-    modelKind: 'LLM', state, modelCount: state === 'READY' ? 1 : 0,
+    state, modelCount: state === 'READY' ? 1 : 0,
     successfulUnitCount: state === 'READY' ? 1 : 0, failedUnitCount: 0, safeMessage: null,
   }],
   llmModels: state === 'READY' ? [{
@@ -49,12 +49,13 @@ const snapshot = (
   }] : [],
   audioModels: [], imageModels: [], videoModels: [],
 })
+/** `rows`: which model rows the fixture gives a source (a source status itself carries no kind). */
 const freshnessSnapshot = (
-  sources: Array<{ modelKind: 'LLM' | 'AUDIO' | 'IMAGE'; state: 'READY' | 'PARTIAL' | 'STALE_ERROR' | 'ERROR'; modelCount: number }>,
+  sources: Array<{ rows: 'LLM' | 'AUDIO' | 'IMAGE'; state: 'READY' | 'PARTIAL' | 'STALE_ERROR' | 'ERROR'; modelCount: number }>,
 ) => ({
   runtimeKind: 'autobyteus',
   ownerProvider: descriptor('LMSTUDIO', 'DISCOVERED'),
-  sources: sources.map(source => ({
+  sources: sources.map(({ rows: _rows, ...source }) => ({
     ...source,
     successfulUnitCount: source.state === 'READY' || source.state === 'PARTIAL' ? 1 : 0,
     failedUnitCount: source.state === 'PARTIAL'
@@ -66,13 +67,13 @@ const freshnessSnapshot = (
       ? 'MODEL_DISCOVERY_UNAVAILABLE'
       : null,
   })),
-  llmModels: sources.some(source => source.modelKind === 'LLM' && source.modelCount > 0)
+  llmModels: sources.some(source => source.rows === 'LLM' && source.modelCount > 0)
     ? snapshot('LMSTUDIO', 'DISCOVERED', 'READY').llmModels
     : [],
-  audioModels: sources.some(source => source.modelKind === 'AUDIO' && source.modelCount > 0)
+  audioModels: sources.some(source => source.rows === 'AUDIO' && source.modelCount > 0)
     ? [{ ...snapshot('LMSTUDIO', 'DISCOVERED', 'READY').llmModels[0], modelIdentifier: 'audio-model' }]
     : [],
-  imageModels: sources.some(source => source.modelKind === 'IMAGE' && source.modelCount > 0)
+  imageModels: sources.some(source => source.rows === 'IMAGE' && source.modelCount > 0)
     ? [{ ...snapshot('LMSTUDIO', 'DISCOVERED', 'READY').llmModels[0], modelIdentifier: 'image-model' }]
     : [],
   videoModels: [],
@@ -264,9 +265,9 @@ describe('useProviderApiKeySectionRuntime provider-scoped behavior', () => {
     const { wrapper } = mountRuntime({
       settings: [setting('LMSTUDIO', false, 'DISCOVERED')],
       snapshots: [freshnessSnapshot([
-        { modelKind: 'LLM', state: 'READY', modelCount: 1 },
-        { modelKind: 'AUDIO', state: 'ERROR', modelCount: 0 },
-        { modelKind: 'IMAGE', state: 'ERROR', modelCount: 0 },
+        { rows: 'LLM', state: 'READY', modelCount: 1 },
+        { rows: 'AUDIO', state: 'ERROR', modelCount: 0 },
+        { rows: 'IMAGE', state: 'ERROR', modelCount: 0 },
       ]) as never],
     })
     const runtime = wrapper.vm as never as {
@@ -286,7 +287,7 @@ describe('useProviderApiKeySectionRuntime provider-scoped behavior', () => {
     const { wrapper } = mountRuntime({
       settings: [setting('LMSTUDIO', false, 'DISCOVERED')],
       snapshots: [freshnessSnapshot([
-        { modelKind: 'LLM', state: 'PARTIAL', modelCount: 0 },
+        { rows: 'LLM', state: 'PARTIAL', modelCount: 0 },
       ]) as never],
     })
     const runtime = wrapper.vm as never as {
@@ -308,8 +309,8 @@ describe('useProviderApiKeySectionRuntime provider-scoped behavior', () => {
     const mixed = mountRuntime({
       settings: [setting('LMSTUDIO', false, 'DISCOVERED')],
       snapshots: [freshnessSnapshot([
-        { modelKind: 'LLM', state: 'READY', modelCount: 1 },
-        { modelKind: 'AUDIO', state: 'STALE_ERROR', modelCount: 1 },
+        { rows: 'LLM', state: 'READY', modelCount: 1 },
+        { rows: 'AUDIO', state: 'STALE_ERROR', modelCount: 1 },
       ]) as never],
     }).wrapper.vm as never as {
       initialize: () => Promise<void>
@@ -323,8 +324,8 @@ describe('useProviderApiKeySectionRuntime provider-scoped behavior', () => {
     const allStale = mountRuntime({
       settings: [setting('LMSTUDIO', false, 'DISCOVERED')],
       snapshots: [freshnessSnapshot([
-        { modelKind: 'LLM', state: 'STALE_ERROR', modelCount: 1 },
-        { modelKind: 'AUDIO', state: 'STALE_ERROR', modelCount: 1 },
+        { rows: 'LLM', state: 'STALE_ERROR', modelCount: 1 },
+        { rows: 'AUDIO', state: 'STALE_ERROR', modelCount: 1 },
       ]) as never],
     }).wrapper.vm as never as {
       initialize: () => Promise<void>
