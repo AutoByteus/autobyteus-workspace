@@ -30,5 +30,6 @@
 - AR-004: `CollaborationRootResolver` (file, signature, construction, failure contract); `RemoteRootDirectory`
   delegates to it.
 - AR-006: the Docker data-copy rollback residual is corrected, FU-003.
+- Design case: `docs/design-cases.md` Case 5 (AR-001).
 - N-1 (why a dist stamp) and N-2 (check that `pnpm deploy` carries the stamp) folded in.
 - Requirements unchanged (SR-002). Classification Large / High. Routing: ARCH-REV-002.

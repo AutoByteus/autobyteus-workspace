@@ -64,7 +64,7 @@ Principle 13.
 - **Again in autobyteus-349 (AR-002):** the startup cleanup removed a never-started run when a walk of its folder "found no file besides the record". The removal is a recursive `fs.rm`, so a walk that failed, or did not look at a symlink, would have read as "empty" and deleted the very content the rule protects. Fix: the walk does not follow links, every entry other than directories and the record counts as content, and any walk error keeps the run and logs it.
 - **Notice it by:** "finds no X, so …", "counts as"; a destructive step gated on not finding something.
 
-### Case 5: Claims About The Code Taken On Trust (autobyteus-245, AR-202; autobyteus-247, AR-301; autobyteus-280, DI-001; autobyteus-278, AR-404; autobyteus-282, D-1; autobyteus-303, AR-001, SR-007; autobyteus-311, M-3; autobyteus-339, CRR-002 F-API-001)
+### Case 5: Claims About The Code Taken On Trust (autobyteus-245, AR-202; autobyteus-247, AR-301; autobyteus-280, DI-001; autobyteus-278, AR-404; autobyteus-282, D-1; autobyteus-303, AR-001, SR-007; autobyteus-311, M-3; autobyteus-339, CRR-002 F-API-001; autobyteus-285, AR-001)
 
 Principle 1.
 
@@ -88,6 +88,7 @@ Principle 1.
   - What happened: to stop a client connection from holding the server's shutdown, the design cut every connection at close (`forceCloseConnections`). It called a cut request harmless because "run admission is already closed". Nobody traced a state-changing handler. `createAgentRun` persists the prepared run before activation checks admission, so cut creates left prepared-only runs, and completed runs whose client never got the ID (a retry duplicates them). The base build had completed those requests.
   - Fix (SR-004): close only what caused the stall (connections that never sent a request), let requests in progress finish within 2 s, then close the rest.
   - Lesson: when a mechanism change drops a guarantee the old path gave ("a request in progress gets its answer"), trace one state-changing caller through it before calling the loss acceptable.
+- **Again in autobyteus-285 (AR-001):** the restart-resume design woke every busy run through `root.executeAgentCommand(post_message)`, because all three root kinds have that method. For a standalone root it serves only children: the host's commands go through its own stream, and `executeAgentCommand` rejects them (`AGENT_ROOT_HOST_COMMAND_REJECTED`). So every busy standalone chat would have failed to resume. Fix: dispatch by place; the host goes through `postUserMessage`, children and members through `executeAgentCommand`. Lesson: a method that exists on every kind is not proof that it serves every member of each kind; read its guard.
 - **Notice it by:** "mirrors", "as today", "the compiler enforces", a count with no source; a probe's stand-in for an outside service taken as the service; a module called "production" without listing its importers; "unchanged" for a merge of copies that were never compared line by line. "unrecoverable" or "the layout matches" without opening the existing files or asking how they were made. A product behavior stated from a function, without a caller.
 
 ### Case 6: One Rule Applied By Several Callers (autobyteus-280, AR-004; autobyteus-260)
