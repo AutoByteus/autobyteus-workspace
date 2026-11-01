@@ -11,7 +11,7 @@ Words: **member** = a configured Agent of a Team or Org run (direct Agent, Agent
 | Record | Type | Where it is saved | Binding fields today |
 | --- | --- | --- | --- |
 | Configured member (Team, Org, mounted Team) | `ConfiguredAgentExecutionNode` | the run's execution tree (`agent_teams/<team>/…`, Org tree) | `launchConfiguration.{runtimeKind, llmModelIdentifier, llmConfig}`, `platformAgentRunId` |
-| Delegated Agent copy | `TaskAgentExecution` | the coordinating run's tree (`taskExecutions`), and the copy's own `run_metadata.json` | started launch in `source.launchConfiguration`; user choice `userLaunchSelection`; `platformAgentRunId` |
+| Delegated Agent copy | `TaskAgentExecution` | the copy's own `run_metadata.json` (`taskAgent` section); the coordinating tree holds a link; in memory the two are composed (`task-execution-tree-split.ts`) | started launch in `source.launchConfiguration`; user choice `userLaunchSelection`; `platformAgentRunId` |
 | Member of a delegated Team copy | `TaskTeamAgentExecution` | the same, inside `TaskTeamExecution.members` | the Team copy's `source` members; `userLaunchSelection`; `platformAgentRunId` |
 
 ### 1.1 Configured member
@@ -28,7 +28,7 @@ One pure function decides the result for every kind, `applyRuntimeSelection(reco
 
 ## 2. The activation commit clears the pending switch in the same durable write as the binding
 
-`CollaborationAgentPlatformBindingChange` (`agent-collaboration/execution/domain/collaboration-agent-platform-binding.ts`) gains a third kind, `runtime_switch`: `{ kind, switchId, binding: CollaborationAgentPlatformBinding | null }` (`null` for the native runtime, which has no provider session). Every root already implements `commitAgentPlatformBindingChange(change)` under its persistence lock before the new run is published (*Read:* `RootTeamRun`, `AgentOrgRun`, `StandaloneAgentRunRoot`, each through its tree mutator). For `runtime_switch` the mutator matches the member (address and run ID, in the root's members and in every `taskExecutions` list), requires the stored pending switch to carry the same `switchId`, sets `platformAgentRunId` to the binding (or leaves `null`), and removes `pendingRuntimeSwitch`, in one tree write. A copy's own file is written from its tree record by the existing persistence step (to confirm in the design review, notes F-09). Stored before and after, a Team member, external target:
+`CollaborationAgentPlatformBindingChange` (`agent-collaboration/execution/domain/collaboration-agent-platform-binding.ts`) gains a third kind, `runtime_switch`: `{ kind, switchId, binding: CollaborationAgentPlatformBinding | null }` (`null` for the native runtime, which has no provider session). Every root already implements `commitAgentPlatformBindingChange(change)` under its persistence lock before the new run is published (*Read:* `RootTeamRun`, `AgentOrgRun`, `StandaloneAgentRunRoot`, each through its tree mutator). For `runtime_switch` the mutator matches the member (address and run ID, in the root's members and in every `taskExecutions` list), requires the stored pending switch to carry the same `switchId`, sets `platformAgentRunId` to the binding (or leaves `null`), and removes `pendingRuntimeSwitch`, in one tree write. A copy's facts are saved in its own file by the existing compose-at-load, split-at-save persistence (notes F-09 (a)); the mutators work on the composed record. Stored before and after, a Team member, external target:
 
 ```
 before: member { address: "/reviewer", agentRunId: "run-7", platformAgentRunId: null,

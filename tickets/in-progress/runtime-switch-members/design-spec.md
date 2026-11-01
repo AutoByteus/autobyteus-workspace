@@ -18,11 +18,11 @@ The standalone switch of 316 is complete and on `origin/personal`: a pending swi
 
 - Task size: **Large** — server: run-history records and schemas (the saved structures of Team, Org and copies), three tree mutators and three roots' commit seams, the shared handle and planner, the Team/Org/delegated save paths (mutators, services, managers, GraphQL), memory discovery; library: none; web: member rows, delegated rows, drafts and clients, generated types; renames across the Team and Org chains; roughly 45 files plus tests.
 - Architectural risk: **High** — it changes the persisted structure of every Team, Org and copy record (optional fields), the durable commit of a member's binding in three roots (concurrency, ownership of the persistence lock), and a path every member activation takes; a mistake would affect all restores of members.
-- Escalation trigger: a root's persistence cannot carry the new commit kind inside its existing lock; a copy's own file is written by a path separate from its tree record (F-09a); or the activity inspector or restore path of a switched member behaves differently from the standalone run in the built-server case.
+- Escalation trigger: a root's persistence cannot carry the new commit kind inside its existing lock; the web DTO projections need more than the pending flag (F-09b); or the activity inspector or restore path of a switched member behaves differently from the standalone run in the built-server case.
 
 ## Architecture Investigation Evidence
 
-Evidence is in `investigation-notes.md` F-01…F-09; each design decision cites its finding. Two points are not yet shown and are named as the first implementation tests: F-09 (a) and (b).
+Evidence is in `investigation-notes.md` F-01…F-09; each design decision cites its finding. One point is not yet shown and is the first implementation test: F-09 (b).
 
 ## Intended Change
 
@@ -251,7 +251,7 @@ A Team member saved on another runtime: the tree record at `/reviewer` shows the
 
 ## Risks
 
-- A copy's own file and its tree record could be written by separate paths (F-09a): the first implementation test decides; if so both are extended.
+- A copy's facts have one home, its own file, composed with the coordinating tree's link at load and split at save (F-09a); the new optional fields must be added to the compose and split functions and to the own-file schema: covered by the record round-trip tests.
 - Team-level choices for copies reach followers: each following member needs its own pending record; a member that never spoke only gets the choice.
 - Many members may switch at once (default propagation): each makes its own session at its own next input; the hand-over note is per member run.
 - The Team/Org must be stopped for the edit (existing rule); a user who wants only one member to continue while the others run cannot: out of scope (product decision for later).
