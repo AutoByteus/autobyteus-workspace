@@ -34,3 +34,22 @@
 - N-1 (why a dist stamp) and N-2 (check that `pnpm deploy` carries the stamp) folded in.
 - Requirements unchanged (SR-002). Classification Large / High. Routing: ARCH-REV-002.
 - 2026-11-01, review result recorded: **ARCH-REV-002 Pass** on SR-004. Cosmetic N-6 folded in (Risks, the update-test example, Task Size, Change Scope follow-ups) and N-7 noted in D3. The reviewer routed to `/software_engineering_team/implementation_engineer`.
+
+## SR-005 — 2026-11-01 — Design revision for CRR-002 (Fail, Design Impact)
+- Trigger: CRR-002, the failure-origin review of API-REV-001.
+  - F-API-001: the eligibility check raced the restore and post. An archived run got a notice turn, and a user
+    message 0.02–0.3 s before the post led to an extra turn ahead of it.
+  - O-1: a member's or delegated run's notice was never persisted or seen (BEH-004).
+- Design:
+  - restore without posting; re-check `terminatedAt` and archived after the restore (final: archive refuses an active
+    run or root);
+  - post with the new admission rule `onlyAsFirstInput` (refused with `AGENT_RUN_INPUT_NOT_FIRST` when the run
+    instance already reserved or admitted input), passed through `post_message`'s new optional `postOptions` for
+    members and delegated runs;
+  - every place publishes the run's own `SYSTEM_TASK_NOTIFICATION` through one observer helper, and the member handle
+    does not present a platform notice as `member_input`;
+  - D3.4's wave text corrected to the accepted order (delegated, then host and members).
+- Requirements: REQ-003's "already received new input" clarified (any input the restored run accepted before the
+  notice). No change in intended behavior; BEH-003 and BEH-004 are now met without a residual.
+- FU-004 (code reviewer) absorbed. Design case: `docs/design-cases.md` Case 10.
+- Classification Large / High (unchanged). Routing: `/architecture_reviewer` (a revised High package).

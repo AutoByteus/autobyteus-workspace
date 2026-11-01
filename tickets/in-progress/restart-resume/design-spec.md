@@ -1,7 +1,7 @@
 # Design Spec — restart-resume (autobyteus-285)
 
 ## Solution And Approval Basis
-- Current solution revision ID: `SR-004` (ARCH-REV-001: AR-001 to AR-006). SR-003 is in git history.
+- Current solution revision ID: `SR-005` (CRR-002: F-API-001 race closed at the run's admission; O-1 member notice persisted). SR-004 (ARCH-REV-001) and SR-003 are in git history.
 - Approved requirements: `requirements-doc.md` SR-002, approved by **the user** on 2026-11-01 (DEC-001 = A: only
   update restarts resume; busy runs only).
 - User approval of the design, when the direction requires it: `Not required`. The Task's direction asks for the user's
@@ -107,26 +107,44 @@
   2. **consume it at once**: delete the file before any resume (REQ-005 once; a crash during resume does not repeat);
   3. **update test per entry:** `entry.version !== null && current !== null && entry.version !== current`. Entries
      that fail it are dropped with one log line, "restart was not an update" (DEC-001 = A);
-  4. group the remaining entries by root, and order each root's entries in **two waves (AR-003)**: first its
-     `delegated` and `member` entries, then its `host` entry;
-  5. run at most **3 posts at a time** (DEC-002; the limiter counts posts, and a host waiting for its wave holds no slot, N-7). For each entry, **immediately before posting (AR-002)**,
-     check eligibility:
-     - skip when the run is live (`AgentRunManager.getActiveRun(id)` is not null): something, the user or a
-       coordinating run, already started it. This is what REQ-003's "already received new input" means: any input
-       restores and activates a run, so a live run has had new input or is otherwise running, and a second turn must
-       not be started;
-     - skip when it has `terminatedAt`, is archived, or is gone (no history row, or no Team/Org history row for a
-       member);
-     - a Task-closed delegated run is refused by its root's fence, and that is logged;
-  6. dispatch by place (**AR-001**):
-     - `host`: `standaloneRootManager.postUserMessage({ runId, message, postOptions: { lifecycleObserver } })`. A
-       standalone host's commands do not go through `executeAgentCommand`, which rejects them
-       (`standalone-root-message-delivery.ts:254-259`, `AGENT_ROOT_HOST_COMMAND_REJECTED`);
-     - `member` and `delegated`: `root = await rootResolver.resolveOrRestore(entry.root)` (AR-004), then
-       `root.executeAgentCommand(entry.agentRunId, { kind: "post_message", message })`. That wakes a shut-down
-       delegated child and keeps the root's fences;
-     - a result that is not accepted, or a throw, is logged, and the run stays stopped (REQ-006). Only accepted
-       entries count as resumed.
+  4. group the remaining entries by root, and order each root's entries in **two waves (AR-003, as implemented and
+     accepted in CR-C1)**: wave 1 is its `delegated` entries; wave 2 is its `host` and `member` entries, whose notices
+     list the accepted wave-1 runs;
+  5. run at most **3 posts at a time** (DEC-002; the limiter counts posts, and an entry waiting for its wave holds no
+     slot, N-7). Before restoring, skip entries that are already ineligible (live, `terminatedAt`, archived, gone).
+     That is only a cheap pre-filter: **the guard is step 6** (SR-005, CRR-002 F-API-001);
+  6. **restore, re-check, then post a first-input-only notice (SR-005).** Each step is owned by an existing boundary:
+     1. **restore without posting:**
+        - `host`: `standaloneRootManager.resolveRootAndEnsureHost(runId)` (activates the host; returns the root and
+          run);
+        - `member` and `delegated`: `rootResolver.resolveOrRestore(entry.root)` (the root is active; the member
+          starts on input in 6.3);
+     2. **re-check after the restore:** the history says `terminatedAt` is not set and the run (host or delegated
+        Agent) or its Team/Org root is not archived. **This check is final**, because archiving refuses an active run
+        or root ("Run is active. Terminate it before archiving history",
+        `agent-run-history-catalog-service.ts:364-377`, through `liveness.releaseForHistory`). If it fails, nothing is
+        posted. The restored run stays idle, and its idle shutdown stops it as usual, so no paid turn starts;
+     3. **post with `onlyAsFirstInput: true`:**
+        - `host`: `root.postHostUserMessage({ message, postOptions: { lifecycleObserver, onlyAsFirstInput: true } })`;
+        - `member` and `delegated`: `root.executeAgentCommand(agentRunId, { kind: "post_message", message,
+          postOptions: { lifecycleObserver, onlyAsFirstInput: true } })`. `post_message` gains an optional
+          `postOptions`, passed through the member handle (`configured-agent-execution-handle.ts:140-152`) to
+          `AgentRun.postUserMessage`;
+        - **the new admission rule** (`AgentRunInputOptions.onlyAsFirstInput`, checked in
+          `AgentRunInputAdmissionState.reserve`, `agent-run-input-admission-state.ts:88-121`): the input is refused
+          with `AGENT_RUN_INPUT_NOT_FIRST` when this run instance has already reserved or admitted any input. A
+          restored run is a new instance, so its counter starts empty. A user's message, a coordinating run's
+          `send_message_to`, or a peer's message that reached the run first is admitted first, and the notice is
+          refused. If the notice is first, a later message is queued after it as usual. The decision is taken in the
+          run's own dispatch queue, so it has no window;
+     4. a result that is not accepted (including `AGENT_RUN_INPUT_NOT_FIRST`, logged as "the run already had input"),
+        or a throw, is logged, and the run is not counted as resumed (REQ-006). Only accepted entries count as
+        resumed.
+  - **Meaning of REQ-003 "already received new input" (corrects SR-004):** any input reserved or admitted by the run
+    instance before the notice. It is decided by the admission rule, not by `getActiveRun`: a user's message is
+    admitted while its activation is still running, before the run is visible as live (CRR-002).
+  - A user's Stop of an offline run is not a product action (Stop is not offered offline), so it is not a case
+    (CRR-002 scope note).
 - **D4, Notice (REQ-004, AR-001).** It is built by one function, `buildRestartNotice({ entry, resumedDelegated })`, in
   the same shape as the Model Router's system request (`model-routing/services/model-router.ts:200-209`):
   - `new AgentInputUserMessage(text, SenderType.SYSTEM, null, metadata)` with
@@ -140,14 +158,18 @@
     - `dedupe_key = "agent_run_input:" + agentRunId + ":" + message_id` (the web's scheme,
       `autobyteus-web/stores/agentRunStore.ts:170`). Both are read by the pending-input snapshot and the history
       projection (`run-projection-dedupe.ts:93`); they are display and projection keys, **not** a send guard (AR-002).
-      The guard is the live check in D3.5.
-  - **How it shows:**
-    - host: as the Model Router does, the `lifecycleObserver` publishes `SYSTEM_TASK_NOTIFICATION { sender_id,
-      content, turn_id }` when the input is forwarded, so the window shows a system notice, not a user message;
-    - member and delegated: the root publishes the posted message as the member's input
-      (`configured-agent-execution-handle.ts:147-152`, `member_input`). That event must show a `SYSTEM`-sender message
-      as a system notice; the implementation checks the member presentation and adds the sender mapping if it is
-      missing (test).
+      The guard is the admission rule in D3.6.3.
+  - **How it shows, the same for every place (SR-005, CRR-002 O-1; replaces SR-004's member wording):**
+    - The `lifecycleObserver` in `postOptions` publishes the run's own `SYSTEM_TASK_NOTIFICATION { sender_id, content,
+      turn_id }` when the input is forwarded, as the Model Router does. One helper,
+      `restartNoticeLifecycleObserver(run, text)`, is used by the host and member paths. The recorded sender id keeps
+      it in the run's memory and history, so it shows live and after a reload, for the host and for members and
+      delegated runs.
+    - The member handle composes this observer with its own (`createUnsentInputFailureObserver`). It **does not
+      publish its `member_input` presentation for a message marked as a platform notice** (one that carries
+      `platformInputPrefaceMetadata`), so the window does not show a duplicate as member input.
+    - Tests: a member's and a delegated run's notice is visible after a window opens later and after a reload
+      (API-05T's case); the host stays as API-05H.
   - Text:
     - The application restarted at <time> after an update to <version>.
     - Your previous turn was interrupted.
@@ -179,7 +201,7 @@
   - New: `src/restart-resume/` (`release-identity.ts`, `busy-run-record.ts` (shape, read, write), `busy-run-recorder.ts`,
     `restart-resumer.ts`, `restart-notice.ts`); `scripts/write-release-identity.mjs`.
   - Modified: `server-runtime.ts` (the cleanup wrapper; one background stage), `active-collaboration-root-directory.ts`
-    (`placeOf`; the `isDelegatedRun` boundary query, implemented by the standalone, Team and Org roots), the member input presentation if it does not yet show a SYSTEM sender as a notice, `build-studio-server.ts` (builds the root resolver); new `src/compositions/collaboration-root-resolver.ts`, `system-task-notification-senders.ts`, `runtime-memory-event-accumulator.ts`,
+    (`placeOf`; the `isDelegatedRun` boundary query, implemented by the standalone, Team and Org roots), the input admission (`agent-run-input-contract.ts` `AgentRunInputOptions.onlyAsFirstInput`; `agent-run-input-admission-state.ts` `reserve`), the `post_message` command type (`team-member-execution-command.ts`: optional `postOptions`) and its three root deliveries plus the member handle (`configured-agent-execution-handle.ts`: pass `postOptions` through; no `member_input` presentation for a platform notice), `build-studio-server.ts` (builds the root resolver); new `src/compositions/collaboration-root-resolver.ts`, `system-task-notification-senders.ts`, `runtime-memory-event-accumulator.ts`,
     `remote-collaboration-composition.ts` (its `RemoteRootDirectory` delegates to the shared resolver, D5), `package.json` (`build:full`
     runs the stamp script).
   - Tests and docs.
@@ -262,7 +284,7 @@
 | Once | read → delete file → resume from memory | resume, then delete (a crash repeats every resume) |
 | Update test | per entry: `entry.version && current && entry.version !== current` | a timestamp or "file exists" test (resumes after every quit) |
 | Wake | host → `standaloneRootManager.postUserMessage`; member or delegated → `root.executeAgentCommand(id, post_message)` | `executeAgentCommand` for a host (rejected, AR-001); posting to an `AgentRun` directly (bypasses the root's fences) |
-| Eligibility | re-checked immediately before each post (live, `terminatedAt`, archived, gone) | checking once before the queue (AR-002) |
+| Eligibility | restore → re-check `terminatedAt`/archived (final: archive refuses an active run) → post `onlyAsFirstInput` | check-then-post across a restore await (CRR-002 F-API-001) |
 | Order | per root: delegated and members first, then the host with the accepted list | one flat queue (a host can re-dispatch before its copies are back, AR-003) |
 | Record | recorder writes only with entries and merges; resumer is the only deleter | the recorder removing the file (AR-005) |
 
@@ -276,10 +298,12 @@
 2. `placeOf` with `isDelegatedRun` in the three root kinds; the shared `CollaborationRootResolver` (D5); remote collaboration delegates to it, and its tests stay green.
 3. D2: the recorder and the cleanup wrapper, with tests (record before `preClose`; busy only; no root → skipped).
 4. D4: the notice and the sender id, with the memory accumulator test.
-5. D3: the resumer and the startup stage, with tests: no file; bad file; not an update; update with every eligibility
+5. SR-005: the `onlyAsFirstInput` admission rule and the `post_message` `postOptions` pass-through, with tests (refused after a reserved or admitted input; first wins; the handle passes options; no duplicate `member_input` for a platform notice).
+6. D3: the resumer and the startup stage, with tests: no file; bad file; not an update; update with every eligibility
    case; once (the file is deleted before the first resume); concurrency 3; a throw is logged.
-6. Docs: `agent_execution.md` (restart resume) and a new module doc `restart_resume.md`.
-7. Validation (API/E2E), on separate data only:
+7. Docs: `agent_execution.md` (restart resume) and a new module doc `restart_resume.md`.
+8. Validation (API/E2E), on separate data only:
+   - **SR-005 repeats of API-04/04B/04C:** an archive or a user message timed around the post leaves no notice on the archived run, and no extra turn ahead of the user's message (the notice is refused or comes first); a member's and a delegated run's notice is visible when a window opens later and after a reload (API-05T).
    - **AC-002 real app:** build version X; busy standalone Codex, standalone Claude, a Team member, an Org agent, and a
      standalone root with a busy delegated copy; quit. Rebuild the same code stamped X+1 (the stamp is the only
      difference); start it on the same isolated data root. All of them continue, each with one notice, and the root
@@ -305,7 +329,7 @@
 ## Risks
 - A record write slower than expected eats into 284's 10 s bound: it is one in-memory scan and one small file.
 - Many busy Claude runs resume at once: capped at 3 (memory ~260–480 MB each, 283).
-- Duplicate work: the live check immediately before each post (AR-002); 284 guarantees one server.
+- Duplicate work: the first-input-only admission rule (D3.6.3); 284 guarantees one server.
 
 ## Guidance For Implementation
 - Never resume without the update test; never resume from a file that was not deleted first.
