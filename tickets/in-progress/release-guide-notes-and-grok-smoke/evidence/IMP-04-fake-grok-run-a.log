@@ -1,0 +1,266 @@
+# IMP-04 live suite, only the fake Grok enabled, no override (token-free)
+# Command: env -i PATH=$PATH HOME=/tmp/ab355/home TMPDIR=$TMPDIR RUN_GROK_E2E=1 GROK_BUILD_COMMAND=<worktree>/scripts/tests/fixtures/fake-grok-acp.mjs SKILL_LINKS_E2E_STEP_TIMEOUT_MS=30000 vitest run tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts --reporter=default --reporter=json (RUN_CLAUDE_E2E/RUN_CODEX_E2E unset: Claude and Codex disabled; no provider call)
+# Commit: 6cc367a37e (run on the working tree committed unchanged as 6cc367a37e)
+# Environment: macOS (Darwin 25.5.0), Node v22.23.1, vitest 4.1.12, worktree release-guide-notes-and-grok-smoke; temp HOME; the fake is the only Grok
+# Date: 2026-11-01
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/release-guide-notes-and-grok-smoke/autobyteus-server-ts
+(node:2815) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts
+AgentFactory (Singleton) initialized.
+stdout | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts > workspace skill links with real runtimes (REQ-105)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/release-guide-notes-and-grok-smoke/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/release-guide-notes-and-grok-smoke/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-52MJ3M/app-data
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-52MJ3M/app-data/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-52MJ3M/app-data/.env
+◇ injected env (2) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-52MJ3M/app-data/.env // tip: ⌘ enable debugging { debug: true }
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/release-guide-notes-and-grok-smoke/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/release-guide-notes-and-grok-smoke/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-52MJ3M/app-data
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-52MJ3M/app-data/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-52MJ3M/app-data/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-52MJ3M/app-data/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-52MJ3M/app-data/memory
+============================================================
+Initialized server settings service with 33 predefined settings
+stdout | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts > workspace skill links with real runtimes (REQ-105)
+AgentRunManager initialized.
+AgentRunManager initialized.
+stdout | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts > workspace skill links with real runtimes (REQ-105)
+Loading workspace packages to trigger registration...
+stdout | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts > workspace skill links with real runtimes (REQ-105)
+Successfully loaded workspace packages.
+stdout | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts > workspace skill links with real runtimes (REQ-105)
+Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-52MJ3M/app-data/temp_workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-52MJ3M/app-data/temp_workspace.
+Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-52MJ3M/app-data/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+stdout | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts > workspace skill links with real runtimes (REQ-105)
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+stdout | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts > workspace skill links with real runtimes (REQ-105)
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+stdout | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts > workspace skill links with real runtimes (REQ-105)
+Registered required tool unit: Core Tools
+stdout | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts > workspace skill links with real runtimes (REQ-105)
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+stdout | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts > workspace skill links with real runtimes (REQ-105)
+Registered required tool unit: Project Task Tools
+stdout | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts > workspace skill links with real runtimes (REQ-105)
+Successfully registered tool definition: 'delegate_task'
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+Registered required tool unit: Task Delegation Tools
+Registered required tool unit: Media Tools
+stdout | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts > workspace skill links with real runtimes (REQ-105)
+Successfully registered tool definition: 'publish_artifacts'
+stdout | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts > workspace skill links with real runtimes (REQ-105)
+Registered required tool unit: Published Artifact Tools
+stdout | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts > workspace skill links with real runtimes (REQ-105)
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+stdout | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts > workspace skill links with real runtimes (REQ-105)
+Registered required tool unit: Agent Discovery Tools
+stdout | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts > workspace skill links with real runtimes (REQ-105)
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+stdout | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts > workspace skill links with real runtimes (REQ-105)
+Registered required tool unit: Agent Communication Tools
+stdout | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts > workspace skill links with real runtimes (REQ-105)
+Successfully registered tool definition: 'search_memory'
+stdout | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts > workspace skill links with real runtimes (REQ-105)
+Registered required tool unit: Memory Tools
+stdout | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts > workspace skill links with real runtimes (REQ-105)
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+stdout | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts > workspace skill links with real runtimes (REQ-105)
+Registered required tool unit: Agent Runtime Tools
+stdout | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts > workspace skill links with real runtimes (REQ-105)
+Registered required tool unit: Browser Tools
+stderr | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts > workspace skill links with real runtimes (REQ-105)
+Overwriting existing tool definition for name: 'search_web'
+stdout | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts > workspace skill links with real runtimes (REQ-105)
+Successfully registered tool definition: 'search_web'
+stdout | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts > workspace skill links with real runtimes (REQ-105)
+Registered required tool unit: Search Tools
+stdout | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts > workspace skill links with real runtimes (REQ-105)
+Added new custom server setting: AUTOBYTEUS_AGENT_PACKAGE_ROOTS
+Server setting 'AUTOBYTEUS_AGENT_PACKAGE_ROOTS' updated
+stdout | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts > workspace skill links with real runtimes (REQ-105) > grok
+SKILL_LINKS_LIVE_MODEL {"runtime":"grok","model":"grok-4.5","pinned":"grok-4.7"}
+stdout | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts > workspace skill links with real runtimes (REQ-105) > grok > starts a new run in the linked workspace and continues it after restore, using the skill both times (AC-101, AC-102)
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-52MJ3M/grok-run-ws-siarHy
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-52MJ3M/grok-run-ws-siarHy.
+stdout | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts > workspace skill links with real runtimes (REQ-105) > grok > starts a new run in the linked workspace and continues it after restore, using the skill both times (AC-101, AC-102)
+Created and registered workspace ID: agent_ws_5a711b9be6d85147256a24f89384d42873c8be3617b3594a0d33c9c03d191345
+stdout | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts > workspace skill links with real runtimes (REQ-105) > grok > starts a new run in the linked workspace and continues it after restore, using the skill both times (AC-101, AC-102)
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-52MJ3M/grok-run-ws-siarHy
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-52MJ3M/grok-run-ws-siarHy.
+stdout | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts > workspace skill links with real runtimes (REQ-105) > grok > starts a new run in the linked workspace and continues it after restore, using the skill both times (AC-101, AC-102)
+Reusing registered workspace ID: agent_ws_5a711b9be6d85147256a24f89384d42873c8be3617b3594a0d33c9c03d191345
+stdout | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts > workspace skill links with real runtimes (REQ-105) > grok > starts a new run in the linked workspace and continues it after restore, using the skill both times (AC-101, AC-102)
+Agent websocket attached for run link_probe_agent_5d32ccd8_ec9977fa46944ef8a8785b712fbb34da
+Created agent session 77f728ff-e157-4819-a092-8c5ae9cc267e for run link_probe_agent_5d32ccd8_ec9977fa46944ef8a8785b712fbb34da
+Agent WebSocket connected: session=77f728ff-e157-4819-a092-8c5ae9cc267e, run=link_probe_agent_5d32ccd8_ec9977fa46944ef8a8785b712fbb34da
+stdout | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts > workspace skill links with real runtimes (REQ-105) > grok > starts a new run in the linked workspace and continues it after restore, using the skill both times (AC-101, AC-102)
+SKILL_LINKS_LIVE_NEW_RUN grok {"runId":"link_probe_agent_5d32ccd8_ec9977fa46944ef8a8785b712fbb34da","text":"","tools":[]}
+stdout | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts > workspace skill links with real runtimes (REQ-105) > grok > starts a brand-new team member with configured skills on its first message (AC-105)
+Agent Team Definition created successfully with ID: link-probe-team-grok-5d32ccd8
+stdout | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts > workspace skill links with real runtimes (REQ-105) > grok > starts a brand-new team member with configured skills on its first message (AC-105)
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-52MJ3M/grok-team-ws-hurnCO
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-52MJ3M/grok-team-ws-hurnCO.
+stdout | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts > workspace skill links with real runtimes (REQ-105) > grok > starts a brand-new team member with configured skills on its first message (AC-105)
+Created and registered workspace ID: agent_ws_68fe52c7278e2ffe2d264521be60519ef528594e9b1db72ab0f95b65a2a4c05a
+stdout | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts > workspace skill links with real runtimes (REQ-105) > grok > starts a brand-new team member with configured skills on its first message (AC-105)
+SKILL_LINKS_LIVE_TEAM_MEMORY_BEFORE grok {"teamRunId":"link_probe_team_grok_5d32ccd8_b89100d738ed44e7b860c644c2d6826b","designerRunId":"link_probe_agent_5d32ccd8_0493b451e59f4b5686d3ba15c48c8f58","memberFoldersBefore":["team_communication_messages_active.jsonl","team_run_execution_tree.json"]}
+stdout | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts > workspace skill links with real runtimes (REQ-105) > grok > starts a brand-new team member with configured skills on its first message (AC-105)
+Agent team websocket attached for team run link_probe_team_grok_5d32ccd8_b89100d738ed44e7b860c644c2d6826b
+Created agent session c81145e1-d430-4a38-b925-5c184702968a for run link_probe_team_grok_5d32ccd8_b89100d738ed44e7b860c644c2d6826b
+stdout | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts > workspace skill links with real runtimes (REQ-105) > grok > starts a brand-new team member with configured skills on its first message (AC-105)
+Agent Team WebSocket connected: session=c81145e1-d430-4a38-b925-5c184702968a, run=link_probe_team_grok_5d32ccd8_b89100d738ed44e7b860c644c2d6826b
+stdout | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts > workspace skill links with real runtimes (REQ-105) > grok > starts a brand-new team member with configured skills on its first message (AC-105)
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-52MJ3M/grok-team-ws-hurnCO
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-52MJ3M/grok-team-ws-hurnCO.
+stdout | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts > workspace skill links with real runtimes (REQ-105) > grok > starts a brand-new team member with configured skills on its first message (AC-105)
+Reusing registered workspace ID: agent_ws_68fe52c7278e2ffe2d264521be60519ef528594e9b1db72ab0f95b65a2a4c05a
+stdout | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts > workspace skill links with real runtimes (REQ-105) > grok > starts a brand-new team member with configured skills on its first message (AC-105)
+SKILL_LINKS_LIVE_TEAM_MEMBER grok {"designerRunId":"link_probe_agent_5d32ccd8_0493b451e59f4b5686d3ba15c48c8f58","text":"","tools":[],"memberFoldersAfter":["link_probe_agent_5d32ccd8_0493b451e59f4b5686d3ba15c48c8f58","team_communication_messages_active.jsonl","team_run_execution_tree.json"]}
+stdout | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts > workspace skill links with real runtimes (REQ-105) > grok > refuses a configured-skill run on a different same-named workspace skill and lets an all-installed agent use it (AC-104)
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-52MJ3M/grok-collision-ws-TC8hjy
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-52MJ3M/grok-collision-ws-TC8hjy.
+stdout | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts > workspace skill links with real runtimes (REQ-105) > grok > refuses a configured-skill run on a different same-named workspace skill and lets an all-installed agent use it (AC-104)
+Created and registered workspace ID: agent_ws_7f4b6e4a580fc6461b7035e09555daeba810ee9c56996cafe67629d9b87a3051
+stdout | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts > workspace skill links with real runtimes (REQ-105) > grok > refuses a configured-skill run on a different same-named workspace skill and lets an all-installed agent use it (AC-104)
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-52MJ3M/grok-collision-ws-TC8hjy
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-52MJ3M/grok-collision-ws-TC8hjy.
+stdout | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts > workspace skill links with real runtimes (REQ-105) > grok > refuses a configured-skill run on a different same-named workspace skill and lets an all-installed agent use it (AC-104)
+Reusing registered workspace ID: agent_ws_7f4b6e4a580fc6461b7035e09555daeba810ee9c56996cafe67629d9b87a3051
+stderr | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts > workspace skill links with real runtimes (REQ-105) > grok > refuses a configured-skill run on a different same-named workspace skill and lets an all-installed agent use it (AC-104)
+Error in createAgentRun: Error: Workspace skill path collision for Grok Build skill 'link-probe-5d32ccd8': path '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-52MJ3M/grok-collision-ws-TC8hjy/.grok/skills/link-probe-5d32ccd8' already exists as a directory.
+stdout | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts > workspace skill links with real runtimes (REQ-105) > grok > refuses a configured-skill run on a different same-named workspace skill and lets an all-installed agent use it (AC-104)
+SKILL_LINKS_LIVE_COLLISION grok {"success":false,"refusal":"Error: Workspace skill path collision for Grok Build skill 'link-probe-5d32ccd8': path '/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-52MJ3M/grok-collision-ws-TC8hjy/.grok/skills/link-probe-5d32ccd8' already exists as a directory."}
+stdout | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts > workspace skill links with real runtimes (REQ-105) > grok > refuses a configured-skill run on a different same-named workspace skill and lets an all-installed agent use it (AC-104)
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-52MJ3M/grok-collision-ws-TC8hjy
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-52MJ3M/grok-collision-ws-TC8hjy.
+stdout | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts > workspace skill links with real runtimes (REQ-105) > grok > refuses a configured-skill run on a different same-named workspace skill and lets an all-installed agent use it (AC-104)
+Reusing registered workspace ID: agent_ws_7f4b6e4a580fc6461b7035e09555daeba810ee9c56996cafe67629d9b87a3051
+stdout | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts > workspace skill links with real runtimes (REQ-105) > grok > refuses a configured-skill run on a different same-named workspace skill and lets an all-installed agent use it (AC-104)
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-52MJ3M/grok-collision-ws-TC8hjy
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-52MJ3M/grok-collision-ws-TC8hjy.
+stdout | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts > workspace skill links with real runtimes (REQ-105) > grok > refuses a configured-skill run on a different same-named workspace skill and lets an all-installed agent use it (AC-104)
+Reusing registered workspace ID: agent_ws_7f4b6e4a580fc6461b7035e09555daeba810ee9c56996cafe67629d9b87a3051
+stderr | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts > workspace skill links with real runtimes (REQ-105) > grok > refuses a configured-skill run on a different same-named workspace skill and lets an all-installed agent use it (AC-104)
+Grok Build workspace skill reconciliation: run='link_probe_all_5d32ccd8_958c897bfcb74cae90bd4969d27d3529', skill='link-probe-5d32ccd8', path='/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-52MJ3M/grok-collision-ws-TC8hjy/.grok/skills/link-probe-5d32ccd8', previousTarget='none', currentSource='/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/skill-links-live-52MJ3M/package/agents/link-probe-agent-5d32ccd8/skills/link-probe-5d32ccd8', disposition='skipped-workspace-owned'.
+stdout | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts > workspace skill links with real runtimes (REQ-105) > grok > refuses a configured-skill run on a different same-named workspace skill and lets an all-installed agent use it (AC-104)
+Agent websocket attached for run link_probe_all_5d32ccd8_958c897bfcb74cae90bd4969d27d3529
+Created agent session 517b3f35-022b-4374-a7c8-db8a93837055 for run link_probe_all_5d32ccd8_958c897bfcb74cae90bd4969d27d3529
+Agent WebSocket connected: session=517b3f35-022b-4374-a7c8-db8a93837055, run=link_probe_all_5d32ccd8_958c897bfcb74cae90bd4969d27d3529
+stdout | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts > workspace skill links with real runtimes (REQ-105) > grok > refuses a configured-skill run on a different same-named workspace skill and lets an all-installed agent use it (AC-104)
+SKILL_LINKS_LIVE_ALL_INSTALLED grok {"text":"","tools":[]}
+stdout | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts > workspace skill links with real runtimes (REQ-105)
+Closed agent session 517b3f35-022b-4374-a7c8-db8a93837055
+Agent WebSocket disconnected: 517b3f35-022b-4374-a7c8-db8a93837055
+stdout | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts > workspace skill links with real runtimes (REQ-105)
+Closed agent session c81145e1-d430-4a38-b925-5c184702968a
+stdout | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts > workspace skill links with real runtimes (REQ-105)
+Closed agent session 77f728ff-e157-4819-a092-8c5ae9cc267e
+Agent WebSocket disconnected: 77f728ff-e157-4819-a092-8c5ae9cc267e
+stdout | tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts > workspace skill links with real runtimes (REQ-105)
+Agent Team Definition with ID link-probe-team-grok-5d32ccd8 deleted successfully.
+ ❯ tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts (3 tests | 3 failed) 3054ms
+       × starts a new run in the linked workspace and continues it after restore, using the skill both times (AC-101, AC-102) 811ms
+       × starts a brand-new team member with configured skills on its first message (AC-105) 796ms
+       × refuses a configured-skill run on a different same-named workspace skill and lets an all-installed agent use it (AC-104) 875ms
+⎯⎯⎯⎯⎯⎯⎯ Failed Tests 3 ⎯⎯⎯⎯⎯⎯⎯
+ FAIL  tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts > workspace skill links with real runtimes (REQ-105) > grok > starts a new run in the linked workspace and continues it after restore, using the skill both times (AC-101, AC-102)
+AssertionError: turn errors: {"code":"ACP_PROMPT_FAILED","message":"fake Grok refuses prompts (token-free model-choice check)","error_scope":"turn","error_effect":"terminal","turn_id":"a3284b04-c8e1-4fad-9439-ee1f7f67c41a"}: expected [ Array(1) ] to deeply equal []
+- Expected
++ Received
+- []
++ [
++   "{\"code\":\"ACP_PROMPT_FAILED\",\"message\":\"fake Grok refuses prompts (token-free model-choice check)\",\"error_scope\":\"turn\",\"error_effect\":\"terminal\",\"turn_id\":\"a3284b04-c8e1-4fad-9439-ee1f7f67c41a\"}",
++ ]
+ ❯ tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts:244:54
+    242|       const first = await ask(stream, runId, `What is the new-run link…
+    243|       console.info(`SKILL_LINKS_LIVE_NEW_RUN ${name}`, JSON.stringify(…
+    244|       expect(first.errors, turnErrors(first.errors)).toEqual([]);
+       |                                                      ^
+    245|       expect(first.text).toContain(newRunCode);
+    246|
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[1/3]⎯
+ FAIL  tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts > workspace skill links with real runtimes (REQ-105) > grok > starts a brand-new team member with configured skills on its first message (AC-105)
+AssertionError: turn errors: {"code":"ACP_PROMPT_FAILED","message":"fake Grok refuses prompts (token-free model-choice check)","error_scope":"turn","error_effect":"terminal","turn_id":"587120aa-44e4-49e5-89af-65121f14ef00","change_sequence":13,"agent_run_id":"link_probe_agent_5d32ccd8_0493b451e59f4b5686d3ba15c48c8f58"}: expected [ Array(1) ] to deeply equal []
+- Expected
++ Received
+- []
++ [
++   "{\"code\":\"ACP_PROMPT_FAILED\",\"message\":\"fake Grok refuses prompts (token-free model-choice check)\",\"error_scope\":\"turn\",\"error_effect\":\"terminal\",\"turn_id\":\"587120aa-44e4-49e5-89af-65121f14ef00\",\"change_sequence\":13,\"agent_run_id\":\"link_probe_agent_5d32ccd8_0493b451e59f4b5686d3ba15c48c8f58\"}",
++ ]
+ ❯ tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts:303:54
+    301|       console.info(`SKILL_LINKS_LIVE_TEAM_MEMBER ${name}`, JSON.string…
+    302|         tools: reply.tools, memberFoldersAfter }));
+    303|       expect(reply.errors, turnErrors(reply.errors)).toEqual([]);
+       |                                                      ^
+    304|       expect(reply.text).toContain(newRunCode);
+    305|       stream.socket.close();
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[2/3]⎯
+ FAIL  tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts > workspace skill links with real runtimes (REQ-105) > grok > refuses a configured-skill run on a different same-named workspace skill and lets an all-installed agent use it (AC-104)
+AssertionError: turn errors: {"code":"ACP_PROMPT_FAILED","message":"fake Grok refuses prompts (token-free model-choice check)","error_scope":"turn","error_effect":"terminal","turn_id":"0a110523-475c-4533-bcbd-606fb309f734"}: expected [ Array(1) ] to deeply equal []
+- Expected
++ Received
+- []
++ [
++   "{\"code\":\"ACP_PROMPT_FAILED\",\"message\":\"fake Grok refuses prompts (token-free model-choice check)\",\"error_scope\":\"turn\",\"error_effect\":\"terminal\",\"turn_id\":\"0a110523-475c-4533-bcbd-606fb309f734\"}",
++ ]
+ ❯ tests/e2e/runtime/workspace-skill-links-live.e2e.test.ts:337:54
+    335|         `What is the new-run link probe code? Use your ${skillName} sk…
+    336|       console.info(`SKILL_LINKS_LIVE_ALL_INSTALLED ${name}`, JSON.stri…
+    337|       expect(reply.errors, turnErrors(reply.errors)).toEqual([]);
+       |                                                      ^
+    338|       expect(reply.text).toContain(workspaceOwnCode);
+    339|       expect(reply.text).not.toContain(newRunCode);
+⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯[3/3]⎯
+ Test Files  1 failed (1)
+      Tests  3 failed (3)
+   Start at  06:07:39
+   Duration  13.64s (transform 7.24s, setup 35ms, import 9.84s, tests 3.05s, environment 0ms)
+JSON report written to /tmp/ab355/run-a.json
+
+# JSON report (ancestorTitles, title, status):
+file message: ''
+['workspace skill links with real runtimes (REQ-105)', 'grok'] starts a new run in the linked workspace and continues it after restor failed
+['workspace skill links with real runtimes (REQ-105)', 'grok'] starts a brand-new team member with configured skills on its first mes failed
+['workspace skill links with real runtimes (REQ-105)', 'grok'] refuses a configured-skill run on a different same-named workspace ski failed

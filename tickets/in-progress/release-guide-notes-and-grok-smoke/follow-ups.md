@@ -2,3 +2,4 @@
 
 | ID | Found by (role, document) | What is wrong, where | Evidence | Why it is outside this ticket | Urgent (`Yes`/`No`) | Suggested Task description | Sent (to, date) |
 | --- | --- | --- | --- | --- | --- | --- | --- |
+| FU-1 | Implementation Engineer, implementation-handoff.md (IMP-07) | `autobyteus-server-ts/tests/e2e/helpers/claude-live-agent-harness.ts` lines 22-27: an `import {` is left open and a second import is inside it, so the file does not parse. Any suite importing it fails to load, and `tsc -p tsconfig.json` stops at it. | `tsc -p tsconfig.json --noEmit`: `claude-live-agent-harness.ts(24,1): error TS1003: Identifier expected.` (6 parse errors); unchanged since `f733da620e` | The live skill-links suite and the release smoke check do not import it; fixing it is not part of the release guide or the Grok model choice | No | Repair the broken import block in `claude-live-agent-harness.ts` and run the suites that import it | |
