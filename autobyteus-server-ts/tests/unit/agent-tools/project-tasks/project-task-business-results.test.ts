@@ -3,11 +3,13 @@ import os from "node:os";
 import path from "node:path";
 import { Readable } from "node:stream";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { trackReleases, type ReleaseTracker } from "../../../helpers/project-task-release-tracker.js";
 import { ProjectStore } from "../../../../src/projects/stores/project-store.js";
 import { ProjectsLayout } from "../../../../src/projects/stores/projects-layout.js";
 import { ProjectService } from "../../../../src/projects/services/project-service.js";
 import * as taskServices from "../../../../src/projects/services/project-task-service.js";
 import { ProjectTaskService } from "../../../../src/projects/services/project-task-service.js";
+import { ProjectTaskContextDrafts } from "../../../../src/projects/services/project-task-context-drafts.js";
 import { ProjectTaskContextStore } from "../../../../src/projects/context/project-task-context-store.js";
 import { AdHocTaskStore } from "../../../../src/projects/stores/ad-hoc-task-store.js";
 import { AdHocTasksLayout } from "../../../../src/projects/stores/ad-hoc-tasks-layout.js";
@@ -26,9 +28,10 @@ const mcp = async (name: string, args: Record<string, unknown>) => {
 const idOfKey = async (taskKey: string) => (await store.listTasks(projectId)).find((task) => task.taskKey === taskKey)!.taskId;
 const root = (kind: RootSubjectKind) => createRootExecutionIdentity({ rootSubjectKind: kind, rootRunId: `root-${kind}` });
 let dir: string, layout: ProjectsLayout, store: ProjectStore, context: ProjectTaskContextStore, tasks: ProjectTaskService, projectId: string;
+let releases: ReleaseTracker;
 let release: ReturnType<typeof vi.fn<TaskExecutionReleaseRequest>>;
 const service = async (storeOverride?: object) => {
-  const created = new ProjectTaskService({ store: (storeOverride ?? store) as ProjectStore, contextStore: context, requestRelease: release,
+  const created = new ProjectTaskService({ store: (storeOverride ?? store) as ProjectStore, contextStore: context, requestRelease: (releases = trackReleases(release)).request,
     adHocTasks: new AdHocTaskStore(new AdHocTasksLayout(path.join(dir, "ad-hoc-tasks"))) });
   await created.load();
   return created;
@@ -43,18 +46,19 @@ beforeEach(async () => {
   tasks = await service();
   vi.spyOn(taskServices, "getProjectTaskService").mockImplementation(() => tasks);
 });
-afterEach(async () => { await tasks.drainRuntimeReleases(); vi.restoreAllMocks(); await fs.rm(dir, { recursive: true, force: true }); });
+afterEach(async () => { await releases.settled(); vi.restoreAllMocks(); await fs.rm(dir, { recursive: true, force: true }); });
 
 describe("shared native/MCP business Task result boundary (Q-2)", () => {
   it("lists saved work/context, open and closed assignments with explicit copy IDs, never workers' internal runs or platform detail (REQ-010, AC-013)", async () => {
-    const draft = await tasks.beginContextDraft(projectId);
-    const upload = await tasks.uploadContextFile(projectId, draft.draftId, { filename: "instructions.txt", mimetype: "text/plain", file: Readable.from(["saved context"]) } as never);
+    const drafts = new ProjectTaskContextDrafts({ store, contextStore: context });
+    const draft = await drafts.beginContextDraft(projectId);
+    const upload = await drafts.uploadContextFile(projectId, draft.draftId, { filename: "instructions.txt", mimetype: "text/plain", file: Readable.from(["saved context"]) } as never);
     const task = await tasks.createTask({ projectId, title: "Full saved work description", description: "Full saved work description",
       contextDraft: { draftId: draft.draftId, storedFilenames: [upload.storedFilename] } });
     const assigned = (agentRun: { agentRunId: string } | { teamRunId: string }, kind: RootSubjectKind, coordinatorAgentRunId?: string) =>
       tasks.linkNewTaskExecution({ role: "assigned", taskId: task.taskId, assignedBy: `manager-${kind}`, hostRoot: root(kind), execution: agentRun, ...(coordinatorAgentRunId ? { teamCoordinatorAgentRunId: coordinatorAgentRunId } : {}) });
     await assigned({ agentRunId: "closed-worker" }, "agent");
-    await tasks.updateTask({ projectId, taskId: task.taskId, status: "DONE" }); await tasks.drainRuntimeReleases();
+    await tasks.updateTask({ projectId, taskId: task.taskId, status: "DONE" }); await releases.settled();
     await tasks.updateTask({ projectId, taskId: task.taskId, status: "TODO" });
     await assigned({ agentRunId: "accepted-agent" }, "agent"); await tasks.markStarted({ agentRunId: "accepted-agent" });
     await assigned({ teamRunId: "failed-team" }, "agent_team", "failed-team-lead");
@@ -172,9 +176,9 @@ describe("shared native/MCP business Task result boundary (Q-2)", () => {
     release.mockResolvedValueOnce([{ execution: { teamRunId: "A" }, stopped: false, error: { code: "EXACT_CLOSE_FAILED", message: "private component receipt retained" } }]);
     const done = { task: { projectId, taskId: key, title: "A", status: "DONE" } }, args = { task_id: key, status: "DONE" };
     expect(JSON.parse(await new UpdateTaskTool().execute(null, args))).toEqual(done);
-    await tasks.drainRuntimeReleases();
+    await releases.settled();
     expect(errors).toHaveBeenCalledWith("TASK_AGENT_RESOURCE_STOP_FAILED", expect.objectContaining({ taskId }));
-    expect((await mcp("update_task", args)).structuredContent).toEqual(done); await tasks.drainRuntimeReleases();
+    expect((await mcp("update_task", args)).structuredContent).toEqual(done); await releases.settled();
     expect(release).toHaveBeenCalledTimes(2);
     expect(release).toHaveBeenLastCalledWith(root(kind), [{ teamRunId: "A" }]);
     expect(await fs.readFile(layout.taskExecutionResourcesFile(projectId, taskId), "utf8")).not.toContain("EXACT_CLOSE_FAILED");
@@ -211,7 +215,7 @@ describe("shared native/MCP business Task result boundary (Q-2)", () => {
     const result = mode === "native" ? await new UpdateTaskTool().execute(null, args).then(() => { throw new Error("Must not acknowledge"); }, e => JSON.parse(e.message))
       : mcpResult!.structuredContent;
     expect(result).toEqual({ error: { code: "PROJECT_OPERATION_UNCONFIRMED", message: "Task change could not be confirmed. Check the saved Task before repeating." } });
-    await tasks.drainRuntimeReleases();
+    await releases.settled();
     expect(diagnostics).toHaveBeenCalled();
     expect((await store.readTask(projectId, task.taskId))!.status).toBe("DONE");
     expect(tasks.isOpen({ agentRunId: "owned" })).toBe(false);

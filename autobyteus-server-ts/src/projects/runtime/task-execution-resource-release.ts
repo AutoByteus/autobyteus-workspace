@@ -6,18 +6,11 @@ import type { TaskExecutionGroup } from "../services/task-execution-resource-ser
  * Nothing is persisted (Q-1): failures are logged and repeating DONE or CANCELLED requests the stop again.
  */
 export class TaskExecutionResourceRelease {
-  private readonly inFlight = new Set<Promise<void>>();
   constructor(private readonly request?: TaskExecutionReleaseRequest) {}
 
   release(taskId: string, groups: readonly TaskExecutionGroup[]): void {
-    for (const group of groups) {
-      const attempt = this.stop(taskId, group);
-      this.inFlight.add(attempt);
-      void attempt.finally(() => this.inFlight.delete(attempt));
-    }
+    for (const group of groups) void this.stop(taskId, group);
   }
-  /** Settles the stops already requested (tests and orderly shutdown). */
-  async drain(): Promise<void> { await Promise.all([...this.inFlight]); }
 
   private async stop(taskId: string, { hostRoot, executions }: TaskExecutionGroup): Promise<void> {
     try {
