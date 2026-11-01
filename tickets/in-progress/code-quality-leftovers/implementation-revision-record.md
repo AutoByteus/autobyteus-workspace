@@ -7,7 +7,7 @@ The current code and `implementation-handoff.md` are authoritative; this record 
 | Revision ID | Triggering Role / Report / Round | Finding IDs | Classification | Related Revision IDs | Result |
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture reviewer, `design-review-report.md`, ARCH-REV-002 (Pass) | N/A | `Initial Baseline` | SR-002, ARCH-REV-002; CRR / API-REV / DR: N/A | Implemented; local checks pass; to code review (CRR-001 Fail) |
-| IR-002 | Code reviewer, `code-review-report.md`, CRR-001 (Fail) | CR-001, CR-002 | `Local Fix` | CRR-001; SR-002, ARCH-REV-002 unchanged; API-REV / DR: N/A | Single-source provider states; unused test reset removed; to code review |
+| IR-002 | Code reviewer, `code-review-report.md`, CRR-001 (Fail) | CR-001, CR-002 | `Local Fix` | CRR-001; SR-002, ARCH-REV-002 unchanged; API-REV / DR: N/A | Single-source provider states; unused test reset removed; code review CRR-002 `Pass` (`code-review-report.md`), to API/E2E |
 
 ## Revision Entries
 
@@ -49,4 +49,5 @@ The current code and `implementation-handoff.md` are authoritative; this record 
 - Changed files or areas: as above.
 - Local validation and result: handoff § Checks Run IMP-16 and IMP-17 (Pass); the other checks remain valid (handoff, "Still valid after IR-002").
 - Next recipient or routing: code reviewer (Large / High, targeted-delta review).
+- Review result: CRR-002 `Pass` (CR-001, CR-002 resolved; no open findings); the reviewer routed the package to API/E2E.
 - Remaining limitations or risks: unchanged from IR-001; FU-002 and FU-003 recorded by the reviewer.
