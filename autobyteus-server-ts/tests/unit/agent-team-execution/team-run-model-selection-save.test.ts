@@ -44,7 +44,7 @@ const harness = async (physicalOutcome = 'committed', readback = 'ok', runtimeKi
   });
   const write = vi.fn(async (_dir, next) => {
     attempted = true;
-    if (physicalOutcome !== 'not_renamed') saved = next;
+    if (physicalOutcome !== 'not_committed') saved = next;
     return { outcome: physicalOutcome };
   });
   const catalog = { runtimeModelSelectionCatalog: vi.fn(async () => view(['small','equal','large'].map(model_identifier => ({ model_identifier } as any)))) };
@@ -88,7 +88,7 @@ describe('configured Team model selection Save', () => {
     expect((await h.manager.updateStoppedModelConfigs({ teamRunId: 'root', patches: [{ ...patch, llmModelIdentifier: 'small' }] })).outcome).toBe('VALIDATION_FAILED');
     expect(h.write).toHaveBeenCalledTimes(1);
   });
-  it.each(['committed', 'renamed_finalization_indeterminate', 'not_renamed'].flatMap(physicalOutcome =>
+  it.each(['committed', 'finalization_indeterminate', 'not_committed'].flatMap(physicalOutcome =>
     ['ok', 'throws', 'missing'].map(readback => ({ physicalOutcome, readback }))))(
     'preserves $physicalOutcome / $readback through Team owner, Studio and resolver', async ({ physicalOutcome, readback }) => {
       const h = await harness(physicalOutcome, readback);
@@ -112,18 +112,18 @@ describe('configured Team model selection Save', () => {
         { teamRunId: 'root', patches: [{ scopeKind: 'CONFIGURED_TEAM', scopeAddress: '/',
           llmModelIdentifier: 'large', llmConfig: null }] },
       );
-      const expected = physicalOutcome === 'not_renamed' ? 'PERSISTENCE_FAILED'
-        : physicalOutcome === 'renamed_finalization_indeterminate' || readback !== 'ok'
+      const expected = physicalOutcome === 'not_committed' ? 'PERSISTENCE_FAILED'
+        : physicalOutcome === 'finalization_indeterminate' || readback !== 'ok'
           ? 'PERSISTENCE_INDETERMINATE' : 'UPDATED';
       expect(response).toMatchObject({ outcome: expected, success: expected === 'UPDATED',
         isActive: false, editability: { editable: true, reason: null }, fieldErrors: [],
         canonicalExecutionTree: { root_team: { default_launch_configuration: {
-          llm_model_identifier: readback === 'ok' && physicalOutcome !== 'not_renamed' ? 'large' : 'small',
+          llm_model_identifier: readback === 'ok' && physicalOutcome !== 'not_committed' ? 'large' : 'small',
           llm_config: null,
         } } },
       });
       expect(h.write).toHaveBeenCalledTimes(1);
-      expect(h.saved()).toEqual(physicalOutcome === 'not_renamed' ? original : {
+      expect(h.saved()).toEqual(physicalOutcome === 'not_committed' ? original : {
         ...original, rootTeam: { ...original.rootTeam, defaultLaunchConfiguration: {
           ...original.rootTeam.defaultLaunchConfiguration, llmModelIdentifier: 'large',
         } },

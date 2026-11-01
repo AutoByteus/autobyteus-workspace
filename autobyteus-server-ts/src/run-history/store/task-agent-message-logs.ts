@@ -117,11 +117,11 @@ export const appendMessageToOwnerLogs = async (
   for (const owner of owners) {
     const result = await append(owner);
     if (result.outcome === "committed") { durable = true; continue; }
-    if (!durable || result.outcome === "renamed_finalization_indeterminate") {
+    if (!durable || result.outcome === "finalization_indeterminate") {
       return { ...result, file: "communication_messages" };
     }
     return {
-      outcome: "renamed_finalization_indeterminate",
+      outcome: "finalization_indeterminate",
       file: "communication_messages",
       stage: "sync_directory",
       cause: new Error(`A message log after an earlier durable log did not commit: ${result.cause.message}`),

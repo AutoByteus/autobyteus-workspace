@@ -48,7 +48,7 @@ describe("AtomicRunPackageFileCommitWriter", () => {
       filePath: renameFailurePath,
       payload: [],
     })).resolves.toMatchObject({
-      outcome: "not_renamed",
+      outcome: "not_committed",
       file: "task_records",
       stage: "rename",
     });
@@ -75,7 +75,7 @@ describe("AtomicRunPackageFileCommitWriter", () => {
       filePath: finalizationFailurePath,
       payload: [],
     })).resolves.toMatchObject({
-      outcome: "renamed_finalization_indeterminate",
+      outcome: "finalization_indeterminate",
       file: "communication_messages",
       stage: "sync_directory",
     });

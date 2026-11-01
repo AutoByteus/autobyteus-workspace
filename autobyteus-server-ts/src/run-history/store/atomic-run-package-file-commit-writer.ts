@@ -3,7 +3,7 @@ import path from "node:path";
 
 export type RunPackageFileRole = string;
 
-/** Stages at which nothing new became durable (`not_renamed`); the last two are message-log appends. */
+/** Stages at which nothing new became durable (`not_committed`); the last two are message-log appends. */
 export type RunPackagePreRenameStage =
   | "prepare_directory"
   | "write_temp"
@@ -13,7 +13,7 @@ export type RunPackagePreRenameStage =
   | "prepare_append"
   | "append_line";
 
-/** Stages after which the write may be durable (`renamed_finalization_indeterminate`); the last two are message-log appends. */
+/** Stages after which the write may be durable (`finalization_indeterminate`); the last two are message-log appends. */
 export type RunPackageDirectoryFinalizationStage =
   | "open_directory"
   | "sync_directory"
@@ -23,13 +23,13 @@ export type RunPackageDirectoryFinalizationStage =
 
 export type RunPackageFileWriteResult<TFile extends RunPackageFileRole = RunPackageFileRole> =
   | Readonly<{
-      outcome: "not_renamed";
+      outcome: "not_committed";
       file: TFile;
       stage: RunPackagePreRenameStage;
       cause: Error;
     }>
   | Readonly<{
-      outcome: "renamed_finalization_indeterminate";
+      outcome: "finalization_indeterminate";
       file: TFile;
       stage: RunPackageDirectoryFinalizationStage;
       cause: Error;
@@ -65,7 +65,7 @@ export class AtomicRunPackageFileCommitWriter {
   }): Promise<RunPackageFileWriteResult<TFile>> {
     let text: string;
     try { text = `${JSON.stringify(input.payload, null, 2)}\n`; }
-    catch (cause) { return { outcome: "not_renamed", file: input.file, stage: "write_temp", cause: asError(cause) }; }
+    catch (cause) { return { outcome: "not_committed", file: input.file, stage: "write_temp", cause: asError(cause) }; }
     return this.writeSerializedText({ file: input.file, filePath: input.filePath, text });
   }
 
@@ -99,7 +99,7 @@ export class AtomicRunPackageFileCommitWriter {
       }
       await this.operations.rm(tempPath, { force: true }).catch(() => undefined);
       return {
-        outcome: "not_renamed",
+        outcome: "not_committed",
         file: input.file,
         stage,
         cause: asError(cause),
@@ -121,7 +121,7 @@ export class AtomicRunPackageFileCommitWriter {
         await directoryHandle.close().catch(() => undefined);
       }
       return {
-        outcome: "renamed_finalization_indeterminate",
+        outcome: "finalization_indeterminate",
         file: input.file,
         stage: finalizationStage,
         cause: asError(cause),

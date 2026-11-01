@@ -112,7 +112,7 @@ describe('whole stopped AgentOrg model configuration', () => {
 
   it('keeps not-renamed failure distinct from committed-readback uncertainty and never replays', async () => {
     const notRenamed = await setup();
-    const failedWrite = vi.spyOn(notRenamed.store, 'write').mockResolvedValue({ outcome: 'not_renamed' });
+    const failedWrite = vi.spyOn(notRenamed.store, 'write').mockResolvedValue({ outcome: 'not_committed' });
     const failed = await notRenamed.manager.updateStoppedRunConfig({ orgRunId: 'org', teamWorkspacePatches: [], modelPatches: [select('CONFIGURED_ORG','/')] });
     expect(failed).toMatchObject({ success: false, outcome: 'PERSISTENCE_FAILED', canonical: notRenamed.tree });
     expect(failedWrite).toHaveBeenCalledTimes(1);
