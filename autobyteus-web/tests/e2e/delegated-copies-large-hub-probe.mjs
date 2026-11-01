@@ -24,6 +24,9 @@
 //        of a stopped hub, L-008 a woken copy's status in the row/header equals the server's, L-009 opening a copy during a
 //        burst of turns ends loaded with its whole conversation (needs >= 9 Teams), L-010 opening a copy whose stored
 //        conversation is several MB, L-011 a copy load that fails on the network is logged, stays unloaded and retries.
+//        With --large-shape unbroken, L-010 also checks the long-token display (large-runs-load-less AC-007): every long
+//        block has the long-unbroken-text class and wraps (no horizontal overflow), a block selects whole (copy), find-in-page
+//        finds text in it, and the conversation ends scrolled to its latest message.
 // Regression check: a current build shows the copy rows with one view request per hub and no member request (S-00n
 // opsUntilRows), and a copy open issues exactly one projection and one artifact request; the base build of this ticket
 // (5ceb43039a) issued two requests per child agent before drawing any row.
@@ -662,6 +665,33 @@ const liveJourneys = async () => {
       projectionBytes: projection.bytes, projectionServerMs: Number(projection.ms.toFixed(1)), ops, state: await storeState() };
     await shot(`${label}-large-copy-open`);
     if (!label.startsWith('base')) assert(ops.GetAgentRunCollaborationMemberProjection === 1 && ops.GetAgentRunCollaborationMemberFileChanges === 1, 'Unexpected requests', result);
+    if (getArg('large-shape', 'words') === 'unbroken') {
+      // large-runs-load-less AC-007: the long-token messages still wrap, select (copy) whole and are found by find-in-page,
+      // and the conversation ends scrolled to its latest message.
+      result.display = await page.evaluate((id) => {
+        const scroller = document.querySelector(`[id^="agent-conversation-scroll-${id}-"]`);
+        const pane = document.querySelector('[data-test="workspace-center-pane"]');
+        const blocks = [...pane.querySelectorAll('.long-unbroken-text')];
+        const longLeaves = [...pane.querySelectorAll('*')].filter((e) => e.children.length === 0 && (e.textContent ?? '').includes('y'.repeat(1000)));
+        const last = blocks.at(-1);
+        const range = document.createRange(); range.selectNodeContents(last);
+        const selection = window.getSelection(); selection.removeAllRanges(); selection.addRange(range);
+        const selected = selection.toString();
+        const copied = document.execCommand('copy');
+        selection.removeAllRanges();
+        const found = window.find('Large 7 ECHO_INPUT', false, false, true) && window.find('ECHO_INPUT yyyyyyyyyyyyyyyyyyyy', false, false, true);
+        return { longClassBlocks: blocks.length, longTextLeaves: longLeaves.length,
+          leavesWithoutClass: longLeaves.filter((e) => !e.closest('.long-unbroken-text')).length,
+          overflowing: blocks.filter((b) => b.scrollWidth > b.clientWidth + 1).length,
+          paneOverflow: pane.scrollWidth > pane.clientWidth + 1,
+          widestBlockPx: Math.max(...blocks.map((b) => b.getBoundingClientRect().width)), paneWidthPx: pane.clientWidth,
+          selectedChars: selected.length, selectedHasWholeToken: selected.includes('y'.repeat(60 * 1024)), copyCommand: copied, found,
+          distanceFromBottom: scroller ? scroller.scrollHeight - scroller.scrollTop - scroller.clientHeight : null };
+      }, target.agentRunId);
+      const d = result.display;
+      assert(d.longClassBlocks >= 40 && d.leavesWithoutClass === 0 && d.overflowing === 0 && !d.paneOverflow && d.selectedHasWholeToken && d.found
+        && d.distanceFromBottom !== null && d.distanceFromBottom <= 40, 'Long-token display: wrapping, copy, search or scroll position changed', result);
+    }
     return result;
   });
   await runCase('L-011', 'A copy whose load fails (network error on its projection) is logged with its identity, stays not loaded, other copies open, reopening loads it (AC-004 alternate)', async () => {

@@ -64,6 +64,9 @@
 //           Alone: pnpm -C autobyteus-web test:e2e:skill-improvement-removal
 //   TLU-001 (live-tool-list-updates) tools edited in the app reach the open run: card, refusal, restore; see
 //           tool-list-update-cases.mjs. Alone: pnpm -C autobyteus-web test:e2e:tool-list-updates
+//   LRL-001..LRL-004 (large-runs-load-less AC-002, AC-003, AC-006): Team and Org runs load only the focused member; the
+//           Team tab's live merge and reconnect; a damaged message log on desktop and phone; see
+//           large-runs-load-less-cases.mjs. Alone: pnpm -C autobyteus-web test:e2e:large-runs-load-less
 // Settings rows (SR-006) are the read-only member rows, collapsed until opened, with the same look as the Members list
 // (`model · runtime · approval · source`, Coordinator chip, an opened Team's card then its Members, "Notes: N" on a
 // collapsed Team); DLP-003 (running) and DLP-007 (stopped and running again) also read them as Settings opens them.
@@ -87,6 +90,7 @@ import { registerSavedRefreshCases } from './settings-saved-model-refresh-cases.
 import { registerDelegatedCopyOwnFileCases } from './delegated-copy-own-file-cases.mjs'
 import { registerSkillImprovementRemovalCases } from './skill-improvement-removal-cases.mjs'
 import { registerToolListUpdateCases } from './tool-list-update-cases.mjs'
+import { registerLargeRunsLoadLessCases } from './large-runs-load-less-cases.mjs'
 import { agentRuntimeName } from '@autobyteus/agent-presentation-contracts'
 import { spawn } from 'node:child_process'
 import { createWriteStream, existsSync } from 'node:fs'
@@ -1544,6 +1548,10 @@ registerToolListUpdateCases({ defineCase, assert, waitFor, delay, settle, shot, 
   /** The scripted AGY agent's tool calls (`AGY_FAKE_TOOL_LOG`): name, arguments, and the result or the error its MCP client got. */
   agyToolCalls: async () => (await fs.readFile(agyToolLog, 'utf8').catch(() => '')).trim().split('\n').filter(Boolean).map((line) => JSON.parse(line)),
   env: () => ({ frontUrl }) })
+registerLargeRunsLoadLessCases({ defineCase, assert, waitFor, delay, sel, settle, shot, gql, callTool, newChatFor, chooseModel, typeAndSend,
+  callFromComposer, openTeamRun, expandWorkspaces, teamTree, teamRunIds, pick, objectsIn, AGY, MODEL,
+  restartBackend: async (label, between) => { await stopOwned(backend); if (between) await between(); backend = await startBackend(label) },
+  env: () => ({ frontUrl, backendUrl, dataRoot, outDir }) })
 const desktopSurface = desktopAdapter({ webDir, outDir, chromium, assert, waitFor })
 let exitCode = 0
 try {
