@@ -14,8 +14,8 @@ It runs three server E2E suites one after another, each in its own clean environ
 The verdict is fail-closed. Every required case below must appear exactly once in the vitest JSON report with
 status `passed`, and no other test may fail. A runtime that cannot run (CLI missing, not signed in) or a case with no
 result counts as failed, with the reason; a live runtime whose setup failed (for example its model is not offered) fails
-only its own cases. The summary names each live runtime's model. The suites' own model overrides (CLAUDE_E2E_MODEL, CODEX_E2E_MODEL,
-GROK_E2E_MODEL) and GROK_BUILD_COMMAND pass through. Exit code 0 means every case passed.
+only its own cases. The summary names each live runtime's model. The suites' own model overrides (CLAUDE_E2E_MODEL,
+CODEX_E2E_MODEL, GROK_E2E_MODEL) and GROK_BUILD_COMMAND pass through. Exit code 0 means every case passed.
 """
 from __future__ import annotations
 
