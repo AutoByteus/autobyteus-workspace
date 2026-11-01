@@ -194,6 +194,9 @@ const normalize = (value: unknown, agentId: string): unknown => {
     }
     if (typeof node === 'string') {
       if (key && /(^ts$|timestamp|_at$|At$)/i.test(key)) return '<clock>';
+      // The throughput method follows the host clock: a generation window shorter than MIN_GENERATION_WINDOW_MS
+      // falls back to end to end. Mask it like the durations.
+      if (key === 'method' && (node === 'generation' || node === 'end_to_end')) return '<method>';
       let result = node
         .split(agentId).join('<agent>')
         .replace(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/gi, (raw) => token(raw, 'uuid'))
