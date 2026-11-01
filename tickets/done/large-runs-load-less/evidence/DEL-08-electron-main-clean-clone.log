@@ -1,0 +1,6 @@
+# Clean-clone run of codex/large-runs-load-less @ 245d43b8b4 (/tmp/ab358-clone); full log 6058 bytes, trimmed to summaries, skips and failures.
+ Test Files  51 passed | 1 skipped (52)
+      Tests  291 passed | 1 skipped (292)
+   Start at  17:44:39
+   Duration  6.33s (transform 1.32s, setup 0ms, collect 3.13s, tests 11.27s, environment 5ms, prepare 3.10s)
+exit=0

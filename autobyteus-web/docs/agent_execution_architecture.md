@@ -66,14 +66,14 @@ graph TD
 
     Handler-->|Segment Created/Updated| Context[Agent Context State]
     Handler-->|File changes / outputs| RunFileChangeStore[Run File Change Store]
-    Handler-->|Team communication messages| TeamCommunicationStore[Team Communication Store]
+    Handler-->|Team communication messages| ParticipantMessages[Collaboration Participant Messages]
     Handler-->|Activity Log| ActivityStore[Activity Store]
     Handler-->|Background task snapshot| BackgroundTaskStore[Background Task Store]
     Handler-->|Token usage| UsageMeterStore[Token Usage Meter Store]
 
     Context-->|Reactivity| UI[Vue Component UI]
     RunFileChangeStore-->|Reactivity| UI
-    TeamCommunicationStore-->|Reactivity| UI
+    ParticipantMessages-->|Reactivity| UI
     ActivityStore-->|Reactivity| UI
     UsageMeterStore-->|Reactivity| UI
 ```
