@@ -45,7 +45,8 @@ describe("Org-root prepared task publishers", () => {
     expect(() => committed.releaseWork(() => undefined)).toThrow();
     expect(seen).toEqual(["activated", "parent-lead:running"]);
     await flushMicrotasks();
-    expect(handles.get("parent-lead")!.handle.postMessage).toHaveBeenCalledExactlyOnceWith(message);
+    // The Team member handle passes the post's options through (autobyteus-285); a work message has none.
+    expect(handles.get("parent-lead")!.handle.postMessage).toHaveBeenCalledExactlyOnceWith(message, {});
     expect(seen.at(-1)).toBe("parent-lead:running");
 
     // These concrete child factories captured the same parent callback at materialization.
@@ -64,7 +65,7 @@ describe("Org-root prepared task publishers", () => {
       execution.emit("idle"); execution.emit("offline");
       expect(seen.slice(before)).toEqual([`${id}:activated`, `${id}-lead:running`, `${id}-lead:idle`, `${id}-lead:offline`]);
       expect(execution.handle.prepareConfiguredActivation).not.toHaveBeenCalled();
-      expect(execution.handle.postMessage).toHaveBeenCalledExactlyOnceWith(message);
+      expect(execution.handle.postMessage).toHaveBeenCalledExactlyOnceWith(message, {});
       expect(execution.input.identity.memberAddress).toBe("/target/lead");
       expect(execution.input.physicalScope.ancestorTeamRunIds).toEqual(id === "child" ? ["parent", "child"] : ["parent", "child", "grandchild"]);
       parent = directory.require(id);
