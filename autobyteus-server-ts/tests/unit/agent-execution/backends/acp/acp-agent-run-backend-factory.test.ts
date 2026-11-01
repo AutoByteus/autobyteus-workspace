@@ -1,7 +1,6 @@
 import fs from "node:fs";
-import os from "node:os";
 import path from "node:path";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterAll, afterEach, describe, expect, it, vi } from "vitest";
 import { AgentDefinition } from "../../../../../src/agent-definition/domain/models.js";
 import type { AgentDefinitionService } from "../../../../../src/agent-definition/services/agent-definition-service.js";
 import type { SkillService } from "../../../../../src/skills/services/skill-service.js";
@@ -23,7 +22,9 @@ import {
   FAKE_ACP_AGENT,
   fixturePath,
   fixtureSessionId,
+  makeTestTempDir,
   readFixture,
+  removeTestTempDirs,
   waitFor,
   writeCustomFixture,
   type FixtureRow,
@@ -39,7 +40,8 @@ const AGENT_TOOLS_MCP_SERVER = { type: "http", name: "autobyteus_agent_tools", u
 const backends: AcpAgentRunBackend[] = [];
 afterEach(async () => { for (const backend of backends.splice(0)) await backend.terminate(); });
 
-const tempDir = (prefix: string) => fs.mkdtempSync(path.join(os.tmpdir(), prefix));
+const tempDir = makeTestTempDir;
+afterAll(removeTestTempDirs);
 
 const launchProfileFor = (fixture: string, recordFile: string, reportMcpReady: boolean): AcpAgentLaunchProfile => ({
   agentLabel: "Fake Agent",

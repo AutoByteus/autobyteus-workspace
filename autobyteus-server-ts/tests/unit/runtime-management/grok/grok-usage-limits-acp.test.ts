@@ -1,12 +1,11 @@
 import fs from "node:fs";
-import os from "node:os";
 import path from "node:path";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterAll, afterEach, beforeEach, describe, expect, it } from "vitest";
 import { createGrokAgentRuntimeStrategy } from "../../../../src/runtime-management/agent-runtimes/strategies/grok-agent-runtime-strategy.js";
 import { runAcpExtensionRequest } from "../../../../src/runtime-management/acp/acp-discovery-handshake.js";
 import { grokBuildLaunchProfile } from "../../../../src/runtime-management/grok/grok-build-launch-profile.js";
 import { createReadDeadline, isDeadlineExceeded } from "../../../../src/runtime-management/read-deadline.js";
-import { FAKE_GROK_CLI, readFixture, writeCustomFixture, type FixtureRow } from "../../agent-execution/backends/acp/acp-fake-agent-harness.js";
+import { FAKE_GROK_CLI, makeTestTempDir, readFixture, removeTestTempDirs, writeCustomFixture, type FixtureRow } from "../../agent-execution/backends/acp/acp-fake-agent-harness.js";
 
 /** Grok's `_x.ai/billing` over a short ACP process, against the fake ACP agent (no real Grok, no account). */
 const ENV_KEYS = ["GROK_BUILD_COMMAND", "FAKE_ACP_FIXTURE", "FAKE_ACP_RECORD"] as const;
@@ -17,7 +16,7 @@ const BILLING = JSON.parse(fs.readFileSync(path.resolve(path.dirname(new URL(imp
   "../../../fixtures/usage-limits/grok-billing.json"), "utf8")) as Record<string, unknown>;
 
 const fakeCommand = (): string => {
-  const file = path.join(fs.mkdtempSync(path.join(os.tmpdir(), "fake-grok-")), "grok");
+  const file = path.join(makeTestTempDir("fake-grok-"), "grok");
   fs.writeFileSync(file, `#!/bin/sh\nexec "${process.execPath}" "${FAKE_GROK_CLI}" "$@"\n`, { mode: 0o755 });
   return file;
 };
@@ -32,9 +31,11 @@ afterEach(() => {
   }
 });
 
+afterAll(removeTestTempDirs);
+
 describe("Grok usage limits over ACP", () => {
   it("sends initialize then _x.ai/billing, opens no session, and maps the answer (AC-006)", async () => {
-    const record = path.join(fs.mkdtempSync(path.join(os.tmpdir(), "acp-record-")), "client.jsonl");
+    const record = path.join(makeTestTempDir("acp-record-"), "client.jsonl");
     process.env.FAKE_ACP_RECORD = record;
     process.env.FAKE_ACP_FIXTURE = writeCustomFixture([
       ...INITIALIZE,
