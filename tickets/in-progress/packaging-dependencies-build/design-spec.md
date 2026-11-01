@@ -34,19 +34,19 @@ Ship only what runs; install from the lockfile; bound the one install that canno
 | --- | --- | --- |
 | D-1 | `autobyteus-server-ts/package.json`: `files: ["dist","prisma","application-packages"]`; `prisma` moves to `dependencies`; `canuse-ok.txt` removed | REQ-001, 002 |
 | D-2 | `pnpm deploy --legacy --prod` in the Dockerfile, `prepare-server.sh` and the stage deploy of `prepare-server.mjs` | REQ-002 |
-| D-3 | `--frozen-lockfile` for every install of a release build (Dockerfile, both prepare scripts, five workflow steps); the Dockerfile copies the manifest of every lockfile importer; the dead lockfile branches go | REQ-003 |
-| D-4 | Source checks for D-2, D-3 and D-6 in one Python test file, with a mutation on a copy | REQ-003, 005 |
+| D-3 | `--frozen-lockfile` for every install of a release build (Dockerfile, both prepare scripts, five workflow steps); the Docker builder keeps the 8 manifests it copies (closed under workspace links; a frozen validation was shown to pass with 8 and with 12; the closure is checked) instead of all 12; the dead lockfile branches go | REQ-003 |
+| D-4 | Source checks for D-2, D-3 and D-6 in one Python test file, with a mutation on a copy: no `--no-frozen-lockfile` / `--frozen-lockfile=false`; every `link:` target of a copied manifest is copied; deploys use `--prod`; both prepare scripts remove the mirrored folder; the Docker deploy mirror stays in the builder (nothing to clean there) | REQ-003, 005 |
 | D-5 | Windows staging: `npm install … --before=<time>`; time = `AUTOBYTEUS_NPM_BEFORE` else the commit time of the workspace HEAD else stop | REQ-004 |
-| D-6 | After each `pnpm deploy`, the prepare scripts remove `autobyteus-server-ts/autobyteus-web` | REQ-005 |
+| D-6 | After each `pnpm deploy`, the prepare scripts remove `autobyteus-server-ts/autobyteus-web`; `prepare-server.sh` fails (instead of skipping the generation) when the Prisma CLI is not found in the deployed package | REQ-005 |
 | D-7 | Remove the nested workflow; list other leftovers (FU-001) | REQ-006 |
-| D-8 | `print-graphql-schema.mjs`, `codegen:local`, `codegen:check`, regenerated file, documented | REQ-007 |
-| D-9 | Declare the imported packages (`graphql-tag`, `vue`, `vue-router` in web; backend SDK in the server's devDependencies), drop `@nuxtjs/apollo`, add `check-declared-imports.mjs` with a test | REQ-008 |
+| D-8 | `print-graphql-schema.mjs`, `codegen:local`, `codegen:check` (both build the server first, because the schema is printed from `dist`), regenerated file, documented. Routine runner: a server architecture test builds the schema from source in-process (no `dist`), prints it to a temp file and runs the web codegen check against it | REQ-007 |
+| D-9 | Declare the imported packages (`graphql-tag`, `vue`, `vue-router` in web; backend SDK in the server's devDependencies), drop `@nuxtjs/apollo`, add `check-declared-imports.mjs` with a test; for the server the check is class-aware: `src/` (runtime) may import production dependencies only, `tests/` may also import development ones — the guard of the rule that the production-only package contains everything runtime code imports | REQ-008 |
 
 ## Change Scope (Mandatory)
 
 - In scope: UC-001, UC-002, UC-003; REQ-001…008.
 - Derived consumers: the server package is read by the Docker starter and `describe-server-package.mjs` (`prisma/migrations`, `dist/app-data-migrations/migrations`, both kept), the desktop's Electron builder (`build.ts` copies `resources/server`), `verify-packaged-server-startup.mjs`; none reads a removed folder (M-2). The lockfile importer of the server changes by three lines (D-1). `generated/graphql.ts` is read by web code and web tests (types only added). Decision for each: no code change besides this list.
-- Deliberately left alone: item 3 (smaller Docker release); proxies (FU-002); `autobyteus-web` Docker/devcontainer files (FU-001); `RELEASE.md` (its statements stay true: release runners "start from `pnpm install` alone", the root lockfile is canonical); `describe-server-package.mjs`; the Electron version and signing.
+- Deliberately left alone: the Android Termux script's install (`android-bootstrap-termux.sh:163`, not a release build); item 3 (smaller Docker release); proxies (FU-002); `autobyteus-web` Docker/devcontainer files (FU-001); `RELEASE.md` (its statements stay true: release runners "start from `pnpm install` alone", the root lockfile is canonical); `describe-server-package.mjs`; the Electron version and signing.
 - Follow-ups: FU-001, FU-002 (`follow-ups.md`).
 
 ## Relevant Behavior And Production-Path Map (Mandatory)
@@ -191,7 +191,7 @@ No shared structure is introduced.
 | --- | --- | --- |
 | `autobyteus-server-ts/package.json`, `pnpm-lock.yaml` | Change | D-1: `files: ["dist","prisma","application-packages"]`; `prisma` from devDependencies to dependencies; D-9: devDependency `@autobyteus/application-backend-sdk: workspace:*`; lockfile by `pnpm install --lockfile-only` |
 | `autobyteus-server-ts/canuse-ok.txt` | Remove | D-1 |
-| `autobyteus-server-ts/docker/Dockerfile.monorepo` | Change | D-2 `--prod` on the deploy (line 53); D-3 `COPY` the four missing importer manifests, `pnpm install --frozen-lockfile` |
+| `autobyteus-server-ts/docker/Dockerfile.monorepo` | Change | D-2 `--prod` on the deploy (line 53); D-3 `pnpm install --frozen-lockfile` with the 8 manifests it already copies (no manifest added) |
 | `autobyteus-web/scripts/prepare-server.sh` | Change | D-2 `--prod`; D-3 one frozen install, drop the dead branch; D-6 remove the mirrored folder after the deploy |
 | `autobyteus-web/scripts/prepare-server.mjs` | Change | D-2 `--prod` in the stage deploy, empty stage `devDependencies`, drop the prune; D-3 frozen install, drop the dead branch; D-5 `--before`; D-6 cleanup |
 | `autobyteus-web/scripts/lib/npm-before.mjs` (+ `scripts/__tests__/npm-before.spec.ts`) | New | D-5: `resolveNpmBefore({ env, workspaceRoot })` |
@@ -200,7 +200,8 @@ No shared structure is introduced.
 | `autobyteus-server-ts/scripts/print-graphql-schema.mjs` | New | D-8: writes the SDL of `buildGraphqlSchema()` to a file; runs with a temp data dir; stdout silent |
 | `autobyteus-web/scripts/codegen-local.mjs`, `autobyteus-web/package.json` | New / change | D-8: `codegen:local`, `codegen:check`; D-9: declare `graphql-tag`, `vue`, `vue-router`, remove `@nuxtjs/apollo` |
 | `autobyteus-web/generated/graphql.ts` | Change | D-8: regenerated, committed in full |
-| `scripts/check-declared-imports.mjs` | New | D-9 |
+| `scripts/check-declared-imports.mjs` | New | D-9 (production/development class-aware for the server) |
+| `autobyteus-server-ts/tests/architecture/web-generated-graphql-current.test.ts` | New | D-8: routine runner of the codegen check (schema from source in-process) |
 | `scripts/tests/test_install_from_lockfile.py`, `scripts/tests/test_declared_imports.py` | New | Source/contract checks for D-2, D-3, D-6, D-9 |
 | `autobyteus-server-ts/tests/architecture/server-package-contents.test.ts` | New | Check for D-1 |
 | Docs: `autobyteus-web/docs/` page that describes codegen (create a short section if none), `autobyteus-server-ts/docs/` page that describes the server package or Docker image (update the contents statement) | Change | Same change |
@@ -237,15 +238,15 @@ The server package after D-1/D-2: `LICENSE README.md application-packages/ dist/
 ## Risks
 
 - The `files` list or `--prod` omits something a target needs: guarded by the startup check on a clean-clone package, a Docker stage build and the Windows build-only run.
-- `--frozen-lockfile` in the Docker builder with all importers installs the applications' packages too (builder time only); measured in validation.
+- `--frozen-lockfile` in the Docker builder with 8 manifests: a frozen validation passed with 8 and with 12 (architecture review); the real builder stage proves it.
 - `vue`/`vue-router` declared with ranges that differ from the resolved versions would move them: the lockfile diff must show no version change for them.
 - The mirrored-folder cleanup removes a path that is never legitimate (`autobyteus-server-ts/autobyteus-web`).
 
 ## Guidance For Implementation
 
 - Reproduction to start from: `evidence/measurements.md` (M-1, M-3 commands; M-6 `git status --ignored` after `prepare-server.sh`; M-7 schema print and codegen diff).
-- Tests: server `server-package-contents.test.ts` (files allowlist exact, `prisma` in dependencies, `npm pack --dry-run --json --ignore-scripts` lists nothing under `src/ tests/ tickets/ docs/ docker/ scripts/` and includes `prisma/schema.prisma`); Python `test_install_from_lockfile.py` (no `--no-frozen-lockfile` in the Dockerfile, both prepare scripts and the workflow; Dockerfile copies the manifest of every importer in `pnpm-lock.yaml`; deploys use `--prod`; both prepare scripts remove the mirrored folder) with a mutation on a copy; `test_declared_imports.py` (runs the check, plus a fixture package with a hidden-hoist import fails); web `npm-before.spec.ts` (override, commit time via a fake runner, neither → error).
-- Real proofs (TESTING.md; from a clean clone, isolated data only): (1) `pnpm install --frozen-lockfile`, server build, `pnpm deploy --legacy --prod`, `prisma generate`, `verify-packaged-server-startup.mjs`: size and contents against M-1; (2) `bash autobyteus-web/scripts/prepare-server.sh` then `git status --ignored` clean under `autobyteus-server-ts/` and the packaged startup check on `resources/server`; (3) `node autobyteus-web/scripts/prepare-server.mjs` rehearsal on macOS if it runs there, else read-only review plus (4); (4) Docker: `docker build --target server-package` of `Dockerfile.monorepo` (or the nearest stage) and the starter tests (`pnpm -C autobyteus-server-ts test:starter`); (5) a build-only desktop release run on the pushed branch for macOS, Linux and Windows (as in autobyteus-305's DR-003), including the packaged-server startup steps; (6) `codegen:check` passes, and fails on a mutated generated file; (7) web typecheck and specs, server unit suites, `pnpm install --frozen-lockfile` and the import check.
+- Tests: server `server-package-contents.test.ts` (files allowlist exact, `prisma` in dependencies, `npm pack --dry-run --json --ignore-scripts` lists nothing under `src/ tests/ tickets/ docs/ docker/ scripts/` and includes `prisma/schema.prisma`); Python `test_install_from_lockfile.py` (no `--no-frozen-lockfile` in the Dockerfile, both prepare scripts and the workflow; every `link:` target of a manifest the Dockerfile copies is copied; deploys use `--prod`; both prepare scripts remove the mirrored folder) with a mutation on a copy; `test_declared_imports.py` (runs the check; a fixture package with a hidden-hoist import fails; a fixture with a dev-only import in runtime code fails); web `npm-before.spec.ts` (override, invalid override refused, commit time via a fake runner, neither → error); server `web-generated-graphql-current.test.ts`; `server-package-contents.test.ts` also asserts the required files are present.
+- Real proofs (TESTING.md; from a clean clone, isolated data only): (1) `pnpm install --frozen-lockfile`, server build, `pnpm deploy --legacy --prod`, `prisma generate`, `verify-packaged-server-startup.mjs`: size and contents against M-1; (2) `bash autobyteus-web/scripts/prepare-server.sh` then `git status --ignored` clean under `autobyteus-server-ts/` and the packaged startup check on `resources/server`; (3) `node autobyteus-web/scripts/prepare-server.mjs` rehearsal on macOS if it runs there, else read-only review plus (4); (4) Docker: `docker build --target server-package` of `Dockerfile.monorepo` (or the nearest stage) and the starter tests (`pnpm -C autobyteus-server-ts test:starter`); (5) a build-only desktop release run on the pushed branch for macOS, Linux and Windows (as in autobyteus-305's DR-003), including the packaged-server startup steps and the Prisma Linux engine validation of the Linux job; (6) `codegen:check` passes, and fails on a mutated generated file; (7) web typecheck and specs, server unit suites, `pnpm install --frozen-lockfile` and the import check.
 - Done means (Task): items 1, 2 and the merged items fixed with tests, proven from a clean clone and a real build, finalized on `origin/personal`; item 3 not started. No release unless asked. Do not write "the user has verified" into any Done-when.
 
 ## Design Principles Check
