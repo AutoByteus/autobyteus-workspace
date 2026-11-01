@@ -43,6 +43,10 @@ export const executeRemoteChildCommand = async (
   agentRunId: string,
   command: TeamMemberExecutionCommand,
 ): Promise<AgentOperationResult> => {
+  // A remote child's node admits its own input: a first-input-only post (restart resume) cannot be honored there.
+  if (command.kind === "post_message" && command.postOptions?.onlyAsFirstInput) {
+    return { accepted: false, code: "REMOTE_RUN_FIRST_INPUT_UNSUPPORTED", message: "A run on another node is resumed by its own node." };
+  }
   const owner = remoteOwnerCommandOf(command);
   if (!owner) return { accepted: false, code: "REMOTE_RUN_COMMAND_UNSUPPORTED", message: "A run on another node approves its own tools." };
   return links.ownerCommand(agentRunId, owner);

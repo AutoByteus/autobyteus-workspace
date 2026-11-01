@@ -1,0 +1,19 @@
+[+0.01s] stamp "1.5.11-beta.9"
+[+4.70s] server started {"label":"X","pid":47786,"port":61452}
+[+6.80s] models {"native":"rr285-fixture:lmstudio@127.0.0.1:61451","codex":"gpt-6.1-terra","claude":"claude-haiku-4-5-20251001"}
+[+12.08s] busy {"label":"slow-1","pid":49152}
+[+13.71s] busy {"label":"slow-2","pid":49694}
+[+13.78s] busy {"label":"slow-3","pid":49144}
+[+19.52s] busy {"label":"slow-4","pid":50639}
+[+23.05s] busy {"label":"slow-5","pid":51363}
+[+28.85s] busy {"label":"slow-6","pid":52293}
+[+28.93s] busy {"label":"t-message","pid":48123}
+[+29.00s] busy {"label":"t-stop","pid":48158}
+[+29.05s] busy {"label":"t-archive","pid":48214}
+[+33.58s] server stopped {"label":"X","signal":"SIGTERM","exit":{"code":0,"signal":null,"at":1793516045409},"ms":2973}
+[+33.58s] record [{"place":"host","run":"8a4587a5da"},{"place":"host","run":"a60f95f31c"},{"place":"host","run":"4ee15933d6"},{"place":"host","run":"b562b644b4"},{"place":"host","run":"58af60387b"},{"place":"host","run":"3748d9096f"},{"place":"host","run":"849892c1ae"},{"place":"host","run":"fd550d3e66"},{"place":"host","run":"5b8a330fa7"}]
+[+33.58s] stamp "1.5.11-beta.9-rr285next"
+[+37.24s] server started {"label":"X1","pid":52577,"port":61653}
+[+48.05s] queue race {"acted":{"stop":{"success":false,"message":"Agent run not found."},"stopMs":168,"archive":{"success":true,"message":"Run 'native_agent_rr285mvxh4jmz_1224e4c5d76a4539849ccf5b8a330fa7' archived."},"archiveMs":308,"archiveDoneAtLogSec":"37.55","message":363,"messageAtLogSec":"37.60"},"lines":["[37.28] Restart resume resumed host run 'probe_agent_rr285mvxh4jmz_669178d360544b46a9b237a60f95f31c' of agent 'probe_agent_rr285mvxh4jmz_669178d360544b46a9b237a60f95f31c'","[37.44] Restart resume resumed host run 'probe_agent_rr285mvxh4jmz_c8822f2d8c02485cb621724ee15933d6' of agent 'probe_agent_rr285mvxh4jmz_c8822f2d8c02485cb621724ee15933d6'","[37.48] Restart resume resumed host run 'probe_agent_rr285mvx
+[+51.68s] server stopped {"label":"X1","signal":"SIGTERM","exit":{"code":0,"signal":null,"at":1793516063362},"ms":3432}
+{"result":"Completed","error":null}

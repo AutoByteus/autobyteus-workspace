@@ -41,6 +41,9 @@ import type { ScopedAgentToolMcpSessionAuthority } from "../agent-tools/mcp/agen
 import { getGeneralProcessPublishedArtifactPublisher } from "../services/published-artifacts/published-artifact-publication-service.js";
 import { StudioRunModelConfigService } from "../run-history/services/studio-run-model-config-service.js";
 import { composeStudioRemoteCollaboration } from "./remote-collaboration-composition.js";
+import { createCollaborationRootResolver } from "./collaboration-root-resolver.js";
+import { composeRestartResume, type RestartResume } from "./restart-resume-composition.js";
+import { getStandaloneAgentRunRootManager } from "../standalone-agent-run-root/services/standalone-agent-run-root-manager.js";
 import {
   createGeneralProcessRunSupervisor,
   type GeneralProcessRunSupervisor,
@@ -92,6 +95,8 @@ export type StudioServer = Readonly<{
   credentialProxyHost: CredentialProxyHost;
   applicationRuntime: ApplicationPlatformRuntime;
   packageRegistryService: ApplicationPackageRegistryService;
+  /** autobyteus-285: the busy-run recorder (shutdown) and the resumer (startup). */
+  restartResume: RestartResume;
 }>;
 
 type StudioApiHandle = ReturnType<typeof configureStudioApplicationApiServices>;
@@ -356,13 +361,19 @@ export const buildStudioServer = async (input: {
       runtimeSwitching: { memory: new RuntimeSwitchRecorder() },
     });
     generalProcessAuthority = null;
+    // One root resolution for inbound remote messages and restart resume (autobyteus-285 D5).
+    const rootResolver = createCollaborationRootResolver({ standaloneRoots: getStandaloneAgentRunRootManager(),
+      teamRuns: generalProcessRunSupervisor.teamRunService, orgRuns: generalProcessRunSupervisor.agentOrgRunService });
     releaseRemoteCollaboration = composeStudioRemoteCollaboration({
       appDataDir: input.appConfig.getAppDataDir(),
       tempWorkspaceDir: input.appConfig.getTempWorkspaceDir(),
       agentRuns: generalProcessRunSupervisor.agentRunService,
       teamRuns: generalProcessRunSupervisor.teamRunService,
       orgRuns: generalProcessRunSupervisor.agentOrgRunService,
+      rootResolver,
     });
+    const restartResume = composeRestartResume({ appDataDir: input.appConfig.getAppDataDir(), rootResolver,
+      orgHistory: generalProcessRunSupervisor.agentOrgRunHistoryCatalogService });
     const applicationServices = createStudioApplicationServices({
       appConfig: input.appConfig,
       packages,
@@ -460,6 +471,7 @@ export const buildStudioServer = async (input: {
         credentialProxyHost,
         applicationRuntime: currentApplicationRuntime,
         packageRegistryService: packages.packageRegistryService,
+        restartResume,
       });
     } catch (error) {
       await app.close();

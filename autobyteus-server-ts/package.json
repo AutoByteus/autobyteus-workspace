@@ -14,7 +14,7 @@
     "prepare:shared": "pnpm -C .. --filter autobyteus-ts --filter @autobyteus/application-sdk-contracts --filter @autobyteus/application-backend-sdk build",
     "prebuild": "pnpm prepare:shared && pnpm exec prisma generate --schema ./prisma/schema.prisma",
     "build": "pnpm run build:full",
-    "build:full": "node ./scripts/clean-build-output.mjs && tsc -p tsconfig.build.json && node ./scripts/copy-build-assets.mjs && node ./scripts/run-sanitized-built-in-agents-bootstrap-smoke.mjs",
+    "build:full": "node ./scripts/clean-build-output.mjs && tsc -p tsconfig.build.json && node ./scripts/copy-build-assets.mjs && node ./scripts/write-release-identity.mjs && node ./scripts/run-sanitized-built-in-agents-bootstrap-smoke.mjs",
     "pretypecheck": "pnpm prepare:shared",
     "typecheck": "tsc -p tsconfig.build.json --noEmit",
     "typecheck:claude-interrupt-resume-e2e": "pnpm prepare:shared && tsc -p tsconfig.claude-interrupt-resume-e2e.json --noEmit",

@@ -103,7 +103,9 @@ describe("AgentOrgExecutionScopeBuilder restore", () => {
     expect(prepareNewAgentRun).not.toHaveBeenCalled();
     expect(write).not.toHaveBeenCalled();
     expect(run.getAgentStatusSnapshots()[0]!.details.status).toBe("offline");
-    const sending = run.executeAgentCommand(agentRunId, { kind: "post_message", message: new AgentInputUserMessage("Continue") });
+    // autobyteus-285: restart resume wakes a restored member with a first-input-only notice; the options reach its run.
+    const postOptions = { lifecycleObserver: vi.fn(), onlyAsFirstInput: true };
+    const sending = run.executeAgentCommand(agentRunId, { kind: "post_message", message: new AgentInputUserMessage("Continue"), postOptions });
     await vi.waitFor(() => expect(write).toHaveBeenCalledTimes(1));
 
     expect(prepareNewAgentRun).toHaveBeenCalledTimes(1);
@@ -113,6 +115,8 @@ describe("AgentOrgExecutionScopeBuilder restore", () => {
 
     releaseDurability();
     expect(await sending).toMatchObject({ accepted: true });
+    expect(agentRun.postUserMessage).toHaveBeenCalledOnce();
+    expect(agentRun.postUserMessage).toHaveBeenCalledWith(expect.objectContaining({ content: "Continue" }), expect.objectContaining({ onlyAsFirstInput: true }));
     expect(enclosingDefinitionLookup).not.toHaveBeenCalled();
 
     expect(run.isActive()).toBe(true);

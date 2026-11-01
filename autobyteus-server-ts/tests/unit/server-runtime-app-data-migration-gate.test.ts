@@ -22,17 +22,24 @@ const mocks = vi.hoisted(() => {
   const credentialProxyHost = {
     listen: vi.fn(async () => "http://127.0.0.1:54322"),
   };
+  // autobyteus-285: the busy-run recorder (first step of the cleanup) and the resumer (after recovery).
+  const restartResume = {
+    recorder: { record: vi.fn(async () => undefined) },
+    resumer: { resumeAfterUpdate: vi.fn(async () => ({ recorded: 0, notUpdate: 0, skipped: 0, resumed: 0, failed: 0 })) },
+  };
   return {
     app,
     lifecycle,
     agentToolsMcpHost,
     credentialProxyHost,
+    restartResume,
     buildStudioServer: vi.fn(async () => ({
       fastify: app,
       applicationRuntime: { lifecycle },
       agentToolsMcpHost,
       credentialProxyHost,
       packageRegistryService: {},
+      restartResume,
     })),
     initializePrisma: vi.fn(async () => undefined),
     disableEnvironmentKeySource: vi.fn(),
@@ -216,6 +223,13 @@ describe("Studio app-data migration startup", () => {
         .toBeLessThan(mocks.app.listen.mock.invocationCallOrder[0]!);
       expect(mocks.app.listen).toHaveBeenCalledWith({ host: "127.0.0.1", port: 0 });
       expect(mocks.lifecycle.recoverAfterListen).toHaveBeenCalledTimes(1);
+      // autobyteus-285: restart resume starts after recovery, in the background, before the background tasks.
+      expect(mocks.restartResume.resumer.resumeAfterUpdate).toHaveBeenCalledTimes(1);
+      expect(mocks.lifecycle.recoverAfterListen.mock.invocationCallOrder[0])
+        .toBeLessThan(mocks.restartResume.resumer.resumeAfterUpdate.mock.invocationCallOrder[0]!);
+      expect(mocks.restartResume.resumer.resumeAfterUpdate.mock.invocationCallOrder[0])
+        .toBeLessThan(mocks.scheduleStudioBackgroundTasks.mock.invocationCallOrder[0]!);
+      expect(mocks.restartResume.recorder.record).not.toHaveBeenCalled();
       expect(mocks.scheduleStudioBackgroundTasks).toHaveBeenCalledTimes(1);
       expect(mocks.closeSecretVault).not.toHaveBeenCalled();
       expect(mocks.shutdownPrisma).not.toHaveBeenCalled();
@@ -318,13 +332,18 @@ describe("Studio app-data migration startup", () => {
       const starting = startConfiguredServer({ host: '127.0.0.1', port: 0 });
       await entered; handlers.get('SIGTERM')!();
       expect(mocks.app.close).not.toHaveBeenCalled(); expect(mocks.shutdownPrisma).not.toHaveBeenCalled();
-      finish(phase === 'build' ? { fastify: mocks.app, applicationRuntime: { lifecycle: mocks.lifecycle }, agentToolsMcpHost: mocks.agentToolsMcpHost, credentialProxyHost: mocks.credentialProxyHost } : undefined);
+      finish(phase === 'build' ? { fastify: mocks.app, applicationRuntime: { lifecycle: mocks.lifecycle }, agentToolsMcpHost: mocks.agentToolsMcpHost, credentialProxyHost: mocks.credentialProxyHost, restartResume: mocks.restartResume } : undefined);
       await starting; await vi.waitFor(() => expect(process.exit).toHaveBeenCalled());
       if (phase === 'prisma') {
         expect(mocks.buildStudioServer).not.toHaveBeenCalled(); expect(mocks.shutdownPrisma).toHaveBeenCalledOnce();
       } else {
         expect(mocks.app.close).toHaveBeenCalledOnce(); expect(mocks.shutdownPrisma).not.toHaveBeenCalled();
+        // autobyteus-285: the busy runs are recorded before the close interrupts anything.
+        expect(mocks.restartResume.recorder.record).toHaveBeenCalledOnce();
+        expect(mocks.restartResume.recorder.record.mock.invocationCallOrder[0])
+          .toBeLessThan(mocks.app.close.mock.invocationCallOrder[0]!);
       }
+      if (phase !== 'background') expect(mocks.restartResume.resumer.resumeAfterUpdate).not.toHaveBeenCalled();
       expect(process.exit).toHaveBeenCalledWith(0);
       expect(mocks.terminateServerProcessTree).toHaveBeenCalledOnce();
       if (phase !== 'background') expect(mocks.scheduleStudioBackgroundTasks).not.toHaveBeenCalled();

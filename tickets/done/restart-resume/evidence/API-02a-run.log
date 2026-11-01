@@ -1,0 +1,16 @@
+[+0.01s] stamp "1.5.11-beta.9"
+[+3.06s] server started {"label":"X","pid":58420,"port":59667}
+[+4.27s] models {"native":"rr285-fixture:lmstudio@127.0.0.1:59666","codex":"gpt-6.1-terra","claude":"claude-haiku-4-5-20251001"}
+[+8.76s] busy {"label":"sa-codex","pid":62307}
+[+9.40s] busy {"label":"sa-claude","pid":63058}
+[+10.62s] busy {"label":"team-codex","pid":63359}
+[+11.26s] busy {"label":"org-claude","pid":63748}
+[+15.82s] busy {"label":"host","pid":65866}
+[+15.87s] busy {"label":"copy","pid":65758}
+[+19.89s] server stopped {"label":"X","signal":"SIGTERM","exit":{"code":0,"signal":null,"at":1793515426478},"ms":1853}
+[+19.89s] record after quit {"entries":[{"kind":"agent","place":"host","status":"running","version":"1.5.11-beta.9","run":"4e8ced1ab1"},{"kind":"agent","place":"host","status":"running","version":"1.5.11-beta.9","run":"6a621b5d26"},{"kind":"agent_team","place":"member","status":"running","version":"1.5.11-beta.9","run":"5e22c31777"},{"kind":"agent_org","place":"member","status":"running","version":"1.5.11-beta.9","run":"f33d9e3f5f"},{"kind":"agent","place":"host","status":"running","version":"1.5.11-beta.9","run":"b0f0ad12b8"},{"kind":"agent","place":"delegated","status":"running","version":"1.5.11-beta.9","run":"0fa794dfa7"}],"lines":["[17.88] Recorded 6 busy run(s) for restart resume"]}
+[+19.89s] stamp "1.5.11-beta.9-rr285next"
+[+22.53s] server started {"label":"X1","pid":66502,"port":59911}
+[+48.37s] after X1 start {"lines":["[22.57] Restart resume resumed host run 'probe_agent_rr285mvxgrkpy_273751c7a45043879a186b6a621b5d26' of agent 'probe_agent_rr285mvxgrkpy_273751c7a45043879a186b6a621b5d26'","[22.76] Restart resume resumed delegated run 'probe_worker_rr285mvxgrkpy_61b57cbfecf04a0c9190c30fa794dfa7' of agent 'probe_host_rr285mvxgrkpy_2a98a7c7470b4c868075c8b0f0ad12b8'","[22.83] Restart resume resumed member run 'org_manager_org_claude_rr285mvxgrkpy_5d04cb07b46c4b5683a940f33d9e3f5f' of agent_org 'probe_org_org_claude_rr285mvxgrkpy_0352871cce5a470b9a520a629ede97c8'","[22.84] Restart resume resumed host run 'probe_agent_rr285mvxgrkpy_2560f18b05f042968924934e8ced1ab1' of agent 'probe_agent_rr285mvxgrkpy_25
+[+49.78s] server stopped {"label":"X1","signal":"SIGTERM","exit":{"code":0,"signal":null,"at":1793515456418},"ms":1290}
+{"result":"Completed","error":null}

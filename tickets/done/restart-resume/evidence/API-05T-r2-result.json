@@ -1,0 +1,468 @@
+{
+  "case": "API-05T-r2",
+  "app": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-api2.fcgHSg/AutoByteus-copy.app",
+  "X": "1.5.11-beta.9",
+  "X1": "1.5.11-beta.9-rr285next",
+  "date": "2026-11-01T08:09:53.736Z",
+  "own": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-desk-zTz1fF",
+  "tag": "RR285Dmvxjur0o",
+  "steps": [
+    {
+      "at": "14.0",
+      "step": "isolated-app",
+      "value": {
+        "args": [
+          "start",
+          "--app",
+          "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-api2.fcgHSg/AutoByteus-copy.app",
+          "--data-root",
+          "<own>/data-root"
+        ],
+        "exit": 0,
+        "ok": true
+      }
+    },
+    {
+      "at": "14.1",
+      "step": "instance started",
+      "value": {
+        "label": "X",
+        "instanceId": "iso-59284-a2e5",
+        "electronPid": 37001,
+        "serverPort": 59285
+      }
+    },
+    {
+      "at": "15.5",
+      "step": "models",
+      "value": {
+        "codex": "gpt-6.1-terra",
+        "claude": "claude-haiku-4-5-20251001"
+      }
+    },
+    {
+      "at": "28.0",
+      "step": "busy",
+      "value": {
+        "label": "team-codex",
+        "pid": 40068
+      }
+    },
+    {
+      "at": "34.2",
+      "step": "busy",
+      "value": {
+        "label": "host",
+        "pid": 41961
+      }
+    },
+    {
+      "at": "34.3",
+      "step": "busy",
+      "value": {
+        "label": "copy",
+        "pid": 40916
+      }
+    },
+    {
+      "at": "37.5",
+      "step": "isolated-app",
+      "value": {
+        "args": [
+          "stop",
+          "iso-59284-a2e5"
+        ],
+        "exit": 0,
+        "ok": true
+      }
+    },
+    {
+      "at": "37.5",
+      "step": "quit",
+      "value": {
+        "label": "quit X (busy)",
+        "electronGoneMs": 804
+      }
+    },
+    {
+      "at": "37.5",
+      "step": "record after quit",
+      "value": {
+        "entries": [
+          {
+            "kind": "agent_team",
+            "place": "member",
+            "version": "1.5.11-beta.9",
+            "run": "058d24b112"
+          },
+          {
+            "kind": "agent",
+            "place": "host",
+            "version": "1.5.11-beta.9",
+            "run": "d3fa4db4b7"
+          },
+          {
+            "kind": "agent",
+            "place": "delegated",
+            "version": "1.5.11-beta.9",
+            "run": "29005898c4"
+          }
+        ],
+        "lines": [
+          "[2026-11-01T08:10:30.472Z] [INFO] [electron.embedded-server.stdout] Recorded 3 busy run(s) for restart resume"
+        ]
+      }
+    },
+    {
+      "at": "37.5",
+      "step": "stamp in app copy",
+      "value": "1.5.11-beta.9-rr285next"
+    },
+    {
+      "at": "41.9",
+      "step": "isolated-app",
+      "value": {
+        "args": [
+          "start",
+          "--app",
+          "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-api2.fcgHSg/AutoByteus-copy.app",
+          "--data-root",
+          "<own>/data-root"
+        ],
+        "exit": 0,
+        "ok": true
+      }
+    },
+    {
+      "at": "42.0",
+      "step": "instance started",
+      "value": {
+        "label": "X1",
+        "instanceId": "iso-59592-aa34",
+        "electronPid": 42049,
+        "serverPort": 59593
+      }
+    },
+    {
+      "at": "62.4",
+      "step": "after X1 start",
+      "value": {
+        "lines": [
+          "[2026-11-01T08:10:35.672Z] [INFO] [electron.embedded-server.stdout] Restart resume resumed delegated run 'desk_worker_rr285dmvxjur0o_0e89d5e3e38f4b8d9f0b7f29005898c4' of agent 'desk_host_rr285dmvxjur0o_5439d4bc848e43299ccca4d3fa4db4b7'",
+          "[2026-11-01T08:10:35.715Z] [INFO] [electron.embedded-server.stdout] Restart resume resumed member run 'desk_team_coordinator_rr285dmvxjur0o_198d603e6a7b458892cf71058d24b112' of agent_team 'desk_team_rr285dmvxjur0o_646c335ea37640cf9fedf6bf7596d59f'",
+          "[2026-11-01T08:10:35.763Z] [INFO] [electron.embedded-server.stdout] Restart resume resumed host run 'desk_host_rr285dmvxjur0o_5439d4bc848e43299ccca4d3fa4db4b7' of agent 'desk_host_rr285dmvxjur0o_5439d4bc848e43299ccca4d3fa4db4b7'",
+          "[2026-11-01T08:10:35.807Z] [INFO] [electron.embedded-server.stdout] Restart resume after the update to 1.5.11-beta.9-rr285next: 3 resumed, 0 skipped, 0 failed"
+        ],
+        "after": {
+          "team-codex": {
+            "notices": 1,
+            "listsDelegated": false,
+            "noticeText": "The application restarted at 2026-11-01T08:10:35.525Z after an update to 1.5.11-beta.9-rr285next.\\nYour previous turn was interrupted.\\nTool calls that were running have unknown results; check before repeating any of them.",
+            "busyAgain": false,
+            "error": null,
+            "lastEntries": [
+              "{\"kind\":\"tool_call\",\"invocationId\":\"exec-14c58dc1-8273-4333-915b-803c666a9333\",\"role\":null,\"content\":\"\",\"toolName\":\"run_bash\",\"toolArgs\":{\"command\":\"/bin/bash -lc \\\"ps -axo pid,ppid,command | grep '[R]R285Dmvxjur0o_team-codex'\\\"\",\"cwd\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-",
+              "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"The interrupted command is no longer running. I can’t determine whether it finished or was terminated.\",\"media\":null,\"ts\":1793520641.444}"
+            ]
+          },
+          "host": {
+            "notices": 1,
+            "listsDelegated": true,
+            "noticeText": "The application restarted at 2026-11-01T08:10:35.525Z after an update to 1.5.11-beta.9-rr285next.\\nYour previous turn was interrupted.\\nTool calls that were running have unknown results; check before repeating any of them.\\nThese runs you delegated were resumed too and are working: desk_worker_rr285dmvxjur0o (desk_worker_rr285dmvxjur0o_0e89d5e3e38f4b8d9f0b7f29005898c4).",
+            "busyAgain": false,
+            "error": null,
+            "lastEntries": [
+              "{\"kind\":\"inter_agent_message\",\"role\":\"user\",\"senderAgentRunId\":\"desk_worker_rr285dmvxjur0o_0e89d5e3e38f4b8d9f0b7f29005898c4\",\"senderAddress\":null,\"content\":\"You received a message from the agent with sender run id \\\"desk_worker_rr285dmvxjur0o_0e89d5e3e38f4b8d9f0b7f29005898c4\\\".\\nmessage:\\nThe comman",
+              "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"Understood. The delegated agent reports that the command was interrupted by the application restart after approximately 12 seconds and did not complete the full 900-second sleep.\",\"media\":null,\"ts\":1793520647.208}"
+            ]
+          },
+          "copy": {
+            "notices": 1,
+            "listsDelegated": false,
+            "noticeText": "The application restarted at 2026-11-01T08:10:35.525Z after an update to 1.5.11-beta.9-rr285next.\\nYour previous turn was interrupted.\\nTool calls that were running have unknown results; check before repeating any of them.",
+            "busyAgain": false,
+            "error": null,
+            "lastEntries": [
+              "{\"kind\":\"tool_call\",\"invocationId\":\"exec-b1a0a950-15d8-4377-9adc-f7010cfb987d\",\"role\":null,\"content\":\"\",\"toolName\":\"send_message_to\",\"toolArgs\":{\"recipient_address\":\"/desk_host_rr285dmvxjur0o\",\"content\":\"The command was interrupted by the application restart after approximately 12 seconds. I checked",
+              "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"The command was interrupted by the restart and is no longer running.\",\"media\":null,\"ts\":1793520647.091}"
+            ]
+          }
+        },
+        "recordAfterStart": null
+      }
+    },
+    {
+      "at": "71.6",
+      "step": "member notice in window (live)",
+      "value": {
+        "segments": 1,
+        "hits": [
+          {
+            "inSystemSegment": true,
+            "text": "The application restarted at 2026-11-01T08:10:35.525Z after an update to 1.5.11-beta.9-rr285next."
+          }
+        ],
+        "url": "file:///private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-api2.fcgHSg/AutoByteus-copy.app/Contents/Resources/app.asar/dist/renderer/index.html#/workspace"
+      }
+    },
+    {
+      "at": "86.9",
+      "step": "member notice in window (after reload)",
+      "value": {
+        "segments": 1,
+        "hits": [
+          {
+            "inSystemSegment": true,
+            "text": "The application restarted at 2026-11-01T08:10:35.525Z after an update to 1.5.11-beta.9-rr285next."
+          }
+        ],
+        "url": "file:///private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-api2.fcgHSg/AutoByteus-copy.app/Contents/Resources/app.asar/dist/renderer/index.html#/workspace"
+      }
+    },
+    {
+      "at": "93.3",
+      "step": "host notice in window (live)",
+      "value": {
+        "segments": 1,
+        "hits": [
+          {
+            "inSystemSegment": true,
+            "text": "The application restarted at 2026-11-01T08:10:35.525Z after an update to 1.5.11-beta.9-rr285next."
+          }
+        ],
+        "url": "file:///private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-api2.fcgHSg/AutoByteus-copy.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat?id=desk_host_rr285dmvxjur0o_5439d4bc848e43299ccca4d3fa4db4b7"
+      }
+    },
+    {
+      "at": "98.4",
+      "step": "copy notice in window (live)",
+      "value": {
+        "segments": 1,
+        "hits": [
+          {
+            "inSystemSegment": true,
+            "text": "The application restarted at 2026-11-01T08:10:35.525Z after an update to 1.5.11-beta.9-rr285next."
+          }
+        ],
+        "url": "file:///private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-api2.fcgHSg/AutoByteus-copy.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat?id=desk_host_rr285dmvxjur0o_5439d4bc848e43299ccca4d3fa4db4b7"
+      }
+    },
+    {
+      "at": "109.6",
+      "step": "host notice in window (after-reload)",
+      "value": {
+        "segments": 1,
+        "hits": [
+          {
+            "inSystemSegment": true,
+            "text": "The application restarted at 2026-11-01T08:10:35.525Z after an update to 1.5.11-beta.9-rr285next."
+          }
+        ],
+        "url": "file:///private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-api2.fcgHSg/AutoByteus-copy.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat?id=desk_host_rr285dmvxjur0o_5439d4bc848e43299ccca4d3fa4db4b7"
+      }
+    },
+    {
+      "at": "114.8",
+      "step": "copy notice in window (after-reload)",
+      "value": {
+        "segments": 1,
+        "hits": [
+          {
+            "inSystemSegment": true,
+            "text": "The application restarted at 2026-11-01T08:10:35.525Z after an update to 1.5.11-beta.9-rr285next."
+          }
+        ],
+        "url": "file:///private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-api2.fcgHSg/AutoByteus-copy.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat?id=desk_host_rr285dmvxjur0o_5439d4bc848e43299ccca4d3fa4db4b7"
+      }
+    },
+    {
+      "at": "115.4",
+      "step": "isolated-app",
+      "value": {
+        "args": [
+          "stop",
+          "iso-59592-aa34"
+        ],
+        "exit": 0,
+        "ok": true
+      }
+    },
+    {
+      "at": "115.4",
+      "step": "quit",
+      "value": {
+        "label": "quit X1",
+        "electronGoneMs": 607
+      }
+    }
+  ],
+  "roots": [
+    {
+      "label": "team-codex",
+      "kind": "team",
+      "runId": "desk_team_coordinator_rr285dmvxjur0o_198d603e6a7b458892cf71058d24b112",
+      "rootId": "desk_team_rr285dmvxjur0o_646c335ea37640cf9fedf6bf7596d59f",
+      "teamName": "Desk Team RR285Dmvxjur0o",
+      "marker": "RR285Dmvxjur0o_team-codex"
+    },
+    {
+      "label": "host",
+      "kind": "agent",
+      "runId": "desk_host_rr285dmvxjur0o_5439d4bc848e43299ccca4d3fa4db4b7",
+      "marker": "RR285Dmvxjur0o_host"
+    }
+  ],
+  "quitX": {
+    "label": "quit X (busy)",
+    "electronGoneMs": 804
+  },
+  "recordAfterQuit": {
+    "entries": [
+      {
+        "root": {
+          "rootSubjectKind": "agent_team",
+          "rootRunId": "desk_team_rr285dmvxjur0o_646c335ea37640cf9fedf6bf7596d59f"
+        },
+        "agentRunId": "desk_team_coordinator_rr285dmvxjur0o_198d603e6a7b458892cf71058d24b112",
+        "place": "member",
+        "status": "running",
+        "recordedAt": "2026-11-01T08:10:30.443Z",
+        "version": "1.5.11-beta.9"
+      },
+      {
+        "root": {
+          "rootSubjectKind": "agent",
+          "rootRunId": "desk_host_rr285dmvxjur0o_5439d4bc848e43299ccca4d3fa4db4b7"
+        },
+        "agentRunId": "desk_host_rr285dmvxjur0o_5439d4bc848e43299ccca4d3fa4db4b7",
+        "place": "host",
+        "status": "running",
+        "recordedAt": "2026-11-01T08:10:30.443Z",
+        "version": "1.5.11-beta.9"
+      },
+      {
+        "root": {
+          "rootSubjectKind": "agent",
+          "rootRunId": "desk_host_rr285dmvxjur0o_5439d4bc848e43299ccca4d3fa4db4b7"
+        },
+        "agentRunId": "desk_worker_rr285dmvxjur0o_0e89d5e3e38f4b8d9f0b7f29005898c4",
+        "place": "delegated",
+        "status": "running",
+        "recordedAt": "2026-11-01T08:10:30.443Z",
+        "version": "1.5.11-beta.9"
+      }
+    ]
+  },
+  "quitXLines": [
+    "[2026-11-01T08:10:30.472Z] [INFO] [electron.embedded-server.stdout] Recorded 3 busy run(s) for restart resume"
+  ],
+  "startX1Lines": [
+    "[2026-11-01T08:10:35.672Z] [INFO] [electron.embedded-server.stdout] Restart resume resumed delegated run 'desk_worker_rr285dmvxjur0o_0e89d5e3e38f4b8d9f0b7f29005898c4' of agent 'desk_host_rr285dmvxjur0o_5439d4bc848e43299ccca4d3fa4db4b7'",
+    "[2026-11-01T08:10:35.715Z] [INFO] [electron.embedded-server.stdout] Restart resume resumed member run 'desk_team_coordinator_rr285dmvxjur0o_198d603e6a7b458892cf71058d24b112' of agent_team 'desk_team_rr285dmvxjur0o_646c335ea37640cf9fedf6bf7596d59f'",
+    "[2026-11-01T08:10:35.763Z] [INFO] [electron.embedded-server.stdout] Restart resume resumed host run 'desk_host_rr285dmvxjur0o_5439d4bc848e43299ccca4d3fa4db4b7' of agent 'desk_host_rr285dmvxjur0o_5439d4bc848e43299ccca4d3fa4db4b7'",
+    "[2026-11-01T08:10:35.807Z] [INFO] [electron.embedded-server.stdout] Restart resume after the update to 1.5.11-beta.9-rr285next: 3 resumed, 0 skipped, 0 failed"
+  ],
+  "recordAfterStart": null,
+  "after": {
+    "team-codex": {
+      "notices": 1,
+      "listsDelegated": false,
+      "noticeText": "The application restarted at 2026-11-01T08:10:35.525Z after an update to 1.5.11-beta.9-rr285next.\\nYour previous turn was interrupted.\\nTool calls that were running have unknown results; check before repeating any of them.",
+      "busyAgain": false,
+      "error": null,
+      "lastEntries": [
+        "{\"kind\":\"tool_call\",\"invocationId\":\"exec-14c58dc1-8273-4333-915b-803c666a9333\",\"role\":null,\"content\":\"\",\"toolName\":\"run_bash\",\"toolArgs\":{\"command\":\"/bin/bash -lc \\\"ps -axo pid,ppid,command | grep '[R]R285Dmvxjur0o_team-codex'\\\"\",\"cwd\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-",
+        "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"The interrupted command is no longer running. I can’t determine whether it finished or was terminated.\",\"media\":null,\"ts\":1793520641.444}"
+      ]
+    },
+    "host": {
+      "notices": 1,
+      "listsDelegated": true,
+      "noticeText": "The application restarted at 2026-11-01T08:10:35.525Z after an update to 1.5.11-beta.9-rr285next.\\nYour previous turn was interrupted.\\nTool calls that were running have unknown results; check before repeating any of them.\\nThese runs you delegated were resumed too and are working: desk_worker_rr285dmvxjur0o (desk_worker_rr285dmvxjur0o_0e89d5e3e38f4b8d9f0b7f29005898c4).",
+      "busyAgain": false,
+      "error": null,
+      "lastEntries": [
+        "{\"kind\":\"inter_agent_message\",\"role\":\"user\",\"senderAgentRunId\":\"desk_worker_rr285dmvxjur0o_0e89d5e3e38f4b8d9f0b7f29005898c4\",\"senderAddress\":null,\"content\":\"You received a message from the agent with sender run id \\\"desk_worker_rr285dmvxjur0o_0e89d5e3e38f4b8d9f0b7f29005898c4\\\".\\nmessage:\\nThe comman",
+        "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"Understood. The delegated agent reports that the command was interrupted by the application restart after approximately 12 seconds and did not complete the full 900-second sleep.\",\"media\":null,\"ts\":1793520647.208}"
+      ]
+    },
+    "copy": {
+      "notices": 1,
+      "listsDelegated": false,
+      "noticeText": "The application restarted at 2026-11-01T08:10:35.525Z after an update to 1.5.11-beta.9-rr285next.\\nYour previous turn was interrupted.\\nTool calls that were running have unknown results; check before repeating any of them.",
+      "busyAgain": false,
+      "error": null,
+      "lastEntries": [
+        "{\"kind\":\"tool_call\",\"invocationId\":\"exec-b1a0a950-15d8-4377-9adc-f7010cfb987d\",\"role\":null,\"content\":\"\",\"toolName\":\"send_message_to\",\"toolArgs\":{\"recipient_address\":\"/desk_host_rr285dmvxjur0o\",\"content\":\"The command was interrupted by the application restart after approximately 12 seconds. I checked",
+        "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"The command was interrupted by the restart and is no longer running.\",\"media\":null,\"ts\":1793520647.091}"
+      ]
+    }
+  },
+  "memberDomLive": {
+    "segments": 1,
+    "hits": [
+      {
+        "inSystemSegment": true,
+        "text": "The application restarted at 2026-11-01T08:10:35.525Z after an update to 1.5.11-beta.9-rr285next."
+      }
+    ],
+    "url": "file:///private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-api2.fcgHSg/AutoByteus-copy.app/Contents/Resources/app.asar/dist/renderer/index.html#/workspace"
+  },
+  "memberDomReload": {
+    "segments": 1,
+    "hits": [
+      {
+        "inSystemSegment": true,
+        "text": "The application restarted at 2026-11-01T08:10:35.525Z after an update to 1.5.11-beta.9-rr285next."
+      }
+    ],
+    "url": "file:///private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-api2.fcgHSg/AutoByteus-copy.app/Contents/Resources/app.asar/dist/renderer/index.html#/workspace"
+  },
+  "hostDom-live": {
+    "segments": 1,
+    "hits": [
+      {
+        "inSystemSegment": true,
+        "text": "The application restarted at 2026-11-01T08:10:35.525Z after an update to 1.5.11-beta.9-rr285next."
+      }
+    ],
+    "url": "file:///private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-api2.fcgHSg/AutoByteus-copy.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat?id=desk_host_rr285dmvxjur0o_5439d4bc848e43299ccca4d3fa4db4b7"
+  },
+  "copyDom-live": {
+    "segments": 1,
+    "hits": [
+      {
+        "inSystemSegment": true,
+        "text": "The application restarted at 2026-11-01T08:10:35.525Z after an update to 1.5.11-beta.9-rr285next."
+      }
+    ],
+    "url": "file:///private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-api2.fcgHSg/AutoByteus-copy.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat?id=desk_host_rr285dmvxjur0o_5439d4bc848e43299ccca4d3fa4db4b7"
+  },
+  "hostDom-after-reload": {
+    "segments": 1,
+    "hits": [
+      {
+        "inSystemSegment": true,
+        "text": "The application restarted at 2026-11-01T08:10:35.525Z after an update to 1.5.11-beta.9-rr285next."
+      }
+    ],
+    "url": "file:///private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-api2.fcgHSg/AutoByteus-copy.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat?id=desk_host_rr285dmvxjur0o_5439d4bc848e43299ccca4d3fa4db4b7"
+  },
+  "copyDom-after-reload": {
+    "segments": 1,
+    "hits": [
+      {
+        "inSystemSegment": true,
+        "text": "The application restarted at 2026-11-01T08:10:35.525Z after an update to 1.5.11-beta.9-rr285next."
+      }
+    ],
+    "url": "file:///private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-api2.fcgHSg/AutoByteus-copy.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat?id=desk_host_rr285dmvxjur0o_5439d4bc848e43299ccca4d3fa4db4b7"
+  },
+  "quitX1": {
+    "label": "quit X1",
+    "electronGoneMs": 607
+  },
+  "result": "Completed",
+  "fallbackCleanup": 0,
+  "rootRemoved": true
+}

@@ -130,6 +130,8 @@ describe("Agent root of a standalone run", () => {
       .resolves.toMatchObject({ delegated: true, copy: { kind: "team" } });
     await flushMicrotasks();
     const lead = f.handles.get("lead-run-2")!;
+    // autobyteus-285: the copies' runs (a task Agent, a task Team's member) are delegated runs; the host is not.
+    expect([root.isDelegatedRun("code-reviewer-run-1"), root.isDelegatedRun("lead-run-2"), root.isDelegatedRun(HOST)]).toEqual([true, true, false]);
     const stored = (await f.store.readTree(dir, HOST))!;
     expect(stored.taskExecutions).toMatchObject([
       { address: "/code_reviewer", agentRunId: "code-reviewer-run-1", platformAgentRunId: null, delegatorAgentRunId: HOST, source: { kind: "agent" } },
@@ -218,14 +220,23 @@ describe("Agent root of a standalone run", () => {
     await reopened.ensureHostReady();
     expect(f.restores).toHaveBeenCalledOnce();
     expect(reopened).not.toBe(root);
+    // autobyteus-285 N-12: restoring the host and waking the copy reserve no input before restart resume's notice.
+    expect(f.host.run.postUserMessage).not.toHaveBeenCalled();
+    const postOptions = { lifecycleObserver: vi.fn(), onlyAsFirstInput: true };
     const post = await reopened.executeAgentCommand("code-reviewer-run-1", {
-      kind: "post_message", message: { content: "Anything else?" } as never,
+      kind: "post_message", message: { content: "Anything else?" } as never, postOptions,
     });
     expect(post).toMatchObject({ accepted: true });
     const restored = f.handles.get("code-reviewer-run-1")!;
     expect(restored).not.toBe(child);
     expect(restored.input.activationMode).toBe("restore");
     expect(restored.handle.postMessage).toHaveBeenCalledOnce();
+    expect(restored.handle.postMessage).toHaveBeenCalledWith(expect.objectContaining({ content: "Anything else?" }), postOptions);
+    expect(restored.handle.reserveInput ?? vi.fn()).not.toHaveBeenCalled();
+    f.host.run.postUserMessage.mockResolvedValueOnce({ accepted: true });
+    await expect(reopened.postHostUserMessage({ message: { content: "Notice" } as never, postOptions })).resolves.toMatchObject({ kind: "posted" });
+    expect(f.host.run.postUserMessage).toHaveBeenCalledOnce();
+    expect(f.host.run.postUserMessage.mock.calls[0]![1]).toBe(postOptions);
     expect(await reopened.executeAgentCommand(HOST, { kind: "interrupt" })).toMatchObject({ code: "AGENT_ROOT_HOST_COMMAND_REJECTED" });
   });
 
