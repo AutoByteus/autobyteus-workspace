@@ -8,6 +8,7 @@ The latest coverage investigation and execution coverage report remain authorita
 | --- | --- | --- | --- | --- |
 | API-REV-001 | Code reviewer, `code-review-report.md` CRR-002 Pass, round 1 | SR-003, ARCH-REV-003, IR-003, CRR-002 | N/A | Fail / 88% |
 | API-REV-002 | Code reviewer, `code-review-report.md` CRR-005 Pass, round 2 | SR-004, SR-005, SR-006, IR-004, IR-005, CRR-003…CRR-005 | Fail / 88% | Fail / 90% |
+| API-REV-003 | Code reviewer, `code-review-report.md` CRR-007 Pass, round 3 | SR-007, SR-008, IR-006, CRR-006, CRR-007 | Fail / 90% | Pass / 94% |
 
 ## Revision Entries
 
@@ -61,4 +62,27 @@ None.
 - Current result and confidence: Fail, 90%
 - New or remaining failure IDs: API-08 L-002 (a delegation with no hub message refetches every loaded list)
 - Recommended owner: failure-origin review by the code reviewer (Local Fix or Design Impact)
+- Remaining risks, blocked evidence, or untested scope: FU-004, FU-006; remote participants, the sequence-gap reopen and the reasoning renderer (residuals)
+
+### API-REV-003 — Round 3: a delegation with no hub message keeps the lists; Pass
+
+- Triggering role, report path, and round: code reviewer, `code-review-report.md` (CRR-007 Pass), round 3
+- Triggering finding or case IDs: API-08 L-002 (round 2 Fail)
+- Related revision IDs: CRR-006 (failure origin: Design Impact), SR-007, SR-008, ARCH-REV-007/008, IR-006, CRR-007
+- Why this revision was recorded: rerun after the rework
+- Coverage decisions or durable test paths changed: the hub probe gains L-012 (a delegation whose copy reports at once) and records browser errors with time and stack
+- Cases added, changed, removed, or rechecked: API-08 rechecked first (Pass, 5 runs); API-03…API-07 and API-09 rerun (Pass); API-01 reuses IR-006's checks
+- Commands, environment, fixture, or broader-validation delta: server `dist` rebuilt at `65a5b34c9b`; the seed removed after the round
+
+#### Prior Failure Resolution
+
+| Prior Case / Failure Reference | Previous Classification | Current Resolution | Case IDs Now Proving It |
+| --- | --- | --- | --- |
+| API-08 L-002: a delegation with no hub message refetched every loaded list | Design Impact (CRR-006) | Resolved by SR-007/SR-008 (IR-006): `participants: {}` with 62 → 62 in all 5 runs | API-08 L-002 (`API-08-r3-hub-participant-requests.log`) |
+
+- Canonical artifacts and sections updated: investigation (round 3 note), report (all sections), progress log, `follow-ups.md` (FU-006 trace), `evidence/api-e2e/`
+- Prior result and confidence: Fail, 90%
+- Current result and confidence: Pass, 94%
+- New or remaining failure IDs: none
+- Recommended owner: code reviewer (proportional test-code review)
 - Remaining risks, blocked evidence, or untested scope: FU-004, FU-006; remote participants, the sequence-gap reopen and the reasoning renderer (residuals)

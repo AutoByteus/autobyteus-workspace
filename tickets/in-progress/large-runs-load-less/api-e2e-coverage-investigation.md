@@ -15,7 +15,7 @@ Paths are relative to `/Users/normy/autobyteus_org/autobyteus-worktrees/large-ru
 - Implementation handoff: `implementation-handoff.md` (IR-003), `implementation-revision-record.md`
 - Code review: `code-review-report.md` (CRR-002 Pass), `code-review-revision-record.md`
 - Delivery revision record: N/A
-- API/E2E revision record: `api-e2e-revision-record.md`; current revision `API-REV-002`
+- API/E2E revision record: `api-e2e-revision-record.md`; current revision `API-REV-003` (round 3: CRR-007 after IR-006, SR-007/SR-008: lists kept unless a message was published past them)
 - Round: 2. Trigger: code review CRR-005 Pass after the API-08 rework (IR-004 `935c5c9fa9`/`da91ae689a`, SR-004/SR-005; IR-005 `99cd853f79`, SR-006). Prior investigation: round 1 (this file)
 - Code: `f48bdfc0ab` … `438ea7fb65` on base `origin/personal` @ `efd28d5c4a`. Head `f4e7b1d13b` (ticket files only after `438ea7fb65`)
 
@@ -113,3 +113,7 @@ None.
 - Proceed To API/E2E Execution: `Yes`
 - Repository-Resident Durable Coverage Will Be Added: `Yes`
 - Reroute Required Before Validation Execution: `No`
+
+## Round 3 Note
+
+- API-08 rechecked first. L-012 is added to the hub probe: a delegation whose new copy reports to the hub at once must show the report once, with at most one list fetch. The probe also records each browser error's time and stack, to trace FU-006. All other cases are rerun unchanged.

@@ -20,3 +20,9 @@ Read it first whenever you pick the run back up. Only add rows.
 | 2026-11-01T14:29:31Z | API-03..API-06, API-09 | Completed | Pass | r2: LRL-001..005 Pass; LRL-005 running Team open 1 fetch, live msg 0, resume 1 reload |
 | 2026-11-01T14:29:31Z | API-07, API-08 | Started | | hub probe --from-seed /tmp/ab358e2e/seed --live --large-shape unbroken (L-001/L-002 participant-count assertions) |
 | 2026-11-01T14:42:10Z | API-07, API-08 | Completed | API-07 Pass; API-08 Fail | r2: L-001 1 fetch (fixed), S-001 1, L-010 179 ms + display pass; L-002: delegation adding no hub message (62->62) still refetches hub + open copy lists once each (4/4 runs); L-002 now asserts SR-004's 0; FU-006 terminal flake (1/4 runs) |
+| 2026-11-01T15:24:31Z | round 3 | Started | | code 65a5b34c9b (IR-006, SR-007/SR-008), head 2b00c20f0a; L-012 added; rebuild server dist |
+| 2026-11-01T15:24:48Z | API-07, API-08 | Started | | hub probe --live --large-shape unbroken, out /tmp/ab358e2e/r3-hub |
+| 2026-11-01T15:32:47Z | API-07, API-08 | Completed | Pass (cases); probe Fail on FU-006 in 2 of 5 runs | r3: S-001 1, L-001 1, L-002 0 refetch (62->62), L-012 report once, 0 refetch; L-010 pass; FU-006 traced: xterm Viewport.syncScrollArea during L-006 navigation |
+| 2026-11-01T15:32:47Z | API-03..06, API-09 | Started | | LRL-001..005 r3 |
+| 2026-11-01T15:38:05Z | API-03..06, API-09 | Completed | Pass | r3 LRL-001..005 Pass |
+| 2026-11-01T15:38:05Z | round 3 | Completed | Pass | 94%; seed removed |
