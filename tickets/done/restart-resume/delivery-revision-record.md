@@ -25,7 +25,7 @@ The latest `docs-sync-report.md`, `handoff-summary.md` and `release-deployment-r
   - merge of `origin/personal` @ `bea544af1b` (49 commits) → `1459807ff9`;
   - `pnpm install --frozen-lockfile`;
   - DEL-01a–f Pass, including the first full green suite on the final code, the release stamp shipping under 345's `files` list, and the Docker update path's stamp and self-check isolation (read from the code).
-- Verification and finalization state: verified from the evidence; no user check needed to finalize. Finalization is recorded in the release report.
+- Verification and finalization state: verified from the evidence; no user check needed to finalize. Merged `--no-ff` into `personal` as `cf0137dfae` and pushed; no release.
 - Terminal return to the Solution Designer: `Sent` after finalization and cleanup.
 - Why this baseline was recorded: first completed delivery round.
 - Next recipient/action: `/software_engineering_team/solution_designer` (terminal receipt; send the follow-ups).
