@@ -93,3 +93,28 @@ Independent architecture review, then implementation per the Change / Refactor S
 - **Route:** `get_handoff_rules` → the revised Large/High package matches the architecture-review rule → `/software_engineering_team/architecture_reviewer`, as a targeted review of SR-003. Implementation then adds DS-007 to IR-001's work, and the route continues to code review.
 
 - 2026-11-01: ARCH-REV-003 **Pass** on SR-003 (DS-007 / DEC-004). The reviewer delivered the handoff to `/software_engineering_team/implementation_engineer`. Residual (recommendation only): tool-call and reasoning renderers were not measured for long tokens. No Solution Designer forwarding required.
+
+## SR-004 Revision (after code review CRR-003, CR-002, 2026-11-01)
+
+- **Finding:** on a running root, participant lists were fetched again on every context publication: twice per selection (inspection, then attach), and once per new child or settings Save (checkpoint reconnect). This is avoidable full-history transfer.
+- **Decision, option (b), one rule for hub, Team and Org:** reload only when a message could have been missed.
+  - `CollaborationParticipantMessages` keeps a per-root consistent-through sequence C. It comes from applied events, and from seen single `checkpoint_required` events, which carry no message.
+  - `reloadRoot(rootKind, rootRunId, { isActive, baseChangeSequence })` reloads for a stored rebuild, or when the live base B > C. Otherwise it keeps the lists and in-flight loads.
+- **Expected API-08 counts:**
+  - running-hub selection: 1;
+  - new child or Save with no message meanwhile: 0;
+  - a message meanwhile: 1.
+- **Tests:** the four cases in the design's SR-004 summary.
+- **Route:** `get_handoff_rules` → the revised Large/High package → `/software_engineering_team/architecture_reviewer` (targeted SR-004). Then implementation, a targeted source review, and the API-08 recheck.
+
+## SR-005 Revision (after ARCH-REV-004, AR-005, 2026-11-01)
+
+- **Option (b):**
+  - `RootEventPublisher` gets a per-instance `liveSequenceId`, carried as `live_sequence_id` in active Agent-root, Team and Org views and snapshots (`null` in stored views). This is a contract field.
+  - `CollaborationParticipantMessages` keeps C with the `live_sequence_id` it belongs to.
+  - `reloadRoot(…, { liveSequenceId, baseChangeSequence })` keeps the lists only for the same non-null ID and B ≤ C, and reloads otherwise.
+  - Option (a) was rejected: it relies on the client observing every stop, resume or restart.
+- **New tests:** stop → resume with a message before attach reloads; a new-publisher reconnect with B ≤ the old C reloads.
+- **Route:** the architecture-review rule → `/software_engineering_team/architecture_reviewer` (targeted SR-005).
+
+- 2026-11-01: ARCH-REV-005 **Pass** on SR-005 (AR-005 resolved; all three roots covered). The reviewer delivered the handoff to `/software_engineering_team/implementation_engineer`. No Solution Designer forwarding required.

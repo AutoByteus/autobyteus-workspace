@@ -9,6 +9,8 @@ The latest `design-review-report.md` remains authoritative.
 | ARCH-REV-001 | Round 1 / initial architecture review | SR-001 | N/A | Fail (Design Impact) | AR-001…AR-004 |
 | ARCH-REV-002 | Round 2 / re-review of SR-002 | SR-002 | Fail | Pass | AR-001…AR-004 resolved |
 | ARCH-REV-003 | Round 3 / targeted re-review of SR-003 (after IR-001) | SR-003 | Pass | Pass | none |
+| ARCH-REV-004 | Round 4 / targeted re-review of SR-004 (after CRR-003) | SR-004 | Pass | Fail (Design Impact) | AR-005 new |
+| ARCH-REV-005 | Round 5 / targeted re-review of SR-005 | SR-005 | Fail | Pass | AR-005 resolved |
 
 ## Revision Entries
 
@@ -85,3 +87,45 @@ None (no open findings; AR-001…AR-004 stay resolved)
   - the QR-004 escalation if still missed;
   - unmeasured long tokens in tool and reasoning renderers (recommendation only);
   - whole-block typography change (negligible).
+
+### ARCH-REV-004 — Targeted re-review of SR-004: the sequence-guarded reload needs a reset per live sequence
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/large-runs-load-less/tickets/in-progress/large-runs-load-less/design-review-report.md`
+- Review round and trigger: round 4 (targeted), Solution Designer re-review request (SR-004), after code review CRR-003 / CR-002 (from API-08), 2026-11-01; code at `776d6b7d86`
+- Triggering role, report path, and finding IDs: Solution Designer, `solution-handoff.md` ("SR-004 Revision"); `code-review-report.md` CR-002; `evidence/api-e2e/API-08-hub-participant-reloads.log`
+- Relevant solution revision IDs: `SR-004`
+- Prior authoritative decision: `Pass` (ARCH-REV-003)
+- Current authoritative decision: `Fail`, `Design Impact`
+- What changed in the review result:
+  - Option (b) is accepted. C advances only contiguously: the gap check precedes `checkpoint_required` (`agentRunCollaborationContext.ts:133-137`).
+  - New AR-005: live sequences restart at 0 for each `RootEventPublisher` (`root-event-publisher.ts:23`). C has no reset, so after a stop and resume, or a server restart, B ≤ stale C keeps lists that miss new messages.
+
+#### Prior Finding Resolution
+
+None (AR-001…AR-004 stay resolved)
+
+- New or remaining finding IDs: AR-005 (Medium)
+- Material classification changes: none (task_size=Large, architectural_risk=High)
+- Recommended recipient: Solution Designer
+- Remaining risks or uncertainty: as in ARCH-REV-003
+
+### ARCH-REV-005 — Targeted re-review of SR-005: the live-sequence identity; Pass
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/large-runs-load-less/tickets/in-progress/large-runs-load-less/design-review-report.md`
+- Review round and trigger: round 5 (targeted), Solution Designer re-review request (SR-005), 2026-11-01
+- Triggering role, report path, and finding IDs: Solution Designer, `solution-handoff.md` ("SR-005 Revision"); AR-005
+- Relevant solution revision IDs: `SR-005`
+- Prior authoritative decision: `Fail` (ARCH-REV-004)
+- Current authoritative decision: `Pass`
+- What changed in the review result: `liveSequenceId` per `RootEventPublisher` instance, carried as `live_sequence_id` in active views and snapshots (`null` when stored). The reload guard is keyed by it. All three root kinds are covered: the Team's publisher is an alias of `RootEventPublisher`.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-005 | Open (Medium) | Resolved | SR-005 | `standalone-root-builder.ts:132`; `agent-org-execution-scope-builder.ts:56`; `team-run-event-publisher.ts:1-6` (alias); `agent-team-stream-handler.ts:137-142`; tests for stop → resume and a new publisher |
+
+- New or remaining finding IDs: none
+- Material classification changes: none (task_size=Large, architectural_risk=High)
+- Recommended recipient: Implementation Engineer; informational notice to the Solution Designer
+- Remaining risks or uncertainty: as in ARCH-REV-003

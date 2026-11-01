@@ -5,16 +5,45 @@
 - Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/large-runs-load-less/tickets/in-progress/large-runs-load-less/requirements-doc.md` (SR-001, approved by the Solution Designer within the direction; user informed)
 - Upstream Investigation Notes: `…/investigation-notes.md`
 - Upstream Solution Revision Record: `…/solution-revision-record.md`
-- Reviewed Design Spec: `…/design-spec.md` (SR-003, Ready; user approval of the design `Not required`)
+- Reviewed Design Spec: `…/design-spec.md` (SR-005, Ready; user approval of the design `Not required`)
 - Supplemental Task Artifacts Reviewed: `evidence/M-*` (before measurements, the CPU profile), `evidence/probes/*.mjs`
-- Relevant Solution Revision IDs: `SR-001`, `SR-002`, `SR-003`
+- Relevant Solution Revision IDs: `SR-001`…`SR-005`
 - Architecture Review Revision Record: `…/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-003`
-- Current Review Round: `3` (targeted: SR-003, DS-007 / DEC-004, after the implementation engineer's IR-001 Design Impact, QR-004 missed)
-- Trigger: Solution Designer re-review request (SR-003), 2026-11-01
-- Prior Review Round Reviewed: `2` (ARCH-REV-002, Pass)
-- Latest Authoritative Round: `3`
+- Current Architecture Review Revision ID: `ARCH-REV-005`
+- Current Review Round: `5` (targeted: SR-005, the live-sequence identity for AR-005)
+- Trigger: Solution Designer re-review request (SR-005), 2026-11-01
+- Prior Review Round Reviewed: `4` (ARCH-REV-004, Fail: AR-005)
+- Latest Authoritative Round: `5`
 - Current-State Evidence Basis: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/large-runs-load-less` @ `efd28d5c4a` (no source changes). Code opened at the lines cited below.
+
+## Round 5 Scope (SR-005, Targeted)
+
+- **Option (b) is adopted.** `RootEventPublisher` gets a random `liveSequenceId` per instance. Active views and live snapshots carry it as `live_sequence_id`; stored views carry `null`. It is added to the three view contracts and their projectors.
+- `CollaborationParticipantMessages` keeps C together with the identity it belongs to.
+- `reloadRoot` keeps the lists only when the identity is non-null, unchanged, and B ≤ C. Every other rebuild reloads: a stored view, another publisher (stop/resume or restart), or B past C.
+- **Coverage of all three root kinds is verified.**
+  - The Agent root constructs `RootEventPublisher` (`standalone-root-builder.ts:132`), and so does the Org (`agent-org-execution-scope-builder.ts:56`).
+  - The Team's `TeamRunEventPublisher` is a re-export alias of `RootEventPublisher` (`agent-team-execution/services/team-run-event-publisher.ts:1-6`; used at `root-team-run.ts:23,108`).
+  - So one change gives every root kind its identity. The Team snapshot path (`agent-team-stream-handler.ts:137-142`) carries it with `baseChangeSequence`.
+- **Rejecting option (a) is sound.** A client-side reset depends on the client observing every lifecycle change, and a root stopped and resumed while not selected escapes that.
+- **Tests:**
+  - stop → resume with a message before attach: reloads, and the message is present;
+  - a reconnect to a new publisher with B ≤ the old C: reloads.
+
+  The SR-004 tests stay. API-08's savings are kept: selection and the checkpoint reopen stay within one publisher.
+- **AR-005 is resolved.** MP-004's consequence no longer holds, because both triggers create a new publisher with a new identity.
+
+## Round 4 Scope (SR-004, Targeted)
+
+- **The finding is right.** DS-002's "every rebuild reloads" refetches full participant histories on every context publication of a running root: twice per selection, and once per new child or Save (API-08). That is avoidable full-history transfer, which DESIGN.md rule 3 forbids. CRR-003 classified it correctly.
+- **Option (b) is the right shape.** Reload only when a message could have been missed: compare the new view's base B with the consistent-through sequence C that the lists have seen.
+  - C advances only contiguously. `applyEvent` checks the gap (`advanceSequencedStream`) **before** it returns `checkpoint_required` (`agentRunCollaborationContext.ts:133-137,140-142,171-178`), so a seen single checkpoint event at S means every event through S was applied. Setting C = S there is sound.
+  - A stored rebuild reloads, and a gap reopen reloads.
+- **Gap: B and C are only comparable within one live sequence.**
+  - The live change sequence belongs to one `RootEventPublisher` instance and starts at 0 for each instance (`agent-collaboration/execution/services/root-event-publisher.ts:23,56`).
+  - A stored inspection reports `baseChangeSequence: 0` (`standalone-agent-run-root-manager.ts:287`, `agent-org-run-manager.ts:203`).
+  - SR-004 says when C advances, but never when it **resets**.
+  - After the root stops and runs again, or after a server restart, the new instance's B is small. A stale C from the previous instance (say 500) makes B ≤ C, so the lists are kept. Any message the new instance produced before the client's attach snapshot is then missing (MP-004). See AR-005.
 
 ## Round 3 Scope (SR-003, Targeted)
 
@@ -83,7 +112,7 @@ SR-002 answers each finding in the design's "SR-002 Revision Summary". Verified 
 
 | Behavior ID | Kind | Design Alignment With Approved Intent | Approved Trigger / Contract And Current-State Evidence | Target Outcome / Path / Spine Coherence | Status | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
-| BEH-001 | User | Pass | Pass | Pass (SR-002: buffer before request, ID merge, `reloadRoot` on every rebuild; remote rule) | Confirmed | — |
+| BEH-001 | User | Pass | Pass | Pass (SR-005: the reload guard is scoped by `live_sequence_id`) | Confirmed | — |
 | BEH-002 | User | Pass | Pass | Pass (SR-002: tree-only inspections; `MemberLoader` generation per rebuild) | Confirmed | — |
 | BEH-003 | User | Pass | Pass | Pass | Confirmed | — |
 | BEH-004 | System | Pass | Pass | Pass (a damaged log fails only the records-owner reads; the view opens) | Confirmed | — |
@@ -253,6 +282,22 @@ Domain vocabulary keeps one meaning per word: `Pass`.
 - Reachability: `Reachable`
 - Review consequence: AR-003. **Round 2: resolved** (`MemberLoader` generation per rebuild).
 
+### `MP-004` — A loaded Team tab across a new live instance of the same root
+
+- Related requirement: REQ-002 ("the loaded list equals the stored log"), AC-002; BEH-004 (stop and resume)
+- Initiating basis kind: `User` / `System`
+- Trigger, two separate cases:
+  - (a) The user stops a running hub, team or org with the Team tab loaded, then resumes it by sending a message. Both are supported actions.
+  - (b) The server restarts while the web stays open. The client reconnects to the restored live root.
+- Forward path:
+  1. The old publisher's sequence reached C (for example 500).
+  2. The new activation creates a new `RootEventPublisher` starting at 0 (`root-event-publisher.ts:23`).
+  3. Messages the root produces before the client's attach snapshot get sequences 1…B, and the attach view's base B is small.
+  4. SR-004's rule keeps the lists, because B ≤ C. C was never reset; the stored rebuild in case (a) reloads, but the design doesn't say it resets C.
+- Consequence: those messages are missing from the loaded list until another reload. A copy's report, or the host's first message after the resume, can be one of them.
+- Reachability: `Reachable` for both (a) and (b), with independent triggers.
+- Review consequence: AR-005. **Round 5: resolved** (a new publisher carries a new `live_sequence_id`, which forces a reload).
+
 ## Unresolved Approved-Behavior Or Current-State Gaps
 
 None in the requirements.
@@ -263,7 +308,7 @@ None in the requirements.
 
 ## Findings
 
-None open. AR-001…AR-004 are resolved (ARCH-REV-002). SR-003 (DS-007) passes the targeted review (ARCH-REV-003).
+None open. AR-001…AR-004 are resolved (ARCH-REV-002); DS-007 passed (ARCH-REV-003); AR-005 is resolved (ARCH-REV-005).
 
 ## Classification
 
@@ -285,5 +330,5 @@ Implementation Engineer (`/software_engineering_team/implementation_engineer`)
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
-- Material-Premise Gate: `Pass` (no new premise)
-- Notes: round 3 is targeted. DS-007 fixes the measured shaping cause with one helper and one class at four renderers, with no visible change (DEC-004). The rest of the design keeps the round-2 Pass. task_size=Large, architectural_risk=High.
+- Material-Premise Gate: `Pass` (MP-001…MP-004 resolved)
+- Notes: round 5 is targeted. Participant lists reload only when a message could have been missed, judged within one live publisher identified by `live_sequence_id`. The rest of the design keeps its earlier Pass. task_size=Large, architectural_risk=High.

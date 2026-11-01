@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-003` (after IR-001: QR-004 missed; SR-002 after ARCH-REV-001)
+- Current solution revision ID: `SR-005` (after ARCH-REV-004 AR-005: the consistent-through sequence is scoped to one live sequence; SR-004 after CRR-003 CR-002: a running root reloaded its lists on every publication; SR-003 after IR-001: QR-004 missed; SR-002 after ARCH-REV-001)
 - Approved requirements baseline: `requirements-doc.md` SR-001, approved by the Solution Designer within the direction (the user informed in the conversation, 2026-11-01)
 - Behavior-defining supplements: none
 - User approval of the design, when the direction requires it: `Not required` (the Task asks for none)
@@ -10,6 +10,36 @@
 - Canonical investigation-notes path: `tickets/in-progress/large-runs-load-less/investigation-notes.md`
 - Authorities read: `references/architecture-design.md`, `references/design-principles.md` (this conversation), `DESIGN.md` (rules 3, 5, 7, re-read 2026-11-01), `autobyteus-server-ts/docs/design/data_migration_guideline.md` §6 ("Don't validate history at startup")
 - Project design-principle conflicts: none
+
+## SR-005 Revision Summary (ARCH-REV-004, AR-005: C must belong to one live sequence)
+
+- **Finding.** The live change sequence belongs to one `RootEventPublisher` instance and starts at 0 for each (`root-event-publisher.ts:23,56`), and stored inspections report 0. After a stop and resume, or a server restart, a new instance's B can be at or below a stale C. The lists would then be kept and miss the messages the new instance produced before the client attached.
+- **Decision, option (b): an explicit live-sequence identity.**
+  - `RootEventPublisher` gets `liveSequenceId`, a random ID made once per instance.
+  - Every active view and live snapshot carries it as `live_sequence_id` (stored views: `null`). This applies to the Agent-root, Team and Org view contracts (`autobyteus-collaboration-stream-contracts`) and their projectors.
+  - `CollaborationParticipantMessages` keeps C together with the `live_sequence_id` it belongs to.
+  - `reloadRoot(rootKind, rootRunId, { liveSequenceId, baseChangeSequence })` keeps the lists only when `liveSequenceId` is non-null, equals the kept one, and `baseChangeSequence <= C`. Any other rebuild reloads: a stored view, another publisher, or B past C.
+  - This holds whatever the client observed in between: stop, resume, restart or a lost connection.
+  - Option (a) was rejected: it depends on the client seeing every lifecycle change, which a hub stopped and resumed while not selected does not give.
+- **Tests (added to SR-004's four):**
+  - stop → resume with a message produced before the client's attach: reloads, and the message is in the list;
+  - a reconnect to a new publisher (simulated server restart) with B ≤ the old C: reloads.
+- The API-08 savings are unchanged: selection and checkpoint reopen stay within one publisher.
+
+## SR-004 Revision Summary (CRR-003, CR-002: repeated reloads on running roots)
+
+- **Finding** (code review, from API-08). A running hub fetched its participant lists again on every context publication. That was twice per selection (the inspection, then the attach snapshot), and once per new child or settings Save (the `checkpoint_required` reconnect). The hub's own list is nearly its whole log, so this is repeated full-history transfer (`DESIGN.md` rule 3). The cause is DS-002's "every rebuild reloads" rule.
+- **Decision, option (b), one rule for hub, Team and Org.** The Team tab only needs a reload when it could have missed a message, and it could only have missed one if the root's change sequence moved while it was not listening. `CollaborationParticipantMessages` keeps, per root, the sequence its lists are consistent through (C):
+  - every applied stream event sets C to the event's last sequence;
+  - a single `checkpoint_required` event (`change_sequence === change_sequence_through`) also sets C to its sequence, because it was seen and carries no message, although the context does not advance on it (`agentRunCollaborationContext.ts:130-185`);
+  - a load's result is consistent with C at the time its request was sent, plus its merged buffer.
+
+  `reloadRoot(rootKind, rootRunId, rebuild)` takes the rebuilt context's `isActive` and `base_change_sequence` (B):
+  - a rebuild from an **active** view or snapshot reloads only when `B > C`, and otherwise keeps the loaded lists and their in-flight loads;
+  - a rebuild from an **inactive (stored) view** reloads its lists, because stored views carry no live sequence. The first load on selection is the only fetch there;
+  - a gap reopen reloads by definition (`B > C`).
+- **Expected counts** (API-08 rechecks): selecting a running hub gives 1 list fetch; a new child or settings Save with no message in the reconnect window gives 0; a message in that window gives 1. Team and Org follow the same rule.
+- Tests: inspect→attach with an equal sequence keeps the list; checkpoint reconnect with B = checkpoint sequence keeps it; B > C reloads; a stored rebuild reloads.
 
 ## SR-003 Revision Summary (IR-001, QR-004 missed)
 
@@ -164,7 +194,7 @@ Each screen asks for what it shows:
 ## Primary Execution Spine(s)
 
 - DS-001: `GraphQL view query / stream snapshot -> root manager inspection (tree read and validated; no message read) -> view projector -> view DTO (schema without communication_messages)`. The live path: `openPackageSnapshotConnection().snapshot` without `messages`.
-- DS-002: `Team tab shown (focused participant; skipped for a remote participant) -> CollaborationParticipantMessages.load(key): start buffering this root's live communication events, then send collaborationParticipantMessages(rootKind, rootRunId, agentRunId) -> resolver: reject a non-participant -> the root's records owner getCollaborationRecordsSnapshot(rootRunId) (live engine, or the stored log validated with the tree) -> filter to the participant (Agent root: the public scope) -> list -> merge the buffer by message ID`. Live: `stream communication event -> root context -> CollaborationParticipantMessages.append`. Rebuild: `root context rebuilt -> CollaborationParticipantMessages.reloadRoot(rootKind, rootRunId)` (abandons in-flight loads, reloads loaded lists). Call sites: `agentRunCollaborationStore` `publish` of a new context instance (inspect, attach, gap `requireReopen` then reopen); `agentTeamRunStore.replaceFailedTeamStream` and the team open commit; `agentOrgStreamingService.reopenOwned` and the org context commit.
+- DS-002: `Team tab shown (focused participant; skipped for a remote participant) -> CollaborationParticipantMessages.load(key): start buffering this root's live communication events, then send collaborationParticipantMessages(rootKind, rootRunId, agentRunId) -> resolver: reject a non-participant -> the root's records owner getCollaborationRecordsSnapshot(rootRunId) (live engine, or the stored log validated with the tree) -> filter to the participant (Agent root: the public scope) -> list -> merge the buffer by message ID`. Live: `stream communication event -> root context -> CollaborationParticipantMessages.append`. Rebuild: `root context rebuilt -> CollaborationParticipantMessages.reloadRoot(rootKind, rootRunId, { isActive, baseChangeSequence })`. It keeps the lists only within the same live sequence (`live_sequence_id`) when `baseChangeSequence` has not passed the sequence they are consistent through. Otherwise it reloads, abandoning in-flight loads (SR-004, SR-005). Call sites: `agentRunCollaborationStore` `publish` of a new context instance (inspect, attach, gap `requireReopen` then reopen); `agentTeamRunStore.replaceFailedTeamStream` and the team open commit; `agentOrgStreamingService.reopenOwned` and the org context commit.
 - DS-003: `root opened or rebuilt (initial open, stream recovery, org source 'stream', gap/checkpoint reopen) -> MemberLoader.beginRoot(root) (new generation: no member hydrated) -> the focused member loaded (exactly between checkpoints on recovery) -> member opened -> MemberLoader.ensure(context, agentRunId) (loads when not hydrated in the current generation) -> projection + file changes -> commit`.
 - DS-004: `hub selected -> agentRunCollaborationStore.inspect (one in-flight or settled view) -> rows; Settings -> agentRunCollaborationStore.viewFor(hostRunId) (awaits the same inspection) -> tree, closed and remote executions`.
 - DS-005: `first access / new root -> RootRunPackageCurrentValidator.scan (tree + manifest + log file presence; no log read)`; `admitCurrent(family, id) -> validates that one package's structure and adds it (no rescan)`; `inspection -> the tree only`; `records owner (participant query, reference content, resume/activation) -> strict validation of that run's tree and log -> error with the reason on failure (rule 7: contained to that run's read)`.
@@ -176,7 +206,7 @@ Each screen asks for what it shows:
 | Spine | Narrative | Owner |
 | --- | --- | --- |
 | DS-001 | The three view projectors stop putting the log in the view. The view keeps everything else: tree, statuses, input states, closed and remote executions, `base_change_sequence`. Snapshots on reconnect are the same view | projectors |
-| DS-002 | `CollaborationParticipantMessages` (web) is the one owner of loaded message lists, keyed by root kind, root run and participant. It starts its load when the Team tab (or a mobile message screen) asks for that participant's list, but never for a remote participant (empty, as today). It starts buffering the root's live `communication` events before it sends the request, then merges by message ID, so nothing is lost or doubled. The list order is the existing perspective order (newest first, then ID). A failed load shows the tab's existing error state with the reason, and opening the tab again retries. Every rebuild of the root context calls `reloadRoot`: reconnect, gap or checkpoint reopen, recovery and stop/inspect. It abandons in-flight loads and reloads loaded lists, because events lost in a gap never reach the client. The server query reads through the root's records owner: the live engine when active, else the stored log validated with the tree (DS-005) | `CollaborationParticipantMessages`; query resolver |
+| DS-002 | `CollaborationParticipantMessages` (web) is the one owner of loaded message lists, keyed by root kind, root run and participant. It starts its load when the Team tab (or a mobile message screen) asks for that participant's list, but never for a remote participant (empty, as today). It starts buffering the root's live `communication` events before it sends the request, then merges by message ID, so nothing is lost or doubled. The list order is the existing perspective order (newest first, then ID). A failed load shows the tab's existing error state with the reason, and opening the tab again retries. Every rebuild of the root context calls `reloadRoot`: reconnect, gap or checkpoint reopen, recovery and stop/inspect. It reloads only when a message could have been missed: a stored rebuild, a different live sequence (`live_sequence_id`: another publisher after a stop/resume or restart), or a base sequence past the sequence the lists are consistent through (SR-004, SR-005). Otherwise the lists and in-flight loads are kept. The server query reads through the root's records owner: the live engine when active, else the stored log validated with the tree (DS-005) | `CollaborationParticipantMessages`; query resolver |
 | DS-003 | One `MemberLoader` replaces the two copies. It holds a generation per root, which every rebuild bumps, and "hydrated" is per member context within the current generation. It dedupes in flight and commits through `commitMemberRunStates`. Initial open, stream recovery (exact, between the checkpoints, as today), org `source: 'stream'` and reopen all stage only the focused member; every other member loads on open via `MemberLoader.ensure`, so a member hydrated before a failure is never shown stale. The hub's copies use the same loader. Status, Task summaries and live events come from the view and stream as today | `MemberLoader` |
 | DS-004 | Settings takes the hub's view from the collaboration store, which reads it once per selection (its in-flight inspection or its published context). It no longer reads it itself | collaboration store |
 | DS-005 | The scan admits a team or org package from its tree, its manifest and the presence of its log file, and reads no log. `admitCurrent` validates the one new package and adds it, without rebuilding the snapshot. Inspections read and validate the tree only. A run's log is strictly validated, with its tree, only in the records owner: the participant query, reference content, and resume/activation. A damaged log fails those reads with the reason, and the run's view and rows still open (rule 7: contained to that run's read) | readiness index; message readers |
@@ -189,7 +219,7 @@ The view projectors (agent, team, org); the `collaborationParticipantMessages` r
 
 ## Ownership Map
 
-- `CollaborationParticipantMessages`: loaded lists, in-flight loads, the live buffer, merge, `reloadRoot` on every root-context rebuild (DS-002), errors.
+- `CollaborationParticipantMessages`: loaded lists, in-flight loads, the live buffer, merge, the per-root consistent-through sequence and the `live_sequence_id` it belongs to, `reloadRoot` on root-context rebuilds when a message could have been missed (DS-002, SR-004), errors.
 - `MemberLoader`: in-flight member loads and commit, and the "hydrated" state per context.
 - Root contexts: structure, statuses and focus. They forward `communication` events to `CollaborationParticipantMessages`, and no longer hold messages.
 - Readiness index: structure-only admission and per-run admission.
@@ -252,7 +282,7 @@ The web root contexts depend on `CollaborationParticipantMessages` and `MemberLo
 | --- | --- | --- |
 | `collaborationParticipantMessages(rootKind: "agent" \| "agent_team" \| "agent_org", rootRunId, agentRunId) -> { messages }` (rejects a non-participant) | one participant's messages of one root | root kind + root run + participant |
 | `getCollaborationRecordsSnapshot(rootRunId)` on the hub manager (new, as the org manager's `agent-org-run-manager.ts:148`) and the team equivalent; the org one gains the tree-plus-messages validation now in its inspection (`:189-197`) | a root's whole log, validated | root run |
-| `CollaborationParticipantMessages.list(key) / load(key) / append(rootKind, rootRunId, message) / reloadRoot(rootKind, rootRunId)` | loaded lists | key = root kind + root run + participant |
+| `CollaborationParticipantMessages.list(key) / load(key) / append(rootKind, rootRunId, message, changeSequenceThrough) / observeSequence(rootKind, rootRunId, sequence) / reloadRoot(rootKind, rootRunId, { isActive, baseChangeSequence })` | loaded lists and their consistent-through sequence | key = root kind + root run + participant |
 | `MemberLoader.beginRoot(root)` / `ensure(context, agentRunId)` | a root's generation; one member's details | root; the context + agent run |
 | `RootRunPackageReadinessIndex.admitCurrent(family, id)` (one package, no rescan) | admission | family + id |
 
@@ -293,7 +323,8 @@ The web root contexts depend on `CollaborationParticipantMessages` and `MemberLo
 
 | File | Concern |
 | --- | --- |
-| `autobyteus-collaboration-stream-contracts/src/{agent-run-collaboration-dtos,agent-org-execution-dtos,root-execution-view-dtos}.ts` and the team view schema | Remove the message fields and correlation |
+| `autobyteus-collaboration-stream-contracts/src/{agent-run-collaboration-dtos,agent-org-execution-dtos,root-execution-view-dtos}.ts` and the team view schema | Remove the message fields and correlation; add `live_sequence_id: string \| null` (SR-005) |
+| server `agent-collaboration/execution/services/root-event-publisher.ts` and the three view projectors and snapshot paths | `liveSequenceId` per publisher instance; carried in active views and snapshots, `null` in stored views (SR-005) |
 | server `services/agent-streaming/agent-collaboration-view-projector.ts`, `agent-org-execution-view-projector.ts`, the team stream snapshot projector | No log in views |
 | server `api/graphql/types/collaboration-participant-messages.ts` (new) | The query |
 | server `run-history/services/root-run-package-current-validator.ts`, `root-run-package-readiness-index.ts` | Structure-only scan; per-package admission |
