@@ -127,7 +127,7 @@ suite('controlled agent drives Org publication through real public boundaries', 
     expect(snapshot.execution_tree.rootOrg.taskExecutions).toEqual(tasks);
     // autobyteus-358: the snapshot carries no messages; the sender's Team tab loads the message.
     expect(snapshot).not.toHaveProperty('communication_messages');
-    expect(await readParticipantMessages(fixture.graphql, { rootKind: 'agent_org', rootRunId: run.rootId, agentRunId: communication.senderAgentRunId }))
+    expect(await readParticipantMessages((query, variables) => fixture.graphql(query, variables), { rootKind: 'agent_org', rootRunId: run.rootId, agentRunId: communication.senderAgentRunId }))
       .toContainEqual(communication);
     const beforeStop = await fixture.projection({ ...run, runId: helperCopy.agentRunId, address: helperCopy.address });
     expect(JSON.stringify(beforeStop.conversation)).toContain('Please read this owned reference.');

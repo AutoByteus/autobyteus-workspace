@@ -170,8 +170,8 @@ flowchart LR
   K --> L[RootCommunicationEngine: Team root port]
   L --> N[agent_teams/<teamRunId>/team_communication_messages_*.jsonl]
   K --> M[team websocket]
-  M --> P[teamCommunicationStore]
-  N --> O[GraphQL: getTeamCommunicationMessages]
+  M --> P[CollaborationParticipantMessages]
+  N --> O[GraphQL: collaborationParticipantMessages, per participant when the Team tab is shown]
   P --> R[Team tab: Team Communication]
   R --> S[TeamCommunicationReferenceViewer]
   S --> T[REST: message reference content route]
@@ -192,8 +192,8 @@ flowchart LR
 | Desktop Artifacts tab | `autobyteus-web/components/workspace/agent/ArtifactsTab.vue` | Displays only run-scoped Agent Artifacts in the desktop right-side panel, and passes the active workspace target's owner subject (`activeWorkspaceTarget.browse`) to the viewer. |
 | Mobile Artifacts view | `autobyteus-web/components/mobile/MobileArtifacts.vue` | Displays only run-scoped Agent Artifacts for the mobile-selected agent run or focused team member run, using the same run artifact store and `ArtifactContentViewer` rather than the desktop right-panel layout. |
 | Mobile focused-run identity | `autobyteus-web/composables/mobile/useMobileFocusedRunIdentity.ts` | Centralizes the mobile agent/team focused run-id guard shared by Activity and Artifacts so stale mobile selections do not leak artifacts or activity from another run, and gives the focused run's owner subject (`focusedReadSubject`) that the mobile viewer reads through. |
-| Team Communication store | `autobyteus-web/stores/teamCommunicationStore.ts` | Owns hydrated/live inter-agent messages and focused sent/received message perspectives. |
-| Team Communication hydration | `autobyteus-web/services/runHydration/teamCommunicationHydrationService.ts` | Loads `getTeamCommunicationMessages(teamRunId)`. |
+| Participant messages | `autobyteus-web/services/collaborationMessages/collaborationParticipantMessages.ts` | Loads one participant's messages of a hub, Team or Org run through `collaborationParticipantMessages` when the Team tab is shown; merges live messages by ID; reloads on every rebuild of the root (autobyteus-358). |
+| Member loader | `autobyteus-web/services/runHydration/memberLoader.ts` | Loads a Team member's, Org member's or hub copy's stored conversation, activities and files when it is opened; one generation per root, begun by every rebuild (autobyteus-358). |
 | Collaboration Messages section | `autobyteus-web/components/workspace/collaboration/CollaborationMessagesSection.vue` | Computes the focused member's message rows once per view and passes them to the panel. Shared by Team, AgentOrg, and standalone Messages. |
 | Collaboration Messages panel | `autobyteus-web/components/workspace/collaboration/CollaborationMessagesPanel.vue` | Renders compact sent/received message rows with a reference count, the bounded reference list (first 20 + Show all) under the selected message only, and Markdown message detail. |
 | Team reference viewer | `autobyteus-web/components/workspace/team/TeamCommunicationReferenceViewer.vue` | Opens a reference through the message-owned content route and owns local inline/maximized preview state. |
