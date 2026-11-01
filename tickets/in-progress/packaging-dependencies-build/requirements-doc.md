@@ -57,6 +57,7 @@
 - Server downloads and proxies (FU-002), the `autobyteus-web` Docker/devcontainer files (reported only).
 - Changing what the desktop app or the server does at run time; the Electron version, signing, or release versioning.
 - Making Windows `npm install` identical to the lockfile (REQ-004 is a bound, not an identity).
+- The Android Termux script (`scripts/android-bootstrap-termux.sh:163`) and the standalone-era `autobyteus-web` Docker files: left alone on purpose (not release builds).
 
 ### Non-Goals
 
@@ -80,7 +81,7 @@ Findings must cite a REQ/AC/BEH ID. New behavior is a `Requirement Gap`.
 | --- | --- | --- | --- | --- |
 | REQ-001 | `autobyteus-server-ts/package.json` has a `files` list so that every server package carries only `dist`, `prisma`, `application-packages` (plus the files npm/pnpm always include). The unreferenced `canuse-ok.txt` is removed. | BEH-001 | Must | FU-005, 227 |
 | REQ-002 | The packaged server (desktop macOS/Linux, Docker) is made with production dependencies only. A package the running server needs (the Prisma CLI that runs migrations) is declared as a production dependency, not a development one. | BEH-001 | Must | 227 |
-| REQ-003 | Every install of a release build follows `pnpm-lock.yaml`: the Docker image and `prepare-server.sh`/`.mjs` use `--frozen-lockfile`; the five installs of `release-desktop.yml` use `--frozen-lockfile`; the Docker image copies the manifest of every workspace importer of the lockfile. A source check fails when a manifest is missing or a `--no-frozen-lockfile` returns. | BEH-002 | Must | FU-008, 231 |
+| REQ-003 | Every install of a release build follows `pnpm-lock.yaml`: the Docker image and `prepare-server.sh`/`.mjs` use `--frozen-lockfile`; the five installs of `release-desktop.yml` use `--frozen-lockfile`; the Docker builder copies the manifests it installs and every workspace package they link to (the 8 copied today are closed under workspace links; the manifests of importers outside that closure are not copied). A source check fails when a linked manifest is missing or a `--no-frozen-lockfile` (or `--frozen-lockfile=false`) returns. | BEH-002 | Must | FU-008, 231 |
 | REQ-004 | The Windows staging `npm install` takes no package published after the commit time of the checkout (`--before`); a variable overrides the time for a rebuild of an older commit; when neither is available the build stops with a clear message. | BEH-002 | Must | FU-008 |
 | REQ-005 | After the desktop server preparation nothing remains under `autobyteus-server-ts/` that the build created; the mirrored `…/autobyteus-web/…` folder that `pnpm deploy` leaves is removed by the scripts that deploy. | BEH-003 | Must | 201 |
 | REQ-006 | `autobyteus-web/.github/workflows/desktop-tag-build.yml` is removed after confirming nothing refers to it; other nested leftovers of archived standalone repositories are listed. | BEH-004 | Should | 230 |
@@ -91,16 +92,16 @@ Findings must cite a REQ/AC/BEH ID. New behavior is a `Requirement Gap`.
 
 | ID | Req | Trigger | Expected | Verification |
 | --- | --- | --- | --- | --- |
-| AC-001 | REQ-001 | List the files the server package would carry (`npm pack --dry-run`) | Nothing under `src/`, `tests/`, `tickets/`, `docs/`, `docker/`, `scripts/`; `prisma/` and `package.json` present; `canuse-ok.txt` gone | Test |
+| AC-001 | REQ-001 | List the files the server package would carry (`npm pack --dry-run`) | Nothing under `src/`, `tests/`, `tickets/`, `docs/`, `docker/`, `scripts/`; `prisma/schema.prisma`, `prisma/migrations`, `package.json`, `LICENSE` present; `canuse-ok.txt` gone | Test |
 | AC-002 | REQ-001, 002 | Clean-clone build of the deployed package, `prisma generate`, packaged-server startup check | Startup passes; the folder is 18% smaller or more than the base (827 MB measured) and holds no `src/`, `tests/`; no vitest, typescript, @types in its `node_modules` | Real build + `verify-packaged-server-startup.mjs` |
 | AC-003 | REQ-002 | Declared dependencies | `prisma` is under `dependencies`; the lockfile importer agrees | Test |
-| AC-004 | REQ-003 | Source check | No `--no-frozen-lockfile` in the Dockerfile, `prepare-server.*`, `release-desktop.yml`; every lockfile importer's `package.json` is copied by the Dockerfile; `pnpm install --frozen-lockfile` passes on the clean clone | Test + clean-clone run |
-| AC-005 | REQ-003 | Docker builder stages | The image's builder installs from the lockfile and the server-package stage builds and starts | Real Docker build of the stages up to the server package |
-| AC-006 | REQ-004 | Windows staging command | The `npm install` call carries `--before=<time>`; the time comes from the override or the commit; missing both stops the build; a unit test covers the three cases; a build-only desktop release run on Windows passes | Test + build-only run |
-| AC-007 | REQ-005 | `git status --ignored` after `prepare-server.sh` | Nothing under `autobyteus-server-ts/` besides `dist/` (and the same after `prepare-server.mjs` rehearsal) | Real run |
+| AC-004 | REQ-003 | Source check | No `--no-frozen-lockfile` or `--frozen-lockfile=false` in the Dockerfile, `prepare-server.*`, `release-desktop.yml`; every workspace package linked (`link:`) by a manifest the Dockerfile copies is itself copied; `pnpm install --frozen-lockfile` passes on the clean clone; a mutation (a linked manifest removed from the Dockerfile copy) fails the check | Test + clean-clone run |
+| AC-005 | REQ-003 | Docker builder stages | The image's builder installs from the lockfile with the 8 manifests (a frozen validation was shown to pass with 8 and with 12) and the server-package stage builds and starts; the install time of the builder stage is recorded | Real Docker build of the stages up to the server package |
+| AC-006 | REQ-004 | Windows staging command | The `npm install` call carries `--before=<time>`; the time comes from the override or the commit; missing both stops the build; an invalid override is refused; a unit test covers the four cases; a build-only desktop release run on Windows passes, and the Linux job's checks include the Prisma Linux engine validation | Test + build-only run |
+| AC-007 | REQ-005 | `git status --ignored` after `prepare-server.sh` | Nothing under `autobyteus-server-ts/` besides `dist/` (and the same after `prepare-server.mjs` rehearsal); `prepare-server.sh` fails when the Prisma CLI is missing from the deployed package instead of skipping the client generation | Real run |
 | AC-008 | REQ-006 | Reference search | No reference to the removed workflow; list of other leftovers in the report | Search |
-| AC-009 | REQ-007 | Schema command then codegen then the check | The regenerated file is committed; the check passes; the check fails on a deliberately stale file (mutation) | Run + mutation |
-| AC-010 | REQ-008 | Import check | No hidden-hoist-only import remains for the listed packages; `@nuxtjs/apollo` is gone; web typecheck, web specs and server unit suites pass; the lockfile changes only by these | Run |
+| AC-009 | REQ-007 | Schema command then codegen then the check | The regenerated file is committed; `codegen:local`/`codegen:check` build the server first so a stale build cannot pass; the check also runs in the server architecture suite (schema built from source in-process, never from `dist`) and fails on a deliberately stale file (mutation) | Run + mutation |
+| AC-010 | REQ-008 | Import check | No hidden-hoist-only import remains for the listed packages; the check is class-aware for the server: runtime code (`autobyteus-server-ts/src`) may import only production dependencies, tests may also use development ones, and a fixture with a dev-only import in runtime code fails; `@nuxtjs/apollo` is gone; web typecheck, web specs and server unit suites pass; the lockfile changes only by these (retained packages keep their versions) | Run |
 | AC-011 | Preserved | Existing suites and the packaged startup of the three desktop targets via a build-only release run | Unchanged results | Existing suites + build-only run |
 
 ## Relevant Scenarios And Journeys
