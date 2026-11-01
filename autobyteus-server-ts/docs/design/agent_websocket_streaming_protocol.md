@@ -24,7 +24,10 @@ sequence after their snapshot's `base_change_sequence` exactly once and in order
 A root's change sequence belongs to its event publisher and starts at 0 for each
 one: a stop and resume, or a server restart, starts another. Every snapshot (and
 the active view a GraphQL inspection returns) therefore names its sequence with
-`live_sequence_id`; a stored view carries `null`. Clients compare sequence numbers
+`live_sequence_id`; a stored view carries `null`. The Team open read
+(`getTeamRunResumeConfig`) gives a running Team's `liveSequenceId` and
+`baseChangeSequence`, read together from its publisher (`null` and `0` when the
+Team is not running). Clients compare sequence numbers
 only within one `live_sequence_id` (autobyteus-358: the Team tab keeps its loaded
 message lists across a reconnect only within one).
 

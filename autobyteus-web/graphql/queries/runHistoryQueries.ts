@@ -268,6 +268,8 @@ export const GetTeamRunResumeConfig = gql`
         editable
         reason
       }
+      liveSequenceId
+      baseChangeSequence
     }
   }
 `;

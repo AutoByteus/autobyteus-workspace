@@ -518,6 +518,7 @@ describe('runHistoryStore', () => {
         projectionByAgentRunId: new Map([[member.agentRunId, { agentRunId: member.agentRunId }]]),
         memberRunStates: [],
         remoteTaskExecutions: [],
+        rebuild: { liveSequenceId: 'live-1', baseChangeSequence: 0 },
       };
     });
     mutateMock.mockReset();

@@ -18,6 +18,13 @@ describe("RootEventPublisher live sequence", () => {
     expect(publisher.liveSequenceId).toBe(before.liveSequenceId);
   });
 
+  it("reads its live sequence and current change sequence together (the Team open read, SR-006)", () => {
+    const publisher = new TeamRunEventPublisher<string>();
+    publisher.publish("a");
+    publisher.publish("b");
+    expect(publisher.getLivePosition()).toEqual({ liveSequenceId: publisher.liveSequenceId, changeSequence: 2 });
+  });
+
   it("gives another instance (a stop and resume, or a restart) another name although its sequence starts again", async () => {
     const first = new RootEventPublisher<string>();
     first.publish("event");

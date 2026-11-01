@@ -31,6 +31,14 @@ class TeamRunResumeConfigPayload {
 
   @Field(() => RunModelConfigEditabilityObject)
   modelConfigEditability!: RunModelConfigEditabilityObject;
+
+  /** The running Team's live sequence, as its stream snapshot names it; null when the Team is not running (autobyteus-358). */
+  @Field(() => String, { nullable: true })
+  liveSequenceId!: string | null;
+
+  /** The change sequence this read is consistent with, in `liveSequenceId`; 0 when the Team is not running. */
+  @Field(() => Int)
+  baseChangeSequence!: number;
 }
 
 @ObjectType()
@@ -102,6 +110,8 @@ export class TeamRunHistoryResolver {
       closedTaskExecutions: config.closedTaskExecutions,
       remoteTaskExecutions: await remoteTaskExecutionDtos(config.executionTree.rootTeam.remoteTaskExecutions),
       modelConfigEditability: config.modelConfigEditability,
+      liveSequenceId: config.liveSequenceId,
+      baseChangeSequence: config.baseChangeSequence,
     };
   }
 

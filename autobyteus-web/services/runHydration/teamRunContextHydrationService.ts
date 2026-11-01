@@ -33,6 +33,7 @@ import {
 } from './memberRunStateHydration';
 import { fetchRunFileChanges } from './runFileChangeHydrationService';
 import { createTeamExecutionViewState } from '~/services/teamExecution/teamExecutionViewState';
+import type { RootContextRebuild } from '~/services/collaborationMessages/collaborationParticipantMessages';
 import {
   createTeamAgentContext,
   createTeamConfigurationView,
@@ -61,6 +62,8 @@ export interface TeamRunHydrationCandidate {
   memberRunStates: readonly MemberRunStateCommit[];
   /** autobyteus-278: the runs this Team delegated to other nodes, registered when the candidate commits. */
   remoteTaskExecutions: readonly RemoteTaskExecutionDto[];
+  /** The running Team's live sequence and the base this read is consistent with; null for a stopped Team (SR-006). */
+  rebuild: RootContextRebuild;
 }
 
 export interface TeamRunRecoveryHydrationCandidate extends Omit<TeamRunHydrationCandidate, 'projectionByAgentRunId'> {
@@ -76,6 +79,8 @@ interface ResumeGraphqlData {
     closedTaskExecutions: unknown;
     remoteTaskExecutions: unknown;
     modelConfigEditability: RunModelConfigEditability;
+    liveSequenceId: string | null;
+    baseChangeSequence: number;
   } | null;
 }
 
@@ -224,6 +229,16 @@ const selectInitialAgentRunId = (input: {
   return coordinator.agent_run_id;
 };
 
+/** The running Team's live sequence and base as the read names them; a stopped Team names none (SR-006). */
+const liveRebuildOf = (teamRunId: string, raw: Readonly<{ liveSequenceId: unknown; baseChangeSequence: unknown }>): RootContextRebuild => {
+  const { liveSequenceId, baseChangeSequence } = raw;
+  if ((liveSequenceId !== null && (typeof liveSequenceId !== 'string' || !liveSequenceId))
+    || typeof baseChangeSequence !== 'number' || !Number.isInteger(baseChangeSequence) || baseChangeSequence < 0) {
+    throw new Error(`Team resume config for '${teamRunId}' has no valid live sequence.`);
+  }
+  return Object.freeze({ liveSequenceId, baseChangeSequence });
+};
+
 /**
  * Builds a Team run's context from its view and stages the focused member only (autobyteus-358, DS-003): every other
  * member is loaded by the member loader when it is opened, and the Team tab loads its messages when it is shown.
@@ -244,6 +259,7 @@ const hydrateCurrentTeamRunContext = async (
   const tree = teamRunExecutionTreeDtoSchema.parse(raw.executionTree);
   const closedTaskExecutions = closedTaskExecutionsDtoSchema.parse(raw.closedTaskExecutions);
   const remoteTaskExecutions = remoteTaskExecutionDtoSchema.array().parse(raw.remoteTaskExecutions);
+  const rebuild = liveRebuildOf(input.teamRunId, raw);
   if (raw.teamRunId !== input.teamRunId || tree.root_team.team_run_id !== input.teamRunId) {
     throw new Error(`Team execution tree root identity mismatch for '${input.teamRunId}'.`);
   }
@@ -322,6 +338,7 @@ const hydrateCurrentTeamRunContext = async (
     memberRunStates: Object.freeze(memberRunStates),
     hydratedContext: Object.freeze({ view }),
     remoteTaskExecutions,
+    rebuild,
   };
 };
 

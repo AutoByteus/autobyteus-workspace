@@ -5,6 +5,9 @@ export type SequencedRootEvent<TEvent> = Readonly<{
   event: TEvent;
 }>;
 
+/** Where a live root stands: its live sequence and the change sequence published so far in it, read together. */
+export type RootLivePosition = Readonly<{ liveSequenceId: string; changeSequence: number }>;
+
 export type RootEventListener<TEvent> = (
   event: SequencedRootEvent<TEvent>,
 ) => void;
@@ -34,6 +37,11 @@ export class RootEventPublisher<TEvent> {
 
   getCurrentChangeSequence(): number {
     return this.changeSequence;
+  }
+
+  /** The live sequence and its current change sequence in one read, so the pair always names one sequence. */
+  getLivePosition(): RootLivePosition {
+    return Object.freeze({ liveSequenceId: this.liveSequenceId, changeSequence: this.changeSequence });
   }
 
   publish(event: TEvent): SequencedRootEvent<TEvent> {
