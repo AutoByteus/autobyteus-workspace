@@ -14,7 +14,7 @@ import CollaborationMessagesSection from '../CollaborationMessagesSection.vue'
 const counters = vi.hoisted(() => ({ hashes: 0, projections: 0 }))
 
 vi.mock('crypto-js/sha256', async (importOriginal) => {
-  const real = (await importOriginal<typeof import('crypto-js/sha256')>()).default
+  const real = (await importOriginal<{ default: typeof import('crypto-js/sha256') }>()).default
   return { default: (...args: Parameters<typeof real>) => { counters.hashes += 1; return real(...args) } }
 })
 vi.mock('~/services/agentOrgExecution/agentOrgCommunicationPerspective', async (importOriginal) => {
@@ -97,7 +97,11 @@ const mountOrgMessages = () => {
   })
   const org = () => store.value['org-run']
   org().select('/reviewer')
-  const messages = computed(() => org().selectedTarget()!.collaborationMessages)
+  const messages = computed(() => {
+    const target = org().selectedTarget()
+    if (!target || !('collaborationMessages' in target)) throw new Error('expected the selected Org agent with Messages')
+    return target.collaborationMessages
+  })
   const Host = defineComponent({ setup: () => () => h(CollaborationMessagesSection, { messages: messages.value }) })
   const wrapper = mount(Host, {
     global: {

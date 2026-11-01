@@ -41,7 +41,6 @@ const frontendBackendEnvironment = Object.freeze({
   BACKEND_AGENT_WS_ENDPOINT: `${developmentBackendUrl.replace(/^http/, 'ws')}/ws/agent`,
   BACKEND_TEAM_WS_ENDPOINT: `${developmentBackendUrl.replace(/^http/, 'ws')}/ws/agent-team`,
   BACKEND_GRAPHQL_WS_ENDPOINT: `${developmentBackendUrl.replace(/^http/, 'ws')}/graphql`,
-  BACKEND_TRANSCRIPTION_WS_ENDPOINT: `${developmentBackendUrl.replace(/^http/, 'ws')}/ws/transcribe`,
   BACKEND_TERMINAL_WS_ENDPOINT: `${developmentBackendUrl.replace(/^http/, 'ws')}/ws/terminal`,
   BACKEND_FILE_EXPLORER_WS_ENDPOINT: `${developmentBackendUrl.replace(/^http/, 'ws')}/ws/file-explorer`,
 });

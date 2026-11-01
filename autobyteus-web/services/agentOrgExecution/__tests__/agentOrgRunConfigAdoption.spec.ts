@@ -13,11 +13,7 @@ vi.mock('~/stores/runHistoryStore', () => ({ useRunHistoryStore: () => ({ applyA
 
 const configuredAgents = (tree: ReturnType<typeof taskBearingView>['execution_tree']) => tree.rootOrg.members.flatMap(member =>
   'agentRunId' in member ? [member] : [...member.members])
-const inactiveView = () => {
-  const view = taskBearingView()
-  view.is_active = false
-  return view
-}
+const inactiveView = () => ({ ...taskBearingView(), is_active: false })
 
 describe('AgentOrg whole model-only canonical adoption', () => {
   beforeEach(() => {
@@ -33,7 +29,7 @@ describe('AgentOrg whole model-only canonical adoption', () => {
     const retained = org.listAgentContextEntries().map(entry => ({ entry,
       state: entry.context.state, conversation: entry.context.conversation, messages: entry.context.conversation.messages,
       files: entry.context.contextFilePaths }))
-    const next = JSON.parse(JSON.stringify(org.executionTree))
+    const next = JSON.parse(JSON.stringify(org.executionTree)) as typeof org.executionTree
     next.rootOrg.defaultLaunchConfiguration.llmModelIdentifier = 'root-next'
     next.rootOrg.defaultLaunchConfiguration.llmConfig = { effort: 'high' }
     const expectedByRunId = new Map<string, string>()

@@ -4,6 +4,7 @@
     "noEmit": true
   },
   "exclude": [
-    "vitest.config.ts"
+    "vitest.config.ts",
+    "vitest.global-setup.ts"
   ]
 }

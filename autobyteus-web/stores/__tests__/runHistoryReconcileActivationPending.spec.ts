@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi, type MockInstance } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
 import { fetchRunHistoryTree, reconcileDiscoveredActiveRuns, type RunHistoryFetchStoreLike } from '~/stores/runHistoryLoadActions'
 import { useAgentContextsStore } from '~/stores/agentContextsStore'
@@ -41,8 +41,9 @@ const snapshot = (run: { isActive: boolean; shouldConnectStream?: boolean }) => 
 }) as unknown as RunHistoryFetchStoreLike
 
 describe('reconcileDiscoveredActiveRuns and the activation-pending marker (D-14)', () => {
-  let disconnect: ReturnType<typeof vi.spyOn>
-  let connect: ReturnType<typeof vi.spyOn>
+  type RunStore = ReturnType<typeof useAgentRunStore>
+  let disconnect: MockInstance<RunStore['disconnectAgentStream']>
+  let connect: MockInstance<RunStore['connectToAgentStream']>
 
   beforeEach(() => {
     setActivePinia(createPinia())

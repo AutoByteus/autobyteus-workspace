@@ -100,6 +100,14 @@ const createRunHistoryHarness = (initialMetadata: AgentRunMetadata[] = []) => {
       metadataByRunId.set(input.runId, updated);
       return { ...updated };
     }),
+    // As the catalog: a prepared run that never started is removed; a started run is refused and kept.
+    cancelPreparedRun: vi.fn(async (runId: string) => {
+      const metadata = metadataByRunId.get(runId);
+      if (!metadata) return { success: true, message: "Prepared run already removed." };
+      if (metadata.startedAt) return { success: false, message: "Only unactivated prepared runs can be cancelled." };
+      metadataByRunId.delete(runId);
+      return { success: true, message: "Prepared run cancelled." };
+    }),
     recordRunSummary: vi.fn(async () => undefined),
     recordRunTerminated: vi.fn(async () => undefined),
   };
@@ -179,10 +187,14 @@ describe("AgentRunService integration", () => {
         standaloneRuns: standaloneRootPort(lifecycleService),
       });
 
-      history.historyCatalogService.recordRunStarted.mockImplementationOnce(async (input: AgentRunMetadata) => {
+      history.historyCatalogService.recordRunStarted.mockImplementationOnce(async (
+        input: AgentRunMetadata & { clearPendingRuntimeSwitch?: boolean },
+      ) => {
         expect(candidate.commitPublication).not.toHaveBeenCalled();
+        // As the catalog: clearPendingRuntimeSwitch is an instruction of the write, not stored metadata.
+        const { clearPendingRuntimeSwitch: _clearPendingRuntimeSwitch, ...metadata } = input;
         const current = history.metadataByRunId.get(input.runId)!;
-        const updated = { ...current, ...input };
+        const updated = { ...current, ...metadata };
         history.metadataByRunId.set(input.runId, updated);
         return updated;
       });

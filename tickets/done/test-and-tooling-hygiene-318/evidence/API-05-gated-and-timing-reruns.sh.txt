@@ -1,0 +1,26 @@
+#!/bin/bash
+# API-05 (part 2): gated scripted e2e and timing reruns in the fresh clone, one at a time, clean env.
+CL=$1; E=$2; cd $CL/autobyteus-server-ts || exit 1
+CLI=$PWD/tests/fixtures/agy-failure-cli.mjs
+run() { # $1 label, $2 tmpdir, rest: env+cmd
+  local label=$1 td=$2; shift 2
+  local th; th="$(cd "$(mktemp -d)" && pwd -P)"
+  local s=$(date +%s)
+  env -i PATH="$PATH" HOME="$th" TMPDIR="$td" NO_COLOR=1 "$@" > /tmp/ab318s/run.log 2>&1; local c=$?
+  echo "$label: exit $c ($(( $(date +%s)-s ))s) | $(grep -aE '^ +Tests ' /tmp/ab318s/run.log | tail -1 | tr -s ' ') | load $(sysctl -n vm.loadavg | awk '{print $2}') | left in TMPDIR: $(ls -A "$td" | wc -l | tr -d ' ')"
+  grep -aE '^ FAIL |AssertionError|Timed out' /tmp/ab318s/run.log | head -3
+  rm -rf "$th"
+}
+F46=$(git ls-files 'tests/e2e/**/context-file-storage-runtime.e2e.test.ts')
+echo "## T-46 RUN_CONTEXT_FILE_PROCESS_E2E=1 $F46"
+td=$(mktemp -d); run "T-46" "$td/" env RUN_CONTEXT_FILE_PROCESS_E2E=1 pnpm exec vitest run $F46 --no-watch; rm -rf "$td"
+echo "## T-28 RUN_AGY_FAILURE_E2E=1 tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts x2 (window evidence)"
+for i in 1 2; do td=$(mktemp -d); ev=$(mktemp -d); run "T-28 run $i" "$td/" env RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=$CLI TASK_COPY_IDLE_LIFETIME_E2E_EVIDENCE_DIR=$ev pnpm exec vitest run tests/e2e/projects/task-copy-idle-lifetime.e2e.test.ts --no-watch; echo "   window evidence: $(cat $ev/*.json 2>/dev/null | tr -d '\n' | grep -oE '"(quietShutdownMs|shutdownAfterEndMs|graceMs|GRACE_MS|lowerBoundMs|upperBoundMs)"[^,}]*' | tr '\n' ' ')"; cp $ev/*.json $E/API-05-t28-run$i-window.json 2>/dev/null; rm -rf "$td" "$ev"; done
+echo "## QR-001 (T-52) RUN_AGY_FAILURE_E2E=1 tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts x10"
+for i in $(seq 1 10); do td=$(mktemp -d); run "QR-001 run $i" "$td/" env RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=$CLI pnpm exec vitest run tests/e2e/projects/task-reactivation-root-visibility.e2e.test.ts --no-watch; rm -rf "$td"; done
+echo "## T-47 tests/unit/projects/project-task-index-status.test.ts -t 'one run per burst' x20"
+for i in $(seq 1 20); do td=$(mktemp -d); run "T-47 run $i" "$td/" pnpm exec vitest run tests/unit/projects/project-task-index-status.test.ts -t "one run per burst" --no-watch; rm -rf "$td"; done
+echo "## T-30, T-53 files"
+td=$(mktemp -d); run "T-30/T-53" "$td/" pnpm exec vitest run tests/unit/services/run-file-changes/run-file-change-service.test.ts tests/unit/run-history/team-member-run-view-projection-service.import.test.ts --no-watch; rm -rf "$td"
+echo "## T-27: each file alone with a fresh empty TMPDIR, then ls -A"
+for f in tests/unit/agent-execution/backends/acp/acp-agent-run-backend-factory.test.ts tests/unit/agent-execution/backends/acp/acp-tool-list-reopen.test.ts tests/unit/agent-execution/backends/grok/grok-build-compaction.test.ts tests/unit/agent-execution/backends/grok/grok-build-session-profile.test.ts tests/unit/agent-execution/backends/workspace-skill-link-regression.test.ts tests/unit/prompt/prompt-builder.test.ts tests/unit/runtime-management/acp/acp-agent-capabilities.test.ts tests/unit/runtime-management/acp/acp-client-connection.test.ts tests/unit/runtime-management/grok/grok-build-capability.test.ts tests/unit/runtime-management/grok/grok-build-launch-profile.test.ts tests/unit/runtime-management/grok/grok-usage-limits-acp.test.ts; do td=$(mktemp -d); run "T-27 $(basename $f)" "$td/" pnpm exec vitest run $f --no-watch; ls -A "$td" | head -3 | sed 's/^/   left: /'; rm -rf "$td"; done

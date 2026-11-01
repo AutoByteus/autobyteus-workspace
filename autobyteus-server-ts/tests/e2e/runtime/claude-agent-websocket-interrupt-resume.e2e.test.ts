@@ -5,10 +5,8 @@
  * Run with a clean private HOME:
  * pnpm -C autobyteus-server-ts exec vitest run tests/e2e/runtime/claude-agent-websocket-interrupt-resume.e2e.test.ts --no-watch
  * RUN_CLAUDE_E2E=1 and a ready Claude CLI enable the separate live interrupt case.
- * Optional scoped typecheck (this file and normal imports, inherited build compiler policy):
- * pnpm -C autobyteus-server-ts typecheck:claude-interrupt-resume-e2e
- * Run server prebuild first for shared outputs/Prisma. Any compiler diagnostic fails;
- * a clean scoped result is not a repository-wide test-typecheck or live-provider pass.
+ * Type-checked with the other server tests under the build policy: pnpm -C autobyteus-server-ts typecheck
+ * (run server prebuild first for shared outputs/Prisma). A type check is not a live-provider pass.
  */
 import fs from "node:fs/promises";
 import fsSync from "node:fs";

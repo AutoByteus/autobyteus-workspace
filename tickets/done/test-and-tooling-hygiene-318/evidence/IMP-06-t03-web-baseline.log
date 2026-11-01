@@ -1,0 +1,276 @@
+# IMP-06 — T-03 (REQ-002): the 94 changed specs pass; web baseline 297 -> 102, none in components/services/stores
+# Command: env -i ... NUXT_TEST=true npx vitest run <the 94 changed spec files> (autobyteus-web); pnpm -C autobyteus-web typecheck:update-baseline
+# Commit: 2fa398db4a
+# Environment: macOS 26.5.2 arm64, Node v22.23.1, pnpm workspace; clean env (env -i PATH HOME=<fresh temp dir> TMPDIR); test-owned data only
+# Date: 2026-11-01
+# Look for: "Test Files  94 passed (94)", "Tests  975 passed (975)"; "[typecheck] baseline written: 102 errors in 44 files (was 297 in 139)"
+
+===== t03-specs.log =====
+(excerpt: 41207 lines, 1280808 bytes; the key lines, then the last 40 lines; the full log stayed at /tmp/h318/t03-specs.log)
+ Test Files  94 passed (94)
+      Tests  975 passed (975)
+----- last 40 lines -----
+stderr | services/runHydration/__tests__/runProjectionActivityHydration.spec.ts > runProjectionActivityHydration > hydrates exact system content and omits only malformed system rows
+[runProjectionActivityHydration] Omitted malformed system instruction activity.
+
+ ✓ services/runHydration/__tests__/runProjectionActivityHydration.spec.ts (4 tests) 4ms
+stdout | components/workspace/agent/__tests__/ArtifactList.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/workspace/agent/__tests__/ArtifactList.spec.ts (4 tests) 30ms
+stdout | components/agents/__tests__/GroupableTagInput.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/agents/__tests__/GroupableTagInput.spec.ts (3 tests) 18ms
+stdout | services/agentOrgExecution/__tests__/agentOrgReferenceProjection.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ services/agentOrgExecution/__tests__/agentOrgReferenceProjection.spec.ts (2 tests) 4ms
+stdout | components/conversation/segments/__tests__/ErrorSegment.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | stores/__tests__/runHistoryTeamMemberInspectionActions.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/conversation/segments/__tests__/ErrorSegment.spec.ts (5 tests) 14ms
+ ✓ stores/__tests__/runHistoryTeamMemberInspectionActions.spec.ts (1 test) 4ms
+
+ Test Files  94 passed (94)
+      Tests  975 passed (975)
+   Start at  11:25:41
+   Duration  52.38s (transform 11.04s, setup 321.40s, collect 42.16s, tests 38.07s, environment 28.61s, prepare 14.40s)
+
+npm notice
+npm notice New major version of npm available! 10.9.8 -> 12.2.1
+npm notice Changelog: https://github.com/npm/cli/releases/tag/v12.2.1
+npm notice To update run: npm install -g npm@12.2.1
+npm notice
+
+===== web-update-baseline-t03.log =====
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+> autobyteus@1.5.11-beta.9 typecheck:update-baseline /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-web
+> pnpm prepare:shared-types && nuxt prepare && node ./scripts/typecheck.mjs --update-baseline
+
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.1.tgz
+
+> autobyteus@1.5.11-beta.9 prepare:shared-types /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-web
+> pnpm -C .. --filter @autobyteus/application-sdk-contracts build
+
+
+> @autobyteus/application-sdk-contracts@0.1.0 build /Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-application-sdk-contracts
+> tsc -p tsconfig.build.json
+
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+
+ WARN  Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-web/stores/serverStore.ts" is used
+
+
+ WARN  Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318/autobyteus-web/stores/serverStore.ts" is used
+
+│
+◆  Types generated in .nuxt.
+[typecheck] Nuxt app (tsconfig.json): 75 errors, exit 2, 32.7s
+[typecheck] Electron main (electron/tsconfig.typecheck.json): 27 errors, exit 2, 1.7s
+[typecheck] build scripts (build/tsconfig.json): 0 errors, exit 0, 0.6s
+[typecheck] cross-package tests (tsconfig.cross-package-tests.json): 0 errors, exit 0, 19.3s
+[typecheck] fewer errors than the baseline: components/agentInput/__tests__/TeamComposerPublication.spec.ts (0, baseline 2)
+[typecheck] fewer errors than the baseline: components/agentOrgs/__tests__/AgentOrgOwnedAuthoring.spec.ts (0, baseline 1)
+[typecheck] fewer errors than the baseline: components/agents/__tests__/GroupableTagInput.spec.ts (0, baseline 3)
+[typecheck] fewer errors than the baseline: components/applications/__tests__/ApplicationIframeHost.spec.ts (0, baseline 1)
+[typecheck] fewer errors than the baseline: components/applications/__tests__/ApplicationImmersiveControlPanel.spec.ts (0, baseline 1)
+[typecheck] fewer errors than the baseline: components/applications/__tests__/ApplicationLaunchSetupPanel.spec.ts (0, baseline 2)
+[typecheck] fewer errors than the baseline: components/applications/__tests__/ApplicationShell.spec.ts (0, baseline 5)
+[typecheck] fewer errors than the baseline: components/applications/__tests__/ApplicationSurface.spec.ts (0, baseline 1)
+[typecheck] fewer errors than the baseline: components/applications/setup/__tests__/ApplicationTeamLaunchProfileEditor.spec.ts (0, baseline 7)
+[typecheck] fewer errors than the baseline: components/chat/__tests__/ChatMessageInput.spec.ts (0, baseline 1)
+[typecheck] fewer errors than the baseline: components/collaboration/handoffs/__tests__/HandoffManager.spec.ts (0, baseline 1)
+[typecheck] fewer errors than the baseline: components/conversation/__tests__/AIMessage.spec.ts (0, baseline 3)
+[typecheck] fewer errors than the baseline: components/conversation/__tests__/UserMessageHistoryFiles.spec.ts (0, baseline 1)
+[typecheck] fewer errors than the baseline: components/conversation/segments/__tests__/ErrorSegment.spec.ts (0, baseline 2)
+[typecheck] fewer errors than the baseline: components/layout/__tests__/RightSideTabs.spec.ts (0, baseline 3)
+[typecheck] fewer errors than the baseline: components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts (0, baseline 1)
+[typecheck] fewer errors than the baseline: components/layout/__tests__/WorkspaceRightToolDrawer.spec.ts (0, baseline 5)
+[typecheck] fewer errors than the baseline: components/layout/__tests__/WorkspaceToolShell.taskLocate.spec.ts (0, baseline 1)
+[typecheck] fewer errors than the baseline: components/memory/__tests__/MemoryIndexPanel.spec.ts (0, baseline 1)
+[typecheck] fewer errors than the baseline: components/mobile/__tests__/MobileArtifactsContentViewerIntegration.spec.ts (0, baseline 1)
+[typecheck] fewer errors than the baseline: components/mobile/__tests__/MobileRemoteAccessShell.spec.ts (0, baseline 1)
+[typecheck] fewer errors than the baseline: components/mobile/__tests__/MobileUxRefinement.spec.ts (0, baseline 2)
+[typecheck] fewer errors than the baseline: components/projects/__tests__/ProjectTaskBoard.spec.ts (0, baseline 1)
+[typecheck] fewer errors than the baseline: components/projects/__tests__/ProjectTaskRow.spec.ts (0, baseline 1)
+[typecheck] fewer errors than the baseline: components/projects/__tests__/TaskCommentsSection.spec.ts (0, baseline 1)
+[typecheck] fewer errors than the baseline: components/projects/__tests__/TaskKeysAndDependencies.spec.ts (0, baseline 1)
+[typecheck] fewer errors than the baseline: components/projects/__tests__/TaskParts.spec.ts (0, baseline 2)
+[typecheck] fewer errors than the baseline: components/projects/panel/__tests__/ProjectsPanelTaskLocate.spec.ts (0, baseline 1)
+[typecheck] fewer errors than the baseline: components/run-settings/__tests__/RunDelegatedLaunchSection.spec.ts (0, baseline 2)
+[typecheck] fewer errors than the baseline: components/server/__tests__/StartupDelayPresentation.spec.ts (0, baseline 1)
+[typecheck] fewer errors than the baseline: components/settings/__tests__/AgentPackagesManager.spec.ts (0, baseline 1)
+[typecheck] fewer errors than the baseline: components/settings/__tests__/RemoteCollaborationOfferDisclosure.spec.ts (0, baseline 6)
+[typecheck] fewer errors than the baseline: components/settings/model-routing/__tests__/modelRoutingPresentation.spec.ts (0, baseline 1)
+[typecheck] fewer errors than the baseline: components/settings/providerApiKey/__tests__/ProviderModelBrowser.spec.ts (0, baseline 3)
+[typecheck] fewer errors than the baseline: components/settings/providerApiKey/__tests__/providerSettingsApolloContract.spec.ts (0, baseline 1)
+[typecheck] fewer errors than the baseline: components/settings/token-usage/__tests__/TokenUsageTaskStatisticsTable.spec.ts (0, baseline 3)
+[typecheck] fewer errors than the baseline: components/workspace/agent/__tests__/AgentEventMonitor.spec.ts (0, baseline 1)
+[typecheck] fewer errors than the baseline: components/workspace/agent/__tests__/ArtifactContentViewer.spec.ts (0, baseline 3)
+[typecheck] fewer errors than the baseline: components/workspace/agent/__tests__/ArtifactList.spec.ts (0, baseline 1)
+[typecheck] fewer errors than the baseline: components/workspace/collaboration/__tests__/CollaborationMessagesOrgRoot.integration.spec.ts (0, baseline 2)
+[typecheck] fewer errors than the baseline: components/workspace/history/__tests__/AgentRunTaskRowsDisclosure.spec.ts (0, baseline 1)
+[typecheck] fewer errors than the baseline: components/workspace/history/__tests__/TaskWorkerTaskSummaryHosts.spec.ts (0, baseline 1)
+[typecheck] fewer errors than the baseline: components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts (0, baseline 3)
+[typecheck] fewer errors than the baseline: components/workspace/history/__tests__/WorkspaceAgentOrgDelegatedRows.spec.ts (0, baseline 2)
+[typecheck] fewer errors than the baseline: components/workspace/history/__tests__/WorkspaceAgentOrgDisclosure.spec.ts (0, baseline 1)
+[typecheck] fewer errors than the baseline: components/workspace/history/__tests__/WorkspaceHistoryFamilyPublication.spec.ts (0, baseline 1)
+[typecheck] fewer errors than the baseline: components/workspace/history/__tests__/WorkspaceHistoryGroupArchiveHeaders.spec.ts (0, baseline 2)
+[typecheck] fewer errors than the baseline: components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts (0, baseline 3)
+[typecheck] fewer errors than the baseline: components/workspace/history/__tests__/workspaceHistoryTeamDefinitionGroups.spec.ts (0, baseline 1)
+[typecheck] fewer errors than the baseline: components/workspace/org/__tests__/AgentOrgWorkspaceConfigBoundary.spec.ts (0, baseline 1)
+[typecheck] fewer errors than the baseline: components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts (0, baseline 1)
+[typecheck] fewer errors than the baseline: components/workspace/tools/__tests__/BrowserPanel.spec.ts (0, baseline 1)
+[typecheck] fewer errors than the baseline: components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts (0, baseline 1)
+[typecheck] fewer errors than the baseline: services/agentCollaboration/__tests__/agentRunCollaborationContext.spec.ts (0, baseline 1)
+[typecheck] fewer errors than the baseline: services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts (0, baseline 2)
+[typecheck] fewer errors than the baseline: services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts (0, baseline 2)
+[typecheck] fewer errors than the baseline: services/agentOrgExecution/__tests__/agentOrgContextHydration.spec.ts (0, baseline 2)
+[typecheck] fewer errors than the baseline: services/agentOrgExecution/__tests__/agentOrgLaunchService.spec.ts (0, baseline 2)
+[typecheck] fewer errors than the baseline: services/agentOrgExecution/__tests__/agentOrgReferenceProjection.spec.ts (0, baseline 1)
+[typecheck] fewer errors than the baseline: services/agentOrgExecution/__tests__/agentOrgRunConfigAdoption.spec.ts (0, baseline 2)
+[typecheck] fewer errors than the baseline: services/agentOrgExecution/__tests__/agentOrgTeamBranchStatus.spec.ts (0, baseline 3)
+[typecheck] fewer errors than the baseline: services/agentStreaming/__tests__/agentStreamMessageProjector.spec.ts (0, baseline 4)
+[typecheck] fewer errors than the baseline: services/agentStreaming/__tests__/recentEventMonitorProductionDispatch.spec.ts (0, baseline 2)
+[typecheck] fewer errors than the baseline: services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts (0, baseline 8)
+[typecheck] fewer errors than the baseline: services/agentStreaming/handlers/__tests__/memberInputMessageHandler.spec.ts (0, baseline 4)
+[typecheck] fewer errors than the baseline: services/agentStreaming/handlers/__tests__/toolLifecycleOrdering.spec.ts (0, baseline 1)
+[typecheck] fewer errors than the baseline: services/agentStreaming/transport/__tests__/WebSocketClient.spec.ts (0, baseline 1)
+[typecheck] fewer errors than the baseline: services/collaborators/__tests__/agentSourceSelectors.spec.ts (0, baseline 6)
+[typecheck] fewer errors than the baseline: services/eventMonitor/__tests__/recentEventMonitorMutationCoordinator.spec.ts (0, baseline 1)
+[typecheck] fewer errors than the baseline: services/eventMonitor/__tests__/recentEventMonitorWindow.spec.ts (0, baseline 1)
+[typecheck] fewer errors than the baseline: services/rootExecution/__tests__/rootExecutionViewState.spec.ts (0, baseline 1)
+[typecheck] fewer errors than the baseline: services/runConfigEditing/__tests__/orgSeedFixture.ts (0, baseline 2)
+[typecheck] fewer errors than the baseline: services/runHydration/__tests__/runProjectionActivityHydration.spec.ts (0, baseline 1)
+[typecheck] fewer errors than the baseline: services/runHydration/__tests__/runProjectionConversation.spec.ts (0, baseline 3)
+[typecheck] fewer errors than the baseline: services/runSubmission/__tests__/localUserSubmission.spec.ts (0, baseline 2)
+[typecheck] fewer errors than the baseline: stores/__tests__/agentContextsStore.spec.ts (0, baseline 2)
+[typecheck] fewer errors than the baseline: stores/__tests__/agentOrgHistoryApollo.spec.ts (0, baseline 2)
+[typecheck] fewer errors than the baseline: stores/__tests__/agentOrgInspection.spec.ts (0, baseline 2)
+[typecheck] fewer errors than the baseline: stores/__tests__/agentRootCompactionIntegration.spec.ts (0, baseline 2)
+[typecheck] fewer errors than the baseline: stores/__tests__/appUpdateStore.spec.ts (0, baseline 10)
+[typecheck] fewer errors than the baseline: stores/__tests__/browserShellStore.spec.ts (0, baseline 1)
+[typecheck] fewer errors than the baseline: stores/__tests__/chatDraftStore.spec.ts (0, baseline 1)
+[typecheck] fewer errors than the baseline: stores/__tests__/definitionMutationCache.spec.ts (0, baseline 1)
+[typecheck] fewer errors than the baseline: stores/__tests__/existingRunConfigStore.spec.ts (0, baseline 9)
+[typecheck] fewer errors than the baseline: stores/__tests__/extensionsStore.spec.ts (0, baseline 1)
+[typecheck] fewer errors than the baseline: stores/__tests__/memorySearchStore.spec.ts (0, baseline 1)
+[typecheck] fewer errors than the baseline: stores/__tests__/projectLiveChanges.spec.ts (0, baseline 1)
+[typecheck] fewer errors than the baseline: stores/__tests__/projectTaskStore.spec.ts (0, baseline 1)
+[typecheck] fewer errors than the baseline: stores/__tests__/runHistoryReconcileActivationPending.spec.ts (0, baseline 1)
+[typecheck] fewer errors than the baseline: stores/__tests__/runHistoryStore.spec.ts (0, baseline 1)
+[typecheck] fewer errors than the baseline: stores/__tests__/runHistoryTeamMemberInspectionActions.spec.ts (0, baseline 1)
+[typecheck] fewer errors than the baseline: stores/__tests__/skillStore.spec.ts (0, baseline 1)
+[typecheck] fewer errors than the baseline: stores/__tests__/taskLocatorStore.spec.ts (0, baseline 1)
+[typecheck] fewer errors than the baseline: stores/__tests__/taskWorkerTaskStore.spec.ts (0, baseline 6)
+[typecheck] fewer errors than the baseline: stores/__tests__/workspaceStore.spec.ts (0, baseline 1)
+[typecheck] production errors: 0; test-file errors: 102 in 44 files (baseline 297 in 139 files)
+[typecheck] baseline written: 102 errors in 44 files (was 297 in 139)
+
+===== t03-specs.txt =====
+components/agentInput/__tests__/TeamComposerPublication.spec.ts
+components/agentOrgs/__tests__/AgentOrgOwnedAuthoring.spec.ts
+components/agents/__tests__/GroupableTagInput.spec.ts
+components/applications/__tests__/ApplicationIframeHost.spec.ts
+components/applications/__tests__/ApplicationImmersiveControlPanel.spec.ts
+components/applications/__tests__/ApplicationLaunchSetupPanel.spec.ts
+components/applications/__tests__/ApplicationShell.spec.ts
+components/applications/__tests__/ApplicationSurface.spec.ts
+components/applications/setup/__tests__/ApplicationTeamLaunchProfileEditor.spec.ts
+components/chat/__tests__/ChatMessageInput.spec.ts
+components/collaboration/handoffs/__tests__/HandoffManager.spec.ts
+components/conversation/__tests__/AIMessage.spec.ts
+components/conversation/__tests__/UserMessageHistoryFiles.spec.ts
+components/conversation/segments/__tests__/ErrorSegment.spec.ts
+components/layout/__tests__/RightSideTabs.spec.ts
+components/layout/__tests__/RightSideTabs.workspaceTarget.spec.ts
+components/layout/__tests__/WorkspaceRightToolDrawer.spec.ts
+components/layout/__tests__/WorkspaceToolShell.taskLocate.spec.ts
+components/memory/__tests__/MemoryIndexPanel.spec.ts
+components/mobile/__tests__/MobileArtifactsContentViewerIntegration.spec.ts
+components/mobile/__tests__/MobileRemoteAccessShell.spec.ts
+components/mobile/__tests__/MobileUxRefinement.spec.ts
+components/projects/__tests__/ProjectTaskBoard.spec.ts
+components/projects/__tests__/ProjectTaskRow.spec.ts
+components/projects/__tests__/TaskCommentsSection.spec.ts
+components/projects/__tests__/TaskKeysAndDependencies.spec.ts
+components/projects/__tests__/TaskParts.spec.ts
+components/projects/panel/__tests__/ProjectsPanelTaskLocate.spec.ts
+components/run-settings/__tests__/RunDelegatedLaunchSection.spec.ts
+components/server/__tests__/StartupDelayPresentation.spec.ts
+components/settings/__tests__/AgentPackagesManager.spec.ts
+components/settings/__tests__/RemoteCollaborationOfferDisclosure.spec.ts
+components/settings/model-routing/__tests__/modelRoutingPresentation.spec.ts
+components/settings/providerApiKey/__tests__/ProviderModelBrowser.spec.ts
+components/settings/providerApiKey/__tests__/providerSettingsApolloContract.spec.ts
+components/settings/token-usage/__tests__/TokenUsageTaskStatisticsTable.spec.ts
+components/workspace/agent/__tests__/AgentEventMonitor.spec.ts
+components/workspace/agent/__tests__/ArtifactContentViewer.spec.ts
+components/workspace/agent/__tests__/ArtifactList.spec.ts
+components/workspace/collaboration/__tests__/CollaborationMessagesOrgRoot.integration.spec.ts
+components/workspace/history/__tests__/AgentRunTaskRowsDisclosure.spec.ts
+components/workspace/history/__tests__/TaskWorkerTaskSummaryHosts.spec.ts
+components/workspace/history/__tests__/WorkspaceAgentOrgActivityPublication.spec.ts
+components/workspace/history/__tests__/WorkspaceAgentOrgDelegatedRows.spec.ts
+components/workspace/history/__tests__/WorkspaceAgentOrgDisclosure.spec.ts
+components/workspace/history/__tests__/WorkspaceHistoryFamilyPublication.spec.ts
+components/workspace/history/__tests__/WorkspaceHistoryGroupArchiveHeaders.spec.ts
+components/workspace/history/__tests__/WorkspaceHistoryWorkspaceSection.spec.ts
+components/workspace/history/__tests__/workspaceHistoryTeamDefinitionGroups.spec.ts
+components/workspace/org/__tests__/AgentOrgWorkspaceConfigBoundary.spec.ts
+components/workspace/team/__tests__/TeamCanonicalPlus.spec.ts
+components/workspace/tools/__tests__/BrowserPanel.spec.ts
+components/workspace/usage/__tests__/TokenUsageMeterPanel.spec.ts
+services/agentCollaboration/__tests__/agentRunCollaborationContext.spec.ts
+services/agentOrgExecution/__tests__/agentOrgComposerSubmission.spec.ts
+services/agentOrgExecution/__tests__/agentOrgContextFiles.spec.ts
+services/agentOrgExecution/__tests__/agentOrgContextHydration.spec.ts
+services/agentOrgExecution/__tests__/agentOrgLaunchService.spec.ts
+services/agentOrgExecution/__tests__/agentOrgReferenceProjection.spec.ts
+services/agentOrgExecution/__tests__/agentOrgRunConfigAdoption.spec.ts
+services/agentOrgExecution/__tests__/agentOrgTeamBranchStatus.spec.ts
+services/agentStreaming/__tests__/agentStreamMessageProjector.spec.ts
+services/agentStreaming/__tests__/recentEventMonitorProductionDispatch.spec.ts
+services/agentStreaming/handlers/__tests__/agentStatusHandler.spec.ts
+services/agentStreaming/handlers/__tests__/memberInputMessageHandler.spec.ts
+services/agentStreaming/handlers/__tests__/toolLifecycleOrdering.spec.ts
+services/agentStreaming/transport/__tests__/WebSocketClient.spec.ts
+services/collaborators/__tests__/agentSourceSelectors.spec.ts
+services/eventMonitor/__tests__/recentEventMonitorMutationCoordinator.spec.ts
+services/eventMonitor/__tests__/recentEventMonitorWindow.spec.ts
+services/rootExecution/__tests__/rootExecutionViewState.spec.ts
+services/runHydration/__tests__/runProjectionActivityHydration.spec.ts
+services/runHydration/__tests__/runProjectionConversation.spec.ts
+services/runSubmission/__tests__/localUserSubmission.spec.ts
+stores/__tests__/agentContextsStore.spec.ts
+stores/__tests__/agentOrgHistoryApollo.spec.ts
+stores/__tests__/agentOrgInspection.spec.ts
+stores/__tests__/agentRootCompactionIntegration.spec.ts
+stores/__tests__/appUpdateStore.spec.ts
+stores/__tests__/browserShellStore.spec.ts
+stores/__tests__/chatDraftStore.spec.ts
+stores/__tests__/definitionMutationCache.spec.ts
+stores/__tests__/existingRunConfigStore.spec.ts
+stores/__tests__/extensionsStore.spec.ts
+stores/__tests__/memorySearchStore.spec.ts
+stores/__tests__/projectLiveChanges.spec.ts
+stores/__tests__/projectTaskStore.spec.ts
+stores/__tests__/runHistoryReconcileActivationPending.spec.ts
+stores/__tests__/runHistoryStore.spec.ts
+stores/__tests__/runHistoryTeamMemberInspectionActions.spec.ts
+stores/__tests__/skillStore.spec.ts
+stores/__tests__/taskLocatorStore.spec.ts
+stores/__tests__/taskWorkerTaskStore.spec.ts
+stores/__tests__/workspaceStore.spec.ts
+

@@ -9,6 +9,7 @@ import { spawnSync } from "node:child_process";
 import { afterEach, describe, expect, it } from "vitest";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { AgentRunConfig } from "../../../src/agent-execution/domain/agent-run-config.js";
+import { RuntimeKind } from "../../../src/runtime-management/runtime-kind-enum.js";
 import type { AgentRunBackendFactory } from "../../../src/agent-execution/backends/agent-run-backend-factory.js";
 import type { AgentRunEvent } from "../../../src/agent-execution/domain/agent-run-event.js";
 import { AgentRunEventType } from "../../../src/agent-execution/domain/agent-run-event.js";
@@ -59,8 +60,7 @@ const testLoggingConfig = {
   scopedLogLevelOverrides: [],
 };
 const unavailableBackendFactory: AgentRunBackendFactory = Object.freeze({
-  createBackend: () => Promise.reject(new Error("Backend factory is outside this test scenario.")),
-  restoreBackend: () => Promise.reject(new Error("Backend factory is outside this test scenario.")),
+  beginPreparation: () => { throw new Error("Backend factory is outside this test scenario."); },
 });
 
 const createWorkspace = async (label: string): Promise<string> =>
@@ -171,39 +171,23 @@ const writeBackendEventLog = async (
   );
 };
 
+// The model comes from the live Codex catalog: CODEX_BACKEND_MODEL, else the live Codex test model (TESTING.md).
+const DEFAULT_CODEX_TEST_MODEL = "gpt-6.1-terra";
 const fetchCodexModelIdentifier = async (
   clientManager: CodexAppServerClientManager,
   cwd: string,
-  requiredModelIdentifier?: string,
 ): Promise<string> => {
   const models = await new CodexModelCatalog(clientManager).listModels(cwd);
   const availableModelIdentifiers = models
     .map((model) => model.model_identifier)
     .filter((identifier): identifier is string => identifier.length > 0);
-  if (requiredModelIdentifier) {
-    if (!availableModelIdentifiers.includes(requiredModelIdentifier)) {
-      throw new Error(
-        `Codex model catalog did not return required model ${requiredModelIdentifier}. Available models: ${availableModelIdentifiers.join(", ")}`,
-      );
-    }
-    return requiredModelIdentifier;
-  }
-  const preferredOrder = [
-    process.env.CODEX_BACKEND_MODEL?.trim(),
-    "gpt-5.3-codex",
-    "gpt-5.3-codex-spark",
-    "gpt-5.4-mini",
-    "gpt-5.4",
-  ].filter((identifier): identifier is string => Boolean(identifier));
-  const preferredIdentifier = preferredOrder.find((identifier) =>
-    availableModelIdentifiers.includes(identifier),
-  );
-  if (!preferredIdentifier) {
+  const modelIdentifier = process.env.CODEX_BACKEND_MODEL?.trim() || DEFAULT_CODEX_TEST_MODEL;
+  if (!availableModelIdentifiers.includes(modelIdentifier)) {
     throw new Error(
-      `Codex model catalog did not return any preferred backend-flow model. Available models: ${availableModelIdentifiers.join(", ")}`,
+      `Codex model catalog did not return ${modelIdentifier} (set CODEX_BACKEND_MODEL). Available models: ${availableModelIdentifiers.join(", ")}`,
     );
   }
-  return preferredIdentifier;
+  return modelIdentifier;
 };
 
 const createFactory = async (input: {
@@ -237,6 +221,7 @@ const createFactory = async (input: {
       resolveSkillScope: () => "CONFIGURED", resolveConfiguredSkillBindingsForAgent: () => [],
     } as never,
     autoByteus: {
+      nativeCommandProcessScope: inert,
       agentFactory: inert,
       createLlm: inert,
       processorRegistries: {
@@ -258,7 +243,7 @@ const createFactory = async (input: {
       } as never,
       clientManager: input.clientManager,
       threadManager: input.threadManager,
-      threadCleanup: new CodexThreadCleanup(undefined, input.clientManager),
+      threadCleanup: new CodexThreadCleanup(),
     },
     claude: {
       workspaceResolver: inert,
@@ -278,6 +263,7 @@ const createFactory = async (input: {
     } as never,
     agentToolMcpRunSessions,
     applicationAgentTools: null,
+    integrationRunAccess: null,
   }).codex;
 };
 
@@ -294,7 +280,8 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
     if (threadManager) {
       for (const runId of createdRunIds) {
         try {
-          await threadManager.terminateThread(runId);
+          const thread = threadManager.getThread(runId);
+          if (thread) await threadManager.terminateThread(runId, thread);
         } catch {
           // ignore cleanup failures during live teardown
         }
@@ -357,9 +344,11 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
       runId,
     });
 
-    const backend = await factory.createBackend(
-      new AgentRunConfig({
-        runtimeKind: "codex_app_server",
+    const backend = await factory.beginPreparation({
+      kind: "new",
+      runId: runId,
+      config: new AgentRunConfig({
+        runtimeKind: RuntimeKind.CODEX_APP_SERVER,
         agentDefinitionId: "agent-def-codex-live",
         llmModelIdentifier: modelIdentifier,
         autoExecuteTools: false,
@@ -367,8 +356,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
         memoryDir: path.join(workspaceRoot, ".memory", runId),
         llmConfig: { reasoning_effort: "medium" },
       }),
-      runId,
-    );
+    }).prepare();
     createdRunIds.add(backend.runId);
 
     const thread = threadManager.getThread(backend.runId);
@@ -417,7 +405,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
           event.eventType === AgentRunEventType.SEGMENT_END &&
           event.payload.id === textSegmentId,
       );
-      await waitFor(() => backend.getStatusSnapshot().status === "idle");
+      await waitFor(() => backend.getLifecycleSnapshot().phase === "idle");
       expect(
         events.some(
           (event) =>
@@ -460,9 +448,11 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
       runId,
     });
 
-    const backend = await factory.createBackend(
-      new AgentRunConfig({
-        runtimeKind: "codex_app_server",
+    const backend = await factory.beginPreparation({
+      kind: "new",
+      runId: runId,
+      config: new AgentRunConfig({
+        runtimeKind: RuntimeKind.CODEX_APP_SERVER,
         agentDefinitionId: "agent-def-codex-live",
         llmModelIdentifier: modelIdentifier,
         autoExecuteTools: false,
@@ -470,8 +460,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
         memoryDir: path.join(workspaceRoot, ".memory", runId),
         llmConfig: { reasoning_effort: "medium" },
       }),
-      runId,
-    );
+    }).prepare();
     createdRunIds.add(backend.runId);
 
     const thread = threadManager.getThread(backend.runId);
@@ -572,9 +561,11 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
       runId,
     });
 
-    const backend = await factory.createBackend(
-      new AgentRunConfig({
-        runtimeKind: "codex_app_server",
+    const backend = await factory.beginPreparation({
+      kind: "new",
+      runId: runId,
+      config: new AgentRunConfig({
+        runtimeKind: RuntimeKind.CODEX_APP_SERVER,
         agentDefinitionId: "agent-def-codex-live",
         llmModelIdentifier: modelIdentifier,
         autoExecuteTools: true,
@@ -582,8 +573,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
         memoryDir: path.join(workspaceRoot, ".memory", runId),
         llmConfig: { reasoning_effort: "medium" },
       }),
-      runId,
-    );
+    }).prepare();
     createdRunIds.add(backend.runId);
 
     const thread = threadManager.getThread(backend.runId);
@@ -660,9 +650,11 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
       runId,
     });
 
-    const backend = await factory.createBackend(
-      new AgentRunConfig({
-        runtimeKind: "codex_app_server",
+    const backend = await factory.beginPreparation({
+      kind: "new",
+      runId: runId,
+      config: new AgentRunConfig({
+        runtimeKind: RuntimeKind.CODEX_APP_SERVER,
         agentDefinitionId: "agent-def-codex-live",
         llmModelIdentifier: modelIdentifier,
         autoExecuteTools: false,
@@ -670,8 +662,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
         memoryDir: path.join(workspaceRoot, ".memory", runId),
         llmConfig: { reasoning_effort: "medium" },
       }),
-      runId,
-    );
+    }).prepare();
     createdRunIds.add(backend.runId);
 
     const thread = threadManager.getThread(backend.runId);
@@ -758,9 +749,11 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
       runId,
     });
 
-    const backend = await factory.createBackend(
-      new AgentRunConfig({
-        runtimeKind: "codex_app_server",
+    const backend = await factory.beginPreparation({
+      kind: "new",
+      runId: runId,
+      config: new AgentRunConfig({
+        runtimeKind: RuntimeKind.CODEX_APP_SERVER,
         agentDefinitionId: "agent-def-codex-live",
         llmModelIdentifier: modelIdentifier,
         autoExecuteTools: true,
@@ -768,8 +761,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
         memoryDir: path.join(workspaceRoot, ".memory", runId),
         llmConfig: { reasoning_effort: "medium" },
       }),
-      runId,
-    );
+    }).prepare();
     createdRunIds.add(backend.runId);
 
     const thread = threadManager.getThread(backend.runId);
@@ -839,9 +831,11 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
     const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
     const runId = "run-codex-backend-steer";
     const factory = await createFactory({ clientManager, threadManager, workspaceRoot, runId });
-    const backend = await factory.createBackend(
-      new AgentRunConfig({
-        runtimeKind: "codex_app_server",
+    const backend = await factory.beginPreparation({
+      kind: "new",
+      runId: runId,
+      config: new AgentRunConfig({
+        runtimeKind: RuntimeKind.CODEX_APP_SERVER,
         agentDefinitionId: "agent-def-codex-live",
         llmModelIdentifier: modelIdentifier,
         autoExecuteTools: true,
@@ -849,8 +843,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
         memoryDir: path.join(workspaceRoot, ".memory", runId),
         llmConfig: { reasoning_effort: "low" },
       }),
-      runId,
-    );
+    }).prepare();
     createdRunIds.add(backend.runId);
     await waitForStartupReady(threadManager.getThread(backend.runId)!.startup.waitForReady);
 
@@ -929,11 +922,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
       undefined,
       new CodexClientThreadRouter(),
     );
-    const modelIdentifier = await fetchCodexModelIdentifier(
-      clientManager,
-      workspaceRoot,
-      "gpt-5.4",
-    );
+    const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
     const runId = "run-codex-backend-multi-reasoning";
     const factory = await createFactory({
       clientManager,
@@ -942,9 +931,11 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
       runId,
     });
 
-    const backend = await factory.createBackend(
-      new AgentRunConfig({
-        runtimeKind: "codex_app_server",
+    const backend = await factory.beginPreparation({
+      kind: "new",
+      runId: runId,
+      config: new AgentRunConfig({
+        runtimeKind: RuntimeKind.CODEX_APP_SERVER,
         agentDefinitionId: "agent-def-codex-live",
         llmModelIdentifier: modelIdentifier,
         autoExecuteTools: true,
@@ -952,8 +943,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
         memoryDir: path.join(workspaceRoot, ".memory", runId),
         llmConfig: { reasoning_effort: "xhigh" },
       }),
-      runId,
-    );
+    }).prepare();
     createdRunIds.add(backend.runId);
 
     const thread = threadManager.getThread(backend.runId);
@@ -1042,11 +1032,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
       undefined,
       new CodexClientThreadRouter(),
     );
-    const modelIdentifier = await fetchCodexModelIdentifier(
-      clientManager,
-      workspaceRoot,
-      "gpt-5.6-luna",
-    );
+    const modelIdentifier = await fetchCodexModelIdentifier(clientManager, workspaceRoot);
     const runId = "run-codex-backend-edit-file";
     const factory = await createFactory({
       clientManager,
@@ -1055,9 +1041,11 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
       runId,
     });
 
-    const backend = await factory.createBackend(
-      new AgentRunConfig({
-        runtimeKind: "codex_app_server",
+    const backend = await factory.beginPreparation({
+      kind: "new",
+      runId: runId,
+      config: new AgentRunConfig({
+        runtimeKind: RuntimeKind.CODEX_APP_SERVER,
         agentDefinitionId: "agent-def-codex-live",
         llmModelIdentifier: modelIdentifier,
         autoExecuteTools: true,
@@ -1065,8 +1053,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
         memoryDir: path.join(workspaceRoot, ".memory", runId),
         llmConfig: { reasoning_effort: "medium" },
       }),
-      runId,
-    );
+    }).prepare();
     createdRunIds.add(backend.runId);
 
     const thread = threadManager.getThread(backend.runId);
@@ -1173,9 +1160,11 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
         "If the user explicitly instructs you to call open_tab with a JSON argument object, call open_tab exactly once with those exact arguments and do not call any other tool.",
     });
 
-    const backend = await factory.createBackend(
-      new AgentRunConfig({
-        runtimeKind: "codex_app_server",
+    const backend = await factory.beginPreparation({
+      kind: "new",
+      runId: runId,
+      config: new AgentRunConfig({
+        runtimeKind: RuntimeKind.CODEX_APP_SERVER,
         agentDefinitionId: "agent-def-codex-browser-live",
         llmModelIdentifier: modelIdentifier,
         autoExecuteTools: true,
@@ -1183,8 +1172,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
         memoryDir: path.join(workspaceRoot, ".memory", runId),
         llmConfig: { reasoning_effort: "medium" },
       }),
-      runId,
-    );
+    }).prepare();
     createdRunIds.add(backend.runId);
 
     const thread = threadManager.getThread(backend.runId);
@@ -1294,22 +1282,24 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
       memoryRecorder: infrastructure.memoryRecorder,
       providerInputNormalizer: infrastructure.providerInputNormalizer,
       agentToolMcpRunSessionDeactivator: deactivator,
+      integrationRunAccess: null,
     });
     previousAgentRunManagerInstance = (AgentRunManager as any).instance;
     (AgentRunManager as any).instance = runManager;
 
-    const run = await runManager.createAgentRun(
-      new AgentRunConfig({
-        runtimeKind: "codex_app_server",
+    const run = (await runManager.beginActivation({
+      kind: "new",
+      runId,
+      config: new AgentRunConfig({
+        runtimeKind: RuntimeKind.CODEX_APP_SERVER,
         agentDefinitionId: "agent-def-codex-publish-artifacts-live",
         llmModelIdentifier: modelIdentifier,
         autoExecuteTools: true,
         workspaceId: workspace.workspaceId,
         memoryDir: path.join(workspaceRoot, ".memory", runId),
         llmConfig: { reasoning_effort: "medium" },
-      } as any),
-      runId,
-    );
+      }),
+    }).prepare()).commitPublication();
     createdRunIds.add(run.runId);
 
     const thread = threadManager.getThread(run.runId);
@@ -1346,7 +1336,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
         (event) =>
           event.eventType === AgentRunEventType.SEGMENT_START &&
           event.payload.segment_type === "tool_call" &&
-          event.payload.metadata &&
+          Boolean(event.payload.metadata) &&
           typeof event.payload.metadata === "object" &&
           !Array.isArray(event.payload.metadata) &&
           (event.payload.metadata as Record<string, unknown>).tool_name === "publish_artifacts",
@@ -1420,9 +1410,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
   }, FLOW_TEST_TIMEOUT_MS);
 
   it("executes the full browser tool surface through the live Codex Agent Tools MCP path", async () => {
-    clientManager = new CodexAppServerClientManager(
-      (cwd) => new CodexAppServerClient({ cwd }),
-    );
+    clientManager = new CodexAppServerClientManager();
     threadManager = new CodexThreadManager(
       clientManager,
       undefined,
@@ -1458,9 +1446,11 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
         "If the user explicitly instructs you to call browser tools with exact JSON arguments in an exact order, call exactly those browser tools in that order and do not call any other tool.",
     });
 
-    const backend = await factory.createBackend(
-      new AgentRunConfig({
-        runtimeKind: "codex_app_server",
+    const backend = await factory.beginPreparation({
+      kind: "new",
+      runId: runId,
+      config: new AgentRunConfig({
+        runtimeKind: RuntimeKind.CODEX_APP_SERVER,
         agentDefinitionId: "agent-def-codex-browser-surface-live",
         llmModelIdentifier: modelIdentifier,
         autoExecuteTools: true,
@@ -1468,8 +1458,7 @@ describeCodexBackendIntegration("CodexAgentRunBackendFactory integration (live t
         memoryDir: path.join(workspaceRoot, ".memory", runId),
         llmConfig: { reasoning_effort: "medium" },
       }),
-      runId,
-    );
+    }).prepare();
     createdRunIds.add(backend.runId);
 
     const thread = threadManager.getThread(backend.runId);

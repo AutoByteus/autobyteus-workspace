@@ -10,6 +10,11 @@ const launch = {
   autoExecuteTools: false,
   workspaceRootPath: '/tmp/org',
 };
+const agentSource = (agentDefinitionId: string) => ({ kind: 'agent' as const, agentDefinitionId, launchConfiguration: launch });
+const teamSource = (teamDefinitionId: string, coordinatorAddress: string) => ({
+  kind: 'agent_team' as const, teamDefinitionId, coordinatorAddress, handoffs: [], defaultLaunchConfiguration: launch,
+  members: [{ address: coordinatorAddress, agentDefinitionId: 'lead-definition', launchConfiguration: launch, followsTeam: true }],
+});
 
 const team: AgentOrgConfiguredTeamNode = {
   address: '/design',
@@ -34,25 +39,26 @@ const team: AgentOrgConfiguredTeamNode = {
   taskExecutions: [
     {
       address: '/design/lead', agentRunId: 'direct-task-agent', platformAgentRunId: null,
-      delegatorAgentRunId: 'configured-researcher', startedAt: '2026-09-01T00:00:00.000Z',
+      delegatorAgentRunId: 'configured-researcher', startedAt: '2026-09-01T00:00:00.000Z', source: agentSource('lead-definition'),
     },
     {
       address: '/design', teamRunId: 'task-team', startedAt: '2026-09-01T00:00:00.000Z',
-      delegatorAgentRunId: 'configured-researcher',
+      delegatorAgentRunId: 'configured-researcher', source: teamSource('design-definition', '/design/lead'),
       members: [{ address: '/design/lead', agentRunId: 'task-team-lead', platformAgentRunId: null }],
       taskExecutions: [
         {
           address: '/design/lead', agentRunId: 'task-team-child-task', platformAgentRunId: null,
-          delegatorAgentRunId: 'task-team-lead', startedAt: '2026-09-01T00:00:00.000Z',
+          delegatorAgentRunId: 'task-team-lead', startedAt: '2026-09-01T00:00:00.000Z', source: agentSource('lead-definition'),
         },
         {
           // A task Team the task Team's lead delegated in turn (Teams are flat).
           address: '/review', teamRunId: 'inner-task-team', startedAt: '2026-09-01T00:00:00.000Z',
-          delegatorAgentRunId: 'task-team-lead',
+          delegatorAgentRunId: 'task-team-lead', source: teamSource('review-definition', '/review/reviewer'),
           members: [{ address: '/review/reviewer', agentRunId: 'inner-reviewer', platformAgentRunId: null }],
           taskExecutions: [{
             address: '/review/reviewer', agentRunId: 'inner-child-task',
             platformAgentRunId: null, delegatorAgentRunId: 'inner-reviewer', startedAt: '2026-09-01T00:00:00.000Z',
+            source: agentSource('reviewer-definition'),
           }],
         },
       ],

@@ -64,7 +64,6 @@ describe('runProjectionConversation', () => {
           toolName: 'search_web',
           toolArgs: { query: 'AutoByteus' },
           toolResult: { status: 'completed' },
-          status: 'success',
           ts: 2,
         },
         {
@@ -107,7 +106,6 @@ describe('runProjectionConversation', () => {
           toolName: 'run_bash',
           toolArgs: { command: 'sleep 1' },
           toolResult: { stdout: 'done\n' },
-          status: 'success',
           ts: 1,
         },
         {
@@ -120,7 +118,6 @@ describe('runProjectionConversation', () => {
           invocationId: 'tool-2',
           toolName: 'run_bash',
           toolArgs: { command: 'pwd' },
-          status: 'running',
           ts: 3,
         },
       ],

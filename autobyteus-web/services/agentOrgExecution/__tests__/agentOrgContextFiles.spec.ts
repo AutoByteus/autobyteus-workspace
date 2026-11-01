@@ -65,8 +65,7 @@ async function choose() {
   await flushPromises()
 }
 async function open(id = 'agent-director', isActive = false) {
-  activeView.is_active = isActive
-  if (!isActive) activeView.agent_statuses = []
+  activeView = { ...activeView, is_active: isActive, agent_statuses: isActive ? activeView.agent_statuses : [] }
   store = useAgentOrgContextsStore()
   await store.openForInspection('org-run')
   if (isActive) await ready()

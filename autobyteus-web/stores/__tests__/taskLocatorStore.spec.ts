@@ -8,7 +8,9 @@ import { useProjectsPanelStore } from '../projectsPanelStore'
 import { LIVE_HIGHLIGHT_MS } from '../projectTaskStore'
 import type { TaskWorkerTask } from '~/types/project'
 
-const task = (taskId: string, projectId: string | null = 'p1'): TaskWorkerTask => ({ taskId, projectId, description: taskId, status: 'TODO' })
+const task = (taskId: string, projectId: string | null = 'p1'): TaskWorkerTask => projectId === null
+  ? { taskId, projectId, title: null, description: taskId, status: 'TODO' }
+  : { taskId, projectId, title: taskId, description: taskId, status: 'TODO' }
 
 describe('taskLocatorStore (delegated-copy-task-locator DS-005)', () => {
   beforeEach(() => { vi.useFakeTimers(); setActivePinia(createPinia()); window.localStorage.clear() })

@@ -1,10 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { createPinia, setActivePinia } from 'pinia'
 import { flushPromises } from '@vue/test-utils'
+import type { AgentMemberRefScope } from '~/stores/agentTeamDefinitionStore'
 
 const mocks = vi.hoisted(() => ({
   definitions: [] as Array<{ id: string; name: string; avatarUrl?: string | null; defaultLaunchConfig?: unknown; ownershipScope?: string }>,
-  teams: [] as Array<{ id: string; name: string; coordinatorMemberName: string; nodes: Array<{ memberName: string; ref: string; refScope?: string }>; defaultLaunchConfig?: unknown }>,
+  teams: [] as Array<{ id: string; name: string; coordinatorMemberName: string; nodes: Array<{ memberName: string; ref: string; refScope?: AgentMemberRefScope }>; defaultLaunchConfig?: unknown }>,
   enabledRuntimes: new Set<string>(['autobyteus', 'codex_app_server']),
   modelsByRuntime: {} as Record<string, string[]>,
   workspacesByRoot: {} as Record<string, { workspaceId: string }>,

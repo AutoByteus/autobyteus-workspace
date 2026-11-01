@@ -1,4 +1,4 @@
-import { ApolloClient, ApolloLink, InMemoryCache, Observable } from '@apollo/client/core'
+import { ApolloClient, ApolloLink, InMemoryCache, Observable, type FetchResult } from '@apollo/client/core'
 import { mount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 import { defineComponent, h } from 'vue'
@@ -55,8 +55,7 @@ describe('split provider credential/catalog Apollo contract', () => {
 
   it('joins credential facts to credential-free local snapshots by provider ID', async () => {
     const cache = new InMemoryCache()
-    const link = new ApolloLink((operation: { operationName: string }) => new Observable((observer: never) => {
-      const sink = observer as never as { next: (value: unknown) => void; complete: () => void }
+    const link = new ApolloLink((operation) => new Observable<FetchResult>((observer) => {
       const data = operation.operationName === 'GetProviderCredentialSettings'
         ? {
             providerCredentialSettings: [{
@@ -75,8 +74,8 @@ describe('split provider credential/catalog Apollo contract', () => {
               audioModels: [], imageModels: [], videoModels: [],
             }],
           }
-      sink.next({ data })
-      sink.complete()
+      observer.next({ data })
+      observer.complete()
     }))
     const client = new ApolloClient({ cache, link })
     vi.mocked(getApolloClient).mockReturnValue(client as never)

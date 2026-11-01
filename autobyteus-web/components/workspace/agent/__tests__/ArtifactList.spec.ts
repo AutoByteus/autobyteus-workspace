@@ -32,7 +32,7 @@ const agentArtifacts: RunFileChangeArtifact[] = [
 const mockArtifacts: ArtifactViewerItem[] = agentArtifacts.map(toAgentArtifactViewerItem);
 
 describe('ArtifactList.vue', () => {
-  const mountSubject = (props: Record<string, unknown>) => mount(ArtifactList, {
+  const mountSubject = (props: { artifacts: ArtifactViewerItem[]; selectedArtifactId?: string | null }) => mount(ArtifactList, {
     props,
     global: {
       stubs: {

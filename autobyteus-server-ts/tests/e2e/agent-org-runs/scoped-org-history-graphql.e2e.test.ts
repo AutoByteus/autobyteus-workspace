@@ -106,17 +106,29 @@ describe("scoped Org history real HTTP lifecycle", () => {
     const invalidPayload = await invalid.json();
     expect(invalidPayload.errors?.[0].message).toContain("orgRunId is required");
     expect(await readRoot(first, aId)).toEqual(storedA);
-    // An invalid value of a declared setting is refused (undeclared keys are left out since 47f44c3df6, so they cannot fail a start).
+    // A setting the model's schema does not declare is left out of the saved configuration, not refused.
+    const undeclared = await create({ ...input, rootConfiguration: { ...input.rootConfiguration,
+      llmConfig: { reasoning_effort: "low", unsupported_setting: true } } });
+    expect(undeclared).toMatchObject({ success: true });
+    const undeclaredRoot = await readRoot(first, undeclared.agentOrgRunId);
+    expect(JSON.stringify(undeclaredRoot)).not.toContain("unsupported_setting");
+    expect(undeclaredRoot.org.rootOrg.members.find((m: Json) => m.address === "/lead").launchConfiguration.llmConfig)
+      .toEqual({ reasoning_effort: "low" });
+    expect(await fs.readFile(treeFile)).toEqual(bytes);
+    // A configuration that is not an object is still refused, and the refused creation records nothing.
+    const rootsBeforeRefusal = await readRoots(first);
     const badConfig = await create({ ...input, rootConfiguration: { ...input.rootConfiguration,
-      llmConfig: { reasoning_effort: "not-a-level" } } });
+      llmConfig: "not-an-object" as never } });
     expect(badConfig).toMatchObject({ success: false, agentOrgRunId: null });
+    expect(badConfig.message).toContain("Model configuration must be null or an object.");
+    expect(await readRoots(first)).toEqual(rootsBeforeRefusal);
     expect(await fs.readFile(treeFile)).toEqual(bytes);
     const restored = await gql(`mutation($id: String!) {
       restoreAgentOrgRun(agentOrgRunId: $id) { success message agentOrgRunId }
     }`, { id: aId });
     expect(restored.restoreAgentOrgRun).toMatchObject({ success: true, agentOrgRunId: aId });
     expect(await readRoot(first, aId)).toMatchObject({ is_active: true });
-    await stop(aId); await stop(b.agentOrgRunId);
+    await stop(aId); await stop(b.agentOrgRunId); await stop(undeclared.agentOrgRunId);
     const beforeRestart = await readRoots(first);
     const settledBytes = await fs.readFile(treeFile);
     await first.stop(); servers.delete(first);

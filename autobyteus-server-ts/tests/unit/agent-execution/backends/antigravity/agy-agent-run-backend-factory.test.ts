@@ -209,7 +209,7 @@ describe("AGY backend capability admission and preserved bindings", () => {
 
   it("starts an allowed run's AGY process, on create and restore, with the server's environment plus its integration variables (DS-002)", async () => {
     const variables = { AUTOBYTEUS_GITHUB_API_URL: "http://127.0.0.1:5555/r/rp_test-dummy/github/api", GIT_TERMINAL_PROMPT: "0" };
-    const environmentForRun = vi.fn((run: { agentDefinitionId: string }) => (run.agentDefinitionId === "test-agent" ? variables : {}));
+    const environmentForRun = vi.fn(async (run: { agentDefinitionId: string }): Promise<Record<string, string>> => (run.agentDefinitionId === "test-agent" ? variables : {}));
     const withAccess = new AgyAgentRunBackendFactory(
       { getAgentDefinitionById: async () => ({ name: "Test agent", description: "Unit test", instructions, toolNames: [], skillNames: [] }) } as never,
       { resolveSkillScope: () => "CONFIGURED", hasEffectiveSkills: () => false, resolveConfiguredSkillBindingsForAgent: () => [] } as never,

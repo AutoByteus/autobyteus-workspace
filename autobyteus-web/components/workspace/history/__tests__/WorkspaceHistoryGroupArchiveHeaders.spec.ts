@@ -35,7 +35,7 @@ const mountSection = (options: { agents?: any[]; archivingKeys?: string[]; withG
   const actions = {
     onRemoveWorkspace: vi.fn(), onCreateRun: vi.fn(), onSelectRun: vi.fn(), onTerminateRun: vi.fn(),
     onArchiveRun: vi.fn(), onDeleteRun: vi.fn(), onSelectTeam: vi.fn(), onTerminateTeam: vi.fn(),
-    onArchiveTeam: vi.fn(), onDeleteTeam: vi.fn(), onSelectTeamMember: vi.fn(),
+    onArchiveTeam: vi.fn(), onDeleteTeam: vi.fn(), onOpenTeamRun: vi.fn(), onSelectTeamMember: vi.fn(),
     ...(options.withGroupActions === false ? {} : groupActions),
   };
   const archivingKeys = new Set(options.archivingKeys ?? []);
@@ -51,7 +51,7 @@ const mountSection = (options: { agents?: any[]; archivingKeys?: string[]; withG
     isGroupArchiving: (key: string) => archivingKeys.has(key),
   };
   const workspaceNode = {
-    workspaceId: 'ws-1', workspaceRootPath: '/ws/a', workspaceName: 'a', workspaceKind: 'filesystem',
+    workspaceId: 'ws-1', workspaceRootPath: '/ws/a', workspaceName: 'a', workspaceKind: 'filesystem' as const,
     canRemoveFromWorkspaces: false, stableKey: WORKSPACE_KEY, agentOrgDefinitions: [orgGroup()],
     agents: options.agents ?? [{ agentDefinitionId: 'agent-def-1', agentName: 'Codex', runs: [agentRun('run-1', { isActive: true })] }],
   };

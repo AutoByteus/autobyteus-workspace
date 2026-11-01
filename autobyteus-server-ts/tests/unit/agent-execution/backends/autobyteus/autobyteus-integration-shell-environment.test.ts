@@ -65,7 +65,7 @@ describe("AutoByteus run integration shell environment", () => {
   });
 
   const access: IntegrationRunAccess = {
-    environmentForRun: vi.fn((run: { agentDefinitionId: string }): Record<string, string> => (run.agentDefinitionId === "agent-allowed"
+    environmentForRun: vi.fn(async (run: { agentDefinitionId: string }): Promise<Record<string, string>> => (run.agentDefinitionId === "agent-allowed"
       ? { AUTOBYTEUS_GITHUB_API_URL: API_URL, GIT_TERMINAL_PROMPT: "0" } : {})),
     revokeForRun: vi.fn(),
   };

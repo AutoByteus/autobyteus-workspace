@@ -1,7 +1,4 @@
-import fs from "node:fs";
-import os from "node:os";
-import path from "node:path";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterAll, afterEach, describe, expect, it, vi } from "vitest";
 import { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { AgentDefinition } from "../../../../../src/agent-definition/domain/models.js";
 import { AgentRunConfig } from "../../../../../src/agent-execution/domain/agent-run-config.js";
@@ -15,13 +12,14 @@ import type { AcpAgentRunBackend } from "../../../../../src/agent-execution/back
 import { AcpAgentRunContext } from "../../../../../src/agent-execution/backends/acp/backend/acp-agent-run-context.js";
 import { grokBuildSessionProfile } from "../../../../../src/agent-execution/backends/grok/grok-build-session-profile.js";
 import { createAgentToolMcpRunSessionsStub } from "../../../../helpers/agent-tool-mcp-run-sessions-stub.js";
-import { FAKE_ACP_AGENT, fixturePath, fixtureSessionId, readFixture, waitFor, writeCustomFixture, type FixtureRow } from "./acp-fake-agent-harness.js";
+import { FAKE_ACP_AGENT, fixturePath, fixtureSessionId, makeTestTempDir, readFixture, removeTestTempDirs, waitFor, writeCustomFixture, type FixtureRow } from "./acp-fake-agent-harness.js";
 
 // The Grok reopen sequence (design: "Grok reopen sequence", SR-003/SR-004): end first, then load,
 // with the run's AcpPreparationOwner as the single holder of its process. The fake ACP agent
 // replays recorded fixtures; each spawn takes the next fixture.
 
-const tempDir = (prefix: string) => fs.mkdtempSync(path.join(os.tmpdir(), prefix));
+const tempDir = makeTestTempDir;
+afterAll(removeTestTempDirs);
 const backends: AcpAgentRunBackend[] = [];
 afterEach(async () => {
   for (const backend of backends.splice(0)) await backend.terminate();

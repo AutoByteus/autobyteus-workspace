@@ -248,8 +248,11 @@ describe("AgentTeamRunManager strict current V2 package integration", () => {
         "assertExecutionInputAllowed",
         "buildMemberExecutionContext",
         "commitPlatformBindingChange",
+        "projectRunRoot",
         "publishAgentEvent",
       ]);
+      // The Project root its members are told (autobyteus-347) is this Team root itself, named by kind and run only.
+      expect(callbacks.projectRunRoot?.()).toEqual({ kind: "agent_team", runId: config.rootTeam.teamRunId });
     });
     const factory = createFactory({ beforeBackendReturn });
     const manager = new AgentTeamRunManager({ memoryDir, flatTeamExecutionFactory: factory.factory, memberExecutionContextBuilder: memberExecutionContextBuilder as never, taskExecutionIdentity, activeRootDirectory: isolatedRootDirectory(), modelSelectionValidator });

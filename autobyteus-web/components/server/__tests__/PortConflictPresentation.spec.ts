@@ -20,7 +20,7 @@ it.each(['en', 'zh-CN'] as const)('shows safe conflict guidance in %s without de
   const { setPreference, t } = useLocalization(); await setPreference(locale)
   const store = useServerStore(); store.isElectron = true
   const snapshot: ServerStatusSnapshot = { status: ServerStatus.ERROR, baseUrl: 'http://127.0.0.1:54321',
-    urls: { graphql: '', rest: '', graphqlWs: '', terminalWs: '', transcription: '', health: '' }, healthCheckStatus: '',
+    urls: { graphql: '', rest: '', graphqlWs: '', terminalWs: '', health: '' }, healthCheckStatus: '',
     message: 'old timeout error', diagnostic: { kind: 'port-conflict', port: 54321, inspection: 'available', observedAt: 'now', owners: [{ pid: 123, executable: '<unsafe-long-name>' }] } }
   store.updateServerStatus(snapshot)
   const loading = mount(ServerLoading, { global: { mocks: { $t: t } } }), monitor = mount(ServerMonitor, { global: { mocks: { $t: t } } }); wrappers.push(loading, monitor)

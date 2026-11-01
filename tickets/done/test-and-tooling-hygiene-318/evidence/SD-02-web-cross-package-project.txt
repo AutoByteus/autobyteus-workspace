@@ -1,0 +1,10 @@
+../autobyteus-server-ts/src/integrations/github/github-repository-source.ts(1,10): error TS1484: 'GitHubRepositorySource' is a type and must be imported using a type-only import when 'verbatimModuleSyntax' is enabled.
+../autobyteus-server-ts/tests/fixtures/recorded-upload-labels.ts(37,55): error TS2345: Argument of type 'HistoricalReplayEvent[]' is not assignable to parameter of type 'readonly EventMonitorReplayEvent[]'.
+  Type 'HistoricalReplayEvent' is not assignable to type 'EventMonitorReplayEvent'.
+    Type 'HistoricalReplaySystemInstructionEvent' is not assignable to type 'EventMonitorReplayEvent'.
+      Type 'HistoricalReplaySystemInstructionEvent' is missing the following properties from type 'HistoricalReplaySystemTaskNotificationEvent': turnGroupId, senderId
+../autobyteus-server-ts/tests/fixtures/recorded-upload-labels.ts(41,50): error TS2345: Argument of type 'HistoricalReplayEvent[]' is not assignable to parameter of type 'EventMonitorReplayEvent[]'.
+  Type 'HistoricalReplayEvent' is not assignable to type 'EventMonitorReplayEvent'.
+    Type 'HistoricalReplaySystemInstructionEvent' is not assignable to type 'EventMonitorReplayEvent'.
+      Type 'HistoricalReplaySystemInstructionEvent' is missing the following properties from type 'HistoricalReplaySystemTaskNotificationEvent': turnGroupId, senderId
+tests/integration/codex-turn-lifecycle-native-to-live-projection.integration.test.ts(66,7): error TS2353: Object literal may only specify known properties, and 'memberTeamContext' does not exist in type '{ agentDefinitionId: string; llmModelIdentifier: string; autoExecuteTools: boolean; workspaceId?: string | null | undefined; memoryDir?: string | null | undefined; llmConfig?: Record<string, unknown> | null | undefined; runtimeKind: RuntimeKind; memberExecutionContext?: MemberExecutionContext | ... 1 more ... | unde...'.

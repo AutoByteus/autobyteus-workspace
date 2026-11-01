@@ -16,7 +16,7 @@ const entry = { kind: 'message', role: 'user', content: '', ts: 10, fileAttachme
 const hydrate = (entries = [entry]) => buildConversationFromProjection('exact-run', entries, defaults);
 const witness = (message: UserMessage) => buildRecentEventMonitorPresentationWitness([
   { kind: 'message', key: 'user', messageIndex: 0, message },
-], (key: string) => key);
+]);
 
 describe('cold and paged user file associations use shared UserMessage Open', () => {
   beforeEach(() => { window.open = vi.fn(); });

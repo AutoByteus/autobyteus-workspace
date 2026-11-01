@@ -84,7 +84,7 @@ describe('Org history delegated rows', () => {
     expect(icon.attributes('data-icon')).toBe('heroicons:user-group-20-solid');
     expect(icon.classes()).toEqual(expect.arrayContaining(['h-4', 'w-4', 'text-slate-500']));
     expect(teamRow.find('[data-icon="heroicons:bolt-20-solid"]').exists()).toBe(false);
-    expect(wrapper.get('[data-test="agent-org-team-row-team-configured"] [data-icon="heroicons:user-group-20-solid"]').exists()).toBe(true);
+    expect(wrapper.find('[data-test="agent-org-team-row-team-configured"] [data-icon="heroicons:user-group-20-solid"]').exists()).toBe(true);
     expect(teamRow.get('.font-semibold').text()).toContain('team');
   });
 
@@ -244,9 +244,10 @@ describe('Org history delegated Team disclosure', () => {
     expect(row().attributes('aria-expanded')).toBe('false');
 
     const next = structuredClone(toRaw(group.runs[0]!).executionTree);
-    const delegated = next.rootOrg.taskExecutions.find((task) => 'teamRunId' in task && task.teamRunId === 'team-task')!;
-    (delegated as { members: unknown[] }).members.push({ address: '/team/worker', agentRunId: 'agent-task-worker-late', platformAgentRunId: null });
-    group.runs[0] = { ...group.runs[0]!, isActive: true, executionTree: next };
+    const taskExecutions = next.rootOrg.taskExecutions.map((task) => ('teamRunId' in task && task.teamRunId === 'team-task'
+      ? { ...task, members: [...task.members, { address: '/team/worker', agentRunId: 'agent-task-worker-late', platformAgentRunId: null }] }
+      : task));
+    group.runs[0] = { ...group.runs[0]!, isActive: true, executionTree: { ...next, rootOrg: { ...next.rootOrg, taskExecutions } } };
     await nextTick();
 
     expect(row().attributes('aria-expanded')).toBe('false');

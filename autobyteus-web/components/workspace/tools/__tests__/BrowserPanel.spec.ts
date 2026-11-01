@@ -65,7 +65,7 @@ describe('BrowserPanel', () => {
 
     expect(wrapper.text()).toMatch(/open a url to start browsing/i)
     expect(wrapper.find('button[title="Maximize Browser view"]').exists()).toBe(false)
-    expect(wrapper.get('button[title="Open new tab"]').exists()).toBe(true)
+    expect(wrapper.find('button[title="Open new tab"]').exists()).toBe(true)
     expect(wrapper.get('input').attributes('placeholder')).toMatch(/enter url and press enter/i)
   })
 

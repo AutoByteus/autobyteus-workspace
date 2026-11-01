@@ -152,13 +152,11 @@ function seedCatalogAndWorkspace(): void {
         {
           memberName: "lead",
           ref: "agent-1",
-          refType: "AGENT",
           refScope: "SHARED",
         },
         {
           memberName: "reviewer",
           ref: "agent-2",
-          refType: "AGENT",
           refScope: "SHARED",
         },
       ],

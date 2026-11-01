@@ -2,9 +2,7 @@ import { taskBearingView } from '~/services/agentOrgExecution/__tests__/taskBear
 import type { AgentOrgDefinition } from '~/stores/agentOrgDefinitionStore'
 import type { AgentOrgDefinitionReferences } from '~/services/agentOrgDefinition/agentOrgDefinitionReferences'
 export const seedFixture = (runId = 'org-run') => {
-  const view = JSON.parse(JSON.stringify(taskBearingView())) as ReturnType<typeof taskBearingView>
-  view.is_active = false
-  view.agent_statuses = []
+  const view = { ...(JSON.parse(JSON.stringify(taskBearingView())) as ReturnType<typeof taskBearingView>), is_active: false, agent_statuses: [] }
   const root = view.execution_tree.rootOrg
   root.orgRunId = runId
   view.communication_messages.orgRunId = runId

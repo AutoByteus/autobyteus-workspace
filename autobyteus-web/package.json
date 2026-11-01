@@ -151,8 +151,8 @@
     "xlsx": "https://cdn.sheetjs.com/xlsx-0.20.3/xlsx-0.20.3.tgz"
   },
   "devDependencies": {
-    "@autobyteus/application-sdk-contracts": "workspace:*",
     "@autobyteus/agent-presentation-contracts": "workspace:*",
+    "@autobyteus/application-sdk-contracts": "workspace:*",
     "@autobyteus/collaboration-stream-contracts": "workspace:*",
     "@autobyteus/team-stream-contracts": "workspace:*",
     "@electron/rebuild": "4.0.4",

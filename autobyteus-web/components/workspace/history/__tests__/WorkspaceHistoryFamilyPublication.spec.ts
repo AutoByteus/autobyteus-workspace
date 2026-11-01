@@ -40,7 +40,7 @@ beforeEach(() => {
   vi.spyOn(useAgentDefinitionStore(),'fetchAllAgentDefinitions').mockImplementation(() => avatar.promise);
   vi.spyOn(useAgentTeamDefinitionStore(),'fetchAllAgentTeamDefinitions').mockImplementation(() => catalog.promise);
   vi.spyOn(useAgentOrgDefinitionStore(),'fetchAll').mockImplementation(() => catalog.promise);
-  vi.spyOn(useAgentRunStore(),'connectToAgentStream').mockImplementation(() => undefined);
+  vi.spyOn(useAgentRunStore(),'connectToAgentStream').mockImplementation(() => null);
   io.hydrate.mockImplementation(() => hydration.promise);
   io.query.mockImplementation(({ query, variables }) => {
     const name=query.definitions.find((d:any)=>d.name)?.name.value;

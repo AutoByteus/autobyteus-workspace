@@ -1,5 +1,6 @@
-// The rules of the web type gate (`scripts/typecheck.mjs`): reading compiler output, telling production files from
-// test files, and comparing test-file error counts with the shrink-only baseline (`typecheck-baseline.json`).
+// The rules of the type gate (`run-typecheck-gate.mjs`): reading compiler output, attributing each diagnostic to a
+// package path, counting test-file errors, and comparing them with the shrink-only baseline. Which files are test files
+// is each package's own rule, passed in by its `scripts/typecheck.mjs`; every other file is production code.
 
 import path from 'node:path';
 
@@ -7,7 +8,7 @@ import path from 'node:path';
 const DIAGNOSTIC_LINE = /^(.+?)\((\d+),(\d+)\): error (TS\d+): /;
 const ERROR_CODE = /\berror TS\d+\b/;
 
-/** A path as the baseline stores it: relative to the web package, with `/` separators. */
+/** A path as the baseline stores it: relative to the package root, with `/` separators. */
 export function toPackagePath(reportedPath, packageRoot) {
   const absolute = path.resolve(packageRoot, reportedPath);
   return path.relative(packageRoot, absolute).split(path.sep).join('/');
@@ -45,18 +46,8 @@ export function parseCompilerOutput(output, packageRoot) {
   return { diagnostics, unattributed, unexpected };
 }
 
-/** Test files may carry baselined errors; every other checked file is production code and must have none. */
-export function isTestFile(packagePath) {
-  return packagePath.includes('/__tests__/')
-    || packagePath.startsWith('__tests__/')
-    || packagePath.endsWith('.spec.ts')
-    || packagePath.endsWith('.test.ts')
-    || packagePath.startsWith('tests/')
-    || packagePath.startsWith('test-support/');
-}
-
-/** Error counts per test file, sorted by path. */
-export function countTestFileErrors(diagnostics) {
+/** Error counts per test file (by the package's `isTestFile(packagePath)` rule), sorted by path. */
+export function countTestFileErrors(diagnostics, isTestFile) {
   const counts = {};
   for (const { file } of diagnostics) {
     if (isTestFile(file)) counts[file] = (counts[file] ?? 0) + 1;

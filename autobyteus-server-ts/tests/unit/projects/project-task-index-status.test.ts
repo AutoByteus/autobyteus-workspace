@@ -145,15 +145,25 @@ describe("Project index status and index after writes", () => {
 
   it("indexes a Project soon after a Task create or edit with no search, one run per burst (REQ-011, AC-015)", async () => {
     await modelOnDisk();
-    // The window runs from the first write; it must outlast three SQLite writes under full-suite load.
-    start(400);
-    const alpha = await project("Alpha");
+    // The index-after-write window runs on fake timers (DEC-008), so every write of the burst lands inside it however
+    // slow the host is: the window ends only when the test advances it. Only the timers are fake; file and SQLite I/O
+    // stay real.
+    vi.useFakeTimers({ toFake: ["setTimeout", "clearTimeout"] });
     const sync = vi.spyOn(fake.index, "sync");
     const search_ = vi.spyOn(fake.index, "search");
-    const task = await tasks.createTask({ projectId: alpha, title: "Docker image fails on ARM servers", description: "Docker image fails on ARM servers" });
-    await tasks.updateTask({ projectId: alpha, taskId: task.taskId, description: "Docker container crashes on arm64" });
-    await tasks.createTask({ projectId: alpha, title: "Sidebar collapse state is lost after restart", description: "Sidebar collapse state is lost after restart" });
-    expect(sync).not.toHaveBeenCalled();
+    let alpha: string;
+    try {
+      start(400);
+      alpha = await project("Alpha");
+      const task = await tasks.createTask({ projectId: alpha, title: "Docker image fails on ARM servers", description: "Docker image fails on ARM servers" });
+      await tasks.updateTask({ projectId: alpha, taskId: task.taskId, description: "Docker container crashes on arm64" });
+      await tasks.createTask({ projectId: alpha, title: "Sidebar collapse state is lost after restart", description: "Sidebar collapse state is lost after restart" });
+      await vi.advanceTimersByTimeAsync(399);
+      expect(sync).not.toHaveBeenCalled();
+      await vi.advanceTimersByTimeAsync(1);
+    } finally {
+      vi.useRealTimers();
+    }
     await until(async () => {
       const current = await status(alpha);
       return current.state === "ready" && current.total === 2;
