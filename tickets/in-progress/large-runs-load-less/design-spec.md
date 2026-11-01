@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-005` (after ARCH-REV-004 AR-005: the consistent-through sequence is scoped to one live sequence; SR-004 after CRR-003 CR-002: a running root reloaded its lists on every publication; SR-003 after IR-001: QR-004 missed; SR-002 after ARCH-REV-001)
+- Current solution revision ID: `SR-006` (after CRR-004 CR-003: the Team open reads its live sequence; SR-005: after ARCH-REV-004 AR-005: the consistent-through sequence is scoped to one live sequence; SR-004 after CRR-003 CR-002: a running root reloaded its lists on every publication; SR-003 after IR-001: QR-004 missed; SR-002 after ARCH-REV-001)
 - Approved requirements baseline: `requirements-doc.md` SR-001, approved by the Solution Designer within the direction (the user informed in the conversation, 2026-11-01)
 - Behavior-defining supplements: none
 - User approval of the design, when the direction requires it: `Not required` (the Task asks for none)
@@ -10,6 +10,16 @@
 - Canonical investigation-notes path: `tickets/in-progress/large-runs-load-less/investigation-notes.md`
 - Authorities read: `references/architecture-design.md`, `references/design-principles.md` (this conversation), `DESIGN.md` (rules 3, 5, 7, re-read 2026-11-01), `autobyteus-server-ts/docs/design/data_migration_guideline.md` §6 ("Don't validate history at startup")
 - Project design-principle conflicts: none
+
+## SR-006 Revision Summary (CRR-004, CR-003: a running Team's open forgets its live position)
+
+- **Finding.** The Team open and resume read (`getTeamRunResumeConfig` → `teamRunContextHydrationService` → `teamRunHydrationCommit.ts`, from `teamRunOpenCoordinator.ts`) names no live sequence. It commits `reloadRoot('agent_team', …, { liveSequenceId: null, baseChangeSequence: 0 })`, so the live snapshot that follows reloads a Team-tab list loaded in between: two fetches per running-Team open, against SR-004's "one rule for hub, Team and Org".
+- **Decision, option (a), the same rule as hub and Org.**
+  - `getTeamRunResumeConfig` (`api/graphql/types/team-run-history.ts:94`) adds `liveSequenceId` and `baseChangeSequence`. For an active Team they come from the root's `RootEventPublisher` (the same values its stream snapshot reports); for a stopped Team they are `null` and `0`.
+  - The open commit passes them to `reloadRoot` as a live rebuild. The snapshot that follows has the same ID and B ≤ C, so it keeps the list.
+  - The `'stored_rebuild'` path stays only for a stopped Team.
+  - Option (b) was rejected because it would give Team its own timing rule; option (c) because a running Team's open is a normal path (the user's PM works in Teams).
+- **Test:** opening a running Team with its Team tab loaded in between gives 1 participant fetch; a stopped Team gives 1. API/E2E rechecks the API-08 counts for Team.
 
 ## SR-005 Revision Summary (ARCH-REV-004, AR-005: C must belong to one live sequence)
 
@@ -332,6 +342,7 @@ The web root contexts depend on `CollaborationParticipantMessages` and `MemberLo
 | server snapshot types (`standalone-agent-run-root.ts:80,114,420`; the org and team root snapshot types) | No `messages` in view snapshots |
 | web `services/collaborationMessages/collaborationParticipantMessages.ts` (new) | The client owner |
 | web `services/runHydration/memberLoader.ts` (new) | The shared member loader |
+| server `api/graphql/types/team-run-history.ts` and the run model config service: `getTeamRunResumeConfig` adds `liveSequenceId` and `baseChangeSequence` (SR-006); web `services/runHydration/teamRunHydrationCommit.ts`: a live rebuild for an active Team (SR-006) |
 | web `services/runHydration/teamRunContextHydrationService.ts` (initial and recovery: focused only), `services/runOpen/teamRunOpenCoordinator.ts`, `services/agentOrgExecution/agentOrgContextHydration.ts` (initial and `source: 'stream'`: focused only), `services/agentOrgExecution/agentOrgStreamingService.ts` (reopen calls `reloadRoot` and `beginRoot`), `teamMemberProjectionHydrationService.ts`, `services/agentCollaboration/agentRunCollaborationChildHydration.ts` | `MemberLoader` generations; focused member only; `reloadRoot` on every rebuild |
 | web `services/teamExecution/teamExecutionViewState.ts`, `services/agentCollaboration/agentRunCollaborationContext.ts`, `services/agentOrgExecution/agentOrgExecutionContext.ts`, `stores/activeContextStore.ts` | No messages held; forward live events; `listMessages()` from the owner |
 | web `components/layout/RightSideTabs.vue` (Team tab), `components/mobile/MobileTeamMessages.vue`, `MobileActivityDigest.vue` | Ask the owner on show; loading and error states |

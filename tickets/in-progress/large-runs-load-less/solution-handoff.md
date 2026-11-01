@@ -118,3 +118,14 @@ Independent architecture review, then implementation per the Change / Refactor S
 - **Route:** the architecture-review rule → `/software_engineering_team/architecture_reviewer` (targeted SR-005).
 
 - 2026-11-01: ARCH-REV-005 **Pass** on SR-005 (AR-005 resolved; all three roots covered). The reviewer delivered the handoff to `/software_engineering_team/implementation_engineer`. No Solution Designer forwarding required.
+
+## SR-006 Revision (after code review CRR-004, CR-003, 2026-11-01)
+
+- **Option (a), the same rule as hub and Org:**
+  - `getTeamRunResumeConfig` (`team-run-history.ts:94`) adds `liveSequenceId` and `baseChangeSequence` from the active Team's publisher (`null`/`0` when stopped).
+  - `teamRunHydrationCommit.ts` passes them to `reloadRoot` as a live rebuild. The following snapshot then keeps the list (same ID, B ≤ C).
+  - Option (b) was rejected: Team would get its own timing rule. Option (c) was rejected: a running Team's open is a normal path.
+- **Test:** 1 participant fetch per running-Team open, and 1 per stopped-Team open; API/E2E rechecks the Team counts.
+- **Route:** `get_handoff_rules` → the revised Large/High package → `/software_engineering_team/architecture_reviewer` (targeted SR-006).
+
+- 2026-11-01: ARCH-REV-006 **Pass** on SR-006, with a condition for implementation: read `liveSequenceId` and `baseChangeSequence` together from one publisher. The reviewer delivered the handoff to `/software_engineering_team/implementation_engineer`. No Solution Designer forwarding required.

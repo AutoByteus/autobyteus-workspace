@@ -11,6 +11,7 @@ The latest `design-review-report.md` remains authoritative.
 | ARCH-REV-003 | Round 3 / targeted re-review of SR-003 (after IR-001) | SR-003 | Pass | Pass | none |
 | ARCH-REV-004 | Round 4 / targeted re-review of SR-004 (after CRR-003) | SR-004 | Pass | Fail (Design Impact) | AR-005 new |
 | ARCH-REV-005 | Round 5 / targeted re-review of SR-005 | SR-005 | Fail | Pass | AR-005 resolved |
+| ARCH-REV-006 | Round 6 / targeted re-review of SR-006 (after CRR-004) | SR-006 | Pass | Pass | none |
 
 ## Revision Entries
 
@@ -124,6 +125,28 @@ None (AR-001…AR-004 stay resolved)
 | Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
 | --- | --- | --- | --- | --- |
 | AR-005 | Open (Medium) | Resolved | SR-005 | `standalone-root-builder.ts:132`; `agent-org-execution-scope-builder.ts:56`; `team-run-event-publisher.ts:1-6` (alias); `agent-team-stream-handler.ts:137-142`; tests for stop → resume and a new publisher |
+
+- New or remaining finding IDs: none
+- Material classification changes: none (task_size=Large, architectural_risk=High)
+- Recommended recipient: Implementation Engineer; informational notice to the Solution Designer
+- Remaining risks or uncertainty: as in ARCH-REV-003
+
+### ARCH-REV-006 — Targeted re-review of SR-006: the running-Team open commits as a live rebuild; Pass
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/large-runs-load-less/tickets/in-progress/large-runs-load-less/design-review-report.md`
+- Review round and trigger: round 6 (targeted), Solution Designer re-review request (SR-006), after code review CRR-004 / CR-003, 2026-11-01; code at `f11a8edeaa`
+- Triggering role, report path, and finding IDs: Solution Designer, `solution-handoff.md` ("SR-006 Revision"); `code-review-report.md` CR-003
+- Relevant solution revision IDs: `SR-006`
+- Prior authoritative decision: `Pass` (ARCH-REV-005)
+- Current authoritative decision: `Pass`
+- What changed in the review result:
+  - The cause is confirmed (`teamRunHydrationCommit.ts:40` always reloads as stored; `team-run-history.ts:94-106` reports no live sequence).
+  - Option (a) is accepted. Committing with the resume config's B is correct, because no events are applied before the attach snapshot compares B2 under the same identity.
+  - Recorded condition: read the identity and base together from one publisher.
+
+#### Prior Finding Resolution
+
+None (no open findings)
 
 - New or remaining finding IDs: none
 - Material classification changes: none (task_size=Large, architectural_risk=High)

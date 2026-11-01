@@ -5,16 +5,31 @@
 - Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/large-runs-load-less/tickets/in-progress/large-runs-load-less/requirements-doc.md` (SR-001, approved by the Solution Designer within the direction; user informed)
 - Upstream Investigation Notes: `…/investigation-notes.md`
 - Upstream Solution Revision Record: `…/solution-revision-record.md`
-- Reviewed Design Spec: `…/design-spec.md` (SR-005, Ready; user approval of the design `Not required`)
+- Reviewed Design Spec: `…/design-spec.md` (SR-006, Ready; user approval of the design `Not required`)
 - Supplemental Task Artifacts Reviewed: `evidence/M-*` (before measurements, the CPU profile), `evidence/probes/*.mjs`
-- Relevant Solution Revision IDs: `SR-001`…`SR-005`
+- Relevant Solution Revision IDs: `SR-001`…`SR-006`
 - Architecture Review Revision Record: `…/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-005`
-- Current Review Round: `5` (targeted: SR-005, the live-sequence identity for AR-005)
-- Trigger: Solution Designer re-review request (SR-005), 2026-11-01
-- Prior Review Round Reviewed: `4` (ARCH-REV-004, Fail: AR-005)
-- Latest Authoritative Round: `5`
+- Current Architecture Review Revision ID: `ARCH-REV-006`
+- Current Review Round: `6` (targeted: SR-006, the running-Team open commit as a live rebuild, after code review CRR-004 / CR-003)
+- Trigger: Solution Designer re-review request (SR-006), 2026-11-01; code at `f11a8edeaa`
+- Prior Review Round Reviewed: `5` (ARCH-REV-005, Pass)
+- Latest Authoritative Round: `6`
 - Current-State Evidence Basis: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/large-runs-load-less` @ `efd28d5c4a` (no source changes). Code opened at the lines cited below.
+
+## Round 6 Scope (SR-006, Targeted)
+
+- **The finding is confirmed in code.** The Team open and resume commit always reloads as a stored rebuild: `reloadRoot('agent_team', …, { liveSequenceId: null, baseChangeSequence: 0 })` (`autobyteus-web/services/runHydration/teamRunHydrationCommit.ts:40`). Its source, `getTeamRunResumeConfig` (`api/graphql/types/team-run-history.ts:94-106`), reports `isActive` but no live sequence. So the stream snapshot that follows reloads a list loaded in between: 2 fetches per running-Team open (CRR-004 / CR-003).
+- **Option (a) is right.** It is the same rule as hub and Org.
+  - The resume config adds `liveSequenceId` and `baseChangeSequence` from the active Team's `RootEventPublisher` (`null` and `0` when stopped).
+  - The commit passes them to `reloadRoot` as a live rebuild.
+  - Rejecting (b), a Team-only timing rule, and (c), accepting the double fetch, is sound.
+- **Correctness of committing with the resume config's B.** No stream events are applied between that commit and the attach snapshot. The snapshot then compares its base B2 under the same identity:
+  - if a message was produced after B, then B2 > B, and the list reloads;
+  - if nothing was produced, B2 = B, and the list is kept;
+  - a list loaded after the commit queries server state at or after B, so it already includes every message up to B;
+  - a different identity (the run stopped or restarted meanwhile) reloads.
+- **Condition (recorded for implementation):** read `liveSequenceId` and `baseChangeSequence` together from the same publisher in one read, so the pair always describes one live sequence.
+- **Test:** 1 participant fetch per running-Team open with the Team tab loaded in between; 1 for a stopped Team. API/E2E rechecks the Team counts.
 
 ## Round 5 Scope (SR-005, Targeted)
 
@@ -308,7 +323,7 @@ None in the requirements.
 
 ## Findings
 
-None open. AR-001…AR-004 are resolved (ARCH-REV-002); DS-007 passed (ARCH-REV-003); AR-005 is resolved (ARCH-REV-005).
+None open. AR-001…AR-004 are resolved (ARCH-REV-002); DS-007 passed (ARCH-REV-003); AR-005 is resolved (ARCH-REV-005); SR-006 passes the targeted review (ARCH-REV-006).
 
 ## Classification
 
@@ -330,5 +345,5 @@ Implementation Engineer (`/software_engineering_team/implementation_engineer`)
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
-- Material-Premise Gate: `Pass` (MP-001…MP-004 resolved)
-- Notes: round 5 is targeted. Participant lists reload only when a message could have been missed, judged within one live publisher identified by `live_sequence_id`. The rest of the design keeps its earlier Pass. task_size=Large, architectural_risk=High.
+- Material-Premise Gate: `Pass` (no new premise)
+- Notes: round 6 is targeted. The running-Team open commits as a live rebuild with the publisher's identity and base, read together. The participant-list reload rule is now identical for hub, Team and Org. task_size=Large, architectural_risk=High.
