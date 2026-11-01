@@ -156,7 +156,7 @@ describe("AgentProviderFactoryBuilder", () => {
     const runSessionsB = { activateForRun: vi.fn() };
     const capabilityA = { marker: "application-capability-a" };
     const capabilityB = { marker: "application-capability-b" };
-    const integrationRunAccess = { environmentForRun: vi.fn(() => ({})), revokeForRun: vi.fn() };
+    const integrationRunAccess = { environmentForRun: vi.fn(async () => ({})), revokeForRun: vi.fn() };
     const first = builder.createForExecution({
       agentDefinitionService: definitionA as never,
       agentToolMcpRunSessions: runSessionsA as never,

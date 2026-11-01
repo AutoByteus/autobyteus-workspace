@@ -126,7 +126,7 @@ describe("AcpAgentRunBackendFactory", () => {
 
   it("starts an allowed run's agent process with the launch profile's environment plus its integration variables (DS-002)", async () => {
     const variables = { AUTOBYTEUS_GITHUB_API_URL: "http://127.0.0.1:5555/r/rp_test-dummy/github/api", GIT_TERMINAL_PROMPT: "0" };
-    const environmentForRun = vi.fn((run: { agentDefinitionId: string }) => (run.agentDefinitionId === "def-1" ? variables : {}));
+    const environmentForRun = vi.fn(async (run: { agentDefinitionId: string }): Promise<Record<string, string>> => (run.agentDefinitionId === "def-1" ? variables : {}));
     const spawn = vi.spyOn(AcpAgentProcess, "spawn");
     try {
       const { factory } = createFactory(fixturePath("prompt"), { integrationRunAccess: { environmentForRun, revokeForRun: vi.fn() } });
