@@ -64,7 +64,7 @@ Repository finalization of `codex/integrations-page` into `origin/personal`, and
 
 - More evidence requested: `None`
 - User check needed: `No`
-- Re-verification after later re-integration: see Repository Finalization
+- Re-verification after later re-integration: `Not needed` (target unchanged after verification)
 
 ## Secret Gate
 
@@ -92,7 +92,22 @@ Repository finalization of `codex/integrations-page` into `origin/personal`, and
 
 ## Repository Finalization
 
-- pending
+Main repository:
+- Bootstrap context source: `handoff.md` (finalization target `origin/personal`) and `RELEASE.md`
+- Ticket branch commit result: `e228306fd5` "docs(delivery): archive autobyteus-337 Integrations page (DR-001)". 123 tracked ticket files; longest ticket path 119 characters; hygiene and licensing checks passed
+- Secret Gate before the first push: `PASS`
+- Ticket branch push result: `origin/codex/integrations-page` → `e228306fd5` (new remote branch)
+- Target advanced after verification / acceptance: `No` (`origin/personal` still `ec3f721622`)
+- Re-integration before final merge: `Not needed`
+- Merge into target result: `finalize/integrations-page` from `origin/personal`; `git merge --no-ff` → `fc3df20d11`; tree identical to the ticket branch; hygiene, licensing and the Secret Gate (merged state) all pass
+- Push target branch result: fetched first (unchanged); `ec3f721622..fc3df20d11`. This record is committed on top and pushed after a fresh fetch
+- Repository finalization status: `Completed`
+
+`AutoByteus/autobyteus-integrations` (AC-009):
+- Branch `codex/integrations-page-readme` (`696758f` by the Solution Designer, plus the delivery fix `f9351bb`), pushed as a new remote branch
+- gitleaks over `origin/main..HEAD`: no leaks
+- `finalize/integrations-page-readme` from `origin/main` @ `8887475`; `git merge --no-ff` → `13a3fae`; tree identical to the branch; `origin/main` checked unchanged before the push; `git push origin HEAD:main`: `8887475..13a3fae`
+- Status: `Completed`
 
 ## Release / Publication / Deployment
 
@@ -100,7 +115,9 @@ Repository finalization of `codex/integrations-page` into `origin/personal`, and
 
 ## Post-Finalization Cleanup
 
-- pending
+- Main repository worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/integrations-page`: removed after the record push (`git worktree remove --force`; only untracked build output remained), pruned. Local `codex/integrations-page` and `finalize/integrations-page` deleted once `origin/personal` contains them.
+- Integrations repository worktree `/Users/normy/autobyteus_org/autobyteus-integrations-worktrees/integrations-page-readme`: removed and pruned from `/Users/normy/autobyteus_org/autobyteus-integrations`. Local `codex/integrations-page-readme` and `finalize/integrations-page-readme` deleted once `origin/main` contains them.
+- Remote branch cleanup: `Not required` (merged `codex/*` branches stay on `origin` in both repositories)
 
 ## Release Notes Summary
 
@@ -117,4 +134,11 @@ Repository finalization of `codex/integrations-page` into `origin/personal`, and
 
 ## Final Status
 
-- pending
+- Verification complete (from the evidence, or the user's check where needed): `Yes`
+- Repository finalization complete: `Yes` (`personal` @ `fc3df20d11`, then this record; integrations `main` @ `13a3fae`)
+- Applicable release/deployment/rollout complete or not required: `Yes` (`Not required`, No release)
+- Applicable safe cleanup complete or not required: `Yes` (both worktrees and local branches, after the record push)
+- Unresolved blocker: `None`
+- Successful terminal package eligible for return: `Yes`
+- Terminal package sent to the Solution Designer: `Yes`, after this record commit and cleanup
+- Terminal message/reference: the DR-001 message to `/software_engineering_team/solution_designer`
