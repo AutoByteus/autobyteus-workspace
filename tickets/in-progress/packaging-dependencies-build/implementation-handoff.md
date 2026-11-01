@@ -94,7 +94,7 @@ Server: `package.json`, `docker/Dockerfile.monorepo`, `docker/README.md`, `scrip
 
 ## Checks Run
 
-Code under test: `6777be781f` (feature) and `4db26446cb` (two web fixes; HEAD of the code). Evidence files are in `/Users/normy/autobyteus_org/autobyteus-worktrees/packaging-dependencies-build/tickets/in-progress/packaging-dependencies-build/evidence/`.
+Code under test: `6777be781f` (feature) and `4db26446cb` (two web fixes). The later commit `9652bbd02e` shortens two comments in `prepare-server.mjs` (line count only) and adds FU-005; no check is affected (the Python source checks were rerun on it). Evidence files are in `/Users/normy/autobyteus_org/autobyteus-worktrees/packaging-dependencies-build/tickets/in-progress/packaging-dependencies-build/evidence/`.
 
 | Check ID | Command Or Steps | Commit Tested | Environment | Code It Exercises | Behavior / Criteria IDs | Result | Evidence Files | Look For |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
