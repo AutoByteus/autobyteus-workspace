@@ -1,0 +1,8 @@
+# IMP-08 mutation member-input (member_input published for a platform notice; tests from 7d9a305627)
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/unit/agent-collaboration/configured-agent-execution-handle.test.ts --no-watch --testTimeout=8000
+# Commit: 7d9a305627
+# Environment: macOS 26.5.2, node v22.23.1
+# Date: 2026-11-01
+
+     × publishes no member_input for a platform notice: the run's own system notice shows it 5ms
+      Tests  1 failed | 38 passed (39)

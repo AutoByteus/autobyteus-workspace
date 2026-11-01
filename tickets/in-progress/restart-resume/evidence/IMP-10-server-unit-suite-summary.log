@@ -1,0 +1,16 @@
+# IMP-10
+# Command: pnpm -C autobyteus-server-ts test:unit (full, on 82932a8b48), then the failing file's folders rerun on 7d9a305627
+# Commit: 82932a8b48 / 7d9a305627
+# Environment: macOS 26.5.2, node v22.23.1
+# Date: 2026-11-01
+
+Full suite on 82932a8b48:
+     × forwards root task-Team and recursively materialized Team/Agent events after ordered durable release; Team members start only with their work 9ms
+ FAIL  tests/unit/agent-org-execution/agent-org-task-publication.test.ts > Org-root prepared task publishers > forwards root task-Team and recursively materialized Team/Agent events after ordered durable release; Team members start only with their work
+ Test Files  1 failed | 907 passed | 5 skipped (913)
+      Tests  1 failed | 7702 passed | 9 skipped (7712)
+   Duration  824.60s (transform 21.96s, setup 13.08s, import 428.68s, tests 291.41s, environment 841ms)
+
+The one failure: two assertions expected the Team member handle to be called with the message only; it now passes the post options through ({}). Fixed in 7d9a305627 (test only). Rerun:
+ Test Files  100 passed (100)
+      Tests  879 passed (879)
