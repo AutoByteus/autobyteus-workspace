@@ -72,7 +72,6 @@
   "tests/integration/agent-execution/agent-run-prompt-fallback.integration.test.ts": 6,
   "tests/integration/agent-execution/agent-run-service.integration.test.ts": 7,
   "tests/integration/agent-execution/autobyteus-agent-run-backend-factory.integration.test.ts": 3,
-  "tests/integration/agent-execution/autobyteus-agent-run-backend-factory.lmstudio.integration.test.ts": 16,
   "tests/integration/agent-execution/claude-agent-run-backend-factory.integration.test.ts": 41,
   "tests/integration/agent-execution/claude-session-manager.integration.test.ts": 1,
   "tests/integration/agent-execution/codex-command-failure-transport.integration.test.ts": 7,
