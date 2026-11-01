@@ -1,7 +1,7 @@
 # Requirements Document — automatic-app-node-updates (autobyteus-356)
 
 ## Document Status
-- Status: **Draft / Ready for Approval**: DEC-001 to DEC-003 need the user. Current solution revision ID: `SR-001`.
+- Status: **Ready for Approval**: DEC-001 (timing) needs the user; DEC-002 and DEC-003 decided within the direction (the user's Task comment: a plain switch, no questions). Current solution revision ID: `SR-001`.
 - Requested by: `/project_task_manager` (run `project_task_manager_7c8dce0c4a8b44f88e776a83809dee03`), Task
   `autobyteus-356`, 2026-11-01. The user's words: "I want to have this automatic update and restart feature for the
   app, the desktop application and the server itself as well … I enable this, just like runtime … when there's a new
@@ -35,5 +35,5 @@
 | ID | Question | Options | Recommendation | Owner | Status |
 | --- | --- | --- | --- | --- | --- |
 | DEC-001 | When may the app install and restart by itself? | (A) as soon as the download is done; (B) once you have not used the computer for 30 minutes (keyboard and mouse idle); (C) only at night (for example 1:00–5:00); (D) only when you quit the app | **B**: it covers the night case, never restarts the app under your hands, and does not wait for a time window if you are away in the day. Busy agents do not block it (they resume, 285) | User | Needs user |
-| DEC-002 | Which releases count? | The app's existing channel setting (stable or beta; you follow beta) | **Reuse the existing channel**; nodes follow the desktop, so they need no channel of their own | User (confirm) | Needs user |
-| DEC-003 | How do Docker nodes stay on the desktop's version? | (A) **the desktop updates them**: after the desktop is on a new version, it updates each node whose switch is on to that same version; (B) each node updates itself from the release channel, on its own schedule | **A**: it keeps them on one version by construction (rule 9; beta.10's GraphQL rename breaks mixed versions). Under B a node could move ahead of a desktop whose switch is off. Cost of A: a node updates only while a desktop is running | User | Needs user |
+| DEC-002 | Which releases count? | The app's existing channel setting (stable or beta) | **Reuse the existing channel**; nodes follow the desktop, so they need no channel of their own | Solution Designer (the user: "just a normal setting, no need to ask", Task comment 2026-11-01) | Decided |
+| DEC-003 | How do Docker nodes stay on the desktop's version? | (A) the desktop updates each node whose switch is on to its own version once it runs a newer one; (B) each node updates itself from the channel | **A**: it meets the Task's constraint (same version, DESIGN rule 9) by construction; B lets a node move ahead of the desktop. Cost of A: a node updates only while a desktop is running | Solution Designer (within the Task's constraint) | Decided |
