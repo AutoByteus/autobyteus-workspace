@@ -15,6 +15,6 @@
 - Prior authoritative result: N/A; current: Delivery Completed (see `release-deployment-report.md`)
 - Docs sync report / handoff summary / release report: `docs-sync-report.md`, `handoff-summary.md`, `release-deployment-report.md`
 - Integration and post-integration verification: merged `origin/personal` @ `0295553657`; `evidence/DEL-01-post-integration-checks.md`
-- Verification and finalization state: verified from the evidence, no user check; finalization in the release report
-- Terminal return to the Solution Designer: see the terminal message
+- Verification and finalization state: verified from the evidence, no user check; `--no-ff` merge `4900dbae57` into `origin/personal`; ticket branches and worktree cleaned up
+- Terminal return to the Solution Designer: `Sent` (after the record commit)
 - Remaining blockers, rollback concerns, untested scope: none blocking; see `handoff-summary.md`
