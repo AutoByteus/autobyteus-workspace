@@ -11,15 +11,15 @@ export class FlatAgentExecutionContext implements TeamAgentMemberRuntimeContext 
   readonly kind = "agent" as const;
   readonly address: AgentTeamAddress;
   readonly agentRunId: string;
-  readonly runtimeKind: RuntimeKind;
+  private currentRuntimeKind: RuntimeKind;
   private platformAgentRunId: string | null;
   constructor(input: { address: AgentTeamAddress; agentRunId: string; runtimeKind: RuntimeKind; platformAgentRunId: string | null }) {
-    Object.assign(this, input);
     this.address = input.address;
     this.agentRunId = input.agentRunId;
-    this.runtimeKind = input.runtimeKind;
+    this.currentRuntimeKind = input.runtimeKind;
     this.platformAgentRunId = input.platformAgentRunId;
   }
+  get runtimeKind(): RuntimeKind { return this.currentRuntimeKind; }
   getPlatformAgentRunId(): string | null { return this.platformAgentRunId; }
   replaceCommittedPlatformAgentRunId(expectedPrevious: string, platformAgentRunId: string): void {
     const normalized = platformAgentRunId.trim();
@@ -27,6 +27,14 @@ export class FlatAgentExecutionContext implements TeamAgentMemberRuntimeContext 
       throw new Error("Flat Team Agent committed provider replacement does not match the expected binding.");
     }
     this.platformAgentRunId = normalized;
+  }
+  /**
+   * A switched member's committed state, or a restore's refresh of a retained member: its agent runtime and session ID, which
+   * may be none (the native agent runtime has no provider session).
+   */
+  refreshSelection(selection: { runtimeKind: RuntimeKind; platformAgentRunId: string | null }): void {
+    this.currentRuntimeKind = selection.runtimeKind;
+    this.platformAgentRunId = selection.platformAgentRunId?.trim() || null;
   }
   adoptPlatformAgentRunId(platformAgentRunId: string): void {
     const normalized = platformAgentRunId.trim();

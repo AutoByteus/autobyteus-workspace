@@ -63,7 +63,7 @@ describe("AgentOrg delegated copy Stop and model choice", () => {
 
     await expect(f.message("task-agent-1")).resolves.toMatchObject({ accepted: true });
     await f.drain();
-    expect(child.handle.replaceModelChoice).toHaveBeenCalledWith(expect.objectContaining(choice));
+    expect(child.handle.replaceSelection).toHaveBeenCalledWith(expect.objectContaining(choice));
     expect(f.rootAgents.isTaskLive("task-agent-1")).toBe(true);
     expect(f.failStop).not.toHaveBeenCalled();
   });

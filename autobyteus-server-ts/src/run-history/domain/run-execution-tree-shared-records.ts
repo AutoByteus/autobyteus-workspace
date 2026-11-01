@@ -1,3 +1,5 @@
+import type { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
+import type { PendingRuntimeSwitch } from "../store/agent-run-metadata-types.js";
 import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import type { CollaborationHandoff } from "../../agent-collaboration/domain/collaboration-handoff.js";
 import type { LaunchConfigurationSource } from "../../agent-collaboration/domain/launch-configuration-source.js";
@@ -6,16 +8,24 @@ import type { AgentLaunchConfiguration } from "../../agent-team-execution/domain
 export type IsoTimestamp = string;
 
 /**
- * The user's model choice for one delegated copy (DEC-005): it replaces
- * only the model and its settings; the runtime, tool approval and workspace stay as started.
+ * The user's choice for one delegated copy (DEC-005): its model and settings and, when the user also chose another agent
+ * runtime (autobyteus-348), that runtime (absent: the started runtime). Tool approval and workspace stay as started.
  * Recorded beside the started values, never over them, so extra and teammate copies still start
  * on the started values (AR-005).
  */
 export type UserLaunchSelection = Readonly<{
+  runtimeKind?: RuntimeKind;
   llmModelIdentifier: string;
   llmConfig: Readonly<Record<string, unknown>> | null;
   selectedAt: IsoTimestamp;
 }>;
+
+/**
+ * autobyteus-348: optional on every record that holds a member's binding. Present from the save that changed the member's
+ * agent runtime until the member's next input makes the switch real; absent means none. The record's own binding holds
+ * the NEW selection (for a copy: its effective launch), `from` the previous one.
+ */
+export type RecordedPendingRuntimeSwitch = Readonly<{ pendingRuntimeSwitch?: PendingRuntimeSwitch }>;
 
 /** Optional on an agent-level copy record; absent truthfully means no user choice. */
 export type RecordedUserLaunchSelection = Readonly<{ userLaunchSelection?: UserLaunchSelection }>;
@@ -31,7 +41,7 @@ export type ConfiguredAgentExecutionNode = Readonly<{
   agentRunId: string;
   platformAgentRunId: string | null;
   launchConfiguration: AgentLaunchConfiguration;
-}>;
+}> & RecordedPendingRuntimeSwitch;
 
 export type ConfiguredTeamExecutionNode = Readonly<{
   address: AgentTeamAddress;
@@ -105,13 +115,13 @@ export type TaskAgentExecution = Readonly<{
   delegatorAgentRunId?: string;
   startedAt: IsoTimestamp;
   source: TaskAgentExecutionSource;
-}> & RecordedUserLaunchSelection;
+}> & RecordedUserLaunchSelection & RecordedPendingRuntimeSwitch;
 
 export type TaskTeamAgentExecution = Readonly<{
   address: AgentTeamAddress;
   agentRunId: string;
   platformAgentRunId: string | null;
-}> & RecordedUserLaunchSelection;
+}> & RecordedUserLaunchSelection & RecordedPendingRuntimeSwitch;
 
 /**
  * A delegated child Team. Teams are flat: its members are agents. Liveness is runtime-only;
@@ -217,7 +227,7 @@ export type EffectiveCopyAgentLaunch = Readonly<{
 /**
  * The single launch rule of a delegated copy agent (DS-003): its own user
  * selection, else (when it follows its Team) the Team's user selection, else its started launch.
- * A selection replaces only the model and its settings. Every restore, hosting and view site uses
+ * A selection replaces the model and its settings and, when it carries one, the agent runtime. Every restore, hosting and view site uses
  * this; none combines selections and started values inline.
  */
 export const effectiveCopyAgentLaunch = (input: Readonly<{
@@ -232,6 +242,7 @@ export const effectiveCopyAgentLaunch = (input: Readonly<{
   return Object.freeze({
     launch: Object.freeze({
       ...input.started,
+      runtimeKind: selection.runtimeKind ?? input.started.runtimeKind,
       llmModelIdentifier: selection.llmModelIdentifier,
       llmConfig: selection.llmConfig === null ? null : structuredClone(selection.llmConfig),
     }),

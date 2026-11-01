@@ -58,7 +58,7 @@ describe("Team root delegated copy Stop and model choice", () => {
       sender: { kind: "agent", identity: coordinator.identity, displayName: "coordinator" }, targetAgentRunId: copyRunId, content: "Continue",
     });
     expect(resumed).toMatchObject({ accepted: true });
-    expect(copy.handle.replaceModelChoice).toHaveBeenCalledWith(expect.objectContaining(choice));
+    expect(copy.handle.replaceSelection).toHaveBeenCalledWith(expect.objectContaining(choice));
 
     const second = await f.root.delegateToNewCopy(coordinator, { recipient_address: "/code_reviewer", description: "Review again" });
     if (!second.delegated || second.copy.kind !== "agent") throw new Error("second copy did not start");

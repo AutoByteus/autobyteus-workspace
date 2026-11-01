@@ -71,7 +71,7 @@ export const observeConfiguredHandles = (activationFailure?: Error) => {
       isStopped: () => !runActive,
       withActivationFence: vi.fn(async <T>(operation: () => Promise<T> | T) => operation()),
       releaseRuntimeForUserStop: finish,
-      replaceModelChoice: vi.fn(),
+      replaceSelection: vi.fn(),
     };
     return { handle, input, emit, finish, cancel, commit };
   };

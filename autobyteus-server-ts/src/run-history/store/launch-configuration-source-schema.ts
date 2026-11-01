@@ -1,4 +1,7 @@
 import type { UserLaunchSelection } from "../domain/run-execution-tree-shared-records.js";
+import { RuntimeKind } from "../../runtime-management/runtime-kind-enum.js";
+import type { PendingRuntimeSwitch } from "./agent-run-metadata-types.js";
+import { parsePendingRuntimeSwitch } from "./agent-run-pending-runtime-switch.js";
 import {
   LAUNCH_CONFIGURATION_FALLBACK_REASONS,
   LAUNCH_CONFIGURATION_ORIGINS,
@@ -84,11 +87,27 @@ export const parseOptionalUserLaunchSelection = <TKey extends "userLaunchSelecti
     selection.llmConfig !== null
     && (!selection.llmConfig || typeof selection.llmConfig !== "object" || Array.isArray(selection.llmConfig))
   ) throw new Error(`${at}.llmConfig must be an object or null.`);
+  if (selection.runtimeKind !== undefined && !Object.values(RuntimeKind).includes(selection.runtimeKind as RuntimeKind)) {
+    throw new Error(`${at}.runtimeKind is unsupported.`);
+  }
   return {
     [key]: {
+      ...(selection.runtimeKind === undefined ? {} : { runtimeKind: selection.runtimeKind as RuntimeKind }),
       llmModelIdentifier: requiredString(selection.llmModelIdentifier, `${at}.llmModelIdentifier`),
       llmConfig: selection.llmConfig === null ? null : structuredClone(selection.llmConfig as Record<string, unknown>),
       selectedAt: isoTimestamp(selection.selectedAt, `${at}.selectedAt`),
     },
   } as { [K in TKey]?: UserLaunchSelection };
 };
+
+/**
+ * The optional pending agent runtime switch of a member or copy record (autobyteus-348). Absent truthfully means none (every
+ * record written before it existed); a malformed section makes the record's file unreadable, like a standalone run's.
+ */
+export const parseOptionalPendingRuntimeSwitch = (
+  record: Record<string, unknown>,
+  label: string,
+): { pendingRuntimeSwitch?: PendingRuntimeSwitch } =>
+  record.pendingRuntimeSwitch === undefined
+    ? {}
+    : { pendingRuntimeSwitch: parsePendingRuntimeSwitch(record.pendingRuntimeSwitch, `${label}.pendingRuntimeSwitch`) };

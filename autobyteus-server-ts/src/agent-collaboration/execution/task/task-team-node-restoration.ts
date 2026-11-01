@@ -13,8 +13,15 @@ import { withCopyLaunch } from "../../collaborators/collaborator-source-projecto
  */
 export const restoreTaskAgentNode = (input: Readonly<{
   source: TeamRunAgentNode;
-  execution: Pick<TaskAgentExecution, "userLaunchSelection">;
-}>): TeamRunAgentNode => withCopyLaunch(input.source, { agentSelection: input.execution.userLaunchSelection });
+  execution: Pick<TaskAgentExecution, "userLaunchSelection" | "pendingRuntimeSwitch">;
+}>): TeamRunAgentNode => withPendingSwitch(
+  withCopyLaunch(input.source, { agentSelection: input.execution.userLaunchSelection }),
+  input.execution.pendingRuntimeSwitch,
+);
+
+/** The node carries the copy's pending agent runtime switch (autobyteus-348) until its next activation makes it real. */
+const withPendingSwitch = (node: TeamRunAgentNode, pending: TaskAgentExecution["pendingRuntimeSwitch"]): TeamRunAgentNode =>
+  pending ? Object.freeze({ ...node, pendingRuntimeSwitch: pending }) : node;
 
 /**
  * Deterministic restore node for a shut-down task Team: the source placement supplies
@@ -41,9 +48,12 @@ export const restoreTaskTeamNode = (input: Readonly<{
     if (!persisted) {
       throw new Error(`Task TeamRun '${input.execution.teamRunId}' has no member at '${child.address}'.`);
     }
-    return withCopyLaunch(
-      Object.freeze({ ...child, agentRunId: persisted.agentRunId, platformAgentRunId: persisted.platformAgentRunId }),
-      { followsTeam: followers.has(child.address), teamSelection, agentSelection: persisted.userLaunchSelection },
+    return withPendingSwitch(
+      withCopyLaunch(
+        Object.freeze({ ...child, agentRunId: persisted.agentRunId, platformAgentRunId: persisted.platformAgentRunId }),
+        { followsTeam: followers.has(child.address), teamSelection, agentSelection: persisted.userLaunchSelection },
+      ),
+      persisted.pendingRuntimeSwitch,
     );
   };
   return Object.freeze({
