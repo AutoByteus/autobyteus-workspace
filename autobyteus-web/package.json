@@ -106,7 +106,7 @@
     "test:e2e:delegated-copy-model-change": "node tests/e2e/delegated-launch-defaults-probe.mjs --cases DCP-001,DCP-002,DCP-003,DCP-004,DCP-005",
     "test:e2e:delegated-copy-own-file": "node tests/e2e/delegated-launch-defaults-probe.mjs --cases DCR-001,DCR-002,DCR-003",
     "test:e2e:skill-improvement-removal": "node tests/e2e/delegated-launch-defaults-probe.mjs --cases SIR-001,SIR-002",
-    "test:e2e:large-runs-load-less": "node tests/e2e/delegated-launch-defaults-probe.mjs --cases LRL-001,LRL-002,LRL-003,LRL-004",
+    "test:e2e:large-runs-load-less": "node tests/e2e/delegated-launch-defaults-probe.mjs --cases LRL-001,LRL-002,LRL-003,LRL-004,LRL-005",
     "test:e2e:tool-list-updates": "node tests/e2e/delegated-launch-defaults-probe.mjs --cases TLU-001",
     "test:e2e:workspace-folder-picker": "node tests/e2e/workspace-folder-picker-probe.mjs",
     "test:e2e:composer-context-file-removal": "node tests/e2e/composer-context-file-removal-probe.mjs",

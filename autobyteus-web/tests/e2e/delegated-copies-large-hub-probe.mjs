@@ -27,6 +27,8 @@
 //        With --large-shape unbroken, L-010 also checks the long-token display (large-runs-load-less AC-007): every long
 //        block has the long-unbroken-text class and wraps (no horizontal overflow), a block selects whole (copy), find-in-page
 //        finds text in it, and the conversation ends scrolled to its latest message.
+//        L-001 and L-002 also check that a Team-tab participant list is fetched once per running-hub selection, at most once
+//        after a delegation, and not at all for the hub when the delegation added no hub message (large-runs-load-less SR-004).
 // Regression check: a current build shows the copy rows with one view request per hub and no member request (S-00n
 // opsUntilRows), and a copy open issues exactly one projection and one artifact request; the base build of this ticket
 // (5ceb43039a) issued two requests per child agent before drawing any row.
@@ -427,6 +429,12 @@ const copyLoadedInPage = async ({ host, id }) => {
   const { memberLoader } = await import('/_nuxt/services/runHydration/memberLoader.ts');
   return memberLoader().isHydrated(`agent:${host}`, id);
 };
+/** The hub's stored participant messages (the Team tab's list for the hub), counted on the server. */
+const hubMessageCount = async () => (await gql('query($k:String!,$r:String!,$a:String!){collaborationParticipantMessages(rootKind:$k,rootRunId:$r,agentRunId:$a)}',
+  { k: 'agent', r: setup.hostId, a: setup.hostId })).collaborationParticipantMessages.messages.length;
+/** Team-tab participant-list requests since `start`, by participant (large-runs-load-less). */
+const participantOps = (start) => requests.slice(start).filter((r) => r.operationName === 'CollaborationParticipantMessages')
+  .reduce((m, r) => ({ ...m, [r.variables?.agentRunId ?? '-']: (m[r.variables?.agentRunId ?? '-'] || 0) + 1 }), {});
 const memberOps = (start, id) => opsSince(start, (r) => ['GetAgentRunCollaborationMemberProjection', 'GetAgentRunCollaborationMemberFileChanges', 'GetRunFileChanges'].includes(r.operationName) && (r.variables?.agentRunId === id || r.variables?.runId === id));
 const allMemberOps = (start) => opsSince(start, (r) => ['GetAgentRunCollaborationMemberProjection', 'GetAgentRunCollaborationMemberFileChanges'].includes(r.operationName) || (r.operationName === 'GetRunFileChanges' && r.variables?.runId !== setup.hostId));
 const expandTeam = async (teamRunId, id = setup.hostId) => {
@@ -522,7 +530,10 @@ const liveJourneys = async () => {
     const hubClickMs = await timedClick(runRow(), HOST_READY, setup.hostId);
     await until('live collaboration snapshot', async () => (await storeState()).phase === 'live', 120000);
     await quiet(1500);
-    return { t1, hubClickToConversationMs: hubClickMs, ops: opsSince(t2Start), memberOps: allMemberOps(t1.requestStart), state: await storeState() };
+    // large-runs-load-less SR-004: the attach snapshot after the selection's view keeps the Team tab's list (one fetch).
+    const participants = participantOps(t2Start);
+    assert(Object.values(participants).every((n) => n === 1), 'A participant list was fetched more than once on one hub selection', { participants });
+    return { t1, hubClickToConversationMs: hubClickMs, ops: opsSince(t2Start), participants, memberOps: allMemberOps(t1.requestStart), state: await storeState() };
   });
   const marker = setup.markers[0];
   await runCase('L-002', 'New delegation while one copy is open: new row, opened copy keeps its conversation, exactly one projection and one artifact request (AC-007, AC-006)', async () => {
@@ -532,6 +543,7 @@ const liveJourneys = async () => {
     const before = await storeState(); const teamsBefore = await teamRowsOf().count();
     await page.evaluate((id) => { window.__minMessages = Infinity; const tick = () => { const t = document.querySelector('#__nuxt').__vue_app__.config.globalProperties.$pinia._s.get('activeContext')?.activeWorkspaceTarget;
       if (t?.agentRunId === id) window.__minMessages = Math.min(window.__minMessages, t.context.state.conversation.messages.length); else window.__lostTarget = true; if (!window.__stopMin) requestAnimationFrame(tick); }; requestAnimationFrame(tick); }, marker.agentRunId);
+    const hubMessagesBefore = await hubMessageCount();
     const start = requests.length, framesStart = frames.length;
     const taskId = (await gql('mutation($input:CreateProjectTaskInput!){createProjectTask(input:$input){taskId}}', { input: { projectId: setup.projectId, title: 'New live Engineering Task', description: 'New live Engineering Task' } })).createProjectTask.taskId;
     send(callTool('delegate_task', { recipient_address: `/${segment(TEAM)}`, task_id: taskId }));
@@ -545,8 +557,16 @@ const liveJourneys = async () => {
     assert(after.target === marker.agentRunId && after.messageCount >= before.messageCount && minMessages > 0 && !lostTarget, 'Opened copy lost its conversation', { before, after, minMessages, lostTarget });
     assert(member.GetAgentRunCollaborationMemberProjection === 1 && member.GetAgentRunCollaborationMemberFileChanges === 1, 'Expected exactly one projection and one artifact request for the opened copy', { member, all });
     assert(JSON.stringify(all) === JSON.stringify(member), 'Requests for other copies', { member, all });
+    // large-runs-load-less SR-004: the delegation's checkpoint reconnect refetches a loaded list at most once (only when a
+    // message fell in the reconnect window), never every loaded list on every publication.
+    const participants = participantOps(start);
+    const hubMessagesAfter = await hubMessageCount();
+    assert(Object.values(participants).every((n) => n <= 1), 'A participant list was fetched more than once after one delegation', { participants });
+    // A delegation adds no hub message here: the hub's loaded list must not be fetched again (SR-004's expected count).
+    assert(hubMessagesAfter !== hubMessagesBefore || !participants[setup.hostId], 'The hub\'s list was fetched again after a delegation that added no hub message',
+      { participants, hubMessagesBefore, hubMessagesAfter });
     await shot('live-new-delegation');
-    return { teamsBefore, teamsAfter: await teamRowsOf().count(), minMessagesDuringRepublication: minMessages, ops, memberOps: member, allMemberOps: all,
+    return { teamsBefore, teamsAfter: await teamRowsOf().count(), minMessagesDuringRepublication: minMessages, ops, participants, hubMessagesBefore, hubMessagesAfter, memberOps: member, allMemberOps: all,
       snapshotsReceived: frames.slice(framesStart).filter((f) => f.type === 'ROOT_EXECUTION_VIEW_SNAPSHOT').length,
       events: frames.slice(framesStart).filter((f) => f.kind).map((f) => f.kind), before, after };
   });

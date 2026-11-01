@@ -64,7 +64,7 @@
 //           Alone: pnpm -C autobyteus-web test:e2e:skill-improvement-removal
 //   TLU-001 (live-tool-list-updates) tools edited in the app reach the open run: card, refusal, restore; see
 //           tool-list-update-cases.mjs. Alone: pnpm -C autobyteus-web test:e2e:tool-list-updates
-//   LRL-001..LRL-004 (large-runs-load-less AC-002, AC-003, AC-006): Team and Org runs load only the focused member; the
+//   LRL-001..LRL-005 (large-runs-load-less AC-002, AC-003, AC-006): Team and Org runs load only the focused member; the
 //           Team tab's live merge and reconnect; a damaged message log on desktop and phone; see
 //           large-runs-load-less-cases.mjs. Alone: pnpm -C autobyteus-web test:e2e:large-runs-load-less
 // Settings rows (SR-006) are the read-only member rows, collapsed until opened, with the same look as the Members list

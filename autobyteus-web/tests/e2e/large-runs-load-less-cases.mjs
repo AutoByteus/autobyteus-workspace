@@ -18,6 +18,10 @@
 //           backend is down): the run opens with its member rows; the Team tab shows "unavailable" with the reason;
 //           a message to the run (resume) is refused with the reason and the run stays stopped; on the phone (Phone
 //           Access, 390×844) the run's message screen shows unavailable with the reason.
+//   LRL-005 (AC-002, REQ-002; the reload rule of SR-004…SR-006) A running Team opened in a fresh page with its Team tab
+//           shown: one participant request for the focused member (the live snapshot after the open read keeps the
+//           list); a message arriving live is shown once with no new request; after a stop and a resume from the
+//           composer (a new live sequence) the list is reloaded and equals the stored log.
 // Run alone: pnpm -C autobyteus-web test:e2e:large-runs-load-less --output-dir <fresh dir>
 import fs from 'node:fs/promises'
 import path from 'node:path'
@@ -447,6 +451,55 @@ export function registerLargeRunsLoadLessCases(h) {
       assert(r.phoneRows === 0, 'the phone shows no partial list', r.phoneRows)
       await mobile.screenshot({ path: path.join(env().outDir, 'LRL-004-phone-unavailable.png') })
     } finally { await phone.close() }
+    return r
+  })
+
+  defineRecordedCase('LRL-005', 'Reload rule (SR-004…SR-006): a running Team opens with one participant request; a live message adds none; a stop and resume reloads the list', async (page, context) => {
+    const t = tag(), r = { names: { team: `LRL Running ${t}` } }
+    keep(r)
+    const lead = await createAgent(`LRLR lead ${t}`), worker = await createAgent(`LRLR worker ${t}`)
+    r.teamDefinitionId = await createTeam(r.names.team, { lead, worker }, 'lead')
+    r.teamRunId = await startTeamRun(page, r.teamDefinitionId, r.names.team, `Hello LRL5-${t}.`)
+    r.members = await teamMembers(r.teamRunId)
+    await sendNote(r.teamRunId, r.members.lead, r.members.worker, `Running ${t} M1`)
+    await waitStored('M1 stored', 'agent_team', r.teamRunId, r.members.lead, `Running ${t} M1`)
+
+    const run = await context.newPage()
+    const watch = watchOps(run)
+    try {
+      await run.goto(`${env().frontUrl}/workspace`, { waitUntil: 'domcontentloaded' }); await settle(run, 2500)
+      const openMark = watch.mark()
+      await openTeamRun(run, r.teamRunId, r.teamDefinitionId)
+      await openTeamTab(run)
+      await quiet(watch, 3000)
+      r.openParticipantOps = countBy(watch.since(openMark, [PARTICIPANT_OP]))
+      assert(Object.keys(r.openParticipantOps).length === 1 && Object.values(r.openParticipantOps)[0] === 1,
+        'opening the running Team: one participant request (the focused member)', r.openParticipantOps)
+      r.focused = Object.keys(r.openParticipantOps)[0].split(':').slice(1).join(':')
+      await assertTabEqualsStored(run, 'running Team at open', await participantMessages('agent_team', r.teamRunId, r.focused), [`Running ${t} M1`])
+
+      // A live message: shown once, no new request.
+      const liveMark = watch.mark()
+      await sendNote(r.teamRunId, r.members.lead, r.members.worker, `Running ${t} M2`)
+      const stored2 = await waitStored('M2 stored', 'agent_team', r.teamRunId, r.focused, `Running ${t} M2`)
+      await assertTabEqualsStored(run, 'after a live message', stored2, [`Running ${t} M1`, `Running ${t} M2`])
+      await quiet(watch, 2000)
+      r.liveParticipantOps = countBy(watch.since(liveMark, [PARTICIPANT_OP]))
+      assert(Object.keys(r.liveParticipantOps).length === 0, 'a live message: no new participant request', r.liveParticipantOps)
+
+      // Stop, then resume by a message from the composer: a new live sequence, so the list is reloaded.
+      await stopTeamRun(r.teamRunId)
+      await delay(2000)
+      const resumeMark = watch.mark()
+      await typeAndSend(run, callTool('send_message_to', { target_agent_run_id: r.members.worker, content: `Resumed ${t} M3` }))
+      const stored3 = await waitStored('M3 stored', 'agent_team', r.teamRunId, r.focused, `Resumed ${t} M3`)
+      await quiet(watch, 3000)
+      r.resumeParticipantOps = countBy(watch.since(resumeMark, [PARTICIPANT_OP]))
+      r.afterResume = await assertTabEqualsStored(run, 'after the resume', stored3, [`Running ${t} M1`, `Running ${t} M2`, `Resumed ${t} M3`])
+      assert((r.resumeParticipantOps[`${PARTICIPANT_OP}:${r.focused}`] ?? 0) >= 1, 'the resume (a new live sequence) reloads the list', r.resumeParticipantOps)
+      await shot(run, 'LRL-005-after-resume')
+    } finally { watch.stop(); await run.close() }
+    await stopTeamRun(r.teamRunId).catch(() => {})
     return r
   })
 }
