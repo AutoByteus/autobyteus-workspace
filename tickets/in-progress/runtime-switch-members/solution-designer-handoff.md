@@ -33,3 +33,8 @@ None yet.
 
 ## Route
 Architecture Design Complete with task_size=Large / architectural_risk=High → `/software_engineering_team/architecture_reviewer` (the only matching rule).
+
+
+## Round 2 (2026-11-01) — after architecture review ARCH-REV-001 (Fail, ARCH-F-001…006)
+
+Fixed in `design-spec.md` (D-3, D-5, D-6, D-8, D-9, mapping, sequence, risks), `switch-member-record-contract.md` (the change carries the member identity; conflict on a stale switch; M-7; section 6, a copy's before/after and wire), `requirements-doc.md` (REQ-002, REQ-006, AC-004), `investigation-notes.md` (F-02 and F-03 restated; F-10…F-14), `follow-ups.md` (FU-001: converge the three launch rules). Classification unchanged: Large, High (two contracts packages added to the rationale). Please recheck: the two construction sites and the Team wrapper's refresh on commit, the shared record-level commit step with the thrown conflict, the strict contracts change in one cut, and the decision to record the pending switch on every affected started copy member.

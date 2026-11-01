@@ -28,7 +28,7 @@ One pure function decides the result for every kind, `applyRuntimeSelection(reco
 
 ## 2. The activation commit clears the pending switch in the same durable write as the binding
 
-`CollaborationAgentPlatformBindingChange` (`agent-collaboration/execution/domain/collaboration-agent-platform-binding.ts`) gains a third kind, `runtime_switch`: `{ kind, switchId, binding: CollaborationAgentPlatformBinding | null }` (`null` for the native runtime, which has no provider session). Every root already implements `commitAgentPlatformBindingChange(change)` under its persistence lock before the new run is published (*Read:* `RootTeamRun`, `AgentOrgRun`, `StandaloneAgentRunRoot`, each through its tree mutator). For `runtime_switch` the mutator matches the member (address and run ID, in the root's members and in every `taskExecutions` list), requires the stored pending switch to carry the same `switchId`, sets `platformAgentRunId` to the binding (or leaves `null`), and removes `pendingRuntimeSwitch`, in one tree write. A copy's facts are saved in its own file by the existing compose-at-load, split-at-save persistence (notes F-09 (a)); the mutators work on the composed record. Stored before and after, a Team member, external target:
+`CollaborationAgentPlatformBindingChange` (`agent-collaboration/execution/domain/collaboration-agent-platform-binding.ts`) gains a third kind, `runtime_switch`: `{ kind, execution: CollaborationMemberExecutionIdentity, switchId, platformAgentRunId: string | null }` (`null` for the native runtime, which has no provider session; the member identity is carried by the change itself because the native commit has no binding to read it from). Every root already implements `commitAgentPlatformBindingChange(change)` under its persistence lock before the new run is published (*Read:* `RootTeamRun`, `AgentOrgRun`, `StandaloneAgentRunRoot`, each through its tree mutator). For `runtime_switch` the commit matches the member (address and run ID, in the root's members and in every `taskExecutions` list), requires the stored pending switch to carry the same `switchId`, sets `platformAgentRunId` (or leaves `null`) and removes `pendingRuntimeSwitch`, in one tree write. **A missing member or a `switchId` that does not match is a thrown conflict, never a silent no-op** (the existing mutators throw `…CONFLICT` for a mismatching binding; a silent no-op would let the handle publish a run whose binding was never stored). The record-level step (match, guard, set, clear) is one function in `runtime-selection-rule.ts` beside the save rule; each tree family only locates the member. A copy's facts are saved in its own file by the existing compose-at-load, split-at-save persistence (notes F-09 (a)); the mutators work on the composed record. Stored before and after, a Team member, external target:
 
 ```
 before: member { address: "/reviewer", agentRunId: "run-7", platformAgentRunId: null,
@@ -51,8 +51,23 @@ The member's memory folder (`agent_teams/<team>/<agentRunId>/`, `agents/<taskAge
 | ID | Invariant |
 | --- | --- |
 | M-1 | A record has a pending switch only while its `platformAgentRunId` is null and its binding fields hold the selection made after `from`. |
-| M-2 | The commit of a switch removes the pending switch and sets the binding in one write; a commit whose `switchId` does not match the stored pending switch changes nothing. |
+| M-2 | The commit of a switch removes the pending switch and sets the binding in one write; a commit whose `switchId` does not match the stored pending switch throws a conflict and changes nothing. |
+| M-7 | After a commit, every in-memory holder of the member's state (the handle's spec and session ID; the Team wrapper's `config` and `FlatAgentExecutionContext`; the root's tree and index) has dropped the pending switch and holds the committed binding, so a later re-activation in the same root lifetime restores instead of switching again. |
 | M-3 | A copy's started values (`source`) are never changed by a switch. |
 | M-4 | A member's address, run ID, memory folder and workspace never change at a switch. |
 | M-5 | I-1…I-11 of the standalone contract hold for every member's folder. |
-| M-6 | A member with no conversation history has its pending switch cleared by its first activation without a marker, an archive or a hand-over (the commit is the same; the archive step is skipped). |
+| M-6 | A member with no conversation history has its pending switch cleared by its first activation without a marker, an archive or a hand-over (the commit is the same; the archive step is skipped). The pending switch is recorded on every affected started member at the save; only the activation decides whether there is a conversation (`AgentConversationActivityInspector`). |
+
+## 6. A delegated copy, before and after, with its wire shape
+
+A task Agent copy started on Claude (`source.launchConfiguration.runtimeKind: "claude_agent_sdk"`), no user choice, session `sess-1`. The user stops the copy and chooses Codex.
+
+```
+own file (taskAgent section), before: { …, platformAgentRunId: "sess-1" }                  // started launch in source; no userLaunchSelection
+own file, after the save:   { …, platformAgentRunId: null,
+                              userLaunchSelection: { runtimeKind: "codex_app_server", llmModelIdentifier: "…", llmConfig: {…}, selectedAt: "…" },
+                              pendingRuntimeSwitch: { switchId: "7c1e…", from: { runtimeKind: "claude_agent_sdk", llmModelIdentifier: "…", llmConfig: {…}, platformAgentRunId: "sess-1" } } }
+own file, after the next input's commit: the same without pendingRuntimeSwitch, platformAgentRunId: "thread-9"
+```
+
+Wire (collaboration contracts, camelCase): `userLaunchSelection: { runtimeKind?, llmModelIdentifier, llmConfig, selectedAt }` (the strict schema gains the optional `runtimeKind`); the Team contracts' snake_case twin gains `runtime_kind?`; the live event `delegated_launch_selections_changed` carries the same `selection`. **The pending switch is not on the wire**: the web needs only the effective runtime (the rule yields it) to show the member and to build the next patch; the server decides undo and the rest. The web's "runtime change pending" hint remains the draft-versus-saved comparison of 316.
