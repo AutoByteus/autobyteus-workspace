@@ -1,0 +1,6 @@
+# Follow-ups — restart-resume (autobyteus-285)
+
+| ID | Found by (role, document) | What is wrong, where | Evidence | Why it is outside this ticket | Urgent (`Yes`/`No`) | Suggested Task description | Sent (to, date) |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| FU-001 | Solution Designer, design | The busy-run record is written only by a graceful shutdown; after a hard kill or power loss nothing is resumed | Design (283 REQ-009) | 283's sequence puts the hard-kill-proof record in a later step | No | "Keep the busy-run record current while runs start and finish turns, so a hard kill or power loss can resume too (283 step 4)." | |
+| FU-002 | Solution Designer, design | A resume that fails (for example, the runtime's CLI is missing or signed out after an update) is only logged; the user sees nothing | Design | Needs a surface; this ticket has no UI | No | "Show the user which runs could not be resumed after an update restart, and why." | |

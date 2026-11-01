@@ -73,6 +73,7 @@
 | ID | Question | Options / reasoning | Recommendation | Owner | Status |
 | --- | --- | --- | --- | --- | --- |
 | DEC-001 | Besides an update restart, which restarts resume automatically? | (A) **only update restarts**; (B) every graceful stop and later start: a plain quit and relaunch, Restart server, `docker stop`/start; (C) updates plus "Restart server" | **A.** It is the user's stated purpose and needs no human. A plain quit is a choice to stop, and an unasked resume the next morning spends money (283's DEC-1 reasoning). "Restart server" is a troubleshooting action. A hard kill or power loss leaves no record in this step anyway. A later per-node setting (286) can widen it | User | **Decided: A** (the user, 2026-11-01) |
+| DEC-005 | Application-owned and system-owned runs (Application platform, the Model Router agent) busy at the stop? | Their owners recover them (the Application platform's own recovery, 283 F-11; Model Routing restarts its router run on use) | **Not recorded, not resumed** by this feature | Solution Designer | Decided |
 | DEC-002 | Bound when many runs resume | 283 had "ask above 5", which contradicts "no human" | **No asking; at most 3 resumes at a time**, the rest queued | Solution Designer | Decided |
 | DEC-003 | Idle runs at the stop | Nothing to continue; a message costs a turn | Not recorded, not resumed (283 DEC-2) | Solution Designer | Decided |
 | DEC-004 | Notice wording | Facts from a system sender, not the user's words (283 DEC-7) | As REQ-004 | Solution Designer | Decided |
