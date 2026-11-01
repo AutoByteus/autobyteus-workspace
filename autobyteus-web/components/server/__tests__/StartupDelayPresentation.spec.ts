@@ -9,7 +9,7 @@ import { ServerStatus, type ServerStatusSnapshot } from '~/types/serverStatus'
 
 vi.mock('~/components/server/ServerLogViewer.vue', () => ({ default: { template: '<div>Log viewer</div>' } }))
 const message = 'Startup is taking longer than usual. Waiting for the backend; see logs for details.'
-const urls = { graphql: 'http://127.0.0.1:29695/graphql', rest: 'http://127.0.0.1:29695/rest', graphqlWs: '', terminalWs: '', transcription: '', health: 'http://127.0.0.1:29695/rest/health' }
+const urls = { graphql: 'http://127.0.0.1:29695/graphql', rest: 'http://127.0.0.1:29695/rest', graphqlWs: '', terminalWs: '', health: 'http://127.0.0.1:29695/rest/health' }
 let snapshot: ServerStatusSnapshot
 let notify: (value: ServerStatusSnapshot) => void
 const mounted: Array<ReturnType<typeof mount>> = []

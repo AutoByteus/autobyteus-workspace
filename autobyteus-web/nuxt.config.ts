@@ -46,7 +46,6 @@ let serverUrls = {
   agentWsEndpoint: '',
   teamWsEndpoint: '',
   graphqlWsEndpoint: '',
-  transcriptionWsEndpoint: '',
   terminalWsEndpoint: '',
   fileExplorerWsEndpoint: ''
 };
@@ -61,7 +60,6 @@ if (isElectronBuild) {
     agentWsEndpoint: `${PRODUCTION_EMBEDDED_SERVER_WS_BASE_URL}/ws/agent`,
     teamWsEndpoint: `${PRODUCTION_EMBEDDED_SERVER_WS_BASE_URL}/ws/agent-team`,
     graphqlWsEndpoint: `${PRODUCTION_EMBEDDED_SERVER_WS_BASE_URL}/graphql`,
-    transcriptionWsEndpoint: `${PRODUCTION_EMBEDDED_SERVER_WS_BASE_URL}/transcribe`,
     terminalWsEndpoint: `${PRODUCTION_EMBEDDED_SERVER_WS_BASE_URL}/ws/terminal`,
     fileExplorerWsEndpoint: `${PRODUCTION_EMBEDDED_SERVER_WS_BASE_URL}/ws/file-explorer`
   };
@@ -73,7 +71,6 @@ if (isElectronBuild) {
     agentWsEndpoint: process.env.BACKEND_AGENT_WS_ENDPOINT || `${backendWsBaseUrl}/ws/agent`,
     teamWsEndpoint: process.env.BACKEND_TEAM_WS_ENDPOINT || `${backendWsBaseUrl}/ws/agent-team`,
     graphqlWsEndpoint: process.env.BACKEND_GRAPHQL_WS_ENDPOINT || `${backendWsBaseUrl}/graphql`,
-    transcriptionWsEndpoint: process.env.BACKEND_TRANSCRIPTION_WS_ENDPOINT || `${backendWsBaseUrl}/ws/transcribe`,
     terminalWsEndpoint: process.env.BACKEND_TERMINAL_WS_ENDPOINT || `${backendWsBaseUrl}/ws/terminal`,
     fileExplorerWsEndpoint: process.env.BACKEND_FILE_EXPLORER_WS_ENDPOINT || `${backendWsBaseUrl}/ws/file-explorer`
   };
@@ -86,7 +83,6 @@ if (isElectronBuild) {
     agentWsEndpoint: process.env.BACKEND_AGENT_WS_ENDPOINT || 'ws://localhost:8000/ws/agent',
     teamWsEndpoint: process.env.BACKEND_TEAM_WS_ENDPOINT || 'ws://localhost:8000/ws/agent-team',
     graphqlWsEndpoint: process.env.BACKEND_GRAPHQL_WS_ENDPOINT || 'ws://localhost:8000/graphql',
-    transcriptionWsEndpoint: process.env.BACKEND_TRANSCRIPTION_WS_ENDPOINT || 'ws://localhost:8000/ws/transcribe',
     terminalWsEndpoint: process.env.BACKEND_TERMINAL_WS_ENDPOINT || 'ws://localhost:8000/ws/terminal',
     fileExplorerWsEndpoint: process.env.BACKEND_FILE_EXPLORER_WS_ENDPOINT || 'ws://localhost:8000/ws/file-explorer'
   };
@@ -188,10 +184,6 @@ const baseConfig: NuxtConfig = {
       fileExplorerWsEndpoint: serverUrls.fileExplorerWsEndpoint,
       mobileRemoteAccessBuild: isMobileWebBuild,
       showDebugErrorPanel: process.env.SHOW_DEBUG_ERROR_PANEL === 'true',
-
-      audio: {
-        transcriptionWsEndpoint: serverUrls.transcriptionWsEndpoint,
-      }
     }
   },
 

@@ -40,21 +40,16 @@ export function getBrowserServerUrls() {
       graphql: config.public.graphqlBaseUrl,
       rest: restUrl,
       graphqlWs: config.public.graphqlWsEndpoint,
-      transcription: config.public.audio.transcriptionWsEndpoint,
       terminalWs: config.public.terminalWsEndpoint,
       health: healthUrl,
     }
   } catch {
     const baseUrl = getBrowserServerBaseUrl()
     const endpoints = deriveNodeEndpoints(baseUrl)
-    const transcriptionWsBase = baseUrl.startsWith('https://')
-      ? `wss://${baseUrl.slice('https://'.length)}`
-      : `ws://${baseUrl.slice('http://'.length)}`
     return {
       graphql: endpoints.graphqlHttp,
       rest: endpoints.rest,
       graphqlWs: endpoints.graphqlWs,
-      transcription: `${transcriptionWsBase}/ws/transcribe`,
       terminalWs: endpoints.terminalWs,
       health: endpoints.health,
     }

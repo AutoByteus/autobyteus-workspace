@@ -28,7 +28,6 @@ BACKEND_REST_BASE_URL=http://localhost:8000/rest
 BACKEND_GRAPHQL_WS_ENDPOINT=ws://localhost:8000/graphql
 BACKEND_AGENT_WS_ENDPOINT=ws://localhost:8000/ws/agent
 BACKEND_TEAM_WS_ENDPOINT=ws://localhost:8000/ws/agent-team
-BACKEND_TRANSCRIPTION_WS_ENDPOINT=ws://localhost:8000/ws/transcribe
 BACKEND_TERMINAL_WS_ENDPOINT=ws://localhost:8000/ws/terminal
 BACKEND_FILE_EXPLORER_WS_ENDPOINT=ws://localhost:8000/ws/file-explorer
 

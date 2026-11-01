@@ -219,7 +219,7 @@ Bridges server events to the renderer process:
 // Events emitted to renderer via IPC
 interface ServerStatusEvent {
   status: "starting" | "running" | "error" | "restarting" | "shutting-down";
-  urls: { graphql; rest; ws; transcription; health };
+  urls: { graphql; rest; ws; health };
   message?: string;
   healthCheckStatus?: string;
 }
