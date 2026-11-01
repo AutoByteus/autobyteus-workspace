@@ -67,12 +67,14 @@ describe("Integrations GraphQL (built server)", () => {
   it("shows nothing on a fresh node, and the GitHub card's API and agent ticks are gone", async () => {
     expect(await gql("query { integrations { id } integrationSources { sourceId } }"))
       .toEqual({ data: { integrations: [], integrationSources: [] } });
-    for (const removed of [
-      "query { githubIntegration { connected } }",
-      'mutation { setGitHubIntegrationAgentAccess(agentDefinitionIds: ["a"]) { connected } }',
-      'mutation { connectGitHubIntegration(token: "x") { connected } }',
-    ]) {
-      expect(errorOf(await gql(removed))?.code).toBe("GRAPHQL_VALIDATION_FAILED");
+    for (const [removed, field] of [
+      ["query { githubIntegration { connected } }", "githubIntegration"],
+      ['mutation { setGitHubIntegrationAgentAccess(agentDefinitionIds: ["a"]) { connected } }', "setGitHubIntegrationAgentAccess"],
+      ['mutation { connectGitHubIntegration(token: "x") { connected } }', "connectGitHubIntegration"],
+    ] as const) {
+      const body = await gql(removed);
+      expect(body.data ?? null).toBeNull();
+      expect(body.errors?.[0]?.message).toContain(`Cannot query field "${field}"`);
     }
   });
 
