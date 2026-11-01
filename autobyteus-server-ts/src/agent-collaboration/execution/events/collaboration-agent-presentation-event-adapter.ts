@@ -1,4 +1,7 @@
 import { isTaskDelegationSystemTaskNotificationMessage, getTaskDelegationSystemTaskNotificationDisplayContent } from "./task-system-input-presentation.js";
+import { SenderType } from "autobyteus-ts/agent/sender-type.js";
+import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
+import { RESTART_RESUME_NOTICE_SENDER_ID } from "../../../agent-execution/domain/system-task-notification-senders.js";
 import type { AgentPresentationMessage } from "@autobyteus/agent-presentation-contracts";
 import type { CollaborationAgentExecutionEvent } from "../domain/collaboration-agent-execution-event.js";
 import {
@@ -12,6 +15,9 @@ import {
   type ResolvePresentationIdentityByAgentRunId,
 } from "./collaboration-agent-presentation-adapter.js";
 import { buildMemberInputPresentationEvent } from "./member-input-presentation-event-builder.js";
+
+const isRestartResumeNotice = (message: AgentInputUserMessage): boolean =>
+  message.senderType === SenderType.SYSTEM && message.metadata.sender_id === RESTART_RESUME_NOTICE_SENDER_ID;
 
 export type CollaborationAgentPresentationAdaptationResult =
   | Readonly<{ kind: "publish"; event: AgentPresentationEvent; message: AgentPresentationMessage }>
@@ -54,6 +60,12 @@ export class CollaborationAgentPresentationEventAdapter {
       return result.kind === "publish" ? publish(result.event) : result;
     }
     if (rawEvent.kind === "member_input") {
+      // autobyteus-285: the restart-resume notice is a system notice for a member too, as the resumer shows it for a host.
+      if (isRestartResumeNotice(rawEvent.message)) return publish(Object.freeze({
+        eventType: "SYSTEM_TASK_NOTIFICATION",
+        details: Object.freeze({ sender: Object.freeze({ kind: "system" }), content: rawEvent.message.content }),
+        statusHint: null,
+      }));
       if (isTaskDelegationSystemTaskNotificationMessage(rawEvent.message)) return publish(Object.freeze({
         eventType: "SYSTEM_TASK_NOTIFICATION",
         details: Object.freeze({

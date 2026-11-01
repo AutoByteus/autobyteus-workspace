@@ -26,6 +26,8 @@ import {
 import { getNodeIdentityService } from "../remote-access/services/node-identity-service.js";
 import { getServerSettingsService } from "../services/server-settings-service.js";
 import { getStandaloneAgentRunRootManager } from "../standalone-agent-run-root/services/standalone-agent-run-root-manager.js";
+import { createRootExecutionIdentity, type RootSubjectKind } from "../agent-collaboration/execution/domain/root-execution-identity.js";
+import type { CollaborationRootResolver } from "./collaboration-root-resolver.js";
 
 /**
  * Binds this node's remote collaboration (CM-10 … CM-12) around the process's run services: the settings,
@@ -36,10 +38,14 @@ export const composeStudioRemoteCollaboration = (input: Readonly<{
   appDataDir: string;
   tempWorkspaceDir: string;
   agentRuns: Pick<AgentRunService, "prepareAgentRun" | "recordRunTitle" | "readRunTitle">;
-  teamRuns: Pick<TeamRunService, "resolveManagedTeamRun" | "storedRemoteLinkCheck" | "createTeamRun" | "terminateTeamRun" | "recordRunTitle"
+  teamRuns: Pick<TeamRunService, "storedRemoteLinkCheck" | "createTeamRun" | "terminateTeamRun" | "recordRunTitle"
     | "readRunTitle" | "pairedAgents">;
-  orgRuns: Pick<AgentOrgRunService, "getActive" | "restore" | "storedRemoteLinkCheck">;
+  orgRuns: Pick<AgentOrgRunService, "storedRemoteLinkCheck">;
+  /** The node's one root resolution (autobyteus-285 D5); the receivers keep their own "not found" handling. */
+  rootResolver: CollaborationRootResolver;
 }>): (() => void) => {
+  const resolve = (rootSubjectKind: RootSubjectKind, rootRunId: string) =>
+    input.rootResolver.resolveOrRestore(createRootExecutionIdentity({ rootSubjectKind, rootRunId }));
   const roots: RemoteRootDirectory = {
     storedLinkCheck: (root, query) => {
       switch (root.kind) {
@@ -48,9 +54,9 @@ export const composeStudioRemoteCollaboration = (input: Readonly<{
         case "agent_org": return input.orgRuns.storedRemoteLinkCheck(root.runId, query);
       }
     },
-    standalone: (hostRunId) => getStandaloneAgentRunRootManager().resolveRoot(hostRunId),
-    team: (teamRunId) => input.teamRuns.resolveManagedTeamRun(teamRunId),
-    org: async (orgRunId) => input.orgRuns.getActive(orgRunId) ?? input.orgRuns.restore(orgRunId),
+    standalone: async (hostRunId) => { const found = await resolve("agent", hostRunId); return found?.kind === "agent" ? found.root : null; },
+    team: async (teamRunId) => { const found = await resolve("agent_team", teamRunId); return found?.kind === "agent_team" ? found.root : null; },
+    org: async (orgRunId) => { const found = await resolve("agent_org", orgRunId); return found?.kind === "agent_org" ? found.root : null; },
     pairedAgents: (kind) => kind === "agent" ? getStandaloneAgentRunRootManager().pairedAgents : input.teamRuns.pairedAgents,
   };
   // autobyteus-32: decisions of copies started for a peer, held until the peer's work packet arrives.
