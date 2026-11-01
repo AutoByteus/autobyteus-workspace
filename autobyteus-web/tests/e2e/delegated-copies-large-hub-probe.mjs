@@ -417,6 +417,13 @@ const timedClick = async (locator, predicateSource, arg, timeout = STEP_TIMEOUT)
 };
 const HOST_READY = `const t = p._s.get('activeContext')?.activeWorkspaceTarget; return p._s.get('agentSelection')?.selectedRunId === arg && t?.context.state.runId === arg && t.context.state.conversation.messages.length > 0;`;
 const CHILD_READY = `const t = p._s.get('activeContext')?.activeWorkspaceTarget; return t?.agentRunId === arg.id && t.context.state.conversation.id === arg.id && t.context.state.conversation.messages.length > 0 && (!arg.marker || document.querySelector('[data-test="workspace-center-pane"]')?.textContent.includes(arg.marker));`;
+/** Whether the app has loaded a copy (its member loader marks it loaded for the hub's root; autobyteus-358 moved this
+ * state from the hub context to the shared MemberLoader). Read through the Nuxt dev server's module, the instance the app
+ * uses; a --desktop-instance build has no such module. */
+const copyLoadedInPage = async ({ host, id }) => {
+  const { memberLoader } = await import('/_nuxt/services/runHydration/memberLoader.ts');
+  return memberLoader().isHydrated(`agent:${host}`, id);
+};
 const memberOps = (start, id) => opsSince(start, (r) => ['GetAgentRunCollaborationMemberProjection', 'GetAgentRunCollaborationMemberFileChanges', 'GetRunFileChanges'].includes(r.operationName) && (r.variables?.agentRunId === id || r.variables?.runId === id));
 const allMemberOps = (start) => opsSince(start, (r) => ['GetAgentRunCollaborationMemberProjection', 'GetAgentRunCollaborationMemberFileChanges'].includes(r.operationName) || (r.operationName === 'GetRunFileChanges' && r.variables?.runId !== setup.hostId));
 const expandTeam = async (teamRunId, id = setup.hostId) => {
@@ -569,7 +576,7 @@ const liveJourneys = async () => {
     await quiet(1500);
     const after = await storeState();
     const centerText = await page.locator('[data-test="workspace-center-pane"]').innerText();
-    const hydrated = await page.evaluate(({ host, id }) => document.querySelector('#__nuxt').__vue_app__.config.globalProperties.$pinia._s.get('agentRunCollaboration').contextFor(host)?.isChildHydrated(id), { host: setup.hostId, id: queuedTarget.agentRunId });
+    const hydrated = await page.evaluate(copyLoadedInPage, { host: setup.hostId, id: queuedTarget.agentRunId });
     assert(hydrated && after.pending.some((p) => p.text.includes(queuedText) && p.state === 'queued') && centerText.includes(queuedText), 'Queued input not shown after opening', { after, hydrated, centerHasText: centerText.includes(queuedText) });
     await shot('live-queued-after-reload');
     return { serverInputStates, after: after.pending, hydrated, messageCount: after.messageCount, ops: memberOps(start, queuedTarget.agentRunId), status: await statusOf(queuedTarget.agentRunId) };
@@ -607,7 +614,7 @@ const liveJourneys = async () => {
     await until('burst processed (server)', async () => { const c = JSON.stringify(await childProjection(setup.hostId, target.address, target.agentRunId)); return texts.every((t) => c.includes(`ECHO:\\\"${t}`) || c.split(t).length > 2); }, 120000).catch(() => {});
     await quiet(2000);
     const host = setup.hostId, id = target.agentRunId;
-    const hydratedNow = () => page.evaluate(({ host, id }) => document.querySelector('#__nuxt').__vue_app__.config.globalProperties.$pinia._s.get('agentRunCollaboration').contextFor(host)?.isChildHydrated(id), { host, id });
+    const hydratedNow = () => page.evaluate(copyLoadedInPage, { host, id });
     let hydrated = await hydratedNow(), reselected = false;
     const firstOps = memberOps(start, id), loadWarnings = warnings.slice(warningsBefore);
     if (!hydrated) { // The policy: a failed load is logged and the next selection retries.
@@ -670,7 +677,7 @@ const liveJourneys = async () => {
     };
     await page.route('**/graphql', handler);
     const errorsBefore = errors.length, warningsBefore = warnings.length, start = requests.length;
-    const hydratedNow = (id) => page.evaluate(({ host, id }) => document.querySelector('#__nuxt').__vue_app__.config.globalProperties.$pinia._s.get('agentRunCollaboration').contextFor(host)?.isChildHydrated(id), { host: setup.hostId, id });
+    const hydratedNow = (id) => page.evaluate(copyLoadedInPage, { host: setup.hostId, id });
     await expandTeam(team.teamRunId);
     step('team expanded'); await memberRow(target.agentRunId).click(); step('copy clicked');
     await until('load failure logged', () => warnings.slice(warningsBefore).some((w) => w.text.includes(target.agentRunId) && w.text.includes(setup.hostId)), 30000);
@@ -704,7 +711,7 @@ const liveJourneys = async () => {
     await quiet(2000);
     const ops = memberOps(start, target.agentRunId);
     assert((ops.GetAgentRunCollaborationMemberProjection ?? 0) >= 1 && (ops.GetAgentRunCollaborationMemberProjection ?? 0) <= 2, 'Unexpected load count', ops);
-    const hydrated = await page.evaluate(({ host, id }) => document.querySelector('#__nuxt').__vue_app__.config.globalProperties.$pinia._s.get('agentRunCollaboration').contextFor(host)?.isChildHydrated(id), { host: setup.otherHostId, id: target.agentRunId });
+    const hydrated = await page.evaluate(copyLoadedInPage, { host: setup.otherHostId, id: target.agentRunId });
     assert(hydrated === true, 'Copy did not end loaded', { hydrated, ops });
     return { clickToTargetMs: ms, ops, hydrated, selected: (await storeState(setup.otherHostId)).selected };
   });
