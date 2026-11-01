@@ -1,0 +1,10 @@
+# API-03: Settings → providers with the real LM Studio host (127.0.0.1:1234; model list only, nothing loaded)
+# Command: env -i PATH HOME TMPDIR node <ev>/API-03-settings-lmstudio-check.mjs --output-dir <ev>/API-03-settings (owned stack: built server from this tree, Nuxt dev, headless Chrome)
+# Code: 534ad1f55e (HEAD 8e011a01bd); macOS arm64; Date: 2026-11-01T07:23:58Z
+
+API-03 settings LM Studio check: Pass. Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/code-quality-leftovers/tickets/in-progress/code-quality-leftovers/evidence/api-e2e/API-03-settings/evidence.json
+checks: {"lmStudioReady": {"modelShown": "google/gemma-4-26b-a4b"}, "ollamaUnavailable": {"notice": "Models unavailable"}, "partialSetting": "Server setting 'LMSTUDIO_HOSTS' has been updated successfully.", "lmStudioPartial": {"notice": "Some model sources were unavailable", "modelsKept": true}, "readySetting": "Server setting 'LMSTUDIO_HOSTS' has been updated successfully.", "lmStudioReadyAgain": {"noticeGone": true}}
+distinctStates: ['IDLE', 'READY', 'ERROR', 'PARTIAL']
+distinctSourceKeySets: ['__typename,failedUnitCount,modelCount,safeMessage,state,successfulUnitCount']
+graphqlErrors: []
+cleanup: {'browser': 'closed', 'frontend': 'terminated', 'backend': 'terminated', 'dataRootRemoved': True}

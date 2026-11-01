@@ -12,7 +12,7 @@ import { TeamRunPersistenceFailStoppedError } from "./team-run-persistence-contr
 import { RootTaskPersistenceFinalizationIndeterminateError } from "../../agent-collaboration/execution/task/task-delegation-command.js";
 
 export type TeamRunPersistenceFailStop = (input: {
-  file: RunPackageFileWriteResult & { outcome: "renamed_finalization_indeterminate" };
+  file: RunPackageFileWriteResult & { outcome: "finalization_indeterminate" };
 } | {
   postDurabilityError: Error;
   fileRole: TeamRunFileRole;
@@ -55,11 +55,11 @@ export class TeamRunPersistenceCoordinator {
         this.options.teamMemoryDir,
         change.nextTree,
       );
-      if (result.outcome === "not_renamed") {
+      if (result.outcome === "not_committed") {
         change.cancelBeforeDurability();
         return { outcome: "not_committed", cause: result.cause };
       }
-      if (result.outcome === "renamed_finalization_indeterminate") {
+      if (result.outcome === "finalization_indeterminate") {
         this.latchPersistenceFailStop(result);
         return { outcome: "finalization_indeterminate", file: result.file, stage: result.stage };
       }
@@ -88,12 +88,12 @@ export class TeamRunPersistenceCoordinator {
       throw error;
     }
     const result = await this.options.executionTreeStore.write(this.options.teamMemoryDir, plan.nextTree);
-    if (result.outcome === "renamed_finalization_indeterminate") {
+    if (result.outcome === "finalization_indeterminate") {
       this.latchPersistenceFailStop(result);
       await command.activation.abortBeforeCommit();
       return { outcome: "finalization_indeterminate", file: result.file, stage: result.stage };
     }
-    if (result.outcome === "not_renamed") {
+    if (result.outcome === "not_committed") {
       await command.activation.abortBeforeCommit();
       return { outcome: "not_committed", cause: result.cause };
     }
@@ -110,11 +110,11 @@ export class TeamRunPersistenceCoordinator {
       append.message,
       prepared.logOwners,
     );
-    if (result.outcome === "not_renamed") {
+    if (result.outcome === "not_committed") {
       append.cancelBeforeDurability();
       return { outcome: "not_committed", cause: result.cause };
     }
-    if (result.outcome === "renamed_finalization_indeterminate") {
+    if (result.outcome === "finalization_indeterminate") {
       this.latchPersistenceFailStop(result);
       // The Team message path's own error and text (A7).
       throw new Error(`Team message finalization is indeterminate at '${result.stage}'.`);
@@ -133,7 +133,7 @@ export class TeamRunPersistenceCoordinator {
   }
 
   private latchPersistenceFailStop(
-    result: RunPackageFileWriteResult & { outcome: "renamed_finalization_indeterminate" },
+    result: RunPackageFileWriteResult & { outcome: "finalization_indeterminate" },
   ): void {
     this.failStopped = true;
     this.options.enterPersistenceFailStop({ file: result });

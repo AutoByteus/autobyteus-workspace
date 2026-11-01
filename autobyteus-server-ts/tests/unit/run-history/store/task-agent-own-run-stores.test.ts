@@ -139,23 +139,23 @@ describe("a delegation writes the task agent's own files first, then its link (D
     const treeBefore = await sha(path.join(f.dir, "collaboration_tree.json"));
     const failing = new (class extends AtomicRunPackageFileCommitWriter {
       override async write(input: Parameters<AtomicRunPackageFileCommitWriter["write"]>[0]): Promise<RunPackageFileWriteResult<any>> {
-        if (input.file === "task_agent_run_metadata") return { outcome: "not_renamed", file: input.file, stage: "write_temp", cause: new Error("disk full") };
+        if (input.file === "task_agent_run_metadata") return { outcome: "not_committed", file: input.file, stage: "write_temp", cause: new Error("disk full") };
         return super.write(input);
       }
     })();
     const result = await new StandaloneRootPackageStore(failing).writeTree(f.dir, hostTree([agentCopy("reviewer-run")]));
-    expect(result).toMatchObject({ outcome: "not_renamed", file: "execution_tree" });
+    expect(result).toMatchObject({ outcome: "not_committed", file: "execution_tree" });
     expect(await sha(path.join(f.dir, "collaboration_tree.json"))).toBe(treeBefore);
     expect(await exists(path.join(f.memory, "agents", "reviewer-run"))).toBe(false);
 
     // A crash after the own file and before the link leaves an unlinked own file; the run loads without it.
     const linkFails = new (class extends AtomicRunPackageFileCommitWriter {
       override async write(input: Parameters<AtomicRunPackageFileCommitWriter["write"]>[0]): Promise<RunPackageFileWriteResult<any>> {
-        if (input.file === "execution_tree") return { outcome: "not_renamed", file: input.file, stage: "rename", cause: new Error("stopped") };
+        if (input.file === "execution_tree") return { outcome: "not_committed", file: input.file, stage: "rename", cause: new Error("stopped") };
         return super.write(input);
       }
     })();
-    expect((await new StandaloneRootPackageStore(linkFails).writeTree(f.dir, hostTree([agentCopy("reviewer-run")]))).outcome).toBe("not_renamed");
+    expect((await new StandaloneRootPackageStore(linkFails).writeTree(f.dir, hostTree([agentCopy("reviewer-run")]))).outcome).toBe("not_committed");
     expect(await exists(path.join(f.memory, "agents", "reviewer-run", "run_metadata.json"))).toBe(true);
     expect(await sha(path.join(f.dir, "collaboration_tree.json"))).toBe(treeBefore);
     expect(await f.store.readTree(f.dir, HOST)).toEqual(hostTree([]));

@@ -72,8 +72,8 @@ segment and tool lifecycle events; it does not derive turn/segment identity,
 synthesize missing starts, or recover text from end payloads.
 
 Team Communication separately consumes accepted inter-Agent delivery events.
-Its persisted projection stores exact `TeamExecutionAddress` sender/receiver
-values and structured `reference_files`; natural prose is never scanned for
+Its persisted projection stores the sender and receiver AgentRun IDs and
+structured `reference_files`; natural prose is never scanned for
 reference authority.
 
 ## Team And Browser Projection
@@ -81,8 +81,9 @@ reference authority.
 A Team member handle verifies its real AgentRun binding and supplies one
 `TeamAgentExecutionBinding`. `TeamAgentEventAdapter` is stateless: it maps
 canonical Agent events and exact error evidence but performs no segment
-correlation. The strict Team projector emits `agent_execution` plus the canonical
-payload through `@autobyteus/team-stream-contracts`.
+correlation. The strict Team projector emits the canonical payload plus the
+root's `change_sequence` and the member's `agent_run_id` through
+`@autobyteus/team-stream-contracts`.
 
 Standalone and Team browser handlers use the same compound turn/segment
 identity. The stored identity retains canonical type, existing mutation requires

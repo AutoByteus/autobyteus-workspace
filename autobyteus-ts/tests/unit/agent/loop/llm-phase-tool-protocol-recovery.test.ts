@@ -241,9 +241,7 @@ describe('LlmPhase unified streaming setup', () => {
         response: { content: 'resumed' },
       });
       expect(llm.streamCaptures).toHaveLength(1);
-      expect(llm.streamCaptures[0].kwargs).toEqual({
-        logicalConversationId: 'agent_no_tools',
-      });
+      expect(llm.streamCaptures[0].kwargs).toEqual({});
       expect(llm.streamCaptures[0].options).toMatchObject({ promptCacheScope: 'conversation', turnId: turn.turnId });
       expect(llm.streamCaptures[0].kwargs).not.toHaveProperty('tools');
       expect(memoryManager.listTurnRawTracesOrdered().some(({ traceType }) =>
@@ -282,7 +280,7 @@ describe('LlmPhase single request builder', () => {
       expect(request.tools).toBe(sentTools);
       expect(llm.streamCaptures).toHaveLength(1);
       expect(llm.streamCaptures[0].messages).toEqual(request.outboundMessages);
-      expect(llm.streamCaptures[0].kwargs).toEqual({ logicalConversationId: 'agent_request_tools', tools: request.tools });
+      expect(llm.streamCaptures[0].kwargs).toEqual({ tools: request.tools });
       expect(llm.streamCaptures[0].kwargs.tools).toBe(request.tools);
       expect(llm.streamCaptures[0].options).toMatchObject({ promptCacheScope: 'conversation', turnId: turn.turnId });
       expect(request).not.toHaveProperty('renderedPayload');

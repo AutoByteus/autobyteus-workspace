@@ -181,7 +181,7 @@ describe("Agent root of a standalone run", () => {
     expect("taskExecutions" in team && team.taskExecutions).toEqual([]);
     const location = await new StandaloneRootLocationService({ memoryDir: f.memoryDir }).findAgent({ agentRunId: "code-reviewer-run-1" });
     expect(location).toMatchObject({ rootSubjectKind: "agent", rootRunId: HOST, memberAddress: "/code_reviewer",
-      memoryDir: path.join(f.memoryDir, "agents", "code-reviewer-run-1"), launchConfiguration: { runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "gpt-host" } });
+      memoryDir: path.join(f.memoryDir, "agents", "code-reviewer-run-1") });
 
     // The host crashes: the root and its children survive; a delegated copy's report wakes the host (DS-009).
     f.host.crash();

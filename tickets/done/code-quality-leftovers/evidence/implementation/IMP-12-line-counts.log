@@ -1,0 +1,41 @@
+# IMP-12 effective line counts (non-empty lines, grep -cv "^\s*$") of every touched source file, base -> now
+# Command: for each file in git diff --name-only efd28d5c4a HEAD (source folders, tests excluded)
+# Commit: d7b11c57b6 (base efd28d5c4a)
+# Date: 2026-11-01T06:17Z
+
+92 -> 85  autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-segment-turn-admission.ts
+497 -> 497  autobyteus-server-ts/src/agent-execution/backends/codex/thread/codex-thread.ts
+36 -> 30  autobyteus-server-ts/src/agent-memory/domain/agent-memory-location.ts
+143 -> 127  autobyteus-server-ts/src/agent-memory/services/agent-memory-location-service.ts
+470 -> 470  autobyteus-server-ts/src/agent-org-execution/services/agent-org-run-manager.ts
+144 -> 144  autobyteus-server-ts/src/agent-org-execution/services/agent-org-run-persistence-coordinator.ts
+453 -> 453  autobyteus-server-ts/src/agent-team-execution/services/agent-team-run-manager.ts
+143 -> 143  autobyteus-server-ts/src/agent-team-execution/services/team-run-persistence-coordinator.ts
+144 -> 143  autobyteus-server-ts/src/api/graphql/types/llm-provider-model-catalog.ts
+47 -> 47  autobyteus-server-ts/src/api/rest/project-task-context-files.ts
+36 -> 18  autobyteus-server-ts/src/app-data-migrations/frozen/server/services/team-communication/team-communication-identity.ts
+136 -> 136  autobyteus-server-ts/src/app-data-migrations/migrations/team-communication-projection-address/team-communication-projection-address-migration.ts
+79 -> 78  autobyteus-server-ts/src/llm-management/llm-providers/domain/models.ts
+165 -> 158  autobyteus-server-ts/src/llm-management/services/dynamic-model-source-lifecycle.ts
+343 -> 340  autobyteus-server-ts/src/llm-management/services/model-catalog-service.ts
+36 -> 29  autobyteus-server-ts/src/projects/runtime/task-execution-resource-release.ts
+0 -> 56  autobyteus-server-ts/src/projects/services/project-task-context-drafts.ts
+494 -> 445  autobyteus-server-ts/src/projects/services/project-task-service.ts
+0 -> 32  autobyteus-server-ts/src/projects/services/task-context-ownership.ts
+245 -> 245  autobyteus-server-ts/src/run-history/services/agent-org-run-history-catalog-service.ts
+121 -> 121  autobyteus-server-ts/src/run-history/store/atomic-run-package-file-commit-writer.ts
+246 -> 246  autobyteus-server-ts/src/run-history/store/message-log.ts
+136 -> 136  autobyteus-server-ts/src/run-history/store/task-agent-message-logs.ts
+305 -> 305  autobyteus-server-ts/src/run-history/store/task-execution-tree-split.ts
+425 -> 425  autobyteus-server-ts/src/standalone-agent-run-root/services/standalone-agent-run-root-manager.ts
+206 -> 201  autobyteus-server-ts/src/standalone-agent-run-root/services/standalone-root-location-service.ts
+169 -> 169  autobyteus-server-ts/src/standalone-agent-run-root/services/standalone-root-persistence-coordinator.ts
+20 -> 19  autobyteus-ts/src/agent/loop/conversation-request.ts
+181 -> 160  autobyteus-ts/src/agent/loop/llm-phase-summary-port.ts
+386 -> 386  autobyteus-ts/src/agent/loop/llm-phase.ts
+41 -> 39  autobyteus-ts/src/llm/api/provider-request-kwargs.ts
+197 -> 192  autobyteus-ts/src/llm/base.ts
+48 -> 48  autobyteus-web/graphql/queries/llm_provider_queries.ts
+497 -> 480  autobyteus-web/stores/llmProviderConfig.ts
+147 -> 145  autobyteus-web/stores/llmProviderConfigSupport.ts
+89 -> deleted  autobyteus-web/utils/application/applicationLaunch.ts

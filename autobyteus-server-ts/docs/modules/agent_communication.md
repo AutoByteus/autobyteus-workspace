@@ -70,7 +70,7 @@ Team Communication projection:
 - `reference_files` become Team Communication child references persisted under
   the team run; and
 - frontend Team tab sent/received perspectives hydrate from that projection and
-  match the focused execution by exact normalized `TeamExecutionAddress`.
+  match the focused member by its AgentRun ID.
 
 Acceptance means the live AgentRun owns one ordered, at-most-once forwarding
 attempt. It does not mean a provider turn has completed and does not synchronously

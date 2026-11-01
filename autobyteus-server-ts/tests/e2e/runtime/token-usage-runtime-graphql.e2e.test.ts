@@ -673,7 +673,8 @@ runRealRuntimeTokenUsageE2e("real runtime token usage GraphQL e2e", () => {
           // The meter keeps the runtime's own reading for the latest model call.
           expect(summary.latestPromptTokens).toBe(asNumber(lastCall?.payload.latest_prompt_tokens));
           expect(["positive", "zero_reported", "not_reported", "unsupported_or_local", "unknown"]).toContain(summary.cacheState);
-          expect(["estimated", "price_missing", "partial_price_missing"]).toContain(summary.apiCostStatus);
+          // A local LM Studio model has no API bill (the local pricing policy); paid runtimes are estimated or priced as missing.
+          expect(spec.id.includes("lmstudio") ? ["local_no_api_bill"] : ["estimated", "price_missing", "partial_price_missing"]).toContain(summary.apiCostStatus);
 
           const usageWindowEnd = new Date(Date.now() + 5_000);
           const statistics = await queryStatistics(usageWindowStart, usageWindowEnd);

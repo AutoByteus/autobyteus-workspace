@@ -1,0 +1,38 @@
+# IMP-02 AC-001 / AC-006 / AC-005 searches (removed and renamed names)
+# Command: git grep per name (shown below), excluding ticket folders; AC-001 also excludes the sealed migration area and its tests and DESIGN.md (rule 11 names the label as its example)
+# Commit: d7b11c57b6
+# Date: 2026-11-01T06:17Z
+
+## AC-001: current code
+releaseConversation: 0 hits
+logicalConversationId: 0 hits
+DISCOVERY_SETTING_MODEL_KINDS: 0 hits
+buildPreparedAgentLaunch: 0 hits
+buildPreparedTeamLaunch: 0 hits
+getTeamAgentRunLocation: 0 hits
+CODEX_SEGMENT_TURN_OMISSION_UNLISTED: 0 hits
+drainRuntimeReleases: 0 hits
+not_renamed: 0 hits
+renamed_finalization_indeterminate: 0 hits
+
+## AC-001: source modelKind (any modelKind in the repository except the media tool schema and the credential catalog, which are other concepts)
+(end)
+
+## Released names kept by rule (frozen copies, sealed migrations and the migration tests that feed them)
+autobyteus-server-ts/src/app-data-migrations/frozen/server/run-history/store/atomic-run-package-file-commit-writer.ts:7
+autobyteus-server-ts/src/app-data-migrations/frozen/server/run-history/store/message-log.ts:2
+autobyteus-server-ts/src/app-data-migrations/migrations/collaborators-to-delegated-runs-v1/collaborators-to-delegated-runs-v1-app-data-migration.ts:1
+autobyteus-server-ts/src/app-data-migrations/migrations/team-run-execution-tree-v2/team-run-execution-tree-v2-app-data-migration.ts:1
+autobyteus-server-ts/tests/app-data-migrations/agent-org-flat-team-families-v1/agent-org-context-file-locator-transition.test.ts:2
+autobyteus-server-ts/tests/app-data-migrations/collaborators-to-delegated-runs-v1/collaborators-to-delegated-runs-v1-app-data-migration.test.ts:1
+autobyteus-server-ts/tests/app-data-migrations/delegated-copy-own-file-complete-v1/delegated-copy-own-file-complete-v1-app-data-migration.test.ts:1
+autobyteus-server-ts/tests/app-data-migrations/task-agent-own-run-v1/task-agent-own-run-v1-app-data-migration.test.ts:1
+autobyteus-server-ts/tests/app-data-migrations/team-context-file-execution-locators-v1/team-context-file-execution-locators-v1.test.ts:3
+
+## AC-006: logicalConversationId over autobyteus-ts, autobyteus-server-ts, test-support (outside archived tickets)
+(end)
+
+## AC-005: agent_execution / execution_address in the two streaming docs
+autobyteus-server-ts/docs/design/agent_websocket_streaming_protocol.md:364:- [Agent Execution](../modules/agent_execution.md)
+autobyteus-server-ts/docs/modules/agent_streaming.md:54:  release (see [Agent Execution](agent_execution.md#runtime-segment-identity-and-ordering));
+(end: both hits are links to agent_execution.md)

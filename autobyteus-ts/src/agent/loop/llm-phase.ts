@@ -222,7 +222,7 @@ export class LlmPhase {
     call.timing.start();
     return call.llm.streamMessages(
       request.outboundMessages,
-      conversationRequestKwargs(call.agentId, request.tools),
+      conversationRequestKwargs(request.tools),
       conversationRequestOptions({ signal: scope.signal, turnId: call.turn.turnId }),
     ) as AsyncIterable<ChunkResponse>;
   }

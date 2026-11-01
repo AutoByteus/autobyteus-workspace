@@ -35,8 +35,6 @@ describe('OpenAICompatibleRequestBuilder', () => {
       outputLimitParameter: 'max_completion_tokens',
       stream: true,
       kwargs: {
-        logicalConversationId: 'agent-1',
-        logical_conversation_id: 'agent-1',
         conversationId: 'conversation-1',
         agentId: 'agent-1',
         turnId: 'turn-1',
@@ -65,8 +63,6 @@ describe('OpenAICompatibleRequestBuilder', () => {
       tools,
       tool_choice: 'required'
     });
-    expect(params).not.toHaveProperty('logicalConversationId');
-    expect(params).not.toHaveProperty('logical_conversation_id');
     expect(params).not.toHaveProperty('conversationId');
     expect(params).not.toHaveProperty('agentId');
     expect(params).not.toHaveProperty('turnId');

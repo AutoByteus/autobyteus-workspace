@@ -2,6 +2,7 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { trackReleases, type ReleaseTracker } from "../../helpers/project-task-release-tracker.js";
 import { ProjectStore } from "../../../src/projects/stores/project-store.js";
 import { ProjectsLayout } from "../../../src/projects/stores/projects-layout.js";
 import { ProjectService } from "../../../src/projects/services/project-service.js";
@@ -21,8 +22,9 @@ describe("Task agent run resources (SR-023/SR-024)", () => {
   let root: string, layout: ProjectsLayout, store: ProjectStore, projectId: string;
   let release: ReturnType<typeof vi.fn<TaskExecutionReleaseRequest>>;
   let tasks: ProjectTaskService;
+  let releases: ReleaseTracker;
   const boot = async () => {
-    const service = new ProjectTaskService({ store, contextStore: new ProjectTaskContextStore(layout), requestRelease: release,
+    const service = new ProjectTaskService({ store, contextStore: new ProjectTaskContextStore(layout), requestRelease: (releases = trackReleases(release)).request,
       taskExecutionResources: new TaskExecutionResourceService(new TaskExecutionResourceStore(layout)) });
     await service.load();
     return service;
@@ -39,7 +41,7 @@ describe("Task agent run resources (SR-023/SR-024)", () => {
     release = vi.fn<TaskExecutionReleaseRequest>(async (_root, agentRuns) => agentRuns.map(execution => ({ execution, stopped: true })));
     tasks = await boot();
   });
-  afterEach(async () => { await tasks.drainRuntimeReleases(); vi.restoreAllMocks(); await fs.rm(root, { recursive: true, force: true }); });
+  afterEach(async () => { await releases.settled(); vi.restoreAllMocks(); await fs.rm(root, { recursive: true, force: true }); });
 
   it("links `starting` before resources, writes the exact documented file, and settles start once", async () => {
     const task = await tasks.createTask({ projectId, title: "A", description: "A" });
@@ -90,7 +92,7 @@ describe("Task agent run resources (SR-023/SR-024)", () => {
       expect(tasks.isOpen({ agentRunId: "worker-a" })).toBe(false); // closure committed before the status write
       return ProjectStore.prototype.updateTask.apply(store, args);
     });
-    await tasks.updateTask({ projectId, taskId: a.taskId, status: "DONE" }); await tasks.drainRuntimeReleases();
+    await tasks.updateTask({ projectId, taskId: a.taskId, status: "DONE" }); await releases.settled();
     expect(release).toHaveBeenCalledWith(hostRoot, [{ agentRunId: "worker-a" }]);
     expect(release).toHaveBeenCalledWith(otherRoot, [{ agentRunId: "worker-a2" }]);
     expect(observed.sort()).toEqual(["manager-root:DONE:false", "team-root:DONE:false"]);
@@ -99,7 +101,7 @@ describe("Task agent run resources (SR-023/SR-024)", () => {
     // Repeated DONE: no file change, and the stop is requested again for every closed agent run.
     const bytes = await fs.readFile(layout.taskExecutionResourcesFile(projectId, a.taskId), "utf8");
     release.mockClear();
-    await tasks.updateTask({ projectId, taskId: a.taskId, status: "DONE" }); await tasks.drainRuntimeReleases();
+    await tasks.updateTask({ projectId, taskId: a.taskId, status: "DONE" }); await releases.settled();
     expect(release).toHaveBeenCalledTimes(2);
     expect(await fs.readFile(layout.taskExecutionResourcesFile(projectId, a.taskId), "utf8")).toBe(bytes);
   });
@@ -111,7 +113,7 @@ describe("Task agent run resources (SR-023/SR-024)", () => {
     release.mockResolvedValueOnce([{ execution: { agentRunId: "worker-a" }, stopped: false, error: { code: "EXACT_CLOSE_FAILED", message: "still running" } }]);
     vi.spyOn(store, "updateTask").mockRejectedValueOnce(new Error("disk full"));
     await expect(tasks.updateTask({ projectId, taskId: a.taskId, status: "DONE" })).rejects.toThrow("disk full");
-    await tasks.drainRuntimeReleases();
+    await releases.settled();
     expect(release).toHaveBeenCalledOnce();
     expect(tasks.isOpen({ agentRunId: "worker-a" })).toBe(false);
     expect((await store.readTask(projectId, a.taskId))!.status).toBe("TODO");

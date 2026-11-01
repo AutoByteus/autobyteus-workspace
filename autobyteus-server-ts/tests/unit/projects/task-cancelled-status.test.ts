@@ -3,6 +3,7 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { trackReleases, type ReleaseTracker } from "../../helpers/project-task-release-tracker.js";
 import { ProjectStore, readTaskFile } from "../../../src/projects/stores/project-store.js";
 import { ProjectsLayout } from "../../../src/projects/stores/projects-layout.js";
 import { AdHocTasksLayout } from "../../../src/projects/stores/ad-hoc-tasks-layout.js";
@@ -68,11 +69,12 @@ describe("CANCELLED ends a Task's work exactly like DONE", () => {
   let appData: string, layout: ProjectsLayout, adHocLayout: AdHocTasksLayout, store: ProjectStore, projectId: string;
   let release: ReturnType<typeof vi.fn<TaskExecutionReleaseRequest>>;
   let tasks: ProjectTaskService;
+  let releases: ReleaseTracker;
   const resourcesFile = (taskId: string) => fs.readFile(layout.taskExecutionResourcesFile(projectId, taskId), "utf8");
   const assign = (taskId: string, agentRunId: string, root = hostRoot) =>
     tasks.linkNewTaskExecution({ role: "assigned", taskId, assignedBy: "manager", hostRoot: root, execution: { agentRunId } });
   const setStatus = (taskId: string, status: ProjectTaskStatus) => tasks.updateTaskById({ taskId, status });
-  const settle = () => tasks.drainRuntimeReleases();
+  const settle = () => releases.settled();
 
   beforeEach(async () => {
     appData = await fs.mkdtemp(path.join(os.tmpdir(), "task-cancelled-status-"));
@@ -82,7 +84,7 @@ describe("CANCELLED ends a Task's work exactly like DONE", () => {
     projectId = (await new ProjectService({ store, workspaceLookup: { listRegisteredWorkspaceRootPaths: async () => [] } }).createProject({ name: "P" })).projectId;
     release = vi.fn<TaskExecutionReleaseRequest>(async (_root, agentRuns) => agentRuns.map(execution => ({ execution, stopped: true })));
     tasks = new ProjectTaskService({ store, adHocTasks: new AdHocTaskStore(adHocLayout), contextStore: new ProjectTaskContextStore(layout),
-      requestRelease: release, taskExecutionResources: new TaskExecutionResourceService(new TaskExecutionResourceStore(layout, adHocLayout)) });
+      requestRelease: (releases = trackReleases(release)).request, taskExecutionResources: new TaskExecutionResourceService(new TaskExecutionResourceStore(layout, adHocLayout)) });
     await tasks.load();
   });
   afterEach(async () => { await settle(); vi.restoreAllMocks(); await fs.rm(appData, { recursive: true, force: true }); });

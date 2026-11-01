@@ -1,5 +1,4 @@
 import fs from "node:fs";
-import { copyExecutionSource, taskExecutionListsOf } from "../../agent-collaboration/collaborators/collaborator-source-projector.js";
 import fsPromises from "node:fs/promises";
 import type { AgentTeamAddress } from "../../agent-collaboration/domain/agent-team-address.js";
 import type {
@@ -7,7 +6,6 @@ import type {
   LocatedExecutionKind,
 } from "../../agent-collaboration/execution/domain/located-execution-structure.js";
 import { AgentMemoryLayout } from "../../agent-memory/store/agent-memory-layout.js";
-import type { AgentLaunchConfiguration } from "../../agent-team-execution/domain/team-run-config.js";
 import { getStandaloneRootTreePath } from "../persistence/standalone-root-tree-path.js";
 import { StandaloneRootPackageStore } from "../persistence/standalone-root-package-store.js";
 import type { StandaloneRootTreeSnapshot } from "../domain/standalone-root-tree.js";
@@ -23,8 +21,6 @@ export type LocatedStandaloneRootAgentExecution = Readonly<{
   memberAddress: AgentTeamAddress;
   platformAgentRunId: string | null;
   configuredPlacement: null;
-  /** The copy's recorded launch snapshot (its catalog source). */
-  launchConfiguration: AgentLaunchConfiguration | null;
   executionKind: Exclude<LocatedExecutionKind, "configured">;
   startedAt: string | null;
   groupPath: readonly LocatedExecutionGroup[];
@@ -211,7 +207,6 @@ export class StandaloneRootLocationService {
       memberAddress: agent.address,
       platformAgentRunId: agent.platformAgentRunId,
       configuredPlacement: null,
-      launchConfiguration: copyExecutionSource(taskExecutionListsOf(tree), agentRunId)?.launchConfiguration ?? null,
       executionKind: agent.executionKind,
       startedAt: agent.startedAt,
       groupPath: Object.freeze(groups.map((team): LocatedExecutionGroup => Object.freeze({

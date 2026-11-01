@@ -292,7 +292,7 @@ export const commitSplitTree = async <TFile extends string>(
   if (split.kind === "unchanged") return { outcome: "committed", file };
   if (split.kind === "write") return writeTree(split.treeFile);
   return {
-    outcome: "not_renamed",
+    outcome: "not_committed",
     file,
     stage: "prepare_directory",
     cause: new Error(`A task agent's own file (${split.result.file}) did not commit: ${split.result.cause.message}`),

@@ -23,14 +23,14 @@ import {createEnabledMemoryCompactionConfiguration} from '../../../../src/memory
 import {CompactionPolicy} from '../../../../src/memory/policies/compaction-policy.js';
 import {MemoryType} from '../../../../src/memory/models/memory-types.js';
 import {resetAgentFactory,waitForCondition,waitForStatus} from './runtime-test-harness.js';
-const COMPACTION_CONVERSATION = /^compaction_(.+)_(\d+)$/;
-type SummaryRequest = { operationId: string; attempt: number; messages: Array<Record<string, unknown>>; kwargs: Record<string, unknown>; options: Record<string, unknown> };
+import { CompactionAttempts } from '../../../helpers/compaction-summary-request.js';
+type SummaryRequest = { attempt: number; messages: Array<Record<string, unknown>>; kwargs: Record<string, unknown>; options: Record<string, unknown> };
 /** The agent's own LLM: agent requests are recorded in `requests`; compaction summary requests are answered by `respondToSummary`. */
 class RecordingMainLLM extends BaseLLM {
   readonly requests: Array<Array<Record<string, unknown>>> = [];
   readonly summaryRequests: SummaryRequest[] = [];
-  readonly respondToSummary = vi.fn(async (_operationId: string, _attempt: number): Promise<string> => taggedSummary);
-  readonly released: string[] = [];
+  readonly respondToSummary = vi.fn(async (_attempt: number): Promise<string> => taggedSummary);
+  private readonly attempts = new CompactionAttempts();
 
   constructor(
     model: LLMModel,
@@ -46,11 +46,11 @@ class RecordingMainLLM extends BaseLLM {
   }
 
   protected async *_streamMessagesToLLM(messages: Message[], kwargs: Record<string, unknown> = {}, options: Record<string, unknown> = {}): AsyncGenerator<ChunkResponse, void, unknown> {
-    const compaction = COMPACTION_CONVERSATION.exec(String(kwargs.logicalConversationId ?? ''));
-    if (compaction) {
-      const request = { operationId: compaction[1]!, attempt: Number(compaction[2]), messages: messages.map((message) => message.toDict()), kwargs, options };
+    const attempt = this.attempts.observe(messages, options.signal as AbortSignal | null | undefined);
+    if (attempt) {
+      const request = { attempt, messages: messages.map((message) => message.toDict()), kwargs, options };
       this.summaryRequests.push(request);
-      const content = await this.respondToSummary(request.operationId, request.attempt);
+      const content = await this.respondToSummary(request.attempt);
       yield new ChunkResponse({ content, is_complete: true, usage: buildLlmTokenUsageObservation({ inputTokens: 50, outputTokens: 20, totalTokens: 70, rawUsage: null }) });
       return;
     }
@@ -60,8 +60,6 @@ class RecordingMainLLM extends BaseLLM {
       is_complete: true
     });
   }
-
-  override async releaseConversation(conversationId: string): Promise<void> { this.released.push(conversationId); }
 
   private recordRequest(messages: Message[]): number {
     this.requests.push(messages.map((message) => message.toDict()));
@@ -127,7 +125,6 @@ describe('compaction on the agent\'s own model, narrow runtime integration',()=>
    expect(main.summaryRequests.map(({options})=>options.maxOutputTokens)).toEqual(main.summaryRequests.map(()=>3000));
    expect(cached.messages.at(-1)).toMatchObject({role:'user',content:COMPACTION_SUMMARY_INSTRUCTION});
    expect(cached.messages.slice(0,main.requests[3]!.length)).toEqual(main.requests[3]);
-   expect(main.released).toEqual(main.summaryRequests.map(({operationId,attempt})=>`compaction_${operationId}_${attempt}`));
    expect(usage.filter(e=>e.ingestion_kind==='autobyteus_compaction')).toHaveLength(main.summaryRequests.length);
    expect(events.filter(e=>e.phase==='completed')).toHaveLength(1);
    expect(new Set(events.map(e=>e.compaction_operation_id)).size).toBe(1);

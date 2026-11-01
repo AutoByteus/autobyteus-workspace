@@ -516,7 +516,11 @@ The image carries its server as the **built-in server package** at
 `node_modules` (native modules built for the image's Node and architecture),
 its Prisma client, the mobile web and `server-package.json`. That file records
 the release version, the architecture, the Node module version, the system
-level the package needs and its data migration folders. Each release publishes
+level the package needs and its data migration folders. The package holds
+runtime content only (`dist`, `prisma`, `application-packages`, production
+packages: the server's `package.json` `files` list, and `pnpm deploy --prod`),
+and the builder installs with `--frozen-lockfile` from the manifests of the
+server and the workspace packages it links to. Each release publishes
 the same folder per architecture (see GitHub Release Automation).
 
 supervisord runs the **starter** (`/opt/autobyteus/starter/starter.mjs`), which

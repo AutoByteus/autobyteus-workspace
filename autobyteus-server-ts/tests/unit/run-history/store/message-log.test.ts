@@ -183,7 +183,7 @@ describe("MessageLog", () => {
     await log.append(message("m1", 1));
     await log.append(message("m2", 2));
     const result = await log.writeInitial([]);
-    expect(result).toMatchObject({ outcome: "not_renamed", stage: "prepare_directory" });
+    expect(result).toMatchObject({ outcome: "not_committed", stage: "prepare_directory" });
     expect(ids(await log.read())).toEqual(["m1", "m2"]);
   });
 
@@ -222,36 +222,36 @@ describe("MessageLog", () => {
 
     it("a failure before the line is written is not committed (prepare_append)", async () => {
       const { healthy, log } = await seeded({ open: true });
-      expect(await log.append(message("m2", 2))).toMatchObject({ outcome: "not_renamed", stage: "prepare_append", file: "communication_messages" });
+      expect(await log.append(message("m2", 2))).toMatchObject({ outcome: "not_committed", stage: "prepare_append", file: "communication_messages" });
       expect(ids(await healthy.read())).toEqual(["m1"]);
     });
 
     it("a failed rotation is not committed and leaves the log readable", async () => {
       const { healthy, log } = await seeded({ rename: true }, { limit: 10 });
-      expect(await log.append(message("m2", 2))).toMatchObject({ outcome: "not_renamed", stage: "prepare_append" });
+      expect(await log.append(message("m2", 2))).toMatchObject({ outcome: "not_committed", stage: "prepare_append" });
       expect(ids(await healthy.read())).toEqual(["m1"]);
     });
 
     it("a failed write is truncated back and not committed (append_line)", async () => {
       const { dir, log, before } = await seeded({ write: true });
-      expect(await log.append(message("m2", 2))).toMatchObject({ outcome: "not_renamed", stage: "append_line" });
+      expect(await log.append(message("m2", 2))).toMatchObject({ outcome: "not_committed", stage: "append_line" });
       expect(await text(dir, "team_communication_messages_active.jsonl")).toBe(before);
     });
 
     it("a failed write whose truncate also fails is indeterminate (restore_size)", async () => {
       const { log } = await seeded({ write: true, truncate: true });
-      expect(await log.append(message("m2", 2))).toMatchObject({ outcome: "renamed_finalization_indeterminate", stage: "restore_size" });
+      expect(await log.append(message("m2", 2))).toMatchObject({ outcome: "finalization_indeterminate", stage: "restore_size" });
     });
 
     it("a failed file sync is indeterminate (sync_file)", async () => {
       const { log } = await seeded({ fileSync: true });
-      expect(await log.append(message("m2", 2))).toMatchObject({ outcome: "renamed_finalization_indeterminate", stage: "sync_file" });
+      expect(await log.append(message("m2", 2))).toMatchObject({ outcome: "finalization_indeterminate", stage: "sync_file" });
     });
 
     it("a failed folder sync after creating the active file is indeterminate (sync_directory); an existing active file needs none", async () => {
       const dir = await tempDir();
       const failing = new MessageLog(dir, "communication_messages", { operations: operationsWith({ directorySync: true }) });
-      expect(await failing.append(message("m1", 1))).toMatchObject({ outcome: "renamed_finalization_indeterminate", stage: "sync_directory" });
+      expect(await failing.append(message("m1", 1))).toMatchObject({ outcome: "finalization_indeterminate", stage: "sync_directory" });
       expect((await failing.append(message("m2", 2))).outcome).toBe("committed");
     });
   });
