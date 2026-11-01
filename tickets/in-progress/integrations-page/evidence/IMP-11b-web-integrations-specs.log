@@ -1,0 +1,120 @@
+# Check: IMP-11b-web-integrations-specs
+# Command (in /Users/normy/autobyteus_org/autobyteus-worktrees/integrations-page/autobyteus-web, clean env: env -i PATH HOME=<temp> TMPDIR): pnpm -s exec cross-env NUXT_TEST=true vitest run components/integrations utils/integrations components/skills/SkillCardIntegrationLabel.spec.ts composables/__tests__/useAppLeftPanelSectionResize.spec.ts composables/__tests__/useShellPrimaryNavigation.spec.ts composables/__tests__/useShellPrimaryNavigation.capabilities.spec.ts components/layout/__tests__/LeftSidebarStrip.spec.ts components/settings/__tests__/ServerSettingsBasicsPanel.spec.ts components/conversation/segments/renderer
+# Commit: 9e8264614e (branch codex/integrations-page)
+# Environment: macOS 26.5.2 arm64, node v22.23.1, git 2.50.1
+# Date: 2026-11-01T07:57:43Z
+
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.1.tgz
+isElectronBuild false
+[Electron Module] Skipping electron module setup: BUILD_TARGET is not electron
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/integrations-page/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/integrations-page/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/integrations-page/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/integrations-page/autobyteus-web/stores/serverStore.ts" is used
+
+ RUN  v3.2.7 /Users/normy/autobyteus_org/autobyteus-worktrees/integrations-page/autobyteus-web
+
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/integrations-page/autobyteus-web/stores/agentTeamContextsStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/integrations-page/autobyteus-web/stores/serverStore.ts" is used
+Duplicated imports "getters", the one from "/Users/normy/autobyteus_org/autobyteus-worktrees/integrations-page/autobyteus-web/stores/agentSelectionStore.ts" has been ignored and "/Users/normy/autobyteus_org/autobyteus-worktrees/integrations-page/autobyteus-web/stores/serverStore.ts" is used
+stderr | components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/__tests__/useAppLeftPanelSectionResize.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/conversation/segments/renderer/__tests__/MermaidDiagramViewer.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/skills/SkillCardIntegrationLabel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/__tests__/useShellPrimaryNavigation.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/layout/__tests__/LeftSidebarStrip.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/settings/__tests__/ServerSettingsBasicsPanel.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/integrations/__tests__/IntegrationsPage.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/conversation/segments/renderer/__tests__/MermaidDiagram.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | components/skills/SkillCardIntegrationLabel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/__tests__/useShellPrimaryNavigation.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/conversation/segments/renderer/__tests__/MermaidDiagramViewer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/conversation/segments/renderer/__tests__/MermaidDiagram.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/layout/__tests__/LeftSidebarStrip.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/__tests__/useAppLeftPanelSectionResize.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/settings/__tests__/ServerSettingsBasicsPanel.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | components/integrations/__tests__/IntegrationsPage.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ composables/__tests__/useAppLeftPanelSectionResize.spec.ts (2 tests) 14ms
+ ✓ components/conversation/segments/renderer/__tests__/MermaidDiagram.spec.ts (7 tests) 63ms
+ ✓ components/conversation/segments/renderer/__tests__/MermaidDiagramViewer.spec.ts (5 tests) 62ms
+ ✓ components/skills/SkillCardIntegrationLabel.spec.ts (2 tests) 20ms
+ ✓ components/conversation/segments/renderer/__tests__/MarkdownRenderer.spec.ts (19 tests) 160ms
+ ✓ composables/__tests__/useShellPrimaryNavigation.spec.ts (5 tests) 5ms
+ ✓ components/layout/__tests__/LeftSidebarStrip.spec.ts (14 tests) 62ms
+ ✓ components/integrations/__tests__/IntegrationsPage.spec.ts (21 tests) 396ms
+ ✓ components/settings/__tests__/ServerSettingsBasicsPanel.spec.ts (2 tests) 68ms
+stderr | utils/integrations/__tests__/integrationText.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | composables/__tests__/useShellPrimaryNavigation.capabilities.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stderr | components/conversation/segments/renderer/__tests__/mermaidDiagramViewport.spec.ts
+Warning: KaTeX doesn't work in quirks mode. Make sure your website has a suitable doctype.
+
+stdout | utils/integrations/__tests__/integrationText.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+stdout | composables/__tests__/useShellPrimaryNavigation.capabilities.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ utils/integrations/__tests__/integrationText.spec.ts (8 tests) 3ms
+stdout | components/conversation/segments/renderer/__tests__/mermaidDiagramViewport.spec.ts
+serverStore: Initializing server config
+serverStore: Not in Electron environment. Skipping server initialization.
+
+ ✓ components/conversation/segments/renderer/__tests__/mermaidDiagramViewport.spec.ts (5 tests) 3ms
+ ✓ composables/__tests__/useShellPrimaryNavigation.capabilities.spec.ts (5 tests) 4ms
+
+ Test Files  12 passed (12)
+      Tests  95 passed (95)
+   Start at  08:57:48
+   Duration  10.00s (transform 4.75s, setup 65.48s, collect 4.42s, tests 859ms, environment 3.71s, prepare 2.80s)
+
+
+# Exit code: 0

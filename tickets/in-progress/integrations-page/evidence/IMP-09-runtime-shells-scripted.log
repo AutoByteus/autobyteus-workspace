@@ -1,0 +1,374 @@
+# Check: IMP-09-runtime-shells-scripted
+# Command (in /Users/normy/autobyteus_org/autobyteus-worktrees/integrations-page/autobyteus-server-ts, clean env: env -i PATH HOME=<temp> TMPDIR plus AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault AUTOBYTEUS_LIVE_STRICT=1 RUN_GITHUB_PROXY_E2E=1 RUN_AGY_FAILURE_E2E=1 ANTIGRAVITY_CLI_COMMAND=<server>/tests/fixtures/agy-shell-env-probe-cli.mjs RUN_GROK_SCRIPTED_E2E=1): pnpm -s exec vitest run tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts --no-watch
+# Commit: f0eb43c749 (branch codex/integrations-page)
+# Environment: macOS 26.5.2 arm64, node v22.23.1, git 2.50.1
+# Date: 2026-11-01T07:55:12Z
+
+! Corepack is about to download https://registry.npmjs.org/pnpm/-/pnpm-10.28.2.tgz
+
+ RUN  v4.1.12 /Users/normy/autobyteus_org/autobyteus-worktrees/integrations-page/autobyteus-server-ts
+
+Prisma schema loaded from prisma/schema.prisma
+Datasource "db": SQLite database "autobyteus-server-test.db" at "file:/Users/normy/autobyteus_org/autobyteus-worktrees/integrations-page/autobyteus-server-ts/tests/.tmp/autobyteus-server-test.db"
+
+Applying migration `20260203074245_init`
+Applying migration `20260208094000_add_external_channel_tables`
+Applying migration `20260209174500_add_channel_message_receipt_turn_id`
+Applying migration `20260209213000_remove_agent_conversation_tables`
+Applying migration `20260210101500_add_agent_avatar`
+Applying migration `20260210192000_add_agent_team_avatar`
+Applying migration `20260211214500_add_sync_columns_and_tombstones`
+Applying migration `20260212070000_remove_workflow_definition`
+Applying migration `20260309103000_add_channel_binding_launch_preset`
+Applying migration `20260310153000_add_channel_binding_team_definition_id`
+Applying migration `20260331102000_remove_channel_bindings_table`
+Applying migration `20260331130000_receipt_lifecycle_and_remove_channel_idempotency`
+Applying migration `20260517090000_add_app_data_migration_records`
+Applying migration `20260624090000_add_token_usage_ledger_events`
+Applying migration `20260625193000_token_usage_component_pricing_explainability`
+Applying migration `20260629120000_add_token_usage_display_fields`
+Applying migration `20260702093000_token_usage_execution_address`
+Applying migration `20260726090000_add_secret_vault`
+Applying migration `20260730090000_add_token_usage_provider_name`
+Applying migration `20260801090000_token_usage_member_display_name`
+Applying migration `20260814090000_team_run_execution_tree_v1`
+Applying migration `20260819090000_add_token_usage_run_records`
+Applying migration `20260820090000_redesign_app_data_migration_summary`
+Applying migration `20260822090000_add_token_usage_analytics`
+Applying migration `20260923130000_add_claude_sdk_usage_state`
+Applying migration `20260924120000_remove_external_channel_tables`
+Applying migration `20261009120000_token_meter_context_readings`
+
+Database reset successful
+
+The following migration(s) have been applied:
+
+migrations/
+  └─ 20260203074245_init/
+    └─ migration.sql
+  └─ 20260208094000_add_external_channel_tables/
+    └─ migration.sql
+  └─ 20260209174500_add_channel_message_receipt_turn_id/
+    └─ migration.sql
+  └─ 20260209213000_remove_agent_conversation_tables/
+    └─ migration.sql
+  └─ 20260210101500_add_agent_avatar/
+    └─ migration.sql
+  └─ 20260210192000_add_agent_team_avatar/
+    └─ migration.sql
+  └─ 20260211214500_add_sync_columns_and_tombstones/
+    └─ migration.sql
+  └─ 20260212070000_remove_workflow_definition/
+    └─ migration.sql
+  └─ 20260309103000_add_channel_binding_launch_preset/
+    └─ migration.sql
+  └─ 20260310153000_add_channel_binding_team_definition_id/
+    └─ migration.sql
+  └─ 20260331102000_remove_channel_bindings_table/
+    └─ migration.sql
+  └─ 20260331130000_receipt_lifecycle_and_remove_channel_idempotency/
+    └─ migration.sql
+  └─ 20260517090000_add_app_data_migration_records/
+    └─ migration.sql
+  └─ 20260624090000_add_token_usage_ledger_events/
+    └─ migration.sql
+  └─ 20260625193000_token_usage_component_pricing_explainability/
+    └─ migration.sql
+  └─ 20260629120000_add_token_usage_display_fields/
+    └─ migration.sql
+  └─ 20260702093000_token_usage_execution_address/
+    └─ migration.sql
+  └─ 20260726090000_add_secret_vault/
+    └─ migration.sql
+  └─ 20260730090000_add_token_usage_provider_name/
+    └─ migration.sql
+  └─ 20260801090000_token_usage_member_display_name/
+    └─ migration.sql
+  └─ 20260814090000_team_run_execution_tree_v1/
+    └─ migration.sql
+  └─ 20260819090000_add_token_usage_run_records/
+    └─ migration.sql
+  └─ 20260820090000_redesign_app_data_migration_summary/
+    └─ migration.sql
+  └─ 20260822090000_add_token_usage_analytics/
+    └─ migration.sql
+  └─ 20260923130000_add_claude_sdk_usage_state/
+    └─ migration.sql
+  └─ 20260924120000_remove_external_channel_tables/
+    └─ migration.sql
+  └─ 20261009120000_token_meter_context_readings/
+    └─ migration.sql
+
+(node:79152) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+stdout | tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts
+AgentFactory (Singleton) initialized.
+
+stdout | tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts > Runtime shells use GitHub through the credential proxy (live GitHub)
+Platform detection: Windows=false
+App root directory: /Users/normy/autobyteus_org/autobyteus-worktrees/integrations-page/autobyteus-server-ts
+App data directory: /Users/normy/autobyteus_org/autobyteus-worktrees/integrations-page/autobyteus-server-ts
+Custom app data directory set to: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-proxy-shells-e2e-OmrRea
+Updated config file path to /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-proxy-shells-e2e-OmrRea/.env
+Loading environment from: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-proxy-shells-e2e-OmrRea/.env
+◇ injected env (2) from ../../../../../../private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-proxy-shells-e2e-OmrRea/.env // tip: ◈ encrypted .env [www.dotenvx.com]
+Environment variables loaded successfully
+Server public base URL configured to: http://localhost:8000
+=== Starting logging configuration ===
+Logging config file is ignored in Node.js: /Users/normy/autobyteus_org/autobyteus-worktrees/integrations-page/autobyteus-server-ts/logging_config.ini
+============================================================
+SERVER PUBLIC URL: http://localhost:8000
+APP ROOT DIRECTORY: /Users/normy/autobyteus_org/autobyteus-worktrees/integrations-page/autobyteus-server-ts
+APP DATA DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-proxy-shells-e2e-OmrRea
+DB DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-proxy-shells-e2e-OmrRea/db
+LOGS DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-proxy-shells-e2e-OmrRea/logs
+DOWNLOAD DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-proxy-shells-e2e-OmrRea/download
+MEMORY DIRECTORY: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-proxy-shells-e2e-OmrRea/memory
+============================================================
+Initialized server settings service with 33 predefined settings
+
+stdout | tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts > Runtime shells use GitHub through the credential proxy (live GitHub)
+AgentRunManager initialized.
+AgentRunManager initialized.
+
+stdout | tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts > Runtime shells use GitHub through the credential proxy (live GitHub)
+Loading workspace packages to trigger registration...
+
+stdout | tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts > Runtime shells use GitHub through the credential proxy (live GitHub)
+Successfully loaded workspace packages.
+
+stdout | tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts > Runtime shells use GitHub through the credential proxy (live GitHub)
+Creating temp workspace at: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-proxy-shells-e2e-OmrRea/temp_workspace
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-proxy-shells-e2e-OmrRea/temp_workspace.
+Initialized TempWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-proxy-shells-e2e-OmrRea/temp_workspace with fixed ID 'temp_ws_default'
+Temp workspace created and cached with ID: temp_ws_default
+
+stdout | tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts > Runtime shells use GitHub through the credential proxy (live GitHub)
+Registering agent customization processors...
+Input processor definition 'WorkspacePathSanitizationProcessor' (class: 'WorkspacePathSanitizationProcessor') registered successfully.
+Registered input processor 'WorkspacePathSanitizationProcessor'.
+Input processor definition 'UserInputContextBuildingProcessor' (class: 'UserInputContextBuildingProcessor') registered successfully.
+Registered input processor 'UserInputContextBuildingProcessor'.
+LLM response processor definition 'MediaUrlTransformerProcessor' (class: 'MediaUrlTransformerProcessor') registered successfully.
+Registered LLM response processor 'MediaUrlTransformerProcessor'.
+Agent customization processor registration complete.
+
+stdout | tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts > Runtime shells use GitHub through the credential proxy (live GitHub)
+Successfully registered tool definition: 'read_file'
+Successfully registered tool definition: 'write_file'
+Successfully registered tool definition: 'edit_file'
+Successfully registered tool definition: 'run_bash'
+Successfully registered tool definition: 'start_background_process'
+Successfully registered tool definition: 'get_background_processes'
+Successfully registered tool definition: 'get_process_output'
+Successfully registered tool definition: 'stop_background_process'
+Successfully registered tool definition: 'search_web'
+Successfully registered tool definition: 'download_media'
+Successfully registered tool definition: 'read_url'
+
+stdout | tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts > Runtime shells use GitHub through the credential proxy (live GitHub)
+Registered required tool unit: Core Tools
+
+stdout | tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts > Runtime shells use GitHub through the credential proxy (live GitHub)
+Successfully registered tool definition: 'get_project_task'
+Successfully registered tool definition: 'list_projects'
+Successfully registered tool definition: 'list_project_tasks'
+Successfully registered tool definition: 'search_project_tasks'
+Successfully registered tool definition: 'create_project'
+Successfully registered tool definition: 'update_project'
+Successfully registered tool definition: 'create_task'
+Successfully registered tool definition: 'update_task'
+Successfully registered tool definition: 'delegate_task'
+Registered required tool unit: Project Task Tools
+Registered required tool unit: Task Delegation Tools
+
+stdout | tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts > Runtime shells use GitHub through the credential proxy (live GitHub)
+Successfully registered tool definition: 'generate_image'
+Successfully registered tool definition: 'edit_image'
+Successfully registered tool definition: 'generate_speech'
+Successfully registered tool definition: 'generate_video'
+
+stdout | tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts > Runtime shells use GitHub through the credential proxy (live GitHub)
+Registered required tool unit: Media Tools
+
+stdout | tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts > Runtime shells use GitHub through the credential proxy (live GitHub)
+Successfully registered tool definition: 'search_memory'
+
+stdout | tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts > Runtime shells use GitHub through the credential proxy (live GitHub)
+Registered required tool unit: Memory Tools
+
+stdout | tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts > Runtime shells use GitHub through the credential proxy (live GitHub)
+Successfully registered tool definition: 'publish_artifacts'
+
+stdout | tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts > Runtime shells use GitHub through the credential proxy (live GitHub)
+Registered required tool unit: Published Artifact Tools
+
+stdout | tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts > Runtime shells use GitHub through the credential proxy (live GitHub)
+Successfully registered tool definition: 'list_available_agents'
+Successfully registered tool definition: 'list_peer_nodes'
+
+stdout | tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts > Runtime shells use GitHub through the credential proxy (live GitHub)
+Registered required tool unit: Agent Discovery Tools
+
+stdout | tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts > Runtime shells use GitHub through the credential proxy (live GitHub)
+Successfully registered tool definition: 'send_message_to'
+Successfully registered tool definition: 'get_handoff_rules'
+
+stdout | tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts > Runtime shells use GitHub through the credential proxy (live GitHub)
+Registered required tool unit: Agent Communication Tools
+
+stdout | tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts > Runtime shells use GitHub through the credential proxy (live GitHub)
+Successfully registered tool definition: 'list_available_agent_runtimes'
+Successfully registered tool definition: 'submit_launch_choices'
+
+stdout | tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts > Runtime shells use GitHub through the credential proxy (live GitHub)
+Registered required tool unit: Agent Runtime Tools
+
+stdout | tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts > Runtime shells use GitHub through the credential proxy (live GitHub)
+Registered required tool unit: Browser Tools
+
+stderr | tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts > Runtime shells use GitHub through the credential proxy (live GitHub)
+Overwriting existing tool definition for name: 'search_web'
+
+stdout | tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts > Runtime shells use GitHub through the credential proxy (live GitHub)
+Successfully registered tool definition: 'search_web'
+
+stdout | tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts > Runtime shells use GitHub through the credential proxy (live GitHub)
+Registered required tool unit: Search Tools
+
+stdout | tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts > Runtime shells use GitHub through the credential proxy (live GitHub)
+prisma:info Starting a sqlite pool with 21 connections.
+
+stdout | tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts > Runtime shells use GitHub through the credential proxy (live GitHub)
+[2026-11-01T07:55:22.459Z] [INFO] [secret-management.vault] Secret vault: application database
+
+stdout | tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts > Runtime shells use GitHub through the credential proxy (live GitHub) > agy (scripted CLI): the AGY process's shell reaches GitHub; skill removed, added again, stop
+Added new custom server setting: AUTOBYTEUS_SKILLS_PATHS
+Server setting 'AUTOBYTEUS_SKILLS_PATHS' updated
+
+stdout | tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts > Runtime shells use GitHub through the credential proxy (live GitHub) > agy (scripted CLI): the AGY process's shell reaches GitHub; skill removed, added again, stop
+Agent Definition created successfully with ID: gh-proxy-agy-scripted-21fad2
+
+stdout | tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts > Runtime shells use GitHub through the credential proxy (live GitHub) > agy (scripted CLI): the AGY process's shell reaches GitHub; skill removed, added again, stop
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-proxy-shells-e2e-OmrRea/workspace-agy-scripted
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-proxy-shells-e2e-OmrRea/workspace-agy-scripted.
+
+stdout | tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts > Runtime shells use GitHub through the credential proxy (live GitHub) > agy (scripted CLI): the AGY process's shell reaches GitHub; skill removed, added again, stop
+Created and registered workspace ID: agent_ws_c13cfd8b10eb1ee1b3d8bada451061a5f86a5de9bdb1c5bfcabd53ef7df1908c
+
+stdout | tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts > Runtime shells use GitHub through the credential proxy (live GitHub) > agy (scripted CLI): the AGY process's shell reaches GitHub; skill removed, added again, stop
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-proxy-shells-e2e-OmrRea/workspace-agy-scripted
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-proxy-shells-e2e-OmrRea/workspace-agy-scripted.
+
+stdout | tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts > Runtime shells use GitHub through the credential proxy (live GitHub) > agy (scripted CLI): the AGY process's shell reaches GitHub; skill removed, added again, stop
+Reusing registered workspace ID: agent_ws_c13cfd8b10eb1ee1b3d8bada451061a5f86a5de9bdb1c5bfcabd53ef7df1908c
+
+stdout | tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts > Runtime shells use GitHub through the credential proxy (live GitHub) > agy (scripted CLI): the AGY process's shell reaches GitHub; skill removed, added again, stop
+AGY compaction detection off for run gh_proxy_agy_scripted_21fad2_74901c75d30542769f47d47a7cb6c98c: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts > Runtime shells use GitHub through the credential proxy (live GitHub) > agy (scripted CLI): the AGY process's shell reaches GitHub; skill removed, added again, stop
+Agent Definition with ID gh-proxy-agy-scripted-21fad2 updated successfully.
+
+stdout | tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts > Runtime shells use GitHub through the credential proxy (live GitHub) > agy (scripted CLI): the AGY process's shell reaches GitHub; skill removed, added again, stop
+Agent Definition with ID gh-proxy-agy-scripted-21fad2 updated successfully.
+
+stdout | tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts > Runtime shells use GitHub through the credential proxy (live GitHub) > agy (scripted CLI): a run of an agent without the skill gets no variables
+Agent Definition created successfully with ID: gh-proxy-agy-without-skill-9bf54e
+
+stdout | tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts > Runtime shells use GitHub through the credential proxy (live GitHub) > agy (scripted CLI): a run of an agent without the skill gets no variables
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-proxy-shells-e2e-OmrRea/workspace-agy-without-skill
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-proxy-shells-e2e-OmrRea/workspace-agy-without-skill.
+
+stdout | tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts > Runtime shells use GitHub through the credential proxy (live GitHub) > agy (scripted CLI): a run of an agent without the skill gets no variables
+Created and registered workspace ID: agent_ws_660858c10b99cbc1cda071bb4b8becda7fdc877a058145d99a81bfdc555a7e8f
+
+stdout | tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts > Runtime shells use GitHub through the credential proxy (live GitHub) > agy (scripted CLI): a run of an agent without the skill gets no variables
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-proxy-shells-e2e-OmrRea/workspace-agy-without-skill
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-proxy-shells-e2e-OmrRea/workspace-agy-without-skill.
+
+stdout | tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts > Runtime shells use GitHub through the credential proxy (live GitHub) > agy (scripted CLI): a run of an agent without the skill gets no variables
+Reusing registered workspace ID: agent_ws_660858c10b99cbc1cda071bb4b8becda7fdc877a058145d99a81bfdc555a7e8f
+
+stdout | tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts > Runtime shells use GitHub through the credential proxy (live GitHub) > agy (scripted CLI): a run of an agent without the skill gets no variables
+AGY compaction detection off for run gh_proxy_agy_without_skill_9bf54e_f6f46e6ba6c74ddc8e6b1d7ca7778303: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts > Runtime shells use GitHub through the credential proxy (live GitHub) > agy (scripted CLI) team: only the member whose agent has the skill gets the variables
+Agent Definition created successfully with ID: gh-proxy-team-lead-with-skill-48b9f3
+
+stdout | tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts > Runtime shells use GitHub through the credential proxy (live GitHub) > agy (scripted CLI) team: only the member whose agent has the skill gets the variables
+Agent Definition created successfully with ID: gh-proxy-team-helper-without-skill-470071
+
+stdout | tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts > Runtime shells use GitHub through the credential proxy (live GitHub) > agy (scripted CLI) team: only the member whose agent has the skill gets the variables
+Agent Team Definition created successfully with ID: gh-proxy-team-08eb0b
+
+stdout | tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts > Runtime shells use GitHub through the credential proxy (live GitHub) > agy (scripted CLI) team: only the member whose agent has the skill gets the variables
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-proxy-shells-e2e-OmrRea/workspace-team
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-proxy-shells-e2e-OmrRea/workspace-team.
+
+stdout | tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts > Runtime shells use GitHub through the credential proxy (live GitHub) > agy (scripted CLI) team: only the member whose agent has the skill gets the variables
+Created and registered workspace ID: agent_ws_ab42ae8fa78fd3b603ae2db7f3e4f52b96e5bdfcc222de2c452f9aad0302c509
+
+stdout | tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts > Runtime shells use GitHub through the credential proxy (live GitHub) > agy (scripted CLI) team: only the member whose agent has the skill gets the variables
+Agent team websocket attached for team run gh_proxy_team_08eb0b_bb3fad64bf43414193466e4bb08e56a0
+Created agent session fc8cc0ed-9ae2-4353-af0e-08f3c416d5c6 for run gh_proxy_team_08eb0b_bb3fad64bf43414193466e4bb08e56a0
+
+stdout | tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts > Runtime shells use GitHub through the credential proxy (live GitHub) > agy (scripted CLI) team: only the member whose agent has the skill gets the variables
+Agent Team WebSocket connected: session=fc8cc0ed-9ae2-4353-af0e-08f3c416d5c6, run=gh_proxy_team_08eb0b_bb3fad64bf43414193466e4bb08e56a0
+
+stdout | tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts > Runtime shells use GitHub through the credential proxy (live GitHub) > agy (scripted CLI) team: only the member whose agent has the skill gets the variables
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-proxy-shells-e2e-OmrRea/workspace-team
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-proxy-shells-e2e-OmrRea/workspace-team.
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-proxy-shells-e2e-OmrRea/workspace-team
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-proxy-shells-e2e-OmrRea/workspace-team.
+
+stdout | tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts > Runtime shells use GitHub through the credential proxy (live GitHub) > agy (scripted CLI) team: only the member whose agent has the skill gets the variables
+Reusing registered workspace ID: agent_ws_ab42ae8fa78fd3b603ae2db7f3e4f52b96e5bdfcc222de2c452f9aad0302c509
+
+stdout | tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts > Runtime shells use GitHub through the credential proxy (live GitHub) > agy (scripted CLI) team: only the member whose agent has the skill gets the variables
+Reusing registered workspace ID: agent_ws_ab42ae8fa78fd3b603ae2db7f3e4f52b96e5bdfcc222de2c452f9aad0302c509
+
+stdout | tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts > Runtime shells use GitHub through the credential proxy (live GitHub) > agy (scripted CLI) team: only the member whose agent has the skill gets the variables
+AGY compaction detection off for run gh_proxy_team_helper_without_skill_470071_cf87b5cfaf6f4f9cb4d36b2d0d8cf3a1: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts > Runtime shells use GitHub through the credential proxy (live GitHub) > agy (scripted CLI) team: only the member whose agent has the skill gets the variables
+AGY compaction detection off for run gh_proxy_team_lead_with_skill_48b9f3_4b877cf2ee2b4931be6c3e526603b3de: CLI version agy version 1.2.11 is below 1.2.16 or unreadable.
+
+stdout | tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts > Runtime shells use GitHub through the credential proxy (live GitHub) > agy (scripted CLI) team: only the member whose agent has the skill gets the variables
+Closed agent session fc8cc0ed-9ae2-4353-af0e-08f3c416d5c6
+
+stdout | tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts > Runtime shells use GitHub through the credential proxy (live GitHub) > grok (recorded fake CLI): the Grok process's shell reaches GitHub; skill removed, added again, stop
+Agent Definition created successfully with ID: gh-proxy-grok-scripted-395442
+
+stdout | tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts > Runtime shells use GitHub through the credential proxy (live GitHub) > grok (recorded fake CLI): the Grok process's shell reaches GitHub; skill removed, added again, stop
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-proxy-shells-e2e-OmrRea/workspace-grok-scripted
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-proxy-shells-e2e-OmrRea/workspace-grok-scripted.
+
+stdout | tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts > Runtime shells use GitHub through the credential proxy (live GitHub) > grok (recorded fake CLI): the Grok process's shell reaches GitHub; skill removed, added again, stop
+Created and registered workspace ID: agent_ws_b5bc431f9200d1cf5b460b5b201ca5ae8a15f2e10f8fc198ee5ec4748eadc187
+
+stdout | tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts > Runtime shells use GitHub through the credential proxy (live GitHub) > grok (recorded fake CLI): the Grok process's shell reaches GitHub; skill removed, added again, stop
+Creating new workspace for rootPath: /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-proxy-shells-e2e-OmrRea/workspace-grok-scripted
+Created metadata-only FileSystemWorkspace at /private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/github-proxy-shells-e2e-OmrRea/workspace-grok-scripted.
+
+stdout | tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts > Runtime shells use GitHub through the credential proxy (live GitHub) > grok (recorded fake CLI): the Grok process's shell reaches GitHub; skill removed, added again, stop
+Reusing registered workspace ID: agent_ws_b5bc431f9200d1cf5b460b5b201ca5ae8a15f2e10f8fc198ee5ec4748eadc187
+
+stdout | tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts > Runtime shells use GitHub through the credential proxy (live GitHub) > grok (recorded fake CLI): the Grok process's shell reaches GitHub; skill removed, added again, stop
+Agent Definition with ID gh-proxy-grok-scripted-395442 updated successfully.
+
+stdout | tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts > Runtime shells use GitHub through the credential proxy (live GitHub) > grok (recorded fake CLI): the Grok process's shell reaches GitHub; skill removed, added again, stop
+Agent Definition with ID gh-proxy-grok-scripted-395442 updated successfully.
+
+ ✓ tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts (10 tests | 6 skipped) 6259ms
+     ✓ agy (scripted CLI): the AGY process's shell reaches GitHub; skill removed, added again, stop  2384ms
+     ✓ agy (scripted CLI): a run of an agent without the skill gets no variables  435ms
+     ✓ agy (scripted CLI) team: only the member whose agent has the skill gets the variables  1260ms
+     ✓ grok (recorded fake CLI): the Grok process's shell reaches GitHub; skill removed, added again, stop  1846ms
+
+ Test Files  1 passed (1)
+      Tests  4 passed | 6 skipped (10)
+   Start at  08:55:13
+   Duration  15.46s (transform 6.74s, setup 43ms, import 8.73s, tests 6.26s, environment 0ms)
+
+
+# Exit code: 0
