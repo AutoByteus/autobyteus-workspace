@@ -1,0 +1,956 @@
+{
+  "startedAt": "2026-11-01T08:09:39.632Z",
+  "result": "Pass",
+  "platform": "darwin-arm64",
+  "node": "v22.23.1",
+  "browserExecutable": "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+  "cases": {
+    "PT-E2E-001": {
+      "title": "Fresh node: Projects always available after Agent Orgs, /projects opens; separate-node API isolation (projects-always-on AC-001)",
+      "result": "Pass",
+      "startedAt": "2026-11-01T08:10:20.545Z",
+      "observations": {
+        "nav": [
+          "Chat",
+          "Agents",
+          "Agent Teams",
+          "Agent Orgs",
+          "Projects",
+          "Skills",
+          "Memory",
+          "Nodes"
+        ],
+        "otherNode": "project_ac05c6fb-dd0a-4451-9e5e-2c40314e03e8"
+      },
+      "finishedAt": "2026-11-01T08:10:20.974Z"
+    },
+    "PT-E2E-002": {
+      "title": "Ordinary New Project validation/focus/Cancel and zero-link save to Tasks",
+      "result": "Pass",
+      "startedAt": "2026-11-01T08:10:20.975Z",
+      "observations": {
+        "projectId": "project_e2efe0ac-5192-4ee6-b822-28312e9ea1e1"
+      },
+      "finishedAt": "2026-11-01T08:10:24.872Z"
+    },
+    "PT-E2E-003": {
+      "title": "Picker/manual share one path; exact entries, no registration/mkdir, unavailable link editing",
+      "result": "Pass",
+      "startedAt": "2026-11-01T08:10:24.872Z",
+      "observations": {
+        "links": [
+          {
+            "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-pages-e2e-chzatk/original-workspace",
+            "displayName": "original-workspace",
+            "description": "existing context",
+            "availability": "AVAILABLE"
+          },
+          {
+            "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-pages-e2e-chzatk/never-mkdir #?雪\\folder",
+            "displayName": "never-mkdir #?雪\\folder",
+            "description": "manual reference",
+            "availability": "UNREGISTERED"
+          }
+        ],
+        "disk": [
+          {
+            "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-pages-e2e-chzatk/original-workspace",
+            "description": "existing context"
+          },
+          {
+            "workspaceRootPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-pages-e2e-chzatk/never-mkdir #?雪\\folder",
+            "description": "manual reference"
+          }
+        ],
+        "manualPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-pages-e2e-chzatk/never-mkdir #?雪\\folder"
+      },
+      "finishedAt": "2026-11-01T08:10:27.295Z"
+    },
+    "PT-E2E-004": {
+      "title": "Invalid paths/canonical duplicates and failed transport preserve Project, registry and folders",
+      "result": "Pass",
+      "startedAt": "2026-11-01T08:10:27.295Z",
+      "observations": {
+        "rejections": [
+          {
+            "invalid": "relative/folder",
+            "code": "WORKSPACE_PATH_INVALID",
+            "responseStatus": 200
+          },
+          {
+            "invalid": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-pages-e2e-chzatk/original-workspace/../original-workspace/",
+            "code": "WORKSPACE_ALREADY_LINKED",
+            "responseStatus": 200
+          }
+        ],
+        "rejectedSaves": 1,
+        "absentPath": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-pages-e2e-chzatk/failed-save-no-registration"
+      },
+      "finishedAt": "2026-11-01T08:10:27.915Z"
+    },
+    "PT-E2E-005": {
+      "title": "Task ordinary composer validation, search-preserving Cancel, typed/file save clears search",
+      "result": "Pass",
+      "startedAt": "2026-11-01T08:10:27.916Z",
+      "observations": {
+        "presentation": [
+          {
+            "locale": "en",
+            "viewport": {
+              "width": 1512,
+              "height": 862
+            },
+            "layout": {
+              "card": {
+                "top": 172,
+                "bottom": 916,
+                "left": 509.5,
+                "right": 1325.5,
+                "height": 744
+              },
+              "label": {
+                "top": 197,
+                "bottom": 217,
+                "left": 534.5,
+                "right": 1300.5,
+                "height": 20
+              },
+              "composer": {
+                "top": 321,
+                "bottom": 601,
+                "left": 534.5,
+                "right": 1300.5,
+                "height": 280
+              },
+              "padding": 24,
+              "border": 1,
+              "firstChildIsLabel": true,
+              "titleAboveDescription": true,
+              "labelOffset": 25,
+              "composerGap": 12,
+              "overflow": false,
+              "fit": {
+                "rootScroll": 1189,
+                "rootClient": 1189,
+                "docScroll": 1512,
+                "innerWidth": 1512,
+                "actions": [
+                  [
+                    1118,
+                    1198,
+                    79
+                  ],
+                  [
+                    1210,
+                    1326,
+                    116
+                  ]
+                ],
+                "widest": []
+              },
+              "actionsFit": true
+            },
+            "association": {
+              "invalid": "false",
+              "describedBy": null,
+              "references": [],
+              "focused": false
+            }
+          },
+          {
+            "locale": "en",
+            "viewport": {
+              "width": 390,
+              "height": 844
+            },
+            "layout": {
+              "card": {
+                "top": 164,
+                "bottom": 1014,
+                "left": 66,
+                "right": 374,
+                "height": 850
+              },
+              "label": {
+                "top": 185,
+                "bottom": 205,
+                "left": 87,
+                "right": 353,
+                "height": 20
+              },
+              "composer": {
+                "top": 311,
+                "bottom": 623,
+                "left": 87,
+                "right": 353,
+                "height": 312
+              },
+              "padding": 20,
+              "border": 1,
+              "firstChildIsLabel": true,
+              "titleAboveDescription": true,
+              "labelOffset": 21,
+              "composerGap": 12,
+              "overflow": false,
+              "fit": {
+                "rootScroll": 340,
+                "rootClient": 340,
+                "docScroll": 390,
+                "innerWidth": 390,
+                "actions": [
+                  [
+                    66,
+                    211,
+                    145
+                  ],
+                  [
+                    223,
+                    374,
+                    151
+                  ]
+                ],
+                "widest": []
+              },
+              "actionsFit": true
+            },
+            "association": {
+              "invalid": "false",
+              "describedBy": null,
+              "references": [],
+              "focused": false
+            }
+          },
+          {
+            "locale": "zh-CN",
+            "viewport": {
+              "width": 1512,
+              "height": 862
+            },
+            "layout": {
+              "card": {
+                "top": 172,
+                "bottom": 916,
+                "left": 509.5,
+                "right": 1325.5,
+                "height": 744
+              },
+              "label": {
+                "top": 197,
+                "bottom": 217,
+                "left": 534.5,
+                "right": 1300.5,
+                "height": 20
+              },
+              "composer": {
+                "top": 321,
+                "bottom": 601,
+                "left": 534.5,
+                "right": 1300.5,
+                "height": 280
+              },
+              "padding": 24,
+              "border": 1,
+              "firstChildIsLabel": true,
+              "titleAboveDescription": true,
+              "labelOffset": 25,
+              "composerGap": 12,
+              "overflow": false,
+              "fit": {
+                "rootScroll": 1189,
+                "rootClient": 1189,
+                "docScroll": 1512,
+                "innerWidth": 1512,
+                "actions": [
+                  [
+                    1159,
+                    1220,
+                    61
+                  ],
+                  [
+                    1232,
+                    1326,
+                    94
+                  ]
+                ],
+                "widest": []
+              },
+              "actionsFit": true
+            },
+            "association": {
+              "invalid": "false",
+              "describedBy": null,
+              "references": [],
+              "focused": false
+            }
+          },
+          {
+            "locale": "zh-CN",
+            "viewport": {
+              "width": 390,
+              "height": 844
+            },
+            "layout": {
+              "card": {
+                "top": 164,
+                "bottom": 974,
+                "left": 66,
+                "right": 374,
+                "height": 810
+              },
+              "label": {
+                "top": 185,
+                "bottom": 205,
+                "left": 87,
+                "right": 353,
+                "height": 20
+              },
+              "composer": {
+                "top": 311,
+                "bottom": 623,
+                "left": 87,
+                "right": 353,
+                "height": 312
+              },
+              "padding": 20,
+              "border": 1,
+              "firstChildIsLabel": true,
+              "titleAboveDescription": true,
+              "labelOffset": 21,
+              "composerGap": 12,
+              "overflow": false,
+              "fit": {
+                "rootScroll": 340,
+                "rootClient": 340,
+                "docScroll": 390,
+                "innerWidth": 390,
+                "actions": [
+                  [
+                    66,
+                    211,
+                    145
+                  ],
+                  [
+                    223,
+                    374,
+                    151
+                  ]
+                ],
+                "widest": []
+              },
+              "actionsFit": true
+            },
+            "association": {
+              "invalid": "false",
+              "describedBy": null,
+              "references": [],
+              "focused": false
+            }
+          }
+        ],
+        "blankTitle": {
+          "error": "Give the task a title.",
+          "invalid": "true",
+          "describedBy": "task-page-title-error",
+          "focused": true
+        },
+        "blankAssociation": {
+          "invalid": "true",
+          "describedBy": "task-page-error",
+          "references": [
+            {
+              "id": "task-page-error",
+              "exists": true,
+              "role": "alert"
+            }
+          ],
+          "focused": true
+        },
+        "uploadFailure": {
+          "textRetained": true,
+          "savedTasks": 0,
+          "retryAvailable": true
+        },
+        "preview": "Full second line",
+        "task": {
+          "taskId": "project_task_65806853-5f54-4ed9-ab1d-0644b8959741",
+          "projectId": "project_e2efe0ac-5192-4ee6-b822-28312e9ea1e1",
+          "taskKey": "api-e2e-project-1",
+          "title": "Browser task",
+          "description": "Browser task\nFull second line",
+          "status": "TODO",
+          "dependsOnTaskIds": [],
+          "createdAt": "2026-11-01T08:10:30.982Z",
+          "updatedAt": "2026-11-01T08:10:30.982Z",
+          "contextFiles": [
+            {
+              "storedFilename": "ctx_2ff720a2815e__note.txt",
+              "displayName": "note.txt",
+              "mimeType": "text/plain",
+              "sizeBytes": 20,
+              "locator": "/rest/projects/project_e2efe0ac-5192-4ee6-b822-28312e9ea1e1/tasks/project_task_65806853-5f54-4ed9-ab1d-0644b8959741/context-files/ctx_2ff720a2815e__note.txt"
+            },
+            {
+              "storedFilename": "ctx_523d8cb3efab__image.png",
+              "displayName": "image.png",
+              "mimeType": "image/png",
+              "sizeBytes": 68,
+              "locator": "/rest/projects/project_e2efe0ac-5192-4ee6-b822-28312e9ea1e1/tasks/project_task_65806853-5f54-4ed9-ab1d-0644b8959741/context-files/ctx_523d8cb3efab__image.png"
+            }
+          ]
+        }
+      },
+      "finishedAt": "2026-11-01T08:10:31.105Z"
+    },
+    "PT-E2E-006": {
+      "title": "Concise detail, HTTP download, edit Cancel then save preserves ID/status/context; inline deletion focus/Escape",
+      "result": "Pass",
+      "startedAt": "2026-11-01T08:10:31.106Z",
+      "observations": {
+        "presentation": [
+          {
+            "locale": "en",
+            "viewport": {
+              "width": 1512,
+              "height": 862
+            },
+            "layout": {
+              "card": {
+                "top": 172,
+                "bottom": 1098,
+                "left": 509.5,
+                "right": 1325.5,
+                "height": 926
+              },
+              "label": {
+                "top": 197,
+                "bottom": 217,
+                "left": 534.5,
+                "right": 1300.5,
+                "height": 20
+              },
+              "composer": {
+                "top": 321,
+                "bottom": 783,
+                "left": 534.5,
+                "right": 1300.5,
+                "height": 462
+              },
+              "padding": 24,
+              "border": 1,
+              "firstChildIsLabel": true,
+              "titleAboveDescription": true,
+              "labelOffset": 25,
+              "composerGap": 12,
+              "overflow": false,
+              "fit": {
+                "rootScroll": 1189,
+                "rootClient": 1189,
+                "docScroll": 1512,
+                "innerWidth": 1512,
+                "actions": [
+                  [
+                    1103,
+                    1182,
+                    79
+                  ],
+                  [
+                    1194,
+                    1326,
+                    131
+                  ]
+                ],
+                "widest": []
+              },
+              "actionsFit": true
+            },
+            "association": {
+              "invalid": "false",
+              "describedBy": null,
+              "references": [],
+              "focused": false
+            }
+          },
+          {
+            "locale": "en",
+            "viewport": {
+              "width": 390,
+              "height": 844
+            },
+            "layout": {
+              "card": {
+                "top": 164,
+                "bottom": 1196,
+                "left": 66,
+                "right": 374,
+                "height": 1032
+              },
+              "label": {
+                "top": 185,
+                "bottom": 205,
+                "left": 87,
+                "right": 353,
+                "height": 20
+              },
+              "composer": {
+                "top": 311,
+                "bottom": 805,
+                "left": 87,
+                "right": 353,
+                "height": 494
+              },
+              "padding": 20,
+              "border": 1,
+              "firstChildIsLabel": true,
+              "titleAboveDescription": true,
+              "labelOffset": 21,
+              "composerGap": 12,
+              "overflow": false,
+              "fit": {
+                "rootScroll": 340,
+                "rootClient": 340,
+                "docScroll": 390,
+                "innerWidth": 390,
+                "actions": [
+                  [
+                    66,
+                    211,
+                    145
+                  ],
+                  [
+                    223,
+                    374,
+                    151
+                  ]
+                ],
+                "widest": []
+              },
+              "actionsFit": true
+            },
+            "association": {
+              "invalid": "false",
+              "describedBy": null,
+              "references": [],
+              "focused": false
+            }
+          },
+          {
+            "locale": "zh-CN",
+            "viewport": {
+              "width": 1512,
+              "height": 862
+            },
+            "layout": {
+              "card": {
+                "top": 172,
+                "bottom": 1098,
+                "left": 509.5,
+                "right": 1325.5,
+                "height": 926
+              },
+              "label": {
+                "top": 197,
+                "bottom": 217,
+                "left": 534.5,
+                "right": 1300.5,
+                "height": 20
+              },
+              "composer": {
+                "top": 321,
+                "bottom": 783,
+                "left": 534.5,
+                "right": 1300.5,
+                "height": 462
+              },
+              "padding": 24,
+              "border": 1,
+              "firstChildIsLabel": true,
+              "titleAboveDescription": true,
+              "labelOffset": 25,
+              "composerGap": 12,
+              "overflow": false,
+              "fit": {
+                "rootScroll": 1189,
+                "rootClient": 1189,
+                "docScroll": 1512,
+                "innerWidth": 1512,
+                "actions": [
+                  [
+                    1159,
+                    1220,
+                    61
+                  ],
+                  [
+                    1232,
+                    1326,
+                    94
+                  ]
+                ],
+                "widest": []
+              },
+              "actionsFit": true
+            },
+            "association": {
+              "invalid": "false",
+              "describedBy": null,
+              "references": [],
+              "focused": false
+            }
+          },
+          {
+            "locale": "zh-CN",
+            "viewport": {
+              "width": 390,
+              "height": 844
+            },
+            "layout": {
+              "card": {
+                "top": 164,
+                "bottom": 1156,
+                "left": 66,
+                "right": 374,
+                "height": 992
+              },
+              "label": {
+                "top": 185,
+                "bottom": 205,
+                "left": 87,
+                "right": 353,
+                "height": 20
+              },
+              "composer": {
+                "top": 311,
+                "bottom": 805,
+                "left": 87,
+                "right": 353,
+                "height": 494
+              },
+              "padding": 20,
+              "border": 1,
+              "firstChildIsLabel": true,
+              "titleAboveDescription": true,
+              "labelOffset": 21,
+              "composerGap": 12,
+              "overflow": false,
+              "fit": {
+                "rootScroll": 340,
+                "rootClient": 340,
+                "docScroll": 390,
+                "innerWidth": 390,
+                "actions": [
+                  [
+                    66,
+                    211,
+                    145
+                  ],
+                  [
+                    223,
+                    374,
+                    151
+                  ]
+                ],
+                "widest": []
+              },
+              "actionsFit": true
+            },
+            "association": {
+              "invalid": "false",
+              "describedBy": null,
+              "references": [],
+              "focused": false
+            }
+          }
+        ],
+        "blankAssociation": {
+          "invalid": "true",
+          "describedBy": "task-page-error",
+          "references": [
+            {
+              "id": "task-page-error",
+              "exists": true,
+              "role": "alert"
+            }
+          ],
+          "focused": true
+        },
+        "edited": {
+          "taskId": "project_task_65806853-5f54-4ed9-ab1d-0644b8959741",
+          "projectId": "project_e2efe0ac-5192-4ee6-b822-28312e9ea1e1",
+          "taskKey": "api-e2e-project-1",
+          "title": "Browser task revised",
+          "description": "Browser task revised\nFull second line",
+          "status": "TODO",
+          "dependsOnTaskIds": [],
+          "createdAt": "2026-11-01T08:10:30.982Z",
+          "updatedAt": "2026-11-01T08:10:33.909Z",
+          "contextFiles": [
+            {
+              "storedFilename": "ctx_2ff720a2815e__note.txt",
+              "displayName": "note.txt",
+              "mimeType": "text/plain",
+              "sizeBytes": 20,
+              "locator": "/rest/projects/project_e2efe0ac-5192-4ee6-b822-28312e9ea1e1/tasks/project_task_65806853-5f54-4ed9-ab1d-0644b8959741/context-files/ctx_2ff720a2815e__note.txt"
+            },
+            {
+              "storedFilename": "ctx_523d8cb3efab__image.png",
+              "displayName": "image.png",
+              "mimeType": "image/png",
+              "sizeBytes": 68,
+              "locator": "/rest/projects/project_e2efe0ac-5192-4ee6-b822-28312e9ea1e1/tasks/project_task_65806853-5f54-4ed9-ab1d-0644b8959741/context-files/ctx_523d8cb3efab__image.png"
+            }
+          ]
+        }
+      },
+      "finishedAt": "2026-11-01T08:10:34.150Z"
+    },
+    "PT-E2E-007": {
+      "title": "External native tool commit -> physical non-deduplicated Refresh preserves search/route and moves status",
+      "result": "Pass",
+      "startedAt": "2026-11-01T08:10:34.151Z",
+      "observations": {
+        "physicalQueries": 1
+      },
+      "finishedAt": "2026-11-01T08:10:37.605Z"
+    },
+    "PT-E2E-008": {
+      "title": "Failed Refresh retains prior success and persistent actionable error, then retry; no-match and empty are distinct",
+      "result": "Pass",
+      "startedAt": "2026-11-01T08:10:37.605Z",
+      "observations": {
+        "retainedRows": [
+          "project-task-row-project_task_16e69cc0-7e3b-494d-8949-f81fa2421376",
+          "project-task-row-project_task_65806853-5f54-4ed9-ab1d-0644b8959741"
+        ]
+      },
+      "finishedAt": "2026-11-01T08:10:41.255Z"
+    },
+    "PT-E2E-009": {
+      "title": "Continuous divided rows and desktop/narrow container breakpoint, ordinary page wrapping",
+      "result": "Pass",
+      "startedAt": "2026-11-01T08:10:41.255Z",
+      "observations": {
+        "styles": [
+          {
+            "radius": "0px",
+            "shadow": "none",
+            "margin": "0px",
+            "tag": "DIV"
+          },
+          {
+            "radius": "0px",
+            "shadow": "none",
+            "margin": "0px",
+            "tag": "DIV"
+          },
+          {
+            "radius": "0px",
+            "shadow": "none",
+            "margin": "0px",
+            "tag": "DIV"
+          }
+        ]
+      },
+      "finishedAt": "2026-11-01T08:10:42.238Z"
+    },
+    "PT-E2E-010": {
+      "title": "Real backend process restart preserves Tasks, context HTTP bytes and links",
+      "result": "Pass",
+      "startedAt": "2026-11-01T08:10:42.238Z",
+      "observations": {
+        "restarted": true
+      },
+      "finishedAt": "2026-11-01T08:10:44.486Z"
+    },
+    "PT-E2E-011": {
+      "title": "All-Task Project deletion includes Done; Cancel preserves originals, explicit cascade affects only Project",
+      "result": "Pass",
+      "startedAt": "2026-11-01T08:10:44.486Z",
+      "observations": {
+        "warning": "Delete project?\n\nDelete the project “API E2E project”, its workspace links and its 3 tasks?\n\nWorkspaces, their files and run history are not changed.\n\nCancel\nDelete project"
+      },
+      "finishedAt": "2026-11-01T08:10:44.852Z"
+    },
+    "PT-E2E-012": {
+      "title": "Ordinary route read/Refresh ordering: late old Project response cannot populate another Project",
+      "result": "Pass",
+      "startedAt": "2026-11-01T08:10:44.852Z",
+      "observations": {
+        "realOldResponseReleased": true
+      },
+      "finishedAt": "2026-11-01T08:10:46.066Z"
+    },
+    "PT-E2E-013": {
+      "title": "120 current Tasks: complete search/counts/no-match across statuses, no truncation or mutation",
+      "result": "Pass",
+      "startedAt": "2026-11-01T08:10:46.066Z",
+      "observations": {
+        "meaningSearch": {
+          "state": "UNAVAILABLE",
+          "reason": "Could not reach huggingface.co to download the model: fetch failed: the probe node has no outside network (huggingface.co)"
+        },
+        "total": 120
+      },
+      "finishedAt": "2026-11-01T08:10:49.833Z"
+    },
+    "PT-E2E-014": {
+      "title": "Task keyboard create/edit/inline-confirmed delete plus unknown Project/Task recovery",
+      "result": "Pass",
+      "startedAt": "2026-11-01T08:10:49.834Z",
+      "observations": {
+        "deletedTaskId": "project_task_b9f1272a-42b1-4aa0-b279-08866bb263c7"
+      },
+      "finishedAt": "2026-11-01T08:10:51.833Z"
+    },
+    "PT-E2E-015": {
+      "title": "Upgraded node with the retired flag stored as false: Projects still shown and opens, no Basics switch, the key is an ordinary deletable Advanced setting (projects-always-on AC-002/003)",
+      "result": "Pass",
+      "startedAt": "2026-11-01T08:10:51.834Z",
+      "observations": {
+        "stored": {
+          "key": "ENABLE_PROJECTS",
+          "value": "false",
+          "isDeletable": true
+        },
+        "deleted": true
+      },
+      "finishedAt": "2026-11-01T08:10:54.369Z"
+    },
+    "PT-E2E-016": {
+      "title": "zh-CN ordinary Project/Task forms/board/detail contain localized controls and no raw Project keys",
+      "result": "Pass",
+      "startedAt": "2026-11-01T08:10:54.369Z",
+      "observations": {
+        "rawKeys": 0
+      },
+      "finishedAt": "2026-11-01T08:10:55.202Z"
+    },
+    "PT-E2E-017": {
+      "title": "Task keys and depends on: key lines, Blocked by / Dependency cancelled badges, key chip copy, Dependencies card links, picker (newest first, loop greyed, keyboard), new Task with a dependency, live clear, delete drops dependents, key URLs (task-keys AC-011–015, 017, 018, 026)",
+      "result": "Pass",
+      "startedAt": "2026-11-01T08:10:55.202Z",
+      "observations": {
+        "toolAck": {
+          "projectId": "project_effd7f92-c9db-43e0-acd5-160791767c14",
+          "taskId": "keys-board-2",
+          "title": "API on the schema",
+          "status": "TODO",
+          "dependsOn": [
+            "keys-board-1"
+          ]
+        },
+        "badges": {
+          "t1": null,
+          "t2": {
+            "kind": "blocked",
+            "text": "Blocked by keys-board-1",
+            "title": "Depends on: keys-board-1 (To Do)"
+          },
+          "t4": {
+            "kind": "cancelled",
+            "text": "Dependency cancelled: keys-board-3",
+            "title": "Depends on: keys-board-3 (Cancelled)"
+          },
+          "t5": {
+            "kind": "blocked",
+            "text": "Blocked by keys-board-1 +1",
+            "title": "Depends on: keys-board-1 (To Do), keys-board-2 (To Do)"
+          }
+        },
+        "chipAfterStatus": true,
+        "copied": {
+          "text": "Copied",
+          "clipboard": "keys-board-2"
+        },
+        "options": [
+          {
+            "key": "keys-board-5",
+            "disabled": true,
+            "text": "keys-board-5 Release the board Depends on this Task"
+          },
+          {
+            "key": "keys-board-4",
+            "disabled": false,
+            "text": "keys-board-4 Docs for the API To Do"
+          },
+          {
+            "key": "keys-board-3",
+            "disabled": false,
+            "text": "keys-board-3 Old sync service Cancelled"
+          },
+          {
+            "key": "keys-board-2",
+            "disabled": true,
+            "text": "keys-board-2 API on the schema Depends on this Task"
+          }
+        ],
+        "initialActive": "keys-board-4",
+        "activeKeys": [
+          "keys-board-3",
+          "keys-board-4",
+          "keys-board-3",
+          "keys-board-4",
+          "keys-board-3",
+          "keys-board-4"
+        ],
+        "liveClear": true,
+        "afterDelete": [
+          [
+            "keys-board-6",
+            []
+          ],
+          [
+            "keys-board-1",
+            [
+              "project_task_46874a63-9f1e-4eb7-a974-7434249d0885"
+            ]
+          ],
+          [
+            "keys-board-5",
+            [
+              "project_task_d991e7ff-c283-4e67-9996-1ccbc7f1aca2"
+            ]
+          ],
+          [
+            "keys-board-4",
+            [
+              "project_task_95819e09-b93d-429c-b725-9da5b4b37566"
+            ]
+          ],
+          [
+            "keys-board-3",
+            []
+          ]
+        ],
+        "queryKept": "details",
+        "longKeys": [
+          {
+            "key": "customer-onboarding-experience-redesign-program-1",
+            "title": "customer-onboarding-experience-redesign-program-1",
+            "text": "customer-onboarding-experience-redesign-program-1",
+            "width": 229
+          }
+        ]
+      },
+      "finishedAt": "2026-11-01T08:11:04.133Z"
+    }
+  },
+  "browserErrors": [],
+  "cleanup": {
+    "browser": "closed",
+    "frontend": "terminated:36643",
+    "nodeA": "terminated:45092",
+    "nodeB": "terminated:36575",
+    "frontendPortReleased": true,
+    "nodeAPortReleased": true,
+    "nodeBPortReleased": true,
+    "tempRootRemoved": true
+  },
+  "error": null,
+  "isolation": {
+    "tempRoot": "/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/autobyteus-projects-pages-e2e-chzatk",
+    "nodeA": "http://127.0.0.1:59216",
+    "nodeB": "http://127.0.0.1:59218",
+    "frontend": "http://127.0.0.1:59275"
+  },
+  "browserVersion": "156.0.8078.74",
+  "finishedAt": "2026-11-01T08:11:06.112Z"
+}

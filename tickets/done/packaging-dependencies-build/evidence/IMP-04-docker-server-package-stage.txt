@@ -1,0 +1,11 @@
+# IMP-04
+# Command: clean clone: docker buildx build --progress=plain -f autobyteus-server-ts/docker/Dockerfile.monorepo --target server-package --output type=local,dest=/tmp/pdb-docker-out . ; docker run --rm -v <out>:/pkg:ro -v <scripts>:/scripts:ro node:22-bookworm node /scripts/verify-packaged-server-startup.mjs --server-root /pkg; pnpm -C autobyteus-server-ts test:starter
+# Commit: 4db26446cb
+# Environment: macOS 26.5.2 darwin arm64, node v22.23.1, pnpm 10.28.2
+# Date: 2026-11-01
+
+DOCKER_EXIT=0 SECONDS=167
+builder install (frozen, 8 manifests, 9 workspace projects): 54.1 s (#22 DONE 56.6s)
+output: LICENSE README.md application-packages dist mobile-web node_modules package.json prisma server-package.json (753 MB); no vitest, typescript or ws at the top level of node_modules
+Packaged server startup validation passed for /pkg
+starter tests: tests 49, pass 49, fail 0

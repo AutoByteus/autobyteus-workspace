@@ -47,9 +47,9 @@ describe("TeamRunPersistenceCoordinator task activation (single execution-tree w
     expect(harness.abortBeforeCommit).not.toHaveBeenCalled();
   });
 
-  it("aborts the prepared child and preserves the root on not_renamed", async () => {
+  it("aborts the prepared child and preserves the root on not_committed", async () => {
     const harness = createHarness({
-      outcome: "not_renamed", file: "execution_tree", stage: "rename", cause: new Error("no rename"),
+      outcome: "not_committed", file: "execution_tree", stage: "rename", cause: new Error("no rename"),
     });
 
     await expect(harness.coordinator.commitTaskActivation(harness.command)).resolves.toMatchObject({
@@ -62,7 +62,7 @@ describe("TeamRunPersistenceCoordinator task activation (single execution-tree w
 
   it("fail-stops, aborts the prepared child, and rejects trailing mutations on indeterminate finalization", async () => {
     const harness = createHarness({
-      outcome: "renamed_finalization_indeterminate",
+      outcome: "finalization_indeterminate",
       file: "execution_tree",
       stage: "sync_directory",
       cause: new Error("directory sync uncertain"),

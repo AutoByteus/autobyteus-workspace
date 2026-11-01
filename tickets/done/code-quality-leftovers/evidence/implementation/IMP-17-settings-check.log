@@ -1,0 +1,7 @@
+# IMP-17 rendered Settings check rerun after IR-002 (the composable that decides the stale/unavailable notices changed)
+# Command: env -i PATH HOME TMPDIR node tickets/in-progress/code-quality-leftovers/evidence/implementation/settings-sources-check.mjs --output-dir tickets/in-progress/code-quality-leftovers/evidence/implementation/IMP-17-settings
+# Commit: web from the working tree on 313bff2c8c (IR-002 changes, committed right after); server dist from IMP-13 (the only IR-002 server change, an unused export, is not reached by this check); Node v22.23.1
+# Date: 2026-11-01T06:56Z
+
+settings sources check: Pass. Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/code-quality-leftovers/tickets/in-progress/code-quality-leftovers/evidence/implementation/IMP-17-settings/evidence.json
+exit=0

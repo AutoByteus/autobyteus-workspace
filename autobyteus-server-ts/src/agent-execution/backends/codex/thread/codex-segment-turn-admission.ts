@@ -13,8 +13,7 @@ const governedEventNames = new Set<string>(CODEX_ACTIVE_TURN_INHERITANCE_EVENTS)
 export type CodexSegmentTurnRejectionReason =
   | "CODEX_SEGMENT_TURN_EXPLICIT_INVALID"
   | "CODEX_SEGMENT_TURN_INACTIVE"
-  | "CODEX_SEGMENT_TURN_CONFLICT"
-  | "CODEX_SEGMENT_TURN_OMISSION_UNLISTED";
+  | "CODEX_SEGMENT_TURN_CONFLICT";
 
 export type CodexSegmentTurnAdmission =
   | Readonly<{
@@ -53,8 +52,8 @@ const reject = (
 export const isCodexSegmentTurnAdmissionEventName = (eventName: string): boolean =>
   governedEventNames.has(eventName);
 
+/** Admits one event of a governed name (`isCodexSegmentTurnAdmissionEventName`) to the active turn. */
 export const resolveCodexSegmentTurnAdmission = (
-  nativeEventName: string,
   params: JsonObject,
   activeTurnId: string | null,
 ): CodexSegmentTurnAdmission => {
@@ -87,13 +86,6 @@ export const resolveCodexSegmentTurnAdmission = (
     new Set(explicitTurnIds).size > 1
   ) {
     return reject("CODEX_SEGMENT_TURN_CONFLICT", eventTurnId);
-  }
-
-  if (
-    explicitTurnIds.length === 0 &&
-    !isCodexSegmentTurnAdmissionEventName(nativeEventName)
-  ) {
-    return reject("CODEX_SEGMENT_TURN_OMISSION_UNLISTED", eventTurnId);
   }
 
   return Object.freeze({

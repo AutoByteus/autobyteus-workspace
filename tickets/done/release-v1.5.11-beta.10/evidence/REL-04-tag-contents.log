@@ -1,0 +1,9 @@
+# REL-04 the tag contains the carried tickets, 2026-11-01T09:46:21Z
+tag v1.5.11-beta.10 -> 792a58b3d3 (tag tag), parent 746b2f5016 = personal 746b2f5016 at verification
+ceda667fa7 in tag: yes  Merge branch 'codex/release-guide-notes-and-grok-smoke' into personal (autobyteus-355: betas carry users' requ
+0295553657 in tag: yes  Merge branch 'codex/docker-node-in-place-server-update' into personal (autobyteus-305 closure: ticket archived
+4900dbae57 in tag: yes  Merge branch 'codex/packaging-dependencies-build' into personal (autobyteus-345: smaller server package, froze
+8a7d91afd6 in tag: yes  Merge branch 'codex/code-quality-leftovers' into personal (autobyteus-357: ten code-quality leftovers, no beha
+cf0137dfae in tag: yes  Merge branch 'codex/restart-resume' into personal (autobyteus-285: busy agents continue by themselves after an
+fc3df20d11 in tag: yes  Merge branch 'codex/integrations-page' into personal (autobyteus-337: Integrations page)
+353 record commits since beta.9: 1 (docs only: 0 non-ticket files)

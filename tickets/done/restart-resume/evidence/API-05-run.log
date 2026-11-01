@@ -1,0 +1,21 @@
+[+3.2s] isolated-app {"args":["start","--app","/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-api.r8VrPh/desk-app/AutoByteus.app","--data-root","<own>/data-root"],"exit":0,"ok":true}
+[+3.2s] instance started {"label":"X","instanceId":"iso-63405-f32f","electronPid":93052,"serverPort":63406}
+[+4.5s] models {"codex":"gpt-6.1-terra","claude":"claude-haiku-4-5-20251001"}
+[+18.7s] busy {"label":"sa-codex","pid":96532}
+[+18.7s] busy {"label":"sa-claude","pid":96542}
+[+18.8s] busy {"label":"team-codex","pid":98322}
+[+18.8s] busy {"label":"org-claude","pid":97810}
+[+21.5s] busy {"label":"host","pid":99602}
+[+21.6s] busy {"label":"copy","pid":98510}
+[+25.2s] isolated-app {"args":["stop","iso-63405-f32f"],"exit":0,"ok":true}
+[+25.2s] quit {"label":"quit X (busy)","electronGoneMs":1520}
+[+25.2s] record after quit {"entries":[{"kind":"agent","place":"host","version":"1.5.11-beta.9","run":"5df9f7dad0"},{"kind":"agent","place":"host","version":"1.5.11-beta.9","run":"f4f01c0bc3"},{"kind":"agent_team","place":"member","version":"1.5.11-beta.9","run":"e293b289da"},{"kind":"agent_org","place":"member","version":"1.5.11-beta.9","run":"300bb9bbe9"},{"kind":"agent","place":"host","version":"1.5.11-beta.9","run":"19748474fa"},{"kind":"agent","place":"delegated","version":"1.5.11-beta.9","run":"958f4666bd"}],"lines":["[2026-11-01T07:00:45.191Z] [INFO] [electron.embedded-server.stdout] Recorded 6 busy run(s) for re
+[+25.2s] stamp in app copy "1.5.11-beta.9-rr285next"
+[+28.3s] isolated-app {"args":["start","--app","/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-api.r8VrPh/desk-app/AutoByteus.app","--data-root","<own>/data-root"],"exit":0,"ok":true}
+[+28.4s] instance started {"label":"X1","instanceId":"iso-63622-f82f","electronPid":451,"serverPort":63623}
+[+48.9s] after X1 start {"lines":["[2026-11-01T07:00:49.441Z] [INFO] [electron.embedded-server.stdout] Restart resume resumed host run 'desk_agent_rr285dmvxhdbm2_2ae7c3f072e94938909e97f4f01c0bc3' of agent 'desk_agent_rr285dmvxhdbm2_2ae7c3f072e94938909e97f4f01c0bc3'","[2026-11-01T07:00:49.651Z] [INFO] [electron.embedded-server.stdout] Restart resume resumed delegated run 'desk_worker_rr285dmvxhdbm2_20aa85bd354c4817ab18ec958f4666bd' of agent 'desk_host_rr285dmvxhdbm2_70f3c061da744f3a989ef519748474fa'","[2026-11-01T07:00:49.651Z] [INFO] [electron.embedded-server.stdout] Restart resume resumed host run 'desk_agent_rr285d
+[+57.0s] member notice in window (live) {"segments":0,"hits":[],"url":"file:///private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-api.r8VrPh/desk-app/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat"}
+[+71.3s] member notice in window (after reload) {"segments":0,"hits":[],"url":"file:///private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-api.r8VrPh/desk-app/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/chat"}
+[+72.7s] isolated-app {"args":["stop","iso-63622-f82f"],"exit":0,"ok":true}
+[+72.7s] quit {"label":"quit X1","electronGoneMs":1321}
+{"result":"Completed","error":null,"fallbackCleanup":0}

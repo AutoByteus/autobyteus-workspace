@@ -5,7 +5,8 @@ const config: CodegenConfig = {
   schema: process.env.BACKEND_GRAPHQL_BASE_URL || process.env.NUXT_PUBLIC_GRAPHQL_BASE_URL,
   documents: "graphql/**/*.ts",
   generates: {
-    "./generated/graphql.ts": {
+    // CODEGEN_OUTPUT lets `codegen:check` generate into a temporary file and compare it with the committed one.
+    [process.env.CODEGEN_OUTPUT || "./generated/graphql.ts"]: {
       plugins: [
         "typescript",
         "typescript-operations",

@@ -312,7 +312,7 @@ export class CodexThread {
     let admittedParams: Readonly<JsonObject> = Object.freeze({ ...params });
     if (isCodexSegmentTurnAdmissionEventName(nativeEventName)) {
       const activeTurnId = this.activeTurnId;
-      const admission = resolveCodexSegmentTurnAdmission(nativeEventName, params, activeTurnId);
+      const admission = resolveCodexSegmentTurnAdmission(params, activeTurnId);
       if (!admission.accepted) {
         if (this.segmentTurnRejections.record(admission.eventTurnId)) {
           logCodexSegmentTurnAdmissionRejection({

@@ -1,0 +1,8 @@
+# IMP-02 mutation delete-late (REQ-005: the record is deleted after resuming; tests from b50e2354ab)
+# Command: pnpm -C autobyteus-server-ts exec vitest run tests/unit/restart-resume/restart-resumer.test.ts --no-watch --testTimeout=8000
+# Commit: b50e2354ab
+# Environment: macOS 26.5.2, node v22.23.1
+# Date: 2026-11-01
+
+     × REQ-005: the record is gone before the first post, so a crash during resume repeats nothing 17ms
+      Tests  1 failed | 12 passed (13)

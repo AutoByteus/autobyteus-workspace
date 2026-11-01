@@ -2,6 +2,7 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { trackReleases, type ReleaseTracker } from "../../helpers/project-task-release-tracker.js";
 import { ProjectStore } from "../../../src/projects/stores/project-store.js";
 import { ProjectsLayout } from "../../../src/projects/stores/projects-layout.js";
 import { AdHocTasksLayout } from "../../../src/projects/stores/ad-hoc-tasks-layout.js";
@@ -13,7 +14,6 @@ import { TaskExecutionResourceStore } from "../../../src/projects/stores/task-ex
 import { ProjectTaskContextStore } from "../../../src/projects/context/project-task-context-store.js";
 import { reopenTaskExecution, type TaskExecutionResourceFile } from "../../../src/projects/domain/task-execution-resources.js";
 import { createRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
-import type { TaskExecutionReleaseRequest } from "../../../src/agent-collaboration/execution/task/task-execution-resource-port.js";
 
 const hostRoot = createRootExecutionIdentity({ rootSubjectKind: "agent", rootRunId: "manager-root" });
 const worker = { agentRunId: "worker" };
@@ -24,9 +24,10 @@ const helper = { agentRunId: "helper" };
 describe("Task agent run resource reactivation", () => {
   let appData: string, layout: ProjectsLayout, adHocLayout: AdHocTasksLayout, store: ProjectStore, projectId: string;
   let tasks: ProjectTaskService;
+  let releases: ReleaseTracker;
   const boot = async () => {
     const service = new ProjectTaskService({ store, adHocTasks: new AdHocTaskStore(adHocLayout), contextStore: new ProjectTaskContextStore(layout),
-      requestRelease: vi.fn<TaskExecutionReleaseRequest>(async (_root, agentRuns) => agentRuns.map(execution => ({ execution, stopped: true }))),
+      requestRelease: (releases = trackReleases()).request,
       taskExecutionResources: new TaskExecutionResourceService(new TaskExecutionResourceStore(layout, adHocLayout)) });
     await service.load();
     return service;
@@ -52,7 +53,7 @@ describe("Task agent run resource reactivation", () => {
     projectId = (await new ProjectService({ store, workspaceLookup: { listRegisteredWorkspaceRootPaths: async () => [] } }).createProject({ name: "P" })).projectId;
     tasks = await boot();
   });
-  afterEach(async () => { await tasks.drainRuntimeReleases(); vi.restoreAllMocks(); await fs.rm(appData, { recursive: true, force: true }); });
+  afterEach(async () => { await releases.settled(); vi.restoreAllMocks(); await fs.rm(appData, { recursive: true, force: true }); });
 
   it("refuses while DONE; a status change alone reopens nothing; then reopens only the assignment, never writes status, and persists (AC-014/015, REQ-001/003/004)", async () => {
     const taskId = await assignedWithHelper();

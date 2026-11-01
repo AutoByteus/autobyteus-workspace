@@ -73,31 +73,17 @@ persisted event so the WebSocket pipeline cannot write a second raw row.
 ## Team Stream Contract
 
 The Team transport uses strict DTOs from `@autobyteus/team-stream-contracts`.
-Every Agent-originated Team message carries one correlated `agent_execution`:
-
-- `persistent_agent` for a persistent Team Agent;
-- `task_agent` when `execution_address.task_agent_run_id` equals the real task
-  AgentRun ID; or
-- `task_team_agent` for an Agent inside a task Team, with the exact
-  `agent_run_id` added because the address itself identifies the task-Team chain
-  and member placement rather than that leaf AgentRun.
-
-The nested execution coordinate is `TeamExecutionAddress`:
-
-```text
-{
-  root_team_run_id,
-  task_team_run_ids,
-  member_address,
-  task_agent_run_id
-}
-```
-
-`member_address` is one canonical rooted AgentTeam address. The task-Team run ID
-array records the concrete nested task-Team chain; `task_agent_run_id` is either
-one concrete delegated AgentRun ID or `null`. The transport does not expose or
-accept legacy member/source paths, route keys, task-instance IDs, represented
-subteams, generated identity, or scalar target aliases.
+A Team member is identified by its AgentRun ID, unique within the root TeamRun
+(a configured member, a delegated task Agent, or an Agent inside a delegated task
+Team). Every Agent-originated Team message is the root-neutral Agent payload plus
+the root's `change_sequence` and the member's `agent_run_id`; reply text leaves
+as `SEGMENT_CONTENT_BATCH` items carrying their own `agent_run_id`. A member's
+placement (rooted address, task-Team chain) lives in the snapshot's
+`execution_tree`, not on each message. Team-only messages name runs the same way:
+`TEAM_COMMUNICATION_MESSAGE` by sender and receiver run IDs, `MEMBER_INPUT_MESSAGE`
+by recipient (and nullable sender) run ID, delegated children by `agent_run_id`
+or `team_run_id`. The transport does not expose or accept member/source paths,
+route keys, task-instance IDs, generated identity, or name targets.
 
 `TeamAgentEventAdapter` verifies the AgentRun binding and maps post-pipeline
 Agent events into the finite Team domain without owning lifecycle state. The
@@ -129,18 +115,17 @@ shape, redacted-content variant, turn identity, or compatibility alias.
   handler subscribes to events and manager lifecycle before reading a fresh
   snapshot.
 - Team `SEND_MESSAGE`, `INTERRUPT_GENERATION`, `APPROVE_TOOL`, and `DENY_TOOL`
-  accept exactly one strict `execution_address`. The address root must equal the
-  WebSocket-bound Team run. The backend follows the exact task-Team chain and
-  member/task-Agent selection; it never falls back to a structural template,
+  name their target by one exact `agent_run_id`, which must be a member run of
+  the WebSocket-bound root TeamRun; otherwise the command is refused with
+  `INVALID_TARGET`. The backend never falls back to a structural template,
   coordinator, name, path, route key, or generated ID.
 - Team `SEND_MESSAGE` additionally carries content, context paths, image URLs,
-  `message_id`, and `dedupe_key`, and dispatches through
-  `TeamRun.executeMemberCommand(...)` to the same exact member AgentRun admission
-  owner. Acceptance is input ownership, not provider completion.
+  `message_id`, `dedupe_key` and optional `@` mentions, and dispatches through
+  `RootTeamRun.executeAgentCommand(...)` to the same exact member AgentRun
+  admission owner. Acceptance is input ownership, not provider completion.
 - Team interrupts and tool decisions remain active-only. Interrupt
-  acknowledgements echo the client `command_id` and exact execution address;
-  the frontend accepts an acknowledgement only when both match its pending
-  command.
+  acknowledgements echo the client `command_id` and `agent_run_id`; the frontend
+  accepts an acknowledgement only when both match its pending command.
 - Manager lookup distinguishes a command-**active** root from a **managed** root
   that is still owned during initialization, Stop, or a nonterminal Stop
   failure. Root `TEAM_RUN_LIFECYCLE { is_active }` represents that manager

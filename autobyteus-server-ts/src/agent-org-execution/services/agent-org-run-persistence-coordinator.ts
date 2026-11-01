@@ -49,11 +49,11 @@ export class AgentOrgRunPersistenceCoordinator {
     return this.withLock(async () => {
       const prepared = input.prepareAgainstCurrent();
       const result = await this.options.executionTreeStore.write(this.options.orgMemoryDir, prepared.nextTree);
-      if (result.outcome === "not_renamed") {
+      if (result.outcome === "not_committed") {
         prepared.cancelBeforeDurability();
         throw result.cause;
       }
-      if (result.outcome === "renamed_finalization_indeterminate") {
+      if (result.outcome === "finalization_indeterminate") {
         this.latch(result);
         throw this.indeterminate(result);
       }
@@ -76,11 +76,11 @@ export class AgentOrgRunPersistenceCoordinator {
         throw error;
       }
       const tree = await this.options.executionTreeStore.write(this.options.orgMemoryDir, prepared.nextTree);
-      if (tree.outcome === "not_renamed") {
+      if (tree.outcome === "not_committed") {
         await input.abortBeforeDurability();
         return { committed: false, message: tree.cause.message };
       }
-      if (tree.outcome === "renamed_finalization_indeterminate") {
+      if (tree.outcome === "finalization_indeterminate") {
         this.latch(tree);
         await input.abortBeforeDurability();
         throw this.indeterminate(tree);
@@ -97,11 +97,11 @@ export class AgentOrgRunPersistenceCoordinator {
       if (prepared.kind !== "append") return { outcome: prepared.kind };
       const result = await this.options.communicationStore.appendMessage(
         this.options.orgMemoryDir, this.options.orgRunId, append.message, prepared.logOwners);
-      if (result.outcome === "not_renamed") {
+      if (result.outcome === "not_committed") {
         append.cancelBeforeDurability();
         return { outcome: "not_committed", cause: result.cause };
       }
-      if (result.outcome === "renamed_finalization_indeterminate") {
+      if (result.outcome === "finalization_indeterminate") {
         this.latch(result);
         throw this.indeterminate(result);
       }
@@ -125,15 +125,15 @@ export class AgentOrgRunPersistenceCoordinator {
 
   private async requireCommitted(result: RunPackageFileWriteResult): Promise<void> {
     if (result.outcome === "committed") return;
-    if (result.outcome === "not_renamed") throw result.cause;
+    if (result.outcome === "not_committed") throw result.cause;
     this.latch(result);
     throw this.indeterminate(result);
   }
-  private latch(result: Extract<RunPackageFileWriteResult, { outcome: "renamed_finalization_indeterminate" }>): void {
+  private latch(result: Extract<RunPackageFileWriteResult, { outcome: "finalization_indeterminate" }>): void {
     this.failStopped = true;
     this.options.enterPersistenceFailStop(this.indeterminate(result));
   }
-  private indeterminate(result: Extract<RunPackageFileWriteResult, { outcome: "renamed_finalization_indeterminate" }>) {
+  private indeterminate(result: Extract<RunPackageFileWriteResult, { outcome: "finalization_indeterminate" }>) {
     return new RootTaskPersistenceFinalizationIndeterminateError("agent_org", result.file, result.stage);
   }
 

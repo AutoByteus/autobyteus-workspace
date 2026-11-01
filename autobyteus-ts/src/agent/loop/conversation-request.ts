@@ -6,9 +6,8 @@ import type { LLMInvocationOptions } from '../../llm/base.js';
  * keeps a byte-identical (cacheable) prefix.
  */
 export const conversationRequestKwargs = (
-  conversationId: string,
   tools: ReadonlyArray<Record<string, unknown>>,
-): Record<string, unknown> => ({ logicalConversationId: conversationId, ...(tools.length ? { tools } : {}) });
+): Record<string, unknown> => (tools.length ? { tools } : {});
 
 export const conversationRequestOptions = (input: {
   signal: AbortSignal;

@@ -28,7 +28,6 @@ describe('DynamicModelSourceLifecycle', () => {
     let rows: readonly string[] = [];
     const spec = {
       key: 'AUTOBYTEUS:LLM',
-      modelKind: 'LLM' as const,
       fingerprint: 'llm|host-a|credential:0',
       currentModelCount: () => rows.length,
       prepare,
@@ -57,7 +56,6 @@ describe('DynamicModelSourceLifecycle', () => {
     const commit = vi.fn((models: readonly string[]) => { rows = models; });
     const spec = {
       key: 'AUTOBYTEUS:LLM',
-      modelKind: 'LLM' as const,
       fingerprint: 'llm|host-a|credential:0',
       currentModelCount: () => rows.length,
       prepare,
@@ -85,7 +83,6 @@ describe('DynamicModelSourceLifecycle', () => {
       .mockRejectedValueOnce(new Error('MODEL_DISCOVERY_UNAVAILABLE'));
     const spec = {
       key: 'AUTOBYTEUS:LLM',
-      modelKind: 'LLM' as const,
       fingerprint: 'llm|host-a|credential:0',
       currentModelCount: () => rows.length,
       prepare,

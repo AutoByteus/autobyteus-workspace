@@ -1,5 +1,6 @@
 import { readRunProjectContext, type RunProjectRoot } from "../../../agent-execution/domain/run-project-context.js";
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
+import { readPlatformInputPreface } from "autobyteus-ts/agent/message/platform-input-preface-metadata.js";
 import type { ApplicationExecutionContext } from "../../../application-orchestration/domain/models.js";
 import type { AgentOperationResult } from "../../../agent-execution/domain/agent-operation-result.js";
 import { AgentRunConfig } from "../../../agent-execution/domain/agent-run-config.js";
@@ -138,18 +139,22 @@ export class ConfiguredAgentExecutionHandle implements RetainedAgentExecutionCon
     return start.run.reserveUserMessage(message, options);
   }
 
-  /** Direct input (delegated seed, user or application input). Starts the member on its first input; see `startForInput`. */
-  async postMessage(message: AgentInputUserMessage): Promise<AgentOperationResult> {
+  /** Direct input (delegated seed, user or application input); starts the member on its first input (`startForInput`). Options
+   * pass through (the caller's observer runs beside this one); a platform notice shows as a run notice, so no `member_input`. */
+  async postMessage(message: AgentInputUserMessage, options: AgentRunInputOptions = {}): Promise<AgentOperationResult> {
+    const platformNotice = readPlatformInputPreface(message.metadata) !== null;
     const start = await this.startForInput();
     if (!start.started) {
       return { accepted: false, code: start.code, message: start.message, agentRunId: this.identity.agentRunId, displayName: this.displayName };
     }
     const run = start.run;
     this.assertInputAllowed();
-    const result = await run.postUserMessage(message, { lifecycleObserver: createUnsentInputFailureObserver({ runId: run.runId,
-      publish: (event) => this.options.callbacks.publishAgentEvent(this.identity, { kind: "agent_run", event }) }) });
+    const unsent = createUnsentInputFailureObserver({ runId: run.runId,
+      publish: (event) => this.options.callbacks.publishAgentEvent(this.identity, { kind: "agent_run", event }) });
+    const caller = options.lifecycleObserver;
+    const result = await run.postUserMessage(message, { ...options, lifecycleObserver: caller ? (fact) => { unsent(fact); caller(fact); } : unsent });
     if (result.accepted) {
-      this.options.callbacks.publishAgentEvent(this.identity, { kind: "member_input", message });
+      if (!platformNotice) this.options.callbacks.publishAgentEvent(this.identity, { kind: "member_input", message });
     } else this.publishCommandStatus("error", result.message ?? null);
     return { ...result, agentRunId: run.runId, displayName: this.displayName };
   }

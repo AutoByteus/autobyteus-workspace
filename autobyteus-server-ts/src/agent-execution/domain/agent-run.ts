@@ -220,6 +220,7 @@ export class AgentRun {
         message,
         observer,
         this.backend.isActive(),
+        options.onlyAsFirstInput === true,
       );
       if (!admission.accepted) return { admission, appendTurnId: null, retry: null } as const;
       const retry = this.compactionRecovery.claimAdmission(message, admission.entrySequence);
@@ -249,7 +250,7 @@ export class AgentRun {
     const admission = await this.dispatchQueue.enqueue(this.runId, () => {
       this.executionAdmissionFence.assertOpen();
       this.lifecycleState.reconcileRuntimeSnapshot(this.backend.getLifecycleSnapshot());
-      return this.inputAdmissionState.reserve(message, observer, this.backend.isActive());
+      return this.inputAdmissionState.reserve(message, observer, this.backend.isActive(), options.onlyAsFirstInput === true);
     });
     if (!admission.accepted) return { reserved: false, ...admission };
 

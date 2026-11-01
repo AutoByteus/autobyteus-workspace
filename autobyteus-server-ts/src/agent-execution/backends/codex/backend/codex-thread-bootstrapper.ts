@@ -257,6 +257,8 @@ export class CodexThreadBootstrapper {
       project: runContext.config.project,
     });
     const dynamicToolRegistrations: CodexDynamicToolRegistration[] | null = null;
+    const integrationVariables = (await this.integrationRunAccess?.environmentForRun(
+      { runId: runContext.runId, agentDefinitionId: runContext.config.agentDefinitionId }, process.env)) ?? {};
     guard.assertAccepting();
     const codexThreadConfig = this.buildThreadConfig({
       agentRunConfig: runContext.config,
@@ -266,8 +268,7 @@ export class CodexThreadBootstrapper {
       appServerConfig: {
         ...this.createAgentToolsMcpAppServerConfig({ runContext, runtimeToolExposure, workingDirectory }),
         ...buildCodexIntegrationThreadConfig(
-          this.integrationRunAccess?.environmentForRun(
-            { runId: runContext.runId, agentDefinitionId: runContext.config.agentDefinitionId }, process.env) ?? {},
+          integrationVariables,
           resolveEffectiveCodexSandboxModeForRunConfig(runContext.config),
         ),
       },

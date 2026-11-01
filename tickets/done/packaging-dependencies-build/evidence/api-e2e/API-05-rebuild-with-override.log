@@ -1,0 +1,27 @@
+# API-05 rebuild of an older commit with AUTOBYTEUS_NPM_BEFORE (SCN-004). clone /tmp/api-e2e-345-clean at 6777be781f (commit time 2026-11-01T06:56:44+01:00), pnpm install --frozen-lockfile exit 0; date 2026-11-01T06:48:46Z
+# command: env -i PATH HOME TMPDIR AUTOBYTEUS_NPM_BEFORE=2026-10-30T12:00:00Z node autobyteus-web/scripts/prepare-server.mjs (the override is a day BEFORE the commit)
+# the run (own log below): 
+   Preparing AutoByteus Server Files   
+Progress: resolved 1, reused 0, downloaded 0, added 0
+Progress: resolved 1460, reused 0, downloaded 0, added 0
+Progress: resolved 1777, reused 0, downloaded 0, added 0
+Progress: resolved 1843, reused 0, downloaded 0, added 0, done
+Packing local workspace dependencies...
+Installing portable runtime dependencies...
+npm install is bounded to packages published before 2026-10-30T12:00:00Z
+added 321 packages in 20s
+Generating Prisma client in staging...
+Pruning node-pty prebuilds for host platform...
+Pruning onnxruntime-web to its Node build...
+Error: Found 8 symlink/junction entries in packaged node_modules:
+EXIT=1 SECONDS=78
+
+# then: python3 API-05-published-before-check.py <stage> 2026-10-30T12:00:00+00:00
+not on the registry (workspace package): @autobyteus/agent-presentation-contracts
+not on the registry (workspace package): @autobyteus/application-sdk-contracts
+not on the registry (workspace package): @autobyteus/collaboration-stream-contracts
+not on the registry (workspace package): @autobyteus/team-stream-contracts
+not on the registry (workspace package): autobyteus-ts
+direct registry dependencies checked: 26
+installed at a version published after the bound: []
+had stable versions published after the bound, kept out by it: [('@agentclientprotocol/sdk', '1.5.0', 1), ('@anthropic-ai/claude-agent-sdk', '0.3.280', 2), ('@fastify/websocket', '11.3.4', 2)]

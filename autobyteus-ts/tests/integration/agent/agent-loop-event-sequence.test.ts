@@ -12,6 +12,7 @@
  * first-seen order, so ordering and identity relations are kept (R-4).
  */
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { CompactionAttempts } from '../../helpers/compaction-summary-request.js';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
@@ -21,7 +22,7 @@ import { AgentInputUserMessage } from '../../../src/agent/message/agent-input-us
 import { AgentStatus } from '../../../src/agent/status/status-enum.js';
 import type { Agent } from '../../../src/agent/agent.js';
 import { EventType } from '../../../src/events/event-types.js';
-import { BaseLLM } from '../../../src/llm/base.js';
+import { BaseLLM, type LLMInvocationOptions } from '../../../src/llm/base.js';
 import { LLMModel } from '../../../src/llm/models.js';
 import { LLMProvider } from '../../../src/llm/providers.js';
 import { LLMConfig } from '../../../src/llm/utils/llm-config.js';
@@ -52,7 +53,6 @@ const end = (reason: LlmFinishReason, providerReason: string, inputTokens = 10) 
   new ChunkResponse({ content: '', is_complete: true, usage: usage(inputTokens), finish: buildFinish(reason, providerReason) });
 const chunks = (...items: ChunkResponse[]): Step => async function* () { for (const item of items) yield item; };
 
-const COMPACTION_CONVERSATION = /^compaction_(.+)_(\d+)$/;
 const summaryText = COMPACTION_SUMMARY_HEADINGS.map((heading) => `## ${heading}\n- Preserve scope.`).join('\n\n');
 const taggedSummary = `<compaction_summary>\n${summaryText}\n</compaction_summary>`;
 
@@ -60,6 +60,7 @@ class ScriptedLLM extends BaseLLM {
   callIndex = 0;
   summaryCalls = 0;
   summaryResponder: (attempt: number) => Promise<string> = async () => taggedSummary;
+  private readonly attempts = new CompactionAttempts();
 
   constructor(private readonly steps: Step[], private readonly log: LogEntry[], model?: Partial<ConstructorParameters<typeof LLMModel>[0]>, config?: LLMConfig) {
     super(
@@ -72,12 +73,12 @@ class ScriptedLLM extends BaseLLM {
     return new CompleteResponse({ content: 'unused' });
   }
 
-  protected async *_streamMessagesToLLM(messages: Message[], kwargs: Record<string, unknown> = {}): AsyncGenerator<ChunkResponse, void, unknown> {
-    const compaction = COMPACTION_CONVERSATION.exec(String(kwargs.logicalConversationId ?? ''));
-    if (compaction) {
+  protected async *_streamMessagesToLLM(messages: Message[], kwargs: Record<string, unknown> = {}, options: LLMInvocationOptions = {}): AsyncGenerator<ChunkResponse, void, unknown> {
+    const attempt = this.attempts.observe(messages, options.signal);
+    if (attempt) {
       this.summaryCalls += 1;
-      this.log.push({ kind: 'llm.summary_request', attempt: Number(compaction[2]), messageCount: messages.length });
-      const content = await this.summaryResponder(Number(compaction[2]));
+      this.log.push({ kind: 'llm.summary_request', attempt, messageCount: messages.length });
+      const content = await this.summaryResponder(attempt);
       yield new ChunkResponse({ content, is_complete: true, usage: usage(50, 20), finish: buildFinish('stop', 'stop') });
       return;
     }
@@ -97,7 +98,6 @@ class ScriptedLLM extends BaseLLM {
     yield* step({ callIndex: this.callIndex, messages });
   }
 
-  override async releaseConversation(): Promise<void> {}
 }
 
 // ---- recording ---------------------------------------------------------------------------

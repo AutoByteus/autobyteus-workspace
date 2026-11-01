@@ -65,6 +65,10 @@ Neither `create_project` nor `update_project` is added automatically either
 - `src/projects/domain/{models,ad-hoc-task,project-errors,project-task-context,task-execution-resources,project-runs}.ts`
 - `src/projects/stores/{projects-layout,project-store,ad-hoc-tasks-layout,ad-hoc-task-store,task-execution-resource-store,task-execution-resource-schema,project-run-store}.ts`
 - `src/projects/services/{project-service,project-task-service,task-execution-resource-service,task-root-view-builder,project-run-service}.ts`
+- `src/projects/services/project-task-context-drafts.ts` (`ProjectTaskContextDrafts`: Task context upload drafts and
+  saved context files for the REST routes) and `task-context-ownership.ts` (`TaskContextOwnership`: the Project/Task
+  existence check and the reclaim of a Task's unpublished context bytes, shared by Task writes and drafts), split out
+  of `ProjectTaskService` (autobyteus-357)
   (`project-run-service.ts`: the [runs started under a Project](#runs-started-under-a-project))
 - `src/projects/changes/{project-change-messages,project-change-publisher,project-change-hub}.ts`
   (the live change feed; see [Live Change Feed](#live-change-feed-and-task-roots))

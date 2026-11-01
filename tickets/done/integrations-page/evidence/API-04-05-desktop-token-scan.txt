@@ -1,0 +1,26 @@
+# Case: API-04/API-05 — token scan after both instances stopped (temporary probe; paths and counts only)
+# Command: SCAN_MARKER=issuecomment node /tmp/s337/scan/token-scan.mjs <data root /private/tmp/s337/root> <both instance logs> <desktop CODEX_HOME>  (script in API-01-cli-home-token-scan.txt)
+# Commit: 22f17adf30 (code 9e8264614e); date 2026-11-01T08:37:08Z
+
+{
+  "/private/tmp/s337/root": {
+    "files": 143,
+    "filesWithToken": [],
+    "filesWithMarker": 2
+  },
+  "<isolated-app logs>/iso-61887-b09e.log": {
+    "files": 1,
+    "filesWithToken": [],
+    "filesWithMarker": 0
+  },
+  "<isolated-app logs>/iso-62256-190c.log": {
+    "files": 1,
+    "filesWithToken": [],
+    "filesWithMarker": 0
+  },
+  "<desktop CODEX_HOME>": {
+    "files": 482,
+    "filesWithToken": [],
+    "filesWithMarker": 2
+  }
+}

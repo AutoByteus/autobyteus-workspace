@@ -13,8 +13,9 @@ It runs three server E2E suites one after another, each in its own clean environ
 
 The verdict is fail-closed. Every required case below must appear exactly once in the vitest JSON report with
 status `passed`, and no other test may fail. A runtime that cannot run (CLI missing, not signed in) or a case with no
-result counts as failed, with the reason. The suites' own model overrides (CLAUDE_E2E_MODEL, CODEX_E2E_MODEL,
-GROK_E2E_MODEL) and GROK_BUILD_COMMAND pass through. Exit code 0 means every case passed.
+result counts as failed, with the reason; a live runtime whose setup failed (for example its model is not offered) fails
+only its own cases. The summary names each live runtime's model. The suites' own model overrides (CLAUDE_E2E_MODEL,
+CODEX_E2E_MODEL, GROK_E2E_MODEL) and GROK_BUILD_COMMAND pass through. Exit code 0 means every case passed.
 """
 from __future__ import annotations
 
@@ -42,7 +43,7 @@ NATIVE_SUITE = "tests/e2e/runtime/configured-skill-on-demand-loading.e2e.test.ts
 SUITES_GROUPED_BY_RUNTIME = frozenset({LIVE_SUITE})
 LIVE_RUNTIMES = ("claude", "codex", "grok")
 LIVE_PASSTHROUGH = ("CLAUDE_E2E_MODEL", "CODEX_E2E_MODEL", "GROK_E2E_MODEL", "GROK_BUILD_COMMAND")
-MODELS_LINE_RE = re.compile(r"SKILL_LINKS_LIVE_MODELS (\{[^\n]*?\})")
+MODEL_LINE_RE = re.compile(r"SKILL_LINKS_LIVE_MODEL (\{[^\n]*?\})")
 ANSI_RE = re.compile(r"\x1b\[[0-9;]*m")
 
 
@@ -170,14 +171,17 @@ def _matches(case: RequiredCase, result: TestResult) -> bool:
 
 
 def evaluate(required: Sequence[RequiredCase], results: Sequence[TestResult], unavailable: Mapping[str, str],
-             suite_errors: Mapping[str, str]) -> list[Row]:
-    """One row per required case, then one row per other failed test or suite error. Fail-closed."""
+             suite_errors: Mapping[str, str], runtime_errors: Mapping[str, str]) -> list[Row]:
+    """One row per required case, then one row per other failed test or suite error. Fail-closed.
+
+    `runtime_errors` are the setup errors of one live runtime's group; they explain only that runtime's cases.
+    """
     rows: list[Row] = []
     claimed: set[int] = set()
     for case in required:
         matched = [index for index, result in enumerate(results) if _matches(case, result)]
         claimed.update(matched)
-        cause = unavailable.get(case.runtime) or suite_errors.get(case.suite) or ""
+        cause = unavailable.get(case.runtime) or runtime_errors.get(case.runtime) or suite_errors.get(case.suite) or ""
         if not matched:
             rows.append(Row(case.runtime, case.scenario, False, cause or "no result"))
         elif len(matched) > 1:
@@ -203,25 +207,41 @@ def worktree_row(before: str, after: str) -> Row | None:
     return Row("worktree", "left unchanged", False, "git status changed: " + "; ".join(changed[:5]))
 
 
-def failed_suite_error(output: str) -> str | None:
-    """The first error under vitest's "Failed Suites" heading, e.g. a `beforeAll` that threw.
+def failed_suite_errors(output: str) -> dict[str, str]:
+    """The errors under vitest's "Failed Suites" heading, e.g. a `beforeAll` that threw, by live runtime.
 
-    The JSON report marks such a suite's tests `skipped` and carries no message, so the step log is read for it.
+    The JSON report marks such a suite's tests `skipped` and carries no message, so the step log is read for it. A
+    `FAIL <file> > <outer> > <runtime>` line keys its error by that runtime; any other `FAIL` line keys it by "", an
+    error of the whole file.
     """
     lines = ANSI_RE.sub("", output).splitlines()
     start = next((index for index, line in enumerate(lines) if "Failed Suites" in line), None)
     if start is None:
-        return None
+        return {}
+    errors: dict[str, str] = {}
+    pending: list[str] = []
     for line in lines[start + 1:]:
         text = line.strip()
-        if text and not text.startswith("FAIL"):
-            return text[:300]
-    return None
+        if "Failed Tests" in text:
+            break
+        if text.startswith("FAIL"):
+            last = text.split(" > ")[-1].strip()
+            pending.append(last if " > " in text and last in LIVE_RUNTIMES else "")
+        elif pending and text and not text.startswith(("❯", "⎯")):
+            for key in pending:
+                errors.setdefault(key, text[:300])
+            pending = []
+    return errors
 
 
 def read_models(output: str) -> dict[str, str] | None:
-    match = MODELS_LINE_RE.search(ANSI_RE.sub("", output))
-    return json.loads(match.group(1)) if match else None
+    """Each live runtime's model from its `SKILL_LINKS_LIVE_MODEL` line, noting a pin it fell back from."""
+    models: dict[str, str] = {}
+    for match in MODEL_LINE_RE.finditer(ANSI_RE.sub("", output)):
+        line = json.loads(match.group(1))
+        pinned = line.get("pinned")
+        models[line["runtime"]] = f"{line['model']} (pinned {pinned} not offered)" if pinned else line["model"]
+    return models or None
 
 
 def format_summary(rows: Sequence[Row], commit: str, models: Mapping[str, str] | None,
@@ -277,6 +297,7 @@ def main() -> int:
     temp_root = Path(tempfile.mkdtemp(prefix="release-smoke-")).resolve()
     results: list[TestResult] = []
     suite_errors: dict[str, str] = {}
+    runtime_errors: dict[str, str] = {}
     durations: dict[str, float] = {}
     models: dict[str, str] | None = None
     passed = False
@@ -300,10 +321,14 @@ def main() -> int:
             results += step_results
             if file_errors:
                 suite_errors[step.suite] = file_errors[0]
-            elif exit_code != 0 and not any(result.status == "failed" for result in step_results):
-                suite_errors[step.suite] = (failed_suite_error(output)
-                                            or f"vitest exited {exit_code} without a failed test")
-        rows = evaluate(REQUIRED_CASES, results, unavailable, suite_errors)
+            elif exit_code != 0:
+                errors = failed_suite_errors(output)
+                runtime_errors.update({runtime: error for runtime, error in errors.items() if runtime})
+                if "" in errors:
+                    suite_errors[step.suite] = errors[""]
+                elif not errors and not any(result.status == "failed" for result in step_results):
+                    suite_errors[step.suite] = f"vitest exited {exit_code} without a failed test"
+        rows = evaluate(REQUIRED_CASES, results, unavailable, suite_errors, runtime_errors)
         guard = worktree_row(status_before, _git("status", "--porcelain"))
         if guard:
             rows.append(guard)

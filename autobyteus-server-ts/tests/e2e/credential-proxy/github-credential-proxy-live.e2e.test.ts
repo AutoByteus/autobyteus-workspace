@@ -1,19 +1,26 @@
 /**
- * Live check (autobyteus-311): the GitHub credential proxy against real GitHub, with the GitHub test token.
+ * Live check (autobyteus-337, AC-003, AC-007, AC-008): GitHub through the Integrations page's flow, against real GitHub,
+ * with the GitHub test token (Issues read/write on `ryan-zheng-teki/autobyteus-mcp-test` only).
  *
- * 1. Connect on a real built server with its own application vault (DS-001, the 244 pattern): the test token is sent
- *    once through `connectGitHubIntegration`, the server checks it with GitHub's `/user` and stores it. Then test,
- *    agent ticks and disconnect. The token appears in no response, no server output and no file under the runtime root.
- * 2. The proxy path (DS-002/DS-003/DS-005) in this process, over a temp vault holding the token after a real connect:
- *    a run's shell variables from the real run access, then, in a clean environment with only those variables,
- *    `curl` of issue #1 and `/user`, `gh api` with a full URL, and `git ls-remote` and `git clone` of
- *    `ryan-zheng-teki/autobyteus-mcp-test` through git's redirection. A run of an agent without access gets nothing.
- *    The token appears in no command output, the activity log or the connections file.
+ * 1. On a real built server with its own application vault: import `https://github.com/AutoByteus/autobyteus-integrations`
+ *    by its link through `importIntegrations` (a real download), connect GitHub through `connectIntegration` (the token is
+ *    sent once; the server checks it with GitHub's `/user` and stores it), test it, then remove the source through
+ *    `removeIntegrationSource`, which removes the connection too (DEC-015). The token appears in no response, no server
+ *    output and no file under the runtime root.
+ * 2. The teammate's way at the shell (AC-008), in this process over a temp data dir and vault: the same repository is
+ *    imported by its link through the real skill-source service, GitHub is connected, an agent definition has the
+ *    `github-integration` skill, and the real access rule gives its run the proxy's variables. In a clean environment
+ *    with only those variables, the integration's own scripts run: `issues.sh list` and `issues.sh comment` on the test
+ *    repository, through the proxy (activity records). An agent without the skill gets nothing; removing the skill
+ *    refuses the next call. Then the same integration from a local folder copy: the GitHub source is removed (its
+ *    connection goes), the folder is imported and connected, and `curl` reaches issue #1 through the proxy. The token
+ *    appears in no command output and no file of the data dir.
+ * Writes one comment on issue #1 of the test repository per run.
  * Gate: RUN_GITHUB_PROXY_E2E=1, with AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault holding `test.github.token`
  * (read-only). Without the secret the test is skipped with its reason (AUTOBYTEUS_LIVE_STRICT=1 fails instead). The
  * token expires 2026-11-25; after that GitHub refuses it (renew the token).
- * Prerequisites: network access to api.github.com and github.com; `curl`, `git` and `gh` on PATH; a current build
- * (`pnpm -C autobyteus-ts build`, then `pnpm -C autobyteus-server-ts build`).
+ * Prerequisites: network access to api.github.com, codeload.github.com and github.com; `bash`, `curl` and `jq` on PATH;
+ * a current build (`pnpm -C autobyteus-ts build`, then `pnpm -C autobyteus-server-ts build`).
  * Command: AUTOBYTEUS_TEST_VAULT=~/.autobyteus-test/vault RUN_GITHUB_PROXY_E2E=1 pnpm -C autobyteus-server-ts exec vitest run tests/e2e/credential-proxy/github-credential-proxy-live.e2e.test.ts --no-watch
  */
 import fs from "node:fs";
@@ -23,6 +30,7 @@ import { spawn } from "node:child_process";
 import { DatabaseSync } from "node:sqlite";
 import { initializePrisma, shutdownPrisma } from "repository_prisma";
 import { afterAll, describe, expect, it } from "vitest";
+import type { AgentDefinition } from "../../../src/agent-definition/domain/models.js";
 import {
   removeOwnedTestRuntime,
   resolveTestDatabaseLocation,
@@ -34,14 +42,20 @@ import { ApplicationDatabaseLocation } from "../../../src/config/application-dat
 import { SecretVaultBootstrap } from "../../../src/secret-management/bootstrap/secret-vault-bootstrap.js";
 import { SecretVaultRepository } from "../../../src/secret-management/persistence/secret-vault-repository.js";
 import { SecretManagementService } from "../../../src/secret-management/services/secret-management-service.js";
+import { SkillService } from "../../../src/skills/services/skill-service.js";
+import { SkillSourceService } from "../../../src/skills/services/skill-source-service.js";
+import { GitHubSkillSourceStore } from "../../../src/skills/stores/github-skill-source-store.js";
 import { createCredentialProxyHost } from "../../../src/credential-proxy/credential-proxy-host.js";
+import { DeliveryDefinitions } from "../../../src/credential-proxy/delivery-definitions.js";
+import { IntegrationAccessRule } from "../../../src/credential-proxy/integration-access-rule.js";
+import { IntegrationCatalog } from "../../../src/credential-proxy/integration-catalog.js";
 import { IntegrationConnectionService } from "../../../src/credential-proxy/integration-connection-service.js";
 import { IntegrationConnectionStore } from "../../../src/credential-proxy/integration-connection-store.js";
-import { IntegrationDefinitions } from "../../../src/credential-proxy/integration-definitions.js";
 
 const GATE = process.env["RUN_GITHUB_PROXY_E2E"] === "1";
+const INTEGRATIONS_REPOSITORY = "https://github.com/AutoByteus/autobyteus-integrations";
 const REPOSITORY = "ryan-zheng-teki/autobyteus-mcp-test";
-const STATUS_FIELDS = "connected login connectedAt agentDefinitionIds";
+const CARD_FIELDS = "id state login skillName source { sourceId kind label }";
 const VAULT_TABLES = `
   CREATE TABLE secret_entries (
     secret_id TEXT NOT NULL PRIMARY KEY, nonce BLOB NOT NULL CHECK (length(nonce) = 12), ciphertext BLOB NOT NULL,
@@ -54,7 +68,7 @@ const VAULT_TABLES = `
 `;
 
 type RunningTestServer = Awaited<ReturnType<typeof startBuiltTestServer>>;
-type Status = { connected: boolean; login: string | null; connectedAt: string | null; agentDefinitionIds: string[] };
+type Card = { id: string; state: string; login: string | null; skillName: string; source: { sourceId: string; kind: string; label: string } };
 
 /** Every file under `dir` whose bytes contain `secret` (paths only; the secret is never printed). */
 const filesContaining = (dir: string, secret: string): string[] => {
@@ -71,9 +85,9 @@ const filesContaining = (dir: string, secret: string): string[] => {
 };
 
 /** A command in a clean environment: PATH, a temp HOME without any git or gh config, and the given variables. */
-const run = (command: string, args: string[], cwd: string, home: string, env: Readonly<Record<string, string>>) =>
+const run = (command: string, args: string[], cwd: string, home: string, env: Readonly<Record<string, string>>, input?: string) =>
   new Promise<{ status: number | null; stdout: string; stderr: string }>((resolve, reject) => {
-    const child = spawn(command, args, { cwd, stdio: ["ignore", "pipe", "pipe"], env: {
+    const child = spawn(command, args, { cwd, stdio: [input === undefined ? "ignore" : "pipe", "pipe", "pipe"], env: {
       PATH: process.env.PATH ?? "", HOME: home, GIT_CONFIG_NOSYSTEM: "1", GIT_CONFIG_GLOBAL: "/dev/null", ...env,
     } });
     let stdout = "";
@@ -82,13 +96,14 @@ const run = (command: string, args: string[], cwd: string, home: string, env: Re
     child.stderr.on("data", (chunk) => { stderr += chunk; });
     child.on("error", reject);
     child.on("close", (status) => resolve({ status, stdout, stderr }));
+    if (input !== undefined) child.stdin!.end(input);
   });
 
-describe.skipIf(!GATE)("GitHub credential proxy against real GitHub (live)", () => {
+describe.skipIf(!GATE)("GitHub through the Integrations page against real GitHub (live)", () => {
   const suffix = `${process.pid}-${Date.now()}`;
   const runtimeRoot = path.join(testRuntimeRoot, `github-proxy-live-${suffix}`);
   const database = resolveTestDatabaseLocation(`file:./db/github-proxy-live-${suffix}.db`);
-  const localRoot = fs.mkdtempSync(path.join(os.tmpdir(), "github-proxy-live-"));
+  const localRoot = fs.realpathSync(fs.mkdtempSync(path.join(os.tmpdir(), "github-proxy-live-")));
   let server: RunningTestServer | null = null;
 
   afterAll(async () => {
@@ -97,7 +112,7 @@ describe.skipIf(!GATE)("GitHub credential proxy against real GitHub (live)", () 
     fs.rmSync(localRoot, { recursive: true, force: true });
   }, 60_000);
 
-  it("connects through GraphQL on a built server with its own vault, and never shows the token", async (context) => {
+  it("imports the integrations repository by its link on a built server, connects, tests, and removes it with its connection", async (context) => {
     const token = await readLiveTestSecret(context, "test.github.token");
     server = await startBuiltTestServer({ runtimeRoot, databaseUrlOverride: database.databaseUrl });
     const responses: string[] = [];
@@ -112,20 +127,25 @@ describe.skipIf(!GATE)("GitHub credential proxy against real GitHub (live)", () 
       return body.data;
     };
 
+    const imported = (await gql<{ importIntegrations: Card[] }>(
+      `mutation($location: String!) { importIntegrations(location: $location) { ${CARD_FIELDS} } }`,
+      { location: INTEGRATIONS_REPOSITORY })).importIntegrations;
+    expect(imported).toEqual([expect.objectContaining({ id: "github", state: "NEEDS_TOKEN", skillName: "github-integration",
+      source: expect.objectContaining({ kind: "GITHUB_REPOSITORY", label: "AutoByteus/autobyteus-integrations" }) })]);
+
     // The only place the token is revealed: the variable of this one request.
-    const connected = (await gql<{ connectGitHubIntegration: Status }>(
-      `mutation($token: String!) { connectGitHubIntegration(token: $token) { ${STATUS_FIELDS} } }`,
-      { token: token.revealToTrustedConsumer() })).connectGitHubIntegration;
-    expect(connected).toMatchObject({ connected: true, login: expect.any(String), connectedAt: expect.any(String) });
-    expect((await gql<{ testGitHubIntegration: Status }>(`mutation { testGitHubIntegration { ${STATUS_FIELDS} } }`))
-      .testGitHubIntegration.login).toBe(connected.login);
-    expect((await gql<{ setGitHubIntegrationAgentAccess: Status }>(
-      `mutation { setGitHubIntegrationAgentAccess(agentDefinitionIds: ["agent-live"]) { ${STATUS_FIELDS} } }`))
-      .setGitHubIntegrationAgentAccess).toMatchObject({ connected: true, agentDefinitionIds: ["agent-live"] });
-    expect((await gql<{ githubIntegration: Status }>(`query { githubIntegration { ${STATUS_FIELDS} } }`)).githubIntegration)
-      .toMatchObject({ connected: true, login: connected.login });
-    expect((await gql<{ disconnectGitHubIntegration: Status }>(`mutation { disconnectGitHubIntegration { ${STATUS_FIELDS} } }`))
-      .disconnectGitHubIntegration).toEqual({ connected: false, login: null, connectedAt: null, agentDefinitionIds: ["agent-live"] });
+    const connected = (await gql<{ connectIntegration: Card }>(
+      `mutation($token: String!) { connectIntegration(id: "github", token: $token) { ${CARD_FIELDS} } }`,
+      { token: token.revealToTrustedConsumer() })).connectIntegration;
+    expect(connected).toMatchObject({ state: "CONNECTED", login: expect.any(String) });
+    expect((await gql<{ testIntegration: Card }>(`mutation { testIntegration(id: "github") { ${CARD_FIELDS} } }`))
+      .testIntegration.login).toBe(connected.login);
+
+    const removal = (await gql<{ removeIntegrationSource: { removedConnectionNames: string[] } }>(
+      "mutation($id: String!) { removeIntegrationSource(sourceId: $id) { removedConnectionNames } }",
+      { id: imported[0]!.source.sourceId })).removeIntegrationSource;
+    expect(removal.removedConnectionNames).toEqual(["GitHub"]);
+    expect((await gql<{ integrations: Card[] }>("query { integrations { id } }")).integrations).toEqual([]);
 
     await server.stop();
     const output = server.output();
@@ -137,15 +157,27 @@ describe.skipIf(!GATE)("GitHub credential proxy against real GitHub (live)", () 
       inServerOutput: output.includes(secret),
       filesWithToken: filesContaining(runtimeRoot, secret),
     }).toEqual({ inResponses: false, inServerOutput: false, filesWithToken: [] });
-  }, 180_000);
+  }, 240_000);
 
-  it("gives a run's shell GitHub through the proxy: curl, gh api, git ls-remote and git clone", async (context) => {
+  it("runs the integration's own scripts through the proxy for an agent with its skill, from a GitHub source and a local folder (AC-008)", async (context) => {
     const token = await readLiveTestSecret(context, "test.github.token");
     const secret = token.revealToTrustedConsumer();
-    const integrationsDir = path.join(localRoot, "integrations");
-    const home = path.join(localRoot, "home");
-    fs.mkdirSync(home, { recursive: true });
     fs.chmodSync(localRoot, 0o700);
+    const dataDir = path.join(localRoot, "data");
+    const skillsDir = path.join(dataDir, "skills");
+    const integrationsDir = path.join(dataDir, "integrations");
+    const home = path.join(localRoot, "home");
+    for (const dir of [skillsDir, home]) fs.mkdirSync(dir, { recursive: true });
+
+    let localPaths: string[] = [];
+    const config = {
+      getSkillsDir: () => skillsDir, getAppDataDir: () => dataDir, getAdditionalSkillsDirs: () => localPaths,
+      getAdditionalAgentPackageRoots: () => [], getAgentOrgsDir: () => path.join(dataDir, "agent-orgs"), get: () => localPaths.join(","),
+    };
+    const sourceStore = new GitHubSkillSourceStore(dataDir);
+    const skills = new SkillService({ config, sourceStore, isRuntimeDefaultSkillFolder: () => false });
+    const skillSources = new SkillSourceService({ config, catalog: skills, store: sourceStore, invalidateWorkspaces: async () => undefined,
+      updateSetting: (_key, value) => { localPaths = value.split(",").filter(Boolean); return [true, ""]; } });
 
     await shutdownPrisma();
     const location = ApplicationDatabaseLocation.fromConfiguredFileUrl("file:application.db", localRoot);
@@ -156,49 +188,79 @@ describe.skipIf(!GATE)("GitHub credential proxy against real GitHub (live)", () 
     const repository = new SecretVaultRepository();
     const bootstrap = await new SecretVaultBootstrap(location, repository).initializeOrVerify();
     const management = new SecretManagementService(repository, bootstrap.rootKey, bootstrap.metadata, bootstrap.health);
-    const host = createCredentialProxyHost({ integrationsDir, management: () => management });
+
+    const definitions = new DeliveryDefinitions();
+    const connections = new IntegrationConnectionService({
+      store: new IntegrationConnectionStore(integrationsDir), definitions, management: () => management,
+    });
+    const catalog = new IntegrationCatalog({ skillSources, skills, connections, definitions });
+    skillSources.setSourceChangeObserver(catalog);
+    const agents = new Map<string, AgentDefinition>();
+    const setAgent = (id: string, skillNames: string[]) =>
+      agents.set(id, { id, name: id, description: "d", instructions: "i", skillNames } as unknown as AgentDefinition);
+    setAgent("agent-live", ["github-integration"]);
+    setAgent("agent-without", ["something-else"]);
+    const access = new IntegrationAccessRule({
+      catalog, definitions, skills, agentDefinitions: { getAgentDefinitionById: async (id) => agents.get(id) ?? null },
+    });
+    const host = createCredentialProxyHost({ integrationsDir, definitions, management: () => management, catalog, access, skillSources: null });
+    const outputs: string[] = [];
     try {
-      const connection = new IntegrationConnectionService({
-        store: new IntegrationConnectionStore(integrationsDir), definitions: new IntegrationDefinitions(), management: () => management,
-      });
-      const connected = await connection.connect(token);
-      await connection.setAgentAccess(["agent-live"]);
       await host.listen();
+      // From the repository link, as a teammate does on the page.
+      expect((await catalog.import(INTEGRATIONS_REPOSITORY)).map((entry) => entry.id)).toEqual(["github"]);
+      expect((await connections.connect("github", token)).connected).toBe(true);
 
-      expect(host.runAccess.environmentForRun({ runId: "run-other", agentDefinitionId: "agent-other" }, {})).toEqual({});
-      const variables = host.runAccess.environmentForRun({ runId: "run-live", agentDefinitionId: "agent-live" }, {});
-      const api = variables["AUTOBYTEUS_GITHUB_API_URL"]!;
-      expect(api).toMatch(/^http:\/\/127\.0\.0\.1:\d+\/r\/rp_[\w-]+\/github\/api$/);
+      expect(await host.runAccess.environmentForRun({ runId: "run-without", agentDefinitionId: "agent-without" }, {})).toEqual({});
+      const env = await host.runAccess.environmentForRun({ runId: "run-live", agentDefinitionId: "agent-live" }, {});
+      expect(env["AUTOBYTEUS_GITHUB_API_URL"]).toMatch(/^http:\/\/127\.0\.0\.1:\d+\/r\/rp_[\w-]+\/github\/api$/);
+      const scripts = path.join(skills.getSkill("github-integration")!.rootPath, "scripts");
 
-      const issue = await run("curl", ["-sS", "-H", "Accept: application/vnd.github+json", `${api}/repos/${REPOSITORY}/issues/1`], localRoot, home, variables);
-      expect(issue.status, issue.stderr).toBe(0);
+      const listed = await run("bash", [path.join(scripts, "issues.sh"), "list", REPOSITORY, "--state", "all", "--limit", "100"], localRoot, home, env);
+      outputs.push(listed.stdout, listed.stderr);
+      expect(listed.status, listed.stderr).toBe(0);
+      expect(listed.stdout).toMatch(new RegExp(`^${REPOSITORY}#1 `, "m"));
+
+      const body = `AutoByteus integrations-page live check (autobyteus-337), ${new Date().toISOString()}. Automated; safe to ignore.`;
+      const commented = await run("bash", [path.join(scripts, "issues.sh"), "comment", `${REPOSITORY}#1`, "--body-file", "-"], localRoot, home, env, body);
+      outputs.push(commented.stdout, commented.stderr);
+      expect(commented.status, commented.stderr).toBe(0);
+      expect(commented.stdout).toMatch(new RegExp(`^commented on ${REPOSITORY}#1: https://github.com/`));
+
+      const activity = () => fs.readFileSync(path.join(integrationsDir, "activity.jsonl"), "utf8").trim().split("\n")
+        .map((line) => JSON.parse(line) as Record<string, unknown>);
+      expect(activity().filter((record) => record.runId === "run-live").map((record) => `${record.route} ${record.method} ${record.status}`))
+        .toEqual(expect.arrayContaining(["api GET 200", "api POST 201"]));
+
+      // The skill taken away from the agent: the run's next call is refused.
+      setAgent("agent-live", []);
+      const refused = await run("curl", ["-sS", `${env["AUTOBYTEUS_GITHUB_API_URL"]}/repos/${REPOSITORY}/issues/1`], localRoot, home, env);
+      expect(JSON.parse(refused.stdout)).toMatchObject({ error: "INTEGRATION_NOT_ALLOWED",
+        message: "This agent has no access to GitHub. Add the github-integration skill to the agent." });
+      setAgent("agent-live", ["github-integration"]);
+
+      // The same integration from a local folder copy: the GitHub source goes first, and its connection with it.
+      const githubSource = catalog.sourceListings()[0]!;
+      const localCopy = path.join(localRoot, "local-integrations");
+      fs.cpSync(githubSource.rootPath, localCopy, { recursive: true });
+      expect(await catalog.removeSource(githubSource.sourceId)).toEqual(["GitHub"]);
+      expect((await connections.status("github")).connected).toBe(false);
+      expect((await catalog.import(localCopy)).map((entry) => [entry.id, entry.state, entry.source.kind])).toEqual([["github", "NEEDS_TOKEN", "LOCAL_PATH"]]);
+      await connections.connect("github", token);
+      const localEnv = await host.runAccess.environmentForRun({ runId: "run-local", agentDefinitionId: "agent-live" }, {});
+      const issue = await run("curl", ["-sS", "-H", "Accept: application/vnd.github+json", `${localEnv["AUTOBYTEUS_GITHUB_API_URL"]}/repos/${REPOSITORY}/issues/1`], localRoot, home, localEnv);
+      outputs.push(issue.stdout, issue.stderr);
       expect(JSON.parse(issue.stdout)).toMatchObject({ number: 1 });
-      const user = await run("curl", ["-sS", `${api}/user`], localRoot, home, variables);
-      expect(JSON.parse(user.stdout)).toMatchObject({ login: connected.login });
-      // gh needs some token of its own before it sends anything; the proxy drops it and adds the stored one.
-      const ghUser = await run("gh", ["api", `${api}/user`, "--jq", ".login"], localRoot, home, { ...variables, GH_TOKEN: "unused" });
-      expect(ghUser.status, ghUser.stderr).toBe(0);
-      expect(ghUser.stdout.trim()).toBe(connected.login);
 
-      const remote = await run("git", ["ls-remote", `https://github.com/${REPOSITORY}.git`, "HEAD"], localRoot, home, variables);
-      expect(remote.status, remote.stderr).toBe(0);
-      expect(remote.stdout).toMatch(/^[0-9a-f]{40}\tHEAD/);
-      const clone = await run("git", ["clone", "-q", "--depth", "1", `https://github.com/${REPOSITORY}.git`, "clone"], localRoot, home, variables);
-      expect(clone.status, clone.stderr).toBe(0);
-      expect(fs.existsSync(path.join(localRoot, "clone", ".git"))).toBe(true);
-
-      const activity = fs.readFileSync(path.join(integrationsDir, "activity.jsonl"), "utf8").trim().split("\n").map((line) => JSON.parse(line));
-      expect(activity.map((entry) => `${entry.route} ${entry.method} ${entry.status}`)).toEqual(expect.arrayContaining([
-        "api GET 200", "git GET 200", "git POST 200",
-      ]));
       expect({
-        inCommandOutput: [issue, user, ghUser, remote, clone].some((result) => `${result.stdout}${result.stderr}`.includes(secret)),
-        filesWithToken: filesContaining(integrationsDir, secret),
+        inCommandOutput: outputs.some((text) => text.includes(secret)),
+        filesWithToken: filesContaining(dataDir, secret).concat(filesContaining(localCopy, secret)),
       }).toEqual({ inCommandOutput: false, filesWithToken: [] });
     } finally {
+      await connections.disconnect("github").catch(() => undefined);
       await host.close();
       management.close();
       await shutdownPrisma();
     }
-  }, 180_000);
+  }, 300_000);
 });

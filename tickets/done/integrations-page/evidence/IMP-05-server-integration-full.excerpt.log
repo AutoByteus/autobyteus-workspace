@@ -1,0 +1,16 @@
+# Excerpt of IMP-05-server-integration-full.log (the full log is next to this file): its header, failed tests, totals and exit code
+# Check: IMP-05-server-integration-full
+# Command (in /Users/normy/autobyteus_org/autobyteus-worktrees/integrations-page/autobyteus-server-ts, clean env: env -i PATH HOME=<temp> TMPDIR): pnpm -s run test:integration
+# Commit: f0eb43c749 (branch codex/integrations-page)
+# Environment: macOS 26.5.2 arm64, node v22.23.1, git 2.50.1
+# Date: 2026-11-01T07:34:19Z
+
+ FAIL  tests/integration/agent-execution/agent-run-service.integration.test.ts > AgentRunService integration > prepares, durably starts, and only then publishes a autobyteus run
+ FAIL  tests/integration/agent-execution/agent-run-service.integration.test.ts > AgentRunService integration > prepares, durably starts, and only then publishes a codex_app_server run
+ FAIL  tests/integration/agent-execution/agent-run-service.integration.test.ts > AgentRunService integration > prepares, durably starts, and only then publishes a claude_agent_sdk run
+ FAIL  tests/integration/agent-team-execution/agent-team-run-manager.integration.test.ts > AgentTeamRunManager strict current V2 package integration > supplies only root-neutral local Team callbacks during materialization
+ FAIL  tests/integration/collaboration-definition-admission/org-owned-team-local-agent.test.ts > Org-owned Team -> Team-local Agent production reads > plans exact configured identities through real providers and normal cached Team service without activation
+ FAIL  tests/integration/collaboration-definition-admission/org-owned-team-local-agent.test.ts > Org-owned Team -> Team-local Agent production reads > supplies fresh mounted enclosing instructions through the actual scope callback and normal Team service
+ Test Files  3 failed | 84 passed | 20 skipped (107)
+      Tests  6 failed | 493 passed | 69 skipped (568)
+# Exit code: 1

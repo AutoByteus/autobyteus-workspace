@@ -1,0 +1,27 @@
+# API-06 packaging checks rerun at head 92ff204d33 (code identical to 4db26446cb except two comment lines of prepare-server.mjs: git diff 4db26446cb HEAD -- autobyteus-web/scripts = 2 insertions, 4 deletions); macOS; date 2026-11-01T07:11:41Z
+
+## python source checks
+...............
+----------------------------------------------------------------------
+Ran 15 tests in 1.384s
+
+OK
+
+## web: npm-before spec
+ Test Files  1 passed (1)
+      Tests  10 passed (10)
+
+## server: package contents + generated graphql current
+ ✓ tests/architecture/web-generated-graphql-current.test.ts (1 test) 3746ms
+     ✓ equals the web codegen output for the current server schema, and the check fails on a changed schema  3638ms
+ ✓ tests/architecture/server-package-contents.test.ts (5 tests) 5600ms
+ Test Files  2 passed (2)
+      Tests  6 passed (6)
+
+## declared imports on the real packages
+Imports are declared: autobyteus-server-ts, autobyteus-web, autobyteus-ts
+
+## codegen drift check against the built server
+[SUCCESS] Generate to /var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/codegen-local-XXNtDX/graphql.ts
+[SUCCESS] Generate outputs
+autobyteus-web/generated/graphql.ts is current.

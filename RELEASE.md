@@ -81,7 +81,9 @@ The user decides at verification. There are three options:
   is the default when the user does not ask for one.
 - **Beta** (`vX.Y.Z-beta.N`). The tag is published as a GitHub pre-release with
   generated notes. It is offered only to desktop installs with
-  **Settings > Updates > Receive beta updates** on.
+  **Settings > Updates > Receive beta updates** on. When a ticket in the
+  release needs an action from users, the beta's notes also carry it (see
+  [Beta notes with a user action](#beta-notes-with-a-user-action)).
 - **Stable** (`vX.Y.Z`). The tag becomes GitHub "Latest", with curated notes
   taken from the ticket's `release-notes.md`.
 
@@ -137,6 +139,12 @@ failing to start; no check before tagging started a run.
   - A quota refusal, such as "usage limit" or a 429, is handled like a runtime
     that cannot run: wait for the reset, or the user waives that runtime for
     this release and the waiver is recorded.
+- **Models:** each live runtime checks its own model; a model the CLI does not
+  offer fails only that runtime's cases, and the others still run. xAI changes
+  the Grok CLI's model list, so Grok uses `grok-4.7` when offered and otherwise
+  the first model the CLI offers. The summary's models line then says, for
+  example, `grok-4.5 (pinned grok-4.7 not offered)`. Setting `GROK_E2E_MODEL`
+  (or `CLAUDE_E2E_MODEL`, `CODEX_E2E_MODEL`) requires exactly that model.
 - **Pass:** exit 0. Put the printed summary in the delivery report.
 - **Failure, or a runtime that cannot run:** no tag. The summary names the
   runtime, the scenario and the reason, and the step logs stay in the temp
@@ -201,6 +209,29 @@ git push origin vX.Y.Z[-beta.N]
   checks a version.
 - Release notes are user-facing and functional. Leave internal IDs, review
   rounds and file paths out.
+
+### Beta notes with a user action
+
+1. A ticket whose change needs an action from users writes it under
+   `## What you need to do` in its `release-notes.md`. Otherwise it leaves the
+   section out.
+2. Before tagging, list the release's tickets
+   (`git log --merges --first-parent <previous-tag>..HEAD`, which leaves out
+   the tickets' base-refresh merges) and collect their sections under one
+   `## What you need to do` heading in `/tmp/actions.md`. With none, the
+   generated notes stand alone.
+3. After all four workflows have succeeded and the assets are complete (see
+   [Watching The Rollout](#watching-the-rollout)), put the section above the
+   generated notes:
+
+   ```bash
+   gh release view vX.Y.Z-beta.N --json body --jq .body > /tmp/generated.md
+   { cat /tmp/actions.md; echo; cat /tmp/generated.md; } > /tmp/notes.md
+   gh release edit vX.Y.Z-beta.N --notes-file /tmp/notes.md
+   ```
+
+   Only the notes change; the tag and the assets do not.
+4. The delivery report names the tickets whose sections were used.
 
 ## Watching The Rollout
 
@@ -338,7 +369,7 @@ What the release workflows build, validate and need.
   - Stable GitHub Releases use curated user-facing notes from `.github/release-notes/release-notes.md` when that file exists in the tagged revision.
   - The release helper prepares that file from the ticket `release-notes.md`.
   - Historical tags that predate the curated file fall back to GitHub generated notes during manual republish.
-  - Pre-release tags (any tag containing `-`, such as `vX.Y.Z-beta.N`) always use GitHub generated notes in both the desktop and Android jobs.
+  - Pre-release tags (any tag containing `-`, such as `vX.Y.Z-beta.N`) always use GitHub generated notes in both the desktop and Android jobs. A user-action section is added afterwards by hand, as [Beta notes with a user action](#beta-notes-with-a-user-action) says.
 - Release channels (stable and beta):
   - Any tag containing `-` is published as a GitHub **pre-release**, including a manual dispatch of such a tag. GitHub "Latest" therefore stays on the newest stable release.
   - Desktop installs are offered pre-releases only when **Settings > Updates > Receive beta updates** is on (off by default). Turning it off never downgrades; the install waits for the next newer stable.

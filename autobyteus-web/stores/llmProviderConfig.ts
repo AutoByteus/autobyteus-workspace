@@ -40,7 +40,6 @@ import {
   type GeminiOptionSaveInput,
   type GeminiSetupConfigState,
   type ModelGroupKind,
-  type ModelKind,
   type ProviderCredentialSetting,
   type ProviderModelCatalogSnapshot,
   type ProviderWithModels,
@@ -54,8 +53,6 @@ export * from './llmProviderConfigSupport'
 export const PROVIDER_SETTINGS_RUNTIME_KIND = 'autobyteus'
 const inFlightCatalogReads = new Map<string, Promise<RuntimeCatalogSnapshot>>()
 const requestKey = (runtime: string, providerId: string): string => `${runtime}:${providerId}`
-/** Discovery settings (Ollama and LM Studio hosts) own only an LLM model source. */
-const DISCOVERY_SETTING_MODEL_KINDS: ReadonlySet<ModelKind> = new Set<ModelKind>(['LLM'])
 const throwGraphqlErrors = (errors: readonly { message: string }[] | null | undefined): void => {
   if (errors?.length) throw new Error(errors.map(error => error.message).join(', '))
 }
@@ -261,7 +258,6 @@ export const useLLMProviderConfigStore = defineStore('llmProviderConfig', {
       const runtime = normalizeCatalogRuntimeKind(runtimeKind)
       const providerId = target.ownerProviderId.trim()
       if (!providerId) throw new Error('Provider is required')
-      const affectedKinds = DISCOVERY_SETTING_MODEL_KINDS
       const epoch = this.catalogEpoch
       const requestId = ++this.nextCatalogRequestId
       const key = requestKey(runtime, providerId)
@@ -271,26 +267,18 @@ export const useLLMProviderConfigStore = defineStore('llmProviderConfig', {
       if (previous) {
         this.applyProviderSnapshotLocal(runtime, {
           ...previous,
-          sources: previous.sources.map(source => affectedKinds.has(source.modelKind)
-            ? {
-                ...source,
-                state: 'IDLE',
-                modelCount: 0,
-                successfulUnitCount: 0,
-                failedUnitCount: 0,
-                safeMessage: null,
-              }
-            : source),
+          sources: previous.sources.map(source => ({
+            ...source,
+            state: 'IDLE',
+            modelCount: 0,
+            successfulUnitCount: 0,
+            failedUnitCount: 0,
+            safeMessage: null,
+          })),
           llmModels: [],
         })
       }
-      return this.runProviderCatalogMutation(
-        runtime,
-        providerId,
-        false,
-        affectedKinds,
-        { epoch, requestId },
-      )
+      return this.runProviderCatalogMutation(runtime, providerId, false, { epoch, requestId })
     },
     async ensureMissingDynamicProviders(runtimeKind: string): Promise<void> {
       const runtime = normalizeCatalogRuntimeKind(runtimeKind)
@@ -305,7 +293,6 @@ export const useLLMProviderConfigStore = defineStore('llmProviderConfig', {
       runtimeKind: string,
       providerId: string,
       force: boolean,
-      affectedKinds?: ReadonlySet<ModelKind>,
       preparedRequest?: PreparedProviderCatalogRequest,
     ): Promise<ProviderModelCatalogSnapshot> {
       const runtime = normalizeCatalogRuntimeKind(runtimeKind)
@@ -320,13 +307,11 @@ export const useLLMProviderConfigStore = defineStore('llmProviderConfig', {
         const hasRows = previous.llmModels.length + previous.audioModels.length + previous.imageModels.length > 0
         this.applyProviderSnapshotLocal(runtime, {
           ...previous,
-          sources: previous.sources.map(source => !affectedKinds || affectedKinds.has(source.modelKind)
-            ? {
-                ...source,
-                state: hasRows ? 'REFRESHING' : 'LOADING',
-                safeMessage: null,
-              }
-            : source),
+          sources: previous.sources.map(source => ({
+            ...source,
+            state: hasRows ? 'REFRESHING' : 'LOADING',
+            safeMessage: null,
+          })),
         })
       }
       try {
@@ -351,13 +336,11 @@ export const useLLMProviderConfigStore = defineStore('llmProviderConfig', {
             + previous.videoModels.length > 0
           this.applyProviderSnapshotLocal(runtime, {
             ...previous,
-            sources: previous.sources.map(source => !affectedKinds || affectedKinds.has(source.modelKind)
-              ? {
-                  ...source,
-                  state: hasRows ? 'STALE_ERROR' : 'ERROR',
-                  safeMessage: 'MODEL_CATALOG_REQUEST_FAILED',
-                }
-              : source),
+            sources: previous.sources.map(source => ({
+              ...source,
+              state: hasRows ? 'STALE_ERROR' : 'ERROR',
+              safeMessage: 'MODEL_CATALOG_REQUEST_FAILED',
+            })),
           })
         }
         throw error

@@ -236,7 +236,8 @@ environment variables: test setups delete inherited `*_API_KEY` variables.
 - **Test-only secrets.** A live check may need a secret that is not a provider key. Its alias in
   the source file maps to a test-only secret ID: `AUTOBYTEUS_TEST_GITHUB_TOKEN=…` is stored as
   `test.github.token`, which the GitHub MCP live check (`RUN_GITHUB_MCP_E2E=1`) and the GitHub
-  credential proxy live check (`RUN_GITHUB_PROXY_E2E=1`) read and send once to a server with its
+  credential proxy live check (`RUN_GITHUB_PROXY_E2E=1`, which also posts one comment on the test
+  repository's issue #1 per run) read and send once to a server with its
   own vault. Only `test-vault setup` accepts these aliases;
   `secrets:import` into an application vault refuses them.
 - **Read-only, like a test database.** A server started with the variable reads the test vault

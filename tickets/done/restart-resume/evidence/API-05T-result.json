@@ -1,0 +1,248 @@
+{
+  "case": "API-05T",
+  "app": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-api.r8VrPh/desk-app/AutoByteus.app",
+  "X": "1.5.11-beta.9",
+  "X1": "1.5.11-beta.9-rr285next",
+  "date": "2026-11-01T07:02:06.543Z",
+  "own": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-desk-XFNGoO",
+  "tag": "RR285Dmvxhfkr3",
+  "steps": [
+    {
+      "at": "3.2",
+      "step": "isolated-app",
+      "value": {
+        "args": [
+          "start",
+          "--app",
+          "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-api.r8VrPh/desk-app/AutoByteus.app",
+          "--data-root",
+          "<own>/data-root"
+        ],
+        "exit": 0,
+        "ok": true
+      }
+    },
+    {
+      "at": "3.2",
+      "step": "instance started",
+      "value": {
+        "label": "X",
+        "instanceId": "iso-64062-8536",
+        "electronPid": 12866,
+        "serverPort": 64063
+      }
+    },
+    {
+      "at": "4.2",
+      "step": "models",
+      "value": {
+        "codex": "gpt-6.1-terra",
+        "claude": "claude-haiku-4-5-20251001"
+      }
+    },
+    {
+      "at": "9.6",
+      "step": "busy",
+      "value": {
+        "label": "team-codex",
+        "pid": 16289
+      }
+    },
+    {
+      "at": "22.2",
+      "step": "isolated-app",
+      "value": {
+        "args": [
+          "stop",
+          "iso-64062-8536"
+        ],
+        "exit": 0,
+        "ok": true
+      }
+    },
+    {
+      "at": "22.2",
+      "step": "quit",
+      "value": {
+        "label": "quit X (busy)",
+        "electronGoneMs": 10452
+      }
+    },
+    {
+      "at": "22.2",
+      "step": "record after quit",
+      "value": {
+        "entries": [
+          {
+            "kind": "agent_team",
+            "place": "member",
+            "version": "1.5.11-beta.9",
+            "run": "6fb5e2ffb4"
+          }
+        ],
+        "lines": [
+          "[2026-11-01T07:02:18.355Z] [INFO] [electron.embedded-server.stdout] Recorded 1 busy run(s) for restart resume"
+        ]
+      }
+    },
+    {
+      "at": "22.2",
+      "step": "stamp in app copy",
+      "value": "1.5.11-beta.9-rr285next"
+    },
+    {
+      "at": "25.1",
+      "step": "isolated-app",
+      "value": {
+        "args": [
+          "start",
+          "--app",
+          "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-api.r8VrPh/desk-app/AutoByteus.app",
+          "--data-root",
+          "<own>/data-root"
+        ],
+        "exit": 0,
+        "ok": true
+      }
+    },
+    {
+      "at": "25.2",
+      "step": "instance started",
+      "value": {
+        "label": "X1",
+        "instanceId": "iso-64354-2531",
+        "electronPid": 17846,
+        "serverPort": 64355
+      }
+    },
+    {
+      "at": "45.2",
+      "step": "after X1 start",
+      "value": {
+        "lines": [
+          "[2026-11-01T07:02:31.670Z] [INFO] [electron.embedded-server.stdout] Restart resume resumed member run 'desk_team_coordinator_rr285dmvxhfkr3_4fd3a47ff82944499e00cf6fb5e2ffb4' of agent_team 'desk_team_rr285dmvxhfkr3_0f15809e28cc45ad812430cf37fd534c'",
+          "[2026-11-01T07:02:31.670Z] [INFO] [electron.embedded-server.stdout] Restart resume after the update to 1.5.11-beta.9-rr285next: 1 resumed, 0 skipped, 0 failed"
+        ],
+        "after": {
+          "team-codex": {
+            "notices": 0,
+            "listsDelegated": false,
+            "noticeText": null,
+            "busyAgain": false,
+            "error": null,
+            "lastEntries": [
+              "{\"kind\":\"tool_call\",\"invocationId\":\"exec-72351044-7936-47cc-9a2f-f7206d7fa802\",\"role\":null,\"content\":\"\",\"toolName\":\"run_bash\",\"toolArgs\":{\"command\":\"/bin/bash -lc \\\"ps aux | grep '[R]R285Dmvxhfkr3_team-codex'\\\"\",\"cwd\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-desk-XFNGoO/worksp",
+              "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"The interrupted command is no longer running. I couldn’t verify whether it finished or was terminated.\",\"media\":null,\"ts\":1793516557.912}"
+            ]
+          }
+        },
+        "recordAfterStart": null
+      }
+    },
+    {
+      "at": "54.4",
+      "step": "member notice in window (live)",
+      "value": {
+        "segments": 0,
+        "hits": [],
+        "url": "file:///private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-api.r8VrPh/desk-app/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/workspace"
+      }
+    },
+    {
+      "at": "69.7",
+      "step": "member notice in window (after reload)",
+      "value": {
+        "segments": 0,
+        "hits": [],
+        "url": "file:///private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-api.r8VrPh/desk-app/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/workspace"
+      }
+    },
+    {
+      "at": "70.1",
+      "step": "isolated-app",
+      "value": {
+        "args": [
+          "stop",
+          "iso-64354-2531"
+        ],
+        "exit": 0,
+        "ok": true
+      }
+    },
+    {
+      "at": "70.1",
+      "step": "quit",
+      "value": {
+        "label": "quit X1",
+        "electronGoneMs": 306
+      }
+    }
+  ],
+  "roots": [
+    {
+      "label": "team-codex",
+      "kind": "team",
+      "runId": "desk_team_coordinator_rr285dmvxhfkr3_4fd3a47ff82944499e00cf6fb5e2ffb4",
+      "rootId": "desk_team_rr285dmvxhfkr3_0f15809e28cc45ad812430cf37fd534c",
+      "teamName": "Desk Team RR285Dmvxhfkr3",
+      "marker": "RR285Dmvxhfkr3_team-codex"
+    }
+  ],
+  "quitX": {
+    "label": "quit X (busy)",
+    "electronGoneMs": 10452
+  },
+  "recordAfterQuit": {
+    "entries": [
+      {
+        "root": {
+          "rootSubjectKind": "agent_team",
+          "rootRunId": "desk_team_rr285dmvxhfkr3_0f15809e28cc45ad812430cf37fd534c"
+        },
+        "agentRunId": "desk_team_coordinator_rr285dmvxhfkr3_4fd3a47ff82944499e00cf6fb5e2ffb4",
+        "place": "member",
+        "status": "running",
+        "recordedAt": "2026-11-01T07:02:18.338Z",
+        "version": "1.5.11-beta.9"
+      }
+    ]
+  },
+  "quitXLines": [
+    "[2026-11-01T07:02:18.355Z] [INFO] [electron.embedded-server.stdout] Recorded 1 busy run(s) for restart resume"
+  ],
+  "startX1Lines": [
+    "[2026-11-01T07:02:31.670Z] [INFO] [electron.embedded-server.stdout] Restart resume resumed member run 'desk_team_coordinator_rr285dmvxhfkr3_4fd3a47ff82944499e00cf6fb5e2ffb4' of agent_team 'desk_team_rr285dmvxhfkr3_0f15809e28cc45ad812430cf37fd534c'",
+    "[2026-11-01T07:02:31.670Z] [INFO] [electron.embedded-server.stdout] Restart resume after the update to 1.5.11-beta.9-rr285next: 1 resumed, 0 skipped, 0 failed"
+  ],
+  "recordAfterStart": null,
+  "after": {
+    "team-codex": {
+      "notices": 0,
+      "listsDelegated": false,
+      "noticeText": null,
+      "busyAgain": false,
+      "error": null,
+      "lastEntries": [
+        "{\"kind\":\"tool_call\",\"invocationId\":\"exec-72351044-7936-47cc-9a2f-f7206d7fa802\",\"role\":null,\"content\":\"\",\"toolName\":\"run_bash\",\"toolArgs\":{\"command\":\"/bin/bash -lc \\\"ps aux | grep '[R]R285Dmvxhfkr3_team-codex'\\\"\",\"cwd\":\"/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-desk-XFNGoO/worksp",
+        "{\"kind\":\"message\",\"role\":\"assistant\",\"content\":\"The interrupted command is no longer running. I couldn’t verify whether it finished or was terminated.\",\"media\":null,\"ts\":1793516557.912}"
+      ]
+    }
+  },
+  "memberDomLive": {
+    "segments": 0,
+    "hits": [],
+    "url": "file:///private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-api.r8VrPh/desk-app/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/workspace"
+  },
+  "memberDomReload": {
+    "segments": 0,
+    "hits": [],
+    "url": "file:///private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/rr285-api.r8VrPh/desk-app/AutoByteus.app/Contents/Resources/app.asar/dist/renderer/index.html#/workspace"
+  },
+  "quitX1": {
+    "label": "quit X1",
+    "electronGoneMs": 306
+  },
+  "result": "Completed",
+  "fallbackCleanup": 0,
+  "rootRemoved": true
+}

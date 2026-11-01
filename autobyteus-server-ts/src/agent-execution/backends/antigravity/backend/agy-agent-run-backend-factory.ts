@@ -98,8 +98,8 @@ export class AgyAgentRunBackendFactory implements AgentRunBackendFactory {
     const compactionDetection = await this.resolveCompactionDetection(runId);
     const process = new AgyStreamProcess();
     ownProcess(process);
-    const integrationVariables = this.integrationRunAccess?.environmentForRun(
-      { runId, agentDefinitionId: config.agentDefinitionId }, globalThis.process.env) ?? {};
+    const integrationVariables = (await this.integrationRunAccess?.environmentForRun(
+      { runId, agentDefinitionId: config.agentDefinitionId }, globalThis.process.env)) ?? {};
     assertAccepting();
       const init = await process.start({ capsulePath: capsule.path, agentName: capsule.manifest.agentName,
         workspacePath: capsule.manifest.workspacePath, model: config.llmModelIdentifier,

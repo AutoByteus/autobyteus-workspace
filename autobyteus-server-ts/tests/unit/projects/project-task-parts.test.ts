@@ -2,6 +2,7 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { trackReleases, type ReleaseTracker } from "../../helpers/project-task-release-tracker.js";
 import { ProjectStore } from "../../../src/projects/stores/project-store.js";
 import { ProjectsLayout } from "../../../src/projects/stores/projects-layout.js";
 import { AdHocTasksLayout } from "../../../src/projects/stores/ad-hoc-tasks-layout.js";
@@ -23,6 +24,7 @@ const hostRoot = createRootExecutionIdentity({ rootSubjectKind: "agent", rootRun
 describe("Project Task parts (services)", () => {
   let appData: string, layout: ProjectsLayout, store: ProjectStore, publisher: ProjectChangePublisher;
   let projects: ProjectService, tasks: ProjectTaskService, emitted: ProjectChangeMessage[], projectId: string;
+  let releases: ReleaseTracker;
   let release: ReturnType<typeof vi.fn<TaskExecutionReleaseRequest>>;
   let tick = 0;
   const now = () => new Date(Date.UTC(2026, 9, 19, 0, 0, tick++));
@@ -48,7 +50,7 @@ describe("Project Task parts (services)", () => {
     release = vi.fn<TaskExecutionReleaseRequest>(async (_r, runs) => runs.map((execution) => ({ execution, stopped: true })));
     projects = new ProjectService({ store, workspaceLookup: { listRegisteredWorkspaceRootPaths: async () => [] }, changes: publisher, now });
     tasks = new ProjectTaskService({ store, adHocTasks: new AdHocTaskStore(adHocLayout), contextStore: new ProjectTaskContextStore(layout), now,
-      requestRelease: release, taskExecutionResources: new TaskExecutionResourceService(new TaskExecutionResourceStore(layout, adHocLayout)), changes: publisher });
+      requestRelease: (releases = trackReleases(release)).request, taskExecutionResources: new TaskExecutionResourceService(new TaskExecutionResourceStore(layout, adHocLayout)), changes: publisher });
     publisher.bind({
       readProject: (id) => projects.getProject(id),
       readTask: (location) => tasks.readTaskChangeView(location),
@@ -57,7 +59,7 @@ describe("Project Task parts (services)", () => {
     await tasks.load();
     projectId = (await projects.createProject({ name: "AutoByteus" })).projectId;
   });
-  afterEach(async () => { await publisher.idle(); await tasks.drainRuntimeReleases(); vi.restoreAllMocks(); await fs.rm(appData, { recursive: true, force: true }); });
+  afterEach(async () => { await publisher.idle(); await releases.settled(); vi.restoreAllMocks(); await fs.rm(appData, { recursive: true, force: true }); });
 
   describe("storing the parent", () => {
     it("a new Task stores its parent on itself only; the parent's file is unchanged (AC-001)", async () => {
@@ -181,7 +183,7 @@ describe("Project Task parts (services)", () => {
       await setStatus(done.taskId, "DONE");
       await setStatus(cancelled.taskId, "CANCELLED");
       await assign(running.taskId, "running-worker");
-      await tasks.drainRuntimeReleases();
+      await releases.settled();
       release.mockClear();
       return { parent, todo, running, done, cancelled, outsider };
     };
@@ -202,7 +204,7 @@ describe("Project Task parts (services)", () => {
         expect((await stored(cancelled.taskId)).status).toBe("CANCELLED");
         expect((await stored(outsider.taskId)).status).toBe("TODO");
         expect(tasks.isOpen({ agentRunId: "running-worker" })).toBe(false);
-        await tasks.drainRuntimeReleases();
+        await releases.settled();
         expect(release).toHaveBeenCalledWith(hostRoot, [{ agentRunId: "running-worker" }]);
         await publisher.idle();
         expect(upserts().map((t) => [t.taskId, t.status])).toEqual(expect.arrayContaining([[parent.taskId, status], [todo.taskId, status], [running.taskId, status]]));

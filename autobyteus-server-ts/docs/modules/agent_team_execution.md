@@ -74,26 +74,14 @@ packages: native flat Team packages remain Team V2 without writes, while the
 supported former multi-Team shape becomes the separate AgentOrg V1 family.
 Current Team runtime and history remain target-schema-only.
 
-## Canonical Execution Address
+## Execution Identity
 
 Every concrete Agent command, status/event projection, task participant, token
-owner, and frontend execution selection uses:
-
-```ts
-type TeamExecutionAddress = Readonly<{
-  rootTeamRunId: string;
-  taskTeamRunIds: readonly string[];
-  memberAddress: AgentTeamAddress;
-  taskAgentRunId: string | null;
-}>;
-```
-
-- direct configured Agent: empty task-Team chain and `taskAgentRunId: null`;
-- delegated task Agent: empty task-Team chain and its exact allocated
-  `taskAgentRunId`;
-- Agent inside a task Team: ordered concrete `taskTeamRunIds`, its canonical
-  member address, and `taskAgentRunId: null`;
-- nested task Teams append their run IDs in traversal order.
+owner, and frontend execution selection identifies a Team Agent by its AgentRun
+ID, unique within the root TeamRun: a direct configured Agent, a delegated task
+Agent and an Agent inside a task Team each have their own. Where the Agent sits
+(its rooted member address and the chain of task Teams above it) is recorded in
+the execution tree, not carried beside the ID.
 
 ## Runtime Composition Path
 
@@ -225,10 +213,13 @@ The Team WebSocket accepts strict command DTOs from
 `@autobyteus/team-stream-contracts`:
 
 - `SEND_MESSAGE` carries content/context attachments, `message_id`,
-  `dedupe_key`, and one exact `execution_address`;
-- `INTERRUPT_GENERATION` carries `command_id` and the exact address; and
-- `APPROVE_TOOL` / `DENY_TOOL` carry invocation ID, reason, and the exact
-  address emitted with the pending tool call.
+  `dedupe_key`, optional `@` mentions, and the target member's `agent_run_id`;
+- `INTERRUPT_GENERATION` carries `command_id` and the `agent_run_id`; and
+- `APPROVE_TOOL` / `DENY_TOOL` carry invocation ID, reason, and the
+  `agent_run_id` emitted with the pending tool call.
+
+A run ID that is not a member run of the connected root is refused with
+`INVALID_TARGET`.
 
 `AgentTeamStreamHandler` parses the DTO, verifies the root, and calls
 `TeamRun.executeMemberCommand(...)`. `FlatTeamExecutionManager` traverses the exact
@@ -716,7 +707,7 @@ never another copy (REQ-007). An Agent target delivers to that real Agent. An Ag
 delivers through its exact direct coordinator ingress. Child managers forward a
 root-bound delivery intent without rewriting the sender/receiver into flat or
 representative identities. Team Communication persists the actual sender and
-receiver as exact `TeamExecutionAddress` values; explicit `reference_files` are
+receiver AgentRun IDs; explicit `reference_files` are
 structured metadata and natural message prose is not scanned for paths.
 The message is saved to the Team's log before the target AgentRun may run it,
 through the one [teammate delivery path](./agent_communication.md#teammate-delivery-path):
@@ -766,8 +757,9 @@ nullable field. It rejects legacy wire aliases, extra fields, invalid enum
 values, and cross-run payloads before the Team projector allocates or emits a
 wire event.
 
-Every Agent-originated Team wire message carries `agent_execution`. The strict
-wire projection contains no duplicate member path/name/run fields. Segment
+Every Agent-originated Team wire message carries the root's `change_sequence`
+and the member's `agent_run_id`. The strict wire projection contains no member
+path or name fields. Segment
 start/content carry required turn, exact ID, and the finite canonical type;
 segment end carries exact turn/ID plus terminal facts without repeating type.
 Error events retain required nullable scope/effect/turn evidence. Invalid Team
@@ -780,9 +772,9 @@ Team-only events retain their own strict identities:
   `delegator_agent_run_id`;
 - `ERROR` with `COLLABORATOR_ADD_FAILED` rejects a send whose `@` mention could
   not be resolved (an ineligible definition) and carries `collaborator_name`;
-- `TEAM_COMMUNICATION_MESSAGE` carries exact sender/receiver addresses;
-- `MEMBER_INPUT_MESSAGE` carries its execution, optional sender, stable message
-  identity, origin, and context files; and
+- `TEAM_COMMUNICATION_MESSAGE` carries the sender and receiver AgentRun IDs;
+- `MEMBER_INPUT_MESSAGE` carries its recipient AgentRun ID, optional sender,
+  stable message identity, origin, and context files; and
 - `TEAM_RUN_LIFECYCLE` carries root liveness only.
 
 Multiple WebSocket/API subscribers do not create duplicate runtime listeners,
@@ -792,8 +784,7 @@ For a live task Agent, the root stream is the continuation path after any exact
 retained projection used for first inspection. The activation-before-Agent-frame
 barrier ensures a client can materialize and select the exact task identity
 before later status, turn, segment, tool, and content events arrive, then route
-those events by `agent_execution` without reload, polling, or same-address
-fallback. A reconnect snapshot remains the recovery authority; it does not
+those events by `agent_run_id` without reload, polling, or fallback. A reconnect snapshot remains the recovery authority; it does not
 replace the normal post-activation event-egress contract.
 
 ## Restore And Persistence

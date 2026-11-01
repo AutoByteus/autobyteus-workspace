@@ -49,6 +49,14 @@ describe("remote child commands", () => {
     await expect(links(current).ownerCommand("manager-run", { kind: "interrupt" })).resolves.toMatchObject({ accepted: false, code: "RUN_NOT_FOUND" });
   });
 
+  it("N-13: refuses a first-input-only post (restart resume) instead of dropping the rule; nothing reaches the node", async () => {
+    const current = channel();
+    await expect(executeRemoteChildCommand(links(current), "researcher-run", {
+      kind: "post_message", message: userMessage({ message_id: "m3" }), postOptions: { onlyAsFirstInput: true },
+    })).resolves.toMatchObject({ accepted: false, code: "REMOTE_RUN_FIRST_INPUT_UNSUPPORTED" });
+    expect(current.ownerCommand).not.toHaveBeenCalled();
+  });
+
   it("Stop of a remote copy terminates its run on its node (a Team through its coordinator); a refusal throws; a local copy is not one", async () => {
     const current = channel();
     await expect(stopRemoteChild(links(current), { teamRunId: "marketing-run" })).resolves.toMatchObject({ outcome: "STOPPED" });

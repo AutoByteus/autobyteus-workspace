@@ -1,7 +1,7 @@
 import { Readable } from "node:stream";
 import type { IncomingHttpHeaders } from "node:http";
 import type { SecretValue } from "autobyteus-ts/secrets/secret-value.js";
-import type { IntegrationRoute } from "./integration-definitions.js";
+import type { DeliveryRoute } from "./delivery-definitions.js";
 
 /** Why the proxy answers instead of GitHub: refusals (`403`) and an unreachable upstream (`502`). */
 export type CredentialProxyErrorCode =
@@ -80,7 +80,7 @@ export const parseCallerPath = (rawPathAndQuery: string): Readonly<{ path: strin
 };
 
 /** The upstream URL for a caller's path on a route; refused unless it stays on the route's origin and paths. */
-export const buildUpstreamUrl = (route: IntegrationRoute, method: string, rawPathAndQuery: string): URL => {
+export const buildUpstreamUrl = (route: DeliveryRoute, method: string, rawPathAndQuery: string): URL => {
   const { path, search } = parseCallerPath(rawPathAndQuery);
   const upstream = new URL(route.basePath + path + search, route.origin);
   if (upstream.origin !== new URL(route.origin).origin) throw pathRefusal();
@@ -88,7 +88,7 @@ export const buildUpstreamUrl = (route: IntegrationRoute, method: string, rawPat
   return upstream;
 };
 
-const authorizationFor = (route: IntegrationRoute, token: string): string =>
+const authorizationFor = (route: DeliveryRoute, token: string): string =>
   route.auth === "bearer"
     ? `Bearer ${token}`
     : `Basic ${Buffer.from(`x-access-token:${token}`, "utf8").toString("base64")}`;
@@ -102,7 +102,7 @@ export class CredentialProxyForwarder {
   constructor(private readonly fetchImpl: typeof fetch = fetch) {}
 
   async forward(input: Readonly<{
-    route: IntegrationRoute;
+    route: DeliveryRoute;
     request: ForwardRequest;
     token: SecretValue;
     /** This route's address for the caller's pass, for rewriting a same-origin `Location`. */
@@ -162,7 +162,7 @@ export class CredentialProxyForwarder {
     };
   }
 
-  private rewriteLocation(route: IntegrationRoute, upstream: URL, location: string, proxyRouteBase: string): string {
+  private rewriteLocation(route: DeliveryRoute, upstream: URL, location: string, proxyRouteBase: string): string {
     let target: URL;
     try {
       target = new URL(location, upstream);

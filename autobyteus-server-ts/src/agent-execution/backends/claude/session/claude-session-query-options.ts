@@ -40,8 +40,8 @@ export const resolveClaudeSessionQueryOptions = async (input: {
       : null;
   const mcpServers = await buildClaudeSessionMcpServerConfig({ agentToolsMcpDescriptor });
   // The run's integration variables for the CLI's shell; the run keeps one pass across process generations.
-  const extraEnvironment = input.integrationRunAccess?.environmentForRun(
-    { runId: runContext.runId, agentDefinitionId: runContext.config.agentDefinitionId }, process.env) ?? {};
+  const extraEnvironment = (await input.integrationRunAccess?.environmentForRun(
+    { runId: runContext.runId, agentDefinitionId: runContext.config.agentDefinitionId }, process.env)) ?? {};
   return {
     systemPrompt: runContext.runtimeContext.carpenterSystemPrompt,
     sessionBinding: input.binding,

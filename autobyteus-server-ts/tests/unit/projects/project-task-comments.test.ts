@@ -2,6 +2,7 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { trackReleases, type ReleaseTracker } from "../../helpers/project-task-release-tracker.js";
 import { ProjectStore } from "../../../src/projects/stores/project-store.js";
 import { ProjectsLayout } from "../../../src/projects/stores/projects-layout.js";
 import { AdHocTasksLayout } from "../../../src/projects/stores/ad-hoc-tasks-layout.js";
@@ -22,6 +23,7 @@ const hostRoot = createRootExecutionIdentity({ rootSubjectKind: "agent", rootRun
 describe("Project Task comments (services)", () => {
   let appData: string, layout: ProjectsLayout, store: ProjectStore, publisher: ProjectChangePublisher;
   let projects: ProjectService, tasks: ProjectTaskService, emitted: ProjectChangeMessage[], projectId: string;
+  let releases: ReleaseTracker;
   let release: ReturnType<typeof vi.fn<TaskExecutionReleaseRequest>>;
   let tick = 0;
   const now = () => new Date(Date.UTC(2026, 9, 22, 8, 0, tick++));
@@ -41,7 +43,7 @@ describe("Project Task comments (services)", () => {
     release = vi.fn<TaskExecutionReleaseRequest>(async (_r, runs) => runs.map((execution) => ({ execution, stopped: true })));
     projects = new ProjectService({ store, workspaceLookup: { listRegisteredWorkspaceRootPaths: async () => [] }, changes: publisher, now });
     tasks = new ProjectTaskService({ store, adHocTasks: new AdHocTaskStore(adHocLayout), contextStore: new ProjectTaskContextStore(layout), now,
-      requestRelease: release, taskExecutionResources: new TaskExecutionResourceService(new TaskExecutionResourceStore(layout, adHocLayout)), changes: publisher });
+      requestRelease: (releases = trackReleases(release)).request, taskExecutionResources: new TaskExecutionResourceService(new TaskExecutionResourceStore(layout, adHocLayout)), changes: publisher });
     publisher.bind({
       readProject: (id) => projects.getProject(id),
       readTask: (location) => tasks.readTaskChangeView(location),
@@ -50,7 +52,7 @@ describe("Project Task comments (services)", () => {
     await tasks.load();
     projectId = (await projects.createProject({ name: "AutoByteus" })).projectId;
   });
-  afterEach(async () => { await publisher.idle(); await tasks.drainRuntimeReleases(); vi.restoreAllMocks(); await fs.rm(appData, { recursive: true, force: true }); });
+  afterEach(async () => { await publisher.idle(); await releases.settled(); vi.restoreAllMocks(); await fs.rm(appData, { recursive: true, force: true }); });
 
   describe("adding comments", () => {
     it("update_task's addComment appends with the next number and the server time, by key (any case) or long ID; the description and ack are unchanged (AC-001)", async () => {

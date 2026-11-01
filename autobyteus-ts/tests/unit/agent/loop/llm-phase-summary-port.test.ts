@@ -3,7 +3,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { AnthropicLLM } from '../../../../src/llm/api/anthropic-llm.js';
-import { BaseLLM, type LLMInvocationOptions } from '../../../../src/llm/base.js';
+import { BaseLLM } from '../../../../src/llm/base.js';
 import { LLMModel } from '../../../../src/llm/models.js';
 import { LLMProvider } from '../../../../src/llm/providers.js';
 import { LLMConfig } from '../../../../src/llm/utils/llm-config.js';
@@ -12,7 +12,7 @@ import { ChunkResponse, CompleteResponse } from '../../../../src/llm/utils/respo
 import { buildFinish } from '../../../../src/llm/utils/llm-response-finish.js';
 import { LLMUserMessage } from '../../../../src/llm/user-message.js';
 import { LLMRequestAssembler } from '../../../../src/agent/llm-request-assembler.js';
-import { LlmPhaseSummaryPort, COMPACTION_CONVERSATION_RELEASE_TIMEOUT_MS } from '../../../../src/agent/loop/llm-phase-summary-port.js';
+import { LlmPhaseSummaryPort } from '../../../../src/agent/loop/llm-phase-summary-port.js';
 import { conversationRequestKwargs, conversationRequestOptions } from '../../../../src/agent/loop/conversation-request.js';
 import type { LlmRequestCapacity } from '../../../../src/agent/token-budget.js';
 import { COMPACTION_SUMMARY_INSTRUCTION, COMPACTION_SUMMARY_PROMPT } from '../../../../src/memory/compaction/compaction-summary-prompt.js';
@@ -54,35 +54,6 @@ class ScriptedLLM extends BaseLLM {
   protected async *_streamMessagesToLLM(): AsyncGenerator<ChunkResponse, void, unknown> { yield* this.chunks; }
 }
 
-/** A provider that keeps one server-side session per logical conversation and releases it on request. */
-class SessionScriptedLLM extends BaseLLM {
-  readonly client = {
-    streamMessage: vi.fn(async function* (_request: { conversationId: string }, _options: { signal: AbortSignal | null }) {
-      yield new ChunkResponse({ content: '<compaction_summary>s</compaction_summary>', is_complete: true });
-    }),
-    cleanup: vi.fn(async (_id: string, _options: { signal?: AbortSignal }) => ({})),
-  };
-  private readonly conversations = new Set<string>();
-  constructor() {
-    super(new LLMModel({ name: 'session', value: 'session', canonicalName: 'session', provider: LLMProvider.OPENAI }), new LLMConfig());
-  }
-  protected async _sendMessagesToLLM(): Promise<CompleteResponse> { return new CompleteResponse({ content: '' }); }
-  protected async *_streamMessagesToLLM(_messages: unknown, kwargs: Record<string, unknown> = {},
-    options: LLMInvocationOptions = {}): AsyncGenerator<ChunkResponse, void, unknown> {
-    const conversationId = String(kwargs.logicalConversationId);
-    this.conversations.add(conversationId);
-    yield* this.client.streamMessage({ conversationId }, { signal: options.signal ?? null });
-  }
-  async releaseConversation(conversationId: string, options: { signal?: AbortSignal } = {}): Promise<void> {
-    this.conversations.delete(conversationId);
-    await this.client.cleanup(conversationId, options);
-  }
-  async cleanup(options: { signal?: AbortSignal } = {}): Promise<void> {
-    for (const conversationId of Array.from(this.conversations)) await this.releaseConversation(conversationId, options);
-    await super.cleanup(options);
-  }
-}
-
 describe('LlmPhaseSummaryPort', () => {
   let dir: string;
   beforeEach(() => {
@@ -107,7 +78,7 @@ describe('LlmPhaseSummaryPort', () => {
     // The agent's normal conversation request, exactly as LlmPhase sends it.
     const request = await new LLMRequestAssembler(memory).prepareRequest(new LLMUserMessage({ content: 'Inspect /repo.' }),
       { turnId: 'turn_0007', requestId: 'turn_0007:llm:1', signal }, 'You are a careful agent.', tools);
-    for await (const _ of llm.streamMessages(request.outboundMessages, conversationRequestKwargs(AGENT_ID, request.tools),
+    for await (const _ of llm.streamMessages(request.outboundMessages, conversationRequestKwargs(request.tools),
       conversationRequestOptions({ signal, turnId: 'turn_0007' }))) { /* drain */ }
     const normal = structuredClone(mockCreate.mock.calls.at(-1)![0]);
     memory.ingestAssistantResponse(new CompleteResponse({ content: 'Inspected.' }), 'turn_0007', 'test');
@@ -142,7 +113,7 @@ describe('LlmPhaseSummaryPort', () => {
     const result = await port.requestTranscriptSummary(COMPACTION_SUMMARY_PROMPT, 'rendered history', identity(3), signal);
     const [messages, kwargs, options] = stream.mock.calls[0]!;
     expect(messages.map(({ role, content }) => [role, content])).toEqual([[MessageRole.SYSTEM, COMPACTION_SUMMARY_PROMPT], [MessageRole.USER, 'rendered history']]);
-    expect(kwargs).toEqual({ logicalConversationId: 'compaction_op_12_3' });
+    expect(kwargs).toEqual({});
     expect(options).toEqual({ signal, turnId: 'turn_0007', retryMode: 'single_attempt' });
     expect(result.metadata.mode).toBe('transcript');
   });
@@ -201,60 +172,5 @@ describe('LlmPhaseSummaryPort', () => {
     const withoutTools = 130;
     expect(fits(withoutTools, [])).toBe(true);
     expect(fits(withoutTools)).toBe(false);
-  });
-
-  describe('isolated compaction conversations on a remote-session provider (AC-009)', () => {
-    const sessionProvider = () => {
-      const llm = new SessionScriptedLLM();
-      return { llm, client: llm.client };
-    };
-
-    it('uses a compaction conversation id per attempt, releases exactly it, and never touches the agent session', async () => {
-      const { llm, client } = sessionProvider();
-      const llmCleanup = vi.spyOn(llm, 'cleanup');
-      for await (const _ of llm.streamMessages([new Message(MessageRole.USER, { content: 'agent turn' })], { logicalConversationId: AGENT_ID })) { /* agent call */ }
-      const port = new LlmPhaseSummaryPort({ agentId: AGENT_ID, llm, tools: [], requestCapacity: capacity(), notifier: null });
-      const signal = new AbortController().signal;
-      await port.requestCachedSummary([new Message(MessageRole.USER, { content: 'agent turn' })], 'summarize', identity(1), signal);
-      await port.requestTranscriptSummary(COMPACTION_SUMMARY_PROMPT, 'history', identity(2), signal);
-
-      expect(client.streamMessage.mock.calls.map(([request]) => request.conversationId)).toEqual([AGENT_ID, 'compaction_op_12_1', 'compaction_op_12_2']);
-      expect(client.cleanup.mock.calls.map(([id]) => id)).toEqual(['compaction_op_12_1', 'compaction_op_12_2']);
-      expect(llmCleanup).not.toHaveBeenCalled();
-      await llm.cleanup();
-      expect(client.cleanup.mock.calls.map(([id]) => id)).toEqual(['compaction_op_12_1', 'compaction_op_12_2', AGENT_ID]);
-    });
-
-    it('still releases the compaction conversation with its own live signal when the attempt is aborted', async () => {
-      const { llm, client } = sessionProvider();
-      const controller = new AbortController();
-      client.streamMessage.mockImplementation(async function* () {
-        controller.abort();
-        throw new Error('aborted by interruption');
-      });
-      const port = new LlmPhaseSummaryPort({ agentId: AGENT_ID, llm, tools: [], requestCapacity: capacity(), notifier: null });
-      await expect(port.requestCachedSummary([new Message(MessageRole.USER, { content: 'x' })], 'summarize', identity(), controller.signal))
-        .rejects.toMatchObject({ code: 'cancelled' });
-      expect(client.cleanup).toHaveBeenCalledOnce();
-      const [releasedId, releaseOptions] = client.cleanup.mock.calls[0]!;
-      expect(releasedId).toBe('compaction_op_12_1');
-      expect(releaseOptions.signal?.aborted).toBe(false);
-    });
-
-    it('bounds a hanging release and keeps the attempt result', async () => {
-      vi.useFakeTimers();
-      const { llm, client } = sessionProvider();
-      client.cleanup.mockImplementation(() => new Promise(() => {}));
-      const port = new LlmPhaseSummaryPort({ agentId: AGENT_ID, llm, tools: [], requestCapacity: capacity(), notifier: null });
-      const pending = port.requestCachedSummary([new Message(MessageRole.USER, { content: 'x' })], 'summarize', identity(), new AbortController().signal);
-      await vi.advanceTimersByTimeAsync(COMPACTION_CONVERSATION_RELEASE_TIMEOUT_MS);
-      await expect(pending).resolves.toMatchObject({ content: '<compaction_summary>s</compaction_summary>' });
-      expect(client.cleanup.mock.calls[0]![1].signal?.aborted).toBe(true);
-      expect(console.warn).toHaveBeenCalledWith('Compaction conversation release failed.', { conversationId: 'compaction_op_12_1' });
-    });
-  });
-
-  it('has nothing to release by default', async () => {
-    await expect(new ScriptedLLM().releaseConversation('compaction_op_1_1')).resolves.toBeUndefined();
   });
 });

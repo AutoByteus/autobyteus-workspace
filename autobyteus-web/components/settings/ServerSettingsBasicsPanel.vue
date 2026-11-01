@@ -11,7 +11,6 @@
       <ShowInternalAgentsCard />
       <FeaturedCatalogItemsCard />
       <WebSearchConfigurationCard @notify="showNotification" />
-      <GitHubIntegrationCard />
       <CompactionConfigCard />
       <UpdateChecksCard class="xl:col-span-2" />
     </div>
@@ -34,7 +33,6 @@ import ClaudeRuntimeCard from '~/components/settings/ClaudeRuntimeCard.vue'
 import CodexFullAccessCard from '~/components/settings/CodexFullAccessCard.vue'
 import CompactionConfigCard from '~/components/settings/CompactionConfigCard.vue'
 import FeaturedCatalogItemsCard from '~/components/settings/FeaturedCatalogItemsCard.vue'
-import GitHubIntegrationCard from '~/components/settings/GitHubIntegrationCard.vue'
 import MediaDefaultModelsCard from '~/components/settings/MediaDefaultModelsCard.vue'
 import ServerSettingsEndpointCards from '~/components/settings/ServerSettingsEndpointCards.vue'
 import UpdateChecksCard from '~/components/settings/UpdateChecksCard.vue'

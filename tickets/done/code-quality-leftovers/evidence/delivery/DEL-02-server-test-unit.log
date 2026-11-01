@@ -1,0 +1,7 @@
+# DEL-02 server unit on a20c9f56d3, 2026-11-01T07:35:25Z
+ FAIL  tests/unit/agent-package-definitions/agent-package-folder-watcher.test.ts > AgentPackageFolderWatcher > starts a registered root that is missing as FOLDER_MISSING and arms it when it appears
+ Test Files  1 failed | 904 passed | 5 skipped (910)
+      Tests  1 failed | 7669 passed | 9 skipped (7679)
+   Duration  784.50s (transform 22.39s, setup 10.80s, import 340.28s, tests 348.12s, environment 855ms)
+exit=1
+# full log: DEL-02-server-test-unit.full.log.gz

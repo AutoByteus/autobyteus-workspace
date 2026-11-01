@@ -2,13 +2,14 @@
 
 ## Scope
 
-The credential proxy lets the agents the user chooses use an outside service
-(GitHub first) from their shell, with the user's token, without the token ever
-reaching the agent. The user stores the token once in the node's vault (the
-GitHub card in Settings) and ticks the agents that may use it. Each run of a
-ticked agent gets, in its shell environment, a loopback address that belongs to
-that run. Calls to that address are forwarded to the service with the token
-added by the server.
+The credential proxy lets agents use an outside service (GitHub first) from
+their shell, with the user's token, without the token ever reaching the agent.
+The user imports an integration on the **Integrations page** (from a GitHub
+repository or a local folder, as a skill source), stores its token once in the
+node's vault from the integration's card, and adds the integration's skill to the
+agents that should use it, as with any skill. Each run of such an agent gets, in
+its shell environment, a loopback address that belongs to that run. Calls to that
+address are forwarded to the service with the token added by the server.
 
 The token is never in a shell environment, command line, process listing, tool
 output, run trace, server log or run file. What a run holds is its *run pass*,
@@ -18,31 +19,104 @@ is allowed.
 ## TS Source
 
 - `src/credential-proxy/`
-  - `integration-definitions.ts`: the app-owned definitions (GitHub): routes,
-    origins, auth formats, allowed methods and paths, shell variables;
+  - `delivery-definitions.ts`: the app-owned delivery definitions (GitHub):
+    routes, origins, auth formats, allowed methods and paths, shell variables,
+    the token check (`verifyToken`). No name or description: those are the
+    manifest's;
+  - `integration-manifest.ts`: reads one integration folder by the manifest
+    contract;
+  - `integration-catalog.ts`: the integrations in the imported skill sources,
+    their state and tools; import, update and removal of a source; the source
+    observer;
+  - `tool-presence.ts`: a prerequisite's `PATH` lookup;
+  - `integration-access-rule.ts`: who may use an integration (full check at run
+    preparation, cheap check per call);
   - `integration-connection-store.ts`: `<app-data-dir>/integrations/connections.json`
-    (per integration: login, connected time, allowed agent definition IDs);
-  - `integration-connection-service.ts`: connect (token checked with GitHub
-    first), test, disconnect, agent access;
-  - `run-pass-registry.ts`: in-memory run passes;
+    (per integration: the login and when it was connected);
+  - `integration-connection-service.ts`: connect (token checked with the service
+    first), test, disconnect, per integration;
+  - `run-pass-registry.ts`: in-memory run passes, each with the run's grants;
   - `integration-run-access.ts`: `IntegrationRunAccess`, what backends call;
   - `credential-proxy-forwarder.ts`: the caller-path checks and one forwarded call;
   - `credential-proxy-routes.ts`, `credential-proxy-local-server.ts`: the
     loopback listener and its single route;
   - `integration-activity-log.ts`: `<app-data-dir>/integrations/activity.jsonl`;
   - `credential-proxy-host.ts`: the host the Studio composition owns.
-- `src/api/graphql/types/github-integration.ts`: the GitHub card's API.
-- Web: `autobyteus-web/components/settings/GitHubIntegrationCard.vue` and
-  `stores/githubIntegrationStore.ts`.
+- `src/api/graphql/types/integrations.ts`: the Integrations page's API.
+- `src/skills/services/skill-source-service.ts`: the import option and the
+  source-change observer (see [Skills](./skills.md)).
+- Web: `autobyteus-web/pages/integrations.vue`, `components/integrations/*` and
+  `stores/integrationsStore.ts` (see `autobyteus-web/docs/integrations.md`).
+
+## Integrations And Their Sources
+
+An integration is one top-level folder of an imported skill source (a local
+folder or a GitHub repository) that holds both `integration.json` and `SKILL.md`
+(`AutoByteus/autobyteus-integrations` `docs/integration-manifest.md`). The
+folder name is its ID (`^[a-z][a-z0-9-]*$`); the `SKILL.md` `name` is its
+skill; `integration.json` holds only `name`, `description`, optional
+`token.help` and optional `prerequisites`; an optional `icon.svg` is kept when it
+is an SVG document under 64 KB, as a `data:image/svg+xml` URL shown only as an
+`<img>`. An invalid folder is skipped with a warning naming it and the reason.
+
+`IntegrationCatalog` reads the sources from disk on every call (no cache, no
+network): the local skill folders and the ACTIVE GitHub sources. Each entry's
+state: `NEEDS_NEWER_APP` when the app has no delivery definition for its ID
+(DEC-001: where a token may go is decided by the app), else `CONNECTED` with the
+login when its token is stored, else `NEEDS_TOKEN`. Tools are looked up on the
+server's `PATH`. Two sources with one ID (possible only through a Skills-page
+import): the entry from the source first in the skill catalog's own precedence is
+kept, the other is skipped with a warning (DEC-017).
+
+- **Import** (`importIntegrations`): a GitHub repository link becomes a managed
+  GitHub skill source; an absolute or `~` path a local skill source (nothing is
+  copied). The source must hold an integration folder, and none named like an
+  integration already imported, else nothing is imported. Coded outcomes:
+  `NOT_A_LINK_OR_PATH`, `ALREADY_IMPORTED`, `DIRECTORY_NOT_FOUND`,
+  `SKILL_NAME_CONFLICT`, `NO_INTEGRATIONS_FOUND`, `INTEGRATION_ALREADY_IMPORTED`,
+  `GITHUB_UNREACHABLE` (with the reason).
+- **Remove** (from the Integrations page or the Skills page): before the source
+  goes, `SkillSourceService` tells its observer, the catalog, which disconnects
+  every connected integration whose kept entry is in it (DEC-015). If that fails,
+  the removal is refused, so no token is left without a card. A local folder's
+  files are never deleted.
+- **Update** of a GitHub source (manual or automatic): before the new revision is
+  published, the catalog disconnects the integrations it drops; a failure refuses
+  the update (DEC-016).
+
+A token saved before an integration source was imported (a node that used the
+earlier GitHub card) stays in the vault; its card shows it connected once the
+source is imported.
+
+## Who May Use An Integration
+
+`IntegrationAccessRule` owns the one access fact (REQ-005): a run may use an
+integration when its agent definition's **effective skills** (its configured
+skills, or every installed skill for an agent set to all installed skills; disabled
+skills excluded) hold the integration's skill, **the copy in the integration's own
+folder**. A same-named skill from anywhere else grants nothing.
+
+- At run preparation (full check): the agent definition is read, its skills are
+  resolved (shared, team-local and application-owned agents alike), and each
+  granted integration is recorded with the run's pass: its skill and its source.
+- On every proxied call (cheap, no catalog rebuild): the agent definition is read
+  again and must still have the skill (by name, or all installed skills), the
+  skill must not be disabled, and the recorded source must still be registered.
+  So removing the skill from an agent, disabling it or removing its source stops
+  the run's next call. A same-named skill that wins precedence later is caught at
+  the next preparation.
 
 ## How A Run Gets Its Address
 
 1. A runtime backend preparing a run (new or restored) calls
    `IntegrationRunAccess.environmentForRun({runId, agentDefinitionId}, baseEnv)`.
-2. If the agent is ticked for no integration, the result is `{}` and no pass is
-   issued: the run is exactly as before.
+2. If the access rule grants no integration, the result is `{}` and no pass is
+   issued: the run is exactly as before (an active pass from an earlier process
+   generation keeps no grants).
 3. Otherwise the run gets one pass (`rp_` + 32 random bytes, base64url), reused
-   while the run is active, and each allowed definition's shell variables.
+   while the run is active, with its grants, and each granted integration's shell
+   variables. `environmentForRun` is async: the full check reads the agent
+   definition.
 4. The backend applies the variables to the run's shell:
 
 | Runtime | Where the variables go |
@@ -75,8 +149,8 @@ One route: `/r/:pass/:integrationId/:route/<path>?<query>`. In order:
 1. loopback gate, else `NOT_LOOPBACK`;
 2. the pass is live, else `RUN_PASS_INVALID`;
 3. the integration and route exist, else `PATH_NOT_ALLOWED`;
-4. the run's agent is allowed now (read on every call, so unticking applies at
-   once), else `INTEGRATION_NOT_ALLOWED`;
+4. the run was granted the integration and the access rule's per-call check
+   still allows it, else `INTEGRATION_NOT_ALLOWED`;
 5. the caller's path: refused if it has `\`, `%5c`, `%2f`, `.`/`..` segments
    (also encoded), empty segments or bad encoding; the upstream URL is built on
    the route's own origin and must keep that origin; the route's methods and
@@ -102,7 +176,17 @@ Forwarding (`CredentialProxyForwarder`):
   git fails at once instead of prompting for a password. The API route passes
   GitHub's `401` through.
 
-GitHub's definition:
+Refusal texts name the integration from its manifest (its ID when it is no
+longer imported), read only when a refusal is written:
+
+- `INTEGRATION_NOT_ALLOWED`: "This agent has no access to {name}. Add the {skill}
+  skill to the agent."
+- `INTEGRATION_NOT_CONNECTED`: "{name} is not connected on this node. Connect it
+  on the Integrations page."
+- `UPSTREAM_REJECTED_TOKEN`: "{name} rejected the stored token. Check it on the
+  Integrations page."
+
+GitHub's delivery definition:
 
 | Route | Upstream | Auth | Allowed |
 | --- | --- | --- | --- |
@@ -118,8 +202,8 @@ GitHub's definition:
 
 ## Integration-Author Contract
 
-What a skill, script or agent can rely on in the shell of a run whose agent is
-ticked for GitHub.
+What a skill, script or agent can rely on in the shell of a run whose agent has
+the GitHub integration's skill (`github-integration` in the official repository).
 
 Variables:
 
@@ -153,8 +237,8 @@ Errors: the proxy answers its own refusals as JSON `{"error": "<CODE>",
 | Status | Code | Meaning |
 | --- | --- | --- |
 | 403 | `RUN_PASS_INVALID` | The address is not valid: the run has ended, or it never had access |
-| 403 | `INTEGRATION_NOT_ALLOWED` | The run's agent is not (or no longer) ticked for GitHub |
-| 403 | `INTEGRATION_NOT_CONNECTED` | No GitHub token on this node |
+| 403 | `INTEGRATION_NOT_ALLOWED` | The run's agent does not (or no longer) have the integration's skill, the skill is disabled, or its source was removed |
+| 403 | `INTEGRATION_NOT_CONNECTED` | No GitHub token on this node (connect it on the Integrations page) |
 | 403 | `PATH_NOT_ALLOWED` | The path or method is outside GitHub's definition |
 | 403 | `UPSTREAM_REJECTED_TOKEN` | git only: GitHub rejected the stored token (expired or revoked) |
 | 403 | `NOT_LOOPBACK` | The call did not come from this machine |
@@ -172,9 +256,9 @@ Not supported:
   connect to the proxy (Codex blocks the network there). Runs with auto-execute on
   (`danger-full-access`) and `workspace-write` runs work.
 
-What the token can do is what the user gave it: the card recommends a
-fine-grained token limited to the needed repositories (a personal-account
-Projects board needs a classic token with the `project` scope).
+What the token can do is what the user gave it: the integration's `token.help`,
+shown when connecting, says what to create (for GitHub, a fine-grained token
+limited to the needed repositories).
 
 ## Security Limits
 
@@ -184,41 +268,64 @@ Projects board needs a classic token with the `project` scope).
   it while the run is active, within that run's access. Processes of the same
   user can also read the vault key file. Protecting against the same user is a
   non-goal here (autobyteus-310).
+- **Agents set to all installed skills** get every connected integration (the
+  user's DEC-002: an integration skill is a normal skill).
+- **Imported repositories.** An imported integration's scripts can use the
+  service as the user through the proxy, so import only trusted repositories, as
+  with any skill (DEC-013). Repository text is shown as text: in `token.help` only
+  `https:` addresses become links.
 - What is refused: an unknown pass, a revoked pass (its run ended or its
-  activation failed), a live pass whose agent is not allowed (never ticked or
-  unticked since), a missing token, a path or host outside the definition, a
-  non-loopback caller.
+  activation failed), a live pass whose agent no longer has the skill (or the skill
+  is disabled, or its source was removed), a missing token, a path or host outside
+  the definition, a non-loopback caller.
 
 ## Adding An Integration
 
-A new integration (Jira Cloud next) is a new app-owned `IntegrationDefinition`:
-its routes (origins, auth format, allowed methods and paths, body handling), its
-shell variables, a vault consumer `{kind: "integration", integrationId}` binding
-in `ProviderCredentialCatalog`, and its own connection API and card. The proxy,
-run passes, runtime delivery, release and activity log are shared. An installed
-skill can't add or change a definition: where a token may go is decided by the
-app.
+A new integration (Jira Cloud next) has two parts:
+
+- in the app, a new `DeliveryDefinition`: its routes (origins, auth format,
+  allowed methods and paths, body handling), its shell variables, its token check,
+  and a vault consumer `{kind: "integration", integrationId}` binding in
+  `ProviderCredentialCatalog`. A connect step other than a token gets its own form
+  on the card (DEC-010);
+- in a repository, its folder (manifest, skill, scripts, optional icon).
+
+Until the app has the definition, the imported folder's card says "Needs a newer
+AutoByteus". The proxy, run passes, runtime delivery, release, access rule and
+activity log are shared. An imported repository can't add or change a delivery
+definition: where a token may go is decided by the app.
 
 ## Tests
 
-- `tests/unit/credential-proxy/credential-proxy-core.test.ts`: definitions, path
-  checks, passes, run access, store.
-- `tests/integration/credential-proxy/`: the host against a fake upstream
-  (refusals, auth formats, redaction, redirects, activity, revocation, logging);
-  the connection service over a real vault; real `git clone`/`push` through the
-  proxy to a local `git http-backend` that requires GitHub's Basic format.
+- `tests/unit/credential-proxy/`: delivery definitions and the token check, path
+  checks, passes and grants, run access, store (`credential-proxy-core.test.ts`);
+  the manifest rules and tool presence (`integration-manifest.test.ts`).
+- `tests/integration/credential-proxy/`: the catalog and the access rule over the
+  real skill services (`integration-catalog.integration.test.ts`: states, every
+  import outcome, DEC-017 precedence, removal from either page, a refused removal,
+  an update that drops an integration, access in both scopes, a same-named skill,
+  disabled, removed skill, removed source); the host against a fake upstream
+  (refusals and their texts, auth formats, redaction, redirects, activity,
+  revocation, logging); the connection service over a real vault; real
+  `git clone`/`push` through the proxy to a local `git http-backend` that requires
+  GitHub's Basic format.
 - Per-runtime delivery: the AutoByteus, Claude, Codex, AGY and ACP backend tests
   under `tests/unit/agent-execution/backends/`, and release in
   `agent-run-manager.test.ts`.
-- `tests/e2e/credential-proxy/github-integration-graphql.e2e.test.ts`: the GraphQL
-  on a built server.
+- `tests/e2e/credential-proxy/integrations-graphql.e2e.test.ts`: the GraphQL on a
+  built server.
 - `tests/e2e/credential-proxy/github-credential-proxy-live.e2e.test.ts`: gated
-  live check against GitHub (`RUN_GITHUB_PROXY_E2E=1`, see `TESTING.md`).
-- Web: `GitHubIntegrationCard.spec.ts` and the rendered probe
-  `pnpm -C autobyteus-web test:e2e:github-integration-card`.
+  live check against GitHub (`RUN_GITHUB_PROXY_E2E=1`, see `TESTING.md`): import
+  by link on a built server, connect, remove; the integration's own scripts through
+  the proxy for an agent with its skill, from a GitHub source and a local folder.
+- `tests/e2e/credential-proxy/github-credential-proxy-runtime-shells.e2e.test.ts`:
+  gated real runs per runtime, with the skill added and removed.
+- Web: `components/integrations/__tests__/IntegrationsPage.spec.ts` and the
+  rendered probe `pnpm -C autobyteus-web test:e2e:integrations-page`.
 
 ## Related Documentation
 
 - [Secret Management](./secret_management.md)
+- [Skills](./skills.md)
 - [Agent Tools MCP Server](./agent_tools_mcp_server.md)
 - [Codex Integration](./codex_integration.md)

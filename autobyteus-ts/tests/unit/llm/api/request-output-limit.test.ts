@@ -39,7 +39,7 @@ async function* emptyStream(): AsyncGenerator<never> {
 }
 
 const drain = async (llm: BaseLLM): Promise<void> => {
-  for await (const _chunk of llm.streamMessages(messages, { logicalConversationId: 'c' })) {
+  for await (const _chunk of llm.streamMessages(messages, {})) {
     // drain
   }
 };
@@ -284,8 +284,8 @@ describe('per-request maxOutputTokens override (REQ-009, AC-011)', () => {
       for (const stream of [true, false]) {
         const llm = build();
         const recorder = install(llm);
-        if (stream) { for await (const _ of llm.streamMessages(messages, { logicalConversationId: 'c' }, options)) { /* drain */ } }
-        else await llm.sendMessages(messages, { logicalConversationId: 'c' }, options);
+        if (stream) { for await (const _ of llm.streamMessages(messages, {}, options)) { /* drain */ } }
+        else await llm.sendMessages(messages, {}, options);
         const mock = typeof recorder === 'function' ? recorder : (stream ? recorder.stream : recorder.sync);
         out.push(read(lastParams(mock)));
       }

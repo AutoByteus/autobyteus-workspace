@@ -209,6 +209,9 @@ importers:
       onnxruntime-web:
         specifier: 1.30.0
         version: 1.30.0
+      prisma:
+        specifier: ^5.22.0
+        version: 5.22.0
       reflect-metadata:
         specifier: ^0.2.2
         version: 0.2.2
@@ -228,6 +231,9 @@ importers:
         specifier: ^4.3.6
         version: 4.3.6
     devDependencies:
+      '@autobyteus/application-backend-sdk':
+        specifier: workspace:*
+        version: link:../autobyteus-application-backend-sdk
       '@modelcontextprotocol/client':
         specifier: 2.3.1
         version: 2.3.1
@@ -252,9 +258,6 @@ importers:
       '@vue/compiler-sfc':
         specifier: ^3.5.28
         version: 3.5.44
-      prisma:
-        specifier: ^5.22.0
-        version: 5.22.0
       typescript:
         specifier: ^5.9.3
         version: 5.9.3
@@ -517,6 +520,9 @@ importers:
       electron-builder:
         specifier: ^25.1.8
         version: 25.1.8(electron-builder-squirrel-windows@25.1.8)
+      graphql-tag:
+        specifier: ^2.12.6
+        version: 2.12.6(graphql@16.12.0)
       happy-dom:
         specifier: ^15.7.4
         version: 15.11.7
@@ -556,9 +562,15 @@ importers:
       vitest:
         specifier: ^3.2.7
         version: 3.2.7(@types/debug@4.1.12)(@types/node@22.19.11)(happy-dom@15.11.7)(jiti@1.21.7)(jsdom@25.0.1)(terser@5.51.2)(yaml@2.8.2)
+      vue:
+        specifier: ^3.5.44
+        version: 3.5.44(typescript@5.9.3)
       vue-bundle-renderer:
         specifier: ^2.4.0
         version: 2.4.0
+      vue-router:
+        specifier: ^4.6.4
+        version: 4.6.4(vue@3.5.44(typescript@5.9.3))
       vue-tsc:
         specifier: 3.3.13
         version: 3.3.13(typescript@5.9.3)

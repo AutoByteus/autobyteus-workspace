@@ -203,7 +203,7 @@ The runner uses these collaborators:
     `LLMRequestAssembler.prepareRequest(...)`, which binds retained provider
     reasoning to the request prefix and returns the exact `tools` to send; it
     then calls `BaseLLM.streamMessages(request.outboundMessages,
-    { logicalConversationId, tools: request.tools }, { promptCacheScope:
+    { tools: request.tools }, { promptCacheScope:
     'conversation', signal, turnId })`. The agent never renders a request; the
     provider adapter is the only request builder;
   - builds `ToolSchemaProvider` schemas only when configured tools exist;
