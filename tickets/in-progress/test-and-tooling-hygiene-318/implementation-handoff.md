@@ -10,21 +10,21 @@
 - Supplemental task artifacts: `evidence/SD-01-server-tests-typecheck-build-policy.txt`, `evidence/SD-02-web-cross-package-project.txt`, `follow-ups.md`
 - Design review report: `tickets/in-progress/test-and-tooling-hygiene-318/design-review-report.md`
 - Architecture review revision record: `tickets/in-progress/test-and-tooling-hygiene-318/architecture-review-revision-record.md` (ARCH-REV-001..004)
-- Triggering rework report: N/A (initial implementation; the T-28 Design Impact was resolved upstream as SR-003/SR-004 during this round)
+- Triggering rework report: delivery engineer, `release-deployment-report.md` and `delivery-revision-record.md` DR-001 (Local Fix: AC-016 server `test:integration`, FU-004). Earlier: the T-28 Design Impact was resolved upstream as SR-003/SR-004 during IR-001
 
 Worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/test-and-tooling-hygiene-318`, branch `codex/test-and-tooling-hygiene-318`, base `origin/personal` `efd28d5c4a`, finalization target `origin/personal`. All paths below are relative to the worktree.
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Initial`
+- Implementation cycle: `Rework` (Local Fix)
 - Implementation revision record: `tickets/in-progress/test-and-tooling-hygiene-318/implementation-revision-record.md`
-- Current implementation revision ID: `IR-001`
+- Current implementation revision ID: `IR-002` (IR-001: initial implementation)
 - Related solution revision IDs: SR-001, SR-002, SR-003, SR-004
 - Related architecture-review revision IDs: ARCH-REV-002, ARCH-REV-004
-- Related code-review revision IDs: N/A
-- Related API/E2E revision IDs: N/A
-- Related delivery revision IDs: N/A
-- Triggering finding IDs: N/A
+- Related code-review revision IDs: CRR-001, CRR-002 (Pass)
+- Related API/E2E revision IDs: API-REV-001 (Pass)
+- Related delivery revision IDs: DR-001 (Blocked: AC-016)
+- Triggering finding IDs: DR-001 / AC-016 (FU-004)
 
 What the package does:
 - **One shared type gate** (`scripts/typecheck-gate/`: rules + fail-closed runner). Each package's `scripts/typecheck.mjs` holds only its projects, baseline path, heap and test-file rule.
@@ -35,6 +35,7 @@ What the package does:
 - **Tooling**: Electron binary downloaded once before workers (T-06); probes never delete evidence (T-50); tests clean their temp folders (T-27).
 - **Run-first items** run in full; stale probe expectations fixed from their cause (T-33..T-36), T-09, T-52, AE-006 — results below.
 - TESTING.md typecheck rows updated.
+- **IR-002 (Local Fix, DR-001 / AC-016)**: the two stale server integration files (FU-004) fixed at their cause as labelled baseline fixes (`de3d284b14`, `f3950965c3`); server `test:integration` is green (IMP-26).
 - **Step 10**: merged the latest `origin/personal` (`32b8f5a763`); the server gate then refused growth from merged tests, fixed at the cause (`023aaeefff`); both gates pass on the final HEAD.
 
 ## Routing Classification (Mandatory)
@@ -79,7 +80,7 @@ Kept items (`Keep` / `Run first` in the triage) and how each ended; dropped item
 | T-06 | Keep | Done: Electron vitest globalSetup downloads once | `13590aa2d4` | IMP-08 |
 | T-07 | Keep | Done: ported to `beginStreamingSession({ resolveOptions }).open()` / `requestClose()`; loads and skips (paid, DEC-011) | `15b9bedd84` | IMP-13 |
 | T-08 | Keep | Done: docs line current | `590bb6359c` | IMP-14 |
-| T-09 | Run first (REQ-011) | Ran: watcher test passes 14/14 inside the full `test:integration` twice; per-event latency max 570 ms, median 485 ms (wait 8 s), no late or lost event; nothing to derive or report. The full run's 4 other failures predate this ticket → FU-004 | — (temporary instrumentation, not committed) | IMP-21 |
+| T-09 | Run first (REQ-011) | Ran: watcher test passes 14/14 inside the full `test:integration` twice; per-event latency max 570 ms, median 485 ms (wait 8 s), no late or lost event; nothing to derive or report. The full run's 4 other failures (stale tests, also at base) were fixed in IR-002 (FU-004): `test:integration` is now green | — (temporary instrumentation, not committed) | IMP-21 |
 | T-10 | Keep | Done: import block closed; the 8 users load | `da1ad432dd` | IMP-09 |
 | T-11 | Keep | Done: planner `resolveConfiguration` then `build({ plan })` | `69496b79c7` | IMP-10 |
 | T-12 | Keep | Done per DEC-010 (undeclared key left out; non-object refused, tree unchanged) | `b7aa1f5637` | IMP-10 |
@@ -142,7 +143,6 @@ Also done in this round: REQ-010 server gate (`fb0dd07f23`, `0a050de62e`), TESTI
 
 - The server baseline still holds 1,203 errors in stale gated suites (FU-001); the gate stops growth, it does not repair them.
 - Probe and e2e timing still depends on host load. The runs here met loads of 30–40 from other teams' parallel runs and passed.
-- Server `test:integration` has 4 failing cases that predate this ticket (FU-004); TESTING.md's "Green server suites" is not met until that follow-up lands.
 - Merges from parallel teams can add test type errors the gates have not seen (R-02): after this branch lands, a merge that adds them fails the gate, as it did here at step 10. The fix is the same: repair at the cause, then shrink.
 
 ## Task Design Health Assessment Implementation Check
@@ -207,11 +207,11 @@ All runs: macOS 26.5.2 arm64, Node v22.23.1; clean env (`env -i PATH=$PATH HOME=
 | IMP-23 | QR-001 ×10 with the scripted AGY CLI | `975527ec0c` | scripted AGY CLI | T-52 | BEH-007 / AC-013 | Pass | `IMP-23-t52-qr001-10-runs.log` | 10 × "Tests  6 passed \| 1 skipped (7)" |
 | IMP-24 | merge; both gates shrink + pass; drift fixes; TMV and T-36 probes; merged probe refusal | `32b8f5a763` … `ab0027a398` | as above | step 10, T-35, T-36, T-50 | BEH-001, BEH-006, BEH-008, BEH-010 | Pass | `IMP-24-step10-merge-gates-probes.log` | web "baseline written: 99 errors in 43 files" + PASS; server "baseline written: 1200 errors in 370 files" + PASS; "tamv exit 0", "trmf exit 0" |
 | IMP-25 | full web suite, `test:electron`, server `test:unit` | `ab0027a398` | as above | everything touched | REQ-016 (partial) | Pass | `IMP-25-broad-suites-final.log` | "Tests 4968 passed (4968)"; "Tests 7729 passed \| 9 skipped (7738)" |
+| IMP-26 | each fixed file; server gate; full `pnpm test:integration` (IR-002) | `f3950965c3` | as above | `agent-run-service.integration.test.ts`, `agent-team-run-manager.integration.test.ts` | REQ-016 / AC-016 (server integration) | Pass | `IMP-26-fu004-integration-green.log` | "Test Files 87 passed \| 20 skipped (107)"; "Tests 499 passed \| 69 skipped (568)"; gate "1200 in 370 files … PASS" |
 
 - Not run, and why:
   - Paid live suites (T-07, T-16, T-41, T-42, T-44, T-45): DEC-011, no paid runs; they are proven to load and skip.
   - REQ-016's literal fresh-clone run (new clone → install → server build → `test:integration:prepare` → both type checks → suites) is left to API/E2E. This worktree began fresh (no Electron `dist/`), and IMP-01..IMP-25 cover each named step on it, but not one end-to-end clean-clone pass.
-  - Server `test:integration` is not fully green: 4 cases in 2 files fail at base `efd28d5c4a` too (FU-004), outside this ticket's item list.
 
 ## Frontend Rendered-Result Check
 
