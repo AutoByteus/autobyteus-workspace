@@ -2,23 +2,23 @@
 
 ## Upstream Artifact Package
 
-- Upstream review applicability and handoff-rule result: architecture review selected (Large/High). ARCH-REV-002 Pass on SR-002; after IR-001's Design Impact (QR-004), ARCH-REV-003 Pass on SR-003 (DS-007, DEC-004); after CRR-003's Design Impact (CR-002), ARCH-REV-005 Pass on SR-004/SR-005 (reload only when a message could have been missed; `live_sequence_id`); after CRR-004's Design Impact (CR-003), ARCH-REV-006 Pass on SR-006 (the Team open read names the running Team's live sequence). Route now: code review (targeted).
+- Upstream review applicability and handoff-rule result: architecture review selected (Large/High). ARCH-REV-002 Pass on SR-002; after IR-001's Design Impact (QR-004), ARCH-REV-003 Pass on SR-003 (DS-007, DEC-004); after CRR-003's Design Impact (CR-002), ARCH-REV-005 Pass on SR-004/SR-005 (reload only when a message could have been missed; `live_sequence_id`); after CRR-004's Design Impact (CR-003), ARCH-REV-006 Pass on SR-006 (the Team open read names the running Team's live sequence). After CRR-006 (CR-004, API-08 L-002), ARCH-REV-007 Fail (AR-006) and ARCH-REV-008 Pass on SR-007/SR-008: the keep rule watches the latest message, by each root's message predicate. Route now: code review (targeted).
 - Requirements doc: `tickets/in-progress/large-runs-load-less/requirements-doc.md` (SR-001)
 - Investigation notes: `.../investigation-notes.md`
 - Solution revision record: `.../solution-revision-record.md`
-- Design spec: `.../design-spec.md` (SR-006; DS-002 reload rule revised by SR-004, SR-005 and SR-006)
+- Design spec: `.../design-spec.md` (SR-008; DS-002 reload rule revised by SR-004 … SR-008)
 - Supplemental task artifacts: `evidence/M-*`, `evidence/probes/*.mjs`
-- Design review report: `.../design-review-report.md` (ARCH-REV-006 Pass)
+- Design review report: `.../design-review-report.md` (ARCH-REV-008 Pass)
 - Architecture review revision record: `.../architecture-review-revision-record.md`
-- Triggering rework report: CRR-004 (`code-review-report.md`, CR-003) → `solution-handoff.md` "SR-006 Revision", `design-review-report.md` ARCH-REV-006
+- Triggering rework report: CRR-006 (`code-review-report.md`, CR-004, from API-08 round 2 L-002) → `solution-handoff.md` "SR-007" and "SR-008", `design-review-report.md` ARCH-REV-008
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Rework` (IR-002 adds DS-007 to IR-001; IR-003 is CR-001's Local Fix; IR-004 implements SR-004/SR-005 for CR-002; IR-005 implements SR-006 for CR-003)
+- Implementation cycle: `Rework` (IR-002 adds DS-007 to IR-001; IR-003 is CR-001's Local Fix; IR-004 implements SR-004/SR-005 for CR-002; IR-005 implements SR-006 for CR-003; IR-006 implements SR-007/SR-008 for CR-004)
 - Implementation revision record: `.../implementation-revision-record.md`
-- Current implementation revision ID: `IR-005`
-- Related solution revision IDs: `SR-002` … `SR-006`; architecture-review: `ARCH-REV-002`, `ARCH-REV-003`, `ARCH-REV-005`, `ARCH-REV-006`; code-review: `CRR-001` … `CRR-004`; API/E2E: API-08 (round 1); delivery: `N/A`
-- Triggering finding IDs: CR-003 (CRR-004); before it CR-002 (CRR-003; API-08) and AR-005
+- Current implementation revision ID: `IR-006`
+- Related solution revision IDs: `SR-002` … `SR-008`; architecture-review: `ARCH-REV-002`, `ARCH-REV-003`, `ARCH-REV-005`, `ARCH-REV-006`, `ARCH-REV-008`; code-review: `CRR-001` … `CRR-006`; API/E2E: rounds 1 and 2 (API-08); delivery: `N/A`
+- Triggering finding IDs: CR-004 (CRR-006; API-08 L-002), AR-006 (ARCH-REV-007); before them CR-003, CR-002, AR-005
 
 All steps of the Change / Refactor Sequence are implemented and checked, and every QR is met. Commits on `codex/large-runs-load-less` over `origin/personal` @ `efd28d5c4a`:
 
@@ -41,6 +41,8 @@ All steps of the Change / Refactor Sequence are implemented and checked, and eve
 | `da91ae689a` | SR-004/SR-005 web: the participant owner keeps C with its live sequence; `reloadRoot` keeps the lists when nothing could have been missed; hub, Org and Team streams advance C |
 | `585ae49761` | SR-006 and ARCH-REV-006 docs as received |
 | `99cd853f79` | SR-006: `getTeamRunResumeConfig` gives `liveSequenceId` and `baseChangeSequence` (one read of the publisher); the Team commit rebuilds with them; `generated/graphql.ts` regenerated |
+| `a69534dae4` | SR-007, SR-008 and ARCH-REV-007/008 docs as received |
+| `65a5b34c9b` | SR-007/SR-008: each root's publisher takes its message predicate and keeps `lastMessageChangeSequence`; `last_message_change_sequence` in views, snapshots and the Team open read; the client keeps its lists when no message is past C; contracts, dist, codegen, docs |
 
 ## Routing Classification (Mandatory)
 
@@ -55,7 +57,7 @@ All steps of the Change / Refactor Sequence are implemented and checked, and eve
 
 | Behavior ID | Approved Change / Preserved Outcome | Implemented Production Path / Key Files | Result / Notes |
 | --- | --- | --- | --- |
-| BEH-001 | Views and snapshots carry no message log; the Team tab loads its participant's messages when shown; a rebuild reloads them only when a message could have been missed (SR-004, SR-005) | Server: `services/agent-streaming/*-view-projector.ts`, snapshot types (`agent-org-run.ts`, `standalone-agent-run-root.ts`, `root-team-run.ts`), `api/graphql/types/collaboration-participant-messages.ts`. Web: `services/collaborationMessages/*`, contexts forward `communication` events, `CollaborationMessagesSection.vue` loads on show | Hub view 2,790,524 → 176,226 bytes (QR-001 met). Order newest first then ID; live merge by ID (owner spec). IR-004: `RootEventPublisher.liveSequenceId` → `live_sequence_id` in views and snapshots; `CollaborationParticipantMessages.advance` / `reloadRoot(kind, id, { liveSequenceId, baseChangeSequence })`; called from `agentRunCollaborationStore.publish`, `agentOrgContextsStore` commit, the Team snapshot effect, and `markCommittedTeamRunHydrationAuthority` with the Team open read's live sequence (SR-006: `getTeamRunResumeConfig` → `RootTeamRun.getLivePosition()` → `RootEventPublisher.getLivePosition()`). API-08 counts by spec: running-hub selection 1; new child with no message 0; with a message 1 |
+| BEH-001 | Views and snapshots carry no message log; the Team tab loads its participant's messages when shown; a rebuild reloads them only when a message could have been missed (SR-004, SR-005) | Server: `services/agent-streaming/*-view-projector.ts`, snapshot types (`agent-org-run.ts`, `standalone-agent-run-root.ts`, `root-team-run.ts`), `api/graphql/types/collaboration-participant-messages.ts`. Web: `services/collaborationMessages/*`, contexts forward `communication` events, `CollaborationMessagesSection.vue` loads on show | Hub view 2,790,524 → 176,226 bytes (QR-001 met). Order newest first then ID; live merge by ID (owner spec). IR-004: `RootEventPublisher.liveSequenceId` → `live_sequence_id` in views and snapshots; `CollaborationParticipantMessages.advance` / `reloadRoot(kind, id, { liveSequenceId, baseChangeSequence })`; called from `agentRunCollaborationStore.publish`, `agentOrgContextsStore` commit, the Team snapshot effect, and `markCommittedTeamRunHydrationAuthority` with the Team open read's live sequence (SR-006: `getTeamRunResumeConfig` → `RootTeamRun.getLivePosition()` → `RootEventPublisher.getLivePosition()`). API-08 counts by spec: running-hub selection 1; new child with no message 0, even when its copy's output moved the base (SR-007); with a message 1 |
 | BEH-002 | Team/Org open stages the focused member only; others on open; Team-tab messages on show | `services/runHydration/memberLoader.ts`; `teamRunContextHydrationService.ts` (open and recovery focused-only); `agentOrgContextHydration.ts` (`focus`); `agentOrgContextsStore.ts`; `teamMemberProjectionHydrationService.ts` and `agentRunCollaborationChildHydration.ts` reduced to load-target adapters | One member request at open (specs: team hydration, org hydration, org Apollo). Browser measurement on a large seeded Team/Org not run (M-151) |
 | BEH-003 | One view read per hub selection; Settings shares it | `agentRunCollaborationStore.viewFor`, `syncHost` reuses a settled stored view; `existingRunConfigStore.readAgentCanonical` | Hub click: 0 view requests (the history row read it once), 1 participant request (QR-002 met) |
 | BEH-004 | Admission by structure; messages validated where read; damaged log reported then | `run-history/services/root-run-package-current-validator.ts` (`scanOne`, tree-only), `root-run-package-readiness-index.ts` (`admitCurrent`); records owners validate tree + log | Scan 85 ms at 100.4 MB vs 89 ms base (QR-003 met). Damaged log: query fails with reason, view opens (org unit, team API integration) |
@@ -80,6 +82,8 @@ All steps of the Change / Refactor Sequence are implemented and checked, and eve
 - **D-IMP-6, Settings reuses the hub's view.** `syncHost` reuses a published, historical (stopped) hub view instead of reading it again; a hub that was live is read again. That is what made QR-002 pass.
 - **D-IMP-7, the Team snapshot's `live_sequence_id` is never null.** The design gives `string | null` for all three contracts, with `null` for stored views. A Team snapshot only ever comes from a live snapshot connection (`agent-team-stream-handler.ts`), and the Team has no stored view contract, so its field is a required string. The Agent-root and Org views keep `string | null`: their GraphQL inspections of a stopped root carry `null`.
 - **D-IMP-8 (revised in IR-005), every Team commit rebuilds with its read's live sequence.** IR-004 gave `markCommittedTeamRunHydrationAuthority` a `'stored_rebuild' | 'rebuilt_by_stream_snapshot'` flag. With SR-006 the open read names the running Team's live sequence and base, so the flag is gone: every commit (open, restore, launch, recovery) calls `reloadRoot` with the candidate's `rebuild`. A stream recovery's read is taken between two equal checkpoints, so its base equals its candidate snapshot's, and the commit keeps what that snapshot rebuilt (same live sequence, B ≤ C). A stopped Team's read names none, so its commit reloads.
+- **D-IMP-11, the message predicates live with their event types.** `isStandaloneRootMessageEvent` (`standalone-root-event.ts`), `isAgentOrgMessageEvent` (`agent-org-run-event.ts`) and `isTeamRunMessageEvent` (`team-run-event.ts`) are exported next to each root's event union. The three builders pass them, and the tests that construct publishers import the same functions, so a test cannot drift from production. Tests of the publisher alone, with no root kind, pass `() => false`.
+- **D-IMP-12, the views check the pair.** The Agent-root and Org view contracts reject a view that names a live sequence without a latest message sequence, or the reverse, and a latest message past the base. The Team open read is checked the same way on the client (`liveRebuildOf`). One mapper, `rebuildOfView`, turns a hub, Org or Team view into the rebuild, at the three call sites.
 - **D-IMP-10, the Team open read's live sequence comes from the managed root.** `TeamRunHistoryService.getTeamRunResumeConfig` reads `getManagedTeamRun(id)?.getLivePosition()`: the same root whose presence makes `isActive` true and whose publisher the Team stream binds to. It reads `liveSequenceId` and `changeSequence` in one call (`RootEventPublisher.getLivePosition()`). An application-owned Team that the Studio service reports as active without a managed root names no live sequence, so its lists reload.
 - **D-IMP-9, where C advances.** The hub and Org streaming services advance C after `applyEvent`: to the event's last sequence when it was applied, and to its sequence when it was a single event that returned `checkpoint_required` (a single event has no `change_sequence_through`; the contract allows it only on batches). The Team stream advances to the view's change sequence after every applied message. Each call names the live sequence of the context that applied it, so an event of another publisher never moves C.
 
@@ -105,7 +109,7 @@ All steps of the Change / Refactor Sequence are implemented and checked, and eve
 - Dead code in the touched files and modules removed: `Yes` (listed above).
 - Dead code found elsewhere, added to `follow-ups.md`: FU-002, the unused `assets/css/main.css`. FU-001 is pre-existing failing tests (below). FU-005 (IR-004): the interrupt-result probe's Team snapshot lacks `remote_task_executions` on base.
 - Shared structures stay tight: `Yes`.
-- Size guard: `Yes`. `AgentConversationFeed.vue` is at 500 non-blank lines (base 498; the per-frame logic lives in `useOncePerFrame.ts`). `existingRunConfigStore.ts` stays at its base 503. IR-004: `teamExecutionViewState.ts` 499 (base 497), `agentOrgStreamingService.ts` 489. IR-005: `root-team-run.ts` 499 (base 499). No other changed source file is over 500.
+- Size guard: `Yes`. `AgentConversationFeed.vue` is at 500 non-blank lines (base 498; the per-frame logic lives in `useOncePerFrame.ts`). `existingRunConfigStore.ts` stays at its base 503. IR-004: `teamExecutionViewState.ts` 499 (base 497), `agentOrgStreamingService.ts` 489. IR-005: `root-team-run.ts` 499 (base 499). IR-006: `teamExecutionViewState.ts` 499 (the shared `rebuildOfView` mapper keeps it under). No other changed source file is over 500.
 
 ## Persisted Data Transition Check (When Applicable)
 
@@ -153,6 +157,16 @@ Evidence: `evidence/IMP-local-checks.log` (header, commit and counts per check).
 | IMP-28 | web guards, each alone | `99cd853f79` | — | web | — | Pass | same | exit 0 ×3 |
 | IMP-29 | targeted Team open specs (running keeps, stopped reloads) and server resume-config tests | `99cd853f79` | isolated HOME | the Team open read and commit | CR-003 | Pass | same | see log |
 | IMP-30 | codegen against this branch's built server (temporary data folder, stopped and removed) | `99cd853f79` | 127.0.0.1:18358 | `generated/graphql.ts` | — | Two fields added only | same | `liveSequenceId`, `baseChangeSequence` |
+| IMP-31 | contract packages `pnpm test` (dist rebuilt) | `65a5b34c9b` | isolated HOME | `last_message_change_sequence`, the pair check | SR-007 | Pass | IMP-IR006-checks.log | `# pass 39` / `# pass 21` |
+| IMP-32 | server `typecheck` | `65a5b34c9b` | isolated HOME | server src | SR-007, SR-008 | Pass | same | `tsc exit=0` |
+| IMP-33 | server `test:unit` (full) | `65a5b34c9b` | isolated HOME | server | SR-007, SR-008 | Pass | same | `7674 passed` |
+| IMP-34 | server `test:integration` (full) | `65a5b34c9b` | isolated HOME | server | SR-007 | Pass except FU-001 (same 6) | same | `480 passed` |
+| IMP-35 | web `typecheck` | `65a5b34c9b` | isolated HOME | web | — | Pass (baseline 297) | same | `PASS` |
+| IMP-36 | web Nuxt suite (full) | `65a5b34c9b` | isolated HOME | web | AC-002, SR-007 | Pass | same | `4944 passed` |
+| IMP-37 | web guards, each alone | `65a5b34c9b` | — | web | — | Pass | same | exit 0 ×3 |
+| IMP-38 | targeted: per-root predicates; owner, hub and Team stream keep/reload cases | `65a5b34c9b` | isolated HOME | the message rule | CR-004, AR-006 | Pass | same | see log |
+| IMP-39 | mutation: compare the base instead of the latest message | `65a5b34c9b` | isolated HOME | `reloadRoot` | CR-004 | 3 tests fail as expected | same | `3 failed` |
+| IMP-40 | codegen against this branch's built server (temporary data folder, stopped and removed) | `65a5b34c9b` | 127.0.0.1:18358 | `generated/graphql.ts` | — | One field added | same | `lastMessageChangeSequence` |
 
 - Not run, and why: the M-151 browser measurement on a large seeded Team/Org (request counts are covered by specs; left to API/E2E); the gated live suites (no provider proof needed). IR-004: the Electron suite (no Electron file changed); the API-08 browser probe on a seeded live hub (the counts are proven by `agentRunCollaborationParticipantReloads.spec.ts`; the recheck belongs to API/E2E).
 
@@ -168,6 +182,7 @@ Evidence: `evidence/IMP-local-checks.log` (header, commit and counts per check).
 - AC-003: open a large Team and a large Org, count member requests, then open another member.
 - AC-006: open a run whose stored log is damaged. Its Team tab shows the reason; resume is refused.
 - Team counts (SR-006): opening a running Team with its Team tab shown gives 1 participant request (the snapshot keeps it); a stopped Team gives 1.
+- L-002 (SR-007): a new delegation on a running hub, Team or Org whose copy writes output but no message refetches no list; a message in the reconnect window refetches once and shows once.
 - API-08 recheck (SR-004/SR-005): a running-hub selection gives 1 participant request; a new child or Save with no message in the reconnect window gives 0 more; with a message, 1, and it is shown. Also stop → resume of a hub while it is not selected, with a message before the attach: the list reloads and shows it. A server restart while a hub's Team tab is open reloads it too.
 
 ## API / E2E / Executable Coverage Investigation And Execution Still Required

@@ -10,7 +10,8 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | IR-002 | Architecture Reviewer / `design-review-report.md` / ARCH-REV-003 (Pass), after IR-001's Design Impact | IR-001 QR-004 | `Design Impact Rework` | `SR-003`, `ARCH-REV-003` | DS-007 done; QR-004 met; ready for code review |
 | IR-003 | Code Reviewer / `code-review-report.md` / CRR-001 (Fail 9.3/10) | CR-001 | `Local Fix` | `CRR-001` | Mobile loading / unavailable states; CRR-002 Pass |
 | IR-004 | Architecture Reviewer / `design-review-report.md` / ARCH-REV-005 (Pass), after CRR-003's Design Impact | CR-002 (CRR-003, API-08); AR-005 | `Design Impact Rework` | `SR-004`, `SR-005`, `ARCH-REV-005`, `CRR-003` | Lists reload only when a message could have been missed; `live_sequence_id`; CRR-004 Fail (CR-003) |
-| IR-005 | Architecture Reviewer / `design-review-report.md` / ARCH-REV-006 (Pass), after CRR-004's Design Impact | CR-003 (CRR-004) | `Design Impact Rework` | `SR-006`, `ARCH-REV-006`, `CRR-004` | The Team open read names the running Team's live sequence; ready for targeted code review |
+| IR-005 | Architecture Reviewer / `design-review-report.md` / ARCH-REV-006 (Pass), after CRR-004's Design Impact | CR-003 (CRR-004) | `Design Impact Rework` | `SR-006`, `ARCH-REV-006`, `CRR-004` | The Team open read names the running Team's live sequence; CRR-005 Pass; then API-08 round 2 L-002 → CRR-006 (CR-004) |
+| IR-006 | Architecture Reviewer / `design-review-report.md` / ARCH-REV-008 (Pass), after CRR-006's Design Impact | CR-004 (CRR-006, API-08 L-002); AR-006 | `Design Impact Rework` | `SR-007`, `SR-008`, `ARCH-REV-007`, `ARCH-REV-008`, `CRR-006` | Keep rule on the latest message by each root's predicate; ready for targeted code review |
 
 ## Revision Entries
 
@@ -138,4 +139,52 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
   - Mocks and candidate fixtures carry the fields.
 - Local validation and result: `evidence/IMP-IR005-checks.log`.
 - Next recipient or routing: `get_handoff_rules` → code review (targeted, Large/High), then API/E2E rechecks the Team counts.
+- Remaining limitations or risks: FU-001 to FU-005.
+
+### IR-006 — SR-007/SR-008: keep the lists when no message is past C
+
+- Triggering role, report path, and round: `/software_engineering_team/architecture_reviewer`, `design-review-report.md`, ARCH-REV-008 (Pass) on SR-007 and SR-008. The chain before it:
+  - API-08 round 2 found that a delegation with no message still refetched every list;
+  - CRR-006 returned that as CR-004, a Design Impact;
+  - ARCH-REV-007 failed SR-007 with AR-006 (one message predicate per root).
+- Triggering finding IDs: CR-004; AR-006.
+- Classification: `Design Impact Rework`.
+- Prior authoritative result: IR-005 at `99cd853f79`. A delegation's reconnect snapshot had a base past C, because the new copy's output events count in the change sequence, so every loaded list was refetched (API-08 L-002: 62 before and after).
+- Current authoritative result: `65a5b34c9b`, plus the IR-006 records commit.
+- Related revision IDs: `SR-007`, `SR-008`; `ARCH-REV-007`, `ARCH-REV-008`; `CRR-006`; API/E2E rounds 1–2; delivery `N/A`.
+- Approved behaviour or requirement IDs affected: REQ-002, AC-002; DESIGN.md rule 3; DS-002.
+- Implementation delta:
+  - **Server.** `RootEventPublisher` takes a required `{ isMessageEvent }` and keeps `lastMessageChangeSequence`, which it sets in `publish` when the predicate holds.
+    - The value is read in the same `RootLivePosition` as the live sequence and change sequence, and with the base in every snapshot connection.
+    - The predicates are exported next to each root's event union (D-IMP-11) and passed at the three construction sites.
+    - Inspections carry it (`null` when stored); the Agent-root and Org projectors and the Team snapshot carry `last_message_change_sequence`; `getTeamRunResumeConfig` carries `lastMessageChangeSequence`.
+  - **Contracts.** The field is added to the three view contracts. The Agent-root and Org views check the live-sequence/latest-message pair and that the latest message is not past the base (D-IMP-12). `dist/` rebuilt.
+  - **Web `CollaborationParticipantMessages`.**
+    - C means "the lists hold every message through C".
+    - `reloadRoot` keeps the lists and loads in flight when the live sequence is the same and non-null and `lastMessageChangeSequence <= C`, and then sets C := B. Anything else reloads.
+    - `rebuildOfView` maps a view to the rebuild at the hub, Org and Team call sites; the Team open read is checked by `liveRebuildOf`.
+  - The 17 server test files that construct publishers pass a predicate: the production ones for root-kind publishers, `() => false` otherwise. Fixtures carry the new field.
+  - `generated/graphql.ts` regenerated against this branch's built server (temporary data folder, stopped and removed); only `lastMessageChangeSequence` was added.
+  - Docs: the web docs and the protocol doc.
+- Tests:
+  - Server, one per root kind: a message advances M and a presentation event does not (Agent root, Org, Team). The publisher reads the three values together, including in its snapshot connection.
+  - Contracts: the field round-trips; a missing half of the pair and M past the base are rejected.
+  - Owner spec (11):
+    - keeps when the base moved without a message past C (L-002), and C becomes the base;
+    - a message past C reloads during and after a load;
+    - a new publisher reloads, and old-stream events do not move C;
+    - every SR-004 … SR-006 case still holds.
+  - Hub stream (real store and stream):
+    - selection: 1 fetch;
+    - new child: 0;
+    - a new child whose copy's output moved the base to 22 with no message: 0;
+    - a message in the window: 1 fetch, and the message shows once;
+    - a restart: reloads.
+  - Team stream:
+    - the base moved with no message past C: kept;
+    - a message past C: reloads;
+    - another live sequence: reloads.
+  - Mutation check: comparing the base instead of the latest message fails 3 tests.
+- Local validation and result: `evidence/IMP-IR006-checks.log`.
+- Next recipient or routing: `get_handoff_rules` → code review (targeted, Large/High), then API-08 L-002 is rechecked.
 - Remaining limitations or risks: FU-001 to FU-005.
