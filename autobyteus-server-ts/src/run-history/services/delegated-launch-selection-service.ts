@@ -4,7 +4,7 @@ import type {
   DelegatedStopOutcome,
 } from "../../agent-collaboration/collaborators/delegated-launch-selection-command.js";
 import type {
-  DelegatedHostSelectionValue,
+  DelegatedLaunchSelectionValue,
   DelegatedLaunchChange,
   DelegatedRunReference,
 } from "../../agent-collaboration/domain/delegated-launch-selection.js";
@@ -40,7 +40,7 @@ export type DelegatedLaunchServiceResult = Readonly<{
 export type StoppedRootConfiguredPatches =
   | Readonly<{ kind: "team"; patches: readonly TeamRunSelectionPatch[] }>
   | Readonly<{ kind: "org"; patches: readonly AgentOrgRunSelectionPatch[] }>
-  | Readonly<{ kind: "agent"; selection: DelegatedHostSelectionValue }>;
+  | Readonly<{ kind: "agent"; selection: DelegatedLaunchSelectionValue }>;
 
 const stopResult = (outcome: DelegatedStopServiceResult["outcome"], message: string, notStoppedUnattributed = 0): DelegatedStopServiceResult =>
   Object.freeze({ success: outcome === "STOPPED" || outcome === "ALREADY_STOPPED", outcome, message, notStoppedUnattributed });

@@ -21,6 +21,8 @@ export class DelegatedExecutionTargetInput {
 
 @InputType()
 export class DelegatedLaunchSelectionValueInput {
+  /** The agent runtime to run the copy on: its current one (a model edit), the previous one (undo) or another (a switch). */
+  @Field(() => String) runtimeKind!: string;
   @Field(() => String) llmModelIdentifier!: string;
   @Field(() => GraphQLJSON, { nullable: true }) llmConfig!: Record<string, unknown> | null;
 }
@@ -134,7 +136,10 @@ export class DelegatedLaunchSelectionResolver {
       const result = await this.service.update({
         rootKind,
         rootRunId: input.rootRunId,
-        changes: input.changes.map((change) => ({ ...referenceOf(change), selection: change.selection })),
+        changes: input.changes.map((change) => ({
+          ...referenceOf(change),
+          selection: { ...change.selection, runtimeKind: requiredRuntimeKind(change.selection.runtimeKind, change.agentRunId ?? change.teamRunId ?? "") },
+        })),
         configured: configuredOf(rootKind, input.configuredPatches),
       });
       return { ...result, fieldErrors: [...result.fieldErrors] };

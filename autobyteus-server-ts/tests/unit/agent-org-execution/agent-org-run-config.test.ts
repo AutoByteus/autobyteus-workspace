@@ -275,7 +275,7 @@ describe('stopped AgentOrg Save with delegated copies (AR-004, AR-003)', () => {
     const write = vi.spyOn(h.store, 'write');
     const result = await h.manager.updateStoppedRunConfig({ orgRunId: 'org', teamWorkspacePatches: [],
       selectionPatches: [select('CONFIGURED_AGENT', '/worker')],
-      delegatedChanges: [{ teamRunId: 'team-copy', selection: { llmModelIdentifier: 'larger', llmConfig: { temperature: 0, enabled: false } } }] });
+      delegatedChanges: [{ teamRunId: 'team-copy', selection: { runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: 'larger', llmConfig: { temperature: 0, enabled: false } } }] });
     expect(result).toMatchObject({ outcome: 'UPDATED', success: true });
     expect(write).toHaveBeenCalledTimes(1);
     const saved = (await h.store.read(h.dir, 'org'))!;
@@ -289,7 +289,7 @@ describe('stopped AgentOrg Save with delegated copies (AR-004, AR-003)', () => {
     const write = vi.spyOn(h.store, 'write');
     const result = await h.manager.updateStoppedRunConfig({ orgRunId: 'org', teamWorkspacePatches: [],
       selectionPatches: [select('CONFIGURED_AGENT', '/worker')],
-      delegatedChanges: [{ teamRunId: 'team-copy', selection: { llmModelIdentifier: 'not-offered', llmConfig: null } }] });
+      delegatedChanges: [{ teamRunId: 'team-copy', selection: { runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: 'not-offered', llmConfig: null } }] });
     expect(result).toMatchObject({ outcome: 'MODEL_UNAVAILABLE', success: false });
     expect(write).not.toHaveBeenCalled();
   });

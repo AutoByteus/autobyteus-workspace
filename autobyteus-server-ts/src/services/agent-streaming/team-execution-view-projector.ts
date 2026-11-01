@@ -184,6 +184,7 @@ const projectMemberLaunch = (member: RecordedMemberLaunch) => ({
 /** A user model choice, emitted only when recorded. */
 const optionalSelection = <K extends "user_launch_selection" | "user_team_launch_selection" | "selection">(key: K, selection: UserLaunchSelection | undefined) =>
   (selection ? { [key]: {
+    ...(selection.runtimeKind === undefined ? {} : { runtime_kind: selection.runtimeKind }),
     llm_model_identifier: selection.llmModelIdentifier,
     llm_config: selection.llmConfig as Record<string, import("@autobyteus/team-stream-contracts").JsonValue> | null,
     selected_at: selection.selectedAt,

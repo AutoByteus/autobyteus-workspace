@@ -145,7 +145,7 @@ describe('stopped Team Save with delegated copies (AR-004)', () => {
     const h = await harness(); const copy = withCatalogCopy(h); const started = structuredClone(copy.source);
     const result = await h.manager.updateStoppedRunLaunchChanges({ teamRunId: 'root',
       configuredPatches: [{ scopeKind: 'CONFIGURED_AGENT', scopeAddress: '/member', runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: 'equal', llmConfig: null }],
-      delegatedChanges: [{ agentRunId: 'retained-task', selection: { llmModelIdentifier: 'large', llmConfig: null } }] });
+      delegatedChanges: [{ agentRunId: 'retained-task', selection: { runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: 'large', llmConfig: null } }] });
     expect(result).toMatchObject({ outcome: 'UPDATED', success: true });
     expect(h.write).toHaveBeenCalledTimes(1);
     expect(h.saved().rootTeam.members[0].launchConfiguration.llmModelIdentifier).toBe('equal');
@@ -156,7 +156,7 @@ describe('stopped Team Save with delegated copies (AR-004)', () => {
     const h = await harness(); withCatalogCopy(h); const original = structuredClone(h.saved());
     const result = await h.manager.updateStoppedRunLaunchChanges({ teamRunId: 'root',
       configuredPatches: [{ scopeKind: 'CONFIGURED_AGENT', scopeAddress: '/member', runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: 'equal', llmConfig: null }],
-      delegatedChanges: [{ agentRunId: 'retained-task', selection: { llmModelIdentifier: 'not-offered', llmConfig: null } }] });
+      delegatedChanges: [{ agentRunId: 'retained-task', selection: { runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: 'not-offered', llmConfig: null } }] });
     expect(result).toMatchObject({ outcome: 'MODEL_UNAVAILABLE', success: false });
     expect(h.write).not.toHaveBeenCalled(); expect(h.saved()).toEqual(original);
   });
@@ -164,7 +164,7 @@ describe('stopped Team Save with delegated copies (AR-004)', () => {
   it('refuses a delegated change naming a configured member', async () => {
     const h = await harness(); withCatalogCopy(h);
     const result = await h.manager.updateStoppedRunLaunchChanges({ teamRunId: 'root', configuredPatches: [],
-      delegatedChanges: [{ agentRunId: 'run-member', selection: { llmModelIdentifier: 'equal', llmConfig: null } }] });
+      delegatedChanges: [{ agentRunId: 'run-member', selection: { runtimeKind: RuntimeKind.AUTOBYTEUS, llmModelIdentifier: 'equal', llmConfig: null } }] });
     expect(result).toMatchObject({ outcome: 'VALIDATION_FAILED', fieldErrors: [{ path: 'changes[0]' }] });
     expect(h.write).not.toHaveBeenCalled();
   });
