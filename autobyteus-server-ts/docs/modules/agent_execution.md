@@ -798,7 +798,7 @@ Claude Agent SDK `0.3.280` is used with the exact direct peer
 `@anthropic-ai/sdk@0.132.1` in SDK streaming input mode. Its
 `@modelcontextprotocol/sdk` peer (v1) is installed by the package manager and
 used for types only; AutoByteus does not depend on it directly. Each Claude AgentRun keeps one Claude CLI process for its
-whole life: `ClaudeSdkClient.openStreamingSession` opens one
+whole life: `ClaudeSdkClient.beginStreamingSession({ resolveOptions }).open()` opens one
 `query({ prompt: AsyncIterable, options })` lazily on the first input (new or
 restored run), and `ClaudeSessionProcess` owns that process, its single frame
 pump, and exit detection. There is no idle timer in the session itself. Run
