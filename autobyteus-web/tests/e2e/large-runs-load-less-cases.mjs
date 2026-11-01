@@ -8,7 +8,8 @@
 //           Workspaces tree in a fresh page: one member projection and one file-change request (the focused member);
 //           another member opened: one more pair, for it only; going back loads nothing; every member row is shown; the
 //           Team tab asks for the focused participant's messages once and lists the stored ones.
-//   LRL-002 (AC-003, QR-005) The same for a stopped Org run (agents and a placed Team) opened from the Workspaces tree.
+//   LRL-002 (AC-003, QR-005) A stopped Org run (agents and a placed Team) opened from the Workspaces tree: at most one member
+//           (the focused one; with no selection, none) loads at open; the writer opened: one pair, for it only.
 //   LRL-003 (AC-002, SCN-002b/c) A live Team run: the worker's Team tab loads while the coordinator sends the worker a
 //           message (the participant response is held in the browser until the message is stored, then delivered as
 //           the server read it): the list ends equal to the stored log, the new message once. Then the run's stream
@@ -201,7 +202,7 @@ export function registerLargeRunsLoadLessCases(h) {
     return r
   })
 
-  defineRecordedCase('LRL-002', 'AC-003, QR-005 (Org): opening a stopped Org run loads only the focused member; another member loads when opened', async (page, context) => {
+  defineRecordedCase('LRL-002', 'AC-003, QR-005 (Org): opening a stopped Org run loads at most the focused member (none with no selection); another member loads when opened', async (page, context) => {
     const t = tag(), r = { names: { org: `LRL Org ${t}` } }
     keep(r)
     const ids = {}
@@ -230,7 +231,8 @@ export function registerLargeRunsLoadLessCases(h) {
     r.orgAgents = objectsIn(tree).filter((o) => pick(o, 'agentRunId') && typeof o.address === 'string').map((o) => ({ address: o.address, agentRunId: pick(o, 'agentRunId') }))
     const stop = (await gql('mutation($id:String!){terminateAgentOrgRun(agentOrgRunId:$id){success message}}', { id: r.orgRunId })).terminateAgentOrgRun
     assert(stop.success, 'org run stopped', stop)
-    await delay(3000)
+    await waitFor('org run inactive', async () => (await gql('query($id:String!){getAgentOrgRootHistory(orgRunId:$id){is_active}}', { id: r.orgRunId }))
+      .getAgentOrgRootHistory?.is_active === false, 60000, 1000)
 
     const cold = await context.newPage()
     const watch = watchOps(cold)
@@ -385,9 +387,11 @@ export function registerLargeRunsLoadLessCases(h) {
       r.teamTabText = (await unavailable.innerText()).replace(/\s+/g, ' ').trim()
       r.serverReason = await gql('query($k:String!,$r:String!,$a:String!){collaborationParticipantMessages(rootKind:$k,rootRunId:$r,agentRunId:$a)}',
         { k: 'agent_team', r: r.teamRunId, a: r.members.lead }).then(() => null, (e) => String(e.message))
-      assert(r.serverReason, 'the server refuses the damaged log', r.serverReason)
+      // The reason names the damaged file and line (AC-006 "with the reason").
+      r.expectedReason = `${path.basename(r.damaged.file)}:line ${r.damaged.line} is not valid JSON`
+      assert(r.serverReason?.includes(r.expectedReason), 'the server refuses the damaged log with the reason', { serverReason: r.serverReason, expected: r.expectedReason })
+      assert(r.teamTabText.includes(r.expectedReason), 'the Team tab shows the reason', { teamTabText: r.teamTabText, expected: r.expectedReason })
       assert(await teamTabRows(desk).count() === 0, 'no partial list', await rowTexts(desk))
-      r.reasonShown = r.teamTabText.length > 'Messages unavailable'.length
       await shot(desk, 'LRL-004-team-tab-unavailable')
 
       // Resume: a message to the stopped run is refused with the reason, and the run stays stopped.
@@ -396,14 +400,15 @@ export function registerLargeRunsLoadLessCases(h) {
       desk.on('console', (m) => { if (m.type() === 'error') consoleErrors.push(m.text()) })
       const resumeText = `Resume please ${t}.`
       await typeAndSend(desk, resumeText)
-      await delay(8000)
+      await waitFor('the restore response', async () => restores.length > 0, 60000, 250)
+      await delay(1500)
       r.restoreResponses = restores.map((x) => x.slice(0, 600))
       r.resumeConsoleErrors = consoleErrors.filter((x) => /sending|restor|JSON/i.test(x)).map((x) => x.slice(0, 300))
       r.activeAfterResume = await teamActive(r.teamRunId)
       r.composerStillHolds = (await desk.locator('main textarea:visible').last().inputValue()) === resumeText
       r.reasonVisibleAfterResume = (await desk.locator('body').innerText()).split(r.teamTabText.slice(-40)).length - 1
       assert(r.activeAfterResume === false, 'the run stays stopped', r.activeAfterResume)
-      assert(r.restoreResponses.some((x) => x.includes('is not valid JSON')), 'the server refuses the resume with the reason', r.restoreResponses)
+      assert(r.restoreResponses.some((x) => x.includes(r.expectedReason)), 'the server refuses the resume with the reason', { restoreResponses: r.restoreResponses, expected: r.expectedReason })
       await shot(desk, 'LRL-004-resume-refused')
     } finally { await desk.close() }
 
@@ -448,6 +453,7 @@ export function registerLargeRunsLoadLessCases(h) {
       await phoneUnavailable.waitFor({ timeout: 30000 })
       r.phoneText = (await phoneUnavailable.innerText()).replace(/\s+/g, ' ').trim()
       r.phoneRows = await mobile.locator('[data-testid="mobile-team-message-row"]').count()
+      assert(r.phoneText.includes(r.expectedReason), 'the phone shows the reason', { phoneText: r.phoneText, expected: r.expectedReason })
       assert(r.phoneRows === 0, 'the phone shows no partial list', r.phoneRows)
       await mobile.screenshot({ path: path.join(env().outDir, 'LRL-004-phone-unavailable.png') })
     } finally { await phone.close() }
@@ -496,7 +502,8 @@ export function registerLargeRunsLoadLessCases(h) {
       await quiet(watch, 3000)
       r.resumeParticipantOps = countBy(watch.since(resumeMark, [PARTICIPANT_OP]))
       r.afterResume = await assertTabEqualsStored(run, 'after the resume', stored3, [`Running ${t} M1`, `Running ${t} M2`, `Resumed ${t} M3`])
-      assert((r.resumeParticipantOps[`${PARTICIPANT_OP}:${r.focused}`] ?? 0) >= 1, 'the resume (a new live sequence) reloads the list', r.resumeParticipantOps)
+      assert(r.resumeParticipantOps[`${PARTICIPANT_OP}:${r.focused}`] === 1 && Object.keys(r.resumeParticipantOps).length === 1,
+        'the resume (a new live sequence) reloads the list once', r.resumeParticipantOps)
       await shot(run, 'LRL-005-after-resume')
     } finally { watch.stop(); await run.close() }
     await stopTeamRun(r.teamRunId).catch(() => {})
