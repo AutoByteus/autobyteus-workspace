@@ -14,6 +14,7 @@ import { AgentTeamDefinitionResolver } from './types/agent-team-definition.js';
 import { AgentOrgDefinitionResolver } from './types/agent-org-definition.js';
 import { AgentOrgRunResolver } from './types/agent-org-run.js';
 import { AgentRunCollaborationResolver } from './types/agent-run-collaboration.js';
+import { CollaborationParticipantMessagesResolver } from './types/collaboration-participant-messages.js';
 import { TokenUsageStatisticsResolver } from './types/token-usage-stats.js';
 import { TokenUsageAnalyticsResolver } from './types/token-usage-analytics.js';
 import { AgentCustomizationOptionsResolver } from './types/agent-customization-options.js';
@@ -29,7 +30,6 @@ import { RemoteCollaborationSettingsResolver } from './types/remote-collaboratio
 import { RunHistoryResolver } from './types/run-history.js';
 import { ProjectRunHistoryResolver } from './types/project-run-history.js';
 import { RunFileChangesResolver } from './types/run-file-changes.js';
-import { TeamCommunicationResolver } from './types/team-communication.js';
 import { TeamRunHistoryResolver } from './types/team-run-history.js';
 import { RuntimeAvailabilityResolver } from './types/runtime-availability.js';
 import { AgentPackageResolver } from './types/agent-packages.js';
@@ -68,6 +68,7 @@ export async function buildGraphqlSchema() {
       AgentOrgDefinitionResolver,
       AgentOrgRunResolver,
       AgentRunCollaborationResolver,
+      CollaborationParticipantMessagesResolver,
       TokenUsageStatisticsResolver,
       TokenUsageAnalyticsResolver,
       AgentCustomizationOptionsResolver,
@@ -83,7 +84,6 @@ export async function buildGraphqlSchema() {
       RunHistoryResolver,
       ProjectRunHistoryResolver,
       RunFileChangesResolver,
-      TeamCommunicationResolver,
       TeamRunHistoryResolver,
       RuntimeAvailabilityResolver,
       AgentPackageResolver,

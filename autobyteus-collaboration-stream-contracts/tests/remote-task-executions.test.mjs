@@ -19,7 +19,6 @@ const agentView = (remote) => ({
     execution_tree: { subjectKind: "agent", createdAt: "2026-10-23T08:00:00.000Z",
       host: { address: "/project_task_manager", agentRunId: "host-run", agentDefinitionId: "ptm-def" }, taskExecutions: [] },
     closed_task_executions: [],
-    communication_messages: { schemaVersion: 1, subjectKind: "agent", hostRunId: "host-run", messages: [] },
     agent_statuses: [], agent_input_states: [],
     ...(remote === undefined ? {} : { remote_task_executions: remote }),
   },

@@ -354,20 +354,6 @@ export declare const agentOrgCommunicationMessageDtoSchema: z.ZodObject<{
     referenceFiles: z.ZodArray<z.ZodString>;
     createdAt: z.ZodString;
 }, z.core.$strict>;
-export declare const agentOrgCommunicationMessagesDtoSchema: z.ZodObject<{
-    schemaVersion: z.ZodLiteral<1>;
-    subjectKind: z.ZodLiteral<"agent_org">;
-    orgRunId: z.ZodString;
-    messages: z.ZodArray<z.ZodObject<{
-        messageId: z.ZodString;
-        senderAgentRunId: z.ZodString;
-        receiverAgentRunId: z.ZodString;
-        content: z.ZodString;
-        messageType: z.ZodString;
-        referenceFiles: z.ZodArray<z.ZodString>;
-        createdAt: z.ZodString;
-    }, z.core.$strict>>;
-}, z.core.$strict>;
 export declare const agentOrgAgentStatusDtoSchema: z.ZodObject<{
     member_address: z.ZodString;
     agent_run_id: z.ZodString;
@@ -506,20 +492,6 @@ export declare const agentOrgExecutionViewDtoSchema: z.ZodObject<{
     }, z.core.$strict>, z.ZodObject<{
         teamRunId: z.ZodString;
     }, z.core.$strict>]>>;
-    communication_messages: z.ZodObject<{
-        schemaVersion: z.ZodLiteral<1>;
-        subjectKind: z.ZodLiteral<"agent_org">;
-        orgRunId: z.ZodString;
-        messages: z.ZodArray<z.ZodObject<{
-            messageId: z.ZodString;
-            senderAgentRunId: z.ZodString;
-            receiverAgentRunId: z.ZodString;
-            content: z.ZodString;
-            messageType: z.ZodString;
-            referenceFiles: z.ZodArray<z.ZodString>;
-            createdAt: z.ZodString;
-        }, z.core.$strict>>;
-    }, z.core.$strict>;
     agent_statuses: z.ZodArray<z.ZodObject<{
         member_address: z.ZodString;
         agent_run_id: z.ZodString;

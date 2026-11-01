@@ -65,7 +65,6 @@ export type RootTeamRunPackageSnapshot = Readonly<{
   tree: TeamRunExecutionTreeSnapshot;
   /** Task executions of `tree` whose Task is DONE or CANCELLED (read at the same point as the tree). */
   closedTaskExecutions: readonly TaskExecutionReference[];
-  messages: TeamCommunicationMessagesSnapshot;
   statuses: readonly TeamAgentStatusSnapshot[];
   inputStates: readonly import("../../agent-collaboration/execution/domain/live-agent-input-snapshot.js").LiveAgentInputSnapshot[];
 }>;
@@ -402,7 +401,6 @@ export class RootTeamRun {
       this.options.persistence.readConsistent(() => ({
         tree: this.tree,
         closedTaskExecutions: this.taskExecutions.closedTaskExecutions(),
-        messages: this.getCommunicationSnapshot(),
         statuses: this.getLeafAgentStatusSnapshots(),
         inputStates: this.options.rootRun.getInputStateSnapshots(),
       })),

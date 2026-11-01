@@ -11,6 +11,7 @@ import { appConfigProvider } from "../../../src/config/app-config-provider.js";
 import { startStudioE2eRuntimeServer } from "../helpers/studio-runtime-test-server.js";
 import { buildE2eClientCommandIds, sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.js";
 import { until } from "../helpers/agy-runtime-error-fixture.js";
+import { readParticipantMessages } from "../../helpers/collaboration-participant-messages.js";
 
 // Members of a delegated copy contact the standalone Agent-run host that delegated the work
 // (delegated-copy-member-contact-delegator SR-005/SR-006: REQ-001..REQ-004, REQ-006; AC-001..AC-003, AC-006, AC-009)
@@ -298,8 +299,7 @@ suite("Delegated copy members contact the Agent-run host (real HTTP/WS/GraphQL/s
     expect(hostText).toContain("CALLED:");
     await expectNothingAdded("@host and send_message_to");
     // The Team tab's record: one reviewer → host message carrying the request.
-    const communication = (await graphql(`query($id:String!){agentRunCollaboration(runId:$id)}`, { id: hostRunId }))
-      .agentRunCollaboration?.root_agent?.communication_messages?.messages as any[] | undefined ?? [];
+    const communication = await readParticipantMessages(graphql, { rootKind: "agent", rootRunId: hostRunId, agentRunId: hostRunId });
     const toHost = communication.filter((message) => message.senderAgentRunId === reviewer.agentRunId
       && message.receiverAgentRunId === hostRunId && String(message.content).includes(marker));
     expect(toHost, JSON.stringify(communication).slice(0, 1_000)).toHaveLength(1);

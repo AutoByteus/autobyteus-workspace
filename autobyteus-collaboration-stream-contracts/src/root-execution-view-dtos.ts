@@ -68,7 +68,7 @@ export const AgentRootExecutionViewDtoSchema = z.object({
 
 const validateAgentRootCorrelation = (value: AgentRootExecutionViewDto, context: z.RefinementCtx): void => {
   const view = value.root_agent;
-  if (view.execution_tree.host.agentRunId !== value.root_run_id || view.communication_messages.hostRunId !== value.root_run_id) {
+  if (view.execution_tree.host.agentRunId !== value.root_run_id) {
     addCorrelationIssue(context, "Agent root snapshot host correlation mismatch.");
   }
   const addresses = new Map<string, string>([[view.execution_tree.host.agentRunId, view.execution_tree.host.address]]);
@@ -86,11 +86,6 @@ const validateAgentRootCorrelation = (value: AgentRootExecutionViewDto, context:
     }
   };
   visit(view.execution_tree.taskExecutions as readonly IdentityNode[]);
-  for (const message of view.communication_messages.messages) {
-    if (!addresses.has(message.senderAgentRunId) || !addresses.has(message.receiverAgentRunId)) {
-      addCorrelationIssue(context, `Agent root communication message '${message.messageId}' identity mismatch.`);
-    }
-  }
   for (const status of view.agent_statuses) {
     if (!childRunIds.has(status.agent_run_id) || addresses.get(status.agent_run_id) !== status.member_address) {
       addCorrelationIssue(context, "Agent root status identity mismatch.");
@@ -108,8 +103,7 @@ export const RootExecutionViewDtoSchema = z.discriminatedUnion("root_subject_kin
     return;
   }
   if (value.root_subject_kind !== "agent_org") return;
-  const correlated = [value.root_org.execution_tree.rootOrg.orgRunId, value.root_org.communication_messages.orgRunId];
-  if (correlated.some((id) => id !== value.root_run_id)) addCorrelationIssue(context, "AgentOrg snapshot root correlation mismatch.");
+  if (value.root_org.execution_tree.rootOrg.orgRunId !== value.root_run_id) addCorrelationIssue(context, "AgentOrg snapshot root correlation mismatch.");
 
   const addressesByRunId = new Map<string, string>();
   const addressesByTeamRunId = new Map<string, string>();
@@ -169,12 +163,6 @@ export const RootExecutionViewDtoSchema = z.discriminatedUnion("root_subject_kin
     }
   }
   taskIdentities(value.root_org.execution_tree.rootOrg.taskExecutions as readonly IdentityNode[], rootLive);
-
-  for (const message of value.root_org.communication_messages.messages) {
-    if (!addressesByRunId.has(message.senderAgentRunId) || !addressesByRunId.has(message.receiverAgentRunId)) {
-      addCorrelationIssue(context, `AgentOrg communication message '${message.messageId}' identity mismatch.`);
-    }
-  }
 
   const inputIds = new Set<string>();
   for (const input of value.root_org.agent_input_states) {

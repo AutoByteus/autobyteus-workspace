@@ -36,7 +36,6 @@ const orgSnapshot = (orgRunId = "org-run-1") => ({
       },
     },
     closed_task_executions: [],
-    communication_messages: { schemaVersion: 1, subjectKind: "agent_org", orgRunId: "org-run-1", messages: [] },
     agent_statuses: [],
     agent_input_states: [],
     remote_task_executions: [],
@@ -229,16 +228,9 @@ test("rejects duplicate and sidecar AgentOrg member identities", () => {
     status("/lead", "agent-run-lead"),
     status("/reviewer", "agent-run-reviewer"),
   );
-  sidecars.root_org.communication_messages.messages.push({
-    messageId: "message-1",
-    senderAgentRunId: "agent-run-lead",
-    receiverAgentRunId: "agent-run-missing",
-    content: "hello",
-    messageType: "agent_message",
-    referenceFiles: [],
-    createdAt: "2026-09-01T00:00:00.000Z",
-  });
-  assert.throws(() => RootExecutionViewDtoSchema.parse(sidecars), /communication message.*identity mismatch/);
+  // autobyteus-358: an AgentOrg view carries no message log; the messages are read per participant.
+  sidecars.root_org.communication_messages = { schemaVersion: 1, subjectKind: "agent_org", orgRunId: "org-run-1", messages: [] };
+  assert.throws(() => RootExecutionViewDtoSchema.parse(sidecars), /communication_messages|Unrecognized key/);
 });
 
 test("requires each configured Team coordinator to be one of that Team's direct Agents", () => {

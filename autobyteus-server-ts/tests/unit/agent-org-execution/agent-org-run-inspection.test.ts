@@ -36,8 +36,11 @@ describe('strict read-only Org inspection', () => {
     const before = await Promise.all((await fs.readdir(f.dir)).map(async (name) => [name, await fs.readFile(path.join(f.dir, name), 'utf8')]));
     const result = await f.manager.getInspection('org');
     const dto = projectAgentOrgExecutionSnapshot({ ...result, remoteTaskExecutions: [] });
-    expect(result).toMatchObject({ isActive: false, baseChangeSequence: 0, snapshot: { messages: f.messages } });
+    expect(result).toMatchObject({ isActive: false, baseChangeSequence: 0 });
+    // autobyteus-358: the view reads the tree only; the messages are read through the records owner.
+    expect(result.snapshot).not.toHaveProperty('messages');
     expect(result.snapshot).not.toHaveProperty('tasks');
+    expect((await f.manager.getCollaborationRecordsSnapshot('org')).messages).toEqual(f.messages);
     expect(dto.root_org.execution_tree.rootOrg.taskExecutions).toEqual([expect.objectContaining({
       agentRunId: 'task-run', delegatorAgentRunId: 'configured',
     })]);
@@ -69,15 +72,29 @@ describe('strict read-only Org inspection', () => {
     expect((await (await fixture()).manager.getInspection('org')).snapshot.closedTaskExecutions).toEqual([]);
   });
 
-  it('rejects unavailable/corrupt packages instead of manufacturing an empty inspection', async () => {
+  it('rejects an unavailable package; a damaged log fails only the message read, and the view still opens (AC-006)', async () => {
     const f = await fixture();
     await expect(f.manager.getInspection('missing')).rejects.toThrow('unavailable');
+    await expect(f.manager.getCollaborationRecordsSnapshot('missing')).rejects.toThrow('not found');
     const file = (await fs.readdir(f.dir)).find((name) => name.includes('communication'))!;
     // A complete malformed line (an unfinished last line would be ignored by design, REQ-005).
     await fs.writeFile(path.join(f.dir, file), '{broken\n');
-    await expect(f.manager.getInspection('org')).rejects.toThrow();
+    await expect(f.manager.getInspection('org')).resolves.toMatchObject({ orgRunId: 'org', isActive: false });
+    await expect(f.manager.getCollaborationRecordsSnapshot('org')).rejects.toThrow();
     expect(await fs.readFile(path.join(f.dir, file), 'utf8')).toBe('{broken\n');
     expect(f.build).not.toHaveBeenCalled();
+  });
+
+  it('validates the stored log with the tree when the messages are read (autobyteus-358)', async () => {
+    const f = await fixture();
+    const file = (await fs.readdir(f.dir)).find((name) => name.includes('communication'))!;
+    await new AgentOrgCommunicationMessagesStore().write(f.dir, { ...f.messages, messages: [{
+      messageId: 'm-self', senderAgentRunId: 'configured', receiverAgentRunId: 'configured', content: 'hi',
+      messageType: 'agent_message', referenceFiles: [], createdAt: '2026-11-01T00:00:00.000Z',
+    }] } as never);
+    expect(file).toBeTruthy();
+    await expect(f.manager.getInspection('org')).resolves.toMatchObject({ orgRunId: 'org' });
+    await expect(f.manager.getCollaborationRecordsSnapshot('org')).rejects.toThrow(/distinct AgentRun endpoints/);
   });
 
   it('uses the task execution binding and physical path, with source configuration only', async () => {

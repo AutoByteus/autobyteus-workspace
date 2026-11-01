@@ -75,7 +75,7 @@ afterEach(async () => {
 });
 
 describe("AgentTeamStreamHandler current root stream", () => {
-  it("connects with one atomic snapshot (tree, messages, statuses) before lifecycle changes", async () => {
+  it("connects with one atomic snapshot (tree, statuses) before lifecycle changes", async () => {
     const harness = createHarness();
     const sessionId = await harness.handler.connect(harness.connection, "team-run-root");
     expect(sessionId).toEqual(expect.any(String));
@@ -91,10 +91,11 @@ describe("AgentTeamStreamHandler current root stream", () => {
       payload: {
         root_team_run_id: "team-run-root",
         base_change_sequence: 31,
-        messages: [expect.objectContaining({ message_id: "message-010" })],
       },
     });
     expect(output[1]!.payload).not.toHaveProperty("tasks");
+    // autobyteus-358: the Team tab reads its participant's messages; the snapshot carries none.
+    expect(output[1]!.payload).not.toHaveProperty("messages");
   });
 
   it("streams strict live status N and the following Agent event N+1 after the snapshot barrier", async () => {

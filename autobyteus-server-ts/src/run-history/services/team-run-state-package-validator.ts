@@ -14,6 +14,17 @@ export type ValidatedTeamRunStatePackage = TeamRunStatePackage & Readonly<{
   index: TeamExecutionIndex;
 }>;
 
+/** The tree alone: what the history admission reads (autobyteus-358: no message log). */
+export const validateTeamRunExecutionTree = (
+  executionTree: TeamRunExecutionTreeSnapshot,
+  rootTeamRunId: string,
+): TeamExecutionIndex => {
+  if (executionTree.rootTeam.teamRunId !== rootTeamRunId) {
+    throw new Error(`TeamRun package '${rootTeamRunId}' has contradictory root IDs.`);
+  }
+  return new TeamExecutionIndex(executionTree);
+};
+
 export const validateTeamRunStatePackage = (
   state: TeamRunStatePackage,
 ): ValidatedTeamRunStatePackage => {
@@ -21,7 +32,7 @@ export const validateTeamRunStatePackage = (
   if (state.communicationMessages.rootTeamRunId !== rootTeamRunId) {
     throw new Error(`TeamRun package '${rootTeamRunId}' has contradictory root IDs.`);
   }
-  const index = new TeamExecutionIndex(state.executionTree);
+  const index = validateTeamRunExecutionTree(state.executionTree, rootTeamRunId);
   // The message endpoints are the store's set (the one that composed the view): the tree's agents and its
   // remote runs (AR-001). At least one endpoint is an agent of this tree; the index stays local-only.
   const endpoints = agentRunIdsOfTree(TEAM_RUN_TREE_SHAPE, state.executionTree);

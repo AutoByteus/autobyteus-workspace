@@ -39,13 +39,6 @@ const agentView = (overrides = {}) => ({
       ],
     },
     closed_task_executions: [],
-    communication_messages: {
-      schemaVersion: 1, subjectKind: "agent", hostRunId: "host-run",
-      messages: [{
-        messageId: "m1", senderAgentRunId: "reviewer-run", receiverAgentRunId: "host-run", content: "done",
-        messageType: "agent_message", referenceFiles: [], createdAt: "2026-09-30T00:00:02.000Z",
-      }],
-    },
     agent_input_states: [],
     remote_task_executions: [],
     agent_statuses: [
@@ -65,7 +58,8 @@ test("an Agent root tree has no collaborators; delegated runs carry their run id
   assert.throws(() => RootExecutionViewDtoSchema.parse(agentView({ execution_tree: { ...view.root_agent.execution_tree, taskExecutions: [withoutRun] } })));
 });
 
-test("an Agent root view correlates host, children, messages and statuses", () => {
+test("an Agent root view correlates host, children and statuses, and carries no message log (autobyteus-358)", () => {
+  assert.throws(() => RootExecutionViewDtoSchema.parse(agentView({ communication_messages: { schemaVersion: 1, subjectKind: "agent", hostRunId: "host-run", messages: [] } })));
   assert.equal(RootExecutionViewDtoSchema.parse(agentView()).root_subject_kind, "agent");
   assert.throws(() => RootExecutionViewDtoSchema.parse({ ...agentView(), root_run_id: "other" }));
   const unknownStatus = agentView();

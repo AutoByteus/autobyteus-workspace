@@ -10,14 +10,9 @@ import type { AgentOrgRunEvent } from "../../agent-org-execution/domain/agent-or
 import type { SequencedRootEvent } from "../../agent-collaboration/execution/services/root-event-publisher.js";
 import { AgentOrgExecutionIndex } from "../../agent-org-execution/services/agent-org-execution-index.js";
 import type { AgentOrgRunExecutionTreeSnapshot } from "../../agent-org-execution/domain/agent-org-run-execution-tree.js";
-import { isPublicMessage } from "./public-message-scope.js";
 import { projectRemoteTaskExecution, projectRemoteTaskExecutionSummary } from "./remote-task-execution-dto-projection.js";
 import type { RemoteTaskExecutionDto } from "@autobyteus/agent-presentation-contracts";
 
-const agentsOf = (tree: AgentOrgRunExecutionTreeSnapshot) => {
-  const index = new AgentOrgExecutionIndex(tree);
-  return (agentRunId: string) => index.getAgent(agentRunId) !== null;
-};
 import type { TaskExecutionReference } from "../../agent-collaboration/execution/task/task-execution-reference.js";
 
 const requireStartedExecution = (run: AgentOrgRun, reference: TaskExecutionReference) => {
@@ -52,8 +47,6 @@ export const projectAgentOrgExecutionSnapshot = (input: Readonly<{
     is_active: isActive,
     execution_tree: projectAgentOrgExecutionTree(snapshot.tree),
     closed_task_executions: snapshot.closedTaskExecutions,
-    communication_messages: { ...snapshot.messages,
-      messages: snapshot.messages.messages.filter((message) => isPublicMessage(message, agentsOf(snapshot.tree))) },
     agent_input_states: snapshot.inputStates,
     agent_statuses: snapshot.statuses.map((status) => ({
       member_address: status.execution.memberAddress,

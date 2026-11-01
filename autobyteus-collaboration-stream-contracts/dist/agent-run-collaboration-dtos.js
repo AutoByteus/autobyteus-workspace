@@ -16,19 +16,12 @@ export const agentRunCollaborationTreeDtoSchema = z.object({
     }).strict(),
     taskExecutions: z.array(taskExecutionDtoSchema),
 }).strict();
-export const agentRunCollaborationCommunicationMessagesDtoSchema = z.object({
-    schemaVersion: z.literal(1),
-    subjectKind: z.literal("agent"),
-    hostRunId: nonEmptyStringSchema,
-    messages: z.array(agentOrgCommunicationMessageDtoSchema),
-}).strict();
 /** Statuses cover the Agent root's children; the host reports on its own Agent stream. */
 export const agentRunCollaborationViewDtoSchema = z.object({
     base_change_sequence: z.number().int().nonnegative(),
     is_active: z.boolean(),
     execution_tree: agentRunCollaborationTreeDtoSchema,
     closed_task_executions: closedTaskExecutionsDtoSchema,
-    communication_messages: agentRunCollaborationCommunicationMessagesDtoSchema,
     agent_statuses: z.array(agentOrgAgentStatusDtoSchema),
     agent_input_states: z.array(z.object({ agent_run_id: nonEmptyStringSchema, state: agentInputStateSchema }).strict()),
     /** The runs this root delegated to other nodes (autobyteus-278); their summaries arrive as events. */

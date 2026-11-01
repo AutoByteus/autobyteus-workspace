@@ -23,10 +23,6 @@ const agentView = (closed) => ({
       taskExecutions: [taskAgent("/writer", "writer-run"), taskTeam("/review", "review-team", "review-lead", [taskAgent("/helper", "helper-run")])],
     },
     closed_task_executions: closed,
-    communication_messages: { schemaVersion: 1, subjectKind: "agent", hostRunId: "host-run", messages: [{
-      messageId: "m1", senderAgentRunId: "writer-run", receiverAgentRunId: "host-run", content: "done",
-      messageType: "agent_message", referenceFiles: [], createdAt: at,
-    }] },
     agent_statuses: [], agent_input_states: [], remote_task_executions: [],
   },
 });
@@ -47,15 +43,13 @@ const orgView = (closed) => ({
       taskExecutions: [taskAgent("/writer", "writer-run")],
     } },
     closed_task_executions: closed,
-    communication_messages: { schemaVersion: 1, subjectKind: "agent_org", orgRunId: "org-run", messages: [] },
     agent_statuses: [], agent_input_states: [], remote_task_executions: [],
   },
 });
 
-test("Agent root views require closed task executions and keep closed nodes and their messages in the tree", () => {
+test("Agent root views require closed task executions and keep closed nodes in the tree", () => {
   const parsed = RootExecutionViewDtoSchema.parse(agentView([{ agentRunId: "writer-run" }, { teamRunId: "review-team" }, { agentRunId: "helper-run" }]));
   assert.deepEqual(parsed.root_agent.closed_task_executions, [{ agentRunId: "writer-run" }, { teamRunId: "review-team" }, { agentRunId: "helper-run" }]);
-  assert.equal(parsed.root_agent.communication_messages.messages[0].senderAgentRunId, "writer-run");
   const missing = agentView([]);
   delete missing.root_agent.closed_task_executions;
   assert.throws(() => RootExecutionViewDtoSchema.parse(missing));
