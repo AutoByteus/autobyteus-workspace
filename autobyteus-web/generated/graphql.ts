@@ -16,8 +16,11 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
+  /** DateTime scalar supporting ISO strings and date-only YYYY-MM-DD values */
   DateTime: { input: any; output: any; }
+  /** The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf). */
   JSON: { input: any; output: any; }
+  /** The `SafeInt` scalar type represents non-fractional signed whole numeric values that are considered safe as defined by the ECMAScript specification. */
   SafeInt: { input: number; output: number; }
 };
 
@@ -942,6 +945,8 @@ export type CreateAgentRunInput = {
   initialSummary?: InputMaybe<Scalars['String']['input']>;
   llmConfig?: InputMaybe<Scalars['JSON']['input']>;
   llmModelIdentifier: Scalars['String']['input'];
+  /** The Project the run is started under; omitted for a plain run. */
+  projectId?: InputMaybe<Scalars['String']['input']>;
   runtimeKind: Scalars['String']['input'];
   workspaceId?: InputMaybe<Scalars['String']['input']>;
   workspaceRootPath: Scalars['String']['input'];
@@ -968,6 +973,8 @@ export type CreateAgentTeamDefinitionInput = {
 
 export type CreateAgentTeamRunInput = {
   memberConfigs: Array<TeamMemberConfigInput>;
+  /** The Project the Team run is started under; omitted for a plain run. */
+  projectId?: InputMaybe<Scalars['String']['input']>;
   teamConfigs: Array<TeamScopeLaunchConfigInput>;
   teamDefinitionId: Scalars['String']['input'];
 };
@@ -2654,6 +2661,14 @@ export type Project = {
   workspaces: Array<ProjectWorkspace>;
 };
 
+/** The runs started under one Project, grouped as a workspace's are. */
+export type ProjectRunHistoryObject = {
+  __typename?: 'ProjectRunHistoryObject';
+  agentDefinitions: Array<RunHistoryAgentGroupObject>;
+  projectId: Scalars['String']['output'];
+  teamDefinitions: Array<WorkspaceHistoryTeamDefinitionObject>;
+};
+
 export type ProjectTask = {
   __typename?: 'ProjectTask';
   comments: Array<ProjectTaskComment>;
@@ -2876,6 +2891,7 @@ export type Query = {
   peerNodes: Array<PeerNodeGql>;
   previewMcpServerTools: Array<ToolDefinitionDetail>;
   project?: Maybe<Project>;
+  projectRunHistory: ProjectRunHistoryObject;
   projectTaskIndexes: Array<ProjectTaskIndex>;
   projectTasks: Array<ProjectTask>;
   projects: Array<Project>;
@@ -3282,6 +3298,12 @@ export type QueryPreviewMcpServerToolsArgs = {
 
 
 export type QueryProjectArgs = {
+  projectId: Scalars['String']['input'];
+};
+
+
+export type QueryProjectRunHistoryArgs = {
+  limitPerAgent?: Scalars['Int']['input'];
   projectId: Scalars['String']['input'];
 };
 
@@ -5721,6 +5743,14 @@ export type GetProjectQueryVariables = Exact<{
 
 
 export type GetProjectQuery = { __typename?: 'Query', project?: { __typename?: 'Project', projectId: string, name: string, description: string, createdAt: string, updatedAt: string, taskCount: number, openTaskCount: number, workspaces: Array<{ __typename?: 'ProjectWorkspace', workspaceRootPath: string, displayName: string, description: string, availability: ProjectWorkspaceAvailability }> } | null };
+
+export type GetProjectRunHistoryQueryVariables = Exact<{
+  projectId: Scalars['String']['input'];
+  limitPerAgent?: InputMaybe<Scalars['Int']['input']>;
+}>;
+
+
+export type GetProjectRunHistoryQuery = { __typename?: 'Query', projectRunHistory: { __typename?: 'ProjectRunHistoryObject', projectId: string, agentDefinitions: Array<{ __typename?: 'RunHistoryAgentGroupObject', agentDefinitionId: string, agentName: string, runs: Array<{ __typename?: 'RunHistoryItemObject', runId: string, summary: string, createdAt: string, archivedAt?: string | null, terminatedAt?: string | null, status: string, isActive: boolean, shouldConnectStream: boolean, statusSource: string, hasCollaboration: boolean }> }>, teamDefinitions: Array<{ __typename?: 'WorkspaceHistoryTeamDefinitionObject', teamDefinitionId: string, teamDefinitionName: string, runs: Array<{ __typename?: 'WorkspaceHistoryTeamRunItemObject', teamRunId: string, teamDefinitionId: string, teamDefinitionName: string, coordinatorAddress: string, workspaceRootPath?: string | null, summary: string, createdAt: string, archivedAt?: string | null, terminatedAt?: string | null, isActive: boolean, rootTeam: any, members: Array<{ __typename?: 'WorkspaceHistoryTeamRunMemberObject', memberAddress: string, displayName: string, agentRunId: string, status: string, runtimeKind: string, workspaceRootPath?: string | null }> }> }> } };
 
 export type TaskRootFieldsFragment = { __typename?: 'TaskRoot', kind: string, recipientAddress?: string | null, ingressAgentRunId: string, teamRunId?: string | null, start: string, closed: boolean, status: string, hostRoot: { __typename?: 'TaskRootHost', kind: string, runId: string }, startError?: { __typename?: 'TaskRootStartError', code: string, message: string } | null };
 
@@ -12948,6 +12978,78 @@ export function useGetProjectLazyQuery(variables?: GetProjectQueryVariables | Vu
   return VueApolloComposable.useLazyQuery<GetProjectQuery, GetProjectQueryVariables>(GetProjectDocument, variables, options);
 }
 export type GetProjectQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetProjectQuery, GetProjectQueryVariables>;
+export const GetProjectRunHistoryDocument = gql`
+    query GetProjectRunHistory($projectId: String!, $limitPerAgent: Int = 6) {
+  projectRunHistory(projectId: $projectId, limitPerAgent: $limitPerAgent) {
+    projectId
+    agentDefinitions {
+      agentDefinitionId
+      agentName
+      runs {
+        runId
+        summary
+        createdAt
+        archivedAt
+        terminatedAt
+        status
+        isActive
+        shouldConnectStream
+        statusSource
+        hasCollaboration
+      }
+    }
+    teamDefinitions {
+      teamDefinitionId
+      teamDefinitionName
+      runs {
+        teamRunId
+        teamDefinitionId
+        teamDefinitionName
+        coordinatorAddress
+        workspaceRootPath
+        summary
+        createdAt
+        archivedAt
+        terminatedAt
+        isActive
+        rootTeam
+        members {
+          memberAddress
+          displayName
+          agentRunId
+          status
+          runtimeKind
+          workspaceRootPath
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetProjectRunHistoryQuery__
+ *
+ * To run a query within a Vue component, call `useGetProjectRunHistoryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetProjectRunHistoryQuery` returns an object from Apollo Client that contains result, loading and error properties
+ * you can use to render your UI.
+ *
+ * @param variables that will be passed into the query
+ * @param options that will be passed into the query, supported options are listed on: https://v4.apollo.vuejs.org/guide-composable/query.html#options;
+ *
+ * @example
+ * const { result, loading, error } = useGetProjectRunHistoryQuery({
+ *   projectId: // value for 'projectId'
+ *   limitPerAgent: // value for 'limitPerAgent'
+ * });
+ */
+export function useGetProjectRunHistoryQuery(variables: GetProjectRunHistoryQueryVariables | VueCompositionApi.Ref<GetProjectRunHistoryQueryVariables> | ReactiveFunction<GetProjectRunHistoryQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetProjectRunHistoryQuery, GetProjectRunHistoryQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetProjectRunHistoryQuery, GetProjectRunHistoryQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetProjectRunHistoryQuery, GetProjectRunHistoryQueryVariables>> = {}) {
+  return VueApolloComposable.useQuery<GetProjectRunHistoryQuery, GetProjectRunHistoryQueryVariables>(GetProjectRunHistoryDocument, variables, options);
+}
+export function useGetProjectRunHistoryLazyQuery(variables?: GetProjectRunHistoryQueryVariables | VueCompositionApi.Ref<GetProjectRunHistoryQueryVariables> | ReactiveFunction<GetProjectRunHistoryQueryVariables>, options: VueApolloComposable.UseQueryOptions<GetProjectRunHistoryQuery, GetProjectRunHistoryQueryVariables> | VueCompositionApi.Ref<VueApolloComposable.UseQueryOptions<GetProjectRunHistoryQuery, GetProjectRunHistoryQueryVariables>> | ReactiveFunction<VueApolloComposable.UseQueryOptions<GetProjectRunHistoryQuery, GetProjectRunHistoryQueryVariables>> = {}) {
+  return VueApolloComposable.useLazyQuery<GetProjectRunHistoryQuery, GetProjectRunHistoryQueryVariables>(GetProjectRunHistoryDocument, variables, options);
+}
+export type GetProjectRunHistoryQueryCompositionFunctionResult = VueApolloComposable.UseQueryReturn<GetProjectRunHistoryQuery, GetProjectRunHistoryQueryVariables>;
 export const GetProjectTasksDocument = gql`
     query GetProjectTasks($projectId: String!) {
   projectTasks(projectId: $projectId) {
