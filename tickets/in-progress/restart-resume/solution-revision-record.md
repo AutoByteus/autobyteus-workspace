@@ -15,3 +15,20 @@
   the shared `resolveOrRestoreRoot` and the root's `post_message`); D4: a system notice with its own recorded sender id.
 - DEC-005 (application-owned and system-owned runs not resumed) decided by the Solution Designer.
 - Classification: Large / High. Routing: architecture review. Follow-ups FU-001, FU-002.
+
+## SR-004 — 2026-11-01 — Design revision for ARCH-REV-001 (Fail, Design Impact)
+- AR-001 (High): a standalone host is woken through `standaloneRootManager.postUserMessage`; children and members
+  through `executeAgentCommand(post_message)`. The notice metadata is named (sender_id, preface, message_id,
+  dedupe_key), and so is its display (host via `SYSTEM_TASK_NOTIFICATION`; members via `member_input` with a SYSTEM
+  sender). The Current-State claim and the Wake example are corrected; test: a busy host with no children.
+- AR-002: eligibility is re-checked immediately before each post. "Already received new input" = the run is live.
+  The false dedupe claim is dropped; tests cover runs changed while queued.
+- AR-003: per root, delegated and member entries go first, then the host, whose notice lists only the accepted
+  delegated runs. In a Team or Org every resumed member gets the list. Test: one delegated run refused.
+- AR-005: the recorder only writes, only with entries, merging; the resumer is the only deleter; `version` is per
+  entry.
+- AR-004: `CollaborationRootResolver` (file, signature, construction, failure contract); `RemoteRootDirectory`
+  delegates to it.
+- AR-006: the Docker data-copy rollback residual is corrected, FU-003.
+- N-1 (why a dist stamp) and N-2 (check that `pnpm deploy` carries the stamp) folded in.
+- Requirements unchanged (SR-002). Classification Large / High. Routing: ARCH-REV-002.
