@@ -90,7 +90,7 @@ const settings = (entries: Array<[string, string, boolean]>): ProviderCredential
 /** A discovered source's reload answer: its models now and its source state. */
 const snapshot = (models: ModelInfo[], state = "READY", safeMessage: string | null = null): LocalProviderModelCatalogSnapshot => ({
   runtimeKind: "autobyteus", ownerProvider: {} as never, audioModels: [], imageModels: [], videoModels: [], llmModels: models,
-  sources: [{ modelKind: "LLM", state: state as never, modelCount: models.length, successfulUnitCount: 1, failedUnitCount: 0, safeMessage }],
+  sources: [{ state: state as never, modelCount: models.length, successfulUnitCount: 1, failedUnitCount: 0, safeMessage }],
 });
 const DISCOVERED_MODELS: Record<string, ModelInfo[]> = {
   [LLMProvider.OLLAMA]: [model("qwen3:8b", "qwen3:8b", LLMProvider.OLLAMA)],

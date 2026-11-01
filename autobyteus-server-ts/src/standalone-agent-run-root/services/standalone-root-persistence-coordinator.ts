@@ -51,18 +51,18 @@ export class StandaloneRootPersistenceCoordinator {
       const createsPackage = !this.created;
       if (createsPackage) {
         const messages = await this.options.store.writeMessages(this.options.collaborationDir, this.options.getMessages());
-        if (messages.outcome === "not_renamed") {
+        if (messages.outcome === "not_committed") {
           prepared.cancelBeforeDurability();
           throw messages.cause;
         }
-        if (messages.outcome === "renamed_finalization_indeterminate") this.latchAndThrow(messages);
+        if (messages.outcome === "finalization_indeterminate") this.latchAndThrow(messages);
       }
       const result = await this.options.store.writeTree(this.options.collaborationDir, prepared.nextTree);
-      if (result.outcome === "not_renamed") {
+      if (result.outcome === "not_committed") {
         prepared.cancelBeforeDurability();
         throw result.cause;
       }
-      if (result.outcome === "renamed_finalization_indeterminate") this.latchAndThrow(result);
+      if (result.outcome === "finalization_indeterminate") this.latchAndThrow(result);
       this.created = true;
       this.finalize("execution_tree", prepared.commitAfterDurability);
       if (createsPackage) await this.recordPackageCreated();
@@ -89,11 +89,11 @@ export class StandaloneRootPersistenceCoordinator {
         const result = write === "messages"
           ? await this.options.store.writeMessages(this.options.collaborationDir, this.options.getMessages())
           : await this.options.store.writeTree(this.options.collaborationDir, prepared.nextTree);
-        if (result.outcome === "not_renamed") {
+        if (result.outcome === "not_committed") {
           await input.abortBeforeDurability();
           return { committed: false, message: result.cause.message };
         }
-        if (result.outcome === "renamed_finalization_indeterminate") {
+        if (result.outcome === "finalization_indeterminate") {
           await input.abortBeforeDurability();
           this.latchAndThrow(result);
         }
@@ -117,22 +117,22 @@ export class StandaloneRootPersistenceCoordinator {
           const created = write === "messages"
             ? await this.options.store.writeMessages(this.options.collaborationDir, this.options.getMessages())
             : await this.options.store.writeTree(this.options.collaborationDir, this.options.getTree());
-          if (created.outcome === "not_renamed") {
+          if (created.outcome === "not_committed") {
             append.cancelBeforeDurability();
             return { outcome: "not_committed", cause: created.cause };
           }
-          if (created.outcome === "renamed_finalization_indeterminate") this.latchAndThrow(created);
+          if (created.outcome === "finalization_indeterminate") this.latchAndThrow(created);
         }
         this.created = true;
         await this.recordPackageCreated();
       }
       const result = await this.options.store.appendMessage(
         this.options.collaborationDir, this.options.hostRunId, append.message, prepared.logOwners);
-      if (result.outcome === "not_renamed") {
+      if (result.outcome === "not_committed") {
         append.cancelBeforeDurability();
         return { outcome: "not_committed", cause: result.cause };
       }
-      if (result.outcome === "renamed_finalization_indeterminate") this.latchAndThrow(result);
+      if (result.outcome === "finalization_indeterminate") this.latchAndThrow(result);
       this.finalize("communication_messages", () => append.commitAfterDurability());
       return { outcome: "committed" };
     });
@@ -157,7 +157,7 @@ export class StandaloneRootPersistenceCoordinator {
     return scheduled;
   }
 
-  private latchAndThrow(result: Extract<RunPackageFileWriteResult, { outcome: "renamed_finalization_indeterminate" }>): never {
+  private latchAndThrow(result: Extract<RunPackageFileWriteResult, { outcome: "finalization_indeterminate" }>): never {
     const error = new RootTaskPersistenceFinalizationIndeterminateError("agent", result.file, result.stage);
     this.failStopped = true;
     this.options.enterPersistenceFailStop(error);

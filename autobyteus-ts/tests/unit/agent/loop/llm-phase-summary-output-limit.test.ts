@@ -114,7 +114,7 @@ describe('LlmPhaseSummaryPort output limit on the wire', () => {
     const llm = new AnthropicLLM(catalogModel('claude-opus-5-5'), new LLMConfig({ maxTokens: 1024 }), providerApiKeyResolver('synthetic'));
     const create = mockAnthropicCreate(llm);
     const signal = new AbortController().signal;
-    for await (const _ of llm.streamMessages(conversation, conversationRequestKwargs('agent', tools),
+    for await (const _ of llm.streamMessages(conversation, conversationRequestKwargs(tools),
       conversationRequestOptions({ signal, turnId: 'turn_1' }))) { /* drain */ }
     const agentRequest = structuredClone((create.mock.calls.at(-1) as any[])[0]);
 

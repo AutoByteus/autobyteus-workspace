@@ -215,7 +215,6 @@ export class ModelCatalogService {
     if (provider.id === LLMProvider.OLLAMA) {
       return this.lifecycle.ensure({
         key,
-        modelKind: 'LLM',
         fingerprint: `ollama|${OllamaModelProvider.getHosts().join(',')}`,
         currentModelCount: () => this.llmSourceCount(key),
         prepare: async () => {
@@ -236,7 +235,6 @@ export class ModelCatalogService {
     if (provider.id === LLMProvider.LMSTUDIO) {
       return this.lifecycle.ensure({
         key,
-        modelKind: 'LLM',
         fingerprint: `lmstudio|${LMStudioModelProvider.getHosts().join(',')}`,
         currentModelCount: () => this.llmSourceCount(key),
         prepare: async () => {
@@ -263,7 +261,6 @@ export class ModelCatalogService {
     const key = sourceKey(endpoint.id, 'LLM');
     return {
       key,
-      modelKind: 'LLM',
       fingerprint: `${endpoint.id}|${endpoint.baseUrl}`,
       currentModelCount: () => this.llmSourceCount(key),
       prepare: async () => {
@@ -292,7 +289,7 @@ export class ModelCatalogService {
     const videoModels = VideoClientFactory.listModels()
       .filter((model) => String(model.provider) === provider.id);
     const sourceStatuses = dynamic
-      ? [this.lifecycle.status(llmKey, 'LLM', llmModels.length)]
+      ? [this.lifecycle.status(llmKey, llmModels.length)]
       : [];
     return {
       runtimeKind: runtime,

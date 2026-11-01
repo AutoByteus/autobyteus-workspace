@@ -80,7 +80,7 @@ class Agent {
   /** Assemble and send one conversation request the way LlmPhase does; returns the request body. */
   async request(turnId: string, input: string | null, tools: typeof toolsV1): Promise<Body> {
     const request = await this.prepare(turnId, input, tools);
-    await this.llm.sendMessages(request.outboundMessages, { logicalConversationId: AGENT_ID, tools: request.tools }, { promptCacheScope: 'conversation' });
+    await this.llm.sendMessages(request.outboundMessages, { tools: request.tools }, { promptCacheScope: 'conversation' });
     return structuredClone(mockCreate.mock.calls.at(-1)![0]);
   }
 

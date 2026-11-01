@@ -2,6 +2,7 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { trackReleases, type ReleaseTracker } from "../../../helpers/project-task-release-tracker.js";
 import { ProjectStore } from "../../../../src/projects/stores/project-store.js";
 import { ProjectsLayout } from "../../../../src/projects/stores/projects-layout.js";
 import { ProjectService } from "../../../../src/projects/services/project-service.js";
@@ -12,7 +13,6 @@ import { ProjectTaskContextStore } from "../../../../src/projects/context/projec
 import { AdHocTaskStore } from "../../../../src/projects/stores/ad-hoc-task-store.js";
 import { AdHocTasksLayout } from "../../../../src/projects/stores/ad-hoc-tasks-layout.js";
 import { createRootExecutionIdentity } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
-import type { TaskExecutionReleaseRequest } from "../../../../src/agent-collaboration/execution/task/task-execution-resource-port.js";
 import { ProjectTaskToolsMcpAdapterProvider } from "../../../../src/agent-tools/mcp/providers/project-task-tools-mcp-adapter-provider.js";
 import { PROJECT_TASK_TOOL_DESCRIPTIONS, buildProjectTaskToolSchema, parseUpdateTaskInput } from "../../../../src/agent-tools/project-tasks/project-task-tool-contract.js";
 
@@ -25,6 +25,7 @@ const tool = async (name: string, args: Record<string, unknown>) => {
 };
 const hostRoot = createRootExecutionIdentity({ rootSubjectKind: "agent", rootRunId: "manager-root" });
 let dir: string, layout: ProjectsLayout, store: ProjectStore, projects: ProjectService, tasks: ProjectTaskService, projectId: string;
+let releases: ReleaseTracker;
 
 beforeEach(async () => {
   dir = await fs.mkdtemp(path.join(os.tmpdir(), "project-task-comments-tools-"));
@@ -34,12 +35,12 @@ beforeEach(async () => {
   projects = new ProjectService({ store, changes, workspaceLookup: { listRegisteredWorkspaceRootPaths: async () => [] } });
   tasks = new ProjectTaskService({ store, changes, contextStore: new ProjectTaskContextStore(layout),
     adHocTasks: new AdHocTaskStore(new AdHocTasksLayout(path.join(dir, "ad-hoc-tasks"))),
-    requestRelease: vi.fn<TaskExecutionReleaseRequest>(async (_root, runs) => runs.map((execution) => ({ execution, stopped: true }))) });
+    requestRelease: (releases = trackReleases()).request });
   await tasks.load();
   vi.spyOn(taskServices, "getProjectTaskService").mockImplementation(() => tasks);
   projectId = (await projects.createProject({ name: "AutoByteus" })).projectId;
 });
-afterEach(async () => { await tasks.drainRuntimeReleases(); vi.restoreAllMocks(); await fs.rm(dir, { recursive: true, force: true }); });
+afterEach(async () => { await releases.settled(); vi.restoreAllMocks(); await fs.rm(dir, { recursive: true, force: true }); });
 
 const create = async (description: string, extra: Record<string, unknown> = {}) => (await tool("create_task", { project_id: projectId, title: description, description, ...extra })).task;
 const idOfKey = async (key: string) => (await store.listTasks(projectId)).find((t) => t.taskKey === key)!.taskId;

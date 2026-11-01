@@ -1,0 +1,55 @@
+{
+  "startedAt": "2026-11-01T06:43:30.889Z",
+  "checks": {
+    "ready": {
+      "models": [
+        "fake-model-a",
+        "fake-model-b"
+      ]
+    },
+    "staleAfterReload": {
+      "notice": "Could not refresh models. Showing last known models.",
+      "modelsKept": true
+    },
+    "lmStudioUnavailable": {
+      "notice": "Models unavailable"
+    }
+  },
+  "graphql": {
+    "responses": 10,
+    "errors": [],
+    "sourceKeySets": [
+      "__typename,failedUnitCount,modelCount,safeMessage,state,successfulUnitCount",
+      "__typename,failedUnitCount,modelCount,safeMessage,state,successfulUnitCount",
+      "__typename,failedUnitCount,modelCount,safeMessage,state,successfulUnitCount",
+      "__typename,failedUnitCount,modelCount,safeMessage,state,successfulUnitCount",
+      "__typename,failedUnitCount,modelCount,safeMessage,state,successfulUnitCount",
+      "__typename,failedUnitCount,modelCount,safeMessage,state,successfulUnitCount",
+      "__typename,failedUnitCount,modelCount,safeMessage,state,successfulUnitCount",
+      "__typename,failedUnitCount,modelCount,safeMessage,state,successfulUnitCount"
+    ],
+    "distinctSourceKeySets": [
+      "__typename,failedUnitCount,modelCount,safeMessage,state,successfulUnitCount"
+    ]
+  },
+  "cleanup": {
+    "browser": "closed",
+    "frontend": "terminated",
+    "backend": "terminated",
+    "fakeEndpoint": "stopped",
+    "dataRootRemoved": true
+  },
+  "stack": {
+    "backendUrl": "http://127.0.0.1:59704",
+    "frontendUrl": "http://127.0.0.1:59705",
+    "dataRoot": "/private/var/folders/7w/9r4_s1_s42z3f7c136bpjf0r0000gn/T/settings-sources-FR8FmG",
+    "fakeEndpoint": "http://127.0.0.1:59707/v1",
+    "closedPort": 59706
+  },
+  "customProvider": {
+    "id": "provider_fake_gateway",
+    "name": "Fake Gateway"
+  },
+  "result": "Pass",
+  "finishedAt": "2026-11-01T06:44:01.833Z"
+}

@@ -2,6 +2,7 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { trackReleases, type ReleaseTracker } from "../../helpers/project-task-release-tracker.js";
 import { ProjectStore } from "../../../src/projects/stores/project-store.js";
 import { ProjectsLayout } from "../../../src/projects/stores/projects-layout.js";
 import { AdHocTasksLayout } from "../../../src/projects/stores/ad-hoc-tasks-layout.js";
@@ -23,6 +24,7 @@ const team: TaskExecutionReference = { teamRunId: "review-team" };
 /** The batched "current Task of each Task worker" read (DS-001, REQ-008, REQ-009, AR-001). */
 describe("ProjectTaskService.currentTasksOfTaskWorkers", () => {
   let appData: string, layout: ProjectsLayout, store: ProjectStore, projects: ProjectService, tasks: ProjectTaskService, projectId: string;
+  let releases: ReleaseTracker;
 
   beforeEach(async () => {
     appData = await fs.mkdtemp(path.join(os.tmpdir(), "task-worker-tasks-"));
@@ -34,10 +36,10 @@ describe("ProjectTaskService.currentTasksOfTaskWorkers", () => {
     projectId = (await projects.createProject({ name: "Desktop App" })).projectId;
     const requestRelease = vi.fn<TaskExecutionReleaseRequest>(async (_root, executions) => executions.map((execution) => ({ execution, stopped: true })));
     tasks = new ProjectTaskService({ store, adHocTasks: new AdHocTaskStore(adHocLayout), contextStore: new ProjectTaskContextStore(layout), changes,
-      requestRelease, taskExecutionResources: new TaskExecutionResourceService(new TaskExecutionResourceStore(layout, adHocLayout)) });
+      requestRelease: (releases = trackReleases(requestRelease)).request, taskExecutionResources: new TaskExecutionResourceService(new TaskExecutionResourceStore(layout, adHocLayout)) });
     await tasks.load();
   });
-  afterEach(async () => { await tasks.drainRuntimeReleases(); vi.restoreAllMocks(); await fs.rm(appData, { recursive: true, force: true }); });
+  afterEach(async () => { await releases.settled(); vi.restoreAllMocks(); await fs.rm(appData, { recursive: true, force: true }); });
 
   const assign = async (taskId: string, execution: TaskExecutionReference) => {
     await tasks.linkNewTaskExecution({ role: "assigned", taskId, assignedBy: "manager", recipientAddress: "/worker", hostRoot, execution,

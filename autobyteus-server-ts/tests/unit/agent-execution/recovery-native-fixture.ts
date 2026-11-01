@@ -18,22 +18,24 @@ import { AgentRunProviderInputNormalizer } from '../../../src/agent-execution/in
 import { AgentRunCommandCoordinator } from '../../../src/agent-execution/services/agent-run-command-coordinator.js';
 import { AgentRunCommandRegistry } from '../../../src/agent-execution/services/agent-run-command-registry.js';
 import { stubAutoByteusRunTools } from "../../helpers/agent-tool-mcp-run-sessions-stub.js";
+import { CompactionAttempts } from "../../helpers/compaction-summary-request.js";
+import type { LLMInvocationOptions } from 'autobyteus-ts/llm/base.js';
 
 export const summary = COMPACTION_SUMMARY_HEADINGS.map(h => `## ${h}\n- Preserve the approved scope; do not deploy.`).join('\n\n');
 export async function eventually(check: () => unknown) {
   // A failed compaction operation includes the summarizer's transcript backoff (1 s + 2 s).
   await vi.waitFor(() => expect(check()).toBeTruthy(), { timeout: 12000, interval: 10 });
 }
-const COMPACTION_CONVERSATION = /^compaction_(.+)_(\d+)$/;
 /**
- * The agent's own LLM. Compaction summary requests (isolated `compaction_<op>_<attempt>` conversations)
- * are answered from `compress`, called once per compaction execution (attempt 1); later attempts of
- * the same execution reuse its outcome, so `compress` keeps meaning "one compaction operation".
+ * The agent's own LLM. Compaction summary requests (recognised by the summary prompt they carry) are answered from
+ * `compress`, called once per compaction operation (attempt 1); later attempts of the same operation reuse its
+ * outcome, so `compress` keeps meaning "one compaction operation".
  */
 class Parent extends BaseLLM {
   requests: Message[][] = [];
   readonly compress = vi.fn(async () => summary);
   private operationOutcome: Promise<string> | null = null;
+  private readonly attempts = new CompactionAttempts();
   constructor(private postResponse: boolean) {
     super(new LLMModel({ name:'parent', value:'parent', provider:LLMProvider.OPENAI, maxContextTokens:12000, activeContextTokens:12000 }),
       new LLMConfig({ maxTokens:200, compactionRatio:0.5, safetyMarginTokens:10 }));
@@ -43,10 +45,10 @@ class Parent extends BaseLLM {
     return { content:`ANSWER-${n}`, usage:buildLlmTokenUsageObservation({ inputTokens:this.postResponse && n===4 ? 7000:200, outputTokens:1, totalTokens:null, rawUsage:null }) };
   }
   protected async _sendMessagesToLLM(messages: Message[]) { return new CompleteResponse(this.response(messages)); }
-  protected async *_streamMessagesToLLM(messages: Message[], kwargs: Record<string, unknown> = {}) {
-    const compaction = COMPACTION_CONVERSATION.exec(String(kwargs.logicalConversationId ?? ''));
-    if (compaction) {
-      if (compaction[2] === '1' || !this.operationOutcome) this.operationOutcome = this.compress();
+  protected async *_streamMessagesToLLM(messages: Message[], _kwargs: Record<string, unknown> = {}, options: LLMInvocationOptions = {}) {
+    const attempt = this.attempts.observe(messages, options.signal);
+    if (attempt) {
+      if (attempt === 1 || !this.operationOutcome) this.operationOutcome = this.compress();
       const body = await this.operationOutcome;
       yield new ChunkResponse({ content: `<compaction_summary>\n${body}\n</compaction_summary>`, is_complete: true });
       return;

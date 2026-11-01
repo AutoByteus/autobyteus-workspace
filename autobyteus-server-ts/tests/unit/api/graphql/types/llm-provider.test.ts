@@ -255,7 +255,7 @@ describe('LlmProviderResolver', () => {
       runtimeKind: 'autobyteus',
       ownerProvider: { ...provider('OLLAMA'), catalogMode: 'DISCOVERED' },
       sources: [{
-        modelKind: 'LLM', state: 'READY', modelCount: 0,
+        state: 'READY', modelCount: 0,
         successfulUnitCount: 1, failedUnitCount: 0, safeMessage: null,
       }],
       llmModels: [], audioModels: [], imageModels: [], videoModels: [],

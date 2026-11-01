@@ -60,7 +60,7 @@ const snapshot = (
   runtimeKind,
   ownerProvider: provider(owner, owner === 'OPENAI' ? 'STATIC' : 'DISCOVERED'),
   sources: owner === 'OPENAI' ? [] : [{
-    modelKind: 'LLM', state, modelCount: rows.length,
+    state, modelCount: rows.length,
     successfulUnitCount: state === 'READY' ? 1 : 0,
     failedUnitCount: state === 'ERROR' || state === 'STALE_ERROR' ? 1 : 0,
     safeMessage: state === 'ERROR' || state === 'STALE_ERROR' ? 'MODEL_DISCOVERY_UNAVAILABLE' : null,
@@ -81,14 +81,13 @@ const catalogResponse = (runtimeKind: string, rows = ['current']) => ({
 const discoveredSnapshotWithMedia = (suffix: string) => ({
   runtimeKind: 'autobyteus',
   ownerProvider: provider('LMSTUDIO', 'DISCOVERED'),
-  sources: (['LLM', 'AUDIO', 'IMAGE'] as const).map(modelKind => ({
-    modelKind,
+  sources: [{
     state: 'READY' as const,
     modelCount: 1,
     successfulUnitCount: 1,
     failedUnitCount: 0,
     safeMessage: null,
-  })),
+  }],
   llmModels: [model(`llm-${suffix}`)],
   audioModels: [model(`audio-${suffix}`)],
   imageModels: [model(`image-${suffix}`)],
@@ -233,7 +232,7 @@ describe('llmProviderConfig provider-scoped catalog state', () => {
     expect(store.models('autobyteus')).toEqual(['current'])
   })
 
-  it('clears only the discovery-setting LLM source before a guarded non-forcing ensure', async () => {
+  it('clears the discovery-setting source and its LLM rows before a guarded non-forcing ensure', async () => {
     const old = deferred<unknown>()
     const current = deferred<unknown>()
     const mutate = vi.fn().mockReturnValueOnce(old.promise).mockReturnValueOnce(current.promise)
@@ -249,11 +248,9 @@ describe('llmProviderConfig provider-scoped catalog state', () => {
     expect(during.audioModels.map(row => row.modelIdentifier)).toEqual(['audio-known'])
     expect(during.imageModels.map(row => row.modelIdentifier)).toEqual(['image-known'])
     expect(during.videoModels.map(row => row.modelIdentifier)).toEqual(['video-known'])
-    // Media rows survive the LLM-only reset, so the LLM source refreshes rather than cold-loads.
+    // Media rows survive the reset of the LLM rows, so the source refreshes rather than cold-loads.
     expect(during.sources).toEqual([
-      expect.objectContaining({ modelKind: 'LLM', state: 'REFRESHING', modelCount: 0, safeMessage: null }),
-      expect.objectContaining({ modelKind: 'AUDIO', modelCount: 1 }),
-      expect.objectContaining({ modelKind: 'IMAGE', modelCount: 1 }),
+      expect.objectContaining({ state: 'REFRESHING', modelCount: 0, safeMessage: null }),
     ])
     expect(mutate).toHaveBeenNthCalledWith(2, expect.objectContaining({
       mutation: ENSURE_PROVIDER_MODEL_CATALOG,

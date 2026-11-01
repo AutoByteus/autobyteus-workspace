@@ -8,7 +8,6 @@ export type DynamicSourcePreparation<TModel> = {
 
 export type DynamicSourceSpec<TModel> = {
   key: string;
-  modelKind: ModelSourceStatus['modelKind'];
   fingerprint: string;
   currentModelCount: () => number;
   prepare: () => Promise<DynamicSourcePreparation<TModel>>;
@@ -36,17 +35,16 @@ const safeFailureMessage = (error: unknown): string => {
 export class DynamicModelSourceLifecycle {
   private readonly records = new Map<string, DynamicSourceRecord>();
 
-  status(key: string, modelKind: ModelSourceStatus['modelKind'], modelCount: number): ModelSourceStatus {
+  status(key: string, modelCount: number): ModelSourceStatus {
     const record = this.records.get(key);
     if (!record) return {
-      modelKind,
       state: 'IDLE',
       modelCount,
       successfulUnitCount: 0,
       failedUnitCount: 0,
       safeMessage: null,
     };
-    return this.toStatus(record, modelKind, modelCount);
+    return this.toStatus(record, modelCount);
   }
 
   ensure<TModel>(spec: DynamicSourceSpec<TModel>, force = false): Promise<ModelSourceStatus> {
@@ -63,7 +61,7 @@ export class DynamicModelSourceLifecycle {
     }
     if (!force && record.inFlight) return record.inFlight;
     if (!force && record.attemptedFingerprint === spec.fingerprint) {
-      return Promise.resolve(this.toStatus(record, spec.modelKind, spec.currentModelCount()));
+      return Promise.resolve(this.toStatus(record, spec.currentModelCount()));
     }
 
     const generation = ++record.generation;
@@ -98,7 +96,7 @@ export class DynamicModelSourceLifecycle {
     record.state = 'READY';
     record.successfulUnitCount = 1;
     this.records.set(spec.key, record);
-    return this.toStatus(record, spec.modelKind, models.length);
+    return this.toStatus(record, models.length);
   }
 
   remove(key: string): void {
@@ -122,7 +120,7 @@ export class DynamicModelSourceLifecycle {
     try {
       const prepared = await spec.prepare();
       if (!this.isCurrent(record, generation, fingerprint)) {
-        return this.toStatus(record, spec.modelKind, spec.currentModelCount());
+        return this.toStatus(record, spec.currentModelCount());
       }
       spec.commit(prepared.models);
       record.modelCount = prepared.models.length;
@@ -142,7 +140,7 @@ export class DynamicModelSourceLifecycle {
         record.state = record.modelCount > 0 ? 'STALE_ERROR' : 'ERROR';
       }
     }
-    return this.toStatus(record, spec.modelKind, spec.currentModelCount());
+    return this.toStatus(record, spec.currentModelCount());
   }
 
   private isCurrent(record: DynamicSourceRecord, generation: number, fingerprint: string): boolean {
@@ -164,13 +162,8 @@ export class DynamicModelSourceLifecycle {
     };
   }
 
-  private toStatus(
-    record: DynamicSourceRecord,
-    modelKind: ModelSourceStatus['modelKind'],
-    modelCount: number,
-  ): ModelSourceStatus {
+  private toStatus(record: DynamicSourceRecord, modelCount: number): ModelSourceStatus {
     return {
-      modelKind,
       state: record.state,
       modelCount,
       successfulUnitCount: record.successfulUnitCount,

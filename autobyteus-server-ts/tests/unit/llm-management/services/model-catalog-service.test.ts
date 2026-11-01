@@ -81,7 +81,7 @@ describe('ModelCatalogService', () => {
     expect(openAi?.imageModels.length).toBeGreaterThan(0);
     expect(ollama).toMatchObject({
       ownerProvider: { catalogMode: 'DISCOVERED' },
-      sources: [{ modelKind: 'LLM', state: 'IDLE' }],
+      sources: [{ state: 'IDLE' }],
     });
     expect(snapshots.map(({ ownerProvider }) => ownerProvider.id)).not.toContain('AUTOBYTEUS');
     expect(discoverOllamaModels).not.toHaveBeenCalled();
@@ -119,7 +119,7 @@ describe('ModelCatalogService', () => {
     const service = createService();
 
     const first = await service.ensureProviderModelCatalog(LLMProvider.OLLAMA, 'autobyteus');
-    expect(first.sources).toEqual([expect.objectContaining({ modelKind: 'LLM', state: 'READY' })]);
+    expect(first.sources).toEqual([expect.objectContaining({ state: 'READY' })]);
     expect(discoverOllamaModels).toHaveBeenCalledOnce();
 
     await service.ensureProviderModelCatalog(LLMProvider.OLLAMA, 'autobyteus');
@@ -150,6 +150,6 @@ describe('ModelCatalogService', () => {
     const snapshot = await service.listProviderModelCatalogSnapshots('autobyteus');
     const ollama = snapshot.find(({ ownerProvider }) => ownerProvider.id === LLMProvider.OLLAMA)!;
     expect(ollama.llmModels).toEqual([]);
-    expect(ollama.sources).toEqual([expect.objectContaining({ modelKind: 'LLM', state: 'ERROR', modelCount: 0 })]);
+    expect(ollama.sources).toEqual([expect.objectContaining({ state: 'ERROR', modelCount: 0 })]);
   });
 });

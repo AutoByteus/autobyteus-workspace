@@ -1,0 +1,7 @@
+# IMP-11 rendered Settings check of dynamic model sources (AC-002) on an owned stack
+# Command: env -i PATH HOME TMPDIR node tickets/in-progress/code-quality-leftovers/evidence/implementation/settings-sources-check.mjs --output-dir tickets/in-progress/code-quality-leftovers/evidence/implementation/IMP-11-settings
+# Commit: d7b11c57b6 (HEAD), server dist from IMP-13; macOS, Node v22.23.1
+# Date: 2026-11-01T06:43Z
+
+settings sources check: Pass. Evidence: /Users/normy/autobyteus_org/autobyteus-worktrees/code-quality-leftovers/tickets/in-progress/code-quality-leftovers/evidence/implementation/IMP-11-settings/evidence.json
+exit=0

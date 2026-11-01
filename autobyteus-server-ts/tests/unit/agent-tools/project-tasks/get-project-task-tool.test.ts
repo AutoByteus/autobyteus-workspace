@@ -2,6 +2,7 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { trackReleases, type ReleaseTracker } from "../../../helpers/project-task-release-tracker.js";
 import { defaultToolRegistry } from "autobyteus-ts/tools/registry/tool-registry.js";
 import { ProjectStore } from "../../../../src/projects/stores/project-store.js";
 import { ProjectsLayout } from "../../../../src/projects/stores/projects-layout.js";
@@ -14,7 +15,7 @@ import { AdHocTasksLayout } from "../../../../src/projects/stores/ad-hoc-tasks-l
 import { AgentDefinition } from "../../../../src/agent-definition/domain/models.js";
 import { createRootExecutionIdentity } from "../../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
 import { TaskDelegationError } from "../../../../src/agent-collaboration/execution/task/task-delegation-command.js";
-import type { TaskExecutionOwner, TaskExecutionReleaseRequest } from "../../../../src/agent-collaboration/execution/task/task-execution-resource-port.js";
+import type { TaskExecutionOwner } from "../../../../src/agent-collaboration/execution/task/task-execution-resource-port.js";
 import type { TaskExecutionReference } from "../../../../src/agent-collaboration/execution/task/task-execution-reference.js";
 import { resolveAutoByteusAgentTools } from "../../../../src/agent-execution/backends/autobyteus/autobyteus-agent-tool-resolver.js";
 import { buildRuntimeAgentToolExposure, resolveRuntimeAgentToolExposure } from "../../../../src/agent-execution/shared/runtime-agent-tool-exposure.js";
@@ -46,6 +47,7 @@ const hostRoot = createRootExecutionIdentity({ rootSubjectKind: "agent_team", ro
 const member = (ownedTaskOf: () => TaskExecutionOwner | null) =>
   ({ identity: { root: hostRoot, memberAddress: "/worker", agentRunId: "worker" }, tasks: { ownedTaskOf } });
 let dir: string, store: ProjectStore, projects: ProjectService, tasks: ProjectTaskService, projectId: string;
+let releases: ReleaseTracker;
 
 beforeEach(async () => {
   dir = await fs.mkdtemp(path.join(os.tmpdir(), "get-project-task-"));
@@ -55,12 +57,12 @@ beforeEach(async () => {
   projects = new ProjectService({ store, changes, workspaceLookup: { listRegisteredWorkspaceRootPaths: async () => [] } });
   tasks = new ProjectTaskService({ store, changes, contextStore: new ProjectTaskContextStore(layout),
     adHocTasks: new AdHocTaskStore(new AdHocTasksLayout(path.join(dir, "ad-hoc-tasks"))),
-    requestRelease: vi.fn<TaskExecutionReleaseRequest>(async (_root, runs) => runs.map((execution) => ({ execution, stopped: true }))) });
+    requestRelease: (releases = trackReleases()).request });
   await tasks.load();
   vi.spyOn(taskServices, "getProjectTaskService").mockImplementation(() => tasks);
   projectId = (await projects.createProject({ name: "AutoByteus" })).projectId;
 });
-afterEach(async () => { await tasks.drainRuntimeReleases(); vi.restoreAllMocks(); await fs.rm(dir, { recursive: true, force: true }); });
+afterEach(async () => { await releases.settled(); vi.restoreAllMocks(); await fs.rm(dir, { recursive: true, force: true }); });
 
 const create = async (title: string, description: string, extra: Record<string, unknown> = {}) =>
   (await tool("create_task", { project_id: projectId, title, description, ...extra })).task as { taskId: string };
@@ -86,7 +88,7 @@ describe("get_project_task (REQ-014, AC-012)", () => {
     const a = await create("With files", "Body.", { context_files: [source] });
     const longId = await longIdOf(a.taskId);
     await tasks.linkNewTaskExecution({ role: "assigned", taskId: longId, assignedBy: "manager", hostRoot, execution: { agentRunId: "earlier" } });
-    await tool("update_task", { task_id: a.taskId, status: "DONE" }); await tasks.drainRuntimeReleases();
+    await tool("update_task", { task_id: a.taskId, status: "DONE" }); await releases.settled();
     await tool("update_task", { task_id: a.taskId, status: "IN_PROGRESS" });
     await tasks.linkNewTaskExecution({ role: "assigned", taskId: longId, assignedBy: "manager", hostRoot, execution: { agentRunId: "current" } });
     const read = await tool("get_project_task", { project_id: projectId, task_id: a.taskId });

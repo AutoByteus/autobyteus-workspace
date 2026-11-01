@@ -2,6 +2,7 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { trackReleases } from "../../helpers/project-task-release-tracker.js";
 import type { AgentInputUserMessage } from "autobyteus-ts/agent/message/agent-input-user-message.js";
 import { AgentMemoryLayout } from "../../../src/agent-memory/store/agent-memory-layout.js";
 import type { AgentOperationResult } from "../../../src/agent-execution/domain/agent-operation-result.js";
@@ -312,12 +313,13 @@ const createHarness = async () => {
   const projectStore = new ProjectStore(projectsLayout);
   const contextStore = new ProjectTaskContextStore(projectsLayout);
   const adHocTasks = new AdHocTaskStore(new AdHocTasksLayout(path.join(memoryDir, "ad-hoc-tasks")));
+  const releases = trackReleases((identity, agentRuns) => {
+    expect(identity).toEqual(createTeamRootExecutionIdentity(rootTeamRunId));
+    return root!.releaseTaskExecutions(agentRuns);
+  });
   const tasks = new ProjectTaskService({ store: projectStore, contextStore, adHocTasks,
     taskExecutionResources: new TaskExecutionResourceService(new TaskExecutionResourceStore(projectsLayout, adHocTasks.layout)),
-    requestRelease: (identity, agentRuns) => {
-      expect(identity).toEqual(createTeamRootExecutionIdentity(rootTeamRunId));
-      return root!.releaseTaskExecutions(agentRuns);
-    },
+    requestRelease: releases.request,
   });
   await tasks.load();
   const helper = new AgentDefinition({ id: "scope-helper", name: "Scope Helper", description: "Test helper", instructions: "Read work" });
@@ -376,7 +378,7 @@ const createHarness = async () => {
     for (let i = 0; i < 3; i += 1) { await new Promise<void>((resolve) => setImmediate(resolve)); await lifecycle.drain(); }
   };
   return { memoryDir, rootDir, root, commands, service: new TaskDelegationToolService(), backend, clock, inspect, emitStatus, emitBackgroundTask, drain, publisher, treeStore,
-    tasks, projectStore, projectsLayout, projects: new ProjectService({ store: projectStore }) };
+    tasks, releases, projectStore, projectsLayout, projects: new ProjectService({ store: projectStore }) };
 };
 
 afterEach(async () => {
@@ -454,7 +456,7 @@ describe("current delegate_task lifecycle integration (pure spawn, idle shutdown
       expect(treeText).not.toMatch(/taskLifetime|lifetime|taskId|agentRunResources/i);
 
       const stop = vi.spyOn(h.backend, "releaseDirectTaskExecution");
-      await h.tasks.updateTask({ projectId, taskId: a.taskId, status: "DONE" }); await h.tasks.drainRuntimeReleases();
+      await h.tasks.updateTask({ projectId, taskId: a.taskId, status: "DONE" }); await h.releases.settled();
       const closedA = await resources(a.taskId);
       expect(closedA.every(e => e.closedAt !== null)).toBe(true);
       expect((await resources(b.taskId)).every(e => e.closedAt === null)).toBe(true);
@@ -466,7 +468,7 @@ describe("current delegate_task lifecycle integration (pure spawn, idle shutdown
       // Repeated DONE re-invokes each run's exact committed-copy release (the registration's own release is
       // memoized after success, AR9-F02b) and starts nothing.
       const stops = stop.mock.calls.length;
-      await h.tasks.updateTask({ projectId, taskId: a.taskId, status: "DONE" }); await h.tasks.drainRuntimeReleases();
+      await h.tasks.updateTask({ projectId, taskId: a.taskId, status: "DONE" }); await h.releases.settled();
       expect(new Set(stop.mock.calls.slice(stops).map(([ref]) => JSON.stringify(ref)))).toEqual(new Set(closedA.map(exact)));
       expect(stop.mock.calls.length - stops).toBe(closedA.length);
       await expect(message(workerA, "/reviewer")).resolves.toMatchObject({ accepted: false, code: "TASK_AGENT_RESOURCE_CLOSED" });
@@ -482,7 +484,7 @@ describe("current delegate_task lifecycle integration (pure spawn, idle shutdown
       await expect(message(workerB, "/reviewer")).resolves.toMatchObject({ accepted: true });
       expect((await h.tasks.listTasks(projectId)).map(t => t.taskId)).toEqual([a.taskId]);
       expect(h.backend.preparedAgents.length + h.backend.preparedTeams.length).toBe(prepared);
-    } finally { await h.tasks.drainRuntimeReleases(); await h.root.terminate(); }
+    } finally { await h.releases.settled(); await h.root.terminate(); }
   });
 
   it("spawns a fresh task Agent through the only public tool and persists the delegator in one tree write", async () => {
@@ -726,7 +728,7 @@ describe("current delegate_task lifecycle integration (pure spawn, idle shutdown
         // The coordinator works on no Task: it reads any Project Task.
         expect(await read(memberOf("run-coordinator", "/coordinator"), b.taskKey)).toMatchObject({ taskId: b.taskKey, title: "Task B" });
       }
-    } finally { await h.tasks.drainRuntimeReleases(); await h.root.terminate(); }
+    } finally { await h.releases.settled(); await h.root.terminate(); }
   });
 
   it("gives described work no Task line in its first message (AC-015)", async () => {

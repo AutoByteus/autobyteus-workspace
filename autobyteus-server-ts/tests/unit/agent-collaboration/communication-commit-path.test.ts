@@ -138,7 +138,7 @@ describe("package-creation retry after the log was written and the tree write fa
     const dir = path.join(await tempDir(), "agents", "host", "collaboration");
     const store = new StandaloneRootPackageStore();
     const writeTree = store.writeTree.bind(store);
-    vi.spyOn(store, "writeTree").mockImplementationOnce(async () => ({ outcome: "not_renamed", file: "execution_tree", stage: "rename", cause: new Error("disk full") }))
+    vi.spyOn(store, "writeTree").mockImplementationOnce(async () => ({ outcome: "not_committed", file: "execution_tree", stage: "rename", cause: new Error("disk full") }))
       .mockImplementation(writeTree);
     const coordinator = new StandaloneRootPersistenceCoordinator({
       hostRunId: "host", collaborationDir: dir, store, packageExists: false,
@@ -158,7 +158,7 @@ describe("package-creation retry after the log was written and the tree write fa
     const dir = path.join(await tempDir(), "agent_orgs", "org");
     let treeWrites = 0;
     const executionTreeStore = { write: vi.fn(async () => (++treeWrites === 1
-      ? { outcome: "not_renamed" as const, file: "execution_tree", stage: "rename" as const, cause: new Error("disk full") }
+      ? { outcome: "not_committed" as const, file: "execution_tree", stage: "rename" as const, cause: new Error("disk full") }
       : { outcome: "committed" as const, file: "execution_tree" })) } as unknown as AgentOrgRunExecutionTreeStore;
     const communicationStore = new AgentOrgCommunicationMessagesStore();
     const coordinator = new AgentOrgRunPersistenceCoordinator({ orgRunId: "org", orgMemoryDir: dir, executionTreeStore, communicationStore, enterPersistenceFailStop: vi.fn() });

@@ -130,15 +130,15 @@ describe("per-run message logs of a team run (D-4, contract §3.4)", () => {
     const append = MessageLog.prototype.append;
     vi.spyOn(MessageLog.prototype, "append").mockImplementation(async function (this: MessageLog, entry): Promise<RunPackageFileWriteResult<"communication_messages">> {
       calls += 1;
-      if (calls === 2) return { outcome: "not_renamed", file: "communication_messages", stage: "append_line", cause: new Error("disk full") };
+      if (calls === 2) return { outcome: "not_committed", file: "communication_messages", stage: "append_line", cause: new Error("disk full") };
       return append.call(this, entry);
     });
     const result = await f.send(message("m1", "lead-run", "copy-run", 1));
-    expect(result).toMatchObject({ outcome: "renamed_finalization_indeterminate", file: "communication_messages" });
+    expect(result).toMatchObject({ outcome: "finalization_indeterminate", file: "communication_messages" });
     expect(await readLog(f.files.copy)).toEqual(["m1"]);
     // Nothing durable yet: the first log's failure is reported as not committed.
     calls = 1;
-    expect(await f.send(message("m2", "lead-run", "worker-run", 2))).toMatchObject({ outcome: "not_renamed" });
+    expect(await f.send(message("m2", "lead-run", "worker-run", 2))).toMatchObject({ outcome: "not_committed" });
   });
 
   it("puts the receiver's log first and stores a message within one run once", () => {

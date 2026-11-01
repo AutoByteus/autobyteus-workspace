@@ -1,0 +1,25 @@
+# API-02: Projects feature probe (owned stack: nodes A/B, Nuxt dev, headless Chrome)
+# Command: env -i PATH HOME TMPDIR USER LOGNAME pnpm -C autobyteus-web test:e2e:projects --skip-server-build --output-dir=<ev>/API-02-projects-probe (server built from this tree at 07:00Z)
+# Code: 534ad1f55e + baseline fix 8e011a01bd; macOS arm64; Date: 2026-11-01T07:22:54Z
+# Context-file REST journey (147: /rest/projects/*/task-context-drafts/*/context-files): PT-E2E-005 (typed and file save), PT-E2E-006 (HTTP download, context preserved through edit), PT-E2E-010 (context bytes after a real backend restart)
+
+## Attempt 1 (before the baseline fix): 16 Pass, PT-E2E-017 Fail 'Enter on a loop option adds nothing' — stale since cba9eca3ef (in the base); result in API-02-projects-probe-attempt1/
+
+## Final run
+[PT-E2E-001] Pass
+[PT-E2E-002] Pass
+[PT-E2E-003] Pass
+[PT-E2E-004] Pass
+[PT-E2E-005] Pass
+[PT-E2E-006] Pass
+[PT-E2E-007] Pass
+[PT-E2E-008] Pass
+[PT-E2E-009] Pass
+[PT-E2E-010] Pass
+[PT-E2E-011] Pass
+[PT-E2E-012] Pass
+[PT-E2E-013] Pass
+[PT-E2E-014] Pass
+[PT-E2E-015] Pass
+[PT-E2E-016] Pass
+[PT-E2E-017] Pass

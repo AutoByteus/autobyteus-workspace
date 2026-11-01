@@ -1,5 +1,4 @@
 import { randomUUID } from "node:crypto";
-import type { MultipartFile } from "@fastify/multipart";
 import type {
   ExistingTaskExecutionAssignInput, NewTaskExecutionLinkInput, TaskExecutionResourcePort, TaskExecutionReleaseRequest, TaskExecutionReopenInput,
   TaskExecutionReopenResult,
@@ -29,6 +28,8 @@ import { NO_PART_CLOSURE, TaskPartClosure, type PartClosureResult } from "./task
 import { TaskAssignmentEligibility, terminalAssignment } from "./task-assignment-eligibility.js";
 import { TaskReferences } from "./task-references.js";
 import { readDelegatedTaskIdentity } from "./task-identity-reader.js";
+import { bestEffortContextCleanup, TaskContextOwnership } from "./task-context-ownership.js";
+import type { ProjectTaskSearchCleanup } from "../search/project-task-search-service.js";
 import { sameDependencies } from "../domain/task-dependencies.js";
 import { appendComment, normalizeCommentText } from "../domain/task-comments.js";
 import { normalizeTaskDescription, normalizeTaskTitle, taskTextPatchOf } from "../domain/task-text.js";
@@ -50,12 +51,10 @@ type Dependencies = {
   changes?: ProjectChangeMarks;
   /** A Task root's live status from its hosting root (composition-bound); absent means `offline`. */
   workerStatus?: TaskWorkerStatusResolver;
-  /** Search index cleanup after a committed delete (composition-bound; never throws or waits); absent means no index. */ searchCleanup?: import("../search/project-task-search-service.js").ProjectTaskSearchCleanup;
+  /** Search index cleanup after a committed delete (composition-bound; never throws or waits); absent means no index. */
+  searchCleanup?: ProjectTaskSearchCleanup;
 };
 const compareTasks = (a: Pick<ProjectTask, "taskId" | "updatedAt">, b: Pick<ProjectTask, "taskId" | "updatedAt">): number => b.updatedAt.localeCompare(a.updatedAt) || a.taskId.localeCompare(b.taskId);
-const cleanup = async (operation: () => Promise<unknown>): Promise<void> => {
-  try { await operation(); } catch (e) { console.warn("Task context cleanup failed.", e); }
-};
 const noContext = (): PreparedTaskContext => ({ files: [], consumed: [] });
 /** How one update changes saved context: removals (UI only), whether it rewrites the list, and its context step. */
 type ContextUpdate = { removals: string[]; writesContextList: boolean; prepare: () => Promise<PreparedTaskContext> };
@@ -85,6 +84,7 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
   private get store() { return this.deps.store ?? getProjectStore(); }
   private get context() { return this.deps.contextStore ?? getProjectTaskContextStore(); }
   private get references() { return new TaskReferences(() => this.store); }
+  private get ownership() { return new TaskContextOwnership(() => this.store, () => this.context); }
   private get relations() { return new TaskRelationWrites(() => this.store, () => this.changes, this.references); }
   /** A part closes through this service's own update, with the cascade off (a part has no parts). */
   private get partClosure() { return new TaskPartClosure(() => this.store, (projectId, taskId, status) => this.update(projectId, taskId, { status }, noContextChange, false)); }
@@ -253,36 +253,6 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
         title: view.kind === "project" ? view.task.title : null, description: view.task.description, status: view.task.status } };
     }));
   }
-  async beginContextDraft(projectId: string, taskId?: string) {
-    await this.assertOwner(projectId, taskId);
-    if (taskId) await this.reclaim(projectId, taskId);
-    return this.context.begin(projectId, taskId);
-  }
-  async uploadContextFile(projectId: string, draftId: string, file: MultipartFile) {
-    await this.assertDraftOwner(projectId, draftId);
-    return this.context.upload(projectId, draftId, file);
-  }
-  async readDraftContextFile(projectId: string, draftId: string, filename: string) {
-    await this.assertDraftOwner(projectId, draftId);
-    return this.context.draftFile(projectId, draftId, filename);
-  }
-  async removeDraftContextFile(projectId: string, draftId: string, filename: string) {
-    await this.assertDraftOwner(projectId, draftId);
-    return this.context.removeDraftFiles(projectId, draftId, [filename]);
-  }
-  async discardContextDraft(projectId: string, draftId: string) {
-    await this.assertDraftOwner(projectId, draftId);
-    return this.context.discard(projectId, draftId);
-  }
-  async readSavedContextFile(projectId: string, taskId: string, filename: string) {
-    const task = await this.assertOwner(projectId, taskId);
-    const file = task?.contextFiles?.find((f) => f.storedFilename === filename);
-    if (!file) throw new ProjectError("TASK_CONTEXT_NOT_FOUND", "Saved Task context was not found.");
-    const filePath = await this.context.savedFile(projectId, taskId, file).catch(() => { throw new ProjectError("TASK_CONTEXT_NOT_FOUND", "Saved Task bytes are unavailable."); });
-    return { file, filePath };
-  }
-  /** Settles stop requests already made by DONE or CANCELLED (tests and orderly shutdown). */
-  async drainRuntimeReleases(): Promise<void> { await this.release.drain(); }
 
   // ── TaskExecutionResourcePort (runtime-facing) ──
   /** A Project Task by key or long ID (never a Task with no Project); its stored ID, its key and its saved work. */
@@ -401,7 +371,7 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
     const title = normalizeTaskTitle(text.title), description = normalizeTaskDescription(text.description);
     const taskId = this.deps.createId?.() ?? `project_task_${randomUUID()}`;
     const timestamp = this.nowIso();
-    await this.assertOwner(projectId);
+    await this.ownership.assertOwner(projectId);
     const { dependsOnTaskIds = [], partOfTaskId = null } = this.relations.changesOf(await relations());
     const { task, prepared } = await this.relations.write(projectId, null, { ...(dependsOnTaskIds.length ? { dependsOnTaskIds } : {}), ...(partOfTaskId ? { partOfTaskId } : {}) }, async () => {
       const prepared = await prepareContext(taskId);
@@ -429,7 +399,7 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
     const { title, description, status, dependsOnTaskIds, partOfTaskId, addComment } = patch;
     const closing = status !== undefined && isTerminalTaskStatus(status);
     const { removals } = context;
-    const existing = await this.assertOwner(projectId, taskId);
+    const existing = await this.ownership.assertOwner(projectId, taskId);
     // Input errors are rejected before anything is written (DONE or CANCELLED would otherwise already have closed its runs).
     if (removals.some((name) => !(existing?.contextFiles ?? []).some((f) => f.storedFilename === name))) throw new ProjectError("TASK_CONTEXT_NOT_FOUND", "Saved context was not found in this Task.");
     const prepared = await context.prepare();
@@ -452,38 +422,19 @@ export class ProjectTaskService implements TaskExecutionResourcePort {
     const updated = closing ? await this.closeAndWrite({ projectId, taskId }, writeMetadata) : await writeMetadata();
     this.changes.taskChanged({ projectId, taskId });
     await this.consume(projectId, prepared);
-    if (removed.length) await cleanup(() => this.context.cleanupRemoved(projectId, taskId, removed));
+    if (removed.length) await bestEffortContextCleanup(() => this.context.cleanupRemoved(projectId, taskId, removed));
     return { task: updated, attached: prepared.files, parts: closesParts && cascade ? await this.partClosure.closeOpenParts(projectId, taskId, updated.status) : NO_PART_CLOSURE };
-  }
-  private async assertOwner(projectId: string, taskId?: string): Promise<ProjectTask | undefined> {
-    if (!(await this.store.readProject(projectId))) throw new ProjectError("PROJECT_NOT_FOUND", `Project '${projectId}' was not found.`);
-    if (taskId === undefined) return undefined;
-    const task = await this.store.readTask(projectId, taskId);
-    if (!task) throw new ProjectError("TASK_NOT_FOUND", `Task '${taskId}' was not found in this project.`);
-    return task;
-  }
-  private async assertDraftOwner(projectId: string, draftId: string) {
-    await this.assertOwner(projectId);
-    const manifest = await this.context.describe(projectId, draftId);
-    await this.assertOwner(projectId, manifest.taskId);
   }
   private async prepareChanges(projectId: string, taskId: string, draftId: string | undefined, names: string[], hasChanges: boolean): Promise<PreparedTaskContext> {
     if (!hasChanges) return noContext();
-    await this.reclaim(projectId, taskId);
+    await this.ownership.reclaimUnpublished(projectId, taskId);
     return this.context.prepare(projectId, taskId, draftId, names, true);
-  }
-  private async reclaim(projectId: string, taskId: string) {
-    await this.store.updateTask(projectId, taskId, async (task) => {
-      // Failed membership proof preserves bytes; housekeeping failure is non-fatal.
-      await cleanup(() => this.context.reclaimUnpublished(projectId, taskId, new Set(task.contextFiles?.map((f) => f.storedFilename))));
-      return task;
-    });
   }
   private async validatePrepared(projectId: string, taskId: string, prepared: PreparedTaskContext) {
     for (const f of prepared.files) await this.context.savedFile(projectId, taskId, f);
   }
   private async consume(projectId: string, prepared: PreparedTaskContext) {
-    if (prepared.draftId && prepared.consumed.length) await cleanup(() => this.context.removeDraftFiles(projectId, prepared.draftId!, prepared.consumed));
+    if (prepared.draftId && prepared.consumed.length) await bestEffortContextCleanup(() => this.context.removeDraftFiles(projectId, prepared.draftId!, prepared.consumed));
   }
 }
 

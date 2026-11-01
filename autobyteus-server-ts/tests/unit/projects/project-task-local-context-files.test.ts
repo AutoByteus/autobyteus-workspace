@@ -3,12 +3,14 @@ import os from "node:os";
 import path from "node:path";
 import { Readable } from "node:stream";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
+import { trackReleases, type ReleaseTracker } from "../../helpers/project-task-release-tracker.js";
 import { ProjectStore } from "../../../src/projects/stores/project-store.js";
 import { ProjectsLayout } from "../../../src/projects/stores/projects-layout.js";
 import { AdHocTasksLayout } from "../../../src/projects/stores/ad-hoc-tasks-layout.js";
 import { AdHocTaskStore } from "../../../src/projects/stores/ad-hoc-task-store.js";
 import { ProjectService } from "../../../src/projects/services/project-service.js";
 import { ProjectTaskService } from "../../../src/projects/services/project-task-service.js";
+import { ProjectTaskContextDrafts } from "../../../src/projects/services/project-task-context-drafts.js";
 import { ProjectTaskContextStore } from "../../../src/projects/context/project-task-context-store.js";
 import { CONTEXT_FILE_MAX_BYTES, contextFileMimeTypeForPath } from "../../../src/context-files/domain/context-file-upload-policy.js";
 import { createRootExecutionIdentity } from "../../../src/agent-collaboration/execution/domain/root-execution-identity.js";
@@ -19,7 +21,8 @@ const originalCopyFile = fs.copyFile.bind(fs);
 
 /** Agent-attached context files: node-local sources copied into a Project Task's saved context (no draft). */
 describe("Project Task local context files", () => {
-  let appData: string, sources: string, layout: ProjectsLayout, store: ProjectStore, context: ProjectTaskContextStore, tasks: ProjectTaskService, projectId: string;
+  let appData: string, sources: string, layout: ProjectsLayout, store: ProjectStore, context: ProjectTaskContextStore, tasks: ProjectTaskService, drafts: ProjectTaskContextDrafts, projectId: string;
+  let releases: ReleaseTracker;
   let release: ReturnType<typeof vi.fn<TaskExecutionReleaseRequest>>;
   const source = async (name: string, content: string | Buffer = `bytes of ${name}`) => {
     const file = path.join(sources, name);
@@ -31,8 +34,8 @@ describe("Project Task local context files", () => {
   const contextEntries = (taskId: string) => fs.readdir(layout.contextDir(projectId, taskId)).catch(() => [] as string[]);
   const taskDirs = () => fs.readdir(layout.tasksDir(projectId)).catch(() => [] as string[]);
   const uiTask = async (description = "UI task") => {
-    const draft = await tasks.beginContextDraft(projectId);
-    const upload = await tasks.uploadContextFile(projectId, draft.draftId,
+    const draft = await drafts.beginContextDraft(projectId);
+    const upload = await drafts.uploadContextFile(projectId, draft.draftId,
       { filename: "ui.txt", mimetype: "text/plain", file: Readable.from([Buffer.from("ui bytes")]) } as never);
     return tasks.createTask({ projectId, title: description, description, contextDraft: { draftId: draft.draftId, storedFilenames: [upload.storedFilename] } });
   };
@@ -44,13 +47,14 @@ describe("Project Task local context files", () => {
     store = new ProjectStore(layout);
     context = new ProjectTaskContextStore(layout);
     release = vi.fn<TaskExecutionReleaseRequest>(async (_root, agentRuns) => agentRuns.map(execution => ({ execution, stopped: true })));
-    tasks = new ProjectTaskService({ store, contextStore: context, requestRelease: release,
+    tasks = new ProjectTaskService({ store, contextStore: context, requestRelease: (releases = trackReleases(release)).request,
       adHocTasks: new AdHocTaskStore(new AdHocTasksLayout(path.join(appData, "ad-hoc-tasks"))) });
     await tasks.load();
+    drafts = new ProjectTaskContextDrafts({ store, contextStore: context });
     projectId = (await new ProjectService({ store, workspaceLookup: { listRegisteredWorkspaceRootPaths: async () => [] } }).createProject({ name: "P" })).projectId;
   });
   afterEach(async () => {
-    await tasks.drainRuntimeReleases();
+    await releases.settled();
     vi.restoreAllMocks();
     await fs.chmod(path.join(sources, "locked.txt"), 0o600).catch(() => undefined);
     await fs.rm(appData, { recursive: true, force: true });
@@ -81,7 +85,7 @@ describe("Project Task local context files", () => {
     // Sources are only read; later changes or deletion do not affect the saved copies.
     expect(await fs.readFile(md, "utf8")).toBe("# Notes");
     await fs.writeFile(md, "changed later"); await fs.rm(sources, { recursive: true, force: true });
-    const reread = await tasks.readSavedContextFile(projectId, view.taskId, view.contextFiles[1]!.storedFilename);
+    const reread = await drafts.readSavedContextFile(projectId, view.taskId, view.contextFiles[1]!.storedFilename);
     expect(await fs.readFile(reread.filePath, "utf8")).toBe("# Notes");
     // A linked delegation hands the saved copies to the worker (AC-010).
     expect((await tasks.resolveAssignment(view.taskId)).referenceFiles).toEqual(view.contextFiles.map(f => f.localPath));
@@ -186,7 +190,7 @@ describe("Project Task local context files", () => {
     await tasks.linkNewTaskExecution({ role: "assigned", taskId: task.taskId, assignedBy: "manager", hostRoot, execution: { agentRunId: "worker" } });
     const done = await tasks.updateTaskById({ taskId: task.taskId, status: "DONE", localContextFiles: [await source("result.txt")] });
     expect(done).toMatchObject({ status: "DONE", attachedContextFiles: [expect.objectContaining({ displayName: "result.txt" })] });
-    await tasks.drainRuntimeReleases();
+    await releases.settled();
     expect((await taskJson(task.taskId)).contextFiles).toHaveLength(3);
     expect(tasks.isOpen({ agentRunId: "worker" })).toBe(false);
     expect(release).toHaveBeenCalledWith(hostRoot, [{ agentRunId: "worker" }]);
