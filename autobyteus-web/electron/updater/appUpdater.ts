@@ -3,6 +3,7 @@ import { app, BrowserWindow, net } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import type { ProgressInfo, UpdateInfo } from 'electron-updater';
 import type {
+  AppUpdateAutomaticChangeResult,
   AppUpdateChannelChangeResult,
   AppUpdateOperation,
   AppUpdateState,
@@ -13,6 +14,8 @@ import { logger } from '../logger';
 import { classifyAppUpdateError } from './appUpdateErrorClassifier';
 import { isAppUpdateChannel, loadAppUpdateChannel, saveAppUpdateChannel } from './appUpdateChannelStore';
 import { AppUpdateNotificationRecord } from './appUpdateNotificationRecord';
+import { loadAppUpdateAutomatic, saveAppUpdateAutomatic } from './appUpdateAutomaticStore';
+import { AppUpdateAutomaticRun } from './appUpdateAutomaticRun';
 import { resolveAppReleasePageUrl } from './appReleasePage';
 import { APP_UPDATE_STATE_CHANNEL, type AppUpdateController } from './appUpdateController';
 import { AppUpdateCheckSchedule, type AppUpdateCheckSource } from './appUpdateCheckSchedule';
@@ -37,6 +40,10 @@ const CHECK_OPERATIONS: Readonly<Record<AppUpdateCheckSource | 'manual', AppUpda
 
 type AppUpdaterOptions = {
   prepareForInstall?: () => Promise<void>;
+  /** After a failed automatic install (autobyteus-356): the application relaunches the old version when it can. */
+  recoverAfterFailedInstall?: () => void | Promise<void>;
+  /** The automatic install's quit bound (60 s by default). */
+  installQuitBoundMs?: number;
   /** The launch check's delay (8 s by default). */
   autoCheckDelayMs?: number;
   /** Whether the machine is online; Electron's `net.isOnline()` by default. */
@@ -54,6 +61,7 @@ export class AppUpdater implements AppUpdateController {
   private lastErrorSignature: string | null = null;
   private notificationRecord: AppUpdateNotificationRecord | null = null;
   private schedule: AppUpdateCheckSchedule | null = null;
+  private automaticRun: AppUpdateAutomaticRun | null = null;
   private readonly autoCheckDelayMs: number | undefined;
   private readonly isOnline: () => boolean;
   private readonly testFeedUrl: string | null;
@@ -83,6 +91,7 @@ export class AppUpdater implements AppUpdateController {
       checkedAt: null,
       notification: null,
       autoCheck: null,
+      automaticUpdate: false,
     };
   }
 
@@ -106,6 +115,13 @@ export class AppUpdater implements AppUpdateController {
       autoUpdater.setFeedURL({ provider: 'generic', url: this.testFeedUrl });
     }
     this.notificationRecord = new AppUpdateNotificationRecord(app.getPath('userData'), this.state.currentVersion);
+    this.automaticRun = new AppUpdateAutomaticRun({
+      record: () => this.notificationRecord,
+      recoverAfterFailedInstall: () => this.options.recoverAfterFailedInstall?.(),
+      quitBoundMs: this.options.installQuitBoundMs,
+    });
+    // The app quitting is the automatic install going ahead (it clears the quit bound).
+    app.on('before-quit', () => this.automaticRun?.quitStarted());
     const schedule = new AppUpdateCheckSchedule({
       userDataPath: app.getPath('userData'),
       target: this,
@@ -118,6 +134,7 @@ export class AppUpdater implements AppUpdateController {
     this.state = {
       ...this.state,
       updateChannel: loadAppUpdateChannel(app.getPath('userData')),
+      automaticUpdate: loadAppUpdateAutomatic(app.getPath('userData')),
       notification: this.currentNotification(),
       autoCheck: schedule.settings(),
     };
@@ -274,8 +291,13 @@ export class AppUpdater implements AppUpdateController {
       try {
         await this.options.prepareForInstall?.();
         autoUpdater.quitAndInstall(false, true);
+        this.automaticRun?.awaitQuit(() => {
+          this.handleError(new Error('The app did not quit to install the update within 60 seconds.'), 'Failed to install update and restart.', 'install');
+          this.automaticInstallFailed();
+        });
       } catch (error) {
         this.handleError(error, 'Failed to install update and restart.', 'install');
+        this.automaticInstallFailed();
       }
     }, 100);
 
@@ -300,6 +322,24 @@ export class AppUpdater implements AppUpdateController {
     return { accepted: true, persisted, state: this.getState() };
   }
 
+  /**
+   * "Update automatically" for the app (autobyteus-356). Turning it on continues an update that was found or
+   * downloaded; the switch is read again at every event, so turning it off stops what has not started.
+   */
+  setAutomaticUpdate(enabled: unknown): AppUpdateAutomaticChangeResult {
+    if (typeof enabled !== 'boolean') return { accepted: false, persisted: false, state: this.getState() };
+    if (!this.initialized) this.initialize();
+    const persisted = saveAppUpdateAutomatic(app.getPath('userData'), enabled);
+    this.applyState({ automaticUpdate: enabled });
+    const version = this.state.availableVersion;
+    if (enabled && version) {
+      // An update staged earlier while a later check moved the status to `available` is re-emitted from the cache (N-8).
+      if (this.state.status === 'available') this.startAutomatic(version);
+      else if (this.state.status === 'downloaded') this.installAutomatically(version);
+    }
+    return { accepted: true, persisted, state: this.getState() };
+  }
+
   markNotificationRead(): AppUpdateState {
     if (this.notificationRecord?.markRead()) this.applyState({ notification: this.currentNotification() });
     return this.getState();
@@ -308,6 +348,34 @@ export class AppUpdater implements AppUpdateController {
   clearNotification(): AppUpdateState {
     if (this.notificationRecord?.clear()) this.applyState({ notification: this.currentNotification() });
     return this.getState();
+  }
+
+  /** DS-001: with the switch on, a found version that is not blocked is downloaded automatically. */
+  private startAutomatic(version: string): void {
+    const run = this.automaticRun;
+    if (!this.state.automaticUpdate || !run || run.blocks(version)) return;
+    run.beginDownload(version);
+    void this.downloadUpdate().then((state) => {
+      if (state.status === 'error' && state.errorOperation === 'download') this.automaticDownloadFailed(state.message);
+    });
+  }
+
+  /** DS-002: the downloaded version installs at once (DEC-001 = A); recorded only when the install was accepted. */
+  private installAutomatically(version: string): void {
+    const run = this.automaticRun;
+    if (!this.state.automaticUpdate || !run || run.blocks(version)) return;
+    if (!this.installUpdateAndRestart().accepted) return;
+    run.installAccepted(version);
+    this.applyState({ notification: this.currentNotification() });
+  }
+
+  private automaticDownloadFailed(reason: string): void {
+    if (this.automaticRun?.downloadFailed(reason)) this.applyState({ notification: this.currentNotification() });
+  }
+
+  /** The automatic install failed in this process: recorded once (blocking the version), then recovery runs. */
+  private automaticInstallFailed(): void {
+    if (this.automaticRun?.installFailed(this.state.message)) this.applyState({ notification: this.currentNotification() });
   }
 
   /** The release link names the packaged GitHub feed; a test feed has none (DEC-017). */
@@ -353,6 +421,7 @@ export class AppUpdater implements AppUpdateController {
         downloadTransferredBytes: null,
         downloadTotalBytes: null,
       });
+      if (updateInfo.version) this.startAutomatic(updateInfo.version);
     });
 
     autoUpdater.on('update-not-available', () => {
@@ -396,10 +465,17 @@ export class AppUpdater implements AppUpdateController {
         errorOperation: null,
         downloadPercent: 100,
       });
+      this.automaticRun?.downloadDone();
+      const version = this.state.availableVersion;
+      if (version) this.installAutomatically(version);
     });
 
     autoUpdater.on('error', (error: Error) => {
-      this.handleError(error, 'Auto-update failed.', this.activeOperation ?? 'updater-event');
+      const operation = this.activeOperation;
+      this.handleError(error, 'Auto-update failed.', operation ?? 'updater-event');
+      // Only the operation under way decides which automatic step failed (a native install refusal arrives here).
+      if (operation === 'download') this.automaticDownloadFailed(this.state.message);
+      else if (operation === 'install') this.automaticInstallFailed();
     });
   }
 

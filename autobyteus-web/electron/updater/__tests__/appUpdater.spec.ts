@@ -63,6 +63,7 @@ const {
       isPackaged: true,
       getVersion: vi.fn(() => '1.1.9'),
       getPath: vi.fn((_name: string) => ''),
+      on: vi.fn(),
     },
     ipcHandlers: handlers,
     ipcMainMock: {

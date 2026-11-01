@@ -41,6 +41,7 @@ const DEFAULT_STATE: AppUpdateStatePayload = {
   checkedAt: null,
   notification: null,
   autoCheck: null,
+  automaticUpdate: false,
 };
 
 export const useAppUpdateStore = defineStore('appUpdate', {
