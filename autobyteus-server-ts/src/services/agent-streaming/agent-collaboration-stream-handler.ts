@@ -87,7 +87,7 @@ export class AgentCollaborationStreamHandler {
       egress.send(CollaborationStreamServerMessageSchema.parse({
         type: "ROOT_EXECUTION_VIEW_SNAPSHOT",
         payload: projectAgentCollaborationView({ hostRunId, isActive: root.isHostLive(), snapshot: barrier.snapshot,
-          baseChangeSequence: barrier.baseChangeSequence, remoteTaskExecutions }),
+          baseChangeSequence: barrier.baseChangeSequence, liveSequenceId: barrier.liveSequenceId, remoteTaskExecutions }),
       }));
       const unsubscribe = barrier.subscribe((event) => {
         try {

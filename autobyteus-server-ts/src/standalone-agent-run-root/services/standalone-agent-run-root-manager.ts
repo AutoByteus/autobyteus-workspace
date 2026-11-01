@@ -75,6 +75,8 @@ export type StandaloneRootInspection = Readonly<{
   isActive: boolean;
   snapshot: StandaloneRootPackageSnapshot;
   baseChangeSequence: number;
+  /** The live sequence `baseChangeSequence` counts in; null for a stored package. */
+  liveSequenceId: string | null;
 }>;
 
 const launchConfigurationOf = (metadata: AgentRunMetadata): AgentLaunchConfiguration => Object.freeze({
@@ -278,13 +280,14 @@ export class StandaloneAgentRunRootManager implements StandaloneRunCommandPort, 
     if (active) {
       const connection = await active.openPackageSnapshotConnection();
       try {
-        return Object.freeze({ hostRunId, isActive: true, snapshot: connection.snapshot, baseChangeSequence: connection.baseChangeSequence });
+        return Object.freeze({ hostRunId, isActive: true, snapshot: connection.snapshot,
+          baseChangeSequence: connection.baseChangeSequence, liveSequenceId: connection.liveSequenceId });
       } finally { connection.close(); }
     }
     // The view reads the tree only; the message log is read where it is shown (getCollaborationRecordsSnapshot).
     const tree = await this.store.readTree(this.layout.getAgentRunCollaborationDirPath(hostRunId), hostRunId);
     if (!tree) return null;
-    return Object.freeze({ hostRunId, isActive: false, baseChangeSequence: 0, snapshot: Object.freeze({
+    return Object.freeze({ hostRunId, isActive: false, baseChangeSequence: 0, liveSequenceId: null, snapshot: Object.freeze({
       tree, closedTaskExecutions: this.closedTaskExecutionsFor(hostRunId, tree),
       statuses: Object.freeze([]), inputStates: Object.freeze([]),
     }) });

@@ -67,7 +67,7 @@ export class AgentOrgStreamHandler {
       }));
       egress.send(CollaborationStreamServerMessageSchema.parse({
         type: "ROOT_EXECUTION_VIEW_SNAPSHOT",
-        payload: projectAgentOrgExecutionView(run, barrier.snapshot, barrier.baseChangeSequence, remoteTaskExecutions),
+        payload: projectAgentOrgExecutionView(run, barrier, remoteTaskExecutions),
       }));
       const unsubscribe = barrier.subscribe((event) => {
         try {

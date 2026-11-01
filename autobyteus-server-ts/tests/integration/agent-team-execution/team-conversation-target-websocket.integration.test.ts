@@ -65,6 +65,7 @@ const startHarness = async () => {
     openPackageSnapshotConnection: vi.fn(async () => ({
       snapshot: { tree, closedTaskExecutions: [], messages: messagesSnapshot, statuses: [], inputStates: [] },
       baseChangeSequence: 0,
+      liveSequenceId: "live-team-1",
       queuedEvents: [],
       subscribe: vi.fn(() => vi.fn()),
       close: vi.fn(),

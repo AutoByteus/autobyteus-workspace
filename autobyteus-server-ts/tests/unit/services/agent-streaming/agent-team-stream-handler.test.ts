@@ -44,6 +44,7 @@ const createHarness = (input: {
     openPackageSnapshotConnection: vi.fn(async () => ({
       snapshot: { tree, closedTaskExecutions: [], messages, inputStates: [], statuses: [] },
       baseChangeSequence: 31,
+      liveSequenceId: "live-team-1",
       subscribe: vi.fn((listener: (event: unknown) => void) => { eventListener = listener; return vi.fn(); }),
       close: closeSnapshot,
     })),
@@ -91,6 +92,7 @@ describe("AgentTeamStreamHandler current root stream", () => {
       payload: {
         root_team_run_id: "team-run-root",
         base_change_sequence: 31,
+        live_sequence_id: "live-team-1",
       },
     });
     expect(output[1]!.payload).not.toHaveProperty("tasks");

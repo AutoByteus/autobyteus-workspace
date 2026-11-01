@@ -19,6 +19,8 @@ export const agentRunCollaborationTreeDtoSchema = z.object({
 /** Statuses cover the Agent root's children; the host reports on its own Agent stream. */
 export const agentRunCollaborationViewDtoSchema = z.object({
     base_change_sequence: z.number().int().nonnegative(),
+    /** The live sequence `base_change_sequence` counts in (one per root event publisher); null for a stored view. */
+    live_sequence_id: nonEmptyStringSchema.nullable(),
     is_active: z.boolean(),
     execution_tree: agentRunCollaborationTreeDtoSchema,
     closed_task_executions: closedTaskExecutionsDtoSchema,

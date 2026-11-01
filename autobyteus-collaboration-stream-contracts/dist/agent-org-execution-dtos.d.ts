@@ -390,6 +390,7 @@ export declare const agentOrgAgentStatusDtoSchema: z.ZodObject<{
 export declare const agentOrgExecutionViewDtoSchema: z.ZodObject<{
     base_change_sequence: z.ZodNumber;
     is_active: z.ZodBoolean;
+    live_sequence_id: z.ZodNullable<z.ZodString>;
     execution_tree: z.ZodObject<{
         subjectKind: z.ZodLiteral<"agent_org">;
         createdAt: z.ZodString;

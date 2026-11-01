@@ -6,7 +6,7 @@ const launch = { runtime_kind: "autobyteus", llm_model_identifier: "m", llm_conf
 const snapshot = (closed) => ({
   type: "TEAM_EXECUTION_VIEW_SNAPSHOT",
   payload: {
-    root_team_run_id: "team-run", base_change_sequence: 4,
+    root_team_run_id: "team-run", base_change_sequence: 4, live_sequence_id: "live-1",
     execution_tree: {
       created_at: "t", archived_at: null, application_binding: null, handoffs: [],
       root_team: {

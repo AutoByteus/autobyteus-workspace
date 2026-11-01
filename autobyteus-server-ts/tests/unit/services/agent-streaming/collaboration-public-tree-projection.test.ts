@@ -36,8 +36,8 @@ const setup = (kind: "agent" | "agent_org", linked = true) => {
     details: { status: "idle" as const, trigger: null, errorMessage: null, recoverableBlock: null }, statusHint: "IDLE" as const,
   })) };
   const projectView = () => kind === "agent"
-    ? projectAgentCollaborationView({ hostRunId: "manager", isActive: true, snapshot: snapshot as never, baseChangeSequence: 7, remoteTaskExecutions: [] })
-    : projectAgentOrgExecutionSnapshot({ orgRunId: "org-root", isActive: true, snapshot: snapshot as never, baseChangeSequence: 7, remoteTaskExecutions: [] });
+    ? projectAgentCollaborationView({ hostRunId: "manager", isActive: true, snapshot: snapshot as never, baseChangeSequence: 7, liveSequenceId: "live-1", remoteTaskExecutions: [] })
+    : projectAgentOrgExecutionSnapshot({ orgRunId: "org-root", isActive: true, snapshot: snapshot as never, baseChangeSequence: 7, liveSequenceId: "live-1", remoteTaskExecutions: [] });
   const projectEvent = (event: StandaloneRootEvent) => kind === "agent"
     ? projectAgentCollaborationEvent("manager", tree as ReturnType<typeof agentProjectionTree>, { event, changeSequence: 8 })
     : projectAgentOrgExecutionEvent(run as never, { event, changeSequence: 8 });
@@ -108,7 +108,7 @@ describe.each(["agent", "agent_org"] as const)("%s camel-case public projection"
 });
 
 it("GraphQL Agent inspection reuses the exact public view without materialization", async () => {
-  const current = setup("agent"), inspection = { hostRunId: "manager", isActive: false, snapshot: current.snapshot, baseChangeSequence: 7 };
+  const current = setup("agent"), inspection = { hostRunId: "manager", isActive: false, snapshot: current.snapshot, baseChangeSequence: 7, liveSequenceId: "live-1" };
   const getInspection = vi.fn(async () => inspection), restore = vi.fn();
   const manager = { getInspection, resolveCommandReadyRoot: restore } as never;
   bindProcessStandaloneAgentRunRootManager(manager);
@@ -125,7 +125,7 @@ it("GraphQL Agent inspection reuses the exact public view without materializatio
 
 it("Org GraphQL inspection service reuses strict public snapshot projection without restoring", async () => {
   const current = setup("agent_org"), inspection = { orgRunId: "org-root", isActive: false,
-    snapshot: { ...current.snapshot, statuses: [] }, baseChangeSequence: 7 };
+    snapshot: { ...current.snapshot, statuses: [] }, baseChangeSequence: 7, liveSequenceId: "live-1" };
   const getInspection = vi.fn(async () => inspection), restore = vi.fn();
   const service = new AgentOrgRunService({ manager: { getInspection, restore } } as never);
   expect(await service.getInspection("org-root")).toEqual(projectAgentOrgExecutionSnapshot({ ...inspection,

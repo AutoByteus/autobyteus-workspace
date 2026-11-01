@@ -29,6 +29,7 @@ const agentView = (overrides = {}) => ({
   root_run_id: "host-run",
   root_agent: {
     base_change_sequence: 3,
+    live_sequence_id: "live-1",
     is_active: true,
     execution_tree: {
       subjectKind: "agent", createdAt: "2026-09-30T00:00:00.000Z",
@@ -66,6 +67,15 @@ test("an Agent root view correlates host, children and statuses, and carries no 
   unknownStatus.root_agent.agent_statuses[0].agent_run_id = "host-run";
   unknownStatus.root_agent.agent_statuses[0].member_address = "/research_assistant";
   assert.throws(() => RootExecutionViewDtoSchema.parse(unknownStatus), /status identity/);
+});
+
+test("an Agent root view names its live sequence, or null for a stored view; the field is required (autobyteus-358)", () => {
+  assert.equal(RootExecutionViewDtoSchema.parse(agentView()).root_agent.live_sequence_id, "live-1");
+  assert.equal(RootExecutionViewDtoSchema.parse(agentView({ live_sequence_id: null, is_active: false })).root_agent.live_sequence_id, null);
+  const missing = agentView();
+  delete missing.root_agent.live_sequence_id;
+  assert.throws(() => RootExecutionViewDtoSchema.parse(missing));
+  assert.throws(() => RootExecutionViewDtoSchema.parse(agentView({ live_sequence_id: "" })));
 });
 
 test("Agent root events, lifecycle and commands use root kind 'agent'; SEND_MESSAGE takes mentions", () => {

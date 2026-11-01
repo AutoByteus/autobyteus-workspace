@@ -272,6 +272,8 @@ export const agentOrgAgentStatusDtoSchema = z.object({
 
 export const agentOrgExecutionViewDtoSchema = z.object({
   base_change_sequence: z.number().int().nonnegative(), is_active: z.boolean(),
+  /** The live sequence `base_change_sequence` counts in (one per root event publisher); null for a stored view. */
+  live_sequence_id: nonEmptyStringSchema.nullable(),
   execution_tree: agentOrgExecutionTreeDtoSchema,
   closed_task_executions: closedTaskExecutionsDtoSchema,
   agent_statuses: z.array(agentOrgAgentStatusDtoSchema),

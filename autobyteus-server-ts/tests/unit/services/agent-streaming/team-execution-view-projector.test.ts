@@ -39,9 +39,9 @@ const root = {
 describe("Team execution view strict projection", () => {
   it("carries closed task executions beside the unfiltered tree, and maps the sequenced closed event", () => {
     const closed = [{ teamRunId: "task-team-run-qa-001" }, { agentRunId: "nested-task-agent-run-001" }];
-    const projected = projectTeamExecutionViewSnapshot("team-run-root", {
+    const projected = projectTeamExecutionViewSnapshot("team-run-root", { snapshot: {
       tree, closedTaskExecutions: closed, statuses: [], inputStates: [],
-    }, 3, []);
+    }, baseChangeSequence: 3, liveSequenceId: "live-team-1" }, []);
     expect(projected.type === "TEAM_EXECUTION_VIEW_SNAPSHOT" && projected.payload.closed_task_executions)
       .toEqual([{ team_run_id: "task-team-run-qa-001" }, { agent_run_id: "nested-task-agent-run-001" }]);
     expect(projected.type === "TEAM_EXECUTION_VIEW_SNAPSHOT" && projected.payload.execution_tree.root_team.task_executions)
@@ -78,15 +78,16 @@ describe("Team execution view strict projection", () => {
       }),
       details: createTeamAgentStatusDetails({ status: "running", trigger: "turn_started" }),
     });
-    const projected = projectTeamExecutionViewSnapshot("team-run-root", {
+    const projected = projectTeamExecutionViewSnapshot("team-run-root", { snapshot: {
       tree, closedTaskExecutions: [], statuses: [status], inputStates: [],
-    }, 17, []);
+    }, baseChangeSequence: 17, liveSequenceId: "live-team-1" }, []);
 
     expect(projected).toMatchObject({
       type: "TEAM_EXECUTION_VIEW_SNAPSHOT",
       payload: {
         root_team_run_id: "team-run-root",
         base_change_sequence: 17,
+        live_sequence_id: "live-team-1",
         execution_tree: {
           root_team: {
             team_run_id: "team-run-root",
@@ -118,8 +119,8 @@ describe("Team execution view strict projection", () => {
     const delegated = parent.taskExecutions.find((task: { teamRunId?: string }) => task.teamRunId === "task-team-run-automation-001");
     delegated.taskExecutions[0].taskLifetime = { lifetimeId: "controlled-lifetime", purpose: "delegation" };
     const current = validateTeamRunExecutionTreePayload(stamped, "team-run-root"), before = JSON.stringify(current);
-    expect(projectTeamExecutionViewSnapshot("team-run-root", { tree: current, closedTaskExecutions: [], statuses: [], inputStates: [] }, 17, []))
-      .toEqual(projectTeamExecutionViewSnapshot("team-run-root", { tree, closedTaskExecutions: [], statuses: [], inputStates: [] }, 17, []));
+    expect(projectTeamExecutionViewSnapshot("team-run-root", { snapshot: { tree: current, closedTaskExecutions: [], statuses: [], inputStates: [] }, baseChangeSequence: 17, liveSequenceId: "live" }, []))
+      .toEqual(projectTeamExecutionViewSnapshot("team-run-root", { snapshot: { tree, closedTaskExecutions: [], statuses: [], inputStates: [] }, baseChangeSequence: 17, liveSequenceId: "live" }, []));
     const event = { changeSequence: 19, event: {
       eventSourceType: TeamRunEventSourceType.TASK_EXECUTION,
       taskExecution: { agentRunId: "nested-task-agent-run-001" },

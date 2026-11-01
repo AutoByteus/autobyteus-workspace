@@ -1,3 +1,5 @@
+import { randomUUID } from "node:crypto";
+
 export type SequencedRootEvent<TEvent> = Readonly<{
   changeSequence: number;
   event: TEvent;
@@ -10,6 +12,7 @@ export type RootEventListener<TEvent> = (
 export type RootSnapshotConnection<TSnapshot, TEvent> = Readonly<{
   snapshot: TSnapshot;
   baseChangeSequence: number;
+  liveSequenceId: string;
   queuedEvents: readonly SequencedRootEvent<TEvent>[];
   subscribe(listener: RootEventListener<TEvent>): () => void;
   close(): void;
@@ -20,6 +23,11 @@ export type RootSnapshotConnection<TSnapshot, TEvent> = Readonly<{
  * synchronous and subscriber failures are isolated from domain operations.
  */
 export class RootEventPublisher<TEvent> {
+  /**
+   * Names this publisher's change sequence (autobyteus-358, SR-005): it starts at 0 for every instance, so a
+   * sequence number is comparable only with others of the same ID (a stop/resume or a restart starts another).
+   */
+  readonly liveSequenceId = randomUUID();
   private changeSequence = 0;
   private readonly listeners = new Set<RootEventListener<TEvent>>();
   private readonly barriers = new Set<SequencedRootEvent<TEvent>[]>();
@@ -67,6 +75,7 @@ export class RootEventPublisher<TEvent> {
       return Object.freeze({
         snapshot,
         baseChangeSequence,
+        liveSequenceId: this.liveSequenceId,
         get queuedEvents() { return Object.freeze([...queued]); },
         subscribe: (listener: RootEventListener<TEvent>) => {
           if (!open) throw new Error("Root snapshot connection is closed.");

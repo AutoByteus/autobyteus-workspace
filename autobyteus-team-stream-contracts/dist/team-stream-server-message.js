@@ -10,6 +10,8 @@ const message = (type, payload) => z.object({ type: z.literal(type), payload }).
 export const teamExecutionViewSnapshotPayloadSchema = z.object({
     root_team_run_id: z.string().trim().min(1),
     base_change_sequence: z.number().int().nonnegative(),
+    /** The live sequence `base_change_sequence` counts in (one per root event publisher); a snapshot is always live. */
+    live_sequence_id: z.string().min(1),
     execution_tree: teamRunExecutionTreeDtoSchema,
     closed_task_executions: z.array(teamTaskExecutionReferenceDtoSchema),
     agent_statuses: z.array(teamAgentStatusDtoSchema),

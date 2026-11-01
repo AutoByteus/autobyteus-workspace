@@ -76,6 +76,7 @@ export declare const agentRunCollaborationTreeDtoSchema: z.ZodObject<{
 /** Statuses cover the Agent root's children; the host reports on its own Agent stream. */
 export declare const agentRunCollaborationViewDtoSchema: z.ZodObject<{
     base_change_sequence: z.ZodNumber;
+    live_sequence_id: z.ZodNullable<z.ZodString>;
     is_active: z.ZodBoolean;
     execution_tree: z.ZodObject<{
         subjectKind: z.ZodLiteral<"agent">;

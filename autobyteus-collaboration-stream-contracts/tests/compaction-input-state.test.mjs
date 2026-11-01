@@ -5,7 +5,7 @@ const launch={runtimeKind:'autobyteus',llmModelIdentifier:'parent',llmConfig:nul
 const block={operationId:'op',failureEpoch:1,position:{kind:'held_turn',turnId:'turn-A'},state:'awaiting_user',code:'failed',message:'retry required'};
 const state={run_instance_id:'instance',revision:2,recoverableBlock:block,entries:[{sequence:1,message_id:'A',dedupe_key:'input:A',turn_id:'turn-A',state:'held',content:'real A',sender_type:'user',file_attachments:[]}]};
 const snapshot=()=>({root_subject_kind:'agent_org',root_run_id:'org',root_org:{
- base_change_sequence:0,is_active:true,
+ base_change_sequence:0,live_sequence_id:'live-1',is_active:true,
  execution_tree:{subjectKind:'agent_org',createdAt:'2026-09-01',archivedAt:null,applicationBinding:null,handoffs:[],rootOrg:{address:'/',orgDefinitionId:'definition',orgDefinitionName:'Org',orgRunId:'org',defaultLaunchConfiguration:launch,members:[{address:'/worker',agentDefinitionId:'worker',role:null,description:null,agentRunId:'run',platformAgentRunId:null,launchConfiguration:launch}],taskExecutions:[]}},
  closed_task_executions:[],
  

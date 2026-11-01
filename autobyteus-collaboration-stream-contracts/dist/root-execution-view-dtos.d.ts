@@ -10,6 +10,7 @@ export declare const AgentOrgRootExecutionViewDtoSchema: z.ZodObject<{
     root_org: z.ZodObject<{
         base_change_sequence: z.ZodNumber;
         is_active: z.ZodBoolean;
+        live_sequence_id: z.ZodNullable<z.ZodString>;
         execution_tree: z.ZodObject<{
             subjectKind: z.ZodLiteral<"agent_org">;
             createdAt: z.ZodString;
@@ -455,6 +456,7 @@ export declare const AgentRootExecutionViewDtoSchema: z.ZodObject<{
     root_run_id: z.ZodString;
     root_agent: z.ZodObject<{
         base_change_sequence: z.ZodNumber;
+        live_sequence_id: z.ZodNullable<z.ZodString>;
         is_active: z.ZodBoolean;
         execution_tree: z.ZodObject<{
             subjectKind: z.ZodLiteral<"agent">;
@@ -759,6 +761,7 @@ export declare const RootExecutionViewDtoSchema: z.ZodDiscriminatedUnion<[z.ZodO
     root_org: z.ZodObject<{
         base_change_sequence: z.ZodNumber;
         is_active: z.ZodBoolean;
+        live_sequence_id: z.ZodNullable<z.ZodString>;
         execution_tree: z.ZodObject<{
             subjectKind: z.ZodLiteral<"agent_org">;
             createdAt: z.ZodString;
@@ -1203,6 +1206,7 @@ export declare const RootExecutionViewDtoSchema: z.ZodDiscriminatedUnion<[z.ZodO
     root_run_id: z.ZodString;
     root_agent: z.ZodObject<{
         base_change_sequence: z.ZodNumber;
+        live_sequence_id: z.ZodNullable<z.ZodString>;
         is_active: z.ZodBoolean;
         execution_tree: z.ZodObject<{
             subjectKind: z.ZodLiteral<"agent">;
@@ -2127,6 +2131,7 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
         root_org: z.ZodObject<{
             base_change_sequence: z.ZodNumber;
             is_active: z.ZodBoolean;
+            live_sequence_id: z.ZodNullable<z.ZodString>;
             execution_tree: z.ZodObject<{
                 subjectKind: z.ZodLiteral<"agent_org">;
                 createdAt: z.ZodString;
@@ -2571,6 +2576,7 @@ export declare const CollaborationStreamServerMessageSchema: z.ZodDiscriminatedU
         root_run_id: z.ZodString;
         root_agent: z.ZodObject<{
             base_change_sequence: z.ZodNumber;
+            live_sequence_id: z.ZodNullable<z.ZodString>;
             is_active: z.ZodBoolean;
             execution_tree: z.ZodObject<{
                 subjectKind: z.ZodLiteral<"agent">;
