@@ -14,9 +14,9 @@
 
 ## Current Implementation Summary
 
-- Implementation cycle: `Rework` (IR-002 adds DS-007 to IR-001)
+- Implementation cycle: `Rework` (IR-002 adds DS-007 to IR-001; IR-003 is CR-001's Local Fix)
 - Implementation revision record: `.../implementation-revision-record.md`
-- Current implementation revision ID: `IR-002`
+- Current implementation revision ID: `IR-003`
 - Related solution revision IDs: `SR-002`, `SR-003`; architecture-review: `ARCH-REV-002`, `ARCH-REV-003`; code-review, API/E2E, delivery: `N/A`
 - Triggering finding IDs: IR-001's Design Impact (QR-004)
 
@@ -35,6 +35,7 @@ All steps of the Change / Refactor Sequence are implemented and checked, and eve
 | `3a1b4efb9a` | IR-001 records and evidence |
 | `9800ecb9b7` | SR-003 and ARCH-REV-003 docs as received |
 | `b58a3106c3` | DS-007: `long-unbroken-text` shaping for blocks with a run of at least 1,000 non-whitespace characters (QR-004) |
+| `438ea7fb65` | CR-001: the mobile message screens show loading and unavailable states (AC-006) |
 
 ## Routing Classification (Mandatory)
 
@@ -123,6 +124,7 @@ Evidence: `evidence/IMP-local-checks.log` (header, commit and counts per check).
 | IMP-10 | probes on the seed | `e66b453d5b` | Chrome headless, load in evidence | hub view, click, scan, L-010 (DS-006 only) | QR-001…QR-003 | QR-001/002/003 met (L-010 at 85.9 s led to SR-003) | IMP-M156-startup-scan-after.log, IMP-hub-after-S/, IMP-L010-unbroken-after/, IMP-L010-unbroken-after.cpuprofile | `176226`, click ops, `85` vs `89` ms |
 | IMP-11 | L-010 unbroken and words | `b58a3106c3` | Chrome headless, load ~9 | the four renderers, the feed | QR-004, AC-007 | Pass: 199 ms unbroken, 294 ms words | IMP-L010-ds007.log, IMP-L010-unbroken-ds007/, IMP-L010-words-ds007/ | `clickToStoreLoadedMs=198.8` |
 | IMP-12 | suites from a clean clone (`git clone` of the branch, `pnpm install --frozen-lockfile`, prebuild, build, nuxt prepare, then every suite) | `b58a3106c3` | isolated HOME | everything | AC-008 | see IMP-clean-clone.log | IMP-clean-clone.log | per-suite counts |
+| IMP-13 | `vitest run components/mobile`, web typecheck, guards | `438ea7fb65` | isolated HOME | mobile message screens | AC-006 (CR-001) | Pass | IMP-CR001-mobile-states.log | `Tests  77 passed` |
 
 - Not run, and why: the M-151 browser measurement on a large seeded Team/Org (request counts are covered by specs; left to API/E2E); the gated live suites (no provider proof needed).
 

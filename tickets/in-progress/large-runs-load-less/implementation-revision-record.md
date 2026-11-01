@@ -8,6 +8,7 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 | --- | --- | --- | --- | --- | --- |
 | IR-001 | Architecture Reviewer / `design-review-report.md` / ARCH-REV-002 (Pass) | N/A | `Initial Baseline` | `SR-002`, `ARCH-REV-002` | Steps 1–6, 8 done; step 7 misses QR-004 → `Design Impact` to the Solution Designer |
 | IR-002 | Architecture Reviewer / `design-review-report.md` / ARCH-REV-003 (Pass), after IR-001's Design Impact | IR-001 QR-004 | `Design Impact Rework` | `SR-003`, `ARCH-REV-003` | DS-007 done; QR-004 met; ready for code review |
+| IR-003 | Code Reviewer / `code-review-report.md` / CRR-001 (Fail 9.3/10) | CR-001 | `Local Fix` | `CRR-001` | Mobile loading / unavailable states; ready for targeted code review |
 
 ## Revision Entries
 
@@ -57,4 +58,23 @@ The current code and `implementation-handoff.md` remain authoritative. This reco
 - Local validation and result: L-010 unbroken 199 ms, words 294 ms (`evidence/IMP-L010-ds007.log`). Web typecheck passes; the three guards each pass; related specs 101 passed. Suites from a clean clone: `evidence/IMP-clean-clone.log`.
 - Next recipient or routing: `get_handoff_rules` → code review (Large/High).
 - Remaining limitations or risks: tool-call and reasoning renderers not measured with long tokens (the reviewer's recommendation); M-151 browser measurement left to API/E2E; FU-001, FU-002.
+
+### IR-003 — CR-001: mobile message screens show loading and unavailable states
+
+- Triggering role, report path, and round: `/software_engineering_team/code_reviewer`, `code-review-report.md`, CRR-001 (Fail, 9.3/10).
+- Triggering finding IDs: CR-001 (blocking).
+- Classification: `Local Fix`.
+- Prior authoritative result: IR-002 at `a0330adab1` (review commit `e2aecff03e`).
+- Current authoritative result: `438ea7fb65`, plus the IR-003 records commit.
+- Related revision IDs: `CRR-001`; solution, architecture, API/E2E, delivery `N/A`.
+- Approved behaviour or requirement IDs affected: AC-006 (never a silently empty log); design file mapping "loading and error states" for the mobile screens.
+- Implementation delta:
+  - `MobileTeamMessages.vue` reads `messagesStatus()`: a loading article while the focused member's list loads; an unavailable article with the server's reason on error; "No team messages yet" only for a loaded empty list.
+  - The `MobileActivityDigest.vue` summary follows the same three states.
+  - Both screens reuse the Team tab's `loading_messages` / `messages_unavailable` strings (en, zh-CN) through the new `services/collaborationMessages/participantMessagesStatusText.ts`. The mobile shell spec forbids the text `TeamCommunicationPanel` (the keys' namespace) in mobile files; that check is kept.
+  - `test-support/participantMessagesStub.ts` can hold a root's load or fail it with a reason.
+- Tests: three specs in `MobileTeamMessages.spec.ts`: loading, unavailable with the reason, and loaded empty. Each covers the screen and the digest summary.
+- Local validation and result: `evidence/IMP-CR001-mobile-states.log`: mobile specs 77 passed; web typecheck passes; the three guards each pass.
+- Next recipient or routing: `get_handoff_rules` → code review (targeted).
+- Remaining limitations or risks: unchanged from IR-002; FU-003 (the code reviewer's) recorded.
 
