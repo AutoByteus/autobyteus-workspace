@@ -97,7 +97,7 @@ Per `GLOSSARY.md`; no new domain word. "Server package" is the existing term (`d
 
 DS-001 (shell): `release-desktop.yml job -> pnpm install --frozen-lockfile (workspace) -> prepare-server.sh -> pnpm install --frozen-lockfile -> prisma generate -> server build -> web mobile build -> pnpm deploy --legacy --prod (files list applies) -> remove the mirrored bin folder -> clean workspace symlinks -> prisma generate in the package -> onnxruntime-web pruning -> electron-rebuild node-pty -> verify-packaged-server-startup (workflow step)`.
 
-DS-001 (Docker): `Dockerfile builder: COPY all importer manifests -> pnpm install --frozen-lockfile -> COPY sources -> builds -> pnpm deploy --legacy --prod -> prisma generate -> onnxruntime-web pruning -> mobile-web copy -> describe-server-package -> image`.
+DS-001 (Docker): `Dockerfile builder: COPY the linked-closed set of manifests -> pnpm install --frozen-lockfile -> COPY sources -> builds -> pnpm deploy --legacy --prod -> prisma generate -> onnxruntime-web pruning -> mobile-web copy -> describe-server-package -> image`.
 
 DS-002: `release-desktop.yml Windows job -> pnpm install --frozen-lockfile -> prepare-server.mjs -> pnpm install --frozen-lockfile (server) -> build -> pnpm deploy --legacy --prod into the stage -> remove the mirrored bin folder -> remove the stage node_modules -> rewrite the stage manifest (workspace packages as packed tarballs, devDependencies empty) -> npm install --before=<time> -> prisma generate -> import validation -> prune prebuilds -> electron-rebuild`.
 
