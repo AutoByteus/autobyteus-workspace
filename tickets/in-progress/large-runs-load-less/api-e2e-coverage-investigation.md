@@ -15,8 +15,8 @@ Paths are relative to `/Users/normy/autobyteus_org/autobyteus-worktrees/large-ru
 - Implementation handoff: `implementation-handoff.md` (IR-003), `implementation-revision-record.md`
 - Code review: `code-review-report.md` (CRR-002 Pass), `code-review-revision-record.md`
 - Delivery revision record: N/A
-- API/E2E revision record: `api-e2e-revision-record.md`; current revision `API-REV-001`
-- Round: 1. Trigger: code review CRR-002 Pass (reviewed route). Prior investigation: none
+- API/E2E revision record: `api-e2e-revision-record.md`; current revision `API-REV-002`
+- Round: 2. Trigger: code review CRR-005 Pass after the API-08 rework (IR-004 `935c5c9fa9`/`da91ae689a`, SR-004/SR-005; IR-005 `99cd853f79`, SR-006). Prior investigation: round 1 (this file)
 - Code: `f48bdfc0ab` … `438ea7fb65` on base `origin/personal` @ `efd28d5c4a`. Head `f4e7b1d13b` (ticket files only after `438ea7fb65`)
 
 ## Current Requirement And Design Basis
@@ -82,6 +82,12 @@ Paths are relative to `/Users/normy/autobyteus_org/autobyteus-worktrees/large-ru
 | API-08 | AC-001, AC-002, AC-004, AC-007; hub regression | large-hub probe on a seed | Existing probe | `--seed-to`, then `--from-seed … --live` (S, S-ROWS, L-001…L-011) on the head | The live hub journeys ran only on the earlier ticket's code |
 
 - Test progress log: `Yes`
+
+Round 2 plan (the reload rule of SR-004…SR-006: keep a root's loaded lists within one live sequence while the base has not passed the sequence they are consistent through):
+- API-08 first (round 1 Fail). L-001 and L-002 assert the expected counts: one participant fetch per running-hub selection; after a delegation at most one per loaded list, and none for the hub when the delegation added no hub message (SR-004: "a new child … with no message in the reconnect window gives 0").
+- API-09 (new, durable LRL-005): a running Team opened in a fresh page with its Team tab: one fetch; a live message: none; a stop and resume from the composer (a new live sequence): a reload, and the list equals the stored log.
+- API-03…API-06 rerun on the rebuilt server (the Team open read and the views gained fields); API-07 inside the hub run.
+- API-01 reuses IR-004/IR-005's checks (`evidence/IMP-IR004-checks.log`, `IMP-IR005-checks.log`).
 - Found during execution: the hub probe still read the removed `isChildHydrated` (L-004, L-009, L-011, L-005): a baseline fix reads `MemberLoader` instead.
 
 ## Durable Coverage To Add

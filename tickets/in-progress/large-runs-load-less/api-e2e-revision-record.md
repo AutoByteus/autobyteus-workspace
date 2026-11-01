@@ -7,6 +7,7 @@ The latest coverage investigation and execution coverage report remain authorita
 | Revision ID | Triggering Role / Report / Round | Related Upstream Revision IDs | Prior Result / Confidence | Current Result / Confidence |
 | --- | --- | --- | --- | --- |
 | API-REV-001 | Code reviewer, `code-review-report.md` CRR-002 Pass, round 1 | SR-003, ARCH-REV-003, IR-003, CRR-002 | N/A | Fail / 88% |
+| API-REV-002 | Code reviewer, `code-review-report.md` CRR-005 Pass, round 2 | SR-004, SR-005, SR-006, IR-004, IR-005, CRR-003…CRR-005 | Fail / 88% | Fail / 90% |
 
 ## Revision Entries
 
@@ -30,3 +31,34 @@ None.
 - New or remaining failure IDs: API-08 (a running hub's participant lists reloaded on every context publish)
 - Recommended owner: failure-origin review by the code reviewer; preliminary `Design Impact` (Solution Designer)
 - Remaining risks, blocked evidence, or untested scope: FU-004; remote participants, the sequence-gap reopen and the reasoning renderer (residuals in the investigation)
+
+### API-REV-002 — Round 2: the running-hub click and running-Team open fetch once; a delegation still refetches every loaded list
+
+- Triggering role, report path, and round: code reviewer, `code-review-report.md` (CRR-005 Pass), round 2
+- Triggering finding or case IDs: API-08 (round 1 Fail)
+- Related revision IDs: CRR-003 (failure origin: Design Impact), SR-004, SR-005, SR-006, ARCH-REV-004…006, IR-004, IR-005, CRR-004, CRR-005
+- Why this revision was recorded: rerun after the rework
+- Coverage decisions or durable test paths changed:
+  - LRL-005 added (`large-runs-load-less-cases.mjs`; script and probe header updated).
+  - The hub probe's L-001/L-002 assert the participant counts and record the hub's stored message count around the delegation.
+- Cases added, changed, removed, or rechecked:
+  - API-08 rechecked first: Fail, narrowed to the delegation.
+  - API-09 new: Pass.
+  - API-03…API-07 rerun: Pass.
+  - API-01 reuses IR-005's checks; API-02 kept.
+- Commands, environment, fixture, or broader-validation delta: server `dist` rebuilt at `99cd853f79`; the round-1 seed reused
+
+#### Prior Failure Resolution
+
+| Prior Case / Failure Reference | Previous Classification | Current Resolution | Case IDs Now Proving It |
+| --- | --- | --- | --- |
+| API-08: a running hub's selection fetched its list twice | Design Impact (CRR-003) | Fixed by SR-004/SR-005 (IR-004): one fetch | API-08 L-001 (`API-08-r2-hub-participant-requests.log` line 84) |
+| API-08: every publication re-read every loaded list (each new delegation) | Design Impact (CRR-003) | Not fixed for a delegation: with no hub message added (62 → 62), both loaded lists are fetched again (4/4 runs) | API-08 L-002 (`API-08-r2-delegation-refetch.log`) |
+| (CR-003) a running Team's open fetched twice | Design Impact (SR-006) | Fixed (IR-005): one fetch | API-09 |
+
+- Canonical artifacts and sections updated: investigation (meta, round 2 plan), report (all sections), progress log, `follow-ups.md` (FU-006), `evidence/api-e2e/`
+- Prior result and confidence: Fail, 88%
+- Current result and confidence: Fail, 90%
+- New or remaining failure IDs: API-08 L-002 (a delegation with no hub message refetches every loaded list)
+- Recommended owner: failure-origin review by the code reviewer (Local Fix or Design Impact)
+- Remaining risks, blocked evidence, or untested scope: FU-004, FU-006; remote participants, the sequence-gap reopen and the reasoning renderer (residuals)
