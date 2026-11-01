@@ -17,3 +17,16 @@
   5. the persisted-data decision (`Directly Usable — No Migration`).
 - Constraints for later stages: off by default; test data only; live Codex tests use `gpt-6.1-terra` (effort medium);
   prove from a clean clone; no "the user has verified" in Done-when; release only on the user's word.
+
+## Revision SR-003 (for ARCH-REV-002), 2026-11-01, commit after `7469fb6f98`
+- AR-001: DS-002 now has the in-process gate `installRequestedVersion`. An install failure is detected by the catch,
+  by `error` while `activeOperation === 'install'`, or by no `before-quit` within 60 s. It is recorded as
+  `install`, never `download`. The recovery hook `recoverAfterFailedInstall` belongs to `ElectronApplication`: it
+  calls `app.relaunch()` and then `app.exit(0)` only when the server is stopped or gone; otherwise there is no
+  relaunch (the 284 rule). The reconcile also accepts a late install-on-quit as `AUTO_UPDATED`. Tests are listed in
+  Validation Guidance.
+- AR-002: `automatic` is written only on `accepted: true`. Switching on with `updateStaged` while the status moved
+  on goes through `startAutomatic(V)`, so the cached download re-emits `update-downloaded`. A test must prove that
+  re-emit; if it does not hold, the escalation trigger applies.
+- N-1..N-5 are stated in Tradeoffs And Risks; N-4 is fixed (a timer per node follow). FU-003 is added. Requirements
+  are unchanged; the user confirmed REQ-004's meaning in his own words.
