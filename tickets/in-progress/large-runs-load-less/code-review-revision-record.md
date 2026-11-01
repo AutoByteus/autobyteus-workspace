@@ -7,6 +7,7 @@
 | CRR-001 | `code-review-report.md` | Implementation Review / IR-002 | N/A | Fail (9.3/10): Local Fix → Implementation | CR-001 |
 | CRR-002 | `code-review-report.md` | Implementation Review / IR-003 (Targeted Delta Review) | Fail (CRR-001) | Pass (9.5/10) | CR-001 resolved |
 | CRR-003 | `code-review-report.md` | API/E2E Failure-Origin Review / API-REV-001 Fail (API-08) | Pass (CRR-002) | Fail: Design Impact → Solution Designer | CR-002 new |
+| CRR-004 | `code-review-report.md` | Implementation Review / IR-004 (Full Re-Audit) | Fail (CRR-003) | Fail (9.3/10): Design Impact → Solution Designer | CR-002 resolved (hub, Org); CR-003 new |
 
 ## Revision Entries
 
@@ -88,3 +89,30 @@ None
 - Material score or classification changes: round-2 Pass superseded by the round-3 failure-origin result
 - Recommended recipient: Solution Designer
 - Remaining risks or uncertainty: Team and Org share the rule (C-14, not measured); FU-004 (composer send errors only logged) recorded by API/E2E
+
+### CRR-004 — Live-sequence reload rule: hub and Org fixed; running Team open still fetches twice
+
+- Canonical review report updated: `code-review-report.md` (the round-4 section; CR-002/CR-003; Classification; Latest Result)
+- Review entry point and round: Implementation Review, round 4
+- Review scope: `Full Re-Audit` (shared contract field; DS-002 reload rule)
+- Triggering role, report path, and finding or scenario IDs: Implementation Engineer, `implementation-handoff.md` (IR-004), CR-002
+- Relevant solution revision IDs: SR-004, SR-005
+- Relevant architecture-review revision IDs: ARCH-REV-004, ARCH-REV-005
+- Relevant implementation revision IDs: IR-004
+- Relevant API/E2E revision IDs: API-REV-001 (API-08 recheck pending)
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: CRR-003 `Fail`
+- Current authoritative result: `Fail`, `Design Impact` → Solution Designer
+- What changed in the review result and why: the per-root position (live sequence ID, C) and `reloadRoot`'s keep rule are correct. The advance condition was verified against `applyEvent`'s two results; stop/resume and restart reload; server IDs come per publisher. That resolves CR-002 for hub and Org, with tests and mutations. CR-003: a running Team opens through GraphQL hydration with no live sequence and commits as `'stored_rebuild'`, so the following stream snapshot reloads a list loaded in between, which is the CR-002 pattern for Team. SR-004 states one rule for all three roots; the implementation records it as a limitation outside SR-005; it needs a design choice
+- Supported product scenario / material-premise basis changes: C-14 (Team and Org share the rule) resolved; for Team, its open path is CR-003
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| CR-002 | Open (Design Impact) | Resolved for hub and Org; the Team open path is carried as CR-003 | SR-004, SR-005, ARCH-REV-005, IR-004 | Owner spec (10); `agentRunCollaborationParticipantReloads.spec.ts`; Team/Org stream specs; mutation results in `evidence/IMP-IR004-checks.log` |
+
+- New or remaining finding IDs: CR-003
+- Material score or classification changes: 9.3/10; Design Impact
+- Recommended recipient: Solution Designer
+- Remaining risks or uncertainty: the API-08 recheck is pending; FU-005 recorded by implementation

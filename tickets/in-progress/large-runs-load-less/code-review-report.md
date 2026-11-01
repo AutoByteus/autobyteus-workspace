@@ -2,7 +2,7 @@
 
 ## Review Round Meta
 
-- Review Entry Point: `API/E2E Failure-Origin Review` (round 3). Rounds 1–2 were `Implementation Review`; their results stand except where round 3 updates them
+- Review Entry Point: `Implementation Review` (round 4, IR-004 for CR-002; SR-004/SR-005, ARCH-REV-005). Round 3 was an `API/E2E Failure-Origin Review`. Rounds 1–2 were `Implementation Review`; their results stand except where round 3 updates them
 - Requirements Doc Reviewed As Context: `requirements-doc.md` (approved SR-001; SR-003 adds DEC-004 with no visible change)
 - Investigation Notes Reviewed As Context: `investigation-notes.md` (E-01…E-09, M-151/152/156/162/163, M-163b as cited)
 - Solution Revision Record Reviewed As Context: `solution-revision-record.md` (SR-001…SR-003)
@@ -16,8 +16,9 @@
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
 - Relevant Implementation Revision IDs: IR-001, IR-002, IR-003
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-003`
-- Current Review Round: 3 (failure-origin)
+- Current Code Review Revision ID: `CRR-004`
+- Current Review Round: 4
+- Round 4 Review Scope: `Full Re-Audit`, because the delta (`git diff 776d6b7d86 da91ae689a`, 82 files) adds a field to the three shared view contracts and the Team snapshot, and changes DS-002's reload rule. I re-audited the structural checks for the changed areas and the full scorecard; round-1 evidence for unchanged code is carried forward
 - Review Scope: `Targeted Delta Review` (round 2). Round 1 was a `Full Review`; its evidence is carried forward
 - Review Scope Evidence (round 2): `git diff e2aecff03e 438ea7fb65` stays within CR-001's files and behavior:
   - the two mobile screens;
@@ -37,6 +38,31 @@
 - Exact Failing Commands / Execution Mode: `pnpm -C autobyteus-web test:e2e:delegated-copies-large-hub --from-seed <--teams 12 --unrelated 50> --output-dir <fresh> --live --large-shape unbroken --samples 1` (clean env, scripted AGY, test-owned data)
 - Failure Evidence Paths: `evidence/api-e2e/API-08-hub-participant-reloads.log`, `evidence/api-e2e/API-07-08-hub-probe-live.json`
 - Delivery Revision Record: N/A
+
+## Round 4: CR-002 Rework (IR-004; SR-004, SR-005)
+
+- **Changed.**
+  - **Server.** `RootEventPublisher.liveSequenceId` is a random ID per instance. It is carried by every live snapshot connection, and as `live_sequence_id` in the active Agent-root and Org views and the Team snapshot. Stored inspections carry `null`. Contracts and `dist/` were rebuilt.
+  - **Web owner.** It keeps a per-root position (live sequence ID, consistent-through C). `advance` moves C within the same live sequence. `reloadRoot(kind, id, { liveSequenceId, baseChangeSequence })` keeps the lists and their in-flight loads only when the live sequence is non-null and the same, and B ≤ C. Anything else reloads, and `null` forgets the position.
+  - **Advance sites.** Hub and Org advance after `applyEvent` (applied, or a single `checkpoint_required` event); Team advances after each applied message.
+  - **Reload sites.** Hub `publish`, Org `publish`, the Team snapshot effect (which carries the rebuild), and the Team commit (`'stored_rebuild'` reloads; `'rebuilt_by_stream_snapshot'` does not).
+- **Verified.**
+  - **The advance condition.** `application === 'applied' || through === undefined` is exactly "applied, or a single `checkpoint_required`". `applyEvent` returns only those two values (`agentRunCollaborationContext.ts:38`, `agentOrgExecutionContext.ts:45`), and a sequence gap throws before anything is applied. No `checkpoint_required` event carries a message.
+  - **Inspect → attach** on a running hub: same publisher; B' = B keeps; B' > B (something happened before the subscription) reloads, which is conservative.
+  - **Stop and resume, or a restart:** a different live sequence or `null` reloads (SR-005).
+  - **Team reconnect:** `liveSequenceId` is reset on disconnect, so `advance` with `null` moves nothing.
+  - **Server:** active inspections and snapshots take the ID from the same publisher connection; stored ones get `null`.
+- **Tests.**
+  - The owner spec has 10 tests, including SR-004's four and SR-005's two.
+  - The new `agentRunCollaborationParticipantReloads.spec.ts` drives the real hub store and stream: selection gives 1 fetch; a new child gives 0, or 1 with a message, and that message is shown; a new publisher reloads.
+  - Team keep and reload across snapshots; Org advance on a batch and a checkpoint; the publisher identity on the server.
+  - Mutations fail them as expected (always reload: 5; no-op `advance`: 2; ignore the identity: 2).
+- **Checks.** `evidence/IMP-IR004-checks.log`: contracts 39/21; server typecheck, unit 7,670, integration 480 (FU-001 only); web typecheck PASS, 4,942 passed; three guards pass.
+- **One gap, CR-003 (C-15).** Opening a **running Team** still fetches a loaded list twice. The open reads the Team through GraphQL hydration, which names no live sequence, and commits as `'stored_rebuild'` (`teamRunHydrationCommit.ts`; `teamRunOpenCoordinator.ts`). That forgets the root's position. The live stream's snapshot follows at once, and with no kept position `reloadRoot` reloads, so a Team-tab list loaded between the two is fetched again. This is the API-08 pattern (CR-002) for Team. The implementation records it as a known limitation "outside SR-005", but SR-004 states "one rule for hub, Team and Org", with an expected 1 fetch per selection, and ARCH-REV-005 does not address the Team open path. Closing it needs a design choice:
+  - the Team open (or resume) read carries the live sequence ID and base of an active Team;
+  - on a running Team, the Team-tab load starts only once the stream snapshot is applied;
+  - or the limitation is accepted explicitly, with a follow-up.
+- **Result:** CR-002 resolved for hub and Org; CR-003 is `Design Impact` → Solution Designer.
 
 ## Round 3: API/E2E Failure-Origin Review (API-08)
 
@@ -270,7 +296,8 @@ No new premises beyond the candidate gate.
 
 | ID | Severity | Location | Problem | Required Action | Classification / Owner |
 | --- | --- | --- | --- | --- | --- |
-| CR-002 | Blocking (round 3) | `autobyteus-web/stores/agentRunCollaborationStore.ts:77` (`publish` → `reloadRoot`); the DS-002 reload policy (and the same rule for Team and Org, C-14) | On a running hub, the participant lists (the hub's is close to its whole log) are fetched again on every context publication: twice per selection (inspect, then attach) and again on every new delegation or settings Save (a reconnect for a fresh snapshot). This is avoidable repeated full-history transfer (DESIGN.md rule 3) against the ticket's outcome. It is correct and complete (API-05), and no worse than base | The Solution Designer revises the reload policy. Options: (a) on a running root, start the Team-tab load only once the live stream is ready, and do not reload on the attach that follows an inspection; (b) reload on a reconnect only when a gap is possible (for example a continuity check of the stream's change sequence), or fetch only the messages since the last applied sequence; (c) accept the per-reconnect reload as the protocol's cost, fix only the selection double, and record the rest. Apply one policy across hub, Team and Org | `Design Impact` → Solution Designer |
+| CR-003 | Blocking (round 4) | `autobyteus-web/services/runHydration/teamRunHydrationCommit.ts` (`'stored_rebuild'` with `liveSequenceId: null`) with `teamRunOpenCoordinator.ts`; the Team snapshot effect's `reloadRoot` | Opening a running Team: the GraphQL-hydrated commit forgets the root's position, the live snapshot then reloads every list loaded in between, so a Team-tab list is fetched twice per running-Team open, which is the CR-002 pattern for Team. It contradicts SR-004's "one rule for hub, Team and Org" and its expected one fetch per selection; ARCH-REV-005 did not cover this path | The Solution Designer decides: (a) the Team open or resume read returns the active Team's `live_sequence_id` and base, so the commit is a live rebuild; (b) on a running Team, start the Team-tab load only after the stream snapshot is applied; or (c) accept and record the limitation as a follow-up | `Design Impact` → Solution Designer |
+| CR-002 | **Resolved for hub and Org (round 4)**: IR-004 (`935c5c9fa9`, `da91ae689a`); Team open remains as CR-003. Round 3 text: | `autobyteus-web/stores/agentRunCollaborationStore.ts:77` (`publish` → `reloadRoot`); the DS-002 reload policy (and the same rule for Team and Org, C-14) | On a running hub, the participant lists (the hub's is close to its whole log) are fetched again on every context publication: twice per selection (inspect, then attach) and again on every new delegation or settings Save (a reconnect for a fresh snapshot). This is avoidable repeated full-history transfer (DESIGN.md rule 3) against the ticket's outcome. It is correct and complete (API-05), and no worse than base | The Solution Designer revises the reload policy. Options: (a) on a running root, start the Team-tab load only once the live stream is ready, and do not reload on the attach that follows an inspection; (b) reload on a reconnect only when a gap is possible (for example a continuity check of the stream's change sequence), or fetch only the messages since the last applied sequence; (c) accept the per-reconnect reload as the protocol's cost, fix only the selection double, and record the rest. Apply one policy across hub, Team and Org | `Design Impact` → Solution Designer |
 | CR-001 | — **Resolved (round 2)**: IR-003 `438ea7fb65` | `autobyteus-web/components/mobile/MobileTeamMessages.vue:6-8`; `autobyteus-web/components/mobile/MobileActivityDigest.vue:105-108` | The mobile message screens read only `listMessages()`. While the focused member's list is loading they say "No team messages yet for the focused member.", and after a failed load (a damaged log, AC-006) they keep saying it, which is a silently empty log. AC-006 requires the messages to show as unavailable with the reason and never silently empty, and the design mapping gives these screens "loading and error states". The desktop Team tab does this correctly (`CollaborationMessagesPanel.vue`) | Read the view's `messagesStatus()` on both screens. Show a loading state while `loading`, and an unavailable state with `error` when `error`, reusing the Team tab's `loading_messages` / `messages_unavailable` strings (en, zh-CN). Keep "No team messages yet" for a loaded empty list only; the digest summary likewise. Add specs for loading, error-with-reason, and loaded-empty | `Local Fix` → Implementation |
 
 ## Follow-ups
@@ -279,11 +306,11 @@ No new premises beyond the candidate gate.
 
 ## Classification
 
-- Round 3: `Design Impact` (CR-002), owned by the Solution Designer. The implementation follows DS-002's reload call sites as written. The policy itself causes the avoidable repeated transfer, and choosing a narrower trigger (or accepting part of it) is a design decision. Round 2: none (Pass). Round 1: `Local Fix`, owned by the Implementation Engineer: a bounded UI omission against the approved AC-006 and the design's own mapping. No design or requirement change is needed.
+- Round 4: `Design Impact` (CR-003), owned by the Solution Designer: the Team open path is not covered by SR-004/SR-005 as designed. Round 3: `Design Impact` (CR-002), owned by the Solution Designer. The implementation follows DS-002's reload call sites as written. The policy itself causes the avoidable repeated transfer, and choosing a narrower trigger (or accepting part of it) is a design decision. Round 2: none (Pass). Round 1: `Local Fix`, owned by the Implementation Engineer: a bounded UI omission against the approved AC-006 and the design's own mapping. No design or requirement change is needed.
 
 ## Recommended Recipient
 
-- Round 3: the Solution Designer. Then implementation, then a targeted source review, then API/E2E (API-08 request counts). Round 2: API/E2E Engineer. Round 1: Implementation Engineer.
+- Round 4: the Solution Designer (CR-003). Round 3: the Solution Designer. Then implementation, then a targeted source review, then API/E2E (API-08 request counts). Round 2: API/E2E Engineer. Round 1: Implementation Engineer.
 
 ## Residual Risks
 
@@ -293,6 +320,7 @@ No new premises beyond the candidate gate.
 
 ## Latest Authoritative Result
 
+- Review Decision (round 4): `Fail`. CR-002 resolved for hub and Org. CR-003 (running Team open fetches a loaded list twice) is `Design Impact` → Solution Designer. Scorecard 9.3/10 (Runtime Correctness 9.1, API/E2E Readiness 9.1). Everything else re-audited and holds
 - Review Decision (round 3, failure-origin): `Fail`. Origin: the DS-002 reload policy (reload on every publication) causes avoidable repeated participant-list transfer on running hubs; design gap; review gap acknowledged. `Design Impact` → Solution Designer (CR-002)
 - Review Decision (round 2): `Pass` ( CR-001 resolved; 9.5/10, every category ≥ 9.4). Round 1: `Fail`
 - Review Entry Point: `Implementation Review`
