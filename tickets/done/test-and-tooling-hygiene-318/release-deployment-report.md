@@ -1,5 +1,7 @@
 # Delivery / Release / Deployment Report — test-and-tooling-hygiene-318 (autobyteus-318)
 
+> DR-002 (below) supersedes DR-001's blocked verification.
+
 ## Scope
 
 - Finalize autobyteus-318 into `origin/personal`. No release requested. `Large` / `Low`, reviewed route: architecture review, CRR-001 Pass, API-REV-001 Pass 95.8%, CRR-002 test-code review Not Applicable.
@@ -33,3 +35,15 @@
 ## Final Status
 
 - Verification complete: `No` (AC-016). Finalization: `No`. Release: `Not required`. Blocker: FU-004 (Local Fix routed). Terminal package: `Not yet eligible`.
+
+## DR-002 — After the FU-004 Local Fix
+
+- Fix: `de3d284b14`, `f3950965c3` (baseline fixes, test files only). CRR-003 Pass; API-REV-002 Pass at 96.5%; CRR-004 Not Applicable.
+- Integration: `origin/personal` still `3b9dc912a1` (already contained). No non-ticket change after `1e9bab6d4b`. Checkpoint `49a380c37b` (the reviewer's round-2 documents).
+- Verification: **`Sufficient`**. AC-016 holds: API-08's clean clone has full `test:integration` with 499 passed, 0 failed; the server gate PASS at its baseline. See `handoff-summary.md`.
+- Docs sync: `Updated` (the diagram probe examples), per `docs-sync-report.md`.
+- Release decision: `No release` (none requested).
+- Ticket state: archived to `tickets/done/test-and-tooling-hygiene-318/`.
+- Repository finalization: ticket branch commit and push (Secret Gate first), `git merge --no-ff` into `origin/personal` with the Secret Gate, licensing and hygiene checks, pushed after checking `origin/personal` was unchanged. The commits are in the terminal message.
+- Cleanup: the worktree and its local branches are removed after the push; the remote ticket branch is kept.
+- Final status: verification `Yes`; finalization `Yes`; release `Not required`; cleanup `Yes`; blocker `None`; terminal package sent to the Solution Designer.

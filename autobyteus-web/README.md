@@ -420,8 +420,10 @@ certified. A narrow desktop viewport is not mobile Projects support.
 The shared Markdown Mermaid viewer has a self-starting browser probe covering inline sizing; fine-pointer rest/hover/focus chrome; no-hover, coarse-pointer, and hybrid fine-primary/coarse-secondary fallbacks; the four uniform icon-only viewer actions; open/fit/zoom/pan; keyboard and touch input; link routing; render lifecycle; localization; focus containment; narrow/200%-text layouts; and a diagram opened from an already-maximized artifact preview. The nested scenario checks viewer-over-host stacking and hit ownership, retained artifact path/content/Preview/maximize state, one-live-SVG restoration, layer-scoped close/backdrop/first-`Escape` dismissal, later host dismissal by a distinct `Escape`, and repeated-cycle cleanup. It installs a temporary Nuxt fixture route, starts an owned development server, runs Chrome through Playwright Core, and removes owned resources before returning:
 
 ```bash
-pnpm test:e2e:diagram-zoom-viewer -- --output-dir test-results/diagram-zoom-viewer
+pnpm test:e2e:diagram-zoom-viewer -- --output-dir test-results/diagram-zoom-viewer-$(date +%Y%m%dT%H%M%S)
 ```
+
+The output directory must be new or empty: the probe refuses a non-empty one and exits without writing.
 
 The probe chooses a free local port by default. Use `--port <port>` to pin it. If automatic browser discovery does not find Chrome/Chromium, pass `--browser-executable <path>` or set `PLAYWRIGHT_CHROME_EXECUTABLE_PATH=<path>`.
 
