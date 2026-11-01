@@ -95,4 +95,36 @@ describe("TaskAgentExecutionRegistry single liveness predicate (AR-005)", () => 
     expect(execution.handle.getOrCreateAgentRun).toHaveBeenCalled();
     expect(registry.isLive("reopened-task")).toBe(true);
   });
+
+  it("gives a stopped retained handle the copy's current selection, with its pending runtime switch, when it wakes (autobyteus-348)", async () => {
+    const { registry, handles, worker } = buildRegistry();
+    const prepared = await registry.beginPreparation({
+      address: "/worker", agentRunId: "switched-task", sourceNode: worker,
+      message: new AgentInputUserMessage("start", SenderType.USER),
+    }).prepare();
+    prepared.sealForCommit();
+    prepared.commitAfterDurability().releaseWork(() => undefined);
+    await flush();
+    const execution = handles.get("switched-task")!;
+    execution.emit("idle");
+    await registry.tryShutDownIfQuiet("switched-task");
+
+    // The user chose another agent runtime while the copy was stopped: its record now holds the new launch and the pending switch.
+    const pending = { switchId: "switch-1", from: { runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "gpt", llmConfig: null, platformAgentRunId: "codex-thread" } };
+    const switched = { ...worker, runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "claude-sonnet", pendingRuntimeSwitch: pending };
+    await registry.restore({ address: "/worker", agentRunId: "switched-task", platformAgentRunId: null, sourceNode: switched });
+    expect(execution.handle.replaceSelection).toHaveBeenCalledWith(expect.objectContaining({
+      runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, llmModelIdentifier: "claude-sonnet", platformAgentRunId: null, pendingRuntimeSwitch: pending,
+    }));
+    expect(execution.handle.getOrCreateAgentRun).toHaveBeenCalled();
+  });
+
+  it("builds a restore-mode handle for a switched copy with its pending runtime switch in the execution it activates (autobyteus-348)", async () => {
+    const { registry, handles, worker } = buildRegistry();
+    const pending = { switchId: "switch-1", from: { runtimeKind: RuntimeKind.CODEX_APP_SERVER, llmModelIdentifier: "gpt", llmConfig: null, platformAgentRunId: "codex-thread" } };
+    await registry.restore({ address: "/worker", agentRunId: "reopened-switched", platformAgentRunId: null,
+      sourceNode: { ...worker, runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, pendingRuntimeSwitch: pending } });
+    const execution = handles.get("reopened-switched")!;
+    expect(execution.input.execution).toMatchObject({ runtimeKind: RuntimeKind.CLAUDE_AGENT_SDK, platformAgentRunId: null, pendingRuntimeSwitch: pending });
+  });
 });

@@ -31,7 +31,8 @@ import { sendE2eSendMessageCommand } from "../helpers/websocket-command-helpers.
 //         session ID returns, the field is cleared), switch again, edit only the model while the switch is pending (the
 //         switch stays), refuse a running run, then the first message makes the switch.
 //   RS-03 a host with a delegated copy: one Save carries the host's own runtime and the copy's model; the copy keeps its
-//         runtime; the delegated copy itself cannot switch runtime (REQ-013).
+//         runtime; the delegated copy cannot switch through the stopped-run mutation (REQ-013); it switches through its own
+//         choice (updateDelegatedLaunchSelections, autobyteus-348; see delegated-copy-model-change DCM-009).
 //   RS-04 a server restart: a pending switch survives it; a switch that was activated (marker first, no user record yet)
 //         still delivers its notice with the first input after the restart, once (I-11, derived from the raw traces).
 //   RS-05 a failed attempt: the archive step fails after the native candidate wrote its instruction; the previous agent's file
@@ -457,7 +458,7 @@ describe.runIf(ENABLED)("agent runtime switch, native runtime and stopped-run se
     const hostBefore = await metadata(hostId);
     const combined = (await gql("mutation($input: UpdateDelegatedLaunchSelectionsInput!) { updateDelegatedLaunchSelections(input: $input) { success outcome message fieldErrors { path message } } }", { input: {
       rootKind: "AGENT", rootRunId: hostId,
-      changes: [{ agentRunId: copyId, selection: { llmModelIdentifier: AGY_ALT, llmConfig: null } }],
+      changes: [{ agentRunId: copyId, selection: { runtimeKind: AGY, llmModelIdentifier: AGY_ALT, llmConfig: null } }],
       configuredPatches: [{ scopeKind: "CONFIGURED_AGENT", scopeAddress: "/", runtimeKind: NATIVE, llmModelIdentifier: nativeModel, llmConfig: null }] } })).updateDelegatedLaunchSelections;
     expect(combined, JSON.stringify(combined)).toMatchObject({ success: true, outcome: "UPDATED" });
     const hostAfter = await metadata(hostId);
