@@ -5,16 +5,43 @@
 - Upstream Requirements Doc: `/Users/normy/autobyteus_org/autobyteus-worktrees/large-runs-load-less/tickets/in-progress/large-runs-load-less/requirements-doc.md` (SR-001, approved by the Solution Designer within the direction; user informed)
 - Upstream Investigation Notes: `…/investigation-notes.md`
 - Upstream Solution Revision Record: `…/solution-revision-record.md`
-- Reviewed Design Spec: `…/design-spec.md` (SR-006, Ready; user approval of the design `Not required`)
+- Reviewed Design Spec: `…/design-spec.md` (SR-008, Ready; user approval of the design `Not required`)
 - Supplemental Task Artifacts Reviewed: `evidence/M-*` (before measurements, the CPU profile), `evidence/probes/*.mjs`
-- Relevant Solution Revision IDs: `SR-001`…`SR-006`
+- Relevant Solution Revision IDs: `SR-001`…`SR-008`
 - Architecture Review Revision Record: `…/architecture-review-revision-record.md`
-- Current Architecture Review Revision ID: `ARCH-REV-006`
-- Current Review Round: `6` (targeted: SR-006, the running-Team open commit as a live rebuild, after code review CRR-004 / CR-003)
-- Trigger: Solution Designer re-review request (SR-006), 2026-11-01; code at `f11a8edeaa`
-- Prior Review Round Reviewed: `5` (ARCH-REV-005, Pass)
-- Latest Authoritative Round: `6`
+- Current Architecture Review Revision ID: `ARCH-REV-008`
+- Current Review Round: `8` (targeted: SR-008, one message predicate per root, for AR-006)
+- Trigger: Solution Designer re-review request (SR-008), 2026-11-01
+- Prior Review Round Reviewed: `7` (ARCH-REV-007, Fail: AR-006)
+- Latest Authoritative Round: `8`
 - Current-State Evidence Basis: worktree `/Users/normy/autobyteus_org/autobyteus-worktrees/large-runs-load-less` @ `efd28d5c4a` (no source changes). Code opened at the lines cited below.
+
+## Round 8 Scope (SR-008, Targeted)
+
+- **AR-006 is resolved.** Each root owns a required `isMessageEvent` predicate, passed as `new RootEventPublisher({ isMessageEvent })`. `publish` sets `lastMessageChangeSequence` when the predicate holds.
+- **Construction sites verified.** These are the only three in production code:
+  - `standalone-root-builder.ts:132`: `kind === "communication"`;
+  - `agent-org-execution-scope-builder.ts:56`: `kind === "communication"`;
+  - `team-root-materializer.ts:55`, through the `TeamRunEventPublisher` alias: `eventSourceType === TeamRunEventSourceType.COMMUNICATION`.
+- Each predicate matches the client's append sites: `agentRunCollaborationContext.ts:181`, `agentOrgExecutionContext.ts:276`, `teamExecutionViewState.ts:436-443`.
+- Making the parameter required means a new root kind cannot omit it.
+- **Tests:** one per root kind (a message advances M; a presentation event does not).
+- **Implementation note:** 17 test files construct publishers directly, and their fixtures must now pass a predicate.
+
+## Round 7 Scope (SR-007, Targeted)
+
+- **The finding and the re-examination are right.** The keep rule measured every root change, but a delegation's reconnect window always contains the new copy's presentation events, so B > C and every delegation reloaded (API-08 L-002). The Team tab only needs to know whether a **message** was published after C. REQ-002 is unchanged.
+- **The rule is sound.** C means "the lists hold every message through C". M is `last_message_change_sequence`, read in the same `RootLivePosition` as the ID and B (`root-event-publisher.ts:8-9,40-43`).
+  - A rebuild with the same non-null ID and M ≤ C cannot have missed a message in (C, B], so keeping the lists and setting C := B is correct.
+  - That holds for in-flight loads too: no message was published after C.
+  - Anything else reloads.
+  - Rejecting (b) (reconnect protocol rework) and (c) (keeping the per-delegation reload) is proportionate.
+- **Gap: "the latest `communication` event" is not one thing in a generic publisher.**
+  - `RootEventPublisher<TEvent>` (`root-event-publisher.ts:25-50`) is shared by three event types whose message events have different shapes:
+    - Agent root: `{ kind: "communication", message }` (`standalone-agent-run-root.ts:228`, `standalone-root-event.ts:22`);
+    - Org: `{ kind: "communication", message }` (`agent-org-run.ts:174`, `agent-org-run-event.ts:17`);
+    - Team: `{ eventSourceType: TeamRunEventSourceType.COMMUNICATION, payload }`, projected to the client's `TEAM_COMMUNICATION_MESSAGE` (`team-execution-view-projector.ts:76-80`).
+  - The design names no owner for "is this a message event" per root. If that predicate misses one root's message shape, M never advances for that root, lists are kept, and messages are silently missed (REQ-002). See AR-006.
 
 ## Round 6 Scope (SR-006, Targeted)
 
@@ -127,7 +154,7 @@ SR-002 answers each finding in the design's "SR-002 Revision Summary". Verified 
 
 | Behavior ID | Kind | Design Alignment With Approved Intent | Approved Trigger / Contract And Current-State Evidence | Target Outcome / Path / Spine Coherence | Status | Required Action |
 | --- | --- | --- | --- | --- | --- | --- |
-| BEH-001 | User | Pass | Pass | Pass (SR-005: the reload guard is scoped by `live_sequence_id`) | Confirmed | — |
+| BEH-001 | User | Pass | Pass | Pass (SR-007 keep rule on messages; SR-008 one required predicate per root) | Confirmed | — |
 | BEH-002 | User | Pass | Pass | Pass (SR-002: tree-only inspections; `MemberLoader` generation per rebuild) | Confirmed | — |
 | BEH-003 | User | Pass | Pass | Pass | Confirmed | — |
 | BEH-004 | System | Pass | Pass | Pass (a damaged log fails only the records-owner reads; the view opens) | Confirmed | — |
@@ -323,7 +350,7 @@ None in the requirements.
 
 ## Findings
 
-None open. AR-001…AR-004 are resolved (ARCH-REV-002); DS-007 passed (ARCH-REV-003); AR-005 is resolved (ARCH-REV-005); SR-006 passes the targeted review (ARCH-REV-006).
+None open. AR-001…AR-006 are resolved (ARCH-REV-002, ARCH-REV-005, ARCH-REV-008). DS-007 (ARCH-REV-003) and SR-006 (ARCH-REV-006) passed.
 
 ## Classification
 
@@ -345,5 +372,5 @@ Implementation Engineer (`/software_engineering_team/implementation_engineer`)
 ## Latest Authoritative Result
 
 - Review Decision: `Pass`
-- Material-Premise Gate: `Pass` (no new premise)
-- Notes: round 6 is targeted. The running-Team open commits as a live rebuild with the publisher's identity and base, read together. The participant-list reload rule is now identical for hub, Team and Org. task_size=Large, architectural_risk=High.
+- Material-Premise Gate: `Pass`
+- Notes: round 8 is targeted. Participant lists are kept across a rebuild only when the live sequence ID is the same and no message (by each root's own required predicate) was published after C. The rule is the same for hub, Team and Org. task_size=Large, architectural_risk=High.

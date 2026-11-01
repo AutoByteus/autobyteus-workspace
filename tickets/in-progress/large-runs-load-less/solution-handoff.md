@@ -129,3 +129,27 @@ Independent architecture review, then implementation per the Change / Refactor S
 - **Route:** `get_handoff_rules` → the revised Large/High package → `/software_engineering_team/architecture_reviewer` (targeted SR-006).
 
 - 2026-11-01: ARCH-REV-006 **Pass** on SR-006, with a condition for implementation: read `liveSequenceId` and `baseChangeSequence` together from one publisher. The reviewer delivered the handoff to `/software_engineering_team/implementation_engineer`. No Solution Designer forwarding required.
+
+## SR-007 Revision (after failure-origin review CRR-006, CR-004, 2026-11-01)
+
+- **Finding:** each delegation on a running hub reloaded every loaded list with no new message, because the new copy's non-message events push B past C before the snapshot.
+- **Re-examined** (the fourth correction of this rule): the requirement holds; the rule measured all root changes instead of messages.
+- **Option (a):**
+  - `RootEventPublisher` tracks `lastMessageChangeSequence` (the latest `communication` event), read in one `RootLivePosition` with `liveSequenceId` and `changeSequence`.
+  - It is carried as `last_message_change_sequence` in active views, snapshots and `getTeamRunResumeConfig` (`null` when stored).
+  - Keep the lists when the live sequence is the same and the last message ≤ C (then C := B); reload otherwise.
+- **Tests:** a delegation with no message gives 0 refetches; a message in the window reloads once; the SR-004…006 cases still hold.
+- **Route:** `get_handoff_rules` → the revised Large/High package → `/software_engineering_team/architecture_reviewer` (targeted SR-007).
+
+## SR-008 Revision (after ARCH-REV-007, AR-006, 2026-11-01)
+
+- A required `isMessageEvent` predicate per root, passed as `new RootEventPublisher({ isMessageEvent })`:
+  - Agent root at `standalone-root-builder.ts:132`: `kind === "communication"`;
+  - Org at `agent-org-execution-scope-builder.ts:56`: `kind === "communication"`;
+  - Team at `team-root-materializer.ts`: `eventSourceType === TeamRunEventSourceType.COMMUNICATION`.
+- Each predicate matches the client's append sites (`agentRunCollaborationContext.ts:181`, `agentOrgExecutionContext.ts:276`, `teamExecutionViewState.ts:436-443`).
+- `publish` sets `lastMessageChangeSequence` when the predicate holds.
+- **Tests:** one per root kind (a message advances M; a presentation event does not).
+- **Route:** the architecture-review rule → `/software_engineering_team/architecture_reviewer` (targeted SR-008).
+
+- 2026-11-01: ARCH-REV-008 **Pass** on SR-008 (with SR-007): AR-006 resolved; the three production construction sites verified. The reviewer delivered the handoff to `/software_engineering_team/implementation_engineer`. No Solution Designer forwarding required.

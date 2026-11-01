@@ -12,6 +12,8 @@ The latest `design-review-report.md` remains authoritative.
 | ARCH-REV-004 | Round 4 / targeted re-review of SR-004 (after CRR-003) | SR-004 | Pass | Fail (Design Impact) | AR-005 new |
 | ARCH-REV-005 | Round 5 / targeted re-review of SR-005 | SR-005 | Fail | Pass | AR-005 resolved |
 | ARCH-REV-006 | Round 6 / targeted re-review of SR-006 (after CRR-004) | SR-006 | Pass | Pass | none |
+| ARCH-REV-007 | Round 7 / targeted re-review of SR-007 (after CRR-006) | SR-007 | Pass | Fail (Design Impact) | AR-006 new |
+| ARCH-REV-008 | Round 8 / targeted re-review of SR-008 | SR-008 | Fail | Pass | AR-006 resolved |
 
 ## Revision Entries
 
@@ -152,3 +154,45 @@ None (no open findings)
 - Material classification changes: none (task_size=Large, architectural_risk=High)
 - Recommended recipient: Implementation Engineer; informational notice to the Solution Designer
 - Remaining risks or uncertainty: as in ARCH-REV-003
+
+### ARCH-REV-007 — Targeted re-review of SR-007: the message-based keep rule; the per-root message predicate is missing
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/large-runs-load-less/tickets/in-progress/large-runs-load-less/design-review-report.md`
+- Review round and trigger: round 7 (targeted), Solution Designer re-review request (SR-007), after CRR-006 / CR-004 (API-08 L-002), 2026-11-01; code at `6ab1cfa81c`
+- Triggering role, report path, and finding IDs: Solution Designer, `solution-handoff.md` ("SR-007 Revision"); `code-review-report.md` CR-004; `evidence/api-e2e/API-08-r2-delegation-refetch.log`
+- Relevant solution revision IDs: `SR-007`
+- Prior authoritative decision: `Pass` (ARCH-REV-006)
+- Current authoritative decision: `Fail`, `Design Impact`
+- What changed in the review result:
+  - The keep rule (same ID and M ≤ C, then keep and set C := B) is accepted as correct.
+  - New AR-006: the generic `RootEventPublisher` serves three message shapes (Agent and Org `kind: "communication"`, Team `eventSourceType: COMMUNICATION`), and the design names no per-root predicate for which events advance M.
+
+#### Prior Finding Resolution
+
+None (AR-001…AR-005 stay resolved)
+
+- New or remaining finding IDs: AR-006 (Medium)
+- Material classification changes: none (task_size=Large, architectural_risk=High)
+- Recommended recipient: Solution Designer
+- Remaining risks or uncertainty: as in ARCH-REV-003
+
+### ARCH-REV-008 — Targeted re-review of SR-008: one required message predicate per root; Pass
+
+- Canonical design review report: `/Users/normy/autobyteus_org/autobyteus-worktrees/large-runs-load-less/tickets/in-progress/large-runs-load-less/design-review-report.md`
+- Review round and trigger: round 8 (targeted), Solution Designer re-review request (SR-008), 2026-11-01
+- Triggering role, report path, and finding IDs: Solution Designer, `solution-handoff.md` ("SR-008 Revision"); AR-006
+- Relevant solution revision IDs: `SR-008`
+- Prior authoritative decision: `Fail` (ARCH-REV-007)
+- Current authoritative decision: `Pass`
+- What changed in the review result: a required `isMessageEvent` per publisher, set at the only three production construction sites. Each predicate matches the client's append sites.
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| AR-006 | Open (Medium) | Resolved | SR-008 | `standalone-root-builder.ts:132`, `agent-org-execution-scope-builder.ts:56`, `team-root-materializer.ts:55`; client append sites `agentRunCollaborationContext.ts:181`, `agentOrgExecutionContext.ts:276`, `teamExecutionViewState.ts:436-443`; one test per root kind |
+
+- New or remaining finding IDs: none
+- Material classification changes: none (task_size=Large, architectural_risk=High)
+- Recommended recipient: Implementation Engineer; informational notice to the Solution Designer
+- Remaining risks or uncertainty: as in ARCH-REV-003; 17 test files constructing publishers must pass a predicate

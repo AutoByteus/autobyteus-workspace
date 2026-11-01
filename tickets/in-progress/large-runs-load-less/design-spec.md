@@ -2,7 +2,7 @@
 
 ## Solution And Approval Basis
 
-- Current solution revision ID: `SR-006` (after CRR-004 CR-003: the Team open reads its live sequence; SR-005: after ARCH-REV-004 AR-005: the consistent-through sequence is scoped to one live sequence; SR-004 after CRR-003 CR-002: a running root reloaded its lists on every publication; SR-003 after IR-001: QR-004 missed; SR-002 after ARCH-REV-001)
+- Current solution revision ID: `SR-008` (after ARCH-REV-007 AR-006: each root owns its message predicate; SR-007: after CRR-006 CR-004: the keep rule measures messages, not every root change; SR-006: after CRR-004 CR-003: the Team open reads its live sequence; SR-005: after ARCH-REV-004 AR-005: the consistent-through sequence is scoped to one live sequence; SR-004 after CRR-003 CR-002: a running root reloaded its lists on every publication; SR-003 after IR-001: QR-004 missed; SR-002 after ARCH-REV-001)
 - Approved requirements baseline: `requirements-doc.md` SR-001, approved by the Solution Designer within the direction (the user informed in the conversation, 2026-11-01)
 - Behavior-defining supplements: none
 - User approval of the design, when the direction requires it: `Not required` (the Task asks for none)
@@ -10,6 +10,32 @@
 - Canonical investigation-notes path: `tickets/in-progress/large-runs-load-less/investigation-notes.md`
 - Authorities read: `references/architecture-design.md`, `references/design-principles.md` (this conversation), `DESIGN.md` (rules 3, 5, 7, re-read 2026-11-01), `autobyteus-server-ts/docs/design/data_migration_guideline.md` §6 ("Don't validate history at startup")
 - Project design-principle conflicts: none
+
+## SR-008 Revision Summary (ARCH-REV-007, AR-006: one message predicate per root)
+
+- **Finding.** `RootEventPublisher<TEvent>` serves three event shapes. A message is `{ kind: "communication" }` for the Agent root (`standalone-agent-run-root.ts:228`) and the Org (`agent-org-run.ts:174`), but `{ eventSourceType: TeamRunEventSourceType.COMMUNICATION }` for the Team (`team-execution-view-projector.ts:76-80`). A generic "latest communication event" could miss one shape: M would then never advance for that root, and its lists would be kept while messages are missed.
+- **Decision.** Each root owns its predicate and passes it to its publisher, `new RootEventPublisher({ isMessageEvent })`. `publish` sets `lastMessageChangeSequence` when the predicate holds.
+  - Agent root at `standalone-root-builder.ts:132`: `(event) => event.kind === "communication"`.
+  - Org at `agent-org-execution-scope-builder.ts:56`: `(event) => event.kind === "communication"`.
+  - Team at `team-root-materializer.ts` (the `TeamRunEventPublisher` alias): `(event) => event.eventSourceType === TeamRunEventSourceType.COMMUNICATION`.
+  - Each predicate matches exactly the events the client appends to its participant lists: `agentRunCollaborationContext.ts:181`, `agentOrgExecutionContext.ts:276` and `teamExecutionViewState.ts:436-443`. `isMessageEvent` is required, so a new root kind cannot forget it.
+- **Tests,** one per root kind: a message advances M; a presentation event does not.
+
+## SR-007 Revision Summary (CRR-006, CR-004: the keep rule measured every root change, not messages)
+
+- **Finding** (API-08 L-002, 4 of 4 runs). One new delegation on a running hub refetches every loaded list although no message was written (62 before, 62 after).
+  - The delegation's `task_execution_started` returns `checkpoint_required`, and the stream reconnects for a fresh snapshot.
+  - The new copy publishes non-message events (`agent_presentation` × 16 and a batch) into the root's change sequence before the snapshot, so B > C and the lists reload.
+  - So SR-004's measure, the root's change sequence, reloads on essentially every delegation. The PM's main path is a several-MB hub list per delegation.
+- **Re-examination** (the fourth correction of this rule: SR-004, SR-005, SR-006, now). The requirement is achievable and unchanged (REQ-002, no visible change). The rule watched the wrong quantity: the Team tab needs a reload only when a **message** could have been missed, not any root change.
+- **Decision, option (a), one rule for hub, Team and Org:**
+  - **Server.** `RootEventPublisher` also keeps `lastMessageChangeSequence`: the sequence of the latest `communication` event it published, 0 when none. It is read together with `liveSequenceId` and `changeSequence` in one `RootLivePosition` (the ARCH-REV-006 condition). Active views and snapshots, and `getTeamRunResumeConfig`, carry it as `last_message_change_sequence` (stored views: `null`).
+  - **Client.** C keeps its meaning: the lists hold every message through sequence C. On a rebuild with the same non-null `live_sequence_id` and `last_message_change_sequence <= C`, no message was missed: the lists are kept and C becomes B. Any other rebuild reloads (another or no live sequence, or a message past C).
+  - Options (b) and (c) were rejected. (b) reworks the reconnect protocol and is larger. (c) keeps a per-delegation cost no smaller than the old snapshots on the user's main path.
+- **Tests:**
+  - a delegation with no message in the window refetches nothing (API-08 L-002: 0);
+  - a message in the window reloads, and the message shows once;
+  - every SR-004…SR-006 case still holds.
 
 ## SR-006 Revision Summary (CRR-004, CR-003: a running Team's open forgets its live position)
 
