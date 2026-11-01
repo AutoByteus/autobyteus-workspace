@@ -9,6 +9,7 @@ The latest `code-review-report.md` (or `api-e2e-test-review-report.md`) is autho
 | CRR-001 | `code-review-report.md` | Implementation Review, round 1 (IR-001) | N/A | Pass | None |
 | CRR-002 | `code-review-report.md` | API/E2E Failure-Origin Review, round 2 (API-REV-001 F-API-001; O-1) | Pass | Fail: `Design Impact` → Solution Designer | F-API-001; CR-C2 and CR-C6 reclassified |
 | CRR-003 | `code-review-report.md` | Implementation Review, round 3 (IR-002, SR-005; Full Re-Audit of D3, D4 and the input path) | Fail | Pass | F-API-001, CR-C2 / O-1 (resolved by design and code) |
+| CRR-004 | `api-e2e-test-review-report.md` | Proportional API/E2E Test-Code Review (API-REV-002 Pass) | Pass (CRR-003) | Not Applicable (no durable test changed) | None |
 
 ## Revision Entries
 
@@ -105,3 +106,31 @@ None (CRR-001 had no findings). Candidates CR-C2 and CR-C6 from round 1 are recl
 - Material score or classification changes: category 8 goes from 8.6 to 9.3; category 2 goes from 9.5 to 9.6; overall 9.4; Large / High
 - Recommended recipient: API/E2E engineer
 - Remaining risks or uncertainty: the runtime proof of both fixes; the rest of design step 7; `configured-agent-execution-handle.ts` (496) and `root-team-run.ts` (500) are at the size limit.
+
+### CRR-004 — Proportional test-code review after API-REV-002 Pass
+
+- Canonical review report updated: `api-e2e-test-review-report.md` (new)
+- Review entry point and round: Successful API/E2E Test-Code Review, round 1
+- Review scope: `N/A` (test review)
+- Triggering role, report path, and finding or scenario IDs: API/E2E engineer, `api-e2e-execution-coverage-report.md` (API-REV-002 `Pass`, 95.1%); F-API-001 and O-1 proven at runtime (API-04-r2, API-04B-r2, API-04C-r2, API-04E, API-02-r2, API-03-r2, API-05T-r2)
+- Relevant solution revision IDs: SR-005
+- Relevant architecture-review revision IDs: ARCH-REV-003
+- Relevant implementation revision IDs: IR-001, IR-002
+- Relevant API/E2E revision IDs: API-REV-001, API-REV-002
+- Relevant delivery revision IDs: N/A
+- Prior authoritative result: `Pass` (CRR-003)
+- Current authoritative result: `Not Applicable`, passing to delivery
+- What changed in the review result and why: no repository test code changed in either API/E2E round. The temporary probes are evidence; their verdict rules were read as an evidence-quality check and they test SR-005's outcomes, so they don't pass trivially.
+- Supported product scenario / material-premise basis changes: None
+
+#### Prior Finding Resolution
+
+| Finding ID | Prior Status | Current Status | Related Revision References | Verification Evidence |
+| --- | --- | --- | --- | --- |
+| F-API-001 | Resolved by design and code; runtime proof pending (CRR-003) | Resolved; proven at runtime | API-REV-002 | API-04-r2, API-04B-r2, API-04C-r2 (live); API-04E (42 targets, 0 violations) |
+| CR-C2 / O-1 | Resolved by design and code; runtime proof pending (CRR-003) | Resolved; proven at runtime | API-REV-002 | API-02-r2 and API-03-r2 (1 notice in memory per member, Org agent and copy); API-05T-r2 (shown once, after a reload; screenshots) |
+
+- New or remaining finding IDs: None
+- Material score or classification changes: None; Large / High
+- Recommended recipient: delivery engineer
+- Remaining risks or uncertainty: the Docker in-place update is untested and the real Squirrel install is user-only; O-2 (log classification); the same-instance property has no durable end-to-end test; the AR-003 refused copy has unit coverage only; `configured-agent-execution-handle.ts` (496) and `root-team-run.ts` (500) are at the size limit; FU-001 to FU-003.
