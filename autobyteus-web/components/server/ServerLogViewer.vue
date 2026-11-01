@@ -4,7 +4,7 @@
       <h4 class="text-lg font-medium text-gray-800">{{ $t('server.components.server.ServerLogViewer.server_logs') }}</h4>
       <div class="flex items-center space-x-2">
         <button 
-          @click="refreshLogs" 
+          @click="refreshLogs()" 
           class="text-sm text-blue-600 hover:text-blue-800 focus:outline-none flex items-center"
           :disabled="isLoadingLogs"
         >

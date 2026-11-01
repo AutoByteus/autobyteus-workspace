@@ -1,0 +1,34 @@
+# IMP-03 release_smoke.py unit tests
+# Command: python3 -m unittest -v scripts/tests/test_release_smoke.py
+# Commit: 927e343504
+# Environment: macOS, Python 3.9.6
+# Date: 2026-11-01
+
+test_live_step_gets_real_login_gates_and_overrides_only (scripts.tests.test_release_smoke.EnvironmentTest) ... ok
+test_scripted_steps_get_a_temp_home (scripts.tests.test_release_smoke.EnvironmentTest) ... ok
+test_grok_command_override (scripts.tests.test_release_smoke.PreflightTest) ... ok
+test_missing_cli_and_codex_login (scripts.tests.test_release_smoke.PreflightTest) ... ok
+test_covers_every_runtime (scripts.tests.test_release_smoke.RequiredCasesTest) ... ok
+test_titles_exist_in_the_suites (scripts.tests.test_release_smoke.RequiredCasesTest) ... ok
+test_failed_suite_errors_by_runtime (scripts.tests.test_release_smoke.SummaryTest) ... ok
+test_failed_suite_errors_whole_file_and_shared_error (scripts.tests.test_release_smoke.SummaryTest) ... ok
+test_models_lines (scripts.tests.test_release_smoke.SummaryTest) ... ok
+test_summary_result_line (scripts.tests.test_release_smoke.SummaryTest) ... ok
+test_worktree_guard (scripts.tests.test_release_smoke.SummaryTest) ... ok
+test_all_cases_passed (scripts.tests.test_release_smoke.VerdictTest) ... ok
+test_duplicate_match_fails (scripts.tests.test_release_smoke.VerdictTest) ... ok
+test_failed_case_shows_first_failure_line (scripts.tests.test_release_smoke.VerdictTest) ... ok
+test_file_level_error_is_reported (scripts.tests.test_release_smoke.VerdictTest) ... ok
+test_live_case_needs_its_runtime_ancestor (scripts.tests.test_release_smoke.VerdictTest) ... ok
+test_missing_runtime_fails_with_no_result (scripts.tests.test_release_smoke.VerdictTest) ... ok
+test_other_failed_test_fails_the_check (scripts.tests.test_release_smoke.VerdictTest) ... ok
+test_other_passed_or_skipped_tests_are_ignored (scripts.tests.test_release_smoke.VerdictTest) ... ok
+test_preflight_reason_names_the_runtime (scripts.tests.test_release_smoke.VerdictTest) ... ok
+test_runtime_setup_error_fails_only_that_runtime (scripts.tests.test_release_smoke.VerdictTest) ... ok
+test_skipped_case_fails (scripts.tests.test_release_smoke.VerdictTest) ... ok
+test_suite_error_fails_the_check (scripts.tests.test_release_smoke.VerdictTest) ... ok
+
+----------------------------------------------------------------------
+Ran 23 tests in 0.004s
+
+OK

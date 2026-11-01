@@ -1,0 +1,34 @@
+# Measurements for autobyteus-345 (2026-11-01; macOS arm64, Node 22.23.1, pnpm 10.28.2; worktree at origin/personal efd28d5c4a; nothing written outside the worktree and /tmp; no user data touched)
+
+## M-1 What `pnpm deploy --legacy` carries today (the desktop and Docker server package)
+`pnpm --filter autobyteus-server-ts deploy <dir> --legacy` after `pnpm -C autobyteus-server-ts build`: 827 MB total; node_modules 762 MB; dist 28.7 MB; tests 19.8 MB; src 13.2 MB; tickets 1.9 MB; docs 1.5 MB; docker 0.27 MB; scripts 0.08 MB; plus AGENTS.md, canuse-ok.txt, tsconfig*.json, vitest.config.ts. The deployed node_modules holds vitest, typescript, prisma, ws, @types/*, @vue/compiler-sfc, @modelcontextprotocol/{client,core,node,server}.
+
+## M-2 What the server reads from its package folder at run time (source reading)
+`dist/` (built code and `dist/built-in-agents/templates`), `prisma/` (schema.prisma and migrations; `node_modules/prisma/build/index.js` runs `migrate deploy`, `src/startup/migrations.ts:18,91`), `application-packages/platform/applications` (`bundled-application-resource-root.ts`), `package.json` (app-root detection `app-config.ts:176-188`), `mobile-web/` and `download/` (added by the packaging scripts). Nothing reads `src/`, `tests/`, `tickets/`, `docs/`, `docker/` or `scripts/` of the package at run time; `logging_config.ini` is read but ignored. `canuse-ok.txt` (content "OK") is referenced by nothing (`git grep`).
+
+## M-3 Candidate package: `files: ["dist","prisma","application-packages"]`, `prisma` moved from devDependencies to dependencies, `pnpm deploy --legacy --prod`
+674 MB total (-153 MB, -18%); node_modules 645 MB (-116 MB: dev packages gone); the folder holds LICENSE, README.md, application-packages, dist, node_modules, package.json, prisma. Then `node_modules/.bin/prisma generate --schema prisma/schema.prisma` and `node autobyteus-web/scripts/verify-packaged-server-startup.mjs --server-root <dir>`: "Packaged server startup validation passed". (Lockfile change of the move: three lines, prisma from the devDependencies list to the dependencies list of the server importer.)
+
+## M-4 Windows staging install: lockfile routes tried (FU-008)
+- `pnpm deploy --legacy --prod` keeps the lockfile versions (tslib 2.8.1 only).
+- The same with `--config.node-linker=hoisted` gives a flat tree with no symlinks, but RE-RESOLVES: tslib 2.9.1, a version the committed lockfile does not contain. Not usable as "from the lockfile".
+- Non-legacy deploy (`--config.inject-workspace-packages=true`) writes a derived `pnpm-lock.yaml` with absolute `file:///…` workspace paths of this machine; `pnpm install --frozen-lockfile --prod --config.node-linker=hoisted` on it fails ("specifiers in the lockfile don't match specifiers in package.json": the deploy rewrote package.json). Not usable.
+- Decision input: the stage keeps `npm install` (the flat tree Windows needs) but bounded by `--before=<commit time of the checkout>`: nothing published after the commit enters the build.
+
+## M-5 The `pnpm install` flags
+`autobyteus-web/scripts/prepare-server.sh:162-166` tests `${SERVER_REPO_DIR}/pnpm-lock.yaml` (the lockfile is at the workspace root, so the test is always false) and so always runs `pnpm install --no-frozen-lockfile`; `prepare-server.mjs:174` the same flag; `.github/workflows/release-desktop.yml` lines 139, 269, 404, 488, 564 the same flag; `Dockerfile.monorepo:29` the same flag with 9 of the 12 importer manifests. `pnpm install --frozen-lockfile` on this checkout succeeds (the lockfile is current). Lockfile importers (12): applications/brief-studio, applications/socratic-math-teacher, autobyteus-agent-presentation-contracts, autobyteus-application-backend-sdk, autobyteus-application-devkit, autobyteus-application-frontend-sdk, autobyteus-application-sdk-contracts, autobyteus-collaboration-stream-contracts, autobyteus-server-ts, autobyteus-team-stream-contracts, autobyteus-ts, autobyteus-web; the Dockerfile copies the manifest of 8 of them (missing: application-devkit, application-frontend-sdk, brief-studio, socratic-math-teacher).
+
+## M-6 Stray folder after the desktop build (201), reproduced
+After `bash autobyteus-web/scripts/prepare-server.sh`: `git status --ignored` shows `autobyteus-server-ts/autobyteus-web/resources/server/node_modules/.bin` (24 KB). Cause: `pnpm deploy` of pnpm 10.28.2 links the bins of the deploy target a second time at a path mirrored under the project folder; also reproduced with other targets (`_pkg345-scratch/…` appeared in the workspace root for a target outside it; one earlier run failed with `EACCES mkdir '/Users/tmp'` for a target under `/tmp`). The folder is untracked-ignored and 24 KB; the packaged app is unchanged.
+
+## M-7 `generated/graphql.ts` against the current schema (164)
+Schema printed in-process (`probes/print-graphql-schema.probe.mjs` with `buildGraphqlSchema`, no running app, `env -i`, temp HOME): 3,142 lines of SDL. `BACKEND_GRAPHQL_BASE_URL=<that file> pnpm -C autobyteus-web codegen` vs the committed file: +102 lines, additions only: scalar descriptions (DateTime, JSON, SafeInt), `projectId` on CreateAgentRunInput and CreateAgentTeamRunInput, `ProjectRunHistoryObject` and related. 316 found "the hand-edited file" six lines behind a month earlier, so the file is still maintained by hand. The first printing put "AgentFactory (Singleton) initialized." on stdout; the script must write to a file.
+
+## M-8 Undeclared imports (251), `import-provider-check.mjs` run on the three packages
+Hidden-hoist-only providers: server — `@autobyteus/application-backend-sdk` (3 test files; not in package.json); web — `graphql-tag` (74 files), `vue` (702 files), `vue-router`; also `@huggingface/tokenizers`, `onnxruntime-web`, `type-graphql`, `@prisma/client` (build scripts and a seed script that import from the SERVER stage, not web dependencies: not to be declared). `jsdom` is no longer imported by server code. `@apollo/client`, `@vue/apollo-composable` and `graphql` are declared in the web package.json now. `@nuxtjs/apollo` (web devDependency) is imported by nothing and not registered in nuxt.config.
+
+## M-9 Proxy (168)
+Node 22.23.1: `HTTP_PROXY=<url>` set at launch: `fetch` goes direct (ENOTFOUND). With `NODE_USE_ENV_PROXY=1` at launch the request goes to the proxy (ECONNREFUSED on the unused proxy port). Setting the variables inside the process has no effect. Electron 42.11.16 bundles Node 24. No server code or dependency honours proxies (`git grep` finds none); `undici` is not a server dependency.
+
+## M-10 Docker image already prunes onnxruntime-web (169)
+`Dockerfile.monorepo:57` runs `autobyteus-web/scripts/onnxruntime-web-packaging.mjs` on the server package (added by `01c56f1b95`, the signed server package change); the script prunes `onnxruntime-web/dist` to the Node build and checks the embedding runtime; it is the one list used by the macOS/Linux script, the Windows script and the image.
