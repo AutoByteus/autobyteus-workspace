@@ -14,17 +14,39 @@
 - Relevant Architecture Review Revision IDs: ARCH-REV-002, ARCH-REV-003
 - Implementation Handoff Reviewed As Context: `implementation-handoff.md` (IR-002)
 - Implementation Revision Record Reviewed As Context: `implementation-revision-record.md`
-- Relevant Implementation Revision IDs: IR-001, IR-002
+- Relevant Implementation Revision IDs: IR-001, IR-002, IR-003
 - Code Review Revision Record: `code-review-revision-record.md`
-- Current Code Review Revision ID: `CRR-001`
-- Current Review Round: 1
-- Review Scope: `Full Review`
-- Review Scope Evidence (round >1): N/A
+- Current Code Review Revision ID: `CRR-002`
+- Current Review Round: 2
+- Review Scope: `Targeted Delta Review` (round 2). Round 1 was a `Full Review`; its evidence is carried forward
+- Review Scope Evidence (round 2): `git diff e2aecff03e 438ea7fb65` stays within CR-001's files and behavior:
+  - the two mobile screens;
+  - a new 13-line status-words module;
+  - the shared test stub;
+  - the mobile spec.
+
+  `b3e9f741a7` is ticket records only. No spine, interface or data shape changed.
 - Trigger: implementation complete (IR-002), `Large`/`High` → source review
 - Prior Review Round Reviewed: none
 - Latest Authoritative Round: 1
 - Coverage Investigation / Execution Coverage Report / API/E2E Revision Record: N/A
 - Delivery Revision Record: N/A
+
+## Round 2: CR-001 Local Fix (IR-003)
+
+- **Changed.**
+  - `MobileTeamMessages.vue` reads `messagesStatus()`: a loading state, an unavailable state with the server's reason, and "No team messages yet" only for a loaded empty list.
+  - The `MobileActivityDigest.vue` summary follows the same three states (on error: "These messages can't be shown: <reason>").
+  - The words are the Team tab's `loading_messages` / `messages_unavailable` (en, zh-CN), through `services/collaborationMessages/participantMessagesStatusText.ts`.
+- **Verified.**
+  - The states match AC-006 and the design mapping.
+  - The new module does not bypass `MobileRemoteAccessShell.spec.ts:442-480`. That guard keeps mobile "free from desktop shell imports" (it forbids component names such as `TeamCommunicationPanel`). The module imports no desktop component and owns the status words in the participant-messages service area, so the guard stays intact.
+  - The shared `participantMessagesStub` keeps its default behavior; `clear` also clears hold and fail outcomes.
+- **Tests.** Three new cases (loading, unavailable with the reason, loaded empty), each checking the screen and the digest summary.
+- **Checks.**
+  - `evidence/IMP-CR001-mobile-states.log`: the mobile specs 77/77; web typecheck PASS; three guards pass.
+  - The shared stub serves five other specs that the log didn't rerun, so I ran all six stub-using specs on `b3e9f741a7`: 6 files / 62 tests passed.
+- **Result:** CR-001 resolved; `Pass`.
 
 ## Routing Classification Review
 
@@ -190,7 +212,7 @@ No new premises beyond the candidate gate.
 
 ## Review Scorecard (Mandatory)
 
-- Overall score (`/10`): 9.3
+- Overall score (`/10`): 9.5 (round 2; round 1: 9.3)
 - Score calculation note: simple average of the ten categories, for trend visibility only.
 
 | Priority | Category | Score | Why This Score | What Is Weak / Holding It Down | What Should Improve |
@@ -201,8 +223,8 @@ No new premises beyond the candidate gate.
 | 4 | Separation of Concerns and File Placement | 9.4 | As mapped; files shrank where code moved | `AgentConversationFeed.vue` at the 500 limit | — |
 | 5 | Shared-Structure / Data-Model Tightness and Reusable Owned Structures | 9.5 | Views lost the log; one DTO and one row projector | — | — |
 | 6 | Naming Quality and Local Readability | 9.4 | Clear comments stating why | — | — |
-| 7 | API/E2E Readiness | 8.9 | All suites green from a clean clone (FU-001 excepted); QR-001…004 met | CR-001: the mobile message screens have no loading or error state | Fix CR-001 with tests |
-| 8 | Runtime Correctness And Behavioral Fidelity | 9.0 | Ordering, merge, generations, admission and resume traced correct | CR-001: a damaged log is silently empty on mobile (AC-006) | Fix CR-001 |
+| 7 | API/E2E Readiness | 9.4 (round 2: CR-001 resolved; round 1: 8.9) | All suites green from a clean clone (FU-001 excepted); QR-001…004 met | CR-001: the mobile message screens have no loading or error state | Fix CR-001 with tests |
+| 8 | Runtime Correctness And Behavioral Fidelity | 9.4 (round 2: CR-001 resolved; round 1: 9.0) | Ordering, merge, generations, admission and resume traced correct | CR-001: a damaged log is silently empty on mobile (AC-006) | Fix CR-001 |
 | 9 | No Backward-Compatibility / No Legacy Retention | 9.6 | Clean removal | — | — |
 | 10 | Cleanup Completeness | 9.5 | Removal plan applied; leftovers grep clean | — | — |
 
@@ -210,7 +232,7 @@ No new premises beyond the candidate gate.
 
 | ID | Severity | Location | Problem | Required Action | Classification / Owner |
 | --- | --- | --- | --- | --- | --- |
-| CR-001 | Blocking | `autobyteus-web/components/mobile/MobileTeamMessages.vue:6-8`; `autobyteus-web/components/mobile/MobileActivityDigest.vue:105-108` | The mobile message screens read only `listMessages()`. While the focused member's list is loading they say "No team messages yet for the focused member.", and after a failed load (a damaged log, AC-006) they keep saying it, which is a silently empty log. AC-006 requires the messages to show as unavailable with the reason and never silently empty, and the design mapping gives these screens "loading and error states". The desktop Team tab does this correctly (`CollaborationMessagesPanel.vue`) | Read the view's `messagesStatus()` on both screens. Show a loading state while `loading`, and an unavailable state with `error` when `error`, reusing the Team tab's `loading_messages` / `messages_unavailable` strings (en, zh-CN). Keep "No team messages yet" for a loaded empty list only; the digest summary likewise. Add specs for loading, error-with-reason, and loaded-empty | `Local Fix` → Implementation |
+| CR-001 | — **Resolved (round 2)**: IR-003 `438ea7fb65` | `autobyteus-web/components/mobile/MobileTeamMessages.vue:6-8`; `autobyteus-web/components/mobile/MobileActivityDigest.vue:105-108` | The mobile message screens read only `listMessages()`. While the focused member's list is loading they say "No team messages yet for the focused member.", and after a failed load (a damaged log, AC-006) they keep saying it, which is a silently empty log. AC-006 requires the messages to show as unavailable with the reason and never silently empty, and the design mapping gives these screens "loading and error states". The desktop Team tab does this correctly (`CollaborationMessagesPanel.vue`) | Read the view's `messagesStatus()` on both screens. Show a loading state while `loading`, and an unavailable state with `error` when `error`, reusing the Team tab's `loading_messages` / `messages_unavailable` strings (en, zh-CN). Keep "No team messages yet" for a loaded empty list only; the digest summary likewise. Add specs for loading, error-with-reason, and loaded-empty | `Local Fix` → Implementation |
 
 ## Follow-ups
 
@@ -218,11 +240,11 @@ No new premises beyond the candidate gate.
 
 ## Classification
 
-- `Local Fix`, owned by the Implementation Engineer: a bounded UI omission against the approved AC-006 and the design's own mapping. No design or requirement change is needed.
+- Round 2: none (Pass). Round 1: `Local Fix`, owned by the Implementation Engineer: a bounded UI omission against the approved AC-006 and the design's own mapping. No design or requirement change is needed.
 
 ## Recommended Recipient
 
-- Implementation Engineer. Then source review again (`Targeted Delta Review`: the two mobile components and their specs), then API/E2E.
+- Round 2: the API/E2E Engineer (primary pass recipient); informational notice to the Implementation Engineer. Round 1: Implementation Engineer.
 
 ## Residual Risks
 
@@ -232,11 +254,11 @@ No new premises beyond the candidate gate.
 
 ## Latest Authoritative Result
 
-- Review Decision: `Fail`
+- Review Decision: `Pass` (round 2; CR-001 resolved; 9.5/10, every category ≥ 9.4). Round 1: `Fail`
 - Review Entry Point: `Implementation Review`
 - Supported Product Scenario Gate: `Pass` (SCN-007-MOBILE promoted)
 - Material-Premise Gate: `Pass`
 - Score Summary: 9.3/10. Below 9.2: API/E2E Readiness 8.9 and Runtime Correctness 9.0 (both CR-001)
 - Failure Origin: N/A
-- Recommended Recipient: Implementation Engineer
+- Recommended Recipient: API/E2E Engineer (round 2)
 - Notes: otherwise a strong, faithful implementation. D-IMP-1…D-IMP-6 were checked and hold. The checks in `evidence/IMP-clean-clone.log` (at `b58a3106c3`) were reused, and none was rerun.
